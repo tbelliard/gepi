@@ -4,7 +4,7 @@
  *
  * @version $Id: absences.php 6281 2011-01-04 17:26:47Z crob $
  *
- * Fichier destiné à gérer les accès responsables et élèves du module absences
+ * Fichier destinÃ© Ã  gÃ©rer les accÃ¨s responsables et Ã©lÃ¨ves du module absences
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -44,21 +44,21 @@ if (!checkAccess()) {
     die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (substr(getSettingValue("active_module_absence"),0,1)!='y') {
 	header("Location: ../accueil.php");
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 elseif (substr(getSettingValue("active_absences_parents"),0,1)!='y'){
-	// On vérifie aussi que l'accès parents est bien autorisé
+	// On vÃ©rifie aussi que l'accÃ¨s parents est bien autorisÃ©
 	header("Location: ../accueil.php");
-	die("Le module n'est pas activé.");
+	die("Le module n'est pas activÃ©.");
 }
 
 // =============================== fin initialisation de base ===================
-// =============================== Ensemble des opérations php ==================
+// =============================== Ensemble des opÃ©rations php ==================
 
-// on met le header ici pour récupérer des infos sur les enfants
+// on met le header ici pour rÃ©cupÃ©rer des infos sur les enfants
 $style_specifique = 'mod_absences/styles/parents_absences';
 $javascript_specifique = '';
 //**************** EN-TETE *****************
@@ -66,23 +66,23 @@ $titre_page = "Les absences";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-// On récupère du header les infos sur les enfants : $tab_tmp_ele
-// Sécurité supplémentaire car il faut nécessairement être un responsable pour avoir ces infos
+// On rÃ©cupÃ¨re du header les infos sur les enfants : $tab_tmp_ele
+// SÃ©curitÃ© supplÃ©mentaire car il faut nÃ©cessairement Ãªtre un responsable pour avoir ces infos
 $aff_absences = array();
 $nbre = count($tab_tmp_ele);
 
 for($i = 0; $i < $nbre; ){
 	$aff_absences[$i] = '';
-	$n = $i + 1; // pour le nom et le prénom de l'élève
+	$n = $i + 1; // pour le nom et le prÃ©nom de l'Ã©lÃ¨ve
 
-	// On récupère toutes les absences qui correspondent à ce login
+	// On rÃ©cupÃ¨re toutes les absences qui correspondent Ã  ce login
 	$query = mysql_query("SELECT * FROM absences_eleves WHERE eleve_absence_eleve = '".$tab_tmp_ele[$i]."' ORDER BY a_date_absence_eleve")
-					OR DIE('Erreur dans la récupération des absences de votre enfant : '.mysql_error());
+					OR DIE('Erreur dans la rÃ©cupÃ©ration des absences de votre enfant : '.mysql_error());
 	$nbre_absence = mysql_num_rows($query);
 
 	// et on les mets en forme
 	for($a = 0; $a < $nbre_absence; $a++){
-		// on récupère ce dont on a besoin
+		// on rÃ©cupÃ¨re ce dont on a besoin
 		$abs[$a]["d_date_absence_eleve"] = mysql_result($query, $a, "d_date_absence_eleve");
 		$abs[$a]["a_date_absence_eleve"] = mysql_result($query, $a, "a_date_absence_eleve");
 		$abs[$a]["heuredeb_absence"] = mysql_result($query, $a, "d_heure_absence_eleve");
@@ -90,7 +90,7 @@ for($i = 0; $i < $nbre; ){
 		$abs[$a]["justification"] = mysql_result($query, $a, "justify_absence_eleve");
 		$abs[$a]["type"] = mysql_result($query, $a, "type_absence_eleve");
 		$abs[$a]["id"] = mysql_result($query, $a, "id_absence_eleve");
-		// on vérifie le type
+		// on vÃ©rifie le type
 		if ($abs[$a]["type"] == "A") {
 			$type = "<td style=\"abs\">Abs.</td>";
 		}elseif($abs[$a]["type"] == "R"){
@@ -99,9 +99,9 @@ for($i = 0; $i < $nbre; ){
 			$type = "<td>-</td>";
 
 		}
-		// on vérifie la justification
+		// on vÃ©rifie la justification
 		if ($abs[$a]["justification"] == "N") {
-			$justifie = "<td>Non justifiée</td>";
+			$justifie = "<td>Non justifiÃ©e</td>";
 		}elseif($abs[$a]["justification"] == "T"){
 			$justifie = "<td>Par tel.</td>";
 		}elseif($abs[$a]["justification"] == "O"){
@@ -114,31 +114,31 @@ for($i = 0; $i < $nbre; ){
 			<tr>
 				<td>'.$tab_tmp_ele[$n].'</td>'
 				.$type.'
-				<td>Du '.$abs[$a]["d_date_absence_eleve"].' à '.$abs[$a]["heuredeb_absence"].'</td>
-				<td>Au '.$abs[$a]["a_date_absence_eleve"].' à '.$abs[$a]["heurefin_absence"].'</td>'
+				<td>Du '.$abs[$a]["d_date_absence_eleve"].' Ã  '.$abs[$a]["heuredeb_absence"].'</td>
+				<td>Au '.$abs[$a]["a_date_absence_eleve"].' Ã  '.$abs[$a]["heurefin_absence"].'</td>'
 				.$justifie.'
 				<td>non</td>
 			</tr>
 		';
 
 	}
-	// On vérifie si les bulletins ont été renseignés pour les différentes périodes
+	// On vÃ©rifie si les bulletins ont Ã©tÃ© renseignÃ©s pour les diffÃ©rentes pÃ©riodes
 	$query_b = mysql_query("SELECT * FROM absences WHERE login = '".$tab_tmp_ele[$i]."' ORDER BY periode");
 	$verif = mysql_num_rows($query_b);
 		$aff_absences_bulletin = '';
 	if ($verif >= 1) {
 		$aff_absences_bulletin .= '<br /><br />
 		<table id="absBull">
-			<caption title="Ces absences sont enregistrées sur le bulletin après traitement et vérification.">
+			<caption title="Ces absences sont enregistrÃ©es sur le bulletin aprÃ¨s traitement et vÃ©rification.">
 			Les absences retenues sur le bulletin</caption>
 			<thead>
 				<tr>
-					<th>Elève concerné</th>
-					<th>Période</th>
+					<th>ElÃ¨ve concernÃ©</th>
+					<th>PÃ©riode</th>
 					<th>Nbre d\'absences</th>
-					<th>dont non justifiées</th>
+					<th>dont non justifiÃ©es</th>
 					<th>Nbre de retards</th>
-					<th>Appréciation</th>
+					<th>ApprÃ©ciation</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -173,7 +173,7 @@ for($i = 0; $i < $nbre; ){
 	$i = $i + 2;
 // MODIF } // fin for($i = 0; $i < count($tab_tmp_ele); ...
 
-// =============================== Fin des opérations php =======================
+// =============================== Fin des opÃ©rations php =======================
 
 ?>
 <!-- Debut de la page absences parents -->
@@ -202,7 +202,7 @@ for($c = 0; $c < $nbre_absence; $c++){
 
 </table>
 
-<?php // Si les bulletins sont renseignés, on affiche les infos relatives aux absences
+<?php // Si les bulletins sont renseignÃ©s, on affiche les infos relatives aux absences
   if (isset($aff_absences_bulletin) AND $aff_absences_bulletin != "") {
     echo $aff_absences_bulletin;
   }

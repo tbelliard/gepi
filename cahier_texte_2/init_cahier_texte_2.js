@@ -20,18 +20,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation... pour que le tableau existe, même si on ne définit pas le tableau dans ../temp/info_jours.js
+// Initialisation... pour que le tableau existe, mÃªme si on ne dÃ©finit pas le tableau dans ../temp/info_jours.js
 var tab_jours_ouverture=new Array();
 
-//page initialisation: Déplacé en fin de fichier pour que les fonctions soient chargées avant
+//page initialisation: DÃ©placÃ© en fin de fichier pour que les fonctions soient chargÃ©es avant
 //Event.observe(window, 'load', initPage);
 
 function initPage () {
-	// On ajoute un délais pour que Calendar et calendarInstanciation soient définies via les lib JS calendar.js et calendar-setup.js
+	// On ajoute un dÃ©lais pour que Calendar et calendarInstanciation soient dÃ©finies via les lib JS calendar.js et calendar-setup.js
 	//getWinCalendar();
 	setTimeout('getWinCalendar();', 500);
 
-	//si id_group_init est renseigné on affiche le groupe concerné, sinon on affiche les dernieres notices
+	//si id_group_init est renseignÃ© on affiche le groupe concernÃ©, sinon on affiche les dernieres notices
 	var id_groupe_init = $('id_groupe_init').value;
 	if (id_groupe_init != '') {
 	    id_groupe = id_groupe_init;
@@ -49,7 +49,7 @@ function initPage () {
 			    }
 	    );
 		*/
-		// On ajoute un délais pour que le calendrier soit chargé avant
+		// On ajoute un dÃ©lais pour que le calendrier soit chargÃ© avant
 		setTimeout('initFenetreNotice('+id_groupe_init+')',500);
 	} else {
             getWinDernieresNotices().hide();
@@ -106,13 +106,13 @@ function include(filename)
 //include('./ajax_functions.js');
 
 include('../lib/DHTMLcalendar/calendar.js');
-// Les deux suivants sont insérés plus bas pour tenter d'éviter des erreurs du type:
-//	Erreur : Calendar is not defined
-//	Fichier Source : https://.../Gepi/lib/DHTMLcalendar/lang/calendar-fr.js
-//	Ligne : 13
-//	Erreur : Calendar is not defined
-//	Fichier Source : https://.../Gepi/lib/DHTMLcalendar/calendar-setup.js
-//	Ligne : 63
+// Les deux suivants sont insÃ©rÃ©s plus bas pour tenter d'Ã©viter des erreurs du type:
+//	ErreurÂ : Calendar is not defined
+//	Fichier SourceÂ : https://.../Gepi/lib/DHTMLcalendar/lang/calendar-fr.js
+//	LigneÂ : 13
+//	ErreurÂ : Calendar is not defined
+//	Fichier SourceÂ : https://.../Gepi/lib/DHTMLcalendar/calendar-setup.js
+//	LigneÂ : 63
 //include('../lib/DHTMLcalendar/lang/calendar-fr.js');
 //include('../lib/DHTMLcalendar/calendar-setup.js');
 
@@ -197,7 +197,7 @@ function getWinDernieresNotices() {
 	if (typeof winDernieresNotices=="undefined") {
 		winDernieresNotices = new Window(
 				{id: 'win_dernieres_notices',
-				title: 'Dernières Notices',
+				title: 'DerniÃ¨res Notices',
 				showEffect: Element.show,
 				hideEffect: Element.hide,
 				top:155,
@@ -258,7 +258,7 @@ function getWinCalendar() {
 				height:170}
 			);
 /*
-		// Pour ajouter un délais... on a parfois des pb avec l'ouverture des fenêtres
+		// Pour ajouter un dÃ©lais... on a parfois des pb avec l'ouverture des fenÃªtres
 		// Web Developper signale des pb d'init avec Calendar...
 		if(!$('win_calendar_content')) {
 			setTimeout('setWinCalendarContent();winCalendar.show();winCalendar.toFront();return winCalendar;',500);
@@ -506,7 +506,7 @@ function suppressionCompteRendu(message, id_ct_a_supprimer, csrf_alea) {
 }
 
 function suppressionDevoir(message, id_devoir_a_supprimer, id_groupe, csrf_alea) {
-	if (confirmlink(this,'suppression du travail à faire pour le ' + message + ' ?','Confirmez vous ')) {
+	if (confirmlink(this,'suppression du travail Ã  faire pour le ' + message + ' ?','Confirmez vous ')) {
     	new Ajax.Request('./ajax_suppression_notice.php?type=CahierTexteTravailAFaire&id_objet='+id_devoir_a_supprimer+'&csrf_alea='+csrf_alea,
     		{ onComplete:
     			function(transport) {
@@ -690,7 +690,7 @@ function completeDeplacementNoticeCallback(response) {
 	    $('id_ct').value = response;
 
 	    if ($F('id_groupe_deplacement') == -1) {
-		    updateWindows('Pas de groupe spécifié');
+		    updateWindows('Pas de groupe spÃ©cifiÃ©');
 		    return false;
 	    } else {
 		    if (typeof calendarDeplacementInstanciation != 'undefined' && calendarDeplacementInstanciation != null) {
@@ -705,7 +705,7 @@ function completeDeplacementNoticeCallback(response) {
 			    $('date_deplacement').value = 0;
 		    }
 		    $('deplacement_notice_form').request({
-			    //une fois le deplacement effectué en base, on mets à jour la fenetre d'edition puis la liste des notices'
+			    //une fois le deplacement effectuÃ© en base, on mets Ã  jour la fenetre d'edition puis la liste des notices'
 			    onComplete: function (transport) {updateWindows(transport.responseText);debut_alert = new Date();}
 		    });
 	    }
@@ -723,7 +723,7 @@ function completeDuplicationNoticeCallback(response) {
 	    $('id_ct').value = response;
 
 	    if ($F('id_groupe_duplication') == -1) {
-		    updateWindows('Pas de groupe spécifié');
+		    updateWindows('Pas de groupe spÃ©cifiÃ©');
 		    return false;
 	    } else {
 		    if (typeof calendarDuplicationInstanciation != 'undefined' && calendarDuplicationInstanciation != null) {
@@ -738,7 +738,7 @@ function completeDuplicationNoticeCallback(response) {
 			    $('date_duplication').value = 0;
 		    }
 		    $('duplication_notice_form').request({
-			    //une fois le deplacement effectué en base, on mets à jour la fenetre d'edition puis la liste des notices'
+			    //une fois le deplacement effectuÃ© en base, on mets Ã  jour la fenetre d'edition puis la liste des notices'
 			    onComplete: function (transport) {updateWindows(transport.responseText);debut_alert = new Date();}
 		    });
 	    }
@@ -840,14 +840,14 @@ function GetNextOpenDayUnixDate() {
 		//alert('Date='+jour+'/'+mois+'/'+annee);
 		//alert('timestamp='+timestamp);
 
-		// On crée une date de test
+		// On crÃ©e une date de test
 		var testDate = new Date();
 		testDate.setTime(timestamp*1000);
 
 		// Initialisation pour faire au moins un tour dans la boucle
 		jour_ouvert='n';
 
-		var cpt_tmp=0; // Sécurité pour éviter une boucle infinie
+		var cpt_tmp=0; // SÃ©curitÃ© pour Ã©viter une boucle infinie
 		while((jour_ouvert=='n')&&(cpt_tmp<7)) {
 
 			timestamp+=3600*24;
@@ -858,7 +858,7 @@ function GetNextOpenDayUnixDate() {
 
 			for(i=0;i<tab_jours_ouverture.length;i++) {
 				//alert("tab_jours_ouverture["+i+"]="+tab_jours_ouverture[i]+" et testDate.getDay()="+testDate.getDay())
-				// testDate.getDay() donne le numéro du jour avec 0 pour dimanche
+				// testDate.getDay() donne le numÃ©ro du jour avec 0 pour dimanche
 				if(tab_jours_ouverture[i]==testDate.getDay()) {
 					jour_ouvert='y';
 					break;
@@ -866,13 +866,13 @@ function GetNextOpenDayUnixDate() {
 			}
 			cpt_tmp++;
 		}
-		// Il faut retourner timestamp (calculé d'après le jour en cours d'édition) et ne pas effectuer de setTime() modifiant la date courante parce qu'on appelle deux fois la fonction en cliquant sur Passer aux devoirs du lendemain... et on passerait alors deux jours au lieu d'un
+		// Il faut retourner timestamp (calculÃ© d'aprÃ¨s le jour en cours d'Ã©dition) et ne pas effectuer de setTime() modifiant la date courante parce qu'on appelle deux fois la fonction en cliquant sur Passer aux devoirs du lendemain... et on passerait alors deux jours au lieu d'un
 		//calendarInstanciation.date.setTime(timestamp*1000);
 		//return Math.round(calendarInstanciation.date.getTime()/1000);
 		return timestamp;
 	}
 	else {
-		// On n'a pas récupéré de jours ouverts dans la base
+		// On n'a pas rÃ©cupÃ©rÃ© de jours ouverts dans la base
 		return Math.round(calendarInstanciation.date.getTime()/1000 + 3600*24);
 	}
 }

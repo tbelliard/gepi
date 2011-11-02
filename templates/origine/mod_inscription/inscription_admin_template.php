@@ -24,7 +24,7 @@
 */
 
 /**
-* Appelle les sous-modèles
+* Appelle les sous-modÃ¨les
 * templates/origine/header_template.php
 * templates/origine/bandeau_template.php
 *
@@ -35,7 +35,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 
 <head>
-<!-- on inclut l'entête -->
+<!-- on inclut l'entÃªte -->
 	<?php
 	  $tbs_bouton_taille = "..";
 	  include('../templates/origine/header_template.php');
@@ -78,7 +78,7 @@
 
 
 <!-- ************************* -->
-<!-- Début du corps de la page -->
+<!-- DÃ©but du corps de la page -->
 <!-- ************************* -->
 <body onload="show_message_deconnexion();<?php echo $tbs_charger_observeur;?>">
 
@@ -97,8 +97,8 @@
 <?php
 echo add_token_field();
 ?>
-		Le module Inscription vous permet de définir un ou plusieurs items (stage, intervention, ...),
-		au(x)quel(s) les utilisateurs pourront s'inscrire ou se désinscrire en cochant ou décochant une croix.
+		Le module Inscription vous permet de dÃ©finir un ou plusieurs items (stage, intervention, ...),
+		au(x)quel(s) les utilisateurs pourront s'inscrire ou se dÃ©sinscrire en cochant ou dÃ©cochant une croix.
 		<br />
 		<a href='help.php' onclick="javascript:centrerpopup('help.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes');return false;">
 		  Consultez l'aide
@@ -113,7 +113,7 @@ echo add_token_field();
 			   value="y" 
 			  <?php if (getSettingValue("active_inscription")=='y') echo " checked='checked'"; ?> />
 		<label for='activer_y' style='cursor: pointer;'>
-		  Activer l'accès au module Inscription
+		  Activer l'accÃ¨s au module Inscription
 		</label>
 		<br />
 		<input type="radio" 
@@ -122,7 +122,7 @@ echo add_token_field();
 			   value="n" 
 			  <?php if (getSettingValue("active_inscription")=='n') echo " checked='checked'"; ?> />
 		<label for='activer_n' style='cursor: pointer;'>
-		  Désactiver l'accès au module Inscription
+		  DÃ©sactiver l'accÃ¨s au module Inscription
 		</label>
 	  </fieldset>
 	  <p class="center">
@@ -137,7 +137,7 @@ echo add_token_field();
 
 
 
-<!-- Début du pied -->
+<!-- DÃ©but du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
 
 	<script type='text/javascript'>
@@ -159,7 +159,7 @@ echo add_token_field();
 		<?php
 			if ($tbs_microtime!="") {
 				echo "
-   <p class='microtime'>Page générée en ";
+   <p class='microtime'>Page gÃ©nÃ©rÃ©e en ";
    			echo $tbs_microtime;
 				echo " sec</p>
    			";

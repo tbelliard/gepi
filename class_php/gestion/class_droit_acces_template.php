@@ -4,7 +4,7 @@
 */
 
 /**
- * Contenu à afficher dans /gestion/droit_acces.php
+ * Contenu Ã  afficher dans /gestion/droit_acces.php
  *
  * @author regis
  */
@@ -20,7 +20,7 @@ class class_droit_acces_template {
 
 
 /**
- * Contenu à afficher dans /gestion/droit_acces.php
+ * Contenu Ã  afficher dans /gestion/droit_acces.php
  *
  * @author regis
  */
@@ -42,12 +42,12 @@ class class_droit_acces_template {
   }
  
 /**
- * Récupère les données à afficher et enregistre au besoin les réglages dans la table setting
+ * RÃ©cupÃ¨re les donnÃ©es Ã  afficher et enregistre au besoin les rÃ©glages dans la table setting
  *
- * @var $statutPasse : Statut à régler
- * @var $namePasse : Nom de la variable à enregistrer dans la table setting
- * @var $valuePasse : Valeur de la variable à enregistrer dans la table setting
- * @var $textePasse : Texte à afficher dans la page
+ * @var $statutPasse : Statut Ã  rÃ©gler
+ * @var $namePasse : Nom de la variable Ã  enregistrer dans la table setting
+ * @var $valuePasse : Valeur de la variable Ã  enregistrer dans la table setting
+ * @var $textePasse : Texte Ã  afficher dans la page
  */
   public function set_entree($statutPasse, $namePasse, $textePasse){
 
@@ -62,7 +62,7 @@ class class_droit_acces_template {
   }
 
 /**
- * Renvoie les données à afficher d'un item
+ * Renvoie les donnÃ©es Ã  afficher d'un item
  *
  */
   public function get_item(){
@@ -82,11 +82,11 @@ class class_droit_acces_template {
 /**
  * Modifie les droits dans la table droits
  *
- * @var $statutPasse : statut à mettre à jour
- * @var $titreItem : nom du droit à vérifier
- * @var $namePasse : nom de la page à mettre à jour (\xxxxx\xxxxx.xxx)
- * @var $force : permet de forcer le droit à V avec 'yes' et à F avec toute autre valeur.
- * Laisser vide pour que le droit soit recherché dans setting
+ * @var $statutPasse : statut Ã  mettre Ã  jour
+ * @var $titreItem : nom du droit Ã  vÃ©rifier
+ * @var $namePasse : nom de la page Ã  mettre Ã  jour (\xxxxx\xxxxx.xxx)
+ * @var $force : permet de forcer le droit Ã  V avec 'yes' et Ã  F avec toute autre valeur.
+ * Laisser vide pour que le droit soit recherchÃ© dans setting
  *
  */
   public function ouvreDroits($statutPasse, $titreItem, $namePasse, $force= NULL ){

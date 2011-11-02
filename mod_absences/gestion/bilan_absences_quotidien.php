@@ -3,8 +3,8 @@
 /**
  * @version $Id: bilan_absences_quotidien.php 4152 2010-03-21 23:32:16Z adminpaulbert $
  *
- * Fichier destiné à visionner le bilan de la journée des absences heure par heure et cours par cours
- * en ordonnant le classement des élèves par classe et par ordre alphabétique.
+ * Fichier destinÃ© Ã  visionner le bilan de la journÃ©e des absences heure par heure et cours par cours
+ * en ordonnant le classement des Ã©lÃ¨ves par classe et par ordre alphabÃ©tique.
  *
  * @copyright 2007
  */
@@ -27,13 +27,13 @@ if ($resultat_session == 'c') {
 die();
 };
 
-// Sécurité
+// SÃ©curitÃ©
 if (!checkAccess()) {
     header("Location: ../../logout.php?auto=1");
 die();
 }
 
-// Insertion du style spécifique
+// Insertion du style spÃ©cifique
 $style_specifique = "mod_absences/gestion/style_absences";
 
 //+++++++++++++++++++++++++++++++++
@@ -47,15 +47,15 @@ $date_choisie = isset($_POST["date_choisie"]) ? $_POST["date_choisie"] : (date("
 $choix_date = explode("/", $date_choisie);
 $date_choisie_ts = mktime(0,0,0, $choix_date[1], $choix_date[0], $choix_date[2]);
 
-// On récupère le nom des créneaux
+// On rÃ©cupÃ¨re le nom des crÃ©neaux
 
 $creneaux = retourne_creneaux();
-// On récupère le nombre de créneaux
+// On rÃ©cupÃ¨re le nombre de crÃ©neaux
 $nb_creneaux = count($creneaux);
 
 // Fonctions des absences
 	function suivi_absence($creneau_id, $eleve_id, $date_choisie){
-		// On récupère les horaires de début du créneau en question et on les transforme en timestamp UNIX
+		// On rÃ©cupÃ¨re les horaires de dÃ©but du crÃ©neau en question et on les transforme en timestamp UNIX
 			$choix_date = explode("/", $date_choisie);
 			$date_choisie_ts = mktime(0,0,0, $choix_date[1], $choix_date[0], $choix_date[2]);
 		if (date("w", $date_choisie_ts) == getSettingValue("creneau_different")) {
@@ -70,7 +70,7 @@ $nb_creneaux = count($creneaux);
 		//$d_date = explode("/", $d_date_absence_eleve);
 		$ts_heuredeb = mktime($heuredeb[0], $heuredeb[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
 		$ts_heurefin = mktime($heurefin[0], $heurefin[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
-		// On teste si l'élève était absent ou en retard le cours du créneau (on ne teste que le début du créneau)
+		// On teste si l'Ã©lÃ¨ve Ã©tait absent ou en retard le cours du crÃ©neau (on ne teste que le dÃ©but du crÃ©neau)
 		$req = mysql_query("SELECT id, retard_absence FROM absences_rb
 								WHERE eleve_id = '".$eleve_id."' AND
 								(
@@ -89,11 +89,11 @@ $nb_creneaux = count($creneaux);
 
 
 		$rep = mysql_fetch_array($req);
-			// S'il est marqué absent A -> fond rouge
+			// S'il est marquÃ© absent A -> fond rouge
 		if ($rep["retard_absence"] == "A") {
 			return "<td style=\"border: 1px solid black; background-color: #ffd4d4; color: red;\"><b>A</b></td>";
 		} elseif ($rep["retard_absence"] == "R") {
-			// S'il est marqué en retard R -> fond vert
+			// S'il est marquÃ© en retard R -> fond vert
 			return "<td style=\"border: 1px solid black; background-color: #d7ffd4; color: green;\"><b>R</b></td>";
 		} else {
 			return "<td style=\"border: 1px solid black;\"></td>";
@@ -138,7 +138,7 @@ $nb_creneaux = count($creneaux);
 		<th style="border: 1px solid black; background-color: grey;">Classe</th>
 		<th style="border: 1px solid black; background-color: grey; width: 300px;">Nom Pr&eacute;nom</th>
 <?php
-		//afficher les créneaux
+		//afficher les crÃ©neaux
 			$i = 0;
 		while($i < $nb_creneaux){
 			echo "<th style=\"border: 1px solid black; background-color: grey;\">".$creneaux[$i]."</th>\n";
@@ -149,33 +149,33 @@ $nb_creneaux = count($creneaux);
 
 <?php
 // ===================== Quelques variables utiles ===============
-	// On détermine le jour en Français actuel
+	// On dÃ©termine le jour en FranÃ§ais actuel
 	$jour_choisi = retourneJour(date("w", $date_choisie_ts));
 	$query = mysql_query("SELECT ouverture_horaire_etablissement, fermeture_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement = '".$jour_choisi."'");
-	$attention = ''; // message de prévention au cas où $query ne retourne rien
+	$attention = ''; // message de prÃ©vention au cas oÃ¹ $query ne retourne rien
 
 	$nbre_rep = mysql_num_rows($query);
 	if ($nbre_rep >= 1) {
-		// Avec le résultat, on calcule les timestamps UNIX
+		// Avec le rÃ©sultat, on calcule les timestamps UNIX
 		$req = mysql_fetch_array($query);
 		$rep_deb = explode(":", $req["ouverture_horaire_etablissement"]);
 		$rep_fin = explode(":", $req["fermeture_horaire_etablissement"]);
 		$time_actu_deb = mktime($rep_deb[0], $rep_deb[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
 		$time_actu_fin = mktime($rep_fin[0], $rep_fin[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
 	}else{
-		// Si on ne récupère rien, on donne par défaut les ts du jour actuel
+		// Si on ne rÃ©cupÃ¨re rien, on donne par dÃ©faut les ts du jour actuel
 		$time_actu_deb = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
 		$time_actu_fin = mktime(23, 59, 0, date("m"), date("d"), date("Y"));
 		// et on affiche un petit message
-		$attention = "L'établissement est censé être fermé aujourd'hui.";
+		$attention = "L'Ã©tablissement est censÃ© Ãªtre fermÃ© aujourd'hui.";
 	}
 
-// Affichage des noms répartis par classe
+// Affichage des noms rÃ©partis par classe
 $req_classe = mysql_query("SELECT id, classe FROM classes ORDER BY classe");
 $nbre = mysql_num_rows($req_classe);
 
 for($i = 0; $i < $nbre; $i++) {
-	// On récupère le nom de toutes les classes
+	// On rÃ©cupÃ¨re le nom de toutes les classes
 	$rep_classe[$i]["classe"] = mysql_result($req_classe, $i, "classe");
 	$rep_classe[$i]["id"] = mysql_result($req_classe, $i, "id");
 	echo '
@@ -184,7 +184,7 @@ for($i = 0; $i < $nbre; $i++) {
 			<td colspan="'.($nb_creneaux + 1).'"></td>
 		</tr>
 		';
-	// On traite alors l'affichage de tous les élèves de chaque classe
+	// On traite alors l'affichage de tous les Ã©lÃ¨ves de chaque classe
 	$req_absences = mysql_query("SELECT DISTINCT eleve_id FROM absences_rb
 									WHERE eleve_id != 'appel' AND
 									(
@@ -207,15 +207,15 @@ for($i = 0; $i < $nbre; $i++) {
 		$rep_absences[$b]["eleve_id"] = mysql_result($req_absences, $b, "eleve_id");
 		$req_id_classe = mysql_fetch_array(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '".$rep_absences[$b]["eleve_id"]."'"));
 
-		// On affiche l'élève en fonction de la classe à laquelle il appartient
+		// On affiche l'Ã©lÃ¨ve en fonction de la classe Ã  laquelle il appartient
 		if ($rep_classe[$i]["id"] == $req_id_classe["id_classe"]) {
-			// On récupère nom et prénom de l'élève
+			// On rÃ©cupÃ¨re nom et prÃ©nom de l'Ã©lÃ¨ve
 			$rep_nom = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$rep_absences[$b]["eleve_id"]."'"));
 			echo '<tr>
 			<td></td>
 			<td>'.$rep_nom["nom"].' '.$rep_nom["prenom"].'</td>
 			';
-			// On traite alors pour chaque créneau
+			// On traite alors pour chaque crÃ©neau
 			if (getSettingValue("creneau_different") != 'n') {
 				if (date("w") == getSettingValue("creneau_different")) {
 					$req_creneaux = mysql_query("SELECT id_definie_periode FROM edt_creneaux_bis WHERE type_creneaux != 'pause'");
@@ -244,6 +244,6 @@ for($i = 0; $i < $nbre; $i++) {
 
 <h5>Impression faite le <?php echo date("d/m/Y - h:i"); ?>.</h5>
 <?php
-echo '<p class="red">'.$attention.'</p>'; // message d'information si le jour demandé est un jour fermé normalement
+echo '<p class="red">'.$attention.'</p>'; // message d'information si le jour demandÃ© est un jour fermÃ© normalement
 require("../../lib/footer.inc.php");
 ?>

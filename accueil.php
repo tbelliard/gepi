@@ -4,7 +4,7 @@
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * 
- * Les entrÈes du menu d'accueil sont dans la page class_php/class_page_accueil.php
+ * Les entr√©es du menu d'accueil sont dans la page class_php/class_page_accueil.php
  * 
  * @license GNU/GPL v2
  * @package General
@@ -31,27 +31,27 @@
  */
 
 //=================================================================================
-// Les entrÈes du menu d'accueil sont dans la page class_php/class_page_accueil.php
+// Les entr√©es du menu d'accueil sont dans la page class_php/class_page_accueil.php
 //=================================================================================
 
-/* ---------Variables envoyÈes au gabarit
-*	$tbs_gere_connect							affichage ou non du nombre de connectÈs
-*	$tbs_alert_sums								nombre d'alertes de sÈcuritÈs
+/* ---------Variables envoy√©es au gabarit
+*	$tbs_gere_connect							affichage ou non du nombre de connect√©s
+*	$tbs_alert_sums								nombre d'alertes de s√©curit√©s
 *	$tbs_statut_utilisateur				statut de l'utilisateur
 *
 *
 *	----- tableaux -----
-*	$tbs_message_admin						messages de sÈcuritÈ pour l'administrateur
-*	$tbs_nom_connecte							nom des personnes connectÈes
-*				-> texte								NOM PrÈnom
-*				-> style								Classe ‡ appliquer
+*	$tbs_message_admin						messages de s√©curit√© pour l'administrateur
+*	$tbs_nom_connecte							nom des personnes connect√©es
+*				-> texte								NOM Pr√©nom
+*				-> style								Classe √† appliquer
 *				-> courriel							Adresse courriel
 *				-> statut								Statut
-*	$tbs_referencement								Demande de rÈfÈrencement
+*	$tbs_referencement								Demande de r√©f√©rencement
 *				-> texte								Message
 *				-> lien									lien vers la page
 *				-> titre								titre du lien
-*	$tbs_probleme_dir									messages : problËmes de rÈglage
+*	$tbs_probleme_dir									messages : probl√®mes de r√©glage
 *	$tbs_interface_graphique					lien vers l'interface graphique
 *				-> lien
 *				-> classe
@@ -62,18 +62,18 @@
 *	$tbs_canal_rss
 *				-> lien									lien du flux
 *				-> texte								texte du lien
-*				-> mode									1 si rÈcupÈration directe, 2 si fichier CSV
+*				-> mode									1 si r√©cup√©ration directe, 2 si fichier CSV
 *				-> expli								explications
 *	$tbs_menu
 *				-> classe								classe CSS
 *				-> image								icone du lien
 *				-> texte								texte du titre du menu
-*				-> entree								entrÈes du menu
+*				-> entree								entr√©es du menu
 *							-> lien						lien vers la page
 *							-> titre   				texte du lien
 *							-> expli					explications
 *
-*	Variables hÈritÈes de :
+*	Variables h√©rit√©es de :
 *
 *	header_template.inc
 *	header_barre_prof_template.inc
@@ -83,7 +83,7 @@
 
 
 
-// Initialisation des feuilles de style aprËs modification pour amÈliorer l'accessibilitÈ
+// Initialisation des feuilles de style apr√®s modification pour am√©liorer l'accessibilit√©
 $accessibilite="y";
 
 // Begin standart header
@@ -97,7 +97,7 @@ $gepiPathJava=".";
  */
 require_once("./lib/initialisations.inc.php");
 
-// On teste s'il y a une mise ‡ jour de la base de donnÈes ‡ effectuer
+// On teste s'il y a une mise √† jour de la base de donn√©es √† effectuer
 if (test_maj()) {
     header("Location: ./utilitaires/maj.php");
 }
@@ -113,13 +113,13 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// On vÈrifie si l'utilisation du cdt n'est pas unique
+// On v√©rifie si l'utilisation du cdt n'est pas unique
 if (getSettingValue("use_only_cdt") == 'y' AND $_SESSION["statut"] == 'professeur'){
   $cdt = (getSettingValue("GepiCahierTexteVersion") == '2') ? '_2' : '';
   header("Location:cahier_texte".$cdt."/index.php");
 }
 
-// SÈcuritÈ
+// S√©curit√©
 if (!checkAccess()) {
     header("Location: ./logout.php?auto=2");
     die();
@@ -127,7 +127,7 @@ if (!checkAccess()) {
 
 
 unset ($_SESSION['order_by']);
-$test_https = 'y'; // pour ne pas avoir ‡ refaire le test si on a besoin de l'URL complËte (rss)
+$test_https = 'y'; // pour ne pas avoir √† refaire le test si on a besoin de l'URL compl√®te (rss)
 if (!isset($_SERVER['HTTPS'])
     OR (isset($_SERVER['HTTPS']) AND strtolower($_SERVER['HTTPS']) != "on")
     OR (isset($_SERVER['X-Forwaded-Proto']) AND $_SERVER['X-Forwaded-Proto'] != "https"))
@@ -152,7 +152,7 @@ if($_SESSION['statut']=='professeur'){
 	//$_SERVER['HTTP_REFERER']=	https://127.0.0.1/steph/gepi-trunk/accueil_simpl_prof.php
 	//$_SERVER['REQUEST_URI']=	/steph/gepi-trunk/accueil.php
 	if((isset($_SERVER['HTTP_REFERER']))&&(preg_match("#$gepiPath/accueil_simpl_prof.php$#",$_SERVER['HTTP_REFERER']))&&(isset($_SERVER['REQUEST_URI']))&&($_SERVER['REQUEST_URI']=="$gepiPath/accueil.php")) {
-		// On ne va accÈder ‡ l'accueil.php classique
+		// On ne va acc√©der √† l'accueil.php classique
 	}
 	else {
 		if($accueil_simpl=="y"){
@@ -185,10 +185,10 @@ if(isset($_GET['del_id_info'])) {
 	if(!isset($msg)) {$msg="";}
 
 	if(del_info_action($_GET['del_id_info'])) {
-		$msg.="Action n∞ ".$_GET['del_id_info']." supprimÈe.<br />";
+		$msg.="Action n¬∞ ".$_GET['del_id_info']." supprim√©e.<br />";
 	}
 	else {
-		$msg.="Erreur lors de la suppression de l'action n∞ ".$_GET['del_id_info'].".<br />";
+		$msg.="Erreur lors de la suppression de l'action n¬∞ ".$_GET['del_id_info'].".<br />";
 	}
 }
 
@@ -198,10 +198,10 @@ if((($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite'))
 	if(!isset($msg)) {$msg="";}
 
 	if(del_acces_cdt($_GET['del_id_acces_cdt'])) {
-		$msg.="AccËs CDT n∞ ".$_GET['del_id_acces_cdt']." supprimÈ.<br />";
+		$msg.="Acc√®s CDT n¬∞ ".$_GET['del_id_acces_cdt']." supprim√©.<br />";
 	}
 	else {
-		$msg.="Erreur lors de la suppression de l'accËs CDT n∞ ".$_GET['del_id_acces_cdt'].".<br />";
+		$msg.="Erreur lors de la suppression de l'acc√®s CDT n¬∞ ".$_GET['del_id_acces_cdt'].".<br />";
 	}
 }
 
@@ -211,7 +211,7 @@ include_once("./lib/header_template.inc");
 $tbs_statut_utilisateur = $_SESSION['statut'];
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],"Accueil"))
-		echo "erreur lors de la crÈation du fil d'ariane";
+		echo "erreur lors de la cr√©ation du fil d'ariane";
 /*
 // voir le fil d'Ariane pour debug
 	foreach ($_SESSION['ariane']['lien'] as $index=>$lienActuel){
@@ -232,16 +232,16 @@ $_SESSION["retour"] = "";
 
 if ($_SESSION['statut'] == "administrateur") {
 
-    // VÈrification et/ou changement du rÈpertoire de backup
+    // V√©rification et/ou changement du r√©pertoire de backup
 	if (!check_backup_directory()) {
-		$afficheAccueil->message_admin[] = "Il y a eu un problËme avec la mise ‡ jour du rÈpertoire de sauvegarde.
-Veuillez vÈrifier que le rÈpertoire /backup de Gepi est accessible en Ècriture par le serveur (le serveur *uniquement* !)";
+		$afficheAccueil->message_admin[] = "Il y a eu un probl√®me avec la mise √† jour du r√©pertoire de sauvegarde.
+Veuillez v√©rifier que le r√©pertoire /backup de Gepi est accessible en √©criture par le serveur (le serveur *uniquement* !)";
     }
 
 
 	if (!check_user_temp_directory()) {		
-		$afficheAccueil->message_admin[] = "Il y a eu un problËme avec la mise ‡ jour du rÈpertoire temp.
-Veuillez vÈrifier que le rÈpertoire /temp de Gepi est accessible en Ècriture par le serveur (le serveur *uniquement* !)";
+		$afficheAccueil->message_admin[] = "Il y a eu un probl√®me avec la mise √† jour du r√©pertoire temp.
+Veuillez v√©rifier que le r√©pertoire /temp de Gepi est accessible en √©criture par le serveur (le serveur *uniquement* !)";
 	}else{
 		$_SESSION['user_temp_directory']='y';
 	}
@@ -250,13 +250,13 @@ Veuillez vÈrifier que le rÈpertoire /temp de Gepi est accessible en Ècriture par
 	  $afficheAccueil->message_admin[] = "Attention : le site est en cours de maintenance et temporairement inaccessible.";
 	}
 
-    // * affichage du nombre de connectÈ *
+    // * affichage du nombre de connect√© *
     // compte le nombre d'enregistrement dans la table
 	$sql = "SELECT login FROM log WHERE END > now()";
 	$res = sql_query($sql);
 	$afficheAccueil->nb_connect = sql_count($res);
 	if(mysql_num_rows($res)>1) {
-		$titre="Personnes connectÈes";
+		$titre="Personnes connect√©es";
 		$alt=1;
 		while($lig_log=mysql_fetch_object($res)) {
 			$sql="SELECT nom,prenom,statut,email,login FROM utilisateurs WHERE login='$lig_log->login';";
@@ -289,7 +289,7 @@ Veuillez vÈrifier que le rÈpertoire /temp de Gepi est accessible en Ècriture par
 	}
     $afficheAccueil->gere_connect= "1";
 
-	// Lien vers le panneau de contrÙle de sÈcuritÈ
+	// Lien vers le panneau de contr√¥le de s√©curit√©
 	$alert_sums = mysql_result(mysql_query("SELECT SUM(niveau) FROM tentatives_intrusion WHERE (statut = 'new')"), 0);
 	if (empty($alert_sums)) $alert_sums = "0";
 	$afficheAccueil->alert_sums = $alert_sums;
@@ -297,8 +297,8 @@ Veuillez vÈrifier que le rÈpertoire /temp de Gepi est accessible en Ècriture par
 
 // christian : demande d'enregistrement
 	if (($force_ref)) {
-		$afficheAccueil->referencement[]=array("texte"=>"Votre Ètablissement n'est pas rÈfÈrencÈ parmi les utilisateurs de Gepi.","lien"=>"$gepiPath/referencement.php?etape=explication","titre"=>"Pourquoi est-ce utile ?");
-		$afficheAccueil->referencement[]=array("texte"=>"Votre Ètablissement n'est pas rÈfÈrencÈ parmi les utilisateurs de Gepi.","lien"=>"$gepiPath/referencement.php?etape=1","titre"=>"RÈfÈrencer votre Ètablissement");
+		$afficheAccueil->referencement[]=array("texte"=>"Votre √©tablissement n'est pas r√©f√©renc√© parmi les utilisateurs de Gepi.","lien"=>"$gepiPath/referencement.php?etape=explication","titre"=>"Pourquoi est-ce utile ?");
+		$afficheAccueil->referencement[]=array("texte"=>"Votre √©tablissement n'est pas r√©f√©renc√© parmi les utilisateurs de Gepi.","lien"=>"$gepiPath/referencement.php?etape=1","titre"=>"R√©f√©rencer votre √©tablissement");
 	}
 
 // fin christian demande d'enregistrement
@@ -313,22 +313,22 @@ Veuillez vÈrifier que le rÈpertoire /temp de Gepi est accessible en Ècriture par
 		OR (isset($_SERVER['HTTPS']) AND strtolower($_SERVER['HTTPS']) != "on")
 		OR (isset($_SERVER['X-Forwaded-Proto']) AND $_SERVER['X-Forwaded-Proto'] != "https")
 		) {
-		$afficheAccueil->probleme_dir[]="Connexion non sÈcurisÈe ! Vous *devez* accÈder ‡ Gepi en HTTPS (vÈrifiez la configuration de votre serveur web)";
+		$afficheAccueil->probleme_dir[]="Connexion non s√©curis√©e ! Vous *devez* acc√©der √† Gepi en HTTPS (v√©rifiez la configuration de votre serveur web)";
 		$test_https = 'n';
 	}
 
 	if (ini_get("register_globals") == "1") {
-		$afficheAccueil->probleme_dir[]="PHP potentiellement mal configurÈ (register_globals=on)! Pour prÈvenir certaines failles de sÈcuritÈ, vous *devez* configurer PHP avec le paramËtre register_globals ‡ off.";
+		$afficheAccueil->probleme_dir[]="PHP potentiellement mal configur√© (register_globals=on)! Pour pr√©venir certaines failles de s√©curit√©, vous *devez* configurer PHP avec le param√®tre register_globals √† off.";
 	}
     
     if (version_compare(PHP_VERSION,'5.2.4')<0) {
-        $afficheAccueil->probleme_dir[]="GÈpi nÈcessite une version de php supÈrieure ‡ la version 5.2.4 pour fonctionner de maniËre optimale. Il est conseillÈ de mettre ‡ jour votre version de PHP.";
+        $afficheAccueil->probleme_dir[]="G√©pi n√©cessite une version de php sup√©rieure √† la version 5.2.4 pour fonctionner de mani√®re optimale. Il est conseill√© de mettre √† jour votre version de PHP.";
     }
     if(file_exists('./lib/global.inc')){
-        $afficheAccueil->probleme_dir[]="Le fichier global.inc dans le rÈpertoire lib est obsolËte. Vous devez le supprimer manuellement.";
+        $afficheAccueil->probleme_dir[]="Le fichier global.inc dans le r√©pertoire lib est obsol√®te. Vous devez le supprimer manuellement.";
     }
     /**
-     * Pour Debug : DÈcommenter les 2 lignes si pas en multisites
+     * Pour Debug : D√©commenter les 2 lignes si pas en multisites
      */
     /**
      $_COOKIE['RNE']="essai";
@@ -343,12 +343,12 @@ Veuillez vÈrifier que le rÈpertoire /temp de Gepi est accessible en Ècriture par
 	$sql="SELECT DISTINCT id_groupe, declarant FROM j_signalement WHERE nature='erreur_affect';";
 	$res_sign=mysql_query($sql);
 	if(mysql_num_rows($res_sign)>0) {
-		$tbs_signalement="<p class='tbs_signalement'>Une ou des erreurs d'affectation d'ÈlËves ont ÈtÈ signalÈes dans le ou les enseignements suivants&nbsp;:<br />\n";
+		$tbs_signalement="<p class='tbs_signalement'>Une ou des erreurs d'affectation d'√©l√®ves ont √©t√© signal√©es dans le ou les enseignements suivants&nbsp;:<br />\n";
 		while($lig_sign=mysql_fetch_object($res_sign)) {
 			$tmp_tab_champ=array('classes');
 			$current_group_sign=get_group($lig_sign->id_groupe,$tmp_tab_champ);
 			$current_group_sign['description']=str_replace  ( "&"  , "&amp;"  , $current_group_sign['description'] );
-			$tbs_signalement.="<a href='groupes/edit_eleves.php?id_groupe=".$lig_sign->id_groupe."&amp;id_classe=".$current_group_sign['classes']['list'][0]."'>".$current_group_sign['name']." (<em>".$current_group_sign['description']." ".$current_group_sign['classlist_string']."</em>)</a> signalÈ par ".affiche_utilisateur($lig_sign->declarant,$current_group_sign['classes']['list'][0])."<br />\n";
+			$tbs_signalement.="<a href='groupes/edit_eleves.php?id_groupe=".$lig_sign->id_groupe."&amp;id_classe=".$current_group_sign['classes']['list'][0]."'>".$current_group_sign['name']." (<em>".$current_group_sign['description']." ".$current_group_sign['classlist_string']."</em>)</a> signal√© par ".affiche_utilisateur($lig_sign->declarant,$current_group_sign['classes']['list'][0])."<br />\n";
 		}
 		$tbs_signalement.="</p>\n";
 		$afficheAccueil->signalement=$tbs_signalement;
@@ -358,8 +358,8 @@ Veuillez vÈrifier que le rÈpertoire /temp de Gepi est accessible en Ècriture par
 }elseif(($_SESSION['statut']=="professeur")||($_SESSION['statut']=="scolarite")||($_SESSION['statut']=="cpe")||($_SESSION['statut']=="secours")){
 	if (!check_user_temp_directory()) {
 
-		$afficheAccueil->probleme_dir[]="Il y a eu un problËme avec la mise ‡ jour du rÈpertoire temp.";
-		$afficheAccueil->probleme_dir[]="Veuillez contacter l'administrateur pour rÈsoudre ce problËme.";
+		$afficheAccueil->probleme_dir[]="Il y a eu un probl√®me avec la mise √† jour du r√©pertoire temp.";
+		$afficheAccueil->probleme_dir[]="Veuillez contacter l'administrateur pour r√©soudre ce probl√®me.";
 		$_SESSION['user_temp_directory']='n';
 	}else{
 		$_SESSION['user_temp_directory']='y';
@@ -375,7 +375,7 @@ if($_SESSION['statut']=="professeur"){
 include("affichage_des_messages.inc.php");
 
 //==========================================================================================
-// La suite (dÈtail du menu de la page d'accueil) est dans class_php/class_page_accueil.php
+// La suite (d√©tail du menu de la page d'accueil) est dans class_php/class_page_accueil.php
 //==========================================================================================
 
 $tbs_microtime	="";
@@ -383,14 +383,14 @@ $tbs_pmv="";
 require_once ("./lib/footer_template.inc.php");
 
 /****************************************************************
-			On s'assure que le nom du gabarit est bien renseignÈ
+			On s'assure que le nom du gabarit est bien renseign√©
 ****************************************************************/
 if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 	$_SESSION['rep_gabarits']="origine";
 }
 
 //==================================
-// DÈcommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// D√©commenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 //  $affiche_debug=debug_var();
 
 

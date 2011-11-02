@@ -42,26 +42,26 @@ if (!checkAccess()) {
 
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_classe"]) ? $_GET["id_classe"] : false);
 
-// On teste si un professeur peut effectuer l'édition
+// On teste si un professeur peut effectuer l'Ã©dition
 if (($_SESSION['statut'] == 'professeur') and $gepiSettings["GepiAccesRecapitulatifEctsProf"] !='yes') {
-   die("Droits insuffisants pour effectuer cette opération");
+   die("Droits insuffisants pour effectuer cette opÃ©ration");
 }
 
-// On teste si le service scolarité peut effectuer la saisie
+// On teste si le service scolaritÃ© peut effectuer la saisie
 if (($_SESSION['statut'] == 'scolarite') and $gepiSettings["GepiAccesRecapitulatifEctsScolarite"] !='yes') {
-   die("Droits insuffisants pour effectuer cette opération");
+   die("Droits insuffisants pour effectuer cette opÃ©ration");
 }
 
 
 
-// Si aucune classe n'a été choisie, on affiche la liste des classes accessibles
+// Si aucune classe n'a Ã©tÃ© choisie, on affiche la liste des classes accessibles
 if (!$id_classe) {
 
-// On n'affiche le header que dans la partie de sélection de la classe,
-// car le tableau va s'ouvrir dans une nouvelle fenêtre pour pouvoir être imprimé
+// On n'affiche le header que dans la partie de sÃ©lection de la classe,
+// car le tableau va s'ouvrir dans une nouvelle fenÃªtre pour pouvoir Ãªtre imprimÃ©
 
 //**************** EN-TETE *****************
-$titre_page = "Récapitulatif ECTS";
+$titre_page = "RÃ©capitulatif ECTS";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -69,7 +69,7 @@ require_once("../lib/header.inc");
 
     if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
 
-        // On ne sélectionne que les classes qui ont au moins un enseignement ouvrant à crédits ECTS
+        // On ne sÃ©lectionne que les classes qui ont au moins un enseignement ouvrant Ã  crÃ©dits ECTS
         if($_SESSION['statut']=='scolarite'){
             $call_classe = mysql_query("SELECT DISTINCT c.*
                                         FROM classes c, periodes p, j_scol_classes jsc, j_groupes_classes jgc
@@ -80,17 +80,17 @@ require_once("../lib/header.inc");
 
         $nombre_classe = mysql_num_rows($call_classe);
         if($nombre_classe==0){
-            echo "<p>Aucune classe avec paramétrage ECTS ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
+            echo "<p>Aucune classe avec paramÃ©trage ECTS ne vous est attribuÃ©e.<br />Contactez l'administrateur pour qu'il effectue le paramÃ©trage appropriÃ© dans la Gestion des classes.</p>\n";
         }
     } else {
         $call_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (c.id = jgc.id_classe AND jgc.saisie_ects = TRUE AND jgc.id_groupe = jgp.id_groupe AND jgp.login = '".$_SESSION['login']."')");
         $nombre_classe = mysql_num_rows($call_classe);
         if ($nombre_classe == "0") {
-            echo "Vous n'êtes pas enseignant dans une classe ayant des enseignements ouvrant droits à des ECTS.";
+            echo "Vous n'Ãªtes pas enseignant dans une classe ayant des enseignements ouvrant droits Ã  des ECTS.";
         }
     }
 
-    echo "<p>Cliquez sur la classe pour laquelle vous souhaitez éditer les documents ECTS :</p>\n";
+    echo "<p>Cliquez sur la classe pour laquelle vous souhaitez Ã©diter les documents ECTS :</p>\n";
     //echo "<br/><p><a href='recapitulatif.php?id_classe=all' target='_new'>Toutes les classes</a></p>";
 
     $i = 0;
@@ -109,27 +109,27 @@ require_once("../lib/header.inc");
 } else {
   // Ici, on affiche le tableau
 
-  // On load les les périodes de l'année en cours, notamment pour connaître
-  // la période actuelle
+  // On load les les pÃ©riodes de l'annÃ©e en cours, notamment pour connaÃ®tre
+  // la pÃ©riode actuelle
   include "../lib/periodes.inc.php";
 
 
   // Initialisation des tableaux
   
-  $annees = array(); // Contient années->périodes->matieres.
-                     // C'est le tableau global de référence pour les colonnes.
+  $annees = array(); // Contient annÃ©es->pÃ©riodes->matieres.
+                     // C'est le tableau global de rÃ©fÃ©rence pour les colonnes.
                      
-  $resultats = array(); // Contient les résultats, organisés par
-                        // élève->année->période->matiere. C'est le tableau de stockage des donnnées
+  $resultats = array(); // Contient les rÃ©sultats, organisÃ©s par
+                        // Ã©lÃ¨ve->annÃ©e->pÃ©riode->matiere. C'est le tableau de stockage des donnnÃ©es
                         
   $derniere_annee_archivee = false;
-  $ignore_annees = array(); // Contient, pour chaque élève, les années
-                              // qui doivent être grisées car redoublées
+  $ignore_annees = array(); // Contient, pour chaque Ã©lÃ¨ve, les annÃ©es
+                              // qui doivent Ãªtre grisÃ©es car redoublÃ©es
   
-  $gepiYear = $gepiSettings['gepiYear']; // L'année courante
+  $gepiYear = $gepiSettings['gepiYear']; // L'annÃ©e courante
 
 
-  // On vérifie que l'utilisateur a bien le droit de visualiser les résultats de la classe sélectionnée
+  // On vÃ©rifie que l'utilisateur a bien le droit de visualiser les rÃ©sultats de la classe sÃ©lectionnÃ©e
   
     if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
         if($_SESSION['statut']=='scolarite'){
@@ -142,28 +142,28 @@ require_once("../lib/header.inc");
 
         $nombre_classe = mysql_num_rows($call_classe);
         if($nombre_classe==0){
-            echo "<p>Aucune classe avec paramétrage ECTS ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
+            echo "<p>Aucune classe avec paramÃ©trage ECTS ne vous est attribuÃ©e.<br />Contactez l'administrateur pour qu'il effectue le paramÃ©trage appropriÃ© dans la Gestion des classes.</p>\n";
             die();
         }
     } else {
         $call_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (c.id = '".$id_classe."' AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE AND jgc.id_groupe = jgp.id_groupe AND jgp.login = '".$_SESSION['login']."')");
         $nombre_classe = mysql_num_rows($call_classe);
         if ($nombre_classe == "0") {
-            echo "Soit vous n'êtes pas enseignant dans cette classe, soit cette classe n'ouvre pas droits à des ECTS.";
+            echo "Soit vous n'Ãªtes pas enseignant dans cette classe, soit cette classe n'ouvre pas droits Ã  des ECTS.";
             die();
         }
     }
 
-  // On passe élève par élève. Pour chaque élève, on va extraire les ECTS
-  // archivés, puis les ECTS courant, et au fur et à mesure on stocke
-  // tout ça dans le tableau récapitulatif général, en mettant bien à jour
+  // On passe Ã©lÃ¨ve par Ã©lÃ¨ve. Pour chaque Ã©lÃ¨ve, on va extraire les ECTS
+  // archivÃ©s, puis les ECTS courant, et au fur et Ã  mesure on stocke
+  // tout Ã§a dans le tableau rÃ©capitulatif gÃ©nÃ©ral, en mettant bien Ã  jour
   
-  // Appel des élèves
+  // Appel des Ã©lÃ¨ves
   $Classe = ClassePeer::retrieveByPK($id_classe);
   $Eleves = $Classe->getEleves('1');
   
 
-  // Boucle de remplissage des données
+  // Boucle de remplissage des donnÃ©es
   foreach ($Eleves as $Eleve) {
     if (!array_key_exists($Eleve->getIdEleve(), $ignore_annees)){
       $ignore_annees[$Eleve->getIdEleve()] = array();
@@ -175,12 +175,12 @@ require_once("../lib/header.inc");
     }
     
     
-    // On alimente le tableau de référence, si nécessaire
+    // On alimente le tableau de rÃ©fÃ©rence, si nÃ©cessaire
     foreach($annees_precedentes as $a) {
-      // L'année
+      // L'annÃ©e
       if (!array_key_exists($a['annee'], $annees)) {
         $annees[$a['annee']] = array();
-        // Les périodes
+        // Les pÃ©riodes
         foreach($a['periodes'] as $num => $periode) {
           if (!array_key_exists($num, $annees[$a['annee']])) {
             $annees[$a['annee']][$num] = array('nom_periode' => $periode, 'matieres' => array());
@@ -189,18 +189,18 @@ require_once("../lib/header.inc");
       }
     }
     
-    // On va chercher les résultats
+    // On va chercher les rÃ©sultats
     foreach($annees_precedentes as $a) {
-      // On initialise le tableau de l'année, si besoin
+      // On initialise le tableau de l'annÃ©e, si besoin
       if (!array_key_exists($a['annee'], $resultats[$Eleve->getLogin()])) {
         $resultats[$Eleve->getLogin()][$a['annee']] = array();
       }
       
-      // On passe chaque période et on récupère le crédit
+      // On passe chaque pÃ©riode et on rÃ©cupÃ¨re le crÃ©dit
       foreach($a['periodes'] as $p_num => $p) {
-        // On initialise le tableau de la période, si besoin
+        // On initialise le tableau de la pÃ©riode, si besoin
         if (!array_key_exists($p_num, $resultats[$Eleve->getLogin()][$a['annee']])) {
-          $resultats[$Eleve->getLogin()][$a['annee']][$p_num] = array(); // C'est le tableau qui va ensuite contenir les crédits par matière
+          $resultats[$Eleve->getLogin()][$a['annee']][$p_num] = array(); // C'est le tableau qui va ensuite contenir les crÃ©dits par matiÃ¨re
         }
         $credits = $Eleve->getArchivedEctsCredits($a['annee'], $p_num);
         foreach($credits as $credit) {
@@ -210,7 +210,7 @@ require_once("../lib/header.inc");
           $resultats[$Eleve->getLogin()][$a['annee']][$p_num][$credit->getMatiere()] = $credit;
         }
       }
-      // On regarde si l'élève est redoublant
+      // On regarde si l'Ã©lÃ¨ve est redoublant
       $redoublant = sql_count(sql_query("SELECT * FROM archivage_eleves2 WHERE ine = '".$Eleve->getNoGep()."' AND doublant = 'R'")) != "0" ? true : false;
       if ($redoublant && $derniere_annee_archivee) {
         $ignore_annees[$Eleve->getIdEleve()][$derniere_annee_archivee] = true;
@@ -218,7 +218,7 @@ require_once("../lib/header.inc");
       $derniere_annee_archivee = $a['annee'];      
     }
         
-    // On continue avec l'année courante, même principe
+    // On continue avec l'annÃ©e courante, mÃªme principe
     $redoublant = sql_count(sql_query("SELECT * FROM j_eleves_regime WHERE login = '".$Eleve->getLogin()."' AND doublant = 'R'")) != "0" ? true : false;
     if ($redoublant) {
       $ignore_annees[$Eleve->getIdEleve()][$derniere_annee_archivee] = true;
@@ -230,7 +230,7 @@ require_once("../lib/header.inc");
       $resultats[$Eleve->getLogin()][$gepiYear] = array();
     }
     
-    // On regarde quelle est la période maxi pour laquelle l'élève a des notes
+    // On regarde quelle est la pÃ©riode maxi pour laquelle l'Ã©lÃ¨ve a des notes
     $periode_num = mysql_result(mysql_query("SELECT MAX(num_periode) FROM ects_credits WHERE id_eleve = '".$Eleve->getIdEleve()."'"),0);
     
     for($i=1;$i<=$periode_num;$i++) {
@@ -240,7 +240,7 @@ require_once("../lib/header.inc");
       if (!array_key_exists($i, $resultats[$Eleve->getLogin()][$gepiYear])) {
         $resultats[$Eleve->getLogin()][$gepiYear][$i] = array();
       }
-      // Maintenant on récupère pour chaque période les crédits pour chaque matière
+      // Maintenant on rÃ©cupÃ¨re pour chaque pÃ©riode les crÃ©dits pour chaque matiÃ¨re
       $categories = $Eleve->getEctsGroupesByCategories($i);
       foreach ($categories as $categorie) {
         foreach($categorie[1] as $group) {
@@ -250,8 +250,8 @@ require_once("../lib/header.inc");
               m.matiere = jgm.id_matiere AND
               jgm.id_groupe = '".$group->getId()."'"), 0);
           
-          // On enregistre quoi qu'il arrive la matière dans le tableau de référence,
-          // car il s'agit de l'année en cours. Donc on doit pouvoir utiliser le tableau
+          // On enregistre quoi qu'il arrive la matiÃ¨re dans le tableau de rÃ©fÃ©rence,
+          // car il s'agit de l'annÃ©e en cours. Donc on doit pouvoir utiliser le tableau
           // comme document de travail.
           if (!array_key_exists($matiere, $annees[$gepiYear][$i]['matieres'])) {
               $annees[$gepiYear][$i]['matieres'][$matiere] = $matiere;
@@ -268,7 +268,7 @@ require_once("../lib/header.inc");
     return preg_replace('/[^0-9a-zA-Z]/i','',$annee);
   }
   
-  // Affichage des en-têtes du tableau
+  // Affichage des en-tÃªtes du tableau
   require('../lib/header.inc');
   ?>
   <style>
@@ -362,9 +362,9 @@ require_once("../lib/header.inc");
   
   <?php
   
-  echo "<h1 style='margin-top: 0px; margin-bottom: 0px;margin-left: 30px;'>Crédits ECTS acquis - Classe de ".$Classe->getNom()."</h1>";
+  echo "<h1 style='margin-top: 0px; margin-bottom: 0px;margin-left: 30px;'>CrÃ©dits ECTS acquis - Classe de ".$Classe->getNom()."</h1>";
   
-  echo "<p style='margin-left: 30px;'>Afficher/masquer par année : ";
+  echo "<p style='margin-left: 30px;'>Afficher/masquer par annÃ©e : ";
   
 
   $a = 1;
@@ -379,7 +379,7 @@ require_once("../lib/header.inc");
   
   echo "<table style='border: 1px solid black;border-collapse: collapse; margin: 20px;'>";
   echo "<tr>";
-  echo "<td style='padding-left: 150px;'>&nbsp;</td>\n"; // Nom et prénom
+  echo "<td style='padding-left: 150px;'>&nbsp;</td>\n"; // Nom et prÃ©nom
   foreach($annees as $annee => $periodes) {
     $colspan_annee = 0;
     $column_classname = column_classname($annee);
@@ -390,11 +390,11 @@ require_once("../lib/header.inc");
     echo $annee;
     echo "</td>\n";
   }
-  // La colonne pour le crédit global :
+  // La colonne pour le crÃ©dit global :
   echo "<td class='debut_annee'></td>";
   echo "</tr>";
   
-  // Maintenant on affiche les périodes
+  // Maintenant on affiche les pÃ©riodes
   echo "<tr>\n";
   echo "<td></td>\n";
   foreach($annees as $annee => $periodes) {
@@ -410,11 +410,11 @@ require_once("../lib/header.inc");
       $m++;
     }
   }
-  // La colonne pour le crédit global
+  // La colonne pour le crÃ©dit global
   echo "<td class='debut_annee'></td>";
   echo "</tr>\n";
   
-  // Et enfin on affiche les matières
+  // Et enfin on affiche les matiÃ¨res
   echo "<tr>\n";
   echo "<td class='lone_cell'>";
   echo "Classe :<br/><br/>";
@@ -467,12 +467,12 @@ require_once("../lib/header.inc");
     $classe_bg = $classe_bg == 'ligne_paire' ? 'ligne_impaire' : 'ligne_paire';
     echo "<tr class='$classe_bg'>";
     
-    // Nom Prénom
+    // Nom PrÃ©nom
     echo "<td class='lone_cell nom'>";
     echo $Eleve->getNom().' '.$Eleve->getPrenom();
     echo "</td>";
     
-    // Les résultats
+    // Les rÃ©sultats
     $a = 1;
     $nb_a = count($annees);
     foreach($annees as $annee => $periodes) {
@@ -532,7 +532,7 @@ require_once("../lib/header.inc");
       }
       $a++;
     }
-    // Le crédit global
+    // Le crÃ©dit global
     echo "<td class='lone_cell result'>";
     echo $total_ects;
     $credit_global = $Eleve->getCreditEctsGlobal();

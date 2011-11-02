@@ -44,9 +44,9 @@ if (!checkAccess()) {
 }
 
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_carnets_notes")!='y') {
-	die("Le module n'est pas activé.");
+	die("Le module n'est pas activÃ©.");
 }
 
 
@@ -56,11 +56,11 @@ if(isset($_POST['recopier'])) {
 	$num_periode=$_POST['num_periode'];
 	$id_classe=$_POST['id_classe'];
 
-	// Vérification:
+	// VÃ©rification:
 	$sql="SELECT 1=1 FROM periodes WHERE num_periode='$num_periode' AND id_classe='$id_classe' AND verouiller='O';";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
-		$msg="La période n°$num_periode est close.";
+		$msg="La pÃ©riode nÂ°$num_periode est close.";
 	}
 	else {
 		$login=$_POST['login'];
@@ -70,7 +70,7 @@ if(isset($_POST['recopier'])) {
 		$coche=isset($_POST['coche']) ? $_POST['coche'] : NULL;
 		$cpt=$_POST['cpt'];
 
-		//echo "<p>Classe $id_classe sur période $num_periode<br />\n";
+		//echo "<p>Classe $id_classe sur pÃ©riode $num_periode<br />\n";
 		$nberr=0;
 		$nbsucces=0;
 		$msg="";
@@ -127,7 +127,7 @@ if(isset($_POST['recopier'])) {
 			$msg="$nberr erreur(s) a(ont) eu lieu.<br />";
 		}
 		elseif($nbsucces>0){
-			$msg="$nbsucces enregistrement(s) effectué(s).<br />";
+			$msg="$nbsucces enregistrement(s) effectuÃ©(s).<br />";
 		}
 	}
 }
@@ -176,12 +176,12 @@ if(!isset($id_classe)){
 	echo "</p></div>\n";
 
 	//echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method='post'>\n";
-	echo "<p>Cette page est destinée à effectuer la recopie des moyennes des carnets de notes vers les bulletins.<br />Ne seront recopiées que les moyennes autres que 'abs', 'disp' et '-'.</p>\n";
+	echo "<p>Cette page est destinÃ©e Ã  effectuer la recopie des moyennes des carnets de notes vers les bulletins.<br />Ne seront recopiÃ©es que les moyennes autres que 'abs', 'disp' et '-'.</p>\n";
 	$sql="SELECT DISTINCT id,classe FROM classes ORDER BY classe";
 	$res_classe=mysql_query($sql);
 
 	if(mysql_num_rows($res_classe)==0){
-		echo "<p>Il semble qu'aucune classe ne soit définie.</p>\n";
+		echo "<p>Il semble qu'aucune classe ne soit dÃ©finie.</p>\n";
 		echo "<p><br /></p>\n";
 		require("../lib/footer.inc.php");
 		die();
@@ -275,7 +275,7 @@ else{
 		if(isset($num_periode)){
 			echo "&amp;num_periode=$num_periode";
 		}
-		echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";
+		echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe prÃ©cÃ©dente</a>";
 	}
 	if($chaine_options_classes!="") {
 		echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
@@ -299,7 +299,7 @@ else{
 	//if(!isset($choix_periode)){
 	if(!isset($num_periode)){
 		//echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method='post'>\n";
-		echo "<p>Cette page est destinée à effectuer la recopie des moyennes des carnets de notes vers les bulletins.</p>\n";
+		echo "<p>Cette page est destinÃ©e Ã  effectuer la recopie des moyennes des carnets de notes vers les bulletins.</p>\n";
 
 		//$sql="SELECT classe FROM classes WHERE id='".$_POST['id_classe']."'";
 		$sql="SELECT classe FROM classes WHERE id='".$id_classe."'";
@@ -314,7 +314,7 @@ else{
 		else{
 
 			$tmp_classe=mysql_fetch_array($res_classe);
-			echo "<table summary='Choix de la période'><tr><td valign='top'><p class='bold'>Choisissez une période pour la classe de $tmp_classe[0]: </p></td><td><p>\n";
+			echo "<table summary='Choix de la pÃ©riode'><tr><td valign='top'><p class='bold'>Choisissez une pÃ©riode pour la classe de $tmp_classe[0]: </p></td><td><p>\n";
 
 			//echo "<input type='hidden' name='id_classe' value='".$_POST['id_classe']."' />\n";
 			//echo "<input type='hidden' name='id_classe' value='".$id_classe."' />\n";
@@ -338,7 +338,7 @@ else{
 					echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;num_periode=$lig_per->num_periode'>$lig_per->nom_periode</a><br />\n";
 				}
 				else{
-					echo "$lig_per->nom_periode (<i>période close</i>)<br />\n";
+					echo "$lig_per->nom_periode (<i>pÃ©riode close</i>)<br />\n";
 				}
 			}
 			echo "</p></td></tr></table>\n";
@@ -367,7 +367,7 @@ else{
 		$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND num_periode='$num_periode'";
 		$res_per=mysql_query($sql);
 		if(mysql_num_rows($res_per)==0){
-			echo "<p>Il semble que la période choisie n'existe pas.</p>\n";
+			echo "<p>Il semble que la pÃ©riode choisie n'existe pas.</p>\n";
 			echo "<p><br /></p>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -394,17 +394,17 @@ else{
 		//echo "$sql<br />\n";
 		$resultat=mysql_query($sql);
 		if(mysql_num_rows($resultat)==0){
-			echo "<p>Il semble qu'aucun carnet de notes ne soit encore défini.</p>\n";
+			echo "<p>Il semble qu'aucun carnet de notes ne soit encore dÃ©fini.</p>\n";
 			die("</body></html>");
 		}
 		else{
 			echo "<p>Recopie des moyennes des carnets de notes vers les bulletins.</p>\n";
 			$nb_carnets_notes=mysql_num_rows($resultat);
 			if($nb_carnets_notes==1){
-				echo "<p>".$nb_carnets_notes." carnet de note seulement est actuellement renseigné.<br />C'est le seul proposé dans la recopie ci-dessous.</p>\n";
+				echo "<p>".$nb_carnets_notes." carnet de note seulement est actuellement renseignÃ©.<br />C'est le seul proposÃ© dans la recopie ci-dessous.</p>\n";
 			}
 			else{
-				echo "<p>".$nb_carnets_notes." carnets de notes sont actuellement renseignés.<br />Ce sont les seuls proposés dans la recopie ci-dessous.</p>\n";
+				echo "<p>".$nb_carnets_notes." carnets de notes sont actuellement renseignÃ©s.<br />Ce sont les seuls proposÃ©s dans la recopie ci-dessous.</p>\n";
 			}
 
 			echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method='post'>\n";
@@ -419,26 +419,26 @@ else{
 			echo "<input type='hidden' name='choix_classe' value='oui' />\n";
 			echo "<input type='hidden' name='choix_periode' value='oui' />\n";
 
-			echo "<p>Recopie des moyennes pour la classe <b>$tmp_classe[0]</b> de sur la période <b>$tmp_per[0]</b>:</p>\n";
+			echo "<p>Recopie des moyennes pour la classe <b>$tmp_classe[0]</b> de sur la pÃ©riode <b>$tmp_per[0]</b>:</p>\n";
 
 			//echo "<table border='1'>\n";
 			echo "<table class='boireaus' width='100%' summary='Comparaisons'>\n";
 			echo "<tr>\n";
 			echo "<th style='text-align:center; font-weight:bold;'>Classe</th>\n";
 			echo "<th style='text-align:center; font-weight:bold;'>Groupe</th>\n";
-			echo "<th style='text-align:center; font-weight:bold;'>Elève</th>\n";
+			echo "<th style='text-align:center; font-weight:bold;'>ElÃ¨ve</th>\n";
 			echo "<th style='text-align:center; font-weight:bold;'>Moyenne<br />du carnet<br />de notes</th>\n";
 			echo "<th style='text-align:center; font-weight:bold;'>Moyenne<br />sur le<br />bulletin</th>\n";
 			echo "<th style='text-align:center; font-weight:bold;'>Recopier</th>\n";
 			echo "<th style='text-align:center; font-weight:bold;'>\n";
 			echo "<a href='javascript:modif_toutes_cases(true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' title='Tout cocher' /></a>/\n";
-			echo "<a href='javascript:modif_toutes_cases(false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' title='Tout décocher' /></a>\n";
+			echo "<a href='javascript:modif_toutes_cases(false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' title='Tout dÃ©cocher' /></a>\n";
 			echo "";
 			echo "</th>\n";
 			echo "</tr>\n";
 			// Compteur des groupes
 			$i=0;
-			// Compteur de chaque ligne élève du tableau
+			// Compteur de chaque ligne Ã©lÃ¨ve du tableau
 			$cpt=0;
 			$alt=1;
 			while($ligne=mysql_fetch_object($resultat)){
@@ -475,10 +475,10 @@ else{
 				//echo "<!-- $sql -->\n";
 				$res_ele=mysql_query($sql);
 				if(mysql_num_rows($res_ele)==0){
-					echo "<td colspan='3'>Aucun élève dans cette classe et ce groupe!</td>\n";
+					echo "<td colspan='3'>Aucun Ã©lÃ¨ve dans cette classe et ce groupe!</td>\n";
 					echo "</tr>\n";
 					echo "</table>\n";
-					//echo "<p>Aucun élève dans cette classe et ce groupe!</p>\n";
+					//echo "<p>Aucun Ã©lÃ¨ve dans cette classe et ce groupe!</p>\n";
 					//die("</body></html>");
 				}
 				else{
@@ -544,9 +544,9 @@ else{
 						echo "<td style='text-align:center;'><input type='checkbox' name='coche[$cpt]' id='coche_".$i."_".$j."' value='recopier' /></td>\n";
 						if($temoin_grp==0){
 							echo "<td>";
-							//Coche/décoche
+							//Coche/dÃ©coche
 							echo "<a href='javascript:modif_case($i,true)'><img src='../images/enabled.png' width='15' height='15' alt='Cocher tout le groupe' title='Cocher tout le groupe' /></a>/\n";
-							echo "<a href='javascript:modif_case($i,false)'><img src='../images/disabled.png' width='15' height='15' alt='Décocher tout le groupe' title='Décocher tout le groupe' /></a>\n";
+							echo "<a href='javascript:modif_case($i,false)'><img src='../images/disabled.png' width='15' height='15' alt='DÃ©cocher tout le groupe' title='DÃ©cocher tout le groupe' /></a>\n";
 							echo "</td>\n";
 						}
 						else{
@@ -566,7 +566,7 @@ else{
 			echo "<input type='hidden' name='cpt' value='$cpt' />\n";
 			echo "</form>\n";
 
-			echo "<p><i>NOTE:</i> Les cases en rouge mettent en évidence les moyennes non recopiées.</p>\n";
+			echo "<p><i>NOTE:</i> Les cases en rouge mettent en Ã©vidence les moyennes non recopiÃ©es.</p>\n";
 
 			echo "<script type='text/javascript' language='javascript'>
 	function modif_case(n_grp,statut){
@@ -596,7 +596,7 @@ else{
 			$coche=$_POST['coche'];
 			$cpt=$_POST['cpt'];
 
-			echo "<p>Classe $id_classe sur période $num_periode<br />\n";
+			echo "<p>Classe $id_classe sur pÃ©riode $num_periode<br />\n";
 			for($i=0;$i<$cpt;$i++){
 				if((isset($coche[$i]))&&($moy[$i]!='-')){
 					//echo "$login[$i] $id_groupe[$i] $moy[$i] <br />\n";

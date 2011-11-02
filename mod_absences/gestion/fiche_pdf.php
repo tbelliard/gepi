@@ -33,12 +33,12 @@ extract($_POST, EXTR_OVERWRITE);
 header('Content-Type: application/pdf');
 
 // Global configuration file
-// Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
-//Le problème peut être résolu en ajoutant la ligne suivante :
+// Quand on est en SSL, IE n'arrive pas Ã  ouvrir le PDF.
+//Le problÃ¨me peut Ãªtre rÃ©solu en ajoutant la ligne suivante :
 Header('Pragma: public');
 
 // Lorsque qu'on utilise une session PHP, parfois, IE n'affiche pas le PDF
-// C'est un problème qui affecte certaines versions d'IE.
+// C'est un problÃ¨me qui affecte certaines versions d'IE.
 // Pour le contourner, on ajoutez la ligne suivante avant session_start() :
 session_cache_limiter('private');
 
@@ -70,7 +70,7 @@ function redimensionne_logo($photo, $L_max, $H_max)
 	// largeur et hauteur de l'image d'origine
 	$largeur = $info_image[0];
 	$hauteur = $info_image[1];
-	// largeur et/ou hauteur maximum à afficher en pixel
+	// largeur et/ou hauteur maximum Ã  afficher en pixel
 	 $taille_max_largeur = $L_max;
 	 $taille_max_hauteur = $H_max;
 
@@ -79,7 +79,7 @@ function redimensionne_logo($photo, $L_max, $H_max)
 	 $ratio_h = $hauteur / $taille_max_hauteur;
 	 $ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
 
-	// définit largeur et hauteur pour la nouvelle image
+	// dÃ©finit largeur et hauteur pour la nouvelle image
 	 $nouvelle_largeur = $largeur / $ratio;
 	 $nouvelle_hauteur = $hauteur / $ratio;
 
@@ -90,7 +90,7 @@ function redimensionne_logo($photo, $L_max, $H_max)
 	return array($nouvelle_largeur, $nouvelle_hauteur);
  }
 
-//permet de transformer les caractère html
+//permet de transformer les caractÃ¨re html
  function unhtmlentities($chaineHtml) {
          $tmp = get_html_translation_table(HTML_ENTITIES);
          $tmp = array_flip ($tmp);
@@ -171,17 +171,17 @@ function microtime_float_img() {
 	$Y_datation_bul = '5';
 	$cadre_datation_bul = '1';
 
-	// cadre identitée eleve
-	$active_bloc_eleve = '1'; // fait - afficher les informations sur l'élève
+	// cadre identitÃ©e eleve
+	$active_bloc_eleve = '1'; // fait - afficher les informations sur l'Ã©lÃ¨ve
 	$X_eleve = '5'; $Y_eleve = '40';
 	$cadre_eleve = '1';
 	$active_photo = '1';
-	$affiche_doublement = '1'; // affiche si l'élève à doubler
-	$affiche_date_naissance = '1'; // affiche la date de naissance de l'élève
-	$affiche_dp = '1'; // affiche l'état de demi pension ou extern
+	$affiche_doublement = '1'; // affiche si l'Ã©lÃ¨ve Ã  doubler
+	$affiche_date_naissance = '1'; // affiche la date de naissance de l'Ã©lÃ¨ve
+	$affiche_dp = '1'; // affiche l'Ã©tat de demi pension ou extern
 	$affiche_nom_court = '0'; // affiche le nom court de la classe
 	$affiche_effectif_classe = '0'; // affiche l'effectif de la classe
-	$affiche_numero_impression = '1'; // affiche le numéro d'impression des bulletins
+	$affiche_numero_impression = '1'; // affiche le numÃ©ro d'impression des bulletins
 
 	// datation
 	$gepiYear = getSettingValue('gepiYear');
@@ -197,9 +197,9 @@ function microtime_float_img() {
 $etiquette_action = 'originaux';
 
 if ( $etiquette_action === 'originaux' ) {
-	// on sélectionne les informations
-	// sql sélection des eleves et de leurs informations
-	//requête des classes sélectionné
+	// on sÃ©lectionne les informations
+	// sql sÃ©lection des eleves et de leurs informations
+	//requÃªte des classes sÃ©lectionnÃ©
 	if (isset($id_classe[0])) {
 		$o=0;
 		$prepa_requete = "";
@@ -213,7 +213,7 @@ if ( $etiquette_action === 'originaux' ) {
 			$o = $o + 1;
 		}
 	}
-	//requête des élèves sélectionné
+	//requÃªte des Ã©lÃ¨ves sÃ©lectionnÃ©
 	if (!empty($id_eleve[0])) {
 		$o=0;
 		$prepa_requete = "";
@@ -229,7 +229,7 @@ if ( $etiquette_action === 'originaux' ) {
 		}
 	}
 
-	//tableau des données élève
+	//tableau des donnÃ©es Ã©lÃ¨ve
 	if (isset($id_classe[0])) {
 		$call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves e, '.$prefix_base.'j_eleves_classes ec, '.$prefix_base.'classes c, '.$prefix_base.'j_eleves_regime er WHERE ( ('.$prepa_requete.') AND ec.id_classe = c.id AND e.login = ec.login AND er.login = e.login ) GROUP BY e.login ORDER BY ec.id_classe ASC, e.nom ASC, e.prenom ASC');
 	}
@@ -237,22 +237,22 @@ if ( $etiquette_action === 'originaux' ) {
 		$call_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves e, '.$prefix_base.'j_eleves_classes ec, '.$prefix_base.'classes c, '.$prefix_base.'j_eleves_regime er WHERE ( ('.$prepa_requete.') AND ec.id_classe = c.id AND e.login = ec.login AND er.login = e.login ) GROUP BY e.login ORDER BY ec.id_classe ASC, e.nom ASC, e.prenom ASC');
 	}
 
-	//on compte les élèves sélectionné
+	//on compte les Ã©lÃ¨ves sÃ©lectionnÃ©
 	$nb_eleves = mysql_num_rows($call_eleve);
 	$i = '0';
 	while ( $donne_persone = mysql_fetch_array( $call_eleve ))
 	{
-		// information sur l'élève
-		$id_eleve[$i] = $donne_persone['login']; // id de l'élève
-		$ele_id_eleve[$i] = $donne_persone['ele_id']; // ele_id de l'élève
+		// information sur l'Ã©lÃ¨ve
+		$id_eleve[$i] = $donne_persone['login']; // id de l'Ã©lÃ¨ve
+		$ele_id_eleve[$i] = $donne_persone['ele_id']; // ele_id de l'Ã©lÃ¨ve
 		$classe_eleve[$i] = classe_de($id_eleve[$i]);
 		$sexe_eleve[$i] = $donne_persone['sexe']; // M ou F
-		$nom_eleve[$i] = strtoupper($donne_persone['nom']); // nom de l'élève
-		$prenom_eleve[$i] = ucfirst($donne_persone['prenom']); // prénom de l'élève
+		$nom_eleve[$i] = strtoupper($donne_persone['nom']); // nom de l'Ã©lÃ¨ve
+		$prenom_eleve[$i] = ucfirst($donne_persone['prenom']); // prÃ©nom de l'Ã©lÃ¨ve
 		if ($sexe_eleve[$i] == "M") {
-			$date_naissance[$i] = 'Né le '.date_fr($donne_persone['naissance']);
+			$date_naissance[$i] = 'NÃ© le '.date_fr($donne_persone['naissance']);
 		} else {
-			$date_naissance[$i] = 'Née le '.date_fr($donne_persone['naissance']);
+			$date_naissance[$i] = 'NÃ©e le '.date_fr($donne_persone['naissance']);
 		}
 			$classe_id_eleve[$i] = $donne_persone['id'];
 			$classe_nomlong_eleve[$i] = $donne_persone['nom_complet'];
@@ -274,7 +274,7 @@ if ( $etiquette_action === 'originaux' ) {
 		if($donne_persone['regime']==='d/p') { $dp_eleve[$i]='demi-pensionnaire'; }
 		if($donne_persone['regime']==='ext.') { $dp_eleve[$i]='externe'; }
 		if($donne_persone['regime']==='int.') { $dp_eleve[$i]='interne'; }
-		if($donne_persone['regime']==='i-e') { if($sexe_eleve[$i]==='M') { $dp_eleve[$i]='interne externé'; } else { $dp_eleve[$i]='interne externée'; } }
+		if($donne_persone['regime']==='i-e') { if($sexe_eleve[$i]==='M') { $dp_eleve[$i]='interne externÃ©'; } else { $dp_eleve[$i]='interne externÃ©e'; } }
 		if($donne_persone['regime']!='ext.' and $donne_persone['regime']!='d/p' and $donne_persone['regime']==='int.' and $donne_persone['regime']==='i-e') { $dp_eleve[$i]='inconnu'; }
 
 		$i = $i + 1;
@@ -506,7 +506,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
     $this->_out($s);
 }
 
-    //En-tête du document
+    //En-tÃªte du document
     function Header()
     {
 	    global $prefix_base;
@@ -515,9 +515,9 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 			$affiche_filigrame='0'; // affiche un filigramme
 			$texte_filigrame='DOCUMENT DE TEST'; // texte du filigrame
 			$affiche_logo_etab='1';
-			$entente_mel='0'; // afficher l'adresse mel dans l'entête
-			$entente_tel='0'; // afficher le numéro de téléphone dans l'entête
-			$entente_fax='0'; // afficher le numéro de fax dans l'entête
+			$entente_mel='0'; // afficher l'adresse mel dans l'entÃªte
+			$entente_tel='0'; // afficher le numÃ©ro de tÃ©lÃ©phone dans l'entÃªte
+			$entente_fax='0'; // afficher le numÃ©ro de fax dans l'entÃªte
 			$L_max_logo=75; $H_max_logo=75; //dimension du logo
 
     //Affiche le filigrame
@@ -535,7 +535,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 	if($affiche_logo_etab==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
 	{
 	 $valeur=redimensionne_logo($logo, $L_max_logo, $H_max_logo);
-	 //$X_logo et $Y_logo; placement du bloc identite de l'établissement
+	 //$X_logo et $Y_logo; placement du bloc identite de l'Ã©tablissement
 	 $X_logo=5; $Y_logo=5; $L_logo=$valeur[0]; $H_logo=$valeur[1];
 	 $X_etab=$X_logo+$L_logo; $Y_etab=$Y_logo;
 	 //logo
@@ -560,8 +560,8 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 	 $this->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,'');
 	  $gepiSchoolTel = getSettingValue('gepiSchoolTel');
 	  $gepiSchoolFax = getSettingValue('gepiSchoolFax');
-	if($entente_tel==='1' and $entente_fax==='1') { $entete_communic = 'Tél: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax; }
-	if($entente_tel==='1' and empty($entete_communic)) { $entete_communic = 'Tél: '.$gepiSchoolTel; }
+	if($entente_tel==='1' and $entente_fax==='1') { $entete_communic = 'TÃ©l: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax; }
+	if($entente_tel==='1' and empty($entete_communic)) { $entete_communic = 'TÃ©l: '.$gepiSchoolTel; }
 	if($entente_fax==='1' and empty($entete_communic)) { $entete_communic = 'Fax: '.$gepiSchoolFax; }
 	if( isset($entete_communic) and $entete_communic != '' ) {
 	 $this->Cell(90,5, $entete_communic,0,2,'');
@@ -575,11 +575,11 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
     //Pied de page du document
     function Footer()
     {
-        //Positionnement à 1 cm du bas et 0,5cm + 0,5cm du coté gauche
+        //Positionnement Ã  1 cm du bas et 0,5cm + 0,5cm du cotÃ© gauche
    	$this->SetXY(5,-10);
         //Police Arial Gras 6
         $this->SetFont('Arial','B',8);
-        $this->Cell(0,4.5, traite_accents_utf8("Fiche récapitulative des absences - GEPI : solution libre de gestion et de suivi des résultats scolaires."),0,0,'C');
+        $this->Cell(0,4.5, traite_accents_utf8("Fiche rÃ©capitulative des absences - GEPI : solution libre de gestion et de suivi des rÃ©sultats scolaires."),0,0,'C');
     }
 }
 
@@ -604,7 +604,7 @@ $pdf->SetTextColor(0,0,0);
 $pdf->SetFillColor(255,255,255);
 
 
-// bloc affichage information sur l'élèves
+// bloc affichage information sur l'Ã©lÃ¨ves
 	if ( $active_bloc_eleve === '1' ) {
 	 $pdf->SetXY($X_eleve,$Y_eleve);
  	 $pdf->SetFont($caractere_utilse,'B',14);
@@ -617,7 +617,7 @@ $pdf->SetFillColor(255,255,255);
 	 $X_eleve_2 = $X_eleve;
 	 $Y_eleve_2 = $Y_eleve;
 
-		//photo de l'élève
+		//photo de l'Ã©lÃ¨ve
 	 	if ( $active_photo === '1' and $photo_eleve[$cpt_eleve]!='' and file_exists($photo_eleve[$cpt_eleve]) ) {
 		 $L_photo_max=$hauteur_cadre_eleve*2.8; $H_photo_max=$hauteur_cadre_eleve*2.8;
 		 $valeur=redimensionne_logo($photo_eleve[$cpt_eleve], $L_photo_max, $H_photo_max);
@@ -643,11 +643,11 @@ $pdf->SetFillColor(255,255,255);
 	 }
 	 if ( $affiche_effectif_classe === '1' ) {
 	  if ( $info_bulletin[$ident_eleve_aff][$id_periode]['effectif']!="") {
-		$pdf->Cell(45,4.5, traite_accents_utf8('Effectif : '.$info_bulletin[$ident_eleve_aff][$id_periode]['effectif'].' élèves'),0,0,''); }
+		$pdf->Cell(45,4.5, traite_accents_utf8('Effectif : '.$info_bulletin[$ident_eleve_aff][$id_periode]['effectif'].' Ã©lÃ¨ves'),0,0,''); }
 	 }
 	 if ( $affiche_numero_impression === '1' ) {
 	  $num_ordre = $cpt_eleve;
-	  $pdf->Cell(45,4, 'Impression N° '.$num_ordre,0,2,'');
+	  $pdf->Cell(45,4, 'Impression NÂ° '.$num_ordre,0,2,'');
 	 }
 	}
 
@@ -661,9 +661,9 @@ $pdf->SetFillColor(255,255,255);
 	 if($cadre_datation_bul!=0) { $pdf->Rect($X_datation_bul, $Y_datation_bul, $longeur_cadre_datation_bul, $hauteur_cadre_datation_bul, 'D'); }
 	 $pdf->Cell(90,7, "Classe de ".traite_accents_utf8(unhtmlentities($classe_nomlong_eleve[$cpt_eleve])),0,2,'C');
 	 $pdf->SetFont($caractere_utilse,'',12);
-	 $pdf->Cell(90,5, traite_accents_utf8("Année scolaire ".$annee_scolaire),0,2,'C');
+	 $pdf->Cell(90,5, traite_accents_utf8("AnnÃ©e scolaire ".$annee_scolaire),0,2,'C');
 	 $pdf->SetFont($caractere_utilse,'',10);
-	 $pdf->Cell(90,5, traite_accents_utf8("Fiche récapitulative des absences"),0,2,'C');
+	 $pdf->Cell(90,5, traite_accents_utf8("Fiche rÃ©capitulative des absences"),0,2,'C');
 	 $pdf->SetFont($caractere_utilse,'',8);
 	 $pdf->Cell(95,7, $date_bulletin,0,2,'R');
 	 $pdf->SetFont($caractere_utilse,'',10);
@@ -671,8 +671,8 @@ $pdf->SetFillColor(255,255,255);
 
 
 // bloc d'information divers
-	// nombre de lettre expédié à la famille
-	// nombre de lettre resté sans réponse
+	// nombre de lettre expÃ©diÃ© Ã  la famille
+	// nombre de lettre restÃ© sans rÃ©ponse
 	// nombre d'avertissement
 	// nombre d'exclusion
 	// nombre de retenue
@@ -684,17 +684,17 @@ $pdf->SetFillColor(255,255,255);
 	$y_divers = '40';
 	// hauteur des lignes
 	$h_divers = '5';
-	// largeur de la colonne titre à gauche
+	// largeur de la colonne titre Ã  gauche
 	$l_divers = '35';
 
 	// placement du bloc
  	$pdf->SetXY($x_divers,$y_divers);
-	// nombre de lettre expédié à la famille
+	// nombre de lettre expÃ©diÃ© Ã  la famille
         $cpt_lettre_envoye = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."'"),0);
-	$pdf->Cell($l_divers, $h_divers, traite_accents_utf8('Nombre de lettres expédiées : ').$cpt_lettre_envoye, 0, 2, 'L', 0);
-	// nombre de lettre resté sans réponse
+	$pdf->Cell($l_divers, $h_divers, traite_accents_utf8('Nombre de lettres expÃ©diÃ©es : ').$cpt_lettre_envoye, 0, 2, 'L', 0);
+	// nombre de lettre restÃ© sans rÃ©ponse
         $cpt_lettre_envoye_sans_reponse = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND quireception_lettre_suivi = ''"),0);
-	$pdf->Cell($l_divers, $h_divers, traite_accents_utf8('Lettres restées sans réponse : ').$cpt_lettre_envoye_sans_reponse, 0, 2, 'L', 0);
+	$pdf->Cell($l_divers, $h_divers, traite_accents_utf8('Lettres restÃ©es sans rÃ©ponse : ').$cpt_lettre_envoye_sans_reponse, 0, 2, 'L', 0);
 	// nombre d'avertissement
         $cpt_lettre_avertissement = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis, ".$prefix_base."lettres_types WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND id_lettre_type = type_lettre_suivi AND titre_lettre_type LIKE '%avertissement%'"),0);
 	$pdf->Cell($l_divers, $h_divers, 'Nombre d\'avertissements : '.$cpt_lettre_avertissement, 0, 2, 'L', 0);
@@ -714,7 +714,7 @@ $info_absence = repartire_jour($id_eleve[$cpt_eleve], 'A', $du_sql, $au_sql);
 $info_retard = repartire_jour($id_eleve[$cpt_eleve], 'R', $du_sql, $au_sql);
 
 
-	// on initialise le tableau des mois sélectionné
+	// on initialise le tableau des mois sÃ©lectionnÃ©
 	if ( $mois === '' ) { $mois = tableau_mois($mois_du, $annee_du, $mois_au, $annee_au); }
 
 	// placement en x du tableau
@@ -723,22 +723,22 @@ $info_retard = repartire_jour($id_eleve[$cpt_eleve], 'R', $du_sql, $au_sql);
 	$y_mois = '72.5'; $y_mois_o = $y_mois;
 	// hauteur des lignes
 	$h_mois = '5';
-	// largeur de la colonne titre à gauche
+	// largeur de la colonne titre Ã  gauche
 	$l_mois = '25';
-	// on compte le nombre de mois à affiché pour établire ensuite la largeur de ces colonnes
+	// on compte le nombre de mois Ã  affichÃ© pour Ã©tablire ensuite la largeur de ces colonnes
 		$nb_jour = '31';
 		// 210 - 10(marge gauche) - 10(marge gauche) - 35(titre) - 13(total)
-		// largeur total qu'on réserve pour l'affichage des mois
+		// largeur total qu'on rÃ©serve pour l'affichage des mois
 		$largeur_total = '166';
 		// largeur des colonnes jour
 		$l_jour = $largeur_total / $nb_jour;
 
-	// entête du tableau
+	// entÃªte du tableau
 	// placement en x et y
 	$pdf->SetXY($x_mois, $y_mois);
 	// case vide
 	$pdf->Cell($l_mois, $h_mois, '', 'RB', 0, 'C', 0);
-		// entête des jours
+		// entÃªte des jours
 		$i = '1';
 		while ( $i <= 31 ) {
 			$pdf->Cell($l_jour, $h_mois, $i, 1, 0, 'C', 0);
@@ -764,12 +764,12 @@ $info_retard = repartire_jour($id_eleve[$cpt_eleve], 'R', $du_sql, $au_sql);
 
 					if ( !empty($info_absence[$jour_select.'-0']) ) {
 
-					   // boucle pour vérifier si plusieurs horraire dans cette journé
+					   // boucle pour vÃ©rifier si plusieurs horraire dans cette journÃ©
 					   $cpt_horraire_jour = 0;
 					   $jour_select_tt = $jour_select.'-'.$cpt_horraire_jour;
 					   while ( !empty($info_absence[$jour_select_tt]) )
 					   {
-						// connaitre si l'absence à été le matin
+						// connaitre si l'absence Ã  Ã©tÃ© le matin
 						if ( $info_absence[$jour_select_tt]['heure_debut'] >= '06:00:00' and $info_absence[$jour_select_tt]['heure_fin'] <= '13:00:00' ) {
 							// on prend l'emplacement du X et du Y initial de la case
 							$valeur_x_carre = $pdf->GetX();
@@ -777,10 +777,10 @@ $info_retard = repartire_jour($id_eleve[$cpt_eleve], 'R', $du_sql, $au_sql);
 							// couleur de remplissage
 							$pdf->SetFillColor(0, 0, 0); $aff_couleur = '0';
 							$pdf->SetTextColor(255, 255, 255);
-							// si matin ou aprés midi on divise par deux
+							// si matin ou aprÃ©s midi on divise par deux
 							$l_jour_case = $l_jour / 2;
 							// placement de la case absences
-							  // si après midi on déplace la case +$l_jour_case
+							  // si aprÃ¨s midi on dÃ©place la case +$l_jour_case
 							$pdf->SetXY($valeur_x_carre, $valeur_y_carre);
 							// cellule de l'absences
 							$pdf->Cell($l_jour_case, $h_mois, 'M', $cadre, 0, 'C', 1);
@@ -789,7 +789,7 @@ $info_retard = repartire_jour($id_eleve[$cpt_eleve], 'R', $du_sql, $au_sql);
 							$pdf->SetTextColor(0, 0, 0);
 							$pass = 'ok';
 						}
-						// connaitre si l'absence a été l'après-midi
+						// connaitre si l'absence a Ã©tÃ© l'aprÃ¨s-midi
 						if ( $info_absence[$jour_select_tt]['heure_debut'] > '13:00:00' and $info_absence[$jour_select_tt]['heure_fin'] <= '19:00:00' ) {
 							// on prend l'emplacement du X et du Y initial de la case
 							$valeur_x_carre = $pdf->GetX();
@@ -797,10 +797,10 @@ $info_retard = repartire_jour($id_eleve[$cpt_eleve], 'R', $du_sql, $au_sql);
 							// couleur de remplissage
 							$pdf->SetFillColor(0, 0, 0); $aff_couleur = '0';
 							$pdf->SetTextColor(255, 255, 255);
-							// si matin ou après midi on divise par deux
+							// si matin ou aprÃ¨s midi on divise par deux
 							$l_jour_case = $l_jour / 2;
 							// placement de la case absences
-							  // si après midi on déplace la case +$l_jour_case
+							  // si aprÃ¨s midi on dÃ©place la case +$l_jour_case
 							$pdf->SetXY($valeur_x_carre+$l_jour_case, $valeur_y_carre);
 							// cellule de l'absences
 							$pdf->Cell($l_jour_case, $h_mois, 'A', $cadre, 0, 'C', 1);
@@ -809,7 +809,7 @@ $info_retard = repartire_jour($id_eleve[$cpt_eleve], 'R', $du_sql, $au_sql);
 							$pdf->SetTextColor(0, 0, 0);
 							$pass = 'ok';
 						}
-						// connaitre si l'absence a été toute la journée
+						// connaitre si l'absence a Ã©tÃ© toute la journÃ©e
 						if ( $info_absence[$jour_select_tt]['heure_debut'] > '06:00:00' and $info_absence[$jour_select_tt]['heure_fin'] <= '19:00:00' and $pass != 'ok' ) {
 							// on prend l'emplacement du X et du Y initial de la case
 							$valeur_x_carre = $pdf->GetX();
@@ -817,10 +817,10 @@ $info_retard = repartire_jour($id_eleve[$cpt_eleve], 'R', $du_sql, $au_sql);
 							// couleur de remplissage
 							$pdf->SetFillColor(0, 0, 0); $aff_couleur = '0';
 							$pdf->SetTextColor(255, 255, 255);
-							// si matin ou après midi on divise par deux
+							// si matin ou aprÃ¨s midi on divise par deux
 							$l_jour_case = $l_jour;
 							// placement de la case absences
-							  // si après midi on déplace la case +$l_jour_case
+							  // si aprÃ¨s midi on dÃ©place la case +$l_jour_case
 							$pdf->SetXY($valeur_x_carre, $valeur_y_carre);
 							// cellule de l'absences
 							$pdf->Cell($l_jour_case, $h_mois, 'MA', $cadre, 0, 'C', 1);
@@ -865,44 +865,44 @@ $annuel = $mois;
 
 	// hauteur des lignes
 	$h_annuel = '5';
-	// largeur de la colonne titre à gauche
+	// largeur de la colonne titre Ã  gauche
 	$l_intituler = '35';
-	// hauteur de la colonne titre à gauche quand il y a deux informations
+	// hauteur de la colonne titre Ã  gauche quand il y a deux informations
 	$h_intituler = $h_annuel * 2;
-	// on compte le nombre de mois à affiché pour établire ensuite la largeur de ces colonnes
+	// on compte le nombre de mois Ã  affichÃ© pour Ã©tablire ensuite la largeur de ces colonnes
 		$nb_mois = count($annuel);
 		// 210 - 10(marge gauche) - 10(marge gauche) - 35(titre) - 13(total)
-		// largeur total qu'on réserve pour l'affichage des mois
+		// largeur total qu'on rÃ©serve pour l'affichage des mois
 		$largeur_total = '156';
 		// largeur des colonnes mois
 		$l_annuel = $largeur_total / ($nb_mois+1);
 
-	// variable vide pour la totalisation des données
+	// variable vide pour la totalisation des donnÃ©es
 	$total_absence_nb = '0';
 	$total_absence_heure = '0';
 	$total_retard = '0';
 
-	// entête du tableau
+	// entÃªte du tableau
 	// placement en x et y
 	$pdf->SetXY($x_annuel, $y_annuel);
 	// case vide
 	$pdf->Cell($l_intituler, $h_annuel, '', 'RB', 0, 'C', 0);
-		// entête des mois
+		// entÃªte des mois
 		$i = '0';
 		while ( !empty($annuel[$i]) ) {
 			$pdf->Cell($l_annuel, $h_annuel, $annuel[$i]['mois_court'], 1, 0, 'C', 0);
 		$i = $i + 1;
 		}
-		// entête total
+		// entÃªte total
 		$pdf->Cell($l_annuel, $h_annuel, 'total', 'LRT', 0, 'C', 0);
 
 
-	// ligne des absences non justifé
-	// décaler y par rapport à la première ligne
+	// ligne des absences non justifÃ©
+	// dÃ©caler y par rapport Ã  la premiÃ¨re ligne
 	$y_annuel = $y_annuel + $h_annuel;
 	$pdf->SetFont('arial','',9);
 	$pdf->SetXY($x_annuel, $y_annuel);
-	$pdf->Cell($l_intituler, $h_intituler, traite_accents_utf8('Absence non justifiée'), 1, 0, 'L', 0);
+	$pdf->Cell($l_intituler, $h_intituler, traite_accents_utf8('Absence non justifiÃ©e'), 1, 0, 'L', 0);
 		$i = '0'; $total = '0';
 		while ( !empty($annuel[$i]) ) {
 				$texte = '';
@@ -939,10 +939,10 @@ $annuel = $mois;
 		$pdf->Cell($l_annuel, $h_annuel, $texte, 'LRB', 0, 'C', 0);
 			$total_absence_heure = $total_absence_heure + $total;
 
-	// ligne des absences justifé
+	// ligne des absences justifÃ©
 	$y_annuel = $y_annuel + $h_annuel;
 	$pdf->SetXY($x_annuel, $y_annuel);
-	$pdf->Cell($l_intituler, $h_intituler, traite_accents_utf8('Absence justifiée'), 1, 0, 'L', 0);
+	$pdf->Cell($l_intituler, $h_intituler, traite_accents_utf8('Absence justifiÃ©e'), 1, 0, 'L', 0);
 		$i = '0'; $total = '0';
 		while ( !empty($annuel[$i]) ) {
 				$texte = '';
@@ -979,11 +979,11 @@ $annuel = $mois;
 		$pdf->Cell($l_annuel, $h_annuel, $texte, 'LRB', 0, 'C', 0);
 			$total_absence_heure = $total_absence_heure + $total;
 
-	// ligne des retards non justifié
+	// ligne des retards non justifiÃ©
 	$y_annuel = $y_annuel + $h_annuel;
 	$pdf->SetFont('arial','',9);
 	$pdf->SetXY($x_annuel, $y_annuel);
-	$pdf->Cell($l_intituler, $h_annuel, traite_accents_utf8('Retard non justifié'), 1, 0, 'L', 0);
+	$pdf->Cell($l_intituler, $h_annuel, traite_accents_utf8('Retard non justifiÃ©'), 1, 0, 'L', 0);
 		$i = '0'; $total = '0';
 		while ( !empty($annuel[$i]) ) {
 				$texte = '';
@@ -1000,10 +1000,10 @@ $annuel = $mois;
 		$pdf->Cell($l_annuel, $h_annuel, $texte, 'LRB', 0, 'C', 0);
 			$total_retard = $total_retard + $total;
 
-	// ligne des retards justifié
+	// ligne des retards justifiÃ©
 	$y_annuel = $y_annuel + $h_annuel;
 	$pdf->SetXY($x_annuel, $y_annuel);
-	$pdf->Cell($l_intituler, $h_annuel, traite_accents_utf8('Retard justifié'), 1, 0, 'L', 0);
+	$pdf->Cell($l_intituler, $h_annuel, traite_accents_utf8('Retard justifiÃ©'), 1, 0, 'L', 0);
 		$i = '0'; $total = '0';
 		while ( !empty($annuel[$i]) ) {
 				$texte = '';
@@ -1029,7 +1029,7 @@ $annuel = $mois;
 	$pdf->Cell(0, $h_annuel, 'Total des absences : '.$total_absence_nb.', Total des absences en heure : '.convert_minutes_heures($total_absence_heure).', Total des retards : '.$total_retard, 0, 0, 'C', 0);
 // fin du tableau annuel des absences et retards
 
-// tableau des nombre d'absences par jour et par heure (période)
+// tableau des nombre d'absences par jour et par heure (pÃ©riode)
 $i = '0';
 if ( isset($semaine_horaire['lundi']['ouverture']) ) { $semaine[$i]['jour'] = 'lundi'; $i = $i + 1; }
 if ( isset($semaine_horaire['mardi']['ouverture']) ) { $semaine[$i]['jour'] = 'mardi'; $i = $i + 1; }
@@ -1044,22 +1044,22 @@ if ( isset($semaine_horaire['samedi']['ouverture']) ) { $semaine[$i]['jour'] = '
 	$y_semaine = '178.5';
 	// hauteur des lignes
 	$h_semaine = '5';
-	// largeur de la colonne titre à gauche
+	// largeur de la colonne titre Ã  gauche
 	$l_horaire = '25';
-	// on compte le nombre de mois à affiché pour établire ensuite la largeur de ces colonnes
+	// on compte le nombre de mois Ã  affichÃ© pour Ã©tablire ensuite la largeur de ces colonnes
 		$nb_jour = count($semaine);
 		// 210 - 10(marge gauche) - 10(marge gauche) - 35(titre) - 13(total)
-		// largeur total qu'on réserve pour l'affichage des mois
+		// largeur total qu'on rÃ©serve pour l'affichage des mois
 		$largeur_total = '70';
 		// largeur des colonnes jour
 		$l_semaine = $largeur_total / $nb_jour;
 
-	// entête du tableau
+	// entÃªte du tableau
 	// placement en x et y
 	$pdf->SetXY($x_semaine, $y_semaine);
 	// case vide
 	$pdf->Cell($l_horaire, $h_semaine, 'ABSENCES', 'RB', 0, 'C', 0);
-		// entête des jours
+		// entÃªte des jours
 		$i = '0';
 		while ( !empty($semaine[$i]) ) {
 			$pdf->SetFont('arial','',9);
@@ -1080,11 +1080,11 @@ if ( isset($semaine_horaire['samedi']['ouverture']) ) { $semaine[$i]['jour'] = '
 		$tab_jour['samedi'] = '6';
 		$tab_jour['dimanche'] = '0';
 
-		// calcul du nombre de période à affiché dans la semaine
+		// calcul du nombre de pÃ©riode Ã  affichÃ© dans la semaine
 		$maxHor = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."edt_creneaux
 							WHERE suivi_definie_periode = '1'"),0);
 
-		// si il est égale à 0 alors on l'initialise à 11
+		// si il est Ã©gale Ã  0 alors on l'initialise Ã  11
 		if ( $maxHor === '0' or $maxHor > '11' ) { $maxHor = '11'; }
 
 	while ($i < $maxHor) {
@@ -1104,9 +1104,9 @@ if ( isset($semaine_horaire['samedi']['ouverture']) ) { $semaine[$i]['jour'] = '
 	$i = $i + 1;
 	}
 
-// fin du tableau des nombre d'absences par jour et par heure (période)
+// fin du tableau des nombre d'absences par jour et par heure (pÃ©riode)
 
-// tableau des nombre de retards par jour et par heure (période)
+// tableau des nombre de retards par jour et par heure (pÃ©riode)
 $i = '0';
 
 	// placement en x du tableau
@@ -1115,22 +1115,22 @@ $i = '0';
 	$y_semaine = '178.5';
 	// hauteur des lignes
 	$h_semaine = '5';
-	// largeur de la colonne titre à gauche
+	// largeur de la colonne titre Ã  gauche
 	$l_horaire = '25';
-	// on compte le nombre de mois à affiché pour établire ensuite la largeur de ces colonnes
+	// on compte le nombre de mois Ã  affichÃ© pour Ã©tablire ensuite la largeur de ces colonnes
 		$nb_jour = count($semaine);
 		// 210 - 10(marge gauche) - 10(marge gauche) - 35(titre) - 13(total)
-		// largeur total qu'on réserve pour l'affichage des mois
+		// largeur total qu'on rÃ©serve pour l'affichage des mois
 		$largeur_total = '69';//77.5
 		// largeur des colonnes jour
 		$l_semaine = $largeur_total / $nb_jour;
 
-	// entête du tableau
+	// entÃªte du tableau
 	// placement en x et y
 	$pdf->SetXY($x_semaine, $y_semaine);
 	// case vide
 	$pdf->Cell($l_horaire, $h_semaine, 'RETARDS', 'RB', 0, 'C', 0);
-		// entête des jours
+		// entÃªte des jours
 		$i = '0';
 		while ( !empty($semaine[$i]) ) {
 			$pdf->SetFont('arial','',9);
@@ -1161,7 +1161,7 @@ $i = '0';
 	$i = $i + 1;
 	}
 
-// fin du tableau des nombre d'absences par jour et par heure (période)
+// fin du tableau des nombre d'absences par jour et par heure (pÃ©riode)
 
 // le graphique
 $test = 'on';
@@ -1178,7 +1178,7 @@ if ( $active_graphique === '1' AND $test == 'on') {
 	$l_graphique_max = $l_graphique * 2.8;
 	$h_graphique_max = $h_graphique * 2.8;
 
-	//préparation des valeurs
+	//prÃ©paration des valeurs
 	// axe x
 	if ( !isset($valeur_x) ) {
 		$i = '0';
@@ -1218,14 +1218,14 @@ if ( $active_graphique === '1' AND $test == 'on') {
 	$_SESSION['nom_fichier_png'] = $nom_fichier;
 	$graphique = '../../documents/'.$nom_fichier.'.png';
 
-	// génération du graphique
+	// gÃ©nÃ©ration du graphique
 	include('../lib/graph_double_ligne.php');
 
 	$valeur=redimensionne_logo($graphique, $l_graphique_max, $h_graphique_max);
 
-	// hauteur du graphique définie
+	// hauteur du graphique dÃ©finie
 	$h_graphique = $valeur[1];
-	// largeur du graphique définie
+	// largeur du graphique dÃ©finie
 	$l_graphique = $valeur[0];
 
 	// le graphique
@@ -1244,7 +1244,7 @@ if ( $active_graphique === '1' AND $test == 'on') {
 	$y_observation = '240';
 	// hauteur des lignes
 	$h_observation = '5';
-	// largeur de la colonne titre à gauche
+	// largeur de la colonne titre Ã  gauche
 	$l_observation = '94';
 
 	$pdf->SetXY($x_observation, $y_observation);

@@ -40,9 +40,9 @@ if ($resultat_session == 'c') {
 
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
-// INSERT INTO droits VALUES('/mod_notanet/select_matieres.php','V','F','F','F','F','F','F','F','Notanet: Association Types de brevet/Matières','');
-// Pour décommenter le passage, il suffit de supprimer le 'slash-etoile' ci-dessus et l'étoile-slash' ci-dessous.
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
+// INSERT INTO droits VALUES('/mod_notanet/select_matieres.php','V','F','F','F','F','F','F','F','Notanet: Association Types de brevet/MatiÃ¨res','');
+// Pour dÃ©commenter le passage, il suffit de supprimer le 'slash-etoile' ci-dessus et l'Ã©toile-slash' ci-dessous.
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -66,7 +66,7 @@ if(($type_brevet!=0)&&
 
 if(!isset($msg)) {$msg="";}
 
-// Bibliothèque pour Notanet et Fiches brevet
+// BibliothÃ¨que pour Notanet et Fiches brevet
 include("lib_brevets.php");
 
 $id_matiere=array();
@@ -91,7 +91,7 @@ if((isset($is_posted))&&(isset($type_brevet))) {
 
 	$tabmatieres=tabmatieres($type_brevet);
 
-	// Nettoyage des choix de matières dans 'notanet_corresp'
+	// Nettoyage des choix de matiÃ¨res dans 'notanet_corresp'
 	$sql="DELETE FROM notanet_corresp WHERE type_brevet='$type_brevet';";
 	$res_nettoyage=mysql_query($sql);
 	if(!$res_nettoyage){
@@ -100,7 +100,7 @@ if((isset($is_posted))&&(isset($type_brevet))) {
 	else {
 		$nb_err=0;
 		$cpt_enr=0;
-		// Enregistrement des choix de matières dans 'notanet_corresp'
+		// Enregistrement des choix de matiÃ¨res dans 'notanet_corresp'
 		for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 			//if($tabmatieres[$j][0]!=''){
 			//if(($tabmatieres[$j][0]!='')&&($tabmatieres[$j]['socle']=='n')) {
@@ -119,7 +119,7 @@ if((isset($is_posted))&&(isset($type_brevet))) {
 						}
 					}
 					else{
-						// Cas de matières non dispensées...
+						// Cas de matiÃ¨res non dispensÃ©es...
 						$sql="INSERT INTO notanet_corresp SET notanet_mat='".$tabmatieres[$j][0]."',
 																matiere='',
 																statut='".$statut_matiere[$j]."',
@@ -150,17 +150,17 @@ if((isset($is_posted))&&(isset($type_brevet))) {
 			$res_insert=mysql_query($sql);
 			if(!$res_insert) {$nb_err++;}else{$cpt_enr++;}
 
-			if($nb_err==0) {$msg.="Enregistrement effectué pour $cpt_enr matière(s).";}
+			if($nb_err==0) {$msg.="Enregistrement effectuÃ© pour $cpt_enr matiÃ¨re(s).";}
 			header("Location: ".$_SERVER['PHP_SELF']."?type_brevet=$type_brevet&msg=".urlencode($msg)."#ancre_$j_matiere");
 		}
 
-		if($nb_err==0) {$msg.="Enregistrement effectué pour $cpt_enr matière(s).<br />\n";}
+		if($nb_err==0) {$msg.="Enregistrement effectuÃ© pour $cpt_enr matiÃ¨re(s).<br />\n";}
 	}
 }
 
 
 //**************** EN-TETE *****************
-$titre_page = "Notanet: Associations type de brevet/matières";
+$titre_page = "Notanet: Associations type de brevet/matiÃ¨res";
 //echo "<div class='noprint'>\n";
 require_once("../lib/header.inc");
 //echo "</div>\n";
@@ -169,7 +169,7 @@ require_once("../lib/header.inc");
 //debug_var();
 
 echo "<div class='noprint'>\n";
-echo "<p class='bold'><a href='../accueil.php'>Accueil</a> | <a href='index.php'>Retour à l'accueil Notanet</a>";
+echo "<p class='bold'><a href='../accueil.php'>Accueil</a> | <a href='index.php'>Retour Ã  l'accueil Notanet</a>";
 
 // Choix du type de Brevet:
 if (!isset($type_brevet)) {
@@ -187,7 +187,7 @@ if (!isset($type_brevet)) {
 	$sql="SELECT DISTINCT type_brevet FROM notanet_ele_type ORDER BY type_brevet;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0){
-		echo "<p>Aucun élève n'est encore associé à un type de brevet.<br />Commencez par <a href='select_eleves.php'>sélectionner les élèves</a>.</p>\n";
+		echo "<p>Aucun Ã©lÃ¨ve n'est encore associÃ© Ã  un type de brevet.<br />Commencez par <a href='select_eleves.php'>sÃ©lectionner les Ã©lÃ¨ves</a>.</p>\n";
 
 		require("../lib/footer.inc.php");
 		die();
@@ -221,12 +221,12 @@ else {
 						)";
 	$res_creation_table=mysql_query($sql);
 	if(!$res_creation_table){
-		echo "<p><b style='color:red;'>ERREUR</b> lors de la création de la table 'notanet_corresp'.</p>\n";
+		echo "<p><b style='color:red;'>ERREUR</b> lors de la crÃ©ation de la table 'notanet_corresp'.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
 
-	// Fonction définie dans lib_brevets.php
+	// Fonction dÃ©finie dans lib_brevets.php
 	$tabmatieres=tabmatieres($type_brevet);
 
 
@@ -236,7 +236,7 @@ else {
 		$sql="SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec, notanet_ele_type net WHERE net.login=jec.login AND net.type_brevet='$type_brevet' ORDER BY id_classe";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			echo "<p>Aucun élève n'est encore associé à ce type de brevet.<br />Commencez par <a href='select_eleves.php'>sélectionner les élèves</a>.</p>\n";
+			echo "<p>Aucun Ã©lÃ¨ve n'est encore associÃ© Ã  ce type de brevet.<br />Commencez par <a href='select_eleves.php'>sÃ©lectionner les Ã©lÃ¨ves</a>.</p>\n";
 
 			require("../lib/footer.inc.php");
 			die();
@@ -251,10 +251,10 @@ else {
 
 		$conditions="id_classe='$id_classe[0]'";
 		if(count($id_classe)==1) {
-			echo "<p>La seule classe concernée est ".get_classe_from_id($id_classe[0]);
+			echo "<p>La seule classe concernÃ©e est ".get_classe_from_id($id_classe[0]);
 		}
 		else {
-			echo "<p>Les classes concernées sont ".get_classe_from_id($id_classe[0]);
+			echo "<p>Les classes concernÃ©es sont ".get_classe_from_id($id_classe[0]);
 			for($i=1;$i<count($id_classe);$i++){
 				$conditions=$conditions." OR id_classe='$id_classe[$i]'";
 				echo ", ".get_classe_from_id($id_classe[$i]);
@@ -279,25 +279,25 @@ else {
 		}
 
 		//echo "<table border='1'>\n";
-		echo "<table class='boireaus' summary='Tableau des associations matière notanet/matière gepi'>\n";
+		echo "<table class='boireaus' summary='Tableau des associations matiÃ¨re notanet/matiÃ¨re gepi'>\n";
 		echo "<tr style='font-weight:bold; text-align:center'>\n";
 
 		echo "<th colspan='2'>NOTANET</th>\n";
 
-		echo "<th colspan='3'>Matière</th>\n";
+		echo "<th colspan='3'>MatiÃ¨re</th>\n";
 
 		//echo "<th>&nbsp;</th>\n";
-		echo "<th rowspan='2'>Matière GEPI</th>\n";
+		echo "<th rowspan='2'>MatiÃ¨re GEPI</th>\n";
 
 		echo "<tr style='font-weight:bold; text-align:center'>\n";
 
-		echo "<th>Numéro</th>\n";
-		echo "<th>Intitulé de la matière NOTANET</th>\n";
+		echo "<th>NumÃ©ro</th>\n";
+		echo "<th>IntitulÃ© de la matiÃ¨re NOTANET</th>\n";
 
-		echo "<th>Imposée</th>\n";
+		echo "<th>ImposÃ©e</th>\n";
 		echo "<th>Optionnelle</th>\n";
-		echo "<th>Non dispensée dans l'établissement</th>\n";
-		//echo "<th>Matière GEPI</th>\n";
+		echo "<th>Non dispensÃ©e dans l'Ã©tablissement</th>\n";
+		//echo "<th>MatiÃ¨re GEPI</th>\n";
 
 		echo "</tr>\n";
 
@@ -381,14 +381,14 @@ else {
 							$sql="SELECT 1=1 FROM matieres WHERE matiere='$lig_tmp->matiere';";
 							//echo "$sql<br />";
 							$test_matiere=mysql_query($sql);
-							if(mysql_num_rows($test_matiere)==0) {echo "<img src='../images/icons/ico_attention.png' width='22' height='19' title=\"Cette matière ne correspond plus à une matière GEPI cette année (un nouveau nom de matière existe peut-être cette année).\" alt=\"Cette matière ne correspond plus à une matière GEPI cette année (un nouveau nom de matière existe peut-être cette année).\" />\n";}
+							if(mysql_num_rows($test_matiere)==0) {echo "<img src='../images/icons/ico_attention.png' width='22' height='19' title=\"Cette matiÃ¨re ne correspond plus Ã  une matiÃ¨re GEPI cette annÃ©e (un nouveau nom de matiÃ¨re existe peut-Ãªtre cette annÃ©e).\" alt=\"Cette matiÃ¨re ne correspond plus Ã  une matiÃ¨re GEPI cette annÃ©e (un nouveau nom de matiÃ¨re existe peut-Ãªtre cette annÃ©e).\" />\n";}
 							else {
 								$sql="SELECT 1=1 FROM notanet n, notanet_ele_type net WHERE n.matiere='$lig_tmp->matiere' AND n.login=net.login AND net.type_brevet='$type_brevet';";
 								//echo "$sql<br />";
 								$test_matiere=mysql_query($sql);
 								$nb_ele_matiere=mysql_num_rows($test_matiere);
 								if($nb_ele_matiere>0) {
-									echo "&nbsp;(<span style='font-style: italic;' title=\"Matière associée à $nb_ele_matiere enregistrement(s) dans l'extraction notanet pour le type de brevet choisi. Si aucune association n'est signalée, c'est soit que la matière n'est associée à aucune note d'élève, soit que l'extraction n'a pas été effectuée (ou pas avec cette matière présente)\">$nb_ele_matiere</span>)";
+									echo "&nbsp;(<span style='font-style: italic;' title=\"MatiÃ¨re associÃ©e Ã  $nb_ele_matiere enregistrement(s) dans l'extraction notanet pour le type de brevet choisi. Si aucune association n'est signalÃ©e, c'est soit que la matiÃ¨re n'est associÃ©e Ã  aucune note d'Ã©lÃ¨ve, soit que l'extraction n'a pas Ã©tÃ© effectuÃ©e (ou pas avec cette matiÃ¨re prÃ©sente)\">$nb_ele_matiere</span>)";
 								}
 							}
 							echo "<br />";
@@ -411,7 +411,7 @@ else {
 		echo "</table>\n";
 
 		//==================================================
-		$titre="Ajout matière";
+		$titre="Ajout matiÃ¨re";
 		$texte_checkbox_matieres="";
 		$texte_checkbox_matieres.="<input type='hidden' name='j_matiere' id='j_matiere' value='' />";
 		$texte_checkbox_matieres.="<input type='hidden' name='matiere_a_ajouter' id='matiere_a_ajouter' value='' />";
@@ -439,30 +439,30 @@ else {
 
 		echo "<p><i>NOTES:</i></p>\n";
 		echo "<ul>\n";
-		echo "<li><p>La désignation comme optionnelle de certaines matières ci-dessus ne correspond pas nécessairement au caractère optionnel d'une matière dans NOTANET, mais au fait que l'on ne considère pas comme une erreur le fait qu'un élève n'ait pas de moyenne saisie dans cette matière (<i>qu'on ne trouve pas de moyenne dans la table 'matiere_notes'</i>).</p></li>\n";
-		echo "<li><p>Certaines erreurs seront sans doute signalées parce que certains élèves sont dispensés, absents,... sur certaines matières.<br />Il sera alors possible de saisir les valeurs autorisées DI, AB,... avant de générer un fichier CSV complet.</p></li>\n";
+		echo "<li><p>La dÃ©signation comme optionnelle de certaines matiÃ¨res ci-dessus ne correspond pas nÃ©cessairement au caractÃ¨re optionnel d'une matiÃ¨re dans NOTANET, mais au fait que l'on ne considÃ¨re pas comme une erreur le fait qu'un Ã©lÃ¨ve n'ait pas de moyenne saisie dans cette matiÃ¨re (<i>qu'on ne trouve pas de moyenne dans la table 'matiere_notes'</i>).</p></li>\n";
+		echo "<li><p>Certaines erreurs seront sans doute signalÃ©es parce que certains Ã©lÃ¨ves sont dispensÃ©s, absents,... sur certaines matiÃ¨res.<br />Il sera alors possible de saisir les valeurs autorisÃ©es DI, AB,... avant de gÃ©nÃ©rer un fichier CSV complet.</p></li>\n";
 		//echo "<li><p></p></li>\n";
-		echo "<li><p>Il est possible de sélectionner plusieurs matières pour une option (<i>ex.: AGL1 et ALL1 pour la Langue vivante 1</i>) en utilisant CTRL+clic avec la souris.<br />
-		(<i>on parle de sélection multiple</i>)</p></li>\n";
-		echo "<li><p>Dans le cas du 'SOCLE B2I', il n'est pas nécessaire d'associer une matière.<br />L'affectation de la 'note' (<i>MS, ME, MN ou AB</i>) ne se fait pas par extraction des notes de l'année.</p>
-		<p>Pour le 'SOCLE NIVEAU A2 DE LANGUE', les matières ne sont pas exploitées pour le filtrage... seul le statut 'imposee' ou 'optionnelle' selon le type de brevet est utilisé.</p></li>\n";
-		echo "<li><p>Dans certains établissements, la matière Education Civique est considérée comme une sous-matière de Histoire-géographie et EDCIV ne fait alors pas l'objet d'une moyenne séparée de HIGEO.<br />Dans ce cas, il convient d'associer les deux matières notanet Histoire-Géo et Education civique à HIGEO.<br />Dans le cas contraire, l'export CSV sera refusé par l'application Notanet académique.</p></li>\n";
+		echo "<li><p>Il est possible de sÃ©lectionner plusieurs matiÃ¨res pour une option (<i>ex.: AGL1 et ALL1 pour la Langue vivante 1</i>) en utilisant CTRL+clic avec la souris.<br />
+		(<i>on parle de sÃ©lection multiple</i>)</p></li>\n";
+		echo "<li><p>Dans le cas du 'SOCLE B2I', il n'est pas nÃ©cessaire d'associer une matiÃ¨re.<br />L'affectation de la 'note' (<i>MS, ME, MN ou AB</i>) ne se fait pas par extraction des notes de l'annÃ©e.</p>
+		<p>Pour le 'SOCLE NIVEAU A2 DE LANGUE', les matiÃ¨res ne sont pas exploitÃ©es pour le filtrage... seul le statut 'imposee' ou 'optionnelle' selon le type de brevet est utilisÃ©.</p></li>\n";
+		echo "<li><p>Dans certains Ã©tablissements, la matiÃ¨re Education Civique est considÃ©rÃ©e comme une sous-matiÃ¨re de Histoire-gÃ©ographie et EDCIV ne fait alors pas l'objet d'une moyenne sÃ©parÃ©e de HIGEO.<br />Dans ce cas, il convient d'associer les deux matiÃ¨res notanet Histoire-GÃ©o et Education civique Ã  HIGEO.<br />Dans le cas contraire, l'export CSV sera refusÃ© par l'application Notanet acadÃ©mique.</p></li>\n";
 
 		if(($type_brevet==2)||($type_brevet==3)||($type_brevet==4)||($type_brevet==5)||($type_brevet==6)) {
-				echo "<li><p>Dans certains établissements, on enseigne la LV1, mais pas les SCPHY pour les brevets PRO.<br />
-				Pourtant, l'application académique Notanet n'accepte pas que la matière 104 soit alors déclarée comme Non dispensée et donc n'apparaisse pas dans le fichier CSV généré par Gepi.<br />
-				Dans ce cas, il conviendra d'associer la même matière Gepi pour les deux matières Notanet LV1 (103) et SCPHY (104).<br />
-				De cette façon le fichier CSV généré sera conforme à ce qui est attendu par l'application Notanet académique.</p></li>\n";
+				echo "<li><p>Dans certains Ã©tablissements, on enseigne la LV1, mais pas les SCPHY pour les brevets PRO.<br />
+				Pourtant, l'application acadÃ©mique Notanet n'accepte pas que la matiÃ¨re 104 soit alors dÃ©clarÃ©e comme Non dispensÃ©e et donc n'apparaisse pas dans le fichier CSV gÃ©nÃ©rÃ© par Gepi.<br />
+				Dans ce cas, il conviendra d'associer la mÃªme matiÃ¨re Gepi pour les deux matiÃ¨res Notanet LV1 (103) et SCPHY (104).<br />
+				De cette faÃ§on le fichier CSV gÃ©nÃ©rÃ© sera conforme Ã  ce qui est attendu par l'application Notanet acadÃ©mique.</p></li>\n";
 		}
 		echo "</ul>\n";
 
 		if($type_brevet==2){
 			echo "<p><b>ATTENTION:</b></p>\n";
 			echo "<blockquote>\n";
-			echo "<p>Pour le Brevet de série PROFESSIONNELLE, sans option de série, il faut cocher 'optionnelle' la LV1 et les Sciences-Physiques, puisque chaque élève n'a de notes que dans l'une ou l'autre.<br />Ne pas cocher cette case conduirait à considérer qu'il manque une moyenne qui en LV1, qui en Sciences-Physiques pour chaque élève et une erreur serait affichée sans production des lignes de l'export NOTANET.</p>\n";
-			echo "<p>L'inconvénient: si un élève n'a de moyenne ni en LV1, ni en Sciences-physiques, cela ne sera pas signalé comme une erreur alors que cela devrait l'être...<br />En attendant une éventuelle amélioration du dispositif, il convient de contrôler manuellement (de visu) de tels manques.</p>\n";
+			echo "<p>Pour le Brevet de sÃ©rie PROFESSIONNELLE, sans option de sÃ©rie, il faut cocher 'optionnelle' la LV1 et les Sciences-Physiques, puisque chaque Ã©lÃ¨ve n'a de notes que dans l'une ou l'autre.<br />Ne pas cocher cette case conduirait Ã  considÃ©rer qu'il manque une moyenne qui en LV1, qui en Sciences-Physiques pour chaque Ã©lÃ¨ve et une erreur serait affichÃ©e sans production des lignes de l'export NOTANET.</p>\n";
+			echo "<p>L'inconvÃ©nient: si un Ã©lÃ¨ve n'a de moyenne ni en LV1, ni en Sciences-physiques, cela ne sera pas signalÃ© comme une erreur alors que cela devrait l'Ãªtre...<br />En attendant une Ã©ventuelle amÃ©lioration du dispositif, il convient de contrÃ´ler manuellement (de visu) de tels manques.</p>\n";
 			echo "<p><br /></p>\n";
-			echo "<p><b>GROS DOUTE:</b> Est-ce qu'un élève peut suivre les deux (LV1 et Sc-Phy) et choisir la matière à retenir pour le Brevet?<br />Si oui, je n'ai pas géré ce cas... il faut corriger (vider) la matière non souhaitée pour chaque élève dans le prochain formulaire.</p>\n";
+			echo "<p><b>GROS DOUTE:</b> Est-ce qu'un Ã©lÃ¨ve peut suivre les deux (LV1 et Sc-Phy) et choisir la matiÃ¨re Ã  retenir pour le Brevet?<br />Si oui, je n'ai pas gÃ©rÃ© ce cas... il faut corriger (vider) la matiÃ¨re non souhaitÃ©e pour chaque Ã©lÃ¨ve dans le prochain formulaire.</p>\n";
 			echo "</blockquote>\n";
 		}
 	/*
@@ -470,14 +470,14 @@ else {
 	else {
 		echo "</div>\n";
 
-		// Nettoyage des choix de matières dans 'notanet_corresp'
+		// Nettoyage des choix de matiÃ¨res dans 'notanet_corresp'
 		$sql="DELETE FROM notanet_corresp WHERE type_brevet='$type_brevet';";
 		$res_nettoyage=mysql_query($sql);
 		if(!$res_nettoyage){
 			echo "<p><b style='color:red;'>ERREUR</b> lors du nettoyage de la table 'notanet_corresp'.</p>\n";
 		}
 
-		// Enregistrement des choix de matières dans 'notanet_corresp'
+		// Enregistrement des choix de matiÃ¨res dans 'notanet_corresp'
 		for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 			if($tabmatieres[$j][0]!=''){
 				//$tabmatieres[$j][0]
@@ -493,7 +493,7 @@ else {
 					}
 				}
 				else{
-					// Cas de matières non dispensées...
+					// Cas de matiÃ¨res non dispensÃ©es...
 					$sql="INSERT INTO notanet_corresp SET notanet_mat='".$tabmatieres[$j][0]."',
 															matiere='',
 															statut='".$statut_matiere[$j]."',

@@ -2,8 +2,8 @@
 /*
  * @version $Id: demande_ldap.inc.php 1713 2008-04-15 14:02:32Z jjocal $
  *
- * Ce fichier peut servir à faire une demande à un annuaire ldap pour qu'il renvoie une information
- * juste après l'authentification CAS du fichier lib/cas.inc.php
+ * Ce fichier peut servir Ã  faire une demande Ã  un annuaire ldap pour qu'il renvoie une information
+ * juste aprÃ¨s l'authentification CAS du fichier lib/cas.inc.php
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -30,7 +30,7 @@ $ds = ldap_connect("ent-ldap.ac-bordeaux.fr");
 if ($ds){
 
 	$sr = ldap_bind($ds); // connexion anonyme, typique
-	// pour un accès en lecture seule.
+	// pour un accÃ¨s en lecture seule.
 
 	$dn = "o=personne,dc=ac-bordeaux,dc=fr, c=fr";
 	//$uid = "uid=".phpCAS::getUser();
@@ -43,14 +43,14 @@ if ($ds){
 	// DEBUG
 	//print_r($info);
 
-	// Il faudra faire attention au cas où un utilisateur a plusieurs établissements
+	// Il faudra faire attention au cas oÃ¹ un utilisateur a plusieurs Ã©tablissements
 	// Le nombre de RNE se trouve dans $info[0]["ou"][count]
 	$RNE = $info[0]["ou"][0];
 
 
 	//Fermeture connexion LDAP
 	ldap_close($ds);
-	// On relance le login.php mais avec le RNE de l'établissement et le ticket CAS
+	// On relance le login.php mais avec le RNE de l'Ã©tablissement et le ticket CAS
 	header("Location: login.php?rne=".$RNE."&ticket=".$_GET["ticket"]."");
 
 }else{

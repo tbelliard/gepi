@@ -48,7 +48,7 @@ if (!checkAccess()) {
 
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des professeurs principaux";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des professeurs principaux";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
@@ -56,10 +56,10 @@ require_once("../lib/header.inc");
 
 <?php
 
-// On vérifie si l'extension d_base est active
+// On vÃ©rifie si l'extension d_base est active
 //verif_active_dbase();
 
-echo "<center><h3 class='gepi'>Sixième phase<br />Importation des professeurs principaux</h3></center>\n";
+echo "<center><h3 class='gepi'>SixiÃ¨me phase<br />Importation des professeurs principaux</h3></center>\n";
 
 if (!isset($step1)) {
 	$j=0;
@@ -72,13 +72,13 @@ if (!isset($step1)) {
 	}
 	if ($flag != 0){
 		echo "<p><b>ATTENTION ...</b><br />\n";
-		echo "Des professeurs principaux sont actuellement définis dans la base GEPI<br /></p>\n";
-		echo "<p>Si vous poursuivez la procédure ces données seront supprimées et remplacées par celles de votre fichier F_DIV.CSV</p>\n";
+		echo "Des professeurs principaux sont actuellement dÃ©finis dans la base GEPI<br /></p>\n";
+		echo "<p>Si vous poursuivez la procÃ©dure ces donnÃ©es seront supprimÃ©es et remplacÃ©es par celles de votre fichier F_DIV.CSV</p>\n";
 
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 		echo add_token_field();
 		echo "<input type='hidden' name='step1' value='y' />\n";
-		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />\n";
+		echo "<input type='submit' name='confirm' value='Poursuivre la procÃ©dure' />\n";
 		echo "</form>\n";
 		echo "<br />\n";
 		require("../lib/footer.inc.php");
@@ -98,8 +98,8 @@ if (!isset($is_posted)) {
 		}
 	}
 
-	echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération uniquement si la constitution des classes a été effectuée et si les professeurs ont été importés !</p>\n";
-	echo "<p>Importation du fichier <b>F_div.csv</b> contenant les associations classe/professeur principal  : veuillez préciser le nom complet du fichier <b>F_div.csv</b>.\n";
+	echo "<p><b>ATTENTION ...</b><br />Vous ne devez procÃ©der Ã  cette opÃ©ration uniquement si la constitution des classes a Ã©tÃ© effectuÃ©e et si les professeurs ont Ã©tÃ© importÃ©s !</p>\n";
+	echo "<p>Importation du fichier <b>F_div.csv</b> contenant les associations classe/professeur principal  : veuillez prÃ©ciser le nom complet du fichier <b>F_div.csv</b>.\n";
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	echo add_token_field();
 	echo "<input type=hidden name='is_posted' value='yes' />\n";
@@ -118,7 +118,7 @@ if (!isset($is_posted)) {
 			echo "<p>Impossible d'ouvrir le fichier CSV</p>";
 			echo "<p><a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>";
 		} else {
-			// on constitue le tableau des champs à extraire
+			// on constitue le tableau des champs Ã  extraire
 			//$tabchamps = array("MATIMN","MATILC");
 			$tabchamps = array("DIVCOD","NUMIND");
 
@@ -129,7 +129,7 @@ if (!isset($is_posted)) {
 			while (!feof($fp)) {
 				$ligne = fgets($fp, 4096);
 				if($nblignes==0){
-					// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommés avec l'ajout de ',...' en fin de nom de champ.
+					// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommÃ©s avec l'ajout de ',...' en fin de nom de champ.
 					// On ne retient pas ces ajouts pour $en_tete
 					$temp=explode(";",$ligne);
 					for($i=0;$i<sizeof($temp);$i++){
@@ -147,7 +147,7 @@ if (!isset($is_posted)) {
 			if (@dbase_get_record_with_names($fp,1)) {
 				$temp = @dbase_get_record_with_names($fp,1);
 			} else {
-				echo "<p>Le fichier sélectionné n'est pas valide !<br />";
+				echo "<p>Le fichier sÃ©lectionnÃ© n'est pas valide !<br />";
 				echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>";
 				die();
 			}
@@ -179,7 +179,7 @@ if (!isset($is_posted)) {
 				}
 			}
 /*
-			echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent à des nouvelles matières dans la base GEPI. les identifiants en vert correspondent à des identifiants de matières détectés dans le fichier GEP mais déjà présents dans la base GEPI.<br /><br />Il est possible que certaines matières ci-dessous, bien que figurant dans le fichier GEP, ne soient pas utilisées dans votre établissement cette année. C'est pourquoi il vous sera proposé en fin de procédure d'initialsation, un nettoyage de la base afin de supprimer ces données inutiles.</p>";
+			echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent Ã  des nouvelles matiÃ¨res dans la base GEPI. les identifiants en vert correspondent Ã  des identifiants de matiÃ¨res dÃ©tectÃ©s dans le fichier GEP mais dÃ©jÃ  prÃ©sents dans la base GEPI.<br /><br />Il est possible que certaines matiÃ¨res ci-dessous, bien que figurant dans le fichier GEP, ne soient pas utilisÃ©es dans votre Ã©tablissement cette annÃ©e. C'est pourquoi il vous sera proposÃ© en fin de procÃ©dure d'initialsation, un nettoyage de la base afin de supprimer ces donnÃ©es inutiles.</p>";
 */
 			echo "<table border=1 cellpadding=2 cellspacing=2>\n";
 			echo "<tr><th><p class=\"small\">Classe</p></th><th><p class=\"small\">Professeur principal</p></th></tr>\n";
@@ -187,7 +187,7 @@ if (!isset($is_posted)) {
 
 			//=========================
 			$fp=fopen($dbf_file['tmp_name'],"r");
-			// On lit une ligne pour passer la ligne d'entête:
+			// On lit une ligne pour passer la ligne d'entÃªte:
 			$ligne = fgets($fp, 4096);
 			//=========================
 			$nb_reg_no = 0;
@@ -266,30 +266,30 @@ if (!isset($is_posted)) {
 			//dbase_close($fp);
 			fclose($fp);
 			if ($nb_reg_no != 0) {
-				echo "<p>Lors de l'enregistrement des données il y a eu $nb_reg_no erreurs.<br />Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
+				echo "<p>Lors de l'enregistrement des donnÃ©es il y a eu $nb_reg_no erreurs.<br />Essayez de trouvez la cause de l'erreur et recommencez la procÃ©dure avant de passer Ã  l'Ã©tape suivante.</p>\n";
 			} else {
 				if($nb_reg_ok>0){
-					echo "<p>L'importation des professeurs principaux dans la base GEPI a été effectuée avec succès !</p>\n";
+					echo "<p>L'importation des professeurs principaux dans la base GEPI a Ã©tÃ© effectuÃ©e avec succÃ¨s !</p>\n";
 				}
 				else{
-					echo "<p>Aucun professeur principal n'a été inscrit dans la base GEPI !</p>\n";
+					echo "<p>Aucun professeur principal n'a Ã©tÃ© inscrit dans la base GEPI !</p>\n";
 				}
 
-				echo "<p>Avant de procéder à un nettoyage des tables pour supprimer les données inutiles, vous devriez effectuer une <a href='../gestion/accueil_sauve.php?action=dump".add_token_in_url()."'>sauvegarde</a><br />\n";
-				echo "Après cette sauvegarde, effectuez le nettoyage en repassant par 'Gestion générale/Initialisation des données à partir de fichiers DBF et XML/Procéder à la septième phase'.<br />\n";
-				echo "Si les données sont effectivement inutiles, c'est terminé.<br />\n";
-				echo "Sinon, vous pourrez restaurer votre sauvegarde et vous aurez pu noter les associations profs/matières/classes manquantes... à effectuer par la suite manuellement dans 'Gestion des bases'.</p>";
+				echo "<p>Avant de procÃ©der Ã  un nettoyage des tables pour supprimer les donnÃ©es inutiles, vous devriez effectuer une <a href='../gestion/accueil_sauve.php?action=dump".add_token_in_url()."'>sauvegarde</a><br />\n";
+				echo "AprÃ¨s cette sauvegarde, effectuez le nettoyage en repassant par 'Gestion gÃ©nÃ©rale/Initialisation des donnÃ©es Ã  partir de fichiers DBF et XML/ProcÃ©der Ã  la septiÃ¨me phase'.<br />\n";
+				echo "Si les donnÃ©es sont effectivement inutiles, c'est terminÃ©.<br />\n";
+				echo "Sinon, vous pourrez restaurer votre sauvegarde et vous aurez pu noter les associations profs/matiÃ¨res/classes manquantes... Ã  effectuer par la suite manuellement dans 'Gestion des bases'.</p>";
 
-				echo "<p>Vous pouvez procéder à l'étape suivante de nettoyage des tables GEPI.</p>\n";
-				echo "<center><p><a href='clean_tables.php?a=a".add_token_in_url()."'>Suppression des données inutiles</a></p></center>\n";
+				echo "<p>Vous pouvez procÃ©der Ã  l'Ã©tape suivante de nettoyage des tables GEPI.</p>\n";
+				echo "<center><p><a href='clean_tables.php?a=a".add_token_in_url()."'>Suppression des donnÃ©es inutiles</a></p></center>\n";
 			}
 		}
 	} else if (trim($dbf_file['name'])=='') {
-		echo "<p>Aucun fichier n'a été sélectionné !<br />\n";
+		echo "<p>Aucun fichier n'a Ã©tÃ© sÃ©lectionnÃ© !<br />\n";
 		echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>\n";
 
 	} else {
-		echo "<p>Le fichier sélectionné n'est pas valide !<br />\n";
+		echo "<p>Le fichier sÃ©lectionnÃ© n'est pas valide !<br />\n";
 		echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>\n";
 	}
 }

@@ -43,7 +43,7 @@ if (!checkAccess()) {
 $indice_aid = isset($_GET["indice_aid"]) ? $_GET["indice_aid"] : (isset($_POST["indice_aid"]) ? $_POST["indice_aid"] : NULL);
 $order_by = isset($_GET["order_by"]) ? $_GET["order_by"] : NULL;
 
-// Vérification du niveau de gestion des AIDs
+// VÃ©rification du niveau de gestion des AIDs
 if (NiveauGestionAid($_SESSION["login"],$indice_aid) <= 0) {
     header("Location: ../logout.php?auto=1");
     die();
@@ -61,8 +61,8 @@ $activer_outils_comp = @mysql_result($call_data, 0, "outils_complementaires");
 if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($_POST["is_posted"]))) {
 	check_token();
 
-    // Enregistrement des données
-    // On va chercher les aid déjà existantes
+    // Enregistrement des donnÃ©es
+    // On va chercher les aid dÃ©jÃ  existantes
     $calldata = mysql_query("SELECT * FROM aid WHERE indice_aid='$indice_aid'");
     $nombreligne = mysql_num_rows($calldata);
     $i = 0;
@@ -76,7 +76,7 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($_POST["
             $register = mysql_query("update aid set fiche_publique='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
         };
         if (!$register)
-			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée fiche_publique de l'aid $aid_id <br />\n";
+			    $msg_inter .= "Erreur lors de l'enregistrement de la donnÃ©e fiche_publique de l'aid $aid_id <br />\n";
         // Enregistrement de eleve_peut_modifier
         if (isset($_POST["eleve_peut_modifier_".$aid_id])) {
             $register = mysql_query("update aid set eleve_peut_modifier='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
@@ -84,7 +84,7 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($_POST["
             $register = mysql_query("update aid set eleve_peut_modifier='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
         };
         if (!$register)
-			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée eleve_peut_modifier de l'aid $aid_id <br />\n";
+			    $msg_inter .= "Erreur lors de l'enregistrement de la donnÃ©e eleve_peut_modifier de l'aid $aid_id <br />\n";
          // Enregistrement de prof_peut_modifier
         if (isset($_POST["prof_peut_modifier_".$aid_id])) {
             $register = mysql_query("update aid set prof_peut_modifier='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
@@ -92,7 +92,7 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($_POST["
             $register = mysql_query("update aid set prof_peut_modifier='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
         };
         if (!$register)
-			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée prof_peut_modifier de l'aid $aid_id <br />\n";
+			    $msg_inter .= "Erreur lors de l'enregistrement de la donnÃ©e prof_peut_modifier de l'aid $aid_id <br />\n";
         // Enregistrement de cpe_peut_modifier
         if (isset($_POST["cpe_peut_modifier_".$aid_id])) {
             $register = mysql_query("update aid set cpe_peut_modifier='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
@@ -100,7 +100,7 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($_POST["
             $register = mysql_query("update aid set cpe_peut_modifier='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
         };
         if (!$register)
-			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée cpe_peut_modifier de l'aid $aid_id <br />\n";
+			    $msg_inter .= "Erreur lors de l'enregistrement de la donnÃ©e cpe_peut_modifier de l'aid $aid_id <br />\n";
 
         // Enregistrement de affiche_adresse1
         if (isset($_POST["affiche_adresse1_".$aid_id])) {
@@ -109,7 +109,7 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($_POST["
             $register = mysql_query("update aid set affiche_adresse1='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
         };
         if (!$register)
-			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée affiche_adresse1 de l'aid $aid_id <br />\n";
+			    $msg_inter .= "Erreur lors de l'enregistrement de la donnÃ©e affiche_adresse1 de l'aid $aid_id <br />\n";
         // Enregistrement de en_construction
         if (isset($_POST["en_construction_".$aid_id])) {
             $register = mysql_query("update aid set en_construction='y' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
@@ -117,11 +117,11 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($_POST["
             $register = mysql_query("update aid set en_construction='n' where indice_aid='".$indice_aid."' and id = '".$aid_id."'");
         };
         if (!$register)
-			    $msg_inter .= "Erreur lors de l'enregistrement de la donnée en_construction de l'aid $aid_id <br />\n";
+			    $msg_inter .= "Erreur lors de l'enregistrement de la donnÃ©e en_construction de l'aid $aid_id <br />\n";
         $i++;
     }
     if ($msg_inter == "") {
-        $msg = "Les modifications ont été enregistrées.";
+        $msg = "Les modifications ont Ã©tÃ© enregistrÃ©es.";
     } else {
         $msg = $msg_inter;
     }
@@ -139,18 +139,18 @@ if ($_SESSION['statut']=="administrateur")
 else
     echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
   if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) {
-    echo "|<a href=\"add_aid.php?action=add_aid&amp;mode=unique&amp;indice_aid=$indice_aid\">Ajouter un(e) $nom_aid</a>|<a href=\"add_aid.php?action=add_aid&amp;mode=multiple&amp;indice_aid=$indice_aid\">Ajouter des $nom_aid à la chaîne</a>|";
+    echo "|<a href=\"add_aid.php?action=add_aid&amp;mode=unique&amp;indice_aid=$indice_aid\">Ajouter un(e) $nom_aid</a>|<a href=\"add_aid.php?action=add_aid&amp;mode=multiple&amp;indice_aid=$indice_aid\">Ajouter des $nom_aid Ã  la chaÃ®ne</a>|";
   }
   if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) {
-    echo "<a href=\"export_csv_aid.php?indice_aid=$indice_aid\">Importation de données depuis un fichier vers GEPI</a>|";
+    echo "<a href=\"export_csv_aid.php?indice_aid=$indice_aid\">Importation de donnÃ©es depuis un fichier vers GEPI</a>|";
 }
 echo "</p>";
 
 if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y"))
-    echo "<br /><p class=\"medium\">Les droits d'accès aux différents champs sont configurables pour l'ensemble des AID dans la page <b><i>Gestion des AID -> <a href='./config_aid_fiches_projet.php'>Configurer les fiches projet</a></i></b>.</p>";
+    echo "<br /><p class=\"medium\">Les droits d'accÃ¨s aux diffÃ©rents champs sont configurables pour l'ensemble des AID dans la page <b><i>Gestion des AID -> <a href='./config_aid_fiches_projet.php'>Configurer les fiches projet</a></i></b>.</p>";
 
 echo "<p class=\"medium\">";
-// On va chercher les aid déjà existantes, et on les affiche.
+// On va chercher les aid dÃ©jÃ  existantes, et on les affiche.
 if (!isset($order_by)) {$order_by = "numero,nom";}
 $calldata = mysql_query("SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY $order_by");
 $nombreligne = mysql_num_rows($calldata);
@@ -158,13 +158,13 @@ $nombreligne = mysql_num_rows($calldata);
 if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y"))
     echo "<form action=\"index2.php\" name=\"form1\" method=\"post\">\n";
 echo "<table border='1' cellpadding='5' class='boireaus' summary=''>";
-echo "<tr><th><p><a href='index2.php?order_by=numero,nom&amp;indice_aid=$indice_aid'>N°</a></p></th>\n";
+echo "<tr><th><p><a href='index2.php?order_by=numero,nom&amp;indice_aid=$indice_aid'>NÂ°</a></p></th>\n";
 echo "<th><p><a href='index2.php?order_by=nom&amp;indice_aid=$indice_aid'>Nom</a></p></th>";
 // En tete de la colonne "Ajouter, supprimer des professeurs"
 if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5)
   if(!((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y')))
     echo "<th>&nbsp;</th>";
-// En tete de la colonne "Ajouter, supprimer des élèves"
+// En tete de la colonne "Ajouter, supprimer des Ã©lÃ¨ves"
 echo "<th>&nbsp;</th>";
   // En tete de la colonne "Ajouter, supprimer des gestionnairess"
 if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10)
@@ -173,27 +173,27 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10)
 // colonne publier la fiche
 if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y")) {
     echo "<th><p class=\"small\">La fiche est visible sur la <a href=\"javascript:centrerpopup('../public/index_fiches.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">partie publique</a></p>\n";
-    echo "<a href=\"javascript:CocheColonne(1);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(1);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+    echo "<a href=\"javascript:CocheColonne(1);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(1);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>\n";
     echo "</th>\n";
 
-    echo "<th><p class=\"small\">Les élèves reponsables peuvent modifier la fiche (*)</p>\n";
-    echo "<a href=\"javascript:CocheColonne(2);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(2);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+    echo "<th><p class=\"small\">Les Ã©lÃ¨ves reponsables peuvent modifier la fiche (*)</p>\n";
+    echo "<a href=\"javascript:CocheColonne(2);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(2);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>\n";
     echo "</th>\n";
 
     echo "<th><p class=\"small\">Les professeurs reponsables peuvent modifier la fiche (*)</p>\n";
-    echo "<a href=\"javascript:CocheColonne(3);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(3);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+    echo "<a href=\"javascript:CocheColonne(3);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(3);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>\n";
     echo "</th>\n";
 
     echo "<th><p class=\"small\">Les CPE peuvent modifier la fiche (*)</p>\n";
-    echo "<a href=\"javascript:CocheColonne(4);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(4);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+    echo "<a href=\"javascript:CocheColonne(4);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(4);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>\n";
     echo "</th>\n";
 
     echo "<th><p class=\"small\">Le lien \"adresse publique\" est visible sur la partie publique</p>\n";
-    echo "<a href=\"javascript:CocheColonne(5);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(5);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+    echo "<a href=\"javascript:CocheColonne(5);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(5);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>\n";
     echo "</th>\n";
 
-    echo "<th><p class=\"small\">Le lien \"adresse publique\" est accompagné d'une message \"En construction\"</p>\n";
-    echo "<a href=\"javascript:CocheColonne(6);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(6);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+    echo "<th><p class=\"small\">Le lien \"adresse publique\" est accompagnÃ© d'une message \"En construction\"</p>\n";
+    echo "<a href=\"javascript:CocheColonne(6);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(6);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>\n";
     echo "</th>\n";
 }
 // Colonne "supprimer
@@ -215,7 +215,7 @@ while ($i < $nombreligne){
     if ($aid_num =='') {$aid_num='&nbsp;';}
     $aid_id = @mysql_result($calldata, $i, "id");
     $alt=$alt*(-1);
-    // Première colonne du numéro de l'AID
+    // PremiÃ¨re colonne du numÃ©ro de l'AID
     if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1)
         echo "<tr class='lig$alt'><td><p class='medium'><b>$aid_num</b></p></td>";
     // Colonne du nom de l'AID
@@ -233,9 +233,9 @@ while ($i < $nombreligne){
     if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 5)
       if (!((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y')))
         echo "<td><p class='medium'><a href='modify_aid.php?flag=prof&amp;aid_id=$aid_id&amp;indice_aid=$indice_aid'>Ajouter, supprimer des professeurs</a></p></td>\n";
-    // colonne "Ajouter, supprimer des élèves"
+    // colonne "Ajouter, supprimer des Ã©lÃ¨ves"
     if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1)
-        echo "<td><p class='medium'><a href='modify_aid.php?flag=eleve&amp;aid_id=$aid_id&amp;indice_aid=$indice_aid'>Ajouter, supprimer des élèves</a></p></td>\n";
+        echo "<td><p class='medium'><a href='modify_aid.php?flag=eleve&amp;aid_id=$aid_id&amp;indice_aid=$indice_aid'>Ajouter, supprimer des Ã©lÃ¨ves</a></p></td>\n";
     // colonne "Ajouter, supprimer des gestionnaires"
     if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 10)
       if (getSettingValue("active_mod_gest_aid")=="y")
@@ -245,7 +245,7 @@ while ($i < $nombreligne){
         echo "<td><center><input type=\"checkbox\" name=\"fiche_publique_".$aid_id."\" value=\"y\" id=\"case_1_".$i."\" ";
         if ($fiche_publique == "y") echo "checked";
         echo " /></center></td>\n";
-        // Les élèves peuvent-ils modifier la fiche ?
+        // Les Ã©lÃ¨ves peuvent-ils modifier la fiche ?
         echo "<td><center><input type=\"checkbox\" name=\"eleve_peut_modifier_".$aid_id."\" value=\"y\" id=\"case_2_".$i."\" ";
         if ($eleve_peut_modifier == "y") echo "checked";
         echo " /></center></td>\n";
@@ -278,7 +278,7 @@ $i++;
 </table>
 <?php
 if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y")) {
-  echo "<br />(*) Uniquement si l'administrateur a ouvert cette possibilité pour le projet concerné.";
+  echo "<br />(*) Uniquement si l'administrateur a ouvert cette possibilitÃ© pour le projet concernÃ©.";
   echo "<br /><br /><br /><center>\n";
 	echo "<div id='fixe'>\n";
   echo "<input type=\"submit\" name=\"Valider\" />";

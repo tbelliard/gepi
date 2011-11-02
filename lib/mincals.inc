@@ -43,7 +43,7 @@ class Calendar
     }
 
     function getRneMultisite(){
-    	// Pour le multisite, on doit récupérer le RNE de l'établissement
+    	// Pour le multisite, on doit rÃ©cupÃ©rer le RNE de l'Ã©tablissement
 		$rne = isset($_GET['rne']) ? $_GET['rne'] : (isset($_POST['rne']) ? $_POST['rne'] : 'aucun');
 		$aff_get_rne = NULL;
 		if ($rne != 'aucun') {
@@ -64,7 +64,7 @@ class Calendar
    function getDateLink($day, $month, $year) {
       global $id_classe;
       global $selected_eleve_login;
-      return "<a title=\"Voir le cahier de textes pour cette journée\" href=\"".$this->dmy."year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=".$this->id_groupe . $this->getRneMultisite() . "\"";
+      return "<a title=\"Voir le cahier de textes pour cette journÃ©e\" href=\"".$this->dmy."year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=".$this->id_groupe . $this->getRneMultisite() . "\"";
    }
 
 
@@ -140,7 +140,7 @@ class Calendar
 	// correction w3c : \" pour encadrer la valeur de border, align, valign, colspan
         $s .= "<table class=\"calendar\" border=\"1\" summary=\"Tableau calendrier\">\n";
         $s .= "<tr><td class=\"calendarcol1\" align=\"right\" valign=\"top\"></td>\n";
-        $s .= "<td align=\"center\" valign=\"top\" class=\"calendarHeader\">" . (($prevMonth == "") ? "&nbsp;" : "<a href=\"$prevMonth\"><img src='".$gepiPath."/images/icons/back.png' alt='Mois précédent' /></a>")  . "</td>\n";
+        $s .= "<td align=\"center\" valign=\"top\" class=\"calendarHeader\">" . (($prevMonth == "") ? "&nbsp;" : "<a href=\"$prevMonth\"><img src='".$gepiPath."/images/icons/back.png' alt='Mois prÃ©cÃ©dent' /></a>")  . "</td>\n";
         $s .= "<td align=\"center\" valign=\"top\" class=\"calendarHeader\" colspan=\"5\">";
 
         $s .= "$monthName&nbsp;$this->year";

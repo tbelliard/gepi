@@ -23,33 +23,33 @@
 
 
 
-/* ---------Variables envoyÈes au gabarit
-*	$tbs_CdT_public_titre						cahier de textes public activÈ
+/* ---------Variables envoy√©es au gabarit
+*	$tbs_CdT_public_titre						cahier de textes public activ√©
 *	$tbs_multisite									rne si on est en multisite
-*	$tbs_gepiSchoolName							nom de l'Ètablissement
-*	$tbs_gepiYear										annÈe scolaire en cours
-*	$tbs_password_recovery					adresse page de rÈcupÈration de mot de passe oubliÈ
+*	$tbs_gepiSchoolName							nom de l'√©tablissement
+*	$tbs_gepiYear										ann√©e scolaire en cours
+*	$tbs_password_recovery					adresse page de r√©cup√©ration de mot de passe oubli√©
 * $tbs_SSO_lien										adresse page de login SSO
 *	$tbs_admin_java									nom du script pour contacter l'administrateur
 *	$tbsStyleScreenAjout						chemin du fichier Style_Screen_Ajout.css
 *	
 *	----- tableaux -----
 *	$tbs_Site_ferme									message de fermeture									tbs_blk1
-* $tbs_message										message sous l'entÍte									tbs_message
+* $tbs_message										message sous l'ent√™te									tbs_message
 *				-> classe									classe CSS ("" ou "txt_rouge")
-*				-> texte									le texte ‡ afficher
+*				-> texte									le texte √† afficher
 *	$tbs_admin_adr									adresse courriel administrateur				tbs_blk2
 *				-> nom
 *				-> fai
 * $tbs_dossier_gabarit						liste des gabarits disponibles				tbs_blk3
-*				-> texte									texte ‡ afficher dans la liste de choix
+*				-> texte									texte √† afficher dans la liste de choix
 *				-> value									nom du dossier
-*				-> selection							`y` si gabarit par dÈfaut, `n` ou rien sinon
+*				-> selection							`y` si gabarit par d√©faut, `n` ou rien sinon
 */
 
 
 /*
-table ‡ ajouter pour pouvoir utiliser plusieurs gabarits et donnÈes du gabarit d'origine 
+table √† ajouter pour pouvoir utiliser plusieurs gabarits et donn√©es du gabarit d'origine 
 
 CREATE TABLE `gabarits` (
 `index` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -73,7 +73,7 @@ NULL , 'Interface de GEPI', 'origine', 'n'
 
 //test version de php
 if (version_compare(PHP_VERSION, '5') < 0) {
-    die('GEPI nÈcessite PHP5 pour fonctionner');
+    die('GEPI n√©cessite PHP5 pour fonctionner');
 }
 
 
@@ -84,22 +84,22 @@ if (isset($_GET["rne"])) {
 	setcookie('RNE', $_GET["rne"], null, '/');
 }
 
-// VÈrification de la bonne installation de GEPI
+// V√©rification de la bonne installation de GEPI
 require_once("./utilitaires/verif_install.php");
 
 $niveau_arbo = 0;
 
-// On indique qu'il faut crÈer des variables non protÈgÈes (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut cr√©er des variables non prot√©g√©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Initialisations files
 require_once("./lib/initialisations.inc.php");
 
-// Si on est sur LCS, on rÈcupËre l'identitÈ de connexion:
+// Si on est sur LCS, on r√©cup√®re l'identit√© de connexion:
 //if ($is_lcs_plugin=='yes') {list ($idpers,$login) = isauth();}
-// Inutile, c'est dÈj‡ fait dans lib/initialisations.inc.php
+// Inutile, c'est d√©j√† fait dans lib/initialisations.inc.php
 
-# On redirige vers le login SSO si le login local ou ldap n'est pas activÈ.
+# On redirige vers le login SSO si le login local ou ldap n'est pas activ√©.
 //if ($session_gepi->auth_sso && !$session_gepi->auth_locale && !$session_gepi->auth_ldap) {
 if (($session_gepi->auth_sso && !$session_gepi->auth_locale && ! $session_gepi->auth_ldap) ||
 (($is_lcs_plugin=='yes')&&($login!=""))) {
@@ -113,9 +113,9 @@ if ($session_gepi->auth_simpleSAML == 'yes') {
 	die();
 }
 
-// Test de mise ‡ jour : si on dÈtecte que la base n'est ‡ jour avec les nouveaux
-// paramËtres utilisÈs pour l'authentification, on redirige vers maj.php pour
-// une mise ‡ jour, normale ou forcÈe.
+// Test de mise √† jour : si on d√©tecte que la base n'est √† jour avec les nouveaux
+// param√®tres utilis√©s pour l'authentification, on redirige vers maj.php pour
+// une mise √† jour, normale ou forc√©e.
 if (!isset($gepiSettings['auth_sso'])) {
 	header("Location:utilitaires/maj.php");
 	exit();
@@ -130,7 +130,7 @@ if ($session_gepi->auth_locale && isset($_POST['login']) && isset($_POST['no_ant
 	$auth = $session_gepi->authenticate($_POST['login'], $NON_PROTECT['password']);
 
 	if ($auth == "1") {
-		// On renvoie ‡ la page d'accueil
+		// On renvoie √† la page d'accueil
 		session_write_close();
 		header("Location: ./accueil.php");
 		die();
@@ -153,17 +153,17 @@ $test = 'templates/accueil_externe.php' ;
 //Site en maintenance
 	$tbs_Site_ferme = array();
 	if ((getSettingValue("disable_login"))!='no'){
-		// Fermeture du site ‡ afficher en rouge et plus grand
+		// Fermeture du site √† afficher en rouge et plus grand
 		$tbs_Site_ferme[0] = "Le site est en cours de maintenance et temporairement inaccessible.";
-		$tbs_Site_ferme[1] = "Veuillez nous excuser de ce dÈrangement et rÈessayer de vous connecter ultÈrieurement.";
+		$tbs_Site_ferme[1] = "Veuillez nous excuser de ce d√©rangement et r√©essayer de vous connecter ult√©rieurement.";
 	}
 
 
 //==================================
-//On vÈrifie si le module cahiers de textes public est activÈ
+//On v√©rifie si le module cahiers de textes public est activ√©
 	$tbs_CdT_public_titre =  "" ;
 	if (getSettingValue("active_cahiers_texte")=='y' and getSettingValue("cahier_texte_acces_public") == "yes" and getSettingValue("disable_login")!='yes') {
-		$tbs_CdT_public_titre = "Consulter les cahiers de textes (accËs public)";
+		$tbs_CdT_public_titre = "Consulter les cahiers de textes (acc√®s public)";
 	}
 //==================================
 //Utilisation tbs_multisite
@@ -177,7 +177,7 @@ $test = 'templates/accueil_externe.php' ;
 //==================================
 
 //==================================
-//Nom annÈe
+//Nom ann√©e
 	$tbs_gepiSchoolName = getSettingValue("gepiSchoolName");
 	$tbs_gepiYear = getSettingValue("gepiYear");
 	
@@ -191,7 +191,7 @@ $test = 'templates/accueil_externe.php' ;
 	}
 	
 //==================================
-//	Mot de passe oubliÈ
+//	Mot de passe oubli√©
 	$tbs_password_recovery = "";
 	if (getSettingValue("enable_password_recovery") == "yes") {
 		$tbs_password_recovery = "recover_password.php";
@@ -213,7 +213,7 @@ $test = 'templates/accueil_externe.php' ;
 //	Feuille de style style_screen_ajout.css
 if (isset($style_screen_ajout))  {
 
-	// Styles paramÈtrables depuis l'interface:
+	// Styles param√©trables depuis l'interface:
 	if($style_screen_ajout=='y') {
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 			if (@file_exists('./style_screen_ajout_'.getSettingValue("gepiSchoolRne").'.css')) {
@@ -342,10 +342,10 @@ $test = mysql_query("SHOW TABLES LIKE 'gabarits'");
 
 	
 //==================================
-// DÈcommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// D√©commenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 //debug_var();
 
-// appel des bibliothËques tinyButStrong
+// appel des biblioth√®ques tinyButStrong
 
 		
 $_SESSION['tbs_class'] = 'tbs/tbs_class.php';

@@ -41,7 +41,7 @@ if (!checkAccess()) {
 die();
 }
 
-// Page bourrinÈe... la gestion du token n'est pas faite... et ne sera faite que si quelqu'un utilise encore ce mode d'initialisation et le manifeste sur la liste de diffusion gepi-users
+// Page bourrin√©e... la gestion du token n'est pas faite... et ne sera faite que si quelqu'un utilise encore ce mode d'initialisation et le manifeste sur la liste de diffusion gepi-users
 check_token();
 
 $liste_tables_del = array(
@@ -84,17 +84,17 @@ $liste_tables_del = array(
 );
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'annÈe : Importation des matiËres";
+$titre_page = "Outil d'initialisation de l'ann√©e : Importation des mati√®res";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-// On vÈrifie si l'extension d_base est active
+// On v√©rifie si l'extension d_base est active
 verif_active_dbase();
 
 ?>
 <p class=bold>|<a href="index.php">Retour accueil initialisation</a>|</p>
 <?php
-echo "<center><h3 class='gepi'>QuatriËme phase d'initialisation<br />Importation des professeurs</h3></center>";
+echo "<center><h3 class='gepi'>Quatri√®me phase d'initialisation<br />Importation des professeurs</h3></center>";
 
 if (!isset($step1)) {
     $j=0;
@@ -111,14 +111,14 @@ if (!isset($step1)) {
 
     if ($flag != 0){
         echo "<p><b>ATTENTION ...</b><br />";
-        echo "Des donnÈes concernant les professeurs sont actuellement prÈsentes dans la base GEPI<br /></p>";
-        echo "<p>Si vous poursuivez la procÈdure les donnÈes telles que notes, apprÈciations, ... seront effacÈes.</p>";
-        echo "<ul><li>Seules la table contenant les utilisateurs (professeurs, admin, ...) et la table mettant en relation les matiËres et les professeurs seront conservÈes.</li>";
-        echo "<li>Les professeurs de l'annÈe passÈe prÈsents dans la base GEPI et non prÈsents dans la base GEP de cette annÈe ne sont pas effacÈs de la base GEPI mais simplement dÈclarÈs \"inactifs\".</li>";
+        echo "Des donn√©es concernant les professeurs sont actuellement pr√©sentes dans la base GEPI<br /></p>";
+        echo "<p>Si vous poursuivez la proc√©dure les donn√©es telles que notes, appr√©ciations, ... seront effac√©es.</p>";
+        echo "<ul><li>Seules la table contenant les utilisateurs (professeurs, admin, ...) et la table mettant en relation les mati√®res et les professeurs seront conserv√©es.</li>";
+        echo "<li>Les professeurs de l'ann√©e pass√©e pr√©sents dans la base GEPI et non pr√©sents dans la base GEP de cette ann√©e ne sont pas effac√©s de la base GEPI mais simplement d√©clar√©s \"inactifs\".</li>";
         echo "</ul>";
         echo "<form enctype='multipart/form-data' action='professeurs.php' method=post>";
         echo "<input type=hidden name='step1' value='y' />";
-        echo "<input type='submit' name='confirm' value='Poursuivre la procÈdure' />";
+        echo "<input type='submit' name='confirm' value='Poursuivre la proc√©dure' />";
         echo "</form>";
 		echo "<p><br /></p>\n";
 		require("../lib/footer.inc.php");
@@ -137,23 +137,23 @@ if (!isset($is_posted)) {
     $del = @mysql_query("DELETE FROM tempo2");
 
     echo "<form enctype='multipart/form-data' action='professeurs.php' method=post>";
-    echo "<p>Importation du fichier <b>F_wind.dbf</b> contenant les donnÈes relatives aux professeurs.";
-    echo "<p>Veuillez prÈciser le nom complet du fichier <b>F_wind.dbf</b>.";
+    echo "<p>Importation du fichier <b>F_wind.dbf</b> contenant les donn√©es relatives aux professeurs.";
+    echo "<p>Veuillez pr√©ciser le nom complet du fichier <b>F_wind.dbf</b>.";
     echo "<input type=hidden name='is_posted' value='yes' />";
     echo "<input type=hidden name='step1' value='y' />";
     echo "<p><input type='file' size='80' name='dbf_file' />";
-    echo "<br /><br /><p>Quelle formule appliquer pour la gÈnÈration du login ?</p>";
+    echo "<br /><br /><p>Quelle formule appliquer pour la g√©n√©ration du login ?</p>";
     echo "<input type='radio' name='login_gen_type' value='name' checked /> nom";
-    echo "<br /><input type='radio' name='login_gen_type' value='name8' /> nom (tronquÈ ‡ 8 caractËres)";
-    echo "<br /><input type='radio' name='login_gen_type' value='fname8' /> pnom (tronquÈ ‡ 8 caractËres)";
-    echo "<br /><input type='radio' name='login_gen_type' value='fname19' /> pnom (tronquÈ ‡ 19 caractËres)";
+    echo "<br /><input type='radio' name='login_gen_type' value='name8' /> nom (tronqu√© √† 8 caract√®res)";
+    echo "<br /><input type='radio' name='login_gen_type' value='fname8' /> pnom (tronqu√© √† 8 caract√®res)";
+    echo "<br /><input type='radio' name='login_gen_type' value='fname19' /> pnom (tronqu√© √† 19 caract√®res)";
     echo "<br /><input type='radio' name='login_gen_type' value='firstdotname' /> prenom.nom";
-    echo "<br /><input type='radio' name='login_gen_type' value='firstdotname19' /> prenom.nom (tronquÈ ‡ 19 caractËres)";
-    echo "<br /><input type='radio' name='login_gen_type' value='namef8' /> nomp (tronquÈ ‡ 8 caractËres)";
-    echo "<br /><input type='radio' name='login_gen_type' value='lcs' /> pnom (faÁon LCS)";
-    echo "<br /><br /><p>Ces comptes seront-ils utilisÈs en Single Sign-On avec CAS ou LemonLDAP ? (laissez 'non' si vous ne savez pas de quoi il s'agit)</p>";
+    echo "<br /><input type='radio' name='login_gen_type' value='firstdotname19' /> prenom.nom (tronqu√© √† 19 caract√®res)";
+    echo "<br /><input type='radio' name='login_gen_type' value='namef8' /> nomp (tronqu√© √† 8 caract√®res)";
+    echo "<br /><input type='radio' name='login_gen_type' value='lcs' /> pnom (fa√ßon LCS)";
+    echo "<br /><br /><p>Ces comptes seront-ils utilis√©s en Single Sign-On avec CAS ou LemonLDAP ? (laissez 'non' si vous ne savez pas de quoi il s'agit)</p>";
     echo "<br /><input type='radio' name='sso' value='no' checked /> Non";
-    echo "<br /><input type='radio' name='sso' value='yes' /> Oui (aucun mot de passe ne sera gÈnÈrÈ)";
+    echo "<br /><input type='radio' name='sso' value='yes' /> Oui (aucun mot de passe ne sera g√©n√©r√©)";
     echo "<p><input type=submit value='Valider' />";
     echo "</form>";
 
@@ -163,7 +163,7 @@ if (!isset($is_posted)) {
     // On commence par rendre inactifs tous les professeurs
     $req = mysql_query("UPDATE utilisateurs set etat='inactif' where statut = 'professeur'");
 
- // on efface la ligne "display_users" dans la table "setting" de faÁon ‡ afficher tous les utilisateurs dans la page  /utilisateurs/index.php
+ // on efface la ligne "display_users" dans la table "setting" de fa√ßon √† afficher tous les utilisateurs dans la page  /utilisateurs/index.php
     $req = mysql_query("DELETE from setting where NAME = 'display_users'");
 
     if(strtoupper($dbf_file['name']) == "F_WIND.DBF") {
@@ -172,7 +172,7 @@ if (!isset($is_posted)) {
             echo "<p>Impossible d'ouvrir le fichier dbf !</p>";
             echo "<a href='professeurs.php'>Cliquer ici </a> pour recommencer !</center></p>";
         } else {
-            // on constitue le tableau des champs ‡ extraire
+            // on constitue le tableau des champs √† extraire
             $tabchamps = array("AINOMU","AIPREN","AICIVI","NUMIND","FONCCO","INDNNI" );
 
             $nblignes = dbase_numrecords($fp); //number of rows
@@ -181,7 +181,7 @@ if (!isset($is_posted)) {
             if (@dbase_get_record_with_names($fp,1)) {
                 $temp = @dbase_get_record_with_names($fp,1);
             } else {
-                echo "<p>Le fichier sÈlectionnÈ n'est pas valide !<br />";
+                echo "<p>Le fichier s√©lectionn√© n'est pas valide !<br />";
                 echo "<a href='professeurs.php'>Cliquer ici </a> pour recommencer !</center></p>";
                 die();
             }
@@ -201,9 +201,9 @@ if (!isset($is_posted)) {
                 }
             }
 
-            echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent ‡ des professeurs nouveaux dans la base GEPI. les identifiants en vert correspondent ‡ des professeurs dÈtectÈs dans les fichiers GEP mais dÈj‡ prÈsents dans la base GEPI.<br /><br />Il est possible que certains professeurs ci-dessous, bien que figurant dans le fichier GEP, ne soient plus en exercice dans votre Ètablissement cette annÈe. C'est pourquoi il vous sera proposÈ en fin de procÈdure d'initialsation, un nettoyage de la base afin de supprimer ces donnÈes inutiles.</p>";
+            echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent √† des professeurs nouveaux dans la base GEPI. les identifiants en vert correspondent √† des professeurs d√©tect√©s dans les fichiers GEP mais d√©j√† pr√©sents dans la base GEPI.<br /><br />Il est possible que certains professeurs ci-dessous, bien que figurant dans le fichier GEP, ne soient plus en exercice dans votre √©tablissement cette ann√©e. C'est pourquoi il vous sera propos√© en fin de proc√©dure d'initialsation, un nettoyage de la base afin de supprimer ces donn√©es inutiles.</p>";
             echo "<table border=1 cellpadding=2 cellspacing=2>";
-            echo "<tr><td><p class=\"small\">Identifiant du professeur</p></td><td><p class=\"small\">Nom</p></td><td><p class=\"small\">PrÈnom</p></td><td>Mot de passe *</td></tr>";
+            echo "<tr><td><p class=\"small\">Identifiant du professeur</p></td><td><p class=\"small\">Nom</p></td><td><p class=\"small\">Pr√©nom</p></td><td>Mot de passe *</td></tr>";
             srand();
             $nb_reg_no = 0;
             for($k = 1; ($k < $nblignes+1); $k++){
@@ -211,7 +211,7 @@ if (!isset($is_posted)) {
                 for($i = 0; $i < count($tabchamps); $i++) {
                     $affiche[$i] = dbase_filter(trim($ligne[$tabindice[$i]]));
                 }
-                //CivilitÈ
+                //Civilit√©
                 $civilite = '';
                 if ($affiche[2] = "ML") $civilite = "Mlle";
                 if ($affiche[2] = "MM") $civilite = "Mme";
@@ -254,7 +254,7 @@ if (!isset($is_posted)) {
                 if ($exist == 'no') {
 
 
-                    // Aucun professeur ne porte le mÍme nom dans la base GEPI. On va donc rentrer ce professeur dans la base
+                    // Aucun professeur ne porte le m√™me nom dans la base GEPI. On va donc rentrer ce professeur dans la base
 
                     $affiche[1] = traitement_magic_quotes(corriger_caracteres($affiche[1]));
 
@@ -344,7 +344,7 @@ if (!isset($is_posted)) {
                         $temp1 = $prenom1 . $nom1;
                     }
                         $login_prof = $temp1;
-                    // On teste l'unicitÈ du login que l'on vient de crÈer
+                    // On teste l'unicit√© du login que l'on vient de cr√©er
                     $m = 2;
                     $test_unicite = 'no';
                     $temp = $login_prof;
@@ -364,13 +364,13 @@ if (!isset($is_posted)) {
                     } elseif ($_POST['sso']== "no") {
                        $pwd = md5(rand (1,9).rand (1,9).rand (1,9).rand (1,9).rand (1,9).rand (1,9));
                        $mess_mdp = $pwd;
-//                       $mess_mdp = "Inconnu (compte bloquÈ)";
+//                       $mess_mdp = "Inconnu (compte bloqu√©)";
                     } elseif ($_POST['sso'] == "yes") {
                         $pwd = '';
                         $mess_mdp = "aucun (sso)";
                     }
 
-                    // utilise le prÈnom composÈ s'il existe, plutÙt que le premier prÈnom
+                    // utilise le pr√©nom compos√© s'il existe, plut√¥t que le premier pr√©nom
 
                     //$res = mysql_query("INSERT INTO utilisateurs VALUES ('".$login_prof."', '".$affiche[0]."', '".$premier_prenom."', '".$civilite."', '".$pwd."', '', 'professeur', 'actif', 'y', '')");
 					$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='$affiche[0]', prenom='$premier_prenom', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='y'";
@@ -386,34 +386,34 @@ if (!isset($is_posted)) {
                     $res = mysql_query("UPDATE utilisateurs set etat='actif' where login = '".$login_prof_gepi."'");
                     if(!$res) $nb_reg_no++;
                     $res = mysql_query("INSERT INTO tempo2 VALUES ('".$login_prof_gepi."', '".$affiche[3]."')");
-                    echo "<tr><td><p><font color='green'>".$login_prof_gepi."</font></p></td><td><p>".$affiche[0]."</p></td><td><p>".$affiche[1]."</p></td><td>InchangÈ</td></tr>";
+                    echo "<tr><td><p><font color='green'>".$login_prof_gepi."</font></p></td><td><p>".$affiche[0]."</p></td><td><p>".$affiche[1]."</p></td><td>Inchang√©</td></tr>";
                 }
             }
             dbase_close($fp);
             echo "</table>";
             if ($nb_reg_no != 0) {
-                echo "<p>Lors de l'enregistrement des donnÈes il y a eu $nb_reg_no erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procÈdure avant de passer ‡ l'Ètape suivante.";
+                echo "<p>Lors de l'enregistrement des donn√©es il y a eu $nb_reg_no erreurs. Essayez de trouvez la cause de l'erreur et recommencez la proc√©dure avant de passer √† l'√©tape suivante.";
           } else {
-                echo "<p>L'importation des professeurs dans la base GEPI a ÈtÈ effectuÈe avec succËs !</p>";
+                echo "<p>L'importation des professeurs dans la base GEPI a √©t√© effectu√©e avec succ√®s !</p>";
 
-                echo "<p><b>* PrÈcision sur les mots de passe (en non-SSO) :</b><br />
-                (il est conseillÈ d'imprimer cette page)</p>
+                echo "<p><b>* Pr√©cision sur les mots de passe (en non-SSO) :</b><br />
+                (il est conseill√© d'imprimer cette page)</p>
                 <ul>
-                <li>Lorsqu'un nouveau professeur est insÈrÈ dans la base GEPI, son mot de passe lors de la premiËre
-                 connexion ‡ GEPI est son NUMEN.</li>
-                <li>Si le NUMEM n'est pas disponible dans le fichier F_wind.dbf, GEPI gÈnËre alÈatoirement
+                <li>Lorsqu'un nouveau professeur est ins√©r√© dans la base GEPI, son mot de passe lors de la premi√®re
+                 connexion √† GEPI est son NUMEN.</li>
+                <li>Si le NUMEM n'est pas disponible dans le fichier F_wind.dbf, GEPI g√©n√®re al√©atoirement
                 un mot de passe.</li></ul>";
-                echo "<p><b>Dans tous les cas le nouvel utilisateur est amenÈ ‡ changer son mot de passe lors de sa premiËre connexion.</b></p>";
-                echo "<br /><p>Vous pouvez procÈder ‡ la cinquiËme phase d'affectation des matiËres ‡ chaque professeur, d'affectation des professeurs dans chaque classe et de dÈfinition des options suivies par les ÈlËves.</p>";
+                echo "<p><b>Dans tous les cas le nouvel utilisateur est amen√© √† changer son mot de passe lors de sa premi√®re connexion.</b></p>";
+                echo "<br /><p>Vous pouvez proc√©der √† la cinqui√®me phase d'affectation des mati√®res √† chaque professeur, d'affectation des professeurs dans chaque classe et de d√©finition des options suivies par les √©l√®ves.</p>";
             }
-            echo "<center><p><b><a href='prof_disc_classe.php'>ProcÈder ‡ la cinquiËme phase d'initialisation</a></b></p></center><br /><br />";
+            echo "<center><p><b><a href='prof_disc_classe.php'>Proc√©der √† la cinqui√®me phase d'initialisation</a></b></p></center><br /><br />";
         }
     } else if (trim($dbf_file['name'])=='') {
-        echo "<p>Aucun fichier n'a ÈtÈ sÈlectionnÈ !<br />";
+        echo "<p>Aucun fichier n'a √©t√© s√©lectionn√© !<br />";
         echo "<a href='professeurs.php'>Cliquer ici </a> pour recommencer !</p>";
 
     } else {
-        echo "<p>Le fichier sÈlectionnÈ n'est pas valide !<br />";
+        echo "<p>Le fichier s√©lectionn√© n'est pas valide !<br />";
         echo "<a href='professeurs.php'>Cliquer ici </a> pour recommencer !</p>";
     }
 }

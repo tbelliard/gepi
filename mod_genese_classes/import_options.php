@@ -49,13 +49,13 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Import options depuis CSV',
+description='GÃ©nÃ¨se des classes: Import options depuis CSV',
 statut='';";
 $insert=mysql_query($sql);
 }
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -66,7 +66,7 @@ $projet=isset($_POST['projet']) ? $_POST['projet'] : (isset($_GET['projet']) ? $
 
 
 //**************** EN-TETE *****************
-$titre_page = "Génèse classe: Import CSV des options";
+$titre_page = "GÃ©nÃ¨se classe: Import CSV des options";
 //echo "<div class='noprint'>\n";
 require_once("../lib/header.inc");
 //echo "</div>\n";
@@ -101,7 +101,7 @@ if($action=="upload_file") {
 	$fp=fopen($csv_file['tmp_name'],"r");
 
 	if(!$fp) {
-		// Aie : on n'arrive pas à ouvrir le fichier... Pas bon.
+		// Aie : on n'arrive pas Ã  ouvrir le fichier... Pas bon.
 		echo "<p>Impossible d'ouvrir le fichier CSV !</p>\n";
 		echo "<p><a href='".$_SERVER['PHP_SELF']."?projet=$projet'>Cliquer ici</a> pour recommencer !</p>\n";
 
@@ -115,7 +115,7 @@ if($action=="upload_file") {
 
 		$tab_non_option=array('NOM','PRENOM','SEXE','NAISSANCE','LOGIN','ELENOET','ELE_ID','INE','EMAIL','CLASSE');
 
-		// Lecture de la ligne d'entête du CSV
+		// Lecture de la ligne d'entÃªte du CSV
 		$ligne=trim(fgets($fp, 4096));
 		$tabligne_entete=explode(";",$ligne);
 
@@ -128,7 +128,7 @@ if($action=="upload_file") {
 			if(!in_array($tabligne_entete[$i],$tab_non_option)) {
 
 
-				// VERIFIER AUSSI SI L'OPTION PRéSUMéE EST DANS gc_options
+				// VERIFIER AUSSI SI L'OPTION PRÃ©SUMÃ©E EST DANS gc_options
 				$sql="SELECT 1=1 FROM gc_options WHERE projet='$projet' AND opt='".$tabligne_entete[$i]."';";
 				$test=mysql_query($sql);
 				if(mysql_num_rows($test)>0) {
@@ -154,12 +154,12 @@ if($action=="upload_file") {
 		}
 
 		if($cle=="") {
-			echo "<p style='color:red'>ERREUR: Le fichier ne contient aucune des clés LOGIN, ELENOET, ELE_ID ou INE.</p>\n";
+			echo "<p style='color:red'>ERREUR: Le fichier ne contient aucune des clÃ©s LOGIN, ELENOET, ELE_ID ou INE.</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
 
-		echo "<table class='boireaus' border='1' summary='Options importées'>\n";
+		echo "<table class='boireaus' border='1' summary='Options importÃ©es'>\n";
 		echo "<tr><th>Login</th><th>Options</th></tr>\n";
 		$val_login_precedent="";
 		$alt=1;
@@ -178,7 +178,7 @@ if($action=="upload_file") {
 				}
 
 				$val_login="";
-				// Si la clé n'est pas LOGIN, il faut récupérer le login d'après la table eleves... A FAIRE
+				// Si la clÃ© n'est pas LOGIN, il faut rÃ©cupÃ©rer le login d'aprÃ¨s la table eleves... A FAIRE
 				if($cle=="") {
 					$sql="SELECT 1=1 FROM eleves WHERE login='".$valeur_cle."';";
 					$res=mysql_query($sql);
@@ -187,12 +187,12 @@ if($action=="upload_file") {
 					}
 					elseif(mysql_num_rows($res)==0) {
 						echo "<tr><td colspan='2'>\n";
-						echo "<span style='color:red'>Aucun enregistrement n'a été trouvé dans la table 'eleves' pour le login correspondant à la ligne '<span style='color:blue'>$ligne</span>'</span><br />\n";
+						echo "<span style='color:red'>Aucun enregistrement n'a Ã©tÃ© trouvÃ© dans la table 'eleves' pour le login correspondant Ã  la ligne '<span style='color:blue'>$ligne</span>'</span><br />\n";
 						echo "</td></tr>\n";
 					}
 					else {
 						echo "<tr><td colspan='2'>\n";
-						echo "<span style='color:red'>Plusieurs enregistrement ont été trouvés dans la table 'eleves' pour le login '<span style='color:blue'>$valeur_cle</span>' correspondant à la ligne '<span style='color:blue'>$ligne</span>'.C'est une grosse anomalie.</span><br />\n";
+						echo "<span style='color:red'>Plusieurs enregistrement ont Ã©tÃ© trouvÃ©s dans la table 'eleves' pour le login '<span style='color:blue'>$valeur_cle</span>' correspondant Ã  la ligne '<span style='color:blue'>$ligne</span>'.C'est une grosse anomalie.</span><br />\n";
 						echo "</td></tr>\n";
 					}
 				}
@@ -206,12 +206,12 @@ if($action=="upload_file") {
 					}
 					elseif(mysql_num_rows($res)==0) {
 						echo "<tr><td colspan='2'>\n";
-						echo "<span style='color:red'>Aucun enregistrement n'a été trouvé dans la table 'eleves' pour le login correspondant à la ligne '<span style='color:blue'>$ligne</span>'</span><br />\n";
+						echo "<span style='color:red'>Aucun enregistrement n'a Ã©tÃ© trouvÃ© dans la table 'eleves' pour le login correspondant Ã  la ligne '<span style='color:blue'>$ligne</span>'</span><br />\n";
 						echo "</td></tr>\n";
 					}
 					else {
 						echo "<tr><td colspan='2'>\n";
-						echo "<span style='color:red'>Plusieurs valeurs ont été trouvées dans la table 'eleves' pour le login correspondant à la ligne '<span style='color:blue'>$ligne</span>'</span><br />\n";
+						echo "<span style='color:red'>Plusieurs valeurs ont Ã©tÃ© trouvÃ©es dans la table 'eleves' pour le login correspondant Ã  la ligne '<span style='color:blue'>$ligne</span>'</span><br />\n";
 						echo "</td></tr>\n";
 					}
 				}
@@ -249,7 +249,7 @@ if($action=="upload_file") {
 		}
 		echo "</td></tr>\n";
 		echo "</table>\n";
-		echo "<p>Import achevé.</p>\n";
+		echo "<p>Import achevÃ©.</p>\n";
 	}
 }
 else {
@@ -257,7 +257,7 @@ else {
 
 	echo "<h2>Projet $projet</h2>\n";
 
-	echo "<p>Veuillez fournir un fichier CSV au format... approprié... pour importer les options futures des élèves.</p>\n";
+	echo "<p>Veuillez fournir un fichier CSV au format... appropriÃ©... pour importer les options futures des Ã©lÃ¨ves.</p>\n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
@@ -268,8 +268,8 @@ else {
 
 	echo "<p><i>NOTES&nbsp;:</i></p>\n";
 	echo "<ul>\n";
-	echo "<li><p>Les options préalablement saisies pour ce projet seront perdues.<p></li>\n";
-	echo "<li><p>Le format du CSV pourra être par exemple&nbsp;:<br />NOM;PRENOM;NAISSANCE;ELENOET;CLASSE;AGL1;AGL2;ALL1;ALL2;ATHLE;DECP3;ESP2;LATIN;Redoublement;Depart<br />Dans cet exemple, ELENOET sera la clé pour identifier l'élève.<br />Les autres clés valides sont LOGIN, ELE_ID, INE.<br />Les noms des colonnes doivent coïncider avec les noms de matières dans Gepi.</p><p>Le plus simple pour obtenir ce fichier consiste à suivre les étapes dans l'ordre.<br />Lors de l'étape 2 'Lister les options actuelles des élèves', un fichier CSV au bon format est généré.</p></li>\n";
+	echo "<li><p>Les options prÃ©alablement saisies pour ce projet seront perdues.<p></li>\n";
+	echo "<li><p>Le format du CSV pourra Ãªtre par exemple&nbsp;:<br />NOM;PRENOM;NAISSANCE;ELENOET;CLASSE;AGL1;AGL2;ALL1;ALL2;ATHLE;DECP3;ESP2;LATIN;Redoublement;Depart<br />Dans cet exemple, ELENOET sera la clÃ© pour identifier l'Ã©lÃ¨ve.<br />Les autres clÃ©s valides sont LOGIN, ELE_ID, INE.<br />Les noms des colonnes doivent coÃ¯ncider avec les noms de matiÃ¨res dans Gepi.</p><p>Le plus simple pour obtenir ce fichier consiste Ã  suivre les Ã©tapes dans l'ordre.<br />Lors de l'Ã©tape 2 'Lister les options actuelles des Ã©lÃ¨ves', un fichier CSV au bon format est gÃ©nÃ©rÃ©.</p></li>\n";
 	echo "</ul>\n";
 }
 

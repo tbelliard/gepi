@@ -9,13 +9,13 @@
 
 // gestion des fonctions sur les absences, dispences, retard, infirmerie
 
-// fonction qui permet de vérifier si la variable ne contient que des caractère
+// fonction qui permet de vÃ©rifier si la variable ne contient que des caractÃ¨re
 function verif_texte($texte_ver) {
 	if(!my_ereg("^[a-zA-Z_]+$",$texte_ver)){ $texte_ver = FALSE; } else { $texte_ver = $texte_ver; }
 	return $texte_ver;
  }
 
-// fonction qui permet de vérifier si la variable ne contient que des chiffres
+// fonction qui permet de vÃ©rifier si la variable ne contient que des chiffres
 function verif_num($texte_ver) {
 	if(!my_ereg("^[0-9]+$",$texte_ver)){ $texte_ver = FALSE; } else { $texte_ver = $texte_ver; }
 	return $texte_ver;
@@ -24,8 +24,8 @@ function verif_num($texte_ver) {
 
 /* ************************************************************* */
 /* DEBUT - GESTION DES COURIERS                                  */
-/* modif_suivi_du_courrier( numéro id de l'absence )             */
-// permet de supprimer un courrier s'il y a besoin par rapport à l'id de l'absence
+/* modif_suivi_du_courrier( numÃ©ro id de l'absence )             */
+// permet de supprimer un courrier s'il y a besoin par rapport Ã  l'id de l'absence
 function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve='')
 {
 
@@ -39,8 +39,8 @@ function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve='')
 
 	}
 
-		// on vérify s'il y a un courrier si oui on le supprime s'il fait parti d'un ensemble de courrier alors on le modifi.
-		// première option il existe une lettre qui fait seulement référence à cette id donc suppression
+		// on vÃ©rify s'il y a un courrier si oui on le supprime s'il fait parti d'un ensemble de courrier alors on le modifi.
+		// premiÃ¨re option il existe une lettre qui fait seulement rÃ©fÃ©rence Ã  cette id donc suppression
 		$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi = ',".$id_absence_eleve.",'"),0);
 		if( $cpt_lettre_suivi == 1 )
 		{
@@ -56,7 +56,7 @@ function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve='')
 		else
 		{
 
-			// deuxième option il existe une lettre qui fait référence à cette id mais à d'autre aussi donc modification
+			// deuxiÃ¨me option il existe une lettre qui fait rÃ©fÃ©rence Ã  cette id mais Ã  d'autre aussi donc modification
 			$cpt_lettre_suivi = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'"),0);
 			if( $cpt_lettre_suivi == 1 )
 			{
@@ -87,12 +87,12 @@ function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve='')
 }
 /* ******************************************** */
 
-// fonction permettant de supprimer un ou plusieurs id dans une table donnée
-// à partir d'un tableau qui contiendrais les ids
-// $tableau_des_ids: tableau avec les numéro id
-// $prefix_base: préfix de la base s'il y en a
+// fonction permettant de supprimer un ou plusieurs id dans une table donnÃ©e
+// Ã  partir d'un tableau qui contiendrais les ids
+// $tableau_des_ids: tableau avec les numÃ©ro id
+// $prefix_base: prÃ©fix de la base s'il y en a
 // $table: nom de la table choisie
-// $selection: avoir un variable sélection
+// $selection: avoir un variable sÃ©lection
 function supprime_id($tableau_des_ids, $prefix_base, $table, $selection)
  {
 	$id_init = '0';
@@ -119,7 +119,7 @@ function supprime_id($tableau_des_ids, $prefix_base, $table, $selection)
 		{
 
 
-			// on vérifie s'il y a du courrier
+			// on vÃ©rifie s'il y a du courrier
 			if ( $table === 'absences_eleves' )
 			{
 
@@ -143,8 +143,8 @@ function supprime_id($tableau_des_ids, $prefix_base, $table, $selection)
 
  }
 
-// fonction gérant l'insertion d'une absences ou plusieurs absence
-// par rapport à un tableau d'information qui contient les informations ci-dessous
+// fonction gÃ©rant l'insertion d'une absences ou plusieurs absence
+// par rapport Ã  un tableau d'information qui contient les informations ci-dessous
 // du, au, de, a, motif, justification, justification plus d'info
 function ajout_abs($tableau_des_donnees)
  {
@@ -159,14 +159,14 @@ function ajout_abs($tableau_des_donnees)
 
 
 /* *************************************************************** */
-/* Fonction gérant l'insertion d'absence dans la table absences_rb */
+/* Fonction gÃ©rant l'insertion d'absence dans la table absences_rb */
 function gerer_absence($id='',$eleve_id,$retard_absence,$groupe_id='',$edt_id='',$jour_semaine='',$creneau_id='',$debut_ts,$fin_ts,$date_saisie,$login_saisie='',$action)
 {
 
 	global $prefix_base;
 
 	/*
-	$eleve_id -> login de l'élève
+	$eleve_id -> login de l'Ã©lÃ¨ve
 	$retard_absence -> R ou A
 	$groupe_id -> vide
 	$edt_id -> vide
@@ -182,7 +182,7 @@ function gerer_absence($id='',$eleve_id,$retard_absence,$groupe_id='',$edt_id=''
 	if ( $action === 'ajouter' )
 	{
 
-		// on vérifie qu'une absence ne se trouve pas entre le début et la fin de celle saisie
+		// on vÃ©rifie qu'une absence ne se trouve pas entre le dÃ©but et la fin de celle saisie
 		$cpt_ligne = mysql_result(mysql_query("SELECT count(*)
 										   		 FROM " . $prefix_base . "absences_rb
 										   		WHERE eleve_id = '" . $eleve_id . "'
@@ -218,7 +218,7 @@ function gerer_absence($id='',$eleve_id,$retard_absence,$groupe_id='',$edt_id=''
         	while ($donnee = mysql_fetch_array($execution))
         	{
 
-				// si le debut est la fin sont compris entre les deux valeur mais égale à aucun début
+				// si le debut est la fin sont compris entre les deux valeur mais Ã©gale Ã  aucun dÃ©but
 				// on les supprimes
 				if ( $debut_ts > $donnee['debut_ts'] and $fin_ts < $donnee['fin_ts'] )
 				{
@@ -227,7 +227,7 @@ function gerer_absence($id='',$eleve_id,$retard_absence,$groupe_id='',$edt_id=''
 
 				}
 
-				// si le debut est égale à la valeur de début et que la fin est inférieur à la fin
+				// si le debut est Ã©gale Ã  la valeur de dÃ©but et que la fin est infÃ©rieur Ã  la fin
 				// ???????????????????????
 				// en attente de plus d'information
 
@@ -263,7 +263,7 @@ function gerer_absence($id='',$eleve_id,$retard_absence,$groupe_id='',$edt_id=''
 
 
 /* *************************************************************** */
-/* Fonction gérant la suppression des absences dans la table absences_rb */
+/* Fonction gÃ©rant la suppression des absences dans la table absences_rb */
 function suppr_absences_rb($id)
 {
 
@@ -277,7 +277,7 @@ function suppr_absences_rb($id)
 	if ( $id != '' )
     {
 
-		// on vérifie qu'une absence ne se trouve pas entre le début et la fin de celle saisie
+		// on vÃ©rifie qu'une absence ne se trouve pas entre le dÃ©but et la fin de celle saisie
 		$cpt_ligne = mysql_result(mysql_query("SELECT count(*)
 											   FROM " . $prefix_base . "absences_eleves
 											   WHERE id_absence_eleve = '" . $id . "'"
@@ -344,7 +344,7 @@ function suppr_absences_rb($id)
 
 
 /* *************************************************************** */
-/* Fonction gérant la modification des absences dans la table absences_rb */
+/* Fonction gÃ©rant la modification des absences dans la table absences_rb */
 function modifier_absences_rb($id,$debut_ts_modif,$fin_ts_modif)
 {
 
@@ -358,7 +358,7 @@ function modifier_absences_rb($id,$debut_ts_modif,$fin_ts_modif)
 	if ( $id != '' )
     {
 
-		// on vérifie qu'une absence ne se trouve pas entre le début et la fin de celle saisie
+		// on vÃ©rifie qu'une absence ne se trouve pas entre le dÃ©but et la fin de celle saisie
 		$cpt_ligne = mysql_result(mysql_query("SELECT count(*)
 											   FROM " . $prefix_base . "absences_eleves
 											   WHERE id_absence_eleve = '" . $id . "'"

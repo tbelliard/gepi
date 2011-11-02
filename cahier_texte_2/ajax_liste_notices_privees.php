@@ -22,7 +22,7 @@
  */
 
 header('Content-Type: text/html; charset=ISO-8859-1');
-// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) {$traite_anti_inject = "yes";}
 include("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
@@ -37,7 +37,7 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-// INSERT INTO droits SET id='/cahier_texte_2/ajax_liste_notices_privees.php',administrateur='F',professeur='V',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Cahiers de textes : Liste des notices privées',statut='';
+// INSERT INTO droits SET id='/cahier_texte_2/ajax_liste_notices_privees.php',administrateur='F',professeur='V',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Cahiers de textes : Liste des notices privÃ©es',statut='';
 
 //echo "plop<br />";
 
@@ -48,9 +48,9 @@ if (!checkAccess()) {
 
 //echo "plip<br />";
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_cahiers_texte")!='y') {
-	die("Le module n'est pas activé.");
+	die("Le module n'est pas activÃ©.");
 }
 
 $utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
@@ -59,13 +59,13 @@ if ($utilisateur == null) {
 	die();
 }
 
-// Récupération des variables
+// RÃ©cupÃ©ration des variables
 $id_groupe=isset($_POST["id_groupe"]) ? $_POST["id_groupe"] : (isset($_GET["id_groupe"]) ? $_GET["id_groupe"] : NULL);
 $today=isset($_POST["today"]) ? $_POST["today"] : (isset($_GET["today"]) ? $_GET["today"] : NULL);
 
 //debug_var();
 
-// Contrôler que le prof est associé à cette classe?
+// ContrÃ´ler que le prof est associÃ© Ã  cette classe?
 
 $id_groupe=preg_replace("/[^0-9]/","",$id_groupe);
 if($today!="all") {
@@ -83,7 +83,7 @@ else {
 
 	echo "<div style='float:right; width: 10em; text-align: right;'>\n";
 	if($today!='all') {
-		// Voir toutes les notices privées du groupe
+		// Voir toutes les notices privÃ©es du groupe
 		echo " <a href=\"javascript:
 						getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$id_groupe."&today=all');
 						\">Toutes les NP</a>\n";

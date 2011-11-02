@@ -49,13 +49,13 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Choix des options',
+description='GÃ©nÃ¨se des classes: Choix des options',
 statut='';";
 $insert=mysql_query($sql);
 }
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -83,7 +83,7 @@ if((isset($choix_options))&&((isset($lv1))||(isset($lv2))||(isset($lv3))||(isset
 	if(isset($lv1)) {
 		$enregistrements_inseres=array();
 		for($i=0;$i<count($lv1);$i++) {
-			// Il faudrait contrôler que les options sont valides et éviter certains caractères.
+			// Il faudrait contrÃ´ler que les options sont valides et Ã©viter certains caractÃ¨res.
 			if(($lv1[$i]!="")&&(!in_array($lv1[$i],$enregistrements_inseres))) {
 				$sql="INSERT INTO gc_options SET projet='$projet', opt='".$lv1[$i]."', type='lv1';";
 				//echo "$sql<br />";
@@ -96,7 +96,7 @@ if((isset($choix_options))&&((isset($lv1))||(isset($lv2))||(isset($lv3))||(isset
 	if(isset($lv2)) {
 		$enregistrements_inseres=array();
 		for($i=0;$i<count($lv2);$i++) {
-			// Il faudrait contrôler que les options sont valides et éviter certains caractères.
+			// Il faudrait contrÃ´ler que les options sont valides et Ã©viter certains caractÃ¨res.
 			if(($lv2[$i]!="")&&(!in_array($lv2[$i],$enregistrements_inseres))) {
 				$sql="INSERT INTO gc_options SET projet='$projet', opt='".$lv2[$i]."', type='lv2';";
 				//echo "$sql<br />";
@@ -109,7 +109,7 @@ if((isset($choix_options))&&((isset($lv1))||(isset($lv2))||(isset($lv3))||(isset
 	if(isset($lv3)) {
 		$enregistrements_inseres=array();
 		for($i=0;$i<count($lv3);$i++) {
-			// Il faudrait contrôler que les options sont valides et éviter certains caractères.
+			// Il faudrait contrÃ´ler que les options sont valides et Ã©viter certains caractÃ¨res.
 			if(($lv3[$i]!="")&&(!in_array($lv3[$i],$enregistrements_inseres))) {
 				$sql="INSERT INTO gc_options SET projet='$projet', opt='".$lv3[$i]."', type='lv3';";
 				//echo "$sql<br />";
@@ -122,7 +122,7 @@ if((isset($choix_options))&&((isset($lv1))||(isset($lv2))||(isset($lv3))||(isset
 	if(isset($autre_option)) {
 		$enregistrements_inseres=array();
 		for($i=0;$i<count($autre_option);$i++) {
-			// Il faudrait contrôler que les options sont valides et éviter certains caractères.
+			// Il faudrait contrÃ´ler que les options sont valides et Ã©viter certains caractÃ¨res.
 			if(($autre_option[$i]!="")&&(!in_array($autre_option[$i],$enregistrements_inseres))) {
 				$sql="INSERT INTO gc_options SET projet='$projet', opt='".$autre_option[$i]."', type='autre';";
 				//echo "$sql<br />";
@@ -133,17 +133,17 @@ if((isset($choix_options))&&((isset($lv1))||(isset($lv2))||(isset($lv3))||(isset
 	}
 
 	if($nb_err==0) {
-		$msg="Regénération de la liste des options effectuée: ";
-		$msg.="$nb_reg1 LV1, $nb_reg2 LV2, $nb_reg3 LV3 et $nb_reg4 autres options enregistrées.";
+		$msg="RegÃ©nÃ©ration de la liste des options effectuÃ©e: ";
+		$msg.="$nb_reg1 LV1, $nb_reg2 LV2, $nb_reg3 LV3 et $nb_reg4 autres options enregistrÃ©es.";
 	}
 	else {
-		$msg="ERREUR lors de la regénération de la liste des options: ";
-		$msg.="$nb_reg1 LV1, $nb_reg2 LV2, $nb_reg3 LV3 et $nb_reg4 autres options   enregistrées.";
+		$msg="ERREUR lors de la regÃ©nÃ©ration de la liste des options: ";
+		$msg.="$nb_reg1 LV1, $nb_reg2 LV2, $nb_reg3 LV3 et $nb_reg4 autres options   enregistrÃ©es.";
 	}
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Génèse classe: Choix options";
+$titre_page = "GÃ©nÃ¨se classe: Choix options";
 //echo "<div class='noprint'>\n";
 require_once("../lib/header.inc");
 //echo "</div>\n";
@@ -331,11 +331,11 @@ echo "</form>\n";
 
 echo "<p><em>NOTES&nbsp;:</em></p>\n";
 echo "<ul>\n";
-echo "<li>Il est possible d'imposer des contraintes pour indiquer que l'on ne veut pas de LATIN en 3A2 et 3B2 (<i>les élèves faisant LATIN pourront alors être cochés dans toutes les colonnes sauf 3A2 et 3B2</i>).<br />
+echo "<li>Il est possible d'imposer des contraintes pour indiquer que l'on ne veut pas de LATIN en 3A2 et 3B2 (<i>les Ã©lÃ¨ves faisant LATIN pourront alors Ãªtre cochÃ©s dans toutes les colonnes sauf 3A2 et 3B2</i>).<br />
 Pour autant, la solution par exclusion de telle option sur telle classe ne suffit pas toujours.<br />
-Il peut être commode de créer des options comme z_3B1, z_3B2,... pour les élèves qui ne doivent pas être mis dans une autre classe.<br >
-En combinant l'option z_3B1 avec une exclusion du type pas d'option z_3B1 dans les classes autres que 3B1 vous pourrez ajouter des contraintes non gérables autrement.</li>\n";
-echo "<li>Créer une option Z_XXX pour les élèves incertains (<i>départ annoncé mais non confirmé,...</i>) permet de repérer rapidement si on a bien réparti les incertains sur les différentes classes.</li>\n";
+Il peut Ãªtre commode de crÃ©er des options comme z_3B1, z_3B2,... pour les Ã©lÃ¨ves qui ne doivent pas Ãªtre mis dans une autre classe.<br >
+En combinant l'option z_3B1 avec une exclusion du type pas d'option z_3B1 dans les classes autres que 3B1 vous pourrez ajouter des contraintes non gÃ©rables autrement.</li>\n";
+echo "<li>CrÃ©er une option Z_XXX pour les Ã©lÃ¨ves incertains (<i>dÃ©part annoncÃ© mais non confirmÃ©,...</i>) permet de repÃ©rer rapidement si on a bien rÃ©parti les incertains sur les diffÃ©rentes classes.</li>\n";
 echo "</ul>\n";
 
 require("../lib/footer.inc.php");

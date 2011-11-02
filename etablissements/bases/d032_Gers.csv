@@ -1,21 +1,21 @@
 0320013R;-;college;public;32200;Gimont
 0320019X;-;college;public;32230;Marciac
 0320033M;-;college;public;32190;Vic-Fezensac
-0320010M;Antoine De Saint-Exupéry;college;public;32100;Condom
+0320010M;Antoine De Saint-ExupÃ©ry;college;public;32100;Condom
 0320608M;Beauregard;college;public;32140;Masseube
 0320027F;D'Artagnan;college;public;32110;Nogaro
 0320035P;de l'Astarac;college;public;32300;Mirande
 0320021Z;du Fezensaguet;college;public;32120;Mauvezin
 0320008K;du Lac de l'Uby;college;public;32150;Cazaubon
 0320029H;du Val d'Adour;college;public;32400;Riscle
-0320031K;François De Belleforest;college;public;32130;Samatan
+0320031K;FranÃ§ois De Belleforest;college;public;32130;Samatan
 0320012P;Hubert Reeves;college;public;32500;Fleurance
 0320011N;Jean Rostand;college;public;32800;Eauze
 0320028G;Louis Pasteur;college;public;32160;Plaisance
 0320014S;Louise Michel;college;public;32600;L'Isle-Jourdain
-0320017V;Maréchal Lannes;college;public;32700;Lectoure
+0320017V;MarÃ©chal Lannes;college;public;32700;Lectoure
 0320006H;Mathalin;college;public;32022;Auch
-0320059R;Notre-Dame de Piétat;college;prive;32100;Condom
+0320059R;Notre-Dame de PiÃ©tat;college;prive;32100;Condom
 0320056M;Notre-Dame du Clos Fleuri;college;prive;32600;L'Isle-Jourdain
 0320650H;Oratoire Sainte-Marie;college;prive;32002;Auch
 0320563N;Sadi Carnot;college;public;32008;Auch
@@ -24,7 +24,7 @@
 0320651J;Saint-Joseph;college;prive;32700;Lectoure
 0320052H;Saint-Taurin;college;prive;32800;Eauze
 0320562M;Salinis;college;public;32008;Auch
-0320074G;Vasconie;college;public;32170;Miélan
+0320074G;Vasconie;college;public;32170;MiÃ©lan
 0320001C;Vert;college;public;32290;Aignan
 0320090Z;1;ecole;public;32700;Lectoure
 0320347D;1;ecole;public;32460;Le-Houga
@@ -36,7 +36,7 @@
 0320385V;-;ecole;public;32110;Arblade-le-Haut
 0320589S;-;ecole;public;32270;Aubiet
 0320397H;-;ecole;public;32000;Auch
-0320408V;-;ecole;public;32600;Auradé
+0320408V;-;ecole;public;32600;AuradÃ©
 0320409W;-;ecole;public;32400;Aurensan
 0320410X;-;ecole;public;32550;Auterive
 0320411Y;-;ecole;public;32170;Aux-Aussat
@@ -44,7 +44,7 @@
 0320420H;-;ecole;public;32350;Barran
 0320594X;-;ecole;public;32320;Bassoues
 0320426P;-;ecole;public;32410;Beaucaire
-0320606K;-;ecole;public;32160;Beaumarchés
+0320606K;-;ecole;public;32160;BeaumarchÃ©s
 0320434Y;-;ecole;public;32300;Berdoues
 0320440E;-;ecole;public;32350;Biran
 0320443H;-;ecole;public;32100;Blaziert
@@ -53,47 +53,47 @@
 0320457Y;-;ecole;public;32450;Castelnau-Barbarens
 0320460B;-;ecole;public;32440;Castelnau-d'Auzan
 0320462D;-;ecole;public;32100;Castelnau-sur-l'Auvignon
-0320464F;-;ecole;public;32700;Castéra-Lectourois
-0320465G;-;ecole;public;32410;Castéra-Verduzan
+0320464F;-;ecole;public;32700;CastÃ©ra-Lectourois
+0320465G;-;ecole;public;32410;CastÃ©ra-Verduzan
 0320472P;-;ecole;public;32360;Castillon-Massas
 0320477V;-;ecole;public;32100;Caussens
 0320478W;-;ecole;public;32150;Cazaubon
-0320486E;-;ecole;public;32500;Céran
-0320488G;-;ecole;public;32140;Chélan
+0320486E;-;ecole;public;32500;CÃ©ran
+0320488G;-;ecole;public;32140;ChÃ©lan
 0320490J;-;ecole;public;32430;Cologne
 0320498T;-;ecole;public;32400;Corneillan
 0320502X;-;ecole;public;32330;Courrensan
 0320503Y;-;ecole;public;32270;Crastes
-0320504Z;-;ecole;public;32190;Dému
+0320504Z;-;ecole;public;32190;DÃ©mu
 0320506B;-;ecole;public;32810;Duran
 0320513J;-;ecole;public;32430;Encausse
 0320515L;-;ecole;public;32200;Escorneboeuf
 0320614U;-;ecole;public;32240;Estang
-0320528A;-;ecole;public;32490;Frégouville
+0320528A;-;ecole;public;32490;FrÃ©gouville
 0320531D;-;ecole;public;32160;Galiax
 0320340W;-;ecole;public;32200;Gimont
 0320342Y;-;ecole;public;32330;Gondrin
 0320344A;-;ecole;public;32500;Goutz
 0320607L;-;ecole;public;32360;Jegun
-0320359S;-;ecole;public;32160;Jû-Belloc
-0320367A;-;ecole;public;32300;Labéjan
-0320369C;-;ecole;public;32230;Ladevèze-Rivière
+0320359S;-;ecole;public;32160;JÃ»-Belloc
+0320367A;-;ecole;public;32300;LabÃ©jan
+0320369C;-;ecole;public;32230;LadevÃ¨ze-RiviÃ¨re
 0320371E;-;ecole;public;32300;Lagarde-Hachan
 0320374H;-;ecole;public;32330;Lagraulet-du-Gers
 0320375J;-;ecole;public;32170;Laguian-Mazous
 0320377L;-;ecole;public;32810;Lahitte
-0320378M;-;ecole;public;32140;Lalanne-Arqué
+0320378M;-;ecole;public;32140;Lalanne-ArquÃ©
 0320018W;-;ecole;public;32190;Lannepax
 0320590T;-;ecole;public;32480;La-Romieu
 0320080N;-;ecole;public;32100;Larroque-sur-l'Osse
 0320286M;-;ecole;public;32500;La-Sauvetat
-0320083S;-;ecole;public;32550;Lasséran
+0320083S;-;ecole;public;32550;LassÃ©ran
 0320084T;-;ecole;public;32110;Laujuzan
 0320086V;-;ecole;public;32360;Lavardens
 0320088X;-;ecole;public;32220;Laymont
 0320450R;-;ecole;public;32350;Le-Brouilh-Monbert
 0320094D;-;ecole;public;32400;Lelin-Lapujolle
-0320351H;-;ecole;public;32300;L'Isle-de-Noé
+0320351H;-;ecole;public;32300;L'Isle-de-NoÃ©
 0320099J;-;ecole;public;32220;Lombez
 0320103N;-;ecole;public;32290;Lupiac
 0320105R;-;ecole;public;32270;Lussan
@@ -101,40 +101,40 @@
 0320109V;-;ecole;public;32730;Malabat
 0320110W;-;ecole;public;32170;Manas-Bastanous
 0320112Y;-;ecole;public;32370;Manciet
-0320114A;-;ecole;public;32140;Manent-Montané
+0320114A;-;ecole;public;32140;Manent-MontanÃ©
 0320116C;-;ecole;public;32190;Marambat
 0320117D;-;ecole;public;32230;Marciac
-0320120G;-;ecole;public;32290;Margouët-Meymes
+0320120G;-;ecole;public;32290;MargouÃ«t-Meymes
 0320122J;-;ecole;public;32270;Marsan
 0320123K;-;ecole;public;32700;Marsolan
 0320124L;-;ecole;public;32700;Mas-d'Auvignon
 0320125M;-;ecole;public;32140;Masseube
 0320129S;-;ecole;public;32400;Maumusson-Laguian
 0320131U;-;ecole;public;32200;Maurens
-0320136Z;-;ecole;public;32170;Miélan
+0320136Z;-;ecole;public;32170;MiÃ©lan
 0320138B;-;ecole;public;32340;Miradoux
 0320139C;-;ecole;public;32300;Miramont-d'Astarac
 0320142F;-;ecole;public;32300;Mirande
 0320147L;-;ecole;public;32420;Monbardon
 0320148M;-;ecole;public;32130;Monblanc
 0320149N;-;ecole;public;32600;Monbrun
-0320153T;-;ecole;public;32490;Monferran-Savès
+0320153T;-;ecole;public;32490;Monferran-SavÃ¨s
 0320155V;-;ecole;public;32120;Monfort
 0320157X;-;ecole;public;32240;Monguilhem
 0320160A;-;ecole;public;32240;Monlezun-d'Armagnac
-0320165F;-;ecole;public;32810;Montaut-les-Créneaux
-0320167H;-;ecole;public;32550;Montégut
-0320168J;-;ecole;public;32730;Montégut-Arros
+0320165F;-;ecole;public;32810;Montaut-les-CrÃ©neaux
+0320167H;-;ecole;public;32550;MontÃ©gut
+0320168J;-;ecole;public;32730;MontÃ©gut-Arros
 0320169K;-;ecole;public;32320;Montesquiou
 0320170L;-;ecole;public;32390;Montestruc-sur-Gers
-0320172N;-;ecole;public;32220;Montpézat
-0320175S;-;ecole;public;32250;Montréal
-0320176T;-;ecole;public;32240;Mormès
+0320172N;-;ecole;public;32220;MontpÃ©zat
+0320175S;-;ecole;public;32250;MontrÃ©al
+0320176T;-;ecole;public;32240;MormÃ¨s
 0320177U;-;ecole;public;32330;Mouchan
 0320182Z;-;ecole;public;32130;Noilhan
 0320183A;-;ecole;public;32270;Nougaroulet
 0320186D;-;ecole;public;32350;Ordan-Larroque
-0320188F;-;ecole;public;32260;Ornézan
+0320188F;-;ecole;public;32260;OrnÃ©zan
 0320190H;-;ecole;public;32140;Panassac
 0320191J;-;ecole;public;32110;Panjas
 0320193L;-;ecole;public;32500;Pauilhac
@@ -153,17 +153,17 @@
 0320231C;-;ecole;public;32310;Roques
 0320236H;-;ecole;public;32340;Saint-Antoine
 0320245T;-;ecole;public;32380;Saint-Clar
-0320247V;-;ecole;public;32380;Saint-Créac
+0320247V;-;ecole;public;32380;Saint-CrÃ©ac
 0320243R;-;ecole;public;32390;Sainte-Christie
 0320248W;-;ecole;public;32170;Sainte-Dode
 0320261K;-;ecole;public;32200;Sainte-Marie
 0320251Z;-;ecole;public;32430;Saint-Georges
-0320253B;-;ecole;public;32400;Saint-Germé
-0320255D;-;ecole;public;32110;Saint-Griède
+0320253B;-;ecole;public;32400;Saint-GermÃ©
+0320255D;-;ecole;public;32110;Saint-GriÃ¨de
 0320256E;-;ecole;public;32550;Saint-Jean-le-Comtal
 0320262L;-;ecole;public;32110;Saint-Martin-d'Armagnac
-0320265P;-;ecole;public;32300;Saint-Médard
-0320267S;-;ecole;public;32700;Saint-Mézard
+0320265P;-;ecole;public;32300;Saint-MÃ©dard
+0320267S;-;ecole;public;32700;Saint-MÃ©zard
 0320268T;-;ecole;public;32300;Saint-Michel
 0320271W;-;ecole;public;32300;Saint-Ost
 0320274Z;-;ecole;public;32310;Saint-Puy
@@ -172,11 +172,11 @@
 0320284K;-;ecole;public;32400;Sarragachies
 0320285L;-;ecole;public;32120;Sarrant
 0320288P;-;ecole;public;32300;Sauviac
-0320290S;-;ecole;public;32400;Ségos
-0320291T;-;ecole;public;32600;Ségoufielle
+0320290S;-;ecole;public;32400;SÃ©gos
+0320291T;-;ecole;public;32600;SÃ©goufielle
 0320639W;-;ecole;public;32260;Seissan
 0320294W;-;ecole;public;32700;Sempesserre
-0320297Z;-;ecole;public;32130;Seysses-Savès
+0320297Z;-;ecole;public;32130;Seysses-SavÃ¨s
 0320298A;-;ecole;public;32420;Simorre
 0320301D;-;ecole;public;32120;Solomiac
 0320304G;-;ecole;public;32400;Tarsac
@@ -188,35 +188,35 @@
 0320313S;-;ecole;public;32420;Tournan
 0320314T;-;ecole;public;32380;Tournecoupe
 0320317W;-;ecole;public;32230;Troncens
-0320320Z;-;ecole;public;32310;Valence-sur-Baïse
+0320320Z;-;ecole;public;32310;Valence-sur-BaÃ¯se
 0320325E;-;ecole;public;32400;Viella
 0320327G;-;ecole;public;32730;Villecomtal-sur-Arros
-0320399K;Antoine De Saint-Exupéry;ecole;public;32000;Auch
+0320399K;Antoine De Saint-ExupÃ©ry;ecole;public;32000;Auch
 0320511G;Chenonceaux;ecole;public;32800;Eauze
-0320576C;de l'Immaculée Conception;ecole;prive;32700;Lectoure
-0320393D;François Arago;ecole;public;32000;Auch
+0320576C;de l'ImmaculÃ©e Conception;ecole;prive;32700;Lectoure
+0320393D;FranÃ§ois Arago;ecole;public;32000;Auch
 0320398J;Georges Guynemer;ecole;public;32000;Auch
 0320584L;Grand Garros 1;ecole;public;32000;Auch
 0320585M;Grand Garros 2;ecole;public;32000;Auch
-0320396G;Jean Jaurès;ecole;public;32000;Auch
-0320640X;Jean Jaurès;ecole;public;32550;Pavie
+0320396G;Jean JaurÃ¨s;ecole;public;32000;Auch
+0320640X;Jean JaurÃ¨s;ecole;public;32550;Pavie
 0320494N;Jules Ferry;ecole;public;32100;Condom
 0320524W;Louis Pasteur 2;ecole;public;32500;Fleurance
 0320526Y;Gaspard Monge;ecole;public;32500;Fleurance
 0320582J;Notre-Dame;ecole;prive;32140;Masseube
 0320580G;Notre-Dame;ecole;prive;32300;Mirande
 0320566S;Notre-Dame de Cahuzac;ecole;prive;32200;Gimont
-0320571X;Notre-Dame de Piétat;ecole;prive;32100;Condom
+0320571X;Notre-Dame de PiÃ©tat;ecole;prive;32100;Condom
 0320567T;Notre-Dame - Le Clos Fleuri;ecole;prive;32600;L'Isle-Jourdain
 0320063V;Oratoire Sainte-Marie;ecole;prive;32000;Auch
 0320354L;Paul Bert 1;ecole;public;32600;L'Isle-Jourdain
-0320497S;Pierre Mendès-France;ecole;public;32100;Condom
+0320497S;Pierre MendÃ¨s-France;ecole;public;32100;Condom
 0320395F;du Pont National;ecole;public;32000;Auch
-0320355M;René Cassin 2;ecole;public;32600;L'Isle-Jourdain
+0320355M;RenÃ© Cassin 2;ecole;public;32600;L'Isle-Jourdain
 0320392C;Rouget De Lisle;ecole;public;32000;Auch
 0320581H;Sainte-Germaine;ecole;prive;32130;Samatan
 0320572Y;Saint-Joseph;ecole;prive;32100;Condom
 0320578E;Saint-Laurent;ecole;prive;32500;Fleurance
 0320704S;Saint-Paul;ecole;prive;32000;Auch
 0320574A;Saint-Taurin;ecole;prive;32800;Eauze
-0320280F;Yves Chazé;ecole;public;32130;Samatan
+0320280F;Yves ChazÃ©;ecole;public;32130;Samatan

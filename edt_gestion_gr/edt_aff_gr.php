@@ -24,32 +24,32 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/*/ table de données sur le module de gestion des groupes EdT
+/*/ table de donnÃ©es sur le module de gestion des groupes EdT
 edt_gr_nom (id, nom, nom_long, subdivision_type, subdivision)
-	- id entier autoincrémenté
-	- nom et nom_long permettent de préciser deux niveaux (deux longueurs de noms)
-	- subdivision_type peut être de trois types : classe, demi ou autre
-	- subdivision précise l'id de la classe dans les cas où subdivision_type = classe ou demi. Sinon 'plusieurs'
+	- id entier autoincrÃ©mentÃ©
+	- nom et nom_long permettent de prÃ©ciser deux niveaux (deux longueurs de noms)
+	- subdivision_type peut Ãªtre de trois types : classe, demi ou autre
+	- subdivision prÃ©cise l'id de la classe dans les cas oÃ¹ subdivision_type = classe ou demi. Sinon 'plusieurs'
 
 edt_gr_eleves (id, id_gr_nom, id_eleve)
-	- id entier autoincrémenté
-	- id_gr_nom renvoie à l'id de la table edt_gr_nom
-	- id_eleve renvoie à l'id_eleve de la table eleves
+	- id entier autoincrÃ©mentÃ©
+	- id_gr_nom renvoie Ã  l'id de la table edt_gr_nom
+	- id_eleve renvoie Ã  l'id_eleve de la table eleves
 
 edt_gr_profs (id, id_gr_nom, id_utilisateurs)
-	- id entier autoincrémenté
-	- id_gr_nom renvoie à l'id de la table edt_gr_nom
+	- id entier autoincrÃ©mentÃ©
+	- id_gr_nom renvoie Ã  l'id de la table edt_gr_nom
 	- id_utilisateurs renvoie au login de la table utilisateurs (professeurs ou 'autre' uniquement).
 
 edt_gr_classes (id, id_gr_nom, id_classe)
-	- id entier autoincrémenté
-	- id_gr_nom renvoie à l'id de la table edt_gr_nom
+	- id entier autoincrÃ©mentÃ©
+	- id_gr_nom renvoie Ã  l'id de la table edt_gr_nom
 	- id_classe renvoie l'id de la table classes.
 */
 
 // ========== Initialisation =============
 
-$titre_page = "Gérer les groupes de l'EdT";
+$titre_page = "GÃ©rer les groupes de l'EdT";
 $affiche_connexion = 'yes';
 $niveau_arbo = 1;
 
@@ -66,7 +66,7 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 if (!checkAccess()) {
     header("Location: ./logout.php?auto=2");
     die();
@@ -93,7 +93,7 @@ $choix_prof = isset($_POST["choix_prof"]) ? $_POST["choix_prof"] : NULL;
 
 // L'action "ajouter"
 if ($action == "ajouter_gr") {
-	// On vérifie si le nom est bien saisie
+	// On vÃ©rifie si le nom est bien saisie
 	if ($nom_gr == '') {
 		$msg_gr .= '<span class="red">Il faut renseigner le nom !</span>';
 		$style_nom_gr = 'style="background-color: orange; border: 1px solid red;"';
@@ -101,17 +101,17 @@ if ($action == "ajouter_gr") {
 		$auto = 'non';
 
 	}else{
-		// On vérifie aussi que le nom n'existe pas déjà
+		// On vÃ©rifie aussi que le nom n'existe pas dÃ©jÃ 
 		$verif = mysql_fetch_array(mysql_query("SELECT id FROM edt_gr_nom WHERE nom = '".$nom_gr."'"));
 		if ($verif >= 1) {
-			// Ce nom existe déjà, il ne faut pas de doublon ;)
-			$msg_gr = '<p>Ce nom existe déjà, veuillez le modifier avant de sauvegarder.</p>';
+			// Ce nom existe dÃ©jÃ , il ne faut pas de doublon ;)
+			$msg_gr = '<p>Ce nom existe dÃ©jÃ , veuillez le modifier avant de sauvegarder.</p>';
 			$style_nom_gr = 'style="background-color: orange; border: 1px solid red;"';
 			$style_fieldset = ' style="display: block;"';
 			$auto = 'non';
 		}
 
-		// On vérifie aussi que le champ subdivision corresponde au type de groupe
+		// On vÃ©rifie aussi que le champ subdivision corresponde au type de groupe
 		if ($type == "autre") { $choix_classe = "plusieurs";}
 
 		if ($type == "classe" OR $type == "demi") {
@@ -131,7 +131,7 @@ if ($action == "ajouter_gr") {
 									VALUES ('', '".$nom_gr."', '".$nom_long_gr."', '".$type."', '".$choix_classe."')";
 			$query_e = mysql_query($sql_e) OR trigger_error('Impossible d\'enregistrer dans la base '.mysql_error(), E_USER_WARNING);
 			//$id_gr_nom = mysql_insert_id($query_e);
-			// Avec une connexion permanente à la base, impossible de récupérer l'id
+			// Avec une connexion permanente Ã  la base, impossible de rÃ©cupÃ©rer l'id
 			$select_id = mysql_query("SELECT id FROM edt_gr_nom WHERE nom = '".$nom_gr."' LIMIT 1");
 			$id_gr_nom = mysql_result($select_id, 0,"id");
 
@@ -185,7 +185,7 @@ while($gr = mysql_fetch_array($query_g)){
 			<td style="cursor: pointer;" id="id_'.$gr["id"].'">
 	';
 
-		// On vérifie que la subdivision est bien renseignée
+		// On vÃ©rifie que la subdivision est bien renseignÃ©e
 		$aff_subdivision = (isset($gr["subdivision"]) AND $gr["subdivision"] != '') ? $gr["subdivision"] : '-+-';
 
 	if ($gr["subdivision_type"] == "demi" OR $gr["subdivision_type"] == "classe") {
@@ -211,7 +211,7 @@ while($gr = mysql_fetch_array($query_g)){
 	$a++;
 }
 
-// la liste des classes pour la création de nouveaux groupes :
+// la liste des classes pour la crÃ©ation de nouveaux groupes :
 
 	$query = mysql_query("SELECT id, classe FROM classes ORDER BY id");
 	$nbre = mysql_num_rows($query);
@@ -230,7 +230,7 @@ while($gr = mysql_fetch_array($query_g)){
 		}
 		$aff_select_classes .= '</select>'."\n";
 
-// La liste des professeurs pour la création de nouveaux groupes :
+// La liste des professeurs pour la crÃ©ation de nouveaux groupes :
 
 	$query_p = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut = 'professeur' AND etat = 'actif' ORDER BY nom, prenom")
 						OR trigger_error('Impossible de lire la liste des professeurs.', E_USER_ERROR);

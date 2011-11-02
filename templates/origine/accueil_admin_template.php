@@ -8,7 +8,7 @@
 
 <head>
 
-<!-- on inclut l'entête -->
+<!-- on inclut l'entÃªte -->
 	<?php include('./templates/origine/header_template.php');?>
 	
 	<link rel="stylesheet" type="text/css" href="./accessibilite.css" media="screen" />
@@ -56,7 +56,7 @@
 
 <div id='container'>
 
-<a name="contenu" class="invisible">Début de la page</a>	
+<a name="contenu" class="invisible">DÃ©but de la page</a>	
 	
 <?php	
 				if (count($tbs_menu)) {
@@ -80,7 +80,7 @@
 							unset($newentree);
 						}
 							echo "
-<!-- Fin menu	général -->
+<!-- Fin menu	gÃ©nÃ©ral -->
 				";
 					}
 				unset($value);

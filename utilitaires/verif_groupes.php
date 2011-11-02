@@ -36,7 +36,7 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-//INSERT INTO `droits` VALUES ('/utilitaires/verif_groupes.php', 'V', 'F', 'F', 'F', 'F', 'F', 'Vérification des incohérences d appartenances à des groupes', '');
+//INSERT INTO `droits` VALUES ('/utilitaires/verif_groupes.php', 'V', 'F', 'F', 'F', 'F', 'F', 'VÃ©rification des incohÃ©rences d appartenances Ã  des groupes', '');
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -53,21 +53,21 @@ function affiche_debug($texte,$e_login){
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Vérification des affectations dans les groupes";
+$titre_page = "VÃ©rification des affectations dans les groupes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='clean_tables.php'>Retour page précédente</a></p>";
+echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='clean_tables.php'>Retour page prÃ©cÃ©dente</a></p>";
 
 $verif=isset($_POST['verif']) ? $_POST['verif'] : (isset($_GET['verif']) ? $_GET['verif'] : NULL);
 
 //if(!isset($_GET['verif'])){
 if(!isset($verif)) {
-	echo "<h2>Vérification des groupes</h2>\n";
-	echo "<p>Cette page est destinée à repérer la cause d'éventuelles erreurs du type:</p>\n";
+	echo "<h2>VÃ©rification des groupes</h2>\n";
+	echo "<p>Cette page est destinÃ©e Ã  repÃ©rer la cause d'Ã©ventuelles erreurs du type:</p>\n";
 	echo "<pre style='color:green;'>Warning: mysql_result(): Unable to jump to row 0
 on MySQL result index 468 in /var/wwws/gepi/lib/groupes.inc.php on line 143</pre>\n";
-	echo "<p>Pour procéder à la vérification, cliquez sur ce lien: <a href='".$_SERVER['PHP_SELF']."?verif=oui".add_token_in_url()."'>Vérification</a><br />(<i>l'opération peut être très longue</i>)</p>\n";
+	echo "<p>Pour procÃ©der Ã  la vÃ©rification, cliquez sur ce lien: <a href='".$_SERVER['PHP_SELF']."?verif=oui".add_token_in_url()."'>VÃ©rification</a><br />(<i>l'opÃ©ration peut Ãªtre trÃ¨s longue</i>)</p>\n";
 }
 else {
 	check_token(false);
@@ -75,15 +75,15 @@ else {
 	$ini=isset($_POST['ini']) ? $_POST['ini'] : NULL;
 
 
-	echo "<h2>Recherche des inscriptions erronées d'élèves</h2>\n";
+	echo "<h2>Recherche des inscriptions erronÃ©es d'Ã©lÃ¨ves</h2>\n";
 	flush();
 	$err_no=0;
 
-	// Liste des numéros de périodes
+	// Liste des numÃ©ros de pÃ©riodes
 	$sql="SELECT DISTINCT num_periode FROM periodes ORDER BY num_periode;";
 	$res_per=mysql_query($sql);
 	if(mysql_num_rows($res_per)==0) {
-		echo "<p>Aucune période n'est encore définie.</p>\n";
+		echo "<p>Aucune pÃ©riode n'est encore dÃ©finie.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -102,7 +102,7 @@ else {
 		$res_ele=mysql_query($sql);
 
 		if(mysql_num_rows($res_ele)==0) {
-			echo "<p>Aucun élève n'est encore inscrit dans un groupe.</p>\n";
+			echo "<p>Aucun Ã©lÃ¨ve n'est encore inscrit dans un groupe.</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
@@ -128,8 +128,8 @@ else {
 	}
 
 	/*
-	// On commence par ne récupérer que les login/periode pour ne pas risquer d'oublier d'élèves
-	// (il peut y avoir des incohérences non détectées si on essaye de récupérer davantage d'infos dans un premier temps)
+	// On commence par ne rÃ©cupÃ©rer que les login/periode pour ne pas risquer d'oublier d'Ã©lÃ¨ves
+	// (il peut y avoir des incohÃ©rences non dÃ©tectÃ©es si on essaye de rÃ©cupÃ©rer davantage d'infos dans un premier temps)
 	$sql="SELECT DISTINCT login,periode FROM j_eleves_groupes ORDER BY login,periode";
 	$res_ele=mysql_query($sql);
 	*/
@@ -149,7 +149,7 @@ else {
 
 	//$ini="A";
 	//$ini="";
-	//echo "<i>Parcours des login commençant par la lettre $ini</i>";
+	//echo "<i>Parcours des login commenÃ§ant par la lettre $ini</i>";
 
 	if(mysql_num_rows($res_ele)>0) {
 		$chaine_rapport="";
@@ -160,7 +160,7 @@ else {
 				$ini=strtoupper(substr($lig_ele->login,0,1));
 				//echo " - <i>$ini</i>";
 				echo "<a name='suite'></a>\n";
-				$info="<p>\n<i>Parcours des login commençant par la lettre $ini</i></p>\n";
+				$info="<p>\n<i>Parcours des login commenÃ§ant par la lettre $ini</i></p>\n";
 				echo $info;
 				$chaine_rapport.=$info;
 			}
@@ -168,7 +168,7 @@ else {
 			for($loop=0;$loop<count($tab_per);$loop++) {
 				$num_periode=$tab_per[$loop];
 
-				// Récupération de la liste des groupes auxquels l'élève est inscrit sur la période en cours d'analyse:
+				// RÃ©cupÃ©ration de la liste des groupes auxquels l'Ã©lÃ¨ve est inscrit sur la pÃ©riode en cours d'analyse:
 				$sql="SELECT id_groupe FROM j_eleves_groupes WHERE login='$lig_ele->login' AND periode='$num_periode'";
 				//echo "$sql<br />\n";
 				affiche_debug($sql,$lig_ele->login);
@@ -176,7 +176,7 @@ else {
 
 				//while($lig_jeg=mysql_fetch_object($res_jeg)){
 				if(mysql_num_rows($res_jeg)>0){
-					// On vérifie si l'élève est dans une classe pour cette période:
+					// On vÃ©rifie si l'Ã©lÃ¨ve est dans une classe pour cette pÃ©riode:
 					//$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$lig_ele->login' AND periode='$num_periode'";
 					$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$lig_ele->login' AND periode='$num_periode'";
 					affiche_debug($sql,$lig_ele->login);
@@ -184,12 +184,12 @@ else {
 
 					if(mysql_num_rows($res_jec)==0){
 						$temoin_erreur="y";
-						// L'élève n'est dans aucune classe sur la période choisie.
+						// L'Ã©lÃ¨ve n'est dans aucune classe sur la pÃ©riode choisie.
 						$sql="SELECT c.* FROM classes c, j_eleves_classes jec WHERE jec.login='$lig_ele->login' AND periode='$num_periode' AND jec.id_classe=c.id";
 						affiche_debug($sql,$lig_ele->login);
 						$res_class_test=mysql_query($sql);
 
-						// Le test ci-dessous est forcément vrai si on est arrivé là!
+						// Le test ci-dessous est forcÃ©ment vrai si on est arrivÃ© lÃ !
 						if(mysql_num_rows($res_class_test)==0){
 							$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_eleves_classes jec WHERE jec.login='$lig_ele->login' AND jec.id_classe=c.id";
 							affiche_debug($sql,$lig_ele->login);
@@ -200,14 +200,14 @@ else {
 							if(mysql_num_rows($res_class)!=0){
 								while($lig_class=mysql_fetch_object($res_class)){
 									$chaine_classes.=", $lig_class->classe";
-									$chaine_msg.=",<br /><a href='../classes/eleve_options.php?login_eleve=".$lig_ele->login."&amp;id_classe=".$lig_class->id."' target='_blank'>Contrôler en $lig_class->classe</a>\n";
+									$chaine_msg.=",<br /><a href='../classes/eleve_options.php?login_eleve=".$lig_ele->login."&amp;id_classe=".$lig_class->id."' target='_blank'>ContrÃ´ler en $lig_class->classe</a>\n";
 								}
 								$chaine_msg=substr($chaine_msg,7);
 								$chaine_classes=substr($chaine_classes,2);
 
 								//echo "<br />\n";
 								$info="<p>\n";
-								$info.="<b>$lig_ele->login</b> de <b>$chaine_classes</b> est inscrit à des groupes pour la période <b>$num_periode</b>, mais n'est pas dans la classe pour cette période.<br />\n";
+								$info.="<b>$lig_ele->login</b> de <b>$chaine_classes</b> est inscrit Ã  des groupes pour la pÃ©riode <b>$num_periode</b>, mais n'est pas dans la classe pour cette pÃ©riode.<br />\n";
 								echo $info;
 								$chaine_rapport.=$info;
 
@@ -215,7 +215,7 @@ else {
 								$chaine_rapport.=$chaine_msg;
 
 
-								// Contrôler à quelles classes les groupes sont liés.
+								// ContrÃ´ler Ã  quelles classes les groupes sont liÃ©s.
 								unset($tab_tmp_grp);
 								$tab_tmp_grp=array();
 								if(isset($tab_tmp_clas)){unset($tab_tmp_clas);}
@@ -232,7 +232,7 @@ else {
 								}
 
 								$info="<br />\n";
-								$info.="Les groupes dont <b>$lig_ele->login</b> est membre sont liés ";
+								$info.="Les groupes dont <b>$lig_ele->login</b> est membre sont liÃ©s ";
 								echo $info;
 								$chaine_rapport.=$info;
 
@@ -240,7 +240,7 @@ else {
 									$info="aux classes suivantes: ";
 								}
 								else{
-									$info="à la classe suivante: ";
+									$info="Ã  la classe suivante: ";
 								}
 								echo $info;
 								$chaine_rapport.=$info;
@@ -255,16 +255,16 @@ else {
 									$chaine_rapport.=$info;
 								}
 								$info="<br />\n";
-								$info.="Si <b>$lig_ele->login</b> n'est pas dans une de ces classes, il faudrait l'affecter dans la classe sur une période au moins pour pouvoir supprimer son appartenance à ces groupes, ou procéder à un nettoyage des tables de la base GEPI.";
+								$info.="Si <b>$lig_ele->login</b> n'est pas dans une de ces classes, il faudrait l'affecter dans la classe sur une pÃ©riode au moins pour pouvoir supprimer son appartenance Ã  ces groupes, ou procÃ©der Ã  un nettoyage des tables de la base GEPI.";
 								$info.="</p>\n";
 								echo $info;
 								$chaine_rapport.=$info;
 							}
 							else{
 								$info="<p>\n";
-								$info.="<b>$lig_ele->login</b> est inscrit à des groupes pour la période <b>$num_periode</b>, mais n'est dans aucune classe.<br />\n";
-								// ... dans aucune classe sur aucune période.
-								$info.="Il va falloir l'affecter dans une classe pour pouvoir supprimer ses inscriptions à des groupes.<br />\n";
+								$info.="<b>$lig_ele->login</b> est inscrit Ã  des groupes pour la pÃ©riode <b>$num_periode</b>, mais n'est dans aucune classe.<br />\n";
+								// ... dans aucune classe sur aucune pÃ©riode.
+								$info.="Il va falloir l'affecter dans une classe pour pouvoir supprimer ses inscriptions Ã  des groupes.<br />\n";
 								$info.="</p>\n";
 								echo $info;
 								$chaine_rapport.=$info;
@@ -273,12 +273,12 @@ else {
 						$err_no++;
 
 
-						// Est-ce qu'en plus l'élève aurait des notes ou moyennes saisies sur la période?
+						// Est-ce qu'en plus l'Ã©lÃ¨ve aurait des notes ou moyennes saisies sur la pÃ©riode?
 						//$sql="SELECT * FROM matieres_notes WHERE id_groupe='$tab_tmp_grp[$i]' AND periode='$num_periode' AND login='$lig_ele->login'"
 						$sql="SELECT * FROM matieres_notes WHERE periode='$num_periode' AND login='$lig_ele->login'";
 						$res_mat_not=mysql_query($sql);
 						if(mysql_num_rows($res_mat_not)>0){
-							$info="<b>$lig_ele->login</b> a de plus des moyennes saisies pour le bulletin sur la période <b>$num_periode</b>";
+							$info="<b>$lig_ele->login</b> a de plus des moyennes saisies pour le bulletin sur la pÃ©riode <b>$num_periode</b>";
 							echo $info;
 							$chaine_rapport.=$info;
 							/*
@@ -312,8 +312,8 @@ else {
 									$grp_tmp=$lig_tmp->description;
 
 									$info="<p>\n";
-									//echo "Il semble que $lig_ele->login de la classe $lig_clas->id_classe soit inscrit dans le groupe $lig_grp->id_groupe alors que ce groupe n'est pas associé à la classe dans 'j_groupes_classes'.<br />\n";
-									$info.="<b>$lig_ele->login</b> est inscrit en période $num_periode dans le groupe <b>$grp_tmp</b> (<i>groupe n°$lig_grp->id_groupe</i>) alors que ce groupe n'est pas associé à la classe <b>$clas_tmp</b> dans 'j_groupes_classes'.<br />\n";
+									//echo "Il semble que $lig_ele->login de la classe $lig_clas->id_classe soit inscrit dans le groupe $lig_grp->id_groupe alors que ce groupe n'est pas associÃ© Ã  la classe dans 'j_groupes_classes'.<br />\n";
+									$info.="<b>$lig_ele->login</b> est inscrit en pÃ©riode $num_periode dans le groupe <b>$grp_tmp</b> (<i>groupe nÂ°$lig_grp->id_groupe</i>) alors que ce groupe n'est pas associÃ© Ã  la classe <b>$clas_tmp</b> dans 'j_groupes_classes'.<br />\n";
 									echo $info;
 									$chaine_rapport.=$info;
 
@@ -323,8 +323,8 @@ else {
 									$res_tmp_clas=mysql_query($sql);
 									if(mysql_num_rows($res_tmp_clas)>0){
 										//$lig_tmp_clas=mysql_fetch_object($res_tmp_clas);
-										//echo "Vous pouvez tenter de décocher l'élève de <b>$clas_tmp</b> du groupe <b>$grp_tmp</b> dans cette <a href='../groupes/edit_eleves.php?id_groupe=".$lig_grp->id_groupe."&id_classe=".$lig_tmp_clas->id_classe."' target='_blank'>page</a> si il s'y trouve.<br />\n";
-										$info="Vous pouvez tenter de décocher l'élève de <b>$clas_tmp</b> du groupe <b>$grp_tmp</b> dans l'une des pages suivantes ";
+										//echo "Vous pouvez tenter de dÃ©cocher l'Ã©lÃ¨ve de <b>$clas_tmp</b> du groupe <b>$grp_tmp</b> dans cette <a href='../groupes/edit_eleves.php?id_groupe=".$lig_grp->id_groupe."&id_classe=".$lig_tmp_clas->id_classe."' target='_blank'>page</a> si il s'y trouve.<br />\n";
+										$info="Vous pouvez tenter de dÃ©cocher l'Ã©lÃ¨ve de <b>$clas_tmp</b> du groupe <b>$grp_tmp</b> dans l'une des pages suivantes ";
 										echo $info;
 										$chaine_rapport.=$info;
 
@@ -342,7 +342,7 @@ else {
 										$chaine_rapport.=$info;
 									}
 
-									$info="Si aucune erreur n'est relevée non plus dans la(es) classe(s) de ";
+									$info="Si aucune erreur n'est relevÃ©e non plus dans la(es) classe(s) de ";
 									$info.="<a href='../classes/eleve_options.php?login_eleve=".$lig_ele->login."&amp;id_classe=".$lig_clas->id_classe."' target='_blank'>$clas_tmp</a>, \n";
 									echo $info;
 									$chaine_rapport.=$info;
@@ -352,7 +352,7 @@ else {
 										echo $info;
 										$chaine_rapport.=$info;
 									}
-									$info="il faudra effectuer un <a href='clean_tables.php?maj=9".add_token_in_url()."'>nettoyage des tables de la base de données GEPI</a> (<i>après une <a href='../gestion/accueil_sauve.php?action=";
+									$info="il faudra effectuer un <a href='clean_tables.php?maj=9".add_token_in_url()."'>nettoyage des tables de la base de donnÃ©es GEPI</a> (<i>aprÃ¨s une <a href='../gestion/accueil_sauve.php?action=";
 									if(getSettingValue("mode_sauvegarde")=="gepi") {$info.="dump";} else {$info.="system_dump";}
 									$info.=add_token_in_url()."' target='blank'>sauvegarde de la base</a></i>).<br />\n";
 									$info.="</p>\n";
@@ -366,7 +366,7 @@ else {
 						else{
 							$temoin_erreur="y";
 							$info="<p>\n";
-							$info.="<b>$lig_ele->login</b> est inscrit dans plusieurs classes sur la période $num_periode:<br />\n";
+							$info.="<b>$lig_ele->login</b> est inscrit dans plusieurs classes sur la pÃ©riode $num_periode:<br />\n";
 							echo $info;
 							$chaine_rapport.=$info;
 
@@ -375,12 +375,12 @@ else {
 								$res_tmp=mysql_query($sql);
 								$lig_tmp=mysql_fetch_object($res_tmp);
 								$clas_tmp=$lig_tmp->classe;
-								$info="Classe de <a href='../classes/classes_const.php?id_classe=$lig_clas->id_classe'>$clas_tmp</a> (<i>n°$lig_clas->id_classe</i>)<br />\n";
+								$info="Classe de <a href='../classes/classes_const.php?id_classe=$lig_clas->id_classe'>$clas_tmp</a> (<i>nÂ°$lig_clas->id_classe</i>)<br />\n";
 								echo $info;
 								$chaine_rapport.=$info;
 							}
-							$info="Cela ne devrait pas être possible.<br />\n";
-							$info.="Faites le ménage dans les effectifs des classes ci-dessus.\n";
+							$info="Cela ne devrait pas Ãªtre possible.<br />\n";
+							$info.="Faites le mÃ©nage dans les effectifs des classes ci-dessus.\n";
 							$info.="</p>\n";
 							echo $info;
 							$chaine_rapport.=$info;
@@ -388,7 +388,7 @@ else {
 						}
 					}
 				}
-				// Pour envoyer ce qui a été écrit vers l'écran sans attendre la fin de la page...
+				// Pour envoyer ce qui a Ã©tÃ© Ã©crit vers l'Ã©cran sans attendre la fin de la page...
 				flush();
 			}
 
@@ -412,7 +412,7 @@ else {
 </script>\n";
 
 		echo "<NOSCRIPT>\n";
-		echo "<div id='fixe'><input type=\"submit\" name=\"ok\" value=\"Suite de la vérification\" /></div>\n";
+		echo "<div id='fixe'><input type=\"submit\" name=\"ok\" value=\"Suite de la vÃ©rification\" /></div>\n";
 		echo "</NOSCRIPT>\n";
 
 
@@ -427,22 +427,22 @@ else {
 		$err_no=mysql_num_rows($test_err);
 
 		if($err_no==0){
-			echo "<p>Aucune erreur d'affectation dans des groupes/classes n'a été détectée.</p>\n";
+			echo "<p>Aucune erreur d'affectation dans des groupes/classes n'a Ã©tÃ© dÃ©tectÃ©e.</p>\n";
 		}
 		else{
-			echo "<p>Une ou des erreurs ont été relevées.<br />\n";
-			echo "Pour corriger, il faut passer par 'Gestion des bases/Gestion des classes/Gérer les élèves' et contrôler pour quelles périodes l'élève est dans la classe.<br />\n";
-			echo "Puis, cliquer sur le lien 'Matières suivies' pour cet élève et décocher l'élève des périodes souhaitées appropriées.<br />\n";
+			echo "<p>Une ou des erreurs ont Ã©tÃ© relevÃ©es.<br />\n";
+			echo "Pour corriger, il faut passer par 'Gestion des bases/Gestion des classes/GÃ©rer les Ã©lÃ¨ves' et contrÃ´ler pour quelles pÃ©riodes l'Ã©lÃ¨ve est dans la classe.<br />\n";
+			echo "Puis, cliquer sur le lien 'MatiÃ¨res suivies' pour cet Ã©lÃ¨ve et dÃ©cocher l'Ã©lÃ¨ve des pÃ©riodes souhaitÃ©es appropriÃ©es.<br />\n";
 			echo "</p>\n";
-			echo "<p>Il se peut également qu'un <a href='clean_tables.php?maj=9".add_token_in_url()."'>nettoyage de la base (<i>étape des Groupes</i>)</a> soit nécessaire.<br />\n";
+			echo "<p>Il se peut Ã©galement qu'un <a href='clean_tables.php?maj=9".add_token_in_url()."'>nettoyage de la base (<i>Ã©tape des Groupes</i>)</a> soit nÃ©cessaire.<br />\n";
 			echo "Prenez soin de faire une <a href='../gestion/accueil_sauve.php?action=";
 			if(getSettingValue("mode_sauvegarde")=="gepi") {$info.="dump";} else {$info.="system_dump";}
-			$info.=add_token_in_url()."' target='blank'>sauvegarde de la base</a> auparavant par précaution.<br />\n";
+			$info.=add_token_in_url()."' target='blank'>sauvegarde de la base</a> auparavant par prÃ©caution.<br />\n";
 		}
 
 		echo "<hr />\n";
 
-		echo "<h2>Recherche des références à des identifiants de groupes inexistants</h2>\n";
+		echo "<h2>Recherche des rÃ©fÃ©rences Ã  des identifiants de groupes inexistants</h2>\n";
 
 		$err_no=0;
 		$table=array('j_groupes_classes','j_groupes_matieres','j_groupes_professeurs','j_eleves_groupes');
@@ -459,7 +459,7 @@ else {
 					$res_test=mysql_query($sql);
 
 					if(mysql_num_rows($res_test)==0){
-						echo "<b>Erreur:</b> Le groupe d'identifiant $ligne[0] est utilisé dans $table[$i] alors que le groupe n'existe pas dans la table 'groupes'.<br />\n";
+						echo "<b>Erreur:</b> Le groupe d'identifiant $ligne[0] est utilisÃ© dans $table[$i] alors que le groupe n'existe pas dans la table 'groupes'.<br />\n";
 						$id_grp_suppr[]=$ligne[0];
 						// FAIRE UNE SAUVEGARDE DE LA BASE AVANT DE DECOMMENTER LES 3 LIGNES CI-DESSOUS:
 						/*
@@ -474,14 +474,14 @@ else {
 			}
 		}
 		if($err_no==0){
-			echo "<p>Aucune erreur d'identifiant de groupe n'a été relevée dans les tables 'j_groupes_classes', 'j_groupes_matieres', 'j_groupes_professeurs' et 'j_eleves_groupes'.</p>\n";
+			echo "<p>Aucune erreur d'identifiant de groupe n'a Ã©tÃ© relevÃ©e dans les tables 'j_groupes_classes', 'j_groupes_matieres', 'j_groupes_professeurs' et 'j_eleves_groupes'.</p>\n";
 		}
 		else{
-			echo "<p>Une ou des erreurs ont été relevées.<br />\n";
-			echo "Pour corriger, vous devriez procéder à un <a href='clean_tables.php?maj=9".add_token_in_url()."'>nettoyage de la base (<i>étape des Groupes</i>)</a>.<br />\n";
+			echo "<p>Une ou des erreurs ont Ã©tÃ© relevÃ©es.<br />\n";
+			echo "Pour corriger, vous devriez procÃ©der Ã  un <a href='clean_tables.php?maj=9".add_token_in_url()."'>nettoyage de la base (<i>Ã©tape des Groupes</i>)</a>.<br />\n";
 			echo "Prenez soin de faire une <a href='../gestion/accueil_sauve.php?action=";
 			if(getSettingValue("mode_sauvegarde")=="gepi") {$info.="dump";} else {$info.="system_dump";}
-			$info.=add_token_in_url()."' target='blank'>sauvegarde de la base</a> auparavant par précaution.<br />\n";
+			$info.=add_token_in_url()."' target='blank'>sauvegarde de la base</a> auparavant par prÃ©caution.<br />\n";
 			echo "</p>\n";
 		}
 	}

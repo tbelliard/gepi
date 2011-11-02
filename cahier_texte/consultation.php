@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Initialisations files
@@ -46,10 +46,10 @@ if (!checkAccess()) {
     die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_cahiers_texte")!='y') {
-    tentative_intrusion(1, "Tentative d'accès au cahier de textes en consultation alors que le module n'est pas activé.");
-    die("Le module n'est pas activé.");
+    tentative_intrusion(1, "Tentative d'accÃ¨s au cahier de textes en consultation alors que le module n'est pas activÃ©.");
+    die("Le module n'est pas activÃ©.");
 }
 
 include "../lib/mincals.inc";
@@ -65,7 +65,7 @@ $year = isset($_POST["year"]) ? $_POST["year"] : (isset($_GET["year"]) ? $_GET["
 unset($id_matiere);
 $id_matiere = isset($_POST["id_matiere"]) ? $_POST["id_matiere"] : (isset($_GET["id_matiere"]) ? $_GET["id_matiere"] : -1);
 unset($id_groupe);
-// modification Régis : traité "matiere" au cas où le javascript est désactivé
+// modification RÃ©gis : traitÃ© "matiere" au cas oÃ¹ le javascript est dÃ©sactivÃ©
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] : (isset($_POST['matiere']) ?  substr(strstr($_POST['matiere'],"id_groupe="),10) : (isset($_GET["matiere"]) ?  substr(strstr($_GET["matiere"],"id_groupe="),10) :  NULL)));
 if (is_numeric($id_groupe)) {
     $current_group = get_group($id_groupe);
@@ -75,7 +75,7 @@ if (is_numeric($id_groupe)) {
 }
 
 unset($selected_eleve);
-// modification Régis : traité "eleve" au cas où le javascript est désactivé
+// modification RÃ©gis : traitÃ© "eleve" au cas oÃ¹ le javascript est dÃ©sactivÃ©
 $login_eleve = isset($_POST["login_eleve"]) ? $_POST["login_eleve"] :(isset($_GET["login_eleve"]) ? $_GET["login_eleve"] :(isset($_POST['eleve']) ? substr(strstr($_POST['eleve'],"login_eleve="),12) : (isset($_GET["eleve"]) ? substr(strstr($_GET["eleve"],"login_eleve="),12) :false)));
 if ($login_eleve) {
 	$selected_eleve = mysql_fetch_object(mysql_query("SELECT e.login, e.nom, e.prenom FROM eleves e WHERE (login = '" . $login_eleve . "')"));
@@ -84,9 +84,9 @@ if ($login_eleve) {
 }
 
 if ($_SESSION['statut'] == 'eleve') {
-	// On enregistre si un élève essaie de voir le cahier de texte d'un autre élève
+	// On enregistre si un Ã©lÃ¨ve essaie de voir le cahier de texte d'un autre Ã©lÃ¨ve
 	if ($selected_eleve) {
-		if (strtolower($selected_eleve->login) != strtolower($_SESSION['login'])) {tentative_intrusion(2, "Tentative d'un élève d'accéder au cahier de textes d'un autre élève.");}
+		if (strtolower($selected_eleve->login) != strtolower($_SESSION['login'])) {tentative_intrusion(2, "Tentative d'un Ã©lÃ¨ve d'accÃ©der au cahier de textes d'un autre Ã©lÃ¨ve.");}
 	}
 	$selected_eleve = mysql_fetch_object(mysql_query("SELECT e.login, e.nom, e.prenom FROM eleves e WHERE login = '".$_SESSION['login'] . "'"));
 } elseif ($_SESSION['statut'] == "responsable") {
@@ -98,25 +98,25 @@ if ($_SESSION['statut'] == 'eleve') {
 			"r.login = '".$_SESSION['login']."' AND (re.resp_legal='1' OR re.resp_legal='2'));");
 
 	if (mysql_num_rows($get_eleves) == 1) {
-			// Un seul élève associé : on initialise tout de suite la variable $selected_eleve
+			// Un seul Ã©lÃ¨ve associÃ© : on initialise tout de suite la variable $selected_eleve
 			// Cela signifie entre autre que l'on ne prend pas en compte $login_eleve, fermant ainsi une
-			// potentielle faille de sécurité.
+			// potentielle faille de sÃ©curitÃ©.
 		$selected_eleve = mysql_fetch_object($get_eleves);
 	} elseif (mysql_num_rows($get_eleves) == 0) {
 		$selected_eleve = false;
 	} elseif (mysql_num_rows($get_eleves) > 1 and $selected_eleve) {
-		// Si on est là, c'est que la variable $login_eleve a été utilisée pour
-		// générer $selected_eleve
-		// On va vérifier que l'élève ainsi sélectionné fait bien partie des élèves
-		// associés à l'utilisateur au statut 'responsable'
+		// Si on est lÃ , c'est que la variable $login_eleve a Ã©tÃ© utilisÃ©e pour
+		// gÃ©nÃ©rer $selected_eleve
+		// On va vÃ©rifier que l'Ã©lÃ¨ve ainsi sÃ©lectionnÃ© fait bien partie des Ã©lÃ¨ves
+		// associÃ©s Ã  l'utilisateur au statut 'responsable'
 		$ok = false;
 		while($test = mysql_fetch_object($get_eleves)) {
 			if (strtolower($test->login) == strtolower($selected_eleve->login)) {$ok = true;}
 		}
 		if (!$ok) {
-			// Si on est là, ce qu'un utilisateur au statut 'responsable' a essayé
-			// de sélectionner un élève pour lequel il n'est pas responsable.
-			tentative_intrusion(2, "Tentative d'accès par un parent au cahier de textes d'un autre élève que le ou les sien(s).");
+			// Si on est lÃ , ce qu'un utilisateur au statut 'responsable' a essayÃ©
+			// de sÃ©lectionner un Ã©lÃ¨ve pour lequel il n'est pas responsable.
+			tentative_intrusion(2, "Tentative d'accÃ¨s par un parent au cahier de textes d'un autre Ã©lÃ¨ve que le ou les sien(s).");
 			$selected_eleve = false;
 		}
 	}
@@ -127,7 +127,7 @@ if ($_SESSION['statut'] == 'eleve') {
 		//echo "$sql<br />";
 		$verif_ele=mysql_query($sql);
 		if(mysql_num_rows($verif_ele)==0) {
-			tentative_intrusion(2, "Tentative d'accès par un parent au cahier de textes d'un autre élève que le ou les sien(s).");
+			tentative_intrusion(2, "Tentative d'accÃ¨s par un parent au cahier de textes d'un autre Ã©lÃ¨ve que le ou les sien(s).");
 			header("Location: ../logout.php?auto=1");
 			die();
 			//echo "PB intrusion<br />";
@@ -139,10 +139,10 @@ $selected_eleve_login = $selected_eleve ? $selected_eleve->login : "";
 // Nom complet de la classe
 $appel_classe = mysql_query("SELECT classe FROM classes WHERE id='$id_classe'");
 $classe_nom = @mysql_result($appel_classe, 0, "classe");
-// Nom complet de la matière
+// Nom complet de la matiÃ¨re
 $matiere_nom = $current_group["matiere"]["nom_complet"];
 $matiere_nom_court = $current_group["matiere"]["matiere"];
-// Vérification
+// VÃ©rification
 settype($month,"integer");
 settype($day,"integer");
 settype($year,"integer");
@@ -178,7 +178,7 @@ if($selected_eleve_login!=""){
 	}
 }
 
-// On vérifie que la date demandée est bien comprise entre la date de début des cahiers de texte et la date de fin des cahiers de texte :
+// On vÃ©rifie que la date demandÃ©e est bien comprise entre la date de dÃ©but des cahiers de texte et la date de fin des cahiers de texte :
 if ($today < getSettingValue("begin_bookings")) {
    $today = getSettingValue("begin_bookings");
 } else if ($today > getSettingValue("end_bookings")) {
@@ -194,7 +194,7 @@ echo "<div class=\"centre_table\">\n";
 		echo "<div class=\"ct_col_gauche\">\n";
 			echo "<p class=\"menu_retour\">\n";
 				echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/>\n";
-					echo "Retour à l'accueil\n";
+					echo "Retour Ã  l'accueil\n";
 				echo "</a>\n";
 			echo "</p>\n";
 			echo "<p>Nous sommes le :&nbsp;<br />\n";
@@ -205,14 +205,14 @@ echo "<div class=\"centre_table\">\n";
 			echo "\n</script>\n</p>\n";
 			echo "<noscript>\n<p>".strftime("%A %d %B %Y", $today)."</p>\n</noscript>";
 //<p class='menu_retour'>".get_date_php()."</p>\n</noscript>";
-			// On gère la sélection de l'élève
+			// On gÃ¨re la sÃ©lection de l'Ã©lÃ¨ve
 			if ($_SESSION['statut'] == 'responsable') {
 				echo make_eleve_select_html('consultation.php', $_SESSION['login'], $selected_eleve, $year, $month, $day);
 			}
 			if ($selected_eleve_login != "") {echo make_matiere_select_html('consultation.php', $selected_eleve_login, $id_groupe, $year, $month, $day);}
 		echo "</div>\n";
 		//echo "<td align=\"right\">\n";
-		// Modification Régis : la colonne de droite doit être avant la colonne centrale
+		// Modification RÃ©gis : la colonne de droite doit Ãªtre avant la colonne centrale
 		echo "<div class=\"ct_col_droit\">\n";
 			echo "<h2 class='invisible'>Calendrier</h2>";
 			echo "<form action=\"./consultation.php\" method=\"post\" style=\"width: 100%;\">\n";
@@ -229,7 +229,7 @@ echo "<div class=\"centre_table\">\n";
 		echo "</div>\n";
 		//echo "<td style=\"text-align:center;\">\n";
 		//echo "<td class=\"ct_col_centre\" style=\"text-align:center;\">\n";
-		// Modification Régis : la colonne centrale doit être à la fin pour que son contenu se positionne entre les 2 autres
+		// Modification RÃ©gis : la colonne centrale doit Ãªtre Ã  la fin pour que son contenu se positionne entre les 2 autres
 		echo "<div class=\"ct_col_centre\">\n";
 			echo "<p>\n";
 				echo "<span class='grand'>Cahier de textes";
@@ -237,7 +237,7 @@ echo "<div class=\"centre_table\">\n";
 				if ($id_classe != null) {echo "<br />$classe_nom";}
 				echo "</span>\n";
 
-				// Test si le cahier de texte est partagé
+				// Test si le cahier de texte est partagÃ©
 				//if ($current_group) {
 				if (($current_group)&&(isset($selected_eleve_classe))) {
 					//echo "<br />\n<strong>(";
@@ -260,15 +260,15 @@ echo "<div class=\"centre_table\">\n";
 echo "</div>\n";
 echo "<hr />\n";
 
-// Modification Regis : mise en page par CSS des devoirs à faire si la matière n'est pas sélectionnée
+// Modification Regis : mise en page par CSS des devoirs Ã  faire si la matiÃ¨re n'est pas sÃ©lectionnÃ©e
 
 $test_cahier_texte = mysql_query("SELECT contenu FROM ct_entry WHERE (id_groupe='$id_groupe')");
 $nb_test = mysql_num_rows($test_cahier_texte);
 $delai = getSettingValue("delai_devoirs");
-//Affichage des devoirs globaux s'il n'y a pas de notices dans ct_entry à afficher
+//Affichage des devoirs globaux s'il n'y a pas de notices dans ct_entry Ã  afficher
 
 if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0)) {
-    if ($delai == "") die("Erreur : Délai de visualisation du travail personnel non défini. Contactez l'administrateur de GEPI de votre établissement.");
+    if ($delai == "") die("Erreur : DÃ©lai de visualisation du travail personnel non dÃ©fini. Contactez l'administrateur de GEPI de votre Ã©tablissement.");
     $nb_dev = 0;
     for ($i = 0; $i <= $delai; $i++) {
         //$aujourhui = $aujourdhui = mktime(0,0,0,date("m"),date("d"),date("Y"));
@@ -304,20 +304,20 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
         if ($nb_devoirs_cahier_texte != 0) {
             $nb_dev++;
             if ($nb_dev == '1') {
-                //echo "<br /><center>Date sélectionnée : ".strftime("%A %d %B %Y", $today)."</center>\n";
+                //echo "<br /><center>Date sÃ©lectionnÃ©e : ".strftime("%A %d %B %Y", $today)."</center>\n";
                 //echo "<br /><center><strong><font style='font-variant: small-caps;'>Travaux personnels des $delai jours suivant le ".strftime("%d %B %Y", $today)."</font></strong></center><br />\n";
                 //echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice.";\" width = '100%' cellpadding='5'><tr><td>\n";
-				// Correction Régis : création de classes pour gérer la mise en page par fichier CSS
-                echo "<p class=\"centre_texte no_print\">Date sélectionnée : ".strftime("%A %d %B %Y", $today)."\n</p>\n";
+				// Correction RÃ©gis : crÃ©ation de classes pour gÃ©rer la mise en page par fichier CSS
+                echo "<p class=\"centre_texte no_print\">Date sÃ©lectionnÃ©e : ".strftime("%A %d %B %Y", $today)."\n</p>\n";
                 echo "<h2 class=\"centre_texte_pt_cap petit_h2\">Travaux personnels des $delai jours suivant le ".strftime("%d %B %Y", $today)."</h2>\n";
-                //  echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice.";\" width = '100%' cellpadding='5' summary=\"Tableau des travaux à effectuer\">\n<tr>\n<td class=\"cel_trav_futur\">\n";
+                //  echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice.";\" width = '100%' cellpadding='5' summary=\"Tableau des travaux Ã  effectuer\">\n<tr>\n<td class=\"cel_trav_futur\">\n";
 					echo "<div class='cel_trav_futur couleur_bord_tableau_notice color_fond_notices_f'>\n";
 
             }
             //echo "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["f"].";\"><font color='".$color_police_travaux."' style='font-variant: small-caps;'><strong>Travaux personnels pour le ".strftime("%a %d %b", $jour)."</strong></font>\n";
             echo "<h3 class=\"titre_a_faire couleur_bord_tableau_notice color_fond_notices_f color_police_travaux\">\nTravaux personnels pour le ".strftime("%a %d %b", $jour)."</h3>\n";
 
-            // Affichage des devoirs dans chaque matière
+            // Affichage des devoirs dans chaque matiÃ¨re
             while ($ind < $nb_devoirs_cahier_texte) {
                 $content = mysql_result($appel_devoirs_cahier_texte, $ind, 'contenu');
                 // Mise en forme du texte
@@ -336,7 +336,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 					// ???????????????????????????????
 					// Faudrait-il modifier ici pour utiliser
 					$chaine.=affiche_utilisateur($prof[2],$selected_eleve_classe);
-					// Comment est utilisé $chaine???
+					// Comment est utilisÃ© $chaine???
 					// ???????????????????????????????
                 }
                 //$html = "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["f"]."; padding: 2px; margin: 2px;\"><font color='".$color_police_matieres."' style='font-variant: small-caps;'><small><strong><u>".$matiere_devoirs." (".$chaine."):</u></strong></small></font>".$html;
@@ -357,56 +357,56 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
     die();
     //Affichage page de garde
 } elseif ($nb_test == 0) {
-	//echo "<center>"; correction Régis : balise <center> dépréciée
+	//echo "<center>"; correction RÃ©gis : balise <center> dÃ©prÃ©ciÃ©e
 	if ($_SESSION['statut'] == "responsable") {
-		echo "<p class='gepi_garde'>Choisissez un élève et une matière.</p>\n"; //correction Régis : h3 doit venir après h1 et h2
+		echo "<p class='gepi_garde'>Choisissez un Ã©lÃ¨ve et une matiÃ¨re.</p>\n"; //correction RÃ©gis : h3 doit venir aprÃ¨s h1 et h2
 	} elseif ($_SESSION['statut'] == "eleve") {
-		echo "<p class='gepi_garde'>Choisissez une matière</p>\n";
+		echo "<p class='gepi_garde'>Choisissez une matiÃ¨re</p>\n";
 	} else {
-		echo "<p class='gepi_garde'>Choisissez une classe et une matière.</p>\n";
+		echo "<p class='gepi_garde'>Choisissez une classe et une matiÃ¨re.</p>\n";
 	}
 	//echo "</center>";
 	require("../lib/footer.inc.php");
 	die();
 }
 //echo "______________";
-// Affichage des comptes rendus et des travaux à faire.
+// Affichage des comptes rendus et des travaux Ã  faire.
 
 // Modification Regis : mise en page sur 2 colonnes par CSS
 
 // echo "<table width=\"98%\" border=\"0\" align=\"center\">\n";
-// echo "<table class=\"centre_cont_texte\" summary=\"Tableau des comptes rendus de travaux à effectuer\">\n";
+// echo "<table class=\"centre_cont_texte\" summary=\"Tableau des comptes rendus de travaux Ã  effectuer\">\n";
 
-// ---------------------------- Début du conteneur 2 colonnes (div) ----
+// ---------------------------- DÃ©but du conteneur 2 colonnes (div) ----
 
 echo "<div class=\"centre_cont_texte\">\n";
 
-// Première colonne : affichage du 'travail à faire' à venir
+// PremiÃ¨re colonne : affichage du 'travail Ã  faire' Ã  venir
 //echo "<tr><td width=\"30%\" valign=\"top\">\n";
-// correction Regis : mise en page déplacée dans ccs
+// correction Regis : mise en page dÃ©placÃ©e dans ccs
 //   echo "<tr>\n";
 
-// ---------------------------- Début de la colonne de gauche (div div)  ----
+// ---------------------------- DÃ©but de la colonne de gauche (div div)  ----
 
     echo "<div class=\"cct_gauche\">\n";
 	 // ?????????????????????????????????????????????????????????
 // ---------------------------- Lien vers see_all.php  ----
 	   echo "<a href='see_all.php?id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe'>Voir l'ensemble du cahier de textes</a>\n<br />\n";
-	// Cela provoque une déconnexion de l'élève et le compte est rendu 'inactif'???
+	// Cela provoque une dÃ©connexion de l'Ã©lÃ¨ve et le compte est rendu 'inactif'???
 	// ?????????????????????????????????????????????????????????
 
 // ---------------------------- Affichage des devoirs  ---
 
-      if ($delai == "") die("Erreur : Délai de visualisation des devoirs non défini. Contactez l'administrateur de GEPI de votre établissement.");
-// Si l'affichage des devoirs est activée, on affiche les devoirs
+      if ($delai == "") die("Erreur : DÃ©lai de visualisation des devoirs non dÃ©fini. Contactez l'administrateur de GEPI de votre Ã©tablissement.");
+// Si l'affichage des devoirs est activÃ©e, on affiche les devoirs
       if ($delai != 0) {
 // Affichage de la semaine en cours
         $nb_dev = 0;
         for ($i = 0; $i <= $delai; $i++) {
           $jour = mktime(0, 0, 0, date('m',$today), (date('d',$today) + $i), date('Y',$today) );
-        // On regarde pour chaque jour, s'il y a des devoirs dans à faire
+        // On regarde pour chaque jour, s'il y a des devoirs dans Ã  faire
           if ($selected_eleve) {
-// On détermine la période active, pour ne pas avoir de duplication des entrées
+// On dÃ©termine la pÃ©riode active, pour ne pas avoir de duplication des entrÃ©es
 	         $appel_devoirs_cahier_texte = mysql_query("SELECT DISTINCT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
                 "FROM ct_devoirs_entry ct, groupes g, j_eleves_groupes jeg, j_eleves_classes jec, periodes p WHERE (" .
                 "ct.id_groupe = jeg.id_groupe and " .
@@ -447,11 +447,11 @@ echo "<div class=\"centre_cont_texte\">\n";
 
 // ---------------------------- Affichage de la semaine et du titre  ---
 
-// Correction Régis : ajout de class pour gérer la mise en page + <strong> à la place de <strong>
+// Correction RÃ©gis : ajout de class pour gÃ©rer la mise en page + <strong> Ã  la place de <strong>
               echo "<p class=\"sem_du_au\"><strong>Semaine du ".strftime("%d %B", $debutsemaine)." au ".strftime("%d %B %Y", $finsemaine)."</strong></p>\n";
               echo "<h2 class='h2_label'><strong>Travaux personnels des $delai prochains jours</strong></h2>\n";
 
-// ---------------------------- Affichage des travaux à faire (div div div)  ---
+// ---------------------------- Affichage des travaux Ã  faire (div div div)  ---
 
 //              echo "<div class=\"a_faire_gauche\">\n";
               echo "<div class='cel_trav_futur couleur_bord_tableau_notice color_fond_notices_f color_police_travaux'>\n";
@@ -462,7 +462,7 @@ echo "<div class=\"centre_cont_texte\">\n";
             //echo "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["f"].";\"><div style='color: ".$color_police_travaux."; font-variant: small-caps; text-align: center; font-weight: bold;'>Travaux personnels<br />pour le ".strftime("%a %d %b", $jour)."</div>\n";
             echo "<h3 class='titre_a_faire color_police_travaux'>Travaux personnels pour le<br />".strftime("%a %d %b", $jour)."</h3>\n";
 
-            // Affichage des devoirs dans chaque matière
+            // Affichage des devoirs dans chaque matiÃ¨re
             while ($ind < $nb_devoirs_cahier_texte) {
               $content = mysql_result($appel_devoirs_cahier_texte, $ind, 'contenu');
               // Mise en forme du texte
@@ -481,7 +481,7 @@ echo "<div class=\"centre_cont_texte\">\n";
               $chaine.=affiche_utilisateur($prof[2],$selected_eleve_classe);
               }
 //$html = "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["f"]."; padding: 2px; margin: 2px;\"><font color='".$color_police_matieres."' style='font-variant: small-caps;'><small><strong><u>".$matiere_devoirs." (".$chaine.") :</u></strong></small></font>\n".$html;
-// Correction Régis : ajout de class pour gérer la mise en page
+// Correction RÃ©gis : ajout de class pour gÃ©rer la mise en page
               $html = "<div class='matiere_a_faire couleur_bord_tableau_notice couleur_cellule_f color_police_matieres'>\n<h4 class='a_faire_titre color_police_matieres'>".$matiere_devoirs." (".$chaine.") :</h4>\n<div class='txt_gauche'>\n".$html;
               // fichier joint
               $html .= affiche_docs_joints($id_devoirs,"t");
@@ -496,9 +496,9 @@ echo "<div class=\"centre_cont_texte\">\n";
       //if ($nb_dev != 0) echo "</td>\n</tr>\n</table>\n";
       if ($nb_dev != 0) echo "</div>\n";
     }
-// ---------------------------- Fin Affichage des travaux à faire (div div /div) ---
+// ---------------------------- Fin Affichage des travaux Ã  faire (div div /div) ---
 
-// ---------------------------- Affichage des informations générales (div div div) ---
+// ---------------------------- Affichage des informations gÃ©nÃ©rales (div div div) ---
     $appel_info_cahier_texte = mysql_query("SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
 
     $nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
@@ -508,33 +508,33 @@ echo "<div class=\"centre_cont_texte\">\n";
 // documents joints
     $html .= affiche_docs_joints($id_ct,"c");
     if ($html != '') {
-//echo "<strong>Informations Générales</strong><table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["i"]."; padding: 2px; margin: 2px;\" width = '100%' cellpadding='5'><tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["i"]."; padding: 2px; margin: 2px;\"><td>".$html."</td></tr></table><br />\n";
-// Correction Régis : remplacement de <strong> par <strong> + ajout de class pour gérer la mise en page
-	   echo "<h2 class='h2_label'><strong>Informations Générales</strong></h2>\n";
+//echo "<strong>Informations GÃ©nÃ©rales</strong><table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["i"]."; padding: 2px; margin: 2px;\" width = '100%' cellpadding='5'><tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["i"]."; padding: 2px; margin: 2px;\"><td>".$html."</td></tr></table><br />\n";
+// Correction RÃ©gis : remplacement de <strong> par <strong> + ajout de class pour gÃ©rer la mise en page
+	   echo "<h2 class='h2_label'><strong>Informations GÃ©nÃ©rales</strong></h2>\n";
 	   echo "<div class='ct_info_generale couleur_bord_tableau_notice color_fond_notices_i'>\n";
 //		  echo "<tr class=\"tr_info_generale\">\n";
 			 echo "<div class='tr_info_generale couleur_bord_tableau_notice couleur_cellule_i'>".$html."</div>\n\n";
 //		  echo "</tr>\n";
 	   echo "</div>\n";
-// ---------------------------- Fin affichage des informations générales (div div /div) ---
+// ---------------------------- Fin affichage des informations gÃ©nÃ©rales (div div /div) ---
 	   echo "<br />\n";
     }
     echo "</div>\n";
 // ----------------------------  Fin de la colonne de gauche (div /div) ---
 
 
-// ----------------------------  Début de la deuxième de droite (div div) ---
+// ----------------------------  DÃ©but de la deuxiÃ¨me de droite (div div) ---
 //echo "<td valign=\"top\">";
     echo "<div class=\"cct_droit\">\n";
 // ----------------------------  Titre (div div div) --
             echo "<div class='titre_notice'>\n";
-              echo "<h2 class='h2_label'><strong>les dix dernières séances jusqu'au ".strftime("%A %d %B %Y", $today)." :</strong></h2>\n";
+              echo "<h2 class='h2_label'><strong>les dix derniÃ¨res sÃ©ances jusqu'au ".strftime("%A %d %B %Y", $today)." :</strong></h2>\n";
             echo "</div>\n";
 // ----------------------------  Fin titre (div div /div) --
 
 // ----------------------------  Dates (div div div) --
       echo "<div class='cdt_dates'>\n";
-// Première ligne
+// PremiÃ¨re ligne
 //echo "<tr><td style=\"width:50%\"><strong>" . strftime("%A %d %B %Y", $today) . "</strong>";
 //        echo "<tr>\n";
 // ----------------------------  Date du jour (div div div div) --
@@ -543,8 +543,8 @@ echo "<div class=\"centre_cont_texte\">\n";
 //          echo "</div>\n";
 // ----------------------------  Fin date du jour (div div div /div) --
 
-#y? sont les année, mois et jour précédents
-#t? sont les année, mois et jour suivants
+#y? sont les annÃ©e, mois et jour prÃ©cÃ©dents
+#t? sont les annÃ©e, mois et jour suivants
 $i= mktime(0,0,0,$month,$day-1,$year);
 $yy = date("Y",$i);
 $ym = date("m",$i);
@@ -553,15 +553,15 @@ $i= mktime(0,0,0,$month,$day+1,$year);
 $ty = date("Y",$i);
 $tm = date("m",$i);
 $td = date("d",$i);
-//echo "</td>\n<td><a title=\"Aller au jour précédent\" href=\"consultation.php?year=$yy&amp;month=$ym&amp;day=$yd&amp;id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe\"><img src='".$gepiPath."/images/icons/back.png' alt='Jour précédent'></a></td>\n<td align=\"center\"><a href=\"consultation.php?id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe\">Aujourd'hui</a></td>\n<td align=\"right\"><a title=\"Aller au jour suivant\" href=\"consultation.php?year=$ty&amp;month=$tm&amp;day=$td&amp;id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe\"><img src='".$gepiPath."/images/icons/forward.png' alt='Jour suivant'></a></td>\n</tr>\n";
-// correction Régis : mise en page dans CSS
-// ----------------------------  Jour précédent (div div div div) --
+//echo "</td>\n<td><a title=\"Aller au jour prÃ©cÃ©dent\" href=\"consultation.php?year=$yy&amp;month=$ym&amp;day=$yd&amp;id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe\"><img src='".$gepiPath."/images/icons/back.png' alt='Jour prÃ©cÃ©dent'></a></td>\n<td align=\"center\"><a href=\"consultation.php?id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe\">Aujourd'hui</a></td>\n<td align=\"right\"><a title=\"Aller au jour suivant\" href=\"consultation.php?year=$ty&amp;month=$tm&amp;day=$td&amp;id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe\"><img src='".$gepiPath."/images/icons/forward.png' alt='Jour suivant'></a></td>\n</tr>\n";
+// correction RÃ©gis : mise en page dans CSS
+// ----------------------------  Jour prÃ©cÃ©dent (div div div div) --
           echo "<div class='cdt_dates_precedent'>\n";
-            echo "<a title=\"Aller au jour précédent\" href=\"consultation.php?year=$yy&amp;month=$ym&amp;day=$yd&amp;id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe\">\n";
-              echo "<img src='".$gepiPath."/images/icons/back.png' alt='Jour précédent' />\n";
+            echo "<a title=\"Aller au jour prÃ©cÃ©dent\" href=\"consultation.php?year=$yy&amp;month=$ym&amp;day=$yd&amp;id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe\">\n";
+              echo "<img src='".$gepiPath."/images/icons/back.png' alt='Jour prÃ©cÃ©dent' />\n";
             echo "</a>\n";
           echo "</div>\n";
-// ----------------------------  Fin jour précédent (div div div /div) --
+// ----------------------------  Fin jour prÃ©cÃ©dent (div div div /div) --
 
 // ----------------------------  Aujourd'hui (div div div div) --
           echo "<div class=\"cdt_dates_aujourdhui\">\n";
@@ -588,13 +588,13 @@ $td = date("d",$i);
 // affichage du texte
 //        echo "<tr>\n";
           //  echo "<div>\n";
-// echo "<center><strong>les dix dernières séances jusqu'au ".strftime("%A %d %B %Y", $today)." :</strong></center></td>\n</tr>\n";
+// echo "<center><strong>les dix derniÃ¨res sÃ©ances jusqu'au ".strftime("%A %d %B %Y", $today)." :</strong></center></td>\n</tr>\n";
 // echo "<tr><td colspan=\"4\" style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background: rgb(199, 255, 153); padding: 2px; margin: 2px;\">";
 // echo "<tr>\n<td colspan=\"4\" style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice."; padding: 2px; margin: 2px;\">\n";
 
-			   // correction Régis : mise en page dans CSS
+			   // correction RÃ©gis : mise en page dans CSS
             // echo "<div class=\"centre_texte\">\n";
-              // echo "<h2 class='h2_label'><strong>les dix dernières séances jusqu'au ".strftime("%A %d %B %Y", $today)." :</strong></h2>\n";
+              // echo "<h2 class='h2_label'><strong>les dix derniÃ¨res sÃ©ances jusqu'au ".strftime("%A %d %B %Y", $today)." :</strong></h2>\n";
            //  echo "</div>\n";
           //  echo "</div>\n";
 //        echo "</tr>\n";
@@ -632,17 +632,17 @@ $td = date("d",$i);
           // Boucle d'affichage des notices dans la colonne de gauche
           $date_ct_old = -1;
            while (true) {
-            // On met les notices du jour avant les devoirs à rendre aujourd'hui
+            // On met les notices du jour avant les devoirs Ã  rendre aujourd'hui
             if ($notice && (!$devoir || $notice->date_ct >= $devoir->date_ct)) {
-                // Il y a encore une notice et elle est plus récente que le prochain devoir, où il n'y a plus de devoirs
+                // Il y a encore une notice et elle est plus rÃ©cente que le prochain devoir, oÃ¹ il n'y a plus de devoirs
                 $not_dev = $notice;
                 $notice = mysql_fetch_object($res_notices);
               } elseif($devoir) {
-                // Plus de notices et toujours un devoir, ou devoir plus récent
+                // Plus de notices et toujours un devoir, ou devoir plus rÃ©cent
                 $not_dev = $devoir;
                 $devoir = mysql_fetch_object($res_devoirs);
               } else {
-                // Plus rien à afficher, on sort de la boucle
+                // Plus rien Ã  afficher, on sort de la boucle
                 break;
               }
               // Passage en HTML
@@ -655,17 +655,17 @@ $td = date("d",$i);
               }
               //$titre .= "<strong>" . strftime("%a %d %b %y", $not_dev->date_ct) . "</strong>\n";
               $titre .= "<strong>" . strftime("%a %d %b %y", $not_dev->date_ct) . "</strong>\n";
-              // Numérotation des notices si plusieurs notice sur la même journée
+              // NumÃ©rotation des notices si plusieurs notice sur la mÃªme journÃ©e
               if ($not_dev->type == "c") {               if ($date_ct_old == $not_dev->date_ct) {
                 $num_notice++;
-                //$titre .= " <strong><i>(notice N° ".$num_notice.")</i></strong>";
-                $titre .= " <stong><em>(notice N° ".$num_notice.")</em></strong>";
+                //$titre .= " <strong><i>(notice NÂ° ".$num_notice.")</i></strong>";
+                $titre .= " <stong><em>(notice NÂ° ".$num_notice.")</em></strong>";
               } else {
-                // on afffiche "(notice N° 1)" uniquement s'il y a plusieurs notices dans la même journée
+                // on afffiche "(notice NÂ° 1)" uniquement s'il y a plusieurs notices dans la mÃªme journÃ©e
                 $nb_notices = sql_query1("SELECT count(id_ct) FROM ct_entry WHERE (id_groupe='" . $current_group["id"] ."' and date_ct='".$not_dev->date_ct."')");
-                if ($nb_notices > 1) $titre .= " <strong><em>(notice N° 1)</em></strong>";
-                //$titre .= " <strong><i>(notice N° 1)</i></strong>";
-                // On réinitialise le compteur
+                if ($nb_notices > 1) $titre .= " <strong><em>(notice NÂ° 1)</em></strong>";
+                //$titre .= " <strong><i>(notice NÂ° 1)</i></strong>";
+                // On rÃ©initialise le compteur
                 $num_notice = 1;
               }
             }

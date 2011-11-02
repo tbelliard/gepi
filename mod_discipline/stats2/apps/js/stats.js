@@ -107,7 +107,7 @@ function auto_complete(){
 }
 
 function auto_completed(input, li){
-  //on rÈcupËre le login et on l'impose au champ cachÈ
+  //on r√©cup√®re le login et on l'impose au champ cach√©
   $('login').value =  li.id;
   // on desactive le choix des dates pour le post
   $('month').disable();
@@ -150,7 +150,7 @@ function inittab(name) {
     var id_onglet=href_onglet[1];
     afficherDiv(id_onglet);
   } else
-//sinon on affiche la premiËre
+//sinon on affiche la premi√®re
 {
     var les_a = $$('#menutabs a');
     les_a[0].addClassName('current');
@@ -169,11 +169,11 @@ function teste(event){
     }
   }
   cliquera.className = 'current';
-  // MÈthode "pousse-toi de l‡" pas beau mais efficace et tu sais ce que tu caches
+  // M√©thode "pousse-toi de l√†" pas beau mais efficace et tu sais ce que tu caches
   for(i=0 ; i<les_a.length; i++){
     cacherDiv('tab'+i);
   }
-  // Il te reste ‡ afficher le bon div
+  // Il te reste √† afficher le bon div
   afficherDiv(testurl[1]);
 
   new Ajax.Request('index.php?ctrl=bilans&action=set_onglet&current_onglet='+namea, {

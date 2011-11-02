@@ -25,7 +25,7 @@ for ($index = 0; $index < $numlines; $index++) {
   if (!strlen($tmpline) || $tmpline == "\r") {
     // this is a blank line, send <p>
     $html .= SetHTMLOutputMode('', "0", 0);
-    continue; //passage à l'itération suivante
+    continue; //passage Ã  l'itÃ©ration suivante
   }
 
   // HTML AUTORISE OU INTERDIT ...
@@ -36,7 +36,7 @@ for ($index = 0; $index < $numlines; $index++) {
     // HTML mode
     $html .= SetHTMLOutputMode("", "0", 0);
     $html .= $matches[2];
-    continue;  //passage à l'itération suivante
+    continue;  //passage Ã  l'itÃ©ration suivante
   }
 
   //      */
@@ -141,7 +141,7 @@ for ($index = 0; $index < $numlines; $index++) {
   //    $html .= SetHTMLOutputMode('', "0", 0) . "<br />\n";
   } else {
 	//$html .= SetHTMLOutputMode('p', "0", 0);
-	//correction Régis, enlever p pour ne plus injecter les balises <p>
+	//correction RÃ©gis, enlever p pour ne plus injecter les balises <p>
 	$html = preg_replace("|(<u>)(.*?)(</u>)|", "<ins>\\2</ins>", $html);
 	$html .= SetHTMLOutputMode('', "0", 0);
   }

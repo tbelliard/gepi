@@ -27,7 +27,7 @@ $niveau_arbo = 1;
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
-// fonctions complémentaires et/ou librairies utiles
+// fonctions complÃ©mentaires et/ou librairies utiles
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -51,7 +51,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Export de données des bulletins',
+description='Export de donnÃ©es des bulletins',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -64,7 +64,7 @@ if (!checkAccess()) {
 
 /*
 function clean_string_csv($texte) {
-	// Pour remplacer les ; par ., et les " par '' et virer les retours à la ligne
+	// Pour remplacer les ; par ., et les " par '' et virer les retours Ã  la ligne
 	$texte=preg_replace("/;/",".,",$texte);
 	$texte=preg_replace('/"/',"''",$texte);
 	$texte=preg_replace('/\\\r\\\n/','',$texte);
@@ -148,7 +148,7 @@ if($nb_classes==0) {
 	die();
 }
 
-echo "<p>Effectifs en période 1&nbsp;: <a href='".$_SERVER['PHP_SELF']."?export_csv=effectifs'>Export CSV</a></p>\n";
+echo "<p>Effectifs en pÃ©riode 1&nbsp;: <a href='".$_SERVER['PHP_SELF']."?export_csv=effectifs'>Export CSV</a></p>\n";
 echo "<table class='boireaus'>\n";
 echo "<tr>\n";
 echo "<th>Classes</th>\n";
@@ -170,11 +170,11 @@ for($i=0;$i<count($tab_classe);$i++) {
 }
 echo "</table>\n";
 
-echo "<p>Effectifs par sexe en période 1&nbsp;: <a href='".$_SERVER['PHP_SELF']."?export_csv=effectifs_sexe'>Export CSV</a></p>\n";
+echo "<p>Effectifs par sexe en pÃ©riode 1&nbsp;: <a href='".$_SERVER['PHP_SELF']."?export_csv=effectifs_sexe'>Export CSV</a></p>\n";
 echo "<table class='boireaus'>\n";
 echo "<tr>\n";
 echo "<th>Classes</th>\n";
-echo "<th>Effectifs garçons</th>\n";
+echo "<th>Effectifs garÃ§ons</th>\n";
 echo "<th>Effectifs filles</th>\n";
 echo "<th>Effectifs totaux</th>\n";
 echo "</tr>\n";

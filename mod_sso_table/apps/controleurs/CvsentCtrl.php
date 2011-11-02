@@ -20,7 +20,7 @@
 * along with GEPI; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -29,7 +29,7 @@ require_once ("Controleur.php");
 require_once("ImportModele.php");
 
 /**
- * Contrôleur par défaut: Index
+ * ContrÃ´leur par dÃ©faut: Index
  */
 class CvsentCtrl extends Controleur {
 
@@ -43,7 +43,7 @@ class CvsentCtrl extends Controleur {
     private $libel_enseignant;
 
     /**
-     * Action par défaut
+     * Action par dÃ©faut
      */
     function index() {
         $this->vue->LoadTemplate('cvsent.php');
@@ -56,13 +56,13 @@ class CvsentCtrl extends Controleur {
             if (is_uploaded_file($this->tmp)) {
                 $this->copy_file($this->tmp);
             } else
-                throw new Exception('Aucun fichier ne semble uploadé ');
+                throw new Exception('Aucun fichier ne semble uploadÃ© ');
             $this->csv = '../temp/'.get_user_temp_directory().'/ENT-Identifiants.csv';
             if (file_exists($this->csv)) {
                 $this->traite_file($this->csv);
                 unlink($this->csv);
                 if (file_exists($this->csv)){
-                    throw new Exception('Impossible de supprimer le fichier csv dans votre repertoire temp. Il est conseillé de le faire manuellement.');
+                    throw new Exception('Impossible de supprimer le fichier csv dans votre repertoire temp. Il est conseillÃ© de le faire manuellement.');
                 }
                 if (is_null($this->erreurs_lignes)) {
                     $this->vue->LoadTemplate('result.php');
@@ -103,7 +103,7 @@ class CvsentCtrl extends Controleur {
         $data = new ImportModele();
         $this->verif_file($file);
         if (is_null($this->erreurs_lignes)) {
-            // on crée la table des imports ENT
+            // on crÃ©e la table des imports ENT
             $data->cree_table_import();
 
             $this->fic = fopen($file, 'r');
@@ -115,7 +115,7 @@ class CvsentCtrl extends Controleur {
                 //$this->ligne[1] : uid
                 //$this->ligne[2] : classe
                 //$this->ligne[3] : statut
-                //$this->ligne[4] : prénom
+                //$this->ligne[4] : prÃ©nom
                 //$this->ligne[5] : nom
                 //$this->ligne[6] : login
                 //$this->ligne[7] : mot de passe
@@ -124,7 +124,7 @@ class CvsentCtrl extends Controleur {
                 //$this->ligne[10] : uid pere
                 //$this->ligne[11] : uid tuteur1
                 //$this->ligne[12] : uid tuteur2
-                // si on a un élève, il a un père ou une mère ou un tuteur 1 ou un tuteur 2
+                // si on a un Ã©lÃ¨ve, il a un pÃ¨re ou une mÃ¨re ou un tuteur 1 ou un tuteur 2
                 if ($this->ligne[9] != "" || $this->ligne[10] != "" || $this->ligne[11] != "" || $this->ligne[12] != "") {
                     $recherche = TRUE;
                 } else {
@@ -132,7 +132,7 @@ class CvsentCtrl extends Controleur {
                 }
                 $this->res = $data->cherche_login($this->ligne, $statut, $recherche);
                 if (mysql_num_rows($this->res) == 1) {
-                    // on a un seul utilisateur dans Gépi
+                    // on a un seul utilisateur dans GÃ©pi
                     $row = mysql_fetch_row($this->res);
                     $login_gepi = $row[0];
                 } else {
@@ -142,19 +142,19 @@ class CvsentCtrl extends Controleur {
                 $data->ligne_table_import($this->ligne, $login_gepi);
             }
 
-            // regrouper dans un seul enregistrement les UID présents plusieurs fois
+            // regrouper dans un seul enregistrement les UID prÃ©sents plusieurs fois
             $data->cree_index_uid();
 
-            // récupérer les libellés élèves, responsables, enseignants
+            // rÃ©cupÃ©rer les libellÃ©s Ã©lÃ¨ves, responsables, enseignants
             //$this->req= "SELECT DISTINCT `statut` FROM `utilisateurs` u, `plugin_sso_table_import` e  WHERE u.`statut` = 'professeur' AND e.login = u.login AND e.login != '' ";
-            // Ne fonctionne pas, certains profs ont un statut 'personnel' dans l'ENT (remplaçant pas encore remonté, prof des école UPI...)
-            // supprimer les élèves sans classe
+            // Ne fonctionne pas, certains profs ont un statut 'personnel' dans l'ENT (remplaÃ§ant pas encore remontÃ©, prof des Ã©cole UPI...)
+            // supprimer les Ã©lÃ¨ves sans classe
             $this->res = $data->trouve_statut_eleves();
             if (mysql_num_rows($this->res) == 1) {
                 $row = mysql_fetch_row($this->res);
                 $this->libel_eleve = $row[0];
             } else {
-                echo "il y a " . mysql_num_rows($this->res) . " dénominations pour le statut élève ";
+                echo "il y a " . mysql_num_rows($this->res) . " dÃ©nominations pour le statut Ã©lÃ¨ve ";
                 die ();
             }
             $data->supprime_sans_classe($this->libel_eleve);
@@ -165,17 +165,17 @@ class CvsentCtrl extends Controleur {
                 $row = mysql_fetch_row($this->res);
                 $this->libel_responsable = $row[0];
             } else {
-                echo "il y a " . mysql_num_rows($this->res) . " dénominations pour le statut responsable ";
+                echo "il y a " . mysql_num_rows($this->res) . " dÃ©nominations pour le statut responsable ";
                 die ();
             }
             $data->supprime_sans_classe($this->libel_responsable);
-            // supprimer les responsables sans élève (erreurs dans l'ENT)
+            // supprimer les responsables sans Ã©lÃ¨ve (erreurs dans l'ENT)
             /*
               // si on a un tuteur dans l'ENT qui n'est que tuteur1 ou tuteur2, on peut le supprimer
               $this->tuteur = $data->est_que_tuteur();
               if (mysql_num_rows($this->tuteur) != 0) {
               while ($this->row = mysql_fetch_array($this->tuteur)) {
-              // on a bien un compte tuteur dans l'ENT, on peut le supprimer il n'a pas de compte dans gépi
+              // on a bien un compte tuteur dans l'ENT, on peut le supprimer il n'a pas de compte dans gÃ©pi
               $data->del_by_uid($this->row['uid']);
               }
               }
@@ -188,17 +188,17 @@ class CvsentCtrl extends Controleur {
             $this->res = $data->login_vide();
             while ($this->row = mysql_fetch_array($this->res)) {
                 $login = '';
-                // si on a un responsable, on le retrouve dans père ou mère ou tuteur 1 ou tuteur 2
+                // si on a un responsable, on le retrouve dans pÃ¨re ou mÃ¨re ou tuteur 1 ou tuteur 2
                 $this->resp = $data->est_responsable($this->row);
                 if (mysql_num_rows($this->resp) != 0) {
                     // on a bien un responsable
-                    // on regarde déjà si la recherche sur responsable ne régle pas le problème
+                    // on regarde dÃ©jÃ  si la recherche sur responsable ne rÃ©gle pas le problÃ¨me
                     $this->resp1 = $data->cherche_login($this->row, 'responsable');
                     if (mysql_num_rows($this->resp1) == 1) {
                         $row1 = mysql_fetch_assoc($this->resp1);
                         $login = $row1['login'];
                     } else if (mysql_num_rows($this->resp) != 0) {
-                        // on recherche le responsable avec ce nom et prénom ayant cet élève
+                        // on recherche le responsable avec ce nom et prÃ©nom ayant cet Ã©lÃ¨ve
                         $this->eleve = mysql_fetch_assoc($this->resp);
                         $this->resp2 = $data->cherche_responsable($this->eleve, $this->row);
                         if (mysql_num_rows($this->resp2) != 0) {
@@ -206,14 +206,14 @@ class CvsentCtrl extends Controleur {
                             $login = $row2[0];
                         }
                     } else {
-                        // on a pas trouver d'élève, il va falloir traiter à la main
+                        // on a pas trouver d'Ã©lÃ¨ve, il va falloir traiter Ã  la main
                         $login = '';
                     }
                 } else {
-                    // si on a un élève, il a un père ou une mère ou un tuteur 1 ou un tuteur 2
+                    // si on a un Ã©lÃ¨ve, il a un pÃ¨re ou une mÃ¨re ou un tuteur 1 ou un tuteur 2
                     $this->reselv = $data->est_eleve($this->row);
                     if (mysql_num_rows($this->reselv) != 0) {
-                        // on a bien un élève, on recherche l'élève ayant un de ces responsables
+                        // on a bien un Ã©lÃ¨ve, on recherche l'Ã©lÃ¨ve ayant un de ces responsables
                         $this->responsable = mysql_fetch_assoc($this->reselv);
                         $this->reselv2 = $data->cherche_eleve($this->responsable, $this->row);
                         if (mysql_num_rows($this->reselv2) == 1) {
@@ -221,7 +221,7 @@ class CvsentCtrl extends Controleur {
                             $login = $rowelv2[0];
                         }
                     }
-                    // les autres sont ni élève ni responsable
+                    // les autres sont ni Ã©lÃ¨ve ni responsable
                     $this->resautre = $data->doublon_pro($this->row, $this->libel_eleve, $this->libel_responsable);
                     if (mysql_num_rows($this->resautre) == 1) {
                         $rowautre = mysql_fetch_row($this->resautre);
@@ -234,7 +234,7 @@ class CvsentCtrl extends Controleur {
 
             fclose($this->fic);
 
-            // il reste encore les erreurs : 2 comptes ENT -> 1 compte Gépi, on peut nettoyer quand les 2 comptes ne sont pas des comptes parents
+            // il reste encore les erreurs : 2 comptes ENT -> 1 compte GÃ©pi, on peut nettoyer quand les 2 comptes ne sont pas des comptes parents
             $this->res = $data->doublon_2ent_1gepi();
             if (mysql_num_rows($this->res) > 0) {
                 while ($this->row2 = mysql_fetch_array($this->res)) {
@@ -244,7 +244,7 @@ class CvsentCtrl extends Controleur {
             $this->res = $data->doublon_2ent_1gepi();
             if (mysql_num_rows($this->res) > 0) {
                 $class = "message_red";
-                $message = "Ce compte pose problème";
+                $message = "Ce compte pose problÃ¨me";
                 while ($this->row2 = mysql_fetch_array($this->res)) {
                     $this->nom = $this->row2['nom'] . " " . $this->row2['prenom'];
                     $this->table[] = array('login_gepi' => $this->nom, 'login_sso' => $this->ligne['uid'], 'couleur' => $class, 'message' => $message);
@@ -256,7 +256,7 @@ class CvsentCtrl extends Controleur {
             } else {
                 $this->ecriture = FALSE;
             }
-            // On récupère tous les membres de l'ENT ayant un login Gépi
+            // On rÃ©cupÃ¨re tous les membres de l'ENT ayant un login GÃ©pi
             $this->res = $data->get_gepi_ent();
             if (mysql_num_rows($this->res) != 0) {
                 while ($this->ligne = mysql_fetch_array($this->res)) {
@@ -268,20 +268,20 @@ class CvsentCtrl extends Controleur {
                     }
                 }
             }
-            // On récupère les membres de l'ENT sans login présents dans Gépi
+            // On rÃ©cupÃ¨re les membres de l'ENT sans login prÃ©sents dans GÃ©pi
             $this->class = "message_red";
             $this->res = $data->get_sans_login();
             if (mysql_num_rows($this->res) != 0) {
                 while ($this->ligne = mysql_fetch_array($this->res)) {
                     $this->res2 = $data->cherche_login($this->ligne);
                     if (mysql_num_rows($this->res2) > 0) {
-                        $this->message = 'Il y a plusieurs personnes dans Gépi ayant les mêmes noms et prénoms';
+                        $this->message = 'Il y a plusieurs personnes dans GÃ©pi ayant les mÃªmes noms et prÃ©noms';
                         $nomPrenom = $this->ligne['nom'] . " " . $this->ligne['prenom'];
                         $this->table[] = array('login_gepi' => $nomPrenom, 'login_sso' => $this->ligne['uid'], 'couleur' => $this->class, 'message' => $this->message);
                     }
                 }
             }
-            // On récupère les membres de l'ENT sans login absents de Gépi
+            // On rÃ©cupÃ¨re les membres de l'ENT sans login absents de GÃ©pi
             $this->res = $data->get_sans_login();
             if (mysql_num_rows($this->res) != 0) {
                 while ($this->ligne = mysql_fetch_array($this->res)) {
@@ -296,12 +296,12 @@ class CvsentCtrl extends Controleur {
                         if (isset($possibles))
                             $probable = $this->get_probable($this->ligne, $possibles);
                         if ($probable) {
-                            $this->message = "L'utilisateur est peut être " . $probable['nom'] . " " . $probable['prenom'] . "( " . $probable['statut'] . ")";
+                            $this->message = "L'utilisateur est peut Ãªtre " . $probable['nom'] . " " . $probable['prenom'] . "( " . $probable['statut'] . ")";
                             $this->class = "message_purple";
                             $nomPrenom = $this->ligne['nom'] . " " . $this->ligne['prenom'];
                             $this->table[] = array('login_gepi' => $nomPrenom, 'login_sso' => $this->ligne['uid'], 'couleur' => $this->class, 'message' => $this->message);
                         } else {
-                            $this->message = "L'utilisateur n'existe probablement pas dans gépi.";
+                            $this->message = "L'utilisateur n'existe probablement pas dans gÃ©pi.";
                             $this->class = "message_red";
                             $nomPrenom = $this->ligne['nom'] . " " . $this->ligne['prenom'];
                             $this->table[] = array('login_gepi' => $nomPrenom, 'login_sso' => $this->ligne['uid'], 'couleur' => $this->class, 'message' => $this->message);
@@ -337,42 +337,42 @@ class CvsentCtrl extends Controleur {
 
     private function get_message($code) {
         //$NomBloc   : nom du bloc qui appel la fonction (lecture seule)
-        //$CurrRec   : tableau contenant les champs de l'enregistrement en cours (lecture/écriture)
-        //$RecNum    : numéro de l'enregsitrement en cours (lecture seule)
+        //$CurrRec   : tableau contenant les champs de l'enregistrement en cours (lecture/Ã©criture)
+        //$RecNum    : numÃ©ro de l'enregsitrement en cours (lecture seule)
         switch ($code) {
             case 0:
                 $query = "SELECT `login_sso` FROM `sso_table_correspondance` WHERE `login_gepi`='" . $this->ligne['login'] . "'";
                 $result = mysql_query($query);
-                // Vérification du résultat
+                // VÃ©rification du rÃ©sultat
                 if (!$result) {
-                    $message = 'Requête invalide : ' . mysql_error() . "\n";
-                    $message .= 'Requête complète : ' . $query;
+                    $message = 'RequÃªte invalide : ' . mysql_error() . "\n";
+                    $message .= 'RequÃªte complÃ¨te : ' . $query;
                     die($message);
                 }
                 $row = mysql_fetch_row($result);
                 if ($row[0] == $this->ligne['uid']) {
                     $this->class = "message_blue";
-                    $this->message = 'Une entrée identique existe déjà dans la table pour ce login gépi';
+                    $this->message = 'Une entrÃ©e identique existe dÃ©jÃ  dans la table pour ce login gÃ©pi';
                 } else {
                     $this->class = "message_red";
-                    $this->message = 'Une entrée différente existe déjà dans la table pour ce login gépi';
+                    $this->message = 'Une entrÃ©e diffÃ©rente existe dÃ©jÃ  dans la table pour ce login gÃ©pi';
                 }
                 break;
             case 1:
                 $this->class = "message_red";
-                $this->message = 'Une entrée existe déjà dans la table pour ce login sso';
+                $this->message = 'Une entrÃ©e existe dÃ©jÃ  dans la table pour ce login sso';
                 break;
             case 2:
                 $this->class = "message_red";
-                $this->message = 'L\'utilisateur n\'existe pas dans gépi.';
+                $this->message = 'L\'utilisateur n\'existe pas dans gÃ©pi.';
                 break;
             case 3:
                 $this->class = "message_orange";
-                $this->message = 'L\'utilisateur existe mais son compte n\'est pas paramétré pour le sso. Il faut corriger absolument pour que la correspondance fonctionne.';
+                $this->message = 'L\'utilisateur existe mais son compte n\'est pas paramÃ©trÃ© pour le sso. Il faut corriger absolument pour que la correspondance fonctionne.';
                 break;
             case 5:
                 $this->class = "message_red";
-                $this->message = 'Aucune des deux valeurs ne peut être vide. Il faut rectifier cela.';
+                $this->message = 'Aucune des deux valeurs ne peut Ãªtre vide. Il faut rectifier cela.';
                 break;
             default:
                 $this->class = "message_green";

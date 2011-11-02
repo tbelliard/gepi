@@ -45,7 +45,7 @@ if (!checkAccess()) {
 if(strstr($_SERVER['HTTP_REFERER'],"eleves/index.php")) {$_SESSION['retour_apres_maj_sconet']="../eleves/index.php";}
 
 //**************** EN-TETE *****************
-$titre_page = "Mise à jour eleves/responsables";
+$titre_page = "Mise Ã  jour eleves/responsables";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 echo "<p class=bold>";
@@ -53,51 +53,51 @@ echo "<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' cla
 echo "</p>\n";
 
 /*
-echo "<p>Vous pouvez effectuer les mises à jour de deux façons:</p>\n";
+echo "<p>Vous pouvez effectuer les mises Ã  jour de deux faÃ§ons:</p>\n";
 echo "<ul>\n";
-echo "<li><a href='maj_import2.php'>Nouvelle méthode (<i>plus complète</i>)</a>: Nouvelle méthode, en fournissant directement les fichiers XML de Sconet/STS.</li>\n";
-echo "<li><a href='maj_import1.php'>Ancienne méthode</a>: En générant des fichiers CSV à partir des fichiers XML de Sconet/STS.</li>\n";
+echo "<li><a href='maj_import2.php'>Nouvelle mÃ©thode (<i>plus complÃ¨te</i>)</a>: Nouvelle mÃ©thode, en fournissant directement les fichiers XML de Sconet/STS.</li>\n";
+echo "<li><a href='maj_import1.php'>Ancienne mÃ©thode</a>: En gÃ©nÃ©rant des fichiers CSV Ã  partir des fichiers XML de Sconet/STS.</li>\n";
 echo "</ul>\n";
 echo "<p><br /></p>\n";
 */
 
-echo "<p><a href='maj_import2.php'>Mise à jour des données élèves/responsables à l'aide des fichiers XML de Sconet/STS</a>.</p>\n";
+echo "<p><a href='maj_import2.php'>Mise Ã  jour des donnÃ©es Ã©lÃ¨ves/responsables Ã  l'aide des fichiers XML de Sconet/STS</a>.</p>\n";
 echo "<p><br /></p>\n";
 
 //==================================
-// RNE de l'établissement pour comparer avec le RNE de l'établissement de l'année précédente
+// RNE de l'Ã©tablissement pour comparer avec le RNE de l'Ã©tablissement de l'annÃ©e prÃ©cÃ©dente
 $gepiSchoolRne=getSettingValue("gepiSchoolRne") ? getSettingValue("gepiSchoolRne") : "";
 //==================================
 if($gepiSchoolRne=="") {
-	echo "<p><b style='color:red;'>Attention</b>: Le RNE de l'établissement n'est pas renseigné dans 'Gestion générale/<a href='../gestion/param_gen.php' target='_blank'>Configuration générale</a>'<br />Cela peut perturber l'import de l'établissement d'origine des élèves.<br />Vous devriez corriger avant de poursuivre.</p>\n";
+	echo "<p><b style='color:red;'>Attention</b>: Le RNE de l'Ã©tablissement n'est pas renseignÃ© dans 'Gestion gÃ©nÃ©rale/<a href='../gestion/param_gen.php' target='_blank'>Configuration gÃ©nÃ©rale</a>'<br />Cela peut perturber l'import de l'Ã©tablissement d'origine des Ã©lÃ¨ves.<br />Vous devriez corriger avant de poursuivre.</p>\n";
 	echo "<p><br /></p>\n";
 }
 
 $sql="SELECT 1=1 FROM eleves;";
 $test=mysql_query($sql);
 if(mysql_num_rows($test)==0){
-	echo "<p>Aucun élève ne semble encore présent dans la base.</p>\n";
+	echo "<p>Aucun Ã©lÃ¨ve ne semble encore prÃ©sent dans la base.</p>\n";
 }
 else{
 	$sql="SELECT * FROM eleves WHERE ele_id LIKE 'e%' OR ele_id LIKE '';";
 	$res_ele=mysql_query($sql);
 
 	if(mysql_num_rows($res_ele)==0){
-		echo "<p>Tous vos élèves ont un identifiant 'ele_id' formaté comme ceux provenant de Sconet.<br />C'est ce qu'il faut pour la mise à jour d'après Sconet.</p>\n";
+		echo "<p>Tous vos Ã©lÃ¨ves ont un identifiant 'ele_id' formatÃ© comme ceux provenant de Sconet.<br />C'est ce qu'il faut pour la mise Ã  jour d'aprÃ¨s Sconet.</p>\n";
 	}
 	else{
-		echo "<p>Un ou des élèves ont un identifiant 'ele_id' correspondant à une initialisation sans Sconet ou à une création individuelle manuelle.<br />Ces élèves ne pourront pas être mis à jour automatiquement d'après Sconet.</p>";
+		echo "<p>Un ou des Ã©lÃ¨ves ont un identifiant 'ele_id' correspondant Ã  une initialisation sans Sconet ou Ã  une crÃ©ation individuelle manuelle.<br />Ces Ã©lÃ¨ves ne pourront pas Ãªtre mis Ã  jour automatiquement d'aprÃ¨s Sconet.</p>";
 
-		echo "<p>Voir en <a href='#notes_correction'>sous le tableau</a> les possibilités de correction.</p>\n";
+		echo "<p>Voir en <a href='#notes_correction'>sous le tableau</a> les possibilitÃ©s de correction.</p>\n";
 
 		echo "<blockquote>\n";
-		echo "<table class='boireaus' summary='Elèves à corriger'>\n";
+		echo "<table class='boireaus' summary='ElÃ¨ves Ã  corriger'>\n";
 		echo "<tr>\n";
 		echo "<th>Identifiant<br />'ele_id'</th>\n";
 		echo "<th>Identifiant<br />'elenoet'</th>\n";
 		echo "<th>Login</th>\n";
 		echo "<th>Nom</th>\n";
-		echo "<th>Prénom</th>\n";
+		echo "<th>PrÃ©nom</th>\n";
 		echo "<th>Classe</th>\n";
 		echo "</tr>\n";
 		$alt=1;
@@ -133,7 +133,7 @@ else{
 		echo "</table>\n";
 
 		echo "<a name='notes_correction'></a>\n";
-		echo "<p>Si les ELE_ID ne sont pas corrects, mais que les ELENOET de la table 'eleves' correspondent bien à ceux du fichier 'ElevesSansAdresses.xml', vous pouvez corriger les 'ELE_ID' automatiquement dans la page suivante: <a href='corrige_ele_id.php'>Correction des ELE_ID</a></p>\n";
+		echo "<p>Si les ELE_ID ne sont pas corrects, mais que les ELENOET de la table 'eleves' correspondent bien Ã  ceux du fichier 'ElevesSansAdresses.xml', vous pouvez corriger les 'ELE_ID' automatiquement dans la page suivante: <a href='corrige_ele_id.php'>Correction des ELE_ID</a></p>\n";
 
 		echo "</blockquote>\n";
 	}
@@ -143,23 +143,23 @@ else{
 $sql="SELECT 1=1 FROM resp_pers;";
 $test=mysql_query($sql);
 if(mysql_num_rows($test)==0){
-	echo "<p>Aucun responsables ne semble encore défini.</p>\n";
+	echo "<p>Aucun responsables ne semble encore dÃ©fini.</p>\n";
 }
 else{
 	$sql="SELECT * FROM resp_pers WHERE pers_id LIKE 'p%';";
 	$res_pers=mysql_query($sql);
 	if(mysql_num_rows($res_pers)==0){
-		echo "<p>Tous vos responsables ont un identifiant 'pers_id' formaté comme ceux provenant de Sconet.<br />C'est ce qu'il faut pour la mise à jour d'après Sconet.</p>\n";
+		echo "<p>Tous vos responsables ont un identifiant 'pers_id' formatÃ© comme ceux provenant de Sconet.<br />C'est ce qu'il faut pour la mise Ã  jour d'aprÃ¨s Sconet.</p>\n";
 	}
 	else{
-		echo "<p>Un ou des responsables ont un identifiant 'pers_id' correspondant à une initialisation sans Sconet ou à une création individuelle manuelle.<br />Ces responsables ne pourront pas être mis à jour automatiquement d'après Sconet.</p>\n";
+		echo "<p>Un ou des responsables ont un identifiant 'pers_id' correspondant Ã  une initialisation sans Sconet ou Ã  une crÃ©ation individuelle manuelle.<br />Ces responsables ne pourront pas Ãªtre mis Ã  jour automatiquement d'aprÃ¨s Sconet.</p>\n";
 
 		echo "<blockquote>\n";
 		echo "<table class='boireaus'>\n";
 		echo "<tr>\n";
 		echo "<th>Identifiant<br />'pers_id'</th>\n";
 		echo "<th>Nom</th>\n";
-		echo "<th>Prénom</th>\n";
+		echo "<th>PrÃ©nom</th>\n";
 		echo "<th>Responsable de</th>\n";
 		echo "</tr>\n";
 		$alt=1;
@@ -174,7 +174,7 @@ else{
 			$sql="SELECT e.login,e.nom,e.prenom FROM eleves e, responsables2 r WHERE e.ele_id=r.ele_id AND r.pers_id='$lig->pers_id';";
 			$res_resp=mysql_query($sql);
 			if(mysql_num_rows($res_resp)==0){
-				echo "<span style='color:red;'>Aucun élève associé</span>\n";
+				echo "<span style='color:red;'>Aucun Ã©lÃ¨ve associÃ©</span>\n";
 			}
 			else{
 				$cpt_ele=0;
@@ -210,7 +210,7 @@ else{
 
 
 echo "<p><br /></p>\n";
-echo "<p><i>NOTE&nbsp;:</i> Cette page ne permet pas d'initialiser une année, mais seulement de mettre à jour en cours d'année les informations élèves (<i>nom, prénom, naissance, INE, régime,...</i>) et responsables (<i>nom, prénom, changement d'adresse, tel,...</i>), et d'importer les élèves/responsables ajoutés en cours d'année.</p>\n";
+echo "<p><i>NOTE&nbsp;:</i> Cette page ne permet pas d'initialiser une annÃ©e, mais seulement de mettre Ã  jour en cours d'annÃ©e les informations Ã©lÃ¨ves (<i>nom, prÃ©nom, naissance, INE, rÃ©gime,...</i>) et responsables (<i>nom, prÃ©nom, changement d'adresse, tel,...</i>), et d'importer les Ã©lÃ¨ves/responsables ajoutÃ©s en cours d'annÃ©e.</p>\n";
 
 // Il faudrait permettre de corriger l'ELE_ID et le PERS_ID
 echo "<p><br /></p>\n";

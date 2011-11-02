@@ -62,11 +62,11 @@ if(isset($_GET['forcer_recalcul_rang'])) {
 			$msg="Erreur lors de la programmation du recalcul des rangs pour cette classe.";
 		}
 		else {
-			$msg="Recalcul des rangs programmé pour cette classe.";
+			$msg="Recalcul des rangs programmÃ© pour cette classe.";
 		}
 	}
 	else {
-		$msg="Aucune période n'est définie pour cette classe.<br />Recalcul des rangs impossible pour cette classe.";
+		$msg="Aucune pÃ©riode n'est dÃ©finie pour cette classe.<br />Recalcul des rangs impossible pour cette classe.";
 	}
 }
 
@@ -110,7 +110,7 @@ if(mysql_num_rows($res_class_tmp)>0){
 $priority_defaut = 5;
 
 //================================
-// Liste de domaines à déplacer par la suite dans global.inc ?
+// Liste de domaines Ã  dÃ©placer par la suite dans global.inc ?
 /*
 $tab_domaines=array('bulletins', 'cahier_notes', 'absences', 'cahier_textes', 'edt');
 $tab_domaines_sigle=array('B', 'CN', 'Abs', 'CDT', 'EDT');
@@ -201,7 +201,7 @@ if (isset($_POST['is_posted'])) {
     }
 
     foreach ($options as $key => $value) {
-        // Toutes les vérifications de sécurité sont faites dans la fonction
+        // Toutes les vÃ©rifications de sÃ©curitÃ© sont faites dans la fonction
         $update = update_group_class_options($key, $id_classe, $value);
     }
 
@@ -226,7 +226,7 @@ if (isset($_POST['is_posted'])) {
 					$sql="DELETE FROM j_groupes_visibilite WHERE id_groupe='".$tab_id_groupe[$loop]."' AND domaine='".$tab_domaines[$loo]."';";
 					//echo "$sql<br />";
 					$suppr=mysql_query($sql);
-					if(!$suppr) {$msg.="Erreur lors de la suppression de l'invisibilité du groupe n°".$tab_id_groupe[$loop]." sur les ".$tab_domaines_texte[$loo].".<br />";}
+					if(!$suppr) {$msg.="Erreur lors de la suppression de l'invisibilitÃ© du groupe nÂ°".$tab_id_groupe[$loop]." sur les ".$tab_domaines_texte[$loo].".<br />";}
 				}
 			}
 			else {
@@ -234,7 +234,7 @@ if (isset($_POST['is_posted'])) {
 					$sql="INSERT j_groupes_visibilite SET id_groupe='".$tab_id_groupe[$loop]."', domaine='".$tab_domaines[$loo]."', visible='n';";
 					//echo "$sql<br />";
 					$insert=mysql_query($sql);
-					if(!$insert) {$msg.="Erreur lors de l'enregistrement de l'invisibilité du groupe n°".$tab_id_groupe[$loop]." sur les ".$tab_domaines_texte[$loo].".<br />";}
+					if(!$insert) {$msg.="Erreur lors de l'enregistrement de l'invisibilitÃ© du groupe nÂ°".$tab_id_groupe[$loop]." sur les ".$tab_domaines_texte[$loo].".<br />";}
 				}
 			}
 
@@ -255,7 +255,7 @@ if (isset($_POST['is_posted'])) {
 	}
 	//================================
 
-	$msg="Enregistrement effectué.";
+	$msg="Enregistrement effectuÃ©.";
 
 }
 
@@ -278,24 +278,24 @@ if (isset($_GET['action'])) {
             if ($delete == true) {
                 //================================
                 // MODIF: boireaus
-                //$msg .= "Le groupe " . $_GET['id_groupe'] . " a été supprimé.";
+                //$msg .= "Le groupe " . $_GET['id_groupe'] . " a Ã©tÃ© supprimÃ©.";
 
                 //$sql="SELECT * FROM groupes WHERE id='".$_GET['id_groupe']."'";
                 //$req_grp=mysql_query($sql);
                 //$ligne_grp=mysql_fetch_object($req_grp);
-                // Le groupe n'existe déjà plus
-                $msg .= "Le groupe $ligne_grp->name (" . $_GET['id_groupe'] . ") a été supprimé.";
+                // Le groupe n'existe dÃ©jÃ  plus
+                $msg .= "Le groupe $ligne_grp->name (" . $_GET['id_groupe'] . ") a Ã©tÃ© supprimÃ©.";
                 //================================
             } else {
-                $msg .= "Une erreur a empêché la suppression du groupe.";
+                $msg .= "Une erreur a empÃªchÃ© la suppression du groupe.";
             }
         } else {
-            $msg .= "Des données existantes bloquent la suppression du groupe. Aucune note ni appréciation du bulletin ne doit avoir été saisie pour les élèves de ce groupe pour permettre la suppression du groupe.";
+            $msg .= "Des donnÃ©es existantes bloquent la suppression du groupe. Aucune note ni apprÃ©ciation du bulletin ne doit avoir Ã©tÃ© saisie pour les Ã©lÃ¨ves de ce groupe pour permettre la suppression du groupe.";
         }
     }
 }
 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
 //$titre_page = "Gestion des groupes";
 $titre_page = "Gestion des enseignements";
@@ -307,11 +307,11 @@ require_once("../lib/header.inc");
 if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['confirm_delete_group']))) {
 	check_token(false);
 
-	// On va détailler ce qui serait supprimé en cas de confirmation
+	// On va dÃ©tailler ce qui serait supprimÃ© en cas de confirmation
 	$tmp_group=get_group($_GET['id_groupe']);
 	echo "<div style='border: 2px solid red;'>\n";
 	echo "<p><b>ATTENTION&nbsp;:</b> Vous souhaitez supprimer l'enseignement suivant&nbsp;: ".$tmp_group['name']." (<i>".$tmp_group['description']."</i>) en ".$tmp_group['classlist_string']."<br />\n";
-	echo "Voici quelques éléments sur l'enseignement&nbsp;:</p>\n";
+	echo "Voici quelques Ã©lÃ©ments sur l'enseignement&nbsp;:</p>\n";
 	$suppression_possible='y';
 
 	$lien_bull_simp="";
@@ -332,7 +332,7 @@ if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['c
 		echo "Aucune note sur les bulletins.<br />\n";
 	}
 	else {
-		echo "<span style='color:red;'>$nb_mn note(s) sur les bulletins</span> (<i>toutes périodes confondues</i>)&nbsp;: $lien_bull_simp<br />\n";
+		echo "<span style='color:red;'>$nb_mn note(s) sur les bulletins</span> (<i>toutes pÃ©riodes confondues</i>)&nbsp;: $lien_bull_simp<br />\n";
 		$suppression_possible='n';
 	}
 
@@ -340,10 +340,10 @@ if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['c
 	$test_ma=mysql_query($sql);
 	$nb_ma=mysql_num_rows($test_ma);
 	if($nb_ma==0) {
-		echo "Aucune appréciation sur les bulletins.<br />\n";
+		echo "Aucune apprÃ©ciation sur les bulletins.<br />\n";
 	}
 	else {
-		echo "<span style='color:red;'>$nb_ma appréciation(s) sur les bulletins</span> (<i>toutes périodes confondues</i>)&nbsp;: $lien_bull_simp<br />\n";
+		echo "<span style='color:red;'>$nb_ma apprÃ©ciation(s) sur les bulletins</span> (<i>toutes pÃ©riodes confondues</i>)&nbsp;: $lien_bull_simp<br />\n";
 		$suppression_possible='n';
 	}
 
@@ -372,11 +372,11 @@ if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['c
 	}
 
 	// NOTES
-	// Récupérer les cahier de notes
+	// RÃ©cupÃ©rer les cahier de notes
 	$sql="SELECT DISTINCT id_cahier_notes, periode FROM cn_cahier_notes WHERE id_groupe='".$_GET['id_groupe']."' ORDER BY periode;";
 	$res_ccn=mysql_query($sql);
 	if(mysql_num_rows($res_ccn)==0) {
-		echo "Aucun cahier de notes n'est initialisé pour cet enseignement.<br />\n";
+		echo "Aucun cahier de notes n'est initialisÃ© pour cet enseignement.<br />\n";
 	}
 	else {
 		while($lig_id_cn=mysql_fetch_object($res_ccn)) {
@@ -384,10 +384,10 @@ if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['c
 			$res_dev=mysql_query($sql);
 			$nb_dev=mysql_num_rows($res_dev);
 			if($nb_dev==0) {
-				echo "Période $lig_id_cn->periode&nbsp;: Aucun devoir.<br />\n";
+				echo "PÃ©riode $lig_id_cn->periode&nbsp;: Aucun devoir.<br />\n";
 			}
 			else {
-				echo "Période $lig_id_cn->periode&nbsp;: $nb_dev devoir(s) dans le carnet de notes.<br />\n";
+				echo "PÃ©riode $lig_id_cn->periode&nbsp;: $nb_dev devoir(s) dans le carnet de notes.<br />\n";
 				$temoin_non_vide='y';
 			}
 		}
@@ -397,9 +397,9 @@ if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['c
 	if($suppression_possible=='y') {
 		if($temoin_non_vide=='y') {
 			echo "<p>Si vous souhaitez effectuer ";
-			echo "malgré tout ";
+			echo "malgrÃ© tout ";
 			echo "la suppression de l'enseignement&nbsp;: ";
-			echo "<a href='edit_class.php?id_groupe=".$_GET['id_groupe']."&amp;action=delete_group&amp;confirm_delete_group=y&amp;id_classe=$id_classe".add_token_in_url()."' onclick=\"return confirmlink(this, 'ATTENTION !!! L\'enseignement n\'est pas totalement vide, même si les bulletins ne contiennent pas de référence à cet enseignement.\\nEtes-vous *VRAIMENT SÛR* de vouloir continuer ?', 'Confirmation de la suppression')\">Supprimer</a>";
+			echo "<a href='edit_class.php?id_groupe=".$_GET['id_groupe']."&amp;action=delete_group&amp;confirm_delete_group=y&amp;id_classe=$id_classe".add_token_in_url()."' onclick=\"return confirmlink(this, 'ATTENTION !!! L\'enseignement n\'est pas totalement vide, mÃªme si les bulletins ne contiennent pas de rÃ©fÃ©rence Ã  cet enseignement.\\nEtes-vous *VRAIMENT SÃ›R* de vouloir continuer ?', 'Confirmation de la suppression')\">Supprimer</a>";
 			echo "</p>\n";
 		}
 		else {
@@ -409,7 +409,7 @@ if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['c
 		}
 	}
 	else {
-		echo "<p style='color:red;'>Des données existantes bloquent la suppression du groupe.<br />Aucune note ni appréciation du bulletin ne doit avoir été saisie pour les élèves de ce groupe pour permettre la suppression du groupe.</p>\n";
+		echo "<p style='color:red;'>Des donnÃ©es existantes bloquent la suppression du groupe.<br />Aucune note ni apprÃ©ciation du bulletin ne doit avoir Ã©tÃ© saisie pour les Ã©lÃ¨ves de ce groupe pour permettre la suppression du groupe.</p>\n";
 	}
 	echo "</div>\n";
 }
@@ -430,12 +430,12 @@ if(mysql_num_rows($res_display_mat_cat)>0) {
 		$url_wiki=$lig_wiki->url;
 	}
 	$titre="Enseignement invisible";
-	$texte="<p>Cet enseignement n'apparaîtra pas sur les bulletins ni sur les relevés de notes.<br />";
-	$texte.="Voir <a href='$url_wiki' target='_blank'>Enseignement invisible sur les bulletins et relevés de notes</a>.<br />";
+	$texte="<p>Cet enseignement n'apparaÃ®tra pas sur les bulletins ni sur les relevÃ©s de notes.<br />";
+	$texte.="Voir <a href='$url_wiki' target='_blank'>Enseignement invisible sur les bulletins et relevÃ©s de notes</a>.<br />";
 	$tabdiv_infobulle[]=creer_div_infobulle('enseignement_invisible',$titre,"",$texte,"",25,0,'y','y','n','n');
 }
 else {
-	echo "<p style='color:red;'>Anomalie&nbsp;: Les infos concernant 'display_mat_cat' n'ont pas pu être récupérées pour cette classe.</p>\n";
+	echo "<p style='color:red;'>Anomalie&nbsp;: Les infos concernant 'display_mat_cat' n'ont pas pu Ãªtre rÃ©cupÃ©rÃ©es pour cette classe.</p>\n";
 }
 
 echo "<table border='0' summary='Menu'><tr>\n";
@@ -443,8 +443,8 @@ echo "<td width='40%' align='left'>\n";
 echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 echo "<p class='bold'>\n";
 echo "<a href='../classes/index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-//if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";}
-if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe préc.</a>";}
+//if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe prÃ©cÃ©dente</a>";}
+if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe prÃ©c.</a>";}
 if($chaine_options_classes!="") {
 
 	echo "<script type='text/javascript'>
@@ -481,11 +481,11 @@ if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_c
 // AJOUT: boireaus 20081224
 $titre="Navigation";
 $texte="";
-$texte.="<img src='../images/icons/date.png' alt='' /> <a href='../classes/periodes.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Périodes</a><br />";
-$texte.="<img src='../images/icons/edit_user.png' alt='' /> <a href='../classes/classes_const.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Elèves</a><br />";
+$texte.="<img src='../images/icons/date.png' alt='' /> <a href='../classes/periodes.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">PÃ©riodes</a><br />";
+$texte.="<img src='../images/icons/edit_user.png' alt='' /> <a href='../classes/classes_const.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">ElÃ¨ves</a><br />";
 //$texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignements</a><br />";
-$texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class_grp_lot.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">config.simplifiée</a><br />";
-$texte.="<img src='../images/icons/configure.png' alt='' /> <a href='../classes/modify_nom_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramètres</a>";
+$texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class_grp_lot.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">config.simplifiÃ©e</a><br />";
+$texte.="<img src='../images/icons/configure.png' alt='' /> <a href='../classes/modify_nom_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">ParamÃ¨tres</a>";
 
 $ouvrir_infobulle_nav=getSettingValue("ouvrir_infobulle_nav");
 //echo "\$ouvrir_infobulle_nav=$ouvrir_infobulle_nav<br />";
@@ -513,9 +513,9 @@ echo "Navigation";
 echo "</a>";
 //=========================
 
-echo " | <a href='menage_eleves_groupes.php?id_classe=$id_classe'>Désinscriptions par lots</a>";
+echo " | <a href='menage_eleves_groupes.php?id_classe=$id_classe'>DÃ©sinscriptions par lots</a>";
 
-echo " | <a href='../groupes/repartition_ele_grp.php'>Répartir des élèves entre plusieurs groupes</a>";
+echo " | <a href='../groupes/repartition_ele_grp.php'>RÃ©partir des Ã©lÃ¨ves entre plusieurs groupes</a>";
 
 echo "</p>\n";
 echo "</form>\n";
@@ -540,7 +540,7 @@ $nb_mat = mysql_num_rows($query);
 
 echo "<td>\n";
 echo "<select name='matiere' size='1'>\n";
-echo "<option value='null'>-- Sélectionner matière --</option>\n";
+echo "<option value='null'>-- SÃ©lectionner matiÃ¨re --</option>\n";
 for ($i=0;$i<$nb_mat;$i++) {
     $matiere = mysql_result($query, $i, "matiere");
     $nom_matiere = mysql_result($query, $i, "nom_complet");
@@ -557,7 +557,7 @@ echo "</td>\n";
 // MODIF: boireaus
 /*
 echo "<select name='mode' size='1'>";
-echo "<option value='null'>-- Sélectionner mode --</option>";
+echo "<option value='null'>-- SÃ©lectionner mode --</option>";
 echo "<option value='groupe' selected>cette classe seulement (" . $classe["classe"] .")</option>";
 echo "<option value='regroupement'>plusieurs classes</option>";
 echo "</select>";
@@ -570,7 +570,7 @@ echo "</tr>\n</table>\n";
 //==============================
 
 echo "<input type='hidden' name='id_classe' value='" . $id_classe . "' />\n";
-echo "<input type='submit' value='Créer' />\n";
+echo "<input type='submit' value='CrÃ©er' />\n";
 echo "</fieldset>\n";
 echo "</form>\n";
 echo "</td>\n</tr>\n</table>\n";
@@ -603,23 +603,23 @@ echo add_token_field();
 ?>
 <!--form enctype="multipart/form-data" action="edit_class.php" name="formulaire" id="form_mat" method=post-->
 
-<!--p>Définir les priorités d'après <input type='button' value="l'ordre alphabétique" onClick="ordre_alpha();" /> / <input type='button' value="l'ordre par défaut des matières" onClick="ordre_defaut();" /><br /-->
-<!--table border='0' width='100%'><tr align='center'><td width='30%'>&nbsp;</td><td width='30%'>Afficher les matières dans l'ordre <a href='javascript:ordre_alpha();'>alphabétique</a> ou <a href='javascript:ordre_defaut();'>des priorités</a>.</td>
-<td width='30%'>Mettre tous les coefficients à <select name='coefficient_recop' id='coefficient_recopie'-->
-<!--table border='0' width='100%'><tr align='center'><td>Afficher les matières dans l'ordre <a href='javascript:ordre_alpha();'>alphabétique</a> ou <a href='javascript:ordre_defaut();'>des priorités</a>.</td-->
+<!--p>DÃ©finir les prioritÃ©s d'aprÃ¨s <input type='button' value="l'ordre alphabÃ©tique" onClick="ordre_alpha();" /> / <input type='button' value="l'ordre par dÃ©faut des matiÃ¨res" onClick="ordre_defaut();" /><br /-->
+<!--table border='0' width='100%'><tr align='center'><td width='30%'>&nbsp;</td><td width='30%'>Afficher les matiÃ¨res dans l'ordre <a href='javascript:ordre_alpha();'>alphabÃ©tique</a> ou <a href='javascript:ordre_defaut();'>des prioritÃ©s</a>.</td>
+<td width='30%'>Mettre tous les coefficients Ã  <select name='coefficient_recop' id='coefficient_recopie'-->
+<!--table border='0' width='100%'><tr align='center'><td>Afficher les matiÃ¨res dans l'ordre <a href='javascript:ordre_alpha();'>alphabÃ©tique</a> ou <a href='javascript:ordre_defaut();'>des prioritÃ©s</a>.</td-->
 
-<table border='0' width='100%' summary='Paramètres'>
+<table border='0' width='100%' summary='ParamÃ¨tres'>
 <tr align='center'>
 <td width='40%'>
 <fieldset style="padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;">
 <p>Pour cette classe,
-<input type='button' value="régler les priorités d'affichage" onClick='choix_ordre();' />:</p>
+<input type='button' value="rÃ©gler les prioritÃ©s d'affichage" onClick='choix_ordre();' />:</p>
 <!--ul>
-<li><a href='javascript:ordre_defaut();'>égales aux valeurs définies par défaut</a>,</li>
-<li><a href='javascript:ordre_alpha();'>suivant l'ordre alphabétique des matières.</a></li>
+<li><a href='javascript:ordre_defaut();'>Ã©gales aux valeurs dÃ©finies par dÃ©faut</a>,</li>
+<li><a href='javascript:ordre_alpha();'>suivant l'ordre alphabÃ©tique des matiÃ¨res.</a></li>
 </ul-->
-<input type='radio' name='ordre' id='ordre_defaut' value='ordre_defaut' /><label for='ordre_defaut' style='cursor: pointer;'> égales aux valeurs définies par défaut,</label><br />
-<input type='radio' name='ordre' id='ordre_alpha' value='ordre_alpha' /><label for='ordre_alpha' style='cursor: pointer;'> suivant l'ordre alphabétique des matières.</label>
+<input type='radio' name='ordre' id='ordre_defaut' value='ordre_defaut' /><label for='ordre_defaut' style='cursor: pointer;'> Ã©gales aux valeurs dÃ©finies par dÃ©faut,</label><br />
+<input type='radio' name='ordre' id='ordre_alpha' value='ordre_alpha' /><label for='ordre_alpha' style='cursor: pointer;'> suivant l'ordre alphabÃ©tique des matiÃ¨res.</label>
 </fieldset>
 </td>
 
@@ -633,7 +633,7 @@ $call_nom_class = mysql_query("SELECT * FROM classes WHERE id = '$id_classe'");
 $display_rang = mysql_result($call_nom_class, 0, 'display_rang');
 if($display_rang=='y') {
 	$titre="Recalcul des rangs";
-	$texte="<p>Un utilisateur a rencontré un jour le problème suivant&nbsp;:<br />Le rang était calculé pour les enseignements, mais pas pour le rang général de l'élève.<br />Ce lien permet de forcer le recalcul des rangs pour les enseignements comme pour le rang général.<br />Le recalcul sera effectué lors du prochain affichage de bulletin ou de moyennes.</p>";
+	$texte="<p>Un utilisateur a rencontrÃ© un jour le problÃ¨me suivant&nbsp;:<br />Le rang Ã©tait calculÃ© pour les enseignements, mais pas pour le rang gÃ©nÃ©ral de l'Ã©lÃ¨ve.<br />Ce lien permet de forcer le recalcul des rangs pour les enseignements comme pour le rang gÃ©nÃ©ral.<br />Le recalcul sera effectuÃ© lors du prochain affichage de bulletin ou de moyennes.</p>";
 	$tabdiv_infobulle[]=creer_div_infobulle('recalcul_rang',$titre,"",$texte,"",25,0,'y','y','n','n');
 	
 	echo "<fieldset style='padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;'>\n";
@@ -652,8 +652,8 @@ if($display_rang=='y') {
 <br />
 
 <fieldset style="padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;">
-<!--a href='javascript:coeff();'>Mettre tous les coefficients à</a-->
-<input type='button' value='Mettre tous les coefficients à' onClick='coeff(); changement();' />
+<!--a href='javascript:coeff();'>Mettre tous les coefficients Ã </a-->
+<input type='button' value='Mettre tous les coefficients Ã ' onClick='coeff(); changement();' />
 <select name='coefficient_recop' id='coefficient_recopie' >
 <?php
 for($i=0;$i<10;$i++){
@@ -662,22 +662,22 @@ for($i=0;$i<10;$i++){
 ?>
 </select>
 <!--input type='button' value='Modifier' onClick='coeff();' /-->
-<!--Mettre tous les coefficients à <input type='button' value='0' onClick='coeff(0);' /> / <input type='button' value='1' onClick='coeff(1);' /-->
+<!--Mettre tous les coefficients Ã  <input type='button' value='0' onClick='coeff(0);' /> / <input type='button' value='1' onClick='coeff(1);' /-->
 <!--/p-->
 </fieldset>
 </td></tr></table>
-<!--p><i>Pour les enseignements impliquant plusieurs classes, le coefficient s'applique à tous les élèves de la classe courante et peut être réglé indépendamment d'une classe à l'autre (pour le régler individuellement par élève, voir la liste des élèves inscrits).</i-->
+<!--p><i>Pour les enseignements impliquant plusieurs classes, le coefficient s'applique Ã  tous les Ã©lÃ¨ves de la classe courante et peut Ãªtre rÃ©glÃ© indÃ©pendamment d'une classe Ã  l'autre (pour le rÃ©gler individuellement par Ã©lÃ¨ve, voir la liste des Ã©lÃ¨ves inscrits).</i-->
 <?php
-    // si le module ECTS est activé, on calcul la valeur total d'ECTS attribués aux groupes
+    // si le module ECTS est activÃ©, on calcul la valeur total d'ECTS attribuÃ©s aux groupes
     if ($gepiSettings['active_mod_ects'] == "y") {
         $total_ects = mysql_result(mysql_query("SELECT sum(valeur_ects) FROM j_groupes_classes WHERE (id_classe = '".$id_classe."' and saisie_ects = TRUE)"), 0);
-        echo "<p style='margin-top: 10px;'>Nombre total d'ECTS actuellement attribués pour cette classe : ".intval($total_ects)."</p>\n";
+        echo "<p style='margin-top: 10px;'>Nombre total d'ECTS actuellement attribuÃ©s pour cette classe : ".intval($total_ects)."</p>\n";
         if ($total_ects < 30) {
-            echo "<p style='color: red;'>Attention, le total d'ECTS pour un semestre devrait être au moins égal à 30.</p>\n";
+            echo "<p style='color: red;'>Attention, le total d'ECTS pour un semestre devrait Ãªtre au moins Ã©gal Ã  30.</p>\n";
         }
     }
 
-	// Mettre un témoin pour repérer le prof principal
+	// Mettre un tÃ©moin pour repÃ©rer le prof principal
 	$tab_prof_suivi=get_tab_prof_suivi($id_classe);
 	$nb_prof_suivi=count($tab_prof_suivi);
 	if($nb_prof_suivi>1) {
@@ -701,10 +701,10 @@ for($i=0;$i<10;$i++){
 	echo "<tr>\n";
 	echo "<th rowspan='2'>Supprimer</th>\n";
 	echo "<th rowspan='2'>Enseignement</th>\n";
-	echo "<th colspan='".($nb_periode-1)."'><img src='../images/icons/edit_user.png' alt=''/> Elèves inscrits</th>\n";
-	echo "<th rowspan='2'>Priorité<br />d'affichage</th>\n";
-	echo "<th rowspan='2'>Catégorie</th>\n";
-	echo "<th colspan='".count($tab_domaines)."'>Visibilité</th>\n";
+	echo "<th colspan='".($nb_periode-1)."'><img src='../images/icons/edit_user.png' alt=''/> ElÃ¨ves inscrits</th>\n";
+	echo "<th rowspan='2'>PrioritÃ©<br />d'affichage</th>\n";
+	echo "<th rowspan='2'>CatÃ©gorie</th>\n";
+	echo "<th colspan='".count($tab_domaines)."'>VisibilitÃ©</th>\n";
 	echo "<th rowspan='2'>Coefficient</th>\n";
 	echo "<th colspan='3'>Mode moy</th>\n";
 	$nb_total_col=8+$nb_periode-1+count($tab_domaines);
@@ -712,7 +712,7 @@ for($i=0;$i<10;$i++){
 	if ($gepiSettings['active_mod_ects'] == "y") {
 		echo "<th rowspan='2'>Activer la saisie ECTS</th>\n";
 		echo "<th rowspan='2'>\n";
-		echo "Nombre d'ECTS par défaut pour une période";
+		echo "Nombre d'ECTS par dÃ©faut pour une pÃ©riode";
 		echo "</th>\n";
 		$nb_total_col+=2;
 	}
@@ -724,15 +724,15 @@ for($i=0;$i<10;$i++){
 	for($i=1;$i<$nb_periode;$i++) {
 		echo "<th>P$i</th>\n";
 	}
-	//echo "<th>Priorité d'affichage</th>\n";
-	//echo "<th>Catégorie</th>\n";
+	//echo "<th>PrioritÃ© d'affichage</th>\n";
+	//echo "<th>CatÃ©gorie</th>\n";
 	for($i=0;$i<count($tab_domaines);$i++) {
 		echo "<th>".$tab_domaines_sigle[$i]."</th>\n";
 	}
 	//echo "<th>Coefficient</th>\n";
 	echo "<th title='La note compte normalement dans la moyenne.'>La note<br />compte</th>\n";
-	echo "<th title='Les points au-dessus de 10 coefficientés sont ajoutés sans augmenter le total des coefficients.'>Bonus</th>\n";
-	echo "<th title='La note ne compte que si elle est supérieure ou égale à 10'>Sup10</th>\n";
+	echo "<th title='Les points au-dessus de 10 coefficientÃ©s sont ajoutÃ©s sans augmenter le total des coefficients.'>Bonus</th>\n";
+	echo "<th title='La note ne compte que si elle est supÃ©rieure ou Ã©gale Ã  10'>Sup10</th>\n";
 	echo "</tr>\n";
 
 	$prec_cat="";
@@ -747,8 +747,8 @@ for($i=0;$i<10;$i++){
 
 		//===============================
 		unset($result_matiere);
-		// On récupère l'ordre par défaut des matières dans matieres pour permettre de fixer les priorités d'après les priorités par défaut de matières.
-		// Sinon, pour l'affichage, c'est la priorité dans j_groupes_classes qui est utilisée à l'affichage dans les champs select.
+		// On rÃ©cupÃ¨re l'ordre par dÃ©faut des matiÃ¨res dans matieres pour permettre de fixer les prioritÃ©s d'aprÃ¨s les prioritÃ©s par dÃ©faut de matiÃ¨res.
+		// Sinon, pour l'affichage, c'est la prioritÃ© dans j_groupes_classes qui est utilisÃ©e Ã  l'affichage dans les champs select.
 		$sql="SELECT m.priority, m.categorie_id FROM matieres m, j_groupes_matieres jgc WHERE jgc.id_groupe='".$group["id"]."' AND m.matiere=jgc.id_matiere";
 		//echo "$sql<br />\n";
 		$result_matiere=mysql_query($sql);
@@ -816,7 +816,7 @@ for($i=0;$i<10;$i++){
 			echo $current_group["profs"]["users"][$prof]["nom"];
 	
 			if(in_array($current_group["profs"]["users"][$prof]["login"],$tab_prof_suivi)) {
-				echo " <img src='../images/bulle_verte.png' width='9' height='9' title=\"Professeur principal d'au moins un élève de la classe sur une des périodes.";
+				echo " <img src='../images/bulle_verte.png' width='9' height='9' title=\"Professeur principal d'au moins un Ã©lÃ¨ve de la classe sur une des pÃ©riodes.";
 				if($nb_prof_suivi>1) {echo " La liste des ".getSettingValue('prof_suivi')." est ".$liste_prof_suivi.".";}
 				echo "\" />\n";
 			}
@@ -825,7 +825,7 @@ for($i=0;$i<10;$i++){
 
 		echo "</td>\n";
 
-		// Inscription des élèves sur les différentes périodes
+		// Inscription des Ã©lÃ¨ves sur les diffÃ©rentes pÃ©riodes
 		foreach($current_group["periodes"] as $period) {
 			if($period["num_periode"]!=""){
 				$inscrits = count($current_group["eleves"][$period["num_periode"]]["list"]);
@@ -836,13 +836,13 @@ for($i=0;$i<10;$i++){
 			}
 		}
 
-		// Priorité d'affichage
+		// PrioritÃ© d'affichage
 		echo "<td>";
 		echo "<select onchange=\"changement()\" size=1 id='priorite_".$cpt_grp."' name='priorite_" . $current_group["id"] . "'>\n";
 		echo "<option value='0'";
 		if  ($current_group["classes"]["classes"][$id_classe]["priorite"] == '0') echo " selected";
 		echo ">0";
-		if ($priority_defaut == 0) echo " (valeur par défaut)";
+		if ($priority_defaut == 0) echo " (valeur par dÃ©faut)";
 		echo "</option>\n";
 		$k = 0;
 	
@@ -852,7 +852,7 @@ for($i=0;$i<10;$i++){
 			echo "<option value=$k";
 			if ($current_group["classes"]["classes"][$id_classe]["priorite"] == $k) {echo " selected";}
 			echo ">".$j;
-			if ($priority_defaut == $k) {echo " (valeur par défaut)";}
+			if ($priority_defaut == $k) {echo " (valeur par dÃ©faut)";}
 			echo "</option>\n";
 			$k++;
 			$j = $k - 10;
@@ -860,7 +860,7 @@ for($i=0;$i<10;$i++){
 		echo "</select>\n";
 		echo "</td>\n";
 
-		// Catégorie
+		// CatÃ©gorie
 		echo "<td>";
 		echo "<select onchange=\"changement()\" size=1 id='categorie_".$cpt_grp."' name='categorie_" .$current_group["id"]. "'>\n";
 		echo "<option value='0'";
@@ -884,7 +884,7 @@ for($i=0;$i<10;$i++){
 
 		if(($display_mat_cat=='y')&&($current_group["classes"]["classes"][$id_classe]["categorie_id"]=="0")) {
 			//echo "<br />\n";
-			$message_categorie_aucune="La matière n apparaitra pas sur les bulletins et relevés de notes. Voir http://www.sylogix.org/wiki/gepi/Enseignement_invisible";
+			$message_categorie_aucune="La matiÃ¨re n apparaitra pas sur les bulletins et relevÃ©s de notes. Voir http://www.sylogix.org/wiki/gepi/Enseignement_invisible";
 			//echo "<img src='../images/icons/ico_attention.png' width='22' height='19' alt='$message_categorie_aucune' title='$message_categorie_aucune' />\n";
 
 			echo "<a href='#' onclick=\"afficher_div('enseignement_invisible','y',-100,20);return false;\"";
@@ -894,7 +894,7 @@ for($i=0;$i<10;$i++){
 		}
 		echo "</td>\n";
 
-		// Visibilité
+		// VisibilitÃ©
 		for($loop=0;$loop<count($tab_domaines);$loop++) {
 			if(!in_array($current_group["id"],$invisibilite_groupe[$tab_domaines[$loop]])) {
 				echo "<td>";
@@ -999,8 +999,8 @@ for($i=0;$i<10;$i++){
 	}
 
 if(isset($temoin_anomalie_categorie)&&($temoin_anomalie_categorie=='y')) {
-	$titre="Anomalie d'association enseignement/catégorie";
-	$texte="<p>Cet enseignement est associé à une catégorie qui n'existe pas ou plus.<br />Veuillez contrôler les paramètres et cliquer sur <b>Enregistrer</b> pour corriger.";
+	$titre="Anomalie d'association enseignement/catÃ©gorie";
+	$texte="<p>Cet enseignement est associÃ© Ã  une catÃ©gorie qui n'existe pas ou plus.<br />Veuillez contrÃ´ler les paramÃ¨tres et cliquer sur <b>Enregistrer</b> pour corriger.";
 	$tabdiv_infobulle[]=creer_div_infobulle('association_anormale_enseignement_categorie',$titre,"",$texte,"",30,0,'y','y','n','n');
 }
 
@@ -1070,30 +1070,30 @@ echo "}
 
 
 <!--form enctype="multipart/form-data" action="edit_class.php" name="formulaire2" method=post>
-    <input type='button' value="Définir les priorités d'après l'ordre alphabétique" onClick="ordre_alpha();" /><br />
-    Mettre tous les coefficients à <input type='button' value='0' onClick='coeff(0);' /> / <input type='button' value='1' onClick='coeff(1);' />
+    <input type='button' value="DÃ©finir les prioritÃ©s d'aprÃ¨s l'ordre alphabÃ©tique" onClick="ordre_alpha();" /><br />
+    Mettre tous les coefficients Ã  <input type='button' value='0' onClick='coeff(0);' /> / <input type='button' value='1' onClick='coeff(1);' />
 </form-->
 <p><i>Remarques:</i></p>
 <ul>
 <li>Un seul coefficient non nul provoque l'apparition de tous les coefficients sur les bulletins.</li>
-<li>Un/des coefficients non nul(s) est/sont nécessaire(s) pour que la ligne moyenne générale apparaisse sur le bulletin.</li>
-<!--li>Les coefficients réglés ici ne s'appliquent qu'à la classe <?php echo $classe["classe"]?>, même dans le cas des enseignements concernant d'autres classes.</li-->
-<li>Pour les enseignements impliquant plusieurs classes, le coefficient s'applique à tous les élèves de la classe courante et peut être réglé indépendamment d'une classe à l'autre (pour le régler individuellement par élève, voir la liste des élèves inscrits).<br />
-Les coefficients réglés ici ne s'appliquent donc qu'à la classe
+<li>Un/des coefficients non nul(s) est/sont nÃ©cessaire(s) pour que la ligne moyenne gÃ©nÃ©rale apparaisse sur le bulletin.</li>
+<!--li>Les coefficients rÃ©glÃ©s ici ne s'appliquent qu'Ã  la classe <?php echo $classe["classe"]?>, mÃªme dans le cas des enseignements concernant d'autres classes.</li-->
+<li>Pour les enseignements impliquant plusieurs classes, le coefficient s'applique Ã  tous les Ã©lÃ¨ves de la classe courante et peut Ãªtre rÃ©glÃ© indÃ©pendamment d'une classe Ã  l'autre (pour le rÃ©gler individuellement par Ã©lÃ¨ve, voir la liste des Ã©lÃ¨ves inscrits).<br />
+Les coefficients rÃ©glÃ©s ici ne s'appliquent donc qu'Ã  la classe
 <?php
     // Bizarre... $classe peut contenir une autre classe que celle en cours???
     $classe_tmp = get_classe($id_classe);
     echo $classe_tmp["classe"];
 ?>
-, même dans le cas des enseignements concernant des regroupements de plusieurs classes.</li>
+, mÃªme dans le cas des enseignements concernant des regroupements de plusieurs classes.</li>
 <li>
-	Les modes de prise en compte de la moyenne d'un enseignement dans la moyenne générale sont les suivants&nbsp;:
+	Les modes de prise en compte de la moyenne d'un enseignement dans la moyenne gÃ©nÃ©rale sont les suivants&nbsp;:
 	<ul>
 		<li>La note compte&nbsp;: La note compte normalement dans la moyenne.</li>
-		<li>Bonus&nbsp;: Les points au-dessus de 10 sont coefficientés et ajoutés au total des points, mais le total des coefficients n'est pas augmenté.</li>
-		<li>Sup10&nbsp;: La note n'est comptée que si elle est supérieure à 10.<br />
-		Remarque&nbsp;: Cela n'améliore pas nécessairement la moyenne générale de l'élève puisque s'il avait 13 de moyenne générale sans cette note, il perd des points s'il a 12 à un enseignement compté sup10.<br />
-		Et l'élève qui a 9 à cet enseignement ne perd pas de point... injuste, non?</li>
+		<li>Bonus&nbsp;: Les points au-dessus de 10 sont coefficientÃ©s et ajoutÃ©s au total des points, mais le total des coefficients n'est pas augmentÃ©.</li>
+		<li>Sup10&nbsp;: La note n'est comptÃ©e que si elle est supÃ©rieure Ã  10.<br />
+		Remarque&nbsp;: Cela n'amÃ©liore pas nÃ©cessairement la moyenne gÃ©nÃ©rale de l'Ã©lÃ¨ve puisque s'il avait 13 de moyenne gÃ©nÃ©rale sans cette note, il perd des points s'il a 12 Ã  un enseignement comptÃ© sup10.<br />
+		Et l'Ã©lÃ¨ve qui a 9 Ã  cet enseignement ne perd pas de point... injuste, non?</li>
 	</ul>
 </li>
 </ul>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Ensemble de méthodes utilisées par le script d'initialisation
+ * Ensemble de mÃ©thodes utilisÃ©es par le script d'initialisation
  * 
  * $Id: update_functions.php 7923 2011-08-23 12:36:29Z regis $
  * 
@@ -18,7 +18,7 @@
  * @return string 
  */
 function add_index($tablename, $indexname, $indexcolumns) {
-  $result = "&nbsp;->Ajout de l'index '$indexname' à la table $tablename<br />";
+  $result = "&nbsp;->Ajout de l'index '$indexname' Ã  la table $tablename<br />";
   $req_res=0;
   $req_test = mysql_query("SHOW INDEX FROM $tablename");
   if (mysql_num_rows($req_test)!=0) {
@@ -34,15 +34,15 @@ function add_index($tablename, $indexname, $indexcolumns) {
       $result .= msj_erreur();
     }
   } else {
-    $result .= msj_present("L'index existe déjà.");
+    $result .= msj_present("L'index existe dÃ©jÃ .");
   }
   return $result;
 }
 
 /**
- * mise à jour réussie
+ * mise Ã  jour rÃ©ussie
  * @param sring $message
- * @return string Ok ! ou $message écrit en vert 
+ * @return string Ok ! ou $message Ã©crit en vert 
  */
 function msj_ok($message=""){
   if ($message=="") {
@@ -54,18 +54,18 @@ function msj_ok($message=""){
 }
 
 /**
- * Echec d'une mise à jour
+ * Echec d'une mise Ã  jour
  * @param string $message
- * @return string Erreur suivi de $message écrit en rouge
+ * @return string Erreur suivi de $message Ã©crit en rouge
  */
 function msj_erreur($message=""){
   return "<span class='msj_erreur'>Erreur $message</span><br />";
 }
 
 /**
- * Mise à jour déjà effectuée
+ * Mise Ã  jour dÃ©jÃ  effectuÃ©e
  * @param string $message
- * @return string $message écrit en bleu
+ * @return string $message Ã©crit en bleu
  */
 function msj_present($message){
   return "<span class='msj_present'> $message.</span><br />";

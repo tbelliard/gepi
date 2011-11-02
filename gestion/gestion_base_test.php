@@ -21,10 +21,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
-// On précise de ne pas traiter les données avec la fonction anti_inject
+// On prÃ©cise de ne pas traiter les donnÃ©es avec la fonction anti_inject
 if (isset($_POST["action"]) and ($_POST["action"] == 'protect'))  $traite_anti_inject = 'no';
 
 // Initialisations files
@@ -39,7 +39,7 @@ $dossier_a_archiver=isset($_POST['dossier']) ? $_POST['dossier'] : (isset($_GET[
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
-//Décommenter la ligne suivante pour le mode "manuel et bavard"
+//DÃ©commenter la ligne suivante pour le mode "manuel et bavard"
 //$debug="yes";
 
 if (!isset($action) or ($action != "restaure")) {
@@ -58,7 +58,7 @@ if (!isset($action) or ($action != "restaure")) {
         die();
     }
 } else {
-	// On s'assure que l'utilisateur qui a initié la restauration était bien
+	// On s'assure que l'utilisateur qui a initiÃ© la restauration Ã©tait bien
 	// un admin !
 	if (!isset($_SESSION["tempstatut"])) {
 		$_SESSION["tempstatut"] = $_SESSION['statut'];
@@ -69,31 +69,31 @@ if (!isset($action) or ($action != "restaure")) {
 }
 
 
-// Initialisation du répertoire actuel de sauvegarde des donnes de test
+// Initialisation du rÃ©pertoire actuel de sauvegarde des donnes de test
 $dirname = "donnees_test";
 
-// Téléchargement d'un fichier vers backup
+// TÃ©lÃ©chargement d'un fichier vers backup
 if (isset($action) and ($action == 'upload'))  {
 	check_token();
     $sav_file = isset($_FILES["sav_file"]) ? $_FILES["sav_file"] : NULL;
     if (!isset($sav_file['tmp_name']) or ($sav_file['tmp_name'] =='')) {
-        $msg = "Erreur de téléchargement.";
+        $msg = "Erreur de tÃ©lÃ©chargement.";
     } else if (!file_exists($sav_file['tmp_name'])) {
-        $msg = "Erreur de téléchargement.";
+        $msg = "Erreur de tÃ©lÃ©chargement.";
     } else if (!preg_match('/sql$/',$sav_file['name']) AND !preg_match('/gz$/',$sav_file['name'])){
-        $msg = "Erreur : seuls les fichiers ayant l'extension .sql ou .gz sont autorisés.";
+        $msg = "Erreur : seuls les fichiers ayant l'extension .sql ou .gz sont autorisÃ©s.";
     } else {
         $dest = "../backup/".$dirname."/";
         $n = 0;
         if (!deplacer_fichier_upload($sav_file['tmp_name'], "../backup/".$dirname."/data_test.sql")) {
-            $msg = "Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire backup";
+            $msg = "ProblÃ¨me de transfert : le fichier n'a pas pu Ãªtre transfÃ©rÃ© sur le rÃ©pertoire backup";
         } else {
-            $msg = "Téléchargement réussi.";
+            $msg = "TÃ©lÃ©chargement rÃ©ussi.";
         }
     }
 }
 
-// Protection du répertoire backup
+// Protection du rÃ©pertoire backup
 if (isset($action) and ($action == 'protect'))  {
 	check_token();
     include_once("../lib/class.htaccess.php");
@@ -105,13 +105,13 @@ if (isset($action) and ($action == 'protect'))  {
     $user = $ht->get_htpasswd();
     // Add an Administrator
     if(empty($_POST['pwd1_backup']) || empty($_POST['pwd2_backup'])) {
-        $msg = "Problème : les deux mots de passe ne sont pas identiques ou sont vides.";
+        $msg = "ProblÃ¨me : les deux mots de passe ne sont pas identiques ou sont vides.";
         $error = 1;
     } elseif ($_POST['pwd1_backup'] != $_POST['pwd2_backup']) {
-        $msg = "Problème : les deux mots de passe ne sont pas identiques.";
+        $msg = "ProblÃ¨me : les deux mots de passe ne sont pas identiques.";
         $error = 1;
     } elseif (empty($_POST['login_backup'])) {
-        $msg = "Problème : l'identifiant est vide.";
+        $msg = "ProblÃ¨me : l'identifiant est vide.";
         $error = 1;
     } else {
         $_login = strtolower(unslashes($_POST['login_backup']));
@@ -140,18 +140,18 @@ if (isset($action) and ($action == 'protect'))  {
 if (isset($action) and ($action == 'del_protect'))  {
 	check_token();
    if ((@unlink("../backup/".$dirname."/.htaccess")) and (@unlink("../backup/".$dirname."/.htpasswd"))) {
-       $msg = "Les fichiers .htaccess et .htpasswd ont été supprimés. Le répertoire /backup n'est plus protégé\n";
+       $msg = "Les fichiers .htaccess et .htpasswd ont Ã©tÃ© supprimÃ©s. Le rÃ©pertoire /backup n'est plus protÃ©gÃ©\n";
    }
 }
 
 function charset_to_iso($string, $method = "mbstring") {
-	// Cette fonction a pour objet de convertir, si nécessaire,
-	// la chaîne de caractères $string avec l'encodage iso-8859-1
-	// Il s'agit surtout de prendre en compte les backup réalisés
+	// Cette fonction a pour objet de convertir, si nÃ©cessaire,
+	// la chaÃ®ne de caractÃ¨res $string avec l'encodage iso-8859-1
+	// Il s'agit surtout de prendre en compte les backup rÃ©alisÃ©s
 	// avec mysqldump, qui encodent en utf8...
 
 	if (preg_match('%(?:[\xC2-\xDF][\x80-\xBF]|\xE0[\xA0-\xBF][\x80-\xBF]|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}|\xED[\x80-\x9F][\x80-\xBF]|\xF0[\x90-\xBF][\x80-\xBF]{2}|[\xF1-\xF3][\x80-\xBF]{3}|\xF4[\x80-\x8F][\x80-\xBF]{2})+%xs', $string)) {
-    	// Ce preg_match détecte la présence d'un caractère codé en utf-8
+    	// Ce preg_match dÃ©tecte la prÃ©sence d'un caractÃ¨re codÃ© en utf-8
     	// Donc si elle retourne true, il faut convertir :
     	if ($method == "mbstring") {
     		return mb_convert_encoding($string, "ISO-8859-1", "UTF-8");
@@ -260,7 +260,7 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
         $numtab++;
     }
     if (mysql_error()) {
-       echo "<hr />\n<font color='red'>ERREUR lors de la sauvegarde du à un problème dans la la base.</font><br />".mysql_error()."<hr/>\n";
+       echo "<hr />\n<font color='red'>ERREUR lors de la sauvegarde du Ã  un problÃ¨me dans la la base.</font><br />".mysql_error()."<hr/>\n";
        return false;
        die();
     }
@@ -277,7 +277,7 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
         current_time();
         if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
             return TRUE;
-        if (isset($debug)) echo "<b><br />Dump des données de la table ".$tables[$offsettable]."<br /></b>\n";
+        if (isset($debug)) echo "<b><br />Dump des donnÃ©es de la table ".$tables[$offsettable]."<br /></b>\n";
         $fin=0;
         while (!$fin){
             $todump = get_content($db,$tables[$offsettable],$offsetrow,$rowlimit);
@@ -296,7 +296,7 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
                 $fin=1;$offsetrow=-1;
             }
         }
-        if (isset($debug)) echo "Pour cette table, nombre de lignes sauvegardées : ".$offsetrow."<br />\n";
+        if (isset($debug)) echo "Pour cette table, nombre de lignes sauvegardÃ©es : ".$offsetrow."<br />\n";
         if ($fin) $offsetrow=-1;
         current_time();
         if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
@@ -304,7 +304,7 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
     }
     $offsettable=-1;
     $todump ="#\n";
-    $todump.="# ******* Fin du fichier - La sauvegarde s'est terminée normalement ********\n";
+    $todump.="# ******* Fin du fichier - La sauvegarde s'est terminÃ©e normalement ********\n";
     fwrite ($fileHandle,$todump);
     fclose($fileHandle);
     return true;
@@ -330,7 +330,7 @@ function extractMySqlDump($dumpFile,$duree,$force) {
 		    $reg = mysql_query($query);
 		    echo "<p>$query</p>\n";
 		    if (!$reg) {
-			echo "<p><font color=red>ERROR</font> : '$query' Erreur retournée : ".mysql_error()."</p>\n";
+			echo "<p><font color=red>ERROR</font> : '$query' Erreur retournÃ©e : ".mysql_error()."</p>\n";
 			$result_ok = 'no';
 		    }
 	    }
@@ -364,13 +364,13 @@ function get_def($db, $table) {
 function get_content($db, $table,$from,$limit) {
     $search       = array("\x00", "\x0a", "\x0d", "\x1a");
     $replace      = array('\0', '\n', '\r', '\Z');
-    // les données de la table
+    // les donnÃ©es de la table
     $def = '';
     $query = "SELECT DISTINCT * FROM $table LIMIT $from,$limit";
     $resData = @mysql_query($query);
-    //peut survenir avec la corruption d'une table, on prévient
+    //peut survenir avec la corruption d'une table, on prÃ©vient
     if (!$resData) {
-        $def .="Problème avec les données de $table, corruption possible !\n";
+        $def .="ProblÃ¨me avec les donnÃ©es de $table, corruption possible !\n";
     } else {
         if (@mysql_num_rows($resData) > 0) {
              $sFieldnames = "";
@@ -383,7 +383,7 @@ function get_content($db, $table,$from,$limit) {
                   $lesDonnees = "";
                   for ($mp = 0; $mp < $num_fields; $mp++) {
                   $lesDonnees .= "'" . str_replace($search, $replace, traitement_magic_quotes($rowdata[$mp])) . "'";
-                  //on ajoute à la fin une virgule si nécessaire
+                  //on ajoute Ã  la fin une virgule si nÃ©cessaire
                       if ($mp<$num_fields-1) $lesDonnees .= ", ";
                   }
                   $lesDonnees = "$sInsert($lesDonnees);\n";
@@ -406,7 +406,7 @@ else {
 }
 
 
-// Durée d'une portion
+// DurÃ©e d'une portion
 if ((isset($_POST['duree'])) and ($_POST['duree'] > 0)) $_SESSION['defaulttimeout'] = $_POST['duree'];
 if (getSettingValue("backup_duree_portion") > "4" and !isset($_POST['sauve_duree'])) $_SESSION['defaulttimeout'] = getSettingValue("backup_duree_portion");
 
@@ -419,7 +419,7 @@ if (!isset($_SESSION['defaulttimeout'])) {
     }
 }
 
-// Lors d'une sauvegarde, nombre de lignes traitées dans la base entre chaque vérification du temps restant
+// Lors d'une sauvegarde, nombre de lignes traitÃ©es dans la base entre chaque vÃ©rification du temps restant
 $defaultrowlimit=10;
 
 //**************** EN-TETE *****************
@@ -430,10 +430,10 @@ require_once("../lib/header.inc");
 //debug_var();
 
 if (!function_exists("gzwrite")) {
-    echo "<h3 class='gepi'>Problème de configuration :</h3>\n";
-    echo "<p>Les fonctions de compression 'zlib' ne sont pas activées. Vous devez configurer PHP pour qu'il utilise 'zlib'.</p>\n";
-    echo "<p>Vous ne pouvez donc pas accéder aux fonctions de sauvegarde/restauration de GEPI.
-    Contactez l'administrateur technique afin de régler ce problème.</p>\n";
+    echo "<h3 class='gepi'>ProblÃ¨me de configuration :</h3>\n";
+    echo "<p>Les fonctions de compression 'zlib' ne sont pas activÃ©es. Vous devez configurer PHP pour qu'il utilise 'zlib'.</p>\n";
+    echo "<p>Vous ne pouvez donc pas accÃ©der aux fonctions de sauvegarde/restauration de GEPI.
+    Contactez l'administrateur technique afin de rÃ©gler ce problÃ¨me.</p>\n";
     require("../lib/footer.inc.php");
     die();
 }
@@ -442,10 +442,10 @@ if (!function_exists("gzwrite")) {
 if (isset($action) and ($action == 'restaure_confirm'))  {
 	check_token(false);
 
-    echo "<h3>Confirmation de chargement des données de test. Attention, ne pas faire sur une base de production</h3>\n";
-    echo "Fichier sélectionné pour la restauration : <b>".$_GET['file']."</b><br/>";
-    echo "Attention, les donnée vont etre écrasées, et il y des entrées (tables de jointures) qui seront dupliquée si les contraintes de cles primaires ne sont pas bonnes.\n";
-    echo "<p><b>Etes-vous sûr de vouloir continuer ?</b></p>\n";
+    echo "<h3>Confirmation de chargement des donnÃ©es de test. Attention, ne pas faire sur une base de production</h3>\n";
+    echo "Fichier sÃ©lectionnÃ© pour la restauration : <b>".$_GET['file']."</b><br/>";
+    echo "Attention, les donnÃ©e vont etre Ã©crasÃ©es, et il y des entrÃ©es (tables de jointures) qui seront dupliquÃ©e si les contraintes de cles primaires ne sont pas bonnes.\n";
+    echo "<p><b>Etes-vous sÃ»r de vouloir continuer ?</b></p>\n";
 
 	echo "<blockquote>\n";
 
@@ -504,7 +504,7 @@ if (isset($action) and ($action == 'restaure'))  {
 
 		init_time(); //initialise le temps
 
-		//début de fichier
+		//dÃ©but de fichier
 		// En fait d'offset, on compte maintenant des lignes
 		if (!isset($_GET["offset"])) {$offset=0;}
 		else {$offset=$_GET["offset"];}
@@ -543,7 +543,7 @@ $quitter_la_page=isset($_POST['quitter_la_page']) ? $_POST['quitter_la_page'] : 
 // Sauvegarde
 if (isset($action) and ($action == 'dump'))  {
 	check_token(false);
-	// On enregistre le paramètre pour s'en souvenir la prochaine fois
+	// On enregistre le paramÃ¨tre pour s'en souvenir la prochaine fois
 	saveSetting("mode_sauvegarde", "gepi");
 	if (isset($_POST['sauve_duree'])) {
 		if ($_POST['sauve_duree'] == "yes") {
@@ -556,21 +556,21 @@ if (isset($action) and ($action == 'dump'))  {
     $filename=$path."data_test.sql";
 
 //    if (!isset($_GET["duree"])&&is_file($filename)){
-//        echo "<font color=\"#FF0000\"><center><b>Le fichier existe déjà. Patientez une minute avant de retenter la sauvegarde.</b></center></font>\n<hr />\n";
+//        echo "<font color=\"#FF0000\"><center><b>Le fichier existe dÃ©jÃ . Patientez une minute avant de retenter la sauvegarde.</b></center></font>\n<hr />\n";
 //    } else {
         init_time(); //initialise le temps
-        //début de fichier
+        //dÃ©but de fichier
         if (!isset($_GET["offsettable"])) $offsettable=0;
             else $offsettable=$_GET["offsettable"];
-        //début de fichier
+        //dÃ©but de fichier
         if (!isset($_GET["offsetrow"])) $offsetrow=-1;
             else $offsetrow=$_GET["offsetrow"];
-        //timeout de 30 secondes par défaut, -1 pour utiliser sans timeout
+        //timeout de 30 secondes par dÃ©faut, -1 pour utiliser sans timeout
         $duree = 30;
-        //Limite de lignes à dumper à chaque fois
+        //Limite de lignes Ã  dumper Ã  chaque fois
         if (!isset($_GET["rowlimit"])) $rowlimit=$defaultrowlimit;
             else  $rowlimit=$_GET["rowlimit"];
-         //si le nom du fichier n'est pas en paramètre le mettre ici
+         //si le nom du fichier n'est pas en paramÃ¨tre le mettre ici
          if (!isset($_GET["fichier"])) {
              $fichier=$filename;
          } else $fichier=$_GET["fichier"];
@@ -589,7 +589,7 @@ if (isset($action) and ($action == 'dump'))  {
             $percentwitdh=$percent*4;
             echo "<div align='center'>\n<table width=\"400\" border=\"0\">
             <tr><td width='400' align='center'><b>Sauvegarde en cours</b><br/>
-            <br/>A la fin de la sauvegarde, Gepi vous proposera automatiquement de télécharger le fichier.
+            <br/>A la fin de la sauvegarde, Gepi vous proposera automatiquement de tÃ©lÃ©charger le fichier.
             <br/><br/>Progression ".$percent."%</td></tr>\n<tr><td>\n<table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table>\n</td></tr>\n</table>\n</div>\n";
         }
         flush();
@@ -617,14 +617,14 @@ if (isset($action) and ($action == 'dump'))  {
                 exit;
            }
         } else {
-			// La sauvegarde est terminée. On compresse le fichier
+			// La sauvegarde est terminÃ©e. On compresse le fichier
 			//$compress = gzip($fichier, 9);
 			//if ($compress) {
 			//	$filetype = ".sql.gz";
 			//}
 			//@unlink($fichier);
 
-            echo "<div align='center'><p>Sauvegarde Terminée.<br />\n";
+            echo "<div align='center'><p>Sauvegarde TerminÃ©e.<br />\n";
 
 			//$nomsql.$filetype
 			$handle=opendir($path);
@@ -635,7 +635,7 @@ if (isset($action) and ($action == 'dump'))  {
 				//=================================
 				// AJOUT: boireaus
 				and ($file != 'csv')
-				and ($file != 'notanet')  //le dossier notanet à ne pas afficher dans la liste
+				and ($file != 'notanet')  //le dossier notanet Ã  ne pas afficher dans la liste
 				//=================================
 				and ($file != '.htaccess') and ($file != '.htpasswd') and ($file != 'index.html')) {
 					$tab_file[] = $file;
@@ -661,7 +661,7 @@ if (isset($action) and ($action == 'dump'))  {
 				clearstatcache();
 			}
 
-            //echo "<br/><p class=grand><a href='savebackup.php?filename=$fichier'>Télécharger le fichier généré par la sauvegarde</a></p>\n";
+            //echo "<br/><p class=grand><a href='savebackup.php?filename=$fichier'>TÃ©lÃ©charger le fichier gÃ©nÃ©rÃ© par la sauvegarde</a></p>\n";
             echo "<br/><br/><a href=\"gestion_base_test.php";
 			if(isset($quitter_la_page)) {echo "?quitter_la_page=y";}
 			echo "\">Retour vers l'interface de sauvegarde/restauration</a><br /></div>\n";
@@ -705,7 +705,7 @@ closedir($handle);
 arsort($tab_file);
 
 if ($n > 0) {
-    echo "<h3>Fichiers de chargement des données de test</h3>\n";
+    echo "<h3>Fichiers de chargement des donnÃ©es de test</h3>\n";
     //echo "<center>\n<table border=\"1\" cellpadding=\"5\" cellspacing=\"1\">\n<tr><td><b>Nom du fichier de sauvegarde</b></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>\n";
     echo "<center>\n<table class='boireaus' cellpadding=\"5\" cellspacing=\"1\">\n<tr><th><b>Nom du fichier de sauvegarde</b></th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th></tr>\n";
     $m = 0;
@@ -720,10 +720,10 @@ if ($n > 0) {
 		if ((my_ereg('^_photos',$value)&&my_ereg('.zip$',$value))||(my_ereg('^_cdt',$value)&&my_ereg('.zip$',$value))){
 		   echo "<td> </td>\n";
 		} else {
-            echo "<td><a href='gestion_base_test.php?action=restaure_confirm&amp;file=$value".add_token_in_url()."'>Charger les données</a></td>\n";
+            echo "<td><a href='gestion_base_test.php?action=restaure_confirm&amp;file=$value".add_token_in_url()."'>Charger les donnÃ©es</a></td>\n";
 		}
-        echo "<td><a href='savebackup.php?fileid=$m'>Télécharger</a></td>\n";
-        echo "<td><a href='../backup/".$dirname."/".$value."'>Téléch. direct</a></td>\n";
+        echo "<td><a href='savebackup.php?fileid=$m'>TÃ©lÃ©charger</a></td>\n";
+        echo "<td><a href='../backup/".$dirname."/".$value."'>TÃ©lÃ©ch. direct</a></td>\n";
         echo "</tr>\n";
         $m++;
     }
@@ -732,7 +732,7 @@ if ($n > 0) {
 }
 ?>
 
-<H3>Créer un fichier de sauvegarde/restauration de la base de test <?php echo $dbDb; ?></H3>
+<H3>CrÃ©er un fichier de sauvegarde/restauration de la base de test <?php echo $dbDb; ?></H3>
 
 <!--
 <form enctype="multipart/form-data" action="gestion_base_test.php" method=post name=formulaire>
@@ -744,7 +744,7 @@ echo add_token_field();
 ?>
 </form>
 -->
-Pour activer la sauvegarde des données de tests, merci de décommenter les lignes 737 à 746 du fichier gestion/gestion_base_test.php
+Pour activer la sauvegarde des donnÃ©es de tests, merci de dÃ©commenter les lignes 737 Ã  746 du fichier gestion/gestion_base_test.php
 
 <?php
 echo "<h3>Documentation de la base de test : </h3>\n";

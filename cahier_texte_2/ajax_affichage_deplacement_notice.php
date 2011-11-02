@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 header('Content-Type: text/html; charset=ISO-8859-1');
-// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
 // Initialisations files
@@ -43,9 +43,9 @@ if (!checkAccess()) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_cahiers_texte")!='y') {
-	die("Le module n'est pas activé.");
+	die("Le module n'est pas activÃ©.");
 }
 
 $utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
@@ -54,7 +54,7 @@ if ($utilisateur == null) {
 	die();
 }
 
-//récupération des parametres
+//rÃ©cupÃ©ration des parametres
 //id du compte rendu
 $id_ct = isset($_POST["id_ct"]) ? $_POST["id_ct"] :(isset($_GET["id_ct"]) ? $_GET["id_ct"] :NULL);
 $id_info = isset($_POST["id_info"]) ? $_POST["id_info"] :(isset($_GET["id_info"]) ? $_GET["id_info"] :NULL);
@@ -63,7 +63,7 @@ $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_
 
 //$ctCompteRendu = CahierTexteCompteRenduPeer::retrieveByPK($id_ct);
 //if ($ctCompteRendu == null) {
-//	echo "Pas de compte rendu selectionnés.";
+//	echo "Pas de compte rendu selectionnÃ©s.";
 //	die();
 //}
 echo "<form enctype=\"multipart/form-data\" name=\"deplacement_notice_form\" id=\"deplacement_notice_form\" action=\"ajax_deplacement_notice.php\" method=\"post\">\n";

@@ -9,7 +9,7 @@
 	echo "<tr";
 	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 	echo ">\n";
-	echo "<td>Académie de: </td>\n";
+	echo "<td>AcadÃ©mie de: </td>\n";
 	echo "<td><input type='text' name='fb_academie' value='$fb_academie' /></td>\n";
 	echo "</tr>\n";
 
@@ -21,7 +21,7 @@
 	echo "<tr";
 	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 	echo ">\n";
-	echo "<td>Département de: </td>\n";
+	echo "<td>DÃ©partement de: </td>\n";
 	echo "<td><input type='text' name='fb_departement' value='$fb_departement' /></td>\n";
 	echo "</tr>\n";
 
@@ -56,14 +56,14 @@
 	// MODE DE CALCUL POUR LES MOYENNES DES REGROUPEMENTS DE MATIERES:
 	// - LV1: on fait la moyenne de toutes les LV1 (AGL1, ALL1)
 	// ou
-	// - LV1: on présente pour chaque élève, la moyenne qui correspond à sa LV1: ALL1 s'il fait ALL1,...
+	// - LV1: on prÃ©sente pour chaque Ã©lÃ¨ve, la moyenne qui correspond Ã  sa LV1: ALL1 s'il fait ALL1,...
 	// ****************************************************************************
 	$fb_mode_moyenne=getSettingValue("fb_mode_moyenne");
 	$alt=$alt*(-1);
 	echo "<tr";
 	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 	echo ">\n";
-	echo "<td valign='top'>Mode de calcul des moyennes pour les options Notanet associées à plusieurs matières (<i>ex.: LV1 associée à AGL1 et ALL1</i>): </td>\n";
+	echo "<td valign='top'>Mode de calcul des moyennes pour les options Notanet associÃ©es Ã  plusieurs matiÃ¨res (<i>ex.: LV1 associÃ©e Ã  AGL1 et ALL1</i>): </td>\n";
 	echo "<td>";
 		echo "<table border='0'>\n";
 		echo "<tr>\n";
@@ -77,8 +77,8 @@
 		}
 		echo "</td>\n";
 		echo "<td>\n";
-		echo "Calculer la moyenne de toutes matières d'une même option Notanet confondues<br />\n";
-		echo "(<i>on compte ensemble les AGL1 et ALL1; c'est la moyenne de toute la LV1 qui est effectuée</i>)\n";
+		echo "Calculer la moyenne de toutes matiÃ¨res d'une mÃªme option Notanet confondues<br />\n";
+		echo "(<i>on compte ensemble les AGL1 et ALL1; c'est la moyenne de toute la LV1 qui est effectuÃ©e</i>)\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 
@@ -93,8 +93,8 @@
 		}
 		echo "</td>\n";
 		echo "<td>\n";
-		echo "Calculer les moyennes par matières<br />\n";
-		echo "(<i>on ne mélange pas AGL1 et ALL1 dans le calcul de la moyenne de classe pour un élève</i>)\n";
+		echo "Calculer les moyennes par matiÃ¨res<br />\n";
+		echo "(<i>on ne mÃ©lange pas AGL1 et ALL1 dans le calcul de la moyenne de classe pour un Ã©lÃ¨ve</i>)\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
@@ -111,7 +111,7 @@
 	echo "<tr";
 	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 	echo ">\n";
-	echo "<td>Nombre de lignes pour l'avis du chef d'établissement: </td>\n";
+	echo "<td>Nombre de lignes pour l'avis du chef d'Ã©tablissement: </td>\n";
 	echo "<td><input type='text' name='fb_nblig_avis_chef' value='$fb_nblig_avis_chef' /></td>\n";
 	echo "</tr>\n";
 	*/
@@ -140,7 +140,7 @@
 	echo "<tr";
 	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 	echo ">\n";
-	echo "<td>Largeur de la colonne DISCIPLINES (<i>1ère colonne</i>) en pourcentage: </td>\n";
+	echo "<td>Largeur de la colonne DISCIPLINES (<i>1Ã¨re colonne</i>) en pourcentage: </td>\n";
 	echo "<td><input type='text' name='fb_largeur_col_disc' value='$fb_largeur_col_disc' /></td>\n";
 	echo "</tr>\n";
 
@@ -152,7 +152,7 @@
 	echo "<tr";
 	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 	echo ">\n";
-	echo "<td>Largeur des colonnes 'NOTE MOYENNE affectée du coefficient' en pourcentage: </td>\n";
+	echo "<td>Largeur des colonnes 'NOTE MOYENNE affectÃ©e du coefficient' en pourcentage: </td>\n";
 	echo "<td><input type='text' name='fb_largeur_col_opt' value='$fb_largeur_col_opt' /></td>\n";
 	echo "</tr>\n";
 
@@ -177,13 +177,13 @@
 	echo "<tr";
 	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 	echo ">\n";
-	echo "<td>Largeur de la colonne Appréciation des professeurs (<i>dernière colonne</i>) en pourcentage: </td>\n";
+	echo "<td>Largeur de la colonne ApprÃ©ciation des professeurs (<i>derniÃ¨re colonne</i>) en pourcentage: </td>\n";
 	echo "<td><input type='text' name='fb_largeur_col_app' value='$fb_largeur_col_app' /></td>\n";
 	echo "</tr>\n";
 
 
 	//===============================================
-	echo "<tr><td colspan='2' style='font-weight:bold;'>Informations académie, département établissement,..., élèves</td></tr>\n";
+	echo "<tr><td colspan='2' style='font-weight:bold;'>Informations acadÃ©mie, dÃ©partement Ã©tablissement,..., Ã©lÃ¨ves</td></tr>\n";
 
 
 	$fb_taille_acad=getSettingValue("fb_taille_acad");
@@ -194,7 +194,7 @@
 	echo "<tr";
 	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 	echo ">\n";
-	echo "<td>Taille en points des informations 'Académie, Département': </td>\n";
+	echo "<td>Taille en points des informations 'AcadÃ©mie, DÃ©partement': </td>\n";
 	echo "<td><input type='text' name='fb_taille_acad' value='$fb_taille_acad' /></td>\n";
 	echo "</tr>\n";
 
@@ -219,7 +219,7 @@
 	echo "<tr";
 	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 	echo ">\n";
-	echo "<td>Marges des infos établissement en pixels: </td>\n";
+	echo "<td>Marges des infos Ã©tablissement en pixels: </td>\n";
 	echo "<td><input type='text' name='fb_marg_etab' value='$fb_marg_etab' /></td>\n";
 	echo "</tr>\n";
 
@@ -249,7 +249,7 @@
 	echo "<tr";
 	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 	echo ">\n";
-	echo "<td>Taille en point des textes des informations élève: </td>\n";
+	echo "<td>Taille en point des textes des informations Ã©lÃ¨ve: </td>\n";
 	echo "<td><input type='text' name='fb_taille_txt_ele' value='$fb_taille_txt_ele' /></td>\n";
 	echo "</tr>\n";
 
@@ -261,7 +261,7 @@
 	echo "<tr";
 	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 	echo ">\n";
-	echo "<td>Marges haute et basses des infos élève en pixels: </td>\n";
+	echo "<td>Marges haute et basses des infos Ã©lÃ¨ve en pixels: </td>\n";
 	echo "<td><input type='text' name='fb_marg_h_ele' value='$fb_marg_h_ele' /></td>\n";
 	echo "</tr>\n";
 
@@ -279,7 +279,7 @@
 	echo "<tr";
 	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 	echo ">\n";
-	echo "<td>Taille en points des intitulés de l'entête du tableau 'DISCIPLINES', 'NOTE MOYENNE',...: </td>\n";
+	echo "<td>Taille en points des intitulÃ©s de l'entÃªte du tableau 'DISCIPLINES', 'NOTE MOYENNE',...: </td>\n";
 	echo "<td><input type='text' name='fb_titretab' value='$fb_titretab' /></td>\n";
 	echo "</tr>\n";
 
@@ -384,7 +384,7 @@
 	echo "<tr";
 	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 	echo ">\n";
-	echo "<td>Largeur de la colonne des cases à cocher B2i (<i>sans la partie texte</i>) en pourcentage de la largeur du tableau: </td>\n";
+	echo "<td>Largeur de la colonne des cases Ã  cocher B2i (<i>sans la partie texte</i>) en pourcentage de la largeur du tableau: </td>\n";
 	echo "<td><input type='text' name='fb_largeur_coche_b2i' value='$fb_largeur_coche_b2i' /></td>\n";
 	echo "</tr>\n";
 
@@ -392,7 +392,7 @@
 
 	//===============================================
 	echo "<tr><td colspan='2' style='font-weight:bold;'>Images</td></tr>\n";
-	echo "<tr><td colspan='2'>Il peut arriver avec certains navigateurs que la transparence des PNG pose des problèmes lors de l'impression.<br />Un jeu de fichiers alternatifs avec un fond blanc est proposé pour résoudre ce problème.</td></tr>\n";
+	echo "<tr><td colspan='2'>Il peut arriver avec certains navigateurs que la transparence des PNG pose des problÃ¨mes lors de l'impression.<br />Un jeu de fichiers alternatifs avec un fond blanc est proposÃ© pour rÃ©soudre ce problÃ¨me.</td></tr>\n";
 
 	$fb_modele_img=getSettingValue("fb_modele_img");
 	if($fb_modele_img=="") {$fb_modele_img=1;}
@@ -400,7 +400,7 @@
 	echo "<tr";
 	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 	echo ">\n";
-	echo "<td valign='top'>Modèle d'image: </td>\n";
+	echo "<td valign='top'>ModÃ¨le d'image: </td>\n";
 	echo "<td>\n";
 	echo "<input type='radio' name='fb_modele_img' id='fb_modele_img_std' value='1' ";
 	if($fb_modele_img==1) {echo "checked ";}
@@ -458,15 +458,15 @@
 	}
 </script>\n";
 
-	//echo "<p>Les proportions de largeur des colonnes diffèrent un peu entre les brevets agricoles et les brevets non agricoles.<br />Les liens suivants permettent de fixer les proportions par défaut correspondant à ces deux cas.<br />\n";
-	echo "<p>Les proportions de largeur des colonnes diffèrent un peu entre les brevets.<br />Les liens suivants permettent de fixer les proportions par défaut correspondant aux différents cas.</p>\n";
+	//echo "<p>Les proportions de largeur des colonnes diffÃ¨rent un peu entre les brevets agricoles et les brevets non agricoles.<br />Les liens suivants permettent de fixer les proportions par dÃ©faut correspondant Ã  ces deux cas.<br />\n";
+	echo "<p>Les proportions de largeur des colonnes diffÃ¨rent un peu entre les brevets.<br />Les liens suivants permettent de fixer les proportions par dÃ©faut correspondant aux diffÃ©rents cas.</p>\n";
 
 	echo "<table><tr>";
-	echo "<td>Brevet série</td>\n";
+	echo "<td>Brevet sÃ©rie</td>\n";
 	//echo "<a href='#' onClick='fixe_proportions(\"non_agri\")'>non agricoles</a>";
 	//echo " ou \n";
 	//echo "<a href='#' onClick='fixe_proportions(\"agri\")'>agricoles</a>";
-	echo "<td><a href='#' onClick='fixe_proportions(\"college\")'>collège</a>,</td>";
+	echo "<td><a href='#' onClick='fixe_proportions(\"college\")'>collÃ¨ge</a>,</td>";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td>&nbsp;</td>\n";

@@ -2,18 +2,18 @@
 
 /**
  * Description of GroupeHelper
- *  Classe qui implemente des methodes statiques pour géré un groupe ou un tableau de groupe
+ *  Classe qui implemente des methodes statiques pour gÃ©rÃ© un groupe ou un tableau de groupe
  *
  * @author joss
  */
 class GroupeHelper {
  
  	/**
-	 * Compare deux groupes par ordre alphabétique de leur nom (avec les noms de classes d'eleves associée)
+	 * Compare deux groupes par ordre alphabÃ©tique de leur nom (avec les noms de classes d'eleves associÃ©e)
 	 *
 	 * @param      array $groupeA Le premier groupe a coparer
 	 * @param      array $groupeB Le deuxieme groupe a comparer
-	 * @return     int un entier, qui sera inférieur, égal ou supérieur à zéro suivant que le premier argument est considéré comme plus petit, égal ou plus grand que le second argument.
+	 * @return     int un entier, qui sera infÃ©rieur, Ã©gal ou supÃ©rieur Ã  zÃ©ro suivant que le premier argument est considÃ©rÃ© comme plus petit, Ã©gal ou plus grand que le second argument.
 	 */
 	public static function compareGroupe($a, $b) {
 		//echo($a->getDescriptionAvecClasses());
@@ -22,10 +22,10 @@ class GroupeHelper {
 
  	/**
 	 * 
-	 * Classe un tableau de groupe par ordre alphabétique de leur nom (avec les noms de classes d'eleves associée)
+	 * Classe un tableau de groupe par ordre alphabÃ©tique de leur nom (avec les noms de classes d'eleves associÃ©e)
 	 *
 	 * @param      array $groupes Le tableau de groupes
-	 * @return     array $groupes Un tableau de groupe ordonnés
+	 * @return     array $groupes Un tableau de groupe ordonnÃ©s
 	 * @throws     PropelException - if unable to parse/validate the date/time value.
 	 */
 	public static function orderByGroupNameWithClasses(PropelObjectCollection $groupes) {

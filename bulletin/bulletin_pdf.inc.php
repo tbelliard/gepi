@@ -1,6 +1,6 @@
 <?php
 	// Tableau des champs de model_bulletin
-	// Il faudra peut-être revoir cela pour initialiser un tableau $valeur_bull_pdf[] des valeurs par défaut des champs
+	// Il faudra peut-Ãªtre revoir cela pour initialiser un tableau $valeur_bull_pdf[] des valeurs par dÃ©faut des champs
 	// ou une autre structure $modele_bull_pdf[$i]['nom_champ']="nom_model_bulletin"
 	//                        $modele_bull_pdf[$i]['valeur']="Defaut"
 
@@ -204,7 +204,7 @@
 		mysql>
 	*/
 
-	$val_defaut_champ_bull_pdf["nom_model_bulletin"]="Nom du modèle";
+	$val_defaut_champ_bull_pdf["nom_model_bulletin"]="Nom du modÃ¨le";
 	$val_defaut_champ_bull_pdf["active_bloc_datation"]=1;
 	$val_defaut_champ_bull_pdf["active_bloc_eleve"]=1;
 	$val_defaut_champ_bull_pdf["active_bloc_adresse_parent"]=1;
@@ -310,11 +310,11 @@
 	$val_defaut_champ_bull_pdf["couleur_moy_general1"]=239;
 	$val_defaut_champ_bull_pdf["couleur_moy_general2"]=239;
 	$val_defaut_champ_bull_pdf["couleur_moy_general3"]=239;
-	$val_defaut_champ_bull_pdf["titre_entete_matiere"]="Matière";
+	$val_defaut_champ_bull_pdf["titre_entete_matiere"]="MatiÃ¨re";
 	$val_defaut_champ_bull_pdf["titre_entete_coef"]="coef.";
 	$val_defaut_champ_bull_pdf["titre_entete_nbnote"]="nb. n.";
 	$val_defaut_champ_bull_pdf["titre_entete_rang"]="rang";
-	$val_defaut_champ_bull_pdf["titre_entete_appreciation"]="Appréciation / Conseils";
+	$val_defaut_champ_bull_pdf["titre_entete_appreciation"]="ApprÃ©ciation / Conseils";
 	$val_defaut_champ_bull_pdf["active_coef_sousmoyene"]=0;
 	$val_defaut_champ_bull_pdf["arrondie_choix"]=0.01;
 	$val_defaut_champ_bull_pdf["nb_chiffre_virgule"]=2;
@@ -383,7 +383,7 @@
 	for($loop_champs=0;$loop_champs<count($champ_bull_pdf);$loop_champs++) {
 		$type_champ_pdf["$champ_bull_pdf[$loop_champs]"]="numerique";
 	}
-	// Liste des champs non numériques
+	// Liste des champs non numÃ©riques
 	$type_champ_pdf["nom_model_bulletin"]="texte";
 	$type_champ_pdf["caractere_utilse"]="texte";
 	$type_champ_pdf["texte_filigrame"]="texte";
@@ -410,7 +410,7 @@
 		$sql="SELECT MAX(id_model_bulletin) AS max_id_model_bulletin FROM modele_bulletin;";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			// Ca ne devrait pas arriver: en 1 il doit y avoir le modèle standard
+			// Ca ne devrait pas arriver: en 1 il doit y avoir le modÃ¨le standard
 			return 2;
 		}
 		else {

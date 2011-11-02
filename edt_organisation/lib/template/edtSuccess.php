@@ -42,7 +42,7 @@
                                             </div>
                                             <div class="art-postcontent">
                                                 <!-- article-content -->
-                                                <p>Cette partie du logiciel est en cours de développement. Il s'agit de la nouvelle interface du module EDT, issue d'une refactorisation complète du module. L'objectif est de passer tout le module en objet MVC.</p>
+                                                <p>Cette partie du logiciel est en cours de dÃ©veloppement. Il s'agit de la nouvelle interface du module EDT, issue d'une refactorisation complÃ¨te du module. L'objectif est de passer tout le module en objet MVC.</p>
                                                 <div class="cleared"></div>
                                                 <!-- /article-content -->
                                             </div>

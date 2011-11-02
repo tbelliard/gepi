@@ -34,18 +34,18 @@ $hauteur_classe=10;
 // Ecart sous la classe
 $ecart_sous_classe=2;
 
-// Espace pour Nom et prénom dans le cadre
+// Espace pour Nom et prÃ©nom dans le cadre
 $hauteur_info_eleve=5;
 
 // Pour pouvoir ne pas imprimer le Footer
 $no_footer="n";
 
-// Il arrive qu'il y ait un décalage vertical s'amplifiant ligne après ligne sur les découpes
-// Par défaut, pas de décalage:
+// Il arrive qu'il y ait un dÃ©calage vertical s'amplifiant ligne aprÃ¨s ligne sur les dÃ©coupes
+// Par dÃ©faut, pas de dÃ©calage:
 $correctif_vertical=1;
 // 1=100%
 //===================
-// Valeurs calculées:
+// Valeurs calculÃ©es:
 
 // Nombre de cases par page
 $nb_cell=$trombino_pdf_nb_lig*$trombino_pdf_nb_col;

@@ -20,7 +20,7 @@
 * along with GEPI; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -28,7 +28,7 @@ require_once ("Controleur.php");
 require_once("ImportModele.php");
 
 /**
- * Contrôleur par défaut: Index
+ * ContrÃ´leur par dÃ©faut: Index
  */
 class ImportCtrl extends Controleur {
 
@@ -39,7 +39,7 @@ class ImportCtrl extends Controleur {
     private $erreurs_lignes = Null;
 
     /**
-     * Action par défaut
+     * Action par dÃ©faut
      */
     function index() {
         $this->vue->LoadTemplate('import.php');
@@ -52,13 +52,13 @@ class ImportCtrl extends Controleur {
             if (is_uploaded_file($this->tmp)) {
                 $this->copy_file($this->tmp);
             } else
-                throw new Exception('Aucun fichier ne semble uploadé ');
+                throw new Exception('Aucun fichier ne semble uploadÃ© ');
             $this->csv = '../temp/'.get_user_temp_directory().'/correspondances.csv';            
             if (file_exists($this->csv)) {
                 $this->traite_file($this->csv);
                 unlink($this->csv);
                 if (file_exists($this->csv)){
-                    throw new Exception('Impossible de supprimer le fichier csv dans votre repertoire temp. Il est conseillé de le faire manuellement.');
+                    throw new Exception('Impossible de supprimer le fichier csv dans votre repertoire temp. Il est conseillÃ© de le faire manuellement.');
                 }
                 if (is_null($this->erreurs_lignes)) {
                     $this->vue->LoadTemplate('result.php');
@@ -139,28 +139,28 @@ class ImportCtrl extends Controleur {
 
     private function get_message($code) {
         //$NomBloc   : nom du bloc qui appel la fonction (lecture seule)
-        //$CurrRec   : tableau contenant les champs de l'enregistrement en cours (lecture/écriture)
-        //$RecNum    : numéro de l'enregsitrement en cours (lecture seule)
+        //$CurrRec   : tableau contenant les champs de l'enregistrement en cours (lecture/Ã©criture)
+        //$RecNum    : numÃ©ro de l'enregsitrement en cours (lecture seule)
         switch ($code) {
             case 0:
                 $this->class = "message_red";
-                $this->message = 'Une entrée existe déja dans la table pour ce login gépi';
+                $this->message = 'Une entrÃ©e existe dÃ©ja dans la table pour ce login gÃ©pi';
                 break;
             case 1:
                 $this->class = "message_red";
-                $this->message = 'Une entrée existe déja dans la table pour ce login sso';
+                $this->message = 'Une entrÃ©e existe dÃ©ja dans la table pour ce login sso';
                 break;
             case 2:
                 $this->class = "message_red";
-                $this->message = 'L\'utilisateur n\'existe pas dans gépi.';
+                $this->message = 'L\'utilisateur n\'existe pas dans gÃ©pi.';
                 break;
             case 3:
                 $this->class = "message_orange";
-                $this->message = 'L\'utilisateur existe mais son compte n\'est pas paramétré pour le sso. Il faut corriger absolument pour que la correspondance fonctionne.';
+                $this->message = 'L\'utilisateur existe mais son compte n\'est pas paramÃ©trÃ© pour le sso. Il faut corriger absolument pour que la correspondance fonctionne.';
                 break;
             case 5:
                 $this->class = "message_red";
-                $this->message = 'Aucune des deux valeurs ne peut être vide. Il faut rectifier cela.';
+                $this->message = 'Aucune des deux valeurs ne peut Ãªtre vide. Il faut rectifier cela.';
                 break;
             default:
                 $this->class = "message_green";

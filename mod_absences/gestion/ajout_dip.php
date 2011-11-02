@@ -62,7 +62,7 @@ $cal_2 = new Calendrier("form1", "au_dispense_eleve");
 if (empty($_GET['fiche']) and empty($_POST['fiche'])) {$fiche="";}
     else { if (isset($_GET['fiche'])) {$fiche=$_GET['fiche'];} if (isset($_POST['fiche'])) {$fiche=$_POST['fiche'];} }
 
-// si pas de sélection on retourne à la sélection
+// si pas de sÃ©lection on retourne Ã  la sÃ©lection
 if((empty($classe_choix) or $classe_choix === 'tous') and empty($eleve_absent[0]) and empty($id) and $action_sql === '') { header("Location:select.php?type=$type"); }
 
 if($id == "" and $eleve_absent == "" and $eleve_dispense == "") { header("Location:select.php?type=$type"); }
@@ -93,12 +93,12 @@ if($action_sql == "ajouter" OR $action_sql == "modifier")
     //si au est vide on copie du dans au
        if ($a_date_absence_eleve=="AAAA-MM-JJ" or $a_date_absence_eleve=="" or $a_date_absence_eleve=="--") { $a_date_absence_eleve=$d_date_absence_eleve; }
 
-     // on explose la date en plusieur partie jour mois année
+     // on explose la date en plusieur partie jour mois annÃ©e
        $d_date_absence_eleve_verif = explode('-',$d_date_absence_eleve);
        $a_date_absence_eleve_verif = explode('-',$a_date_absence_eleve);
 
 
-     // vérification des date saisies
+     // vÃ©rification des date saisies
        if(verif_date($d_date_absence_eleve) == "pass")
         {
               $verification = '1';
@@ -116,11 +116,11 @@ if($action_sql == "ajouter" OR $action_sql == "modifier")
                                         $verification = '1';
                                     } else { $verification = '7'; $erreur = '1'; $texte_erreur = "la date de fin tombe un dimanche."; }
                              } else { $verification = '6'; $erreur = '1'; $texte_erreur = "la date de debut tombe un dimanche."; }
-                      } else { $verification = '8'; $erreur='1'; $texte_erreur = "La date du debut ne peut être plus grande que celle de fin."; }
+                      } else { $verification = '8'; $erreur='1'; $texte_erreur = "La date du debut ne peut Ãªtre plus grande que celle de fin."; }
                } else { $verification = '4'; $erreur = '1'; $texte_erreur = "La date de fin n'est pas correcte."; }
         } else { $verification = '5'; $erreur = '1'; $texte_erreur = "La date de debut n'est pas correcte."; }
 
-        // si les date sont OK alors on vérifie quelle sont les jour données
+        // si les date sont OK alors on vÃ©rifie quelle sont les jour donnÃ©es
           if ($verification === '1' and $erreur === '0')
                  {
                       $erreur_jour = '1';
@@ -150,7 +150,7 @@ if($action_sql == "ajouter" OR $action_sql == "modifier")
                                break;
                            }
 
-                           // on vérifie que les périodes existe bien dans la base
+                           // on vÃ©rifie que les pÃ©riodes existe bien dans la base
                               $sql = "SELECT * from ".$prefix_base."edt_creneaux";
                               $resultat = mysql_query($sql) or die('Erreur SQL !'.$sql.'<br />'.mysql_error());
                               while ($data_Per = mysql_fetch_array($resultat))
@@ -160,7 +160,7 @@ if($action_sql == "ajouter" OR $action_sql == "modifier")
                                     {
                                         if (strtolower($p) == strtolower(substr($info_absence_eleve,$i,2)))
                                          {
-                                           $verification = '12'; $texte_erreur = "Cette période n'est pas bonne!";
+                                           $verification = '12'; $texte_erreur = "Cette pÃ©riode n'est pas bonne!";
                                          }
                                     }
                                }
@@ -180,7 +180,7 @@ if($action_sql == "ajouter" OR $action_sql == "modifier")
                                                                                                 saisie_absence_eleve = '".$_SESSION['login']."'
                                                                                                 WHERE id_absence_eleve = '".$id_absence_eleve."'"; }
                               $resultat = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-                         } else { $verification = '3'; $erreur='1'; $texte_erreur = "Il y a une erreur dans la  spécificationr des jours."; }
+                         } else { $verification = '3'; $erreur='1'; $texte_erreur = "Il y a une erreur dans la  spÃ©cificationr des jours."; }
                  }
 
           if( $erreur!='1' ) { if( $fiche === 'oui' ) { header("Location:gestion_absences.php?type=$type&select_fiche_eleve=$eleve_absence_eleve&aff_fiche=abseleve#abseleve"); } else { header("Location:gestion_absences.php?type=$type"); } }
@@ -194,7 +194,7 @@ if ($action === 'supprimer')
 	   else { if (isset($_GET['date_ce_jour'])) { $date_ce_jour = $_GET['date_ce_jour']; } if (isset($_POST['date_ce_jour'])) { $date_ce_jour = $_POST['date_ce_jour']; } }
 
         $id_dispense_eleve = $_GET['id'];
-        // Vérification des champs
+        // VÃ©rification des champs
         $requete_sup = "SELECT eleve_absence_eleve FROM ".$prefix_base."absences_eleves
 								WHERE id_absence_eleve ='$id_dispense_eleve'";
 	   $resultat_sup = mysql_query($requete_sup) or die('Erreur SQL !'.$requete_sup.'<br />'.mysql_error());
@@ -231,7 +231,7 @@ if ($action === 'modifier')
         }
 }
 
- // définition des date et autres infos
+ // dÃ©finition des date et autres infos
  $datej = date('Y-m-d');
  $annee_en_cours_t=annee_en_cours_t($datej);
  $datejour = date('d/m/Y');
@@ -252,10 +252,10 @@ function getDate(input_pass,form_choix){
  var date_jour = jour+"/"+mois+"/"+annee;
 // nom du formulaire
   var form_action = form_choix;
-// id des élèments
+// id des Ã©lÃ¨ments
   var input_pass_id = input_pass.id;
   var input_pass_value = input_pass.value;
-// modifie le contenue de l'élèment
+// modifie le contenue de l'Ã©lÃ¨ment
 if(document.forms[form_action].elements[input_pass_id].value=='JJ/MM/AAAA' || document.forms[form_action].elements[input_pass_id].value=='') { document.forms[form_action].elements[input_pass_id].value=date_jour; }
 }
  // -->
@@ -354,7 +354,7 @@ if ($action == "ajouter" or $action == "modifier" or $erreur = 1)
         $requete_t = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$id_eleve."' AND  d_date_absence_eleve <= '".$datej."' AND   a_date_absence_eleve >= '".$datej."' and type_absence_eleve = 'D'";
         $resultat = mysql_query($requete_t) or die('Erreur SQL !'.$requete_t.'<br />'.mysql_error());
 ?>
-                 <div class="norme_absence_rouge"><strong>liste des dispenses déjas enregistré pour cette date</strong></div>
+                 <div class="norme_absence_rouge"><strong>liste des dispenses dÃ©jas enregistrÃ© pour cette date</strong></div>
                  <?php /* div de centrage du tableau pour ie5 */ ?>
                  <div style="text-align:center">
                  <table style="margin: auto; width: 500px;" border="0" cellspacing="2" cellpadding="0">

@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Initialisations files
@@ -36,7 +36,7 @@ if ($resultat_session == 'c') {
     header("Location: ../logout.php?auto=1");
     die();};
 
-// INSERT INTO droits VALUES ('/gestion/param_couleurs.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Définition des couleurs pour Gepi', '');
+// INSERT INTO droits VALUES ('/gestion/param_couleurs.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'DÃ©finition des couleurs pour Gepi', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
@@ -223,17 +223,17 @@ elseif(isset($_POST['valide_import_couleurs'])) {
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
 	if(!is_uploaded_file($csv_file['tmp_name'])) {
-		$msg="L'upload du fichier a échoué.<br />\n";
+		$msg="L'upload du fichier a Ã©chouÃ©.<br />\n";
 
-		$msg.="<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+		$msg.="<p>Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 		$msg.="post_max_size=$post_max_size<br />\n";
 		$msg.="upload_max_filesize=$upload_max_filesize<br />\n";
 	}
 	else {
 		if(!file_exists($csv_file['tmp_name'])){
-			$msg="Le fichier aurait été uploadé... mais ne serait pas présent/conservé.<br />\n";
+			$msg="Le fichier aurait Ã©tÃ© uploadÃ©... mais ne serait pas prÃ©sent/conservÃ©.<br />\n";
 
-			$msg.="Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+			$msg.="Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 			$msg.="post_max_size=$post_max_size<br />\n";
 			$msg.="upload_max_filesize=$upload_max_filesize<br />\n";
 			$msg.="et le volume de ".$csv_file['name']." serait<br />\n";
@@ -248,14 +248,14 @@ elseif(isset($_POST['valide_import_couleurs'])) {
 			$res_copy=copy("$source_file" , "$dest_file");
 
 			if(!$res_copy){
-				$msg="La copie du fichier vers le dossier temporaire a échoué.<br />Vérifiez que l'utilisateur ou le groupe apache ou www-data a accès au dossier temp/$tempdir<br />\n";
+				$msg="La copie du fichier vers le dossier temporaire a Ã©chouÃ©.<br />VÃ©rifiez que l'utilisateur ou le groupe apache ou www-data a accÃ¨s au dossier temp/$tempdir<br />\n";
 			}
 			else{
 			*/
 
 				$dest_file=$csv_file['tmp_name'];
 
-				//echo "<p>La copie du fichier vers le dossier temporaire a réussi.</p>\n";
+				//echo "<p>La copie du fichier vers le dossier temporaire a rÃ©ussi.</p>\n";
 
 				$fp=fopen($dest_file,"r");
 				if(!$fp) {
@@ -272,7 +272,7 @@ elseif(isset($_POST['valide_import_couleurs'])) {
 							$valeur=$tmp_tab[1];
 
 							if(!in_array($nom, $tab_items)) {
-								$msg.="Item '$nom' inconnu (non importé).<br />";
+								$msg.="Item '$nom' inconnu (non importÃ©).<br />";
 							}
 							else {
 								if(!saveSetting($nom, $valeur)) {
@@ -285,8 +285,8 @@ elseif(isset($_POST['valide_import_couleurs'])) {
 						}
 					}
 					if($cpt_reg>0) {
-						$msg.="$cpt_reg items enregistrés.<br />";
-						$msg.="Validez le formulaire en bas de page pour regénérer le fichier de styles CSS.<br />";
+						$msg.="$cpt_reg items enregistrÃ©s.<br />";
+						$msg.="Validez le formulaire en bas de page pour regÃ©nÃ©rer le fichier de styles CSS.<br />";
 					}
 				}
 
@@ -296,7 +296,7 @@ elseif(isset($_POST['valide_import_couleurs'])) {
 }
 
 
-// Liste des couleurs,... paramétrables
+// Liste des couleurs,... paramÃ©trables
 $tab=array();
 $tab[0]='style_body_backgroundcolor';
 // NOTE: Pour JavaScript, on n'a pas le droit au '-' dans un nom de variable
@@ -309,7 +309,7 @@ if(isset($_POST['is_posted'])) {
 	$err_no=0;
 	$msg="";
 
-	//if(isset($_POST['style_body_backgroundcolor'])) {
+	//if(isset($_POST['style_body_backgroundcolor']))Â {
 
 	$reinitialiser="n";
 	if(isset($_POST['secu'])) {
@@ -326,16 +326,16 @@ if(isset($_POST['is_posted'])) {
 				$fich=fopen("../style_screen_ajout.css","w+");
 			}
 			fwrite($fich,"/*
-Ce fichier est destiné à recevoir des paramètres définis depuis la page /gestion/param_couleurs.php
-Chargé juste avant la section <body> dans le /lib/header.inc,
-ses propriétés écrasent les propriétés définies auparavant dans le </head>.
+Ce fichier est destinÃ© Ã  recevoir des paramÃ¨tres dÃ©finis depuis la page /gestion/param_couleurs.php
+ChargÃ© juste avant la section <body> dans le /lib/header.inc,
+ses propriÃ©tÃ©s Ã©crasent les propriÃ©tÃ©s dÃ©finies auparavant dans le </head>.
 */
 ");
 			fclose($fich);
-			$msg.="Réinitialisation effectuée.";
+			$msg.="RÃ©initialisation effectuÃ©e.";
 		}
 		else {
-			$msg.="Erreur lors de la réinitialisation.";
+			$msg.="Erreur lors de la rÃ©initialisation.";
 		}
 	}
 	else {
@@ -357,9 +357,9 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 						$fich=fopen("../style_screen_ajout.css","w+");
 					}
 					fwrite($fich,"/*
-Ce fichier est destiné à recevoir des paramètres définis depuis la page /gestion/param_couleurs.php
-Chargé juste avant la section <body> dans le /lib/header.inc,
-ses propriétés écrasent les propriétés définies auparavant dans le </head>.
+Ce fichier est destinÃ© Ã  recevoir des paramÃ¨tres dÃ©finis depuis la page /gestion/param_couleurs.php
+ChargÃ© juste avant la section <body> dans le /lib/header.inc,
+ses propriÃ©tÃ©s Ã©crasent les propriÃ©tÃ©s dÃ©finies auparavant dans le </head>.
 */
 
 @media screen  {
@@ -369,7 +369,7 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 }
 ");
 					fclose($fich);
-					//$msg.="Enregistrement effectué. ";
+					//$msg.="Enregistrement effectuÃ©. ";
 					$temoin_modif++;
 					$temoin_fichier_regenere++;
 				}
@@ -391,13 +391,13 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 				$fich=fopen("../style_screen_ajout.css","w+");
 			}
 			fwrite($fich,"/*
-Ce fichier est destiné à recevoir des paramètres définis depuis la page /gestion/param_couleurs.php
-Chargé juste avant la section <body> dans le /lib/header.inc,
-ses propriétés écrasent les propriétés définies auparavant dans le </head>.
+Ce fichier est destinÃ© Ã  recevoir des paramÃ¨tres dÃ©finis depuis la page /gestion/param_couleurs.php
+ChargÃ© juste avant la section <body> dans le /lib/header.inc,
+ses propriÃ©tÃ©s Ã©crasent les propriÃ©tÃ©s dÃ©finies auparavant dans le </head>.
 */
 ");
 			fclose($fich);
-			//$msg.="Enregistrement effectué. ";
+			//$msg.="Enregistrement effectuÃ©. ";
 			$temoin_modif++;
 			$temoin_fichier_regenere++;
 		}
@@ -438,7 +438,7 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 				}
 
 				if(saveSetting('degrade_haut',$degrade_haut)) {
-					//$msg.="Enregistrement effectué. ";
+					//$msg.="Enregistrement effectuÃ©. ";
 					$temoin_modif++;
 				}
 				else {
@@ -456,7 +456,7 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 				}
 
 				if(saveSetting('degrade_bas',$_POST['degrade_bas'])) {
-					//$msg.="Enregistrement effectué. ";
+					//$msg.="Enregistrement effectuÃ©. ";
 					$temoin_modif++;
 				}
 				else {
@@ -474,7 +474,7 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 				*/
 
 
-				// Générer l'image...
+				// GÃ©nÃ©rer l'image...
 
 				//genere_degrade($degrade_haut,$degrade_bas,100,"../images/background/degrade1.png");
 				if(getSettingValue('degrade_double_bandeau')=='y') {$parametre_double_degrade='double';} else {$parametre_double_degrade='';}
@@ -524,7 +524,7 @@ fieldset#login_box div#header {
 .menu_barre_bottom {
 	background-color: #$degrade_haut;
 }
-/* ul ul pour ne masquer par défaut que les sous-menus */
+/* ul ul pour ne masquer par dÃ©faut que les sous-menus */
 #menu_barre ul ul {
 	background-color: #$degrade_bas;
 }
@@ -539,7 +539,7 @@ fieldset#login_box div#header {
 ");
 
 /*
-//Pour old-style... problème: Si on le met cela s'applique même en new-style.
+//Pour old-style... problÃ¨me: Si on le met cela s'applique mÃªme en new-style.
 
 #td_headerTopRight {
 	background-color: #$degrade_haut;
@@ -585,7 +585,7 @@ fieldset#login_box div#header {
 				}
 
 				if(saveSetting('couleur_infobulle_fond_entete',$couleur_infobulle_fond_entete)) {
-					//$msg.="Enregistrement effectué. ";
+					//$msg.="Enregistrement effectuÃ©. ";
 					$temoin_modif++;
 				}
 				else {
@@ -603,7 +603,7 @@ fieldset#login_box div#header {
 				}
 
 				if(saveSetting('couleur_infobulle_fond_corps',$couleur_infobulle_fond_corps)) {
-					//$msg.="Enregistrement effectué. ";
+					//$msg.="Enregistrement effectuÃ©. ";
 					$temoin_modif++;
 				}
 				else {
@@ -644,19 +644,19 @@ fieldset#login_box div#header {
 /*=====================================================*/
 /* Utilisation des couleurs d'info bulles pour les onglets d'absences*/
 
-/* Intérieur des onglets de mod_abs2*/
+/* IntÃ©rieur des onglets de mod_abs2*/
 div.css-panes {
 	background-color: #$couleur_infobulle_fond_corps;
 	border-top:1px solid black;
 }
 
-/* Etiquette de l'onglet sélectionné */
+/* Etiquette de l'onglet sÃ©lectionnÃ© */
 ul.css-tabs a.current {
 	background-color: #$couleur_infobulle_fond_corps;
 	border-bottom:2px solid #$couleur_infobulle_fond_corps;
 }
 
-/* Etiquettes non sélectionnées*/
+/* Etiquettes non sÃ©lectionnÃ©es*/
 ul.css-tabs a {
 	background-color:#$couleur_infobulle_fond_corps;
 }
@@ -724,7 +724,7 @@ div.info_abs {
 				}
 
 				if(saveSetting('couleur_lig_entete',$couleur_lig_entete)) {
-					//$msg.="Enregistrement effectué. ";
+					//$msg.="Enregistrement effectuÃ©. ";
 					$temoin_modif++;
 				}
 				else {
@@ -742,7 +742,7 @@ div.info_abs {
 				}
 
 				if(saveSetting('couleur_lig_alt1',$couleur_lig_alt1)) {
-					//$msg.="Enregistrement effectué. ";
+					//$msg.="Enregistrement effectuÃ©. ";
 					$temoin_modif++;
 				}
 				else {
@@ -760,7 +760,7 @@ div.info_abs {
 				}
 
 				if(saveSetting('couleur_lig_alt_1',$couleur_lig_alt_1)) {
-					//$msg.="Enregistrement effectué. ";
+					//$msg.="Enregistrement effectuÃ©. ";
 					$temoin_modif++;
 				}
 				else {
@@ -817,7 +817,7 @@ div.info_abs {
 			}
 
 			if(saveSetting('couleur_fond_postit',$couleur_fond_postit)) {
-				//$msg.="Enregistrement effectué. ";
+				//$msg.="Enregistrement effectuÃ©. ";
 				$temoin_modif++;
 
 				if ($GLOBALS['multisite'] == 'y') {
@@ -839,13 +839,13 @@ div.info_abs {
 			}
 		}
 		//=========================================
-		// paramétrer le style du panneau d'affichage
+		// paramÃ©trer le style du panneau d'affichage
 		//=========================================
 		if(isset($_POST['select_panneau_affichage'])) {
 			$selected_panel = $_POST['select_panneau_affichage'];
 			if(($selected_panel=='---')||(in_array($_POST['select_panneau_affichage'],$tab_panneau_affichage))) {
 				if(saveSetting('style_panneau_affichage',$selected_panel)) {
-					//$msg.="Enregistrement effectué. ";
+					//$msg.="Enregistrement effectuÃ©. ";
 	
 					if(in_array($_POST['select_panneau_affichage'],$tab_panneau_affichage)) {
 	
@@ -1050,7 +1050,7 @@ div.info_abs {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Couleurs et Modèles GEPI";
+$titre_page = "Couleurs et ModÃ¨les GEPI";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -1061,7 +1061,7 @@ include("../lib/couleurs_ccm.php");
 	<p class='bold'>
 		<?php if(!isset($_GET['import_couleurs'])) { ?>
 		<a href='index.php#param_couleurs'><img src='../images/icons/back.png' alt='' class='back_link'/> Retour</a>
-		| Choix modèle&nbsp;:
+		| Choix modÃ¨le&nbsp;:
 		<select name='choix_modele' id='choix_modele' onchange="valide_modele($('choix_modele').options[$('choix_modele').selectedIndex].value)">
 			<option value=''>---</option>
 			<option value='rose'>Rose</option>
@@ -1073,7 +1073,7 @@ include("../lib/couleurs_ccm.php");
 		<?php }	else { ?>
 		<a href='param_couleurs.php'><img src='../images/icons/back.png' alt='' class='back_link'/> Retour</a>
 		<?php } ?>
-		| <a href='param_couleurs.php?export_couleurs=y'>Exporter les couleurs de votre modèle</a>
+		| <a href='param_couleurs.php?export_couleurs=y'>Exporter les couleurs de votre modÃ¨le</a>
 		| <a href='param_couleurs.php?import_couleurs=y'>Importer les couleurs depuis un CSV</a>
 	</p>
 	</div>
@@ -1084,7 +1084,7 @@ if((isset($_GET['import_couleurs']))&&($_GET['import_couleurs']=='y')) {
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	echo add_token_field();
-	echo "<p>Veuillez fournir le fichier de CSV des correspondances de votre modèle de couleur&nbsp;:<br />\n";
+	echo "<p>Veuillez fournir le fichier de CSV des correspondances de votre modÃ¨le de couleur&nbsp;:<br />\n";
 	echo "<input type=\"file\" size=\"65\" name=\"csv_file\" /><br />\n";
 	echo "<input type='hidden' name='valide_import_couleurs' value='yes' />\n";
 	echo "<p><input type='submit' value='Valider' /></p>\n";
@@ -1254,7 +1254,7 @@ aff_tab_couleurs_ccm('div_choix_couleur');
 
 
 
-	// Cahier de texte : Travail à faire
+	// Cahier de texte : Travail Ã  faire
 	//	#FFCCCF
 	tabmotif['fond_notices_t_R']=255;
 	tabmotif['fond_notices_t_V']=204;
@@ -1271,7 +1271,7 @@ aff_tab_couleurs_ccm('div_choix_couleur');
 	tabmotif['cellule_alt_t_V']=223;
 	tabmotif['cellule_alt_t_B']=226;
 
-	// Cahier de texte : Informations générales
+	// Cahier de texte : Informations gÃ©nÃ©rales
 	//	#ACACFF
 	tabmotif['fond_notices_i_R']=172;
 	tabmotif['fond_notices_i_V']=172;
@@ -1298,7 +1298,7 @@ aff_tab_couleurs_ccm('div_choix_couleur');
 	tabmotif['cellule_f_V']=255;
 	tabmotif['cellule_f_B']=223;
 
-	// Cahier de texte : Couleurs générales
+	// Cahier de texte : Couleurs gÃ©nÃ©rales
 	//	#FF4444
 	tabmotif['police_travaux_R']=255;
 	tabmotif['police_travaux_V']=68;
@@ -1337,7 +1337,7 @@ aff_tab_couleurs_ccm('div_choix_couleur');
 	}
 	// ========================================================================================
 	//
-	//					Création des observers généraux mousedown, mouseup
+	//					CrÃ©ation des observers gÃ©nÃ©raux mousedown, mouseup
 	//
 	// ========================================================================================
 	window.onload = function() {
@@ -1362,8 +1362,8 @@ aff_tab_couleurs_ccm('div_choix_couleur');
 <!--noscript>
 </noscript-->
 
-<p>Définissez les couleurs pour l'interface GEPI et gérez vos modèles.
-<!--Dans sa version actuelle, seule la couleur de fond de la page peut être paramétrée depuis cette page.-->
+<p>DÃ©finissez les couleurs pour l'interface GEPI et gÃ©rez vos modÃ¨les.
+<!--Dans sa version actuelle, seule la couleur de fond de la page peut Ãªtre paramÃ©trÃ©e depuis cette page.-->
 </p>
 
 <?php
@@ -1439,7 +1439,7 @@ echo add_token_field();
 						echo "checked='checked' ";
 					}
 					echo "/> ";
-					echo "<label for='utiliser_couleurs_perso' style='cursor: pointer;'>Utiliser des couleurs personnalisées.</label>\n";
+					echo "<label for='utiliser_couleurs_perso' style='cursor: pointer;'>Utiliser des couleurs personnalisÃ©es.</label>\n";
 				// echo "</td>\n";
 			// echo "</tr>\n";
 			// echo "<tr>\n";
@@ -1447,15 +1447,15 @@ echo add_token_field();
 			// 		echo "&nbsp;";
 			// 	echo "</td>\n";
 				// echo "<td>\n";
-					echo "<table class='tableau_change_couleur' summary=\"arrière plan changement de couleur : colonne 3 rouge, colonne 4 vert, colonne 5 bleu, colonne 7 validation\">\n";
+					echo "<table class='tableau_change_couleur' summary=\"arriÃ¨re plan changement de couleur : colonne 3 rouge, colonne 4 vert, colonne 5 bleu, colonne 7 validation\">\n";
 						echo "<tr class='fond_blanc'>\n";
 							echo "<td class='texte_gras'>\nMotif\n</td>\n";
-							echo "<td class='texte_gras'>\nPropriété\n</td>\n";
+							echo "<td class='texte_gras'>\nPropriÃ©tÃ©\n</td>\n";
 							for($j=0;$j<count($comp);$j++) {
 								echo "<td class='texte_gras'>\n$comp[$j]\n</td>\n";
 							}
-							echo "<td class='texte_gras'>\nAperçu\n</td>\n";
-							echo "<td class='texte_gras'>\nRéinitialisation\n</td>\n";
+							echo "<td class='texte_gras'>\nAperÃ§u\n</td>\n";
+							echo "<td class='texte_gras'>\nRÃ©initialisation\n</td>\n";
 						echo "</tr>\n";
 						for($i=0;$i<count($tab);$i++) {
 							echo "<tr>\n";
@@ -1495,15 +1495,15 @@ echo add_token_field();
 								echo "document.getElementById('id_couleur_motif').value='".$tab[$i]."';";
 								echo "afficher_div('div_choix_couleur','y',10,-200)\">";
 
-								// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
+								// Champ calculÃ©/mis Ã  jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
 								echo "<input type='hidden' name='$tab[$i]' value='$tab[$i]' />\n";
 								echo "&nbsp;&nbsp;&nbsp;</td>\n";
 
 								echo "<td>\n";
-								//echo "<a href='#' onclick='reinit_couleurs(\"$tab[$i]\");return false;'>Réinitialiser</a>\n";
-								echo "<a href='#' onclick='reinit_couleurs(\"$tab[$i]\");return false;'>Réinitialiser</a>\n";
-								//echo "<a href='javascript:reinit_couleurs(\"$tab[$i]\");'>Réinitialiser</a>\n";
-								//echo "<input type='button' name='reinit$i' value='Réinitialiser' onclick='javascript:reinit_couleurs(\"$tab[$i]\");' />\n";
+								//echo "<a href='#' onclick='reinit_couleurs(\"$tab[$i]\");return false;'>RÃ©initialiser</a>\n";
+								echo "<a href='#' onclick='reinit_couleurs(\"$tab[$i]\");return false;'>RÃ©initialiser</a>\n";
+								//echo "<a href='javascript:reinit_couleurs(\"$tab[$i]\");'>RÃ©initialiser</a>\n";
+								//echo "<input type='button' name='reinit$i' value='RÃ©initialiser' onclick='javascript:reinit_couleurs(\"$tab[$i]\");' />\n";
 
 								/*
 								echo " <a href='#' onclick=\"document.getElementById('id_couleur_r').value='id_".$tab[$i]."_R';";
@@ -1526,7 +1526,7 @@ echo add_token_field();
 
 
 
-	echo "<h2>\n<strong>Dégradé:</strong>\n</h2>\n";
+	echo "<h2>\n<strong>DÃ©gradÃ©:</strong>\n</h2>\n";
 	// echo "<blockquote>\n";
 		echo "<div class='tableau_param_couleur'>\n";
 			// echo "<tr>\n";
@@ -1538,7 +1538,7 @@ echo add_token_field();
 					echo "/> ";
 				// echo "</td>\n";
 				// echo "<td>\n";
-					echo "<label for='utiliser_degrade' style='cursor: pointer;'>Générer/utiliser un dégradé personnalisé pour l'entête de page.</label>\n";
+					echo "<label for='utiliser_degrade' style='cursor: pointer;'>GÃ©nÃ©rer/utiliser un dÃ©gradÃ© personnalisÃ© pour l'entÃªte de page.</label>\n";
 				// echo "</td>\n";
 			// echo "</tr>\n";
 
@@ -1547,24 +1547,24 @@ echo add_token_field();
 					// echo "&nbsp;";
 				// echo "</td>\n";
 				// echo "<td>\n";
-					echo "<table class='tableau_change_couleur' summary=\"bandeau changement de couleur : ligne 2 dégradé haut, ligne 3 dégradé bas, colonne 2 rouge, colonne 3 vert, colonne 4 bleu, colonne 6 validation\">\n";
+					echo "<table class='tableau_change_couleur' summary=\"bandeau changement de couleur : ligne 2 dÃ©gradÃ© haut, ligne 3 dÃ©gradÃ© bas, colonne 2 rouge, colonne 3 vert, colonne 4 bleu, colonne 6 validation\">\n";
 						echo "<tr class='fond_blanc'>\n";
 							echo "<td class='texte_gras'>Couleur</td>\n";
 							for($j=0;$j<count($comp);$j++) {
 								echo "<td class='texte_gras'>$comp[$j]</td>\n";
 							}
-							echo "<td class='texte_gras'>Aperçu</td>\n";
-							echo "<td class='texte_gras'>Réinitialisation</td>\n";
+							echo "<td class='texte_gras'>AperÃ§u</td>\n";
+							echo "<td class='texte_gras'>RÃ©initialisation</td>\n";
 							echo "<td rowspan='3' style='text-align: left;'>\n";
 							echo "<input type='checkbox' name='degrade_double_bandeau' id='degrade_double_bandeau' value='y' ";
 							if(getSettingValue('degrade_double_bandeau')=='y') {echo "checked ";}
-							echo "/><label for='degrade_double_bandeau'> Utiliser un double dégradé sur le bandeau d'entête.</label><br />\n";
+							echo "/><label for='degrade_double_bandeau'> Utiliser un double dÃ©gradÃ© sur le bandeau d'entÃªte.</label><br />\n";
 							echo "<input type='checkbox' name='degrade_double_bandeau_small' id='degrade_double_bandeau_small' value='y' ";
 							if(getSettingValue('degrade_double_bandeau_small')=='y') {echo "checked ";}
-							echo "/><label for='degrade_double_bandeau_small'> Utiliser un double dégradé sur le bandeau d'entête réduit.</label><br />\n";
+							echo "/><label for='degrade_double_bandeau_small'> Utiliser un double dÃ©gradÃ© sur le bandeau d'entÃªte rÃ©duit.</label><br />\n";
 							echo "<input type='checkbox' name='degrade_double_barre_menu' id='degrade_double_barre_menu' value='y' ";
 							if(getSettingValue('degrade_double_barre_menu')=='y') {echo "checked ";}
-							echo "/><label for='degrade_double_barre_menu'> Utiliser un double dégradé sur la barre de menus.</label><br />\n";
+							echo "/><label for='degrade_double_barre_menu'> Utiliser un double dÃ©gradÃ© sur la barre de menus.</label><br />\n";
 							echo "</td>\n";
 						echo "</tr>\n";
 
@@ -1621,12 +1621,12 @@ echo add_token_field();
 								echo "document.getElementById('id_couleur_motif').value='".$tab_degrade[$i]."';";
 								echo "afficher_div('div_choix_couleur','y',10,-200)\">";
 
-								// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
+								// Champ calculÃ©/mis Ã  jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
 									echo "<input type='hidden' name='$tab_degrade[$i]' value='$tab_degrade[$i]' />\n";
 								echo "&nbsp;&nbsp;&nbsp;</td>\n";
 
 								echo "<td>\n";
-									echo "<a href='#' onclick='reinit_couleurs(\"$tab_degrade[$i]\");return false;'>Réinitialiser</a>\n";
+									echo "<a href='#' onclick='reinit_couleurs(\"$tab_degrade[$i]\");return false;'>RÃ©initialiser</a>\n";
 								echo "</td>\n";
 
 
@@ -1686,7 +1686,7 @@ echo add_token_field();
 				echo "/> ";
 			// echo "</td>\n";
 			// echo "<td>\n";
-				echo "<label for='utiliser_couleurs_perso_infobulles' style='cursor: pointer;'>Utiliser des couleurs personnalisées pour les infobulles.</label>\n";
+				echo "<label for='utiliser_couleurs_perso_infobulles' style='cursor: pointer;'>Utiliser des couleurs personnalisÃ©es pour les infobulles.</label>\n";
 			// echo "</td>\n";
 		// echo "</tr>\n";
 
@@ -1695,21 +1695,21 @@ echo add_token_field();
 				// echo "&nbsp;";
 			// echo "</td>\n";
 			// echo "<td>\n";
-				echo "<table class='tableau_change_couleur' summary=\"infobulles changement de couleurs : ligne 2 entête, ligne 3 corps, colonne 2 rouge, colonne 3 vert, colonne 4 bleu, colonne 6 validation\">\n";
+				echo "<table class='tableau_change_couleur' summary=\"infobulles changement de couleurs : ligne 2 entÃªte, ligne 3 corps, colonne 2 rouge, colonne 3 vert, colonne 4 bleu, colonne 6 validation\">\n";
 
 					echo "<tr class='fond_blanc'>\n";
 						echo "<td class='texte_gras'>\nMotif\n</td>\n";
 						for($j=0;$j<count($comp);$j++) {
 							echo "<td class='texte_gras'>\n$comp[$j]\n</td>\n";
 						}
-						echo "<td class='texte_gras'>\nAperçu\n</td>\n";
-						echo "<td class='texte_gras'>\nRéinitialisation\n</td>\n";
+						echo "<td class='texte_gras'>\nAperÃ§u\n</td>\n";
+						echo "<td class='texte_gras'>\nRÃ©initialisation\n</td>\n";
 
 					echo "</tr>\n";
 
 					echo "<tr>\n";
 						echo "<td>\n";
-							echo "Couleur de fond de l'entête des infobulles\n";
+							echo "Couleur de fond de l'entÃªte des infobulles\n";
 						echo "</td>\n";
 						for($j=0;$j<count($comp);$j++) {
 							/*
@@ -1722,7 +1722,7 @@ echo add_token_field();
 							*/
 
 							echo "<td>\n";
-							echo "<label for='id_couleur_infobulle_fond_entete_".$comp[$j]."' class='invisible'>".$comp[$j]."E entête ".$comp[$j]."</label>\n";
+							echo "<label for='id_couleur_infobulle_fond_entete_".$comp[$j]."' class='invisible'>".$comp[$j]."E entÃªte ".$comp[$j]."</label>\n";
 							echo "<input type='text' name='couleur_infobulle_fond_entete_".$comp[$j]."' id='id_couleur_infobulle_fond_entete_".$comp[$j]."' value='".$tabcouleurs['couleur_infobulle_fond_entete'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_infobulle_fond_entete\")' onkeydown=\"clavier_2(this.id,event,0,255);\" autocomplete='off' />\n";
 							echo "</td>\n";
 						}
@@ -1736,11 +1736,11 @@ echo add_token_field();
 						echo "document.getElementById('id_couleur_motif').value='couleur_infobulle_fond_entete';";
 						echo "afficher_div('div_choix_couleur','y',10,-200)\">";
 
-						// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
+						// Champ calculÃ©/mis Ã  jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
 							echo "<input type='hidden' name='couleur_infobulle_fond_entete' value='couleur_infobulle_fond_entete' />\n";
 						echo "&nbsp;&nbsp;&nbsp;</td>\n";
 						echo "<td>\n";
-							echo "<a href='#' onclick='reinit_couleurs(\"couleur_infobulle_fond_entete\");return false;'>Réinitialiser</a>\n";
+							echo "<a href='#' onclick='reinit_couleurs(\"couleur_infobulle_fond_entete\");return false;'>RÃ©initialiser</a>\n";
 						echo "</td>\n";
 						echo "</tr>\n";
 
@@ -1772,11 +1772,11 @@ echo add_token_field();
 							echo "document.getElementById('id_couleur_motif').value='couleur_infobulle_fond_corps';";
 							echo "afficher_div('div_choix_couleur','y',10,-200)\">";
 
-							// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
+							// Champ calculÃ©/mis Ã  jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
 								echo "<input type='hidden' name='couleur_infobulle_fond_corps' value='couleur_infobulle_fond_corps' />\n";
 							echo "&nbsp;&nbsp;&nbsp;</td>\n";
 							echo "<td>\n";
-								echo "<a href='#' onclick='reinit_couleurs(\"couleur_infobulle_fond_corps\");return false;'>Réinitialiser</a>\n";
+								echo "<a href='#' onclick='reinit_couleurs(\"couleur_infobulle_fond_corps\");return false;'>RÃ©initialiser</a>\n";
 							echo "</td>\n";
 						echo "</tr>\n";
 
@@ -1827,7 +1827,7 @@ echo add_token_field();
 			$tabcouleurs['couleur_lig_alt_1']['B']=240;
 		}
 
-	echo "<h2><strong>Couleurs des lignes alternées dans les tableaux:</strong></h2>\n";
+	echo "<h2><strong>Couleurs des lignes alternÃ©es dans les tableaux:</strong></h2>\n";
 		echo "<div class='tableau_param_couleur'>\n";
 					echo "<input type='checkbox' name='utiliser_couleurs_perso_lig_tab_alt' id='utiliser_couleurs_perso_lig_tab_alt' value='y' ";
 					if(getSettingValue('utiliser_couleurs_perso_lig_tab_alt')=='y') {
@@ -1843,13 +1843,13 @@ echo add_token_field();
 							for($j=0;$j<count($comp);$j++) {
 								echo "<td class='texte_gras'>$comp[$j]</td>\n";
 							}
-							echo "<td class='texte_gras'>Aperçu</td>\n";
-							echo "<td class='texte_gras'>Réinitialisation</td>\n";
+							echo "<td class='texte_gras'>AperÃ§u</td>\n";
+							echo "<td class='texte_gras'>RÃ©initialisation</td>\n";
 
 						echo "</tr>\n";
 
 						echo "<tr>\n";
-							echo "<td>Couleur ligne d'entête";
+							echo "<td>Couleur ligne d'entÃªte";
 							echo "</td>\n";
 							for($j=0;$j<count($comp);$j++) {
 								echo "<td>\n";
@@ -1865,11 +1865,11 @@ echo add_token_field();
 							echo "document.getElementById('id_couleur_motif').value='couleur_lig_entete';";
 							echo "afficher_div('div_choix_couleur','y',10,-200)\">";
 
-							// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
+							// Champ calculÃ©/mis Ã  jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
 								echo "<input type='hidden' name='couleur_lig_entete' value='couleur_lig_entete' />\n";
 							echo "&nbsp;&nbsp;&nbsp;</td>\n";
 							echo "<td>\n";
-								echo "<a href='#' onclick='reinit_couleurs(\"couleur_lig_entete\");return false;'>Réinitialiser</a>\n";
+								echo "<a href='#' onclick='reinit_couleurs(\"couleur_lig_entete\");return false;'>RÃ©initialiser</a>\n";
 							echo "</td>\n";
 						echo "</tr>\n";
 
@@ -1890,11 +1890,11 @@ echo add_token_field();
 							echo "document.getElementById('id_couleur_motif').value='couleur_lig_alt1';";
 							echo "afficher_div('div_choix_couleur','y',10,-200)\">";
 
-							// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
+							// Champ calculÃ©/mis Ã  jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
 								echo "<input type='hidden' name='couleur_lig_alt1' value='couleur_lig_alt1' />\n";
 							echo "&nbsp;&nbsp;&nbsp;</td>\n";
 							echo "<td>\n";
-								echo "<a href='#' onclick='reinit_couleurs(\"couleur_lig_alt1\");return false;'>Réinitialiser</a>\n";
+								echo "<a href='#' onclick='reinit_couleurs(\"couleur_lig_alt1\");return false;'>RÃ©initialiser</a>\n";
 							echo "</td>\n";
 						echo "</tr>\n";
 
@@ -1915,11 +1915,11 @@ echo add_token_field();
 							echo "document.getElementById('id_couleur_motif').value='couleur_lig_alt_1';";
 							echo "afficher_div('div_choix_couleur','y',10,-200)\">";
 
-							// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
+							// Champ calculÃ©/mis Ã  jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
 								echo "<input type='hidden' name='couleur_lig_alt_1' value='couleur_lig_alt_1' />\n";
 							echo "&nbsp;&nbsp;&nbsp;</td>\n";
 							echo "<td>\n";
-								echo "<a href='#' onclick='reinit_couleurs(\"couleur_lig_alt_1\");return false;'>Réinitialiser</a>\n";
+								echo "<a href='#' onclick='reinit_couleurs(\"couleur_lig_alt_1\");return false;'>RÃ©initialiser</a>\n";
 							echo "</td>\n";
 						echo "</tr>\n";
 
@@ -1963,8 +1963,8 @@ echo add_token_field();
 					for($j=0;$j<count($comp);$j++) {
 						echo "<td class='texte_gras'>$comp[$j]</td>\n";
 					}
-					echo "<td class='texte_gras'>Aperçu</td>\n";
-					echo "<td class='texte_gras'>Réinitialisation</td>\n";
+					echo "<td class='texte_gras'>AperÃ§u</td>\n";
+					echo "<td class='texte_gras'>RÃ©initialisation</td>\n";
 
 				echo "</tr>\n";
 
@@ -1985,11 +1985,11 @@ echo add_token_field();
 					echo "document.getElementById('id_couleur_motif').value='couleur_fond_postit';";
 					echo "afficher_div('div_choix_couleur','y',10,-200)\">";
 
-					// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
+					// Champ calculÃ©/mis Ã  jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
 						echo "<input type='hidden' name='couleur_fond_postit' value='couleur_fond_postit' />\n";
 					echo "&nbsp;&nbsp;&nbsp;</td>\n";
 					echo "<td>\n";
-						echo "<a href='#' onclick='reinit_couleurs(\"couleur_fond_postit\");return false;'>Réinitialiser</a>\n";
+						echo "<a href='#' onclick='reinit_couleurs(\"couleur_fond_postit\");return false;'>RÃ©initialiser</a>\n";
 					echo "</td>\n";
 				echo "</tr>\n";
 
@@ -2016,18 +2016,18 @@ echo add_token_field();
 			echo "checked='checked' ";
 		}
 		echo "/> ";
-		echo "<label for='utiliser_cahier_texte_perso' style='cursor: pointer;'>Couleurs personnalisées dans le cahier de textes.</label>\n";
+		echo "<label for='utiliser_cahier_texte_perso' style='cursor: pointer;'>Couleurs personnalisÃ©es dans le cahier de textes.</label>\n";
 
 //=== initialisation des couleurs ===
 
 		// tableaux de noms
 		$tab_ct_couleur_fond=array("fond_notices", "entete_fond", "cellule", "cellule_alt");
 		$tab_ct_couleur_classe=array("color_fond_notices", "couleur_entete_fond", "couleur_cellule", "couleur_cellule_alt");
-		$tab_ct_nom_couleur_fond=array("fond des notices", "entête des notices", "notices", "cellule_alt");
+		$tab_ct_nom_couleur_fond=array("fond des notices", "entÃªte des notices", "notices", "cellule_alt");
 		$tab_ct_notice=array("c","t","i","f");
-		$tab_ct_nom_notice=array("Compte rendu de séance","Travail à faire","Informations générales","Rappel des travaux à faire");
+		$tab_ct_nom_notice=array("Compte rendu de sÃ©ance","Travail Ã  faire","Informations gÃ©nÃ©rales","Rappel des travaux Ã  faire");
 		$tab_ct_police_bordure=array("police_travaux","police_matieres","bord_tableau_notice","cellule_gen");
-		$tab_ct_nom_police_bordure=array("police des notices travaux","police des matieres","bord des tableaux","Couleur générale des cellules");
+		$tab_ct_nom_police_bordure=array("police des notices travaux","police des matieres","bord des tableaux","Couleur gÃ©nÃ©rale des cellules");
 
 // ----- Notices -----
 
@@ -2066,21 +2066,21 @@ echo add_token_field();
 			}
 		}
 
-		// Tableau de réglage des couleurs
+		// Tableau de rÃ©glage des couleurs
 		for($i=0;$i<count($tab_ct_notice);$i++) {
 		// Titre de la notice
 			echo "<h3>$tab_ct_nom_notice[$i]</h3>";
 			echo "<table class='tableau_change_couleur' summary=\"cahier de texte changement de couleur\">\n";
-				// entête
+				// entÃªte
 				echo "<tr class='fond_blanc'>\n";
 					echo "<td class='texte_gras'>Couleur</td>\n";
 					for($j=0;$j<count($comp);$j++) {
 						echo "<td class='texte_gras'>$comp[$j]</td>\n";
 					}
-					echo "<td class='texte_gras'>Aperçu</td>\n";
-					echo "<td class='texte_gras'>Réinitialisation</td>\n";
+					echo "<td class='texte_gras'>AperÃ§u</td>\n";
+					echo "<td class='texte_gras'>RÃ©initialisation</td>\n";
 				echo "</tr>\n";
-				// Données de la couleur
+				// DonnÃ©es de la couleur
 					for($j=0;$j<count($tab_ct_couleur_fond);$j++) {
 						if (isset($tab_ct_couleur_origine[$tab_ct_couleur_fond[$j]][$tab_ct_notice[$i]])) {
 							echo "<tr>\n";
@@ -2106,7 +2106,7 @@ echo add_token_field();
 									echo "<input type='hidden' name='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."' value='".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."' />\n";
 								echo "</td>\n";
 								echo "<td>\n";
-									echo "<a href='#' onclick='reinit_couleurs(\"".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."\");return false;'>Réinitialiser</a>\n";
+									echo "<a href='#' onclick='reinit_couleurs(\"".$tab_ct_couleur_fond[$j]."_".$tab_ct_notice[$i]."\");return false;'>RÃ©initialiser</a>\n";
 								echo "</td>\n";
 							echo "</tr>\n";
 						}
@@ -2117,7 +2117,7 @@ echo add_token_field();
 		}
 // ----- Fin fonds des notices -----
 
-// ----- Couleurs communes à toutes les notices -----
+// ----- Couleurs communes Ã  toutes les notices -----
 
 		// Couleurs d'origine
 		$tab_ct_couleur_gen_origine=array("police_travaux","police_matieres","bord_tableau_notice","cellule_gen");
@@ -2139,20 +2139,20 @@ echo add_token_field();
 			}
 		}
 
-		// Tableau de réglage des couleurs
+		// Tableau de rÃ©glage des couleurs
 		// Titre de la notice
 		echo "<h3>Polices, bordures ...</h3>";
 		echo "<table class='tableau_change_couleur' summary=\"cahier de texte changement de couleur\">\n";
-			// entête
+			// entÃªte
 			echo "<tr class='fond_blanc'>\n";
 				echo "<td class='texte_gras'>Couleur</td>\n";
 				for($j=0;$j<count($comp);$j++) {
 					echo "<td class='texte_gras'>$comp[$j]</td>\n";
 				}
-				echo "<td class='texte_gras'>Aperçu</td>\n";
-				echo "<td class='texte_gras'>Réinitialisation</td>\n";
+				echo "<td class='texte_gras'>AperÃ§u</td>\n";
+				echo "<td class='texte_gras'>RÃ©initialisation</td>\n";
 			echo "</tr>\n";
-			// Données de la couleur
+			// DonnÃ©es de la couleur
 			for($i=0;$i<count($tab_ct_police_bordure);$i++) {
 				echo "<tr>\n";
 					echo "<td>".$tab_ct_nom_police_bordure[$i]."</td>\n";
@@ -2177,7 +2177,7 @@ echo add_token_field();
 						echo "<input type='hidden' name='".$tab_ct_police_bordure[$i]."' value='".$tab_ct_police_bordure[$i]."' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
-						echo "<a href='#' onclick='reinit_couleurs(\"".$tab_ct_police_bordure[$i]."\");return false;'>Réinitialiser</a>\n";
+						echo "<a href='#' onclick='reinit_couleurs(\"".$tab_ct_police_bordure[$i]."\");return false;'>RÃ©initialiser</a>\n";
 					echo "</td>\n";
 				echo "</tr>\n";
 			}
@@ -2189,7 +2189,7 @@ echo add_token_field();
 	echo "</div>\n";
 
 ?>
-<!-- ====================== Paramétrage du panneau d'affichage ========================== -->	
+<!-- ====================== ParamÃ©trage du panneau d'affichage ========================== -->	
 
 <?php
 		//$tab_style = array('fil_blanc','fil_noir','fil_bleu','fil_vert','filet_noir','filet_noir_2','liege');
@@ -2200,7 +2200,7 @@ echo add_token_field();
 							'fil_vert' => 'fil de fer vert',
 							'filet_noir' => 'filet noir',
 							'filet_noir_2' => 'filet noir avec baguette',
-							'liege' => 'plaque de liège'); 
+							'liege' => 'plaque de liÃ¨ge'); 
 		$selected_style = null; 
 		if (getSettingValue('style_panneau_affichage')) {
 			$selected_style = getSettingValue('style_panneau_affichage');
@@ -2240,7 +2240,7 @@ echo add_token_field();
 	<div style="clear:both;"></div>	
 <?php
 /*============================================*/
-/* 	 ça marche, il manque enregistrement    */
+/* 	 Ã§a marche, il manque enregistrement    */
 /*============================================*/
 
 
@@ -2255,7 +2255,7 @@ echo add_token_field();
 
 	echo "<h2><strong>Remarque:</strong></h2>";
 	// echo "<blockquote>\n";
-		echo "<p>Il peut arriver qu'il faille insister après validation pour que le navigateur recharge bien la page (<em>problème de cache du navigateur</em>).<br />Vous pouvez forcer le rechargement avec CTRL+MAJ+R.</p>\n";
+		echo "<p>Il peut arriver qu'il faille insister aprÃ¨s validation pour que le navigateur recharge bien la page (<em>problÃ¨me de cache du navigateur</em>).<br />Vous pouvez forcer le rechargement avec CTRL+MAJ+R.</p>\n";
 	// echo "</blockquote>\n";
 
 	/*
@@ -2269,10 +2269,10 @@ echo add_token_field();
 
 	// echo "<div class='centre_texte'>\n";
 		echo "<div class='panneau_secour'>\n";
-			echo "Le bouton ci-dessous est une 'sécurité'<br />pour réinitialiser les couleurs<br />si jamais vous en arriviez à obtenir quelque chose<br />comme du texte noir sur un fond noir.<br />\n";
+			echo "Le bouton ci-dessous est une 'sÃ©curitÃ©'<br />pour rÃ©initialiser les couleurs<br />si jamais vous en arriviez Ã  obtenir quelque chose<br />comme du texte noir sur un fond noir.<br />\n";
 			echo "<input type='hidden' name='secu' value='n' />\n";
-			//echo "<input type='button' name='reinitialiser' value='Réinitialiser' onclick='reinitialiser()' /></div>\n";
-			echo "<input type='button' name='reinitialiser' value='Réinitialiser' onclick='reinit()' />\n";
+			//echo "<input type='button' name='reinitialiser' value='RÃ©initialiser' onclick='reinitialiser()' /></div>\n";
+			echo "<input type='button' name='reinitialiser' value='RÃ©initialiser' onclick='reinit()' />\n";
 		echo "</div>\n";
 	// echo "</div>\n";
 
@@ -2283,7 +2283,7 @@ echo add_token_field();
 
 
 
-// Liste simplifiée
+// Liste simplifiÃ©e
 var liste_style=new Array('style_body_backgroundcolor', 'degrade_haut', 'degrade_bas', 'couleur_infobulle_fond_corps', 'couleur_infobulle_fond_entete', 'couleur_lig_entete', 'couleur_lig_alt1', 'couleur_lig_alt_1');
 
 //,'couleur_fond_postit'
@@ -2299,17 +2299,17 @@ function valide_modele(choix) {
 		var id_style_body_backgroundcolor_V=220
 		var id_style_body_backgroundcolor_B=220
 		
-		// Haut du dégradé
+		// Haut du dÃ©gradÃ©
 		var id_degrade_haut_R=160
 		var id_degrade_haut_V=80
 		var id_degrade_haut_B=80
 		
-		// Bas du dégradé
+		// Bas du dÃ©gradÃ©
 		var id_degrade_bas_R=200
 		var id_degrade_bas_V=80
 		var id_degrade_bas_B=80
 		
-		// Couleur de fond de l'entête des infobulles
+		// Couleur de fond de l'entÃªte des infobulles
 		var id_couleur_infobulle_fond_entete_R=200
 		var id_couleur_infobulle_fond_entete_V=80
 		var id_couleur_infobulle_fond_entete_B=80
@@ -2319,7 +2319,7 @@ function valide_modele(choix) {
 		var id_couleur_infobulle_fond_corps_V=180
 		var id_couleur_infobulle_fond_corps_B=180
 
-		// Couleur des lignes alternées
+		// Couleur des lignes alternÃ©es
 		var id_couleur_entete_R=255
 		var id_couleur_entete_V=239
 		var id_couleur_entete_B=213
@@ -2341,17 +2341,17 @@ function valide_modele(choix) {
 		var id_style_body_backgroundcolor_V=250
 		var id_style_body_backgroundcolor_B=230
 		
-		// Haut du dégradé
+		// Haut du dÃ©gradÃ©
 		var id_degrade_haut_R=80
 		var id_degrade_haut_V=140
 		var id_degrade_haut_B=80
 		
-		// Bas du dégradé
+		// Bas du dÃ©gradÃ©
 		var id_degrade_bas_R=80
 		var id_degrade_bas_V=180
 		var id_degrade_bas_B=80
 		
-		// Couleur de fond de l'entête des infobulles
+		// Couleur de fond de l'entÃªte des infobulles
 		var id_couleur_infobulle_fond_entete_R=80
 		var id_couleur_infobulle_fond_entete_V=180
 		var id_couleur_infobulle_fond_entete_B=80
@@ -2361,7 +2361,7 @@ function valide_modele(choix) {
 		var id_couleur_infobulle_fond_corps_V=250
 		var id_couleur_infobulle_fond_corps_B=200
 
-		// Couleur des lignes alternées
+		// Couleur des lignes alternÃ©es
 		var id_couleur_entete_R=255
 		var id_couleur_entete_V=239
 		var id_couleur_entete_B=213
@@ -2383,17 +2383,17 @@ function valide_modele(choix) {
 		var id_style_body_backgroundcolor_V=230
 		var id_style_body_backgroundcolor_B=250
 		
-		// Haut du dégradé
+		// Haut du dÃ©gradÃ©
 		var id_degrade_haut_R=60
 		var id_degrade_haut_V=60
 		var id_degrade_haut_B=100
 		
-		// Bas du dégradé
+		// Bas du dÃ©gradÃ©
 		var id_degrade_bas_R=80
 		var id_degrade_bas_V=80
 		var id_degrade_bas_B=160
 		
-		// Couleur de fond de l'entête des infobulles
+		// Couleur de fond de l'entÃªte des infobulles
 		var id_couleur_infobulle_fond_entete_R=80
 		var id_couleur_infobulle_fond_entete_V=80
 		var id_couleur_infobulle_fond_entete_B=160
@@ -2403,7 +2403,7 @@ function valide_modele(choix) {
 		var id_couleur_infobulle_fond_corps_V=200
 		var id_couleur_infobulle_fond_corps_B=250
 
-		// Couleur des lignes alternées
+		// Couleur des lignes alternÃ©es
 		var id_couleur_entete_R=255
 		var id_couleur_entete_V=239
 		var id_couleur_entete_B=213
@@ -2425,17 +2425,17 @@ function valide_modele(choix) {
 		var id_style_body_backgroundcolor_V=198
 		var id_style_body_backgroundcolor_B=170
 		
-		// Haut du dégradé
+		// Haut du dÃ©gradÃ©
 		var id_degrade_haut_R=53
 		var id_degrade_haut_V=26
 		var id_degrade_haut_B=0
 		
-		// Bas du dégradé
+		// Bas du dÃ©gradÃ©
 		var id_degrade_bas_R=147
 		var id_degrade_bas_V=77
 		var id_degrade_bas_B=0
 		
-		// Couleur de fond de l'entête des infobulles
+		// Couleur de fond de l'entÃªte des infobulles
 		var id_couleur_infobulle_fond_entete_R=180
 		var id_couleur_infobulle_fond_entete_V=100
 		var id_couleur_infobulle_fond_entete_B=0
@@ -2445,7 +2445,7 @@ function valide_modele(choix) {
 		var id_couleur_infobulle_fond_corps_V=180
 		var id_couleur_infobulle_fond_corps_B=160
 
-		// Couleur des lignes alternées
+		// Couleur des lignes alternÃ©es
 		var id_couleur_entete_R=255
 		var id_couleur_entete_V=239
 		var id_couleur_entete_B=213
@@ -2466,17 +2466,17 @@ function valide_modele(choix) {
 		var id_style_body_backgroundcolor_V=254
 		var id_style_body_backgroundcolor_B=254
 		
-		// Haut du dégradé
+		// Haut du dÃ©gradÃ©
 		var id_degrade_haut_R=29
 		var id_degrade_haut_V=29
 		var id_degrade_haut_B=29
 		
-		// Bas du dégradé
+		// Bas du dÃ©gradÃ©
 		var id_degrade_bas_R=90
 		var id_degrade_bas_V=90
 		var id_degrade_bas_B=90
 		
-		// Couleur de fond de l'entête des infobulles
+		// Couleur de fond de l'entÃªte des infobulles
 		var id_couleur_infobulle_fond_entete_R=230
 		var id_couleur_infobulle_fond_entete_V=230
 		var id_couleur_infobulle_fond_entete_B=230
@@ -2486,7 +2486,7 @@ function valide_modele(choix) {
 		var id_couleur_infobulle_fond_corps_V=180
 		var id_couleur_infobulle_fond_corps_B=180
 
-		// Couleur des lignes alternées
+		// Couleur des lignes alternÃ©es
 		var id_couleur_entete_R=90
 		var id_couleur_entete_V=90
 		var id_couleur_entete_B=90

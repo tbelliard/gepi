@@ -5,9 +5,9 @@
  * See: https://rnd.feide.no/content/idp-hosted-metadata-reference
  */
 
-//__DYNAMIC:1__ représente l'entityID du fournisseur d'identité. Il est remplacé par l'url du serveur si c'est spécifié dynamic.
-// si pour une configuration manuelle un autre entityID est précisé, il doit correspondre à l'entityID
-// précisé dans le fichier simplesaml/metadate/saml20-idp-remote.php du fournisseur de service (sacoche)
+//__DYNAMIC:1__ reprÃ©sente l'entityID du fournisseur d'identitÃ©. Il est remplacÃ© par l'url du serveur si c'est spÃ©cifiÃ© dynamic.
+// si pour une configuration manuelle un autre entityID est prÃ©cisÃ©, il doit correspondre Ã  l'entityID
+// prÃ©cisÃ© dans le fichier simplesaml/metadate/saml20-idp-remote.php du fournisseur de service (sacoche)
 if (getSettingValue('gepiEnableIdpSaml20') == 'yes') {
 	$metadata['gepi-idp'] = array(
 		/*
@@ -25,7 +25,7 @@ if (getSettingValue('gepiEnableIdpSaml20') == 'yes') {
 		 * Authentication source to use. Must be one that is configured in
 		 * 'config/authsources.php'.
 		 */
-		'auth' => getSettingValue('auth_simpleSAML_source'),//on utilise la source configur�e par d�faut dans l'admin gepi
+		'auth' => getSettingValue('auth_simpleSAML_source'),//on utilise la source configurée par défaut dans l'admin gepi
 
 		/* Uncomment the following to use the uri NameFormat on attributes. */
 		'AttributeNameFormat' => 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',

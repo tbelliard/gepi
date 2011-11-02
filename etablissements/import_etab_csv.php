@@ -46,13 +46,13 @@ if (!checkAccess()) {
 $titre_page = "Etablissements | Importation d'un fichier csv";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-// $long_max : doit être plus grand que la plus grande ligne trouvée dans le fichier CSV
+// $long_max : doit Ãªtre plus grand que la plus grande ligne trouvÃ©e dans le fichier CSV
 $long_max = 8000;
 
 echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a></>\n";;
 
 if (!isset($is_posted)) {
-	echo "<p><span class = 'grand'>Première phase d'importation des établissements </span></p>\n";
+	echo "<p><span class = 'grand'>PremiÃ¨re phase d'importation des Ã©tablissements </span></p>\n";
 	echo "<hr />\n";
 	echo "<p>Choisir un fichier csv parmi ceux disponibles actuellement dans la distribution GEPI : <br />\n";
 	echo "<form enctype=\"multipart/form-data\" action=\"import_etab_csv.php\" method=post name=\"formulaire\">\n";
@@ -64,7 +64,7 @@ if (!isset($is_posted)) {
 	$file_tab = array();
 	while ($file = readdir($handle)) {
 	if (($file != '.') and ($file != '..'))
-		// On met le fichier dans un tableau, histoire de pouvoir classer tout ça
+		// On met le fichier dans un tableau, histoire de pouvoir classer tout Ã§a
 		$files_tab[] = $file;
 	}
 	sort($files_tab);
@@ -89,37 +89,37 @@ if (!isset($is_posted)) {
 	echo "<input type='file' name=\"csv_file\" />\n";
 	echo "<input type='submit' value='Valider' />\n";
 	?>
-	<p><label for='en_tete' style='cursor: pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (<i>non vide</i>) à ignorer, cocher la case ci-contre&nbsp;
+	<p><label for='en_tete' style='cursor: pointer;'>Si le fichier Ã  importer comporte une premiÃ¨re ligne d'en-tÃªte (<i>non vide</i>) Ã  ignorer, cocher la case ci-contre&nbsp;
 	<input type='checkbox' name="en_tete" id="en_tete" value="yes" /></label></p>
 	<input type='hidden' name='is_posted' value='1' />
 	<input type='hidden' name='choix' value="autre" />
 
 	</FORM>
 	<?php
-	echo "<p>Le fichier d'importation peut-être constitué à l'aide d'un tableur à partir des informations contenues dans le fichier \"NMETABC.TXT\" qui se trouve dans GEP.";
-	echo "<br />Il doit être au format csv (séparateur : point-virgule) et doit contenir les six champs suivants :<br />\n";
-	echo "--> <B>Le N° RNE de l'établissement</B><br />\n";
-	echo "--> <B>Le nom de l'établissement</B><br />\n";
+	echo "<p>Le fichier d'importation peut-Ãªtre constituÃ© Ã  l'aide d'un tableur Ã  partir des informations contenues dans le fichier \"NMETABC.TXT\" qui se trouve dans GEP.";
+	echo "<br />Il doit Ãªtre au format csv (sÃ©parateur : point-virgule) et doit contenir les six champs suivants :<br />\n";
+	echo "--> <B>Le NÂ° RNE de l'Ã©tablissement</B><br />\n";
+	echo "--> <B>Le nom de l'Ã©tablissement</B><br />\n";
 	echo "--> <B>Le type :</B>\n<ul>\n";
 	foreach ($type_etablissement as $type_etab => $nom_etablissement) {
-		if ($nom_etablissement != "") echo "<li>\"<b>".$type_etab."</b>\" (pour les établissements de type \"".$nom_etablissement."\")</li>\n";
+		if ($nom_etablissement != "") echo "<li>\"<b>".$type_etab."</b>\" (pour les Ã©tablissements de type \"".$nom_etablissement."\")</li>\n";
 	}
-	echo "</ul>\nSeules ces possibilités sont autorisées (attention à respecter la casse).<br /><br />\n";
-	echo "--> <B>Le type  \"public\" ou \"prive\". Seules ces deux possibilités sont autorisées.</B><br />\n";
+	echo "</ul>\nSeules ces possibilitÃ©s sont autorisÃ©es (attention Ã  respecter la casse).<br /><br />\n";
+	echo "--> <B>Le type  \"public\" ou \"prive\". Seules ces deux possibilitÃ©s sont autorisÃ©es.</B><br />\n";
 	echo "--> <B>Le code postal de la ville.</B><br />\n";
 	echo "--> <B>La ville.</B>\n";
 
 } else if (isset($is_posted ) and ($is_posted==1 )) {
 	check_token(false);
 
-	echo "<p><span class = 'grand'>Deuxième phase d'importation des établissements </span></p>\n";
+	echo "<p><span class = 'grand'>DeuxiÃ¨me phase d'importation des Ã©tablissements </span></p>\n";
 	$table_etab=array();
 	if ($_POST['choix'] == 'gepi') {
 		$fp = @fopen("./bases/".$_POST['csv_file'], "r");
 	} else {
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 	if($csv_file['tmp_name'] == "") {
-		echo "<p>Aucun fichier n'a été sélectionné !</p>\n";
+		echo "<p>Aucun fichier n'a Ã©tÃ© sÃ©lectionnÃ© !</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -127,19 +127,19 @@ if (!isset($is_posted)) {
 	}
 
 	echo "<form enctype='multipart/form-data' action='import_etab_csv.php' method='post'>\n";
-	echo "<p><b>Attention</b>, les données ne sont pas encore enregistrées dans la base GEPI. Vous devez confirmer l'importation (bouton en bas de la page) !</p>\n";
+	echo "<p><b>Attention</b>, les donnÃ©es ne sont pas encore enregistrÃ©es dans la base GEPI. Vous devez confirmer l'importation (bouton en bas de la page) !</p>\n";
 	if(!$fp) {
 		echo "Impossible d'ouvrir le fichier CSV";
 	} else {
 		// Nombre total de lignes lues
 		$row = 0;
-		// Nombre total de lignes insérées dans la base
+		// Nombre total de lignes insÃ©rÃ©es dans la base
 		$ind = 0;
 		echo "<table class='boireaus'><tr>
-		<th><p class='bold'>N° RNE</p></th>
-		<th><p class='bold'>Nom de l'établissement</p></th>
-		<th><p class='bold'>Type lycée/collège/école/...</p></th>
-		<th><p class='bold'>Type public/privé</p></th>
+		<th><p class='bold'>NÂ° RNE</p></th>
+		<th><p class='bold'>Nom de l'Ã©tablissement</p></th>
+		<th><p class='bold'>Type lycÃ©e/collÃ¨ge/Ã©cole/...</p></th>
+		<th><p class='bold'>Type public/privÃ©</p></th>
 		<th><p class='bold'>Code postal</p></th>
 		<th><p class='bold'>Ville</p></th></tr>\n";
 		$alt=1;
@@ -180,7 +180,7 @@ if (!isset($is_posted)) {
 					case 1:
 						// Nom
 						if ($data[$c] == "") {
-						$col = "<b><font color='red'>Non défini</font></b>\n";
+						$col = "<b><font color='red'>Non dÃ©fini</font></b>\n";
 							$reg_ligne='no';
 						} else {
 							$reg_nom = traitement_magic_quotes(corriger_caracteres($data[$c]));
@@ -189,7 +189,7 @@ if (!isset($is_posted)) {
 						echo "<td>$col</td>\n";
 						break;
 					case 2:
-						// Type lycée/collège
+						// Type lycÃ©e/collÃ¨ge
 						$tempo = $data[$c];
 						$valid='no';
 						foreach ($type_etablissement as $type_etabli => $nom_etablissement) {
@@ -203,12 +203,12 @@ if (!isset($is_posted)) {
 						if ($valid=='yes') {
 							echo "<td><p>$tempo</p></td>\n";
 						} else {
-							echo "<td><b><font color='red'>Non défini</font></b></td>\n";
+							echo "<td><b><font color='red'>Non dÃ©fini</font></b></td>\n";
 							$reg_ligne='no';
 						}
 						break;
 					case 3:
-						// Type public/privé
+						// Type public/privÃ©
 						$tempo = strtolower($data[$c]);
 						$valid='yes';
 						switch($tempo) {
@@ -223,7 +223,7 @@ if (!isset($is_posted)) {
 						if ($valid=='yes') {
 							echo "<td><p>$tempo</p></td>\n";
 						} else {
-							echo "<td><b><font color='red'>Non défini</font></b></td>\n";
+							echo "<td><b><font color='red'>Non dÃ©fini</font></b></td>\n";
 							$reg_ligne='no';
 						}
 						break;
@@ -233,14 +233,14 @@ if (!isset($is_posted)) {
 							echo "<td><p>$data[$c]</p></td>\n";
 							$reg_cp=$data[$c];
 						} else {
-							echo "<td><b><font color='red'>Non défini</font></b></td>\n";
+							echo "<td><b><font color='red'>Non dÃ©fini</font></b></td>\n";
 							$reg_ligne='no';
 						}
 						break;
 					case 5:
 						// Ville
 					if ($data[$c] == "") {
-							$col = "<b><font color='red'>Non défini</font></b>\n";
+							$col = "<b><font color='red'>Non dÃ©fini</font></b>\n";
 							$reg_ligne='no';
 							$reg_ville = '';
 						} else {
@@ -267,40 +267,40 @@ if (!isset($is_posted)) {
 		}
 		fclose($fp);
 		echo "</table>\n";
-		echo "<p>Première phase de l'importation : <b>$row entrées détectées</b> !</p>\n";
+		echo "<p>PremiÃ¨re phase de l'importation : <b>$row entrÃ©es dÃ©tectÃ©es</b> !</p>\n";
 		if ($row > 0) {
 			$table_etab=serialize($table_etab);
 			$_SESSION['table_etab']=$table_etab;
 			echo "<p class='bold'>AVERTISSEMENT : </p>
-			<ul><li>Les N° RNE qui apparaissent en rouge correspondent à des établissements déjà présents dans la base.
-			Les lignes correspondantes seront ignorées lors de la phase finale d'importation.</li>
-			<li>Les intitulés \"<font color=red>Non défini</font>\" signifient que le champ en question n'est pas valide.
-			La ligne correspondante sera ignorée lors de la phase finale d'importation.</li>
+			<ul><li>Les NÂ° RNE qui apparaissent en rouge correspondent Ã  des Ã©tablissements dÃ©jÃ  prÃ©sents dans la base.
+			Les lignes correspondantes seront ignorÃ©es lors de la phase finale d'importation.</li>
+			<li>Les intitulÃ©s \"<font color=red>Non dÃ©fini</font>\" signifient que le champ en question n'est pas valide.
+			La ligne correspondante sera ignorÃ©e lors de la phase finale d'importation.</li>
 			</ul>\n";
 			if ($ind != 0) {
 				if ($ind == 1) {
-					echo "<center><p><b>".$ind." ligne est prête à être enregistrée.</b></p>\n";
+					echo "<center><p><b>".$ind." ligne est prÃªte Ã  Ãªtre enregistrÃ©e.</b></p>\n";
 				}
 				else{
-					echo "<center><p><b>".$ind." lignes sont prêtes à être enregistrées.</b></p>\n";
+					echo "<center><p><b>".$ind." lignes sont prÃªtes Ã  Ãªtre enregistrÃ©es.</b></p>\n";
 				}
-				echo "<input type='submit' value='Enregistrer les données' /></center>\n";
+				echo "<input type='submit' value='Enregistrer les donnÃ©es' /></center>\n";
 				echo "<input type='hidden' name='is_posted' value='2' />\n";
 			} else {
-				echo "<center><p><b>Il n'y a aucun établissement à entrer dans la base.</p></center>\n";
+				echo "<center><p><b>Il n'y a aucun Ã©tablissement Ã  entrer dans la base.</p></center>\n";
 			}
 
 			echo add_token_field();
 
 			echo "</form>\n";
 		} else {
-			echo "<p>L'importation a échoué !</p>\n";
+			echo "<p>L'importation a Ã©chouÃ© !</p>\n";
 		}
 	}
 } else {
-	echo "<p><span class = 'grand'>Troisième phase d'importation des établissements </span></p>\n";
+	echo "<p><span class = 'grand'>TroisiÃ¨me phase d'importation des Ã©tablissements </span></p>\n";
 	if (!isset($_SESSION['table_etab'])) {
-		echo "<center><p class='grand'>Opération non conforme.</p></center></body></html>\n";
+		echo "<center><p class='grand'>OpÃ©ration non conforme.</p></center></body></html>\n";
 		die();
 	}
 
@@ -324,10 +324,10 @@ if (!isset($is_posted)) {
 		}
 	}
 	If ($pb == 'yes') {
-		echo "<p>Il y a eu un ou plusieurs problèmes lors de l'enregistrement.
-		Les lignes en rouge indiquent les enregistrements défectueux.</p>\n";
+		echo "<p>Il y a eu un ou plusieurs problÃ¨mes lors de l'enregistrement.
+		Les lignes en rouge indiquent les enregistrements dÃ©fectueux.</p>\n";
 	} else {
-		echo "<p class='bold'>".count ($table_etab)." établissements ont été insérés avec succès dans la base.</p>\n";
+		echo "<p class='bold'>".count ($table_etab)." Ã©tablissements ont Ã©tÃ© insÃ©rÃ©s avec succÃ¨s dans la base.</p>\n";
 	}
 
 	echo "<table class='boireaus' cellpadding=\"2\" cellspacing=\"2\">\n";
@@ -342,7 +342,7 @@ if (!isset($is_posted)) {
 		}
 
 		for ($j=0; $j<count($table_etab[$c]); $j++) {
-			// Pour l'affichage final, on enlève les caractère \ qu'on a rajouté avec traitement_magic_quotes plus haut
+			// Pour l'affichage final, on enlÃ¨ve les caractÃ¨re \ qu'on a rajoutÃ© avec traitement_magic_quotes plus haut
 			echo "<td>".StripSlashes($table_etab[$c][$j])."</td>\n";
 		}
 		echo "</tr>\n";

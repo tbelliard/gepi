@@ -30,7 +30,7 @@ class EdtCreneau extends BaseEdtCreneau {
             EdtCreneau::TYPE_VIE_SCOLAIRE => 'vie scolaire');
 
 	/**
-	 * Renvoi le creneau suivant du type donné
+	 * Renvoi le creneau suivant du type donnÃ©
 	 *
 	 * @return     EdtCreneau EdtCreneau
 	 *
@@ -69,7 +69,7 @@ class EdtCreneau extends BaseEdtCreneau {
 
 	/**
 	 *
-	 * Renvoi le creneau precedent du type donné
+	 * Renvoi le creneau precedent du type donnÃ©
 	 *
 	 * @return     EdtCreneau EdtCreneau
 	 *

@@ -28,7 +28,7 @@ require_once("../lib/initialisations.inc.php");
 require_once("../lib/mincals.inc");
 require_once("../lib/transform_functions.php");
 require_once("lib/functions.inc");
-// On vérifie si l'accès est restreint ou non
+// On vÃ©rifie si l'accÃ¨s est restreint ou non
 require_once("lib/auth.php");
 
 
@@ -51,7 +51,7 @@ if (is_numeric($id_groupe)) {
     $current_group = false;
 }
 
-// Pour le multisite, on doit récupérer le RNE de l'établissement
+// Pour le multisite, on doit rÃ©cupÃ©rer le RNE de l'Ã©tablissement
 $rne = isset($_GET['rne']) ? $_GET['rne'] : (isset($_POST['rne']) ? $_POST['rne'] : 'aucun');
 $aff_input_rne = NULL;
 if ($rne != 'aucun') {
@@ -61,10 +61,10 @@ if ($rne != 'aucun') {
 // Nom complet de la classe
 $appel_classe = mysql_query("SELECT classe FROM classes WHERE id='$id_classe'");
 $classe_nom = @mysql_result($appel_classe, 0, "classe");
-// Nom complet de la matière
+// Nom complet de la matiÃ¨re
 $matiere_nom = $current_group["matiere"]["nom_complet"];
 $matiere_nom_court = $current_group["matiere"]["matiere"];
-// Vérification
+// VÃ©rification
 settype($month,"integer");
 settype($day,"integer");
 settype($year,"integer");
@@ -84,18 +84,18 @@ $titre_page = "Cahier de textes";
 $page_accueil = "index.php?id_classe=-1";
 require_once("lib/header.inc");
 //**************** FIN EN-TETE *************
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_cahiers_texte")!='y') {
     echo("<center><p class='grand'>Le cahier de textes n'est pas accessible pour le moment.</p></center>");
     require ("../lib/footer.inc.php");
     die();
 }
 if (getSettingValue("cahier_texte_acces_public")!='yes') {
-    echo("<center><p class='grand'>Le cahier de textes n'est pas en accès public.</p></center>");
+    echo("<center><p class='grand'>Le cahier de textes n'est pas en accÃ¨s public.</p></center>");
     require ("../lib/footer.inc.php");
     die();
 }
-// On vérifie que la date demandée est bien comprise entre la date de début des cahiers de texte et la date de fin des cahiers de texte :
+// On vÃ©rifie que la date demandÃ©e est bien comprise entre la date de dÃ©but des cahiers de texte et la date de fin des cahiers de texte :
 if ($today < getSettingValue("begin_bookings")) {
    $today = getSettingValue("begin_bookings");
 } else if ($today > getSettingValue("end_bookings")) {
@@ -123,7 +123,7 @@ echo "<p><span class='grand'>Cahier de textes";
 if ($id_classe != -1) echo "<br />$classe_nom";
 if ($id_matiere != -1) echo "- $matiere_nom ($matiere_nom_court)";
 echo "</span>\n";
-// Test si le cahier de texte est partagé
+// Test si le cahier de texte est partagÃ©
 if ($current_group) {
   echo "<br />\n<b>(";
   $i=0;
@@ -149,9 +149,9 @@ echo "</tr></table>\n<hr />\n";
 $test_cahier_texte = mysql_query("SELECT contenu  FROM ct_entry WHERE (id_groupe='$id_groupe')");
 $nb_test = mysql_num_rows($test_cahier_texte);
 $delai = getSettingValue("delai_devoirs");
-//Affichage des devoirs globaux s'il n'y a pas de notices dans ct_entry à afficher
+//Affichage des devoirs globaux s'il n'y a pas de notices dans ct_entry Ã  afficher
 if (($nb_test == 0) and ($id_classe != -1) and ($delai != 0)) {
-    if ($delai == "") die("Erreur : Délai de visualisation du travail personnel non défini. Contactez l'administrateur de GEPI de votre établissement.");
+    if ($delai == "") die("Erreur : DÃ©lai de visualisation du travail personnel non dÃ©fini. Contactez l'administrateur de GEPI de votre Ã©tablissement.");
     $nb_dev = 0;
     for ($i = 0; $i <= $delai; $i++) {
         $aujourhui = $aujourdhui = mktime(0,0,0,date("m"),date("d"),date("Y"));
@@ -168,12 +168,12 @@ if (($nb_test == 0) and ($id_classe != -1) and ($delai != 0)) {
         if ($nb_devoirs_cahier_texte != 0) {
             $nb_dev++;
             if ($nb_dev == '1') {
-                echo "<br /><center>Date sélectionnée : ".strftime("%A %d %B %Y", $today)."</center>\n";
+                echo "<br /><center>Date sÃ©lectionnÃ©e : ".strftime("%A %d %B %Y", $today)."</center>\n";
                 echo "<br /><center><b><font style='font-variant: small-caps;'>Travaux personnels des $delai jours suivant le ".strftime("%d %B %Y", $today)." pour la classe de $classe_nom</font></b></center><br />\n";
                 echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice.";\" width = '100%' cellpadding='5'><tr><td>\n";
             }
             echo "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["f"].";\"><font color='".$color_police_travaux."' style='font-variant: small-caps;'><b>Travaux personnels pour le ".strftime("%a %d %b", $jour)."</b></font>\n";
-            // Affichage des devoirs dans chaque matière
+            // Affichage des devoirs dans chaque matiÃ¨re
             while ($ind < $nb_devoirs_cahier_texte) {
                 $content = mysql_result($appel_devoirs_cahier_texte, $ind, 'contenu');
                 // Mise en forme du texte
@@ -205,14 +205,14 @@ if (($nb_test == 0) and ($id_classe != -1) and ($delai != 0)) {
     die();
     //AFfichage page de garde
 } elseif ($nb_test == 0) {
-    echo "<center><h3 class='gepi'>".getSettingValue("gepiSchoolName"). " - année scolaire " . getSettingValue("gepiYear")."</H3>\n";
-    echo "<h3 class='gepi'><font color='red'>Choisissez une classe et une matière.</font></h3>\n";
+    echo "<center><h3 class='gepi'>".getSettingValue("gepiSchoolName"). " - annÃ©e scolaire " . getSettingValue("gepiYear")."</H3>\n";
+    echo "<h3 class='gepi'><font color='red'>Choisissez une classe et une matiÃ¨re.</font></h3>\n";
     $nom_fic_logo = getSettingValue("logo_etab");
     $nom_fic_logo_c = "../images/".$nom_fic_logo;
     if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
         echo "<img src=\"".$nom_fic_logo_c."\" style=\"border: 0;\" ALT=\"\" /><br />\n";
     }
-    echo "<br /><br /><p>Ce cahier de textes est géré sous <a href='http://gepi.mutualibre.org/'>GEPI</a>.\n<br />GEPI est un outil de gestion, de suivi, et de visualisation graphique des résultats scolaires (écoles, collèges, lycées).\n<br />GEPI est un logiciel libre et gratuit diffusé sous la licence GPL.</p><br />\n";
+    echo "<br /><br /><p>Ce cahier de textes est gÃ©rÃ© sous <a href='http://gepi.mutualibre.org/'>GEPI</a>.\n<br />GEPI est un outil de gestion, de suivi, et de visualisation graphique des rÃ©sultats scolaires (Ã©coles, collÃ¨ges, lycÃ©es).\n<br />GEPI est un logiciel libre et gratuit diffusÃ© sous la licence GPL.</p><br />\n";
     echo "<br /><a href='http://www.php.net'><img src=\"../php4.gif\" alt=\"Powered by php4\" width=\"88\" height=\"31\" style=\"border: 0;\" />\n</a><a href='http://www.mysql.org'> <img src=\"../mysqllogo.gif\" alt=\"Powered by MySQL\" width=\"88\" height=\"31\" style=\"border: 0;\" /></a>\n";
     //echo "</center></body></html>";
     echo "</center>";
@@ -220,21 +220,21 @@ if (($nb_test == 0) and ($id_classe != -1) and ($delai != 0)) {
     die();
 }
 
-// Affichage des compte-rendus et des travaux à faire.
+// Affichage des compte-rendus et des travaux Ã  faire.
 echo "<table width=\"98%\" border = 0 align=\"center\">\n";
 
-// Première colonne : affichage du 'travail à faire' à venir
+// PremiÃ¨re colonne : affichage du 'travail Ã  faire' Ã  venir
 echo "<tr><td width = \"30%\" valign=\"top\">\n";
 echo "<a href='see_all.php?id_classe=$id_classe&amp;id_groupe=$id_groupe'>Voir l'ensemble du cahier de textes</a><br /><br />\n";
 // Affichage des devoirs
-if ($delai == "") die("Erreur : Délai de visualisation des devois non défini. Contactez l'administrateur de GEPI de votre établissement.");
-// Si l'affichage des devoirs est activée, on affiche les devoirs
+if ($delai == "") die("Erreur : DÃ©lai de visualisation des devois non dÃ©fini. Contactez l'administrateur de GEPI de votre Ã©tablissement.");
+// Si l'affichage des devoirs est activÃ©e, on affiche les devoirs
 if ($delai != 0) {
 // Affichage de la semaine en cours
     $nb_dev = 0;
     for ($i = 0; $i <= $delai; $i++) {
         $jour = mktime(0, 0, 0, date('m',$today), (date('d',$today) + $i), date('Y',$today) );
-        // On regarde pour chaque jour, s'il y a des devoirs dans à faire
+        // On regarde pour chaque jour, s'il y a des devoirs dans Ã  faire
         $appel_devoirs_cahier_texte = mysql_query("SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
                 "FROM ct_devoirs_entry ct, groupes g, j_groupes_classes jgc WHERE (" .
                 "ct.id_groupe = jgc.id_groupe and " .
@@ -260,7 +260,7 @@ if ($delai != 0) {
                 echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice.";\" width = '100%' cellpadding='2'><tr><td>\n";
             }
             echo "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["f"].";\"><div style='color: ".$color_police_travaux."; font-variant: small-caps; text-align: center; font-weight: bold;'>Travaux personnels<br />pour le ".strftime("%a %d %b", $jour)."</div>\n";
-            // Affichage des devoirs dans chaque matière
+            // Affichage des devoirs dans chaque matiÃ¨re
             while ($ind < $nb_devoirs_cahier_texte) {
                 $content = mysql_result($appel_devoirs_cahier_texte, $ind, 'contenu');
                 // Mise en forme du texte
@@ -288,7 +288,7 @@ if ($delai != 0) {
     }
     if ($nb_dev != 0) echo "</td></tr></table>\n";
 }
-// Affichage des informations générales
+// Affichage des informations gÃ©nÃ©rales
 $appel_info_cahier_texte = mysql_query("SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
 
 $nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
@@ -298,19 +298,19 @@ include "../lib/transform.php";
 // documents joints
 $html .= affiche_docs_joints($id_ct,"c");
 if ($html != '')
-echo "<b>Informations Générales</b><table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["i"]."; padding: 2px; margin: 2px;\" width = '100%' cellpadding='5'><tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["i"]."; padding: 2px; margin: 2px;\"><td>".$html."</td></tr></table><br />\n";
+echo "<b>Informations GÃ©nÃ©rales</b><table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["i"]."; padding: 2px; margin: 2px;\" width = '100%' cellpadding='5'><tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["i"]."; padding: 2px; margin: 2px;\"><td>".$html."</td></tr></table><br />\n";
 echo "</td>\n";
-// Fin de la première colonne
+// Fin de la premiÃ¨re colonne
 
 
-// Début de la deuxième colonne
+// DÃ©but de la deuxiÃ¨me colonne
 echo "<td valign=\"top\">";
 
 echo "<table border=0 width = 100%>";
-// Première ligne
+// PremiÃ¨re ligne
 echo "<tr><td style=\"width:50%\"><b>" . strftime("%A %d %B %Y", $today) . "</b>";
-#y? sont les année, mois et jour précédents
-#t? sont les année, mois et jour suivants
+#y? sont les annÃ©e, mois et jour prÃ©cÃ©dents
+#t? sont les annÃ©e, mois et jour suivants
 $i= mktime(0,0,0,$month,$day-1,$year);
 $yy = date("Y",$i);
 $ym = date("m",$i);
@@ -319,10 +319,10 @@ $i= mktime(0,0,0,$month,$day+1,$year);
 $ty = date("Y",$i);
 $tm = date("m",$i);
 $td = date("d",$i);
-echo "</td><td><a title=\"Aller au jour précédent\" href=\"index.php?year=$yy&amp;month=$ym&amp;day=$yd&amp;id_classe=$id_classe&amp;id_groupe=$id_groupe\">&lt;&lt;</a></td><td align=center><a href=\"index.php?id_classe=$id_classe&amp;id_groupe=$id_groupe\">Aujourd'hui</a></td><td align=right><a title=\"Aller au jour suivant\" href=\"index.php?year=$ty&amp;month=$tm&amp;day=$td&amp;id_classe=$id_classe&amp;id_groupe=$id_groupe\">&gt;&gt;</a></td></tr>\n";
+echo "</td><td><a title=\"Aller au jour prÃ©cÃ©dent\" href=\"index.php?year=$yy&amp;month=$ym&amp;day=$yd&amp;id_classe=$id_classe&amp;id_groupe=$id_groupe\">&lt;&lt;</a></td><td align=center><a href=\"index.php?id_classe=$id_classe&amp;id_groupe=$id_groupe\">Aujourd'hui</a></td><td align=right><a title=\"Aller au jour suivant\" href=\"index.php?year=$ty&amp;month=$tm&amp;day=$td&amp;id_classe=$id_classe&amp;id_groupe=$id_groupe\">&gt;&gt;</a></td></tr>\n";
 // affichage du texte
 echo "<tr><td colspan=\"4\">\n";
-echo "<center><b>les dix dernières séances jusqu'au ".strftime("%A %d %B %Y", $today)." :</b></center></td></tr>\n";
+echo "<center><b>les dix derniÃ¨res sÃ©ances jusqu'au ".strftime("%A %d %B %Y", $today)." :</b></center></td></tr>\n";
 //echo "<tr><td colspan=\"4\" style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background: rgb(199, 255, 153); padding: 2px; margin: 2px;\">";
 echo "<tr><td colspan=\"4\" style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice."; padding: 2px; margin: 2px;\">\n";
 
@@ -360,17 +360,17 @@ $devoir = mysql_fetch_object($res_devoirs);
 // Boucle d'affichage des notices dans la colonne de gauche
 $date_ct_old = -1;
 while (true) {
-    // On met les notices du jour avant les devoirs à rendre aujourd'hui
+    // On met les notices du jour avant les devoirs Ã  rendre aujourd'hui
     if ($notice && (!$devoir || $notice->date_ct >= $devoir->date_ct)) {
-        // Il y a encore une notice et elle est plus récente que le prochain devoir, où il n'y a plus de devoirs
+        // Il y a encore une notice et elle est plus rÃ©cente que le prochain devoir, oÃ¹ il n'y a plus de devoirs
         $not_dev = $notice;
         $notice = mysql_fetch_object($res_notices);
     } elseif($devoir) {
-        // Plus de notices et toujours un devoir, ou devoir plus récent
+        // Plus de notices et toujours un devoir, ou devoir plus rÃ©cent
         $not_dev = $devoir;
         $devoir = mysql_fetch_object($res_devoirs);
     } else {
-        // Plus rien à afficher, on sort de la boucle
+        // Plus rien Ã  afficher, on sort de la boucle
         break;
     }
     // Passage en HTML
@@ -382,17 +382,17 @@ while (true) {
         $titre .= "<strong>A faire pour le : </strong>\n";
     }
     $titre .= "<b>" . strftime("%a %d %b %y", $not_dev->date_ct) . "</b>\n";
-    // Numérotation des notices si plusieurs notice sur la même journée
+    // NumÃ©rotation des notices si plusieurs notice sur la mÃªme journÃ©e
     if ($not_dev->type == "c") {
       if ($date_ct_old == $not_dev->date_ct) {
         $num_notice++;
-        $titre .= " <b><i>(notice N° ".$num_notice.")</i></b>";
+        $titre .= " <b><i>(notice NÂ° ".$num_notice.")</i></b>";
       } else {
-        // on afffiche "(notice N° 1)" uniquement s'il y a plusieurs notices dans la même journée
+        // on afffiche "(notice NÂ° 1)" uniquement s'il y a plusieurs notices dans la mÃªme journÃ©e
         $nb_notices = sql_query1("SELECT count(id_ct) FROM ct_entry WHERE (id_groupe='" . $current_group["id"] ."' and date_ct='".$not_dev->date_ct."')");
         if ($nb_notices > 1)
-            $titre .= " <b><i>(notice N° 1)</i></b>";
-        // On réinitialise le compteur
+            $titre .= " <b><i>(notice NÂ° 1)</i></b>";
+        // On rÃ©initialise le compteur
         $num_notice = 1;
       }
     }

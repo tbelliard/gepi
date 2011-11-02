@@ -125,7 +125,7 @@ $display_end = @mysql_result($call_data, 0, "display_end");
 
 
     //**************** EN-TETE *****************
-if (!isset($bord))     $titre_page = "Visualisation des appréciations ".$nom_aid;
+if (!isset($bord))     $titre_page = "Visualisation des apprÃ©ciations ".$nom_aid;
 require_once("../lib/header.inc");
     //**************** FIN EN-TETE *****************
 
@@ -135,7 +135,7 @@ if (!isset($aid_id)) {
     $nombre_aid = mysql_num_rows($call_prof_aid);
     if ($nombre_aid == "0") {
 
-        echo "<p>Vous n'êtes pas professeur responsable. Vous n'avez donc pas accès à ce module.</p></html></body>\n";
+        echo "<p>Vous n'Ãªtes pas professeur responsable. Vous n'avez donc pas accÃ¨s Ã  ce module.</p></html></body>\n";
 
         die();
 
@@ -143,7 +143,7 @@ if (!isset($aid_id)) {
 
         $i = "0";
 
-        echo "<p>Vous êtes professeur responsable dans les $nom_aid :<br />\n";
+        echo "<p>Vous Ãªtes professeur responsable dans les $nom_aid :<br />\n";
 
         while ($i < $nombre_aid) {
 
@@ -151,7 +151,7 @@ if (!isset($aid_id)) {
 
             $aid_id = mysql_result($call_prof_aid, $i, "id");
 
-            echo "<br /><span class='bold'>$aid_display</span> --- <a href='visu_aid.php?aid_id=$aid_id&aid=yes&indice_aid=$indice_aid'>Visualiser les appréciations pour cette rubrique</a>\n";
+            echo "<br /><span class='bold'>$aid_display</span> --- <a href='visu_aid.php?aid_id=$aid_id&aid=yes&indice_aid=$indice_aid'>Visualiser les apprÃ©ciations pour cette rubrique</a>\n";
 
         $i++;
 
@@ -167,7 +167,7 @@ if (!isset($aid_id)) {
 
     //
 
-    // on calcule le nombre maximum de périodes dans les classes concernées par l'AID
+    // on calcule le nombre maximum de pÃ©riodes dans les classes concernÃ©es par l'AID
 
     //
 
@@ -205,7 +205,7 @@ if (!isset($aid_id)) {
 
     //
 
-    // On propose de selectionner les périodes à imprimer
+    // On propose de selectionner les pÃ©riodes Ã  imprimer
 
     //
 
@@ -217,9 +217,9 @@ if (!isset($aid_id)) {
 
     $aid_nom = mysql_result($calldata, 0, "nom");
 
-    echo "<p class='bold'>Appréciations $nom_aid : $aid_nom</p>\n";
+    echo "<p class='bold'>ApprÃ©ciations $nom_aid : $aid_nom</p>\n";
 
-    echo "<p>Choisissez les données à imprimer ou à visualiser (vous pouvez cocher plusieurs cases) : </p>\n";
+    echo "<p>Choisissez les donnÃ©es Ã  imprimer ou Ã  visualiser (vous pouvez cocher plusieurs cases) : </p>\n";
 
     $i=$display_begin;
 
@@ -231,7 +231,7 @@ if (!isset($aid_id)) {
 
         $name = "visu_app_".$i;
 
-        echo "<p><INPUT TYPE=CHECKBOX NAME='$name' VALUE='yes'>Période $i - Extraire les appréciations<p>\n";
+        echo "<p><INPUT TYPE=CHECKBOX NAME='$name' VALUE='yes'>PÃ©riode $i - Extraire les apprÃ©ciations<p>\n";
 
         if ($type_note == 'last') {$last_periode_aid = min($nb_periode_max,$display_end);}
 
@@ -239,7 +239,7 @@ if (!isset($aid_id)) {
 
             $name = "visu_note_".$i;
 
-            echo "<p><INPUT TYPE=CHECKBOX NAME='$name' VALUE='yes'>Période $i - Extraire les notes<p>\n";
+            echo "<p><INPUT TYPE=CHECKBOX NAME='$name' VALUE='yes'>PÃ©riode $i - Extraire les notes<p>\n";
 
         }
 
@@ -251,13 +251,13 @@ if (!isset($aid_id)) {
 
 
 
-    echo "<b>Paramètres d'affichage</b><br />\n";
+    echo "<b>ParamÃ¨tres d'affichage</b><br />\n";
 
     echo "<br />\nLargeur en pixel du tableau : <input type=text name=larg_tab size=3 value=\"680\">";
 
     echo "<br />\nBords en pixel du tableau : <input type=text name=bord size=3 value=\"1\">";
 
-    echo "<br />\n<br />\n<span class='small'><b>Remarque :</b> après validation, les résultats s'affichent sous la forme d'un tableau dans une nouvelle page sans en-tête. Pour revenir à cet écran, il vous suffira de fermer la fenêtre (croix en haut à droite).</span>";
+    echo "<br />\n<br />\n<span class='small'><b>Remarque :</b> aprÃ¨s validation, les rÃ©sultats s'affichent sous la forme d'un tableau dans une nouvelle page sans en-tÃªte. Pour revenir Ã  cet Ã©cran, il vous suffira de fermer la fenÃªtre (croix en haut Ã  droite).</span>";
 
 
 
@@ -283,11 +283,11 @@ if (!isset($aid_id)) {
 
     //
 
-    // Calcul du nombre de colonnes à afficher et définition de la première ligne à afficher
+    // Calcul du nombre de colonnes Ã  afficher et dÃ©finition de la premiÃ¨re ligne Ã  afficher
 
     //
 
-    $ligne1[1] = "Nom Prénom";
+    $ligne1[1] = "Nom PrÃ©nom";
 
     $k = $display_begin;
 
@@ -299,7 +299,7 @@ if (!isset($aid_id)) {
 
             $indice_col++;
 
-            $ligne1[$indice_col] = "Période ".$k;
+            $ligne1[$indice_col] = "PÃ©riode ".$k;
 
         }
 
@@ -309,7 +309,7 @@ if (!isset($aid_id)) {
 
             $indice_col++;
 
-            $ligne1[$indice_col] = "Période ".$k;
+            $ligne1[$indice_col] = "PÃ©riode ".$k;
 
         }
 
@@ -413,7 +413,7 @@ if (!isset($aid_id)) {
 
     $aid_nom = mysql_result($calldata, 0, "nom");
 
-    echo "<p class='bold'>" . $_SESSION['nom'] . " " . $_SESSION['prenom'] . " | Année : ".getSettingValue("gepiYear")." | Appréciations $nom_aid : $aid_nom</p>";
+    echo "<p class='bold'>" . $_SESSION['nom'] . " " . $_SESSION['prenom'] . " | AnnÃ©e : ".getSettingValue("gepiYear")." | ApprÃ©ciations $nom_aid : $aid_nom</p>";
 
     echo "</p>\n";
 

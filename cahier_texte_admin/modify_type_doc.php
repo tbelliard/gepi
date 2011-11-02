@@ -45,19 +45,19 @@ if (isset($_POST['modif'])) {
 	check_token();
   if ($_POST['id'] !='ajout') {
      $req = sql_query("UPDATE ct_types_documents SET extension='".$_POST['ext']."', titre='".$_POST['description']."', upload='".$_POST['upload']."' WHERE id_type='".$_POST['id']."'");
-     if ($req) $msg = "Les modifications ont été enregistrées."; else $msg = "Il y a eu un problème lors de l'enregistrement.";
+     if ($req) $msg = "Les modifications ont Ã©tÃ© enregistrÃ©es."; else $msg = "Il y a eu un problÃ¨me lors de l'enregistrement.";
   } else {
      $ext = $_POST['ext'];
      if ($ext != '') {
         $req = sql_query("INSERT INTO ct_types_documents SET extension='".$ext."', titre='".$_POST['description']."', upload='".$_POST['upload']."'");
-        if ($req) $msg = "L'enregistrement a bien été effectué."; else $msg = "Il y a eu un problème lors de l'enregistrement.";
+        if ($req) $msg = "L'enregistrement a bien Ã©tÃ© effectuÃ©."; else $msg = "Il y a eu un problÃ¨me lors de l'enregistrement.";
      } else {
-        $msg = "Enregistrement impossible. Veuillez définir une extension correcte.";
+        $msg = "Enregistrement impossible. Veuillez dÃ©finir une extension correcte.";
      }
   }
 }
 
-// Suppression des types selectionnés
+// Suppression des types selectionnÃ©s
 if (isset($_POST['bouton_sup'])) {
 	check_token();
   $query = "SELECT id_type FROM ct_types_documents";
@@ -74,18 +74,18 @@ if (isset($_POST['bouton_sup'])) {
       }
   }
   if ($nb_sup == "0") {
-     $msg = "Aucune suppression n'a été effectuée.";
+     $msg = "Aucune suppression n'a Ã©tÃ© effectuÃ©e.";
   } else if ($nb_sup == "1") {
-     if ($ok_sup=='yes') $msg = "La suppression a été effectuée avec succès."; else $msg = "Il y a eu un problème lors de la suppression.";
+     if ($ok_sup=='yes') $msg = "La suppression a Ã©tÃ© effectuÃ©e avec succÃ¨s."; else $msg = "Il y a eu un problÃ¨me lors de la suppression.";
   } else {
-     if ($ok_sup=='yes') $msg = "Les suppressions ont été effectuées avec succès."; else $msg = "Il y a eu un problème lors de la suppression.";
+     if ($ok_sup=='yes') $msg = "Les suppressions ont Ã©tÃ© effectuÃ©es avec succÃ¨s."; else $msg = "Il y a eu un problÃ¨me lors de la suppression.";
   }
 
 }
 
 //===========================================================
 // header
-$titre_page = "Types de fichiers autorisés en téléchargement";
+$titre_page = "Types de fichiers autorisÃ©s en tÃ©lÃ©chargement";
 require_once("../lib/header.inc");
 //===========================================================
 //debug_var();
@@ -97,12 +97,12 @@ if (isset($_GET['id'])) {
   <p class=bold><a href="modify_type_doc.php?a=a<?php echo add_token_in_url();?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
   <?php
   if ($_GET['id']=='ajout') {
-     echo "<h2>Type de fichier autorisé en téléchargement - Ajout d'un type de fichier</h2>";
+     echo "<h2>Type de fichier autorisÃ© en tÃ©lÃ©chargement - Ajout d'un type de fichier</h2>";
      $ext = '';
      $description = '';
      $upload = 'oui';
   } else {
-     echo "<h2>Type de fichier autorisé en téléchargement - Modification</h2>";
+     echo "<h2>Type de fichier autorisÃ© en tÃ©lÃ©chargement - Modification</h2>";
      $query = "SELECT extension, titre, upload  FROM ct_types_documents WHERE id_type='".$_GET['id']."' ORDER BY extension";
      $result = sql_query($query);
      $row=sql_row($result,0);
@@ -118,7 +118,7 @@ if (isset($_GET['id'])) {
   <table>
   <tr><td>Extension : </td><td><input type="text" name="ext" value="<?php echo $ext; ?>" size="20" /></td></tr>
   <tr><td>Type/Description : </td><td><input type="text" name="description" value="<?php echo $description; ?>" size="20" /></td></tr>
-  <tr><td>Autorisé : </td><td><select name="upload" size="1">
+  <tr><td>AutorisÃ© : </td><td><select name="upload" size="1">
   <option <?php if ($upload=='oui') echo "selected"; ?>>oui</option>
   <option <?php if ($upload=='non') echo "selected"; ?>>non</option>
   </select></td></tr>
@@ -131,7 +131,7 @@ if (isset($_GET['id'])) {
   // Affichage du tableau complet
   ?>
   <p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>|<a href="modify_type_doc.php?id=ajout<?php echo add_token_in_url();?>"> Ajouter un type de fichier </a></p>
-  <H2>Types de fichiers autorisés en téléchargement</h2>
+  <H2>Types de fichiers autorisÃ©s en tÃ©lÃ©chargement</h2>
   <form action="modify_type_doc.php" name="formulaire2" method="post">
 <?php
 	echo add_token_field();
@@ -140,7 +140,7 @@ if (isset($_GET['id'])) {
 <tr>
 <th><b>Extension</b></th>
 <th><b>Type/Description</b></th>
-<th><b>Autorisé</b></th>
+<th><b>AutorisÃ©</b></th>
 <th><input type="submit" name="bouton_sup" value="Supprimer" onclick="return confirmlink(this, '', 'Confirmation de la suppression')" /></th>
 </tr>
   <?php

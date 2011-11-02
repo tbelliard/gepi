@@ -66,16 +66,16 @@ if(($duree2!="20dernieres")&&
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Sécurité Gepi - Archives -";
+$titre_page = "SÃ©curitÃ© Gepi - Archives -";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='security_policy.php'>Définir la politique de sécurité</a> | <a href='security_panel.php'>Panneau de sécurité</a></p>\n";
+echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='security_policy.php'>DÃ©finir la politique de sÃ©curitÃ©</a> | <a href='security_panel.php'>Panneau de sÃ©curitÃ©</a></p>\n";
 echo "<br />\n";
 echo "<form action=\"security_panel_archives.php\" name=\"form_affiche_alerte\" method=\"post\">\n";
 echo "Afficher l'historique des alertes : <select name=\"duree2\" size=\"1\">\n";
 echo "<option ";
 if ($duree2 == '20dernieres') echo "selected";
-echo " value='20dernieres'>les 20 dernières</option>\n";
+echo " value='20dernieres'>les 20 derniÃ¨res</option>\n";
 echo "<option ";
 if ($duree2 == 2) echo "selected";
 echo " value=2>depuis Deux jours</option>\n";
@@ -99,7 +99,7 @@ if ($duree2 == 365) echo "selected";
 echo " value=365>depuis Un an</option>\n";
 echo "<option ";
 if ($duree2 == 'all') echo "selected";
-echo " value='all'>depuis Le début</option>\n";
+echo " value='all'>depuis Le dÃ©but</option>\n";
 echo "</select>\n";
 echo " <input type=\"submit\" name=\"Valider\" value=\"Valider\" /><br /><br />\n";
 echo "</form>\n";
@@ -130,7 +130,7 @@ if(isset($duree2)){echo "&amp;duree2=$duree2";}
 echo "' style='display:inline;'>IP</a>\n";
 echo "</th>\n";
 echo "<th>\n";
-// Le tri par date est le mode standard... pas besoin de paramètre
+// Le tri par date est le mode standard... pas besoin de paramÃ¨tre
 echo "<a href='".$_SERVER['PHP_SELF'];
 if(isset($duree2)){echo "?duree2=$duree2";}
 echo "' style='display:inline;'>Date</a>\n";
@@ -182,7 +182,7 @@ while ($row = mysql_fetch_object($req)) {
 	echo "<tr class='lig$alt white_hover'>\n";
 	echo "<td>\n";
 	if ($row->login != "-") {
-		// On récupère des informations sur l'utilisateur :
+		// On rÃ©cupÃ¨re des informations sur l'utilisateur :
 		$user_req = mysql_query("SELECT u.login, u.nom, u.prenom, u.statut, u.etat, u.niveau_alerte, u.observation_securite FROM utilisateurs u WHERE (u.login = '".$row->login . "')");
 		$user = mysql_fetch_object($user_req);
 	}
@@ -195,12 +195,12 @@ while ($row = mysql_fetch_object($req)) {
 			//echo " (compte actif)";
 			echo " (<span style='color:green;'>compte actif</span>)";
 		} else {
-			//echo " (compte désactivé)";
-			echo " (<span style='color:red;'>compte désactivé</span>)";
+			//echo " (compte dÃ©sactivÃ©)";
+			echo " (<span style='color:red;'>compte dÃ©sactivÃ©</span>)";
 		}
-		echo "<br/>Score cumulé : ".$user->niveau_alerte;
+		echo "<br/>Score cumulÃ© : ".$user->niveau_alerte;
 	} else {
-		echo "<b>Attaque extérieure</b><br/>\n";
+		echo "<b>Attaque extÃ©rieure</b><br/>\n";
 		echo "Adresse IP : ".$row->adresse_ip."<br/>\n";
 	}
 	echo "</td>\n";
@@ -213,11 +213,11 @@ while ($row = mysql_fetch_object($req)) {
 		if ($user->etat == "actif") {
 			echo "<a style='padding: 2px;' href='security_panel.php?action=desactiver&amp;user_login=".$user->login;
 			if(isset($order_by)) {echo "&amp;order_by=$order_by";}
-			echo add_token_in_url()."'>Désactiver le compte</a>\n";
+			echo add_token_in_url()."'>DÃ©sactiver le compte</a>\n";
 		} else {
 			echo "<a style='padding: 2px;' href='security_panel.php?action=activer&amp;user_login=".$user->login;
 			if(isset($order_by)) {echo "&amp;order_by=$order_by";}
-			echo add_token_in_url()."'>Réactiver le compte</a>\n";
+			echo add_token_in_url()."'>RÃ©activer le compte</a>\n";
 		}
 		echo "<br />\n";
 		if ($user->observation_securite == 0) {
@@ -232,10 +232,10 @@ while ($row = mysql_fetch_object($req)) {
 		echo "<br />\n";
 		echo "<a style='padding: 2px;' href='security_panel.php?action=reinit_cumul&amp;user_login=".$user->login;
 		if(isset($order_by)) {echo "&amp;order_by=$order_by";}
-		echo add_token_in_url()."'>Réinitialiser cumul</a>\n";
+		echo add_token_in_url()."'>RÃ©initialiser cumul</a>\n";
 		echo "</p>\n";
 	} else {
-		echo "<p class='small'><i>Aucune action disponible</i><br />(l'alerte n'est pas liée à un utilisateur du système)</p>\n";
+		echo "<p class='small'><i>Aucune action disponible</i><br />(l'alerte n'est pas liÃ©e Ã  un utilisateur du systÃ¨me)</p>\n";
 	}
 	echo "</td>\n";
 	echo "</tr>\n";

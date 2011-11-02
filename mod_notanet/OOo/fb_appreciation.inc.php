@@ -2,13 +2,13 @@
 	/* $Id: fb_appreciation.inc.php 3181 2009-06-03 09:31:02Z crob $ */
 
 	//=====================
-	// on va chercher les appréciations si besoin
+	// on va chercher les apprÃ©ciations si besoin
 	$tab_eleves_OOo[$nb_eleve][$j][4]="";			// on initialise le champ pour ne pas avoir d'erreur
 				
 	if($avec_app=="y") {
-		// On vérifie que la matière est dispensée
+		// On vÃ©rifie que la matiÃ¨re est dispensÃ©e
 		if($tabmatieres[$j][-4]=="non dispensee dans l etablissement") {
-			$tab_eleves_OOo[$nb_eleve][$j][4]="non dispensée dans l établissement";		
+			$tab_eleves_OOo[$nb_eleve][$j][4]="non dispensÃ©e dans l Ã©tablissement";		
 		}else{		
 			$sql="SELECT appreciation FROM notanet_app na,
 											notanet_corresp nc

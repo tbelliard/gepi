@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 *
 * ******************************************** *
-* Appelle les sous-modèles                     *
+* Appelle les sous-modÃ¨les                     *
 * templates/origine/header_template.php        *
 * templates/origine/bandeau_template.php       *
 * ******************************************** *
@@ -36,7 +36,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 
 <head>
-<!-- on inclut l'entête -->
+<!-- on inclut l'entÃªte -->
 	<?php
 	  $tbs_bouton_taille = "..";
 	  include('../templates/origine/header_template.php');
@@ -79,7 +79,7 @@
 
 
 <!-- ************************* -->
-<!-- Début du corps de la page -->
+<!-- DÃ©but du corps de la page -->
 <!-- ************************* -->
 <body onload="show_message_deconnexion();<?php echo $tbs_charger_observeur;?>">
 
@@ -91,19 +91,19 @@
   <div id='container'>
 <!-- Fin haut de page -->
 
-	<h2 class="colleHaut">Configuration générale</h2>
+	<h2 class="colleHaut">Configuration gÃ©nÃ©rale</h2>
 	<p>
 	  <em>
-		La désactivation du module trombinoscope n'entraîne aucune suppression des données.
-		Lorsque le module est désactivé, il n'y a pas d'accès au module.
+		La dÃ©sactivation du module trombinoscope n'entraÃ®ne aucune suppression des donnÃ©es.
+		Lorsque le module est dÃ©sactivÃ©, il n'y a pas d'accÃ¨s au module.
 	  </em>
 	</p>
-	<form action="trombinoscopes_admin.php" id="form1" method="post" title="Configuration générale">
+	<form action="trombinoscopes_admin.php" id="form1" method="post" title="Configuration gÃ©nÃ©rale">
 	  <fieldset>
 	<?php
 	echo add_token_field();
 	?>
-		<legend class="bold">Élèves :</legend>
+		<legend class="bold">Ã‰lÃ¨ves :</legend>
 		<input type="radio"
 			   name="activer"
 			   id='activer_y'
@@ -122,7 +122,7 @@
 			   />
 		<label for='activer_n'
 			   style='cursor:pointer'>
-		  Désactiver le module trombinoscope
+		  DÃ©sactiver le module trombinoscope
 		</label>
 		<input type="hidden" name="is_posted" value="1" />
 	  </fieldset>
@@ -146,7 +146,7 @@
 			  <?php if (getSettingValue("active_module_trombino_pers")!='y')echo " checked='checked'"; ?>
 			   />
 		<label for='activer_personnels_n' style='cursor:pointer'>
-		  Désactiver le module trombinoscope des personnels
+		  DÃ©sactiver le module trombinoscope des personnels
 		</label>
 	  </fieldset>
 
@@ -159,11 +159,11 @@
 	  <h2>Configuration d'affichage et de stockage</h2>
 	  <p>
 		<em>
-		  Les valeurs ci-dessous vous servent au paramétrage des valeurs maxi des largeurs et des hauteurs.
+		  Les valeurs ci-dessous vous servent au paramÃ©trage des valeurs maxi des largeurs et des hauteurs.
 		</em>
 	  </p>
 	  <fieldset>
-		<legend class="bold">Pour l'écran</legend>
+		<legend class="bold">Pour l'Ã©cran</legend>
 		largeur maxi 
 		<input type="text"
 			   name="l_max_aff_trombinoscopes"
@@ -239,9 +239,9 @@
 	  <h2>Configuration du redimensionnement des photos</h2>
 	  <p>
 		<em>
-		  La désactivation du redimensionnement des photos n'entraîne aucune suppression des données. 
-		  Lorsque le système de redimensionnement est désactivé, les photos transferées sur le site 
-		  ne seront pas réduites en 
+		  La dÃ©sactivation du redimensionnement des photos n'entraÃ®ne aucune suppression des donnÃ©es. 
+		  Lorsque le systÃ¨me de redimensionnement est dÃ©sactivÃ©, les photos transferÃ©es sur le site 
+		  ne seront pas rÃ©duites en 
 		  <?php echo getSettingValue("l_resize_trombinoscopes");?>x<?php echo getSettingValue("h_resize_trombinoscopes");?>.
 		</em>
 	  </p>
@@ -258,7 +258,7 @@
 		  <?php echo getSettingValue("l_resize_trombinoscopes");?>x<?php echo getSettingValue("h_resize_trombinoscopes");?>
 		</label>
 	  <br/>
-		<strong>Remarque</strong> attention GD doit être actif sur le serveur de GEPI pour utiliser 
+		<strong>Remarque</strong> attention GD doit Ãªtre actif sur le serveur de GEPI pour utiliser 
 		le redimensionnement.
 	  <br/>
 		<input type="radio" 
@@ -268,7 +268,7 @@
 			  <?php if (getSettingValue("active_module_trombinoscopes_rd")=='n') echo " checked='checked'"; ?> 
 			   />
 		<label for='activer_redimensionne_n' style='cursor:pointer'>
-		  Désactiver le redimensionnement des photos
+		  DÃ©sactiver le redimensionnement des photos
 		</label>
 	  </fieldset>
 
@@ -277,32 +277,32 @@
 		<input name="activer_rotation"
 			   value=""
 			   type="radio"
-			   title="Tourner de 0°"
+			   title="Tourner de 0Â°"
 			  <?php if (getSettingValue("active_module_trombinoscopes_rt")=='') echo "checked='checked'"; ?>
 			   />
-		0°
+		0Â°
 		<input name="activer_rotation"
 			   value="90"
 			   type="radio"
-			   title="Tourner de 90°"
+			   title="Tourner de 90Â°"
 			  <?php if (getSettingValue("active_module_trombinoscopes_rt")=='90') echo "checked='checked'"; ?>
 			   />
-		90°
+		90Â°
 		<input name="activer_rotation"
 			   value="180"
 			   type="radio"
-			   title="Tourner de 180°"
+			   title="Tourner de 180Â°"
 			  <?php if (getSettingValue("active_module_trombinoscopes_rt")=='180') echo "checked='checked'"; ?>
 			  />
-		180°
+		180Â°
 		<input name="activer_rotation"
 			   value="270"
 			   type="radio"
-			   title="Tourner de 270°"
+			   title="Tourner de 270Â°"
 			  <?php if (getSettingValue("active_module_trombinoscopes_rt")=='270') echo "checked='checked'"; ?>
 			   />
-		270°
-		Sélectionner une valeur si vous désirez une rotation de la photo originale
+		270Â°
+		SÃ©lectionner une valeur si vous dÃ©sirez une rotation de la photo originale
 	  </fieldset>
 
 	  <p class="center">
@@ -311,38 +311,38 @@
 			   style="font-variant: small-caps;" />
 	  </p>
 
-	  <h2>Gestion de l'accès des élèves</h2>
+	  <h2>Gestion de l'accÃ¨s des Ã©lÃ¨ves</h2>
 	  <p>
-		Dans la page "Gestion générale"-&gt;"Droits d'accès", vous avez la possibilité de donner à
-		<strong>tous les élèves</strong> le droit d'envoyer/modifier lui-même sa photo dans l'interface
-		"Gérer mon compte".
+		Dans la page "Gestion gÃ©nÃ©rale"-&gt;"Droits d'accÃ¨s", vous avez la possibilitÃ© de donner Ã 
+		<strong>tous les Ã©lÃ¨ves</strong> le droit d'envoyer/modifier lui-mÃªme sa photo dans l'interface
+		"GÃ©rer mon compte".
 	  </p>
 	  <p>
-		<strong>Si cette option est activée</strong>, vous pouvez, ci-dessous, gérer plus finement quels élèves
+		<strong>Si cette option est activÃ©e</strong>, vous pouvez, ci-dessous, gÃ©rer plus finement quels Ã©lÃ¨ves
 		ont le droit d'envoyer/modifier leur photo.
 	  </p>
 	  <p class="bold">
-		Marche à suivre :
+		Marche Ã  suivre :
 	  </p>
 	  <ul id="expli_AID" class="colleHaut">
-		<li>Créez une "catégorie d'AID" ayant par exemple pour intitulé "trombinoscope".</li>
+		<li>CrÃ©ez une "catÃ©gorie d'AID" ayant par exemple pour intitulÃ© "trombinoscope".</li>
 		<li>
-		  Configurez l'affichage de cette catégorie d'AID de sorte que :
+		  Configurez l'affichage de cette catÃ©gorie d'AID de sorte que :
 		  <ul>
-			<li>L'AID n'apparaîsse pas dans le bulletin officiel,</li>
-			<li>L'AID n'apparaîsse pas dans le bulletin simplifié.</li>
-			<li>Les autres paramètres n'ont pas d'importance.</li>
+			<li>L'AID n'apparaÃ®sse pas dans le bulletin officiel,</li>
+			<li>L'AID n'apparaÃ®sse pas dans le bulletin simplifiÃ©.</li>
+			<li>Les autres paramÃ¨tres n'ont pas d'importance.</li>
 		  </ul>
 		</li>
-		<li>Dans la "Liste des aid de la catégorie", ajoutez une ou plusieurs AIDs.</li>
+		<li>Dans la "Liste des aid de la catÃ©gorie", ajoutez une ou plusieurs AIDs.</li>
 		<li>
-		  Ci-dessous, sélectionner dans la liste des catégories d'AIDs, celle portant le nom que vous avez
-		  donné ci-dessus. <em>(cette liste n'apparaît pas si vous n'avez pas donné la possibilité à tous
-		  les élèves d'envoyer/modifier leur photo dans "Gestion générale"-&gt;"Droits d'accès")</em>.
+		  Ci-dessous, sÃ©lectionner dans la liste des catÃ©gories d'AIDs, celle portant le nom que vous avez
+		  donnÃ© ci-dessus. <em>(cette liste n'apparaÃ®t pas si vous n'avez pas donnÃ© la possibilitÃ© Ã  tous
+		  les Ã©lÃ¨ves d'envoyer/modifier leur photo dans "Gestion gÃ©nÃ©rale"-&gt;"Droits d'accÃ¨s")</em>.
 		</li>
 		<li>
-		  Tous les élèves inscrits dans une des AIDs de la catégorie sus-nommée pourront alors
-		  envoyer/modifier leur photo (<em>à l'exception des élèves sans numéro Sconet ou "elenoet"</em>).
+		  Tous les Ã©lÃ¨ves inscrits dans une des AIDs de la catÃ©gorie sus-nommÃ©e pourront alors
+		  envoyer/modifier leur photo (<em>Ã  l'exception des Ã©lÃ¨ves sans numÃ©ro Sconet ou "elenoet"</em>).
 		</li>
 	  </ul>
 
@@ -352,7 +352,7 @@ if (!isset($aid_trouve)) {
 ?>
 	  <p>
 		<strong>
-		  Vous devez créer une AID pour pouvoir limiter l'accès des élèves au trombinoscope
+		  Vous devez crÃ©er une AID pour pouvoir limiter l'accÃ¨s des Ã©lÃ¨ves au trombinoscope
 		</strong>
 	  </p>
 
@@ -361,7 +361,7 @@ if (!isset($aid_trouve)) {
 ?>
 	  <p>
 		<strong>
-		  Nom de la catégorie d'AID permettant de gérer l'accès des élèves :
+		  Nom de la catÃ©gorie d'AID permettant de gÃ©rer l'accÃ¨s des Ã©lÃ¨ves :
 		</strong>
 		<select name="num_aid_trombinoscopes" size="1" title="Choisir une AID">
 		  <option value="">
@@ -380,7 +380,7 @@ if (!isset($aid_trouve)) {
 		</select>
 	  </p>
 	  <p>
-		<strong>Remarque :</strong> Si "aucune" AID n'est définie, <strong>tous les élèves</strong> peuvent
+		<strong>Remarque :</strong> Si "aucune" AID n'est dÃ©finie, <strong>tous les Ã©lÃ¨ves</strong> peuvent
 		envoyer/modifier leur photo (<em>sauf ceux sans elenoet</em>).
 	  </p>
 	  <p class="center">
@@ -427,9 +427,9 @@ if (!isset($aid_trouve)) {
 			   id='supprime_eleves'
 			   value="oui" />
 		<label for="supprime_eleve" id='sup_ele'>
-		  Vider le dossier photos des élèves
+		  Vider le dossier photos des Ã©lÃ¨ves
 		</label>
-		<br/><em>Un fichier de sauvegarde sera créé, pensez à le récupérer puis le supprimer dans le module de gestion des sauvegardes.</em>
+		<br/><em>Un fichier de sauvegarde sera crÃ©Ã©, pensez Ã  le rÃ©cupÃ©rer puis le supprimer dans le module de gestion des sauvegardes.</em>
 	  </fieldset>
 <?php } ?>
 	  <p class="center">
@@ -463,7 +463,7 @@ if (!isset($aid_trouve)) {
 			   id='voir_eleve'
 			   value="yes" />
 		<label for="voir_eleve">
-		  Lister les élèves n'ayant pas de photos
+		  Lister les Ã©lÃ¨ves n'ayant pas de photos
 		</label>
   <?php } ?>
 	  </fieldset>
@@ -482,16 +482,16 @@ if (!isset($aid_trouve)) {
 	<p>
 	<fieldset>
 		<legend class="bold">Purger le dossier des photos</legend>
-		Supprimer les photos des élèves et des professeurs qui ne sont plus référencés dans la base.<br/>
+		Supprimer les photos des Ã©lÃ¨ves et des professeurs qui ne sont plus rÃ©fÃ©rencÃ©s dans la base.<br/>
 		<input type="hidden" name="purge_dossier_photos" value="oui">
 		<input type="checkbox"
 			   name="cpts_inactifs"
 			   id='cpts_inactifs'
 			   value="oui" />
 		<label for="purge_dossier_photos">
-		  Effacer également les photos des élèves et des professeurs dont le compte est désactivé.
+		  Effacer Ã©galement les photos des Ã©lÃ¨ves et des professeurs dont le compte est dÃ©sactivÃ©.
 		</label>
-		<br/><em>Un fichier de sauvegarde sera créé, pensez à le récupérer puis le supprimer dans le module de gestion des sauvegardes.</em>
+		<br/><em>Un fichier de sauvegarde sera crÃ©Ã©, pensez Ã  le rÃ©cupÃ©rer puis le supprimer dans le module de gestion des sauvegardes.</em>
  	  </fieldset>
 	  <p class="center">
 		<input type="submit" 
@@ -502,18 +502,18 @@ if (!isset($aid_trouve)) {
  <?php 
  } ?>
  
-	<h2>Télécharger les photos</h2>
+	<h2>TÃ©lÃ©charger les photos</h2>
 	<form method="post" action="trombinoscopes_admin.php" id="formEnvoi1" enctype="multipart/form-data">
 	<fieldset>
 	<?php
 	echo add_token_field();
 	?>
 		<legend class="bold">
-			Télécharger les photos des élèves à partir d'un fichier ZIP
+			TÃ©lÃ©charger les photos des Ã©lÃ¨ves Ã  partir d'un fichier ZIP
 		</legend>
 		<input type="hidden" name="action" value="upload_photos_eleves" />
-		<input type="file" name="nom_du_fichier" title="Nom du fichier à télécharger"/>
-		<input type="submit" value="Télécharger"/>
+		<input type="file" name="nom_du_fichier" title="Nom du fichier Ã  tÃ©lÃ©charger"/>
+		<input type="submit" value="TÃ©lÃ©charger"/>
 		<br/>
 		<input type="checkbox"
 			   name="ecraser"
@@ -524,20 +524,20 @@ if (!isset($aid_trouve)) {
 		</label>
 		<p>
 		  <em>
-			Si cochée, les photos déjà présentes seront remplacées par les nouvelles.
-			Sinon, les anciennes photos seront conservées
+			Si cochÃ©e, les photos dÃ©jÃ  prÃ©sentes seront remplacÃ©es par les nouvelles.
+			Sinon, les anciennes photos seront conservÃ©es
 		  </em>
 		</p>
 
 		<p>Le fichier ZIP doit contenir :<br/>
 		<span style="margin-left: 40px;">
-		- soit les photos  encodées au format JPEG nommées d'après les ELENOET des élèves (<em>ELENOET.jpg</em>) ou pour, un GEPI multisite, les login des élèves (<em>login.jpg</em>) ;<br/>
+		- soit les photos  encodÃ©es au format JPEG nommÃ©es d'aprÃ¨s les ELENOET des Ã©lÃ¨ves (<em>ELENOET.jpg</em>) ou pour, un GEPI multisite, les login des Ã©lÃ¨ves (<em>login.jpg</em>) ;<br/>
 		</span><span style="margin-left: 40px;">
-		- soit les photos  encodées au format JPEG et un fichier au <a href="http://fr.wikipedia.org/wiki/Comma-separated_values" target="_blank">format CSV</a>, <b>impérativement nommé <em>correspondances.csv</em></b>, établissant les correspondances entre (premier champ) les noms des fichiers photos et (second champ) les ELENOET des élèves ou, pour un GEPI multisite, les login des élèves (<a href="correspondances.csv" target="_blank">exemple de fichier correspondances.csv</a>) ; pour générer le fichier correspondances.csv vous pouvez <a href="trombinoscopes_admin.php?liste_eleves=oui<?php echo add_token_in_url(); ?>">récupérer la liste</a> des élèves avec prénom, nom, eleonet et login.  <br/>
+		- soit les photos  encodÃ©es au format JPEG et un fichier au <a href="http://fr.wikipedia.org/wiki/Comma-separated_values" target="_blank">format CSV</a>, <b>impÃ©rativement nommÃ© <em>correspondances.csv</em></b>, Ã©tablissant les correspondances entre (premier champ) les noms des fichiers photos et (second champ) les ELENOET des Ã©lÃ¨ves ou, pour un GEPI multisite, les login des Ã©lÃ¨ves (<a href="correspondances.csv" target="_blank">exemple de fichier correspondances.csv</a>) ; pour gÃ©nÃ©rer le fichier correspondances.csv vous pouvez <a href="trombinoscopes_admin.php?liste_eleves=oui<?php echo add_token_in_url(); ?>">rÃ©cupÃ©rer la liste</a> des Ã©lÃ¨ves avec prÃ©nom, nom, eleonet et login.  <br/>
 		</span>
 		</p>
 
-		<p>La <b>taille maximale</b> d'un fichier téléchargé vers le serveur est de <b><?php echo ini_get('upload_max_filesize');?>.</b><br/>Effectuez si nécessaire votre téléchargement en plusieurs fichiers Zip.</p>
+		<p>La <b>taille maximale</b> d'un fichier tÃ©lÃ©chargÃ© vers le serveur est de <b><?php echo ini_get('upload_max_filesize');?>.</b><br/>Effectuez si nÃ©cessaire votre tÃ©lÃ©chargement en plusieurs fichiers Zip.</p>
 
 	  </fieldset>
 	</form>
@@ -550,10 +550,10 @@ if (!isset($aid_trouve)) {
 	echo add_token_field();
 	?>
 		<legend class="bold">
-			Restaurer les photos à partir d'une sauvegarde (ou d'un fichier ZIP)
+			Restaurer les photos Ã  partir d'une sauvegarde (ou d'un fichier ZIP)
 		</legend>
 		<input type="hidden" name="action" value="upload" />
-		<input type="file" name="nom_du_fichier" title="Nom du fichier à télécharger"/>
+		<input type="file" name="nom_du_fichier" title="Nom du fichier Ã  tÃ©lÃ©charger"/>
 		<input type="submit" value="Restaurer"/>
 		<br/>
 		<input type="checkbox"
@@ -565,14 +565,14 @@ if (!isset($aid_trouve)) {
 		</label>
 		<p>
 		  <em>
-			Si coché, les photos déjà présentes seront remplacées par les nouvelles.
-			Sinon, les anciennes photos seront conservées
+			Si cochÃ©, les photos dÃ©jÃ  prÃ©sentes seront remplacÃ©es par les nouvelles.
+			Sinon, les anciennes photos seront conservÃ©es
 		  </em>
 		</p>
 
-		<p>Le fichier ZIP doit contenir une arborescence <b>photos/eleves</b> et/ou <b>photos/personnels</b> contenant respectivement les photos des élèves et des personnels encodées au format JPEG. Les photos des élèves doivent être nommées d'après les ELENOET des élèves (<em>ELENOET.jpg</em>) ou, pour un GEPI multisite, d'après les login des élèves (<em>login.jpg</em>).
+		<p>Le fichier ZIP doit contenir une arborescence <b>photos/eleves</b> et/ou <b>photos/personnels</b> contenant respectivement les photos des Ã©lÃ¨ves et des personnels encodÃ©es au format JPEG. Les photos des Ã©lÃ¨ves doivent Ãªtre nommÃ©es d'aprÃ¨s les ELENOET des Ã©lÃ¨ves (<em>ELENOET.jpg</em>) ou, pour un GEPI multisite, d'aprÃ¨s les login des Ã©lÃ¨ves (<em>login.jpg</em>).
 
-		<p>La <b>taille maximale</b> d'un fichier téléchargé vers le serveur est de <b><?php echo ini_get('upload_max_filesize');?>.</b><br/>Effectuez si nécessaire votre téléchargement en plusieurs fichiers ZIP.</p>
+		<p>La <b>taille maximale</b> d'un fichier tÃ©lÃ©chargÃ© vers le serveur est de <b><?php echo ini_get('upload_max_filesize');?>.</b><br/>Effectuez si nÃ©cessaire votre tÃ©lÃ©chargement en plusieurs fichiers ZIP.</p>
 
 	  </fieldset>
 	</form>
@@ -583,10 +583,10 @@ if (!isset($aid_trouve)) {
   if (isset ($eleves_sans_photo)){
   ?>
 	<table class="boireaus">
-	  <caption>Élèves sans photos</caption>
+	  <caption>Ã‰lÃ¨ves sans photos</caption>
 	  <tr>
 		<th>Nom</th>
-		<th>Prénom</th>
+		<th>PrÃ©nom</th>
 	  </tr>
   <?php
 		$lig="lig1";
@@ -615,7 +615,7 @@ if (!isset($aid_trouve)) {
 	  <caption>Professeurs sans photos</caption>
 	  <tr>
 		<th>Nom</th>
-		<th>Prénom</th>
+		<th>PrÃ©nom</th>
 	  </tr>
   <?php 
 		$lig="lig1";
@@ -643,7 +643,7 @@ if (!isset($aid_trouve)) {
 
 
 
-<!-- Début du pied -->
+<!-- DÃ©but du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
 
 	<script type='text/javascript'>
@@ -665,7 +665,7 @@ if (!isset($aid_trouve)) {
 		<?php
 			if ($tbs_microtime!="") {
 				echo "
-   <p class='microtime'>Page générée en ";
+   <p class='microtime'>Page gÃ©nÃ©rÃ©e en ";
    			echo $tbs_microtime;
 				echo " sec</p>
    			";

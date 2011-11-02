@@ -1,14 +1,14 @@
 <?php
 /*
- * Classe spécifique au serveur LDAP de Scribe NG, où sont stockées les
- * éléments de configuration et les requêtes spécifiques à ce système.
+ * Classe spÃ©cifique au serveur LDAP de Scribe NG, oÃ¹ sont stockÃ©es les
+ * Ã©lÃ©ments de configuration et les requÃªtes spÃ©cifiques Ã  ce systÃ¨me.
  * 
- * Il est peut-être possible de l'utiliser plus largement que pour Scribe,
- * dans la mesure où le schéma LDAP devrait être unifié progressivement
- * entre les différents ENT académiques.
+ * Il est peut-Ãªtre possible de l'utiliser plus largement que pour Scribe,
+ * dans la mesure oÃ¹ le schÃ©ma LDAP devrait Ãªtre unifiÃ© progressivement
+ * entre les diffÃ©rents ENT acadÃ©miques.
  * 
  * L'objectif premier de cette classe est de faciliter la synchronisation
- * de données pour l'initialisation de l'année scolaire.
+ * de donnÃ©es pour l'initialisation de l'annÃ©e scolaire.
  * 
  */
 
@@ -17,7 +17,7 @@ class LDAPServerScribe extends LDAPServer {
     
     
     #
-    # Permet de récupérer tous les eleves du LDAP
+    # Permet de rÃ©cupÃ©rer tous les eleves du LDAP
     # Retourne la liste des eleves ou false si aucun eleve trouve
     #
     public function get_all_eleves() {
@@ -33,8 +33,8 @@ class LDAPServerScribe extends LDAPServer {
         return $eleves;
     }
 
-    # Permet de récupérer tous les profs du LDAP
-    # Retourne la liste des profs ou false si aucun prof trouvé
+    # Permet de rÃ©cupÃ©rer tous les profs du LDAP
+    # Retourne la liste des profs ou false si aucun prof trouvÃ©
     #
     public function get_all_profs(){
         $filter = "(entpersonprofils=enseignant)";
@@ -49,8 +49,8 @@ class LDAPServerScribe extends LDAPServer {
         return $profs;
     }
 
-    # Permet de récupérer tous les profs du LDAP
-    # Retourne la liste des profs ou false si aucun prof trouvé
+    # Permet de rÃ©cupÃ©rer tous les profs du LDAP
+    # Retourne la liste des profs ou false si aucun prof trouvÃ©
     #
     public function get_all_personnels(){
         $filter = "(entpersonprofils=administratif)";
@@ -100,7 +100,7 @@ class LDAPServerScribe extends LDAPServer {
         $equipes = ldap_get_entries($this->ds, $sr);
         if (!array_key_exists(0, $equipes)) {
             $equipes = false;
-            error_log("Aucune équipe trouvee");
+            error_log("Aucune Ã©quipe trouvee");
         }
         return $equipes;
     }

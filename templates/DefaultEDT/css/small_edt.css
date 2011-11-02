@@ -8,7 +8,7 @@
 	font-size: 1em;
 	color: black;
 	text-align: left;
-    width:190px;    /* largeur fixe pour compatibilité avec IE6 */
+    width:190px;    /* largeur fixe pour compatibilitÃ© avec IE6 */
 }
 .fond_h{
     float:left; 
@@ -17,7 +17,7 @@
 	font-size: 1em;
 	color: black;
 	text-align: left;
-    width:100%;    /* largeur fixe pour compatibilité avec IE6 */
+    width:100%;    /* largeur fixe pour compatibilitÃ© avec IE6 */
 }
 .ligne {
 	float:left;
@@ -36,7 +36,7 @@
 	float:left;
 	padding: 00px 00px 00px 00px;
 	margin: 00px 00px 00px 00px;
-	width:150px;	    /* largeur fixe pour compatibilité avec IE6 */
+	width:150px;	    /* largeur fixe pour compatibilitÃ© avec IE6 */
 	font-family: Verdana,Arial,Helvetica,sans-serif;
 	font-size: 100%;
 	color: black;
@@ -175,7 +175,7 @@
 	padding: 00px 00px 0px 00px;
 	margin: 00px 00px 00px 02px;
 	max-width:50px;
-	width:30px;         /* largeur fixe pour compatibilité avec IE6 */
+	width:30px;         /* largeur fixe pour compatibilitÃ© avec IE6 */
 	height : 100%;
 	font-family: Verdana,Arial,Helvetica,sans-serif;
 	font-size: 80%;

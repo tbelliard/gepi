@@ -31,12 +31,12 @@ extract($_POST, EXTR_OVERWRITE);
 header('Content-Type: application/pdf');
 
 // Global configuration file
-// Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
-//Le problème peut être résolu en ajoutant la ligne suivante :
+// Quand on est en SSL, IE n'arrive pas Ã  ouvrir le PDF.
+//Le problÃ¨me peut Ãªtre rÃ©solu en ajoutant la ligne suivante :
 Header('Pragma: public');
 
 // Lorsque qu'on utilise une session PHP, parfois, IE n'affiche pas le PDF
-// C'est un problème qui affecte certaines versions d'IE.
+// C'est un problÃ¨me qui affecte certaines versions d'IE.
 // Pour le contourner, on ajoutez la ligne suivante avant session_start() :
 session_cache_limiter('private');
 
@@ -81,7 +81,7 @@ die();
 
 
 if ( $etiquette_action === 'test' ) {
-//importation des informations de présentation de la lettre type
+//importation des informations de prÃ©sentation de la lettre type
            $requete_structure ="SELECT * FROM ".$prefix_base."etiquettes_formats WHERE id_etiquette_format = '".$etiquette_format."'";
            $execution_structure = mysql_query($requete_structure) or die('Erreur SQL !'.$requete_structure.'<br />'.mysql_error());
            while ( $donne_structure = mysql_fetch_array($execution_structure))
@@ -98,10 +98,10 @@ if ( $etiquette_action === 'test' ) {
 }
 
 if ( $etiquette_action === 'originaux' ) {
-// on sélectionne les informations
+// on sÃ©lectionne les informations
 $etiquette_agencement = '3';
 
-	// méthode de trie
+	// mÃ©thode de trie
 	$trie = '';
 	if($trie_par === '1') { $trie = 'ORDER BY c.id ASC, e.nom ASC, e.prenom ASC'; }
 	if($trie_par === '2') { $trie = 'ORDER BY e.nom ASC, e.prenom ASC'; }
@@ -114,16 +114,16 @@ $etiquette_agencement = '3';
         while ( $donne_persone = mysql_fetch_array($execution_persone))
 	 {
 
-		// information sur l'élève
-		$id_eleve[$i] = $donne_persone['login']; // id de l'élève
-		$eleve_numid[$i] = $donne_persone['ele_id']; // numéro id de l'élève
+		// information sur l'Ã©lÃ¨ve
+		$id_eleve[$i] = $donne_persone['login']; // id de l'Ã©lÃ¨ve
+		$eleve_numid[$i] = $donne_persone['ele_id']; // numÃ©ro id de l'Ã©lÃ¨ve
 
 		$classe_eleve[$i] = classe_de($id_eleve[$i]);
 		$sexe_eleve[$i] = $donne_persone['sexe']; // M ou F
-		$nom_eleve[$i] = strtoupper($donne_persone['nom']); // nom de l'élève
-		$prenom_eleve[$i] = ucfirst($donne_persone['prenom']); // prénom de l'élève
-		$naissance_eleve[$i] = $donne_persone['naissance']; // date de naissance de l'élève au format SQL AAAA-MM-JJ
-		$code_eleve[$i] = $donne_persone['no_gep']; // date de naissance de l'élève au format SQL AAAA-MM-JJ
+		$nom_eleve[$i] = strtoupper($donne_persone['nom']); // nom de l'Ã©lÃ¨ve
+		$prenom_eleve[$i] = ucfirst($donne_persone['prenom']); // prÃ©nom de l'Ã©lÃ¨ve
+		$naissance_eleve[$i] = $donne_persone['naissance']; // date de naissance de l'Ã©lÃ¨ve au format SQL AAAA-MM-JJ
+		$code_eleve[$i] = $donne_persone['no_gep']; // date de naissance de l'Ã©lÃ¨ve au format SQL AAAA-MM-JJ
 
 		// information sur les responsables
 		$nombre_de_responsable = 0;
@@ -153,15 +153,15 @@ $etiquette_agencement = '3';
 			        $cp_responsable['1'][$i] = '';
 			}
 
-		// nom et prénom, classe de l'élève
+		// nom et prÃ©nom, classe de l'Ã©lÃ¨ve
 		if($etiquette_type === '1') { $ligne[$i]['1'] = ' '.$nom_eleve[$i].' '.$prenom_eleve[$i]; $ligne[$i]['2'] = ' Classe: '.$classe_eleve[$i]; $ligne[$i]['3'] = ''; $ligne[$i]['4'] = ''; $ligne[$i]['5'] = ''; $cpt_ligne[$i] = '5'; }
-		// nom et prénom de l'élève avec sont code élève
+		// nom et prÃ©nom de l'Ã©lÃ¨ve avec sont code Ã©lÃ¨ve
 		if($etiquette_type === '2') { $ligne[$i]['1'] = ' '.$nom_eleve[$i].' '.$prenom_eleve[$i]; $ligne[$i]['2'] = ' Classe: '.$classe_eleve[$i]; $ligne[$i]['3'] = ' '.$code_eleve[$i]; $ligne[$i]['4'] = ''; $ligne[$i]['5'] = ''; $cpt_ligne[$i] = '5'; }
-		// nom et prénom de l'élève avec sont code élève
+		// nom et prÃ©nom de l'Ã©lÃ¨ve avec sont code Ã©lÃ¨ve
 		if($etiquette_type === '3') { $ligne[$i]['1'] = ' '; $ligne[$i]['2'] = ' '.$nom_eleve[$i].' '.$prenom_eleve[$i]; $ligne[$i]['3'] = ' '.$code_eleve[$i]; $ligne[$i]['4'] = ''; $ligne[$i]['5'] = ''; $cpt_ligne[$i] = '5'; }
 		// adresse des responsables
 		if($etiquette_type === '4') { $ligne[$i]['1'] = ' '.$civilitee_responsable['1'][$i].' '.$prenom_responsable['1'][$i].' '.$nom_responsable['1'][$i]; $ligne[$i]['2'] = ' '.$adresse_responsable['1'][$i]; $ligne[$i]['3'] = ' '.$cp_responsable['1'][$i].' '.$commune_responsable['1'][$i]; $ligne[$i]['4'] = ''; $ligne[$i]['5'] = ''; $cpt_ligne[$i] = '5'; }
-		// adresse des responsables et nom de l'élève
+		// adresse des responsables et nom de l'Ã©lÃ¨ve
 		if($etiquette_type === '5') { $ligne[$i]['1'] = ' '.$civilitee_responsable['1'][$i].' '.$prenom_responsable['1'][$i].' '.$nom_responsable['1'][$i]; $ligne[$i]['2'] = '    --- '.$nom_eleve[$i].' '.$prenom_eleve[$i].'('.$classe_eleve[$i].')'; $ligne[$i]['3'] = ' '.$adresse_responsable['1'][$i]; $ligne[$i]['4'] = ' '.$cp_responsable['1'][$i].' '.$commune_responsable['1'][$i]; $ligne[$i]['5'] = ''; $ligne[$i]['6'] = ''; $cpt_ligne[$i] = '6'; }
 
 
@@ -198,14 +198,14 @@ $pdf->SetAutoPageBreak(false);
 
 	$caractere_utilse = 'Arial';
 
-//calcul du nombre d'étiquette
+//calcul du nombre d'Ã©tiquette
 $nombre_eleve = count($id_eleve);
 $nombre_etiquette_par_page = $nbl * $nbh;
 $nombre_de_page = ceil($nombre_eleve / $nombre_etiquette_par_page);
 //echo $nombre_etiquette_par_page.' '.$nombre_eleve.' '.$nombre_de_page.'<br/>';
 $i = '0';
 
-// initialisation du compteur d'élèves
+// initialisation du compteur d'Ã©lÃ¨ves
 $cpt_eleve = '0';
 // initialisation du compteur de page
 $cpt_page = 0;
@@ -220,7 +220,7 @@ while ( $cpt_page < $nombre_de_page )
 if ( !isset($xcote_origine) ) { $xcote_origine = $xcote; }
 if ( !isset($ycote_origine) ) { $ycote_origine = $ycote; }
 
-		// placement des premières étiquette
+		// placement des premiÃ¨res Ã©tiquette
 		$pdf->SetY($ycote_origine);
 		$ycote_passe = $ycote_origine;
 		$ycote_passeh = $ycote_origine;
@@ -266,7 +266,7 @@ if ( !isset($ycote_origine) ) { $ycote_origine = $ycote; }
 							if($cpt_ligne_aff != '1' and $cpt_ligne_aff != $cpt_ligne[$i]) { $code_cadre = 'RL'; }
 							if($cpt_ligne_aff != '1' and $cpt_ligne_aff == $cpt_ligne[$i]) { $code_cadre = 'RLB'; }
 						}
-						// calcule de la taille du texte des appréciation
+						// calcule de la taille du texte des apprÃ©ciation
 			 			$hauteur_caractere = '11';
 						if($etiquette_type === '5' and $cpt_ligne_aff == '2') { $hauteur_caractere = '6'; }
 	
@@ -288,11 +288,11 @@ if ( !isset($ycote_origine) ) { $ycote_origine = $ycote; }
 					$cpt_ligne_aff = $cpt_ligne_aff + 1;
 					}
 
-				// compteur élève
+				// compteur Ã©lÃ¨ve
 				$cpt_eleve = $cpt_eleve + 1;
 			$i = $i + 1;
 
-				// passer à la ligne
+				// passer Ã  la ligne
 				$xcote_passe = $xcote_passe + $largeur + $espacementx;
 
 				// placement de X et Y leur nouveau point
@@ -307,7 +307,7 @@ if ( !isset($ycote_origine) ) { $ycote_origine = $ycote; }
 	 	$cpt_i_h = $cpt_i_h + 1;
 		}
 
-	// compteur du nombre d'étiquette affiché sur la page et fin de la boucle des etiquettes par page
+	// compteur du nombre d'Ã©tiquette affichÃ© sur la page et fin de la boucle des etiquettes par page
 //	$cpt_etiquette = $cpt_etiquette + 1;
 	}
 

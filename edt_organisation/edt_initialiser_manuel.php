@@ -23,7 +23,7 @@ if ($resultat_session == 'c') {
     die();
 }
 
-/*/ SÈcuritÈ
+/*/ S√©curit√©
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
@@ -58,9 +58,9 @@ echo "
 Elle vous permettra de rentrer heure par heure des informations
 en v&eacute;rifiant si deux cours ne se chevauchent pas.</p>
 <p>Nous vous conseillons pour cela de saisir les emplois du temps des professeurs directement sur leur affichage.
- Pour cela, cliquez sur [Visionner], [Professeur], puis vous choisissez le professeur dans la liste dÈroulante.
-  En cliquant ensuite sur (-+-), une fenÍtre apparait o˘ vous pouvez saisir les cours. Un module de vÈrification
-  des cours est prÈsent mais ne peut se substituer ‡ un vÈritable logiciel de fabrication des emplois du temps.</p>
+ Pour cela, cliquez sur [Visionner], [Professeur], puis vous choisissez le professeur dans la liste d√©roulante.
+  En cliquant ensuite sur (-+-), une fen√™tre apparait o√π vous pouvez saisir les cours. Un module de v√©rification
+  des cours est pr√©sent mais ne peut se substituer √† un v√©ritable logiciel de fabrication des emplois du temps.</p>
 
 	</div>
 
@@ -72,7 +72,7 @@ d&eacute;finis dans Gepi peuvent appara&icirc;tre dans l'emploi du temps. Si vou
 	// Saisie manuelle de l'emploi du temps
 echo '
 	<span class="legend">Vous ne devriez utiliser ce menu que pour de rares occasions car il n\'est pas aussi
-	performant que la mÈthode dÈcrite plus haut.</span>
+	performant que la m√©thode d√©crite plus haut.</span>
 		<form action="edt_initialiser_manuel.php" name="choix_prof" method="post">
 	<fieldset id="init_edt1">
 		<legend>Saisie manuelle</legend>
@@ -107,7 +107,7 @@ echo '
 		</form>
 	<br />';
 
-	// Ensuite, on propose la liste des enseignements de ce professeur associÈs ‡ la matiËre
+	// Ensuite, on propose la liste des enseignements de ce professeur associ√©s √† la mati√®re
 if (isset($choix_prof)) {
 	echo '
 			<form action="edt_initialiser_manuel.php" name="choix_enseignement" method="post">
@@ -125,7 +125,7 @@ if (isset($choix_prof)) {
 	echo "
 				<option value=\"rien\">Choix de l'enseignement</option>\n";
 
-	// On dÈtermine le selected
+	// On d√©termine le selected
 	for($i=0; $i<count($tab_enseignements); $i++) {
 		if(isset($enseignement)){
 			if($enseignement == $tab_enseignements[$i]["id"]){
@@ -225,12 +225,12 @@ if (isset($choix_prof)) {
 	<tr>
 		<td>
 			<select name="heure_debut">
-				<option value="0">Le cours commence au dÈbut d\'un crÈneau</option>
-				<option value="0.5">Le cours commence au milieu d\'un crÈneau</option>
+				<option value="0">Le cours commence au d√©but d\'un cr√©neau</option>
+				<option value="0.5">Le cours commence au milieu d\'un cr√©neau</option>
 			</select>
 		</td>';
 
-	// On propose aussi le choix du type de semaine et l'heure de dÈbut du cours
+	// On propose aussi le choix du type de semaine et l'heure de d√©but du cours
 
 	echo '
 		<td>
@@ -249,7 +249,7 @@ if (isset($choix_prof)) {
 			<select name="choix_semaine">
 				<option value="0">Toutes les semaines</option>
 		';
-	// on rÈcupËre les types de semaines
+	// on r√©cup√®re les types de semaines
 				//<option value="2">Semaines paires</option>
 				//<option value="1">Semaines impaires</option>
 	$req_semaines = mysql_query('SELECT SQL_SMALL_RESULT DISTINCT type_edt_semaine FROM edt_semaines LIMIT 10');
@@ -296,9 +296,9 @@ if (isset($choix_prof)) {
 		</td>
 		<td>
 			<select name="periode_calendrier">
-				<option value="rien">AnnÈe entiËre</option>
+				<option value="rien">Ann√©e enti√®re</option>
 	';
-	// Choix de la pÈriode dÈfinie dans le calendrier
+	// Choix de la p√©riode d√©finie dans le calendrier
 	$req_calendrier = mysql_query("SELECT * FROM edt_calendrier WHERE etabferme_calendrier = '1' AND etabvacances_calendrier = '0'");
 	$nbre_calendrier = mysql_num_rows($req_calendrier);
 		for ($a=0; $a<$nbre_calendrier; $a++) {
@@ -322,7 +322,7 @@ if (isset($choix_prof)) {
 	</fieldset>
 	</form>';
 
-	// Traitement et enregistrement des entrÈes manuelles de l'EdT
+	// Traitement et enregistrement des entr√©es manuelles de l'EdT
 
 	if (isset($choix_prof) AND ($enseignement == "rien" OR $login_salle == "rien" OR $ch_heure == "rien" OR $ch_jour_semaine == "rien")) {
 		echo '
@@ -332,7 +332,7 @@ if (isset($choix_prof)) {
 			//echo "<font color=\"green\">OK Tout Est OK !</font>";
 
 
-			// VÈrification que la salle est libre ‡ ce jour cette heure
+			// V√©rification que la salle est libre √† ce jour cette heure
 			$verif_salle = mysql_query("SELECT id_cours FROM edt_cours WHERE
 						id_salle ='".$login_salle."' AND
 						jour_semaine = '".$ch_jour_semaine."' AND
@@ -345,18 +345,18 @@ if (isset($choix_prof)) {
 			if ($nbre_verif_s != 0) {
 				$req_present_s = mysql_query("SELECT id_groupe id_aid, FROM edt_cours WHERE id_cours = '".$rep_verif_s['id_cours']."'");
 				$rep_present_s = mysql_fetch_array($req_present_s);
-				// On vÈrifie si ce n'est pas une AID
+				// On v√©rifie si ce n'est pas une AID
 				if ($rep_present_s['id_aid'] != "") {
 					$aid = $rep_present_s['id_aid'];
-					echo "<p class=\"refus\">Cette salle est dÈj‡ occupÈe par un groupe AID( ".$aid." ).</p>";
+					echo "<p class=\"refus\">Cette salle est d√©j√† occup√©e par un groupe AID( ".$aid." ).</p>";
 				}else{
 					$tab_present_s = get_group($rep_present_s["id_groupe"]);
-					echo "<p class=\"refus\">Cette salle est dÈj‡ occupÈe par les ".$tab_present_s["classlist_string"]." en ".$tab_present_s["description"]."</p><br />";
+					echo "<p class=\"refus\">Cette salle est d√©j√† occup√©e par les ".$tab_present_s["classlist_string"]." en ".$tab_present_s["description"]."</p><br />";
 				}
 
 			}
 
-			// VÈrification que ce prof n'a pas dÈj‡ cours ‡ ce moment l‡
+			// V√©rification que ce prof n'a pas d√©j√† cours √† ce moment l√†
 			$verif_prof = mysql_query("SELECT * FROM edt_cours, j_groupes_professeurs WHERE
 									edt_cours.jour_semaine = '".$ch_jour_semaine."' AND
 									edt_cours.id_definie_periode = '".$ch_heure."' AND
@@ -369,13 +369,13 @@ if (isset($choix_prof)) {
 			$rep_verif_prof = mysql_fetch_array($verif_prof);
 			$nbre_verif_prof = mysql_num_rows($verif_prof);
 			if ($nbre_verif_prof != 0) {
-				// On vÈrifie si ce n'est pas une AID
+				// On v√©rifie si ce n'est pas une AID
 				if ($verif_prof['id_aid'] != "") {
 					$aid = $verif_prof['id_aid'];
-					echo "<p class=\"refus\">Ce professeur a dÈj‡ cours avec un groupe AID ( ".$aid." ).</p>";
+					echo "<p class=\"refus\">Ce professeur a d√©j√† cours avec un groupe AID ( ".$aid." ).</p>";
 				}else{
 					$tab_present_p = get_group($rep_verif_prof["id_groupe"]);
-					echo "<p class=\"refus\">Ce professeur a dÈj‡ cours avec les ".$tab_present_p["classlist_string"]." en ".$tab_present_p["description"]."</p><br />";
+					echo "<p class=\"refus\">Ce professeur a d√©j√† cours avec les ".$tab_present_p["classlist_string"]." en ".$tab_present_p["description"]."</p><br />";
 				}
 			}
 
@@ -385,22 +385,22 @@ if (isset($choix_prof)) {
 				(id_cours, id_groupe, id_salle, jour_semaine, id_definie_periode, duree, heuredeb_dec, id_semaine, modif_edt, login_prof)
 					VALUE ('', '".$enseignement."', '".$login_salle."', '".$ch_jour_semaine."', '".$ch_heure."', '".$duree."', '".$heure_debut."', '".$choix_semaine."', '0', '".$choix_prof."')") or die('Erreur dans l\'enregistrement, il faut recommencer !');
 
-				// et on affiche les infos sur le cours enregistrÈ
+				// et on affiche les infos sur le cours enregistr√©
 					$contenu = "";
 				if ($id_aid != "") {
-					// c'est une AID et donc on rÈcupËre les infos de cette AID
+					// c'est une AID et donc on r√©cup√®re les infos de cette AID
 					$query1 = mysql_query("SELECT nom, indice_aid FROM aid WHERE id = '".$id_aid."'");
 					$rep_aid = mysql_fetch_array($query1);
 					$tab_infos["classlist_string"] = $rep_aid["nom"];
 					// puis le nom de l'AID
 					$rep_nom_aid = mysql_fetch_array(mysql_query("SELECT nom FROM aid_config WHERE indice_aid = '".$rep_aid["indice_aid"]."'"));
 					$tab_infos["description"] = $rep_nom_aid["nom"];
-					// $contenu est la liste des ÈlËves
+					// $contenu est la liste des √©l√®ves
 					$query = mysql_query("SELECT login FROM j_aid_eleves WHERE id_aid = '".$id_aid."'");
 					$nbre = mysql_num_rows($query);
 					for($a = 0; $a < $nbre; $a++){
 						$nom[$a] = mysql_result($query, $a, "login");
-						// On rÈcupËre ses nom et prÈnom
+						// On r√©cup√®re ses nom et pr√©nom
 						$query_n = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$nom[$a]."'"));
 						$contenu .= $query_n["nom"].' '.$query_n["prenom"].'<br />';
 					}
@@ -414,11 +414,11 @@ if (isset($choix_prof)) {
 					}
 				}
 
-				$titre_listeleve = "Liste des ÈlËves";
+				$titre_listeleve = "Liste des √©l√®ves";
 
 				$classe_js = "<a href=\"#\" onmouseover=\"afficher_div('nouveau_cours','Y',10,10);return false;\">Liste</a>
 					".creer_div_infobulle("nouveau_cours", $titre_listeleve, "#330033", $contenu, "#FFFFFF", 15,0,"n","n","y","n");
-				echo "<p>Ce cours est enregistrÈ :<font color=\"green\" size=\"1\">
+				echo "<p>Ce cours est enregistr√© :<font color=\"green\" size=\"1\">
 					Les ".$tab_infos["classlist_string"]." en ".$tab_infos["description"]." avec ".$choix_prof." (".$classe_js.").</font></p>";
 			}
 		}

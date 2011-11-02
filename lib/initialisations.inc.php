@@ -19,7 +19,7 @@ $GLOBALS['niveau_arbo']=$niveau_arbo;
 /**
  * Chemin de la racine de GEPI
  * 
- * initialisée dans secure/connect.inc.php
+ * initialisÃ©e dans secure/connect.inc.php
  * 
  * On la retrouve en tant que global dans share.inc.php
  *
@@ -69,7 +69,7 @@ $GLOBALS['gepiRcVersion'] = NULL;
 $GLOBALS['gepiBetaVersion'] = NULL;
 
 /**
- * Les informations du groupes obtenues à partir de get_group()
+ * Les informations du groupes obtenues Ã  partir de get_group()
  * 
  * @global array $GLOBALS['current_group']
  * @name $current_group
@@ -98,7 +98,7 @@ $GLOBALS['id_groupe']  = NULL;
 $GLOBALS['active_hostbyaddr'] = NULL;
 
 /**
- * Affichage des statistiques de la classe sur les bulletins si à 1
+ * Affichage des statistiques de la classe sur les bulletins si Ã  1
  * 
  * @global int $GLOBALS['min_max_moyclas']
  * @name $min_max_moyclas
@@ -122,7 +122,7 @@ $GLOBALS['eff_groupe']=NULL;
 $GLOBALS['tabdiv_infobulle']=NULL;
 
 /**
- * Texte à afficher quand une période est close
+ * Texte Ã  afficher quand une pÃ©riode est close
  * 
  * @global string $GLOBALS['gepiClosedPeriodLabel']
  * @name $gepiClosedPeriodLabel
@@ -139,12 +139,12 @@ $GLOBALS['gepiClosedPeriodLabel']=NULL;
 
 
 
-// Initialisation de variables utilisées si javascript activé
+// Initialisation de variables utilisÃ©es si javascript activÃ©
 $tabdiv_infobulle=array();
 $tabid_infobulle=array();
 
 // Initialisation des chemins relatifs
-// $chemin_relatif_gepi2 utilisé avec secure/connect.inc.php
+// $chemin_relatif_gepi2 utilisÃ© avec secure/connect.inc.php
 // $chemin_relatif_gepi pour les autres fichiers
 $chemin_relatif_gepi = $chemin_relatif_gepi2 = dirname(dirname(__FILE__));
 
@@ -191,17 +191,17 @@ if (isset($_REQUEST['rne'])) {
 } elseif (isset($_REQUEST['RNE'])) {
 	setcookie('RNE', $_REQUEST['RNE'], null, '/');
 }
-// Pour le choix de la préférence de source d'authentification pour l'authentification multiauth
+// Pour le choix de la prÃ©fÃ©rence de source d'authentification pour l'authentification multiauth
 if (isset($_REQUEST["source"])) {
 	setcookie('source', $_REQUEST["source"], null, '/');
 }
 
 /**
- * Données de connexion à la base
+ * DonnÃ©es de connexion Ã  la base
  */
    require_once($chemin_relatif_gepi2."/secure/connect.inc.php");
 /**
- * Connection à la base
+ * Connection Ã  la base
  */
    require_once($chemin_relatif_gepi."/lib/mysql.inc");
  /**
@@ -209,7 +209,7 @@ if (isset($_REQUEST["source"])) {
   */
    require_once($chemin_relatif_gepi."/lib/mb_ou_pas.php");
  /**
-  * Fichier de configuration générale
+  * Fichier de configuration gÃ©nÃ©rale
   */
    require_once($chemin_relatif_gepi."/lib/global.inc.php");
  /**
@@ -230,7 +230,7 @@ if (isset($_REQUEST["source"])) {
 	}
 
  /**
-  * Traitement des données
+  * Traitement des donnÃ©es
   */
    require_once($chemin_relatif_gepi."/lib/traitement_data.inc.php");
  /**
@@ -261,11 +261,11 @@ if (isset($_REQUEST["source"])) {
      die("Erreur chargement settings");
    }
    /**
-    * Fonctions relatives à l'identification via LDAP
+    * Fonctions relatives Ã  l'identification via LDAP
     */
    require_once($chemin_relatif_gepi.$ldap_class);
    /**
-    * Fonctions relatives à la session
+    * Fonctions relatives Ã  la session
     * 
     * @see class_exists()
     * @see get_include_path()
@@ -273,7 +273,7 @@ if (isset($_REQUEST["source"])) {
    require_once($chemin_relatif_gepi.$session_class);
 
 // Modif pour la longueur des logins par $longmax_login du global.inc.php
-// Si le champ de setting existe alors il faut l'utiliser car il est réglé par la page param_gen.php
+// Si le champ de setting existe alors il faut l'utiliser car il est rÃ©glÃ© par la page param_gen.php
 if(isset($gepiSettings['longmax_login'])){
     $longmax_login = $gepiSettings['longmax_login'];
 }

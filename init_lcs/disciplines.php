@@ -71,7 +71,7 @@ $lcs_ldap_people_dn = 'ou=people,'.$lcs_ldap_base_dn;
 $lcs_ldap_groups_dn = 'ou=groups,'.$lcs_ldap_base_dn;
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des matières";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des matiÃ¨res";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -80,17 +80,17 @@ echo "<p class=bold><a href='../init_lcs/index.php'><img src='../images/icons/ba
 if (isset($_POST['is_posted'])) {
 	check_token();
 
-    // L'admin a validé la procédure, on procède donc...
+    // L'admin a validÃ© la procÃ©dure, on procÃ¨de donc...
 
     // On se connecte au LDAP
     $ds = connect_ldap($lcs_ldap_host,$lcs_ldap_port,"","");
 
-    // On commence par récupérer tous les profs depuis le LDAP
+    // On commence par rÃ©cupÃ©rer tous les profs depuis le LDAP
     $sr = ldap_search($ds,$lcs_ldap_base_dn,"(cn=Matiere_*)");
     $info = ldap_get_entries($ds,$sr);
 
     if ($_POST['record'] == "yes") {
-        // Suppression des données présentes dans les tables en lien avec les matières
+        // Suppression des donnÃ©es prÃ©sentes dans les tables en lien avec les matiÃ¨res
 
         $j=0;
         while ($j < count($liste_tables_del)) {
@@ -102,7 +102,7 @@ if (isset($_POST['is_posted'])) {
 
         $new_matieres = array();
         echo "<table border=\"1\" cellpadding=\"3\" cellspacing=\"3\">\n";
-        echo "<tr><td>Identifiant matière</td><td>Nom complet matière</td><td>identifiants prof.</td></tr>\n";
+        echo "<tr><td>Identifiant matiÃ¨re</td><td>Nom complet matiÃ¨re</td><td>identifiants prof.</td></tr>\n";
         for ($i=0;$i<$info["count"];$i++) {
             $matiere=preg_replace("/Matiere_/","",$info[$i]["cn"][0]);
             $get_matieres = mysql_query("SELECT matiere FROM matieres");
@@ -117,10 +117,10 @@ if (isset($_POST['is_posted'])) {
             } else {
                 $reg_matiere = mysql_query("UPDATE matieres SET nom_complet='".html_entity_decode_all_version(stripslashes($_POST['reg_nom_complet'][$matiere]))."' WHERE matiere = '" . $matiere . "'");
             }
-            if (!$reg_matiere) echo "<p>Erreur lors de l'enregistrement de la matière $matiere.";
+            if (!$reg_matiere) echo "<p>Erreur lors de l'enregistrement de la matiÃ¨re $matiere.";
             $new_matieres[] = $matiere;
 
-            // On regarde maintenant les affectations professeur/matière
+            // On regarde maintenant les affectations professeur/matiÃ¨re
             $list_member = "";
             if ($info[$i]["memberuid"]["count"] > 0) {
               for ( $u = 0; $u < $info[$i]["memberuid"]["count"] ; $u++ ) {
@@ -149,7 +149,7 @@ if (isset($_POST['is_posted'])) {
             }
             echo "<tr><td>".$matiere."</td><td>".stripslashes($_POST['reg_nom_complet'][$matiere])."</td><td>".$list_member."</td></tr>\n";
         }
-        // On efface les matières qui ne sont plus utilisées
+        // On efface les matiÃ¨res qui ne sont plus utilisÃ©es
         echo "</table>";
         $to_remove = array_diff($matieres, $new_matieres);
 
@@ -158,8 +158,8 @@ if (isset($_POST['is_posted'])) {
             $res2 = mysql_query("DELETE from j_professeurs_matieres WHERE id_matiere = '" . $delete . "'");
         }
 
-        echo "<p>Opération effectuée.</p>";
-        echo "<p>Vous pouvez vérifier l'importation en allant sur la page de <a href='../matieres/index.php'>gestion des matières</a>.</p>";
+        echo "<p>OpÃ©ration effectuÃ©e.</p>";
+        echo "<p>Vous pouvez vÃ©rifier l'importation en allant sur la page de <a href='../matieres/index.php'>gestion des matiÃ¨res</a>.</p>";
 
     } elseif ($_POST['record'] == "no") {
 
@@ -168,14 +168,14 @@ if (isset($_POST['is_posted'])) {
             echo "<input type=hidden name='record' value='yes'>";
             echo "<input type=hidden name='is_posted' value='yes'>";
 
-            echo "<p>Les matières en vert indiquent des matières déjà existantes dans la base GEPI.<br />Les matières en rouge indiquent des matières nouvelles et qui vont être ajoutées à la base GEPI.<br /></p>";
-            echo "<p>Attention !!! Il n'y a pas de tests sur les champs entrés. Soyez vigilant à ne pas mettre des caractères spéciaux dans les champs ...</p>";
-            echo "<p>Essayez de remplir tous les champs, cela évitera d'avoir à le faire ultérieurement.</p>";
-            echo "<p>N'oubliez pas <b>d'enregistrer les données</b> en cliquant sur le bouton en bas de la page<br /><br />";
+            echo "<p>Les matiÃ¨res en vert indiquent des matiÃ¨res dÃ©jÃ  existantes dans la base GEPI.<br />Les matiÃ¨res en rouge indiquent des matiÃ¨res nouvelles et qui vont Ãªtre ajoutÃ©es Ã  la base GEPI.<br /></p>";
+            echo "<p>Attention !!! Il n'y a pas de tests sur les champs entrÃ©s. Soyez vigilant Ã  ne pas mettre des caractÃ¨res spÃ©ciaux dans les champs ...</p>";
+            echo "<p>Essayez de remplir tous les champs, cela Ã©vitera d'avoir Ã  le faire ultÃ©rieurement.</p>";
+            echo "<p>N'oubliez pas <b>d'enregistrer les donnÃ©es</b> en cliquant sur le bouton en bas de la page<br /><br />";
             echo "<br/>";
             echo "<center>";
             echo "<table border=1 cellpadding=2 cellspacing=2>";
-            echo "<tr><td><p class=\"small\">Identifiant de la matière</p></td><td><p class=\"small\">Nom complet</p></td></tr>";
+            echo "<tr><td><p class=\"small\">Identifiant de la matiÃ¨re</p></td><td><p class=\"small\">Nom complet</p></td></tr>";
             for ($i=0;$i<$info["count"];$i++) {
                 $matiere=preg_replace("/Matiere_/","",$info[$i]["cn"][0]);
                 $description = $info[$i]["description"][0];
@@ -201,28 +201,28 @@ if (isset($_POST['is_posted'])) {
             }
             echo "</table>\n";
             echo "</center>";
-            echo "<center><input type='submit' value='Enregistrer les données'></center>\n";
+            echo "<center><input type='submit' value='Enregistrer les donnÃ©es'></center>\n";
             echo "</form>\n";
     }
 
 } else {
 
     echo "<p><b>ATTENTION ...</b><br />";
-    echo "<p>Si vous poursuivez la procédure les données telles que notes, appréciations, ... seront effacées.</p>";
-    echo "<p>Seules la table contenant les matières et la table mettant en relation les matières et les professeurs seront conservées.</p>";
-    echo "<p>L'opération d'importation des matières depuis le LDAP de LCS va effectuer les opérations suivantes :</p>";
+    echo "<p>Si vous poursuivez la procÃ©dure les donnÃ©es telles que notes, apprÃ©ciations, ... seront effacÃ©es.</p>";
+    echo "<p>Seules la table contenant les matiÃ¨res et la table mettant en relation les matiÃ¨res et les professeurs seront conservÃ©es.</p>";
+    echo "<p>L'opÃ©ration d'importation des matiÃ¨res depuis le LDAP de LCS va effectuer les opÃ©rations suivantes :</p>";
     echo "<ul>";
-    echo "<li>Ajout ou mise à jour de chaque matières présente dans le LDAP</li>";
-    echo "<li>Association professeurs <-> matières</li>";
+    echo "<li>Ajout ou mise Ã  jour de chaque matiÃ¨res prÃ©sente dans le LDAP</li>";
+    echo "<li>Association professeurs <-> matiÃ¨res</li>";
     echo "</ul>";
     echo "<form enctype='multipart/form-data' action='disciplines.php' method=post>";
 	echo add_token_field();
     echo "<input type=hidden name='is_posted' value='yes'>";
     echo "<input type=hidden name='record' value='no'>";
 
-    echo "<p>Etes-vous sûr de vouloir importer toutes les matières depuis l'annuaire du serveur LCS vers Gepi ?</p>";
+    echo "<p>Etes-vous sÃ»r de vouloir importer toutes les matiÃ¨res depuis l'annuaire du serveur LCS vers Gepi ?</p>";
     echo "<br/>";
-    echo "<input type='submit' value='Je suis sûr'>";
+    echo "<input type='submit' value='Je suis sÃ»r'>";
     echo "</form>";
 }
 require("../lib/footer.inc.php");

@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* fichier pour visionner l'EdT d'un élève */
+/* fichier pour visionner l'EdT d'un Ã©lÃ¨ve */
 
 $login_edt = isset($_POST["login_edt"]) ? $_POST["login_edt"] : (isset($_GET["login_edt"]) ? $_GET["login_edt"] : NULL);
 $choix_classe = isset($_POST["choix_classe"]) ? $_POST["choix_classe"] : (isset($_GET["choix_classe"]) ? $_GET["choix_classe"] : NULL);
@@ -36,7 +36,7 @@ $period_id=isset($_GET['period_id']) ? $_GET['period_id'] : (isset($_POST['perio
 
 
 if ($_SESSION["statut"] != "eleve" AND $_SESSION["statut"] != "responsable") {
-		// On affiche un formulaire alphabétique
+		// On affiche un formulaire alphabÃ©tique
 	echo '
 <table cellpadding="0" cellspacing="0" border="0">
 	<tr>
@@ -82,7 +82,7 @@ if ($_SESSION["statut"] != "eleve" AND $_SESSION["statut"] != "responsable") {
 	echo "<input type=\"hidden\" name=\"visioedt\" value=\"eleve1\" />\n";
 	echo "</p></form>\n</td>\n";
 
-	// On peut aussi faire un affichage par classe (à revoir)
+	// On peut aussi faire un affichage par classe (Ã  revoir)
 	echo "<td> ".LOOKFOR_STUDENTS_BY_CLASS." </td>";
 	echo "<td><form action=\"index_edt.php\" id=\"liste_classe\" method=\"post\"><p>\n";
 	echo "<select name=\"choix_classe1\" onchange='document.getElementById(\"liste_classe\").submit();'>\n";
@@ -104,7 +104,7 @@ if ($_SESSION["statut"] != "eleve" AND $_SESSION["statut"] != "responsable") {
 
 	echo "</tr>\n</table>\n";
 
-		// puis un formulaire des élèves alphabétique aussi
+		// puis un formulaire des Ã©lÃ¨ves alphabÃ©tique aussi
 	if (isset($alphabet_eleves) OR isset($choix_classe)) {
 
 			if (isset($alphabet_eleves) AND $alphabet_eleves != "rien") {
@@ -157,7 +157,7 @@ if($indice_eleve_select != -1){
 
 				$req_nom = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$tab_select[$i]["login"]."'"));
 
-				// On conserve à l'affichage le nom de l'élève
+				// On conserve Ã  l'affichage le nom de l'Ã©lÃ¨ve
 				if(isset($login_edt)){
 					if($login_edt == $tab_select[$i]["login"]){
 						$selected = " selected='selected'";
@@ -178,7 +178,7 @@ if($indice_eleve_select != -1){
 		echo "<input type='hidden' name=\"type_edt_2\" value=\"eleve\" />\n";
 		echo "<input type='hidden' name=\"visioedt\" value=\"eleve1\" />\n";
 
-		// On garde en mémoire la lettre ou la classe
+		// On garde en mÃ©moire la lettre ou la classe
 		if ($choix_classe == "ok") {
 			echo "<input type=\"hidden\" name=\"choix_classe\" value=\"ok\" />\n";
 			echo "<input type=\"hidden\" name=\"choix_classe1\" value=\"".$choix_classe1."\" />\n";

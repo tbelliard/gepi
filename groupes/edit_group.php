@@ -40,7 +40,7 @@ if (!checkAccess()) {
 	die();
 }
 
-// Initialisation des variables utilisées dans le formulaire
+// Initialisation des variables utilisÃ©es dans le formulaire
 
 $chemin_retour=isset($_GET['chemin_retour']) ? $_GET['chemin_retour'] : (isset($_POST['chemin_retour']) ? $_POST["chemin_retour"] : NULL);
 $ancre=isset($_GET['ancre']) ? $_GET['ancre'] : (isset($_POST['ancre']) ? $_POST["ancre"] : NULL);
@@ -109,7 +109,7 @@ if (isset($_POST['is_posted'])) {
 	// Classes
 
 	if ($_POST['mode'] == "groupe") {
-		// Ajout sécurité:
+		// Ajout sÃ©curitÃ©:
 		if((!isset($id_classe))||($id_classe=='')) {$id_classe=$current_group['classes']['list'][0];}
 
 		$clazz[] = $id_classe;
@@ -131,9 +131,9 @@ if (isset($_POST['is_posted'])) {
 			if (preg_match("/^precclasse\_/", $key)) {
 				$temp = explode("_", $key);
 				$tmpid = $temp[1];
-				// On vérifie si la classe a été décochée:
+				// On vÃ©rifie si la classe a Ã©tÃ© dÃ©cochÃ©e:
 				if(!isset($_POST['classe_'.$tmpid])){
-					// On vérifie si l'identifiant de classe $tmpid peut être décoché.
+					// On vÃ©rifie si l'identifiant de classe $tmpid peut Ãªtre dÃ©cochÃ©.
 		
 					unset($tabtmp);
 					$tabtmp=array();
@@ -175,12 +175,12 @@ if (isset($_POST['is_posted'])) {
 						*/
 		
 						$error = true;
-						$msg .= "Des données existantes bloquent la suppression de la classe $clas_tmp du groupe.<br />\nAucune note ni appréciation du bulletin ne doit avoir été saisie pour les élèves de ce groupe pour permettre la suppression du groupe.<br />\n";
+						$msg .= "Des donnÃ©es existantes bloquent la suppression de la classe $clas_tmp du groupe.<br />\nAucune note ni apprÃ©ciation du bulletin ne doit avoir Ã©tÃ© saisie pour les Ã©lÃ¨ves de ce groupe pour permettre la suppression du groupe.<br />\n";
 						if(count($tabtmp)==1){
-							$msg.="L'élève ayant des moyennes ou appréciations saisies est $tabtmp[0].<br />\n";
+							$msg.="L'Ã©lÃ¨ve ayant des moyennes ou apprÃ©ciations saisies est $tabtmp[0].<br />\n";
 						}
 						else{
-							$msg.="Les élèves ayant des moyennes ou appréciations saisies sont $tabtmp[0]";
+							$msg.="Les Ã©lÃ¨ves ayant des moyennes ou apprÃ©ciations saisies sont $tabtmp[0]";
 							for($i=1;$i<count($tabtmp);$i++){
 								$msg.=", $tabtmp[$i]";
 							}
@@ -190,7 +190,7 @@ if (isset($_POST['is_posted'])) {
 								$clazz[] = $tmpid;
 					}
 					else{
-						// On teste aussi si il y a des élèves de la classe dans le groupe.
+						// On teste aussi si il y a des Ã©lÃ¨ves de la classe dans le groupe.
 						$sql="SELECT jeg.login FROM j_eleves_groupes jeg, j_eleves_classes jec WHERE
 									jeg.login=jec.login AND
 									jeg.periode=jec.periode AND
@@ -200,7 +200,7 @@ if (isset($_POST['is_posted'])) {
 						$res_ele_clas_grp=mysql_query($sql);
 						if(mysql_num_rows($res_ele_clas_grp)>0){
 							$error = true;
-							$msg .= "Des données existantes bloquent la suppression de la classe $clas_tmp du groupe.<br />\nAucun élève de la classe ne doit être inscrit dans le groupe.<br />\n<a href='edit_eleves.php?id_groupe=$id_groupe&id_classe=$tmpid'>Enlevez les élèves du groupe</a> avant.<br />\n";
+							$msg .= "Des donnÃ©es existantes bloquent la suppression de la classe $clas_tmp du groupe.<br />\nAucun Ã©lÃ¨ve de la classe ne doit Ãªtre inscrit dans le groupe.<br />\n<a href='edit_eleves.php?id_groupe=$id_groupe&id_classe=$tmpid'>Enlevez les Ã©lÃ¨ves du groupe</a> avant.<br />\n";
 							// Et on remet la classe dans la liste des classes:
 							$clazz[] = $tmpid;
 						}
@@ -224,7 +224,7 @@ if (isset($_POST['is_posted'])) {
 			$id = preg_replace("/^prof\_/", "", $key);
 			$proflogin = $_POST["proflogin_".$id];
 			// Normalement on a un traitement anti-injection sur $_POST, donc pas de soucis.
-			// Mais ça serait bien de faire un test quand même. Si un dev passe par là...
+			// Mais Ã§a serait bien de faire un test quand mÃªme. Si un dev passe par lÃ ...
 			//$reg_professeurs[] = $proflogin;
 
 			$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_professeur='$proflogin' AND id_matiere='$reg_matiere';";
@@ -246,24 +246,24 @@ if (isset($_POST['is_posted'])) {
 
 	if (empty($reg_clazz)) {
 		$error = true;
-		$msg .= "Vous devez sélectionner au moins une classe.<br />\n";
+		$msg .= "Vous devez sÃ©lectionner au moins une classe.<br />\n";
 	}
 
 	if (!$error) {
-		// pas d'erreur : on continue avec la mise à jour du groupe
+		// pas d'erreur : on continue avec la mise Ã  jour du groupe
 		$create = update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves);
 		if (!$create) {
-			$msg .= "Erreur lors de la mise à jour du groupe.";
+			$msg .= "Erreur lors de la mise Ã  jour du groupe.";
 		} else {
 			//======================================
 			// MODIF: boireaus
-			//$msg = "Le groupe a bien été mis à jour.";
-			$msg = "L'enseignement ". stripslashes($reg_nom_complet) . " a bien été mis à jour.";
+			//$msg = "Le groupe a bien Ã©tÃ© mis Ã  jour.";
+			$msg = "L'enseignement ". stripslashes($reg_nom_complet) . " a bien Ã©tÃ© mis Ã  jour.";
 			$msg = urlencode($msg);
 
 			if(isset($chemin_retour)) {
 				if(strstr($chemin_retour,'utilisateurs/index.php')) {
-					// On n'arrive sur edit_group.php en venant de utilisateurs/index.php que depuis la partie Gestion de comptes utilisateurs Personnels de l'établissement
+					// On n'arrive sur edit_group.php en venant de utilisateurs/index.php que depuis la partie Gestion de comptes utilisateurs Personnels de l'Ã©tablissement
 					if(isset($ancre)) {
 						header("Location: $chemin_retour?&msg=$msg&mode=personnels#$ancre");
 					}
@@ -298,7 +298,7 @@ print_r($reg_professeurs);
 echo "</pre>\n";
 */
 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des groupes";
 require_once("../lib/header.inc");
@@ -329,7 +329,7 @@ else{
 
 echo "<a href='mes_listes.php?id_groupe=$id_groupe'>Exporter la composition du groupe</a> | ";
 ?>
-<a href="edit_class.php?id_classe=<?php echo $id_classe;?>&amp;action=delete_group&amp;id_groupe=<?php echo $id_groupe;?><?php echo add_token_in_url();?>" onclick="return confirmlink(this, 'ATTENTION !!! LISEZ CET AVERTISSEMENT : La suppression d\'un enseignement est irréversible. Une telle suppression ne devrait pas avoir lieu en cours d\'année. Si c\'est le cas, cela peut entraîner la présence de données orphelines dans la base. Si des données officielles (notes et appréciations du bulletin) sont présentes, la suppression sera bloquée. Dans le cas contraire, toutes les données liées au groupe seront supprimées, incluant les notes saisies par les professeurs dans le carnet de notes ainsi que les données présentes dans le cahier de texte. Etes-vous *VRAIMENT SÛR* de vouloir continuer ?', 'Confirmation de la suppression')"> Supprimer le groupe</a>
+<a href="edit_class.php?id_classe=<?php echo $id_classe;?>&amp;action=delete_group&amp;id_groupe=<?php echo $id_groupe;?><?php echo add_token_in_url();?>" onclick="return confirmlink(this, 'ATTENTION !!! LISEZ CET AVERTISSEMENT : La suppression d\'un enseignement est irrÃ©versible. Une telle suppression ne devrait pas avoir lieu en cours d\'annÃ©e. Si c\'est le cas, cela peut entraÃ®ner la prÃ©sence de donnÃ©es orphelines dans la base. Si des donnÃ©es officielles (notes et apprÃ©ciations du bulletin) sont prÃ©sentes, la suppression sera bloquÃ©e. Dans le cas contraire, toutes les donnÃ©es liÃ©es au groupe seront supprimÃ©es, incluant les notes saisies par les professeurs dans le carnet de notes ainsi que les donnÃ©es prÃ©sentes dans le cahier de texte. Etes-vous *VRAIMENT SÃ›R* de vouloir continuer ?', 'Confirmation de la suppression')"> Supprimer le groupe</a>
 <?php
 if ($mode == "groupe") {
 	echo "<h3>Modifier le groupe</h3>\n";
@@ -353,7 +353,7 @@ echo add_token_field();
 if ($mode == "groupe") {
 	echo "<p>\n";
 	if((isset($current_group))&&(count($current_group["eleves"]["all"]["list"])==0)) {
-		echo "Sélectionnez la classe à laquelle appartient le groupe :\n";
+		echo "SÃ©lectionnez la classe Ã  laquelle appartient le groupe :\n";
 		echo "<select name='id_classe' size='1'";
 		echo " onchange='changement();'";
 		echo ">\n";
@@ -373,10 +373,10 @@ if ($mode == "groupe") {
 			$i++;
 			}
 		} else {
-			echo "<option value='false'>Aucune classe définie !</option>\n";
+			echo "<option value='false'>Aucune classe dÃ©finie !</option>\n";
 		}
 		echo "</select>\n";
-		//echo "<br />[-> <a href='edit_group.php?id_classe=".$id_classe."&id_groupe=".$id_groupe."&mode=regroupement'>sélectionner plusieurs classes</a>]</p>\n";
+		//echo "<br />[-> <a href='edit_group.php?id_classe=".$id_classe."&id_groupe=".$id_groupe."&mode=regroupement'>sÃ©lectionner plusieurs classes</a>]</p>\n";
 		echo "<br />\n";
 	}
 	else {
@@ -387,10 +387,10 @@ if ($mode == "groupe") {
 		}
 	}
 
-	echo "[-> <a href='edit_group.php?id_classe=".$id_classe."&amp;id_groupe=".$id_groupe."&amp;mode=regroupement'>sélectionner plusieurs classes</a>]\n";
+	echo "[-> <a href='edit_group.php?id_classe=".$id_classe."&amp;id_groupe=".$id_groupe."&amp;mode=regroupement'>sÃ©lectionner plusieurs classes</a>]\n";
 
-	// On ne propose de fusionner le groupe avec un/des groupes existants que si le groupe n'a pas déjà de notes,...
-	// ... NON: On fera le test sur les groupes à y associer seulement.
+	// On ne propose de fusionner le groupe avec un/des groupes existants que si le groupe n'a pas dÃ©jÃ  de notes,...
+	// ... NON: On fera le test sur les groupes Ã  y associer seulement.
 	//          Ce sont les autres groupes qui seraient susceptibles de voir leurs notes disparaitre
 	echo "<br />[-> <a href='fusion_group.php?id_classe=".$id_classe."&amp;id_groupe=".$id_groupe."'>fusionner le groupe avec un ou des groupes existants</a>]";
 
@@ -401,7 +401,7 @@ if ($mode == "groupe") {
 
 } else if ($mode == "regroupement") {
 	echo "<input type='hidden' name='id_classe' value='".$id_classe."' />\n";
-	echo "<p>Sélectionnez les classes auxquelles appartient le regroupement :";
+	echo "<p>SÃ©lectionnez les classes auxquelles appartient le regroupement :";
 
 	//$call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
 	//$sql="SELECT * FROM classes c, periodes p WHERE p.id_classe=c.id AND MAX(p.num_periode)='".get_period_number($id_classe)."' ORDER BY classe;";
@@ -452,8 +452,8 @@ if ($mode == "groupe") {
 			}
 			echo "'>$classe</label>\n";
 			if (in_array($id_classe_temp, $reg_clazz)){
-				// Pour contrôler les suppressions de classes.
-				// On conserve la liste des classes précédemment cochées:
+				// Pour contrÃ´ler les suppressions de classes.
+				// On conserve la liste des classes prÃ©cÃ©demment cochÃ©es:
 				echo "<input type='hidden' name='precclasse_".$id_classe_temp."' value='y' />\n";
 			}
 			echo "<br />\n";
@@ -482,8 +482,8 @@ if ($mode == "groupe") {
 				echo " onchange='changement();'";
 				echo " /><label for='classe_".$id_classe_temp."' style='cursor: pointer;'>$classe</label>\n";
 				if (in_array($id_classe_temp, $reg_clazz)){
-					// Pour contrôler les suppressions de classes.
-					// On conserve la liste des classes précédemment cochées:
+					// Pour contrÃ´ler les suppressions de classes.
+					// On conserve la liste des classes prÃ©cÃ©demment cochÃ©es:
 					echo "<input type='hidden' name='precclasse_".$id_classe_temp."' value='y' />\n";
 				}
 				echo "<br />\n";
@@ -496,15 +496,15 @@ if ($mode == "groupe") {
 		echo "</tr>\n";
 		echo "</table>\n";
 
-		// On ne propose de fusionner le groupe avec un/des groupes existants que si le groupe n'a pas déjà de notes,...
-		// ... NON: On fera le test sur les groupes à y associer seulement.
+		// On ne propose de fusionner le groupe avec un/des groupes existants que si le groupe n'a pas dÃ©jÃ  de notes,...
+		// ... NON: On fera le test sur les groupes Ã  y associer seulement.
 		//          Ce sont les autres groupes qui seraient susceptibles de voir leurs notes disparaitre
 		echo "<p>[-> <a href='fusion_group.php?id_classe=".$id_classe."&amp;id_groupe=".$id_groupe."'>fusionner le groupe avec un ou des groupes existants</a>]";
 
 		echo "</p>\n";
 
 	} else {
-		echo "<p>Aucune classe définie !</p>\n";
+		echo "<p>Aucune classe dÃ©finie !</p>\n";
 	}
 }
 
@@ -515,7 +515,7 @@ if ($mode == "groupe") {
 
 
 
-<!--p>Sélectionnez la matière enseignée à ce groupe :-->
+<!--p>SÃ©lectionnez la matiÃ¨re enseignÃ©e Ã  ce groupe :-->
 <?php
 /*
 $query = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
@@ -539,7 +539,7 @@ echo "</div>\n";
 echo "<div style='width: 45%; float: right;'>\n";
 
 //=================================================
-echo "<p>Sélectionnez la matière enseignée à ce groupe : ";
+echo "<p>SÃ©lectionnez la matiÃ¨re enseignÃ©e Ã  ce groupe : ";
 
 $query = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
 $nb_mat = mysql_num_rows($query);
@@ -561,7 +561,7 @@ echo "</select>\n";
 echo "</p>\n";
 //=================================================
 
-// Mettre un témoin pour repérer le prof principal
+// Mettre un tÃ©moin pour repÃ©rer le prof principal
 
 $tab_prof_suivi=array();
 $nb_prof_suivi=0;
@@ -577,7 +577,7 @@ if(isset($id_classe)) {
 	}
 }
 
-echo "<p>Cochez les professeurs qui participent à cet enseignement : </p>\n";
+echo "<p>Cochez les professeurs qui participent Ã  cet enseignement : </p>\n";
 
 //$calldata = mysql_query("SELECT u.login, u.nom, u.prenom, u.civilite FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.login");
 $sql="SELECT u.login, u.nom, u.prenom, u.civilite, u.statut FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.nom;";
@@ -599,7 +599,7 @@ for ($i=0;$i<$nb;$i++) {
 }
 
 if (count($prof_list["list"]) == "0") {
-	echo "<p><font color='red'>ERREUR !</font> Aucun professeur n'a été défini comme compétent dans la matière considérée.</p>\n";
+	echo "<p><font color='red'>ERREUR !</font> Aucun professeur n'a Ã©tÃ© dÃ©fini comme compÃ©tent dans la matiÃ¨re considÃ©rÃ©e.</p>\n";
 } else {
 	$total_profs = array_merge($prof_list["list"], $reg_professeurs);
 	$total_profs = array_unique($total_profs);
@@ -642,7 +642,7 @@ if (count($prof_list["list"]) == "0") {
 			}
 
 			if(in_array($prof_login,$tab_prof_suivi)) {
-				echo " <img src='../images/bulle_verte.png' width='9' height='9' title=\"Professeur principal d'au moins un élève de la classe sur une des périodes.";
+				echo " <img src='../images/bulle_verte.png' width='9' height='9' title=\"Professeur principal d'au moins un Ã©lÃ¨ve de la classe sur une des pÃ©riodes.";
 				if($nb_prof_suivi>1) {echo " La liste des ".getSettingValue('prof_suivi')." est ".$liste_prof_suivi.".";}
 				echo "\" />\n";
 			}

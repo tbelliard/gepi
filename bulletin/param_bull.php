@@ -21,11 +21,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut creer des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Begin standart header
-$titre_page = "Paramètres de configuration des bulletins scolaires HTML";
+$titre_page = "ParamÃ¨tres de configuration des bulletins scolaires HTML";
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -58,7 +58,7 @@ $tabcouleur=Array("aliceblue","antiquewhite","aqua","aquamarine","azure","beige"
 // tableau des polices pour avis du CC de classe
 $tab_polices_avis=Array("Arial","Helvetica","Serif","Times","Times New Roman","Verdana",);
 
-//Style des caractères avis
+//Style des caractÃ¨res avis
 // tableau des styles de polices pour avis du CC de classe
 $tab_styles_avis=Array("Normal","Gras","Italique","Gras et Italique");
 
@@ -307,7 +307,7 @@ if (isset($_POST['is_posted'])) {
 	if((isset($_POST['addressblock_classe_annee']))&&(isset($_POST['addressblock_logo_etab_prop']))){
 		$valtest=$addressblock_logo_etab_prop+$addressblock_classe_annee;
 		if($valtest>100){
-			$msg.="Erreur! La somme addressblock_logo_etab_prop+addressblock_classe_annee dépasse 100% de la largeur de la page !";
+			$msg.="Erreur! La somme addressblock_logo_etab_prop+addressblock_classe_annee dÃ©passe 100% de la largeur de la page !";
 			$reg_ok = 'no';
 		}
 		else{
@@ -699,7 +699,7 @@ if (isset($_POST['is_posted'])) {
 }
 
 if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
-$msg = "Enregistrement réussi !";
+$msg = "Enregistrement rÃ©ussi !";
 }
 
 
@@ -754,13 +754,13 @@ function SetDefaultValues(nb){
 <p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>
 | <!--a href="./index.php"> Imprimer les bulletins au format HTML</a-->
 <a href="./bull_index.php"> Imprimer les bulletins</a>
-| <a href="./param_bull_pdf.php"> Paramètres d'impression des bulletins PDF</a>
+| <a href="./param_bull_pdf.php"> ParamÃ¨tres d'impression des bulletins PDF</a>
 </p>
 
 <?php
 if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul")!='yes') OR ((getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")!='yes')))) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")!='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")!='yes')))
 {
-    die("Droits insuffisants pour effectuer cette opération");
+    die("Droits insuffisants pour effectuer cette opÃ©ration");
 }
 ?>
 
@@ -775,7 +775,7 @@ echo add_token_field();
 
     <tr <?php $nb_ligne = 1; if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Rétablir les paramètres par défaut :<br />
+        RÃ©tablir les paramÃ¨tres par dÃ©faut :<br />
         &nbsp;&nbsp;&nbsp;<A HREF="javascript:SetDefaultValues('A4V')">Impression sur A4 "portrait"</A><br />
         &nbsp;&nbsp;&nbsp;<A HREF="javascript:SetDefaultValues('A3H')">Impression sur A3 "paysage"</A>
 
@@ -813,7 +813,7 @@ echo add_token_field();
         <td><input type="text" name="textsize" id="textsize" size="20" value="<?php echo(getSettingValue("textsize")); ?>" onKeyDown="clavier_2(this.id,event,0,100);" />
         </td>
     </tr>
-    <!-- Début AJOUT: boireaus -->
+    <!-- DÃ©but AJOUT: boireaus -->
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         <label for='p_bulletin_margin' style='cursor: pointer;'>Marges hautes et basses des paragraphes en points du texte (hormis les titres) :</label>
@@ -837,24 +837,24 @@ echo add_token_field();
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='col_matiere_largeur' style='cursor: pointer;'>Largeur de la première colonne (matières) en pixels :</label><br />
-        <span class="small">(Si le contenu d'une cellule de la colonne est plus grand que la taille prévue, la mention ci-dessus devient caduque. La colonne sera dans ce cas dimensionnée par le navigateur lui-même.)</span>
+        <label for='col_matiere_largeur' style='cursor: pointer;'>Largeur de la premiÃ¨re colonne (matiÃ¨res) en pixels :</label><br />
+        <span class="small">(Si le contenu d'une cellule de la colonne est plus grand que la taille prÃ©vue, la mention ci-dessus devient caduque. La colonne sera dans ce cas dimensionnÃ©e par le navigateur lui-mÃªme.)</span>
         </td>
         <td><input type="text" name="col_matiere_largeur" id="col_matiere_largeur" size="20" value="<?php echo(getSettingValue("col_matiere_largeur")); ?>" onKeyDown="clavier_2(this.id,event,0,2000);" />
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='col_note_largeur' style='cursor: pointer;'>Largeur des colonnes min, max, classe et élève en pixels :</label><br />
-        <span class="small">(Même remarque que ci-dessus)</span>
+        <label for='col_note_largeur' style='cursor: pointer;'>Largeur des colonnes min, max, classe et Ã©lÃ¨ve en pixels :</label><br />
+        <span class="small">(MÃªme remarque que ci-dessus)</span>
         </td>
         <td><input type="text" name="col_note_largeur" id="col_note_largeur" size="20" value="<?php echo(getSettingValue("col_note_largeur")); ?>" onKeyDown="clavier_2(this.id,event,0,2000);" />
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='col_boite_largeur' style='cursor: pointer;'>Largeur des cellules contenant les notes des carnets de notes à afficher sur les bulletins :</label><br />
-        <span class="small">(Même remarque que ci-dessus)</span>
+        <label for='col_boite_largeur' style='cursor: pointer;'>Largeur des cellules contenant les notes des carnets de notes Ã  afficher sur les bulletins :</label><br />
+        <span class="small">(MÃªme remarque que ci-dessus)</span>
         </td>
         <td><input type="text" name="col_boite_largeur" id="col_boite_largeur" size="20" value="<?php echo(getSettingValue("col_boite_largeur")); ?>" onKeyDown="clavier_2(this.id,event,0,2000);" />
         </td>
@@ -862,7 +862,7 @@ echo add_token_field();
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         <label for='col_hauteur' style='cursor: pointer;'>Hauteur minimale des lignes en pixels ("0" si automatique) :</label><br />
-        <span class="small">(Si le contenu d'une cellule est telle que la hauteur fixée ci-dessus est insuffisante, la hauteur de la ligne sera dimensionnée par le navigateur lui-même.)</span>
+        <span class="small">(Si le contenu d'une cellule est telle que la hauteur fixÃ©e ci-dessus est insuffisante, la hauteur de la ligne sera dimensionnÃ©e par le navigateur lui-mÃªme.)</span>
         </td>
         <td><input type="text" name="col_hauteur" id="col_hauteur" size="20" value="<?php echo(getSettingValue("col_hauteur")); ?>" onKeyDown="clavier_2(this.id,event,0,150);" />
         </td>
@@ -883,21 +883,21 @@ echo add_token_field();
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='bull_ecart_entete' style='cursor: pointer;'>Espace (nombre de lignes vides) entre l'en-tête du bulletin et le tableau des notes et appréciations :</label>
+        <label for='bull_ecart_entete' style='cursor: pointer;'>Espace (nombre de lignes vides) entre l'en-tÃªte du bulletin et le tableau des notes et apprÃ©ciations :</label>
         </td>
         <td><input type="text" name="bull_ecart_entete" id="bull_ecart_entete" size="20" value="<?php echo(getSettingValue("bull_ecart_entete")); ?>" onKeyDown="clavier_2(this.id,event,0,20);" />
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='bull_espace_avis' style='cursor: pointer;'>Espace (nombre de lignes vides) pour une saisie à la main de l'avis du Conseil de classe, si celui-ci n'a pas été saisi dans GEPI :</label>
+        <label for='bull_espace_avis' style='cursor: pointer;'>Espace (nombre de lignes vides) pour une saisie Ã  la main de l'avis du Conseil de classe, si celui-ci n'a pas Ã©tÃ© saisi dans GEPI :</label>
         </td>
         <td><input type="text" name="bull_espace_avis" id="bull_espace_avis" size="20" value="<?php echo(getSettingValue("bull_espace_avis")); ?>" onKeyDown="clavier_2(this.id,event,0,20);" />
         </td>
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Bordures des cellules du tableau des moyennes et appréciations :
+        Bordures des cellules du tableau des moyennes et apprÃ©ciations :
         </td>
         <td>
 		<?php
@@ -919,7 +919,7 @@ echo add_token_field();
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='bull_categ_font_size' style='cursor: pointer;'>Taille en points du texte des catégories de matières (<i>lorsqu'elles sont affichées</i>) :</label>
+        <label for='bull_categ_font_size' style='cursor: pointer;'>Taille en points du texte des catÃ©gories de matiÃ¨res (<i>lorsqu'elles sont affichÃ©es</i>) :</label>
         </td>
 	<?php
 		if(getSettingValue("bull_categ_font_size")){
@@ -934,7 +934,7 @@ echo add_token_field();
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='bull_categ_bgcolor' style='cursor: pointer;'>Couleur de fond des lignes de catégories de matières (<i>lorsqu'elles sont affichées</i>) :</label>
+        <label for='bull_categ_bgcolor' style='cursor: pointer;'>Couleur de fond des lignes de catÃ©gories de matiÃ¨res (<i>lorsqu'elles sont affichÃ©es</i>) :</label>
         </td>
 	<?php
 		if(getSettingValue("bull_categ_bgcolor")){
@@ -981,7 +981,7 @@ echo add_token_field();
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='bull_police_avis' style='cursor: pointer;'>Police de caractères pour l'avis du conseil de classe :</label>
+        <label for='bull_police_avis' style='cursor: pointer;'>Police de caractÃ¨res pour l'avis du conseil de classe :</label>
         </td>
 	<?php
 		if(getSettingValue("bull_police_avis")){
@@ -1011,7 +1011,7 @@ echo add_token_field();
 
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='bull_font_style_avis' style='cursor: pointer;'>Style de caractères pour l'avis du conseil de classe :</label>
+        <label for='bull_font_style_avis' style='cursor: pointer;'>Style de caractÃ¨res pour l'avis du conseil de classe :</label>
         </td>
 	<?php
 		if(getSettingValue("bull_font_style_avis")){
@@ -1040,7 +1040,7 @@ echo add_token_field();
 
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Genre des périodes :<br />(<i>'trimestre' ou 'semestre' est masculin; 'période' est féminin</i>)
+        Genre des pÃ©riodes :<br />(<i>'trimestre' ou 'semestre' est masculin; 'pÃ©riode' est fÃ©minin</i>)
         </td>
 	<?php
 		if(getSettingValue("genre_periode")){
@@ -1060,14 +1060,14 @@ echo add_token_field();
         echo "<label for='genre_periodeF' style='cursor: pointer;'>\n";
 		echo "<input type=\"radio\" name=\"genre_periode\" id=\"genre_periodeF\" value=\"F\" ";
         if ($genre_periode == 'F') {echo " checked";}
-        echo " />&nbsp;Féminin</label>\n";
+        echo " />&nbsp;FÃ©minin</label>\n";
         ?>
 	</td>
     </tr>
 
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Faire apparaitre le nom de l'établissement sur le bulletin :<br />(<i>certains établissements ont le nom dans le Logo</i>)
+        Faire apparaitre le nom de l'Ã©tablissement sur le bulletin :<br />(<i>certains Ã©tablissements ont le nom dans le Logo</i>)
         </td>
 	<?php
 		if(getSettingValue("bull_affich_nom_etab")){
@@ -1094,7 +1094,7 @@ echo add_token_field();
 
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Faire apparaitre l'adresse de l'établissement sur le bulletin :<br />(<i>certains établissements ont l'adresse dans le Logo</i>)
+        Faire apparaitre l'adresse de l'Ã©tablissement sur le bulletin :<br />(<i>certains Ã©tablissements ont l'adresse dans le Logo</i>)
         </td>
 	<?php
 		if(getSettingValue("bull_affich_adr_etab")){
@@ -1121,7 +1121,7 @@ echo add_token_field();
 
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Faire apparaitre les <?php echo $gepi_denom_mention;?>s (<i>Félicitations, encouragements, avertissements,...</i>) avec l'avis du conseil de classe.
+        Faire apparaitre les <?php echo $gepi_denom_mention;?>s (<i>FÃ©licitations, encouragements, avertissements,...</i>) avec l'avis du conseil de classe.
         </td>
 	<?php
 		if(getSettingValue("bull_affich_mentions")){
@@ -1148,7 +1148,7 @@ echo add_token_field();
 
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Faire apparaitre l'intitulé <?php echo $gepi_denom_mention;?>s en gras devant la <?php echo $gepi_denom_mention;?> choisie pour un élève avec l'avis du conseil de classe.
+        Faire apparaitre l'intitulÃ© <?php echo $gepi_denom_mention;?>s en gras devant la <?php echo $gepi_denom_mention;?> choisie pour un Ã©lÃ¨ve avec l'avis du conseil de classe.
         </td>
 	<?php
 		if(getSettingValue("bull_affich_intitule_mentions")){
@@ -1204,7 +1204,7 @@ echo add_token_field();
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher la mention "doublant" ou "doublante", le cas échéant :
+        Afficher la mention "doublant" ou "doublante", le cas Ã©chÃ©ant :
         </td>
         <td>
         <?php
@@ -1219,7 +1219,7 @@ echo add_token_field();
     </tr>
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher les informations sur l'élève sur une seule ligne <i>(si non une information par ligne)</i> :
+        Afficher les informations sur l'Ã©lÃ¨ve sur une seule ligne <i>(si non une information par ligne)</i> :
         </td>
         <td>
         <?php
@@ -1234,7 +1234,7 @@ echo add_token_field();
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher les appréciations des matières :
+        Afficher les apprÃ©ciations des matiÃ¨res :
         </td>
         <td>
         <?php
@@ -1250,7 +1250,7 @@ echo add_token_field();
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher les données sur les absences :
+        Afficher les donnÃ©es sur les absences :
         </td>
         <td>
         <?php
@@ -1283,7 +1283,7 @@ echo add_token_field();
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher les données sur les AID :
+        Afficher les donnÃ©es sur les AID :
         </td>
         <td>
         <?php
@@ -1299,7 +1299,7 @@ echo add_token_field();
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher le numéro du bulletin :
+        Afficher le numÃ©ro du bulletin :
         </td>
         <td>
         <?php
@@ -1331,7 +1331,7 @@ echo add_token_field();
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher le nom du professeur principal et du chef d'établissement :
+        Afficher le nom du professeur principal et du chef d'Ã©tablissement :
         </td>
         <td>
         <?php
@@ -1347,7 +1347,7 @@ echo add_token_field();
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher l'établissement d'origine sur le bulletin :
+        Afficher l'Ã©tablissement d'origine sur le bulletin :
         </td>
         <td>
         <?php
@@ -1370,7 +1370,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 	echo ">\n";
 ?>
         <td style="font-variant: small-caps;">
-        Afficher la photo de l'élève sur le bulletin :
+        Afficher la photo de l'Ã©lÃ¨ve sur le bulletin :
         </td>
         <td>
 <?php
@@ -1433,7 +1433,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher le numéro de téléphone de l'établissement :
+        Afficher le numÃ©ro de tÃ©lÃ©phone de l'Ã©tablissement :
         </td>
         <td>
         <?php
@@ -1450,7 +1450,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher le numéro de fax de l'établissement :
+        Afficher le numÃ©ro de fax de l'Ã©tablissement :
         </td>
         <td>
         <?php
@@ -1467,7 +1467,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;" colspan='2'>
-        <label for='bull_intitule_app' style='cursor: pointer;'>Intitulé de la colonne Appréciations :</label>
+        <label for='bull_intitule_app' style='cursor: pointer;'>IntitulÃ© de la colonne ApprÃ©ciations :</label>
         <?php
 		echo "<input type=\"text\" name=\"bull_intitule_app\" id=\"bull_intitule_app\" value=\"".getSettingValue('bull_intitule_app')."\" size='100' />";
         ?>
@@ -1476,7 +1476,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher le numéro INE de l'élève :
+        Afficher le numÃ©ro INE de l'Ã©lÃ¨ve :
         </td>
         <td>
         <?php
@@ -1519,9 +1519,9 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         <td style="font-variant: small-caps;">
         Choix de l'apparence du bulletin (emplacement et regroupement des moyennes de la classe)
 		<ul>
-		<li><i><label for='choix_bulletin1' style='cursor: pointer;'>Toutes les informations chiffrées sur la classe et l'élève sont avant la colonne <?php echo getSettingValue('bull_intitule_app')?>.</label></i><br />
-		<li><i><label for='choix_bulletin2' style='cursor: pointer;'>Idem choix 1. Les informations sur la classe sont regroupées en une catégorie "Pour la classe".</label></i><br />
-		<li><i><label for='choix_bulletin3' style='cursor: pointer;'>Idem choix 2. Les informations pour la classe sont situées après la colonne <?php echo getSettingValue('bull_intitule_app')?>.</label></i><br />
+		<li><i><label for='choix_bulletin1' style='cursor: pointer;'>Toutes les informations chiffrÃ©es sur la classe et l'Ã©lÃ¨ve sont avant la colonne <?php echo getSettingValue('bull_intitule_app')?>.</label></i><br />
+		<li><i><label for='choix_bulletin2' style='cursor: pointer;'>Idem choix 1. Les informations sur la classe sont regroupÃ©es en une catÃ©gorie "Pour la classe".</label></i><br />
+		<li><i><label for='choix_bulletin3' style='cursor: pointer;'>Idem choix 2. Les informations pour la classe sont situÃ©es aprÃ¨s la colonne <?php echo getSettingValue('bull_intitule_app')?>.</label></i><br />
         </ul>
 		</td>
         <td> <br />
@@ -1541,7 +1541,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
     </tr>
 
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
-        <td style="font-variant: small-caps;">Afficher les moyennes minimale, classe et maximale dans une seule colonne pour gagner de la place pour l'appréciation : </td>
+        <td style="font-variant: small-caps;">Afficher les moyennes minimale, classe et maximale dans une seule colonne pour gagner de la place pour l'apprÃ©ciation : </td>
         <td>
 	    <?php
         echo "<input type=\"radio\" name=\"min_max_moyclas\" id=\"min_max_moyclas1\" value='1' ";
@@ -1567,14 +1567,14 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 <hr />
 <H3>Bloc adresse</H3>
 <center><table border="1" cellpadding="10" width="90%" summary='Bloc adresse'><tr><td>
-Ces options contrôlent le positionnement du bloc adresse du responsable de l'élève directement sur le bulletin (et non sur la page de garde - voir ci-dessous). L'affichage de ce bloc est contrôlé classe par classe, au niveau du paramétrage de la classe.
+Ces options contrÃ´lent le positionnement du bloc adresse du responsable de l'Ã©lÃ¨ve directement sur le bulletin (et non sur la page de garde - voir ci-dessous). L'affichage de ce bloc est contrÃ´lÃ© classe par classe, au niveau du paramÃ©trage de la classe.
 </td></tr></table></center>
 
 <table cellpadding="8" cellspacing="0" width="100%" border="0" summary='Bloca adresse'>
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;;$nb_ligne++;?>>
         <td colspan='2' style="font-variant: small-caps;">
-	<a href="javascript:SetDefaultValues('Adresse')">Rétablir les paramètres par défaut</a>
+	<a href="javascript:SetDefaultValues('Adresse')">RÃ©tablir les paramÃ¨tres par dÃ©faut</a>
         </td>
      </tr>
 
@@ -1601,7 +1601,7 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='addressblock_padding_text' style='cursor: pointer;'>Espace vertical en mm entre le bloc "adresse" et le bloc des résultats :</label>
+        <label for='addressblock_padding_text' style='cursor: pointer;'>Espace vertical en mm entre le bloc "adresse" et le bloc des rÃ©sultats :</label>
         </td>
         <td><input type="text" name="addressblock_padding_text" id="addressblock_padding_text" size="20" value="<?php echo(getSettingValue("addressblock_padding_text")); ?>" onKeyDown="clavier_2(this.id,event,0,150);" />
         </td>
@@ -1630,7 +1630,7 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='addressblock_logo_etab_prop' style='cursor: pointer;'>Proportion (en % de la largeur de page) allouée au logo et à l'adresse de l'établissement :</label>
+        <label for='addressblock_logo_etab_prop' style='cursor: pointer;'>Proportion (en % de la largeur de page) allouÃ©e au logo et Ã  l'adresse de l'Ã©tablissement :</label>
         </td>
 	<?php
 		if(!getSettingValue("addressblock_logo_etab_prop")){
@@ -1645,7 +1645,7 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='addressblock_classe_annee' style='cursor: pointer;'>Proportion (en % de la largeur de page) allouée au bloc "Classe, année, période" :</label>
+        <label for='addressblock_classe_annee' style='cursor: pointer;'>Proportion (en % de la largeur de page) allouÃ©e au bloc "Classe, annÃ©e, pÃ©riode" :</label>
         </td>
 	<?php
 		if(!getSettingValue("addressblock_classe_annee")){
@@ -1661,7 +1661,7 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='bull_ecart_bloc_nom' style='cursor: pointer;'>Nombre de sauts de ligne entre le bloc Logo+Etablissement et le bloc Nom, prénom,... de l'élève :</label>
+        <label for='bull_ecart_bloc_nom' style='cursor: pointer;'>Nombre de sauts de ligne entre le bloc Logo+Etablissement et le bloc Nom, prÃ©nom,... de l'Ã©lÃ¨ve :</label>
         </td>
 	<?php
 		if(!getSettingValue("bull_ecart_bloc_nom")){
@@ -1676,8 +1676,8 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <font color='red'>Activer l'affichage des bordures pour comprendre la présentation avec bloc "adresse"</font> :<br />
-		<span style='font-size:x-small;'>Il faut ajuster les paramètres des champs '<i>Espace en mm entre la marge haute de la feuille et le bloc "adresse"</i>', '<i>Longueur en mm du bloc "adresse"</i>' et '<i>Proportion (en % de la largeur de page) allouée au logo et à l'adresse de l'établissement</i>' pour que les cadres bleu et vert n'entrent pas en collision (<i>vous pouvez modifier la taille de la fenêtre du navigateur à l'aide de la souris pour comprendre les éventuelles abérrations de présentation pour certaines combinaisons de valeurs</i>).</span>
+        <font color='red'>Activer l'affichage des bordures pour comprendre la prÃ©sentation avec bloc "adresse"</font> :<br />
+		<span style='font-size:x-small;'>Il faut ajuster les paramÃ¨tres des champs '<i>Espace en mm entre la marge haute de la feuille et le bloc "adresse"</i>', '<i>Longueur en mm du bloc "adresse"</i>' et '<i>Proportion (en % de la largeur de page) allouÃ©e au logo et Ã  l'adresse de l'Ã©tablissement</i>' pour que les cadres bleu et vert n'entrent pas en collision (<i>vous pouvez modifier la taille de la fenÃªtre du navigateur Ã  l'aide de la souris pour comprendre les Ã©ventuelles abÃ©rrations de prÃ©sentation pour certaines combinaisons de valeurs</i>).</span>
         </td>
 	<?php
 		if(!getSettingValue("addressblock_debug")){
@@ -1704,12 +1704,12 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
 <center><table border="1" cellpadding="10" width="90%" summary='Page de garde'><tr><td>
 La page de garde contient les informations suivantes :
 <ul>
-<li>l'adresse où envoyer le bulletin. Si vous utilisez des enveloppes à fenêtre, vous pouvez régler les paramètres ci-dessous pour qu'elle apparaisse dans le cadre prévu à cet effet,</li>
+<li>l'adresse oÃ¹ envoyer le bulletin. Si vous utilisez des enveloppes Ã  fenÃªtre, vous pouvez rÃ©gler les paramÃ¨tres ci-dessous pour qu'elle apparaisse dans le cadre prÃ©vu Ã  cet effet,</li>
 <li>un texte que vous pouvez personnaliser (voir plus bas).</li>
 </ul>
-<b><a href='javascript:centrerpopup("./modele_page_garde.php",600,600,"scrollbars=yes,statusbar=yes,menubar=yes,resizable=yes")'>Aperçu de la page de garde</a></b>
-(Attention : la mise en page <!--des bulletins -->est très différente à l'écran et à l'impression.
-Veillez à utiliser la fonction "aperçu avant impression" afin de vous rendre compte du résultat.
+<b><a href='javascript:centrerpopup("./modele_page_garde.php",600,600,"scrollbars=yes,statusbar=yes,menubar=yes,resizable=yes")'>AperÃ§u de la page de garde</a></b>
+(Attention : la mise en page <!--des bulletins -->est trÃ¨s diffÃ©rente Ã  l'Ã©cran et Ã  l'impression.
+Veillez Ã  utiliser la fonction "aperÃ§u avant impression" afin de vous rendre compte du rÃ©sultat.
 </td></tr></table></center>
 <table cellpadding="8" cellspacing="0" width="100%" border="0" summary='Page de garde'>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
@@ -1748,9 +1748,9 @@ Veillez à utiliser la fonction "aperçu avant impression" afin de vous rendre com
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
     <?php
     $impression = getSettingValue("page_garde_texte");
-    echo "<td colspan=\"2\" valign=\"top\"  style=\"font-variant: small-caps;\">Texte de la page de garde apparaissant à la suite de l'adresse : </td>
+    echo "<td colspan=\"2\" valign=\"top\"  style=\"font-variant: small-caps;\">Texte de la page de garde apparaissant Ã  la suite de l'adresse : </td>
 	</tr>";
-    // Modif : on utilise toute la largeur de la page pour afficher l'éditeur de textes
+    // Modif : on utilise toute la largeur de la page pour afficher l'Ã©diteur de textes
     echo "
 	<tr><td colspan=\"2\" ><div class='small'>
 		<i>Mise en forme du message :</i>";

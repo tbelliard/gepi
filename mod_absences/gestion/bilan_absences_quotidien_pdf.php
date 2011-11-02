@@ -3,7 +3,7 @@
 *
 * $Id: bilan_absences_quotidien_pdf.php 4098 2010-02-26 18:33:42Z crob $
 *
-* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
+* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, StÃ©phane Boireau, Christian Chapel
 *
 * This file is part of GEPI.
 *
@@ -24,12 +24,12 @@
 
 $niveau_arbo = 2;
 //================================
-// REMONTé: boireaus 20080102
+// REMONTÃ©: boireaus 20080102
 // Initialisations files
 require_once('../../lib/initialisations.inc.php');
 
 // Lorsque qu'on utilise une session PHP, parfois, IE n'affiche pas le PDF
-// C'est un problème qui affecte certaines versions d'IE.
+// C'est un problÃ¨me qui affecte certaines versions d'IE.
 // Pour le contourner, on ajoutez la ligne suivante avant session_start() :
 session_cache_limiter('private');
 
@@ -58,8 +58,8 @@ if(!isset($_SESSION['pdf_debug']))
 	header('Content-Type: application/pdf');
 
 	// Global configuration file
-	// Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
-	//Le problème peut être résolu en ajoutant la ligne suivante :
+	// Quand on est en SSL, IE n'arrive pas Ã  ouvrir le PDF.
+	//Le problÃ¨me peut Ãªtre rÃ©solu en ajoutant la ligne suivante :
 	Header('Pragma: public');
 
 }
@@ -67,8 +67,8 @@ else
 {
 
 	echo "<p style='color:red'>DEBUG:<br />
-	      La génération du PDF va échouer parce qu'on affiche ces informations de debuggage,<br />
-              mais il se peut que vous ayez des précisions sur ce qui pose problème.<br />
+	      La gÃ©nÃ©ration du PDF va Ã©chouer parce qu'on affiche ces informations de debuggage,<br />
+              mais il se peut que vous ayez des prÃ©cisions sur ce qui pose problÃ¨me.<br />
               </p>\n";
 
 }
@@ -86,7 +86,7 @@ include("../lib/functions.php");
 
 define('FPDF_FONTPATH','../../fpdf/font/');
 
-// définition des marge
+// dÃ©finition des marge
 	define('TopMargin','5');
 	define('RightMargin','2');
 	define('LeftMargin','2');
@@ -96,7 +96,7 @@ define('FPDF_FONTPATH','../../fpdf/font/');
 
 
 /* ************************* */
-/*    fonction spécifique    */
+/*    fonction spÃ©cifique    */
 /* ************************* */
 function redimensionne_image_logo($photo, $L_max, $H_max)
 {
@@ -105,7 +105,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	// largeur et hauteur de l'image d'origine
 	$largeur = $info_image[0];
 	$hauteur = $info_image[1];
-	// largeur et/ou hauteur maximum à afficher en pixel
+	// largeur et/ou hauteur maximum Ã  afficher en pixel
 	$taille_max_largeur = $L_max;
 	$taille_max_hauteur = $H_max;
 
@@ -114,7 +114,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	$ratio_h = $hauteur / $taille_max_hauteur;
 	$ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
 
-	// définit largeur et hauteur pour la nouvelle image
+	// dÃ©finit largeur et hauteur pour la nouvelle image
 	$nouvelle_largeur = $largeur / $ratio;
 	$nouvelle_hauteur = $hauteur / $ratio;
 
@@ -129,10 +129,10 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 
 
 /* ******************************************** */
-/*     initialisation des variable d'entré      */
+/*     initialisation des variable d'entrÃ©      */
 /* ******************************************** */
 
-	// si aucune date de demandé alors on met celle du jour au format jj/mm/aaaa
+	// si aucune date de demandÃ© alors on met celle du jour au format jj/mm/aaaa
 	if (empty($_GET['date_choisie']) and empty($_POST['date_choisie'])) { $date_choisie = date("d/m/Y"); }
 	  else { if (isset($_GET['date_choisie'])) { $date_choisie = $_GET['date_choisie']; } if (isset($_POST['date_choisie'])) { $date_choisie = $_POST['date_choisie']; } }
 	if (empty($_GET['du']) and empty($_POST['du'])) { $du = ''; }
@@ -145,50 +145,50 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 /* ******************************************** */
 
 /* *********************************************/
-/* information sur la présentation du document */
+/* information sur la prÃ©sentation du document */
 /* *********************************************/
 
-	$caractere_utilse = 'arial'; // caractère utilisé
+	$caractere_utilse = 'arial'; // caractÃ¨re utilisÃ©
 	$affiche_logo_etab = '1';
 	$nom_etab_gras = '0';
-	$entente_mel = '1'; // afficher l'adresse mel dans l'entête
+	$entente_mel = '1'; // afficher l'adresse mel dans l'entÃªte
 		$courrier_image = '';
 		$courrier_texte = '';
-	$entente_tel = '1'; // afficher le numéro de téléphone dans l'entête
+	$entente_tel = '1'; // afficher le numÃ©ro de tÃ©lÃ©phone dans l'entÃªte
 		$tel_image = '';
 		$tel_texte = '';
-	$entente_fax = '1'; // afficher le numéro de fax dans l'entête
+	$entente_fax = '1'; // afficher le numÃ©ro de fax dans l'entÃªte
 		$fax_image = '';
 		$fax_texte = '';
 	$L_max_logo = 75; $H_max_logo=75; //dimension du logo
-	$centrage_logo = '1'; // centrer le logo de l'établissement
+	$centrage_logo = '1'; // centrer le logo de l'Ã©tablissement
 	$Y_centre_logo = '18'; // centre du logo sur la page
-	$affiche_date_edition = '1'; // affiche la date d'édition
-	$taille_texte_date_edition = '8'; // définit la taille de la date d'édition
+	$affiche_date_edition = '1'; // affiche la date d'Ã©dition
+	$taille_texte_date_edition = '8'; // dÃ©finit la taille de la date d'Ã©dition
 
 	// point de commencement du tableau sur la page
 	$x_tab = '5';
 	$y_tab = '40';
 
-	// hauteur de l'entête
+	// hauteur de l'entÃªte
 	$hau_entete = '6';
 
-	// largeur de la colonne de l'intitulé de la classe
+	// largeur de la colonne de l'intitulÃ© de la classe
 	$lar_col_classe = '20';
 
-	// largeur de la colonne du nom de l'élève
+	// largeur de la colonne du nom de l'Ã©lÃ¨ve
 	$lar_col_eleve = '50';
 
-	// largeur de la colonne du nom des créneaux
+	// largeur de la colonne du nom des crÃ©neaux
 	$lar_col_creneaux = '130';
 
-	// nombre de ligne à affiché sur 1 page
+	// nombre de ligne Ã  affichÃ© sur 1 page
 	$nb_ligne_parpage = '25';
 
 	// largeur total du tableau
 	$lar_total_tableau = $lar_col_classe + $lar_col_eleve + $lar_col_creneaux;
 
-	// hauteur de la cellule des données
+	// hauteur de la cellule des donnÃ©es
 	$hau_donnee = '5';
 
 	// avec couleur ou sans
@@ -199,24 +199,24 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 
 
 /* ******************************************** */
-/*     construction du tableau des données      */
+/*     construction du tableau des donnÃ©es      */
 /* ******************************************** */
-// chargement des information de la base de données
+// chargement des information de la base de donnÃ©es
 
-	// les données concernerons la journée du (date au format timestamp)
+	// les donnÃ©es concernerons la journÃ©e du (date au format timestamp)
 	$choix_date = explode("/",$date_choisie);
 	$date_choisie_ts = mktime(0,0,0, $choix_date[1], $choix_date[0], $choix_date[2]);
 
-	// On récupère le nom des créneaux
+	// On rÃ©cupÃ¨re le nom des crÃ©neaux
 	$creneaux = retourne_creneaux();
 
-	// on compte le nombre de créneaux
+	// on compte le nombre de crÃ©neaux
 	$nb_creneaux = count($creneaux);
 
-	// On détermine le jour au format texte en Français actuel
+	// On dÃ©termine le jour au format texte en FranÃ§ais actuel
 	$jour_choisi = retourneJour(date("w", $date_choisie_ts));
 
-	// on recherche l'horaire d'ouverture et de fermetture de l'établissement
+	// on recherche l'horaire d'ouverture et de fermetture de l'Ã©tablissement
 	$requete = mysql_query("SELECT ouverture_horaire_etablissement, fermeture_horaire_etablissement
 				FROM horaires_etablissement
 				WHERE jour_horaire_etablissement = '" . $jour_choisi . "'");
@@ -224,7 +224,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	if ($nbre_rep >= 1)
 	{
 
-		// Avec le résultat, on calcule les timestamps UNIX
+		// Avec le rÃ©sultat, on calcule les timestamps UNIX
 		$req = mysql_fetch_array($requete);
 		$rep_deb = explode(":", $req["ouverture_horaire_etablissement"]);
 		$rep_fin = explode(":", $req["fermeture_horaire_etablissement"]);
@@ -235,13 +235,13 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	else
 	{
 
-		// Si on ne récupère rien, on donne par défaut les ts du jour actuel
+		// Si on ne rÃ©cupÃ¨re rien, on donne par dÃ©faut les ts du jour actuel
 		$time_actu_deb = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
 		$time_actu_fin = mktime(23, 59, 0, date("m"), date("d"), date("Y"));
 
 	}
 
-	// nous recherchons tout les élèves absence le jour choisie
+	// nous recherchons tout les Ã©lÃ¨ves absence le jour choisie
 	$requete = "SELECT ar.id, ar.eleve_id, ar.retard_absence, ar.creneau_id, ar.debut_ts, ar.fin_ts, jec.login, jec.id_classe, e.login, e.nom, e.prenom, c.id, c.nom_complet, c.classe
 		    FROM " . $prefix_base . "absences_rb ar, " . $prefix_base . "j_eleves_classes jec, " . $prefix_base . "eleves e, " . $prefix_base . "classes c
 		    WHERE ( jec.login = ar.eleve_id
@@ -266,11 +266,11 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 		    GROUP BY ar.id
 		    ORDER BY c.classe ASC, eleve_id ASC";
 
-	// on insère toute les classes dans un tableau
+	// on insÃ¨re toute les classes dans un tableau
 	// initialisation du tableau
 	$tab_classe = '';
 
-	// requete de liste des classes présente dans la base de donnée
+	// requete de liste des classes prÃ©sente dans la base de donnÃ©e
 	$requete_classes = "SELECT nom_complet, classe
 		    			FROM " . $prefix_base . "classes
 		    			ORDER BY classe ASC";
@@ -284,19 +284,19 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 
 		$tab_classe[$cpt_classe] = $donnee_classes['classe'];
 
-		// incrémentation du compteur
+		// incrÃ©mentation du compteur
 		$cpt_classe = $cpt_classe + 1;
 
 	}
 
 
 	// compteur temporaire pour la boucle ci-dessous
-	// compteur élève et classe
+	// compteur Ã©lÃ¨ve et classe
 	$i = 0;
-	// compteur des classes passé
+	// compteur des classes passÃ©
 	$ic = 0;
 
-	// nom de l'élève précédent
+	// nom de l'Ã©lÃ¨ve prÃ©cÃ©dent
 	$eleve_precedent = '';
 	$classe_precedent = '';
 
@@ -306,7 +306,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	{
 
 		$passe = 0;
-		// si l'enregistrement sélectionner correspond ne correspond pas à la $ic classe
+		// si l'enregistrement sÃ©lectionner correspond ne correspond pas Ã  la $ic classe
 		while ( $tab_classe[$ic] != $donnee['classe'] )
 		{
 
@@ -322,8 +322,8 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 
 		}
 
-		// si l'élève précedent et différent de celui que nous traiton et que la variable de l'élève précédent
-		// est différent de rien alors on incrément notre tableau de donnée
+		// si l'Ã©lÃ¨ve prÃ©cedent et diffÃ©rent de celui que nous traiton et que la variable de l'Ã©lÃ¨ve prÃ©cÃ©dent
+		// est diffÃ©rent de rien alors on incrÃ©ment notre tableau de donnÃ©e
 		if ( $eleve_precedent != $donnee['login'] and $eleve_precedent != '' and $passe != 1)
 		{
 			$i = $i + 1;
@@ -335,54 +335,54 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 			if ( $classe_precedent != $donnee['classe'] )
 			{
 
-				// on insère les informations sur la classe de l'élève
+				// on insÃ¨re les informations sur la classe de l'Ã©lÃ¨ve
 				$tab_donnee[$i]['classe'] = $donnee['classe'];
 				$tab_donnee[$i]['ident_eleve'] = '';
 
 				$classe_precedent = $donnee['classe'];
 
-				// on incrémente le tableau principal
+				// on incrÃ©mente le tableau principal
 				$i = $i + 1;
 
 			}
 
-			// on incrémente le compteur de classe
+			// on incrÃ©mente le compteur de classe
 			//$ic = $ic + 1;
 
-			// nom de l'élève et prénom
+			// nom de l'Ã©lÃ¨ve et prÃ©nom
 			$tab_donnee[$i]['classe'] = $donnee['classe'];
 			$tab_donnee[$i]['ident_eleve'] = strtoupper($donnee['nom']) . ' ' . ucfirst($donnee['prenom']);
 
 			// type A ou R -- absence ou retard
 			$type = $donnee['retard_absence'];
 
-			// fonction qui décode un timestamps en date et heure un tableau $donnee['heure'] $donnee['date']
+			// fonction qui dÃ©code un timestamps en date et heure un tableau $donnee['heure'] $donnee['date']
 			$heure_debut = timestamps_decode($donnee['debut_ts'], 'fr');
 				$heure_debut = $heure_debut['heure'];
 			$heure_fin = timestamps_decode($donnee['fin_ts'], 'fr');
 				$heure_fin = $heure_fin['heure'];
 
-			// fonction permettant de savoir dans quelle période nous nous trouvons par rapport à une heur donnée
+			// fonction permettant de savoir dans quelle pÃ©riode nous nous trouvons par rapport Ã  une heur donnÃ©e
 			$periode = '';
 			$periode = creneau_absence_du_jour($donnee['login'],$date_choisie,$type);
 
-			// si des période existe
+			// si des pÃ©riode existe
 			if ( $periode != '' )
 			{
 
-				// apprés la récupération des périodes sur lesquelle l'absence ce tient on l'explose en talbeau
+				// apprÃ©s la rÃ©cupÃ©ration des pÃ©riodes sur lesquelle l'absence ce tient on l'explose en talbeau
 				$periode_tab = explode(';',$periode);
 
-				// compteur temporaire de période
+				// compteur temporaire de pÃ©riode
 				$compteur_periode = 0;
 
 				while ( !empty($periode_tab[$compteur_periode]) )
 				{
 
-					// nom de la période sélectionné
+					// nom de la pÃ©riode sÃ©lectionnÃ©
 					$periode_select = $periode_tab[$compteur_periode];
 
-					// définition des donnée de $tab_donnee_sup
+					// dÃ©finition des donnÃ©e de $tab_donnee_sup
 					$tab_donnee_sup[$i][$periode_select][$type] = '1';
 
 					// compteur des passages
@@ -402,34 +402,34 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 			// type A ou R -- absence ou retard
 			$type = $donnee['retard_absence'];
 
-			// fonction qui décode un timestamps en date et heure un tableau $donnee['heure'] $donnee['date']
+			// fonction qui dÃ©code un timestamps en date et heure un tableau $donnee['heure'] $donnee['date']
 			$heure_debut = timestamps_decode($donnee['debut_ts'], 'fr');
 				$heure_debut = $heure_debut['heure'];
 			$heure_fin = timestamps_decode($donnee['fin_ts'], 'fr');
 				$heure_fin = $heure_fin['heure'];
 
-			// fonction permettant de savoir dans quelle période nous nous trouvons par rapport à une heur donnée
+			// fonction permettant de savoir dans quelle pÃ©riode nous nous trouvons par rapport Ã  une heur donnÃ©e
 			//$periode = periode_active_nom($heure_debut, $heure_fin);
 			$periode = '';
 			$periode = creneau_absence_du_jour($donnee['login'],$date_choisie,$type);
 
-			// si des période existe
+			// si des pÃ©riode existe
 			if ( $periode != '' )
 			{
 
-				// apprés la récupération des périodes sur lesquelle l'absence ce tient on l'explose en talbeau
+				// apprÃ©s la rÃ©cupÃ©ration des pÃ©riodes sur lesquelle l'absence ce tient on l'explose en talbeau
 				$periode_tab = explode(';',$periode);
 
-				// compteur temporaire de période
+				// compteur temporaire de pÃ©riode
 				$compteur_periode = 0;
 
 				while ( !empty($periode_tab[$compteur_periode]) )
 				{
 
-					// nom de la période sélectionné
+					// nom de la pÃ©riode sÃ©lectionnÃ©
 					$periode_select = $periode_tab[$compteur_periode];
 
-					// définition des donnée de $tab_donnee_sup
+					// dÃ©finition des donnÃ©e de $tab_donnee_sup
 					$tab_donnee_sup[$i][$periode_select][$type] = '1';
 
 					// compteur des passages
@@ -443,14 +443,14 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 
 	}
 
-		// si l'enregistrement sélectionner correspond ne correspond pas à la $ic classe
+		// si l'enregistrement sÃ©lectionner correspond ne correspond pas Ã  la $ic classe
 		$ic = $ic + 1;
 
 		// on fait une boucle s'il reste des classes
 		while ( !empty($tab_classe[$ic]) )
 		{
 
-			// on incrément le compteur du tableau général
+			// on incrÃ©ment le compteur du tableau gÃ©nÃ©ral
 			$i = $i + 1;
 
 			$tab_donnee[$i]['classe'] = $tab_classe[$ic];
@@ -459,13 +459,13 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 			// type A ou R -- absence ou retard
 			$type = 'entete_classe';
 
-			// on incrémente le compteur de classe
+			// on incrÃ©mente le compteur de classe
 			$ic = $ic + 1;
 
 		}
 
 
-	// nombre d'entrée total
+	// nombre d'entrÃ©e total
 	$nb_d_entree_total = $i;
 
 	// si le compteur de classe = 0 alors on lui indique 1
@@ -476,7 +476,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 
 	};
 
-	// nombre de page à créer, arrondit au nombre supérieur
+	// nombre de page Ã  crÃ©er, arrondit au nombre supÃ©rieur
 	$nb_page_total = ceil( $nb_d_entree_total / $nb_ligne_parpage );
 
 
@@ -495,15 +495,15 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 /* **************************** */
 
 
-// définition d'une variable
+// dÃ©finition d'une variable
 	$hauteur_pris = 0;
 
-/* début de la génération du fichier PDF */
+/* dÃ©but de la gÃ©nÃ©ration du fichier PDF */
 
-	//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
+	//crÃ©ation du PDF en mode Portrait, unitÃ©e de mesure en mm, de taille A4
 	$pdf=new FPDF('p', 'mm', 'A4');
 
-	// compteur pour le nombre d'élève à affiché
+	// compteur pour le nombre d'Ã©lÃ¨ve Ã  affichÃ©
 	$nb_eleve_aff = 1;
 
 	// si la variable $gepiSchoolName est vide alors on cherche les informations dans la base
@@ -514,35 +514,35 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 
 	}
 
-	// création du document
+	// crÃ©ation du document
 	$pdf->SetCreator($gepiSchoolName);
 	// auteur du document
 	$pdf->SetAuthor($gepiSchoolName);
-	// mots clé
+	// mots clÃ©
 	$pdf->SetKeywords('');
 	// sujet du document
 	$pdf->SetSubject('Bilan journalier des absences');
 	// titre du document
 	$pdf->SetTitle('Bilan journalier des absences');
-	// méthode d'affichage du document à son ouverture
+	// mÃ©thode d'affichage du document Ã  son ouverture
 	$pdf->SetDisplayMode('fullwidth', 'single');
 	// compression du document
 	$pdf->SetCompression(TRUE);
-	// change automatiquement de page à 5mm du bas
+	// change automatiquement de page Ã  5mm du bas
 	$pdf->SetAutoPageBreak(TRUE, 5);
 
 
 /* **************************** */
-/* début de la boucle des pages */
+/* dÃ©but de la boucle des pages */
 
-// comptage du nombre de page traité
+// comptage du nombre de page traitÃ©
 $nb_page_traite = 0;
 
-// initialiser la variable compteur de ligne passé pour le tableau
+// initialiser la variable compteur de ligne passÃ© pour le tableau
 $nb_ligne_passe = 0;
 
 // initialiser un compteur temporaire autre que i
-// il serviras pour savoir à quelle endroit de la liste nous somme rendus
+// il serviras pour savoir Ã  quelle endroit de la liste nous somme rendus
 $j = 0;
 
 // boucle des page
@@ -552,7 +552,7 @@ while ($nb_page_traite < $nb_page_total)
 	// ajout de l'initialisation d'une nouvelle page dans le document
 	$pdf->AddPage();
 
-	// police de caractère utilisé
+	// police de caractÃ¨re utilisÃ©
 	$pdf->SetFont('Arial');
 
 /* ENTETE - DEBUT */
@@ -604,7 +604,7 @@ while ($nb_page_traite < $nb_page_total)
 	$pdf->SetFont($caractere_utilse,'',14);
 	$gepiSchoolName = getSettingValue('gepiSchoolName');
 
-	// mettre en gras le nom de l'établissement si $nom_etab_gras = 1
+	// mettre en gras le nom de l'Ã©tablissement si $nom_etab_gras = 1
 	if ( $nom_etab_gras === '1' )
 	{
 
@@ -638,8 +638,8 @@ while ($nb_page_traite < $nb_page_total)
 	$gepiSchoolFax = getSettingValue('gepiSchoolFax');
 
 	$passealaligne = '0';
-	// entête téléphone
-			// emplacement du cadre télécome
+	// entÃªte tÃ©lÃ©phone
+			// emplacement du cadre tÃ©lÃ©come
 			$x_telecom = $pdf->GetX();
 			$y_telecom = $pdf->GetY();
 
@@ -675,7 +675,7 @@ while ($nb_page_traite < $nb_page_total)
 	}
 
 	$passealaligne = '2';
-	// entête fax
+	// entÃªte fax
 	if( $entente_fax==='1' )
 	{
 
@@ -750,7 +750,7 @@ while ($nb_page_traite < $nb_page_total)
 		$pdf->Cell(120, 8, 'du '.$date_choisie, 0, 1, 'C');
 
 		$pdf->SetX(85);
-		$pdf->Cell(120, 5, traite_accents_utf8('année'), 0, 1, 'C');
+		$pdf->Cell(120, 5, traite_accents_utf8('annÃ©e'), 0, 1, 'C');
 
 		$pdf->SetX(85);
 		$pdf->Cell(120, 5, traite_accents_utf8($annee_scolaire), 0, 1, 'C');
@@ -761,26 +761,26 @@ while ($nb_page_traite < $nb_page_total)
 
 /* ENTETE TABLEAU - DEBUT */
 
-	//Sélection de la police
+	//SÃ©lection de la police
 	$pdf->SetFont($caractere_utilse, 'B', 10);
 
 	// placement du point de commencement du tableau
 	$pdf->SetXY($x_tab, $y_tab);
 
-	// Cellule entête classe
+	// Cellule entÃªte classe
 	$pdf->Cell($lar_col_classe, $hau_entete, 'Classe', 1, 0, 'C');
 
-	// Cellule identité
-	$pdf->Cell($lar_col_eleve, $hau_entete, traite_accents_utf8('Nom Prénom'), 1, 0, 'C');
+	// Cellule identitÃ©
+	$pdf->Cell($lar_col_eleve, $hau_entete, traite_accents_utf8('Nom PrÃ©nom'), 1, 0, 'C');
 
-	// Cellule créneaux
-	// un divisie l'espace réserver à la colonne des créneaux par le nombre de créneaux
+	// Cellule crÃ©neaux
+	// un divisie l'espace rÃ©server Ã  la colonne des crÃ©neaux par le nombre de crÃ©neaux
 	$largeur_1_creneau = $lar_col_creneaux / $nb_creneaux;
 
 	//compteur temporaire pour la boucle ci-dessous
 	$i = 0;
 
-	// boucle des cellule de créneau
+	// boucle des cellule de crÃ©neau
 	while ( $nb_creneaux > $i )
 	{
 
@@ -798,9 +798,9 @@ while ($nb_page_traite < $nb_page_total)
 
 
 	/* ***************************************** */
-	/* début de la boucle du tableau des données */
+	/* dÃ©but de la boucle du tableau des donnÃ©es */
 
-	// initialisation des classe passé
+	// initialisation des classe passÃ©
 	$classe_pass = '';
 
 	// initialiser la variable compteur de ligne pour la page actuel
@@ -812,12 +812,12 @@ while ($nb_page_traite < $nb_page_total)
 
 	/* TABLEAU DONNEES - DEBUT */
 
-		// s'il reste des données alors on les affiches
+		// s'il reste des donnÃ©es alors on les affiches
 		if ( !empty($tab_donnee[$nb_ligne_passe]) )
 		{
 
 			// Si c'est un typdes $tab_donnee[$nb_ligne_passe]['ident_eleve'] vide
-			// alors on n'affiche l'entête de la classe
+			// alors on n'affiche l'entÃªte de la classe
 			if ( $tab_donnee[$nb_ligne_passe]['ident_eleve'] === '' )
 			{
 
@@ -830,20 +830,20 @@ while ($nb_page_traite < $nb_page_total)
 				// variable qui contient le point Y suivant pour la ligne suivante
 				$y_dernier = $y_dernier + $hau_donnee;
 
-				// on incrémente le nombre de ligne passé sur la page
+				// on incrÃ©mente le nombre de ligne passÃ© sur la page
 				$nb_ligne_passe_reel = $nb_ligne_passe_reel + 1;
 
 			}
 			else
 			{
 
-				// initialisation du point X et Y de la ligne des données
+				// initialisation du point X et Y de la ligne des donnÃ©es
 				$pdf->SetXY($x_tab, $y_dernier);
 
-				// colonne vide pour le décalage des classes
+				// colonne vide pour le dÃ©calage des classes
 				$pdf->Cell($lar_col_classe, $hau_donnee, '', 0, 0, '');
 
-				// colonne du nom et prénom de l'élève
+				// colonne du nom et prÃ©nom de l'Ã©lÃ¨ve
 				$pdf->Cell($lar_col_eleve, $hau_donnee, traite_accents_utf8($tab_donnee[$nb_ligne_passe]['ident_eleve']), 1, 0, '');
 
 				// variable qui contient le point Y suivant pour la ligne suivante
@@ -862,11 +862,11 @@ while ($nb_page_traite < $nb_page_total)
 					if ( !empty($tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['A']) and $tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['A'] === '1' and empty($tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['R']))
 					{
 
-						// si la couleur à était demandé alors on l'initialise
+						// si la couleur Ã  Ã©tait demandÃ© alors on l'initialise
 						if ( $couleur_fond === '1' )
 						{
 
-							// couleur de caractère
+							// couleur de caractÃ¨re
 							$pdf->SetTextColor(255, 0, 0);
 							// couleur du fond de cellule
 							$pdf->SetFillColor(255, 223, 223);
@@ -876,18 +876,18 @@ while ($nb_page_traite < $nb_page_total)
 						// construction de la cellule du tableau
 						$pdf->Cell($largeur_1_creneau, $hau_donnee, 'A', 1, 0, 'C', $couleur_fond);
 
-						// remise de la couleur du caractère à noir
+						// remise de la couleur du caractÃ¨re Ã  noir
 						$pdf->SetTextColor(0, 0, 0);
 
 					}
 					elseif ( !empty($tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['R']) and $tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['R'] === '1'  and empty($tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['A']) )
 					{
 
-						// si la couleur à était demandé alors on l'initialise
+						// si la couleur Ã  Ã©tait demandÃ© alors on l'initialise
 						if ( $couleur_fond === '1' )
 						{
 
-							// couleur de caractère
+							// couleur de caractÃ¨re
 							$pdf->SetTextColor(33, 223, 0);
 							// couleur du fond de cellule
 							$pdf->SetFillColor(228, 255, 223);
@@ -897,18 +897,18 @@ while ($nb_page_traite < $nb_page_total)
 						// construction de la cellule du tableau
 						$pdf->Cell($largeur_1_creneau, $hau_donnee, 'R', 1, 0, 'C', $couleur_fond);
 
-						// remise de la couleur du caractère à noir
+						// remise de la couleur du caractÃ¨re Ã  noir
 						$pdf->SetTextColor(0, 0, 0);
 
 					}
 					elseif ( !empty($tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['R']) and $tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['R'] === '1'  and !empty($tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['A']) and $tab_donnee_sup[$nb_ligne_passe][$nom_creneau]['A'] === '1' )
 					{
 
-						// si la couleur à était demandé alors on l'initialise
+						// si la couleur Ã  Ã©tait demandÃ© alors on l'initialise
 						if ( $couleur_fond === '1' )
 						{
 
-							// couleur de caractère
+							// couleur de caractÃ¨re
 							$pdf->SetTextColor(255, 0, 0);
 							// couleur du fond de cellule
 							$pdf->SetFillColor(255, 223, 223);
@@ -918,11 +918,11 @@ while ($nb_page_traite < $nb_page_total)
 						// construction de la cellule du tableau pour l'absence
 						$pdf->Cell($largeur_1_creneau/2, $hau_donnee, 'A', 1, 0, 'C', $couleur_fond);
 
-						// si la couleur à était demandé alors on l'initialise
+						// si la couleur Ã  Ã©tait demandÃ© alors on l'initialise
 						if ( $couleur_fond === '1' )
 						{
 
-							// couleur de caractère
+							// couleur de caractÃ¨re
 							$pdf->SetTextColor(33, 223, 0);
 							// couleur du fond de cellule
 							$pdf->SetFillColor(228, 255, 223);
@@ -932,7 +932,7 @@ while ($nb_page_traite < $nb_page_total)
 						// construction de la cellule du tableau pour le retard
 						$pdf->Cell($largeur_1_creneau/2, $hau_donnee, 'R', 1, 0, 'C', $couleur_fond);
 
-						// remise de la couleur du caractère à noir
+						// remise de la couleur du caractÃ¨re Ã  noir
 						$pdf->SetTextColor(0, 0, 0);
 
 					}
@@ -943,25 +943,25 @@ while ($nb_page_traite < $nb_page_total)
 
 					}
 
-					// compteur de passage pour les créneaux
+					// compteur de passage pour les crÃ©neaux
 					$k = $k + 1;
 
 				}
 
-				// on incrémente le nombre de ligne passé sur la page
+				// on incrÃ©mente le nombre de ligne passÃ© sur la page
 				$nb_ligne_passe_reel = $nb_ligne_passe_reel + 1;
 
 			}
 
-				// on incrémente le nombre de ligne traité dans le tableau des données
+				// on incrÃ©mente le nombre de ligne traitÃ© dans le tableau des donnÃ©es
 				$nb_ligne_passe = $nb_ligne_passe + 1;
 
 		}
 		else
 		{
 
-			// s'il n'y a plus de donnée à afficher alors on lui dit que le
-			// maximum de ligne à était atteint pour qu'il termine la boucle
+			// s'il n'y a plus de donnÃ©e Ã  afficher alors on lui dit que le
+			// maximum de ligne Ã  Ã©tait atteint pour qu'il termine la boucle
 			$nb_ligne_passe_reel = $nb_ligne_parpage + 1;
 
 		}
@@ -969,12 +969,12 @@ while ($nb_page_traite < $nb_page_total)
 	/* TABLEAU DONNEES - FIN */
 
 	}
-	/* fin de la boucle du tableau des données */
+	/* fin de la boucle du tableau des donnÃ©es */
 	/* *************************************** */
 
 /* PIED DE PAGE - DEBUT */
 
-	//Positionnement à 1 cm du bas et 0,5cm + 0,5cm du coté gauche
+	//Positionnement Ã  1 cm du bas et 0,5cm + 0,5cm du cotÃ© gauche
 	$pdf->SetXY(5,-10);
 
 	//Police Arial Gras 6
@@ -988,10 +988,10 @@ while ($nb_page_traite < $nb_page_total)
 
 /* PIED DE PAGE - FIN */
 
-	// on incrément le nombre d'entrée passé
+	// on incrÃ©ment le nombre d'entrÃ©e passÃ©
 	$nb_d_entree_passe = $nb_ligne_passe;
 
-	// on incrément le nombre de page traité
+	// on incrÃ©ment le nombre de page traitÃ©
 	$nb_page_traite = $nb_page_traite + 1;
 }
 /* fin de la boucle des pages */
@@ -999,10 +999,10 @@ while ($nb_page_traite < $nb_page_total)
 
 // fermeture du fichier pdf et lecture dans le navigateur 'nom', 'I/D'
 
-	// génération du nom du document
+	// gÃ©nÃ©ration du nom du document
 	$nom_fichier = 'bilan_journalier_'.$datation_fichier.'.pdf';
 
-	// génération du document
+	// gÃ©nÃ©ration du document
 	$pdf->Output($nom_fichier,'I');
 
 ?>

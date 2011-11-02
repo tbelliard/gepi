@@ -21,7 +21,7 @@
  */
 
 /**
- * Appelle les sous-modèles
+ * Appelle les sous-modÃ¨les
  * templates/origine/header_template.php
  * templates/origine/bandeau_template.php
  *
@@ -35,7 +35,7 @@ interface discipline_admin {
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 
 <head>
-<!-- on inclut l'entête -->
+<!-- on inclut l'entÃªte -->
 	<?php
 	  $tbs_bouton_taille = "..";
 	  include('../templates/origine/header_template.php');
@@ -78,7 +78,7 @@ interface discipline_admin {
 
 
 <!-- ************************* -->
-<!-- Début du corps de la page -->
+<!-- DÃ©but du corps de la page -->
 <!-- ************************* -->
 <body onload="show_message_deconnexion();<?php echo $tbs_charger_observeur;?>">
 
@@ -90,11 +90,11 @@ interface discipline_admin {
   <div id='container'>
   <!-- Fin haut de page -->
   
-  <h2>Configuration générale</h2>
+  <h2>Configuration gÃ©nÃ©rale</h2>
   <p>
 	<em>
-	  La désactivation du module Discipline n'entraîne aucune suppression des données.
-	  Lorsque le module est désactivé, les utilisateurs n'ont pas accès au module.
+	  La dÃ©sactivation du module Discipline n'entraÃ®ne aucune suppression des donnÃ©es.
+	  Lorsque le module est dÃ©sactivÃ©, les utilisateurs n'ont pas accÃ¨s au module.
 	</em>
   </p>
 
@@ -119,7 +119,7 @@ echo add_token_field();
 			 value="n"
 			<?php if (getSettingValue("active_mod_discipline")=='n') echo " checked='checked'"; ?> />
 	  <label for='activer_n' style='cursor: pointer;'>
-		Désactiver le module Discipline
+		DÃ©sactiver le module Discipline
 	  </label>
 	</fieldset>
 
@@ -133,7 +133,7 @@ echo add_token_field();
 			 onchange='changement();'
 			   <?php if (getSettingValue("autorise_commentaires_mod_disc") == "yes") echo " checked='checked'";?> />
 		<label for='autorise_commentaires_mod_disc_y' style='cursor: pointer;'>
-		  Activer une zone de dialogue relative à chaque incident. <br/>Cette zone permet de commenter l'évolution du traitement de l'incident, de formuler une demande au CPE, ... 
+		  Activer une zone de dialogue relative Ã  chaque incident. <br/>Cette zone permet de commenter l'Ã©volution du traitement de l'incident, de formuler une demande au CPE, ... 
 		</label>
 	  <br />
 		  <input type='radio'
@@ -143,7 +143,7 @@ echo add_token_field();
 			 onchange='changement();'
 			   <?php if (getSettingValue("autorise_commentaires_mod_disc") == "no") echo " checked='checked'";?> />
 		<label for='visa_cdt_inter_modif_notices_visees_n' style='cursor: pointer;'>
-		  Désactiver la zone de dialogue relative à chaque incident.
+		  DÃ©sactiver la zone de dialogue relative Ã  chaque incident.
 		</label>
 	  </fieldset>
 	
@@ -155,7 +155,7 @@ echo add_token_field();
   
 
 
-<!-- Début du pied -->
+<!-- DÃ©but du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
 
 	<script type='text/javascript'>
@@ -177,7 +177,7 @@ echo add_token_field();
 		<?php
 			if ($tbs_microtime!="") {
 				echo "
-   <p class='microtime'>Page générée en ";
+   <p class='microtime'>Page gÃ©nÃ©rÃ©e en ";
    			echo $tbs_microtime;
 				echo " sec</p>
    			";

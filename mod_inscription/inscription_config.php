@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut creer des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Initialisations files
@@ -57,7 +57,7 @@ $id_inter = isset($_POST['id_inter']) ? $_POST['id_inter'] : (isset($_GET['id_in
 if (isset($_GET['action']) and ($_GET['action'] == "supprimer")) {
     $del = mysql_query("delete from inscription_j_login_items where id='".$_GET['id_inter']."'");
     $del = mysql_query("delete from inscription_items where id='".$_GET['id_inter']."'");
-    $msg = "Les modifications ont été enregistrées.";
+    $msg = "Les modifications ont Ã©tÃ© enregistrÃ©es.";
 }
 
 // Enregistrement
@@ -68,11 +68,11 @@ if (isset($_POST['is_posted_notes'])) {
 
   $msg = "";
   if (!saveSetting("active_inscription_utilisateurs", $_POST['activer']))
-		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+		$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation !";
 	if (isset($NON_PROTECT['notes'])) {
     $msg = "";
     $imp = traitement_magic_quotes($NON_PROTECT['notes']);
-    if (!saveSetting("mod_inscription_explication", $imp)) $msg .= "Erreur lors de l'enregistrement du paramètre mod_inscription_explication !";
+    if (!saveSetting("mod_inscription_explication", $imp)) $msg .= "Erreur lors de l'enregistrement du paramÃ¨tre mod_inscription_explication !";
   }
   if (!saveSetting("mod_inscription_titre", $_POST['mod_inscription_titre']))
     $msg .= "Erreur lors de l'enregistrement de mod_inscription_titre !";
@@ -95,7 +95,7 @@ if (isset($_POST['is_posted'])) {
         where id = '".$_POST['id_inter']."'
         ");
     }
-    $msg .= "Les modifications ont été enregistrées.";
+    $msg .= "Les modifications ont Ã©tÃ© enregistrÃ©es.";
 }
 
 $call_data = mysql_query("SELECT * FROM inscription_items ORDER BY $order_by_");
@@ -132,7 +132,7 @@ if (isset($_GET['action']) and ($_GET['action'] == "ajout")) {
         echo "<input type=\"hidden\" name=\"is_posted\" value=\"ajout\" />\n";
     }
     echo "<H2>Ajout d'un item</H2>\n";
-    echo "<p>un item correspond à une entité (stage, intervention dans les établissements, réunion...) à laquelle les utilisateurs peuvent s'inscrire.</p>\n";
+    echo "<p>un item correspond Ã  une entitÃ© (stage, intervention dans les Ã©tablissements, rÃ©union...) Ã  laquelle les utilisateurs peuvent s'inscrire.</p>\n";
     echo "<table cellpadding=\"6\">\n";
     echo "<tr><td>Date (au format AAAA/MM/JJ) : </td><td><input type=\"text\" name=\"date\" value=\"$date\" size=\"20\" /></td></tr>\n";
     echo "<tr><td>Heure : </td><td><input type=\"text\" name=\"heure\" value=\"$heure\" size=\"20\" /></td></tr>\n";
@@ -148,24 +148,24 @@ if (isset($_GET['action']) and ($_GET['action'] == "ajout")) {
 echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href=\"./inscription_config.php?action=ajout\">Ajouter un item</a> | <a href=\"javascript:centrerpopup('help.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">Aide</a></p>\n";
 echo "<form name=\"formulaire\" method=\"post\"  action=\"inscription_config.php\">\n";
 echo add_token_field();
-echo "<H2>Activation  / Désactivation</H2>\n";
+echo "<H2>Activation  / DÃ©sactivation</H2>\n";
 $active_prof = getSettingValue("active_inscription_utilisateurs");
 if ($active_prof == "y") {
-  echo "Actuellement, la page autorisant les inscriptions est activée : les utilisateurs (professeurs, cpe, scolarité) peuvent donc s'inscrire.";
+  echo "Actuellement, la page autorisant les inscriptions est activÃ©e : les utilisateurs (professeurs, cpe, scolaritÃ©) peuvent donc s'inscrire.";
 } else {
-  echo "Actuellement, la page autorisant les inscriptions n'est pas activée : les utilisateurs (professeurs, cpe, scolarité) ne peuvent pas s'inscrire.";
+  echo "Actuellement, la page autorisant les inscriptions n'est pas activÃ©e : les utilisateurs (professeurs, cpe, scolaritÃ©) ne peuvent pas s'inscrire.";
 }
 ?><br /> <label for='activer_y' style='cursor: pointer;'><input type="radio" name="activer" id="activer_y" value="y" <?php if (getSettingValue("active_inscription_utilisateurs")=='y') echo " checked"; ?> />
 &nbsp;Activer l'acc&egrave;s aux inscriptions</label><br />
 <label for='activer_n' style='cursor: pointer;'><input type="radio" name="activer" id="activer_n" value="n" <?php if (getSettingValue("active_inscription_utilisateurs")=='n') echo " checked"; ?> />
-&nbsp;Désactiver l'accès aux inscriptions</label>
+&nbsp;DÃ©sactiver l'accÃ¨s aux inscriptions</label>
 <?php
 echo "<H2>Liste des items</H2>\n";
 if ($nombre_lignes != 0) {
-  echo "<p>Chaque item ci-dessous correspond à une entité (stage, intervention dans les établissements, réunion...) à laquelle les utilisateurs peuvent s'inscrire.</p>\n";
+  echo "<p>Chaque item ci-dessous correspond Ã  une entitÃ© (stage, intervention dans les Ã©tablissements, rÃ©union...) Ã  laquelle les utilisateurs peuvent s'inscrire.</p>\n";
   echo "<table width=\"100%\" border=\"1\" cellspacing=\"1\" cellpadding=\"5\">\n";
   echo "<tr>\n";
-  echo "<td><p class='bold'><a href='inscription_config.php?order_by_=id'>N°</a></p></td>\n";
+  echo "<td><p class='bold'><a href='inscription_config.php?order_by_=id'>NÂ°</a></p></td>\n";
   echo "<td><p class='bold'><a href='inscription_config.php?order_by_=date'>Date</a></p></td>\n";
   echo "<td><p class='bold'>Heure</p></td>\n";
   echo "<td><p class='bold'><a href='inscription_config.php?order_by_=description'>Description (lieu, ...)</a></p></td>\n";
@@ -212,19 +212,19 @@ if ($nombre_lignes != 0) {
     echo "<td>$heure</td>\n";
     echo "<td>$description</td>\n";
     echo "<td>".$noms_inscrits."</td>\n";
-    echo "<td><a href=\"./inscription_config.php?id_inter=$id&amp;action=supprimer\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir supprimer cet item ?')\">Supprimer</a></td>\n";
+    echo "<td><a href=\"./inscription_config.php?id_inter=$id&amp;action=supprimer\" onclick=\"javascript:return confirm('ÃŠtes-vous sÃ»r de vouloir supprimer cet item ?')\">Supprimer</a></td>\n";
     echo "</tr>\n";
     $i++;
   }
   echo "</table>\n";
 } else {
-  echo "<p>Actuellement aucun item n'est présent dans la base.";
+  echo "<p>Actuellement aucun item n'est prÃ©sent dans la base.";
 }
 $contenu = getSettingValue("mod_inscription_explication");
 echo "<H2>Titre du module</H2>\n";
 echo "<input type=\"text\" name=\"mod_inscription_titre\" size=\"40\" value=\"".getSettingValue("mod_inscription_titre")."\" />\n";
 echo "<H2>Texte explicatif</H2>\n";
-echo "<p>Le texte ci-dessous sera visible par les personnes accédant au module d'inscription/désincription.</p>\n";
+echo "<p>Le texte ci-dessous sera visible par les personnes accÃ©dant au module d'inscription/dÃ©sincription.</p>\n";
 echo "<input type=\"hidden\" name=\"is_posted_notes\" value=\"yes\" />\n";
     // lancement de FCKeditor
 

@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Fichier qui permet de construire la barre de menu scolarité
+ * Fichier qui permet de construire la barre de menu scolaritÃ©
  * 
  * $Id: header_barre_scolarite_template.php 8300 2011-09-21 14:42:31Z crob $
  *
- * Variables envoyées au gabarit : liens de la barre de menu scolarité
+ * Variables envoyÃ©es au gabarit : liens de la barre de menu scolaritÃ©
  * - $tbs_menu_admin = array(li)
  *
  * @license GNU/GPL v2
@@ -14,8 +14,8 @@
  * @see getSettingValue()
  * @see insert_confirm_abandon()
  * @see menu_plugins()
- * @todo Réécrire la barre administrateur, le principe des gabarits, c'est d'envoyer des variables aux gabarits, 
- * pas d'écrire du code html dans le constructeur
+ * @todo RÃ©Ã©crire la barre administrateur, le principe des gabarits, c'est d'envoyer des variables aux gabarits, 
+ * pas d'Ã©crire du code html dans le constructeur
  */
 
 /* This file is part of GEPI.
@@ -43,7 +43,7 @@ if (!$_SESSION["login"]) {
     die();
 }
 
-// Fonction générant le menu Plugins
+// Fonction gÃ©nÃ©rant le menu Plugins
 include("menu_plugins.inc.php");
 $barre_plugin=menu_plugins();
 if ($barre_plugin!="") {
@@ -105,12 +105,12 @@ if ($barre_plugin!="") {
 			$menus .= '            </ul>'."\n";
 			$menus .= '     </li>'."\n";
 	
-			$menus .= '     <li class="plus">Vérif. et accès</a>'."\n";
+			$menus .= '     <li class="plus">VÃ©rif. et accÃ¨s</a>'."\n";
 			$menus .= '            <ul class="niveau3">'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/bulletin/verif_bulletins.php"'.insert_confirm_abandon().'>Vérif. remplissage bull</a></li>'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/bulletin/verrouillage.php"'.insert_confirm_abandon().'>Vérrouillage périodes</a></li>'."\n";
+			$menus .= '                <li><a href="'.$gepiPath.'/bulletin/verif_bulletins.php"'.insert_confirm_abandon().'>VÃ©rif. remplissage bull</a></li>'."\n";
+			$menus .= '                <li><a href="'.$gepiPath.'/bulletin/verrouillage.php"'.insert_confirm_abandon().'>VÃ©rrouillage pÃ©riodes</a></li>'."\n";
 			$menus .= '                <li><a href="'.$gepiPath.'/bulletin/autorisation_exceptionnelle_saisie_app.php"'.insert_confirm_abandon().'>Autorisation exceptionnelle de remplissage</a></li>'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/classes/acces_appreciations.php"'.insert_confirm_abandon().'>Accès resp/ele appréciations</a></li>'."\n";
+			$menus .= '                <li><a href="'.$gepiPath.'/classes/acces_appreciations.php"'.insert_confirm_abandon().'>AccÃ¨s resp/ele apprÃ©ciations</a></li>'."\n";
 			$menus .= '            </ul>'."\n";
 			$menus .= '     </li>'."\n";
 	
@@ -121,7 +121,7 @@ if ($barre_plugin!="") {
 				$menus .= '                <li><a href="'.$gepiPath.'/bulletin/param_bull.php"'.insert_confirm_abandon().'>Param. impression bull</a></li>'."\n";
 			}
 			$menus .= '                <li><a href="'.$gepiPath.'/bulletin/bull_index.php"'.insert_confirm_abandon().'>Impression bulletins</a></li>'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().'>Bulletins simplifiés</a></li>'."\n";
+			$menus .= '                <li><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().'>Bulletins simplifiÃ©s</a></li>'."\n";
 			$menus .= '            </ul>'."\n";
 			$menus .= '     </li>'."\n";
 	
@@ -136,10 +136,10 @@ if ($barre_plugin!="") {
 			$menus .= '            <ul class="niveau3">'."\n";
 			$menus .= '                <li><a href="'.$gepiPath.'/visualisation/affiche_eleve.php?type_graphe=courbe"'.insert_confirm_abandon().'>Courbe</a></li>'."\n";
 			$menus .= '                <li><a href="'.$gepiPath.'/visualisation/affiche_eleve.php?type_graphe=etoile"'.insert_confirm_abandon().'>Etoile</a></li>'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/visualisation/eleve_classe.php"'.insert_confirm_abandon().'>Elève/classe</a></li>'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/visualisation/eleve_eleve.php"'.insert_confirm_abandon().'>Elève/élève</a></li>'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/visualisation/evol_eleve.php"'.insert_confirm_abandon().'>Evol. élève année</a></li>'."\n";
-			$menus .= '                <li><a href="'.$gepiPath.'/visualisation/evol_eleve_classe.php"'.insert_confirm_abandon().'>Evol. élève/classe année</a></li>'."\n";
+			$menus .= '                <li><a href="'.$gepiPath.'/visualisation/eleve_classe.php"'.insert_confirm_abandon().'>ElÃ¨ve/classe</a></li>'."\n";
+			$menus .= '                <li><a href="'.$gepiPath.'/visualisation/eleve_eleve.php"'.insert_confirm_abandon().'>ElÃ¨ve/Ã©lÃ¨ve</a></li>'."\n";
+			$menus .= '                <li><a href="'.$gepiPath.'/visualisation/evol_eleve.php"'.insert_confirm_abandon().'>Evol. Ã©lÃ¨ve annÃ©e</a></li>'."\n";
+			$menus .= '                <li><a href="'.$gepiPath.'/visualisation/evol_eleve_classe.php"'.insert_confirm_abandon().'>Evol. Ã©lÃ¨ve/classe annÃ©e</a></li>'."\n";
 			$menus .= '                <li><a href="'.$gepiPath.'/visualisation/stats_classe.php"'.insert_confirm_abandon().'>Evol. moyennes classes</a></li>'."\n";
 			$menus .= '                <li><a href="'.$gepiPath.'/visualisation/classe_classe.php"'.insert_confirm_abandon().'>Classe/classe</a></li>'."\n";
 			$menus .= '            </ul>'."\n";
@@ -153,7 +153,7 @@ if ($barre_plugin!="") {
 			// Carnets de notes
 			$menus .= '<li class="li_inline"><a href="#"'.insert_confirm_abandon().'>&nbsp;Carnets de notes</a>'."\n";
 			$menus .= '   <ul class="niveau2">'."\n";
-			$menus .= '       <li><a href="'.$gepiPath.'/cahier_notes/visu_releve_notes_bis.php"'.insert_confirm_abandon().'>Relevés de notes</a></li>'."\n";
+			$menus .= '       <li><a href="'.$gepiPath.'/cahier_notes/visu_releve_notes_bis.php"'.insert_confirm_abandon().'>RelevÃ©s de notes</a></li>'."\n";
 			$menus .= '       <li><a href="'.$gepiPath.'/cahier_notes/index2.php"'.insert_confirm_abandon().'>Moyennes des CN</a></li>'."\n";
 			$menus .= '   </ul>'."\n";
 			$menus .= '</li>'."\n";
@@ -164,19 +164,19 @@ if ($barre_plugin!="") {
 		// Gestion
 		$menus .= '<li class="li_inline"><a href="#"'.insert_confirm_abandon().'>&nbsp;Gestion</a>'."\n";
 		$menus .= '   <ul class="niveau2">'."\n";
-		$menus .= '       <li class="plus"><a href="'.$gepiPath.'/eleves/index.php"'.insert_confirm_abandon().'>Elèves</a>'."\n";
+		$menus .= '       <li class="plus"><a href="'.$gepiPath.'/eleves/index.php"'.insert_confirm_abandon().'>ElÃ¨ves</a>'."\n";
 		$menus .= '           <ul class="niveau3">'."\n";
-		$menus .= '                <li><a href="'.$gepiPath.'/eleves/index.php"'.insert_confirm_abandon().'>Gestion élèves</a></li>'."\n";
-		//$menus .= '                <li><a href="'.$gepiPath.'/responsables/maj_import2.php"'.insert_confirm_abandon().'>Mise à jour Sconet</a></li>'."\n";
-		$menus .= '                <li><a href="'.$gepiPath.'/eleves/visu_eleve.php"'.insert_confirm_abandon().'>Consultation elève</a></li>'."\n";
-		$menus .= '                <li><a href="'.$gepiPath.'/classes/acces_appreciations.php"'.insert_confirm_abandon().'>Accès appréciations</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/eleves/index.php"'.insert_confirm_abandon().'>Gestion Ã©lÃ¨ves</a></li>'."\n";
+		//$menus .= '                <li><a href="'.$gepiPath.'/responsables/maj_import2.php"'.insert_confirm_abandon().'>Mise Ã  jour Sconet</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/eleves/visu_eleve.php"'.insert_confirm_abandon().'>Consultation elÃ¨ve</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/classes/acces_appreciations.php"'.insert_confirm_abandon().'>AccÃ¨s apprÃ©ciations</a></li>'."\n";
 		$menus .= '            </ul>'."\n";
 		$menus .= '       </li>'."\n";
 		$menus .= '       <li class="plus"><a href="'.$gepiPath.'/responsables/index.php"'.insert_confirm_abandon().'>Responsables</a>'."\n";
 		$menus .= '           <ul class="niveau3">'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/responsables/index.php"'.insert_confirm_abandon().'>Gestion responsables</a></li>'."\n";
-		//$menus .= '                <li><a href="'.$gepiPath.'/responsables/maj_import2.php"'.insert_confirm_abandon().'>Mise à jour Sconet</a></li>'."\n";
-		$menus .= '                <li><a href="'.$gepiPath.'/classes/acces_appreciations.php"'.insert_confirm_abandon().'>Accès appréciations</a></li>'."\n";
+		//$menus .= '                <li><a href="'.$gepiPath.'/responsables/maj_import2.php"'.insert_confirm_abandon().'>Mise Ã  jour Sconet</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/classes/acces_appreciations.php"'.insert_confirm_abandon().'>AccÃ¨s apprÃ©ciations</a></li>'."\n";
 		$menus .= '            </ul>'."\n";
 		$menus .= '       </li>'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/messagerie/index.php"'.insert_confirm_abandon().'>Panneau affichage</a></li>'."\n";
@@ -187,8 +187,8 @@ if ($barre_plugin!="") {
 		//=======================================================
 		$menus .= '<li class="li_inline"><a href="#"'.insert_confirm_abandon().'>&nbsp;Listes</a>'."\n";
 		$menus .= '   <ul class="niveau2">'."\n";
-		$menus .= '       <li><a href="'.$gepiPath.'/groupes/visu_profs_class.php"'.insert_confirm_abandon().'>Visu. équipes péda</a></li>'."\n";
-		$menus .= '       <li><a href="'.$gepiPath.'/groupes/visu_mes_listes.php"'.insert_confirm_abandon().'>Visu. mes élèves</a></li>'."\n";
+		$menus .= '       <li><a href="'.$gepiPath.'/groupes/visu_profs_class.php"'.insert_confirm_abandon().'>Visu. Ã©quipes pÃ©da</a></li>'."\n";
+		$menus .= '       <li><a href="'.$gepiPath.'/groupes/visu_mes_listes.php"'.insert_confirm_abandon().'>Visu. mes Ã©lÃ¨ves</a></li>'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/mod_ooo/publipostage_ooo.php"'.insert_confirm_abandon().'>Publipostage OOo</a></li>'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/impression/impression_serie.php"'.insert_confirm_abandon().'>Impression PDF listes</a></li>'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/groupes/mes_listes.php"'.insert_confirm_abandon().'>Export CSV listes</a></li>'."\n";

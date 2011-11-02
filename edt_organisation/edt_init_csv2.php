@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Fichier qui permet de faire l'import de l'EdT depuis un logiciel propriÈtaire
+ * Fichier qui permet de faire l'import de l'EdT depuis un logiciel propri√©taire
  *
  * @version $Id: edt_init_csv2.php 7525 2011-07-27 17:53:45Z crob $
 
@@ -40,22 +40,22 @@ if ($resultat_session == 'c') {
     header("Location: ../logout.php?auto=1");
     die();
 }
-// SÈcuritÈ
+// S√©curit√©
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
-// SÈcuritÈ supplÈmentaire par rapport aux paramËtres du module EdT / Calendrier
+// S√©curit√© suppl√©mentaire par rapport aux param√®tres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes") {
     Die(ASK_AUTHORIZATION_TO_ADMIN);
 }
-// CSS et js particulier ‡ l'EdT
+// CSS et js particulier √† l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 // ==============PROTOTYPE===============
 $utilisation_prototype = "ok";
 // ============fin PROTOTYPE=============
-// On insËre l'entÍte de Gepi
+// On ins√®re l'ent√™te de Gepi
 require_once("../lib/header.inc");
 // On ajoute le menu EdT
 require_once("./menu.inc.php");
@@ -117,17 +117,17 @@ $aff_etape = null;
 $exist = NULL;
 $msg_gr = NULL;
 
-// On rÈcupËre le rÈpertoire temporaire de l'admin
+// On r√©cup√®re le r√©pertoire temporaire de l'admin
 $tempdir = get_user_temp_directory();
 if (!$tempdir) {
-	// On crÈe alors le rÈpertoire adÈquat
+	// On cr√©e alors le r√©pertoire ad√©quat
 	$creer_rep = check_user_temp_directory();
 	if (!$creer_rep) {
-		trigger_error('Impossible d\'enregistrer le fichier sur le serveur, veuillez vÈrifier les droits en Ècriture sur le rÈpertoire /temp', E_USER_ERROR);
+		trigger_error('Impossible d\'enregistrer le fichier sur le serveur, veuillez v√©rifier les droits en √©criture sur le r√©pertoire /temp', E_USER_ERROR);
 	}
 }
 
-// On vÈrifie que l'utilisateur utilise ou pas le module edt_gr
+// On v√©rifie que l'utilisateur utilise ou pas le module edt_gr
 if ($action == "modgr") {
 	if ($module_gr == 'y') {
 		$value = 'y';
@@ -135,26 +135,26 @@ if ($action == "modgr") {
 		$value = 'n';
 	}
 
-	// On met ‡ jour le setting
+	// On met √† jour le setting
 	$save = saveSetting('mod_edt_gr', $value);
 	if ($save) {
-		$msg_gr = '<span style="color: green;">Modification enregistrÈe</span>';
+		$msg_gr = '<span style="color: green;">Modification enregistr√©e</span>';
 	}else{
 		$msg_gr = '<span class="red">Impossible d\'enregistrer</span>';
 	}
 }
-// on rËgle le checked
+// on r√®gle le checked
 if (getSettingValue('mod_edt_gr') == "y") {
 	$checked_gr = ' checked="checked"';
 }else{
 	$checked_gr = '';
 }
 
-// Si l'utilisateur veut recommencer, on efface toutes les entrÈes de l'Ètape qu'il a demandÈe
+// Si l'utilisateur veut recommencer, on efface toutes les entr√©es de l'√©tape qu'il a demand√©e
 if ($recommencer != 'non' AND is_numeric($recommencer)) {
 
 
-    // On efface toutes les entrÈes de cette Ètape (les Ètapes vont de 0 ‡ 12)
+    // On efface toutes les entr√©es de cette √©tape (les √©tapes vont de 0 √† 12)
     if ($recommencer == '0' AND file_exists("../temp/".$tempdir."/g_edt_2.csv")) {
     	// On efface le fichier
     	unlink("../temp/".$tempdir."/g_edt_2.csv");
@@ -162,18 +162,18 @@ if ($recommencer != 'non' AND is_numeric($recommencer)) {
     }
 
     $supprimer = mysql_query("DELETE FROM edt_init WHERE ident_export >= '" . $recommencer . "' AND ident_export != 'fichierTexte2'")
-    OR trigger_error('Erreur, La table edt_init n\'a pas ÈtÈ mise ‡ jour : ' . mysql_error(), E_USER_ERROR);
+    OR trigger_error('Erreur, La table edt_init n\'a pas √©t√© mise √† jour : ' . mysql_error(), E_USER_ERROR);
     $modifier = mysql_query("UPDATE edt_init SET nom_export = '" . $recommencer . "' WHERE ident_export = 'fichierTexte2'")
-    OR trigger_error('Erreur dans le retour en arriËre : ' . mysql_error(), E_USER_ERROR);
+    OR trigger_error('Erreur dans le retour en arri√®re : ' . mysql_error(), E_USER_ERROR);
 
-	// On vÈrifie que la demande d'effacement des cours prÈcÈdents soit bien cochÈe
+	// On v√©rifie que la demande d'effacement des cours pr√©c√©dents soit bien coch√©e
 	if ($truncate_cours == "oui") {
 		$vider_table = mysql_query("TRUNCATE TABLE edt_cours");
     }
 
 }elseif($recommencer == 'non' AND is_numeric($recommencer)){
 
-	// On vÈrifie que la demande d'effacement des cours prÈcÈdents soit bien cochÈe
+	// On v√©rifie que la demande d'effacement des cours pr√©c√©dents soit bien coch√©e
 	if ($truncate_cours == "oui") {
 		$vider_table = mysql_query("TRUNCATE TABLE edt_cours");
     }
@@ -181,7 +181,7 @@ if ($recommencer != 'non' AND is_numeric($recommencer)) {
 }
 
 
-// On garde en mÈmoire les deux coches pour effacer la table de cours et afficher les informations quand on enregistre les cours
+// On garde en m√©moire les deux coches pour effacer la table de cours et afficher les informations quand on enregistre les cours
 $referer = explode("/", $_SERVER['HTTP_REFERER']);
 if ($aff_infos == "oui" OR ($referer[5] == "edt_init_concordance2.php" AND $_SESSION["afficher_infos"] == ' checked="checked"')) {
     $_SESSION["afficher_infos"] = ' checked="checked"';
@@ -195,38 +195,38 @@ if ($truncate_cours == "oui" OR ($referer[5] == "edt_init_concordance2.php" AND 
 }
 
 
-// On teste d'abord pour savoir ‡ quelle Ètape on est
+// On teste d'abord pour savoir √† quelle √©tape on est
 $query = mysql_query("SELECT nom_export, nom_gepi FROM edt_init WHERE ident_export = 'fichierTexte2'");
-// On affiche le numÈro de l'Ètape
+// On affiche le num√©ro de l'√©tape
 if ($query) {
     $etape_effectuee = mysql_fetch_array($query);
     $etape = $etape_effectuee["nom_export"];
     $date_last = explode(" ", $etape_effectuee["nom_gepi"]);
-    // Si $etape est null, on crÈe l'entrÈe
+    // Si $etape est null, on cr√©e l'entr√©e
     if ($etape == '') {
         $insert = mysql_query("INSERT INTO edt_init SET ident_export = 'fichierTexte2', nom_export = '0', nom_gepi = '" . date("d-m-Y h:i") . "'");
         $etape = '0';
     }
     $aff_etape = '
-		<h3 class="gepi" style="font-weight: bold;">Vous Ítes actuellement ‡ l\'Ètape numÈro ' . $etape . '</h3>
+		<h3 class="gepi" style="font-weight: bold;">Vous √™tes actuellement √† l\'√©tape num√©ro ' . $etape . '</h3>
 	';
     if ($date_last != '' AND $etape != 0) {
         echo '
-		<p>Cette initialisation a ÈtÈ commencÈe le : ' . $date_last[0] . ' ‡ ' . $date_last[1] . '</p>
+		<p>Cette initialisation a √©t√© commenc√©e le : ' . $date_last[0] . ' √† ' . $date_last[1] . '</p>
 		';
     }
 } else {
-    // On crÈe le compteur d'Ètapes
+    // On cr√©e le compteur d'√©tapes
     $insert = mysql_query("INSERT INTO edt_init SET ident_export = 'fichierTexte2', nom_export = '0', nom_gepi = '" . date("d-m-Y h:i") . "'");
     $etape = 0;
     $aff_etape = '
-	<p class="red">Vous n\'avez pas commencÈ la concordance.</p>';
+	<p class="red">Vous n\'avez pas commenc√© la concordance.</p>';
 }
 echo '<div id="divCsv2">';
 echo $aff_etape;
 
 
-// On vÈrifie si un fichier de ce type n'existe pas dÈj‡
+// On v√©rifie si un fichier de ce type n'existe pas d√©j√†
 	if (file_exists("../temp/".$tempdir."/g_edt_2.csv")) {
 	 	// On peut continuer la concordance
 	 	$action = "upload_file";
@@ -236,7 +236,7 @@ echo $aff_etape;
 // On commence le travail sur le fichier
 if ($action == "upload_file") {
 
-	// et on enregistre le fichier si nÈcessaire
+	// et on enregistre le fichier si n√©cessaire
 	if ($exist != "oui") {
 		if (strtolower($csv_file['name']) == "g_edt_2.csv") {
 			$source_file = ($csv_file['tmp_name']);
@@ -248,7 +248,7 @@ if ($action == "upload_file") {
 		}
 	}
 
-    // On vÈrifie le nom du fichier...
+    // On v√©rifie le nom du fichier...
     if (file_exists("../temp/".$tempdir."/g_edt_2.csv") === TRUE) {
         // plus besoin d'afficher les explications
         $_SESSION["explications"] = "non";
@@ -260,27 +260,27 @@ if ($action == "upload_file") {
             echo "<p>Impossible d'ouvrir le fichier CSV !</p>";
             echo "<p><a href=\"./edt_init_csv.php\">Cliquer ici </a> pour recommencer !</center></p>";
         } else {
-            // A partir de l‡, on vide la table edt_cours
+            // A partir de l√†, on vide la table edt_cours
             if ($truncate_cours == "oui") {
                 $vider_table = mysql_query("TRUNCATE TABLE edt_cours");
             }
             // On ouvre alors toutes les lignes de tous les champs
             $tableau = array();
-            // On affiche le tire pour chaque Ètape
+            // On affiche le tire pour chaque √©tape
             $titre = array('Les jours de la semaine',
-                'Les crÈneaux : vous devez faire la concordance sur les crÈneaux de dÈbut de cours <br />&nbsp;&nbsp;&nbsp;-> <span style="font-style: italic;">PrÈcisez le crÈneau de dÈbut pour tous les crÈneaux (si le cours commence au milieu du crÈneau M1, il faut donc choisir le crÈneau M1).</span>.',
+                'Les cr√©neaux : vous devez faire la concordance sur les cr√©neaux de d√©but de cours <br />&nbsp;&nbsp;&nbsp;-> <span style="font-style: italic;">Pr√©cisez le cr√©neau de d√©but pour tous les cr√©neaux (si le cours commence au milieu du cr√©neau M1, il faut donc choisir le cr√©neau M1).</span>.',
                 'Les divisions : le nom des classes',
-                'Les matiËres enseignÈes : ',
+                'Les mati√®res enseign√©es : ',
                 'Les professeurs : ',
-                'Les salles : <b>Gepi vÈrifie l\'existence de ces salles et crÈe celles qui n\'existent pas.</b>',
+                'Les salles : <b>Gepi v√©rifie l\'existence de ces salles et cr√©e celles qui n\'existent pas.</b>',
                 'Les groupes : subdivisions des regroupements',
                 'Les regroupements : ce sont les enseignements ou les AID de Gepi',
-                'Les effectifs : non utilisÈs pour l\'EdT',
-                'Les ModalitÈs : non utilisÈes pour l\'EdT',
-                'La frÈquence : le type de semaine ainsi que les cours qui ne durent pas toute l\'annÈe',
-                'L\'aire : non utilisÈe dans Gepi',
+                'Les effectifs : non utilis√©s pour l\'EdT',
+                'Les Modalit√©s : non utilis√©es pour l\'EdT',
+                'La fr√©quence : le type de semaine ainsi que les cours qui ne durent pas toute l\'ann√©e',
+                'L\'aire : non utilis√©e dans Gepi',
                 'Vous allez pouvoir enregistrer les cours dans la base');
-            // On dÈtermine quel est le helper appelÈ
+            // On d√©termine quel est le helper appel√©
             $helpers = array('select_jours', 'select_creneaux', 'select_classes', 'select_matieres', 'select_professeurs', 'aucun', 'aucun',
                 'select_aid_groupes', 'aucun', 'aucun', 'select_frequence', 'aucun');
 
@@ -289,23 +289,23 @@ if ($action == "upload_file") {
             	$aff_enregistrer = 'Enregistrer ces concordances';
                 while ($tab = fgetcsv($fp, 1024, ";")) {
                     if (in_array($tab[$etape], $tableau) === false) {
-                        // Puisque la valeur du champ n'est pas encore dans $tableau, on l'insËre pour Èviter les doublons
+                        // Puisque la valeur du champ n'est pas encore dans $tableau, on l'ins√®re pour √©viter les doublons
                         if ($tab[$etape] != '') {
                             $tableau[] = $tab[$etape];
                         }
                     }
                 }
-                // On range les infos du tableau dans l'ordre alphabÈtique
+                // On range les infos du tableau dans l'ordre alphab√©tique
                 asort($tableau);
 
-                // On commence le traitement des entrÈes et des sorties
+                // On commence le traitement des entr√©es et des sorties
                 echo '<form name="edtInitCsv2" action="edt_init_concordance2.php" method="post">';
                 $nbre_lignes = count($tableau);
 
                 //for($l = 0; $l < $nbre_lignes; $l++)
-                $l = 0; // comme itÈrateur
+                $l = 0; // comme it√©rateur
 				foreach ($tableau as $key => $val) {
-                	// On enlËve les guillemets et les apostrophes et les accents
+                	// On enl√®ve les guillemets et les apostrophes et les accents
                 	//$valeur = my_ereg_replace("'", "wkzx", my_ereg_replace('"', "zxwk", $val));
                 	$valeur = remplace_accents($val, 'all_nospace');
                     echo '
@@ -318,17 +318,17 @@ if ($action == "upload_file") {
                     if ($etape != 2) {
                         $test_selected = explode(" ", $valeur);
                     } elseif ($etape == 0) {
-                    	// Pour les jours, on enlËve l'espace devant
+                    	// Pour les jours, on enl√®ve l'espace devant
                         $test_selected[0] = trim($valeur);
                     }else{
 						$test_selected[0] = $valeur;
 					}
 
-					// Pour les salles, on annonce celles qui existent dÈj‡
+					// Pour les salles, on annonce celles qui existent d√©j√†
 					if (salleifexists($valeur) == "oui" AND $etape == 5) {
-						echo '<span style="font-style: italic; color: green; font-size: 0.8em;">Salle existante, non crÈÈe !</span>';
+						echo '<span style="font-style: italic; color: green; font-size: 0.8em;">Salle existante, non cr√©√©e !</span>';
 					}elseif (salleifexists($valeur) != "oui" AND $etape == 5){
-						echo '<span style="font-style: italic; color: red; font-size: 0.8em;">Salle ‡ crÈer !</span>';
+						echo '<span style="font-style: italic; color: red; font-size: 0.8em;">Salle √† cr√©er !</span>';
 					}
 
                     $nom_select = 'nom_gepi_' . $l; // pour le nom du select
@@ -361,7 +361,7 @@ if ($action == "upload_file") {
                     $l++;
                 }
                 if ($etape == 6 OR $etape == 8 OR $etape == 9 OR $etape == 11) {
-                	$aff_enregistrer = 'Passer ‡ l\'Ètape suivante (aucun enregistrement)';
+                	$aff_enregistrer = 'Passer √† l\'√©tape suivante (aucun enregistrement)';
                 }elseif($etape == 5){
 					$aff_enregistrer = 'Enregistrer ces salles';
 				}
@@ -370,14 +370,14 @@ if ($action == "upload_file") {
 				<form name="edtInitCsv2" action="edt_init_concordance2.php" method="post">';
                 $b = 0; // c'est pour le while
 
-                // C'est l‡ qu'on enregistre les cours en se servant des donnÈes recueillies auparavant
+                // C'est l√† qu'on enregistre les cours en se servant des donn√©es recueillies auparavant
                 while ($tab = fgetcsv($fp, 1024, ";")) {
                     $nbre_lignes = $b;
                     $toutelaligne = null;
                     // On rentre toutes les cellules de la ligne dans une seule variable
                     for($t = 0; $t < 12; $t++) {
 
-                        // On Èlimine les guillemets et l'apostrophe qui mettent la pagaille
+                        // On √©limine les guillemets et l'apostrophe qui mettent la pagaille
                         //$toutelaligne .= my_ereg_replace("'", "wkzx", my_ereg_replace('"', "zxwk", $tab[$t])) . '|';
                         $toutelaligne .= remplace_accents($tab[$t], 'all_nospace'). '|';
 
@@ -385,7 +385,7 @@ if ($action == "upload_file") {
 
                     echo '
 					<input type="hidden" name="ligne_' . $b . '" value="' . $toutelaligne . '" />';
-                    $b++; // on incrÈmente le compteur pour le name
+                    $b++; // on incr√©mente le compteur pour le name
                 }
                 echo 'Votre fichier comporte ' . $nbre_lignes . ' cours.';
                 $aff_enregistrer = 'Enregistrer ces cours';
@@ -417,8 +417,8 @@ if (isset($_SESSION["explications"]) AND $_SESSION["explications"] == "non") {
 <h3 class="red">Initialiser l'emploi du temps de Gepi &agrave; partir d'un export csv d'un logiciel propri&eacute;taire.</h3>
 
 <p style="font-weight: bold;">UDT(profil concepteur) > Recherche > Emploi du temps > Rechercher.
-(en laissant l'option "cours" cochÈe par dÈfaut, et en laissant
-a priori toutes les divisions/professeurs/matiËres/salles/...,
+(en laissant l'option "cours" coch√©e par d√©faut, et en laissant
+a priori toutes les divisions/professeurs/mati√®res/salles/...,
 sauf si on ne veut extraire qu'une partie de l'EdT)</p>
 <p class="red">Attention, il faut sauvegarder le fichier avec un tableur comme Calc d'OpenOffice.org car Excell fournit un csv qui pose des probl&egrave;mes &agrave; l'utilisation.</p>
 <p>Il faut enlever la ligne d'ent&ecirc;te.</p>
@@ -437,7 +437,7 @@ la derni&egrave;re sera la plus longue. Par contre, les 11 premi&egrave;res &eac
 	<li>Jour</li>
 	<li>Heure</li>
 	<li>Div</li>
-	<li>MatiËre</li>
+	<li>Mati√®re</li>
 	<li>Professeur</li>
 	<li>Salle</li>
 	<li>Groupe</li>
@@ -448,7 +448,7 @@ la derni&egrave;re sera la plus longue. Par contre, les 11 premi&egrave;res &eac
 	<li>Aire</li>
 </ol>
 
-	<p>Veuillez prÈciser le nom complet du fichier <b>g_edt_2.csv</b>.</p>
+	<p>Veuillez pr√©ciser le nom complet du fichier <b>g_edt_2.csv</b>.</p>
 		<form enctype="multipart/form-data" action="edt_init_csv2.php" method="post">
 
 			<input type="hidden" name="action" value="upload_file" />

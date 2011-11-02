@@ -46,34 +46,34 @@ include("../lib/initialisation_annee.inc.php");
 $liste_tables_del = $liste_tables_del_etape_professeurs;
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des matières";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des matiÃ¨res";
 require_once("../lib/header.inc");
 //************** FIN EN-TETE ***************
 ?>
 <p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
-echo "<center><h3 class='gepi'>Quatrième phase d'initialisation<br />Importation des associations profs-matières-classes (enseignements)</h3></center>";
+echo "<center><h3 class='gepi'>QuatriÃ¨me phase d'initialisation<br />Importation des associations profs-matiÃ¨res-classes (enseignements)</h3></center>";
 
 
 if (!isset($_POST["action"])) {
     //
-    // On sélectionne le fichier à importer
+    // On sÃ©lectionne le fichier Ã  importer
     //
 
-    echo "<p>Vous allez effectuer la quatrième étape : elle consiste à importer le fichier <b>prof_disc_classes.csv</b> contenant les données relatives aux enseignements.";
-    echo "<p>ATTENTION ! Avec cette opération, vous effacez tous les groupes d'enseignement qui avaient été définis l'année dernière. Ils seront écrasés par ceux que vous allez importer avec la procédure courante.</p>";
-    echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : ";
+    echo "<p>Vous allez effectuer la quatriÃ¨me Ã©tape : elle consiste Ã  importer le fichier <b>prof_disc_classes.csv</b> contenant les donnÃ©es relatives aux enseignements.";
+    echo "<p>ATTENTION ! Avec cette opÃ©ration, vous effacez tous les groupes d'enseignement qui avaient Ã©tÃ© dÃ©finis l'annÃ©e derniÃ¨re. Ils seront Ã©crasÃ©s par ceux que vous allez importer avec la procÃ©dure courante.</p>";
+    echo "<p>Les champs suivants doivent Ãªtre prÃ©sents, dans l'ordre, et <b>sÃ©parÃ©s par un point-virgule</b> : ";
     echo "<ul><li>Login du professeur</li>" .
-            "<li>Nom court de la matière</li>" .
-            "<li>Le ou les identifiant(s) de classe (séparés par un point d'exclamation ; ex : 1S1!1S2)</li>" .
-            "<li>Type d'enseignement (CG pour enseignement général suivi par toute la classe, OPT pour un enseignement optionnel)</li>" .
+            "<li>Nom court de la matiÃ¨re</li>" .
+            "<li>Le ou les identifiant(s) de classe (sÃ©parÃ©s par un point d'exclamation ; ex : 1S1!1S2)</li>" .
+            "<li>Type d'enseignement (CG pour enseignement gÃ©nÃ©ral suivi par toute la classe, OPT pour un enseignement optionnel)</li>" .
             "</ul>";
-    echo "<p>Exemple de ligne pour un enseignement général :<br/>" .
+    echo "<p>Exemple de ligne pour un enseignement gÃ©nÃ©ral :<br/>" .
             "DUPONT.JEAN;MATHS;1S1;CG<br/>" .
-            "Exemple de ligne pour un enseignement optionnel avec des élèves de plusieurs classes :<br/>" .
+            "Exemple de ligne pour un enseignement optionnel avec des Ã©lÃ¨ves de plusieurs classes :<br/>" .
             "DURANT.PATRICE;ANGL2;1S1!1S2!1S3;OPT</p>";
-    echo "<p>Veuillez préciser le nom complet du fichier <b>prof_disc_classes.csv</b>.";
+    echo "<p>Veuillez prÃ©ciser le nom complet du fichier <b>prof_disc_classes.csv</b>.";
     echo "<form enctype='multipart/form-data' action='prof_disc_classes.php' method='post'>";
 	echo add_token_field();
     echo "<input type='hidden' name='action' value='upload_file' />";
@@ -84,12 +84,12 @@ if (!isset($_POST["action"])) {
 } else {
 	check_token(false);
     //
-    // Quelque chose a été posté
+    // Quelque chose a Ã©tÃ© postÃ©
     //
     if ($_POST['action'] == "save_data") {
         //
-        // On enregistre les données dans la base.
-        // Le fichier a déjà été affiché, et l'utilisateur est sûr de vouloir enregistrer
+        // On enregistre les donnÃ©es dans la base.
+        // Le fichier a dÃ©jÃ  Ã©tÃ© affichÃ©, et l'utilisateur est sÃ»r de vouloir enregistrer
         //
 
         $j=0;
@@ -107,7 +107,7 @@ if (!isset($_POST["action"])) {
         $error = 0;
         // Compteur d'enregistrement
         $total = 0;
-        // Warning matière, si jamais une matière est créée à la volée
+        // Warning matiÃ¨re, si jamais une matiÃ¨re est crÃ©Ã©e Ã  la volÃ©e
         $warning_matiere = false;
         while ($go) {
 
@@ -116,7 +116,7 @@ if (!isset($_POST["action"])) {
             $reg_classes = $_POST["ligne".$i."_classes"];
             $reg_type = $_POST["ligne".$i."_type"];
 
-            // On nettoie et on vérifie :
+            // On nettoie et on vÃ©rifie :
             $reg_prof = preg_replace("/[^A-Za-z0-9\._]/","",trim(strtoupper($reg_prof)));
             if (strlen($reg_prof) > 50) $reg_prof = substr($reg_prof, 0, 50);
 
@@ -124,23 +124,23 @@ if (!isset($_POST["action"])) {
             if (strlen($reg_matiere) > 50) $reg_matiere = substr($reg_matiere, 0, 50);
 
             $reg_classes = preg_replace("/[^A-Za-z0-9\.\-!]/","",trim($reg_classes));
-            if (strlen($reg_classes) > 2000) $reg_classes = substr($reg_classes, 0, 2000); // C'est juste pour éviter une tentative d'overflow...
+            if (strlen($reg_classes) > 2000) $reg_classes = substr($reg_classes, 0, 2000); // C'est juste pour Ã©viter une tentative d'overflow...
 
-            // On ne garde véritablement que les types CG et OPT. En effet la génération par Scribe
-            // est supposée n'intégrer que ces deux types.
+            // On ne garde vÃ©ritablement que les types CG et OPT. En effet la gÃ©nÃ©ration par Scribe
+            // est supposÃ©e n'intÃ©grer que ces deux types.
             if ($reg_type != "CG" AND $reg_type != "OPT") $reg_type = false;
 
             if ($reg_type) {
 
-                // Première étape : on s'assure que le prof existe. S'il n'existe pas, on laisse tomber.
+                // PremiÃ¨re Ã©tape : on s'assure que le prof existe. S'il n'existe pas, on laisse tomber.
                 $test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $reg_prof . "'"),0);
                 if ($test == 1) {
 
-                    // Le prof existe. cool. Maintenant on récupère la matière.
+                    // Le prof existe. cool. Maintenant on rÃ©cupÃ¨re la matiÃ¨re.
                     $test = mysql_query("SELECT nom_complet FROM matieres WHERE matiere = '" . $reg_matiere . "'");
 
                     if (mysql_num_rows($test) == 0) {
-                        // La matière n'existe pas, on la créé
+                        // La matiÃ¨re n'existe pas, on la crÃ©Ã©
                         $res = mysql_query("INSERT INTO matieres SET matiere = '" . $reg_matiere . "', nom_complet = '" . $reg_matiere . "',priority='0',matiere_aid='n',matiere_atelier='n'");
                         $reg_matiere_complet = $reg_matiere;
                         $warning_matiere = true;
@@ -149,23 +149,23 @@ if (!isset($_POST["action"])) {
                     }
 
                     // Maintenant on en arrive aux classes
-                    // On récupère un tableau :
+                    // On rÃ©cupÃ¨re un tableau :
                     $reg_classes = explode("!", $reg_classes);
 
-                    // On détermine le type de groupe
+                    // On dÃ©termine le type de groupe
                     if (count($reg_classes) > 1) {
                         // On force le type "OPT" s'il y a plusieurs classes
                         $reg_type = "OPT";
                     } else {
                         if ($reg_type == "") {
-                            // Si on n'a qu'une seule classe et que rien n'est spécifié, on a par défaut
-                            // un cours général
+                            // Si on n'a qu'une seule classe et que rien n'est spÃ©cifiÃ©, on a par dÃ©faut
+                            // un cours gÃ©nÃ©ral
                             $reg_type = "CG";
                         }
                     }
 
                     // Si on arrive ici, c'est que normalement tout est bon.
-                    // On va quand même s'assurer qu'on a des classes valides.
+                    // On va quand mÃªme s'assurer qu'on a des classes valides.
 
                     $valid_classes = array();
                     foreach ($reg_classes as $classe) {
@@ -174,29 +174,29 @@ if (!isset($_POST["action"])) {
                     }
 
                     if (count($valid_classes) > 0) {
-                        // C'est bon, on a au moins une classe valide. On peut créer le groupe !
+                        // C'est bon, on a au moins une classe valide. On peut crÃ©er le groupe !
 
                         $new_group = mysql_query("INSERT INTO groupes SET name = '" . $reg_matiere . "', description = '" . $reg_matiere_complet . "'");
                         $group_id = mysql_insert_id();
                         if (!$new_group) echo mysql_error();
-                        // Le groupe est créé. On associe la matière.
+                        // Le groupe est crÃ©Ã©. On associe la matiÃ¨re.
                         $res = mysql_query("INSERT INTO j_groupes_matieres SET id_groupe = '".$group_id."', id_matiere = '" . $reg_matiere . "'");
                         if (!$res) echo mysql_error();
                         // On associe le prof
                         $res = mysql_query("INSERT INTO j_groupes_professeurs SET id_groupe = '" . $group_id . "', login = '" . $reg_prof . "'");
                         if (!$res) echo mysql_error();
-                        // On associe la matière au prof
+                        // On associe la matiÃ¨re au prof
                         $res = mysql_query("INSERT INTO j_professeurs_matieres SET id_professeur = '" . $reg_prof . "', id_matiere = '" . $reg_matiere . "'");
-                        // On associe le groupe aux classes (ou à la classe)
+                        // On associe le groupe aux classes (ou Ã  la classe)
                         foreach ($valid_classes as $classe_id) {
                             $res = mysql_query("INSERT INTO j_groupes_classes SET id_groupe = '" . $group_id . "', id_classe = '" . $classe_id ."'");
                             if (!$res) echo mysql_error();
                         }
 
-                        // Si le type est à "CG", on associe les élèves de la classe au groupe
+                        // Si le type est Ã  "CG", on associe les Ã©lÃ¨ves de la classe au groupe
                         if ($reg_type == "CG") {
 
-                            // On récupère le nombre de périodes pour la classe
+                            // On rÃ©cupÃ¨re le nombre de pÃ©riodes pour la classe
                             $periods = mysql_result(mysql_query("SELECT count(num_periode) FROM periodes WHERE id_classe = '" . $valid_classes[0] . "'"), 0);
                             $get_eleves = mysql_query("SELECT DISTINCT(login) FROM j_eleves_classes WHERE id_classe = '" . $valid_classes[0] . "'");
                             $nb = mysql_num_rows($get_eleves);
@@ -216,7 +216,7 @@ if (!isset($_POST["action"])) {
                         }
                     } // -> Fin du test si on a au moins une classe valide
 
-                } // -> Fin du test où le prof existe
+                } // -> Fin du test oÃ¹ le prof existe
             }
 
             $i++;
@@ -224,29 +224,29 @@ if (!isset($_POST["action"])) {
         }
 
         if ($error > 0) echo "<p><font color=red>Il y a eu " . $error . " erreurs.</font></p>";
-        if ($total > 0) echo "<p>" . $total . " groupes ont été enregistrés.</p>";
-        if ($warning_matiere) echo "<p><font color=red>Attention !</font> Des matières ont été créées à la volée lors de l'importation. Leur nom complet n'a pu être déterminé. Vous devez donc vous rendre sur la page de <a href='../matieres/index.php'>gestion des matières</a> pour les renommer.</p>";
-        echo "<p><a href='index.php'>Revenir à la page précédente</a></p>";
+        if ($total > 0) echo "<p>" . $total . " groupes ont Ã©tÃ© enregistrÃ©s.</p>";
+        if ($warning_matiere) echo "<p><font color=red>Attention !</font> Des matiÃ¨res ont Ã©tÃ© crÃ©Ã©es Ã  la volÃ©e lors de l'importation. Leur nom complet n'a pu Ãªtre dÃ©terminÃ©. Vous devez donc vous rendre sur la page de <a href='../matieres/index.php'>gestion des matiÃ¨res</a> pour les renommer.</p>";
+        echo "<p><a href='index.php'>Revenir Ã  la page prÃ©cÃ©dente</a></p>";
 
 
     } else if ($_POST['action'] == "upload_file") {
         //
-        // Le fichier vient d'être envoyé et doit être traité
-        // On va donc afficher le contenu du fichier tel qu'il va être enregistré dans Gepi
-        // en proposant des champs de saisie pour modifier les données si on le souhaite
+        // Le fichier vient d'Ãªtre envoyÃ© et doit Ãªtre traitÃ©
+        // On va donc afficher le contenu du fichier tel qu'il va Ãªtre enregistrÃ© dans Gepi
+        // en proposant des champs de saisie pour modifier les donnÃ©es si on le souhaite
         //
 
         $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
-        // On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
-        // autant forcer l'utilisateur à être rigoureux
+        // On vÃ©rifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
+        // autant forcer l'utilisateur Ã  Ãªtre rigoureux
         if(strtolower($csv_file['name']) == "prof_disc_classes.csv") {
 
             // Le nom est ok. On ouvre le fichier
             $fp=fopen($csv_file['tmp_name'],"r");
 
             if(!$fp) {
-                // Aie : on n'arrive pas à ouvrir le fichier... Pas bon.
+                // Aie : on n'arrive pas Ã  ouvrir le fichier... Pas bon.
                 echo "<p>Impossible d'ouvrir le fichier CSV !</p>";
                 echo "<p><a href='prof_disc_classes.php'>Cliquer ici </a> pour recommencer !</center></p>";
             } else {
@@ -254,11 +254,11 @@ if (!isset($_POST["action"])) {
                 // Fichier ouvert ! On attaque le traitement
 
                 // On va stocker toutes les infos dans un tableau
-                // Une ligne du CSV pour une entrée du tableau
+                // Une ligne du CSV pour une entrÃ©e du tableau
                 $data_tab = array();
 
                 //=========================
-                // On lit une ligne pour passer la ligne d'entête:
+                // On lit une ligne pour passer la ligne d'entÃªte:
                 $ligne = fgets($fp, 4096);
                 //=========================
 
@@ -270,12 +270,12 @@ if (!isset($_POST["action"])) {
                             $tabligne=explode(";",$ligne);
 
                             // 0 : Login du prof
-                            // 1 : nom court de la matière
-                            // 2 : identifiant(s) de là (des) classe(s) (Format : 1S1!1S2!1S3)
+                            // 1 : nom court de la matiÃ¨re
+                            // 2 : identifiant(s) de lÃ  (des) classe(s) (Format : 1S1!1S2!1S3)
                             // 3 : type de groupe (CG || OPT)
 
 
-            // On nettoie et on vérifie :
+            // On nettoie et on vÃ©rifie :
             $tabligne[0] = preg_replace("/[^A-Za-z0-9\._]/","",trim(strtoupper($tabligne[0])));
             if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
 
@@ -304,13 +304,13 @@ if (!isset($_POST["action"])) {
                 fclose($fp);
 
                 // Fin de l'analyse du fichier.
-                // Maintenant on va afficher tout ça.
+                // Maintenant on va afficher tout Ã§a.
 
                 echo "<form enctype='multipart/form-data' action='prof_disc_classes.php' method='post'>";
 				echo add_token_field();
                 echo "<input type='hidden' name='action' value='save_data' />";
                 echo "<table>";
-                echo "<tr><td>Login prof</td><td>Matière</td><td>Classe(s)</td><td>Type</td></tr>";
+                echo "<tr><td>Login prof</td><td>MatiÃ¨re</td><td>Classe(s)</td><td>Type</td></tr>";
 
                 for ($i=0;$i<$k-1;$i++) {
 
@@ -343,11 +343,11 @@ if (!isset($_POST["action"])) {
 
         } else if (trim($csv_file['name'])=='') {
 
-            echo "<p>Aucun fichier n'a été sélectionné !<br />";
+            echo "<p>Aucun fichier n'a Ã©tÃ© sÃ©lectionnÃ© !<br />";
             echo "<a href='prof_disc_classes.php'>Cliquer ici </a> pour recommencer !</center></p>";
 
         } else {
-            echo "<p>Le fichier sélectionné n'est pas valide !<br />";
+            echo "<p>Le fichier sÃ©lectionnÃ© n'est pas valide !<br />";
             echo "<a href='prof_disc_classes.php'>Cliquer ici </a> pour recommencer !</center></p>";
         }
     }

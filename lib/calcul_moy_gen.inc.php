@@ -1,18 +1,18 @@
 <?php
 /**
- * calcul de la moyenne gÈnÈrale
+ * calcul de la moyenne g√©n√©rale
  * 
  * $Id: calcul_moy_gen.inc.php 7765 2011-08-15 15:03:46Z regis $
  * 
- * Script ‡ appeler dans le code
+ * Script √† appeler dans le code
  * 
  * calcul des tableaux :
- * - $moy_gen_classe = tableau des moyennes gÈnÈrales de la classe
- * - $moy_gen_eleve  = tableau des moyennes gÈnÈrales d'ÈlËves
+ * - $moy_gen_classe = tableau des moyennes g√©n√©rales de la classe
+ * - $moy_gen_eleve  = tableau des moyennes g√©n√©rales d'√©l√®ves
  * 
- * le script ‡ besoin de :
- * - $id_classe : la classe concernÈe
- * - $periode_num : la pÈriode concernÈe
+ * le script √† besoin de :
+ * - $id_classe : la classe concern√©e
+ * - $periode_num : la p√©riode concern√©e
  * 
  * @copyright Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL
@@ -24,7 +24,7 @@
 
 /*
 function calc_moy_debug($texte){
-	// Passer ‡ 1 la variable pour gÈnÈrer un fichier de debug...
+	// Passer √† 1 la variable pour g√©n√©rer un fichier de debug...
 	$debug=0;
 	if($debug==1){
 		$fich=fopen("/tmp/calc_moy_debug.txt","a+");
@@ -58,7 +58,7 @@ $quartile6_grp=array();
 
 $place_eleve_classe=array();
 
-// On appelle la liste des ÈlËves de la classe
+// On appelle la liste des √©l√®ves de la classe
 
 $sql="SELECT e.* FROM eleves e, j_eleves_classes c
 	WHERE (
@@ -74,10 +74,10 @@ $nombre_eleves = mysql_num_rows($appel_liste_eleves);
 calc_moy_debug("\$nombre_eleves=$nombre_eleves\n");
 
 
-// On appelle la liste des matiËres de la classe
+// On appelle la liste des mati√®res de la classe
 if ($affiche_categories) {
 	calc_moy_debug("\$affiche_categories=$affiche_categories\n");
-	// On utilise les valeurs spÈcifiÈes pour la classe en question
+	// On utilise les valeurs sp√©cifi√©es pour la classe en question
 
 	$sql="SELECT DISTINCT jgc.id_groupe, jgc.coef, jgc.categorie_id, jgc.mode_moy ".
 	"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m, matieres_categories mc " .
@@ -112,7 +112,7 @@ if ($affiche_categories) {
 $nombre_groupes = mysql_num_rows($appel_liste_groupes);
 calc_moy_debug("\$nombre_groupes=$nombre_groupes\n");
 
-// Initialisation des tableaux liÈs aux calculs des moyennes gÈnÈrales
+// Initialisation des tableaux li√©s aux calculs des moyennes g√©n√©rales
 $current_group = array();
 $current_coef = array();
 $current_mode_moy = array();
@@ -181,9 +181,9 @@ while ($i < $nombre_eleves) {
 		$moy_cat_max[$i][$cat_id] = "-";
 	}
 
-	// Pour le cas o˘ une matiËre est saisie en "Aucune" catÈgorie dans
+	// Pour le cas o√π une mati√®re est saisie en "Aucune" cat√©gorie dans
 	// Gestion des bases/Gestion des classes/<classe> Enseignements
-	// La catÈgorie "Aucune" n'existe pas dans 'matieres_categories'
+	// La cat√©gorie "Aucune" n'existe pas dans 'matieres_categories'
 	$moy_cat_eleve[$i][0] = 0;
 	$total_coef_cat_classe[$i][0] = 0;
 	$total_coef_cat_eleve[$i][0] = 0;
@@ -193,21 +193,21 @@ while ($i < $nombre_eleves) {
 	$moy_cat_max[$i][0] = "-";
 	//=================================
 
-	// Temoin que la moyenne gÈnÈrale de l'ÈlËve peut avoir une signification
+	// Temoin que la moyenne g√©n√©rale de l'√©l√®ve peut avoir une signification
 	$temoin_au_moins_une_matiere_avec_note[$i]="n";
 
 	$i++;
 }
 
-// Pour dÈbugger:
+// Pour d√©bugger:
 $lignes_debug="";
 $ele_login_debug="rom.abela";
 
-// TÈmoin destinÈ ‡ tester si tous les coefficients sont ‡ 1
-// S'ils le sont, on n'imprime pas deux lignes de moyenne gÈnÈrale (moy.gen.coefficientÈe d'aprËs Gestion des classes/<Classe> Enseignements et moy.gen avec coef ‡ 1) mÍme si la case est cochÈe dans le modËle PDF.
+// T√©moin destin√© √† tester si tous les coefficients sont √† 1
+// S'ils le sont, on n'imprime pas deux lignes de moyenne g√©n√©rale (moy.gen.coefficient√©e d'apr√®s Gestion des classes/<Classe> Enseignements et moy.gen avec coef √† 1) m√™me si la case est coch√©e dans le mod√®le PDF.
 $temoin_tous_coef_a_1="y";
 
-// PrÈparation des donnÈes
+// Pr√©paration des donn√©es
 $j=0;
 $prev_cat = null;
 while ($j < $nombre_groupes) {
@@ -254,7 +254,7 @@ while ($j < $nombre_groupes) {
 		$prev_cat = $current_group[$j]["classes"]["classes"][$id_classe]["categorie_id"];
 	}
 
-	// Moyenne de la classe dans la matiËre $current_matiere[$j]
+	// Moyenne de la classe dans la mati√®re $current_matiere[$j]
 	$sql="SELECT round(avg(note),$nb_chiffres_moy) moyenne
 		FROM matieres_notes
 		WHERE (
@@ -284,7 +284,7 @@ while ($j < $nombre_groupes) {
 	$current_group_effectif_avec_note[$j] = mysql_num_rows($req_current_group_effectif_avec_note);
 	//===================================
 
-	// Calcul de la moyenne des ÈlËves et de la moyenne de la classe pour l'enseignement courant ($j)
+	// Calcul de la moyenne des √©l√®ves et de la moyenne de la classe pour l'enseignement courant ($j)
 	$i=0;
 
 	$sql="SELECT MIN(note) note_min, MAX(note) note_max FROM matieres_notes
@@ -356,12 +356,12 @@ while ($j < $nombre_groupes) {
 			$lignes_debug.="<p>\$current_group[$j]['name']=".$current_group[$j]['name']."<br />";
 		}
 
-		// Maintenant on regarde si l'ÈlËve suit bien cette matiËre ou pas
+		// Maintenant on regarde si l'√©l√®ve suit bien cette mati√®re ou pas
 		if (in_array($current_eleve_login[$i], $current_group[$j]["eleves"][$periode_num]["list"])) {
 			calc_moy_debug("\$current_group[$j]['name']=".$current_group[$j]['name']."\n");
 
 			//=====================================
-			// RÈcupÈration de la note et du statut
+			// R√©cup√©ration de la note et du statut
 			$sql="SELECT distinct * FROM matieres_notes
 			WHERE (
 			login='".$current_eleve_login[$i]."' AND
@@ -394,7 +394,7 @@ while ($j < $nombre_groupes) {
 			//echo "\$current_eleve_login[$i]=$current_eleve_login[$i]<br />";
 
 			//=====================================
-			// On teste si l'ÈlËve a un coef spÈcifique pour cette matiËre
+			// On teste si l'√©l√®ve a un coef sp√©cifique pour cette mati√®re
 			calc_moy_debug("\$coefficients_a_1=$coefficients_a_1\n");
 			if((isset($coefficients_a_1))&&($coefficients_a_1=="oui")) {
 				$coef_eleve=1;
@@ -421,16 +421,16 @@ while ($j < $nombre_groupes) {
 				}
 			}
 			//===============
-			// Ajout d'aprËs J.Etheve
+			// Ajout d'apr√®s J.Etheve
 			$coef_eleve1=1;
 			//===============
-			// RÈserve pour les moyennes de catÈgorie plus bas:
+			// R√©serve pour les moyennes de cat√©gorie plus bas:
 			$coef_eleve_reserve=$coef_eleve;
-			// Pour les catÈgories, on ne tient pas compte des mode_moy
+			// Pour les cat√©gories, on ne tient pas compte des mode_moy
 			//===============
 
 			if($current_mode_moy[$j]=='sup10') {
-				// Si la matiËre est une matiËre ‡ "bonus" (seules les notes supÈrieures ‡ 10 comptent), on passe le coef ‡ zÈro si la note n'est pas numÈrique ou si elle est infÈrieure ‡ 10.
+				// Si la mati√®re est une mati√®re √† "bonus" (seules les notes sup√©rieures √† 10 comptent), on passe le coef √† z√©ro si la note n'est pas num√©rique ou si elle est inf√©rieure √† 10.
 				if(($current_eleve_note[$j][$i]!="")&&($current_eleve_note[$j][$i]!="-")&&($current_eleve_note[$j][$i]<10)) {
 					$coef_eleve=0;
 				}
@@ -484,13 +484,13 @@ while ($j < $nombre_groupes) {
 				//if (($current_eleve_note[$j][$i] != '') and ($current_eleve_statut[$j][$i] == '')) {
 				if (($current_eleve_note[$j][$i] != '') and ($current_eleve_note[$j][$i] != '-') and ($current_eleve_statut[$j][$i] == '')) {
 
-					// Temoin que la moyenne gÈnÈrale de l'ÈlËve peut avoir une signification
+					// Temoin que la moyenne g√©n√©rale de l'√©l√®ve peut avoir une signification
 					if($coef_eleve!=0) {$temoin_au_moins_une_matiere_avec_note[$i]="y";}
 
 					if($current_mode_moy[$j]=='sup10') {
-						// La note compte si elle est supÈrieure ‡ 10
-						// Une telle note peut faire baisser la moyenne si la moyenne est supÈrieure ‡ la note courante ‡ comptabiliser
-						// Si coef_eleve>0, c'est que la note est supÈrieure ‡ 10
+						// La note compte si elle est sup√©rieure √† 10
+						// Une telle note peut faire baisser la moyenne si la moyenne est sup√©rieure √† la note courante √† comptabiliser
+						// Si coef_eleve>0, c'est que la note est sup√©rieure √† 10
 
 						$total_coef_eleve[$i] += $coef_eleve;
 						$moy_gen_eleve[$i] += $coef_eleve*$current_eleve_note[$j][$i];
@@ -498,21 +498,21 @@ while ($j < $nombre_groupes) {
 					}
 					elseif($current_mode_moy[$j]=='bonus') {
 						// Mode bac
-						// Les points au-dessus de 10 sont coefficientÈs et ajoutÈs sans augmenter le total des coefs
+						// Les points au-dessus de 10 sont coefficient√©s et ajout√©s sans augmenter le total des coefs
 						if(($current_eleve_note[$j][$i]!="")&&($current_eleve_note[$j][$i]!="-")&&($current_eleve_note[$j][$i]>10)) {
 							$moy_gen_eleve[$i] += $coef_eleve*($current_eleve_note[$j][$i]-10);
 						}
 
-						// On n'augmente pas le total des coef pour la moyenne gÈnÈrale
+						// On n'augmente pas le total des coef pour la moyenne g√©n√©rale
 					}
 					elseif($current_mode_moy[$j]=='ameliore') {
-						// Non traitÈ pour le moment
+						// Non trait√© pour le moment
 
 						//*********
 						// A FAIRE
 						//*********
 
-						// Stocker ces notes dans un tableau temporaire et parcourir aprËs le calcul de la moyenne gÈnÈrale de l'ÈlËve pour voir si cela amÈliore la moyenne gÈnÈrale
+						// Stocker ces notes dans un tableau temporaire et parcourir apr√®s le calcul de la moyenne g√©n√©rale de l'√©l√®ve pour voir si cela am√©liore la moyenne g√©n√©rale
 					}
 					else {
 						// Mode classique
@@ -525,13 +525,13 @@ while ($j < $nombre_groupes) {
 
 					}
 
-					// Faut-il ne pas compter ‡ bonus quand on force les coef ‡ 1? Oui
+					// Faut-il ne pas compter √† bonus quand on force les coef √† 1? Oui
 					$total_coef_eleve1[$i] += $coef_eleve1;
-					// La note compte normalement pour le mode avec coef forcÈs ‡ 1:	
+					// La note compte normalement pour le mode avec coef forc√©s √† 1:	
 					$moy_gen_eleve1[$i] += $coef_eleve1*$current_eleve_note[$j][$i];
 
-					// On fait en sorte que les coef comptent au niveau des catÈgories: on ne prend pas en compte les mode_moy
-					// On prend le coef pour la moyenne de catÈgorie
+					// On fait en sorte que les coef comptent au niveau des cat√©gories: on ne prend pas en compte les mode_moy
+					// On prend le coef pour la moyenne de cat√©gorie
 					$total_coef_cat_eleve[$i][$prev_cat] += $coef_eleve_reserve;
 					calc_moy_debug("\$total_coef_cat_eleve[$i][$prev_cat]=".$total_coef_cat_eleve[$i][$prev_cat]."\n");
 					$moy_cat_eleve[$i][$prev_cat] += $coef_eleve_reserve*$current_eleve_note[$j][$i];
@@ -589,7 +589,7 @@ while ($i < $nombre_eleves) {
 			$lignes_debug.="\$moy_gen_eleve[$i]=".$moy_gen_eleve[$i]."<br />";
 		}
 
-		// PrÈparation des donnÈes pour affichage des graphiques
+		// Pr√©paration des donn√©es pour affichage des graphiques
 		if ($affiche_graph == 'y')  {
 			if ($moy_gen_eleve[$i] >= 15) {$quartile1_classe_gen++; $place_eleve_classe[$i] = 1;}
 			else if (($moy_gen_eleve[$i] >= 12) and ($moy_gen_eleve[$i] < 15)) {$quartile2_classe_gen++;$place_eleve_classe[$i] = 2;}
@@ -626,7 +626,7 @@ while ($i < $nombre_eleves) {
 }
 
 
-// Recherche des moyennes min/max/classe de catÈgories
+// Recherche des moyennes min/max/classe de cat√©gories
 foreach($categories as $cat) {
 	$moy_min_categorie[$cat]=1000;
 	$moy_max_categorie[$cat]=-1;
@@ -645,10 +645,10 @@ foreach($categories as $cat) {
 			}
 			$moy_classe_categorie[$cat]+=$moy_cat_eleve[$i][$cat];
 
-			// On formate avec virgule la moyenne de catÈgorie pour l'ÈlËve
-			// *** A FAIRE *** Il faudrait prendre en compte le nombre de dÈcimales demandÈes sur le modËle
+			// On formate avec virgule la moyenne de cat√©gorie pour l'√©l√®ve
+			// *** A FAIRE *** Il faudrait prendre en compte le nombre de d√©cimales demand√©es sur le mod√®le
 			
-			// On incrÈmente le nombre d'ÈlËves qui ont une moyenne sur la catÈgorie
+			// On incr√©mente le nombre d'√©l√®ves qui ont une moyenne sur la cat√©gorie
 			$tmp_eff++;
 		}
 
@@ -676,10 +676,10 @@ foreach($categories as $cat) {
 	$lignes_debug.="\$moy_max_categorie[$cat]=$moy_max_categorie[$cat]<br />";
 	$lignes_debug.="\$moy_min_categorie[$cat]=$moy_min_categorie[$cat]<br />";
 
-	// Pour chaque ÈlËve, on met les mÍmes moyennes min/classe/max
-	// de catÈgorie parce que sinon, on pourrait arriver ‡ l'aberration suivante:
-	// Un ÈlËve, seul de la classe ‡ avoir une combinaison d'options, aurait
-	// sa moyenne de catÈgorie qui serait Ègalement min, max et classe
+	// Pour chaque √©l√®ve, on met les m√™mes moyennes min/classe/max
+	// de cat√©gorie parce que sinon, on pourrait arriver √† l'aberration suivante:
+	// Un √©l√®ve, seul de la classe √† avoir une combinaison d'options, aurait
+	// sa moyenne de cat√©gorie qui serait √©galement min, max et classe
 	$i = 0;
 	while ($i < $nombre_eleves) {
 		$moy_cat_min[$i][$cat]=$moy_min_categorie[$cat];
@@ -720,7 +720,7 @@ if($moy_min_classe1==21) {
 $moy_max_classe = max($moy_gen_eleve);
 $moy_max_classe1 = max($moy_gen_eleve1);
 
-//Calcul de la moyenne gÈnÈrale de la classe
+//Calcul de la moyenne g√©n√©rale de la classe
 $nb_elv_classe=sizeof($moy_gen_eleve);
 $moy_generale_classe = 0;
 $effectif_avec_moyenne=0;

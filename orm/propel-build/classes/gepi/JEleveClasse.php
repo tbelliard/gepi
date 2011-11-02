@@ -17,7 +17,7 @@ class JEleveClasse extends BaseJEleveClasse {
 
       	/**
 	 *
-	 * Retourne la periode de note associée
+	 * Retourne la periode de note associÃ©e
 	 *
 	 *
 	 * @return PeriodeNote $periode_note

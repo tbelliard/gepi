@@ -83,18 +83,18 @@ if ($action == 'supprimer') {
 }
 
 // header
-$titre_page = "Gestion des mef (module élémentaire de formation)";
+$titre_page = "Gestion des mef (module Ã©lÃ©mentaire de formation)";
 require_once("../lib/header.inc");
 
 echo "<p class='bold'>";
 echo "<a href=\"../accueil_admin.php\">";
 echo "<img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | ";
-echo "<a href=\"associer_eleve_mef.php\">associer les élèves au mef</a>";
+echo "<a href=\"associer_eleve_mef.php\">associer les Ã©lÃ¨ves au mef</a>";
 echo "</p>";
 ?>
 
 <div style="text-align:center">
-    <h2>Définition des mef</h2>
+    <h2>DÃ©finition des mef</h2>
 <?php if ($action == "ajouter" OR $action == "modifier") { ?>
 <div style="text-align:center">
     <?php
@@ -113,10 +113,10 @@ echo add_token_field();
     	</p>
       <table cellpadding="2" cellspacing="2" class="menu">
         <tr>
-          <td>Id extérieur (nomenclature EN)</td>
-          <td>Libellé court</td>
-          <td>Libellé long</td>
-          <td>Libellé d'édition</td>
+          <td>Id extÃ©rieur (nomenclature EN)</td>
+          <td>LibellÃ© court</td>
+          <td>LibellÃ© long</td>
+          <td>LibellÃ© d'Ã©dition</td>
        </tr>
         <tr>
               <td>
@@ -140,12 +140,12 @@ echo add_token_field();
 } ?>
 	<a href="admin_mef.php?action=ajouter"><img src='../images/icons/add.png' alt='' class='back_link' /> Ajouter les mef</a>
 	<br/><br/>
-	<a href="admin_mef.php?action=ajouterdefaut<?php echo add_token_in_url();?>"><img src='../images/icons/add.png' alt='' class='back_link' /> Ajouter les mef par défaut</a>
+	<a href="admin_mef.php?action=ajouterdefaut<?php echo add_token_in_url();?>"><img src='../images/icons/add.png' alt='' class='back_link' /> Ajouter les mef par dÃ©faut</a>
 	<br/><br/>
     <table cellpadding="0" cellspacing="1" class="menu">
       <tr>
         <td>Id</td>
-        <td>Numéro mef nomenclature EN</td>
+        <td>NumÃ©ro mef nomenclature EN</td>
         <td>Libelle Court</td>
         <td>Libelle Long</td>
         <td>Libelle Edition</td>
@@ -164,7 +164,7 @@ echo add_token_field();
           <td><?php echo $mef->getLibelleLong(); ?></td>
           <td><?php echo $mef->getLibelleEdition(); ?></td>
           <td><a href="admin_mef.php?action=modifier&amp;id=<?php echo $mef->getId(); echo add_token_in_url();?>"><img src="../images/icons/configure.png" title="Modifier" alt="" /></a></td>
-          <td><a href="admin_mef.php?action=supprimer&amp;id=<?php echo $mef->getId(); echo add_token_in_url();?>" onclick="return confirm('Etes-vous sûr de vouloir supprimer ce mef ?')"><img src="../images/icons/delete.png" width="22" height="22" title="Supprimer" alt="" /></a></td>
+          <td><a href="admin_mef.php?action=supprimer&amp;id=<?php echo $mef->getId(); echo add_token_in_url();?>" onclick="return confirm('Etes-vous sÃ»r de vouloir supprimer ce mef ?')"><img src="../images/icons/delete.png" width="22" height="22" title="Supprimer" alt="" /></a></td>
        </tr>
      <?php } ?>
     </table>

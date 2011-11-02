@@ -44,11 +44,11 @@ if (!checkAccess()) {
 	die();
 }
 
-// Passer à 'y' pour afficher les requêtes
+// Passer Ã  'y' pour afficher les requÃªtes
 $debug_resp='n';
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des responsables des élèves";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des responsables des Ã©lÃ¨ves";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
@@ -56,7 +56,7 @@ require_once("../lib/header.inc");
 
 <?php
 
-echo "<center><h3 class='gepi'>Deuxième phase d'initialisation<br />Importation des responsables</h3></center>\n";
+echo "<center><h3 class='gepi'>DeuxiÃ¨me phase d'initialisation<br />Importation des responsables</h3></center>\n";
 
 //if(isset($step1)) {
 if(!isset($step1)) {
@@ -70,13 +70,13 @@ if(!isset($step1)) {
 	}
 	if ($flag != 0){
 		echo "<p><b>ATTENTION ...</b><br />\n";
-		echo "Des données concernant les responsables sont actuellement présentes dans la base GEPI<br /></p>\n";
-		echo "<p>Si vous poursuivez la procédure ces données seront effacées.</p>\n";
+		echo "Des donnÃ©es concernant les responsables sont actuellement prÃ©sentes dans la base GEPI<br /></p>\n";
+		echo "<p>Si vous poursuivez la procÃ©dure ces donnÃ©es seront effacÃ©es.</p>\n";
 		echo "<form enctype='multipart/form-data' action='responsables.php' method=post>\n";
 		echo add_token_field();
 		echo "<input type=hidden name='verif_tables_non_vides' value='y' />\n";
 		echo "<input type=hidden name='step1' value='y' />\n";
-		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />\n";
+		echo "<input type='submit' name='confirm' value='Poursuivre la procÃ©dure' />\n";
 		echo "</form>\n";
 
 		$sql="SELECT 1=1 FROM utilisateurs WHERE statut='responsable';";
@@ -87,7 +87,7 @@ if(!isset($step1)) {
 			if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)==0) {
-				echo "<p style='color:red'>Il existe un ou des comptes responsables de l'année passée, et vous n'avez pas mis ces comptes en réserve pour imposer le même login/mot de passe cette année.<br />Est-ce bien un choix délibéré ou un oubli de votre part?<br />Pour conserver ces login/mot de de passe de façon à ne pas devoir re-distribuer ces informations (<em>et éviter de perturber ces utilisateurs</em>), vous pouvez procéder à la mise en réserve avant d'initialiser l'année dans la page <a href='../gestion/changement_d_annee.php'>Changement d'année</a> (<em>vous y trouverez aussi la possibilité de conserver les comptes élèves (s'ils n'ont pas déjà été supprimés) et bien d'autres actions à ne pas oublier avant l'initialisation</em>).</p>\n";
+				echo "<p style='color:red'>Il existe un ou des comptes responsables de l'annÃ©e passÃ©e, et vous n'avez pas mis ces comptes en rÃ©serve pour imposer le mÃªme login/mot de passe cette annÃ©e.<br />Est-ce bien un choix dÃ©libÃ©rÃ© ou un oubli de votre part?<br />Pour conserver ces login/mot de de passe de faÃ§on Ã  ne pas devoir re-distribuer ces informations (<em>et Ã©viter de perturber ces utilisateurs</em>), vous pouvez procÃ©der Ã  la mise en rÃ©serve avant d'initialiser l'annÃ©e dans la page <a href='../gestion/changement_d_annee.php'>Changement d'annÃ©e</a> (<em>vous y trouverez aussi la possibilitÃ© de conserver les comptes Ã©lÃ¨ves (s'ils n'ont pas dÃ©jÃ  Ã©tÃ© supprimÃ©s) et bien d'autres actions Ã  ne pas oublier avant l'initialisation</em>).</p>\n";
 			}
 		}
 
@@ -151,16 +151,16 @@ if (!isset($is_posted)) {
 		$del=mysql_query($sql);
 	}
 
-	echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération uniquement si la constitution des classes a été effectuée !</p>";
-	//echo "<p>Importation des fichiers <b>PERSONNES.CSV</b>, <b>RESPONSABLES.CSV</b> et <b>ADRESSES.CSV</b> contenant les données relatives aux responsables : veuillez préciser le nom complet du fichier <b>F_ere.dbf</b>.\n";
-	echo "<p>Importation des fichiers <b>PERSONNES.CSV</b>, <b>RESPONSABLES.CSV</b> et <b>ADRESSES.CSV</b> contenant les données relatives aux responsables.\n";
+	echo "<p><b>ATTENTION ...</b><br />Vous ne devez procÃ©der Ã  cette opÃ©ration uniquement si la constitution des classes a Ã©tÃ© effectuÃ©e !</p>";
+	//echo "<p>Importation des fichiers <b>PERSONNES.CSV</b>, <b>RESPONSABLES.CSV</b> et <b>ADRESSES.CSV</b> contenant les donnÃ©es relatives aux responsables : veuillez prÃ©ciser le nom complet du fichier <b>F_ere.dbf</b>.\n";
+	echo "<p>Importation des fichiers <b>PERSONNES.CSV</b>, <b>RESPONSABLES.CSV</b> et <b>ADRESSES.CSV</b> contenant les donnÃ©es relatives aux responsables.\n";
 	echo "<form enctype='multipart/form-data' action='responsables.php' method=post>\n";
 	echo add_token_field();
 	echo "<input type=hidden name='is_posted' value='yes' />\n";
 	//echo "<input type=hidden name='step1' value='y' />\n";
-	echo "<p>Sélectionnez le fichier <b>PERSONNES.CSV</b>:<br /><input type='file' size='80' name='pers_file' />\n";
-	echo "<p>Sélectionnez le fichier <b>RESPONSABLES.CSV</b>:<br /><input type='file' size='80' name='resp_file' />\n";
-	echo "<p>Sélectionnez le fichier <b>ADRESSES.CSV</b>:<br /><input type='file' size='80' name='adr_file' />\n";
+	echo "<p>SÃ©lectionnez le fichier <b>PERSONNES.CSV</b>:<br /><input type='file' size='80' name='pers_file' />\n";
+	echo "<p>SÃ©lectionnez le fichier <b>RESPONSABLES.CSV</b>:<br /><input type='file' size='80' name='resp_file' />\n";
+	echo "<p>SÃ©lectionnez le fichier <b>ADRESSES.CSV</b>:<br /><input type='file' size='80' name='adr_file' />\n";
 	echo "<p><input type=submit value='Valider' />\n";
 	echo "</form>\n";
 
@@ -179,14 +179,14 @@ if (!isset($is_posted)) {
 			echo "<p><a href='responsables.php'>Cliquer ici </a> pour recommencer !</center></p>\n";
 		}
 		else{
-			// on constitue le tableau des champs à extraire
+			// on constitue le tableau des champs Ã  extraire
 			$tabchamps=array("pers_id","nom","prenom","civilite","tel_pers","tel_port","tel_prof","mel","adr_id");
 
 			$nblignes=0;
 			while (!feof($fp)) {
 				$ligne = fgets($fp, 4096);
 				if($nblignes==0){
-					// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommés avec l'ajout de ',...' en fin de nom de champ.
+					// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommÃ©s avec l'ajout de ',...' en fin de nom de champ.
 					// On ne retient pas ces ajouts pour $en_tete
 					$temp=explode(";",$ligne);
 					unset($en_tete);
@@ -216,7 +216,7 @@ if (!isset($is_posted)) {
 
 			//=========================
 			$fp=fopen($csv_file['tmp_name'],"r");
-			// On lit une ligne pour passer la ligne d'entête:
+			// On lit une ligne pour passer la ligne d'entÃªte:
 			$ligne = fgets($fp, 4096);
 			//=========================
 			$nb_reg_no3=0;
@@ -243,7 +243,7 @@ if (!isset($is_posted)) {
 									";
 						$req = mysql_query($sql);
 						if(!$req) {
-							echo "Erreur lors de la requête $sql<br />\n";
+							echo "Erreur lors de la requÃªte $sql<br />\n";
 							$nb_reg_no3++;
 							echo mysql_error();
 						} else {
@@ -263,7 +263,7 @@ if (!isset($is_posted)) {
 								if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 								$insert_u=mysql_query($sql);
 								if(!$insert_u) {
-									echo "Erreur lors de la création du compte utilisateur pour ".$affiche[1]." ".$affiche[2].".<br />";
+									echo "Erreur lors de la crÃ©ation du compte utilisateur pour ".$affiche[1]." ".$affiche[2].".<br />";
 								}
 								else {
 									$sql="UPDATE resp_pers SET login='".$lig_tmp_u->login."' WHERE pers_id='".$affiche[0]."';";
@@ -283,19 +283,19 @@ if (!isset($is_posted)) {
 			fclose($fp);
 
 			if ($nb_reg_no3 != 0) {
-				echo "<p>Lors de l'enregistrement des données de PERSONNES.CSV, il y a eu $nb_reg_no3 erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
+				echo "<p>Lors de l'enregistrement des donnÃ©es de PERSONNES.CSV, il y a eu $nb_reg_no3 erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procÃ©dure avant de passer Ã  l'Ã©tape suivante.</p>\n";
 			} else {
-				echo "<p>L'importation des personnes (<em>responsables</em>) dans la base GEPI a été effectuée avec succès (<em>".$nb_record3." enregistrements au total</em>).</p>\n";
+				echo "<p>L'importation des personnes (<em>responsables</em>) dans la base GEPI a Ã©tÃ© effectuÃ©e avec succÃ¨s (<em>".$nb_record3." enregistrements au total</em>).</p>\n";
 			}
 
 		}
 	} else if (trim($csv_file['name'])=='') {
-		echo "<p>Aucun fichier PERSONNES.CSV n'a été sélectionné !<br />\n";
+		echo "<p>Aucun fichier PERSONNES.CSV n'a Ã©tÃ© sÃ©lectionnÃ© !<br />\n";
 		//echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</center></p>";
 		echo "<a href='responsables.php'>Cliquer ici </a> pour recommencer !</center></p>\n";
 
 	} else {
-		echo "<p>Le fichier sélectionné n'est pas valide !<br />\n";
+		echo "<p>Le fichier sÃ©lectionnÃ© n'est pas valide !<br />\n";
 		//echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</center></p>";
 		echo "<a href='responsables.php'>Cliquer ici </a> pour recommencer !</center></p>\n";
 	}
@@ -312,14 +312,14 @@ if (!isset($is_posted)) {
 			echo "<p><a href='responsables.php'>Cliquer ici </a> pour recommencer !</center></p>";
 		}
 		else{
-			// on constitue le tableau des champs à extraire
+			// on constitue le tableau des champs Ã  extraire
 			$tabchamps=array("ele_id","pers_id","resp_legal","pers_contact");
 
 			$nblignes=0;
 			while (!feof($fp)) {
 				$ligne = fgets($fp, 4096);
 				if($nblignes==0){
-					// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommés avec l'ajout de ',...' en fin de nom de champ.
+					// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommÃ©s avec l'ajout de ',...' en fin de nom de champ.
 					// On ne retient pas ces ajouts pour $en_tete
 					$temp=explode(";",$ligne);
 					unset($en_tete);
@@ -349,7 +349,7 @@ if (!isset($is_posted)) {
 
 			//=========================
 			$fp=fopen($csv_file['tmp_name'],"r");
-			// On lit une ligne pour passer la ligne d'entête:
+			// On lit une ligne pour passer la ligne d'entÃªte:
 			$ligne = fgets($fp, 4096);
 			//=========================
 			$nb_reg_no1=0;
@@ -385,7 +385,7 @@ if (!isset($is_posted)) {
 			$sql="SELECT r.pers_id,r.ele_id FROM responsables2 r LEFT JOIN eleves e ON e.ele_id=r.ele_id WHERE e.ele_id is NULL;";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)>0){
-				echo "<p>Suppression de responsabilités sans élève.\n";
+				echo "<p>Suppression de responsabilitÃ©s sans Ã©lÃ¨ve.\n";
 				flush();
 				$cpt_nett=0;
 				while($lig_nett=mysql_fetch_object($test)){
@@ -397,25 +397,25 @@ if (!isset($is_posted)) {
 					$cpt_nett++;
 				}
 				//echo ".</p>\n";
-				echo "<br />$cpt_nett associations aberrantes supprimées.</p>\n";
+				echo "<br />$cpt_nett associations aberrantes supprimÃ©es.</p>\n";
 			}
 
 
 
 			if ($nb_reg_no1 != 0) {
-				echo "<p>Lors de l'enregistrement des données de RESPONSABLES.CSV, il y a eu $nb_reg_no1 erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
+				echo "<p>Lors de l'enregistrement des donnÃ©es de RESPONSABLES.CSV, il y a eu $nb_reg_no1 erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procÃ©dure avant de passer Ã  l'Ã©tape suivante.</p>\n";
 			}
 			else {
-				echo "<p>L'importation des relations eleves/responsables dans la base GEPI a été effectuée avec succès (<em>".$nb_record1." enregistrements au total</em>).</p>\n";
+				echo "<p>L'importation des relations eleves/responsables dans la base GEPI a Ã©tÃ© effectuÃ©e avec succÃ¨s (<em>".$nb_record1." enregistrements au total</em>).</p>\n";
 			}
 
 		}
 	} else if (trim($csv_file['name'])=='') {
-		echo "<p>Aucun fichier RESPONSABLES.CSV n'a été sélectionné !<br />\n";
+		echo "<p>Aucun fichier RESPONSABLES.CSV n'a Ã©tÃ© sÃ©lectionnÃ© !<br />\n";
 		echo "<a href='responsables.php'>Cliquer ici </a> pour recommencer !</center></p>\n";
 
 	} else {
-		echo "<p>Le fichier sélectionné n'est pas valide !<br />\n";
+		echo "<p>Le fichier sÃ©lectionnÃ© n'est pas valide !<br />\n";
 		echo "<a href='responsables.php'>Cliquer ici </a> pour recommencer !</center></p>\n";
 	}
 
@@ -430,14 +430,14 @@ if (!isset($is_posted)) {
 			echo "<p><a href='responsables.php'>Cliquer ici </a> pour recommencer !</center></p>";
 		}
 		else{
-			// on constitue le tableau des champs à extraire
+			// on constitue le tableau des champs Ã  extraire
 			$tabchamps=array("adr_id","adr1","adr2","adr3","adr4","cp","pays","commune");
 
 			$nblignes=0;
 			while (!feof($fp)) {
 				$ligne = fgets($fp, 4096);
 				if($nblignes==0){
-					// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommés avec l'ajout de ',...' en fin de nom de champ.
+					// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommÃ©s avec l'ajout de ',...' en fin de nom de champ.
 					// On ne retient pas ces ajouts pour $en_tete
 					$temp=explode(";",$ligne);
 					unset($en_tete);
@@ -467,7 +467,7 @@ if (!isset($is_posted)) {
 
 			//=========================
 			$fp=fopen($csv_file['tmp_name'],"r");
-			// On lit une ligne pour passer la ligne d'entête:
+			// On lit une ligne pour passer la ligne d'entÃªte:
 			$ligne = fgets($fp, 4096);
 			//=========================
 			$nb_reg_no2=0;
@@ -503,28 +503,28 @@ if (!isset($is_posted)) {
 			fclose($fp);
 
 			if ($nb_reg_no2 != 0) {
-				echo "<p>Lors de l'enregistrement des données de ADRESSES.CSV, il y a eu $nb_reg_no2 erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
+				echo "<p>Lors de l'enregistrement des donnÃ©es de ADRESSES.CSV, il y a eu $nb_reg_no2 erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procÃ©dure avant de passer Ã  l'Ã©tape suivante.</p>\n";
 			} else {
-				echo "<p>L'importation des adresses de responsables dans la base GEPI a été effectuée avec succès (<em>".$nb_record2." enregistrements au total</em>).</p>\n";
+				echo "<p>L'importation des adresses de responsables dans la base GEPI a Ã©tÃ© effectuÃ©e avec succÃ¨s (<em>".$nb_record2." enregistrements au total</em>).</p>\n";
 			}
 
 		}
 	} else if (trim($csv_file['name'])=='') {
-		echo "<p>Aucun fichier ADRESSES.CSV n'a été sélectionné !<br />\n";
+		echo "<p>Aucun fichier ADRESSES.CSV n'a Ã©tÃ© sÃ©lectionnÃ© !<br />\n";
 		//echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</center></p>";
 		echo "<a href='responsables.php'>Cliquer ici </a> pour recommencer !</center></p>\n";
 
 	} else {
-		echo "<p>Le fichier sélectionné n'est pas valide !<br />\n";
+		echo "<p>Le fichier sÃ©lectionnÃ© n'est pas valide !<br />\n";
 		//echo "<a href='disciplines.php'>Cliquer ici </a> pour recommencer !</center></p>";
 		echo "<a href='responsables.php'>Cliquer ici </a> pour recommencer !</center></p>\n";
 	}
 
 
 	if(($nb_reg_no1==0)&&($nb_reg_no2==0)&&($nb_reg_no3==0)){
-		echo "<p>Vous pouvez à présent retourner à l'accueil et effectuer toutes les autres opérations d'initialisation manuellement ou bien procéder à la troisième phase d'importation des matières et de définition des options suivies par les élèves.</p>\n";
-		echo "<center><p><a href='../accueil.php'>Retourner à l'accueil</a></p></center>\n";
-		echo "<center><p><a href='disciplines_csv.php'>Procéder à la troisième phase</a>.</p></center>\n";
+		echo "<p>Vous pouvez Ã  prÃ©sent retourner Ã  l'accueil et effectuer toutes les autres opÃ©rations d'initialisation manuellement ou bien procÃ©der Ã  la troisiÃ¨me phase d'importation des matiÃ¨res et de dÃ©finition des options suivies par les Ã©lÃ¨ves.</p>\n";
+		echo "<center><p><a href='../accueil.php'>Retourner Ã  l'accueil</a></p></center>\n";
+		echo "<center><p><a href='disciplines_csv.php'>ProcÃ©der Ã  la troisiÃ¨me phase</a>.</p></center>\n";
 	}
 }
 require("../lib/footer.inc.php");

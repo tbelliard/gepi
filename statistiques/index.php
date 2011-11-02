@@ -27,7 +27,7 @@ $niveau_arbo = 1;
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
-// fonctions complémentaires et/ou librairies utiles
+// fonctions complÃ©mentaires et/ou librairies utiles
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -73,7 +73,7 @@ echo "</p>\n";
 
 echo "<ul>\n";
 echo "<li><a href='classes_effectifs.php'>Classes, effectifs,...</a></li>\n";
-echo "<li><a href='export_donnees_bulletins.php'>Export de données des bulletins</a></li>\n";
+echo "<li><a href='export_donnees_bulletins.php'>Export de donnÃ©es des bulletins</a></li>\n";
 echo "<li><a href='stat_connexions.php'>Statistiques de connexion</a></li>\n";
 echo "</ul>\n";
 

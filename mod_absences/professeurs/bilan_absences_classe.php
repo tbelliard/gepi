@@ -31,7 +31,7 @@ $nobar = 'oui';
 require_once("../../lib/initialisations.inc.php");
 //mes fonctions
 include("../lib/functions.php");
-// ainsi que les fonctions de l'EdT pour la gestion des créneaux
+// ainsi que les fonctions de l'EdT pour la gestion des crÃ©neaux
 require_once("../../edt_organisation/fonctions_calendrier.php");
 require_once("../../edt_organisation/fonctions_edt.php");
 
@@ -45,7 +45,7 @@ if ($resultat_session == "c") {
     die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 // SQL : INSERT INTO droits VALUES ( '/mod_absences/professeurs/bilan_absences_classe.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Bilan des absences saisies par classe', '');
 // maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_absences/professeurs/bilan_absences_classe.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Bilan des absences saisies par classe', '');";
 /*/
@@ -54,7 +54,7 @@ if (!checkAccess()) {
     die();
 }*/
 
-// ======================== Initialisation des données ==================== //
+// ======================== Initialisation des donnÃ©es ==================== //
 $id_classe = isset($_GET["id_classe"]) ? $_GET["id_classe"] : (isset($_POST["id_classe"]) ? $_POST["id_classe"] : NULL);
 $debut = isset($_POST["debut"]) ? $_POST["debut"] : date("d/m/Y");
 $fin = isset($_POST["fin"]) ? $_POST["fin"] : date("d/m/Y");
@@ -63,10 +63,10 @@ $fin = isset($_POST["fin"]) ? $_POST["fin"] : date("d/m/Y");
 $aff_debug = $aff_nom_classe = $aff_liste_abs = $aff_bilan = $aff_liste_eleves = NULL;
 
 
-// ======================== Traitement des données ======================== //
+// ======================== Traitement des donnÃ©es ======================== //
 
 	if ($id_classe == NULL) {
-		trigger_error("Impossible d'afficher les informations demandées car la classe n'est pas précisée.", E_USER_ERROR);
+		trigger_error("Impossible d'afficher les informations demandÃ©es car la classe n'est pas prÃ©cisÃ©e.", E_USER_ERROR);
 	}
 
 	// On recherche les renseignements sur cette classe
@@ -84,10 +84,10 @@ $aff_debug = $aff_nom_classe = $aff_liste_abs = $aff_bilan = $aff_liste_eleves =
 	$date_fin_ts = mktime(23,59,60, $choix_date_fin[1], $choix_date_fin[0], $choix_date_fin[2]);
 	$ts = $date_deb_ts;
 
-	// Nbre de jours demandés
+	// Nbre de jours demandÃ©s
 	$nbre_de_jours = ($date_fin_ts - $date_deb_ts) / 86400;
 
-	// On recherche l'ensemble des absences enregistrées sur ces dates là
+	// On recherche l'ensemble des absences enregistrÃ©es sur ces dates lÃ 
 	$sql_a = "SELECT id, nom, prenom, retard_absence, debut_ts, fin_ts, eleve_id
 				FROM absences_rb a, eleves e
 				WHERE debut_ts >= '".$date_deb_ts."'
@@ -102,7 +102,7 @@ $aff_debug = $aff_nom_classe = $aff_liste_abs = $aff_bilan = $aff_liste_eleves =
 		$aff_tab = '<tr><td>Nom</td>';
 	for($j = 0 ; $j < $nbre_de_jours ; $j++){
 
-		// On affiche la première ligne  du tableau
+		// On affiche la premiÃ¨re ligne  du tableau
 		$aff_tab .= '<td>'.date("d/m", $ts).'</td>';
 		$date_du_jour[$j] = date("d/m", $ts);
 		$ts = $ts + 86400;
@@ -135,7 +135,7 @@ $aff_debug = $aff_nom_classe = $aff_liste_abs = $aff_bilan = $aff_liste_eleves =
 				$rep[$k]["eleve_id"] = mysql_result($query_a, $k, "eleve_id");
 				$rep[$k]["retard_absence"] = mysql_result($query_a, $k, "retard_absence");
 
-				// On va calculer le nombre d'entrées saisies pour chaque jour demandé
+				// On va calculer le nombre d'entrÃ©es saisies pour chaque jour demandÃ©
 				if ($rep[$k]["debut_ts"] >= $ts AND
 					$rep[$k]["fin_ts"] <= ($ts + 86400) AND
 					$aff[$i]["login"] == $rep[$k]["eleve_id"] AND

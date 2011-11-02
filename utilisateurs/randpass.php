@@ -1,7 +1,7 @@
 <?php
 // ---------------------------------------
 // Script created by John Brookes
-// Copyright John Brookes ©2005
+// Copyright John Brookes Â©2005
 // http://www.gotaxe.com
 // ---------------------------------------
 // GARP v1.0 (GotAxe? Random Passwords)

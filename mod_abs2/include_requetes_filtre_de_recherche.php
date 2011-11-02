@@ -42,7 +42,7 @@ if ($reinit_filtre == 'y') {
 	    , 'filter_recherche_saisie_a_rattacher', 'filter_regime', 'filter_date_suppression_saisie_debut_plage', 'filter_date_suppression_saisie_fin_plage');
     $liste_parametres_checkbox = array('filter_date_modification', 'filter_discipline', 'filter_marqueur_appel', 'filter_saisies_supprimees');
 
-    //récupération des paramètres de la requète
+    //rÃ©cupÃ©ration des paramÃ¨tres de la requÃ¨te
     foreach ($liste_parametres_sauf_checkbox as $param_name) {
 	//echo $param_name.' : '.$_POST[$param_name].'<br/>';
 	if (isset($_POST[$param_name])) {

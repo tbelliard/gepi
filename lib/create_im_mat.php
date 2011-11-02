@@ -21,12 +21,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// On précise de ne pas traiter les données avec la fonction anti_inject
+// On prÃ©cise de ne pas traiter les donnÃ©es avec la fonction anti_inject
 $traite_anti_inject = 'no';
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
-//$texte : le texte à afficher
+//$texte : le texte Ã  afficher
 //$height : la hauteur de l'image
 //$width : la largeur de l'image
 //$colortxt : la couleur du texte de la forme #xxxxxx ou xxxxxx

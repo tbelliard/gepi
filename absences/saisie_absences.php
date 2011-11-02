@@ -22,7 +22,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut creer des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Initialisations files
@@ -51,9 +51,9 @@ if (!checkAccess()) {
 
 include "../lib/periodes.inc.php";
 
-// Vérifications
+// VÃ©rifications
 if((!isset($id_classe))||(!isset($id_classe))) {
-	$msg="Il faut choisir une classe et une période.";
+	$msg="Il faut choisir une classe et une pÃ©riode.";
 	header("Location:index.php?msg=$msg");
 }
 
@@ -66,7 +66,7 @@ elseif(($ver_periode[$periode_num]=="P")&&($_SESSION['statut']=='secours')) {
 }
 
 if($acces=="n") {
-	$msg="La période $periode_num est close pour cette classe.";
+	$msg="La pÃ©riode $periode_num est close pour cette classe.";
 	header("Location:index.php?id_classe=$id_classe&msg=$msg");
 }
 
@@ -96,7 +96,7 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 
 		//=========================
 		// AJOUT: boireaus 20071007
-		// Récupération du numéro de l'élève dans les saisies:
+		// RÃ©cupÃ©ration du numÃ©ro de l'Ã©lÃ¨ve dans les saisies:
 		$num_eleve=-1;
 		for($i=0;$i<count($log_eleve);$i++){
 			if($reg_eleve_login==$log_eleve[$i]){
@@ -140,7 +140,7 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 			}
 			//echo "\$ap=$ap<br />";
 
-			// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+			// ContrÃ´le des saisies pour supprimer les sauts de lignes surnumÃ©raires.
 			//$ap=my_ereg_replace('(\\\r\\\n)+',"\r\n",$ap);
 			$ap=preg_replace('/(\\\r\\\n)+/',"\r\n",$ap);
 			//=========================
@@ -163,16 +163,16 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 					$register = mysql_query("INSERT INTO absences SET login='$reg_eleve_login', periode='$periode_num',nb_absences='$nb_absences',non_justifie='$nb_nj', nb_retards='$nb_retard',appreciation='$ap'");
 				}
 			if (!$register) {
-					$msg = "Erreur lors de l'enregistrement des données";
+					$msg = "Erreur lors de l'enregistrement des donnÃ©es";
 			}
 		}
 		$j++;
 	}
 	//$affiche_message = 'yes';
-	if(!isset($msg)){$msg='Les modifications ont été enregistrées !';}
+	if(!isset($msg)){$msg='Les modifications ont Ã©tÃ© enregistrÃ©es !';}
 }
-$themessage  = 'Des champs ont été modifiés. Voulez-vous vraiment quitter sans enregistrer ?';
-//$message_enregistrement = 'Les modifications ont été enregistrées !';
+$themessage  = 'Des champs ont Ã©tÃ© modifiÃ©s. Voulez-vous vraiment quitter sans enregistrer ?';
+//$message_enregistrement = 'Les modifications ont Ã©tÃ© enregistrÃ©es !';
 
 $javascript_specifique = "saisie/scripts/js_saisie";
 //**************** EN-TETE *****************
@@ -189,7 +189,7 @@ change = 'no';
 echo add_token_field(true);
 ?>
 <p class="bold">
-<a href="index.php?id_classe=<?php echo $id_classe; ?>" onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Choisir une autre période</a> |
+<a href="index.php?id_classe=<?php echo $id_classe; ?>" onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Choisir une autre pÃ©riode</a> |
 <a href="index.php" onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">Choisir une autre classe</a> | <input type="submit" value="Enregistrer" /> | <a href="<?php echo "consulter_absences.php?id_classe=$id_classe&amp;periode_num=$periode_num";?>">Consulter les absences de la classe</a></p>
 
 
@@ -202,9 +202,9 @@ $classe = mysql_result($call_classe, "0", "classe");
 <!--table border=1 cellspacing=2 cellpadding=5-->
 <table class='boireaus' cellspacing='2' cellpadding='5'>
 <tr>
-	<th align='center'><b>Nom Prénom</b></th>
-	<th align='center'><b>Nb. total de 1/2 journées d'absence</b></th>
-	<th align='center'><b>Nb. absences non justifiées</b></th>
+	<th align='center'><b>Nom PrÃ©nom</b></th>
+	<th align='center'><b>Nb. total de 1/2 journÃ©es d'absence</b></th>
+	<th align='center'><b>Nb. absences non justifiÃ©es</b></th>
 	<th align='center'><b>Nb. de retard</b></th>
 	<th align='center'><b>Observations</b></th>
 </tr>
@@ -258,7 +258,7 @@ while($i < $nombre_lignes) {
 
 	echo ">$current_eleve_ap_absences</textarea>\n";
 
-	// Espace pour afficher les éventuelles fautes de frappe
+	// Espace pour afficher les Ã©ventuelles fautes de frappe
 	echo "<div id='div_verif_n3".$num_id."' style='color:red;'></div>\n";
 
 	echo "</td>\n";
@@ -278,10 +278,10 @@ while($i < $nombre_lignes) {
 
 <?php
 
-echo "<p>Il est impératif que vous ne laissiez pas de 'champ absence', 'absence_non_justifiee', 'retard' vide.<br />
-Un champ retard vide n'est pas compris comme zéro retard, mais comme une absence de remplissage du champ.<br />
-Si vous n'avez rempli que les champs non nuls, vous pouvez compléter d'un coup ci-dessous&nbsp;:<br />\n";
-echo "<a href='javascript:complete_a_zero_champs_vides()'>Compléter les champs vides par des zéros</a>";
+echo "<p>Il est impÃ©ratif que vous ne laissiez pas de 'champ absence', 'absence_non_justifiee', 'retard' vide.<br />
+Un champ retard vide n'est pas compris comme zÃ©ro retard, mais comme une absence de remplissage du champ.<br />
+Si vous n'avez rempli que les champs non nuls, vous pouvez complÃ©ter d'un coup ci-dessous&nbsp;:<br />\n";
+echo "<a href='javascript:complete_a_zero_champs_vides()'>ComplÃ©ter les champs vides par des zÃ©ros</a>";
 echo "</p>\n";
 
 echo "<script type='text/javascript'>\n";

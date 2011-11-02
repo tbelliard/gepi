@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Initialisations files
@@ -53,7 +53,7 @@ if ($utilisateur == null) {
 	die();
 }
 
-//récupération des paramètres de la requète
+//rÃ©cupÃ©ration des paramÃ¨tres de la requÃ¨te
 $nom_eleve = isset($_POST["nom_eleve"]) ? $_POST["nom_eleve"] :(isset($_GET["nom_eleve"]) ? $_GET["nom_eleve"] :(isset($_SESSION["nom_eleve"]) ? $_SESSION["nom_eleve"] : NULL));
 $id_eleve = isset($_POST["id_eleve"]) ? $_POST["id_eleve"] :(isset($_GET["id_eleve"]) ? $_GET["id_eleve"] :(isset($_SESSION["id_eleve"]) ? $_SESSION["id_eleve"] : NULL));
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :(isset($_SESSION["id_groupe_abs"]) ? $_SESSION["id_groupe_abs"] : NULL));
@@ -120,12 +120,12 @@ if (!$classe_col->isEmpty()) {
 	}
 	echo "</select>&nbsp;";
 
-	echo '<button type="submit">Afficher les élèves</button>';
+	echo '<button type="submit">Afficher les Ã©lÃ¨ves</button>';
 	echo '</p>';
 	echo "</form>";
 	echo "</td>";
 } else {
-    echo '<td>Aucune classe avec élève affecté n\'a été trouvée</td>';
+    echo '<td>Aucune classe avec Ã©lÃ¨ve affectÃ© n\'a Ã©tÃ© trouvÃ©e</td>';
 }
 
 echo "</tr></table>";
@@ -164,7 +164,7 @@ if (!$eleve_col->isEmpty()) {
 				<input value="Enregistrer" name="Valider" type="submit"  onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
 			</p>
 
-<!-- Afichage du tableau de la liste des élèves -->
+<!-- Afichage du tableau de la liste des Ã©lÃ¨ves -->
 <!-- Legende du tableau-->
 	<?php echo ('<p>');
 	    $mef_collection = MefQuery::create()->find();
@@ -185,8 +185,8 @@ if (!$eleve_col->isEmpty()) {
 	<table style="width:750px;" >
 		<tbody>
 			<tr class="titre_tableau_gestion" style="white-space: nowrap;">
-				<th style="text-align : center;" abbr="élèves">Liste des &eacute;l&egrave;ves.
-				Sélectionner :
+				<th style="text-align : center;" abbr="Ã©lÃ¨ves">Liste des &eacute;l&egrave;ves.
+				SÃ©lectionner :
 				<a href="#" onclick="SetAllCheckBoxes('liste_mef_eleve', 'active_mef_eleve[]', '', true); return false;">Tous</a>
 				<a href="#" onclick="SetAllCheckBoxes('liste_mef_eleve', 'active_mef_eleve[]', '', false); return false;">Aucun</a>
 				</th>
@@ -281,7 +281,7 @@ function redimensionne_image_petit($photo)
     // largeur et hauteur de l'image d'origine
     $largeur = $info_image[0];
     $hauteur = $info_image[1];
-    // largeur et/ou hauteur maximum à afficher
+    // largeur et/ou hauteur maximum Ã  afficher
              $taille_max_largeur = 45;
              $taille_max_hauteur = 45;
 
@@ -290,7 +290,7 @@ function redimensionne_image_petit($photo)
      $ratio_h = $hauteur / $taille_max_hauteur;
      $ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
 
-    // définit largeur et hauteur pour la nouvelle image
+    // dÃ©finit largeur et hauteur pour la nouvelle image
      $nouvelle_largeur = $largeur / $ratio;
      $nouvelle_hauteur = $hauteur / $ratio;
 

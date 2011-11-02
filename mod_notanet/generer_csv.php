@@ -50,7 +50,7 @@ check_token();
 // Fin de ligne
 $eol="\r\n";
 
-// Récupération des lignes
+// RÃ©cupÃ©ration des lignes
 $lig_notanet=isset($_POST['lig_notanet']) ? $_POST['lig_notanet'] : NULL;
 
 // Initialisation du fichier
@@ -79,7 +79,7 @@ else {
 
 	//$fd.="TEMOIN".$eol;
 
-	// Bibliothèque pour Notanet et Fiches brevet
+	// BibliothÃ¨que pour Notanet et Fiches brevet
 	include("lib_brevets.php");
 
 	/*
@@ -159,7 +159,7 @@ else {
 									}
 									$note=formate_note_notanet($lig2->note_notanet);
 								}
-								// Le formatage est déjà fait lors de l'insertion dans la table: NON... il faut deux chiffres après la virgule
+								// Le formatage est dÃ©jÃ  fait lors de l'insertion dans la table: NON... il faut deux chiffres aprÃ¨s la virgule
 								//$lig_notanet[]="$lig2->ine|$lig2->id_mat|".formate_note_notanet($lig2->note_notanet)."|";
 								//$lig_notanet[]="$lig2->ine|$lig2->id_mat|".$lig2->note_notanet."|";
 								$lig_notanet[]="$lig2->ine|".sprintf("%03d",$lig2->id_mat)."|".$note."|";
@@ -218,7 +218,7 @@ else {
 							}
 							$note=formate_note_notanet($lig2->note_notanet);
 						}
-						// Le formatage est déjà fait lors de l'insertion dans la table
+						// Le formatage est dÃ©jÃ  fait lors de l'insertion dans la table
 						//$lig_notanet[]="$lig2->ine|$lig2->id_mat|".formate_note_notanet($lig2->note_notanet)."|";
 						//$lig_notanet[]="$lig2->ine|$lig2->id_mat|".$note."|";
 						$lig_notanet[]="$lig2->ine|".sprintf("%03d",$lig2->id_mat)."|".$note."|";
@@ -241,7 +241,7 @@ else {
 
 }
 
-// Génération/envoi au navigateur du fichier
+// GÃ©nÃ©ration/envoi au navigateur du fichier
 $nom_fic = "notanet_".date('Y.m.d_H.i.s_').preg_replace("/ /","_",microtime()).".csv";
 send_file_download_headers('text/x-csv',$nom_fic);
 

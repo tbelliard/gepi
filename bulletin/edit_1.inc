@@ -4,8 +4,8 @@
  */
 
 	//echo "\$test_coef=$test_coef<br />\n";
-        // On initialise le tableau des notes et appréciations :
-        echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Tableau des notes et appréciations'>\n";
+        // On initialise le tableau des notes et apprÃ©ciations :
+        echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Tableau des notes et apprÃ©ciations'>\n";
         echo "<thead>\n";
 
 		if($min_max_moyclas!=1) {
@@ -18,10 +18,10 @@
         echo "<tr>\n<td style=\"width: ".$col_matiere_largeur."px; vertical-align: top;\"$chaine_rowspan>
         <span class='bulletin'><font size=\"1\">";
         if ($bull_affiche_numero == 'yes'){
-            echo "Bulletin N° ".$k."/".$nombre_eleves;
+            echo "Bulletin NÂ° ".$k."/".$nombre_eleves;
         }
         else{
-            echo "Effectif : ".$nombre_eleves." élèves";
+            echo "Effectif : ".$nombre_eleves." Ã©lÃ¨ves";
         }
         echo "</font></span></td>\n";
         if ($test_coef != 0 and $affiche_coef == "y"){
@@ -48,7 +48,7 @@
 		echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"$chaine_rowspan><span class='bulletin'>Classe m/C/M</span></td>\n";
 	}
 
-        echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"$chaine_rowspan><span class='bulletin'>&Eacute;lève</span></td>\n";
+        echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"$chaine_rowspan><span class='bulletin'>&Eacute;lÃ¨ve</span></td>\n";
         if ($affiche_graph == 'y')  {
             //echo"</td>\n<td style=\"width: ".$col_note_largeur."px; text-align: center;\"><span class='bulletin'>Niveaux<br />ABC<font size=\"-2\">+</font>C<font size=\"-2\">-</font>DE</span></td>\n";
             echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"$chaine_rowspan><span class='bulletin'>Niveaux<br />ABC<font size=\"-2\">+</font>C<font size=\"-2\">-</font>DE</span></td>\n";
@@ -57,9 +57,9 @@
             echo "<td style=\"width: ".$col_note_largeur."px; text-align: center;\"$chaine_rowspan><span class='bulletin'><i>Rang</i></span></td>\n";
         }
 
-        // Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
+        // Pas d'affichage dans le cas d'un bulletin d'une pÃ©riode "examen blanc"
         if ($bull_affiche_appreciations == 'y'){
-            //echo "<td colspan=\"2\"><span class='bulletin'>Appréciation/Conseils</span></td>\n";
+            //echo "<td colspan=\"2\"><span class='bulletin'>ApprÃ©ciation/Conseils</span></td>\n";
             echo "<td colspan=\"2\"$chaine_rowspan><span class='bulletin'>".$bull_intitule_app."</span></td>\n";
         }
         echo "</tr>\n";
@@ -81,9 +81,9 @@
 		*/
     echo "</thead>\n";
 
-        // Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
+        // Pas d'affichage dans le cas d'un bulletin d'une pÃ©riode "examen blanc"
         if ($bull_affiche_aid == 'y') {
-            // On attaque maintenant l'affichage des appréciations des Activités Interdisciplinaires devant apparaître en tête des bulletins :
+            // On attaque maintenant l'affichage des apprÃ©ciations des ActivitÃ©s Interdisciplinaires devant apparaÃ®tre en tÃªte des bulletins :
             //------------------------------
             $z=0;
             while ($z < $nb_aid_b) {
@@ -104,12 +104,12 @@
 
 
 
-        // On va créer une nouvelle boucle interne : la boucle 'matière'
+        // On va crÃ©er une nouvelle boucle interne : la boucle 'matiÃ¨re'
         //------------------------------
         $j = 0;
         $prev_cat_id = null;
             while ($j < $nombre_groupes) {
-            // On teste si des notes de une ou plusieurs boites du carnet de notes doivent être affichée
+            // On teste si des notes de une ou plusieurs boites du carnet de notes doivent Ãªtre affichÃ©e
             $test_cn = mysql_query("select distinct c.nom_court, c.id, nc.note from cn_cahier_notes cn, cn_conteneurs c, cn_notes_conteneurs nc
             where (
             cn.periode = '".$periode_num."' and
@@ -132,10 +132,10 @@
             }
             $nb_ligne_par_matiere = max($nb_ligne_cn,1) ;
 
-            // Si l'élève suit bien cette matière ou pas
+            // Si l'Ã©lÃ¨ve suit bien cette matiÃ¨re ou pas
             //-----------------------------
             if (in_array($current_eleve_login[$i], $current_group[$j]["eleves"][$periode_num]["list"])) {
-                // On appelle les résultats :
+                // On appelle les rÃ©sultats :
                 $current_matiere_note_min = sql_query1("SELECT MIN(note) note_min FROM matieres_notes WHERE (id_groupe='".$current_group[$j]["id"]."' AND periode='$periode_num' AND statut ='')");
                 $current_matiere_note_max = sql_query1("SELECT MAX(note) note_max FROM matieres_notes WHERE (id_groupe='".$current_group[$j]["id"]."' AND periode='$periode_num' AND statut ='')");
                 $current_eleve_appreciation = sql_query1("SELECT appreciation FROM matieres_appreciations WHERE (login='".$current_eleve_login[$i]."' AND id_groupe='".$current_group[$j]["id"]."' AND periode='$periode_num')");
@@ -144,14 +144,14 @@
 
         //==========================================
         // AJOUT: boireaus
-        // Nombre de contrôles
+        // Nombre de contrÃ´les
         $sql="SELECT cnd.note, cd.note_sur FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE cnd.login='".$current_eleve_login[$i]."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$current_group[$j]["id"]."' AND ccn.periode='$periode_num' AND cnd.statut='';";
         //echo "\n<!--sql=$sql-->\n";
         $result_nbct=mysql_query($sql);
         $current_eleve_nbct=mysql_num_rows($result_nbct);
 
 	//++++++++++++++++++++++++
-	// Modif d'après F.Boisson
+	// Modif d'aprÃ¨s F.Boisson
 	// on prend les notes dans $string_notes
 	$string_notes='';
 	if ($result_nbct ) {
@@ -176,14 +176,14 @@
 
 
                 if ($affiche_categories) {
-                // On regarde si on change de catégorie de matière
+                // On regarde si on change de catÃ©gorie de matiÃ¨re
                     if ($current_group[$j]["classes"]["classes"][$id_classe]["categorie_id"] != $prev_cat_id) {
                         $prev_cat_id = $current_group[$j]["classes"]["classes"][$id_classe]["categorie_id"];
-                        // On est dans une nouvelle catégorie
+                        // On est dans une nouvelle catÃ©gorie
 
-                        // On récupère les infos nécessaires, et on affiche une ligne
+                        // On rÃ©cupÃ¨re les infos nÃ©cessaires, et on affiche une ligne
                         $cat_name = html_entity_decode_all_version(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group[$j]["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
-                        // On détermine le nombre de colonnes pour le colspan
+                        // On dÃ©termine le nombre de colonnes pour le colspan
 
 
         	if($min_max_moyclas!=1){
@@ -221,7 +221,7 @@
                         if ($affiche_rang == 'y')  {$nb_total_cols++; $nb_last_cols++;}
                         if ($bull_affiche_appreciations == 'y') {$nb_total_cols++; $nb_last_cols++;}
 
-                        // On regarde s'il faut afficher la moyenne de l'élève pour cette catégorie
+                        // On regarde s'il faut afficher la moyenne de l'Ã©lÃ¨ve pour cette catÃ©gorie
 		                $affiche_cat_moyenne_query = mysql_query("SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $prev_cat_id . "')");
 		                if (mysql_num_rows($affiche_cat_moyenne_query) == "0") {
 		                	$affiche_cat_moyenne = false;
@@ -244,7 +244,7 @@
                         }
                         echo "<p style='padding: 0; margin:0; font-size: ".$bull_categ_font_size."px;'>".$cat_name."</p></td>\n";
                         if ($affiche_cat_moyenne == "1") {
-				//ERIC  Modif pour les cas où les moy sont regroupées en fin de bulletin dans une seule cas
+				//ERIC  Modif pour les cas oÃ¹ les moy sont regroupÃ©es en fin de bulletin dans une seule cas
 				if($min_max_moyclas!=1){
 				  echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>"."-"."</td>\n"; // max classe
 				  echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;'>".nf($moy_cat_classe[$i][$prev_cat_id])."</td>\n"; //moy classe
@@ -280,7 +280,7 @@
             //=========================================
             // AJOUT: boireaus
             if($affiche_nbdev=="y"){
-                // Nombre de contrôles:
+                // Nombre de contrÃ´les:
                 echo "<td style=\"text-align: center; width: ".$col_note_largeur."px;\" rowspan=\"".$nb_ligne_par_matiere."\">";
                 //echo "<span class='bulletin'>$current_eleve_nbct</span>";
                 echo "<span class='bulletin'>$current_eleve_nbct/$current_matiere_nbct</span>";
@@ -356,11 +356,11 @@
 		}
 
 
-		// Moyenne de l'élève
+		// Moyenne de l'Ã©lÃ¨ve
 		echo "<td style=\"text-align: center; width: ".$col_note_largeur."px;\" rowspan=\"".$nb_ligne_par_matiere."\"><span class='bulletin'><b>";
 
-		// On va déterminer la place de l'élève si la note n'est pas abs, disp,...
-		// avant d'afficher la moyenne de l'élève
+		// On va dÃ©terminer la place de l'Ã©lÃ¨ve si la note n'est pas abs, disp,...
+		// avant d'afficher la moyenne de l'Ã©lÃ¨ve
                         $place_eleve = "";
                         $flag_moy = 'no';
                         if ($current_eleve_note[$j][$i] != '') {
@@ -379,7 +379,7 @@
                                 //if($note!="-") {$note=number_format($current_eleve_note[$j][$i],1, ',', ' ');}
                                 if($current_eleve_note[$j][$i]!="-") {$note=number_format($current_eleve_note[$j][$i],1, ',', ' ');} else {$note="-";}
                                 echo $note;
-								// Est-il judicieux d'avoir ce $flag_moy ici même si la note est un '-'? A quoi sert-il?
+								// Est-il judicieux d'avoir ce $flag_moy ici mÃªme si la note est un '-'? A quoi sert-il?
                                 $flag_moy = 'yes';
                             }
                         } else {
@@ -417,20 +417,20 @@
                         }
                     }
 
-                    // Cas où des notes de une ou plusieurs boites du carnet de notes doivent être affichées
+                    // Cas oÃ¹ des notes de une ou plusieurs boites du carnet de notes doivent Ãªtre affichÃ©es
 
-                    // Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
+                    // Pas d'affichage dans le cas d'un bulletin d'une pÃ©riode "examen blanc"
                     if ($bull_affiche_appreciations == 'y') {
                         if ($nb_ligne_cn == 0){
                             echo "<td colspan=\"2\" >";
                         } else {
-                            // Il faudrait peut-être ci-dessous un htmlentities() sur $cn_nom[$cn]
+                            // Il faudrait peut-Ãªtre ci-dessous un htmlentities() sur $cn_nom[$cn]
                             echo "<td style=\"width: ".$col_boite_largeur."px;\">
                             <span class='bulletin'>".$cn_nom[$cn]."&nbsp;:&nbsp;".$cn_note[$cn]."</span></td>\n";
                             if ($cn == 0){echo "<td rowspan=\"".$nb_ligne_cn."\">";}
                         }
                     }
-                    // Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
+                    // Pas d'affichage dans le cas d'un bulletin d'une pÃ©riode "examen blanc"
                     if (($cn == 0) and  ($bull_affiche_appreciations == 'y')) {
                         /*
                         if ($current_eleve_appreciation) {
@@ -466,9 +466,9 @@
 
 
 
-        // Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
+        // Pas d'affichage dans le cas d'un bulletin d'une pÃ©riode "examen blanc"
         if ($bull_affiche_aid == 'y') {
-            // On attaque maintenant l'affichage des appréciations des Activités Interdisciplinaires devant apparaître en fin des bulletins :
+            // On attaque maintenant l'affichage des apprÃ©ciations des ActivitÃ©s Interdisciplinaires devant apparaÃ®tre en fin des bulletins :
             //------------------------------
             $z=0;
             while ($z < $nb_aid_e) {
@@ -491,12 +491,12 @@
 
 	//if($ne_pas_afficher_moy_gen==""){
 	if($display_moy_gen=="y"){
-		// Affichage des moyennes générales
+		// Affichage des moyennes gÃ©nÃ©rales
 		if ($test_coef != 0) {
 			//echo "<tr><td>\$display_moy_gen=$display_moy_gen</td><td>\$test_coef=$test_coef</td><td>\$total_coef=$total_coef</td><td>\$total_coef_eleve[$i]=$total_coef_eleve[$i]</td></tr>\n";
 			//if ($total_coef != 0) {
 			if ($total_coef_eleve[$i] != 0) {
-				echo "<tr>\n<td style=\"width: ".$col_matiere_largeur."px;\"><span class='bulletin'><b>Moyenne générale</b></span></td>\n";
+				echo "<tr>\n<td style=\"width: ".$col_matiere_largeur."px;\"><span class='bulletin'><b>Moyenne gÃ©nÃ©rale</b></span></td>\n";
 
 				if ($affiche_coef == "y"){echo "<td style=\"text-align: center;\">-</td>\n";}
 				if ($affiche_nbdev == "y"){echo "<td style=\"text-align: center;\">-</td>\n";}
@@ -508,7 +508,7 @@
 					echo "<span class='bulletin'>".nf($moy_min_classe)."</span>";
 				    echo "</td>\n";
 
-				    // Colonne Moyenne générale de la classe:
+				    // Colonne Moyenne gÃ©nÃ©rale de la classe:
 				   echo "<td style=\"text-align: center;\">";
 				   echo "<span class='bulletin'>".nf($moy_generale_classe)."</span>";
 				   echo "</td>\n";
@@ -526,7 +526,7 @@
 					echo "</td>\n";
 				}
 
-				// Colonne Moyenne générale d'élève:
+				// Colonne Moyenne gÃ©nÃ©rale d'Ã©lÃ¨ve:
 				echo "<td style=\"text-align: center;\">";
 				echo "<span class='bulletin'><b>".nf($moy_gen_eleve[$i])."</b></span></td>\n";
 				if ($affiche_graph == 'y')  {
@@ -548,7 +548,7 @@
 					echo "<td style=\"text-align: center;\"><span class='bulletin'>".$rang."</span></td>\n";
 				}
 
-				// Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
+				// Pas d'affichage dans le cas d'un bulletin d'une pÃ©riode "examen blanc"
 				if ($bull_affiche_appreciations == 'y'){
 					//echo "<td colspan=\"2\"><span class='bulletin'>-</span></td>\n</tr>\n";
 					echo "<td colspan=\"2\"><span class='bulletin'>-</span></td>\n";

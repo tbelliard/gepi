@@ -144,8 +144,8 @@ class jointure_calendar_classes {
 	}
 /*******************************************************************
  *
- *		Vérifier que les périodes de notes sont toutes les mêmes
- *		pour les classes inscrites dans le même calendrier
+ *		VÃ©rifier que les pÃ©riodes de notes sont toutes les mÃªmes
+ *		pour les classes inscrites dans le mÃªme calendrier
  *
  *******************************************************************/
  
@@ -175,13 +175,13 @@ class jointure_calendar_classes {
 	}
 /*******************************************************************
  *
- *		Vérifier que les périodes de notes sont toutes les mêmes
- *		pour les classes inscrites dans le même calendrier
+ *		VÃ©rifier que les pÃ©riodes de notes sont toutes les mÃªmes
+ *		pour les classes inscrites dans le mÃªme calendrier
  *
  *******************************************************************/
  
 	public function getPeriodesNotesFromCalendar() {
-		$result = "<option selected value=\"0\">aucune période";
+		$result = "<option selected value=\"0\">aucune pÃ©riode";
 		$Classes = $this->getClasses();
 		if ($Classes) {
 			$FirstClass = $Classes[0];

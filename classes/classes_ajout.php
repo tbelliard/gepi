@@ -53,7 +53,7 @@ else {
 	$classes_ajout_sans_regime="n";
 }
 
-// On ne propose pas de définir le régime quand suhosin est actif... on a alors trop de variables postées s'il y a beaucoup d'élèves
+// On ne propose pas de dÃ©finir le rÃ©gime quand suhosin est actif... on a alors trop de variables postÃ©es s'il y a beaucoup d'Ã©lÃ¨ves
 $suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
 if($suhosin_post_max_totalname_length!='') {
 	$classes_ajout_sans_regime="y";
@@ -62,7 +62,7 @@ if($suhosin_post_max_totalname_length!='') {
 $sql="SELECT classe FROM classes WHERE id = '$id_classe';";
 $call_classe = mysql_query($sql);
 if(mysql_num_rows($call_classe)==0) {
-	echo "La classe n°$id_classe (id_classe) n'existe pas.<br />\n";
+	echo "La classe nÂ°$id_classe (id_classe) n'existe pas.<br />\n";
 	die();
 }
 $classe = mysql_result($call_classe, "0", "classe");
@@ -98,7 +98,7 @@ if (isset($is_posted) and ($is_posted == 1)) {
 			while ($i < $nb_periode) {
 				$tab_per_ajout_eleve=$_POST['ajout_eleve_'.$id_eleve];
 				if(isset($tab_per_ajout_eleve[$i])) {
-					// Contrôler que l'élève n'est pas déjà dans une autre classe
+					// ContrÃ´ler que l'Ã©lÃ¨ve n'est pas dÃ©jÃ  dans une autre classe
 					$sql="SELECT id_classe FROM j_eleves_classes WHERE
 					(login = '$login_eleve' and
 					id_classe!='$id_classe' and
@@ -106,7 +106,7 @@ if (isset($is_posted) and ($is_posted == 1)) {
 					$test_clas_per=mysql_query($sql);
 					if(mysql_num_rows($test_clas_per)>0) {
 						$lig_clas_per=mysql_fetch_object($test_clas_per);
-						$msg_complement.=get_nom_prenom_eleve($login_eleve)." est déjà dans une autre classe&nbsp;: ".get_class_from_id($lig_clas_per->id_classe)."<br />\n";
+						$msg_complement.=get_nom_prenom_eleve($login_eleve)." est dÃ©jÃ  dans une autre classe&nbsp;: ".get_class_from_id($lig_clas_per->id_classe)."<br />\n";
 						$reg_ok = 'no';
 					}
 					else {
@@ -121,7 +121,7 @@ if (isset($is_posted) and ($is_posted == 1)) {
 							if (!($reg_data))  {$reg_ok = 'no';}
 						}
 		
-						// UPDATE: Ajouter l'élève à tous les groupes pour la période:
+						// UPDATE: Ajouter l'Ã©lÃ¨ve Ã  tous les groupes pour la pÃ©riode:
 						$sql="SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe'";
 						$res_liste_grp_classe=mysql_query($sql);
 						if(mysql_num_rows($res_liste_grp_classe)>0){
@@ -155,7 +155,7 @@ if (isset($is_posted) and ($is_posted == 1)) {
 							$insert_cpe=mysql_query($sql);
 						}
 						else {
-							$msg_complement.="<br />L'élève $login_eleve n'a pas été associé à un CPE.";
+							$msg_complement.="<br />L'Ã©lÃ¨ve $login_eleve n'a pas Ã©tÃ© associÃ© Ã  un CPE.";
 						}
 			
 						$sql="SELECT DISTINCT professeur FROM j_eleves_professeurs jep
@@ -175,7 +175,7 @@ if (isset($is_posted) and ($is_posted == 1)) {
 							$insert_pp=mysql_query($sql);
 						}
 						else {
-							$msg_complement.="<br />L'élève $login_eleve n'a pas été associé à un ".$gepiProfSuivi.".";
+							$msg_complement.="<br />L'Ã©lÃ¨ve $login_eleve n'a pas Ã©tÃ© associÃ© Ã  un ".$gepiProfSuivi.".";
 						}
 					}
 				}
@@ -217,9 +217,9 @@ if (isset($is_posted) and ($is_posted == 1)) {
 	}
 
 	if (($reg_data) == 'yes') {
-	$msg = "L'enregistrement des données a été correctement effectué !";
+	$msg = "L'enregistrement des donnÃ©es a Ã©tÃ© correctement effectuÃ© !";
 	} else {
-	$msg = "Il y a eu un problème lors de l'enregistrement !";
+	$msg = "Il y a eu un problÃ¨me lors de l'enregistrement !";
 	}
 	$msg.=$msg_complement;
 }
@@ -265,9 +265,9 @@ if(mysql_num_rows($res_class_tmp)>0){
 // =================================
 
 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
-$titre_page = "Gestion des classes | Ajout d'élèves à une classe";
+$titre_page = "Gestion des classes | Ajout d'Ã©lÃ¨ves Ã  une classe";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 
@@ -295,10 +295,10 @@ function DecocheLigne(ki) {
 <form enctype="multipart/form-data" action="classes_ajout.php" name="form1" method=post>
 
 <p class="bold">
-<a href="classes_const.php?id_classe=<?php echo $id_classe;?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à la page de gestion des élèves</a>
+<a href="classes_const.php?id_classe=<?php echo $id_classe;?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour Ã  la page de gestion des Ã©lÃ¨ves</a>
 
 <?php
-if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
+if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe prÃ©cÃ©dente</a>";}
 if($chaine_options_classes!="") {
 
 	echo "<script type='text/javascript'>
@@ -334,7 +334,7 @@ if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_c
 </form>
 
 <form enctype="multipart/form-data" action="classes_ajout.php" name="formulaire" method=post>
-<p><b>Ajout d'élèves à la classe de <?php echo $classe; ?></b><br />Liste des élèves non affectés à une classe :</p>
+<p><b>Ajout d'Ã©lÃ¨ves Ã  la classe de <?php echo $classe; ?></b><br />Liste des Ã©lÃ¨ves non affectÃ©s Ã  une classe :</p>
 
 <?php
 
@@ -343,14 +343,14 @@ echo add_token_field();
 $call_eleves = mysql_query("SELECT * FROM eleves ORDER BY nom, prenom");
 $nombreligne = mysql_num_rows($call_eleves);
 if ($nombreligne == '0') {
-	echo "<p>Il n'y a pas d'élèves actuellement dans la base.</p>\n";
+	echo "<p>Il n'y a pas d'Ã©lÃ¨ves actuellement dans la base.</p>\n";
 } else {
 	$eleves_non_affectes = 'no';
 	echo "<table class='boireaus' cellpadding='5'>\n";
 	echo "<tr>\n";
-	echo "<th><p><b>Nom Prénom </b></p></th>\n";
+	echo "<th><p><b>Nom PrÃ©nom </b></p></th>\n";
 	if($classes_ajout_sans_regime!="y") {
-		echo "<th><p><b>Régime</b></p></th>\n";
+		echo "<th><p><b>RÃ©gime</b></p></th>\n";
 	}
 	echo "<th><p><b>Redoublant</b></p></th>\n";
 	$i="1";
@@ -359,12 +359,12 @@ if ($nombreligne == '0') {
 		$i++;
 	}
 
-	echo "<th><p style='font-weight:bold; text-align:center;'>cocher / décocher <br />toutes périodes</p></th>\n";
+	echo "<th><p style='font-weight:bold; text-align:center;'>cocher / dÃ©cocher <br />toutes pÃ©riodes</p></th>\n";
 	echo "</tr>";
 	$k = '0';
 	//=========================
 	// AJOUT: boireaus 20071010
-	// Compteur des élèves effectivement non affectés:
+	// Compteur des Ã©lÃ¨ves effectivement non affectÃ©s:
 	//$ki=0;
 	//=========================
 	$alt=1;
@@ -399,14 +399,14 @@ if ($nombreligne == '0') {
 			$id_classe_eleve = mysql_result($call_data, 0, "id_classe");
 			$query_periode_max = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe_eleve'");
 			$periode_max = mysql_num_rows($query_periode_max) + 1 ;
-			// si l'élève est déjà dans une classe dont le nombre de périodes est différent du nombre de périodes de la classe selctionnée, on ne fait rien. Dans la cas contraire :
+			// si l'Ã©lÃ¨ve est dÃ©jÃ  dans une classe dont le nombre de pÃ©riodes est diffÃ©rent du nombre de pÃ©riodes de la classe selctionnÃ©e, on ne fait rien. Dans la cas contraire :
 			if ($periode_max == $nb_periode) {
 				$i = '1';
 				while ($i < $nb_periode) {
 					$call_data2 = mysql_query("SELECT id_classe FROM j_eleves_classes WHERE (login = '$login_eleve' and periode = '$i')");
 					$test2 = mysql_num_rows($call_data2);
 					if ($test2 == 0) {
-						// l'élève n'est affecté à aucune classe pour cette période
+						// l'Ã©lÃ¨ve n'est affectÃ© Ã  aucune classe pour cette pÃ©riode
 						$inserer_ligne = 'yes';
 						$eleves_non_affectes = 'yes';
 						$nom_classe[$i] = 'vide';
@@ -467,7 +467,7 @@ if ($nombreligne == '0') {
 				$elementlist .= "'".$ajout_login[$i]."',";
 			}
 			$elementlist = substr($elementlist, 0, -1);
-			echo "<td><center><a href=\"javascript:CocheLigne($id_eleve);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne($id_eleve);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></center></td>\n";
+			echo "<td><center><a href=\"javascript:CocheLigne($id_eleve);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne($id_eleve);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a></center></td>\n";
 			echo "</tr>\n";
 
 			//$ki++;
@@ -477,7 +477,7 @@ if ($nombreligne == '0') {
 	echo "</table>\n";
 
 	if ($eleves_non_affectes == 'no') {
-		echo "<p>Il n'y a aucun élève de disponible à ajouter !";
+		echo "<p>Il n'y a aucun Ã©lÃ¨ve de disponible Ã  ajouter !";
 	} else {
 		echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
 	}

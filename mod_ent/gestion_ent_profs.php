@@ -3,7 +3,7 @@
 /*
  * $Id: gestion_ent_profs.php 6602 2011-03-03 11:38:21Z crob $
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane boireau, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Eric Lebrun, StÃ©phane boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -39,7 +39,7 @@ if (!checkAccess()) {
 	die();
 }
 
-// Sécurité supplémentaire pour éviter d'aller voir ce fichier si on n'est pas dans un ent
+// SÃ©curitÃ© supplÃ©mentaire pour Ã©viter d'aller voir ce fichier si on n'est pas dans un ent
 if (getSettingValue("use_ent") != 'y') {
 	die('Fichier interdit.');
 }
@@ -51,10 +51,10 @@ $nbre_req = isset($_POST["nbre_req"]) ? $_POST["nbre_req"] : NULL;
 //$ = isset($_POST[""]) ? $_POST[""] : NULL;
 
 
-// ======================= Traitement des données ================================
+// ======================= Traitement des donnÃ©es ================================
 if ($action == "modifier") {
 	check_token();
-	// L'utilisateur vient d'envoyer la liste des login à modifier
+	// L'utilisateur vient d'envoyer la liste des login Ã  modifier
 	echo $nbre_req;
 
 	for($a = 0 ; $a < $nbre_req ; $a++){
@@ -62,20 +62,20 @@ if ($action == "modifier") {
 		$login_a_modifier = isset($_POST["modifier_".$a]) ? $_POST["modifier_".$a] : NULL;
 		$id_col2 = isset($_POST["id_".$a]) ? $_POST["id_".$a] : NULL;
 
-		// On met à jour les deux tables tempo2 et utilisateurs
+		// On met Ã  jour les deux tables tempo2 et utilisateurs
 		$sql1 = "UPDATE tempo2 SET col1 = '".$login_a_modifier."' WHERE col2 = '".$id_col2."'";
-		$query1 = mysql_query($sql1) OR DIE('Erreur sur la requête '.$sql1.'<br />'.mysql_error().'<br />Veuillez contacter les services concernés.');
+		$query1 = mysql_query($sql1) OR DIE('Erreur sur la requÃªte '.$sql1.'<br />'.mysql_error().'<br />Veuillez contacter les services concernÃ©s.');
 
 		$sql2 = "UPDATE utilisateurs SET login = '".$login_a_modifier."' WHERE numind = '".$id_col2."'";
-		$query1 = mysql_query($sql2) OR DIE('Erreur sur la requête '.$sql2.'<br />'.mysql_error().'<br />Veuillez contacter les services concernés.');
+		$query1 = mysql_query($sql2) OR DIE('Erreur sur la requÃªte '.$sql2.'<br />'.mysql_error().'<br />Veuillez contacter les services concernÃ©s.');
 
 	}
 
 } else {
 
-	// On récupère la liste de tous les professeurs de la table ldap_bx
+	// On rÃ©cupÃ¨re la liste de tous les professeurs de la table ldap_bx
 	$sql_bx = "SELECT * FROM ldap_bx WHERE statut_u = 'teacher' ORDER BY nom_u, prenom_u";
-	$query_bx = mysql_query($sql_bx) OR DIE('Erreur dans la requête '.$sql_bx.'<br />'.mysql_error());
+	$query_bx = mysql_query($sql_bx) OR DIE('Erreur dans la requÃªte '.$sql_bx.'<br />'.mysql_error());
 
 	$aff_ldap_bx = '<p>Liste des professeurs disponibles dans l\'ENT</p>
 					<p>Pour ajouter des utilisateurs, contactez votre administrateur ENT</p>';
@@ -86,14 +86,14 @@ if ($action == "modifier") {
 
 	}
 
-	// On récupère le login des profs avec le motif 'erreur'
+	// On rÃ©cupÃ¨re le login des profs avec le motif 'erreur'
 	$sql_p = "SELECT u.login, u.nom, u.prenom, t.col2 FROM utilisateurs u, tempo2 t
 														WHERE u.statut = 'professeur'
 														AND u.login = t.col1
 														AND u.login LIKE 'erreur_%'
 														ORDER BY u.nom, u.prenom";
 	$query_p = mysql_query($sql_p)
-				OR DIE('Erreur dans la requête '.$sql_p.'<br />'.mysql_error().'<br /> Veuillez en informer le gestionnaire du système');
+				OR DIE('Erreur dans la requÃªte '.$sql_p.'<br />'.mysql_error().'<br /> Veuillez en informer le gestionnaire du systÃ¨me');
 
 	$j = 0;
 
@@ -105,13 +105,13 @@ if ($action == "modifier") {
 	}
 }
 
-// =========== fichiers spéciaux ==========
+// =========== fichiers spÃ©ciaux ==========
 $style_specifique = "edt_organisation/style_edt";
 //**************** EN-TETE *****************
 $titre_page = "Gestion des erreurs de login de l'ENT";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-//debug_var(); // à enlever en production
+//debug_var(); // Ã  enlever en production
 ?>
 
 <!-- Gestion des utilisateurs -->

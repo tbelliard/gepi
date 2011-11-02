@@ -47,24 +47,24 @@ if (!checkAccess()) {
     die();
 }
 // header
-$titre_page = "Définition des créneaux horaires";
+$titre_page = "DÃ©finition des crÃ©neaux horaires";
 require_once("../../lib/header.inc");
 
-// si égale 1 = ouvert si égale 2 = fermée
+// si Ã©gale 1 = ouvert si Ã©gale 2 = fermÃ©e
  function FermeeOuvert($rep)
  {
      if ( $rep === '1' ) { $reponse = 'ouvert'; }
-     if ( $rep === '2' ) { $reponse = 'fermée'; }
+     if ( $rep === '2' ) { $reponse = 'fermÃ©e'; }
      if ( $rep != '1' and $rep != '2') { $reponse = ''; }
      
      return $reponse;
  }
 
-// si égale 1 = pas en période vacance si égale 2 = période de vacance
+// si Ã©gale 1 = pas en pÃ©riode vacance si Ã©gale 2 = pÃ©riode de vacance
  function VacanceScolaire($rep)
  {
      if ( $rep === '0' ) { $reponse = ''; }
-     if ( $rep === '1' ) { $reponse = 'période de vacance scolaire'; }
+     if ( $rep === '1' ) { $reponse = 'pÃ©riode de vacance scolaire'; }
      if ( $rep != '0' and $rep != '1') { $reponse = ''; }
 	     
      return $reponse;
@@ -117,7 +117,7 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
 {
    while ($total < $nb_ajout)
       {
-            // Vérifcation des variable
+            // VÃ©rifcation des variable
 		$classe_concerne_calendrier_ins = $classe_concerne_calendrier_insc[$total];
 		$nom_calendrier_ins = $nom_calendrier[$total];
 		$jourdebut_calendrier_ins = date_sql($jourdebut_calendrier[$total]);
@@ -137,7 +137,7 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
 
               if ($action_sql == "modifier") { $id_calendrier_ins = $id_calendrier[$total]; }
 
-		// si des classe sont sélectionné alors on les mets au format classe;classe;classe..
+		// si des classe sont sÃ©lectionnÃ© alors on les mets au format classe;classe;classe..
 		$classe_implose = '';
 		if ( !empty($classe_concerne_calendrier_ins[0]) )
 		{
@@ -150,7 +150,7 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
 			}
 		}
 
-	    // vérification des champs non vide
+	    // vÃ©rification des champs non vide
             if( $nom_calendrier_ins != "" && $jourdebut_calendrier_ins != "" )
             {
 			$test = '1';
@@ -169,7 +169,7 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
                                   }
                                  if($action_sql == "modifier")
                                   {
-                                     // Requete de mise à jour MYSQL
+                                     // Requete de mise Ã  jour MYSQL
                                         $requete = "UPDATE ".$prefix_base."edt_calendrier SET
 							classe_concerne_calendrier = '".$classe_implose."',
 							nom_calendrier = '".$nom_calendrier_ins."',
@@ -183,12 +183,12 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
                                   mysql_query($requete) or die('Erreur SQL !'.$sql.'<br />'.mysql_error());
                                   $verification[$total] = 1;
                               } else {
-                                        // vérification = 2 - Ce créneaux horaires existe déjas
+                                        // vÃ©rification = 2 - Ce crÃ©neaux horaires existe dÃ©jas
                                          $verification[$total] = 2;
                                          $erreur = 1;
                                      }
             } else {
-                     // vérification = 3 - Tous les champs ne sont pas remplie
+                     // vÃ©rification = 3 - Tous les champs ne sont pas remplie
                      $verification[$total] = 3;
                      $erreur = 1;
                    }
@@ -294,17 +294,17 @@ echo "</p>";
 <?php if ($action == "visualiser") { ?>
 <?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align:center">
-<h2>Définition du calendrier</h2>
+<h2>DÃ©finition du calendrier</h2>
 <a href="admin_config_calendrier.php?action=ajouter"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter une date</a>
 <br/><br/>
     <table cellpadding="0" cellspacing="1" class="tab_table">
       <tr>
-        <th class="tab_th" style="width: 180px;">définition</th>
+        <th class="tab_th" style="width: 180px;">dÃ©finition</th>
         <th class="tab_th" style="width: 100px;">du</th>
-        <th class="tab_th" style="width: 80px;">à</th>
+        <th class="tab_th" style="width: 80px;">Ã </th>
         <th class="tab_th" style="width: 100px;">au</th>
-        <th class="tab_th" style="width: 80px;">à</th>
-        <th class="tab_th" style="width: 80px;">étab.</th>
+        <th class="tab_th" style="width: 80px;">Ã </th>
+        <th class="tab_th" style="width: 80px;">Ã©tab.</th>
         <th class="tab_th" style="width: 25px;"></th>
         <th class="tab_th" style="width: 25px;"></th>
       </tr>
@@ -322,7 +322,7 @@ echo "</p>";
           <td><?php echo $date_au['heure']; ?></td>
           <td><?php echo FermeeOuvert($data_periode['etabferme_calendrier']); ?></td>
           <td><a href="admin_config_calendrier.php?action=modifier&amp;id_calendrier=<?php echo $data_periode['id_calendrier']; ?>"><img src="../../images/icons/configure.png" title="Modifier" border="0" alt="Modifier" /></a></td>
-          <td><a href="admin_config_calendrier.php?action=visualiser&amp;action_sql=supprimer&amp;id_calendrier=<?php echo $data_periode['id_calendrier']; ?>" onClick="return confirm('Etes-vous certain de vouloir supprimer cette entrée ?')"><img src="../images/x2.png" width="22" height="22" title="Supprimer" border="0" alt="Supprimer" /></a></td>
+          <td><a href="admin_config_calendrier.php?action=visualiser&amp;action_sql=supprimer&amp;id_calendrier=<?php echo $data_periode['id_calendrier']; ?>" onClick="return confirm('Etes-vous certain de vouloir supprimer cette entrÃ©e ?')"><img src="../images/x2.png" width="22" height="22" title="Supprimer" border="0" alt="Supprimer" /></a></td>
         </tr>
      <?php } ?>
     </table>
@@ -336,15 +336,15 @@ echo "</p>";
 <div style="text-align:center">
   <?php if ($action == "ajouter") { ?>
 
-	<h2>Période du calendrier</h2>
+	<h2>PÃ©riode du calendrier</h2>
 
     <form name="form1" method="post" action="admin_config_calendrier.php?action=ajouter">
       <table class="tab_table">
         <tr>
-          <th class="tab_th">Nombre de date à définir</th>
+          <th class="tab_th">Nombre de date Ã  dÃ©finir</th>
         </tr>
         <tr>
-          <td class="couleur_ligne_1" style="text-align: right;"><input name="nb_ajout" type="text" size="5" maxlength="5" value="<?php if(isset($nb_ajout)) { echo $nb_ajout; } else { ?>1<?php } ?>" class="input_sans_bord" />&nbsp;&nbsp;&nbsp;<input type="submit" name="Submit2" value="Mettre à jour" /></td>
+          <td class="couleur_ligne_1" style="text-align: right;"><input name="nb_ajout" type="text" size="5" maxlength="5" value="<?php if(isset($nb_ajout)) { echo $nb_ajout; } else { ?>1<?php } ?>" class="input_sans_bord" />&nbsp;&nbsp;&nbsp;<input type="submit" name="Submit2" value="Mettre Ã  jour" /></td>
         </tr>
       </table>
     </form>
@@ -358,11 +358,11 @@ echo "</p>";
     <form action="admin_config_calendrier.php?action=visualiser&amp;action_sql=<?php if($action=="ajouter") { ?>ajouter<?php } if($action=="modifier") { ?>modifier<?php } ?>" method="post" name="form2" id="form2">
       <table cellpadding="2" cellspacing="2" class="tab_table">
         <tr>
-          <th class="tab_th">définition</th>
+          <th class="tab_th">dÃ©finition</th>
           <th class="tab_th">datation</th>          
-          <th class="tab_th">étab.</th>
+          <th class="tab_th">Ã©tab.</th>
           <th class="tab_th">Vacance scolaire</th>
-	  <th class="tab_th">Classe concerné</th>
+	  <th class="tab_th">Classe concernÃ©</th>
         </tr>
         <?php
         $i = '1';
@@ -373,11 +373,11 @@ echo "</p>";
          <tr>
           <td><img src="../images/attention.png" width="28" height="28" alt="" /></td>
           <td colspan="3" class="erreur_rouge_jaune"><b>- Erreur -<br />
-          <?php if ($verification_erreur[$nb] == 2) { ?>Ce créneau horaire existe déja<?php } ?>
-          <?php if ($verification_erreur[$nb] == 5) { ?>L'heure de fin n'est pas définie<?php } ?>
-          <?php if ($verification_erreur[$nb] == 4) { ?>L'heure de début n'est pas définie<?php } ?>
+          <?php if ($verification_erreur[$nb] == 2) { ?>Ce crÃ©neau horaire existe dÃ©ja<?php } ?>
+          <?php if ($verification_erreur[$nb] == 5) { ?>L'heure de fin n'est pas dÃ©finie<?php } ?>
+          <?php if ($verification_erreur[$nb] == 4) { ?>L'heure de dÃ©but n'est pas dÃ©finie<?php } ?>
           <?php if ($verification_erreur[$nb] == 3) { ?>Tous les champs ne sont pas remplis<?php } ?>
-          <?php if ($verification_erreur[$nb] == 6) { ?>L'heure de fin ne peut pas être plus petite que l'heure de début<?php } ?>
+          <?php if ($verification_erreur[$nb] == 6) { ?>L'heure de fin ne peut pas Ãªtre plus petite que l'heure de dÃ©but<?php } ?>
           </b><br /></td>
          </tr>
         <?php } ?>
@@ -391,8 +391,8 @@ echo "</p>";
 			<a href="#calend" onClick="<?php echo $cal_a[$nb]->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>; decoche('<?php echo $nb; ?>');"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
 		</td>
              </tr>
-	     <tr><td colspan="2"><input name="lajournee[<?php echo $nb; ?>]" id="lajournee_<?php echo $nb; ?>" value="1" type="checkbox" <?php if ( isset($lajournee_erreur[$nb]) and $lajournee[$nb] === '1' ) { ?>checked="checked"<?php } ?> title="Concerne la journée entière" onclick="preremplis('<?php echo $nb; ?>')" /> toute la journée</td></tr>
-             <tr><td>heure de début</td><td><input name="heuredebut_calendrier[<?php echo $nb; ?>]" type="text" id="heuredebut_calendrier_<?php echo $nb; ?>" size="5" maxlength="5" value="<?php if($action=="modifier") { echo $heuredebut_calendrier['0']; } elseif (isset($heuredebut_calendrier_erreur[$nb])) { echo $heuredebut_calendrier_erreur[$nb]; } else { ?>00:00<?php } ?>" class="input_sans_bord" /></td></tr>
+	     <tr><td colspan="2"><input name="lajournee[<?php echo $nb; ?>]" id="lajournee_<?php echo $nb; ?>" value="1" type="checkbox" <?php if ( isset($lajournee_erreur[$nb]) and $lajournee[$nb] === '1' ) { ?>checked="checked"<?php } ?> title="Concerne la journÃ©e entiÃ¨re" onclick="preremplis('<?php echo $nb; ?>')" /> toute la journÃ©e</td></tr>
+             <tr><td>heure de dÃ©but</td><td><input name="heuredebut_calendrier[<?php echo $nb; ?>]" type="text" id="heuredebut_calendrier_<?php echo $nb; ?>" size="5" maxlength="5" value="<?php if($action=="modifier") { echo $heuredebut_calendrier['0']; } elseif (isset($heuredebut_calendrier_erreur[$nb])) { echo $heuredebut_calendrier_erreur[$nb]; } else { ?>00:00<?php } ?>" class="input_sans_bord" /></td></tr>
              <tr><td>termine le</td><td><input name="jourfin_calendrier[<?php echo $nb; ?>]" type="text" id="jourfin_calendrier_<?php echo $nb; ?>" size="10" maxlength="10" value="<?php if($action=="modifier") { echo $jourfin_calendrier['0']; } elseif (isset($jourfin_calendrier_erreur[$nb])) { echo $jourfin_calendrier_erreur[$nb]; } else { ?>00/00/0000<?php } ?>" class="input_sans_bord" />
 			<a href="#calend" onClick="<?php echo $cal_b[$nb]->get_strPopup('../../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
 		 </td>
@@ -400,8 +400,8 @@ echo "</p>";
              <tr><td>heure de fin</td><td><input name="heurefin_calendrier[<?php echo $nb; ?>]" type="text" id="heurefin_calendrier_<?php echo $nb; ?>" size="5" maxlength="5" value="<?php if($action=="modifier") { echo $heurefin_calendrier['0']; } elseif (isset($heurefin_calendrier_erreur[$nb])) { echo $heurefin_calendrier_erreur[$nb]; } else { ?>00:00<?php } ?>" class="input_sans_bord" /></td></tr>
 	</table>
 	  </td>
-	  <td><select name="etabferme_calendrier[<?php echo $nb; ?>]"><option value="1" <?php if ( ( $action === 'modifier' and $etabferme_calendrier['0'] === '1' ) or ( isset($etabferme_calendrier_erreur[$nb]) and $etabferme_calendrier_erreur[$nb] === '1') ) { ?>checked="checked"<?php } ?>>ouvert</option><option value="0" <?php if ( ( $action === 'modifier' and $etabferme_calendrier['0'] === '0' ) or ( isset($etabferme_calendrier_erreur[$nb]) and $etabferme_calendrier_erreur[$nb] === '0') ) { ?>selected="selected"<?php } ?>>fermé</option></select>
-	  <td><input name="etabvacances_calendrier[<?php echo $nb; ?>]" value="1" type="checkbox" <?php if ( ( $action === 'modifier' and $etabvacances_calendrier['0'] === '1' ) or ( isset($etabvacances_calendrier_erreur[$nb]) and $etabvacances_calendrier_erreur[$nb] === '1') ) { ?>checked="checked"<?php } ?> title="Période de vacance scolaire" /></td>
+	  <td><select name="etabferme_calendrier[<?php echo $nb; ?>]"><option value="1" <?php if ( ( $action === 'modifier' and $etabferme_calendrier['0'] === '1' ) or ( isset($etabferme_calendrier_erreur[$nb]) and $etabferme_calendrier_erreur[$nb] === '1') ) { ?>checked="checked"<?php } ?>>ouvert</option><option value="0" <?php if ( ( $action === 'modifier' and $etabferme_calendrier['0'] === '0' ) or ( isset($etabferme_calendrier_erreur[$nb]) and $etabferme_calendrier_erreur[$nb] === '0') ) { ?>selected="selected"<?php } ?>>fermÃ©</option></select>
+	  <td><input name="etabvacances_calendrier[<?php echo $nb; ?>]" value="1" type="checkbox" <?php if ( ( $action === 'modifier' and $etabvacances_calendrier['0'] === '1' ) or ( isset($etabvacances_calendrier_erreur[$nb]) and $etabvacances_calendrier_erreur[$nb] === '1') ) { ?>checked="checked"<?php } ?> title="PÃ©riode de vacance scolaire" /></td>
 	  <td>
 		<?php $tab_classe['0'] = ''; if ( isset($classe_concerne_calendrier['0']) ) { $tab_classe = explode(';',$classe_concerne_calendrier['0']); } ?>
 		<select name="classe_concerne_calendrier_<?php echo $nb; ?>[]" id="classe_concerne_calendrier_<?php echo $nb; ?>" size="6" multiple="multiple">

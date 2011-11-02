@@ -52,9 +52,9 @@ if ($utilisateur == null) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_module_absence")!='2') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") {
@@ -93,20 +93,20 @@ include('menu_bilans.inc.php');
 ?>
 <div id="contain_div" class="css-panes">
 <div class="legende">
-    <h3 class="legende">Légende  </h3>
+    <h3 class="legende">LÃ©gende  </h3>
     <table class="legende">
         <tr >
             <td width="450px"><h4 class="legende">Saisies  </h4>
-            Les saisies de l'élève sur le créneau sont numérotées après son nom. La couleur dépend du type de la saisie.</td>
+            Les saisies de l'Ã©lÃ¨ve sur le crÃ©neau sont numÃ©rotÃ©es aprÃ¨s son nom. La couleur dÃ©pend du type de la saisie.</td>
             <td width="300px">
             <font color="orange">&#9632;</font> Retard<br />
-            <font color="red">&#9632;</font> Manquement aux obligations de présence<br />
-            <font color="blue">&#9632;</font> Non manquement aux obligations de présence
+            <font color="red">&#9632;</font> Manquement aux obligations de prÃ©sence<br />
+            <font color="blue">&#9632;</font> Non manquement aux obligations de prÃ©sence
             </td>
         </tr>
         <tr>
             <td rowspan="2"><h4 class="legende">Appels  </h4>
-            La couleur de fond de cellule indique si un appel enseignant a été effectué ou non.
+            La couleur de fond de cellule indique si un appel enseignant a Ã©tÃ© effectuÃ© ou non.
             </td>
             <td style="background-color:#ddd;">
                 Appel non fait.
@@ -158,11 +158,11 @@ foreach ($creneau_col as $creneau) {
 <br />
 <?php
 if ($choix_creneau_obj != null) {
-	echo '<br/>Voir les absences de <span style="color: blue;">'.$choix_creneau_obj->getHeuredebutDefiniePeriode('H:i').'</span> à <span style="color: blue;">'.$choix_creneau_obj->getHeurefinDefiniePeriode('H:i').'</span>.';
+	echo '<br/>Voir les absences de <span style="color: blue;">'.$choix_creneau_obj->getHeuredebutDefiniePeriode('H:i').'</span> Ã  <span style="color: blue;">'.$choix_creneau_obj->getHeurefinDefiniePeriode('H:i').'</span>.';
 ?>
 <br />
 
-<!-- Affichage des réponses-->
+<!-- Affichage des rÃ©ponses-->
 <table class="tab_edt" summary="Liste des absents r&eacute;partie par classe">
 <?php
 // On affiche la liste des classes
@@ -176,7 +176,7 @@ $dt_fin_creneau = clone $dt_date_absence_eleve;
 $dt_fin_creneau->setTime($choix_creneau_obj->getHeurefinDefiniePeriode('H'), $choix_creneau_obj->getHeurefinDefiniePeriode('i'));
 foreach($classe_col as $classe){
     //$classe = new Classe();
-	// On détermine si sur deux colonnes, le compte tombe juste
+	// On dÃ©termine si sur deux colonnes, le compte tombe juste
 	$calc = $classe_col->count() / 2;
 	$modulo = $classe_col->count() % 2;
 	$num_id = 'id'.remplace_accents($classe->getNom(), 'all');
@@ -191,9 +191,9 @@ foreach($classe_col as $classe){
 //		</td>';
 	echo '	<td><h4>'.$classe->getNom().'</h4></td>';
 
-	//la classe a-t-elle des cours actuellement ? On récupère la liste des cours pour cette période.
+	//la classe a-t-elle des cours actuellement ? On rÃ©cupÃ¨re la liste des cours pour cette pÃ©riode.
 	//on regarde au debut du creneau et a la fin car il peut y avoir des demi creneau
-	//on pourrait appeler $classe->getEdtEmplacementCours deux fois mais on va faire une optimisation à la place.
+	//on pourrait appeler $classe->getEdtEmplacementCours deux fois mais on va faire une optimisation Ã  la place.
 	$edtCoursCol = $classe->getEdtEmplacementCourssPeriodeCalendrierActuelle('now');
 	require_once("../orm/helpers/EdtEmplacementCoursHelper.php");
 	$cours_col = EdtEmplacementCoursHelper::getColEdtEmplacementCoursActuel($edtCoursCol, $dt_debut_creneau);
@@ -202,12 +202,12 @@ foreach($classe_col as $classe){
 	$cours_col->addCollection( EdtEmplacementCoursHelper::getColEdtEmplacementCoursActuel($edtCoursCol, $dt_presque_fin_creneau));
 	
 
-	//on teste si l'appel a été fait
+	//on teste si l'appel a Ã©tÃ© fait
 	$appel_manquant = false;
 	$echo_str = '';
-	$classe_deja_sorties = Array();//liste des appels deja affiché sous la form [id_classe, id_utilisateur]
-	$groupe_deja_sortis = Array();//liste des appels deja affiché sous la form [id_groupe, id_utilisateur]
-	foreach ($cours_col as $edtCours) {//on regarde tous les cours enregistrés dans l'edt
+	$classe_deja_sorties = Array();//liste des appels deja affichÃ© sous la form [id_classe, id_utilisateur]
+	$groupe_deja_sortis = Array();//liste des appels deja affichÃ© sous la form [id_groupe, id_utilisateur]
+	foreach ($cours_col as $edtCours) {//on regarde tous les cours enregistrÃ©s dans l'edt
 	    //$edtCours = new EdtEmplacementCours();
 	    $abs_col = AbsenceEleveSaisieQuery::create()->filterByPlageTemps($dt_debut_creneau, $dt_fin_creneau)
 		      ->filterByEdtEmplacementCours($edtCours)->find();

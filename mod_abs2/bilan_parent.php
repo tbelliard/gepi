@@ -38,7 +38,7 @@ if ($resultat_session == 'c') {
 };
 
 /*
-  // mise à jour des droits dans la table droits
+  // mise Ã  jour des droits dans la table droits
   $sql="INSERT INTO `droits` ( `id` , `administrateur` , `professeur` , `cpe` , `scolarite` , `eleve` , `responsable` , `secours` , `autre` , `description` , `statut` )
   VALUES ('/mod_abs2/bilan_parent.php', 'F', 'F', 'F', 'F', 'F', 'V', 'F', 'F', 'Affichage parents des absences de leurs enfants', '')
   ON DUPLICATE KEY UPDATE `responsable` = 'V'";
@@ -58,9 +58,9 @@ if ($utilisateur == null) {
   die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_module_absence") != '2') {
-  die("Le module n'est pas activé.");
+  die("Le module n'est pas activÃ©.");
 }
 
 if ($utilisateur->getStatut() != "responsable") {
@@ -115,7 +115,7 @@ $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 //$javascript_specifique[] = "mod_abs2/lib/include";
 $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
 
-//renvoi la priorite d'affichage : 1:Retard Justifie ; 2 Absence Justifiee ; 3 Retard Non justifé ; 4 Absence non justifiée
+//renvoi la priorite d'affichage : 1:Retard Justifie ; 2 Absence Justifiee ; 3 Retard Non justifÃ© ; 4 Absence non justifiÃ©e
 function get_priorite($abs) {
   if ($abs->getJustifiee()) {
     if ($abs->getRetard()) {
@@ -133,7 +133,7 @@ function get_priorite($abs) {
   return($priorite);
 }
 
-//On verifie que l'absence est un manquement et n'est pas incluse dans des crenaux fermes(mercredi après midi par exemple)
+//On verifie que l'absence est un manquement et n'est pas incluse dans des crenaux fermes(mercredi aprÃ¨s midi par exemple)
 function isAffichable($abs, $date, $eleve) {
   $creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
   $test_ouverture = false;
@@ -186,7 +186,7 @@ include('menu_bilans.inc.php');
     <tr>
       <th style="border: 1px solid black; background-color: gray; min-width: 300px; max-width: 500px;">Nom Pr&eacute;nom</th>
       <?php
-//afficher les créneaux
+//afficher les crÃ©neaux
       foreach (EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime() as $creneau) {
       ?>
         <th style="border: 1px solid black; background-color: gray;">
@@ -228,7 +228,7 @@ include('menu_bilans.inc.php');
       </td>
       <?php
         if ($affichage) {
-          // On traite alors pour chaque créneau
+          // On traite alors pour chaque crÃ©neau
           foreach ($creneau_col as $creneau) {
             $abs_col = $eleve->getAbsenceEleveSaisiesManquementObligationPresenceDuCreneau($creneau, $dt_date_absence_eleve);
             $tab_heure = explode(":", $creneau->getHeuredebutDefiniePeriode());
@@ -279,19 +279,19 @@ include('menu_bilans.inc.php');
 
     <p>
       <span style="background-color:red;">&nbsp;&nbsp;NJ&nbsp;&nbsp;</span>
-              	Manquement aux obligations scolaires : Absence non justifiée
+              	Manquement aux obligations scolaires : Absence non justifiÃ©e
     </p>
     <p>
       <span style="background-color:fuchsia;">&nbsp;RNJ&nbsp;</span>
-              	Manquement aux obligations scolaires : Retard non justifiée
+              	Manquement aux obligations scolaires : Retard non justifiÃ©e
     </p>
     <p>
       <span style="background-color:blue;">&nbsp;&nbsp;&nbsp;J&nbsp;&nbsp;&nbsp;&nbsp;</span>
-              	Manquement aux obligations scolaires : Absence justifiée
+              	Manquement aux obligations scolaires : Absence justifiÃ©e
     </p>
     <p>
       <span style="background-color:aqua;">&nbsp;&nbsp;RJ&nbsp;&nbsp;</span>
-              	Manquement aux obligations scolaires : Retard justifiée
+              	Manquement aux obligations scolaires : Retard justifiÃ©e
     </p>
 
     <!-- Absences totales -->
@@ -340,7 +340,7 @@ include('menu_bilans.inc.php');
         <tr>
           <th style="border: 1px solid black; background-color: gray; min-width: 300px; max-width: 500px;"><?php echo $eleve->getNom() . ' ' . $eleve->getPrenom(); ?></th>
       <?php
-        //afficher les créneaux
+        //afficher les crÃ©neaux
         foreach (EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime() as $creneau) {
       ?>
           <th style="border: 1px solid black; background-color: gray;">
@@ -359,7 +359,7 @@ include('menu_bilans.inc.php');
         unset($date_actuelle);
         $date_actuelle = clone $dt_fin_toutes;
         while ($date_actuelle >= $dt_debut_toutes) {
-          //on regarde si une des saisies du jour est affichable selon les critères (etab ouvert et manquement obligation)
+          //on regarde si une des saisies du jour est affichable selon les critÃ¨res (etab ouvert et manquement obligation)
           $affichage = false;
           foreach ($eleve->getAbsenceEleveSaisiesDuJour($date_actuelle) as $abs) {
             if (isAffichable($abs, $date_actuelle, $eleve)) {

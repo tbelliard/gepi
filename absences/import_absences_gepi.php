@@ -47,7 +47,7 @@ include("../lib/calendrier/calendrier.class.php");
 $cal_1 = new Calendrier("form_absences", "du");
 $cal_2 = new Calendrier("form_absences", "au");
 
-// variable définie
+// variable dÃ©finie
     $date_ce_jour = date('d/m/Y'); 
 	$erreur = '';
 
@@ -68,7 +68,7 @@ $cal_2 = new Calendrier("form_absences", "au");
 		}
 		else {
 			//$du = $date_ce_jour;
-			// On met le début de l'année... ça ne conviendra que pour la première période, mais bon...
+			// On met le dÃ©but de l'annÃ©e... Ã§a ne conviendra que pour la premiÃ¨re pÃ©riode, mais bon...
 			$annee = strftime("%Y");
 			$mois = strftime("%m");
 			$jour = strftime("%d");
@@ -129,8 +129,8 @@ $cal_2 = new Calendrier("form_absences", "au");
     $date_absence_eleve_fin->setTime(23, 59, 59);
 }
 
-// fonction de sécurité
-// uid de pour ne pas refaire renvoyer plusieurs fois le même formulaire
+// fonction de sÃ©curitÃ©
+// uid de pour ne pas refaire renvoyer plusieurs fois le mÃªme formulaire
 // autoriser la validation de formulaire $uid_post===$_SESSION['uid_prime']
  if(empty($_SESSION['uid_prime'])) { $_SESSION['uid_prime']=''; }
  if (empty($_GET['uid_post']) and empty($_POST['uid_post'])) {$uid_post='';}
@@ -141,7 +141,7 @@ $cal_2 = new Calendrier("form_absences", "au");
 	    $uid_post = preg_replace('/%20/',' ',$uid_post);
 	if($uid_post===$_SESSION['uid_prime']) { $valide_form = 'yes'; } else { $valide_form = 'no'; }
 	$_SESSION['uid_prime'] = $uid;
-// fin de la fonction de sécurité
+// fin de la fonction de sÃ©curitÃ©
 
 include "../lib/periodes.inc.php";
 include "../mod_absences/lib/functions.php";
@@ -156,7 +156,7 @@ elseif(($ver_periode[$periode_num]=="P")&&($_SESSION['statut']=='secours')) {
 }
 
 if($acces=="n") {
-	$msg="La période $periode_num est close pour cette classe.";
+	$msg="La pÃ©riode $periode_num est close pour cette classe.";
 	header("Location:index.php?id_classe=$id_classe&msg=$msg");
 }
 //===========================================================
@@ -178,10 +178,10 @@ function getDate(input_pass,form_choix){
  var date_jour = jour+"/"+mois+"/"+annee;
 // nom du formulaire
   var form_action = form_choix;
-// id des élèments
+// id des Ã©lÃ¨ments
   var input_pass_id = input_pass.id;
   var input_pass_value = input_pass.value;
-// modifie le contenue de l'élèment
+// modifie le contenue de l'Ã©lÃ¨ment
 if(document.forms[form_action].elements[input_pass_id].value=='JJ/MM/AAAA' || document.forms[form_action].elements[input_pass_id].value=='') { document.forms[form_action].elements[input_pass_id].value=date_jour; }
 }
  // -->
@@ -191,9 +191,9 @@ if(document.forms[form_action].elements[input_pass_id].value=='JJ/MM/AAAA' || do
 
 <?php
 if ( $etape === '0' ) {
-// etape de présentation et de demande d'information
+// etape de prÃ©sentation et de demande d'information
 	if ( $periode_num != '' ) {
-	// si une période est bien sélectionner alors on demande la date de début et de fin de cette période
+	// si une pÃ©riode est bien sÃ©lectionner alors on demande la date de dÃ©but et de fin de cette pÃ©riode
 
 		$call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
 		$classe = mysql_result($call_classe, "0", "classe");
@@ -205,11 +205,11 @@ if ( $etape === '0' ) {
 		echo add_token_field();
 ?>
       <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
-         <legend style="font: normal 10pt Arial;">&nbsp;Sélection&nbsp;</legend>
+         <legend style="font: normal 10pt Arial;">&nbsp;SÃ©lection&nbsp;</legend>
             <div style="color: #E8F1F4; text-align: left; font: normal 12pt verdana, sans-serif; font-weight: bold; background-image: url(../mod_absences/images/haut_tab.png); border: 0px solid #F8F8F8;">Importation des absences</div>
             <div style="text-align: center; color: #330033; font: normal 10pt Arial;">
 		Pour la classe de <?php echo "$classe"; ?><br /><br />
-		Définissez les dates de début et de fin pour la période du <?php echo $nom_periode[$periode_num]; ?><br />
+		DÃ©finissez les dates de dÃ©but et de fin pour la pÃ©riode du <?php echo $nom_periode[$periode_num]; ?><br />
                 du <input name="du" type="text" size="11" maxlength="11" value="<?php echo $du; ?>" /><a href="#calend" onClick="<?php  echo $cal_1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
 		au <input name="au" id="au" type="text" size="11" maxlength="11" value="<?php echo $au; ?>" onClick="getDate(au,'form_absences')" /><a href="#calend" onClick="<?php  echo $cal_2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170); ?>"><img src="../lib/calendrier/petit_calendrier.gif" border="0" alt="" /></a>
                 <input type="hidden" name="id_classe" value="<?php echo $id_classe; ?>" />
@@ -218,23 +218,23 @@ if ( $etape === '0' ) {
                 <input type="submit" name="Submit32" value="Importer" /><br />
             </div>
             <div style="text-align: center; color: #FF0000; font: normal 10pt Arial;">
-		Attention, vous allez importer les absences<br />gérées par le module absence de GEPI
+		Attention, vous allez importer les absences<br />gÃ©rÃ©es par le module absence de GEPI
 	    </div>
       </fieldset>
     </form>
 </div>
 <?php
 
-	} else { echo 'Vous n\'avez sélectionné aucune période. Il vous est donc impossible d\'importer les données'; }
+	} else { echo 'Vous n\'avez sÃ©lectionnÃ© aucune pÃ©riode. Il vous est donc impossible d\'importer les donnÃ©es'; }
 
 }
 
 if ( $etape === '1' ) {
 	check_token(false);
 
- // affiché le résultats
+ // affichÃ© le rÃ©sultats
 
-	 // si la date au et vide ou alors erroné alors on prend du
+	 // si la date au et vide ou alors erronÃ© alors on prend du
 	if ( empty($au) or verif_date(date_sql($au)) === 'erreur' ) { $au = $du; }
 
 ?>
@@ -256,14 +256,14 @@ if ( $etape === '1' ) {
 
 
 	<span style="font-weight: bold; color: #FF0000;">Attention</span>
-	<ul><li style="color: #FF0000;">l'importation sera terminée quand vous aurez cliqué sur "Enregistrer".</li>
-	<li style="color: #FF0000;">Après avoir cliqué sur "Enregistrer" ces données écraseront les données qui auraient déja été saisies pour cette période.</li></ul>
+	<ul><li style="color: #FF0000;">l'importation sera terminÃ©e quand vous aurez cliquÃ© sur "Enregistrer".</li>
+	<li style="color: #FF0000;">AprÃ¨s avoir cliquÃ© sur "Enregistrer" ces donnÃ©es Ã©craseront les donnÃ©es qui auraient dÃ©ja Ã©tÃ© saisies pour cette pÃ©riode.</li></ul>
 
 	<table style="margin: auto; border: 0px; background: #088CB9; color: #E0EDF1; text-align: center;" cellspacing="1" cellpadding="0">
 	<tr>
-	    <td style="text-align: center; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px; font-size: 10px;">Nom Prénom</td>
-	    <td style="text-align: center; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px; font-size: 10px;">Nb. total de 1/2 journées d'absence</td>
-	    <td style="text-align: center; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px; font-size: 10px;">Nb. absences non justifiées</td>
+	    <td style="text-align: center; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px; font-size: 10px;">Nom PrÃ©nom</td>
+	    <td style="text-align: center; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px; font-size: 10px;">Nb. total de 1/2 journÃ©es d'absence</td>
+	    <td style="text-align: center; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px; font-size: 10px;">Nb. absences non justifiÃ©es</td>
 	    <td style="text-align: center; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px; font-size: 10px;">Nb. de retard</td>
 	    <td style="text-align: center; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px; font-size: 10px;">Observations</td>
 	</tr>

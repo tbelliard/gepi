@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 // Initialisations files
@@ -53,7 +53,7 @@ if ($utilisateur == null) {
 	die();
 }
 
-//récupération des paramètres de la requète
+//rÃ©cupÃ©ration des paramÃ¨tres de la requÃ¨te
 $id_mef = isset($_POST["id_mef"]) ? $_POST["id_mef"] :NULL;
 $total_eleves = isset($_POST["total_eleves"]) ? $_POST["total_eleves"] :(isset($_GET["total_eleves"]) ? $_GET["total_eleves"] :0);
 
@@ -71,7 +71,7 @@ for($i=0; $i<$total_eleves; $i++) {
 
     //$id_eleve = $_POST['id_eleve_absent'][$i];
 
-    //on test si l'eleve est enregistré absent
+    //on test si l'eleve est enregistrÃ© absent
     if (!isset($_POST['active_mef_eleve'][$i])) {
 	continue;
     }
@@ -83,7 +83,7 @@ for($i=0; $i<$total_eleves; $i++) {
     }
     $eleve->setMef($mef);
     $eleve->save();
-    $message_enregistrement .= "Mef enregistré pour l'eleve : ".$eleve->getNom()."<br/>";
+    $message_enregistrement .= "Mef enregistrÃ© pour l'eleve : ".$eleve->getNom()."<br/>";
 }
 
 include("associer_eleve_mef.php");

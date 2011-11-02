@@ -36,17 +36,17 @@ class AbsencesNotificationHelper {
    * @return clsTinyButStrong $TBS deroulante des types d'absences
    */
   public static function MergeNotification($notification, $modele){
-    //on charge le modele et on merge les donnÈes de l'Ètablissement
+    //on charge le modele et on merge les donn√©es de l'√©tablissement
     $TBS=self::MergeInfosEtab($modele);
     $TBS->MergeField('notif_id',$notification->getId());
-    //on rÈcupËre la liste des noms d'eleves
+    //on r√©cup√®re la liste des noms d'eleves
     $eleve_col = new PropelCollection();
     if ($notification->getAbsenceEleveTraitement() != null) {
 	foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
 	    $eleve_col->add($saisie->getEleve());
 	}
     }
-    //merge des saisies pour modËles du type 1.5.3
+    //merge des saisies pour mod√®les du type 1.5.3
     $TBS->MergeBlock('el_col',$eleve_col);
 
     foreach ($eleve_col as $eleve) {
@@ -93,14 +93,14 @@ class AbsencesNotificationHelper {
 	    if ($date->format('H') < 12) {
 		$next_date = $demi_j->getNext();
 		if ($next_date != null && $next_date->format('Y-m-d') == $date->format('Y-m-d')) {
-		    $str .= ' la journÈe';
+		    $str .= ' la journ√©e';
 		} else {
 		    $str .= ' le matin';
-		    //on recule le pointeur car on l'a avancÈ avec $demi_j->getNext()
+		    //on recule le pointeur car on l'a avanc√© avec $demi_j->getNext()
 		    $demi_j->getPrevious();
 		}
 	    } else {
-		$str .= ' l\'aprËs midi';
+		$str .= ' l\'apr√®s midi';
 	    }
 	    $demi_journee_string_col->append($str);
 	}
@@ -156,7 +156,7 @@ class AbsencesNotificationHelper {
   }
 
   /**
-   * Charge le modele TBS et Merge les donnÈes Ètablissement  *
+   * Charge le modele TBS et Merge les donn√©es √©tablissement  *
    *
    * @param String $modele chemin du modele tbs   *
    */
@@ -196,21 +196,21 @@ class AbsencesNotificationHelper {
    *
    * @param AbsenceEleveNotification $notification
    * @param String $message le message texte a envoyer
-   * @return String message d'erreur si envoi ÈchouÈ
+   * @return String message d'erreur si envoi √©chou√©
    */
   public static function EnvoiNotification($notification, $message){
     $return_message = '';
     if ($notification->getStatutEnvoi() != AbsenceEleveNotificationPeer::STATUT_ENVOI_ETAT_INITIAL && $notification->getStatutEnvoi() != AbsenceEleveNotificationPeer::STATUT_ENVOI_ETAT_INITIAL) {
-	return 'Seul une notification de statut initial ou prete ‡ envoyer peut Ítre envoyÈe avec cette mÈthode';
+	return 'Seul une notification de statut initial ou prete √† envoyer peut √™tre envoy√©e avec cette m√©thode';
     }
     if ($notification->getTypeNotification() != AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_EMAIL &&
 	    $notification->getTypeNotification() != AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_SMS) {
-	return 'Seul une notification de type email ou sms peut Ítre envoyÈe avec cette mÈthode';
+	return 'Seul une notification de type email ou sms peut √™tre envoy√©e avec cette m√©thode';
     } elseif ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_EMAIL) {
 	if ($notification->getEmail() == null || $notification->getEmail() == '') {
-	    $notification->setErreurMessageEnvoi('email non renseignÈ');
+	    $notification->setErreurMessageEnvoi('email non renseign√©');
 	    $notification->save();
-	    return 'Echec de l\'envoi : email non renseignÈ.';
+	    return 'Echec de l\'envoi : email non renseign√©.';
 	}
 
 	require_once('../lib/email_validator.php');
@@ -235,7 +235,7 @@ class AbsencesNotificationHelper {
 	    $notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_SUCCES);
 	    $return_message = '';
 	} else {
-	    $return_message = 'Non acceptÈ pour livraison.';
+	    $return_message = 'Non accept√© pour livraison.';
 	    $notification->setErreurMessageEnvoi($return_message);
 	    $notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC);
 	}
@@ -244,7 +244,7 @@ class AbsencesNotificationHelper {
 
     } else if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_SMS) {
 	if (getSettingValue("abs2_sms")!='y') {
-	    return 'Erreur : envoi de sms dÈsactivÈ.';
+	    return 'Erreur : envoi de sms d√©sactiv√©.';
 	}
 
 	// Load the template
@@ -255,14 +255,14 @@ class AbsencesNotificationHelper {
 	    $param['username'] = getSettingValue("abs2_sms_username"); // identifiant de notre compte TM4B
 	    $param['password'] = getSettingValue("abs2_sms_password"); // mot de passe de notre compte TM4B
 	    $param['type'] = 'broadcast'; // envoi de sms
-	    $param['msg'] = $message; // message que l'on dÈsire envoyer
+	    $param['msg'] = $message; // message que l'on d√©sire envoyer
 
 	    $tel = $notification->getTelephone();
 	    if (substr($tel, 0, 1) == '0') {
 		$tel = '33'.substr($tel, 1, 9);
 	    }
-	    $param['to'] = $tel; // numÈros de tÈlÈphones auxquels on envoie le message
-	    $param['from'] = getSettingValue("gepiSchoolName"); // expÈditeur du message (first class uniquement)
+	    $param['to'] = $tel; // num√©ros de t√©l√©phones auxquels on envoie le message
+	    $param['from'] = getSettingValue("gepiSchoolName"); // exp√©diteur du message (first class uniquement)
 	    $param['route'] = 'business'; // type de route (pour la france, business class uniquement)
 	    $param['version'] = '2.1';
 	    $param['sim'] = 'yes'; // on active le mode simulation, pour tester notre script
@@ -272,8 +272,8 @@ class AbsencesNotificationHelper {
 	    $script = "/http.php";
 	    $param['email'] = getSettingValue("abs2_sms_username"); // identifiant de notre compte TM4B
 	    $param['pass'] = getSettingValue("abs2_sms_password"); // mot de passe de notre compte TM4B
-	    $param['message'] = $message; // message que l'on dÈsire envoyer
-	    $param['numero'] = $notification->getTelephone(); // numÈros de tÈlÈphones auxquels on envoie le message
+	    $param['message'] = $message; // message que l'on d√©sire envoyer
+	    $param['numero'] = $notification->getTelephone(); // num√©ros de t√©l√©phones auxquels on envoie le message
 	} else if (getSettingValue("abs2_sms_prestataire")=='pluriware') {
             $url = "http://sms.pluriware.fr/httpapi.php";
             $hote = "pluriware.fr";
@@ -290,17 +290,17 @@ class AbsencesNotificationHelper {
 	    if (substr($tel, 0, 1) == '0') { //Ajout indicatif 33
 		$tel = '33'.substr($tel, 1, 9);
 	    }
-        $param['to'] = $tel; // numÈro de tÈlÈphone auxquel on envoie le message
-	    $param['from'] = str_replace(" ","",getSettingValue("gepiSchoolTel")); // expÈditeur du message (facultatif)
+        $param['to'] = $tel; // num√©ro de t√©l√©phone auxquel on envoie le message
+	    $param['from'] = str_replace(" ","",getSettingValue("gepiSchoolTel")); // exp√©diteur du message (facultatif)
 	    /*
     		Les  parametres suivants sont pour le moment facultatifs (janv/2011) 
-        mais peuvent Ítres utiles pour une Èvolution future ou en cas de debug
+        mais peuvent √™tres utiles pour une √©volution future ou en cas de debug
 	    */
 	    $param['gepi_school'] = getSettingValue("gepiSchoolName");
 	    $param['gepi_version'] = getSettingValue("version"); // pour debug au cas ou
-	    $param['gepi_mail'] = getSettingValue("gepiSchoolEmail"); // remontÈe Èventuelle des rÈponses par mail
-	    $param['gepi_rne'] = getSettingValue("gepiSchoolRne"); // identification supplÈmentaire
-	    $param['gepi_pays'] = getSettingValue("gepiSchoolPays"); // peux servir pour corriger ou insÈrer l'indicatif international du num tel
+	    $param['gepi_mail'] = getSettingValue("gepiSchoolEmail"); // remont√©e √©ventuelle des r√©ponses par mail
+	    $param['gepi_rne'] = getSettingValue("gepiSchoolRne"); // identification suppl√©mentaire
+	    $param['gepi_pays'] = getSettingValue("gepiSchoolPays"); // peux servir pour corriger ou ins√©rer l'indicatif international du num tel
 		
 		//echo "<pre>";
 		//echo print_r($param);
@@ -346,10 +346,10 @@ class AbsencesNotificationHelper {
 
 	$notification->setDateEnvoi('now');
 
-	//traitement de la rÈponse
+	//traitement de la r√©ponse
 	if (getSettingValue("abs2_sms_prestataire")=='tm4b') {
 	    if (substr($reponse, 0, 5) == 'error') {
-		$return_message = 'Erreur : message non envoyÈ. Code erreur : '.$reponse;
+		$return_message = 'Erreur : message non envoy√©. Code erreur : '.$reponse;
 		$notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC);
 		$notification->setErreurMessageEnvoi($reponse);
 	    } else {
@@ -357,7 +357,7 @@ class AbsencesNotificationHelper {
 	    }
 	} else if (getSettingValue("abs2_sms_prestataire")=='123-sms') {
 	    if ($reponse != '80') {
-		$return_message = 'Erreur : message non envoyÈ. Code erreur : '.$reponse;
+		$return_message = 'Erreur : message non envoy√©. Code erreur : '.$reponse;
 		$notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC);
 		$notification->setErreurMessageEnvoi($reponse);
 	    } else {
@@ -365,7 +365,7 @@ class AbsencesNotificationHelper {
 	    }
 	} else if (getSettingValue("abs2_sms_prestataire")=='pluriware') {
             if (substr($reponse, 0, 3) == 'ERR') {
-                $return_message = 'Erreur : message non envoyÈ. Code erreur : '.$reponse;
+                $return_message = 'Erreur : message non envoy√©. Code erreur : '.$reponse;
                 $notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC);
                 $notification->setErreurMessageEnvoi($reponse);
             } else {
@@ -379,7 +379,7 @@ class AbsencesNotificationHelper {
   }
 }
 
-// utilisÈ pour formater certain champs dans les modele tbs
+// utilis√© pour formater certain champs dans les modele tbs
 function tbs_str($FieldName,&$CurrRec) {
     $CurrRec = html_entity_decode($CurrRec,ENT_QUOTES);
     $CurrRec = str_replace('\"','"',str_replace("\'","'",$CurrRec));

@@ -12,15 +12,15 @@
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Cache-Control" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
-<title>Déconnexion</title>
+<title>DÃ©connexion</title>
 <link rel="stylesheet" type="text/css" href="<?php echo $gepiPath;?>/css/style.css" />
 <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
 <link rel="icon" type="image/ico" href="./favicon.ico" />
 <?php
-	// Styles paramétrables depuis l'interface:
+	// Styles paramÃ©trables depuis l'interface:
 	if($style_screen_ajout=='y'){
-		// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
-		// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+		// La variable $style_screen_ajout se paramÃ¨tre dans le /lib/global.inc
+		// C'est une sÃ©curitÃ©... il suffit de passer la variable Ã  'n' pour dÃ©sactiver ce fichier CSS et Ã©ventuellement rÃ©tablir un accÃ¨s aprÃ¨s avoir imposÃ© une couleur noire sur noire
 		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/templates/origine/css/logout.css' />";
 		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />";
 	}
@@ -43,9 +43,9 @@ if (my_eregi("msie",$agent) && !my_eregi("opera",$agent)) {
 
 	echo "<div style='width: 70%; margin: auto;'>";
 	echo "<p><b>Note aux utilisateurs de Microsoft Internet Explorer :</b>";
-	echo "<br/>Si vous subissez des déconnexions intempestives, si vous n'arrivez pas à vous connecter à Gepi, " .
-			"ou bien s'il vous faut répéter plusieurs fois la procédure de connexion avant de pouvoir accéder aux outils de Gepi, " .
-			"il est possible que votre navigateur en soit la cause. Nous vous recommandons de télécharger gratuitement et d'installer <a href='http://www.mozilla-europe.org/fr/products/firefox/'>Mozilla Firefox</a>, " .
+	echo "<br/>Si vous subissez des dÃ©connexions intempestives, si vous n'arrivez pas Ã  vous connecter Ã  Gepi, " .
+			"ou bien s'il vous faut rÃ©pÃ©ter plusieurs fois la procÃ©dure de connexion avant de pouvoir accÃ©der aux outils de Gepi, " .
+			"il est possible que votre navigateur en soit la cause. Nous vous recommandons de tÃ©lÃ©charger gratuitement et d'installer <a href='http://www.mozilla-europe.org/fr/products/firefox/'>Mozilla Firefox</a>, " .
 			"qui vous garantira les meilleures conditions d'utilisation de Gepi.</p>";
 	echo "</div>";
 }

@@ -44,7 +44,7 @@ if (!checkAccess()) {
 check_token();
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année: Suppression des fichiers temporaires";
+$titre_page = "Outil d'initialisation de l'annÃ©e: Suppression des fichiers temporaires";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -55,7 +55,7 @@ echo "<center><h3 class='gepi'>Suppression des fichiers temporaires</h3></center
 
 $tempdir=get_user_temp_directory();
 if(!$tempdir){
-	echo "<p style='color:red'>Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas défini!?</p>\n";
+	echo "<p style='color:red'>Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas dÃ©fini!?</p>\n";
 	// Il ne faut pas aller plus loin...
 	// SITUATION A GERER
 }
@@ -70,18 +70,18 @@ if (!isset($is_posted)) {
 	}
 
 	if($temoin==0){
-		echo "<p>Aucun des fichiers d'initialisation n'est encore présent dans votre dossier temporaire.</p>\n";
+		echo "<p>Aucun des fichiers d'initialisation n'est encore prÃ©sent dans votre dossier temporaire.</p>\n";
 
-		echo "<p><i>Remarque&nbsp;:</i> Il est recommandé de <a href='../responsables/dedoublonnage_adresses.php'>dédoublonner les adresses des responsables</a> en fin d'initialisation (<i>Sconet a tendance à compter deux enregistrements même pour des responsables vivant sous le même toit</i>)</p>\n";
+		echo "<p><i>Remarque&nbsp;:</i> Il est recommandÃ© de <a href='../responsables/dedoublonnage_adresses.php'>dÃ©doublonner les adresses des responsables</a> en fin d'initialisation (<i>Sconet a tendance Ã  compter deux enregistrements mÃªme pour des responsables vivant sous le mÃªme toit</i>)</p>\n";
 
 		require("../lib/footer.inc.php");
 		die();
 	}
 	elseif($temoin==1){
-		echo "<p>Un des fichiers d'initialisation est encore présent dans votre dossier temporaire.</p>\n";
+		echo "<p>Un des fichiers d'initialisation est encore prÃ©sent dans votre dossier temporaire.</p>\n";
 	}
 	else{
-		echo "<p>$temoin des fichiers d'initialisation sont encore présents dans votre dossier temporaire.</p>\n";
+		echo "<p>$temoin des fichiers d'initialisation sont encore prÃ©sents dans votre dossier temporaire.</p>\n";
 	}
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
@@ -100,15 +100,15 @@ else {
 		if(file_exists("../temp/$tempdir/$tab[$i]")){
 			echo "<p>Suppression de $tab[$i] ... ";
 			if(unlink("../temp/".$tempdir."/$tab[$i]")){
-				echo "réussie.</p>\n";
+				echo "rÃ©ussie.</p>\n";
 			}
 			else{
-				echo "<font color='red'>Echec!</font> Vérifiez les droits d'écriture sur le serveur.</p>\n";
+				echo "<font color='red'>Echec!</font> VÃ©rifiez les droits d'Ã©criture sur le serveur.</p>\n";
 			}
 		}
 	}
 
-	echo "<p><i>Remarque&nbsp;:</i> Il est recommandé de <a href='../responsables/dedoublonnage_adresses.php'>dédoublonner les adresses des responsables</a> en fin d'initialisation (<i>Sconet a tendance à compter deux enregistrements même pour des responsables vivant sous le même toit</i>)</p>\n";
+	echo "<p><i>Remarque&nbsp;:</i> Il est recommandÃ© de <a href='../responsables/dedoublonnage_adresses.php'>dÃ©doublonner les adresses des responsables</a> en fin d'initialisation (<i>Sconet a tendance Ã  compter deux enregistrements mÃªme pour des responsables vivant sous le mÃªme toit</i>)</p>\n";
 
 }
 

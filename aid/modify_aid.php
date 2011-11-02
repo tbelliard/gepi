@@ -52,7 +52,7 @@ if (!checkAccess()) {
     die();
 }
 
-// Vérification du niveau de gestion des AIDs
+// VÃ©rification du niveau de gestion des AIDs
 if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) <= 0) {
     header("Location: ../logout.php?auto=1");
     die();
@@ -61,15 +61,15 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) <= 0) {
 if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) and (isset($add_prof) and ($add_prof == "yes"))) {
 	check_token();
 
-    // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
+    // On commence par vÃ©rifier que le professeur n'est pas dÃ©jÃ  prÃ©sent dans cette liste.
     $test = mysql_query("SELECT * FROM j_aid_utilisateurs WHERE (id_utilisateur = '$reg_prof_login' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
     $test2 = mysql_num_rows($test);
     if ($test2 != "0") {
-        $msg = "Le professeur que vous avez tenté d'ajouter appartient déjà à cet AID";
+        $msg = "Le professeur que vous avez tentÃ© d'ajouter appartient dÃ©jÃ  Ã  cet AID";
     } else {
         if ($reg_prof_login != '') {
             $reg_data = mysql_query("INSERT INTO j_aid_utilisateurs SET id_utilisateur= '$reg_prof_login', id_aid = '$aid_id', indice_aid='$indice_aid'");
-            if (!$reg_data) { $msg = "Erreur lors de l'ajout du professeur !"; } else { $msg = "Le professeur a bien été ajouté !"; }
+            if (!$reg_data) { $msg = "Erreur lors de l'ajout du professeur !"; } else { $msg = "Le professeur a bien Ã©tÃ© ajoutÃ© !"; }
         }
     }
     $flag = "prof";
@@ -78,15 +78,15 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) and (isset($add_prof
 if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($add_prof_gest) and ($add_prof_gest == "yes"))) {
 	check_token();
 
-    // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
+    // On commence par vÃ©rifier que le professeur n'est pas dÃ©jÃ  prÃ©sent dans cette liste.
     $test = mysql_query("SELECT * FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '$reg_prof_login' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
     $test2 = mysql_num_rows($test);
     if ($test2 != "0") {
-        $msg = "L'utilisateur que vous avez tenté d'ajouter appartient déjà à la liste des gestionnaires de cette AID";
+        $msg = "L'utilisateur que vous avez tentÃ© d'ajouter appartient dÃ©jÃ  Ã  la liste des gestionnaires de cette AID";
     } else {
         if ($reg_prof_login != '') {
             $reg_data = mysql_query("INSERT INTO j_aid_utilisateurs_gest SET id_utilisateur= '$reg_prof_login', id_aid = '$aid_id', indice_aid='$indice_aid'");
-            if (!$reg_data) { $msg = "Erreur lors de l'ajout de l'utilisateur !"; } else { $msg = "L'utilisateur a bien été ajouté !"; }
+            if (!$reg_data) { $msg = "Erreur lors de l'ajout de l'utilisateur !"; } else { $msg = "L'utilisateur a bien Ã©tÃ© ajoutÃ© !"; }
         }
     }
     $flag = "prof_gest";
@@ -101,10 +101,10 @@ $autoriser_inscript_multiples = @mysql_result($call_data, 0, "autoriser_inscript
 if (isset($add_eleve) and ($add_eleve == "yes")) {
 	check_token();
 
-    // Les élèves responsable : à chercher parmi les élèves de l'AID
-    // On commence par supprimer les élèves responsables
+    // Les Ã©lÃ¨ves responsable : Ã  chercher parmi les Ã©lÃ¨ves de l'AID
+    // On commence par supprimer les Ã©lÃ¨ves responsables
     sql_query("delete from j_aid_eleves_resp where id_aid='$aid_id' and indice_aid='$indice_aid'");
-    // Les élèves responsable sont à sélectionner parmi les élèves de l'AID
+    // Les Ã©lÃ¨ves responsable sont Ã  sÃ©lectionner parmi les Ã©lÃ¨ves de l'AID
     $call_eleves = mysql_query("SELECT * FROM j_aid_eleves WHERE (indice_aid='$indice_aid' and id_aid='$aid_id')");
     $nombre = mysql_num_rows($call_eleves);
     $i = "0";
@@ -116,25 +116,25 @@ if (isset($add_eleve) and ($add_eleve == "yes")) {
         $i++;
     }
 
-    // On commence par vérifier que l'élève n'est pas déjà présent dans cette liste, ni dans aucune.
+    // On commence par vÃ©rifier que l'Ã©lÃ¨ve n'est pas dÃ©jÃ  prÃ©sent dans cette liste, ni dans aucune.
     if ($autoriser_inscript_multiples == 'y')
       $test = mysql_query("SELECT * FROM j_aid_eleves WHERE (login='$reg_add_eleve_login' and id_aid='$aid_id' and indice_aid='$indice_aid')");
     else
       $test = mysql_query("SELECT * FROM j_aid_eleves WHERE (login='$reg_add_eleve_login' and indice_aid='$indice_aid')");
     $test2 = mysql_num_rows($test);
     if ($test2 != "0") {
-        $msg = "L'élève que vous avez tenté d'ajouter appartient déjà à une AID";
+        $msg = "L'Ã©lÃ¨ve que vous avez tentÃ© d'ajouter appartient dÃ©jÃ  Ã  une AID";
     } else {
         if ($reg_add_eleve_login != '') {
             $reg_data = mysql_query("INSERT INTO j_aid_eleves SET login='$reg_add_eleve_login', id_aid='$aid_id', indice_aid='$indice_aid'");
-            if (!$reg_data) { $msg = "Erreur lors de l'ajout de l'élève"; } else { $msg = "L'élève a bien été ajouté."; }
+            if (!$reg_data) { $msg = "Erreur lors de l'ajout de l'Ã©lÃ¨ve"; } else { $msg = "L'Ã©lÃ¨ve a bien Ã©tÃ© ajoutÃ©."; }
         }
     }
-    $msg .= "<br />Les modifications ont été enregistrées.";
+    $msg .= "<br />Les modifications ont Ã©tÃ© enregistrÃ©es.";
     $flag = "eleve";
 
-    // Cas où la catégorie d'AID est utilisée pour la gestion des accès au trombinoscope,
-    // Lister (ou non) uniquement les élèves sans photographie.
+    // Cas oÃ¹ la catÃ©gorie d'AID est utilisÃ©e pour la gestion des accÃ¨s au trombinoscope,
+    // Lister (ou non) uniquement les Ã©lÃ¨ves sans photographie.
     if ((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y')) {
         if(isset($_POST['eleves_sans_photos'])){
 		    		$_SESSION['eleves_sans_photos']="y";
@@ -146,13 +146,13 @@ if (isset($_POST["toutes_aids"]) and ($_POST["toutes_aids"] == "y")) {
 	check_token();
 
     $msg = "";
-    // On récupère la liste des profs responsable de cette Aids :
+    // On rÃ©cupÃ¨re la liste des profs responsable de cette Aids :
     $sql = "SELECT id_utilisateur FROM j_aid_utilisateurs j WHERE (j.id_aid='$aid_id' and j.indice_aid='$indice_aid')";
-    $query = mysql_query($sql) OR DIE('Erreur dans la requête : '.mysql_error());
+    $query = mysql_query($sql) OR DIE('Erreur dans la requÃªte : '.mysql_error());
     while($temp = mysql_fetch_array($query)) {
         $liste_profs[] = $temp["id_utilisateur"];
     }
-    // On appelle toutes les aids de la catégorie
+    // On appelle toutes les aids de la catÃ©gorie
     $calldata = mysql_query("SELECT * FROM aid WHERE indice_aid='$indice_aid'");
     $nombreligne = mysql_num_rows($calldata);
     $i = 0;
@@ -170,16 +170,16 @@ if (isset($_POST["toutes_aids"]) and ($_POST["toutes_aids"] == "y")) {
         $i++;
     }
     $flag = "prof";
-    if ($msg == '') $msg = "Les modifications ont été enregistrées.";
+    if ($msg == '') $msg = "Les modifications ont Ã©tÃ© enregistrÃ©es.";
 }
 
 if (isset($_POST["selection_aids"]) and ($_POST["selection_aids"] == "y")) {
 	check_token();
 
     $msg = "";
-    // On récupère la liste des profs responsable de cette Aids :
+    // On rÃ©cupÃ¨re la liste des profs responsable de cette Aids :
     $sql = "SELECT id_utilisateur FROM j_aid_utilisateurs j WHERE (j.id_aid='$aid_id' and j.indice_aid='$indice_aid')";
-    $query = mysql_query($sql) OR DIE('Erreur dans la requête : '.mysql_error());
+    $query = mysql_query($sql) OR DIE('Erreur dans la requÃªte : '.mysql_error());
     while($temp = mysql_fetch_array($query)) {
         $liste_profs[] = $temp["id_utilisateur"];
     }
@@ -188,12 +188,12 @@ if (isset($_POST["selection_aids"]) and ($_POST["selection_aids"] == "y")) {
         $test = sql_query1("SELECT id_utilisateur FROM j_aid_utilisateurs WHERE id_aid = '".$key1."' and id_utilisateur = '".$key2."' and indice_aid='$indice_aid'");
         if ($test == -1) {
           $reg_data = mysql_query("INSERT INTO j_aid_utilisateurs SET id_utilisateur= '$key2', id_aid = '$key1', indice_aid='$indice_aid'");
-          if (!$reg_data) { $msg .= "Erreur lors de l'ajout du professeur $key2 à l'aid dont l'identifiant est $key1 !<br />"; }
+          if (!$reg_data) { $msg .= "Erreur lors de l'ajout du professeur $key2 Ã  l'aid dont l'identifiant est $key1 !<br />"; }
         }
      }
     }
     $flag = "prof";
-    if ($msg == '') $msg = "Les modifications ont été enregistrées.";
+    if ($msg == '') $msg = "Les modifications ont Ã©tÃ© enregistrÃ©es.";
 }
 
 
@@ -201,13 +201,13 @@ if (isset($_POST["toutes_aids_gest"]) and ($_POST["toutes_aids_gest"] == "y")) {
 	check_token();
 
     $msg = "";
-    // On récupère la liste des profs responsable de cette Aids :
+    // On rÃ©cupÃ¨re la liste des profs responsable de cette Aids :
     $sql = "SELECT id_utilisateur FROM j_aid_utilisateurs_gest j WHERE (j.id_aid='$aid_id' and j.indice_aid='$indice_aid')";
-    $query = mysql_query($sql) OR DIE('Erreur dans la requête : '.mysql_error());
+    $query = mysql_query($sql) OR DIE('Erreur dans la requÃªte : '.mysql_error());
     while($temp = mysql_fetch_array($query)) {
         $liste_profs[] = $temp["id_utilisateur"];
     }
-    // On appelle toutes les aids de la catégorie
+    // On appelle toutes les aids de la catÃ©gorie
     $calldata = mysql_query("SELECT * FROM aid WHERE indice_aid='$indice_aid'");
     $nombreligne = mysql_num_rows($calldata);
     $i = 0;
@@ -225,7 +225,7 @@ if (isset($_POST["toutes_aids_gest"]) and ($_POST["toutes_aids_gest"] == "y")) {
         $i++;
     }
     $flag = "prof_gest";
-    if ($msg == '') $msg = "Les modifications ont été enregistrées.";
+    if ($msg == '') $msg = "Les modifications ont Ã©tÃ© enregistrÃ©es.";
 }
 
 $calldata = mysql_query("SELECT nom FROM aid where (id = '$aid_id' and indice_aid='$indice_aid')");
@@ -235,7 +235,7 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 if (!isset($_GET["aid_id"]) OR !isset($_GET["indice_aid"]) OR !isset($_GET["flag"])) {
 	$_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'].'?flag='.$flag.'&aid_id='.$aid_id.'&indice_aid='.$indice_aid;
 }
-// Ajout d'un style spécifique pour l'AID
+// Ajout d'un style spÃ©cifique pour l'AID
 $style_specifique = "aid/style_aid";
 
 //**************** EN-TETE *********************
@@ -244,30 +244,30 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 
-// On affiche un select avec la liste des aid de cette catégorie
+// On affiche un select avec la liste des aid de cette catÃ©gorie
 if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 5)
     $sql = "SELECT id, nom FROM aid WHERE indice_aid = '".$indice_aid."' ORDER BY numero, nom";
 else if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1)
     $sql = "SELECT a.id, a.nom FROM aid a, j_aid_utilisateurs_gest j WHERE a.indice_aid = '".$indice_aid."' and j.id_utilisateur = '" . $_SESSION["login"] . "' and j.indice_aid = '".$indice_aid."' and  a.id=j.id_aid ORDER BY a.numero, a.nom";
 
 
-$query = mysql_query($sql) OR DIE('Erreur dans la requête select * from aid : '.mysql_error());
+$query = mysql_query($sql) OR DIE('Erreur dans la requÃªte select * from aid : '.mysql_error());
 $nbre = mysql_num_rows($query);
 
 $aff_precedent = '';
 $aff_suivant = '';
 
-// On recherche les AID précédente et suivante
+// On recherche les AID prÃ©cÃ©dente et suivante
 for($a = 0; $a < $nbre; $a++){
 	$aid_p[$a]["id"] = mysql_result($query, $a, "id");
 
-	// On teste pour savoir quel est le aid_id actuellement affiché
+	// On teste pour savoir quel est le aid_id actuellement affichÃ©
 	if ($a != 0) {
-		// Alors on propose un lien vers l'AID précédente
+		// Alors on propose un lien vers l'AID prÃ©cÃ©dente
 		if ($aid_p[$a]["id"] == $aid_id) {
 			$aid_precedent = $aid_p[$a-1]["id"];
 			$aff_precedent = '
-			<a href="modify_aid.php?flag='.$flag.'&amp;indice_aid='.$indice_aid.'&amp;aid_id='.$aid_precedent.'">Aid précédente&nbsp;</a>';
+			<a href="modify_aid.php?flag='.$flag.'&amp;indice_aid='.$indice_aid.'&amp;aid_id='.$aid_precedent.'">Aid prÃ©cÃ©dente&nbsp;</a>';
 		}
 	}
 
@@ -288,7 +288,7 @@ echo '<form action="modify_aid.php" method="post" name="autre_aid">
 	';
 
 // On recommence le query
-$query = mysql_query($sql) OR trigger_error('Erreur dans la requête select * from aid : '.mysql_error(), E_USER_ERROR);
+$query = mysql_query($sql) OR trigger_error('Erreur dans la requÃªte select * from aid : '.mysql_error(), E_USER_ERROR);
 while($infos = mysql_fetch_array($query)){
 	// On affiche la liste des "<option>"
 	if ($aid_id == $infos["id"]) {
@@ -321,7 +321,7 @@ if ($flag == "prof") { ?>
         Les noms des professeurs ci-dessous figurent (selon le param&eacute;trage) sur les bulletins officiels et/ou les bulletins simplifi&eacute;s.<br />
         <?php
         if ($activer_outils_comp == "y")
-              echo "De plus ces professeurs peuvent modifier les fiches projet (si l'administrateur a activé cette possibilité).";
+              echo "De plus ces professeurs peuvent modifier les fiches projet (si l'administrateur a activÃ© cette possibilitÃ©).";
         echo "<hr /><table class=\"aid_tableau\" border=\"0\" summary=''>\n";
     }
     $i = "0";
@@ -341,7 +341,7 @@ if ($flag == "prof") { ?>
         echo "</table>";
     }
     ?>
-    <p class='bold'>Ajouter un professeur responsable à la liste de l'AID :</p>
+    <p class='bold'>Ajouter un professeur responsable Ã  la liste de l'AID :</p>
     <select size=1 name="reg_prof_login">
     <!--option value=''><p>(aucun)</p></option-->
     <option value=''>(aucun)</option>
@@ -370,7 +370,7 @@ if ($flag == "prof") { ?>
     ?>
       <form enctype="multipart/form-data" action="modify_aid.php" method="post">
       <hr /><H2>Affecter cette liste aux Aids sans professeur responsable</H2>
-      Si vous cliquez sur le bouton ci-dessous, les professeurs de la liste ci-dessus seront également affectés à toutes les AIDs de cette catégorie n'ayant pas encore de professeur responsable.
+      Si vous cliquez sur le bouton ci-dessous, les professeurs de la liste ci-dessus seront Ã©galement affectÃ©s Ã  toutes les AIDs de cette catÃ©gorie n'ayant pas encore de professeur responsable.
       <?php
 		echo add_token_field();
 
@@ -388,7 +388,7 @@ if ($flag == "prof") { ?>
       echo "<input type=\"hidden\" name=\"selection_aids\" value=\"y\" />\n";
       echo "<input type=\"hidden\" name=\"indice_aid\" value=\"".$indice_aid."\" />\n";
       echo "<input type=\"hidden\" name=\"aid_id\" value=\"".$aid_id."\" />\n";
-      // On appelle toutes les aids de la catégorie
+      // On appelle toutes les aids de la catÃ©gorie
       $calldata = mysql_query("SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY numero, nom");
       $nombreligne = mysql_num_rows($calldata);
       $i = 0;
@@ -401,8 +401,8 @@ if ($flag == "prof") { ?>
       }
       echo "</select>";
 
-      echo "<br />Si vous cliquez sur le bouton ci-dessous, les professeurs de la liste de cette AID seront également affectés à toutes les AIDs s&eacute;lectionn&eacute;es ci-dessus.<br />";
-      echo "<br /><input type=\"submit\" value=\"Affecter la liste aux Aids sélectionnées ci-dessus\" />\n";
+      echo "<br />Si vous cliquez sur le bouton ci-dessous, les professeurs de la liste de cette AID seront Ã©galement affectÃ©s Ã  toutes les AIDs s&eacute;lectionn&eacute;es ci-dessus.<br />";
+      echo "<br /><input type=\"submit\" value=\"Affecter la liste aux Aids sÃ©lectionnÃ©es ci-dessus\" />\n";
       echo "</form>";
 
    }
@@ -442,7 +442,7 @@ if ($flag == "prof_gest") { ?>
         echo "</table>";
     }
     ?>
-    <p class='bold'>Ajouter un utilisateur à la liste des gestionnaires de l'AID :</p>
+    <p class='bold'>Ajouter un utilisateur Ã  la liste des gestionnaires de l'AID :</p>
     <select size=1 name="reg_prof_login">
     <option value=''>(aucun)</option>
     <?php
@@ -470,7 +470,7 @@ if ($flag == "prof_gest") { ?>
     ?>
       <form enctype="multipart/form-data" action="modify_aid.php" method="post">
       <hr /><H2>Affecter cette liste aux Aids sans gestionnaire</H2>
-      Si vous cliquez sur le bouton ci-dessous, les utilisateurs de la liste ci-dessus seront également affectés à toutes les AIDs de cette catégorie n'ayant pas encore de gestionnaire.
+      Si vous cliquez sur le bouton ci-dessous, les utilisateurs de la liste ci-dessus seront Ã©galement affectÃ©s Ã  toutes les AIDs de cette catÃ©gorie n'ayant pas encore de gestionnaire.
       <?php
 		echo add_token_field();
 
@@ -483,7 +483,7 @@ if ($flag == "prof_gest") { ?>
 }
 
 if ($flag == "eleve") {
-	// On ajoute le nom des profs et le nombre d'élèves
+	// On ajoute le nom des profs et le nombre d'Ã©lÃ¨ves
 	$aff_profs = "<font style=\"color: brown; font-size: 12px;\">(";
 	$req_profs = mysql_query("SELECT id_utilisateur FROM j_aid_utilisateurs WHERE id_aid = '".$aid_id."'");
 	$nbre_profs = mysql_num_rows($req_profs);
@@ -496,7 +496,7 @@ if ($flag == "eleve") {
 ?>
     <p class='grand'><?php echo "$nom_aid  $aid_nom. $aff_profs"; ?></p>
 
-    <p class = 'bold'>Liste des élèves de l'AID <?php echo $aid_nom ?> :</p>
+    <p class = 'bold'>Liste des Ã©lÃ¨ves de l'AID <?php echo $aid_nom ?> :</p>
     <hr />
     <?php
     $vide = 1;
@@ -506,7 +506,7 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
 	echo add_token_field();
 
 	echo "<table class=\"aid_tableau\" border=\"0\" summary=''>";
-    // appel de la liste des élèves de l'AID :
+    // appel de la liste des Ã©lÃ¨ves de l'AID :
     $call_liste_data = mysql_query("SELECT DISTINCT e.login, e.nom, e.prenom, e.elenoet
 							FROM eleves e, j_aid_eleves j, j_eleves_classes jec, classes c
 							WHERE (j.id_aid = '$aid_id' and
@@ -516,7 +516,7 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
 							j.indice_aid = '$indice_aid')
 							ORDER BY c.classe, e.nom, e.prenom");
     $nombre = mysql_num_rows($call_liste_data);
-    // On affiche d'abord le nombre d'élèves
+    // On affiche d'abord le nombre d'Ã©lÃ¨ves
     		$s = "";
 		if ($nombre >= 2) {
 			$s = "s";
@@ -525,9 +525,9 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
 			$s = "";
 		}
     echo "<tr><td>\n";
-    echo $nombre." élève".$s.".\n</td><td></td>";
+    echo $nombre." Ã©lÃ¨ve".$s.".\n</td><td></td>";
     if ($activer_outils_comp == "y") {
-      echo "<td>Elève responsable (*)</td>";
+      echo "<td>ElÃ¨ve responsable (*)</td>";
     }
     echo "</tr>\n";
     $i = "0";
@@ -541,9 +541,9 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
         $classe_eleve = @mysql_result($call_classe, '0', "classe");
         $v_elenoet=mysql_result($call_liste_data, $i, 'elenoet');
         echo "<tr><td>\n";
-        echo "<b>$nom_eleve $prenom_eleve</b>, $classe_eleve </td>\n<td> <a href='../lib/confirm_query.php?liste_cible=$login_eleve&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_eleve_aid".add_token_in_url()."'><img src=\"../images/icons/delete.png\" title=\"Supprimer cet élève\" alt=\"Supprimer\" /></a>\n";
+        echo "<b>$nom_eleve $prenom_eleve</b>, $classe_eleve </td>\n<td> <a href='../lib/confirm_query.php?liste_cible=$login_eleve&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_eleve_aid".add_token_in_url()."'><img src=\"../images/icons/delete.png\" title=\"Supprimer cet Ã©lÃ¨ve\" alt=\"Supprimer\" /></a>\n";
 
-        // Dans le cas où la catégorie d'AID est utilisée pour la gestion des accès au trombinoscope, on ajouter un lien sur la photo de l'élève.
+        // Dans le cas oÃ¹ la catÃ©gorie d'AID est utilisÃ©e pour la gestion des accÃ¨s au trombinoscope, on ajouter un lien sur la photo de l'Ã©lÃ¨ve.
         if ((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y')) {
           $info="<div align='center'>\n";
       	  if($v_elenoet!=""){
@@ -560,7 +560,7 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
 		      if($photo!="") {
        	    echo "<a href='#' onmouseover=\"afficher_div('info_popup_eleve".$v_elenoet."','y',30,-200);\"";
 	          echo " onmouseout=\"cacher_div('info_popup_eleve".$v_elenoet."');\">";
-	          echo "<img src='../images/icons/buddy.png' alt='Photo élève' />";
+	          echo "<img src='../images/icons/buddy.png' alt='Photo Ã©lÃ¨ve' />";
 	          echo "</a>";
 	        } else {
 	          echo "<img src='../images/icons/buddy_no.png' alt='Pas de photo' />";
@@ -580,7 +580,7 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
     echo "</table>";
 
     if ($vide == 1) {
-        echo "<br /><p style=\"color: red;\">Il n'y a pas actuellement d'élèves dans cette AID !</p>";
+        echo "<br /><p style=\"color: red;\">Il n'y a pas actuellement d'Ã©lÃ¨ves dans cette AID !</p>";
     }
     if ($autoriser_inscript_multiples == 'y')
       $requete = "SELECT distinct e.login, e.nom, e.prenom, e.elenoet
@@ -597,13 +597,13 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
     if ($nombreligne != 0) {
 
         if (getSettingValue("num_aid_trombinoscopes")==$indice_aid) {
-            echo "<br />Ci-dessous, lister uniquement les élèves sans photographie <input type=\"checkbox\" name=\"eleves_sans_photos\" value=\"y\" ";
+            echo "<br />Ci-dessous, lister uniquement les Ã©lÃ¨ves sans photographie <input type=\"checkbox\" name=\"eleves_sans_photos\" value=\"y\" ";
             if(isset($_SESSION['eleves_sans_photos'])) echo " checked ";
             echo "/>";
         }
 
-        echo "<br />\n<p><span class = 'bold'>Ajouter un élève à la liste de l'AID :</span>\n";
-        echo "<a href=\"modify_aid_new.php?id_aid=".$aid_id."&amp;indice_aid=".$indice_aid."\">Lister les élèves par classe</a>\n";
+        echo "<br />\n<p><span class = 'bold'>Ajouter un Ã©lÃ¨ve Ã  la liste de l'AID :</span>\n";
+        echo "<a href=\"modify_aid_new.php?id_aid=".$aid_id."&amp;indice_aid=".$indice_aid."\">Lister les Ã©lÃ¨ves par classe</a>\n";
         echo "<br /><select size=\"1\" name=\"reg_add_eleve_login\">";
         //echo "<option value=''><p>(aucun)</p></option>";
         echo "<option value=''>(aucun)</option>\n";
@@ -631,7 +631,7 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
 
 
 <?php } else {
-        echo "<p>Tous les élèves de la base ont une AID. Impossible d'ajouter un élève à cette AID !</p>";
+        echo "<p>Tous les Ã©lÃ¨ves de la base ont une AID. Impossible d'ajouter un Ã©lÃ¨ve Ã  cette AID !</p>";
     }
     ?>
     <input type="hidden" name="add_eleve" value="yes" />
@@ -639,7 +639,7 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
     <input type="hidden" name="aid_id" value="<?php echo $aid_id;?>" />
     <input type="submit" value='Enregistrer' />
     </form>
-    <?php if (getSettingValue("num_aid_trombinoscopes")==$indice_aid) echo "<br /><br /><br /><br /><br />"; // Pour que les trombines des derniers élèves s'affichent correctement.
+    <?php if (getSettingValue("num_aid_trombinoscopes")==$indice_aid) echo "<br /><br /><br /><br /><br />"; // Pour que les trombines des derniers Ã©lÃ¨ves s'affichent correctement.
     if ($activer_outils_comp == "y") {?>
     <p><br />(*) Les &eacute;l&egrave;ves responsables peuvent par exemple acc&eacute;der dans certaines conditions &agrave; l'&eacute;dition des fiches AID.
     <?php }

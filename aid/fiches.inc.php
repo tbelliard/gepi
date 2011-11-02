@@ -22,13 +22,13 @@
  */
 
 /*
-Portion de code qui affiche toutes les fiches, utilisÈ ‡ la fois dans l'interface publique et dans l'interface privÈe
+Portion de code qui affiche toutes les fiches, utilis√© √† la fois dans l'interface publique et dans l'interface priv√©e
  Variables requises :
 $indice_aid
 $_login -> laisser vide s'il s'agit de l'interface publqiue
 $message_avertissement -> message "en construction
 $non_defini -> ce qui s'affiche si le champ n'est pas rempli
-$annee -> il s'agit de l'annÈe en cours. Si non prÈcisÈ, il s'agit de l'annÈe en cours
+$annee -> il s'agit de l'ann√©e en cours. Si non pr√©cis√©, il s'agit de l'ann√©e en cours
 */
 
 // Initialisation des variables
@@ -38,7 +38,7 @@ $nb_productions = mysql_num_rows($call_productions);
 $call_public = mysql_query("select * from aid_public order by public");
 $nb_public = mysql_num_rows($call_public );
 
-// si le plugin "port_folio" existe et est activÈ
+// si le plugin "port_folio" existe et est activ√©
 $test_plugin = sql_query1("select ouvert from plugins where nom='port_folio'");
 if ($test_plugin=='y') {
   $flag_port_folio='y';
@@ -58,7 +58,7 @@ $requete .= " ORDER BY nom";
 $calldata = mysql_query($requete);
 $nombreligne = mysql_num_rows($calldata);
 
-echo "Cliquez sur le symbole <img src=\"../images/plier.png\" alt=\"Plus de dÈtails\" title=\"Plus de dÈtails\" style=\"vertical-align: middle;\"/> devant chaque projet pour afficher ou cacher les dÈtails du projet. Vous pouvez aussi ";
+echo "Cliquez sur le symbole <img src=\"../images/plier.png\" alt=\"Plus de d√©tails\" title=\"Plus de d√©tails\" style=\"vertical-align: middle;\"/> devant chaque projet pour afficher ou cacher les d√©tails du projet. Vous pouvez aussi ";
 echo "<a href=\"#\" style=\"background-color:#FF8543; color:white; font-size:130%; font-family:serif\" onclick=\"javascript:";
 $i = 0;
 while ($i < $nombreligne){
@@ -76,9 +76,9 @@ while ($i < $nombreligne){
     $i++;
 }
 echo "\" > cacher </a>";
-echo " tous les dÈtails.<br />\n";
+echo " tous les d√©tails.<br />\n";
 if ($_login!="")
-    echo "Selon le paramÈtrage effectuÈ par l'administrateur, certaines de ces fiches sont en partie <a href=\"../public/index_fiches.php\">librement consultables et accessibles au public</a>.<br />";
+    echo "Selon le param√©trage effectu√© par l'administrateur, certaines de ces fiches sont en partie <a href=\"../public/index_fiches.php\">librement consultables et accessibles au public</a>.<br />";
 echo "<br />";
 $i = 0;
 while ($i < $nombreligne){
@@ -126,9 +126,9 @@ while ($i < $nombreligne){
     }
 
     echo "<span id=\"info1_".$aid_id."\" style=\"cursor:pointer;\" onclick=\"javascript:Element.show('id_".$aid_id."');Element.hide('info1_".$aid_id."');Element.show('info2_".$aid_id."');\" >
-	   <img src=\"../images/plier.png\" alt=\"Plus de dÈtails\" title=\"Plus de dÈtails\"  style=\"vertical-align: middle;\" /></span>\n";
+	   <img src=\"../images/plier.png\" alt=\"Plus de d√©tails\" title=\"Plus de d√©tails\"  style=\"vertical-align: middle;\" /></span>\n";
     echo "<span id=\"info2_".$aid_id."\" style=\"display: none;cursor:pointer;\" onclick=\"javascript:Element.hide('id_".$aid_id."');Element.show('info1_".$aid_id."');Element.hide('info2_".$aid_id."');\" >
-	   <img src=\"../images/deplier.png\" alt=\"Moins de dÈtails\" title=\"Moins de dÈtails\"  style=\"vertical-align: middle;\" /></span>\n";
+	   <img src=\"../images/deplier.png\" alt=\"Moins de d√©tails\" title=\"Moins de d√©tails\"  style=\"vertical-align: middle;\" /></span>\n";
     if (isset($flag_port_folio) and (isset($_SESSION['login'])))
       echo lien_valide_competences_par_aid($aid_id,$indice_aid,$_SESSION['login'],1);
 
@@ -146,20 +146,20 @@ while ($i < $nombreligne){
     if ((VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'adresse1','',$annee)) and ($adresse1 != "")) {
         if (($affiche_adresse1 == 'y')or(($affiche_adresse1 != 'y') and ($_login!="") )) {
             if ((substr($adresse1,0,4) == "http") or (substr($adresse1,0,3) == "ftp")) {
-                echo "<span class=\"small\"> -  AccËs public : <a href='".$adresse1."' title='".$adresse1."' ";
+                echo "<span class=\"small\"> -  Acc√®s public : <a href='".$adresse1."' title='".$adresse1."' ";
                 if (($en_construction == 'y') and ($message_avertissement!="")) echo " onclick='alert(\"".$message_avertissement."\");' ";
-                echo ">cliquer pour accÈder au site</a></span>";
+                echo ">cliquer pour acc√©der au site</a></span>";
              } else
-                echo "<span class=\"small\"> -  AccËs public : <b>".$adresse1."</b></span>";
+                echo "<span class=\"small\"> -  Acc√®s public : <b>".$adresse1."</b></span>";
         }
     }
-    // Adresse privÈe :
+    // Adresse priv√©e :
     if ((VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'adresse2','',$annee)) and ($adresse2 != "")) {
         if ($adresse2 != "")  {
             if ((substr($adresse2,0,4) == "http") or (substr($adresse2,0,3) == "ftp"))
-                echo "<span class=\"small\"> -  AccËs restreint : <a href='".$adresse2."' title='".$adresse2."' >cliquer pour accÈder au site</a></span>";
+                echo "<span class=\"small\"> -  Acc√®s restreint : <a href='".$adresse2."' title='".$adresse2."' >cliquer pour acc√©der au site</a></span>";
             else
-                echo "<span class=\"small\"> -  AccËs restreint : <b>".$adresse2."</b></span>";
+                echo "<span class=\"small\"> -  Acc√®s restreint : <b>".$adresse2."</b></span>";
         }
     }
     echo "<br />";
@@ -168,8 +168,8 @@ while ($i < $nombreligne){
     echo "<tr>\n";
     echo "<td style=\"vertical-align:top;width:50%\">";
     if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'resume','',$annee)) {
-        echo "<span class='medium'><b>RÈsumÈ : </b>";
-        //RÈsumÈ
+        echo "<span class='medium'><b>R√©sum√© : </b>";
+        //R√©sum√©
         if ($resume == -1) $resume = $non_defini;
         echo "<br />".htmlentities($resume);
         echo "</span>";
@@ -179,14 +179,14 @@ while ($i < $nombreligne){
     echo "<td style=\"vertical-align:top;\">";
     if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'famille','',$annee)) {
         // Famille
-        echo "<span class='medium'><b>Projet classÈ dans la famille : </b>";
+        echo "<span class='medium'><b>Projet class√© dans la famille : </b>";
         $famille = sql_query1("select type from aid_familles where id = '".$famille."'");
         if ($famille == -1) $famille = $non_defini;
         echo $famille;
         echo "</span>\n";
     }
 
-    //Mots clÈs :
+    //Mots cl√©s :
     if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'mots_cles','',$annee)) {
         $mc = explode("|",$mots_cles);
         $k = 0;
@@ -203,7 +203,7 @@ while ($i < $nombreligne){
             }
             $k++;
         }
-        echo "<br /><span class='medium'><b>Mots clÈs : </b>";
+        echo "<br /><span class='medium'><b>Mots cl√©s : </b>";
         if ($aff_motcle == "")
             echo $non_defini;
         else
@@ -265,7 +265,7 @@ while ($i < $nombreligne){
     if ((VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'matiere1','',$annee)) and (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'matiere2',''))) {
         $discipline1 = sql_query1("select nom_complet from matieres where matiere = '".$discipline1."'");
         $discipline2 = sql_query1("select nom_complet from matieres where matiere = '".$discipline2."'");
-        echo "<br /><span class='medium'><b>Disciplines attachÈes : </b>\n";
+        echo "<br /><span class='medium'><b>Disciplines attach√©es : </b>\n";
 
         if (($discipline1 == "-1") and ($discipline2 == "-1"))
             echo $non_defini."</span>\n";
@@ -309,7 +309,7 @@ while ($i < $nombreligne){
     //Contacts
     if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'contacts','',$annee)) {
         if ($contacts == "") $contacts = "-";
-        echo "<b>Contacts extÈrieurs, ressources, ... : </b>".htmlentities($contacts)."<br />";
+        echo "<b>Contacts ext√©rieurs, ressources, ... : </b>".htmlentities($contacts)."<br />";
     }
 
     // Autres infos
@@ -324,9 +324,9 @@ while ($i < $nombreligne){
       echo "<hr /><b>Autres informations : </b><ul>";
       if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'eleve_peut_modifier','',$annee)) {
         if ($eleve_peut_modifier == "y")
-          echo "<li>Les ÈlËves responsables peuvent modifier cette fiche.</li>";
+          echo "<li>Les √©l√®ves responsables peuvent modifier cette fiche.</li>";
         else
-          echo "<li>Les ÈlËves responsables ne peuvent pas modifier cette fiche.</li>";
+          echo "<li>Les √©l√®ves responsables ne peuvent pas modifier cette fiche.</li>";
       }
       if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'prof_peut_modifier','',$annee)) {
         if ($prof_peut_modifier == "y")
@@ -352,9 +352,9 @@ while ($i < $nombreligne){
     } else {
       if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'eleves_profs','',$annee)) {
         echo "<hr /><b>Autres informations : </b><ul>";
-        echo "<li>ElËves responsables du projet :".$eleves_resp."</li>";
+        echo "<li>El√®ves responsables du projet :".$eleves_resp."</li>";
         echo "<li>Professeurs responsables du projet :".$responsables."</li>";
-        echo "<li>ElËves faisant partie du projet :".$eleves."</li>";
+        echo "<li>El√®ves faisant partie du projet :".$eleves."</li>";
         echo "</ul>";
       }
 

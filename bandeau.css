@@ -6,7 +6,7 @@ Mise en page du bandeau
 
 */
 
-/* Définition générale */
+/* DÃ©finition gÃ©nÃ©rale */
 
 #bandeau {
 	width:100%;
@@ -145,7 +145,7 @@ Mise en page du bandeau
 	padding-right: 0.7%;
 }
 
-/* Définition des couleurs */
+/* DÃ©finition des couleurs */
 /* darkfade */
 .darkfade {
 	background-color:#4a4a59;
@@ -189,7 +189,7 @@ Mise en page du bandeau
 }
 /* no_style */
 
-/* Définition des images de fond*/
+/* DÃ©finition des images de fond*/
 .gd_bandeau_darkfade {
 	background-image: url(images/background/darkfade.png);
 	background-repeat: repeat-x;

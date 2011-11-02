@@ -38,13 +38,13 @@ if ($_GET["cherch_salle"] == "ok") {
 		$auto_aff_21 = 1;
 	}
 	else
-		echo ("Vous devez choisir un créneau, revenez en arrière !");
+		echo ("Vous devez choisir un crÃ©neau, revenez en arriÃ¨re !");
 
 	if (isset($_GET["ch_jour_semaine"])) {
 		$auto_aff_22 = 1;
 	}
 	else
-		echo ("Vous devez choisir un jour de la semaine, revenez en arrière !");
+		echo ("Vous devez choisir un jour de la semaine, revenez en arriÃ¨re !");
 
 	if (($auto_aff_21 == 1) AND ($auto_aff_22 == 1)) {
 		$auto_aff_2 = 1;
@@ -133,7 +133,7 @@ echo ('<OPTION value=\'rien\'>Semaine</OPTION>');
 		$tab_select_semaine[$d]["num_semaine"] = mysql_result($req_semaine, $d, "num_edt_semaine");
 		$tab_select_semaine[$d]["type_semaine"] = mysql_result($req_semaine, $d, "type_edt_semaine");
 
-		echo ('<OPTION value=\''.$tab_select_semaine[$d]["id_semaine"].'\'>Semaine n° '.$tab_select_semaine[$d]["num_semaine"].' ('.$tab_select_semaine[$d]["type_semaine"].') </OPTION>');
+		echo ('<OPTION value=\''.$tab_select_semaine[$d]["id_semaine"].'\'>Semaine nÂ° '.$tab_select_semaine[$d]["num_semaine"].' ('.$tab_select_semaine[$d]["type_semaine"].') </OPTION>');
 
 	}
 echo '</SELECT>';*/

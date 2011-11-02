@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Fichiers qui permet de paramétrer les couleurs de chaque matière des emplois du temps
+ * Fichiers qui permet de paramÃ©trer les couleurs de chaque matiÃ¨re des emplois du temps
  *
  * @version $Id: edt_param_couleurs.php 6919 2011-05-14 09:26:25Z adminpaulbert $
  *
@@ -45,12 +45,12 @@ if ($resultat_session == 'c') {
     die();
 }
 
-/*/ Sécurité
+/*/ SÃ©curitÃ©
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }*/
-// CSS et js particulier à l'EdT
+// CSS et js particulier Ã  l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt";
 $utilisation_jsdivdrag = "";
@@ -65,7 +65,7 @@ $style_specifique[] = "templates/".NameTemplateEDT()."/css/style_param";
 //==============PROTOTYPE===============
 $utilisation_prototype = "ok";
 //============fin PROTOTYPE=============
-// On insère l'entête de Gepi
+// On insÃ¨re l'entÃªte de Gepi
 require_once("../lib/header.inc");
 
 // On ajoute le menu EdT
@@ -120,7 +120,7 @@ require_once("./menu.inc.php");
 										</div>
 										<div class="art-postcontent">
 											<!-- article-content -->
-	<p><?php echo "Pensez à activer l'affichage des couleurs pour qu'elles soient visibles sur les emplois du temps."; ?></p>
+	<p><?php echo "Pensez Ã  activer l'affichage des couleurs pour qu'elles soient visibles sur les emplois du temps."; ?></p>
 
 	<table id="edt_table_couleurs" style="width:100%">
 		<thead>
@@ -130,14 +130,14 @@ require_once("./menu.inc.php");
 		<tbody>
 
 <?php
-// On affiche la liste des matières
+// On affiche la liste des matiÃ¨res
 $req_sql = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY nom_complet");
 $nbre_matieres = mysql_num_rows($req_sql);
 
 	for($i=0; $i < $nbre_matieres; $i++){
 	$aff_matiere[$i]["court"] = mysql_result($req_sql, $i, "matiere");
 	$aff_matiere[$i]["long"] = mysql_result($req_sql, $i, "nom_complet");
-	// On détermine la couleur choisie
+	// On dÃ©termine la couleur choisie
 	$recher_couleur = "M_".$aff_matiere[$i]["court"];
 	$color = GetSettingEdt($recher_couleur);
 		if ($color == "") {

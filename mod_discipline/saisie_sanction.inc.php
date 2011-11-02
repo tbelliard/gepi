@@ -3,19 +3,19 @@
 $Id: saisie_sanction.inc.php 7140 2011-06-06 14:57:51Z crob $
 */
 
-// Page incluse dans saisie_sanction.php ou appelée via ajax depuis saisie_sanction.php->ajout_sanction.php
+// Page incluse dans saisie_sanction.php ou appelÃ©e via ajax depuis saisie_sanction.php->ajout_sanction.php
 
 //Configuration du calendrier
 
 include("../lib/calendrier/calendrier.class.php");
 
-//Variable : $dernier  on afficher le dernier créneau si $dernier='o' (paramètre pour une exclusion)
+//Variable : $dernier  on afficher le dernier crÃ©neau si $dernier='o' (paramÃ¨tre pour une exclusion)
 function choix_heure2($champ_heure,$selected,$dernier) {
 	$sql="SELECT * FROM edt_creneaux ORDER BY heuredebut_definie_periode;";
 	$res_abs_cren=mysql_query($sql);
-	$num_row = mysql_num_rows($res_abs_cren); //le nombre de ligne de la requète
+	$num_row = mysql_num_rows($res_abs_cren); //le nombre de ligne de la requÃ¨te
 	if($num_row==0) {
-		echo "La table edt_creneaux n'est pas renseignée!";
+		echo "La table edt_creneaux n'est pas renseignÃ©e!";
 	}
 	else {
         $cpt=1;	
@@ -25,7 +25,7 @@ function choix_heure2($champ_heure,$selected,$dernier) {
 		while($lig_ac=mysql_fetch_object($res_abs_cren)) {
 			echo "<option value='$lig_ac->nom_definie_periode'";
 			if(($lig_ac->nom_definie_periode==$selected)||(($dernier=='o')&&($cpt==$num_row))) {echo " selected='selected'";}
-			echo ">$lig_ac->nom_definie_periode&nbsp;: $lig_ac->heuredebut_definie_periode à $lig_ac->heurefin_definie_periode</option>\n";
+			echo ">$lig_ac->nom_definie_periode&nbsp;: $lig_ac->heuredebut_definie_periode Ã  $lig_ac->heurefin_definie_periode</option>\n";
 			$cpt++;
 		}
 		echo "</select>\n";
@@ -34,7 +34,7 @@ function choix_heure2($champ_heure,$selected,$dernier) {
 
 //if((!isset($cpt))||(!isset($valeur))) {
 if(!isset($valeur)) {
-	echo "<p><strong>Erreur&nbsp;:</strong> Des paramètres n'ont pas été transmis.</p>\n";
+	echo "<p><strong>Erreur&nbsp;:</strong> Des paramÃ¨tres n'ont pas Ã©tÃ© transmis.</p>\n";
 	die();
 }
 
@@ -49,7 +49,7 @@ if(isset($ele_login)) {
 		$tab_protagonistes=get_protagonistes($id_incident,array('Responsable'),array('eleve'));
 		if(count($tab_protagonistes)>1) {
 			//echo "plup";
-			$meme_sanction_pour_autres_protagonistes.="Même sanction pour&nbsp;:<br />\n";
+			$meme_sanction_pour_autres_protagonistes.="MÃªme sanction pour&nbsp;:<br />\n";
 			for($loop=0;$loop<count($tab_protagonistes);$loop++) {
 				if($tab_protagonistes[$loop]!=$ele_login) {
 					$meme_sanction_pour_autres_protagonistes.="<input type='checkbox' name='autre_protagoniste_meme_sanction[]' id='autre_protagoniste_meme_sanction_$loop' value=\"$tab_protagonistes[$loop]\" /><label for='autre_protagoniste_meme_sanction_$loop'>".get_nom_prenom_eleve($tab_protagonistes[$loop])."</label><br />\n";
@@ -133,7 +133,7 @@ if($valeur=='travail') {
 	echo "<textarea name='no_anti_inject_travail' cols='30' onchange='changement();'>$travail</textarea>\n";
 
 	//echo "<span style='color: red;'>Mettre un champ d'ajout de fichier.</span><br />\n";
-	//echo "<span style='color: red;'>Pouvoir aussi choisir un des fichiers joints lors de la déclaration de l'incident.</span><br />\n";
+	//echo "<span style='color: red;'>Pouvoir aussi choisir un des fichiers joints lors de la dÃ©claration de l'incident.</span><br />\n";
 
 	if((isset($ele_login))&&(isset($id_incident))) {
 		sanction_documents_joints($id_incident, $ele_login);
@@ -145,7 +145,7 @@ if($valeur=='travail') {
 	if($meme_sanction_pour_autres_protagonistes!="") {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
-		echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Même sanction&nbsp;: </td>\n";
+		echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>MÃªme sanction&nbsp;: </td>\n";
 		echo "<td style='text-align:left;'>\n";
 		echo $meme_sanction_pour_autres_protagonistes;
 		echo "</td>\n";
@@ -213,10 +213,10 @@ elseif($valeur=='retenue') {
 	echo "<img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" />\n";
 	echo "</a>\n";
 
-	// Si le module EDT est actif et si l'EDT est renseigné
+	// Si le module EDT est actif et si l'EDT est renseignÃ©
 	if(param_edt($_SESSION["statut"]) == 'yes') {
-		//echo "<a href='#' onclick=\"edt_eleve('$id_sanction');return false;\" title='EDT élève'><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='EDT élève' /></a>";
-		echo "<a href='#' onclick=\"edt_eleve();return false;\" title='EDT élève'><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='EDT élève' /></a>";
+		//echo "<a href='#' onclick=\"edt_eleve('$id_sanction');return false;\" title='EDT Ã©lÃ¨ve'><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='EDT Ã©lÃ¨ve' /></a>";
+		echo "<a href='#' onclick=\"edt_eleve();return false;\" title='EDT Ã©lÃ¨ve'><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='EDT Ã©lÃ¨ve' /></a>";
 		//echo "<input type='hidden' name='ele_login' id='ele_login' value='$ele_login' />\n";
 	}
 
@@ -225,21 +225,21 @@ elseif($valeur=='retenue') {
 
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt'>\n";
-	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Heure de début&nbsp;: </td>\n";
+	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Heure de dÃ©but&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	//echo "<input type='text' name='heure_debut' value='' />\n";
 	echo "<input type='text' name='heure_debut_main' id='display_heure_main' size='5' value=\"$heure_debut\" onKeyDown=\"clavier_heure(this.id,event);\" AutoComplete=\"off\" /> ou \n";
 	choix_heure2('heure_debut',$heure_debut,'');
 	
 	//pour infobulle
-	$texte="- 2 choix possibles pour inscrire l'heure de début de la retenue<br />Le premier grace à la liste déroulante. Vous choisissez un créneau. Dans ce cas, c'est l'heure début de crénaux HH:MM qui sera pris en compte pour l'impression de la retenue.<br/>Dans l'autre cas, vous saisissez l'heure à la place de '00:00' sous ce format.";
+	$texte="- 2 choix possibles pour inscrire l'heure de dÃ©but de la retenue<br />Le premier grace Ã  la liste dÃ©roulante. Vous choisissez un crÃ©neau. Dans ce cas, c'est l'heure dÃ©but de crÃ©naux HH:MM qui sera pris en compte pour l'impression de la retenue.<br/>Dans l'autre cas, vous saisissez l'heure Ã  la place de '00:00' sous ce format.";
 	
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt'>\n";
-	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Durée&nbsp;: </td>\n";
+	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>DurÃ©e&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	echo "<input type='text' name='duree_retenue' id='duree_retenue' size='2' value='$duree_retenue' onchange='changement();' /> en heures\n";
 	echo "</td>\n";
@@ -250,7 +250,7 @@ elseif($valeur=='retenue') {
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Lieu&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	echo "<input type='text' name='lieu_retenue' id='lieu_retenue' value='$lieu_retenue' onchange='changement();' />\n";
-	// Sélectionner parmi des lieux déjà saisis?
+	// SÃ©lectionner parmi des lieux dÃ©jÃ  saisis?
 	//$sql="SELECT DISTINCT lieu FROM s_retenues WHERE lieu!='' ORDER BY lieu;";
 	$sql="(SELECT DISTINCT lieu FROM s_retenues WHERE lieu!='')";
 	if(param_edt($_SESSION["statut"]) == 'yes') {
@@ -297,7 +297,7 @@ elseif($valeur=='retenue') {
 	echo "<textarea name='no_anti_inject_travail' cols='30' onchange='changement();'>$travail</textarea>\n";
 
 	//echo "<span style='color: red;'>Mettre un champ d'ajout de fichier.</span><br />\n";
-	//echo "<span style='color: red;'>Pouvoir aussi choisir un des fichiers joints lors de la déclaration de l'incident.</span><br />\n";
+	//echo "<span style='color: red;'>Pouvoir aussi choisir un des fichiers joints lors de la dÃ©claration de l'incident.</span><br />\n";
 
 	if((isset($ele_login))&&(isset($id_incident))) {
 		sanction_documents_joints($id_incident, $ele_login);
@@ -319,10 +319,10 @@ elseif($valeur=='retenue') {
 	echo "<option value=''>---</option>\n";
 	echo "<option value='absent'>Absent</option>\n";
 	echo "<option value='aucun_motif'>Aucun motif</option>\n";
-	echo "<option value='report_demande'>Report demandé</option>\n";
+	echo "<option value='report_demande'>Report demandÃ©</option>\n";
 	echo "<option value='autre'>Autre</option>\n";
 	echo "</select></li>\n";
-	echo "<li>Modifier les données (date, heure, ...) pour le report</li>\n";
+	echo "<li>Modifier les donnÃ©es (date, heure, ...) pour le report</li>\n";
 	echo "<li>Enregistrer les modifications</li>\n";
 	echo "<li>Imprimer le document sur la page suivante</li>\n";
 	echo "</ol>\n";
@@ -337,7 +337,7 @@ elseif($valeur=='retenue') {
 	if($meme_sanction_pour_autres_protagonistes!="") {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
-		echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Même sanction&nbsp;: </td>\n";
+		echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>MÃªme sanction&nbsp;: </td>\n";
 		echo "<td style='text-align:left;'>\n";
 		echo $meme_sanction_pour_autres_protagonistes;
 		echo "</td>\n";
@@ -416,7 +416,7 @@ elseif($valeur=='exclusion') {
 
 	$alt=1;
 	echo "<tr class='lig$alt'>\n";
-	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Date de début&nbsp;: </td>\n";
+	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Date de dÃ©but&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	//echo "<input type='text' name='date_debut' id='date_debut' value='$date_debut' size='10' onchange='changement();' />\n";
 	echo "<input type='text' name='date_debut' id='date_debut' value='$date_debut' size='10' onchange='changement();' onKeyDown=\"clavier_date_plus_moins(this.id,event);\" />\n";
@@ -428,7 +428,7 @@ elseif($valeur=='exclusion') {
 
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt'>\n";
-	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Heure de début&nbsp;: </td>\n";
+	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Heure de dÃ©but&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	//echo "<input type='text' name='heure_debut' value='' />\n";
 	choix_heure2('heure_debut',$heure_debut,'');
@@ -463,7 +463,7 @@ elseif($valeur=='exclusion') {
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Lieu&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	echo "<input type='text' name='lieu_exclusion' id='lieu_exclusion' value=\"$lieu_exclusion\" onchange='changement();' />\n";
-	// Sélectionner parmi des lieux déjà saisis?
+	// SÃ©lectionner parmi des lieux dÃ©jÃ  saisis?
 	$sql="SELECT DISTINCT lieu FROM s_exclusions WHERE lieu!='' ORDER BY lieu;";
 	$res_lieu=mysql_query($sql);
 	if(mysql_num_rows($res_lieu)>0) {
@@ -495,7 +495,7 @@ elseif($valeur=='exclusion') {
 	echo "<textarea name='no_anti_inject_travail' cols='30' onchange='changement();'>$travail</textarea>\n";
 
 	//echo "<span style='color: red;'>Mettre un champ d'ajout de fichier.</span><br />\n";
-	//echo "<span style='color: red;'>Pouvoir aussi choisir un des fichiers joints lors de la déclaration de l'incident.</span><br />\n";
+	//echo "<span style='color: red;'>Pouvoir aussi choisir un des fichiers joints lors de la dÃ©claration de l'incident.</span><br />\n";
 
 	if((isset($ele_login))&&(isset($id_incident))) {
 		sanction_documents_joints($id_incident, $ele_login);
@@ -504,11 +504,11 @@ elseif($valeur=='exclusion') {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-// Ajout Eric génération Ooo de l'exclusion
+// Ajout Eric gÃ©nÃ©ration Ooo de l'exclusion
 	$alt=$alt*(-1);
 	echo "<tr>\n";
 	echo "<td colspan=2 style='text-align:center;'>\n";
-	echo "Données à renseigner pour l'impression Open Office de l'exclusion temporaire :</td>\n";
+	echo "DonnÃ©es Ã  renseigner pour l'impression Open Office de l'exclusion temporaire :</td>\n";
 	echo "</tr>\n";
 
 	$alt=$alt*(-1);
@@ -516,7 +516,7 @@ elseif($valeur=='exclusion') {
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Numero de courrier&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	echo "<input type='text' name='numero_courrier' id='numero_courrier' value=\"$numero_courrier\" onchange='changement();' />\n";
-	echo "<i>La référence du courrier dans le registre courrier départ. Ex : ADM/SD/012/11</i></td>\n";
+	echo "<i>La rÃ©fÃ©rence du courrier dans le registre courrier dÃ©part. Ex : ADM/SD/012/11</i></td>\n";
 	echo "</tr>\n";
 	
 	$alt=$alt*(-1);
@@ -561,7 +561,7 @@ elseif($valeur=='exclusion') {
 	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Choix du signataire de l'exclusion&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
-	// Sélectionner parmi les signataires déjà saisis?
+	// SÃ©lectionner parmi les signataires dÃ©jÃ  saisis?
 	$sql="SELECT * FROM s_delegation ORDER BY fct_autorite";
 	$res_signataire=mysql_query($sql);
 	if(mysql_num_rows($res_signataire)>0) {
@@ -576,7 +576,7 @@ elseif($valeur=='exclusion') {
 		}
 		echo "</select>\n";
 	} else {
-	    echo "<i>Aucun signataire n'est saisi dans la base. Demandez à votre administrateur de saisir cette liste en admin du module</i>";
+	    echo "<i>Aucun signataire n'est saisi dans la base. Demandez Ã  votre administrateur de saisir cette liste en admin du module</i>";
 	};
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -584,7 +584,7 @@ elseif($valeur=='exclusion') {
 	if($meme_sanction_pour_autres_protagonistes!="") {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
-		echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Même sanction&nbsp;: </td>\n";
+		echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>MÃªme sanction&nbsp;: </td>\n";
 		echo "<td style='text-align:left;'>\n";
 		echo $meme_sanction_pour_autres_protagonistes;
 		echo "</td>\n";
@@ -639,7 +639,7 @@ else {
 		if($meme_sanction_pour_autres_protagonistes!="") {
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
-			echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Même sanction&nbsp;: </td>\n";
+			echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>MÃªme sanction&nbsp;: </td>\n";
 			echo "<td style='text-align:left;'>\n";
 			echo $meme_sanction_pour_autres_protagonistes;
 			echo "</td>\n";

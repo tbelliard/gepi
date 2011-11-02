@@ -43,7 +43,7 @@ class calendrierAction extends Action {
 				$jointure->id_calendar = $request->getParam('id_calendrier');
 				if (!$jointure->PeriodsCompatible()) {
 					$PeriodesNotesAutorisees = false;
-					$message = "Certaines classes n'ont pas les mêmes périodes de notes ! Vous ne pourrez donc pas associer une période de notes à une période calendaire.";
+					$message = "Certaines classes n'ont pas les mÃªmes pÃ©riodes de notes ! Vous ne pourrez donc pas associer une pÃ©riode de notes Ã  une pÃ©riode calendaire.";
 				}
 				else {
 					$liste_periodes = $jointure->getPeriodesNotesFromCalendar();
@@ -57,7 +57,7 @@ class calendrierAction extends Action {
 			}
 		}
 		else {
-			$response->addVar('nom_calendrier', "Erreur - aucun calendrier demandé");
+			$response->addVar('nom_calendrier', "Erreur - aucun calendrier demandÃ©");
 			$response->addVar('Calendrier', "");
 		}
 		$response->addVar('liste_periodes', $liste_periodes);

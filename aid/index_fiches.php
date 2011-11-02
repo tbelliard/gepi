@@ -39,9 +39,9 @@ if (!checkAccess()) {
 }
 
 $indice_aid = $_GET["indice_aid"];
-// Vérification de la validité de $indice_aid et $aid_id
+// VÃ©rification de la validitÃ© de $indice_aid et $aid_id
 if (!VerifAidIsAcive($indice_aid,"")) {
-    echo "<p>Vous tentez d'accéder à des outils qui ne sont pas activés. veuillez contacter l'administrateur.</p></body></html>";
+    echo "<p>Vous tentez d'accÃ©der Ã  des outils qui ne sont pas activÃ©s. veuillez contacter l'administrateur.</p></body></html>";
     die();
 }
 
@@ -68,14 +68,14 @@ if (!isset($_GET['action'])) {
     if (isset($test_salle) && $test_salle != 0)
         echo ", salles";
     if (($feuille_presence == 'y') and ($_SESSION["statut"] != "eleve") and ($_SESSION["statut"] != "responsable"))
-        echo ", feuilles de présence";
+        echo ", feuilles de prÃ©sence";
     echo ")</a></li>\n";
-    echo "<li><a href=\"visu_fiches.php?indice_aid=".$indice_aid."\"><b>Tableau de toutes les fiches ".$nom_projet."</b> (résumé, productions attendues, ...)</a></li>\n";
-    echo "<li><a href=\"index_fiches.php?action=liste_eleves&amp;indice_aid=".$indice_aid."\"><b>Liste de tous les ".$gepiSettings['denomination_eleves']."</b> (classements possibles par nom, prénom, classe, projet)</a></li>\n";
+    echo "<li><a href=\"visu_fiches.php?indice_aid=".$indice_aid."\"><b>Tableau de toutes les fiches ".$nom_projet."</b> (rÃ©sumÃ©, productions attendues, ...)</a></li>\n";
+    echo "<li><a href=\"index_fiches.php?action=liste_eleves&amp;indice_aid=".$indice_aid."\"><b>Liste de tous les ".$gepiSettings['denomination_eleves']."</b> (classements possibles par nom, prÃ©nom, classe, projet)</a></li>\n";
     if (($_SESSION["statut"] == "administrateur") or ($_SESSION["statut"] == "cpe"))
-        echo "<li><a href=\"index_fiches.php?action=liste_eleves_sans_projet&amp;indice_aid=".$indice_aid."\"><b>Liste des ".$gepiSettings['denomination_eleves']." non affectés</b></a></li>\n";
+        echo "<li><a href=\"index_fiches.php?action=liste_eleves_sans_projet&amp;indice_aid=".$indice_aid."\"><b>Liste des ".$gepiSettings['denomination_eleves']." non affectÃ©s</b></a></li>\n";
     if (($feuille_presence == 'y') and ($_SESSION["statut"] != "eleve") and ($_SESSION["statut"] != "responsable"))
-        echo "<li><a href=\"index_fiches.php?action=liste_presence&amp;indice_aid=".$indice_aid."\"><b>Edition de toutes les feuilles de présence</b></a></li>\n";
+        echo "<li><a href=\"index_fiches.php?action=liste_presence&amp;indice_aid=".$indice_aid."\"><b>Edition de toutes les feuilles de prÃ©sence</b></a></li>\n";
 
     echo "</ul>\n";
 }
@@ -94,11 +94,11 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_projet")) {
     $nombreligne = mysql_num_rows($calldata);
     echo "<table style=\"width:100%\" cellpadding=\"3\" border=\"1\">\n";
     echo "<tr>\n";
-    echo "<td>N°</td>\n";
+    echo "<td>NÂ°</td>\n";
     echo "<td>Nom du projet ".$nom_projet."</td>\n";
     echo "<td>".ucfirst($gepiSettings['denomination_professeurs'])." responsables</td>\n";
     echo "<td>".ucfirst($gepiSettings['denomination_eleves'])." responsables</td>\n";
-    // On n'affiche la colonne "salle" uniquement si ce champ est utilisé.
+    // On n'affiche la colonne "salle" uniquement si ce champ est utilisÃ©.
     If (VerifAccesFicheProjet($_SESSION['login'],'',$indice_aid,'perso1',"R")) {
         echo "<td>".LibelleChampAid("perso1")."</td>\n";
     }
@@ -188,8 +188,8 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_projet")) {
         echo "<td><span class='medium'><b>$aid_nom</b></span>\n";
 
     if (($feuille_presence == 'y') and ($_SESSION["statut"] != "eleve") and ($_SESSION["statut"] != "responsable"))
-            echo "<br /><span class='medium'><a href='index_fiches.php?action=liste_presence&amp;aid_id=".$aid_id."&amp;indice_aid=".$indice_aid."' title=\"La feuille de présence s'ouvre dans une nouvelle fenêtre.\"  ><i>Feuille de présence</i></a></span>\n";
-        echo "<br /><span class='medium'><i>Fiche complète : </i>\n";
+            echo "<br /><span class='medium'><a href='index_fiches.php?action=liste_presence&amp;aid_id=".$aid_id."&amp;indice_aid=".$indice_aid."' title=\"La feuille de prÃ©sence s'ouvre dans une nouvelle fenÃªtre.\"  ><i>Feuille de prÃ©sence</i></a></span>\n";
+        echo "<br /><span class='medium'><i>Fiche complÃ¨te : </i>\n";
         echo "<a href='modif_fiches.php?aid_id=$aid_id&amp;indice_aid=$indice_aid&amp;retour=index_fiches.php' >Visualiser</a></span>\n";
         if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'','')) {
             echo " - <a href='modif_fiches.php?aid_id=$aid_id&amp;indice_aid=$indice_aid&amp;action=modif&amp;retour=index_fiches.php'>Modifier</a>";
@@ -210,7 +210,7 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_projet")) {
     echo "</table>\n";
 }
 
-// Affichage de la feuille de présence
+// Affichage de la feuille de prÃ©sence
 if ((isset($_GET['action'])) and ($_GET['action']=="liste_presence")) {
     $nom_aid = sql_query1("SELECT nom FROM aid_config WHERE indice_aid = '$indice_aid'");
     if (!isset($_GET['aid_id']))
@@ -281,14 +281,14 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_presence")) {
             echo LibelleChampAid("perso3")." : ".$perso1."<br />";
         echo $liste_profs."<br />";
         echo $liste_eleves;
-        echo "<p><span class = 'bold'>Séance ".$nom_projet." du .....................................................................</span>\n";
+        echo "<p><span class = 'bold'>SÃ©ance ".$nom_projet." du .....................................................................</span>\n";
 
-        // appel de la liste des élèves de l'AID :
+        // appel de la liste des Ã©lÃ¨ves de l'AID :
         $call_liste_data = mysql_query("SELECT e.login, e.nom, e.prenom
         FROM eleves e, j_aid_eleves j
         WHERE (j.id_aid='".$aid_id."' and e.login=j.login and j.indice_aid='$indice_aid') ORDER BY nom, prenom");
         echo "<table style=\"width:95%\" border=\"1\" cellpadding=\"8\">\n";
-        echo "<tr><td style=\"width:50%\"><b>Nom Prénom</b></td><td><b>Absences / Retard (début de séance)</b></td><td><b>Absences / Retard (fin de séance)</b></td></tr>";
+        echo "<tr><td style=\"width:50%\"><b>Nom PrÃ©nom</b></td><td><b>Absences / Retard (dÃ©but de sÃ©ance)</b></td><td><b>Absences / Retard (fin de sÃ©ance)</b></td></tr>";
         $nombre = mysql_num_rows($call_liste_data);
         $j = "0";
         while ($j < $nombre) {
@@ -316,7 +316,7 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_presence")) {
 }
 
 
-// Affichage de la liste des élèves
+// Affichage de la liste des Ã©lÃ¨ves
 if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves")) {
     $order_by2 = isset($_POST["order_by2"]) ? $_POST["order_by2"] : (isset($_GET["order_by2"]) ? $_GET["order_by2"] : 'nom');
     if ($order_by2 == "nom") $order_by2 = "e.nom, e.prenom";
@@ -326,7 +326,7 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves")) {
     echo "<a href=\"./index_fiches.php?indice_aid=".$indice_aid."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
     echo "</p>";
     echo "<h2>Liste des ".$gepiSettings['denomination_eleves']."</h2>";
-    echo "Cliquez sur l'en-tête de la première ligne pour classer les ".$gepiSettings['denomination_eleves']." par nom et prénom, classe ou projet<br /><br />";
+    echo "Cliquez sur l'en-tÃªte de la premiÃ¨re ligne pour classer les ".$gepiSettings['denomination_eleves']." par nom et prÃ©nom, classe ou projet<br /><br />";
 
     $call_liste_data = mysql_query("SELECT distinct e.nom, e.prenom, c.classe, c.id, a.nom, j.id_aid, e.login
     FROM eleves e, j_aid_eleves j, classes c, j_eleves_classes jec, aid a
@@ -340,7 +340,7 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves")) {
 
     echo "<table style=\"width:90%\" border=\"1\" cellpadding=\"3\">\n";
     echo "<tr>
-    <td style=\"width:50%\"><b><a href='index_fiches.php?order_by2=nom&amp;action=liste_eleves&amp;indice_aid=".$indice_aid."'>Nom Prénom</a></b></td>\n
+    <td style=\"width:50%\"><b><a href='index_fiches.php?order_by2=nom&amp;action=liste_eleves&amp;indice_aid=".$indice_aid."'>Nom PrÃ©nom</a></b></td>\n
     <td style=\"width:50%\"><b>Identifiant</b></td>\n
     <td><b><a href='index_fiches.php?order_by2=classe&amp;action=liste_eleves&amp;indice_aid=".$indice_aid."'>Classe</a></b></td>\n
     <td><b><a href='index_fiches.php?order_by2=projet&amp;action=liste_eleves&amp;indice_aid=".$indice_aid."'>".$nom_projet."</a></b></td>\n";
@@ -384,20 +384,20 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves")) {
 
 }
 
-// Affichage de la liste des élèves sans projet
+// Affichage de la liste des Ã©lÃ¨ves sans projet
 if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves_sans_projet")) {
-  echo "<h2>Liste des élèves non affectés</h2>";
+  echo "<h2>Liste des Ã©lÃ¨ves non affectÃ©s</h2>";
   echo "<p class='bold'>";
   echo "<a href=\"./index_fiches.php?indice_aid=".$indice_aid."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
   echo "</p>";
 
-  // Choix des classes à exclure
+  // Choix des classes Ã  exclure
   if (!isset($_GET['choix_classes'])) {
     echo "<form method=\"get\" action=\"".$_SERVER['PHP_SELF']."\">\n";
     $sql="SELECT id,classe FROM classes ORDER BY classe;";
     $res_classes=mysql_query($sql);
     $nb_classes=mysql_num_rows($res_classes);
-    echo "<p>Selectionnez les classes à exclure de la recherche&nbsp;:\n";
+    echo "<p>Selectionnez les classes Ã  exclure de la recherche&nbsp;:\n";
     echo "</p>\n";
     // Affichage sur 4/5 colonnes
     $nb_classes_par_colonne=round($nb_classes/4);
@@ -424,11 +424,11 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves_sans_projet")) 
   	echo "<input type='hidden' name='indice_aid'  value='".$_GET['indice_aid']."'  />";
     echo "</form>\n";
   } else {
-    // On affiche les élèves non affectés
+    // On affiche les Ã©lÃ¨ves non affectÃ©s
     $order_by2 = isset($_POST["order_by2"]) ? $_POST["order_by2"] : (isset($_GET["order_by2"]) ? $_GET["order_by2"] : 'nom');
     if ($order_by2 == "nom") $order_by2 = "e.nom, e.prenom";
     if ($order_by2 == "classe") $order_by2 = "c.classe, e.nom, e.prenom";
-    echo "Cliquez sur l'en-tête de la première ligne pour classer les ".$gepiSettings['denomination_eleves']." par nom et prénom ou classe<br /><br />";
+    echo "Cliquez sur l'en-tÃªte de la premiÃ¨re ligne pour classer les ".$gepiSettings['denomination_eleves']." par nom et prÃ©nom ou classe<br /><br />";
 
 
 
@@ -453,7 +453,7 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_eleves_sans_projet")) 
 
     echo "<table style=\"width:90%\" border=\"1\" cellpadding=\"3\">\n";
     echo "<tr>
-      <td style=\"width:50%\"><b><a href='index_fiches.php?order_by2=nom&amp;action=liste_eleves_sans_projet&amp;indice_aid=".$indice_aid."&amp;id_classe_serie=".serialize($id_classe)."&amp;choix_classes=y'>Nom Prénom</a></b></td>\n
+      <td style=\"width:50%\"><b><a href='index_fiches.php?order_by2=nom&amp;action=liste_eleves_sans_projet&amp;indice_aid=".$indice_aid."&amp;id_classe_serie=".serialize($id_classe)."&amp;choix_classes=y'>Nom PrÃ©nom</a></b></td>\n
     <td style=\"width:50%\"><b>Identifiant</b></td>\n
     <td><b><a href='index_fiches.php?order_by2=classe&amp;action=liste_eleves_sans_projet&amp;indice_aid=".$indice_aid."&amp;id_classe_serie=".serialize($id_classe)."&amp;choix_classes=y'>Classe</a></b></td>\n
     </tr>\n";

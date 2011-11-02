@@ -67,7 +67,7 @@ include "../lib/periodes.inc.php";
 
 if ($_SESSION['statut'] != "secours") {
 	if (!(check_prof_groupe($_SESSION['login'],$current_group["id"]))) {
-		$mess=rawurlencode("Vous n'êtes pas professeur de cet enseignement !");
+		$mess=rawurlencode("Vous n'Ãªtes pas professeur de cet enseignement !");
 		header("Location: index.php?msg=$mess");
 		die();
 	}
@@ -91,7 +91,7 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
 	for($i=0;$i<$indice_max_log_eleve;$i++){
 
 		if(isset($log_eleve[$i])) {
-			// La période est-elle ouverte?
+			// La pÃ©riode est-elle ouverte?
 			$reg_eleve_login=$log_eleve[$i];
 
 			if (in_array($reg_eleve_login, $current_group["eleves"][$k]["list"])) {
@@ -148,7 +148,7 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
 	/*
 	foreach ($current_group["eleves"]["all"]["list"] as $reg_eleve_login) {
 		// MODIFICATION: boireaus
-		// On n'enregistre que pour la période correspondant à $periode_cn
+		// On n'enregistre que pour la pÃ©riode correspondant Ã  $periode_cn
 		//$k=1;
 		$k=$periode_cn;
 		//while ($k < $nb_periode) {
@@ -189,7 +189,7 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
 	}
 	*/
 
-	// on indique qu'il faut le cas échéant procéder à un recalcul du rang des élèves
+	// on indique qu'il faut le cas Ã©chÃ©ant procÃ©der Ã  un recalcul du rang des Ã©lÃ¨ves
 	//$k=1;
 	$k=$periode_cn;
 	//while ($k < $nb_periode) {
@@ -214,8 +214,8 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
 	$affiche_message = 'yes';
 }
 if (!isset($is_posted)) {$is_posted = '';}
-$themessage  = 'Des notes ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
-$message_enregistrement = "Les modifications ont été enregistrées !";
+$themessage  = 'Des notes ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
+$message_enregistrement = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
 //**************** EN-TETE *****************
 $titre_page = "Saisie des moyennes";
 require_once("../lib/header.inc");
@@ -223,7 +223,7 @@ require_once("../lib/header.inc");
 
 //debug_var();
 
-// Couleurs utilisées
+// Couleurs utilisÃ©es
 $couleur_devoirs = '#AAE6AA';
 $couleur_fond = '#AAE6AA';
 $couleur_moy_cn = '#96C8F0';
@@ -256,7 +256,7 @@ if($periode_cn==0){
 		}
 	}
 
-	// Si jamais aucune période n'est ouverte:
+	// Si jamais aucune pÃ©riode n'est ouverte:
 	if($periode_cn==0){
 		$periode_cn=1;
 	}
@@ -274,13 +274,13 @@ if ($periode_cn != 0) {
 if ($periode_cn != 0) {
 	$login_prof = $_SESSION['login'];
 
-	// On teste si la première classe du groupe a bien la période $periode_cn (on ne peut pas associer un groupe a des classes qui n'ont pas le même nombre de périodes)
+	// On teste si la premiÃ¨re classe du groupe a bien la pÃ©riode $periode_cn (on ne peut pas associer un groupe a des classes qui n'ont pas le mÃªme nombre de pÃ©riodes)
 	$sql="SELECT 1=1 FROM periodes WHERE (id_classe='".$current_group["classes"]["list"][0]."' and num_periode='$periode_cn');";
 	//echo "$sql<br />";
 	$test_periode_premiere_classe_du_groupe=mysql_query($sql);
 	if(mysql_num_rows($test_periode_premiere_classe_du_groupe)==0) {
-		// En passant à enseignement suivant, il peut arriver que l'on passe d'un enseignement à trois périodes à un enseignement à 2 périodes.
-		// Si on arrive sur l'enseignement à deux périodes avec un periode_cn=3, on obtient des erreurs
+		// En passant Ã  enseignement suivant, il peut arriver que l'on passe d'un enseignement Ã  trois pÃ©riodes Ã  un enseignement Ã  2 pÃ©riodes.
+		// Si on arrive sur l'enseignement Ã  deux pÃ©riodes avec un periode_cn=3, on obtient des erreurs
 
 		$sql="SELECT num_periode FROM periodes p, j_groupes_classes jgc WHERE p.verouiller='N' AND jgc.id_classe=p.id_classe AND jgc.id_groupe='".$current_group["id"]."' ORDER BY num_periode LIMIT 1;";
 		$test=mysql_query($sql);
@@ -293,7 +293,7 @@ if ($periode_cn != 0) {
 		}
 	}
 
-	// On récupére, si le cahier de notes est initialisé l'identifiant du cahier de notes.
+	// On rÃ©cupÃ©re, si le cahier de notes est initialisÃ© l'identifiant du cahier de notes.
 	$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe = '" . $current_group["id"] . "' and periode='$periode_cn');";
 	//echo "$sql<br />";
 	$appel_cahier_notes = mysql_query($sql);
@@ -327,18 +327,18 @@ echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" name='fo
 
 echo "<p class='bold'>\n";
 if (isset($retour_cn)) {
-	echo "<a href=\"../cahier_notes/index.php?id_groupe=" . $current_group["id"] . "&amp;periode_num=$periode_cn\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour vers mes évaluations</a>";
+	echo "<a href=\"../cahier_notes/index.php?id_groupe=" . $current_group["id"] . "&amp;periode_num=$periode_cn\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour vers mes Ã©valuations</a>";
 } else {
 	echo "<a href=\"index.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil saisie</a>";
 }
-echo " | <a href='saisie_appreciations.php?id_groupe=" . $current_group["id"] . "&amp;periode_cn=$periode_cn' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisir les appréciations</a>";
+echo " | <a href='saisie_appreciations.php?id_groupe=" . $current_group["id"] . "&amp;periode_cn=$periode_cn' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisir les apprÃ©ciations</a>";
 // enregistrement du chemin de retour pour la fonction imprimer
 $_SESSION['chemin_retour'] = $_SERVER['PHP_SELF']."?". $_SERVER['QUERY_STRING'];
 echo " | <a href='../prepa_conseil/index1.php?id_groupe=$id_groupe'>Imprimer</a>";
 
 //=========================
 // AJOUT: boireaus 20071108
-echo " | <a href='index.php?id_groupe=" . $current_group["id"] . "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Import/Export notes et appréciations</a>";
+echo " | <a href='index.php?id_groupe=" . $current_group["id"] . "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Import/Export notes et apprÃ©ciations</a>";
 //=========================
 
 
@@ -348,7 +348,7 @@ echo " | <a href='index.php?id_groupe=" . $current_group["id"] . "' onclick=\"re
 /*
 // =================================
 // AJOUT: boireaus
-// Pour proposer de passer à la classe suivante ou à la précédente
+// Pour proposer de passer Ã  la classe suivante ou Ã  la prÃ©cÃ©dente
 //$sql="SELECT id, classe FROM classes ORDER BY classe";
 if($_SESSION['statut']=='secours'){
 	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
@@ -361,7 +361,7 @@ if($_SESSION['statut']=='professeur'){
 	//$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
 
 
-    $tab_groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
+    $tab_groups = get_groups_for_prof($_SESSION["login"],"classe puis matiÃ¨re");
     //$tab_groups = get_groups_for_prof($_SESSION["login"]);
 
 	if(!empty($tab_groups)) {
@@ -388,7 +388,7 @@ if($_SESSION['statut']=='professeur'){
 		if(isset($id_grp_prec)){
 			if($id_grp_prec!=0){
 				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_cn=$periode_cn";
-				echo "'>Enseignement précédent</a>";
+				echo "'>Enseignement prÃ©cÃ©dent</a>";
 			}
 		}
 		if(isset($id_grp_suiv)){
@@ -420,8 +420,8 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 	}
 
 	if($login_prof_groupe_courant!='') {
-		//$tab_groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
-		$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matière");
+		//$tab_groups = get_groups_for_prof($_SESSION["login"],"classe puis matiÃ¨re");
+		$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matiÃ¨re");
 		//$tab_groups = get_groups_for_prof($_SESSION["login"]);
 	}
 
@@ -473,7 +473,7 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 		if(isset($id_grp_prec)){
 			if($id_grp_prec!=0){
 				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_cn=$periode_cn";
-				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement précédent</a>";
+				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement prÃ©cÃ©dent</a>";
 			}
 		}
 
@@ -536,8 +536,8 @@ if ($affiche_bascule == 'yes') {
 
 	echo "<div id='div_bascule'>\n";
 
-	//if ($id_racine == '') echo "<tr><td></td><td><font color=\"#FF0000\">Actuellement, vous n'utilisez pas le cahier de notes. Il n'y a donc aucune note à importer.</font></td></tr>\n";
-	if ($id_racine == '') {echo "<font color=\"#FF0000\">Actuellement, vous n'utilisez pas le cahier de notes. Il n'y a donc aucune note à importer.</font>\n";}
+	//if ($id_racine == '') echo "<tr><td></td><td><font color=\"#FF0000\">Actuellement, vous n'utilisez pas le cahier de notes. Il n'y a donc aucune note Ã  importer.</font></td></tr>\n";
+	if ($id_racine == '') {echo "<font color=\"#FF0000\">Actuellement, vous n'utilisez pas le cahier de notes. Il n'y a donc aucune note Ã  importer.</font>\n";}
 
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=\"post\">\n";
 	echo add_token_field();
@@ -547,11 +547,11 @@ if ($affiche_bascule == 'yes') {
 		echo "<input type=\"hidden\" name=\"is_posted\" value=\"bascule\" />\n";
 	} 
 	else {
-		// Si une Recopie a été effectuée ou provoquée, le token doit être correct.
+		// Si une Recopie a Ã©tÃ© effectuÃ©e ou provoquÃ©e, le token doit Ãªtre correct.
 		check_token();
 
-		//echo "<tr><td><input type=\"submit\" value=\"Annuler recopie\"></td><td> : Afficher dans la colonne \"bulletin\" les moyennes actuellement enregistrées</td></tr>\n";
-		echo "<input type=\"submit\" value=\"Annuler recopie\" /> : Afficher dans la colonne \"bulletin\" les moyennes actuellement enregistrées\n";
+		//echo "<tr><td><input type=\"submit\" value=\"Annuler recopie\"></td><td> : Afficher dans la colonne \"bulletin\" les moyennes actuellement enregistrÃ©es</td></tr>\n";
+		echo "<input type=\"submit\" value=\"Annuler recopie\" /> : Afficher dans la colonne \"bulletin\" les moyennes actuellement enregistrÃ©es\n";
 	}
 	echo "<input type=\"hidden\" name=\"id_groupe\" value= \"".$id_groupe."\" />\n";
 	echo "<input type=\"hidden\" name=\"periode_cn\" value=\"".$periode_cn."\" />\n";
@@ -618,14 +618,14 @@ echo add_token_field();
 <?php
 	$temoin_notes=0;
 
-	// Il ne faudrait afficher le bouton d'enregistrement que si la période choisie est ouverte ou seulement partiellement close.
+	// Il ne faudrait afficher le bouton d'enregistrement que si la pÃ©riode choisie est ouverte ou seulement partiellement close.
 	//if ($current_group["classe"]["ver_periode"]["all"][$periode_cn]!=0) {
 	//if ($current_group["classe"]["ver_periode"]["all"][$periode_cn]>=2) {
 	if (($current_group["classe"]["ver_periode"]["all"][$periode_cn]>=2)||
 		(($current_group["classe"]["ver_periode"]["all"][$periode_cn]!=0)&&($_SESSION['statut']=='secours'))) {
 		echo "<p><input type='submit' value='Enregistrer' /> : Enregistrer les moyennes dans le bulletin</p>\n";
 
-		echo "<p><i>Taper une note de 0 à 20 pour chaque élève, ou à défaut le code 'a' pour 'absent', le code 'd' pour 'dispensé', le code 'n' ou '-' pour absence de note.</i></p>\n";
+		echo "<p><i>Taper une note de 0 Ã  20 pour chaque Ã©lÃ¨ve, ou Ã  dÃ©faut le code 'a' pour 'absent', le code 'd' pour 'dispensÃ©', le code 'n' ou '-' pour absence de note.</i></p>\n";
 	}
 
 	echo "<p><b>Moyennes (sur 20) de : ".htmlentities($current_group["description"])." (" . $current_group["classlist_string"] . ")</b></p>\n";
@@ -636,7 +636,7 @@ echo add_token_field();
 	echo "<table border='1' cellspacing='2' cellpadding='1' class='boireaus' summary='Saisie'>\n";
 	//echo "<table border='1' cellspacing='2' cellpadding='1'>\n";
 	echo "<tr>\n";
-	echo "<td><b><a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_cn&amp;order_by=nom'>Nom Prénom</a></b></td>\n";
+	echo "<td><b><a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_cn&amp;order_by=nom'>Nom PrÃ©nom</a></b></td>\n";
 
 	if ($multiclasses) {
 		echo "<td><b><a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_cn&amp;order_by=classe'>Classe</a></b></td>";
@@ -713,22 +713,22 @@ echo add_token_field();
 </tr>
 
 <?php
-// On commence par mettre la liste dans l'ordre souhaité
+// On commence par mettre la liste dans l'ordre souhaitÃ©
 if ($order_by != "classe") {
 	$liste_eleves = $current_group["eleves"]["all"]["list"];
 } else {
 	// Ici, on trie par classe
-	// On va juste créer une liste des élèves pour chaque classe
+	// On va juste crÃ©er une liste des Ã©lÃ¨ves pour chaque classe
 	$tab_classes = array();
 	foreach($current_group["classes"]["list"] as $classe_id) {
 		$tab_classes[$classe_id] = array();
 	}
-	// On passe maintenant élève par élève et on les met dans la bonne liste selon leur classe
+	// On passe maintenant Ã©lÃ¨ve par Ã©lÃ¨ve et on les met dans la bonne liste selon leur classe
 	foreach($current_group["eleves"]["all"]["list"] as $eleve_login) {
 		$classe = $current_group["eleves"]["all"]["users"][$eleve_login]["classe"];
 		$tab_classes[$classe][] = $eleve_login;
 	}
-	// On met tout ça à la suite
+	// On met tout Ã§a Ã  la suite
 	$liste_eleves = array();
 	foreach($current_group["classes"]["list"] as $classe_id) {
 		$liste_eleves = array_merge($liste_eleves, $tab_classes[$classe_id]);
@@ -742,7 +742,7 @@ $num_id = 10;
 $prev_classe = null;
 //=========================
 // AJOUT: boireaus 20071010
-// Compteur pour les élèves
+// Compteur pour les Ã©lÃ¨ves
 $i=0;
 //=========================
 $alt=1;
@@ -765,7 +765,7 @@ foreach ($liste_eleves as $eleve_login) {
 
 		if (in_array($eleve_login, $current_group["eleves"][$k]["list"])) {
 			//
-			// si l'élève appartient au groupe pour cette période
+			// si l'Ã©lÃ¨ve appartient au groupe pour cette pÃ©riode
 			//
 			$eleve_nom = $current_group["eleves"][$k]["users"][$eleve_login]["nom"];
 			$eleve_prenom = $current_group["eleves"][$k]["users"][$eleve_login]["prenom"];
@@ -773,7 +773,7 @@ foreach ($liste_eleves as $eleve_login) {
 			$eleve_id_classe = $current_group["classes"]["classes"][$current_group["eleves"][$k]["users"][$eleve_login]["classe"]]["id"];
 			$suit_option[$k] = 'yes';
 			//
-			// si l'élève suit la matière
+			// si l'Ã©lÃ¨ve suit la matiÃ¨re
 			//
 			$note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
 			$eleve_statut = @mysql_result($note_query, 0, "statut");
@@ -785,7 +785,7 @@ foreach ($liste_eleves as $eleve_login) {
 			(($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]=="O")&&($_SESSION['statut']=='secours'))) {
 			//if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] == "O") {
 				//
-				// si la période est verrouillée pour l'élève
+				// si la pÃ©riode est verrouillÃ©e pour l'Ã©lÃ¨ve
 				//
 
 				//$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login' AND id_conteneur='$id_racine')");
@@ -802,7 +802,7 @@ foreach ($liste_eleves as $eleve_login) {
 				//if ($current_group["classe"]["ver_periode"]["all"][$k]>=2) {
 				if (($current_group["classe"]["ver_periode"]["all"][$k]>=2)||
 					(($current_group["classe"]["ver_periode"]["all"][$k]!=0)&&($_SESSION['statut']=='secours'))) {
-					// La période n'est pas complètement verrouillée pour tous.
+					// La pÃ©riode n'est pas complÃ¨tement verrouillÃ©e pour tous.
 
 					if ($periode_cn == $k) {
 						// Affichage de la colonne du carnet de notes
@@ -837,7 +837,7 @@ foreach ($liste_eleves as $eleve_login) {
 					$mess[$k].="><center><b>";
 				}
 
-				// Affichage de la colonne 'note' -> REMONTé
+				// Affichage de la colonne 'note' -> REMONTÃ©
 				//$mess[$k] =$mess[$k]."<td><center><b>";
 				if ($eleve_statut != '') {
 					$mess[$k] = $mess[$k].$eleve_statut;
@@ -852,7 +852,7 @@ foreach ($liste_eleves as $eleve_login) {
 				$mess[$k] =$mess[$k]."</b></center></td>\n";
 			} else {
 				//
-				// si la période n'est pas verrouillée pour l'élève
+				// si la pÃ©riode n'est pas verrouillÃ©e pour l'Ã©lÃ¨ve
 				// PAS COMPLETEMENT...
 				//
 
@@ -941,7 +941,7 @@ foreach ($liste_eleves as $eleve_login) {
 
 		} else {
 			//
-			// si l'élève n'est pas dans le groupe pour la période
+			// si l'Ã©lÃ¨ve n'est pas dans le groupe pour la pÃ©riode
 			//
 			$suit_option[$k] = 'no';
 			/*
@@ -1116,11 +1116,11 @@ if($temoin_notes==0) {
 }
 
 if(count($tab_recopie_vide)>0) {
-	$chaine_js="<p style='text-align:center'>Pas de moyenne recopiée pour:<br />";
+	$chaine_js="<p style='text-align:center'>Pas de moyenne recopiÃ©e pour:<br />";
 	for($i=0;$i<count($tab_recopie_vide);$i++) {
 		$chaine_js.="<b>".$tab_recopie_vide[$i]."</b><br />";
 	}
-	$chaine_js.="Il faudra saisir manuellement Absent (<b>a</b>), Dispensé (<b>d</b>) ou Non noté (<b>-</b>).</p>";
+	$chaine_js.="Il faudra saisir manuellement Absent (<b>a</b>), DispensÃ© (<b>d</b>) ou Non notÃ© (<b>-</b>).</p>";
 
 	echo "<script type='text/javascript'>
 	document.getElementById('info_recopie').innerHTML=\"$chaine_js\";
@@ -1132,7 +1132,7 @@ if ($is_posted == 'bascule') {
 ?>
 	<script type="text/javascript" language="javascript">
 	<!--
-	alert("Attention, les notes importées ne sont pas encore enregistrées dans la base GEPI. Vous devez confirmer l'importation (bouton \"enregistrer\") !");
+	alert("Attention, les notes importÃ©es ne sont pas encore enregistrÃ©es dans la base GEPI. Vous devez confirmer l'importation (bouton \"enregistrer\") !");
 	//-->
 	</script>
 <?php
@@ -1161,7 +1161,7 @@ if (($current_group["classe"]["ver_periode"]["all"][$periode_cn]>=2)||
 </form>
 
 <script language='javascript' type='text/javascript'>
-	// On donne le focus à la première cellule lors du chargement de la page:
+	// On donne le focus Ã  la premiÃ¨re cellule lors du chargement de la page:
 	if(document.getElementById('n110')){
 		document.getElementById('n110').focus();
 	}

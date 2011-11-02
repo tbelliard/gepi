@@ -27,7 +27,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 
 <head>
-<!-- on inclut l'entête -->
+<!-- on inclut l'entÃªte -->
 	<?php
 	  $tbs_bouton_taille = "..";
 	  include('../templates/origine/header_template.php');
@@ -70,7 +70,7 @@
 
 
 <!-- ************************* -->
-<!-- Début du corps de la page -->
+<!-- DÃ©but du corps de la page -->
 <!-- ************************* -->
 <body onload="show_message_deconnexion();<?php echo $tbs_charger_observeur;?>">
 
@@ -97,58 +97,58 @@
 	
   <h1>Le module Inscription</h1>
   <p>
-	Le module Inscription permet de définir un ou plusieurs items (journée, stage, intervention, ...), au(x)quel(s) les utilisateurs pourront s'inscrire ou se désinscrire en cochant ou décochant une croix.
+	Le module Inscription permet de dÃ©finir un ou plusieurs items (journÃ©e, stage, intervention, ...), au(x)quel(s) les utilisateurs pourront s'inscrire ou se dÃ©sinscrire en cochant ou dÃ©cochant une croix.
   </p>
   <ul>
-	<li>La configuration du module est accessible aux administrateurs et à la scolarité.</li>
-	<li>L'interface d'inscription/désinscription est accessible aux professeurs, cpe, administrateurs et scolarité.</li>
+	<li>La configuration du module est accessible aux administrateurs et Ã  la scolaritÃ©.</li>
+	<li>L'interface d'inscription/dÃ©sinscription est accessible aux professeurs, cpe, administrateurs et scolaritÃ©.</li>
   </ul>
 
   <p>
-	Après avoir activé le module, les administrateurs et la scolarité disposent dans la page d'accueil
+	AprÃ¨s avoir activÃ© le module, les administrateurs et la scolaritÃ© disposent dans la page d'accueil
    d'un nouveau module de configuration.
   </p>
-  <p>La première étape consiste à configurer ce module :</p>
+  <p>La premiÃ¨re Ã©tape consiste Ã  configurer ce module :</p>
   <ul>
 	<li>
 	  <span class="bold">
-		Activation / Désactivation :
+		Activation / DÃ©sactivation :
 	  </span>
 	  <br />
-	  Tant que le module n'est pas entièrement configuré, vous avez intérêt à ne pas activer la page autorisant
-	  les inscriptions. De cette façon, ce module reste invisible aux autres utilisateurs (professeurs et cpe).
+	  Tant que le module n'est pas entiÃ¨rement configurÃ©, vous avez intÃ©rÃªt Ã  ne pas activer la page autorisant
+	  les inscriptions. De cette faÃ§on, ce module reste invisible aux autres utilisateurs (professeurs et cpe).
 	  <br />
-	  De même, lorsque les inscriptions sont closes, vous pouvez désactiver les inscriptions, tout en gardant
-	  l'accès au module de configuration.
+	  De mÃªme, lorsque les inscriptions sont closes, vous pouvez dÃ©sactiver les inscriptions, tout en gardant
+	  l'accÃ¨s au module de configuration.
 	</li>
 	<li>
 	  <span class="bold">
 		Liste des items :
 	  </span>
 	  <br />
-	  C'est la liste des entités auxquelles les utilisateurs pourront s'incrire.
+	  C'est la liste des entitÃ©s auxquelles les utilisateurs pourront s'incrire.
 	  <br />
-	  Chaque entité est caratérisée par un identifiant numérique, une date (format AAAA/MM/JJ),
-	  une heure (20 caractères max), une description (200 caractères max).
+	  Chaque entitÃ© est caratÃ©risÃ©e par un identifiant numÃ©rique, une date (format AAAA/MM/JJ),
+	  une heure (20 caractÃ¨res max), une description (200 caractÃ¨res max).
 	</li>
 	<li>
 	  <span class="bold">
 		Titre du module :
 	  </span>
 	  <br />
-	  Vous avez ici la possibilité de personnaliser l'intitulé du module visible dans la page d'accueil.
+	  Vous avez ici la possibilitÃ© de personnaliser l'intitulÃ© du module visible dans la page d'accueil.
 	</li>
 	<li>
 	  <span class="bold">
 		Texte explicatif :
 	  </span>
 	  <br />
-	  Ce texte sera visible par les personnes accédant au module d'inscription/désincription.
+	  Ce texte sera visible par les personnes accÃ©dant au module d'inscription/dÃ©sincription.
 	</li>
   </ul>
 
 
-<!-- Début du pied -->
+<!-- DÃ©but du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
 
 	<script type='text/javascript'>
@@ -170,7 +170,7 @@
 		<?php
 			if ($tbs_microtime!="") {
 				echo "
-   <p class='microtime'>Page générée en ";
+   <p class='microtime'>Page gÃ©nÃ©rÃ©e en ";
    			echo $tbs_microtime;
 				echo " sec</p>
    			";

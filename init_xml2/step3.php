@@ -48,21 +48,21 @@ if (!checkAccess()) {
 
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des élèves - Etape 3";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des Ã©lÃ¨ves - Etape 3";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 //debug_var();
-// Passer à 'y' pour afficher les requêtes
+// Passer Ã  'y' pour afficher les requÃªtes
 $debug_ele="n";
 
 //==================================
-// RNE de l'établissement pour comparer avec le RNE de l'établissement de l'année précédente
+// RNE de l'Ã©tablissement pour comparer avec le RNE de l'Ã©tablissement de l'annÃ©e prÃ©cÃ©dente
 $gepiSchoolRne=getSettingValue("gepiSchoolRne") ? getSettingValue("gepiSchoolRne") : "";
 //==================================
 
-echo "<center><h3 class='gepi'>Première phase d'initialisation<br />Importation des élèves,  constitution des classes et affectation des élèves dans les classes</h3></center>\n";
-echo "<center><h3 class='gepi'>Troisième étape : Enregistrement des élèves et affectation des élèves dans les classes</h3></center>\n";
+echo "<center><h3 class='gepi'>PremiÃ¨re phase d'initialisation<br />Importation des Ã©lÃ¨ves,  constitution des classes et affectation des Ã©lÃ¨ves dans les classes</h3></center>\n";
+echo "<center><h3 class='gepi'>TroisiÃ¨me Ã©tape : Enregistrement des Ã©lÃ¨ves et affectation des Ã©lÃ¨ves dans les classes</h3></center>\n";
 
 if (isset($is_posted) and ($is_posted == "yes")) {
 	check_token(false);
@@ -101,7 +101,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 
         $reg_eleve = mysql_query("INSERT INTO eleves SET no_gep='$no_gep',login='$reg_login',nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='$reg_elenoet',ele_id='$reg_ele_id', lieu_naissance='$reg_lieu_naissance'");
 
-        if (!$reg_eleve) {echo "<p>Erreur lors de l'enregistrement de l'élève $reg_nom $reg_prenom.</p>\n";}
+        if (!$reg_eleve) {echo "<p>Erreur lors de l'enregistrement de l'Ã©lÃ¨ve $reg_nom $reg_prenom.</p>\n";}
 		else {
 			$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant1='".$reg_ele_id."' AND statut='eleve';";
 			if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
@@ -120,7 +120,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 				if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 				$insert_u=mysql_query($sql);
 				if(!$insert_u) {
-					echo "Erreur lors de la re-création du compte utilisateur pour ".$reg_nom." ".$reg_prenom.".<br />\n";
+					echo "Erreur lors de la re-crÃ©ation du compte utilisateur pour ".$reg_nom." ".$reg_prenom.".<br />\n";
 				}
 			}
 		}
@@ -132,7 +132,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
         if ($reg_doublant != "O") {$doublant = '-';}
 
         $register = mysql_query("INSERT INTO j_eleves_regime SET login='$reg_login',regime='$regime',doublant='$doublant'");
-        if (!$register) echo "<p>Erreur lors de l'enregistrement des infos de régime pour l'élève $reg_nom $reg_prenom.</p>\n";
+        if (!$register) echo "<p>Erreur lors de l'enregistrement des infos de rÃ©gime pour l'Ã©lÃ¨ve $reg_nom $reg_prenom.</p>\n";
 
         $call_classes = mysql_query("SELECT * FROM classes");
         $nb_classes = mysql_num_rows($call_classes);
@@ -145,7 +145,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
                 $u = 1;
                 while ($u <= $number_periodes) {
                     $reg = mysql_query("INSERT INTO j_eleves_classes SET login='$reg_login',id_classe='$id_classe',periode='$u', rang='0'");
-                    if (!$reg) echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à la classe $classe pour la période $u</p>\n";
+                    if (!$reg) echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'Ã©lÃ¨ve $reg_nom $reg_prenom Ã  la classe $classe pour la pÃ©riode $u</p>\n";
                     $u++;
                 }
             }
@@ -162,30 +162,30 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 						$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$reg_elenoet', id_etablissement='$reg_etab';";
 						$insert_etab=mysql_query($sql);
 						if (!$insert_etab) {
-							echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
+							echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'Ã©lÃ¨ve $reg_nom $reg_prenom Ã  l'Ã©tablissement $reg_etab.</p>\n";
 						}
 					}
 					else {
 						$sql="UPDATE j_eleves_etablissements SET id_etablissement='$reg_etab' WHERE id_eleve='$reg_elenoet';";
 						$update_etab=mysql_query($sql);
 						if (!$update_etab) {
-							echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
+							echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'Ã©lÃ¨ve $reg_nom $reg_prenom Ã  l'Ã©tablissement $reg_etab.</p>\n";
 						}
 					}
 				}
 			}
 			else {
-				// Si le RNE de l'établissement courant (celui du GEPI) n'est pas renseigné, on insère les nouveaux enregistrements, mais on ne met pas à jour au risque d'écraser un enregistrement correct avec l'info que l'élève de 1ère était en 2nde dans le même établissement.
+				// Si le RNE de l'Ã©tablissement courant (celui du GEPI) n'est pas renseignÃ©, on insÃ¨re les nouveaux enregistrements, mais on ne met pas Ã  jour au risque d'Ã©craser un enregistrement correct avec l'info que l'Ã©lÃ¨ve de 1Ã¨re Ã©tait en 2nde dans le mÃªme Ã©tablissement.
 				// Il suffira de faire un
 				//       DELETE FROM j_eleves_etablissements WHERE id_etablissement='$gepiSchoolRne';
-				// une fois le RNE renseigné.
+				// une fois le RNE renseignÃ©.
 				$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$reg_elenoet';";
 				$test_etab=mysql_query($sql);
 				if(mysql_num_rows($test_etab)==0){
 					$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$reg_elenoet', id_etablissement='$reg_etab';";
 					$insert_etab=mysql_query($sql);
 					if (!$insert_etab) {
-						echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
+						echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'Ã©lÃ¨ve $reg_nom $reg_prenom Ã  l'Ã©tablissement $reg_etab.</p>\n";
 					}
 				}
 			}
@@ -193,26 +193,26 @@ if (isset($is_posted) and ($is_posted == "yes")) {
         }
         $i++;
     }
-    // on vide la table tempo2 qui nous a servi à stocker les login temporaires des élèves
+    // on vide la table tempo2 qui nous a servi Ã  stocker les login temporaires des Ã©lÃ¨ves
     $del = @mysql_query("DELETE FROM tempo2");
 
-	// On renseigne le témoin: La mise à jour à partir de sconet sera possible.
+	// On renseigne le tÃ©moin: La mise Ã  jour Ã  partir de sconet sera possible.
 	saveSetting("import_maj_xml_sconet", 1);
 
-    //echo "<p>L'importation des données de <b>GEP</b> concernant la constitution des classes est terminée.</p>";
-    echo "<p>L'importation des données concernant la constitution des classes est terminée.</p>\n";
-    echo "<center><p><a href='responsables.php'>Procéder à la deuxième phase d'importation des responsables</a></p></center>\n";
+    //echo "<p>L'importation des donnÃ©es de <b>GEP</b> concernant la constitution des classes est terminÃ©e.</p>";
+    echo "<p>L'importation des donnÃ©es concernant la constitution des classes est terminÃ©e.</p>\n";
+    echo "<center><p><a href='responsables.php'>ProcÃ©der Ã  la deuxiÃ¨me phase d'importation des responsables</a></p></center>\n";
 	echo "<p><br /></p>\n";
     require("../lib/footer.inc.php");
 	die();
 }
 else {
-    // on vide la table tempo2 qui va nous servir à stocker les login temporaires des élèves
+    // on vide la table tempo2 qui va nous servir Ã  stocker les login temporaires des Ã©lÃ¨ves
     $del = @mysql_query("DELETE FROM tempo2");
 
 	//if(getSettingValue('use_sso')=="lcs") {
 	if(getSettingValue('auth_sso')=="lcs") {
-		// On va récupérer les logins du LCS
+		// On va rÃ©cupÃ©rer les logins du LCS
 		require_once("../lib/lcs.inc.php");
 		$ds = connect_ldap($lcs_ldap_host,$lcs_ldap_port,"","");
 	}
@@ -222,11 +222,11 @@ else {
 	$tab_sql[]="SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP FROM temp_gep_import2 t, tempo_utilisateurs tu WHERE t.ELE_ID=tu.identifiant1 ORDER BY DIVCOD,ELENOM,ELEPRE;";
 	$tab_sql[]="SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP FROM temp_gep_import2 WHERE ELE_ID NOT IN (SELECT identifiant1 FROM tempo_utilisateurs) ORDER BY DIVCOD,ELENOM,ELEPRE;";
 
-    echo "<p>Le tableau suivant affiche les données qui vont être enregistrées dans la base de donnée GEPI lorsque vous aurez confirmé ce choix tout en bas de la page.<br /><b>Tant que vous n'avez pas validé en bas de la page, aucune donnée n'est enregistrée !</b></p>\n";
-    echo "<p>Les valeurs en rouge signalent d'éventuelles données manquantes (<em>ND pour \"non défini\"</em>) dans le fichier <b>ElevesSansAdresses.xml</b> fourni ! Ceci n'est pas gênant pour l'enregistrement dans la base <b>GEPI</b>. Vous aurez en effet la possibilité de compléter les données manquantes avec les outils fournis dans <b>GEPI</b></p>\n";
-    echo "<p>Une fois cette page entièrement chargée, ce qui peut prendre un peu de temps, <b>veuillez lire attentivement les remarques en bas de la page </b>avant de procéder à l'enregistrement définitif des données</p>\n";
-    echo "<table border='1' class='boireaus' cellpadding='2' cellspacing='2' summary='Tableau des élèves'>\n";
-    echo "<tr><th><p class=\"small\">N° INE</p></th><th><p class=\"small\">Identifiant</p></th><th><p class=\"small\">Nom</p></th><th><p class=\"small\">Prénom</p></th><th><p class=\"small\">Sexe</p></th><th><p class=\"small\">Date de naiss.</p></th><th><p class=\"small\">Régime</p></th><th><p class=\"small\">Doublant</p></th><th><p class=\"small\">Classe</p></th><th><p class=\"small\">Etablissement d'origine ou précédent</p></th></tr>\n";
+    echo "<p>Le tableau suivant affiche les donnÃ©es qui vont Ãªtre enregistrÃ©es dans la base de donnÃ©e GEPI lorsque vous aurez confirmÃ© ce choix tout en bas de la page.<br /><b>Tant que vous n'avez pas validÃ© en bas de la page, aucune donnÃ©e n'est enregistrÃ©e !</b></p>\n";
+    echo "<p>Les valeurs en rouge signalent d'Ã©ventuelles donnÃ©es manquantes (<em>ND pour \"non dÃ©fini\"</em>) dans le fichier <b>ElevesSansAdresses.xml</b> fourni ! Ceci n'est pas gÃªnant pour l'enregistrement dans la base <b>GEPI</b>. Vous aurez en effet la possibilitÃ© de complÃ©ter les donnÃ©es manquantes avec les outils fournis dans <b>GEPI</b></p>\n";
+    echo "<p>Une fois cette page entiÃ¨rement chargÃ©e, ce qui peut prendre un peu de temps, <b>veuillez lire attentivement les remarques en bas de la page </b>avant de procÃ©der Ã  l'enregistrement dÃ©finitif des donnÃ©es</p>\n";
+    echo "<table border='1' class='boireaus' cellpadding='2' cellspacing='2' summary='Tableau des Ã©lÃ¨ves'>\n";
+    echo "<tr><th><p class=\"small\">NÂ° INE</p></th><th><p class=\"small\">Identifiant</p></th><th><p class=\"small\">Nom</p></th><th><p class=\"small\">PrÃ©nom</p></th><th><p class=\"small\">Sexe</p></th><th><p class=\"small\">Date de naiss.</p></th><th><p class=\"small\">RÃ©gime</p></th><th><p class=\"small\">Doublant</p></th><th><p class=\"small\">Classe</p></th><th><p class=\"small\">Etablissement d'origine ou prÃ©cÃ©dent</p></th></tr>\n";
 
 	$alt=1;
     $max_lignes_pb = 0;
@@ -279,21 +279,21 @@ else {
 			echo "\$reg_nom=$reg_nom<br />\n";
 			*/
 	
-			// On teste pour savoir s'il faut créer un login
+			// On teste pour savoir s'il faut crÃ©er un login
 			$nouv_login='no';
 			if ($no_gep != '') {
 					$nouv_login = 'yes';
 			}
-			// S'il s'agit d'un élève ne figurant pas déjà dans une des bases élève des années passées,
-			// on crée un login !
+			// S'il s'agit d'un Ã©lÃ¨ve ne figurant pas dÃ©jÃ  dans une des bases Ã©lÃ¨ve des annÃ©es passÃ©es,
+			// on crÃ©e un login !
 
 			//echo "no_gep=$no_gep<br />\n";
 			//echo "nouv_login=$nouv_login<br />\n";
 			if (($no_gep == '') or ($nouv_login=='yes')) {
 				$login_eleve="";
 	
-				$reg_nom = strtr($reg_nom,"àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
-				$reg_prenom = strtr($reg_prenom,"àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
+				$reg_nom = strtr($reg_nom,"Ã Ã¢Ã¤Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼Ã§Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃŽÃÃ”Ã–Ã™Ã›ÃœÃ‡","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
+				$reg_prenom = strtr($reg_prenom,"Ã Ã¢Ã¤Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼Ã§Ã€Ã„Ã‚Ã‰ÃˆÃŠÃ‹ÃŽÃÃ”Ã–Ã™Ã›ÃœÃ‡","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
 				/*
 				$temp1 = strtoupper($reg_nom);
 				$temp1 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp1);
@@ -322,19 +322,19 @@ else {
 					$login_eleve=generate_unique_login($reg_nom, $reg_prenom, 'name9_p', 'maj');
 				}
 	
-				// Dans le cas où Gepi est intégré à un ENT, il ne doit pas générer de login mais récupérer celui qui existe déjà
+				// Dans le cas oÃ¹ Gepi est intÃ©grÃ© Ã  un ENT, il ne doit pas gÃ©nÃ©rer de login mais rÃ©cupÃ©rer celui qui existe dÃ©jÃ 
 				if (getSettingValue("use_ent") == 'y') {
-					// On a récupéré les informations dans la table ldap_bx
+					// On a rÃ©cupÃ©rÃ© les informations dans la table ldap_bx
 					// voir aussi les explications de la ligne 710 du fichiers professeurs.php
 					$sql_p = "SELECT login_u FROM ldap_bx
 											WHERE identite_u = '".$no_gep."'";
 					$query_p = mysql_query($sql_p);
 					$nbre = mysql_num_rows($query_p);
 					if ($nbre >= 1) {
-						// On considère que l'information est bonne puisqu'elle a été construite avec la même source sconet
+						// On considÃ¨re que l'information est bonne puisqu'elle a Ã©tÃ© construite avec la mÃªme source sconet
 						$login_eleve = mysql_result($query_p, 0,"login_u");
 					}else{
-						// Il faudra trouver une solution dans ce cas là (même s'il ne doit pas être très fréquent
+						// Il faudra trouver une solution dans ce cas lÃ  (mÃªme s'il ne doit pas Ãªtre trÃ¨s frÃ©quent
 						//$login_eleve = "erreur_".$i;
 						$login_eleve = "erreur_".$id_tempo;
 					}
@@ -366,12 +366,12 @@ else {
 					}
 				}
 				else {
-					// On teste l'unicité du login que l'on vient de créer: Normalement, c'est déjà fait avec generate_unique_login()... NON: On n'a pas testé la table tempo2.
+					// On teste l'unicitÃ© du login que l'on vient de crÃ©er: Normalement, c'est dÃ©jÃ  fait avec generate_unique_login()... NON: On n'a pas testÃ© la table tempo2.
 					$k = 2;
 					$test_unicite = 'no';
 					$temp = $login_eleve;
 					while ($test_unicite != 'yes') {
-						// test_unique_e_login() contrôle l'existence du login dans la table 'utilisateurs' et renseigne la table 'tempo2'
+						// test_unique_e_login() contrÃ´le l'existence du login dans la table 'utilisateurs' et renseigne la table 'tempo2'
 						//$test_unicite = test_unique_e_login($login_eleve,$i);
 						$test_unicite = test_unique_e_login($login_eleve,$id_tempo);
 						if ($test_unicite != 'yes') {
@@ -406,7 +406,7 @@ else {
 				$eleve_naissance_jour = substr($reg_naissance, 6, 2);
 				$naissance = $eleve_naissance_jour."/".$eleve_naissance_mois."/".$eleve_naissance_annee;
 			} else {
-				$naissance = 'non définie';
+				$naissance = 'non dÃ©finie';
 			}
 	
 			$reg_regime_aff=traite_regime_sconet($reg_regime);
@@ -450,7 +450,7 @@ else {
 					$etab_ville = @mysql_result($calletab, 0, "ville");
 					$reg_etab_aff = "$etab_nom, $etab_cp $etab_ville";
 				} else {
-					$reg_etab_aff = "<font color = 'red'>RNE : $reg_etab, étab. non répertorié</font>";
+					$reg_etab_aff = "<font color = 'red'>RNE : $reg_etab, Ã©tab. non rÃ©pertoriÃ©</font>";
 					$ligne_pb = 'yes';
 				}
 			} else {
@@ -468,7 +468,7 @@ else {
 				echo "<td><p class=\"small\">$no_gep_aff</p></td>\n";
 				echo "<td><p class=\"small\">";
 				if($lcs_eleve_en_erreur=='y') {
-					echo "<span style='color:red'>Non trouvé dans l'annuaire LDAP</span>";
+					echo "<span style='color:red'>Non trouvÃ© dans l'annuaire LDAP</span>";
 				}
 				else {
 					echo $login_eleve;
@@ -485,7 +485,7 @@ else {
 				echo "</tr>\n";
 			}
 	
-			// Si la ligne comportait un problème, on incrémente max_lignes_pb
+			// Si la ligne comportait un problÃ¨me, on incrÃ©mente max_lignes_pb
 			if ($ligne_pb == 'yes') {
 				$max_lignes_pb++;
 			}
@@ -498,11 +498,11 @@ else {
     //echo "<p><b>Nombre total de lignes : $nb</b><br />\n";
     echo "<p><b>Nombre total de lignes : $ii</b><br />\n";
     if ($max_lignes_pb == 0) {
-        echo "Aucune erreur n'a été détectée !</p>\n";
+        echo "Aucune erreur n'a Ã©tÃ© dÃ©tectÃ©e !</p>\n";
     } else {
-        echo "Des données manquantes ou incomplètes ont été détectées dans <b>$max_lignes_pb lignes</b> : Elles apparaissent dans le tableau ci-dessus en rouge !\n";
+        echo "Des donnÃ©es manquantes ou incomplÃ¨tes ont Ã©tÃ© dÃ©tectÃ©es dans <b>$max_lignes_pb lignes</b> : Elles apparaissent dans le tableau ci-dessus en rouge !\n";
         if ($affiche != 'partiel') {
-            echo "<p>--> Pour n'afficher que les lignes ou des problèmes ont été détectés, cliquez sur le bouton \"Affichage partiel\" :</p>\n";
+            echo "<p>--> Pour n'afficher que les lignes ou des problÃ¨mes ont Ã©tÃ© dÃ©tectÃ©s, cliquez sur le bouton \"Affichage partiel\" :</p>\n";
             echo "<form enctype='multipart/form-data' action='step3.php' method='post'>\n";
             echo "<input type='hidden' name='is_posted' value='no' />\n";
             echo "<input type='hidden' name='affiche' value='partiel' />\n";
@@ -519,13 +519,13 @@ else {
     }
 
     if (getSettingValue("use_ent") == 'y') {
-    	// Dans le cas d'un ent on renvoie l'admin pour qu'il vérifie tous les logins de la forme erreur_xx
+    	// Dans le cas d'un ent on renvoie l'admin pour qu'il vÃ©rifie tous les logins de la forme erreur_xx
     	echo '
-			<p>--&gt; Avant d\'enregistrer, vous allez vérifier tous les logins potentiellement erronés.</p>
-			<p><a href="../mod_ent/gestion_ent_eleves.php">Vérifier les logins</a></p>
+			<p>--&gt; Avant d\'enregistrer, vous allez vÃ©rifier tous les logins potentiellement erronÃ©s.</p>
+			<p><a href="../mod_ent/gestion_ent_eleves.php">VÃ©rifier les logins</a></p>
 		';
     } else {
-	    echo "<p>--&gt; Pour Enregistrer toutes les données dans la base <b>GEPI</b>, cliquez sur le bouton \"Enregistrer\" !</p>\n";
+	    echo "<p>--&gt; Pour Enregistrer toutes les donnÃ©es dans la base <b>GEPI</b>, cliquez sur le bouton \"Enregistrer\" !</p>\n";
     	echo "<form enctype='multipart/form-data' action='step3.php' method='post'>\n";
 
 	    //echo "<p>Si vous disposez d'un fichier ELEVE_ETABLISSEMENT.CSV, vous pouvez le fournir maintenant:<br />";

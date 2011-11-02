@@ -42,8 +42,8 @@ if (!checkAccess()) {
 }
 
 if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
-	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
-	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	$mess=rawurlencode("Vous tentez d accÃ©der au module Discipline qui est dÃ©sactivÃ© !");
+	tentative_intrusion(1, "Tentative d'accÃ¨s au module Discipline qui est dÃ©sactivÃ©.");
 	header("Location: ../accueil.php?msg=$mess");
 	die();
 }
@@ -51,7 +51,7 @@ if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 require('sanctions_func_lib.php');
 
 
-// Pour choisir de n'afficher que les incidents de la date indiquée:
+// Pour choisir de n'afficher que les incidents de la date indiquÃ©e:
 $date_incident=isset($_POST['date_incident']) ? $_POST['date_incident'] : (isset($_GET['date_incident']) ? $_GET['date_incident'] : "");
 $heure_incident=isset($_POST['heure_incident']) ? $_POST['heure_incident'] : (isset($_GET['heure_incident']) ? $_GET['heure_incident'] : "");
 $nature_incident=isset($_POST['nature_incident']) ? $_POST['nature_incident'] : (isset($_GET['nature_incident']) ? $_GET['nature_incident'] : "");
@@ -88,7 +88,7 @@ $msg="";
 				//echo "$sql<br />";
 				$res=mysql_query($sql);
 				if(!$res) {
-					$msg.="ERREUR lors de la mise à jour de l'état de l'incident n°".$form_id_incident[$i].".<br />\n";
+					$msg.="ERREUR lors de la mise Ã  jour de l'Ã©tat de l'incident nÂ°".$form_id_incident[$i].".<br />\n";
 				}
 			}
 		}
@@ -119,21 +119,21 @@ if((isset($_POST['suppr_incident']))&&($_SESSION['statut']!='professeur')) {
 					$sql="DELETE FROM s_retenues WHERE id_sanction='$lig->id_sanction';";
 					$res=mysql_query($sql);
 					if(!$res) {
-						$msg.="ERREUR lors de la suppression de retenues attachées à l'incident ".$suppr_incident[$i].".<br />\n";
+						$msg.="ERREUR lors de la suppression de retenues attachÃ©es Ã  l'incident ".$suppr_incident[$i].".<br />\n";
 						$temoin_erreur="y";
 					}
 
 					$sql="DELETE FROM s_exclusions WHERE id_sanction='$lig->id_sanction';";
 					$res=mysql_query($sql);
 					if(!$res) {
-						$msg.="ERREUR lors de la suppression d'excluions attachées à l'incident ".$suppr_incident[$i].".<br />\n";
+						$msg.="ERREUR lors de la suppression d'excluions attachÃ©es Ã  l'incident ".$suppr_incident[$i].".<br />\n";
 						$temoin_erreur="y";
 					}
 
 					$sql="DELETE FROM s_travail WHERE id_sanction='$lig->id_sanction';";
 					$res=mysql_query($sql);
 					if(!$res) {
-						$msg.="ERREUR lors de la suppression de travaux attachés à l'incident ".$suppr_incident[$i].".<br />\n";
+						$msg.="ERREUR lors de la suppression de travaux attachÃ©s Ã  l'incident ".$suppr_incident[$i].".<br />\n";
 						$temoin_erreur="y";
 					}
 				}
@@ -142,7 +142,7 @@ if((isset($_POST['suppr_incident']))&&($_SESSION['statut']!='professeur')) {
 					$sql="DELETE FROM s_sanctions s WHERE s.id_incident='$suppr_incident[$i]';";
 					$res=mysql_query($sql);
 					if(!$res) {
-						$msg.="ERREUR lors de la suppression de la sanction associée à l'incident ".$suppr_incident[$i].".<br />\n";
+						$msg.="ERREUR lors de la suppression de la sanction associÃ©e Ã  l'incident ".$suppr_incident[$i].".<br />\n";
 						$temoin_erreur="y";
 					}
 				}
@@ -170,7 +170,7 @@ require_once("../lib/header.inc");
 //echo "\$gepiPath=$gepiPath<br />";
 //debug_var();
 
-echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'index</a>\n";
+echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour Ã  l'index</a>\n";
 
 if(($_SESSION['statut']=='administrateur')||
 ($_SESSION['statut']=='cpe')||
@@ -178,7 +178,7 @@ if(($_SESSION['statut']=='administrateur')||
 	echo " | <a href='traiter_incident.php'>Incidents avec protagonistes</a>\n";
 }
 elseif ($_SESSION['statut']=='professeur') {
-	// Rechercher les incidents signalés par le prof ou ayant le prof pour protagoniste
+	// Rechercher les incidents signalÃ©s par le prof ou ayant le prof pour protagoniste
 	$sql="SELECT 1=1 FROM s_incidents WHERE declarant='".$_SESSION['login']."';";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
@@ -219,7 +219,7 @@ if(!isset($id_incident)) {
 	$sql2.=" LEFT JOIN s_protagonistes sp ON sp.id_incident=si.id_incident
 	where sp.id_incident is NULL;";
 
-	// A RETESTER AVEC DES PARENTHESES SUR (SELECT ...NULL) puis ORDER BY hors des parenthèses...
+	// A RETESTER AVEC DES PARENTHESES SUR (SELECT ...NULL) puis ORDER BY hors des parenthÃ¨ses...
 	*/
 
 	$sql.=" ORDER BY si.date DESC, si.heure DESC;";
@@ -229,36 +229,36 @@ if(!isset($id_incident)) {
 	//echo "$sql<br />";
 	if(mysql_num_rows($res)==0) {
 		// Cette partie ne sert quasiment jamais parce qu'on teste tous les incidents, pas seulement ceux sans protagonistes.
-		echo " | <a href='".$_SERVER['PHP_SELF']."' onclick='history.go(-1);return false;'> Retour à la page précédente</a>\n";
+		echo " | <a href='".$_SERVER['PHP_SELF']."' onclick='history.go(-1);return false;'> Retour Ã  la page prÃ©cÃ©dente</a>\n";
 		echo "</p>\n";
 
 		if($incidents_clos=="y") {
-			echo "<p>Aucun incident n'est encore déclaré";
+			echo "<p>Aucun incident n'est encore dÃ©clarÃ©";
 			if(($date_incident!="")||
 			($heure_incident!="")||
 			($nature_incident!="")||
-			($protagoniste_incident!="")) {echo " avec les critères choisis";}
+			($protagoniste_incident!="")) {echo " avec les critÃ¨res choisis";}
 			echo ".</p>\n";
 		}
 		else {
 			$res=mysql_query($sql2);
 			if(mysql_num_rows($res)==0) {
-				echo "<p>Aucun incident n'est encore déclaré";
+				echo "<p>Aucun incident n'est encore dÃ©clarÃ©";
 				if(($date_incident!="")||
 				($heure_incident!="")||
 				($nature_incident!="")||
-				($protagoniste_incident!="")) {echo " avec les critères choisis";}
+				($protagoniste_incident!="")) {echo " avec les critÃ¨res choisis";}
 				echo ".</p>\n";
 			}
 			else {
-				echo "<p>Aucun incident (<i>non clos</i>) n'est déclaré";
+				echo "<p>Aucun incident (<i>non clos</i>) n'est dÃ©clarÃ©";
 				if(($date_incident!="")||
 				($heure_incident!="")||
 				($nature_incident!="")||
-				($protagoniste_incident!="")) {echo " avec les critères choisis";}
+				($protagoniste_incident!="")) {echo " avec les critÃ¨res choisis";}
 				echo ".</p>\n";
 
-				echo "<p><a href='".$_SERVER['PHP_SELF']."?incidents_clos=y$chaine_criteres'>Afficher les incidents clos avec les mêmes critères</a>.</p>\n";
+				echo "<p><a href='".$_SERVER['PHP_SELF']."?incidents_clos=y$chaine_criteres'>Afficher les incidents clos avec les mÃªmes critÃ¨res</a>.</p>\n";
 			}
 		}
 		echo "<p><br /></p>\n";
@@ -267,7 +267,7 @@ if(!isset($id_incident)) {
 	}
 	echo "</p>\n";
 
-	echo "<p class='bold'>Choisir l'incident à traiter/consulter&nbsp;:</p>\n";
+	echo "<p class='bold'>Choisir l'incident Ã  traiter/consulter&nbsp;:</p>\n";
 	echo "<blockquote>\n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
@@ -346,7 +346,7 @@ if(!isset($id_incident)) {
 	//echo "<input type='submit' name='modifier_etat_incidents' value='Valider' />\n";
 	echo "clos ou non";
 	echo "</th>\n";
-	// Ne proposer le bouton pour supprimer qu'à certains utilisateurs?
+	// Ne proposer le bouton pour supprimer qu'Ã  certains utilisateurs?
 	//echo "<th><input type='submit' name='supprimer' value='Suppr' /></th>\n";
 
 	if(($_SESSION['statut']!='professeur')) {
@@ -378,16 +378,16 @@ if(!isset($id_incident)) {
 
 			echo "<td>\n";
 			if($lig->description=="") {
-				$texte="Aucun détail n'a été saisi.";
+				$texte="Aucun dÃ©tail n'a Ã©tÃ© saisi.";
 			}
 			else {
 				$texte=nl2br($lig->description);
 			}
 			$lieu_incident=get_lieu_from_id($lig->id_lieu);
 			if($lieu_incident!="") {$texte.="<br /><span style='font-size:x-small;'>Lieu&nbsp;:".$lieu_incident."</span>";}
-			$texte.="<br /><span style='font-size:x-small;'>Incident signalé par ".u_p_nom($lig->declarant)."</span>";
+			$texte.="<br /><span style='font-size:x-small;'>Incident signalÃ© par ".u_p_nom($lig->declarant)."</span>";
 
-			$tabdiv_infobulle[]=creer_div_infobulle("incident_".$lig->id_incident,"Incident n°$lig->id_incident","",$texte,"",30,0,'y','y','n','n');
+			$tabdiv_infobulle[]=creer_div_infobulle("incident_".$lig->id_incident,"Incident nÂ°$lig->id_incident","",$texte,"",30,0,'y','y','n','n');
 
 			//if($lig->etat=='clos') {
 			if(($lig->etat=='clos')||(($_SESSION['statut']=='professeur')&&($lig->declarant!=$_SESSION['login']))) {
@@ -395,12 +395,12 @@ if(!isset($id_incident)) {
 				//echo " onmouseover=\"delais_afficher_div('incident_".$lig->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
 				echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('incident_".$lig->id_incident."','y',20,20);\"";
 				echo " onclick='return false;'";
-				echo ">Détails</a>";
+				echo ">DÃ©tails</a>";
 			}
 			else {
 				//echo "<a href='saisie_incident.php?id_incident=$lig->id_incident&amp;step=2' onmouseover=\"delais_afficher_div('incident_".$lig->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
 				echo "<a href='saisie_incident.php?id_incident=$lig->id_incident&amp;step=2' onmouseover=\"cacher_toutes_les_infobulles();afficher_div('incident_".$lig->id_incident."','y',20,20);\"";
-				//echo ">Détails</a>";
+				//echo ">DÃ©tails</a>";
 				//echo " (*)";
 				echo ">Modifier</a>";
 			}
@@ -461,7 +461,7 @@ else {
 	//echo "$sql<br />";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
-		echo "<p>Incident n°$id_incident</p>\n";
+		echo "<p>Incident nÂ°$id_incident</p>\n";
 
 		echo "<p>Normalement, on n'arrive pas ici...</p>\n";
 	}

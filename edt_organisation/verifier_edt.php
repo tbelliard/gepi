@@ -44,14 +44,14 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 // ajout de la ligne suivante dans 'sql/data_gepi.sql' et 'utilitaires/updates/access_rights.inc.php'
-// INSERT INTO droits VALUES ('/edt_organisation/verifier_edt.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'vérifier la table edt_cours', '');
+// INSERT INTO droits VALUES ('/edt_organisation/verifier_edt.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'vÃ©rifier la table edt_cours', '');
 
 $sql="SELECT 1=1 FROM droits WHERE id='/edt_organisation/verifier_edt.php';";
 $res_test=mysql_query($sql);
 if (mysql_num_rows($res_test)==0) {
-	$sql="INSERT INTO droits VALUES ('/edt_organisation/verifier_edt.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F','vérifier la table edt_cours', '');";
+	$sql="INSERT INTO droits VALUES ('/edt_organisation/verifier_edt.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F','vÃ©rifier la table edt_cours', '');";
 	$res_insert=mysql_query($sql);
 }
 
@@ -60,7 +60,7 @@ if (!checkAccess()) {
     die();
 }
 if ($_SESSION["statut"] != "administrateur") {
-	Die('Vous devez demander à votre administrateur l\'autorisation de voir cette page.');
+	Die('Vous devez demander Ã  votre administrateur l\'autorisation de voir cette page.');
 }
 
 // ===== Initialisation des variables =====
@@ -114,13 +114,13 @@ if (isset($supprimer)) {
 }
 
 
-// CSS et js particulier à l'EdT
+// CSS et js particulier Ã  l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 
-//++++++++++ l'entête de Gepi +++++
+//++++++++++ l'entÃªte de Gepi +++++
 require_once("../lib/header.inc");
-//++++++++++ fin entête +++++++++++
+//++++++++++ fin entÃªte +++++++++++
 //++++++++++ le menu EdT ++++++++++
 require_once("./menu.inc.php");
 //++++++++++ fin du menu ++++++++++
@@ -164,12 +164,12 @@ if (!strstr($ua, "MSIE 6.0")) {
         echo '<p style="text-align:center;font-size:1.2em;border-bottom:1px solid black;"><strong>Test 1</strong></p>';
         echo "<p style=\"text-align:center;\">".mysql_num_rows($req_profs)." enseignant(s) inscrit(s) dans les emplois du temps n'existe(nt) plus dans GEPI</p>";
         echo '<p style="text-align:center;padding:8px;">
-               <a style="background-color:#FFFABD;border:2px solid black;padding:2px;" href="./verifier_edt.php?supprimer=suppression_profs'.add_token_in_url().'">Lancer la procédure de nettoyage</a>
+               <a style="background-color:#FFFABD;border:2px solid black;padding:2px;" href="./verifier_edt.php?supprimer=suppression_profs'.add_token_in_url().'">Lancer la procÃ©dure de nettoyage</a>
             </p>';
     }
     else {
         echo '<p style="text-align:center;font-size:1.2em;border-bottom:1px solid black;"><strong>Test 1</strong></p>';
-        echo '<p style="text-align:center;">Il y a concordance parfaite entre enseignants enregistrés sur GEPI et ceux enregistrés dans les emplois du temps</p>';
+        echo '<p style="text-align:center;">Il y a concordance parfaite entre enseignants enregistrÃ©s sur GEPI et ceux enregistrÃ©s dans les emplois du temps</p>';
 
     }
 $ua = getenv("HTTP_USER_AGENT");
@@ -204,12 +204,12 @@ if (!strstr($ua, "MSIE 6.0")) {
         //    echo "<p style=\"text-align:center;\">".$rep['id_groupe']."<p>";
         //}
         echo '<p style="text-align:center;padding:8px;">
-	           <a style="background-color:#FFFABD;border:2px solid black;padding:2px;" href="./verifier_edt.php?supprimer=suppression_groupes'.add_token_in_url().'">Lancer la procédure de nettoyage</a>
+	           <a style="background-color:#FFFABD;border:2px solid black;padding:2px;" href="./verifier_edt.php?supprimer=suppression_groupes'.add_token_in_url().'">Lancer la procÃ©dure de nettoyage</a>
             </p>';
     }
     else {
         echo '<p style="text-align:center;font-size:1.2em;border-bottom:1px solid black;"><strong>Test 2</strong></p>';
-        echo '<p style="text-align:center;">Il y a concordance parfaite entre enseignements enregistrés sur GEPI et ceux enregistrés dans les emplois du temps</p>';
+        echo '<p style="text-align:center;">Il y a concordance parfaite entre enseignements enregistrÃ©s sur GEPI et ceux enregistrÃ©s dans les emplois du temps</p>';
 
     }
 $ua = getenv("HTTP_USER_AGENT");
@@ -240,12 +240,12 @@ if (!strstr($ua, "MSIE 6.0")) {
         echo '<p style="text-align:center;font-size:1.2em;border-bottom:1px solid black;"><strong>Test 3</strong></p>';
 	    echo "<p style=\"text-align:center;\">".mysql_num_rows($req_groupes)." aid(s) inscrit(s) dans les emplois du temps n'existe(nt) plus dans GEPI</p>";
         echo '<p style="text-align:center;padding:8px;">
-	           <a style="background-color:#FFFABD;border:2px solid black;padding:2px;" href="./verifier_edt.php?supprimer=suppression_groupes'.add_token_in_url().'">Lancer la procédure de nettoyage</a>
+	           <a style="background-color:#FFFABD;border:2px solid black;padding:2px;" href="./verifier_edt.php?supprimer=suppression_groupes'.add_token_in_url().'">Lancer la procÃ©dure de nettoyage</a>
             </p>';
     }
     else {
         echo '<p style="text-align:center;font-size:1.2em;border-bottom:1px solid black;"><strong>Test 3</strong></p>';
-        echo '<p style="text-align:center;">Il y a concordance parfaite entre aids enregistrés sur GEPI et ceux enregistrés dans les emplois du temps</p>';
+        echo '<p style="text-align:center;">Il y a concordance parfaite entre aids enregistrÃ©s sur GEPI et ceux enregistrÃ©s dans les emplois du temps</p>';
 
     }
 $ua = getenv("HTTP_USER_AGENT");
@@ -273,7 +273,7 @@ if (!strstr($ua, "MSIE 6.0")) {
 	$req_duree_0=mysql_query("SELECT * FROM edt_cours WHERE duree=0 ORDER BY login_prof, jour_semaine;");
     if (mysql_num_rows($req_duree_0) != 0) {
         echo '<p style="text-align:center;font-size:1.2em;border-bottom:1px solid black;"><strong>Test 4</strong></p>';
-	    echo "<p style=\"text-align:center;\">".mysql_num_rows($req_duree_0)." enseignement(s) a(ont) une durée nulle.<br />Cela peut causer de grosses perturbations sur l'affichage de l'EDT des professeurs concernés.</p>\n";
+	    echo "<p style=\"text-align:center;\">".mysql_num_rows($req_duree_0)." enseignement(s) a(ont) une durÃ©e nulle.<br />Cela peut causer de grosses perturbations sur l'affichage de l'EDT des professeurs concernÃ©s.</p>\n";
 
         echo '<p style="text-align:center;padding:8px;">
 	           <a style="background-color:#FFFABD;border:2px solid black;padding:2px;" href="./verifier_edt.php?supprimer=suppression_cours_duree_nulle'.add_token_in_url().'">Supprimer ces enseignements dans l\'EDT</a>
@@ -286,7 +286,7 @@ if (!strstr($ua, "MSIE 6.0")) {
 		echo "<th>id_cours</th>\n";
 		echo "<th>Professeur</th>\n";
 		echo "<th>Jour</th>\n";
-		echo "<th>Heure début</th>\n";
+		echo "<th>Heure dÃ©but</th>\n";
 		echo "<th>Modifier</th>\n";
 		echo "<th> ou Supprimer</th>\n";
 		echo "</tr>\n";
@@ -311,7 +311,7 @@ if (!strstr($ua, "MSIE 6.0")) {
 			}
 			echo $tab_creneaux[$lig->id_definie_periode];
 			echo "</td>\n";
-			// Il manque le period_id... mais on ne peut pas avoir le même id_cours avec plusieurs period_id
+			// Il manque le period_id... mais on ne peut pas avoir le mÃªme id_cours avec plusieurs period_id
 			//echo "<td><a href='modifier_cours_popup.php?period_id="."&id_cours=$lig->id_cours&type_edt=prof&identite=$lig->login_prof' target='_blank'><img src='../images/icons/saisie.png' width='16' height='16' title='Editer' alt='Editer' /></a></td>\n";
 			echo "<td><a href='modifier_cours.php?period_id="."&id_cours=$lig->id_cours&type_edt=prof&identite=$lig->login_prof' target='_blank'><img src='../images/icons/saisie.png' width='16' height='16' title='Editer' alt='Editer' /></a></td>\n";
 			echo "<td><a href='effacer_cours.php?period_id="."&supprimer_cours=$lig->id_cours&type_edt=prof&identite=$lig->login_prof' target='_blank'><img src='../images/icons/delete.png' width='16' height='16' title='Supprimer' alt='Supprimer' /></a></td>\n";
@@ -322,7 +322,7 @@ if (!strstr($ua, "MSIE 6.0")) {
     }
     else {
         echo '<p style="text-align:center;font-size:1.2em;border-bottom:1px solid black;"><strong>Test 4</strong></p>';
-        echo '<p style="text-align:center;">Aucun enseignement n\'a de durée nulle.</p>';
+        echo '<p style="text-align:center;">Aucun enseignement n\'a de durÃ©e nulle.</p>';
 
     }
 $ua = getenv("HTTP_USER_AGENT");

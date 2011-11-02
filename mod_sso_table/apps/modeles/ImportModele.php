@@ -20,7 +20,7 @@
 * along with GEPI; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -247,7 +247,7 @@ class ImportModele {
    */
 
   /**
-   * Création de la table sso_table_import
+   * CrÃ©ation de la table sso_table_import
    */
   public function cree_table_import() {
     $this->req = "DROP TABLE IF EXISTS `sso_table_import`;";
@@ -259,7 +259,7 @@ class ImportModele {
 					`statut` varchar(100) COMMENT 'statut dans ENT',
 					`prenom` varchar(50) COMMENT 'prenom dans ENT',
 					`nom` varchar(50) COMMENT 'nom dans ENT',
-					`login` varchar(50) COMMENT 'login de Gépi',
+					`login` varchar(50) COMMENT 'login de GÃ©pi',
 					`jointure` varchar(50) COMMENT 'jointure ENT annuaire',
 					`pere` varchar(50) COMMENT 'uid pere dans ENT',
 					`mere` varchar(50) COMMENT 'uid mere',
@@ -268,7 +268,7 @@ class ImportModele {
 					PRIMARY KEY  (`id`)
 					) ENGINE=MyISAM AUTO_INCREMENT=4
 					DEFAULT CHARSET=latin1
-					COMMENT='Liste des utilisateurs présents dans l''ENT';";
+					COMMENT='Liste des utilisateurs prÃ©sents dans l''ENT';";
     $this->res = mysql_query($this->req) or die(mysql_error());
   }
 
@@ -292,10 +292,10 @@ class ImportModele {
   }
 
   /**
-   * Recherche un login dans utilisateurs à partir d'une ligne du CSV
+   * Recherche un login dans utilisateurs Ã  partir d'une ligne du CSV
    * @param array $importENT Ligne du fichier CSV
-   * @param text $statut statut à prendre en compte (tous par défaut)
-   * @param bool $recherche recherche ou rejette le statut (par défaut : recherche)
+   * @param text $statut statut Ã  prendre en compte (tous par dÃ©faut)
+   * @param bool $recherche recherche ou rejette le statut (par dÃ©faut : recherche)
    */
   public function cherche_login($importENT, $statut = '%', $recherche = TRUE) {
     if ($recherche == TRUE) {
@@ -311,7 +311,7 @@ class ImportModele {
 
   /**
    * Supprime les enregistrement sans classe en fonction d'un statut
-   * @param text $statut statut à prendre en compte
+   * @param text $statut statut Ã  prendre en compte
    */
   public function supprime_sans_classe($statut) {
     $this->req = "DELETE FROM `sso_table_import` WHERE `statut` = '" . $statut . "' AND `classe`=''";
@@ -328,9 +328,9 @@ class ImportModele {
   }
 
   /**
-   * Recherche si un utilisateur dans sso_table_import a le statut recherché
-   * @param text $uid uid de l'utilisateur testé
-   * @param text $statut statut à prendre en compte
+   * Recherche si un utilisateur dans sso_table_import a le statut recherchÃ©
+   * @param text $uid uid de l'utilisateur testÃ©
+   * @param text $statut statut Ã  prendre en compte
    */
   public function a_statut($uid, $statut) {
     $this->req = "SELECT 1=1 FROM `sso_table_import` WHERE `uid` = $uid `statut` = '" . $statut . "'";
@@ -345,8 +345,8 @@ class ImportModele {
 
   /**
    * Recherche si un utilisateur dans sso_table_import est responsable en cherchant son enfant
-   * @param array $ligne enregistrement de l'utilisateur cherché
-   * @return ressource mysql_query($this->req) nom, prenom, login, uid des élèves liés à l'utilisateur
+   * @param array $ligne enregistrement de l'utilisateur cherchÃ©
+   * @return ressource mysql_query($this->req) nom, prenom, login, uid des Ã©lÃ¨ves liÃ©s Ã  l'utilisateur
    */
   public function est_responsable($ligne) {
     $this->req = "SELECT `nom` nom, `prenom` prenom, `login` login, `uid` uid FROM `sso_table_import`
@@ -373,9 +373,9 @@ class ImportModele {
   }
 
   /**
-   * Recherche le login d'un utilisateur responsable en utilisant son enfant pour le retrouver dans Gépi (traitement des doublons)
+   * Recherche le login d'un utilisateur responsable en utilisant son enfant pour le retrouver dans GÃ©pi (traitement des doublons)
    * @param array $eleve issus de public function est_responsable($ligne)
-   * @param array $ligne enregistrement de l'utilisateur cherché
+   * @param array $ligne enregistrement de l'utilisateur cherchÃ©
    * @return ressource mysql_query($this->req) login du responsable
    */
   public function cherche_responsable($eleve, $ligne) {
@@ -391,7 +391,7 @@ class ImportModele {
 
   /**
    * Recherche si un utilisateur dans sso_table_import est eleve
-   * @param array $ligne enregistrement de l'utilisateur cherché
+   * @param array $ligne enregistrement de l'utilisateur cherchÃ©
    */
   public function est_eleve($ligne) {
     $this->req = "SELECT `nom` nom , `prenom` prenom , `login` login , `uid` uid FROM `sso_table_import`
@@ -405,8 +405,8 @@ class ImportModele {
   }
 
   /**
-   * Recherche le login d'un eleve a partir de son nom, de son prénom et du login de son responsable
-   * @param array $ligne enregistrement de l'utilisateur cherché
+   * Recherche le login d'un eleve a partir de son nom, de son prÃ©nom et du login de son responsable
+   * @param array $ligne enregistrement de l'utilisateur cherchÃ©
    * @param array $responsable issu de public function est_eleve($ligne)
    */
   public function cherche_eleve($responsable, $ligne) {
@@ -491,8 +491,8 @@ class ImportModele {
 
   /**
    * Efface un responsable en fonction de son nom, son prenom, son login
-   * @param array $ligne enregistrement de l'utilisateur cherché
-   * @param texte $lib_responsable libellé du statut dans l'ENT
+   * @param array $ligne enregistrement de l'utilisateur cherchÃ©
+   * @param texte $lib_responsable libellÃ© du statut dans l'ENT
    */
   public function efface_2ent_1gepi($ligne, $lib_responsable) {
     $this->req = "DELETE FROM `sso_table_import` WHERE `login` = '" . $ligne['login'] . "'
@@ -508,9 +508,9 @@ class ImportModele {
   }
 
   /**
-   * Tronque les prénoms au premier espace
-   * @param array $ligne enregistrement de l'utilisateur cherché
-   * @return texte  1er prénom des élèves en ayant plusieurs, $ligne[4] pour les autres
+   * Tronque les prÃ©noms au premier espace
+   * @param array $ligne enregistrement de l'utilisateur cherchÃ©
+   * @return texte  1er prÃ©nom des Ã©lÃ¨ves en ayant plusieurs, $ligne[4] pour les autres
    */
   private function traite_prenom($ligne) {
     if (($ligne[9] || $ligne[10] || $ligne[11] || $ligne[12] ) || (!$ligne[9] && !$ligne[10] && !$ligne[11] && !$ligne[12] && !$ligne[2] )) {
@@ -522,8 +522,8 @@ class ImportModele {
   }
 
   /**
-   * Recherche le login d'un eleve a partir de son nom, de son prénom et du login de son responsable
-   * @param texte $uid enregistrement de l'utilisateur cherché
+   * Recherche le login d'un eleve a partir de son nom, de son prÃ©nom et du login de son responsable
+   * @param texte $uid enregistrement de l'utilisateur cherchÃ©
    */
   public function del_by_uid($uid) {
     $this->req = "DELETE FROM `sso_table_import` WHERE `uid` = '" . $uid . "' ";
@@ -531,7 +531,7 @@ class ImportModele {
   }
 
   /**
-   * On récupère les utilisateurs de Gépi sans correspondance dans la table
+   * On rÃ©cupÃ¨re les utilisateurs de GÃ©pi sans correspondance dans la table
    */
   public function get_homonymes_sans_correspondance($nom) {
     $this->req = "SELECT * FROM `utilisateurs`  WHERE  nom='" . traitement_magic_quotes($nom) . "' AND NOT EXISTS

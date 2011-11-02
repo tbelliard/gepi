@@ -8,15 +8,15 @@ var d = document.getElementById(id);
 	}
 if (d) {d.style.display='block';}
 }
-//Utilisation de Prototype et de méthode toggle de Element qui permet de changer le display d'un id
+//Utilisation de Prototype et de mÃ©thode toggle de Element qui permet de changer le display d'un id
 function changerDisplayDiv(nomDiv) {
 	Element.toggle(nomDiv);
 }
 // ===================================================
 //
-//      Utiliser AJAX pour éviter des requêtes inutiles
+//      Utiliser AJAX pour Ã©viter des requÃªtes inutiles
 //      sur l'affichage des EDTs 
-//      utilisé dans vie_scolaire_absences.php
+//      utilisÃ© dans vie_scolaire_absences.php
 //
 // ===================================================
 
@@ -82,8 +82,8 @@ function AfficheEdtClasseDuJour(idClasse, nomDiv, niveau_arbo) {
 
 
 
-// Fonction qui permet de cocher / décocher tous les checkbox de l'élément dont le name = nouvelle_periode
-// pour le calendrier (création et modification des périodes pédagogiques)
+// Fonction qui permet de cocher / dÃ©cocher tous les checkbox de l'Ã©lÃ©ment dont le name = nouvelle_periode
+// pour le calendrier (crÃ©ation et modification des pÃ©riodes pÃ©dagogiques)
 function CocheCase(boul) {
 
 	nbelements = document.nouvelle_periode.elements.length;

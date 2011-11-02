@@ -5,11 +5,11 @@
 ?>
 
 <!-- ************************* -->
-<!-- Début du corps de la page -->
+<!-- DÃ©but du corps de la page -->
 <!-- ************************* -->
 
-<!-- Début bandeau -->
-<!-- Initialisation du bandeau à la bonne couleur -->
+<!-- DÃ©but bandeau -->
+<!-- Initialisation du bandeau Ã  la bonne couleur -->
 	<div id='bandeau' class="<?php echo $tbs_modif_bandeau.' '.$tbs_degrade_entete.' '.$tbs_modif_bandeau.'_'.$tbs_degrade_entete; ?>">
 	
 <a href="#contenu" class="invisible"> Aller au contenu </a>
@@ -18,7 +18,7 @@
 	<!-- User name, status, main matter, home, logout, account management -->
 
 <div class="bandeau_colonne">
-	<!-- Bouton rétrécir le bandeau -->
+	<!-- Bouton rÃ©trÃ©cir le bandeau -->
 		<a class='change_taille_gd' href="#" onclick="modifier_taille_bandeau();change_mode_header('y', '<?php echo $tbs_bouton_taille;?>');return false;">
 			<img src="<?php echo $tbs_bouton_taille;?>/images/up.png" alt='Cacher le bandeau' title='Cacher le bandeau' />
 		</a>
@@ -46,7 +46,7 @@
 	<!-- titre de la page -->	
 		<h1><?php echo $titre_page; ?></h1>
 		
-	<!-- Dernière connexion -->
+	<!-- DerniÃ¨re connexion -->
 		<!-- <p id='dern_connect'> -->
 		<?php
 			if ($tbs_last_connection!=""){
@@ -58,14 +58,14 @@
 			}
 		?>
 		
-	<!-- numéro de version	 -->
+	<!-- numÃ©ro de version	 -->
 		<p class="rouge">
 			<?php echo $tbs_version_gepi; ?>
 		</p>
 </div>
 
 <div class="bandeau_colonne" id="bd_colonne_droite">
-	<!-- Nom prénom -->
+	<!-- Nom prÃ©nom -->
 		<p id='bd_nom'>
 			<?php echo $tbs_nom_prenom; ?>
 		</p>
@@ -97,7 +97,7 @@
 			}
 		?>
 	
-	<!-- On vérifie si le module de mise à jour est activé -->
+	<!-- On vÃ©rifie si le module de mise Ã  jour est activÃ© -->
 		
 		<?php
 			if ($tbs_mise_a_jour !="") {
@@ -136,7 +136,7 @@
 		?>
 	</ol>
 		
-	<!-- sépare les 2 menus -->
+	<!-- sÃ©pare les 2 menus -->
 		<!-- <div class='spacer'> </div> -->
 	
 	<!-- menu contact	 -->
@@ -148,7 +148,7 @@
 					if ("$value[texte]"!="") {
 						echo "
 	<li class='ligne_deux_menu'>
-		<a href='$value[lien]' $value[onclick] title=\"Nouvelle fenêtre\">
+		<a href='$value[lien]' $value[onclick] title=\"Nouvelle fenÃªtre\">
 			$value[texte]
 		</a>
 	</li>
@@ -168,7 +168,7 @@
 
 	echo '<!--[if lt IE 7]>
 <script type=text/javascript>
-	// Fonction destinée à remplacer le "li:hover" pour IE 6
+	// Fonction destinÃ©e Ã  remplacer le "li:hover" pour IE 6
 	sfHover = function() {
 		var sfEls = document.getElementById("menu_barre").getElementsByTagName("li");
 		for (var i=0; i<sfEls.length; i++) {
@@ -217,7 +217,7 @@
 			echo ">\n";
 			//echo "<a href=\"$gepiPath/".$tab['lien']." ".insert_confirm_abandon()."\">".$tab['texte']."</a>\n";
 
-			// éventuellement le lien peut être vide
+			// Ã©ventuellement le lien peut Ãªtre vide
 			if ($tab['lien']=="") {
 				echo $tab['texte']."\n";
 			}
@@ -243,7 +243,7 @@
 			echo ">";
 			//echo "<a href=\"$gepiPath/".$tab['lien']."\" ".insert_confirm_abandon().">".$tab['texte']."</a>";
 
-			// éventuellement le lien peut être vide
+			// Ã©ventuellement le lien peut Ãªtre vide
 			if ($tab['lien']=="") {
 				echo $tab['texte']."\n";
 			}
@@ -286,7 +286,7 @@
 </div>
 <?php endif ?>
 
-<!-- menu scolarité -->
+<!-- menu scolaritÃ© -->
 <?php if (count($tbs_menu_scol)) : ?>
 <div id="menu_barre">
 	<div class="menu_barre_bottom"></div>

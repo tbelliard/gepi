@@ -27,7 +27,7 @@ $niveau_arbo = 1;
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
-// fonctions complémentaires et/ou librairies utiles
+// fonctions complÃ©mentaires et/ou librairies utiles
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -113,9 +113,9 @@ function tableau_php_tableau_html($tab) {
 
 /*
 # 0 : logout normal
-# 2 : logout renvoyé par la fonction checkAccess (problème gepiPath ou accès interdit)
-# 3 : logout lié à un timeout
-# 4 : logout lié à une nouvelle connexion sous un nouveau profil
+# 2 : logout renvoyÃ© par la fonction checkAccess (problÃ¨me gepiPath ou accÃ¨s interdit)
+# 3 : logout liÃ© Ã  un timeout
+# 4 : logout liÃ© Ã  une nouvelle connexion sous un nouveau profil
 */
 
 if(!isset($mode)) {
@@ -130,11 +130,11 @@ if(!isset($mode)) {
 
 	echo "<p>Choisissez&nbsp;:</p>\n";
 	echo "<ul>\n";
-	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=1'>Statistiques globales de connexions élèves et responsables</a></li>\n";
+	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=1'>Statistiques globales de connexions Ã©lÃ¨ves et responsables</a></li>\n";
 	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=2'>Statistiques des connexions parents d'une classe</a></li>\n";
 	echo "</ul>\n";
 
-	echo "<p style='color:red'>Faire une autre graphique avec les connexions élèves.</p>";
+	echo "<p style='color:red'>Faire une autre graphique avec les connexions Ã©lÃ¨ves.</p>";
 	echo "<p style='color:red'>Faire une autre graphique avec le nombre de connexions par semaine.</p>";
 }
 elseif($mode==1) {
@@ -143,22 +143,22 @@ elseif($mode==1) {
 	$sql="select START from log order by START ASC limit 1;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
-		// Toujours vrai si on est connecté pour consulter cette page
+		// Toujours vrai si on est connectÃ© pour consulter cette page
 		$date_premier_log=mysql_result($res, 0);
 		echo "<p>Les journaux de connexion remontent au ".formate_date($date_premier_log)."</p>";
 	}
 	
 	$begin_bookings=getSettingValue('begin_bookings');
 	$mysql_begin_bookings=strftime("%Y-%m-%d 00:00:00", $begin_bookings);
-	echo "<p>Les logs antérieurs à ".formate_date($mysql_begin_bookings)." ne seront pas pris en compte.</p>\n";
+	echo "<p>Les logs antÃ©rieurs Ã  ".formate_date($mysql_begin_bookings)." ne seront pas pris en compte.</p>\n";
 
 	$sql="SELECT DISTINCT l.login from log l, resp_pers rp where rp.login=l.login and autoclose>='0' AND autoclose<='3' AND START>='$mysql_begin_bookings';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<p>Aucun compte parent n'a encore essayé de (<em>ou réussi à</em>) se connecter.</p>\n";
+		echo "<p>Aucun compte parent n'a encore essayÃ© de (<em>ou rÃ©ussi Ã </em>) se connecter.</p>\n";
 	}
 	else {
-		echo "<p>".mysql_num_rows($res)." parent(s) a(ont) réussi à se connecter à ce jour.</p>\n";
+		echo "<p>".mysql_num_rows($res)." parent(s) a(ont) rÃ©ussi Ã  se connecter Ã  ce jour.</p>\n";
 	
 		$tab_parents_connectes_avec_succes=array();
 		while($lig=mysql_fetch_object($res)) {
@@ -166,15 +166,15 @@ elseif($mode==1) {
 		}
 	
 		// Mettre les pourcentages aussi
-		echo "<p>Nombre d'élèves et responsables connectés au moins une fois&nbsp;:</p>\n";
+		echo "<p>Nombre d'Ã©lÃ¨ves et responsables connectÃ©s au moins une fois&nbsp;:</p>\n";
 		echo "<table class='boireaus'>\n";
 		echo "<tr>\n";
 		echo "<th rowspan='2'>Classe</th>\n";
 		echo "<th rowspan='2'>Effectif</th>\n";
-		echo "<th colspan='2'>Elèves</th>\n";
+		echo "<th colspan='2'>ElÃ¨ves</th>\n";
 		echo "<th rowspan='2'>Parents</th>\n";
-		echo "<th colspan='2'>Parents d'enfants<br />différents</th>\n";
-		echo "<th rowspan='2'>Parents toujours<br />en échec de<br />mot de passe</th>\n";
+		echo "<th colspan='2'>Parents d'enfants<br />diffÃ©rents</th>\n";
+		echo "<th rowspan='2'>Parents toujours<br />en Ã©chec de<br />mot de passe</th>\n";
 		echo "</tr>\n";
 
 		echo "<tr>\n";
@@ -195,7 +195,7 @@ elseif($mode==1) {
 					$tab_ele[]=$lig->login;
 				}
 			}
-			$titre_infobulle="Elèves connectés au moins une fois\n";
+			$titre_infobulle="ElÃ¨ves connectÃ©s au moins une fois\n";
 			$texte_infobulle=tableau_php_tableau_html($tab_ele);
 			$tabdiv_infobulle[]=creer_div_infobulle('div_ele_'.$i,$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
 	
@@ -215,7 +215,7 @@ elseif($mode==1) {
 				print_r($tab_resp);
 			}
 			*/
-			$titre_infobulle="Parents connectés au moins une fois\n";
+			$titre_infobulle="Parents connectÃ©s au moins une fois\n";
 			$texte_infobulle="<div align='center'>".tableau_php_tableau_html($tab_resp)."</div>";
 			$tabdiv_infobulle[]=creer_div_infobulle('div_resp_'.$i,$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
 	
@@ -238,7 +238,7 @@ elseif($mode==1) {
 				print_r($tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes);
 			}
 			*/
-			$titre_infobulle="Parents en échec de connexion\n";
+			$titre_infobulle="Parents en Ã©chec de connexion\n";
 			$texte_infobulle=tableau_php_tableau_html($tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes);
 			$tabdiv_infobulle[]=creer_div_infobulle('div_resp_echec_'.$i,$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
 	
@@ -408,11 +408,11 @@ elseif($mode==2) {
 	
 	echo "<a href=\"#calend\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 	
-	echo "&nbsp;à la date&nbsp;: ";
+	echo "&nbsp;Ã  la date&nbsp;: ";
 	echo "<input type='text' name = 'display_date_fin' id = 'display_date_fin' size='10' value = \"".$display_date_fin."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
 	echo "<label for='choix_periode_dates' style='cursor: pointer;'><a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 	echo "<br />\n";
-	echo " (<i>Veillez à respecter le format jj/mm/aaaa</i>)\n";
+	echo " (<i>Veillez Ã  respecter le format jj/mm/aaaa</i>)\n";
 	echo "<input type='hidden' name='mode' value='2' />\n";
 	echo "<input type='submit' value='Valider' />\n";
 	echo "</fieldset>\n";
@@ -440,7 +440,7 @@ elseif($mode==2) {
 		//echo "$sql<br />";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			echo "<p>Aucun compte parent n'a encore essayé de (<em>ou réussi à</em>) se connecter.</p>\n";
+			echo "<p>Aucun compte parent n'a encore essayÃ© de (<em>ou rÃ©ussi Ã </em>) se connecter.</p>\n";
 		}
 		else {
 			$tab_connexions=array();
@@ -545,7 +545,7 @@ elseif($mode==2) {
 			echo "<script type='text/javascript'>
 	var texte_mois=new Array();
 	texte_mois[1]='Janvier';
-	texte_mois[2]='Février';
+	texte_mois[2]='FÃ©vrier';
 	texte_mois[3]='Mars';
 	texte_mois[4]='Avril';
 	texte_mois[5]='Mai';
@@ -555,7 +555,7 @@ elseif($mode==2) {
 	texte_mois[9]='Septembre';
 	texte_mois[10]='Octobre';
 	texte_mois[11]='Novembre';
-	texte_mois[12]='Décembre';
+	texte_mois[12]='DÃ©cembre';
 	
 	// Fonction de tracer de trait
 	function tracer_ligne(ctx,x1,y1,x2,y2)  {

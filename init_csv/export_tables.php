@@ -68,9 +68,9 @@ require_once("../lib/header.inc");
 //if(!isset($_GET['export'])) {
 if((!isset($_GET['export']))&&(!isset($_GET['nettoyer']))) {
 	echo "<p>Vous pouvez exporter le contenu actuel des tables au format CSV.<br />\n";
-	echo "Les champs des fichiers obtenus seront conformes à ce qui est requis pour une initialisation CSV.</p>\n";
+	echo "Les champs des fichiers obtenus seront conformes Ã  ce qui est requis pour une initialisation CSV.</p>\n";
 
-	echo "<p>Les fichiers ainsi obtenus peuvent permettre de préparer une nouvelle année, si peu de modifications sont requises.</p>\n";
+	echo "<p>Les fichiers ainsi obtenus peuvent permettre de prÃ©parer une nouvelle annÃ©e, si peu de modifications sont requises.</p>\n";
 
 	echo "<p><a href='".$_SERVER['PHP_SELF']."?export=y'>Exporter</a></p>\n";
 
@@ -79,7 +79,7 @@ if((!isset($_GET['export']))&&(!isset($_GET['nettoyer']))) {
 }
 
 if($_SESSION['user_temp_directory']!='y') {
-	echo "<p>ERREUR&nbsp;: Le dossier temporaire ne semble pas accessible.<br />Les fichiers CSV ne pourront pas être générés.</p>\n";
+	echo "<p>ERREUR&nbsp;: Le dossier temporaire ne semble pas accessible.<br />Les fichiers CSV ne pourront pas Ãªtre gÃ©nÃ©rÃ©s.</p>\n";
 
 	require("../lib/footer.inc.php");
 	die();
@@ -94,19 +94,19 @@ if(isset($_GET['nettoyer'])) {
 	for($i=0;$i<count($tab_fich);$i++) {
 		@unlink("../temp/$dirname/$tab_fich[$i]");
 	}
-	echo "<p>Terminé.</p>\n";
+	echo "<p>TerminÃ©.</p>\n";
 
 	require("../lib/footer.inc.php");
 	die();
 }
 
-echo "<p>Génération des fichiers CSV au format 'init_csv'&nbsp;:</p>\n";
+echo "<p>GÃ©nÃ©ration des fichiers CSV au format 'init_csv'&nbsp;:</p>\n";
 
-// Nom ; Prénom ; Date de naissance ; n° identifiant interne (étab) ; n° identifiant national ; Code établissement précédent ; Doublement (OUI | NON) ; Régime (INTERN | EXTERN | IN.EX. | DP DAN) ; Sexe (F ou M)
+// Nom ; PrÃ©nom ; Date de naissance ; nÂ° identifiant interne (Ã©tab) ; nÂ° identifiant national ; Code Ã©tablissement prÃ©cÃ©dent ; Doublement (OUI | NON) ; RÃ©gime (INTERN | EXTERN | IN.EX. | DP DAN) ; Sexe (F ou M)
 $sql="SELECT * FROM eleves e, j_eleves_regime jer WHERE jer.login=e.login ORDER BY e.nom, e.prenom;";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	echo "<p>Aucun élève n'a été trouvé.</p>\n";
+	echo "<p>Aucun Ã©lÃ¨ve n'a Ã©tÃ© trouvÃ©.</p>\n";
 }
 else {
 	$lignes="";
@@ -142,7 +142,7 @@ else {
 
 	$fich=fopen("../temp/".$dirname."/g_eleves.csv","w+");
 	if(!$fich) {
-		echo "<p>ERREUR&nbsp;: Le fichier g_eleves.csv n'a pas pu être généré dans le dossier temporaire.</p>\n";
+		echo "<p>ERREUR&nbsp;: Le fichier g_eleves.csv n'a pas pu Ãªtre gÃ©nÃ©rÃ© dans le dossier temporaire.</p>\n";
 	}
 	else {
 		fwrite($fich,$lignes);
@@ -152,11 +152,11 @@ else {
 	echo "<a href='../temp/".$dirname."/g_eleves.csv'>g_eleves.csv</a><br />\n";
 }
 
-//n° d'identifiant élève interne à l'établissement ; Nom du responsable ; Prénom du responsable ; Civilité ; Ligne 1 Adresse ; Ligne 2 Adresse ; Code postal ; Commune
+//nÂ° d'identifiant Ã©lÃ¨ve interne Ã  l'Ã©tablissement ; Nom du responsable ; PrÃ©nom du responsable ; CivilitÃ© ; Ligne 1 Adresse ; Ligne 2 Adresse ; Code postal ; Commune
 $sql="SELECT r.*, rp.*, ra.*, e.elenoet FROM eleves e, responsables2 r, resp_pers rp, resp_adr ra WHERE r.pers_id=rp.pers_id AND rp.adr_id=ra.adr_id AND r.ele_id=e.ele_id AND r.resp_legal!='0' ORDER BY rp.nom, rp.prenom;";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	echo "<p>Aucun responsable n'a été trouvé.</p>\n";
+	echo "<p>Aucun responsable n'a Ã©tÃ© trouvÃ©.</p>\n";
 }
 else {
 	$lignes="";
@@ -167,7 +167,7 @@ else {
 
 	$fich=fopen("../temp/".$dirname."/g_responsables.csv","w+");
 	if(!$fich) {
-		echo "<p>ERREUR&nbsp;: Le fichier g_responsables.csv n'a pas pu être généré dans le dossier temporaire.</p>\n";
+		echo "<p>ERREUR&nbsp;: Le fichier g_responsables.csv n'a pas pu Ãªtre gÃ©nÃ©rÃ© dans le dossier temporaire.</p>\n";
 	}
 	else {
 		fwrite($fich,$lignes);
@@ -177,11 +177,11 @@ else {
 	echo "<a href='../temp/".$dirname."/g_responsables.csv'>g_responsables.csv</a><br />\n";
 }
 
-//Nom court matière ; Nom long matière
+//Nom court matiÃ¨re ; Nom long matiÃ¨re
 $sql="SELECT matiere, nom_complet FROM matieres;";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	echo "<p>Aucune matière n'a été trouvée.</p>\n";
+	echo "<p>Aucune matiÃ¨re n'a Ã©tÃ© trouvÃ©e.</p>\n";
 }
 else {
 	$lignes="";
@@ -192,7 +192,7 @@ else {
 
 	$fich=fopen("../temp/".$dirname."/g_disciplines.csv","w+");
 	if(!$fich) {
-		echo "<p>ERREUR&nbsp;: Le fichier g_disciplines.csv n'a pas pu être généré dans le dossier temporaire.</p>\n";
+		echo "<p>ERREUR&nbsp;: Le fichier g_disciplines.csv n'a pas pu Ãªtre gÃ©nÃ©rÃ© dans le dossier temporaire.</p>\n";
 	}
 	else {
 		fwrite($fich,$lignes);
@@ -202,11 +202,11 @@ else {
 	echo "<a href='../temp/".$dirname."/g_disciplines.csv'>g_disciplines.csv</a><br />\n";
 }
 
-//Nom ; Prénom ; Civilité ; Adresse e-mail
+//Nom ; PrÃ©nom ; CivilitÃ© ; Adresse e-mail
 $sql="SELECT * FROM utilisateurs WHERE statut='professeur' ORDER BY nom, prenom;";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	echo "<p>Aucun professeur n'a été trouvé.</p>\n";
+	echo "<p>Aucun professeur n'a Ã©tÃ© trouvÃ©.</p>\n";
 }
 else {
 	$lignes="";
@@ -217,7 +217,7 @@ else {
 
 	$fich=fopen("../temp/".$dirname."/g_professeurs.csv","w+");
 	if(!$fich) {
-		echo "<p>ERREUR&nbsp;: Le fichier g_professeurs.csv n'a pas pu être généré dans le dossier temporaire.</p>\n";
+		echo "<p>ERREUR&nbsp;: Le fichier g_professeurs.csv n'a pas pu Ãªtre gÃ©nÃ©rÃ© dans le dossier temporaire.</p>\n";
 	}
 	else {
 		fwrite($fich,$lignes);
@@ -227,12 +227,12 @@ else {
 	echo "<a href='../temp/".$dirname."/g_professeurs.csv'>g_professeurs.csv</a><br />\n";
 }
 
-//n° d'identifiant élève interne à l'établissement ; Identifiant court de la classe 
+//nÂ° d'identifiant Ã©lÃ¨ve interne Ã  l'Ã©tablissement ; Identifiant court de la classe 
 $tab_ele_clas=array();
 $sql="SELECT DISTINCT e.elenoet, c.classe FROM eleves e, j_eleves_classes jec, classes c WHERE jec.login=e.login AND c.id=jec.id_classe ORDER BY c.classe,e.nom,e.prenom;";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	echo "<p>Aucune association élève/classe n'a été trouvée.</p>\n";
+	echo "<p>Aucune association Ã©lÃ¨ve/classe n'a Ã©tÃ© trouvÃ©e.</p>\n";
 }
 else {
 	$lignes="";
@@ -245,7 +245,7 @@ else {
 
 	$fich=fopen("../temp/".$dirname."/g_eleves_classes.csv","w+");
 	if(!$fich) {
-		echo "<p>ERREUR&nbsp;: Le fichier g_eleves_classes.csv n'a pas pu être généré dans le dossier temporaire.</p>\n";
+		echo "<p>ERREUR&nbsp;: Le fichier g_eleves_classes.csv n'a pas pu Ãªtre gÃ©nÃ©rÃ© dans le dossier temporaire.</p>\n";
 	}
 	else {
 		fwrite($fich,$lignes);
@@ -255,11 +255,11 @@ else {
 	echo "<a href='../temp/".$dirname."/g_eleves_classes.csv'>g_eleves_classes.csv</a><br />\n";
 }
 
-//Login du professeur ; Nom court de la matière ; Le ou les identifiants de classe (séparés par des !) ; Le type de cours (CG (= cours général) | OPT (= option))
+//Login du professeur ; Nom court de la matiÃ¨re ; Le ou les identifiants de classe (sÃ©parÃ©s par des !) ; Le type de cours (CG (= cours gÃ©nÃ©ral) | OPT (= option))
 $sql="SELECT * FROM utilisateurs WHERE statut='professeur' ORDER BY nom, prenom;";
 $res_prof=mysql_query($sql);
 if(mysql_num_rows($res_prof)==0) {
-	echo "<p>Aucun professeur n'a été trouvé.</p>\n";
+	echo "<p>Aucun professeur n'a Ã©tÃ© trouvÃ©.</p>\n";
 }
 else {
 	$lignes="";
@@ -294,13 +294,13 @@ else {
 
 					$lignes.="$lig_prof->login;$lig_grp->id_matiere;$classes;";
 
-					// Est-ce un cours général? ou une option?
+					// Est-ce un cours gÃ©nÃ©ral? ou une option?
 					if($cpt_classes>1) {
 						$lignes.="OPT;";
 						$tab_clas_opt["$first_classe"][]=$lig_grp->id_matiere;
 					}
 					else {
-						// Tous les élèves de la classe suivent-ils l'enseignement?
+						// Tous les Ã©lÃ¨ves de la classe suivent-ils l'enseignement?
 						$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$lig_grp->id_groupe';";
 						$test1=mysql_query($sql);
 
@@ -323,7 +323,7 @@ else {
 
 	$fich=fopen("../temp/".$dirname."/g_prof_disc_classes.csv","w+");
 	if(!$fich) {
-		echo "<p>ERREUR&nbsp;: Le fichier g_prof_disc_classes.csv n'a pas pu être généré dans le dossier temporaire.</p>\n";
+		echo "<p>ERREUR&nbsp;: Le fichier g_prof_disc_classes.csv n'a pas pu Ãªtre gÃ©nÃ©rÃ© dans le dossier temporaire.</p>\n";
 	}
 	else {
 		fwrite($fich,$lignes);
@@ -333,11 +333,11 @@ else {
 	echo "<a href='../temp/".$dirname."/g_prof_disc_classes.csv'>g_prof_disc_classes.csv</a><br />\n";
 }
 
-//n° d'identifiant élève interne à l'établissement ; Identifiants des matières suivies en option, séparés par des !
+//nÂ° d'identifiant Ã©lÃ¨ve interne Ã  l'Ã©tablissement ; Identifiants des matiÃ¨res suivies en option, sÃ©parÃ©s par des !
 $sql="SELECT e.elenoet, e.login FROM eleves e ORDER BY e.nom,e.prenom;";
 $res_ele=mysql_query($sql);
 if(mysql_num_rows($res_ele)==0) {
-	echo "<p>Aucun élève n'a été trouvé.</p>\n";
+	echo "<p>Aucun Ã©lÃ¨ve n'a Ã©tÃ© trouvÃ©.</p>\n";
 }
 else {
 	$lignes="";
@@ -372,7 +372,7 @@ else {
 
 	$fich=fopen("../temp/".$dirname."/g_eleves_options.csv","w+");
 	if(!$fich) {
-		echo "<p>ERREUR&nbsp;: Le fichier g_eleves_options.csv n'a pas pu être généré dans le dossier temporaire.</p>\n";
+		echo "<p>ERREUR&nbsp;: Le fichier g_eleves_options.csv n'a pas pu Ãªtre gÃ©nÃ©rÃ© dans le dossier temporaire.</p>\n";
 	}
 	else {
 		fwrite($fich,$lignes);
@@ -383,7 +383,7 @@ else {
 
 }
 
-echo "<p>Les fichiers ont été générés dans un dossier temporaire.<br />Après récupération des fichiers, vous devriez faire le ménage dans ce dossier temporaire.<br /><a href='".$_SERVER['PHP_SELF']."?nettoyer=y'>Supprimer les fichiers générés</a></p>\n";
+echo "<p>Les fichiers ont Ã©tÃ© gÃ©nÃ©rÃ©s dans un dossier temporaire.<br />AprÃ¨s rÃ©cupÃ©ration des fichiers, vous devriez faire le mÃ©nage dans ce dossier temporaire.<br /><a href='".$_SERVER['PHP_SELF']."?nettoyer=y'>Supprimer les fichiers gÃ©nÃ©rÃ©s</a></p>\n";
 
 require("../lib/footer.inc.php");
 ?>

@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut creer des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Begin standart header
@@ -70,8 +70,8 @@ function get_classe_from_id($id){
 	$sql="SELECT * FROM classes WHERE id='$id'";
 	$resultat_classe=mysql_query($sql);
 	if(mysql_num_rows($resultat_classe)!=1){
-		//echo "<p>ERREUR! La classe d'identifiant '$id_classe[0]' n'a pas pu être identifiée.</p>";
-		echo "<p>ERREUR! La classe d'identifiant '$id' n'a pas pu être identifiée.</p>";
+		//echo "<p>ERREUR! La classe d'identifiant '$id_classe[0]' n'a pas pu Ãªtre identifiÃ©e.</p>";
+		echo "<p>ERREUR! La classe d'identifiant '$id' n'a pas pu Ãªtre identifiÃ©e.</p>";
 	}
 	else{
 		$ligne_classe=mysql_fetch_object($resultat_classe);
@@ -91,16 +91,16 @@ function get_classe_from_id($id){
 /*
 if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul")!='yes') OR ((getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")!='yes')))) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")!='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")!='yes')))
 {
-	die("Droits insuffisants pour effectuer cette opération");
+	die("Droits insuffisants pour effectuer cette opÃ©ration");
 }
 */
 if ((($_SESSION['statut']=='professeur') AND (getSettingValue("CommentairesTypesPP")=='yes') AND (mysql_num_rows(mysql_query("SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."'"))>0))
 	OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("CommentairesTypesScol")=='yes')))
 {
-	// Accès autorisé à la page
+	// AccÃ¨s autorisÃ© Ã  la page
 }
 else{
-	die("Droits insuffisants pour effectuer cette opération");
+	die("Droits insuffisants pour effectuer cette opÃ©ration");
 }
 
 ?>
@@ -119,18 +119,18 @@ else{
 	if($recopie!="oui"){
 
 		// =============================================
-		// Définition/modification des commentaires-type
+		// DÃ©finition/modification des commentaires-type
 		// =============================================
 
 		if(!isset($_POST['id_classe'])){
 
 			// Choix de la classe
 
-			//echo "<p>Pour quelle classe et quelles périodes souhaitez-vous définir/modifier les commentaires-type?</p>\n";
-			echo "<p>Pour quelle classe souhaitez-vous définir/modifier les commentaires-type?</p>\n";
+			//echo "<p>Pour quelle classe et quelles pÃ©riodes souhaitez-vous dÃ©finir/modifier les commentaires-type?</p>\n";
+			echo "<p>Pour quelle classe souhaitez-vous dÃ©finir/modifier les commentaires-type?</p>\n";
 			echo "<blockquote>\n";
 
-			// A REVOIR: Il ne faut lister que les classes appropriées.
+			// A REVOIR: Il ne faut lister que les classes appropriÃ©es.
 			//$sql="select distinct id,classe from classes order by classe";
 			// if ((($_SESSION['statut']=='professeur') AND (getSettingValue("CommentairesTypesPP")=='yes') AND (mysql_num_rows(mysql_query("SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."'"))>0))
 			// OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("CommentairesTypesScol")=='yes')))
@@ -154,7 +154,7 @@ else{
 
 			$resultat_classes=mysql_query($sql);
 			if(mysql_num_rows($resultat_classes)==0){
-				echo "<p>Aucune classe n'est encore définie...</p>\n</form>\n</body>\n</html>\n";
+				echo "<p>Aucune classe n'est encore dÃ©finie...</p>\n</form>\n</body>\n</html>\n";
 				exit();
 			}
 
@@ -215,22 +215,22 @@ else{
 			if(!isset($_POST['num_periode'])){
 
 				// ==================
-				// Choix des périodes
+				// Choix des pÃ©riodes
 				// ==================
 
-				// Récupération des variables:
+				// RÃ©cupÃ©ration des variables:
 				$id_classe=$_POST['id_classe'];
 				//echo "\$id_classe=$id_classe<br />\n";
 
 				echo "<h2>Saisie/Modification des commentaires-types pour la classe de ".get_classe_from_id($id_classe)."</h2>\n";
 
-				// Rappel des commentaires-type saisis pour cette classe sur toutes les périodes définies:
+				// Rappel des commentaires-type saisis pour cette classe sur toutes les pÃ©riodes dÃ©finies:
 
 				$sql="select * from periodes where id_classe='$id_classe' order by num_periode";
 				//echo "$sql<br />";
 				$resultat_num_periode=mysql_query($sql);
 				if(mysql_num_rows($resultat_num_periode)==0){
-					echo "Aucune période n'est encore définie pour cette classe...<br />\n";
+					echo "Aucune pÃ©riode n'est encore dÃ©finie pour cette classe...<br />\n";
 					echo "</body>\n</html>\n";
 					exit();
 				}
@@ -257,7 +257,7 @@ else{
 							echo "</ul>\n";
 						}
 						else{
-							echo "<p style='color:red;'>Aucun commentaire-type n'est saisi pour cette classe sur cette période.</p>\n";
+							echo "<p style='color:red;'>Aucun commentaire-type n'est saisi pour cette classe sur cette pÃ©riode.</p>\n";
 						}
 						echo "</li>\n";
 					}
@@ -266,17 +266,17 @@ else{
 
 
 
-				// Choix des périodes:
+				// Choix des pÃ©riodes:
 
-				echo "<p>Pour quelles périodes souhaitez-vous définir/modifier les commentaires-type?</p>\n";
+				echo "<p>Pour quelles pÃ©riodes souhaitez-vous dÃ©finir/modifier les commentaires-type?</p>\n";
 				//echo "<p>\n";
 				echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 
-				// Récupération du nom de la classe
+				// RÃ©cupÃ©ration du nom de la classe
 				$sql="select * from classes where id='$id_classe'";
 				$resultat_classe=mysql_query($sql);
 				if(mysql_num_rows($resultat_classe)==0){
-					echo "<p>L'identifiant de la classe semble erroné.</p>\n</form>\n</body>\n</html>\n";
+					echo "<p>L'identifiant de la classe semble erronÃ©.</p>\n</form>\n</body>\n</html>\n";
 					exit();
 				}
 				$ligne_classe=mysql_fetch_object($resultat_classe);
@@ -287,7 +287,7 @@ else{
 				//echo "$sql<br />";
 				$resultat_num_periode=mysql_query($sql);
 				if(mysql_num_rows($resultat_num_periode)==0){
-					echo "Aucune période n'est encore définie pour cette classe...<br />\n";
+					echo "Aucune pÃ©riode n'est encore dÃ©finie pour cette classe...<br />\n";
 				}
 				else{
 					/*
@@ -326,7 +326,7 @@ else{
 				// Saisie, modification, suppression, validation des commentaires
 				// ==============================================================
 
-				// Récupération des variables:
+				// RÃ©cupÃ©ration des variables:
 				$id_classe=$_POST['id_classe'];
 				$num_periode=$_POST['num_periode'];
 				$suppr=isset($_POST['suppr']) ? $_POST['suppr'] : "";
@@ -350,11 +350,11 @@ else{
 				//if(isset($_POST['commentaire_1'])){
 				if(isset($compteur_nb_commentaires)){
 				//if(isset($_POST['commentaire'])){
-					// Récupération des variables:
+					// RÃ©cupÃ©ration des variables:
 					//$commentaire=$_POST['commentaire'];
 					//$commentaire=html_entity_decode($_POST['commentaire']);
 
-					// Nettoyage des commentaires déjà saisis pour cette classe et ces périodes:
+					// Nettoyage des commentaires dÃ©jÃ  saisis pour cette classe et ces pÃ©riodes:
 					$sql="delete from commentaires_types where id_classe='$id_classe' and (num_periode='$num_periode[0]'";
 
 					for($i=1;$i<count($num_periode);$i++){
@@ -407,11 +407,11 @@ else{
 				*/
 
 
-				// Récupération du nom de la classe
+				// RÃ©cupÃ©ration du nom de la classe
 				$sql="select * from classes where id='$id_classe'";
 				$resultat_classe=mysql_query($sql);
 				if(mysql_num_rows($resultat_classe)==0){
-					echo "<p>L'identifiant de la classe semble erroné.</p>\n</form>\n</body>\n</html>\n";
+					echo "<p>L'identifiant de la classe semble erronÃ©.</p>\n</form>\n</body>\n</html>\n";
 					exit();
 				}
 				$ligne_classe=mysql_fetch_object($resultat_classe);
@@ -419,7 +419,7 @@ else{
 				//echo "<p><b>Classe de $classe_courante</b></p>\n";
 				echo "<h2>Classe de $classe_courante</h2>\n";
 
-				// Recherche des commentaires déjà saisis:
+				// Recherche des commentaires dÃ©jÃ  saisis:
 				//$sql="select * from commentaires_types where id_classe='$id_classe' and (num_periode='$num_periode[0]'";
 				//$sql="select distinct commentaire,id from commentaires_types where id_classe='$id_classe' and (num_periode='$num_periode[0]'";
 				$sql="select distinct commentaire,id from commentaires_types where id_classe='$id_classe' and (num_periode='$num_periode[0]'";
@@ -435,7 +435,7 @@ else{
 				$resultat_commentaires=mysql_query($sql);
 				$cpt=1;
 				if(mysql_num_rows($resultat_commentaires)!=0){
-					echo "<p>Voici la liste des commentaires-type existants pour la classe et la/les période(s) choisie(s):</p>\n";
+					echo "<p>Voici la liste des commentaires-type existants pour la classe et la/les pÃ©riode(s) choisie(s):</p>\n";
 					echo "<blockquote>\n";
 					echo "<table class='boireaus' border='1'>\n";
 					echo "<tr style='text-align:center;'>\n";
@@ -496,7 +496,7 @@ else{
 		if(!isset($_POST['id_classe'])){
 
 			// =========================
-			// Choix de la classe modèle
+			// Choix de la classe modÃ¨le
 			// =========================
 
 			echo "<p>De quelle classe souhaitez-vous recopier les commentaires-type?</p>\n";
@@ -504,7 +504,7 @@ else{
 			$sql="select distinct id,classe from classes order by classe";
 			$resultat_classes=mysql_query($sql);
 			if(mysql_num_rows($resultat_classes)==0){
-				echo "<p>Aucune classe n'est encore définie...</p>\n</form>\n</body>\n</html>\n";
+				echo "<p>Aucune classe n'est encore dÃ©finie...</p>\n</form>\n</body>\n</html>\n";
 				exit();
 			}
 
@@ -536,10 +536,10 @@ else{
 		else{
 
 			// ============================
-			// La classe-modèle est choisie
+			// La classe-modÃ¨le est choisie
 			// ============================
 
-			// Récupération des variables:
+			// RÃ©cupÃ©ration des variables:
 			$id_classe=$_POST['id_classe'];
 
 			echo "<h2>Recopie de commentaires-types</h2>\n";
@@ -574,31 +574,31 @@ else{
 
 			echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 
-			// Récupération du nom de la classe
+			// RÃ©cupÃ©ration du nom de la classe
 			$sql="select * from classes where id='$id_classe'";
 			$resultat_classe=mysql_query($sql);
 			if(mysql_num_rows($resultat_classe)==0){
-				echo "<p>L'identifiant de la classe semble erroné.</p>\n</form>\n</body>\n</html>\n";
+				echo "<p>L'identifiant de la classe semble erronÃ©.</p>\n</form>\n</body>\n</html>\n";
 				exit();
 			}
 			$ligne_classe=mysql_fetch_object($resultat_classe);
 			$classe_source="$ligne_classe->classe";
 
-			echo "<p><b>Classe modèle:</b> $classe_source</p>\n";
+			echo "<p><b>Classe modÃ¨le:</b> $classe_source</p>\n";
 
 			if(!isset($_POST['num_periode'])){
 
 				// =============================
-				// Choix des périodes à recopier
+				// Choix des pÃ©riodes Ã  recopier
 				// =============================
 
-				// Rappel des commentaires-type saisis pour cette classe sur toutes les périodes définies:
+				// Rappel des commentaires-type saisis pour cette classe sur toutes les pÃ©riodes dÃ©finies:
 
 				$sql="select * from periodes where id_classe='$id_classe' order by num_periode";
 				//echo "$sql<br />";
 				$resultat_num_periode=mysql_query($sql);
 				if(mysql_num_rows($resultat_num_periode)==0){
-					echo "Aucune période n'est encore définie pour cette classe...<br />\n";
+					echo "Aucune pÃ©riode n'est encore dÃ©finie pour cette classe...<br />\n";
 					echo "</body>\n</html>\n";
 					exit();
 				}
@@ -627,7 +627,7 @@ else{
 							echo "</ul>\n";
 						}
 						else{
-							echo "<p style='color:red;'>Aucun commentaire-type n'est saisi pour cette classe sur cette période.</p>\n";
+							echo "<p style='color:red;'>Aucun commentaire-type n'est saisi pour cette classe sur cette pÃ©riode.</p>\n";
 							//echo "</body>\n</html>\n";
 							//exit();
 						}
@@ -643,9 +643,9 @@ else{
 
 
 
-				// Choix des périodes:
+				// Choix des pÃ©riodes:
 
-				echo "<p>Pour quelles périodes souhaitez-vous recopier les commentaires-type?</p>\n";
+				echo "<p>Pour quelles pÃ©riodes souhaitez-vous recopier les commentaires-type?</p>\n";
 				//echo "<p>\n";
 				//echo "<input type='hidden' name='id_classe' value='$id_classe'>\n";
 
@@ -655,7 +655,7 @@ else{
 				//echo "$sql<br />";
 				$resultat_num_periode=mysql_query($sql);
 				if(mysql_num_rows($resultat_num_periode)==0){
-					echo "<p>Aucune période n'est encore définie pour cette classe...</p>\n";
+					echo "<p>Aucune pÃ©riode n'est encore dÃ©finie pour cette classe...</p>\n";
 				}
 				else{
 					/*
@@ -690,10 +690,10 @@ else{
 			}
 			else{
 				// =========================================================
-				// La classe-modèle et les périodes à recopier sont choisies
+				// La classe-modÃ¨le et les pÃ©riodes Ã  recopier sont choisies
 				// =========================================================
 
-				// Récupération des variables:
+				// RÃ©cupÃ©ration des variables:
 				$num_periode=$_POST['num_periode'];
 
 /*
@@ -727,7 +727,7 @@ else{
 					// Choix des classes vers lesquelles la recopie doit se faire
 					// ==========================================================
 
-					echo "<p>Voici les commentaires-type saisis pour cette classe et les périodes choisies:</p>\n";
+					echo "<p>Voici les commentaires-type saisis pour cette classe et les pÃ©riodes choisies:</p>\n";
 					echo "<ul>\n";
 					for($i=0;$i<count($num_periode);$i++){
 						echo "<li>\n";
@@ -773,7 +773,7 @@ else{
 					}
 					$resultat_classes=mysql_query($sql);
 					if(mysql_num_rows($resultat_classes)==0){
-						echo "<p>Aucune classe n'est encore définie...</p>\n</form>\n</body>\n</html>\n";
+						echo "<p>Aucune classe n'est encore dÃ©finie...</p>\n</form>\n</body>\n</html>\n";
 						exit();
 					}
 
@@ -800,7 +800,7 @@ function tout_decocher(){
 </script>
 ";
 					echo "<input type='button' name='toutcocher' value='Tout cocher' onClick='tout_cocher();' /> - \n";
-					echo "<input type='button' name='toutdecocher' value='Tout décocher' onClick='tout_decocher();' />\n";
+					echo "<input type='button' name='toutdecocher' value='Tout dÃ©cocher' onClick='tout_decocher();' />\n";
 					echo "<center><input type='submit' name='ok' value='Valider' /></center>\n";
 				}
 				else {
@@ -815,7 +815,7 @@ function tout_decocher(){
 					//echo count($num_periode)."<br />";
 					//flush();
 
-					// Nettoyage des commentaires déjà saisis pour ces classes et ces périodes:
+					// Nettoyage des commentaires dÃ©jÃ  saisis pour ces classes et ces pÃ©riodes:
 					for($i=0;$i<count($id_dest_classe);$i++){
 						$sql="delete from commentaires_types where id_classe='$id_dest_classe[$i]' and (num_periode='$num_periode[0]'";
 
@@ -838,7 +838,7 @@ function tout_decocher(){
 					echo "sql=$sql<br />";
 					$resultat_commentaires_source=mysql_query($sql);
 					if(mysql_num_rows($resultat_commentaires_source)==0){
-						echo "<p>C'est malin... il n'existe pas de commentaires-type pour la/les classe(s) et la/les période(s) choisie(s).<br />\nDe plus, les commentaires existants ont été supprimés...</p>\n";
+						echo "<p>C'est malin... il n'existe pas de commentaires-type pour la/les classe(s) et la/les pÃ©riode(s) choisie(s).<br />\nDe plus, les commentaires existants ont Ã©tÃ© supprimÃ©s...</p>\n";
 					}
 					else{
 						while($ligne_commentaires_source=mysql_fetch_object($resultat_commentaires_source)){
@@ -851,26 +851,26 @@ function tout_decocher(){
 
 
 					for($i=0;$i<count($num_periode);$i++){
-						// Nom de la période courante:
+						// Nom de la pÃ©riode courante:
 						$sql="select nom_periode from periodes where num_periode='$num_periode[$i]'";
 						$resultat_periode=mysql_query($sql);
 						$ligne_nom_periode=mysql_fetch_object($resultat_periode);
 						echo "<p><b>$ligne_nom_periode->nom_periode</b>:</p>\n";
 						echo "<blockquote>\n";
 
-						// Récupération des commentaires à insérer:
+						// RÃ©cupÃ©ration des commentaires Ã  insÃ©rer:
 						$sql="select commentaire from commentaires_types where id_classe='$id_classe' and num_periode='$num_periode[$i]' order by commentaire";
 						//echo "sql=$sql<br />";
 						$resultat_commentaires_source=mysql_query($sql);
 						if(mysql_num_rows($resultat_commentaires_source)==0){
-							echo "<p>C'est malin... il n'existe pas de commentaires-type pour la classe modèle et la période choisie.<br />\nDe plus, les commentaires existants pour les classes destination ont été supprimés...</p>\n";
+							echo "<p>C'est malin... il n'existe pas de commentaires-type pour la classe modÃ¨le et la pÃ©riode choisie.<br />\nDe plus, les commentaires existants pour les classes destination ont Ã©tÃ© supprimÃ©s...</p>\n";
 						}
 						else{
 							while($ligne_commentaires_source=mysql_fetch_object($resultat_commentaires_source)){
 								echo "<table>\n";
 								for($j=0;$j<count($id_dest_classe);$j++){
 
-									// Récupération du nom de la classe:
+									// RÃ©cupÃ©ration du nom de la classe:
 									$sql="select classe from classes where id='$id_dest_classe[$j]'";
 									$resultat_classe_dest=mysql_query($sql);
 									$ligne_classe_dest=mysql_fetch_object($resultat_classe_dest);
@@ -889,7 +889,7 @@ function tout_decocher(){
 								}
 								echo "</table>\n";
 							}
-							echo "<p>Insertions terminées pour la période.</p>\n";
+							echo "<p>Insertions terminÃ©es pour la pÃ©riode.</p>\n";
 						}
 						echo "</blockquote>\n";
 					}

@@ -70,9 +70,9 @@ if (!checkAccess()) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_module_trombinoscopes")!='y') {
-	die("Le module n'est pas activé.");
+	die("Le module n'est pas activÃ©.");
 }
 
 $id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : NULL;
@@ -92,12 +92,12 @@ x INT(11) NOT NULL ,
 y INT(11) NOT NULL);";
 $create_table=mysql_query($sql);
 
-// On ne va afficher l'entête que pour le choix du groupe, pas sur la partie réalisation du plan de classe
+// On ne va afficher l'entÃªte que pour le choix du groupe, pas sur la partie rÃ©alisation du plan de classe
 if(!isset($id_groupe)) {
 	//**************** EN-TETE *****************
 	$titre_page = "Plan de classe";
 	/**
-	* Entête de la page
+	* EntÃªte de la page
 	*/
 	require_once("../lib/header.inc");
 	//**************** FIN EN-TETE *************
@@ -106,11 +106,11 @@ if(!isset($id_groupe)) {
 	echo "<a href=\"trombinoscopes.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a> \n";
 	echo "</p>\n";
 
-	$tab_groups = get_groups_for_prof($_SESSION['login'],"classe puis matière");
+	$tab_groups = get_groups_for_prof($_SESSION['login'],"classe puis matiÃ¨re");
 
 	echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	echo add_token_field();
-	echo "<p>Choisissez l'enseignement pour lequel vous souhaitez réaliser le plan de classe&nbsp;:</p>\n";
+	echo "<p>Choisissez l'enseignement pour lequel vous souhaitez rÃ©aliser le plan de classe&nbsp;:</p>\n";
 
 	echo "<table class='boireaus'>\n";
 	echo "<tr>\n";
@@ -155,7 +155,7 @@ if(!isset($id_groupe)) {
 
 //======================================
 /**
-* Entête de la page
+* EntÃªte de la page
 */
 require_once("../lib/header.inc");
 //======================================
@@ -247,7 +247,7 @@ ORDER BY $grp_order_by;";
 
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	echo "<p>Erreur lors de la requête $sql</p>\n";
+	echo "<p>Erreur lors de la requÃªte $sql</p>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -255,7 +255,7 @@ if(mysql_num_rows($res)==0) {
 //================================
 $largeur_img_fond=$dim_photo+30;
 $hauteur_img_fond=$dim_photo+30;
-//Création de l'image:
+//CrÃ©ation de l'image:
 $img=imageCreate($largeur_img_fond,$hauteur_img_fond);
 //$img=imagecreatetruecolor($largeur_img_fond,$hauteur_img_fond);
 
@@ -312,7 +312,7 @@ while($lig=mysql_fetch_object($res)) {
 		else {$dif_ref=$hauteur;}
 		$ratio=$dif_ref/$dim_photo;
 
-		// définit largeur et hauteur pour la nouvelle image
+		// dÃ©finit largeur et hauteur pour la nouvelle image
 		$nouvelle_largeur = $largeur / $ratio;
 		$nouvelle_hauteur = $hauteur / $ratio;
 
@@ -417,7 +417,7 @@ if(mysql_num_rows($res_pos)>0) {
 
 echo "}
 
-// Il faut attendre que les div soient initialisés dans le footer.
+// Il faut attendre que les div soient initialisÃ©s dans le footer.
 setTimeout('positionner_les_photos()', 2000);
 </script>\n";
 

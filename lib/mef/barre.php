@@ -1,6 +1,6 @@
 <?php
 //affichage des boutons de mise en forme
-echo "<center><b><u>Mise en forme du texte : </u></b> Sélectionnez le texte puis cliquez sur la mise en forme désirée.</center><br>";
+echo "<center><b><u>Mise en forme du texte : </u></b> SÃ©lectionnez le texte puis cliquez sur la mise en forme dÃ©sirÃ©e.</center><br>";
 echo "<center>
 <a title=\"Gras\" href='#' onclick='insertTags(\" __ \",\" __ \",\"\")'><img alt=\"Gras\" src=\"../lib/mef/gras.png\" style=\"border: 0px solid ;\"></a> &nbsp;&nbsp;
 <a title=\"Italique\" href='#' onclick='insertTags(\" &#39;&#39; \",\" &#39;&#39; \",\"\")'><img alt=\"Italique\" src=\"../lib/mef/italique.png\" style=\"border: 0px solid ;\"></a> &nbsp;&nbsp;
@@ -16,11 +16,11 @@ echo "<center>
 <a title=\"Centrer\" href='#' onclick='insertTags(\" _c_ \",\" _c_ \",\"\")'><img alt=\"Centrer\" src=\"../lib/mef/centre.png\" style=\"border: 0px solid ;\"></a> &nbsp;&nbsp;
 
 <a title=\"Liste\" href='#' onclick='insertTags(\"* \",\"\",\"\")'><img alt=\"Liste\" src=\"../lib/mef/puce.png\" style=\"border: 0px solid ;\"></a> &nbsp;&nbsp;
-<a title=\"Liste numérotée\" href='#' onclick='insertTags(\"# \",\"\",\"\")'><img alt=\"Liste numérotée\" src=\"../lib/mef/numero.png\" style=\"border: 0px solid ;\"></a> &nbsp;&nbsp;
+<a title=\"Liste numÃ©rotÃ©e\" href='#' onclick='insertTags(\"# \",\"\",\"\")'><img alt=\"Liste numÃ©rotÃ©e\" src=\"../lib/mef/numero.png\" style=\"border: 0px solid ;\"></a> &nbsp;&nbsp;
 <a title=\"Ligne\" href='#' onclick='insertTags(\"----\",\"\",\"\")'><img alt=\"Ligne\" src=\"../lib/mef/ligne.png\" style=\"border: 0px solid ;\"></a></center><br>";
 echo "<center>
-<a title=\"Retour à la ligne\" href='#' onclick='insertTags(\"%%%\",\"\",\"\")'>Retour à la ligne</a> (à placer en fin de ligne) &nbsp;&nbsp; 
-TITRAGE (à placer juste devant le titre) :   <a title=\"Petit titre\" href='#' onclick='insertTags(\"!\",\"\",\"\")'>Petit titre</a> &nbsp;&nbsp;
+<a title=\"Retour Ã  la ligne\" href='#' onclick='insertTags(\"%%%\",\"\",\"\")'>Retour Ã  la ligne</a> (Ã  placer en fin de ligne) &nbsp;&nbsp; 
+TITRAGE (Ã  placer juste devant le titre) :   <a title=\"Petit titre\" href='#' onclick='insertTags(\"!\",\"\",\"\")'>Petit titre</a> &nbsp;&nbsp;
 <a title=\"Gros titre\" href='#' onclick='insertTags(\"!!!\",\"\",\"\")'>Gros titre</a> &nbsp;&nbsp;
 </center><br>";
 ?>

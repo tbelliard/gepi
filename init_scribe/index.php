@@ -40,41 +40,41 @@ if (!checkAccess()) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année";
+$titre_page = "Outil d'initialisation de l'annÃ©e";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 <p class='bold'><a href="../gestion/index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
-<p>Vous allez effectuer l'initialisation de l'année scolaire qui vient de débuter.</p>
+<p>Vous allez effectuer l'initialisation de l'annÃ©e scolaire qui vient de dÃ©buter.</p>
 
 <?php
-	echo "<p>Avez-vous pensé à effectuer les différentes opérations de fin d'année et préparation de nouvelle année à la page <a href='../gestion/changement_d_annee.php' style='font-weight:bold;'>Changement d'année</a>&nbsp?</p>\n";
+	echo "<p>Avez-vous pensÃ© Ã  effectuer les diffÃ©rentes opÃ©rations de fin d'annÃ©e et prÃ©paration de nouvelle annÃ©e Ã  la page <a href='../gestion/changement_d_annee.php' style='font-weight:bold;'>Changement d'annÃ©e</a>&nbsp?</p>\n";
 ?>
 
 <ul>
-<li>Au cours de la procédure, le cas échéant, certaines données de l'année passée seront définitivement effacées de la base GEPI (élèves, notes, appréciations, ...) . Seules seront conservées les données suivantes :<br /><br />
-- les données relatives aux établissements,<br />
-- les données relatives aux classes : intitulés courts, intitulés longs, nombre de périodes et noms des périodes,<br />
-- les données relatives aux matières : identifiants et intitulés complets,<br />
-- les données relatives aux utilisateurs (professeurs, administrateurs, ...). Concernant les professeurs, les matières enseignées par les professeurs sont conservées,<br />
-- Les données relatives aux différents types d'AID.</li><br />
+<li>Au cours de la procÃ©dure, le cas Ã©chÃ©ant, certaines donnÃ©es de l'annÃ©e passÃ©e seront dÃ©finitivement effacÃ©es de la base GEPI (Ã©lÃ¨ves, notes, apprÃ©ciations, ...) . Seules seront conservÃ©es les donnÃ©es suivantes :<br /><br />
+- les donnÃ©es relatives aux Ã©tablissements,<br />
+- les donnÃ©es relatives aux classes : intitulÃ©s courts, intitulÃ©s longs, nombre de pÃ©riodes et noms des pÃ©riodes,<br />
+- les donnÃ©es relatives aux matiÃ¨res : identifiants et intitulÃ©s complets,<br />
+- les donnÃ©es relatives aux utilisateurs (professeurs, administrateurs, ...). Concernant les professeurs, les matiÃ¨res enseignÃ©es par les professeurs sont conservÃ©es,<br />
+- Les donnÃ©es relatives aux diffÃ©rents types d'AID.</li><br />
 
-<li>L'initialisation s'effectue en différentes phases :<br />
+<li>L'initialisation s'effectue en diffÃ©rentes phases :<br />
     <ul>
     <br />
-    <li><a href='eleves.php'>Procéder à la première phase</a> d'importation des élèves, de constitution des classes et d'affectation des élèves dans les classes.</li>
+    <li><a href='eleves.php'>ProcÃ©der Ã  la premiÃ¨re phase</a> d'importation des Ã©lÃ¨ves, de constitution des classes et d'affectation des Ã©lÃ¨ves dans les classes.</li>
     <br />
-    <li><a href='professeurs.php'>Procéder à la deuxième phase</a> d'importation des professeurs.</li>
+    <li><a href='professeurs.php'>ProcÃ©der Ã  la deuxiÃ¨me phase</a> d'importation des professeurs.</li>
     <br />
-    <li><a href='disciplines.php'>Procéder à la troisième phase</a> d'importation des matières et d'affectation de ces matières aux professeurs.</li>
+    <li><a href='disciplines.php'>ProcÃ©der Ã  la troisiÃ¨me phase</a> d'importation des matiÃ¨res et d'affectation de ces matiÃ¨res aux professeurs.</li>
     <br />
-    <li><a href='prof_disc_classes.php'>Procéder à la quatrième phase</a> d'affectation des professeurs aux classes et à la création des groupes d'enseignement.</li>
+    <li><a href='prof_disc_classes.php'>ProcÃ©der Ã  la quatriÃ¨me phase</a> d'affectation des professeurs aux classes et Ã  la crÃ©ation des groupes d'enseignement.</li>
     <br />
-    <li><a href='eleves_options.php'>Procéder à la cinquième phase</a> d'affection des élèves aux enseignements optionnels.</li>
+    <li><a href='eleves_options.php'>ProcÃ©der Ã  la cinquiÃ¨me phase</a> d'affection des Ã©lÃ¨ves aux enseignements optionnels.</li>
     <br />
     <br />
 </li>
-<li>Une fois toute la procédure d'initialisation des données terminée, il vous sera possible d'effectuer toutes les modifications nécessaires au cas par cas par le biais des outils de gestion inclus dans <b>GEPI</b>.</li>
+<li>Une fois toute la procÃ©dure d'initialisation des donnÃ©es terminÃ©e, il vous sera possible d'effectuer toutes les modifications nÃ©cessaires au cas par cas par le biais des outils de gestion inclus dans <b>GEPI</b>.</li>
 </ul>
 <?php require("../lib/footer.inc.php");?>

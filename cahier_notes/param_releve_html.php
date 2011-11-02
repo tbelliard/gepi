@@ -21,11 +21,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut creer des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Begin standart header
-$titre_page = "Paramètres de configuration des relevés de notes HTML";
+$titre_page = "ParamÃ¨tres de configuration des relevÃ©s de notes HTML";
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -45,7 +45,7 @@ include("../fckeditor/fckeditor.php") ;
 $sql="SELECT 1=1 FROM droits WHERE id='/cahier_notes/param_releve_html.php';";
 $res_test=mysql_query($sql);
 if (mysql_num_rows($res_test)==0) {
-	$sql="INSERT INTO droits VALUES ('/cahier_notes/param_releve_html.php', 'V', 'V', 'F', 'V', 'F', 'F', 'F','F', 'Relevé de notes', '1');";
+	$sql="INSERT INTO droits VALUES ('/cahier_notes/param_releve_html.php', 'V', 'V', 'F', 'V', 'F', 'F', 'F','F', 'RelevÃ© de notes', '1');";
 	$res_insert=mysql_query($sql);
 }
 
@@ -265,7 +265,7 @@ if (isset($_POST['ok'])) {
 	if((isset($_POST['releve_addressblock_classe_annee']))&&(isset($_POST['releve_addressblock_logo_etab_prop']))){
 		$valtest=$releve_addressblock_logo_etab_prop+$releve_addressblock_classe_annee;
 		if($valtest>100){
-			$msg.="Erreur! La somme releve_addressblock_logo_etab_prop+releve_addressblock_classe_annee dépasse 100% de la largeur de la page !";
+			$msg.="Erreur! La somme releve_addressblock_logo_etab_prop+releve_addressblock_classe_annee dÃ©passe 100% de la largeur de la page !";
 			$reg_ok = 'no';
 		}
 		else{
@@ -492,7 +492,7 @@ if (isset($_POST['ok'])) {
 }
 
 if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
-   $msg = "Enregistrement réussi !";
+   $msg = "Enregistrement rÃ©ussi !";
 }
 
 
@@ -507,19 +507,19 @@ if (!loadSettings()) {
 
 <?php
 
-// A FAIRE: Créer des droits
+// A FAIRE: CrÃ©er des droits
 
 if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul")!='yes') OR ((getSettingValue("GepiProfImprBul")=='yes') AND (getSettingValue("GepiProfImprBulSettings")!='yes')))) OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("GepiScolImprBulSettings")!='yes')) OR (($_SESSION['statut']=='administrateur') AND (getSettingValue("GepiAdminImprBulSettings")!='yes')))
 {
-    die("Droits insuffisants pour effectuer cette opération");
+    die("Droits insuffisants pour effectuer cette opÃ©ration");
 }
 
 // Compteur pour alterner les couleurs de lignes
 $nb_ligne=1;
 
 
-$titre_infobulle="Paramètres communs HTML/PDF\n";
-$texte_infobulle="Ce paramètre est commun aux relevés HTML et PDF.\n";
+$titre_infobulle="ParamÃ¨tres communs HTML/PDF\n";
+$texte_infobulle="Ce paramÃ¨tre est commun aux relevÃ©s HTML et PDF.\n";
 //$texte_infobulle.="\n";
 $tabdiv_infobulle[]=creer_div_infobulle('parametres_communs_html_et_pdf',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
@@ -531,8 +531,8 @@ $tabdiv_infobulle[]=creer_div_infobulle('parametres_communs_html_et_pdf',$titre_
 <?php
 echo add_token_field();
 ?>
-<H3>Mise en page du relevé de notes HTML</H3>
-<table cellpadding="8" cellspacing="0" width="100%" border="0" summary="Tableau des paramètres">
+<H3>Mise en page du relevÃ© de notes HTML</H3>
+<table cellpadding="8" cellspacing="0" width="100%" border="0" summary="Tableau des paramÃ¨tres">
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
@@ -576,7 +576,7 @@ echo add_token_field();
 		?>" onKeyDown="clavier_2(this.id,event,0,100);" />
         </td>
     </tr>
-    <!-- Début AJOUT: boireaus -->
+    <!-- DÃ©but AJOUT: boireaus -->
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         <label for='p_releve_margin' style='cursor: pointer;'>Marges hautes et basses des paragraphes en points du texte (hormis les titres)&nbsp;:</label>
@@ -608,8 +608,8 @@ echo add_token_field();
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_col_matiere_largeur' style='cursor: pointer;'>Largeur de la première colonne (matières) en pixels&nbsp;:</label><br />
-        <span class="small">(Si le contenu d'une cellule de la colonne est plus grand que la taille prévue, la mention ci-dessus devient caduque. La colonne sera dans ce cas dimensionnée par le navigateur lui-même.)</span>
+        <label for='releve_col_matiere_largeur' style='cursor: pointer;'>Largeur de la premiÃ¨re colonne (matiÃ¨res) en pixels&nbsp;:</label><br />
+        <span class="small">(Si le contenu d'une cellule de la colonne est plus grand que la taille prÃ©vue, la mention ci-dessus devient caduque. La colonne sera dans ce cas dimensionnÃ©e par le navigateur lui-mÃªme.)</span>
         </td>
         <td><input type="text" name="releve_col_matiere_largeur" id="releve_col_matiere_largeur" size="20" value="<?php
 		if(getSettingValue("releve_col_matiere_largeur")!=""){
@@ -624,7 +624,7 @@ echo add_token_field();
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         <label for='releve_col_hauteur' style='cursor: pointer;'>Hauteur minimale des lignes en pixels ("0" si automatique)&nbsp;:</label><br />
-        <span class="small">(Si le contenu d'une cellule est tel que la hauteur fixée ci-dessus est insuffisante, la hauteur de la ligne sera dimensionnée par le navigateur lui-même.)</span>
+        <span class="small">(Si le contenu d'une cellule est tel que la hauteur fixÃ©e ci-dessus est insuffisante, la hauteur de la ligne sera dimensionnÃ©e par le navigateur lui-mÃªme.)</span>
         </td>
         <td><input type="text" name="releve_col_hauteur" id="releve_col_hauteur" size="20" value="<?php
 		if(getSettingValue("releve_col_hauteur")!=""){
@@ -666,7 +666,7 @@ echo add_token_field();
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_ecart_entete' style='cursor: pointer;'>Espace (nombre de lignes vides) entre l'en-tête du relevé et le tableau des notes et appréciations&nbsp;:</label>
+        <label for='releve_ecart_entete' style='cursor: pointer;'>Espace (nombre de lignes vides) entre l'en-tÃªte du relevÃ© et le tableau des notes et apprÃ©ciations&nbsp;:</label>
         </td>
         <td><input type="text" name="releve_ecart_entete" id="releve_ecart_entete" size="20" value="<?php
 		if(getSettingValue("releve_ecart_entete")!=""){
@@ -680,7 +680,7 @@ echo add_token_field();
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Bordures des cellules du tableau des moyennes et appréciations&nbsp;:
+        Bordures des cellules du tableau des moyennes et apprÃ©ciations&nbsp;:
         </td>
         <td>
 		<?php
@@ -702,7 +702,7 @@ echo add_token_field();
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_categ_font_size' style='cursor: pointer;'>Taille en points du texte des catégories de matières (<i>lorsqu'elles sont affichées</i>)&nbsp;:</label>
+        <label for='releve_categ_font_size' style='cursor: pointer;'>Taille en points du texte des catÃ©gories de matiÃ¨res (<i>lorsqu'elles sont affichÃ©es</i>)&nbsp;:</label>
         </td>
 	<?php
 		if(getSettingValue("releve_categ_font_size")){
@@ -717,7 +717,7 @@ echo add_token_field();
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_categ_bgcolor' style='cursor: pointer;'>Couleur de fond des lignes de catégories de matières (<i>lorsqu'elles sont affichées</i>)&nbsp;:</label>
+        <label for='releve_categ_bgcolor' style='cursor: pointer;'>Couleur de fond des lignes de catÃ©gories de matiÃ¨res (<i>lorsqu'elles sont affichÃ©es</i>)&nbsp;:</label>
         </td>
 	<?php
 		if(getSettingValue("releve_categ_bgcolor")){
@@ -748,7 +748,7 @@ echo add_token_field();
 
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Faire apparaitre le nom de l'établissement sur le relevé&nbsp;:<br />(<i>certains établissements ont le nom dans le Logo</i>)
+        Faire apparaitre le nom de l'Ã©tablissement sur le relevÃ©&nbsp;:<br />(<i>certains Ã©tablissements ont le nom dans le Logo</i>)
 		<?php
 			echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('parametres_communs_html_et_pdf','y',100,100);\"  onmouseout=\"cacher_div('parametres_communs_html_et_pdf');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
 		?>
@@ -778,7 +778,7 @@ echo add_token_field();
 
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Faire apparaitre l'adresse de l'établissement sur le relevé&nbsp;:<br />(<i>certains établissements ont l'adresse dans le Logo</i>)
+        Faire apparaitre l'adresse de l'Ã©tablissement sur le relevÃ©&nbsp;:<br />(<i>certains Ã©tablissements ont l'adresse dans le Logo</i>)
 		<?php
 			echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('parametres_communs_html_et_pdf','y',100,100);\"  onmouseout=\"cacher_div('parametres_communs_html_et_pdf');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
 		?>
@@ -817,10 +817,10 @@ echo add_token_field();
 
 
 <?php
-//Informations devant figurer sur le relevé de notes</H3>
+//Informations devant figurer sur le relevÃ© de notes</H3>
 ?>
-<h3>Informations devant figurer sur le relevé de notes</h3>
-<table cellpadding="8" cellspacing="0" width="100%" border="0" summary="Tableau des informations devant figurer sur le relevé de notes">
+<h3>Informations devant figurer sur le relevÃ© de notes</h3>
+<table cellpadding="8" cellspacing="0" width="100%" border="0" summary="Tableau des informations devant figurer sur le relevÃ© de notes">
 <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         Afficher le nom court de la classe&nbsp;:
@@ -839,7 +839,7 @@ echo add_token_field();
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher la mention "doublant" ou "doublante", le cas échéant&nbsp;:
+        Afficher la mention "doublant" ou "doublante", le cas Ã©chÃ©ant&nbsp;:
         </td>
         <td>
         <?php
@@ -854,7 +854,7 @@ echo add_token_field();
     </tr>
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher les informations sur l'élève sur une seule ligne <i>(si non une information par ligne)</i>&nbsp;:
+        Afficher les informations sur l'Ã©lÃ¨ve sur une seule ligne <i>(si non une information par ligne)</i>&nbsp;:
         </td>
         <td>
         <?php
@@ -869,7 +869,7 @@ echo add_token_field();
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher le numéro du relevé&nbsp;:
+        Afficher le numÃ©ro du relevÃ©&nbsp;:
         </td>
         <td>
         <?php
@@ -885,7 +885,7 @@ echo add_token_field();
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher le nom du professeur principal et du chef d'établissement&nbsp;:
+        Afficher le nom du professeur principal et du chef d'Ã©tablissement&nbsp;:
         </td>
         <td>
         <?php
@@ -901,7 +901,7 @@ echo add_token_field();
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher l'établissement d'origine sur le relevé&nbsp;:
+        Afficher l'Ã©tablissement d'origine sur le relevÃ©&nbsp;:
         </td>
         <td>
         <?php
@@ -924,7 +924,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 	echo ">\n";
 ?>
         <td style="font-variant: small-caps;">
-        Afficher la photo de l'élève sur le relevé&nbsp;:
+        Afficher la photo de l'Ã©lÃ¨ve sur le relevÃ©&nbsp;:
         </td>
         <td>
 <?php
@@ -987,7 +987,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher le numéro de téléphone de l'établissement&nbsp;:
+        Afficher le numÃ©ro de tÃ©lÃ©phone de l'Ã©tablissement&nbsp;:
 		<?php
 			echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('parametres_communs_html_et_pdf','y',100,100);\"  onmouseout=\"cacher_div('parametres_communs_html_et_pdf');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
 		?>
@@ -1007,7 +1007,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher le numéro de fax de l'établissement&nbsp;:
+        Afficher le numÃ©ro de fax de l'Ã©tablissement&nbsp;:
 		<?php
 			echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('parametres_communs_html_et_pdf','y',100,100);\"  onmouseout=\"cacher_div('parametres_communs_html_et_pdf');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
 		?>
@@ -1027,7 +1027,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher l'adresse email de l'établissement&nbsp;:
+        Afficher l'adresse email de l'Ã©tablissement&nbsp;:
 		<?php
 			echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('parametres_communs_html_et_pdf','y',100,100);\"  onmouseout=\"cacher_div('parametres_communs_html_et_pdf');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
 		?>
@@ -1047,7 +1047,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher le numéro INE de l'élève&nbsp;:
+        Afficher le numÃ©ro INE de l'Ã©lÃ¨ve&nbsp;:
         </td>
         <td>
         <?php
@@ -1065,7 +1065,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Afficher la formule figurant en bas de chaque relevé de notes&nbsp;:
+        Afficher la formule figurant en bas de chaque relevÃ© de notes&nbsp;:
         </td>
         <td>
         <?php
@@ -1082,7 +1082,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;" colspan="2">
-        <label for='no_anti_inject_releve_formule_bas' style='cursor: pointer;'>Formule figurant en bas de chaque relevé de notes:</label>
+        <label for='no_anti_inject_releve_formule_bas' style='cursor: pointer;'>Formule figurant en bas de chaque relevÃ© de notes:</label>
         <input type="text" name="no_anti_inject_releve_formule_bas" id="no_anti_inject_releve_formule_bas" size="100" value="<?php echo(getSettingValue("releve_formule_bas")); ?>" />
         </td>
     </tr>
@@ -1094,7 +1094,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 	if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++;
 	echo ">\n";
     echo "<td style='font-variant: small-caps;' colspan='2'>\n";
-	echo "<label for='no_anti_inject_releve_formule_bas' style='cursor: pointer;'>Formule figurant en bas de chaque relevé&nbsp;:</label>\n";
+	echo "<label for='no_anti_inject_releve_formule_bas' style='cursor: pointer;'>Formule figurant en bas de chaque relevÃ©&nbsp;:</label>\n";
 	echo "<input type='text' name='no_anti_inject_releve_formule_bas' id='no_anti_inject_releve_formule_bas' size='100' value=\"".getSettingValue("releve_formule_bas")."\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -1112,15 +1112,15 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
 <hr />
 <H3>Bloc adresse</H3>
-<center><table border="1" cellpadding="10" width="90%" summary="Tableau des paramètres bloc adresse"><tr><td>
-Ces options contrôlent le positionnement du bloc adresse du responsable de l'élève directement sur le relevé (et non sur la page de garde - voir ci-dessous). L'affichage de ce bloc est contrôlé classe par classe, au niveau du paramétrage de la classe.
+<center><table border="1" cellpadding="10" width="90%" summary="Tableau des paramÃ¨tres bloc adresse"><tr><td>
+Ces options contrÃ´lent le positionnement du bloc adresse du responsable de l'Ã©lÃ¨ve directement sur le relevÃ© (et non sur la page de garde - voir ci-dessous). L'affichage de ce bloc est contrÃ´lÃ© classe par classe, au niveau du paramÃ©trage de la classe.
 </td></tr></table></center>
 
-<table cellpadding="8" cellspacing="0" width="100%" border="0" summary="Paramètres du bloc adresse">
+<table cellpadding="8" cellspacing="0" width="100%" border="0" summary="ParamÃ¨tres du bloc adresse">
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;;$nb_ligne++;?>>
         <td colspan='2' style="font-variant: small-caps;">
-	<a href="javascript:SetDefaultValues('Adresse')">Rétablir les paramètres par défaut</a>
+	<a href="javascript:SetDefaultValues('Adresse')">RÃ©tablir les paramÃ¨tres par dÃ©faut</a>
         </td>
      </tr>
 
@@ -1166,7 +1166,7 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_addressblock_padding_text' style='cursor: pointer;'>Espace vertical en mm entre le bloc "adresse" et le bloc des résultats&nbsp;:</label>
+        <label for='releve_addressblock_padding_text' style='cursor: pointer;'>Espace vertical en mm entre le bloc "adresse" et le bloc des rÃ©sultats&nbsp;:</label>
         </td>
         <td><input type="text" name="releve_addressblock_padding_text" id="releve_addressblock_padding_text" size="20" value="<?php
 
@@ -1219,7 +1219,7 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_addressblock_logo_etab_prop' style='cursor: pointer;'>Proportion (en % de la largeur de page) allouée au logo et à l'adresse de l'établissement&nbsp;:</label>
+        <label for='releve_addressblock_logo_etab_prop' style='cursor: pointer;'>Proportion (en % de la largeur de page) allouÃ©e au logo et Ã  l'adresse de l'Ã©tablissement&nbsp;:</label>
         </td>
 	<?php
 		if(!getSettingValue("releve_addressblock_logo_etab_prop")){
@@ -1236,7 +1236,7 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_addressblock_classe_annee' style='cursor: pointer;'>Proportion (en % de la largeur de page) allouée au bloc "Classe, année, période"&nbsp;:</label>
+        <label for='releve_addressblock_classe_annee' style='cursor: pointer;'>Proportion (en % de la largeur de page) allouÃ©e au bloc "Classe, annÃ©e, pÃ©riode"&nbsp;:</label>
         </td>
 	<?php
 		if(!getSettingValue("releve_addressblock_classe_annee")){
@@ -1254,7 +1254,7 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <label for='releve_ecart_bloc_nom' style='cursor: pointer;'>Nombre de sauts de ligne entre le bloc Logo+Etablissement et le bloc Nom, prénom,... de l'élève&nbsp;:</label>
+        <label for='releve_ecart_bloc_nom' style='cursor: pointer;'>Nombre de sauts de ligne entre le bloc Logo+Etablissement et le bloc Nom, prÃ©nom,... de l'Ã©lÃ¨ve&nbsp;:</label>
         </td>
 	<?php
 		if(!getSettingValue("releve_ecart_bloc_nom")){
@@ -1271,8 +1271,8 @@ Ces options contrôlent le positionnement du bloc adresse du responsable de l'élè
     </tr>
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        <font color='red'>Activer l'affichage des bordures pour comprendre la présentation avec bloc "adresse"</font>&nbsp;:<br />
-		<span style='font-size:x-small;'>Il faut ajuster les paramètres des champs '<i>Espace en mm entre la marge haute de la feuille et le bloc "adresse"</i>', '<i>Longueur en mm du bloc "adresse"</i>' et '<i>Proportion (en % de la largeur de page) allouée au logo et à l'adresse de l'établissement</i>' pour que les cadres bleu et vert n'entrent pas en collision (<i>vous pouvez modifier la taille de la fenêtre du navigateur à l'aide de la souris pour comprendre les éventuelles abérrations de présentation pour certaines combinaisons de valeurs</i>).</span>
+        <font color='red'>Activer l'affichage des bordures pour comprendre la prÃ©sentation avec bloc "adresse"</font>&nbsp;:<br />
+		<span style='font-size:x-small;'>Il faut ajuster les paramÃ¨tres des champs '<i>Espace en mm entre la marge haute de la feuille et le bloc "adresse"</i>', '<i>Longueur en mm du bloc "adresse"</i>' et '<i>Proportion (en % de la largeur de page) allouÃ©e au logo et Ã  l'adresse de l'Ã©tablissement</i>' pour que les cadres bleu et vert n'entrent pas en collision (<i>vous pouvez modifier la taille de la fenÃªtre du navigateur Ã  l'aide de la souris pour comprendre les Ã©ventuelles abÃ©rrations de prÃ©sentation pour certaines combinaisons de valeurs</i>).</span>
         </td>
 	<?php
 		if(!getSettingValue("releve_addressblock_debug")){

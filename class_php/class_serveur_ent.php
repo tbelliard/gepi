@@ -25,16 +25,16 @@ include '../secure/serveur.inc.php';
 if (in_array('domain_name', $_POST) AND in_array($_POST['domain_name'], $serveur) AND $serveur[$_POST['domain_name']]['RNE'] !== 'all'){
   $_GET['rne'] = isset($_POST['domain_name']) ? $serveur[$_POST['domain_name']]['RNE'] : NULL;
 }else{
-  // Dans le cas d'une utilisation multisite, si le demandeur à les droits 'all', on lui fait confiance pour demander la base qu'il souhaite
+  // Dans le cas d'une utilisation multisite, si le demandeur Ã  les droits 'all', on lui fait confiance pour demander la base qu'il souhaite
   $_GET['rne'] = isset($_POST['RNE']) ? $_POST['RNE'] : NULL;
 }
-$traite_anti_inject = 'no'; // pour éviter les échappements dans les tableaux sérialisés
+$traite_anti_inject = 'no'; // pour Ã©viter les Ã©chappements dans les tableaux sÃ©rialisÃ©s
 require_once("../lib/initialisationsPropel.inc.php");
 
 /**
- * Classe qui implémente un serveur pour permettre à un ENT de se connecter à GEPI
- * Accès limité à la lecture seule. Pour limiter les accès, on liste les méthodes disponibles
- * Les logins des élèves existent sous la forme d'un tableau envoyé en POST par curl
+ * Classe qui implÃ©mente un serveur pour permettre Ã  un ENT de se connecter Ã  GEPI
+ * AccÃ¨s limitÃ© Ã  la lecture seule. Pour limiter les accÃ¨s, on liste les mÃ©thodes disponibles
+ * Les logins des Ã©lÃ¨ves existent sous la forme d'un tableau envoyÃ© en POST par curl
  *
  * http://www.sylogix.org/projects/gepi/wiki/RefDoc_serveurressource
  *
@@ -46,62 +46,62 @@ require_once("../lib/initialisationsPropel.inc.php");
 class serveur_ent {
 
   /**
-   * Définit le type de demande (utilise le nom des méthodes autorisées)
-   * @var string méthode évoquée par la demande
+   * DÃ©finit le type de demande (utilise le nom des mÃ©thodes autorisÃ©es)
+   * @var string mÃ©thode Ã©voquÃ©e par la demande
    */
   private $_demande      = NULL;
 
   /**
-   * Définit la période demandée
-   * @var integer Numéro de la période, 0 par défaut équivaut à toutes les périodes.
+   * DÃ©finit la pÃ©riode demandÃ©e
+   * @var integer NumÃ©ro de la pÃ©riode, 0 par dÃ©faut Ã©quivaut Ã  toutes les pÃ©riodes.
    */
   private $_periode   = 0;
   /**
-   * liste des logins des enfants du parent qui demande (envoyé par le client)
+   * liste des logins des enfants du parent qui demande (envoyÃ© par le client)
    * @var array _enfants
    */
   private $_enfants     = array();
   /**
-   * Le login ENT du demandeur (envoyé par le client)
+   * Le login ENT du demandeur (envoyÃ© par le client)
    * @var string _login
    */
   private $_login       = NULL;
   /**
-   * Le RNE de l'établissement du demandeur (envoyé par le client)
+   * Le RNE de l'Ã©tablissement du demandeur (envoyÃ© par le client)
    * @var string RNE
    */
   private $_etab        = NULL;
   /**
-   * la clé secrète entre le client et le serveur
-   * @var string clé
+   * la clÃ© secrÃ¨te entre le client et le serveur
+   * @var string clÃ©
    */
   private $_api_key     = NULL;
   /**
-   * Ce hash est envoyé par le client, le serveur le renvoie avec la réponse pour permettre au client de vérifier qu'il s'agit bien de sa demande
+   * Ce hash est envoyÃ© par le client, le serveur le renvoie avec la rÃ©ponse pour permettre au client de vÃ©rifier qu'il s'agit bien de sa demande
    * @var string hash
    */
   private $_hash        = NULL;
   /**
-   * Le nom du client sert de couple Mon/cl pour vérifier
+   * Le nom du client sert de couple Mon/cl pour vÃ©rifier
    * @var string Nom du client
    */
   private $_domain_name   = NULL;
   /**
-   * Encodage des données à renvoyer
-   * @var string $_encodage vaut 'ISO' par défaut, peut être placé à 'utf8' par le client
+   * Encodage des donnÃ©es Ã  renvoyer
+   * @var string $_encodage vaut 'ISO' par dÃ©faut, peut Ãªtre placÃ© Ã  'utf8' par le client
    */
   private $_encodage      = 'ISO';
 
   /**
-   * Format des informations envoyées (tableau sérialisé ou xml)
-   * @var string vaut 'serialize' par défaut, peut être placé à 'xml' par le client
+   * Format des informations envoyÃ©es (tableau sÃ©rialisÃ© ou xml)
+   * @var string vaut 'serialize' par dÃ©faut, peut Ãªtre placÃ© Ã  'xml' par le client
    */
   private $_format        = 'serialize';
 
   /**
-   * Tableau de la liste des méthodes autorisées pour le client
+   * Tableau de la liste des mÃ©thodes autorisÃ©es pour le client
    *
-   * @var array Définie dans le fichier de config
+   * @var array DÃ©finie dans le fichier de config
    */
   private $_config        = array();
   /**
@@ -110,18 +110,18 @@ class serveur_ent {
    * @example Si on est en multisite, il faut un cookie["RNE"] qui donne le bon RNE pour que GEPI se connecte sur la bonne base
    */
   public function __construct(){
-    // On initialise toutes nos propriétés
+    // On initialise toutes nos propriÃ©tÃ©s
     $this->setData();
-    // Vérification de la clé
+    // VÃ©rification de la clÃ©
     $this->_domain_name = isset($_POST['domain_name']) ? $_POST['domain_name'] : NULL;
     $this->verifKey($this->_domain_name);
 
-    // On vérifie que la demande est disponible
+    // On vÃ©rifie que la demande est disponible
     if (!in_array($this->_demande, $this->getMethodesAutorisees())){
-      $this->writeLog(__METHOD__, 'Méthode inexistante:'.$this->_demande, ((array_key_exists('login', $_POST)) ? $_POST['login'] : 'inexistant'));
-      Die('Méthode inexistante !');
+      $this->writeLog(__METHOD__, 'MÃ©thode inexistante:'.$this->_demande, ((array_key_exists('login', $_POST)) ? $_POST['login'] : 'inexistant'));
+      Die('MÃ©thode inexistante !');
     }
-    // On vérifie si les logins des enfants envoyés existent bien dans GEPI
+    // On vÃ©rifie si les logins des enfants envoyÃ©s existent bien dans GEPI
     $reponse = array(); // permet de stocker les informations sur les enfants (tableau d'objets propel)
     $test = unserialize($this->_enfants);
 
@@ -135,15 +135,15 @@ class serveur_ent {
           $this->writeLog(__METHOD__, 'login enfant inexistant : ' . $enfants, ((array_key_exists('login', $_POST)) ? $_POST['login'] : 'inexistant'));
           $reponse[] = 'inexistant';
         }else{
-          // on recherche la réponse pour ce login
+          // on recherche la rÃ©ponse pour ce login
           $arenvoyer = $this->{$this->_demande}($enf[0]);
           $reponse[$enf[0]->getLogin()] = $arenvoyer;
         }
 
       } // foreach
-    // le cas où les enfants ne sont pas présents
+    // le cas oÃ¹ les enfants ne sont pas prÃ©sents
     }else{
-      // On vérifie si cette demande concerne un professeur
+      // On vÃ©rifie si cette demande concerne un professeur
       $arg = '';
       if (strpos('Professeur', $this->_demande) !== false){
         $arg = UtilisateurProfessionnelQuery::create()
@@ -175,18 +175,18 @@ class serveur_ent {
   }
 
   /**
-   * Charge les données envoyées par le client
+   * Charge les donnÃ©es envoyÃ©es par le client
    *
-   * @todo Mieux gérer le cas où la requête n'est pas en POST
-   * @return void initialise les propriétés de l'objet
+   * @todo Mieux gÃ©rer le cas oÃ¹ la requÃªte n'est pas en POST
+   * @return void initialise les propriÃ©tÃ©s de l'objet
    */
   private function setData(){
     // On ne fonctionne qu'en POST
     if ($this->testRequestMethod() != 'POST'){
-      $this->writeLog(__METHOD__, 'La demande n\'a pas été passée en POST', ((array_key_exists('login', $_POST)) ? $_POST['login'] : 'inexistant'));
+      $this->writeLog(__METHOD__, 'La demande n\'a pas Ã©tÃ© passÃ©e en POST', ((array_key_exists('login', $_POST)) ? $_POST['login'] : 'inexistant'));
       Die();
     }else{
-      // On vérifie que les données demandées existent
+      // On vÃ©rifie que les donnÃ©es demandÃ©es existent
       $this->_etab        = (array_key_exists('etab', $_POST)) ? $_POST['etab'] : null;
       $this->_enfants     = (array_key_exists('enfants', $_POST)) ? $_POST['enfants'] : null;
       $this->_api_key     = (array_key_exists('api_key', $_POST)) ? $_POST['api_key'] : 'false';
@@ -201,7 +201,7 @@ class serveur_ent {
   }
 
   /**
-   * Permet de vérifier la clé du demandeur
+   * Permet de vÃ©rifier la clÃ© du demandeur
    *
    * @param string $demandeur
    */
@@ -211,8 +211,8 @@ class serveur_ent {
       @$this->writeLog(__METHOD__, 'Compte inexistant ('.$demandeur.')', $_SERVER['HTTP_REFERER']);
       Die('Compte inexistant.');
     }else if ($this->_api_key != $serveur[$demandeur]['api_key']){
-      $this->writeLog(__METHOD__, 'La clé n\'est pas bonne ('.$this->_api_key.'|'.$key.')', ((array_key_exists('login', $_POST)) ? $_POST['login'] : 'inexistant'));
-      Die('la clé est obsolète.');
+      $this->writeLog(__METHOD__, 'La clÃ© n\'est pas bonne ('.$this->_api_key.'|'.$key.')', ((array_key_exists('login', $_POST)) ? $_POST['login'] : 'inexistant'));
+      Die('la clÃ© est obsolÃ¨te.');
     }else{
       $this->_config = $serveur[$demandeur];
       return true;
@@ -220,7 +220,7 @@ class serveur_ent {
   }
 
   /**
-   * Vérifie si le client fait la demande depuis une adresse IP autorisée
+   * VÃ©rifie si le client fait la demande depuis une adresse IP autorisÃ©e
    *
    * @param string $demandeur
    */
@@ -230,17 +230,17 @@ class serveur_ent {
       $this->writeLog(__METHOD__, 'Compte inexistant IP ('.$demandeur.')', $_SERVER['HTTP_REFERER']);
       Die('Compte inexistant IP.');
     }else if ($this->_api_key != $serveur[$demandeur]['ip']){
-      $this->writeLog(__METHOD__, 'La clé n\'est pas bonne ('.$this->_api_key.'|'.$key.')', ((array_key_exists('login', $_POST)) ? $_POST['login'] : 'inexistant'));
-      Die('la clé est obsolète');
+      $this->writeLog(__METHOD__, 'La clÃ© n\'est pas bonne ('.$this->_api_key.'|'.$key.')', ((array_key_exists('login', $_POST)) ? $_POST['login'] : 'inexistant'));
+      Die('la clÃ© est obsolÃ¨te');
     }else{
       return true;
     }
   }
 
   /**
-   * Renvoie la liste des méthodes autorisées par le serveur
-   * @todo Penser à mettre à jour cette liste au fur et à mesure de la définition des méthodes
-   * @return array liste des méthodes autorisées
+   * Renvoie la liste des mÃ©thodes autorisÃ©es par le serveur
+   * @todo Penser Ã  mettre Ã  jour cette liste au fur et Ã  mesure de la dÃ©finition des mÃ©thodes
+   * @return array liste des mÃ©thodes autorisÃ©es
    */
   public function getMethodesAutorisees(){
     if (in_array('all', $this->_config['auth'])){
@@ -253,21 +253,21 @@ class serveur_ent {
   }
 
   /**
-   * Renvoie la liste des notes d'un élève en fonction de son login pour les deux derniers mois
+   * Renvoie la liste des notes d'un Ã©lÃ¨ve en fonction de son login pour les deux derniers mois
    *
-   * @param string $_login login de l'élève
-   * @return array Liste des notes d'un élève
+   * @param string $_login login de l'Ã©lÃ¨ve
+   * @return array Liste des notes d'un Ã©lÃ¨ve
    */
   public function notesEleve(eleve $_eleve){
     return array();
   }
 
   /**
-   * Renvoie la liste des devoirs à faire pour un élève (en fonction du login de l'élève)
+   * Renvoie la liste des devoirs Ã  faire pour un Ã©lÃ¨ve (en fonction du login de l'Ã©lÃ¨ve)
    *
-   * @todo Pour le moment, on renvoie pour chaque matière le devoir le plus éloigné dans le temps, il faudrait renvoyer tous les devoirs dont la date est postérieure
+   * @todo Pour le moment, on renvoie pour chaque matiÃ¨re le devoir le plus Ã©loignÃ© dans le temps, il faudrait renvoyer tous les devoirs dont la date est postÃ©rieure
    * @param object Eleve $_eleve
-   * @return array Liste des devoirs à faire du cdt de l'élève
+   * @return array Liste des devoirs Ã  faire du cdt de l'Ã©lÃ¨ve
    */
   public function cdtDevoirsEleve(eleve $_eleve){
     $var = array();
@@ -291,10 +291,10 @@ class serveur_ent {
   }
 
   /**
-   * Renvoie la liste des derniers compte-rendus pour chaque enseignement auxquels est inscrit un élève
+   * Renvoie la liste des derniers compte-rendus pour chaque enseignement auxquels est inscrit un Ã©lÃ¨ve
    *
    * @param object Eleve $_eleve
-   * @return array Liste des Compte-Rendus d'un élève
+   * @return array Liste des Compte-Rendus d'un Ã©lÃ¨ve
    */
   public function cdtCREleve($_eleve){
     $var = array();
@@ -318,10 +318,10 @@ class serveur_ent {
   }
 
   /**
-   * Renvoie la liste des devoirs à faire donnés pour chaque enseignement d'un professeur
+   * Renvoie la liste des devoirs Ã  faire donnÃ©s pour chaque enseignement d'un professeur
    *
    * @param object UtilisateurProfessionnel $_professeur
-   * @return array Liste des devoirs donnés par le professeur avec les enseignements correspondants
+   * @return array Liste des devoirs donnÃ©s par le professeur avec les enseignements correspondants
    */
   public function cdtDevoirsProfesseur(UtilisateurProfessionnel $_professeur){
     $devoirs = $_professeur->getCahierTexteTravailAFairesJoinGroupe();
@@ -347,10 +347,10 @@ class serveur_ent {
   }
 
   /**
-   * Renvoie la liste des professeurs d'un élève avec leur matière associée
+   * Renvoie la liste des professeurs d'un Ã©lÃ¨ve avec leur matiÃ¨re associÃ©e
    *
-   * @param string $_login login de l'élève
-   * @return array Liste des professeurs de l'élève
+   * @param string $_login login de l'Ã©lÃ¨ve
+   * @return array Liste des professeurs de l'Ã©lÃ¨ve
    */
   public function professeursEleve(eleve $eleve){
     $reponse = array();
@@ -366,17 +366,17 @@ class serveur_ent {
   }
 
   /**
-   * Renvoie la liste des cours d'un élève au cours de la semaine actuelle
+   * Renvoie la liste des cours d'un Ã©lÃ¨ve au cours de la semaine actuelle
    *
    * @param string $_login
-   * @return array edt d'un élève sous la forme d'un tableau php : array('lundi'=>array('M1'=>'Mathématiques',...), 'mardi'=>array(),...)
+   * @return array edt d'un Ã©lÃ¨ve sous la forme d'un tableau php : array('lundi'=>array('M1'=>'MathÃ©matiques',...), 'mardi'=>array(),...)
    */
   public function edtEleve($_login){
     return array();
   }
 
   /**
-   * Renvoie la liste des élèves avec leur classe (nom, prénom, login, no_gep, eleonet, ele_id, sexe, naissance, classe)
+   * Renvoie la liste des Ã©lÃ¨ves avec leur classe (nom, prÃ©nom, login, no_gep, eleonet, ele_id, sexe, naissance, classe)
    */
   public function listeElevesAvecClasse(){
     $eleves = EleveQuery::create()->find();
@@ -414,7 +414,7 @@ class serveur_ent {
   }
 
   /**
-   * Renvoie la liste des professeurs avec leurs matières rattachées (nom, prénom, login, liste matières)
+   * Renvoie la liste des professeurs avec leurs matiÃ¨res rattachÃ©es (nom, prÃ©nom, login, liste matiÃ¨res)
    */
   public function listeProfesseursAvecMatieres(){
     $profs = UtilisateurProfessionnelQuery::create()
@@ -470,7 +470,7 @@ class serveur_ent {
       $groupes = $classe->getJGroupesClassessJoinGroupe();
       foreach ($groupes as $groupe){
         $profs = $groupe->getGroupe()->getJGroupesProfesseurssJoinUtilisateurProfessionnel();
-        // Puis on récupère le login des professeurs qui ont au moins un enseignement dans cette classe.
+        // Puis on rÃ©cupÃ¨re le login des professeurs qui ont au moins un enseignement dans cette classe.
         foreach ($profs as $prof){
           if ($this->_format == 'xml'){
             $professeurs .= '
@@ -499,9 +499,9 @@ class serveur_ent {
   }
 
   /**
-   * Renvoie la liste des matières avec le nom long
+   * Renvoie la liste des matiÃ¨res avec le nom long
    *
-   * @return array Tableau des matières nom court - nom long - - - - - -
+   * @return array Tableau des matiÃ¨res nom court - nom long - - - - - -
    */
   public function listeMatieresAvecNomlong(){
     $matieres = MatiereQuery::create()->orderByMatiere()->find();
@@ -526,12 +526,12 @@ class serveur_ent {
   /**
    * Loggue les erreurs du serveur dans un fichier
    *
-   * @param string $methode méthode demandée
+   * @param string $methode mÃ©thode demandÃ©e
    * @param string $message message d'erreur
    * @param string $login_demandeur login du demandeur
    */
   private function writeLog($methode, $message, $login_demandeur){
-    // Du code pour écrire dans un fichier de log
+    // Du code pour Ã©crire dans un fichier de log
     $fichier = fopen('../temp/serveur_ent.log', 'a+');
     fputs($fichier, ($this->_etab !== NULL ? $this->_etab : 'ETAB') . ' :: ' . $login_demandeur . ' = ' . $message . ' -> ' . $methode . ' ' . $_SERVER['REMOTE_ADDR'] . ".\n");
     fclose($fichier);

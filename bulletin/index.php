@@ -69,7 +69,7 @@ if (!checkAccess()) {
 
 	$bulletin_pass = 'non';
 
-	//ajout Eric pour impression triée par Etab d'origine
+	//ajout Eric pour impression triÃ©e par Etab d'origine
 	if (empty($_GET['tri_par_etab_origine']) and empty($_POST['tri_par_etab_origine'])) {$tri_par_etab_origine="non";}
 	    else { if (isset($_GET['tri_par_etab_origine'])) {$tri_par_etab_origine=$_GET['tri_par_etab_origine'];} if (isset($_POST['tri_par_etab_origine'])) {$tri_par_etab_origine=$_POST['tri_par_etab_origine'];} }
 
@@ -80,16 +80,16 @@ if (!checkAccess()) {
 	//=========================
 
 
-	// ERIC on n'imprime plus que les periodes fermées
+	// ERIC on n'imprime plus que les periodes fermÃ©es
 	
 	$periode_ferme = '1';
 	if (empty($_GET['selection_eleve']) and empty($_POST['selection_eleve'])) { $selection_eleve = ''; }
 	   else { if (isset($_GET['selection_eleve'])) { $selection_eleve = $_GET['selection_eleve']; } if (isset($_POST['selection_eleve'])) { $selection_eleve = $_POST['selection_eleve']; } }
 
 	$message_erreur = '';
-		if ( !empty($classe[0]) and empty($periode[0]) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oubliez pas de sélectionner la ou les période(s) !'; }
-		if ( empty($classe[0]) and !empty($periode[0]) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oubliez pas de sélectionner la ou les classe(s) !'; }
-		if ( empty($classe[0]) and empty($periode[0]) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oubliez pas de sélectionner la ou les classe(s) et la ou les période(s) !'; }
+		if ( !empty($classe[0]) and empty($periode[0]) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oubliez pas de sÃ©lectionner la ou les pÃ©riode(s) !'; }
+		if ( empty($classe[0]) and !empty($periode[0]) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oubliez pas de sÃ©lectionner la ou les classe(s) !'; }
+		if ( empty($classe[0]) and empty($periode[0]) and !empty($creer_pdf) and empty($selection_eleve) ) { $message_erreur = 'attention n\'oubliez pas de sÃ©lectionner la ou les classe(s) et la ou les pÃ©riode(s) !'; }
 
 	/*
 	//debug_var();
@@ -111,7 +111,7 @@ if (!checkAccess()) {
 				if(mysql_num_rows($test_per)>0){
 
 					if($message_erreur!=''){$message_erreur.='<br />';}
-					$message_erreur.="La période $periode[$j] n'est pas close pour ".get_class_from_id($classe[$i]);
+					$message_erreur.="La pÃ©riode $periode[$j] n'est pas close pour ".get_class_from_id($classe[$i]);
 				}
 			}
 		}
@@ -142,7 +142,7 @@ if (!checkAccess()) {
 
 	//ERIC
 		if(!empty($creer_pdf) and !empty($periode[0]) and !empty($classe[0]) and !empty($type_bulletin) and empty($selection_eleve) ) {
-			// le redirection se fait sur l'un ou l'autre des 2 fichiers de génération du bulletin en PDF
+			// le redirection se fait sur l'un ou l'autre des 2 fichiers de gÃ©nÃ©ration du bulletin en PDF
 			$bulletin_pass = 'oui';
 		}
 	// FIN Christian renvoye vers le fichier PDF bulletin
@@ -191,14 +191,14 @@ function affichercacher(a) {
 
 <?php
 if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")!='yes') {
-   die("Droits insuffisants pour effectuer cette opération");
+   die("Droits insuffisants pour effectuer cette opÃ©ration");
 }
 
 //debug_var();
 
 	//modification christian pour le choix des bulletins au format PDF
 	if(!isset($id_classe)) {
-		echo "<p class='bold'><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>";
+		echo "<p class='bold'><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour Ã  l'accueil</a>";
 
 		if((empty($format))) {
 			echo " | <a href='index.php?format=pdf'>Impression au format PDF </a>";
@@ -217,7 +217,7 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 
 			?>
 			<form method="post" action="bulletin_pdf_avec_modele_classe.php" name="imprime_pdf_ok" target="_blank">
-		  		<fieldset style="width: 90%; margin: auto;"><legend>Votre sélection</legend>
+		  		<fieldset style="width: 90%; margin: auto;"><legend>Votre sÃ©lection</legend>
 		  		 	<input type="hidden" name="classe" value="<?php echo $classe; ?>" />
 		  		 	<input type="hidden" name="eleve" value="<?php echo $eleve; ?>" />
 		  		 	<input type="hidden" name="periode" value="<?php echo $periode; ?>" />
@@ -227,7 +227,7 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 		  		 	<input type="hidden" name="coefficients_a_1" value="<?php echo $coefficients_a_1; ?>" />
 		  		 	<input type="hidden" name="bull_pdf_debug" value="<?php echo $bull_pdf_debug; ?>" />
 		  		 	<input type="hidden" name="format" value="<?php echo $format; ?>" />
-		  			<center><input type="submit" id="valider_pdf" name="creer_pdf" value="Télécharger le PDF" /></center>
+		  			<center><input type="submit" id="valider_pdf" name="creer_pdf" value="TÃ©lÃ©charger le PDF" /></center>
 				</fieldset>
 			</form>
 			<?php
@@ -245,7 +245,7 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 				<select name="classe[]" size="6" multiple="multiple" tabindex="3">
 				  <optgroup label="----- Listes des classes -----">
 				    <?php
-					if( $_SESSION['statut'] === 'scolarite' ){ //n'affiche que les classes du profil scolarité
+					if( $_SESSION['statut'] === 'scolarite' ){ //n'affiche que les classes du profil scolaritÃ©
 						$login_scolarite = $_SESSION['login'];
 						$requete_classe = mysql_query("SELECT c.classe, c.nom_complet, c.id, jsc.login, jsc.id_classe, p.id_classe FROM ".$prefix_base."classes c, ".$prefix_base."j_scol_classes jsc, ".$prefix_base."periodes p WHERE ( jsc.login = '".$login_scolarite."' AND jsc.id_classe = c.id AND p.id_classe = c.id ) GROUP BY p.id_classe ORDER BY nom_complet ASC");
 					} else {
@@ -261,8 +261,8 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 			  		while ($donner_classe = mysql_fetch_array($requete_classe))
 				  	 {
 						//=========================
-						// AJOUT: boireaus 20071106 d'après Hugues MALHERBE
-						// Pour régler le problème du champ id_classe non récupéré dans le cas d'un accès prof (on ne récupère que c.id, mais c.id=id_classe):
+						// AJOUT: boireaus 20071106 d'aprÃ¨s Hugues MALHERBE
+						// Pour rÃ©gler le problÃ¨me du champ id_classe non rÃ©cupÃ©rÃ© dans le cas d'un accÃ¨s prof (on ne rÃ©cupÃ¨re que c.id, mais c.id=id_classe):
 						$donner_classe['id_classe']=$donner_classe['id'];
 						//=========================
 
@@ -280,7 +280,7 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 			      <td align="center" nowrap="nowrap" valign="middle">
 				<select tabindex="5" name="periode[]" size="4" multiple="multiple">
 				  <?php
-					// sélection des période disponible
+					// sÃ©lection des pÃ©riode disponible
 			            $requete_periode = mysql_query('SELECT nom_periode FROM '.$prefix_base.'periodes GROUP BY '.$prefix_base.'periodes.nom_periode ORDER BY '.$prefix_base.'periodes.nom_periode ASC');
 				  		while($donner_periode = mysql_fetch_array($requete_periode))
 					  	 {
@@ -294,7 +294,7 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 				<select name="eleve[]" size="6" multiple="multiple" tabindex="4">
 				  <optgroup label="----- Listes des &eacute;l&egrave;ves -----">
 				    <?php
-					// sélection des id eleves sélectionné.
+					// sÃ©lection des id eleves sÃ©lectionnÃ©.
 					if(!empty($classe[0]))
 					{
 						$cpt_classe_selec = 0; $selection_classe = "";
@@ -313,7 +313,7 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 				</td>
 			    </tr>
 			    <tr>
-			      <td align="center" nowrap="nowrap" valign="middle"><input name="selection_eleve" id="selection_eleve" value="Liste élève >" onclick="this.form.submit();this.disabled=true;this.value='En cours'" type="submit" title="Transfère les élèves des classe sélectionné" alt="Transfère les élèves des classe sélectionné" /></td>
+			      <td align="center" nowrap="nowrap" valign="middle"><input name="selection_eleve" id="selection_eleve" value="Liste Ã©lÃ¨ve >" onclick="this.form.submit();this.disabled=true;this.value='En cours'" type="submit" title="TransfÃ¨re les Ã©lÃ¨ves des classe sÃ©lectionnÃ©" alt="TransfÃ¨re les Ã©lÃ¨ves des classe sÃ©lectionnÃ©" /></td>
 			    </tr>
 			  </tbody>
 		</table>
@@ -325,20 +325,20 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 		$option_modele_bulletin=getSettingValue("option_modele_bulletin");
 
 		if ($option_modele_bulletin!=1) {
-		    echo "<br />Choisir le modèle de bulletin<br/>";
+		    echo "<br />Choisir le modÃ¨le de bulletin<br/>";
 			echo "<select tabindex=\"5\" name=\"type_bulletin\">";
-			// sélection des modèle des bulletins.
+			// sÃ©lection des modÃ¨le des bulletins.
 			$sql="SELECT id_model_bulletin, valeur FROM ".$prefix_base."modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY ".$prefix_base."modele_bulletin.valeur ASC";
 			$requete_modele = mysql_query($sql);
-			if ($option_modele_bulletin==2) { //Par défaut  le modèle défini pour les classes
-				echo "<option value=\"-1\">Utiliser les modèles pré-sélectionnés par classe</option>";
+			if ($option_modele_bulletin==2) { //Par dÃ©faut  le modÃ¨le dÃ©fini pour les classes
+				echo "<option value=\"-1\">Utiliser les modÃ¨les prÃ©-sÃ©lectionnÃ©s par classe</option>";
 			}
 				while($donner_modele = mysql_fetch_array($requete_modele)) {
 					echo "<option value=\"".$donner_modele['id_model_bulletin']."\"";
 					echo ">".ucfirst($donner_modele['valeur'])."</option>\n";
 				}
 			echo "</select>\n";
-		} else { // on utilise le modèle définie dans les paramètres de la classe.
+		} else { // on utilise le modÃ¨le dÃ©finie dans les paramÃ¨tres de la classe.
 		    echo "<input type=\"hidden\" name=\"type_bulletin\" value=\"-1\" />";
 		}
 ?>
@@ -354,11 +354,11 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 			?>block<?php } else { ?>none<?php } ?>; border-top: solid 1px; border-bottom: solid 1px; padding: 10px; background-color: #E0EEEF; font: normal 85% Verdana, Helvetica, sans-serif;"><!--a name="ao"></a-->
 			  <span style="font-family: Arial;">
 				<input type="checkbox" name="tri_par_etab_origine" id="tri_par_etab_origine" value="oui" <?php if ( isset($tri_par_etab_origine) and $tri_par_etab_origine === 'oui' ) { ?>checked="checked"<?php } ?> />
-				&nbsp;<label for="tri_par_etab_origine" style="cursor: pointer;">Impression triée par établissement d'origine des élèves.</label><br />
+				&nbsp;<label for="tri_par_etab_origine" style="cursor: pointer;">Impression triÃ©e par Ã©tablissement d'origine des Ã©lÃ¨ves.</label><br />
 				<input type="checkbox" name="coefficients_a_1" id="coefficients_a_1" value="oui" <?php if ( isset($coefficients_a_1) and $coefficients_a_1 === 'oui' ) { ?>checked="checked"<?php } ?> />
-				&nbsp;<label for="coefficients_a_1" style="cursor: pointer;">Forcer les coefficients des matières à 1, indépendamment des coefficients saisis dans les paramètres de la classe.</label><br />
+				&nbsp;<label for="coefficients_a_1" style="cursor: pointer;">Forcer les coefficients des matiÃ¨res Ã  1, indÃ©pendamment des coefficients saisis dans les paramÃ¨tres de la classe.</label><br />
 			  	<input type="checkbox" name="bull_pdf_debug" id="bull_pdf_debug" value="oui" <?php if ( isset($bull_pdf_debug) and $bull_pdf_debug === 'oui' ) { ?>checked="checked"<?php } ?> />
-		  		&nbsp;<label for="bull_pdf_debug" style="cursor: pointer;">Activer le debug pour afficher les variables perturbant la génération de PDF.</label><br />
+		  		&nbsp;<label for="bull_pdf_debug" style="cursor: pointer;">Activer le debug pour afficher les variables perturbant la gÃ©nÃ©ration de PDF.</label><br />
 			  </span>
 			</div>
 			<br />
@@ -366,7 +366,7 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 
 
 	 	<input type="hidden" name="format" value="<?php echo $format; ?>" />
-		<input type="submit" id="creer_pdf" name="creer_pdf" value="Créer le PDF" />
+		<input type="submit" id="creer_pdf" name="creer_pdf" value="CrÃ©er le PDF" />
 		</center>
 		</fieldset>
 	   </form>
@@ -377,22 +377,22 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 <p>Vous allez effectuer l'impression de bulletin au format PDF. Voici quelques conseils pour utiliser l'interface.</p>
 <ul>
 <li>
-	<p><b>Procédure à suivre pour imprimer des classes complètes :</b><br /></p>
+	<p><b>ProcÃ©dure Ã  suivre pour imprimer des classes complÃ¨tes :</b><br /></p>
 	<ul>
-		<li><p>Sélectionner la ou les classes à imprimer. Pour une sélection multiple, utiliser le CTRL-Clic et l'ascenseur.</p></li>
-		<li><p>Sélectionner ensuite la ou les périodes pour lesquelles imprimer les bulletins. Remarque : Seules les périodes fermées seront imprimées.</p></li>
-		<li><p>Choisir si nécessaire le modèle de bulletin à appliquer.</p></li>
+		<li><p>SÃ©lectionner la ou les classes Ã  imprimer. Pour une sÃ©lection multiple, utiliser le CTRL-Clic et l'ascenseur.</p></li>
+		<li><p>SÃ©lectionner ensuite la ou les pÃ©riodes pour lesquelles imprimer les bulletins. Remarque : Seules les pÃ©riodes fermÃ©es seront imprimÃ©es.</p></li>
+		<li><p>Choisir si nÃ©cessaire le modÃ¨le de bulletin Ã  appliquer.</p></li>
 		<li><p>Valider en cliquant sur le bouton "CREER LE PDF".</p><br/></li>
 	</ul>
 </li>
 <li>
-	<p><b>Procédure à suivre pour imprimer quelques élèves dans des classes :</b><br /></p>
+	<p><b>ProcÃ©dure Ã  suivre pour imprimer quelques Ã©lÃ¨ves dans des classes :</b><br /></p>
 	<ul>
-		<li><p>Sélectionner la ou les classes à imprimer. Pour une sélection multiple, utiliser le CTRL-Clic et l'ascenseur.</p></li>
-		<li><p>Cliquer sur le bouton "Liste élèves".</p></li>
-		<li><p>Sélectionner la ou les élèves à imprimer. Pour une sélection multiple, utiliser le CTRL-Clic et l'ascenseur.</p></li>
-		<li><p>Sélectionner ensuite la ou les périodes pour lesquelles imprimer les bulletins. Remarque : Seules les périodes fermées seront imprimées.</p></li>
-		<li><p>Choisir si nécessaire le modèle de bulletin à appliquer.</p></li>
+		<li><p>SÃ©lectionner la ou les classes Ã  imprimer. Pour une sÃ©lection multiple, utiliser le CTRL-Clic et l'ascenseur.</p></li>
+		<li><p>Cliquer sur le bouton "Liste Ã©lÃ¨ves".</p></li>
+		<li><p>SÃ©lectionner la ou les Ã©lÃ¨ves Ã  imprimer. Pour une sÃ©lection multiple, utiliser le CTRL-Clic et l'ascenseur.</p></li>
+		<li><p>SÃ©lectionner ensuite la ou les pÃ©riodes pour lesquelles imprimer les bulletins. Remarque : Seules les pÃ©riodes fermÃ©es seront imprimÃ©es.</p></li>
+		<li><p>Choisir si nÃ©cessaire le modÃ¨le de bulletin Ã  appliquer.</p></li>
 		<li><p>Valider en cliquant sur le bouton "CREER LE PDF".</p></li>
 	</ul>
 </li>
@@ -401,9 +401,9 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 
 		<?php
 	}
-	// fin de modification de la sélection pour le PDF Christian
+	// fin de modification de la sÃ©lection pour le PDF Christian
 
-	//modification christian gestion des modèles
+	//modification christian gestion des modÃ¨les
 
 
 if (!isset($id_classe) and $format != 'pdf' and $modele === '') {
@@ -429,7 +429,7 @@ if (!isset($id_classe) and $format != 'pdf' and $modele === '') {
     echo "</p>\n";
 
 	if($nombreligne==0){
-		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
+		echo "<p>Aucune classe ne vous est attribuÃ©e.<br />Contactez l'administrateur pour qu'il effectue le paramÃ©trage appropriÃ© dans la Gestion des classes.</p>\n";
 	}
 	else{
 		echo "<p>Cliquez sur la classe pour laquelle vous souhaitez extraire les bulletins.<br />\n";
@@ -447,7 +447,7 @@ if (!isset($id_classe) and $format != 'pdf' and $modele === '') {
 
 
 
-		echo "<p>Ou <a href='bull_index.php'>accéder au nouveau dispositif des bulletins (<i>HTML et PDF</i>)</a></p>\n";
+		echo "<p>Ou <a href='bull_index.php'>accÃ©der au nouveau dispositif des bulletins (<i>HTML et PDF</i>)</a></p>\n";
 	}
 }
 
@@ -455,7 +455,7 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 	
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 
-	echo "<p class='bold'><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>";
+	echo "<p class='bold'><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour Ã  l'accueil</a>";
 
 	echo " | <a href='index.php?format=pdf'>Impression au format PDF</a>\n";
 
@@ -503,7 +503,7 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 
 	if($id_class_prec!=0){
 		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec";
-		echo "#graph'>Classe précédente</a>";
+		echo "#graph'>Classe prÃ©cÃ©dente</a>";
 	}
 	if($chaine_options_classes!="") {
 		echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
@@ -519,7 +519,7 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 
 	echo "</form>\n";
 
-	echo "<p><b>Choisissez la période : </b></p>\n";
+	echo "<p><b>Choisissez la pÃ©riode : </b></p>\n";
 	include "../lib/periodes.inc.php";
 
 	$i="1";
@@ -541,7 +541,7 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 		echo "<tr>\n";
 		if ($ver_periode[$i] == "N") {
 			echo "<td style='text-align:center; color:red;'>&nbsp;</td>\n";
-			echo "<td><b>".ucfirst($nom_periode[$i])."</b> : édition impossible ";
+			echo "<td><b>".ucfirst($nom_periode[$i])."</b> : Ã©dition impossible ";
 			echo " (<i>$gepiOpenPeriodLabel</i>)</td>\n";
 		} else {
 			echo "<td align='center'><input type='radio' name='periode_num' id='periode_num_$i' value='$i'";
@@ -554,8 +554,8 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 			echo " onchange='colore_checked();'";
 			echo " /> </td>\n";
 			echo "<td id='td_periode_$i'><label for='periode_num_$i' style='cursor: pointer;'><b>".ucfirst($nom_periode[$i])."</b>";
-			if ($ver_periode[$i] == "P"){echo " (<i>Période partiellement close, seule la saisie des avis du conseil de classe est possible</i>)";}
-			if ($ver_periode[$i] == "O"){echo " (<i>Période entièrement close, plus aucune saisie/modification n'est possible</i>)";}
+			if ($ver_periode[$i] == "P"){echo " (<i>PÃ©riode partiellement close, seule la saisie des avis du conseil de classe est possible</i>)";}
+			if ($ver_periode[$i] == "O"){echo " (<i>PÃ©riode entiÃ¨rement close, plus aucune saisie/modification n'est possible</i>)";}
 			echo "</label></td>\n";
 			$num_per_close=$i;
 			$nb_per_close++;
@@ -584,11 +584,11 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 </script>\n";
 
 	// AJOUTER LES AUTRES PARAMETRES
-	echo "<p><b>Et les bulletins à imprimer: </b></p>\n";
+	echo "<p><b>Et les bulletins Ã  imprimer: </b></p>\n";
 	$sql="SELECT DISTINCT e.login,e.nom,e.prenom FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND jec.id_classe='$id_classe' ORDER BY e.nom,e.prenom";
 	$res_ele=mysql_query($sql);
 	if(mysql_num_rows($res_ele)==0){
-		echo "<p style='color:red;'>ERREUR: La classe choisie ne compterait aucun élève?</p>\n";
+		echo "<p style='color:red;'>ERREUR: La classe choisie ne compterait aucun Ã©lÃ¨ve?</p>\n";
 		echo "</form>\n";
 		echo "</body>\n";
 		echo "</html>\n";
@@ -596,15 +596,15 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 	}
 	else{
 
-		echo "<table border='0' summary='Sélection'>\n";
+		echo "<table border='0' summary='SÃ©lection'>\n";
 		echo "<tr>\n";
 		echo "<td valign='top'><input type='radio' name='selection' id='selection_CLASSE_ENTIERE_' value='_CLASSE_ENTIERE_' onchange=\"affiche_nb_ele_select();\" checked /></td>\n";
-		echo "<td valign='top'><label for='selection_CLASSE_ENTIERE_' style='cursor: pointer;'>Classe entière</label></td>\n";
+		echo "<td valign='top'><label for='selection_CLASSE_ENTIERE_' style='cursor: pointer;'>Classe entiÃ¨re</label></td>\n";
 		echo "<td valign='top'> ou </td>\n";
 		//echo "</tr>\n";
 		//echo "<tr>\n";
 		echo "<td valign='top'><input type='radio' name='selection' id='selection_ele' value='_SELECTION_' onchange=\"affiche_nb_ele_select();\" /></td>\n";
-		echo "<td valign='top'><label for='selection_ele' style='cursor: pointer;'>Sélection</label><br />\n";
+		echo "<td valign='top'><label for='selection_ele' style='cursor: pointer;'>SÃ©lection</label><br />\n";
 		echo "<select id='liste_login_ele' name='liste_login_ele[]' multiple='yes' size='5' onchange=\"document.getElementById('selection_ele').checked=true;affiche_nb_ele_select();\">\n";
 		
 		while($lig_ele=mysql_fetch_object($res_ele)){
@@ -638,20 +638,20 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 		}
 
 		if(num>=2){
-			document.getElementById('nb_ele_select').innerHTML=num+' élèves sélectionnés.';
+			document.getElementById('nb_ele_select').innerHTML=num+' Ã©lÃ¨ves sÃ©lectionnÃ©s.';
 		}
 		else{
-			document.getElementById('nb_ele_select').innerHTML=num+' élève sélectionné.';
+			document.getElementById('nb_ele_select').innerHTML=num+' Ã©lÃ¨ve sÃ©lectionnÃ©.';
 		}
 	}
 </script>\n";
 
 	echo "<table border='0' summary='Nombre de bulletins'>\n";
-	echo "<tr><td valign='top'><input type='checkbox' name='un_seul_bull_par_famille' id='un_seul_bull_par_famille' value='oui' /></td><td><label for='un_seul_bull_par_famille' style='cursor: pointer;'>Ne pas imprimer de bulletin pour le deuxième parent<br />(<i>même dans le cas de parents séparés</i>).</label></td></tr>\n";
+	echo "<tr><td valign='top'><input type='checkbox' name='un_seul_bull_par_famille' id='un_seul_bull_par_famille' value='oui' /></td><td><label for='un_seul_bull_par_famille' style='cursor: pointer;'>Ne pas imprimer de bulletin pour le deuxiÃ¨me parent<br />(<i>mÃªme dans le cas de parents sÃ©parÃ©s</i>).</label></td></tr>\n";
 
 
     if(!getSettingValue("bull_intitule_app")){
-		$bull_intitule_app="Appréciations/Conseils";
+		$bull_intitule_app="ApprÃ©ciations/Conseils";
 	}
 	else{
 		$bull_intitule_app=getSettingValue("bull_intitule_app");
@@ -659,19 +659,19 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 
 	// A FAIRE:
 	// Tester et ne pas afficher:
-	// - si tous les coeff sont à 1
+	// - si tous les coeff sont Ã  1
 	$test_coef=mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef!='1.0')"));
 	if($test_coef>0){
 		echo "<tr>\n";
-		echo "<td colspan=\"2\"><br /><br /><b>Calcul des moyennes générales";
-		// Ne pas afficher la mention de catégorie, si on n'affiche pas les catégories dans cette classe.
+		echo "<td colspan=\"2\"><br /><br /><b>Calcul des moyennes gÃ©nÃ©rales";
+		// Ne pas afficher la mention de catÃ©gorie, si on n'affiche pas les catÃ©gories dans cette classe.
 		$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
 		if ($affiche_categories == "y") {
-			echo " et par catégorie";
+			echo " et par catÃ©gorie";
 		}
 		echo ".<br /></b></td>\n";
 		echo "</tr>\n";
-		echo "<tr><td valign='top'><input type='checkbox' name='coefficients_a_1' id='coefficients_a_1' value='oui' /></td><td><label for='coefficients_a_1' style='cursor: pointer;'>Forcer les coefficients des matières à 1, indépendamment des coefficients saisis dans les paramètres de la classe.</label></td></tr>\n";
+		echo "<tr><td valign='top'><input type='checkbox' name='coefficients_a_1' id='coefficients_a_1' value='oui' /></td><td><label for='coefficients_a_1' style='cursor: pointer;'>Forcer les coefficients des matiÃ¨res Ã  1, indÃ©pendamment des coefficients saisis dans les paramÃ¨tres de la classe.</label></td></tr>\n";
 	}
 	echo "</table>\n";
 
@@ -686,7 +686,7 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 	if($b_adr_pg_defaut=="xx") {
 		echo "checked='checked' ";
 	}
-	echo "/><label for='b_adr_pg_xx' style='cursor:pointer'> D'après les paramètres du bulletin HTML</label><br />\n";
+	echo "/><label for='b_adr_pg_xx' style='cursor:pointer'> D'aprÃ¨s les paramÃ¨tres du bulletin HTML</label><br />\n";
 
 	echo "<input type='radio' name='b_adr_pg' id='b_adr_pg_nn' value='nn' ";
 	if($b_adr_pg_defaut=="nn") {
@@ -718,11 +718,11 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 	echo "</form>\n";
 
 	echo "<br />\n<center><table border=\"1\" cellpadding=\"10\" width=\"80%\" summary='Avertissement'><tr><td>";
-	echo "<center><b>Avertissement</b></center><br /><br />La mise en page des bulletins est très différente à l'écran et à l'impression.
+	echo "<center><b>Avertissement</b></center><br /><br />La mise en page des bulletins est trÃ¨s diffÃ©rente Ã  l'Ã©cran et Ã  l'impression.
 	Avant d'imprimer les bulletins :
 	<ul>
-	<li>Veillez à utiliser la fonction \"aperçu avant impression\" disponible sur la plupart des navigateurs.</li>
-	<li>Veillez à régler les paramètres de marges, d'en-tête et de pied de page.</li>
+	<li>Veillez Ã  utiliser la fonction \"aperÃ§u avant impression\" disponible sur la plupart des navigateurs.</li>
+	<li>Veillez Ã  rÃ©gler les paramÃ¨tres de marges, d'en-tÃªte et de pied de page.</li>
 	</ul>
 	</td></tr></table></center>\n";
 }

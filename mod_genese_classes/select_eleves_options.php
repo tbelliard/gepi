@@ -49,13 +49,13 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Choix des options des élèves',
+description='GÃ©nÃ¨se des classes: Choix des options des Ã©lÃ¨ves',
 statut='';";
 $insert=mysql_query($sql);
 }
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -192,9 +192,9 @@ $_POST['autre_opt_3']=	Array (*)
 
 }
 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-$titre_page = "Génèse classe: Choix options élèves";
+$titre_page = "GÃ©nÃ¨se classe: Choix options Ã©lÃ¨ves";
 //echo "<div class='noprint'>\n";
 require_once("../lib/header.inc");
 //echo "</div>\n";
@@ -222,12 +222,12 @@ echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 echo ">Rafraichir sans enregistrer</a></p>\n";
 
 //=================================
-// Récupération de la liste des classes actuelles et futures et de la liste des options
+// RÃ©cupÃ©ration de la liste des classes actuelles et futures et de la liste des options
 $classe_fut=array();
 $sql="SELECT DISTINCT classe FROM gc_divisions WHERE projet='$projet' AND statut='future' ORDER BY classe;";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	echo "<p>Aucune classe future n'est encore définie pour ce projet.</p>\n";
+	echo "<p>Aucune classe future n'est encore dÃ©finie pour ce projet.</p>\n";
 	// Est-ce que cela doit vraiment bloquer la saisie des options?
 	require("../lib/footer.inc.php");
 	die();
@@ -250,7 +250,7 @@ else {
 	}
 	$classe_fut[]="Red";
 	$classe_fut[]="Dep";
-	$classe_fut[]=""; // Vide pour les Non Affectés
+	$classe_fut[]=""; // Vide pour les Non AffectÃ©s
 }
 
 $id_classe_actuelle=array();
@@ -258,7 +258,7 @@ $classe_actuelle=array();
 $sql="SELECT DISTINCT id_classe,classe FROM gc_divisions WHERE projet='$projet' AND statut='actuelle' ORDER BY classe;";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	echo "<p>Aucune classe actuelle n'est encore sélectionnée pour ce projet.</p>\n";
+	echo "<p>Aucune classe actuelle n'est encore sÃ©lectionnÃ©e pour ce projet.</p>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -317,7 +317,7 @@ if(mysql_num_rows($res)>0) {
 //=============================
 include("lib_gc.php");
 // On y initialise les couleurs
-// Il faut que le tableaux $classe_fut soit initialisé.
+// Il faut que le tableaux $classe_fut soit initialisÃ©.
 //=============================
 
 //=========================================
@@ -343,7 +343,7 @@ $eff_tot=0;
 $eff_tot_M=0;
 $eff_tot_F=0;
 
-// Nombre max de périodes pour faire les requêtes pour les redoublants dont la classe n'est pas "connue"
+// Nombre max de pÃ©riodes pour faire les requÃªtes pour les redoublants dont la classe n'est pas "connue"
 $max_nb_per=0;
 
 $chaine_id_classe="";
@@ -372,7 +372,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 
 	//==========================================
 	echo "<tr>\n";
-	echo "<th rowspan='2'>Elève</th>\n";
+	echo "<th rowspan='2'>ElÃ¨ve</th>\n";
 	echo "<th rowspan='2'>Sexe</th>\n";
 	echo "<th rowspan='2'>Classe<br />actuelle</th>\n";
 	echo "<th rowspan='2'>Profil</th>\n";
@@ -492,7 +492,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 	}
 	echo "</tr>\n";
 	//==========================================
-	// Effectifs utiles: sans les départs/red
+	// Effectifs utiles: sans les dÃ©parts/red
 	echo "<tr>\n";
 	echo "<th>Eff.util&nbsp;: <span id='eff_ut_tot_".$id_classe_actuelle[$j]."'>&nbsp;</span></th>\n";
 	echo "<th id='eff_ut_tot_sexe_".$id_classe_actuelle[$j]."'>...</th>\n";
@@ -557,7 +557,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 	for($i=0;$i<count($autre_opt);$i++) {
 		echo "<th>\n";
 		echo "<a href=\"javascript:modif_colonne('autre_opt_$i',$j,true);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>";
-		echo " / <a href=\"javascript:modif_colonne('autre_opt_$i',$j,false);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+		echo " / <a href=\"javascript:modif_colonne('autre_opt_$i',$j,false);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>";
 		echo "</th>\n";
 	}
 	echo "</tr>\n";
@@ -718,7 +718,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 				}
 			}
 			else {
-				// On récupère les options de l'année écoulée
+				// On rÃ©cupÃ¨re les options de l'annÃ©e Ã©coulÃ©e
 				$sql="SELECT * FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE jeg.id_groupe=jgm.id_groupe AND jeg.login='$lig->login';";
 				$res_opt=mysql_query($sql);
 				if(mysql_num_rows($res_opt)>0) {
@@ -827,12 +827,12 @@ echo "</form>\n";
 
 
 	//===============================================
-	// Paramètres concernant le délais avant affichage d'une infobulle via delais_afficher_div()
-	// Hauteur de la bande testée pour la position de la souris:
+	// ParamÃ¨tres concernant le dÃ©lais avant affichage d'une infobulle via delais_afficher_div()
+	// Hauteur de la bande testÃ©e pour la position de la souris:
 	$hauteur_survol_infobulle=20;
-	// Largeur de la bande testée pour la position de la souris:
+	// Largeur de la bande testÃ©e pour la position de la souris:
 	$largeur_survol_infobulle=100;
-	// Délais en ms avant affichage:
+	// DÃ©lais en ms avant affichage:
 	//$delais_affichage_infobulle=500;
 	$delais_affichage_infobulle=2000;
 
@@ -849,7 +849,7 @@ echo "<div id='div_test_aff_classe2' class='infobulle_corps' style='position:abs
 
 	//echo "<div id='div_set_profil' class='infobulle_corps' style='position:absolute; border:1px solid black;'>Profil</div>\n";
 
-	$titre="Sélection du profil";
+	$titre="SÃ©lection du profil";
 	$texte="<p style='text-align:center;'>";
 	for($loop=0;$loop<count($tab_profil);$loop++) {
 		if($loop>0) {$texte.=" - ";}
@@ -938,7 +938,7 @@ echo "<div id='div_test_aff_classe2' class='infobulle_corps' style='position:abs
 
 
 
-$titre="<span id='entete_div_photo_eleve'>Elève</span>";
+$titre="<span id='entete_div_photo_eleve'>ElÃ¨ve</span>";
 $texte="<div id='corps_div_photo_eleve' align='center'>\n";
 //$texte.="<img src='../photos/eleves/".$photo."' id='id_photo_eleve' width='150' alt=\"Photo\" />";
 //$texte.="<img src='../photos/eleves/".$photo."' id='id_photo_eleve' width='150' alt=\"Photo\" />";
@@ -956,7 +956,7 @@ function affiche_photo(photo,nom_prenom) {
 var tab_id_classe=new Array($chaine_id_classe);
 
 function calcule_effectif(champ,n) {
-	// Il faut déclarer les variables k, i et j locales sans quoi l'appel récursif à calcule_effectif() mène à une boucle infinie.
+	// Il faut dÃ©clarer les variables k, i et j locales sans quoi l'appel rÃ©cursif Ã  calcule_effectif() mÃ¨ne Ã  une boucle infinie.
 	var k;
 	var i;
 	var j;
@@ -978,7 +978,7 @@ function calcule_effectif(champ,n) {
 
 		for(i=0;i<$cpt;i++) {
 			//alert('document.getElementById('+champ+'_'+i+')')
-			// Le champ peut ne pas exister pour les classes futures (à cause des options exclues sur certaines classes)
+			// Le champ peut ne pas exister pour les classes futures (Ã  cause des options exclues sur certaines classes)
 			if(document.getElementById(champ+'_'+k+'_'+i)) {
 				if(document.getElementById(champ+'_'+k+'_'+i).checked) {
 					eff++;
@@ -1004,7 +1004,7 @@ function calcule_effectif(champ,n) {
 		}
 
 		if(champ=='classe_fut') {
-			// Il faut recalculer les effectifs utiles au cas où on aurait augmenté/réduit l'effectif des Red/Dep
+			// Il faut recalculer les effectifs utiles au cas oÃ¹ on aurait augmentÃ©/rÃ©duit l'effectif des Red/Dep
 
 			//calcule_effectif('classe_fut',".count($classe_fut).");
 			calcule_effectif('lv1',".count($lv1).");
@@ -1038,7 +1038,7 @@ function calcule_eff_utile_total() {
 	for(k=0;k<".count($classe_fut).";k++) {
 		if((k!=".(count($classe_fut)-2).")&&(k!=".(count($classe_fut)-3).")) {
 			for(i=0;i<$cpt;i++) {
-				// Le champ peut ne pas exister pour les classes futures (à cause des options exclues sur certaines classes)
+				// Le champ peut ne pas exister pour les classes futures (Ã  cause des options exclues sur certaines classes)
 				if(document.getElementById('classe_fut_'+k+'_'+i)) {
 					if(document.getElementById('classe_fut_'+k+'_'+i).checked) {
 						if(document.getElementById('eleve_sexe_'+i)) {
@@ -1079,7 +1079,7 @@ function colorise(mode,n) {
 	for(k=0;k<n;k++) {
 		for(i=0;i<$cpt;i++) {
 			if(mode!='profil') {
-				// Le champ peut ne pas exister pour les classes futures (à cause des options exclues sur certaines classes)
+				// Le champ peut ne pas exister pour les classes futures (Ã  cause des options exclues sur certaines classes)
 				if(document.getElementById(mode+'_'+k+'_'+i)) {
 					if(document.getElementById(mode+'_'+k+'_'+i).checked) {
 						if(mode=='classe_fut') {
@@ -1151,7 +1151,7 @@ function lance_colorisation() {
 }
 ";
 
-// probleme: si une classe ou catégorie (red ou arriv) a un effectif nul le rang du premier et du dernier élève ne sont pas affectés et on obtient alors une erreur
+// probleme: si une classe ou catÃ©gorie (red ou arriv) a un effectif nul le rang du premier et du dernier Ã©lÃ¨ve ne sont pas affectÃ©s et on obtient alors une erreur
 $chaine_reperes_eleves_classes="";
 for($i=0;$i<count($num_eleve1_id_classe_actuelle);$i++) {
 	if($i==0) {$chaine_reperes_eleves_classes.="var num_eleve1_id_classe_actuelle=new Array('$num_eleve1_id_classe_actuelle[$i]'";}

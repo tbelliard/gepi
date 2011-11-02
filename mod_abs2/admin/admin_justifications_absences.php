@@ -102,7 +102,7 @@ echo "</p>";
 ?>
 
 <div style="text-align:center">
-    <h2>Définition des justifications d'absence</h2>
+    <h2>DÃ©finition des justifications d'absence</h2>
 <?php if ($action == "ajouter" OR $action == "modifier" OR $action == "supprimer_statut") { ?>
 <div style="text-align:center">
     <?php
@@ -143,7 +143,7 @@ echo add_token_field();
 } ?>
 	<a href="admin_justifications_absences.php?action=ajouter"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter une nouvelle justification</a>
 	<br/><br/>
-	<a href="admin_justifications_absences.php?action=ajouterdefaut<?php echo add_token_in_url();?>"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les justifications par défaut</a>
+	<a href="admin_justifications_absences.php?action=ajouterdefaut<?php echo add_token_in_url();?>"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les justifications par dÃ©faut</a>
 	<br/><br/>
     <table cellpadding="0" cellspacing="1" class="menu">
       <tr>
@@ -164,7 +164,7 @@ echo add_token_field();
 	  <td><?php echo $justification->getNom(); ?></td>
 	  <td><?php echo $justification->getCommentaire(); ?></td>
           <td><a href="admin_justifications_absences.php?action=modifier&amp;id=<?php echo $justification->getId(); echo add_token_in_url();?>"><img src="../../images/icons/configure.png" title="Modifier" border="0" alt="" /></a></td>
-          <td><a href="admin_justifications_absences.php?action=supprimer&amp;id=<?php echo $justification->getId(); echo add_token_in_url();?>" onClick="return confirm('Etes-vous sûr de vouloir supprimer ce justification ?')"><img src="../../images/icons/delete.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
+          <td><a href="admin_justifications_absences.php?action=supprimer&amp;id=<?php echo $justification->getId(); echo add_token_in_url();?>" onClick="return confirm('Etes-vous sÃ»r de vouloir supprimer ce justification ?')"><img src="../../images/icons/delete.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
           <td><a href="admin_justifications_absences.php?action=monter&amp;id=<?php echo $justification->getId(); echo add_token_in_url();?>"><img src="../../images/up.png" width="22" height="22" title="monter" border="0" alt="" /></a></td>
           <td><a href="admin_justifications_absences.php?action=descendre&amp;id=<?php echo $justification->getId(); echo add_token_in_url();?>"><img src="../../images/down.png" width="22" height="22" title="descendre" border="0" alt="" /></a></td>
         </tr>

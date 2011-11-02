@@ -20,23 +20,23 @@
 * along with GEPI; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
 ?>
 [onload;file=menu.php]
-<p>Vous allez mettre en place les correspondances entre les logins de Gépi et ceux de votre ENT d'après les noms et les prénoms, controlez dans l'aide les contraintes sur ce fichier :</p>
+<p>Vous allez mettre en place les correspondances entre les logins de GÃ©pi et ceux de votre ENT d'aprÃ¨s les noms et les prÃ©noms, controlez dans l'aide les contraintes sur ce fichier :</p>
 <form action="index.php?ctrl=cvsent&action=result" enctype='multipart/form-data' method="post">
 <p>
-	<input type="radio" name="choix" value="erreur" checked="checked" />Recherche des erreurs : seules les erreurs sont affichées, aucune donnée n'est écrite dans la base<br/>
-	<input type="radio" name="choix" value="test" />Test : toutes les entrées sont listées avec leur état, aucune donnée n'est écrite dans la base<br/>
-	<input type="radio" name="choix" value="ecrit" />Inscription dans la base : toutes les entrées sont traitées puis listées avec leur état. Les données sont écrites dans la base <br/>
+	<input type="radio" name="choix" value="erreur" checked="checked" />Recherche des erreurs : seules les erreurs sont affichÃ©es, aucune donnÃ©e n'est Ã©crite dans la base<br/>
+	<input type="radio" name="choix" value="test" />Test : toutes les entrÃ©es sont listÃ©es avec leur Ã©tat, aucune donnÃ©e n'est Ã©crite dans la base<br/>
+	<input type="radio" name="choix" value="ecrit" />Inscription dans la base : toutes les entrÃ©es sont traitÃ©es puis listÃ©es avec leur Ã©tat. Les donnÃ©es sont Ã©crites dans la base <br/>
 </p>
 <p class="title-page">Veuillez fournir le fichier csv :</p>
 <p>
 	<input type='file'  name='fichier'  />
 
-<input type='submit' value='Téléchargement' />
+<input type='submit' value='TÃ©lÃ©chargement' />
 </p>
 </form>

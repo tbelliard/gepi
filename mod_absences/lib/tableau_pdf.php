@@ -3,7 +3,7 @@
 *
 * $Id$
 *
-* Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
+* Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, StÃ©phane Boireau, Julien Jocal
 * sur proposition de Didier Blanqui
 *
 * This file is part of GEPI.
@@ -25,12 +25,12 @@
 
 $niveau_arbo = 2;
 //================================
-// REMONTé: boireaus 20080102
+// REMONTÃ©: boireaus 20080102
 // Initialisations files
 require_once('../../lib/initialisations.inc.php');
 
 // Lorsque qu'on utilise une session PHP, parfois, IE n'affiche pas le PDF
-// C'est un problème qui affecte certaines versions d'IE.
+// C'est un problÃ¨me qui affecte certaines versions d'IE.
 // Pour le contourner, on ajoutez la ligne suivante avant session_start() :
 session_cache_limiter('private');
 
@@ -58,7 +58,7 @@ include("../lib/functions.php");
 
 define('FPDF_FONTPATH','../../fpdf/font/');
 
-// définition des marge
+// dÃ©finition des marge
 	define('TopMargin','5');
 	define('RightMargin','2');
 	define('LeftMargin','2');
@@ -68,7 +68,7 @@ define('FPDF_FONTPATH','../../fpdf/font/');
 
 
 /* ************************* */
-/*    fonction spécifique    */
+/*    fonction spÃ©cifique    */
 /* ************************* */
 function redimensionne_image_logo($photo, $L_max, $H_max)
 {
@@ -77,7 +77,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	// largeur et hauteur de l'image d'origine
 	$largeur = $info_image[0];
 	$hauteur = $info_image[1];
-	// largeur et/ou hauteur maximum à afficher en pixel
+	// largeur et/ou hauteur maximum Ã  afficher en pixel
 	$taille_max_largeur = $L_max;
 	$taille_max_hauteur = $H_max;
 
@@ -86,7 +86,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	$ratio_h = $hauteur / $taille_max_hauteur;
 	$ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
 
-	// définit largeur et hauteur pour la nouvelle image
+	// dÃ©finit largeur et hauteur pour la nouvelle image
 	$nouvelle_largeur = $largeur / $ratio;
 	$nouvelle_hauteur = $hauteur / $ratio;
 
@@ -100,13 +100,13 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 header('Content-Type: application/pdf');
 
 /* ******************************************** */
-/*     initialisation des variable d'entré      */
+/*     initialisation des variable d'entrÃ©      */
 /* ******************************************** */
 
 //choix du tri pour le tableau
 $tri = isset($_GET['tri']) ? $_GET['tri'] : 'nom, prenom';
 
-// On ajoute un paramètre sur les élèves de ce CPE en particulier
+// On ajoute un paramÃ¨tre sur les Ã©lÃ¨ves de ce CPE en particulier
 $sql_eleves_cpe = "SELECT e_login FROM j_eleves_cpe WHERE cpe_login = '".$_SESSION['login']."'";
 $query_eleves_cpe = mysql_query($sql_eleves_cpe) OR die('Erreur SQL ! <br />' . $sql_eleves_cpe . ' <br /> ' . mysql_error());
 $test_cpe = array();
@@ -116,7 +116,7 @@ while($test_eleves_cpe = mysql_fetch_array($query_eleves_cpe)){
 	$test_cpe[] = $test_eleves_cpe['e_login'];
 }
 
-	// initialisation des variables d'entrée
+	// initialisation des variables d'entrÃ©e
    if (empty($_GET['type']) and empty($_POST['type'])) { $type = ''; }
     else { if (isset($_GET['type'])) { $type = $_GET['type']; } if (isset($_POST['type'])) { $type = $_POST['type']; } }
    if (empty($_GET['justifie']) and empty($_POST['justifie'])) { $justifie = ''; }
@@ -138,7 +138,7 @@ if ($type=='A') {$typetableau='des absences';}
 if ($type=='R') {$typetableau='des retards';}
 if ($type=='D') {$typetableau='des dispenses';}
 if ($type=='I') {$typetableau='de l\'Infirmerie';}
-// prépation de la requête modification pour absences par telephone didier
+// prÃ©pation de la requÃªte modification pour absences par telephone didier
 	if(!empty($type)) {
 		$requete_recherche = 'type_absence_eleve = \''.$type.'\'';
 	}
@@ -211,10 +211,10 @@ if ($type=='I') {$typetableau='de l\'Infirmerie';}
 	$nb_d_entree_total = mysql_num_rows( $executer );
 	$i = 0;
 
-	//mise des données dans un tableau
+	//mise des donnÃ©es dans un tableau
 	while ($donner = mysql_fetch_array( $executer ))
 	{
-		// On vérifie que le cpe a les droits sur ces élèves
+		// On vÃ©rifie que le cpe a les droits sur ces Ã©lÃ¨ves
 		if (in_array($donner["eleve_absence_eleve"], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
 
 			$tab_donnee[$i]['nom']							= $donner['nom'];
@@ -228,41 +228,41 @@ if ($type=='I') {$typetableau='de l\'Infirmerie';}
 			$tab_donnee[$i]['info_justify_absence_eleve']	= $donner['info_justify_absence_eleve'];
 			$tab_donnee[$i]['info_absence_eleve']			= $donner['info_absence_eleve'];
 
-			$i = $i+1; // On incrémente
+			$i = $i+1; // On incrÃ©mente
 
 		}
 	}
 
 /* *********************************************/
-/* information sur la présentation du document */
+/* information sur la prÃ©sentation du document */
 /* *********************************************/
 
-	$caractere_utilse = 'arial'; // caractère utilisé
+	$caractere_utilse = 'arial'; // caractÃ¨re utilisÃ©
 	$affiche_logo_etab = '1';
 	$nom_etab_gras = '0';
-	$entente_mel = '1'; // afficher l'adresse mel dans l'entête
+	$entente_mel = '1'; // afficher l'adresse mel dans l'entÃªte
 		$courrier_image = '';
 		$courrier_texte = '';
-	$entente_tel = '1'; // afficher le numéro de téléphone dans l'entête
+	$entente_tel = '1'; // afficher le numÃ©ro de tÃ©lÃ©phone dans l'entÃªte
 		$tel_image = '';
 		$tel_texte = '';
-	$entente_fax = '1'; // afficher le numéro de fax dans l'entête
+	$entente_fax = '1'; // afficher le numÃ©ro de fax dans l'entÃªte
 		$fax_image = '';
 		$fax_texte = '';
 	$L_max_logo = 75; $H_max_logo=75; //dimension du logo
-	$centrage_logo = '1'; // centrer le logo de l'établissement
+	$centrage_logo = '1'; // centrer le logo de l'Ã©tablissement
 	$Y_centre_logo = '18'; // centre du logo sur la page
-	$affiche_date_edition = '1'; // affiche la date d'édition
-	$taille_texte_date_edition = '8'; // définit la taille de la date d'édition
+	$affiche_date_edition = '1'; // affiche la date d'Ã©dition
+	$taille_texte_date_edition = '8'; // dÃ©finit la taille de la date d'Ã©dition
 
 	// point de commencement du tableau sur la page
 	$x_tab = '5';
 	$y_tab = '40';
 
-	// hauteur de l'entête
+	// hauteur de l'entÃªte
 	$hau_entete = '6';
-    // ajout classe dans tableau  et  modification différentes largeurs de colonne
-	// largeur de la colonne du nom de l'élève
+    // ajout classe dans tableau  et  modification diffÃ©rentes largeurs de colonne
+	// largeur de la colonne du nom de l'Ã©lÃ¨ve
 	$lar_col_eleve = '58';
 	// largeur de la colonneclasse
 	$lar_col_classe = '14';
@@ -284,18 +284,18 @@ if ($type=='I') {$typetableau='de l\'Infirmerie';}
 	$lar_col_heure_dispense = '25';
       // largeur de la colonne motif
 	$lar_col_motif = '14';
-	// nombre de ligne à affiché sur 1 page
+	// nombre de ligne Ã  affichÃ© sur 1 page
 	$nb_ligne_parpage = '22';
 
 	// largeur total du tableau
 	$lar_total_tableau = $lar_col_eleve + $lar_col_date_du + $lar_col_date_au + $lar_col_heure_debut + $lar_col_heure_fin + $lar_col_motif;
 
-	// hauteur de la cellule des données
+	// hauteur de la cellule des donnÃ©es
 	$hau_donnee = '10';
 
 	// avec couleur ou sans
 	$couleur_fond = '1';
-// nombre de page à créer, arrondit au nombre supérieur
+// nombre de page Ã  crÃ©er, arrondit au nombre supÃ©rieur
 	$nb_page_total = ceil( $nb_d_entree_total / $nb_ligne_parpage );
 
 /* **************************** */
@@ -310,12 +310,12 @@ if ($type=='I') {$typetableau='de l\'Infirmerie';}
 /* **************************** */
 
 
-// définition d'une variable
+// dÃ©finition d'une variable
 	$hauteur_pris = 0;
 
-/* début de la génération du fichier PDF */
+/* dÃ©but de la gÃ©nÃ©ration du fichier PDF */
 
-	//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
+	//crÃ©ation du PDF en mode Portrait, unitÃ©e de mesure en mm, de taille A4
 	$pdf=new FPDF('p', 'mm', 'A4');
 
 		// si la variable $gepiSchoolName est vide alors on cherche les informations dans la base
@@ -326,35 +326,35 @@ if ($type=='I') {$typetableau='de l\'Infirmerie';}
 
 	}
 
-	// création du document
+	// crÃ©ation du document
 	$pdf->SetCreator($gepiSchoolName);
 	// auteur du document
 	$pdf->SetAuthor($gepiSchoolName);
-	// mots clé
+	// mots clÃ©
 	$pdf->SetKeywords('');
 	// sujet du document
 	$pdf->SetSubject('Bilan journalier des absences');
 	// titre du document
 	$pdf->SetTitle('Bilan journalier des absences');
-	// méthode d'affichage du document à son ouverture
+	// mÃ©thode d'affichage du document Ã  son ouverture
 	$pdf->SetDisplayMode('fullwidth', 'single');
 	// compression du document
 	$pdf->SetCompression(TRUE);
-	// change automatiquement de page à 5mm du bas
+	// change automatiquement de page Ã  5mm du bas
 	$pdf->SetAutoPageBreak(TRUE, 5);
 
 
 /* **************************** */
-/* début de la boucle des pages */
+/* dÃ©but de la boucle des pages */
 
-// comptage du nombre de page traité
+// comptage du nombre de page traitÃ©
 $nb_page_traite = 0;
 
-// initialiser la variable compteur de ligne passé pour le tableau
+// initialiser la variable compteur de ligne passÃ© pour le tableau
 $nb_ligne_passe = 0;
 
 // initialiser un compteur temporaire autre que i
-// il serviras pour savoir à quelle endroit de la liste nous somme rendus
+// il serviras pour savoir Ã  quelle endroit de la liste nous somme rendus
 $j = 0;
 
 // boucle des page
@@ -364,7 +364,7 @@ while ($nb_page_traite < $nb_page_total)
 	// ajout de l'initialisation d'une nouvelle page dans le document
 	$pdf->AddPage();
 
-	// police de caractère utilisé
+	// police de caractÃ¨re utilisÃ©
 	$pdf->SetFont('Arial');
 
 /* ENTETE - DEBUT */
@@ -416,7 +416,7 @@ while ($nb_page_traite < $nb_page_total)
 	$pdf->SetFont($caractere_utilse,'',14);
 	$gepiSchoolName = getSettingValue('gepiSchoolName');
 
-	// mettre en gras le nom de l'établissement si $nom_etab_gras = 1
+	// mettre en gras le nom de l'Ã©tablissement si $nom_etab_gras = 1
 	if ( $nom_etab_gras === '1' )
 	{
 
@@ -450,8 +450,8 @@ while ($nb_page_traite < $nb_page_total)
 	$gepiSchoolFax = getSettingValue('gepiSchoolFax');
 
 	$passealaligne = '0';
-	// entête téléphone
-			// emplacement du cadre télécome
+	// entÃªte tÃ©lÃ©phone
+			// emplacement du cadre tÃ©lÃ©come
 			$x_telecom = $pdf->GetX();
 			$y_telecom = $pdf->GetY();
 
@@ -487,7 +487,7 @@ while ($nb_page_traite < $nb_page_total)
 	}
 
 	$passealaligne = '2';
-	// entête fax
+	// entÃªte fax
 	if( $entente_fax==='1' )
 	{
 
@@ -565,7 +565,7 @@ while ($nb_page_traite < $nb_page_total)
 		$pdf->Cell(80, 6, 'au '.$au, 0, 1, 'C');
 
 		$pdf->SetX(85);
-		$pdf->Cell(80, 4, 'année', 0, 1, 'C');
+		$pdf->Cell(80, 4, 'annÃ©e', 0, 1, 'C');
 
 		$pdf->SetX(85);
 		$pdf->Cell(80, 4, $annee_scolaire, 0, 1, 'C');
@@ -576,14 +576,14 @@ while ($nb_page_traite < $nb_page_total)
 
 /* ENTETE TABLEAU - DEBUT */
 if ($type=='A') {
-	//Sélection de la police
+	//SÃ©lection de la police
 	$pdf->SetFont($caractere_utilse, 'B', 10);
 
 	// placement du point de commencement du tableau
 	$pdf->SetXY($x_tab, $y_tab);
 
-	// Cellule identité
-	$pdf->Cell($lar_col_eleve, $hau_entete, 'Nom Prénom', 1, 0, 'C');
+	// Cellule identitÃ©
+	$pdf->Cell($lar_col_eleve, $hau_entete, 'Nom PrÃ©nom', 1, 0, 'C');
 
 	// Cellule classe ajout
 
@@ -599,7 +599,7 @@ if ($type=='A') {
     $pdf->Cell($lar_col_heure_debut, $hau_entete, 'de', 1, 0, 'C');
 
 		// Cellule Heure fin
-    $pdf->Cell($lar_col_heure_debut, $hau_entete, 'à', 1, 0, 'C');
+    $pdf->Cell($lar_col_heure_debut, $hau_entete, 'Ã ', 1, 0, 'C');
 	// Cellule motif
     $pdf->Cell($lar_col_motif, $hau_entete, 'Motif', 1, 0, 'C');
 
@@ -607,14 +607,14 @@ if ($type=='A') {
 	$y_dernier = $y_tab + $hau_entete;}
 
 	if ($type=='R') {
-	//Sélection de la police
+	//SÃ©lection de la police
 	$pdf->SetFont($caractere_utilse, 'B', 10);
 
 	// placement du point de commencement du tableau
 	$pdf->SetXY($x_tab, $y_tab);
 
-	// Cellule identité
-	$pdf->Cell($lar_col_eleve, $hau_entete, 'Nom Prénom', 1, 0, 'C');
+	// Cellule identitÃ©
+	$pdf->Cell($lar_col_eleve, $hau_entete, 'Nom PrÃ©nom', 1, 0, 'C');
 
 	// Cellule classe ajout
 
@@ -633,14 +633,14 @@ if ($type=='A') {
 	$y_dernier = $y_tab + $hau_entete;}
 
 	if ($type=='D') {
-	//Sélection de la police
+	//SÃ©lection de la police
 	$pdf->SetFont($caractere_utilse, 'B', 10);
 
 	// placement du point de commencement du tableau
 	$pdf->SetXY($x_tab, $y_tab);
 
-	// Cellule identité
-	$pdf->Cell($lar_col_eleve, $hau_entete, 'Nom Prénom', 1, 0, 'C');
+	// Cellule identitÃ©
+	$pdf->Cell($lar_col_eleve, $hau_entete, 'Nom PrÃ©nom', 1, 0, 'C');
 
 	// Cellule classe ajout
 
@@ -659,14 +659,14 @@ if ($type=='A') {
 	$y_dernier = $y_tab + $hau_entete;}
 
 	if ($type=='I') {
-	//Sélection de la police
+	//SÃ©lection de la police
 	$pdf->SetFont($caractere_utilse, 'B', 10);
 
 	// placement du point de commencement du tableau
 	$pdf->SetXY($x_tab, $y_tab);
 
-	// Cellule identité
-	$pdf->Cell($lar_col_eleve, $hau_entete, 'Nom Prénom', 1, 0, 'C');
+	// Cellule identitÃ©
+	$pdf->Cell($lar_col_eleve, $hau_entete, 'Nom PrÃ©nom', 1, 0, 'C');
 
 	// Cellule classe ajout
 
@@ -679,7 +679,7 @@ if ($type=='A') {
     $pdf->Cell($lar_col_heure_debut, $hau_entete, 'de', 1, 0, 'C');
 
 		// Cellule Heure fin
-    $pdf->Cell($lar_col_heure_debut, $hau_entete, 'à', 1, 0, 'C');
+    $pdf->Cell($lar_col_heure_debut, $hau_entete, 'Ã ', 1, 0, 'C');
 
 	// variable qui contient le point Y suivant pour la ligne suivante
 	$y_dernier = $y_tab + $hau_entete;}
@@ -689,7 +689,7 @@ if ($type=='A') {
 /* ENTETE TABLEAU - FIN */
 
 	/* ***************************************** */
-	/* début de la boucle du tableau des données */
+	/* dÃ©but de la boucle du tableau des donnÃ©es */
 
 	// initialiser la variable compteur de ligne pour la page actuel
 	$nb_ligne_passe_reel = 0;
@@ -700,9 +700,9 @@ if ($type=='A') {
 	{        if ( !empty($tab_donnee[$nb_ligne_passe]) )
 		{
 
-	          // initialisation du point X et Y de la ligne des données
+	          // initialisation du point X et Y de la ligne des donnÃ©es
 				$pdf->SetXY($x_tab, $y_dernier);
-				// colonne du nom et prénom de l'élève
+				// colonne du nom et prÃ©nom de l'Ã©lÃ¨ve
 				$pdf->Cell($lar_col_eleve, $hau_donnee, $tab_donnee[$nb_ligne_passe]['nom']." ".$tab_donnee[$nb_ligne_passe]['prenom'], 1, 0, 'C');
 				// classe ajout
 				$pdf->Cell($lar_col_classe, $hau_donnee, $tab_donnee[$nb_ligne_passe]['classe'], 1, 0, 'C');
@@ -710,7 +710,7 @@ if ($type=='A') {
 				$pdf->Cell($lar_col_date_du, $hau_donnee, date_frc($tab_donnee[$nb_ligne_passe]['d_date_absence_eleve']), 1, 0, 'C');
 				// colonne de fin date absence
 				$pdf->Cell($lar_col_date_au, $hau_donnee, date_frc($tab_donnee[$nb_ligne_passe]['a_date_absence_eleve']), 1, 0, 'C');
-				// colonne de heyre début
+				// colonne de heyre dÃ©but
 				$pdf->Cell($lar_col_heure_debut, $hau_donnee, heure($tab_donnee[$nb_ligne_passe]['d_heure_absence_eleve']), 1, 0, 'C');
 				// colonne de heure fin
 				$pdf->Cell($lar_col_heure_fin, $hau_donnee, heure($tab_donnee[$nb_ligne_passe]['a_heure_absence_eleve']), 1, 0, 'C');
@@ -718,16 +718,16 @@ if ($type=='A') {
 				$pdf->Cell($lar_col_motif, $hau_donnee, $tab_donnee[$nb_ligne_passe]['motif_absence_eleve'], 1, 0, 'C');
 				// variable qui contient le point Y suivant pour la ligne suivante
 				$y_dernier = $y_dernier + $hau_donnee;
-				// on incrémente le nombre de ligne passé sur la page
+				// on incrÃ©mente le nombre de ligne passÃ© sur la page
 				$nb_ligne_passe_reel = $nb_ligne_passe_reel + 1;
-				// on incrémente le nombre de ligne traité dans le tableau des données
+				// on incrÃ©mente le nombre de ligne traitÃ© dans le tableau des donnÃ©es
 				$nb_ligne_passe = $nb_ligne_passe + 1;
 				}
 				else
 		{
 
-			// s'il n'y a plus de donnée à afficher alors on lui dit que le
-			// maximum de ligne à était atteint pour qu'il termine la boucle
+			// s'il n'y a plus de donnÃ©e Ã  afficher alors on lui dit que le
+			// maximum de ligne Ã  Ã©tait atteint pour qu'il termine la boucle
 			$nb_ligne_passe_reel = $nb_ligne_parpage + 1;
 
 		}
@@ -741,9 +741,9 @@ if ($type=='R') {
 	{        if ( !empty($tab_donnee[$nb_ligne_passe]) )
 		{
 
-	          // initialisation du point X et Y de la ligne des données
+	          // initialisation du point X et Y de la ligne des donnÃ©es
 				$pdf->SetXY($x_tab, $y_dernier);
-				// colonne du nom et prénom de l'élève
+				// colonne du nom et prÃ©nom de l'Ã©lÃ¨ve
 				$pdf->Cell($lar_col_eleve, $hau_donnee, $tab_donnee[$nb_ligne_passe]['nom']." ".$tab_donnee[$nb_ligne_passe]['prenom'], 1, 0, 'C');
 				// classe ajout
 				$pdf->Cell($lar_col_classe, $hau_donnee, $tab_donnee[$nb_ligne_passe]['classe'], 1, 0, 'C');
@@ -755,16 +755,16 @@ if ($type=='R') {
 				$pdf->Cell($lar_col_cause, $hau_donnee, $tab_donnee[$nb_ligne_passe]['info_justify_absence_eleve'], 1, 0, 'C');
 				// variable qui contient le point Y suivant pour la ligne suivante
 				$y_dernier = $y_dernier + $hau_donnee;
-				// on incrémente le nombre de ligne passé sur la page
+				// on incrÃ©mente le nombre de ligne passÃ© sur la page
 				$nb_ligne_passe_reel = $nb_ligne_passe_reel + 1;
-				// on incrémente le nombre de ligne traité dans le tableau des données
+				// on incrÃ©mente le nombre de ligne traitÃ© dans le tableau des donnÃ©es
 				$nb_ligne_passe = $nb_ligne_passe + 1;
 				}
 				else
 		{
 
-			// s'il n'y a plus de donnée à afficher alors on lui dit que le
-			// maximum de ligne à était atteint pour qu'il termine la boucle
+			// s'il n'y a plus de donnÃ©e Ã  afficher alors on lui dit que le
+			// maximum de ligne Ã  Ã©tait atteint pour qu'il termine la boucle
 			$nb_ligne_passe_reel = $nb_ligne_parpage + 1;
 
 		}
@@ -778,9 +778,9 @@ if ($type=='R') {
 	{        if ( !empty($tab_donnee[$nb_ligne_passe]) )
 		{
 
-	          // initialisation du point X et Y de la ligne des données
+	          // initialisation du point X et Y de la ligne des donnÃ©es
 				$pdf->SetXY($x_tab, $y_dernier);
-				// colonne du nom et prénom de l'élève
+				// colonne du nom et prÃ©nom de l'Ã©lÃ¨ve
 				$pdf->Cell($lar_col_eleve, $hau_donnee, $tab_donnee[$nb_ligne_passe]['nom']." ".$tab_donnee[$nb_ligne_passe]['prenom'], 1, 0, 'C');
 				// classe ajout
 				$pdf->Cell($lar_col_classe, $hau_donnee, $tab_donnee[$nb_ligne_passe]['classe'], 1, 0, 'C');
@@ -792,16 +792,16 @@ if ($type=='R') {
 				$pdf->Cell($lar_col_horaire, $hau_donnee, $tab_donnee[$nb_ligne_passe]['info_absence_eleve'], 1, 0, 'C');
 				// variable qui contient le point Y suivant pour la ligne suivante
 				$y_dernier = $y_dernier + $hau_donnee;
-				// on incrémente le nombre de ligne passé sur la page
+				// on incrÃ©mente le nombre de ligne passÃ© sur la page
 				$nb_ligne_passe_reel = $nb_ligne_passe_reel + 1;
-				// on incrémente le nombre de ligne traité dans le tableau des données
+				// on incrÃ©mente le nombre de ligne traitÃ© dans le tableau des donnÃ©es
 				$nb_ligne_passe = $nb_ligne_passe + 1;
 				}
 				else
 		{
 
-			// s'il n'y a plus de donnée à afficher alors on lui dit que le
-			// maximum de ligne à était atteint pour qu'il termine la boucle
+			// s'il n'y a plus de donnÃ©e Ã  afficher alors on lui dit que le
+			// maximum de ligne Ã  Ã©tait atteint pour qu'il termine la boucle
 			$nb_ligne_passe_reel = $nb_ligne_parpage + 1;
 
 		}
@@ -814,30 +814,30 @@ if ($type=='R') {
 	{        if ( !empty($tab_donnee[$nb_ligne_passe]) )
 		{
 
-	          // initialisation du point X et Y de la ligne des données
+	          // initialisation du point X et Y de la ligne des donnÃ©es
 				$pdf->SetXY($x_tab, $y_dernier);
-				// colonne du nom et prénom de l'élève
+				// colonne du nom et prÃ©nom de l'Ã©lÃ¨ve
 				$pdf->Cell($lar_col_eleve, $hau_donnee, $tab_donnee[$nb_ligne_passe]['nom']." ".$tab_donnee[$nb_ligne_passe]['prenom'], 1, 0, 'C');
 				// classe ajout
 				$pdf->Cell($lar_col_classe, $hau_donnee, $tab_donnee[$nb_ligne_passe]['classe'], 1, 0, 'C');
 				// colonne du debut date
 				$pdf->Cell($lar_col_date_du, $hau_donnee, date_frc($tab_donnee[$nb_ligne_passe]['d_date_absence_eleve']), 1, 0, 'C');
-				// colonne de heure début
+				// colonne de heure dÃ©but
 				$pdf->Cell($lar_col_heure_debut, $hau_donnee, heure($tab_donnee[$nb_ligne_passe]['d_heure_absence_eleve']), 1, 0, 'C');
 				// colonne de heure fin
 				$pdf->Cell($lar_col_heure_fin, $hau_donnee, heure($tab_donnee[$nb_ligne_passe]['a_heure_absence_eleve']), 1, 0, 'C');
 				// variable qui contient le point Y suivant pour la ligne suivante
 				$y_dernier = $y_dernier + $hau_donnee;
-				// on incrémente le nombre de ligne passé sur la page
+				// on incrÃ©mente le nombre de ligne passÃ© sur la page
 				$nb_ligne_passe_reel = $nb_ligne_passe_reel + 1;
-				// on incrémente le nombre de ligne traité dans le tableau des données
+				// on incrÃ©mente le nombre de ligne traitÃ© dans le tableau des donnÃ©es
 				$nb_ligne_passe = $nb_ligne_passe + 1;
 				}
 				else
 		{
 
-			// s'il n'y a plus de donnée à afficher alors on lui dit que le
-			// maximum de ligne à était atteint pour qu'il termine la boucle
+			// s'il n'y a plus de donnÃ©e Ã  afficher alors on lui dit que le
+			// maximum de ligne Ã  Ã©tait atteint pour qu'il termine la boucle
 			$nb_ligne_passe_reel = $nb_ligne_parpage + 1;
 
 		}
@@ -845,12 +845,12 @@ if ($type=='R') {
 
 		}
 	}
-	/* fin de la boucle du tableau des données */
+	/* fin de la boucle du tableau des donnÃ©es */
 	/* *************************************** */
 
 /* PIED DE PAGE - DEBUT */
 
-	//Positionnement à 1 cm du bas et 0,5cm + 0,5cm du coté gauche
+	//Positionnement Ã  1 cm du bas et 0,5cm + 0,5cm du cotÃ© gauche
 	$pdf->SetXY(5,-10);
 
 	//Police Arial Gras 6
@@ -865,10 +865,10 @@ if ($type=='R') {
 
 /* PIED DE PAGE - FIN */
 
-	// on incrément le nombre d'entrée passé
+	// on incrÃ©ment le nombre d'entrÃ©e passÃ©
 	$nb_d_entree_passe = $nb_ligne_passe;
 
-	// on incrément le nombre de page traité
+	// on incrÃ©ment le nombre de page traitÃ©
 	$nb_page_traite = $nb_page_traite + 1;
 }
 /* fin de la boucle des pages */
@@ -876,10 +876,10 @@ if ($type=='R') {
 
 // fermeture du fichier pdf et lecture dans le navigateur 'nom', 'I/D'
 
-	// génération du nom du document
+	// gÃ©nÃ©ration du nom du document
 	$nom_fichier = 'bilan_journalier_.pdf';
 
-	// génération du document
+	// gÃ©nÃ©ration du document
 	$pdf->Output($nom_fichier,'I');
 
 ?>

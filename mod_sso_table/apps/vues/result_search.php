@@ -20,16 +20,16 @@
 * along with GEPI; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
 ?>
 [onload;file=maj.php]
-<p>Résultats de la recherche</p>
+<p>RÃ©sultats de la recherche</p>
 <table width="80%" border="1" align="center" cellpadding="2" cellspacing="0">
   <tr bgcolor="#CACACA">
-    <td width="30%"><strong>Login gépi</strong></td>
+    <td width="30%"><strong>Login gÃ©pi</strong></td>
     <td width="30%"><strong>Nom</strong></td>
     <td><strong>Prenom</strong></td>
   </tr>
@@ -44,7 +44,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     <td ><div>[b1.prenom]</div></td>
   </tr>
   <tr bgcolor="#FFCFB9">
-    <td colspan="4">[b1;block=tr;nodata]Il n'y a pas de données.</td>
+    <td colspan="4">[b1;block=tr;nodata]Il n'y a pas de donnÃ©es.</td>
   </tr>
 </table>
 </body>

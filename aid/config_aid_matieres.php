@@ -59,18 +59,18 @@ if (isset($is_posted) and ($is_posted == "1")) {
         if (isset($_POST["id_".$matiere])) {
             $req = mysql_query("update matieres set matiere_aid='y' where matiere='".$matiere."'");
             if (!$req) {
-                $msg .= "Problème lors de l'enregistrement de la matière ".$matiere.".<br />";
+                $msg .= "ProblÃ¨me lors de l'enregistrement de la matiÃ¨re ".$matiere.".<br />";
                 $pb="yes";
             }
         } else {
             $test = sql_query1("select count(id) from aid where matiere1='".$matiere."' or matiere2='".$matiere."'");
             if ($test > 0) {
-                $msg .= "La matière ".$matiere." ne peut être supprimée car elle est déjà utilisée dans au moins une fiche projet.<br />";
+                $msg .= "La matiÃ¨re ".$matiere." ne peut Ãªtre supprimÃ©e car elle est dÃ©jÃ  utilisÃ©e dans au moins une fiche projet.<br />";
                 $pb = "yes";
             } else {
                 $req = mysql_query("update matieres set matiere_aid='n' where matiere='".$matiere."'");
                 if (!$req) {
-                    $msg .= "Problème lors de la suppression de la matière ".$matiere.".<br />";
+                    $msg .= "ProblÃ¨me lors de la suppression de la matiÃ¨re ".$matiere.".<br />";
                     $pb="yes";
                 }
 
@@ -78,7 +78,7 @@ if (isset($is_posted) and ($is_posted == "1")) {
         }
         $i++;
     }
-    if ($pb!="yes") $msg = "Les modifications ont été enregistrées.";
+    if ($pb!="yes") $msg = "Les modifications ont Ã©tÃ© enregistrÃ©es.";
 }
 
 
@@ -96,13 +96,13 @@ require_once("../lib/header.inc");
 echo add_token_field();
 
 echo "<p>Parmi les champs des fiches projet figurent les deux champs \"discipline principale\" et \"discipline secondaire\".
-<br />Parmi toutes les matières actuellement présentes dans la base de GEPI, indiquez dans le tableau ci-dessous
-les matières qui apparaîtront dans la liste déroulante des diciplines proposées pour le remplissage de ces champs.";
+<br />Parmi toutes les matiÃ¨res actuellement prÃ©sentes dans la base de GEPI, indiquez dans le tableau ci-dessous
+les matiÃ¨res qui apparaÃ®tront dans la liste dÃ©roulante des diciplines proposÃ©es pour le remplissage de ces champs.";
 
 echo "<table border='1' cellpadding='5' class='boireaus'>";
-echo "<tr><th><b>Identifiant de la matière</b></th>
-<th><span class='small'>Nom complet de la matière</span></th>
-<th><span class='small'>La matière fait partie de la liste des disciplines proposées dans les fiches projet</span></th>
+echo "<tr><th><b>Identifiant de la matiÃ¨re</b></th>
+<th><span class='small'>Nom complet de la matiÃ¨re</span></th>
+<th><span class='small'>La matiÃ¨re fait partie de la liste des disciplines proposÃ©es dans les fiches projet</span></th>
 </tr>";
 $res = mysql_query($requete);
 $nb_lignes = mysql_num_rows($res);

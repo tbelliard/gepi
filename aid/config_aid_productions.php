@@ -57,19 +57,19 @@ if (isset($is_posted) and ($is_posted == "1")) {
             if ($value == "") {
                 $test = sql_query1("select count(id) from aid where productions='".$key."'");
                 if ($test > 0) {
-                    $msg .= "Le type ".$value." ne peut être supprimée il est déjà utilisé dans au moins une fiche projet.<br />";
+                    $msg .= "Le type ".$value." ne peut Ãªtre supprimÃ©e il est dÃ©jÃ  utilisÃ© dans au moins une fiche projet.<br />";
                     $pb = "yes";
                 } else {
                     $req = mysql_query("delete from aid_productions where id='".$key."'");
                     if (!$req) {
-                        $msg .= "Problème lors de la suppression du type $value <br />";
+                        $msg .= "ProblÃ¨me lors de la suppression du type $value <br />";
                         $pb = "yes";
                     }
                 }
             } else {
                 $req = mysql_query("update aid_productions set nom = '".$value."' where id='".$key."'");
                 if (!$req) {
-                    $msg .= "Problème lors de la mise à jour du type $value <br />";
+                    $msg .= "ProblÃ¨me lors de la mise Ã  jour du type $value <br />";
                     $pb = "yes";
                 }
             }
@@ -77,13 +77,13 @@ if (isset($is_posted) and ($is_posted == "1")) {
             if (($key!="is_posted") and ($value!='')) {
                 $req = mysql_query("insert into aid_productions set nom = '".$value."'");
                 if (!$req) {
-                    $msg .= "Problème lors de l'insertion du type $value <br />";
+                    $msg .= "ProblÃ¨me lors de l'insertion du type $value <br />";
                     $pb = "yes";
                 }
             }
         }
     }
-    if ($pb!="yes") $msg = "Les modifications ont été enregistrées.";
+    if ($pb!="yes") $msg = "Les modifications ont Ã©tÃ© enregistrÃ©es.";
 }
 $requete = "select * from aid_productions order by nom";
 
@@ -103,11 +103,11 @@ require_once("../lib/header.inc");
 
   echo "<p>Parmi les champs des fiches projet figurent le champs \"production\".
 <br />Vous pouvez ci-dessous modifier, ajouter ou supprimer des types de productions.
-<br /><b>Remarque : </b>Si vous avez déjà créé des fiches projet et affecté des productions, tout changement dans les types ci-dessous peut avoir des conséquences plus ou moins néfastes.";
+<br /><b>Remarque : </b>Si vous avez dÃ©jÃ  crÃ©Ã© des fiches projet et affectÃ© des productions, tout changement dans les types ci-dessous peut avoir des consÃ©quences plus ou moins nÃ©fastes.";
 
 echo "<table border='1' cellpadding='5' class='boireaus'>";
 echo "<tr><th><b>Identifiant</b></th>
-<th><span class='small'>Intitulé du type de production</span></th>
+<th><span class='small'>IntitulÃ© du type de production</span></th>
 </tr>";
 $res = mysql_query($requete);
 $nb_lignes = mysql_num_rows($res);

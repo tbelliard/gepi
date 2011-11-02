@@ -1,6 +1,6 @@
 <?php
 /**
- * Arborescence des évaluations
+ * Arborescence des Ã©valuations
  * 
  * $Id: index.php 8428 2011-10-04 17:13:43Z crob $
  *
@@ -67,9 +67,9 @@ if (!checkAccess()) {
     die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_carnets_notes")!='y') {
-    die("Le module n'est pas activé.");
+    die("Le module n'est pas activÃ©.");
 }
 
 $msg="";
@@ -95,10 +95,10 @@ if (is_numeric($id_groupe) && $id_groupe > 0) {
     $sql="SELECT 1=1 FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' AND login='".$_SESSION['login']."';";
     $test_prof_groupe=mysql_query($sql);
     if(mysql_num_rows($test_prof_groupe)==0) {
-        $mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes qui ne vous appartient pas !");
+        $mess=rawurlencode("Vous tentez de pÃ©nÃ©trer dans un carnet de notes qui ne vous appartient pas !");
 		unset($_SESSION['id_groupe_session']);
-		tentative_intrusion(1, "Tentative d'accès à un carnet de notes qui ne lui appartient pas (id_groupe=$id_groupe)");
-        // Sans le unset($_SESSION['id_groupe_session']) avec ces tentative_intrusion(), une modif d'id_groupe en barre d'adresse me provoquait 7 insertions... d'où un score à +7 et une déconnexion
+		tentative_intrusion(1, "Tentative d'accÃ¨s Ã  un carnet de notes qui ne lui appartient pas (id_groupe=$id_groupe)");
+        // Sans le unset($_SESSION['id_groupe_session']) avec ces tentative_intrusion(), une modif d'id_groupe en barre d'adresse me provoquait 7 insertions... d'oÃ¹ un score Ã  +7 et une dÃ©connexion
         header("Location: index.php?msg=$mess");
         die();
     }
@@ -106,13 +106,13 @@ if (is_numeric($id_groupe) && $id_groupe > 0) {
     $current_group = get_group($id_groupe);
 }
 
-// On teste si le carnet de notes appartient bien à la personne connectée
+// On teste si le carnet de notes appartient bien Ã  la personne connectÃ©e
 if ((isset($_POST['id_racine'])) or (isset($_GET['id_racine']))) {
     $id_racine = isset($_POST['id_racine']) ? $_POST['id_racine'] : (isset($_GET['id_racine']) ? $_GET['id_racine'] : NULL);
     if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
-        $mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes qui ne vous appartient pas !");
+        $mess=rawurlencode("Vous tentez de pÃ©nÃ©trer dans un carnet de notes qui ne vous appartient pas !");
 		unset($_SESSION['id_groupe_session']);
-		tentative_intrusion(1, "Tentative d'accès à un carnet de notes qui ne lui appartient pas (id_racine=$id_racine)");
+		tentative_intrusion(1, "Tentative d'accÃ¨s Ã  un carnet de notes qui ne lui appartient pas (id_racine=$id_racine)");
         header("Location: index.php?msg=$mess");
         die();
     }
@@ -129,16 +129,16 @@ if(isset($_GET['clean_anomalie_cn'])) {
 			$sql="DELETE FROM cn_notes_devoirs WHERE id_devoir='".$suppr_id_dev."';";
 			$suppr=mysql_query($sql);
 			if(!$suppr) {
-				$msg.="Erreur lors de la suppression des notes associées au devoir n°$suppr_id_dev.<br />";
+				$msg.="Erreur lors de la suppression des notes associÃ©es au devoir nÂ°$suppr_id_dev.<br />";
 			}
 			else {
 				$sql="DELETE FROM cn_devoirs WHERE id='".$suppr_id_dev."';";
 				$suppr=mysql_query($sql);
 				if(!$suppr) {
-					$msg.="Erreur lors de la suppression du devoir n°$suppr_id_dev.<br />";
+					$msg.="Erreur lors de la suppression du devoir nÂ°$suppr_id_dev.<br />";
 				}
 				else {
-					$msg.="Devoir n°$suppr_id_dev supprimé.<br />";
+					$msg.="Devoir nÂ°$suppr_id_dev supprimÃ©.<br />";
 				}
 			}
 		}
@@ -162,7 +162,7 @@ if(isset($_GET['clean_anomalie_dev'])) {
 	}
 
 	if((!isset($tmp_id_groupe))||(!isset($tmp_periode_num))) {
-		$msg="Le groupe ou la période ne sont pas définis.<br />";
+		$msg="Le groupe ou la pÃ©riode ne sont pas dÃ©finis.<br />";
 	}
 	else {
 		$sql="SELECT ccn.id_groupe, ccn.periode FROM cn_cahier_notes ccn, 
@@ -176,7 +176,7 @@ if(isset($_GET['clean_anomalie_dev'])) {
 		//echo "$sql<br />";
 		$test_cn=mysql_query($sql);
 		if(mysql_num_rows($test_cn)==0) {
-			$msg="Tentative d'accès à un devoir non associé à un de vos carnet de notes.<br />";
+			$msg="Tentative d'accÃ¨s Ã  un devoir non associÃ© Ã  un de vos carnet de notes.<br />";
 		}
 		else {
 			$lig_tmp=mysql_fetch_object($test_cn);
@@ -184,7 +184,7 @@ if(isset($_GET['clean_anomalie_dev'])) {
 			//echo "$sql<br />";
 			$res_a=mysql_query($sql);
 			if(mysql_num_rows($res_a)==0) {
-				$msg="Aucune anomalie n'est relevée pour le devoir n°".$_GET['clean_anomalie_dev'].".<br />";
+				$msg="Aucune anomalie n'est relevÃ©e pour le devoir nÂ°".$_GET['clean_anomalie_dev'].".<br />";
 			}
 			else {
 				if(!isset($msg)) {$msg="";}
@@ -193,10 +193,10 @@ if(isset($_GET['clean_anomalie_dev'])) {
 					//echo "$sql<br />";
 					$del=mysql_query($sql);
 					if($del) {
-						$msg.="Ménage effectué pour $lig_a->login : $lig_a->note - $lig_a->statut sur le devoir n°".$_GET['clean_anomalie_dev'].".<br />\n";
+						$msg.="MÃ©nage effectuÃ© pour $lig_a->login : $lig_a->note - $lig_a->statut sur le devoir nÂ°".$_GET['clean_anomalie_dev'].".<br />\n";
 					}
 					else {
-						$msg.="Erreur lors du ménage pour $lig_a->login : $lig_a->note - $lig_a->statut sur le devoir n°".$_GET['clean_anomalie_dev'].".<br />\n";
+						$msg.="Erreur lors du mÃ©nage pour $lig_a->login : $lig_a->note - $lig_a->statut sur le devoir nÂ°".$_GET['clean_anomalie_dev'].".<br />\n";
 					}
 				}
 			}
@@ -212,14 +212,14 @@ require('cc_lib.php');
 //**************** EN-TETE *****************
 $titre_page = "Carnet de notes";
 /**
- * Entête de la page
+ * EntÃªte de la page
  */
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
 
 /*
 $fich=fopen("/tmp/test_img.txt","a+");
-fwrite($fich,"Juste après Header\n");
+fwrite($fich,"Juste aprÃ¨s Header\n");
 //fwrite($fich,"==================================\n");
 fclose($fich);
 */
@@ -253,7 +253,7 @@ if (isset($_GET['id_groupe']) and isset($_GET['periode_num'])) {
     }
 }
 
-// Recopie de la structure de la periode précédente
+// Recopie de la structure de la periode prÃ©cÃ©dente
 if ((isset($_GET['creer_structure'])) and ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)) {
   check_token();
 
@@ -313,7 +313,7 @@ if ((isset($_GET['creer_structure'])) and ($current_group["classe"]["ver_periode
 		if(getSettingValue('gepi_denom_boite_genre')=="f") {$accord_f="e";} else {$accord_f="";}
 		echo "$accord_f ";
 		echo getSettingValue('gepi_denom_boite');
-		echo " n'a été cré$accord_f dans le carnet de notes de la période précédente.</font></b></center></p><hr />";
+		echo " n'a Ã©tÃ© crÃ©$accord_f dans le carnet de notes de la pÃ©riode prÃ©cÃ©dente.</font></b></center></p><hr />";
 	}
 }
 /*
@@ -341,7 +341,7 @@ if  (isset($id_racine) and ($id_racine!='')) {
 	*/
 
     //
-    // Suppression d'une évaluation
+    // Suppression d'une Ã©valuation
     //
     if ((isset($_GET['del_dev'])) and ($_GET['js_confirmed'] ==1)) {
         $temp = $_GET['del_dev'];
@@ -357,7 +357,7 @@ if  (isset($id_racine) and ($id_racine!='')) {
 			//echo "$sql0<br />";
 			$sql= mysql_query($sql0);
 			if(mysql_num_rows($sql)==0) {
-				echo "<p style='color:red'>Le devoir $temp n'a pas été trouvé.</p>\n";
+				echo "<p style='color:red'>Le devoir $temp n'a pas Ã©tÃ© trouvÃ©.</p>\n";
 			}
 			else {
 				$id_cont = mysql_result($sql, 0, 'id_conteneur');
@@ -401,7 +401,7 @@ if  (isset($id_racine) and ($id_racine!='')) {
 			$nb_cont = mysql_num_rows($sql);
 			if (($nb_dev != 0) or ($nb_cont != 0)) {
 				echo "<script type=\"text/javascript\" language=\"javascript\">\n";
-				echo 'alert("Impossible de supprimer une boîte qui n\'est pas vide !");\n';
+				echo 'alert("Impossible de supprimer une boÃ®te qui n\'est pas vide !");\n';
 				echo "</script>\n";
 			} else {
 				$sql = mysql_query("DELETE FROM cn_conteneurs WHERE id='$temp'");
@@ -440,7 +440,7 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 		$login_prof_groupe_courant=$tmp_current_group["profs"]["list"][0];
 	}
 
-	$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matière");
+	$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matiÃ¨re");
 
 	if(!empty($tab_groups)) {
 
@@ -454,7 +454,7 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 		$temoin_tmp=0;
 		for($loop=0;$loop<count($tab_groups);$loop++) {
 			if((!isset($tab_groups[$loop]["visibilite"]["cahier_notes"]))||($tab_groups[$loop]["visibilite"]["cahier_notes"]=='y')) {
-				// On ne retient que les groupes qui ont un nombre de périodes au moins égal à la période sélectionnée
+				// On ne retient que les groupes qui ont un nombre de pÃ©riodes au moins Ã©gal Ã  la pÃ©riode sÃ©lectionnÃ©e
 				if($tab_groups[$loop]["nb_periode"]>=$periode_num) {
 					if($tab_groups[$loop]['id']==$id_groupe){
 						$num_groupe=$loop;
@@ -509,7 +509,7 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 </script>\n";
 
 			echo "<input type='hidden' name='periode_num' id='periode_num' value='$periode_num' />\n";
-			echo "Période $periode_num: <select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+			echo "PÃ©riode $periode_num: <select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
 			echo $chaine_options_classes;
 			echo "</select> | \n";
 		}
@@ -517,7 +517,7 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 	// =================================
 }
 
-    echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'> Choisir une autre période</a> | \n";
+    echo "<a href='index.php?id_groupe=" . $current_group["id"] . "'> Choisir une autre pÃ©riode</a> | \n";
 
 	// Recuperer la liste des cahiers de notes
 	$sql="SELECT * FROM cn_cahier_notes ccn where id_groupe='$id_groupe' ORDER BY periode;";
@@ -567,7 +567,7 @@ var tab_per_cn=new Array();\n";
 	}
 </script>\n";
 	
-		echo "<span title='Accéder au cahier de notes de la période (ne sont proposées que les périodes pour lesquelles le cahier de notes a été initialisé)'>Période</span> <select name='id_racine' id='id_racine' onchange=\"confirm_changement_periode(change, '$themessage');\">\n";
+		echo "<span title='AccÃ©der au cahier de notes de la pÃ©riode (ne sont proposÃ©es que les pÃ©riodes pour lesquelles le cahier de notes a Ã©tÃ© initialisÃ©)'>PÃ©riode</span> <select name='id_racine' id='id_racine' onchange=\"confirm_changement_periode(change, '$themessage');\">\n";
 		echo $chaine_options_periodes;
 		echo "</select> | \n";
 	}
@@ -585,19 +585,19 @@ var tab_per_cn=new Array();\n";
 		echo "<a href='import_cahier_notes.php?id_racine=".$id_racine."'>Importer les notes</a> | \n";
 		//==================================
 
-        echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_index'> Créer un";
+        echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_index'> CrÃ©er un";
         if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "e";}
         echo " ".htmlentities(strtolower(getSettingValue("gepi_denom_boite")))." </a> | \n";
 
-        echo "<a href='add_modif_dev.php?id_conteneur=$id_racine&amp;mode_navig=retour_index'> Créer une évaluation </a> | \n";
+        echo "<a href='add_modif_dev.php?id_conteneur=$id_racine&amp;mode_navig=retour_index'> CrÃ©er une Ã©valuation </a> | \n";
         if ($periode_num!='1')  {
-            $themessage = 'En cliquant sur OK, vous allez créer la même structure de boîtes que celle de la période précédente. Si des boîtes existent déjà, elles ne seront pas supprimées.';
-            echo "<a href='index.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;creer_structure=yes".add_token_in_url()."'  onclick=\"return confirm_abandon (this, 'yes', '$themessage')\"> Créer la même structure que la période précédente</a> | \n";
+            $themessage = 'En cliquant sur OK, vous allez crÃ©er la mÃªme structure de boÃ®tes que celle de la pÃ©riode prÃ©cÃ©dente. Si des boÃ®tes existent dÃ©jÃ , elles ne seront pas supprimÃ©es.';
+            echo "<a href='index.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;creer_structure=yes".add_token_in_url()."'  onclick=\"return confirm_abandon (this, 'yes', '$themessage')\"> CrÃ©er la mÃªme structure que la pÃ©riode prÃ©cÃ©dente</a> | \n";
         }
     }
 
 	// Le retour n'est pas parfait... il faudrait aussi periode_num dans chemin_retour
-	// ou alors stocker ici l'info en session pour la période...
+	// ou alors stocker ici l'info en session pour la pÃ©riode...
 	echo "<a href=\"../groupes/signalement_eleves.php?id_groupe=$id_groupe&amp;chemin_retour=../cahier_notes/index.php?id_groupe=$id_groupe\"> Signaler des erreurs d'affectation</a>";
 
 	echo " | ";
@@ -608,11 +608,11 @@ var tab_per_cn=new Array();\n";
 	echo "</div>\n";
 
     echo "<h2 class='gepi'>Carnet de notes : ". htmlentities($current_group["description"]) . " ($nom_periode[$periode_num])</h2>\n";
-    echo "<p class='bold'> Classe(s) : " . $current_group["classlist_string"] . " | Matière : " . htmlentities($current_group["matiere"]["nom_complet"]) . "(" . htmlentities($current_group["matiere"]["matiere"]) . ")";
-    // On teste si le carnet de notes est partagé ou non avec d'autres utilisateurs
+    echo "<p class='bold'> Classe(s) : " . $current_group["classlist_string"] . " | MatiÃ¨re : " . htmlentities($current_group["matiere"]["nom_complet"]) . "(" . htmlentities($current_group["matiere"]["matiere"]) . ")";
+    // On teste si le carnet de notes est partagÃ© ou non avec d'autres utilisateurs
     $login_prof = $_SESSION['login'];
     if (count($current_group["profs"]["list"]) > 1) {
-        echo " | Carnet de notes partagé avec : ";
+        echo " | Carnet de notes partagÃ© avec : ";
         $flag = 0;
         foreach($current_group["profs"]["users"] as $prof) {
             $l_prof = $prof["login"];
@@ -634,7 +634,7 @@ var tab_per_cn=new Array();\n";
 			$res_cn_dev=mysql_query($sql);
 			if(mysql_num_rows($res_cn_dev)>0) {
 				if($info_anomalie=="") {
-					$info_anomalie="<div style='border:1px solid red; margin: 1em;'><p><span style='color:red; font-weight:bold;'>ANOMALIE&nbsp;:</span> Un devoir au moins a été créé dans un enseignement qui ne doit normalement pas apparaître dans les Carnets de notes.<br />Il conviendrait de le supprimer, ou de le transférer (<em>si par exemple, il a été créé dans un sous-groupe, au lieu du groupe classe</em>).</p>\n";
+					$info_anomalie="<div style='border:1px solid red; margin: 1em;'><p><span style='color:red; font-weight:bold;'>ANOMALIE&nbsp;:</span> Un devoir au moins a Ã©tÃ© crÃ©Ã© dans un enseignement qui ne doit normalement pas apparaÃ®tre dans les Carnets de notes.<br />Il conviendrait de le supprimer, ou de le transfÃ©rer (<em>si par exemple, il a Ã©tÃ© crÃ©Ã© dans un sous-groupe, au lieu du groupe classe</em>).</p>\n";
 				}
 
 				$tmp_group=get_group($tmp_id_groupe);
@@ -661,7 +661,7 @@ var tab_per_cn=new Array();\n";
 			}
 		}
 		if($info_anomalie!="") {
-			$info_anomalie.="<p>Si vous pensez qu'un de ces enseignements devrait apparaître dans les carnets de notes, prenez contact avec l'administration de votre établissement.</p>\n";
+			$info_anomalie.="<p>Si vous pensez qu'un de ces enseignements devrait apparaÃ®tre dans les carnets de notes, prenez contact avec l'administration de votre Ã©tablissement.</p>\n";
 			$info_anomalie.="</div>\n";
 		}
 
@@ -669,10 +669,10 @@ var tab_per_cn=new Array();\n";
 	}
 
 
-    echo "<h3 class='gepi'>Liste des évaluations du carnet de notes</h3>\n";
+    echo "<h3 class='gepi'>Liste des Ã©valuations du carnet de notes</h3>\n";
     $empty = affiche_devoirs_conteneurs($id_racine,$periode_num, $empty, $current_group["classe"]["ver_periode"]["all"][$periode_num]);
     echo "</ul>\n";
-    if ($empty == 'yes') echo "<p><b>Actuellement, aucune évaluation.</b> Vous devez créer au moins une évaluation.</p>\n";
+    if ($empty == 'yes') echo "<p><b>Actuellement, aucune Ã©valuation.</b> Vous devez crÃ©er au moins une Ã©valuation.</p>\n";
     if ($empty != 'yes') {
 		$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='bulletins' AND visible='n';";
 		$test_jgv=mysql_query($sql);
@@ -715,11 +715,11 @@ var tab_per_cn=new Array();\n";
 				}
 	
 				echo "<ul><li><a href='../saisie/saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num&amp;retour_cn=yes'>Saisie des moyennes</a> $info_mn</li>\n";
-				echo "<li><a href='../saisie/saisie_appreciations.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num'>Saisie des appréciations</a> $info_ma</li></ul>\n";
+				echo "<li><a href='../saisie/saisie_appreciations.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num'>Saisie des apprÃ©ciations</a> $info_ma</li></ul>\n";
 			} else {
 				echo "<h3 class='gepi'>Visualisation du bulletin ($nom_periode[$periode_num])</h3>\n";
 				echo "<ul><li><a href='../saisie/saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num&amp;retour_cn=yes'>Visualisation des moyennes</a> (<b>".$gepiClosedPeriodLabel."</b>).</li>\n";
-				echo "<li><a href='../saisie/saisie_appreciations.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num'>Visualisation des appréciations</a> (<b>".$gepiClosedPeriodLabel."</b>).</li></ul>\n";
+				echo "<li><a href='../saisie/saisie_appreciations.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num'>Visualisation des apprÃ©ciations</a> (<b>".$gepiClosedPeriodLabel."</b>).</li></ul>\n";
 			}
 		}
     }
@@ -738,7 +738,7 @@ if (isset($_GET['id_groupe']) and !(isset($_GET['periode_num'])) and !(isset($id
     echo "<a href='index.php?id_groupe=no_group'> Mes enseignements </a>|</p>\n";
     echo "<p class='bold'>Enseignement : ".htmlentities($current_group["description"])." (" . $current_group["classlist_string"] .")</p>\n";
 
-    echo "<H3>Visualisation/modification - Choisissez la période : </H3>\n";
+    echo "<H3>Visualisation/modification - Choisissez la pÃ©riode : </H3>\n";
     $i="1";
     while ($i < ($current_group["nb_periode"])) {
         echo "<p><a href='index.php?id_groupe=$id_groupe&amp;periode_num=$i'>".ucfirst($current_group["periodes"][$i]["nom_periode"])."</a>";
@@ -746,23 +746,23 @@ if (isset($_GET['id_groupe']) and !(isset($_GET['periode_num'])) and !(isset($id
 	$sql="SELECT * FROM periodes WHERE num_periode='$i' AND id_classe='".$current_group["classes"]["list"][0]."' AND verouiller='N'";
 	$res_test=mysql_query($sql);
 	if(mysql_num_rows($res_test)==0){
-		echo " (<i>période close</i>)";
+		echo " (<i>pÃ©riode close</i>)";
 	}
 
 	echo "</p>\n";
     $i++;
     }
     echo "<h3>Visualisation uniquement : </h3>\n";
-    echo "<p><a href='toutes_notes.php?id_groupe=$id_groupe'>Voir toutes les évaluations de l'année</a></p>\n";
+    echo "<p><a href='toutes_notes.php?id_groupe=$id_groupe'>Voir toutes les Ã©valuations de l'annÃ©e</a></p>\n";
 
 }
 
 if (!(isset($_GET['id_groupe'])) and !(isset($_GET['periode_num'])) and !(isset($id_racine))) {
     ?>
     <p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a></p>
-    <p>Accéder au carnet de notes : </p>
+    <p>AccÃ©der au carnet de notes : </p>
     <?php
-    $groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
+    $groups = get_groups_for_prof($_SESSION["login"],"classe puis matiÃ¨re");
 
     if (empty($groups)) {
         echo "<br /><br />";

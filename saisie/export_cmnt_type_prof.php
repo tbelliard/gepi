@@ -40,7 +40,7 @@ if (!checkAccess()) {
     die();
 }
 
-// On n'autorise que les profs à accéder à cette page
+// On n'autorise que les profs Ã  accÃ©der Ã  cette page
 if($_SESSION['statut']!='professeur') {
     header("Location: ../logout.php?auto=1");
     die();

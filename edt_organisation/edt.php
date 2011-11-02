@@ -26,7 +26,7 @@
 /**
  * Gestion des cahiers de textes
  * 
- * @param $_POST['activer'] activation/désactivation
+ * @param $_POST['activer'] activation/dÃ©sactivation
  * @param $_POST['export_cn_ods'] autorisation de l'export au format OD
  * @param $_POST['referentiel_note'] referentiel de note
  * @param $_POST['note_autre_que_sur_referentiel'] note autre que sur referentiel
@@ -57,15 +57,15 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
 
-// ====== CSS particulier à l'EdT ================
+// ====== CSS particulier Ã  l'EdT ================
 $style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
-// ====== Entête de Gepi =========================
+// ====== EntÃªte de Gepi =========================
 //require_once("../lib/header.inc");
 // ===============================================
 
@@ -98,12 +98,12 @@ $message = "";
 		$modif_setting = "ok";
 	}
 
-	// On effectue la requête
+	// On effectue la requÃªte
 	if ($modif_setting == "ok") {
 		check_token();
-		$modif = mysql_query($requete) OR DIE('La modification n\'a pas été enregistrée : '.mysql_error());
-		//$message .= "<p class=\"red\">La modification a bien été enregistrée !</p>";
-		$msg .= "La modification a bien été enregistrée !";
+		$modif = mysql_query($requete) OR DIE('La modification n\'a pas Ã©tÃ© enregistrÃ©e : '.mysql_error());
+		//$message .= "<p class=\"red\">La modification a bien Ã©tÃ© enregistrÃ©e !</p>";
+		$msg .= "La modification a bien Ã©tÃ© enregistrÃ©e !";
 		$post_reussi=TRUE;
 	}
 
@@ -111,14 +111,14 @@ $message = "";
   if (isset ($autorise_saisir_prof)){
 	check_token();
     if (saveSetting("edt_remplir_prof", $autorise_saisir_prof)){
-      $message .= "<p class=\"red\">La modification a bien été enregistrée !</p>";;
-	  $msg .= " La modification a bien été enregistrée !";
+      $message .= "<p class=\"red\">La modification a bien Ã©tÃ© enregistrÃ©e !</p>";;
+	  $msg .= " La modification a bien Ã©tÃ© enregistrÃ©e !";
     }
   }
 
-	// Petite fonction pour déterminer le checked="checked"
+	// Petite fonction pour dÃ©terminer le checked="checked"
 	function eval_checked($Settings, $yn){
-	$req_setting = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE name = '".$Settings."'")) OR DIE ('Erreur requête eval_setting () : '.mysql_error());
+	$req_setting = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE name = '".$Settings."'")) OR DIE ('Erreur requÃªte eval_setting () : '.mysql_error());
 		if ($req_setting["value"] == $yn) {
 			$aff_check = ' checked="checked"';
 		}else {
@@ -141,7 +141,7 @@ include_once("../lib/header_template.inc");
 ****************************************************************/
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
-		echo "erreur lors de la création du fil d'ariane";
+		echo "erreur lors de la crÃ©ation du fil d'ariane";
 /****************************************************************/
 
 /*
@@ -167,7 +167,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
 </p>
 <p>
 		<input name="activ_tous" id="activPas" value="n" type="radio"<?php echo eval_checked("autorise_edt_tous", "n"); ?> onclick='document.autorise_edt.submit();' />
-<label for="activPas">&nbsp;Désactiver les emplois du temps pour tous les utilisateurs</label>
+<label for="activPas">&nbsp;DÃ©sactiver les emplois du temps pour tous les utilisateurs</label>
 </p>
 
 	</form>
@@ -233,20 +233,20 @@ $tbs_pmv="";
 require_once ("../lib/footer_template.inc.php");
 
 /****************************************************************
-			On s'assure que le nom du gabarit est bien renseigné
+			On s'assure que le nom du gabarit est bien renseignÃ©
 ****************************************************************/
 if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 	$_SESSION['rep_gabarits']="origine";
 }
 
 //==================================
-// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// DÃ©commenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 // $affiche_debug=debug_var();
 
 
 $nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/edt_organisation/edt_template.php';
 
-$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+$tbs_last_connection=""; // On n'affiche pas les derniÃ¨res connexions
 include($nom_gabarit);
 
 // ------ on vide les tableaux -----

@@ -1,18 +1,18 @@
 <?php
 
 /**
- * Classe de méthodes statiques qui permettent d'eviter de repeter du code en liaison avec l'affichage des listes d'eleves.
+ * Classe de mÃ©thodes statiques qui permettent d'eviter de repeter du code en liaison avec l'affichage des listes d'eleves.
  *
  * @author jjocal
  */
 class EleveHelper {
 
   /**
-   * Affiche une liste d'élèves en menu déroulant (balises select et option en xhtml)
+   * Affiche une liste d'Ã©lÃ¨ves en menu dÃ©roulant (balises select et option en xhtml)
    *
-   * @param   array $options Pour parametrer l'affichage : @todo à terminer
+   * @param   array $options Pour parametrer l'affichage : @todo Ã  terminer
    * @param   array $liste_leves tableau d'objet Eleve
-   * @return  string Liste déroulante Xhtml
+   * @return  string Liste dÃ©roulante Xhtml
    */
   public static function afficheHtmlSelectListeEleves($options, $liste_eleves){
 
@@ -36,7 +36,7 @@ class EleveHelper {
     $nbre = count($liste_eleves);
     if ($nbre === 0) {
       $retour .= '
-      <option value="r">Pas d\'élève dans la base</option>';
+      <option value="r">Pas d\'Ã©lÃ¨ve dans la base</option>';
     }else{
 
       for($a = 0 ; $a < $nbre ; $a++){
@@ -55,7 +55,7 @@ class EleveHelper {
           $_prenom_eleve  = $liste_eleves[$a]->getPrenom();
         }
 
-        // On gère également le selected
+        // On gÃ¨re Ã©galement le selected
         $aff_selected = ($_id_eleve == $_selected) ? ' selected="selected"' : NULL;
 
         $retour .= '

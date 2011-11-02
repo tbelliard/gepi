@@ -5,7 +5,7 @@
  *
  * @version $Id: edt_init_concordance2.php 3323 2009-08-05 10:06:18Z crob $
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
+ * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, StÃ©phane Boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -40,7 +40,7 @@ if ($resultat_session == 'c') {
     header("Location: ../logout.php?auto=1");
     die();
 }
-// Sécurité
+// SÃ©curitÃ©
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
@@ -72,39 +72,39 @@ echo "<div id='header'>
 
 </div>
 ";
-// traitement des données qui arrivent
+// traitement des donnÃ©es qui arrivent
 
 if ($etape != NULL) {
 	// Alors on peut commencer le traitement
 
-	echo '<p>Etape numéro : '.$etape.'</p>';
+	echo '<p>Etape numÃ©ro : '.$etape.'</p>';
 	echo '<p>Nbre lignes : '.$nbre_lignes.'</p>';
 
 	if ($etape != 12 AND $etape != 5) {
 			$values = NULL;
-		// C'est le cas général pour enregistrer les concordances entre le fichier csv et Gepi
-		// On réceptionne les données et on les rentre dans la base
+		// C'est le cas gÃ©nÃ©ral pour enregistrer les concordances entre le fichier csv et Gepi
+		// On rÃ©ceptionne les donnÃ©es et on les rentre dans la base
 		for($a = 0; $a < $nbre_lignes; $a++){
 
 			$nom_gepi[$a] = isset($_POST["nom_gepi_".$a]) ? $_POST["nom_gepi_".$a] : NULL;
 			$nom_export[$a] = isset($_POST["nom_export_".$a]) ? $_POST["nom_export_".$a] : NULL;
 
-			// On prépare la requête en vérifiant qu'elle doit bien être construite
+			// On prÃ©pare la requÃªte en vÃ©rifiant qu'elle doit bien Ãªtre construite
 			if ($nom_gepi[$a] != '' AND $nom_gepi[$a] != 'none') {
 				$values .= "('', '".$etape."', '".$nom_export[$a]."', '".$nom_gepi[$a]."'), ";
 
 			}
 		}
-		// On envoie toutes les requêtes d'un coup
+		// On envoie toutes les requÃªtes d'un coup
 		echo $values;
 		$envoie = mysql_query("INSERT INTO edt_init (id_init, ident_export, nom_export, nom_gepi)
 					VALUE ".$values." ('', ".$etape.", 'fin', 'fin')")
-					OR error_reporting('Erreur dans la requête $envoie de l\'étape '.$etape.' : '.mysql_error().'<br />'.$envoie);
-		// On récupère le nombre de valeurs enregistrées et on affiche
+					OR error_reporting('Erreur dans la requÃªte $envoie de l\'Ã©tape '.$etape.' : '.mysql_error().'<br />'.$envoie);
+		// On rÃ©cupÃ¨re le nombre de valeurs enregistrÃ©es et on affiche
 		if ($etape == 6 OR $etape == 8 OR $etape == 9 OR $etape == 11) {
-			echo '<p>Aucun enregistrement, passez à l\'étape suivante.</p>';
+			echo '<p>Aucun enregistrement, passez Ã  l\'Ã©tape suivante.</p>';
 		}else{
-			echo '<p>'.$nbre_lignes.' lignes ont été enregistrées dans la base.</p>';
+			echo '<p>'.$nbre_lignes.' lignes ont Ã©tÃ© enregistrÃ©es dans la base.</p>';
 		}
 
 	}elseif($etape == 5){
@@ -133,18 +133,18 @@ if ($etape != NULL) {
 			$en = '';
 		}
 		echo '
-		<p>'.$enre.' nouvelle'.$s.' salle'.$s.' '.$ont.' été enregistrée'.$s.' et '.$deja.' existai'.$en.'t déjà.</p>';
+		<p>'.$enre.' nouvelle'.$s.' salle'.$s.' '.$ont.' Ã©tÃ© enregistrÃ©e'.$s.' et '.$deja.' existai'.$en.'t dÃ©jÃ .</p>';
 
 	}elseif($etape == 12){
 
-		// Ce sont les cours qui arrivent, car on a terminé les concordances
+		// Ce sont les cours qui arrivent, car on a terminÃ© les concordances
 		for($i = 0; $i < $nbre_lignes; $i++){
 			// On initialise toutes les variables et on affiche la valeur de chaque cours
 			$ligne = isset($_POST["ligne_".$i]) ? $_POST["ligne_".$i] : NULL;
 			//echo $ligne.'<br />';
-			// On explose la variable pour récupérer toutes les données
+			// On explose la variable pour rÃ©cupÃ©rer toutes les donnÃ©es
 			$tab = explode("|", $ligne);
-			/*/ Toutes les infos sont envoyées en brut
+			/*/ Toutes les infos sont envoyÃ©es en brut
 			for($v = 0; $v < 12; $v++){
 				if (!isset($tab[$v])) {
 
@@ -161,10 +161,10 @@ if ($etape != NULL) {
 				$debug = 'ok';
 
 			if ($enregistre["reponse"] == 'ok') {
-				// On affiche les infos si c'est demandé
+				// On affiche les infos si c'est demandÃ©
 
 				if ($aff_infos == 'oui' OR $debug == 'ok') {
-					$msg_enreg .= 'La ligne '.$i.' a bien été enregistrée.<br />';
+					$msg_enreg .= 'La ligne '.$i.' a bien Ã©tÃ© enregistrÃ©e.<br />';
 				}
 			}elseif($enregistre["reponse"] == 'non'){
 
@@ -178,7 +178,7 @@ if ($etape != NULL) {
 						$essai = gestion_edt_gr($tab);
 
 						if ($essai == 'non') {
-							// On a terminé
+							// On a terminÃ©
 							$aff_create = 'Pas d\'enregistrement.';
 						}else{
 
@@ -186,7 +186,7 @@ if ($etape != NULL) {
 							$enregistre2 = enregistreCoursCsv2($tab[0], $tab[1], $tab[2], $tab[3], $tab[4], $tab[5], $tab[6], $tab[7], $tab[8], $tab[9], $tab[10], $tab[11]);
 							if ($enregistre2["reponse"] == 'ok') {
 
-								$aff_create = 'Le cours est enregistré avec un edt_gr.';
+								$aff_create = 'Le cours est enregistrÃ© avec un edt_gr.';
 
 							}
 
@@ -194,7 +194,7 @@ if ($etape != NULL) {
 
 					} // if (getSettingValue("mod_edt_gr") == 'y'
 
-					$msg_enreg .= '<p title="'.$tab[0].'|'.$tab[1].'|'.$tab[2].'|'.$tab[3].'|'.$tab[4].'|'.$tab[5].'|'.$tab[6].'|'.$tab[7].'|'.$tab[8].'|'.$tab[9].'|'.$tab[10].'|'.$tab[11].'">La ligne '.$i.' n\'a pas été reconnue.'.$enregistre["msg_erreur"].''.$aff_create.'</p>'."\n";
+					$msg_enreg .= '<p title="'.$tab[0].'|'.$tab[1].'|'.$tab[2].'|'.$tab[3].'|'.$tab[4].'|'.$tab[5].'|'.$tab[6].'|'.$tab[7].'|'.$tab[8].'|'.$tab[9].'|'.$tab[10].'|'.$tab[11].'">La ligne '.$i.' n\'a pas Ã©tÃ© reconnue.'.$enregistre["msg_erreur"].''.$aff_create.'</p>'."\n";
 				}
 			}else{
 				echo '(ligne '.$i.')&nbsp;->&nbsp;Il y a eu un souci car ce n\'est pas ok ou non qui arrive mais '.$enregistre["msg_erreur"].'.<br />';
@@ -203,13 +203,13 @@ if ($etape != NULL) {
 		echo $msg_enreg; // permet d'afficher le message de bilan
 	}
 
-	// On incrémente le numéro de l'étape
+	// On incrÃ©mente le numÃ©ro de l'Ã©tape
 	if ($etape != 12) {
 		$prochaine_etape = $etape + 1;
 		$vers_etape2 = mysql_query("UPDATE edt_init SET nom_export = '".$prochaine_etape."' WHERE ident_export = 'fichierTexte2'");
 		// et on affiche un lien qui permet de continuer
 		echo '
-		<a href="edt_init_csv2.php">Pour continuer les concordances, veuillez recommencer la même procédure pour l\'étape n° '.$prochaine_etape.'</a>';
+		<a href="edt_init_csv2.php">Pour continuer les concordances, veuillez recommencer la mÃªme procÃ©dure pour l\'Ã©tape nÂ° '.$prochaine_etape.'</a>';
 
 	}else{
 		$tempdir = get_user_temp_directory();
@@ -217,14 +217,14 @@ if ($etape != NULL) {
 			// On efface le fichier csv
 			//unlink("../temp/".$tempdir."/g_edt_2.csv");
 			echo '
-			<p style="color: green;">Le fichier est conservé dans le répertoire de l\'administrateur.</p>';
+			<p style="color: green;">Le fichier est conservÃ© dans le rÃ©pertoire de l\'administrateur.</p>';
 		}
 
-		// On affiche un lien pour revenir à la page de départ
+		// On affiche un lien pour revenir Ã  la page de dÃ©part
 		echo '
 		<a href="edt_init_csv2.php" style="border: 1px solid black;">Retour</a>';
 	}
-} // on a terminé le travail de concordances
+} // on a terminÃ© le travail de concordances
 
 ?>
 </body>

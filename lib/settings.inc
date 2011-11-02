@@ -28,13 +28,13 @@
  */
 
 /**
- * Tableau des réglages
+ * Tableau des rÃ©glages
  * 
  * $gepiSettings['name'] = 'value'
  * 
- * name le nom du réglage dans setting.name
+ * name le nom du rÃ©glage dans setting.name
  * 
- * value la valeur du réglage dans setting.value 
+ * value la valeur du rÃ©glage dans setting.value 
  *
  * @global array $GLOBALS['gepiSettings']
  * @name $gepiSettings
@@ -42,12 +42,12 @@
 $GLOBALS['gepiSettings'] = array();
 
 /**
- * Charge les réglages depuis la base de données
+ * Charge les rÃ©glages depuis la base de donnÃ©es
  *
- * Recherche tous les réglages
- * Retourne le résultat dans le tableau associatif $gepiSettings
+ * Recherche tous les rÃ©glages
+ * Retourne le rÃ©sultat dans le tableau associatif $gepiSettings
  *
- * Retourne TRUE si tout c'est bien passé, FALSE sinon
+ * Retourne TRUE si tout c'est bien passÃ©, FALSE sinon
  *
  * @global array
  * @return bool TRUE if the settings are loaded
@@ -69,16 +69,16 @@ function loadSettings()
 }
 
 /**
- * Renvoie la valeur d'un réglage en fonction de son nom
+ * Renvoie la valeur d'un rÃ©glage en fonction de son nom
  *
- * Utilisez cette fonction à l'intérieur des autres fonctions afin de ne pas avoir
- * à déclarer la variable globale $gepiSettings
+ * Utilisez cette fonction Ã  l'intÃ©rieur des autres fonctions afin de ne pas avoir
+ * Ã  dÃ©clarer la variable globale $gepiSettings
  *
  * Retourne la valeur si le nom existe
  *
  * @global array 
- * @param text $_name Le nom du réglage que vous cherchez
- * @return text La valeur correspondant à $_name
+ * @param text $_name Le nom du rÃ©glage que vous cherchez
+ * @return text La valeur correspondant Ã  $_name
  * 
  */
 function getSettingValue($_name)
@@ -88,11 +88,11 @@ function getSettingValue($_name)
 }
 
 /**
- * Renvoie TRUE si le réglage est 'yes' ou 'y'
+ * Renvoie TRUE si le rÃ©glage est 'yes' ou 'y'
  *
  *
- * @param text $_name Le nom du réglage que vous cherchez
- * @return bool TRUE si le réglage que vous cherchez est 'yes' or 'y', FALSE sinon
+ * @param text $_name Le nom du rÃ©glage que vous cherchez
+ * @return bool TRUE si le rÃ©glage que vous cherchez est 'yes' or 'y', FALSE sinon
  */
 function getSettingAOui($_name)
 {
@@ -106,13 +106,13 @@ function getSettingAOui($_name)
 /**
  * Sauvegarde une paire name, value dans la base
  *
- * Utilisez cette fonction ponctuellement, Si vous devez sauvegarder plusieurs réglages,
- * vous devriez plutôt écrire votre propre code
+ * Utilisez cette fonction ponctuellement, Si vous devez sauvegarder plusieurs rÃ©glages,
+ * vous devriez plutÃ´t Ã©crire votre propre code
  * 
  * @global array
- * @param text $_name Le nom du réglage
- * @param text $_value La valeur du réglage
- * @return bool TRUE si tout s'est bien passé, FALSE sinon
+ * @param text $_name Le nom du rÃ©glage
+ * @param text $_value La valeur du rÃ©glage
+ * @return bool TRUE si tout s'est bien passÃ©, FALSE sinon
  */
 function saveSetting($_name, $_value)
 {

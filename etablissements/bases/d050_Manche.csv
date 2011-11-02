@@ -1,7 +1,7 @@
 0500150S;Interparoissial;college;prive;50000;Saint-Lo
-0500121K;Saint Joseph;college;prive;50001;Saint-Lô
-0500094F;Georges Lavalley;college;public;50003;Saint-Lô
-0500095G;Louis Pasteur;college;public;50008;Saint-Lô
+0500121K;Saint Joseph;college;prive;50001;Saint-LÃ´
+0500094F;Georges Lavalley;college;public;50003;Saint-LÃ´
+0500095G;Louis Pasteur;college;public;50008;Saint-LÃ´
 0501829S;Jean Baptiste Charcot;college;public;50100;Cherbourg-Octeville
 0500140F;Saint Joseph;college;prive;50100;Cherbourg-Octeville
 0500092D;La Bucaille;college;public;50100;Cherbourg-Octeville
@@ -16,22 +16,22 @@
 0500153V;Notre Dame;college;prive;50150;Sourdeval
 0500079P;Albert Camus;college;public;50160;Torigni-Sur-Vire
 0501241C;Georges Brassens;college;public;50170;Pontorson
-0501701C;Institut Saint-Lô;college;prive;50180;Agneaux
+0501701C;Institut Saint-LÃ´;college;prive;50180;Agneaux
 0500053L;-;college;public;50190;Periers
 0500117F;Guerard;college;prive;50206;Coutances
-0501206P;Jacques Prévert;college;public;50207;Coutances
+0501206P;Jacques PrÃ©vert;college;public;50207;Coutances
 0501703E;Germain;college;prive;50208;Coutances
 0500014U;Anne Heurgon-Desjardins;college;public;50210;Cerisy-La-Salle
 0501240B;Gabriel De Montgomery;college;public;50220;Ducey
 0500001E;Les Embruns;college;public;50230;Agon-Coutainville
 0501242D;Le Clos Tardif;college;public;50240;Saint-James
-0500149R;Immaculée Conception;college;prive;50240;Saint-James
+0500149R;ImmaculÃ©e Conception;college;prive;50240;Saint-James
 0501218C;Etenclin;college;public;50250;La Haye-Du-Puits
 0500010P;Marcel Grillard;college;public;50260;Bricquebec
-0501239A;La Vanlee;college;public;50290;Bréhal
+0501239A;La Vanlee;college;public;50290;BrÃ©hal
 0501704F;Notre Dame De La Providence;college;prive;50300;Avranches
 0500003G;Challemel Lacour;college;public;50303;Avranches
-0501525L;La Chaussonnière;college;public;50303;Avranches
+0501525L;La ChaussonniÃ¨re;college;public;50303;Avranches
 0500047E;Tiphaigne De La Roche;college;public;50310;Montebourg
 0501201J;L Abbaye;college;prive;50310;Montebourg
 0500042Z;Louis Beuve;college;public;50320;La Haye-Pesnel
@@ -39,10 +39,10 @@
 0500069D;Gilles De Gouberville;college;public;50330;Saint-Pierre-Eglise
 0501799J;Lucien Goubert;college;public;50340;Flamanville
 0501220E;Le Castillon;college;public;50340;Les Pieux
-0501302U;-;college;public;50370;Brécey
+0501302U;-;college;public;50370;BrÃ©cey
 0500072G;Barbey D'aurevilly;college;public;50390;Saint-Sauveur-Le-Vicomte
 0500152U;De L Abbaye;college;prive;50390;Saint-Sauveur-Le-Vicomte
-0501705G;Sévigné;college;prive;50400;Granville
+0501705G;SÃ©vignÃ©;college;prive;50400;Granville
 0500039W;Andre Malraux;college;public;50407;Granville
 0500052K;Du Moulin De Haut;college;public;50410;Percy
 0500078N;Raymond Queneau;college;public;50420;Tessy-Sur-Vire
@@ -55,7 +55,7 @@
 0500068C;Saint Exupery;college;public;50480;Sainte-Mere-Eglise
 0500071F;Tancrede De Hauteville;college;public;50490;Saint-Sauveur-Lendelin
 0500139E;Notre-Dame;college;prive;50500;Carentan
-0500012S;Léon Gambetta;college;public;50500;Carentan
+0500012S;LÃ©on Gambetta;college;public;50500;Carentan
 0500044B;Charlemagne;college;public;50520;Juvigny-Le-Tertre
 0501930B;Charlemagne;college;public;50520;Juvigny-Le-Tertre
 0500075K;Anatole France;college;public;50530;Sartilly
@@ -68,34 +68,34 @@
 0500061V;Jules Verne;college;public;50600;Saint-Hilaire-Du-Harcouet
 0501301T;Du Marais;college;public;50620;Saint-Jean-De-Daye
 0501444Y;Pierre Mottier;college;public;50640;Le Teilleul
-0500024E;Ingénieur Cachin;college;public;50651;Cherbourg-Octeville
+0500024E;IngÃ©nieur Cachin;college;public;50651;Cherbourg-Octeville
 0501207R;-;college;public;50670;Saint-Pois
-0500059T;Jean Grémillon;college;public;50680;Saint-Clair-Sur-L'elle
+0500059T;Jean GrÃ©millon;college;public;50680;Saint-Clair-Sur-L'elle
 0500155X;Sainte Marie;college;prive;50700;Valognes
 0500096H;Felix Buhot;college;public;50700;Valognes
 0500011R;Jean Follain;college;public;50750;Canisy
-0500123M;Saint Joseph;college;prive;50800;Villedieu-Les-Poêles
-0500083U;Le Dinandier;college;public;50800;Villedieu-Les-Poêles
+0500123M;Saint Joseph;college;prive;50800;Villedieu-Les-PoÃªles
+0500083U;Le Dinandier;college;public;50800;Villedieu-Les-PoÃªles
 0500780B;Gustave Blouet;ecole;public;50000;Baudre
 0500782D;-;ecole;public;50000;Le Mesnil-Rouxelin
 0500785G;-;ecole;public;50000;Saint-Georges-Montcocq
-0501500J;L'yser;ecole;public;50000;Saint-Lô
-0501536Y;Jules Ferry;ecole;public;50000;Saint-Lô
-0501502L;Jules Verne;ecole;public;50000;Saint-Lô
-0501501K;Raymond Brule;ecole;public;50000;Saint-Lô
-0501621R;L Aurore;ecole;public;50000;Saint-Lô
-0501250M;Gendrin;ecole;public;50000;Saint-Lô
-0501372V;Ecole Sainte-Geneviève;ecole;prive;50000;Saint-Lô
-0501370T;Ecole Interparoissiale;ecole;prive;50000;Saint-Lô
-0501439T;Calmette Guérin;ecole;public;50000;Saint-Lô
+0501500J;L'yser;ecole;public;50000;Saint-LÃ´
+0501536Y;Jules Ferry;ecole;public;50000;Saint-LÃ´
+0501502L;Jules Verne;ecole;public;50000;Saint-LÃ´
+0501501K;Raymond Brule;ecole;public;50000;Saint-LÃ´
+0501621R;L Aurore;ecole;public;50000;Saint-LÃ´
+0501250M;Gendrin;ecole;public;50000;Saint-LÃ´
+0501372V;Ecole Sainte-GeneviÃ¨ve;ecole;prive;50000;Saint-LÃ´
+0501370T;Ecole Interparoissiale;ecole;prive;50000;Saint-LÃ´
+0501439T;Calmette GuÃ©rin;ecole;public;50000;Saint-LÃ´
 0501323S;Sainte-Marie;ecole;prive;50100;Cherbourg-Octeville
 0501324T;Saint Joseph;ecole;prive;50100;Cherbourg-Octeville
-0501259X;Jacques Prévert;ecole;public;50100;Cherbourg-Octeville
+0501259X;Jacques PrÃ©vert;ecole;public;50100;Cherbourg-Octeville
 0501258W;-;ecole;public;50100;Cherbourg-Octeville
 0501849N;Amont Quentin;ecole;public;50100;Cherbourg-Octeville
 0501326V;Sainte-Marie Du Roule;ecole;prive;50100;Cherbourg-Octeville
 0500346E;Gibert-Zola;ecole;public;50100;Cherbourg-Octeville
-0501680E;Jean Jaurès;ecole;public;50100;Cherbourg-Octeville
+0501680E;Jean JaurÃ¨s;ecole;public;50100;Cherbourg-Octeville
 0501411M;Saint Paul;ecole;prive;50100;Cherbourg-Octeville
 0501325U;Notre Dame Du Voeu;ecole;prive;50100;Cherbourg-Octeville
 0501666P;Avenue De Paris;ecole;public;50100;Cherbourg-Octeville
@@ -111,21 +111,21 @@
 0500524Y;Ernest Renan;ecole;public;50110;Tourlaville
 0501394U;Saint-Louis;ecole;prive;50110;Tourlaville
 0501422Z;Leon Blum;ecole;public;50110;Tourlaville
-0501396W;N-D De L'espérance;ecole;prive;50110;Tourlaville
+0501396W;N-D De L'espÃ©rance;ecole;prive;50110;Tourlaville
 0501497F;Jean Zay;ecole;public;50110;Tourlaville
-0500527B;Léon Gambetta;ecole;public;50110;Tourlaville
-0501681F;Léon Blum;ecole;public;50120;Equeurdreville-Hainneville
+0500527B;LÃ©on Gambetta;ecole;public;50110;Tourlaville
+0501681F;LÃ©on Blum;ecole;public;50120;Equeurdreville-Hainneville
 0501334D;Sainte-Marie;ecole;prive;50120;Equeurdreville-Hainneville
 0501534W;Jean Goubert;ecole;public;50120;Equeurdreville-Hainneville
 0501721Z;J Bocher;ecole;public;50120;Equeurdreville-Hainneville
-0501807T;François Mittérrand;ecole;public;50120;Equeurdreville-Hainneville
+0501807T;FranÃ§ois MittÃ©rrand;ecole;public;50120;Equeurdreville-Hainneville
 0501264C;Jules Ferry;ecole;public;50120;Equeurdreville-Hainneville
 0501778L;-;ecole;public;50120;Equeurdreville-Hainneville
 0501682G;Jean Goubert;ecole;public;50120;Equeurdreville-Hainneville
 0501211V;Hameau Noblet;ecole;public;50130;Cherbourg-Octeville
 0501655C;J Goubert;ecole;public;50130;Cherbourg-Octeville
 0501356C;Sainte-Jeanne D'arc;ecole;prive;50130;Cherbourg-Octeville
-0500337V;Fraternité;ecole;public;50130;Cherbourg-Octeville
+0500337V;FraternitÃ©;ecole;public;50130;Cherbourg-Octeville
 0501841E;A Bayet;ecole;public;50130;Cherbourg-Octeville
 0501237Y;Hameau Baquesne;ecole;public;50130;Cherbourg-Octeville
 0501533V;La Polle   Cherbourg;ecole;public;50130;Cherbourg-Octeville
@@ -137,7 +137,7 @@
 0501471C;-;ecole;public;50140;Romagny
 0500511J;-;ecole;public;50140;Villechien
 0501389N;Ecole Saint-Martin;ecole;prive;50150;Sourdeval
-0501274N;André Bruno;ecole;public;50150;Sourdeval
+0501274N;AndrÃ© Bruno;ecole;public;50150;Sourdeval
 0500808G;-;ecole;public;50160;Gieville
 0501753J;-;ecole;public;50160;Guilberville
 0500820V;-;ecole;public;50160;Saint-Amand
@@ -146,7 +146,7 @@
 0501360G;Ecole Notre-Dame;ecole;prive;50170;Pontorson
 0501732L;Louis Pergaud;ecole;public;50170;Pontorson
 0500652M;B. Duguesclin;ecole;public;50170;Sacey
-0501303V;Institut Saint-Lô;ecole;prive;50180;Agneaux
+0501303V;Institut Saint-LÃ´;ecole;prive;50180;Agneaux
 0501420X;Marie Ravenel;ecole;public;50180;Agneaux
 0501415S;-;ecole;public;50180;Hebecrevon
 0501098X;-;ecole;public;50180;Saint-Gilles
@@ -186,18 +186,18 @@
 0500380S;-;ecole;public;50220;Juilley
 0501539B;-;ecole;public;50220;Pontaubault
 0500387Z;-;ecole;public;50220;Precey
-0500389B;René Hardy;ecole;public;50220;Saint-Quentin-Sur-Le-Homme
+0500389B;RenÃ© Hardy;ecole;public;50220;Saint-Quentin-Sur-Le-Homme
 0501261Z;-;ecole;public;50230;Agon-Coutainville
 0501304W;Ecole Notre-Dame;ecole;prive;50240;Argouges
 0500739G;-;ecole;public;50240;Carnet
 0500741J;-;ecole;public;50240;La Croix-Avranchin
 0500744M;-;ecole;public;50240;Montanel
 0501524K;Le Bourg;ecole;public;50240;Saint-Aubin-De-Terregatte
-0501367P;Immaculée Conception;ecole;prive;50240;Saint-James
+0501367P;ImmaculÃ©e Conception;ecole;prive;50240;Saint-James
 0501276R;-;ecole;public;50240;Saint-James
 0500753X;-;ecole;public;50240;Saint-Laurent-De-Terregatte
 0500755Z;-;ecole;public;50240;Vergoncey
-0500434A;Françoise Dolto;ecole;public;50250;Bolleville
+0500434A;FranÃ§oise Dolto;ecole;public;50250;Bolleville
 0500443K;-;ecole;public;50250;Doville
 0501345R;Ecole Sainte-Marie;ecole;prive;50250;La Haye-Du-Puits
 0501257V;Le Chat Perche;ecole;public;50250;La Haye-Du-Puits
@@ -217,13 +217,13 @@
 0500254E;-;ecole;public;50260;Rocheville
 0500255F;-;ecole;public;50260;Saint-Martin-Le-Hebert
 0501679D;-;ecole;public;50260;Sottevast
-0501186T;Jean Jaurès;ecole;public;50270;Barneville-Carteret
+0501186T;Jean JaurÃ¨s;ecole;public;50270;Barneville-Carteret
 0501428F;Section Carteret;ecole;public;50270;Barneville-Carteret
 0501824L;Les Chardons Bleus;ecole;public;50270;Les Moitiers-D'allonne
 0500167K;-;ecole;public;50270;Saint-Maurice-En-Cotentin
 0501495D;-;ecole;public;50270;Surtainville
-0500220T;Jean Monnet;ecole;public;50290;Bréhal
-0501315H;Ecole Saint-Joseph;ecole;prive;50290;Bréhal
+0500220T;Jean Monnet;ecole;public;50290;BrÃ©hal
+0501315H;Ecole Saint-Joseph;ecole;prive;50290;BrÃ©hal
 0500224X;-;ecole;public;50290;Bricqueville-Sur-Mer
 0500229C;-;ecole;public;50290;Coudeville-Sur-Mer
 0500232F;-;ecole;public;50290;Longueville
@@ -231,7 +231,7 @@
 0501305X;Ecole Sainte-Marie;ecole;prive;50300;Avranches
 0501149C;A. Parisy;ecole;public;50300;Avranches
 0501307Z;Ecole Saint-Joseph;ecole;prive;50300;Avranches
-0501174E;A. De Saint Exupéry;ecole;public;50300;Le Val-Saint-Pere
+0501174E;A. De Saint ExupÃ©ry;ecole;public;50300;Le Val-Saint-Pere
 0501796F;-;ecole;public;50300;Marcey-Les-Greves
 0501973Y;-;ecole;public;50300;Saint-Martin-Des-Champs
 0501170A;-;ecole;public;50300;Saint-Ovin
@@ -268,8 +268,8 @@
 0501730J;A. Levaufre;ecole;public;50350;Donville-Les-Bains
 0501826N;Le Vieux Figuier;ecole;public;50360;Picauville
 0501359F;Saint-Michel;ecole;prive;50360;Picauville
-0500201X;-;ecole;public;50370;Brécey
-0501314G;Ecole Jeanne D'arc;ecole;prive;50370;Brécey
+0500201X;-;ecole;public;50370;BrÃ©cey
+0501314G;Ecole Jeanne D'arc;ecole;prive;50370;BrÃ©cey
 0500202Y;-;ecole;public;50370;La Chaise-Baudouin
 0500206C;-;ecole;public;50370;Le Grand-Celland
 0500411A;-;ecole;public;50380;Saint-Aubin-Des-Preaux
@@ -282,9 +282,9 @@
 0501383G;Notre-Dame;ecole;prive;50390;Saint-Sauveur-Le-Vicomte
 0501280V;-;ecole;public;50390;Saint-Sauveur-Le-Vicomte
 0501923U;Val Es Fleurs;ecole;public;50400;Granville
-0501521G;Inst Sévigné Croix Du Lude;ecole;prive;50400;Granville
+0501521G;Inst SÃ©vignÃ© Croix Du Lude;ecole;prive;50400;Granville
 0501338H;Ecole Saint-Paul;ecole;prive;50400;Granville
-0501440U;Jean Macé;ecole;public;50400;Granville
+0501440U;Jean MacÃ©;ecole;public;50400;Granville
 0501252P;Pierre Et Marie Curie;ecole;public;50400;Granville
 0501644R;Ecole Notre-Dame;ecole;prive;50400;Granville
 0501491Z;Jules Ferry;ecole;public;50400;Granville
@@ -337,7 +337,7 @@
 0500298C;-;ecole;public;50500;Saint-Georges-De-Bohon
 0500299D;Isidore Delahaye;ecole;public;50500;Saint-Hilaire-Petitville
 0501685K;-;ecole;public;50500;Sainteny
-0500226Z;J. Prévert;ecole;public;50510;Cerences
+0500226Z;J. PrÃ©vert;ecole;public;50510;Cerences
 0501320N;Ecole Notre-Dame;ecole;prive;50510;Cerences
 0501438S;-;ecole;public;50510;Hudimesnil
 0500233G;-;ecole;public;50510;Le Loreur
@@ -348,7 +348,7 @@
 0500872B;-;ecole;public;50530;Saint-Jean-Le-Thomas
 0500876F;-;ecole;public;50530;Saint-Pierre-Langers
 0501273M;Alain Fournier;ecole;public;50530;Sartilly
-0501386K;Ecole Sainte-Thérèse;ecole;prive;50530;Sartilly
+0501386K;Ecole Sainte-ThÃ©rÃ¨se;ecole;prive;50530;Sartilly
 0501040J;Pierre Lostis;ecole;public;50540;Isigny-Le-Buat
 0501492A;Marcel Lepaysant;ecole;public;50550;Saint-Vaast-La-Hougue
 0501684J;-;ecole;public;50560;Blainville-Sur-Mer
@@ -371,8 +371,8 @@
 0501349V;Ecole Saint-Joseph;ecole;prive;50600;Les Loges-Marchis
 0500718J;-;ecole;public;50600;Milly
 0501662K;Le Champ Failly;ecole;public;50600;Parigny
-0501364L;Immaculée Conception;ecole;prive;50600;Saint-Hilaire-Du-Harcouet
-0501546J;Beauséjour;ecole;public;50600;Saint-Hilaire-Du-Harcouet
+0501364L;ImmaculÃ©e Conception;ecole;prive;50600;Saint-Hilaire-Du-Harcouet
+0501546J;BeausÃ©jour;ecole;public;50600;Saint-Hilaire-Du-Harcouet
 0501815B;-;ecole;public;50600;Saint-Hilaire-Du-Harcouet
 0501690R;-;ecole;public;50600;Virey
 0500419J;Eric Tabarly;ecole;public;50610;Jullouville
@@ -391,7 +391,7 @@
 0501387L;Ecole Saint-Vital;ecole;prive;50640;Savigny-Le-Vieux
 0501130G;-;ecole;public;50660;Contrieres
 0501134L;-;ecole;public;50660;Hyenville
-0501348U;Ecole Sainte-Thérèse;ecole;prive;50660;Lingreville
+0501348U;Ecole Sainte-ThÃ©rÃ¨se;ecole;prive;50660;Lingreville
 0501859Z;-;ecole;public;50660;Lingreville
 0501133K;-;ecole;public;50660;Montchaton
 0501657E;-;ecole;public;50660;Orval
@@ -422,7 +422,7 @@
 0500909S;-;ecole;public;50700;Tamerville
 0501635F;Ste Marie;ecole;prive;50700;Valognes
 0501809V;Le Quesnay;ecole;public;50700;Valognes
-0500910T;Léopold Delisle;ecole;public;50700;Valognes
+0500910T;LÃ©opold Delisle;ecole;public;50700;Valognes
 0500911U;-;ecole;public;50700;Valognes
 0501748D;-;ecole;public;50700;Yvetot-Bocage
 0501820G;1,2,3 Soleil;ecole;public;50710;Creances
@@ -454,15 +454,15 @@
 0500916Z;-;ecole;public;50800;La Bloutiere
 0501695W;-;ecole;public;50800;La Lande-D'airou
 0500926K;-;ecole;public;50800;La Trinite
-0500925J;-;ecole;public;50800;Sainte-Cécile
-0501821H;-;ecole;public;50800;Villedieu-Les-Poêles
-0501401B;Institution Notre-Dame;ecole;prive;50800;Villedieu-Les-Poêles
+0500925J;-;ecole;public;50800;Sainte-CÃ©cile
+0501821H;-;ecole;public;50800;Villedieu-Les-PoÃªles
+0501401B;Institution Notre-Dame;ecole;prive;50800;Villedieu-Les-PoÃªles
 0500693G;-;ecole;public;50810;Berigny
 0500778Z;-;ecole;public;50810;La Barre-De-Semilly
 0500818T;-;ecole;public;50810;Rouxeville
 0500705V;-;ecole;public;50810;Saint-Germain-D'elle
 0501668S;-;ecole;public;50810;Saint-Jean-Des-Baisants
-0501498G;Eugène Mahaut;ecole;public;50840;Fermanville
+0501498G;EugÃ¨ne Mahaut;ecole;public;50840;Fermanville
 0501178J;-;ecole;public;50850;Ger
 0501434M;Raymond Queneau;ecole;public;50860;Moyon
 0501161R;-;ecole;public;50870;Plomb

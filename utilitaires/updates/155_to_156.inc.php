@@ -1,18 +1,18 @@
 <?php
 /**
- * Fichier de mise à jour de la version 1.5.5 à la version 1.5.6
+ * Fichier de mise Ã  jour de la version 1.5.5 Ã  la version 1.5.6
  * 
  * $Id: 155_to_156.inc.php 8585 2011-11-01 17:35:26Z mleygnac $
  *
- * Le code PHP présent ici est exécuté tel quel.
- * Pensez à conserver le code parfaitement compatible pour une application
- * multiple des mises à jour. Toute modification ne doit être réalisée qu'après
- * un test pour s'assurer qu'elle est nécessaire.
+ * Le code PHP prÃ©sent ici est exÃ©cutÃ© tel quel.
+ * Pensez Ã  conserver le code parfaitement compatible pour une application
+ * multiple des mises Ã  jour. Toute modification ne doit Ãªtre rÃ©alisÃ©e qu'aprÃ¨s
+ * un test pour s'assurer qu'elle est nÃ©cessaire.
  *
- * Le résultat de la mise à jour est du html préformaté. Il doit être concaténé
- * dans la variable $result, qui est déjà initialisé.
+ * Le rÃ©sultat de la mise Ã  jour est du html prÃ©formatÃ©. Il doit Ãªtre concatÃ©nÃ©
+ * dans la variable $result, qui est dÃ©jÃ  initialisÃ©.
  *
- * Exemple : $result .= msj_ok("Champ XXX ajouté avec succès");
+ * Exemple : $result .= msj_ok("Champ XXX ajoutÃ© avec succÃ¨s");
  *
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL,
@@ -23,7 +23,7 @@
  * @see msj_present()
  */
 
-$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.5.6" . $rc . $beta . " :</h3>";
+$result .= "<h3 class='titreMaJ'>Mise Ã  jour vers la version 1.5.6" . $rc . $beta . " :</h3>";
 
 //===================================================
 /*
@@ -37,12 +37,12 @@ $res_test=mysql_num_rows($req_test);
 if ($res_test==0){
   $result_inter = traite_requete("INSERT INTO setting VALUES ('cas_attribut_prenom', '');");
   if ($result_inter == '') {
-    $result.=msj_ok("Définition du paramètre cas_attribut_prenom : Ok !");
+    $result.=msj_ok("DÃ©finition du paramÃ¨tre cas_attribut_prenom : Ok !");
   } else {
-    $result.=msj_erreur("Définition du paramètre cas_attribut_prenom : Erreur !");
+    $result.=msj_erreur("DÃ©finition du paramÃ¨tre cas_attribut_prenom : Erreur !");
   }
 } else {
-  $result .= msj_present("Le paramètre cas_attribut_prenom existe déjà dans la table setting.");
+  $result .= msj_present("Le paramÃ¨tre cas_attribut_prenom existe dÃ©jÃ  dans la table setting.");
 }
 
 //===================================================
@@ -66,17 +66,17 @@ if ($test == -1) {
 		$result .= msj_erreur("ECHEC !");
 	}
 } else {
-		$result .= msj_present("La table existe déjà");
+		$result .= msj_present("La table existe dÃ©jÃ ");
 }
 
 //===================================================
 
-// Ajout d'un champ à une table
+// Ajout d'un champ Ã  une table
 
-$result .= "&nbsp;->Ajout d'un champ id_lieu à la table 'a_types'<br />";
+$result .= "&nbsp;->Ajout d'un champ id_lieu Ã  la table 'a_types'<br />";
 $test_date_decompte=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_types LIKE 'id_lieu';"));
 if ($test_date_decompte>0) {
-	$result .= msj_present("Le champ existe déjà.");
+	$result .= msj_present("Le champ existe dÃ©jÃ .");
 }
 else {
 	$query = mysql_query("ALTER TABLE a_types ADD id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'eleve' AFTER commentaire,
@@ -114,7 +114,7 @@ if ($test == -1) {
 		$result .= msj_erreur("ECHEC !");
 	}
 } else {
-		$result .= msj_present("La table existe déjà");
+		$result .= msj_present("La table existe dÃ©jÃ ");
 }
 
 $req_test=mysql_query("SELECT value FROM setting WHERE name = 'utiliserMenuBarre'");
@@ -122,12 +122,12 @@ $res_test=mysql_num_rows($req_test);
 if ($res_test==0){
   $result_inter = traite_requete("INSERT INTO setting VALUES ('utiliserMenuBarre', 'yes');");
   if ($result_inter == '') {
-    $result.=msj_ok("Définition du paramètre utiliserMenuBarre : Ok !");
+    $result.=msj_ok("DÃ©finition du paramÃ¨tre utiliserMenuBarre : Ok !");
   } else {
-    $result.=msj_erreur("Définition du paramètre utiliserMenuBarre : Erreur !");
+    $result.=msj_erreur("DÃ©finition du paramÃ¨tre utiliserMenuBarre : Erreur !");
   }
 } else {
-  $result .= msj_present("Le paramètre utiliserMenuBarre existe déjà dans la table setting.");
+  $result .= msj_present("Le paramÃ¨tre utiliserMenuBarre existe dÃ©jÃ  dans la table setting.");
 }
 
 

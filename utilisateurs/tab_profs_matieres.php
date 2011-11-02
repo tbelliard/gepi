@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// On indique qu'il faut crée des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut crÃ©e des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Initialisations files
@@ -44,7 +44,7 @@ if (!checkAccess()) {
     die();
 }
 
-// Initialisation du message signalant les enregistrements ou les problèmes.
+// Initialisation du message signalant les enregistrements ou les problÃ¨mes.
 $msg="";
 
 // Initialisation des variables
@@ -77,14 +77,14 @@ if(isset($_POST['user_login'])){
 				$sql="SELECT * FROM j_professeurs_matieres WHERE id_professeur='$user_login[$i]' AND id_matiere='$tab_matiere[$j]'";
 				$result_test=mysql_query($sql);
 				if(mysql_num_rows($result_test)!=0){
-					// On a décoché la matière pour ce professeur!
+					// On a dÃ©cochÃ© la matiÃ¨re pour ce professeur!
 
-					// On vérifie que le professeur n'est pas associé à un groupe pour cette matière...
+					// On vÃ©rifie que le professeur n'est pas associÃ© Ã  un groupe pour cette matiÃ¨re...
 					$sql="SELECT jgm.id_groupe FROM j_groupes_professeurs jgp, j_groupes_matieres jgm WHERE jgp.login='$user_login[$i]' AND jgm.id_matiere='$tab_matiere[$j]' AND jgm.id_groupe=jgp.id_groupe";
 					//echo "$sql\n";
 					$result_test2=mysql_query($sql);
 					if(mysql_num_rows($result_test2)==0){
-						// ... puis on supprime l'entrée de la table 'j_professeurs_matieres'
+						// ... puis on supprime l'entrÃ©e de la table 'j_professeurs_matieres'
 						$sql="DELETE FROM j_professeurs_matieres WHERE id_professeur='$user_login[$i]' AND id_matiere='$tab_matiere[$j]'";
 						$result_suppr=mysql_query($sql);
 					}
@@ -93,7 +93,7 @@ if(isset($_POST['user_login'])){
 						$sql="SELECT id_classe FROM j_groupes_classes WHERE id_groupe='$lign_groupe->id_groupe'";
 						$result_classe=mysql_query($sql);
 						$lign_classe=mysql_fetch_object($result_classe);
-						$msg.="L'utilisateur $user_login[$i] est associé à un <a href='../groupes/edit_class.php?id_classe=$lign_classe->id_classe'>groupe</a> pour $tab_matiere[$j]. La matière n'a pas pu être supprimée.<br />\n";
+						$msg.="L'utilisateur $user_login[$i] est associÃ© Ã  un <a href='../groupes/edit_class.php?id_classe=$lign_classe->id_classe'>groupe</a> pour $tab_matiere[$j]. La matiÃ¨re n'a pas pu Ãªtre supprimÃ©e.<br />\n";
 					}
 				}
 			}
@@ -106,14 +106,14 @@ if(isset($_POST['user_login'])){
 	//c_".$i."_[".$j."]
 
 	if($msg==""){
-		$msg="Enregistrement réussi.";
+		$msg="Enregistrement rÃ©ussi.";
 	}
 }
 
 
 
 //**************** EN-TETE *****************
-$titre_page = "Gestion des utilisateurs | Affectation des matières aux professeurs";
+$titre_page = "Gestion des utilisateurs | Affectation des matiÃ¨res aux professeurs";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 /*
@@ -133,7 +133,7 @@ if($msg!=""){
 <?php
 	echo add_token_field();
 
-	// Fonction destinée à afficher verticalement, lettre par lettre, une chaine:
+	// Fonction destinÃ©e Ã  afficher verticalement, lettre par lettre, une chaine:
 	function aff_vertical($texte){
 		$chaine="";
 		for($i=0;$i<strlen($texte);$i++){
@@ -145,7 +145,7 @@ if($msg!=""){
 		return $chaine;
 	}
 
-	// Tableau de la liste des matières:
+	// Tableau de la liste des matiÃ¨res:
 	$tab_matiere=array();
 	$sql="SELECT matiere FROM matieres ORDER BY matiere";
 	$result_matieres=mysql_query($sql);
@@ -261,7 +261,7 @@ if($msg!=""){
 </script>\n";
 
 /*
-	// Section remontée: on a besoin de $nombreligne dans un fonction JavaScript.
+	// Section remontÃ©e: on a besoin de $nombreligne dans un fonction JavaScript.
 	$order_by="nom, prenom";
 	$calldata = mysql_query("SELECT * FROM utilisateurs WHERE statut='professeur' AND etat='actif' ORDER BY $order_by");
 	$nombreligne = mysql_num_rows($calldata);
@@ -274,7 +274,7 @@ if($msg!=""){
 		echo "<input type='hidden' name='tab_matiere[$i]' value='$tab_matiere[$i]' />\n";
 	}
 
-	echo "<table class='boireaus' border='1' summary='Tableau des professeurs et matières'>\n";
+	echo "<table class='boireaus' border='1' summary='Tableau des professeurs et matiÃ¨res'>\n";
 	echo "<tr style='text-align:center; background: white;'>\n";
 	echo "<td>Masquage</td>\n";
 	for($i=0;$i<count($tab_matiere);$i++){

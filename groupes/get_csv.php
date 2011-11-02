@@ -35,8 +35,8 @@ if ($resultat_session == 'c') {
 }
 
 
-//INSERT INTO droits VALUES ('/groupes/get_csv.php', 'F', 'V', 'V', 'V', 'F', 'V', 'Génération de CSV élèves', '');
-//INSERT INTO droits VALUES ('/groupes/get_csv.php', 'V', 'V', 'V', 'V', 'F', 'V', 'Génération de CSV élèves', '');
+//INSERT INTO droits VALUES ('/groupes/get_csv.php', 'F', 'V', 'V', 'V', 'F', 'V', 'GÃ©nÃ©ration de CSV Ã©lÃ¨ves', '');
+//INSERT INTO droits VALUES ('/groupes/get_csv.php', 'V', 'V', 'V', 'V', 'F', 'V', 'GÃ©nÃ©ration de CSV Ã©lÃ¨ves', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
@@ -206,13 +206,13 @@ if($current_group) {
 			$eleve_classe=$lig_tmp->classe;
 		}
 
-		// La fonction get_group() dans /lib/groupes.inc.php ne récupère pas le sexe et la date de naissance...
+		// La fonction get_group() dans /lib/groupes.inc.php ne rÃ©cupÃ¨re pas le sexe et la date de naissance...
 		// ... pourrait-on l'ajouter?
 		$sql="SELECT sexe,naissance,lieu_naissance,email,no_gep,elenoet,ele_id FROM eleves WHERE login='$eleve_login'";
 		$res_tmp=mysql_query($sql);
 
 		if(mysql_num_rows($res_tmp)==0){
-			die("Problème avec les infos de $eleve_login</body></html>");
+			die("ProblÃ¨me avec les infos de $eleve_login</body></html>");
 		}
 		else{
 			$lig_tmp=mysql_fetch_object($res_tmp);

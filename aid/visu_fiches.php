@@ -25,9 +25,9 @@ require_once("../lib/initialisations.inc.php");
 
 // Initialisation des variables
 $indice_aid = $_GET["indice_aid"];
-// Vérification de la validité de $indice_aid et $aid_id
+// VÃ©rification de la validitÃ© de $indice_aid et $aid_id
 if (!VerifAidIsAcive($indice_aid,"")) {
-    echo "<p>Vous tentez d'accéder à des outils qui ne sont pas activés. veuillez contacter l'administrateur.</p></body></html>";
+    echo "<p>Vous tentez d'accÃ©der Ã  des outils qui ne sont pas activÃ©s. veuillez contacter l'administrateur.</p></body></html>";
     die();
 }
 $nom_projet = sql_query1("select nom from aid_config where indice_aid='".$indice_aid."'");
@@ -58,7 +58,7 @@ echo "<h3 style=\"text-align:center\">Liste des projets ".$nom_projet."</h3>";
 
 $_login = $_SESSION["login"];
 $message_avertissement = "";
-$non_defini = "<span style=\"color:red\">Non défini</span>";
+$non_defini = "<span style=\"color:red\">Non dÃ©fini</span>";
 
 include "./fiches.inc.php";
 ?>

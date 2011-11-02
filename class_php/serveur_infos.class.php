@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-// Sécurité : éviter que quelqu'un appelle ce fichier seul
+// SÃ©curitÃ© : Ã©viter que quelqu'un appelle ce fichier seul
 $serveur_script = $_SERVER["SCRIPT_NAME"];
 $analyse = explode("/", $serveur_script);
 $analyse[3] = isset($analyse[3]) ? $analyse[3] : NULL;
@@ -31,7 +31,7 @@ $analyse[3] = isset($analyse[3]) ? $analyse[3] : NULL;
 	}
 /**
  * Classe qui renvoie l'ensemble des infos utiles
- * sur les paramètres du serveur
+ * sur les paramÃ¨tres du serveur
  */
 class infos{
 
@@ -53,7 +53,7 @@ class infos{
 		// on teste le premier chiffre
 		$version = substr($test, 0, 1);
 		if ($version == 5) {
-			$retour = '<span style="color: green;">'.phpversion().' (Gepi nécessite php 5.2.x minimum)</span>';
+			$retour = '<span style="color: green;">'.phpversion().' (Gepi nÃ©cessite php 5.2.x minimum)</span>';
 		}elseif($version == 4 AND substr($test, 2, 2) >= 3){
 			$retour = '<span style="color: green;">'.phpversion().'(Attention, Gepi ne fonctionne pas avec cette version, elle est trop ancienne)</span>';
 		}else{
@@ -119,9 +119,9 @@ class infos{
 		}
 		$retour .= '</table><br />';
 
-		if(!in_array('pdo_mysql',$extensions)) {$retour.="<span style='color:red'>ATTENTION&nbsp;</span> Il semble que le module 'pdo_mysql' ne soit pas présent.<br />Cela risque de rendre impossible l'utilisation des modules cahier_texte_2, mod_ects, mod_plugins,...<br />";}
+		if(!in_array('pdo_mysql',$extensions)) {$retour.="<span style='color:red'>ATTENTION&nbsp;</span> Il semble que le module 'pdo_mysql' ne soit pas prÃ©sent.<br />Cela risque de rendre impossible l'utilisation des modules cahier_texte_2, mod_ects, mod_plugins,...<br />";}
 
-		if(in_array('suhosin',$extensions)) {$retour.="<span style='color:red'>ATTENTION&nbsp;</span> Il semble que le module '<b>suhosin</b>' soit présent.<br />Si les restrictions imposées par ce module sont trop sévères, certaines pages de Gepi peuvent être perturbées.<br /><em>Exemple de perturbation&nbsp;:</em> Seule une partie des valeurs des formulaires est transmise parce que le module limite le nombre de variables pouvant être envoyées en POST par un formulaire.<br />";}
+		if(in_array('suhosin',$extensions)) {$retour.="<span style='color:red'>ATTENTION&nbsp;</span> Il semble que le module '<b>suhosin</b>' soit prÃ©sent.<br />Si les restrictions imposÃ©es par ce module sont trop sÃ©vÃ¨res, certaines pages de Gepi peuvent Ãªtre perturbÃ©es.<br /><em>Exemple de perturbation&nbsp;:</em> Seule une partie des valeurs des formulaires est transmise parce que le module limite le nombre de variables pouvant Ãªtre envoyÃ©es en POST par un formulaire.<br />";}
 
 		return $retour;
 	}
@@ -143,7 +143,7 @@ class infos{
 		}elseif(ini_get('register_globals') == ''){
 			$register_g = "off";
 		}else{
-			$register_g = "paramètre inconnu";
+			$register_g = "paramÃ¨tre inconnu";
 		}
 		$retour = $register_g;
 

@@ -98,17 +98,17 @@ while($i<12)
          if($i != 0) { $date_select = $annee_select."-".$mois."-01"; $mois = mois_precedent($date_select); $annee_select = annee_precedent($date_select);  }
          $date_debut = $annee_select."-".$mois."-01";
          if($mois == "01") { $mois_aff[$i] = "janvier ".$annee_select; }
-         if($mois == "02") { $mois_aff[$i] = "février ".$annee_select; }
+         if($mois == "02") { $mois_aff[$i] = "fÃ©vrier ".$annee_select; }
          if($mois == "03") { $mois_aff[$i] = "mars ".$annee_select; }
          if($mois == "04") { $mois_aff[$i] = "avril ".$annee_select; }
          if($mois == "05") { $mois_aff[$i] = "mai ".$annee_select; }
          if($mois == "06") { $mois_aff[$i] = "juin ".$annee_select; }
          if($mois == "07") { $mois_aff[$i] = "juillet ".$annee_select; }
-         if($mois == "08") { $mois_aff[$i] = "août ".$annee_select; }
+         if($mois == "08") { $mois_aff[$i] = "aoÃ»t ".$annee_select; }
          if($mois == "09") { $mois_aff[$i] = "septembre ".$annee_select; }
          if($mois == "10") { $mois_aff[$i] = "octobre ".$annee_select; }
          if($mois == "11") { $mois_aff[$i] = "novembre ".$annee_select; }
-         if($mois == "12") { $mois_aff[$i] = "décembre ".$annee_select; }
+         if($mois == "12") { $mois_aff[$i] = "dÃ©cembre ".$annee_select; }
          $date_fin = $annee_select."-".$mois."-".nb_jour_mois($mois,$annee_select);
 
          if($eleve_1 == "tous" and $classe_1 == "tous") { $requete_compt = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE type_absence_eleve = '".$type_1."' AND d_date_absence_eleve >= '".$date_debut."' AND a_date_absence_eleve <= '".$date_fin."'"),0); }
@@ -121,10 +121,10 @@ while($i<12)
          $i = $i + 1;
   }
 
-if($type_1=="A") { $tire_graph = "Absences sur les 12 mois précédents"; }
-if($type_1=="D") { $tire_graph = "Dispenses sur les 12 mois précédents"; }
-if($type_1=="I") { $tire_graph = "Passages à l'infirmerie sur les 12 mois précédents"; }
-if($type_1=="R") { $tire_graph = "Retards sur les 12 mois précédents"; }
+if($type_1=="A") { $tire_graph = "Absences sur les 12 mois prÃ©cÃ©dents"; }
+if($type_1=="D") { $tire_graph = "Dispenses sur les 12 mois prÃ©cÃ©dents"; }
+if($type_1=="I") { $tire_graph = "Passages Ã  l'infirmerie sur les 12 mois prÃ©cÃ©dents"; }
+if($type_1=="R") { $tire_graph = "Retards sur les 12 mois prÃ©cÃ©dents"; }
 
 $y = array($nb_mois[11],$nb_mois[10],$nb_mois[9],$nb_mois[8],$nb_mois[7],$nb_mois[6],$nb_mois[5],$nb_mois[4],$nb_mois[3],$nb_mois[2],$nb_mois[1],$nb_mois[0]);
 $x = array($mois_aff[11],$mois_aff[10],$mois_aff[9],$mois_aff[8],$mois_aff[7],$mois_aff[6],$mois_aff[5],$mois_aff[4],$mois_aff[3],$mois_aff[2],$mois_aff[1],$mois_aff[0]);
@@ -182,7 +182,7 @@ $plot->xAxis->label->setAngle("30");
 $plot->xAxis->label->move(10, 0);
 $plot->xAxis->label->setAlign(LABEL_RIGHT, LABEL_BOTTOM);
 $plot->xAxis->label->setPadding(0, 0, 0, 0);
-//$plot->xAxis->left->title->move(-10, 0); // Déplace de 10 pixels vers la gauche
+//$plot->xAxis->left->title->move(-10, 0); // DÃ©place de 10 pixels vers la gauche
 
 $graph->add($plot);
 $graph->draw();

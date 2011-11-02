@@ -1,6 +1,6 @@
 <?php
 /**
- * Fichier de mise ‡ jour de la version 1.5.0 ‡ la version 1.5.1
+ * Fichier de mise √† jour de la version 1.5.0 √† la version 1.5.1
  * 
  * $Id:  $
  *
@@ -13,9 +13,9 @@
  * @see msj_present()
  */
 
-		$result .= "<h3 class='titreMaJ'>Mise ‡ jour vers la version 1.5.1" . $rc . $beta . " :</h3>";
+		$result .= "<h3 class='titreMaJ'>Mise √† jour vers la version 1.5.1" . $rc . $beta . " :</h3>";
 
-		$result .= "&nbsp;->Ajout du champ rn_nomdev ‡ la table classes<br />";
+		$result .= "&nbsp;->Ajout du champ rn_nomdev √† la table classes<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'rn_nomdev'"));
 		if ($test1 == 0) {
 			$query3 = mysql_query("ALTER TABLE `classes` ADD `rn_nomdev` CHAR( 1 ) NOT NULL DEFAULT 'n';");
@@ -25,10 +25,10 @@
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout du champ rn_toutcoefdev ‡ la table classes<br />";
+		$result .= "&nbsp;->Ajout du champ rn_toutcoefdev √† la table classes<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'rn_toutcoefdev'"));
 		if ($test1 == 0) {
 			$query3 = mysql_query("ALTER TABLE `classes` ADD `rn_toutcoefdev` CHAR( 1 ) NOT NULL DEFAULT 'n';");
@@ -38,10 +38,10 @@
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout du champ rn_coefdev_si_diff ‡ la table classes<br />";
+		$result .= "&nbsp;->Ajout du champ rn_coefdev_si_diff √† la table classes<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'rn_coefdev_si_diff'"));
 		if ($test1 == 0) {
 			$query3 = mysql_query("ALTER TABLE `classes` ADD `rn_coefdev_si_diff` CHAR( 1 ) NOT NULL DEFAULT 'n';");
@@ -51,10 +51,10 @@
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout du champ rn_datedev ‡ la table classes<br />";
+		$result .= "&nbsp;->Ajout du champ rn_datedev √† la table classes<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'rn_datedev'"));
 		if ($test1 == 0) {
 			$query3 = mysql_query("ALTER TABLE `classes` ADD `rn_datedev` CHAR( 1 ) NOT NULL DEFAULT 'n';");
@@ -64,10 +64,10 @@
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout du champ rn_sign_chefetab ‡ la table classes<br />";
+		$result .= "&nbsp;->Ajout du champ rn_sign_chefetab √† la table classes<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'rn_sign_chefetab'"));
 		if ($test1 == 0) {
 			$query3 = mysql_query("ALTER TABLE `classes` ADD `rn_sign_chefetab` CHAR( 1 ) NOT NULL DEFAULT 'n';");
@@ -77,10 +77,10 @@
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout du champ rn_sign_pp ‡ la table classes<br />";
+		$result .= "&nbsp;->Ajout du champ rn_sign_pp √† la table classes<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'rn_sign_pp'"));
 		if ($test1 == 0) {
 			$query3 = mysql_query("ALTER TABLE `classes` ADD `rn_sign_pp` CHAR( 1 ) NOT NULL DEFAULT 'n';");
@@ -90,10 +90,10 @@
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout du champ rn_sign_resp ‡ la table classes<br />";
+		$result .= "&nbsp;->Ajout du champ rn_sign_resp √† la table classes<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'rn_sign_resp'"));
 		if ($test1 == 0) {
 			$query3 = mysql_query("ALTER TABLE `classes` ADD `rn_sign_resp` CHAR( 1 ) NOT NULL DEFAULT 'n';");
@@ -103,10 +103,10 @@
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout du champ rn_sign_nblig ‡ la table classes<br />";
+		$result .= "&nbsp;->Ajout du champ rn_sign_nblig √† la table classes<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'rn_sign_nblig'"));
 		if ($test1 == 0) {
 			$query3 = mysql_query("ALTER TABLE `classes` ADD `rn_sign_nblig` INT( 11 ) NOT NULL DEFAULT '3';");
@@ -116,10 +116,10 @@
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout du champ rn_formule ‡ la table classes<br />";
+		$result .= "&nbsp;->Ajout du champ rn_formule √† la table classes<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM classes LIKE 'rn_formule'"));
 		if ($test1 == 0) {
 			$query3 = mysql_query("ALTER TABLE `classes` ADD `rn_formule` TEXT NOT NULL;");
@@ -129,14 +129,14 @@
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		// DÈbut de la 1.5.1? 20070904
+		// D√©but de la 1.5.1? 20070904
 
 		// ====================================
 		// Ajouts concernant le dispositif EDT
-		$result .= "&nbsp;->CrÈation de la table 'salle_cours'<br />";
+		$result .= "&nbsp;->Cr√©ation de la table 'salle_cours'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'salle_cours'"));
 		if ($test1 == 0) {
 			$query1 = mysql_query("CREATE TABLE salle_cours (`id_salle` INT( 3 ) NOT NULL AUTO_INCREMENT PRIMARY KEY , `numero_salle` VARCHAR( 10 ) NOT NULL , `nom_salle` VARCHAR( 50 ) NOT NULL);");
@@ -146,10 +146,10 @@
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('La table existe dÈj‡');
+			$result .= msj_present('La table existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->CrÈation de la table 'edt_cours'<br />";
+		$result .= "&nbsp;->Cr√©ation de la table 'edt_cours'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'edt_cours'"));
 		if ($test1 == 0) {
 			$query1 = mysql_query("CREATE TABLE `edt_cours` (`id_cours` int(3) NOT NULL auto_increment, `id_groupe` varchar(10) NOT NULL, `id_salle` varchar(3) NOT NULL, `jour_semaine` varchar(10) NOT NULL, `id_definie_periode` varchar(3) NOT NULL, `duree` varchar(10) NOT NULL default '2', `heuredeb_dec` varchar(3) NOT NULL default '0', `id_semaine` varchar(3) NOT NULL default '0', `id_calendrier` varchar(3) NOT NULL default '0', `modif_edt` varchar(3) NOT NULL default '0', PRIMARY KEY  (`id_cours`));");
@@ -159,11 +159,11 @@
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('La table existe dÈj‡');
+			$result .= msj_present('La table existe d√©j√†');
 		}
 
-		// Ajout d'un champ ‡ cette table
-		$result .= "&nbsp;->Ajout du champ 'login_prof' ‡ la table 'edt_cours'<br />";
+		// Ajout d'un champ √† cette table
+		$result .= "&nbsp;->Ajout du champ 'login_prof' √† la table 'edt_cours'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM edt_cours LIKE 'login_prof'"));
 		if ($test1 == 0) {
 			$sql="ALTER TABLE `edt_cours` ADD `login_prof` varchar(50) NOT NULL;";
@@ -175,10 +175,10 @@
 			}
 		}
 		else{
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->CrÈation de la table 'edt_setting'<br />";
+		$result .= "&nbsp;->Cr√©ation de la table 'edt_setting'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'edt_setting'"));
 		if ($test1 == 0) {
 			$query1 = mysql_query("CREATE TABLE `edt_setting` (`id` INT( 3 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,`reglage` VARCHAR( 30 ) NOT NULL ,`valeur` VARCHAR( 30 ) NOT NULL);");
@@ -188,10 +188,10 @@
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('La table existe dÈj‡');
+			$result .= msj_present('La table existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->CrÈation de la table 'edt_calendrier'<br />";
+		$result .= "&nbsp;->Cr√©ation de la table 'edt_calendrier'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'edt_calendrier'"));
 		if ($test1 == 0) {
 			$query1 = mysql_query("CREATE TABLE `edt_calendrier` (`id_calendrier` int(11) NOT NULL auto_increment,
@@ -213,10 +213,10 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('La table existe dÈj‡');
+			$result .= msj_present('La table existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout des champs 'debut_calendrier_ts' et 'fin_calendrier_ts' ‡ la table 'edt_calendrier'<br />";
+		$result .= "&nbsp;->Ajout des champs 'debut_calendrier_ts' et 'fin_calendrier_ts' √† la table 'edt_calendrier'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM edt_calendrier LIKE 'fin_calendrier_ts'"));
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE `edt_calendrier` ADD `debut_calendrier_ts` VARCHAR( 11 ) NOT NULL AFTER `nom_calendrier` ,ADD `fin_calendrier_ts` VARCHAR( 11 ) NOT NULL AFTER `debut_calendrier_ts` ;");
@@ -227,11 +227,11 @@ PRIMARY KEY (`id_calendrier`));");
 			}
 		}
 		else{
-			$result .= msj_present('Les champs existent dÈj‡');
+			$result .= msj_present('Les champs existent d√©j√†');
 		}
 
 
-		$result .= "&nbsp;->CrÈation de la table 'edt_gr_nom'<br />";
+		$result .= "&nbsp;->Cr√©ation de la table 'edt_gr_nom'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'edt_gr_nom'"));
 		if ($test1 == 0) {
 			$query1 = mysql_query("CREATE TABLE `edt_gr_nom` (
@@ -247,10 +247,10 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('La table existe dÈj‡');
+			$result .= msj_present('La table existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->CrÈation de la table 'edt_gr_eleves'<br />";
+		$result .= "&nbsp;->Cr√©ation de la table 'edt_gr_eleves'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'edt_gr_eleves'"));
 		if ($test1 == 0) {
 			$query1 = mysql_query("CREATE TABLE `edt_gr_eleves` (
@@ -264,10 +264,10 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('La table existe dÈj‡');
+			$result .= msj_present('La table existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->CrÈation de la table 'edt_gr_profs'<br />";
+		$result .= "&nbsp;->Cr√©ation de la table 'edt_gr_profs'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'edt_gr_profs'"));
 		if ($test1 == 0) {
 			$query1 = mysql_query("CREATE TABLE `edt_gr_profs` (
@@ -281,10 +281,10 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('La table existe dÈj‡');
+			$result .= msj_present('La table existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->CrÈation de la table 'edt_gr_classes'<br />";
+		$result .= "&nbsp;->Cr√©ation de la table 'edt_gr_classes'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'edt_gr_classes'"));
 		if ($test1 == 0) {
 			$query1 = mysql_query("CREATE TABLE `edt_gr_classes` (
@@ -298,11 +298,11 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('La table existe dÈj‡');
+			$result .= msj_present('La table existe d√©j√†');
 		}
 
 
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'nom_creneaux_s' ‡ la table 'edt_setting'<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'nom_creneaux_s' √† la table 'edt_setting'<br/>";
 		$req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'nom_creneaux_s'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -313,10 +313,10 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'edt_aff_salle' ‡ la table 'edt_setting'<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'edt_aff_salle' √† la table 'edt_setting'<br/>";
 		$req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_salle'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -327,10 +327,10 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'edt_aff_matiere' ‡ la table 'edt_setting'<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'edt_aff_matiere' √† la table 'edt_setting'<br/>";
 		$req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_matiere'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -341,10 +341,10 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'edt_aff_creneaux' ‡ la table 'edt_setting'<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'edt_aff_creneaux' √† la table 'edt_setting'<br/>";
 		$req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_creneaux'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -355,10 +355,10 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'edt_aff_init_infos' ‡ la table 'edt_setting'<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'edt_aff_init_infos' √† la table 'edt_setting'<br/>";
 		$req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_init_infos'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -369,10 +369,10 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'edt_aff_couleur' ‡ la table 'edt_setting'<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'edt_aff_couleur' √† la table 'edt_setting'<br/>";
 		$req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_couleur'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -383,10 +383,10 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'edt_aff_init_infos2' ‡ la table 'edt_setting'<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'edt_aff_init_infos2' √† la table 'edt_setting'<br/>";
 		$req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_init_infos2'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -397,10 +397,10 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'aff_cherche_salle' ‡ la table 'edt_setting'<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'aff_cherche_salle' √† la table 'edt_setting'<br/>";
 		$req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'aff_cherche_salle'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -411,10 +411,10 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'param_menu_edt' ‡ la table 'edt_setting'<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'param_menu_edt' √† la table 'edt_setting'<br/>";
 		$req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'param_menu_edt'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -425,10 +425,10 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'scolarite_modif_cours' ‡ la table 'edt_setting'<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'scolarite_modif_cours' √† la table 'edt_setting'<br/>";
 		$req_test = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'scolarite_modif_cours'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -439,10 +439,10 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'edt_calendrier_ouvert' ‡ la table 'setting'<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'edt_calendrier_ouvert' √† la table 'setting'<br/>";
 		$req_test = mysql_query("SELECT value FROM setting WHERE name='edt_calendrier_ouvert'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -453,10 +453,10 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'scolarite_modif_cours' ‡ la table 'setting'<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'scolarite_modif_cours' √† la table 'setting'<br/>";
 		$req_test = mysql_query("SELECT value FROM setting WHERE name = 'scolarite_modif_cours'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -467,10 +467,10 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'autorise_edt_tous' ‡ la table 'setting'<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'autorise_edt_tous' √† la table 'setting'<br/>";
 		$req_test = mysql_query("SELECT value FROM setting WHERE name = 'autorise_edt_tous'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -481,10 +481,10 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'autorise_edt_admin' ‡ la table 'setting'<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'autorise_edt_admin' √† la table 'setting'<br/>";
 		$req_test = mysql_query("SELECT value FROM setting WHERE name = 'autorise_edt_admin'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -495,10 +495,10 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'autorise_edt_eleve' ‡ la table 'setting'<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'autorise_edt_eleve' √† la table 'setting'<br/>";
 		$req_test = mysql_query("SELECT value FROM setting WHERE name = 'autorise_edt_eleve'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -509,10 +509,10 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'mod_edt_gr' ‡ la table 'setting'<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'mod_edt_gr' √† la table 'setting'<br/>";
 		$req_test = mysql_query("SELECT value FROM setting WHERE name = 'mod_edt_gr'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -523,7 +523,7 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
 
@@ -532,7 +532,7 @@ PRIMARY KEY (`id_calendrier`));");
 
 
 		// Multisite
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'multisite' ‡ la table 'setting'<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'multisite' √† la table 'setting'<br/>";
 		$req_test = mysql_query("SELECT value FROM setting WHERE name='multisite'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -543,11 +543,11 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
-		//DÈbuts du dispositif sur les rss dans le cdt
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'rss_cdt_eleve' ‡ la table 'setting'<br/>";
+		//D√©buts du dispositif sur les rss dans le cdt
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'rss_cdt_eleve' √† la table 'setting'<br/>";
 		$req_test = mysql_query("SELECT value FROM setting WHERE name = 'rss_cdt_eleve'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -558,11 +558,11 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
 		// statuts dynamiques
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'statuts_prives' ‡ la table 'setting'<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'statuts_prives' √† la table 'setting'<br/>";
 		$req_test = mysql_query("SELECT value FROM setting WHERE name = 'statuts_prives'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -573,11 +573,11 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
-		// CrÈation des tables sur les statuts privÈs
-		$result .= "&nbsp;->CrÈation de la table 'droits_statut'<br />";
+		// Cr√©ation des tables sur les statuts priv√©s
+		$result .= "&nbsp;->Cr√©ation de la table 'droits_statut'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'droits_statut'"));
 		if ($test1 == 0) {
 			$query1 = mysql_query("CREATE TABLE `droits_statut` (`id` int(11) NOT NULL auto_increment, `nom_statut` varchar(30) NOT NULL, PRIMARY KEY  (`id`));");
@@ -587,10 +587,10 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('La table existe dÈj‡');
+			$result .= msj_present('La table existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->CrÈation de la table 'droits_utilisateurs'<br />";
+		$result .= "&nbsp;->Cr√©ation de la table 'droits_utilisateurs'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'droits_utilisateurs'"));
 		if ($test1 == 0) {
 			$query1 = mysql_query("CREATE TABLE `droits_utilisateurs` (`id` int(11) NOT NULL auto_increment, `id_statut` int(11) NOT NULL, `login_user` varchar(50) NOT NULL, PRIMARY KEY  (`id`));");
@@ -600,10 +600,10 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('La table existe dÈj‡');
+			$result .= msj_present('La table existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->CrÈation de la table 'droits_speciaux'<br />";
+		$result .= "&nbsp;->Cr√©ation de la table 'droits_speciaux'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'droits_speciaux'"));
 		if ($test1 == 0) {
 			$query1 = mysql_query("CREATE TABLE `droits_speciaux` (`id` int(11) NOT NULL auto_increment, `id_statut` int(11) NOT NULL, `nom_fichier` varchar(200) NOT NULL, `autorisation` char(1) NOT NULL, PRIMARY KEY  (`id`));");
@@ -613,13 +613,13 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('La table existe dÈj‡');
+			$result .= msj_present('La table existe d√©j√†');
 		}
 
 		// ========================================
 
 
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'active_notanet' ‡ la table 'setting'<br/>";
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'active_notanet' √† la table 'setting'<br/>";
 		$req_test = mysql_query("SELECT value FROM setting WHERE name='active_notanet'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -630,12 +630,12 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
 
-		//+++++++Modif liÈ ‡ longmax_login++++++++++++
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'longmax_login' ‡ la table 'setting'<br/>";
+		//+++++++Modif li√© √† longmax_login++++++++++++
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'longmax_login' √† la table 'setting'<br/>";
 		$req_test = mysql_query("SELECT value FROM setting WHERE name='longmax_login'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -646,14 +646,14 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
 
 
 		//===================================================
 		// AJOUT DU CHAMP id A LA TABLE eleves
-		$result .= "&nbsp;->Ajout du champ 'id' ‡ la table 'eleves'<br />";
+		$result .= "&nbsp;->Ajout du champ 'id' √† la table 'eleves'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'id'"));
 		if ($test1 == 0) {
 			$test2 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'id_eleve'"));
@@ -676,16 +676,16 @@ PRIMARY KEY (`id_calendrier`));");
 				}
 			}
 			else{
-				$result .= msj_present('Le champ a dÈj‡ ÈtÈ traitÈ');
+				$result .= msj_present('Le champ a d√©j√† √©t√© trait√©');
 			}
 		} else {
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 		//===================================================
 
 
 		//===================================================
-		$result .= "&nbsp;->Extension ‡ 255 caractËres du champ 'name' de la table 'preferences'<br />";
+		$result .= "&nbsp;->Extension √† 255 caract√®res du champ 'name' de la table 'preferences'<br />";
 		$query = mysql_query("ALTER TABLE `preferences` CHANGE `name` `name` VARCHAR( 255 ) NOT NULL;");
 		if ($query) {
 			$result .= msj_ok();
@@ -703,7 +703,7 @@ PRIMARY KEY (`id_calendrier`));");
 				$result .= msj_erreur("Le champ n'existe pas !!!");
 			}
 			else{
-				$result .= msj_present('Le champ a dÈj‡ ÈtÈ traitÈ !');
+				$result .= msj_present('Le champ a d√©j√† √©t√© trait√© !');
 			}
 		}
 		else{
@@ -716,13 +716,13 @@ PRIMARY KEY (`id_calendrier`));");
 				}
 			}
 			else{
-				$result .= msj_erreur(": Vous avez ‡ la fois le champ 'id' et le champ 'id_eleve' !");
+				$result .= msj_erreur(": Vous avez √† la fois le champ 'id' et le champ 'id_eleve' !");
 			}
 		}
 		//===================================================
 
 		//===================================================
-		$result .= "&nbsp;->Ajout d'un champ 'numind' ‡ la table 'utilisateurs'<br />";
+		$result .= "&nbsp;->Ajout d'un champ 'numind' √† la table 'utilisateurs'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'numind'"));
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE `utilisateurs` ADD `numind` VARCHAR( 255 ) NOT NULL ;");
@@ -733,13 +733,13 @@ PRIMARY KEY (`id_calendrier`));");
 			}
 		}
 		else{
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 		//===================================================
 
 
 		//===================================================
-		$result .= "&nbsp;->Ajout d'un champ 'nom_etab_gras' ‡ la table 'model_bulletin'<br />";
+		$result .= "&nbsp;->Ajout d'un champ 'nom_etab_gras' √† la table 'model_bulletin'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'nom_etab_gras'"));
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE `model_bulletin` ADD `nom_etab_gras` TINYINT NOT NULL ;");
@@ -750,10 +750,10 @@ PRIMARY KEY (`id_calendrier`));");
 			}
 		}
 		else{
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout d'un champ 'taille_texte_date_edition' ‡ la table 'model_bulletin'<br />";
+		$result .= "&nbsp;->Ajout d'un champ 'taille_texte_date_edition' √† la table 'model_bulletin'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'taille_texte_date_edition'"));
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE `model_bulletin` ADD `taille_texte_date_edition` FLOAT NOT NULL ;");
@@ -764,10 +764,10 @@ PRIMARY KEY (`id_calendrier`));");
 			}
 		}
 		else{
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout d'un champ 'taille_texte_matiere' ‡ la table 'model_bulletin'<br />";
+		$result .= "&nbsp;->Ajout d'un champ 'taille_texte_matiere' √† la table 'model_bulletin'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'taille_texte_matiere'"));
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE `model_bulletin` ADD `taille_texte_matiere` FLOAT NOT NULL ;");
@@ -778,10 +778,10 @@ PRIMARY KEY (`id_calendrier`));");
 			}
 		}
 		else{
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout d'un champ 'active_moyenne_general' ‡ la table 'model_bulletin'<br />";
+		$result .= "&nbsp;->Ajout d'un champ 'active_moyenne_general' √† la table 'model_bulletin'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'active_moyenne_general'"));
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE `model_bulletin` ADD `active_moyenne_general` TINYINT NOT NULL ;");
@@ -792,10 +792,10 @@ PRIMARY KEY (`id_calendrier`));");
 			}
 		}
 		else{
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout d'un champ 'titre_bloc_avis_conseil' ‡ la table 'model_bulletin'<br />";
+		$result .= "&nbsp;->Ajout d'un champ 'titre_bloc_avis_conseil' √† la table 'model_bulletin'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'titre_bloc_avis_conseil'"));
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE `model_bulletin` ADD `titre_bloc_avis_conseil` VARCHAR( 50 ) NOT NULL ;");
@@ -806,10 +806,10 @@ PRIMARY KEY (`id_calendrier`));");
 			}
 		}
 		else{
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout d'un champ 'taille_titre_bloc_avis_conseil' ‡ la table 'model_bulletin'<br />";
+		$result .= "&nbsp;->Ajout d'un champ 'taille_titre_bloc_avis_conseil' √† la table 'model_bulletin'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'taille_titre_bloc_avis_conseil'"));
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE `model_bulletin` ADD `taille_titre_bloc_avis_conseil` FLOAT NOT NULL ;");
@@ -820,10 +820,10 @@ PRIMARY KEY (`id_calendrier`));");
 			}
 		}
 		else{
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout d'un champ 'taille_profprincipal_bloc_avis_conseil' ‡ la table 'model_bulletin'<br />";
+		$result .= "&nbsp;->Ajout d'un champ 'taille_profprincipal_bloc_avis_conseil' √† la table 'model_bulletin'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'taille_profprincipal_bloc_avis_conseil'"));
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE `model_bulletin` ADD `taille_profprincipal_bloc_avis_conseil` FLOAT NOT NULL ;");
@@ -834,10 +834,10 @@ PRIMARY KEY (`id_calendrier`));");
 			}
 		}
 		else{
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout d'un champ 'affiche_fonction_chef' ‡ la table 'model_bulletin'<br />";
+		$result .= "&nbsp;->Ajout d'un champ 'affiche_fonction_chef' √† la table 'model_bulletin'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'affiche_fonction_chef'"));
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE `model_bulletin` ADD `affiche_fonction_chef` TINYINT NOT NULL ;");
@@ -848,10 +848,10 @@ PRIMARY KEY (`id_calendrier`));");
 			}
 		}
 		else{
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout d'un champ 'taille_texte_fonction_chef' ‡ la table 'model_bulletin'<br />";
+		$result .= "&nbsp;->Ajout d'un champ 'taille_texte_fonction_chef' √† la table 'model_bulletin'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'taille_texte_fonction_chef'"));
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE `model_bulletin` ADD `taille_texte_fonction_chef` FLOAT NOT NULL ;");
@@ -862,10 +862,10 @@ PRIMARY KEY (`id_calendrier`));");
 			}
 		}
 		else{
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout d'un champ 'taille_texte_identitee_chef' ‡ la table 'model_bulletin'<br />";
+		$result .= "&nbsp;->Ajout d'un champ 'taille_texte_identitee_chef' √† la table 'model_bulletin'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'taille_texte_identitee_chef'"));
 		if ($test1 == 0) {
 			$query = mysql_query("ALTER TABLE `model_bulletin` ADD `taille_texte_identitee_chef` FLOAT NOT NULL ;");
@@ -876,11 +876,11 @@ PRIMARY KEY (`id_calendrier`));");
 			}
 		}
 		else{
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
 
-		$result .= "&nbsp;->Ajout des champs 'tel_texte', 'fax_image',... ‡ la table 'model_bulletin'<br />";
+		$result .= "&nbsp;->Ajout des champs 'tel_texte', 'fax_image',... √† la table 'model_bulletin'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'tel_texte'"));
 		if ($test1 == 0) {
 			$sql="ALTER TABLE `model_bulletin` ADD `tel_image` VARCHAR( 20 ) NOT NULL ,
@@ -914,10 +914,10 @@ ADD `cadre_adresse` TINYINT NOT NULL ;";
 			}
 		}
 		else{
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout des champs 'centrage_logo', 'ajout_cadre_blanc_photo',... ‡ la table 'model_bulletin'<br />";
+		$result .= "&nbsp;->Ajout des champs 'centrage_logo', 'ajout_cadre_blanc_photo',... √† la table 'model_bulletin'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'centrage_logo'"));
 		if ($test1 == 0) {
 			$sql="ALTER TABLE `model_bulletin` ADD `centrage_logo` TINYINT NOT NULL DEFAULT '0',
@@ -932,12 +932,12 @@ ADD `ajout_cadre_blanc_photo` TINYINT NOT NULL DEFAULT '0';";
 			}
 		}
 		else{
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
 
 		// 20071130
-		$result .= "&nbsp;->Ajout des champs 'affiche_moyenne_mini_general' et 'affiche_moyenne_maxi_general' ‡ la table 'model_bulletin'<br />";
+		$result .= "&nbsp;->Ajout des champs 'affiche_moyenne_mini_general' et 'affiche_moyenne_maxi_general' √† la table 'model_bulletin'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'affiche_moyenne_mini_general'"));
 		if ($test1 == 0) {
 			$sql="ALTER TABLE `model_bulletin` ADD `affiche_moyenne_mini_general` TINYINT NOT NULL DEFAULT '1',
@@ -951,10 +951,10 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			}
 		}
 		else{
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout du champ 'affiche_date_edition' ‡ la table 'model_bulletin'<br />";
+		$result .= "&nbsp;->Ajout du champ 'affiche_date_edition' √† la table 'model_bulletin'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'affiche_date_edition'"));
 		if ($test1 == 0) {
 			$sql="ALTER TABLE `model_bulletin` ADD `affiche_date_edition` TINYINT NOT NULL DEFAULT '1';";
@@ -967,10 +967,10 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			}
 		}
 		else{
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout du champ 'active_moyenne_general' ‡ la table 'model_bulletin'<br />";
+		$result .= "&nbsp;->Ajout du champ 'active_moyenne_general' √† la table 'model_bulletin'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'active_moyenne_general'"));
 		if ($test1 == 0) {
 			$sql="ALTER TABLE `model_bulletin` ADD `active_moyenne_general` TINYINT NOT NULL DEFAULT '1';";
@@ -983,11 +983,11 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			}
 		}
 		else{
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 		//===================================================
-		// Ajout d'un champ pour les AID et le bulletin simplifiÈ
-		$result .= "&nbsp;->Ajout du champ 'bull_simplifie' ‡ la table 'aid_config'<br />";
+		// Ajout d'un champ pour les AID et le bulletin simplifi√©
+		$result .= "&nbsp;->Ajout du champ 'bull_simplifie' √† la table 'aid_config'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM aid_config LIKE 'bull_simplifie'"));
 		if ($test1 == 0) {
 			$sql="ALTER TABLE `aid_config` ADD `bull_simplifie` CHAR(1) NOT NULL DEFAULT 'y';";
@@ -999,10 +999,10 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			}
 		}
 		else{
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
-		// CrÈation de la table absences_rb
+		// Cr√©ation de la table absences_rb
 		$result .= "&nbsp;->Ajout de la table absences_rb. <br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'absences_rb'"));
 		if ($test1 == 0) {
@@ -1025,10 +1025,10 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			}
 		}
 		else{
-			$result .= msj_present('La table existe dÈj‡');
+			$result .= msj_present('La table existe d√©j√†');
 		}
 
-		// CrÈation de la table matieres_appreciations_tempo
+		// Cr√©ation de la table matieres_appreciations_tempo
 		$result .= "&nbsp;->Ajout de la table matieres_appreciations_tempo. <br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'matieres_appreciations_tempo'"));
 		if ($test1 == 0) {
@@ -1044,10 +1044,10 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			}
 		}
 		else{
-			$result .= msj_present('La table existe dÈj‡');
+			$result .= msj_present('La table existe d√©j√†');
 		}
 		/*
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'utiliserMenuBarre' ‡ la table 'setting'<br />";
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'utiliserMenuBarre' √† la table 'setting'<br />";
 		$req_test = mysql_query("SELECT value FROM setting WHERE name='utiliserMenuBarre'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -1058,10 +1058,10 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 		*/
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'active_absences_parents' ‡ la table 'setting'<br />";
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'active_absences_parents' √† la table 'setting'<br />";
 		$req_test = mysql_query("SELECT value FROM setting WHERE name='active_absences_parents'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -1072,10 +1072,10 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
-		$result .= "&nbsp;->Ajout (si besoin) du paramËtre 'creneau_different' ‡ la table 'setting'<br />";
+		$result .= "&nbsp;->Ajout (si besoin) du param√®tre 'creneau_different' √† la table 'setting'<br />";
 		$req_test = mysql_query("SELECT value FROM setting WHERE name='creneau_different'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -1086,10 +1086,10 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
-		// CrÈation de la table absences_creneaux_bis
+		// Cr√©ation de la table absences_creneaux_bis
 		$result .= "&nbsp;->Ajout de la table absences_creneaux_bis. <br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'absences_creneaux_bis'"));
 		if ($test1 == 0) {
@@ -1109,7 +1109,7 @@ PRIMARY KEY  (`id_definie_periode`));";
 			}
 		}
 		else{
-			$result .= msj_present('La table existe dÈj‡');
+			$result .= msj_present('La table existe d√©j√†');
 		}
 
 		$result .= "&nbsp;->Ajout de la table edt_init. <br />";
@@ -1128,57 +1128,57 @@ PRIMARY KEY  (`id_definie_periode`));";
 			}
 		}
 		else{
-			$result .= msj_present('La table existe dÈj‡');
+			$result .= msj_present('La table existe d√©j√†');
 		}
 
 
-		//Initialisation des paramËtres liÈs au module inscription
+		//Initialisation des param√®tres li√©s au module inscription
 		$result_inter = "";
-		$result .= "&nbsp;-> Initialisation des paramËtres liÈs au module inscription<br />";
+		$result .= "&nbsp;-> Initialisation des param√®tres li√©s au module inscription<br />";
 
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'inscription_items'"));
 		if ($test == 0) {
 			$result_inter .= traite_requete("CREATE TABLE IF NOT EXISTS inscription_items (id int(11) NOT NULL auto_increment, date varchar(20) NOT NULL default '', heure varchar(10) NOT NULL default '', description varchar(200) NOT NULL default '', PRIMARY KEY  (id));");
 			if ($result_inter == '')
-			$result .= msj_ok("La table inscription_items a ÈtÈ crÈÈe !");
+			$result .= msj_ok("La table inscription_items a √©t√© cr√©√©e !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("La table inscription_items existe dÈj‡");
+			$result .= msj_present("La table inscription_items existe d√©j√†");
 		}
 
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'inscription_j_login_items'"));
 		if ($test == 0) {
 			$result_inter .= traite_requete("CREATE TABLE IF NOT EXISTS inscription_j_login_items (login varchar(20) NOT NULL default '', id int(11) NOT NULL default '0');");
 			if ($result_inter == '')
-			$result .= msj_ok("La table inscription_j_login_items a ÈtÈ crÈÈe !");
+			$result .= msj_ok("La table inscription_j_login_items a √©t√© cr√©√©e !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_ok("La table inscription_j_login_items existe dÈj‡.");
+			$result .= msj_ok("La table inscription_j_login_items existe d√©j√†.");
 		}
 
 		$req = sql_query1("SELECT VALUE FROM setting WHERE NAME = 'active_inscription'");
 		if ($req == -1)
 		$result_inter .= traite_requete("INSERT INTO setting VALUES ('active_inscription', 'n');");
 		else
-		$result .= msj_present("Le paramËtre active_inscription existe dÈj‡.");
+		$result .= msj_present("Le param√®tre active_inscription existe d√©j√†.");
 		$req = sql_query1("SELECT VALUE FROM setting WHERE NAME = 'active_inscription_utilisateurs'");
 		if ($req == -1)
 		$result_inter .= traite_requete("INSERT INTO setting VALUES ('active_inscription_utilisateurs', 'n');");
 		else
-		$result .= msj_present("Le paramËtre active_inscription_utilisateurs existe dÈj‡.");
+		$result .= msj_present("Le param√®tre active_inscription_utilisateurs existe d√©j√†.");
 
 		$req = sql_query1("SELECT VALUE FROM setting WHERE NAME = 'mod_inscription_explication'");
 		if ($req == -1)
 		$result_inter .= traite_requete("INSERT INTO setting (NAME, VALUE) VALUES('mod_inscription_explication', '<p> <strong>Pr&eacute;sentation des dispositifs du Lyc&eacute;e dans les coll&egrave;ges qui organisent des rencontres avec les parents.</strong> <br />\r\n<br />\r\nChacun d&rsquo;entre vous conna&icirc;t la situation dans laquelle sont plac&eacute;s les &eacute;tablissements : </p>\r\n<ul>\r\n    <li>baisse d&eacute;mographique</li>\r\n    <li>r&eacute;gulation des moyens</li>\r\n    <li>- ... </li>\r\n</ul>\r\nCette ann&eacute;e encore nous devons &ecirc;tre pr&eacute;sents dans les r&eacute;unions organis&eacute;es au sein des coll&egrave;ges afin de pr&eacute;senter nos sp&eacute;cificit&eacute;s, notre valeur ajout&eacute;e, les &eacute;volution du projet, le label international, ... <br />\r\nsur cette feuille, vous avez la possibilit&eacute; de vous inscrire afin d''intervenir dans un ou plusieurs coll&egrave;ges selon vos convenances.');");
 		else
-		$result .= msj_present("Le paramËtre mod_inscription_explication existe dÈj‡.");
+		$result .= msj_present("Le param√®tre mod_inscription_explication existe d√©j√†.");
 		$req = sql_query1("SELECT VALUE FROM setting WHERE NAME = 'mod_inscription_titre'");
 		if ($req == -1)
-		$result_inter .= traite_requete("INSERT INTO setting (NAME, VALUE) VALUES('mod_inscription_titre', 'Intervention dans les collËges');");
+		$result_inter .= traite_requete("INSERT INTO setting (NAME, VALUE) VALUES('mod_inscription_titre', 'Intervention dans les coll√®ges');");
 		else
-		$result .= msj_present("Le paramËtre mod_inscription_titre existe dÈj‡.");
+		$result .= msj_present("Le param√®tre mod_inscription_titre existe d√©j√†.");
 
 		if ($result_inter == '') {
 			$result .= msj_ok();
@@ -1186,20 +1186,20 @@ PRIMARY KEY  (`id_definie_periode`));";
 			$result .= $result_inter."<br />";
 		}
 		//
-		// Outils complÈmenraires de gestion des AID
+		// Outils compl√©menraires de gestion des AID
 		//
 		$result_inter = "";
-		$result .= "<br />&nbsp;->Ajout des paramËtres liÈs aux outils complÈmentaires de gestion des AIDs<br />";
-		// CrÈation de la table j_aidcateg_utilisateurs
+		$result .= "<br />&nbsp;->Ajout des param√®tres li√©s aux outils compl√©mentaires de gestion des AIDs<br />";
+		// Cr√©ation de la table j_aidcateg_utilisateurs
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'j_aidcateg_utilisateurs'"));
 		if ($test == 0) {
 			$result_inter .= traite_requete("CREATE TABLE IF NOT EXISTS j_aidcateg_utilisateurs (indice_aid INT NOT NULL ,id_utilisateur VARCHAR( 50 ) NOT NULL);");
 			if ($result_inter == '')
-			$result .= msj_ok("La table j_aidcateg_utilisateurs a ÈtÈ crÈÈe !");
+			$result .= msj_ok("La table j_aidcateg_utilisateurs a √©t√© cr√©√©e !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("La table j_aidcateg_utilisateurs existe dÈj‡.");
+			$result .= msj_present("La table j_aidcateg_utilisateurs existe d√©j√†.");
 		}
 		$result_inter = "";
 		// Modification de la table aid_config
@@ -1208,11 +1208,11 @@ PRIMARY KEY  (`id_definie_periode`));";
 			$result_inter .= traite_requete("ALTER TABLE aid_config ADD outils_complementaires ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n';");
 			$result_inter .= traite_requete("ALTER TABLE aid_config ADD feuille_presence ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n';");
 			if ($result_inter == '')
-			$result .= msj_ok("Les champs outils_complementaires et feuille_presence dans la table aid_config ont ÈtÈ crÈÈs !");
+			$result .= msj_ok("Les champs outils_complementaires et feuille_presence dans la table aid_config ont √©t√© cr√©√©s !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("Les champs outils_complementaires et feuille_presence dans la table aid_config existent dÈj‡.");
+			$result .= msj_present("Les champs outils_complementaires et feuille_presence dans la table aid_config existent d√©j√†.");
 		}
 		// Modification de la table aid
 		$test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM aid LIKE 'en_construction'"));
@@ -1239,87 +1239,87 @@ ADD affiche_adresse1 ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n' ,
 ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 ;");
 			if ($result_inter == '')
-			$result .= msj_ok("Les champ productions, resume, famille, mots_cles, adresse1, adress2, public_destinataire, contacts, divers, matiere1, matiere2, eleve_peut_modifier, prof_peut_modifier, cpe_peut_modifier, fiche_publique, affiche_adresse1, en_construction, perso1, perso2, perso2 dans la table aid ont ÈtÈ crÈÈs !");
+			$result .= msj_ok("Les champ productions, resume, famille, mots_cles, adresse1, adress2, public_destinataire, contacts, divers, matiere1, matiere2, eleve_peut_modifier, prof_peut_modifier, cpe_peut_modifier, fiche_publique, affiche_adresse1, en_construction, perso1, perso2, perso2 dans la table aid ont √©t√© cr√©√©s !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("Les champ productions, resume, famille, mots_cles, adresse1, adress2, public_destinataire, contacts, divers, matiere1, matiere2, eleve_peut_modifier, prof_peut_modifier, cpe_peut_modifier, fiche_publique, affiche_adresse1, en_construction, perso1, perso2, perso2  dans la table aid existent dÈj‡.");
+			$result .= msj_present("Les champ productions, resume, famille, mots_cles, adresse1, adress2, public_destinataire, contacts, divers, matiere1, matiere2, eleve_peut_modifier, prof_peut_modifier, cpe_peut_modifier, fiche_publique, affiche_adresse1, en_construction, perso1, perso2, perso2  dans la table aid existent d√©j√†.");
 		}
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'j_aid_eleves_resp'"));
 		if ($test == 0) {
 			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `j_aid_eleves_resp` (`id_aid` varchar(100) NOT NULL default '',`login` varchar(60) NOT NULL default '',`indice_aid` int(11) NOT NULL default '0',PRIMARY KEY  (`id_aid`,`login`));");
 			if ($result_inter == '')
-			$result .= msj_ok("La table j_aid_eleves_resp a ÈtÈ crÈÈe !");
+			$result .= msj_ok("La table j_aid_eleves_resp a √©t√© cr√©√©e !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("La table j_aid_eleves_resp existe dÈj‡.");
+			$result .= msj_present("La table j_aid_eleves_resp existe d√©j√†.");
 		}
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'aid_familles'"));
 		if ($test == 0) {
 			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `aid_familles` (`ordre_affichage` smallint(6) NOT NULL default '0',`id` smallint(6) NOT NULL default '0',`type` varchar(250) NOT NULL default '');");
 			if ($result_inter == '')
-			$result .= msj_ok("La table aid_familles a ÈtÈ crÈÈe !");
+			$result .= msj_ok("La table aid_familles a √©t√© cr√©√©e !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("La table aid_familles est dÈj‡ crÈÈe.");
+			$result .= msj_present("La table aid_familles est d√©j√† cr√©√©e.");
 		}
 		$test = mysql_num_rows(mysql_query("select ordre_affichage from aid_familles"));
 		if ($test == 0) {
 			$result_inter = traite_requete("INSERT INTO `aid_familles` (`ordre_affichage`, `id`, `type`) VALUES
 (0, 10, 'Information, presse'),
-(1, 11, 'Philosophie et psychologie, pensÈe'),
+(1, 11, 'Philosophie et psychologie, pens√©e'),
 (2, 12, 'Religions'),
-(3, 13, 'Sciences sociales, sociÈtÈ, humanitaire'),
+(3, 13, 'Sciences sociales, soci√©t√©, humanitaire'),
 (4, 14, 'Langues, langage'),
 (5, 15, 'Sciences (sciences dures)'),
-(6, 16, 'Techniques, sciences appliquÈes, mÈdecine, cuisine...'),
+(6, 16, 'Techniques, sciences appliqu√©es, m√©decine, cuisine...'),
 (7, 17, 'Arts, loisirs et sports'),
-(8, 18, 'LittÈrature, thÈ‚tre, poÈsie'),
-(9, 19, 'GÈographie et Histoire, civilisations anciennes');");
+(8, 18, 'Litt√©rature, th√©√¢tre, po√©sie'),
+(9, 19, 'G√©ographie et Histoire, civilisations anciennes');");
 			if ($result_inter == '')
-			$result .= msj_ok("La table aid_familles a ÈtÈ mise ‡ jour !");
+			$result .= msj_ok("La table aid_familles a √©t√© mise √† jour !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("La table aid_familles est dÈj‡ remplie.");
+			$result .= msj_present("La table aid_familles est d√©j√† remplie.");
 		}
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'aid_public'"));
 		if ($test == 0) {
 			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `aid_public` (`ordre_affichage` smallint(6) NOT NULL default '0',`id` smallint(6) NOT NULL default '0',`public` varchar(100) NOT NULL default '');");
 			if ($result_inter == '')
-			$result .= msj_ok("La table aid_public a ÈtÈ crÈÈe !");
+			$result .= msj_ok("La table aid_public a √©t√© cr√©√©e !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("La table aid_public existe dÈj‡.");
+			$result .= msj_present("La table aid_public existe d√©j√†.");
 		}
 		$test = mysql_num_rows(mysql_query("select * from aid_public"));
 		if ($test == 0) {
 			$result_inter = traite_requete("INSERT INTO `aid_public` (`ordre_affichage`, `id`, `public`) VALUES
-(3, 1, 'LycÈens'),
-(2, 2, 'CollËgiens'),
+(3, 1, 'Lyc√©ens'),
+(2, 2, 'Coll√®giens'),
 (1, 3, 'Ecoliers'),
 (6, 4, 'Grand public'),
-(5, 5, 'Experts (ou spÈcialistes)'),
+(5, 5, 'Experts (ou sp√©cialistes)'),
 (4, 6, 'Etudiants');");
 			if ($result_inter == '')
-			$result .= msj_ok("La table aid_public a ÈtÈ mise ‡ jour !");
+			$result .= msj_ok("La table aid_public a √©t√© mise √† jour !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("La table aid_public est dÈj‡ remplie.");
+			$result .= msj_present("La table aid_public est d√©j√† remplie.");
 		}
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'aid_productions'"));
 		if ($test == 0) {
 			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `aid_productions` (`id` smallint(6) NOT NULL auto_increment, `nom` varchar(100) NOT NULL default '', PRIMARY KEY  (`id`) );");
 			if ($result_inter == '')
-			$result .= msj_ok("La table aid_productions a ÈtÈ crÈÈe !");
+			$result .= msj_ok("La table aid_productions a √©t√© cr√©√©e !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("La table aid_productions existe dÈj‡.");
+			$result .= msj_present("La table aid_productions existe d√©j√†.");
 		}
 		$test = mysql_num_rows(mysql_query("select * from aid_productions"));
 		if ($test == 0) {
@@ -1329,87 +1329,87 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 (3, 'Exposition'),
 (4, 'Film'),
 (5, 'Spectacle'),
-(6, 'RÈalisation plastique'),
-(7, 'RÈalisation technique ou scientifique'),
-(8, 'Jeu vidÈo'),
+(6, 'R√©alisation plastique'),
+(7, 'R√©alisation technique ou scientifique'),
+(8, 'Jeu vid√©o'),
 (9, 'Animation culturelle'),
 (10, 'Maquette'),
 (11, 'Site internet'),
 (12, 'Diaporama'),
 (13, 'Production musicale'),
-(14, 'Production thÈ‚trale'),
+(14, 'Production th√©√¢trale'),
 (15, 'Animation en milieu scolaire'),
 (16, 'Programmation logicielle'),
 (17, 'Journal');");
 			if ($result_inter == '')
-			$result .= msj_ok("La table aid_productions a ÈtÈ mise ‡ jour !");
+			$result .= msj_ok("La table aid_productions a √©t√© mise √† jour !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("La table aid_productions est dÈj‡ remplie.");
+			$result .= msj_present("La table aid_productions est d√©j√† remplie.");
 		}
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'droits_aid'"));
 		if ($test == 0) {
 			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `droits_aid` (`id` varchar(200) NOT NULL default '',`public` char(1) NOT NULL default '',`professeur` char(1) NOT NULL default '',`cpe` char(1) NOT NULL default '',`scolarite` char(1) NOT NULL default '',`eleve` char(1) NOT NULL default '',`responsable` char(1) NOT NULL default 'F',`secours` char(1) NOT NULL default '',`description` varchar(255) NOT NULL default '',`statut` char(1) NOT NULL default '',PRIMARY KEY  (`id`));");
 			if ($result_inter == '')
-			$result .= msj_ok("La table des droits_aid a ÈtÈ crÈÈe !");
+			$result .= msj_ok("La table des droits_aid a √©t√© cr√©√©e !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("La table droits_aid existe dÈj‡.");
+			$result .= msj_present("La table droits_aid existe d√©j√†.");
 		}
 		$test = mysql_num_rows(mysql_query("select * from droits_aid"));
 		if ($test == 0) {
-			$result_inter = traite_requete("INSERT INTO `droits_aid` VALUES('nom', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A prÈciser', '1');");
-			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('numero', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A prÈciser', '1');");
-			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('perso1', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'A prÈciser', '1');");
-			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('perso2', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'A prÈciser', '1');");
+			$result_inter = traite_requete("INSERT INTO `droits_aid` VALUES('nom', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A pr√©ciser', '1');");
+			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('numero', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A pr√©ciser', '1');");
+			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('perso1', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'A pr√©ciser', '1');");
+			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('perso2', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'A pr√©ciser', '1');");
 			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('productions', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Production', '1');");
-			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('resume', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'RÈsumÈ', '1');");
+			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('resume', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'R√©sum√©', '1');");
 			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('famille', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Famille', '1');");
-			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('mots_cles', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Mots clÈs', '1');");
+			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('mots_cles', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Mots cl√©s', '1');");
 			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('adresse1', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Adresse publique', '1');");
-			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('adresse2', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Adresse privÈe', '1');");
+			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('adresse2', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Adresse priv√©e', '1');");
 			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('public_destinataire', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Public destinataire', '1');");
 			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('contacts', 'F', 'V', 'F', 'F', 'V', 'F', 'F', 'Contacts, ressources', '1');");
 			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('divers', 'F', 'V', 'F', 'F', 'V', 'F', 'F', 'Divers', '1');");
 			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('matiere1', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Discipline principale', '1');");
 			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('matiere2', 'V', 'V', 'F', 'F', 'V', 'F', 'F', 'Discipline secondaire', '1');");
-			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('eleve_peut_modifier', '-', '-', '-', '-', '-', '-', '-', 'A prÈciser', '1');");
-			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('cpe_peut_modifier', '-', '-', '-', '-', '-', '-', '-', 'A prÈciser', '1');");
-			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('prof_peut_modifier', '-', '-', '-', '-', '-', '-', '-', 'A prÈciser', '0');");
-			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('fiche_publique', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A prÈciser', '1');");
-			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('affiche_adresse1', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A prÈciser', '1');");
-			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('en_construction', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A prÈciser', '1');");
-			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('perso3', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'A prÈciser', '0');");
+			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('eleve_peut_modifier', '-', '-', '-', '-', '-', '-', '-', 'A pr√©ciser', '1');");
+			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('cpe_peut_modifier', '-', '-', '-', '-', '-', '-', '-', 'A pr√©ciser', '1');");
+			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('prof_peut_modifier', '-', '-', '-', '-', '-', '-', '-', 'A pr√©ciser', '0');");
+			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('fiche_publique', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A pr√©ciser', '1');");
+			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('affiche_adresse1', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A pr√©ciser', '1');");
+			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('en_construction', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'A pr√©ciser', '1');");
+			$result_inter .= traite_requete("INSERT INTO `droits_aid` VALUES('perso3', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'A pr√©ciser', '0');");
 
 			if ($result_inter == '')
-			$result .= msj_ok("La table des droits_aid a ÈtÈ mise ‡ jour !");
+			$result .= msj_ok("La table des droits_aid a √©t√© mise √† jour !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("La table droits_aid est dÈj‡ remplie.");
+			$result .= msj_present("La table droits_aid est d√©j√† remplie.");
 		}
 		$test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM matieres LIKE 'matiere_aid'"));
 		if ($test == 0) {
 			$result_inter = traite_requete("ALTER TABLE `matieres` ADD `matiere_aid` CHAR( 1 ) DEFAULT 'n' NOT NULL , ADD `matiere_atelier` CHAR( 1 ) DEFAULT 'n' NOT NULL;");
 			if ($result_inter == '')
-			$result .= msj_ok("Les champs matiere_aid et matiere_atelier ont ÈtÈ ajoutÈs ‡ la table matieres !");
+			$result .= msj_ok("Les champs matiere_aid et matiere_atelier ont √©t√© ajout√©s √† la table matieres !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("Les champs matiere_aid et matiere_atelier existent dÈj‡ dans la table matieres !");
+			$result .= msj_present("Les champs matiere_aid et matiere_atelier existent d√©j√† dans la table matieres !");
 		}
 		$result .= "<br />&nbsp;->Ajout de la table table matieres_appreciations_grp<br />";
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'matieres_appreciations_grp'"));
 		if ($test == 0) {
 			$result_inter = traite_requete("CREATE TABLE `matieres_appreciations_grp` ( `id_groupe` int(11) NOT NULL default '0', `periode` int(11) NOT NULL default '0', `appreciation` text NOT NULL, PRIMARY KEY  (`id_groupe`,`periode`));");
 			if ($result_inter == '')
-			$result .= msj_ok("La table matieres_appreciations_grp a ÈtÈ crÈÈe !");
+			$result .= msj_ok("La table matieres_appreciations_grp a √©t√© cr√©√©e !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("La table matieres_appreciations_grp existe dÈj‡.");
+			$result .= msj_present("La table matieres_appreciations_grp existe d√©j√†.");
 		}
 
 		$result .= "<br />&nbsp;->Tentative d'ajout du champ display_parents_app dans la table cn_devoirs.<br />";
@@ -1422,7 +1422,7 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 				$result .= $result_inter;
 			}
 		} else {
-			$result .= msj_present("Le champs existe dÈj‡.");
+			$result .= msj_present("Le champs existe d√©j√†.");
 		}
 		//==========================================================
 		// Module Ateliers
@@ -1431,24 +1431,24 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 		if ($test == -1) {
 			$result_inter = traite_requete("INSERT INTO setting (NAME, VALUE) VALUES('active_ateliers', 'n');");
 			if ($result_inter == '') {
-				$result .= msj_ok("Le paramËtre active_ateliers a ÈtÈ crÈÈ.");
+				$result .= msj_ok("Le param√®tre active_ateliers a √©t√© cr√©√©.");
 			} else {
 				$result .= $result_inter;
 			}
 		} else {
-			$result .= msj_present("Le paramËtre active_ateliers existe dÈj‡.");
+			$result .= msj_present("Le param√®tre active_ateliers existe d√©j√†.");
 		}
 
 		$test = sql_query1("SHOW TABLES LIKE 'ateliers_config'");
 		if ($test == -1) {
 			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `ateliers_config` (`nom_champ` char(100) NOT NULL default '', `content` char(255) NOT NULL default '',`param` char(100) NOT NULL default '');");
 			if ($result_inter == '') {
-				$result .= msj_ok("La table ateliers_config a ÈtÈ crÈÈe.");
+				$result .= msj_ok("La table ateliers_config a √©t√© cr√©√©e.");
 			} else {
 				$result .= $result_inter;
 			}
 		} else {
-			$result .= msj_present("La table ateliers_config existe dÈj‡.");
+			$result .= msj_present("La table ateliers_config existe d√©j√†.");
 		}
 
 		//==========================================================
@@ -1460,13 +1460,13 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 		if ($res_test == 0) {
 			$result_inter = traite_requete("INSERT INTO setting VALUES ('param_module_trombinoscopes', 'no_gep');");
 			if ($result_inter == '') {
-				$result.=msj_ok("DÈfinition du paramËtre param_module_trombinoscopes ‡ no_gep: Ok !");
+				$result.=msj_ok("D√©finition du param√®tre param_module_trombinoscopes √† no_gep: Ok !");
 			}
 			else{
-				$result.=msj_erreur("DÈfinition du paramËtre param_module_trombinoscopes ‡ no_gep: Erreur !");
+				$result.=msj_erreur("D√©finition du param√®tre param_module_trombinoscopes √† no_gep: Erreur !");
 			}
 		}else {
-			$result .= msj_present("Le paramËtre param_module_trombinoscopes existe dÈj‡ dans la table setting.");
+			$result .= msj_present("Le param√®tre param_module_trombinoscopes existe d√©j√† dans la table setting.");
 		}
 
 		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'active_module_trombinoscopes'");
@@ -1474,13 +1474,13 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 		if ($res_test == 0) {
 			$result .= traite_requete("INSERT INTO setting VALUES ('active_module_trombinoscopes', 'y');");
 			if ($result_inter == '') {
-				$result.=msj_ok("DÈfinition du paramËtre active_module_trombinoscopes ‡ y: Ok !");
+				$result.=msj_ok("D√©finition du param√®tre active_module_trombinoscopes √† y: Ok !");
 			}
 			else{
-				$result.=msj_erreur("DÈfinition du paramËtre active_module_trombinoscopes ‡ y: Erreur !");
+				$result.=msj_erreur("D√©finition du param√®tre active_module_trombinoscopes √† y: Erreur !");
 			}
 		}else {
-			$result .= msj_present("Le paramËtre active_module_trombinoscopes existe dÈj‡ dans la table setting.");
+			$result .= msj_present("Le param√®tre active_module_trombinoscopes existe d√©j√† dans la table setting.");
 		}
 
 		$req_test=mysql_query("SELECT VALUE FROM setting WHERE NAME = 'l_max_aff_trombinoscopes'");
@@ -1488,50 +1488,50 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 		if ($res_test==0){
 			$result_inter = traite_requete("INSERT INTO setting VALUES ('l_max_aff_trombinoscopes', '120');");
 			if ($result_inter == '') {
-				$result.=msj_ok("DÈfinition du paramËtre l_max_aff_trombinoscopes ‡ 120: Ok !");
+				$result.=msj_ok("D√©finition du param√®tre l_max_aff_trombinoscopes √† 120: Ok !");
 			}
 			else{
-				$result.=msj_erreur("DÈfinition du paramËtre l_max_aff_trombinoscopes ‡ 120: Erreur !");
+				$result.=msj_erreur("D√©finition du param√®tre l_max_aff_trombinoscopes √† 120: Erreur !");
 			}
 		}else {
-			$result .= msj_present("Le paramËtre l_max_aff_trombinoscopes existe dÈj‡ dans la table setting.");
+			$result .= msj_present("Le param√®tre l_max_aff_trombinoscopes existe d√©j√† dans la table setting.");
 		}
 		$req_test=mysql_query("SELECT VALUE FROM setting WHERE NAME = 'h_max_aff_trombinoscopes'");
 		$res_test=mysql_num_rows($req_test);
 		if ($res_test==0){
 			$result_inter = traite_requete("INSERT INTO setting VALUES ('h_max_aff_trombinoscopes', '160');");
 			if ($result_inter == '') {
-				$result.=msj_ok("DÈfinition du paramËtre h_max_aff_trombinoscopes ‡ 160: Ok !");
+				$result.=msj_ok("D√©finition du param√®tre h_max_aff_trombinoscopes √† 160: Ok !");
 			}
 			else{
-				$result.=msj_erreur("DÈfinition du paramËtre h_max_aff_trombinoscopes ‡ 160: Erreur !");
+				$result.=msj_erreur("D√©finition du param√®tre h_max_aff_trombinoscopes √† 160: Erreur !");
 			}
 		}else {
-			$result .= msj_present("Le paramËtre h_max_aff_trombinoscopes existe dÈj‡ dans la table setting.");
+			$result .= msj_present("Le param√®tre h_max_aff_trombinoscopes existe d√©j√† dans la table setting.");
 		}
 		$req_test=mysql_query("SELECT VALUE FROM setting WHERE NAME = 'l_max_imp_trombinoscopes'");
 		$res_test=mysql_num_rows($req_test);
 		if ($res_test==0){
 			$result_inter = traite_requete("INSERT INTO setting VALUES ('l_max_imp_trombinoscopes', '70');");
 			if ($result_inter == '') {
-				$result.=msj_ok("DÈfinition du paramËtre l_max_imp_trombinoscopes ‡ 70: Ok !");
+				$result.=msj_ok("D√©finition du param√®tre l_max_imp_trombinoscopes √† 70: Ok !");
 			} else {
-				$result.=msj_erreur("DÈfinition du paramËtre l_max_imp_trombinoscopes ‡ 70: Erreur !");
+				$result.=msj_erreur("D√©finition du param√®tre l_max_imp_trombinoscopes √† 70: Erreur !");
 			}
 		}else {
-			$result .= msj_present("Le paramËtre l_max_imp_trombinoscopes existe dÈj‡ dans la table setting.");
+			$result .= msj_present("Le param√®tre l_max_imp_trombinoscopes existe d√©j√† dans la table setting.");
 		}
 		$req_test=mysql_query("SELECT VALUE FROM setting WHERE NAME = 'h_max_imp_trombinoscopes'");
 		$res_test=mysql_num_rows($req_test);
 		if ($res_test==0){
 			$result_inter = traite_requete("INSERT INTO setting VALUES ('h_max_imp_trombinoscopes', '100');");
 			if ($result_inter == '') {
-				$result.=msj_ok("DÈfinition du paramËtre h_max_imp_trombinoscopes ‡ 100: Ok !");
+				$result.=msj_ok("D√©finition du param√®tre h_max_imp_trombinoscopes √† 100: Ok !");
 			} else {
-				$result.=msj_erreur("DÈfinition du paramËtre h_max_imp_trombinoscopes ‡ 100: Erreur !");
+				$result.=msj_erreur("D√©finition du param√®tre h_max_imp_trombinoscopes √† 100: Erreur !");
 			}
 		} else {
-			$result .= msj_present("Le paramËtre h_max_imp_trombinoscopes existe dÈj‡ dans la table setting.");
+			$result .= msj_present("Le param√®tre h_max_imp_trombinoscopes existe d√©j√† dans la table setting.");
 		}
 
 		$req_test=mysql_query("SELECT VALUE FROM setting WHERE NAME = 'h_resize_trombinoscopes'");
@@ -1539,12 +1539,12 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 		if ($res_test==0){
 			$result_inter = traite_requete("INSERT INTO setting VALUES ('h_resize_trombinoscopes', '160');");
 			if ($result_inter == '') {
-				$result.=msj_ok("DÈfinition du paramËtre h_resize_trombinoscopes ‡ 160: Ok !");
+				$result.=msj_ok("D√©finition du param√®tre h_resize_trombinoscopes √† 160: Ok !");
 			} else {
-				$result.=msj_erreur("DÈfinition du paramËtre h_resize_trombinoscopes ‡ 160: Erreur !");
+				$result.=msj_erreur("D√©finition du param√®tre h_resize_trombinoscopes √† 160: Erreur !");
 			}
 		} else {
-			$result .= msj_present("Le paramËtre h_resize_trombinoscopes existe dÈj‡ dans la table setting.");
+			$result .= msj_present("Le param√®tre h_resize_trombinoscopes existe d√©j√† dans la table setting.");
 		}
 
 		$req_test=mysql_query("SELECT VALUE FROM setting WHERE NAME = 'l_resize_trombinoscopes'");
@@ -1552,27 +1552,27 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 		if ($res_test==0){
 			$result_inter = traite_requete("INSERT INTO setting VALUES ('l_resize_trombinoscopes', '120');");
 			if ($result_inter == '') {
-				$result.=msj_ok("DÈfinition du paramËtre l_resize_trombinoscopes ‡ 120: Ok !");
+				$result.=msj_ok("D√©finition du param√®tre l_resize_trombinoscopes √† 120: Ok !");
 			} else {
-				$result.=msj_erreur("DÈfinition du paramËtre l_resize_trombinoscopes ‡ 120: Erreur !");
+				$result.=msj_erreur("D√©finition du param√®tre l_resize_trombinoscopes √† 120: Erreur !");
 			}
 		} else {
-			$result .= msj_present("Le paramËtre l_resize_trombinoscopes existe dÈj‡ dans la table setting.");
+			$result .= msj_present("Le param√®tre l_resize_trombinoscopes existe d√©j√† dans la table setting.");
 		}
 
 		//==========================================================
 		// AJOUT: boireaus 20080218
-		//        Dispositif de restriction des accËs aux apprÈciations pour les comptes responsables/eleves
-		$result .= "<br />&nbsp;->Dispositif de restriction des accËs aux apprÈciations pour les comptes responsables/eleves<br />";
+		//        Dispositif de restriction des acc√®s aux appr√©ciations pour les comptes responsables/eleves
+		$result .= "<br />&nbsp;->Dispositif de restriction des acc√®s aux appr√©ciations pour les comptes responsables/eleves<br />";
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'matieres_appreciations_acces'"));
 		if ($test == 0) {
 			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `matieres_appreciations_acces` (`id_classe` INT( 11 ) NOT NULL , `statut` VARCHAR( 255 ) NOT NULL , `periode` INT( 11 ) NOT NULL , `date` DATE NOT NULL , `acces` ENUM( 'y', 'n', 'date' ) NOT NULL );");
 			if ($result_inter == '')
-			$result .= msj_ok("La table matieres_appreciations_acces a ÈtÈ crÈÈe !");
+			$result .= msj_ok("La table matieres_appreciations_acces a √©t√© cr√©√©e !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("La table matieres_appreciations_acces existe dÈj‡.");
+			$result .= msj_present("La table matieres_appreciations_acces existe d√©j√†.");
 		}
 
 		$req_test = mysql_query("SELECT VALUE FROM setting WHERE NAME = 'GepiAccesRestrAccesAppProfP'");
@@ -1580,14 +1580,14 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 		if ($res_test == 0) {
 			$result_inter = traite_requete("INSERT INTO setting VALUES ('GepiAccesRestrAccesAppProfP', 'no');");
 			if ($result_inter == '')
-			$result .= msj_ok("Le paramËtre GepiAccesRestrAccesAppProfP a ÈtÈ ajoutÈ ‡ la table setting !");
+			$result .= msj_ok("Le param√®tre GepiAccesRestrAccesAppProfP a √©t√© ajout√© √† la table setting !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("Le paramËtre GepiAccesRestrAccesAppProfP existe dÈj‡ dans la table setting.");
+			$result .= msj_present("Le param√®tre GepiAccesRestrAccesAppProfP existe d√©j√† dans la table setting.");
 		}
 		// Module archivage
-		$result .= "<br />&nbsp;->Module archivage : ajout (si besoin) du paramËtre 'active_annees_anterieures' ‡ la table 'setting'<br/>";
+		$result .= "<br />&nbsp;->Module archivage : ajout (si besoin) du param√®tre 'active_annees_anterieures' √† la table 'setting'<br/>";
 		$req_test = mysql_query("SELECT value FROM setting WHERE name='active_annees_anterieures'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -1598,82 +1598,82 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
-		$result .= "<br />&nbsp;->Module archivage : CrÈation des tables d'archivage<br />";
+		$result .= "<br />&nbsp;->Module archivage : Cr√©ation des tables d'archivage<br />";
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_aids'"));
 		if ($test == 0) {
 			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_aids` (`id` int(11) NOT NULL auto_increment,`annee` varchar(200) NOT NULL default '',`nom` varchar(100) NOT NULL default '',`id_type_aid` int(11) NOT NULL default '0',`productions` varchar(100) NOT NULL default '',`resume` text NOT NULL,`famille` smallint(6) NOT NULL default '0',`mots_cles` text NOT NULL,`adresse1` varchar(255) NOT NULL default '',`adresse2` varchar(255) NOT NULL default '',`public_destinataire` varchar(50) NOT NULL default '',`contacts` text NOT NULL,`divers` text NOT NULL,`matiere1` varchar(100) NOT NULL default '',`matiere2` varchar(100) NOT NULL default '',`fiche_publique` enum('y','n') NOT NULL default 'n',`affiche_adresse1` enum('y','n') NOT NULL default 'n',`en_construction` enum('y','n') NOT NULL default 'n',`notes_moyenne` varchar(255) NOT NULL,`notes_min` varchar(255) NOT NULL,`notes_max` varchar(255) NOT NULL,`responsables` text NOT NULL,`eleves` text NOT NULL,`eleves_resp` text NOT NULL, PRIMARY KEY  (`id`));");
 			if ($result_inter == '')
-			$result .= msj_ok("La table archivage_aids a ÈtÈ crÈÈe !");
+			$result .= msj_ok("La table archivage_aids a √©t√© cr√©√©e !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("La table archivage_aids existe dÈj‡.");
+			$result .= msj_present("La table archivage_aids existe d√©j√†.");
 		}
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_eleves2'"));
 		if ($test == 0) {
 			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_eleves2` (`annee` varchar(50) NOT NULL default '',`ine` varchar(50) NOT NULL,`doublant` enum('-','R') NOT NULL default '-',`regime` varchar(255) NOT NULL, PRIMARY KEY  (`ine`,`annee`));");
 			if ($result_inter == '')
-			$result .= msj_ok("La table archivage_eleves2 a ÈtÈ crÈÈe !");
+			$result .= msj_ok("La table archivage_eleves2 a √©t√© cr√©√©e !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("La table archivage_eleves2 existe dÈj‡.");
+			$result .= msj_present("La table archivage_eleves2 existe d√©j√†.");
 		}
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_eleves'"));
 		if ($test == 0) {
 			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_eleves` (`ine` varchar(255) NOT NULL,`nom` varchar(255) NOT NULL default '',`prenom` varchar(255) NOT NULL default '',`sexe` char(1) NOT NULL,`naissance` date NOT NULL default '0000-00-00', PRIMARY KEY  (`ine`),  KEY `nom` (`nom`));");
 			if ($result_inter == '')
-			$result .= msj_ok("La table archivage_eleves a ÈtÈ crÈÈe !");
+			$result .= msj_ok("La table archivage_eleves a √©t√© cr√©√©e !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("La table archivage_eleves existe dÈj‡.");
+			$result .= msj_present("La table archivage_eleves existe d√©j√†.");
 		}
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_disciplines'"));
 		if ($test == 0) {
 			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_disciplines` (`id` int(11) NOT NULL auto_increment,`annee` varchar(200) NOT NULL,`INE` varchar(255) NOT NULL,`classe` varchar(255) NOT NULL,`num_periode` tinyint(4) NOT NULL,`nom_periode` varchar(255) NOT NULL,`special` varchar(255) NOT NULL,`matiere` varchar(255) NOT NULL,`prof` varchar(255) NOT NULL,`note` varchar(255) NOT NULL,`moymin` varchar(255) NOT NULL,`moymax` varchar(255) NOT NULL,`moyclasse` varchar(255) NOT NULL,`rang` tinyint(4) NOT NULL,`appreciation` text NOT NULL,`nb_absences` int(11) NOT NULL,`non_justifie` int(11) NOT NULL,`nb_retards` int(11) NOT NULL, PRIMARY KEY  (`id`));");
 			if ($result_inter == '')
-			$result .= msj_ok("La table archivage_disciplines a ÈtÈ crÈÈe !");
+			$result .= msj_ok("La table archivage_disciplines a √©t√© cr√©√©e !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("La table archivage_disciplines existe dÈj‡.");
+			$result .= msj_present("La table archivage_disciplines existe d√©j√†.");
 		}
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_appreciations_aid'"));
 		if ($test == 0) {
 			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_appreciations_aid` (`id_eleve` varchar(255) NOT NULL,`annee` varchar(200) NOT NULL,`classe` varchar(255) NOT NULL,`id_aid` int(11) NOT NULL,`periode` int(11) NOT NULL default '0',`appreciation` text NOT NULL,`note_eleve` varchar(50) NOT NULL,`note_moyenne_classe` varchar(255) NOT NULL,`note_min_classe` varchar(255) NOT NULL,`note_max_classe` varchar(255) NOT NULL,PRIMARY KEY  (`id_eleve`,`id_aid`,`periode`));");
 			if ($result_inter == '')
-			$result .= msj_ok("La table archivage_appreciations_aid a ÈtÈ crÈÈe !");
+			$result .= msj_ok("La table archivage_appreciations_aid a √©t√© cr√©√©e !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("La table archivage_appreciations_aid existe dÈj‡.");
+			$result .= msj_present("La table archivage_appreciations_aid existe d√©j√†.");
 		}
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_aid_eleve'"));
 		if ($test == 0) {
 			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_aid_eleve` (`id_aid` int(11) NOT NULL default '0',`id_eleve` varchar(255) NOT NULL,`eleve_resp` char(1) NOT NULL default 'n',PRIMARY KEY  (`id_aid`,`id_eleve`));");
 			if ($result_inter == '')
-			$result .= msj_ok("La table archivage_aid_eleve a ÈtÈ crÈÈe !");
+			$result .= msj_ok("La table archivage_aid_eleve a √©t√© cr√©√©e !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("La table archivage_aid_eleve existe dÈj‡.");
+			$result .= msj_present("La table archivage_aid_eleve existe d√©j√†.");
 		}
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_types_aid'"));
 		if ($test == 0) {
 			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_types_aid` (`id` int(11) NOT NULL auto_increment,`annee` varchar(200) NOT NULL default '',`nom` varchar(100) NOT NULL default '',`nom_complet` varchar(100) NOT NULL default '',`note_sur` int(11) NOT NULL default '0',`type_note` varchar(5) NOT NULL default '', `display_bulletin` char(1) NOT NULL default 'y', PRIMARY KEY  (`id`));");
 			if ($result_inter == '')
-			$result .= msj_ok("La table archivage_types_aid a ÈtÈ crÈÈe !");
+			$result .= msj_ok("La table archivage_types_aid a √©t√© cr√©√©e !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_present("La table archivage_types_aid existe dÈj‡.");
+			$result .= msj_present("La table archivage_types_aid existe d√©j√†.");
 		}
 
 		// ================ modif jjocal ===============
-		$result .= "<br />&nbsp;->Ajout (si besoin) du paramËtre 'use_ent' ‡ la table 'setting'<br/>";
+		$result .= "<br />&nbsp;->Ajout (si besoin) du param√®tre 'use_ent' √† la table 'setting'<br/>";
 		$req_test = mysql_query("SELECT value FROM setting WHERE name = 'use_ent'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
@@ -1684,61 +1684,61 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le paramËtre existe dÈj‡');
+			$result .= msj_present('Le param√®tre existe d√©j√†');
 		}
 
 		// Modification Delineau
 		// lorsque le trunk sera officiellement en 1.5.1, on supprimera ces lignes
-		$result .= "<br />&nbsp;->Mise ‡ jour des tables d'archivage.<br />";
+		$result .= "<br />&nbsp;->Mise √† jour des tables d'archivage.<br />";
 		$result_inter = traite_requete("ALTER TABLE `archivage_aids` CHANGE `annee` `annee` VARCHAR( 200 ) NOT NULL");
 		if ($result_inter == '')
-		$result .= msj_ok("Le champ annee de la table archivage_aids a ÈtÈ modifiÈ !");
+		$result .= msj_ok("Le champ annee de la table archivage_aids a √©t√© modifi√© !");
 		else
 		$result .= $result_inter."<br />";
 		$result_inter = traite_requete("ALTER TABLE `archivage_appreciations_aid` CHANGE `annee` `annee` VARCHAR( 200 ) NOT NULL");
 		if ($result_inter == '')
-		$result .= msj_ok("Le champ annee de la table archivage_appreciations_aid a ÈtÈ modifiÈ !");
+		$result .= msj_ok("Le champ annee de la table archivage_appreciations_aid a √©t√© modifi√© !");
 		else
 		$result .= $result_inter."<br />";
 		$result_inter = traite_requete("ALTER TABLE `archivage_disciplines` CHANGE `annee` `annee` VARCHAR( 200 ) NOT NULL");
 		if ($result_inter == '')
-		$result .= msj_ok("Le champ annee de la table archivage_disciplines a ÈtÈ modifiÈ !");
+		$result .= msj_ok("Le champ annee de la table archivage_disciplines a √©t√© modifi√© !");
 		else
 		$result .= $result_inter."<br />";
 		$result_inter = traite_requete("ALTER TABLE `archivage_eleves2` CHANGE `annee` `annee` VARCHAR( 50 ) NOT NULL");
 		if ($result_inter == '')
-		$result .= msj_ok("Le champ annee de la table archivage_eleves2 a ÈtÈ modifiÈ !");
+		$result .= msj_ok("Le champ annee de la table archivage_eleves2 a √©t√© modifi√© !");
 		else
 		$result .= $result_inter."<br />";
 		$result_inter = traite_requete("ALTER TABLE `archivage_types_aid` CHANGE `annee` `annee` VARCHAR( 200 ) NOT NULL");
 		if ($result_inter == '')
-		$result .= msj_ok("Le champ annee de la table archivage_types_aid a ÈtÈ modifiÈ !");
+		$result .= msj_ok("Le champ annee de la table archivage_types_aid a √©t√© modifi√© !");
 		else
 		$result .= $result_inter."<br />";
 		$result_inter = traite_requete("ALTER TABLE `archivage_aid_eleve` CHANGE `id_aid` `id_aid` INT( 11 ) NOT NULL DEFAULT '0'");
 		if ($result_inter == '')
-		$result .= msj_ok("Le champ id_aid de la table archivage_aid_eleve a ÈtÈ modifiÈ !");
+		$result .= msj_ok("Le champ id_aid de la table archivage_aid_eleve a √©t√© modifi√© !");
 		else
 		$result .= $result_inter."<br />";
-		// Fin des lignes ‡ supprimer quand la version stable sera sortie
+		// Fin des lignes √† supprimer quand la version stable sera sortie
 
 
 		//==========================================================
 		// Modification Delineau
-		$result .= "<br />&nbsp;->Tentative de crÈation de la table j_aid_utilisateurs_gest.<br />";
+		$result .= "<br />&nbsp;->Tentative de cr√©ation de la table j_aid_utilisateurs_gest.<br />";
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'j_aid_utilisateurs_gest'"));
 		if ($test == 0) {
 			$result_inter = traite_requete("CREATE TABLE j_aid_utilisateurs_gest (id_aid varchar(100) NOT NULL default '', id_utilisateur varchar(50) NOT NULL default '', indice_aid int(11) NOT NULL default '0', PRIMARY KEY  (id_aid,id_utilisateur))");
 			if ($result_inter == '')
-			$result .= msj_ok("La table j_aid_utilisateurs_gest a ÈtÈ crÈÈe !");
+			$result .= msj_ok("La table j_aid_utilisateurs_gest a √©t√© cr√©√©e !");
 			else
 			$result .= $result_inter."<br />";
 		} else {
-  		$result .= msj_present("La table j_aid_utilisateurs_gest existe dÈj‡.");
+  		$result .= msj_present("La table j_aid_utilisateurs_gest existe d√©j√†.");
 		}
 
 		//==========================================================
-		$result .= "<br />&nbsp;->Ajout du champ 'affiche_ine' ‡ la table 'model_bulletin'<br />";
+		$result .= "<br />&nbsp;->Ajout du champ 'affiche_ine' √† la table 'model_bulletin'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM model_bulletin LIKE 'affiche_ine'"));
 		if ($test1 == 0) {
 			$query3 = mysql_query("ALTER TABLE model_bulletin ADD affiche_ine TINYINT NOT NULL;");
@@ -1748,13 +1748,13 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 		//==========================================================
 
 
 		//==========================================================
-		$result .= "<br />&nbsp;->ContrÙle/Mise ‡ jour du dispositif Notanet/Fiches Brevet<br />";
+		$result .= "<br />&nbsp;->Contr√¥le/Mise √† jour du dispositif Notanet/Fiches Brevet<br />";
 		$temoin_notanet_err=0;
 
 		$sql="CREATE TABLE IF NOT EXISTS notanet (
@@ -1769,7 +1769,7 @@ id_classe smallint(6) NOT NULL default '0'
 );";
 		$result_inter = traite_requete($sql);
 		if ($result_inter != '') {
-			$result .= "Erreur sur la crÈation de la table 'notanet': ".$result_inter."<br />";
+			$result .= "Erreur sur la cr√©ation de la table 'notanet': ".$result_inter."<br />";
 			$temoin_notanet_err++;
 		}
 
@@ -1805,7 +1805,7 @@ id_classe smallint(6) NOT NULL default '0'
 );";
 		$result_inter = traite_requete($sql);
 		if ($result_inter != '') {
-			$result .= "Erreur sur la crÈation de la table 'notanet': ".$result_inter."<br />";
+			$result .= "Erreur sur la cr√©ation de la table 'notanet': ".$result_inter."<br />";
 			$temoin_notanet_err++;
 		}
 
@@ -1819,7 +1819,7 @@ PRIMARY KEY  (id)
 );";
 		$result_inter = traite_requete($sql);
 		if ($result_inter != '') {
-			$result .= "Erreur sur la crÈation de la table 'notanet_app': ".$result_inter."<br />";
+			$result .= "Erreur sur la cr√©ation de la table 'notanet_app': ".$result_inter."<br />";
 			$temoin_notanet_err++;
 		}
 
@@ -1834,14 +1834,14 @@ PRIMARY KEY  (id)
 );";
 		$result_inter = traite_requete($sql);
 		if ($result_inter != '') {
-			$result .= "Erreur sur la crÈation de la table 'notanet_corresp': ".$result_inter."<br />";
+			$result .= "Erreur sur la cr√©ation de la table 'notanet_corresp': ".$result_inter."<br />";
 			$temoin_notanet_err++;
 		}
 
 		$sql="SHOW COLUMNS FROM notanet_corresp LIKE 'type_brevet';";
 		$test1 = mysql_num_rows(mysql_query($sql));
 		if($test1 == 0) {
-			$result .= "<br />Ajout du champ 'type_brevet' ‡ la table 'notanet_corresp': ";
+			$result .= "<br />Ajout du champ 'type_brevet' √† la table 'notanet_corresp': ";
 			$query3 = mysql_query("ALTER TABLE notanet_corresp ADD type_brevet TINYINT NOT NULL AFTER id;");
 			if ($query3) {
 				$result .= msj_ok();
@@ -1854,7 +1854,7 @@ PRIMARY KEY  (id)
 		$sql="SHOW COLUMNS FROM notanet_corresp LIKE 'id_mat';";
 		$test1 = mysql_num_rows(mysql_query($sql));
 		if($test1 == 0) {
-			$result .= "<br />Ajout du champ 'id_mat' ‡ la table 'notanet_corresp': ";
+			$result .= "<br />Ajout du champ 'id_mat' √† la table 'notanet_corresp': ";
 			$query3 = mysql_query("ALTER TABLE `notanet_corresp` ADD `id_mat` TINYINT NOT NULL AFTER `type_brevet` ;");
 			if ($query3) {
 				$result .= msj_ok();
@@ -1871,7 +1871,7 @@ PRIMARY KEY  (login)
 );";
 		$result_inter = traite_requete($sql);
 		if ($result_inter != '') {
-			$result .= "Erreur sur la crÈation de la table 'notanet_ele_type': ".$result_inter."<br />";
+			$result .= "Erreur sur la cr√©ation de la table 'notanet_ele_type': ".$result_inter."<br />";
 			$temoin_notanet_err++;
 		}
 
@@ -1882,7 +1882,7 @@ verrouillage CHAR( 1 ) NOT NULL
 );";
 		$result_inter = traite_requete($sql);
 		if ($result_inter != '') {
-			$result .= "Erreur sur la crÈation de la table 'notanet_verrou': ".$result_inter."<br />";
+			$result .= "Erreur sur la cr√©ation de la table 'notanet_verrou': ".$result_inter."<br />";
 			$temoin_notanet_err++;
 		}
 
@@ -1894,7 +1894,7 @@ PRIMARY KEY ( login )
 );";
 		$result_inter = traite_requete($sql);
 		if ($result_inter != '') {
-			$result .= "Erreur sur la crÈation de la table 'notanet_avis': ".$result_inter."<br />";
+			$result .= "Erreur sur la cr√©ation de la table 'notanet_avis': ".$result_inter."<br />";
 			$temoin_notanet_err++;
 		}
 
@@ -1907,12 +1907,12 @@ PRIMARY KEY ( login )
 );";
 		$result_inter = traite_requete($sql);
 		if ($result_inter != '') {
-			$result .= "Erreur sur la crÈation de la table 'notanet_socles': ".$result_inter."<br />";
+			$result .= "Erreur sur la cr√©ation de la table 'notanet_socles': ".$result_inter."<br />";
 			$temoin_notanet_err++;
 		}
 
 
-		$result .= "<br />ContrÙle des valeurs du champ 'b2i' de 'notanet_socles': ";
+		$result .= "<br />Contr√¥le des valeurs du champ 'b2i' de 'notanet_socles': ";
 		$query3 = mysql_query("ALTER TABLE notanet_socles CHANGE b2i b2i ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL;");
 		if ($query3) {
 			$result .= msj_ok();
@@ -1921,7 +1921,7 @@ PRIMARY KEY ( login )
 			$temoin_notanet_err++;
 		}
 
-		$result .= "<br />ContrÙle des valeurs du champ 'a2' de 'notanet_socles': ";
+		$result .= "<br />Contr√¥le des valeurs du champ 'a2' de 'notanet_socles': ";
 		$query3 = mysql_query("ALTER TABLE notanet_socles CHANGE a2 a2 ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL;");
 		if ($query3) {
 			$result .= msj_ok();
@@ -1930,7 +1930,7 @@ PRIMARY KEY ( login )
 			$temoin_notanet_err++;
 		}
 
-		$result .= "<br />ContrÙle des valeurs du champ 'favorable' de 'notanet_avis': ";
+		$result .= "<br />Contr√¥le des valeurs du champ 'favorable' de 'notanet_avis': ";
 		$query3 = mysql_query("ALTER TABLE notanet_avis CHANGE favorable favorable ENUM( 'O', 'N', '' ) NOT NULL;");
 		if ($query3) {
 			$result .= msj_ok();
@@ -1946,13 +1946,13 @@ PRIMARY KEY ( login )
 
 		//==========================================================
 
-		$result .= "<br />ContrÙle de la conversion de la table 'j_eleves_etablissements': ";
+		$result .= "<br />Contr√¥le de la conversion de la table 'j_eleves_etablissements': ";
 
 		$sql="SELECT 1=1 FROM setting WHERE name='conversion_j_eleves_etablissements';";
 		$test_conv=mysql_query($sql);
 		if(mysql_num_rows($test_conv)>0) {
-			$result .= msj_present("DÈj‡ effectuÈe !");
-			//echo "<p>La conversion a dÈj‡ ÈtÈ effectuÈe.</p>\n";
+			$result .= msj_present("D√©j√† effectu√©e !");
+			//echo "<p>La conversion a d√©j√† √©t√© effectu√©e.</p>\n";
 		}
 		else {
 			$cpt_correction_ok=0;
@@ -1982,7 +1982,7 @@ PRIMARY KEY ( login )
 						}
 					}
 					else {
-						// On a une scorie: ÈlËve qui n'est plus dans la table 'eleves'
+						// On a une scorie: √©l√®ve qui n'est plus dans la table 'eleves'
 						$sql="DELETE FROM j_eleves_etablissements WHERE id_eleve='$lig_ee->id_eleve';";
 						$nettoyage=mysql_query($sql);
 						if($nettoyage) {
@@ -1995,9 +1995,9 @@ PRIMARY KEY ( login )
 				}
 			}
 
-			$result .= "<p>RÈsultat des conversions:</p>\n";
+			$result .= "<p>R√©sultat des conversions:</p>\n";
 			$result .= "<table class='boireaus' border='1' summary='Compte-rendu'>\n";
-			$result .= "<tr><th>&nbsp;</th><th>SuccËs</th><th>Echec</th></tr>\n";
+			$result .= "<tr><th>&nbsp;</th><th>Succ√®s</th><th>Echec</th></tr>\n";
 			$result .= "<tr><th>Conversion</th><td>$cpt_correction_ok</td><td>$cpt_correction_err</td></tr>\n";
 			$result .= "<tr><th>Suppression de scories</th><td>$cpt_nettoyage_ok</td><td>$cpt_nettoyage_err</td></tr>\n";
 			$result .= "</table>\n";
@@ -2005,10 +2005,10 @@ PRIMARY KEY ( login )
 			$sql="INSERT INTO setting SET name='conversion_j_eleves_etablissements', value='effectuee';";
 			$res_temoin=mysql_query($sql);
 			if($res_temoin) {
-				$result .= "<p>Mise en place d'un tÈmoin indiquant que la conversion est effectuÈe.</p>\n";
+				$result .= "<p>Mise en place d'un t√©moin indiquant que la conversion est effectu√©e.</p>\n";
 			}
 			else {
-				$result .= "<p>ECHEC de la mise en place d'un tÈmoin indiquant que la conversion est effectuÈe.</p>\n";
+				$result .= "<p>ECHEC de la mise en place d'un t√©moin indiquant que la conversion est effectu√©e.</p>\n";
 			}
 
 
@@ -2016,7 +2016,7 @@ PRIMARY KEY ( login )
 
 
 
-		$result .= "<br />&nbsp;->Ajout du champ 'lieu_naissance' ‡ la table 'eleves'<br />";
+		$result .= "<br />&nbsp;->Ajout du champ 'lieu_naissance' √† la table 'eleves'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'lieu_naissance'"));
 		if ($test1 == 0) {
 			$query3 = mysql_query("ALTER TABLE eleves ADD lieu_naissance VARCHAR( 50 ) NOT NULL AFTER naissance ;");
@@ -2026,12 +2026,12 @@ PRIMARY KEY ( login )
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present('Le champ existe dÈj‡');
+			$result .= msj_present('Le champ existe d√©j√†');
 		}
 
 		$test = sql_query1("SHOW TABLES LIKE 'communes'");
 		if ($test == -1) {
-			$result .= "<br />CrÈation de la table 'communes'. ";
+			$result .= "<br />Cr√©ation de la table 'communes'. ";
 			$sql="CREATE TABLE IF NOT EXISTS communes (
 code_commune_insee VARCHAR( 50 ) NOT NULL ,
 departement VARCHAR( 50 ) NOT NULL ,
@@ -2040,14 +2040,14 @@ PRIMARY KEY ( code_commune_insee )
 );";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
-				$result .= "<br />Erreur sur la crÈation de la table 'communes': ".$result_inter."<br />";
+				$result .= "<br />Erreur sur la cr√©ation de la table 'communes': ".$result_inter."<br />";
 				$temoin_notanet_err++;
 			}
 		}
 
 		$test = sql_query1("SHOW TABLES LIKE 'commentaires_types'");
 		if ($test == -1) {
-			$result .= "<br />CrÈation de la table 'commentaires_types'. ";
+			$result .= "<br />Cr√©ation de la table 'commentaires_types'. ";
 			$sql="CREATE TABLE IF NOT EXISTS commentaires_types (
 id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 commentaire TEXT NOT NULL ,
@@ -2056,7 +2056,7 @@ id_classe INT NOT NULL
 );";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
-				$result .= "<br />Erreur sur la crÈation de la table 'commentaires_types': ".$result_inter."<br />";
+				$result .= "<br />Erreur sur la cr√©ation de la table 'commentaires_types': ".$result_inter."<br />";
 				$temoin_notanet_err++;
 			}
 		}
@@ -2092,7 +2092,7 @@ if(!empty($tab_model[$i])) {
 				//$sql="DROP TABLE modele_bulletin;";
 				//$nettoyage=mysql_query($sql);
 
-				$result .= "<br />CrÈation de latable 'modele_bulletin'<br />";
+				$result .= "<br />Cr√©ation de latable 'modele_bulletin'<br />";
 				$sql="CREATE TABLE IF NOT EXISTS modele_bulletin (
 id_model_bulletin INT( 11 ) NOT NULL ,
 nom VARCHAR( 255 ) NOT NULL ,
@@ -2109,7 +2109,7 @@ valeur VARCHAR( 255 ) NOT NULL
 						//if(isset($tab_model[$i])) {
 						if(!empty($tab_model[$i])) {
 							//echo "<p>\$tab_model[$i]: ";
-							$result .= "Enregistrements d'aprËs \$tab_model[$i] dans la nouvelle table 'modele_bulletin': ";
+							$result .= "Enregistrements d'apr√®s \$tab_model[$i] dans la nouvelle table 'modele_bulletin': ";
 							foreach($tab_model[$i] as $key => $value) {
 								if($cpt>0) {$result .= ", ";}
 
@@ -2133,7 +2133,7 @@ valeur VARCHAR( 255 ) NOT NULL
 			}
 		}
 		else {
-			$result .= "<br />La table 'modele_bulletin' existe dÈj‡.<br />";
+			$result .= "<br />La table 'modele_bulletin' existe d√©j√†.<br />";
 		}
 
 		//==========================================================
@@ -2146,36 +2146,36 @@ valeur VARCHAR( 255 ) NOT NULL
 		if ($test == 0) {
 			$result_inter .= traite_requete("ALTER TABLE `ct_devoirs_entry` ADD `vise` CHAR( 1 ) NOT NULL DEFAULT 'n' AFTER `contenu` ;");
 			if ($result_inter == '') {
-				$result .= msj_ok("Le champ vise a bien ÈtÈ crÈÈ dans la table ct_devoirs_entry !");
+				$result .= msj_ok("Le champ vise a bien √©t√© cr√©√© dans la table ct_devoirs_entry !");
 			} else {
 				$result .= $result_inter."<br />";
 			}
 		} else {
-			$result .= msj_present("Le champ vise dans la table ct_devoirs_entry existe dÈj‡.");
+			$result .= msj_present("Le champ vise dans la table ct_devoirs_entry existe d√©j√†.");
 		}
 
 		$test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM ct_entry LIKE 'vise'"));
 		if ($test == 0) {
 			$result_inter .= traite_requete("ALTER TABLE `ct_entry` ADD `vise` VARCHAR( 1 ) NOT NULL DEFAULT 'n' AFTER `contenu` ;");
 			if ($result_inter == '') {
-				$result .= msj_ok("Le champ vise a bien ÈtÈ crÈÈ dans la table ct_entry !");
+				$result .= msj_ok("Le champ vise a bien √©t√© cr√©√© dans la table ct_entry !");
 			} else {
 				$result .= $result_inter."<br />";
 			}
 		} else {
-			$result .= msj_present("Le champ vise dans la table ct_entry existe dÈj‡.");
+			$result .= msj_present("Le champ vise dans la table ct_entry existe d√©j√†.");
 		}
 
 		$test = mysql_num_rows(mysql_query("SHOW COLUMNS FROM ct_entry LIKE 'visa'"));
 		if ($test == 0) {
 			$result_inter .= traite_requete("ALTER TABLE `ct_entry` ADD `visa` VARCHAR( 1 ) NOT NULL DEFAULT 'n' AFTER `vise` ;");
 			if ($result_inter == '') {
-				$result .= msj_ok("Le champ visa a bien ÈtÈ crÈÈ dans la table ct_entry !");
+				$result .= msj_ok("Le champ visa a bien √©t√© cr√©√© dans la table ct_entry !");
 			} else {
 				$result .= $result_inter."<br />";
 			}
 		} else {
-			$result .= msj_present("Le champ visa dans la table ct_entry existe dÈj‡.");
+			$result .= msj_present("Le champ visa dans la table ct_entry existe d√©j√†.");
 		}
 
 		$req_test=mysql_query("SELECT value FROM setting WHERE name = 'visa_cdt_inter_modif_notices_visees'");
@@ -2183,25 +2183,25 @@ valeur VARCHAR( 255 ) NOT NULL
 		if ($res_test==0){
 			$result_inter = traite_requete("INSERT INTO setting VALUES ('visa_cdt_inter_modif_notices_visees', 'yes');");
 			if ($result_inter == '') {
-				$result.=msj_ok("DÈfinition du paramËtre visa_cdt_inter_modif_notices_visees ‡ 'yes': Ok !");
+				$result.=msj_ok("D√©finition du param√®tre visa_cdt_inter_modif_notices_visees √† 'yes': Ok !");
 			} else {
-				$result.=msj_erreur("DÈfinition du paramËtre visa_cdt_inter_modif_notices_visees ‡ 'yes': Erreur !");
+				$result.=msj_erreur("D√©finition du param√®tre visa_cdt_inter_modif_notices_visees √† 'yes': Erreur !");
 			}
 		} else {
-			$result .= msj_present("Le paramËtre visa_cdt_inter_modif_notices_visees existe dÈj‡ dans la table setting.");
+			$result .= msj_present("Le param√®tre visa_cdt_inter_modif_notices_visees existe d√©j√† dans la table setting.");
 		}
 
 		$req_test=mysql_query("SELECT value FROM setting WHERE name = 'texte_visa_cdt'");
 		$res_test=mysql_num_rows($req_test);
 		if ($res_test==0){
-			$result_inter = traite_requete("INSERT INTO setting VALUES ('texte_visa_cdt', 'Cahier de textes visÈ ce jour <br />Le Principal <br /> M. XXXXX<br />');");
+			$result_inter = traite_requete("INSERT INTO setting VALUES ('texte_visa_cdt', 'Cahier de textes vis√© ce jour <br />Le Principal <br /> M. XXXXX<br />');");
 			if ($result_inter == '') {
-				$result.=msj_ok("DÈfinition du paramËtre texte_visa_cdt : Ok !");
+				$result.=msj_ok("D√©finition du param√®tre texte_visa_cdt : Ok !");
 			} else {
-				$result.=msj_erreur("DÈfinition du paramËtre texte_visa_cdt : Erreur !");
+				$result.=msj_erreur("D√©finition du param√®tre texte_visa_cdt : Erreur !");
 			}
 		} else {
-			$result .= msj_present("Le paramËtre texte_visa_cdt existe dÈj‡ dans la table setting.");
+			$result .= msj_present("Le param√®tre texte_visa_cdt existe d√©j√† dans la table setting.");
 		}
 
 
@@ -2216,7 +2216,7 @@ valeur VARCHAR( 255 ) NOT NULL
 				$result_inter .= traite_requete("ALTER TABLE utilisateurs ADD auth_mode ENUM( 'gepi', 'ldap', 'sso' ) NOT NULL DEFAULT 'gepi';");
 			}
 			if ($result_inter == '') {
-				$result .= msj_ok("Le champ auth_mode a bien ÈtÈ crÈÈ dans la table utilisateurs !");
+				$result .= msj_ok("Le champ auth_mode a bien √©t√© cr√©√© dans la table utilisateurs !");
 				if (getSettingValue("use_sso") == 'yes') {
 					$update = mysql_query("UPDATE utilisateurs SET auth_mode = 'sso'");
 				}
@@ -2224,7 +2224,7 @@ valeur VARCHAR( 255 ) NOT NULL
 				$result .= $result_inter."<br />";
 			}
 		} else {
-			$result .= msj_present("Le champ auth_mode dans la table utilisateurs existe dÈj‡.");
+			$result .= msj_present("Le champ auth_mode dans la table utilisateurs existe d√©j√†.");
 		}
 
 		$req_test=mysql_query("SELECT value FROM setting WHERE name = 'auth_locale'");
@@ -2238,12 +2238,12 @@ valeur VARCHAR( 255 ) NOT NULL
 			}
 			$result_inter = traite_requete("INSERT INTO setting VALUES ('auth_locale', '$valeur_auth_locale');");
 			if ($result_inter == '') {
-				$result.=msj_ok("DÈfinition du paramËtre auth_locale ‡ '$valeur_auth_locale': Ok !");
+				$result.=msj_ok("D√©finition du param√®tre auth_locale √† '$valeur_auth_locale': Ok !");
 			} else {
-				$result.=msj_erreur("DÈfinition du paramËtre auth_locale ‡ '$valeur_auth_locale': Erreur !");
+				$result.=msj_erreur("D√©finition du param√®tre auth_locale √† '$valeur_auth_locale': Erreur !");
 			}
 		} else {
-			$result .= msj_present("Le paramËtre auth_locale existe dÈj‡ dans la table setting.");
+			$result .= msj_present("Le param√®tre auth_locale existe d√©j√† dans la table setting.");
 		}
 
 		$req_test=mysql_query("SELECT value FROM setting WHERE name = 'auth_ldap'");
@@ -2251,12 +2251,12 @@ valeur VARCHAR( 255 ) NOT NULL
 		if ($res_test==0){
 			$result_inter = traite_requete("INSERT INTO setting VALUES ('auth_ldap', 'no');");
 			if ($result_inter == '') {
-				$result.=msj_ok("DÈfinition du paramËtre auth_ldap ‡ 'no': Ok !");
+				$result.=msj_ok("D√©finition du param√®tre auth_ldap √† 'no': Ok !");
 			} else {
-				$result.=msj_erreur("DÈfinition du paramËtre auth_ldap ‡ 'no': Erreur !");
+				$result.=msj_erreur("D√©finition du param√®tre auth_ldap √† 'no': Erreur !");
 			}
 		} else {
-			$result .= msj_present("Le paramËtre auth_ldap existe dÈj‡ dans la table setting.");
+			$result .= msj_present("Le param√®tre auth_ldap existe d√©j√† dans la table setting.");
 		}
 
 		$req_test=mysql_query("SELECT value FROM setting WHERE name = 'auth_sso'");
@@ -2270,12 +2270,12 @@ valeur VARCHAR( 255 ) NOT NULL
 			}
 			$result_inter = traite_requete("INSERT INTO setting VALUES ('auth_sso', '$valeur_auth_sso');");
 			if ($result_inter == '') {
-				$result.=msj_ok("DÈfinition du paramËtre auth_sso ‡ '$valeur_auth_sso': Ok !");
+				$result.=msj_ok("D√©finition du param√®tre auth_sso √† '$valeur_auth_sso': Ok !");
 			} else {
-				$result.=msj_erreur("DÈfinition du paramËtre auth_sso ‡ '$valeur_auth_sso': Erreur !");
+				$result.=msj_erreur("D√©finition du param√®tre auth_sso √† '$valeur_auth_sso': Erreur !");
 			}
 		} else {
-			$result .= msj_present("Le paramËtre auth_sso existe dÈj‡ dans la table setting.");
+			$result .= msj_present("Le param√®tre auth_sso existe d√©j√† dans la table setting.");
 		}
 
 		if (getSettingValue('use_sso') == 'yes') {
@@ -2288,12 +2288,12 @@ valeur VARCHAR( 255 ) NOT NULL
 		if ($res_test==1){
 			$result_inter = traite_requete("DELETE FROM setting WHERE (name = 'use_sso');");
 			if ($result_inter == '') {
-				$result.=msj_ok("Suppression du paramËtre use_sso: Ok !");
+				$result.=msj_ok("Suppression du param√®tre use_sso: Ok !");
 			} else {
-				$result.=msj_erreur("Suppression du paramËtre use_sso: Erreur !");
+				$result.=msj_erreur("Suppression du param√®tre use_sso: Erreur !");
 			}
 		} else {
-			$result .= msj_present("Le paramËtre use_sso est dÈj‡ supprimÈ de la table setting.");
+			$result .= msj_present("Le param√®tre use_sso est d√©j√† supprim√© de la table setting.");
 		}
 
 		$req_test=mysql_query("SELECT value FROM setting WHERE name = 'may_import_user_profile'");
@@ -2301,12 +2301,12 @@ valeur VARCHAR( 255 ) NOT NULL
 		if ($res_test==0){
 			$result_inter = traite_requete("INSERT INTO setting VALUES ('may_import_user_profile', 'no');");
 			if ($result_inter == '') {
-				$result.=msj_ok("DÈfinition du paramËtre may_import_user_profile ‡ 'no': Ok !");
+				$result.=msj_ok("D√©finition du param√®tre may_import_user_profile √† 'no': Ok !");
 			} else {
-				$result.=msj_erreur("DÈfinition du paramËtre may_import_user_profile ‡ 'no': Erreur !");
+				$result.=msj_erreur("D√©finition du param√®tre may_import_user_profile √† 'no': Erreur !");
 			}
 		} else {
-			$result .= msj_present("Le paramËtre may_import_user_profile existe dÈj‡ dans la table setting.");
+			$result .= msj_present("Le param√®tre may_import_user_profile existe d√©j√† dans la table setting.");
 		}
 
 		$req_test=mysql_query("SELECT value FROM setting WHERE name = 'ldap_write_access'");
@@ -2314,18 +2314,18 @@ valeur VARCHAR( 255 ) NOT NULL
 		if ($res_test==0){
 			$result_inter = traite_requete("INSERT INTO setting VALUES ('ldap_write_access', 'no');");
 			if ($result_inter == '') {
-				$result.=msj_ok("DÈfinition du paramËtre ldap_write_access ‡ 'no': Ok !");
+				$result.=msj_ok("D√©finition du param√®tre ldap_write_access √† 'no': Ok !");
 			} else {
-				$result.=msj_erreur("DÈfinition du paramËtre ldap_write_access ‡ 'no': Erreur !");
+				$result.=msj_erreur("D√©finition du param√®tre ldap_write_access √† 'no': Erreur !");
 			}
 		} else {
-			$result .= msj_present("Le paramËtre ldap_write_access existe dÈj‡ dans la table setting.");
+			$result .= msj_present("Le param√®tre ldap_write_access existe d√©j√† dans la table setting.");
 		}
 
 
 		$test = sql_query1("SHOW TABLES LIKE 'commentaires_types_profs'");
 		if ($test == -1) {
-			$result .= "<br />CrÈation de la table 'commentaires_types_profs'. ";
+			$result .= "<br />Cr√©ation de la table 'commentaires_types_profs'. ";
 			$sql="CREATE TABLE IF NOT EXISTS commentaires_types_profs (
 id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 login VARCHAR( 255 ) NOT NULL ,
@@ -2333,7 +2333,7 @@ app TEXT NOT NULL
 );";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
-				$result .= "<br />Erreur sur la crÈation de la table 'commentaires_types_profs': ".$result_inter."<br />";
+				$result .= "<br />Erreur sur la cr√©ation de la table 'commentaires_types_profs': ".$result_inter."<br />";
 			}
 		}
 
@@ -2342,12 +2342,12 @@ app TEXT NOT NULL
 		if ($res_test==0){
 			$result_inter = traite_requete("INSERT INTO setting VALUES ('denomination_professeur', 'professeur');");
 			if ($result_inter == '') {
-				$result.=msj_ok("DÈfinition du paramËtre denomination_professeur ‡ 'professeur': Ok !");
+				$result.=msj_ok("D√©finition du param√®tre denomination_professeur √† 'professeur': Ok !");
 			} else {
-				$result.=msj_erreur("DÈfinition du paramËtre denomination_professeur ‡ 'professeur': Erreur !");
+				$result.=msj_erreur("D√©finition du param√®tre denomination_professeur √† 'professeur': Erreur !");
 			}
 		} else {
-			$result .= msj_present("Le paramËtre denomination_professeur existe dÈj‡ dans la table setting.");
+			$result .= msj_present("Le param√®tre denomination_professeur existe d√©j√† dans la table setting.");
 		}
 
 		$req_test=mysql_query("SELECT value FROM setting WHERE name = 'denomination_professeurs'");
@@ -2355,68 +2355,68 @@ app TEXT NOT NULL
 		if ($res_test==0){
 			$result_inter = traite_requete("INSERT INTO setting VALUES ('denomination_professeurs', 'professeurs');");
 			if ($result_inter == '') {
-				$result.=msj_ok("DÈfinition du paramËtre denomination_professeurs ‡ 'professeurs': Ok !");
+				$result.=msj_ok("D√©finition du param√®tre denomination_professeurs √† 'professeurs': Ok !");
 			} else {
-				$result.=msj_erreur("DÈfinition du paramËtre denomination_professeurs ‡ 'professeurs': Erreur !");
+				$result.=msj_erreur("D√©finition du param√®tre denomination_professeurs √† 'professeurs': Erreur !");
 			}
 		} else {
-			$result .= msj_present("Le paramËtre denomination_professeurs existe dÈj‡ dans la table setting.");
+			$result .= msj_present("Le param√®tre denomination_professeurs existe d√©j√† dans la table setting.");
 		}
 
 		$req_test=mysql_query("SELECT value FROM setting WHERE name = 'denomination_responsable'");
 		$res_test=mysql_num_rows($req_test);
 		if ($res_test==0){
-			$result_inter = traite_requete("INSERT INTO setting VALUES ('denomination_responsable', 'responsable lÈgal');");
+			$result_inter = traite_requete("INSERT INTO setting VALUES ('denomination_responsable', 'responsable l√©gal');");
 			if ($result_inter == '') {
-				$result.=msj_ok("DÈfinition du paramËtre denomination_responsable ‡ 'responsable lÈgal': Ok !");
+				$result.=msj_ok("D√©finition du param√®tre denomination_responsable √† 'responsable l√©gal': Ok !");
 			} else {
-				$result.=msj_erreur("DÈfinition du paramËtre denomination_responsable ‡ 'responsable lÈgal': Erreur !");
+				$result.=msj_erreur("D√©finition du param√®tre denomination_responsable √† 'responsable l√©gal': Erreur !");
 			}
 		} else {
-			$result .= msj_present("Le paramËtre denomination_responsable existe dÈj‡ dans la table setting.");
+			$result .= msj_present("Le param√®tre denomination_responsable existe d√©j√† dans la table setting.");
 		}
 
 		$req_test=mysql_query("SELECT value FROM setting WHERE name = 'denomination_responsables'");
 		$res_test=mysql_num_rows($req_test);
 		if ($res_test==0){
-			$result_inter = traite_requete("INSERT INTO setting VALUES ('denomination_responsables', 'responsables lÈgaux');");
+			$result_inter = traite_requete("INSERT INTO setting VALUES ('denomination_responsables', 'responsables l√©gaux');");
 			if ($result_inter == '') {
-				$result.=msj_ok("DÈfinition du paramËtre denomination_responsables ‡ 'responsables lÈgaux': Ok !");
+				$result.=msj_ok("D√©finition du param√®tre denomination_responsables √† 'responsables l√©gaux': Ok !");
 			} else {
-				$result.=msj_erreur("DÈfinition du paramËtre denomination_responsables ‡ 'responsables lÈgaux': Erreur !");
+				$result.=msj_erreur("D√©finition du param√®tre denomination_responsables √† 'responsables l√©gaux': Erreur !");
 			}
 		} else {
-			$result .= msj_present("Le paramËtre denomination_responsables existe dÈj‡ dans la table setting.");
+			$result .= msj_present("Le param√®tre denomination_responsables existe d√©j√† dans la table setting.");
 		}
 
 		$req_test=mysql_query("SELECT value FROM setting WHERE name = 'denomination_eleve'");
 		$res_test=mysql_num_rows($req_test);
 		if ($res_test==0){
-			$result_inter = traite_requete("INSERT INTO setting VALUES ('denomination_eleve', 'ÈlËve');");
+			$result_inter = traite_requete("INSERT INTO setting VALUES ('denomination_eleve', '√©l√®ve');");
 			if ($result_inter == '') {
-				$result.=msj_ok("DÈfinition du paramËtre denomination_eleve ‡ 'ÈlËve': Ok !");
+				$result.=msj_ok("D√©finition du param√®tre denomination_eleve √† '√©l√®ve': Ok !");
 			} else {
-				$result.=msj_erreur("DÈfinition du paramËtre denomination_eleve ‡ 'ÈlËve': Erreur !");
+				$result.=msj_erreur("D√©finition du param√®tre denomination_eleve √† '√©l√®ve': Erreur !");
 			}
 		} else {
-			$result .= msj_present("Le paramËtre denomination_eleve existe dÈj‡ dans la table setting.");
+			$result .= msj_present("Le param√®tre denomination_eleve existe d√©j√† dans la table setting.");
 		}
 
 		$req_test=mysql_query("SELECT value FROM setting WHERE name = 'denomination_eleves'");
 		$res_test=mysql_num_rows($req_test);
 		if ($res_test==0){
-			$result_inter = traite_requete("INSERT INTO setting VALUES ('denomination_eleves', 'ÈlËves');");
+			$result_inter = traite_requete("INSERT INTO setting VALUES ('denomination_eleves', '√©l√®ves');");
 			if ($result_inter == '') {
-				$result.=msj_ok("DÈfinition du paramËtre denomination_eleves ‡ 'ÈlËves': Ok !");
+				$result.=msj_ok("D√©finition du param√®tre denomination_eleves √† '√©l√®ves': Ok !");
 			} else {
-				$result.=msj_erreur("DÈfinition du paramËtre denomination_eleves ‡ 'ÈlËves': Erreur !");
+				$result.=msj_erreur("D√©finition du param√®tre denomination_eleves √† '√©l√®ves': Erreur !");
 			}
 		} else {
-			$result .= msj_present("Le paramËtre denomination_eleves existe dÈj‡ dans la table setting.");
+			$result .= msj_present("Le param√®tre denomination_eleves existe d√©j√† dans la table setting.");
 		}
 
 		// Ajouts d'index
-		$result .= "&nbsp;->Ajout de l'index 'statut' ‡ la table utilisateurs<br />";
+		$result .= "&nbsp;->Ajout de l'index 'statut' √† la table utilisateurs<br />";
 		//$req_test = mysql_query("SHOW INDEX FROM utilisateurs WHERE Key_name = 'statut'");
 		//$req_res = mysql_num_rows($req_test);
 		$req_res=0;
@@ -2434,10 +2434,10 @@ app TEXT NOT NULL
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present("L'index existe dÈj‡.");
+			$result .= msj_present("L'index existe d√©j√†.");
 		}
 
-		$result .= "&nbsp;->Ajout de l'index 'etat' ‡ la table utilisateurs<br />";
+		$result .= "&nbsp;->Ajout de l'index 'etat' √† la table utilisateurs<br />";
 		//$req_test = mysql_query("SHOW INDEX FROM utilisateurs WHERE Key_name = 'etat'");
 		//$req_res = mysql_num_rows($req_test);
 		$req_res=0;
@@ -2455,11 +2455,11 @@ app TEXT NOT NULL
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present("L'index existe dÈj‡.");
+			$result .= msj_present("L'index existe d√©j√†.");
 		}
 
 
-		$result .= "&nbsp;->Ajout de l'index 'login' ‡ la table resp_pers<br />";
+		$result .= "&nbsp;->Ajout de l'index 'login' √† la table resp_pers<br />";
 		//$req_test = mysql_query("SHOW INDEX FROM resp_pers WHERE Key_name = 'login'");
 		//$req_res = mysql_num_rows($req_test);
 		$req_res=0;
@@ -2477,10 +2477,10 @@ app TEXT NOT NULL
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present("L'index existe dÈj‡.");
+			$result .= msj_present("L'index existe d√©j√†.");
 		}
 
-		$result .= "&nbsp;->Ajout de l'index 'adr_id' ‡ la table resp_pers<br />";
+		$result .= "&nbsp;->Ajout de l'index 'adr_id' √† la table resp_pers<br />";
 		//$req_test = mysql_query("SHOW INDEX FROM resp_pers WHERE Key_name = 'adr_id'");
 		//$req_res = mysql_num_rows($req_test);
 		$req_res=0;
@@ -2498,11 +2498,11 @@ app TEXT NOT NULL
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present("L'index existe dÈj‡.");
+			$result .= msj_present("L'index existe d√©j√†.");
 		}
 
 
-		$result .= "&nbsp;->Ajout de l'index 'pers_id' ‡ la table responsables2<br />";
+		$result .= "&nbsp;->Ajout de l'index 'pers_id' √† la table responsables2<br />";
 		//$req_test = mysql_query("SHOW INDEX FROM responsables2 WHERE Key_name = 'pers_id'");
 		//$req_res = mysql_num_rows($req_test);
 		$req_res=0;
@@ -2520,10 +2520,10 @@ app TEXT NOT NULL
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present("L'index existe dÈj‡.");
+			$result .= msj_present("L'index existe d√©j√†.");
 		}
 
-		$result .= "&nbsp;->Ajout de l'index 'ele_id' ‡ la table responsables2<br />";
+		$result .= "&nbsp;->Ajout de l'index 'ele_id' √† la table responsables2<br />";
 		//$req_test = mysql_query("SHOW INDEX FROM responsables2 WHERE Key_name = 'ele_id'");
 		//$req_res = mysql_num_rows($req_test);
 		$req_res=0;
@@ -2541,10 +2541,10 @@ app TEXT NOT NULL
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present("L'index existe dÈj‡.");
+			$result .= msj_present("L'index existe d√©j√†.");
 		}
 
-		$result .= "&nbsp;->Ajout de l'index 'resp_legal' ‡ la table responsables2<br />";
+		$result .= "&nbsp;->Ajout de l'index 'resp_legal' √† la table responsables2<br />";
 		//$req_test = mysql_query("SHOW INDEX FROM responsables2 WHERE Key_name = 'resp_legal'");
 		//$req_res = mysql_num_rows($req_test);
 		$req_res=0;
@@ -2562,10 +2562,10 @@ app TEXT NOT NULL
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present("L'index existe dÈj‡.");
+			$result .= msj_present("L'index existe d√©j√†.");
 		}
 
-		$result .= "&nbsp;->Ajout de l'index 'ele_id' ‡ la table eleves<br />";
+		$result .= "&nbsp;->Ajout de l'index 'ele_id' √† la table eleves<br />";
 		//$req_test = mysql_query("SHOW INDEX FROM eleves WHERE Key_name = 'ele_id'");
 		//$req_res = mysql_num_rows($req_test);
 		$req_res=0;
@@ -2583,10 +2583,10 @@ app TEXT NOT NULL
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present("L'index existe dÈj‡.");
+			$result .= msj_present("L'index existe d√©j√†.");
 		}
 
-		$result .= "&nbsp;->Ajout de l'index 'id_classe' ‡ la table j_eleves_classes<br />";
+		$result .= "&nbsp;->Ajout de l'index 'id_classe' √† la table j_eleves_classes<br />";
 		//$req_test = mysql_query("SHOW INDEX FROM j_eleves_classes WHERE Key_name = 'id_classe'");
 		//$req_res = mysql_num_rows($req_test);
 		$req_res=0;
@@ -2604,7 +2604,7 @@ app TEXT NOT NULL
 				$result .= msj_erreur();
 			}
 		} else {
-			$result .= msj_present("L'index existe dÈj‡.");
+			$result .= msj_present("L'index existe d√©j√†.");
 		}
 
 ?>

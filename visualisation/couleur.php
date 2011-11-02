@@ -40,8 +40,8 @@ if ($resultat_session == 'c') {
 
 
 // Ajouter une gestion des droits par la suite
-// dans la table MySQL appropriée et décommenter ce passage.
-// INSERT INTO droits VALUES ('/visualisation/couleur.php', 'F', 'V', 'V', 'V', 'F', 'F', 'Choix d une couleur pour le graphique des résultats scolaires', '1');
+// dans la table MySQL appropriÃ©e et dÃ©commenter ce passage.
+// INSERT INTO droits VALUES ('/visualisation/couleur.php', 'F', 'V', 'V', 'V', 'F', 'F', 'Choix d une couleur pour le graphique des rÃ©sultats scolaires', '1');
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -62,15 +62,15 @@ if(isset($_POST['validation'])) {
 
 	$msg="";
 
-	// On insère la saisie...
+	// On insÃ¨re la saisie...
 	$x=isset($_POST['x']) ? $_POST['x'] : 1;
 	$y=isset($_POST['y']) ? $_POST['y'] : 1;
 
 	$img=imagecreatefrompng("$image");
 
 	if (!$img) {
-		//echo "<p>L'image source n'a pas pu être rouverte...</p>";
-		$msg.="L'image source n'a pas pu être rouverte...<br />";
+		//echo "<p>L'image source n'a pas pu Ãªtre rouverte...</p>";
+		$msg.="L'image source n'a pas pu Ãªtre rouverte...<br />";
 	}
 	else {
 		$couleur=imagecolorat($img, $x, $y);
@@ -83,7 +83,7 @@ if(isset($_POST['validation'])) {
 			//echo "$msg";
 		}
 		else{
-			$msg.="Enregistrement de la couleur pour ".$objet." effectué.";
+			$msg.="Enregistrement de la couleur pour ".$objet." effectuÃ©.";
 		}
 	}
 
@@ -106,7 +106,7 @@ $titre_page = "Choix d'une couleur";
 <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache" />
 <META HTTP-EQUIV="Expires" CONTENT="0" />
 <meta HTTP-EQUIV="refresh" content="<?php echo getSettingValue("sessionMaxLength")*60; ?>; URL=<?php echo($gepiPath); ?>/logout.php?auto=3&amp;debut_session=<?php echo urlencode($_SESSION['start']);?>&amp;sessionid=<?php echo session_id();?>" />
-<title><?php echo getSettingValue("gepiSchoolName"); ?> : base de données élèves</title>
+<title><?php echo getSettingValue("gepiSchoolName"); ?> : base de donnÃ©es Ã©lÃ¨ves</title>
 <link rel="stylesheet" type="text/css" href="<?php echo($gepiPath); ?>/style.css" />
 
 <script type="text/javascript" language="javascript">
@@ -121,7 +121,7 @@ change = 'yes';
 </script>
 
 <!--
-Pour affichage d'un fixe en bas à droite (ne marche pas avec IE 6)
+Pour affichage d'un fixe en bas Ã  droite (ne marche pas avec IE 6)
 -->
 <style type="text/css">
 @media screen  {
@@ -152,10 +152,10 @@ if (!isset($titre_page)) $bgcouleur = "bgcolor= \"#FFFFFF\""; else $bgcouleur = 
 
 
 if(isset($style_screen_ajout)){
-	// Styles paramétrables depuis l'interface:
+	// Styles paramÃ©trables depuis l'interface:
 	if($style_screen_ajout=='y'){
-		// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
-		// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+		// La variable $style_screen_ajout se paramÃ¨tre dans le /lib/global.inc
+		// C'est une sÃ©curitÃ©... il suffit de passer la variable Ã  'n' pour dÃ©sactiver ce fichier CSS et Ã©ventuellement rÃ©tablir un accÃ¨s aprÃ¨s avoir imposÃ© une couleur noire sur noire
 		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
 	}
 }
@@ -182,7 +182,7 @@ function show_message_deconnexion(){
     var secs=now.getSeconds();
 
     var heure = hrs + " H " + mins + "' " + secs + "'' ";
-    alert("A "+ heure + ", il vous reste moins de 3 minutes avant d'être déconnecté ! \nPour éviter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !");
+    alert("A "+ heure + ", il vous reste moins de 3 minutes avant d'Ãªtre dÃ©connectÃ© ! \nPour Ã©viter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !");
   }
   setTimeout("show_message_deconnexion()",seconds_int_betweenn_2_msg*1000)
 }
@@ -265,7 +265,7 @@ function show_message_deconnexion(){
             //echo("Professeur de : " . $nom_complet_matiere);
             echo("Professeur de : " . htmlentities($nom_complet_matiere));
          } else {
-            echo "Invité";
+            echo "InvitÃ©";
          }
       }
       $temp = '';
@@ -275,14 +275,14 @@ function show_message_deconnexion(){
     if ($gepiBetaVersion != '') $beta = "-beta".$gepiBetaVersion;
       echo("<br />\nGEPI ".$gepiVersion.$rc.$beta." - ");
       ?>
-      <a href="<?php echo($gepiPath); ?>/accueil.php">Accueil</a> - <a href="<?php echo($gepiPath); ?>/utilisateurs/mon_compte.php">Gérer mon compte</a> - <a href="<?php echo($gepiPath); ?>/logout.php?auto=0">Déconnexion</a>
+      <a href="<?php echo($gepiPath); ?>/accueil.php">Accueil</a> - <a href="<?php echo($gepiPath); ?>/utilisateurs/mon_compte.php">GÃ©rer mon compte</a> - <a href="<?php echo($gepiPath); ?>/logout.php?auto=0">DÃ©connexion</a>
    </div>
    <div class="separation">
    </div>
 
 
 <h3>Choix d'une couleur</h3>
-<p>Cliquez dans l'image sur la couleur souhaitée pour <?php echo $objet;?>.</p>
+<p>Cliquez dans l'image sur la couleur souhaitÃ©e pour <?php echo $objet;?>.</p>
 </div>
 
 <div style="position:absolute;top:<?php $pos=$dimensions[1]+10;echo "$pos";?>px;left:0">

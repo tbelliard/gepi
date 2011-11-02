@@ -47,17 +47,17 @@ include("../lib/initialisation_annee.inc.php");
 $liste_tables_del = $liste_tables_del_etape_professeurs;
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des matières";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des matiÃ¨res";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-// On vérifie si l'extension d_base est active
+// On vÃ©rifie si l'extension d_base est active
 //verif_active_dbase();
 
 ?>
 <p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
-echo "<center><h3 class='gepi'>Quatrième phase d'initialisation<br />Importation des professeurs</h3></center>";
+echo "<center><h3 class='gepi'>QuatriÃ¨me phase d'initialisation<br />Importation des professeurs</h3></center>";
 
 if (!isset($step1)) {
 	$j=0;
@@ -77,15 +77,15 @@ if (!isset($step1)) {
 
 	if ($flag != 0){
 		echo "<p><b>ATTENTION ...</b><br />";
-		echo "Des données concernant les professeurs sont actuellement présentes dans la base GEPI<br /></p>";
-		echo "<p>Si vous poursuivez la procédure les données telles que notes, appréciations, ... seront effacées.</p>";
-		echo "<ul><li>Seules la table contenant les utilisateurs (professeurs, admin, ...) et la table mettant en relation les matières et les professeurs seront conservées.</li>";
-		echo "<li>Les professeurs de l'année passée présents dans la base GEPI et non présents dans la base CSV de cette année ne sont pas effacés de la base GEPI mais simplement déclarés \"inactifs\".</li>";
+		echo "Des donnÃ©es concernant les professeurs sont actuellement prÃ©sentes dans la base GEPI<br /></p>";
+		echo "<p>Si vous poursuivez la procÃ©dure les donnÃ©es telles que notes, apprÃ©ciations, ... seront effacÃ©es.</p>";
+		echo "<ul><li>Seules la table contenant les utilisateurs (professeurs, admin, ...) et la table mettant en relation les matiÃ¨res et les professeurs seront conservÃ©es.</li>";
+		echo "<li>Les professeurs de l'annÃ©e passÃ©e prÃ©sents dans la base GEPI et non prÃ©sents dans la base CSV de cette annÃ©e ne sont pas effacÃ©s de la base GEPI mais simplement dÃ©clarÃ©s \"inactifs\".</li>";
 		echo "</ul>";
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>";
 		echo add_token_field();
 		echo "<input type=hidden name='step1' value='y' />";
-		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />";
+		echo "<input type='submit' name='confirm' value='Poursuivre la procÃ©dure' />";
 		echo "</form>";
 		echo "</div>";
 		echo "</body>";
@@ -109,14 +109,14 @@ if (!isset($is_posted)) {
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method=post>";
 	echo add_token_field();
-	echo "<p>Importation du fichier <b>F_wind.csv</b> contenant les données relatives aux professeurs.";
-	echo "<p>Veuillez préciser le nom complet du fichier <b>F_wind.csv</b>.";
+	echo "<p>Importation du fichier <b>F_wind.csv</b> contenant les donnÃ©es relatives aux professeurs.";
+	echo "<p>Veuillez prÃ©ciser le nom complet du fichier <b>F_wind.csv</b>.";
 	echo "<input type=hidden name='is_posted' value='yes' />";
 	echo "<input type=hidden name='step1' value='y' />";
 	echo "<p><input type='file' size='80' name='dbf_file' />";
 
 
-	echo "<br /><br /><p>Quelle formule appliquer pour la génération du login ?</p>\n";
+	echo "<br /><br /><p>Quelle formule appliquer pour la gÃ©nÃ©ration du login ?</p>\n";
 
 	if(getSettingValue("use_ent")!='y') {
 		$default_login_gen_type=getSettingValue('login_gen_type');
@@ -127,7 +127,7 @@ if (!isset($is_posted)) {
 	}
 
 	if(getSettingValue('auth_sso')=="lcs") {
-		echo "<span style='color:red'>Votre Gepi utilise une authentification LCS; Le format de login ci-dessous ne sera pas pris en compte. Les comptes doivent avoir été importés dans l'annuaire LDAP du LCS avant d'effectuer l'import dans GEPI.</span><br />\n";
+		echo "<span style='color:red'>Votre Gepi utilise une authentification LCS; Le format de login ci-dessous ne sera pas pris en compte. Les comptes doivent avoir Ã©tÃ© importÃ©s dans l'annuaire LDAP du LCS avant d'effectuer l'import dans GEPI.</span><br />\n";
 	}
 
 	echo "<input type='radio' name='login_gen_type' id='login_gen_type_name' value='name' ";
@@ -141,21 +141,21 @@ if (!isset($is_posted)) {
 	if($default_login_gen_type=='name8') {
 		echo "checked ";
 	}
-	echo "/> <label for='login_gen_type_name8'  style='cursor: pointer;'>nom (<em>tronqué à 8 caractères</em>)</label>\n";
+	echo "/> <label for='login_gen_type_name8'  style='cursor: pointer;'>nom (<em>tronquÃ© Ã  8 caractÃ¨res</em>)</label>\n";
 	echo "<br />";
 
 	echo "<input type='radio' name='login_gen_type' id='login_gen_type_fname8' value='fname8' ";
 	if($default_login_gen_type=='fname8') {
 		echo "checked ";
 	}
-	echo "/> <label for='login_gen_type_fname8'  style='cursor: pointer;'>pnom (<em>tronqué à 8 caractères</em>)</label>\n";
+	echo "/> <label for='login_gen_type_fname8'  style='cursor: pointer;'>pnom (<em>tronquÃ© Ã  8 caractÃ¨res</em>)</label>\n";
 	echo "<br />\n";
 
 	echo "<input type='radio' name='login_gen_type' id='login_gen_type_fname19' value='fname19' ";
 	if($default_login_gen_type=='fname19') {
 		echo "checked ";
 	}
-	echo "/> <label for='login_gen_type_fname19'  style='cursor: pointer;'>pnom (<em>tronqué à 19 caractères</em>)</label>\n";
+	echo "/> <label for='login_gen_type_fname19'  style='cursor: pointer;'>pnom (<em>tronquÃ© Ã  19 caractÃ¨res</em>)</label>\n";
 	echo "<br />\n";
 
 	echo "<input type='radio' name='login_gen_type' id='login_gen_type_firstdotname' value='firstdotname' ";
@@ -169,21 +169,21 @@ if (!isset($is_posted)) {
 	if($default_login_gen_type=='firstdotname19') {
 		echo "checked ";
 	}
-	echo "/> <label for='login_gen_type_firstdotname19'  style='cursor: pointer;'>prenom.nom (<em>tronqué à 19 caractères</em>)</label>\n";
+	echo "/> <label for='login_gen_type_firstdotname19'  style='cursor: pointer;'>prenom.nom (<em>tronquÃ© Ã  19 caractÃ¨res</em>)</label>\n";
 	echo "<br />\n";
 
 	echo "<input type='radio' name='login_gen_type' id='login_gen_type_namef8' value='namef8' ";
 	if($default_login_gen_type=='namef8') {
 		echo "checked ";
 	}
-	echo "/> <label for='login_gen_type_namef8'  style='cursor: pointer;'>nomp (<em>tronqué à 8 caractères</em>)</label>\n";
+	echo "/> <label for='login_gen_type_namef8'  style='cursor: pointer;'>nomp (<em>tronquÃ© Ã  8 caractÃ¨res</em>)</label>\n";
 	echo "<br />\n";
 
 	echo "<input type='radio' name='login_gen_type' id='login_gen_type_lcs' value='lcs' ";
 	if($default_login_gen_type=='lcs') {
 		echo "checked ";
 	}
-	echo "/> <label for='login_gen_type_lcs'  style='cursor: pointer;'>pnom (<em>façon LCS</em>)</label>\n";
+	echo "/> <label for='login_gen_type_lcs'  style='cursor: pointer;'>pnom (<em>faÃ§on LCS</em>)</label>\n";
 	echo "<br />\n";
 
 	if (getSettingValue("use_ent") == "y") {
@@ -194,7 +194,7 @@ if (!isset($is_posted)) {
 	}
 	echo "<br />\n";
 
-	// Modifications jjocal dans le cas où c'est un serveur CAS qui s'occupe de tout
+	// Modifications jjocal dans le cas oÃ¹ c'est un serveur CAS qui s'occupe de tout
 	if((getSettingValue("use_sso") == "cas")||(getSettingValue('auth_sso')=="lcs")) {
 		$checked1 = ' checked="checked"';
 		$checked0 = '';
@@ -203,9 +203,9 @@ if (!isset($is_posted)) {
 		$checked0 = ' checked="checked"';
 	}
 
-	echo "<p>Ces comptes seront-ils utilisés en Single Sign-On avec CAS ou LemonLDAP ? (<i>laissez 'non' si vous ne savez pas de quoi il s'agit</i>)</p>\n";
+	echo "<p>Ces comptes seront-ils utilisÃ©s en Single Sign-On avec CAS ou LemonLDAP ? (<i>laissez 'non' si vous ne savez pas de quoi il s'agit</i>)</p>\n";
 	echo "<input type='radio' name='sso' id='sso_n' value='no'".$checked0." /> <label for='sso_n' style='cursor: pointer;'>Non</label>\n";
-	echo "<br /><input type='radio' name='sso' id='sso_y' value='yes'".$checked1." /> <label for='sso_y' style='cursor: pointer;'>Oui (<em>aucun mot de passe ne sera généré</em>)</label>\n";
+	echo "<br /><input type='radio' name='sso' id='sso_y' value='yes'".$checked1." /> <label for='sso_y' style='cursor: pointer;'>Oui (<em>aucun mot de passe ne sera gÃ©nÃ©rÃ©</em>)</label>\n";
 	echo "<br />\n";
 	echo "<br />\n";
 
@@ -219,7 +219,7 @@ if (!isset($is_posted)) {
 	// On commence par rendre inactifs tous les professeurs
 	$req = mysql_query("UPDATE utilisateurs set etat='inactif' where statut = 'professeur'");
 
-	// on efface la ligne "display_users" dans la table "setting" de façon à afficher tous les utilisateurs dans la page  /utilisateurs/index.php
+	// on efface la ligne "display_users" dans la table "setting" de faÃ§on Ã  afficher tous les utilisateurs dans la page  /utilisateurs/index.php
 	$req = mysql_query("DELETE from setting where NAME = 'display_users'");
 
 	if(strtoupper($dbf_file['name']) == "F_WIND.CSV") {
@@ -228,7 +228,7 @@ if (!isset($is_posted)) {
 		echo "<p>Impossible d'ouvrir le fichier CSV !</p>";
 		echo "<a href='".$_SERVER['PHP_SELF']."?a=a".add_token_in_url()."'>Cliquer ici </a> pour recommencer !</center></p>";
 		} else {
-			// on constitue le tableau des champs à extraire
+			// on constitue le tableau des champs Ã  extraire
 			$tabchamps = array("AINOMU","AIPREN","AICIVI","NUMIND","FONCCO","INDNNI" );
 
 			$nblignes=0;
@@ -236,7 +236,7 @@ if (!isset($is_posted)) {
 				$ligne = fgets($fp, 4096);
 				if($nblignes==0){
 
-					// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommés avec l'ajout de ',...' en fin de nom de champ.
+					// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommÃ©s avec l'ajout de ',...' en fin de nom de champ.
 					// On ne retient pas ces ajouts pour $en_tete
 					$temp=explode(";",$ligne);
 					for($i=0;$i<sizeof($temp);$i++){
@@ -260,16 +260,16 @@ if (!isset($is_posted)) {
 				}
 			}
 
-			echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent à des professeurs nouveaux dans la base GEPI. les identifiants en vert correspondent à des professeurs détectés dans les fichiers CSV mais déjà présents dans la base GEPI.<br /><br />Il est possible que certains professeurs ci-dessous, bien que figurant dans le fichier CSV, ne soient plus en exercice dans votre établissement cette année. C'est pourquoi il vous sera proposé en fin de procédure d'initialsation, un nettoyage de la base afin de supprimer ces données inutiles.</p>";
+			echo "<p>Dans le tableau ci-dessous, les identifiants en rouge correspondent Ã  des professeurs nouveaux dans la base GEPI. les identifiants en vert correspondent Ã  des professeurs dÃ©tectÃ©s dans les fichiers CSV mais dÃ©jÃ  prÃ©sents dans la base GEPI.<br /><br />Il est possible que certains professeurs ci-dessous, bien que figurant dans le fichier CSV, ne soient plus en exercice dans votre Ã©tablissement cette annÃ©e. C'est pourquoi il vous sera proposÃ© en fin de procÃ©dure d'initialsation, un nettoyage de la base afin de supprimer ces donnÃ©es inutiles.</p>";
 
 			$alt=1;
 			echo "<table class='boireaus' border=1 cellpadding=2 cellspacing=2>";
-			echo "<tr><th><p class=\"small\">Identifiant du professeur</p></th><th><p class=\"small\">Nom</p></th><th><p class=\"small\">Prénom</p></th><th>Mot de passe *</th></tr>";
+			echo "<tr><th><p class=\"small\">Identifiant du professeur</p></th><th><p class=\"small\">Nom</p></th><th><p class=\"small\">PrÃ©nom</p></th><th>Mot de passe *</th></tr>";
 			srand();
 			$nb_reg_no = 0;
 			//=========================
 			$fp=fopen($dbf_file['tmp_name'],"r");
-			// On lit une ligne pour passer la ligne d'entête:
+			// On lit une ligne pour passer la ligne d'entÃªte:
 			$ligne = fgets($fp, 4096);
 			//=========================
 			for($k = 1; ($k < $nblignes+1); $k++){
@@ -280,7 +280,7 @@ if (!isset($is_posted)) {
 						for($i = 0; $i < count($tabchamps); $i++) {
 							$affiche[$i] = dbase_filter(trim($tabligne[$tabindice[$i]]));
 						}
-						//Civilité
+						//CivilitÃ©
 						$civilite = '';
 						if ($affiche[2] = "ML") $civilite = "Mlle";
 						if ($affiche[2] = "MM") $civilite = "Mme";
@@ -325,7 +325,7 @@ if (!isset($is_posted)) {
 							$test_exist = mysql_query($sql);
 							$result_test = mysql_num_rows($test_exist);
 							if ($result_test == 0) {
-								// On tente ensuite une reconnaissance sur nom/prénom, si le test NUMIND a échoué
+								// On tente ensuite une reconnaissance sur nom/prÃ©nom, si le test NUMIND a Ã©chouÃ©
 								$sql="select login from utilisateurs where (
 								nom='".traitement_magic_quotes($affiche[0])."' and
 								prenom = '".traitement_magic_quotes($premier_prenom)."' and
@@ -367,12 +367,12 @@ if (!isset($is_posted)) {
 						$alt=$alt*(-1);
 						if($lcs_prof_en_erreur=="y") {
 							echo "<tr class='lig$alt'>\n";
-							echo "<td><p><font color='red'>Non trouvé dans l'annuaire LDAP</font></p></td><td><p>".$prof[$k]["nom_usage"]."</p></td><td><p>".$premier_prenom."</p></td><td>&nbsp;</td></tr>\n";
+							echo "<td><p><font color='red'>Non trouvÃ© dans l'annuaire LDAP</font></p></td><td><p>".$prof[$k]["nom_usage"]."</p></td><td><p>".$premier_prenom."</p></td><td>&nbsp;</td></tr>\n";
 						}
 						else {
 							if ($exist == 'no') {
 
-								// Aucun professeur ne porte le même nom dans la base GEPI. On va donc rentrer ce professeur dans la base
+								// Aucun professeur ne porte le mÃªme nom dans la base GEPI. On va donc rentrer ce professeur dans la base
 	
 								$affiche[1] = traitement_magic_quotes(corriger_caracteres($affiche[1]));
 
@@ -467,7 +467,7 @@ if (!isset($is_posted)) {
 								$temp1=generate_unique_login($affiche[0], $affiche[1], $_POST['login_gen_type']);
 
 								$login_prof = $temp1;
-								// On teste l'unicité du login que l'on vient de créer
+								// On teste l'unicitÃ© du login que l'on vient de crÃ©er
 								$m = 2;
 								$test_unicite = 'no';
 								$temp = $login_prof;
@@ -491,14 +491,14 @@ if (!isset($is_posted)) {
 									$pwd = md5(rand (1,9).rand (1,9).rand (1,9).rand (1,9).rand (1,9).rand (1,9));
 									$mess_mdp = $pwd;
 									//echo "<tr><td colspan='4'>Choix 2: $pwd</td></tr>";
-									//$mess_mdp = "Inconnu (compte bloqué)";
+									//$mess_mdp = "Inconnu (compte bloquÃ©)";
 								} elseif ($_POST['sso'] == "yes") {
 									$pwd = '';
 									$mess_mdp = "aucun (sso)";
 									//echo "<tr><td colspan='4'>sso</td></tr>";
 								}
 	
-								// utilise le prénom composé s'il existe, plutôt que le premier prénom
+								// utilise le prÃ©nom composÃ© s'il existe, plutÃ´t que le premier prÃ©nom
 	
 								$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='$affiche[0]', prenom='$premier_prenom', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='y', numind='$affiche[3]'";
 								$res = mysql_query($sql);
@@ -509,12 +509,12 @@ if (!isset($is_posted)) {
 								$res = mysql_query("INSERT INTO tempo2 VALUES ('".$login_prof."', '".$affiche[3]."')");
 								echo "<tr class='lig$alt white_hover'><td><p><font color='red'>".$login_prof."</font></p></td><td><p>".$affiche[0]."</p></td><td><p>".$premier_prenom."</p></td><td>".$mess_mdp."</td></tr>\n";
 							} else {
-								// On corrige aussi les nom/prénom/civilité et numind parce que la reconnaissance a aussi pu se faire sur le nom/prénom
+								// On corrige aussi les nom/prÃ©nom/civilitÃ© et numind parce que la reconnaissance a aussi pu se faire sur le nom/prÃ©nom
 								$res = mysql_query("UPDATE utilisateurs set etat='actif', nom='$affiche[0]', prenom='$premier_prenom', civilite='$civilite', numind='$affiche[3]' where login='".$login_prof_gepi."'");
 	
 								if(!$res) $nb_reg_no++;
 								$res = mysql_query("INSERT INTO tempo2 VALUES ('".$login_prof_gepi."', '".$affiche[3]."')");
-								echo "<tr class='lig$alt white_hover'><td><p><font color='green'>".$login_prof_gepi."</font></p></td><td><p>".$affiche[0]."</p></td><td><p>".$affiche[1]."</p></td><td>Inchangé</td></tr>\n";
+								echo "<tr class='lig$alt white_hover'><td><p><font color='green'>".$login_prof_gepi."</font></p></td><td><p>".$affiche[0]."</p></td><td><p>".$affiche[1]."</p></td><td>InchangÃ©</td></tr>\n";
 							}
 						}
 					}
@@ -524,38 +524,38 @@ if (!isset($is_posted)) {
 			fclose($fp);
 			echo "</table>";
 			if ($nb_reg_no != 0) {
-				echo "<p>Lors de l'enregistrement des données il y a eu $nb_reg_no erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.";
+				echo "<p>Lors de l'enregistrement des donnÃ©es il y a eu $nb_reg_no erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procÃ©dure avant de passer Ã  l'Ã©tape suivante.";
 			} else {
-				echo "<p>L'importation des professeurs dans la base GEPI a été effectuée avec succès !</p>";
+				echo "<p>L'importation des professeurs dans la base GEPI a Ã©tÃ© effectuÃ©e avec succÃ¨s !</p>";
 
 				/*
-				echo "<p><b>* Précision sur les mots de passe (en non-SSO) :</b><br />
-				(il est conseillé d'imprimer cette page)</p>
+				echo "<p><b>* PrÃ©cision sur les mots de passe (en non-SSO) :</b><br />
+				(il est conseillÃ© d'imprimer cette page)</p>
 				<ul>
-				<li>Lorsqu'un nouveau professeur est inséré dans la base GEPI, son mot de passe lors de la première
-				connexion à GEPI est son NUMEN.</li>
-				<li>Si le NUMEM n'est pas disponible dans le fichier F_wind.csv, GEPI génère aléatoirement
+				<li>Lorsqu'un nouveau professeur est insÃ©rÃ© dans la base GEPI, son mot de passe lors de la premiÃ¨re
+				connexion Ã  GEPI est son NUMEN.</li>
+				<li>Si le NUMEM n'est pas disponible dans le fichier F_wind.csv, GEPI gÃ©nÃ¨re alÃ©atoirement
 				un mot de passe.</li></ul>";
 				*/
-				echo "<p><b>* Précision sur les mots de passe (<em>en non-SSO</em>) :</b><br />
-				(<em>il est conseillé d'imprimer cette page</em>)</p>
+				echo "<p><b>* PrÃ©cision sur les mots de passe (<em>en non-SSO</em>) :</b><br />
+				(<em>il est conseillÃ© d'imprimer cette page</em>)</p>
 				<ul>
-				<li>Lorsqu'un nouveau professeur est inséré dans la base GEPI, son mot de passe lors de la première
-				connexion à GEPI est celui inscrit dans le F_wind.csv.</li>
-				<li>Si le mot de passe n'est pas disponible dans le fichier F_wind.csv, GEPI génère aléatoirement
+				<li>Lorsqu'un nouveau professeur est insÃ©rÃ© dans la base GEPI, son mot de passe lors de la premiÃ¨re
+				connexion Ã  GEPI est celui inscrit dans le F_wind.csv.</li>
+				<li>Si le mot de passe n'est pas disponible dans le fichier F_wind.csv, GEPI gÃ©nÃ¨re alÃ©atoirement
 				un mot de passe.</li></ul>";
-				echo "<p><b>Dans tous les cas le nouvel utilisateur est amené à changer son mot de passe lors de sa première connexion.</b></p>";
-				echo "<br /><p>Vous pouvez procéder à la cinquième phase d'affectation des matières à chaque professeur, d'affectation des professeurs dans chaque classe et de définition des options suivies par les élèves.</p>";
+				echo "<p><b>Dans tous les cas le nouvel utilisateur est amenÃ© Ã  changer son mot de passe lors de sa premiÃ¨re connexion.</b></p>";
+				echo "<br /><p>Vous pouvez procÃ©der Ã  la cinquiÃ¨me phase d'affectation des matiÃ¨res Ã  chaque professeur, d'affectation des professeurs dans chaque classe et de dÃ©finition des options suivies par les Ã©lÃ¨ves.</p>";
 			}
-			//echo "<center><p><b><a href='prof_disc_classe.php'>Procéder à la cinquième phase d'initialisation</a></b></p></center><br /><br />";
-			echo "<center><p><b><a href='prof_disc_classe_csv.php?a=a".add_token_in_url()."'>Procéder à la cinquième phase d'initialisation</a></b></p></center><br /><br />";
+			//echo "<center><p><b><a href='prof_disc_classe.php'>ProcÃ©der Ã  la cinquiÃ¨me phase d'initialisation</a></b></p></center><br /><br />";
+			echo "<center><p><b><a href='prof_disc_classe_csv.php?a=a".add_token_in_url()."'>ProcÃ©der Ã  la cinquiÃ¨me phase d'initialisation</a></b></p></center><br /><br />";
 		}
 	} else if (trim($dbf_file['name'])=='') {
-		echo "<p>Aucun fichier n'a été sélectionné !<br />";
+		echo "<p>Aucun fichier n'a Ã©tÃ© sÃ©lectionnÃ© !<br />";
 		echo "<a href='".$_SERVER['PHP_SELF']."?a=a".add_token_in_url()."'>Cliquer ici </a> pour recommencer !</center></p>";
 
 	} else {
-		echo "<p>Le fichier sélectionné n'est pas valide !<br />";
+		echo "<p>Le fichier sÃ©lectionnÃ© n'est pas valide !<br />";
 		echo "<a href='".$_SERVER['PHP_SELF']."?a=a".add_token_in_url()."'>Cliquer ici </a> pour recommencer !</center></p>";
 	}
 }

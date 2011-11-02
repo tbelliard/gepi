@@ -45,22 +45,22 @@ if (!checkAccess()) {
 $debug_ele="n";
 
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année : Importation des élèves - Etape 1";
+$titre_page = "Outil d'initialisation de l'annÃ©e : Importation des Ã©lÃ¨ves - Etape 1";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 <p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
-// On vérifie si l'extension d_base est active
+// On vÃ©rifie si l'extension d_base est active
 //verif_active_dbase();
 
-echo "<center><h3 class='gepi'>Première phase d'initialisation<br />Importation des élèves, constitution des classes et affectation des élèves dans les classes</h3></center>\n";
+echo "<center><h3 class='gepi'>PremiÃ¨re phase d'initialisation<br />Importation des Ã©lÃ¨ves, constitution des classes et affectation des Ã©lÃ¨ves dans les classes</h3></center>\n";
 
 
 if (!isset($is_posted)) {
-	echo "<p>Vous allez effectuer la première étape&nbsp;: elle consiste à importer le fichier <b>ELEVES.CSV</b> (<em>généré à partir des exports XML de Sconet</em>) contenant toutes les données dans une table temporaire de la base de données de <b>GEPI</b>.";
-	echo "<p>Veuillez préciser le nom complet du fichier <b>ELEVES.CSV</b>.";
+	echo "<p>Vous allez effectuer la premiÃ¨re Ã©tape&nbsp;: elle consiste Ã  importer le fichier <b>ELEVES.CSV</b> (<em>gÃ©nÃ©rÃ© Ã  partir des exports XML de Sconet</em>) contenant toutes les donnÃ©es dans une table temporaire de la base de donnÃ©es de <b>GEPI</b>.";
+	echo "<p>Veuillez prÃ©ciser le nom complet du fichier <b>ELEVES.CSV</b>.";
 	echo "<form enctype='multipart/form-data' action='step1.php' method=post>\n";
 	echo add_token_field();
 	echo "<input type=hidden name='is_posted' value='yes' />\n";
@@ -76,7 +76,7 @@ if (!isset($is_posted)) {
 		if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)==0) {
-			echo "<p style='color:red'>Il existe un ou des comptes élèves de l'année passée, et vous n'avez pas mis ces comptes en réserve pour imposer le même login/mot de passe cette année.<br />Est-ce bien un choix délibéré ou un oubli de votre part?<br />Pour conserver ces login/mot de de passe de façon à ne pas devoir re-distribuer ces informations (<em>et éviter de perturber ces utilisateurs</em>), vous pouvez procéder à la mise en réserve avant d'initialiser l'année dans la page <a href='../gestion/changement_d_annee.php'>Changement d'année</a> (<em>vous y trouverez aussi la possibilité de conserver les comptes parents et bien d'autres actions à ne pas oublier avant l'initialisation</em>).</p>\n";
+			echo "<p style='color:red'>Il existe un ou des comptes Ã©lÃ¨ves de l'annÃ©e passÃ©e, et vous n'avez pas mis ces comptes en rÃ©serve pour imposer le mÃªme login/mot de passe cette annÃ©e.<br />Est-ce bien un choix dÃ©libÃ©rÃ© ou un oubli de votre part?<br />Pour conserver ces login/mot de de passe de faÃ§on Ã  ne pas devoir re-distribuer ces informations (<em>et Ã©viter de perturber ces utilisateurs</em>), vous pouvez procÃ©der Ã  la mise en rÃ©serve avant d'initialiser l'annÃ©e dans la page <a href='../gestion/changement_d_annee.php'>Changement d'annÃ©e</a> (<em>vous y trouverez aussi la possibilitÃ© de conserver les comptes parents et bien d'autres actions Ã  ne pas oublier avant l'initialisation</em>).</p>\n";
 		}
 	}
 
@@ -122,7 +122,7 @@ if (!isset($is_posted)) {
 			$create_table = mysql_query($sql);
 
 			$del = @mysql_query("DELETE FROM temp_gep_import2");
-			// on constitue le tableau des champs à extraire
+			// on constitue le tableau des champs Ã  extraire
 			$tabchamps = array("ELENOM","ELEPRE","ELESEXE","ELEDATNAIS","ELENOET","ELE_ID","ELEDOUBL","ELENONAT","ELEREG","DIVCOD","ETOCOD_EP", "ELEOPT1", "ELEOPT2", "ELEOPT3", "ELEOPT4", "ELEOPT5", "ELEOPT6", "ELEOPT7", "ELEOPT8", "ELEOPT9", "ELEOPT10", "ELEOPT11", "ELEOPT12");
 
 			//$nblignes = dbase_numrecords($fp); //number of rows
@@ -132,7 +132,7 @@ if (!isset($is_posted)) {
 			while (!feof($fp)) {
 				$ligne = fgets($fp, 4096);
 				if($nblignes==0){
-					// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommés avec l'ajout de ',...' en fin de nom de champ.
+					// Quand on enregistre en CSV des fichiers DBF de GEP avec OpenOffice, les champs sont renommÃ©s avec l'ajout de ',...' en fin de nom de champ.
 					// On ne retient pas ces ajouts pour $en_tete
 					$temp=explode(";",$ligne);
 					for($i=0;$i<sizeof($temp);$i++){
@@ -165,7 +165,7 @@ if (!isset($is_posted)) {
 
 			//=========================
 			$fp=fopen($csv_file['tmp_name'],"r");
-			// On lit une ligne pour passer la ligne d'entête:
+			// On lit une ligne pour passer la ligne d'entÃªte:
 			$ligne = fgets($fp, 4096);
 			//=========================
 			$nb_reg_ok = 0;
@@ -207,22 +207,22 @@ if (!isset($is_posted)) {
 
 			fclose($fp);
 			if ($nb_reg_no != 0) {
-				echo "<p>Lors de l'enregistrement des données il y a eu $nb_reg_no erreurs, vous ne pouvez pas procéder à la suite de l'initialisation. Trouvez la cause de l'erreur et recommencez la procédure, après avoir vidé la table temporaire.";
+				echo "<p>Lors de l'enregistrement des donnÃ©es il y a eu $nb_reg_no erreurs, vous ne pouvez pas procÃ©der Ã  la suite de l'initialisation. Trouvez la cause de l'erreur et recommencez la procÃ©dure, aprÃ¨s avoir vidÃ© la table temporaire.";
 			}
 			else {
-				echo "<p>Les $nblignes lignes du fichier ELEVES.CSV ont été analysées.<br />$nb_reg_ok lignes de données correspondant à des élèves de l'année en cours ont été enregistrées dans une table temporaire.<br />Il n'y a pas eu d'erreurs, vous pouvez procéder à l'étape suivante.</p>";
-				echo "<center><p><a href='step2.php?a=a".add_token_in_url()."'>Accéder à l'étape 2</a></p></center>";
+				echo "<p>Les $nblignes lignes du fichier ELEVES.CSV ont Ã©tÃ© analysÃ©es.<br />$nb_reg_ok lignes de donnÃ©es correspondant Ã  des Ã©lÃ¨ves de l'annÃ©e en cours ont Ã©tÃ© enregistrÃ©es dans une table temporaire.<br />Il n'y a pas eu d'erreurs, vous pouvez procÃ©der Ã  l'Ã©tape suivante.</p>";
+				echo "<center><p><a href='step2.php?a=a".add_token_in_url()."'>AccÃ©der Ã  l'Ã©tape 2</a></p></center>";
 			}
 		}
 	}
 	else if (trim($csv_file['name'])=='') {
 
-		echo "<p>Aucun fichier n'a été sélectionné !<br />";
+		echo "<p>Aucun fichier n'a Ã©tÃ© sÃ©lectionnÃ© !<br />";
 		echo "<a href='step1.php'>Cliquer ici </a> pour recommencer !</center></p>";
 
 	}
 	else {
-		echo "<p>Le fichier sélectionné n'est pas valide !<br />";
+		echo "<p>Le fichier sÃ©lectionnÃ© n'est pas valide !<br />";
 		echo "<a href='step1.php'>Cliquer ici </a> pour recommencer !</center></p>";
 	}
 }

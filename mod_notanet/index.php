@@ -40,9 +40,9 @@ if ($resultat_session == 'c') {
 
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
-// INSERT INTO droits VALUES('/mod_notanet/index.php','V','V','F','F','F','F','F','F','Accès à l accueil Notanet','');
-// Pour décommenter le passage, il suffit de supprimer le 'slash-etoile' ci-dessus et l'étoile-slash' ci-dessous.
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
+// INSERT INTO droits VALUES('/mod_notanet/index.php','V','V','F','F','F','F','F','F','AccÃ¨s Ã  l accueil Notanet','');
+// Pour dÃ©commenter le passage, il suffit de supprimer le 'slash-etoile' ci-dessus et l'Ã©toile-slash' ci-dessous.
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -169,7 +169,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Fiches brevet: Saisie des paramètres',
+description='Fiches brevet: Saisie des paramÃ¨tres',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -196,20 +196,20 @@ $insert=mysql_query($sql);
 
 if(!isset($msg)) {$msg="";}
 //===========================================================
-// Modification du type des champs id_mat pour pouvoir dépasser 127
+// Modification du type des champs id_mat pour pouvoir dÃ©passer 127
 $query=mysql_query("ALTER TABLE notanet CHANGE id_mat id_mat INT( 4 ) NOT NULL;");
 if(!$query) {
-	$msg.="Erreur lors de la modification du type du champ 'id_mat' de la table 'notanet'.<br />Cela risque de poser problème si vous devez saisir des notes de Langue Vivante Régionale.<br />";
+	$msg.="Erreur lors de la modification du type du champ 'id_mat' de la table 'notanet'.<br />Cela risque de poser problÃ¨me si vous devez saisir des notes de Langue Vivante RÃ©gionale.<br />";
 }
 
 $query = mysql_query("ALTER TABLE notanet_corresp CHANGE id_mat id_mat INT( 4 ) NOT NULL;");
 if(!$query) {
-	$msg.="Erreur lors de la modification du type du champ 'id_mat' de la table 'notanet_corresp'.<br />Cela risque de poser problème si vous devez saisir des notes de Langue Vivante Régionale.<br />";
+	$msg.="Erreur lors de la modification du type du champ 'id_mat' de la table 'notanet_corresp'.<br />Cela risque de poser problÃ¨me si vous devez saisir des notes de Langue Vivante RÃ©gionale.<br />";
 }
 
 $query = mysql_query("ALTER TABLE notanet_app CHANGE id_mat id_mat INT( 4 ) NOT NULL;");
 if(!$query) {
-	$msg.="Erreur lors de la modification du type du champ 'id_mat' de la table 'notanet_app'.<br />Cela risque de poser problème si vous devez saisir des notes de Langue Vivante Régionale.<br />";
+	$msg.="Erreur lors de la modification du type du champ 'id_mat' de la table 'notanet_app'.<br />Cela risque de poser problÃ¨me si vous devez saisir des notes de Langue Vivante RÃ©gionale.<br />";
 }
 //===========================================================
 
@@ -222,7 +222,7 @@ require_once("../lib/header.inc");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 
-// Bibliothèque pour Notanet et Fiches brevet
+// BibliothÃ¨que pour Notanet et Fiches brevet
 //include("lib_brevets.php");
 
 echo "<div class='noprint'>\n";
@@ -347,28 +347,28 @@ echo "</p>\n";
 //echo "<ul>\n";
 if($_SESSION['statut']=="administrateur") {
 	echo "<ol>\n";
-	echo "<li><a href='saisie_param.php'>Saisir les paramètres Académie, Session,...</a>.</li>\n";
-	echo "<li><a href='select_eleves.php'>Effectuer les associations Elèves/Type de brevet</a></li>\n";
+	echo "<li><a href='saisie_param.php'>Saisir les paramÃ¨tres AcadÃ©mie, Session,...</a>.</li>\n";
+	echo "<li><a href='select_eleves.php'>Effectuer les associations ElÃ¨ves/Type de brevet</a></li>\n";
 
-	echo "<li><a href='select_matieres.php'>Effectuer les associations Type de brevet/Matières</a>  (<i>en précisant le statut: imposées et options</i>)</li>\n";
+	echo "<li><a href='select_matieres.php'>Effectuer les associations Type de brevet/MatiÃ¨res</a>  (<i>en prÃ©cisant le statut: imposÃ©es et options</i>)</li>\n";
 
-	//echo "<li><a href='saisie_b2i_a2.php'>Saisir les 'notes' B2i et niveau A2 de langue</a> (<i>nécessaire pour réaliser ensuite l'extraction des moyennes</i>)</li>\n";
+	//echo "<li><a href='saisie_b2i_a2.php'>Saisir les 'notes' B2i et niveau A2 de langue</a> (<i>nÃ©cessaire pour rÃ©aliser ensuite l'extraction des moyennes</i>)</li>\n";
 
-	echo "<li><a href='saisie_lvr.php'>Saisir les 'notes' de Langue Vivante Régionale</a> (<i>si un tel enseignement est évalué dans l'établissement</i>)</li>\n";
+	echo "<li><a href='saisie_lvr.php'>Saisir les 'notes' de Langue Vivante RÃ©gionale</a> (<i>si un tel enseignement est Ã©valuÃ© dans l'Ã©tablissement</i>)</li>\n";
 
 	echo "<li><a href='extract_moy.php'>Effectuer une extraction des moyennes, affichage et traitement des cas particuliers</a></li>\n";
 
 	echo "<li><a href='corrige_extract_moy.php'>Corriger l'extraction des moyennes</a></li>\n";
 
-	echo "<li><a href='choix_generation_csv.php?extract_mode=tous'>Générer un export Notanet</a> pour tous les élèves de telle(s) ou telle(s) classe(s) ou juste une sélection (cf. select_eleves.php)</li>\n";
+	echo "<li><a href='choix_generation_csv.php?extract_mode=tous'>GÃ©nÃ©rer un export Notanet</a> pour tous les Ã©lÃ¨ves de telle(s) ou telle(s) classe(s) ou juste une sÃ©lection (cf. select_eleves.php)</li>\n";
 
-	echo "<li><a href='saisie_socle_commun.php'>Saisir ou importer les résultats du Socle commun.</li>\n";
+	echo "<li><a href='saisie_socle_commun.php'>Saisir ou importer les rÃ©sultats du Socle commun.</li>\n";
 
-	echo "<li><a href='verrouillage_saisie_app.php'>Verrouiller/déverrouiller la saisie des appréciations pour les fiches brevet</a><br />La saisie n'est possible pour les professeurs que si l'extraction des moyennes a été effectuée.</li>\n";
+	echo "<li><a href='verrouillage_saisie_app.php'>Verrouiller/dÃ©verrouiller la saisie des apprÃ©ciations pour les fiches brevet</a><br />La saisie n'est possible pour les professeurs que si l'extraction des moyennes a Ã©tÃ© effectuÃ©e.</li>\n";
 
-	echo "<li><a href='saisie_avis.php'>Saisir l'avis du chef d'établissement</a>.</li>\n";
+	echo "<li><a href='saisie_avis.php'>Saisir l'avis du chef d'Ã©tablissement</a>.</li>\n";
 
-	echo "<li><p>Générer les fiches brevet selon le modèle de:</p>
+	echo "<li><p>GÃ©nÃ©rer les fiches brevet selon le modÃ¨le de:</p>
 	<ul>\n";
 	/*
 	echo "		<li><a href='poitiers/fiches_brevet.php'>Poitiers</a></li>
@@ -380,7 +380,7 @@ if($_SESSION['statut']=="administrateur") {
 	$gepi_version=getSettingValue('version');
 	if(($gepi_version!='1.5.1')&&($gepi_version!='1.5.0')) {  
 	*/
-		echo "		<li><a href='OOo/imprime_ooo.php'>Modèle au format OpenOffice</a> <a href='https://www.sylogix.org/projects/gepi/wiki/GepiDoc_fbOooCalc'><img src='../images/icons/ico_question.png' alt='aide construction gabarit' title='Aide pour utiliser les gabarits .ods pour éditer les fiches brevets' title='Aide pour utiliser les gabarits .ods pour éditer les fiches brevets' /></a></li>\n";
+		echo "		<li><a href='OOo/imprime_ooo.php'>ModÃ¨le au format OpenOffice</a> <a href='https://www.sylogix.org/projects/gepi/wiki/GepiDoc_fbOooCalc'><img src='../images/icons/ico_question.png' alt='aide construction gabarit' title='Aide pour utiliser les gabarits .ods pour Ã©diter les fiches brevets' title='Aide pour utiliser les gabarits .ods pour Ã©diter les fiches brevets' /></a></li>\n";
 	//}
 	echo "	</ul>
 </li>\n";
@@ -388,25 +388,25 @@ if($_SESSION['statut']=="administrateur") {
 	//echo "<li><a href=''></a></li>\n";
 	echo "</ol>\n";
 
-	echo "<p>Au changement d'année: <a href='".$_SERVER['PHP_SELF']."?truncate_tables=y".add_token_in_url()."'>Vider les saisies Notanet antérieures</a>.</p>\n";
+	echo "<p>Au changement d'annÃ©e: <a href='".$_SERVER['PHP_SELF']."?truncate_tables=y".add_token_in_url()."'>Vider les saisies Notanet antÃ©rieures</a>.</p>\n";
 
 	echo "<p><b>NOTES:</b> Pour un bon fonctionnement du dispositif, il faut parcourir les points ci-dessus dans l'ordre.<br />
 	Voir <a href='https://www.sylogix.org/projects/gepi/wiki/Module_notanet' target='_blank'>https://www.sylogix.org/projects/gepi/wiki/Module_notanet</a></p>\n";
 }
 elseif($_SESSION['statut']=="scolarite") {
 	echo "<ul>\n";
-	//echo "<li><a href='saisie_b2i_a2.php'>Saisir les 'notes' B2i et niveau A2 de langue</a> (<i>nécessaire pour réaliser ensuite l'extraction des moyennes</i>)</li>\n";
+	//echo "<li><a href='saisie_b2i_a2.php'>Saisir les 'notes' B2i et niveau A2 de langue</a> (<i>nÃ©cessaire pour rÃ©aliser ensuite l'extraction des moyennes</i>)</li>\n";
 
-	echo "<li><a href='saisie_lvr.php'>Saisir les 'notes' de Langue Vivante Régionale</a> (<i>si un tel enseignement est évalué dans l'établissement</i>)</li>\n";
+	echo "<li><a href='saisie_lvr.php'>Saisir les 'notes' de Langue Vivante RÃ©gionale</a> (<i>si un tel enseignement est Ã©valuÃ© dans l'Ã©tablissement</i>)</li>\n";
 
-	echo "<li><a href='saisie_avis.php'>Saisir l'avis du chef d'établissement</a>.</li>\n";
+	echo "<li><a href='saisie_avis.php'>Saisir l'avis du chef d'Ã©tablissement</a>.</li>\n";
 	echo "</ul>\n";
 
-	echo "<p><b>NOTES:</b> Pour un bon fonctionnement du dispositif, plusieurs opérations doivent auparavant être réalisées en statut administrateur.</p>\n";
+	echo "<p><b>NOTES:</b> Pour un bon fonctionnement du dispositif, plusieurs opÃ©rations doivent auparavant Ãªtre rÃ©alisÃ©es en statut administrateur.</p>\n";
 }
 else {
 	echo "<ul>\n";
-	echo "<li><a href='saisie_app.php'>Saisir les appréciations pour les fiches brevet</a></li>\n";
+	echo "<li><a href='saisie_app.php'>Saisir les apprÃ©ciations pour les fiches brevet</a></li>\n";
 	echo "</ul>\n";
 }
 

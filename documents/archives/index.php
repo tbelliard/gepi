@@ -21,7 +21,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 
 $niveau_arbo=2;
@@ -87,9 +87,9 @@ echo "</p>\n";
 
 // Selon le statut, pointer vers la page annee/index.php ou vers annee/cdt_LOGIN.php
 
-// Si multisite, changer le dossier à parcourir.
-// Il faut aussi qu'un compte non prof ne puisse pas parcourir des dossier d'autres établissements
-// Mettre une valeur à tester en entête
+// Si multisite, changer le dossier Ã  parcourir.
+// Il faut aussi qu'un compte non prof ne puisse pas parcourir des dossier d'autres Ã©tablissements
+// Mettre une valeur Ã  tester en entÃªte
 
 $extension="php";
 
@@ -97,13 +97,13 @@ $extension="php";
 $dossier_etab=get_dossier_etab_cdt_archives();
 
 if($dossier_etab=="") {
-	echo "<p style='color:red'>Le dossier d'archivage de l'établissement n'a pas pu être identifié.</p>\n";
+	echo "<p style='color:red'>Le dossier d'archivage de l'Ã©tablissement n'a pas pu Ãªtre identifiÃ©.</p>\n";
 	require("../../lib/footer.inc.php");
 	die();
 }
 
 if(!file_exists($dossier_etab)) {
-	echo "<p style='color:red'>Aucune année n'a été archivée.</p>\n";
+	echo "<p style='color:red'>Aucune annÃ©e n'a Ã©tÃ© archivÃ©e.</p>\n";
 	require("../../lib/footer.inc.php");
 	die();
 }
@@ -153,7 +153,7 @@ closedir($handle);
 rsort($tab_file);
 
 if(count($tab_file)==0) {
-	echo "<p style='color:red'>Aucune année n'a été archivée.</p>\n";
+	echo "<p style='color:red'>Aucune annÃ©e n'a Ã©tÃ© archivÃ©e.</p>\n";
 	require("../../lib/footer.inc.php");
 	die();
 }
@@ -179,17 +179,17 @@ for($i=0;$i<count($tab_file);$i++) {
 }
 
 if($lignes!="") {
-	echo "<p><b>Liste des années archivées</b>&nbsp;:<br />\n";
+	echo "<p><b>Liste des annÃ©es archivÃ©es</b>&nbsp;:<br />\n";
 	echo $lignes;
 	echo "</p>\n";
 }
 else {
-	echo "<p>Aucune donnée n'est archivée (<i>pour vous</i>).</p>\n";
+	echo "<p>Aucune donnÃ©e n'est archivÃ©e (<i>pour vous</i>).</p>\n";
 }
 
 echo "<p><br /></p>\n";
 
-//echo "<p style='color:red'>A FAIRE: Evaluer le nom du dossier établissement selon le cas multisite ou non</p>\n";
+//echo "<p style='color:red'>A FAIRE: Evaluer le nom du dossier Ã©tablissement selon le cas multisite ou non</p>\n";
 
 require("../../lib/footer.inc.php");
 die();

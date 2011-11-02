@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// On précise de ne pas traiter les données avec la fonction anti_inject
+// On prÃ©cise de ne pas traiter les donnÃ©es avec la fonction anti_inject
 $traite_anti_inject = 'no';
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -53,7 +53,7 @@ require_once("../lib/header.inc");
 
 $objet_msg=isset($_POST['objet_msg']) ? $_POST['objet_msg'] : "Demande d'aide dans GEPI";
 if($objet_msg=='') {
-	echo "<p style='color:red'>Le sujet du mail n'a pas été renseigné.<br />Veuillez corriger.</p>\n";
+	echo "<p style='color:red'>Le sujet du mail n'a pas Ã©tÃ© renseignÃ©.<br />Veuillez corriger.</p>\n";
 	$action="";
 }
 
@@ -61,7 +61,7 @@ switch($action)
 {
 //envoi du message
 case "envoi":
-	//N.B. pour peaufiner, mettre un script de vérification de l'adresse email et du contenu du message !
+	//N.B. pour peaufiner, mettre un script de vÃ©rification de l'adresse email et du contenu du message !
 
 	$corps_message=$message;
 
@@ -77,25 +77,25 @@ case "envoi":
 	$message.="\n".$corps_message."\n";
 
 	if ($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") {
-		//$message .= "\n\nMode de réponse : ".($email_reponse =="" ? "dans le casier =>$casier" :"par email.");
-		//$message .= "\n\nMode de réponse : ".($email_reponse =="" ? "dans le casier =>$casier" :"par email (<a href='mailto:$email_reponse'>$email_reponse</a>).");
-		$message .= "\n\nMode de réponse : ".($email_reponse =="" ? "dans le casier =>$casier" :"par email ($email_reponse).");
+		//$message .= "\n\nMode de rÃ©ponse : ".($email_reponse =="" ? "dans le casier =>$casier" :"par email.");
+		//$message .= "\n\nMode de rÃ©ponse : ".($email_reponse =="" ? "dans le casier =>$casier" :"par email (<a href='mailto:$email_reponse'>$email_reponse</a>).");
+		$message .= "\n\nMode de rÃ©ponse : ".($email_reponse =="" ? "dans le casier =>$casier" :"par email ($email_reponse).");
 	} else {
-		$message .= "\n\nMode de réponse : par email ";
+		$message .= "\n\nMode de rÃ©ponse : par email ";
 		if($email_reponse!="") {
 			//$message.="(<a href='mailto:$email_reponse'>$email_reponse</a>)";
 			$message.="($email_reponse)";
 		}
 		else{
-			$message.="(si spécifié)";
+			$message.="(si spÃ©cifiÃ©)";
 		}
 	}
 
-	// On ne devrait pas POSTer l'identité, mais plutôt la lire de la SESSION...
+	// On ne devrait pas POSTer l'identitÃ©, mais plutÃ´t la lire de la SESSION...
 	// ... ajout d'un test...
 	if("$nama"!=$_SESSION['prenom']." ".$_SESSION['nom']){
 		$message.="\n\n";
-		$message.="Bizarrerie: L'identité POSTée est: $nama\n            Et l'identité de connexion est: ".$_SESSION['prenom']." ".$_SESSION['nom'];
+		$message.="Bizarrerie: L'identitÃ© POSTÃ©e est: $nama\n            Et l'identitÃ© de connexion est: ".$_SESSION['prenom']." ".$_SESSION['nom'];
 	}
 
 	// ===============
@@ -118,7 +118,7 @@ case "envoi":
 
 	$gepiAdminAdress=getSettingValue("gepiAdminAdress");
 	if($gepiAdminAdress==""){
-		echo "<p><span style='color:red;>ERREUR</span>: L'adresse mail de l'administrateur n'est pas renseignée.</p>\n";
+		echo "<p><span style='color:red;>ERREUR</span>: L'adresse mail de l'administrateur n'est pas renseignÃ©e.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -153,45 +153,45 @@ case "envoi":
 
 	if ($envoi) {
 		echo "<br /><br /><br />\n";
-		echo "<p style=\"text-align: center\">Votre message a été envoyé";
+		echo "<p style=\"text-align: center\">Votre message a Ã©tÃ© envoyÃ©";
 
 		if($email_reponse!="") {
-			echo ", vous recevrez rapidement<br />une réponse dans votre boîte aux lettres électronique, veuillez la consulter régulièrement.";
+			echo ", vous recevrez rapidement<br />une rÃ©ponse dans votre boÃ®te aux lettres Ã©lectronique, veuillez la consulter rÃ©guliÃ¨rement.";
 
 			if(!my_ereg("[a-zA-Z0-9_.-]+@[a-zA-Z0-9.-]{2,}[.][a-zA-Z]{2,3}",$email_reponse)) {
 				echo "</p>\n";
-				echo "<p style=\"text-align: center\">L'adresse <span style='color:red'>$email_reponse</span> ne semble pas correctement formatée.<br />Si l'adresse est correcte, ne tenez pas compte de cette remarque.<br />Sinon, vous ne pourrez pas obtenir de réponse par courriel/email.\n";
+				echo "<p style=\"text-align: center\">L'adresse <span style='color:red'>$email_reponse</span> ne semble pas correctement formatÃ©e.<br />Si l'adresse est correcte, ne tenez pas compte de cette remarque.<br />Sinon, vous ne pourrez pas obtenir de rÃ©ponse par courriel/email.\n";
 			}
 		}
 		else {
 			if($_SESSION['statut']=='professeur') {
-				echo ", vous recevrez rapidement<br />une réponse dans votre casier, veuillez le consulter régulièrement.";
+				echo ", vous recevrez rapidement<br />une rÃ©ponse dans votre casier, veuillez le consulter rÃ©guliÃ¨rement.";
 			}
 			else {
 				//echo ".";
 				echo ", l'administrateur va le prendre en compte rapidement, mais ne pourra pas vous
-				répondre par courrier électronique car vous n'avez pas complété d'adresse courriel/email.";
+				rÃ©pondre par courrier Ã©lectronique car vous n'avez pas complÃ©tÃ© d'adresse courriel/email.";
 			}
 		}
 		echo "<br /><br /><br />\n";
 		echo "<a href=\"javascript:self.close();\">Fermer</a></p>\n";
-		echo "<noscript><p style='color:red;'>Il n'est pas possible de refermer la fenêtre par le lien ci-dessus lorsque javascript est désactivé.</p></noscript>\n";
+		echo "<noscript><p style='color:red;'>Il n'est pas possible de refermer la fenÃªtre par le lien ci-dessus lorsque javascript est dÃ©sactivÃ©.</p></noscript>\n";
 	} else {
 		echo "<br /><br /><br /><P style=\"text-align: center\"><font color=\"red\">ATTENTION : impossible d'envoyer le message, contactez l'administrateur pour lui signaler l'erreur ci-dessus.</font></p>\n";
 	}
 	break;
 default://formulaire d'envoi
 	echo "<table cellpadding='5'>";
-	echo "<tr><td>Message posté par :</td><td><b>".$_SESSION['prenom'] . " " . $_SESSION['nom']."</b></td></tr>\n";
-	echo "<tr><td>Nom et prénom de l'administrateur : </td><td><b>".getSettingValue("gepiAdminNom")." ".getSettingValue("gepiAdminPrenom")."</b></td></tr>\n";
+	echo "<tr><td>Message postÃ© par :</td><td><b>".$_SESSION['prenom'] . " " . $_SESSION['nom']."</b></td></tr>\n";
+	echo "<tr><td>Nom et prÃ©nom de l'administrateur : </td><td><b>".getSettingValue("gepiAdminNom")." ".getSettingValue("gepiAdminPrenom")."</b></td></tr>\n";
 
-	echo "<tr><td>Nom de l'établissement : </td><td><b>".getSettingValue("gepiSchoolName")."</b></td></tr>\n";
+	echo "<tr><td>Nom de l'Ã©tablissement : </td><td><b>".getSettingValue("gepiSchoolName")."</b></td></tr>\n";
 
 	if(getSettingValue("gepiAdminAdressFormHidden")!="y"){
-		echo "<tr><td colspan=2>Utilisez l'adresse <b><a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">".getSettingValue("gepiAdminAdress")."</a></b> ou bien rédigez votre message ci-dessous : </td><td></tr>\n";
+		echo "<tr><td colspan=2>Utilisez l'adresse <b><a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">".getSettingValue("gepiAdminAdress")."</a></b> ou bien rÃ©digez votre message ci-dessous : </td><td></tr>\n";
 	}
 	else{
-		echo "<tr><td colspan=2>Rédigez votre message ci-dessous : </td><td></tr>\n";
+		echo "<tr><td colspan=2>RÃ©digez votre message ci-dessous : </td><td></tr>\n";
 	}
 
 	echo "</table>\n";
@@ -199,15 +199,15 @@ default://formulaire d'envoi
 	<form action="contacter_admin.php" method="post" name="doc">
 	<input type="hidden" name="nama" value="<?php echo $_SESSION['prenom']." ".$_SESSION['nom']; ?>" />
 	<input type="hidden" name="action" value="envoi" />
-	<p>Sujet&nbsp;<span style='color:red' alt='Ce champ doit être renseigné' title='Ce champ doit être renseigné'>(*)</span>&nbsp;: <!--input type='text' name='objet_msg' value="Demande d'aide dans GEPI" size='35' maxlength='80' /--><input type='text' name='objet_msg' id='objet_msg' value="" size='35' maxlength='80' /><br />
+	<p>Sujet&nbsp;<span style='color:red' alt='Ce champ doit Ãªtre renseignÃ©' title='Ce champ doit Ãªtre renseignÃ©'>(*)</span>&nbsp;: <!--input type='text' name='objet_msg' value="Demande d'aide dans GEPI" size='35' maxlength='80' /--><input type='text' name='objet_msg' id='objet_msg' value="" size='35' maxlength='80' /><br />
 
 	<?php
 	echo "<textarea valign='bottom' name='message' cols='50' rows='5'>Contenu du message : $message</textarea><br />\n";
 
 
-	echo "E-mail pour la réponse&nbsp;: ";
+	echo "E-mail pour la rÃ©ponse&nbsp;: ";
 	if ($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") {
-		echo "(<i style='font-size:small;'>facultatif, une réponse vous sera adressée dans votre casier si vous ne précisez pas d'e-mail</i>)";
+		echo "(<i style='font-size:small;'>facultatif, une rÃ©ponse vous sera adressÃ©e dans votre casier si vous ne prÃ©cisez pas d'e-mail</i>)";
 	}
 	echo "<br />\n";
 
@@ -227,13 +227,13 @@ default://formulaire d'envoi
 	echo "<br />\n";
 
 	if ($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") {
-		echo "Ou numéro de votre casier en salle des professeurs pour la réponse&nbsp;:<br />";
+		echo "Ou numÃ©ro de votre casier en salle des professeurs pour la rÃ©ponse&nbsp;:<br />";
 
 		if($casier!='') {
 			echo "<input type='text' name='casier' size='40' maxlength='256' value='$casier' />\n";
 		}
 		else {
-			echo "<input type='text' name='casier' size='40' maxlength='256' value='Casier N°' />\n";
+			echo "<input type='text' name='casier' size='40' maxlength='256' value='Casier NÂ°' />\n";
 		}
 		echo "<br />\n";
 	}
@@ -247,7 +247,7 @@ default://formulaire d'envoi
 	echo "<script type='text/javascript'>
 	function verif_et_valide_envoi() {
 		if(document.getElementById('objet_msg').value=='') {
-			alert('Aucun sujet n\\' a été précisé. Veuillez corriger.')
+			alert('Aucun sujet n\\' a Ã©tÃ© prÃ©cisÃ©. Veuillez corriger.')
 		}
 		else {
 
@@ -255,8 +255,8 @@ default://formulaire d'envoi
 				email=document.getElementById('email_reponse').value;
 	
 				if(email=='') {
-					//confirmation=confirm('Vous n avez pas saisi d adresse courriel/email.\\nVous ne pourrez pas recevoir de réponse par courrier électronique.\\nSouhaitez-vous néanmoins poster le message?');
-					confirmation=confirm('Vous n\\'avez pas saisi d\\'adresse courriel/email.\\nVous ne pourrez pas recevoir de réponse par courrier électronique.\\nSouhaitez-vous néanmoins poster le message?');
+					//confirmation=confirm('Vous n avez pas saisi d adresse courriel/email.\\nVous ne pourrez pas recevoir de rÃ©ponse par courrier Ã©lectronique.\\nSouhaitez-vous nÃ©anmoins poster le message?');
+					confirmation=confirm('Vous n\\'avez pas saisi d\\'adresse courriel/email.\\nVous ne pourrez pas recevoir de rÃ©ponse par courrier Ã©lectronique.\\nSouhaitez-vous nÃ©anmoins poster le message?');
 	
 					if(confirmation) {	
 						document.forms['doc'].submit();
@@ -269,7 +269,7 @@ default://formulaire d'envoi
 					//if ((verif.exec(email) == null)&&(verif2.exec(email) == null)) {
 					var verif = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9.-]{2,}[.][a-zA-Z]{2,3}$/
 					if (verif.exec(email) == null) {
-						confirmation=confirm('L\\'adresse courriel/email saisie ne semble pas valide.\\nVeuillez contrôler la saisie et confirmer votre envoi si l\\'adresse est correcte.\\nSouhaitez-vous néanmoins poster le message?');
+						confirmation=confirm('L\\'adresse courriel/email saisie ne semble pas valide.\\nVeuillez contrÃ´ler la saisie et confirmer votre envoi si l\\'adresse est correcte.\\nSouhaitez-vous nÃ©anmoins poster le message?');
 	
 						if(confirmation) {
 							document.forms['doc'].submit();

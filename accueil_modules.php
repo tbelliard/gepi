@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style aprËs modification pour amÈliorer l'accessibilitÈ
+// Initialisation des feuilles de style apr√®s modification pour am√©liorer l'accessibilit√©
 $accessibilite="y";
 
 // Begin standart header
@@ -148,95 +148,95 @@ $titre = array(
 $titre[] = "Absences";
 $titre[] = "Absences 2";
 $titre[] = "Emploi du temps";
-if ($force_msj) {$titre[] = "Mise ‡ jour automatisÈe";}
+if ($force_msj) {$titre[] = "Mise √† jour automatis√©e";}
 $titre[] = "Trombinoscope";
 $titre[] = "Notanet/Fiches Brevet";
 $titre[] = "Inscription";
 $titre[] = "<img src=\"images/icons/rss.png\" alt='rss' />&nbsp;-&nbsp;Flux rss";
 
 $expli = array(
-"Pour gÈrer les cahiers de texte, (configuration gÈnÈrale, ...)",
-"Pour gÈrer les carnets de notes (configuration gÈnÈrale, ...)");
-$expli[] = "Pour gÈrer le module absences";
-$expli[] = "Pour gÈrer le module absences 2 (en cours de developpement)";
-$expli[] = "Pour gÈrer l'ouverture de l'emploi du temps de Gepi.";
-if ($force_msj) {$expli[] = "Pour gÈrer le module de mise ‡ jour de GEPI";}
-$expli[] = "Pour gÈrer le module trombinoscope";
-$expli[] = "Pour gÈrer le module Notanet/Fiches Brevet";
-$expli[] = "Pour gÈrer simplement les inscriptions des ".$gepiSettings['denomination_professeurs']." par exemple ‡ des stages ou bien des interventions dans les collËges";
+"Pour g√©rer les cahiers de texte, (configuration g√©n√©rale, ...)",
+"Pour g√©rer les carnets de notes (configuration g√©n√©rale, ...)");
+$expli[] = "Pour g√©rer le module absences";
+$expli[] = "Pour g√©rer le module absences 2 (en cours de developpement)";
+$expli[] = "Pour g√©rer l'ouverture de l'emploi du temps de Gepi.";
+if ($force_msj) {$expli[] = "Pour g√©rer le module de mise √† jour de GEPI";}
+$expli[] = "Pour g√©rer le module trombinoscope";
+$expli[] = "Pour g√©rer le module Notanet/Fiches Brevet";
+$expli[] = "Pour g√©rer simplement les inscriptions des ".$gepiSettings['denomination_professeurs']." par exemple √† des stages ou bien des interventions dans les coll√®ges";
 $expli[] = "Gestion des flux rss des cahiers de textes produits par Gepi";
 
-// AUtorisation des statuts personnalisÈs
-// AnnÈes antÈrieures
+// AUtorisation des statuts personnalis√©s
+// Ann√©es ant√©rieures
 $chemin[] = "/utilisateurs/creer_statut_admin.php";
-$titre[] = "CrÈer des statuts personnalisÈs";
-$expli[] = "DÈfinir des statuts supplÈmentaires en personnalisant les droits d'accËs.";
+$titre[] = "Cr√©er des statuts personnalis√©s";
+$expli[] = "D√©finir des statuts suppl√©mentaires en personnalisant les droits d'acc√®s.";
 $key_setting[]='statuts_prives';
 
-// AnnÈes antÈrieures
+// Ann√©es ant√©rieures
 $chemin[] = "/mod_annees_anterieures/admin.php";
-$titre[] = "AnnÈes antÈrieures";
-$expli[] = "Pour gÈrer le module AnnÈes antÈrieures";
+$titre[] = "Ann√©es ant√©rieures";
+$expli[] = "Pour g√©rer le module Ann√©es ant√©rieures";
 $key_setting[]='active_annees_anterieures';
 
 // Module ateliers
 $chemin[] = "/mod_ateliers/ateliers_config.php";
 $titre[] = "Ateliers";
-$expli[] = "Gestion et mise en place d'ateliers de type confÈrences (gestion des ateliers, des intervenants, des inscriptions...).";
+$expli[] = "Gestion et mise en place d'ateliers de type conf√©rences (gestion des ateliers, des intervenants, des inscriptions...).";
 $key_setting[]='active_ateliers';
 
 // Module discipline
 $chemin[] = "/mod_discipline/discipline_admin.php";
 $titre[] = "Discipline";
-$expli[] = "Pour gÈrer le module Discipline.";
+$expli[] = "Pour g√©rer le module Discipline.";
 $key_setting[]='active_mod_discipline';
 
-//Module modËle Open_Office
+//Module mod√®le Open_Office
 $chemin[] = "/mod_ooo/ooo_admin.php";
-$titre[] = "ModËle OpenOffice";
-$expli[] = "Pour gÈrer les modËles Open Office de Gepi.";
+$titre[] = "Mod√®le OpenOffice";
+$expli[] = "Pour g√©rer les mod√®les Open Office de Gepi.";
 $key_setting[]='active_mod_ooo';
 
 //Module ECTS
 $chemin[] = "/mod_ects/ects_admin.php";
 $titre[] = "Saisie ECTS";
-$expli[] = "Pour gÈrer les crÈdits ECTS attribuÈs pour chaque enseignement.";
+$expli[] = "Pour g√©rer les cr√©dits ECTS attribu√©s pour chaque enseignement.";
 $key_setting[]='active_mod_ects';
 
 //Module Plugins
 $chemin[] = "/mod_plugins/index.php";
-$titre[] = "GÈrer les plugins";
-$expli[] = "Interface d'administration des plugins personnels de l'Ètablissement.";
+$titre[] = "G√©rer les plugins";
+$expli[] = "Interface d'administration des plugins personnels de l'√©tablissement.";
 $key_setting[]='';
 
-//Module GÈnËse des classes
+//Module G√©n√®se des classes
 $chemin[] = "/mod_genese_classes/admin.php";
-$titre[] = "GÈnËse des classes";
-$expli[] = "Pour gÈrer le module GÈnËse des classes.";
+$titre[] = "G√©n√®se des classes";
+$expli[] = "Pour g√©rer le module G√©n√®se des classes.";
 $key_setting[]='active_mod_genese_classes';
 
 //Module Epreuve blanche
 $chemin[] = "/mod_epreuve_blanche/admin.php";
 $titre[] = "Epreuves blanches";
-$expli[] = "Pour gÈrer des Èpreuves blanches (anonymat des copies,...).";
+$expli[] = "Pour g√©rer des √©preuves blanches (anonymat des copies,...).";
 $key_setting[]='active_mod_epreuve_blanche';
 
 //Module Examen blanc
 $chemin[] = "/mod_examen_blanc/admin.php";
 $titre[] = "Examens blancs";
-$expli[] = "Pour gÈrer des examens blancs.";
+$expli[] = "Pour g√©rer des examens blancs.";
 $key_setting[]='active_mod_examen_blanc';
 
 //Module "Admissions Post-Bac"
 $chemin[] = "/mod_apb/admin.php";
 $titre[] = "Admissions Post-Bac";
-$expli[] = "Pour gÈrer l'export XML vers la plateforme 'Admissions post-bac'.";
+$expli[] = "Pour g√©rer l'export XML vers la plateforme 'Admissions post-bac'.";
 $key_setting[]='active_mod_apb';
 
 //Module "Admissions Post-Bac"
 $chemin[] = "/mod_gest_aid/admin.php";
 $titre[] = "Gestionnaires d'AID";
-$expli[] = "Pour ouvrir la possibilitÈ de dÈfinir des gestionnaires pour chaque AID.";
+$expli[] = "Pour ouvrir la possibilit√© de d√©finir des gestionnaires pour chaque AID.";
 $key_setting[]='active_mod_gest_aid';
 
 $nb_ligne = count($chemin);
@@ -274,7 +274,7 @@ if ($affiche=='yes') {
 			FIN HAUT DE PAGE
 ****************************************************************/
 if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
-		echo "erreur lors de la crÈation du fil d'ariane";
+		echo "erreur lors de la cr√©ation du fil d'ariane";
 /****************************************************************
 
 ****************************************************************/
@@ -300,7 +300,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	{
 		$nouveauItem->choix_icone('active_cahiers_texte') ;	
 		$nouveauItem->titre="Cahier de textes" ;
-		$nouveauItem->expli="Pour gÈrer les cahiers de texte, (configuration gÈnÈrale, ...)" ;
+		$nouveauItem->expli="Pour g√©rer les cahiers de texte, (configuration g√©n√©rale, ...)" ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);	
@@ -312,7 +312,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	{
 		$nouveauItem->choix_icone('active_carnets_notes') ;	
 		$nouveauItem->titre="Carnets de notes" ;
-		$nouveauItem->expli="Pour gÈrer les carnets de notes (configuration gÈnÈrale, ...)" ;
+		$nouveauItem->expli="Pour g√©rer les carnets de notes (configuration g√©n√©rale, ...)" ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
@@ -324,7 +324,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	{
 		$nouveauItem->choix_icone('active_module_absence%') ;	
 		$nouveauItem->titre="Absences" ;
-		$nouveauItem->expli="Pour gÈrer le module absences" ;
+		$nouveauItem->expli="Pour g√©rer le module absences" ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
@@ -336,7 +336,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	{
 		$nouveauItem->choix_icone('active_module_absence%') ;	
 		$nouveauItem->titre="Absences 2" ;
-		$nouveauItem->expli="Pour gÈrer le module absences 2 (en cours de developpement)" ;
+		$nouveauItem->expli="Pour g√©rer le module absences 2 (en cours de developpement)" ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
@@ -348,20 +348,20 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	{
 		$nouveauItem->choix_icone('autorise_edt%') ;	
 		$nouveauItem->titre="Emploi du temps" ;
-		$nouveauItem->expli="Pour gÈrer l'ouverture de l'emploi du temps de Gepi." ;
+		$nouveauItem->expli="Pour g√©rer l'ouverture de l'emploi du temps de Gepi." ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
 	
-// Mise ‡ jour automatisÈe
+// Mise √† jour automatis√©e
 	if ($force_msj) {
 		$nouveauItem = new itemGeneral();
 		$nouveauItem->chemin='/mod_miseajour/admin/index.php';	
 		if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 		{
 			$nouveauItem->choix_icone('active_module_msj') ;	
-			$nouveauItem->titre="Mise ‡ jour automatisÈe" ;
-			$nouveauItem->expli="Pour gÈrer le module de mise ‡ jour de GEPI" ;
+			$nouveauItem->titre="Mise √† jour automatis√©e" ;
+			$nouveauItem->expli="Pour g√©rer le module de mise √† jour de GEPI" ;
 			$menuPage[]=$nouveauItem;
 		}
 		unset($nouveauItem);
@@ -374,7 +374,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	{
 		$nouveauItem->choix_icone('active_module_trombinoscopes') ;	
 		$nouveauItem->titre="Trombinoscope" ;
-		$nouveauItem->expli="Pour gÈrer le module trombinoscope." ;
+		$nouveauItem->expli="Pour g√©rer le module trombinoscope." ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
@@ -386,7 +386,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	{
 		$nouveauItem->choix_icone('active_notanet') ;	
 		$nouveauItem->titre="Notanet/Fiches Brevet" ;
-		$nouveauItem->expli="Pour gÈrer le module Notanet/Fiches Brevet" ;
+		$nouveauItem->expli="Pour g√©rer le module Notanet/Fiches Brevet" ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
@@ -398,7 +398,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	{
 		$nouveauItem->choix_icone('active_inscription') ;	
 		$nouveauItem->titre="Inscription" ;
-		$nouveauItem->expli="Pour gÈrer simplement les inscriptions des ".$gepiSettings['denomination_professeurs']." par exemple ‡ des stages ou bien des interventions dans les collËges" ;
+		$nouveauItem->expli="Pour g√©rer simplement les inscriptions des ".$gepiSettings['denomination_professeurs']." par exemple √† des stages ou bien des interventions dans les coll√®ges" ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
@@ -416,26 +416,26 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	unset($nouveauItem);
 
 
-// Autorisation des statuts personnalisÈs
+// Autorisation des statuts personnalis√©s
 	$nouveauItem = new itemGeneral();
 	$nouveauItem->chemin='/utilisateurs/creer_statut_admin.php';	
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
 		$nouveauItem->choix_icone('statuts_prives') ;	
-		$nouveauItem->titre="CrÈer des statuts personnalisÈs" ;
-		$nouveauItem->expli="DÈfinir des statuts supplÈmentaires en personnalisant les droits d'accËs." ;
+		$nouveauItem->titre="Cr√©er des statuts personnalis√©s" ;
+		$nouveauItem->expli="D√©finir des statuts suppl√©mentaires en personnalisant les droits d'acc√®s." ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
 	
-// AnnÈes antÈrieures
+// Ann√©es ant√©rieures
 	$nouveauItem = new itemGeneral();
 	$nouveauItem->chemin='/mod_annees_anterieures/admin.php';	
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
 		$nouveauItem->choix_icone('active_annees_anterieures') ;	
-		$nouveauItem->titre="AnnÈes antÈrieures" ;
-		$nouveauItem->expli="Pour gÈrer le module AnnÈes antÈrieures." ;
+		$nouveauItem->titre="Ann√©es ant√©rieures" ;
+		$nouveauItem->expli="Pour g√©rer le module Ann√©es ant√©rieures." ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
@@ -447,7 +447,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	{
 		$nouveauItem->choix_icone('active_ateliers') ;	
 		$nouveauItem->titre="Ateliers" ;
-		$nouveauItem->expli="Gestion et mise en place d'ateliers de type confÈrences (gestion des ateliers, des intervenants, des inscriptions...)." ;
+		$nouveauItem->expli="Gestion et mise en place d'ateliers de type conf√©rences (gestion des ateliers, des intervenants, des inscriptions...)." ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
@@ -459,19 +459,19 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	{
 		$nouveauItem->choix_icone('active_mod_discipline') ;	
 		$nouveauItem->titre="Discipline" ;
-		$nouveauItem->expli="Pour gÈrer le module Discipline." ;
+		$nouveauItem->expli="Pour g√©rer le module Discipline." ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
 
-//Module modËle Open_Office
+//Module mod√®le Open_Office
 	$nouveauItem = new itemGeneral();
 	$nouveauItem->chemin='/mod_ooo/ooo_admin.php';	
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
 		$nouveauItem->choix_icone('active_mod_ooo') ;	
-		$nouveauItem->titre="ModËle OpenOffice" ;
-		$nouveauItem->expli="Pour gÈrer les modËles Open Office de Gepi." ;
+		$nouveauItem->titre="Mod√®le OpenOffice" ;
+		$nouveauItem->expli="Pour g√©rer les mod√®les Open Office de Gepi." ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
@@ -483,7 +483,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	{
 		$nouveauItem->choix_icone('active_mod_ects') ;	
 		$nouveauItem->titre="Saisie ECTS" ;
-		$nouveauItem->expli="Pour gÈrer les crÈdits ECTS attribuÈs pour chaque enseignement." ;
+		$nouveauItem->expli="Pour g√©rer les cr√©dits ECTS attribu√©s pour chaque enseignement." ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
@@ -494,20 +494,20 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
 		$nouveauItem->choix_icone('') ;	
-		$nouveauItem->titre="GÈrer les plugins" ;
-		$nouveauItem->expli="Interface d'administration des plugins personnels de l'Ètablissement." ;
+		$nouveauItem->titre="G√©rer les plugins" ;
+		$nouveauItem->expli="Interface d'administration des plugins personnels de l'√©tablissement." ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
 
-//Module GÈnËse des classes
+//Module G√©n√®se des classes
 	$nouveauItem = new itemGeneral();
 	$nouveauItem->chemin='/mod_genese_classes/admin.php';	
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
 		$nouveauItem->choix_icone('active_mod_genese_classes') ;	
-		$nouveauItem->titre="GÈnËse des classes" ;
-		$nouveauItem->expli="Pour gÈrer le module GÈnËse des classes." ;
+		$nouveauItem->titre="G√©n√®se des classes" ;
+		$nouveauItem->expli="Pour g√©rer le module G√©n√®se des classes." ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
@@ -519,7 +519,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	{
 		$nouveauItem->choix_icone('active_mod_epreuve_blanche') ;	
 		$nouveauItem->titre="Epreuves blanches" ;
-		$nouveauItem->expli="Pour gÈrer des Èpreuves blanches (anonymat des copies,...)." ;
+		$nouveauItem->expli="Pour g√©rer des √©preuves blanches (anonymat des copies,...)." ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
@@ -531,7 +531,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	{
 		$nouveauItem->choix_icone('active_mod_examen_blanc') ;	
 		$nouveauItem->titre="Examens blancs" ;
-		$nouveauItem->expli="Pour gÈrer des examens blancs." ;
+		$nouveauItem->expli="Pour g√©rer des examens blancs." ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
@@ -544,7 +544,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	{
 		$nouveauItem->choix_icone('active_mod_apb') ;	
 		$nouveauItem->titre="Admissions Post-Bac" ;
-		$nouveauItem->expli="Pour gÈrer l'export XML vers la plateforme 'Admissions post-bac'." ;
+		$nouveauItem->expli="Pour g√©rer l'export XML vers la plateforme 'Admissions post-bac'." ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
@@ -557,7 +557,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	{
 		$nouveauItem->choix_icone('active_mod_gest_aid') ;	
 		$nouveauItem->titre="Gestionnaires d'AID" ;
-		$nouveauItem->expli="Pour ouvrir la possibilitÈ de dÈfinir des gestionnaires pour chaque AID." ;
+		$nouveauItem->expli="Pour ouvrir la possibilit√© de d√©finir des gestionnaires pour chaque AID." ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
@@ -568,20 +568,20 @@ $tbs_pmv="";
 require_once ("./lib/footer_template.inc.php");
 
 /****************************************************************
-			On s'assure que le nom du gabarit est bien renseignÈ
+			On s'assure que le nom du gabarit est bien renseign√©
 ****************************************************************/
 if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 	$_SESSION['rep_gabarits']="origine";
 }
 
 //==================================
-// DÈcommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// D√©commenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 // $affiche_debug=debug_var2();
 
 
 $nom_gabarit = './templates/'.$_SESSION['rep_gabarits'].'/accueil_modules_template.php';
 
-$tbs_last_connection=""; // On n'affiche pas les derniËres connexions
+$tbs_last_connection=""; // On n'affiche pas les derni√®res connexions
 include($nom_gabarit);
 
 // ------ on vide les tableaux -----

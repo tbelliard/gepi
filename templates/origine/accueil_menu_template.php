@@ -3,7 +3,7 @@
  * $Id: accueil_menu_template.php 5622 2010-10-09 17:41:43Z regis $
 */
 ?>
-<!-- menus général -->
+<!-- menus gÃ©nÃ©ral -->
 
 <div class='div_tableau'>
 	<h3 class="colonne ie_gauche">
@@ -18,4 +18,4 @@
 </div>
 
 
-<!-- Fin menu	général -->	
+<!-- Fin menu	gÃ©nÃ©ral -->	

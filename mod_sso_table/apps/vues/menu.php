@@ -20,15 +20,15 @@
 * along with GEPI; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
 ?>
 <ol id="essaiMenu">
 <li><a href='index.php'><img src='img/back.png' alt='Retour' class='back_link'/> Accueil module </a></li>
-<li><a href='index.php?ctrl=import'><img src='img/table_add.png' alt='importation' class='back_link'/> Import de données </a></li>
-<li><a href='index.php?ctrl=maj'><img src='img/zoom.png' alt='mise_a_jour' class='back_link'/> Mise à jour de données </a></li>
+<li><a href='index.php?ctrl=import'><img src='img/table_add.png' alt='importation' class='back_link'/> Import de donnÃ©es </a></li>
+<li><a href='index.php?ctrl=maj'><img src='img/zoom.png' alt='mise_a_jour' class='back_link'/> Mise Ã  jour de donnÃ©es </a></li>
 <li><a href='index.php?ctrl=cvsent'><img src='img/table_add.png' alt='ent' class='back_link'/> CVS export ENT</a></li>
 <li><a href='index.php?ctrl=nettoyage'><img src='img/database_delete.png' alt='nettoyage' class='back_link'/> Nettoyage correspondances</a></li>
 <li><a href='index.php?ctrl=help'><img src='img/help.png' alt='aide' class='back_link'/> Aide</a></li>

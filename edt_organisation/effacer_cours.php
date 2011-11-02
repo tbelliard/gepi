@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Fichier destiné à permettre la suppression d'un cours
+ * Fichier destinÃ© Ã  permettre la suppression d'un cours
  *
  * @version $Id: effacer_cours.php 3886 2009-12-08 21:48:12Z regis $
  *
@@ -47,17 +47,17 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
-// Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
+// SÃ©curitÃ© supplÃ©mentaire par rapport aux paramÃ¨tres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes" OR ( ($_SESSION["statut"] == 'professeur') AND (getSettingValue("edt_remplir_prof") != 'y') )) {
 	Die(ASK_AUTHORIZATION_TO_ADMIN);
 }
-// On vérifie que le droit soit le bon pour le profil scolarité
+// On vÃ©rifie que le droit soit le bon pour le profil scolaritÃ©
 	$autorise = "non";
 if ($_SESSION["statut"] == "administrateur") {
 	$autorise = "oui";
@@ -70,7 +70,7 @@ elseif(($_SESSION["statut"] == 'professeur') AND (getSettingValue("edt_remplir_p
 }
 else {
 	$autorise = "non";
-	exit('Vous n\'êtes pas autorisé à modifier les cours des emplois du temps, contacter l\'administrateur de Gepi');
+	exit('Vous n\'Ãªtes pas autorisÃ© Ã  modifier les cours des emplois du temps, contacter l\'administrateur de Gepi');
 }
 
 
@@ -83,7 +83,7 @@ $annuler_suppression = isset($_GET["annuler_suppression"]) ? "yes" : (isset($_PO
 $period_id=isset($_GET['period_id']) ? $_GET['period_id'] : (isset($_POST['period_id']) ? $_POST['period_id'] : NULL);
 $message = "";
 
-// ================= On supprime un cours si ça a été demandé
+// ================= On supprime un cours si Ã§a a Ã©tÃ© demandÃ©
 
 if (isset($supprimer_cours) AND $confirme_suppression=="yes") {
     if ($_SESSION["statut"] == "professeur" AND getSettingValue("edt_remplir_prof") == 'y' AND strtolower($identite) != strtolower($_SESSION["login"])){
@@ -91,7 +91,7 @@ if (isset($supprimer_cours) AND $confirme_suppression=="yes") {
     }
     else if (($_SESSION["statut"] == "administrateur") OR ($_SESSION["statut"] == "scolarite") OR (($_SESSION["statut"] == "professeur") AND (getSettingValue("edt_remplir_prof") == 'y'))){
 
-        // ---- formattage du paramètre pour éviter une injection SQL
+        // ---- formattage du paramÃ¨tre pour Ã©viter une injection SQL
         settype($supprimer_cours, "int");
         // ---- En cas de rechargement de page, on ne fait pas la suppression deux fois.
         $test_avant_effacement = mysql_query("SELECT * FROM edt_cours WHERE id_cours= '".$supprimer_cours."'");
@@ -116,13 +116,13 @@ if (isset($supprimer_cours) AND $confirme_suppression=="yes") {
 
 $_SESSION["message"] = $message;
 
-/*/ CSS et js particulier à l'EdT
+/*/ CSS et js particulier Ã  l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 
-// +++++++++++++++ entête de Gepi +++++++++
+// +++++++++++++++ entÃªte de Gepi +++++++++
 require_once("../lib/header.inc");
-// +++++++++++++++ entête de Gepi +++++++++
+// +++++++++++++++ entÃªte de Gepi +++++++++
 
 // On ajoute le menu EdT
 require_once("./menu.inc.php");
@@ -152,10 +152,10 @@ if ($confirme_suppression=="yes" OR $annuler_suppression=="yes"){
 
 <?php
 
-// Si tout est ok, on affiche le cours reçu en GET ou POST
+// Si tout est ok, on affiche le cours reÃ§u en GET ou POST
 if ($autorise == "oui") {
 
-	// On affiche les différents items du cours
+	// On affiche les diffÃ©rents items du cours
 echo '
 <div class="ButtonBarCenter">
 	<fieldset>

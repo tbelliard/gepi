@@ -30,7 +30,7 @@ $niveau_arbo = 1;
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
-// fonctions complÈmentaires et/ou librairies utiles
+// fonctions compl√©mentaires et/ou librairies utiles
 
 
 // Resume session
@@ -43,9 +43,9 @@ if ($resultat_session == "c") {
     die();
 }
 
-// SÈcuritÈ
-// SQL : INSERT INTO droits VALUES ( '/eleves/export_bull_eleve.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Exportation bulletin ÈlËve', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/eleves/export_bull_eleve.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Exportation bulletin ÈlËve', '');";
+// S√©curit√©
+// SQL : INSERT INTO droits VALUES ( '/eleves/export_bull_eleve.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Exportation bulletin √©l√®ve', '');
+// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/eleves/export_bull_eleve.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Exportation bulletin √©l√®ve', '');";
 //
 
 
@@ -62,13 +62,13 @@ if (!checkAccess()) {
 function get_content($db, $table,$from,$limit) {
     $search       = array("\x00", "\x0a", "\x0d", "\x1a");
     $replace      = array('\0', '\n', '\r', '\Z');
-    // les donnÈes de la table
+    // les donn√©es de la table
     $def = '';
     $query = "SELECT * FROM $table LIMIT $from,$limit";
     $resData = @mysql_query($query);
-    //peut survenir avec la corruption d'une table, on prÈvient
+    //peut survenir avec la corruption d'une table, on pr√©vient
     if (!$resData) {
-        $def .="ProblËme avec les donnÈes de $table, corruption possible !\n";
+        $def .="Probl√®me avec les donn√©es de $table, corruption possible !\n";
     } else {
         if (@mysql_num_rows($resData) > 0) {
              $sFieldnames = "";
@@ -78,7 +78,7 @@ function get_content($db, $table,$from,$limit) {
                   $lesDonnees = "";
                   for ($mp = 0; $mp < $num_fields; $mp++) {
                   $lesDonnees .= "'" . str_replace($search, $replace, traitement_magic_quotes($rowdata[$mp])) . "'";
-                  //on ajoute ‡ la fin une virgule si nÈcessaire
+                  //on ajoute √† la fin une virgule si n√©cessaire
                       if ($mp<$num_fields-1) $lesDonnees .= ", ";
                   }
                   $lesDonnees = "$sInsert($lesDonnees);\n";
@@ -159,7 +159,7 @@ function get_bull($ele_login) {
 	}
 
 
-	// RÈcupÈrer aussi les absences?
+	// R√©cup√©rer aussi les absences?
 	$sql="SELECT * FROM absences WHERE login='$ele_login' ORDER BY periode;";
 	//echo "$sql<br />";
 	$res=mysql_query($sql);
@@ -197,17 +197,17 @@ function get_nom_prenom_from_login($ele_login,$mode) {
 	return $retour;
 }
 
-// PB: Il faut remplacer le login PROF par ANONYME_EXT... ou le nom de l'Ètablissement
-// A l'import, il faut avoir crÈÈ l'ÈlËve,
-//             crÈer des enseignements? dans une classe EXTERIEUR... il faut une classe par ÈlËve...
-//             si on a plusieurs arrivÈes, Áa fait des matiËres en plus,... pas un pb...
-//             seules les matiËres suivies par l'ÈlËve sont prises en compte...
-//             crÈer des cours diffÈrents pour chaque ÈlËve pour Èviter des moyennes de classe fantaisistes
-// A l'export, une ligne pour l'association: LOGIN_ETAB -> Nom, prÈnom pour la table utilisateurs
+// PB: Il faut remplacer le login PROF par ANONYME_EXT... ou le nom de l'√©tablissement
+// A l'import, il faut avoir cr√©√© l'√©l√®ve,
+//             cr√©er des enseignements? dans une classe EXTERIEUR... il faut une classe par √©l√®ve...
+//             si on a plusieurs arriv√©es, √ßa fait des mati√®res en plus,... pas un pb...
+//             seules les mati√®res suivies par l'√©l√®ve sont prises en compte...
+//             cr√©er des cours diff√©rents pour chaque √©l√®ve pour √©viter des moyennes de classe fantaisistes
+// A l'export, une ligne pour l'association: LOGIN_ETAB -> Nom, pr√©nom pour la table utilisateurs
 
 
 // Nom: gepiSchoolName
-// PrÈnom: gepiSchoolCity
+// Pr√©nom: gepiSchoolCity
 
 // ======================== CSS et js particuliers ========================
 $utilisation_win = "non";
@@ -231,9 +231,9 @@ echo "<div class='norme'><p class='bold'><a href='index.php'><img src='../images
 if(getSettingValue('exp_imp_chgt_etab')!='yes') {
 	// Pour activer le dispositif:
 	// DELETE FROM setting WHERE name='exp_imp_chgt_etab';INSERT INTO setting SET name='exp_imp_chgt_etab', value='yes';
-	echo "<p>Cette page est destinÈe ‡ exporter les moyennes et apprÈciations du bulletin d'un ÈlËve pour permettre un rÈimport dans un autre Ètablissement.</p>\n";
+	echo "<p>Cette page est destin√©e √† exporter les moyennes et appr√©ciations du bulletin d'un √©l√®ve pour permettre un r√©import dans un autre √©tablissement.</p>\n";
 	echo "<p><br /></p>\n";
-	echo "<p>Le dispositif (<i>encore en cours de test au 17/07/2008</i>) ne semble pas activÈ.</p>\n";
+	echo "<p>Le dispositif (<i>encore en cours de test au 17/07/2008</i>) ne semble pas activ√©.</p>\n";
 	require_once("../lib/footer.inc.php");
 	die();
 }
@@ -243,12 +243,12 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 	echo "</p>\n";
 	echo "</div>\n";
 
-	echo "<p>Cette page est destinÈe ‡ exporter les moyennes et apprÈciations du bulletin d'un ÈlËve pour permettre un rÈimport dans un autre Ètablissement.</p>\n";
+	echo "<p>Cette page est destin√©e √† exporter les moyennes et appr√©ciations du bulletin d'un √©l√®ve pour permettre un r√©import dans un autre √©tablissement.</p>\n";
 
 	// Formulaire pour navigateur SANS Javascript:
 	echo "<noscript>
 	<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire1'>
-		Afficher les ÈlËves dont le <b>nom</b> contient: <input type='text' name='rech_nom' value='' />
+		Afficher les √©l√®ves dont le <b>nom</b> contient: <input type='text' name='rech_nom' value='' />
 		<input type='hidden' name='page' value='$page' />
 		<input type='submit' name='Recherche_sans_js' value='Rechercher' />
 	</form>
@@ -283,7 +283,7 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 	echo "<div id='recherche_avec_js' style='display:none;'>\n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit='cherche_eleves();return false;' method='post' name='formulaire'>";
-	echo "Afficher les ÈlËves dont le <b>nom</b> contient: <input type='text' name='rech_nom' id='rech_nom' value='' />\n";
+	echo "Afficher les √©l√®ves dont le <b>nom</b> contient: <input type='text' name='rech_nom' id='rech_nom' value='' />\n";
 	echo "<input type='hidden' name='page' value='$page' />\n";
 	echo "<input type='button' name='Recherche' value='Rechercher' onclick='cherche_eleves()' />\n";
 	echo "</form>\n";
@@ -295,15 +295,15 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 
 }
 elseif(isset($_POST['Recherche_sans_js'])) {
-	// On ne passe ici que si JavaScript est dÈsactivÈ
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre ÈlËve</a>\n";
+	// On ne passe ici que si JavaScript est d√©sactiv√©
+	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre √©l√®ve</a>\n";
 	echo "</p>\n";
 	echo "</div>\n";
 
 	include("recherche_eleve.php");
 }
 else {
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre ÈlËve</a>\n";
+	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre √©l√®ve</a>\n";
 	echo "</p>\n";
 	echo "</div>\n";
 
@@ -323,7 +323,7 @@ else {
 	fwrite($fich,get_bull($ele_login));
 	fclose($fich);
 
-	echo "<p><a href=\"../temp/".$ele_login.".csv\">TÈlÈcharger le CSV</a></p>\n";
+	echo "<p><a href=\"../temp/".$ele_login.".csv\">T√©l√©charger le CSV</a></p>\n";
 
 }
 

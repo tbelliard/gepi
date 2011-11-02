@@ -22,8 +22,8 @@
 */
 //==============================
 // PREPARATIFS boireaus 20080422
-// Pour passer à no_anti_inject comme pour les autres saisies d'appréciations
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+// Pour passer Ã  no_anti_inject comme pour les autres saisies d'apprÃ©ciations
+// On indique qu'il faut creer des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $mode_commentaire_20080422="";
 //$mode_commentaire_20080422="no_anti_inject";
 
@@ -51,18 +51,18 @@ if (!checkAccess()) {
 	die();
 }
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_carnets_notes")!='y') {
-	die("Le module n'est pas activé.");
+	die("Le module n'est pas activÃ©.");
 }
 
 require('cc_lib.php');
 
 unset($id_racine);
 $id_racine = isset($_POST["id_racine"]) ? $_POST["id_racine"] : (isset($_GET["id_racine"]) ? $_GET["id_racine"] : NULL);
-// On teste si le carnet de notes appartient bien à la personne connectée
+// On teste si le carnet de notes appartient bien Ã  la personne connectÃ©e
 if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
-    $mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes qui ne vous appartient pas !");
+    $mess=rawurlencode("Vous tentez de pÃ©nÃ©trer dans un carnet de notes qui ne vous appartient pas !");
     header("Location: index.php?msg=$mess");
     die();
 }
@@ -76,7 +76,7 @@ include "../lib/periodes.inc.php";
 unset($id_dev);
 $id_dev = isset($_POST["id_dev"]) ? $_POST["id_dev"] : (isset($_GET["id_dev"]) ? $_GET["id_dev"] : NULL);
 if(!isset($id_dev)) {
-	$mess="$nom_cc non précisé.<br />";
+	$mess="$nom_cc non prÃ©cisÃ©.<br />";
 	header("Location: index_cc.php?id_racine=$id_racine&msg=$mess");
 	die();
 }
@@ -91,7 +91,7 @@ if(mysql_num_rows($query)>0) {
 	$precision=mysql_result($query, 0, 'arrondir');
 }
 else {
-	header("Location: index.php?msg=".rawurlencode("Le numéro de devoir n est pas associé à ce groupe."));
+	header("Location: index.php?msg=".rawurlencode("Le numÃ©ro de devoir n est pas associÃ© Ã  ce groupe."));
 	die();
 }
 
@@ -109,7 +109,7 @@ if(isset($_GET['export_csv'])) {
 	//echo "$sql<br />";
 	$res_eval=mysql_query($sql);
 	if(mysql_num_rows($res_eval)==0) {
-		$msg="Aucune évaluation n'est associée au $nom_cc n°$id_dev<br />";
+		$msg="Aucune Ã©valuation n'est associÃ©e au $nom_cc nÂ°$id_dev<br />";
 	}
 	else {
 		$cpt=0;
@@ -211,7 +211,7 @@ if(isset($_GET['export_csv'])) {
 		$now = gmdate('D, d M Y H:i:s') . ' GMT';
 		header('Expires: ' . $now);
 		// lem9 & loic1: IE need specific headers
-		//nom du fichier à telecharger
+		//nom du fichier Ã  telecharger
 	
 		if (preg_match('/MSIE/', $_SERVER['HTTP_USER_AGENT'])) {
 			header('Content-Disposition: inline; filename="cc_dev_'.$id_dev.'_'.date("dmY").'.csv"');
@@ -232,7 +232,7 @@ if(isset($_GET['export_pdf'])) {
 	//echo "$sql<br />";
 	$res_eval=mysql_query($sql);
 	if(mysql_num_rows($res_eval)==0) {
-		$msg="Aucune évaluation n'est associée au $nom_cc n°$id_dev<br />";
+		$msg="Aucune Ã©valuation n'est associÃ©e au $nom_cc nÂ°$id_dev<br />";
 	}
 	else {
 
@@ -322,7 +322,7 @@ if(isset($_GET['export_pdf'])) {
 				$this->SetFont('arial','',7.5);
 
 				//$texte=getSettingValue("gepiSchoolName")."  ";
-				$texte=ucfirst($nom_cc)." n°$id_dev - ".$professeur_courant;
+				$texte=ucfirst($nom_cc)." nÂ°$id_dev - ".$professeur_courant;
 				$lg_text=$this->GetStringWidth($texte);
 				$this->SetXY(10,287);
 				$this->Cell(0,5,$texte,0,0,'L');
@@ -341,13 +341,13 @@ if(isset($_GET['export_pdf'])) {
 
 				$this->SetFont($fonte,'B',14);
 				$this->SetXY(10,10);
-				$this->Cell($largeur_page-$MargeDroite-$MargeGauche,10,getSettingValue('gepiSchoolName').' - Année scolaire '.getSettingValue('gepiYear'),'LRBT',1,'C');
+				$this->Cell($largeur_page-$MargeDroite-$MargeGauche,10,getSettingValue('gepiSchoolName').' - AnnÃ©e scolaire '.getSettingValue('gepiYear'),'LRBT',1,'C');
 
 				$x1=$this->GetX();
 				$y1=$this->GetY();
 
 				$this->SetFont($fonte,'B',12);
-				$texte=ucfirst($nom_cc)." n°".$id_dev;
+				$texte=ucfirst($nom_cc)." nÂ°".$id_dev;
 				$largeur_tmp=$this->GetStringWidth($texte)+4;
 				$this->Cell($largeur_tmp,$this->FontSize*$sc_interligne,$texte,'LRBT',0,'C');
 
@@ -364,7 +364,7 @@ if(isset($_GET['export_pdf'])) {
 			}
 		}
 
-		// Définition de la page
+		// DÃ©finition de la page
 		$pdf=new rel_PDF("P","mm","A4");
 		//$pdf=new FPDF("P","mm","A4");
 		$pdf->SetTopMargin($MargeHaut);
@@ -449,7 +449,7 @@ if(isset($_GET['export_pdf'])) {
 			$y=$pdf->GetY();
 			$pdf->SetXY($x_courant,$y+$h_cell);
 
-			$texte='Élève : '.$tmp_tab['nom']." ".$tmp_tab['prenom'];
+			$texte='Ã‰lÃ¨ve : '.$tmp_tab['nom']." ".$tmp_tab['prenom'];
 			$pdf->Cell($largeur_tab,$h_cell,$texte,'LRBT',0,'C');
 
 			//$x=$pdf->GetX();
@@ -555,8 +555,8 @@ if(isset($_GET['export_pdf'])) {
 	}
 }
 
-//$message_enregistrement = "Les modifications ont été enregistrées !";
-//$themessage  = 'Des notes ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+//$message_enregistrement = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
+//$themessage  = 'Des notes ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Visualisation des notes CC";
 require_once("../lib/header.inc");
@@ -578,7 +578,7 @@ echo " | Export <a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_de
 //echo "|";
 echo "</p>\n";
 
-echo "<h2 class='noprint'>$nom_cc n°$id_dev&nbsp;: $nom_court_dev (<i>$nom_complet_dev</i>)</h2>\n";
+echo "<h2 class='noprint'>$nom_cc nÂ°$id_dev&nbsp;: $nom_court_dev (<i>$nom_complet_dev</i>)</h2>\n";
 
 $sql="SELECT * FROM cc_eval WHERE id_dev='$id_dev' ORDER BY date, nom_court;";
 $res2=mysql_query($sql);
@@ -639,7 +639,7 @@ foreach ($liste_eleves as $eleve) {
 	echo "</tr>\n";
 
 	echo "<tr class='table_no_split'>\n";
-	echo "<th colspan='4'><b>Elève</b>&nbsp;: $eleve_nom[$i] $eleve_prenom[$i]</th>\n";
+	echo "<th colspan='4'><b>ElÃ¨ve</b>&nbsp;: $eleve_nom[$i] $eleve_prenom[$i]</th>\n";
 	echo "</tr>\n";
 
 	echo "<tr class='table_no_split'>\n";

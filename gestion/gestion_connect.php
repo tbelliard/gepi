@@ -48,13 +48,13 @@ if (!checkAccess()) {
 }
 
 /*
-// Enregistrement de la durée de conservation des données
+// Enregistrement de la durÃ©e de conservation des donnÃ©es
 
 if (isset($_POST['duree'])) {
     if (!saveSetting(("duree_conservation_logs"), $_POST['duree'])) {
-        $msg = "Erreur lors de l'enregistrement de la durée de conservation des connexions !";
+        $msg = "Erreur lors de l'enregistrement de la durÃ©e de conservation des connexions !";
     } else {
-        $msg = "La durée de conservation des connexions a été enregistrée.<br />Le changement sera pris en compte après la prochaine connexion à GEPI.";
+        $msg = "La durÃ©e de conservation des connexions a Ã©tÃ© enregistrÃ©e.<br />Le changement sera pris en compte aprÃ¨s la prochaine connexion Ã  GEPI.";
     }
 }
 
@@ -63,7 +63,7 @@ if (isset($_POST['use_sso'])) {
     if (!saveSetting(("use_sso"), $_POST['use_sso'])) {
         $msg = "Erreur lors de l'enregistrement du mode d'authentification !";
     } else {
-        $msg = "Le mode d'authentification a été enregistré.";
+        $msg = "Le mode d'authentification a Ã©tÃ© enregistrÃ©.";
     }
 }
 */
@@ -81,9 +81,9 @@ if (isset($_POST['valid_sup_logs']) ) {
     $sql = "delete from log where END < now()";
     $res = sql_query($sql);
     if ($res) {
-       $msg = "La suppression des entrées dans le journal de connexion a été effectuée.";
+       $msg = "La suppression des entrÃ©es dans le journal de connexion a Ã©tÃ© effectuÃ©e.";
     } else {
-       $msg = "Il y a eu un problème lors de la suppression des entrées dans le journal de connexion.";
+       $msg = "Il y a eu un problÃ¨me lors de la suppression des entrÃ©es dans le journal de connexion.";
     }
 }
 
@@ -92,9 +92,9 @@ if (isset($_POST['valid_chgt_mdp'])) {
     $sql = "update utilisateurs set change_mdp='y' where login != '".$_SESSION['login']."'";
     $res = sql_query($sql);
     if ($res) {
-       $msg = "La demande de changement obligatoire de mot de passe a été enregistrée.";
+       $msg = "La demande de changement obligatoire de mot de passe a Ã©tÃ© enregistrÃ©e.";
     } else {
-       $msg = "Il y a eu un problème lors de l'enregistrement de la demande de changement obligatoire de mot de passe.";
+       $msg = "Il y a eu un problÃ¨me lors de l'enregistrement de la demande de changement obligatoire de mot de passe.";
     }
 }
 */
@@ -110,42 +110,42 @@ if (isset($_POST['valid_param_mdp'])) {
     if ($_POST['nombre_tentatives_connexion'] < 1) $_POST['nombre_tentatives_connexion'] = 1;
     if ($_POST['temps_compte_verrouille'] < 0) $_POST['temps_compte_verrouille'] = 0;
     if (!saveSetting("nombre_tentatives_connexion", $_POST['nombre_tentatives_connexion'])) {
-        $msg1 = "Il y a eu un problème lors de l'enregistrement du paramètre nombre_tentatives_connexion.";
+        $msg1 = "Il y a eu un problÃ¨me lors de l'enregistrement du paramÃ¨tre nombre_tentatives_connexion.";
     } else {
         $msg1 = "";
     }
     if (!saveSetting("temps_compte_verrouille", $_POST['temps_compte_verrouille'])) {
-        $msg2 = "Il y a eu un problème lors de l'enregistrement du paramètre temps_compte_verrouille.";
+        $msg2 = "Il y a eu un problÃ¨me lors de l'enregistrement du paramÃ¨tre temps_compte_verrouille.";
     } else {
         $msg2 = "";
     }
     if (($msg1 == "") and ($msg2 == ""))
-        $msg = "Les paramètres ont été correctement enregistrées";
+        $msg = "Les paramÃ¨tres ont Ã©tÃ© correctement enregistrÃ©es";
     else
         $msg = $msg1." ".$msg2;
 }
 
 
 
-//Activation / désactivation du login
+//Activation / dÃ©sactivation du login
 if (isset($_POST['disable_login'])) {
 	check_token();
 
     if (!saveSetting("disable_login", $_POST['disable_login'])) {
-        $msg = "Il y a eu un problème lors de l'enregistrement du paramètre d'activation/désactivation des connexions.";
+        $msg = "Il y a eu un problÃ¨me lors de l'enregistrement du paramÃ¨tre d'activation/dÃ©sactivation des connexions.";
     } else {
-        $msg = "l'enregistrement du paramètre d'activation/désactivation des connexions a été effectué avec succès.";
+        $msg = "l'enregistrement du paramÃ¨tre d'activation/dÃ©sactivation des connexions a Ã©tÃ© effectuÃ© avec succÃ¨s.";
     }
 }
 
-//Activation / désactivation de la procédure de réinitialisation du mot de passe par email
+//Activation / dÃ©sactivation de la procÃ©dure de rÃ©initialisation du mot de passe par email
 if (isset($_POST['enable_password_recovery'])) {
 	check_token();
 
     if (!saveSetting("enable_password_recovery", $_POST['enable_password_recovery'])) {
-        $msg = "Il y a eu un problème lors de l'enregistrement du paramètre d'activation/désactivation des connexions.";
+        $msg = "Il y a eu un problÃ¨me lors de l'enregistrement du paramÃ¨tre d'activation/dÃ©sactivation des connexions.";
     } else {
-        $msg = "l'enregistrement du paramètre d'activation/désactivation des connexions a été effectué avec succès.";
+        $msg = "l'enregistrement du paramÃ¨tre d'activation/dÃ©sactivation des connexions a Ã©tÃ© effectuÃ© avec succÃ¨s.";
     }
 }
 
@@ -181,9 +181,9 @@ if(isset($_POST['valid_envoi_mail_connexion'])){
 		$envoi_mail_connexion="n";
 	}
 	if (!saveSetting("envoi_mail_connexion", $envoi_mail_connexion)) {
-		$msg = "Il y a eu un problème lors de l'enregistrement du paramètre d'envoi ou non de mail lors des connexions.";
+		$msg = "Il y a eu un problÃ¨me lors de l'enregistrement du paramÃ¨tre d'envoi ou non de mail lors des connexions.";
 	} else {
-		$msg = "l'enregistrement du paramètre d'envoi ou non de mail lors des connexions a été effectué avec succès.";
+		$msg = "l'enregistrement du paramÃ¨tre d'envoi ou non de mail lors des connexions a Ã©tÃ© effectuÃ© avec succÃ¨s.";
 	}
 }
 
@@ -215,10 +215,10 @@ echo "<p class='bold'><a href=\"".$retour."\"><img src='../images/icons/back.png
 
 
 //
-// Affichage des personnes connectées
+// Affichage des personnes connectÃ©es
 //
-echo "<h3 class='gepi'>Utilisateurs connectés en ce moment</h3>";
-echo "<div title=\"Utilisateurs connectés\">";
+echo "<h3 class='gepi'>Utilisateurs connectÃ©s en ce moment</h3>";
+echo "<div title=\"Utilisateurs connectÃ©s\">";
 echo "<ul>";
 // compte le nombre d'enregistrement dans la table
 //$sql = "select u.login, concat(u.prenom, ' ', u.nom) utilisa, u.email from log l, utilisateurs u where (l.LOGIN = u.login and l.END > now())";
@@ -239,7 +239,7 @@ if ($res) {
 		}
 
 		if($afficher_deconnecter_et_changer_mdp=="y") {
-			echo " | <a href=\"../utilisateurs/change_pwd.php?user_login=".$row[0].add_token_in_url()."\">Déconnecter en changeant le mot de passe</a>";
+			echo " | <a href=\"../utilisateurs/change_pwd.php?user_login=".$row[0].add_token_in_url()."\">DÃ©connecter en changeant le mot de passe</a>";
 		}
 		echo "</li>";
     }
@@ -252,29 +252,29 @@ if ($res) {
 <hr class="header" style="margin-top: 32px; margin-bottom: 24px;"/>
 <?php
 //
-// Activation/désactivation des connexions
+// Activation/dÃ©sactivation des connexions
 //
-echo "<h3 class='gepi'>Activation/désactivation des connexions</h3>\n";
+echo "<h3 class='gepi'>Activation/dÃ©sactivation des connexions</h3>\n";
 
 
 $disable_login=getSettingValue("disable_login");
 
 if($disable_login=="yes"){
-	echo "<p>Les connexions sont actuellement <span style='font-weight:bold'>désactivées</span>.</p>\n";
+	echo "<p>Les connexions sont actuellement <span style='font-weight:bold'>dÃ©sactivÃ©es</span>.</p>\n";
 }
 elseif($disable_login=="no"){
-	echo "<p>Les connexions sont actuellement <span style='font-weight:bold'>activées</span>.</p>\n";
+	echo "<p>Les connexions sont actuellement <span style='font-weight:bold'>activÃ©es</span>.</p>\n";
 }
 else{
-	echo "<p>Les connexions <span style='font-weight:bold'>futures</span> sont actuellement <span style='font-weight:bold'>désactivées</span>.<br />Aucune nouvelle connexion n'est acceptée.</p>\n";
+	echo "<p>Les connexions <span style='font-weight:bold'>futures</span> sont actuellement <span style='font-weight:bold'>dÃ©sactivÃ©es</span>.<br />Aucune nouvelle connexion n'est acceptÃ©e.</p>\n";
 }
 
-echo "<p>En désactivant les connexions, vous rendez impossible la connexion au site pour les utilisateurs, hormis les administrateurs.</p>\n";
+echo "<p>En dÃ©sactivant les connexions, vous rendez impossible la connexion au site pour les utilisateurs, hormis les administrateurs.</p>\n";
 
 echo "<form action=\"gestion_connect.php\" name=\"form_acti_connect\" method=\"post\">\n";
 echo add_token_field();
 
-echo "<table border='0' summary='Activation/désactivation des connexions'>\n";
+echo "<table border='0' summary='Activation/dÃ©sactivation des connexions'>\n";
 echo "<tr>\n";
 echo "<td valign='top'>\n";
 echo "<input type='radio' name='disable_login' value='yes' id='label_1a'";
@@ -282,9 +282,9 @@ if ($disable_login=='yes'){ echo " checked ";}
 echo " />\n";
 echo "</td>\n";
 echo "<td>\n";
-echo "<label for='label_1a' style='cursor: pointer;'>Désactiver les connexions</label>\n";
+echo "<label for='label_1a' style='cursor: pointer;'>DÃ©sactiver les connexions</label>\n";
 echo "<br />\n";
-echo "(<i><span style='color:red;'>Attention, les utilisateurs actuellement connectés sont automatiquement déconnectés.</span></i>)\n";
+echo "(<i><span style='color:red;'>Attention, les utilisateurs actuellement connectÃ©s sont automatiquement dÃ©connectÃ©s.</span></i>)\n";
 echo "</td>\n";
 echo "</tr>\n";
 
@@ -295,8 +295,8 @@ if ($disable_login=='soft'){ echo " checked ";}
 echo " />\n";
 echo "</td>\n";
 echo "<td>\n";
-echo "<label for='label_3a' style='cursor: pointer;'>Désactiver les futures connexions</label>\n";
-echo "<br />(<i>et attendre la fin des connexions actuelles pour pouvoir désactiver les connexions et procéder à une opération de maintenance, par exemple</i>)\n";
+echo "<label for='label_3a' style='cursor: pointer;'>DÃ©sactiver les futures connexions</label>\n";
+echo "<br />(<i>et attendre la fin des connexions actuelles pour pouvoir dÃ©sactiver les connexions et procÃ©der Ã  une opÃ©ration de maintenance, par exemple</i>)\n";
 echo "</td>\n";
 echo "</tr>\n";
 
@@ -330,7 +330,7 @@ if($message_login=='') {$message_login=0; saveSetting('message_login',$message_l
 $sql="SELECT * FROM message_login ORDER BY texte;";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	echo "<p>Aucun message n'a encore été saisi.</p>\n";
+	echo "<p>Aucun message n'a encore Ã©tÃ© saisi.</p>\n";
 	echo "<p><a href='saisie_message_connexion.php'>Saisir de nouveaux messages.</a></p>\n";
 }
 else {
@@ -375,17 +375,17 @@ echo "<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\" />\n
 
 /*
 //
-// Activation/désactivation de la procédure de récupération du mot de passe
+// Activation/dÃ©sactivation de la procÃ©dure de rÃ©cupÃ©ration du mot de passe
 //
 echo "<h3 class='gepi'>Mots de passe perdus</h3>";
 echo "<form action=\"gestion_connect.php\" method=\"post\">";
 echo "<input type='radio' name='enable_password_recovery' value='no' id='label_1b'";
 if (getSettingValue("enable_password_recovery")=='no') echo " checked ";
-echo " /> <label for='label_1b'>Désactiver la procédure automatisée de récupération de mot de passe</label>";
+echo " /> <label for='label_1b'>DÃ©sactiver la procÃ©dure automatisÃ©e de rÃ©cupÃ©ration de mot de passe</label>";
 
 echo "<br /><input type='radio' name='enable_password_recovery' value='yes' id='label_2b'";
 if (getSettingValue("enable_password_recovery")=='yes') echo " checked ";
-echo " /> <label for='label_2b'>Activer la procédure automatisée de récupération de mot de passe</label>";
+echo " /> <label for='label_2b'>Activer la procÃ©dure automatisÃ©e de rÃ©cupÃ©ration de mot de passe</label>";
 
 echo "<center><input type=\"submit\" value=\"Valider\" /></center>";
 echo "</form>";
@@ -396,18 +396,18 @@ echo"<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>";
 // Protection contre les attaques.
 //
 echo "<h3 class='gepi'>Protection contre les attaques forces brutes.</h3>";
-echo "<p>Configuration de GEPI de manière à bloquer temporairement le compte d'un utilisateur après un certain nombre de tentatives de connexion infructueuses.
-<br />En contrepartie, un pirate peut se servir de ce mécanisme d'auto-défense pour bloquer en permanence des comptes utilisateur ou administrateur.
-<br />Si vous ête un jour confronté à cette situation d'urgence, vous pourrez dans le fichier \"config.inc.php\", forcer le débloquage des comptes administrateur
-et/ou mettre en liste noire, la ou les adresses IP incriminées.<br /></p>";
+echo "<p>Configuration de GEPI de maniÃ¨re Ã  bloquer temporairement le compte d'un utilisateur aprÃ¨s un certain nombre de tentatives de connexion infructueuses.
+<br />En contrepartie, un pirate peut se servir de ce mÃ©canisme d'auto-dÃ©fense pour bloquer en permanence des comptes utilisateur ou administrateur.
+<br />Si vous Ãªte un jour confrontÃ© Ã  cette situation d'urgence, vous pourrez dans le fichier \"config.inc.php\", forcer le dÃ©bloquage des comptes administrateur
+et/ou mettre en liste noire, la ou les adresses IP incriminÃ©es.<br /></p>";
 
 echo "<form action=\"gestion_connect.php\" name=\"form_param_mdp\" method=\"post\">";
 echo add_token_field();
-echo "<table summary='Paramétrage'><tr>";
+echo "<table summary='ParamÃ©trage'><tr>";
 echo "<td>Nombre maximum de tentatives de connexion infructueuses: </td>";
 echo "<td><input type=\"text\" name=\"nombre_tentatives_connexion\" value=\"".getSettingValue("nombre_tentatives_connexion")."\" size=\"20\" /></td>";
 echo "</tr><tr>";
-echo "<td>Temps en minutes pendant lequel un compte est temporairement verrouillé suite à un trop grand nombre d'essais infructueux : </td>";
+echo "<td>Temps en minutes pendant lequel un compte est temporairement verrouillÃ© suite Ã  un trop grand nombre d'essais infructueux : </td>";
 echo "<td><input type=\"text\" name=\"temps_compte_verrouille\" value=\"".getSettingValue("temps_compte_verrouille")."\" size=\"20\" /></td>";
 echo "</tr></table>";
 
@@ -421,7 +421,7 @@ echo "</form><hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;
 // Avertissement des utilisateurs lors des connexions
 //
 echo "<h3 class='gepi'>Avertissement lors des connexions</h3>";
-echo "<p>Il est possible d'avertir les utilisateurs par mail lors de leur connexion, sous réserve que leur adresse mail soit renseignée dans Gepi (<i>information modifiable par le lien 'Gérer mon compte'</i>).<br />Si l'adresse n'est pas renseignée aucun mail ne peut parvenir à l'utilisateur qui se connecte.<br />Si l'adresse est correctement renseignée, en cas d'usurpation comme de connexion légitime, l'utilisateur recevra un mail.<br />S'il ne réagit pas en changeant de mot de passe et en avertissant l'administrateur lors d'une usurpation, des intrusions ultérieures pourront être opérées sans que l'utilisateur soit averti si l'intrus prend soin de supprimer/modifier l'adresse mail dans 'Gérer mon compte'.</p>\n";
+echo "<p>Il est possible d'avertir les utilisateurs par mail lors de leur connexion, sous rÃ©serve que leur adresse mail soit renseignÃ©e dans Gepi (<i>information modifiable par le lien 'GÃ©rer mon compte'</i>).<br />Si l'adresse n'est pas renseignÃ©e aucun mail ne peut parvenir Ã  l'utilisateur qui se connecte.<br />Si l'adresse est correctement renseignÃ©e, en cas d'usurpation comme de connexion lÃ©gitime, l'utilisateur recevra un mail.<br />S'il ne rÃ©agit pas en changeant de mot de passe et en avertissant l'administrateur lors d'une usurpation, des intrusions ultÃ©rieures pourront Ãªtre opÃ©rÃ©es sans que l'utilisateur soit averti si l'intrus prend soin de supprimer/modifier l'adresse mail dans 'GÃ©rer mon compte'.</p>\n";
 
 echo "<form action=\"gestion_connect.php\" name=\"form_mail_connexion\" method=\"post\">";
 echo add_token_field();
@@ -456,25 +456,25 @@ echo "<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\" />\n
 //
 if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and getSettingValue("use_sso") != "lcs" and getSettingValue("use_sso") != "ldap_scribe")) {
 echo "<h3 class='gepi'>Changement du mot de passe obligatoire lors de la prochaine connexion</h3>";
-echo "<p><span style='font-weight:bold'>ATTENTION : </span>En validant le bouton ci-dessous, <span style='font-weight:bold'>tous les utilisateurs</span> seront amenés à changer leur mot de passe lors de leur prochaine connexion.</p>";
+echo "<p><span style='font-weight:bold'>ATTENTION : </span>En validant le bouton ci-dessous, <span style='font-weight:bold'>tous les utilisateurs</span> seront amenÃ©s Ã  changer leur mot de passe lors de leur prochaine connexion.</p>";
 echo "<form action=\"gestion_connect.php\" name=\"form_chgt_mdp\" method=\"post\">";
-echo "<center><input type=\"submit\" name=\"valid_chgt_mdp\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir forcer le changement de mot de passe de tous les utilisateurs ?', 'Confirmation')\" /></center>";
+echo "<center><input type=\"submit\" name=\"valid_chgt_mdp\" value=\"Valider\" onclick=\"return confirmlink(this, 'ÃŠtes-vous sÃ»r de vouloir forcer le changement de mot de passe de tous les utilisateurs ?', 'Confirmation')\" /></center>";
 echo "<input type=hidden name=mode_navig value='$mode_navig' />";
 echo "</form><hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>";
 }
 //
-// Paramétrage du Single Sign-On
+// ParamÃ©trage du Single Sign-On
 //
 
 echo "<h3 class='gepi'>Mode d'authentification</h3>";
-echo "<p><span style='font-weight:bold'>ATTENTION :</span> Dans le cas d'une authentification en Single Sign-On avec CAS, LemonLDAP ou LCS, seuls les utilisateurs pour lesquels aucun mot de passe n'est présent dans la base de données pourront se connecter. Toutefois, il est recommandé de conserver un compte administrateur avec un mot de passe afin de pouvoir vous connecter en bloquant le SSO par le biais de la variable 'block_sso' du fichier /lib/global.inc.</p>";
-echo "<p>Si vous utilisez CAS, vous devez entrer les coordonnées du serveur CAS dans le fichier /secure/config_cas.inc.php.</p>";
-echo "<p>Si vous utilisez l'authentification sur serveur LDAP, vous devez renseigner le fichier /secure/config_ldap.inc.php avec les informations nécessaires pour se connecter au serveur.</p>";
+echo "<p><span style='font-weight:bold'>ATTENTION :</span> Dans le cas d'une authentification en Single Sign-On avec CAS, LemonLDAP ou LCS, seuls les utilisateurs pour lesquels aucun mot de passe n'est prÃ©sent dans la base de donnÃ©es pourront se connecter. Toutefois, il est recommandÃ© de conserver un compte administrateur avec un mot de passe afin de pouvoir vous connecter en bloquant le SSO par le biais de la variable 'block_sso' du fichier /lib/global.inc.</p>";
+echo "<p>Si vous utilisez CAS, vous devez entrer les coordonnÃ©es du serveur CAS dans le fichier /secure/config_cas.inc.php.</p>";
+echo "<p>Si vous utilisez l'authentification sur serveur LDAP, vous devez renseigner le fichier /secure/config_ldap.inc.php avec les informations nÃ©cessaires pour se connecter au serveur.</p>";
 echo "<form action=\"gestion_connect.php\" name=\"form_auth\" method=\"post\">";
 
 echo "<input type='radio' name='use_sso' value='no' id='label_1'";
 if (getSettingValue("use_sso")=='no' OR !getSettingValue("use_sso")) echo " checked ";
-echo " /> <label for='label_1'>Authentification autonome (sur la base de données de Gepi) [défaut]</label>";
+echo " /> <label for='label_1'>Authentification autonome (sur la base de donnÃ©es de Gepi) [dÃ©faut]</label>";
 
 echo "<br/><input type='radio' name='use_sso' value='lcs' id='lcs'";
 if (getSettingValue("use_sso")=='lcs') echo " checked ";
@@ -494,7 +494,7 @@ echo " /> <label for='label_3'>Authentification SSO par LemonLDAP</label>";
 
 echo "<p>Remarque : les changements n'affectent pas les sessions en cours.";
 
-echo "<center><input type=\"submit\" name=\"auth_mode_submit\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir changer le mode d\' authentification ?', 'Confirmation')\" /></center>";
+echo "<center><input type=\"submit\" name=\"auth_mode_submit\" value=\"Valider\" onclick=\"return confirmlink(this, 'ÃŠtes-vous sÃ»r de vouloir changer le mode d\' authentification ?', 'Confirmation')\" /></center>";
 
 echo "<input type=hidden name=mode_navig value='$mode_navig' />";
 
@@ -505,14 +505,14 @@ echo "</form>
 
 
 //
-// Durée de conservation des logs
+// DurÃ©e de conservation des logs
 //
-echo "<h3 class='gepi'>Durée de conservation des connexions</h3>";
-echo "<p>Conformément à la loi loi informatique et liberté 78-17 du 6 janvier 1978, la durée de conservation de ces données doit être déterminée et proportionnée aux finalités de leur traitement.
-Cependant par sécurité, il est conseillé de conserver une trace des connexions sur un laps de temps suffisamment long.
+echo "<h3 class='gepi'>DurÃ©e de conservation des connexions</h3>";
+echo "<p>ConformÃ©ment Ã  la loi loi informatique et libertÃ© 78-17 du 6 janvier 1978, la durÃ©e de conservation de ces donnÃ©es doit Ãªtre dÃ©terminÃ©e et proportionnÃ©e aux finalitÃ©s de leur traitement.
+Cependant par sÃ©curitÃ©, il est conseillÃ© de conserver une trace des connexions sur un laps de temps suffisamment long.
 </p>";
 echo "<form action=\"gestion_connect.php\" name=\"form_chgt_duree\" method=\"post\">";
-echo "Durée de conservation des informations sur les connexions : <select name=\"duree\" size=\"1\">";
+echo "DurÃ©e de conservation des informations sur les connexions : <select name=\"duree\" size=\"1\">";
 echo "<option ";
 $duree = getSettingValue("duree_conservation_logs");
 if ($duree == 30) echo "selected";
@@ -535,7 +535,7 @@ echo "</form>";
 //
 ?>
 <hr class="header" style="margin-top: 32px; margin-bottom: 24px;"/>
-<h3 class='gepi'>Suppression de toutes les entrées du journal de connexion</h3>
+<h3 class='gepi'>Suppression de toutes les entrÃ©es du journal de connexion</h3>
 <?php
 $sql = "select START from log order by END";
 $res = sql_query($sql);
@@ -544,11 +544,11 @@ $row = sql_row($res, 0);
 $annee = substr($row[0],0,4);
 $mois =  substr($row[0],5,2);
 $jour =  substr($row[0],8,2);
-echo "<p>Nombre d'entrées actuellement présentes dans le journal de connexion : <span style='font-weight:bold'>".$logs_number."</span><br />";
+echo "<p>Nombre d'entrÃ©es actuellement prÃ©sentes dans le journal de connexion : <span style='font-weight:bold'>".$logs_number."</span><br />";
 echo "Actuellement, le journal contient l'historique des connexions depuis le <span style='font-weight:bold'>".$jour."/".$mois."/".$annee."</span></p>";
-echo "<p><span style='font-weight:bold'>ATTENTION : </span>En validant le bouton ci-dessous, <span style='font-weight:bold'>toutes les entrées du journal de connexion (hormis les connexions en cours) seront supprimées</span>.</p>";
+echo "<p><span style='font-weight:bold'>ATTENTION : </span>En validant le bouton ci-dessous, <span style='font-weight:bold'>toutes les entrÃ©es du journal de connexion (hormis les connexions en cours) seront supprimÃ©es</span>.</p>";
 echo "<form action=\"gestion_connect.php\" name=\"form_sup_logs\" method=\"post\">";
-echo "<center><input type=\"submit\" name=\"valid_sup_logs\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir supprimer tout l\'historique du journal de connexion ?', 'Confirmation')\" /></center>";
+echo "<center><input type=\"submit\" name=\"valid_sup_logs\" value=\"Valider\" onclick=\"return confirmlink(this, 'ÃŠtes-vous sÃ»r de vouloir supprimer tout l\'historique du journal de connexion ?', 'Confirmation')\" /></center>";
 echo "<input type=hidden name=mode_navig value='$mode_navig' />";
 echo "</form>";
 */
@@ -583,7 +583,7 @@ if(($duree2!="20dernieres")&&
 
 switch( $duree2 ) {
    case '20dernieres' :
-   $display_duree="les 20 dernières";
+   $display_duree="les 20 derniÃ¨res";
    break;
    case 2:
    $display_duree="depuis deux jours";
@@ -607,7 +607,7 @@ switch( $duree2 ) {
    $display_duree="depuis un an";
    break;
    case 'all':
-   $display_duree="depuis le début";
+   $display_duree="depuis le dÃ©but";
    break;
 }
 
@@ -616,10 +616,10 @@ echo "<h3 class='gepi'>Journal des connexions <span style='font-weight:bold'>".$
 ?>
 <div title="Journal des connections" style="width: 100%;">
 <ul>
-<li>Les lignes en rouge signalent une tentative de connexion avec un mot de passe erroné.</li>
-<li>Les lignes en orange signalent une session close pour laquelle l'utilisateur ne s'est pas déconnecté correctement.</li>
+<li>Les lignes en rouge signalent une tentative de connexion avec un mot de passe erronÃ©.</li>
+<li>Les lignes en orange signalent une session close pour laquelle l'utilisateur ne s'est pas dÃ©connectÃ© correctement.</li>
 <li>Les lignes en noir signalent une session close normalement.</li>
-<li>Les lignes en vert indiquent les sessions en cours (cela peut correspondre à une connexion actuellement close mais pour laquelle l'utilisateur ne s'est pas déconnecté correctement).</li>
+<li>Les lignes en vert indiquent les sessions en cours (cela peut correspondre Ã  une connexion actuellement close mais pour laquelle l'utilisateur ne s'est pas dÃ©connectÃ© correctement).</li>
 </ul>
 
 <?php
@@ -628,7 +628,7 @@ echo "<form action=\"gestion_connect.php#tab_connexions\" name=\"form_affiche_lo
 echo "Afficher le journal des connexions : <select name=\"duree2\" size=\"1\">\n";
 echo "<option ";
 if ($duree2 == '20dernieres') echo "selected";
-echo " value='20dernieres'>les 20 dernières</option>\n";
+echo " value='20dernieres'>les 20 derniÃ¨res</option>\n";
 echo "<option ";
 if ($duree2 == 2) echo "selected";
 echo " value=2>depuis Deux jours</option>\n";
@@ -652,7 +652,7 @@ if ($duree2 == 365) echo "selected";
 echo " value=365>depuis Un an</option>\n";
 echo "<option ";
 if ($duree2 == 'all') echo "selected";
-echo " value='all'>depuis Le début</option>\n";
+echo " value='all'>depuis Le dÃ©but</option>\n";
 echo "</select>\n";
 echo " <input type=\"submit\" name=\"Valider\" value=\"Valider\" /><br /><br />\n";
 echo "<input type=hidden name=mode_navig value='$mode_navig' />\n";
@@ -670,7 +670,7 @@ echo "</div>\n";
     <!--tr>
         <th class="col">Statut</th>
 		<th class="col">Identifiant</th>
-        <th class="col">Début session</th>
+        <th class="col">DÃ©but session</th>
         <th class="col">Fin session</th>
         <th class="col">Adresse IP et nom de la machine cliente</th>
         <th class="col">Navigateur</th>
@@ -682,7 +682,7 @@ echo "</div>\n";
 		<th class="col"><a href='gestion_connect.php?order_by=login'>Identifiant</a></th-->
         <th class="col">Statut</th>
 		<th class="col">Identifiant</th>
-        <th class="col">Début session</th>
+        <th class="col">DÃ©but session</th>
         <th class="col">Fin session</th>
         <th class="col"><a href='gestion_connect.php?order_by=ip<?php if(isset($duree2)){echo "&amp;duree2=$duree2";}?>#tab_connexions'>Adresse IP et nom de la machine cliente</a></th>
         <th class="col">Navigateur</th>
@@ -707,8 +707,8 @@ $sql.=" order by ";
 if(isset($_GET['order_by'])) {
 	$order_by=$_GET['order_by'];
 	/*
-	// Seuls les tris sur la table 'log' peuvent fonctionner étant donnée la requête ci-dessus...
-	// ... sinon, il faudrait passer par un tableau PHP intermédiaire ou revoir complètement la requête...
+	// Seuls les tris sur la table 'log' peuvent fonctionner Ã©tant donnÃ©e la requÃªte ci-dessus...
+	// ... sinon, il faudrait passer par un tableau PHP intermÃ©diaire ou revoir complÃ¨tement la requÃªte...
 	if($order_by=='statut') {
 		$sql.="u.statut, ";
 	}
@@ -760,8 +760,8 @@ if ($res) {
         $heures_f = substr($row[8],11,2);
         $minutes_f = substr($row[8],14,2);
         $secondes_f = substr($row[8],17,2);
-        //$date_fin_f = $jour_f."/".$mois_f."/".$annee_f." à ".$heures_f." h ".$minutes_f;
-        $date_fin_f = $jour_f."/".$mois_f."/".$annee_f." à ".$heures_f."&nbsp;h&nbsp;".$minutes_f;
+        //$date_fin_f = $jour_f."/".$mois_f."/".$annee_f." Ã  ".$heures_f." h ".$minutes_f;
+        $date_fin_f = $jour_f."/".$mois_f."/".$annee_f." Ã  ".$heures_f."&nbsp;h&nbsp;".$minutes_f;
         $end_time = mktime($heures_f, $minutes_f, $secondes_f, $mois_f, $jour_f, $annee_f);
         $annee_b = substr($row[2],0,4);
         $mois_b =  substr($row[2],5,2);
@@ -769,8 +769,8 @@ if ($res) {
         $heures_b = substr($row[2],11,2);
         $minutes_b = substr($row[2],14,2);
         $secondes_b = substr($row[2],17,2);
-        //$date_debut = $jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b;
-        $date_debut = $jour_b."/".$mois_b."/".$annee_b." à ".$heures_b."&nbsp;h&nbsp;".$minutes_b;
+        //$date_debut = $jour_b."/".$mois_b."/".$annee_b." Ã  ".$heures_b." h ".$minutes_b;
+        $date_debut = $jour_b."/".$mois_b."/".$annee_b." Ã  ".$heures_b."&nbsp;h&nbsp;".$minutes_b;
         $temp1 = '';
         $temp2 = '';
         if ($end_time > $now) {
@@ -795,7 +795,7 @@ if ($res) {
 		$ligne_csv[$nb_ligne] = my_ereg_replace("&nbsp;"," ","$row[10];$row[0];$date_debut;");
 
         if ($row[7] == 4) {
-           echo "<td class=\"col\" style=\"color: red;\"><span class='small'><span style='font-weight:bold'>Tentative de connexion<br />avec mot de passe erroné.</span></span></td>\n";
+           echo "<td class=\"col\" style=\"color: red;\"><span class='small'><span style='font-weight:bold'>Tentative de connexion<br />avec mot de passe erronÃ©.</span></span></td>\n";
         } else if ($end_time > $now) {
             echo "<td class=\"col\" style=\"color: green;\"><span class='small'>" .$date_fin_f. "</span></td>\n";
         } else if (($row[7] == 1) or ($row[7] == 2) or ($row[7] == 3)) {
@@ -852,19 +852,19 @@ echo "</table>\n";
 
 echo "<p><i>NOTES:</i></p>\n";
 echo "<ul>\n";
-echo "<li><p>La résolution d'adresse IP en nom DNS peut ralentir l'affichage de cette page.<br />
-Dans le cas d'un serveur situé sur un réseau local, il se peut qu'aucun serveur DNS ne soit en mesure d'assurer la résolution IP/NOM.<br />
-Si l'attente vous pèse, vous pouvez modifier le paramétrage de la variable <span style='font-weight:bold'>\$active_hostbyaddr</span> dans le fichier <span style='font-weight:bold'>lib/global.inc.php</span></p>\n";
+echo "<li><p>La rÃ©solution d'adresse IP en nom DNS peut ralentir l'affichage de cette page.<br />
+Dans le cas d'un serveur situÃ© sur un rÃ©seau local, il se peut qu'aucun serveur DNS ne soit en mesure d'assurer la rÃ©solution IP/NOM.<br />
+Si l'attente vous pÃ¨se, vous pouvez modifier le paramÃ©trage de la variable <span style='font-weight:bold'>\$active_hostbyaddr</span> dans le fichier <span style='font-weight:bold'>lib/global.inc.php</span></p>\n";
 
-$texte="<p style='text-align:justify;'>L'organisme gérant l'espace d'adressage public (adresses IP routables) est l'Internet Assigned Number Authority (IANA). La RFC 1918 définit un espace d'adressage privé permettant à toute organisation d'attribuer des adresses IP aux machines de son réseau interne sans risque d'entrer en conflit avec une adresse IP publique allouée par l'IANA. Ces adresses dites non-routables correspondent aux plages d'adresses suivantes :</p>
+$texte="<p style='text-align:justify;'>L'organisme gÃ©rant l'espace d'adressage public (adresses IP routables) est l'Internet Assigned Number Authority (IANA). La RFC 1918 dÃ©finit un espace d'adressage privÃ© permettant Ã  toute organisation d'attribuer des adresses IP aux machines de son rÃ©seau interne sans risque d'entrer en conflit avec une adresse IP publique allouÃ©e par l'IANA. Ces adresses dites non-routables correspondent aux plages d'adresses suivantes :</p>
 
 <ul>
-<li>Classe A : plage de 10.0.0.0 à 10.255.255.255 ;</li>
-<li>Classe B : plage de 172.16.0.0 à 172.31.255.255 ;</li>
-<li>Classe C : plage de 192.168.0.0 à 192.168.255.55 ;</li>
+<li>Classe A : plage de 10.0.0.0 Ã  10.255.255.255 ;</li>
+<li>Classe B : plage de 172.16.0.0 Ã  172.31.255.255 ;</li>
+<li>Classe C : plage de 192.168.0.0 Ã  192.168.255.55 ;</li>
 </ul>
 
-<p style='text-align:justify;'>Toutes les machines d'un réseau interne, connectées à internet par l'intermédiaire d'un routeur et ne possédant pas d'adresse IP publique doivent utiliser une adresse contenue dans l'une de ces plages. Pour les petits réseaux domestiques, la plage d'adresses de 192.168.0.1 à 192.168.0.255 est généralement utilisée.</p>";
+<p style='text-align:justify;'>Toutes les machines d'un rÃ©seau interne, connectÃ©es Ã  internet par l'intermÃ©diaire d'un routeur et ne possÃ©dant pas d'adresse IP publique doivent utiliser une adresse contenue dans l'une de ces plages. Pour les petits rÃ©seaux domestiques, la plage d'adresses de 192.168.0.1 Ã  192.168.0.255 est gÃ©nÃ©ralement utilisÃ©e.</p>";
 $tabdiv_infobulle[]=creer_div_infobulle('ip_priv',"Espaces d'adressage","",$texte,"",30,0,'y','y','n','n');
 
 echo "<p>Voici les valeurs possibles pour la variable:</p>
@@ -875,19 +875,19 @@ echo "<p>Voici les valeurs possibles pour la variable:</p>
 </tr>
 <tr class='lig1'>
 	<td>all</td>
-	<td>la résolution inverse de toutes les adresses IP est activée.<br />
-	Cela peut se traduire par des lenteurs à l'affichage de la présente page.
+	<td>la rÃ©solution inverse de toutes les adresses IP est activÃ©e.<br />
+	Cela peut se traduire par des lenteurs Ã  l'affichage de la prÃ©sente page.
 	</td>
 </tr>
 <tr class='lig-1'>
 	<td>no</td>
-	<td>la résolution inverse des adresses IP est désactivée.<br />
+	<td>la rÃ©solution inverse des adresses IP est dÃ©sactivÃ©e.<br />
 	Radical, mais toutes les adresses fournies sont en IP.</td>
 </tr>
 <tr class='lig1'>
 	<td>no_local</td>
-	<td>la résolution inverse des adresses IP locales (<i>privées</i>) est désactivée.<br />
-	Seules les adresses IP de <a href='#' onmouseover=\"afficher_div('ip_priv','y',20,20);\" onclick=\"return false;\">réseaux non-privés</a> sont traduites en noms DNS.</td>
+	<td>la rÃ©solution inverse des adresses IP locales (<i>privÃ©es</i>) est dÃ©sactivÃ©e.<br />
+	Seules les adresses IP de <a href='#' onmouseover=\"afficher_div('ip_priv','y',20,20);\" onclick=\"return false;\">rÃ©seaux non-privÃ©s</a> sont traduites en noms DNS.</td>
 </tr>
 </table>
 <p>La valeur actuelle de la variable <span style='font-weight:bold'>\$active_hostbyaddr</span> sur votre GEPI est: <span style='font-weight:bold'>$active_hostbyaddr</span></p>

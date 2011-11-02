@@ -47,7 +47,7 @@ div.info_eleve{
 }
 </style>\n";
 
-// Affichage de l'info sur le nom, prénom et classe de l'élève
+// Affichage de l'info sur le nom, prÃ©nom et classe de l'Ã©lÃ¨ve
 echo "<div class='info_eleve'>$info_eleve_page_garde</div>\n";
 
 //Affichage du bloc adresse

@@ -56,7 +56,7 @@ $insert=mysql_query($sql);
 
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -86,7 +86,7 @@ if($_SESSION['statut']=='professeur') {
 	}
 
 	if((isset($id_exam))&&(!is_pp_proprio_exb($id_exam))) {
-		header("Location: ../accueil.php?msg=".rawurlencode("Vous n'êtes pas propriétaire de l'examen blanc n°$id_exam."));
+		header("Location: ../accueil.php?msg=".rawurlencode("Vous n'Ãªtes pas propriÃ©taire de l'examen blanc nÂ°$id_exam."));
 		die();
 	}
 
@@ -114,7 +114,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			$res_classes=mysql_query($sql);
 			$nb_classes=mysql_num_rows($res_classes);
 			if($nb_classes==0) {
-				$msg="<p>Aucune classe n'est associée à l'examen???</p>\n";
+				$msg="<p>Aucune classe n'est associÃ©e Ã  l'examen???</p>\n";
 			}
 			else {
 				$tab_id_classe=array();
@@ -128,19 +128,19 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 					$tab_suivi_par[]=$lig->suivi_par;
 				}
 
-				// Récupération des paramètres par défaut de modèles de bulletin PDF
+				// RÃ©cupÃ©ration des paramÃ¨tres par dÃ©faut de modÃ¨les de bulletin PDF
 				// Par la suite, il faudra permettre de modifier les valeurs
 				include("get_param_bull.php");
 
 				//===========================
-				// Matières
+				// MatiÃ¨res
 				//$sql="SELECT m.*,em.coef,em.bonus FROM ex_matieres em, matieres m WHERE em.matiere=m.matiere AND id_exam='$id_exam' ORDER BY em.ordre, m.matiere;";
-				// Pour mettre les matières à bonus à la fin si aucun ordre n'a été défini
+				// Pour mettre les matiÃ¨res Ã  bonus Ã  la fin si aucun ordre n'a Ã©tÃ© dÃ©fini
 				$sql="SELECT m.*,em.coef,em.bonus FROM ex_matieres em, matieres m WHERE em.matiere=m.matiere AND id_exam='$id_exam' ORDER BY em.ordre, em.bonus, m.matiere;";
 				$res_matieres=mysql_query($sql);
 				$nb_matieres=mysql_num_rows($res_matieres);
 				if($nb_matieres==0) {
-					$msg="<p>Aucune matière n'est associée à l'examen???</p>\n";
+					$msg="<p>Aucune matiÃ¨re n'est associÃ©e Ã  l'examen???</p>\n";
 				}
 				else {
 					$tab_matiere=array();
@@ -214,7 +214,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 													if($lig_bull->note<$moy_min_bull_grp) {$moy_min_bull_grp=$lig_bull->note;}
 												}
 
-												// Dans le cas où on utilise une moyenne de groupe sur le bulletin pour une période, on remplace l'id_dev par une référence du type bull_$id_groupe_$periode_num
+												// Dans le cas oÃ¹ on utilise une moyenne de groupe sur le bulletin pour une pÃ©riode, on remplace l'id_dev par une rÃ©fÃ©rence du type bull_$id_groupe_$periode_num
 
 												//$tab_note["$lig_bull->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["id_dev"]=$lig_groupe->id_dev;
 												$tab_note["$lig_bull->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["id_dev"]='bull_'.$lig_groupe->id_groupe.'_'.$lig_groupe->valeur;
@@ -226,7 +226,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 												$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["info_dev"]=$tab_info_dev['bull_'.$lig_groupe->id_groupe.'_'.$lig_groupe->valeur];
 												*/
 
-												$tab_note["$lig_bull->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["info_dev"]="Moyenne de l'élève pour la période $lig_groupe->valeur";
+												$tab_note["$lig_bull->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["info_dev"]="Moyenne de l'Ã©lÃ¨ve pour la pÃ©riode $lig_groupe->valeur";
 	
 												$tab_note["$lig_bull->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nom_complet"]=$tab_matiere_nom_complet[$j];
 	
@@ -241,7 +241,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 												$tab_bull[]='bull_'.$lig_groupe->id_groupe.'_'.$lig_groupe->valeur;
 
 												$titre="Moyenne du bulletin (<i>$lig_per->nom_periode</i>)";
-												$texte="<p><b>Moyenne du bulletin sur la période $lig_per->nom_periode</b>";
+												$texte="<p><b>Moyenne du bulletin sur la pÃ©riode $lig_per->nom_periode</b>";
 												$texte.="<br />";
 
 												$reserve_header_tabdiv_infobulle[]=creer_div_infobulle('div_bull_'.$lig_groupe->id_groupe.'_'.$lig_groupe->valeur,$titre,"",$texte,"",30,0,'y','y','n','n');
@@ -250,7 +250,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 										}
 
 /*
-										// Récupération/stockage des moyennes min/max/classe
+										// RÃ©cupÃ©ration/stockage des moyennes min/max/classe
 										$sql="SELECT ROUND(AVG(note),1) moyenne, MIN(note) note_min, MAX(note) note_max FROM matieres_notes WHERE id_groupe='$lig_groupe->id_groupe' AND periode='$lig_groupe->valeur' AND statut='';";
 										$res_moy=mysql_query($sql);
 										if(mysql_num_rows($res_moy)>0) {
@@ -355,7 +355,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 										//echo "$sql<br />\n";
 										$res_dev=mysql_query($sql);
 										while($lig_dev=mysql_fetch_object($res_dev)) {
-											// Comme on fait une requête sur j_eleves_classes pour lister les élèves, les entrées inutiles du tableau $tab_note ci-dessous ne seront pas prises en compte dans le tableau des résultats
+											// Comme on fait une requÃªte sur j_eleves_classes pour lister les Ã©lÃ¨ves, les entrÃ©es inutiles du tableau $tab_note ci-dessous ne seront pas prises en compte dans le tableau des rÃ©sultats
 											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["statut"]=$lig_dev->statut;
 											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["note"]=$lig_dev->note;
 
@@ -364,7 +364,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			
 											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nom_complet"]=$tab_matiere_nom_complet[$j];
 			
-											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["info_dev"]="Moyenne des périodes $lig_groupe->valeur.";
+											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["info_dev"]="Moyenne des pÃ©riodes $lig_groupe->valeur.";
 
 											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["id_groupe"]=$lig_groupe->id_groupe;
 										}
@@ -387,7 +387,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 							//echo "\$tab_note[\"$lig_dev->login\"][\"$tab_matiere[$j]\"]['statut']<br />";
 							//$tab_note["$lig_dev->login"]["$tab_matiere[$j]"]["statut"]=$lig_dev->statut;
 							//$tab_note["$lig_dev->login"]["$tab_matiere[$j]"]["note"]=$lig_dev->note;
-							// Comme on fait une requête sur j_eleves_classes pour lister les élèves, les entrées inutiles du tableau $tab_note ci-dessous ne seront pas prises en compte dans le tableau des résultats
+							// Comme on fait une requÃªte sur j_eleves_classes pour lister les Ã©lÃ¨ves, les entrÃ©es inutiles du tableau $tab_note ci-dessous ne seront pas prises en compte dans le tableau des rÃ©sultats
 							for($i=0;$i<$nb_classes;$i++) {
 								$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["statut"]=$lig_dev->statut;
 								$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["note"]=$lig_dev->note;
@@ -397,7 +397,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 								$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nom_complet"]=$tab_matiere_nom_complet[$j];
 
-								$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["info_dev"]="Note hors enseignement de l'année.";
+								$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["info_dev"]="Note hors enseignement de l'annÃ©e.";
 /*
 								if($lig_dev->statut=='') {
 									if(!isset($tab_moy[$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"])) {
@@ -441,7 +441,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 
 					if($mode=='imprimer') {
-						// Le check_token() est ici surtout destiné à éviter de bouffer inutilement des ressources
+						// Le check_token() est ici surtout destinÃ© Ã  Ã©viter de bouffer inutilement des ressources
 						check_token();
 
 						//=====================================================
@@ -457,7 +457,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 							}
 						}
 	
-						// Parcours des élèves/classes/matières
+						// Parcours des Ã©lÃ¨ves/classes/matiÃ¨res
 						foreach($tab_note as $current_login => $tab_note_ele) {
 							for($i=0;$i<$nb_classes;$i++) {
 								for($j=0;$j<$nb_matieres;$j++) {
@@ -479,7 +479,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 							}
 						}
 
-						// Pour des moyennes de matières indépendantes des classes.
+						// Pour des moyennes de matiÃ¨res indÃ©pendantes des classes.
 						$tab_effectif_matiere=array();
 						$tab_total_matiere=array();
 						$tab_moy_matiere=array();
@@ -493,7 +493,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 							$tab_max_matiere["$tab_matiere[$j]"]=-1;
 						}
 
-						// Finalisation des min/max/moy_classe_grp propres à chaque classe
+						// Finalisation des min/max/moy_classe_grp propres Ã  chaque classe
 						for($i=0;$i<$nb_classes;$i++) {
 							for($j=0;$j<$nb_matieres;$j++) {
 								if($tab_moy[$tab_id_classe[$i]]["$tab_matiere[$j]"]["min"]==1000) {$tab_moy[$tab_id_classe[$i]]["$tab_matiere[$j]"]["min"]="-";}
@@ -505,7 +505,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 								if($tab_moy[$tab_id_classe[$i]]["$tab_matiere[$j]"]["effectif"]!=0) {
 									$tab_moy[$tab_id_classe[$i]]["$tab_matiere[$j]"]["moyenne"]=$tab_moy[$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"]/$tab_moy[$tab_id_classe[$i]]["$tab_matiere[$j]"]["effectif"];
 
-									// Pour des moyennes de matières indépendantes des classes.
+									// Pour des moyennes de matiÃ¨res indÃ©pendantes des classes.
 									$tab_effectif_matiere["$tab_matiere[$j]"]+=$tab_moy[$tab_id_classe[$i]]["$tab_matiere[$j]"]["effectif"];
 									$tab_total_matiere["$tab_matiere[$j]"]+=$tab_moy[$tab_id_classe[$i]]["$tab_matiere[$j]"]["total"];
 
@@ -516,7 +516,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 							}
 						}
 
-						// Calcul des moyennes de matières toutes classes confondues
+						// Calcul des moyennes de matiÃ¨res toutes classes confondues
 						for($j=0;$j<$nb_matieres;$j++) {
 							if($tab_effectif_matiere["$tab_matiere[$j]"]>0) {
 								$tab_moy_matiere["$tab_matiere[$j]"]=$tab_total_matiere["$tab_matiere[$j]"]/$tab_effectif_matiere["$tab_matiere[$j]"];
@@ -524,7 +524,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						}
 
 						// FAUT-IL IMPOSER DES MOYENNES COMMUNES OU PROPOSER LES DEUX MODES?
-						// On ré-impose les moyennes communes
+						// On rÃ©-impose les moyennes communes
 						for($i=0;$i<$nb_classes;$i++) {
 							for($j=0;$j<$nb_matieres;$j++) {
 								$tab_moy[$tab_id_classe[$i]]["$tab_matiere[$j]"]["moyenne"]=$tab_moy_matiere["$tab_matiere[$j]"];
@@ -543,11 +543,11 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						$commun_effectif=0;
 						$commun_total=0;
 
-						// Calcul des moyennes générales
+						// Calcul des moyennes gÃ©nÃ©rales
 						for($i=0;$i<$nb_classes;$i++) {
 							$tab_moy_gen[$tab_id_classe[$i]]=array();
 
-							// Problème avec les élèves qui ont changé de classe en cours d'année... il faudrait choisir une période de référence pour l'appartenance de classe
+							// ProblÃ¨me avec les Ã©lÃ¨ves qui ont changÃ© de classe en cours d'annÃ©e... il faudrait choisir une pÃ©riode de rÃ©fÃ©rence pour l'appartenance de classe
 							$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='$tab_id_classe[$i]' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
 							//echo "$sql<br />\n";
 							$res_ele=mysql_query($sql);
@@ -615,7 +615,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						}
 
 
-						// On force comme moyennes générales les min/max/moy_tous_eleves calculées toutes classes confondues
+						// On force comme moyennes gÃ©nÃ©rales les min/max/moy_tous_eleves calculÃ©es toutes classes confondues
 						for($i=0;$i<$nb_classes;$i++) {
 							if($commun_effectif>0) {
 								$tab_moy_gen[$tab_id_classe[$i]]['moyenne']=round(10*$commun_total/$commun_effectif)/10;
@@ -631,11 +631,11 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 						//================================================================
 
-						// Extraire les infos générales sur l'établissement
+						// Extraire les infos gÃ©nÃ©rales sur l'Ã©tablissement
 						require("../bulletin/header_bulletin_pdf.php");
 
 						header('Content-type: application/pdf');
-						//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
+						//crÃ©ation du PDF en mode Portrait, unitÃ©e de mesure en mm, de taille A4
 						$pdf=new bul_PDF('p', 'mm', 'A4');
 						//$nb_eleve_aff = 1;
 						//$categorie_passe = '';
@@ -652,7 +652,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						//for($i=0;$i<$nb_classes;$i++) {
 						for($i=0;$i<count($id_classe);$i++) {
 
-							// Récupération des infos sur les classes sélectionnées pour l'impression
+							// RÃ©cupÃ©ration des infos sur les classes sÃ©lectionnÃ©es pour l'impression
 							//$sql="SELECT classe, nom_complet FROM classes WHERE id='$id_classe';";
 							for($loop=0;$loop<$nb_classes;$loop++) {
 								if($id_classe[$i]==$tab_id_classe[$loop]) {
@@ -663,7 +663,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 								}
 							}
 
-							// Problème avec les élèves qui ont changé de classe en cours d'année... il faudrait choisir une période de référence pour l'appartenance de classe
+							// ProblÃ¨me avec les Ã©lÃ¨ves qui ont changÃ© de classe en cours d'annÃ©e... il faudrait choisir une pÃ©riode de rÃ©fÃ©rence pour l'appartenance de classe
 							//$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='$tab_id_classe[$i]' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
 							$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe[$i]' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
 							//echo "$sql<br />\n";
@@ -699,7 +699,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 									$tab_ele['description_exam']=$description_exam;
 									$tab_ele['date_exam']=$date_exam;
 
-									// Récup infos Prof Principal (prof_suivi)
+									// RÃ©cup infos Prof Principal (prof_suivi)
 									$sql="SELECT u.* FROM j_eleves_professeurs jep, utilisateurs u WHERE jep.login='".$lig_ele->login."' AND id_classe='$tab_id_classe[$i]' AND jep.professeur=u.login;";
 									$res_pp=mysql_query($sql);
 									//echo "$sql<br />";
@@ -713,7 +713,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 										$tab_ele['pp']['civilite']=$lig_pp->civilite;
 									}
 
-									// Régime et redoublement
+									// RÃ©gime et redoublement
 									$sql="SELECT * FROM j_eleves_regime WHERE login='".$lig_ele->login."';";
 									$res_ele_reg=mysql_query($sql);
 									if(mysql_num_rows($res_ele_reg)>0) {
@@ -750,7 +750,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 										}
 									}
 
-									// Récup infos responsables
+									// RÃ©cup infos responsables
 									$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal FROM resp_pers rp,
 																	resp_adr ra,
 																	responsables2 r
@@ -793,8 +793,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 									}
 
 
-									// Remplissage d'un tableau avec les indices comme attendus par la fonction bull_exb() calquée sur celle des bulletins PDF classiques
-									// Et calcul de la moyenne générale de l'élève
+									// Remplissage d'un tableau avec les indices comme attendus par la fonction bull_exb() calquÃ©e sur celle des bulletins PDF classiques
+									// Et calcul de la moyenne gÃ©nÃ©rale de l'Ã©lÃ¨ve
 									$tot_ele=0;
 									$tot_coef=0;
 									$tab_ele['matieres']=array();
@@ -830,7 +830,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 												$current_id_dev=$tab_note["$lig_ele->login"][$id_classe[$i]]["$tab_matiere[$j]"]['id_dev'];
 											}
 
-											// INFO: $current_id_dev contient un identifiant de devoir si un devoir a été choisi et si c'est la moyenne du bulletin qui a été choisie, c'est $current_id_dev=bull_$id_groupe_$periode_num
+											// INFO: $current_id_dev contient un identifiant de devoir si un devoir a Ã©tÃ© choisi et si c'est la moyenne du bulletin qui a Ã©tÃ© choisie, c'est $current_id_dev=bull_$id_groupe_$periode_num
 
 											//if($lig_ele->login==$login_debug) {echo "\$current_id_dev=$current_id_dev<br />\n";}
 
@@ -869,7 +869,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 										}
 									}
-									// Moyenne générale de l'élève
+									// Moyenne gÃ©nÃ©rale de l'Ã©lÃ¨ve
 									if($tot_coef>0) {
 										$moyenne=round(10*$tot_ele/$tot_coef)/10;
 										$tab_ele['moyenne']=strtr($moyenne,".",",");
@@ -901,7 +901,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						$annee=$instant['year'];
 						$chaine_tmp="$annee-".sprintf("%02d",$mois)."-".sprintf("%02d",$jour)."-".sprintf("%02d",$heure)."-".sprintf("%02d",$minute)."-".sprintf("%02d",$seconde);
 
-						// Génération du fichier PDF
+						// GÃ©nÃ©ration du fichier PDF
 						$nom_bulletin='bulletins_examen_num_'.$id_exam.'_'.$chaine_tmp.'.pdf';
 						$pdf->Output($nom_bulletin,'I');
 						die();
@@ -916,7 +916,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+//$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Examen blanc: Bulletins";
 //echo "<div class='noprint'>\n";
@@ -935,7 +935,7 @@ echo ">Examens blancs</a>";
 if(!isset($id_exam)) {
 	echo "</p>\n";
 
-	echo "<p>Erreur&nbsp;: Aucun examen n'a été choisi.</p>\n";
+	echo "<p>Erreur&nbsp;: Aucun examen n'a Ã©tÃ© choisi.</p>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -953,7 +953,7 @@ if(mysql_num_rows($res)==0) {
 
 echo " | <a href='index.php?id_exam=$id_exam&amp;mode=modif_exam'";
 echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-echo ">Examen n°$id_exam</a>";
+echo ">Examen nÂ°$id_exam</a>";
 //echo "</p>\n";
 //echo "</div>\n";
 
@@ -968,7 +968,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	if($nb_classes==0) {
 		echo "</p>\n";
 
-		echo "<p>Aucune classe n'est associée à l'examen???</p>\n";
+		echo "<p>Aucune classe n'est associÃ©e Ã  l'examen???</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -982,14 +982,14 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	*/
 
 	//===========================
-	// Matières
+	// MatiÃ¨res
 	//$sql="SELECT m.*,em.coef,em.bonus FROM ex_matieres em, matieres m WHERE em.matiere=m.matiere ORDER BY em.ordre, m.matiere;";
 	//$res_matieres=mysql_query($sql);
 	//$nb_matieres=mysql_num_rows($res_matieres);
 	if($nb_matieres==0) {
 		echo "</p>\n";
 
-		echo "<p>Aucune matière n'est associée à l'examen???</p>\n";
+		echo "<p>Aucune matiÃ¨re n'est associÃ©e Ã  l'examen???</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -1005,7 +1005,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	*/
 
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
-	echo "<p class='bold'>Choisissez les classes pour lesquelles vous souhaitez éditer des bulletins&nbsp;:</p>\n";
+	echo "<p class='bold'>Choisissez les classes pour lesquelles vous souhaitez Ã©diter des bulletins&nbsp;:</p>\n";
 	for($i=0;$i<$nb_classes;$i++) {
 		echo "<input type='checkbox' name='id_classe[]' id='id_classe_$i' value='$tab_id_classe[$i]' ";
 		echo "onchange=\"checkbox_change($i);\" ";
@@ -1018,7 +1018,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	echo "<input type='hidden' name='mode' value='imprimer' />\n";
 	echo "</form>\n";
 
-	echo "<p><a href='#' onClick='ModifCase(true)'>Cocher</a> / <a href='#' onClick='ModifCase(false)'>décocher</a> toutes les classes</p>\n";
+	echo "<p><a href='#' onClick='ModifCase(true)'>Cocher</a> / <a href='#' onClick='ModifCase(false)'>dÃ©cocher</a> toutes les classes</p>\n";
 
 	echo "<script type='text/javascript'>
 function checkbox_change(cpt) {
@@ -1043,23 +1043,23 @@ function ModifCase(mode) {
 
 </script>\n";
 
-	//echo "<p style='color:red;'><b>A FAIRE&nbsp;:</b> Calculer les moyennes par matières,...</p>\n";
-	echo "<p style='color:red;'><i>NOTES&nbsp;:</i> Les moyennes supposent actuellement que le référentiel des devoirs est 20.<br />Il faudra modifier pour prendre en compte des notes sur autre chose que 20.<br />Les 'bonus' consistent à ne compter que les points supérieurs à 10.<br />Ex.: Pour 12 (coef 3), 14 (coef 1) et 13 (coef 2 et bonus), le calcul est (12*3+14*1+(13-10)*2)/(3+1)</p>\n";
+	//echo "<p style='color:red;'><b>A FAIRE&nbsp;:</b> Calculer les moyennes par matiÃ¨res,...</p>\n";
+	echo "<p style='color:red;'><i>NOTES&nbsp;:</i> Les moyennes supposent actuellement que le rÃ©fÃ©rentiel des devoirs est 20.<br />Il faudra modifier pour prendre en compte des notes sur autre chose que 20.<br />Les 'bonus' consistent Ã  ne compter que les points supÃ©rieurs Ã  10.<br />Ex.: Pour 12 (coef 3), 14 (coef 1) et 13 (coef 2 et bonus), le calcul est (12*3+14*1+(13-10)*2)/(3+1)</p>\n";
 
 	//echo "<p><br /></p>\n";
-	//echo "<p style='color:red;'><i>PROBLEME&nbsp;:</i> 3B1 moyenne min  '-' alors que cela devrait être '0' ???</p>\n";
-	// CORRIGé
+	//echo "<p style='color:red;'><i>PROBLEME&nbsp;:</i> 3B1 moyenne min  '-' alors que cela devrait Ãªtre '0' ???</p>\n";
+	// CORRIGÃ©
 
 	//echo "<p><br /></p>\n";
-	//echo "<p style='color:red;'><i>PROBLEME&nbsp;:</i> Les moyennes min/max/classes d'un 'enseignement' sont erronées si on a à la fois des notes de devoirs et des notes hors enseignement pour un même 'enseignement'.</p>\n";
-	// CORRIGé
+	//echo "<p style='color:red;'><i>PROBLEME&nbsp;:</i> Les moyennes min/max/classes d'un 'enseignement' sont erronÃ©es si on a Ã  la fois des notes de devoirs et des notes hors enseignement pour un mÃªme 'enseignement'.</p>\n";
+	// CORRIGÃ©
 
 	//echo "<p><br /></p>\n";
-	//echo "<p style='color:red;'><i>A VERIFIER&nbsp;:</i> Les moyennes min/max/classes d'un 'enseignement' sont calculées classe par classe alors qu'elles devraient l'être pour l'ensemble de l'examen.</p>\n";
-	// CORRIGé
+	//echo "<p style='color:red;'><i>A VERIFIER&nbsp;:</i> Les moyennes min/max/classes d'un 'enseignement' sont calculÃ©es classe par classe alors qu'elles devraient l'Ãªtre pour l'ensemble de l'examen.</p>\n";
+	// CORRIGÃ©
 
 	echo "<p><br /></p>\n";
-	echo "<p style='color:red;'><i>PROBLEME&nbsp;:</i> Les élèves qui changent de classe sont mal gérés.<br />Il faudrait choisir une période de référence pour les appartenances des élèves à une classe.</p>\n";
+	echo "<p style='color:red;'><i>PROBLEME&nbsp;:</i> Les Ã©lÃ¨ves qui changent de classe sont mal gÃ©rÃ©s.<br />Il faudrait choisir une pÃ©riode de rÃ©fÃ©rence pour les appartenances des Ã©lÃ¨ves Ã  une classe.</p>\n";
 
 }
 

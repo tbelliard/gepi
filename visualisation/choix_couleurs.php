@@ -37,7 +37,7 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// INSERT INTO droits VALUES ('/visualisation/choix_couleurs.php', 'V', 'F', 'F', 'V', 'F', 'F', 'Choix des couleurs des graphiques des résultats scolaires', '');
+// INSERT INTO droits VALUES ('/visualisation/choix_couleurs.php', 'V', 'F', 'F', 'V', 'F', 'F', 'Choix des couleurs des graphiques des rÃ©sultats scolaires', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
@@ -68,7 +68,7 @@ if(isset($ok)) {
 				}
 				else{
 					//echo "$chaine: ".$$chaine." PROBLEME<br />";
-					$msg.="Valeur erronée pour $chaine<br />\n";
+					$msg.="Valeur erronÃ©e pour $chaine<br />\n";
 					$err_no++;
 				}
 			}
@@ -88,7 +88,7 @@ if(isset($ok)) {
 				}
 				else{
 					//echo "$chaine: ".$$chaine." PROBLEME<br />";
-					$msg.="Valeur erronée pour $chaine<br />\n";
+					$msg.="Valeur erronÃ©e pour $chaine<br />\n";
 					$err_no++;
 				}
 			}
@@ -96,7 +96,7 @@ if(isset($ok)) {
 	}
 
 	if($err_no==0){
-		$msg.="Enregistrement effectué.";
+		$msg.="Enregistrement effectuÃ©.";
 	}
 }
 
@@ -107,7 +107,7 @@ require_once("../lib/header.inc");
 
 /*
 if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")!='yes') {
-   die("Droits insuffisants pour effectuer cette opération");
+   die("Droits insuffisants pour effectuer cette opÃ©ration");
 }
 */
 
@@ -314,7 +314,7 @@ $tabcouleur=Array("aliceblue","antiquewhite","aqua","aquamarine","azure","beige"
 else{
 	// On valide les saisies...
 	// ... le faire au-dessus serait mieux.
-	echo "VALIDé";
+	echo "VALIDÃ©";
 }
 */
 require("../lib/footer.inc.php");

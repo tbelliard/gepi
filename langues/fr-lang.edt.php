@@ -23,7 +23,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// fichier appelÈ par edt_organisation/choix_langue.php
+// fichier appel√© par edt_organisation/choix_langue.php
 // langue = fr - iso latin-1
 // Si GEPI UTF-8, utiliser utf8_encode dans chaque define
 
@@ -31,24 +31,24 @@
 // edt_organisation/...
 // --------------------------------------
 
-define('ASK_AUTHORIZATION_TO_ADMIN', "Vous devez demander ‡ votre administrateur l'autorisation de voir cette page.");
+define('ASK_AUTHORIZATION_TO_ADMIN', "Vous devez demander √† votre administrateur l'autorisation de voir cette page.");
 
 // --------------------------------------
 // edt_organisation/ajax_edtcouleurs.php
 // --------------------------------------
 
 define('NO_COLOR', "pas de couleur");
-define('IMPOSSIBLE_TO_UPDATE', "Impossible de mettre ‡ jour la table edt_setting");
+define('IMPOSSIBLE_TO_UPDATE', "Impossible de mettre √† jour la table edt_setting");
 
 // --------------------------------------
 // edt_organisation/ajouter_salle.php
 // --------------------------------------
 
 define('TITLE_ADD_CLASSROOM', "Emploi du temps");
-define('MANAGE_GEPI_CLASSROOMS', "GÈrer les salles de GEPI");
+define('MANAGE_GEPI_CLASSROOMS', "G√©rer les salles de GEPI");
 define('ADD_CLASSROOM_IN_DB', "Ajouter une salle");
-define('CHANGE_CLASSROOM_NAME', "La salle numÈro %s s'appelle dÈsormais %s");
-//... ‡ finir
+define('CHANGE_CLASSROOM_NAME', "La salle num√©ro %s s'appelle d√©sormais %s");
+//... √† finir
 
 // --------------------------------------
 // edt_organisation/voir_edt.php
@@ -60,10 +60,10 @@ define('TITLE_VOIR_EDT', "L'emploi du temps de :");
 // edt_organisation/edt_param_couleurs.php
 // --------------------------------------
 
-define('TITLE_EDT_PARAM_COLORS', "ParamÈtrer les couleurs des matiËres");
+define('TITLE_EDT_PARAM_COLORS', "Param√©trer les couleurs des mati√®res");
 define('CLICK_ON_COLOR', "Cliquez sur la couleur pour la modifier.");
-define('TEXT1_EDT_PARAM_COLORS', "Pour voir ces couleurs dans les emplois du temps, il faut modifier les paramËtres.");
-define('FIELD', "MatiËre");
+define('TEXT1_EDT_PARAM_COLORS', "Pour voir ces couleurs dans les emplois du temps, il faut modifier les param√®tres.");
+define('FIELD', "Mati√®re");
 define('SHORT_NAME', "Nom court");
 define('COLOR', "Couleur");
 define('MODIFY_COLOR', "Modifier");
@@ -72,53 +72,53 @@ define('MODIFY_COLOR', "Modifier");
 // edt_organisation/edt_parametrer.php
 // --------------------------------------
 
-define('TITLE_EDT_PARAMETRER', "Emploi du temps - ParamËtres");
-define('FIELDS_PARAM', "Les matiËres");
+define('TITLE_EDT_PARAMETRER', "Emploi du temps - Param√®tres");
+define('FIELDS_PARAM', "Les mati√®res");
 define('FIELDS_PARAM_BUTTON1', "Noms courts (du type HG,...).");
-define('FIELDS_PARAM_BUTTON2', " Noms longs (Histoire GÈographie,...).");
-//.... ‡ finir
+define('FIELDS_PARAM_BUTTON2', " Noms longs (Histoire G√©ographie,...).");
+//.... √† finir
 
 // --------------------------------------
 // edt_organisation/voir_edt_eleves.php
 // --------------------------------------
-define('LOOKFOR_STUDENTS_BY_NAME', "Rechercher tous les noms commenÁant par :");
+define('LOOKFOR_STUDENTS_BY_NAME', "Rechercher tous les noms commen√ßant par :");
 define('NEXT_LETTER', "la lettre suivante");
-define('LOOKFOR_STUDENTS_BY_CLASS', " ou la liste des ÈlËves de ");
+define('LOOKFOR_STUDENTS_BY_CLASS', " ou la liste des √©l√®ves de ");
 define('THIS_CLASS', "Cette classe");
-define('PREVIOUS_STUDENT', "ÈlËve prÈcÈdent");
-define('NEXT_STUDENT', "ÈlËve suivant");
-define('CHOOSE_STUDENT', "Choix de l'ÈlËve");
+define('PREVIOUS_STUDENT', "√©l√®ve pr√©c√©dent");
+define('NEXT_STUDENT', "√©l√®ve suivant");
+define('CHOOSE_STUDENT', "Choix de l'√©l√®ve");
 
 // --------------------------------------
 // edt_organisation/voir_edt_prof.php
 // --------------------------------------
-define('PREVIOUS_TEACHER', "Prof. prÈcÈdent");
+define('PREVIOUS_TEACHER', "Prof. pr√©c√©dent");
 define('NEXT_TEACHER', "Prof. suivant");
 define('CHOOSE_TEACHER', "Choix du professeur");
 
 // --------------------------------------
 // edt_organisation/voir_edt_classe.php
 // --------------------------------------
-define('PREVIOUS_CLASS', "Classe prÈcÈdente");
+define('PREVIOUS_CLASS', "Classe pr√©c√©dente");
 define('NEXT_CLASS', "Classe suivante");
 define('CHOOSE_CLASS', "Choix de la classe");
 
 // --------------------------------------
 // edt_organisation/voir_edt_salle.php
 // --------------------------------------
-define('PREVIOUS_CLASSROOM', "Salle prÈcÈdente");
+define('PREVIOUS_CLASSROOM', "Salle pr√©c√©dente");
 define('NEXT_CLASSROOM', "Salle suivante");
 define('CHOOSE_CLASSROOM', "Choix de la salle");
 
 // --------------------------------------
 // edt_organisation/menu.inc.php
 // --------------------------------------
-define('WEEK_NUMBER', "Semaine n∞ ");
+define('WEEK_NUMBER', "Semaine n¬∞ ");
 define('VIEWS', "Visionner");
 define('TEACHERS', "Professeurs");
 define('CLASSES', "Classes");
 define('CLASSROOMS', "Salles");
-define('STUDENTS', "ElËves");
+define('STUDENTS', "El√®ves");
 define('MODIFY', "Modifier");
 define('LOOKFOR', "Chercher");
 define('FREE_CLASSROOMS', "Salles libres");
@@ -126,10 +126,10 @@ define('ADMINISTRATOR', "Admin");
 define('LESSONS', "Enseignements");
 define('GROUPS', "Groupes");
 define('INITIALIZE', "Initialiser");
-define('PARAMETER', "ParamÈtrer");
+define('PARAMETER', "Param√©trer");
 define('COLORS', "Couleurs");
 define('CALENDAR', "calendrier");
-define('PERIODS', "PÈriodes");
+define('PERIODS', "P√©riodes");
 define('WEEKS', "Semaines");
 
 
@@ -137,24 +137,24 @@ define('WEEKS', "Semaines");
 // edt_organisation/effacer_cours.php
 // --------------------------------------
 define('TITLE_DELETE_LESSON', "Effacer un cours de l'emploi du temps");
-define('CANT_DELETE_OTHER_COURSE', "Vous ne pouvez pas effacer un cours d'un collËgue");
-define('DELETE_CONFIRM', "Etes-vous s˚r de vouloir supprimer ce cours ?");
-define('DELETE_FAILURE', "Èchec de l'effacement");
-define('DELETE_SUCCESS', "effacement effectuÈ avec succËs");
+define('CANT_DELETE_OTHER_COURSE', "Vous ne pouvez pas effacer un cours d'un coll√®gue");
+define('DELETE_CONFIRM', "Etes-vous s√ªr de vouloir supprimer ce cours ?");
+define('DELETE_FAILURE', "√©chec de l'effacement");
+define('DELETE_SUCCESS', "effacement effectu√© avec succ√®s");
 define('DELETE_NOTHING', "Vous tentez de supprimer un cours inexistant");
-define('DELETE_BAD_RIGHTS', "Vous ne disposez pas des droits suffisants pour rÈaliser cette opÈration");
+define('DELETE_BAD_RIGHTS', "Vous ne disposez pas des droits suffisants pour r√©aliser cette op√©ration");
 define('CONFIRM_BUTTON', "Confirmer");
 define('ABORT_BUTTON', "Annuler");
 
 // --------------------------------------
 // edt_organisation/fonctions_cours.php
 // --------------------------------------
-define('INCOMPATIBLE_LESSON_LENGTH', "la durÈe du cours n'est pas compatible avec les horaires de l'Ètablissement.");
+define('INCOMPATIBLE_LESSON_LENGTH', "la dur√©e du cours n'est pas compatible avec les horaires de l'√©tablissement.");
 define('LESSON_OVERLAPPING', "Ce cours en chevauche un autre ");
-define('CLASSROOM_NOT_FREE', "La salle demandÈe est dÈj‡ occupÈe par ");
-define('STUDENTS_NOT_FREE', "Attention : Certains ÈlËves ont dÈj‡ cours avec ");
-define('SOME_STUDENTS_NOT_FREE', "Cours crÈÈ bien que certains ÈlËves soient dÈj‡ en cours avec ");
-define('GROUP_IS_EMPTY', "Veuillez choisir un enseignement pour crÈer le crÈneau");
+define('CLASSROOM_NOT_FREE', "La salle demand√©e est d√©j√† occup√©e par ");
+define('STUDENTS_NOT_FREE', "Attention : Certains √©l√®ves ont d√©j√† cours avec ");
+define('SOME_STUDENTS_NOT_FREE', "Cours cr√©√© bien que certains √©l√®ves soient d√©j√† en cours avec ");
+define('GROUP_IS_EMPTY', "Veuillez choisir un enseignement pour cr√©er le cr√©neau");
 
 // --------------------------------------
 // edt_organisation/modifier_cours_popup.php
@@ -163,8 +163,8 @@ define('TITLE_MODIFY_LESSON_POPUP', "Modifier un cours de l'emploi du temps");
 define('TITLE_PAGE', "Gepi - Modifier un cours");
 define('LESSON_MODIFICATION', "Modification du cours");
 define('CHOOSE_LESSON', "Choix de l'enseignement");
-define('LESSON_START_AT_THE_BEGINNING', "Le cours commence au dÈbut d'un crÈneau");
-define('LESSON_START_AT_THE_MIDDLE', "Le cours commence au milieu d'un crÈneau");
+define('LESSON_START_AT_THE_BEGINNING', "Le cours commence au d√©but d'un cr√©neau");
+define('LESSON_START_AT_THE_MIDDLE', "Le cours commence au milieu d'un cr√©neau");
 define('HOUR1', "1/2 heure");
 define('HOUR2', "1 heure");
 define('HOUR3', "1,5 heure");
@@ -182,7 +182,7 @@ define('HOUR14', "7 heures");
 define('HOUR15', "7,5 heures");
 define('HOUR16', "8 heures");
 define('ALL_WEEKS', "Toutes les semaines");
-define('ENTIRE_YEAR', "AnnÈe entiËre");
+define('ENTIRE_YEAR', "Ann√©e enti√®re");
 define('REGISTER', "Enregistrer");
 define('HOURS', "Horaire");
 define('CLASSROOM', "Salle");

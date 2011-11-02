@@ -48,18 +48,18 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 ?>
 <p class=bold>
 <a href="../accueil_admin.php"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour </a>
-| <a href='classes_param.php'>Paramétrage de plusieurs classes par lots</a>
-| <a href='cpe_resp.php'>Paramétrage rapide CPE Responsable</a>
-| <a href='scol_resp.php'>Paramétrage scolarité</a>
-| <a href='acces_appreciations.php'>Paramétrage de l'accès aux appréciations</a>
-| <a href='../groupes/repartition_ele_grp.php'>Répartir des élèves entre plusieurs groupes</a>
+| <a href='classes_param.php'>ParamÃ©trage de plusieurs classes par lots</a>
+| <a href='cpe_resp.php'>ParamÃ©trage rapide CPE Responsable</a>
+| <a href='scol_resp.php'>ParamÃ©trage scolaritÃ©</a>
+| <a href='acces_appreciations.php'>ParamÃ©trage de l'accÃ¨s aux apprÃ©ciations</a>
+| <a href='../groupes/repartition_ele_grp.php'>RÃ©partir des Ã©lÃ¨ves entre plusieurs groupes</a>
 </p>
 <p style='margin-top: 10px;'>
 <img src='../images/icons/add.png' alt='' class='back_link' /> <a href="modify_nom_class.php">Ajouter une classe</a>
 </p>
 
 <?php
-// On va chercher les classes déjà existantes, et on les affiche.
+// On va chercher les classes dÃ©jÃ  existantes, et on les affiche.
 $call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
 $nombre_lignes = mysql_num_rows($call_data);
 if ($nombre_lignes != 0) {
@@ -80,15 +80,15 @@ if ($nombre_lignes != 0) {
 		echo "</td>\n";
 
 		echo "<td>\n";
-		echo "<a href='periodes.php?id_classe=$id_classe'><img src='../images/icons/date.png' alt='' /> Périodes</a></td>\n";
-		//echo "<td>|<a href='modify_class.php?id_classe=$id_classe'>Gérer les matières</a></td>\n";
+		echo "<a href='periodes.php?id_classe=$id_classe'><img src='../images/icons/date.png' alt='' /> PÃ©riodes</a></td>\n";
+		//echo "<td>|<a href='modify_class.php?id_classe=$id_classe'>GÃ©rer les matiÃ¨res</a></td>\n";
 
 		$sql="select id_classe from periodes where id_classe = '$id_classe';";
 		$res_nb_per=mysql_query($sql);
 		$nb_per = mysql_num_rows($res_nb_per);
 		echo "<td>\n";
 		if ($nb_per != 0) {
-			echo "<a href='classes_const.php?id_classe=$id_classe'><img src='../images/icons/edit_user.png' alt='' /> Élèves</a>\n";
+			echo "<a href='classes_const.php?id_classe=$id_classe'><img src='../images/icons/edit_user.png' alt='' /> Ã‰lÃ¨ves</a>\n";
 		}
 		else {
 			echo "&nbsp;";
@@ -101,7 +101,7 @@ if ($nombre_lignes != 0) {
 
 		echo "<td>\n";
 		if ($nb_per != 0) {
-			echo "[<a href='../groupes/edit_class_grp_lot.php?id_classe=$id_classe'>config. simplifiée</a>]\n";
+			echo "[<a href='../groupes/edit_class_grp_lot.php?id_classe=$id_classe'>config. simplifiÃ©e</a>]\n";
 		}
 		else {
 			echo "&nbsp;\n";
@@ -109,7 +109,7 @@ if ($nombre_lignes != 0) {
 		echo "</td>\n";
 
 		echo "<td>\n";
-		echo "<a href='modify_nom_class.php?id_classe=$id_classe'><img src='../images/icons/configure.png' alt='' /> Paramètres</a>\n";
+		echo "<a href='modify_nom_class.php?id_classe=$id_classe'><img src='../images/icons/configure.png' alt='' /> ParamÃ¨tres</a>\n";
 		echo "</td>\n";
 
 		echo "<td>\n";
@@ -127,8 +127,8 @@ if ($nombre_lignes != 0) {
 	echo "</table>\n";
 }
 else {
-	echo "<p class='grand'>Attention : aucune classe n'a été définie dans la base GEPI !</p>\n";
-	echo "<p>Vous pouvez ajouter des classes à la base en cliquant sur le lien ci-dessus, ou bien directement <br /><a href='../initialisation/index.php'>importer les élèves et les classes à partir de fichiers GEP.</a></p>\n";
+	echo "<p class='grand'>Attention : aucune classe n'a Ã©tÃ© dÃ©finie dans la base GEPI !</p>\n";
+	echo "<p>Vous pouvez ajouter des classes Ã  la base en cliquant sur le lien ci-dessus, ou bien directement <br /><a href='../initialisation/index.php'>importer les Ã©lÃ¨ves et les classes Ã  partir de fichiers GEP.</a></p>\n";
 }
 require("../lib/footer.inc.php");
 ?>

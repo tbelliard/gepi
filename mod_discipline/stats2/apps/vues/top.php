@@ -20,7 +20,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -28,7 +28,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 ?>
 <div id="result">
   <div id="wrap" >
-    <h3><font class="red">Top 10 des incidents pour la période du: <?php echo $_SESSION['stats_periodes']['du'];?> au <?php echo $_SESSION['stats_periodes']['au'];?> </font> </h3>
+    <h3><font class="red">Top 10 des incidents pour la pÃ©riode du: <?php echo $_SESSION['stats_periodes']['du'];?> au <?php echo $_SESSION['stats_periodes']['au'];?> </font> </h3>
     <?php ClassVue::afficheVue('parametres.php',$vars) ?>
     <div id="tableaux">
       <div class="float_left" >
@@ -45,7 +45,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
             <?php } ?>
         </table>
         <?php else: ?>
-        <p>Pas d'incidents sur la période avec les filtres selectionnés</p>
+        <p>Pas d'incidents sur la pÃ©riode avec les filtres selectionnÃ©s</p>
         <?php endif; ?>
       </div>
       <div class="float_left" >
@@ -62,7 +62,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
             <?php } ?>
         </table>
         <?php else: ?>
-        <p>Pas de sanctions sur la période avec les filtres selectionnés</p>
+        <p>Pas de sanctions sur la pÃ©riode avec les filtres selectionnÃ©s</p>
         <?php endif; ?>
       </div>
       <div class="float_left" >
@@ -79,7 +79,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
             <?php } ?>
         </table>
         <?php else: ?>
-        <p>Pas de retenues sur la période avec les filtres selectionnés</p>
+        <p>Pas de retenues sur la pÃ©riode avec les filtres selectionnÃ©s</p>
         <?php endif; ?>
       </div>
       <div class="float_left" >
@@ -96,7 +96,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
             <?php } ?>
         </table>
         <?php else: ?>
-        <p>Pas d'exclusions sur la période avec les filtres selectionnés</p>
+        <p>Pas d'exclusions sur la pÃ©riode avec les filtres selectionnÃ©s</p>
         <?php endif; ?>
       </div>
     </div>

@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+// On indique qu'il faut creer des variables non protÃ©gÃ©es (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
 // Initialisations files
@@ -64,15 +64,15 @@ if ((($_SESSION['statut'] == 'scolarite') and $gepiSettings["GepiAccesSaisieEcts
 }
 
 if (!$acces_prof_suivi && !$acces_prof && !$acces_scol) {
-  die("Droits insuffisants pour accéder à cette page.");
+  die("Droits insuffisants pour accÃ©der Ã  cette page.");
 }
 
 // initialisations
 $mode_saisie = isset($_POST["mode"]) ? $_POST["mode"] :(isset($_GET["mode"]) ? $_GET["mode"] : NULL);
 $presaisie = $mode_saisie == 'presaisie' ? true : false;
-if ($acces_scol) $presaisie = false; // On force une saisie normale si profil scolarité
-if ($acces_prof and !$acces_prof_suivi) $presaisie = true; // On force le mode 'présaisie' si on a un prof 'normal'
-// Maintenant on peut utiliser $presaisie dans les tests de manière relativement fiable.
+if ($acces_scol) $presaisie = false; // On force une saisie normale si profil scolaritÃ©
+if ($acces_prof and !$acces_prof_suivi) $presaisie = true; // On force le mode 'prÃ©saisie' si on a un prof 'normal'
+// Maintenant on peut utiliser $presaisie dans les tests de maniÃ¨re relativement fiable.
 
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_classe"]) ? $_GET["id_classe"] :NULL);
 $periode_num = isset($_POST["periode_num"]) ? $_POST["periode_num"] :(isset($_GET["periode_num"]) ? $_GET["periode_num"] :NULL);
@@ -92,17 +92,17 @@ include "../lib/periodes.inc.php";
 //*******************************************************************************************************
 $msg = '';
 
-// Le formulaire a été posté
+// Le formulaire a Ã©tÃ© postÃ©
 if (isset($_POST['is_posted'])) {
 
 	check_token();
 
-    // On s'assure que la période sur laquelle on effectue l'enregistrement est valide
+    // On s'assure que la pÃ©riode sur laquelle on effectue l'enregistrement est valide
     if (($periode_num < $nb_periode) and ($periode_num > 0) and ($ver_periode[$periode_num] == "N" OR $ver_periode[$periode_num] == "P"))  {
       
         $reg = 'yes';
         
-        // On fait des tests de cohérence de droits d'accès
+        // On fait des tests de cohÃ©rence de droits d'accÃ¨s
         
         // Si on est en mode de saisie globale et que l'on n'est pas 
         if (!$presaisie and !$acces_scol) {
@@ -113,37 +113,37 @@ if (isset($_POST['is_posted'])) {
              id_classe = '".$id_classe."'
              ");
              if ($test_prof_suivi == '-1') {
-                 $msg = "Vous n'êtes pas professeur de suivi de cet élève.";
+                 $msg = "Vous n'Ãªtes pas professeur de suivi de cet Ã©lÃ¨ve.";
                  $reg = 'no';
              }
          }
          if ($reg == 'yes') {
 
-             // Suppression ou édition ?
+             // Suppression ou Ã©dition ?
              if (isset($_POST['delete'])) {
-                 if (!$presaisie) { // Pas de reset des données en mode 'présaisie' !
+                 if (!$presaisie) { // Pas de reset des donnÃ©es en mode 'prÃ©saisie' !
                    if (isset($_POST['delete_all']) and $_POST['delete_all'] == 'yes') {
-                       // La case a bien été cochée, on supprime.
+                       // La case a bien Ã©tÃ© cochÃ©e, on supprime.
                       $Eleve = ElevePeer::retrieveByLOGIN($current_eleve_login);
                       $groupes = $Eleve->getEctsGroupes($periode_num);
                       foreach($groupes as $groupe) {
-                          // On a l'élève, le groupe, et la période. On peut supprimer.
+                          // On a l'Ã©lÃ¨ve, le groupe, et la pÃ©riode. On peut supprimer.
                           $Eleve->resetEctsCredit($periode_num,$groupe->getId());
                       }
                       $Eleve->setCreditEctsGlobal(null);
-                      $msg = "Les données de cet élève viennent d'être supprimées.";
+                      $msg = "Les donnÃ©es de cet Ã©lÃ¨ve viennent d'Ãªtre supprimÃ©es.";
                    } else {
-                       $msg = 'Pour supprimer des données, vous devez cocher la case au-dessus du bouton de validation de suppression.';
+                       $msg = 'Pour supprimer des donnÃ©es, vous devez cocher la case au-dessus du bouton de validation de suppression.';
                    }
                  }
 
              } else {
 
-                 // Ici on a affaire à une édition. C'est dans ce bloc que l'enregistrement se passe réellement.
+                 // Ici on a affaire Ã  une Ã©dition. C'est dans ce bloc que l'enregistrement se passe rÃ©ellement.
                 $Eleve = ElevePeer::retrieveByLOGIN($current_eleve_login);
                 $groupes = $Eleve->getEctsGroupes($periode_num);
                 foreach($groupes as $groupe) {
-                    // On a l'élève, le groupe, et la période. On peut enregistrer.
+                    // On a l'Ã©lÃ¨ve, le groupe, et la pÃ©riode. On peut enregistrer.
                     if (!$presaisie) {
                       $valeur_ects = $_POST['valeur_ects_'.$groupe->getId()];
                       $mention_ects = $_POST['mention_ects_'.$groupe->getId()];
@@ -151,7 +151,7 @@ if (isset($_POST['is_posted'])) {
                       if (!in_array($mention_ects, array("A","B","C","D","E","F"))) $mention_ects = '';
                       $Eleve->setEctsCredit($periode_num,$groupe->getId(),$valeur_ects,$mention_ects);
                     } else {
-                      // On vérifie que le prof est bien prof de ce groupe
+                      // On vÃ©rifie que le prof est bien prof de ce groupe
                       if ($groupe->getProfesseurs()->contains($CurrentUser)) {
                         $mention_prof_ects = $_POST['mention_ects_'.$groupe->getId()];
                         if (!in_array($mention_prof_ects, array("A","B","C","D","E","F"))) $mention_prof_ects = '';
@@ -160,7 +160,7 @@ if (isset($_POST['is_posted'])) {
                     }                    
                 }
                 
-                // Le crédit global, uniquement saisi si accès complet
+                // Le crÃ©dit global, uniquement saisi si accÃ¨s complet
                 if (!$presaisie) {
                   $mention_globale = $_POST['credit_ects_global'];
                   if (!in_array($mention_globale, array("A","B","C","D","E","F"))) $mention_globale = '';
@@ -169,12 +169,12 @@ if (isset($_POST['is_posted'])) {
              }
         }
     } else {
-        $msg = "La période sur laquelle vous voulez enregistrer est verrouillée";
+        $msg = "La pÃ©riode sur laquelle vous voulez enregistrer est verrouillÃ©e";
     }
 
     if (isset($_POST['ok1']) OR isset($_POST['delete']))  {
         
-        // En accès complet ou en présaisie, on récupère tous les élèves de la classe.
+        // En accÃ¨s complet ou en prÃ©saisie, on rÃ©cupÃ¨re tous les Ã©lÃ¨ves de la classe.
         if ($acces_scol) {
             $appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
             WHERE (
@@ -184,7 +184,7 @@ if (isset($_POST['is_posted'])) {
 
             ) ORDER BY nom,prenom");
             
-        // Pour un prof principal, on ne récupère que les élèves dont il est responsable
+        // Pour un prof principal, on ne rÃ©cupÃ¨re que les Ã©lÃ¨ves dont il est responsable
         } else if ($acces_prof_suivi && !$presaisie) {
             $appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
             WHERE (c.id_classe='$id_classe' AND
@@ -194,7 +194,7 @@ if (isset($_POST['is_posted'])) {
             c.periode = '".$periode_num."'
             ) ORDER BY nom,prenom");
             
-        // En présaisie, on ne propose que les élèves pour lesquels le prof enseigne au moins
+        // En prÃ©saisie, on ne propose que les Ã©lÃ¨ves pour lesquels le prof enseigne au moins
         // dans un groupe de la classe.
         } else if ($presaisie) {
             $appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg, j_groupes_professeurs jgp
@@ -220,8 +220,8 @@ if (isset($_POST['is_posted'])) {
     }
 }
 //*******************************************************************************************************
-$message_enregistrement = "Les modifications ont été enregistrées !";
-$themessage = 'Des valeurs ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$message_enregistrement = "Les modifications ont Ã©tÃ© enregistrÃ©es !";
+$themessage = 'Des valeurs ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Saisie des ECTS";
 require_once("../lib/header.inc");
@@ -233,11 +233,11 @@ change = 'no';
 </script>
 <?php
 
-// Première étape : la classe est définie, on definit la période
+// PremiÃ¨re Ã©tape : la classe est dÃ©finie, on definit la pÃ©riode
 if (isset($id_classe) and (!isset($periode_num))) {
     $classe_suivi = sql_query1("SELECT nom_complet FROM classes WHERE id = '".$id_classe."'");
     echo "<p class=bold><a href=\"index_saisie.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Mes classes</a></p>\n";
-    echo "<p><b>".$classe_suivi.", choisissez la période : </b></p>\n";
+    echo "<p><b>".$classe_suivi.", choisissez la pÃ©riode : </b></p>\n";
     include "../lib/periodes.inc.php";
     $i="1";
     echo "<ul>\n";
@@ -252,20 +252,20 @@ if (isset($id_classe) and (!isset($periode_num))) {
     echo "</ul>\n";
 }
 
-// Deuxième étape : la classe est définie, la période est définie, on affiche la liste des élèves
+// DeuxiÃ¨me Ã©tape : la classe est dÃ©finie, la pÃ©riode est dÃ©finie, on affiche la liste des Ã©lÃ¨ves
 if (isset($id_classe) and (isset($periode_num)) and (!isset($fiche))) {
     $classe_suivi = sql_query1("SELECT nom_complet FROM classes WHERE id = '".$id_classe."'");
     ?>
 
 	<form enctype="multipart/form-data" action="saisie_ects.php" name="form1" method='post'>
 
-    <p class=bold><a href="saisie_ects.php?id_classe=<?php echo $id_classe; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Choisir une autre période</a>
+    <p class=bold><a href="saisie_ects.php?id_classe=<?php echo $id_classe; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Choisir une autre pÃ©riode</a>
 
 	<?php
 
 	echo "<input type='hidden' name='periode_num' value='$periode_num' />\n";
 
-// Ajout lien classe précédente / classe suivante
+// Ajout lien classe prÃ©cÃ©dente / classe suivante
 if($_SESSION['statut'] == 'scolarite'){
 	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc, j_groupes_classes jgc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 }
@@ -288,7 +288,7 @@ elseif($presaisie) {
         ORDER BY c.classe;";
 }
 elseif($_SESSION['statut'] == 'autre'){
-	// On recherche toutes les classes pour ce statut qui n'est accessible que si l'admin a donné les bons droits
+	// On recherche toutes les classes pour ce statut qui n'est accessible que si l'admin a donnÃ© les bons droits
 	$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc WHERE p.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE  ORDER BY classe";
 }
 elseif($_SESSION['statut'] == 'secours'){
@@ -335,7 +335,7 @@ if($nb_classes_suivies>0){
 
 // =================================
 if (isset($id_class_prec) && $id_class_prec!=0) {
-	echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;periode_num=$periode_num' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";
+	echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;periode_num=$periode_num' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe prÃ©cÃ©dente</a>";
 }
 
 if(($chaine_options_classes!="")&&($nb_classes_suivies>1)) {
@@ -371,7 +371,7 @@ if(($chaine_options_classes!="")&&($nb_classes_suivies>1)) {
 if(isset($id_class_suiv)){
 	if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv&amp;periode_num=$periode_num' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>";}
 }
-//fin ajout lien classe précédente / classe suivante
+//fin ajout lien classe prÃ©cÃ©dente / classe suivante
 echo "</p>\n";
 
 echo "</form>\n";
@@ -382,11 +382,11 @@ echo "</form>\n";
 
     <?php
     if ($ver_periode[$periode_num] != "N" AND $ver_periode[$periode_num] != "P") {
-        echo "Cette période est fermée pour cette classe !";
+        echo "Cette pÃ©riode est fermÃ©e pour cette classe !";
     } else {
         ?>
 
-        <p>Cliquez sur le nom de l'élève pour lequel vous voulez entrer ou modifier les crédits ECTS.</p>
+        <p>Cliquez sur le nom de l'Ã©lÃ¨ve pour lequel vous voulez entrer ou modifier les crÃ©dits ECTS.</p>
         <?php
         if ($acces_scol) {
             $sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
@@ -436,7 +436,7 @@ echo "</form>\n";
 if (isset($fiche)) {
 
     if ($ver_periode[$periode_num] != "N" AND $ver_periode[$periode_num] != "P") {
-        echo "La période est fermée !";
+        echo "La pÃ©riode est fermÃ©e !";
         die();
     }
 
@@ -482,7 +482,7 @@ function updateMention(id,valeur){
     $Classe = ClassePeer::retrieveByPK($id_classe);
     $annees_precedentes = $Eleve->getEctsAnneesPrecedentes();
     $nb_cols = 0;
-    // On compte le total de colonnes (= le nombre de périodes pour chaque année archivée).
+    // On compte le total de colonnes (= le nombre de pÃ©riodes pour chaque annÃ©e archivÃ©e).
     foreach($annees_precedentes as $a) {
         $nb_cols += count($a['periodes']);
     }
@@ -553,7 +553,7 @@ function updateMention(id,valeur){
 
     if($ele_login_prec!=""){
         echo " | <a href='".$_SERVER['PHP_SELF']."?mode=$mode_saisie&fiche=y&amp;periode_num=$periode_num&amp;current_eleve_login=$ele_login_prec&amp;id_classe=$id_classe";
-        echo "'>".ucfirst($gepiSettings['denomination_eleve'])." précédent</a>";
+        echo "'>".ucfirst($gepiSettings['denomination_eleve'])." prÃ©cÃ©dent</a>";
     }
     if($chaine_options_eleves!="") {
         echo " | <select name='current_eleve_login' onchange=\"document.forms['form_navigation'].submit();\">\n";
@@ -576,12 +576,12 @@ function updateMention(id,valeur){
 	echo "</form>\n";
 
 	echo "<form enctype=\"multipart/form-data\" name='ects_form' id='ects_form' action=\"saisie_ects.php\" method=\"post\">\n";
-    echo "<p><b>Principaux domaines d'études</b> : ".$Classe->getEctsDomainesEtude()."</p>";
+    echo "<p><b>Principaux domaines d'Ã©tudes</b> : ".$Classe->getEctsDomainesEtude()."</p>";
 
 	echo add_token_field();
     
     echo "<div style='float:left;'>";
-	echo "<table class='boireaus' style='margin-left: 50px; border-top: 0px solid black; border-right: 0px solid black; border-left: 0px solid black;' summary=\"Elève ".$Eleve->getLogin()."\">\n";
+	echo "<table class='boireaus' style='margin-left: 50px; border-top: 0px solid black; border-right: 0px solid black; border-left: 0px solid black;' summary=\"ElÃ¨ve ".$Eleve->getLogin()."\">\n";
 
     echo "<tr><td style='border-top: 0px solid black; border-right: 0px solid black; border-left: 0px solid black;' colspan='";
     echo $nb_cols+1;
@@ -622,11 +622,11 @@ function updateMention(id,valeur){
 
 
 
-    // Cette variable contient tous les groupes pour la période, organisés par catégories.
+    // Cette variable contient tous les groupes pour la pÃ©riode, organisÃ©s par catÃ©gories.
     $categories = $Eleve->getEctsGroupesByCategories($periode_num);
 
-    // Pour s'assurer qu'on affiche bien tout, il faut néanmoins récupérer tout de suite
-    // les crédits ECTS précédents, sans quoi on ne saura si tout a été affiché.
+    // Pour s'assurer qu'on affiche bien tout, il faut nÃ©anmoins rÃ©cupÃ©rer tout de suite
+    // les crÃ©dits ECTS prÃ©cÃ©dents, sans quoi on ne saura si tout a Ã©tÃ© affichÃ©.
     $periodes_precedentes = array();
     if ($periode_num > 1) {
         for($i=1;$i<$periode_num;$i++) {
@@ -639,7 +639,7 @@ function updateMention(id,valeur){
             }
         }
     }
-    // Idem pour les crédits archivés : on stock en avance tous les crédits archivés
+    // Idem pour les crÃ©dits archivÃ©s : on stock en avance tous les crÃ©dits archivÃ©s
     $archived_credits = array();
     foreach($annees_precedentes as $a) {
         $archived_credits[$a['annee']] = array();
@@ -648,7 +648,7 @@ function updateMention(id,valeur){
         }
     }
 
-    // Ce tableau liste les ID des groupes déjà affichés, pour chaque période.
+    // Ce tableau liste les ID des groupes dÃ©jÃ  affichÃ©s, pour chaque pÃ©riode.
     $groupes_id = array();
     $donnees_enregistrees = true;
     $total_valeur = array();
@@ -657,11 +657,11 @@ function updateMention(id,valeur){
     }
     $mentions = array('A','B','C','D','E','F');
 
-    // Ce tableau liste les ID des ects archivés déjà affichés, pour éviter des doublons à la fin,
-    // et déterminer ceux qui n'ont pas encore été affichés.
+    // Ce tableau liste les ID des ects archivÃ©s dÃ©jÃ  affichÃ©s, pour Ã©viter des doublons Ã  la fin,
+    // et dÃ©terminer ceux qui n'ont pas encore Ã©tÃ© affichÃ©s.
     $archives_id = array();
 
-    // Ce tableau sert à calculer les totaux de crédits.
+    // Ce tableau sert Ã  calculer les totaux de crÃ©dits.
     $archives_valeurs_globales = array();
     foreach($annees_precedentes as $a) {
         $archives_valeurs_globales[$a['annee']] = array();
@@ -677,26 +677,26 @@ function updateMention(id,valeur){
                 echo 1+$nb_cols;
             echo "' style='text-align:left; padding-left: 10px; background-color: lightgray;'><b><i>".$categorie[0]->getNomComplet()."</i></b></td></tr>";
 
-        // On traite tous les groupes présents pour la catégorie.
-        // Ces groupes sont basés sur la période courante.
+        // On traite tous les groupes prÃ©sents pour la catÃ©gorie.
+        // Ces groupes sont basÃ©s sur la pÃ©riode courante.
         foreach($categorie[1] as $group) {
          
-            // On va stocker les dernières valeurs archivées, pour le cas des redoublants
+            // On va stocker les derniÃ¨res valeurs archivÃ©es, pour le cas des redoublants
             $derniere_annee_archivee = array();
             
             echo "<tr>";
             echo "<td class='bull_simple'>";
-            // Information sur la matière
+            // Information sur la matiÃ¨re
             echo "<p><b>".$group->getDescription()."</b>";
             echo " (".intval($group->getEctsDefaultValue($id_classe)).")";
             echo "</p></td>";
-            // Affichage des éventuels résultats précédents
+            // Affichage des Ã©ventuels rÃ©sultats prÃ©cÃ©dents
             foreach($annees_precedentes as $a) {
                 foreach($a['periodes'] as $p_num => $p) {
                     $archive = $Eleve->getArchivedEctsCredit($a['annee'], $p_num, $group->getDescription());
                     if ($archive != null and !in_array($archive->getId(), $archives_id)) {
                         echo "<td>";
-                        // On stocke l'ID pour voir plus tard si on a bien affiché tous les crédits obtenus par le passé
+                        // On stocke l'ID pour voir plus tard si on a bien affichÃ© tous les crÃ©dits obtenus par le passÃ©
                         $archives_id[] = $archive->getId();
                         echo $archive->getValeur()." - ".$archive->getMention();
                         $derniere_annee_archivee[$p_num] = array('mention' => $archive->getMention(), 'valeur' => $archive->getValeur());
@@ -709,13 +709,13 @@ function updateMention(id,valeur){
                 }
             }
 
-            // Maintenant on attaque les périodes de l'année en cours.
+            // Maintenant on attaque les pÃ©riodes de l'annÃ©e en cours.
             for ($i=1;$i<=$periode_num;$i++) {
                 $CreditEcts = $Eleve->getEctsCredit($i,$group->getId());
 
-                // Si on est rendu à la période courante :
+                // Si on est rendu Ã  la pÃ©riode courante :
                 if ($i == $periode_num) {
-                    if ($CreditEcts == null or $CreditEcts->getMention() == null or $CreditEcts->getMention() == '') $donnees_enregistrees = false; // On indique que des données n'ont pas été enregistrées en base de données
+                    if ($CreditEcts == null or $CreditEcts->getMention() == null or $CreditEcts->getMention() == '') $donnees_enregistrees = false; // On indique que des donnÃ©es n'ont pas Ã©tÃ© enregistrÃ©es en base de donnÃ©es
                     echo "<td class='bull_simple'>";
                     $valeur_ects = $CreditEcts == null ? $group->getEctsDefaultValue($id_classe) : $CreditEcts->getValeur();
                     if ($valeur_ects == null) $valeur_ects = $group->getEctsDefaultValue($id_classe);
@@ -749,8 +749,8 @@ function updateMention(id,valeur){
                         
                         if ($block_lower_credits || ($presaisie && (!$group->getProfesseurs()->contains($CurrentUser) or $official_credit_exists))) echo " DISABLED ";
                         
-                        // Si on a un redoublant et qu'on atteint le crédit de l'année précédente,
-                        // on empêche la sélection des crédits inférieurs.
+                        // Si on a un redoublant et qu'on atteint le crÃ©dit de l'annÃ©e prÃ©cÃ©dente,
+                        // on empÃªche la sÃ©lection des crÃ©dits infÃ©rieurs.
                         if ($redoublant && isset($derniere_annee_archivee[$i]) && $mention == $derniere_annee_archivee[$i]['mention']) {
                           $block_lower_credits = true;
                         }
@@ -767,14 +767,14 @@ function updateMention(id,valeur){
                     $total_valeur[$i] += $valeur_ects;
                     
                     
-                // Ici on est aux périodes précédentes
+                // Ici on est aux pÃ©riodes prÃ©cÃ©dentes
                 } else {
 
-                    // Ici on affiche simplement les valeurs de la période, et seulement
-                    // si le groupe en question n'a pas été déjà traité.
-                    // Il peut arriver que ce groupe ait été traité dans une catégorie
-                    // précédente, s'il était assigné à une autre catégorie au semestre
-                    // précédent pour l'élève en question... (c'est tordu, oui...)
+                    // Ici on affiche simplement les valeurs de la pÃ©riode, et seulement
+                    // si le groupe en question n'a pas Ã©tÃ© dÃ©jÃ  traitÃ©.
+                    // Il peut arriver que ce groupe ait Ã©tÃ© traitÃ© dans une catÃ©gorie
+                    // prÃ©cÃ©dente, s'il Ã©tait assignÃ© Ã  une autre catÃ©gorie au semestre
+                    // prÃ©cÃ©dent pour l'Ã©lÃ¨ve en question... (c'est tordu, oui...)
                     if (!in_array($group->getId(),$groupes_id)) {
                         echo "<td>";
                         if ($CreditEcts == null) {
@@ -790,17 +790,17 @@ function updateMention(id,valeur){
                         echo "<td>-</td>";
                     }
 
-                    // On enlève ce groupe de la liste des groupes pour les périodes précédentes.
-                    // Cela va nous permettre de vérifier s'il reste des groupes non traités ayant
-                    // cette catégorie (typiquement des groupes auxquels l'élève n'est plus
+                    // On enlÃ¨ve ce groupe de la liste des groupes pour les pÃ©riodes prÃ©cÃ©dentes.
+                    // Cela va nous permettre de vÃ©rifier s'il reste des groupes non traitÃ©s ayant
+                    // cette catÃ©gorie (typiquement des groupes auxquels l'Ã©lÃ¨ve n'est plus
                     // inscrit.
-                    // Attention, il y a un cas de figure non pris en compte : si ce même groupe
-                    // est en réalité dans une catégorie différente pour la période précédente !!
-                    // (ce serait un cas tordu, mais le bug engendra serait très embêtant, car le
-                    // crédit serait affiché deux fois).
-                    // Pour pallier ce problème, on doit donc identifier la liste des groupes déjà
-                    // affichés pour chaque période. Et on testera cette liste si jamais on doit afficher
-                    // des crédits qui 'extra'.
+                    // Attention, il y a un cas de figure non pris en compte : si ce mÃªme groupe
+                    // est en rÃ©alitÃ© dans une catÃ©gorie diffÃ©rente pour la pÃ©riode prÃ©cÃ©dente !!
+                    // (ce serait un cas tordu, mais le bug engendra serait trÃ¨s embÃªtant, car le
+                    // crÃ©dit serait affichÃ© deux fois).
+                    // Pour pallier ce problÃ¨me, on doit donc identifier la liste des groupes dÃ©jÃ 
+                    // affichÃ©s pour chaque pÃ©riode. Et on testera cette liste si jamais on doit afficher
+                    // des crÃ©dits qui 'extra'.
                     if (isset($periodes_precedentes[$i][$categorie[0]->getId()][1][$group->getId()])) {
                         unset($periodes_precedentes[$i][$categorie[0]->getId()][1][$group->getId()]);
                     }
@@ -809,25 +809,25 @@ function updateMention(id,valeur){
             }
             echo "</tr>";
             
-            // On indique que le groupe en question a été traité
+            // On indique que le groupe en question a Ã©tÃ© traitÃ©
             $groupes_id[] = $group->getId();
         }
 
-        // Maintenant on a fait le tour de tous les groupes actifs pour la période
-        // courante. On regarde si des groupes supplémentaires doivent être affichés
-        // pour cette catégorie pour des périodes précédentes.
+        // Maintenant on a fait le tour de tous les groupes actifs pour la pÃ©riode
+        // courante. On regarde si des groupes supplÃ©mentaires doivent Ãªtre affichÃ©s
+        // pour cette catÃ©gorie pour des pÃ©riodes prÃ©cÃ©dentes.
         $extra_groups = array();
         for ($i=1;$i<$periode_num;$i++) {
-            // Test 1 : est-ce qu'il reste des groupes supplémentaires ?
+            // Test 1 : est-ce qu'il reste des groupes supplÃ©mentaires ?
             if (count($periodes_precedentes[$i][$categorie[0]->getId()][1]) > 0) {
                 // Oui... Alors on les passe en boucle.
                 foreach($periodes_precedentes[$i][$categorie[0]->getId()][1] as $group) {
-                    // Test 2 : quand même, ils ont pu être déjà traités sans être
-                    // supprimés, s'ils étaient dans une autre catégorie. On regarde
-                    // alors la liste des groupes déjà traités pour les périodes
-                    // précédentes.
+                    // Test 2 : quand mÃªme, ils ont pu Ãªtre dÃ©jÃ  traitÃ©s sans Ãªtre
+                    // supprimÃ©s, s'ils Ã©taient dans une autre catÃ©gorie. On regarde
+                    // alors la liste des groupes dÃ©jÃ  traitÃ©s pour les pÃ©riodes
+                    // prÃ©cÃ©dentes.
                     if(!in_array($group->getId(), $groupes_id)) {
-                        // Il n'a pas été traité, alors on le prend !
+                        // Il n'a pas Ã©tÃ© traitÃ©, alors on le prend !
                         $extra_groups[] = $group;
                     }
                 }
@@ -835,22 +835,22 @@ function updateMention(id,valeur){
         }
         
         foreach($extra_groups as $group) {
-            // On a encore des groupes à traiter... On va donc refaire la même procédure que ci-dessus.
-            // Pas très propre ce copier/coller de code (même si c'est en réalité une version
-            // simplifiée ici), mais bon... Difficile de faire autrement vue la
-            // complexité des contraintes.
+            // On a encore des groupes Ã  traiter... On va donc refaire la mÃªme procÃ©dure que ci-dessus.
+            // Pas trÃ¨s propre ce copier/coller de code (mÃªme si c'est en rÃ©alitÃ© une version
+            // simplifiÃ©e ici), mais bon... Difficile de faire autrement vue la
+            // complexitÃ© des contraintes.
             echo "<tr>";
             echo "<td class='bull_simple'>";
-            // Information sur la matière
+            // Information sur la matiÃ¨re
             echo "<p><b>".$group->getDescription()."</b>";
             echo "</p></td>";
-            // Affichage des éventuels résultats archivés
+            // Affichage des Ã©ventuels rÃ©sultats archivÃ©s
             foreach($annees_precedentes as $a) {
                 foreach($a['periodes'] as $p_num => $p) {
                     $archive = $Eleve->getArchivedEctsCredit($a['annee'], $p, $group->getDescription());
                     if ($archive != null and !in_array($archive->getId(), $archives_id)) {
                         echo "<td>";
-                        // On stocke l'ID pour voir plus tard si on a bien affiché tous les crédits obtenus par le passé
+                        // On stocke l'ID pour voir plus tard si on a bien affichÃ© tous les crÃ©dits obtenus par le passÃ©
                         $archives_id[] = $archive->getId();
                         echo $archive->getValeur()." - ".$archive->getMention();
                         $archives_valeurs_globales[$a['annee']][$p_num] += $archive->getValeur();
@@ -862,17 +862,17 @@ function updateMention(id,valeur){
                 }
             }
 
-            // Maintenant on attaque les périodes de l'année en cours.
+            // Maintenant on attaque les pÃ©riodes de l'annÃ©e en cours.
             for ($i=1;$i<$periode_num;$i++) {
                 $CreditEcts = $Eleve->getEctsCredit($i,$group->getId());
 
-                // Si on est rendu à la période courante :
+                // Si on est rendu Ã  la pÃ©riode courante :
                 if ($i == $periode_num) {
 
-                // Ici on est aux périodes précédentes
+                // Ici on est aux pÃ©riodes prÃ©cÃ©dentes
                 } else {
-                    // Ici on affiche simplement les valeurs de la période, et seulement
-                    // si le groupe en question n'a pas été déjà traité.
+                    // Ici on affiche simplement les valeurs de la pÃ©riode, et seulement
+                    // si le groupe en question n'a pas Ã©tÃ© dÃ©jÃ  traitÃ©.
                     if (!in_array($group->getId(),$groupes_id)) {
                         echo "<td>";
                         if ($CreditEcts == null) {
@@ -893,18 +893,18 @@ function updateMention(id,valeur){
                 }
 
             }
-            // On affiche la période courante vide :
+            // On affiche la pÃ©riode courante vide :
             echo "<td>-</td><td>-</td>";
             echo "</tr>";
-            // On indique que le groupe en question a été traité
+            // On indique que le groupe en question a Ã©tÃ© traitÃ©
             $groupes_id[] = $group->getId();
         }
     }
 
 
-    // Enfin, le traitement ultime : l'hypothèse où il reste des matières archivées
-    // dont les ECTS n'ont pas encore été affichés...
-    // On ne se pose plus la question des catégories, à ce stade...
+    // Enfin, le traitement ultime : l'hypothÃ¨se oÃ¹ il reste des matiÃ¨res archivÃ©es
+    // dont les ECTS n'ont pas encore Ã©tÃ© affichÃ©s...
+    // On ne se pose plus la question des catÃ©gories, Ã  ce stade...
 
     $extra_matieres = array();
     foreach($annees_precedentes as $a) {
@@ -922,16 +922,16 @@ function updateMention(id,valeur){
     foreach($extra_matieres as $matiere) {
         echo "<tr>";
         echo "<td class='bull_simple'>";
-        // Information sur la matière
+        // Information sur la matiÃ¨re
         echo "<p><b>".$matiere."</b>";
         echo "</p></td>";
-        // Affichage des éventuels résultats archivés
+        // Affichage des Ã©ventuels rÃ©sultats archivÃ©s
         foreach($annees_precedentes as $a) {
             foreach($a['periodes'] as $p_num => $p) {
                 $archive = $Eleve->getArchivedEctsCredit($a['annee'], $p_num, $matiere);
                 if ($archive != null and !in_array($archive->getId(), $archives_id)) {
                     echo "<td>";
-                    // On stocke l'ID pour voir plus tard si on a bien affiché tous les crédits obtenus par le passé
+                    // On stocke l'ID pour voir plus tard si on a bien affichÃ© tous les crÃ©dits obtenus par le passÃ©
                     $archives_id[] = $archive->getId();
                     echo $archive->getValeur()." - ".$archive->getMention();
                     $archives_valeurs_globales[$a['annee']][$p_num] += $archive->getValeur();
@@ -943,11 +943,11 @@ function updateMention(id,valeur){
             }
         }
 
-        // Maintenant on attaque les périodes de l'année en cours.
+        // Maintenant on attaque les pÃ©riodes de l'annÃ©e en cours.
         for ($i=1;$i<$periode_num;$i++) {
             echo "<td>-</td>";
         }
-        // On affiche la période courante vide :
+        // On affiche la pÃ©riode courante vide :
         echo "<td>-</td><td>-</td>";
         echo "</tr>";
     }
@@ -989,30 +989,30 @@ function updateMention(id,valeur){
     echo "</tr>";
 
 
-    // On affiche un message si le dossier a été validé en conseil de classe
+    // On affiche un message si le dossier a Ã©tÃ© validÃ© en conseil de classe
     if ($presaisie && $dossier_valide_conseil) {
       echo "<tr><td colspan='";
       echo $nb_cols+1;
       echo "'>";
-      echo "<p style='color: red;'>Dossier validé en conseil de classe</p>";
+      echo "<p style='color: red;'>Dossier validÃ© en conseil de classe</p>";
       echo "</td></tr>";
     }
 
-    // On affiche le statut des données
+    // On affiche le statut des donnÃ©es
     if (!$presaisie) {
       echo "<tr><td colspan='";
       echo $nb_cols+1;
       echo "'>";
       if (!$donnees_enregistrees) {
-          echo "<p style='color: red;'>Dossier non-examiné<br/><span style='font-size: small;'>Les valeurs par défaut sont pré-saisies, mais ne sont pas encore enregistrées en base de données.</span></p>";
+          echo "<p style='color: red;'>Dossier non-examinÃ©<br/><span style='font-size: small;'>Les valeurs par dÃ©faut sont prÃ©-saisies, mais ne sont pas encore enregistrÃ©es en base de donnÃ©es.</span></p>";
       } else {
-          // Des données sont présentes en base de données. Seul les variations de total influent sur le message à afficher
+          // Des donnÃ©es sont prÃ©sentes en base de donnÃ©es. Seul les variations de total influent sur le message Ã  afficher
           if ($total_valeur[$periode_num] < 30) {
-              echo "<p style='color: red;'>Non validé<br/><span style='font-size: small;'>Des crédits sont enregistrés en base de données, mais le total est inférieur à 30.</span></p>";
+              echo "<p style='color: red;'>Non validÃ©<br/><span style='font-size: small;'>Des crÃ©dits sont enregistrÃ©s en base de donnÃ©es, mais le total est infÃ©rieur Ã  30.</span></p>";
           } elseif ($total_valeur[$periode_num] == 30) {
-              echo "<p style='color: blue;'>Validé<br/><span style='font-size: small;'>30 crédits ECTS sont enregistrés en base de données pour cette période.</span></p>";
+              echo "<p style='color: blue;'>ValidÃ©<br/><span style='font-size: small;'>30 crÃ©dits ECTS sont enregistrÃ©s en base de donnÃ©es pour cette pÃ©riode.</span></p>";
           } else {
-              echo "<p style='color: red;'>Excès de crédit<br/><span style='font-size: small;'>Plus de 30 crédits sont enregistrés en base de données pour cette période.</span></p>";
+              echo "<p style='color: red;'>ExcÃ¨s de crÃ©dit<br/><span style='font-size: small;'>Plus de 30 crÃ©dits sont enregistrÃ©s en base de donnÃ©es pour cette pÃ©riode.</span></p>";
           }
       }
       echo "</td></tr>";
@@ -1023,10 +1023,10 @@ function updateMention(id,valeur){
       echo $nb_cols+1;
       echo "' style='padding: 10px;'>";
       if($ele_login_suiv!=""){
-          echo "<input type='submit' NAME='ok1' value=\"Enregistrer et passer à l'élève suivant\" />";
+          echo "<input type='submit' NAME='ok1' value=\"Enregistrer et passer Ã  l'Ã©lÃ¨ve suivant\" />";
       }
       ?>
-      <input type="submit" NAME="ok2" value="Enregistrer et revenir à la liste" />
+      <input type="submit" NAME="ok2" value="Enregistrer et revenir Ã  la liste" />
       </td></tr>
 <?php
 
@@ -1036,10 +1036,10 @@ function updateMention(id,valeur){
 
 ?>
     <tr><td colspan="<?php echo $nb_cols+1;?>" style='padding: 10px;'>
-    <p style='font-size: small;'>Si vous souhaitez supprimer toutes les données ECTS de cet élève pour cette période,<br/>cochez la case ci-dessous puis validez avec le bouton 'Supprimer les données'.<br/>Cette opération est irréversible.</p>
-    <input id="delete_all" type="checkbox" name="delete_all" value="yes" /><label for="delete_all" style='font-size: small;color: red;'>Supprimez toutes les données.</label><br/>
+    <p style='font-size: small;'>Si vous souhaitez supprimer toutes les donnÃ©es ECTS de cet Ã©lÃ¨ve pour cette pÃ©riode,<br/>cochez la case ci-dessous puis validez avec le bouton 'Supprimer les donnÃ©es'.<br/>Cette opÃ©ration est irrÃ©versible.</p>
+    <input id="delete_all" type="checkbox" name="delete_all" value="yes" /><label for="delete_all" style='font-size: small;color: red;'>Supprimez toutes les donnÃ©es.</label><br/>
     <br/>
-    <input type="submit" NAME="delete" value="Supprimer les données" />
+    <input type="submit" NAME="delete" value="Supprimer les donnÃ©es" />
     </td></tr>    
 <?php
 
@@ -1057,7 +1057,7 @@ function updateMention(id,valeur){
 
     </div>
     <div style='padding-left: 30px; padding-top: 70px; float:left;'>
-    <p>A = Très bien</p>
+    <p>A = TrÃ¨s bien</p>
     <p>B = Bien</p>
     <p>C = Assez bien</p>
     <p>D = Convenable</p>

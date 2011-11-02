@@ -70,7 +70,7 @@ try {
     
 }
 catch(Exception $e) {
-    echo "Exception levée dans l'application. <br />"
+    echo "Exception levÃ©e dans l'application. <br />"
      . "<strong>Message</strong> " . $e->getMessage() . "<br />"
      . "<strong>Fichier</strong> " . $e->getFile() . "<br />"
      . "<strong>Ligne</strong> " . $e->getLine() . "<br />";

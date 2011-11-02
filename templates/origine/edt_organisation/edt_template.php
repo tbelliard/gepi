@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 *
 * ******************************************** *
-* Appelle les sous-modèles                     *
+* Appelle les sous-modÃ¨les                     *
 * templates/origine/header_template.php        *
 * templates/origine/bandeau_template.php       *
 * ******************************************** *
@@ -37,7 +37,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 
 <head>
-<!-- on inclut l'entête -->
+<!-- on inclut l'entÃªte -->
 	<?php
 	  $tbs_bouton_taille = "..";
 	  include('../templates/origine/header_template.php');
@@ -81,7 +81,7 @@
 
 
 <!-- ************************* -->
-<!-- Début du corps de la page -->
+<!-- DÃ©but du corps de la page -->
 <!-- ************************* -->
 <body onload="show_message_deconnexion();<?php echo $tbs_charger_observeur;?>">
 
@@ -92,10 +92,10 @@
 
   <div id='container'>
 	
-	<h2>Gestion des accès à l'emploi du temps</h2>
+	<h2>Gestion des accÃ¨s Ã  l'emploi du temps</h2>
 	
 	<p>
-	  (Tous les comptes sauf élève et responsable)
+	  (Tous les comptes sauf Ã©lÃ¨ve et responsable)
 	</p>
 	
 	<hr />
@@ -107,8 +107,8 @@ echo add_token_field();
 ?>
 		  <legend class="invisible">Activation de l'EDT</legend>
 		  <em>
-			La désactivation des emplois du temps n'entraîne aucune suppression des données. Lorsque le module
-			est désactivé, personne n'a accès au module et la consultation des emplois du temps est impossible.
+			La dÃ©sactivation des emplois du temps n'entraÃ®ne aucune suppression des donnÃ©es. Lorsque le module
+			est dÃ©sactivÃ©, personne n'a accÃ¨s au module et la consultation des emplois du temps est impossible.
 		  </em>
 		  <br />
 		  
@@ -129,7 +129,7 @@ echo add_token_field();
 				 onclick="document.getElementById('autorise_edt').submit();"
 				 />
 		  <label for="activPas">
-			Désactiver les emplois du temps pour tous les utilisateurs
+			DÃ©sactiver les emplois du temps pour tous les utilisateurs
 		  </label>
 		  <br />
 		  <span class="block center">
@@ -159,7 +159,7 @@ echo add_token_field();
 				 onclick="document.getElementById('autorise_prof').submit();"
 				 />
 		  <label for="autoProf">
-			Autoriser le professeur à saisir son emploi du temps
+			Autoriser le professeur Ã  saisir son emploi du temps
 		  </label>
 		  <br />
 
@@ -191,9 +191,9 @@ echo add_token_field();
 echo add_token_field();
 ?>
 		  <legend class="invisible">Activation pour les administrateurs</legend>
-		  <em>Les comptes </em>administrateur<em> ont accès aux emplois du temps si celui-ci est activé pour eux.
-		  Si vous avez désactivé; l'accès pour tous, vous pouvez quand même autoriser les comptes
-		  </em>administrateur<em> à y avoir accès.</em>
+		  <em>Les comptes </em>administrateur<em> ont accÃ¨s aux emplois du temps si celui-ci est activÃ© pour eux.
+		  Si vous avez dÃ©sactivÃ©; l'accÃ¨s pour tous, vous pouvez quand mÃªme autoriser les comptes
+		  </em>administrateur<em> Ã  y avoir accÃ¨s.</em>
 		  <br />
 		  <input name="activ_ad"
 				 id="activAdY"
@@ -214,7 +214,7 @@ echo add_token_field();
 				 onclick="document.getElementById('autorise_admin').submit();"
 				 />
 		  <label for="activAdN">
-			Désactiver les emplois du temps pour les administrateurs
+			DÃ©sactiver les emplois du temps pour les administrateurs
 		  </label>
 		  <br />
 		  <span class="block center">
@@ -231,7 +231,7 @@ echo add_token_field();
 	
 	<hr />
 
-	<h2>Gestion de l'accès pour les élèves et leurs responsables</h2>
+	<h2>Gestion de l'accÃ¨s pour les Ã©lÃ¨ves et leurs responsables</h2>
 
 	<form action="edt.php" method="post" id="autorise_ele">
 	  <p>
@@ -239,13 +239,13 @@ echo add_token_field();
 echo add_token_field();
 ?>
 			<em>
-				Si vous souhaitez rendre accessible leur emploi du temps aux élèves et à leurs responsables,
-				il faut impérativement l'autoriser ici.
+				Si vous souhaitez rendre accessible leur emploi du temps aux Ã©lÃ¨ves et Ã  leurs responsables,
+				il faut impÃ©rativement l'autoriser ici.
 			</em>
 	  </p>
 
 		<fieldset class="no_bordure grandEspaceHaut">
-		  <legend class="invisible">Activation pour les élèves et leurs responsables</legend>
+		  <legend class="invisible">Activation pour les Ã©lÃ¨ves et leurs responsables</legend>
 		  <input name="activ_ele"
 				 id="activEleY"
 				 value="yes"
@@ -253,7 +253,7 @@ echo add_token_field();
 				 onclick="document.getElementById('autorise_ele').submit();"
 				 />
 		  <label for="activEleY">
-			Activer les emplois du temps pour les élèves et leurs responsables
+			Activer les emplois du temps pour les Ã©lÃ¨ves et leurs responsables
 		  </label>
 
 		  <br />
@@ -264,7 +264,7 @@ echo add_token_field();
 				 onclick="document.getElementById('autorise_ele').submit();"
 				 />
 		  <label for="activEleN">
-			Désactiver les emplois du temps pour les élèves et leurs responsables
+			DÃ©sactiver les emplois du temps pour les Ã©lÃ¨ves et leurs responsables
 		  </label>
 		  <br />
 		  <span class="block center">
@@ -285,7 +285,7 @@ echo add_token_field();
 	
 
 
-<!-- Début du pied -->
+<!-- DÃ©but du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
 
 	<script type='text/javascript'>
@@ -304,7 +304,7 @@ echo add_token_field();
 		<?php
 			if ($tbs_microtime!="") {
 				echo "
-   <p class='microtime'>Page générée en ";
+   <p class='microtime'>Page gÃ©nÃ©rÃ©e en ";
    			echo $tbs_microtime;
 				echo " sec</p>
    			";

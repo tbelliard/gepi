@@ -23,11 +23,11 @@
 
 $action = isset($_POST["action"]) ? $_POST["action"] :(isset($_GET["action"]) ? $_GET["action"] :NULL);
 
-// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
 // Dans le cas ou on poste un message, pas de traitement anti_inject
-// Pour ne pas interférer avec fckeditor
+// Pour ne pas interfÃ©rer avec fckeditor
 if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) and isset($_POST['ok']))
     $traite_anti_inject = 'no';
 
@@ -67,7 +67,7 @@ if ($order_by != "date_debut" and $order_by != "date_fin" and $order_by != "id")
 /*
 function formate_date_decompte($date_decompte) {
 	//$tmp_date=getdate($date_decompte);
-	return strftime("%d/%m/%Y à %H:%M",$date_decompte);
+	return strftime("%d/%m/%Y Ã  %H:%M",$date_decompte);
 }
 */
 
@@ -77,7 +77,7 @@ function formate_date_decompte($date_decompte) {
 if ((isset($action)) and ($action == 'sup_entry')) {
 	check_token();
    $res = sql_query("delete from messages where id = '".$_GET['id_del']."'");
-   if ($res) $msg = "Suppression réussie";
+   if ($res) $msg = "Suppression rÃ©ussie";
 }
 
 //
@@ -113,7 +113,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
         while ((!checkdate($moisd, $jourd, $anneed)) and ($jourd > 0)) $jourd--;
         $date_debut=mktime(0,0,0,$moisd,$jourd,$anneed);
     } else {
-        $msg = "ATTENTION : La date de début d'affichage n'est pas valide.<br />L'enregistrement ne peut avoir lieu.";
+        $msg = "ATTENTION : La date de dÃ©but d'affichage n'est pas valide.<br />L'enregistrement ne peut avoir lieu.";
         $record = 'no';
 
     }
@@ -139,26 +139,26 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 				//echo "$jourd/$moisd/$anneed<br />";
 			}
 			$date_decompte=mktime(0,0,0,$moisd,$jourd,$anneed);
-			//echo strftime("%d/%m/%Y à %H:%M",$date_decompte)."<br />";
+			//echo strftime("%d/%m/%Y Ã  %H:%M",$date_decompte)."<br />";
 
 			if (preg_match("/([0-9]{1,2}):([0-9]{0,2})/", str_ireplace('h',':',$_POST['display_heure_decompte']))) {
 				$heured = substr($_POST['display_heure_decompte'],0,2);
 				$minuted = substr($_POST['display_heure_decompte'],3,2);
 				$date_decompte=$date_decompte+$heured*3600+$minuted*60;
-				//echo strftime("%d/%m/%Y à %H:%M",$date_decompte)."<br />";
+				//echo strftime("%d/%m/%Y Ã  %H:%M",$date_decompte)."<br />";
 			} else {
-				$msg = "ATTENTION : L'heure de décompte n'est pas valide.<br />L'enregistrement ne peut avoir lieu.";
+				$msg = "ATTENTION : L'heure de dÃ©compte n'est pas valide.<br />L'enregistrement ne peut avoir lieu.";
 				$record = 'no';
 			}
 
 		} else {
-			$msg = "ATTENTION : La date de décompte n'est pas valide.<br />L'enregistrement ne peut avoir lieu.";
+			$msg = "ATTENTION : La date de dÃ©compte n'est pas valide.<br />L'enregistrement ne peut avoir lieu.";
 			$record = 'no';
 		}
 	$login_destinataire=$_POST['login_destinataire'];
 	}
 	
-	// par sécurité les rédacteurs d'un message ne peuvent y insérer la variable _CRSF_ALEA_
+	// par sÃ©curitÃ© les rÃ©dacteurs d'un message ne peuvent y insÃ©rer la variable _CRSF_ALEA_
 	$pos_crsf_alea=strpos($contenu_cor,"_CRSF_ALEA_");
     if($pos_crsf_alea!==false)
 		{
@@ -190,7 +190,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
           ");
       }
       if ($req) {
-          $msg = "Enregistrement réussi.";
+          $msg = "Enregistrement rÃ©ussi.";
           unset($contenu_cor);
           unset($_POST['display_date_debut']);
           unset($_POST['display_date_fin']);
@@ -198,7 +198,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
           unset($id_mess);
           unset($statuts_destinataires);
       } else {
-          $msg = "Problème lors de l'enregistrement du message.";
+          $msg = "ProblÃ¨me lors de l'enregistrement du message.";
       }
     }
 }
@@ -233,7 +233,7 @@ echo "<table width=\"100%\" border = 0 align=\"center\" cellpadding=\"10\">\n";
 echo "<tr><td width = \"40%\" valign=\"top\">\n";
 echo "<span class='grand'>Tous les messages</span><br />\n";
 echo "<span class='small'>Classer par : ";
-echo "<a href='index.php?order_by=date_debut'>date début</a> | <a href='index.php?order_by=date_fin'>date fin</a> | <a href='index.php?order_by=id'>date création</a>\n";
+echo "<a href='index.php?order_by=date_debut'>date dÃ©but</a> | <a href='index.php?order_by=date_fin'>date fin</a> | <a href='index.php?order_by=id'>date crÃ©ation</a>\n";
 echo "</span><br /><br />\n";
 
 $appel_messages = mysql_query("SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_destinataires, login_destinataire FROM messages
@@ -258,16 +258,16 @@ while ($ind < $nb_messages) {
 //  echo "<b><i>Message de </i></b>: ".$prenom_auteur." ".$nom_auteur.";
    echo "<b><i>Affichage </i></b>: du <b>".strftime("%a %d %b %Y", $date_debut1)."</b> au <b>".strftime("%a %d %b %Y", $date_fin1)."</b>\n";
    if(strstr($content,'_DECOMPTE_')) {
-      //echo "<br />Avec décompte des jours jusqu'au ".formate_date_decompte($date_decompte1);
-      echo "<br />Avec décompte des jours jusqu'au ".strftime("%d/%m/%Y à %H:%M",$date_decompte1);
+      //echo "<br />Avec dÃ©compte des jours jusqu'au ".formate_date_decompte($date_decompte1);
+      echo "<br />Avec dÃ©compte des jours jusqu'au ".strftime("%d/%m/%Y Ã  %H:%M",$date_decompte1);
    }
    echo "<br /><b><i>Statuts destinataire(s) </i></b> : ";
 	/*
 	if (strpos($statuts_destinataires1, "p")) echo "professeurs - ";
 	if (strpos($statuts_destinataires1, "c")) echo "c.p.e. - ";
-	if (strpos($statuts_destinataires1, "s")) echo "scolarité - ";
+	if (strpos($statuts_destinataires1, "s")) echo "scolaritÃ© - ";
 	if (strpos($statuts_destinataires1, "a")) echo "administrateurs - ";
-	if (strpos($statuts_destinataires1, "e")) echo "élèves - ";
+	if (strpos($statuts_destinataires1, "e")) echo "Ã©lÃ¨ves - ";
 	*/
 	$chaine_statuts_destinataires="";
 	if (strpos($statuts_destinataires1, "p")) {
@@ -279,7 +279,7 @@ while ($ind < $nb_messages) {
 	}
 	if (strpos($statuts_destinataires1, "s")) {
 		if($chaine_statuts_destinataires!="") {$chaine_statuts_destinataires.=" - ";}
-		$chaine_statuts_destinataires.="scolarité";
+		$chaine_statuts_destinataires.="scolaritÃ©";
 	}
 	if (strpos($statuts_destinataires1, "a")) {
 		if($chaine_statuts_destinataires!="") {$chaine_statuts_destinataires.=" - ";}
@@ -287,7 +287,7 @@ while ($ind < $nb_messages) {
 	}
 	if (strpos($statuts_destinataires1, "e")) {
 		if($chaine_statuts_destinataires!="") {$chaine_statuts_destinataires.=" - ";}
-		$chaine_statuts_destinataires.="élèves";
+		$chaine_statuts_destinataires.="Ã©lÃ¨ves";
 	}
 	if (strpos($statuts_destinataires1, "r")) {
 		if($chaine_statuts_destinataires!="") {$chaine_statuts_destinataires.=" - ";}
@@ -296,13 +296,13 @@ while ($ind < $nb_messages) {
 	echo $chaine_statuts_destinataires;
 	echo "<br /><b><i>Login du destinataire </i></b> : ".$login_destinataire1;
    echo "<br /><a href='index.php?id_mess=$id_message'>modifier</a>
-   - <a href='index.php?id_del=$id_message&action=sup_entry".add_token_in_url()."' onclick=\"return confirmlink(this, 'Etes-vous sûr de vouloir supprimer ce message ?', '".$message_suppression."')\">supprimer</a>
+   - <a href='index.php?id_del=$id_message&action=sup_entry".add_token_in_url()."' onclick=\"return confirmlink(this, 'Etes-vous sÃ»r de vouloir supprimer ce message ?', '".$message_suppression."')\">supprimer</a>
    <table border=1 width = '100%' cellpadding='5'><tr><td>".$content."</td></tr></table><br />\n";
   $ind++;
 }
 // Fin de la colonne de gauche
 echo "</td>\n";
-// Début de la colonne de droite
+// DÃ©but de la colonne de droite
 echo "<td valign=\"top\">\n";
 
 //
@@ -322,7 +322,7 @@ if (isset($id_mess)) {
     $display_date_fin = strftime("%d", $date_fin)."/".strftime("%m", $date_fin)."/".strftime("%Y", $date_fin);
     $display_date_decompte = strftime("%d", $date_decompte)."/".strftime("%m", $date_decompte)."/".strftime("%Y", $date_decompte);
 
-	// Récupération du nombre de secondes
+	// RÃ©cupÃ©ration du nombre de secondes
 	$tmp_sec_decompte=$date_decompte-mktime(0,0,0,strftime("%m", $date_decompte),strftime("%d", $date_decompte),strftime("%Y", $date_decompte));
 	$tmp_heure_decompte=floor($tmp_sec_decompte/3600);
 	$tmp_minute_decompte=floor(($tmp_sec_decompte-3600*$tmp_heure_decompte)/60);
@@ -366,24 +366,24 @@ echo "</td></tr>\n";
 
 //Dates
 echo "<tr><td colspan=\"4\">\n";
-echo "<p><i>Le message sera affiché :</i><br />de la date : ";
+echo "<p><i>Le message sera affichÃ© :</i><br />de la date : ";
 echo "<input type='text' name = 'display_date_debut' id= 'display_date_debut' size='8' value = \"".$display_date_debut."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 echo "<a href=\"#\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
-echo "&nbsp;à la date : ";
+echo "&nbsp;Ã  la date : ";
 echo "<input type='text' name = 'display_date_fin' id = 'display_date_fin' size='8' value = \"".$display_date_fin."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 echo "<a href=\"#\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
 echo "<br />(<span style='font-size:small'>Respectez le format jj/mm/aaaa</span>)</p></td></tr>\n";
 
-//Date pour décompte
+//Date pour dÃ©compte
 echo "<tr><td colspan=\"4\">\n";
-echo "<p><i>Décompte des jours jusqu'au :</i> ";
+echo "<p><i>DÃ©compte des jours jusqu'au :</i> ";
 echo "<input type='text' name = 'display_date_decompte' id= 'display_date_decompte' size='8' value = \"".$display_date_decompte."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 echo "<a href=\"#\" onClick=\"".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
-echo " à <input type='text' name = 'display_heure_decompte' id= 'display_heure_decompte' size='8' value = \"".$display_heure_decompte."\" onKeyDown=\"clavier_heure(this.id,event);\" AutoComplete=\"off\" />\n";
+echo " Ã  <input type='text' name = 'display_heure_decompte' id= 'display_heure_decompte' size='8' value = \"".$display_heure_decompte."\" onKeyDown=\"clavier_heure(this.id,event);\" AutoComplete=\"off\" />\n";
 echo "<br />(<span style='font-size:small'>Respectez le format jj/mm/aaaa</span>)<br />Saisir une chaine <b>_DECOMPTE_</b> dans le corps du message pour que cette date soit prise en compte.\n";
 
 $titre_infobulle="DECOMPTE\n";
-$texte_infobulle="Afin d'afficher un compte à rebours, vous devez écrire un texte du style&nbsp;:<br />Il vous reste _DECOMPTE_ pour saisir vos appréciations du 1er trimestre.<br />\n";
+$texte_infobulle="Afin d'afficher un compte Ã  rebours, vous devez Ã©crire un texte du style&nbsp;:<br />Il vous reste _DECOMPTE_ pour saisir vos apprÃ©ciations du 1er trimestre.<br />\n";
 //$texte_infobulle.="\n";
 $tabdiv_infobulle[]=creer_div_infobulle('a_propos_DECOMPTE',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
@@ -406,7 +406,7 @@ echo " /><label for='desti_c' style='cursor: pointer;'>C.P.E.</label></td>\n";
 
 echo "<td><input type=\"checkbox\" id=\"desti_s\" name=\"desti_s\" value=\"desti_s\"";
 if (strpos($statuts_destinataires, "s")) echo "checked";
-echo " /><label for='desti_s' style='cursor: pointer;'>Scolarité</label></td>\n";
+echo " /><label for='desti_s' style='cursor: pointer;'>ScolaritÃ©</label></td>\n";
 echo "</tr>\n";
 
 echo "<tr>\n";
@@ -420,7 +420,7 @@ echo " /><label for='desti_r' style='cursor: pointer;'>Responsables</label></td>
 
 echo "<td><input type=\"checkbox\" id=\"desti_e\" name=\"desti_e\" value=\"desti_e\"";
 if (strpos($statuts_destinataires, "e")) echo "checked";
-echo " /><label for='desti_e' style='cursor: pointer;'>Elèves</label></td>\n";
+echo " /><label for='desti_e' style='cursor: pointer;'>ElÃ¨ves</label></td>\n";
 
 echo "</tr>\n";
 

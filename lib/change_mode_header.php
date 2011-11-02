@@ -11,7 +11,7 @@
 		die();
 	}
 
-	// Sécurité
+	// SÃ©curitÃ©
 /*
 	if (!checkAccess()) {
 		header("Location: ../logout.php?auto=2");
@@ -21,12 +21,12 @@
 	// La SESSION est valide, on teste juste les bricolages d'URL
 	$url = parse_url($_SERVER['REQUEST_URI']);
 	if (substr($url['path'], 0, strlen($gepiPath)) != $gepiPath) {
-		tentative_intrusion(2, "Tentative d'accès avec modification sauvage de gepiPath");
+		tentative_intrusion(2, "Tentative d'accÃ¨s avec modification sauvage de gepiPath");
 		header("Location: ../logout.php?auto=2");
 		die();
 	}
 
-	// On récupère le mode pour le Header (normalement en POST):
+	// On rÃ©cupÃ¨re le mode pour le Header (normalement en POST):
 	$cacher_header = isset($_POST['cacher_header']) ? $_POST['cacher_header'] : (isset($_GET['cacher_header']) ? $_GET['cacher_header'] : "n");
 
 	// On n'accepte que deux valeurs:

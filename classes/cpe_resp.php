@@ -50,31 +50,31 @@ if (isset($_POST['action']) and ($_POST['action'] == "reg_cperesp")) {
 
         $id_classe = mysql_result($call_data, $i, "id");
         if (isset($_POST[$id_classe]) and ($_POST[$id_classe] == "yes")) {
-            // On rÈcupËre tous les ÈlËves de la classe
+            // On r√©cup√®re tous les √©l√®ves de la classe
             $call_eleves = mysql_query("SELECT login FROM j_eleves_classes WHERE (id_classe='$id_classe' AND periode='1')");
             $nb_eleves = mysql_num_rows($call_eleves);
             for ($j=0;$j<$nb_eleves;$j++) {
-                // Pour chaque ÈlËve, on regarde si un enregistrement existe dÈj‡
+                // Pour chaque √©l√®ve, on regarde si un enregistrement existe d√©j√†
                 $eleve_login = mysql_result($call_eleves, $j, "login");
                 $test = mysql_query("SELECT * FROM j_eleves_cpe WHERE e_login='$eleve_login'");
                 $nbtest = mysql_num_rows($test);
-                if ($nbtest == "0") { // Si aucun enregistrement, on en crÈÈ un nouveau
+                if ($nbtest == "0") { // Si aucun enregistrement, on en cr√©√© un nouveau
                     $reg_data = mysql_query("INSERT INTO j_eleves_cpe SET e_login='$eleve_login', cpe_login='" . $_POST['reg_cpelogin'] . "'");
                     if (!$reg_data) { $msg .= "Erreur lors lors de l'insertion d'un nouvel enregistrement."; $notok = true;}
-                } else { // Si un enregistrement existe, on le met ‡ jour si nÈcessaire
+                } else { // Si un enregistrement existe, on le met √† jour si n√©cessaire
                     $test_cpelogin = mysql_result($test, "0", "cpe_login");
                     if ($test_cpelogin != $_POST['reg_cpelogin']) {
                         $reg_data = mysql_query("UPDATE j_eleves_cpe SET cpe_login='". $_POST['reg_cpelogin'] . "' WHERE e_login='$eleve_login'");
-                        if (!$reg_data) { $msg .= "Erreur lors de la mise ‡ jour d'un enregistrement."; $notok = true;}
+                        if (!$reg_data) { $msg .= "Erreur lors de la mise √† jour d'un enregistrement."; $notok = true;}
                     }
                 }
             }
         }
     }
     if ($notok == true) {
-        $msg .= "Il y a eu des erreurs lors de l'enregistrement des donnÈes";
+        $msg .= "Il y a eu des erreurs lors de l'enregistrement des donn√©es";
         } else {
-        $msg .= "L'enregistrement des donnÈes s'est bien passÈ.";
+        $msg .= "L'enregistrement des donn√©es s'est bien pass√©.";
     }
 }
 
@@ -95,10 +95,10 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 ?>
 <p class="bold"><a href="./index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
-<p>SÈlectionnez un CPE, et cochez les classes pour lesquelles vous souhaitez dÈfinir ce CPE comme responsable du suivi vie scolaire.</p>
-<p>ATTENTION ! Pour les ÈlËves des classes sÈlectionnÈes, le paramÈtrage effectuÈ ici Ècrase d'Èventuels paramÈtrages prÈcÈdents. Les ÈlËves appartenant ‡ des classes non cochÈes conservent leur paramÈtrage actuel.</p>
-<p>Remarque : la classe d'appartenance de l'ÈlËve prise en compte est celle de la premiËre pÈriode de l'annÈe.</p>
-<p><a href="cpe_resp.php?disp_filter=all">Afficher toutes les classes</a> || <a href="cpe_resp.php?disp_filter=only_undefined">Afficher les classes non-paramÈtrÈes</a></p>
+<p>S√©lectionnez un CPE, et cochez les classes pour lesquelles vous souhaitez d√©finir ce CPE comme responsable du suivi vie scolaire.</p>
+<p>ATTENTION ! Pour les √©l√®ves des classes s√©lectionn√©es, le param√©trage effectu√© ici √©crase d'√©ventuels param√©trages pr√©c√©dents. Les √©l√®ves appartenant √† des classes non coch√©es conservent leur param√©trage actuel.</p>
+<p>Remarque : la classe d'appartenance de l'√©l√®ve prise en compte est celle de la premi√®re p√©riode de l'ann√©e.</p>
+<p><a href="cpe_resp.php?disp_filter=all">Afficher toutes les classes</a> || <a href="cpe_resp.php?disp_filter=only_undefined">Afficher les classes non-param√©tr√©es</a></p>
 <?php
 
 	echo "<script type='text/javascript'>
@@ -123,7 +123,7 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
   }
 </script>
 ";
-	echo "<p><a href='javascript:checkAll()'>Tout cocher</a> - <a href='javascript:UncheckAll()'>Tout dÈcocher</a></p>\n";
+	echo "<p><a href='javascript:checkAll()'>Tout cocher</a> - <a href='javascript:UncheckAll()'>Tout d√©cocher</a></p>\n";
 
 	echo "<form name='setCpeResp' action='cpe_resp.php?disp_filter=" . $disp_filter . "' method='post'>";
 	echo add_token_field();
@@ -140,7 +140,7 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 		echo "</option>";
 	}
 	echo "</select>";
-	// On va chercher les classes dÈj‡ existantes, et on les affiche.
+	// On va chercher les classes d√©j√† existantes, et on les affiche.
 
 	$call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
 	$nombre_lignes = mysql_num_rows($call_data);
@@ -185,7 +185,7 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 		echo "<p><input type='submit' value='Enregistrer' /></p>\n";
 
 	} else {
-		echo "<p class='grand'>Attention : aucune classe n'a ÈtÈ dÈfinie dans la base GEPI !</p>\n";
+		echo "<p class='grand'>Attention : aucune classe n'a √©t√© d√©finie dans la base GEPI !</p>\n";
 	}
 ?>
 </form>

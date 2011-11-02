@@ -73,7 +73,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 	}
 	else{
 		if($choisir_ad_existante=='oui'){
-			// On crée la personne si elle n'existe pas et on enchaine avec la page choix_adr_existante.php
+			// On crÃ©e la personne si elle n'existe pas et on enchaine avec la page choix_adr_existante.php
 			$ok='yes';
 		}
 		//elseif(($adr1 != '') and ($commune != '') and ($cp != '')){
@@ -113,9 +113,9 @@ if (isset($is_posted) and ($is_posted == '1')) {
 				//echo "$sql<br />\n";
 				$res_update=mysql_query($sql);
 				if(!$res_update){
-					$msg.="Erreur lors de la mise à jour dans 'resp_pers'. ";
+					$msg.="Erreur lors de la mise Ã  jour dans 'resp_pers'. ";
 				} elseif((getSettingValue('mode_email_resp')!='mon_compte')&&(isset($mel))) {
-					// On met également à jour la table utilisateurs si le responsable a un compte
+					// On met Ã©galement Ã  jour la table utilisateurs si le responsable a un compte
 					$test1_login = mysql_result(mysql_query("SELECT login FROM resp_pers WHERE pers_id = '$pers_id'"), 0);
 					//echo "\$test1_login=$test1_login<br />\n";
 					if ($test1_login != '') {
@@ -131,7 +131,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 				}
 			}
 
-			// On n'insère pas les saisies des champs adr1, adr2,... si une adresse existante a été sélectionnée:
+			// On n'insÃ¨re pas les saisies des champs adr1, adr2,... si une adresse existante a Ã©tÃ© sÃ©lectionnÃ©e:
 			//if($adr_id_existant==""){
 			if($choisir_ad_existante==""){
 				//echo "a<br />";
@@ -174,7 +174,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 							//echo "$sql<br />\n";
 							$res_update=mysql_query($sql);
 							if(!$res_update){
-								$msg.="Erreur lors de la mise à jour de l'identifiant d'adresse dans 'resp_pers'. ";
+								$msg.="Erreur lors de la mise Ã  jour de l'identifiant d'adresse dans 'resp_pers'. ";
 							}
 						}
 					}
@@ -190,7 +190,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 						//echo "$sql<br />\n";
 						$res_update=mysql_query($sql);
 						if(!$res_update){
-							$msg.="Erreur lors de la mise à jour de l'adresse dans 'resp_adr'. ";
+							$msg.="Erreur lors de la mise Ã  jour de l'adresse dans 'resp_adr'. ";
 						}
 					}
 				}
@@ -206,7 +206,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 					//echo "$sql<br />\n";
 					$res_update=mysql_query($sql);
 					if(!$res_update){
-						$msg.="Erreur lors de la mise à jour de l'adresse dans 'resp_adr'. ";
+						$msg.="Erreur lors de la mise Ã  jour de l'adresse dans 'resp_adr'. ";
 					}
 				}
 			}
@@ -217,7 +217,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			}
 
 
-			// Partie élèves:
+			// Partie Ã©lÃ¨ves:
 			//if(isset($cpt)){
 			//if((isset($cpt))&&(isset($pers_id))&&($msg=='')){
 			if((isset($cpt))&&(isset($pers_id))&&($msg=='')&&(isset($tab_nom_prenom_resp))) {
@@ -230,7 +230,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 						//echo "$sql<br />\n";
 						$res_suppr=mysql_query($sql);
 						if(!$res_suppr){
-							$msg.="Erreur lors de la suppression de l'association avec l'élève $suppr_ele_id[$i] dans 'responsables2'. ";
+							$msg.="Erreur lors de la suppression de l'association avec l'Ã©lÃ¨ve $suppr_ele_id[$i] dans 'responsables2'. ";
 						}
 					}
 					else{
@@ -243,7 +243,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 								//echo "$sql<br />\n";
 								$res_update=mysql_query($sql);
 								if(!$res_update){
-									$msg.="Erreur lors de la mise à jour de 'resp_legal' pour l'autre responsable ($pers_id2[$i]). ";
+									$msg.="Erreur lors de la mise Ã  jour de 'resp_legal' pour l'autre responsable ($pers_id2[$i]). ";
 									$temoin_erreur="oui";
 								}
 							}
@@ -253,7 +253,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 								//echo "$sql<br />\n";
 								$res_update=mysql_query($sql);
 								if(!$res_update){
-									$msg.="Erreur lors de la mise à jour de 'resp_legal' pour le responsable $pers_id. ";
+									$msg.="Erreur lors de la mise Ã  jour de 'resp_legal' pour le responsable $pers_id. ";
 								}
 							}
 						}
@@ -278,7 +278,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 					$sql="INSERT INTO responsables2 SET pers_id='$pers_id', ele_id='$add_ele_id', resp_legal='$resp_legal'";
 					$res_update=mysql_query($sql);
 					if(!$res_update){
-						$msg.="Erreur lors de l'ajout de l'élève $add_ele_id. ";
+						$msg.="Erreur lors de l'ajout de l'Ã©lÃ¨ve $add_ele_id. ";
 					}
 				}
 			}
@@ -359,7 +359,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 							$sql="UPDATE resp_pers SET adr_id='$adr_id' WHERE pers_id='$pers_id'";
 							$res_update=mysql_query($sql);
 							if(!$res_update){
-								$msg.="Erreur lors de la mise à jour de l'association de la personne avec son adresse. ";
+								$msg.="Erreur lors de la mise Ã  jour de l'association de la personne avec son adresse. ";
 							}
 						}
 					}
@@ -395,7 +395,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 
 		/*
-		// Partie élèves:
+		// Partie Ã©lÃ¨ves:
 		//if(isset($cpt)){
 		if((isset($cpt))&&(isset($pers_id))&&($msg=='')){
 			//echo "1<br />";
@@ -407,7 +407,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 					//echo "$sql<br />\n";
 					$res_suppr=mysql_query($sql);
 					if(!$res_suppr){
-						$msg.="Erreur lors de la suppression de l'association avec l'élève $suppr_ele_id[$i] dans 'responsables2'. ";
+						$msg.="Erreur lors de la suppression de l'association avec l'Ã©lÃ¨ve $suppr_ele_id[$i] dans 'responsables2'. ";
 					}
 				}
 				else{
@@ -420,7 +420,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 							//echo "$sql<br />\n";
 							$res_update=mysql_query($sql);
 							if(!$res_update){
-								$msg.="Erreur lors de la mise à jour de 'resp_legal' pour l'autre responsable ($pers_id2[$i]). ";
+								$msg.="Erreur lors de la mise Ã  jour de 'resp_legal' pour l'autre responsable ($pers_id2[$i]). ";
 								$temoin_erreur="oui";
 							}
 						}
@@ -430,7 +430,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 							//echo "$sql<br />\n";
 							$res_update=mysql_query($sql);
 							if(!$res_update){
-								$msg.="Erreur lors de la mise à jour de 'resp_legal' pour le responsable $pers_id. ";
+								$msg.="Erreur lors de la mise Ã  jour de 'resp_legal' pour le responsable $pers_id. ";
 							}
 						}
 					}
@@ -455,20 +455,20 @@ if (isset($is_posted) and ($is_posted == '1')) {
 				$sql="INSERT INTO responsables2 SET pers_id='$pers_id', ele_id='$add_ele_id', resp_legal='$resp_legal'";
 				$res_update=mysql_query($sql);
 				if(!$res_update){
-					$msg.="Erreur lors de l'ajout de l'élève $add_ele_id. ";
+					$msg.="Erreur lors de l'ajout de l'Ã©lÃ¨ve $add_ele_id. ";
 				}
 			}
 		}
 		*/
 
 		if($msg==""){
-			$msg="Enregistrement réussi.";
+			$msg="Enregistrement rÃ©ussi.";
 		}
 	}
 }
 
 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *******************************
 $titre_page = "Ajouter ou modifier un responsable";
 require_once("../lib/header.inc");
@@ -480,7 +480,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	$sql="SELECT 1=1 FROM responsables";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0){
-		echo "<p>Une conversion des données responsables est requise.</p>\n";
+		echo "<p>Une conversion des donnÃ©es responsables est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 		require("../lib/footer.inc.php");
 		die();
@@ -489,7 +489,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	$sql="SHOW COLUMNS FROM eleves LIKE 'ele_id'";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)==0){
-		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+		echo "<p>Une conversion des donnÃ©es Ã©lÃ¨ves/responsables est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 		require("../lib/footer.inc.php");
 		die();
@@ -498,7 +498,7 @@ if(!getSettingValue('conv_new_resp_table')){
 		$sql="SELECT 1=1 FROM eleves WHERE ele_id=''";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0){
-			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
+			echo "<p>Une conversion des donnÃ©es Ã©lÃ¨ves/responsables est requise.</p>\n";
 			echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -539,7 +539,7 @@ if(isset($associer_eleve)) {
 	if(!isset($quitter_la_page)){
 		if (!isset($pers_id)) {
 			echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-			echo "<p><b>ERREUR</b>: Aucun identifiant de responsable n'a été fourni.</p>\n";
+			echo "<p><b>ERREUR</b>: Aucun identifiant de responsable n'a Ã©tÃ© fourni.</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
@@ -559,7 +559,7 @@ if(isset($associer_eleve)) {
 </script>\n";
 			echo "<p class=bold><a href=\"#\" onclick=\"refresh_opener();confirm_close (this, change, '$themessage');\">Refermer la page</a>\n";
 
-			echo "<p><b>ERREUR</b>: Aucun identifiant de responsable n'a été fourni.</p>\n";
+			echo "<p><b>ERREUR</b>: Aucun identifiant de responsable n'a Ã©tÃ© fourni.</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
@@ -589,7 +589,7 @@ if(isset($associer_eleve)) {
 	$res_ele=mysql_query($sql);
 
 	if(mysql_num_rows($res_ele)==0){
-		echo "<p>Il semblerait qu'aucun élève ne soit encore dans la base.</p>\n";
+		echo "<p>Il semblerait qu'aucun Ã©lÃ¨ve ne soit encore dans la base.</p>\n";
 
 		require("../lib/footer.inc.php");
 		die();
@@ -598,7 +598,7 @@ if(isset($associer_eleve)) {
 	$tab_anomalie_ele_id=array();
 	$compteur=0;
 	while($lig_ele=mysql_fetch_object($res_ele)){
-		// On ne propose que les élèves n'ayant pas déjà leurs deux responsables légaux
+		// On ne propose que les Ã©lÃ¨ves n'ayant pas dÃ©jÃ  leurs deux responsables lÃ©gaux
 		//$sql="SELECT * FROM responsables2 WHERE ele_id='$lig_ele->ele_id'";
 		$sql="SELECT * FROM responsables2 WHERE ele_id='$lig_ele->ele_id' AND (resp_legal='1' OR resp_legal='2')";
 		$test=mysql_query($sql);
@@ -613,13 +613,13 @@ if(isset($associer_eleve)) {
 					echo "<input type='hidden' name='quitter_la_page' value='$quitter_la_page' />\n";
 				}
 
-				echo "<p>Sélectionner l'élève à associer à ".ucfirst(strtolower($lig_pers->prenom))." ".strtoupper($lig_pers->nom)."<br />\n";
+				echo "<p>SÃ©lectionner l'Ã©lÃ¨ve Ã  associer Ã  ".ucfirst(strtolower($lig_pers->prenom))." ".strtoupper($lig_pers->nom)."<br />\n";
 
 				//echo "<p align='center'>\n";
 				echo "<select name='add_ele_id'";
 				echo " onchange='changement();'";
 				echo ">\n";
-				echo "<option value=''>--- Ajouter un élève ---</option>\n";
+				echo "<option value=''>--- Ajouter un Ã©lÃ¨ve ---</option>\n";
 			}
 
 			if($lig_ele->ele_id!='') {
@@ -634,7 +634,7 @@ if(isset($associer_eleve)) {
 
 	if($compteur>0){
 		echo "</select>\n";
-		echo "<br />\n(<i>$compteur élèves n'ont pas leurs deux responsables légaux</i>)\n";
+		echo "<br />\n(<i>$compteur Ã©lÃ¨ves n'ont pas leurs deux responsables lÃ©gaux</i>)\n";
 		echo "</p>\n";
 
 		echo "<center><input type='submit' value='Enregistrer' /></center>\n";
@@ -642,11 +642,11 @@ if(isset($associer_eleve)) {
 		echo "</form>\n";
 	}
 	else{
-		echo "<p>Tous les élèves ont leur deux responsables légaux.</p>\n";
+		echo "<p>Tous les Ã©lÃ¨ves ont leur deux responsables lÃ©gaux.</p>\n";
 	}
 
 	if(count($tab_anomalie_ele_id)>0) {
-		echo "<p><span style='color:red'>ANOMALIE&nbsp;:</span> Un ou des élèves n'ont pas d'ELE_ID.<br />Comment avez-vous initialisé/importé/créé ces élèves&nbsp;?<br />En voici la liste&nbsp;:</p>";
+		echo "<p><span style='color:red'>ANOMALIE&nbsp;:</span> Un ou des Ã©lÃ¨ves n'ont pas d'ELE_ID.<br />Comment avez-vous initialisÃ©/importÃ©/crÃ©Ã© ces Ã©lÃ¨ves&nbsp;?<br />En voici la liste&nbsp;:</p>";
 		echo "<ul>\n";
 		for($i=0;$i<count($tab_anomalie_ele_id);$i++) {
 			echo "<li><a href='../eleves/modify_eleve.php?eleve_login=".$tab_anomalie_ele_id[$i]."'>".get_nom_prenom_eleve($tab_anomalie_ele_id[$i],'avec_classe')."</li>\n";
@@ -734,7 +734,7 @@ if (isset($pers_id)) {
 			if($lig_email_utilisateur_resp->email!=$mel) {
 				$sql="UPDATE resp_pers SET mel='$lig_email_utilisateur_resp->email' WHERE login='$resp_login_tmp' and statut='responsable';";
 				$update_email=mysql_query($sql);
-				if($update_email) {echo "<span style='color:red;'>Adresse mail mise à jour d'après celle du compte d'utilisateur.</span><br />";}
+				if($update_email) {echo "<span style='color:red;'>Adresse mail mise Ã  jour d'aprÃ¨s celle du compte d'utilisateur.</span><br />";}
 			}
 			$mel=$lig_email_utilisateur_resp->email;
 			//$temoin_compte_utilisateur="y";
@@ -766,7 +766,7 @@ else{
 	echo "<input type='hidden' name='nouv_resp' value='yes' />\n";
 }
 
-// Initialisation des variables, si nécessaire:
+// Initialisation des variables, si nÃ©cessaire:
 if (!isset($resp_nom)) $resp_nom='';
 if (!isset($resp_prenom)) $resp_prenom='';
 if (!isset($civilite)) $civilite='';
@@ -784,16 +784,16 @@ if (!isset($mel)) $mel='';
 
 echo "<table>\n";
 echo "<tr>\n";
-// Colonne nom, prénom, adresse, tel du responsable:
+// Colonne nom, prÃ©nom, adresse, tel du responsable:
 echo "<td valign='top'>\n";
 
-	// Témoin pour faire le distingo entre l'ajout/modif de responsable et l'association avec un élève
+	// TÃ©moin pour faire le distingo entre l'ajout/modif de responsable et l'association avec un Ã©lÃ¨ve
 	echo "<input type='hidden' name='tab_nom_prenom_resp' value='y' />\n";
 
 	// Affichage du tableau de la saisie des nom, prenom, adresse, tel,...
 	echo "<p><b>Responsable:</b>\n";
 	if(isset($pers_id)){
-		echo " (<i>n°$pers_id</i>)";
+		echo " (<i>nÂ°$pers_id</i>)";
 
 		$sql="SELECT u.login, u.email FROM utilisateurs u, resp_pers rp WHERE rp.login=u.login AND rp.pers_id='$pers_id' AND u.login!='';";
 		$test_compte=mysql_query($sql);
@@ -822,13 +822,13 @@ echo "<td valign='top'>\n";
 
 	echo "<table>\n";
 	echo "<tr><td>Nom * : </td><td><input type=text size=50 name=resp_nom value = \"".$resp_nom."\" onchange='changement();' /></td></tr>\n";
-	echo "<tr><td>Prénom * : </td><td><input type=text size=50 name=resp_prenom value = \"".$resp_prenom."\" onchange='changement();' /></td></tr>\n";
-	echo "<tr><td>Civilité : </td><td>\n";
+	echo "<tr><td>PrÃ©nom * : </td><td><input type=text size=50 name=resp_prenom value = \"".$resp_prenom."\" onchange='changement();' /></td></tr>\n";
+	echo "<tr><td>CivilitÃ© : </td><td>\n";
 
 	echo "<table border='0'>\n";
 	echo "<tr>\n";
 	echo "<td>\n";
-	// AFFICHER AVEC JAVASCRIPT CE QUI EST ENREGISTRé/SAISI...
+	// AFFICHER AVEC JAVASCRIPT CE QUI EST ENREGISTRÃ©/SAISI...
 	echo "</td>\n";
 	echo "<td>\n";
 	echo "<label for='civilite' style='cursor: pointer;'>\n";
@@ -869,8 +869,8 @@ echo "<td valign='top'>\n";
 	echo "<tr>\n";
 	echo "<td>Mel : </td><td>\n";
 	if(isset($compte_resp_existe)&&($compte_resp_existe=="y")&&(getSettingValue('mode_email_resp')=='mon_compte')) {
-		// Faudrait-il quand même permettre la saisie en mode mon_compte si le mail est vide?
-		// Pour permettre une récupération de mot de passe?
+		// Faudrait-il quand mÃªme permettre la saisie en mode mon_compte si le mail est vide?
+		// Pour permettre une rÃ©cupÃ©ration de mot de passe?
 		echo $mel;
 	}
 	else {
@@ -889,26 +889,26 @@ echo "<td valign='top'>\n";
 	echo "</table>\n";
 
 echo "</td>\n";
-// Colonne élève et conjoint:
+// Colonne Ã©lÃ¨ve et conjoint:
 echo "<td valign='top'>\n";
 
 
 if(isset($pers_id)){
-	// Enfants/élèves à charge:
+	// Enfants/Ã©lÃ¨ves Ã  charge:
 	//$sql="SELECT DISTINCT ele_id FROM responsables2 WHERE pers_id='$pers_id'";
 	//$sql="SELECT e.nom,e.prenom,e.ele_id,r.resp_legal FROM responsables2 r, eleves e WHERE e.ele_id=r.ele_id AND r.pers_id='$pers_id' ORDER BY e.nom,e.prenom;";
 	$sql="SELECT e.nom,e.prenom,e.login,e.ele_id,r.resp_legal FROM responsables2 r, eleves e WHERE (e.ele_id=r.ele_id AND r.pers_id='$pers_id' AND (r.resp_legal='1' OR r.resp_legal='2')) ORDER BY e.nom,e.prenom;";
 	//echo "$sql<br />\n";
 	$res1=mysql_query($sql);
 	if(mysql_num_rows($res1)==0){
-		echo "<p>Ce responsable n'est encore rattaché à aucun élève.</p>\n";
+		echo "<p>Ce responsable n'est encore rattachÃ© Ã  aucun Ã©lÃ¨ve.</p>\n";
 	}
 	else{
-		echo "<p><b>Elève:</b></p>\n";
+		echo "<p><b>ElÃ¨ve:</b></p>\n";
 		//echo "<table border='1'>\n";
 		echo "<table class='boireaus'>\n";
 		echo "<tr>\n";
-		echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' rowspan='2'>Elève</td>\n";
+		echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' rowspan='2'>ElÃ¨ve</td>\n";
 		echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' colspan='2'>Responsable legal</td>\n";
 		echo "<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' rowspan='2'>Supprimer</td>\n";
 		echo "<td style='font-weight:bold; text-align:center; background-color:#96C8F0;' rowspan='2'>Autre responsable</td>\n";
@@ -926,12 +926,12 @@ if(isset($pers_id)){
 
 			$resp_legal1=$lig_ele->resp_legal;
 
-			// Y a-t-il un deuxième responsable?
+			// Y a-t-il un deuxiÃ¨me responsable?
 			$sql="SELECT rp.nom,rp.prenom,rp.pers_id FROM resp_pers rp, responsables2 r WHERE (rp.pers_id!='$pers_id' AND r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND (r.resp_legal='1' OR r.resp_legal='2'));";
 			//echo "$sql<br />\n";
 			$res_resp=mysql_query($sql);
 
-			// S'il n'y a pas de deuxième responsable et que le responsable déclaré n'est pas le n°1:
+			// S'il n'y a pas de deuxiÃ¨me responsable et que le responsable dÃ©clarÃ© n'est pas le nÂ°1:
 			if((mysql_num_rows($res_resp)==0)&&($resp_legal1!=1)){
 				$tmpbg="background-color:red;";
 			}
@@ -975,7 +975,7 @@ if(isset($pers_id)){
 				}
 				else{
 					echo "<input type='hidden' name='resp_erreur[".$cpt."]' value='y' />\n";
-					echo "<font color='red'>L'élève a trop de responsables légaux. Faites le ménage!</font><br />\n";
+					echo "<font color='red'>L'Ã©lÃ¨ve a trop de responsables lÃ©gaux. Faites le mÃ©nage!</font><br />\n";
 					while($lig_resp=mysql_fetch_object($res_resp)){
 						echo "<a href='modify_resp.php?pers_id=$lig_resp->pers_id' onclick=\"return confirm_abandon (this, change, '$themessage')\">".strtoupper($lig_resp->nom)." ".ucfirst(strtolower($lig_resp->prenom))."</a><br />\n";
 					}
@@ -993,35 +993,35 @@ if(isset($pers_id)){
 }
 
 if(isset($pers_id)) {
-	// Ajout de l'association avec un élève existant:
+	// Ajout de l'association avec un Ã©lÃ¨ve existant:
 	echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?pers_id=$pers_id&amp;associer_eleve=y";
 	if(isset($quitter_la_page)){
 		echo "&amp;quitter_la_page=$quitter_la_page";
 	}
 	echo "'";
 	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-	echo ">Ajouter l'association avec un élève</a></p>\n";
+	echo ">Ajouter l'association avec un Ã©lÃ¨ve</a></p>\n";
 }
 
 /*
-// Ajout de l'association avec un élève existant:
-//echo "Ajouter un élève: ";
+// Ajout de l'association avec un Ã©lÃ¨ve existant:
+//echo "Ajouter un Ã©lÃ¨ve: ";
 echo "<p align='center'>\n";
 echo "<select name='add_ele_id'>\n";
-echo "<option value=''>--- Ajouter un élève ---</option>\n";
+echo "<option value=''>--- Ajouter un Ã©lÃ¨ve ---</option>\n";
 //$sql="SELECT ele_id,nom,prenom FROM eleves ORDER BY nom,prenom";
 */
 
 	/*
 	// *************************
-	// A REVOIR: Si aucun responsable n'est encore saisi, on ne récupère pas l'ensemble des élèves...
-	//           Le mode de "détection/listage" n'est pas valide.
+	// A REVOIR: Si aucun responsable n'est encore saisi, on ne rÃ©cupÃ¨re pas l'ensemble des Ã©lÃ¨ves...
+	//           Le mode de "dÃ©tection/listage" n'est pas valide.
 	// *************************
 	$sql="SELECT DISTINCT e.ele_id,e.nom,e.prenom FROM eleves e, responsables2 r WHERE e.ele_id=r.ele_id ORDER BY e.nom,e.prenom";
 	$res_ele=mysql_query($sql);
 	$compteur=0;
 	while($lig_ele=mysql_fetch_object($res_ele)){
-		// On ne propose que les élèves n'ayant pas déjà leurs deux responsables légaux
+		// On ne propose que les Ã©lÃ¨ves n'ayant pas dÃ©jÃ  leurs deux responsables lÃ©gaux
 		//$sql="SELECT * FROM responsables2 WHERE ele_id='$lig_ele->ele_id'";
 		$sql="SELECT * FROM responsables2 WHERE ele_id='$lig_ele->ele_id' AND (resp_legal='1' OR resp_legal='2')";
 		$test=mysql_query($sql);
@@ -1037,7 +1037,7 @@ $sql="SELECT DISTINCT e.ele_id,e.nom,e.prenom FROM eleves e ORDER BY e.nom,e.pre
 $res_ele=mysql_query($sql);
 $compteur=0;
 while($lig_ele=mysql_fetch_object($res_ele)){
-	// On ne propose que les élèves n'ayant pas déjà leurs deux responsables légaux
+	// On ne propose que les Ã©lÃ¨ves n'ayant pas dÃ©jÃ  leurs deux responsables lÃ©gaux
 	//$sql="SELECT * FROM responsables2 WHERE ele_id='$lig_ele->ele_id'";
 	$sql="SELECT * FROM responsables2 WHERE ele_id='$lig_ele->ele_id' AND (resp_legal='1' OR resp_legal='2')";
 	$test=mysql_query($sql);
@@ -1048,7 +1048,7 @@ while($lig_ele=mysql_fetch_object($res_ele)){
 }
 
 echo "</select>\n";
-echo "<br />\n(<i>$compteur élèves n'ont pas leurs deux responsables légaux</i>)\n";
+echo "<br />\n(<i>$compteur Ã©lÃ¨ves n'ont pas leurs deux responsables lÃ©gaux</i>)\n";
 echo "</p>\n";
 */
 
@@ -1067,7 +1067,7 @@ if((isset($compte_resp_existe))&&($compte_resp_existe=="y")&&isset($resp_login)&
 
 echo "<a name='adresse'></a>\n";
 echo "<p><b>Adresse:</b>";
-if(isset($adr_id)){echo " (<i>n°$adr_id</i>)";}
+if(isset($adr_id)){echo " (<i>nÂ°$adr_id</i>)";}
 echo "</p>\n";
 
 echo "<div id='div_saisie_ad'>\n";
@@ -1077,19 +1077,19 @@ if($temoin_adr==1){
 	$res_adr=mysql_query($sql);
 	if(mysql_num_rows($res_adr)==0){
 		// Bizarre!
-		// Ce n'est pas possible d'après ce qui a été fait auparavant.
+		// Ce n'est pas possible d'aprÃ¨s ce qui a Ã©tÃ© fait auparavant.
 	}
 	elseif(mysql_num_rows($res_adr)==1){
-		// L'adresse n'est associée qu'au responsable courant.
+		// L'adresse n'est associÃ©e qu'au responsable courant.
 		echo "<p>Corriger/modifier l'adresse:</p>\n";
 	}
 	else{
-		// L'adresse n'est associée à au moins un autre responsable.
-		echo "<table><tr><td><b>Attention:</b></td><td>L'adresse indiquée ci-dessous est partagée avec un autre responsable.</td></tr>\n";
-		//<br />\nSi vous modifiez l'adresse, elle le sera pour l'autre responsable également.</p>\n";
+		// L'adresse n'est associÃ©e Ã  au moins un autre responsable.
+		echo "<table><tr><td><b>Attention:</b></td><td>L'adresse indiquÃ©e ci-dessous est partagÃ©e avec un autre responsable.</td></tr>\n";
+		//<br />\nSi vous modifiez l'adresse, elle le sera pour l'autre responsable Ã©galement.</p>\n";
 		echo "<tr><td>&nbsp;</td><td><label for='changement_adresse_corriger' style='cursor: pointer;'><input type='radio' name='changement_adresse' id='changement_adresse_corriger' value='corriger' checked onchange='changement();' /> Corriger/modifier l'adresse commune aux deux responsables,</label> <b>ou</b></td></tr>\n";
 		//echo "<tr><td>&nbsp;</td><td>ou</td></tr>\n";
-		echo "<tr><td>&nbsp;</td><td><label for='changement_adresse_desolidariser' style='cursor: pointer;'><input type='radio' name='changement_adresse' id='changement_adresse_desolidariser' value='desolidariser' onchange='changement();' /> Désolidariser l'adresse de celle de l'autre responsable.</label></td></tr></table>\n";
+		echo "<tr><td>&nbsp;</td><td><label for='changement_adresse_desolidariser' style='cursor: pointer;'><input type='radio' name='changement_adresse' id='changement_adresse_desolidariser' value='desolidariser' onchange='changement();' /> DÃ©solidariser l'adresse de celle de l'autre responsable.</label></td></tr></table>\n";
 	}
 }
 else{
@@ -1114,7 +1114,7 @@ $res_adr=mysql_query($sql);
 if(mysql_num_rows($res_adr)>0){
 	echo "<tr><td><b>ou</b></td>";
 	echo "<td><select name='adr_id_existant'>\n";
-	echo "<option value=''>--- Sélectionner une adresse existante ---</option>\n";
+	echo "<option value=''>--- SÃ©lectionner une adresse existante ---</option>\n";
 	while($lig_adr=mysql_fetch_object($res_adr)){
 		if(($lig_adr->adr1!="")||($lig_adr->adr2!="")||($lig_adr->adr3!="")||($lig_adr->adr4!="")||($lig_adr->commune!="")){
 			echo "<option value='$lig_adr->adr_id'>";
@@ -1195,13 +1195,13 @@ echo "</div>\n";
 
 echo "<center><input type='submit' value='Enregistrer' /></center>\n";
 
-echo "<p>(*): saisie obligatoire<br />(**): un des deux champs au moins doit être rempli</p>\n";
+echo "<p>(*): saisie obligatoire<br />(**): un des deux champs au moins doit Ãªtre rempli</p>\n";
 
 /*
 $sql="SELECT DISTINCT adr1,adr2,adr3,adr4,cp,commune,pays,adr_id FROM resp_adr ORDER BY commune,cp,adr1,adr2,adr3,adr4";
 $res_adr=mysql_query($sql);
 if(mysql_num_rows($res_adr)>0){
-	echo "<b>ou</b> <input type='checkbox' name='select_ad_existante' id='select_ad_existante' value='y' onchange='modif_div_ad()' /> Sélectionner une adresse existante.";
+	echo "<b>ou</b> <input type='checkbox' name='select_ad_existante' id='select_ad_existante' value='y' onchange='modif_div_ad()' /> SÃ©lectionner une adresse existante.";
 
 	echo "<div id='div_ad_existante'>\n";
 	echo "<table border='1'>\n";
@@ -1230,7 +1230,7 @@ if(mysql_num_rows($res_adr)>0){
 /*
 	echo "</td>\n";
 	echo "<td style='text-align:center; font-weight:bold; background-color:#AAE6AA;'>Pays</td>\n";
-	echo "<td style='text-align:center; font-weight:bold; background-color:#96C8F0;'>Responsable associé</td>\n";
+	echo "<td style='text-align:center; font-weight:bold; background-color:#96C8F0;'>Responsable associÃ©</td>\n";
 	echo "<td style='text-align:center; font-weight:bold; background-color:red;'>Supprimer adresse(s)</td>\n";
 	echo "</tr>\n";
 

@@ -21,7 +21,7 @@
 */
 
 $accessibilite="y";
-$titre_page = "Gestionnaires d'AID : Activation/désactivation";
+$titre_page = "Gestionnaires d'AID : Activation/dÃ©sactivation";
 $niveau_arbo = 1;
 $gepiPathJava="./..";
 $post_reussi=FALSE;
@@ -44,7 +44,7 @@ if ($resultat_session == 'c') {
 
 
 //======================================================================================
-// Section checkAccess() à décommenter en prenant soin d'ajouter le droit correspondant:
+// Section checkAccess() Ã  dÃ©commenter en prenant soin d'ajouter le droit correspondant:
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -56,16 +56,16 @@ $msg = '';
 if (isset($_POST['activer'])) {
 	check_token();
 	if (!saveSetting("active_mod_gest_aid", $_POST['activer'])) {
-		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+		$msg = "Erreur lors de l'enregistrement du paramÃ¨tre activation/dÃ©sactivation !";
 	}
 	else {
-		$msg = "Enregistrement effectué.";
+		$msg = "Enregistrement effectuÃ©.";
 		$post_reussi=TRUE;
 	}
 }
 
 //**************** EN-TETE *****************
-// $titre_page = "Gestionnaires d'AID : Activation/désactivation";
+// $titre_page = "Gestionnaires d'AID : Activation/dÃ©sactivation";
 // echo "<div class='noprint'>\n";
 // require_once("../lib/header.inc");
 //echo "</div>\n";
@@ -75,7 +75,7 @@ if (isset($_POST['activer'])) {
 include_once("../lib/header_template.inc");
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion AID"))
-		echo "erreur lors de la création du fil d'ariane";
+		echo "erreur lors de la crÃ©ation du fil d'ariane";
 /****************************************************************
 			FIN HAUT DE PAGE
 ****************************************************************/
@@ -90,20 +90,20 @@ $tbs_pmv="";
 require_once ("../lib/footer_template.inc.php");
 
 /****************************************************************
-			On s'assure que le nom du gabarit est bien renseigné
+			On s'assure que le nom du gabarit est bien renseignÃ©
 ****************************************************************/
 if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 	$_SESSION['rep_gabarits']="origine";
 }
 
 //==================================
-// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// DÃ©commenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 // $affiche_debug=debug_var();
 
 
 $nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/mod_gest_aid/admin_template.php';
 
-$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+$tbs_last_connection=""; // On n'affiche pas les derniÃ¨res connexions
 include($nom_gabarit);
 
 
@@ -121,15 +121,15 @@ echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n"
 echo "<p>
 <input type='radio' name='activer' id='activer_y' value='y' ";
 if (getSettingValue('active_mod_gest_aid')=='y') {echo ' checked';}
-echo " />&nbsp;<label for='activer_y' style='cursor: pointer;'>Activer la possibilité de définir des gestionnaires d'AID</label><br />
+echo " />&nbsp;<label for='activer_y' style='cursor: pointer;'>Activer la possibilitÃ© de dÃ©finir des gestionnaires d'AID</label><br />
 <input type='radio' name='activer' id='activer_n' value='n' ";
 if (getSettingValue('active_mod_gest_aid')=='n') {echo ' checked';}
-echo " />&nbsp;<label for='activer_n' style='cursor: pointer;'>Désactiver la possibilité de définir des gestionnaires d'AID</label>
+echo " />&nbsp;<label for='activer_n' style='cursor: pointer;'>DÃ©sactiver la possibilitÃ© de dÃ©finir des gestionnaires d'AID</label>
 <br />\n";
-echo "<p>En activant le module, l'administrateur peut définir :
+echo "<p>En activant le module, l'administrateur peut dÃ©finir :
 <ul>
-<li> pour chaque catégorie d'AID, un ou plusieurs "super-gestionnaires" parmi les utilisateurs. Ces utilisateurs auront alors dans leur menu une rubrique supplémentaire leur permettant d'ajouter, supprimer ou modifier des AID, ainsi que des  élèves ou professeurs appartenant à ces AID.</li>
-<li> pour chaque AID un ou plusieurs gestionnaires parmi les utilisateurs. Ces gestionnaires auront alors dans leur menu une rubrique supplémentaire leur permettant d'ajouter ou de supprimer des élèves.</li>
+<li> pour chaque catÃ©gorie d'AID, un ou plusieurs "super-gestionnaires" parmi les utilisateurs. Ces utilisateurs auront alors dans leur menu une rubrique supplÃ©mentaire leur permettant d'ajouter, supprimer ou modifier des AID, ainsi que des  Ã©lÃ¨ves ou professeurs appartenant Ã  ces AID.</li>
+<li> pour chaque AID un ou plusieurs gestionnaires parmi les utilisateurs. Ces gestionnaires auront alors dans leur menu une rubrique supplÃ©mentaire leur permettant d'ajouter ou de supprimer des Ã©lÃ¨ves.</li>
 </ul>
 </p>";
 echo " <input type='submit' name='valider' value='Valider' /></p>\n";

@@ -1,12 +1,12 @@
 /*
 accessibilite.css
-Mise en page pour validation et accessibilité
+Mise en page pour validation et accessibilitÃ©
 @version $Id: accessibilite.css 7359 2011-07-02 08:28:15Z adminpaulbert $
 */
 
 
 /***********************
-       Général
+       GÃ©nÃ©ral
 ***********************/
 /* --- Classes par fonctions --- */
 
@@ -37,7 +37,7 @@ Mise en page pour validation et accessibilité
 	font-size: 14pt;
 	line-height: 125%;
 }
-/* --- Décoration du texte --- */
+/* --- DÃ©coration du texte --- */
 .souligne {
 	text-decoration: underline;
 	font-size: smaller;
@@ -140,7 +140,7 @@ Mise en page pour validation et accessibilité
 	float: right;
 	text-align: right;
 }
-/* place un tableau à droite */
+/* place un tableau Ã  droite */
 .ct_col_droit table {
 	margin-left: auto;
 	text-align: right;
@@ -298,8 +298,8 @@ table.menu td {
 }
 
 /* === Mise en page affichage des notices de cahier de texte === */
-/*--- Notices travaux à faire ---*/
-/* border-color: $couleur_bord_tableau_notice; à mettre dans les styles perso  */
+/*--- Notices travaux Ã  faire ---*/
+/* border-color: $couleur_bord_tableau_notice; Ã  mettre dans les styles perso  */
 
 /* mise en page */
 .cel_trav_futur {
@@ -361,7 +361,7 @@ table.menu td {
 	font-variant: small-caps;
 	font-size: 10pt;
 }
-/*--- Fin notices travaux à faire ---*/
+/*--- Fin notices travaux Ã  faire ---*/
 
 /*--- Notices informations generales ---*/
 .ct_info_generale {
@@ -382,14 +382,14 @@ table.menu td {
 	border-color: #6F6968;
 	background-color: #EFEFFF;
 }
-/*--- Fin notices informations générales ---*/
+/*--- Fin notices informations gÃ©nÃ©rales ---*/
 
-/*--- Titre des notices séances---*/
+/*--- Titre des notices sÃ©ances---*/
 .titre_notice{
 	padding: 0em;
 	text-align:center;
 }
-/*--- Fin titre des notices séances ---*/
+/*--- Fin titre des notices sÃ©ances ---*/
 
 /*--- Choix dates ---*/
 .cdt_dates {
@@ -560,7 +560,7 @@ table.menu td {
 
 
 /*************************************************
- --- Paramétrage couleurs : param_couleurs.php ---
+ --- ParamÃ©trage couleurs : param_couleurs.php ---
 *************************************************/
 #tab h2 {
 	padding-left: 1em;
@@ -605,7 +605,7 @@ table.menu td {
 }
 
 /*******************************************************
- --- Paramétrage couleurs notices du cahier de texte ---
+ --- ParamÃ©trage couleurs notices du cahier de texte ---
 *******************************************************/
 
 /* Notices de type compte-rendu */
@@ -634,7 +634,7 @@ table.menu td {
 .couleur_cellule_alt_c {
 	background-color: #D3FFAF;
 }
-/* // Notices de type  travail à faire) */
+/* // Notices de type  travail Ã  faire) */
 /* $color_fond_notices["t"] = "#FFCCCF"; */
 .color_fond_notices_t {
 	background-color: #FFCCCF;
@@ -651,7 +651,7 @@ table.menu td {
 .couleur_cellule_alt_t {
 	background-color: #FFDFE2;
 }
-/* // Notice informations générales */
+/* // Notice informations gÃ©nÃ©rales */
 /* $color_fond_notices["i"] = "#ACACFF"; */
 .color_fond_notices_i {
 	background-color: #ACACFF;
@@ -668,7 +668,7 @@ table.menu td {
 .couleur_cellule_alt_i {
 	background-color: #C8C8FF;
 }
-/* // Travaux à faire "futurs" */
+/* // Travaux Ã  faire "futurs" */
 /* $color_fond_notices["f"] = "#FFFF80"; */
 .color_fond_notices_f {
 	background-color: #FFFF80;
@@ -696,7 +696,7 @@ table.menu td {
 
 
 /***********************
- --- Relevé de notes ---
+ --- RelevÃ© de notes ---
 ***********************/
 
 .bull_simpl_h2 {

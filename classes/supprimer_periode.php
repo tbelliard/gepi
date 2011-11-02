@@ -47,7 +47,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Classes: Supprimer des périodes',
+description='Classes: Supprimer des pÃ©riodes',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -61,7 +61,7 @@ $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_c
 $suppr_periode=isset($_POST['suppr_periode']) ? $_POST['suppr_periode'] : NULL;
 
 if(!isset($id_classe)) {
-	header("Location: index.php?msg=Aucun identifiant de classe n'a été proposé");
+	header("Location: index.php?msg=Aucun identifiant de classe n'a Ã©tÃ© proposÃ©");
 	die();
 }
 
@@ -112,9 +112,9 @@ if(mysql_num_rows($res_class_tmp)>0){
 }
 // =================================
 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-$titre_page = "Gestion des classes - Ajout de périodes";
+$titre_page = "Gestion des classes - Ajout de pÃ©riodes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -122,7 +122,7 @@ echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 
 echo "<p class='bold'><a href='periodes.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>\n";
 
-if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>\n";}
+if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe prÃ©cÃ©dente</a>\n";}
 if($chaine_options_classes!="") {
 
 	echo "<script type='text/javascript'>
@@ -159,11 +159,11 @@ if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_c
 $titre="Navigation";
 $texte="";
 
-//$texte.="<img src='../images/icons/date.png' alt='' /> <a href='periodes.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Périodes</a><br />";
-$texte.="<img src='../images/icons/edit_user.png' alt='' /> <a href='classes_const.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Elèves</a><br />";
+//$texte.="<img src='../images/icons/date.png' alt='' /> <a href='periodes.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">PÃ©riodes</a><br />";
+$texte.="<img src='../images/icons/edit_user.png' alt='' /> <a href='classes_const.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">ElÃ¨ves</a><br />";
 $texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignements</a><br />";
-$texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class_grp_lot.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">config.simplifiée</a><br />";
-$texte.="<img src='../images/icons/configure.png' alt='' /> <a href='modify_nom_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramètres</a>";
+$texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class_grp_lot.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">config.simplifiÃ©e</a><br />";
+$texte.="<img src='../images/icons/configure.png' alt='' /> <a href='modify_nom_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">ParamÃ¨tres</a>";
 
 $ouvrir_infobulle_nav=getSettingValue("ouvrir_infobulle_nav");
 
@@ -220,7 +220,7 @@ function search_liaisons_classes_via_groupes($id_classe) {
 function search_periodes_non_vides($id_classe) {
 	global $tab_periode_non_supprimable;
 
-	// Recherche des périodes non vides
+	// Recherche des pÃ©riodes non vides
 	$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
@@ -238,7 +238,7 @@ function search_periodes_non_vides($id_classe) {
 					}
 				}
 				*/
-				// Contrôle de la présence de notes sur les bulletins
+				// ContrÃ´le de la prÃ©sence de notes sur les bulletins
 				$sql="SELECT jec.login FROM j_eleves_classes jec, matieres_notes mn WHERE jec.id_classe='$id_classe' AND jec.periode='$lig->num_periode' AND jec.periode=mn.periode AND jec.login=mn.login;";
 				//echo "$sql<br />\n";
 				$test=mysql_query($sql);
@@ -246,7 +246,7 @@ function search_periodes_non_vides($id_classe) {
 					$tab_periode_non_supprimable[]=$lig->num_periode;
 				}
 				else {
-					// Contrôle de la présence d'appréciations sur les bulletins
+					// ContrÃ´le de la prÃ©sence d'apprÃ©ciations sur les bulletins
 					$sql="SELECT jec.login FROM j_eleves_classes jec, matieres_appreciations ma WHERE jec.id_classe='$id_classe' AND jec.periode='$lig->num_periode' AND jec.periode=ma.periode AND jec.login=ma.login;";
 					//echo "$sql<br />\n";
 					$test=mysql_query($sql);
@@ -254,7 +254,7 @@ function search_periodes_non_vides($id_classe) {
 						$tab_periode_non_supprimable[]=$lig->num_periode;
 					}
 					else {
-						// Contrôle de la présence de notes dans les carnets de notes
+						// ContrÃ´le de la prÃ©sence de notes dans les carnets de notes
 						$sql="SELECT 1=1 FROM j_groupes_classes jgc, cn_cahier_notes ccn, cn_devoirs cd, cn_conteneurs cc, cn_notes_devoirs cnd WHERE jgc.id_groupe=ccn.id_groupe AND cc.id=cd.id_conteneur AND cc.id_racine=ccn.id_cahier_notes AND cnd.id_devoir=cd.id AND cnd.statut!='v' AND jgc.id_classe='$id_classe' AND ccn.periode='$lig->num_periode';";
 						//echo "$sql<br />\n";
 						$test=mysql_query($sql);
@@ -273,7 +273,7 @@ if(!isset($suppr_periode)) {
 	$sql="SELECT num_periode FROM periodes WHERE id_classe='".$id_classe."' ORDER BY num_periode DESC LIMIT 1;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<p style='color:red'>ANOMALIE&nbsp;: La classe ".$classe." n'a actuellement aucune période.</p>\n";
+		echo "<p style='color:red'>ANOMALIE&nbsp;: La classe ".$classe." n'a actuellement aucune pÃ©riode.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -282,14 +282,14 @@ if(!isset($suppr_periode)) {
 		$max_per=$lig->num_periode;
 	}
 
-	echo "<p><b>ATTENTION&nbsp;:</b> Il est recommandé de faire une <a href='../gestion/accueil_sauve.php?action=";
+	echo "<p><b>ATTENTION&nbsp;:</b> Il est recommandÃ© de faire une <a href='../gestion/accueil_sauve.php?action=";
 	if(getSettingValue('mode_sauvegarde')=='mysqldump') {
 		echo "system_dump";
 	}
 	else {
 		echo "dump";
 	}
-	echo add_token_in_url()."'>sauvegarde de la base</a> avant de supprimer une ou des périodes.</p>\n";
+	echo add_token_in_url()."'>sauvegarde de la base</a> avant de supprimer une ou des pÃ©riodes.</p>\n";
 	echo "<br />\n";
 
 	echo "<p class='bold'>Recherche des liaisons directes&nbsp;:</p>\n";
@@ -303,7 +303,7 @@ if(!isset($suppr_periode)) {
 	//echo "$sql<br />\n";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "Aucune liaison n'a été trouvée.<br />La suppression de période ne présente donc pas de difficulté.</p>\n";
+		echo "Aucune liaison n'a Ã©tÃ© trouvÃ©e.<br />La suppression de pÃ©riode ne prÃ©sente donc pas de difficultÃ©.</p>\n";
 	}
 	else {
 		while($lig=mysql_fetch_object($res)) {
@@ -329,7 +329,7 @@ if(!isset($suppr_periode)) {
 
 	$tab_periode_non_supprimable=array();
 	if(count($tab_liaisons_classes)>0) {
-		echo "<p>La classe <b>$classe</b> est liée (<i>de façon directe ou indirecte (via une autre classe)</i>) aux classes suivantes&nbsp;: ";
+		echo "<p>La classe <b>$classe</b> est liÃ©e (<i>de faÃ§on directe ou indirecte (via une autre classe)</i>) aux classes suivantes&nbsp;: ";
 		$cpt=0;
 		for($i=0;$i<count($tab_liaisons_classes);$i++) {
 			if($tab_liaisons_classes[$i]!=$id_classe) {
@@ -343,41 +343,41 @@ if(!isset($suppr_periode)) {
 		}
 
 		if(count($tab_periode_non_supprimable)>0) {
-			echo "<p>Une ou des périodes ne peuvent être supprimées parce qu'il y a des notes ou appréciations sur les bulletins ou dans des carnets de notes.<br />\n";
+			echo "<p>Une ou des pÃ©riodes ne peuvent Ãªtre supprimÃ©es parce qu'il y a des notes ou apprÃ©ciations sur les bulletins ou dans des carnets de notes.<br />\n";
 			sort($tab_periode_non_supprimable);
 			echo "En voici la liste&nbsp;:";
 			for($i=0;$i<count($tab_periode_non_supprimable);$i++) {
 				if($i>0) {echo ", ";}
-				echo "période $tab_periode_non_supprimable[$i]";
+				echo "pÃ©riode $tab_periode_non_supprimable[$i]";
 			}
 		}
 
-		echo "<p>Quelles périodes voulez-vous supprimer pour <b>$classe</b> et la ou les classes liées?</p>\n";
+		echo "<p>Quelles pÃ©riodes voulez-vous supprimer pour <b>$classe</b> et la ou les classes liÃ©es?</p>\n";
 	}
 	else {
 		$tab_periode_non_supprimable=array();
 		search_periodes_non_vides($id_classe);
 
 		if(count($tab_periode_non_supprimable)>0) {
-			echo "<p>Une ou des périodes ne peuvent être supprimées parce qu'il y a des notes ou appréciations sur les bulletins ou dans des carnets de notes.<br />\n";
+			echo "<p>Une ou des pÃ©riodes ne peuvent Ãªtre supprimÃ©es parce qu'il y a des notes ou apprÃ©ciations sur les bulletins ou dans des carnets de notes.<br />\n";
 			sort($tab_periode_non_supprimable);
 			echo "En voici la liste&nbsp;:";
 			for($i=0;$i<count($tab_periode_non_supprimable);$i++) {
 				if($i>0) {echo ", ";}
-				echo "période $tab_periode_non_supprimable[$i]";
+				echo "pÃ©riode $tab_periode_non_supprimable[$i]";
 			}
 		}
 
-		echo "<p>Quelles périodes voulez-vous supprimer pour <b>$classe</b>?</p>\n";
+		echo "<p>Quelles pÃ©riodes voulez-vous supprimer pour <b>$classe</b>?</p>\n";
 	}
 
 	echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	echo add_token_field();
 
-	echo "<table class='boireaus' summary='Tableau des périodes'>\n";
+	echo "<table class='boireaus' summary='Tableau des pÃ©riodes'>\n";
 	echo "<tr>\n";
-	echo "<th>Numéro de période</th>\n";
-	echo "<th>Nom de période</th>\n";
+	echo "<th>NumÃ©ro de pÃ©riode</th>\n";
+	echo "<th>Nom de pÃ©riode</th>\n";
 	echo "<th>Supprimer</th>\n";
 	echo "</tr>\n";
 	$alt=1;
@@ -429,19 +429,19 @@ if(!isset($suppr_periode)) {
 	//echo "<div style='margin-left: 3em;'>\n";
 	echo "<ul>\n";
 		echo "<li>\n";
-			echo "<p>On ne peut pas supprimer une période n°5 et conserver la période n°6.</p>\n";
+			echo "<p>On ne peut pas supprimer une pÃ©riode nÂ°5 et conserver la pÃ©riode nÂ°6.</p>\n";
 		echo "</li>\n";
 		echo "<li>\n";
-			echo "<p>La suppression de période présente une difficulté lorsqu'il y a des enseignements/groupes à cheval sur plusieurs classes.<br />Deux classes partageant un enseignement doivent avoir le même nombre de périodes.<br />Si vous supprimez des périodes à la classe ".$classe.", il faudra&nbsp:</p>\n";
+			echo "<p>La suppression de pÃ©riode prÃ©sente une difficultÃ© lorsqu'il y a des enseignements/groupes Ã  cheval sur plusieurs classes.<br />Deux classes partageant un enseignement doivent avoir le mÃªme nombre de pÃ©riodes.<br />Si vous supprimez des pÃ©riodes Ã  la classe ".$classe.", il faudra&nbsp:</p>\n";
 			echo "<ul>\n";
-				echo "<li>soit supprimer les mêmes périodes des classes liées à $classe</li>\n";
-				echo "<li>soit rompre les liaisons&nbsp;:<br />Cela signifierait que vous auriez alors deux enseignements distincts pour $classe et une classe partageant l'enseignement.<br />Pour le professeur les conséquences sont les suivantes&nbsp;:<br />\n";
+				echo "<li>soit supprimer les mÃªmes pÃ©riodes des classes liÃ©es Ã  $classe</li>\n";
+				echo "<li>soit rompre les liaisons&nbsp;:<br />Cela signifierait que vous auriez alors deux enseignements distincts pour $classe et une classe partageant l'enseignement.<br />Pour le professeur les consÃ©quences sont les suivantes&nbsp;:<br />\n";
 					echo "<ul>\n";
-						echo "<li>pour saisir les résultats d'un devoir, il faudra créer un devoir dans chacun des deux enseignements et y saisir les notes</li>\n";
-						echo "<li>la moyenne du groupe d'élève ne sera pas calculée; il y aura deux moyennes&nbsp: celles des deux enseignements<br />Même chose pour les moyennes min et max.</li>\n";
-						echo "<li>Pour les notes existantes, il faut créer un nouveau groupe, un nouveau carnet de notes, cloner les devoirs et boites pour y transférer les notes et provoquer le recalcul des moyennes de conteneurs.<br />Les saisies de cahier de textes, d'emploi du temps doivent être dupliquées, les saisies antérieures d'absences peuvent-elles être perturbées (?) ou l'association n'est-elle que élève/jour_heures_absence (?),...</li>";
+						echo "<li>pour saisir les rÃ©sultats d'un devoir, il faudra crÃ©er un devoir dans chacun des deux enseignements et y saisir les notes</li>\n";
+						echo "<li>la moyenne du groupe d'Ã©lÃ¨ve ne sera pas calculÃ©e; il y aura deux moyennes&nbsp: celles des deux enseignements<br />MÃªme chose pour les moyennes min et max.</li>\n";
+						echo "<li>Pour les notes existantes, il faut crÃ©er un nouveau groupe, un nouveau carnet de notes, cloner les devoirs et boites pour y transfÃ©rer les notes et provoquer le recalcul des moyennes de conteneurs.<br />Les saisies de cahier de textes, d'emploi du temps doivent Ãªtre dupliquÃ©es, les saisies antÃ©rieures d'absences peuvent-elles Ãªtre perturbÃ©es (?) ou l'association n'est-elle que Ã©lÃ¨ve/jour_heures_absence (?),...</li>";
 					echo "</ul>\n";
-					echo "<span style='color:red'>La deuxième solution n'est pas implémentée pour le moment</span>\n";
+					echo "<span style='color:red'>La deuxiÃ¨me solution n'est pas implÃ©mentÃ©e pour le moment</span>\n";
 				echo "</li>\n";
 			echo "</ul>\n";
 		echo "</li>\n";
@@ -461,13 +461,13 @@ else {
 		search_periodes_non_vides($tab_liaisons_classes[$i]);
 	}
 
-	// Il faut supprimer toutes les périodes après le plus petit des num_periode
-	// Il ne faut pas se retrouver avec une classe qui aurait des périodes 1, 2, 3 puis passerait à 5 sans période 4.
+	// Il faut supprimer toutes les pÃ©riodes aprÃ¨s le plus petit des num_periode
+	// Il ne faut pas se retrouver avec une classe qui aurait des pÃ©riodes 1, 2, 3 puis passerait Ã  5 sans pÃ©riode 4.
 	
 	$sql="SELECT num_periode FROM periodes WHERE id_classe='".$id_classe."' ORDER BY num_periode DESC LIMIT 1;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<p style='color:red'>ANOMALIE&nbsp;: La classe ".$classe." n'a actuellement aucune période.</p>\n";
+		echo "<p style='color:red'>ANOMALIE&nbsp;: La classe ".$classe." n'a actuellement aucune pÃ©riode.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -488,19 +488,19 @@ else {
 		$sql="SELECT num_periode FROM periodes WHERE id_classe='".$id_classe_courant."' ORDER BY num_periode DESC LIMIT 1;";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			echo "<p style='color:red'>ANOMALIE&nbsp;: La classe ".$classe_courante." n'a actuellement aucune période.</p>\n";
+			echo "<p style='color:red'>ANOMALIE&nbsp;: La classe ".$classe_courante." n'a actuellement aucune pÃ©riode.</p>\n";
 		}
 		else {
-			// Boucle sur la liste des périodes en contrôlant qu'elles ne sont pas dans $tab_periode_non_supprimable
+			// Boucle sur la liste des pÃ©riodes en contrÃ´lant qu'elles ne sont pas dans $tab_periode_non_supprimable
 
 			//for($j=0;$j<count($suppr_periode);$j++) {
 			for($j=$suppr_periode[0];$j<=$max_per;$j++) {
 				//if(!in_array($suppr_periode[$j],$tab_periode_non_supprimable)) {
 				if(!in_array($j,$tab_periode_non_supprimable)) {
 					// Nettoyer j_eleves_groupes
-					//echo "Nettoyage des inscriptions d'élèves dans des groupes/enseignements pour la période $suppr_periode[$j]&nbsp;: ";
+					//echo "Nettoyage des inscriptions d'Ã©lÃ¨ves dans des groupes/enseignements pour la pÃ©riode $suppr_periode[$j]&nbsp;: ";
 					//$sql="DELETE FROM j_eleves_groupes WHERE periode='$suppr_periode[$j]' AND id_groupe IN (SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe_courant');";
-					echo "Nettoyage des inscriptions d'élèves dans des groupes/enseignements pour la période $j&nbsp;: ";
+					echo "Nettoyage des inscriptions d'Ã©lÃ¨ves dans des groupes/enseignements pour la pÃ©riode $j&nbsp;: ";
 					$sql="DELETE FROM j_eleves_groupes WHERE periode='$j' AND id_groupe IN (SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe_courant');";
 					$del=mysql_query($sql);
 					if(!$del) {
@@ -512,9 +512,9 @@ else {
 						echo "<br />\n";
 	
 						// Nettoyer j_eleves_classes
-						//echo "Nettoyage des inscriptions d'élèves dans la classe $classe_courante pour la période $suppr_periode[$j]&nbsp;: ";
+						//echo "Nettoyage des inscriptions d'Ã©lÃ¨ves dans la classe $classe_courante pour la pÃ©riode $suppr_periode[$j]&nbsp;: ";
 						//$sql="DELETE FROM j_eleves_classes WHERE periode='$suppr_periode[$j]' AND id_classe='$id_classe_courant';";
-						echo "Nettoyage des inscriptions d'élèves dans la classe $classe_courante pour la période $j&nbsp;: ";
+						echo "Nettoyage des inscriptions d'Ã©lÃ¨ves dans la classe $classe_courante pour la pÃ©riode $j&nbsp;: ";
 						$sql="DELETE FROM j_eleves_classes WHERE periode='$j' AND id_classe='$id_classe_courant';";
 						$del=mysql_query($sql);
 						if(!$del) {
@@ -530,7 +530,7 @@ else {
 							$sql="SELECT * FROM edt_calendrier WHERE numero_periode='$j' AND (classe_concerne_calendrier LIKE '$id_classe_courant;%' OR classe_concerne_calendrier LIKE '%;$id_classe_courant;%');";
 							$res_edt_calendrier=mysql_query($sql);
 							if(mysql_num_rows($res_edt_calendrier)>0) {
-								echo "Nettoyage de edt_calendrier pour la classe $classe_courante sur la période $j&nbsp;: ";
+								echo "Nettoyage de edt_calendrier pour la classe $classe_courante sur la pÃ©riode $j&nbsp;: ";
 								// Normalement, on ne fait qu'un tour dans la boucle
 								while($lig_edt_cal=mysql_fetch_object($res_edt_calendrier)) {
 									$tab_edt=explode(";",$lig_edt_cal->classe_concerne_calendrier);
@@ -558,9 +558,9 @@ else {
 
 							if($poursuivre=='y') {
 								// Nettoyer periodes
-								//echo "Suppression de la période $suppr_periode[$j] pour la classe $classe_courante&nbsp;: ";
+								//echo "Suppression de la pÃ©riode $suppr_periode[$j] pour la classe $classe_courante&nbsp;: ";
 								//$sql="DELETE FROM periodes WHERE id_classe='$id_classe_courant' AND num_periode='$suppr_periode[$j]';";
-								echo "Suppression de la période $j pour la classe $classe_courante&nbsp;: ";
+								echo "Suppression de la pÃ©riode $j pour la classe $classe_courante&nbsp;: ";
 								$sql="DELETE FROM periodes WHERE id_classe='$id_classe_courant' AND num_periode='$j';";
 								$del=mysql_query($sql);
 								if(!$del) {
@@ -581,11 +581,11 @@ else {
 		echo "</blockquote>\n";
 	}
 
-	echo "<p class='bold'>Terminé.</p>\n";
+	echo "<p class='bold'>TerminÃ©.</p>\n";
 
 	if((substr(getSettingValue('autorise_edt_tous'),0,1)=='y')||(substr(getSettingValue('autorise_edt_admin'),0,1)=='y')||(substr(getSettingValue('autorise_edt_eleve'),0,1)=='y')) {
 		echo "<p><br /></p>\n";
-		echo "<p>Pensez à contrôler que vous avez bien défini les dates de périodes dans le <a href='../edt_organisation/edt_calendrier.php'>calendrier</a>.</p>\n";
+		echo "<p>Pensez Ã  contrÃ´ler que vous avez bien dÃ©fini les dates de pÃ©riodes dans le <a href='../edt_organisation/edt_calendrier.php'>calendrier</a>.</p>\n";
 		echo "<p><br /></p>\n";
 	}
 }

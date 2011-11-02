@@ -51,12 +51,12 @@ if (isset($_GET['action'])) {
 		if ($verify) {
 			$delete = delete_group($_GET['id_groupe']);
 			if ($delete == true) {
-				$msg .= "Le groupe " . $_GET['id_groupe'] . " a été supprimé.";
+				$msg .= "Le groupe " . $_GET['id_groupe'] . " a Ã©tÃ© supprimÃ©.";
 			} else {
-				$msg .= "Une erreur a empêché la suppression du groupe.";
+				$msg .= "Une erreur a empÃªchÃ© la suppression du groupe.";
 			}
 		} else {
-			$msg .= "Des données existantes bloquent la suppression du groupe. Aucune note ni appréciation ne doit avoir été saisie pour les élèves de ce groupe pour permettre la suppression du groupe.";
+			$msg .= "Des donnÃ©es existantes bloquent la suppression du groupe. Aucune note ni apprÃ©ciation ne doit avoir Ã©tÃ© saisie pour les Ã©lÃ¨ves de ce groupe pour permettre la suppression du groupe.";
 		}
 	}
 }
@@ -73,11 +73,11 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 <p class=bold>
 <a href="../accueil_admin.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
  | <a href="add_group.php?mode=regroupement">Ajouter un regroupement (interclasses)</a>
- | <a href="add_group.php?mode=groupe">Ajouter un groupe à une classe</a>
+ | <a href="add_group.php?mode=groupe">Ajouter un groupe Ã  une classe</a>
 
 <?php
 
-// On va chercher les classes déjà existantes, et on les affiche.
+// On va chercher les classes dÃ©jÃ  existantes, et on les affiche.
 
 $call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
 $nombre_lignes = mysql_num_rows($call_data);
@@ -110,7 +110,7 @@ if ($nombre_lignes != 0) {
 				echo "<img src='../images/edit16.png' alt='Modifier' style='width:12px; heigth: 12px;' /></a>\n";
 
 
-				echo "<a href='edit_eleves.php?id_groupe=". $group["id"] . "'><img src='../images/group16.png' alt='Gérer les élèves' style='width:12px; heigth: 12px;' /></a>\n";
+				echo "<a href='edit_eleves.php?id_groupe=". $group["id"] . "'><img src='../images/group16.png' alt='GÃ©rer les Ã©lÃ¨ves' style='width:12px; heigth: 12px;' /></a>\n";
 				echo "&nbsp;";
 
 				echo "<b>" . htmlentities($group["description"]) . "</b>\n";
@@ -137,8 +137,8 @@ if ($nombre_lignes != 0) {
     }
     echo "</table>\n";
 } else {
-    echo "<p class='grand'>Attention : aucune classe n'a été définie dans la base GEPI !</p>\n";
-    echo "<p>Vous devez avoir défini des classes avant de pouvoir éditer les groupes.</p>\n";
+    echo "<p class='grand'>Attention : aucune classe n'a Ã©tÃ© dÃ©finie dans la base GEPI !</p>\n";
+    echo "<p>Vous devez avoir dÃ©fini des classes avant de pouvoir Ã©diter les groupes.</p>\n";
 }
 require("../lib/footer.inc.php");
 ?>

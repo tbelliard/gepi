@@ -20,7 +20,7 @@
 * along with GEPI; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -39,7 +39,7 @@ class MajCtrl extends Controleur {
       $this->nom=$_POST['nom'];
       $data=new ImportModele();
       $this->search_result=$data->search($this->nom);
-      if(!$this->search_result)throw new exception("Aucun utilisateur correspondant à vos critères de recherche n'existe dans Gépi avec son compte paramétré en sso");
+      if(!$this->search_result)throw new exception("Aucun utilisateur correspondant Ã  vos critÃ¨res de recherche n'existe dans GÃ©pi avec son compte paramÃ©trÃ© en sso");
       $this->vue->LoadTemplate('result_search.php');
       $this->vue->MergeBlock('b1',$this->search_result) ;
       $this->vue->show();
@@ -76,7 +76,7 @@ class MajCtrl extends Controleur {
       $this->login_sso=$_POST['login_sso'];
       if($this->login_sso=="")throw new Exception ('Vous devez entrer une valeur pour la correspondance');
       $data=new ImportModele();
-      if($data->verif_exist_login_sso($this->login_sso)) throw new Exception ('Une entrée existe déja avec ce login sso; mise à jour impossible');
+      if($data->verif_exist_login_sso($this->login_sso)) throw new Exception ('Une entrÃ©e existe dÃ©ja avec ce login sso; mise Ã  jour impossible');
       if($data->get_login_sso_table_sso($this->login_gepi)) $this->mode='update';
       else $this->mode='insert';
       $data->maj_sso_table($this->login_gepi,$this->login_sso,$this->mode);

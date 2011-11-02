@@ -50,16 +50,16 @@ if (!checkAccess()) {
 }
 */
 
-//On vérifie si le module est activé
+//On vÃ©rifie si le module est activÃ©
 if (getSettingValue("active_carnets_notes")!='y') {
-	die("Le module n'est pas activé.");
+	die("Le module n'est pas activÃ©.");
 }
 
 
 
 
 // Fonction de recherche des conteneurs derniers enfants (sans enfants (non parents, en somme))
-// avec recalcul des moyennes lancé...
+// avec recalcul des moyennes lancÃ©...
 
 //recherche_enfant($id_racine);
 
@@ -72,29 +72,29 @@ require_once("../lib/header.inc");
 $num_periode=isset($_POST['num_periode']) ? $_POST['num_periode'] : NULL;
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
 
-echo "<div class='norme'><p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='clean_tables.php'>Retour page précédente</a>";
+echo "<div class='norme'><p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='clean_tables.php'>Retour page prÃ©cÃ©dente</a>";
 
 if(!isset($_POST['recalculer'])){
 
 	if(!isset($num_periode)) {
 		echo "</p></div>\n";
 
-		echo "<p class='bold'>Cette page est destinée à effectuer le recalcul des moyennes de conteneurs.<br />Un bug pouvait provoquer une erreur lors de déplacement de devoirs/conteneurs(boites) d'un conteneur(boite) à un autre.</p>\n";
+		echo "<p class='bold'>Cette page est destinÃ©e Ã  effectuer le recalcul des moyennes de conteneurs.<br />Un bug pouvait provoquer une erreur lors de dÃ©placement de devoirs/conteneurs(boites) d'un conteneur(boite) Ã  un autre.</p>\n";
 
 		$sql="SELECT DISTINCT num_periode FROM periodes ORDER BY num_periode";
 		$res_per=mysql_query($sql);
 		if(mysql_num_rows($res_per)==0){
-			echo "<p>Il semble qu'aucune période ne soit encore définie.</p>\n";
+			echo "<p>Il semble qu'aucune pÃ©riode ne soit encore dÃ©finie.</p>\n";
 		}
 		else{
 			echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method='post'>\n";
 
-			echo "<p>Choisissez la ou les périodes pour lesquelles provoquer le recalcul.</p>\n";
+			echo "<p>Choisissez la ou les pÃ©riodes pour lesquelles provoquer le recalcul.</p>\n";
 
 			while ($lig_per=mysql_fetch_object($res_per)) {
 				echo "<label for='per_".$lig_per->num_periode."' style='cursor: pointer;'>";
 				echo "<input type='checkbox' name='num_periode[]' id='per_".$lig_per->num_periode."' value='".$lig_per->num_periode."' />";
-				echo " Période $lig_per->num_periode</label><br />\n";
+				echo " PÃ©riode $lig_per->num_periode</label><br />\n";
 			}
 
 			echo "<p><input type=\"submit\" name='suite' value=\"suite\" style=\"font-variant: small-caps;\" /></p>\n";
@@ -102,14 +102,14 @@ if(!isset($_POST['recalculer'])){
 		}
 	}
 	else {
-		echo " | <a href='".$_SERVER['PHP_SELF']."'>Retour au choix des périodes</a>";
+		echo " | <a href='".$_SERVER['PHP_SELF']."'>Retour au choix des pÃ©riodes</a>";
 		echo "</p></div>\n";
 
 		$sql="SELECT id,classe FROM classes ORDER BY classe;";
 		$res_clas=mysql_query($sql);
 		$nb=mysql_num_rows($res_clas);
 		if($nb==0) {
-			echo "<p>Aucune classe n'a été trouvée.</p>\n";
+			echo "<p>Aucune classe n'a Ã©tÃ© trouvÃ©e.</p>\n";
 		}
 		else {
 			echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method='post'>\n";
@@ -156,7 +156,7 @@ if(!isset($_POST['recalculer'])){
 			echo "<p><input type=\"submit\" name='recalculer' value=\"Recalculer\" style=\"font-variant: small-caps;\" /></p>\n";
 			echo "</form>\n";
 
-			echo "<p><a href='#' onClick='ModifCase(true)'>Cocher toutes les classes</a> / <a href='#' onClick='ModifCase(false)'>Décocher toutes les classes</a></p>\n";
+			echo "<p><a href='#' onClick='ModifCase(true)'>Cocher toutes les classes</a> / <a href='#' onClick='ModifCase(false)'>DÃ©cocher toutes les classes</a></p>\n";
 
 			echo "<script type='text/javascript'>
 	function ModifCase(mode) {
@@ -172,7 +172,7 @@ if(!isset($_POST['recalculer'])){
 	}
 }
 else{
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Retour au choix des périodes</a>";
+	echo " | <a href='".$_SERVER['PHP_SELF']."'>Retour au choix des pÃ©riodes</a>";
 	echo "</p></div>\n";
 
 	/*
@@ -180,7 +180,7 @@ else{
 	$sql="SELECT DISTINCT num_periode FROM periodes ORDER BY num_periode";
 	$res_per=mysql_query($sql);
 	if(mysql_num_rows($res_per)==0){
-		echo "<p>Il semble qu'aucune période ne soit encore définie.</p>\n";
+		echo "<p>Il semble qu'aucune pÃ©riode ne soit encore dÃ©finie.</p>\n";
 	}
 	else{
 	*/
@@ -212,11 +212,11 @@ else{
 				//echo "$sql";
 				$resultat=mysql_query($sql);
 				if(mysql_num_rows($resultat)==0){
-					//echo "<p>Il semble qu'aucun carnet de notes ne soit encore défini pour la période $periode_num.</p>\n";
-					echo "<p>Il semble qu'aucun carnet de notes ne soit encore défini pour la période $periode_num et pour la classe $classe.</p>\n";
+					//echo "<p>Il semble qu'aucun carnet de notes ne soit encore dÃ©fini pour la pÃ©riode $periode_num.</p>\n";
+					echo "<p>Il semble qu'aucun carnet de notes ne soit encore dÃ©fini pour la pÃ©riode $periode_num et pour la classe $classe.</p>\n";
 				}
 				else{
-					echo "<p style='font-weight:bold;'>Recalcul des moyennes pour la classe $classe sur la période $periode_num:</p>\n";
+					echo "<p style='font-weight:bold;'>Recalcul des moyennes pour la classe $classe sur la pÃ©riode $periode_num:</p>\n";
 					echo "<table class='boireaus' border='1'>\n";
 					//echo "<tr style='display:block;'>\n";
 					echo "<tr>\n";
@@ -224,14 +224,14 @@ else{
 					echo "<td style='font-weight:bold; text-align:center;' width='33%'>Classe(s)</td>\n";
 					echo "<td style='font-weight:bold; text-align:center;' width='33%'>Groupe</td>\n";
 					//echo "<td>Moyenne initiale</td>\n";
-					//echo "<td>Moyenne recalculée</td>\n";
-					echo "<td style='font-weight:bold; text-align:center;' width='34%'>Différences</td>\n";
+					//echo "<td>Moyenne recalculÃ©e</td>\n";
+					echo "<td style='font-weight:bold; text-align:center;' width='34%'>DiffÃ©rences</td>\n";
 					*/
 					echo "<th width='33%'>Classe(s)</th>\n";
 					echo "<th width='33%'>Groupe</th>\n";
 					//echo "<td>Moyenne initiale</td>\n";
-					//echo "<td>Moyenne recalculée</td>\n";
-					echo "<th width='34%'>Différences</th>\n";
+					//echo "<td>Moyenne recalculÃ©e</td>\n";
+					echo "<th width='34%'>DiffÃ©rences</th>\n";
 					echo "</tr>\n";
 					while($ligne=mysql_fetch_object($resultat)){
 						$id_groupe=$ligne->id_groupe;
@@ -249,7 +249,7 @@ else{
 						echo "<td align='center'>\n";
 						*/
 
-						// Récupération de la liste des moyennes de conteneurs de ce groupe:
+						// RÃ©cupÃ©ration de la liste des moyennes de conteneurs de ce groupe:
 						unset($tabmoy1);
 						unset($tabmoy2);
 						$tabmoy1=array();
@@ -338,10 +338,10 @@ else{
 						flush();
 					}
 					echo "</table>\n";
-					echo "<p>Terminé.</p>\n";
+					echo "<p>TerminÃ©.</p>\n";
 				}
 			}
-			//echo "<p>Terminé.</p>\n";
+			//echo "<p>TerminÃ©.</p>\n";
 		}
 
 
@@ -381,10 +381,10 @@ else{
 </script>\n";
 
 		if($numdiff==0){
-			echo "<p>Aucune différence n'a été relevée.<br />\nVos moyennes de conteneurs étaient correctes.</p>";
+			echo "<p>Aucune diffÃ©rence n'a Ã©tÃ© relevÃ©e.<br />\nVos moyennes de conteneurs Ã©taient correctes.</p>";
 		}
 		else{
-			echo "<p>Des différences ont été relevées et les moyennes ont été recalculées.<br />\nVos moyennes de conteneurs sont maitnenant correctes.</p>";
+			echo "<p>Des diffÃ©rences ont Ã©tÃ© relevÃ©es et les moyennes ont Ã©tÃ© recalculÃ©es.<br />\nVos moyennes de conteneurs sont maitnenant correctes.</p>";
 		}
 
 		echo "<p><a href=\"javascript:affiche_lig('affiche')\">Afficher toutes les lignes</a><br />\nOu <a href=\"javascript:affiche_lig('cache')\">n'afficher que les changements</a>.</p>\n";

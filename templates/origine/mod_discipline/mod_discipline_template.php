@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 *
 * ******************************************** *
-* Appelle les sous-modèles                     *
+* Appelle les sous-modÃ¨les                     *
 * templates/origine/header_template.php        *
 * templates/origine/bandeau_template.php       *
 * ******************************************** *
@@ -32,7 +32,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 
 <head>
-<!-- on inclut l'entête -->
+<!-- on inclut l'entÃªte -->
 	<?php
 	  $tbs_bouton_taille = "..";
 	  include('../templates/origine/header_template.php');
@@ -73,7 +73,7 @@
 
 
 <!-- ************************* -->
-<!-- Début du corps de la page -->
+<!-- DÃ©but du corps de la page -->
 <!-- ************************* -->
 <body onload="show_message_deconnexion();<?php echo $tbs_charger_observeur;?>">
 
@@ -85,13 +85,13 @@
 	<div id='container'>
 
 
-	<a name="contenu" class="invisible">Début de la page</a>
+	<a name="contenu" class="invisible">DÃ©but de la page</a>
 	
 	<p class="center">
-	  Ce module est destiné à saisir et suivre les incidents et sanctions.
+	  Ce module est destinÃ© Ã  saisir et suivre les incidents et sanctions.
 	</p>
 
-<!-- début corps menu	-->
+<!-- dÃ©but corps menu	-->
 <?php
 	if (count($menuTitre)) {
 		foreach ($menuTitre as $newEntreeMenu) {
@@ -126,14 +126,14 @@
 	}
 ?>
 
-<!-- Fin menu	général -->
+<!-- Fin menu	gÃ©nÃ©ral -->
 <p>
   <em>NOTES&nbsp;</em>
 </p>
 <ul>
   <li>
 	<p>
-	  Une fois un incident clos, il ne peut plus être modifié et aucune sanction liée ne peut être ajoutée/modifiée/supprimée.
+	  Une fois un incident clos, il ne peut plus Ãªtre modifiÃ© et aucune sanction liÃ©e ne peut Ãªtre ajoutÃ©e/modifiÃ©e/supprimÃ©e.
 	</p>
   </li>
   <li>
@@ -143,30 +143,30 @@
   </li>
   <li>
 	<p>Un professeur peut saisir un incident, mais ne peut pas saisir les sanctions.<br />
-Un professeur ne peut modifier que les incidents (<em>non clos</em>) qu'il a lui-même déclaré.<br />Il ne peut consulter que les incidents (<em>et leurs suites</em>) qu'il a déclarés, ou dont il est protagoniste, ou encore dont un des élèves, dont il est professeur principal, est protagoniste.
+Un professeur ne peut modifier que les incidents (<em>non clos</em>) qu'il a lui-mÃªme dÃ©clarÃ©.<br />Il ne peut consulter que les incidents (<em>et leurs suites</em>) qu'il a dÃ©clarÃ©s, ou dont il est protagoniste, ou encore dont un des Ã©lÃ¨ves, dont il est professeur principal, est protagoniste.
 	</p>
   </li>
   <li>
 	<p>
 	  <em>A FAIRE:</em>
-	  Ajouter des tests 'changement()' dans les pages de saisie pour ne pas quitter une étape sans enregistrer.
+	  Ajouter des tests 'changement()' dans les pages de saisie pour ne pas quitter une Ã©tape sans enregistrer.
 	</p>
   </li>
   <li>
 	<p>
 	  <em>A FAIRE:</em>
-	  Permettre de consulter d'autres incidents que les siens propres.<br />Eventuellement avec limitation aux élèves de ses classes.
+	  Permettre de consulter d'autres incidents que les siens propres.<br />Eventuellement avec limitation aux Ã©lÃ¨ves de ses classes.
 	</p>
   </li>
   <li>
 	<p>
 	  <em>A FAIRE ENCORE:</em>
-	  Permettre d'archiver les incidents/sanctions d'une année et vider les tables incidents/sanctions lors de l'initialisation pour éviter des blagues avec les login élèves réattribués à de nouveaux élèves (<em>homonymie,...</em>)
+	  Permettre d'archiver les incidents/sanctions d'une annÃ©e et vider les tables incidents/sanctions lors de l'initialisation pour Ã©viter des blagues avec les login Ã©lÃ¨ves rÃ©attribuÃ©s Ã  de nouveaux Ã©lÃ¨ves (<em>homonymie,...</em>)
 	</p>
   </li>
 </ul>
 
-<!-- Début du pied -->
+<!-- DÃ©but du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
 
 	<script type='text/javascript'>
@@ -185,7 +185,7 @@ Un professeur ne peut modifier que les incidents (<em>non clos</em>) qu'il a lui
 		<?php
 			if ($tbs_microtime!="") {
 				echo "
-   <p class='microtime'>Page générée en ";
+   <p class='microtime'>Page gÃ©nÃ©rÃ©e en ";
    			echo $tbs_microtime;
 				echo " sec</p>
    			";

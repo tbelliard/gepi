@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-// INSERT INTO droits VALUES ('/init_xml2/init_alternatif.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation année scolaire', '');
+// INSERT INTO droits VALUES ('/init_xml2/init_alternatif.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation annÃ©e scolaire', '');
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -44,7 +44,7 @@ if (!checkAccess()) {
 require_once("init_xml_lib.php");
 
 function affiche_debug($texte){
-	// Passer à 1 la variable pour générer l'affichage des infos de debug...
+	// Passer Ã  1 la variable pour gÃ©nÃ©rer l'affichage des infos de debug...
 	$debug=0;
 	if($debug==1) {
 		echo "<font color='green'>".$texte."</font>";
@@ -66,7 +66,7 @@ if(isset($_POST['is_posted'])) {
 
 	if(($cat=='profs')&&($mode=='prof')) {
 		if($login_prof=='') {
-			$msg.="Aucun login professeur n'a été proposé.<br />\n";
+			$msg.="Aucun login professeur n'a Ã©tÃ© proposÃ©.<br />\n";
 		}
 		else {
 			$matiere=isset($_POST['matiere']) ? $_POST['matiere'] : array();
@@ -103,7 +103,7 @@ if(isset($_POST['is_posted'])) {
 	}
 	elseif(($cat=='profs')&&($mode=='matiere')) {
 		if($matiere=='') {
-			$msg.="Aucune matière n'a été proposée.<br />\n";
+			$msg.="Aucune matiÃ¨re n'a Ã©tÃ© proposÃ©e.<br />\n";
 		}
 		else {
 			$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : array();
@@ -154,7 +154,7 @@ if((isset($_POST['login_prof_inactif']))&&($_POST['login_prof_inactif']!="")) {
 
 	$sql="UPDATE utilisateurs SET etat='actif' WHERE login='".$_POST['login_prof_inactif']."';";
 	$update=mysql_query($sql);
-	$msg.=civ_nom_prenom($_POST['login_prof_inactif'])." a été activé(e).<br />";
+	$msg.=civ_nom_prenom($_POST['login_prof_inactif'])." a Ã©tÃ© activÃ©(e).<br />";
 
 	if($mode=='prof') {
 		$login_prof=$_POST['login_prof_inactif'];
@@ -180,7 +180,7 @@ if(isset($_POST['update_profs_des_groupes'])) {
 				$sql="INSERT INTO j_groupes_professeurs SET id_groupe='".$id_groupe[$i]."', login='".$tab_login_prof[$j]."';";
 				$update=mysql_query($sql);
 				if(!$update) {
-					$msg.="Erreur lors de l'association de ".$tab_login_prof[$j]." avec le groupe n°".$id_groupe[$i]."<br />\n";
+					$msg.="Erreur lors de l'association de ".$tab_login_prof[$j]." avec le groupe nÂ°".$id_groupe[$i]."<br />\n";
 					$nb_err++;
 				}
 			}
@@ -191,14 +191,14 @@ if(isset($_POST['update_profs_des_groupes'])) {
 				$sql="DELETE FROM j_groupes_professeurs WHERE id_groupe='".$id_groupe[$i]."' AND login='".$current_group['profs']['list'][$j]."';";
 				$update=mysql_query($sql);
 				if(!$update) {
-					$msg.="Erreur lors de la désinscription de ".$current_group['profs']['list'][$j]." du groupe n°".$id_groupe[$i]."<br />\n";
+					$msg.="Erreur lors de la dÃ©sinscription de ".$current_group['profs']['list'][$j]." du groupe nÂ°".$id_groupe[$i]."<br />\n";
 					$nb_err++;
 				}
 			}
 		}
 
 		if($nb_err==0) {
-			$msg.="Mise à jour du groupe n°".$id_groupe[$i]." effectuée.<br />\n";
+			$msg.="Mise Ã  jour du groupe nÂ°".$id_groupe[$i]." effectuÃ©e.<br />\n";
 		}
 
 		//$i++;
@@ -209,15 +209,15 @@ if(isset($_GET['suppr_groupe'])) {
 	check_token();
 
 	if(!preg_match('/^[0-9]*$/', $_GET['suppr_groupe'])) {
-		$msg.="Le groupe n°".$_GET['suppr_groupe']." n'existe pas.<br />\n";
+		$msg.="Le groupe nÂ°".$_GET['suppr_groupe']." n'existe pas.<br />\n";
 	}
 	else {
 		$delete=delete_group($_GET['suppr_groupe']);
 		if($delete) {
-			$msg.="Le groupe n°".$_GET['suppr_groupe']." a été supprimé.<br />\n";
+			$msg.="Le groupe nÂ°".$_GET['suppr_groupe']." a Ã©tÃ© supprimÃ©.<br />\n";
 		}
 		else {
-			$msg.="Erreur lors de la suppression du groupe n°".$_GET['suppr_groupe'].".<br />\n";
+			$msg.="Erreur lors de la suppression du groupe nÂ°".$_GET['suppr_groupe'].".<br />\n";
 		}
 	}
 }
@@ -229,7 +229,7 @@ if(isset($_POST['add_groupes_classes'])) {
 
 	$matiere=isset($_POST['matiere']) ? $_POST['matiere'] : array();
 
-	// On ne met aucun prof au départ
+	// On ne met aucun prof au dÃ©part
 	$tab_profs=array();
 	for($i=0;$i<count($id_classe);$i++) {
 		$tab_eleves=array();
@@ -270,7 +270,7 @@ if(isset($_POST['add_groupes_classes'])) {
 				$creation=create_group($matiere[$j], $description, $matiere[$j], array($id_classe[$i]), -1);
 				//echo "create_group($matiere[$j], $description, $matiere[$j], array($id_classe[$i]), -1)<br />";
 				if((!$creation)||(!preg_match('/^[0-9]*$/',$creation))) {
-					$msg.="Erreur lors de la création d'un groupe de $matiere[$j] en ".get_nom_classe($id_classe[$i]).".<br />\n";
+					$msg.="Erreur lors de la crÃ©ation d'un groupe de $matiere[$j] en ".get_nom_classe($id_classe[$i]).".<br />\n";
 				}
 				else {
 					//$id_groupe=mysql_insert_id();
@@ -289,16 +289,16 @@ if(isset($_POST['add_groupes_classes'])) {
 	}
 
 	if(($msg=="")&&($nb_reg>0)) {
-		$msg="Création des groupes effectuée.<br />\n";
+		$msg="CrÃ©ation des groupes effectuÃ©e.<br />\n";
 	}
 
 	unset($id_classe);
 }
 
 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$themessage  = 'Des informations ont Ã©tÃ© modifiÃ©es. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-$titre_page = "Outil d'initialisation de l'année";
+$titre_page = "Outil d'initialisation de l'annÃ©e";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -312,16 +312,16 @@ if(!isset($cat)) {
 	echo "</p>\n";
 	echo "</form>\n";
 
-	echo "<center><h3 class='gepi'>Quatrième phase d'initialisation<br />Initialisation alternative</h3></center>\n";
+	echo "<center><h3 class='gepi'>QuatriÃ¨me phase d'initialisation<br />Initialisation alternative</h3></center>\n";
 	
-	echo "<p>Si l'emploi du temps n'est pas encore remonté vers STS, vous disposez d'un fichier <b>sts_emp_RNE_ANNEE.xml</b> incomplet.<br />\n";
-	echo "Si vous ne disposez pas non plus d'un export CSV d'UnDeuxTemps pour initialiser les enseignements, vous pouvez effectuer la création ici.<br />Il convient de suivre les liens dans l'ordre&nbsp;:</p>\n";
+	echo "<p>Si l'emploi du temps n'est pas encore remontÃ© vers STS, vous disposez d'un fichier <b>sts_emp_RNE_ANNEE.xml</b> incomplet.<br />\n";
+	echo "Si vous ne disposez pas non plus d'un export CSV d'UnDeuxTemps pour initialiser les enseignements, vous pouvez effectuer la crÃ©ation ici.<br />Il convient de suivre les liens dans l'ordre&nbsp;:</p>\n";
 	
 	echo "<ol>\n";
-	echo "<li><p><a href='".$_SERVER['PHP_SELF']."?cat=profs'>Associer les matières aux professeurs</a></p></li>\n";
-	echo "<li><p><a href='".$_SERVER['PHP_SELF']."?cat=classes'>Créer des enseignements dans des sélections de classes</a></p></li>\n";
+	echo "<li><p><a href='".$_SERVER['PHP_SELF']."?cat=profs'>Associer les matiÃ¨res aux professeurs</a></p></li>\n";
+	echo "<li><p><a href='".$_SERVER['PHP_SELF']."?cat=classes'>CrÃ©er des enseignements dans des sÃ©lections de classes</a></p></li>\n";
 	// style='color:red'
-	echo "<li><p>Une fois les enseignements créés, il faut poursuivre ici pour faire le ménage des affectations d'élèves dans les enseignements en tenant compte des saisies d'options dans Sconet.<br /><a href='init_options.php?a=a".add_token_in_url()."'>Prise en compte des options</a></p></li>\n";
+	echo "<li><p>Une fois les enseignements crÃ©Ã©s, il faut poursuivre ici pour faire le mÃ©nage des affectations d'Ã©lÃ¨ves dans les enseignements en tenant compte des saisies d'options dans Sconet.<br /><a href='init_options.php?a=a".add_token_in_url()."'>Prise en compte des options</a></p></li>\n";
 	echo "</ol>\n";
 }
 //===================================================================================
@@ -335,18 +335,18 @@ elseif($cat=='profs') {
 		echo "</p>\n";
 		echo "</form>\n";
 
-		echo "<center><h3 class='gepi'>Quatrième phase d'initialisation<br />Initialisation alternative</h3></center>\n";
+		echo "<center><h3 class='gepi'>QuatriÃ¨me phase d'initialisation<br />Initialisation alternative</h3></center>\n";
 		echo "<center><h4 class='gepi'>Professeurs</h4></center>\n";
 
 		echo "<p>Choisir&nbsp;:</p>\n";
 		echo "<ul>\n";
-		//echo "<li><a href='".$_SERVER['PHP_SELF']."?cat=profs&amp;mode=prof'>un professeur, puis ses matières</a></li>\n";
-		//echo "<li><a href='".$_SERVER['PHP_SELF']."?cat=profs&amp;mode=matiere'>une matière, puis les professeurs à y associer</a></li>\n";
+		//echo "<li><a href='".$_SERVER['PHP_SELF']."?cat=profs&amp;mode=prof'>un professeur, puis ses matiÃ¨res</a></li>\n";
+		//echo "<li><a href='".$_SERVER['PHP_SELF']."?cat=profs&amp;mode=matiere'>une matiÃ¨re, puis les professeurs Ã  y associer</a></li>\n";
 
-		// Professeur puis matières
+		// Professeur puis matiÃ¨res
 		echo "<li>\n";
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' name='form2' method='post'>\n";
-		echo "<p>un professeur, puis ses matières&nbsp;: \n";
+		echo "<p>un professeur, puis ses matiÃ¨res&nbsp;: \n";
 
 		echo champ_select_prof('', 'y', 'form2');
 
@@ -359,11 +359,11 @@ elseif($cat=='profs') {
 
 		//=========================================
 
-		// Matière puis professeurs
+		// MatiÃ¨re puis professeurs
 		echo "<li>\n";
-		//echo "<a href='".$_SERVER['PHP_SELF']."?cat=profs&amp;mode=matiere'>une matière, puis les professeurs à y associer</a>\n";
+		//echo "<a href='".$_SERVER['PHP_SELF']."?cat=profs&amp;mode=matiere'>une matiÃ¨re, puis les professeurs Ã  y associer</a>\n";
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' name='form3' method='post'>\n";
-		echo "<p>une matière, puis les professeurs à y associer&nbsp;: \n";
+		echo "<p>une matiÃ¨re, puis les professeurs Ã  y associer&nbsp;: \n";
 
 		echo champ_select_matiere('', 'y', 'form3');
 
@@ -408,7 +408,7 @@ elseif($cat=='profs') {
 	elseif($mode=='prof') {
 		//=========================================
 		// ON CHOISIT LE PROFESSEUR PUIS LES MATIERES A ASSOCIER A CE PROFESSEUR
-		echo " | <a href='".$_SERVER['PHP_SELF']."?cat=profs'>Retour au choix du mode d'affectation des matières aux professeurs</a>";
+		echo " | <a href='".$_SERVER['PHP_SELF']."?cat=profs'>Retour au choix du mode d'affectation des matiÃ¨res aux professeurs</a>";
 
 		// FORMULAIRE DE CHOIX DU PROF
 		$indice_login_prof=0;
@@ -424,11 +424,11 @@ elseif($cat=='profs') {
 
 		echo js_confirm_changement_prof('form1', $indice_login_prof);
 	
-		echo "<center><h3 class='gepi'>Quatrième phase d'initialisation<br />Initialisation alternative</h3></center>\n";
+		echo "<center><h3 class='gepi'>QuatriÃ¨me phase d'initialisation<br />Initialisation alternative</h3></center>\n";
 		echo "<center><h4 class='gepi'>Professeurs</h4></center>\n";
 
 		if($login_prof=='') {
-			echo "<p style='color:red;'>Aucun professeur n'a été choisi.<br /><a href='".$_SERVER['PHP_SELF']."?cat=profs'>Retour</a></p>\n";
+			echo "<p style='color:red;'>Aucun professeur n'a Ã©tÃ© choisi.<br /><a href='".$_SERVER['PHP_SELF']."?cat=profs'>Retour</a></p>\n";
 
 			echo "<p><br /></p>\n";
 			require("../lib/footer.inc.php");
@@ -455,7 +455,7 @@ elseif($cat=='profs') {
 		}
 
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-		echo "<p>Quelles matières associer à <b>".$civ_nom_prenom_prof."</b>&nbsp;: \n";
+		echo "<p>Quelles matiÃ¨res associer Ã  <b>".$civ_nom_prenom_prof."</b>&nbsp;: \n";
 		$sql="SELECT * FROM matieres ORDER BY matiere;";
 		$res=mysql_query($sql);
 
@@ -463,7 +463,7 @@ elseif($cat=='profs') {
 
 		$nb_matieres=mysql_num_rows($res);
 		$nb_mat_par_colonne=round($nb_matieres/3);
-		echo "<table width='100%' summary='Choix des matières'>\n";
+		echo "<table width='100%' summary='Choix des matiÃ¨res'>\n";
 		echo "<tr valign='top' align='center'>\n";
 
 		$i=0;
@@ -513,7 +513,7 @@ function checkbox_change(cpt) {
 		// mode=matiere
 		//=========================================
 		// ON CHOISIT LA MATIERE, PUIS LES PROFESSEURS A ASSOCIER A CETTE MATIERE
-		echo " | <a href='".$_SERVER['PHP_SELF']."?cat=profs'>Retour au choix du mode d'affectation des matières aux professeurs</a>";
+		echo " | <a href='".$_SERVER['PHP_SELF']."?cat=profs'>Retour au choix du mode d'affectation des matiÃ¨res aux professeurs</a>";
 
 		// FORMULAIRE DE CHOIX DU PROF
 		$indice_matiere=0;
@@ -529,11 +529,11 @@ function checkbox_change(cpt) {
 
 		echo js_confirm_changement_matiere('form1', $indice_matiere);
 	
-		echo "<center><h3 class='gepi'>Quatrième phase d'initialisation<br />Initialisation alternative</h3></center>\n";
-		echo "<center><h4 class='gepi'>Matières</h4></center>\n";
+		echo "<center><h3 class='gepi'>QuatriÃ¨me phase d'initialisation<br />Initialisation alternative</h3></center>\n";
+		echo "<center><h4 class='gepi'>MatiÃ¨res</h4></center>\n";
 
 		if($matiere=='') {
-			echo "<p style='color:red;'>Aucun matière n'a été choisie.<br /><a href='".$_SERVER['PHP_SELF']."?cat=profs'>Retour</a></p>\n";
+			echo "<p style='color:red;'>Aucun matiÃ¨re n'a Ã©tÃ© choisie.<br /><a href='".$_SERVER['PHP_SELF']."?cat=profs'>Retour</a></p>\n";
 
 			echo "<p><br /></p>\n";
 			require("../lib/footer.inc.php");
@@ -543,7 +543,7 @@ function checkbox_change(cpt) {
 		$sql="SELECT 1=1 FROM matieres WHERE matiere='$matiere';";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)==0) {
-			echo "<p style='color:red;'>La matière <b>$matiere</b> n'existe pas.<br /><a href='".$_SERVER['PHP_SELF']."?cat=profs'>Retour</a></p>\n";
+			echo "<p style='color:red;'>La matiÃ¨re <b>$matiere</b> n'existe pas.<br /><a href='".$_SERVER['PHP_SELF']."?cat=profs'>Retour</a></p>\n";
 
 			echo "<p><br /></p>\n";
 			require("../lib/footer.inc.php");
@@ -561,7 +561,7 @@ function checkbox_change(cpt) {
 		}
 
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-		echo "<p>Quels professeurs associer à <b>".$matiere."</b>&nbsp;: \n";
+		echo "<p>Quels professeurs associer Ã  <b>".$matiere."</b>&nbsp;: \n";
 		$sql="SELECT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u WHERE etat='actif' AND statut='professeur' ORDER BY nom, prenom;";
 		$res=mysql_query($sql);
 
@@ -656,7 +656,7 @@ elseif($cat=='classes') {
 		$res=mysql_query($sql);
 		$nb=mysql_num_rows($res);
 		if($nb==0) {
-			echo "<p style='color:red'>Aucune classe avec élèves n'existe encore.</p>\n";
+			echo "<p style='color:red'>Aucune classe avec Ã©lÃ¨ves n'existe encore.</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
@@ -665,7 +665,7 @@ elseif($cat=='classes') {
 		echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form2'>\n";
 		echo add_token_field();
 
-		echo "<p class='bold'>Dans quelles classes souhaitez-vous créer des enseignements&nbsp;?</p>\n";
+		echo "<p class='bold'>Dans quelles classes souhaitez-vous crÃ©er des enseignements&nbsp;?</p>\n";
 
 		$nb_class_par_colonne=round($nb/3);
 		echo "<table width='100%' summary='Choix des classes'>\n";
@@ -684,7 +684,7 @@ elseif($cat=='classes') {
 			echo "<input type='checkbox' name='id_classe[]' id='id_classe_$i' value='$lig->id' ";
 			echo "onchange=\"checkbox_change($i)\" ";
 			echo "/><label for='id_classe_$i'><span id='texte_id_classe_$i'>Classe : ".$lig->classe.".</span></label>";
-			// Ajouter en infobulle les enseignements associés ?
+			// Ajouter en infobulle les enseignements associÃ©s ?
 			echo "<br />\n";
 
 			$tab_classe[$i]['id_classe']=$lig->id;
@@ -703,7 +703,7 @@ elseif($cat=='classes') {
 		echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 		echo "</form>\n";
 
-	echo "<p><a href='#' onClick='ModifCase(true)'>Tout cocher</a> / <a href='#' onClick='ModifCase(false)'>Tout décocher</a></p>\n";
+	echo "<p><a href='#' onClick='ModifCase(true)'>Tout cocher</a> / <a href='#' onClick='ModifCase(false)'>Tout dÃ©cocher</a></p>\n";
 
 	echo "<script type='text/javascript'>
 function ModifCase(mode) {
@@ -730,19 +730,19 @@ function checkbox_change(cpt) {
 		echo "<p><em>NOTES</em>&nbsp;:</p>
 <ul>
 	<li>
-		<p>Il est recommandé pour gagner du temps de commencer par sélectionner plusieurs classes et d'y créer les enseignements classiques (<i>MATHS, FRANC, HIGEO,...</i>) et de n'ajouter que par la suite les enseignements n'existant que dans certaines classes.</p>
-		<p>Vous pouvez si vous préférez créer tous les enseignements d'une sélection de classe et supprimer ensuite les enseignements n'existant pas dans certaines de ces classes.</p>
+		<p>Il est recommandÃ© pour gagner du temps de commencer par sÃ©lectionner plusieurs classes et d'y crÃ©er les enseignements classiques (<i>MATHS, FRANC, HIGEO,...</i>) et de n'ajouter que par la suite les enseignements n'existant que dans certaines classes.</p>
+		<p>Vous pouvez si vous prÃ©fÃ©rez crÃ©er tous les enseignements d'une sÃ©lection de classe et supprimer ensuite les enseignements n'existant pas dans certaines de ces classes.</p>
 	</li>
 	<li>
-		<p>Dans ce dispositif aucun enseignement regroupement de plusieurs classes n'est créé.<br />
-		Vous pourrez cependant fusionner par la suite les enseignements créés dans plusieurs classes.<br />
-		Pour cela, la procédure est <b>Gestion des bases/Gestion des classes/&lt;Une_des_classes&gt;/Enseignements/&lt;Le_nom_de_l_enseignement&gt;/fusionner le groupe avec un ou des groupes existants</b></p>
+		<p>Dans ce dispositif aucun enseignement regroupement de plusieurs classes n'est crÃ©Ã©.<br />
+		Vous pourrez cependant fusionner par la suite les enseignements crÃ©Ã©s dans plusieurs classes.<br />
+		Pour cela, la procÃ©dure est <b>Gestion des bases/Gestion des classes/&lt;Une_des_classes&gt;/Enseignements/&lt;Le_nom_de_l_enseignement&gt;/fusionner le groupe avec un ou des groupes existants</b></p>
 	</li>
 </ul>\n";
 */
 		$cpt_groupe=0;
-		//echo "<p style='color:red;'>Afficher ici les associations déjà effectuées et permettre d'associer les profs.</p>";
-		echo "<p class='bold'>Voici les associations déjà effectuées.<br />Vous pouvez y effectuer les associations enseignements/professeurs.</p>";
+		//echo "<p style='color:red;'>Afficher ici les associations dÃ©jÃ  effectuÃ©es et permettre d'associer les profs.</p>";
+		echo "<p class='bold'>Voici les associations dÃ©jÃ  effectuÃ©es.<br />Vous pouvez y effectuer les associations enseignements/professeurs.</p>";
 		for($i=0;$i<count($tab_classe);$i++) {
 			echo "<div class='infobulle_corps' style='float: left; width: 20em; border: 1px solid black; margin: 3px;'>\n";
 			echo "<a name='profs_grp_id_classe_".$tab_classe[$i]['id_classe']."'></a>\n";
@@ -885,7 +885,7 @@ $js_var_classes
 function test_form_classe(id_classe) {
 	id_classe_form_prof_en_cours=document.getElementById('id_classe_form_prof_en_cours').value;
 	if((id_classe_form_prof_en_cours!='')&&(id_classe_form_prof_en_cours!=id_classe)) {
-		alert('Vous avez modifié la liste des professeurs pour une autre classe ('+eval('classe_'+id_classe_form_prof_en_cours)+'), sans valider les modifications. Vous ne pouvez éditer la liste des professeurs que d\'une seule classe à la fois.');
+		alert('Vous avez modifiÃ© la liste des professeurs pour une autre classe ('+eval('classe_'+id_classe_form_prof_en_cours)+'), sans valider les modifications. Vous ne pouvez Ã©diter la liste des professeurs que d\'une seule classe Ã  la fois.');
 	}
 	document.getElementById('id_classe_form_prof_en_cours').value=id_classe;
 }
@@ -895,16 +895,16 @@ function test_form_classe(id_classe) {
 		echo "<p><em>NOTES</em>&nbsp;:</p>
 <ul>
 	<li>
-		<p>Il est recommandé pour gagner du temps de commencer par sélectionner plusieurs classes et d'y créer les enseignements classiques (<i>MATHS, FRANC, HIGEO,...</i>) et de n'ajouter que par la suite les enseignements n'existant que dans certaines classes.</p>
-		<p>Vous pouvez si vous préférez créer tous les enseignements d'une sélection de classe et supprimer ensuite les enseignements n'existant pas dans certaines de ces classes.</p>
+		<p>Il est recommandÃ© pour gagner du temps de commencer par sÃ©lectionner plusieurs classes et d'y crÃ©er les enseignements classiques (<i>MATHS, FRANC, HIGEO,...</i>) et de n'ajouter que par la suite les enseignements n'existant que dans certaines classes.</p>
+		<p>Vous pouvez si vous prÃ©fÃ©rez crÃ©er tous les enseignements d'une sÃ©lection de classe et supprimer ensuite les enseignements n'existant pas dans certaines de ces classes.</p>
 	</li>
 	<li>
-		<p>Dans ce dispositif aucun enseignement regroupement de plusieurs classes n'est créé.<br />
-		Vous pourrez cependant fusionner par la suite les enseignements créés dans plusieurs classes.<br />
-		Pour cela, la procédure est <b>Gestion des bases/Gestion des classes/&lt;Une_des_classes&gt;/Enseignements/&lt;Le_nom_de_l_enseignement&gt;/fusionner le groupe avec un ou des groupes existants</b></p>
+		<p>Dans ce dispositif aucun enseignement regroupement de plusieurs classes n'est crÃ©Ã©.<br />
+		Vous pourrez cependant fusionner par la suite les enseignements crÃ©Ã©s dans plusieurs classes.<br />
+		Pour cela, la procÃ©dure est <b>Gestion des bases/Gestion des classes/&lt;Une_des_classes&gt;/Enseignements/&lt;Le_nom_de_l_enseignement&gt;/fusionner le groupe avec un ou des groupes existants</b></p>
 	</li>
 	<li>
-		<p>A ce stade, les enseignements créés contiennent tous les élèves de la classe correspondante.<br />La table 'temp_gep_import2' contient les options suivies par les élèves comme saisi dans Sconet.<br />Une fois les enseignements créés, il faut poursuivre ici pour faire le ménage des affectations d'élèves dans les enseignements en tenant compte des saisies d'options dans Sconet.<br /><b><a href='init_options.php?a=a".add_token_in_url()."'>Prise en compte des options</a></b></p>
+		<p>A ce stade, les enseignements crÃ©Ã©s contiennent tous les Ã©lÃ¨ves de la classe correspondante.<br />La table 'temp_gep_import2' contient les options suivies par les Ã©lÃ¨ves comme saisi dans Sconet.<br />Une fois les enseignements crÃ©Ã©s, il faut poursuivre ici pour faire le mÃ©nage des affectations d'Ã©lÃ¨ves dans les enseignements en tenant compte des saisies d'options dans Sconet.<br /><b><a href='init_options.php?a=a".add_token_in_url()."'>Prise en compte des options</a></b></p>
 	</li>
 </ul>\n";
 
@@ -913,7 +913,7 @@ function test_form_classe(id_classe) {
 	}
 
 	//===================================================================================
-	// Choix des matières/enseignements à créer dans les classes choisies
+	// Choix des matiÃ¨res/enseignements Ã  crÃ©er dans les classes choisies
 	echo " | <a href='".$_SERVER['PHP_SELF']."?cat=classes'>Choix des classes</a>";
 	echo "</p>\n";
 	echo "</form>\n";
@@ -921,7 +921,7 @@ function test_form_classe(id_classe) {
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form2'>\n";
 	echo add_token_field();
 
-	echo "<p>Choix des enseignements à créer dans les classes de&nbsp;: <b>\n";
+	echo "<p>Choix des enseignements Ã  crÃ©er dans les classes de&nbsp;: <b>\n";
 	for($i=0;$i<count($id_classe);$i++) {
 		if($i>0) {echo ", ";}
 		echo get_nom_classe($id_classe[$i]);
@@ -935,7 +935,7 @@ function test_form_classe(id_classe) {
 	$nb_mat=mysql_num_rows($res_mat);
 
 	$nb_par_colonne=round($nb_mat/3);
-	echo "<table width='100%' summary='Choix des matières'>\n";
+	echo "<table width='100%' summary='Choix des matiÃ¨res'>\n";
 	echo "<tr valign='top' align='center'>\n";
 
 	$cpt_mat=0;
@@ -962,7 +962,7 @@ function test_form_classe(id_classe) {
 
 	echo "<input type='hidden' name='cat' value='classes' />\n";
 	echo "<input type='hidden' name='add_groupes_classes' value='y' />\n";
-	echo "<p align='center'><input type='submit' value='Ajouter des enseignements de ces matières' /></p>\n";
+	echo "<p align='center'><input type='submit' value='Ajouter des enseignements de ces matiÃ¨res' /></p>\n";
 
 	echo "</form>\n";
 
@@ -981,9 +981,9 @@ function checkbox_change_matiere(cpt) {
 
 	echo "<p><em>NOTES</em>&nbsp;:</p>\n";
 	echo "<ul>\n";
-	echo "<li>Si un enseignement n'existe que dans une partie des classes choisies, vous pouvez l'ajouter maintenant, et supprimer par la suite les groupes excédentaires.</li>\n";
-	echo "<li>Vous pourrez fusionner des groupes par la suite s'ils doivent être à cheval sur plusieurs classes, mais pour que les options saisies pour les élèves dans Sconet soient prises en compte, il vaut mieux créer maintenant les groupes sur les différentes classes.</li>\n";
-	echo "<li>L'association des professeurs sera faite après l'ajout des enseignements.</li>\n";
+	echo "<li>Si un enseignement n'existe que dans une partie des classes choisies, vous pouvez l'ajouter maintenant, et supprimer par la suite les groupes excÃ©dentaires.</li>\n";
+	echo "<li>Vous pourrez fusionner des groupes par la suite s'ils doivent Ãªtre Ã  cheval sur plusieurs classes, mais pour que les options saisies pour les Ã©lÃ¨ves dans Sconet soient prises en compte, il vaut mieux crÃ©er maintenant les groupes sur les diffÃ©rentes classes.</li>\n";
+	echo "<li>L'association des professeurs sera faite aprÃ¨s l'ajout des enseignements.</li>\n";
 	echo "</ul>\n";
 /*
 	// Choisir les professeurs

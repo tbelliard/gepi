@@ -51,14 +51,14 @@
 	}
 
 	//**************** EN-TETE *****************
-	$titre_page = "Outil d'initialisation de l'année : Importation CSV UDT";
+	$titre_page = "Outil d'initialisation de l'annÃ©e : Importation CSV UDT";
 	require_once("../lib/header.inc");
 	//**************** FIN EN-TETE *****************
 
 	//debug_var();
 
 	function affiche_debug($texte) {
-		// Passer à 1 la variable pour générer l'affichage des infos de debug...
+		// Passer Ã  1 la variable pour gÃ©nÃ©rer l'affichage des infos de debug...
 		$debug=0;
 		if($debug==1) {
 			echo "<font color='green'>".$texte."</font>";
@@ -85,7 +85,7 @@
 	// On va uploader le CSV dans le tempdir de l'utilisateur (administrateur)
 	$tempdir=get_user_temp_directory();
 	if(!$tempdir) {
-		echo "<p style='color:red'>Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas défini!?</p>\n";
+		echo "<p style='color:red'>Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas dÃ©fini!?</p>\n";
 		// Il ne faut pas aller plus loin...
 		// SITUATION A GERER
 	}
@@ -107,7 +107,7 @@
 		echo " | <a href='".$_SERVER['PHP_SELF']."'>Autre import</a></p>\n";
 		//echo "</div>\n";
 
-		echo "<p>Si le CSV d'UDT est présent, il sera supprimé...</p>\n";
+		echo "<p>Si le CSV d'UDT est prÃ©sent, il sera supprimÃ©...</p>\n";
 		//$tabfich=array("f_ele.csv","f_ere.csv");
 		$tabfich=array("export_udt.csv");
 
@@ -115,10 +115,10 @@
 			if(file_exists("../temp/".$tempdir."/$tabfich[$i]")) {
 				echo "<p>Suppression de $tabfich[$i]... ";
 				if(unlink("../temp/".$tempdir."/$tabfich[$i]")) {
-					echo "réussie.</p>\n";
+					echo "rÃ©ussie.</p>\n";
 				}
 				else {
-					echo "<font color='red'>Echec!</font> Vérifiez les droits d'écriture sur le serveur.</p>\n";
+					echo "<font color='red'>Echec!</font> VÃ©rifiez les droits d'Ã©criture sur le serveur.</p>\n";
 				}
 			}
 		}
@@ -128,11 +128,11 @@
 	}
 	// =======================================================
 	else {
-		echo "<center><h3 class='gepi'>Première phase de l'import CSV UDT</h3></center>\n";
-		//echo "<h2>Préparation des données élèves/classes/périodes/options</h2>\n";
+		echo "<center><h3 class='gepi'>PremiÃ¨re phase de l'import CSV UDT</h3></center>\n";
+		//echo "<h2>PrÃ©paration des donnÃ©es Ã©lÃ¨ves/classes/pÃ©riodes/options</h2>\n";
 		echo "<p class=bold><a href='";
 		if(isset($_SESSION['ad_retour'])) {
-			// On peut venir de l'index init_xml, de la page de conversion ou de la page de mise à jour Sconet
+			// On peut venir de l'index init_xml, de la page de conversion ou de la page de mise Ã  jour Sconet
 			echo $_SESSION['ad_retour'];
 		}
 		else {
@@ -160,11 +160,11 @@
 
 			echo "<p><i>Remarques</i>&nbsp;:</p>\n";
 			echo "<ul>\n";
-			echo "<li>Dans UDT, la démarche est menu Recherche/Emploi du temps, valider la recherche, puis cliquer sur Exporter.</li>\n";
-			echo "<li>Si l'export généré est au format TXT (<i>séparateur tabulation</i>), se rendre dans le menu Outils/Préférences pour choisir CSV plutôt que TXT pour l'export.</li>\n";
-			echo "<li>Les champs du CSV sont&nbsp;:<br />Jour;Heure;Div;Matière;Professeur;Salle;Groupe;Regroup;Eff;Mo;Freq;Aire;</li>\n";
-			//echo "<li><span style='color:red'>A FAIRE:</span> Quand un prof n'est pas identifié, trouver les matières associées dans le CSV.</li>\n";
-			echo "<li>Si vous disposez d'un export <b>STS_EMP_&lt;RNE&gt;_&lt;ANNEE&gt;</b> après remontée de l'emploi du temps vers STS, il vaut mieux effectuer l'<a href='prof_disc_classe_csv.php?a=a".add_token_in_url()."'>initialisation des enseignements</a> à partir de ce fichier.</li>\n";
+			echo "<li>Dans UDT, la dÃ©marche est menu Recherche/Emploi du temps, valider la recherche, puis cliquer sur Exporter.</li>\n";
+			echo "<li>Si l'export gÃ©nÃ©rÃ© est au format TXT (<i>sÃ©parateur tabulation</i>), se rendre dans le menu Outils/PrÃ©fÃ©rences pour choisir CSV plutÃ´t que TXT pour l'export.</li>\n";
+			echo "<li>Les champs du CSV sont&nbsp;:<br />Jour;Heure;Div;MatiÃ¨re;Professeur;Salle;Groupe;Regroup;Eff;Mo;Freq;Aire;</li>\n";
+			//echo "<li><span style='color:red'>A FAIRE:</span> Quand un prof n'est pas identifiÃ©, trouver les matiÃ¨res associÃ©es dans le CSV.</li>\n";
+			echo "<li>Si vous disposez d'un export <b>STS_EMP_&lt;RNE&gt;_&lt;ANNEE&gt;</b> aprÃ¨s remontÃ©e de l'emploi du temps vers STS, il vaut mieux effectuer l'<a href='prof_disc_classe_csv.php?a=a".add_token_in_url()."'>initialisation des enseignements</a> Ã  partir de ce fichier.</li>\n";
 			echo "</ul>\n";
 		}
 		else {
@@ -177,9 +177,9 @@
 				$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
 				if(!is_uploaded_file($csv_file['tmp_name'])) {
-					echo "<p style='color:red;'>L'upload du fichier a échoué.</p>\n";
+					echo "<p style='color:red;'>L'upload du fichier a Ã©chouÃ©.</p>\n";
 
-					echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+					echo "<p>Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 					echo "post_max_size=$post_max_size<br />\n";
 					echo "upload_max_filesize=$upload_max_filesize<br />\n";
 					echo "</p>\n";
@@ -191,9 +191,9 @@
 				}
 				else {
 					if(!file_exists($csv_file['tmp_name'])) {
-						echo "<p style='color:red;'>Le fichier aurait été uploadé... mais ne serait pas présent/conservé.</p>\n";
+						echo "<p style='color:red;'>Le fichier aurait Ã©tÃ© uploadÃ©... mais ne serait pas prÃ©sent/conservÃ©.</p>\n";
 
-						echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+						echo "<p>Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 						echo "post_max_size=$post_max_size<br />\n";
 						echo "upload_max_filesize=$upload_max_filesize<br />\n";
 						echo "et le volume de ".$csv_file['name']." serait<br />\n";
@@ -205,13 +205,13 @@
 						die();
 					}
 
-					echo "<p>Le fichier a été uploadé.</p>\n";
+					echo "<p>Le fichier a Ã©tÃ© uploadÃ©.</p>\n";
 
 					/*
 					echo "\$csv_file['tmp_name']=".$csv_file['tmp_name']."<br />\n";
 					echo "\$tempdir=".$tempdir."<br />\n";
 
-					echo "<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+					echo "<p>Les variables du php.ini peuvent peut-Ãªtre expliquer le problÃ¨me:<br />\n";
 					echo "post_max_size=$post_max_size<br />\n";
 					echo "upload_max_filesize=$upload_max_filesize<br />\n";
 					echo "\$csv_file['size']=".volume_human($csv_file['size'])."<br />\n";
@@ -228,7 +228,7 @@
 					// ajout prise en compte des fichiers ZIP: Marc Leygnac
 					$unzipped_max_filesize=getSettingValue('unzipped_max_filesize')*1024*1024;
 					// $unzipped_max_filesize = 0    pas de limite de taille pour les fichiers extraits
-					// $unzipped_max_filesize < 0    extraction zip désactivée
+					// $unzipped_max_filesize < 0    extraction zip dÃ©sactivÃ©e
 					if($unzipped_max_filesize>=0) {
 						$fichier_emis=$csv_file['name'];
 						$extension_fichier_emis=strtolower(strrchr($fichier_emis,"."));
@@ -257,7 +257,7 @@
 							//echo "<p>\$unzipped_max_filesize=".$unzipped_max_filesize."</p>\n";
 
 							if(($list_file_zip[0]['size']>$unzipped_max_filesize)&&($unzipped_max_filesize>0)) {
-								echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dépasse la limite paramétrée (<i>$unzipped_max_filesize octets</i>).</p>\n";
+								echo "<p style='color:red;'>Erreur : La taille du fichier extrait (<i>".$list_file_zip[0]['size']." octets</i>) dÃ©passe la limite paramÃ©trÃ©e (<i>$unzipped_max_filesize octets</i>).</p>\n";
 								require("../lib/footer.inc.php");
 								die();
 							}
@@ -265,7 +265,7 @@
 							//unlink("$dest_file"); // Pour Wamp...
 							$res_extract=$archive->extract(PCLZIP_OPT_PATH, "../temp/".$tempdir);
 							if ($res_extract != 0) {
-								echo "<p>Le fichier uploadé a été dézippé.</p>\n";
+								echo "<p>Le fichier uploadÃ© a Ã©tÃ© dÃ©zippÃ©.</p>\n";
 								$fichier_extrait=$res_extract[0]['filename'];
 								unlink("$dest_file"); // Pour Wamp...
 								$res_copy=rename("$fichier_extrait" , "$dest_file");
@@ -282,16 +282,16 @@
 					//===============================================================
 
 					if(!$res_copy) {
-						echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a échoué.<br />Vérifiez que l'utilisateur ou le groupe apache ou www-data a accès au dossier temp/$tempdir</p>\n";
+						echo "<p style='color:red;'>La copie du fichier vers le dossier temporaire a Ã©chouÃ©.<br />VÃ©rifiez que l'utilisateur ou le groupe apache ou www-data a accÃ¨s au dossier temp/$tempdir</p>\n";
 						// Il ne faut pas aller plus loin...
 						// SITUATION A GERER
 						require("../lib/footer.inc.php");
 						die();
 					}
 					else {
-						echo "<p>La copie du fichier vers le dossier temporaire a réussi.</p>\n";
+						echo "<p>La copie du fichier vers le dossier temporaire a rÃ©ussi.</p>\n";
 
-						echo "<p>Veuillez maintenant compléter les correspondances utiles entre UDT et GEPI&nbsp;:</p>\n";
+						echo "<p>Veuillez maintenant complÃ©ter les correspondances utiles entre UDT et GEPI&nbsp;:</p>\n";
 
 						//$sql="DROP TABLE IF EXISTS udt_corresp;";
 						//$suppr_table = mysql_query($sql);
@@ -330,8 +330,8 @@
 
 
 
-						//$tabchamps = array("Jour", "Heure", "Div", "Matière", "Professeur", "Salle", "Groupe", "Regroup", "Eff", "Mo", "Freq", "Aire");
-						$tabchamps = array("Div", "Matière", "Professeur", "Groupe", "Regroup", "Mo");
+						//$tabchamps = array("Jour", "Heure", "Div", "MatiÃ¨re", "Professeur", "Salle", "Groupe", "Regroup", "Eff", "Mo", "Freq", "Aire");
+						$tabchamps = array("Div", "MatiÃ¨re", "Professeur", "Groupe", "Regroup", "Mo");
 
 						// Lire ligne 1 et la mettre dans $temp
 						$fp=fopen($dest_file,"r");
@@ -363,7 +363,7 @@
 						}
 						fclose($fp);
 
-						// Lister les classes, matières et profs
+						// Lister les classes, matiÃ¨res et profs
 						$udt_div=array();
 						$udt_matiere=array();
 						$udt_prof=array();
@@ -391,13 +391,13 @@
 								}
 								$test=mysql_query($sql);
 								if(mysql_num_rows($test)==0) {
-									// Inscrire les correspondances avec noms corrigés
+									// Inscrire les correspondances avec noms corrigÃ©s
 									$sql="INSERT INTO udt_lignes SET division='$div', matiere='$matiere', prof='$professeur', groupe='$groupe', regroup='$regroup', mo='$mo';";
 									//echo "$sql<br />\n";
 									$insert=mysql_query($sql);
 									if(!$insert) {echo "Erreur sur $sql<br />\n";}
 								}
-								// Plus loin corriger les $udt_div[] de la même façon avant d'insérer les correspondances
+								// Plus loin corriger les $udt_div[] de la mÃªme faÃ§on avant d'insÃ©rer les correspondances
 							}
 						}
 						sort($udt_div);
@@ -458,7 +458,7 @@
 						$sql="SELECT matiere, nom_complet FROM matieres ORDER BY matiere;";
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
-							echo "<p>ERREUR&nbsp;: Il n'existe aucune matière dans la base.</p>\n";
+							echo "<p>ERREUR&nbsp;: Il n'existe aucune matiÃ¨re dans la base.</p>\n";
 							require("../lib/footer.inc.php");
 							die();
 						}
@@ -468,7 +468,7 @@
 							$tab_matiere_nom_complet[]=$lig->nom_complet;
 						}
 
-						// Les noms avec des PRIME ne sont pas détectés... on se retrouve avec ATPquot pour ATP'
+						// Les noms avec des PRIME ne sont pas dÃ©tectÃ©s... on se retrouve avec ATPquot pour ATP'
 						$tab_udt_matiere=array();
 						$sql="SELECT * FROM udt_corresp WHERE champ='matiere' ORDER BY nom_udt;";
 						$res=mysql_query($sql);
@@ -479,13 +479,13 @@
 							}
 						}
 
-						// Identifier les matières
-						echo "<p><b>Matières</b>&nbsp;:</p>\n";
+						// Identifier les matiÃ¨res
+						echo "<p><b>MatiÃ¨res</b>&nbsp;:</p>\n";
 						echo "<blockquote>\n";
-						echo "<table class='boireaus' summary='Correspondances de matières'>\n";
+						echo "<table class='boireaus' summary='Correspondances de matiÃ¨res'>\n";
 						echo "<tr>\n";
-						echo "<th>Matière dans UDT</th>\n";
-						echo "<th>Matière dans Gepi</th>\n";
+						echo "<th>MatiÃ¨re dans UDT</th>\n";
+						echo "<th>MatiÃ¨re dans Gepi</th>\n";
 						echo "<th>Info</th>\n";
 						echo "</tr>\n";
 						$alt=1;
@@ -518,7 +518,7 @@
 								//echo "$sql<br />\n";
 								$res_info=mysql_query($sql);
 								if(($res_info)&&(mysql_num_rows($res_info)>0)) {
-									echo "<table align='center' class='boireaus' summary='Information sur la matière $udt_matiere[$i]'>\n";
+									echo "<table align='center' class='boireaus' summary='Information sur la matiÃ¨re $udt_matiere[$i]'>\n";
 									$info_alt=1;
 									while($lig_info=mysql_fetch_object($res_info)) {
 										$info_alt=$info_alt*(-1);
@@ -655,14 +655,14 @@
 						echo "</form>\n";
 
 						//echo "<p style='color:red'>A FAIRE: Pouvoir n'afficher que les comptes actifs</p>\n";
-						echo "<p style='color:red'>Si vous ne souhaitez pas créer de groupes de VIE DE CLASSE, REMEDIATION, SOUTIEN,... parce qu'aucune note ne doit être saisie dans ces 'matières', il suffit de ne faire correspondre aucune matière GEPI avec la matière UDT.</p>\n";
+						echo "<p style='color:red'>Si vous ne souhaitez pas crÃ©er de groupes de VIE DE CLASSE, REMEDIATION, SOUTIEN,... parce qu'aucune note ne doit Ãªtre saisie dans ces 'matiÃ¨res', il suffit de ne faire correspondre aucune matiÃ¨re GEPI avec la matiÃ¨re UDT.</p>\n";
 					}
 				}
 			}
 			elseif($step==1) {
 
 				if(!isset($_POST['is_posted'])) {
-					echo "<p style='color:red'>ERREUR&nbsp;: Une partie des variables n'as pas été POSTée.<br />Vous avez probablement un module PHP qui limite le nombre de variables transmises (<i>suhosin?</i>)</p>\n";
+					echo "<p style='color:red'>ERREUR&nbsp;: Une partie des variables n'as pas Ã©tÃ© POSTÃ©e.<br />Vous avez probablement un module PHP qui limite le nombre de variables transmises (<i>suhosin?</i>)</p>\n";
 					require("../lib/footer.inc.php");
 					die();
 				}
@@ -677,7 +677,7 @@
 				$prof_udt=isset($_POST['prof_udt']) ? $_POST['prof_udt'] : array();
 				$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : array();
 
-				echo "<p>Suppression des enseignements, associations élèves/enseignements, classes/enseignements et professeurs/enseignements.</p>\n";
+				echo "<p>Suppression des enseignements, associations Ã©lÃ¨ves/enseignements, classes/enseignements et professeurs/enseignements.</p>\n";
 				$del = @mysql_query("DELETE FROM groupes;");
 				$del = @mysql_query("DELETE FROM j_eleves_groupes;");
 				$del = @mysql_query("DELETE FROM j_groupes_classes;");
@@ -685,13 +685,13 @@
 				//$del = @mysql_query("DELETE FROM j_professeurs_matieres;");
 
 /*
-mar aoû 31 22:11:47 steph@hpcrob:~/2010_01_02/hameau
+mar aoÃ» 31 22:11:47 steph@hpcrob:~/2010_01_02/hameau
 $ grep SVT udt_20100826.csv |egrep "(3 B1|3 B2)"
 Mardi;11H00;3 B2;SVT;FERMANEL CHRISTINE;32;;;29;CG;sb;;
 Mercredi;10H00;3 B2;SVT;FERMANEL CHRISTINE;32;;;29;CG;;;
 Jeudi;08H00;3 B1;SVT;KERAUDREN DELPHINE;32;;;28;CG;;;
 Vendredi;09H00;3 B1;SVT;KERAUDREN DELPHINE;32;;;28;CG;sa;;
-mar aoû 31 22:12:01 steph@hpcrob:~/2010_01_02/hameau
+mar aoÃ» 31 22:12:01 steph@hpcrob:~/2010_01_02/hameau
 $                                                          
 */
 				$sql="TRUNCATE TABLE udt_corresp;";
@@ -763,7 +763,7 @@ $
 				if(mysql_num_rows($res)>0) {
 					while($lig=mysql_fetch_object($res)) {
 						if(in_array($lig->id,$lignes_deja_traitees)) {
-							/*echo "<p style='color:red'><b>Ligne $lig->id déjà traitée.</b><br />\n";
+							/*echo "<p style='color:red'><b>Ligne $lig->id dÃ©jÃ  traitÃ©e.</b><br />\n";
 							echo "division=$lig->division<br />\n";
 							echo "matiere=$lig->matiere<br />\n";
 							echo "prof=$lig->prof<br />\n";
@@ -774,7 +774,7 @@ $
 							echo "<p>L'association $lig->division/$lig->matiere/$lig->prof";
 							if($lig->groupe!="") {echo " (<i>$lig->groupe</i>)";}
 							if($lig->regroup!="") {echo " (<i>$lig->regroup</i>)";}
-							echo " est déjà traitée.";
+							echo " est dÃ©jÃ  traitÃ©e.";
 							echo "<hr />\n";
 						}
 						else {
@@ -820,12 +820,12 @@ $
 							}
 
 
-	// Si c'est un regroupement, il va y avoir plusieurs classes associées
-	// Il faudrait alors les récupérer... et ne pas traiter à nouveau les lignes correspondantes de udt_lignes quand on va les atteindre...
+	// Si c'est un regroupement, il va y avoir plusieurs classes associÃ©es
+	// Il faudrait alors les rÃ©cupÃ©rer... et ne pas traiter Ã  nouveau les lignes correspondantes de udt_lignes quand on va les atteindre...
 							$tab_clas=array();
 							if($lig->regroup!="") {
 								//$sql="SELECT c.id FROM classes c, udt_corresp uc, udt_lignes ul WHERE ul.regroup='$lig->regroup' AND uc.nom_udt=ul.division AND uc.nom_gepi=c.classe AND uc.champ='classe';";
-								// Est-ce qu'un même regroupement peut correspondre à plusieurs matières? Sans doute...
+								// Est-ce qu'un mÃªme regroupement peut correspondre Ã  plusieurs matiÃ¨res? Sans doute...
 								$sql="SELECT DISTINCT c.id FROM classes c, udt_corresp uc, udt_lignes ul WHERE ul.regroup='$lig->regroup' AND ul.matiere='$lig->matiere' AND uc.nom_udt=ul.division AND uc.nom_gepi=c.classe AND uc.champ='classe';";
 								//echo "<span style='color:green'>$sql</span><br />\n";
 								$res_clas=mysql_query($sql);
@@ -850,10 +850,10 @@ $
 								//echo "$sql<br />\n";
 								$res_clas=mysql_query($sql);
 								if(mysql_num_rows($res_clas)==0) {
-									echo "<p>Aucune classe n'est associée à $lig->division dans Gepi.</p>\n";
+									echo "<p>Aucune classe n'est associÃ©e Ã  $lig->division dans Gepi.</p>\n";
 								}
 								elseif(mysql_num_rows($res_clas)>1) {
-									echo "<p>ANOMALIE: Plus d'une classe est associée à $lig->division dans Gepi.</p>\n";
+									echo "<p>ANOMALIE: Plus d'une classe est associÃ©e Ã  $lig->division dans Gepi.</p>\n";
 								}
 								else {
 									$lig_clas=mysql_fetch_object($res_clas);
@@ -869,10 +869,10 @@ $
 							//echo "$sql<br />\n";
 							$res_mat=mysql_query($sql);
 							if(mysql_num_rows($res_mat)==0) {
-								echo "<p>Aucune matière n'est associée dans Gepi à la matière $lig->matiere d'UDT.</p>\n";
+								echo "<p>Aucune matiÃ¨re n'est associÃ©e dans Gepi Ã  la matiÃ¨re $lig->matiere d'UDT.</p>\n";
 							}
 							elseif(mysql_num_rows($res_mat)>1) {
-								echo "<p>ANOMALIE: Plus d'une matière est associée dans Gepi à la matière $lig->matiere d'UDT.</p>\n";
+								echo "<p>ANOMALIE: Plus d'une matiÃ¨re est associÃ©e dans Gepi Ã  la matiÃ¨re $lig->matiere d'UDT.</p>\n";
 							}
 							else {
 								$lig_mat=mysql_fetch_object($res_mat);
@@ -892,11 +892,11 @@ $
 								}
 
 								if(count($tab_clas)==0) {
-									echo "<p clas='color:red'>Aucune classe n'est associée au groupe de $mat.</p>\n";
+									echo "<p clas='color:red'>Aucune classe n'est associÃ©e au groupe de $mat.</p>\n";
 								}
 								else {
-									//echo "<b>Récapitulatif avant création du groupe&nbsp;:</b>\n";
-									echo "<p>Création du groupe $nom_grp ($descr_grp) associé à la matière $mat ";
+									//echo "<b>RÃ©capitulatif avant crÃ©ation du groupe&nbsp;:</b>\n";
+									echo "<p>CrÃ©ation du groupe $nom_grp ($descr_grp) associÃ© Ã  la matiÃ¨re $mat ";
 									$cpt_clas=0;
 									echo "(<i>";
 									foreach($tab_clas as $key => $value) {
@@ -909,10 +909,10 @@ $
 									echo "</i>)&nbsp;: ";
 
 									if($id_groupe=create_group($nom_grp, $descr_grp, $mat, $tab_clas)) {
-										//echo "<span style='color:blue;'>Création du groupe $nom_grp ($descr_grp) avec l'id_groupe $id_groupe</span><br />\n";
-										echo "SUCCES&nbsp;: Groupe créé avec l'id_groupe $id_groupe<br />\n";
+										//echo "<span style='color:blue;'>CrÃ©ation du groupe $nom_grp ($descr_grp) avec l'id_groupe $id_groupe</span><br />\n";
+										echo "SUCCES&nbsp;: Groupe crÃ©Ã© avec l'id_groupe $id_groupe<br />\n";
 	
-										// Récupérer les profs
+										// RÃ©cupÃ©rer les profs
 										$tab_prof=array();
 										/*
 										// CA NE FONCTIONNE PAS
@@ -936,13 +936,13 @@ $
 	10 rows in set (0.00 sec)
 	
 	mysql>
-										// Les noms de groupes et regroup ne coïncident pas.
-										// Si on considère qu'on a un seul enseignement d'une matière par classe, on va fusionner les groupes d'AGL1 (alors que plusieurs profs se répartissent les élèves de plusieurs classes)
+										// Les noms de groupes et regroup ne coÃ¯ncident pas.
+										// Si on considÃ¨re qu'on a un seul enseignement d'une matiÃ¨re par classe, on va fusionner les groupes d'AGL1 (alors que plusieurs profs se rÃ©partissent les Ã©lÃ¨ves de plusieurs classes)
 	
 										if($lig->regroup=="") {
-											// Ce n'est pas un groupe/regroupement, on ne teste pas si plusieurs profs sont associés
-											// S'il y a plusieurs enseignements de MATHS avec plusieurs profs sans groupes, on considère que tout les élèves sont dans chacun des groupes
-											// Il faudra fusionner après coup si ce n'est pas le cas
+											// Ce n'est pas un groupe/regroupement, on ne teste pas si plusieurs profs sont associÃ©s
+											// S'il y a plusieurs enseignements de MATHS avec plusieurs profs sans groupes, on considÃ¨re que tout les Ã©lÃ¨ves sont dans chacun des groupes
+											// Il faudra fusionner aprÃ¨s coup si ce n'est pas le cas
 	
 											$sql="SELECT DISTINCT uc.nom_gepi FROM udt_corresp uc WHERE uc.nom_udt='$lig->prof' AND uc.champ='prof';";
 											echo "<span style='color:plum'>$sql</span><br />\n";
@@ -953,20 +953,20 @@ $
 													$tab_prof[]=$lig_prof->nom_gepi;
 													echo "\$tab_prof[]=$lig_prof->nom_gepi<br />\n";
 		
-													// Contrôler l'association avec la matière ou bien le update_group() le fait?
+													// ContrÃ´ler l'association avec la matiÃ¨re ou bien le update_group() le fait?
 													$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_professeur='$lig_prof->nom_gepi' AND id_matiere='$mat';";
 													$test=mysql_query($sql);
 													if(mysql_num_rows($test)==0) {
 														$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$lig_prof->nom_gepi', id_matiere='$mat';";
 														$insert=mysql_query($sql);
-														if(!$insert) {echo "<b>ERREUR</b> lors de l'association du professeur $lig_prof->nom_gepi avec la matière $mat<br />\n";}
+														if(!$insert) {echo "<b>ERREUR</b> lors de l'association du professeur $lig_prof->nom_gepi avec la matiÃ¨re $mat<br />\n";}
 													}
 												}
 											}
 	
 										}
 										else {
-											// Dans le cas d'un groupe/regroupement, on contrôle s'il y a plusieurs profs associés
+											// Dans le cas d'un groupe/regroupement, on contrÃ´le s'il y a plusieurs profs associÃ©s
 	
 											$sql="SELECT DISTINCT uc.nom_gepi FROM udt_corresp uc WHERE uc.nom_udt='$lig->prof' AND uc.champ='prof';";
 											echo "<span style='color:plum'>$sql</span><br />\n";
@@ -976,13 +976,13 @@ $
 													$tab_prof[]=$lig_prof->nom_gepi;
 													echo "\$tab_prof[]=$lig_prof->nom_gepi<br />\n";
 		
-													// Contrôler l'association avec la matière ou bien le update_group() le fait?
+													// ContrÃ´ler l'association avec la matiÃ¨re ou bien le update_group() le fait?
 													$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_professeur='$lig_prof->nom_gepi' AND id_matiere='$mat';";
 													$test=mysql_query($sql);
 													if(mysql_num_rows($test)==0) {
 														$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$lig_prof->nom_gepi', id_matiere='$mat';";
 														$insert=mysql_query($sql);
-														if(!$insert) {echo "<b>ERREUR</b> lors de l'association du professeur $lig_prof->nom_gepi avec la matière $mat<br />\n";}
+														if(!$insert) {echo "<b>ERREUR</b> lors de l'association du professeur $lig_prof->nom_gepi avec la matiÃ¨re $mat<br />\n";}
 													}
 												}
 											}
@@ -1003,7 +1003,7 @@ $
 												//echo "\$tab_prof[]=$lig_prof->nom_gepi<br />\n";
 												echo $nom_prenom_prof[$lig_prof->nom_gepi];
 
-												// Contrôler l'association avec la matière ou bien le update_group() le fait?
+												// ContrÃ´ler l'association avec la matiÃ¨re ou bien le update_group() le fait?
 												$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_professeur='$lig_prof->nom_gepi' AND id_matiere='$mat';";
 												$test=mysql_query($sql);
 												if(mysql_num_rows($test)==0) {
@@ -1020,14 +1020,14 @@ $
 
 													$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$lig_prof->nom_gepi', id_matiere='$mat', ordre_matieres='$ordre_mat';";
 													$insert=mysql_query($sql);
-													if(!$insert) {echo "<br /><b>ERREUR</b> lors de l'association du professeur $lig_prof->nom_gepi avec la matière $mat<br />\n";}
-													else {echo " (<i>association du professeur avec la matière $mat</i>)";}
+													if(!$insert) {echo "<br /><b>ERREUR</b> lors de l'association du professeur $lig_prof->nom_gepi avec la matiÃ¨re $mat<br />\n";}
+													else {echo " (<i>association du professeur avec la matiÃ¨re $mat</i>)";}
 												}
 												$cpt_prof++;
 											}
 										}
 										else {
-											echo "<span style='color:red'>Aucun professeur n'est associé au groupe.</span>\n";
+											echo "<span style='color:red'>Aucun professeur n'est associÃ© au groupe.</span>\n";
 										}
 										echo "<br />\n";
 	
@@ -1055,7 +1055,7 @@ $
 											foreach($tab_ele[$tab_clas[$loop]] as $key => $value) {
 												//echo "\$tab_ele[\$tab_clas[$loop]][$key]=\$tab_ele[$tab_clas[$loop]][$key]=$value<br />\n";
 	
-												// PROBLEME: Les cours qui se font à la fois en classe entière et en groupe se retrouvent avec un effectif de zéro... d'où l'ajout du test sur aucun élève dans le groupe...
+												// PROBLEME: Les cours qui se font Ã  la fois en classe entiÃ¨re et en groupe se retrouvent avec un effectif de zÃ©ro... d'oÃ¹ l'ajout du test sur aucun Ã©lÃ¨ve dans le groupe...
 												if($temoin_aucun_eleve_dans_l_enseignement=="y") {
 													$temoin_enseignement_suivi="y";
 												}
@@ -1082,11 +1082,11 @@ $
 										//$create = update_group($id_groupe, $id_matiere[$i], $mat_nom_complet, $id_matiere[$i], $reg_clazz, $reg_professeurs, $reg_eleves);
 										$update_group=update_group($id_groupe, $nom_grp, $descr_grp, $mat, $tab_clas, $tab_prof, $reg_eleves);
 										if(!$update_group) {
-											echo "<span style='color:red;'>ERREUR lors de l'association des professeur(s) et élève(s) avec le groupe.</span><br />\n";
+											echo "<span style='color:red;'>ERREUR lors de l'association des professeur(s) et Ã©lÃ¨ve(s) avec le groupe.</span><br />\n";
 										}
 									}
 									else {
-										echo "<span style='color:red;'>ERREUR lors de la création du groupe pour...</span><br />\n";
+										echo "<span style='color:red;'>ERREUR lors de la crÃ©ation du groupe pour...</span><br />\n";
 									}
 
 								}
@@ -1097,7 +1097,7 @@ $
 					}
 				}
 
-				echo "<center><p><a href='init_pp.php?a=a".add_token_in_url()."'>Import des professeurs principaux</a><br />Il est probable que cette information n'était pas dans le fichier de STS, l'import des professeurs principaux risque de ne rien donner... mais qui ne tente rien...</p></center>\n";
+				echo "<center><p><a href='init_pp.php?a=a".add_token_in_url()."'>Import des professeurs principaux</a><br />Il est probable que cette information n'Ã©tait pas dans le fichier de STS, l'import des professeurs principaux risque de ne rien donner... mais qui ne tente rien...</p></center>\n";
 
 			}
 		}

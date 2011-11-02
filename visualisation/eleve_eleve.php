@@ -47,7 +47,7 @@ $v_legend2 = "";
 
 
 //**************** EN-TETE *****************
-$titre_page = "Outil de visualisation | Eleve vis à vis d'un autre élève";
+$titre_page = "Outil de visualisation | Eleve vis Ã  vis d'un autre Ã©lÃ¨ve";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -67,7 +67,7 @@ include "../lib/periodes.inc.php";
 
 if ((!isset($id_classe)) or (!isset($id_classe2))) {
 	echo "</p><form enctype='multipart/form-data' action='eleve_eleve.php' method='post'>\n";
-	echo "<p>Sélectionnez la classe du premier élève :</p>\n";
+	echo "<p>SÃ©lectionnez la classe du premier Ã©lÃ¨ve :</p>\n";
 	echo "<select size='1' name='id_classe'>\n";
 	//$call_classes = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
 	//$call_classes = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
@@ -106,7 +106,7 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 	}
 	echo "</select>\n";
 
-	echo "<p>Sélectionnez la classe du deuxième élève :</p>\n";
+	echo "<p>SÃ©lectionnez la classe du deuxiÃ¨me Ã©lÃ¨ve :</p>\n";
 	echo "<select size='1' name='id_classe2'>\n";
 	$i = "0" ;
 	while ($i < $nombreligne) {
@@ -124,12 +124,12 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 	$classe2 = mysql_result($call_classe, "0", "classe");
 
 	if ((!isset($v_eleve1)) OR (!isset($v_eleve2))) {
-		if (($v_eleve1) AND (!$v_eleve2)) { $msg="Vous devez entrer le nom d'un second élève...";}
+		if (($v_eleve1) AND (!$v_eleve2)) { $msg="Vous devez entrer le nom d'un second Ã©lÃ¨ve...";}
 		?>
 		| <a href="eleve_eleve.php">Choix des classes</a></p>
 		<form enctype="multipart/form-data" action="eleve_eleve.php#graph" method=post>
 		<table><tr><td>
-		<p>Classe : <?php echo $classe; ?><br />Veuillez sélectionner l'élève n°1:<br />
+		<p>Classe : <?php echo $classe; ?><br />Veuillez sÃ©lectionner l'Ã©lÃ¨ve nÂ°1:<br />
 		<select size='1' name='v_eleve1'>
 		<?php
 		$call_eleve = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe' and c.login=e.login) order by nom");
@@ -145,7 +145,7 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 		?>
 		</select>
 		</td><td>
-		<p>Classe : <?php echo $classe2; ?><br /> Veuillez sélectionner l'élève n°2:<br />
+		<p>Classe : <?php echo $classe2; ?><br /> Veuillez sÃ©lectionner l'Ã©lÃ¨ve nÂ°2:<br />
 		<select size='1' name='v_eleve2'>
 		<?php
 		$call_eleve = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe2' and c.login=e.login) order by nom");
@@ -161,7 +161,7 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 		?>
 		</select></td></tr></table>
 
-		<p>Choisissez quelle période vous souhaitez visualiser :<br />
+		<p>Choisissez quelle pÃ©riode vous souhaitez visualiser :<br />
 		<?php
 		$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
 		$nb_periode = mysql_num_rows($periode_query) + 1 ;
@@ -172,7 +172,7 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 		$i++;
 		}
 		?>
-		<input type='radio' name='periode' value='annee' />Année complète</p>
+		<input type='radio' name='periode' value='annee' />AnnÃ©e complÃ¨te</p>
 		<input type='hidden' name='id_classe' value='<?php echo $id_classe; ?>' />
 		<input type='hidden' name='id_classe2' value='<?php echo $id_classe2; ?>' />
 		<input type='submit' value='Visualiser' />
@@ -180,7 +180,7 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 
 	<?php } else {
 
-		?> | <a href="eleve_eleve.php">Choix des classes</a> | <a href="eleve_eleve.php?id_classe=<?php echo $id_classe;?>&amp;id_classe2=<?php echo $id_classe2;?>">Choix des élèves</a></p><?php
+		?> | <a href="eleve_eleve.php">Choix des classes</a> | <a href="eleve_eleve.php?id_classe=<?php echo $id_classe;?>&amp;id_classe2=<?php echo $id_classe2;?>">Choix des Ã©lÃ¨ves</a></p><?php
 		// On appelle les informations de l'utilisateur pour les afficher :
 		//$call_eleve1_info = mysql_query("SELECT login,nom,prenom FROM eleves WHERE login='$v_eleve1'");
 		$call_eleve1_info = mysql_query("SELECT * FROM eleves WHERE login='$v_eleve1'");
@@ -196,7 +196,7 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 		$v_legend2 = $eleve2_nom." ".$eleve2_prenom;
 
 
-		// On récupère des infos sur l'élève 1:
+		// On rÃ©cupÃ¨re des infos sur l'Ã©lÃ¨ve 1:
 		$v_elenoet1=mysql_result($call_eleve1_info, "0", 'elenoet');
 		$v_naissance1=mysql_result($call_eleve1_info, "0", 'naissance');
 		$tmp_tab_naissance=explode("-",$v_naissance1);
@@ -204,7 +204,7 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 		$v_sexe1=mysql_result($call_eleve1_info, "0", 'sexe');
 		$v_eleve_nom_prenom1=$v_legend1;
 
-		// On récupère des infos sur l'élève 2:
+		// On rÃ©cupÃ¨re des infos sur l'Ã©lÃ¨ve 2:
 		$v_elenoet2=mysql_result($call_eleve2_info, "0", 'elenoet');
 		$v_naissance2=mysql_result($call_eleve2_info, "0", 'naissance');
 		unset($tmp_tab_naissance);
@@ -217,12 +217,12 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 		if ($periode != 'annee') {
 			$temp = strtolower($nom_periode[$periode]);
 		} else {
-			$temp = 'Année complète';
+			$temp = 'AnnÃ©e complÃ¨te';
 		}
 		$graph_title = $eleve1_nom." ".$eleve1_prenom." ".$classe." et ".$eleve2_nom." ".$eleve2_prenom." ".$classe2."  | ".$temp;
 		echo "<p class='bold'>$eleve1_nom  $eleve1_prenom ($classe) et $eleve2_nom $eleve2_prenom ($classe2)   |  $temp</p>\n";
 		echo "<table  border='1' cellspacing='2' cellpadding='5'>\n";
-		echo "<tr><td width='100'><p>Matière</p></td><td width='100'><p>$eleve1_nom $eleve1_prenom</p></td><td width='100'><p>$eleve2_nom $eleve2_prenom</p></td><td width='100'><p>Différence</p></td></tr>\n";
+		echo "<tr><td width='100'><p>MatiÃ¨re</p></td><td width='100'><p>$eleve1_nom $eleve1_prenom</p></td><td width='100'><p>$eleve2_nom $eleve2_prenom</p></td><td width='100'><p>DiffÃ©rence</p></td></tr>\n";
 		//$call_classe_infos = mysql_query("SELECT DISTINCT  m.* FROM matieres m,j_classes_matieres_professeurs j WHERE (m.matiere = j.id_matiere AND j.id_classe='$id_classe') ORDER BY j.priorite");
 		$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
 		if ($affiche_categories == "y") {
@@ -232,7 +232,7 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 		}
 
 		if ($affiche_categories) {
-			// On utilise les valeurs spécifiées pour la classe en question
+			// On utilise les valeurs spÃ©cifiÃ©es pour la classe en question
 			$call_groupes = mysql_query("SELECT DISTINCT jgc.id_groupe ".
 			"FROM j_eleves_groupes jeg, j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
 			"WHERE ( " .
@@ -268,7 +268,7 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 			$inserligne="no";
 			$group_id = mysql_result($call_groupes, $i, "id_groupe");
 			$current_group = get_group($group_id);
-			// On essaie maintenant de récupérer un groupe avec la même matière, auquel participerait l'élève 2
+			// On essaie maintenant de rÃ©cupÃ©rer un groupe avec la mÃªme matiÃ¨re, auquel participerait l'Ã©lÃ¨ve 2
 			$call_group2 = mysql_query("SELECT distinct(jeg.id_groupe) id_groupe FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE (" .
 					"jeg.login = '" . $v_eleve2 . "' and " .
 					"jeg.id_groupe = jgm.id_groupe and " .
@@ -311,13 +311,13 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 				if ($inserligne == "yes") {
 
 					if ($affiche_categories) {
-					// On regarde si on change de catégorie de matière
+					// On regarde si on change de catÃ©gorie de matiÃ¨re
 						if ($current_group["classes"]["classes"][$id_classe]["categorie_id"] != $prev_cat_id) {
 							$prev_cat_id = $current_group["classes"]["classes"][$id_classe]["categorie_id"];
-							// On est dans une nouvelle catégorie
-							// On récupère les infos nécessaires, et on affiche une ligne
+							// On est dans une nouvelle catÃ©gorie
+							// On rÃ©cupÃ¨re les infos nÃ©cessaires, et on affiche une ligne
 							$cat_name = html_entity_decode_all_version(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
-							// On détermine le nombre de colonnes pour le colspan
+							// On dÃ©termine le nombre de colonnes pour le colspan
 							$nb_total_cols = 4;
 
 							// On a toutes les infos. On affiche !
@@ -360,14 +360,14 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 		echo "<table border='0'>\n";
 		echo "<tr>\n";
 		echo "<td>\n";
-		//echo "<img src='./draw_artichow1.php?temp1=$temp1&temp2=$temp2&etiquette=$etiq&titre=$graph_title&v_legend1=$v_legend1&v_legend2=$v_legend2&compteur=$compteur&nb_data=3' alt='Graphes comparés de $v_legend1 et $v_legend2' />\n";
-		echo "<img src='./draw_artichow1.php?temp1=$temp1&amp;temp2=$temp2&amp;etiquette=$etiq&amp;titre=$graph_title&amp;v_legend1=$v_legend1&amp;v_legend2=$v_legend2&amp;compteur=$compteur&amp;nb_data=3' alt='Graphes comparés de $v_legend1 et $v_legend2' />\n";
+		//echo "<img src='./draw_artichow1.php?temp1=$temp1&temp2=$temp2&etiquette=$etiq&titre=$graph_title&v_legend1=$v_legend1&v_legend2=$v_legend2&compteur=$compteur&nb_data=3' alt='Graphes comparÃ©s de $v_legend1 et $v_legend2' />\n";
+		echo "<img src='./draw_artichow1.php?temp1=$temp1&amp;temp2=$temp2&amp;etiquette=$etiq&amp;titre=$graph_title&amp;v_legend1=$v_legend1&amp;v_legend2=$v_legend2&amp;compteur=$compteur&amp;nb_data=3' alt='Graphes comparÃ©s de $v_legend1 et $v_legend2' />\n";
 		echo "<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />&nbsp;\n";
 		echo "</td>\n";
 		echo "<td valign='top'>\n";
 
 		// ============================================
-		// Création de l'infobulle1:
+		// CrÃ©ation de l'infobulle1:
 
 		$titre=$v_eleve_nom_prenom1;
 		//$texte="<table border='0'>\n";
@@ -384,7 +384,7 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 		}
 		//$texte.="<td>\n";
 		//$texte.="\$v_elenoet1=$v_elenoet1<br />\n";
-		$texte.="Né";
+		$texte.="NÃ©";
 		if($v_sexe1=="F"){
 			$texte.="e";
 		}
@@ -403,12 +403,12 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 		echo "<a href='#' onmouseover=\"afficher_div('info_popup_eleve1','y',-100,20);\"";
 		//echo " onmouseout=\"cacher_div('info_popup_eleve');\"";
 		echo ">";
-		echo "<img src='../images/icons/buddy.png' alt='Informations élève 1' />";
+		echo "<img src='../images/icons/buddy.png' alt='Informations Ã©lÃ¨ve 1' />";
 		echo "</a>";
 		echo "<br />";
 
 		// ============================================
-		// Création de l'infobulle2:
+		// CrÃ©ation de l'infobulle2:
 
 		$titre=$v_eleve_nom_prenom2;
 		//$texte="<table border='0'>\n";
@@ -425,7 +425,7 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 		}
 		//$texte.="<td>\n";
 		$texte.="<br />\n";
-		$texte.="Né";
+		$texte.="NÃ©";
 		if($v_sexe2=="F"){
 			$texte.="e";
 		}
@@ -444,7 +444,7 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 		echo "<a href='#' onmouseover=\"afficher_div('info_popup_eleve2','y',-100,20);\"";
 		//echo " onmouseout=\"cacher_div('info_popup_eleve');\"";
 		echo ">";
-		echo "<img src='../images/icons/buddy.png' alt='Informations élève 2' />";
+		echo "<img src='../images/icons/buddy.png' alt='Informations Ã©lÃ¨ve 2' />";
 		echo "</a>";
 
 

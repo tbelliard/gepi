@@ -31,7 +31,7 @@ require_once("../lib/initialisations.inc.php");
 
 // fonctions edt
 require_once('./choix_langue.php');
-require_once("./fonctions_edt.php");            // --- fonctions de base communes à tous les emplois du temps
+require_once("./fonctions_edt.php");            // --- fonctions de base communes Ã  tous les emplois du temps
 require_once("./fonctions_edt_eleve.php");      // --- edt eleve
 require_once("./fonctions_calendrier.php");
 require_once("./fonctions_affichage.php");
@@ -52,21 +52,21 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
 
-// Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
+// SÃ©curitÃ© supplÃ©mentaire par rapport aux paramÃ¨tres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes") {
 	Die(ASK_AUTHORIZATION_TO_ADMIN);
 }
 
-// =============== Traitement des données ====================//
+// =============== Traitement des donnÃ©es ====================//
 if (isset($_SESSION["login"])) {
 
-	$autorise = 'non'; // par principe, rien n'est autorisé ;)
+	$autorise = 'non'; // par principe, rien n'est autorisÃ© ;)
 	$aff_nom_edt = ''; // l'edt est vide
 
 	if ($_SESSION['statut'] == "eleve") {
@@ -80,7 +80,7 @@ if (isset($_SESSION["login"])) {
 		$tab_tmp_ele = get_enfants_from_resp_login($_SESSION['login']);
 		$nbre_enfants_brut = count($tab_tmp_ele);
 		$liens_autres_enfants = "";
-		// On vérifie que le login demandé est autorisé pour ce responsable
+		// On vÃ©rifie que le login demandÃ© est autorisÃ© pour ce responsable
 
 		for($a = 0 ; $a < $nbre_enfants_brut ; $a++){
 			if ($tab_tmp_ele[$a] == $_GET["login_edt"]) {
@@ -116,7 +116,7 @@ if (isset($_SESSION["login"])) {
 	}
 }
 
-// CSS et js particulier à l'EdT
+// CSS et js particulier Ã  l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $ua = getenv("HTTP_USER_AGENT");
 if (strstr($ua, "MSIE 6.0")) {

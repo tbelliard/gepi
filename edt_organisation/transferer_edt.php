@@ -44,14 +44,14 @@ if ($resultat_session == 'c') {
     die();
 }
 
-// Sécurité
+// SÃ©curitÃ©
 // ajout de la ligne suivante dans 'sql/data_gepi.sql' et 'utilitaires/updates/access_rights.inc.php'
-// INSERT INTO droits VALUES ('/edt_organisation/transferer_edt.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'transférer un edt', '');
+// INSERT INTO droits VALUES ('/edt_organisation/transferer_edt.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'transfÃ©rer un edt', '');
 
 $sql="SELECT 1=1 FROM droits WHERE id='/edt_organisation/transferer_edt.php';";
 $res_test=mysql_query($sql);
 if (mysql_num_rows($res_test)==0) {
-	$sql="INSERT INTO droits VALUES ('/edt_organisation/transferer_edt.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F','transférer un edt', '');";
+	$sql="INSERT INTO droits VALUES ('/edt_organisation/transferer_edt.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F','transfÃ©rer un edt', '');";
 	$res_insert=mysql_query($sql);
 }
 if (!checkAccess()) {
@@ -59,7 +59,7 @@ if (!checkAccess()) {
     die();
 }
 if ($_SESSION["statut"] != "administrateur") {
-	Die('Vous devez demander à votre administrateur l\'autorisation de voir cette page.');
+	Die('Vous devez demander Ã  votre administrateur l\'autorisation de voir cette page.');
 }
 
 // ===== Initialisation des variables =====
@@ -82,20 +82,20 @@ if (isset($supprimer) AND isset($login)) {
 
     }
     else if ($supprimer== "confirme_suppression") {
-        // ====================== Vérifier que $login est bien un professeur
+        // ====================== VÃ©rifier que $login est bien un professeur
         $req_statut = mysql_query("SELECT statut FROM utilisateurs WHERE login = '".addslashes($login)."' ");
         $rep_statut = mysql_fetch_array($req_statut);
         if ($rep_statut["statut"] == "professeur") {
             $req_suppression = mysql_query("DELETE FROM edt_cours WHERE login_prof = '".addslashes($login)."' ");
             $deletedRows = mysql_affected_rows();
             if ($deletedRows != 0) {
-                $message = "<div class=\"cadreInformation\">L'emploi du temps a été supprimé avec succès.</div>";
+                $message = "<div class=\"cadreInformation\">L'emploi du temps a Ã©tÃ© supprimÃ© avec succÃ¨s.</div>";
             }
             else {
-                $message =  "<div class=\"cadreInformation\">Il n'y a rien à supprimer !</div>";
+                $message =  "<div class=\"cadreInformation\">Il n'y a rien Ã  supprimer !</div>";
             }
         } else {
-            $message = "<div class=\"cadreInformation\">Le compte concerné n'est pas celui d'un professeur !</div>";
+            $message = "<div class=\"cadreInformation\">Le compte concernÃ© n'est pas celui d'un professeur !</div>";
         }
     }
 
@@ -105,14 +105,14 @@ if (isset($supprimer) AND isset($login)) {
 if (isset($couper) AND isset($login)) {
     if ($couper=="ok") {
         $_SESSION["couper_edt"] = $login;
-        $message="<div class=\"cadreInformation\">L'emploi du temps est prêt à être transféré</div>";
+        $message="<div class=\"cadreInformation\">L'emploi du temps est prÃªt Ã  Ãªtre transfÃ©rÃ©</div>";
     }
 }
 
-// ============================================ Transférer un emploi du temps
+// ============================================ TransfÃ©rer un emploi du temps
 if (isset($coller) AND isset($login) AND isset($_SESSION["couper_edt"])) {
     if ($login != $_SESSION["couper_edt"]) {
-        // ====================== Vérifier que $login est bien un professeur
+        // ====================== VÃ©rifier que $login est bien un professeur
         $req_statut = mysql_query("SELECT statut FROM utilisateurs WHERE login = '".addslashes($login)."' ");
         $rep_statut = mysql_fetch_array($req_statut);
         if ($rep_statut["statut"] == "professeur") {
@@ -128,7 +128,7 @@ if (isset($coller) AND isset($login) AND isset($_SESSION["couper_edt"])) {
                                                             ") or die(mysql_error());  
                 if (mysql_num_rows($req_edt_prof) == 0) {
                         $remplacement = mysql_query("UPDATE edt_cours SET login_prof = '".$login."' WHERE login_prof = '".$_SESSION["couper_edt"]."' ");
-                        $message = "<div class=\"cadreInformation\">transfert réalisé. Les cours ont été déplacés avec succès</div>";
+                        $message = "<div class=\"cadreInformation\">transfert rÃ©alisÃ©. Les cours ont Ã©tÃ© dÃ©placÃ©s avec succÃ¨s</div>";
                 }
                 else {
                     $message = "<div class=\"cadreInformation\">L'emploi du temps du prof destinataire n'est pas vide.</div>";
@@ -139,21 +139,21 @@ if (isset($coller) AND isset($login) AND isset($_SESSION["couper_edt"])) {
             }
         }
         else {
-            $message = "<div class=\"cadreInformation\">Le destinataire de l'emploi du temps doit être un professeur.</div>";
+            $message = "<div class=\"cadreInformation\">Le destinataire de l'emploi du temps doit Ãªtre un professeur.</div>";
         }
     }
     else {
-        $message = "<div class=\"cadreInformation\">Vous ne pouvez pas transférer un emploi du temps sur lui-même !</div>";
+        $message = "<div class=\"cadreInformation\">Vous ne pouvez pas transfÃ©rer un emploi du temps sur lui-mÃªme !</div>";
     }
 }
 
-// CSS et js particulier à l'EdT
+// CSS et js particulier Ã  l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 
-//++++++++++ l'entête de Gepi +++++
+//++++++++++ l'entÃªte de Gepi +++++
 require_once("../lib/header.inc");
-//++++++++++ fin entête +++++++++++
+//++++++++++ fin entÃªte +++++++++++
 //++++++++++ le menu EdT ++++++++++
 require_once("./menu.inc.php");
 //++++++++++ fin du menu ++++++++++
@@ -173,7 +173,7 @@ require_once("./menu.inc.php");
         require_once("./menu.inc.new.php"); ?>
 
 
-<h2><strong>Transférer/Supprimer des emplois du temps</strong></h2>
+<h2><strong>TransfÃ©rer/Supprimer des emplois du temps</strong></h2>
 <?php
 
 $ua = getenv("HTTP_USER_AGENT");
@@ -191,8 +191,8 @@ if (!strstr($ua, "MSIE 6.0")) {
 }        
 
 		echo "<div class=\"titre_nom_t_edt\"><strong>nom</strong></div>";
-		echo "<div class=\"titre_prenom_t_edt\">prénom</div>";
-		echo "<div class=\"titre_creneau_t_edt\">créneaux</div>";
+		echo "<div class=\"titre_prenom_t_edt\">prÃ©nom</div>";
+		echo "<div class=\"titre_creneau_t_edt\">crÃ©neaux</div>";
         echo "<div style=\"clear:both;\"></div>";
 
 	$req_profs = mysql_query("SELECT login, nom , prenom FROM utilisateurs WHERE
@@ -204,7 +204,7 @@ if (!strstr($ua, "MSIE 6.0")) {
 		echo "<div class=\"texte_prenom_t_edt\">".$rep_profs['prenom']."</div>";
 		echo "<div class=\"texte_creneau_t_edt\">".mysql_num_rows($req_cours)."</div>";
 		echo "<div class=\"bouton_supprimer_t_edt\"><a href=\"./transferer_edt.php?supprimer=ok&amp;login=".$rep_profs['login']." \" ><img src=\"../templates/".NameTemplateEDT()."/images/erase.png\" title=\"Supprimer l'emploi du temps\" alt=\"Supprimer\" /></a></div>";
-		echo "<div class=\"bouton_copier_t_edt\"><a href=\"./transferer_edt.php?couper=ok&amp;login=".$rep_profs['login']."\" title=\"Déplacer cet emploi du temps\"><img src=\"../templates/".NameTemplateEDT()."/images/copy.png\" title=\"Déplacer cet emploi du temps\" alt=\"Copier\" /></a></div>";
+		echo "<div class=\"bouton_copier_t_edt\"><a href=\"./transferer_edt.php?couper=ok&amp;login=".$rep_profs['login']."\" title=\"DÃ©placer cet emploi du temps\"><img src=\"../templates/".NameTemplateEDT()."/images/copy.png\" title=\"DÃ©placer cet emploi du temps\" alt=\"Copier\" /></a></div>";
 		echo "<div class=\"bouton_coller_t_edt\"><a href=\"./transferer_edt.php?coller=ok&amp;login=".$rep_profs['login']."\" ><img src=\"../templates/".NameTemplateEDT()."/images/paste.png\" title=\"Enseignant destinataire\" alt=\"Coller\" /></a></div>";
         echo "<div style=\"clear:both;\"></div>";
 	}

@@ -108,7 +108,7 @@ if (empty($_GET['pause']) and empty($_POST['pause'])) { $pause = ''; }
 	$tab_sem_inv['samedi'] = '5';
 	$tab_sem_inv['dimanche'] = '6';
 	
-// ajout et mise à jour de la base
+// ajout et mise Ã  jour de la base
 if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 {
 	$chaine_jours_ouverts="";
@@ -144,7 +144,7 @@ if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 			}
 
 		} else{
-			// On teste si le jour en question existe et on passe à 0 le dernier champ
+			// On teste si le jour en question existe et on passe Ã  0 le dernier champ
 			$test = mysql_query("SELECT * FROM horaires_etablissement
 										WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' LIMIT 1");
 			$test_c = mysql_num_rows($test);
@@ -206,7 +206,7 @@ if ( $action === 'visualiser' )
 //
 // ===================================================================
 // header
-$titre_page = "Horaires d'ouverture de l'établissement";
+$titre_page = "Horaires d'ouverture de l'Ã©tablissement";
 $style_specifique[] = "templates/".NameTemplateEdt()."/css/style_edt";
 $ua = getenv("HTTP_USER_AGENT");
 if (strstr($ua, "MSIE 6.0")) {
@@ -265,7 +265,7 @@ require_once("./menu.inc.new.php");
 									<div class="art-post-inner art-article">
 										<div class="art-postmetadataheader">
 											<h2 class="art-postheader">
-												Définition des horaires d'ouverture de l'établissement
+												DÃ©finition des horaires d'ouverture de l'Ã©tablissement
 											</h2>
 										</div>
 										<div class="art-postcontent">
@@ -304,7 +304,7 @@ require_once("./menu.inc.new.php");
 		<?php } ?>
 	    </tr>
 	    <tr class="couleur_ligne_1">
-	      <td class="tab_td_donnee_cote">Fermeture à</td>
+	      <td class="tab_td_donnee_cote">Fermeture Ã </td>
 	      <?php $i = '0';
 		while ( $i < '7' ) { ?>
 		      <td><input name="fermeture[<?php echo $i; ?>]" size="5" maxlength="5"  value="<?php if ( isset($fermeture[$i]) and !empty($fermeture[$i]) ) { echo $fermeture[$i]; } ?>" class="input_sans_bord" /><?php $i = $i + 1; ?></td>

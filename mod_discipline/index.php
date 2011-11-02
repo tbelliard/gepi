@@ -22,7 +22,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
+// Initialisation des feuilles de style aprÃ¨s modification pour amÃ©liorer l'accessibilitÃ©
 $accessibilite="y";
 // Begin standart header
 $niveau_arbo = 1;
@@ -47,8 +47,8 @@ if (!checkAccess()) {
 }
 
 if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
-	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
-	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	$mess=rawurlencode("Vous tentez d accÃ©der au module Discipline qui est dÃ©sactivÃ© !");
+	tentative_intrusion(1, "Tentative d'accÃ¨s au module Discipline qui est dÃ©sactivÃ©.");
 	header("Location: ../accueil.php?msg=$mess");
 	die();
 }
@@ -64,7 +64,7 @@ include_once("../lib/header_template.inc");
 			FIN HAUT DE PAGE
 ****************************************************************/
 if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
-		echo "erreur lors de la création du fil d'ariane";
+		echo "erreur lors de la crÃ©ation du fil d'ariane";
 /****************************************************************
 
 ****************************************************************/
@@ -75,12 +75,12 @@ echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.pn
 
 echo "</p>\n";
 
-echo "<p>Ce module est destiné à saisir et suivre les incidents et sanctions.</p>\n";
+echo "<p>Ce module est destinÃ© Ã  saisir et suivre les incidents et sanctions.</p>\n";
 
  */
 
 //*********************************
-// création des tables si besoin
+// crÃ©ation des tables si besoin
 //*********************************
 
 $sql="CREATE TABLE IF NOT EXISTS s_incidents (
@@ -94,7 +94,7 @@ description TEXT NOT NULL,
 etat VARCHAR( 20 ) NOT NULL
 );";
 $creation=mysql_query($sql);
-// Avec cette table on ne gère pas un historique des modifications de déclaration...
+// Avec cette table on ne gÃ¨re pas un historique des modifications de dÃ©claration...
 
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_incidents LIKE 'id_lieu'"));
 if ($test1 == 0) {
@@ -110,7 +110,7 @@ if(mysql_num_rows($test_table)==0) {
 	);";
 	$creation=mysql_query($sql);
 	if($creation) {
-		$tab_qualite=array("Responsable","Victime","Témoin","Autre");
+		$tab_qualite=array("Responsable","Victime","TÃ©moin","Autre");
 		for($loop=0;$loop<count($tab_qualite);$loop++) {
 			$sql="SELECT 1=1 FROM s_qualites WHERE qualite='".$tab_qualite[$loop]."';";
 			//echo "$sql<br />";
@@ -166,7 +166,7 @@ if(mysql_num_rows($test_table)==0) {
 	$creation=mysql_query($sql);
 	if($creation) {
 		// Mesures prises
-		$tab_mesure=array("Travail supplémentaire","Mot dans le carnet de liaison");
+		$tab_mesure=array("Travail supplÃ©mentaire","Mot dans le carnet de liaison");
 		for($loop=0;$loop<count($tab_mesure);$loop++) {
 			$sql="SELECT 1=1 FROM s_mesures WHERE mesure='".$tab_mesure[$loop]."';";
 			//echo "$sql<br />";
@@ -177,7 +177,7 @@ if(mysql_num_rows($test_table)==0) {
 			}
 		}
 	
-		// Mesures demandées
+		// Mesures demandÃ©es
 		$tab_mesure=array("Retenue","Exclusion");
 		for($loop=0;$loop<count($tab_mesure);$loop++) {
 			$sql="SELECT 1=1 FROM s_mesures WHERE mesure='".$tab_mesure[$loop]."';";
@@ -223,7 +223,7 @@ if(mysql_num_rows($test_table)==0) {
 	);";
 	$creation=mysql_query($sql);
 	if($creation) {
-		$tab_lieu=array("Classe","Couloir","Cour","Réfectoire","Autre");
+		$tab_lieu=array("Classe","Couloir","Cour","RÃ©fectoire","Autre");
 		for($loop=0;$loop<count($tab_lieu);$loop++) {
 			$sql="SELECT 1=1 FROM s_lieux_incidents WHERE lieu='".$tab_lieu[$loop]."';";
 			//echo "$sql<br />";
@@ -320,10 +320,10 @@ if ($test1 == 0) {
 	$query = mysql_query("ALTER TABLE s_incidents ADD message_id VARCHAR(50) NOT NULL;");
 }
 
-// L'état effectué ou non d'une sanction est dans la table s_sanctions plutôt s_retenues ou s_travail parce qu'il est plus simple de taper sur s_sanctions plutôt que sur les deux tables s_retenues ou s_travail
+// L'Ã©tat effectuÃ© ou non d'une sanction est dans la table s_sanctions plutÃ´t s_retenues ou s_travail parce qu'il est plus simple de taper sur s_sanctions plutÃ´t que sur les deux tables s_retenues ou s_travail
 
 //***********************************
-// Fin création des tables si besoin
+// Fin crÃ©ation des tables si besoin
 //***********************************
 
 $phrase_commentaire="";
@@ -333,7 +333,7 @@ $menuTitre=array();
 
 $nouveauItem = new itemGeneral();
 
-//Début de la table configuration
+//DÃ©but de la table configuration
 if($_SESSION['statut']=='administrateur') { 
 /* ===== Titre du menu ===== */
 	$menuTitre[]=new menuGeneral;
@@ -354,24 +354,24 @@ if($_SESSION['statut']=='administrateur') {
 	echo "</tr>\n";
 	
 	echo "<tr>\n";
-	echo "<td width='30%'><a href='../mod_discipline/definir_lieux.php'>Définition des lieux</a>";
+	echo "<td width='30%'><a href='../mod_discipline/definir_lieux.php'>DÃ©finition des lieux</a>";
 	echo "</td>\n";
-	echo "<td>Définir la liste des lieux des incidents.</td>\n";
+	echo "<td>DÃ©finir la liste des lieux des incidents.</td>\n";
 	echo "</tr>\n";
 */
 	$nouveauItem = new itemGeneral();
 	$nouveauItem->chemin='/mod_discipline/definir_lieux.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->titre="Définition des lieux" ;
-		$nouveauItem->expli="Définir la liste des lieux des incidents." ;
+		$nouveauItem->titre="DÃ©finition des lieux" ;
+		$nouveauItem->expli="DÃ©finir la liste des lieux des incidents." ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
 /*
 	echo "<tr>\n";
-	echo "<td width='30%'><a href='../mod_discipline/definir_roles.php'>Définition des rôles</a>";
+	echo "<td width='30%'><a href='../mod_discipline/definir_roles.php'>DÃ©finition des rÃ´les</a>";
 	echo "</td>\n";
 	echo "<td></td>\n";
 	echo "</tr>\n";
@@ -380,8 +380,8 @@ if($_SESSION['statut']=='administrateur') {
 	$nouveauItem->chemin='/mod_discipline/definir_roles.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->titre="Définition des rôles" ;
-		$nouveauItem->expli="Définir la liste des rôles des protagonistes." ;
+		$nouveauItem->titre="DÃ©finition des rÃ´les" ;
+		$nouveauItem->expli="DÃ©finir la liste des rÃ´les des protagonistes." ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
@@ -389,17 +389,17 @@ if($_SESSION['statut']=='administrateur') {
 /*
 	
 	echo "<tr>\n";
-	echo "<td width='30%'><a href='../mod_discipline/definir_mesures.php'>Définition des mesures</a>";
+	echo "<td width='30%'><a href='../mod_discipline/definir_mesures.php'>DÃ©finition des mesures</a>";
 	echo "</td>\n";
-	echo "<td>Définir la liste des mesures prises comme suite à un incident.</td>\n";
+	echo "<td>DÃ©finir la liste des mesures prises comme suite Ã  un incident.</td>\n";
 	echo "</tr>\n";
 */
 	$nouveauItem = new itemGeneral();
 	$nouveauItem->chemin='/mod_discipline/definir_mesures.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->titre="Définition des mesures" ;
-		$nouveauItem->expli="Définir la liste des mesures prises comme suite à un incident." ;
+		$nouveauItem->titre="DÃ©finition des mesures" ;
+		$nouveauItem->expli="DÃ©finir la liste des mesures prises comme suite Ã  un incident." ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
@@ -407,17 +407,17 @@ if($_SESSION['statut']=='administrateur') {
 /*
 	
 	echo "<tr>\n";
-	echo "<td width='30%'><a href='../mod_discipline/definir_autres_sanctions.php'>Définition des types de sanctions</a>";
+	echo "<td width='30%'><a href='../mod_discipline/definir_autres_sanctions.php'>DÃ©finition des types de sanctions</a>";
 	echo "</td>\n";
-	echo "<td>Définir la liste des sanctions pouvant être prises comme suite à un incident.</td>\n";
+	echo "<td>DÃ©finir la liste des sanctions pouvant Ãªtre prises comme suite Ã  un incident.</td>\n";
 	echo "</tr>\n";
 */
 	$nouveauItem = new itemGeneral();
 	$nouveauItem->chemin='/mod_discipline/definir_autres_sanctions.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->titre="Définition des types de sanctions" ;
-		$nouveauItem->expli="Définir la liste des sanctions pouvant être prises comme suite à un incident." ;
+		$nouveauItem->titre="DÃ©finition des types de sanctions" ;
+		$nouveauItem->expli="DÃ©finir la liste des sanctions pouvant Ãªtre prises comme suite Ã  un incident." ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
@@ -428,8 +428,8 @@ if($_SESSION['statut']=='administrateur') {
 	$nouveauItem->chemin='/mod_discipline/definir_natures.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->titre="Définition des natures d'incidents" ;
-		$nouveauItem->expli="Définir les natures d'incidents (<em>liste indicative ou liste imposée</em>)." ;
+		$nouveauItem->titre="DÃ©finition des natures d'incidents" ;
+		$nouveauItem->expli="DÃ©finir les natures d'incidents (<em>liste indicative ou liste imposÃ©e</em>)." ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
@@ -440,8 +440,8 @@ if($_SESSION['statut']=='administrateur') {
 	$nouveauItem->chemin='/mod_discipline/definir_categories.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->titre="Définition des catégories d'incidents" ;
-		$nouveauItem->expli="Définir les catégories d'incidents (<em>à des fins de statistiques</em>)." ;
+		$nouveauItem->titre="DÃ©finition des catÃ©gories d'incidents" ;
+		$nouveauItem->expli="DÃ©finir les catÃ©gories d'incidents (<em>Ã  des fins de statistiques</em>)." ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
@@ -451,9 +451,9 @@ if($_SESSION['statut']=='administrateur') {
 	
 
 	echo "<tr>\n";
-	echo "<td width='30%'><a href='../mod_discipline/destinataires_alertes.php'>Définition des destinataires d'alertes</a>";
+	echo "<td width='30%'><a href='../mod_discipline/destinataires_alertes.php'>DÃ©finition des destinataires d'alertes</a>";
 	echo "</td>\n";
-	echo "<td>Permet de définir la liste des utilisateurs recevant un mail lors de la saisie/modification d'un incident.</td>\n";
+	echo "<td>Permet de dÃ©finir la liste des utilisateurs recevant un mail lors de la saisie/modification d'un incident.</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
 */
@@ -461,8 +461,8 @@ if($_SESSION['statut']=='administrateur') {
 	$nouveauItem->chemin='/mod_discipline/destinataires_alertes.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->titre="Définition des destinataires d'alertes" ;
-		$nouveauItem->expli="Permet de définir la liste des utilisateurs recevant un mail lors de la saisie/modification d'un incident." ;
+		$nouveauItem->titre="DÃ©finition des destinataires d'alertes" ;
+		$nouveauItem->expli="Permet de dÃ©finir la liste des utilisateurs recevant un mail lors de la saisie/modification d'un incident." ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
@@ -472,8 +472,8 @@ if($_SESSION['statut']=='administrateur') {
 	$nouveauItem->chemin='/mod_discipline/delegation.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->titre="Gestion des délégations d'exclusions temporaires" ;
-		$nouveauItem->expli="Permet de gérer la liste des délégataires pour la génération des courriers d'exclusion temporaire" ;
+		$nouveauItem->titre="Gestion des dÃ©lÃ©gations d'exclusions temporaires" ;
+		$nouveauItem->expli="Permet de gÃ©rer la liste des dÃ©lÃ©gataires pour la gÃ©nÃ©ration des courriers d'exclusion temporaire" ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
@@ -511,7 +511,7 @@ echo "</tr>\n";
 echo "<tr>\n";
 echo "<td width='30%'><a href='../mod_discipline/saisie_incident.php'>Signaler/saisir un incident</a>";
 echo "</td>\n";
-echo "<td>Signaler et décrire (nature, date, horaire, lieu, ...) un incident.<br />Indiquer les mesures prises ou demandées</td>\n";
+echo "<td>Signaler et dÃ©crire (nature, date, horaire, lieu, ...) un incident.<br />Indiquer les mesures prises ou demandÃ©es</td>\n";
 echo "</tr>\n";
 */
 	$nouveauItem = new itemGeneral();
@@ -519,7 +519,7 @@ echo "</tr>\n";
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
 		$nouveauItem->titre="Signaler/saisir un incident" ;
-		$nouveauItem->expli="Signaler et décrire (<em>nature, date, horaire, lieu,...</em>) un incident.<br />Indiquer les mesures prises ou demandées" ;
+		$nouveauItem->expli="Signaler et dÃ©crire (<em>nature, date, horaire, lieu,...</em>) un incident.<br />Indiquer les mesures prises ou demandÃ©es" ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
@@ -542,7 +542,7 @@ if(($_SESSION['statut']=='administrateur')||
 		echo "<tr>\n";
 		echo "<td width='30%'><a href='../mod_discipline/incidents_sans_protagonistes.php'>Incidents sans protagonistes</a>";
 		echo "</td>\n";
-		echo "<td>Liste des incidents signalés sans protagonistes.</td>\n";
+		echo "<td>Liste des incidents signalÃ©s sans protagonistes.</td>\n";
 		echo "</tr>\n";
 		 */
 	  $nouveauItem = new itemGeneral();
@@ -550,7 +550,7 @@ if(($_SESSION['statut']=='administrateur')||
 	  if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	  {
 		  $nouveauItem->titre="Incidents sans protagonistes" ;
-		  $nouveauItem->expli="Liste des incidents signalés sans protagonistes." ;
+		  $nouveauItem->expli="Liste des incidents signalÃ©s sans protagonistes." ;
 		  $nouveauItem->indexMenu=$a;
 		  $menuPage[]=$nouveauItem;
 	  }
@@ -576,7 +576,7 @@ if($nb_incidents_incomplets>0) {
 		else {
 			$aff_incident = $nb_incidents_incomplets." incidents";
 		}
-		$nouveauItem->expli="Vous avez signalé ".$aff_incident." sans préciser la nature de l'incident.<br />Pour faciliter la gestion des incidents, il faudrait compléter." ;
+		$nouveauItem->expli="Vous avez signalÃ© ".$aff_incident." sans prÃ©ciser la nature de l'incident.<br />Pour faciliter la gestion des incidents, il faudrait complÃ©ter." ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	  }
@@ -585,14 +585,14 @@ if($nb_incidents_incomplets>0) {
 	echo "<tr>\n";
 	echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php?declarant_incident=".$_SESSION['login']."&amp;nature_incident='>Incidents incomplets</a>";
 	echo "</td>\n";
-	echo "<td style='color:red;'>Vous avez signalé ";
+	echo "<td style='color:red;'>Vous avez signalÃ© ";
 	if($nb_incidents_incomplets==1) {
 			echo "un incident";
 		}
 		else {
 			echo "$nb_incidents_incomplets incidents";
 		}
-	echo " sans préciser la nature de l'incident.<br />Pour faciliter la gestion des incidents, il faudrait compléter.\n";
+	echo " sans prÃ©ciser la nature de l'incident.<br />Pour faciliter la gestion des incidents, il faudrait complÃ©ter.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
  */
@@ -641,7 +641,7 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
 		echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php'>Traiter les suites d'un incident</a>";
 	}
 	echo "</td>\n";
-	echo "<td>Traiter les suites d'un incident : définir une punition ou une sanction</td>\n";
+	echo "<td>Traiter les suites d'un incident : dÃ©finir une punition ou une sanction</td>\n";
 	echo "</tr>\n";
 	
 	echo "</table>\n";
@@ -650,7 +650,7 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
 	$ajout_titre= "";
 	if ($temoin) $ajout_titre= "(<em>avec protagonistes</em>)";
 		  $nouveauItem->titre="Traiter les suites d'un incident ".$ajout_titre;
-		  $nouveauItem->expli="Traiter les suites d'un incident : définir une punition ou une sanction" ;
+		  $nouveauItem->expli="Traiter les suites d'un incident : dÃ©finir une punition ou une sanction" ;
 		  $nouveauItem->indexMenu=$a;
 		  $menuPage[]=$nouveauItem;
 	  }
@@ -699,17 +699,17 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
 	unset($nouveauItem);
 /*
 	echo "<tr>\n";
-	    echo "<td width='30%'><a href='../mod_discipline/stats2/index.php'>Accèder aux statistiques</a>";
+	    echo "<td width='30%'><a href='../mod_discipline/stats2/index.php'>AccÃ¨der aux statistiques</a>";
 	echo "</td>\n";
-	echo "<td>Sélectionner la période de traitement, les données à traiter (établissement, classes, elèves, ...) en appliquant (ou non) des filtres afin d'obtenir des bilans plus ou moins détaillés. </br>Visualiser les évolutions sous la forme de graphiques. Editer le Top 10, ...</td>\n";
+	echo "<td>SÃ©lectionner la pÃ©riode de traitement, les donnÃ©es Ã  traiter (Ã©tablissement, classes, elÃ¨ves, ...) en appliquant (ou non) des filtres afin d'obtenir des bilans plus ou moins dÃ©taillÃ©s. </br>Visualiser les Ã©volutions sous la forme de graphiques. Editer le Top 10, ...</td>\n";
 	echo "</tr>\n";
 	*/
 	$nouveauItem = new itemGeneral();
 	$nouveauItem->chemin='/mod_discipline/stats2/index.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->titre="Accèder aux statistiques" ;
-		$nouveauItem->expli="Sélectionner la période de traitement, les données à traiter (<em>établissement, classes, elèves,...</em>) en appliquant (<em>ou non</em>) des filtres afin d'obtenir des bilans plus ou moins détaillés. <br />Visualiser les évolutions sous la forme de graphiques. Editer le Top 10, ..." ;
+		$nouveauItem->titre="AccÃ¨der aux statistiques" ;
+		$nouveauItem->expli="SÃ©lectionner la pÃ©riode de traitement, les donnÃ©es Ã  traiter (<em>Ã©tablissement, classes, elÃ¨ves,...</em>) en appliquant (<em>ou non</em>) des filtres afin d'obtenir des bilans plus ou moins dÃ©taillÃ©s. <br />Visualiser les Ã©volutions sous la forme de graphiques. Editer le Top 10, ..." ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
@@ -720,7 +720,7 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
 	//echo "<td width='30%'>Effectuer des recherches/statistiques diverses<br /><span style='color: red;'>A FAIRE</span>";
 		echo "<td width='30%'><a href='disc_stat.php'>Effectuer des recherches/statistiques diverses</a><br /><span style='color: red;'>A FAIRE</span>";
 	echo "</td>\n";
-	echo "<td>Pouvoir lister les incidents ayant eu tel élève pour protagoniste (<em>en précisant ou non le rôle dans l'incident</em>), le nombre de travaux, de retenues, d'exclusions,... entre telle et telle date,...</td>\n";
+	echo "<td>Pouvoir lister les incidents ayant eu tel Ã©lÃ¨ve pour protagoniste (<em>en prÃ©cisant ou non le rÃ´le dans l'incident</em>), le nombre de travaux, de retenues, d'exclusions,... entre telle et telle date,...</td>\n";
 	echo "</tr>\n";
 	*/
 	$nouveauItem = new itemGeneral();
@@ -728,7 +728,7 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
 		$nouveauItem->titre="Effectuer des recherches/statistiques diverses" ;
-		$nouveauItem->expli="Pouvoir lister les incidents ayant eu tel élève pour protagoniste (<em>en précisant ou non le rôle dans l'incident</em>), le nombre de travaux, de retenues, d'exclusions,... entre telle et telle date,..." ;
+		$nouveauItem->expli="Pouvoir lister les incidents ayant eu tel Ã©lÃ¨ve pour protagoniste (<em>en prÃ©cisant ou non le rÃ´le dans l'incident</em>), le nombre de travaux, de retenues, d'exclusions,... entre telle et telle date,..." ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
@@ -742,12 +742,12 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 
 	$sql="SELECT 1=1 FROM s_protagonistes, s_incidents WHERE ((login='".$_SESSION['login']."')||(declarant='".$_SESSION['login']."'));";
 	$test=mysql_query($sql);
-	if((mysql_num_rows($test)>0)) { //on a bien un prof ou statut autre comme déclarant ou un protagoniste
+	if((mysql_num_rows($test)>0)) { //on a bien un prof ou statut autre comme dÃ©clarant ou un protagoniste
 	  /*
 		echo "<tr>\n";
 		echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php'>Consulter les suites des incidents</a>";
 		echo "</td>\n";
-		echo "<td>Visualiser la liste des incidents déclarés et leurs traitements.</td>\n";
+		echo "<td>Visualiser la liste des incidents dÃ©clarÃ©s et leurs traitements.</td>\n";
 		echo "</tr>\n";
 		*/
 	  $nouveauItem = new itemGeneral();
@@ -755,12 +755,12 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 	  if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	  {
 		  $nouveauItem->titre="Consulter les suites des incidents" ;
-		  $nouveauItem->expli="Visualiser la liste des incidents déclarés et leurs traitements." ;
+		  $nouveauItem->expli="Visualiser la liste des incidents dÃ©clarÃ©s et leurs traitements." ;
 		  $nouveauItem->indexMenu=$a;
 		  $menuPage[]=$nouveauItem;
 	  }
 	unset($nouveauItem);
-	} else { //le prof n'est ni déclarant ni protagoniste. Pour un elv dont il est PP y a t--il des incidents de déclaré ?
+	} else { //le prof n'est ni dÃ©clarant ni protagoniste. Pour un elv dont il est PP y a t--il des incidents de dÃ©clarÃ© ?
 		$sql="SELECT 1=1 FROM j_eleves_professeurs jep, s_protagonistes sp 
 						  WHERE sp.login=jep.login
 						  AND jep.professeur='".$_SESSION['login']."';";
@@ -771,14 +771,14 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 		AND jec.id_classe=jgc.id_classe
 		AND jgp.id_groupe =  jgc.id_groupe
 		AND jgp.login = '".$_SESSION['login']."';";
-		  $test1=mysql_query($sql1); // prof de la classe autorisé à voir
+		  $test1=mysql_query($sql1); // prof de la classe autorisÃ© Ã  voir
 		}
 		if (getSettingValue("visuDiscProfGroupes")=='yes') {
 		  $sql2="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_professeurs jgp, s_protagonistes sp
 							WHERE jeg.id_groupe=jgp.id_groupe
 							AND sp.login=jeg.login
 							AND jgp.login='".$_SESSION['login']."';";
-		  $test2=mysql_query($sql2); // prof du groupe autorisé à voir
+		  $test2=mysql_query($sql2); // prof du groupe autorisÃ© Ã  voir
 		}
 		  $nouveauItem = new itemGeneral();
 		if ((mysql_num_rows($test)>0) ||
@@ -788,7 +788,7 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 			echo "<tr>\n";
 			echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php'>Consulter les suites des incidents</a>";
 			echo "</td>\n";
-			echo "<td>Visualiser la liste des incidents déclarés et leurs traitements.</td>\n";
+			echo "<td>Visualiser la liste des incidents dÃ©clarÃ©s et leurs traitements.</td>\n";
 			echo "</tr>\n";
 		*/
 		  //$nouveauItem = new itemGeneral();
@@ -796,7 +796,7 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 		  if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 		  {
 			  $nouveauItem->titre="Consulter les suites des incidents" ;
-			  $nouveauItem->expli="Visualiser la liste des incidents déclarés et leurs traitements." ;
+			  $nouveauItem->expli="Visualiser la liste des incidents dÃ©clarÃ©s et leurs traitements." ;
 			  $nouveauItem->indexMenu=$a;
 			  $menuPage[]=$nouveauItem;
 		  }
@@ -806,12 +806,12 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 			echo "<tr>\n";
 			echo "<td width='30%'>Consulter les suites des incidents</a>";
 			echo "</td>\n";
-			echo "<td><p>Aucun incident (<em>avec protagoniste</em>) vous concernant n'est encore déclaré.</td>\n";
+			echo "<td><p>Aucun incident (<em>avec protagoniste</em>) vous concernant n'est encore dÃ©clarÃ©.</td>\n";
 			echo "</tr>\n";
 		   */
 			$nouveauItem->chemin='/mod_discipline/index.php';
 			$nouveauItem->titre="Consulter les suites des incidents" ;
-			$nouveauItem->expli="Aucun incident (<em>avec protagoniste</em>) vous concernant n'est encore déclaré." ;
+			$nouveauItem->expli="Aucun incident (<em>avec protagoniste</em>) vous concernant n'est encore dÃ©clarÃ©." ;
 			$nouveauItem->indexMenu=$a;
 			$menuPage[]=$nouveauItem;
 
@@ -830,13 +830,13 @@ echo "<p><br /></p>\n";
 
 echo "<p><em>NOTES&nbsp;</em></p>\n";
 echo "<ul>\n";
-echo "<li><p>Une fois un incident clos, il ne peut plus être modifié et aucune sanction liée ne peut être ajoutée/modifiée/supprimée.</p></li>\n";
+echo "<li><p>Une fois un incident clos, il ne peut plus Ãªtre modifiÃ© et aucune sanction liÃ©e ne peut Ãªtre ajoutÃ©e/modifiÃ©e/supprimÃ©e.</p></li>\n";
 echo "<li><p>Le module ne conserve pas un historique des modifications d'un incident.<br />Si plusieurs personnes modifient un incident, elles doivent le faire en bonne intelligence.</p></li>\n";
 echo "<li><p>Un professeur peut saisir un incident, mais ne peut pas saisir les sanctions.<br />
-Un professeur ne peut modifier que les incidents (<em>non clos</em>) qu'il a lui-même déclaré.<br />Il ne peut consulter que les incidents (<em>et leurs suites</em>) qu'il a déclarés, ou dont il est protagoniste, ou encore dont un des élèves, dont il est professeur principal, est protagoniste.</p></li>\n";
-//echo "<li><p><em>A FAIRE:</em> Ajouter des tests 'changement()' dans les pages de saisie pour ne pas quitter une étape sans enregistrer.</p></li>\n";
-echo "<li><p><em>A FAIRE:</em> Permettre de consulter d'autres incidents que les siens propres.<br />Eventuellement avec limitation aux élèves de ses classes.</p></li>\n";
-echo "<li><p><em>A FAIRE ENCORE:</em> Permettre d'archiver les incidents/sanctions d'une année et vider les tables incidents/sanctions lors de l'initialisation pour éviter des blagues avec les login élèves réattribués à de nouveaux élèves (<em>homonymie,...</em>)</p></li>\n";
+Un professeur ne peut modifier que les incidents (<em>non clos</em>) qu'il a lui-mÃªme dÃ©clarÃ©.<br />Il ne peut consulter que les incidents (<em>et leurs suites</em>) qu'il a dÃ©clarÃ©s, ou dont il est protagoniste, ou encore dont un des Ã©lÃ¨ves, dont il est professeur principal, est protagoniste.</p></li>\n";
+//echo "<li><p><em>A FAIRE:</em> Ajouter des tests 'changement()' dans les pages de saisie pour ne pas quitter une Ã©tape sans enregistrer.</p></li>\n";
+echo "<li><p><em>A FAIRE:</em> Permettre de consulter d'autres incidents que les siens propres.<br />Eventuellement avec limitation aux Ã©lÃ¨ves de ses classes.</p></li>\n";
+echo "<li><p><em>A FAIRE ENCORE:</em> Permettre d'archiver les incidents/sanctions d'une annÃ©e et vider les tables incidents/sanctions lors de l'initialisation pour Ã©viter des blagues avec les login Ã©lÃ¨ves rÃ©attribuÃ©s Ã  de nouveaux Ã©lÃ¨ves (<em>homonymie,...</em>)</p></li>\n";
 //echo "<li><p></p></li>\n";
 echo "</ul>\n";
 
@@ -850,20 +850,20 @@ $tbs_pmv="";
 require_once ("../lib/footer_template.inc.php");
 
 /****************************************************************
-			On s'assure que le nom du gabarit est bien renseigné
+			On s'assure que le nom du gabarit est bien renseignÃ©
 ****************************************************************/
 if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 	$_SESSION['rep_gabarits']="origine";
 }
 
 //==================================
-// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// DÃ©commenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 // $affiche_debug=debug_var2();
 
 
 $nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/mod_discipline/mod_discipline_template.php';
 
-$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+$tbs_last_connection=""; // On n'affiche pas les derniÃ¨res connexions
 include($nom_gabarit);
 
 // ------ on vide les tableaux -----

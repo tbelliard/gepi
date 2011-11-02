@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
+// On dÃ©samorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) || isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
 $niveau_arbo = "2";
@@ -39,7 +39,7 @@ $logger = new StackLogger();
 Propel::setLogger($logger);
 
 
-// On met le header en petit par défaut
+// On met le header en petit par dÃ©faut
 $_SESSION['cacher_header'] = "y";
 //**************** EN-TETE *****************
 
@@ -95,7 +95,7 @@ if ($newClasse == null) {
 	echo('test creation classe a reussi avec comme retour l\'id : ' . $classe->getId() . '<br/><br/>');
 }
 
-//ajout d'une periode ouverte et d'un periode fermée à une classe
+//ajout d'une periode ouverte et d'un periode fermÃ©e Ã  une classe
 $periode_fermee = new PeriodeNote();
 $periode_fermee->setNumPeriode(1);
 $periode_fermee->setVerouiller('O');
@@ -225,7 +225,7 @@ purgeDonneesTest($logger);
 Propel::setLogger(null);
 
 function purgeDonneesTest($logger) {
-	echo "Purge des données<br/><br/>";
+	echo "Purge des donnÃ©es<br/><br/>";
 	//purge de l'utilisateur
 	echo "<br/>Purge de l'utilisateur : <br/>";
 	$utilisateurProfessionnel = UtilisateurProfessionnelPeer::retrieveByPK(UnitTestUtilisateurProfessionnel::getUtilisateurProfessionnel()->getLogin());
@@ -285,7 +285,7 @@ function purgeDonneesTest($logger) {
 
 	echo ($logger->getDisplay());
 
-	echo "<br/>Fin Purge des données<br/><br/>";
+	echo "<br/>Fin Purge des donnÃ©es<br/><br/>";
 }
 
 ?>

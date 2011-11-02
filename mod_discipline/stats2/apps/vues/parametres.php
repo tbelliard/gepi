@@ -18,7 +18,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-// On empêche l'accès direct au fichier
+// On empÃªche l'accÃ¨s direct au fichier
 if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     die();
 };
@@ -34,15 +34,15 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
       </table><br />      
       <table class="boireaus">
       <tr>
-         <td  class="nouveau" colspan="3">Paramètres sélectionnés (filtres et évolutions)</td>
+         <td  class="nouveau" colspan="3">ParamÃ¨tres sÃ©lectionnÃ©s (filtres et Ã©volutions)</td>
       </tr>
       <tr>
          <th>Type</th>
          <th>Filtres</th>
-         <th>Choix pour les tableaux d'évolution</th>
+         <th>Choix pour les tableaux d'Ã©volution</th>
       </tr>
       <tr>
-        <td class="nouveau"><?php if($filtres_categories) { ?><a href="index.php?ctrl=bilans&action=maj_filtre&type=categories&action_from=<?php echo $action_from;?>" class="supp_filtre" title="Cliquez pour vider" >Catégories</a><?php } else echo'Catégories'; ?></td>
+        <td class="nouveau"><?php if($filtres_categories) { ?><a href="index.php?ctrl=bilans&action=maj_filtre&type=categories&action_from=<?php echo $action_from;?>" class="supp_filtre" title="Cliquez pour vider" >CatÃ©gories</a><?php } else echo'CatÃ©gories'; ?></td>
         <td>
           <?php if($filtres_categories): ?>
             <?php foreach($libelles_categories as $categorie): ?>
@@ -53,7 +53,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
           <?php endif;?>
         </td>        
         <td>
-          <input type="radio" name="evolution" id="evolution" value="Catégories" <?php if ($_SESSION['choix_evolution']=='Catégories') echo 'checked';?>>
+          <input type="radio" name="evolution" id="evolution" value="CatÃ©gories" <?php if ($_SESSION['choix_evolution']=='CatÃ©gories') echo 'checked';?>>
         </td>
       </tr>
       <tr>
@@ -87,17 +87,17 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
         </td>
       </tr>
       <tr>
-        <td class="nouveau"><?php if($filtres_roles) {?><a href="index.php?ctrl=bilans&action=maj_filtre&type=roles&action_from=<?php echo $action_from;?>" class="supp_filtre" title="Cliquez pour vider" >Rôles</a><?php } else echo 'Rôles';?></td>
+        <td class="nouveau"><?php if($filtres_roles) {?><a href="index.php?ctrl=bilans&action=maj_filtre&type=roles&action_from=<?php echo $action_from;?>" class="supp_filtre" title="Cliquez pour vider" >RÃ´les</a><?php } else echo 'RÃ´les';?></td>
         <td><?php if($filtres_roles) {
             foreach($filtres_roles as $role) {?>
-          <a href="index.php?ctrl=bilans&action=maj_filtre&type=roles&choix=<?php echo $role;?>&action_from=<?php echo $action_from;?>" class="supp_filtre" title="Cliquez pour supprimer"><?php if($role=="") echo "Aucun rôle affecté - "; else echo $role,' - ';?></a>
+          <a href="index.php?ctrl=bilans&action=maj_filtre&type=roles&choix=<?php echo $role;?>&action_from=<?php echo $action_from;?>" class="supp_filtre" title="Cliquez pour supprimer"><?php if($role=="") echo "Aucun rÃ´le affectÃ© - "; else echo $role,' - ';?></a>
               <?php    }
           }else {
             echo'Aucun';
           } ?>
         </td>        
         <td>
-          <input type="radio" name="evolution" id="evolution" value="Rôles" <?php if ($_SESSION['choix_evolution']=='Rôles') echo 'checked';?>>
+          <input type="radio" name="evolution" id="evolution" value="RÃ´les" <?php if ($_SESSION['choix_evolution']=='RÃ´les') echo 'checked';?>>
         </td>
       </tr>
     </table>
@@ -107,12 +107,12 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     <?php if($action_from=='affiche_bilans'):?>
     <table class="boireaus">
     <tr>
-      <td  class="nouveau">Choisir le mode de représentation</td>
-      <td><a href="index.php?ctrl=bilans&action=affiche_details"><img src="apps/img/simple.png" alt="simple" title="simplifié"/></a>&nbsp;<a href="index.php?ctrl=bilans&action=affiche_details&value=ok"><img src="apps/img/details.png" title="détaillé" alt="détaillé"/></a>&nbsp;</td>
+      <td  class="nouveau">Choisir le mode de reprÃ©sentation</td>
+      <td><a href="index.php?ctrl=bilans&action=affiche_details"><img src="apps/img/simple.png" alt="simple" title="simplifiÃ©"/></a>&nbsp;<a href="index.php?ctrl=bilans&action=affiche_details&value=ok"><img src="apps/img/details.png" title="dÃ©taillÃ©" alt="dÃ©taillÃ©"/></a>&nbsp;</td>
     </tr>
     <tr>
-      <td  class="nouveau">Mode de représentation actif</td>
-      <td colspan="3"><?php if($mode_detaille) {?>Détaillé<?php }else {?>Simplifié <?php }?> </td>
+      <td  class="nouveau">Mode de reprÃ©sentation actif</td>
+      <td colspan="3"><?php if($mode_detaille) {?>DÃ©taillÃ©<?php }else {?>SimplifiÃ© <?php }?> </td>
     </tr>
     <tr>
     </table>

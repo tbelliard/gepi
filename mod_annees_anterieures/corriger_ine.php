@@ -40,10 +40,10 @@ if (!checkAccess()) {
 }
 
 
-// Si le module n'est pas activé...
+// Si le module n'est pas activÃ©...
 if(getSettingValue('active_annees_anterieures')!="y"){
 	// A DEGAGER
-	// A VOIR: Comment enregistrer une tentative d'accès illicite?
+	// A VOIR: Comment enregistrer une tentative d'accÃ¨s illicite?
 
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -91,20 +91,20 @@ if(isset($confirmer)) {
 		}
 	}
 	else{
-		// Ca ne devrait pas arriver: Soit tout est renseigné, soit rien n'est renseigné et on a pas validé le formulaire.
-		$msg="Des champs n'étaient pas correctement renseignés.";
+		// Ca ne devrait pas arriver: Soit tout est renseignÃ©, soit rien n'est renseignÃ© et on a pas validÃ© le formulaire.
+		$msg="Des champs n'Ã©taient pas correctement renseignÃ©s.";
 	}
 
-	if(($msg=="")&&($cpt>0)){$msg="Enregistrement réussi.";}
+	if(($msg=="")&&($cpt>0)){$msg="Enregistrement rÃ©ussi.";}
 }
 
 
 $style_specifique="mod_annees_anterieures/annees_anterieures";
 
-$themessage="Des modifications ont été effectuées. Voulez-vous vraiment quitter sans enregistrer?";
+$themessage="Des modifications ont Ã©tÃ© effectuÃ©es. Voulez-vous vraiment quitter sans enregistrer?";
 
 //**************** EN-TETE *****************
-$titre_page = "Correction d'INE pour les données antérieures";
+$titre_page = "Correction d'INE pour les donnÃ©es antÃ©rieures";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
@@ -125,7 +125,7 @@ require_once("../lib/header.inc");
 				xhr_object = new XMLHttpRequest();
 			else if(window.ActiveXObject) // Internet Explorer
 				xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
-			else { // XMLHttpRequest non supporté par le navigateur
+			else { // XMLHttpRequest non supportÃ© par le navigateur
 				alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
 				return;
 			}
@@ -154,13 +154,13 @@ if(!isset($mode)){
 	echo "</p>\n";
 	echo "</div>\n";
 
-	echo "<p>Il arrive que lors de la conservation des données d'une année, le numéro INE d'un élève ne soit pas (<i>correctement</i>) rempli.<br />Ce numéro est utilisé pour faire le lien entre un élève de l'année courante (<i>table 'eleves'</i>) et ses données antérieures.<br />Si ce numéro ne coïncide pas entre les deux tables, la consultation est perturbée.</p>\n";
-	echo "<p>Cette page est destinée à corriger des INE inscrits dans les tables d'archivage.</p>\n";
+	echo "<p>Il arrive que lors de la conservation des donnÃ©es d'une annÃ©e, le numÃ©ro INE d'un Ã©lÃ¨ve ne soit pas (<i>correctement</i>) rempli.<br />Ce numÃ©ro est utilisÃ© pour faire le lien entre un Ã©lÃ¨ve de l'annÃ©e courante (<i>table 'eleves'</i>) et ses donnÃ©es antÃ©rieures.<br />Si ce numÃ©ro ne coÃ¯ncide pas entre les deux tables, la consultation est perturbÃ©e.</p>\n";
+	echo "<p>Cette page est destinÃ©e Ã  corriger des INE inscrits dans les tables d'archivage.</p>\n";
 
 	echo "<p>Voulez-vous:</p>\n";
 	echo "<ul>\n";
-	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=ine_login'>afficher les élèves dont l'INE n'était pas rempli lors de la conservation des données antérieures</a>.</li>\n";
-	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=recherche'>rechercher un élève</a></li>\n";
+	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=ine_login'>afficher les Ã©lÃ¨ves dont l'INE n'Ã©tait pas rempli lors de la conservation des donnÃ©es antÃ©rieures</a>.</li>\n";
+	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=recherche'>rechercher un Ã©lÃ¨ve</a></li>\n";
 	echo "</ul>\n";
 }
 elseif($mode=="ine_login"){
@@ -168,13 +168,13 @@ elseif($mode=="ine_login"){
 	echo "</p>\n";
 	echo "</div>\n";
 
-	echo "<p>Affichage des élèves dont le numéro INE n'était pas rempli lors d'une conservation des données antérieures.</p>\n";
+	echo "<p>Affichage des Ã©lÃ¨ves dont le numÃ©ro INE n'Ã©tait pas rempli lors d'une conservation des donnÃ©es antÃ©rieures.</p>\n";
 
 	$sql="SELECT DISTINCT ine,nom,prenom,naissance FROM archivage_eleves WHERE ine LIKE 'LOGIN_%' ORDER BY nom,prenom";
 	$res1=mysql_query($sql);
 
 	if(mysql_num_rows($res1)==0){
-		echo "<p>Aucun élève dans la table 'archivage_eleves' n'a d'INE au préfixe 'LOGIN_'<br />(<i>c'est-à-dire dont l'INE était non rempli lors d'une opération de conservation des données antérieures</i>).</p>\n";
+		echo "<p>Aucun Ã©lÃ¨ve dans la table 'archivage_eleves' n'a d'INE au prÃ©fixe 'LOGIN_'<br />(<i>c'est-Ã -dire dont l'INE Ã©tait non rempli lors d'une opÃ©ration de conservation des donnÃ©es antÃ©rieures</i>).</p>\n";
 	}
 	else{
 
@@ -182,13 +182,13 @@ elseif($mode=="ine_login"){
 		echo "<input type='hidden' name='mode' value=\"ine_login\" />\n";
 		echo add_token_field();
 
-		echo "<table class='table_annee_anterieure' summary='Tableau des élèves'>\n";
+		echo "<table class='table_annee_anterieure' summary='Tableau des Ã©lÃ¨ves'>\n";
 		echo "<tr style='background-color: white;'>\n";
-		echo "<th>INE enregistré</th>\n";
+		echo "<th>INE enregistrÃ©</th>\n";
 		echo "<th>Nom</th>\n";
-		echo "<th>Prénom</th>\n";
+		echo "<th>PrÃ©nom</th>\n";
 		echo "<th>Date de naissance</th>\n";
-		echo "<th>INE corrigé</th>\n";
+		echo "<th>INE corrigÃ©</th>\n";
 		echo "<th>Chercher</th>\n";
 		echo "</tr>\n";
 
@@ -230,12 +230,12 @@ elseif($mode=="ine_login"){
 
 			echo "<td>";
 			echo " <a href='#' onClick=\"";
-			// On renseigne le formulaire de recherche avec le nom et le prénom:
+			// On renseigne le formulaire de recherche avec le nom et le prÃ©nom:
 			echo "document.getElementById('nom_ele').value=document.getElementById('nom_eleve_$cpt').value;";
 			echo "document.getElementById('prenom_ele').value=document.getElementById('prenom_eleve_$cpt').value;";
 			// Pour le lien de renseignement de corrige_ine:
 			echo "document.getElementById('ine_recherche').value='ine_corrige_$cpt';";
-			// On fait le nettoyage pour ne pas laisser les traces d'une précédente requête:
+			// On fait le nettoyage pour ne pas laisser les traces d'une prÃ©cÃ©dente requÃªte:
 			echo "document.getElementById('div_resultat').innerHTML='';";
 			echo "afficher_div('div_search','y',-400,20);";
 			echo "return false;";
@@ -251,7 +251,7 @@ elseif($mode=="ine_login"){
 		echo "<p align='center'><input type='submit' name='confirmer' value='Enregistrer' /></p>\n";
 		echo "</form>\n";
 
-		echo creer_div_infobulle("div_search","Formulaire de recherche dans la table 'eleves'","","<p>Saisir une portion du nom à rechercher...</p>
+		echo creer_div_infobulle("div_search","Formulaire de recherche dans la table 'eleves'","","<p>Saisir une portion du nom Ã  rechercher...</p>
 <form name='recherche' action='".$_SERVER['PHP_SELF']."' method='post'>
 <input type='hidden' name='ine_recherche' id='ine_recherche' value='' />
 <table border='0' summary='Recherche'>
@@ -261,7 +261,7 @@ elseif($mode=="ine_login"){
 		<td rowspan='2'><input type='button' name='chercher' value='Chercher' onClick='get_eleves(this.form)' /></td>
 	</tr>
 	<tr>
-		<th>Prénom: </th>
+		<th>PrÃ©nom: </th>
 		<td><input type='text' name='prenom_ele' id='prenom_ele' value='' onBlur='get_eleves(this.form)' /></td>
 	</tr>
 </table>
@@ -272,7 +272,7 @@ elseif($mode=="ine_login"){
 ","",27,0,"y","y","n","n");
 
 		echo "<p><br /></p>\n";
-		echo "<p><b>Attention:</b> Si vous modifiez un INE en attribuant l'INE d'un autre élève que le bon, vous risquez de ne plus pouvoir trier ce qui correspond effectivement à un élève.<br />Ne procédez à la correction qu'après vérification.</p>\n";
+		echo "<p><b>Attention:</b> Si vous modifiez un INE en attribuant l'INE d'un autre Ã©lÃ¨ve que le bon, vous risquez de ne plus pouvoir trier ce qui correspond effectivement Ã  un Ã©lÃ¨ve.<br />Ne procÃ©dez Ã  la correction qu'aprÃ¨s vÃ©rification.</p>\n";
 	}
 
 	//echo "<div id='idretour' style='border: 1px solid black; background-color: white; width: 100px; height: 30px;'></div>\n";
@@ -283,7 +283,7 @@ elseif($mode=="recherche"){
 	echo "</p>\n";
 	echo "</div>\n";
 
-	echo "<p>Recherche d'élèves pour corriger un numéro INE erroné dans la table des données antérieures.</p>\n";
+	echo "<p>Recherche d'Ã©lÃ¨ves pour corriger un numÃ©ro INE erronÃ© dans la table des donnÃ©es antÃ©rieures.</p>\n";
 
 	if(!isset($recherche1)){
 		echo "<form name='recherche' action='".$_SERVER['PHP_SELF']."' method='post'>
@@ -291,15 +291,15 @@ elseif($mode=="recherche"){
 <input type='hidden' name='recherche1' value='y' />
 <table border='0' summary='Recherche'>
 	<tr>
-		<!--td rowspan='2' valign='top'>Elève dont le </td-->
-		<td>Elève dont </td>
+		<!--td rowspan='2' valign='top'>ElÃ¨ve dont le </td-->
+		<td>ElÃ¨ve dont </td>
 		<td align='center'>le <b>nom</b></td>
 		<td> contient :</td>
 		<td><input type='text' name='recherche1_nom' value='' /></td>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>
-		<td align='center'>et le <b>prénom</b></td>
+		<td align='center'>et le <b>prÃ©nom</b></td>
 		<td> contient: </td>
 		<td><input type='text' name='recherche1_prenom' value='' /></td>
 	</tr>
@@ -316,7 +316,7 @@ elseif($mode=="recherche"){
 		$res1=mysql_query($sql);
 
 		if(mysql_num_rows($res1)==0){
-			echo "<p>Aucun élève dans la table 'archivage_eleves' ne remplit les critères demandés.</p>\n";
+			echo "<p>Aucun Ã©lÃ¨ve dans la table 'archivage_eleves' ne remplit les critÃ¨res demandÃ©s.</p>\n";
 		}
 		else{
 
@@ -326,13 +326,13 @@ elseif($mode=="recherche"){
 			echo "<input type='hidden' name='recherche1_nom' value=\"$recherche1_nom\" />\n";
 			echo "<input type='hidden' name='recherche1_prenom' value=\"$recherche1_prenom\" />\n";
 
-			echo "<table class='table_annee_anterieure' summary='Tableau des élèves'>\n";
+			echo "<table class='table_annee_anterieure' summary='Tableau des Ã©lÃ¨ves'>\n";
 			echo "<tr style='background-color: white;'>\n";
-			echo "<th>INE enregistré</th>\n";
+			echo "<th>INE enregistrÃ©</th>\n";
 			echo "<th>Nom</th>\n";
-			echo "<th>Prénom</th>\n";
+			echo "<th>PrÃ©nom</th>\n";
 			echo "<th>Date de naissance</th>\n";
-			echo "<th>INE corrigé</th>\n";
+			echo "<th>INE corrigÃ©</th>\n";
 			echo "<th>Chercher</th>\n";
 			echo "</tr>\n";
 
@@ -374,12 +374,12 @@ elseif($mode=="recherche"){
 
 				echo "<td>";
 				echo " <a href='#' onClick=\"";
-				// On renseigne le formulaire de recherche avec le nom et le prénom:
+				// On renseigne le formulaire de recherche avec le nom et le prÃ©nom:
 				echo "document.getElementById('nom_ele').value=document.getElementById('nom_eleve_$cpt').value;";
 				echo "document.getElementById('prenom_ele').value=document.getElementById('prenom_eleve_$cpt').value;";
 				// Pour le lien de renseignement de corrige_ine:
 				echo "document.getElementById('ine_recherche').value='ine_corrige_$cpt';";
-				// On fait le nettoyage pour ne pas laisser les traces d'une précédente requête:
+				// On fait le nettoyage pour ne pas laisser les traces d'une prÃ©cÃ©dente requÃªte:
 				echo "document.getElementById('div_resultat').innerHTML='';";
 				echo "afficher_div('div_search','y',-400,20);";
 				echo "return false;";
@@ -395,7 +395,7 @@ elseif($mode=="recherche"){
 			echo "<p align='center'><input type='submit' name='confirmer' value='Enregistrer' /></p>\n";
 			echo "</form>\n";
 
-			echo creer_div_infobulle("div_search","Formulaire de recherche dans la table 'eleves'","","<p>Saisir une portion du nom à rechercher...</p>
+			echo creer_div_infobulle("div_search","Formulaire de recherche dans la table 'eleves'","","<p>Saisir une portion du nom Ã  rechercher...</p>
 <form name='recherche' action='".$_SERVER['PHP_SELF']."' method='post'>
 <input type='hidden' name='ine_recherche' id='ine_recherche' value='' />
 <table border='0' summary='Recherche'>
@@ -405,7 +405,7 @@ elseif($mode=="recherche"){
 		<td rowspan='2'><input type='button' name='chercher' value='Chercher' onClick='get_eleves(this.form)' /></td>
 	</tr>
 	<tr>
-		<th>Prénom: </th>
+		<th>PrÃ©nom: </th>
 		<td><input type='text' name='prenom_ele' id='prenom_ele' value='' onBlur='get_eleves(this.form)' /></td>
 	</tr>
 </table>
@@ -416,7 +416,7 @@ elseif($mode=="recherche"){
 ","",27,0,"y","y","n","n");
 
 			echo "<p><br /></p>\n";
-			echo "<p><b>Attention:</b> Si vous modifiez un INE en attribuant l'INE d'un autre élève que le bon, vous risquez de ne plus pouvoir trier ce qui correspond effectivement à un élève.<br />Ne procédez à la correction qu'après vérification.</p>\n";
+			echo "<p><b>Attention:</b> Si vous modifiez un INE en attribuant l'INE d'un autre Ã©lÃ¨ve que le bon, vous risquez de ne plus pouvoir trier ce qui correspond effectivement Ã  un Ã©lÃ¨ve.<br />Ne procÃ©dez Ã  la correction qu'aprÃ¨s vÃ©rification.</p>\n";
 		}
 	}
 }
@@ -451,27 +451,27 @@ $sql="SELECT DISTINCT a.nom,a.prenom,a.INE,a.naissance
 $res1=mysql_query($sql);
 $nb_ele=mysql_num_rows($res1);
 if($nb_ele==0){
-	echo "<p>Tous les élèves présents dans la table 'archivage_eleves' sont dans la table 'eleves'.</p>\n";
+	echo "<p>Tous les Ã©lÃ¨ves prÃ©sents dans la table 'archivage_eleves' sont dans la table 'eleves'.</p>\n";
 }
 else{
-	echo "<p>Voici la liste des élèves présents dans la table 'archivage_eleves', mais absents de la table 'eleves'.<br />
-	Il s'agit normalement d'élèves ayant quitté l'établissement.<br />
-	Il peut cependant arriver que des élèves dont le numéro INE n'était pas (<i>correctement</i>) rempli lors de la conservation de l'année soit proposés dans la liste ci-dessous.<br />
-	Dans ce cas, le numéro INE utilisé a un préfixe LOGIN_.<br />
-	Ce n'est pas un identifiant correct parce que le login d'un élève n'est pas nécessairement fixe d'une année sur l'autre (<i>dans le cas des doublons</i>).<br />
-	<font color='red'>Une page doit être mise au point pour vous permettre de corriger ces INE</font>.</p>\n";
+	echo "<p>Voici la liste des Ã©lÃ¨ves prÃ©sents dans la table 'archivage_eleves', mais absents de la table 'eleves'.<br />
+	Il s'agit normalement d'Ã©lÃ¨ves ayant quittÃ© l'Ã©tablissement.<br />
+	Il peut cependant arriver que des Ã©lÃ¨ves dont le numÃ©ro INE n'Ã©tait pas (<i>correctement</i>) rempli lors de la conservation de l'annÃ©e soit proposÃ©s dans la liste ci-dessous.<br />
+	Dans ce cas, le numÃ©ro INE utilisÃ© a un prÃ©fixe LOGIN_.<br />
+	Ce n'est pas un identifiant correct parce que le login d'un Ã©lÃ¨ve n'est pas nÃ©cessairement fixe d'une annÃ©e sur l'autre (<i>dans le cas des doublons</i>).<br />
+	<font color='red'>Une page doit Ãªtre mise au point pour vous permettre de corriger ces INE</font>.</p>\n";
 
 	echo "<form name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 
-	echo "<table align='center' class='table_annee_anterieure' summary='Tableau des élèves'>\n";
+	echo "<table align='center' class='table_annee_anterieure' summary='Tableau des Ã©lÃ¨ves'>\n";
 	echo "<tr style='background-color:white;'>\n";
 	echo "<th>Supprimer<br />";
 	echo "<a href='javascript:modif_coche(true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-	echo "<a href='javascript:modif_coche(false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+	echo "<a href='javascript:modif_coche(false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout dÃ©cocher' /></a>\n";
 	echo "</th>\n";
-	echo "<th>Elève</th>\n";
+	echo "<th>ElÃ¨ve</th>\n";
 	echo "<th>Date de naissance</th>\n";
-	echo "<th>N°INE</th>\n";
+	echo "<th>NÂ°INE</th>\n";
 	echo "</tr>\n";
 	$cpt=0;
 	while($lig_ele=mysql_fetch_object($res1)){

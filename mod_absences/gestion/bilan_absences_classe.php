@@ -13,7 +13,7 @@ $choix_classe = isset($_GET["id_classe"]) ? $_GET["id_classe"] : (isset($_POST["
 
 
 echo '
-	<h2>Cette fonctionnalité n\'est pas encore opérationnelle.</h2>
+	<h2>Cette fonctionnalitÃ© n\'est pas encore opÃ©rationnelle.</h2>
 	<br />
 	<p><a href="./bilan_absences_quotidien.php">RETOUR</a></p>
 
