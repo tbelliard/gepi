@@ -1779,7 +1779,7 @@ else {
 		/*****************************************
 		* début de la génération du fichier PDF  *
 		* ****************************************/
-		header('Content-type: application/pdf');
+		//header('Content-type: application/pdf');
 		//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
 		$pdf=new bul_PDF('p', 'mm', 'A4');
 		$nb_eleve_aff = 1;
@@ -2014,7 +2014,13 @@ else {
 		// Envoyer le PDF et quitter
 		$nom_releve = date("Ymd_Hi");
 		$nom_fichier = 'releve_notes_'.$nom_releve.'.pdf';
-		$pdf->Output($nom_fichier,'I');
+
+		if(((isset($bull_pdf_debug))&&($bull_pdf_debug=='y'))||((isset($releve_pdf_debug))&&($releve_pdf_debug=='y'))) {
+			echo $pdf->Output($nom_fichier,'S');
+		}
+		else {
+			$pdf->Output($nom_fichier,'I');
+		}
 
 		die();
 	}
