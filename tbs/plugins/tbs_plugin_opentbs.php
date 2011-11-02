@@ -463,7 +463,7 @@ If they are blank spaces, line beaks, or other unexpected characters, then you h
 		foreach ($this->DebugLst as $name=>$src) {
 			$x = trim($src);
 			$info = '';
-			$xml = ((mb_strlen($x)>0) && $x[0]==='<');
+			$xml = ((strlen($x)>0) && $x[0]==='<');
 			if ($XmlFormat && $xml) {
 				$info = ' (XML reformated for debuging only)';
 				$src = $this->XmlFormat($src);
@@ -533,7 +533,7 @@ If they are blank spaces, line beaks, or other unexpected characters, then you h
 		}
 
 		$Res = substr($Res, 1); // delete the first line break
-		if ($p<mb_strlen($Txt)) $Res .= trim(substr($Txt, $p), ' '); // complete the end
+		if ($p<strlen($Txt)) $Res .= trim(substr($Txt, $p), ' '); // complete the end
 
 		return $Res;
 
@@ -788,7 +788,7 @@ $ImageName must be the name of the image, wihtout path. This is because OpenXML 
 				$p = -1;
 				while (($p = strpos($Txt, $zImg, $p+1))!==false) {
 					// Get the image name
-					$p1 = $p + mb_strlen($zImg);
+					$p1 = $p + strlen($zImg);
 					$p2 = strpos($Txt, '"', $p1);
 					if ($p2===false) return $this->RaiseError("(OpenXML) end of attribute Target not found in position ".$p1." of subfile ".$o->FicPath);
 					$Img = substr($Txt, $p1, $p2 -$p1 -1);
@@ -797,7 +797,7 @@ $ImageName must be the name of the image, wihtout path. This is because OpenXML 
 					if ($p1===false) return $this->RaiseError("(OpenXML) begining of tag not found in position ".$p." of subfile ".$o->FicPath);
 					$p1 = strpos($Txt, $zId, $p1);
 					if ($p1!==false) {
-						$p1 = $p1 + mb_strlen($zId);
+						$p1 = $p1 + strlen($zId);
 						$p2 = strpos($Txt, '"', $p1);
 						if ($p2===false) return $this->RaiseError("(OpenXML) end of attribute Id not found in position ".$p1." of subfile ".$o->FicPath);
 						$Rid = substr($Txt, $p1, $p2 -$p1 -1);
@@ -964,9 +964,9 @@ It needs to be completed when a new picture file extension is added in the docum
 		$Txt = $this->FileRead($idx, true);
 
 		$type = ' ContentType="application/vnd.openxmlformats-officedocument.';
-		$type_l = mb_strlen($type);
+		$type_l = strlen($type);
 		$name = ' PartName="';
-		$name_l = mb_strlen($name);
+		$name_l = strlen($name);
 
 		$p = -1;
 		while ( ($p=strpos($Txt, '<', $p+1))!==false) {
@@ -1034,7 +1034,7 @@ It needs to be completed when a new picture file extension is added in the docum
 				if ( ($n>=2) && ($f[$n-1]==='charts') ) {
 					$f = $f[$n]; // name of the xml file
 					if (substr($f,-4)==='.xml') {
-						$f = substr($f,0,mb_strlen($f)-4);
+						$f = substr($f,0,strlen($f)-4);
 						$this->OpenXmlCharts[$f] = array('idx'=>$i, 'clean'=>false, 'series'=>false);
 					}
 				}
@@ -1071,7 +1071,7 @@ It needs to be completed when a new picture file extension is added in the docum
 			echo "(no subfile loaded)".$nl;
 		} else {
 			$x = ' ProgID="MSGraph.Chart.';
-			$x_len = mb_strlen($x);
+			$x_len = strlen($x);
 			$p = 0;
 			$nbr = 0;
 			$txt = $this->TBS->Source;
@@ -1111,13 +1111,13 @@ It needs to be completed when a new picture file extension is added in the docum
 			$x = '</c:ser>';
 			$p2 = strpos($Txt, '</c:ser>', $p1);
 			if ($p2===false) return false;
-			$res['l'] = $p2 + mb_strlen($x) - $p1;
+			$res['l'] = $p2 + strlen($x) - $p1;
 			return $res;
 		}
 
 		$end_tag = '</c:ser>';
 		$end = strpos($Txt, '</c:ser>', $p);
-		$len = $end + mb_strlen($end_tag) - $p;
+		$len = $end + strlen($end_tag) - $p;
 		$res['l'] = $len;
 
 		$x = substr($Txt, $p, $len);
@@ -1131,7 +1131,7 @@ It needs to be completed when a new picture file extension is added in the docum
 				$tag = '<c:v>';
 				$p1 = strpos($x, $tag, $p1);
 				if ( ($p1!==false) && ($p1<$p2) ) {
-					$p1 = $p1 + mb_strlen($tag);
+					$p1 = $p1 + strlen($tag);
 					$p2 = strpos($x, '<', $p1);
 					$res['leg_p'] = $p1;
 					$res['leg_l'] = $p2 - $p1;
@@ -1140,7 +1140,7 @@ It needs to be completed when a new picture file extension is added in the docum
 			}
 		} else {
 			$res['leg_p'] = 0;
-			$res['leg_l'] = mb_strlen($SeriesNameOrNum);
+			$res['leg_l'] = strlen($SeriesNameOrNum);
 		}	
 			
 		// Data X & Y, we assume that (X or Category) are always first and (Y or Value) are always second
@@ -1270,7 +1270,7 @@ It needs to be completed when a new picture file extension is added in the docum
 				$p2 = $this->OpenXmlSharedStr[$last_id]['end'];
 			}
 			$x1 = '<si'; // SharedString Item
-			$x1_len = mb_strlen($x1);
+			$x1_len = strlen($x1);
 			$x2 = '</si>';
 			while ($last_id<$id) {
 				$last_id++;
@@ -1299,7 +1299,7 @@ It needs to be completed when a new picture file extension is added in the docum
 	function MsExcel_ConvertToRelative_Item(&$Txt, &$Loc, $Tag, $Att, $IsRow) {
 	// convert tags $Tag which have a position (defined with attribute $Att) into relatives tags without attribute $Att. Missing tags are added as empty tags.
 		$item_num = 0;
-		$att_len = mb_strlen($Att);
+		$att_len = strlen($Att);
 		$missing = '<'.$Tag.' />';
 		$closing = '</'.$Tag.'>';
 		$p = 0;
@@ -1334,7 +1334,7 @@ It needs to be completed when a new picture file extension is added in the docum
 					// add missing items before the current item
 					if ($missing_nbr>0) {
 						$x = str_repeat($missing, $missing_nbr);
-						$x_len = mb_strlen($x);
+						$x_len = strlen($x);
 						$Txt = substr_replace($Txt, $x, $p, 0);
 						$PosEnd = $PosEnd + $x_len;
 						$x = ''; // empty the memory
@@ -1354,7 +1354,7 @@ It needs to be completed when a new picture file extension is added in the docum
 				$x = substr($Txt, $PosEnd+1, $x_len0);
 				$this->MsExcel_ConvertToRelative_Item($x, $Loc, 'c', 'r', false);
 				$Txt = substr_replace($Txt, $x, $PosEnd+1, $x_len0);
-				$x_len = mb_strlen($x);
+				$x_len = strlen($x);
 				$p = $x_p + $x_len - $x_len0;
 			} else {
 				$p = $PosEnd;
@@ -1368,7 +1368,7 @@ It needs to be completed when a new picture file extension is added in the docum
     // return the column number from a reference like "B3"
         $num = 0;
         $rank = 0;
-        for ($i=mb_strlen($ColRef)-1;$i>=0;$i--) {
+        for ($i=strlen($ColRef)-1;$i>=0;$i--) {
             $l = $ColRef[$i];
             if (!is_numeric($l)) {
                 $l = ord(strtoupper($l)) -64;
@@ -1394,7 +1394,7 @@ It needs to be completed when a new picture file extension is added in the docum
 			$x = substr($Txt, $p, $x_len0);
 			$this->XML_DeleteElements($x, array('v'));
 			$Txt = substr_replace($Txt, $x, $p, $x_len0);
-			$p = $p + mb_strlen($x);
+			$p = $p + strlen($x);
 		}
 	}
 
@@ -1440,7 +1440,7 @@ It needs to be completed when a new picture file extension is added in the docum
 
 		$Txt = substr_replace($Txt, $x, $p, $x_len);
 
-		$PosEnd = $p + mb_strlen($x); // $PosEnd is used to search the next item, so we update it
+		$PosEnd = $p + strlen($x); // $PosEnd is used to search the next item, so we update it
 		
 	}
 
@@ -1474,14 +1474,14 @@ It needs to be completed when a new picture file extension is added in the docum
 		$is2 = '</is>';
 		$p_is2 = strpos($Txt, $is2, $p_is1);
 		if (($p_is2===false) || ($p_is2>$t1) ) return false; // error in the XML structure
-		$p_is2 = $p_is2 + mb_strlen($is2); // move to end the of the tag
+		$p_is2 = $p_is2 + strlen($is2); // move to end the of the tag
 
 		$middle_len = $p_is1 - $te - 1;
 		$middle = substr($Txt, $te + 1, $middle_len); // text bewteen <c...> and <is>
 		
 		// new tag to replace <is>...</is>
 		static $v = '<v>[]</v>';
-		$v_len = mb_strlen($v);
+		$v_len = strlen($v);
 		$v_pos = strpos($v, '[]');
 
 		$x = $c_open.$middle.$v;
@@ -1489,7 +1489,7 @@ It needs to be completed when a new picture file extension is added in the docum
 		$Txt = substr_replace($Txt, $x, $t0, $p_is2 - $t0);
 		
 		// move the TBS field
-		$p_fld = $t0 + mb_strlen($c_open) + $middle_len + $v_pos;
+		$p_fld = $t0 + strlen($c_open) + $middle_len + $v_pos;
 		$Loc->PosBeg = $p_fld;
 		$Loc->PosEnd = $p_fld +1;
 
@@ -1499,7 +1499,7 @@ It needs to be completed when a new picture file extension is added in the docum
 		$res = '';
 		$p3 = 0;
 		$close = '</'.$Tag.'>';
-		$close_len = mb_strlen($close);
+		$close_len = strlen($close);
 		$nbr = 0;
 		while ( ($p = $this->XML_FoundTagStart($Txt, $Tag, $p3))!==false ) {
 			$nbr++;
@@ -1534,7 +1534,7 @@ It needs to be completed when a new picture file extension is added in the docum
 	function XML_FoundTagStart($Txt, $Tag, $PosBeg) {
 	// Found the next tag of the asked type. (Not specific to MsWord, works for any XML)
 	// Tag must be prefixed with '<' or '</'.
-		$len = mb_strlen($Tag);
+		$len = strlen($Tag);
 		$p = $PosBeg;
 		while ($p!==false) {
 			$p = strpos($Txt, $Tag, $p);
@@ -1577,10 +1577,10 @@ It needs to be completed when a new picture file extension is added in the docum
 	// Delete GoBack hidden bookmarks that appear since Office 2010. Example: <w:bookmarkStart w:id="0" w:name="_GoBack"/><w:bookmarkEnd w:id="0"/>
 
 		$x = ' w:name="_GoBack"/><w:bookmarkEnd ';
-		$x_len = mb_strlen($x);
+		$x_len = strlen($x);
 		
 		$b = '<w:bookmarkStart ';
-		$b_len = mb_strlen($b);
+		$b_len = strlen($b);
 		
 		$nbr_del = 0;
 		
@@ -1614,7 +1614,7 @@ It needs to be completed when a new picture file extension is added in the docum
 		foreach ($rs_lst as $rs) {
 
 			$rs_att = ' '.$rs.'="';
-			$rs_len = mb_strlen($rs_att);
+			$rs_len = strlen($rs_att);
 
 			$p = 0;
 			while ($p!==false) {
@@ -1652,16 +1652,16 @@ It needs to be completed when a new picture file extension is added in the docum
 	// Return the number of deleted dublicates
 	
 		$wro = '<w:r';
-		$wro_len = mb_strlen($wro);
+		$wro_len = strlen($wro);
 
 		$wrc = '</w:r';
-		$wrc_len = mb_strlen($wrc);
+		$wrc_len = strlen($wrc);
 
 		$wto = '<w:t';
-		$wto_len = mb_strlen($wto);
+		$wto_len = strlen($wto);
 
 		$wtc = '</w:t';
-		$wtc_len = mb_strlen($wtc);
+		$wtc_len = strlen($wtc);
 
 		$nbr = 0;
 		$wro_p = 0;
@@ -1675,7 +1675,7 @@ It needs to be completed when a new picture file extension is added in the docum
 				if ( ($wto_p<$wrc_p) && ($wtc_p<$wrc_p) ) { // if the found <w:t> is actually included in the <w:r> element
 					if ($first) {
 						$superflous = '</w:t></w:r>'.substr($Txt, $wro_p, ($wto_p+$wto_len)-$wro_p); // should be like: '</w:t></w:r><w:r>....<w:t'
-						$superflous_len = mb_strlen($superflous);
+						$superflous_len = strlen($superflous);
 						$first = false;
 					}
 					$x = substr($Txt, $wtc_p+$superflous_len,1);
@@ -1770,7 +1770,7 @@ It needs to be completed when a new picture file extension is added in the docum
 
 		static $OpeLst = array('odsNum'=>'float', 'odsPercent'=>'percentage', 'odsCurr'=>'currency', 'odsBool'=>'boolean', 'odsDate'=>'date', 'odsTime'=>'time');
 		$AttStr = 'office:value-type="string"';
-		$AttStr_len = mb_strlen($AttStr);
+		$AttStr_len = strlen($AttStr);
 
 		if (!isset($OpeLst[$Ope])) return false;
 		
@@ -1804,6 +1804,7 @@ It needs to be completed when a new picture file extension is added in the docum
 		}
 
 		// replace the sring attribute with the new attribute
+		//$diff = strlen($att_new) - $AttStr_len;
 		$p_att = $t0 + $p;
 		$p_fld = $p_att + strpos($att_new, '['); // new position of the fields in $Txt
 		$Txt = substr_replace($Txt, $att_new, $p_att, $AttStr_len);
@@ -1865,7 +1866,7 @@ class clsTbsZip {
 		$this->ArchFile = $ArchName;
 		$this->ArchIsNew = true;
 		$bin = 'PK'.chr(05).chr(06).str_repeat(chr(0), 18);
-		$this->CdEndPos = mb_strlen($bin) - 4;
+		$this->CdEndPos = strlen($bin) - 4;
 		$this->CdInfo = array('disk_num_curr'=>0, 'disk_num_cd'=>0, 'file_nbr_curr'=>0, 'file_nbr_tot'=>0, 'l_cd'=>0, 'p_cd'=>0, 'l_comm'=>0, 'v_comm'=>'', 'bin'=>$bin);
 		$this->CdPos = $this->CdInfo['p_cd'];
 	}
@@ -1909,7 +1910,7 @@ class clsTbsZip {
 		if ($Data===false) return $this->FileCancelModif($Name, false); // Cancel a previously added file
 
 		// Save information for adding a new file into the archive
-		$Diff = 30 + 46 + 2*mb_strlen($Name); // size of the header + cd info
+		$Diff = 30 + 46 + 2*strlen($Name); // size of the header + cd info
 		$Ref = $this->_DataCreateNewRef($Data, $DataType, $Compress, $Diff, $Name);
 		if ($Ref===false) return false;
 		$Ref['name'] = $Name;
@@ -2257,7 +2258,7 @@ class clsTbsZip {
 			} else {
 				$b2 = '';
 			}
-			$info_old_len = mb_strlen($b1) + $this->CdFileLst[$ReplIdx]['l_data_c'] + mb_strlen($b2); // $FileInfo['l_data_c'] may have a 0 value in some archives
+			$info_old_len = strlen($b1) + $this->CdFileLst[$ReplIdx]['l_data_c'] + strlen($b2); // $FileInfo['l_data_c'] may have a 0 value in some archives
 			// get replacement information
 			$ReplInfo =& $this->ReplInfo[$ReplIdx];
 			if ($ReplInfo===false) {
@@ -2316,7 +2317,7 @@ class clsTbsZip {
 		$old_cd_len = 0;
 		for ($i=0;$i<$this->CdFileNbr;$i++) {
 			$b1 = $this->CdFileLst[$i]['bin'];
-			$old_cd_len += mb_strlen($b1);
+			$old_cd_len += strlen($b1);
 			if (!isset($DelLst[$i])) {
 				if (isset($FicNewPos[$i])) $this->_PutDec($b1, $FicNewPos[$i], 42, 4);   // p_loc
 				if (isset($this->ReplInfo[$i])) {
@@ -2333,7 +2334,7 @@ class clsTbsZip {
 		}
 		$this->OutputFromString($b2);
 		$ArchPos += $old_cd_len;
- 		$DeltaCdLen =  $DeltaCdLen + mb_strlen($b2) - $old_cd_len;
+ 		$DeltaCdLen =  $DeltaCdLen + strlen($b2) - $old_cd_len;
  		
 		// Output until Central Directory footer
 		if ($this->ArchHnd!==false) $this->OutputFromArch($ArchPos, $this->CdEndPos); // ArchHnd is false if CreateNew() has been called
@@ -2345,7 +2346,7 @@ class clsTbsZip {
 				$b2 .= $this->AddInfo[$idx]['bin'];
 			}
 			$this->OutputFromString($b2);
-			$DeltaCdLen += mb_strlen($b2);
+			$DeltaCdLen += strlen($b2);
 		}
 		
 		// Output Central Directory footer
@@ -2551,7 +2552,7 @@ class clsTbsZip {
 		$now = time();
 		$date  = $this->_MsDos_Date($now);
 		$time  = $this->_MsDos_Time($now);
-		$len_n = mb_strlen($Ref['name']);
+		$len_n = strlen($Ref['name']);
 		$purp  = 2048 ; // purpose // +8 to indicates that there is an extended local header 
 
 		// Header for file in the data section 
@@ -2571,7 +2572,7 @@ class clsTbsZip {
 
 		// Output the data
 		$this->OutputFromString($b.$Ref['data']);
-		$OutputLen = mb_strlen($b) + $Ref['len_c']; // new position of the cursor
+		$OutputLen = strlen($b) + $Ref['len_c']; // new position of the cursor
 		unset($Ref['data']); // save PHP memory
 		
 		// Information for file in the Central Directory
@@ -2627,12 +2628,12 @@ class clsTbsZip {
 			$path = false;
 			if ($Compress) {
 				// we compress now in order to save PHP memory
-				$len_u = mb_strlen($Data);
+				$len_u = strlen($Data);
 				$crc32 = crc32($Data);
 				$Data = gzdeflate($Data);
-				$len_c = mb_strlen($Data);
+				$len_c = strlen($Data);
 			} else {
-				$len_c = mb_strlen($Data);
+				$len_c = strlen($Data);
 				if ($len_u===false) {
 					$len_u = $len_c;
 					$crc32 = crc32($Data);
@@ -2663,7 +2664,7 @@ class clsTbsZip {
 			if ($Ref['len_c']===false) {
 				// means the data must be compressed
 				$Ref['data'] = gzdeflate($Ref['data']);
-				$Ref['len_c'] = mb_strlen($Ref['data']);
+				$Ref['len_c'] = strlen($Ref['data']);
 			}
 		}
 	}
@@ -2672,7 +2673,7 @@ class clsTbsZip {
 	// Return the size of the new archive, or false if it cannot be calculated (because of external file that must be compressed before to be insered)
 
 		if ($this->ArchIsNew) {
-			$Len = mb_strlen($this->CdInfo['bin']);
+			$Len = strlen($this->CdInfo['bin']);
 		} else {
 			$Len = filesize($this->ArchFile);
 		}
@@ -2689,8 +2690,8 @@ class clsTbsZip {
 					$this->_ReadFile($i, false);
 				}
 				$Vis =& $this->VisFileLst[$i];
-				$Len += -mb_strlen($Vis['bin']) -mb_strlen($Info['bin']) - $Info['l_data_c'];
-				if (isset($Vis['desc_bin'])) $Len += -mb_strlen($Vis['desc_bin']);
+				$Len += -strlen($Vis['bin']) -strlen($Info['bin']) - $Info['l_data_c'];
+				if (isset($Vis['desc_bin'])) $Len += -strlen($Vis['desc_bin']);
 			} elseif ($Ref['len_c']===false) {
 				return false; // information not yet known
 			} else {
