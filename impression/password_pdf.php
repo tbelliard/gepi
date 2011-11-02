@@ -1,8 +1,6 @@
 <?php
 /*
- * Last modification  : 10/02/2007
- *
- * Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -22,29 +20,22 @@
  */
 
 //INSERT INTO droits VALUES ('/impression/password_pdf.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','Impression des des mots de passe. Module PDF', '');
- 
-// Global configuration file
-// Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
-//Le problème peut être résolu en ajoutant la ligne suivante :
-Header('Pragma: public');
 
-header('Content-Type: application/pdf');
 //=============================
-// REMONTé:
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 //=============================
+
+$date=date("Ymd_Hi");
+$nom_releve = "export_csv_password_".$date.".pdf";
+
+send_file_download_headers('application/pdf',$nom_releve);
 
 require_once('../fpdf/fpdf.php');
 
 define('FPDF_FONTPATH','../fpdf/font/');
 define('LargeurPage','210');
 define('HauteurPage','297');
-
-/*
-// Initialisations files
-require_once("../lib/initialisations.inc.php");
-*/
 
 require_once("./class_pdf.php");
 require_once ("./liste.inc.php"); //fonction qui retourne le nombre d'élèves par classe (ou groupe) pour une période donnée.
@@ -63,7 +54,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -175,8 +166,7 @@ if (($donnees_personne_csv)) {
 // problème de variable de session
   $pdf->CellFitScale($l_cell_avis,$h_cell,"Erreur de session export PDF",1,0,'L',0); //le quadrillage
 }
-	// sortie PDF sur écran
-	$date=date("Ymd_Hi");
-	$nom_releve = "export_csv_password_".$date.".pdf";
-	$pdf->Output($nom_releve,'I');
+
+// sortie PDF sur écran
+$pdf->Output($nom_releve,'I');
 ?>
