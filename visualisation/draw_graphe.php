@@ -1,11 +1,10 @@
 <?php
 	// On précise de ne pas traiter les données avec la fonction anti_inject
 	$traite_anti_inject = 'no';
-	// En quoi cela consiste-t-il?
 
 	// Initialisations files
 	require_once("../lib/initialisations.inc.php");
-	send_file_download_headers("Content-type:image/png", "image.png", "inline");
+	//send_file_download_headers("Content-type:image/png", "image.png", "inline");
 
 	header("Content-type:image/png");
 	
