@@ -1,10 +1,15 @@
 <?php
-  // Envoi des en-têtes HTTP
-  send_file_download_headers('application/pdf','bulletin.pdf');
+	// Envoi des en-têtes HTTP
+	if(((isset($bull_pdf_debug))&&($bull_pdf_debug=='y'))||((isset($releve_pdf_debug))&&($releve_pdf_debug=='y'))) {
+		echo "\nDEBUG\n";
+	}
+	else {
+		send_file_download_headers('application/pdf','bulletin.pdf');
+	}
 
-if (!defined('FPDF_VERSION')) {
-	require_once('../fpdf/fpdf.php');
-}
+	if (!defined('FPDF_VERSION')) {
+		require_once('../fpdf/fpdf.php');
+	}
 	require('../fpdf/ex_fpdf.php');
 	require_once("../fpdf/class.multicelltag.php");
 
