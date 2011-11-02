@@ -431,7 +431,7 @@ if (!isset($_POST["action"])) {
 				$k = 0;
 				$nat_num = array();
 				while (!feof($fp)) {
-					$ligne = fgets($fp, 4096);
+					$ligne = ensure_utf8(fgets($fp, 4096));
 					if(trim($ligne)!="") {
 
 						$tabligne=explode(";",$ligne);
@@ -446,20 +446,9 @@ if (!isset($_POST["action"])) {
 						// 7 : Régime : INTERN || EXTERN || IN.EX. || DP DAN
 						// 8 : Sexe : F || M
 
-						// On nettoie et on vérifie :
-						//=====================================
-						// MODIF: boireaus
-						//$tabligne[0] = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($tabligne[0])));
-						//$tabligne[0] = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[0])));
-						$tabligne[0] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[0])))))));
 						//=====================================
 						if (mb_strlen($tabligne[0]) > 50) {$tabligne[0] = mb_substr($tabligne[0], 0, 50);}
 
-						//=====================================
-						// MODIF: boireaus
-						//$tabligne[1] = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($tabligne[1]));
-						//$tabligne[1] = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]));
-						$tabligne[1] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]))))));
 						//=====================================
 						if (mb_strlen($tabligne[1]) > 50) $tabligne[1] = mb_substr($tabligne[1], 0, 50);
 
