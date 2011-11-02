@@ -1601,6 +1601,20 @@ function ensure_ascii($chaine){
 }
 
 /**
+ * Nettoyage des caractères d'un nom ou prénom
+ * On ne conserve que les lettres (accentuées incluses), l'espace et le tiret
+ *
+ * @global string 
+ * @param type $chaine La chaine à traiter
+ * @return La chaine corrigée
+ */
+function nettoyer_caracteres_nom($chaine){
+	global $liste_caracteres_accentues;
+    //return preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe",preg_replace("/[^A-Za-z$liste_caracteres_accentues \-]/", "", $chaine)))));
+    return preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe",$chaine))));
+}
+
+/**
  * Fonction qui renvoie le login d'un élève en échange de son ele_id
  *
  * @param int $id_eleve ele_id de l'élève
