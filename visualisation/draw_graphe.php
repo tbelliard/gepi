@@ -1,9 +1,4 @@
 <?php
-/*
- $Id$
-*/
-	header("Content-type:image/png");
-
 	// On précise de ne pas traiter les données avec la fonction anti_inject
 	$traite_anti_inject = 'no';
 	// En quoi cela consiste-t-il?
@@ -11,6 +6,8 @@
 	// Initialisations files
 	require_once("../lib/initialisations.inc.php");
 
+	header("Content-type:image/png");
+	
 	// Récupération des valeurs:
 	//$nb_data = $_GET['nb_data'];
 	$nb_series= $_GET['nb_series'];
