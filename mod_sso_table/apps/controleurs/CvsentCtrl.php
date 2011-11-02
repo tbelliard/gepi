@@ -382,8 +382,8 @@ class CvsentCtrl extends Controleur {
 
     private function get_probable($personne, $possibles) {
         foreach ($possibles as $possible) {
-            $longueur_min = min(strlen($personne['prenom']), strlen($possible['prenom']));
-            if (soundex(substr($personne['prenom'], 0, $longueur_min)) == soundex(substr($possible['prenom'], 0, $longueur_min))) {
+            $longueur_min = min(mb_strlen($personne['prenom']), mb_strlen($possible['prenom']));
+            if (soundex(mb_substr($personne['prenom'], 0, $longueur_min)) == soundex(mb_substr($possible['prenom'], 0, $longueur_min))) {
                 $probables[] = $possible;
             }
         }

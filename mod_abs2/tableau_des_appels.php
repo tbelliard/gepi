@@ -225,7 +225,7 @@ foreach($classe_col as $classe){
 	    if ($edtCours->getUtilisateurProfessionnel() != null) {
 		$echo_str .= $edtCours->getUtilisateurProfessionnel()->getCivilite().' '
 			.$edtCours->getUtilisateurProfessionnel()->getNom().' '
-			.strtoupper(substr($edtCours->getUtilisateurProfessionnel()->getPrenom(), 0 ,1)).'. ';
+			.strtoupper(mb_substr($edtCours->getUtilisateurProfessionnel()->getPrenom(), 0 ,1)).'. ';
 	    }
 	    if ($edtCours->getEdtSalle() != null) {
 		$echo_str .= '- <span style="font-style: italic;">('.$edtCours->getEdtSalle()->getNumeroSalle().')</span>';
@@ -256,7 +256,8 @@ foreach($classe_col as $classe){
 	    if ($cours_col->isEmpty()) {
 		$appel_manquant = false;
 	    }
-	    foreach ($abs_col as $abs) {//$abs = new AbsenceEleveSaisie();        if($abs->getEleve()!=null && $abs->getEleve()->isEleveSorti($dt_debut_creneau)){
+	    foreach ($abs_col as $abs) {//$abs = new AbsenceEleveSaisie();
+        if($abs->getEleve()!=null && $abs->getEleve()->isEleveSorti($dt_debut_creneau)){
                 continue;
         }
 		$affiche = false;
@@ -275,7 +276,7 @@ foreach($classe_col as $classe){
 		if ($affiche) {//on affiche un appel donc on va afficher les infos du prof
 		    $echo_str .= ' '.$abs->getUtilisateurProfessionnel()->getCivilite().' '
 			    .$abs->getUtilisateurProfessionnel()->getNom().' '
-			    .strtoupper(substr($abs->getUtilisateurProfessionnel()->getPrenom(), 0 ,1)).'. ';
+			    .strtoupper(mb_substr($abs->getUtilisateurProfessionnel()->getPrenom(), 0 ,1)).'. ';
 		    $prof_deja_sortis[] = $abs->getUtilisateurProfessionnel()->getPrimaryKey();
 		    $echo_str .= '<br/>';
 		}
@@ -352,7 +353,8 @@ foreach($classe_col as $classe){
 	if (!$abs_col->isEmpty()) {
         $aid_deja_sorties = Array();
         $current_eleve = Null;
-        foreach ($abs_col as $absenceSaisie) {            if($absenceSaisie->getEleve()!=null && $absenceSaisie->getEleve()->isEleveSorti($dt_debut_creneau)){
+        foreach ($abs_col as $absenceSaisie) {
+            if($absenceSaisie->getEleve()!=null && $absenceSaisie->getEleve()->isEleveSorti($dt_debut_creneau)){
                 continue;
             }
             if ($absenceSaisie->getManquementObligationPresenceSpecifie_NON_PRECISE()) {
@@ -363,7 +365,7 @@ foreach($classe_col as $classe){
                 echo $absenceSaisie->getAidDetails()->getNom() . ' ';
                 echo $absenceSaisie->getUtilisateurProfessionnel()->getCivilite() . ' '
                 . $absenceSaisie->getUtilisateurProfessionnel()->getNom() . ' '
-                . strtoupper(substr($absenceSaisie->getUtilisateurProfessionnel()->getPrenom(), 0, 1)) . '. ';
+                . strtoupper(mb_substr($absenceSaisie->getUtilisateurProfessionnel()->getPrenom(), 0, 1)) . '. ';
                 $aid_deja_sorties[] = $absenceSaisie->getAidDetails()->getId();
                 echo '<br/>';
             }

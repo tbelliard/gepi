@@ -768,7 +768,7 @@ foreach ($results as $saisie) {
 	    echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getDeletedAt('U')));
     	$suppr_utilisateur = UtilisateurProfessionnelQuery::create()->findPK($saisie->getDeletedBy());
     	if ($suppr_utilisateur != null) {
-    		echo ' par '.  $suppr_utilisateur->getCivilite().' '.$suppr_utilisateur->getNom().' '.substr($suppr_utilisateur->getPrenom(), 0, 1).'.';;
+    		echo ' par '.  $suppr_utilisateur->getCivilite().' '.$suppr_utilisateur->getNom().' '.mb_substr($suppr_utilisateur->getPrenom(), 0, 1).'.';;
     	}
 	    echo "</a>";
 	    echo '</td>';

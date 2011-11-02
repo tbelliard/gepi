@@ -3,40 +3,7 @@
 */
 
 //========================================
-/*
-$enregistrer_mb="n";
-$sql="SELECT value FROM setting WHERE name='utiliser_mb';";
-//echo "$sql<br />";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
-	$enregistrer_mb="y";
-}
-else {
-	$lig_tmp=mysql_fetch_object($res);
-	$utiliser_mb=$lig_tmp->value;
-	if(($utiliser_mb!='y')&&($utiliser_mb!='n')) {$enregistrer_mb="y";}
-}
 
-$phpversion=phpversion();
-$tab_tmp=split(".",$phpversion);
-if(($tab_tmp[0]>=5)&&($tab_tmp[1]>=3)) {
-	$val_tmp='y';
-}
-else {
-	$val_tmp='n';
-}
-
-if($enregistrer_mb=="y") {
-	$sql="INSERT INTO setting SET name='utiliser_mb', value='$val_tmp';";
-	$insert=mysql_query($sql);
-}
-elseif($val_tmp!=$utiliser_mb) {
-	$sql="UPDATE setting SET value='$val_tmp' WHERE name='utiliser_mb';";
-	$update=mysql_query($sql);
-}
-
-$utiliser_mb=$val_tmp;
-*/
 
 $modifier_mb="n";
 $initialiser_mb="n";
@@ -157,18 +124,7 @@ function my_eregi_replace($motif,$remplacement,$chaine) {
 //mb_strlen ( string $str [, string $encoding ] )
 //(PHP 4 >= 4.0.6, PHP 5)
 function my_strlen($chaine,$encodage=NULL) {
-	global $utiliser_mb;
-	if($utiliser_mb=='y') {
-		if($encodage!=NULL) {
-			return mb_strlen($chaine,$encodage);
-		}
-		else {
-			return mb_strlen($chaine);
-		}
-	}
-	else {
-		return strlen($chaine);
-	}
+  return mb_strlen($chaine,'utf8');
 }
 
 //split ( string pattern, string string [, int limit])

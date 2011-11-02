@@ -985,7 +985,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 
 			$tmp_clas=get_class_from_ele_login($_SESSION['login']);
 			foreach($tmp_clas as $key_tmp => $value_tmp) {
-				if(strlen(my_ereg_replace("[0-9]","",$key_tmp))==0) {
+				if(mb_strlen(my_ereg_replace("[0-9]","",$key_tmp))==0) {
 					$tmp_id_classe=$key_tmp;
 					break;
 				}
@@ -1002,7 +1002,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 					$tmp_clas=get_class_from_ele_login($tmp_tab_enfants[$loop]);
 					foreach($tmp_clas as $key_tmp => $value_tmp) {
 						//echo "\$tmp_clas[$key_tmp]=$value_tmp<br />";
-						if(strlen(my_ereg_replace("[0-9]","",$key_tmp))==0) {
+						if(mb_strlen(my_ereg_replace("[0-9]","",$key_tmp))==0) {
 							$tmp_id_classe=$key_tmp;
 							break;
 						}

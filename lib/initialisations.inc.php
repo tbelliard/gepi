@@ -179,7 +179,7 @@ if($is_lcs_plugin=='yes') {
 
 }
 
-$version = substr(phpversion(), 0, 1);
+$version = mb_substr(phpversion(), 0, 1);
 if ($version == 4) {
   $ldap_class = "/lib/LDAPServer.php4.class.php";
   $session_class = "/lib/Session.php4.class.php";

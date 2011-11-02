@@ -471,7 +471,7 @@ if ($nombreligne == '0') {
 				//echo $ajout_login[$i]."<br>";
 				$elementlist .= "'".$ajout_login[$i]."',";
 			}
-			$elementlist = substr($elementlist, 0, -1);
+			$elementlist = mb_substr($elementlist, 0, -1);
 
 			echo "<td><center><a href=\"javascript:CocheLigne($id_eleve);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne($id_eleve);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></center></td>\n";
 			echo "</tr>\n";

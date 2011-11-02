@@ -240,7 +240,7 @@ for ($row=1; $row<$nb_row; $row++) {
 if ($modif == 'yes') {
     $recalcul_rang = sql_query1("select recalcul_rang from groupes
     where id='".$id_groupe."' limit 1 ");
-    $long = strlen($recalcul_rang);
+    $long = mb_strlen($recalcul_rang);
     if ($long >= $periode_num) {
         $recalcul_rang = substr_replace ( $recalcul_rang, "y", $periode_num-1, $periode_num);
     } else {

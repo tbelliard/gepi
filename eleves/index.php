@@ -1235,7 +1235,7 @@ if(isset($quelles_classes)) {
 			");
 			*/
 			/*
-			if(substr($order_type,0,6)=='regime') {
+			if(mb_substr($order_type,0,6)=='regime') {
 				$tmp_order_type=my_ereg_replace('^regime,','',$order_type);
 			}
 			else {
@@ -1828,7 +1828,7 @@ if(isset($quelles_classes)) {
 	echo "<br />\n";
 	$temoin_notes_bas_de_page="n";
 	$max_file_uploads=ini_get('max_file_uploads');
-	if(($max_file_uploads!="")&&(strlen(preg_replace("/[^0-9]/","",$max_file_uploads))==strlen($max_file_uploads))&&($max_file_uploads>0)) {
+	if(($max_file_uploads!="")&&(mb_strlen(preg_replace("/[^0-9]/","",$max_file_uploads))==mb_strlen($max_file_uploads))&&($max_file_uploads>0)) {
 		echo "<p><i>Notes</i>&nbsp;:</p>\n";
 		echo "<ul>\n";
 		echo "<li><p>L'upload des photos est limité à $max_file_uploads fichier(s) simultanément.</p></li>\n";

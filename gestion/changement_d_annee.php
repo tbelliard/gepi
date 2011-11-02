@@ -189,7 +189,7 @@ echo "<p>Les points sont les suivants&nbsp;:</p>\n";
 echo "<p>La partie archivage de fin d'année&nbsp;:</p>\n";
 echo "<ol>\n";
 echo "<li><p><a href='accueil_sauve.php?chgt_annee=y'>Sauvegarder la base</a> $lien_svg</p></li>\n";
-if(my_strtolower(substr(getSettingValue('active_cahiers_texte'),0,1))=='y') {
+if(my_strtolower(mb_substr(getSettingValue('active_cahiers_texte'),0,1))=='y') {
 	echo "<li><p>Eventuellement, faire un <a href='../cahier_texte_2/export_cdt.php?chgt_annee=y'>export des cahiers de textes</a><br />et une <a href='accueil_sauve.php?chgt_annee=y#zip'>sauvegarde des documents du Cahier de textes</a> $lien_svg</p></li>\n";
 	echo "<li><p><a href='../cahier_texte_2/archivage_cdt.php?chgt_annee=y'>Archiver les cahiers de textes</a> pour permettre aux professeurs une consultation de leurs CDT passés.</p></li>\n";
 }

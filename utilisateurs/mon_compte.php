@@ -392,7 +392,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 			// Envoi de la photo
 			if(isset($reg_no_gep)) {
 				if($reg_no_gep!="") {
-					if(strlen(my_ereg_replace("[0-9]","",$reg_no_gep))==0) {
+					if(mb_strlen(my_ereg_replace("[0-9]","",$reg_no_gep))==0) {
 						if(isset($_POST['suppr_filephoto'])) {
 							if($_POST['suppr_filephoto']=='y') {
 
@@ -1119,20 +1119,20 @@ $res = sql_query($sql);
 if ($res) {
 	for ($i = 0; ($row = sql_row($res, $i)); $i++)
 	{
-		$annee_b = substr($row[0],0,4);
-		$mois_b =  substr($row[0],5,2);
-		$jour_b =  substr($row[0],8,2);
-		$heures_b = substr($row[0],11,2);
-		$minutes_b = substr($row[0],14,2);
-		$secondes_b = substr($row[0],17,2);
+		$annee_b = mb_substr($row[0],0,4);
+		$mois_b =  mb_substr($row[0],5,2);
+		$jour_b =  mb_substr($row[0],8,2);
+		$heures_b = mb_substr($row[0],11,2);
+		$minutes_b = mb_substr($row[0],14,2);
+		$secondes_b = mb_substr($row[0],17,2);
 		$date_debut = $jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b;
 
-		$annee_f = substr($row[5],0,4);
-		$mois_f =  substr($row[5],5,2);
-		$jour_f =  substr($row[5],8,2);
-		$heures_f = substr($row[5],11,2);
-		$minutes_f = substr($row[5],14,2);
-		$secondes_f = substr($row[5],17,2);
+		$annee_f = mb_substr($row[5],0,4);
+		$mois_f =  mb_substr($row[5],5,2);
+		$jour_f =  mb_substr($row[5],8,2);
+		$heures_f = mb_substr($row[5],11,2);
+		$minutes_f = mb_substr($row[5],14,2);
+		$secondes_f = mb_substr($row[5],17,2);
 		$date_fin = $jour_f."/".$mois_f."/".$annee_f." à ".$heures_f." h ".$minutes_f;
 		$end_time = mktime($heures_f, $minutes_f, $secondes_f, $mois_f, $jour_f, $annee_f);
 
@@ -1163,9 +1163,9 @@ if ($res) {
 			$result_hostbyaddr = " - ".@gethostbyaddr($row[2]);
 		}
 		else if ($active_hostbyaddr == "no_local") {
-			if ((substr($row[2],0,3) == 127) or
-				(substr($row[2],0,3) == 10.) or
-				(substr($row[2],0,7) == 192.168)) {
+			if ((mb_substr($row[2],0,3) == 127) or
+				(mb_substr($row[2],0,3) == 10.) or
+				(mb_substr($row[2],0,7) == 192.168)) {
 				$result_hostbyaddr = "";
 			}
 			else {

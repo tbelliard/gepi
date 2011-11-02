@@ -140,8 +140,8 @@ function tbs_Cache_IsValide($CacheFile,$TimeOut) {
 
 function tbs_Cache_File($Dir,$CacheId,$Mask) {
 // Return the cache file path for a given Id.
-	if (strlen($Dir)>0) {
-		if ($Dir[strlen($Dir)-1]<>'/') {
+	if (mb_strlen($Dir)>0) {
+		if ($Dir[mb_strlen($Dir)-1]<>'/') {
 			$Dir .= '/';
 		}
 	}
@@ -150,10 +150,10 @@ function tbs_Cache_File($Dir,$CacheId,$Mask) {
 
 function tbs_Cache_DeleteAll($Dir,$Mask) {
 
-	if (strlen($Dir)==0) {
+	if (mb_strlen($Dir)==0) {
 		$Dir = '.';
 	}
-	if ($Dir[strlen($Dir)-1]<>'/') {
+	if ($Dir[mb_strlen($Dir)-1]<>'/') {
 		$Dir .= '/';
 	}
 	$DirObj = dir($Dir);

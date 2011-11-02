@@ -231,9 +231,9 @@ class Calendrier {
      */
     function set_format($format, $sep){
         if (!is_array($format)){
-            if (strlen($format) == 3){
+            if (mb_strlen($format) == 3){
                 $tmp = array();
-                for ($i = 0; $i < strlen($format); $i++){
+                for ($i = 0; $i < mb_strlen($format); $i++){
                     $tmp[] = $format[$i];
                 }
                 $format = $tmp;

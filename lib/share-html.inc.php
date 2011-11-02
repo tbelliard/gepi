@@ -621,7 +621,7 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
 				echo "<td class='small' ";
 				if(!preg_match("/Rang de l/",$ligne1[$j])) {
 					if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
-						if(strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
+						if(mb_strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
 							for($loop=0;$loop<count($vtn_borne_couleur);$loop++) {
 								if(preg_replace('/,/','.',$col[$j][$i])<=preg_replace('/,/','.',$vtn_borne_couleur[$loop])) {
 									echo " style='";
@@ -640,7 +640,7 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
 				echo "<td align=\"center\" class='small' ";
 				if(!preg_match("/Rang de l/",$ligne1[$j])) {
 					if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
-						if(strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
+						if(mb_strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
 							for($loop=0;$loop<count($vtn_borne_couleur);$loop++) {
 								if(preg_replace('/,/','.',$col[$j][$i])<=preg_replace('/,/','.',$vtn_borne_couleur[$loop])) {
 									echo " style='";
@@ -831,7 +831,7 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day,
 		$chaine = "";
 		for ($k=0;$prof=sql_row($res_prof,$k);$k++) {
 			if ($k != 0) $chaine .= ", ";
-			$chaine .= htmlspecialchars($prof[0])." ".substr(htmlspecialchars($prof[1]),0,1).".";
+			$chaine .= htmlspecialchars($prof[0])." ".mb_substr(htmlspecialchars($prof[1]),0,1).".";
 		}
 
 		$selected = ($row[0] == $current) ? "selected=\"selected\"" : "";
@@ -1039,7 +1039,7 @@ function liens_class_from_ele_login($ele_login){
 	if(isset($tab_classe)){
 		if(count($tab_classe)>0){
 			foreach ($tab_classe as $key => $value){
-				if(strlen(preg_replace("/[0-9]/","",$key))==0) {
+				if(mb_strlen(preg_replace("/[0-9]/","",$key))==0) {
 					if($_SESSION['statut']=='administrateur') {
 						$chaine.=", <a href='../classes/classes_const.php?id_classe=$key'>$value</a>";
 					}
@@ -1048,7 +1048,7 @@ function liens_class_from_ele_login($ele_login){
 					}
 				}
 			}
-			$chaine="(".substr($chaine,2).")";
+			$chaine="(".mb_substr($chaine,2).")";
 		}
 	}
 	return $chaine;
@@ -1231,20 +1231,20 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 	if ($res) {
 		for ($i = 0; ($row = sql_row($res, $i)); $i++)
 		{
-			$annee_b = substr($row[0],0,4);
-			$mois_b =  substr($row[0],5,2);
-			$jour_b =  substr($row[0],8,2);
-			$heures_b = substr($row[0],11,2);
-			$minutes_b = substr($row[0],14,2);
-			$secondes_b = substr($row[0],17,2);
+			$annee_b = mb_substr($row[0],0,4);
+			$mois_b =  mb_substr($row[0],5,2);
+			$jour_b =  mb_substr($row[0],8,2);
+			$heures_b = mb_substr($row[0],11,2);
+			$minutes_b = mb_substr($row[0],14,2);
+			$secondes_b = mb_substr($row[0],17,2);
 			$date_debut = $jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b;
 
-			$annee_f = substr($row[5],0,4);
-			$mois_f =  substr($row[5],5,2);
-			$jour_f =  substr($row[5],8,2);
-			$heures_f = substr($row[5],11,2);
-			$minutes_f = substr($row[5],14,2);
-			$secondes_f = substr($row[5],17,2);
+			$annee_f = mb_substr($row[5],0,4);
+			$mois_f =  mb_substr($row[5],5,2);
+			$jour_f =  mb_substr($row[5],8,2);
+			$heures_f = mb_substr($row[5],11,2);
+			$minutes_f = mb_substr($row[5],14,2);
+			$secondes_f = mb_substr($row[5],17,2);
 			$date_fin = $jour_f."/".$mois_f."/".$annee_f." à ".$heures_f." h ".$minutes_f;
 			$end_time = mktime($heures_f, $minutes_f, $secondes_f, $mois_f, $jour_f, $annee_f);
 
@@ -1275,9 +1275,9 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 				$result_hostbyaddr = " - ".@gethostbyaddr($row[2]);
 			}
 			else if ($active_hostbyaddr == "no_local") {
-				if ((substr($row[2],0,3) == 127) or
-					(substr($row[2],0,3) == 10.) or
-					(substr($row[2],0,7) == 192.168)) {
+				if ((mb_substr($row[2],0,3) == 127) or
+					(mb_substr($row[2],0,3) == 10.) or
+					(mb_substr($row[2],0,7) == 192.168)) {
 					$result_hostbyaddr = "";
 				}
 				else {

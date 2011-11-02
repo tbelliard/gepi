@@ -517,8 +517,8 @@ class CKEditor
 			return "/ckeditor/";
 		}
 
-		$documentRoot = substr($realPath, 0, strlen($realPath) - strlen($selfPath));
-		$fileUrl = substr($file, strlen($documentRoot));
+		$documentRoot = substr($realPath, 0, mb_strlen($realPath) - mb_strlen($selfPath));
+		$fileUrl = substr($file, mb_strlen($documentRoot));
 		$ckeditorUrl = str_replace("ckeditor_php4.php", "", $fileUrl);
 
 		return $ckeditorUrl;

@@ -456,24 +456,6 @@ function retablir_notes_enregistrees() {
 		//$fich_notanet=$_POST['fich_notanet'];
 
 
-		/*
-		echo "<p>Suppression d'éventuels enregistrements antérieurs.</p>\n";
-		if($extract_mode=="tous") {
-			$sql="DELETE FROM notanet;";
-			$nettoyage=mysql_query($sql);
-		}
-		elseif((my_ereg("[0-9]",$extract_mode))&&(strlen(my_ereg_replace("[0-9]","",$extract_mode))==0)) {
-			$sql="SELECT login FROM notanet_ele_type WHERE type_brevet='$extract_mode';";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)>0) {
-				while($lig=mysql_fetch_object($res)) {
-					$sql="DELETE FROM notanet WHERE login='$lig->login';";
-					$nettoyage=mysql_query($sql);
-				}
-			}
-		}
-		*/
-
 		// Boucle sur la liste des élèves...
 		//for($m=0;$m<count($INE);$m++){
 		for($m=0;$m<$nb_tot_eleves;$m++) {
@@ -581,7 +563,7 @@ function retablir_notes_enregistrees() {
 												}
 											}
 											if($test_valeur_speciale_autorisee!="oui"){
-												if(strlen(preg_replace("/[0-9\.]/","",$moy[$j][$k][$m]))!=0){
+												if(mb_strlen(preg_replace("/[0-9\.]/","",$moy[$j][$k][$m]))!=0){
 													echo "<br /><span style='color:red'>ERREUR</span>: La valeur saisie n'est pas valide: ";
 													echo $id_matiere[$j][$k]."=".$moy[$j][$k][$m];
 													echo "<br />\n";
@@ -649,7 +631,7 @@ function retablir_notes_enregistrees() {
 											}
 										}
 										if($test_valeur_speciale_autorisee!="oui"){
-											if(strlen(preg_replace("/[0-9\.]/","",$moy[$j][$k][$m]))!=0){
+											if(mb_strlen(preg_replace("/[0-9\.]/","",$moy[$j][$k][$m]))!=0){
 												echo "<br /><span style='color:red'>ERREUR</span>: La valeur saisie n'est pas valide: ";
 												echo $tabmatieres[$j][0]."=".$moy[$j][$k][$m];
 												echo "<br />\n";

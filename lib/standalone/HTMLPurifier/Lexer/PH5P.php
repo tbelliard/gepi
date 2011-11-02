@@ -128,7 +128,7 @@ class HTML5 {
 
         $this->data = $data;
         $this->char = -1;
-        $this->EOF  = strlen($data);
+        $this->EOF  = mb_strlen($data);
         $this->tree = new HTML5TreeConstructer;
         $this->content_model = self::PCDATA;
 
@@ -370,7 +370,7 @@ class HTML5 {
 
         if(($this->content_model === self::RCDATA || $this->content_model === self::CDATA) &&
         (!$the_same || ($the_same && (!preg_match('/[\t\n\x0b\x0c >\/]/',
-        $this->character($this->char + 1 + strlen($next_node))) || $this->EOF === $this->char)))) {
+        $this->character($this->char + 1 + mb_strlen($next_node))) || $this->EOF === $this->char)))) {
             /* If the content model flag is set to the RCDATA or CDATA states then
             examine the next few characters. If they do not match the tag name of
             the last start tag token emitted (case insensitively), or if they do but
@@ -819,7 +819,7 @@ class HTML5 {
             'type' => self::COMMENT
         ));
 
-        $this->char += strlen($data);
+        $this->char += mb_strlen($data);
 
         /* Switch to the data state. */
         $this->state = 'data';
@@ -1111,7 +1111,7 @@ class HTML5 {
                 $this->char++;
                 $e_name = $this->characters($char_class, $this->char + $char + 1);
                 $entity = $this->character($start, $this->char);
-                $cond = strlen($e_name) > 0;
+                $cond = mb_strlen($e_name) > 0;
 
                 // The rest of the parsing happens bellow.
             break;
@@ -1122,7 +1122,7 @@ class HTML5 {
                 // consumed characters case-sensitively matching one of the
                 // identifiers in the first column of the entities table.
                 $e_name = $this->characters('0-9A-Za-z;', $this->char + 1);
-                $len = strlen($e_name);
+                $len = mb_strlen($e_name);
 
                 for($c = 1; $c <= $len; $c++) {
                     $id = substr($e_name, 0, $c);

@@ -312,7 +312,7 @@ function matiereprof($prof, $equipepeda) {
 
 			$tmp_clas=get_class_from_ele_login($_SESSION['login']);
 			foreach($tmp_clas as $key_tmp => $value_tmp) {
-				if(strlen(my_ereg_replace("[0-9]","",$key_tmp))==0) {
+				if(mb_strlen(my_ereg_replace("[0-9]","",$key_tmp))==0) {
 					$tmp_id_classe=$key_tmp;
 					break;
 				}
@@ -327,7 +327,7 @@ function matiereprof($prof, $equipepeda) {
 				if(isset($tmp_tab_enfants[$loop])) {
 					$tmp_clas=get_class_from_ele_login($tmp_tab_enfants[$loop]);
 					foreach($tmp_clas as $key_tmp => $value_tmp) {
-						if(strlen(my_ereg_replace("[0-9]","",$key_tmp))==0) {
+						if(mb_strlen(my_ereg_replace("[0-9]","",$key_tmp))==0) {
 							$tmp_id_classe=$key_tmp;
 							break;
 						}

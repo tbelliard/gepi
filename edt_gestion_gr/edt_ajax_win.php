@@ -49,10 +49,10 @@ if (!checkAccess()) {
 $id_gr = isset($_GET["id_gr"]) ? $_GET["id_gr"] : NULL;
 $classe = isset($_GET["classe"]) ? $_GET["classe"] : NULL;
 $action = isset($_GET["action"]) ? $_GET["action"] : NULL;
-$id = isset($id_gr) ? substr($id_gr, 3) : NULL;
-$id2 = isset($id_gr) ? substr($id_gr, 4) : NULL;
-$id3 = isset($id_gr) ? substr($id_gr, 5) : NULL;
-$id4 = isset($id_gr) ? substr($id_gr, 6) : NULL;
+$id = isset($id_gr) ? mb_substr($id_gr, 3) : NULL;
+$id2 = isset($id_gr) ? mb_substr($id_gr, 4) : NULL;
+$id3 = isset($id_gr) ? mb_substr($id_gr, 5) : NULL;
+$id4 = isset($id_gr) ? mb_substr($id_gr, 6) : NULL;
 
 // ==========================fin des variables ==================
 

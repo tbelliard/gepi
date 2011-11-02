@@ -109,7 +109,7 @@
 ?>
 				<div class='div_tableau'>
 				  <h3 class="colonne ie_gauche">
-					  <a href="<?php echo "../".substr($newentree->chemin,1) ?>">
+					  <a href="<?php echo "../".mb_substr($newentree->chemin,1) ?>">
 						  <?php echo $newentree->titre ?>
 					  </a>
 				  </h3>

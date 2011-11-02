@@ -105,11 +105,11 @@ if (isset($_GET['envoyer_courrier']) && $_GET['envoyer_courrier'] == 'true') {
 	$source = $TBS->Source;
 	//on supprime la premiere balise text:p et la derniere apres le text:sequence-decls
 	$pos = strpos($source, '</text:sequence-decls>') + 23;
-	$source = substr($source, $pos);
+	$source = mb_substr($source, $pos);
 	$pos = strpos($source, '>') + 1;
-	$source = substr($source, $pos);
+	$source = mb_substr($source, $pos);
 	$pos = strpos($source, '</office:text>');
-	$source = substr($source, 0, $pos - 9);
+	$source = mb_substr($source, 0, $pos - 9);
 	$courrier_source_col->append($source);
 
 	$recap = $notif->getId().', ';

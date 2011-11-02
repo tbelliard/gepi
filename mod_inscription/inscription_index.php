@@ -98,9 +98,9 @@ $i = 0;
 while ($i < $nombre_lignes){
     $id = mysql_result($call_data, $i, "id");
     $date = mysql_result($call_data, $i, "date");
-    $day = substr($date, 8, 2);
-    $month = substr($date, 5, 2);
-    $year = substr($date, 0, 4);
+    $day = mb_substr($date, 8, 2);
+    $month = mb_substr($date, 5, 2);
+    $year = mb_substr($date, 0, 4);
     $date = mktime(0,0,0,$month,$day,$year);
     $date = strftime("%A %d %B %Y", $date);
 

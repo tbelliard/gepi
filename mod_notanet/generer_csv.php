@@ -171,7 +171,7 @@ else {
 			}
 		}
 	}
-	elseif((preg_match("/[0-9]/",$extract_mode))&&(strlen(preg_replace("/[0-9]/","",$extract_mode))==0)) {
+	elseif((preg_match("/[0-9]/",$extract_mode))&&(mb_strlen(preg_replace("/[0-9]/","",$extract_mode))==0)) {
 		$type_brevet=$extract_mode;
 
 		/*

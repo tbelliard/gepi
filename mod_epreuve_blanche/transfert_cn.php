@@ -391,7 +391,7 @@ while($lig=mysql_fetch_object($res_grp)) {
 	$cpt2=0;
 	while($lig_prof=mysql_fetch_object($res_prof)) {
 		if($cpt2>0) {$prof_list.=", ";}
-		$prof_list.=$lig_prof->civilite." ".casse_mot($lig_prof->nom)." ".strtoupper(substr($lig_prof->prenom,0,1));
+		$prof_list.=$lig_prof->civilite." ".casse_mot($lig_prof->nom)." ".strtoupper(mb_substr($lig_prof->prenom,0,1));
 		$cpt2++;
 	}
 	$tab_grp[$cpt]['profs_list']=$prof_list;

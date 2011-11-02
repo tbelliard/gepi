@@ -69,7 +69,7 @@ if(isset($nettoyage)){
 		$msg="Vous tentez de supprimer des fichiers qui ne vous appartiennent pas.";
 	}
 	else{
-		if(strlen(my_ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_")))!=0){
+		if(mb_strlen(my_ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_")))!=0){
 			$msg="Le fichier proposé n'est pas valide: '".my_ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_"))."'";
 		}
 		else{
@@ -101,7 +101,7 @@ $periode_num=isset($_POST["periode_num"]) ? $_POST["periode_num"] : (isset($_GET
 
 
 
-if((strlen(my_ereg_replace("[0-9]","",$id_groupe))!=0)||(strlen(my_ereg_replace("[0-9]","",$periode_num))!=0)){
+if((mb_strlen(my_ereg_replace("[0-9]","",$id_groupe))!=0)||(mb_strlen(my_ereg_replace("[0-9]","",$periode_num))!=0)){
 	$msg="Une au moins des valeurs id_groupe ou periode_num est invalide.";
     header("Location: index.php?msg=$msg");
     die();

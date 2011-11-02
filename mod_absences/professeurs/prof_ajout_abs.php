@@ -726,7 +726,7 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 		foreach ($group["classes"]["classes"] as $classe) {
 			$str .= $classe["classe"] . ", ";
 		}
-		$str = substr($str, 0, -2);
+		$str = mb_substr($str, 0, -2);
 		echo $str . ")</option>";
 	}
 	// Et on ajoute les AID

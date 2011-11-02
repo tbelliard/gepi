@@ -399,7 +399,7 @@ while ($i < $nombre_ligne) {
 		while($ligne=mysql_fetch_object($res_prof)){
 			$texte_alternatif.=", ".casse_mot($ligne->prenom,'majf2')." ".my_strtoupper($ligne->nom);
 		}
-		$texte_alternatif=substr($texte_alternatif,2);
+		$texte_alternatif=mb_substr($texte_alternatif,2);
 	}
 
 	$sql="SELECT DISTINCT c.classe FROM classes c, j_groupes_classes jgc WHERE jgc.id_groupe='$id_groupe' AND c.id=jgc.id_classe ORDER BY c.classe;";
@@ -408,7 +408,7 @@ while ($i < $nombre_ligne) {
 	while($lig_classe=mysql_fetch_object($res_clas_grp)) {
 		$liste_classes_du_groupe.=", ".$lig_classe->classe;
 	}
-	if($liste_classes_du_groupe!='') {$liste_classes_du_groupe=substr($liste_classes_du_groupe,2);}
+	if($liste_classes_du_groupe!='') {$liste_classes_du_groupe=mb_substr($liste_classes_du_groupe,2);}
 
 	$texte_alternatif.=" (".$liste_classes_du_groupe.")";
 
@@ -458,7 +458,7 @@ while ($i < $nombre_ligne) {
 						$temoin=$clas_tmp;
 					}
 				}
-				//if($liste_classes_du_groupe!='') {$liste_classes_du_groupe=substr($liste_classes_du_groupe,2);}
+				//if($liste_classes_du_groupe!='') {$liste_classes_du_groupe=mb_substr($liste_classes_du_groupe,2);}
 
 				echo "<td style='text-align:center'>";
 				if($temoin!="") {

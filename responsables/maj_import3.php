@@ -1112,7 +1112,7 @@ else{
 
 						if(isset($eleves[$i]['mel'])) {$sql.=", mel='".$eleves[$i]['mel']."'";}
 
-						//$sql=substr($sql,0,strlen($sql)-2);
+
 						$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
 						affiche_debug("$sql<br />\n");
 						info_debug($sql);
@@ -1798,7 +1798,7 @@ else{
 				while($lig=mysql_fetch_object($res2)){
 					//$tab_naissance=explode("-",$lig->naissance);
 					//$naissance=$tab_naissance[0].$tab_naissance[1].$tab_naissance[2];
-					$naissance=substr($lig->ELEDATNAIS,0,4)."-".substr($lig->ELEDATNAIS,4,2)."-".substr($lig->ELEDATNAIS,6,2);
+					$naissance=mb_substr($lig->ELEDATNAIS,0,4)."-".mb_substr($lig->ELEDATNAIS,4,2)."-".mb_substr($lig->ELEDATNAIS,6,2);
 					//$sql="INSERT INTO tempo2 SET col1='$lig->ele_id', col2='$naissance';";
 					$sql="INSERT INTO tempo2 SET col1='$lig->ELE_ID', col2='$naissance';";
 					info_debug($sql);
@@ -2494,7 +2494,7 @@ $update_tempo4=mysql_query($sql);
 								}
 
 
-								$new_date=substr($affiche[3],0,4)."-".substr($affiche[3],4,2)."-".substr($affiche[3],6,2);
+								$new_date=mb_substr($affiche[3],0,4)."-".mb_substr($affiche[3],4,2)."-".mb_substr($affiche[3],6,2);
 
 								// Des stripslashes() pour les apostrophes dans les noms
 								if($ele_lieu_naissance=="y") {
@@ -3029,7 +3029,7 @@ $update_tempo4=mysql_query($sql);
 //								echo "<input type='hidden' name='new_".$cpt."_sexe' value='$affiche[2]' />\n";
 								echo "</td>\n";
 
-								$new_date=substr($affiche[3],0,4)."-".substr($affiche[3],4,2)."-".substr($affiche[3],6,2);
+								$new_date=mb_substr($affiche[3],0,4)."-".mb_substr($affiche[3],4,2)."-".mb_substr($affiche[3],6,2);
 								echo "<td style='text-align: center;'>";
 								echo "$new_date";
 								if($ele_lieu_naissance=="y") {
@@ -3219,7 +3219,7 @@ $update_tempo4=mysql_query($sql);
 
 					if($cpt>0){echo ", ";}
 
-					$naissance=substr($lig->ELEDATNAIS,0,4)."-".substr($lig->ELEDATNAIS,4,2)."-".substr($lig->ELEDATNAIS,6,2);
+					$naissance=mb_substr($lig->ELEDATNAIS,0,4)."-".mb_substr($lig->ELEDATNAIS,4,2)."-".mb_substr($lig->ELEDATNAIS,6,2);
 
 					/*
 					switch($lig->ELEREG){
@@ -3484,7 +3484,7 @@ $update_tempo4=mysql_query($sql);
 	
 							if($cpt>0){echo ", ";}
 	
-							$naissance=substr($lig->ELEDATNAIS,0,4)."-".substr($lig->ELEDATNAIS,4,2)."-".substr($lig->ELEDATNAIS,6,2);
+							$naissance=mb_substr($lig->ELEDATNAIS,0,4)."-".mb_substr($lig->ELEDATNAIS,4,2)."-".mb_substr($lig->ELEDATNAIS,6,2);
 	
 							/*
 							switch($lig->ELEREG){
@@ -3552,58 +3552,7 @@ $update_tempo4=mysql_query($sql);
 									elseif($info[0]["uid"]["count"]==1) {
 										$login_eleve=$info[0]["uid"][0];
 	
-										/*
-										for ( $u = 0; $u < $info[0]["uid"]["count"] ; $u++ ) {
-											$uid = $info[0]["memberuid"][$u] ;
-											if (trim($uid) !="") {
-												$eleve_de[$current_classe_id]=$uid;
-												// Extraction des infos sur l'élève :
-												$result2 = @ldap_read ( $ds, "uid=".$uid.",".$lcs_ldap_people_dn, "(objectclass=posixAccount)", $ldap_people_attr );
-												if ($result2) {
-													$info2 = @ldap_get_entries ( $ds, $result2 );
-													if ( $info2["count"]) {
-														// Traitement du champ gecos pour extraction de date de naissance, sexe
-														$gecos = $info2[0]["gecos"][0];
-														$tmp = split ("[\,\]",$info2[0]["gecos"][0],4);
-														$ret_people = array (
-														"uid"         => $info2[0]["uid"][0],
-														"nom"         => stripslashes( utf8_decode($info2[0]["sn"][0]) ),
-														"fullname"        => stripslashes( utf8_decode($info2[0]["cn"][0]) ),
-														"pseudo"      => utf8_decode($info2[0]["givenname"][0]),
-														"email"       => $info2[0]["mail"][0],
-														"homedirectory"   => $info2[0]["homedirectory"][0],
-														"description" => utf8_decode($info2[0]["description"][0]),
-														"shell"           => $info2[0]["loginshell"][0],
-														"sexe"            => $tmp[2],
-														"naissance"       => $tmp[1],
-														"no_gep"          => $info2[0]["employeenumber"][0]
-														);
-														$long = strlen($ret_people["fullname"]) - strlen($ret_people["nom"]);
-														$prenom = substr($ret_people["fullname"], 0, $long) ;
-							
-							
-														$add = add_eleve($uid,$ret_people["nom"],$prenom,$tmp[2],$tmp[1],$ret_people["no_gep"]);
-														$get_periode_num = mysql_result(mysql_query("SELECT count(*) FROM periodes WHERE (id_classe = '" . $current_classe_id . "')"), 0);
-														$check = mysql_result(mysql_query("SELECT count(*) FROM j_eleves_classes WHERE (login = '" . $uid . "')"), 0);
-														if ($check > 0)
-															$del = mysql_query("DELETE from j_eleves_classes WHERE login = '" . $uid . "'");
-														for ($k=1;$k<$get_periode_num+1;$k++) {
-															$res = mysql_query("INSERT into j_eleves_classes SET login = '" . $uid . "', id_classe = '" . $current_classe_id . "', periode = '" . $k . "'");
-														}
-														$check = mysql_result(mysql_query("SELECT count(*) FROM j_eleves_regime WHERE (login = '" . $uid . "')"), 0);
-														if ($check > 0)
-															$del = mysql_query("DELETE from j_eleves_regime WHERE login = '" . $uid . "'");
-														$res = mysql_query("INSERT into j_eleves_regime SET login = '" . $uid . "',
-														regime  = 'd/p',
-														doublant  = '-'");
-													}
-													@ldap_free_result ( $result2 );
-												}
-												$date_naissance = substr($tmp[1],6,2)."-".substr($tmp[1],4,2)."-".substr($tmp[1],0,4) ;
-												echo "<tr><td>".$current_classe."</td><td>".$uid."</td><td>".$ret_people["nom"]."</td><td>".$prenom."</td><td>".$tmp[2]."</td><td>".$date_naissance."</td><td>".$ret_people["no_gep"]."</td></tr>\n";
-											}
-										}
-										*/
+
 									}
 
 									@ldap_free_result ( $result );
@@ -3622,11 +3571,11 @@ $update_tempo4=mysql_query($sql);
 								$temp1 = strtoupper($tmp_nom);
 								$temp1 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp1);
 								$temp1 = strtr($temp1, " '-", "___");
-								$temp1 = substr($temp1,0,7);
+								$temp1 = mb_substr($temp1,0,7);
 								$temp2 = strtoupper($tmp_prenom);
 								$temp2 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp2);
 								$temp2 = strtr($temp2, " '-", "___");
-								$temp2 = substr($temp2,0,1);
+								$temp2 = mb_substr($temp2,0,1);
 								$login_eleve = $temp1.'_'.$temp2;
 		
 								// On teste l'unicité du login que l'on vient de créer
@@ -4407,9 +4356,9 @@ $update_tempo4=mysql_query($sql);
 						//for($loop=0;$loop<count($tmp_group[])) {}
 						foreach($tmp_group["profs"]["users"] as $login_prof) {
 							$chaine_profs.=", ";
-							$chaine_profs.=$login_prof['civilite']."&nbsp;".$login_prof['nom']." ".substr($login_prof['prenom'],0,1);
+							$chaine_profs.=$login_prof['civilite']."&nbsp;".$login_prof['nom']." ".mb_substr($login_prof['prenom'],0,1);
 						}
-						if($chaine_profs!='') {$chaine_profs=substr($chaine_profs,2);}
+						if($chaine_profs!='') {$chaine_profs=mb_substr($chaine_profs,2);}
 
 						$alt=$alt*(-1);
 						/*
@@ -5252,7 +5201,7 @@ $update_tempo4=mysql_query($sql);
 					} elseif(isset($adresses[$i]["commune_etrangere"])) {
 						$sql.="commune='".$adresses[$i]["commune_etrangere"]."', ";
 					}
-					$sql=substr($sql,0,strlen($sql)-2);
+					$sql=mb_substr($sql,0,mb_strlen($sql)-2);
 					$sql.=";";
 					affiche_debug("$sql<br />\n");
 					info_debug($sql);

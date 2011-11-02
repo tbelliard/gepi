@@ -419,7 +419,7 @@ else {
 				}
 
 				foreach($current_group['profs']['list'] as $key => $login_prof) {
-					$html.='echo "<div class=\'noprint\' style=\'float:right; width:10em; margin: 3px; text-align:center; border: 1px solid black;\'><a href=\'cdt_'.$login_prof.'.'.$extension.'\'>'.$current_group['profs']['users'][$login_prof]['civilite'].' '.$current_group['profs']['users'][$login_prof]['nom'].' '.my_strtoupper(substr($current_group['profs']['users'][$login_prof]['prenom'],0,1)).'</a></div>\n";';
+					$html.='echo "<div class=\'noprint\' style=\'float:right; width:10em; margin: 3px; text-align:center; border: 1px solid black;\'><a href=\'cdt_'.$login_prof.'.'.$extension.'\'>'.$current_group['profs']['users'][$login_prof]['civilite'].' '.$current_group['profs']['users'][$login_prof]['nom'].' '.my_strtoupper(mb_substr($current_group['profs']['users'][$login_prof]['prenom'],0,1)).'</a></div>\n";';
 				}
 
 				$html.='}

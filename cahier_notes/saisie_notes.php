@@ -237,14 +237,14 @@ if (isset($_POST['notes'])) {
 	$temp = $_POST['notes']." 1";
 	$temp = my_ereg_replace("\\\\r","\r",$temp);
 	$temp = my_ereg_replace("\\\\n","\n",$temp);
-	$longueur = strlen($temp);
+	$longueur = mb_strlen($temp);
 	$i = 0;
 	$fin_note = 'yes';
 	$indice = $_POST['debut_import']-2;
 	$tempo = '';
 	if(!isset($note_sur_dev_choisi)) {$note_sur_dev_choisi=20;}
 	while (($i < $longueur) and ($indice < $_POST['fin_import'])) {
-		$car = substr($temp, $i, 1);
+		$car = mb_substr($temp, $i, 1);
 		if (my_ereg('^[0-9.,a-zA-Z-]{1}$', $car)) {
 			if (($fin_note=='yes') or ($i == $longueur-1)) {
 				$fin_note = 'no';
@@ -292,13 +292,13 @@ if (isset($_POST['appreciations'])) {
 	$temp = my_ereg_replace("\\\\r","`",$temp);
 	$temp = my_ereg_replace("\\\\n","",$temp);
 	$temp = unslashes($temp);
- 	$longueur = strlen($temp);
+ 	$longueur = mb_strlen($temp);
 	$i = 0;
 	$fin_app = 'yes';
 	$indice = $_POST['debut_import']-2;
 	$tempo = "";
 	while (($i < $longueur) and ($indice < $_POST['fin_import'])) {
-		$car = substr($temp, $i, 1);
+		$car = mb_substr($temp, $i, 1);
 		if (!my_ereg ("^[`]{1}$", $car)) {
 			if (($fin_app=='yes') or ($i == $longueur-1)) {
 				$fin_app = 'no';
@@ -493,9 +493,9 @@ while ($j < $nb_dev) {
 	$facultatif[$j] = mysql_result($appel_dev, $j, 'facultatif');
 	$display_parents[$j] = mysql_result($appel_dev, $j, 'display_parents');
 	$date = mysql_result($appel_dev, $j, 'date');
-	$annee = substr($date,0,4);
-	$mois =  substr($date,5,2);
-	$jour =  substr($date,8,2);
+	$annee = mb_substr($date,0,4);
+	$mois =  mb_substr($date,5,2);
+	$jour =  mb_substr($date,8,2);
 	$display_date[$j] = $jour."/".$mois."/".$annee;
 	$j++;
 }
@@ -1106,9 +1106,9 @@ if ($id_devoir==0) {
 				$ramener_sur_referentiel_s_dev[$i][$m] = mysql_result($query_nb_dev, $m, 'ramener_sur_referentiel');
 				$fac_s_dev[$i][$m]  = mysql_result($query_nb_dev, $m, 'facultatif');
 				$date = mysql_result($query_nb_dev, $m, 'date');
-				$annee = substr($date,0,4);
-				$mois =  substr($date,5,2);
-				$jour =  substr($date,8,2);
+				$annee = mb_substr($date,0,4);
+				$mois =  mb_substr($date,5,2);
+				$jour =  mb_substr($date,8,2);
 				$display_date_s_dev[$i][$m] = $jour."/".$mois."/".$annee;
 
 				$m++;

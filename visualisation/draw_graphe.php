@@ -15,13 +15,13 @@
 	// Récupération des valeurs:
 	//$nb_data = $_GET['nb_data'];
 	$nb_series= $_GET['nb_series'];
-	if((strlen(preg_replace("/[0-9]/","",$nb_series))!=0)||($nb_series=="")){
+	if((mb_strlen(preg_replace("/[0-9]/","",$nb_series))!=0)||($nb_series=="")){
 		exit;
 	}
 
 	//$eleves= $_GET['eleves'];
 	$id_classe=$_GET['id_classe'];
-	if((strlen(preg_replace("/[0-9]/","",$id_classe))!=0)||($id_classe=="")){
+	if((mb_strlen(preg_replace("/[0-9]/","",$id_classe))!=0)||($id_classe=="")){
 		exit;
 	}
 
@@ -84,11 +84,11 @@
 	//$hauteurTotale=600;
 
 	$largeurTotale=isset($_GET['largeur_graphe']) ? $_GET['largeur_graphe'] : '700';
-	if((strlen(preg_replace("/[0-9]/","",$largeurTotale))!=0)||($largeurTotale=="")){
+	if((mb_strlen(preg_replace("/[0-9]/","",$largeurTotale))!=0)||($largeurTotale=="")){
 		$largeurTotale=700;
 	}
 	$hauteurTotale=isset($_GET['hauteur_graphe']) ? $_GET['hauteur_graphe'] : '600';
-	if((strlen(preg_replace("/[0-9]/","",$hauteurTotale))!=0)||($hauteurTotale=="")){
+	if((mb_strlen(preg_replace("/[0-9]/","",$hauteurTotale))!=0)||($hauteurTotale=="")){
 		$hauteurTotale=600;
 	}
 
@@ -105,13 +105,13 @@
 	// $taille_police de 1 à 6
 	//$taille_police=3;
 	$taille_police=isset($_GET['taille_police']) ? $_GET['taille_police'] : '3';
-	if((strlen(preg_replace("/[0-9]/","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")){
+	if((mb_strlen(preg_replace("/[0-9]/","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")){
 		$taille_police=3;
 	}
 
 	//$epaisseur_traits=2;
 	$epaisseur_traits=isset($_GET['epaisseur_traits']) ? $_GET['epaisseur_traits'] : '2';
-	if((strlen(preg_replace("/[0-9]/","",$epaisseur_traits))!=0)||($epaisseur_traits<1)||($epaisseur_traits>6)||($epaisseur_traits=="")){
+	if((mb_strlen(preg_replace("/[0-9]/","",$epaisseur_traits))!=0)||($epaisseur_traits<1)||($epaisseur_traits>6)||($epaisseur_traits=="")){
 		$epaisseur_traits=2;
 	}
 
@@ -199,14 +199,11 @@
 				$total_tmp[$i]=0;
 				// Boucle sur les périodes...
 				for($k=1;$k<=$nb_periode;$k++){
-					//if((strlen(preg_replace("/[0-9]/","",$largeur_imposee_photo))!=0)||($largeur_imposee_photo=="")){$largeur_imposee_photo=100;}
 
 
+					writinfo('/tmp/infos_graphe.txt','a+',"mb_strlen(preg_replace(\"/[0-9\.]/\",\"\",\$moyenne[".$k."][".$i."]))=mb_strlen(preg_replace(\"/[0-9\.]/\",\"\",".$moyenne[$k][$i]."))=".mb_strlen(preg_replace("/[0-9\.]/","",$moyenne[$k][$i]))."\n");
 
-					writinfo('/tmp/infos_graphe.txt','a+',"strlen(preg_replace(\"/[0-9\.]/\",\"\",\$moyenne[".$k."][".$i."]))=strlen(preg_replace(\"/[0-9\.]/\",\"\",".$moyenne[$k][$i]."))=".strlen(preg_replace("/[0-9\.]/","",$moyenne[$k][$i]))."\n");
-
-					//if((strlen(preg_replace("/[0-9]/","",$moyenne[$k][$i]))!=0)&&($moyenne[$k][$i]!="")){
-					if(($moyenne[$k][$i]!='-')&&(strlen(preg_replace("/[0-9\.]/","",$moyenne[$k][$i]))==0)&&($moyenne[$k][$i]!="")){
+					if(($moyenne[$k][$i]!='-')&&(mb_strlen(preg_replace("/[0-9\.]/","",$moyenne[$k][$i]))==0)&&($moyenne[$k][$i]!="")){
 						$total_tmp[$i]=$total_tmp[$i]+$moyenne[$k][$i];
 						$cpt++;
 					}
@@ -297,7 +294,7 @@
 	//$hauteurMat=5+15+15;
 	$hauteurMat=0;
 	for($i=1;$i<count($matiere_nom_long);$i++){
-		$largeur_texte_long = strlen($matiere_nom_long[$i]) * ImageFontWidth($taille_police);
+		$largeur_texte_long = mb_strlen($matiere_nom_long[$i]) * ImageFontWidth($taille_police);
 		if($hauteurMat<$largeur_texte_long){
 			$hauteurMat=$largeur_texte_long;
 		}
@@ -592,13 +589,13 @@
 			$matiere_tronquee=$matiere[$i];
 		}
 		else{
-			$matiere_tronquee=substr($matiere[$i],0,$tronquer_nom_court);
+			$matiere_tronquee=mb_substr($matiere[$i],0,$tronquer_nom_court);
 		}
 
 		writinfo('/tmp/infos_graphe.txt','a+',"\$matiere[$i]=$matiere[$i]\n");
 		writinfo('/tmp/infos_graphe.txt','a+',"\$matiere_tronquee=$matiere_tronquee\n");
 
-		$largeur_texte = strlen($matiere_tronquee) * ImageFontWidth($taille_police);
+		$largeur_texte = mb_strlen($matiere_tronquee) * ImageFontWidth($taille_police);
 		imagettftext($img, $taille_police*4, 0, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp+10, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $matiere_tronquee);
 
 		writinfo('/tmp/infos_graphe.txt','a+',"\$taille_police=$taille_police\n");
@@ -606,7 +603,7 @@
 
 		for($k=1;$k<=$nb_series_bis;$k++){
 			$ytmp=$ytmp+15;
-			$largeur_texte = strlen(nf($moyenne[$k][$i])) * ImageFontWidth($taille_police);
+			$largeur_texte = mb_strlen(nf($moyenne[$k][$i])) * ImageFontWidth($taille_police);
 
 			$tmp=$x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
 			writinfo('/tmp/infos_graphe.txt','a+',"imagettftext($img, ".($taille_police*4).", 0, ".($x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2)).", ".($ytmp+10).", $couleureleve[$k], ".dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf, ".nf($moyenne[$k][$i]).")\n");
@@ -621,7 +618,7 @@
 		}
 		else{
 			//Affichage des matières dans la partie basse du graphique:
-			$largeur_texte = strlen($matiere_tronquee) * ImageFontWidth($taille_police);
+			$largeur_texte = mb_strlen($matiere_tronquee) * ImageFontWidth($taille_police);
             imagettftext($img, $taille_police*4, 0, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $hauteur+$hauteurMoy+5+10, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $matiere_tronquee);
 		}
 	}
@@ -630,7 +627,7 @@
 	if($mgen[1]!=""){
 		$ytmp=20;
 
-		$largeur_texte = strlen("M.GEN") * ImageFontWidth($taille_police);
+		$largeur_texte = mb_strlen("M.GEN") * ImageFontWidth($taille_police);
         imagettftext($img, $taille_police*4, 0, $x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp+10, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", "M.GEN");
 
 		$total_tmp=0;
@@ -638,7 +635,7 @@
 		//for($k=1;$k<$nb_data;$k++){
 		for($k=1;$k<=$nb_series;$k++){
 			$ytmp=$ytmp+15;
-			$largeur_texte = strlen(nf($mgen[$k])) * ImageFontWidth($taille_police);
+			$largeur_texte = mb_strlen(nf($mgen[$k])) * ImageFontWidth($taille_police);
             imagettftext($img, $taille_police*4, 0, $x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp+10, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $mgen[$k]);
 
 			if($mgen[$k]!="-"){
@@ -656,7 +653,7 @@
 			}
 
 			$ytmp=$ytmp+15;
-			$largeur_texte = strlen(nf($mgen_annuelle)) * ImageFontWidth($taille_police);
+			$largeur_texte = mb_strlen(nf($mgen_annuelle)) * ImageFontWidth($taille_police);
             imagettftext($img, $taille_police*4, 0, $x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp+10, $couleureleve[$nb_series_bis], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $mgen_annuelle);
 		}
 	}
@@ -684,7 +681,7 @@
 	$total_largeur_chaines=0;
 	//for($k=1;$k<$nb_data;$k++){
 	for($k=1;$k<=$nb_series;$k++){
-		$largeur_chaine[$k] = strlen($chaine[$k]) * ImageFontWidth($taille_police);
+		$largeur_chaine[$k] = mb_strlen($chaine[$k]) * ImageFontWidth($taille_police);
 		$total_largeur_chaines=$total_largeur_chaines+$largeur_chaine[$k];
 	}
 

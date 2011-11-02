@@ -384,8 +384,8 @@ else{
 		while($lig_ele=mysql_fetch_object($res_ele)){
 			$temoin_erreur="n";
 
-			if(my_strtoupper(substr($lig_ele->login,0,1))!=$ini){
-				$ini=my_strtoupper(substr($lig_ele->login,0,1));
+			if(my_strtoupper(mb_substr($lig_ele->login,0,1))!=$ini){
+				$ini=my_strtoupper(mb_substr($lig_ele->login,0,1));
 				//echo " - <i>$ini</i>";
 				echo "<a name='suite'></a>\n";
 				$info="<p>\n<i>Parcours des login commençant par la lettre $ini</i></p>\n";
@@ -430,8 +430,8 @@ else{
 									$chaine_classes.=", $lig_class->classe";
 									$chaine_msg.=",<br /><a href='../classes/eleve_options.php?login_eleve=".$lig_ele->login."&amp;id_classe=".$lig_class->id."' target='_blank'>Contrôler en $lig_class->classe</a>\n";
 								}
-								$chaine_msg=substr($chaine_msg,7);
-								$chaine_classes=substr($chaine_classes,2);
+								$chaine_msg=mb_substr($chaine_msg,7);
+								$chaine_classes=mb_substr($chaine_classes,2);
 
 								//echo "<br />\n";
 								$info="<p>\n";

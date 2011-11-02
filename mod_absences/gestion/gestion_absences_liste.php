@@ -99,12 +99,12 @@ function age($date_de_naissance_fr)
               $DATEFRAN = date("d/m/Y");
 
             // calcul de mon age d'après la date de naissance $ddn
-              $annais = substr("$ddn", 0, 4);
-              $anjour = substr("$DATEFRAN", 6, 4);
-              $moisnais = substr("$ddn", 4, 2);
-              $moisjour = substr("$DATEFRAN", 3, 2);
-              $journais = substr("$ddn", 6, 2);
-              $jourjour = substr("$DATEFRAN", 0, 2);
+              $annais = mb_substr("$ddn", 0, 4);
+              $anjour = mb_substr("$DATEFRAN", 6, 4);
+              $moisnais = mb_substr("$ddn", 4, 2);
+              $moisjour = mb_substr("$DATEFRAN", 3, 2);
+              $journais = mb_substr("$ddn", 6, 2);
+              $jourjour = mb_substr("$DATEFRAN", 0, 2);
 
               $age = $anjour-$annais;
               if ($moisjour<$moisnais){$age=$age-1;}
@@ -481,7 +481,7 @@ function pagin(numpage){
 						$selected = "";
 					}?>
             <option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?>  onclick="javascript:document.form1.submit()">
-				<?php echo substr($data_liste_classe['nom_complet'], 0, 50)." (".$data_liste_classe['classe'].")"; ?>
+				<?php echo mb_substr($data_liste_classe['nom_complet'], 0, 50)." (".$data_liste_classe['classe'].")"; ?>
 			</option>
                 <?php
 				} ?>
@@ -807,7 +807,7 @@ if ($test_nbre_eleves_cpe === 0){
                   while($data_liste_classe = mysql_fetch_array ($resultat_liste_classe)) {
                          if ($classe_choix==$data_liste_classe['id']) {$selected = "selected"; } else {$selected = ""; }?>
             <option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?>  onclick="javascript:document.form1.submit()">
-			<?php echo substr($data_liste_classe['nom_complet'], 0, 50)." (".$data_liste_classe['classe'].")"; ?></option>
+			<?php echo mb_substr($data_liste_classe['nom_complet'], 0, 50)." (".$data_liste_classe['classe'].")"; ?></option>
                 <?php } ?>
           </select><noscript><input value=">>" name="date" type="submit" /></noscript><br />
           <input value="<?php echo $year; ?>" name="year" id="year2" type="hidden" />
@@ -1131,7 +1131,7 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
                   while ( $data_liste_classe = mysql_fetch_array ($resultat_liste_classe)) {
                          if ($classe_choix==$data_liste_classe['id']) {$selected = "selected"; } else {$selected = ""; }?>
             <option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?>  onclick="javascript:document.form1.submit()">
-			<?php echo substr($data_liste_classe['nom_complet'], 0, 50)." (".$data_liste_classe['classe'].")"; ?></option>
+			<?php echo mb_substr($data_liste_classe['nom_complet'], 0, 50)." (".$data_liste_classe['classe'].")"; ?></option>
                 <?php } ?>
           </select><br />
           <?php if (getSettingValue("active_module_trombinoscopes")=='y') { ?>
@@ -1481,7 +1481,7 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
                     While ( $data_liste_classe = mysql_fetch_array ($resultat_liste_classe)) {
                            if ($classe_choix==$data_liste_classe['id']) {$selected = "selected"; } else {$selected = ""; }?>
               <option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?>  onclick="javascript:document.form1.submit()">
-			  <?php echo substr($data_liste_classe['nom_complet'], 0, 50)." (".$data_liste_classe['classe'].")"; ?></option>
+			  <?php echo mb_substr($data_liste_classe['nom_complet'], 0, 50)." (".$data_liste_classe['classe'].")"; ?></option>
                   <?php } ?>
             </select><noscript><input value=">>" name="date" type="submit" /></noscript><br />
             <input value="<?php echo $year; ?>" name="year5" id="year" type="hidden" />

@@ -118,9 +118,9 @@ if (!isset($_POST["action"])) {
 
 			// On nettoie et on vérifie :
 			$reg_id_int = preg_replace("/[^0-9]/","",trim($reg_id_int));
-			if (strlen($reg_id_int) > 50) $reg_id_int = substr($reg_id_int, 0, 50);
+			if (mb_strlen($reg_id_int) > 50) $reg_id_int = mb_substr($reg_id_int, 0, 50);
 			$reg_options = preg_replace("/[^A-Za-z0-9.\-!]/","",trim($reg_options));
-			if (strlen($reg_options) > 2000) $reg_options = substr($reg_options, 0, 2000); // Juste pour éviter une tentative d'overflow...
+			if (mb_strlen($reg_options) > 2000) $reg_options = mb_substr($reg_options, 0, 2000); // Juste pour éviter une tentative d'overflow...
 
 
 			// Première étape : on s'assure que l'élève existe et on récupère son login... S'il n'existe pas, on laisse tomber.
@@ -254,11 +254,11 @@ if (!isset($_POST["action"])) {
 
 						// On nettoie et on vérifie :
 						$tabligne[0] = preg_replace("/[^0-9]/","",trim($tabligne[0]));
-						if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
+						if (mb_strlen($tabligne[0]) > 50) $tabligne[0] = mb_substr($tabligne[0], 0, 50);
 
 						if(!isset($tabligne[1])) {$tabligne[1]="";}
 						$tabligne[1] = preg_replace("/[^A-Za-z0-9.\-!]/","",trim($tabligne[1]));
-						if (strlen($tabligne[1]) > 2000) $tabligne[1] = substr($tabligne[1], 0, 2000);
+						if (mb_strlen($tabligne[1]) > 2000) $tabligne[1] = mb_substr($tabligne[1], 0, 2000);
 
 
 						$data_tab[$k] = array();

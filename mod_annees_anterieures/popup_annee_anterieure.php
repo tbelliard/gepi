@@ -323,7 +323,7 @@ if(isset($style_specifique)){
 	// Il faudrait filtrer le contenu de la variable...
 	// ne doit contenir que certains types de caractères et se terminer par .css
 	// Non... on ajoute le ".css" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
-	if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0){
+	if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0){
 		// Styles spécifiques à une page:
 		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$style_specifique.css' />\n";
 	}
@@ -332,7 +332,7 @@ if(isset($style_specifique)){
 if(isset($javascript_specifique)){
 	// Il faudrait filtrer le contenu de la variable...
 	// On ajoute le ".js" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
-	if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$javascript_specifique))==0){
+	if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$javascript_specifique))==0){
 		// Javascript spécifique à une page:
 		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$javascript_specifique.js' />\n";
 	}

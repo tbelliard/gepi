@@ -116,17 +116,17 @@ $alt=1;
 $tab_statuts_signalement_faute_autorise=array('administrateur', 'professeur', 'cpe', 'scolarite');
 $afficher_signalement_faute="n";
 if(in_array($_SESSION['statut'],$tab_statuts_signalement_faute_autorise)) {
-	if(($_SESSION['statut']=='professeur')&&(substr(getSettingValue('autoriser_signalement_faute_app_prof'),0,1)=='y')) {
+	if(($_SESSION['statut']=='professeur')&&(mb_substr(getSettingValue('autoriser_signalement_faute_app_prof'),0,1)=='y')) {
 		$afficher_signalement_faute="y";
 	}
-	elseif(($_SESSION['statut']=='professeur')&&(substr(getSettingValue('autoriser_signalement_faute_app_pp'),0,1)=='y')) {
+	elseif(($_SESSION['statut']=='professeur')&&(mb_substr(getSettingValue('autoriser_signalement_faute_app_pp'),0,1)=='y')) {
 		// Tester si le prof est pp de la classe
 		if(is_pp($_SESSION['login'],$id_classe)) {$afficher_signalement_faute="y";}
 	}
-	elseif(($_SESSION['statut']=='scolarite')&&(substr(getSettingValue('autoriser_signalement_faute_app_scol'),0,1)=='y')) {
+	elseif(($_SESSION['statut']=='scolarite')&&(mb_substr(getSettingValue('autoriser_signalement_faute_app_scol'),0,1)=='y')) {
 		$afficher_signalement_faute="y";
 	}
-	elseif(($_SESSION['statut']=='cpe')&&(substr(getSettingValue('autoriser_signalement_faute_app_cpe'),0,1)=='y')) {
+	elseif(($_SESSION['statut']=='cpe')&&(mb_substr(getSettingValue('autoriser_signalement_faute_app_cpe'),0,1)=='y')) {
 		$afficher_signalement_faute="y";
 	}
 }

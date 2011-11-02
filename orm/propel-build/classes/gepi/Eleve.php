@@ -386,7 +386,7 @@ class Eleve extends BaseEleve {
 	    $start_string = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getId().'_filterByPlageTemps_deb_';
 	    $start_len = strlen($start_string);
 	    foreach($_REQUEST as $key => $value) {
-	        if (substr($key,0,$start_len) == $start_string) {
+	        if (mb_substr($key,0,$start_len) == $start_string) {
 	            unset($_REQUEST[$key]);
 	        }
 	    }
@@ -996,8 +996,8 @@ class Eleve extends BaseEleve {
 					$photo=$chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg";
 				} else {
 					for($i=0;$i<5;$i++){
-						if(substr($_elenoet_ou_login,$i,1)=="0"){
-							$test_photo=substr($_elenoet_ou_login,$i+1);
+						if(mb_substr($_elenoet_ou_login,$i,1)=="0"){
+							$test_photo=mb_substr($_elenoet_ou_login,$i+1);
 							//if(file_exists($chemin."../photos/eleves/".$test_photo.".jpg")){
 							if(($test_photo!='')&&(file_exists($chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg"))) {
 								$photo=$chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg";
