@@ -75,7 +75,7 @@ if ($periode1 < $periode2) {
 	}
 	echo ".</span>";
 } else {
-	$temp = strtolower($nom_periode[$periode1]);
+	$temp = my_strtolower($nom_periode[$periode1]);
 	echo "Résultats du $temp.</span>";
 
 }
@@ -180,7 +180,8 @@ while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 
 $cat_names = array();
 foreach ($categories as $cat_id) {
-	$cat_names[$cat_id] = html_entity_decode(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
+	//$cat_names[$cat_id] = html_entity_decode(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
+	$cat_names[$cat_id] = mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0);
 }
 
 // Nombre de groupes sur la classe

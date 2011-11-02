@@ -440,7 +440,7 @@ if ($_SESSION['statut'] == "responsable") {
 	}
 } else if ($_SESSION['statut'] == "eleve") {
 	// Si l'utilisateur identifié est un élève, pas le choix, il ne peut consulter que son équipe pédagogique
-	if ($login_eleve != null and (strtoupper($login_eleve) != strtoupper($_SESSION['login']))) {
+	if ($login_eleve != null and (my_strtoupper($login_eleve) != my_strtoupper($_SESSION['login']))) {
 		tentative_intrusion(2, "Tentative par un élève de visualisation graphique des résultats d'un autre élève.");
 	}
 	$login_eleve = $_SESSION['login'];
@@ -2606,7 +2606,7 @@ function eleve_suivant() {
 			$indice_eleve1=-1;
 			for($loop=0;$loop<count($current_eleve_login);$loop++) {
 				//if($current_eleve_login[$loop]==$eleve1) {
-				if(strtolower($current_eleve_login[$loop])==strtolower($eleve1)) {
+				if(my_strtolower($current_eleve_login[$loop])==my_strtolower($eleve1)) {
 					$indice_eleve1=$loop;
 					break;
 				}
@@ -3495,7 +3495,7 @@ function eleve_suivant() {
 				$indice_eleve1=-1;
 				for($loop=0;$loop<count($current_eleve_login);$loop++) {
 					//if($current_eleve_login[$loop]==$eleve1) {
-					if(strtolower($current_eleve_login[$loop])==strtolower($eleve1)) {
+					if(my_strtolower($current_eleve_login[$loop])==my_strtolower($eleve1)) {
 						$indice_eleve1=$loop;
 						break;
 					}

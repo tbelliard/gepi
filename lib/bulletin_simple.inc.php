@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 */
 $delais_apres_cloture=getSettingValue('delais_apres_cloture');
 //echo "\$delais_apres_cloture=$delais_apres_cloture<br />";
@@ -259,7 +259,7 @@ if ($on_continue == 'yes') {
 		}
 		echo ".</span>";
 	} else {
-		$temp = strtolower($nom_periode[$periode1]);
+		$temp = my_strtolower($nom_periode[$periode1]);
 		echo "Résultats du $temp.</span>";
 	
 	}
@@ -422,7 +422,8 @@ if ($on_continue == 'yes') {
 	
 	$cat_names = array();
 	foreach ($categories as $cat_id) {
-		$cat_names[$cat_id] = html_entity_decode(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
+		//$cat_names[$cat_id] = html_entity_decode(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
+		$cat_names[$cat_id] = mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0);
 	}
 
 	// Nombre de groupes sur la classe
@@ -435,9 +436,9 @@ if ($on_continue == 'yes') {
 		//$tab_login_indice[$nb]=$tab_moy['periodes'][$nb]['tab_login_indice'][$current_eleve_login];
 		// Un élève qui arrive ou part en cours d'année ne sera pas dans la classe ni dans les groupes sur certaines périodes
 		//if(isset($tab_moy['periodes'][$nb]['tab_login_indice'][$current_eleve_login])) {
-		if(isset($tab_moy['periodes'][$nb]['tab_login_indice'][strtoupper($current_eleve_login)])) {
+		if(isset($tab_moy['periodes'][$nb]['tab_login_indice'][my_strtoupper($current_eleve_login)])) {
 			//$tab_login_indice[$nb]=$tab_moy['periodes'][$nb]['tab_login_indice'][$current_eleve_login];
-			$tab_login_indice[$nb]=$tab_moy['periodes'][$nb]['tab_login_indice'][strtoupper($current_eleve_login)];
+			$tab_login_indice[$nb]=$tab_moy['periodes'][$nb]['tab_login_indice'][my_strtoupper($current_eleve_login)];
 			//echo "\$tab_login_indice[$nb]=$tab_login_indice[$nb]<br />";
 		}
 		/*
@@ -524,8 +525,8 @@ if ($on_continue == 'yes') {
 			if(
 				(
 					(in_array($current_eleve_login, $current_group["eleves"][$nb]["list"])) or
-					(in_array(strtolower($current_eleve_login), $current_group["eleves"][$nb]["list"])) or
-					(in_array(strtoupper($current_eleve_login), $current_group["eleves"][$nb]["list"]))
+					(in_array(my_strtolower($current_eleve_login), $current_group["eleves"][$nb]["list"])) or
+					(in_array(my_strtoupper($current_eleve_login), $current_group["eleves"][$nb]["list"]))
 				) and 
 				($test_eleve_app!=0)
 			) {

@@ -54,7 +54,7 @@ $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
 //debug_var();
 
 // Passer à 'y' pour afficher les requêtes
-$debug_resp='y';
+$debug_resp='n';
 
 ?>
 <p class="bold"><a href="index.php#responsables"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
@@ -179,7 +179,7 @@ if (!isset($_POST["action"])) {
 
 
 			//$reg_nom = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($reg_nom)));
-			$reg_nom = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($reg_nom)))))));
+			$reg_nom = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(my_strtoupper($reg_nom)))))));
 			if (strlen($reg_nom) > 50) $reg_nom = substr($reg_nom, 0, 50);
 			//$reg_prenom = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($reg_prenom));
 			$reg_prenom = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_prenom))))));
@@ -305,7 +305,7 @@ if (!isset($_POST["action"])) {
 
 		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
 		// autant forcer l'utilisateur à être rigoureux
-		if(strtolower($csv_file['name']) == "g_responsables.csv") {
+		if(my_strtolower($csv_file['name']) == "g_responsables.csv") {
 
 			// Le nom est ok. On ouvre le fichier
 			$fp=fopen($csv_file['tmp_name'],"r");
@@ -348,7 +348,7 @@ if (!isset($_POST["action"])) {
 							// On nettoie et on vérifie :
 						$tabligne[0] = preg_replace("/[^0-9]/","",trim($tabligne[0]));
 
-						$tabligne[1] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[1])))))));
+						$tabligne[1] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(my_strtoupper($tabligne[1])))))));
 						if (strlen($tabligne[1]) > 50) $tabligne[1] = substr($tabligne[1], 0, 50);
 
 						$tabligne[2] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[2]))))));

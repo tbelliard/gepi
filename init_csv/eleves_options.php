@@ -68,7 +68,7 @@ if (!isset($_POST["action"])) {
 			"</ul>\n";
 	echo "<p style='margin-left:6em; text-indent:-6em;'><em>Remarque&nbsp;:</em> vous pouvez ne spécifier qu'une seule ligne par élève, en indiquant toutes les matières suivies dans le deuxième champ en séparant les identifiants de matières avec un point d'exclamation, mais vous pouvez également avoir une ligne pour une association simple, et avoir autant de lignes que d'enseignements suivis par l'élève.</p>\n";
 	echo "<p>Veuillez préciser le nom complet du fichier <b>g_eleves_options.csv</b>.\n";
->>>>>>> .merge_file_nh0EVh
+
 	echo "<form enctype='multipart/form-data' action='eleves_options.php' method='post'>\n";
 	echo add_token_field();
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
@@ -217,7 +217,7 @@ if (!isset($_POST["action"])) {
 
 		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
 		// autant forcer l'utilisateur à être rigoureux
-		if(strtolower($csv_file['name']) == "g_eleves_options.csv") {
+		if(my_strtolower($csv_file['name']) == "g_eleves_options.csv") {
 
 			// Le nom est ok. On ouvre le fichier
 			$fp=fopen($csv_file['tmp_name'],"r");

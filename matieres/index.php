@@ -46,7 +46,7 @@ if (isset($_POST['is_posted'])) {
     $get_all_matieres = mysql_query("SELECT matiere, priority, categorie_id FROM matieres");
     while ($row = mysql_fetch_object($get_all_matieres)) {
         // On passe les matières une par une et on met à jour
-        $varname_p = strtolower($row->matiere)."_priorite";
+        $varname_p = my_strtolower($row->matiere)."_priorite";
 		//echo "<p>Test \$varname_p=$varname_p<br />";
         if (isset($_POST[$varname_p])) {
 			//echo "isset(\$_POST[$varname_p]) oui<br />";
@@ -76,7 +76,7 @@ if (isset($_POST['is_posted'])) {
         }
 
         // La même chose pour la catégorie de matière
-        $varname_c = strtolower($row->matiere)."_categorie";
+        $varname_c = my_strtolower($row->matiere)."_categorie";
         if (isset($_POST[$varname_c])) {
         	if (is_numeric($_POST[$varname_c])) {
         		// On a une valeur correcte. On y va !
@@ -171,7 +171,7 @@ while ($i < $nombre_lignes){
     echo "<td>".htmlspecialchars($current_matiere_nom)."</td>\n";
     // La priorité par défaut
     echo "<td>\n";
-    echo "<select size=1 name='" . strtolower($current_matiere)."_priorite' onchange='changement()'>\n";
+    echo "<select size=1 name='" . my_strtolower($current_matiere)."_priorite' onchange='changement()'>\n";
     $k = '0';
     echo "<option value=0>0</option>\n";
     $k='11';
@@ -188,7 +188,7 @@ while ($i < $nombre_lignes){
     "</td>\n";
 
     echo "<td>\n";
-    echo "<select size=1 name='" . strtolower($current_matiere)."_categorie' onchange='changement()'>\n";
+    echo "<select size=1 name='" . my_strtolower($current_matiere)."_categorie' onchange='changement()'>\n";
 
 	echo "<option value='0'";
 	if ($current_matiere_categorie_id == '0') {echo " SELECTED";}

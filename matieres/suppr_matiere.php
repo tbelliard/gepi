@@ -384,8 +384,8 @@ else{
 		while($lig_ele=mysql_fetch_object($res_ele)){
 			$temoin_erreur="n";
 
-			if(strtoupper(substr($lig_ele->login,0,1))!=$ini){
-				$ini=strtoupper(substr($lig_ele->login,0,1));
+			if(my_strtoupper(substr($lig_ele->login,0,1))!=$ini){
+				$ini=my_strtoupper(substr($lig_ele->login,0,1));
 				//echo " - <i>$ini</i>";
 				echo "<a name='suite'></a>\n";
 				$info="<p>\n<i>Parcours des login commençant par la lettre $ini</i></p>\n";

@@ -104,7 +104,7 @@ if ($_SESSION['statut'] == "responsable") {
 }
 
 // Et une autre...
-if ($_SESSION['statut'] == "eleve" AND strtoupper($_SESSION['login']) != strtoupper($login_eleve)) {
+if ($_SESSION['statut'] == "eleve" AND my_strtoupper($_SESSION['login']) != my_strtoupper($login_eleve)) {
     tentative_intrusion(3, "Tentative d'un élève de visualiser un bulletin simplifié d'un autre élève.");
     echo "Vous ne pouvez visualiser que vos bulletins simplifiés.\n";
     require("../lib/footer.inc.php");

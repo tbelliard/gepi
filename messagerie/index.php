@@ -438,8 +438,8 @@ echo "<tr><td  colspan=\"4\" >\n";
 	$initiale_courante=0;
 	while($utilisateur=mysql_fetch_array($R_utilisateurs))
 		{
-		$nom=strtoupper($utilisateur['nom'])." ".$utilisateur['prenom'];
-		$initiale=ord(strtoupper($utilisateur['login']));
+		$nom=my_strtoupper($utilisateur['nom'])." ".$utilisateur['prenom'];
+		$initiale=ord(my_strtoupper($utilisateur['login']));
 		if ($initiale!=$initiale_courante)
 			{
 			$initiale_courante=$initiale;

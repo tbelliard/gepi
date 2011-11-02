@@ -90,7 +90,7 @@ function make_area_list_html($link, $current_classe, $current_matiere, $year, $m
       $nombre_profs = mysql_num_rows($call_profs);
       $k = 0;
       while ($k < $nombre_profs) {
-        $temp = strtoupper(@mysql_result($call_profs, $k, "id_professeur"));
+        $temp = my_strtoupper(@mysql_result($call_profs, $k, "id_professeur"));
         if ($temp == $_SESSION['login']) {$flag2 = "yes";}
         $k++;
       }
