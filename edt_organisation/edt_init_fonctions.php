@@ -7,7 +7,7 @@
  * Ensemble des fonctions qui renvoient la concordance pour le fichier txt
  * de l'import des EdT.
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -476,7 +476,7 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 	// Si un cours est enregistré, on renvoie 'oui', sinon on renvoie 'non'
 
 	// le jour => il est bon, il faut juste l'écrire en minuscule
-	$jour_e = strtolower($jour);
+	$jour_e = my_strtolower($jour);
 	// Cette fonction renvoie l'id du créneau de départ, la durée et le moment du début du cours
 	$test_creneau = rechercheCreneauCsv2($creneau);
 	$creneau_e = $test_creneau["id_creneau"];

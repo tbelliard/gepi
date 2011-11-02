@@ -71,7 +71,7 @@ if (isset($_POST['valid_logo'])) {
 	//$match=array();
 	//if (my_ereg("\.([^.]+)$", $doc_file['name'], $match)) {
 	if (((function_exists("mb_ereg"))&&(mb_ereg("\.([^.]+)$", $doc_file['name'], $match)))||((function_exists("ereg"))&&(ereg("\.([^.]+)$", $doc_file['name'], $match)))) {
-		$ext = strtolower($match[1]);
+		$ext = my_strtolower($match[1]);
 		if ($ext!='jpg' and $ext!='png'and $ext!='gif') {
 		//if ($ext!='jpg' and $ext!='jpeg' and $ext!='png'and $ext!='gif') {
 			$msg = "les seules extensions autorisées sont gif, png et jpg";
@@ -127,7 +127,7 @@ if (isset($_POST['is_posted'])) {
 		if (isset($_POST['gepiSchoolRne'])) {
 			$enregistrer_gepiSchoolRne='y';
 			if(($multisite=='y')&&(isset($_COOKIE['RNE']))) {
-				if(($_POST['gepiSchoolRne']!='')&&(strtoupper($_POST['gepiSchoolRne'])!=strtoupper($_COOKIE['RNE']))) {
+				if(($_POST['gepiSchoolRne']!='')&&(my_strtoupper($_POST['gepiSchoolRne'])!=my_strtoupper($_COOKIE['RNE']))) {
 					$msg .= "Erreur lors de l'enregistrement du numéro RNE de l'établissement !<br />Le paramètre choisi risque de vous empêcher de vous connecter.<br />Enregistrement refusé!";
 					$enregistrer_gepiSchoolRne='n';
 				}

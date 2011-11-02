@@ -4,7 +4,7 @@
  * Fichier destiné à permettre la suppression d'un cours
  *
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -85,7 +85,7 @@ $message = "";
 // ================= On supprime un cours si ça a été demandé
 
 if (isset($supprimer_cours) AND $confirme_suppression=="yes") {
-    if ($_SESSION["statut"] == "professeur" AND getSettingValue("edt_remplir_prof") == 'y' AND strtolower($identite) != strtolower($_SESSION["login"])){
+    if ($_SESSION["statut"] == "professeur" AND getSettingValue("edt_remplir_prof") == 'y' AND my_strtolower($identite) != my_strtolower($_SESSION["login"])){
       $message = CANT_DELETE_OTHER_COURSE;
     }
     else if (($_SESSION["statut"] == "administrateur") OR ($_SESSION["statut"] == "scolarite") OR (($_SESSION["statut"] == "professeur") AND (getSettingValue("edt_remplir_prof") == 'y'))){

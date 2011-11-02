@@ -118,5 +118,5 @@ if ($res_test==0){
 }
 
 
-result.="<br />Fin mise à jour<br/>";
+$result.="<br />Fin mise à jour<br/>";
 ?>

@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -31,7 +31,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -317,7 +317,7 @@ echo "</tr>\n";
 
 // Affichage deuxième ligne
 //echo "<tr><td class=cn><b>Boite :</b></td>\n";
-echo "<tr><td class=cn><b>".ucfirst(strtolower(getSettingValue("gepi_denom_boite")))." :</b></td>\n";
+echo "<tr><td class=cn><b>".casse_mot(getSettingValue("gepi_denom_boite",'majf2'))." :</b></td>\n";
 $num_per = 0;
 while ($num_per < $nb_cahier_note) {
     $nb_colspan = $nb_dev[$num_per]-$nb_dev[$num_per-1];

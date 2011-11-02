@@ -3,7 +3,7 @@
 /*
  *
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -186,10 +186,10 @@ function get_nom_prenom_from_login($ele_login,$mode) {
 		$lig=mysql_fetch_object($res);
 
 		if($mode=="np") {
-			$retour=strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
+			$retour=my_strtoupper($lig->nom)." ".casse_mot($lig->prenom,'majf2');
 		}
 		else {
-			$retour=ucfirst(strtolower($lig->prenom))." ".strtoupper($lig->nom);
+			$retour=casse_mot($lig->prenom,'majf2')." ".my_strtoupper($lig->nom);
 		}
 	}
 

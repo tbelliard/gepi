@@ -71,7 +71,7 @@ if (isset($is_posted)) {
 		// Récupération du numéro de l'élève dans les saisies:
 		$num_eleve=-1;
 		for($i=0;$i<count($log_eleve);$i++){
-			if(strtolower($login_eleve)==strtolower($log_eleve[$i])){
+			if(my_strtolower($login_eleve)==my_strtolower($log_eleve[$i])){
 				$num_eleve=$i;
 				break;
 			}
@@ -202,8 +202,8 @@ if (isset($is_posted)) {
 		$num_eleve=-1;
 		for($i=0;$i<count($log_eleve);$i++){
 			//if($eleve_login==$log_eleve[$i]){
-			if(strtolower($eleve_login)==strtolower($log_eleve[$i])) {
-				//echo " strtolower(".$log_eleve[$i].")=".strtolower($log_eleve[$i])." ";
+			if(my_strtolower($eleve_login)==my_strtolower($log_eleve[$i])) {
+				//echo " my_strtolower(".$log_eleve[$i].")=".my_strtolower($log_eleve[$i])." ";
 				$num_eleve=$i;
 				break;
 			}
@@ -620,7 +620,7 @@ function imposer_cpe() {
 		$ind=$loop+1;
 		echo "<option value='$ind'";
 		if($tab_profsuivi[$loop]==$login_pp_unique_actuel) {echo " selected='true'";}
-		echo ">".ucwords(strtolower($tab_profprenom[$loop]))." ".strtoupper($tab_profnom[$loop])."</option>\n";
+		echo ">".casse_mot($tab_profprenom[$loop],'majf2')." ".my_strtoupper($tab_profnom[$loop])."</option>\n";
 	}
 	echo "</select>\n";
 	echo "&nbsp;<a href='javascript: imposer_pp();' title='Imposer pour tous les élèves'><img src='../images/icons/wizard.png' width='16' height='16' alt='Imposer pour tous les élèves' /></a>\n";
@@ -635,7 +635,7 @@ function imposer_cpe() {
 		$ind=$loop+1;
 		echo "<option value='$ind'";
 		if($tab_cperesp[$loop]==$login_cpe_unique_actuel) {echo " selected='true'";}
-		echo ">".ucwords(strtolower($tab_cpeprenom[$loop]))." ".strtoupper($tab_cpenom[$loop])."</option>\n";
+		echo ">".casse_mot($tab_cpeprenom[$loop],'majf2')." ".my_strtoupper($tab_cpenom[$loop])."</option>\n";
 	}
 	echo "</select>\n";
 	echo "&nbsp;<a href='javascript: imposer_cpe();' title='Imposer pour tous les élèves'><img src='../images/icons/wizard.png' width='16' height='16' alt='Imposer pour tous les élèves' /></a>\n";
@@ -687,7 +687,7 @@ function imposer_cpe() {
 
 		//echo "<a href='../eleves/modify_eleve.php?eleve_login=".$login_eleve."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title='Editer la fiche élève' target='_blank' style='color: black;'>";
 		echo "<a href='../eleves/modify_eleve.php?eleve_login=".$login_eleve."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title='Editer la fiche élève' target='_blank'>";
- 		echo strtoupper($nom_eleve)." ".$prenom_eleve;
+ 		echo my_strtoupper($nom_eleve)." ".casse_mot($prenom_eleve,'majf2');
 		echo "</a>\n";
 
 		//=========================
@@ -768,7 +768,7 @@ function imposer_cpe() {
 		for($loop=0;$loop<count($tab_profsuivi);$loop++) {
 			echo "<option value='$tab_profsuivi[$loop]'";
 			if ($tab_profsuivi[$loop]==$eleve_profsuivi) { echo " selected";}
-			echo ">".ucwords(strtolower($tab_profprenom[$loop]))." ".strtoupper($tab_profnom[$loop])."</option>\n";
+			echo ">".casse_mot($tab_profprenom[$loop],'majf2')." ".my_strtoupper($tab_profnom[$loop])."</option>\n";
 		}
 		echo "</select></p>\n";
 		echo "</td>\n";
@@ -786,7 +786,7 @@ function imposer_cpe() {
 		for($loop=0;$loop<count($tab_cperesp);$loop++) {
 			echo "<option value='$tab_cperesp[$loop]'";
 			if ($tab_cperesp[$loop]==$eleve_cperesp) { echo " selected";}
-			echo ">".ucwords(strtolower($tab_cpeprenom[$loop]))." ".strtoupper($tab_cpenom[$loop])."</option>\n";
+			echo ">".casse_mot($tab_cpeprenom[$loop],'majf2')." ".my_strtoupper($tab_cpenom[$loop])."</option>\n";
 		}
 		echo "</select></p>\n";
 		echo "</td>\n";
@@ -827,7 +827,7 @@ function imposer_cpe() {
 					echo "<td><p align='center'>$nom_classe</p></td>\n";
 				}
 				else {
-					echo "<td style='vertical-align: bottom; text-align: right;'><a href='".$_SERVER['PHP_SELF']."?add_eleve_classe=y&amp;num_periode=$i&amp;id_classe=$id_classe&amp;login_eleve=$login_eleve".add_token_in_url()."' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/add.png' width='16' height='16' alt=\"Ajouter ".strtoupper($nom_eleve)." ".$prenom_eleve." à la classe $classe en période $i\" title=\"Ajouter ".strtoupper($nom_eleve)." ".$prenom_eleve." à la classe $classe en période $i\" /></a></td>\n";
+					echo "<td style='vertical-align: bottom; text-align: right;'><a href='".$_SERVER['PHP_SELF']."?add_eleve_classe=y&amp;num_periode=$i&amp;id_classe=$id_classe&amp;login_eleve=$login_eleve".add_token_in_url()."' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/add.png' width='16' height='16' alt=\"Ajouter ".my_strtoupper($nom_eleve)." ".casse_mot($prenom_eleve,'majf2')." à la classe $classe en période $i\" title=\"Ajouter ".my_strtoupper($nom_eleve)." ".casse_mot($prenom_eleve,'majf2')." à la classe $classe en période $i\" /></a></td>\n";
 				}
 			}
 			$i++;

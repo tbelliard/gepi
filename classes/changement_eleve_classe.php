@@ -149,7 +149,7 @@ if(mysql_num_rows($res_ele)==0) {
 }
 $lig_ele=mysql_fetch_object($res_ele);
 
-echo "<p>Vous souhaitez changer <b>".ucfirst(strtolower($lig_ele->prenom))." ".strtoupper($lig_ele->nom)."</b> de classe sur la période <b>".$nom_periode[$periode_num]."</b>";
+echo "<p>Vous souhaitez changer <b>".casse_mot($lig_ele->prenom,'majf2')." ".my_strtoupper($lig_ele->nom)."</b> de classe sur la période <b>".$nom_periode[$periode_num]."</b>";
 if($chgt_periode_sup=='y') {echo " et suivantes";}
 echo ".<br />\n";
 
@@ -319,7 +319,7 @@ else {
 					$chaine_profs="";
 					foreach($tab_group_fut[$j]["profs"]["users"] as $tab_prof) {
 						if($chaine_profs!="") {$chaine_profs.=", ";}
-						$chaine_profs.=ucfirst(strtolower($tab_prof['nom']))." ".ucfirst(mb_substr($tab_prof['prenom'],0,1));
+						$chaine_profs.=casse_mot($tab_prof['nom'],'majf2')." ".my_strtoupper(mb_substr($tab_prof['prenom'],0,1));
 					}
 
 					echo "<option value='".$tab_group_fut[$j]['id']."'";

@@ -33,7 +33,8 @@ if ($resultat_session == 'c') {
     die();
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
-    die();};
+    die();
+}
 
 // INSERT INTO droits VALUES ('/gestion/param_couleurs.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Définition des couleurs pour Gepi', '');
 if (!checkAccess()) {
@@ -429,7 +430,7 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>
 			}
 
 			if(isset($_POST['degrade_haut'])) {
-				if((mb_strlen(preg_replace("/[0-9A-F]/","",strtoupper($_POST['degrade_haut'])))!=0)||(mb_strlen($_POST['degrade_haut'])!=6)) {
+				if((mb_strlen(preg_replace("/[0-9A-F]/","",my_strtoupper($_POST['degrade_haut'])))!=0)||(mb_strlen($_POST['degrade_haut'])!=6)) {
 					$degrade_haut="020202";
 				}
 				else {
@@ -447,7 +448,7 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>
 			}
 
 			if(isset($_POST['degrade_bas'])) {
-				if((strlen(preg_replace("/[0-9A-F]/","",strtoupper($_POST['degrade_bas'])))!=0)||(strlen($_POST['degrade_bas'])!=6)) {
+				if((strlen(preg_replace("/[0-9A-F]/","",my_strtoupper($_POST['degrade_bas'])))!=0)||(strlen($_POST['degrade_bas'])!=6)) {
 					$degrade_bas="4A4A59";
 				}
 				else {
@@ -576,7 +577,7 @@ fieldset#login_box div#header {
 			//couleur_infobulle_fond_entete
 
 			if(isset($_POST['couleur_infobulle_fond_entete'])) {
-				if((strlen(preg_replace("/[0-9A-F]/","",strtoupper($_POST['couleur_infobulle_fond_entete'])))!=0)||(strlen($_POST['couleur_infobulle_fond_entete'])!=6)) {
+				if((strlen(preg_replace("/[0-9A-F]/","",my_strtoupper($_POST['couleur_infobulle_fond_entete'])))!=0)||(strlen($_POST['couleur_infobulle_fond_entete'])!=6)) {
 					$couleur_infobulle_fond_entete="4a4a59";
 				}
 				else {
@@ -594,7 +595,7 @@ fieldset#login_box div#header {
 			}
 
 			if(isset($_POST['couleur_infobulle_fond_corps'])) {
-				if((strlen(preg_replace("/[0-9A-F]/","",strtoupper($_POST['couleur_infobulle_fond_corps'])))!=0)||(strlen($_POST['couleur_infobulle_fond_corps'])!=6)) {
+				if((strlen(preg_replace("/[0-9A-F]/","",my_strtoupper($_POST['couleur_infobulle_fond_corps'])))!=0)||(strlen($_POST['couleur_infobulle_fond_corps'])!=6)) {
 					$couleur_infobulle_fond_corps="EAEAEA";
 				}
 				else {
@@ -715,7 +716,7 @@ div.info_abs {
 			}
 
 			if(isset($_POST['couleur_lig_entete'])) {
-				if((strlen(preg_replace("/[0-9A-F]/","",strtoupper($_POST['couleur_lig_entete'])))!=0)||(strlen($_POST['couleur_lig_entete'])!=6)) {
+				if((strlen(preg_replace("/[0-9A-F]/","",my_strtoupper($_POST['couleur_lig_entete'])))!=0)||(strlen($_POST['couleur_lig_entete'])!=6)) {
 					$couleur_lig_entete="fff5b1";
 				}
 				else {
@@ -733,7 +734,7 @@ div.info_abs {
 			}
 
 			if(isset($_POST['couleur_lig_alt1'])) {
-				if((strlen(preg_replace("/[0-9A-F]/","",strtoupper($_POST['couleur_lig_alt1'])))!=0)||(strlen($_POST['couleur_lig_alt1'])!=6)) {
+				if((strlen(preg_replace("/[0-9A-F]/","",my_strtoupper($_POST['couleur_lig_alt1'])))!=0)||(strlen($_POST['couleur_lig_alt1'])!=6)) {
 					$couleur_lig_alt1="ffefd5";
 				}
 				else {
@@ -751,7 +752,7 @@ div.info_abs {
 			}
 
 			if(isset($_POST['couleur_lig_alt_1'])) {
-				if((strlen(preg_replace("/[0-9A-F]/","",strtoupper($_POST['couleur_lig_alt_1'])))!=0)||(strlen($_POST['couleur_lig_alt_1'])!=6)) {
+				if((strlen(preg_replace("/[0-9A-F]/","",my_strtoupper($_POST['couleur_lig_alt_1'])))!=0)||(strlen($_POST['couleur_lig_alt_1'])!=6)) {
 					$couleur_lig_alt_1="F0FFF0";
 				}
 				else {
@@ -808,7 +809,7 @@ div.info_abs {
 
 
 		if(isset($_POST['couleur_fond_postit'])) {
-			if((strlen(preg_replace("/[0-9A-F]/","",strtoupper($_POST['couleur_fond_postit'])))!=0)||(strlen($_POST['couleur_fond_postit'])!=6)) {
+			if((strlen(preg_replace("/[0-9A-F]/","",my_strtoupper($_POST['couleur_fond_postit'])))!=0)||(strlen($_POST['couleur_fond_postit'])!=6)) {
 				$couleur_fond_postit="ffff00";
 			}
 			else {
@@ -983,7 +984,7 @@ div.info_abs {
 
 			for($i=0;$i<count($poste_notice_nom);$i++) {
 				if(isset($_POST[$poste_notice_nom[$i]])) {
-					if((strlen(preg_replace("/[0-9A-F]/","",strtoupper($_POST[$poste_notice_nom[$i]])))!=0)||(strlen($_POST[$poste_notice_nom[$i]])!=6)) {
+					if((strlen(preg_replace("/[0-9A-F]/","",my_strtoupper($_POST[$poste_notice_nom[$i]])))!=0)||(strlen($_POST[$poste_notice_nom[$i]])!=6)) {
 						$couleur_poste=$poste_notice_couleur[$i];
 					}
 					else {

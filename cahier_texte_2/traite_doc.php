@@ -67,7 +67,7 @@ function ajout_fichier($doc_file, $dest, $cpt_doc, $id_groupe) {
 	$ext = '';
 	//if (my_ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)) {
     if (((function_exists("mb_ereg"))&&(mb_ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)))||((function_exists("ereg"))&&(ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)))) {
-		$ext = corriger_caracteres(strtolower($match[1]));
+		$ext = corriger_caracteres(my_strtolower($match[1]));
 		$ext = corriger_extension($ext);
 	}
 	$query = "SELECT id_type FROM ct_types_documents WHERE extension='$ext' AND upload='oui'";

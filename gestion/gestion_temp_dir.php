@@ -183,7 +183,7 @@ if(isset($reinitialiser)) {
 
 		while ($lig_user=mysql_fetch_object($res_user)){
 			$tab_user_login[]=$lig_user->login;
-			$tab_user_info[]=strtoupper($lig_user->nom)." ".ucfirst(strtolower($lig_user->prenom));
+			$tab_user_info[]=my_strtoupper($lig_user->nom)." ".casse_mot($lig_user->prenom,'majf2');
 		}
 
 		// Nombre d'enregistrements à afficher

@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
 *
 * This file is part of GEPI.
 *
@@ -1124,7 +1124,7 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 		//BLOC IDENTITE ELEVE
 			$pdf->SetXY($X_cadre_eleve,$Y_cadre_eleve);
 			$pdf->SetFont('DejaVu','B',14);
-			$pdf->Cell(90,7,strtoupper($nom[$nb_eleves_i])." ".ucfirst($prenom[$nb_eleves_i]),0,2,'');
+			$pdf->Cell(90,7,my_strtoupper($nom[$nb_eleves_i])." ".casse_mot($prenom[$nb_eleves_i],'majf2'),0,2,'');
 			$pdf->SetFont('DejaVu','',10);
 			//$pdf->Cell(90,5,'Né le '.affiche_date_naissance($naissance[$nb_eleves_i]).', demi-pensionnaire',0,2,'');
 			if($sexe[$nb_eleves_i]=="M"){$e_au_feminin="";}else{$e_au_feminin="e";}

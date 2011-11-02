@@ -290,6 +290,7 @@ function my_strstr($chaine,$motif) {
 	}
 }
 
+/*
 //strtolower ( string str)
 //(PHP 4 >= 4.3.0, PHP 5)
 function my_strtolower($chaine) {
@@ -313,6 +314,7 @@ function my_strtoupper($chaine) {
 		return strtoupper($chaine);
 	}
 }
+*/
 
 //substr ( string string, int start [, int length])
 //(PHP 4 >= 4.0.6, PHP 5)

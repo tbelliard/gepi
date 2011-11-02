@@ -429,7 +429,7 @@ if ($nombreligne == '0') {
 			echo "<tr class='lig$alt'><td>\n";
 
 			//echo "<input type='hidden' name='log_eleve[$ki]' value=\"$login_eleve\" />\n";
-			echo "<p>".strtoupper($nom_eleve)." $prenom_eleve</p></td>\n";
+			echo "<p>".my_strtoupper($nom_eleve)." ".casse_mot($prenom_eleve,'majf2')."</p></td>\n";
 
 			if($classes_ajout_sans_regime!="y") {
 				echo "<td><p>Ext.|Int.|D/P|I-ext.<br /><input type='radio' name='regime_$id_eleve' value='ext.'";

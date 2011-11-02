@@ -346,7 +346,7 @@ else {
 						$login_eleve=get_lcs_login($reg_elenoet, 'eleve');
 						//echo "get_lcs_login($reg_elenoet, 'eleve')=".$login_eleve."<br />";
 						if($login_eleve!='') {
-							$test_tempo2 = mysql_num_rows(mysql_query("SELECT col2 FROM tempo2 WHERE (col2='$login_eleve' or col2='".strtoupper($login_eleve)."')"));
+							$test_tempo2 = mysql_num_rows(mysql_query("SELECT col2 FROM tempo2 WHERE (col2='$login_eleve' or col2='".my_strtoupper($login_eleve)."')"));
 							if ($test_tempo2 != "0") {
 								$ligne_pb = 'yes';
 							} else {

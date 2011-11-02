@@ -66,7 +66,7 @@ change = 'no';
 $call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = mysql_result($call_classe, "0", "classe");
 ?>
-<p><b>Classe de <?php echo "$classe"; ?> - Consultation des absences : <?php $temp = strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b>
+<p><b>Classe de <?php echo "$classe"; ?> - Consultation des absences : <?php $temp = my_strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b>
 <br />
 <!--table border=1 cellspacing=2 cellpadding=5-->
 <table class='boireaus' cellspacing='2' cellpadding='5'>
@@ -103,7 +103,7 @@ while($i < $nombre_lignes) {
 	$current_eleve_login_ap = $current_eleve_login."_ap";
 
 	$alt=$alt*(-1);
-	echo "<tr class='lig$alt'><td align='center'>".strtoupper($current_eleve_nom)." $current_eleve_prenom\n";
+	echo "<tr class='lig$alt'><td align='center'>".my_strtoupper($current_eleve_nom)." ".casse_mot($current_eleve_prenom,'majf2')."\n";
 	echo "</td>\n";
 	echo "<td align='center'>$current_eleve_nb_absences</td>\n";
 	echo "<td align='center'>$current_eleve_nb_nj</td>\n";

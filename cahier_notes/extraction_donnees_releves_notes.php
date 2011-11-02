@@ -401,7 +401,7 @@
 					// Si c'est un élève
 					elseif (($_SESSION['statut'] == 'eleve') AND
 							(getSettingValue("GepiAccesReleveEleve") == "yes") AND
-							strtolower($current_eleve_login[$i])==strtolower($_SESSION['login'])) {
+							my_strtolower($current_eleve_login[$i])==my_strtolower($_SESSION['login'])) {
 						$autorisation_acces='y';
 					}
 					// Si c'est un responsable

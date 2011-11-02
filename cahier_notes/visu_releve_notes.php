@@ -1078,7 +1078,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 										}
 										$requete_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes WHERE ('.$selection_classe.') AND '.$prefix_base.'j_eleves_classes.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'eleves.nom ASC');
 						  				while ($donner_eleve = mysql_fetch_array($requete_eleve)) {
-											?><option value="<?php echo $donner_eleve['login']; ?>"  <?php if(!empty($eleve) and in_array($donner_eleve['login'], $eleve)) { ?>selected="selected"<?php } ?>><?php echo strtoupper($donner_eleve['nom'])." ".ucfirst($donner_eleve['prenom']); ?></option><?php
+											?><option value="<?php echo $donner_eleve['login']; ?>"  <?php if(!empty($eleve) and in_array($donner_eleve['login'], $eleve)) { ?>selected="selected"<?php } ?>><?php echo my_strtoupper($donner_eleve['nom'])." ".casse_mot($donner_eleve['prenom'],'majf2'); ?></option><?php
 										}
 									}
 									if(empty($classe[0]) and empty($eleve)) {
@@ -2117,7 +2117,7 @@ if ($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") {
 	}
 
 	if ($_SESSION['statut'] == "eleve") {
-		if (strtoupper($login_eleve) != strtoupper($_SESSION['login'])) {
+		if (my_strtoupper($login_eleve) != my_strtoupper($_SESSION['login'])) {
 			tentative_intrusion(3, "Tentative d'un élève de visualiser les relevés de notes d'un autre élève.");
 			echo "Vous ne pouvez visualiser que vos relevés de notes.\n";
 			require("../lib/footer.inc.php");

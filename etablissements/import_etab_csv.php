@@ -209,7 +209,7 @@ if (!isset($is_posted)) {
 						break;
 					case 3:
 						// Type public/privé
-						$tempo = strtolower($data[$c]);
+						$tempo = my_strtolower($data[$c]);
 						$valid='yes';
 						switch($tempo) {
 							case "public":

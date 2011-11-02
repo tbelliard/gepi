@@ -68,10 +68,10 @@ function get_nom_prenom_from_login($ele_login,$mode) {
 		$lig=mysql_fetch_object($res);
 
 		if($mode=="np") {
-			$retour=strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
+			$retour=my_strtoupper($lig->nom)." ".casse_mot($lig->prenom,'majf2');
 		}
 		else {
-			$retour=ucfirst(strtolower($lig->prenom))." ".strtoupper($lig->nom);
+			$retour=casse_mot($lig->prenom,'majf2')." ".my_strtoupper($lig->nom);
 		}
 	}
 
@@ -91,10 +91,10 @@ function get_infos_from_ele_login($ele_login,$mode) {
 		$lig=mysql_fetch_object($res);
 
 		if($mode=="np") {
-			$retour['denomination']=strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
+			$retour['denomination']=my_strtoupper($lig->nom)." ".casse_mot($lig->prenom,'majf2');
 		}
 		else {
-			$retour['denomination']=ucfirst(strtolower($lig->prenom))." ".strtoupper($lig->nom);
+			$retour['denomination']=casse_mot($lig->prenom,'majf2')." ".my_strtoupper($lig->nom);
 		}
 
 		$retour['nom']=$lig->nom;

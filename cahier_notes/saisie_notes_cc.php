@@ -625,7 +625,7 @@ foreach ($liste_eleves as $eleve) {
 	*/
 
 	echo "<input type='text' name='note_eleve[$i]' size='4' autocomplete='off' id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onfocus=\"javascript:this.select()";
-	if($elenoet!="") {echo ";affiche_photo('".nom_photo($elenoet)."','".addslashes(strtoupper($eleve_nom[$i])." ".ucfirst(strtolower($eleve_prenom[$i])))."')";}
+	if($elenoet!="") {echo ";affiche_photo('".nom_photo($elenoet)."','".addslashes(my_strtoupper($eleve_nom[$i])." ".casse_mot($eleve_prenom[$i],'majf2'))."')";}
 	echo "\" onchange=\"verifcol($num_id);changement();\" value='";
 	if ((isset($note_import[$current_displayed_line])) and  ($note_import[$current_displayed_line] != '')) {
 		echo $note_import[$current_displayed_line];

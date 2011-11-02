@@ -2,7 +2,7 @@
 
 /**
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -98,7 +98,7 @@ if ($action == "upload_file") {
 
 
 	// On vérifie le nom du fichier...
-	if(strtolower($txt_file['name']) == "emploidutemps.txt") {
+	if(my_strtolower($txt_file['name']) == "emploidutemps.txt") {
 		// Le nom est ok. On ouvre le fichier
         $fp = fopen($txt_file['tmp_name'],"r");
 
@@ -162,7 +162,7 @@ if ($action == "upload_file") {
 							echo 'Numéro : '.$tab[0].' civilité :'.$tab[1].' nom : <b>'.$tab[2].' '.$prenom.'</b>';
 							echo '<input type="hidden" name="numero_texte_'.$numero.'" value="'.$tab[0].'" />';
 							$nom_select = "nom_gepi_".$numero; // pour le name du select
-							$nom_selected = strtoupper(remplace_accents($tab[2], 'all_nospace')); // pour le selected
+							$nom_selected = my_strtoupper(remplace_accents($tab[2], 'all_nospace')); // pour le selected
 							echo $nom_selected;
 							include("helpers/select_professeurs.php");
 							echo '<br />'."\n";
