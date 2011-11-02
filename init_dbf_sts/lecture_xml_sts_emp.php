@@ -58,7 +58,7 @@ function createRandomPassword() {
 <html>
 <head>
     <title>Lecture du XML Emploi du temps de Sts-web et génération de CSV</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="author" content="Stephane Boireau, A.S. RUE de Bernay/Pont-Audemer" />
     <!--link type="text/css" rel="stylesheet" href="../styles.css" /-->
     <link type="text/css" rel="stylesheet" href="../style.css" />
@@ -1315,7 +1315,7 @@ die();
 <html>
 <head>
     <title>Fichier profs</title>
-    <meta http-equiv='Content-Type' content='text/html; charset=ISO-8859-15' />
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
     <meta name='author' content='Stephane Boireau, A.S. RUE de Bernay/Pont-Audemer' />
     <link type='text/css' rel='stylesheet' href='../../style.css' />
 </head>

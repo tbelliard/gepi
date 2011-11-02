@@ -45,7 +45,7 @@ function begin_html() {
 <html>
 <head>
 <title>Installation de GEPI</title>
-<meta HTTP-EQUIV="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta HTTP-EQUIV="Content-Type" content="text/html; charset=utf-8" />
 <META HTTP-EQUIV="Pragma" CONTENT="no-cache" />
 <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache" />
 <META HTTP-EQUIV="Expires" CONTENT="0" />

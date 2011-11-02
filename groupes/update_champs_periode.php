@@ -48,7 +48,7 @@ if (!checkAccess()) {
 	die();
 }
 
-header('Content-Type: text/xml; charset=ISO-8859-1');
+header('Content-Type: text/xml; charset=utf-8');
 
 $id_groupe=isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL;
 $id_classe=isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL;

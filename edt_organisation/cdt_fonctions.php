@@ -57,9 +57,9 @@ function AfficheIconePlusNew_CDT($id_groupe, $login_edt, $type_edt, $heuredeb_de
 					id_groupe = '".$id_groupe."';
 					getWinDernieresNotices().hide();
 					getWinListeNotices();
-					new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$id_groupe."', {encoding: 'ISO-8859-1'});
+					new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$id_groupe."', {encoding: 'utf-8'});
 					getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=".$id_groupe."&today=".$MaDate."', { 
-								encoding: 'ISO-8859-1',
+								encoding: 'utf-8',
 								onComplete : 
 								function() {
 									initWysiwyg();
@@ -78,9 +78,9 @@ function AfficheIconePlusNew_CDT($id_groupe, $login_edt, $type_edt, $heuredeb_de
 					id_groupe = '".$id_groupe."';
 					getWinDernieresNotices().hide();
 					getWinListeNotices();
-					new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$id_groupe."', {encoding: 'ISO-8859-1'});
+					new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$id_groupe."', {encoding: 'utf-8'});
 					getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_ct=".$id_ct."&id_groupe=".$id_groupe."&today=".$MaDate."', { 
-								encoding: 'ISO-8859-1',
+								encoding: 'utf-8',
 								onComplete : 
 								function() {
 									initWysiwyg();

@@ -163,9 +163,9 @@ $a = 1;
 			id_groupe = '".$group->getId()."';
 			getWinDernieresNotices().hide();
 			getWinListeNotices();
-			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$group->getId()."', {encoding: 'ISO-8859-1'});
+			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$group->getId()."', {encoding: 'utf-8'});
 			getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=".$group->getId()."&today='+getCalendarUnixDate(), { 
-	            		encoding: 'ISO-8859-1',
+	            		encoding: 'utf-8',
 	            		onComplete : 
 	            		function() {
 	            			initWysiwyg();

@@ -200,7 +200,7 @@ if($filtrage_html=='htmlpurifier') {
 
 	$config = HTMLPurifier_Config::createDefault();
 	//$config->set('Core', 'Encoding', 'ISO-8859-15'); // replace with your encoding
-	$config->set('Core.Encoding', 'ISO-8859-15'); // replace with your encoding
+	$config->set('Core.Encoding', 'utf-8'); // replace with your encoding
 	//$config->set('HTML', 'Doctype', 'HTML 4.01 Transitional'); // replace with your doctype
 	//$config->set('HTML', 'Doctype', 'HTML 4.01 Strict'); // replace with your doctype
 	$config->set('HTML.Doctype', 'HTML 4.01 Strict'); // replace with your doctype

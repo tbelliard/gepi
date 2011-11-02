@@ -7,7 +7,6 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 	$string = "ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸";
 	$encoding = mb_detect_encoding($string, "UTF-8, ISO-8859-1");
 	$string = mb_convert_encoding($string, "UTF-8", $encoding);
-	//$string = mb_convert_encoding($string, "ISO-8859-1", $encoding);
 } else {
 	$string = "";
 }
@@ -16,7 +15,6 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 	$rech_nom=isset($_POST['rech_nom']) ? $_POST['rech_nom'] : (isset($_GET['rech_nom']) ? $_GET['rech_nom'] : NULL);
 	$rech_prenom=isset($_POST['rech_prenom']) ? $_POST['rech_prenom'] : (isset($_GET['rech_prenom']) ? $_GET['rech_prenom'] : NULL);
 
-	//$rech_nom=my_ereg_replace("[^A-Za-zÃ‚Ã„Ã€ÃÃƒÃ„Ã…Ã‡ÃŠÃ‹ÃˆÃ‰ÃÃÃŒÃÃ‘Ã”Ã–Ã’Ã“Ã•Å Ã›ÃœÃ™ÃšÃÅ¸Å½Ã¡Ã Ã¢Ã¤Ã£Ã¥Ã§Ã©Ã¨ÃªÃ«Ã®Ã¯Ã¬Ã­Ã±Ã´Ã¶Ã°Ã²Ã³ÃµÅ¡Ã»Ã¼Ã¹ÃºÃ½Ã¿Å¾]","",$rech_nom);
 
 	//$page=isset($_POST['page']) ? $_POST['page'] : "";
 	$page=isset($_POST['page']) ? $_POST['page'] : (isset($_GET['page']) ? $_GET['page'] : "");

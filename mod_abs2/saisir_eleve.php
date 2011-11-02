@@ -424,7 +424,7 @@ echo '<div id="edt_'.$eleve->getLogin().'" style="display: none; position: stati
 			echo '<br>';
 			echo "<a href=\"#\" style=\"font-size: 11pt;\"  onclick=\"javascript:
 					if (!$('edt_".$eleve->getLogin()."').visible()) {
-					    new Ajax.Updater('edt_".$eleve->getLogin()."', './ajax_edt_eleve.php?eleve_login=".$eleve->getLogin()."', {encoding: 'ISO-8859-1'});
+					    new Ajax.Updater('edt_".$eleve->getLogin()."', './ajax_edt_eleve.php?eleve_login=".$eleve->getLogin()."', {encoding: 'utf-8'});
 					    $('edt_".$eleve->getLogin()."').show();
 					} else {
 					    $('edt_".$eleve->getLogin()."').hide();

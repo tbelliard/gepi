@@ -58,7 +58,7 @@ log_ajax_app("Test check_token() depasse.");
 
 //echo "C";
 
-header('Content-Type: text/html; charset=ISO-8859-1');
+header('Content-Type: text/html; charset=utf-8');
 
 // Initialisation des variables
 $var1 = isset($_POST["var1"]) ? $_POST["var1"] : (isset($_GET["var1"]) ? $_GET["var1"] : NULL);

@@ -69,7 +69,7 @@ include "../lib/bulletin_simple_classe.inc.php";
 //include "../lib/bulletin_simple_classe_bis.inc.php";
 //==============================
 
-header('Content-Type: text/html; charset=ISO-8859-15');
+header('Content-Type: text/html; charset=utf-8');
 
 //==============================
 // Dans le cas d'un appel via ajax, on ne met pas de header: affichage dans une infobulle

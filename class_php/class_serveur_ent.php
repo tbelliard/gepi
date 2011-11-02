@@ -380,7 +380,7 @@ class serveur_ent {
    */
   public function listeElevesAvecClasse(){
     $eleves = EleveQuery::create()->find();
-    $retour = ($this->_format == 'xml') ? '<?xml version=\'1.0\' encoding=\'ISO-8859-1\'?><eleves>' : array();
+    $retour = ($this->_format == 'xml') ? '<?xml version=\'1.0\' encoding=\'utf-8\'?><eleves>' : array();
     foreach ($eleves as $eleve){
       $eleCla = $eleve->getJEleveClassesJoinClasse();
       $classes = array();
@@ -421,7 +421,7 @@ class serveur_ent {
                         ->filterByStatut('professeur')
                         ->filterByEtat('actif')
                         ->find();
-    $retour = ($this->_format == 'xml') ? '<?xml version=\'1.0\' encoding=\'ISO-8859-1\'?><professeurs>' : array();
+    $retour = ($this->_format == 'xml') ? '<?xml version=\'1.0\' encoding=\'utf-8\'?><professeurs>' : array();
     foreach ($profs as $prof) {
       $matieres = array();
       $profMat = $prof->getJProfesseursMatieressJoinMatiere();
@@ -463,7 +463,7 @@ class serveur_ent {
 
   public function listeClassesAvecProfesseurs(){
     $classes = ClasseQuery::create()->find();
-    $retour = ($this->_format == 'xml') ? '<?xml version=\'1.0\' encoding=\'ISO-8859-1\'?><classes>' : array();
+    $retour = ($this->_format == 'xml') ? '<?xml version=\'1.0\' encoding=\'utf-8\'?><classes>' : array();
     foreach ($classes as $classe){
       $professeurs = ($this->_format == 'xml') ? '' : array();
       // Pour chaque classe, on liste les groupes
@@ -505,7 +505,7 @@ class serveur_ent {
    */
   public function listeMatieresAvecNomlong(){
     $matieres = MatiereQuery::create()->orderByMatiere()->find();
-    $retour = ($this->_format == 'xml') ? '<?xml version=\'1.0\' encoding=\'ISO-8859-1\'?><matieres>' : array();
+    $retour = ($this->_format == 'xml') ? '<?xml version=\'1.0\' encoding=\'utf-8\'?><matieres>' : array();
     foreach ($matieres as $matiere){
       if ($this->_format == 'xml'){
         $retour .= '

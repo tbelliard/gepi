@@ -92,7 +92,7 @@ require('fonctions_annees_anterieures.inc.php');
 $acces=check_acces_aa($logineleve);
 
 if($acces=="y") {
-	header('Content-Type: text/html; charset=ISO-8859-15');
+	header('Content-Type: text/html; charset=utf-8');
 	
 	// On a passé les barrières, on passe au traitement
 

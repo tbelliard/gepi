@@ -48,7 +48,7 @@ if (!checkAccess()) {
 
 check_token();
 
-header('Content-Type: text/html; charset=ISO-8859-15');
+header('Content-Type: text/html; charset=utf-8');
 
 /*
 $signalement_login_eleve=isset($_POST['signalement_login_eleve']) ? $_POST['signalement_login_eleve'] : "";

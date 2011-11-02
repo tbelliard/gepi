@@ -23,7 +23,7 @@
 
 //Attention, la sortie standard de ce script (echo), doit etre soit une erreur soit l'id de la notice. La sortie est utilisée dans un javascript
 
-header('Content-Type: text/html; charset=ISO-8859-1');
+header('Content-Type: text/html; charset=utf-8');
 
 $filtrage_extensions_fichiers_table_ct_types_documents='y';
 

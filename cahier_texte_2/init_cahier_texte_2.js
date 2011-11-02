@@ -37,18 +37,7 @@ function initPage () {
 	    id_groupe = id_groupe_init;
 	    getWinDernieresNotices().hide();
 	    getWinListeNotices();
-		/*
-	    new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe_init, {encoding: 'ISO-8859-1'});
-	    getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=' + id_groupe_init + '&today='+getCalendarUnixDate(), {
-		    encoding: 'ISO-8859-1',
-		    onComplete :
-		    function() {
-			    initWysiwyg();
-				debut_alert = new Date();
-				    }
-			    }
-	    );
-		*/
+		
 		// On ajoute un délais pour que le calendrier soit chargé avant
 		setTimeout('initFenetreNotice('+id_groupe_init+')',500);
 	} else {
@@ -76,9 +65,9 @@ function temporiser_init() {
 }
 
 function initFenetreNotice(id_groupe_init) {
-	    new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe_init, {encoding: 'ISO-8859-1'});
+	    new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe_init, {encoding: 'utf-8'});
 	    getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=' + id_groupe_init + '&today='+getCalendarUnixDate(), {
-		    encoding: 'ISO-8859-1',
+		    encoding: 'utf-8',
 		    onComplete :
 		    function() {
 			    initWysiwyg();

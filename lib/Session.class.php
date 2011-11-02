@@ -908,9 +908,8 @@ if (getSettingValue("sso_cas_table") == 'yes') {
       	if (isset($tab[$code_attribut])) {
         	$valeur = $tab[$code_attribut];
 					if (!empty($valeur)){						// L'attribut est trouvé et non vide, on l'assigne pour mettre à jour l'utilisateur
-						// On s'assure que la chaîne est bien enregistrée en iso-8859-1.
-						// Il est en effet probable que la chaîne d'origine soit en UTF-8.
-						$valeur = ensure_iso8859_1($valeur);
+						// On s'assure que la chaîne est bien enregistrée en iso-UTF-8.
+						$valeur = ensure_utf8($valeur);
 						$this->cas_extra_attributes[$attribut] = trim(mysql_real_escape_string($valeur));
 					}
         }

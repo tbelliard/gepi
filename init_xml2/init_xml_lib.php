@@ -6,7 +6,7 @@ $debug_import="n";
 
 function traite_utf8($chaine) {
 	// On passe par cette fonction pour pouvoir desactiver rapidement ce traitement s'il ne se revele plus necessaire
-	//$retour=$chaine;
+	$retour=$chaine;
 
 	// mb_detect_encoding($chaine . 'a' , 'UTF-8, ISO-8859-1');
 
@@ -26,7 +26,7 @@ function traite_utf8($chaine) {
 	//$retour=recode_string("utf8..iso-8859-15", $chaine);
 	// recode_string est absent la plupart du temps
 
-	$retour=utf8_decode($chaine);
+	// $retour=utf8_decode($chaine);
 
 	return $retour;
 }

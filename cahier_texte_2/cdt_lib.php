@@ -21,97 +21,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-/*
-	function html_entete($titre='Cahier de textes',$niveau_arbo=1,$avec_init_php='n',$chaine_login_prof="") {
-		$entete="";
 
-		// trunk/documents/archives/etablissement/cahier_texte_2010_2011/cdt/index_classes.html
-
-		if($avec_init_php=='y') {
-			if($niveau_arbo==0) {
-				$pref_arbo="../../../..";
-				$n_arbo=4;
-			}
-			else {
-				$pref_arbo="../../../../..";
-				$n_arbo=5;
-			}
-
-			$entete.='<?php
-
-$niveau_arbo='.$n_arbo.';
-require_once("../../../../../lib/initialisations.inc.php");
-
-// Resume session
-$resultat_session = $session_gepi->security_check();
-if ($resultat_session == "c") {
-	header("Location: '.$pref_arbo.'/utilisateurs/mon_compte.php?change_mdp=yes");
-	die();
-} else if ($resultat_session == "0") {
-	header("Location: '.$pref_arbo.'/logout.php?auto=1");
-	die();
-}
-
-$tab_statuts=array("administrateur","professeur","scolarite","cpe","autre");
-if(!in_array($_SESSION["statut"],$tab_statuts)) {
-	header("Location: '.$pref_arbo.'/logout.php?auto=1");
-	die();
-}
-
-// Ajouter une autre filtrage selon le statut...
-// ... et des retours différents
-
-$tab_login=array('.$chaine_login_prof.');
-if(($_SESSION["statut"]=="professeur")&&(!in_array($_SESSION["login"],$tab_login))) {
-	header("Location: '.$pref_arbo.'/logout.php?auto=1");
-	die();
-}
-
-?>
-';
-
-			//$entete.="";
-		}
-
-		$entete.='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<meta http-equiv="Pragma" content="no-cache" />
-<meta http-equiv="Cache-Control" content="no-cache" />
-<meta http-equiv="Expires" content="0" />
-<meta http-equiv="Content-Script-Type" content="text/javascript" />
-<meta http-equiv="Content-Style-Type" content="text/css" />';
-
-		if($niveau_arbo==0) {
-			$pref_arbo=".";
-		}
-		else {
-			$pref_arbo="..";
-		}
-
-		$entete.="<link rel='stylesheet' type='text/css' href='$pref_arbo/style.css' />
-<link rel='stylesheet' type='text/css' href='$pref_arbo/accessibilite.css' media='screen' />
-<link rel='stylesheet' type='text/css' href='$pref_arbo/accessibilite_print.css' media='print' />
-<link rel='stylesheet' type='text/css' href='$pref_arbo/portable.css' media='handheld' />
-<link title='bandeau' rel='stylesheet' type='text/css' href='$pref_arbo/css/bandeau_r01.css' media='screen' />
-<!--[if lte IE 7]>
-<link title='bandeau' rel='stylesheet' type='text/css' href='$pref_arbo/css/bandeau_r01_ie.css' media='screen' />
-<![endif]-->
-<!--[if lte IE 6]>
-<link title='bandeau' rel='stylesheet' type='text/css' href='$pref_arbo/css/bandeau_r01_ie6.css' media='screen' />
-<![endif]-->
-<!--[if IE 7]>
-<link title='bandeau' rel='stylesheet' type='text/css' href='$pref_arbo/css/bandeau_r01_ie7.css' media='screen' />
-<![endif]-->
-<link rel='stylesheet' type='text/css' href='$pref_arbo/style_screen_ajout.css' />\n";
-		$entete.="<title>$titre</title>\n";
-		$entete.="</head>\n";
-		$entete.="<body>\n";
-
-		return $entete;
-	}
-*/
 
 	function html_entete($titre='Cahier de textes',$n_arbo=1,$avec_init_php='n',$chaine_login_prof="") {
 		$entete="";
@@ -148,7 +58,7 @@ require_once("'.$pref_arbo.'/entete.php");
 		$entete.='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Cache-Control" content="no-cache" />
 <meta http-equiv="Expires" content="0" />

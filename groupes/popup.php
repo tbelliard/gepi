@@ -146,7 +146,7 @@ if($gepi_prof_suivi==""){
 		echo "<title>".htmlentities($enseignement)."</title>\n";
 	}
 ?>
-	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="author" content="Stephane Boireau, A.S. RUE de Bernay/Pont-Audemer" />
 	<!--link type="text/css" rel="stylesheet" href="../styles.css" /-->
 	<link type="text/css" rel="stylesheet" href="../style.css" />

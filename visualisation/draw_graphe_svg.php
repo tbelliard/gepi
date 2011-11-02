@@ -6,7 +6,7 @@
 	require_once("../lib/initialisations.inc.php");
 
 	header("Content-type: image/svg+xml");
-	echo '<?xml version="1.0" encoding="iso-8859-1"?>';
+	echo '<?xml version="1.0" encoding="utf-8"?>';
 	echo "\n";
 
 	// On précise de ne pas traiter les données avec la fonction anti_inject

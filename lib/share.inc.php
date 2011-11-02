@@ -1429,18 +1429,19 @@ function vider_dir($dir){
 
 /**
  * Cette méthode prend une chaîne de caractères et s'assure qu'elle est bien
- * retournée en ISO-8859-1.
+ * retournée en UTF-8.
+ * 
+ * On ne devrait plus l'utiliser mais utiliser ensure_utf8() à la place
  * 
  * @param string La chaine à tester
  * @return string La chaine traitée
- * @todo On pourrait au moins passer en ISO-8859-15
  */
 function ensure_iso8859_1($str) {
 	$encoding = mb_detect_encoding($str);
-	if ($encoding == 'ISO-8859-1') {
+	if ($encoding == 'UTF-8') {
 		return $str;
 	} else {
-		return mb_convert_encoding($str, 'ISO-8859-1');
+		return mb_convert_encoding($str, 'UTF-8');
 	}
 }
 
@@ -1456,7 +1457,7 @@ function caract_ooo($chaine){
 	}
 	else{
 		$caract_accent=array("À","à","Â","â","Ä","ä","É","é","È","è","Ê","ê","Ë","ë","Î","î","Ï","ï","Ô","ô","Ö","ö","Ù","ù","Û","û","Ü","ü");
-		$caract_utf8=array("Ã€","Ã ","Ã‚","Ã¢","Ã„","Ã¤","Ã‰","Ã©","Ã¨","ÃŠ","Ãª","Ã‹","Ã«","Ã","Ã®","Ã","Ã¯","Ã”","Ã´","Ã–","Ã¶","Ã™","Ã¹","Ã›","Ã»","Ãœ","Ã¼","u");
+		$caract_utf8=array("À","à","Â","â","Ä","ä","É","é","È","è","Ê","ê","Ë","ë","Î","î","Ï","ï","Ô","ô","Ö","ö","Ù","ù","Û","û","Ü","ü");
 
 		$retour=$chaine;
 		for($i=0;$i<count($caract_accent);$i++){
@@ -4165,7 +4166,7 @@ function get_tab_prof_suivi($id_classe) {
  * - message_accueil_utilisateur("UNTEL","Bonjour Untel",130674844,130684567,130690844) : affiche le message "Bonjour Untel" sur la page du destinataire de login "UNTEL" à partir de la date 130674844, jusqu'à la date 130684567, avec décompte sur la date 130690844
  * 
  * @param type $login_destinataire login du destinataire (obligatoire)
- * @param type $texte texte du message contenant éventuellement des balises HTML et encodé en iso-8859-1 (obligatoire)
+ * @param type $texte texte du message contenant éventuellement des balises HTML et encodé en utf-8 (obligatoire)
  * @param type $date_debut date à partir de laquelle est affiché le message (timestamp, optionnel)
  * @param type $date_fin date à laquelle le message n'est plus affiché (timestamp, optionnel)
  * @param type $date_decompte date butoir du décompte, la chaîne _DECOMPTE_ dans $texte est remplacée par un décompte (timestamp, optionnel)

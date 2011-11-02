@@ -109,7 +109,7 @@ class ajaxrequestAction extends Action {
 							$fin_periode = $fin[0];
 							$num_initial = $request->getParam('num_jour_initial');
 							$num_final = $request->getParam('num_jour_final');
-							header('Content-type: text/html;charset=iso-8859-1;');
+							header('Content-type: text/html;charset=utf-8;');
 							$content = '[{
 									"code": "success",
 									"message": "mise à jour de la période effectuée",
@@ -120,7 +120,7 @@ class ajaxrequestAction extends Action {
 									}]';
 						}
 						else {
-							header('Content-type: text/html;charset=iso-8859-1;');
+							header('Content-type: text/html;charset=utf-8;');
 							$code = "error";
 							$message = "impossible de mettre à jour la période";
 							$content = '[{
@@ -130,7 +130,7 @@ class ajaxrequestAction extends Action {
 						}
 					}
 					else {
-						header('Content-type: text/html;charset=iso-8859-1;');
+						header('Content-type: text/html;charset=utf-8;');
 						$code = "error";
 						$message = "Le chevauchement des périodes n'est pas possible";
 						$content = '[{
@@ -144,7 +144,7 @@ class ajaxrequestAction extends Action {
 
 				}
 				else {
-					header('Content-type: text/html;charset=iso-8859-1;');
+					header('Content-type: text/html;charset=utf-8;');
 					$content = '[{
 							"code": "error",
 							"message": "Le format des dates est non valide" 
@@ -153,7 +153,7 @@ class ajaxrequestAction extends Action {
 			}
 		}
 		else {
-			header('Content-type: text/html;charset=iso-8859-1;');
+			header('Content-type: text/html;charset=utf-8;');
 			$content = '[{
 					"code": "error",
 					"message": "Aucune période transmise" 
@@ -175,7 +175,7 @@ class ajaxrequestAction extends Action {
 			$PeriodeCalendaire = new PeriodeCalendaire();
 			$PeriodeCalendaire->id = $request->getParam('periodid');
 			$success = $PeriodeCalendaire->delete();
-			header('Content-type: text/html;charset=iso-8859-1;');
+			header('Content-type: text/html;charset=utf-8;');
 			if ($success) {
 				
 				$code = "success";
@@ -226,7 +226,7 @@ class ajaxrequestAction extends Action {
 						$stop = true;
 					}
 				}
-				header('Content-type: text/html;charset=iso-8859-1;');
+				header('Content-type: text/html;charset=utf-8;');
 				//header('Content-type: application/x-json');
 				$content = '[{
 						"id": "'.$period['id'].'",

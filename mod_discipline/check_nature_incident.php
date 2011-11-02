@@ -51,7 +51,7 @@ if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 }
 
 
-header('Content-Type: text/html; charset=ISO-8859-1');
+header('Content-Type: text/html; charset=utf-8');
 
 //$chaine_rech=isset($_GET['chaine_rech']) ? $_GET['chaine_rech'] : NULL;
 $nature=isset($_POST['nature']) ? $_POST['nature'] : NULL;

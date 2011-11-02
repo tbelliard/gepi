@@ -319,7 +319,7 @@ foreach($data_eleves as &$eleve) {
 // Génération du fichier XML à partir des données rassemblées ci-dessus
 
 
-$doc = new DOMDocument('1.0','iso-8859-15');
+$doc = new DOMDocument('1.0','utf-8');
 
 // La racine : <fichier>
 $root = $doc->createElement('fichier');

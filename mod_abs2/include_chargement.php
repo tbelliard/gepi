@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-header('Content-Type: text/html; charset=ISO-8859-1');
+header('Content-Type: text/html; charset=utf-8');
 $compteur = isset($_GET['compteur']) ? (int) htmlentities($_GET['compteur']) : Null;
 if (!is_int($compteur)) {
     die();
