@@ -1425,12 +1425,6 @@ function ensure_utf8($str, $from_encoding = null) {
     }
 	$result = null;
     if ($encoding !== false && $encoding != null) {
-    	//test : est-ce que iconv est bien implémenté sur ce système ?
-        $test = 'c\'est un bel ete' === iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", 'c\'est un bel été');
-        if ($test) {
-            //on utilise iconv pour la conversion
-            $result = @iconv("UTF-8", $encoding."//TRANSLIT//IGNORE", $str);
-        }
         if ($result == null && function_exists('mb_convert_encoding')) {
             $result = mb_convert_encoding($str, 'UTF-8', $encoding);
         }
