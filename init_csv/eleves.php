@@ -189,10 +189,10 @@ if (!isset($_POST["action"])) {
 			//==========================
 
 			// On nettoie et on vérifie :
-			$reg_nom = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(my_strtoupper($reg_nom)))))));
+			$reg_nom=nettoyer_caracteres_nom(trim(my_strtoupper($reg_nom)));
 
 			if (mb_strlen($reg_nom) > 50) $reg_nom = mb_substr($reg_nom, 0, 50);
-			$reg_prenom = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_prenom))))));
+			$reg_prenom=nettoyer_caracteres_nom(trim($reg_prenom));
 
 			if (mb_strlen($reg_prenom) > 50) $reg_prenom = mb_substr($reg_prenom, 0, 50);
 			$naissance = explode("/", $reg_naissance);
@@ -449,8 +449,10 @@ if (!isset($_POST["action"])) {
 						// On nettoie et on vérifie :
 						//=====================================
 						if (mb_strlen($tabligne[0]) > 50) {$tabligne[0] = mb_substr($tabligne[0], 0, 50);}
+						$tabligne[0]=nettoyer_caracteres_nom($tabligne[0]);
 
 						if (mb_strlen($tabligne[1]) > 50) $tabligne[1] = mb_substr($tabligne[1], 0, 50);
+						$tabligne[1]=nettoyer_caracteres_nom($tabligne[1]);
 
 						$naissance = explode("/", $tabligne[2]);
 						if (!preg_match("/[0-9]/", $naissance[0]) OR mb_strlen($naissance[0]) > 2 OR mb_strlen($naissance[0]) == 0) $naissance[0] = "00";
