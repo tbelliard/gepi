@@ -356,7 +356,8 @@ if ($affiche_categories) {
 
 	$cat_names = array();
 	foreach ($categories as $cat_id) {
-		$cat_names[$cat_id] = html_entity_decode(mysql_result(mysql_query("SELECT nom_court FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
+		//$cat_names[$cat_id] = html_entity_decode(mysql_result(mysql_query("SELECT nom_court FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
+		$cat_names[$cat_id] = mysql_result(mysql_query("SELECT nom_court FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0);
 	}
 }
 
@@ -916,7 +917,7 @@ while($i < $lignes_groupes) {
 
 				// On récupère l'indice de l'élève dans $tab_moy pour la période $num_periode
 				//$indice_j_ele=$tab_moy['periodes'][$num_periode]['tab_login_indice'][$current_eleve_login[$j]];
-				$indice_j_ele=$tab_moy['periodes'][$num_periode]['tab_login_indice'][strtoupper($current_eleve_login[$j])];
+				$indice_j_ele=$tab_moy['periodes'][$num_periode]['tab_login_indice'][my_strtoupper($current_eleve_login[$j])];
 				$coef_eleve=$tab_moy['periodes'][$num_periode]['current_coef_eleve'][$indice_j_ele][$i];
 
 				//echo "\$current_eleve_login[$j]=$current_eleve_login[$j]<br />";
@@ -1046,7 +1047,7 @@ while($i < $lignes_groupes) {
 				else {
 					// On récupère l'indice de l'élève dans $tab_moy pour la période $num_periode
 					//$indice_j_ele=$tab_moy['periodes'][$p]['tab_login_indice'][$current_eleve_login[$j]];
-					$indice_j_ele=$tab_moy['periodes'][$p]['tab_login_indice'][strtoupper($current_eleve_login[$j])];
+					$indice_j_ele=$tab_moy['periodes'][$p]['tab_login_indice'][my_strtoupper($current_eleve_login[$j])];
 
 					//$current_eleve_note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$current_eleve_login[$j]' AND id_groupe='" . $current_group["id"] . "' AND periode='$p')");
 					//$current_eleve_statut = @mysql_result($current_eleve_note_query, 0, "statut");
@@ -1281,8 +1282,8 @@ while($i < $lignes_groupes) {
 					$tmp_col=$col[1][$loop+$ligne_supl];
 					//echo "\$current_eleve_login[$loop]=$current_eleve_login[$loop]<br />";
 					$col[1][$loop+$ligne_supl]="<a href='../visualisation/draw_graphe.php?".
-					"temp1=".strtr($chaine_moy_eleve1[$loop+$ligne_supl],',','.').
-					"&amp;temp2=".strtr($chaine_moy_classe[$loop+$ligne_supl],',','.').
+					"temp1=".preg_replace('/,/','.',$chaine_moy_eleve1[$loop+$ligne_supl]).
+					"&amp;temp2=".preg_replace('/,/','.',$chaine_moy_classe[$loop+$ligne_supl]).
 					"&amp;etiquette=".$chaine_matieres[$loop+$ligne_supl].
 					"&amp;titre=$graph_title".
 					"&amp;v_legend1=".$current_eleve_login[$loop].
@@ -1426,7 +1427,7 @@ if ($ligne_supl >= 1) {
 				while($j < $nb_lignes_tableau) {
 
 					//$indice_j_ele=$tab_moy['periodes'][$num_periode]['tab_login_indice'][$current_eleve_login[$j]];
-					$indice_j_ele=$tab_moy['periodes'][$num_periode]['tab_login_indice'][strtoupper($current_eleve_login[$j])];
+					$indice_j_ele=$tab_moy['periodes'][$num_periode]['tab_login_indice'][my_strtoupper($current_eleve_login[$j])];
 					$tmp_moy_cat_ele=$tab_moy['periodes'][$num_periode]['moy_cat_eleve'][$indice_j_ele][$cat_id];
 
 					//echo "$current_eleve_login[$j]: \$tab_moy['periodes'][$num_periode]['moy_cat_eleve'][$indice_j_ele][$cat_id]=".$tmp_moy_cat_ele."<br />";
@@ -1557,8 +1558,8 @@ if ($ligne_supl >= 1) {
 
 //				if($referent=='une_periode') {
 					//$indice_j_ele=$tab_moy['periodes'][$num_periode]['tab_login_indice'][$current_eleve_login[$j]];
-					if(isset($tab_moy['periodes'][$loop]['tab_login_indice'][strtoupper($current_eleve_login[$j])])) {
-						$indice_j_ele=$tab_moy['periodes'][$loop]['tab_login_indice'][strtoupper($current_eleve_login[$j])];
+					if(isset($tab_moy['periodes'][$loop]['tab_login_indice'][my_strtoupper($current_eleve_login[$j])])) {
+						$indice_j_ele=$tab_moy['periodes'][$loop]['tab_login_indice'][my_strtoupper($current_eleve_login[$j])];
 						$tmp_moy_gen_ele=$tab_moy['periodes'][$loop]['moy_gen_eleve'][$indice_j_ele];
 						if(($tmp_moy_gen_ele!='')&&($tmp_moy_gen_ele!='-')) {
 							$col[$nb_col][$j+$ligne_supl] = number_format($tmp_moy_gen_ele,1, ',', ' ');
@@ -2174,10 +2175,11 @@ if(isset($_GET['mode'])) {
 
 		$now = gmdate('D, d M Y H:i:s') . ' GMT';
 
-		$nom_fic=$chaine_titre."_".$now.".csv";
+		$nom_fic=$chaine_titre."_".$now;
 
 		// Filtrer les caractères dans le nom de fichier:
 		$nom_fic=preg_replace("/[^a-zA-Z0-9_.-]/","",remplace_accents($nom_fic,'all'));
+		$nom_fic.=".csv";
 
 		/*
 		header('Content-Type: text/x-csv');

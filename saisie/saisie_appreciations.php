@@ -1283,7 +1283,7 @@ foreach ($liste_eleves as $eleve_login) {
 						//if(file_exists($_photo_eleve.".jpg")) {
 							//$mess[$k].=";affiche_photo('".$_photo_eleve.".jpg','".addslashes(strtoupper($eleve_nom)." ".ucfirst(strtolower($eleve_prenom)))."')";
 						if(file_exists($_photo_eleve)) {
-							$mess[$k].=";affiche_photo('".$_photo_eleve."','".addslashes(strtoupper($eleve_nom)." ".ucfirst(strtolower($eleve_prenom)))."')";
+							$mess[$k].=";affiche_photo('".$_photo_eleve."','".addslashes(my_strtoupper($eleve_nom)." ".casse_mot($eleve_prenom,'majf2'))."')";
 						}
 						else {
 							$mess[$k].="document.getElementById('div_photo_eleve').innerHTML='';";

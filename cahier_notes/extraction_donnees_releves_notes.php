@@ -764,6 +764,14 @@
 								}
 							}
 						}
+						else {
+							$tab_ele['etab_id'] = "";
+							$tab_ele['etab_nom'] = "Non renseigné";
+							$tab_ele['etab_niveau'] = "";
+							$tab_ele['etab_type'] = "";
+							$tab_ele['etab_cp'] = "";
+							$tab_ele['etab_ville'] = "";
+						}
 
 						// Récup infos CPE
 						$sql="SELECT u.* FROM j_eleves_cpe jec, utilisateurs u WHERE e_login='".$current_eleve_login[$i]."' AND jec.cpe_login=u.login;";

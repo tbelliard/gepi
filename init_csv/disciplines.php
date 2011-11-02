@@ -114,7 +114,7 @@ if (!isset($_POST["action"])) {
 			$reg_nom_long = $lig->col2;
 
 			// On nettoie et on vérifie :
-			$reg_nom_court = preg_replace("/[^A-Za-z0-9.\-]/","",trim(strtoupper($reg_nom_court)));
+			$reg_nom_court = preg_replace("/[^A-Za-z0-9.\-]/","",trim(my_strtoupper($reg_nom_court)));
 			if (mb_strlen($reg_nom_court) > 50) $reg_nom_court = mb_substr($reg_nom_court, 0, 50);
 			//$reg_nom_long = preg_replace("/[^A-Za-z0-9 .\-éèüëïäêç]/","",trim($reg_nom_long));
 			$reg_nom_long = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_nom_long))))));
@@ -193,7 +193,7 @@ if (!isset($_POST["action"])) {
 
 		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
 		// autant forcer l'utilisateur à être rigoureux
-		if(strtolower($csv_file['name']) == "g_disciplines.csv") {
+		if(my_strtolower($csv_file['name']) == "g_disciplines.csv") {
 
 			// Le nom est ok. On ouvre le fichier
 			$fp=fopen($csv_file['tmp_name'],"r");
@@ -229,7 +229,7 @@ if (!isset($_POST["action"])) {
 
 
 							// On nettoie et on vérifie :
-							$tabligne[0] = preg_replace("/[^A-Za-z0-9.\-]/","",trim(strtoupper($tabligne[0])));
+							$tabligne[0] = preg_replace("/[^A-Za-z0-9.\-]/","",trim(my_strtoupper($tabligne[0])));
 							if (mb_strlen($tabligne[0]) > 50) $tabligne[0] = mb_substr($tabligne[0], 0, 50);
 							//$tabligne[1] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäêç]/","",trim($tabligne[1]));
 							$tabligne[1] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]))))));

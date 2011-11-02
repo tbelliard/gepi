@@ -130,7 +130,7 @@ if (isset($_POST['is_posted'])) {
 						//for($i=0;$i<count($log_eleve);$i++){
 						for($i=0;$i<$indice_max_log_eleve;$i++){
 							if(isset($log_eleve[$i])){
-								if(strtolower("$reg_eleve_login"."_t".$k)==strtolower("$log_eleve[$i]")){
+								if(my_strtolower("$reg_eleve_login"."_t".$k)==my_strtolower("$log_eleve[$i]")){
 									$num_eleve=$i;
 									break;
 								}
