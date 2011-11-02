@@ -1047,7 +1047,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			$result .= msj_present('La table existe déjà');
 		}
 
-		$result .= "&nbsp;->Ajout (si besoin) du param�tre 'active_absences_parents' � la table 'setting'<br />";
+		$result .= "&nbsp;->Ajout (si besoin) du paramètre 'active_absences_parents' à la table 'setting'<br />";
 		$req_test = mysql_query("SELECT value FROM setting WHERE name='active_absences_parents'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
