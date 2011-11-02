@@ -1047,21 +1047,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			$result .= msj_present('La table existe déjà');
 		}
 
-		$result .= "&nbsp;->Ajout (si besoin) du paramètre 'utiliserMenuBarre' à la table 'setting'<br />";
-		$req_test = mysql_query("SELECT value FROM setting WHERE name='utiliserMenuBarre'");
-		$res_test = mysql_num_rows($req_test);
-		if ($res_test == 0){
-			$query = mysql_query("INSERT INTO setting VALUES ('utiliserMenuBarre', 'no');");
-			if ($query) {
-				$result .= msj_ok();
-			} else {
-				$result .= msj_erreur();
-			}
-		} else {
-			$result .= msj_present('Le paramètre existe déjà');
-		}
-
-		$result .= "&nbsp;->Ajout (si besoin) du paramètre 'active_absences_parents' à la table 'setting'<br />";
+		$result .= "&nbsp;->Ajout (si besoin) du param�tre 'active_absences_parents' � la table 'setting'<br />";
 		$req_test = mysql_query("SELECT value FROM setting WHERE name='active_absences_parents'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){

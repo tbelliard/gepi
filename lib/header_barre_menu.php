@@ -24,6 +24,8 @@ if (!$_SESSION["login"]) {
     die();
 }
 
+$utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "light"))?"yes":"no";
+
 //include('./barre_menu_css_js.php');
 echo '<!--[if lt IE 7]>
 <script type=text/javascript>
@@ -117,7 +119,9 @@ echo '<!--[if lt IE 7]>
 			$barre_note .= '	<ul class="niveau2">'."\n";
 				foreach($mes_groupes as $tmp_group) {
 					if((!isset($tmp_group["visibilite"]["cahier_notes"]))||($tmp_group["visibilite"]["cahier_notes"]=='y')) {
-						if(getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "light") {
+						//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
+
+						if($utiliserMenuBarreLight=="yes") {
 							$barre_note.= '		<li><a href="'.$gepiPath.'/cahier_notes/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)'.'</a>'."\n";
 						}
 						else {
@@ -171,7 +175,9 @@ echo '<!--[if lt IE 7]>
 	
 				foreach($mes_groupes as $tmp_group) {
 					if((!isset($tmp_group["visibilite"]["bulletins"]))||($tmp_group["visibilite"]["bulletins"]=='y')) {
-						if(getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "light") {
+						//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
+
+						if($utiliserMenuBarreLight=="yes") {
 							$barre_note.= '		<li><a href="'.$gepiPath.'/saisie/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)'.'</a>'."\n";
 						}
 						else {
@@ -205,7 +211,7 @@ echo '<!--[if lt IE 7]>
 				foreach($mes_groupes as $tmp_group) {
 					if((!isset($tmp_group["visibilite"]["bulletins"]))||($tmp_group["visibilite"]["bulletins"]=='y')) {
 						//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
-						if(getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "light") {
+						if($utiliserMenuBarreLight=="yes") {
 							$barre_note.= '		<li><a href="'.$gepiPath.'/saisie/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)'.'</a>'."\n";
 						}
 						else {

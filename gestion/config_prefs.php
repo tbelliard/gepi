@@ -1205,10 +1205,10 @@ if (getSettingValue('active_mod_discipline')!='n') {
 }
 
 	// On ajoute le réglage pour le menu en barre horizontale
-	$aff = "non";
+$aff = "non";
 if ($_SESSION["statut"] == "administrateur") {
 	$aff = "oui";
-}elseif($_SESSION["statut"] == "professeur" AND getSettingValue("utiliserMenuBarre") == "yes") {
+}elseif($_SESSION["statut"] != "administrateur" && getSettingValue("utiliserMenuBarre") != "no") {
 	$aff = "oui";
 }else {
 	$aff = "non";
@@ -1226,28 +1226,30 @@ if ($aff == "oui") {
 	<fieldset id="afficherBarreMenu" style="border: 1px solid grey;">
 		<legend style="border: 1px solid grey;">Gérer la barre horizontale du menu</legend>
 			<input type="hidden" name="modifier_le_menu" value="ok" />
-';
-	echo '
-		<p>
-			<label for="visibleMenu" id="texte_visibleMenu">Rendre visible la barre de menu horizontale';
-	if($_SESSION['statut']=='professeur') {echo " (<em>complete</em>)";}
-	echo ' sous l\'en-tête.</label>
-			<input type="radio" id="visibleMenu" name="afficher_menu" value="yes"'.eval_checked("utiliserMenuBarre", "yes", $_SESSION["statut"], $_SESSION["login"]).' onclick="document.change_menu.submit();" />
-		</p>
-';
+		</p>';
 
-	if($_SESSION['statut']=='professeur') {
+	if(($_SESSION["statut"] != "administrateur" && getSettingValue("utiliserMenuBarre") == "yes") || $_SESSION["statut"] == "administrateur") {
 		echo '
 		<p>
-			<label for="visibleMenu_light" id="texte_visibleMenu_light">Rendre visible la barre de menu horizontale (<em>allégée</em>) sous l\'en-tête.</label>
+			<label for="visibleMenu" id="texte_visibleMenu">Rendre visible la barre de menu horizontale complète  sous l\'en-tête.</label>
+			<input type="radio" id="visibleMenu" name="afficher_menu" value="yes"'.eval_checked("utiliserMenuBarre", "yes", $_SESSION["statut"], $_SESSION["login"]).' onclick="document.change_menu.submit();" />
+		</p>';
+	}
+
+		echo '
+		<p>
+			<label for="visibleMenu_light" id="texte_visibleMenu_light">Rendre visible la barre de menu horizontale allégée sous l\'en-tête.</label>
 			<input type="radio" id="visibleMenu_light" name="afficher_menu" value="light"'.eval_checked("utiliserMenuBarre", "light", $_SESSION["statut"], $_SESSION["login"]).' onclick="document.change_menu.submit();" />
 		</p>
 ';
-	}
+
 	echo '
 		<p>
 			<label for="invisibleMenu" id="texte_invisibleMenu">Ne pas utiliser la barre de menu horizontale.</label>
 			<input type="radio" id="invisibleMenu" name="afficher_menu" value="no"'.eval_checked("utiliserMenuBarre", "no", $_SESSION["statut"], $_SESSION["login"]).' onclick="document.change_menu.submit();" />
+		</p>
+		<p>
+			<em>La barre de menu horizontale allégée a une arborescence moins profonde pour que les menus \'professeurs\' s\'affichent plus rapidement au cas où le serveur serait saturé.</em>
 		</p>
 	</fieldset>
 		</form>
