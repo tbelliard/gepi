@@ -300,7 +300,7 @@ class CAS_CookieJar {
 			if (!$pos)
 			return false;
 			// verify that the cookie domain is the last part of the host.
-			if ($pos + mb_strlen($cookie['domain']) != mb_strlen($target['host']))
+			if ($pos + strlen($cookie['domain']) != strlen($target['host']))
 			return false;
 		}
 		// If the cookie host doesn't begin with '.', the host must case-insensitive
