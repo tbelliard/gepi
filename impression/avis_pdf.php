@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -372,7 +372,7 @@ echo "</pre>";
 				$pdf->SetFont('DejaVu','B',9);
 				//$texte = strtoupper($donnees_eleves['nom'][$nb_eleves_i])." ".ucfirst($donnees_eleves['prenom'][$nb_eleves_i]);
 				
-				$texte = strtoupper($donnees_eleves[$nb_eleves_i]['nom'])." ".ucfirst($donnees_eleves[$nb_eleves_i]['prenom']);
+				$texte = my_strtoupper($donnees_eleves[$nb_eleves_i]['nom'])." ".casse_mot($donnees_eleves[$nb_eleves_i]['prenom'],'majf2');
 				
 				$pdf->CellFitScale($l_cell_nom,$h_cell,$texte,1,0,'L',0); //$l_cell_nom.' - '.$h_cell.' / '.$X_tableau.' - '.$y_tmp
 			

@@ -189,10 +189,10 @@ if (!isset($_POST["action"])) {
 			//==========================
 
 			// On nettoie et on vérifie :
-			$reg_nom = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($reg_nom)))))));
+			$reg_nom=nettoyer_caracteres_nom(trim(my_strtoupper($reg_nom)));
 
 			if (mb_strlen($reg_nom) > 50) $reg_nom = mb_substr($reg_nom, 0, 50);
-			$reg_prenom = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_prenom))))));
+			$reg_prenom=nettoyer_caracteres_nom(trim($reg_prenom));
 
 			if (mb_strlen($reg_prenom) > 50) $reg_prenom = mb_substr($reg_prenom, 0, 50);
 			$naissance = explode("/", $reg_naissance);
@@ -213,11 +213,11 @@ if (!isset($_POST["action"])) {
 
 			$reg_etab_prec = preg_replace("/[^A-Z0-9]/","",trim($reg_etab_prec));
 
-			$reg_double = trim(strtoupper($reg_double));
+			$reg_double = trim(my_strtoupper($reg_double));
 			if ($reg_double != "OUI" AND $reg_double != "NON") $reg_double = "NON";
 
 
-			$reg_regime = trim(strtoupper($reg_regime));
+			$reg_regime = trim(my_strtoupper($reg_regime));
 			if ($reg_regime != "INTERN" AND $reg_regime != "EXTERN" AND $reg_regime != "IN.EX." AND $reg_regime != "DP DAN") $reg_regime = "DP DAN";
 
 			if ($reg_sexe != "F" AND $reg_sexe != "M") $reg_sexe = "F";
@@ -404,7 +404,7 @@ if (!isset($_POST["action"])) {
 
 		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
 		// autant forcer l'utilisateur à être rigoureux
-		if(strtolower($csv_file['name']) == "g_eleves.csv") {
+		if(my_strtolower($csv_file['name']) == "g_eleves.csv") {
 
 			// Le nom est ok. On ouvre le fichier
 			$fp=fopen($csv_file['tmp_name'],"r");
@@ -446,11 +446,13 @@ if (!isset($_POST["action"])) {
 						// 7 : Régime : INTERN || EXTERN || IN.EX. || DP DAN
 						// 8 : Sexe : F || M
 
+						// On nettoie et on vérifie :
 						//=====================================
 						if (mb_strlen($tabligne[0]) > 50) {$tabligne[0] = mb_substr($tabligne[0], 0, 50);}
+						$tabligne[0]=nettoyer_caracteres_nom($tabligne[0]);
 
-						//=====================================
 						if (mb_strlen($tabligne[1]) > 50) $tabligne[1] = mb_substr($tabligne[1], 0, 50);
+						$tabligne[1]=nettoyer_caracteres_nom($tabligne[1]);
 
 						$naissance = explode("/", $tabligne[2]);
 						if (!preg_match("/[0-9]/", $naissance[0]) OR mb_strlen($naissance[0]) > 2 OR mb_strlen($naissance[0]) == 0) $naissance[0] = "00";
@@ -481,16 +483,16 @@ if (!isset($_POST["action"])) {
 						$tabligne[5] = preg_replace("/[^A-Z0-9]/","",trim($tabligne[5]));
 						$tabligne[5] = preg_replace("/\"/", "", $tabligne[5]);
 
-						$tabligne[6] = trim(strtoupper($tabligne[6]));
+						$tabligne[6] = trim(my_strtoupper($tabligne[6]));
 						$tabligne[6] = preg_replace("/\"/", "", $tabligne[6]);
 						if ($tabligne[6] != "OUI" AND $tabligne[6] != "NON") $tabligne[6] = "NON";
 
 
-						$tabligne[7] = trim(strtoupper($tabligne[7]));
+						$tabligne[7] = trim(my_strtoupper($tabligne[7]));
 						$tabligne[7] = preg_replace("/\"/", "", $tabligne[7]);
 						if ($tabligne[7] != "INTERN" AND $tabligne[7] != "EXTERN" AND $tabligne[7] != "IN.EX." AND $tabligne[7] != "DP DAN") $tabligne[7] = "DP DAN";
 
-						$tabligne[8] = trim(strtoupper($tabligne[8]));
+						$tabligne[8] = trim(my_strtoupper($tabligne[8]));
 						$tabligne[8] = preg_replace("/\"/", "", $tabligne[8]);
 						if ($tabligne[8] != "F" AND $tabligne[8] != "M") $tabligne[8] = "F";
 

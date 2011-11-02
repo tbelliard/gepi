@@ -1504,10 +1504,11 @@ if(isset($_GET['mode'])) {
 
 		$now = gmdate('D, d M Y H:i:s') . ' GMT';
 
-		$nom_fic=$chaine_titre."_".$now.".csv";
+		$nom_fic=$chaine_titre."_".$now;
 
 		// Filtrer les caractères dans le nom de fichier:
 		$nom_fic=preg_replace("/[^a-zA-Z0-9_.-]/","",remplace_accents($nom_fic,'all'));
+		$nom_fic.=".csv";
 
 		/*
 		header('Content-Type: text/x-csv');

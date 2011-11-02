@@ -13,7 +13,7 @@
  * - $id_classe : la classe concernée
  * - $periode_num : la période concernée
  * 
- * @copyright Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL
  * @package Notes
  * @subpackage scripts
@@ -347,7 +347,7 @@ while ($j < $nombre_groupes) {
 		$current_eleve_login[$i] = mysql_result($appel_liste_eleves, $i, "login");
 		//===============
 		// Ajout J.Etheve
-		$tab_login_indice[strtoupper($current_eleve_login[$i])]=$i;
+		$tab_login_indice[my_strtoupper($current_eleve_login[$i])]=$i;
 		//===============
 
 		if($current_eleve_login[$i]==$ele_login_debug) {

@@ -215,7 +215,7 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 
 
 		if ($periode != 'annee') {
-			$temp = strtolower($nom_periode[$periode]);
+			$temp = my_strtolower($nom_periode[$periode]);
 		} else {
 			$temp = 'Année complète';
 		}
