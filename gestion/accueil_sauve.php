@@ -753,13 +753,13 @@ function restoreMySqlDump_old($dumpFile,$duree) {
         }
         //echo $TPSCOUR."<br />";
         $buffer=gzgets($fileHandle);
-        if (mb_substr($buffer,mb_strlen($buffer),1)==0)
+        if (mb_substr($buffer,mb_strlen($buffer),1)==0) {
             $buffer=mb_substr($buffer,0,mb_strlen($buffer)-1);
-
+        }
         //echo $buffer."<br />";
 
         if(mb_substr($buffer, 0, 1) != "#" AND mb_substr($buffer, 0, 1) != "/") {
-            if (!isset($debut_req))  $debut_req = $buffer;
+            if (!isset($debut_req)) {$debut_req = $buffer;}
             $formattedQuery .= $buffer;
               //echo $formattedQuery."<hr />";
             if ($formattedQuery) {
@@ -770,14 +770,15 @@ function restoreMySqlDump_old($dumpFile,$duree) {
                     $formattedQuery = "";
                     unset($debut_req);
                     $cpt++;
-                    //echo $cpt;
+                    //echo "$cpt requêtes exécutées avec succès jusque là.<br />";
                 }
             }
         }
     }
 
-    if (mysql_error())
+    if (mysql_error()) {
         echo "<hr />\nERREUR à partir de [$formattedQuery]<br />".mysql_error()."<hr />\n";
+    }
 
     gzclose($fileHandle);
     $offset=-1;
@@ -953,6 +954,8 @@ if (isset($action) and ($action == 'restaure'))  {
 
 	$restauration_old_way=isset($_POST["restauration_old_way"]) ? $_POST["restauration_old_way"] : (isset($_GET["restauration_old_way"]) ? $_GET["restauration_old_way"] : "n");
 
+	$cpt=isset($_POST["cpt"]) ? $_POST["cpt"] : (isset($_GET["cpt"]) ? $_GET["cpt"] : 0);
+
 	if($restauration_old_way=='y') {
 		//===============================================
 		init_time(); //initialise le temps
@@ -977,6 +980,8 @@ if (isset($action) and ($action == 'restaure'))  {
 		flush();
 		if ($offset!=-1) {
 			if (restoreMySqlDump_old($path.$file,$duree)) {
+				echo "$cpt requête(s) exécutée(s) avec succès jusque là.<br />";
+
 				if (isset($debug)) {
 					echo "<br />\n<b>Cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way".add_token_in_url()."\">ici</a> pour poursuivre la restauration</b>\n";
 				}
@@ -992,6 +997,7 @@ if (isset($action) and ($action == 'restaure'))  {
 				exit;
 			}
 		} else {
+			echo "<p style='text-align:center'>$cpt requête(s) exécutée(s) avec succès en tout.</p>";
 
 			echo "<div align='center'><p>Restauration Terminée.<br /><br />Votre session GEPI n'est plus valide, vous devez vous reconnecter<br /><a href = \"../login.php\">Se connecter</a></p></div>\n";
 			require("../lib/footer.inc.php");
