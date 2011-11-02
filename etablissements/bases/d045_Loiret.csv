@@ -1,0 +1,421 @@
+0450003J;Jean Moulin;college;public;45410;Artenay
+0450004K;Louis-Joseph Soulas;college;public;45480;Bazoches-les-Gallerandes
+0450005L;Robert Goupil;college;public;45190;Beaugency
+0450006M;Frédéric Bazille;college;public;45340;Beaune-la-Rolande
+0450007N;-;college;public;45270;Bellegarde
+0450008P;Albert Camus;college;public;45250;Briare
+0450016Y;Henri Becquerel;college;public;45230;Châtillon-Coligny
+0450017Z;Pierre Dezarnaulds;college;public;45360;Châtillon-sur-Loire
+0450022E;Pierre-Auguste Renoir;college;public;45210;Ferrières-en-Gâtinais
+0450023F;Le Pré des Rois;college;public;45240;La-Ferté-Saint-Aubin
+0450025H;Louis Pasteur;ecole;public;45000;Orléans
+0450026J;du Clos Beauvoys;ecole;public;45300;Pithiviers
+0450034T;Guillaume de Lorris;college;public;45260;Lorris
+0450038X;Gaston Couté;college;public;45130;Meung-sur-Loire
+0450041A;du Chinchon;college;public;45200;Montargis
+0450045E;-;college;public;45170;Neuville-aux-Bois
+0450047G;Charles Rivière;college;public;45160;Olivet
+0450052M;Joliot-Curie;college;public;45000;Orléans
+0450053N;Amédée Dunois;college;public;45000;Orléans
+0450055R;Etienne Dolet;college;public;45650;Saint-Jean-le-Blanc
+0450061X;Alfred De Musset;college;public;45310;Patay
+0450063Z;Victor Hugo;college;public;45390;Puiseaux
+0450069F;Max Jacob;college;public;45140;Saint-Jean-de-la-Ruelle
+0450109Z;Saint-Aignan;college;prive;45000;Orléans
+0450118J;La Providence;college;prive;45160;Olivet
+0450123P;Saint-Joseph;college;prive;45730;Saint-Benoît-sur-Loire
+0450127U;-;ecole;public;45260;Chailly-en-Gâtinais
+0450129W;-;ecole;public;45260;La-Cour-Marigny
+0450131Y;-;ecole;public;45290;Oussoy-en-Gâtinais
+0450135C;-;ecole;public;45260;Thimory
+0450136D;-;ecole;public;45290;Varennes-Changy
+0450137E;-;ecole;public;45260;Vieilles-Maisons-sur-Joudry
+0450140H;-;ecole;public;45460;Bonnée
+0450142K;Paul Fort;ecole;public;45460;Les-Bordes
+0450145N;-;ecole;public;45570;Dampierre-en-Burly
+0450148S;-;ecole;public;45260;Montereau
+0450149T;des Grands;ecole;public;45730;Saint-Benoît-sur-Loire
+0450150U;des Petits;ecole;public;45730;Saint-Benoît-sur-Loire
+0450151V;Jean-Marie Blanchard;ecole;public;45600;Sully-sur-Loire
+0450152W;du Centre;ecole;public;45600;Sully-sur-Loire
+0450155Z;-;ecole;public;45600;Guilly
+0450157B;-;ecole;public;45600;Lion-en-Sullias
+0450158C;-;ecole;public;45600;Saint-Aignan-le-Jaillard
+0450160E;-;ecole;public;45600;Saint-Florent
+0450161F;-;ecole;public;45600;Saint-Père-sur-Loire
+0450163H;-;ecole;public;45600;Viglain
+0450164J;-;ecole;public;45600;Villemurlin
+0450175W;-;ecole;public;45230;Adon
+0450178Z;Gustave Eiffel;ecole;public;45250;Briare
+0450182D;-;ecole;public;45420;Bonny-sur-Loire
+0450184F;-;ecole;public;45230;La-Bussière
+0450189L;-;ecole;public;45250;Ousson-sur-Loire
+0450192P;-;ecole;public;45420;Thou
+0450195T;des Grands;ecole;public;45500;Autry-le-Châtel
+0450197V;-;ecole;public;45360;Cernoy-en-Berry
+0450210J;-;ecole;public;45290;Boismorand
+0450211K;-;ecole;public;45290;Les-Choux
+0450217S;-;ecole;public;45500;Nevoy
+0450220V;-;ecole;public;45500;Saint-Brisson-sur-Loire
+0450221W;-;ecole;public;45500;Saint-Gondon
+0450222X;-;ecole;public;45500;Saint-Martin-sur-Ocre
+0450273C;Marcel Proust;ecole;public;45000;Orléans
+0450277G;Gutenberg (petits);ecole;public;45000;Orléans
+0450280K;des Cordiers;ecole;public;45000;Orléans
+0450283N;Charles Pensée;ecole;public;45000;Orléans
+0450285R;Guillaume Apollinaire;ecole;public;45000;Orléans
+0450287T;André Dessaux;ecole;public;45000;Orléans
+0450289V;Michel De La Fournière;ecole;public;45000;Orléans
+0450291X;Jean Zay;ecole;public;45000;Orléans
+0450293Z;Gutenberg (grands);ecole;public;45000;Orléans
+0450296C;Jacques Androuet Du Cerceau;ecole;public;45000;Orléans
+0450299F;Louis Guilloux;ecole;public;45000;Orléans
+0450304L;-;ecole;public;45450;Ingrannes
+0450309S;-;ecole;public;45170;Saint-Lyé-la-Forêt
+0450313W;Jacques-Yves Cousteau;ecole;public;45760;Vennecy
+0450315Y;-;ecole;public;45170;Villereau
+0450325J;-;ecole;public;45510;Neuvy-en-Sullias
+0450326K;-;ecole;public;45150;Férolles
+0450327L;-;ecole;public;45150;Darvoy
+0450328M;du Faubourg Berry (petits);ecole;public;45150;Jargeau
+0450329N;Porte Madeleine (grands);ecole;public;45150;Jargeau
+0450332S;-;ecole;public;45370;Dry
+0450334U;Les Raboliots;ecole;public;45370;Jouy-le-Potier
+0450337X;-;ecole;public;45370;Mézières-lez-Cléry
+0450338Y;Les Sablons;ecole;public;45750;Saint-Pryvé-Saint-Mesmin
+0450339Z;Hervé Bazin;ecole;public;45750;Saint-Pryvé-Saint-Mesmin
+0450340A;Demay - Vignier;ecole;public;45650;Saint-Jean-le-Blanc
+0450341B;Charles Jeune (petits);ecole;public;45650;Saint-Jean-le-Blanc
+0450346G;La Cerisaie;ecole;public;45160;Olivet
+0450347H;du Poutyl;ecole;public;45160;Olivet
+0450354R;-;ecole;public;45190;Messas
+0450371J;-;ecole;public;45160;Ardon
+0450376P;Jehan De Meung;ecole;public;45130;Meung-sur-Loire
+0450377R;La Nivelle;ecole;public;45130;Meung-sur-Loire
+0450378S;-;ecole;public;45130;Baccon
+0450381V;-;ecole;public;45130;Coulmiers
+0450382W;-;ecole;public;45130;Epieds-en-Beauce
+0450385Z;-;ecole;public;45130;Huisseau-sur-Mauves
+0450403U;-;ecole;public;45310;Saint-Péravy-la-Colombe
+0450404V;-;ecole;public;45310;Saint-Sigismond
+0450406X;-;ecole;public;45310;Villamblain
+0450408Z;Jean Beaudoin;ecole;public;45430;Chécy
+0450410B;Montesquieu;ecole;public;45760;Boigny-sur-Bionne
+0450411C;-;ecole;public;45430;Bou
+0450412D;-;ecole;public;45800;Combleux
+0450416H;-;ecole;public;45760;Marigny-les-Usages
+0450430Y;René Ferragu;ecole;public;45400;Fleury-les-Aubrais
+0450434C;Victor Hugo;ecole;public;45140;Ingré
+0450440J;Jean Vilar;ecole;public;45380;La-Chapelle-Saint-Mesmin
+0450453Y;-;ecole;public;45520;Cercottes
+0450459E;-;ecole;public;45520;Huêtre
+0450467N;-;ecole;public;45200;Paucourt
+0450473V;-;ecole;public;45700;Chevillon-sur-Huillard
+0450478A;Michel Moineau;ecole;public;45120;Châlette-sur-Loing
+0450479B;Maîtrise Notre-Dame;college;prive;45190;Beaugency
+0450486J;de Vésines;ecole;public;45120;Châlette-sur-Loing
+0450493S;-;ecole;public;45490;Treilles-en-Gâtinais
+0450494T;-;ecole;public;45490;Sceaux-du-Gâtinais
+0450496V;-;ecole;public;45490;Préfontaines
+0450499Y;-;ecole;public;45490;Mignerette
+0450500Z;-;ecole;public;45490;Mignères
+0450501A;-;ecole;public;45210;Griselles
+0450503C;-;ecole;public;45120;Girolles
+0450504D;-;ecole;public;45210;Fontenay-sur-Loing
+0450506F;Victor Hugo;ecole;public;45680;Dordives
+0450517T;-;ecole;public;45320;Courtenay
+0450518U;Romain Rolland (grands);ecole;public;45000;Orléans
+0450519V;Romain Rolland (petits);ecole;public;45000;Orléans
+0450524A;Maxime Perrard;ecole;public;45000;Orléans
+0450530G;-;ecole;public;45530;Vitry-aux-Loges
+0450532J;-;ecole;public;45530;Sury-aux-Bois
+0450534L;-;ecole;public;45110;Saint-Martin-d'Abbat
+0450538R;-;ecole;public;45460;Saint-Aignan-des-Gués
+0450539S;-;ecole;public;45110;Germigny-des-Prés
+0450544X;-;ecole;public;45460;Bouzy-la-Forêt
+0450545Y;Maurice Genevoix;ecole;public;45110;Châteauneuf-sur-Loire
+0450547A;Louis Pasteur;ecole;public;45200;Montargis
+0450549C;Léon Gambetta;ecole;public;45200;Montargis
+0450551E;Albert Thierry;ecole;public;45200;Montargis
+0450552F;Paul Langevin;ecole;public;45200;Montargis
+0450553G;Genébrier;ecole;public;45200;Montargis
+0450556K;du Clos Vinot;ecole;public;45200;Amilly
+0450558M;Les Goths;ecole;public;45200;Amilly
+0450564U;des Petits;ecole;public;45700;Villemandeur
+0450565V;des Grands;ecole;public;45700;Villemandeur
+0450567X;-;ecole;public;45210;Bazoches-sur-le-Betz
+0450575F;-;ecole;public;45210;Rosoy-le-Vieil
+0450576G;-;ecole;public;45320;Saint-Hilaire-les-Andrésis
+0450578J;-;ecole;public;45210;La-Selle-sur-le-Bied
+0450581M;-;ecole;public;45220;Chuelles
+0450584R;-;ecole;public;45220;Gy-les-Nonains
+0450585S;-;ecole;public;45210;La-Selle-en-Hermoy
+0450588V;-;ecole;public;45220;Montcorbon
+0450589W;-;ecole;public;45220;Saint-Firmin-des-Bois
+0450595C;-;ecole;public;45230;Châtillon-Coligny
+0450597E;-;ecole;public;45230;La-Chapelle-sur-Aveyron
+0450599G;-;ecole;public;45230;Dammarie-sur-Loing
+0450600H;-;ecole;public;45230;Montbouy
+0450605N;-;ecole;public;45290;Pressigny-les-Pins
+0450606P;-;ecole;public;45230;Sainte-Geneviève-des-Bois
+0450609T;Mazagran (petits);ecole;public;45330;Malesherbes
+0450618C;-;ecole;public;45300;Manchecourt
+0450632T;-;ecole;public;45390;Aulnay-la-Rivière
+0450633U;-;ecole;public;45390;Boësses
+0450634V;-;ecole;public;45390;Briarres-sur-Essonne
+0450638Z;-;ecole;public;45390;Grangermont
+0450646H;-;ecole;public;45300;Ascoux
+0450647J;-;ecole;public;45300;Bondaroy
+0450658W;-;ecole;public;45300;Dadonville
+0450659X;-;ecole;public;45300;Escrennes
+0450661Z;-;ecole;public;45300;Estouy
+0450662A;-;ecole;public;45300;Givraines
+0450663B;-;ecole;public;45300;Guigneville
+0450665D;-;ecole;public;45300;Mareau-aux-Bois
+0450669H;-;ecole;public;45170;Santeau
+0450671K;-;ecole;public;45300;Vrigny
+0450672L;-;ecole;public;45300;Yèvre-la-Ville
+0450679U;-;ecole;public;45270;Chapelon
+0450687C;-;ecole;public;45270;Quiers-sur-Bézonde
+0450688D;-;ecole;public;45270;Villemoutiers
+0450694K;-;ecole;public;45340;Batilly-en-Gâtinais
+0450704W;-;ecole;public;45490;Lorcy
+0450708A;-;ecole;public;45340;Nancray-sur-Rimarde
+0450712E;Louise Michel;ecole;public;45000;Orléans
+0450713F;Charles Péguy;ecole;public;45000;Orléans
+0450715H;-;ecole;public;45480;Outarville
+0450717K;-;ecole;public;45480;Andonville
+0450724T;-;ecole;public;45480;Boisseaux
+0450725U;-;ecole;public;45480;Charmont-en-Beauce
+0450732B;-;ecole;public;45480;Greneville-en-Beauce
+0450783G;Jean Joudiou;college;public;45110;Châteauneuf-sur-Loire
+0450784H;Condorcet;college;public;45400;Fleury-les-Aubrais
+0450785J;Jeanne D'Arc;college;public;45000;Orléans
+0450787L;Gutenberg;college;public;45330;Malesherbes
+0450789N;Le Grand Clos;college;public;45200;Montargis
+0450790P;Maximilien De Sully;college;public;45600;Sully-sur-Loire
+0450800A;du Morvant;ecole;public;45110;Châteauneuf-sur-Loire
+0450822Z;Bel Air;ecole;public;45380;La-Chapelle-Saint-Mesmin
+0450827E;-;ecole;public;45290;Nogent-sur-Vernisson
+0450829G;-;ecole;public;45220;Melleroy
+0450831J;du Berry;ecole;public;45500;Gien
+0450839T;Antoine De Saint-Exupéry;college;public;45800;Saint-Jean-de-Braye
+0450840U;Paul Eluard;college;public;45120;Châlette-sur-Loing
+0450857M;du Mail;ecole;public;45190;Beaugency
+0450858N;-;ecole;public;45570;Ouzouer-sur-Loire
+0450859P;-;ecole;public;45300;Sermaises
+0450860R;Jean Mermoz;ecole;public;45000;Orléans
+0450861S;Claude Bernard;ecole;public;45000;Orléans
+0450868Z;-;ecole;public;45170;Aschères-le-Marché
+0450869A;du Centre;ecole;public;45250;Briare
+0450870B;Alain Fournier;ecole;public;45520;Chevilly
+0450871C;-;ecole;public;45520;Gidy
+0450872D;Jules Ferry;ecole;public;45400;Fleury-les-Aubrais
+0450873E;de la Gare;ecole;public;45500;Gien
+0450875G;Molière;ecole;public;45000;Orléans
+0450876H;Les Aydes;ecole;public;45000;Orléans
+0450879L;-;ecole;public;45300;Pithiviers-le-Vieil
+0450880M;-;ecole;public;45410;Sougy
+0450881N;-;ecole;public;45360;Châtillon-sur-Loire
+0450882P;Roger Giry;ecole;public;45340;Nibelle
+0450883R;Garambault;ecole;public;45190;Beaugency
+0450885T;Denis Diderot;ecole;public;45000;Orléans
+0450912X;-;ecole;public;45310;Bricy
+0450913Y;René-Guy Cadou;ecole;public;45000;Orléans
+0450915A;Les Capucins;ecole;public;45650;Saint-Jean-le-Blanc
+0450917C;-;ecole;public;45410;Artenay
+0450918D;-;ecole;public;45120;Cepoy
+0450919E;-;ecole;public;45390;Puiseaux
+0450920F;-;ecole;public;45480;Bazoches-les-Gallerandes
+0450922H;du Nécotin;ecole;public;45000;Orléans
+0450923J;Saint-Firmin Des Vignes;ecole;public;45200;Amilly
+0450924K;-;ecole;public;45500;Poilly-lez-Gien
+0450925L;-;ecole;public;45220;Douchy
+0450927N;Maurice Genevoix;ecole;public;45340;Beaune-la-Rolande
+0450936Y;Jean Rostand;college;public;45000;Orléans
+0450937Z;Robert Schumann;college;public;45200;Amilly
+0450939B;Alain Fournier;college;public;45100;Orléans-La-Source
+0450945H;Sainte-Croix - Saint-Euverte;ecole;prive;45000;Orléans
+0450946J;Saint-Paul - Recouvrance;ecole;prive;45000;Orléans
+0450948L;Notre-Dame de Consolation;ecole;prive;45000;Orléans
+0450949M;Saint-Marc - Assomption;ecole;prive;45000;Orléans
+0450950N;Saint-Joseph;ecole;prive;45170;Neuville-aux-Bois
+0450954T;Notre-Dame;ecole;prive;45370;Cléry-Saint-André
+0450955U;Sainte-Thérèse;ecole;prive;45240;La-Ferté-Saint-Aubin
+0450957W;Saint-Jean;ecole;prive;45130;Meung-sur-Loire
+0450959Y;La Providence;ecole;prive;45160;Olivet
+0450961A;Notre-Dame de la Brétauche;ecole;prive;45430;Chécy
+0450962B;Jeanne D'Arc;ecole;prive;45310;Patay
+0450964D;Saint-Joseph;ecole;prive;45110;Châteauneuf-sur-Loire
+0450965E;Sainte-Geneviève;ecole;prive;45500;Gien
+0450970K;Sainte-Marie;ecole;prive;45730;Saint-Benoît-sur-Loire
+0450971L;Jeanne D'Arc;ecole;prive;45600;Sully-sur-Loire
+0450974P;Jeanne D'Arc;ecole;prive;45330;Malesherbes
+0450979V;Sainte-Thérèse;ecole;prive;45560;Saint-Denis-en-Val
+0450986C;Saint-Charles;ecole;prive;45000;Orléans
+0450987D;Saint-Paul - Bourdon Blanc;ecole;prive;45000;Orléans
+0450988E;René Cassin;ecole;public;45500;Gien
+0450989F;Jean Moulin;ecole;public;45200;Montargis
+0450992J;du Val;ecole;public;45160;Olivet
+0450993K;François Mitterrand;ecole;public;45140;Saint-Jean-de-la-Ruelle
+0450998R;Louis Petit;ecole;public;45800;Saint-Jean-de-Braye
+0451005Y;Saint-Louis - Saint-Charles;ecole;prive;45200;Montargis
+0451010D;Jeanne D'Arc;ecole;prive;45210;Ferrières-en-Gâtinais
+0451026W;-;ecole;public;45480;Autruy-sur-Juine
+0451027X;-;ecole;public;45270;Bellegarde
+0451031B;du Centre;ecole;public;45500;Gien
+0451035F;Louis Pasteur;college;public;45380;La-Chapelle-Saint-Mesmin
+0451036G;Anatole Bailly;college;public;45000;Orléans
+0451038J;de la Montjoie;college;public;45770;Saran
+0451052Z;-;ecole;public;45720;Coullons
+0451053A;des Ravouillères;ecole;public;45740;Lailly-en-Val
+0451054B;Jacqueline Auriol;ecole;public;45310;Patay
+0451055C;Louis Gallouëdec;ecole;public;45800;Saint-Jean-de-Braye
+0451056D;-;ecole;public;45130;Charsonville
+0451057E;du Clos D'Or;ecole;public;45550;Saint-Denis-de-l'Hôtel
+0451065N;Saint-Marceau;ecole;prive;45000;Orléans
+0451068S;de Montabuzard;college;public;45140;Ingré
+0451069T;Le Clos Ferbois;college;public;45150;Jargeau
+0451070U;Montesquieu;college;public;45100;Orléans-La-Source
+0451072W;Pierre De Coubertin;college;public;45800;Saint-Jean-de-Braye
+0451074Y;Jacques Prévert;college;public;45650;Saint-Jean-le-Blanc
+0451080E;-;ecole;public;45370;Cléry-Saint-André
+0451083H;du Centre;ecole;public;45240;La-Ferté-Saint-Aubin
+0451085K;des Chêneries;ecole;public;45240;La-Ferté-Saint-Aubin
+0451086L;Château Vignon (grands);ecole;public;45330;Malesherbes
+0451088N;-;ecole;public;45430;Mardié
+0451091S;Jardin des Plantes;ecole;public;45000;Orléans
+0451093U;Lavoisier;ecole;public;45000;Orléans
+0451095W;-;ecole;public;45360;Pierrefitte-ès-Bois
+0451096X;Abbé Regnard;ecole;public;45300;Pithiviers
+0451097Y;Général De Gaulle;ecole;public;45300;Pithiviers
+0451100B;Paul Langevin;ecole;public;45800;Saint-Jean-de-Braye
+0451102D;Jean Moulin;ecole;public;45140;Saint-Jean-de-la-Ruelle
+0451104F;-;EREA;public;45200;Amilly
+0451107J;de la vallée de l'Ouanne;college;public;45220;Château-Renard
+0451119X;-;ecole;public;45300;Boynes
+0451120Y;-;ecole;public;45190;Cravant
+0451121Z;-;ecole;public;45450;Fay-aux-Loges
+0451122A;Henri Wallon;ecole;public;45400;Fleury-les-Aubrais
+0451124C;-;ecole;public;45220;Château-Renard
+0451125D;de la Madeleine;ecole;public;45000;Orléans
+0451126E;François Rabelais;ecole;public;45130;Saint-Ay
+0451127F;-;ecole;public;45400;Semoy
+0451148D;Pablo Picasso;college;public;45120;Châlette-sur-Loing
+0451149E;-;ecole;public;45340;Boiscommun
+0451152H;-;ecole;public;45490;Corbeilles
+0451155L;-;ecole;public;45270;Ladon
+0451156M;-;ecole;public;45240;Ligny-le-Ribault
+0451158P;Henri Poincaré;ecole;public;45000;Orléans
+0451161T;-;ecole;public;45160;Saint-Hilaire-Saint-Mesmin
+0451162U;Paul Doumer;ecole;public;45140;Saint-Jean-de-la-Ruelle
+0451163V;Paul Bert;ecole;public;45140;Saint-Jean-de-la-Ruelle
+0451164W;Jules Lenormand;ecole;public;45140;Saint-Jean-de-la-Ruelle
+0451165X;-;ecole;public;45770;Saran
+0451166Y;Chêne Maillard;ecole;public;45770;Saran
+0451173F;Aristide Bruant;college;public;45320;Courtenay
+0451178L;Pierre et Marie Curie (grands);ecole;public;45400;Fleury-les-Aubrais
+0451180N;Les Sablonnieres;ecole;public;45770;Saran
+0451181P;de Bûges (grands);ecole;public;45120;Corquilleroy
+0451182R;-;ecole;public;45700;Pannes
+0451183S;Georges Braibant;ecole;public;45700;Pannes
+0451184T;-;ecole;public;45230;Saint-Maurice-sur-Aveyron
+0451185U;-;ecole;public;45700;Saint-Maurice-sur-Fessard
+0451198H;-;ecole;public;45240;Marcilly-en-Villette
+0451203N;Jean Bonnet;ecole;public;45650;Saint-Jean-le-Blanc
+0451205R;-;ecole;public;45220;Triguères
+0451207T;du Bourgneuf;ecole;public;45560;Saint-Denis-en-Val
+0451208U;de Champdoux;ecole;public;45560;Saint-Denis-en-Val
+0451210W;des Montoires;ecole;public;45500;Gien
+0451212Y;Maurice Jourdain (petits);ecole;public;45400;Fleury-les-Aubrais
+0451214A;-;ecole;public;45510;Tigy
+0451215B;(petits);ecole;public;45120;Corquilleroy
+0451241E;André Malraux;college;public;45140;Saint-Jean-de-la-Ruelle
+0451244H;Denis Poisson;college;public;45300;Pithiviers
+0451245J;Ernest Bildstein;college;public;45500;Gien
+0451262C;-;ecole;public;45170;Neuville-aux-Bois
+0451263D;Albert Camus;ecole;public;45430;Chécy
+0451264E;-;ecole;public;45150;Ouvrouer-les-Champs
+0451266G;Saint-Aignan;ecole;public;45300;Pithiviers
+0451267H;Jacques Prévert;ecole;public;45800;Saint-Jean-de-Braye
+0451268J;-;ecole;public;45640;Sandillon
+0451269K;Jacques Prévert;ecole;public;45250;Ouzouer-sur-Trézée
+0451271M;Louis Aragon;ecole;public;45140;Saint-Jean-de-la-Ruelle
+0451273P;-;ecole;public;45330;Coudray
+0451274R;-;ecole;public;45490;Courtempierre
+0451286D;Les Clorisseaux;college;public;45500;Poilly-lez-Gien
+0451289G;-;ecole;public;45400;Chanteau
+0451294M;-;ecole;public;45390;La-Neuville-sur-Essonne
+0451298S;des Papecets;ecole;public;45130;Meung-sur-Loire
+0451303X;La Bolière;college;public;45000;Orléans-La-Source
+0451312G;Les Chaussées;ecole;public;45190;Beaugency
+0451313H;du Lancy;ecole;public;45120;Châlette-sur-Loing
+0451314J;-;ecole;public;45190;Tavers
+0451315K;-;ecole;public;45700;Vimory
+0451316L;La Croix Saint-Marceau;college;prive;45100;Orléans
+0451328Z;-;ecole;public;45470;Traînou
+0451329A;Saint-Charles;college;prive;45000;Orléans
+0451330B;Saint-Louis;college;prive;45200;Montargis
+0451331C;Saint-François de Sales;college;prive;45500;Gien
+0451332D;Saint-Grégoire;college;prive;45300;Pithiviers
+0451333E;Saint-Paul - Bourdon Blanc;college;prive;45000;Orléans
+0451334F;Sainte-Croix - Saint-Euverte;college;prive;45000;Orléans
+0451355D;Jacques Brel;ecole;public;45400;Fleury-les-Aubrais
+0451356E;Les Plesses;ecole;public;45130;Baule
+0451365P;Pierre Mendès-France;college;public;45430;Chécy
+0451372X;Les Potières;ecole;public;45130;Meung-sur-Loire
+0451373Y;Gaston Galloux;ecole;public;45000;Orléans
+0451374Z;Georges Chardon;ecole;public;45000;Orléans
+0451389R;-;ecole;public;45300;Engenville
+0451396Y;-;ecole;public;45240;Ménestreau-en-Villette
+0451397Z;-;ecole;public;45170;Chilleurs-aux-Bois
+0451398A;-;ecole;public;45630;Beaulieu-sur-Loire
+0451399B;Louise Michel;ecole;public;45800;Saint-Jean-de-Braye
+0451414T;Les Sablons;ecole;public;45240;La-Ferté-Saint-Aubin
+0451415U;La Cléry;ecole;public;45210;Ferrières-en-Gâtinais
+0451416V;Jean Zay;ecole;public;45800;Saint-Jean-de-Braye
+0451421A;Jean Pelletier;college;public;45000;Orléans
+0451422B;des Gens du Voyage;ecole;public;45000;Orléans
+0451423C;du Plissay;ecole;public;45160;Olivet
+0451434P;Jacques De Tristan;college;public;45370;Cléry-Saint-André
+0451435R;Claude De Loynes;ecole;public;45590;Saint-Cyr-en-Val
+0451436S;Les Guernazelles;ecole;public;45000;Orléans
+0451443Z;de la Forêt;college;public;45470;Traînou
+0451447D;-;ecole;public;45470;Loury
+0451448E;-;ecole;public;45620;Cerdon
+0451449F;La Sologne;college;public;45510;Tigy
+0451450G;Jean Mermoz;college;public;45500;Gien
+0451452J;-;ecole;public;45510;Vannes-sur-Cosson
+0451456N;-;ecole;public;45110;Sigloy
+0451473G;Louis Aragon;ecole;public;45400;Fleury-les-Aubrais
+0451486W;-;ecole;public;45310;Gémigny
+0451487X;-;ecole;public;45390;Echilleuses
+0451496G;Les Bruyères;ecole;public;45560;Saint-Denis-en-Val
+0451499K;de l'Orbellière;college;public;45160;Olivet
+0451505S;du Moulin;ecole;public;45140;Ingré
+0451506T;de Cuiry;ecole;public;45500;Gien
+0451507U;Jacques Prévert;ecole;public;45140;Ormes
+0451522K;Sainte-Anne;ecole;prive;45250;Briare
+0451523L;Saint-Vincent;ecole;prive;45000;Orléans
+0451524M;Saint-Laurent;ecole;prive;45000;Orléans
+0451525N;Vivier Boutet;ecole;public;45120;Châlette-sur-Loing
+0451536A;de Viroy;ecole;public;45200;Amilly
+0451538C;-;ecole;public;45260;Lorris
+0451539D;Adrienne Bolland;ecole;public;45450;Donnery
+0451540E;Pierre Segelle;ecole;public;45000;Orléans
+0451542G;Les Vallées;ecole;public;45380;La-Chapelle-Saint-Mesmin
+0451543H;Notre-Dame;ecole;prive;45190;Beaugency
+0451544J;André Chêne;college;public;45400;Fleury-les-Aubrais
+0451554V;-;ecole;public;45380;Chaingy
+0451555W;La Cigogne;ecole;public;45000;Orléans
+0451556X;Maurice Meunier;ecole;public;45200;Montargis
+0451557Y;La Claudinerie;ecole;public;45220;Saint-Germain-des-Prés
+0451558Z;Michel Ronfard;ecole;public;45160;Olivet
+0451561C;-;ecole;public;45130;Le-Bardon
+0451563E;Saint-Grégoire;ecole;prive;45300;Pithiviers
+0451570M;Olympia Cormier;ecole;public;45000;Orléans
+0451571N;-;ecole;public;45510;Vienne-en-Val
+0451572P;-;ecole;public;45470;Rebréchien
+0451573R;-;ecole;public;45700;Montcresson
+0451591K;-;ecole;public;45370;Mareau-aux-Prés
+0451608D;-;college;public;45460;Les-Bordes

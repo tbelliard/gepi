@@ -1,0 +1,29 @@
+.table_annee_anterieure{
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+
+.table_annee_anterieure th{
+	border: 1px solid black;
+	font-weight: bold;
+	text-align: center;
+}
+
+.table_annee_anterieure td{
+	border: 1px solid black;
+	padding: 0.1em;
+}
+
+.table_annee_anterieure td.td_note{
+	text-align: center;
+}
+
+.table_annee_anterieure td.td_note_classe, th.td_note_classe{
+	text-align: center;
+	font-size: small;
+}
+
+.table_annee_anterieure .info_prof{
+	font-style: italic;
+	font-size: small;
+}

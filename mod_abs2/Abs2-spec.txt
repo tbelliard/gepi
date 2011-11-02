@@ -1,0 +1,105 @@
+h1. Cahier des charges du module absences 2
+
+
+_Avant propos_
+
+Devant la nécessité de recoder le module absences, nous allons profiter de ce lieu pour établir un cahier des charges le plus complet possible. A cet effet, en fonction des discussions sur les différentes liste de diffusion de gepi, la synthèse sera mise à jour ici même. Tous ceux qui veulent participer à ces échanges sont les bienvenus.
+
+h2. Quelques principes pour le développement
+
+* Pour éviter de disperser les bonnes volontés, il serait bien qu'une version aboutie soit prête avant la fin de l'année scolaire 2009-2010 pour pouvoir tester en grandeur nature le module dans les établissements.
+* Le choix technologique a été porté sur un outil d'ORM récent et puissant : Propel ("Doc. officielle":http://propel.phpdb.org/trac/wiki/Users/Documentation/1.3 et [[propel|traduction partielle]]).
+* Le module portera le nom de mod_abs2 dont la structure est déjà présente sur le [browser:trunk/mod_abs2 trunk].
+* Il faudra que le code respecte quelques principes (conventions de nommage, DRY, POO).
+* Ce module devra être lié avec le nouveau module Disciplines de Stéphane Boireau ainsi qu'avec le module emploi du temps. Pour la saisie des absences, on utilisera les AID pour constituer des groupes d'élèves-professeurs-activité. Le module AID devra donc également être lié au module absences.
+* Les documents produits par Gepi devront être possibles sous plusieurs formats (html, openoffice, pdf, csv).
+* 3 méthodes d'envoi devront être possibles (papier, courriel et sms).
+
+h2. Les fonctionnalités
+
+h3. La saisie
+
+* Chaque utilisateur devra pouvoir disposer de droits bien définis => un professeur ne peut saisir "absent" que des élèves qu'il a en cours par exemple.
+** => Les informations disponibles lors de la saisie :
+*** Les utilisateurs CPE auront l'edt de l'élève lors de la saisie des absences.
+*** Les professeurs pourront voir leur propre edt et ainsi vérifier s'ils ont bien saisie les absences lors de leurs cours (couleur différente).
+** => Les différents niveaux de saisie possibles sont différenciés pour les comptes de statut cpe et de statut prof :
+*** l'utilisateur peut saisir seulement les élèves auxquels il est rattaché
+*** L'interface de saisie devra permettre de voir le suivi sur chaque créneau de la journée ainsi qu'une information sur la saisie de la veille.
+*** L'interface sera liée (à la demande de l'admin) au module emploi du temps.
+*** L'utilisateur pourra ou pas modifier le créneau et la date de la saisie.
+*** l'utilisateur peut saisir tous les élèves de l'établissement
+*** L'utilisateur pourra ne saisir que les présents (si l'admin le permet).
+*** L'utilisateur pourra marquer une saisie comme étant erronée, et non la supprimer pour des raison de sécurité.
+*** Un professeur ne pourra saisir que certains type d'absence (infirmerie, retard etc...), un cpe pourra saisir tout les types possible (dispense médicale, dérogation, problème familiaux, etc...)
+*** L'interface devra alors permettre de saisir un lot d'élève à partir de la liste de :
+**** tous les élèves de l'établissement
+**** tous les élèves d'une classe
+**** tous les élèves d'un enseignement
+**** tous les élèves d'une Activité Inter Disciplinaire (AID)
+*** L'interface devra permettre par un simple coche de préciser que l'absence dure toute la journée sans devoir nécessairement préciser les créneaux d'absence.
+** => Les "moments" possibles de la saisie
+*** l'utilisateur peut saisir son niveau d'absence à n'importe quel moment de la journée
+*** l'utilisateur peut saisir son niveau d'absence en respectant son emploi du temps seulement
+*** L'utilisateur ne peut saisir/modifier des absences que sur la journée d'aujourd'hui ou sur d'autres journées (paramétrable).
+** => Que peut saisir l'utilisateur ?
+*** l'utilisateur peut saisir les élèves absents seulement
+*** l'utilisateur peut corriger une absence en retard
+*** l'utilisateur peut saisir les élèves absents et ceux en retard
+*** l'utilisateur peut saisir tous les types d'absence (absence, retard, dispense, inclusion, ...)
+** => Le suivi des appels
+*** Tableau récapitulatif de toutes les saisies de la journée (avec possibilité d'imprimer et/ou d'archiver sous la forme d'un fichier)
+**** sous la forme brute de toutes les saisies
+**** sous sa forme traitée
+**** Chaque professeur aura accès à un tableau récapitulatif de ses saisies (par journée, par semaine, par mois).
+**** Permettre (paramétrable) à un professeur principal de voir toutes les saisies (par journée, par semaine, par mois) d'une classe (dont il est PP).
+*** Toutes les saisies, même sans absent, doivent être enregistrées.
+    *-> CPE doit avoir accès à un tableau récapitulatif de toutes les saisies (y compris les enregistrements "vides").
+* Pouvoir rentrer des absences a priori sans que ça provoque l'envoi de lettres aux parents ......
+
+
+h2. Le traitement
+
+_Préambule_
+
+** Seuls les personnels autorisés (CPE et scolarite) pourront accéder à cette partie du module
+
+h3. le traitement en lui même
+
+* Mettre un motif à une absence
+* Mettre un type à une absence
+* Lancer une action sur une absence
+* Allonger/Raccourcir une absence
+* Fusionner/regrouper des absences
+
+* Envoyer un courrier/mail/sms aux responsables (responsable 1, 2 ou un simple contact)
+** Possibilité de demander des justifications pour plusieurs absences en une seule lettre. Le fichier doit donc proposer sur une seule feuille la liste des absences à justifier.
+** Assurer le suivi de ce courrier (réponse, relance, ...)
+* Suivre le retour de ces courriers
+
+* Pouvoir produire des bilans individualisés pour des périodes données (et pouvoir les imprimer + pdf)
+
+* Avoir accès très rapidement sur la liste des absents à toutes les informations concernant l'élève absent (numéro de téléphone, adresse, bilan de ses absences,...)
+* Prévoir un motif d'absence qui ne donne pas lieu à l'envoi de lettre comme pour les voyages scolaire, concours, journée d'appel,...
+* Pouvoir faire des statistiques sur chaque classe, chaque élève, chaque type d'absence, en tenant compte du nombre de jour, de la discipline, du professeur, du régime.
+*** Faire un lien fort avec le module discipline déjà existant
+* Lire le bilan de la saisie "fond de salle" dans un seul tableau en précisant le nombre d'absents total (avec également une distinction par régime)
+* Pouvoir faire des exportations sous plusieurs formats (csv, Excell/Calc.OOo, pdf).
+
+* Prévoir un module d'archivage des bilans (Légal : 10 ans -> production de pdf à graver par exemple)
+
+h3. le suivi du courrier
+
+* Envoyer un courrier (papier, mail, sms).
+* Recevoir/saisir une réponse à ce courrier.
+* Envoyer une relance et la suivre.
+* Faire des statistiques de la gestion du courrier (par classe, par élève, par type,...)
+
+h3. Les interfaces des utilisateurs
+
+* Lors de la consultation de la fiche d'un élève par un cpe, avoir une récapitulation de ses dernières absences sans avoir à donner un intervalle de date
+* Prévoir l'affichage du motif de l'absence (maladie, décès etc ....) dans l'interface de l'enseignant
+
+h3. Gestion des droits
+
+* Il faut qu'elle soit souple, tant dans la saisie que dans le suivi de ces absences (CPE, Prof, chef d'établissement, ...)

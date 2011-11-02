@@ -1,0 +1,67 @@
+/*
+*$Id: gestion.css 4967 2010-07-30 15:48:43Z regis $
+*/
+
+h2 {
+  margin: 1em 0em 0em 0em;
+  padding-left: 1em;
+  padding: 0em 1em;
+  font-family: Verdana;
+  font-style: normal;
+  font-variant: small-caps;
+  font-weight: normal;
+  font-size: x-large;
+  line-height: 200%;
+}
+p {
+  padding: 0em 0.5em 0.5em 0.5em;
+}
+hr {
+  color: inherit;
+  background-color: inherit;
+}
+input[type=submit] {
+  font-variant: small-caps;
+}
+label {
+  cursor: pointer;
+}
+.center{
+  text-align: center;
+}
+.italic{
+  font-style: italic;
+}
+.grandEspaceHaut{
+  padding-top: 1em;
+}
+.colleHaut{
+  margin-top: 0em;
+  padding-top: 0em;
+
+}
+.block{
+  display: block;
+}
+.no_bordure{
+  border-width: 0;
+}
+table.boireaus{
+  margin: 0.5em auto;
+  background-color: #eee0e5;
+}
+.boireaus th{
+  color: #fff;
+  background-color: #000;
+}
+.boireaus td{
+  padding: 0em 0.5em;
+}
+table.centreTable{
+  margin: 0.5em auto;
+  padding: 0em 0.5em;
+  border-width: 1px;
+  border-color: black;
+  border-style: solid;
+  border-collapse: separate;
+}

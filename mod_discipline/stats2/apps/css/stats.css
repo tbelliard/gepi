@@ -1,0 +1,426 @@
+/*
+ * $Id: stats.css 4310 2010-04-15 10:13:51Z crob $
+ *
+ * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Didier Blanqui
+ *
+ * This file is part of GEPI.
+ *
+ * GEPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GEPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GEPI; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+ .mess_red {
+   text-align:center;
+   font-size:20px;
+   width:100%;
+   border: 1px solid red;
+   background-color: #FF7579;
+   color:#FFFFFF;
+}
+.mess_orange {
+   text-align:center;
+   font-size:20px;
+   width:100%;
+   border: 1px solid orange;
+   background-color: #FFAA60;
+   color:#FFFFFF;
+}
+.mess_green {
+   text-align:center;
+   font-size:20px;
+   width:100%;
+   border: 1px solid green;
+   background-color: #82FF46;
+   color:#FFFFFF;
+}
+div#select {
+
+    float: left;
+    width: 360px;
+    margin-top: 0px;
+    margin-left: 0px;
+    margin-right: 5px;
+    border: 1px solid #333;
+    background-color: #cfe2e2;
+    min-height: 740px;
+}
+.titre {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.selected {
+    font-size: 12px;
+}
+
+.selected_titre {
+    font-size: 14px;
+    color: red;
+    margin-left: 1px;
+    margin-top: 3px;
+    margin-bottom: 2px;
+    padding-left: 10px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+div,p#selected {
+
+    margin: 0px;
+    padding: 0px;
+}
+
+li#selected {
+    font-size: 12px;
+    margin: 0px;
+    list-style-type: none;
+    background-image: url(../img/puce.gif);
+    background-repeat: no-repeat;
+    background-position: 0% 65%;
+    padding-left: 10px;
+}
+
+.individus {
+    padding: 2px;
+    margin: 2px;
+}
+
+.sous_menu {
+    padding: 0px;
+    margin: 0px;
+    border: 1px solid;
+    background-color: #f0f0f0;
+}
+
+a.sous_menu:active {
+    font-weight: bold;
+}
+
+#fieldset {
+    background-color: #ffffff;
+    padding: 0px;
+    margin: 0px;
+}
+
+#recherche_indiv {
+    display: block;
+}
+
+#recherche_classe {
+    display: block;
+}
+
+.submit {
+    float: right;
+    font-size: 14px;
+    color: #ff8000;
+    border-color: #ff8000;
+}
+.submit2 {
+    margin:15px;
+    font-size: 14px;
+    color: #ff8000;
+    border-color: #ff8000;
+}
+
+div#tableaux {
+
+    width: auto;
+    margin-top:10px;
+    padding:5px;
+    clear:both;
+
+
+}
+div#result {
+
+    width: auto;
+    margin-top:5px;
+    padding:5px;
+    border: 1px solid #333;
+    background-color: #cfe2e2;
+    _height: 650px;
+
+
+}
+div#selected {
+
+    width: auto;
+    margin-top:15px;
+    overflow:auto;
+    padding:15px;
+    border: 1px solid #333;
+    background-color: #cfe2e2;
+    min-height: 740px;
+}
+
+.auto_complete {
+    position: absolute;
+    min-width: 304px;
+    background-color: white;
+    border: 1px solid #888;
+    margin: 0px;
+    padding: 0px;
+}
+
+ul.affichage_nom {
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+    text-align: left;
+}
+
+ul.affichage_nom li.selected {
+    width: 300px;
+    background-color: #ffb;
+    cursor: pointer;
+}
+
+li.affichage_nom {
+    list-style-type: none;
+    display: block;
+    margin: 0;
+    width: 300px;
+    padding: 2px;
+    height: 72px;
+}
+
+li.affichage_nom div.photo_trombi {
+    float: left;
+    width: 72px;
+    height: 72px;
+    margin-right: 8px;
+}
+
+li.affichage_nom div.nom {
+    font-weight: bold;
+    font-size: 11px;
+    line-height: 1em;
+}
+
+div.bloc {
+    border: 1px solid #CCCCCC;
+    margin: 10px 5px;
+    padding: 0px 0px 10px 0px;
+    background-color: #DCD8FF;
+    width:230px;
+}
+
+div.bloc h3{
+    font-size: 14px;
+    padding: 2px 5px;
+    margin: 0 0 10px 0;
+    background-color: #6078FF;
+    cursor: move;
+}
+
+h1 {
+    margin-bottom: 0;
+    font-size: 18px;
+}
+div#Categories_incidents1{
+    width:260px;
+    float:left;
+}
+div#Categories_incidents2{
+    width:260px;
+    float:left;
+}
+div#Natures_incidents{
+    margin:5px;
+    float:left;
+    height:450px;
+    width:300px;
+    overflow: auto;
+    background-color:#FFB2F4;
+    padding: 2px 5px;
+    border: 1px dashed;
+    border-color: red;
+}
+
+div #natures{
+    margin:5px;
+    float:left;
+    background-color:#B0FFA8;
+    padding: 2px 2px;
+    border: 1px dashed;
+    border-color: green;
+}
+div #categories{
+    margin:5px;
+    background-color:#F0F2A8;
+    width:550px;
+    border: 1px dashed;
+    border-color: red;
+    overflow: hidden;
+}
+
+
+div #wrap {
+    overflow: hidden; 
+}
+.option {
+    width:320px;
+}
+div.bilans{
+    float:left;
+    margin: 5px;
+}
+div#filtres{
+    margin:5px;
+    background-color:#B0FFA8;
+    padding: 2px 2px;
+    border: 1px dashed;
+    border-color: green;
+}
+div#filtre_categories{
+    margin:15px;
+    float:left;
+    width: 300px;
+    background-color:#F0F2A8;    
+    border: 1px dashed;
+    border-color: red;
+}
+a.supp:link { COLOR: #000000;  TEXT-DECORATION: none }
+a.supp:visited { COLOR: #000000;  TEXT-DECORATION: none }
+a.supp:active { COLOR: #000000;  TEXT-DECORATION: none }
+a.supp:hover { COLOR: #c8373a;  TEXT-DECORATION: line-through  }
+
+a.supp_filtre:link { COLOR: #0FD11F;  TEXT-DECORATION: none }
+a.supp_filtre:visited { COLOR: #0FD11F;  TEXT-DECORATION: none }
+a.supp_filtre:active { COLOR: #0FD11F;  TEXT-DECORATION: none }
+a.supp_filtre:hover { COLOR: #c8373a;  TEXT-DECORATION: line-through  }
+
+
+#banner {  
+  margin: 0px;
+  padding:0px;
+  background-color:#ddd;
+  border-top: 1px solid #666;;
+  border-left: 1px solid #666;;
+  border-right: 1px solid #666;
+  border-bottom: 0px;
+}
+.bar {
+    padding: 5px;
+    background-color: #3e3e3e;
+}
+
+#wrap_li {
+    overflow: hidden;
+    background-color:#ffffff;
+    margin: 0px;    
+    padding:0px;
+}
+
+.panel {
+    clear: both;    
+    padding: 1em;
+}
+.panel.active-tab-body {
+    display: block;
+}
+ tr.alt {
+	background-color: #C8FFC8;
+}
+ tr  {
+	background-color: #FFE6AA;
+}
+tr.fond  {
+	background-color:#cfe2e2;
+}
+
+ul.css-tabs {
+	margin:0 !important;
+    padding:0;
+    list-style: none;
+     border-bottom:1px dashed #666;
+}
+
+
+ul.css-tabs li {
+	 /* Indispensable */
+    display: -moz-inline-stack;
+    display:inline-block;
+    padding: 0px;
+    margin:0px;
+    vertical-align: middle;
+    zoom: 1;
+        *display: inline;
+}
+
+ul.css-tabs a {
+	float:left;
+	font-size:13px;
+	display:block;
+	padding:5px 8px;
+	text-decoration:none;
+	border-top:1px solid #666;
+        border-right:1px solid #666;
+        border-left:1px solid #666;
+	border-bottom:1px solid #666;
+	height:18px;
+	background-color:#efefef;
+	color:#777;	
+	-moz-border-radius-topleft: 4px;
+	-moz-border-radius-topright:4px;
+	position:relative;
+	top:1px;
+	
+}
+ul.css-tabs a:hover {
+	background-color:#F7F7F7;
+	color:#333;
+}
+ul.css-tabs a.current {
+	background-color:#ddd;
+	border-bottom:1px dashed #666;
+	color:#000;
+	cursor:default;
+}
+div.css-panes {
+        border-top:0px ;
+	border-bottom:1px solid #666;
+        border-left:1px solid #666;
+        border-right:1px solid #666;
+	min-height:400px;
+       	padding:15px 20px;
+	background-color:#ddd;
+}
+
+
+table {
+	border-collapse: collapse;
+}
+
+
+th{
+    border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	background-color: khaki;
+	font-weight:bold;
+	text-align:center;
+	vertical-align: middle;
+}
+thead, tfoot {
+	background-color: #DDD;
+}
+div.float_left{
+  float:left;
+  margin: 2px;
+  padding: 2px;
+  border: 1px dashed;
+  border-color: red;
+}

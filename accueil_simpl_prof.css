@@ -1,0 +1,48 @@
+/*
+$Id: accueil_simpl_prof.css 1299 2008-01-05 09:49:07Z crob $
+*/
+table.contenu {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+
+.contenu th {
+	font-weight:bold;
+	text-align: center;
+	background-color: white;
+	border: 1px solid black;
+	/*border-spacing:0;*/
+}
+
+/*
+	tr {
+		border-collapse: collapse;
+	}
+*/
+.contenu td {
+	vertical-align: middle;
+	text-align: center;
+	border: 1px solid black;
+	/*border-collapse: collapse;*/
+}
+
+td.verrouillagepart {
+	background-color: silver;
+}
+
+td.verrouillagetot {
+	background-color: gray;
+}
+
+td.deverrouille {
+	background-color: lightgreen;
+}
+
+.saisies_effectuees{
+	color: black;
+}
+
+.saisies_manquantes{
+	color: black;
+	background-color: orangered;
+}

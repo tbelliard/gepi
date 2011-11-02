@@ -1,0 +1,88 @@
+/* $Id: style_ecran_login.css 3518 2009-10-04 13:28:04Z crob $ */
+
+#ct_public {
+	position:absolute;
+	top:2em;
+	width:90%;
+	margin-bottom:0em;
+	margin-left:5%;
+	text-align:center;
+	font-size:120%;
+}
+
+#Site_ferme {
+	position:absolute;
+	top:2.6em;
+	width:90%;
+	margin-left:5%;
+	text-align:center;
+	font-size:120%;
+	color:red;
+}
+
+#identification {
+	width:27em;
+	margin-top:8em;
+	margin-left:auto;
+	margin-right:auto;
+	padding:0em;
+	border: 1px solid black; 
+}
+
+
+#div_login_entete {
+	text-align: center;
+	margin-top:0em;
+	padding:0em 0em 0.5em 0em ;
+	background: #4a4a59;
+	/*background-image: url("./images/background/darkfade_small.png");*/
+	background-image: url("../images/background/darkfade_small.png");
+	background-repeat: repeat-x;
+	color: white;
+}
+
+#div_login_entete h1 {
+	margin:0em;
+	padding:0.5em;
+	font-size: 1.1em;
+	font-weight: bold;
+	letter-spacing: 0.1em;
+}
+#div_login_entete p {
+	margin:0em;
+	padding:0em;
+	font-size: 0.8em;
+	font-weight: bold;
+	letter-spacing: 0.1em;
+}
+
+.message {
+	margin:0em 0em 1.2em 0em;
+	text-align:center;
+}
+
+.cadenas {
+	float:left;
+	padding:0.8em 1em 0.5em;
+	width:48px;
+	height: 48px;
+}
+
+.droite {
+	margin:0.8em;
+	text-align:right;
+	font-size: 1.1em;
+}
+
+#mot_passe {
+	margin:-2em 0em 0em;
+	padding-left:0.5em;
+}
+
+.info {
+	margin-top:4em;
+}
+
+#new_login_footer {
+	font-size: 0.5em;
+}

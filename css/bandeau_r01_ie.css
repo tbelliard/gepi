@@ -1,0 +1,45 @@
+/*
+* @version $Id: bandeau_r01_ie.css 3307 2009-07-23 16:16:10Z crob $
+*
+* bandeau_r01_ie.css
+* Correction de mise en page du bandeau pour affichage dans internet exploreur 6 et 7 
+*  
+*/
+
+/* === Corrections pour le bandeau ===*/
+/* Placement du titre */
+.gd_bandeau h1{
+	top: -0.9em;
+}
+/* Nom de l'utilisateur */
+#bd_nom {
+	margin-top: -3.7em;
+}
+/* Dernière connexion */
+#dern_connect {
+	float:left;
+	margin:0em;
+	padding: 0em 0.3em;
+	width:48%;
+}
+/* Premier menu */
+#premier_menu {
+	margin:0.3em 0em 0em auto;
+}
+.spacer {
+	clear: right;
+	width:49%;
+	margin:-1em 0em 0em auto;
+}
+/* Deuxième menu */
+#deux_menu {
+	padding:0em;
+	width:49%;
+	text-align:right;
+	color: white;
+}
+/* barre de menu prof */
+#essaiMenu {
+	margin: -0.3em 0em 0em 0em;
+	padding: 0.3em;
+}

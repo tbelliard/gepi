@@ -1,0 +1,29 @@
+/* $Id: login.css */
+
+#identification{
+	margin-top:4em;
+}
+
+.maintenance{
+	top:2.6em;
+	width:90%;
+	margin-left:5%;
+	text-align:center;
+	font-size:120%;
+	color:red;
+}
+
+.cache {
+	display : none;
+}
+
+.switcher {
+	width:100%;
+	text-align:center;
+}
+
+.txt_rouge {
+	color:red;
+}
+
+

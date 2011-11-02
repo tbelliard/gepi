@@ -1,0 +1,676 @@
+0440001M;Joseph-Auguste Joubert;lycee;public;44154;Ancenis
+0440005S;Guy Moquet;lycee;public;44146;Châteaubriant
+0440008V;François Cacault;college;public;44190;Clisson
+0440010X;Paul Langevin;college;public;44220;Couëron
+0440012Z;Grand Air;lycee;public;44503;La-Baule
+0440013A;-;college;public;44290;Guémené-Penfao
+0440015C;Jacques Prévert;college;public;44410;Herbignac
+0440016D;Anne De Bretagne;college;public;44800;Saint-Herblain
+0440018F;Raymond Queneau;college;public;44270;Machecoul
+0440021J;Georges Clémenceau;lycee;public;44042;Nantes
+0440022K;Jules Verne;lycee;public;44042;Nantes
+0440023L;Chantenay;college;public;44100;Nantes
+0440024M;Gabriel Guist'Hau;lycee;public;44042;Nantes
+0440025N;Talence;college;public;44300;Nantes
+0440028S;La Colinière;college;public;44319;Nantes
+0440029T;Livet;lycee;public;44042;Nantes
+0440030U;Gaspard Monge;lycee;public;44322;Nantes
+0440031V;Vial;lycee;public;44042;Nantes
+0440032W;La Chauvinière;lprof;public;44322;Nantes
+0440033X;François Arago;lprof;public;44322;Nantes
+0440034Y;Michelet;lprof;public;44322;Nantes
+0440035Z;Léonard De Vinci;lprof;public;44300;Nantes
+0440036A;L.A. De Bougainville;lprof;public;44100;Nantes
+0440045K;Victor Hugo;college;public;44042;Nantes
+0440049P;Aristide Briand;college;public;44262;Nantes
+0440055W;Jean Rostand;college;public;44700;Orvault
+0440056X;Albert Chassagne;lprof;public;44560;Paimboeuf
+0440061C;Jules Verne;college;public;44510;Le-Pouliguen
+0440062D;Jean Perrin;lycee;public;44400;Rezé
+0440063E;Louis-Jacques Goussier;lprof;public;44400;Rezé
+0440064F;de Pont-Rousseau;college;public;44400;Rezé
+0440065G;de la Petite Lande;college;public;44400;Rezé
+0440066H;René-Guy Cadou;college;public;44250;Saint-Brévin-les-Pins
+0440069L;Aristide Briand;lycee;public;44606;Saint-Nazaire
+0440074S;François Blancho;lprof;public;44606;Saint-Nazaire
+0440077V;Jacques Prévert;lycee;public;44260;Savenay
+0440080Y;Jean Monnet;college;public;44120;Vertou
+0440085D;Jean Brossaud;lprof;public;44606;Saint-Nazaire
+0440086E;La Colinière;lycee;public;44319;Nantes
+0440107C;d'Angreviers;college;prive;44190;Gorges
+0440111G;Institut Prive Bel Air;lycee;prive;44008;Nantes
+0440116M;Leloup Bouhier;lprof;public;44100;Nantes
+0440119R;Sainte-Anne;lprof;prive;44600;Saint-Nazaire
+0440141P;Emilien Maillard;lprof;public;44154;Ancenis
+0440142R;Jean Jaurès;lprof;public;44100;Nantes
+0440147W;René-Guy Cadou;college;public;44150;Ancenis
+0440149Y;Saint-Joseph;lycee;prive;44153;Ancenis
+0440151A;Saint-Joseph;lycee;prive;44110;Châteaubriant
+0440152B;de la Haye Saint-Donatien;college;prive;44590;Derval
+0440153C;Saint-Gabriel;college;prive;44115;Haute-Goulaine
+0440154D;Blanche De Castille;lycee;prive;44319;Nantes
+0440158H;Françoise D'Amboise;lycee;prive;44015;Nantes
+0440160K;Externat des Enfants Nantais;lycee;prive;44042;Nantes
+0440161L;Saint-Joseph du Loquidy;lycee;prive;44322;Nantes
+0440163N;Saint-Stanislas;lycee;prive;44042;Nantes
+0440166S;Notre-Dame de toutes aides;lycee;prive;44071;Nantes
+0440167T;Saint-Félix;lycee;prive;44001;Nantes
+0440168U;Sacré-Coeur;college;prive;44100;Nantes
+0440171X;Notre-Dame de l'Abbaye;lycee;prive;44100;Nantes
+0440172Y;La Perverie - Sacré-Coeur;lycee;prive;44322;Nantes
+0440175B;Gabriel Deshayes;lycee;prive;44530;Saint-Gildas-des-Bois
+0440176C;Saint-Dominique;lycee;prive;44807;Saint-Herblain
+0440177D;Saint-Louis;lycee;prive;44600;Saint-Nazaire
+0440178E;Notre-Dame d'Espérance;lycee;prive;44600;Saint-Nazaire
+0440179F;de la Maine;college;prive;44140;Aigrefeuille-sur-Maine
+0440182J;Saint-Laurent;college;prive;44130;Blain
+0440184L;Saint-Hermeland;college;prive;44830;Bouaye
+0440188R;de l'Immaculée Conception;college;prive;44190;Clisson
+0440190T;Sainte-Philomène;college;prive;44220;Couëron
+0440191U;Sainte-Marie;college;prive;44500;La-Baule-Escoublac
+0440192V;Saint-Michel;college;prive;44290;Guémené-Penfao
+0440193W;Saint-Jean-Baptiste;college;prive;44350;Guérande
+0440195Y;Saint-Joseph;college;prive;44410;Herbignac
+0440196Z;Sainte-Anne;college;prive;44650;Legé
+0440198B;Notre-Dame;college;prive;44620;La-Montagne
+0440199C;Saint-Joseph;college;prive;44850;Ligné
+0440200D;Notre-Dame;college;prive;44430;Le-Loroux-Bottereau
+0440201E;Saint-Joseph;lycee;prive;44270;Machecoul
+0440203G;Notre-Dame de l'Abbaye;college;prive;44100;Nantes
+0440206K;Notre-Dame du Bon Conseil;college;prive;44022;Nantes
+0440207L;Saint-Jean-Baptiste De La Salle;college;prive;44000;Nantes
+0440209N;Helder Camara;college;prive;44119;Treillières
+0440210P;Sainte-Madeleine - La Joliverie;college;prive;44265;Nantes
+0440211R;Théophane Vénard;college;prive;44100;Nantes
+0440217X;Notre-Dame de Lourdes;college;prive;44300;Nantes
+0440219Z;Saint-Jacques De Compostelle;college;prive;44200;Nantes
+0440221B;Saint-Michel;college;prive;44390;Nort-sur-Erdre
+0440223D;Saint-Joseph;college;prive;44170;Nozay
+0440224E;Saint-Martin;college;prive;44160;Pontchâteau
+0440226G;Notre-Dame de Recouvrance;college;prive;44210;Pornic
+0440228J;du Sacré-Coeur;college;prive;44380;Pornichet
+0440229K;Saint-Paul;college;prive;44400;Rezé
+0440231M;Sainte-Anne;college;prive;44400;Rezé
+0440232N;Saint-Augustin;college;prive;44440;Riaillé
+0440233P;Saint-Joseph;college;prive;44250;Saint-Brévin-les-Pins
+0440235S;Sainte-Thérèse;college;prive;44600;Saint-Nazaire
+0440236T;du Sacré-Coeur;college;prive;44680;Sainte-Pazanne
+0440238V;Saint-Roch;college;prive;44320;Saint-Père-en-Retz
+0440239W;Général Lamoricière;college;prive;44310;Saint-Philbert-de-Grand-Lieu
+0440241Y;Saint-Joseph;college;prive;44260;Savenay
+0440242Z;Saint-Joseph;college;prive;44330;Vallet
+0440243A;Sainte-Anne;college;prive;44370;Varades
+0440244B;Saint-Blaise;college;prive;44120;Vertou
+0440246D;Sacré-Coeur;lprof;prive;44100;Nantes
+0440247E;Saint-Félix;lprof;prive;44001;Nantes
+0440250H;Sainte-Madeleine;lprof;prive;44265;Nantes
+0440252K;Talensac;lprof;prive;44002;Nantes
+0440253L;Saint-Jean-Baptiste De La Salle;lprof;prive;44010;Nantes
+0440255N;Encia;lprof;prive;44000;Nantes
+0440256P;Saint-Pierre;lprof;prive;44230;Saint-Sébastien-sur-Loire
+0440257R;Jeanne Bernard;lprof;prive;44800;Saint-Herblain
+0440259T;Notre-Dame d'Espérance;lycee;prive;44600;Saint-Nazaire
+0440261V;Saint-Thomas D'Aquin;lprof;prive;44153;Ancenis
+0440262W;Nazareth;lprof;prive;44110;Châteaubriant
+0440267B;Pierre Masson;lprof;prive;44100;Nantes
+0440274J;Notre-Dame;lprof;prive;44401;Rezé
+0440279P;La Baugerie;lprof;prive;44230;Saint-Sébastien-sur-Loire
+0440282T;Le Masle;lprof;prive;44600;Saint-Nazaire
+0440283U;Libertaire - Rutigliano;college;public;44319;Nantes
+0440284V;Stendhal;college;public;44322;Nantes
+0440285W;Gaston Serpette;college;public;44000;Nantes
+0440286X;Claude Debussy;college;public;44100;Nantes
+0440287Y;Le Hérault;college;public;44800;Saint-Herblain
+0440288Z;Albert Camus;lycee;public;44100;Nantes
+0440289A;Jean Mounes;college;public;44210;Pornic
+0440291C;Iles de Loire;college;public;44230;Saint-Sébastien-sur-Loire
+0440292D;Jean Mermoz;college;public;44170;Nozay
+0440293E;Robert Schumann;college;public;44110;Châteaubriant
+0440294F;Etienne Lenoir;lprof;public;44146;Châteaubriant
+0440302P;Saint-Donatien - Immaculée;lprof;prive;44000;Nantes
+0440307V;Sainte-Thérèse;lprof;prive;44600;Saint-Nazaire
+0440308W;Le Galinet;college;public;44130;Blain
+0440309X;Le Breil;college;public;44100;Nantes
+0440310Y;Jean-Jacques Audubon;lprof;public;44220;Couëron
+0440311Z;Ernest Renan;college;public;44800;Saint-Herblain
+0440314C;Jean Moulin;college;public;44600;Saint-Nazaire
+0440315D;André Boulloche;lprof;public;44606;Saint-Nazaire
+0440316E;La Neustrie;college;public;44340;Bouguenais
+0440329U;-;EREA;public;44300;Nantes
+0440347N;Antoine De Saint-Exupéry;college;public;44620;La-Montagne
+0440348P;La Ville aux Roses;college;public;44110;Châteaubriant
+0440350S;Albert Vincon;college;public;44600;Saint-Nazaire
+0440352U;Louis Armand;lprof;public;44270;Machecoul
+0440355X;Charles Péguy;lycee;prive;44190;Gorges
+0440422V;Sainte-Anne;college;prive;44470;Carquefou
+0440423W;Saint-Joseph;college;prive;44590;Derval
+0440534S;Salvador Allende;college;public;44400;Rezé
+0440536U;Georges De La Tour;college;public;44000;Nantes
+0440537V;Les Savarières;lprof;public;44230;Saint-Sébastien-sur-Loire
+0440538W;Jacques Brel;college;public;44350;Guérande
+0440539X;René-Guy Cadou;college;public;44550;Montoir-de-Bretagne
+0440540Y;Jean-Baptiste Pellé de Quéral;college;public;44160;Pontchâteau
+0440541Z;des Trois Rivières;lprof;public;44160;Pontchâteau
+0440542A;Manon Roland;college;public;44600;Saint-Nazaire
+0440980B;agricole;lycee;prive;44430;Le-Landreau
+0440981C;Gabriel Deshayes;lycee;prive;44530;Saint-Gildas-des-Bois
+0441032H;-;lycee;prive;44590;Derval
+0441514G;Jean De Neyman;college;public;44600;Saint-Nazaire
+0441545R;La Noé Lambert;college;public;44300;Nantes
+0441547T;Le Grand Beauregard;college;public;44240;La-Chapelle-sur-Erdre
+0441548U;René Bernier;college;public;44230;Saint-Sébastien-sur-Loire
+0441550W;-;lprof;public;44350;Guérande
+0441551X;Les Bourdonnières;lprof;public;44265;Nantes
+0441552Y;Les Bourdonnières;lycee;public;44265;Nantes
+0441608J;La Durantière;college;public;44100;Nantes
+0441610L;Gutenberg;college;public;44800;Saint-Herblain
+0441612N;Pierre De Coubertin;college;public;44650;Legé
+0441613P;Pierre Norange;college;public;44600;Saint-Nazaire
+0441616T;Julien Lambot;college;public;44570;Trignac
+0441653H;Saint-Joseph - La Joliverie;lprof;prive;44230;Saint-Sébastien-sur-Loire
+0441654J;Paul Doumer;college;public;44390;Nort-sur-Erdre
+0441655K;Louis Pasteur;college;public;44540;Saint-Mars-la-Jaille
+0441656L;Pablo Neruda;lprof;public;44340;Bouguenais
+0441657M;Antoine De Saint-Exupéry;college;public;44260;Savenay
+0441658N;Pierre et Marie Curie;college;public;44640;Le-Pellerin
+0441686U;Auguste Mailloux;college;public;44430;Le-Loroux-Bottereau
+0441724K;La Reinetière;college;public;44980;Sainte-Luce-sur-Loire
+0441727N;Arthur Rimbaud;college;public;44480;Donges
+0441728P;René Char;college;public;44720;Saint-Joachim
+0441781X;horticole La Grillonnais;lprof;prive;44115;Basse-Goulaine
+0441782Y;Grand Blottereau;lprof;prive;44300;Nantes
+0441784A;Le Château;lprof;prive;44150;Ancenis
+0441785B;Les Prateaux;lprof;prive;44130;Blain
+0441787D;Saint-Exupery;lprof;prive;44430;Le-Loroux-Bottereau
+0441788E;Le Bois Tillac;lprof;prive;44640;Le-Pellerin
+0441789F;Saint-Martin;lprof;prive;44270;Machecoul
+0441790G;Saint-Joseph;lprof;prive;44110;Châteaubriant
+0441791H;de l'Erdre;lprof;prive;44390;Nort-sur-Erdre
+0441794L;Kerguenec;lprof;prive;44350;Saint-Molf
+0441795M;La Motte;lycee;prive;44320;Saint-Père-en-Retz
+0441820P;Gabriel Guist'Hau;college;public;44042;Nantes
+0441821R;Jules Verne;college;public;44042;Nantes
+0441822S;climatique Grand Air;college;public;44500;La-Baule-Escoublac
+0441823T;industriel;lprof;public;44600;Saint-Nazaire
+0441858F;Bellestre;college;public;44830;Bouaye
+0441859G;Eric Tabarly;college;public;44500;La-Baule-Escoublac
+0441862K;Louise Michel;college;public;44560;Paimboeuf
+0441912P;Gabriel Deshayes;lprof;prive;44530;Saint-Gildas-des-Bois
+0441917V;La Fontaine;college;public;44780;Missillac
+0441928G;Saint-Joseph;college;prive;44150;Ancenis
+0441929H;Saint-Joseph;college;prive;44110;Châteaubriant
+0441930J;Saint-Joseph;college;prive;44270;Machecoul
+0441931K;Saint-Joseph Du Loquidy;college;prive;44322;Nantes
+0441932L;Blanche De Castille;college;prive;44319;Nantes
+0441933M;Externat des Enfants Nantais;college;prive;44042;Nantes
+0441934N;Françoise D'Amboise;college;prive;44015;Nantes
+0441935P;Notre-Dame de toutes Aides;college;prive;44071;Nantes
+0441936R;La Perverie - Sacré-Coeur;college;prive;44322;Nantes
+0441937S;Saint-Félix;college;prive;44001;Nantes
+0441938T;Saint-Stanislas;college;prive;44042;Nantes
+0441939U;Gabriel Deshayes;college;prive;44530;Saint-Gildas-des-Bois
+0441940V;Saint-Dominique;college;prive;44800;Saint-Herblain
+0441941W;Saint-Louis;college;prive;44600;Saint-Nazaire
+0441982R;Bretagne;lycee;prive;44300;Nantes
+0441992B;du Pays de Retz;lycee;public;44210;Pornic
+0441993C;Carcouet;lycee;public;44184;Nantes
+0442011X;La Coutancière;college;public;44240;La-Chapelle-sur-Erdre
+0442023K;Paul Gauguin;college;public;44360;Cordemais
+0442029S;Gérard Philipe;college;public;44470;Carquefou
+0442052S;Pierre Abelard;college;public;44330;Vallet
+0442061B;Jules Rieffel;lycee;public;44817;Saint-Herblain
+0442071M;Daniel Brottier;lprof;prive;44340;Bouguenais
+0442094M;Nicolas Appert;lprof;public;44702;Orvault
+0442095N;La Herdrie;lycee;public;44115;Basse-Goulaine
+0442112G;Galilée;lycee;public;44350;Guérande
+0442119P;de Bretagne;college;prive;44300;Nantes
+0442186M;Condorcet;college;public;44310;Saint-Philbert-de-Grand-Lieu
+0442207K;Camille Claudel;lycee;public;44130;Blain
+0442226F;La Mennais;lycee;prive;44350;Guérande
+0442273G;Charles Péguy;lycee;prive;44190;Gorges
+0442277L;de Goulaine;college;public;44115;Basse-Goulaine
+0442286W;expérimental;lycee;public;44606;Saint-Nazaire
+0442309W;-;lycee;public;44830;Bouaye
+0442334Y;-;lycee;public;44330;Vallet
+0442368K;du Pays Blanc;college;public;44350;Guérande
+0442388G;Centre Educatif Nantais Sportifs;college;prive;44240;La-Chapelle-sur-Erdre
+0442417N;Les Sables d'Or;college;public;44470;Thouaré-sur-Loire
+0442418P;Le Haut Gesvres;college;public;44119;Treillières
+0490001K;David d'Angers;lycee;public;49035;Angers
+0490002L;Joachim Du Bellay;lycee;public;49035;Angers
+0490003M;Chevrollier;lycee;public;49035;Angers
+0490004N;Eugène Chevreul;college;public;49100;Angers
+0490005P;La Roseraie;lprof;public;49015;Angers
+0490010V;Châteaucoin;college;public;49150;Baugé
+0490013Y;-;lprof;public;49800;Brain-sur-l'Authion
+0490014Z;de l'Aubance;college;public;49320;Brissac-Quincé
+0490017C;Pierre et Marie Curie;college;public;49120;Chemillé
+0490018D;Europe - Robert Schuman;lycee;public;49311;Cholet
+0490020F;-;lprof;public;49321;Cholet
+0490022H;Georges Clémenceau;college;public;49300;Cholet
+0490023J;Lucien Millet;college;public;49700;Doué-la-Fontaine
+0490026M;Maryse Bastié;college;public;49123;Ingrandes
+0490027N;du Val d'Oudon;college;public;49220;Le-Lion-d'Angers
+0490028P;François Truffaut;college;public;49160;Longué-Jumelles
+0490029R;Camille Claudel;college;public;49370;Le-Louroux-Béconnais
+0490032U;Jean Zay;college;public;49460;Montreuil-Juigné
+0490034W;de l'Evre;college;public;49110;Montrevault
+0490037Z;Philippe Cousteau;college;public;49420;Pouancé
+0490039B;d'Anjou - Bretagne;college;public;49410;Saint-Florent-le-Vieil
+0490040C;Philippe Duplessis-Mornay;lycee;public;49408;Saumur
+0490042E;Pierre Mendès-France;college;public;49400;Saumur
+0490046J;Les Fontaines;college;public;49380;Thouarcé
+0490048L;Jean Rostand;college;public;49800;Trélazé
+0490054T;Fernand Renaudeau;lycee;public;49321;Cholet
+0490055U;Sadi Carnot;lycee;public;49413;Saumur
+0490057W;Georges Pompidou;college;public;49270;Champtoceaux
+0490058X;Jean Bertin;lprof;public;49413;Saumur
+0490059Y;Chevrollier;lprof;public;49035;Angers
+0490060Z;Jean Lurçat;college;public;49017;Angers
+0490061A;Californie;college;public;49035;Angers
+0490782J;Blaise Pascal;lycee;public;49500;Segré
+0490783K;Jean Mermoz;college;public;49035;Angers
+0490784L;Henri Dunant;lprof;public;49017;Angers
+0490785M;Blaise Pascal;lprof;public;49500;Segré
+0490801E;Paul-Emile Victor;lprof;public;49243;Avrillé
+0490819Z;Sainte-Agnès;lycee;prive;49000;Angers
+0490822C;Jeanne D'Arc;lycee;prive;49100;Angers
+0490823D;Urbain Mongazon;lycee;prive;49000;Angers
+0490824E;Saint-Martin;lycee;prive;49100;Angers
+0490828J;Notre-Dame de Bonnes Nouvelles;lycee;prive;49600;Beaupréau
+0490829K;Jeanne D'Arc;college;prive;49300;Cholet
+0490831M;Sainte-Marie;lycee;prive;49300;Cholet
+0490832N;-;lprof;prive;49520;Combrée
+0490834R;Notre-Dame d'Orveau;lycee;prive;49500;Nyoiseau
+0490835S;Saint-Joseph;lycee;prive;49620;La-Pommeraye
+0490836T;Sainte-Anne;college;prive;49400;Saumur
+0490837U;Notre-Dame;lycee;prive;49310;La-Salle-de-Vihiers
+0490838V;Saint-Louis;lycee;prive;49400;Saumur
+0490839W;Saint-André;college;prive;49400;Saumur
+0490840X;Bourg-Chevreau - Sainte-Anne;lprof;prive;49500;Segré
+0490842Z;Sainte-Marie;college;prive;49660;Torfou
+0490843A;Cathédrale Saint-Maurice;college;prive;49100;Angers
+0490844B;Saint-Augustin;college;prive;49000;Angers
+0490845C;de l'Immaculée Conception;college;prive;49000;Angers
+0490849G;Notre-Dame;college;prive;49150;Baugé
+0490851J;D'Elbée;college;prive;49600;Beaupréau
+0490853L;Saint-Vincent;college;prive;49320;Brissac-Quincé
+0490854M;Sainte-Emilie;college;prive;49440;Candé
+0490856P;Saint-Benoît;college;prive;49270;Champtoceaux
+0490857R;Saint-François;college;prive;49330;Châteauneuf-sur-Sarthe
+0490858S;Saint-Joseph;college;prive;49120;Chemillé
+0490860U;Saint-Joseph;college;prive;49308;Cholet
+0490862W;Notre-Dame du Bretonnais;college;prive;49300;Cholet
+0490863X;Saint-Joseph;college;prive;49700;Doué-la-Fontaine
+0490865Z;Saint-Louis;college;prive;49510;Jallais
+0490866A;François D'Assise;college;prive;49220;Le-Lion-d'Angers
+0490867B;Saint-Joseph;college;prive;49160;Longué-Jumelles
+0490868C;Père Daniel Brottier;college;prive;49360;Maulévrier
+0490869D;Saint-Joseph;college;prive;49122;Le-May-sur-Evre
+0490871F;du Sacré-Coeur;college;prive;49420;Pouancé
+0490873H;Jacques Cathelineau;college;prive;49410;Saint-Florent-le-Vieil
+0490874J;Jean Blouin;college;prive;49230;Saint-Germain-sur-Moine
+0490875K;Saint-Jean Bosco;college;prive;49450;Saint-Macaire-en-Mauges
+0490876L;Frédéric Ozanam;college;prive;49110;Saint-Pierre-Montlimart
+0490878N;Saint-Joseph;college;prive;49500;Segré
+0490879P;Saint-Paul;college;prive;49380;Thouarcé
+0490881S;Saint-Jean;college;prive;49310;Vihiers
+0490886X;La Providence;lprof;prive;49306;Cholet
+0490887Y;Sainte-Marie;lycee;prive;49300;Cholet
+0490888Z;Saint-Julien - La Baronnerie;lprof;prive;49480;Saint-Sylvain-d'Anjou
+0490897J;Saint-Serge;lprof;prive;49100;Angers
+0490903R;Le Pinier Neuf;lprof;prive;49600;Beaupréau
+0490904S;Jeanne Delanoue;lprof;prive;49304;Cholet
+0490910Y;Les Ardilliers;lprof;prive;49421;Saumur
+0490921K;François Rabelais;college;public;49000;Angers
+0490922L;Molière;college;public;49250;Beaufort-en-Vallée
+0490925P;-;EREA;public;49124;Saint-Barthélemy-d'Anjou
+0490946M;Le Fresne;lycee;public;49036;Angers
+0490952U;Champ Blanc;lycee;prive;49710;Le-Longeron
+0490953V;Félix Landreau;college;public;49000;Angers
+0490955X;Antoine De Saint-Exupéry;college;public;49290;Chalonnes-sur-Loire
+0490956Y;Les Roches;college;public;49430;Durtal
+0490957Z;La Venaiserie;college;public;49124;Saint-Barthélemy-d'Anjou
+0490960C;Honoré De Balzac;college;public;49400;Saumur
+0490962E;Georges Gironde;college;public;49500;Segré
+0490963F;-;lprof;public;49260;Montreuil-Bellay
+0491024X;de la Vallée du Loir;college;public;49140;Seiches-sur-le-Loir
+0491025Y;Colbert;college;public;49321;Cholet
+0491026Z;de la République;college;public;49321;Cholet
+0491027A;agricole et horticole;lprof;prive;49136;Les-Ponts-de-Cé
+0491028B;Michel De Montaigne;college;public;49100;Angers
+0491083L;La Madeleine;college;prive;49000;Angers
+0491260D;François Villon;college;public;49130;Les-Ponts-de-Cé
+0491261E;Paul Eluard;college;public;49350;Gennes
+0491262F;Calypso;college;public;49260;Montreuil-Bellay
+0491641T;La Barre - Jean XXIII;college;prive;49000;Angers
+0491645X;Jean Racine;college;public;49170;Saint-Georges-sur-Loire
+0491646Y;Ludovic Ménard;lprof;public;49800;Trélazé
+0491648A;Benjamin Delessert;college;public;49400;Saumur
+0491674D;Clément Janequin;college;public;49240;Avrillé
+0491675E;Joachim Du Bellay;college;public;49300;Cholet
+0491703K;Jean Vilar;college;public;49035;Angers
+0491705M;Jacques Prévert;college;public;49330;Châteauneuf-sur-Sarthe
+0491706N;Le Pont de Moine;college;public;49230;Montfaucon-Montigné
+0491707P;de la Vallée du Lys;college;public;49310;Vihiers
+0491764B;Claude Debussy;college;public;49017;Angers
+0491766D;Porte d'Anjou;college;public;49490;Noyant
+0491801S;Les Buissonnets;lprof;prive;49100;Angers
+0491802T;Robert D'Arbrissel;lycee;prive;49120;Chemillé
+0491804V;Edmond Michelet;lycee;prive;49330;Etriché
+0491807Y;-;lprof;prive;49520;Noëllet
+0491809A;Les Trois Provinces;lycee;prive;49304;Cholet
+0491825T;David d'Angers;college;public;49035;Angers
+0491826U;Yolande D'Anjou;college;public;49400;Saumur
+0491859E;Trémolières;college;public;49300;Cholet
+0491921X;Jeanne D'Arc;college;prive;49100;Angers
+0491922Y;Urbain Mongazon;college;prive;49000;Angers
+0491923Z;Saint-Laud;college;prive;49130;Les-Ponts-de-Cé
+0491924A;Saint-Martin;college;prive;49100;Angers
+0491925B;Notre-Dame de Bonnes Nouvelles;college;prive;49600;Beaupréau
+0491926C;-;college;prive;49520;Combrée
+0491927D;Notre-Dame d'Orveau;college;prive;49500;Nyoiseau
+0491928E;Saint-Joseph;college;prive;49620;La-Pommeraye
+0491929F;Notre-Dame;college;prive;49310;La-Salle-de-Vihiers
+0491930G;Saint-Louis;college;prive;49400;Saumur
+0491966W;Henri Bergson;lycee;public;49036;Angers
+0492003L;Sainte-Marie - Maine;lprof;prive;49100;Angers
+0492004M;Saint-Charles;college;prive;49100;Angers
+0492015Z;Sacré-Coeur;lycee;prive;49023;Angers
+0492019D;Urbain Mongazon;lycee;prive;49000;Angers
+0492061Z;Auguste et Jean Renoir;lycee;public;49035;Angers
+0492081W;Jean Monnet;college;public;49000;Angers
+0492089E;Emmanuel Mounier;lycee;public;49017;Angers
+0492110C;-;lprof;public;49120;Chemillé
+0492123S;Jean Moulin;lprof;public;49017;Angers
+0492140K;Jeanne D'Arc;college;prive;49480;Saint-Sylvain-d'Anjou
+0492148U;Jean Bodin;lycee;public;49137;Les-Ponts-de-Cé
+0492224B;-;lprof;public;49120;Chemillé
+0530001N;Léo Ferré;college;public;53300;Ambrières-les-Vallées
+0530002P;des Sept Fontaines;college;public;53240;Andouillé
+0530003R;Jean-Louis Bernard;college;public;53160;Bais
+0530004S;Victor Hugo;lycee;public;53200;Château-Gontier
+0530005T;Volney;college;public;53400;Craon
+0530007V;Paul Langevin;college;public;53600;Evron
+0530010Y;Ambroise Paré;lycee;public;53013;Laval
+0530011Z;Douanier Rousseau;lycee;public;53013;Laval
+0530012A;Réaumur;lycee;public;53013;Laval
+0530013B;Robert Buron;lprof;public;53013;Laval
+0530015D;Pierre Dubois;college;public;53000;Laval
+0530016E;Lavoisier;lycee;public;53103;Mayenne
+0530021K;de Misedon;college;public;53410;Port-Brillet
+0530025P;Les Garettes;college;public;53700;Villaines-la-Juhel
+0530030V;L'Oriette;college;public;53230;Cossé-le-Vivien
+0530031W;Le Grand Champ;college;public;53290;Grez-en-Bouère
+0530040F;Pierre et Marie Curie;lprof;public;53204;Château-Gontier
+0530041G;Emmanuel De Martonne;college;public;53000;Laval
+0530046M;Saint-Michel;lycee;prive;53200;Château-Gontier
+0530048P;de l'Immaculée Conception;lycee;prive;53000;Laval
+0530049R;D'Avesnières;lycee;prive;53012;Laval
+0530051T;Sainte-Thérèse;college;prive;53000;Laval
+0530052U;Sacré-Coeur;lycee;prive;53102;Mayenne
+0530053V;Don Bosco - Jouvence;college;prive;53100;Mayenne
+0530054W;Saint-Joseph;college;prive;53230;Cossé-le-Vivien
+0530055X;Le Prieuré;college;prive;53400;Craon
+0530059B;Sacré-Coeur;college;prive;53600;Evron
+0530060C;Sacré-Coeur;college;prive;53120;Gorron
+0530061D;Saint-Jean-Baptiste De La Salle;college;prive;53000;Laval
+0530063F;Saint-Joseph;college;prive;53170;Meslay-du-Maine
+0530064G;Saint-Joseph;college;prive;53150;Montsûrs
+0530065H;Notre-Dame;college;prive;53410;Saint-Pierre-la-Cour
+0530066J;Sainte-Jeanne D'Arc;college;prive;53700;Villaines-la-Juhel
+0530068L;Haute Follis;lprof;prive;53000;Laval
+0530071P;Notre-Dame de la Miséricorde;lprof;prive;53000;Laval
+0530073S;Bon Accueil;lprof;prive;53100;Mayenne
+0530077W;René Cassin;college;public;53500;Ernée
+0530078X;Jules Ferry;college;public;53100;Mayenne
+0530079Y;Léonard De Vinci;lprof;public;53103;Mayenne
+0530081A;agricole;lycee;public;53013;Laval
+0530082B;Jules Renard;college;public;53000;Laval
+0530484N;Alain Gerbault;college;public;53000;Laval
+0530520C;-;lprof;public;53200;Château-Gontier
+0530583W;des Avaloirs;college;public;53140;Pré-en-Pail
+0530584X;Alfred Jarry;college;public;53800;Renazé
+0530770Z;Saint-Joseph;college;prive;53500;Ernée
+0530778H;G. Lesnard;lprof;public;53015;Laval
+0530779J;Jean Rostand;college;public;53200;Château-Gontier
+0530790W;Jacques Monod;college;public;53000;Laval
+0530791X;Maurice Genevoix;college;public;53170;Meslay-du-Maine
+0530792Y;Béatrix De Gavre;college;public;53150;Montsûrs
+0530793Z;Francis Lallart;college;public;53120;Gorron
+0530803K;Victor Hugo;college;public;53110;Lassay-les-Châteaux
+0530804L;Louis Launay;college;public;53190;Landivy
+0530813W;Robert Schuman;lprof;prive;53200;Château-Gontier
+0530815Y;rural;lprof;prive;53500;Ernée
+0530816Z;d'Orion;lycee;prive;53600;Evron
+0530818B;Rochefeuille;lycee;prive;53100;Mayenne
+0530826K;Mme De Sevigné;college;public;53100;Mayenne
+0530827L;Paul-Emile Victor;college;public;53200;Azé
+0530874M;Saint-Michel;college;prive;53200;Château-Gontier
+0530875N;de l'Immaculée Conception;college;prive;53000;Laval
+0530876P;Don Bosco - Ermitage;college;prive;53100;Mayenne
+0530904V;de l'Immaculée Conception;lprof;prive;53000;Laval
+0530914F;Fernand Puech;college;public;53000;Laval
+0530949U;Raoul Vadepied;lprof;public;53602;Evron
+0720001K;John F. Kennedy;college;public;72700;Allonnes
+0720002L;Normandie-Maine;college;public;72490;Ancinnes
+0720003M;Claude Chappe;lprof;public;72231;Arnage
+0720004N;René Cassin;college;public;72290;Ballon
+0720007S;Guillaume Apollinaire;college;public;72440;Bouloire
+0720010V;La Germinière;lycee;public;72700;Rouillon
+0720011W;Pierre De Ronsard;college;public;72340;La-Chartre-sur-le-Loir
+0720012X;de Racan;lycee;public;72500;Château-du-Loir
+0720013Y;Maréchal Leclerc de Hauteclocque;lprof;public;72500;Château-du-Loir
+0720014Z;André Pioger;college;public;72240;Conlie
+0720015A;François Grude;college;public;72160;Connerré
+0720017C;Robert Garnier;lycee;public;72405;La-Ferte-Bernard
+0720019E;Léo Delibes;college;public;72130;Fresnay-sur-Sarthe
+0720021G;Estournelles De Constant;lycee;public;72205;La-Flèche
+0720023J;Le Petit Versailles;college;public;72200;La-Flèche
+0720024K;Bellevue;college;public;72540;Loué
+0720027N;de Perseigne;lycee;public;72600;Mamers
+0720028P;-;lprof;public;72600;Mamers
+0720029R;Montesquieu;lycee;public;72000;Le-Mans
+0720030S;Bellevue;lycee;public;72000;Le-Mans
+0720033V;Gabriel Touchard;lycee;public;72017;Le-Mans
+0720034W;Funay;lprof;public;72019;Le-Mans
+0720035X;Hélène Boucher;lprof;public;72100;Le-Mans
+0720038A;Roger Vercel;college;public;72000;Le-Mans
+0720040C;Ambroise Paré;college;public;72000;Le-Mans
+0720043F;Jean Moulin;college;public;72260;Marolles-les-Braults
+0720046J;des Alpes Mancelles;college;public;72130;Moulins-le-Carbonnel
+0720048L;Colbert De Torcy;lycee;public;72305;Sablé-sur-Sarthe
+0720049M;Charles Cros;lprof;public;72305;Sablé-sur-Sarthe
+0720051P;Jules Ferry;college;public;72120;Saint-Calais
+0720053S;Véron De Forbonnais;college;public;72580;Saint-Cosme-en-Vairais
+0720055U;Paul Scarron;lycee;public;72140;Sillé-le-Guillaume
+0720058X;Gabriel Goussault;college;public;72320;Vibraye
+0720062B;Le Vieux Chêne;college;public;72200;La-Flèche
+0720064D;André-Marie Ampère;lprof;public;72206;La-Flèche
+0720065E;Georges Washington;lprof;public;72017;Le-Mans
+0720067G;de Bercé;college;public;72500;Château-du-Loir
+0720068H;Le Plateau;college;public;72000;Le-Mans
+0720069J;Alexandre Mauboussin;college;public;72600;Mamers
+0720070K;Pierre Reverdy;college;public;72300;Sablé-sur-Sarthe
+0720072M;Robert Garnier;lprof;public;72405;La-Ferte-Bernard
+0720081X;Alain Fournier;college;public;72100;Le-Mans
+0720797A;de Vauguyon;college;public;72100;Le-Mans
+0720798B;Vieux Colombier;college;public;72000;Le-Mans
+0720799C;Jean De L'Epine;college;public;72000;Le-Mans
+0720800D;Albert Camus;college;public;72100;Le-Mans
+0720802F;Sainte-Thérèse;college;prive;72170;Beaumont-sur-Sarthe
+0720803G;Frère André;college;prive;72120;Saint-Calais
+0720804H;Saint-Jean;college;prive;72500;Château-du-Loir
+0720806K;Notre-Dame;college;prive;72400;La-Ferté-Bernard
+0720807L;Notre-Dame - Saint-Joseph;college;prive;72130;Fresnay-sur-Sarthe
+0720808M;Saint-Michel;college;prive;72540;Loué
+0720811R;Saint-Joseph - Lorraine;college;prive;72700;Pruillé-le-Chétif
+0720812S;Les Muriers;college;prive;72000;Le-Mans
+0720815V;Sacré-Coeur;college;prive;72100;Le-Mans
+0720816W;Notre-Dame;college;prive;72260;Marolles-les-Braults
+0720817X;Saint-Coeur De Marie;college;prive;72140;Sillé-le-Guillaume
+0720818Y;Saint-Charles;lycee;prive;72000;Le-Mans
+0720822C;Sainte-Catherine;lprof;prive;72018;Le-Mans
+0720823D;Pontlieue;lprof;prive;72100;Le-Mans
+0720825F;Notre-Dame du Foyer;lprof;prive;72000;Le-Mans
+0720833P;Notre-Dame;lycee;prive;72205;La-Flèche
+0720834R;Notre-Dame de Sainte-Croix;lycee;prive;72016;Le-Mans
+0720835S;Saint-Louis;college;prive;72000;Le-Mans
+0720836T;Psallette - Saint-Vincent;college;prive;72000;Le-Mans
+0720837U;Notre-Dame;lycee;prive;72015;Le-Mans
+0720838V;Saint-Julien;college;prive;72000;Le-Mans
+0720840X;Saint-Paul;lycee;prive;72600;Mamers
+0720842Z;Saint-Michel des Perrais;lycee;prive;72330;Parigné-le-Pôlin
+0720843A;Sainte-Anne;lprof;prive;72300;Sablé-sur-Sarthe
+0720847E;Louis Cordelet;college;public;72250;Parigné-l'Evêque
+0720885W;Le Ronceray;college;public;72100;Le-Mans
+0720902P;Maroc;college;public;72019;Le-Mans
+0720903R;Henri Lefeuvre;college;public;72230;Arnage
+0720904S;Le Joncheray;college;public;72170;Beaumont-sur-Sarthe
+0720905T;A.J.Trouvé-Chauvel;college;public;72210;La-Suze-sur-Sarthe
+0720906U;Jean Cocteau;college;public;72190;Coulaines
+0720907V;André Provots;lprof;public;72250;Brette-les-Pins
+0720920J;Raphaël Elize;EREA;public;72560;Changé
+0720983C;Saint-Benoît - Maupertuis;college;prive;72000;Le-Mans
+0720984D;Saint-Joseph;college;prive;72000;Le-Mans
+0720986F;La Madeleine;college;public;72018;Le-Mans
+0720987G;du Val d'Huisne;college;public;72100;Le-Mans
+0720988H;Suzanne Bouteloup;college;public;72360;Mayet
+0720989J;d'Anjou;college;public;72300;Sablé-sur-Sarthe
+0721009F;agricole;lycee;prive;72303;Sablé-sur-Sarthe
+0721042S;Jean Rostand;college;public;72380;Sainte-Jamme-sur-Sarthe
+0721043T;Alfred De Musset;college;public;72220;Ecommoy
+0721044U;Paul Chevallier;college;public;72150;Le-Grand-Lucé
+0721086P;Wilbur Wright;college;public;72470;Champagné
+0721089T;de Courtanvaux;college;public;72310;Bessé-sur-Braye
+0721090U;Villaret - Clairefontaine;college;public;72000;Le-Mans
+0721092W;Sud;lprof;public;72008;Le-Mans
+0721093X;La Foresterie;college;public;72110;Bonnétable
+0721094Y;Sud;lycee;public;72008;Le-Mans
+0721224P;Le Marin;college;public;72700;Allonnes
+0721225R;Louis Pasteur;college;public;72530;Yvré-l'Evêque
+0721226S;Les Quatre Vents;college;public;72800;Le-Lude
+0721261E;Saint-Joseph;college;prive;72220;Teloché
+0721262F;Les Sources;college;public;72100;Le-Mans
+0721263G;Marcel Pagnol;college;public;72270;Malicorne-sur-Sarthe
+0721281B;Amédée Bollée;college;public;72230;Mulsanne
+0721298V;Saint-Martin;lprof;prive;72500;La-Bruère-sur-Loir
+0721301Y;Jean Rondeau;lprof;public;72120;Saint-Calais
+0721304B;Jacques Prévert;college;public;72510;Pontvallain
+0721334J;EFPAR;lprof;prive;72120;Saint-Calais
+0721336L;Notre-Dame;lprof;prive;72400;La-Ferté-Bernard
+0721337M;Nazareth;lprof;prive;72340;Ruillé-sur-Loir
+0721363R;Berthelot;college;public;72017;Le-Mans
+0721364S;du Val d'Huisne;college;public;72400;La-Ferté-Bernard
+0721365T;Paul Scarron;college;public;72140;Sillé-le-Guillaume
+0721405L;Notre-Dame;college;prive;72200;La-Flèche
+0721406M;Saint-Paul;college;prive;72600;Mamers
+0721407N;Saint-Michel des Perrais;college;prive;72330;Parigné-le-Pôlin
+0721408P;Sainte-Anne;college;prive;72300;Sablé-sur-Sarthe
+0721477P;Jacques Peletier;college;public;72560;Changé
+0721478R;Saint-Joseph-Lorraine;lprof;prive;72700;Pruillé-le-Chétif
+0721483W;Pierre Belon;college;public;72330;Cérans-Foulletourte
+0721493G;Marguerite Yourcenar;lycee;public;72007;Le-Mans
+0721548S;André Malraux;lycee;public;72700;Allonnes
+0721549T;Saint-Paul - Notre Dame;lycee;prive;72406;La-Ferte-Bernard
+0721607F;Anne Frank;college;public;72000;Le-Mans
+0721608G;Saint-Martin;college;prive;72500;La-Bruère-sur-Loir
+0850006V;Georges Clémenceau;lycee;public;85111;Chantonnay
+0850012B;-;lprof;public;85205;Fontenay-le-Comte
+0850014D;du Golfe des Pictons;college;public;85770;L'Ile-d'Elle
+0850015E;Les Sicardières;college;public;85350;L'Ile-d'Yeu
+0850016F;de l'Atlantique;lprof;public;85402;Luçon
+0850024P;Gaston Chaissac;college;public;85700;Pouzauges
+0850025R;Pierre Mendès-France;lycee;public;85021;La-Roche-sur-Yon
+0850027T;Alfred Kastler;lycee;public;85020;La-Roche-sur-Yon
+0850028U;Edouard Branly;lprof;public;85035;La-Roche-sur-Yon
+0850029V;-;lprof;public;85020;La-Roche-sur-Yon
+0850032Y;Savary De Mauléon;lycee;public;85119;Les-Sables-d'Olonne
+0850033Z;Eric Tabarly;lprof;public;85119;Les-Sables-d'Olonne
+0850039F;du Pays de Monts;college;public;85160;Saint-Jean-de-Monts
+0850043K;Valère Mathé;lprof;public;85340;Olonne-sur-Mer
+0850047P;-;EREA;public;85100;Château-d'Olonne
+0850063G;Haxo;college;public;85000;La-Roche-sur-Yon
+0850065J;Pierre Garcie Ferrande;college;public;85800;Saint-Gilles-Croix-de-Vie
+0850066K;François Viète;college;public;85200;Fontenay-le-Comte
+0850067L;André Tiraqueau;college;public;85200;Fontenay-le-Comte
+0850068M;François Rabelais;lycee;public;85205;Fontenay-le-Comte
+0850069N;Emile Beaussire;college;public;85400;Luçon
+0850073T;Sainte-Marie;college;prive;85250;Chavagnes-en-Paillers
+0850074U;Saint-Joseph;college;prive;85200;Fontenay-le-Comte
+0850076W;Jean XXIII;lycee;prive;85505;Les-Herbiers
+0850077X;Sainte-Ursule;lycee;prive;85403;Luçon
+0850079Z;Notre-Dame de la Tourtelière;lycee;prive;85700;Pouzauges
+0850082C;Richelieu;college;prive;85000;La-Roche-sur-Yon
+0850083D;Saint-Joseph;lycee;prive;85035;La-Roche-sur-Yon
+0850084E;Amiral Merveilleux Du Vignaux;college;prive;85100;Château-d'Olonne
+0850086G;Saint-Gabriel;lprof;prive;85292;Saint-Laurent-sur-Sèvre
+0850087H;Saint-Michel;lycee;prive;85292;Saint-Laurent-sur-Sèvre
+0850090L;Sainte-Marie;college;prive;85190;Aizenay
+0850091M;Notre-Dame de l'Espérance;college;prive;85260;Les-Brouzils
+0850092N;Saint-Martin;college;prive;85490;Benet
+0850097U;Saint-Joseph;college;prive;85120;La-Châtaigneraie
+0850099W;Saint-Pierre;college;prive;85140;Les-Essarts
+0850103A;Notre-Dame du Port;college;prive;85350;L'Ile-d'Yeu
+0850104B;Villebois - Mareuil;college;prive;85600;Montaigu
+0850106D;Saint-Jacques;college;prive;85150;La-Mothe-Achard
+0850107E;Saint-Jacques;college;prive;85540;Moutiers-les-Mauxfaits
+0850108F;Saint-Paul;college;prive;85670;Palluau
+0850109G;Les Sorbets;college;prive;85330;Noirmoutier-en-l'Ile
+0850110H;Les Sorbets;lprof;prive;85330;Noirmoutier-en-l'Ile
+0850111J;Puy Chabot;college;prive;85170;Le-Poiré-sur-Vie
+0850113L;Saint-Sauveur;college;prive;85620;Rocheservière
+0850114M;Saint-Louis;college;prive;85000;La-Roche-sur-Yon
+0850117R;Notre-Dame de Bourgenay;college;prive;85100;Les-Sables-d'Olonne
+0850118S;Bourdevaire;lycee;prive;85110;Sainte-Cécile
+0850120U;Jeanne D'Arc;lprof;prive;85800;Saint-Gilles-Croix-de-Vie
+0850122W;Saint-Paul;college;prive;85210;Sainte-Hermine
+0850123X;Les Lauriers;college;prive;85160;Saint-Jean-de-Monts
+0850125Z;Saint-Nicolas;college;prive;85130;Tiffauges
+0850130E;Notre-Dame du Roc;lprof;prive;85035;La-Roche-sur-Yon
+0850133H;Sainte-Marie du Port;lprof;prive;85119;Les-Sables-d'Olonne
+0850135K;Sainte-Marie;lycee;prive;85111;Chantonnay
+0850136L;Jeanne D'Arc;lprof;prive;85603;Montaigu
+0850137M;Saint-Louis;lprof;prive;85007;La-Roche-sur-Yon
+0850142T;Notre-Dame;lycee;prive;85304;Challans
+0850144V;Nature;lycee;public;85035;La-Roche-sur-Yon
+0850145W;René Couzinet;college;public;85110;Chantonnay
+0850146X;René Couzinet;lprof;public;85302;Challans
+0850147Y;Charles Milcendeau;college;public;85300;Challans
+0850148Z;du centre;college;public;85100;Les-Sables-d'Olonne
+0850149A;Paul Langevin;college;public;85340;Olonne-sur-Mer
+0850151C;Bel Air;lycee;public;85205;Fontenay-le-Comte
+0850152D;Albert Laval;lprof;public;85400;Sainte-Gemme-la-Plaine
+0850604V;Les Gondoliers;college;public;85000;La-Roche-sur-Yon
+0850605W;Edouard Herriot;college;public;85000;La-Roche-sur-Yon
+0850606X;Stéphane Piobetta;college;public;85000;La-Roche-sur-Yon
+0850607Y;Le Sourdy;college;public;85400;Luçon
+0850609A;Les Etablières;lycee;prive;85015;La-Roche-sur-Yon
+0850639H;Jules Ferry;college;public;85600;Montaigu
+0850641K;Corentin Riou;college;public;85540;Moutiers-les-Mauxfaits
+0851132U;Les Colliberts;college;public;85580;Saint-Michel-en-l'Herm
+0851144G;Molière;college;public;85330;Noirmoutier-en-l'Ile
+0851145H;du Marais Poitevin;college;public;85490;Benet
+0851146J;de l'Anglée;college;public;85210;Sainte-Hermine
+0851158X;Saint-Joseph;college;prive;85300;Challans
+0851159Y;Jean Yole;college;prive;85500;Les-Herbiers
+0851160Z;Antoine De Saint-Exupéry;college;prive;85700;Pouzauges
+0851163C;Pierre Mendès-France;college;public;85120;La-Châtaigneraie
+0851181X;Saint-Gilles;college;prive;85800;Saint-Gilles-Croix-de-Vie
+0851191H;Saint-Joseph;college;prive;85110;Chantonnay
+0851193K;Jean Rostand;college;public;85500;Les-Herbiers
+0851195M;Frédéric et Irène Joliot-Curie;college;public;85240;Saint-Hilaire-des-Loges
+0851220P;Jean Monnet;college;public;85100;Château-d'Olonne
+0851274Y;Sacré-Coeur;college;prive;85000;La-Roche-sur-Yon
+0851290R;Sainte-Ursule;college;prive;85400;Luçon
+0851292T;Saint-Michel;college;prive;85290;Saint-Laurent-sur-Sèvre
+0851293U;Saint-Gabriel;college;prive;85290;Saint-Laurent-sur-Sèvre
+0851295W;L'Espérance;college;prive;85110;Sainte-Cécile
+0851304F;Auguste et Jean Renoir;college;public;85000;La-Roche-sur-Yon
+0851344Z;Notre-Dame;lprof;prive;85205;Fontenay-le-Comte
+0851346B;François Truffaut;lycee;public;85300;Challans
+0851388X;Olivier Messiaen;college;public;85290;Mortagne-sur-Sèvre
+0851390Z;Léonard De Vinci;lycee;public;85603;Montaigu
+0851400K;Jean Monnet;lprof;public;85500;Les-Herbiers
+0851401L;Maréchal De Lattre De Tassigny;lycee;public;85021;La-Roche-sur-Yon
+0851435Y;Antoine De Saint-Exupéry;college;public;85170;Belleville-sur-Vie

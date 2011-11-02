@@ -1,0 +1,76 @@
+
+#calendrierEntier, #calendrierEntier table, #calendrierEntier select {
+font-family: Arial;
+font-size: 12px;
+}
+
+#calendrierEntier {
+background-image: url("petit_calendrier.gif");
+background-position: center center;
+background-repeat: no-repeat;
+}
+
+#calendar {
+width: 100%;
+border-collapse: collapse;
+border-right: 1px solid #999999;
+border-bottom: 1px solid #999999;
+margin: 0;
+padding: 0;
+text-align: center;
+font-size: 110%;
+}
+
+#calendar th {
+border-left: 1px solid #999999;
+border-top: 1px solid #999999;
+padding: 0.5em;
+font-weight: bold;
+width: 14%;
+}
+
+#calendar td {
+border-left: 1px solid #999999;
+border-top: 1px solid #999999;
+margin: 0;
+padding: 0;
+}
+
+#calendar td a {
+display: block;
+text-decoration: none;
+color: #FF0000;
+}
+
+#calendar td a:hover {
+background-color: #E99042;
+color: #660000;
+}
+
+.dim{
+background-color: #D8CDE8;
+}
+
+.aut {
+background-color: #EEEEEE;
+}
+
+.sam {
+background-color: #DDD69F;
+}
+
+.ajd {
+background-color: #EEEE44;
+}
+
+#calendrier {
+width: 100%;
+margin: 0;
+text-align: center;
+}
+
+#calendrier select {
+width: 49%;
+margin: 0;
+padding: 0;
+}

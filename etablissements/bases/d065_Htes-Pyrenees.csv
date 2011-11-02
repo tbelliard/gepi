@@ -1,0 +1,258 @@
+0650003A;Maréchal Foch;college;public;65240;Arreau
+0650015N;La Serre de Sarsan;college;public;65100;Lourdes
+0650017R;de la Barousse;college;public;65370;Loures-Barousse
+0650018S;des Trois Vallées;college;public;65120;Luz-Saint-Sauveur
+0650019T;Jean Jaurès;college;public;65700;Maubourguet
+0650020U;du Haut Lavedan;college;public;65260;Pierrefitte-Nestalas
+0650022W;Beaulieu;college;public;65150;Saint-Laurent-de-Neste
+0650031F;Louis Desaix;college;public;65000;Tarbes
+0650033H;Placide Massey;college;public;65000;Tarbes
+0650034J;Paul Eluard;college;public;65000;Tarbes
+0650036L;du Val d'Arros;college;public;65190;Tournay
+0650037M;D'Astarac - Bigorre;college;public;65220;Trie-sur-Baïse
+0650050B;Voltaire;college;public;65000;Tarbes
+0650074C;du Pradeau;college;prive;65000;Tarbes
+0650075D;Saint-Martin;college;prive;65500;Vic-en-Bigorre
+0650084N;Gaston Fébus;college;public;65300;Lannemezan
+0650088T;Paul Valéry;college;public;65600;Séméac
+0650089U;Blanche Odin;college;public;65200;Bagnères-de-Bigorre
+0650094Z;-;ecole;public;65700;Hères
+0650099E;-;ecole;public;65700;Soublecause
+0650101G;-;ecole;public;65700;Auriébat
+0650105L;-;ecole;public;65700;Lafitole
+0650106M;-;ecole;public;65700;Lahitte-Toupière
+0650107N;-;ecole;public;65700;Larreule
+0650111T;-;ecole;public;65700;Sombrun
+0650117Z;-;ecole;public;65320;Gardères
+0650118A;-;ecole;public;65380;Hibarette
+0650119B;Théophile Gautier;ecole;public;65000;Tarbes
+0650120C;Henri IV;ecole;public;65000;Tarbes
+0650126J;Jules Michelet;ecole;public;65000;Tarbes
+0650127K;La Sendère;ecole;public;65000;Tarbes
+0650146F;-;ecole;public;65380;Lanne
+0650148H;-;ecole;public;65200;Loucrup
+0650149J;-;ecole;public;65290;Louey
+0650150K;-;ecole;public;65320;Luquet
+0650155R;-;ecole;public;65200;Visker
+0650158U;-;ecole;public;65350;Cabanac
+0650159V;-;ecole;public;65350;Castelvieilh
+0650160W;-;ecole;public;65350;Castéra-Lou
+0650162Y;-;ecole;public;65350;Coussan
+0650165B;-;ecole;public;65350;Laslades
+0650166C;-;ecole;public;65350;Louit
+0650167D;-;ecole;public;65350;Marseillan
+0650169F;-;ecole;public;65350;Oléac-Debat
+0650174L;-;ecole;public;65350;Souyeaux
+0650177P;-;ecole;public;65140;Bazillac
+0650180T;-;ecole;public;65140;Escondeaux
+0650181U;-;ecole;public;65140;Gensac
+0650184X;-;ecole;public;65140;Lescurry
+0650188B;-;ecole;public;65140;Monfaucon
+0650192F;-;ecole;public;65140;Rabastens-de-Bigorre
+0650194H;-;ecole;public;65140;Sarriac-Bigorre
+0650195J;-;ecole;public;65140;Sénac
+0650196K;-;ecole;public;65140;Tostat
+0650204U;-;ecole;public;65220;Fontrailles
+0650212C;-;ecole;public;65220;Sère-Rustaing
+0650213D;-;ecole;public;65220;Tournous-Darré
+0650218J;Lamartine;ecole;public;65800;Aureilhan
+0650219K;Joliot-Curie;ecole;public;65800;Aureilhan
+0650220L;-;ecole;public;65390;Aurensan
+0650225S;-;ecole;public;65460;Bours
+0650227U;-;ecole;public;65320;Gayan
+0650232Z;-;ecole;public;65320;Lagarde
+0650240H;-;ecole;public;65320;Tarasteix
+0650243L;-;ecole;public;65500;Artagnan
+0650244M;-;ecole;public;65500;Caixon
+0650246P;-;ecole;public;65500;Escaunets
+0650247R;-;ecole;public;65500;Marsac
+0650248S;-;ecole;public;65500;Nouilhan
+0650249T;-;ecole;public;65500;Pujo
+0650250U;-;ecole;public;65500;Saint-Lézer
+0650252W;-;ecole;public;65500;Siarrouy
+0650257B;-;ecole;public;65260;Adast
+0650258C;-;ecole;public;65400;Agos-Vidalos
+0650259D;-;ecole;public;65400;Arcizans-Avant
+0650261F;Parc Suzanne;ecole;public;65400;Argelès-Gazost
+0650263H;-;ecole;public;65400;Ayros-Arbouix
+0650264J;-;ecole;public;65400;Ayzac-Ost
+0650266L;-;ecole;public;65400;Boô-Silhen
+0650269P;-;ecole;public;65400;Gez
+0650271S;-;ecole;public;65400;Ouzous
+0650276X;-;ecole;public;65400;Saint-Savin
+0650280B;-;ecole;public;65400;Vier-Bordes
+0650281C;-;ecole;public;65260;Villelongue
+0650283E;Joseph Contraires;ecole;public;65400;Arras-en-Lavedan
+0650286H;-;ecole;public;65400;Aucun
+0650288K;-;ecole;public;65560;Ferrières
+0650294S;Jules Ferry;ecole;public;65200;Bagnères-de-Bigorre
+0650295T;Sadi Carnot;ecole;public;65200;Bagnères-de-Bigorre
+0650296U;du Pic du Midi;ecole;public;65200;Bagnères-de-Bigorre
+0650298W;de Lesponne;ecole;public;65710;Campan
+0650299X;des Palomières;ecole;public;65200;Bagnères-de-Bigorre
+0650303B;-;ecole;public;65200;Cieutat
+0650305D;-;ecole;public;65200;Labassère
+0650306E;-;ecole;public;65200;Mérilheu
+0650307F;-;ecole;public;65200;Montgaillard
+0650310J;-;ecole;public;65200;Orignac
+0650322X;Galade;ecole;public;65710;Campan
+0650325A;-;ecole;public;65200;Gerde
+0650327C;Donatien Arberet;ecole;public;65100;Adé
+0650329E;-;ecole;public;65100;Arcizac-ez-Angles
+0650332H;-;ecole;public;65100;Aspin-en-Lavedan
+0650333J;-;ecole;public;65100;Bartrès
+0650337N;-;ecole;public;65200;Germs-sur-l'Oussouet
+0650343V;-;ecole;public;65100;Lézignan
+0650344W;d'Anclades;ecole;public;65100;Lourdes
+0650345X;Honoré Auzon;ecole;public;65100;Lourdes
+0650346Y;du Lapacca;ecole;public;65100;Lourdes
+0650349B;-;ecole;public;65100;Ossen
+0650352E;-;ecole;public;65100;Poueyferré
+0650357K;Hubert Reeves;ecole;public;65120;Barèges
+0650361P;-;ecole;public;65120;Esquièze-Sère
+0650362R;-;ecole;public;65120;Esterre
+0650376F;-;ecole;public;65100;Loubajac
+0650381L;-;ecole;public;65690;Angos
+0650384P;-;ecole;public;65360;Bernac-Debat
+0650385R;-;ecole;public;65360;Bernac-Dessus
+0650387T;-;ecole;public;65310;Horgues
+0650394A;-;ecole;public;65360;Saint-Martin
+0650395B;-;ecole;public;65360;Salles-Adour
+0650396C;-;ecole;public;65600;Sarrouilles
+0650401H;-;ecole;public;65360;Vielle-Adour
+0650402J;du Montaigu;ecole;public;65600;Séméac
+0650403K;de l'Arbizon;ecole;public;65600;Séméac
+0650404L;-;ecole;public;65440;Ancizan
+0650410T;-;ecole;public;65410;Beyrède-Jumet
+0650413W;-;ecole;public;65440;Guchen
+0650417A;-;ecole;public;65410;Sarrancolin
+0650422F;-;ecole;public;65510;Génos
+0650425J;-;ecole;public;65510;Loudenvielle
+0650432S;-;ecole;public;65230;Campuzan
+0650447H;-;ecole;public;65230;Thermes-Magnoac
+0650456T;-;ecole;public;65330;Montastruc
+0650464B;-;ecole;public;65130;Esparros
+0650467E;-;ecole;public;65250;Hèches
+0650478S;-;ecole;public;65250;Montoussé
+0650482W;-;ecole;public;65130;Bourg-de-Bigorre
+0650484Y;-;ecole;public;65130;Capvern
+0650488C;-;ecole;public;65300;Clarens
+0650497M;Le Guérissa;ecole;public;65300;Lannemezan
+0650499P;-;ecole;public;65300;Lutilhous
+0650502T;-;ecole;public;65300;Pinas
+0650507Y;-;ecole;public;65300;Uglas
+0650514F;-;ecole;public;65370;Izaourt
+0650520M;-;ecole;public;65370;Saléchan
+0650525T;-;ecole;public;65660;Aventignan
+0650528W;-;ecole;public;65150;Cantaous
+0650535D;-;ecole;public;65150;Nistos
+0650547S;-;ecole;public;65190;Burg
+0650549U;-;ecole;public;65190;Calavanté
+0650552X;-;ecole;public;65190;Goudon
+0650554Z;-;ecole;public;65190;Lanespède
+0650557C;-;ecole;public;65190;Luc
+0650559E;-;ecole;public;65190;Moulédous
+0650563J;-;ecole;public;65190;Ozon
+0650564K;-;ecole;public;65190;Peyraube
+0650567N;-;ecole;public;65190;Sinzos
+0650574W;-;ecole;public;65170;Aragnouet
+0650580C;-;ecole;public;65170;Vielle-Aure
+0650657L;-;ecole;public;65350;Aubarède
+0650658M;-;ecole;public;65130;Avezac-Prat-Lahitte
+0650662S;-;ecole;prive;65290;Juillan
+0650663T;Saint-Joseph;ecole;prive;65380;Ossun
+0650664U;Jeanne D'Arc;ecole;prive;65700;Maubourguet
+0650666W;Saint-Martin;ecole;prive;65500;Vic-en-Bigorre
+0650667X;Jeanne D'Arc;ecole;prive;65000;Tarbes
+0650670A;Sainte-Thérèse;ecole;prive;65000;Tarbes
+0650671B;Pradeau - La Sède;ecole;prive;65000;Tarbes
+0650672C;Saint-Joseph;ecole;prive;65000;Tarbes
+0650673D;Notre-Dame;ecole;prive;65400;Argelès-Gazost
+0650674E;Saint-Vincent;ecole;prive;65200;Bagnères-de-Bigorre
+0650676G;de l'Immaculée de Soum;ecole;prive;65100;Lourdes
+0650679K;Massabielle;ecole;prive;65100;Lourdes
+0650681M;Sainte-Elisabeth;ecole;prive;65270;Saint-Pé-de-Bigorre
+0650683P;Notre-Dame de Garaison;ecole;prive;65670;Monléon-Magnoac
+0650689W;Saint-Dominique;ecole;prive;65000;Tarbes
+0650705N;Les Cèdres;ecole;public;65800;Aureilhan
+0650706P;Jean Bourdette;ecole;public;65400;Argelès-Gazost
+0650707R;-;ecole;public;65400;Arrens-Marsous
+0650708S;-;ecole;public;65200;Asté
+0650709T;Marcel Pagnol;ecole;public;65460;Bazet
+0650710U;-;ecole;public;65380;Bénac
+0650711V;-;ecole;public;65190;Bordes
+0650712W;-;ecole;public;65710;Campan
+0650713X;-;ecole;public;65230;Castelnau-Magnoac
+0650714Y;-;ecole;public;65700;Castelnau-Rivière-Basse
+0650715Z;-;ecole;public;65120;Gèdre
+0650716A;-;ecole;public;65310;Laloubère
+0650717B;-;ecole;public;65380;Lamarque-Pontacq
+0650719D;-;ecole;public;65370;Loures-Barousse
+0650720E;-;ecole;public;65700;Madiran
+0650721F;-;ecole;public;65670;Monléon-Magnoac
+0650722G;-;ecole;public;65310;Odos
+0650723H;-;ecole;public;65490;Oursbelille
+0650724J;-;ecole;public;65200;Pouzac
+0650725K;-;ecole;public;65170;Saint-Lary-Soulan
+0650726L;-;ecole;public;65430;Soues
+0650727M;Jean Jaurès;ecole;public;65430;Soues
+0650728N;-;ecole;public;65260;Soulom
+0650729P;-;ecole;public;65200;Trébons
+0650738Z;Saint-Vincent;college;prive;65200;Bagnères-de-Bigorre
+0650740B;des Pyrénées;college;public;65000;Tarbes
+0650742D;-;ecole;public;65240;Arreau
+0650744F;-;ecole;public;65380;Azereix
+0650746H;-;ecole;public;65290;Juillan
+0650748K;Paul Guth;ecole;public;65380;Ossun
+0650750M;-;ecole;public;65150;Saint-Laurent-de-Neste
+0650751N;-;ecole;public;65220;Trie-sur-Baïse
+0650763B;-;ecole;public;65360;Allier
+0650764C;-;ecole;public;65270;Saint-Pé-de-Bigorre
+0650768G;Las Moulias;ecole;public;65300;Lannemezan
+0650770J;-;ecole;public;65800;Orleix
+0650780V;-;ecole;public;65330;Galan
+0650783Y;Jean-Marie Lordat;ecole;public;65190;Tournay
+0650789E;F. Camescasse;ecole;public;65700;Maubourguet
+0650793J;-;ecole;public;65250;La-Barthe-de-Neste
+0650795L;-;ecole;public;65120;Luz-Saint-Sauveur
+0650797N;Voltaire;ecole;public;65000;Tarbes
+0650814G;-;ecole;public;65140;Peyrun
+0650815H;-;ecole;public;65390;Andrest
+0650816J;-;ecole;public;65350;Pouyastruc
+0650817K;L. Pasteur - J. Ferry;ecole;public;65000;Tarbes
+0650821P;-;ecole;public;65220;Lalanne-Trie
+0650835E;Victor Hugo;college;public;65000;Tarbes
+0650836F;climatique;college;public;65400;Argelès-Gazost
+0650838H;Pierre Mendès-France;college;public;65500;Vic-en-Bigorre
+0650845R;Alphonse Meillon;ecole;public;65110;Cauterets
+0650848U;-;ecole;public;65420;Ibos
+0650850W;P. Bert - P. Baratgin;ecole;public;65300;Lannemezan
+0650877A;Peyramale - Saint-Joseph;college;prive;65100;Lourdes
+0650878B;Notre-Dame de Garaison;college;prive;65670;Monléon-Magnoac
+0650879C;Saint-Pierre;college;prive;65270;Saint-Pé-de-Bigorre
+0650880D;Jeanne D'Arc;college;prive;65000;Tarbes
+0650881E;Saint-Dominique;college;prive;65000;Tarbes
+0650882F;Notre-Dame De La Sède;college;prive;65000;Tarbes
+0650899Z;Paul Verlaine;ecole;public;65690;Barbazan-Debat
+0650900A;Arthur Rimbaud;ecole;public;65690;Barbazan-Debat
+0650916T;Sainte-Anne;ecole;prive;65230;Castelnau-Magnoac
+0650924B;-;ecole;public;65200;Hiis
+0650926D;-;ecole;public;65380;Layrisse
+0650928F;des Bourtoulets;ecole;public;65300;Lannemezan
+0650944Y;Pierre Guillard;ecole;public;65500;Vic-en-Bigorre
+0650945Z;Victor Hugo;ecole;public;65000;Tarbes
+0650958N;Ormeau Figarol;ecole;public;65000;Tarbes
+0650959P;Jean Moulin;ecole;public;65000;Tarbes
+0650960R;Paul Bert;ecole;public;65000;Tarbes
+0650964V;Aristide Briand;ecole;public;65320;Bordères-sur-l'Echez
+0650965W;Claude Debussy;ecole;public;65000;Tarbes
+0650966X;Jean Moulin;ecole;public;65260;Pierrefitte-Nestalas
+0650978K;Jules Verne;ecole;public;65000;Tarbes
+0650979L;Jean Macé;ecole;public;65000;Tarbes
+0650994C;Jean-Jacques Rousseau;ecole;public;65000;Tarbes
+0651004N;Pradeau - La Sède;college;prive;65000;Tarbes
+0651007S;Sainte-Marie de Campan;ecole;public;65710;Campan
+0651018D;Saint-Joseph;ecole;prive;65150;Tuzaguet
+0651019E;La Calandreta De Bigorra;ecole;prive;65310;Laloubère
+0651024K;Saint-Joseph;college;prive;65150;Cantaous
+0651027N;Calendreta;ecole;prive;65200;Bagnères-de-Bigorre

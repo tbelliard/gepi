@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Export_CSV" script:language="StarBasic">REM  *****  BASIC  *****
+
+
+sub Main
+rem ----------------------------------------------------------------------
+rem define variables
+dim document   as object
+dim dispatcher as object
+rem ----------------------------------------------------------------------
+rem get access to the document
+document   = ThisComponent.CurrentController.Frame
+dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+dim NomFichierOds as string
+dim NomFichierCsv as string
+NomFichierOds = ThisComponent.URL
+NomFichierCsv = Mid(NomFichierOds,1,Len(NomFichierOds)-3) &amp; &quot;csv&quot;
+
+rem ----------------------------------------------------------------------
+dim args1(2) as new com.sun.star.beans.PropertyValue
+args1(0).Name = &quot;URL&quot;
+args1(0).Value = NomFichierOds
+args1(1).Name = &quot;FilterName&quot;
+args1(1).Value = &quot;calc8&quot;
+args1(2).Name = &quot;SelectionOnly&quot;
+args1(2).Value = true
+
+dispatcher.executeDispatch(document, &quot;.uno:SaveAs&quot;, &quot;&quot;, 0, args1())
+
+rem ----------------------------------------------------------------------
+Remplace_ptvirg_pipe
+rem ----------------------------------------------------------------------
+
+dim args2(3) as new com.sun.star.beans.PropertyValue
+args2(0).Name = &quot;URL&quot;
+args2(0).Value = NomFichierCsv
+args2(1).Name = &quot;FilterName&quot;
+args2(1).Value = &quot;Text - txt - csv (StarCalc)&quot;
+args2(2).Name = &quot;FilterOptions&quot;
+args2(2).Value = &quot;59,0,22,1&quot;
+args2(3).Name = &quot;SelectionOnly&quot;
+args2(3).Value = true
+
+dispatcher.executeDispatch(document, &quot;.uno:SaveAs&quot;, &quot;&quot;, 0, args2())
+
+rem ----------------------------------------------------------------------
+Remplace_pipe_ptvirg
+rem ----------------------------------------------------------------------
+dim args3(2) as new com.sun.star.beans.PropertyValue
+args3(0).Name = &quot;URL&quot;
+args3(0).Value = NomFichierOds
+args3(1).Name = &quot;FilterName&quot;
+args3(1).Value = &quot;calc8&quot;
+args3(2).Name = &quot;SelectionOnly&quot;
+args3(2).Value = true
+
+dispatcher.executeDispatch(document, &quot;.uno:SaveAs&quot;, &quot;&quot;, 0, args3())
+
+
+end sub
+
+
+
+sub Remplace_ptvirg_pipe
+rem ----------------------------------------------------------------------
+rem define variables
+dim document   as object
+dim dispatcher as object
+rem ----------------------------------------------------------------------
+rem get access to the document
+document   = ThisComponent.CurrentController.Frame
+dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+
+rem ----------------------------------------------------------------------
+dim args1(1) as new com.sun.star.beans.PropertyValue
+args1(0).Name = &quot;By&quot;
+args1(0).Value = 1
+args1(1).Name = &quot;Sel&quot;
+args1(1).Value = true
+
+dispatcher.executeDispatch(document, &quot;.uno:GoDownToEndOfData&quot;, &quot;&quot;, 0, args1())
+
+rem ----------------------------------------------------------------------
+dim args2(1) as new com.sun.star.beans.PropertyValue
+args2(0).Name = &quot;By&quot;
+args2(0).Value = 1
+args2(1).Name = &quot;Sel&quot;
+args2(1).Value = true
+
+dispatcher.executeDispatch(document, &quot;.uno:GoDownToEndOfData&quot;, &quot;&quot;, 0, args2())
+
+rem ----------------------------------------------------------------------
+dim args3(17) as new com.sun.star.beans.PropertyValue
+args3(0).Name = &quot;SearchItem.StyleFamily&quot;
+args3(0).Value = 2
+args3(1).Name = &quot;SearchItem.CellType&quot;
+args3(1).Value = 0
+args3(2).Name = &quot;SearchItem.RowDirection&quot;
+args3(2).Value = true
+args3(3).Name = &quot;SearchItem.AllTables&quot;
+args3(3).Value = false
+args3(4).Name = &quot;SearchItem.Backward&quot;
+args3(4).Value = false
+args3(5).Name = &quot;SearchItem.Pattern&quot;
+args3(5).Value = false
+args3(6).Name = &quot;SearchItem.Content&quot;
+args3(6).Value = false
+args3(7).Name = &quot;SearchItem.AsianOptions&quot;
+args3(7).Value = false
+args3(8).Name = &quot;SearchItem.AlgorithmType&quot;
+args3(8).Value = 0
+args3(9).Name = &quot;SearchItem.SearchFlags&quot;
+args3(9).Value = 65536
+args3(10).Name = &quot;SearchItem.SearchString&quot;
+args3(10).Value = &quot;;&quot;
+args3(11).Name = &quot;SearchItem.ReplaceString&quot;
+args3(11).Value = &quot;|POINT-VIRGULE|&quot;
+args3(12).Name = &quot;SearchItem.Locale&quot;
+args3(12).Value = 255
+args3(13).Name = &quot;SearchItem.ChangedChars&quot;
+args3(13).Value = 2
+args3(14).Name = &quot;SearchItem.DeletedChars&quot;
+args3(14).Value = 2
+args3(15).Name = &quot;SearchItem.InsertedChars&quot;
+args3(15).Value = 2
+args3(16).Name = &quot;SearchItem.TransliterateFlags&quot;
+args3(16).Value = 1280
+args3(17).Name = &quot;SearchItem.Command&quot;
+args3(17).Value = 3
+
+dispatcher.executeDispatch(document, &quot;.uno:ExecuteSearch&quot;, &quot;&quot;, 0, args3())
+
+rem ----------------------------------------------------------------------
+dim args4(0) as new com.sun.star.beans.PropertyValue
+args4(0).Name = &quot;ToPoint&quot;
+args4(0).Value = &quot;$C$2&quot;
+
+dispatcher.executeDispatch(document, &quot;.uno:GoToCell&quot;, &quot;&quot;, 0, args4())
+
+end sub
+
+
+
+sub Remplace_pipe_ptvirg
+rem ----------------------------------------------------------------------
+rem define variables
+dim document   as object
+dim dispatcher as object
+rem ----------------------------------------------------------------------
+rem get access to the document
+document   = ThisComponent.CurrentController.Frame
+dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+
+rem ----------------------------------------------------------------------
+dim args1(1) as new com.sun.star.beans.PropertyValue
+args1(0).Name = &quot;By&quot;
+args1(0).Value = 1
+args1(1).Name = &quot;Sel&quot;
+args1(1).Value = true
+
+dispatcher.executeDispatch(document, &quot;.uno:GoDownToEndOfData&quot;, &quot;&quot;, 0, args1())
+
+rem ----------------------------------------------------------------------
+dim args2(1) as new com.sun.star.beans.PropertyValue
+args2(0).Name = &quot;By&quot;
+args2(0).Value = 1
+args2(1).Name = &quot;Sel&quot;
+args2(1).Value = true
+
+dispatcher.executeDispatch(document, &quot;.uno:GoDownToEndOfData&quot;, &quot;&quot;, 0, args2())
+
+rem ----------------------------------------------------------------------
+dim args3(17) as new com.sun.star.beans.PropertyValue
+args3(0).Name = &quot;SearchItem.StyleFamily&quot;
+args3(0).Value = 2
+args3(1).Name = &quot;SearchItem.CellType&quot;
+args3(1).Value = 0
+args3(2).Name = &quot;SearchItem.RowDirection&quot;
+args3(2).Value = true
+args3(3).Name = &quot;SearchItem.AllTables&quot;
+args3(3).Value = false
+args3(4).Name = &quot;SearchItem.Backward&quot;
+args3(4).Value = false
+args3(5).Name = &quot;SearchItem.Pattern&quot;
+args3(5).Value = false
+args3(6).Name = &quot;SearchItem.Content&quot;
+args3(6).Value = false
+args3(7).Name = &quot;SearchItem.AsianOptions&quot;
+args3(7).Value = false
+args3(8).Name = &quot;SearchItem.AlgorithmType&quot;
+args3(8).Value = 0
+args3(9).Name = &quot;SearchItem.SearchFlags&quot;
+args3(9).Value = 65536
+args3(10).Name = &quot;SearchItem.SearchString&quot;
+args3(10).Value = &quot;|POINT-VIRGULE|&quot;
+args3(11).Name = &quot;SearchItem.ReplaceString&quot;
+args3(11).Value = &quot;;&quot;
+args3(12).Name = &quot;SearchItem.Locale&quot;
+args3(12).Value = 255
+args3(13).Name = &quot;SearchItem.ChangedChars&quot;
+args3(13).Value = 2
+args3(14).Name = &quot;SearchItem.DeletedChars&quot;
+args3(14).Value = 2
+args3(15).Name = &quot;SearchItem.InsertedChars&quot;
+args3(15).Value = 2
+args3(16).Name = &quot;SearchItem.TransliterateFlags&quot;
+args3(16).Value = 1280
+args3(17).Name = &quot;SearchItem.Command&quot;
+args3(17).Value = 3
+
+dispatcher.executeDispatch(document, &quot;.uno:ExecuteSearch&quot;, &quot;&quot;, 0, args3())
+
+rem ----------------------------------------------------------------------
+dim args4(0) as new com.sun.star.beans.PropertyValue
+args4(0).Name = &quot;ToPoint&quot;
+args4(0).Value = &quot;$C$2&quot;
+
+dispatcher.executeDispatch(document, &quot;.uno:GoToCell&quot;, &quot;&quot;, 0, args4())
+
+end sub
+
+</script:module>

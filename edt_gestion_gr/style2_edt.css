@@ -1,0 +1,62 @@
+/* Fichier css pour la gestion gr du module EdT de Gepi */
+#ajoutGr .p {
+cursor: pointer; font-weight: bold; color: blue;
+}
+#ajoutGr2 p {
+width: 30em; text-align: right;
+}
+#ajoutGr2 fieldset {
+border: 1px solid grey; width: 400px;
+}
+#ajoutGr2 legend {
+border: 1px solid grey;
+}
+#ajoutGr3 {
+position: absolute; margin-left: 32em;
+}
+#ajoutGr4 {
+position: absolute; margin-left: 32em; margin-top: 5em;
+}
+#listeGr p {
+cursor: pointer;
+}
+#container th {
+width: 10em; color: grey; border: 1px solid silver; text-align: center;
+}
+#container td {
+border: 1px solid silver; text-align: center;
+}
+#edt_gr_g {
+float: left; width: 200px; border: 2px dashed grey; text-align: center;
+}
+#container td:hover {
+background-color: grey; color: white;
+}
+#edt_gr_g a {
+color: blue;
+}
+#edt_gr_d {
+	float: right;
+	width: 350px;
+	border: 2px dotted blue;
+	padding: 5px;
+}
+#edt_gr_m {
+	position: relative;
+	margin-left: 200px;
+	margin-right: 400px;
+	width: 350px;
+	padding-left: 40px;
+}
+.gr_lignepaire {
+	background-color: silver;
+}
+.gr_lignepaire:hover {
+	background-color: grey;
+}
+.gr_ligneimpaire {
+	background-color: rgb(192, 192, 150);
+}
+fieldset {
+border: 1px solid grey;
+}

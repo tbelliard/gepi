@@ -1,0 +1,379 @@
+
+	<?php require_once("./menu.inc.php"); ?>
+	<!-- la page du corps de l'EdT -->
+
+	<div id="lecorps">
+		<?php require_once("./menu.inc.new.php"); ?>
+		<?php if (isset($data['message'])) { ?>
+		<div class="cadreInformation"><?php echo  $data['message']; ?></div><?php } ?>
+
+		<a href="#" onmouseover="javascript:changerDisplayDiv('aide_calendar');" onmouseout="javascript:changerDisplayDiv('aide_calendar');">
+			<img src="../images/info.png" alt="Plus d'infos..." title="Plus d'infos..." />
+		</a>
+		<div style="display: none;" id="aide_calendar">
+			<hr />
+			<p><span class="red">Attention</span>, ces lignes de calendrier ne sont pas en phase avec les périodes des notes. Si vous voulez faire un
+			 lien entre les périodes de notes et celles du calendrier, vous devez préciser lors de la création de ces dernières
+			 à quelle période de notes elles sont rattachées en choisissant celle-ci dans le menu <em>Période de notes ?</em></p>
+			 <hr />
+		</div>
+		
+		<?php if (isset($data['calendrier']) AND isset($data['modifier'])) { ?>
+		<form name="nouvelle_periode" action="edt_calendrier.php" method="post">
+			<fieldset id="modif_periode">
+			<legend>Modifier la période pour le calendrier</legend>
+			<input type="hidden" name="calendrier" value="ok" />
+			<input type="hidden" name="modif_ok" value="<?php echo $rep_modif["id_calendrier"]; ?>" />
+			<p>
+				<input type="text" id="nomPer" name="nom_periode" maxlenght="100" size="30" value="<?php echo $rep_modif["nom_calendrier"]; ?>" />
+				<label for="nomPer">Nom</label>
+			</p>
+			<div id="div_classes_concernees">
+				<p>
+					<b>
+						<a href="javascript:CocheCase(true)">Tout cocher</a> -
+						<a href="javascript:CocheCase(false)">Tout décocher</a>
+					</b>
+				</p>
+				<table>
+					<tr valign="top" align="right">
+						<td>
+							<?php	for($i=0; $i<$ligne; $i++) {
+								$aff_checked = checked_calendar($tab_select[$i]["id"], $rep_modif["classe_concerne_calendrier"]); ?>
+							<label for="case_1_<?php echo $tab_select[$i]["id"]; ?>"><?php echo $tab_select[$i]["classe"]; ?></label>
+							<input  name="<?php echo $classes_concernees; ?>" 
+									value="<?php echo $tab_select[$i]["id"] ?>" 
+									id="case_1_<?php echo $tab_select[$i]["id"] ?>"<?php echo $aff_checked; ?> 
+									type="checkbox" />
+							<br />
+							<?php }	?>
+						</td>
+						<td>
+							<?php for($i=$ligne; $i<($ligne*2); $i++) {
+								$aff_checked = checked_calendar($tab_select[$i]["id"], $rep_modif["classe_concerne_calendrier"]); ?>
+							<label for="case_1_<?php echo $tab_select[$i]["id"]; ?>"><?php echo $tab_select[$i]["classe"]; ?></label>
+							<input  name="<?php echo $classes_concernees; ?>" 
+									value="<?php echo $tab_select[$i]["id"] ?>" 
+									id="case_1_<?php echo $tab_select[$i]["id"] ?>"<?php echo $aff_checked; ?> 
+									type="checkbox" />
+							<br />
+							<?php } ?>
+						</td>
+						<td>
+							<?php for($i=($ligne*2); $i<($ligne*3); $i++) {
+								$aff_checked = checked_calendar($tab_select[$i]["id"], $rep_modif["classe_concerne_calendrier"]); ?>
+								<label for="case_1_<?php echo $tab_select[$i]["id"]; ?>"><?php echo $tab_select[$i]["classe"]; ?></label>
+								<input  name="<?php echo $classes_concernees; ?>" 
+										value="<?php echo $tab_select[$i]["id"] ?>" 
+										id="case_1_<?php echo $tab_select[$i]["id"] ?>"<?php echo $aff_checked; ?> 
+										type="checkbox" />
+							<br />
+							<?php } ?>
+						</td>
+						<?php if ($modulo !== 0) {	?>
+						<td>
+							<?php for($i=($ligne*3); $i<count($tab_select); $i++) {
+								$aff_checked = checked_calendar($tab_select[$i]["id"], $rep_modif["classe_concerne_calendrier"]); ?>
+								<label for="case_1_<?php echo $tab_select[$i]["id"]; ?>"><?php echo $tab_select[$i]["classe"]; ?></label>
+								<input  name="<?php echo $classes_concernees; ?>" 
+										value="<?php echo $tab_select[$i]["id"] ?>" 
+										id="case_1_<?php echo $tab_select[$i]["id"] ?>"<?php echo $aff_checked; ?> 
+										type="checkbox" />
+								<br />
+							<?php } ?>
+						</td>
+						<?php } ?>
+					</tr>
+				</table>
+			</div>
+			
+<?php
+	// Fin du div pour le choix des classes
+		// On retravaille les jours pour utiliser le calendrier
+
+
+		echo '
+			<p>
+				<input type="text" id="jourDebPer" name="jour_dperiode" maxlenght="10" size="10" value="'.$aff_jourdeb.'" />
+					<a href="#calend" onclick="window.open(\'../lib/calendrier/pop.calendrier.php?frm=nouvelle_periode&amp;ch=jour_dperiode\',\'calendrier\',\'width=350,height=170,scrollbars=0\').focus();">
+					<img src="../lib/calendrier/petit_calendrier.gif" alt="" border="0" /></a>
+				<label for="jourDebPer">Premier jour</label>
+
+				<input type="text" id="heureDeb" name="heure_deb" maxlenght="5" size="5" value="'.$aff_heuredeb.'" />
+				<label for="heureDeb">Heure de début</label>
+			</p>
+			<p>
+				<input type="text" id="jourFinPer" name="jour_fperiode" maxlenght="10" size="10" value="'.$aff_jourfin.'" />
+					<a href="#calend" onclick="window.open(\'../lib/calendrier/pop.calendrier.php?frm=nouvelle_periode&amp;ch=jour_fperiode\',\'calendrier\',\'width=350,height=170,scrollbars=0\').focus();">
+					<img src="../lib/calendrier/petit_calendrier.gif" alt="" border="0" /></a>
+				<label for="jourFinPer">Dernier jour</label>
+
+				<input type="text" id="heureFin" name="heure_fin" maxlenght="5" size="5" value="'.$aff_heurefin.'" />
+				<label for="heureFin">Heure de fin</label>
+			</p>
+			<p>
+				<select id="choixPer" name="choix_periode">
+					<option value="rien">Non</option>'."\n";
+		// Proposition de définition des périodes déjà existantes de la table periodes
+
+			$rep_periodes[] = array();
+			for ($i=0; $i<$nbre_periodes; $i++) {
+				$rep_periodes[$i]["num_periode"] = mysql_result($req_periodes, $i, "num_periode");
+				$rep_periodes[$i]["nom_periode"] = mysql_result($req_periodes, $i, "nom_periode");
+					if ($rep_modif["numero_periode"] == $rep_periodes[$i]["num_periode"]) {
+						$selected = " selected='true'";
+					}
+					else $selected = "";
+				echo '<option value="'.$rep_periodes[$i]["num_periode"].'"'.$selected.'>'.$rep_periodes[$i]["nom_periode"].'</option>'."\n";
+			}
+		echo '
+				</select>
+				<label for="choixPer">Périodes de notes ?</label>
+			</p>
+			<p>
+				<select id="etabFerm" name="etabferme">
+			';
+			// On vérifie le ouvert - fermé
+			if ($rep_modif["etabferme_calendrier"] == "1") {
+				$selected1 = " selected='selected'";
+			} else $selected1 = "";
+			if ($rep_modif["etabferme_calendrier"] == "2") {
+				$selected2 = " selected='selected'";
+			} else $selected2 = "";
+		echo '
+					<option value="1"'.$selected1.'>Ouvert</option>
+					<option value="2"'.$selected2.'>Fermé</option>
+				</select>
+				<label for="etabFerm">Etablissement</label>
+			</p>
+			<p>
+				<select id="selectVac" name="vacances">
+			';
+			// On vérifie le vacances - cours
+			if ($rep_modif["etabvacances_calendrier"] == "0") {
+				$selected1v = " selected='selected'";
+			} else $selected1v = "";
+			if ($rep_modif["etabvacances_calendrier"] == "1") {
+				$selected2v = " selected='selected'";
+			}else $selected2v = "";
+		echo '
+					<option value="0"'.$selected1v.'>Cours</option>
+					<option value="1"'.$selected2v.'>Vacances</option>
+				</select>
+				<label for="selectVac">Vacances / Cours</label>
+			</p>
+				<input type="submit" name="valider" value="enregistrer" />
+	</fieldset>
+			</form>
+	<br />
+		';
+}
+?>
+
+
+	<?php if ($data['modifier'] == NULL) { ?>
+	<p><a href="edt_calendrier.php?calendrier=ok&amp;new_periode=ok"><img src="../images/icons/add.png" alt="" class="back_link" /> AJOUT PONCTUEL</a></p>
+	<p><a href="edt_calendrier.php?calendrier=ok&amp;full_calendar=ok"><img src="../images/icons/add.png" alt="" class="back_link" /> GENERATION DES 36 SEMAINES</a></p>	
+	<?php } ?>
+
+	<fieldset id="aff_calendar">
+		<legend>Calendrier</legend>
+		<table id="edt_calendar" cellspacing="1" cellpadding="1" border="1">
+			<tr class="premiere_ligne">
+				<td>Nom</td>
+				<td>Classes</td>
+				<td class="bonnelargeur">Premier jour</td>
+				<td class="bonnelargeur">à</td>
+				<td class="bonnelargeur">Dernier jour</td>
+				<td class="bonnelargeur">à</td>
+				<td class="bonnelargeur">Etablissement</td>
+				<td>Cours<br />Vacances</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+
+			<?php for ($i=0; $i<$data['nbre_affcalendar']; $i++) { ?>
+			<tr class="<?php echo $data['class_tr'][$i] ?>">
+				<td><?php echo $data['rep_affcalendar'][$i]["nom_calendrier"] ?></td>
+				<td><?php echo $data['aff_classe_concerne'][$i] ?></td>
+				<td><?php echo $data['aff_jourdeb'][$i] ?></td>
+				<td><?php echo $data['rep_affcalendar'][$i]["heuredebut_calendrier"] ?></td>
+				<td><?php echo $data['aff_jourfin'][$i] ?></td>
+				<td><?php echo $data['rep_affcalendar'][$i]["heurefin_calendrier"] ?></td>
+				<td><?php echo $data['ouvert_ferme'][$i] ?></td>
+				<td><?php echo $data['aff_cours'][$i] ?></td>
+				<td class="modif_supr"><a href="edt_calendrier.php?calendrier=ok&amp;modifier=<?php echo $data['rep_affcalendar'][$i]["id_calendrier"] ?>"><img src="../templates/<?php echo NameTemplateEDT(); ?>/images/clef.png" title="Modifier" alt="Modifier" /></a></td>
+				<td class="modif_supr"><a href="edt_calendrier.php?calendrier=ok&amp;supprimer=<?php echo $data['rep_affcalendar'][$i]["id_calendrier"] ?>" onclick="return confirm(\'Confirmez-vous cette suppression ?\')"><img src="../templates/<?php echo NameTemplateEDT(); ?>/images/delete2.png" title="Supprimer" alt="Supprimer" /></a></td>
+				<td class="modif_supr"><a href="edt_calendrier.php?calendrier=ok&amp;copier_edt=<?php echo $data['rep_affcalendar'][$i]["id_calendrier"] ?>"><img src="../templates/<?php echo NameTemplateEDT(); ?>/images/copier.png" title="Copier" alt="Copier" /></a></td>
+				<td class="modif_supr"><a href="edt_calendrier.php?calendrier=ok&amp;coller_edt=<?php echo $data['rep_affcalendar'][$i]["id_calendrier"] ?>" onclick="return confirm(\'Confirmez-vous le collage ?\')"><img src="../templates/<?php echo NameTemplateEDT(); ?>/images/coller.png" title="Coller" alt="Coller" /></a></td>
+			</tr>
+			<?php } ?>
+		</table>
+	</fieldset>
+	<br />
+	<?php if ($data['new_periode'] == "ok") { ?>
+	<form name="nouvelle_periode" action="edt_calendrier.php" method="post">
+		<fieldset id="saisie_new_periode">
+		<legend>Ajouter une ligne au calendrier</legend>
+		<input type="hidden" name="calendrier" value="ok" />
+		<input type="hidden" name="new_periode" value="ok" />
+		<div id="div_classes_concernees">
+			<p>
+				<a href="javascript:CocheCase(true)">Tout cocher</a> -
+				<a href="javascript:CocheCase(false)">Tout décocher</a>
+			</p>
+<?php
+	$tab_select = renvoie_liste("classe");
+
+	echo '
+	<table>
+		<tr valign="top" align="right"><td>
+			';
+	// Choix des classes sur 3 (ou 4) colonnes
+		$modulo = count($tab_select) % 3;
+			// Calcul du nombre d'entrée par colonne ($ligne)
+		if ($modulo !== 0) {
+			$calcul = count($tab_select) / 3;
+			$expl = explode(".", $calcul);
+			$ligne = $expl[0];
+		}else {
+			$ligne = count($tab_select) / 3;
+		}
+
+	// Par défaut, tous les checkbox sont cochés
+	$aff_checked = " checked='checked'";
+
+	// On affiche la première colonne
+for($i=0; $i<$ligne; $i++) {
+
+	echo '
+		<label for="case_1_'.$tab_select[$i]["id"].'">'.$tab_select[$i]["classe"].'</label>
+			<input name="classes_concernees[]" value="'.$tab_select[$i]["id"].'" id="case_1_'.$tab_select[$i]["id"].'"'.$aff_checked.' type="checkbox" />
+		<br />
+		';
+}
+
+echo '
+		</td><td>
+	';
+
+for($i=$ligne; $i<($ligne*2); $i++) {
+	// On affiche la deuxième colonne
+	echo '
+		<label for="case_1_'.$tab_select[$i]["id"].'">'.$tab_select[$i]["classe"].'</label>
+				<input name="classes_concernees[]" value="'.$tab_select[$i]["id"].'" id="case_1_'.$tab_select[$i]["id"].'"'.$aff_checked.' type="checkbox" />
+		<br />
+		';
+}
+
+echo '
+		</td><td>
+	';
+for($i=($ligne*2); $i<($ligne*3); $i++) {
+	// On affiche la troisième colonne
+	echo '
+		<label for="case_1_'.$tab_select[$i]["id"].'">'.$tab_select[$i]["classe"].'</label>
+				<input name="classes_concernees[]" value="'.$tab_select[$i]["id"].'" id="case_1_'.$tab_select[$i]["id"].'"'.$aff_checked.' type="checkbox" />
+		<br />
+		';
+}
+echo '
+		</td>
+	';
+// s'il y a une quatrième colonne, on l'affiche
+if ($modulo !== 0) {
+	echo '
+		<td>
+		';
+	for($i=($ligne*3); $i<count($tab_select); $i++) {
+		echo '
+			<label for="case_1_'.$tab_select[$i]["id"].'">'.$tab_select[$i]["classe"].'</label>
+				<input name="classes_concernees[]" value="'.$tab_select[$i]["id"].'" id="case_1_'.$tab_select[$i]["id"].'"'.$aff_checked.' type="checkbox" />
+		<br />
+		';
+	}
+	echo '</td>';
+	}
+
+
+	echo '
+		</tr>
+	</table>
+	</div>
+		<p>
+			<input type="text" name="nom_periode" maxlenght="100" size="30" value="Nouvelle période" />
+			<span class="legende">Nom</span>
+		</p>
+		<p>
+
+		<input type="text" name="jour_debut" maxlenght="10" size="10" value="'.$data['date_jour'].'" />
+		<a href="#calend" onclick="window.open(\'../lib/calendrier/pop.calendrier.php?frm=nouvelle_periode&amp;ch=jour_debut\',\'calendrier\',\'width=350,height=170,scrollbars=0\').focus();">
+		<img src="../lib/calendrier/petit_calendrier.gif" alt="" border="0" /></a>
+			<span class="legende">Premier jour</span>
+
+			<input type="text" name="heure_deb" maxlenght="5" size="5" value="00:00" />
+			<span class="legende">Heure de début</span>
+		</p>
+		<p>
+
+		<input type="text" name="jour_fin" maxlenght="10" size="10" value="jj/mm/YYYY" />
+		<a href="#calend" onclick="window.open(\'../lib/calendrier/pop.calendrier.php?frm=nouvelle_periode&amp;ch=jour_fin\',\'calendrier\',\'width=350,height=170,scrollbars=0\').focus();">
+		<img src="../lib/calendrier/petit_calendrier.gif" alt="" border="0" /></a>
+			<span class="legende">Dernier jour</span>
+
+			<input type="text" name="heure_fin" maxlenght="5" size="5" value="23:59" />
+			<span class="legende">Heure de fin</span>
+		</p>
+		<p>
+			<select name="choix_periode">
+				<option value="rien">Non</option>';
+	// Proposition de définition des périodes déjà existantes de la table periodes
+	$req_periodes = mysql_query("SELECT DISTINCT nom_periode, num_periode FROM periodes");
+	$nbre_periodes = mysql_num_rows($req_periodes);
+		$rep_periodes[] = array();
+		for ($i=0; $i<$nbre_periodes; $i++) {
+			$rep_periodes[$i]["num_periode"] = mysql_result($req_periodes, $i, "num_periode");
+			$rep_periodes[$i]["nom_periode"] = mysql_result($req_periodes, $i, "nom_periode");
+			echo '
+				<option value="'.$rep_periodes[$i]["num_periode"].'">'.$rep_periodes[$i]["nom_periode"].'</option>
+				';
+		}
+	echo '
+			</select>
+			<span class="legende">Période de notes ?</span>
+		</p>
+		<p>
+			<select id="etabFerm" name="etabferme">
+				<option value="1">Ouvert</option>
+				<option value="2">Fermé</option>
+			</select>
+			<label for="etabFerm">Etablissement</label>
+		</p>
+		<p>
+			<select name="vacances">
+				<option value="0">Cours</option>
+				<option value="1">Vacances</option>
+			</select>
+			<span class="legende">Vacances / Cours</span>
+		</p>
+			<input type="submit" name="valider" value="enregistrer" />
+
+</fieldset>
+		</form>
+
+	';
+} // if ($new_periode == "ok")
+
+
+
+// On vérifie le retour en session pour savoir si il faut l'afficher
+if (isset($_SESSION["retour"]) AND $_SESSION["retour"] == "../mod_absences/admin/index.php") {
+	echo '<p class=bold><a href="'.$_SESSION["retour"].'"><img src="../images/icons/back.png" alt="Retour" class="back_link"/> Retour vers le module absences</a>';
+}
+?>
+
+	</div>
+<br />
+<br />

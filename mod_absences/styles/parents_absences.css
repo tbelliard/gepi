@@ -1,0 +1,22 @@
+/*
+ * @version $Id: parents_absences.css 1424 2008-01-29 22:14:19Z jjocal $
+ * fichier css pour l'affichage de la page parents absences
+ */
+#abs td, #absBull td{
+	text-align: center;
+	border: 1px solid grey
+}
+
+th {
+	background-color: silver;
+}
+
+caption {
+	color: red;
+	font-weight: bold;
+	background-color: grey;
+}
+
+#absBull {
+
+}

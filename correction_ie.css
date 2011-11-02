@@ -1,0 +1,62 @@
+/*
+correction_ie.css
+Mise en page du bandeau pour affichage en grand dans internet exploreur
+
+@version $Id: correction_ie.css 2283 2008-08-17 20:20:27Z crob $
+
+*/
+
+/* ----- Bandeau ----- */
+body {
+	position: relative;
+	}
+#bandeau {
+	overflow: visible;
+	height: 1%;
+}
+.gd_bandeau #bandeau_gauche p{
+	width:100%;
+	left: 0.5em;
+	bottom: 0.3em;
+}
+
+/*  --- Cahier de texte : consultation.php ---  */
+/* Tableau avec 3 colonnes equilibrees */
+.centre_table {
+	overflow: visible;
+	height: 1%;
+}
+.ct_col_centre{ 
+	float: right;
+}
+#eleve {
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+#matiere {
+	margin-top: 10px;
+}
+
+/* Notices 2 colonnes */
+.centre_cont_text {
+	overflow: visible;
+	height: 1%;
+}
+.cdt_fond_not_dev {
+	margin-top:-4px;
+}
+
+/* ----- cahier_notes/visu_releve_notes.php ----- */
+.tab_releve_note {
+	width: 680px;
+	margin: 0px auto;
+	padding: 2px;
+	border: 1px outset;
+}
+.tab_signatures {
+	width: 676px;
+	margin : 5px auto;
+	padding: 2px;
+	border: 1px solid;
+	border-color: #cdcdcd black black #cdcdcd;
+}

@@ -1,0 +1,156 @@
+a:active {
+  outline:none;
+}
+
+:focus {
+  -moz-outline-style:none;
+}
+ul.css-tabs {
+	margin:0 !important;
+	padding:0;
+	height:30px;
+	border-bottom:1px solid #666;
+}
+
+/* single tab */
+ul.css-tabs li {
+	float:left;
+	padding:0;
+	margin:0;
+	list-style-type:none;
+}
+
+/* link inside the tab. uses a background image */
+ul.css-tabs a {
+	float:left;
+	display:block;
+	padding:5px 2px;
+	text-decoration:none;
+	border:1px solid #666;
+	border-bottom:0px;
+	height:18px;
+	background-color:#efefef;
+	color:#777;
+	margin-right:1px;
+	-moz-border-radius-topleft: 4px;
+	-moz-border-radius-topright:4px;
+	position:relative;
+	top:1px;
+}
+
+ul.css-tabs a:hover {
+	background-color:#F7F7F7;
+	color:#333;
+}
+
+/* selected tab */
+ul.css-tabs a.current {
+	background-color:#ddd;
+	border-bottom:2px solid #ddd;
+	color:#000;
+	cursor:default;
+}
+div.css-panes {
+	clear: both;
+	border:1px solid #666;
+	border-width:0 1px 1px 1px;
+	min-height:400px;
+	padding:15px 20px;
+	background-color:#ddd;
+}
+
+.abs_menu span {
+width: 50px; padding: 2px 20px 2px 20px; background-color: silver; margin-left: 3%;
+}
+.abs_menu span:hover {
+background-color: grey; cursor: pointer;
+}
+#aff_result {
+background-color: lightblue;
+}
+.lienWeb{
+color: blue; cursor: pointer;
+}
+.ok{
+color: green;
+}
+.no{
+color: red;
+}
+.orange{
+ color: orangered;
+}
+.purple{
+    color:purple;
+}
+#presentations{
+padding: 10px 5px 10px 5px; width: 200px;
+}
+#presentations td{
+padding: 10px 5px 10px 5px; background-color: silver; color: white; font-weight: bold; text-align: center;
+}
+._center td{
+text-align: center; border: 1px solid pink;
+}
+#table_liste_absents th {
+text-align: center; color: white; background-color: silver; font-size:68%; padding:0.1em;
+}
+#table_liste_absents tr td {
+border: 1px solid rgb(200, 200, 200); text-align: center; margin: 1px 1px 1px 1px; border-spacing : 0px; font-size:88%;
+}
+#table_liste_absents input {
+font-size:96%;
+}
+#table_liste_absents select {
+font-size:100%;
+width:75px;
+}
+select.small {
+width:168px;
+font-size:96%;
+}
+.gras {
+font-weight: bold;
+}
+.lig1{
+background-color:silver;
+}
+.lig2{
+background-color:white;
+}
+td.couleur_manquement{
+  background-color:#FFBACD;
+}
+td.couleur_retard{
+  background-color:#FFF5AF;
+}
+div.legende{
+    
+   display:inline-block; 
+    background-color: #CCCCCC;
+    border: 2px outset black;
+    font: 10px Verdana;
+    padding:4px;
+}
+h3.legende{
+    font: normal small-caps normal 14pt Verdana;
+    margin:2px;   
+}
+h4.legende{
+    font: normal small-caps normal 10pt Verdana;
+    margin:2px;   
+}
+table.legende {
+    border-collapse: collapse;
+    border-spacing: 0px;
+    margin:4px;
+    
+	
+}
+.legende  td{
+    padding:4px;
+    border-spacing: 0px;
+    border: 1px solid black;
+    font: 11px Verdana ;
+	
+}

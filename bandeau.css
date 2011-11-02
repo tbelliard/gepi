@@ -1,0 +1,208 @@
+/*
+bandeau.css
+Mise en page du bandeau
+
+@version $Id: bandeau.css 3041 2009-04-08 16:30:08Z jjacquard $
+
+*/
+
+/* Définition générale */
+
+#bandeau {
+	width:100%;
+	min-width: 40em;
+	padding: 0em;
+	margin: 0 auto;
+	position: relative;
+	overflow: auto;
+}
+#bandeau p{
+	font-family: Verdana,sans-serif;
+	font-size : 10pt;
+}
+
+
+/* bandeau gauche */
+#bandeau_gauche {
+	width:49%;
+	float:left;
+}
+#bandeau_gauche h1{
+	margin-top: 0.5em;
+	margin-left: 20px;
+	text-align: center;
+	line-height: 1em;
+}
+#bandeau_gauche p{
+	text-align: left;
+	margin-top: 0.1em;
+	margin-bottom: 0em;
+	position: absolute;
+	bottom: 5px;
+	width:49%;
+	font-size : 10pt;
+}
+#bandeau_droit_fixe {
+	width:49%;
+	margin-left:auto;
+	padding-top: 0px;
+	padding-right: 3px;
+	text-align: right;
+	font-size: 10pt;
+}
+#bandeau_droit {
+	width:49%;
+	float:right;
+	padding-top: 0px;
+	padding-right: 3px;
+	text-align: right;
+	font-size: 10pt;
+}
+.bt_change_taille {
+   position: absolute;
+   left:3px;
+	top: 3px;
+	width: 18px;
+	height: 18px;
+}
+#bd_nom {
+	font-weight:bold;
+	margin-top: 0px;
+	padding-top: 0px;
+}
+#bd_nom p {
+	margin-top: 0px;
+	padding-top: 0px;
+}
+#bd_accueil {
+	margin-bottom: 0px;
+	padding-bottom: 0px;
+}
+#bd_accueil p {
+	margin-bottom: 0px;
+	padding-bottom: 0px;
+}
+
+/* taille des bandeaux */
+/* grand bandeau */
+.gd_bandeau {
+	min-height:6.0em;
+	width:100%;
+	min-width: 40em;
+	border:0;
+	text-align:center;
+}
+.gd_bandeau .change_taille_pt {
+	display:none;
+}
+.gd_bandeau .menu_general{
+	border-top: 1px dotted;
+}
+/* margin-bottom: 2em; */
+.gd_bandeau #bandeau_gauche h1{
+	min-height: 2.9em;
+	margin-bottom: 0px;
+}
+/* petit bandeau */
+.pt_bandeau {
+	min-height:30px;
+	width:100%;
+	min-width: 40em;
+	border:0px;
+	text-align:center;
+}
+.pt_bandeau .change_taille_gd {
+	display:none;
+}
+.pt_bandeau #bandeau_gauche p{
+	display:none;
+}
+.pt_bandeau .menu_general{
+	display:none;
+}
+.pt_bandeau #bd_parent{
+	display:none;
+}
+.pt_bandeau .menu_bandeau{
+	display:none;
+}
+.pt_bandeau #bandeau_gauche h1{
+	font-size: 1.2em;
+	font-weight:bold;
+}
+.pt_bandeau #bd_accueil {
+	width:8em;
+	margin-top: -1.8em;
+   margin-left:auto;
+	padding: 0;
+}
+.pt_bandeau #bd_nom{
+   margin-right:6em;
+}
+.pt_bandeau #bandeau_nom {
+	text-align: right;
+	margin-left: auto;
+	padding-right: 0.7%;
+}
+
+/* Définition des couleurs */
+/* darkfade */
+.darkfade {
+	background-color:#4a4a59;
+}
+.darkfade h1{
+	color: white;
+}
+.darkfade p{
+	color: white;
+}
+.darkfade a:link {
+	color: #D3D3D3;
+}
+.darkfade a:visited {
+	color: #D3D3D3;
+}
+.darkfade a:hover {
+	color: white;
+}
+.darkfade .menu_general{
+	border-color: orange;
+}
+/* degrade1 */
+.degrade1 h1{
+	color: white;
+}
+.degrade1 p{
+	color: white;
+}
+.degrade1 a:link {
+	color: #D3D3D3;
+}
+.degrade1 a:visited {
+	color: #D3D3D3;
+}
+.degrade1 a:hover {
+	color: white;
+}
+.degrade1 .menu_general{
+	border-color: orange;
+}
+/* no_style */
+
+/* Définition des images de fond*/
+.gd_bandeau_darkfade {
+	background-image: url(images/background/darkfade.png);
+	background-repeat: repeat-x;
+}
+.pt_bandeau_darkfade {
+	background-image: url(images/background/darkfade_small.png);
+	background-repeat: repeat-x;
+}
+.gd_bandeau_degrade1 {
+	background-image: url(images/background/degrade1.png);
+	background-repeat: repeat-x;
+}
+.pt_bandeau_degrade1 {
+	background-image: url(images/background/degrade1_small.png);
+	background-repeat: repeat-x;
+}

@@ -1,0 +1,782 @@
+/*body {
+    margin: 5px;
+    padding: 0;
+    width: auto;
+    color: #330033;
+    background: #E9E9E4;
+    font: normal normal 10pt Tahoma;
+    left: 0;
+    top: 0;
+}*/
+
+
+textarea {
+    background : #FDFEFF;
+    border : 1px solid #0061BD;
+}
+
+.input_input {
+    background-color: #FFFFFF;
+    border : 1px solid #010101;
+    color: #010002;
+}
+
+input:focus {
+    background-color: #FFFFFF;
+    border : 1px solid #010101;
+    color: #010002;
+}
+
+.norme_absence {
+    color: #330033;
+    font: normal 10pt Arial;
+    text-align: left;
+}
+
+.norme_absence_rouge {
+    color: #FF0000;
+    font: normal 10pt Arial;
+    text-align: center;
+}
+.norme_absence_orange {
+    color: #FFCC33;
+    font: normal 10pt Arial;
+    text-align: center;
+}
+
+.norme_absence_vert {
+    color: #006600;
+    font: normal 10pt Arial;
+}
+
+.norme_absence_bleu {
+    color: #330099;
+    font: normal 10pt Arial;
+}
+
+.norme_absence_gris_bleu {
+    color: #E0EDF1;
+    font: normal 10pt Arial;
+}
+
+.norme_absence_gris_bleu_centre {
+    color: #E0EDF1;
+    font: normal 10pt Arial;
+    text-align: center;
+}
+
+.norme_absence_blanc {
+    color: #FFFFFF;
+    font: normal 10pt Arial;
+}
+
+.norme_absence_jaune {
+    color: #FFFF33;
+    font: normal 10pt Arial;
+}
+
+.norme_absence_jaune_claire {
+    color: #FFFFCC;
+    font: normal 10pt Arial;
+}
+
+.norme_absence_min {
+    color: #330033;
+    font: normal 8pt Arial;
+    text-align: left;
+}
+
+.norme_absence_rouge_min {
+    color: #FF0000;
+    font: normal 8pt Arial;
+}
+
+.norme_absence_vert_min {
+    color: #006600;
+    font: normal 8pt Arial;
+}
+
+.norme_absence_gris_bleu_min {
+    color: #E0EDF1;
+    font: normal 8pt Arial;
+}
+
+.norme_absence_blanc_min {
+    color: #FFFFFF;
+    font: normal 8pt Arial;
+    text-align: left;
+}
+
+.centre {
+    color: #000000;
+    font: normal 10pt Arial;
+    text-align: center;
+}
+
+
+.adroite {
+    color: #000000;
+    font: normal 10pt Arial;
+    text-align: right;
+}
+
+.fond_gris_bleu {
+    background: #E8F1F4;
+}
+
+
+.fond_bleu_1 {
+    background: #0099CC;
+}
+
+.fond_bleu_2 {
+    background: #0069C8;
+}
+
+
+.fond_bleu_3 {
+    background: #88C7FF;
+}
+
+.fond_bleu_4 {
+    background: #B7DDFF;
+}
+
+
+.fond_bleu_5 {
+    background: #088CB9;
+}
+
+
+.fond_blanc {
+    background: #FFFFFF;
+}
+
+.fond_jaune_claire {
+    background: #FFFFCC;
+}
+
+.fond_rouge {
+    background: #FF3333;
+}
+
+.fond_rouge_2 {
+    background: #FBDDD2;
+}
+.fond_orange2 {
+    background: #FFCC33;
+}
+.fond_orange {
+    background: #FFFF99;
+}
+
+.tableau_centre {
+/*  background: #FFFFFF; */
+    font: normal 10pt Arial;
+    margin: auto;
+}
+/* pour tableau moyen (ne prend pas toutes la page) */
+.tableau_moyen_centre {
+/*  background: #FFFFFF; */
+    font: normal 10pt Arial;
+    width: 400px;
+    margin: auto;
+}
+
+.tableau_moyen_centre_th {
+    font: normal 10pt Arial;
+    margin: auto;
+    border: thin solid #6495ed;
+    padding: 0px;
+    background: #088CB9;
+    color: #E0EDF1;
+    text-align: center;
+}
+
+.tableau_moyen_centre_th_25 {
+    font: normal 10pt Arial;
+    margin: auto;
+    border: thin solid #6495ed;
+    width: 25px;
+    padding: 1px;
+    background: #088CB9;
+    color: #E0EDF1;
+    text-align: center;
+}
+
+/* fin pour tableau moyen (ne prend pas toutes la page) */
+
+.erreur_rouge_jaune {
+    background: #FF3333;
+    color: #FFFF33;
+    font: normal 10pt Arial;
+    text-align: center;
+}
+
+.fieldset_efface {
+    border: none;
+    margin: 0px;
+}
+
+
+/* pour le calque d'information */
+.tableau_calque_information {
+    font: normal 10pt Arial;
+    width: 450px;
+    background: #FFFFFF;
+    border: 2px solid #0099CC;
+}
+
+.texte_fondjaune_calque_information {
+/*  width: 450px;*/
+    color: #330033;
+    font: normal 10pt Arial;
+    background: #FFFFCC;
+/*  border: 2px solid #0099CC; */
+}
+
+/* pour le calque d'information */
+
+/* style pour l'ajout d'absences */
+.entete_tableau {
+    width: 600px;
+    color: #778899;
+    font: bold 15pt verdana, sans-serif;
+    font-weight: bold;
+    background-image: url(../images/haut_tab.png);
+    margin: auto; /*    border: 2px solid #0099CC; */
+}
+
+.entete_tableau_absence {
+    width: 650px;
+    font: normal 12pt verdana, sans-serif;
+    font-weight: bold;
+    margin: auto; /*    border: 2px solid #0099CC; */
+    border: solid 2px #2F4F4F;
+    text-align: left;
+}
+
+.titre_tableau_absence {
+    color: #E8F1F4;
+    font: normal 12pt verdana, sans-serif;
+    font-weight: bold;
+    background-image: url(../images/haut_tab.png);
+}
+
+.titre_tableau_absence_valider {
+    color: #E8F1F4;
+    text-align: right;
+    font: normal 12pt verdana, sans-serif;
+    font-weight: bold;
+    background-image: url(../images/haut_tab.png);
+}
+
+.tr_tableau_absence_titre {
+    color: #000000;
+    font: normal 10pt Arial;
+    margin: auto;
+    background: #C4E0EB;
+}
+
+.td_tableau_absence_1 {
+    width: 20%;
+    color: #000000;
+    font: normal 10pt Arial;
+    margin: auto;
+    background: #E8F1F4;
+}
+
+.td_tableau_absence_2 {
+    width: 20%;
+    color: #000000;
+    font: normal 10pt Arial;
+    margin: auto;
+    background: #C6DCE3;
+}
+
+.td_tableau_sel {
+    width: 20%;
+    color: #000000;
+    font: normal 10pt Arial;
+    margin: auto;
+    background: #00FF9A;
+}
+
+
+.td_tableau_identité {
+    width: 10px;
+}
+
+/* style pour la sélection */
+.entete_tableau_selection {
+    width: 500px;
+    font: normal 12pt verdana, sans-serif;
+    font-weight: bold;
+    margin: auto; /*    border: 2px solid #0099CC; */
+    border: solid 2px #2F4F4F;
+    text-align: left;
+}
+
+.titre_tableau_selection {
+    color: #E8F1F4;
+    font: normal 12pt verdana, sans-serif;
+    font-weight: bold;
+    background-image: url(../images/haut_tab.png);
+}
+
+.td_tableau_selection {
+ width: 50%;
+    color: #000000;
+    font: normal 10pt Arial;
+    text-align: center;
+    margin: auto;
+    background: #E8F1F4;
+}
+
+
+/* affichage si erreur */
+.erreur {
+/*  color: #FFFF33; */
+    color: #FFFFFF;
+    font: normal 10pt Arial;
+    text-align: center;
+}
+
+.table_erreur {
+    width: 400px;
+    margin: auto;
+    background: #CC3300;
+    border-left: 5px solid #FFFFFF;
+    border-right: 5px solid #FFFFFF;
+}
+
+.tableau_info_compt {
+    width: 100px;
+    color: #000000;
+    font: normal 10pt Arial;
+    text-align: center;
+    margin: auto;
+    background: #FFFFCC;
+    border-right: 2px solid #FFD700;
+}
+
+.tableau_info_disp {
+    width: 100px;
+    color: #000000;
+    font: normal 10pt Arial;
+    text-align: center;
+    margin: auto;
+    background: #FCB596;
+    border-right: 2px solid #F9682B;
+}
+
+.tableau_100 {
+    width: 100%;
+    margin: auto;
+}
+
+.tableau_liste {
+    width: 95%;
+    color: #000000;
+    font: normal 10pt Arial;
+    margin: auto;
+    background: #FFFFCC;
+    border-left: 2px solid #FFD700;
+    border-bottom: 1px solid #FFD700;
+    padding: 5px;
+}
+
+
+/* gestion des absences page principal */
+
+.titre_tableau_gestion {
+    color: #E8F1F4;
+    text-align: left;
+    font: normal 12pt verdana, sans-serif;
+    font-weight: bold;
+    background-image: url(../images/haut_tab.png);
+    border: 0px solid #F8F8F8;
+}
+
+.td_tableau_gestion {
+    width: 400px;
+    text-align: left;
+    font: normal 12pt verdana, sans-serif;
+}
+
+.class10 {
+    width: 10%;
+}
+
+.class35 {
+    width: 35%;
+}
+
+.class55 {
+    width: 55%;
+}
+
+.class35bas {
+    width: 35%;
+    background: #E8F1F4;
+    background-image: url(../images/bas_tab2.png);
+}
+
+.fond_vert {
+    background: #71A49E;
+    text-align: center;
+}
+
+.class55bas {
+    width: 55%;
+    background: #E8F1F4;
+    background-image: url(../images/bas_tab2.png);
+}
+
+.norme_absence_gestion {
+    color: #330033;
+    font: normal 10pt Arial;
+    text-align: left;
+}
+
+.legend_texte {
+    font: normal 10pt Arial;
+}
+
+.titre_tableau_imprime {
+    width: 40%;
+    border: 5px solid;
+    color: #E8F1F4;
+    text-align: left;
+    font: normal 12pt verdana, sans-serif;
+    font-weight: bold;
+    background-image: url(../images/haut_tab2.png);
+}
+
+/*
+.fieldset_a {
+    position :              relative;
+    top :                   1em;
+    padding :               0 0.5em 1em 0.5em;
+    background-color :      #CCC;
+}
+html>body fieldset_a {
+    padding-top :           1em;
+    top :                   0;
+}
+legend {
+    position :              relative;
+    top :                   -1em;
+    padding :               0.4em;
+}*/
+
+
+.td_tableau_fiche {
+    width: 50%;
+    color: #000000;
+    font: normal 10pt Arial;
+    text-align: left;
+    margin: auto;
+    background: #E8F1F4;
+}
+
+.titre_sous_menu {
+    background: #9FC4C6;
+    border-color: #104310;
+    border-bottom: 12px;
+    border-left: 5px;
+    text-align: center;
+}
+
+.bordure_sous_menu {
+    /* background: #E5F4FB; */
+    background: #E0EBCF;
+    border-left: 1px solid #294345;
+    border-top: 1px solid #294345;
+}
+
+.info_eleve {
+    border: 1px solid #B1798C;
+    background: White;
+    margin: 12px 12px 12px 12px;
+    padding: 1em;
+}
+
+.info_eleve_courrier {
+    border: 1px solid #B1798C;
+    background: White;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: -13px;
+    margin-bottom: 12px;
+/*    margin: -12px 12px 12px 12px;*/
+    padding: 0.1em;
+    width: 90%;
+}
+
+.dimi_texte {
+    font: normal 9pt verdana, sans-serif;
+}
+
+.texte_ou {
+    font-size: large;
+}
+
+
+.table_calendrier {
+	border-style: solid; 
+	border-width: 2px; 
+	border-color: black;
+	width: 100%;
+	border-collapse: collapse;
+	margin: auto;
+}
+
+.td_calendrier_mois {
+	border-style: solid; 
+	border-width: 1px; 
+	border-color: #5F5F5F;
+	width: 100px;
+	font-size : 0.7em;
+	font-family : Verdana, Arial, Helvetica, Geneva, sans-serif;
+	color : black; 
+}
+
+.td_calendrier_jour {
+	border-style: solid; 
+	border-width: 1px; 
+	border-color: #5F5F5F;
+	width: 20px;
+	font-size : 0.8em;
+	font-family : Verdana, Arial, Helvetica, Geneva, sans-serif;
+	color : black;
+	text-align: center; 
+}
+
+.table_semaine {
+	border-style: solid; 
+	border-width: 2px; 
+	border-color: black;
+	width: 400px;
+	border-collapse: collapse;
+	margin: auto;
+}
+
+.td_semaine_jour {
+	border-style: solid; 
+	border-width: 1px; 
+	border-color: #5F5F5F;
+	width: 20px;
+	font-size : 0.8em;
+	font-family : Verdana, Arial, Helvetica, Geneva, sans-serif;
+	color : black;
+	text-align: center; 
+}
+
+
+.titre_tableau_alert {
+    color: #E8F1F4;
+    text-align: left;
+    font: normal 12pt verdana, sans-serif;
+    font-weight: bold;
+    background-image: url(../images/tab_rouge.png);
+    border: 0px solid #F8F8F8;
+}
+
+
+	/* couleur dans administration du module absences */
+	.couleur_ligne_1 {
+		background: #B7DDFF; 
+	}
+
+	.couleur_ligne_2 {
+		background: #88C7FF;
+	}
+	/* fin couleur dans administration du module absences */
+
+.input_sans_bord {
+	border: 1px solid white;
+}
+
+.input_sans_bord:hover {
+	background: #FFFFDF; 
+	color: #000000; 
+}
+
+.input_sans_bord:focus {
+	background: #FEFF9F;
+	color: #000000;
+}
+
+.tab_table {
+    margin: auto;
+    border: 0px;
+    background: #088CB9;
+    color: #E0EDF1;
+    text-align: center;
+}
+
+.tab_titre {
+	margin: auto;
+	border: 0px;
+	border-left: 10px solid #088CB9;
+	padding-left: 10px;
+	background: #FFFFFF;
+	color: #000000;
+	text-align: left;
+	font-size: 14px;
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+.tab_th {
+	text-align: center;
+	white-space: nowrap;
+	padding-left: 2px;
+	padding-right: 2px;
+	font-weight: bold;
+	color: #FFFFFF;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+
+.tab_td_donnee_cote {
+	text-align: left;
+	white-space: nowrap;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+.fieldset_efface {
+    border: none;
+    margin: 0px;
+}
+
+.erreur_rouge_jaune {
+    background: #FF3333;
+    color: #FFFF33;
+    font: normal 10pt Arial;
+    text-align: center;
+}
+
+	/* couleur dans le module absences */
+	.couleur_ligne_3 {
+		background: #E8F1F4;
+	}
+
+	.couleur_ligne_4 {
+		background: #C6DCE3;
+	}
+	/* fin couleur dans le module absences */
+
+.entete_tableau_absence_degrade {
+    color: #E8F1F4;
+    text-align: left;
+    font: normal 12pt verdana, sans-serif;
+    font-weight: bold;
+    background-image: url(mod_absences/images/haut_tab.png);
+    border: 0px solid #F8F8F8;
+}
+
+.entete_tableau_absence { 
+    background: #71A49E;
+    text-align: center;
+}
+
+.entete_alert {
+    color: #E8F1F4;
+    text-align: center;
+    font-weight: bold;
+    background-image: url(../images/tab_rouge.png);
+    border: 0px solid #F8F8F8;
+    -moz-border-radius : 10px;
+}
+
+.entete_alert_message {
+	color: #E8F1F4;
+	background-color: #BF0000; /* #555555 */
+	text-align: left;
+	font-weight: bold;
+	border: 0px solid #F8F8F8;
+	-moz-border-radius : 10px 10px 0px 0px;
+	padding-left: 10px;
+}
+
+	/* couleur dans le module absences alert*/
+	.couleur_ligne_5 {
+		background: #FFDFDF;
+	}
+
+	.couleur_ligne_6 {
+		background: #FFBFBF;
+	}
+	/* fin couleur dans le module absences alert */
+
+ .scroll {
+	position: relative ;
+	width: 98.5%;
+	height: 170px;
+	overflow: scroll;
+	padding: 0px ;
+}
+
+a.info img {
+	border: 0;
+	vertical-align: middle;
+}
+
+a.info {
+	text-decoration: none;
+	color: black;
+	border-bottom: 1px gray dotted;
+}
+
+a.info span {
+	display: none;
+}
+
+a.info:hover,a.info:focus,a.info:active {
+	background: none; /* correction d'un bug IE */
+}
+
+a.info:hover span,a.info:focus span,a.info:active span {
+	display: inline;
+	position: absolute;
+	z-index: 500;
+	margin: 1em 0 0 1em;
+	background: orange;
+	text-align: left;
+	color: white;
+	padding: 2px;
+	border: 1px solid #000000;
+}
+
+.entete_stats {
+    color: #000000;
+    text-align: center;
+    font-weight: bold;
+    background-image: url(../images/tab_jaune.png);
+    border: 0px solid #D9EF1D;
+    -moz-border-radius : 10px;
+}
+
+.entete_stats_message {
+	color: #000000;
+	background-color: #D9EF1D; /* #555555 */
+	text-align: left;
+	font-weight: bold;
+	border: 0px solid #D9EF1D;
+	-moz-border-radius : 10px 10px 0px 0px;
+	padding-left: 10px;
+}
+
+.information_etat_ae {
+	color: #E8F1F4;
+	background-color: #BF0000; /* #555555 */
+	text-align: center;
+	font-weight: bold;
+	border: 0px solid #F8F8F8;
+	margin: 0px 20px 2px 20px;
+	font-size: 14px;
+}

@@ -1,0 +1,390 @@
+0120002M;Voltaire;college;public;12700;Capdenac-Gare
+0120004P;Jean Jaurès;college;public;12110;Cransac
+0120011X;-;college;public;12330;Marcillac-Vallon
+0120016C;-;college;public;12600;Mur-de-Barrez
+0120017D;Jean Boudou;college;public;12800;Naucelle
+0120018E;Jean Amans;college;public;12290;Pont-de-Salars
+0120019F;Célestin Sourèzes;college;public;12170;Réquista
+0120020G;-;college;public;12240;Rieupeyroux
+0120021H;-;college;public;12390;Rignac
+0120028R;Denys Puech;college;public;12130;Saint-Geniez-d'Olt
+0120029S;Jean D'Alembert;college;public;12150;Sévérac-le-Château
+0120032V;Albert Camus;college;public;12160;Baraqueville
+0120055V;Dominique Savio;college;prive;12240;Rieupeyroux
+0120062C;Saint-Géraud;college;prive;12220;Montbazens
+0120064E;Saint-Pierre;college;prive;12600;Mur-de-Barrez
+0120067H;Sainte-Marie;college;prive;12290;Pont-de-Salars
+0120068J;Saint-Louis;college;prive;12170;Réquista
+0120070L;Jeanne D'Arc;college;prive;12390;Rignac
+0120075S;Sainte-Marie;college;prive;12130;Saint-Geniez-d'Olt
+0120077U;des Monts et Lacs;college;prive;12410;Salles-Curan
+0120078V;Sacré-Coeur;college;prive;12150;Sévérac-le-Château
+0120080X;Notre-Dame;college;prive;12160;Baraqueville
+0120081Y;Saint-Michel;college;prive;12370;Belmont-sur-Rance
+0120082Z;Saint-Louis;college;prive;12700;Capdenac-Gare
+0120084B;Sainte-Marie;college;prive;12120;Cassagnes-Bégonhès
+0120088F;Saint-Georges;college;prive;12140;Entraygues-sur-Truyère
+0120090H;Saint-Dominique;college;prive;12270;La-Fouillade
+0120091J;Saint-Matthieu;college;prive;12210;Laguiole
+0120092K;Saint-Joseph;college;prive;12330;Marcillac-Vallon
+0120101V;Joseph Fabre;college;public;12000;Rodez
+0120123U;La Pradelie;ecole;public;12630;Agen-d'Aveyron
+0120125W;-;ecole;public;12220;Les-Albres
+0120126X;-;ecole;public;12300;Almont-les-Junies
+0120132D;La Capelle Farcel;ecole;public;12430;Alrance
+0120133E;-;ecole;public;12260;Ambeyrac
+0120134F;-;ecole;public;12390;Anglars-Saint-Félix
+0120147V;Marcel Pagnol;ecole;public;12110;Aubin
+0120148W;Jules Ferry;ecole;public;12110;Aubin
+0120155D;Roger Noyer;ecole;public;12390;Auzits
+0120161K;-;ecole;public;12510;Balsac
+0120172X;-;ecole;public;12370;Belmont-sur-Rance
+0120174Z;-;ecole;public;12310;Bertholène
+0120189R;-;ecole;public;12160;Boussac
+0120190S;Arsène Ratier;ecole;public;12340;Bozouls
+0120199B;-;ecole;public;12350;Brandonnet
+0120200C;-;ecole;public;12550;Brasc
+0120209M;-;ecole;public;12480;Broquiès
+0120214T;François Truffaut;ecole;public;12360;Brusque
+0120218X;de Magrin;ecole;public;12450;Calmont
+0120221A;-;ecole;public;12360;Camarès
+0120224D;-;ecole;public;12800;Camjac
+0120232M;-;ecole;public;12290;Canet-de-Salars
+0120233N;-;ecole;public;12420;Cantoin
+0120248E;de Lardeyrolles;ecole;public;12240;Castanet
+0120250G;-;ecole;public;12500;Castelnau-de-Mandailles
+0120251H;de Mandailles;ecole;public;12500;Castelnau-de-Mandailles
+0120252J;-;ecole;public;12620;Castelnau-Pégayrols
+0120259S;-;ecole;public;12120;Centrès
+0120260T;de Taurines;ecole;public;12120;Centrès
+0120262V;-;ecole;public;12330;Clairvaux-d'Aveyron
+0120268B;-;ecole;public;12260;La-Capelle-Balaguier
+0120278M;François Fabie;ecole;public;12170;Durenque
+0120283T;-;ecole;public;12140;Entraygues-sur-Truyère
+0120286W;-;ecole;public;12390;Escandolières
+0120301M;Marie Curie;ecole;public;12300;Firmi
+0120303P;La Bessenoits;ecole;public;12300;Firmi
+0120304R;-;ecole;public;12300;Flagnac
+0120305S;d'Agnac;ecole;public;12300;Flagnac
+0120306T;Marcel Pagnol;ecole;public;12450;Flavin
+0120311Y;-;ecole;public;12260;Foissac
+0120316D;-;ecole;public;12340;Gabriac
+0120318F;-;ecole;public;12310;Gaillac-d'Aveyron
+0120319G;-;ecole;public;12220;Galgan
+0120321J;-;ecole;public;12330;Bruejouls
+0120330U;-;ecole;public;12350;Compolibat
+0120335Z;-;ecole;public;12470;Condom-d'Aubrac
+0120338C;Prosper Mérimée;ecole;public;12320;Conques
+0120341F;-;ecole;public;12540;Cornus
+0120345K;Le Causse;ecole;public;12190;Coubisou
+0120349P;Emile Zola;ecole;public;12110;Cransac
+0120352T;La Blaquererie;ecole;public;12230;La-Couvertoirade
+0120353U;Les Cascades;ecole;public;12100;Creissels
+0120357Y;-;ecole;public;12640;La-Cresse
+0120358Z;-;ecole;public;12340;Cruéjouls
+0120359A;-;ecole;public;12210;Curières
+0120372P;-;ecole;public;12390;Goutrens
+0120378W;-;ecole;public;12320;Grand-Vabre
+0120381Z;-;ecole;public;12230;L'Hospitalet-du-Larzac
+0120385D;Jean Alazard;ecole;public;12210;Lacalm
+0120386E;-;ecole;public;12600;Lacroix-Barrez
+0120391K;-;ecole;public;12210;Laguiole
+0120398T;-;ecole;public;12350;Lanuéjouls
+0120402X;-;ecole;public;12500;Lassouts
+0120405A;de Laclaparède;ecole;public;12380;Laval-Roquecezière
+0120407C;-;ecole;public;12150;Lavernhe
+0120408D;-;ecole;public;12170;Lédergues
+0120411G;Falguières;ecole;public;12170;Lédergues
+0120413J;-;ecole;public;12440;Lescure-Jaoul
+0120415L;-;ecole;public;12430;Lestrade-et-Thouels
+0120417N;Prosper Alfaric;ecole;public;12300;Livinhac-le-Haut
+0120420S;de Lioujas;ecole;public;12740;La-Loubière
+0120423V;-;ecole;public;12360;Cénomes
+0120425X;Jacques Prévert;ecole;public;12450;Luc
+0120428A;-;ecole;public;12220;Lugan
+0120429B;-;ecole;public;12270;Lunac
+0120432E;-;ecole;public;12350;Maleville
+0120436J;Lavernhe;ecole;public;12160;Manhac
+0120438L;Jean Auzel;ecole;public;12330;Marcillac-Vallon
+0120440N;-;ecole;public;12200;Martiel
+0120441P;-;ecole;public;12550;Martrin
+0120448X;Le Crès;ecole;public;12100;Millau
+0120451A;Martel;ecole;public;12100;Millau
+0120459J;Beauregard;ecole;public;12100;Millau
+0120461L;Jean-Henri Fabre;ecole;public;12100;Millau
+0120474A;-;ecole;public;12220;Montbazens
+0120478E;-;ecole;public;12200;Monteils
+0120480G;-;ecole;public;12460;Montézic
+0120481H;-;ecole;public;12380;Montfranc
+0120482J;-;ecole;public;12490;Montjaux
+0120485M;-;ecole;public;12400;Montlaur
+0120488R;-;ecole;public;12540;Fondamente
+0120494X;La Vitarelle;ecole;public;12210;Montpeyroux
+0120497A;Gaurels;ecole;public;12260;Montsalès
+0120498B;-;ecole;public;12200;Morlhon-le-Haut
+0120507L;-;ecole;public;12370;Murasson
+0120508M;-;ecole;public;12600;Mur-de-Barrez
+0120514U;-;ecole;public;12270;Najac
+0120523D;Le Bez;ecole;public;12700;Naussac
+0120525F;-;ecole;public;12330;Nauviale
+0120542Z;-;ecole;public;12310;Palmas
+0120557R;-;ecole;public;12290;Prades-Salars
+0120565Z;-;ecole;public;12320;Pruines
+0120567B;de Salan;ecole;public;12800;Quins
+0120568C;-;ecole;public;12400;Rebourguil
+0120583U;-;ecole;public;12390;Rignac
+0120588Z;-;ecole;public;12640;Rivière-sur-Tarn
+0120590B;Bezonnes;ecole;public;12340;Rodelle
+0120593E;Saint-Julien;ecole;public;12340;Rodelle
+0120595G;Cambon;ecole;public;12000;Rodez
+0120601N;Paul Ramadier;ecole;public;12000;Rodez
+0120612A;Ferdinand Foch;ecole;public;12000;Rodez
+0120617F;-;ecole;public;12200;La-Rouquette
+0120620J;-;ecole;public;12220;Roussennac
+0120622L;Paul Ramadier;college;public;12300;Decazeville
+0120627S;Saint-Joseph;college;prive;12000;Rodez
+0120630V;Blanchard et Caussat;ecole;public;12400;Saint-Affrique
+0120634Z;-;ecole;public;12460;Saint-Amans-des-Cots
+0120641G;-;ecole;public;12470;Saint-Chély-d'Aubrac
+0120650S;Celestin Rossignol;ecole;public;12260;Sainte-Croix
+0120653V;-;ecole;public;12320;Saint-Cyprien-sur-Dourdou
+0120658A;Arthur Rimbaud;ecole;public;12230;Sainte-Eulalie-de-Cernon
+0120660C;Lunel;ecole;public;12320;Saint-Félix-de-Lunel
+0120661D;-;ecole;public;12400;Saint-Félix-de-Sorgues
+0120662E;-;ecole;public;12420;Sainte-Geneviève-sur-Argence
+0120672R;-;ecole;public;12140;Saint-Hippolyte
+0120680Z;-;ecole;public;12480;Saint-Izaire
+0120684D;-;ecole;public;12170;Saint-Jean-Delnous
+0120687G;Saint-Jean-D'Alcas;ecole;public;12250;Saint-Jean-et-Saint-Paul
+0120689J;-;ecole;public;12550;Saint-Juéry
+0120696S;-;ecole;public;12560;Saint-Laurent-d'Olt
+0120698U;Jean-Henri Fabre;ecole;public;12780;Saint-Léons
+0120701X;Port d'Agres;ecole;public;12300;Saint-Parthem
+0120702Y;Charles Cayla;ecole;public;12850;Sainte-Radegonde
+0120704A;-;ecole;public;12200;Saint-Rémy
+0120715M;Saint-Julien de Piganiol;ecole;public;12300;Saint-Santin
+0120717P;-;ecole;public;12380;Saint-Sernin-sur-Rance
+0120718R;-;ecole;public;12370;Saint-Sever-du-Moustier
+0120719S;-;ecole;public;12460;Saint-Symphorien-de-Thénières
+0120720T;de Melvieu;ecole;public;12400;Saint-Victor-et-Melvieu
+0120721U;Saint-Victor;ecole;public;12400;Saint-Victor-et-Melvieu
+0120726Z;Eugène Viala;ecole;public;12410;Salles-Curan
+0120727A;de Bouloc;ecole;public;12410;Salles-Curan
+0120732F;de Souyri;ecole;public;12330;Salles-la-Source
+0120740P;-;ecole;public;12440;La-Salvetat-Peyralès
+0120744U;-;ecole;public;12200;Sanvensa
+0120746W;-;ecole;public;12230;Sauclières
+0120749Z;-;ecole;public;12800;Sauveterre-de-Rouergue
+0120769W;-;ecole;public;12320;Sénergues
+0120782K;-;ecole;public;12310;Sévérac-l'Eglise
+0120783L;-;ecole;public;12700;Sonnac
+0120784M;de Lieucamp;ecole;public;12700;Sonnac
+0120786P;-;ecole;public;12210;Soulages-Bonneval
+0120790U;Saint-Martial;ecole;public;12800;Tauriac-de-Naucelle
+0120794Y;-;ecole;public;12440;Tayrac
+0120800E;-;ecole;public;12200;Toulonjac
+0120803H;-;ecole;public;12290;Trémouilles
+0120806L;-;ecole;public;12430;Le-Truel
+0120811S;Jean De La Fontaine;ecole;public;12400;Vabres-l'Abbaye
+0120812T;-;ecole;public;12200;Vailhourles
+0120824F;Versols;ecole;public;12400;Versols-et-Lapeyre
+0120826H;-;ecole;public;12720;Veyreau
+0120827J;-;ecole;public;12780;Vézins-de-Lévézou
+0120833R;-;ecole;public;12490;Viala-du-Tarn
+0120844C;Jean Pendaries;ecole;public;12200;Villefranche-de-Rouergue
+0120845D;Nord;ecole;public;12200;Villefranche-de-Rouergue
+0120850J;Le Tricot;ecole;public;12200;Villefranche-de-Rouergue
+0120856R;-;ecole;public;12310;Vimenet
+0120858T;-;ecole;public;12110;Viviez
+0120862X;de Lax;ecole;public;12160;Baraqueville
+0120878P;Marcel Aymard;college;public;12100;Millau
+0120907W;-;ecole;public;12290;Pont-de-Salars
+0120912B;Jules Ferry;ecole;public;12800;Naucelle
+0120913C;-;ecole;public;12550;Plaisance
+0120914D;Sainte-Geneviève;college;prive;12000;Rodez
+0120916F;Sacré-Coeur;college;prive;12000;Rodez
+0120917G;Jacques Prévert;ecole;public;12520;Aguessac
+0120918H;Notre-Dame du Sacré-Coeur;college;prive;12000;Rodez
+0120919J;-;ecole;public;12150;Lapanouse
+0120921L;-;ecole;public;12240;Rieupeyroux
+0120922M;Jean Monnet;ecole;public;12500;Espalion
+0120923N;Georges Brassens;ecole;public;12160;Baraqueville
+0120924P;Jean Moulin;ecole;public;12150;Sévérac-le-Château
+0120927T;-;ecole;public;12330;Saint-Christophe-Vallon
+0120939F;Notre-Dame;ecole;prive;12350;Drulhe
+0120941H;Saint-Georges;ecole;prive;12140;Entraygues-sur-Truyère
+0120942J;Saint-Hilarian;ecole;prive;12500;Espalion
+0120945M;Sainte-Catherine;ecole;prive;12190;Estaing
+0120946N;-;ecole;prive;12300;Firmi
+0120948R;Saint-Charles;ecole;prive;12450;Flavin
+0120949S;-;ecole;prive;12140;Florentin-la-Capelle
+0120950T;Saint-Jean-Baptiste;ecole;prive;12270;La-Fouillade
+0120954X;-;ecole;prive;12140;Golinhac
+0120966K;Saint-Jean;ecole;prive;12450;Luc
+0120967L;Saint-Joseph;ecole;prive;12450;Luc
+0120973T;-;ecole;prive;12330;Marcillac-Vallon
+0120979Z;Sacré-Coeur;ecole;prive;12100;Millau
+0120981B;Saint-Géraud;ecole;prive;12220;Montbazens
+0120988J;-;ecole;public;12740;Sébazac-Concourès
+0120989K;Saint-Joseph;ecole;prive;12630;Agen-d'Aveyron
+0120990L;-;ecole;prive;12520;Aguessac
+0120997U;Sainte-Agnès;ecole;prive;12110;Aubin
+0121001Y;-;ecole;prive;12120;Auriac-Lagast
+0121002Z;-;ecole;prive;12390;Auzits
+0121004B;Saint-Michel;ecole;prive;12370;Belmont-sur-Rance
+0121006D;Saint-François;ecole;prive;12340;Bozouls
+0121008F;-;ecole;prive;12480;Broquiès
+0121011J;-;ecole;prive;12450;Calmont
+0121013L;-;ecole;prive;12360;Camarès
+0121017R;Jeanne D'Arc;ecole;prive;12700;Capdenac-Gare
+0121020U;Saint-Dominique;ecole;prive;12160;Baraqueville
+0121021V;Sainte-Marie;ecole;prive;12120;Cassagnes-Bégonhès
+0121024Y;Sainte-Bernadette;ecole;prive;12230;La-Cavalerie
+0121025Z;-;ecole;prive;12330;Clairvaux-d'Aveyron
+0121026A;-;ecole;prive;12240;Colombiès
+0121028C;-;ecole;prive;12520;Compeyre
+0121031F;-;ecole;prive;12550;Coupiac
+0121033H;Notre-Dame;ecole;prive;12100;Creissels
+0121035K;Saint-Michel;ecole;prive;12110;Cransac
+0121041S;-;ecole;prive;12270;Najac
+0121046X;-;ecole;prive;12190;Le-Nayrac
+0121048Z;Les Grillons;ecole;prive;12510;Olemps
+0121050B;Sainte-Bernadette;ecole;prive;12850;Onet-le-Château
+0121056H;-;ecole;prive;12470;Prades-d'Aubrac
+0121061N;Saint-Joseph;ecole;prive;12170;Réquista
+0121063R;Sainte-Famille;ecole;prive;12240;Rieupeyroux
+0121067V;Saint-Joseph;ecole;prive;12390;Rignac
+0121069X;Jeanne D'Arc;ecole;prive;12000;Rodez
+0121070Y;Sainte-Thérèse;ecole;prive;12000;Rodez
+0121071Z;Sainte-Procule;ecole;prive;12000;Rodez
+0121076E;-;ecole;prive;12250;Roquefort-sur-Soulzon
+0121077F;Saint-Jean-Baptiste;ecole;prive;12400;Saint-Affrique
+0121083M;-;ecole;prive;12330;Saint-Christophe-Vallon
+0121084N;Sainte-Marie;ecole;prive;12500;Saint-Côme-d'Olt
+0121085P;-;ecole;prive;12320;Saint-Cyprien-sur-Dourdou
+0121088T;Sainte-Marie;ecole;prive;12130;Saint-Geniez-d'Olt
+0121089U;-;ecole;prive;12100;Saint-Georges-de-Luzençon
+0121098D;Sainte-Agnès;ecole;prive;12560;Saint-Saturnin-de-Lenne
+0121099E;-;ecole;prive;12380;Saint-Sernin-sur-Rance
+0121101G;-;ecole;prive;12410;Salles-Curan
+0121102H;Saint-Joseph;ecole;prive;12330;Salles-la-Source
+0121105L;Sainte-Marie;ecole;prive;12440;La-Salvetat-Peyralès
+0121106M;-;ecole;prive;12200;Sanvensa
+0121108P;-;ecole;prive;12170;La-Selve
+0121112U;Bon Pasteur;ecole;prive;12150;Sévérac-le-Château
+0121116Y;-;ecole;prive;12250;Tournemire
+0121117Z;-;ecole;prive;12400;Vabres-l'Abbaye
+0121121D;-;ecole;prive;12290;Le-Vibal
+0121122E;Saint-Joseph;ecole;prive;12580;Villecomtal
+0121123F;Marie Immaculée;ecole;prive;12430;Villefranche-de-Panat
+0121125H;Sainte-Famille;ecole;prive;12200;Villefranche-de-Rouergue
+0121126J;Notre-Dame;ecole;prive;12200;Villefranche-de-Rouergue
+0121128L;Notre-Dame;ecole;prive;12260;Villeneuve
+0121131P;-;ecole;prive;12410;Curan
+0121133S;Jean Moulin;college;public;12000;Rodez
+0121137W;-;ecole;public;12300;Bouillac
+0121138X;-;ecole;public;12600;Brommat
+0121139Y;-;ecole;public;12240;La-Capelle-Bleys
+0121142B;-;ecole;public;12310;Laissac
+0121144D;Gages;ecole;public;12630;Montrozier
+0121145E;-;ecole;public;12270;Saint-André-de-Najac
+0121146F;-;ecole;public;12600;Taussac
+0121148H;La Chartreuse;ecole;public;12200;Villefranche-de-Rouergue
+0121153N;Marguerite Marie;ecole;prive;12100;Millau
+0121155R;Saint-Martin;ecole;prive;12100;Millau
+0121156S;Sainte-Marie;ecole;prive;12290;Pont-de-Salars
+0121158U;Sainte-Angèle;ecole;prive;12310;Laissac
+0121159V;Jeanne D'Arc;ecole;prive;12800;Naucelle
+0121160W;-;ecole;public;12120;Arvieu
+0121162Y;-;ecole;public;12300;Boisse-Penchot
+0121164A;-;ecole;public;12560;Campagnac
+0121165B;Jules Verne;ecole;public;12230;La-Cavalerie
+0121166C;Le Sailhenc;ecole;public;12300;Decazeville
+0121167D;-;ecole;public;12390;Mayran
+0121168E;-;ecole;public;12160;Moyrazès
+0121169F;-;ecole;public;12500;Saint-Côme-d'Olt
+0121170G;-;ecole;public;12120;Salmiech
+0121171H;Gelles;ecole;public;12700;Causse-et-Diège
+0121172J;Jouels;ecole;public;12800;Sauveterre-de-Rouergue
+0121173K;-;ecole;public;12430;Villefranche-de-Panat
+0121174L;Saint-Martin;college;prive;12800;Naucelle
+0121176N;Louis Denayrouze;college;public;12500;Espalion
+0121178R;-;EREA;public;12200;Villefranche-de-Rouergue
+0121180T;-;ecole;public;12430;Alrance
+0121183W;-;ecole;public;12580;Campuac
+0121184X;Carcenac - Peyrales;ecole;public;12160;Baraqueville
+0121185Y;-;ecole;public;12120;Comps-la-Grand-Ville
+0121187A;François Fabie;ecole;public;12300;Decazeville
+0121188B;-;ecole;public;12190;Estaing
+0121189C;Les Tilleuls;ecole;public;12360;Fayet
+0121190D;-;ecole;public;12270;La-Fouillade
+0121194H;-;ecole;public;12230;Nant
+0121195J;-;ecole;public;12190;Le-Nayrac
+0121196K;Le Stade;ecole;public;12850;Onet-le-Château
+0121197L;Les Narcisses;ecole;public;12850;Onet-le-Château
+0121199N;-;ecole;public;12350;Prévinquières
+0121200P;-;ecole;public;12170;Réquista
+0121202S;-;ecole;public;12120;Rullac-Saint-Cirq
+0121203T;-;ecole;public;12100;Saint-Georges-de-Luzençon
+0121204U;-;ecole;public;12230;Saint-Jean-du-Bruel
+0121205V;Les Cardabelles;ecole;public;12490;Saint-Rome-de-Cernon
+0121206W;-;ecole;public;12490;Saint-Rome-de-Tarn
+0121207X;-;ecole;public;12200;Savignac
+0121208Y;-;ecole;public;12190;Sébrazac
+0121209Z;Jean-Henri Fabre;ecole;public;12290;Ségur
+0121211B;-;ecole;public;12250;Tournemire
+0121212C;Hôpital Du Larzac;ecole;public;12100;Millau
+0121213D;Francis Carco;college;public;12200;Villefranche-de-Rouergue
+0121214E;-;ecole;public;12700;Asprières
+0121217H;-;ecole;public;12460;Huparlac
+0121218J;Eugène Selles;ecole;public;12100;Millau
+0121219K;-;ecole;public;12150;Recoules-Prévinquières
+0121221M;Cardaillac;ecole;public;12000;Rodez
+0121222N;Les Marmousets;ecole;public;12130;Saint-Geniez-d'Olt
+0121223P;-;ecole;public;12600;Thérondels
+0121224R;Le Pont;ecole;public;12110;Viviez
+0121227U;Saint-Matthieu;ecole;prive;12210;Laguiole
+0121228V;Sainte-Foy;ecole;prive;12300;Decazeville
+0121234B;Emilie De Rodat;ecole;prive;12000;Rodez
+0121236D;Saint-Félix;ecole;public;12000;Rodez
+0121239G;Pierre Puel;ecole;public;12850;Onet-le-Château
+0121241J;J. Macé - E. Herriot;ecole;public;12300;Decazeville
+0121244M;des Quatre Rives;ecole;public;12000;Le-Monastère
+0121247R;Pierre Loubière;ecole;public;12510;Olemps
+0121248S;Les Genets;ecole;public;12850;Onet-le-Château
+0121250U;Flaugergues;ecole;public;12000;Rodez
+0121255Z;Saint-Joseph;college;prive;12200;Villefranche-de-Rouergue
+0121256A;Jeanne D'Arc;college;prive;12400;Saint-Affrique
+0121257B;Sainte-Foy;college;prive;12300;Decazeville
+0121258C;de l'Immaculée Conception;college;prive;12500;Espalion
+0121259D;Jeanne D'Arc;college;prive;12100;Millau
+0121273U;Les Quatre Saisons;college;public;12850;Onet-le-Château
+0121275W;-;ecole;public;12120;Cassagnes-Bégonhès
+0121276X;Jules Ferry;ecole;public;12100;Millau
+0121277Y;-;ecole;public;12620;Saint-Beauzély
+0121278Z;-;ecole;public;12740;Sébazac-Concourès
+0121295T;de la Viadène;college;public;12460;Saint-Amans-des-Cots
+0121297V;Jean Jaurès;college;public;12400;Saint-Affrique
+0121300Y;Jean Boudou;ecole;public;12110;Aubin
+0121301Z;Paul Bert;ecole;public;12100;Millau
+0121302A;Gourgan;ecole;public;12000;Rodez
+0121308G;-;ecole;public;12520;Verrières
+0121325A;Calcomier;ecole;public;12000;Rodez
+0121326B;-;ecole;public;12370;Mounes-Prohencoux
+0121331G;Saint-Viateur;ecole;prive;12850;Onet-le-Château
+0121340S;Puits de Cales;ecole;public;12100;Millau
+0121352E;-;ecole;public;12450;Ceignac
+0121353F;-;ecole;public;12260;Villeneuve
+0121354G;-;ecole;public;12120;Sainte-Juliette-sur-Viaur
+0121356J;Jean Boudou;ecole;public;12450;Luc
+0121357K;-;ecole;public;12200;La-Bastide-l'Evêque
+0121370Z;Saint-Paul;ecole;prive;12000;Rodez
+0121380K;-;ecole;public;12130;Pierrefiche
+0121381L;François Fabie;ecole;public;12000;Rodez
+0121403K;Pierre Riols;ecole;public;12700;Capdenac-Gare
+0121407P;Paul Cayla;ecole;public;12510;Druelle
+0121424H;Sainte-Geneviève - Saint-Joseph;ecole;prive;12000;Rodez
+0121430P;Sainte-Geneviève - Saint-Joseph;college;prive;12000;Rodez
+0121433T;de Solville;ecole;public;12200;La-Bastide-l'Evêque
+0121435V;-;ecole;public;12350;Privezac
+0121436W;-;ecole;public;12330;Nuces

@@ -1,0 +1,143 @@
+<?php
+
+require_once "../../artichow/LinePlot.class.php";
+
+// Mes fonctions
+//	include("functions.php");
+
+// Variable prédéfinit
+//	date_default_timezone_set('Europe/Paris');
+		if ( function_exists('date_default_timezone_get') ) {
+			date_default_timezone_set('UTC');
+			date_default_timezone_get();
+		} else {
+				localtime();
+			}
+	$date_act = date('Y-m-d');
+
+// Variable non définit
+	if (empty($_GET['donnee_titre']) and empty($_POST['donnee_titre'])) { $donnee_titre = ''; }
+	   else { if (isset($_GET['donnee_titre'])) { $donnee_titre = $_GET['donnee_titre']; } if (isset($_POST['donnee_titre'])) { $donnee_titre = $_POST['donnee_titre']; } }
+	if (empty($_GET['echelle_x']) and empty($_POST['echelle_x'])) { $echelle_x = ''; }
+	   else { if (isset($_GET['echelle_x'])) { $echelle_x = $_GET['echelle_x']; } if (isset($_POST['echelle_x'])) { $echelle_x = $_POST['echelle_x']; } }
+	if (empty($_GET['echelle_y']) and empty($_POST['echelle_y'])) { $echelle_y = ''; }
+	   else { if (isset($_GET['echelle_y'])) { $echelle_y = $_GET['echelle_y']; } if (isset($_POST['echelle_y'])) { $echelle_y = $_POST['echelle_y']; } }
+	if (empty($_GET['donnee_label']) and empty($_POST['donnee_label'])) { $donnee_label = ''; }
+	   else { if (isset($_GET['donnee_label'])) { $donnee_label = $_GET['donnee_label']; } if (isset($_POST['donnee_label'])) { $donnee_label = $_POST['donnee_label']; } }
+
+// LE GRAPHIQUE
+
+  $days = array(
+      'Lundi',
+      'Mardi',
+      'Mercredi',
+      'Jeudi',
+      'Vendredi',
+      'Samedi',
+      'Dimanche'
+   );
+
+//$graph = new Graph(529, 250);
+$graph = new Graph(536, 252);
+   
+   // définition des couleur bleu et rouge
+   $bleu = new Color(0, 0, 200);
+   $rouge = new Color(200, 0, 0);
+   
+   $group = new PlotGroup;
+   // padding du graphique
+   $group->setPadding(40, 40);
+   // décalement du 0 et de la fin
+//   $group->setSpace(4, 4, 10, 0);
+   // couleur de fond du graphique
+   $group->setBackgroundColor(
+      new Color(255, 255, 255)
+   );
+
+//   $values_absences = array(12, 5, 20, 32, 15, 4, 12, 5, 20, 32, 15, 4);
+	$values_absences = $_SESSION['axe_y_abs'];
+//   $values_retards = array(1, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0);
+	$values_retards = $_SESSION['axe_y_ret'];
+   //$x = array('jan.', 'fev.', 'mar.', 'avr.', 'mai', 'jui.', 'juil.', 'aou.', 'sep.', 'oct.', 'nov.', 'dec.');
+	$x = $_SESSION['axe_x'];
+
+   
+   // les absences
+   $plot = new LinePlot($values_absences);
+   $plot->setColor($rouge);
+   $plot->setYAxis(PLOT_LEFT); //Plot::LEFT
+	// épaisseur du trait
+	$plot->setThickness(2);
+
+	// point rouge sur le graphique
+	$plot->mark->setFill($rouge);
+	$plot->mark->setType(MARK_SQUARE);   
+
+   $group->add($plot);
+	// pas de chiffre après la virgule
+	   $group->axis->left->setLabelPrecision(1);
+   $group->axis->left->setColor($rouge);
+   $group->axis->left->title->set("Absences");
+
+   // les retards
+   $plot = new LinePlot($values_retards);
+	$plot->xAxis->setLabelText($x);
+   $plot->setColor($bleu);
+   $plot->setYAxis(PLOT_RIGHT); //Plot::RIGHT
+	// type de trait
+	$plot->setStyle(LINE_DOTTED); //Line::DOTTED
+		// Change le style de ligne (Line::SOLID, Line::DOTTED ou Line::DASHED).
+
+	// point noir sur le graphique
+	$plot->mark->setFill($bleu);
+	$plot->mark->setType(MARK_CIRCLE);
+	   $plot->mark->setSize(7);
+	   $plot->mark->setFill(new White);
+	   $plot->mark->border->show();
+
+/*
+    * const int CIRCLE := 1
+    * const int SQUARE := 2
+    * const int TRIANGLE := 3
+    * const int INVERTED_TRIANGLE := 4
+    * const int RHOMBUS := 5
+    * const int CROSS := 6
+    * const int PLUS := 7
+    * const int IMAGE := 8
+    * const int STAR := 9
+    * const int PAPERCLIP := 10
+    * const int BOOK := 11
+
+*/
+   
+   $group->add($plot);
+	// pas de chiffre après la virgule
+	   $group->axis->right->setLabelPrecision(1);
+   $group->axis->right->setColor($bleu);
+   $group->axis->right->title->set("Retard");
+
+
+// AXE X
+
+	// donnée de l'axe X
+	$group->axis->bottom->setLabelText($x); 
+        // police de caractère de l'axe X
+	$group->axis->bottom->label->setFont(new Tuffy(8));
+	// rotation du texte de l'axe X en degré
+	$group->axis->bottom->label->setAngle("30");
+	// positionement du texte de l'axe X
+	$group->axis->bottom->label->move(10, 0);
+	// alignement du texte de l'axe X
+	$group->axis->bottom->label->setAlign(LABEL_RIGHT, LABEL_BOTTOM);
+	// padding de l'axe X
+	$group->axis->bottom->label->setPadding(0, 0, 0, 0);
+
+
+   $graph->add($group);
+
+	$nom_fichier = $_SESSION['nom_fichier_png'];
+
+$graph->draw('../../documents/'.$nom_fichier.'.png');
+
+$graph->deleteAllCache();
+?>

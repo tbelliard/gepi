@@ -1,0 +1,55 @@
+/* $Id: style.css 3953 2009-12-21 18:32:30Z regis $ */
+
+body {
+	padding: 0em;
+	margin: 0em;
+	background: #EEEEEE;
+	font-family: verdana, sans-serif;
+	color: #330033;
+}
+
+/* images : suppression des bordures */
+img {
+	border: 0;
+}
+
+/* liens : definition generale */
+a {
+	color: #0000AA;
+	text-decoration: none;
+	border: 0;
+}
+a:visited {
+	color: #0000AA;
+	text-decoration: none;
+}
+a:hover {
+	color: gray;
+}
+a:active {
+	color: #0000AA;
+	text-decoration: none;
+}
+
+/* texte : classes de mises en forme generale */
+.center {
+	text-align:center;
+}	
+
+.bold {
+	font-weight: bold;
+	font-style: normal;
+}
+
+.rouge {
+	color:red;
+}
+
+#container {
+	margin-bottom:1em;
+}
+
+#container p {
+	margin-left:1em;
+}
+

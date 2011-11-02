@@ -1,0 +1,170 @@
+body {
+        font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+        font-size: 100%;
+        color: #000000;
+     }
+
+t.form {
+        font-size: 0.71em;
+        width: 60em;
+        min-width: 500px;
+        max-width: 90%;
+        margin: 0 auto;
+        background-color: #FCF8ED;
+        padding: 1em;
+
+        /* Mozilla corner-code */
+        -moz-border-radius: 1em;
+
+        /* CSS3 corner-code */
+        border-radius: 1em;
+    }
+
+h1, h2 {
+       		font-family: "Trebuchet MS", Verdana, Geneva, Arial, Helvetica, sans-serif;
+       }
+
+fieldset {
+        padding: 1em;
+        margin: 1em 1em 1em 0;
+        width: 50%;
+	text-align: center;
+        border: none;
+        background-color: #33469A;
+        color: #000000;
+
+        /* Mozilla corner-code */
+        -moz-border-radius: 1em;
+
+        /* CSS3 corner-code */
+        border-radius: 1em;
+        }
+
+legend {
+        padding: 1em;
+        background-color: #99AFF8;
+        color: #000000;
+        border: 0.1em solid #EDF0FC;
+        font-weight: bold;
+
+        /* Mozilla corner-code */
+        -moz-border-radius: 1em;
+
+        /* CSS3 corner-code */
+        border-radius:1em;
+       }
+
+fieldset .row {
+        background-color: #FFFFFF;
+        color: #000000;
+        padding: 0.5em;
+        margin: 0.5em 0;
+
+        /* Auto float-clearing code */
+        overflow: auto;
+        width: 100%;
+
+        /* Mozilla corner-code */
+        -moz-border-radius: 0.5em;
+
+        /* CSS3 corner-code */
+        border-radius: 0.5em;
+    }
+
+fieldset .row label {
+        display: block;
+        width: 27%;
+        padding: 0.5em;
+        float: left;
+        clear: both;
+    }
+
+fieldset .row span.input, fieldset .row input {
+        display: block;
+        width: 70%;
+        float: right;
+        vertical-align: middle;
+        margin-bottom: 0.2em;
+    }
+
+fieldset .row span.input input {
+        display: inline;
+        width: auto;
+        float: none;
+    }
+
+fieldset .row span.input label {
+        padding: 0;
+        width: auto;
+        background-color: transparent;
+    }
+
+/*  select {
+        min-width: 60%;
+    }
+
+textarea {
+        min-width: 60%;
+    }
+
+input, textarea, selec AND $classe != "toutes"t {
+        font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+        font-size: 1em;
+        padding: 0.15em;
+    }
+
+input[type="text"], input[type="password"] {
+        min-width: 60%;
+    }
+
+input[type="file"] {
+        min-width: 60%;
+    } */
+
+    * html fieldset {
+        position: relative;
+        padding-top: 2.75em;
+        margin: 3em 0 2em 0;
+    }
+
+    * html fieldset legend {
+        position: absolute;
+        top: -1.75em;
+        left: 0.25em;
+    }
+
+    * html fieldset.nolegend {
+        margin-top: 2em;
+        padding-top: 1em;
+    }
+
+/*  * html select {
+        width: 60%;
+    }
+
+    * html textarea {
+        width: 60%;
+    }*/
+
+    * html fieldset .row label {
+    }
+
+.erreur_rouge_jaune {
+    background: #FF3333;
+    color: #FFFF33;
+    font: normal 10pt Arial;
+    text-align: center;
+}
+
+.tt {
+    border-collapse: separate;
+    border-spacing: 0px;
+    border: none;
+    border-bottom: 1px solid lightgrey;
+    margin: 20px;
+    padding-left: 0px;
+    background-image: url("../../images/background/left-top-corner.png");
+    background-repeat: no-repeat;
+    /*background-position: 16% 1%;    */
+    background-position: -1px 0%;
+}

@@ -1,0 +1,24 @@
+/* $Id: mod_discipline.css 5600 2010-10-08 11:02:41Z crob $ */
+/*======================================*/
+/* Pour la complétion sur les formulaires avec ScriptAculoUs */
+#div_completion_nature {
+	border: 1px solid #999;
+	/*background: #fafafa;*/
+	/*background: green;*/
+}
+#div_completion_nature ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+#div_completion_nature a {
+	display: block;
+	padding: .2em .3em;
+	text-decoration: none;
+	color: #333;
+}
+#div_completion_nature .selected {
+	background: lightyellow;
+	font-weight: bold;
+}
+/*======================================*/

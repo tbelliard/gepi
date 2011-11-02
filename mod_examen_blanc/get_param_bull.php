@@ -1,0 +1,165 @@
+<?php
+/*
+$Id: get_param_bull.php 3746 2009-11-20 08:58:25Z crob $
+*/
+
+	$val_defaut_champ_bull_pdf["nom_model_bulletin"]="Nom du modèle";
+	$val_defaut_champ_bull_pdf["active_bloc_datation"]=1;
+	$val_defaut_champ_bull_pdf["active_bloc_eleve"]=1;
+	$val_defaut_champ_bull_pdf["active_bloc_adresse_parent"]=1;
+	$val_defaut_champ_bull_pdf["active_bloc_absence"]=1;
+	$val_defaut_champ_bull_pdf["active_bloc_note_appreciation"]=1;
+	$val_defaut_champ_bull_pdf["active_bloc_avis_conseil"]=1;
+	$val_defaut_champ_bull_pdf["active_bloc_chef"]=1;
+	$val_defaut_champ_bull_pdf["active_photo"]=0;
+	//$val_defaut_champ_bull_pdf["active_coef_moyenne"]=0;
+	$val_defaut_champ_bull_pdf["active_coef_moyenne"]=1;
+	$val_defaut_champ_bull_pdf["active_nombre_note"]=0;
+	$val_defaut_champ_bull_pdf["active_nombre_note_case"]=0;
+	$val_defaut_champ_bull_pdf["active_moyenne"]=1;
+	$val_defaut_champ_bull_pdf["active_moyenne_eleve"]=1;
+	$val_defaut_champ_bull_pdf["active_moyenne_classe"]=1;
+	$val_defaut_champ_bull_pdf["active_moyenne_min"]=1;
+	$val_defaut_champ_bull_pdf["active_moyenne_max"]=1;
+	$val_defaut_champ_bull_pdf["active_regroupement_cote"]=0;
+	$val_defaut_champ_bull_pdf["active_entete_regroupement"]=0;
+	$val_defaut_champ_bull_pdf["active_moyenne_regroupement"]=0;
+	$val_defaut_champ_bull_pdf["active_rang"]=0;
+	$val_defaut_champ_bull_pdf["active_graphique_niveau"]=0;
+	$val_defaut_champ_bull_pdf["active_appreciation"]=1;
+	$val_defaut_champ_bull_pdf["affiche_doublement"]=1;
+	$val_defaut_champ_bull_pdf["affiche_date_naissance"]=1;
+	$val_defaut_champ_bull_pdf["affiche_dp"]=1;
+	$val_defaut_champ_bull_pdf["affiche_nom_court"]=0;
+	$val_defaut_champ_bull_pdf["affiche_effectif_classe"]=0;
+	$val_defaut_champ_bull_pdf["affiche_numero_impression"]=0;
+	$val_defaut_champ_bull_pdf["caractere_utilse"]="Arial";
+	$val_defaut_champ_bull_pdf["X_parent"]=110;
+	$val_defaut_champ_bull_pdf["Y_parent"]=40;
+	$val_defaut_champ_bull_pdf["X_eleve"]=5;
+	$val_defaut_champ_bull_pdf["Y_eleve"]=40;
+	$val_defaut_champ_bull_pdf["cadre_eleve"]=1;
+	$val_defaut_champ_bull_pdf["X_datation_bul"]=110;
+	$val_defaut_champ_bull_pdf["Y_datation_bul"]=5;
+	$val_defaut_champ_bull_pdf["cadre_datation_bul"]=1;
+	$val_defaut_champ_bull_pdf["hauteur_info_categorie"]=5;
+	$val_defaut_champ_bull_pdf["X_note_app"]=5;
+	$val_defaut_champ_bull_pdf["Y_note_app"]=72;
+	$val_defaut_champ_bull_pdf["longeur_note_app"]=200;
+	$val_defaut_champ_bull_pdf["hauteur_note_app"]=175;
+	$val_defaut_champ_bull_pdf["largeur_coef_moyenne"]=8;
+	$val_defaut_champ_bull_pdf["largeur_nombre_note"]=8;
+	$val_defaut_champ_bull_pdf["largeur_d_une_moyenne"]=10;
+	$val_defaut_champ_bull_pdf["largeur_niveau"]=18;
+	$val_defaut_champ_bull_pdf["largeur_rang"]=5;
+	$val_defaut_champ_bull_pdf["X_absence"]=5;
+	$val_defaut_champ_bull_pdf["Y_absence"]=246.3;
+	$val_defaut_champ_bull_pdf["hauteur_entete_moyenne_general"]=5;
+	$val_defaut_champ_bull_pdf["X_avis_cons"]=5;
+	$val_defaut_champ_bull_pdf["Y_avis_cons"]=250;
+	$val_defaut_champ_bull_pdf["longeur_avis_cons"]=130;
+	$val_defaut_champ_bull_pdf["hauteur_avis_cons"]=37;
+	$val_defaut_champ_bull_pdf["cadre_avis_cons"]=1;
+	$val_defaut_champ_bull_pdf["X_sign_chef"]=138;
+	$val_defaut_champ_bull_pdf["Y_sign_chef"]=250;
+	$val_defaut_champ_bull_pdf["longeur_sign_chef"]=67;
+	$val_defaut_champ_bull_pdf["hauteur_sign_chef"]=37;
+	$val_defaut_champ_bull_pdf["cadre_sign_chef"]=0;
+	//$val_defaut_champ_bull_pdf["affiche_filigrame"]=1;
+	$val_defaut_champ_bull_pdf["affiche_filigrame"]=0;
+	$val_defaut_champ_bull_pdf["texte_filigrame"]="DUPLICATA INTERNET";
+	$val_defaut_champ_bull_pdf["affiche_logo_etab"]=1;
+	$val_defaut_champ_bull_pdf["entente_mel"]=1;
+	$val_defaut_champ_bull_pdf["entente_tel"]=1;
+	$val_defaut_champ_bull_pdf["entente_fax"]=1;
+	$val_defaut_champ_bull_pdf["L_max_logo"]=75;
+	$val_defaut_champ_bull_pdf["H_max_logo"]=75;
+	$val_defaut_champ_bull_pdf["toute_moyenne_meme_col"]=0;
+	$val_defaut_champ_bull_pdf["active_reperage_eleve"]=1;
+	$val_defaut_champ_bull_pdf["couleur_reperage_eleve1"]=255;
+	$val_defaut_champ_bull_pdf["couleur_reperage_eleve2"]=255;
+	$val_defaut_champ_bull_pdf["couleur_reperage_eleve3"]=207;
+	$val_defaut_champ_bull_pdf["couleur_categorie_entete"]=1;
+	$val_defaut_champ_bull_pdf["couleur_categorie_entete1"]=239;
+	$val_defaut_champ_bull_pdf["couleur_categorie_entete2"]=239;
+	$val_defaut_champ_bull_pdf["couleur_categorie_entete3"]=239;
+	$val_defaut_champ_bull_pdf["couleur_categorie_cote"]=1;
+	$val_defaut_champ_bull_pdf["couleur_categorie_cote1"]=239;
+	$val_defaut_champ_bull_pdf["couleur_categorie_cote2"]=239;
+	$val_defaut_champ_bull_pdf["couleur_categorie_cote3"]=239;
+	$val_defaut_champ_bull_pdf["couleur_moy_general"]=1;
+	$val_defaut_champ_bull_pdf["couleur_moy_general1"]=239;
+	$val_defaut_champ_bull_pdf["couleur_moy_general2"]=239;
+	$val_defaut_champ_bull_pdf["couleur_moy_general3"]=239;
+	$val_defaut_champ_bull_pdf["titre_entete_matiere"]="Matière";
+	$val_defaut_champ_bull_pdf["titre_entete_coef"]="coef.";
+	$val_defaut_champ_bull_pdf["titre_entete_nbnote"]="nb. n.";
+	$val_defaut_champ_bull_pdf["titre_entete_rang"]="rang";
+	$val_defaut_champ_bull_pdf["titre_entete_appreciation"]="Appréciation / Conseils";
+	$val_defaut_champ_bull_pdf["active_coef_sousmoyene"]=0;
+	$val_defaut_champ_bull_pdf["arrondie_choix"]=0.01;
+	$val_defaut_champ_bull_pdf["nb_chiffre_virgule"]=2;
+	$val_defaut_champ_bull_pdf["chiffre_avec_zero"]=0;
+	$val_defaut_champ_bull_pdf["autorise_sous_matiere"]=1;
+	$val_defaut_champ_bull_pdf["affichage_haut_responsable"]=1;
+	$val_defaut_champ_bull_pdf["entete_model_bulletin"]=1;
+	$val_defaut_champ_bull_pdf["ordre_entete_model_bulletin"]=1;
+	$val_defaut_champ_bull_pdf["affiche_etab_origine"]=0;
+	$val_defaut_champ_bull_pdf["imprime_pour"]=1;
+	$val_defaut_champ_bull_pdf["largeur_matiere"]=40;
+	$val_defaut_champ_bull_pdf["nom_etab_gras"]=0;
+	$val_defaut_champ_bull_pdf["taille_texte_date_edition"]=0;
+	$val_defaut_champ_bull_pdf["taille_texte_matiere"]=0;
+	$val_defaut_champ_bull_pdf["active_moyenne_general"]=1;
+	$val_defaut_champ_bull_pdf["titre_bloc_avis_conseil"]="";
+	$val_defaut_champ_bull_pdf["taille_titre_bloc_avis_conseil"]=0;
+	$val_defaut_champ_bull_pdf["taille_profprincipal_bloc_avis_conseil"]=0;
+	$val_defaut_champ_bull_pdf["affiche_fonction_chef"]=0;
+	$val_defaut_champ_bull_pdf["taille_texte_fonction_chef"]=0;
+	$val_defaut_champ_bull_pdf["taille_texte_identitee_chef"]=0;
+	$val_defaut_champ_bull_pdf["tel_image"]="";
+	$val_defaut_champ_bull_pdf["tel_texte"]="";
+	$val_defaut_champ_bull_pdf["fax_image"]="";
+	$val_defaut_champ_bull_pdf["fax_texte"]="";
+	$val_defaut_champ_bull_pdf["courrier_image"]="";
+	$val_defaut_champ_bull_pdf["courrier_texte"]="";
+	$val_defaut_champ_bull_pdf["largeur_bloc_eleve"]=0;
+	$val_defaut_champ_bull_pdf["hauteur_bloc_eleve"]=0;
+	$val_defaut_champ_bull_pdf["largeur_bloc_adresse"]=0;
+	$val_defaut_champ_bull_pdf["hauteur_bloc_adresse"]=0;
+	$val_defaut_champ_bull_pdf["largeur_bloc_datation"]=0;
+	$val_defaut_champ_bull_pdf["hauteur_bloc_datation"]=0;
+	$val_defaut_champ_bull_pdf["taille_texte_classe"]=0;
+	$val_defaut_champ_bull_pdf["type_texte_classe"]="";
+	$val_defaut_champ_bull_pdf["taille_texte_annee"]=0;
+	$val_defaut_champ_bull_pdf["type_texte_annee"]="";
+	$val_defaut_champ_bull_pdf["taille_texte_periode"]=0;
+	$val_defaut_champ_bull_pdf["type_texte_periode"]="";
+	$val_defaut_champ_bull_pdf["taille_texte_categorie_cote"]=0;
+	$val_defaut_champ_bull_pdf["taille_texte_categorie"]=0;
+	$val_defaut_champ_bull_pdf["type_texte_date_datation"]="";
+	$val_defaut_champ_bull_pdf["cadre_adresse"]=0;
+	$val_defaut_champ_bull_pdf["centrage_logo"]=0;
+	$val_defaut_champ_bull_pdf["Y_centre_logo"]=18;
+	$val_defaut_champ_bull_pdf["ajout_cadre_blanc_photo"]=0;
+	$val_defaut_champ_bull_pdf["affiche_moyenne_mini_general"]=1;
+	$val_defaut_champ_bull_pdf["affiche_moyenne_maxi_general"]=1;
+	$val_defaut_champ_bull_pdf["affiche_date_edition"]=1;
+	//$val_defaut_champ_bull_pdf["affiche_ine"]=0;
+	$val_defaut_champ_bull_pdf["affiche_ine"]=1;
+
+	//=========================
+	// AJOUT: boireaus 20081224
+	$val_defaut_champ_bull_pdf["affiche_nom_etab"]=1;
+	$val_defaut_champ_bull_pdf["affiche_adresse_etab"]=1;
+	//=========================
+
+	if(isset($tab_id_classe)) {
+		foreach($val_defaut_champ_bull_pdf as $key => $value) {
+			for($loop=0;$loop<count($tab_id_classe);$loop++) {
+				$tab_modele_pdf["$key"][$tab_id_classe[$loop]]=$value;
+				//echo "\$tab_modele_pdf[\"$key\"][$tab_id_classe[$loop]]=$value<br />\n";
+			}
+		}
+	}
+?>

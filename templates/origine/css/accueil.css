@@ -1,0 +1,217 @@
+/* 
+ * $Id: accueil.css 7115 2011-06-05 07:29:21Z crob $
+ *
+ * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ *
+ * This file is part of GEPI.
+ *
+ * GEPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GEPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GEPI; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+ */
+
+h2 {
+	margin-top:1.5em;
+}
+
+
+.infobulle_entete {
+	background-color: #4a4a59;
+}
+.infobulle_corps {
+	background-color: #DFDFDF;
+}
+
+table.boireaus {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	border-collapse: collapse;
+}
+
+.boireaus th {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	background-color: #f0e68c;
+	font-weight:bold;
+	text-align:center;
+	vertical-align: middle;
+}
+
+.boireaus td {
+	text-align:center;
+	vertical-align: middle;
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+}
+.boireaus .lig-1 {
+	background-color: #C8FFC8;
+}
+.boireaus .lig1 {
+	background-color: #FFE6AA;
+}
+
+/*
+#messagerie {
+	width: 70%;
+	padding: 5px 5px 5px 10px;
+	border: 1px dashed #0000AA;
+	background-repeat: no-repeat;
+	background-position: 0% 0%;
+	margin-right:auto;
+	margin-left:auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+*/
+#messagerie {
+  width: 70%;
+  padding-top: 5px;
+  padding-right: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  border: 4px double #0000AA;
+  background-repeat: no-repeat;
+  background-position: 0% 0%;
+  margin-top: 10px;
+  margin-right: auto;
+  margin-bottom: 10px;
+  margin-left: auto;
+  -webkit-border-radius: 10px 10px 10px 10px;
+  -moz-border-radius: 10px 10px 10px 10px;
+  border-radius: 10px 10px 10px 10px;
+}
+
+hr {
+height: 1px;
+color: #F00;
+background-color: #F00;
+}
+
+.invisible {
+  display: none;
+}
+
+.div_tableau {
+	display:table;
+	width:70%; 
+	margin:0 auto; 
+	padding:0em;
+}
+
+.cellule_1 {
+	width:98%;
+	padding:0.5em 0.5em 0.5em 0.5em;
+	border-width:thin;
+	border-style:solid; 
+	border-color:#d3d3d3; 
+}
+.cellule_1 form{
+	text-align:center;
+}
+
+.colonne {
+	display:table-cell;
+	padding:0.5em;
+	vertical-align:middle;
+	border-width:thin;
+	border-style:solid; 
+	border-color:#d3d3d3; 
+}
+
+.colonne:first-child {
+	width:30%; 
+	font-size:medium;
+	font-weight:normal;
+}
+
+.colonne + .colonne {
+	border-left:thin solid #d3d3d3;
+}
+
+.colonne3 {
+	display:table-cell;
+	padding:0.5em;
+	vertical-align:middle;
+	border-width:thin;
+	border-style:solid; 
+	border-color:#d3d3d3; 
+}
+
+.colonne3gauche {
+	width:7%; 
+	font-size:medium;
+	font-weight:normal;
+	text-align:center;
+}
+
+.colonne3centre  {
+	width:27%; 
+	font-size:medium;
+	font-weight:normal;
+}
+
+.colonne3droite  {
+	border-left:thin solid #d3d3d3;
+}
+
+
+
+
+/* message */
+.headerMessage {
+	width: 100%;
+	padding: 0.5%;
+	margin: 0;
+	color: #FF0000;
+	font-variant: small-caps;
+	text-align: center;
+}
+
+/* se référencer */
+.referencement {
+	border-style:solid; 
+	border-width:1px; 
+	border-color: #6F6968; 
+	background-color: #CFD7FF; 
+	margin: 2px 60px;  
+	padding: 2px;
+	text-align: center; 
+	color: #FF0000; 
+	font-weight: bold;
+}
+/* Flux RSS */
+.flux_rss {
+	cursor: pointer;
+	color:blue;
+}
+
+.rouge {
+	color:red;
+}
+.vert {
+	color:green;
+}
+
+.small {
+	font-size:smaller;
+}
+
+.fixeMilieuDroit {
+	position: fixed;
+	top: 50%;
+	right: 2em;
+	text-align:center;
+}

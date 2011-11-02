@@ -1,0 +1,39 @@
+Ce module permet de rechercher un login dans les tables gepi à  partir de l'uid retourné par un CAS. Si votre CAS est associé à  un ldap qui va fournir le login gepi, merci d'utiliser le module standard CAS.
+
+Using the CAS authentication source with simpleSAMLphp
+==========================================================
+
+This is completely based on the original cas authentication, 
+the only diffrence is this is authentication module and not a script.
+
+Setting up the CAS authentication module
+----------------------------------
+
+The first thing you need to do is to enable the cas module:
+
+    touch modules/cas/enable
+
+Adding a authentication source
+
+example authsources.php
+----------------------------------
+
+Il faut indiquer une table ainsi que les champs permettant de retrouver le login gepi
+Dans cet exemple, l'uid est retourné dans le nom d'utilisateur et non dans les attributs lors de la validation du ticket
+
+
+	'example-gepicas' => array(
+		'gepicas:CAS',
+		'cas' => array(
+			'login' => 'https://cas.example.com/login',
+			'validate' => 'https://cas.example.com/validate',
+			'logout' => 'https://cas.example.com/logout'
+		),
+		'search_table' => array(
+			'name' => 'plugin_sso_table',
+			'cas_uid_column' => 'login_sso',
+			'gepi_login_column' => 'login_gepi'
+            'champ_uid_retour' => 'username'
+		),
+        'ldap'=>array(),
+	),

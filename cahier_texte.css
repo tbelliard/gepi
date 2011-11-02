@@ -1,0 +1,324 @@
+/*
+Cahier_texte.css
+Mise en page pou validation et accessibilité
+*/
+
+
+/***********************
+       Général
+***********************/
+/* --- Décoration du texte --- */
+/*souligne le texte*/
+.souligne {
+	text-decoration: underline;
+	font-size: smaller;
+}
+/*aligne le texte*/
+.txt_centre {
+	text-align:center;
+}
+.centre_texte {
+	text-align: center;
+}
+.droite_texte {
+	text-align: right;
+}
+.txt_gauche {
+	text-align: left;
+}
+/* centre le texte et le met en petite capitale grasse*/
+.txt_centre_pt_cap {
+	text-align:center;
+	font-variant: small-caps;
+	font-weight: bold;
+}
+/* colorie le texte */
+.bleu {
+	color:blue;
+	font-variant: small-caps;
+}
+
+/* --- Tableaux --- */
+/* Tableau avec 3 colonnes equilibrees*/
+table.centre_table {
+	width: 100%;
+}
+td.ct_col_gauche {
+	width: 34%;
+	text-align:left;
+}
+td.ct_col_centre{
+	width: 32%;
+	text-align:center;
+}
+td.ct_col_droit{
+	width: 34%;
+	text-align:right;
+}
+/* place le tableau de droite à droite */
+.ct_col_droit table {
+	margin-left: auto;
+	text-align:right;
+}
+
+/***********************
+       Accueil.php
+***********************/
+
+/*
+#messagerie {
+	width: 70%;
+	padding: 5px 5px 5px 10px;
+	border: 1px dashed #0000AA;
+	background-repeat: no-repeat;
+	background-position: 0% 0%;
+	margin-right:auto;
+	margin-left:auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+*/
+#messagerie {
+  width: 70%;
+  padding-top: 5px;
+  padding-right: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  border: 4px double #0000AA;
+  background-repeat: no-repeat;
+  background-position: 0% 0%;
+  margin-top: 10px;
+  margin-right: auto;
+  margin-bottom: 10px;
+  margin-left: auto;
+  -webkit-border-radius: 10px 10px 10px 10px;
+  -moz-border-radius: 10px 10px 10px 10px;
+  border-radius: 10px 10px 10px 10px;
+}
+
+/* menu */
+.accueil {
+	width: 68%;
+	margin-right:auto;
+	margin-left:auto;
+	margin-bottom:0px;
+	border: none;
+	text-align: left;
+	padding-left: 20px;
+	padding-bottom: 3px;
+	padding-top: 3px;
+	font-size: 11pt;
+	font-weight: bold;
+	color: black;
+	background-image: url("./images/background/left-top-corner.png");
+	background-repeat: no-repeat;
+	background-position: -1px 0%;
+	border-collapse: separate;
+	border-spacing: 0px;
+}
+table.menu {
+	width: 70%;
+	border-collapse: separate;
+	border-spacing: 0px;
+	border: none;
+	border-bottom: 1px solid lightgrey;
+	margin-right:auto;
+	margin-left:auto;
+	margin-top: 0px;
+	margin-bottom: 10px;
+	padding-left: 0px;
+	background-image:none;
+	background-repeat: no-repeat;
+	background-position: -1px 0%;
+}
+table.menu td {
+	border: 1px solid lightgrey;
+	border-bottom: none;
+	border-top: 1px solid lightgrey;
+	border-left: 1px solid lightgrey;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.accueil img {
+	position: relative;
+	bottom: -3px;
+}
+
+/********************************************
+ --- Cahier de texte : consultation.php --- 
+********************************************/
+
+/* Modifications dans consultation.php - share.inc.php - cahier_texte.css - header.inc*/
+/* --- Mise en page choix de l'enseignement + calendrier --- */
+
+/* --- Mise en page affichage du contenu de cahier de texte --- */
+table.centre_cont_text {
+	width:98%;
+	border:0;
+	text-align:center;
+}
+td.cct_gauche {
+	width:30%;
+	vertical-align:top;
+}
+td.cct_droit {
+	vertical-align:top;
+}
+
+/* --- Mise en page affichage des travaux personnel de cahier de texte --- */
+
+/* 	--- Travaux à faire "futurs" ---*/
+td.cel_trav_futur {
+	border-style:solid;
+	border-width:1px;
+	border-color: #6F6968;
+	background-color: #FFFF80;
+	padding: 2px;
+}
+.titre_a_faire {
+	color: #FF4444;
+	font-variant: small-caps;
+	font-weight: bold;
+}
+.matiere_a_faire {
+	border-style:solid;
+	border-width:1px;
+	border-color: #6F6968;
+	background-color: #FFFFDF;
+	padding: 2px;
+	margin: 1px;
+	color: green;
+	font-variant: small-caps;
+	font-weight: bold;
+}
+table.a_faire_gauche {
+	border-style:solid;
+	border-width:0px;
+	border-color: #6F6968;
+	width:100%;
+	padding:2px;
+	margin-bottom:20px;
+}
+.a_faire_gauche td {
+	border-style:solid;
+	border-width:1px;
+	border-color:#6F6968;
+	background-color:#FFFF80;
+	color:#FF4444;
+	font-variant: small-caps;
+	text-align: center;
+	font-weight: bold;
+}
+.a_faire_fond {
+	border-style:solid;
+	border-width:1px;
+	border-color: #6F6968;
+	background-color: #FFFFDF;
+	padding: 2px;
+	margin: 1px;
+}
+.a_faire_titre {
+	color: green;
+	font-variant: small-caps;
+	text-align: left;
+	text-decoration: underline;
+	font-size: smaller;
+}
+/* Notice informations generales*/
+.ct_info_generale {
+	border-style:solid;
+	border-width:1px;
+	border-color: #6F6968;
+	background-color: #ACACFF;
+	padding: 2px;
+	margin: 2px;
+	width: 100%;
+}
+.tr_info_generale {
+	border-style:solid;
+	border-width:1px;
+	border-color: #6F6968;
+	background-color: #EFEFFF;
+	padding: 2px;
+	margin: 2px;
+}
+.ct_jour {
+	border-style:solid;
+	border-width:0px;
+	border-color:#6F6968;
+	padding: 2px;
+	margin: 2px;
+}
+/* Cahier de texte - vue generale */
+.ct_sa_table1 {
+	overflow: auto;
+}
+
+.ct_sa_matiere {
+	float:left;
+	width:30%;
+}
+.ct_sa_titre {
+   right:2px;
+	width:69%;
+	margin-left:auto;
+	text-align:center;
+}
+.ct_sa_info_ge {
+	border-bottom-style: solid;
+	border-width:2px;
+	border-color: #6F6968;
+}
+.ct_sa_info_ge_cont {
+	border-style:solid;
+	border-width:0px;
+	border-color: #6F6968;
+	padding: 5px;
+	margin: 2px;
+	width:100%;
+}
+/*// Notices de type compte-rendu */
+.ct_sa_noti_cr {
+	border-style:solid;
+	border-width:1px;
+	border-color: #6F6968;
+	width:100%;
+	padding:1px;
+	background-color:#C7FF99;
+}
+/*// Notices de type  travail à faire) */
+.ct_sa_noti_taf {
+	border-style:solid;
+	border-width:1px;
+	border-color: #6F6968;
+	width:100%;
+	padding:1px;
+	background-color:#FFCCCF;
+}
+/*// Notice informations generales */
+.ct_sa_noti_ig {
+	border-style:solid;
+	border-width:1px;
+	border-color: #6F6968;
+	width:100%;
+	padding:1px;
+	background-color:#ACACFF;
+}
+/* Travaux à faire "futurs" */
+.ct_sa_noti_fut {
+	border-style:solid;
+	border-width:1px;
+	border-color: #6F6968;
+	width:100%;
+	padding:1px;
+	background-color:#FFFF80;
+}
+
+/* Affichage page de garde */
+.gepi_garde{
+	text-align:center;
+	font: normal small-caps normal 14pt Verdana;
+	line-height: 125%;
+}
+

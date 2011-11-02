@@ -1,0 +1,6 @@
+.ajoutSt {
+cursor: pointer; border: 2px solid green; background-color: lightblue; width: 20%; text-align: center; color: blue;
+}
+.ajoutSt:hover {
+background-color: yellow; border: 2px solid red;
+}

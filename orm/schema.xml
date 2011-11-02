@@ -1,0 +1,740 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<database name="gepi" defaultIdMethod="native">
+
+	<table name="utilisateurs" phpName="UtilisateurProfessionnel" description="Utilisateur de gepi">
+		<column name="login" required="true" primaryKey="true" autoIncrement="false" type="VARCHAR" size="50" description="Login de l'utilisateur, et clÃ© primaire de la table utilisateur" />
+		<column name="nom" type="VARCHAR" required="true" size="50" description="Nom de l'utilisateur" />
+		<column name="prenom" required="true" type="VARCHAR" size="50" description="Prenom de l'utilisateur" />
+		<column name="civilite" required="true" type="VARCHAR" size="5" description="Civilite" />
+		<column name="password" required="true" type="CHAR" size="128" description="Mot de passe" />
+		<column name="salt" required="false" type="CHAR" size="128" description="sel pour le hmac du mot de passe" />
+		<column name="email" required="true" type="VARCHAR" size="50" description="Email de l'utilisateur" />
+		<column name="show_email" required="true" type="VARCHAR" size="50" default="no" description="L'email de l'utilisateur est-il public (yes/no)" />
+		<column name="statut" required="true" type="VARCHAR" size="20" description="Statut de l'utilisateur" />
+		<column name="etat" required="true" type="VARCHAR" size="20" description="Etat de l'utilisateur (actif/inactif)" />
+		<column name="change_mdp" required="true" type="CHAR" size="1" default="n" description="L'utilisateur doit-il changer son mot de passe (y/n) (a la premiere connexion par exemple)" />
+		<column name="date_verrouillage" required="true" type="DATE" default="2006-01-01 00:00:00" description="Date de verrouillage de l'utilisateur" />
+		<column name="password_ticket" required="true" type="VARCHAR" size="255" description="password_ticket de l'utilisateur" />
+		<column name="ticket_expiration" required="true" type="DATE" description="ticket_expiration de l'utilisateur" />
+		<column name="niveau_alerte" required="true" type="SMALLINT" default="0" description="niveau_alerte de l'utilisateur" />
+		<column name="observation_securite" required="true" type="TINYINT" default="0" description="observation_securite de l'utilisateur" />
+		<column name="temp_dir" required="true" type="VARCHAR" size="255" description="Repertoire temporaire de l'utilisateur" />
+		<column name="numind" required="true" type="VARCHAR" size="255" description="numind de l'utilisateur" />
+		<column name="auth_mode" required="true" type="VARCHAR" size="255" default="gepi" description="auth_mode de l'utilisateur (gepi/cas/ldap)" />
+	</table>
+
+	<table name="groupes" phpName="Groupe" description="Groupe d'eleves permettant d'y affecter une matiere et un professeurs">
+		<column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" description="Clee primaire du groupe" />
+		<column name="name" required="true" type="VARCHAR" size="60" description="Nom du groupe" />
+		<column name="description" required="true" type="LONGVARCHAR" description="Description du groupe" />
+		<column name="recalcul_rang" type="VARCHAR" size="10" description="recalcul_rang" />
+	</table>
+
+	<table name="j_groupes_professeurs" isCrossRef="true" description="Table permettant le jointure entre groupe d'eleves et professeurs. Est rarement utilise directement dans le code.">
+		<column name="id_groupe" type="INTEGER" required="true" primaryKey="true" description="Cle primaire du groupe" />
+		<foreign-key foreignTable="groupes" onDelete="cascade">
+			<reference local="id_groupe" foreign="id"/>
+		</foreign-key>
+		<column name="login" type="VARCHAR" size="50" required="true" primaryKey="true" description="Cle primaire de l'utilisateur" />
+		<foreign-key foreignTable="utilisateurs" onDelete="cascade">
+			<reference local="login" foreign="login"/>
+		</foreign-key>
+	</table>
+
+	<table name="j_groupes_matieres" description="Table permettant le jointure entre un enseignement et une matière." isCrossRef="true">
+		<column name="id_groupe" type="INTEGER" required="true" primaryKey="true" description="Cle primaire du groupe" />
+		<foreign-key foreignTable="groupes" onDelete="cascade">
+			<reference local="id_groupe" foreign="id"/>
+		</foreign-key>
+		<column name="id_matiere" type="VARCHAR" size="255" required="true" primaryKey="true" description="Cle primaire de la matiere" />
+		<foreign-key foreignTable="matieres" onDelete="cascade">
+			<reference local="id_matiere" foreign="matiere"/>
+		</foreign-key>
+	</table>
+
+	<table name="classes" phpName="Classe" description="Classe regroupant des eleves">
+		<column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" description="Cle primaire de la classe" />
+		<column name="classe" phpName="Nom" required="true" type="VARCHAR" size="100" description="nom de la classe. Le nom court est différent pour chaque classe." />
+		<column name="nom_complet" required="true" type="VARCHAR" size="100" description="nom complet de la classe. Le nom long n'est pas toujours différent pour chaque classe. Le nom long peu servir à catégoriser le niveau." />
+		<column name="suivi_par" required="true" type="VARCHAR" size="50" />
+		<column name="formule" required="true" type="VARCHAR" size="100" />
+		<column name="format_nom" required="true" type="VARCHAR" size="5" />
+		<column name="display_rang" required="true" type="CHAR" size="1" default="n"/>
+		<column name="display_address" required="true" type="CHAR" size="1" default="n"/>
+		<column name="display_coef" required="true" type="CHAR" size="1" default="y"/>
+		<column name="display_mat_cat" required="true" type="CHAR" size="1" default="n"/>
+		<column name="display_nbdev" required="true" type="CHAR" size="1" default="n"/>
+		<column name="display_moy_gen" required="true" type="CHAR" size="1" default="y"/>
+		<column name="modele_bulletin_pdf" type="VARCHAR" size="255" />
+		<column name="rn_nomdev" required="true" type="CHAR"  default="n"/>
+		<column name="rn_toutcoefdev" required="true" type="CHAR"  default="n"/>
+		<column name="rn_coefdev_si_diff" required="true" type="CHAR" default="n"/>
+		<column name="rn_datedev" required="true" type="CHAR" size="1" default="n"/>
+		<column name="rn_sign_chefetab" required="true" type="CHAR" size="1" default="n"/>
+		<column name="rn_sign_pp" required="true" type="CHAR" size="1" default="n"/>
+		<column name="rn_sign_resp" required="true" type="CHAR" size="1" default="n"/>
+		<column name="rn_sign_nblig" required="true" type="INTEGER" default="3"/>
+		<column name="rn_formule" required="true" type="LONGVARCHAR"/>
+    <column name="ects_type_formation" type="VARCHAR" size="255" />
+    <column name="ects_parcours" type="VARCHAR" size="255" />
+    <column name="ects_code_parcours" type="VARCHAR" size="255" />
+    <column name="ects_domaines_etude" type="VARCHAR" size="255" />
+    <column name="ects_fonction_signataire_attestation" type="VARCHAR" size="255" />
+	</table>
+
+        <table name="periodes" phpName="PeriodeNote" description="Table regroupant les periodes de notes pour les classes">
+		<column name="nom_periode" type="VARCHAR" size="10" required="false" description="Nom de la periode de note" />
+		<column name="num_periode" type="INTEGER" size="10" required="true" primaryKey="true" description="identifiant numerique de la periode (1, 2 ou3)" />
+		<column name="verouiller" type="VARCHAR" size="1" required="true" default="O" description="Verrouillage de la periode : O pour verouillee, N pour non verrouillee, P pour partiel (pied de bulletin)" />
+		<column name="id_classe" type="INTEGER" size="11" required="true" primaryKey="true" description="identifiant numerique de la classe." />
+		<foreign-key foreignTable="classes" onDelete="cascade"><reference local="id_classe" foreign="id"/></foreign-key>
+		<column name="date_verrouillage" type="TIMESTAMP" required="false" description="date de verrouillage de la periode" />
+		<column name="date_fin" type="TIMESTAMP" required="false" description="date de verrouillage de la periode" />
+	</table>
+
+	<table name="j_scol_classes" description="Table permettant le jointure entre un utilisateur scolarite et une classe.">
+		<column name="login" type="VARCHAR" size="50" required="true" primaryKey="true" description="Cle primaire de l'utilisateur" />
+		<foreign-key foreignTable="utilisateurs" onDelete="cascade">
+			<reference local="login" foreign="login"/>
+		</foreign-key>
+		<column name="id_classe" type="INTEGER" size="11" required="true" primaryKey="true" description="Cle primaire de la classe" />
+		<foreign-key foreignTable="classes" onDelete="cascade">
+			<reference local="id_classe" foreign="id"/>
+		</foreign-key>
+	</table>
+
+	<table name="j_groupes_classes" description="Table permettant la jointure entre groupe d'enseignement et une classe. Cette jointure permet de definir un enseignement, c'est à dire un groupe d'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe">
+		<column name="id_groupe" type="INTEGER" required="true" primaryKey="true" description="Cle primaire du groupe"/>
+		<foreign-key foreignTable="groupes" onDelete="cascade">
+			<reference local="id_groupe" foreign="id"/>
+		</foreign-key>
+		<column name="id_classe" type="INTEGER" required="true" primaryKey="true" description="Cle primaire de la classe" />
+		<foreign-key foreignTable="classes" onDelete="cascade">
+			<reference local="id_classe" foreign="id"/>
+		</foreign-key>
+		<column name="priorite" type="SMALLINT" required="true"/>
+		<column name="coef" type="DECIMAL" required="true"/>
+		<column name="categorie_id" type="INTEGER" required="true"/>
+		<foreign-key foreignTable="matieres_categories">
+			<reference local="categorie_id" foreign="id"/>
+		</foreign-key>
+		<column name="saisie_ects" type="BOOLEAN" required="false" default="0" description="Active ou non la saisie ECTS pour cet enseignement"/>
+		<column name="valeur_ects" type="DECIMAL" required="false" description="Valeur par défaut des ECTS pour cet enseignement"/>
+	</table>
+
+<!-- objets specifiques a cahiers de texte 2 -->
+	<table name="ct_entry" phpName="CahierTexteCompteRendu" description="Compte rendu du cahier de texte">
+		<column name="id_ct" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" description="Cle primaire du compte rendu" />
+		<column name="heure_entry" required="true" type="TIME" default="00:00:00" description="heure de l'entree" />
+		<column name="date_ct" required="true" type="INTEGER" default="0" description="date du compte rendu" />
+		<column name="contenu" required="true" type="LONGVARCHAR" description="contenu redactionnel du compte rendu" />
+		<column name="vise" required="true" type="CHAR" default="n" description="vise" />
+		<column name="visa" required="true" type="CHAR" default="n" description="visa" />
+		<column name="id_groupe" required="true" type="INTEGER" description="Cle etrangere du groupe auquel appartient le compte rendu" />
+		<foreign-key foreignTable="groupes" onDelete="cascade">
+			<reference local="id_groupe" foreign="id" />
+		</foreign-key>
+		<column name="id_login" type="VARCHAR" size="32" description="Cle etrangere de l'utilisateur auquel appartient le compte rendu" />
+		<foreign-key foreignTable="utilisateurs" onDelete="setnull">
+			<reference local="id_login" foreign="login" />
+		</foreign-key>
+		<column name="id_sequence" type="INTEGER" size="5" default="0" description="Cle etrangere de la sequence auquel appartient le compte rendu" />
+		<foreign-key foreignTable="ct_sequences" onDelete="setnull">
+			<reference local="id_sequence" foreign="id" />
+		</foreign-key>
+	</table>
+
+	<table name="ct_documents" phpName="CahierTexteCompteRenduFichierJoint" description="Document (fichier joint) appartenant a un compte rendu du cahier de texte">
+		<column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" description="Cle primaire du document" />
+		<column name="id_ct" default="0" required="true" type="INTEGER" description="Cle etrangere du compte rendu auquel appartient ce document" />
+		<foreign-key foreignTable="ct_entry" onDelete="cascade">
+			<reference local="id_ct" foreign="id_ct" />
+		</foreign-key>
+		<column name="titre" required="true" type="VARCHAR" size="255" description="Titre du document (fichier joint)" />
+		<column name="taille" required="true" default="0" type="INTEGER" description="Taille du document (fichier joint)" />
+		<column name="emplacement" required="true" type="VARCHAR" size="255" description="Chemin du systeme de fichier vers le document (fichier joint)" />
+		<column name="visible_eleve_parent" required="false" type="BOOLEAN" default="true" description="Visibilité élève/parent du document joint" />
+	</table>
+
+	<table name="ct_devoirs_entry" phpName="CahierTexteTravailAFaire" description="Travail Ã  faire (devoir) cahier de texte">
+		<column name="id_ct" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" description="Cle primaire du travail Ã  faire" />
+		<column name="date_ct" required="true" type="INTEGER" default="0" description="date pour laquelle le travail est a faire" />
+		<column name="contenu" required="true" type="LONGVARCHAR" description="contenu redactionnel du travail a faire" />
+		<column name="vise" required="true" type="CHAR" default="n" description="vise" />
+		<column name="id_groupe" required="true" type="INTEGER" description="Cle etrangere du groupe auquel appartient ce travail a faire" />
+		<foreign-key foreignTable="groupes" onDelete="cascade">
+			<reference local="id_groupe" foreign="id" />
+		</foreign-key>
+		<column name="id_login" type="VARCHAR" size="32" description="Cle etrangere du l'utilisateur auquel appartient ce travail a faire" />
+		<foreign-key foreignTable="utilisateurs" onDelete="setnull">
+			<reference local="id_login" foreign="login" />
+		</foreign-key>
+    <column name="id_sequence" type="INTEGER" size="5" default="0" description="Cle etrangere de la sequence auquel appartient le devoir a faire" />
+		<foreign-key foreignTable="ct_sequences" onDelete="setnull">
+			<reference local="id_sequence" foreign="id" />
+		</foreign-key>
+                <column name="date_visibilite_eleve" required="true" type="TIMESTAMP" defaultExpr="now()" description="Timestamp précisant quand les devoirs sont portés à la conaissance des élèves"/>
+	</table>
+
+	<table name="ct_devoirs_documents" phpName="CahierTexteTravailAFaireFichierJoint" description="Document (fichier joint) appartenant a un travail Ã  faire du cahier de texte">
+		<column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" description="Cle primaire du document" />
+		<column name="id_ct_devoir" default="0" required="true" type="INTEGER" description="Cle etrangere du travail a faire auquel appartient ce document" />
+		<foreign-key foreignTable="ct_devoirs_entry" onDelete="cascade">
+			<reference local="id_ct_devoir" foreign="id_ct" />
+		</foreign-key>
+		<column name="titre" required="true" type="VARCHAR" size="255" description="Titre du document (fichier joint)" />
+		<column name="taille" required="true" default="0" type="INTEGER" description="Taille du document (fichier joint)" />
+		<column name="emplacement" required="true" type="VARCHAR" size="255" description="Chemin du systeme de fichier vers le document (fichier joint)" />
+ 		<column name="visible_eleve_parent" required="false" type="BOOLEAN" default="true" description="Visibilité élève/parent du document joint" />
+	</table>
+
+	<table name="ct_private_entry" phpName="CahierTexteNoticePrivee" description="Notice privee du cahier de texte">
+		<column name="id_ct" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" description="Cle primaire de la cotice privee" />
+		<column name="heure_entry" required="true" type="TIME" default="00:00:00" description="heure de l'entree" />
+		<column name="date_ct" required="true" type="INTEGER" default="0" description="date du compte rendu" />
+		<column name="contenu" required="true" type="LONGVARCHAR" description="contenu redactionnel du compte rendu" />
+		<column name="id_groupe" required="true" type="INTEGER" description="Cle etrangere du groupe auquel appartient le compte rendu" />
+		<foreign-key foreignTable="groupes" onDelete="cascade">
+			<reference local="id_groupe" foreign="id" />
+		</foreign-key>
+		<column name="id_login" type="VARCHAR" size="32" description="Cle etrangere de l'utilisateur auquel appartient le compte rendu" />
+		<foreign-key foreignTable="utilisateurs" onDelete="setnull">
+			<reference local="id_login" foreign="login" />
+		</foreign-key>
+    <column name="id_sequence" type="INTEGER" size="5" default="0" description="Cle etrangere de la sequence auquel appartient la notice privee" />
+		<foreign-key foreignTable="ct_sequences" onDelete="setnull">
+			<reference local="id_sequence" foreign="id" />
+		</foreign-key>
+	</table>
+
+  <table name="ct_sequences" phpName="CahierTexteSequence" description="Sequence de plusieurs compte-rendus">
+		<column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" description="Cle primaire des sequences" />
+		<column name="titre" required="true" type="VARCHAR" size="255" description="Titre de la sequence" />
+		<column name="description" required="true" type="CLOB" description="Description de la sequence" />
+	</table>
+
+<!-- fin des objets specifiques a cahiers de texte 2 -->
+
+<!-- objets propel generes pour absence2-->
+
+	<table name="eleves" phpName="Eleve" description="Liste des eleves de l'etablissement">
+		<column name="no_gep" required="true" type="VARCHAR" size="50" description="Ancien numero GEP, Numero national de l'eleve"/>
+		<column name="login" required="true" type="VARCHAR" size="50" description="Login de l'eleve, est conserve pour le login utilisateur"/>
+		<column name="nom" required="true" type="VARCHAR" size="50" description="Nom eleve"/>
+		<column name="prenom" required="true" type="VARCHAR" size="50" description="Prenom eleve"/>
+		<column name="sexe" required="true" type="VARCHAR" size="1" description="M ou F"/>
+		<column name="naissance" required="true" type="DATE" description="Date de naissance AAAA-MM-JJ"/>
+		<column name="lieu_naissance" required="true" type="VARCHAR" size="50" default="" description="Code de Sconet"/>
+		<column name="elenoet" required="true" type="VARCHAR" size="50" description="Numero interne de l'eleve dans l'etablissement"/>
+		<column name="ereno" required="true" type="VARCHAR" size="50" description="Plus utilise"/>
+		<column name="ele_id" required="true" type="VARCHAR" size="10" default="" description="cle utilise par Sconet dans ses fichiers xml"/>
+		<column name="email" required="true" type="VARCHAR" size="255" default="" description="Courriel de l'eleve"/>
+		<column name="id_eleve" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire autoincremente"/>
+                <column name="date_sortie" required="false" type="TIMESTAMP" default="NULL" description="Timestamp de sortie de l'élève de l'établissement (fin d'inscription)"/>
+		<column name="mef_code" required="false" type="INTEGER" description="code mef de la formation de l'eleve"/>
+		<foreign-key foreignTable="mef" onDelete="setnull"><reference local="mef_code" foreign="mef_code"/></foreign-key>
+	</table>
+
+	<table name="mef" description="Module élémentaire de formation">
+		<column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" description="Cle primaire de la classe" />
+		<column name="mef_code" required="false" type="INTEGER" description="Numero de la nomenclature officielle (numero MEF)" />
+                <column name="libelle_court" required="true" type="VARCHAR" size="50" description="libelle de la formation"/>
+                <column name="libelle_long" required="true" type="VARCHAR" size="300" description="libelle de la formation"/>
+                <column name="libelle_edition" required="true" type="VARCHAR" size="300" description="libelle de la formation pour presentation"/>
+	</table>
+
+	<table name="j_eleves_classes" phpName="JEleveClasse" description="Table de jointure entre les eleves et leur classe en fonction de la periode">
+		<column name="login" required="true" primaryKey="true" type="VARCHAR" size="50" description="cle etrangere, Login de l'eleve"/>
+		<foreign-key foreignTable="eleves" onDelete="cascade"><reference local="login" foreign="login"/></foreign-key>
+		<column name="id_classe" required="true" primaryKey="true" type="INTEGER" size="11" default="0" description="cle etrangere, id de la classe"/>
+		<foreign-key foreignTable="classes" onDelete="cascade"><reference local="id_classe" foreign="id"/></foreign-key>
+		<column name="periode" required="true" primaryKey="true" type="INTEGER" size="11" default="0" description="Numéro de la periode ou l'eleve est inscrit dans cette classe"/>
+		<column name="rang" required="true" type="SMALLINT" size="6" default="0" description=""/>
+	</table>
+
+	<table name="j_eleves_cpe" phpName="JEleveCpe" description="Table de jointure entre les CPE et les eleves">
+		<column name="e_login" required="true" primaryKey="true" type="VARCHAR" size="50" default="" description="cle etrangere, login de l'eleve"/>
+		<foreign-key foreignTable="eleves" onDelete="cascade"><reference local="e_login" foreign="login"/></foreign-key>
+		<column name="cpe_login" required="true" primaryKey="true" type="VARCHAR" size="50" default="" description="cle etrangere, login du CPE (utilisateur professionnel)"/>
+		<foreign-key foreignTable="utilisateurs" onDelete="cascade"><reference local="cpe_login" foreign="login"/></foreign-key>
+	</table>
+
+	<table name="j_eleves_groupes" phpName="JEleveGroupe" description="Table de jointure entre les eleves et leurs enseignements (groupes)">
+		<column name="login" required="true" primaryKey="true" type="VARCHAR" size="50" default="" description="cle etrangere, login de l'eleve"/>
+		<foreign-key foreignTable="eleves" onDelete="cascade"><reference local="login" foreign="login"/></foreign-key>
+		<column name="id_groupe" required="true" primaryKey="true" type="INTEGER" size="11" default="0" description="cle etrangere, id du groupe"/>
+		<foreign-key foreignTable="groupes" onDelete="cascade"><reference local="id_groupe" foreign="id"/></foreign-key>
+		<column name="periode" required="true" primaryKey="true" type="INTEGER" size="11" default="0" description="Periode ou l'eleve est inscrit dans cet enseignement (groupe)"/>
+	</table>
+
+	<table name="j_eleves_professeurs" phpName="JEleveProfesseurPrincipal" description="Table de jointure entre les professeurs principaux et les eleves">
+		<column name="login" required="true" primaryKey="true" type="VARCHAR" size="50" description="cle etrangere, login de l'eleve"/>
+		<foreign-key foreignTable="eleves" onDelete="cascade"><reference local="login" foreign="login"/></foreign-key>
+		<column name="professeur" required="true" primaryKey="true" type="VARCHAR" size="50" description="cle etrangere, login du professeur (utilisateur professionnel)"/>
+		<foreign-key foreignTable="utilisateurs" onDelete="cascade"><reference local="professeur" foreign="login"/></foreign-key>
+		<column name="id_classe" required="true" primaryKey="true" type="INTEGER" size="11" description="cle etrangere, id de la classe"/>
+		<foreign-key foreignTable="classes" onDelete="cascade"><reference local="id_classe" foreign="id"/></foreign-key>
+	</table>
+
+	<table name="j_eleves_regime" phpName="EleveRegimeDoublant" description="Mention du redoublement eventuel de l'eleve ainsi que son regime de presence (externe, demi-pensionnaire, ...)">
+		<column name="login" required="true" primaryKey="true" type="VARCHAR" size="50" description="cle etrangere, login de l'eleve"/>
+		<foreign-key foreignTable="eleves" onDelete="cascade"><reference local="login" foreign="login"/></foreign-key>
+		<column name="doublant" required="true" type="CHAR" size="1" description="R pour les redoublants et - ou rien pour les autres"/>
+		<column name="regime" required="true" type="CHAR" size="5" description="Regime de l'eleve d/p ext. ... etc"/>
+	</table>
+
+	<table name="responsables2" phpName="ResponsableInformation" description="Table de jointure entre les eleves et leurs responsables legaux avec mention du niveau de ces responsables">
+		<column name="ele_id" primaryKey="true" required="true" type="VARCHAR" size="10" description="cle etrangere, ele_id de l'eleve"/>
+		<foreign-key foreignTable="eleves" onDelete="cascade"><reference local="ele_id" foreign="ele_id"/></foreign-key>
+		<column name="pers_id" required="true" type="VARCHAR" size="10" description="cle etrangere vers le responsable"/>
+		<foreign-key foreignTable="resp_pers" onDelete="cascade"><reference local="pers_id" foreign="pers_id"/></foreign-key>
+		<column name="resp_legal" primaryKey="true" required="true" type="VARCHAR" size="1" description="Niveau de responsabilite du responsable legal"/>
+		<column name="pers_contact" required="true" type="VARCHAR" size="1" description=""/>
+	</table>
+	
+	<table name="resp_pers" phpName="ResponsableEleve" description="Liste des responsables legaux des eleves">
+		<column name="pers_id" required="true" primaryKey="true" type="VARCHAR" size="10" description="cle primaire genere par sconet"/>
+		<column name="login" required="true" type="VARCHAR" size="50" description="cle primaire du responsable, login utilise comme utilisateur"/>
+		<column name="nom" required="true" type="VARCHAR" size="30" description="Nom du responsable legal"/>
+		<column name="prenom" required="true" type="VARCHAR" size="30" description="Prenom du responsable legal"/>
+		<column name="civilite" required="true" type="VARCHAR" size="5" description="civilite du responsable legal : M. Mlle Mme"/>
+		<column name="tel_pers" required="true" type="VARCHAR" size="255" description="Telephone personnel du responsable legal"/>
+		<column name="tel_port" required="true" type="VARCHAR" size="255" description="Telephone portable du responsable legal"/>
+		<column name="tel_prof" required="true" type="VARCHAR" size="255" description="Telephone professionnel du responsable lega"/>
+		<column name="mel" required="true" type="VARCHAR" size="100" description="Courriel du responsable legal"/>
+		<column name="adr_id" type="VARCHAR" size="10" description="cle etrangere vers l'adresse du responsable lega"/>
+		<foreign-key foreignTable="resp_adr" onDelete="setnull"><reference local="adr_id" foreign="adr_id"/></foreign-key>
+	</table>
+
+	<table name="resp_adr" phpName="ResponsableEleveAdresse" description="Table de jointure entre les responsables legaux et leur adresse">
+		<column name="adr_id" required="true" primaryKey="true" type="VARCHAR" size="10" description="cle primaire, genere par sconet"/>
+		<column name="adr1" required="true" type="VARCHAR" size="100" description="1ere ligne adresse"/>
+		<column name="adr2" required="true" type="VARCHAR" size="100" description="2eme ligne adresse"/>
+		<column name="adr3" required="true" type="VARCHAR" size="100" description="3eme ligne adresse"/>
+		<column name="adr4" required="true" type="VARCHAR" size="100" description="4eme ligne adresse"/>
+		<column name="cp" required="true" type="VARCHAR" size="6" description="Code postal"/>
+		<column name="pays" required="true" type="VARCHAR" size="50" description="Pays (quand il est autre que France)"/>
+		<column name="commune" required="true" type="VARCHAR" size="50" description="Commune de residence"/>
+	</table>
+
+  <table name="j_eleves_etablissements" phpName="JEleveAncienEtablissement" description="Table de jointure pour connaitre l'etablissement precedent de l'eleve" isCrossRef="true">
+    <column name="id_eleve" required="true" primaryKey="true" type="VARCHAR" size="50" description="cle etrangere, id_eleve de l'eleve"/>
+    <foreign-key foreignTable="eleves" onDelete="cascade"><reference local="id_eleve" foreign="id_eleve"/></foreign-key>
+    <column name="id_etablissement" required="true" primaryKey="true" type="VARCHAR" size="8" default="" description="cle etrangere, id de l'etablissement"/>
+    <foreign-key foreignTable="etablissements" onDelete="cascade"><reference local="id_etablissement" foreign="id"/></foreign-key>
+  </table>
+
+  <table name="etablissements" phpName="AncienEtablissement" description="Liste des etablissements precedents des eleves">
+    <column name="id" required="true" autoIncrement="true" primaryKey="true" type="INTEGER" size="8" description="cle primaire auto-incrementee"/>
+    <column name="nom" required="true" type="VARCHAR" size="50" description="Nom de l'etablissement"/>
+    <column name="niveau" required="true" type="VARCHAR" size="50" description="niveau"/>
+    <column name="type" required="true" type="VARCHAR" size="50" description="type d'etablissement"/>
+    <column name="cp" required="true" type="INTEGER" size="10" description="code postal de l'etablissement"/>
+    <column name="ville" required="true" type="VARCHAR" default="" size="50" description="Ville de l'etablissement"/>
+  </table>
+
+  <table name="aid" phpName="AidDetails" description="Liste des AID (Activites Inter-Disciplinaires)">
+    <column name="id" required="true" autoIncrement="true" primaryKey="true" type="VARCHAR" size="100" description="cle primaire auto-incremente"/>
+    <column name="nom" required="true" type="VARCHAR" size="100" default="" description="Nom de l'AID"/>
+    <column name="numero" required="true" type="VARCHAR" size="8" default="0" description="Numero d'ordre d'affichage"/>
+    <column name="indice_aid" required="true" type="INTEGER" size="11" default="0" description="Cle etrangere, vers la liste des categories d'AID (aid_config)"/>
+    <foreign-key foreignTable="aid_config" onDelete="cascade"><reference local="indice_aid" foreign="indice_aid"/></foreign-key>
+    <column name="perso1" required="true" type="VARCHAR" size="255" description=""/>
+    <column name="perso2" required="true" type="VARCHAR" size="255" description=""/>
+    <column name="perso3" required="true" type="VARCHAR" size="255" description=""/>
+    <column name="productions" required="true" type="VARCHAR" size="100" description=""/>
+    <column name="resume" required="true" type="LONGVARCHAR" description=""/>
+    <column name="famille" required="true" type="SMALLINT" size="6" description=""/>
+    <column name="mots_cles" required="true" type="VARCHAR" size="255" description=""/>
+    <column name="adresse1" required="true" type="VARCHAR" size="255" description=""/>
+    <column name="adresse2" required="true" type="VARCHAR" size="255" description=""/>
+    <column name="public_destinataire" required="true" type="VARCHAR" size="50" description=""/>
+    <column name="contacts" required="true" type="LONGVARCHAR" description=""/>
+    <column name="divers" required="true" type="LONGVARCHAR" description=""/>
+    <column name="matiere1" required="true" type="VARCHAR" size="100" description=""/>
+    <column name="matiere2" required="true" type="VARCHAR" size="100" description=""/>
+    <column name="eleve_peut_modifier" required="true" type="CHAR" size="1" default="n" description=""/>
+    <column name="prof_peut_modifier" required="true" type="CHAR" size="1" default="n" description=""/>
+    <column name="cpe_peut_modifier" required="true" type="CHAR" size="1" default="n" description=""/>
+    <column name="fiche_publique" required="true" type="CHAR" size="1" default="n" description=""/>
+    <column name="affiche_adresse1" required="true" type="CHAR" size="1" default="n" description=""/>
+    <column name="en_construction" required="true" type="CHAR" size="1" default="n" description=""/>
+  </table>
+
+  <table name="aid_config" phpName="AidConfiguration" description="Liste des categories d'AID (Activites inter-Disciplinaires)">
+    <column name="nom" required="true" type="CHAR" size="100" default="" description="Nom de la categorie d'AID"/>
+    <column name="nom_complet" required="true" type="CHAR" size="100" default="" description="Nom complet de la categorie d'AID"/>
+    <column name="note_max" required="true" type="INTEGER" size="11" default="0" description="Note maximum qu'on peut mettre pour cette categorie d'AID"/>
+    <column name="order_display1" required="true" type="CHAR" size="1" default="0" description=""/>
+    <column name="order_display2" required="true" type="INTEGER" size="11" default="0" description=""/>
+    <column name="type_note" required="true" type="CHAR" size="5" default="" description="A no si cette AID n'est pas notee"/>
+    <column name="display_begin" required="true" type="INTEGER" size="11" default="0" description="Numero de la periode de debut de cette categorie d'AID"/>
+    <column name="display_end" required="true" type="INTEGER" size="11" default="0" description="Numero de la periode de fin de cette categorie d'AID"/>
+    <column name="message" required="true" type="CHAR" size="20" default="" description=""/>
+    <column name="display_nom" required="true" type="CHAR" size="1" default="" description=""/>
+    <column name="indice_aid" required="true" primaryKey="true" type="INTEGER" size="11" default="0" description="cle primaire de chaque categorie d'AID"/>
+    <column name="display_bulletin" required="true" type="CHAR" size="1" default="y" description="Pour savoir si cette categorie d'AID est presente sur le bulletin classique"/>
+    <column name="bull_simplifie" required="true" type="CHAR" size="1" default="y" description="Pour savoir si cette categorie d'AID est presente sur le bulletin simplifie"/>
+    <column name="outils_complementaires" required="true" type="CHAR" size="1" default="n" description=""/>
+    <column name="feuille_presence" required="true" type="CHAR" size="1" default="n" description=""/>
+  </table>
+
+  <table name="j_aid_utilisateurs" phpName="JAidUtilisateursProfessionnels" description="Table de liaison entre les AID et les utilisateurs professionnels" isCrossRef="true">
+    <column name="id_aid" required="true" primaryKey="true" type="VARCHAR" size="100" description="cle etrangere vers l'AID" />
+    <foreign-key foreignTable="aid" onDelete="cascade"><reference local="id_aid" foreign="id"/></foreign-key>
+    <column name="id_utilisateur" required="true" primaryKey="true" type="VARCHAR" size="100" description="Login de l'utilisateur professionnel" />
+    <foreign-key foreignTable="utilisateurs" onDelete="cascade"><reference local="id_utilisateur" foreign="login"/></foreign-key>
+    <!--column name="indice_aid" required="true" primaryKey="true" type="INTEGER" size="11" default="0" description="cle etrangere vers la categorie d'AID" />
+    <foreign-key foreignTable="aid_config" onDelete="cascade"><reference local="indice_aid" foreign="indice_aid"/></foreign-key-->
+  </table>
+
+  <table name="j_aid_eleves" phpName="JAidEleves" description="Table de liaison entre les AID et les eleves qui en sont membres" isCrossRef="true">
+    <column name="id_aid" required="true" primaryKey="true" type="VARCHAR" size="100" description="Clé etrangere vers l'AID" />
+    <foreign-key foreignTable="aid" onDelete="cascade"><reference local="id_aid" foreign="id"/></foreign-key>
+    <column name="login" required="true" primaryKey="true" type="VARCHAR" size="60" description="Login de l'eleve qui est membre de cette AID" />
+    <foreign-key foreignTable="eleves" onDelete="cascade"><reference local="login" foreign="login"/></foreign-key>
+    <!-- column name="indice_aid" required="true" primaryKey="true" type="INTEGER" size="11" default="0" description="cle etrangere vers la categorie d'AID" />
+    <foreign-key foreignTable="aid_config" onDelete="cascade"><reference local="indice_aid" foreign="indice_aid"/></foreign-key-->
+  </table>
+
+  <table name="a_motifs" phpName="AbsenceEleveMotif" description="Liste des motifs possibles pour une absence">
+    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire auto-incrementee"/>
+    <column name="nom" required="true" type="VARCHAR" size="250" description="Nom du motif"/>
+    <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
+    <behavior name="sortable" />
+    <behavior name="timestampable" />
+  </table>
+
+  <table name="a_justifications" phpName="AbsenceEleveJustification" description="Liste des justifications possibles pour une absence">
+    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire auto-incrementee"/>
+    <column name="nom" required="true" type="VARCHAR" size="250" description="Nom de la justification"/>
+    <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
+    <behavior name="sortable" />
+    <behavior name="timestampable" />
+  </table>
+
+  <table name="a_types" phpName="AbsenceEleveType" description="Liste des types d'absences possibles dans l'etablissement">
+    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="Cle primaire auto-incrementee"/>
+    <column name="nom" required="true" type="VARCHAR" size="250" description="Nom du type d'absence"/>
+    <column name="justification_exigible" required="false" type="BOOLEAN" description="Ce type d'absence doit entrainer une justification de la part de la famille"/>
+    <column name="sous_responsabilite_etablissement" required="false" type="VARCHAR" default="NON_PRECISE" description="L'eleve est sous la responsabilite de l'etablissement. Typiquement : absence infirmerie, mettre la propriété à vrai car l'eleve est encore sous la responsabilité de l'etablissement. Possibilite : 'vrai'/'faux'/'non_precise'"/>
+    <column name="manquement_obligation_presence" required="false" size="50" type="VARCHAR" default="NON_PRECISE" description="L'eleve manque à ses obligations de presence (L'absence apparait sur le bulletin). Possibilite : 'vrai'/'faux'/'non_precise'"/>
+    <column name="retard_bulletin" required="false" type="VARCHAR" size="50" default="NON_PRECISE" description="La saisie est comptabilisée dans le bulletin en tant que retard. Possibilite : 'vrai'/'faux'/'non_precise'"/>
+    <column name="type_saisie" required="false" type="VARCHAR" size="50" default="NON_PRECISE" description="Enumeration des possibilités de l'interface de saisie de l'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE, DISCIPLINE"/>
+    <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
+    <column name="id_lieu" required="false" type="INTEGER" size="11" default="null" description="cle etrangere du lieu ou se trouve l'élève"/>
+    <foreign-key foreignTable="a_lieux" onDelete="setnull"><reference local="id_lieu" foreign="id"/></foreign-key>
+    <behavior name="sortable" />
+    <behavior name="timestampable" />
+  </table>
+
+  <table name="a_lieux" phpName="AbsenceEleveLieu" description="Lieu pour les types d'absence ou les saisies">
+    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="Cle primaire auto-incrementee"/>
+    <column name="nom" required="true" type="VARCHAR" size="250" description="Nom du lieu"/>
+    <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
+    <behavior name="sortable" />
+  </table>
+
+  <table name="a_types_statut" phpName="AbsenceEleveTypeStatutAutorise" description="Liste des statuts autorises à saisir des types d'absences">
+    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="Cle primaire auto-incrementee"/>
+    <column name="id_a_type" required="true" type="INTEGER" size="11" description="Cle etrangere de la table a_type"/>
+    <foreign-key foreignTable="a_types" onDelete="cascade"><reference local="id_a_type" foreign="id"/></foreign-key>
+    <column name="statut" required="true" type="VARCHAR" size="20" description="Statut de l'utilisateur" />
+  </table>
+
+  <table name="a_saisies" phpName="AbsenceEleveSaisie" description="Chaque saisie d'absence doit faire l'objet d'une ligne dans la table a_saisies. Une saisie peut etre : une plage horaire longue durée (plusieurs jours), défini avec les champs debut_abs et fin_abs. Un creneau horaire, le jour etant precisé dans debut_abs. Un cours de l'emploi du temps, le jours du cours etant precisé dans debut_abs.">
+    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description=""/>
+	<!-- si un utilisateur est supprime, on ne supprime pas les absences saisies par cet utilisateur, le champ utilisateur_id est alors regle sur null -->
+    <column name="utilisateur_id" type="VARCHAR" size="100" description="Login de l'utilisateur professionnel qui a saisi l'absence"/>
+    <foreign-key foreignTable="utilisateurs" onDelete="none" phpName = "UtilisateurProfessionnel" refPhpName = "AbsenceEleveSaisie"><reference local="utilisateur_id" foreign="login"/></foreign-key>
+    <column name="eleve_id" type="INTEGER" size="11" default="null" description="id_eleve de l'eleve objet de la saisie, egal à null si aucun eleve n'est saisi"/>
+    <foreign-key foreignTable="eleves" onDelete="cascade"><reference local="eleve_id" foreign="id_eleve"/></foreign-key>
+    <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire de l'utilisateur"/>
+    <column name="debut_abs" required="false" type="TIMESTAMP" description="Debut de l'absence en timestamp UNIX"/>
+    <column name="fin_abs" required="false" type="TIMESTAMP" description="Fin de l'absence en timestamp UNIX"/>
+    <column name="id_edt_creneau" required="false" type="INTEGER" size="12" default="null" description="identifiant du creneaux de l'emploi du temps"/>
+    <foreign-key foreignTable="edt_creneaux" onDelete="setnull"><reference local="id_edt_creneau" foreign="id_definie_periode"/></foreign-key>
+    <column name="id_edt_emplacement_cours" required="false" type="INTEGER" size="12" default="null" description="identifiant du cours de l'emploi du temps"/>
+    <foreign-key foreignTable="edt_cours" onDelete="setnull"><reference local="id_edt_emplacement_cours" foreign="id_cours"/></foreign-key>
+    <column name="id_groupe" required="false" type="INTEGER" default="null" description="identifiant du groupe pour lequel la saisie a ete effectuee"/>
+    <foreign-key foreignTable="groupes" onDelete="setnull"><reference local="id_groupe" foreign="id"/></foreign-key>
+    <column name="id_classe" required="false" type="INTEGER" default="null" description="identifiant de la classe pour lequel la saisie a ete effectuee"/>
+    <foreign-key foreignTable="classes" onDelete="setnull"><reference local="id_classe" foreign="id"/></foreign-key>
+    <column name="id_aid" required="false" type="INTEGER" default="null" description="identifiant de l'aid pour lequel la saisie a ete effectuee"/>
+    <foreign-key foreignTable="aid" onDelete="setnull"><reference local="id_aid" foreign="id"/></foreign-key>
+    <column name="id_s_incidents" required="false" type="INTEGER" default="null" description="identifiant de la saisie d'incident discipline"/>
+    <column name="id_lieu" required="false" type="INTEGER" size="11" default="null" description="cle etrangere du lieu ou se trouve l'eleve"/>
+    <column name="deleted_by" type="VARCHAR" size="100" default="null" description="Login de l'utilisateur professionnel qui a supprimé la saisie"/>
+    <column name="created_at" type="TIMESTAMP" description="Date de creation de la saisie"/>
+    <column name="updated_at" type="TIMESTAMP" description="Date de modification de la saisie, y compris suppression, restauration et changement de version"/>
+    <foreign-key foreignTable="a_lieux" onDelete="setnull"><reference local="id_lieu" foreign="id"/></foreign-key>
+    <behavior name="timestampable" />
+	<behavior name="soft_delete" />
+    <behavior name="versionable">
+      <parameter name="log_created_at" value="true" />
+      <parameter name="log_created_by" value="true" />
+    </behavior>
+	<index><index-column name="deleted_at"/></index>
+	<index><index-column name="debut_abs"/></index>
+	<index><index-column name="fin_abs"/></index>
+  </table>
+
+  <table name="a_traitements" phpName="AbsenceEleveTraitement" description="Un traitement peut gerer plusieurs saisies et consiste à definir les motifs/justifications... de ces absences saisies">
+    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire auto-incremente"/>
+    <column name="utilisateur_id" type="VARCHAR" size="100" default="null" description="Login de l'utilisateur professionnel qui a fait le traitement"/>
+	<!-- si un utilisateur est supprime, on ne supprime pas les traitements saisis par cet utilisateur, le champ utilisateur_id est alors regle sur null -->
+    <foreign-key foreignTable="utilisateurs" onDelete="none" phpName = "UtilisateurProfessionnel" refPhpName = "AbsenceEleveTraitement"><reference local="utilisateur_id" foreign="login"/></foreign-key>
+    <column name="a_type_id" type="INTEGER" default="null" size="4" description="cle etrangere du type d'absence"/>
+    <foreign-key foreignTable="a_types" onDelete="setnull"><reference local="a_type_id" foreign="id"/></foreign-key>
+    <column name="a_motif_id" type="INTEGER" default="null" size="4" description="cle etrangere du motif d'absence"/>
+    <foreign-key foreignTable="a_motifs" onDelete="setnull"><reference local="a_motif_id" foreign="id"/></foreign-key>
+    <column name="a_justification_id" type="INTEGER" default="null" size="4" description="cle etrangere de la justification de l'absence"/>
+    <foreign-key foreignTable="a_justifications" onDelete="setnull"><reference local="a_justification_id" foreign="id"/></foreign-key>
+    <!-- column name="texte_justification" required="false" type="VARCHAR" size="250" description="Texte additionnel à ce traitement"/-->
+    <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
+    <behavior name="timestampable" />
+    <column name="modifie_par_utilisateur_id" type="VARCHAR" size="100" default="null" description="Login de l'utilisateur professionnel qui a modifie en dernier le traitement"/>
+	<!-- si un utilisateur est supprime, on ne supprime pas les traitements saisis par cet utilisateur, le champ utilisateur_id est alors regle sur null -->
+    <foreign-key foreignTable="utilisateurs" onDelete="none" phpName = "ModifieParUtilisateur" refPhpName = "ModifiedAbsenceEleveTraitement"><reference local="modifie_par_utilisateur_id" foreign="login"/></foreign-key>
+	<behavior name="soft_delete" />
+	<index><index-column name="deleted_at"/></index>
+  </table>
+
+  <table name="j_traitements_saisies" phpName="JTraitementSaisieEleve" description="Table de jointure entre la saisie et le traitement des absences" isCrossRef="true">
+    <column name="a_saisie_id" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere de l'absence saisie"/>
+    <foreign-key foreignTable="a_saisies" onDelete="cascade"><reference local="a_saisie_id" foreign="id"/></foreign-key>
+    <column name="a_traitement_id" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere du traitement de ces absences"/>
+    <foreign-key foreignTable="a_traitements" onDelete="cascade"><reference local="a_traitement_id" foreign="id"/></foreign-key>
+  </table>
+
+  <table name="a_notifications" phpName="AbsenceEleveNotification" description="Notification (a la famille) des absences">
+    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description=""/>
+    <column name="utilisateur_id" type="VARCHAR" default="null" size="100" description="Login de l'utilisateur professionnel qui envoi la notification"/>
+    <foreign-key foreignTable="utilisateurs" onDelete="setnull"><reference local="utilisateur_id" foreign="login"/></foreign-key>
+    <column name="a_traitement_id" default="null" required="true" type="INTEGER" size="12" description="cle etrangere du traitement qu'on notifie"/>
+    <foreign-key foreignTable="a_traitements" onDelete="cascade"><reference local="a_traitement_id" foreign="id"/></foreign-key>
+    <column name="type_notification" required="false" type="ENUM" valueSet="courrier, email, sms, communication telephonique" default="null" description="type de notification (0 : courrier, 1 : email, 2 : sms, 3 : telephone"/>
+    <column name="email" required="false" type="VARCHAR" size="100" description="email de destination (pour le type email)"/>
+    <column name="telephone" required="false" type="VARCHAR" size="100" description="numero du telephone de destination (pour le type sms)"/>
+    <column name="adr_id" required="false" type="VARCHAR" size="10" description="cle etrangere vers l'adresse de destination (pour le type courrier)"/>
+    <foreign-key foreignTable="resp_adr" onDelete="setnull"><reference local="adr_id" foreign="adr_id"/></foreign-key>
+    <!--foreign-key foreignTable="a_type_envois" onDelete="setnull"><reference local="id_type_envoi" foreign="id"/></foreign-key-->
+    <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
+    <column name="statut_envoi" required="false" type="ENUM" valueSet="etat initial, en cours, echec, succes, succes avec accuse de reception, pret a envoyer" default="etat initial" description="Statut de cet envoi (0 : etat initial, 1 : en cours, 2 : echec, 3 : succes, 4 : succes avec accuse de reception)"/>
+    <column name="date_envoi" required="false" type="TIMESTAMP" description="Date envoi"/>
+    <column name="erreur_message_envoi" required="false" type="LONGVARCHAR" description="Message d'erreur retourné par le service d'envoi"/>
+    <behavior name="timestampable" />
+  </table>
+
+  <table name="j_notifications_resp_pers" phpName="JNotificationResponsableEleve" description="Table de jointure entre la notification et les personnes dont on va mettre le nom dans le message." isCrossRef="true">
+    <column name="a_notification_id" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere de la notification"/>
+    <foreign-key foreignTable="a_notifications" onDelete="cascade"><reference local="a_notification_id" foreign="id"/></foreign-key>
+    <column name="pers_id" required="true" primaryKey="true" type="VARCHAR" size="10" description="cle etrangere des personnes"/>
+    <foreign-key foreignTable="resp_pers" onDelete="cascade"><reference local="pers_id" foreign="pers_id"/></foreign-key>
+  </table>
+
+  <table name="a_agregation_decompte" phpName="AbsenceAgregationDecompte" description="Table d'agregation des decomptes de demi journees d'absence et de retard">
+    <column name="eleve_id" type="INTEGER" size="11" primaryKey="true" description="id de l'eleve"/>
+    <foreign-key foreignTable="eleves" onDelete="cascade"><reference local="eleve_id" foreign="id_eleve"/></foreign-key>
+    <column name="date_demi_jounee" type="TIMESTAMP" default="0000-00-00 00:00:00" required="true" primaryKey="true" description="Date de la demi journée agrégée : 00:00 pour une matinée, 12:00 pour une après midi"/>
+    <column name="manquement_obligation_presence" default="false" type="BOOLEAN" description="Cette demi journée est comptée comme absence"/>
+    <column name="justifiee" default="false" type="BOOLEAN" description="Si cette demi journée est compté comme absence, y a-t-il une justification"/>
+    <column name="notifiee" default="false" type="BOOLEAN" description="Si cette demi journée est compté comme absence, y a-t-il une notification à la famille"/>
+    <column name="nb_retards" default="0" type="INTEGER" description="Nombre de retards décomptés dans la demi journée"/>
+    <column name="nb_retards_justifies" default="0" type="INTEGER" description="Nombre de retards justifiés décomptés dans la demi journée"/>
+    <column name="motifs_absences" type="ARRAY" description="Liste des motifs (table a_motifs) associés à cette demi-journée d'absence"/>
+    <column name="motifs_retards" type="ARRAY" description="Liste des motifs (table a_motifs) associés aux retard de cette demi-journée"/>
+    <behavior name="timestampable"/>    
+  </table>
+
+<!-- fin objets propel generes pour absence2-->
+
+<!-- Objets propel spécifiques au module ECTS -->
+  <table name="ects_credits" phpName="CreditEcts" description="Objet qui précise le nombre d'ECTS obtenus par l'eleve pour un enseignement et une periode donnée">
+    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description=""/>
+    <column name="id_eleve" required="true" primaryKey="true" type="INTEGER" size="11" description="Identifiant de l'eleve"/>
+    <foreign-key foreignTable="eleves" onDelete="cascade"><reference local="id_eleve" foreign="id_eleve"/></foreign-key>
+    <column name="num_periode" required="true" primaryKey="true" type="INTEGER" size="11" description="Identifiant de la periode"/>
+    <column name="id_groupe" required="true" primaryKey="true" type="INTEGER" size="11" description="Identifiant du groupe"/>
+    <foreign-key foreignTable="groupes" onDelete="cascade"><reference local="id_groupe" foreign="id"/></foreign-key>
+    <column name="valeur" type="DECIMAL" description="Nombre de credits obtenus par l'eleve"/>
+    <column name="mention" type="VARCHAR" size="255" description="Mention obtenue"/>
+    <column name="mention_prof" type="VARCHAR" size="255" description="Mention presaisie par le prof"/>
+  </table>
+
+  <table name="ects_global_credits" phpName="CreditEctsGlobal" description="Objet qui précise la mention globale obtenue pour un eleve">
+    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description=""/>
+    <column name="id_eleve" required="true" primaryKey="true" type="INTEGER" size="11" description="Identifiant de l'eleve"/>
+    <foreign-key foreignTable="eleves" onDelete="cascade"><reference local="id_eleve" foreign="id_eleve"/></foreign-key>
+    <column name="mention" type="VARCHAR" required="true" size="255" description="Mention obtenue"/>
+  </table>
+
+  <table name="archivage_ects" phpName="ArchiveEcts" description="Enregistrement d'archive pour les credits ECTS, dont le rapport n'est edite qu'au depart de l'eleve">
+    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description=""/>
+    <column name="annee" required="true" type="VARCHAR" size="255" description="Annee scolaire"/>
+    <column name="ine" required="true" primaryKey="true" type="VARCHAR" size="255" description="Identifiant de l'eleve"/>
+    <foreign-key foreignTable="eleves" onDelete="cascade"><reference local="ine" foreign="no_gep"/></foreign-key>
+    <column name="classe" required="true" type="VARCHAR" size="255" description="Classe de l'eleve"/>
+    <column name="num_periode" required="true" primaryKey="true" type="INTEGER" size="11" description="Identifiant de la periode"/>
+    <column name="nom_periode" required="true" type="VARCHAR" size="255" description="Nom complet de la periode"/>
+    <column name="special" primaryKey="true" type="VARCHAR" size="255" description="Cle utilisee pour isoler certaines lignes (par exemple un credit ECTS pour une periode et non une matiere)"/>
+    <column name="matiere" type="VARCHAR" size="255" description="Nom de l'enseignement"/>
+    <column name="profs" type="VARCHAR" size="255" description="Liste des profs de l'enseignement"/>
+    <column name="valeur" type="DECIMAL" required="true" description="Nombre de crédits obtenus par l'eleve"/>
+    <column name="mention" type="VARCHAR" required="true" size="255" description="Mention obtenue"/>
+  </table>
+
+<!-- Fin des objets propel spécifiques au module ECTS -->
+
+  <table name="matieres" phpName="Matiere" description="Matières">
+    <column name="matiere" required="true" primaryKey="true" type="VARCHAR" size="255" description=""/>
+    <column name="nom_complet" type="VARCHAR" required="true" size="200" description="Nom complet"/>
+    <column name="priority" required="true" type="INTEGER" defaultValue="0" size="6" description="Priorite d'affichage"/>
+    <column name="matiere_aid" type="VARCHAR" defaultValue="n" size="1" description="Matiere AID"/>
+    <column name="matiere_atelier" type="VARCHAR" defaultValue="n" size="1" description="Matiere Atelier"/>
+    <column name="categorie_id" required="true" type="INTEGER" defaultValue="1" size="11" description="Association avec Categories de matieres"/>
+    <foreign-key foreignTable="matieres_categories">
+        <reference local="categorie_id" foreign="id"/>
+    </foreign-key>
+  </table>
+
+  <table name="matieres_categories" phpName="CategorieMatiere" description="Categories de matiere, utilisees pour regrouper des enseignements">
+    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description=""/>
+    <column name="nom_court" type="VARCHAR" required="true" size="255" description="Nom court"/>
+    <column name="nom_complet" type="VARCHAR" required="true" size="255" description="Nom complet"/>
+    <column name="priority" required="true" type="INTEGER" size="6" description="Priorite d'affichage"/>
+  </table>
+
+  <table name="j_matieres_categories_classes" phpName="JCategoriesMatieresClasses" description="Liaison entre categories de matiere et classes" isCrossRef="true">
+    <column name="categorie_id" required="true" primaryKey="true" type="INTEGER" size="11" description=""/>
+    <foreign-key foreignTable="matieres_categories" onDelete="cascade"><reference local="categorie_id" foreign="id"/></foreign-key>
+    <column name="classe_id" required="true" primaryKey="true" type="INTEGER" size="11" description=""/>
+    <foreign-key foreignTable="classes" onDelete="cascade"><reference local="classe_id" foreign="id"/></foreign-key>
+    <column name="affiche_moyenne" type="BOOLEAN" required="false" default="0" description="Nom complet"/>
+    <column name="priority" required="true" type="INTEGER" size="6" description="Priorite d'affichage"/>
+  </table>
+
+  <table name="j_professeurs_matieres" phpName="JProfesseursMatieres" description="Liaison entre les profs et les matières" isCrossRef="true">
+    <column name="id_matiere" required="true" type="VARCHAR" size="50" primaryKey="true" description=""/>
+    <foreign-key foreignTable="matieres" phpName="Matiere">
+      <reference local="id_matiere" foreign="matiere"/>
+    </foreign-key>
+    <column name="id_professeur" required="true" type="VARCHAR" size="50" primaryKey="true" description=""/>
+    <foreign-key foreignTable="utilisateurs" phpName="Professeur">
+      <reference local="id_professeur" foreign="login"/>
+    </foreign-key>
+    <column name="ordre_matieres" required="true" type="INTEGER" size="11" defaultValue='0' description="Priorite d'affichage"/>
+  </table>
+
+
+<!-- Début des objets propel spécifiques au module PLUGIN -->
+  <table name="plugins" phpName="PlugIn" description="Liste des plugins installes sur ce Gepi">
+    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire"/>
+    <column name="nom" required="true" type="VARCHAR" size="100" description="Nom du plugin"/>
+    <column name="repertoire" type="VARCHAR" required="true" size="255" description="Repertoire du plugin"/>
+    <column name="description" type="CLOB" required="true" description="Description du plugin"/>
+    <column name="ouvert" required="true" type="CHAR" size="1" description="Statut du plugin, si il est operationnel y/n"/>
+  </table>
+
+  <table name="plugins_autorisations" phpName="PlugInAutorisation" description="Liste des autorisations pour chaque statut">
+    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire"/>
+    <column name="plugin_id" required="true" type="INTEGER" size="11" description="cle etrangere vers la table plugins"/>
+    <foreign-key foreignTable="plugins" onDelete="cascade"><reference local="plugin_id" foreign="id"/></foreign-key>
+    <column name="fichier" required="true" type="VARCHAR" size="100" description="Nom d'un fichier de ce plugin"/>
+    <column name="user_statut" type="VARCHAR" required="true" size="50" description="Statut de l'utilisateur"/>
+    <column name="auth" required="true" type="CHAR" size="1" description="Est-ce que ce statut a le droit de voir ce fichier y/n"/>
+  </table>
+
+  <table name="plugins_menus" phpName="PlugInMiseEnOeuvreMenu" description="Items pour construire le menu de ce plug-in">
+    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire"/>
+    <column name="plugin_id" required="true" type="INTEGER" size="11" description="cle etrangere vers la table plugins"/>
+    <foreign-key foreignTable="plugins" onDelete="cascade"><reference local="plugin_id" foreign="id"/></foreign-key>
+    <column name="user_statut" required="true" type="VARCHAR" size="50" description="Statut de l'utilisateur"/>
+    <column name="titre_item" required="true" type="VARCHAR" size="255" description="Titre du lien qui amène vers le bon fichier"/>
+    <column name="lien_item" required="true" type="VARCHAR" size="255" description="url relative"/>
+    <column name="description_item" required="true" type="VARCHAR" size="255" description="Description du lien"/>
+  </table>
+<!-- Fin des objets propel spécifiques au module PLUGIN -->
+
+	<table name="preferences" phpName="PreferenceUtilisateurProfessionnel" description="Preference (cle - valeur) associes à un utilisateur professionnel">
+		<column name="name" required="true" primaryKey="true" type="VARCHAR" size="50" description="Cle primaire du compte rendu" />
+		<column name="value" required="true" autoIncrement="true" type="LONGVARCHAR" description="valeur associe a la cle" />
+		<column name="login" primaryKey="true" type="VARCHAR" size="50" description="Cle etrangere de l'utilisateur auquel appartient le compte rendu" />
+		<foreign-key foreignTable="utilisateurs" onDelete="cascade">
+			<reference local="login" foreign="login" />
+		</foreign-key>
+	</table>
+
+<!-- Début des objets propel spécifiques au module EDT -->
+    <table name="edt_creneaux" phpName="EdtCreneau" description="Table contenant les creneaux de chaque journee (M1, M2...S1, S2...)">
+        <column name="id_definie_periode" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire auto-incremente"/>
+        <column name="nom_definie_periode" required="true" type="VARCHAR" size="50" description="Nom du creneau - typiquement, M1, M2, R (pour repas), P (pour récréation), S1, S2 etc"/>
+        <column name="heuredebut_definie_periode" required="true" type="TIME" description="Heure de debut du creneau"/>
+        <column name="heurefin_definie_periode" required="true" type="TIME" description="Heure de fin du creneau"/>
+        <column name="suivi_definie_periode" required="false" type="INTEGER" size="2" default="9" description="champ inutilise"/>
+        <column name="type_creneaux" required="false" type="VARCHAR" size="15" default="cours" description="types possibles : cours, pause, repas, vie_scolaire"/>
+        <column name="jour_creneau" required="false" type="VARCHAR" size="20" default="NULL" description="Par defaut, aucun jour en particulier mais on peut imposer que des creneaux soient specifiques a un jour en particulier : 'lundi', 'mardi', 'mercredi'..."/>
+    </table>
+
+    <table name="horaires_etablissement" phpName="EdtHorairesEtablissement" description="Table contenant les heures d'ouverture et de fermeture de l'etablissement par journee">
+        <column name="id_horaire_etablissement" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire auto-incremente"/>
+        <column name="date_horaire_etablissement" required="false" type="DATE" description="NULL (c'etait un 0 a l'origine...voir si pb) = horaires valables toute l'annee pour le jour specifie - date precise = horaires valables uniquement pour cette date"/>
+        <column name="jour_horaire_etablissement" required="true" type="VARCHAR" size="15" description="defini le jour de la semaine - typiquement, lundi, mardi, etc..."/>
+        <column name="ouverture_horaire_etablissement" required="true" type="TIME" description="Heure d'ouverture de l'etablissement"/>
+        <column name="fermeture_horaire_etablissement" required="true" type="TIME" description="Heure de fermeture de l'etablissement"/>
+        <column name="pause_horaire_etablissement" required="false" type="TIME" description="champ non utilise"/>
+        <column name="ouvert_horaire_etablissement" required="true" type="BOOLEAN" description="1 = etablissement ouvert - 0 = etablissement ferme"/>
+    </table>
+
+	<table name="edt_semaines" phpName="EdtSemaine" description="Liste des semaines de l'annee scolaire courante - 53 enregistrements obligatoires (pas 52!), pour lesquel on assigne un type (A ou B par exemple)">
+		<column name="id_edt_semaine" required="true" primaryKey="true" type="INTEGER" size="10" description="cle primaire"/>
+		<column name="num_edt_semaine" required="true" type="INTEGER" size="10" description="numero de la semaine dans l'annee civile"/>
+		<column name="type_edt_semaine" required="false" type="VARCHAR" size="10" description="typiquement, champ egal a 'A' ou 'B' pour l'alternance des semaines"/>
+		<column name="num_semaines_etab" required="false" type="INTEGER" size="10" description="numero de la semaine propre a l'etablissement"/>
+	</table>
+
+	<table name="edt_calendrier" phpName="EdtCalendrierPeriode" description="Liste des periodes datees de l'annee courante(pour definir par exemple les trimestres)">
+		<column name="id_calendrier" required="true" primaryKey="true" type="INTEGER" size="11" description="cle primaire"/>
+        <!-- le champ suivant est impossible a traiter automatiquement - aucune foreign-key associable -->
+		<column name="classe_concerne_calendrier" required="true" type="LONGVARCHAR" description="id des classes (separes par des ;) concernees par cette periode"/>
+		<column name="nom_calendrier" required="true" type="VARCHAR" size="100" description="nom de la periode definie"/>
+		<column name="debut_calendrier_ts" required="true" type="VARCHAR" description="timestamp du debut de la periode"/>
+		<column name="fin_calendrier_ts" required="true" type="VARCHAR" description="timestamp de la fin de la periode"/>
+		<column name="jourdebut_calendrier" required="true" type="DATE" size="11" description="date du debut de la periode"/>
+		<column name="heuredebut_calendrier" required="true" type="TIME" size="11" description="heure du debut de la periode"/>
+		<column name="jourfin_calendrier" required="true" type="DATE" size="11" description="date de la fin de la periode"/>
+		<column name="heurefin_calendrier" required="true" type="TIME" size="11" description="heure de la fin de la periode"/>
+		<column name="numero_periode" required="true" type="TINYINT" size="4" description="id de la periode de notes associee"/>
+		<!--foreign-key foreignTable="periodes" onDelete="setnull"><reference local="numero_periode" foreign="num_periode"/></foreign-key-->
+		<column name="etabferme_calendrier" required="true" type="TINYINT" size="4" description="egal a 1 si etablissement ouvert sur cette periode - 0 sinon"/>
+		<column name="etabvacances_calendrier" required="true" type="TINYINT" size="4" description="egal a 1 si la periode est definie sur les vacances - 0 sinon"/>
+	</table>
+
+	<table name="edt_cours" phpName="EdtEmplacementCours" description="Liste de tous les creneaux de tous les emplois du temps">
+		<column name="id_cours" required="true" primaryKey="true" type="INTEGER" size="3" description="cle primaire"/>
+		<column name="id_groupe" required="false" type="CHAR" size="10" description="id du groupe d'enseignement concerne - '' sinon"/>
+		<foreign-key foreignTable="groupes" onDelete="cascade"><reference local="id_groupe" foreign="id"/></foreign-key>
+		<column name="id_aid" required="false" type="CHAR" size="10" description="id de l'aid concerne - '' sinon"/>
+		<foreign-key foreignTable="aid" onDelete="cascade"><reference local="id_aid" foreign="id"/></foreign-key>
+		<column name="id_salle" required="false" type="CHAR" size="10" description="id de la salle concernee"/>
+		<foreign-key foreignTable="salle_cours" onDelete="setnull"><reference local="id_salle" foreign="id_salle"/></foreign-key>
+		<column name="jour_semaine" required="true" type="VARCHAR" size="10" description="jour de la semaine ou a lieu le cours : lundi, mardi etc..."/>
+		<column name="id_definie_periode" required="true" type="VARCHAR" size="3" description="id du creneau de la journee ou a lieu le cours - voir table edt_creneaux "/>
+		<foreign-key foreignTable="edt_creneaux" onDelete="cascade"><reference local="id_definie_periode" foreign="id_definie_periode"/></foreign-key>
+		<column name="duree" required="true" default="2" type="VARCHAR" size="10" description="duree du cours definie en demi-creneaux.1h de cours correspond a une duree=2. Les creneaux de pause ne sont pas comptabilisé"/>
+		<column name="heuredeb_dec" required="true" default="0" type="VARCHAR" size="3" description="0 si le cours commence au debut du creneau - 0.5 s'il commence au milieu"/>
+		<column name="id_semaine" phpName="TypeSemaine" required="false" default ="" type="VARCHAR" size="3" description="type de semaine - typiquement, 'A' ou 'B' si on a une alternance semaine A, semaine B."/>
+		<column name="id_calendrier" required="false" type="VARCHAR" size="3" description="NULL = le cours a lieu toute l'annee - sinon, id de la periode (EdtCalendrierPeriode) durant laquelle a lieu le cours"/>
+		<foreign-key foreignTable="edt_calendrier" onDelete="setnull"><reference local="id_calendrier" foreign="id_calendrier"/></foreign-key>
+		<column name="modif_edt" required="false" type="VARCHAR" size="3" description="champ inutilise"/>
+		<column name="login_prof" required="false" type="VARCHAR" size="50" description="login du prof qui dispense le cours"/>
+		<foreign-key foreignTable="utilisateurs" onDelete="setnull"><reference local="login_prof" foreign="login"/></foreign-key>
+	</table>
+
+	<table name="salle_cours" phpName="EdtSalle" description="Liste des salles de classe">
+		<column name="id_salle" required="true" primaryKey="true" type="INTEGER" size="3" description="cle primaire"/>
+		<column name="numero_salle" required="true" type="VARCHAR" size="10" description="numero de la salle defini par l'utilisateur"/>
+		<column name="nom_salle" required="false" type="VARCHAR" size="50" description="nom de la salle defini par l'utilisateur"/>
+	</table>
+
+</database>

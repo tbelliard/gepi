@@ -1,0 +1,540 @@
+0850014D;du Golfe des Pictons;college;public;85770;L'Ile-d'Elle
+0850015E;Les Sicardières;college;public;85350;L'Ile-d'Yeu
+0850024P;Gaston Chaissac;college;public;85700;Pouzauges
+0850039F;du Pays de Monts;college;public;85160;Saint-Jean-de-Monts
+0850047P;-;EREA;public;85100;Château-d'Olonne
+0850063G;Haxo;college;public;85000;La-Roche-sur-Yon
+0850065J;Pierre Garcie Ferrande;college;public;85800;Saint-Gilles-Croix-de-Vie
+0850066K;François Viète;college;public;85200;Fontenay-le-Comte
+0850067L;André Tiraqueau;college;public;85200;Fontenay-le-Comte
+0850069N;Emile Beaussire;college;public;85400;Luçon
+0850073T;Sainte-Marie;college;prive;85250;Chavagnes-en-Paillers
+0850074U;Saint-Joseph;college;prive;85200;Fontenay-le-Comte
+0850082C;Richelieu;college;prive;85000;La-Roche-sur-Yon
+0850084E;Amiral Merveilleux Du Vignaux;college;prive;85100;Château-d'Olonne
+0850090L;Sainte-Marie;college;prive;85190;Aizenay
+0850091M;Notre-Dame de l'Espérance;college;prive;85260;Les-Brouzils
+0850092N;Saint-Martin;college;prive;85490;Benet
+0850097U;Saint-Joseph;college;prive;85120;La-Châtaigneraie
+0850099W;Saint-Pierre;college;prive;85140;Les-Essarts
+0850103A;Notre-Dame du Port;college;prive;85350;L'Ile-d'Yeu
+0850104B;Villebois - Mareuil;college;prive;85600;Montaigu
+0850106D;Saint-Jacques;college;prive;85150;La-Mothe-Achard
+0850107E;Saint-Jacques;college;prive;85540;Moutiers-les-Mauxfaits
+0850108F;Saint-Paul;college;prive;85670;Palluau
+0850109G;Les Sorbets;college;prive;85330;Noirmoutier-en-l'Ile
+0850111J;Puy Chabot;college;prive;85170;Le-Poiré-sur-Vie
+0850113L;Saint-Sauveur;college;prive;85620;Rocheservière
+0850114M;Saint-Louis;college;prive;85000;La-Roche-sur-Yon
+0850117R;Notre-Dame de Bourgenay;college;prive;85100;Les-Sables-d'Olonne
+0850122W;Saint-Paul;college;prive;85210;Sainte-Hermine
+0850123X;Les Lauriers;college;prive;85160;Saint-Jean-de-Monts
+0850125Z;Saint-Nicolas;college;prive;85130;Tiffauges
+0850145W;René Couzinet;college;public;85110;Chantonnay
+0850147Y;Charles Milcendeau;college;public;85300;Challans
+0850148Z;du centre;college;public;85100;Les-Sables-d'Olonne
+0850149A;Paul Langevin;college;public;85340;Olonne-sur-Mer
+0850162P;Les Robretières;ecole;prive;85000;La-Roche-sur-Yon
+0850195A;Louis Buton;ecole;public;85190;Aizenay
+0850197C;du Dauphin Bleu;ecole;public;85750;Angles
+0850199E;-;ecole;public;85220;Apremont
+0850200F;-;ecole;public;85430;Aubigny
+0850202H;-;ecole;public;85440;Avrillé
+0850206M;La Porte des Iles;ecole;public;85550;La-Barre-de-Monts
+0850212U;René Goscinny;ecole;public;85190;Beaulieu-sous-la-Roche
+0850214W;-;ecole;public;85230;Beauvoir-sur-Mer
+0850218A;Les Champs du Bois;ecole;public;85490;Benet
+0850222E;-;ecole;public;85560;Le-Bernard
+0850223F;-;ecole;public;85320;Bessay
+0850229M;-;ecole;public;85420;Bouillé-Courdault
+0850232R;Pierre Menanteau;ecole;public;85510;Le-Boupère
+0850234T;l'Orée du Bois;ecole;public;85200;Bourneau
+0850238X;Benjamin Rabier;ecole;public;85470;Brétignolles-sur-Mer
+0850241A;-;ecole;public;85530;La-Bruffière
+0850243C;Les P'tits Marrons;ecole;public;85410;La-Caillère-Saint-Hilaire
+0850249J;-;ecole;public;85310;Chaillé-sous-les-Ormeaux
+0850250K;-;ecole;public;85200;Chaix
+0850253N;Victor Hugo;ecole;public;85300;Challans
+0850254P;Capitaine Debouté;ecole;public;85300;Challans
+0850259V;Jacques-Yves Cousteau;ecole;public;85540;Le-Champ-Saint-Père
+0850260W;L'Eolière;ecole;public;85110;Chantonnay
+0850264A;de Puybelliard;ecole;public;85110;Chantonnay
+0850265B;Marguerite Aujard;ecole;public;85150;La-Chapelle-Achard
+0850267D;-;ecole;public;85220;La-Chapelle-Hermier
+0850273K;-;ecole;public;85100;Château-d'Olonne
+0850276N;Les Nouettes;ecole;public;85100;Château-d'Olonne
+0850280T;La Mainborgère;ecole;public;85320;Château-Guibert
+0850282V;-;ecole;public;85390;Chavagnes-les-Redoux
+0850283W;des Tilleuls;ecole;public;85390;Cheffois
+0850284X;Jean De La Fontaine;ecole;public;85430;Les-Clouzeaux
+0850286Z;Jules Verne;ecole;public;85220;Coëx
+0850293G;Jean Moulin;ecole;public;85610;Cugand
+0850294H;-;ecole;public;85540;Curzon
+0850295J;-;ecole;public;85420;Damvix
+0850297L;-;ecole;public;85200;Doix
+0850300P;Antoine De Saint-Exupéry;ecole;public;85590;Les-Epesses
+0850305V;de l'Acacia;ecole;public;85670;Falleron
+0850307X;-;ecole;public;85240;Faymoreau
+0850310A;Benjamin Julien Garos;ecole;public;85200;Fontaines
+0850311B;Les Cordeliers;ecole;public;85200;Fontenay-le-Comte
+0850312C;Les Jacobins;ecole;public;85200;Fontenay-le-Comte
+0850313D;Marceau Bretaud;ecole;public;85200;Fontenay-le-Comte
+0850322N;Gaston Goulard;ecole;public;85240;Foussais-Payré
+0850326T;Gustave Eiffel;ecole;public;85190;La-Génétouze
+0850327U;-;ecole;public;85150;Le-Girouard
+0850329W;La Rivière aux Enfants;ecole;public;85440;Grosbreuil
+0850332Z;-;ecole;public;85770;Le-Gué-de-Velluire
+0850335C;Jacques Prévert;ecole;public;85500;Les-Herbiers
+0850337E;des Droits de l'Enfant;ecole;public;85570;L'Hermenault
+0850338F;Jacques Prévert;ecole;public;85770;L'Ile-d'Elle
+0850340H;Les Salines;ecole;public;85340;L'Ile-d'Olonne
+0850341J;Le Pu - Port Joinville;ecole;public;85350;L'Ile-d'Yeu
+0850350U;de Pareds;ecole;public;85110;La-Jaudonnière
+0850352W;Les Bergeronnettes;ecole;public;85400;Lairoux
+0850353X;Il était une fois;ecole;public;85150;Landeronde
+0850355Z;André Turcot;ecole;public;85370;Le-Langon
+0850357B;-;ecole;public;85420;Liez
+0850359D;Mozaïc;ecole;public;85200;Longèves
+0850360E;Jules Verne;ecole;public;85560;Longeville-sur-Mer
+0850361F;Les Conches;ecole;public;85560;Longeville-sur-Mer
+0850367M;Jacques Prévert;ecole;public;85170;Les-Lucs-sur-Boulogne
+0850377Y;-;ecole;public;85570;Marsais-Sainte-Radégonde
+0850378Z;-;ecole;public;85420;Le-Mazeau
+0850380B;-;ecole;public;85700;La-Meilleraie-Tillay
+0850381C;-;ecole;public;85200;Mervent
+0850384F;Jules Verne;ecole;public;85600;Montaigu
+0850386H;Georges Brassens;ecole;public;85700;Montournais
+0850387J;Le Champ de la Lampe;ecole;public;85200;Montreuil
+0850391N;Evrunes;ecole;public;85290;Mortagne-sur-Sèvre
+0850392P;Le Pré aux Oiseaux;ecole;public;85150;La-Mothe-Achard
+0850393R;René Guilbaud;ecole;public;85640;Mouchamps
+0850395T;Charles-Louis Largeteau;ecole;public;85390;Mouilleron-en-Pareds
+0850396U;Les Crayons de Soleil;ecole;public;85000;Mouilleron-le-Captif
+0850397V;Gaston Ramon;ecole;public;85540;Moutiers-les-Mauxfaits
+0850399X;Les Sources;ecole;public;85370;Mouzeuil-Saint-Martin
+0850403B;de Chevrette;ecole;public;85370;Nalliers
+0850405D;Antoine De Saint-Exupéry;ecole;public;85310;Nesmy
+0850406E;Henri Roca;ecole;public;85430;Nieul-le-Dolent
+0850407F;Camille Vignot;ecole;public;85240;Nieul-sur-l'Autise
+0850408G;Edouard Richer;ecole;public;85330;Noirmoutier-en-l'Ile
+0850412L;du Vieil;ecole;public;85330;Noirmoutier-en-l'Ile
+0850413M;Les Embruns;ecole;public;85690;Notre-Dame-de-Monts
+0850417S;René-Guy Cadou;ecole;public;85340;Olonne-sur-Mer
+0850419U;du Parc;ecole;public;85200;L'Orbrie
+0850420V;-;ecole;public;85420;Oulmes
+0850421W;Le Verger;ecole;public;85670;Palluau
+0850422X;-;ecole;public;85320;Péault
+0850423Y;du Marais;ecole;public;85300;Le-Perrier
+0850424Z;-;ecole;public;85570;Petosse
+0850425A;-;ecole;public;85200;Pissotte
+0850426B;Louis Aragon;ecole;public;85770;Le-Poiré-sur-Velluire
+0850429E;Le Payre;ecole;public;85440;Poiroux
+0850430F;-;ecole;public;85570;Pouillé
+0850431G;Jules Verne;ecole;public;85700;Pouzauges
+0850433J;-;ecole;public;85240;Puy-de-Serre
+0850434K;-;ecole;public;85450;Puyravault
+0850435L;Les Deux Lays;ecole;public;85210;La-Réorthe
+0850436M;F.E. Voisin;ecole;public;85270;Notre-Dame-de-Riez
+0850438P;Gaston Chaissac;ecole;public;85620;Rocheservière
+0850439R;Les Trois Iles;ecole;public;85580;Triaize
+0850441T;R. Robuchon;ecole;public;85770;Velluire
+0850444W;des Bourdinières;ecole;public;85130;La-Verrie
+0850447Z;Marais des Cygnes;ecole;public;85450;Vouillé-les-Marais
+0850448A;-;ecole;public;85120;Vouvant
+0850449B;Jacques Brel;ecole;public;85240;Xanton-Chassenon
+0850452E;Jean Roy;ecole;public;85000;La-Roche-sur-Yon
+0850458L;René Laennec;ecole;public;85000;La-Roche-sur-Yon
+0850466V;Victor Hugo;ecole;public;85000;La-Roche-sur-Yon
+0850470Z;de Rivoli;ecole;public;85000;La-Roche-sur-Yon
+0850472B;de Montjoie;ecole;public;85000;La-Roche-sur-Yon
+0850480K;-;ecole;public;85510;Rochetrejoux
+0850481L;-;ecole;public;85320;Rosnay
+0850485R;Le Centre;ecole;public;85100;Les-Sables-d'Olonne
+0850489V;Paul-Emile Pajot;ecole;public;85100;Les-Sables-d'Olonne
+0850491X;-;ecole;public;85210;Saint-Aubin-la-Plaine
+0850492Y;Françoise Pournin;ecole;public;85540;Saint-Avaugourd-des-Landes
+0850494A;Jacques Moreau;ecole;public;85110;Sainte-Cécile
+0850498E;L'Arc-en-Ciel;ecole;public;85670;Saint-Christophe-du-Ligneron
+0850503K;-;ecole;public;85170;Saint-Denis-la-Chevasse
+0850505M;-;ecole;public;85670;Saint-Etienne-du-Bois
+0850506N;des P'tits Loups;ecole;public;85150;Sainte-Flaive-des-Loups
+0850508R;du Marronnier;ecole;public;85150;Sainte-Foy
+0850509S;Victor Hugo;ecole;public;85250;Saint-Fulgent
+0850515Y;Les Guernovelles;ecole;public;85230;Saint-Gervais
+0850516Z;Edmond Bocquier;ecole;public;85800;Saint-Gilles-Croix-de-Vie
+0850524H;La Fradinière;ecole;public;85270;Saint-Hilaire-de-Riez
+0850528M;Jacques Charpentreau;ecole;public;85240;Saint-Hilaire-des-Loges
+0850534U;Emilien Charrier;ecole;public;85440;Talmont-Saint-Hilaire
+0850537X;-;ecole;public;85480;Saint-Hilaire-le-Vouhis
+0850539Z;-;ecole;public;85210;Saint-Jean-de-Beugné
+0850544E;d'Orouët;ecole;public;85160;Saint-Jean-de-Monts
+0850548J;-;ecole;public;85220;Saint-Maixent-sur-Vie
+0850550L;-;ecole;public;85200;Saint-Martin-de-Fraigneau
+0850553P;Anselme Roy;ecole;public;85140;Saint-Martin-des-Noyers
+0850559W;René Jaulin;ecole;public;85200;Fontenay-le-Comte
+0850560X;Les P'tits Minois;ecole;public;85700;Saint-Mesmin
+0850561Y;-;ecole;public;85580;Saint-Michel-en-l'Herm
+0850569G;des Tuileries;ecole;public;85120;Saint-Pierre-du-Chemin
+0850570H;de la Porte de l'Ile;ecole;public;85420;Saint-Pierre-le-Vieux
+0850571J;de Souil;ecole;public;85420;Saint-Pierre-le-Vieux
+0850572K;-;ecole;public;85110;Saint-Prouant
+0850573L;-;ecole;public;85450;Sainte-Radégonde-des-Noyers
+0850574M;-;ecole;public;85420;Saint-Sigismond
+0850575N;-;ecole;public;85410;Saint-Sulpice-en-Pareds
+0850576P;-;ecole;public;85570;Saint-Valérien
+0850578S;-;ecole;public;85110;Saint-Vincent-Sterlanges
+0850581V;Sablier du Frène;ecole;public;85170;Saligny
+0850585Z;-;ecole;public;85110;Sigournais
+0850587B;-;ecole;public;85300;Soullans
+0850590E;du Payre;ecole;public;85440;Talmont-Saint-Hilaire
+0850598N;Jacques-Yves Cousteau;ecole;public;85130;Tiffauges
+0850604V;Les Gondoliers;college;public;85000;La-Roche-sur-Yon
+0850605W;Edouard Herriot;college;public;85000;La-Roche-sur-Yon
+0850606X;Stéphane Piobetta;college;public;85000;La-Roche-sur-Yon
+0850607Y;Le Sourdy;college;public;85400;Luçon
+0850610B;La Rose des Dunes;ecole;public;85630;Barbâtre
+0850611C;Pierre Perret;ecole;public;85310;La-Chaize-le-Vicomte
+0850613E;Jean Macé;ecole;public;85450;Champagné-les-Marais
+0850614F;Elie De Sayvre;ecole;public;85120;La-Châtaigneraie
+0850616H;-;ecole;public;85740;L'Epine
+0850617J;C. Bouron - R. Massé;ecole;public;85200;Fontenay-le-Comte
+0850618K;-;ecole;public;85680;La-Guérinière
+0850619L;Bourg Saint-Sauveur;ecole;public;85350;L'Ile-d'Yeu
+0850621N;Georges Brassens;ecole;public;85370;Nalliers
+0850622P;Jean Yole;ecole;public;85000;La-Roche-sur-Yon
+0850624S;Les Salines;ecole;public;85800;Saint-Gilles-Croix-de-Vie
+0850626U;-;ecole;public;85210;Sainte-Hermine
+0850628W;Henry Simon;ecole;public;85270;Saint-Hilaire-de-Riez
+0850629X;de la Plage;ecole;public;85160;Saint-Jean-de-Monts
+0850630Y;-;ecole;public;85200;Saint-Michel-le-Cloucq
+0850638G;Anita Conti;ecole;public;85280;La-Ferrière
+0850639H;Jules Ferry;college;public;85600;Montaigu
+0850641K;Corentin Riou;college;public;85540;Moutiers-les-Mauxfaits
+0850643M;Saint-Michel;ecole;prive;85100;Les-Sables-d'Olonne
+0850650V;Saint-Nicolas;ecole;prive;85100;Les-Sables-d'Olonne
+0850652X;Pierre Monnereau;ecole;prive;85250;Saint-André-Goule-d'Oie
+0850653Y;Saint-Joseph;ecole;prive;85260;Saint-André-Treize-Voies
+0850655A;Sainte-Marie;ecole;prive;85130;Saint-Aubin-des-Ormeaux
+0850657C;-;ecole;prive;85540;Saint-Avaugourd-des-Landes
+0850661G;Sainte-Marie;ecole;prive;85670;Saint-Christophe-du-Ligneron
+0850665L;Sacré-Coeur;ecole;prive;85410;Saint-Cyr-des-Gâts
+0850667N;Notre-Dame;ecole;prive;85170;Saint-Denis-la-Chevasse
+0850669R;Notre-Dame du Sacré-Coeur;ecole;prive;85670;Saint-Etienne-du-Bois
+0850670S;L'Envol;ecole;prive;85150;Sainte-Flaive-des-Loups
+0850672U;-;ecole;prive;85140;Sainte-Florence
+0850674W;Notre-Dame;ecole;prive;85310;Saint-Florent-des-Bois
+0850675X;Saint-Joseph;ecole;prive;85150;Sainte-Foy
+0850677Z;Saint-Michel;ecole;prive;85250;Saint-Fulgent
+0850679B;Saint-Charles;ecole;prive;85400;Sainte-Gemme-la-Plaine
+0850681D;-;ecole;prive;85600;Saint-Georges-de-Montaigu
+0850683F;-;ecole;prive;85150;Saint-Georges-de-Pointindoux
+0850685H;Saint-Michel;ecole;prive;85110;Saint-Germain-de-Prinçay
+0850686J;Saint-Gervais;ecole;prive;85230;Saint-Gervais
+0850688L;Saint-Joseph;ecole;prive;85800;Saint-Gilles-Croix-de-Vie
+0850690N;Sainte-Croix;ecole;prive;85800;Saint-Gilles-Croix-de-Vie
+0850694T;Sacré-Coeur;ecole;prive;85110;Chantonnay
+0850695U;Sacré-Coeur;ecole;prive;85660;Saint-Philbert-de-Bouaine
+0850696V;Sacré-Coeur;ecole;prive;85120;Saint-Pierre-du-Chemin
+0850698X;Saint-André;ecole;prive;85110;Saint-Prouant
+0850702B;Saint-Joseph;ecole;prive;85220;Saint-Révérend
+0850705E;Notre-Dame;ecole;prive;85260;Saint-Sulpice-le-Verdon
+0850706F;Saint-Joseph;ecole;prive;85230;Saint-Urbain
+0850709J;-;ecole;prive;85110;Saint-Vincent-Sterlanges
+0850710K;Saint-Joseph;ecole;prive;85540;Saint-Vincent-sur-Graon
+0850712M;Sacré-Coeur;ecole;prive;85170;Saligny
+0850714P;Sainte-Marie;ecole;prive;85300;Sallertaine
+0850715R;du Donjon;ecole;prive;85110;Sigournais
+0850717T;Les Roseaux;ecole;prive;85300;Soullans
+0850719V;Sainte-Mélaine;ecole;prive;85310;Le-Tablier
+0850722Y;Saint-Pierre;ecole;prive;85440;Talmont-Saint-Hilaire
+0850724A;Saint-André;ecole;prive;85120;La-Tardière
+0850725B;Jeanne D'Arc;ecole;prive;85480;Thorigny
+0850726C;Sainte-Marie;ecole;prive;85410;Thouarsais-Bouildroux
+0850728E;Notre-Dame;ecole;prive;85130;Tiffauges
+0850729F;Notre-Dame;ecole;prive;85360;La-Tranche-sur-Mer
+0850730G;Saint-Martin;ecole;prive;85600;Treize-Septiers
+0850732J;-;ecole;prive;85590;Treize-Vents
+0850737P;Saint-Pierre;ecole;prive;85150;Vairé
+0850739S;Louis Chaigne;ecole;prive;85190;Venansault
+0850740T;Marie Godet;ecole;prive;85250;Vendrennes
+0850742V;Sapinaud;ecole;prive;85130;La-Verrie
+0850746Z;Sainte-Marie;ecole;prive;85120;Vouvant
+0850747A;Saint-Philbert;ecole;prive;85330;Noirmoutier-en-l'Ile
+0850749C;La Mouette - L'Herbaudière;ecole;prive;85330;Noirmoutier-en-l'Ile
+0850750D;Nazareth;ecole;prive;85690;Notre-Dame-de-Monts
+0850752F;Saint-Joseph;ecole;prive;85140;L'Oie
+0850753G;Saint-Joseph;ecole;prive;85340;Olonne-sur-Mer
+0850756K;Saint-Vincent;ecole;prive;85200;L'Orbrie
+0850758M;Sainte-Agnès;ecole;prive;85670;Palluau
+0850761R;Notre-Dame;ecole;prive;85320;Les-Pineaux
+0850762S;Saint-Joseph;ecole;prive;85200;Pissotte
+0850764U;Sainte-Marie de Nazareth;ecole;prive;85770;Le-Poiré-sur-Velluire
+0850766W;du Sacré-Coeur;ecole;prive;85170;Le-Poiré-sur-Vie
+0850768Y;-;ecole;prive;85700;La-Pommeraie-sur-Sèvre
+0850772C;Le Donjon;ecole;prive;85700;Pouzauges
+0850773D;Notre-Dame - Vieux Pouzauges;ecole;prive;85700;Pouzauges
+0850775F;Notre-Dame de la Salette;ecole;prive;85250;La-Rabatelière
+0850777H;Sainte-Marie;ecole;prive;85700;Réaumur
+0850778J;Jeanne D'Arc;ecole;prive;85210;La-Réorthe
+0850780L;La Source;ecole;prive;85620;Rocheservière
+0850782N;Richelieu;ecole;prive;85000;La-Roche-sur-Yon
+0850784R;Saint-Louis;ecole;prive;85000;La-Roche-sur-Yon
+0850785S;Jeanne D'Arc;ecole;prive;85000;La-Roche-sur-Yon
+0850788V;Sainte-Famille;ecole;prive;85000;La-Roche-sur-Yon
+0850791Y;Notre-Dame;ecole;prive;85000;Bourg-sous-La-Roche
+0850794B;Saint-André;ecole;prive;85000;La-Roche-sur-Yon
+0850795C;des Vieux Tilleuls;ecole;prive;85510;Rochetrejoux
+0850798F;Sainte-Marie - Saint-Paul;ecole;prive;85210;Sainte-Hermine
+0850802K;Saint-Gildas;ecole;prive;85600;Saint-Hilaire-de-Loulay
+0850803L;Le Marais Bleu;ecole;prive;85270;Saint-Hilaire-de-Riez
+0850806P;Saint-Louis;ecole;prive;85240;Saint-Hilaire-des-Loges
+0850809T;Notre-Dame de Bourgenay;ecole;prive;85440;Talmont-Saint-Hilaire
+0850811V;Saint-Joseph;ecole;prive;85120;Saint-Hilaire-de-Voust
+0850814Y;Saint-Joseph;ecole;prive;85480;Saint-Hilaire-le-Vouhis
+0850815Z;Saint-Jean;ecole;prive;85160;Saint-Jean-de-Monts
+0850818C;-;ecole;prive;85150;Saint-Julien-des-Landes
+0850820E;Louis-Marie Grignion de Montfort;ecole;prive;85290;Saint-Laurent-sur-Sèvre
+0850822G;Saint-Louis De Gonzague;ecole;prive;85590;Saint-Malô-du-Bois
+0850824J;Saint-Médard;ecole;prive;85590;Saint-Mars-la-Réorthe
+0850827M;Notre-Dame de l'Espérance;ecole;prive;85470;Brem-sur-Mer
+0850828N;Pierre Monnereau;ecole;prive;85140;Saint-Martin-des-Noyers
+0850830R;Saint-Louis;ecole;prive;85130;Saint-Martin-des-Tilleuls
+0850836X;Saint-Jean-Bosco;ecole;prive;85120;Saint-Maurice-des-Noues
+0850839A;Sacré-Coeur;ecole;prive;85390;Saint-Maurice-le-Girard
+0850840B;-;ecole;prive;85700;Saint-Mesmin
+0850843E;-;ecole;prive;85580;Saint-Michel-en-l'Herm
+0850845G;Saint-Michel;ecole;prive;85200;Saint-Michel-le-Cloucq
+0850847J;Sainte-Anne;ecole;prive;85700;Saint-Michel-Mont-Mercure
+0850848K;Sacré-Coeur;ecole;prive;85500;Saint-Paul-en-Pareds
+0850853R;Sainte-Marie;ecole;prive;85430;Les-Clouzeaux
+0850854S;Saint-Joseph;ecole;prive;85220;Coëx
+0850856U;Saint-Pierre;ecole;prive;85220;Commequiers
+0850859X;-;ecole;prive;85260;La-Copechagnière
+0850860Y;Saint-Michel;ecole;prive;85610;Cugand
+0850865D;Saint-Joseph;ecole;prive;85200;Doix
+0850867F;Sacré-Coeur;ecole;prive;85170;Dompierre-sur-Yon
+0850868G;Saint-Joseph;ecole;prive;85590;Les-Epesses
+0850870J;Sainte-Thérèse;ecole;prive;85740;L'Epine
+0850872L;Saint-Joseph;ecole;prive;85140;Les-Essarts
+0850874N;Sacré-Coeur;ecole;prive;85670;Falleron
+0850877S;Sainte-Marie;ecole;prive;85800;Le-Fenouiller
+0850878T;Saint-Nicolas;ecole;prive;85280;La-Ferrière
+0850880V;-;ecole;prive;85700;La-Flocellière
+0850884Z;Sacré-Coeur;ecole;prive;85200;Fontenay-le-Comte
+0850885A;Saint-Jean;ecole;prive;85200;Fontenay-le-Comte
+0850887C;La Foi;ecole;prive;85200;Fontenay-le-Comte
+0850892H;Saint-Antoine;ecole;prive;85240;Foussais-Payré
+0850895L;Sainte-Jeanne D'Arc;ecole;prive;85300;Froidfond
+0850896M;Saint-Joseph;ecole;prive;85710;La-Garnache
+0850897N;Sainte-Marie;ecole;prive;85710;La-Garnache
+0850898P;Saint-Joseph;ecole;prive;85130;La-Gaubretière
+0850899R;Sainte-Marie;ecole;prive;85130;La-Gaubretière
+0850900S;Sacré-Coeur;ecole;prive;85190;La-Génétouze
+0850903V;Notre-Dame;ecole;prive;85470;Brétignolles-sur-Mer
+0850905X;Saint-Joseph;ecole;prive;85320;La-Bretonnière
+0850906Y;Notre-Dame;ecole;prive;85120;Breuil-Barret
+0850908A;Saint-Joseph;ecole;prive;85260;Les-Brouzils
+0850911D;Sacré-Coeur;ecole;prive;85530;La-Bruffière
+0850912E;Notre-Dame;ecole;prive;85530;La-Bruffière
+0850914G;-;ecole;prive;85410;Cezais
+0850918L;Saint-Sauveur;ecole;prive;85310;Chaillé-sous-les-Ormeaux
+0850920N;Saint-Joseph;ecole;prive;85310;La-Chaize-le-Vicomte
+0850922R;Saint-Joseph;ecole;prive;85300;Challans
+0850923S;Notre-Dame;ecole;prive;85300;Challans
+0850924T;Saint-Joseph;ecole;prive;85500;Chambretaud
+0850926V;Sainte-Thérèse;ecole;prive;85450;Champagné-les-Marais
+0850927W;Saint-Pierre;ecole;prive;85540;Le-Champ-Saint-Père
+0850929Y;de Béthanie;ecole;prive;85110;Chantonnay
+0850932B;La Source;ecole;prive;85150;La-Chapelle-Achard
+0850933C;-;ecole;prive;85120;La-Chapelle-aux-Lys
+0850934D;Saint-Pierre;ecole;prive;85220;La-Chapelle-Hermier
+0850935E;Saint-Joseph;ecole;prive;85670;La-Chapelle-Palluau
+0850938H;Sainte-Marie;ecole;prive;85120;La-Châtaigneraie
+0850940K;Saint-Paul;ecole;prive;85100;Château-d'Olonne
+0850944P;Sainte-Thérèse;ecole;prive;85710;Châteauneuf
+0850946S;Saint-Joseph;ecole;prive;85700;Les-Châtelliers-Châteaumur
+0850947T;Saint-Christophe;ecole;prive;85140;Chauché
+0850950W;Nazareth;ecole;prive;85250;Chavagnes-en-Paillers
+0850951X;-;ecole;prive;85390;Chavagnes-les-Redoux
+0850953Z;Saint-Joseph;ecole;prive;85390;Cheffois
+0850956C;François Joseph;ecole;prive;85220;L'Aiguillon-sur-Vie
+0850957D;Saint-Joseph;ecole;prive;85190;Aizenay
+0850961H;Saint-Joseph;ecole;prive;85120;Antigny
+0850964L;Sainte-Anne;ecole;prive;85220;Apremont
+0850966N;Saint-Joseph;ecole;prive;85430;Aubigny
+0850970T;Notre-Dame;ecole;prive;85630;Barbâtre
+0850973W;Saint-Pierre;ecole;prive;85130;Bazoges-en-Paillers
+0850976Z;Sainte-Marie;ecole;prive;85390;Bazoges-en-Pareds
+0850977A;Sainte-Thérèse;ecole;prive;85170;Beaufou
+0850980D;La Croix des Vignes;ecole;prive;85190;Beaulieu-sous-la-Roche
+0850981E;Saint-Joseph;ecole;prive;85500;Beaurepaire
+0850983G;Saint-Joseph;ecole;prive;85230;Beauvoir-sur-Mer
+0850985J;Saint-Augustin;ecole;prive;85170;Belleville-sur-Vie
+0850988M;Sainte-Mathilde;ecole;prive;85490;Benet
+0850989N;Saint-Jean;ecole;prive;85610;La-Bernardière
+0850992S;Sainte-Jeanne D'Arc;ecole;prive;85710;Bois-de-Céné
+0850994U;-;ecole;prive;85600;La-Boissière-de-Montaigu
+0850997X;Sacré-Coeur;ecole;prive;85430;La-Boissière-des-Landes
+0850998Y;-;ecole;prive;85600;Boufféré
+0851000A;Jeanne D'Arc;ecole;prive;85230;Bouin
+0851002C;Les Tilleuls;ecole;prive;85140;Boulogne
+0851004E;Sainte-Marie;ecole;prive;85510;Le-Boupère
+0851006G;Saint-André;ecole;prive;85480;Bournezeau
+0851008J;Notre-Dame;ecole;prive;85400;Luçon
+0851009K;La Fontaine;ecole;prive;85800;Givrand
+0851012N;Saint-Louis;ecole;prive;85440;Grosbreuil
+0851017U;Notre-Dame de l'Assomption;ecole;prive;85680;La-Guérinière
+0851018V;Saint-Joseph;ecole;prive;85600;La-Guyonnière
+0851020X;de l'Arc-en-Ciel;ecole;prive;85260;L'Herbergement
+0851022Z;Saint-Joseph - Le Brandon;ecole;prive;85500;Les-Herbiers
+0851024B;Ardelay;ecole;prive;85500;Les-Herbiers
+0851026D;du Petit Bourg;ecole;prive;85500;Les-Herbiers
+0851027E;du Petit Bourg;ecole;prive;85500;Les-Herbiers
+0851028F;Notre-Dame;ecole;prive;85570;L'Hermenault
+0851030H;Saint-Hilaire;ecole;prive;85770;L'Ile-d'Elle
+0851031J;Sainte-Anne;ecole;prive;85340;L'Ile-d'Olonne
+0851033L;Notre-Dame du Port;ecole;prive;85350;L'Ile-d'Yeu
+0851037R;Saint-Joseph;ecole;prive;85520;Jard-sur-Mer
+0851040U;Jeanne D'Arc;ecole;prive;85150;Landeronde
+0851041V;Saint-Raphaël;ecole;prive;85130;Les-Landes-Genusson
+0851044Y;Saint-Joseph;ecole;prive;85370;Le-Langon
+0851046A;Notre-Dame;ecole;prive;85220;Landevieille
+0851050E;Sacré-Coeur;ecole;prive;85400;Luçon
+0851052G;Notre-Dame;ecole;prive;85170;Les-Lucs-sur-Boulogne
+0851054J;Saint-Joseph;ecole;prive;85190;Maché
+0851056L;-;ecole;prive;85420;Maillé
+0851059P;La Jeune Autize;ecole;prive;85420;Maillezais
+0851060R;Sainte-Marie;ecole;prive;85590;Mallièvre
+0851062T;Sainte-Marie;ecole;prive;85320;Mareuil-sur-Lay-Dissais
+0851064V;Saint-Joseph;ecole;prive;85150;Martinet
+0851066X;Jeanne D'Arc;ecole;prive;85700;La-Meilleraie-Tillay
+0851068Z;Saint-Michel;ecole;prive;85700;Menomblet
+0851073E;-;ecole;prive;85500;Mesnard-la-Barotière
+0851074F;Abbé Auguste-Billaud;ecole;prive;85110;Monsireigne
+0851076H;Amiral Duchaffault;ecole;prive;85600;Montaigu
+0851077J;Jeanne D'Arc;ecole;prive;85600;Montaigu
+0851078K;Les Puys;ecole;prive;85700;Montournais
+0851080M;-;ecole;prive;85450;Moreilles
+0851081N;Saint-Louis De Gonzague;ecole;prive;85260;Mormaison
+0851083R;Saint-Léger;ecole;prive;85290;Mortagne-sur-Sèvre
+0851085T;Saint-Hilaire;ecole;prive;85290;Mortagne-sur-Sèvre
+0851086U;Saint-Joseph;ecole;prive;85290;Mortagne-sur-Sèvre
+0851087V;Sainte-Marie;ecole;prive;85150;La-Mothe-Achard
+0851089X;Notre-Dame;ecole;prive;85640;Mouchamps
+0851092A;-;ecole;prive;85390;Mouilleron-en-Pareds
+0851093B;Notre-Dame - Saint-Joseph;ecole;prive;85000;Mouilleron-le-Captif
+0851095D;Saint-Maurice;ecole;prive;85540;Moutiers-les-Mauxfaits
+0851097F;Sainte-Marie;ecole;prive;85320;Moutiers-sur-le-Lay
+0851099H;Sainte-Elisabeth;ecole;prive;85370;Mouzeuil-Saint-Martin
+0851100J;Sacré-Coeur;ecole;prive;85370;Nalliers
+0851102L;Saint-Charles;ecole;prive;85310;Nesmy
+0851104N;Saint-Pierre;ecole;prive;85430;Nieul-le-Dolent
+0851107S;Saint-Ambroise;ecole;prive;85240;Nieul-sur-l'Autise
+0851114Z;Gaston Chaissac;ecole;public;85140;Les-Essarts
+0851115A;-;ecole;public;85520;Jard-sur-Mer
+0851116B;François Rabelais;ecole;public;85420;Maillezais
+0851117C;Les Pyramides;ecole;public;85000;La-Roche-sur-Yon
+0851118D;La Généraudière;ecole;public;85000;La-Roche-sur-Yon
+0851119E;Georges Clémenceau;ecole;public;85100;Les-Sables-d'Olonne
+0851120F;Les Maines;ecole;public;85600;Saint-Georges-de-Montaigu
+0851121G;Jean De La Fontaine;ecole;public;85290;Saint-Laurent-sur-Sèvre
+0851122H;-;ecole;public;85210;Thiré
+0851124K;Jean Moulin;ecole;public;85000;La-Roche-sur-Yon
+0851125L;-;ecole;public;85400;Chasnais
+0851126M;La Courte Echelle;ecole;public;85480;Bournezeau
+0851127N;Sebastien Luneau;ecole;public;85230;Bouin
+0851128P;-;ecole;prive;85670;Saint-Paul-Mont-Penit
+0851129R;Sainte-Thérèse - Les Jaulnières;ecole;prive;85000;La-Roche-sur-Yon
+0851130S;L'Aubépine;ecole;prive;85000;La-Roche-sur-Yon
+0851132U;Les Colliberts;college;public;85580;Saint-Michel-en-l'Herm
+0851133V;-;ecole;public;85480;Thorigny
+0851134W;Sainte-Marie;ecole;prive;85390;Tallud-Sainte-Gemme
+0851135X;-;ecole;prive;85300;Le-Perrier
+0851136Y;-;ecole;prive;85200;Fontaines
+0851144G;Molière;college;public;85330;Noirmoutier-en-l'Ile
+0851145H;du Marais Poitevin;college;public;85490;Benet
+0851146J;de l'Anglée;college;public;85210;Sainte-Hermine
+0851149M;Jacques Maury;ecole;public;85460;L'Aiguillon-sur-Mer
+0851151P;Paul-Henri Tisseau;ecole;public;85390;Bazoges-en-Pareds
+0851152R;-;ecole;public;85450;Chaillé-les-Marais
+0851154T;Gaston Chaissac;ecole;public;85770;Vix
+0851155U;Les Jardins;ecole;public;85600;Montaigu
+0851157W;L'Arc-en-Ciel;ecole;prive;85110;Sainte-Cécile
+0851158X;Saint-Joseph;college;prive;85300;Challans
+0851159Y;Jean Yole;college;prive;85500;Les-Herbiers
+0851160Z;Antoine De Saint-Exupéry;college;prive;85700;Pouzauges
+0851163C;Pierre Mendès-France;college;public;85120;La-Châtaigneraie
+0851166F;L'Espérance;ecole;prive;85110;Sainte-Cécile
+0851167G;Saint-Joseph;ecole;prive;85480;Fougeré
+0851170K;-;ecole;public;85220;Commequiers
+0851171L;La Croix-Maraud;ecole;public;85300;Challans
+0851172M;Pierre Menanteau;ecole;public;85170;Dompierre-sur-Yon
+0851175R;Saint-Philbert du Pont Charrault;ecole;public;85110;Chantonnay
+0851176S;Les Chaumes;ecole;public;85170;Belleville-sur-Vie
+0851181X;Saint-Gilles;college;prive;85800;Saint-Gilles-Croix-de-Vie
+0851183Z;Robert Bonnaud;ecole;public;85200;Fontenay-le-Comte
+0851185B;-;ecole;public;85320;Corpe
+0851187D;L'Angelmière;ecole;public;85000;La-Roche-sur-Yon
+0851188E;-;ecole;public;85110;La-Jaudonnière
+0851191H;Saint-Joseph;college;prive;85110;Chantonnay
+0851193K;Jean Rostand;college;public;85500;Les-Herbiers
+0851195M;Frédéric et Irène Joliot-Curie;college;public;85240;Saint-Hilaire-des-Loges
+0851202V;de la vallée Du Lay;ecole;public;85320;Mareuil-sur-Lay-Dissais
+0851203W;du Pont Boileau;ecole;public;85000;La-Roche-sur-Yon
+0851204X;Marcel Pagnol;ecole;public;85000;La-Roche-sur-Yon
+0851220P;Jean Monnet;college;public;85100;Château-d'Olonne
+0851239K;Louis Remondet;ecole;public;85110;Chantonnay
+0851241M;Jean Moulin;ecole;public;85400;Luçon
+0851247U;Saint-Nicolas;ecole;prive;85580;Grues
+0851248V;-;ecole;prive;85210;Saint-Martin-Lars-en-Sainte-Hermine
+0851266P;des Pensées;ecole;public;85170;Le-Poiré-sur-Vie
+0851267R;-;ecole;public;85460;La-Faute-sur-Mer
+0851268S;Flora Tristan - Saint-André Ornay;ecole;public;85000;La-Roche-sur-Yon
+0851269T;Marcel Baussais;ecole;public;85340;Olonne-sur-Mer
+0851271V;du centre;ecole;public;85400;Luçon
+0851273X;Saint-Domnin;ecole;prive;85440;Avrillé
+0851274Y;Sacré-Coeur;college;prive;85000;La-Roche-sur-Yon
+0851276A;Sainte-Thérèse;ecole;prive;85750;Angles
+0851277B;Notre-Dame du Sacré-Coeur;ecole;prive;85550;La-Barre-de-Monts
+0851278C;Sainte-Thérèse;ecole;prive;85140;La-Merlatière
+0851279D;Sainte-Thérèse;ecole;prive;85100;Les-Sables-d'Olonne
+0851280E;Louis-Marie Grignion de Montfort;ecole;prive;85150;Saint-Mathurin
+0851281F;-;ecole;prive;85770;Vix
+0851284J;La Melière;ecole;public;85300;Challans
+0851285K;Paul-Emile Victor;ecole;public;85150;Saint-Georges-de-Pointindoux
+0851288N;Jules Ferry;ecole;public;85150;Saint-Mathurin
+0851290R;Sainte-Ursule;college;prive;85400;Luçon
+0851292T;Saint-Michel;college;prive;85290;Saint-Laurent-sur-Sèvre
+0851293U;Saint-Gabriel;college;prive;85290;Saint-Laurent-sur-Sèvre
+0851295W;L'Espérance;college;prive;85110;Sainte-Cécile
+0851304F;Auguste et Jean Renoir;college;public;85000;La-Roche-sur-Yon
+0851319X;Léonce Gluard;ecole;public;85000;La-Roche-sur-Yon
+0851320Y;-;ecole;public;85430;La-Boissière-des-Landes
+0851321Z;-;ecole;public;85300;Sallertaine
+0851322A;-;ecole;public;85520;Saint-Vincent-sur-Jard
+0851328G;-;ecole;public;85470;Brem-sur-Mer
+0851349E;Le Chemin Neuf;ecole;public;85600;Saint-Hilaire-de-Loulay
+0851351G;La Métairie;ecole;public;85500;Les-Herbiers
+0851353J;La Mer;ecole;public;85360;La-Tranche-sur-Mer
+0851354K;Robert Desnos;ecole;public;85290;Mortagne-sur-Sèvre
+0851355L;L'Herbaudière;ecole;public;85330;Noirmoutier-en-l'Ile
+0851359R;Jacques Prévert;ecole;public;85480;Fougeré
+0851360S;Jean De La Fontaine;ecole;public;85260;L'Herbergement
+0851361T;-;ecole;public;85300;Froidfond
+0851363V;-;ecole;public;85190;Venansault
+0851365X;La Pironnière;ecole;public;85100;Château-d'Olonne
+0851367Z;Jan et Joël Martel;ecole;public;85710;La-Garnache
+0851369B;-;ecole;public;85400;Sainte-Gemme-la-Plaine
+0851370C;Beugne L'Abbé;ecole;public;85400;Les-Magnils-Reigniers
+0851374G;Françoise Dolto;ecole;public;85310;Saint-Florent-des-Bois
+0851376J;La Mer et le Vent;ecole;public;85270;Saint-Hilaire-de-Riez
+0851379M;du Moulin Rouge;ecole;public;85000;La-Roche-sur-Yon
+0851382R;du Val d'Asson;ecole;public;85600;Treize-Septiers
+0851385U;-;ecole;public;85200;Sérigné
+0851388X;Olivier Messiaen;college;public;85290;Mortagne-sur-Sèvre
+0851397G;du Guémesse;ecole;public;85130;La-Gaubretière
+0851398H;Le Petit Prince;ecole;public;85800;Le-Fenouiller
+0851435Y;Antoine De Saint-Exupéry;college;public;85170;Belleville-sur-Vie
+0851471M;Amiral Merveilleux Du Vignaux;ecole;prive;85100;Château-d'Olonne
+0851524V;-;ecole;public;85170;Le-Poiré-sur-Vie
+0851536H;Notre-Dame des Flots;ecole;prive;85340;Olonne-sur-Mer

@@ -1,0 +1,326 @@
+0160001P;-;college;public;16140;Aigre
+0160002R;Guez De Balzac;lycee;public;16016;Angoulême
+0160003S;Marguerite De Valois;lycee;public;16017;Angoulême
+0160004T;Charles Augustin De Coulomb;lycee;public;16016;Angoulême
+0160005U;Jules Michelet;college;public;16000;Angoulême
+0160006V;L'Oisellerie;lycee;public;16400;La-Couronne
+0160010Z;Elie Vinet;lycee;public;16300;Barbezieux-Saint-Hilaire
+0160012B;Alfred De Vigny;college;public;16250;Blanzac-Porcheresse
+0160015E;-;college;public;16210;Chalais
+0160016F;de l'Argentor;college;public;16350;Champagne-Mouton
+0160020K;Jean Monnet;lycee;public;16100;Cognac
+0160022M;Emile Roux;lprof;public;16500;Confolens
+0160024P;-;college;public;16400;La-Couronne
+0160027T;Jean Lartaut;college;public;16200;Jarnac
+0160029V;Alfred Renoleau;college;public;16230;Mansle
+0160030W;-;college;public;16220;Montbron
+0160031X;-;college;public;16310;Montemboeuf
+0160032Y;Antoine Delafont;college;public;16190;Montmoreau-Saint-Cybard
+0160034A;Claudie Haigneré;college;public;16170;Rouillac
+0160036C;Jean Caillaud;lprof;public;16600;Ruelle-sur-Touvre
+0160039F;du Val de Charente;college;public;16700;Ruffec
+0160040G;Eugène Delacroix;college;public;16330;Saint-Amant-de-Boixe
+0160042J;Font-Belle;college;public;16130;Segonzac
+0160043K;Henri Martin;college;public;16320;Villebois-Lavalette
+0160047P;Charles Augustin De Coulomb;lprof;public;16016;Angoulême
+0160048R;Pierre-André Chabanne;lprof;public;16260;Chasseneuil-sur-Bonnieure
+0160049S;Jean Rostand;lprof;public;16017;Angoulême
+0160050T;Jules Verne;college;public;16000;Angoulême
+0160061E;Sainte-Marthe - Chavagnes;college;prive;16000;Angoulême
+0160062F;Saint-Paul;lycee;prive;16007;Angoulême
+0160063G;Sainte-Marie;lycee;prive;16300;Barbezieux-Saint-Hilaire
+0160065J;de Beaulieu;lycee;prive;16100;Cognac
+0160073T;Saint-Gauthier;college;prive;16500;Confolens
+0160075V;Jean XXIII;college;prive;16200;Jarnac
+0160076W;de l'Enfant Jésus;college;prive;16110;La-Rochefoucauld
+0160077X;Sacré-Coeur;college;prive;16700;Ruffec
+0160079Z;Sainte-Marthe;lprof;prive;16000;Angoulême
+0160083D;Saint-Joseph - L'Amandier;lprof;prive;16710;Saint-Yrieix-sur-Charente
+0160094R;Norbert Casteret;college;public;16600;Ruelle-sur-Touvre
+0160100X;Romain Rolland;college;public;16800;Soyaux
+0160106D;René Cassin;college;public;16160;Gond-Pontouvre
+0160108F;Félix Gaillard;lprof;public;16300;Salles-de-Barbezieux
+0160113L;La Grande Garenne;college;public;16000;Angoulême
+0160115N;Albert Micheneau;college;public;16240;Villefagnan
+0160116P;Elisée Mousnier;college;public;16100;Cognac
+0160117R;Félix Gaillard;college;public;16100;Cognac
+0160119T;Louis Delage;lprof;public;16100;Cognac
+0160120U;Jean De La Quintinie;college;public;16150;Chabanais
+0160792Z;du bâtiment;lprof;public;16022;Angoulême
+0160793A;Jean Michaud;college;public;16270;Roumazières-Loubert
+0160862A;Jean-Albert Grégoire;lprof;public;16800;Soyaux
+0160863B;Maurice Genevoix;college;public;16120;Châteauneuf-sur-Charente
+0160864C;Claude Boucher;college;public;16100;Cognac
+0160865D;Jean Monnet;lprof;public;16108;Cognac
+0160866E;Jean Moulin;college;public;16300;Barbezieux-Saint-Hilaire
+0160867F;Jean Rostand;college;public;16110;La-Rochefoucauld
+0160882X;Louis Pasteur;college;public;16260;Chasseneuil-sur-Bonnieure
+0160884Z;Marguerite De Valois;college;public;16000;Angoulême
+0160894K;Pierre Mendès-France;college;public;16800;Soyaux
+0160895L;André Malraux;college;public;16360;Baignes-Sainte-Radegonde
+0160944P;Noël-Noël;college;public;16500;Confolens
+0160968R;-;EREA;public;16000;Angoulême
+0160969S;Puygrelier;college;public;16470;Saint-Michel
+0161003D;La Garenne;lprof;public;16700;Ruffec
+0161048C;Saint-Paul;college;prive;16000;Angoulême
+0161049D;Sainte-Marie;college;prive;16300;Barbezieux-Saint-Hilaire
+0161050E;Saint-Joseph;college;prive;16100;Cognac
+0161075G;Pierre Bodet;college;public;16000;Angoulême
+0161095D;de l'Image et du Son;lprof;public;16022;Angoulême
+0161106R;Anatole France;college;public;16000;Angoulême
+0170002K;Arlette Guirado;college;public;17520;Archiac
+0170004M;-;college;public;17770;Burie
+0170005N;Aliénor D'Aquitaine;college;public;17480;Le-Château-d'Oléron
+0170007R;Jean Monnet;college;public;17170;Courçon
+0170008S;Les Vieilles Vignes;college;public;17120;Cozes
+0170009T;Jules Ferry;college;public;17260;Gémozac
+0170010U;Françoise Dolto;college;public;17220;La-Jarrie
+0170011V;Léopold Dussaigne;college;public;17500;Jonzac
+0170012W;La Trézence;college;public;17330;Loulay
+0170016A;Didier Daurat;college;public;17150;Mirambeau
+0170020E;Emile Combes;lycee;public;17800;Pons
+0170022G;Maurice Merleau-Ponty;lycee;public;17304;Rochefort
+0170025K;Gilles Jamain;lprof;public;17312;Rochefort
+0170027M;René-Josué Valin;lycee;public;17023;La-Rochelle
+0170028N;Jean Dautet;lycee;public;17022;La-Rochelle
+0170029P;Léonce Vieljeux;lycee;public;17026;La-Rochelle
+0170030R;Léonce Vieljeux;lprof;public;17026;La-Rochelle
+0170031S;Pierre Doriole;lprof;public;17012;La-Rochelle
+0170035W;Beauregard;college;public;17000;La-Rochelle
+0170042D;Cordouan;lycee;public;17205;Royan
+0170043E;Samuel De Champlain;lprof;public;17205;Royan
+0170044F;Pierre et Marie Curie;lprof;public;17205;Royan
+0170047J;Jean Monnet;college;public;17620;Saint-Agnant
+0170048K;Bernard Roussillon;college;public;17360;Saint-Aigulin
+0170049L;Maurice Chastang;college;public;17240;Saint-Genis-de-Saintonge
+0170050M;Raymond Bouyer;college;public;17770;Saint-Hilaire-de-Villefranche
+0170051N;Louis Audouin-Dubreuil;lycee;public;17415;Saint-Jean-d'Angély
+0170052P;mécanique agricole Blaise Pascal;lprof;public;17415;Saint-Jean-d'Angély
+0170055T;-;college;public;17250;Saint-Porchaire
+0170056U;Robert Cellerier;college;public;17350;Saint-Savinien
+0170058W;Bellevue;lycee;public;17107;Saintes
+0170059X;Agrippa d'Aubigné;college;public;17100;Saintes
+0170060Y;Bernard Palissy;lycee;public;17107;Saintes
+0170063B;Edgar Quinet;college;public;17100;Saintes
+0170070J;-;lprof;public;17700;Surgères
+0170071K;Hélène De Fonsèque;college;public;17700;Surgères
+0170072L;Joliot-Curie;college;public;17430;Tonnay-Charente
+0170076R;La Fontaine;college;public;17210;Montlieu-la-Garde
+0170077S;Pierre Mendès-France;college;public;17000;La-Rochelle
+0170078T;Bernard Palissy;lprof;public;17107;Saintes
+0170079U;Emile Combes;lprof;public;17800;Pons
+0170081W;La Fayette;college;public;17300;Rochefort
+0170082X;Marcel Pagnol;college;public;17380;Tonnay-Boutonne
+0170087C;Georges Desclaude;lycee;public;17100;Saintes
+0170088D;Samuel De Missy;college;public;17000;La-Rochelle
+0170098P;Saint-Louis;lycee;prive;17250;Pont-l'Abbé-d'Arnoult
+0170099R;Fénelon;college;prive;17000;La-Rochelle
+0170100S;Fénelon;lprof;prive;17005;La-Rochelle
+0170102U;Jeanne D'Arc;college;prive;17100;Saintes
+0170103V;Notre-Dame de Recouvrance;lycee;prive;17100;Saintes
+0170107Z;La Providence;lprof;prive;17025;La-Rochelle
+0170110C;Saint-Sacrement;college;prive;17290;Aigrefeuille-d'Aunis
+0170111D;Notre-Dame de Nazareth;college;prive;17120;Cozes
+0170112E;Marie Eustelle;college;prive;17230;Marans
+0170113F;Sainte-Marie de la Providence;college;prive;17300;Rochefort
+0170118L;Sainte-Sophie;college;prive;17400;Saint-Jean-d'Angély
+0170120N;Jeanne D'Arc;college;prive;17700;Surgères
+0170135E;Jean Hyppolite;lprof;public;17502;Jonzac
+0170142M;Albert Camus;college;public;17000;La-Rochelle
+0170144P;René Caillié;college;public;17100;Saintes
+0170384A;Sainte-Marie - Saint-Jean-Baptiste;college;prive;17200;Royan
+0170386C;Jean Hay;college;public;17320;Marennes
+0170387D;André Albert;college;public;17600;Saujon
+0170388E;Fernand Garandeau;college;public;17390;La-Tremblade
+0170389F;Emile Combes;college;public;17800;Pons
+0170390G;Samuel Dumenieu;college;public;17130;Montendre
+0170392J;-;EREA;public;17100;Saintes
+0170393K;de l'industrie laitière;lprof;public;17700;Surgères
+0170394L;-;lprof;public;17100;Saintes
+0170399S;Le Renaudin;lprof;public;17500;Saint-Germain-de-Lusignan
+0170970M;Jean Guiton;college;public;17140;Lagord
+0171022U;Maurice Calmel;college;public;17230;Marans
+0171034G;Les Salières;college;public;17410;Saint-Martin-de-Ré
+0171056F;Edouard Grimaux;college;public;17300;Rochefort
+0171057G;Pierre Loti;college;public;17300;Rochefort
+0171058H;Louis Audouin-Dubreuil;lprof;public;17415;Saint-Jean-d'Angély
+0171117X;Fabre D'Eglantine;college;public;17000;La-Rochelle
+0171118Y;Georges Texier;college;public;17400;Saint-Jean-d'Angély
+0171120A;Henri Dunant;college;public;17200;Royan
+0171122C;Emile Zola;college;public;17200;Royan
+0171129K;André Dulin;college;public;17290;Aigrefeuille-d'Aunis
+0171159T;Marc Jeanjean;college;public;17160;Matha
+0171160U;-;college;public;17270;Montguyon
+0171184V;Eugène Fromentin;college;public;17000;La-Rochelle
+0171210Y;Marc Chagall;college;public;17139;Dompierre-sur-Mer
+0171211Z;André Malraux;college;public;17340;Châtelaillon-Plage
+0171213B;L'Ouche des Carmes;college;public;17470;Aulnay
+0171215D;du Pertuis d'Antioche;college;public;17310;Saint-Pierre-d'Oléron
+0171238D;Rompsay;lprof;public;17022;La-Rochelle
+0171339N;L'Atlantique;college;public;17440;Aytré
+0171340P;Saint-Louis;college;prive;17250;Pont-l'Abbé-d'Arnoult
+0171341R;Notre-Dame de Recouvrance;college;prive;17100;Saintes
+0171405K;hôtelier;lycee;public;17022;La-Rochelle
+0171406L;hôtelier;lprof;public;17022;La-Rochelle
+0171418Z;Saint-Exupéry;lycee;public;17028;La-Rochelle
+0171422D;agricole, aquacole et maritime;lycee;public;17560;Bourcefranc-le-Chapus
+0171428K;de la Mer et du Littoral;lycee;public;17560;Bourcefranc-le-Chapus
+0171432P;maritime et aquacole;lprof;public;17022;La-Rochelle
+0171455P;Marcel Dassault;lycee;public;17300;Rochefort
+0171472H;expérimental;lycee;public;17190;Saint-Georges-d'Oléron
+0790001X;Raymond Migaud;college;public;79240;L'Absie
+0790003Z;Blaise Pascal;college;public;79150;Argenton-Château
+0790004A;Molière;college;public;79290;Bouillé-Loretz
+0790007D;Maurice Genevoix;lycee;public;79301;Bressuire
+0790010G;Antoine De Saint-Exupéry;college;public;79170;Brioux-sur-Boutonne
+0790011H;François Albert;college;public;79370;Celles-sur-Belle
+0790013K;-;college;public;79220;Champdeniers-Saint-Denis
+0790014L;François Truffaut;college;public;79110;Chef-Boutonne
+0790015M;Jean-François Cail;lprof;public;79110;Chef-Boutonne
+0790016N;Henri Martineau;college;public;79160;Coulonges-sur-l'Autize
+0790017P;Jean Monnet;college;public;79120;Lezay
+0790019S;Joseph Desfontaines;lycee;public;79500;Melle
+0790020T;Maurice Fombeure;college;public;79340;Ménigoute
+0790021U;L'Orangerie;college;public;79800;La-Mothe-Saint-Héray
+0790023W;Jean Macé;lycee;public;79004;Niort
+0790024X;Paul Guérin;lycee;public;79004;Niort
+0790027A;Jean Zay;college;public;79000;Niort
+0790028B;Ferdinand Renault;college;public;79800;Pamproux
+0790029C;Ernest Pérochon;lycee;public;79204;Parthenay
+0790030D;du Marchioux;college;public;79200;Parthenay
+0790031E;du Haut Val de Sèvre;lprof;public;79403;Saint-Maixent-l'Ecole
+0790032F;François Villon;college;public;79330;Saint-Varent
+0790033G;Anne Frank;college;public;79190;Sauzé-Vaussais
+0790034H;Louis Merle;college;public;79130;Secondigny
+0790035J;Jean De La Fontaine;college;public;79390;Thénezay
+0790036K;Jean Moulin;lycee;public;79101;Thouars
+0790038M;Jean Moulin;lprof;public;79101;Thouars
+0790043T;Paul Guérin;lprof;public;79004;Niort
+0790044U;Roger Thabault;college;public;79310;Mazières-en-Gâtine
+0790052C;Pierre et Marie Curie;college;public;79000;Niort
+0790056G;Saint-Hilaire;college;prive;79000;Niort
+0790057H;Notre-Dame;lycee;prive;79028;Niort
+0790058J;Saint-Charles;lycee;prive;79101;Thouars
+0790059K;Sainte-Agnès;college;prive;79600;Airvault
+0790060L;Saint-Joseph;college;prive;79150;Argenton-Château
+0790061M;Abbé Pierre;college;prive;79250;Nueil-Les-Aubiers
+0790063P;François D'Assise;college;prive;79140;Cerizay
+0790064R;Sacré-Coeur;college;prive;79110;Chef-Boutonne
+0790065S;Sainte-Anne;college;prive;79700;Mauléon
+0790067U;Charles Péguy;college;prive;79320;Moncoutant
+0790069W;Saint-Joseph;college;prive;79028;Niort
+0790070X;Notre-Dame de la Couldre;college;prive;79200;Parthenay
+0790071Y;Saint-Joseph;college;prive;79200;Parthenay
+0790072Z;Saint-André;college;prive;79400;Saint-Maixent-l'Ecole
+0790073A;Saint-Joseph;college;prive;79330;Saint-Varent
+0790074B;Saint-Joseph;college;prive;79130;Secondigny
+0790078F;Saint-André;lprof;prive;79007;Niort
+0790080H;Saint-Joseph;lprof;prive;79300;Bressuire
+0790089T;Gérard Philipe;college;public;79000;Niort
+0790090U;-;lprof;public;79204;Parthenay
+0790091V;Jules Supervielle;college;public;79300;Bressuire
+0790699F;Albert Camus;college;public;79270;Frontenay-Rohan-Rohan
+0790702J;Simone Signoret;lprof;public;79301;Bressuire
+0790703K;Philippe De Commynes;college;public;79000;Niort
+0790704L;Voltaire;college;public;79600;Airvault
+0790706N;Les Sicaudières;lycee;public;79300;Bressuire
+0790708R;Marie De La Tour D'Auvergne;college;public;79100;Thouars
+0790709S;Fontanes;college;public;79000;Niort
+0790710T;François Rabelais;college;public;79000;Niort
+0790767E;-;lprof;public;79011;Niort
+0790768F;Jacques Bujault;lycee;public;79500;Melle
+0790928E;Gaston Barré;lprof;public;79010;Niort
+0790929F;René Caillié;college;public;79210;Mauzé-sur-le-Mignon
+0790943W;du Pinier;college;public;79500;Melle
+0790945Y;Georges Clémenceau;college;public;79140;Cerizay
+0790950D;Emile Zola;college;public;79230;Prahecq
+0790964U;Thomas-Jean Main;lprof;public;79011;Niort
+0790965V;Jean Vilar;college;public;79260;La-Crèche
+0790966W;Jacques Prévert;college;public;79320;Moncoutant
+0790978J;Denfert-Rochereau;college;public;79400;Saint-Maixent-l'Ecole
+0790979K;Françoise Dolto;EREA;public;79450;Saint-Aubin-le-Cloud
+0791002K;Jean Rostand;college;public;79100;Thouars
+0791014Y;Notre-Dame;college;prive;79300;Bressuire
+0791016A;Notre-Dame;college;prive;79000;Niort
+0791017B;Saint-Charles;college;prive;79100;Thouars
+0791029P;Léonard De Vinci;lprof;public;79300;Bressuire
+0791042D;Pierre Mendès-France;college;public;79200;Parthenay
+0791062A;de la Venise Verte;lycee;public;79012;Niort
+0791134D;Antoine De Saint-Exupéry;college;prive;79000;Niort
+0860002K;Romain Rolland;college;public;86250;Charroux
+0860003L;Marcelin Berthelot;lycee;public;86106;Châtellerault
+0860005N;Edouard Branly;lycee;public;86106;Châtellerault
+0860006P;Edouard Branly;lprof;public;86106;Châtellerault
+0860009T;André Theuriet;lycee;public;86400;Civray
+0860010U;Les Terres Rouges;lprof;public;86400;Civray
+0860014Y;André Brouillet;college;public;86700;Couhé
+0860015Z;Bellevue;college;public;86220;Dangé-Saint-Romain
+0860016A;Jean Jaurès;college;public;86160;Gençay
+0860017B;René Cassin;college;public;86150;L'Isle-Jourdain
+0860019D;Arthur Rimbaud;college;public;86190;Latillé
+0860020E;Arsène Lambert;college;public;86140;Lencloître
+0860021F;Guy Chauvet;lycee;public;86206;Loudun
+0860022G;Marc Godrie;lprof;public;86200;Loudun
+0860023H;Joachim Du Bellay;college;public;86200;Loudun
+0860026L;Louise Michel;college;public;86320;Lussac-les-Châteaux
+0860027M;Georges David;college;public;86110;Mirebeau
+0860028N;Jean Moulin;lycee;public;86500;Montmorillon
+0860029P;Raoul Mortier;lprof;public;86500;Montmorillon
+0860031S;Jean Moulin;college;public;86500;Montmorillon
+0860032T;Jean Rostand;college;public;86170;Neuville-de-Poitou
+0860034V;Victor Hugo;lycee;public;86034;Poitiers
+0860035W;Camille Guérin;lycee;public;86022;Poitiers
+0860037Y;Louis Armand;lycee;public;86022;Poitiers
+0860038Z;Aliénor D'Aquitaine;lycee;public;86034;Poitiers
+0860039A;Le Dolmen;lprof;public;86036;Poitiers
+0860040B;Jardin des Plantes;college;public;86000;Poitiers
+0860043E;Léon Huet;college;public;86270;La-Roche-Posay
+0860044F;Maurice Bedel;college;public;86230;Saint-Gervais-les-Trois-Clochers
+0860045G;Isaac De Razilly;college;public;86330;Saint-Jean-de-Sauves
+0860046H;Prosper Mérimée;college;public;86310;Saint-Savin
+0860047J;Frédéric et Irène Joliot-Curie;college;public;86370;Vivonne
+0860048K;Auguste Perret;lprof;public;86036;Poitiers
+0860049L;Camille Guérin;college;public;86210;Vouneuil-sur-Vienne
+0860052P;Louis Armand;lprof;public;86022;Poitiers
+0860053R;Camille Claudel;college;public;86400;Civray
+0860076R;Jean Moulin;college;public;86000;Poitiers
+0860702W;Jean Macé;college;public;86100;Châtellerault
+0860718N;Xavier Bernard;lycee;public;86480;Rouillé
+0860723U;Pierre De Ronsard;college;public;86000;Poitiers
+0860752A;Saint-Gabriel - Notre-Dame;lprof;prive;86108;Châtellerault
+0860753B;Saint-Gabriel - Notre-Dame;college;prive;86100;Châtellerault
+0860755D;Les Feuillants;lycee;prive;86035;Poitiers
+0860756E;Saint-Stanislas;college;prive;86000;Poitiers
+0860758G;La Providence;college;prive;86000;Poitiers
+0860759H;de l'Union Chrétienne;college;prive;86000;Poitiers
+0860761K;Jeanne D'Arc;college;prive;86400;Civray
+0860762L;Saint-Martin;college;prive;86700;Couhé
+0860763M;Saint-Pierre;college;prive;86220;Dangé-Saint-Romain
+0860764N;Sacré-Coeur;college;prive;86130;Jaunay-Clan
+0860765P;Chavagnes - Saint-Joseph;college;prive;86200;Loudun
+0860768T;Saint-Martial;college;prive;86500;Montmorillon
+0860772X;Notre-Dame de la Chaume;college;prive;86190;Vouillé
+0860774Z;Cloche Perse;lprof;prive;86036;Poitiers
+0860787N;Saint-Jacques De Compostelle;lprof;prive;86000;Poitiers
+0860789R;Le Porteau;lprof;prive;86034;Poitiers
+0860791T;François Rabelais;college;public;86000;Poitiers
+0860792U;Gérard Philipe;college;public;86300;Chauvigny
+0860793V;Anne Frank;EREA;public;86550;Mignaloux-Beauvoir
+0860799B;Jules Verne;college;public;86180;Buxerolles
+0860800C;Grandpont;lprof;public;86361;Chasseneuil-du-Poitou
+0860818X;-;lprof;public;86540;Thuré
+0860820Z;Jean-Marie Bouloux;lprof;public;86500;Montmorillon
+0860823C;Réaumur;lprof;public;86036;Poitiers
+0860876K;George Sand;college;public;86100;Châtellerault
+0860903P;de l'Union Chrétienne;lycee;prive;86011;Poitiers
+0860984C;René Descartes;college;public;86100;Châtellerault
+0861038L;Antoine De Saint-Exupéry;college;public;86130;Jaunay-Clan
+0861053C;Jean Monnet;college;public;86600;Lusignan
+0861071X;Henri IV;college;public;86000;Poitiers
+0861072Y;France Bloch-Sérazin;college;public;86000;Poitiers
+0861073Z;Théophraste Renaudot;college;public;86280;Saint-Benoît
+0861092V;Camille Guérin;college;public;86000;Poitiers
+0861094X;hôtelier;lprof;public;86034;Poitiers
+0861113T;Le Verger;lprof;public;86100;Châtellerault
+0861223M;Pilote Innovant;lycee;public;86130;Jaunay-Clan
+0861228T;du Bois d'Amour;lycee;public;86034;Poitiers

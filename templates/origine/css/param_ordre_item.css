@@ -1,0 +1,59 @@
+/* 
+    Document   : param_ordre_item
+    Created on : 7 juil. 2010, 14:20:42
+    Author     : regis
+    Description:
+        Purpose of the stylesheet follows.
+*/
+#container{
+  width:98%;
+  margin:0em auto;
+}
+.onglet{
+  display:inline-block;
+  margin-left:0em;
+  margin-right:0em;
+  padding:3px .5em;
+  min-width: 6em;
+  text-align: center;
+  cursor:pointer;
+}
+.onglet_0{
+  background-image:url('../../../images/background/left-top-corner.png');
+}
+a.onglet_0{
+  color:#606060;
+}
+a.onglet_0:hover{
+  color:#202020;
+}
+.onglet_1{
+  padding-bottom:4px;
+  background-color:#f3f3f3;
+  background-image:url('../../../images/background/left-top-corner.png');
+}
+a.onglet_1{
+  color:#000000;
+}
+.contenu_onglet{
+  background-color:#f3f3f3;
+  border:1px solid #d3d3d3;
+  margin-top:-1px;
+  padding:5px;
+  display:none;
+}
+.contenu_onglet2{
+  background-color:#f3f3f3;
+  border:1px solid black;
+  margin-top:-1px;
+  padding:5px;
+}
+ul{
+  margin-top:0px;
+  margin-bottom:0px;
+  margin-left:0px;
+  list-style-type:none;
+}
+.ecarte{
+  margin: 60%;
+}

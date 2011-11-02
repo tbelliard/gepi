@@ -1,0 +1,80 @@
+    form {
+        font-size: 0.71em;
+        width: 60em;
+        min-width: 500px;
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 1em;
+    }
+
+    fieldset {
+        padding: 1em;
+        margin: 1em 1em 1em 0;
+        width: 60%;
+        text-align: center;
+        border: none;
+        background-color: #33469A;
+        color: #000000;
+    }
+
+    legend {
+        padding: 1em;
+        background-color: #99AFF8;
+        color: #000000;
+        border: 0.1em solid #EDF0FC;
+        font-weight: bold;
+    }
+
+    fieldset .row {
+        background-color: #FFFFFF;
+        color: #000000;
+        padding: 0.5em;
+        margin: 0.5em 0;
+        /* Auto float-clearing code */
+        overflow: auto;
+        width: 100%;
+    }
+
+    fieldset .row label {
+        display: block;
+        width: 27%;
+        padding: 0.5em;
+        float: left;
+        clear: both;
+    }
+
+   fieldset .row span.input,
+   fieldset .row input {
+        display: block;
+        width: 70%;
+        float: right;
+        vertical-align: middle;
+        margin-bottom: 0.2em;
+    }
+    fieldset .row span.input input {
+        display: inline;
+        width: auto;
+        float: none;
+    }
+
+    fieldset .row span.input label {
+        padding: 0;
+        width: auto;
+        background-color: transparent;
+    }
+    * html fieldset {
+        position: relative;
+        padding-top: 2.75em;
+        margin: 3em 0 2em 0;
+    }
+    * html fieldset legend {
+        position: absolute;
+        top: -1.75em;
+        left: 0.25em;
+    }
+
+    * html fieldset.nolegend {
+        margin-top: 2em;
+        padding-top: 1em;
+    }
+

@@ -1,0 +1,247 @@
+/* Styles pour les emplois du temps horizontaux */
+/* utilisables avec tous les navigateurs sauf IE6 */
+
+.fond {
+    float:left; 
+	position:relative;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 1em;
+	color: black;
+	text-align: left;
+    width:190px;    /* largeur fixe pour compatibilité avec IE6 */
+}
+.fond_h{
+    float:left; 
+	position:relative;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 1em;
+	color: black;
+	text-align: left;
+    width:100%;    /* largeur fixe pour compatibilité avec IE6 */
+}
+.ligne {
+	float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 00px 00px 00px 00px;
+	height:3em;
+    width:100%;	
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+}
+.colonne {
+	float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 00px 00px 00px 00px;
+	width:150px;	    /* largeur fixe pour compatibilité avec IE6 */
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+}
+
+.cellule_h {
+	float:left;
+	margin: 00px 0px 00px 00px;
+	border:0px solid #000000; 
+	height : 100%;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 80%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+}
+.cellule {
+	float:left;
+	margin: 00px 0px 00px 00px;
+	border:0px solid #000000; 
+	width : 100%;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 80%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+}
+.demicellule_h {
+	float:left;
+	margin: 00px 0px 00px 00px;
+	border:0px solid #000000; 
+	height : 50%;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+	overflow:hidden;
+}
+.demicellule {
+	float:left;
+	margin: 00px 0px 00px 00px;
+	border:0px solid #000000; 
+	width : 50%;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+	overflow:hidden;
+}
+.tierscellule_h{
+	float:left;
+	margin: 00px 0px 00px 00px;
+	border:0px solid #000000; 
+	height : 33%;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+	overflow:hidden;
+}
+.tierscellule{
+	float:left;
+	margin: 00px 0px 00px 00px;
+	border:0px solid #000000; 
+	width : 33%;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 72%;
+	color: black;
+	text-align: center;
+	background-color: #cccccc ;
+	overflow:hidden;
+}
+.cadre {
+	position:relative;
+	border-left:1px solid #000000;
+	border-top:1px solid #000000;
+	padding:0 0 0 0;
+	height:100%;
+}
+
+.cadreRepas {
+	position:relative;
+	border-left:1px solid #000000;
+	border-top:1px solid #000000;
+	background-color:#999999;
+	padding:0 0 0 0;
+	height:100%;
+	overflow:hidden;
+}
+.cadreCouleur {
+	position:relative;
+	border-left:1px solid #000000;
+	border-top:1px solid #000000;
+	background-color:white;
+	padding:0 0 0 0;
+	height:98%;
+	overflow:hidden; 
+}
+
+.entete  {
+	float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 0px 00px 00px 0px;
+	width:100%;
+	height : 100%;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: brown;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+	background-color: orange ; 
+}
+.entete_h {
+	float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 0px 01px 00px 0px;
+	width:100%;
+	height : 100%;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: brown;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+	background-color: orange ; 
+}
+.colonne_creneaux {
+    float:left;
+	padding: 00px 00px 0px 00px;
+	margin: 00px 00px 00px 02px;
+	max-width:50px;
+	width:30px;         /* largeur fixe pour compatibilité avec IE6 */
+	height : 100%;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 80%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+}
+.ligne_creneaux {
+    float:left;
+	padding: 00px 00px 0px 00px;
+	margin: 02px 00px 00px 00px;
+	max-height:50px;
+	height:2.5em;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 80%;
+	color: black;
+	text-align: center;
+	border-right: 1px solid #004A7A;
+	border-bottom: 1px solid #004A7A;
+}
+.entete_creneaux {
+	float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 0px 0px 00px 0px;
+	width:100%;
+	font-size: 1em;
+	background-color:orange;
+	border-top : 1px solid #000000;
+	border-right : 1px solid #0;
+}
+.entete_creneaux_h {
+	float:left;
+	padding: 00px 00px 00px 00px;
+	margin: 0px 01px 00px 0px;
+	height:98%;
+	font-size: 1em;
+	background-color:white;
+	border-right:1px solid black;
+}			
+.cellule_creneaux {
+    float:left;
+	margin: 0px 0px 0px 00px;
+	border:0px solid #000000; 
+	width:100%;
+	height : 100%;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 100%;
+	color: black;
+	text-align: center;
+	background-color: #fffbc7 ; 
+}
+
+.ButtonBar {
+    position:absolute;
+    bottom:0;
+    right:0;
+    margin:0;
+	width:100%;
+	height:15px;	
+}
+
+.ButtonBar .image {
+    float:right;
+    margin:0;
+	width:15px;
+	height:15px;
+}
+

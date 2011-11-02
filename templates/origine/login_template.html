@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  @version $Id: login_template.html $ -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<!-- correction Regis : déclaration par défaut pour les scripts et les mises en page-->
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+
+<title>[onshow.tbs_gepiSchoolName] : base de données élèves | Identifiez vous...</title>
+
+<!-- Icones -->
+<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
+<link rel="icon" type="image/ico" href="./favicon.ico" />
+
+<!-- fonction javascript -->
+<script src="lib/functions.js" type="text/javascript"></script>
+<script src="lib/prototype.js" type="text/javascript"></script>
+
+<script src="templates/origine/lib/login.js" type="text/javascript"></script>
+
+
+<!-- feuilles de style -->
+
+
+<!-- feuillesde style générale -->
+<link rel="stylesheet" type="text/css" href="./css/style.css" />
+
+<!-- feuilles de style normales -->
+<link rel="stylesheet" type="text/css" href="./css/style_ecran.css" media="screen" />
+
+<link rel="stylesheet" type="text/css" href="./css/style_telephone.css" media="handheld" />
+
+<!-- feuilles de style page login -->
+<link rel="stylesheet" type="text/css" href="./css/style_ecran_login.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="./css/style_telephone_login.css" media="handheld" />
+
+<!-- feuilles de style IE -->
+<!--[if lte IE 7]>
+	<link rel="stylesheet" type="text/css" href="./css/style_ecran_login_IE.css" media="screen" />
+<![endif]-->
+
+[onshow;block=begin; when [tbsStyleScreenAjout]!=n]
+<link rel='stylesheet' type='text/css' href='[onshow.tbsStyleScreenAjout]' />
+[onshow;block=end]
+<!-- fin des feuilles de style -->
+
+<!-- feuille de style perso -->
+<link rel='stylesheet' type='text/css' href='templates/origine/css/login.css' />
+<!-- fin des feuilles de style perso -->
+
+</head>
+<body onload="observeur()">
+
+<!-- Site en maintenance -->
+	<p class='maintenance'>
+			[tbs_blk1;block=begin][tbs_blk1.val]<br />
+			[tbs_blk1;block=end]
+	</p>
+
+<!-- Cahier de texte public -->	
+	<div id='ct_public'>
+		<a href='public/index.php?id_classe=-1'>
+			<img src="images/icons/cahier_texte.png" alt='' class='link' />&nbsp;[onshow.tbs_CdT_public_titre;magnet=div]
+		</a>
+	</div>
+
+<!-- identification -->
+	<form action='login.php' method='post' >
+		<div id ='identification'>
+				
+<!-- Utilisation multisite -->
+			<p class ='cache'>
+				<input type="hidden" name="rne" value="[onshow.tbs_multisite]" />
+			</p>
+				
+<!-- Entête -->				
+								
+			<div id='div_login_entete'>
+				<h1>[onshow.tbs_gepiSchoolName]</h1>
+				<p class='annee'>[onshow.tbs_gepiYear]</p>
+			</div>
+					
+			<div id='div_login'>
+			
+<!-- Message -->	
+				<p class='message'>[tbs_message.classe;att=class;attadd]
+					[tbs_message;block=p][tbs_message.texte]
+				</p>
+				
+<!-- Cadenas -->
+				<div>
+					<img class='cadenas' src='images/icons/lock.png' alt="" title="" />
+				</div>		
+							
+<!-- Identifiant -->				
+				<p class='droite' title="Saisissez l'identifiant qui vous a été donné.">
+					<label for='login'>Identifiant</label>
+					<input type='text' id='login' name='login' size='17' />
+				</p>
+						
+<!-- Mot de passe -->				
+				<p class='droite' title="Saisissez votre mot de passe en respectant les minuscules et les majuscules." >
+					<label for='no_anti_inject_password'>Mot de passe</label>
+					<input type='password' id='no_anti_inject_password' name='no_anti_inject_password' size='17' onkeypress='capsDetect(arguments[0]);'/>
+				</p>
+					
+<!-- Bouton valider -->				
+				<p class='droite' title="Envoyer les identifiants">
+					<input type='submit' name='submit' id='soumettre' value='Valider' />
+				</p>
+									
+<!-- Mot de passe oublié -->
+				<p id='mot_passe' title="Cliquez pour demander un nouveau mot de passe">
+				&nbsp;
+					<a class='small' href='[onshow.tbs_password_recovery;magnet=a]'>
+						Mot de passe oublié ? 
+					</a>
+				</p>
+			</div>
+		</div>
+
+	</form>
+
+<!-- Message pour la page de login -->
+<p class="rouge center">[onshow.msg_page_login;magnet=p;htmlconv=no]</p>
+	
+<!-- Switcher de gabarit -->
+	<form enctype="multipart/form-data" id= "switcher" action="login.php" method="get">
+		<p class='switcher'>
+			<label for="template" id="titre_switcher">Gabarits disponibles</label>
+			<!-- <select name='template' id='template' onchange="document.getElementById('switcher').submit();"> -->
+			<select name='template' id='template' title="Choisir une mise en page">
+				<option value='[tbs_blk3.value]' [tbs_blk3.selection]>[tbs_blk3;block=option;bmagnet=(form)] [tbs_blk3.texte]</option>
+			</select>
+		</p>
+		<!-- Bouton valider -->				
+		<p id="p_bt_gabarit"  class="center">
+			<input type='submit' name='bt_gabarit' id="bt_gabarit" value='Choisir' />
+		</p>
+
+	</form>
+
+	<div class="center info">
+<!-- Identification par SSO -->
+		<p>
+			<a href='[onshow.tbs_SSO_lien;magnet=a]'>
+				<img src='images/icons/forward_.png' alt=''/>
+				Se connecter en utilisant le service d'authentification unique
+			</a>
+		</p>
+		
+<!-- Information vie privée -->
+		<p>
+			<a href="gestion/info_vie_privee.php" onclick="centrerpopup('gestion/info_vie_privee.php',700,480,'scrollbars=yes,statusbar=no,resizable=yes');return false;">
+			<!-- <a href="gestion/info_vie_privee.php" id="info_vie_privee"> -->
+				<img src='./images/icons/vie_privee.png' alt='' class='link' />
+				Informations vie privée
+			</a>
+		</p>
+
+<!-- Ecrire aux administrateurs -->
+		
+		<p>
+			<!-- <a href="javascript:pigeon('[tbs_blk2.nom;block=p]','[tbs_blk2.fai]');">Contacter l'administrateur</a> -->
+			<a href="mailto:[tbs_blk2.nom;block=p]%40[tbs_blk2.fai]?subject=GEPI">Contacter l'administrateur</a>
+		</p>
+
+	</div>
+
+
+	<div id="new_login_footer" class="center">
+		<a href="http://gepi.mutualibre.org/" title="vers le site de GEPI : Gestion des Élèves Par Internet" >
+			GEPI : Outil de gestion, de suivi, et de visualisation graphique des résultats scolaires (écoles, collèges, lycées)
+		</a>
+		<br />
+		Copyright &copy; 2001-2008
+		<a href="mailto:th&#111;mas%2eb%65lliard&#64;fr&#101;e&#46;%66r?subject=GEPI">Thomas Belliard</a> 
+, <a href="mailto:lau&#114;ent%2ed%65lin&#101;au&#64;ac%2dpo%69tiers&#46;fr?subject=GEPI">Laurent Delineau</a>
+, <a href="mailto:eric%2eebrun&#64;ac%2dpoitiers&#46;fr?subject=GEPI">Eric Lebrun</a>
+, <a href="mailto:st%65phane&#46;boireau%40ac%2drouen%2efr?subject=GEPI">Stéphane Boireau</a> 
+, <a href="mailto:coll%65gerb%40f&#114;ee.%66r?subject=GEPI">Julien Jocal</a>
+		<!--<a href="javascript:pigeon('thomas.belliard','free.fr');">Thomas Belliard</a>
+, <a href="javascript:pigeon('laurent.delineau','ac-poitiers.fr');">Laurent Delineau</a> 
+, <a href="javascript:pigeon('eric.lebrun','ac-poitiers.fr');">Eric Lebrun</a> 
+, <a href="javascript:pigeon('stephane.boireau','ac-rouen.fr');">Stéphane Boireau</a> 
+, <a href="javascript:pigeon('collegerb','free.fr');">Julien Jocal</a>  --> 
+		<br/><br/>
+		<img src='images/php-powered.png' alt="php powered" />&nbsp;
+		<img src='images/mysql-powered.png' alt="mysql powered" />
+	</div> 
+
+
+		
+
+</body>
+</html>
+
