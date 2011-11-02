@@ -67,7 +67,7 @@
 
 	$type_brevet = isset($_POST['type_brevet']) ? $_POST['type_brevet'] : (isset($_GET['type_brevet']) ? $_GET['type_brevet'] : NULL);
 	if(isset($type_brevet)) {
-		if((!preg_match("/[0-9]/",$type_brevet))||(strlen(preg_replace("/[0-9]/","",$type_brevet))!=0)) {
+		if((!preg_match("/[0-9]/",$type_brevet))||(mb_strlen(preg_replace("/[0-9]/","",$type_brevet))!=0)) {
 			$type_brevet=NULL;
 		}
 	}
@@ -747,10 +747,10 @@
 										$valeur_tmp="";
 		
 										// On traite le cas des notes non numériques AB, DI,... plus pour décrémenter les SUR_TOTAUX
-										if((strlen(preg_replace("/[0-9]/","",$tabmatieres[$j]['fb_col'][1]))==0)&&($tabmatieres[$j][-1]!='PTSUP')&&($tabmatieres[$j]['socle']=='n')){
+										if((mb_strlen(preg_replace("/[0-9]/","",$tabmatieres[$j]['fb_col'][1]))==0)&&($tabmatieres[$j][-1]!='PTSUP')&&($tabmatieres[$j]['socle']=='n')){
 											$SUR_TOTAL[1]+=$tabmatieres[$j]['fb_col'][1];
 										}
-										if((strlen(preg_replace("/[0-9]/","",$tabmatieres[$j]['fb_col'][2]))==0)&&($tabmatieres[$j][-1]!='PTSUP')&&($tabmatieres[$j]['socle']=='n')){
+										if((mb_strlen(preg_replace("/[0-9]/","",$tabmatieres[$j]['fb_col'][2]))==0)&&($tabmatieres[$j][-1]!='PTSUP')&&($tabmatieres[$j]['socle']=='n')){
 											$SUR_TOTAL[2]+=$tabmatieres[$j]['fb_col'][2];
 										}
 				

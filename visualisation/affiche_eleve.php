@@ -261,7 +261,7 @@ if(
 	$num_periode_saisie = isset($_POST['num_periode_saisie']) ? $_POST['num_periode_saisie'] : NULL;
 
 	//if(!is_numeric($num_periode_saisie)) {
-	if(strlen(preg_replace("/[0-9]/","",$num_periode_saisie))==0) {
+	if(mb_strlen(preg_replace("/[0-9]/","",$num_periode_saisie))==0) {
 		$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$id_classe' AND periode='$num_periode_saisie' AND login='$eleve_saisie_avis';";
 		//echo "$sql<br />";
 		$verif=mysql_query($sql);
@@ -954,7 +954,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 	}
 	// On s'assure que la largeur est valide:
-	if((strlen(preg_replace("/[0-9]/","",$largeur_imposee_photo))!=0)||($largeur_imposee_photo=="")) {$largeur_imposee_photo=100;}
+	if((mb_strlen(preg_replace("/[0-9]/","",$largeur_imposee_photo))!=0)||($largeur_imposee_photo=="")) {$largeur_imposee_photo=100;}
 
 
 	if(isset($_POST['affiche_mgen'])) {
@@ -1064,7 +1064,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 		}
 	}
-	if((strlen(preg_replace("/[0-9]/","",$largeur_graphe))!=0)||($largeur_graphe=="")) {
+	if((mb_strlen(preg_replace("/[0-9]/","",$largeur_graphe))!=0)||($largeur_graphe=="")) {
 		$largeur_graphe=600;
 	}
 
@@ -1087,7 +1087,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 		}
 	}
-	if((strlen(preg_replace("/[0-9]/","",$hauteur_graphe))!=0)||($hauteur_graphe=="")) {
+	if((mb_strlen(preg_replace("/[0-9]/","",$hauteur_graphe))!=0)||($hauteur_graphe=="")) {
 		$hauteur_graphe=400;
 	}
 
@@ -1109,7 +1109,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 		}
 	}
-	if((strlen(preg_replace("/[0-9]/","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")) {
+	if((mb_strlen(preg_replace("/[0-9]/","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")) {
 		$taille_police=2;
 	}
 
@@ -1132,7 +1132,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 		}
 	}
-	if((strlen(preg_replace("/[0-9]/","",$epaisseur_traits))!=0)||($epaisseur_traits<1)||($epaisseur_traits>6)||($epaisseur_traits=="")) {
+	if((mb_strlen(preg_replace("/[0-9]/","",$epaisseur_traits))!=0)||($epaisseur_traits<1)||($epaisseur_traits>6)||($epaisseur_traits=="")) {
 		$epaisseur_traits=2;
 	}
 
@@ -1213,41 +1213,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 	}
 
-/*	$affiche_photo=isset($_POST['affiche_photo']) ? $_POST['affiche_photo'] : 'non';
-	$largeur_imposee_photo=isset($_POST['largeur_imposee_photo']) ? $_POST['largeur_imposee_photo'] : '100';
-	// On s'assure que la largeur est valide:
-	if((strlen(preg_replace("/[0-9]/","",$largeur_imposee_photo))!=0)||($largeur_imposee_photo=="")) {$largeur_imposee_photo=100;}
 
-	//$affiche_mgen=isset($_POST['affiche_mgen']) ? $_POST['affiche_mgen'] : '';
-	//$affiche_minmax=isset($_POST['affiche_minmax']) ? $_POST['affiche_minmax'] : '';
-	$affiche_mgen=isset($_POST['affiche_mgen']) ? $_POST['affiche_mgen'] : 'non';
-	$affiche_minmax=isset($_POST['affiche_minmax']) ? $_POST['affiche_minmax'] : 'non';
-	$affiche_moy_annuelle=isset($_POST['affiche_moy_annuelle']) ? $_POST['affiche_moy_annuelle'] : 'non';
-
-	$largeur_graphe=isset($_POST['largeur_graphe']) ? $_POST['largeur_graphe'] : '600';
-	if((strlen(preg_replace("/[0-9]/","",$largeur_graphe))!=0)||($largeur_graphe=="")) {
-		$largeur_graphe=600;
-	}
-	$hauteur_graphe=isset($_POST['hauteur_graphe']) ? $_POST['hauteur_graphe'] : '400';
-	if((strlen(preg_replace("/[0-9]/","",$hauteur_graphe))!=0)||($hauteur_graphe=="")) {
-		$hauteur_graphe=400;
-	}
-
-	$taille_police=isset($_POST['taille_police']) ? $_POST['taille_police'] : '3';
-	if((strlen(preg_replace("/[0-9]/","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")) {
-		$taille_police=3;
-	}
-
-	$epaisseur_traits=isset($_POST['epaisseur_traits']) ? $_POST['epaisseur_traits'] : '2';
-	if((strlen(preg_replace("/[0-9]/","",$epaisseur_traits))!=0)||($epaisseur_traits<1)||($epaisseur_traits>6)||($epaisseur_traits=="")) {
-		$epaisseur_traits=2;
-	}
-
-	$temoin_image_escalier=isset($_POST['temoin_image_escalier']) ? $_POST['temoin_image_escalier'] : 'non';
-
-	// A zéro caractères, on ne tronque pas
-	$tronquer_nom_court=isset($_POST['tronquer_nom_court']) ? $_POST['tronquer_nom_court'] : '0';
-*/
 	//===============================================
 
 	//echo "\$temoin_imageps=$temoin_imageps<br />";
@@ -1315,7 +1281,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 		}
 	}
-	if((strlen(preg_replace("/[0-9]/","",$graphe_hauteur_affichage_deroulant))!=0)||($graphe_hauteur_affichage_deroulant=="")) {
+	if((mb_strlen(preg_replace("/[0-9]/","",$graphe_hauteur_affichage_deroulant))!=0)||($graphe_hauteur_affichage_deroulant=="")) {
 		$graphe_hauteur_affichage_deroulant=200;
 	}
 
@@ -2982,11 +2948,11 @@ function eleve_suivant() {
 					if($angle==0) {
 						$x=$tab20[2*$i]+5;
 
-						$x_verif=$x+strlen($texte)*ImageFontWidth($taille_police);
+						$x_verif=$x+mb_strlen($texte)*ImageFontWidth($taille_police);
 
 						if($x_verif>$largeurTotale) {
 							for($j=$taille_police;$j>1;$j--) {
-								$x_verif=$x+strlen($texte)*ImageFontWidth($j);
+								$x_verif=$x+mb_strlen($texte)*ImageFontWidth($j);
 								if($x_verif<=$largeurTotale) {
 									break;
 								}
@@ -3001,11 +2967,11 @@ function eleve_suivant() {
 					}
 					elseif(($angle>0)&&($angle<90)) {
 						$x=$tab20[2*$i]+5;
-						$x_verif=$x+strlen($texte)*ImageFontWidth($taille_police);
+						$x_verif=$x+mb_strlen($texte)*ImageFontWidth($taille_police);
 
 						if($x_verif>$largeurTotale) {
 							for($j=$taille_police;$j>1;$j--) {
-								$x_verif=$x+strlen($texte)*ImageFontWidth($j);
+								$x_verif=$x+mb_strlen($texte)*ImageFontWidth($j);
 								if($x_verif<=$largeurTotale) {
 									break;
 								}
@@ -3019,15 +2985,15 @@ function eleve_suivant() {
 						$y=round($tab20[2*$i+1]+$angle*(ImageFontHeight($taille_police)+2)/90);
 					}
 					elseif($angle==90) {
-						$x=round($tab20[2*$i]-strlen($texte)*ImageFontWidth($taille_police)/2);
+						$x=round($tab20[2*$i]-mb_strlen($texte)*ImageFontWidth($taille_police)/2);
 						$y=$tab20[2*$i+1]+ImageFontHeight($taille_police)+2;
 					}
 					elseif(($angle>90)&&($angle<180)) {
-						$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($taille_police)+5);
+						$x=$tab20[2*$i]-(mb_strlen($texte)*ImageFontWidth($taille_police)+5);
 
 						if($x<0) {
 							for($j=$taille_police;$j>1;$j--) {
-								$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($j)+5);
+								$x=$tab20[2*$i]-(mb_strlen($texte)*ImageFontWidth($j)+5);
 								if($x>=0) {
 									break;
 								}
@@ -3042,11 +3008,11 @@ function eleve_suivant() {
 						$y=round($tab20[2*$i+1]+($angle-90)*(ImageFontHeight($taille_police)-2)/90);
 					}
 					elseif($angle==180) {
-						$x=$tab20[2*$i]-strlen($texte)*ImageFontWidth($taille_police)-5;
+						$x=$tab20[2*$i]-mb_strlen($texte)*ImageFontWidth($taille_police)-5;
 
 						if($x<0) {
 							for($j=$taille_police;$j>1;$j--) {
-								$x=$tab20[2*$i]-strlen($texte)*ImageFontWidth($j)-5;
+								$x=$tab20[2*$i]-mb_strlen($texte)*ImageFontWidth($j)-5;
 								if($x>=0) {
 									break;
 								}
@@ -3061,11 +3027,11 @@ function eleve_suivant() {
 						$y=round($tab20[2*$i+1]-ImageFontHeight($taille_police)/2);
 					}
 					elseif(($angle>180)&&($angle<270)) {
-						$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($taille_police)+5);
+						$x=$tab20[2*$i]-(mb_strlen($texte)*ImageFontWidth($taille_police)+5);
 
 						if($x<0) {
 							for($j=$taille_police;$j>1;$j--) {
-								$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($j)+5);
+								$x=$tab20[2*$i]-(mb_strlen($texte)*ImageFontWidth($j)+5);
 								if($x>=0) {
 									break;
 								}
@@ -3080,17 +3046,17 @@ function eleve_suivant() {
 						$y=round($tab20[2*$i+1]-($angle-180)*(ImageFontHeight($taille_police)-2)/90);
 					}
 					elseif($angle==270) {
-						$x=round($tab20[2*$i]-strlen($texte)*ImageFontWidth($taille_police)/2);
+						$x=round($tab20[2*$i]-mb_strlen($texte)*ImageFontWidth($taille_police)/2);
 						//$y=$tab20[2*$i+1]-ImageFontHeight($taille_police)-2;
 						$y=$tab20[2*$i+1]-2*ImageFontHeight($taille_police)-2;
 					}
 					else{
 						$x=$tab20[2*$i]+5;
-						$x_verif=$x+strlen($texte)*ImageFontWidth($taille_police);
+						$x_verif=$x+mb_strlen($texte)*ImageFontWidth($taille_police);
 
 						if($x_verif>$largeurTotale) {
 							for($j=$taille_police;$j>1;$j--) {
-								$x_verif=$x+strlen($texte)*ImageFontWidth($j);
+								$x_verif=$x+mb_strlen($texte)*ImageFontWidth($j);
 								if($x_verif<=$largeurTotale) {
 									break;
 								}
@@ -3105,7 +3071,7 @@ function eleve_suivant() {
 					}
 
 
-					$x2=$x+strlen($texte)*ImageFontWidth($tmp_taille_police);
+					$x2=$x+mb_strlen($texte)*ImageFontWidth($tmp_taille_police);
 					$y2=$y+20;
 
 					//echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_matiere_',$tab_imagemap[$i],'affiche');\" onMouseout=\"div_info('div_matiere_',$tab_imagemap[$i],'cache');\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
@@ -3766,11 +3732,11 @@ function eleve_suivant() {
 				if($angle==0) {
 					$x=$tab20[2*$i]+5;
 
-					$x_verif=$x+strlen($texte)*ImageFontWidth($taille_police);
+					$x_verif=$x+mb_strlen($texte)*ImageFontWidth($taille_police);
 
 					if($x_verif>$largeurTotale) {
 						for($j=$taille_police;$j>1;$j--) {
-							$x_verif=$x+strlen($texte)*ImageFontWidth($j);
+							$x_verif=$x+mb_strlen($texte)*ImageFontWidth($j);
 							if($x_verif<=$largeurTotale) {
 								break;
 							}
@@ -3785,11 +3751,11 @@ function eleve_suivant() {
 				}
 				elseif(($angle>0)&&($angle<90)) {
 					$x=$tab20[2*$i]+5;
-					$x_verif=$x+strlen($texte)*ImageFontWidth($taille_police);
+					$x_verif=$x+mb_strlen($texte)*ImageFontWidth($taille_police);
 
 					if($x_verif>$largeurTotale) {
 						for($j=$taille_police;$j>1;$j--) {
-							$x_verif=$x+strlen($texte)*ImageFontWidth($j);
+							$x_verif=$x+mb_strlen($texte)*ImageFontWidth($j);
 							if($x_verif<=$largeurTotale) {
 								break;
 							}
@@ -3803,15 +3769,15 @@ function eleve_suivant() {
 					$y=round($tab20[2*$i+1]+$angle*(ImageFontHeight($taille_police)+2)/90);
 				}
 				elseif($angle==90) {
-					$x=round($tab20[2*$i]-strlen($texte)*ImageFontWidth($taille_police)/2);
+					$x=round($tab20[2*$i]-mb_strlen($texte)*ImageFontWidth($taille_police)/2);
 					$y=$tab20[2*$i+1]+ImageFontHeight($taille_police)+2;
 				}
 				elseif(($angle>90)&&($angle<180)) {
-					$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($taille_police)+5);
+					$x=$tab20[2*$i]-(mb_strlen($texte)*ImageFontWidth($taille_police)+5);
 
 					if($x<0) {
 						for($j=$taille_police;$j>1;$j--) {
-							$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($j)+5);
+							$x=$tab20[2*$i]-(mb_strlen($texte)*ImageFontWidth($j)+5);
 							if($x>=0) {
 								break;
 							}
@@ -3826,11 +3792,11 @@ function eleve_suivant() {
 					$y=round($tab20[2*$i+1]+($angle-90)*(ImageFontHeight($taille_police)-2)/90);
 				}
 				elseif($angle==180) {
-					$x=$tab20[2*$i]-strlen($texte)*ImageFontWidth($taille_police)-5;
+					$x=$tab20[2*$i]-mb_strlen($texte)*ImageFontWidth($taille_police)-5;
 
 					if($x<0) {
 						for($j=$taille_police;$j>1;$j--) {
-							$x=$tab20[2*$i]-strlen($texte)*ImageFontWidth($j)-5;
+							$x=$tab20[2*$i]-mb_strlen($texte)*ImageFontWidth($j)-5;
 							if($x>=0) {
 								break;
 							}
@@ -3845,11 +3811,11 @@ function eleve_suivant() {
 					$y=round($tab20[2*$i+1]-ImageFontHeight($taille_police)/2);
 				}
 				elseif(($angle>180)&&($angle<270)) {
-					$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($taille_police)+5);
+					$x=$tab20[2*$i]-(mb_strlen($texte)*ImageFontWidth($taille_police)+5);
 
 					if($x<0) {
 						for($j=$taille_police;$j>1;$j--) {
-							$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($j)+5);
+							$x=$tab20[2*$i]-(mb_strlen($texte)*ImageFontWidth($j)+5);
 							if($x>=0) {
 								break;
 							}
@@ -3864,17 +3830,17 @@ function eleve_suivant() {
 					$y=round($tab20[2*$i+1]-($angle-180)*(ImageFontHeight($taille_police)-2)/90);
 				}
 				elseif($angle==270) {
-					$x=round($tab20[2*$i]-strlen($texte)*ImageFontWidth($taille_police)/2);
+					$x=round($tab20[2*$i]-mb_strlen($texte)*ImageFontWidth($taille_police)/2);
 					//$y=$tab20[2*$i+1]-ImageFontHeight($taille_police)-2;
 					$y=$tab20[2*$i+1]-2*ImageFontHeight($taille_police)-2;
 				}
 				else{
 					$x=$tab20[2*$i]+5;
-					$x_verif=$x+strlen($texte)*ImageFontWidth($taille_police);
+					$x_verif=$x+mb_strlen($texte)*ImageFontWidth($taille_police);
 
 					if($x_verif>$largeurTotale) {
 						for($j=$taille_police;$j>1;$j--) {
-							$x_verif=$x+strlen($texte)*ImageFontWidth($j);
+							$x_verif=$x+mb_strlen($texte)*ImageFontWidth($j);
 							if($x_verif<=$largeurTotale) {
 								break;
 							}

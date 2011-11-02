@@ -297,11 +297,11 @@ else {
 				$temp1 = strtoupper($reg_nom);
 				$temp1 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp1);
 				$temp1 = strtr($temp1, " '-", "___");
-				$temp1 = substr($temp1,0,7);
+				$temp1 = mb_substr($temp1,0,7);
 				$temp2 = strtoupper($reg_prenom);
 				$temp2 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp2);
 				$temp2 = strtr($temp2, " '-", "___");
-				$temp2 = substr($temp2,0,1);
+				$temp2 = mb_substr($temp2,0,1);
 				$login_eleve = $temp1.'_'.$temp2;
 				*/
 
@@ -346,7 +346,7 @@ else {
 						$login_eleve=get_lcs_login($reg_elenoet, 'eleve');
 						//echo "get_lcs_login($reg_elenoet, 'eleve')=".$login_eleve."<br />";
 						if($login_eleve!='') {
-							$test_tempo2 = mysql_num_rows(mysql_query("SELECT col2 FROM tempo2 WHERE (col2='$login_eleve' or col2='".strtoupper($login_eleve)."')"));
+							$test_tempo2 = mysql_num_rows(mysql_query("SELECT col2 FROM tempo2 WHERE (col2='$login_eleve' or col2='".my_strtoupper($login_eleve)."')"));
 							if ($test_tempo2 != "0") {
 								$ligne_pb = 'yes';
 							} else {
@@ -400,9 +400,9 @@ else {
 				$ligne_pb = 'yes';
 			}
 			if ($reg_naissance != '') {
-				$eleve_naissance_annee = substr($reg_naissance, 0, 4);
-				$eleve_naissance_mois = substr($reg_naissance, 4, 2);
-				$eleve_naissance_jour = substr($reg_naissance, 6, 2);
+				$eleve_naissance_annee = mb_substr($reg_naissance, 0, 4);
+				$eleve_naissance_mois = mb_substr($reg_naissance, 4, 2);
+				$eleve_naissance_jour = mb_substr($reg_naissance, 6, 2);
 				$naissance = $eleve_naissance_jour."/".$eleve_naissance_mois."/".$eleve_naissance_annee;
 			} else {
 				$naissance = 'non définie';

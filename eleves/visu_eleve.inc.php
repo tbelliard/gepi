@@ -164,7 +164,7 @@ if(document.getElementById('rech_nom')) {document.getElementById('rech_nom').foc
 			$tab_lien=array();
 
 			while($lig_ele=mysql_fetch_object($res_ele)) {
-				$tab_txt[]=ucfirst(strtolower($lig_ele->prenom))." ".strtoupper($lig_ele->nom);
+				$tab_txt[]=casse_mot($lig_ele->prenom,'majf2')." ".my_strtoupper($lig_ele->nom);
 				//$tab_lien[]=$_SERVER['PHP_SELF']."?ele_login=".$lig_ele->login;
 				$tab_lien[]=$_SERVER['PHP_SELF']."?ele_login=".$lig_ele->login."&amp;id_classe=".$id_classe;
 			}
@@ -655,8 +655,8 @@ Patientez pendant l'extraction des données... merci.
 				$acces_absences="y";
 			}
 
-			if((($eleve_classe_prof=="y")&&(substr(getSettingValue('visuDiscProfClasses'),0,1)=='y'))||
-				(($eleve_groupe_prof=="y")&&(substr(getSettingValue('visuDiscProfGroupes'),0,1)=='y'))) {
+			if((($eleve_classe_prof=="y")&&(mb_substr(getSettingValue('visuDiscProfClasses'),0,1)=='y'))||
+				(($eleve_groupe_prof=="y")&&(mb_substr(getSettingValue('visuDiscProfGroupes'),0,1)=='y'))) {
 				$acces_discipline="y";
 			}
 
@@ -1241,7 +1241,7 @@ Patientez pendant l'extraction des données... merci.
 			if ($tab_ele['regime'] == "int.") {echo "Interne";}
 			if ($tab_ele['regime'] == "i-e"){
 				echo "Interne&nbsp;externé";
-				if (strtoupper($tab_ele['sexe'])!= "F") {echo "e";}
+				if (my_strtoupper($tab_ele['sexe'])!= "F") {echo "e";}
 			}
 			echo "</td></tr>\n";
 
@@ -1489,9 +1489,9 @@ Patientez pendant l'extraction des données... merci.
 							echo affiche_utilisateur($tab_ele['groupes'][$i]['prof'][$j]['prof_login'], $tab_ele['classe'][0]['id_classe']);
 						}
 						else {
-							echo ucfirst(strtolower($tab_ele['groupes'][$i]['prof'][$j]['prenom']));
+							echo casse_mot($tab_ele['groupes'][$i]['prof'][$j]['prenom'],'majf2');
 							echo " ";
-							echo ucfirst(strtolower($tab_ele['groupes'][$i]['prof'][$j]['nom']));
+							echo casse_mot($tab_ele['groupes'][$i]['prof'][$j]['nom'],'majf2');
 						}
 						if($tab_ele['groupes'][$i]['prof'][$j]['email']!='') {echo "</a>";}
 
@@ -1728,7 +1728,7 @@ Patientez pendant l'extraction des données... merci.
 
 						echo "<div id='bulletin_$periode1' class='onglet' style='";
 						echo " background-color: ".$tab_couleur['bulletin'].";";
-						if((isset($onglet2))&&(substr($onglet2,0,9)=='bulletin_')) {
+						if((isset($onglet2))&&(mb_substr($onglet2,0,9)=='bulletin_')) {
 							if('bulletin_'.$n_per!=$onglet2) {
 								echo " display:none;";
 							}
@@ -1868,7 +1868,7 @@ Patientez pendant l'extraction des données... merci.
 
 						echo "<div id='releve_$periode1' class='onglet' style='";
 						echo " background-color: ".$tab_couleur['releve'].";";
-						if((isset($onglet2))&&(substr($onglet2,0,7)=='releve_')) {
+						if((isset($onglet2))&&(mb_substr($onglet2,0,7)=='releve_')) {
 							if('releve_'.$n_per!=$onglet2) {
 								echo " display:none;";
 							}

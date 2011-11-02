@@ -497,7 +497,7 @@ else {
 				// $unzipped_max_filesize < 0    extraction zip désactivée
 				if($unzipped_max_filesize>=0) {
 					$fichier_emis=$csv_file['name'];
-					$extension_fichier_emis=strtolower(strrchr($fichier_emis,"."));
+					$extension_fichier_emis=my_strtolower(strrchr($fichier_emis,"."));
 					if (($extension_fichier_emis==".zip")||($csv_file['type']=="application/zip"))
 						{
 

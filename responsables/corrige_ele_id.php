@@ -796,7 +796,7 @@ else{
 						$sql.="eledoubl='".ouinon($eleves[$i]["doublement"])."', ";
 						if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){$sql.="etocod_ep='".$eleves[$i]["scolarite_an_dernier"]["code_rne"]."', ";}
 						if(isset($eleves[$i]["code_regime"])){$sql.="elereg='".$eleves[$i]["code_regime"]."', ";}
-						$sql=substr($sql,0,strlen($sql)-2);
+						$sql=mb_substr($sql,0,mb_strlen($sql)-2);
 						$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
 						affiche_debug("$sql<br />\n");
 						$res_insert=mysql_query($sql);

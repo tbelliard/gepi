@@ -146,6 +146,6 @@ class CAS_CurlRequest
 	 */
 	public function _curlReadHeaders ($ch, $header) {
 		$this->storeResponseHeader($header);
-		return strlen($header);
+		return mb_strlen($header);
 	}
 }

@@ -243,10 +243,10 @@ if (isset($is_posted) and ($is_posted == "yes")) {
         if (($no_gep == '') or ($nouv_login=='yes')) {
             $temp1 = strtoupper($reg_nom);
             $temp1 = strtr($temp1, " '-", "___");
-            $temp1 = substr($temp1,0,7);
+            $temp1 = mb_substr($temp1,0,7);
             $temp2 = strtoupper($reg_prenom);
             $temp2 = strtr($temp2, " '-", "___");
-            $temp2 = substr($temp2,0,1);
+            $temp2 = mb_substr($temp2,0,1);
             $login_eleve = $temp1.'_'.$temp2;
 
             // On teste l'unicité du login que l'on vient de créer
@@ -281,9 +281,9 @@ if (isset($is_posted) and ($is_posted == "yes")) {
             $ligne_pb = 'yes';
         }
         if ($reg_naissance != '') {
-            $eleve_naissance_annee = substr($reg_naissance, 0, 4);
-            $eleve_naissance_mois = substr($reg_naissance, 4, 2);
-            $eleve_naissance_jour = substr($reg_naissance, 6, 2);
+            $eleve_naissance_annee = mb_substr($reg_naissance, 0, 4);
+            $eleve_naissance_mois = mb_substr($reg_naissance, 4, 2);
+            $eleve_naissance_jour = mb_substr($reg_naissance, 6, 2);
             $naissance = $eleve_naissance_jour."/".$eleve_naissance_mois."/".$eleve_naissance_annee;
         } else {
             $naissance = 'non définie';

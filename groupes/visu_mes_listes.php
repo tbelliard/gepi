@@ -117,7 +117,7 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 						}
 						$cpt++;
 					}
-					$chaine_class=substr($chaine_class,1);
+					$chaine_class=mb_substr($chaine_class,1);
 
 				}
 

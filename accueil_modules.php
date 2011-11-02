@@ -74,7 +74,7 @@ function acces($id,$statut) {
 /*
 function affiche_ligne($chemin_,$titre_,$expli_,$tab,$statut_,$key_setting) {
     if (acces($chemin_,$statut_)==1)  {
-        $temp = substr($chemin_,1);
+        $temp = mb_substr($chemin_,1);
         echo "<tr>\n";
         //echo "<td width=30%><a href=$temp>$titre_</a></span>";
         echo "<td>\n";
@@ -591,7 +591,7 @@ unset($menuPage);
 for ($i=0;$i<count($menuPage);$i++)
 {
 	echo "<img src='".$menuPage[$i]->icone['chemin']."' width='19' height='19' title='".$menuPage[$i]->icone['titre']."' alt='".$menuPage[$i]->icone['alt']."' />";
-	echo " - ".$i." - <a href='".substr($menuPage[$i]->chemin,1)."'>".$menuPage[$i]->titre."</a> - ".$menuPage[$i]->expli."<br />";
+	echo " - ".$i." - <a href='".mb_substr($menuPage[$i]->chemin,1)."'>".$menuPage[$i]->titre."</a> - ".$menuPage[$i]->expli."<br />";
 }
 */
 

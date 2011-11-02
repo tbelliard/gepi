@@ -256,7 +256,7 @@ elseif(isset($_POST['modif_manuelle_periode'])) {
 	check_token(false);
 
 	$periode=isset($_POST['periode']) ? $_POST['periode'] : NULL;
-	if(strlen(preg_replace('/[0-9]/','',$periode))!=0) {$periode=NULL;}
+	if(mb_strlen(preg_replace('/[0-9]/','',$periode))!=0) {$periode=NULL;}
 	if($periode=='') {$periode=NULL;}
 
 	$acces=isset($_POST['acces']) ? $_POST['acces'] : NULL;

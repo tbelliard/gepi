@@ -55,7 +55,7 @@ while($creneaux = mysql_fetch_array($query)){
 	}
 
 	// On enlève les secondes à la fin
-	$heure_deb = substr($creneaux["heuredebut_definie_periode"], 0, -3);
+	$heure_deb = mb_substr($creneaux["heuredebut_definie_periode"], 0, -3);
 
 	echo '
 		<option value="'.$creneaux["id_definie_periode"].'"'.$selected.'>'.$creneaux["nom_definie_periode"].' : '.$heure_deb.'</option>';

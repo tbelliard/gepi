@@ -4,7 +4,7 @@
  * Fichier qui permet de faire l'import de l'EdT depuis un logiciel propriétaire
  *
 
-Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
 
 This file is part of GEPI.
 
@@ -237,7 +237,7 @@ if ($action == "upload_file") {
 
 	// et on enregistre le fichier si nécessaire
 	if ($exist != "oui") {
-		if (strtolower($csv_file['name']) == "g_edt_2.csv") {
+		if (my_strtolower($csv_file['name']) == "g_edt_2.csv") {
 			$source_file = ($csv_file['tmp_name']);
 			$dest_file = "../temp/".$tempdir."/g_edt_2.csv";
 			$res_copy = copy("$source_file" , "$dest_file");
@@ -333,7 +333,7 @@ if ($action == "upload_file") {
                     $nom_select = 'nom_gepi_' . $l; // pour le nom du select
                     //if ($etape == 4) {
                     	// Pour les prof, on met tout en majuscule
-                    	$nom_selected = strtoupper($test_selected[0]);
+                    	$nom_selected = my_strtoupper($test_selected[0]);
 
 
                     //}else{

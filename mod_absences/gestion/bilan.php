@@ -470,11 +470,11 @@ $pdf->SetY(90);
 
 
 $pdf->SetY(250);
-if(substr($civilite_cpe[$i],0,1) == "M" OR substr($civilite_cpe[$i],0,1) == "" ) { $nomine = 'Le conseiller Principal d\'Education'; }
-if(substr($civilite_cpe[$i],0,2) == "Mm") { $nomine = 'La conseillère Principale d\'Education'; }
-if(substr($civilite_cpe[$i],0,2) == "Ml") { $nomine = 'La conseillère Principale d\'Education'; }
+if(mb_substr($civilite_cpe[$i],0,1) == "M" OR mb_substr($civilite_cpe[$i],0,1) == "" ) { $nomine = 'Le conseiller Principal d\'Education'; }
+if(mb_substr($civilite_cpe[$i],0,2) == "Mm") { $nomine = 'La conseillère Principale d\'Education'; }
+if(mb_substr($civilite_cpe[$i],0,2) == "Ml") { $nomine = 'La conseillère Principale d\'Education'; }
 $pdf->Cell(0, 5, ($nomine), 0, 1, 'R', '');
-$pdf->Cell(0, 5, ($civilite_cpe[$i]." ".substr($prenom_cpe[$i],0,1).". ".$nom_cpe[$i]), 0, 1, 'R', '');
+$pdf->Cell(0, 5, ($civilite_cpe[$i]." ".mb_substr($prenom_cpe[$i],0,1).". ".$nom_cpe[$i]), 0, 1, 'R', '');
 }
 
 // Et on affiche le pdf généré... (ou on le sauvegarde en local)

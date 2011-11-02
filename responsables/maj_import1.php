@@ -225,14 +225,14 @@ else{
 									if(($lig_ele->nom!=$affiche[0])||
 									($lig_ele->prenom!=$affiche[1])||
 									($lig_ele->sexe!=$affiche[2])||
-									($lig_ele->naissance!=substr($affiche[3],0,4)."-".substr($affiche[3],4,2)."-".substr($affiche[3],6,2))){
+									($lig_ele->naissance!=mb_substr($affiche[3],0,4)."-".mb_substr($affiche[3],4,2)."-".mb_substr($affiche[3],6,2))){
 									*/
 
 									// On ne retient que le premier prénom:
 									$tab_prenom = explode(" ",$affiche[1]);
 									$affiche[1] = traitement_magic_quotes(corriger_caracteres($tab_prenom[0]));
 
-									$new_date=substr($affiche[3],0,4)."-".substr($affiche[3],4,2)."-".substr($affiche[3],6,2);
+									$new_date=mb_substr($affiche[3],0,4)."-".mb_substr($affiche[3],4,2)."-".mb_substr($affiche[3],6,2);
 
 									// Des stripslashes() pour les apostrophes dans les noms
 									if((stripslashes($lig_ele->nom)!=stripslashes($affiche[0]))||
@@ -570,7 +570,7 @@ else{
 									echo "<input type='hidden' name='new_".$cpt."_sexe' value='$affiche[2]' />\n";
 									echo "</td>\n";
 
-									$new_date=substr($affiche[3],0,4)."-".substr($affiche[3],4,2)."-".substr($affiche[3],6,2);
+									$new_date=mb_substr($affiche[3],0,4)."-".mb_substr($affiche[3],4,2)."-".mb_substr($affiche[3],6,2);
 									echo "<td style='text-align: center;'>";
 									echo "$new_date";
 									echo "<input type='hidden' name='new_".$cpt."_naissance' value='$new_date' />\n";
@@ -775,10 +775,10 @@ else{
 					// Générer un login...
 					$temp1 = strtoupper($nom);
 					$temp1 = strtr($temp1, " '-", "___");
-					$temp1 = substr($temp1,0,7);
+					$temp1 = mb_substr($temp1,0,7);
 					$temp2 = strtoupper($prenom);
 					$temp2 = strtr($temp2, " '-", "___");
-					$temp2 = substr($temp2,0,1);
+					$temp2 = mb_substr($temp2,0,1);
 					$login_eleve = $temp1.'_'.$temp2;
 
 					// On teste l'unicité du login que l'on vient de créer

@@ -107,7 +107,7 @@ if ($ctTravailAFaire != null) {
 }
 
 // Vérification : est-ce que l'utilisateur a le droit de modifier cette entré ?
-if ((strtolower($ctTravailAFaire->getIdLogin()) != strtolower($utilisateur->getLogin()))&&
+if ((my_strtolower($ctTravailAFaire->getIdLogin()) != my_strtolower($utilisateur->getLogin()))&&
 (getSettingValue("cdt_autoriser_modif_multiprof")!="yes")) {
 	echo("Erreur edition de devoir : vous n'avez pas le droit de modifier cette notice car elle appartient à un autre professeur.");
 	die();

@@ -185,9 +185,9 @@ if (isset($_POST['ok'])) {
 
 		if ($_POST['display_date']) {
 			if (my_ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date'])) {
-				$annee=substr($_POST['display_date'],6,4);
-				$mois=substr($_POST['display_date'],3,2);
-				$jour=substr($_POST['display_date'],0,2);
+				$annee=mb_substr($_POST['display_date'],6,4);
+				$mois=mb_substr($_POST['display_date'],3,2);
+				$jour=mb_substr($_POST['display_date'],0,2);
 			} else {
 				$annee=strftime("%Y");
 				$mois=strftime("%m");

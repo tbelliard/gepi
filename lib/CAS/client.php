@@ -1649,7 +1649,7 @@ class CASClient
 					case 'proxyGrantingTicket':
 						continue;
 					default:
-						if (strlen(trim($attr_node->nodeValue))) {
+						if (mb_strlen(trim($attr_node->nodeValue))) {
 							phpCas :: trace("Attribute [".$attr_node->localName."] = ".$attr_node->nodeValue);
 							$this->addAttributeToArray($extra_attributes, $attr_node->localName, $attr_node->nodeValue);
 						}
@@ -2388,7 +2388,7 @@ class CASClient
 	public function _curl_read_headers($ch, $header)
 	{
 		$this->_curl_headers[] = $header;
-		return strlen($header);
+		return mb_strlen($header);
 	}
 
 	/**

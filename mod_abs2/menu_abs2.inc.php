@@ -43,7 +43,8 @@ if(($_SESSION['statut']=='cpe')||
 	    || $url_end=='extraction_saisies.php'
         || $url_end=='bilan_individuel.php'
         || $url_end=='totaux_du_jour.php'
-        || $url_end=='statistiques.php') {echo "class='current' ";}
+        || $url_end=='statistiques.php'
+        || $url_end=='stat_justifications.php') {echo "class='current' ";}
     echo "title='Bilans'>Bilans</a></li>\n";
 
     echo "<li><a href='saisir_groupe.php' ";

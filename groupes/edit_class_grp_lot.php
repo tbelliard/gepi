@@ -490,7 +490,7 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 					$selected=" selected";
 				}
 			}
-			echo "<option value='$ligne_prof->id_professeur'$selected>".ucfirst(strtolower($ligne_prof->prenom))." ".strtoupper($ligne_prof->nom)."</option>\n";
+			echo "<option value='$ligne_prof->id_professeur'$selected>".casse_mot($ligne_prof->prenom,'majf2')." ".my_strtoupper($ligne_prof->nom)."</option>\n";
 		}
 		echo "</select>\n";
 		echo "</td>\n";

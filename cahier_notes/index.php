@@ -586,7 +586,7 @@ var tab_per_cn=new Array();\n";
 
         echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_index'> Créer un";
         if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "e";}
-        echo " ".htmlspecialchars(strtolower(getSettingValue("gepi_denom_boite")))." </a> | \n";
+        echo " ".htmlspecialchars(my_strtolower(getSettingValue("gepi_denom_boite")))." </a> | \n";
 
         echo "<a href='add_modif_dev.php?id_conteneur=$id_racine&amp;mode_navig=retour_index'> Créer une évaluation </a> | \n";
         if ($periode_num!='1')  {

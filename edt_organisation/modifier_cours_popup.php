@@ -4,7 +4,7 @@
  * Fichier destiné à permettre la modification d'un cours
  *
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -99,8 +99,8 @@ if ($analyse[0] == "AID") {
 // Dans le cas d'un professeur, on s'assure qu'il s'agit bien de son edt
 if (($_SESSION["statut"] == 'professeur') AND (getSettingValue("edt_remplir_prof") == 'y')){
 
-  if (strtolower($identite) != strtolower($_SESSION["login"])){
-    Die("Vous ne pouvez pas cr&eacute;er un cours pour un coll&egrave;gue");
+  if (my_strtolower($identite) != my_strtolower($_SESSION["login"])){
+    die("Vous ne pouvez pas cr&eacute;er un cours pour un coll&egrave;gue");
   }
 }
 

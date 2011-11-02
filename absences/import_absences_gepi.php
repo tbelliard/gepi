@@ -249,7 +249,7 @@ if ( $etape === '1' ) {
 <div style="text-align: center;">
 
 	<span style="font: normal small-caps normal 14pt Verdana; line-height: 125%;">Classe de <?php echo "$classe"; ?> - Importation des absences de GEPI</span>
-	<br />pour le : <b><?php $temp = strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b>
+	<br />pour le : <b><?php $temp = my_strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b>
 	<br /><br />
 
 

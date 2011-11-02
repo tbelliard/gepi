@@ -561,7 +561,7 @@ if(!isset($debut)){
 	$debut=0;
 }
 else{
-	if(strlen(my_ereg_replace("[0-9]","",$debut))){
+	if(mb_strlen(my_ereg_replace("[0-9]","",$debut))){
 		$debut=0;
 	}
 }

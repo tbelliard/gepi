@@ -480,9 +480,9 @@ else{
 		echo "<td>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</td>\n";
 		echo "<td>".formate_date($lig_ele->naissance)."</td>\n";
 		echo "<td>";
-		if(substr($lig_ele->INE,0,6)=="LOGIN_") {echo "<span style='color:red;'>";}
+		if(mb_substr($lig_ele->INE,0,6)=="LOGIN_") {echo "<span style='color:red;'>";}
 		echo $lig_ele->INE;
-		if(substr($lig_ele->INE,0,6)=="LOGIN_"){echo "</span>";}
+		if(mb_substr($lig_ele->INE,0,6)=="LOGIN_"){echo "</span>";}
 		echo "</td>\n";
 		echo "</tr>\n";
 		$cpt++;

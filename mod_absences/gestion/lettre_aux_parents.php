@@ -344,11 +344,11 @@ $pdf->SetX(30);
 $pdf->SetY(210);
 $pdf->Write( 5, ('         Je vous remercie de bien vouloir faire connaître le motif de son absence dans les meilleurs délais afin de régulariser sa situation. Si vous avez déjà fourni un justificatif, veuillez ne pas tenir compte de ce courrier.'));
 $pdf->SetY(230);
-if(substr($civilite_cpe[$i],0,1) == "M" OR substr($civilite_cpe[$i],0,1) == "" ) { $nomine = 'Le Conseiller Principal d\'Education'; }
-if(substr($civilite_cpe[$i],0,2) == "Mm") { $nomine = 'La Conseillère Principale d\'Education'; }
-if(substr($civilite_cpe[$i],0,2) == "Ml") { $nomine = 'La Conseillère Principale d\'Education'; }
+if(mb_substr($civilite_cpe[$i],0,1) == "M" OR mb_substr($civilite_cpe[$i],0,1) == "" ) { $nomine = 'Le Conseiller Principal d\'Education'; }
+if(mb_substr($civilite_cpe[$i],0,2) == "Mm") { $nomine = 'La Conseillère Principale d\'Education'; }
+if(mb_substr($civilite_cpe[$i],0,2) == "Ml") { $nomine = 'La Conseillère Principale d\'Education'; }
 $pdf->Cell(0, 5, ($nomine), 0, 1, 'R', '');
-$pdf->Cell(0, 5, ($civilite_cpe[$i]." ".substr($prenom_cpe[$i],0,1).". ".$nom_cpe[$i]), 0, 1, 'R', '');
+$pdf->Cell(0, 5, ($civilite_cpe[$i]." ".mb_substr($prenom_cpe[$i],0,1).". ".$nom_cpe[$i]), 0, 1, 'R', '');
 $pdf->SetY(250);
 $pdf->Cell(60, 5, 'DATE :', 0, 0, '', '');
 $pdf->Cell(50, 5, 'SIGNATURE DU RESPONSABLE :', 0, 1, '', '');

@@ -116,7 +116,7 @@ if ($ctCompteRendu != null) {
 }
 
 // Vérification : est-ce que l'utilisateur a le droit de modifier cette entré ?
-if((strtolower($ctCompteRendu->getIdLogin()) != strtolower($utilisateur->getLogin()))&&
+if((my_strtolower($ctCompteRendu->getIdLogin()) != my_strtolower($utilisateur->getLogin()))&&
 (getSettingValue("cdt_autoriser_modif_multiprof")!="yes")) {
 	echo("Erreur edition de compte rendu : vous n'avez pas le droit de modifier cette notice car elle appartient à un autre professeur.");
 	die();
@@ -367,7 +367,7 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 			/*
 			if(count($tab_jours_ouverture)>0) {
 				$cpt_jo=0; // Pour éviter une boucle infinie en cas de blague
-				while((!in_array(strtolower(strftime("%a",$demain)),$tab_jours_ouverture))&&($cpt_jo<7)) {
+				while((!in_array(my_strtolower(strftime("%a",$demain)),$tab_jours_ouverture))&&($cpt_jo<7)) {
 					$demain = $today + 3600*24;
 					$cpt_jo++;
 				}

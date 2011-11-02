@@ -163,14 +163,14 @@ if(isset($javascript_specifique)) {
 
 	if(is_array($javascript_specifique)) {
 		foreach($javascript_specifique as $current_javascript_specifique) {
-			if(strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$current_javascript_specifique))==0) {
+			if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$current_javascript_specifique))==0) {
 				// Javascript spécifique à une page:
               $tbs_librairies[]=$gepiPath."/".$current_javascript_specifique.'.js';
 			}
 		}
 	}
 	else {
-		if(strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$javascript_specifique))==0) {
+		if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$javascript_specifique))==0) {
 			// Javascript spécifique à une page:
 			$tbs_librairies[]=$gepiPath."/".$javascript_specifique.'.js';
 		}
@@ -224,7 +224,7 @@ if(isset($style_specifique)) {
 
   if(is_array($style_specifique)) {
 	foreach($style_specifique as $current_style_specifique) {
-	  if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$current_style_specifique))==0) {
+	  if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$current_style_specifique))==0) {
 		//// Styles spécifiques à une page:
 		$tbs_CSS[]=array("fichier"=> $gepiPath."/".$current_style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
 
@@ -232,7 +232,7 @@ if(isset($style_specifique)) {
 
 	}
   } else {
-	if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0) {
+	if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0) {
 	  // Styles spécifiques à une page:
 	  $tbs_CSS[]=array("fichier"=> $gepiPath."/".$style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
 	}
@@ -523,10 +523,10 @@ $tbs_menu_admin = array();
 $tbs_menu_scol = array();
 $tbs_menu_cpe = array();
 if (!isset($nobar)) { $nobar = "non"; }
-if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "professeur" AND $nobar != 'oui') {
+if (getSettingValue("utiliserMenuBarre") != "no" AND $_SESSION["statut"] == "professeur" AND $nobar != 'oui') {
 	// On vérifie que l'utilisateur ne l'a pas enlevée
 
-	if ((getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes")||(getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "light")) {
+	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") != "no") {
 		// ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix un peu plus haut ?
 		if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
               /**
@@ -544,7 +544,7 @@ if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "pr
              */
 		include("header_barre_prof_template.php");
 	}
-} else if ((getSettingValue("utiliserMenuBarre") == "yes") AND ($_SESSION["statut"] == "administrateur") AND ($nobar != 'oui')) {
+} else if ((getSettingValue("utiliserMenuBarre") != "no") AND ($_SESSION["statut"] == "administrateur") AND ($nobar != 'oui')) {
 
 		// Il n'y a pas de préférence enregistrée pour des non_prof
 		// Du coup, on récupère la valeur par défaut: 'yes'
@@ -566,7 +566,7 @@ if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "pr
 			include("header_barre_admin_template.php");
 		}
 
-} else if ((getSettingValue("utiliserMenuBarre") == "yes") AND ($_SESSION["statut"] == "scolarite") AND ($nobar != 'oui')) {
+} else if ((getSettingValue("utiliserMenuBarre") != "no") AND ($_SESSION["statut"] == "scolarite") AND ($nobar != 'oui')) {
 
 		// Il n'y a pas de préférence enregistrée pour des non_prof
 		// Du coup, on récupère la valeur par défaut: 'yes'
@@ -588,7 +588,7 @@ if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "pr
 			include("header_barre_scolarite_template.php");
 		}
 	
-} else if ((getSettingValue("utiliserMenuBarre") == "yes") AND ($_SESSION["statut"] == "cpe") AND ($nobar != 'oui')) {
+} else if ((getSettingValue("utiliserMenuBarre") != "no") AND ($_SESSION["statut"] == "cpe") AND ($nobar != 'oui')) {
 		// Il n'y a pas de préférence enregistrée pour des non_prof
 		// Du coup, on récupère la valeur par défaut: 'yes'
 		if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {

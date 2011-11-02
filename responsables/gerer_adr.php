@@ -142,11 +142,11 @@ if(!getSettingValue('conv_new_resp_table')){
 	if(($champ_rech!='commune')&&($champ_rech!='cp')&&($champ_rech!='adrX')&&($champ_rech!='non_assoc')) {$champ_rech="commune";}
 
 	$nb_adr=isset($_POST['nb_adr']) ? $_POST['nb_adr'] : 20;
-	if(strlen(preg_replace("/[0-9]/","",$nb_adr))!=0) {
+	if(mb_strlen(preg_replace("/[0-9]/","",$nb_adr))!=0) {
 		$nb_adr=20;
 	}
 	$num_premier_adr_rech=isset($_POST['num_premier_adr_rech']) ? $_POST['num_premier_adr_rech'] : 0;
-	if((strlen(preg_replace("/[0-9]/","",$num_premier_adr_rech))!=0)||($num_premier_adr_rech=="")) {
+	if((mb_strlen(preg_replace("/[0-9]/","",$num_premier_adr_rech))!=0)||($num_premier_adr_rech=="")) {
 		$num_premier_adr_rech=0;
 	}
 

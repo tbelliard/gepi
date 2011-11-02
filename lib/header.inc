@@ -178,14 +178,14 @@ if(isset($javascript_specifique)) {
 
 	if(is_array($javascript_specifique)) {
 		foreach($javascript_specifique as $current_javascript_specifique) {
-			if(strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$current_javascript_specifique))==0) {
+			if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$current_javascript_specifique))==0) {
 				// Javascript spécifique à une page:
 				echo "<script type='text/javascript' src='$gepiPath/$current_javascript_specifique.js'></script>\n";
 			}
 		}
 	}
 	else {
-		if(strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$javascript_specifique))==0) {
+		if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$javascript_specifique))==0) {
 			// Javascript spécifique à une page:
 			echo "<script type='text/javascript' src='$gepiPath/$javascript_specifique.js'></script>\n";
 		}
@@ -363,14 +363,14 @@ if(isset($style_specifique)) {
 
 	if(is_array($style_specifique)) {
 		foreach($style_specifique as $current_style_specifique) {
-			if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$current_style_specifique))==0) {
+			if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$current_style_specifique))==0) {
 				// Styles spécifiques à une page:
 				echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$current_style_specifique.css' />\n";
 			}
 		}
 	}
 	else {
-		if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0) {
+		if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0) {
 			// Styles spécifiques à une page:
 			echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$style_specifique.css' />\n";
 		}
@@ -737,11 +737,10 @@ if (isset($titre_page)) {
 // ==========> On ajoute la barre de menu <========================= //
 if (!isset($nobar)) { $nobar = "non"; }
 
-if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "professeur" AND $nobar != 'oui') {
+if (getSettingValue("utiliserMenuBarre") != "no" AND $_SESSION["statut"] == "professeur" AND $nobar != 'oui') {
 
 	// On vérifie que l'utilisateur ne l'a pas enlevée
-	//if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
-	if ((getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes")||(getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "light")) {
+	if ((getPref($_SESSION["login"], "utiliserMenuBarre", "yes") != "no")) {
 		// ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix un peu plus haut ?
 		if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
           /**
@@ -763,7 +762,7 @@ if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "pr
 elseif ($_SESSION["statut"] == "administrateur") {
 
 	// On vérifie que l'utilisateur ne l'a pas enlevée
-	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") != "no") {
 		// ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix un peu plus haut ?
 		if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
           /**
@@ -785,7 +784,7 @@ elseif ($_SESSION["statut"] == "administrateur") {
 elseif ($_SESSION["statut"] == "scolarite") {
 
 	// On vérifie que l'utilisateur ne l'a pas enlevée
-	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") != "no") {
 		// ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix un peu plus haut ?
 		if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
           /**
@@ -826,7 +825,7 @@ elseif ($_SESSION["statut"] == "scolarite") {
 elseif ($_SESSION["statut"] == "cpe") {
 
 	// On vérifie que l'utilisateur ne l'a pas enlevée
-	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") != "no") {
 		// ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix un peu plus haut ?
 		if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
 			require_once($prefix."edt_organisation/fonctions_calendrier.php");

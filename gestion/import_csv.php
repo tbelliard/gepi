@@ -1,8 +1,6 @@
 <?php
 /*
- * Last modification  : 14/03/2005
- *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -120,7 +118,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                         if (preg_match ("/^[a-zA-Z0-9_]{1,".$longmax_login."}$/", $data[$c])) {
                             $reg_login = "reg_".$row."_login";
                             $reg_statut = "reg_".$row."_statut";
-                            $data[$c] =    strtoupper($data[$c]);
+                            $data[$c] =    my_strtoupper($data[$c]);
                             $call_login = mysql_query("SELECT login FROM eleves WHERE login='$data[$c]'");
                             $test = mysql_num_rows($call_login);
                             if ($test != 0) {
@@ -179,7 +177,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                         break;
                     case 3:
                         // Sexe
-                        $data[$c] =    strtoupper($data[$c]);
+                        $data[$c] =    my_strtoupper($data[$c]);
                         if (preg_match ("/^[MF]$/", $data[$c])) {
                             echo "<td><p>$data[$c]</p></td>";
                             $reg_sexe = "reg_".$row."_sexe";
@@ -246,7 +244,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                         break;
                     case 6:
                         //Régime
-                        $data[$c] =    strtolower($data[$c]);
+                        $data[$c] =    my_strtolower($data[$c]);
                         if (preg_match ("#^(d/p|ext.|int.|i-e)$#", $data[$c])) {
                             echo "<td><p>$data[$c]</p></td>";
                             $reg_regime = "reg_".$row."_regime";
@@ -259,7 +257,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
 
                    case 7:
                         // Doublant
-                        $data[$c] =    strtoupper($data[$c]);
+                        $data[$c] =    my_strtoupper($data[$c]);
                         if (preg_match ("/^[R\-]{1}$/", $data[$c])) {
                             echo "<td><p>$data[$c]</p></td>";
                             $reg_doublant = "reg_".$row."_doublant";

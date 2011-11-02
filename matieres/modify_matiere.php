@@ -276,7 +276,7 @@ if (isset($_GET['current_matiere'])) {
 			echo "<input type='checkbox' name='login_prof[]' id='login_prof_$cpt' value='$lig->login' ";
 			echo "onchange=\"checkbox_change($cpt)\" ";
 			if(in_array($lig->login,$tab_profs_associes)) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
-			echo "/><label for='login_prof_$cpt'><span id='texte_login_prof_$cpt'$temp_style>".$lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1).".</span></label><br />\n";
+			echo "/><label for='login_prof_$cpt'><span id='texte_login_prof_$cpt'$temp_style>".$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1).".</span></label><br />\n";
 			$cpt++;
 		}
 	}

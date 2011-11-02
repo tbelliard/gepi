@@ -164,8 +164,8 @@ if (isset($_POST['is_posted'])) {
                      "email"       => $info2[0]["mail"][0],
                      "sexe"        => $tmp[2],
                      );
-                     $long = strlen($ret_people["fullname"]) - strlen($ret_people["nom"]);
-                     $prenom = substr($ret_people["fullname"], 0, $long) ;
+                     $long = mb_strlen($ret_people["fullname"]) - mb_strlen($ret_people["nom"]);
+                     $prenom = mb_substr($ret_people["fullname"], 0, $long) ;
                  }
                  @ldap_free_result ( $result2 );
              }

@@ -149,7 +149,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 						}
 						else{
 							$ligtmp=mysql_fetch_object($res1);
-							$nb=substr($ligtmp->adr_id,1);
+							$nb=mb_substr($ligtmp->adr_id,1);
 							$nb++;
 							//$adr_id="a".$nb;
 							$adr_id="a".sprintf("%09d",$nb);
@@ -296,7 +296,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			}
 			else{
 				$ligtmp=mysql_fetch_object($res1);
-				$nb=substr($ligtmp->pers_id,1);
+				$nb=mb_substr($ligtmp->pers_id,1);
 				$nb++;
 				//$pers_id="p".$nb;
 				$pers_id="p".sprintf("%09d",$nb);
@@ -334,7 +334,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 					}
 					else{
 						$ligtmp=mysql_fetch_object($res1);
-						$nb=substr($ligtmp->adr_id,1);
+						$nb=mb_substr($ligtmp->adr_id,1);
 						$nb++;
 						//$adr_id="a".$nb;
 						$adr_id="a".sprintf("%09d",$nb);

@@ -74,7 +74,7 @@ class Odf
     public function setImage($key, $value)
     {
         $filename = strtok(strrchr($value, '/'), '/.');
-        $file = substr(strrchr($value, '/'), 1);
+        $file = mb_substr(strrchr($value, '/'), 1);
         $size = @getimagesize($value);
         if ($size === false) {
             throw new OdfException("Invalid image");

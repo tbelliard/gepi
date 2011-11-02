@@ -225,7 +225,7 @@ foreach($classe_col as $classe){
 	    if ($edtCours->getUtilisateurProfessionnel() != null) {
 		$echo_str .= $edtCours->getUtilisateurProfessionnel()->getCivilite().' '
 			.$edtCours->getUtilisateurProfessionnel()->getNom().' '
-			.strtoupper(substr($edtCours->getUtilisateurProfessionnel()->getPrenom(), 0 ,1)).'. ';
+			.strtoupper(mb_substr($edtCours->getUtilisateurProfessionnel()->getPrenom(), 0 ,1)).'. ';
 	    }
 	    if ($edtCours->getEdtSalle() != null) {
 		$echo_str .= '- <span style="font-style: italic;">('.$edtCours->getEdtSalle()->getNumeroSalle().')</span>';
@@ -276,7 +276,7 @@ foreach($classe_col as $classe){
 		if ($affiche) {//on affiche un appel donc on va afficher les infos du prof
 		    $echo_str .= ' '.$abs->getUtilisateurProfessionnel()->getCivilite().' '
 			    .$abs->getUtilisateurProfessionnel()->getNom().' '
-			    .strtoupper(substr($abs->getUtilisateurProfessionnel()->getPrenom(), 0 ,1)).'. ';
+			    .strtoupper(mb_substr($abs->getUtilisateurProfessionnel()->getPrenom(), 0 ,1)).'. ';
 		    $prof_deja_sortis[] = $abs->getUtilisateurProfessionnel()->getPrimaryKey();
 		    $echo_str .= '<br/>';
 		}
@@ -365,7 +365,7 @@ foreach($classe_col as $classe){
                 echo $absenceSaisie->getAidDetails()->getNom() . ' ';
                 echo $absenceSaisie->getUtilisateurProfessionnel()->getCivilite() . ' '
                 . $absenceSaisie->getUtilisateurProfessionnel()->getNom() . ' '
-                . strtoupper(substr($absenceSaisie->getUtilisateurProfessionnel()->getPrenom(), 0, 1)) . '. ';
+                . strtoupper(mb_substr($absenceSaisie->getUtilisateurProfessionnel()->getPrenom(), 0, 1)) . '. ';
                 $aid_deja_sorties[] = $absenceSaisie->getAidDetails()->getId();
                 echo '<br/>';
             }

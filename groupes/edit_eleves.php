@@ -387,7 +387,7 @@ echo "</form>\n";
 		$cpt_prof=0;
 		foreach($current_group["profs"]["users"] as $tab_prof){
 			if($cpt_prof>0){echo ", ";}
-			echo ucfirst(strtolower($tab_prof['prenom']))." ".strtoupper($tab_prof['nom']);
+			echo casse_mot($tab_prof['prenom'],'majf2')." ".my_strtoupper($tab_prof['nom']);
 			$cpt_prof++;
 		}
 		echo ".</p>\n";
@@ -419,7 +419,7 @@ echo "</form>\n";
 			for($loop=0;$loop<count($tmp_grp["eleves"]["all"]["list"]);$loop++) {
 				$chaine_js[$cpt_ele_grp].=",\"".$tmp_grp["eleves"]["all"]["list"][$loop]."\"";
 			}
-			$chaine_js[$cpt_ele_grp]=substr($chaine_js[$cpt_ele_grp],1);
+			$chaine_js[$cpt_ele_grp]=mb_substr($chaine_js[$cpt_ele_grp],1);
 
 			$id_groupe_js[$cpt_ele_grp]=$lig_grp_avec_eleves->id_groupe;
 
@@ -481,7 +481,7 @@ $conditions = "e.login = j.login and (";
 foreach ($current_group["classes"]["list"] as $query_id_classe) {
 	$conditions .= "j.id_classe = '" . $query_id_classe . "' or ";
 }
-$conditions = substr($conditions, 0, -4);
+$conditions = mb_substr($conditions, 0, -4);
 $conditions .= ") and c.id = j.id_classe";
 
 // Définition de l'ordre de la liste
@@ -546,7 +546,7 @@ foreach ($current_group["periodes"] as $period) {
 	foreach($total_eleves as $e_login) {
 		$elements[$period["num_periode"]] .= "'eleve_" . $period["num_periode"] . "_"  . $e_login  . "',";
 	}
-    $elements[$period["num_periode"]] = substr($elements[$period["num_periode"]], 0, -1);
+    $elements[$period["num_periode"]] = mb_substr($elements[$period["num_periode"]], 0, -1);
 }
 
 //=============================
@@ -750,7 +750,7 @@ if(count($total_eleves)>0) {
 					$elementlist .= "'eleve_" . $period["num_periode"] . "_" . $e_login . "',";
 				}
 			}
-			$elementlist = substr($elementlist, 0, -1);
+			$elementlist = mb_substr($elementlist, 0, -1);
 	
 			echo "<td><a href=\"javascript:CocheLigne($num_eleve);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne($num_eleve);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></td>\n";
 			$setting = get_eleve_groupe_setting($e_login, $id_groupe, "coef");
