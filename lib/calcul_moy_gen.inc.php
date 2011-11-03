@@ -21,17 +21,25 @@
  * @see get_group()
  */
 
-/*
+/**
+ * Enregistre les calculs de moyennes dans un fichier
+ * 
+ * Passer à 1 la variable $debug pour générer un fichier de debug...
+ *
+ * @param string $texte Le calcul à enregistrer
+ * @see get_user_temp_directory()
+ */
 function calc_moy_debug($texte){
-	// Passer à 1 la variable pour générer un fichier de debug...
 	$debug=0;
 	if($debug==1){
-		$fich=fopen("/tmp/calc_moy_debug.txt","a+");
+		$tmp_dir=get_user_temp_directory();
+		if((!$tmp_dir)||(!file_exists("../temp/".$tmp_dir))) {$tmp_dir="/tmp";} else {$tmp_dir="../temp/".$tmp_dir;}
+		$fich=fopen($tmp_dir."/calc_moy_debug.txt","a+");
 		fwrite($fich,$texte);
 		fclose($fich);
 	}
 }
-*/
+
 
 // Ce parametre n'est pas pris en compte... si on l'augmente, des filtrages ont lieu plus loin hors de ce fichier
 $nb_chiffres_moy=1;

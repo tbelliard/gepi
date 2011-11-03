@@ -72,10 +72,23 @@ function mise_a_jour_moyennes_conteneurs($_current_group, $periode_num,$id_racin
 }
 
 
+/**
+ * Remplit un fichier de suivi des actions
+ * 
+ * Passer la variable $local_debug à "y" pour activer le remplissage du fichier "/tmp/calcule_moyenne.txt" de debug
+ * 
+ * @param string $texte 
+ */
+function fdebug($texte){
+	$local_debug="n";
+	if($local_debug=="y") {
+		$fich=fopen("/tmp/calcule_moyenne.txt","a+");
+		fwrite($fich,$texte);
+		fclose($fich);
+	}
+}
 
-//
-// 
-//
+
 /**
  *Liste des sous-conteneurs d'un conteneur
  * 
