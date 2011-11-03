@@ -190,9 +190,11 @@ if (!isset($_POST["action"])) {
 
 			// On nettoie et on vérifie :
 			$reg_nom=nettoyer_caracteres_nom(trim(my_strtoupper($reg_nom)));
+			$reg_nom=preg_replace("/'/", " ", $reg_nom);
 
 			if (mb_strlen($reg_nom) > 50) $reg_nom = mb_substr($reg_nom, 0, 50);
 			$reg_prenom=nettoyer_caracteres_nom(trim($reg_prenom));
+			$reg_prenom=preg_replace("/'/", " ", $reg_prenom);
 
 			if (mb_strlen($reg_prenom) > 50) $reg_prenom = mb_substr($reg_prenom, 0, 50);
 			$naissance = explode("/", $reg_naissance);
@@ -269,8 +271,8 @@ if (!isset($_POST["action"])) {
 				$sql="INSERT INTO eleves SET " .
 						"no_gep = '" . $reg_id_nat . "', " .
 						"login = '" . $reg_login . "', " .
-						"nom = '" . $reg_nom . "', " .
-						"prenom = '" . $reg_prenom . "', " .
+						"nom = '" . mysql_real_escape_string($reg_nom) . "', " .
+						"prenom = '" . mysql_real_escape_string($reg_prenom) . "', " .
 						"sexe = '" . $reg_sexe . "', " .
 						"naissance = '" . $reg_naissance . "', " .
 						"elenoet = '" . $reg_id_int . "', " .
@@ -291,7 +293,7 @@ if (!isset($_POST["action"])) {
 						if(mysql_num_rows($res_tmp_u)>0) {
 							$lig_tmp_u=mysql_fetch_object($res_tmp_u);
 
-							$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".$reg_nom."', prenom='".$reg_prenom."', ";
+							$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".mysql_real_escape_string($reg_nom)."', prenom='".mysql_real_escape_string($reg_prenom)."', ";
 							if($reg_sexe=='M') {
 								$sql.="civilite='M', ";
 							}
@@ -321,7 +323,7 @@ if (!isset($_POST["action"])) {
 									if (!$insert_etab) {
 										//echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab_prec.</p>\n";
 										$error++;
-										echo mysql_error();
+										echo "<span style='color:red'>".mysql_error().'<span><br />';
 									}
 								}
 								else {
@@ -330,7 +332,7 @@ if (!isset($_POST["action"])) {
 									if (!$update_etab) {
 										//echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab_prec.</p>\n";
 										$error++;
-										echo mysql_error();
+										echo "<span style='color:red'>".mysql_error().'<span><br />';
 									}
 								}
 							}
@@ -348,7 +350,7 @@ if (!isset($_POST["action"])) {
 								if (!$insert_etab) {
 									//echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab_prec.</p>\n";
 									$error++;
-									echo mysql_error();
+									echo "<span style='color:red'>".mysql_error().'<span><br />';
 								}
 							}
 						}
@@ -375,7 +377,7 @@ if (!isset($_POST["action"])) {
 					$insert3 = mysql_query("INSERT INTO j_eleves_regime SET login = '" . $reg_login . "', doublant = '" . $reg_double . "', regime = '" . $reg_regime . "'");
 					if (!$insert3) {
 						$error++;
-						echo mysql_error();
+						echo "<span style='color:red'>".mysql_error().'<span><br />';
 					}
 				}
 
@@ -448,11 +450,13 @@ if (!isset($_POST["action"])) {
 
 						// On nettoie et on vérifie :
 						//=====================================
-						if (mb_strlen($tabligne[0]) > 50) {$tabligne[0] = mb_substr($tabligne[0], 0, 50);}
 						$tabligne[0]=nettoyer_caracteres_nom($tabligne[0]);
+						$tabligne[0]=preg_replace("/'/", " ", $tabligne[0]);
+						if (mb_strlen($tabligne[0]) > 50) {$tabligne[0] = mb_substr($tabligne[0], 0, 50);}
 
-						if (mb_strlen($tabligne[1]) > 50) $tabligne[1] = mb_substr($tabligne[1], 0, 50);
 						$tabligne[1]=nettoyer_caracteres_nom($tabligne[1]);
+						$tabligne[1]=preg_replace("/'/", " ", $tabligne[1]);
+						if (mb_strlen($tabligne[1]) > 50) $tabligne[1] = mb_substr($tabligne[1], 0, 50);
 
 						$naissance = explode("/", $tabligne[2]);
 						if (!preg_match("/[0-9]/", $naissance[0]) OR mb_strlen($naissance[0]) > 2 OR mb_strlen($naissance[0]) == 0) $naissance[0] = "00";
@@ -569,15 +573,15 @@ if (!isset($_POST["action"])) {
 					echo "<td>\n";
 
 					$sql="INSERT INTO temp_gep_import2 SET id_tempo='$i',
-					elenom='".addslashes($data_tab[$i]["nom"])."',
-					elepre='".addslashes($data_tab[$i]["prenom"])."',
-					elesexe='".addslashes($data_tab[$i]["sexe"])."',
-					eledatnais='".addslashes($data_tab[$i]["naissance"])."',
-					elenoet='".addslashes($data_tab[$i]["id_int"])."',
-					elenonat='".addslashes($data_tab[$i]["id_nat"])."',
-					etocod_ep='".addslashes($data_tab[$i]["etab_prec"])."',
-					eledoubl='".addslashes($data_tab[$i]["doublement"])."',
-					elereg='".addslashes($data_tab[$i]["regime"])."';";
+					elenom='".mysql_real_escape_string($data_tab[$i]["nom"])."',
+					elepre='".mysql_real_escape_string($data_tab[$i]["prenom"])."',
+					elesexe='".mysql_real_escape_string($data_tab[$i]["sexe"])."',
+					eledatnais='".mysql_real_escape_string($data_tab[$i]["naissance"])."',
+					elenoet='".mysql_real_escape_string($data_tab[$i]["id_int"])."',
+					elenonat='".mysql_real_escape_string($data_tab[$i]["id_nat"])."',
+					etocod_ep='".mysql_real_escape_string($data_tab[$i]["etab_prec"])."',
+					eledoubl='".mysql_real_escape_string($data_tab[$i]["doublement"])."',
+					elereg='".mysql_real_escape_string($data_tab[$i]["regime"])."';";
 					$insert=mysql_query($sql);
 					if(!$insert) {
 						echo "<span style='color:red'>".$data_tab[$i]["nom"]."</span>";

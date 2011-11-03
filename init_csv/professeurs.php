@@ -209,14 +209,12 @@ if (!isset($_POST["action"])) {
 		echo "<br />\n";
 		echo "<p><em>On remplit la table 'utilisateurs' pour créer les nouveaux comptes et on ré-active d'anciens comptes&nbsp;:</em> ";
 
-		//$go = true;
 		$i = 0;
 		// Compteur d'erreurs
 		$error = 0;
 		// Compteur d'enregistrement
 		$total = 0;
 		$total_deja_presents = 0;
-		//while ($go) {
 		while ($lig=mysql_fetch_object($res_temp)) {
 			$reg_nom = $lig->nom;
 			$reg_prenom = $lig->prenom;
@@ -226,10 +224,10 @@ if (!isset($_POST["action"])) {
 			$reg_sso = $lig->sso;
 
 			// On nettoie et on vérifie :
-			$reg_nom = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(my_strtoupper($reg_nom)))))));
+			$reg_nom=my_strtoupper(nettoyer_caracteres_nom($reg_nom));
 			if (mb_strlen($reg_nom) > 50) $reg_nom = mb_substr($reg_nom, 0, 50);
 
-			$reg_prenom = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_prenom))))));
+			$reg_prenom=nettoyer_caracteres_nom($reg_prenom);
 			if (mb_strlen($reg_prenom) > 50) $reg_prenom = mb_substr($reg_prenom, 0, 50);
 
 			if ($reg_civilite != "M." AND $reg_civilite != "MME" AND $reg_civilite != "MLLE") { $reg_civilite = "";}
@@ -250,33 +248,33 @@ if (!isset($_POST["action"])) {
 				$reg_password = "";
 				switch($reg_sso){
 					case "ldap":
-					$auth_mode = "ldap";
-					$change_mdp = "n";
-					break;
+						$auth_mode = "ldap";
+						$change_mdp = "n";
+						break;
 					case "sso":
-					$auth_mode = "sso";
-					$change_mdp = "n";
-					break;
+						$auth_mode = "sso";
+						$change_mdp = "n";
+						break;
 					default:
-					$auth_mode = "gepi";
-					$change_mdp = "y";
-					// On génère un password :
-					$feed = "0123456789abcdefghijklmnopqrstuvwxyz";
+						$auth_mode = "gepi";
+						$change_mdp = "y";
+						// On génère un password :
+						$feed = "0123456789abcdefghijklmnopqrstuvwxyz";
 						for ($t=0; $t < 20; $t++){
 							$reg_password .= mb_substr($feed, rand(0, mb_strlen($feed)-1), 1);
 						}
 						$reg_password = md5($reg_password);
-					break;
+						break;
 				}
 
 
 				$insert = mysql_query("INSERT INTO utilisateurs SET " .
 						"login = '" . $reg_login . "', " .
-						"nom = '" . $reg_nom . "', " .
-						"prenom = '" . $reg_prenom . "', " .
+						"nom = '" . mysql_real_escape_string($reg_nom) . "', " .
+						"prenom = '" . mysql_real_escape_string($reg_prenom) . "', " .
 						"civilite = '" . $reg_civilite . "', " .
 						"password = '" . $reg_password . "', " .
-						"email = '" . $reg_email . "', " .
+						"email = '" . mysql_real_escape_string($reg_email) . "', " .
 						"statut = 'professeur', " .
 						"etat = 'actif', " .
 						"change_mdp = '" . $change_mdp . "', " .
@@ -284,7 +282,7 @@ if (!isset($_POST["action"])) {
 
 				if (!$insert) {
 					$error++;
-					echo mysql_error();
+					echo "<span style='color:red'>".mysql_error().'<span><br />';
 				} else {
 					$total++;
 				}
@@ -296,10 +294,9 @@ if (!isset($_POST["action"])) {
 
 
 			$i++;
-			//if (!isset($_POST['ligne'.$i.'_nom'])) {$go = false;}
 		}
 
-		if ($error > 0) {echo "<p><span style='color:red'>Il y a eu " . $error . " erreurs.</span></p>\n";}
+		if ($error > 0) {echo "<p style='color:red'>Il y a eu " . $error . " erreurs.</p>\n";}
 		if ($total > 0) {echo "<p>" . $total . " professeurs ont été enregistrés.</p>\n";}
 		if($total_deja_presents>0) {echo "<p>" . $total_deja_presents . " professeurs déjà présents.</p>\n";}
 
@@ -355,10 +352,12 @@ if (!isset($_POST["action"])) {
 						// 3 : Adresse email
 
 						// On nettoie et on vérifie :
-						$tabligne[0] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(my_strtoupper($tabligne[0])))))));
+						$tabligne[0]=my_strtoupper(nettoyer_caracteres_nom($tabligne[0]));
+						$tabligne[0]=preg_replace("/'/"," ",$tabligne[0]);
 						if (mb_strlen($tabligne[0]) > 50) $tabligne[0] = mb_substr($tabligne[0], 0, 50);
 
-						$tabligne[1] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]))))));
+						$tabligne[1]=nettoyer_caracteres_nom($tabligne[1]);
+						$tabligne[1]=preg_replace("/'/"," ",$tabligne[1]);
 						if (mb_strlen($tabligne[1]) > 50) $tabligne[1] = mb_substr($tabligne[1], 0, 50);
 
 						if ($tabligne[2] != "M." AND $tabligne[2] != "MME" AND $tabligne[2] != "MLLE") { $tabligne[2] = "";}
@@ -375,7 +374,7 @@ if (!isset($_POST["action"])) {
 							// On génère le login
 
 							$reg_nom_login = preg_replace("/\040/","_", $tabligne[0]);
-							$reg_prenom_login = strtr($tabligne[1], "éèüëïäê", "eeueiae");
+							$reg_prenom_login = remplace_accents($tabligne[1]);
 							$reg_prenom_login = preg_replace("/[^a-zA-Z.\-]/", "", $reg_prenom_login);
 
 							$login_prof=generate_unique_login($reg_nom_login, $reg_prenom_login, $_POST['login_mode'], 'maj');
@@ -438,12 +437,12 @@ if (!isset($_POST["action"])) {
 						echo "<td>\n";
 					}
 
-					$sql="INSERT INTO temp_profs SET login='".addslashes($data_tab[$i]["reg_login"])."',
-					nom='".addslashes($data_tab[$i]["nom"])."',
-					prenom='".addslashes($data_tab[$i]["prenom"])."',
-					civilite='".addslashes($data_tab[$i]["civilite"])."',
-					email='".addslashes($data_tab[$i]["email"])."',
-					sso='".addslashes($data_tab[$i]["sso"])."';";
+					$sql="INSERT INTO temp_profs SET login='".mysql_real_escape_string($data_tab[$i]["reg_login"])."',
+					nom='".mysql_real_escape_string($data_tab[$i]["nom"])."',
+					prenom='".mysql_real_escape_string($data_tab[$i]["prenom"])."',
+					civilite='".mysql_real_escape_string($data_tab[$i]["civilite"])."',
+					email='".mysql_real_escape_string($data_tab[$i]["email"])."',
+					sso='".mysql_real_escape_string($data_tab[$i]["sso"])."';";
 					$insert=mysql_query($sql);
 					if(!$insert) {
 						echo "<span style='color:red'>";
@@ -455,27 +454,21 @@ if (!isset($_POST["action"])) {
 						echo $data_tab[$i]["reg_login"];
 					}
 
-					//echo "<input type='hidden' name='ligne".$i."_login' value='" . $data_tab[$i]["reg_login"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["nom"];
-					//echo "<input type='hidden' name='ligne".$i."_nom' value='" . $data_tab[$i]["nom"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["prenom"];
-					//echo "<input type='hidden' name='ligne".$i."_prenom' value='" . $data_tab[$i]["prenom"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["civilite"];
-					//echo "<input type='hidden' name='ligne".$i."_civilite' value='" . $data_tab[$i]["civilite"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["email"];
-					//echo "<input type='hidden' name='ligne".$i."_email' value='" . $data_tab[$i]["email"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["sso"];
-					//echo "<input type='hidden' name='ligne".$i."_sso' value='" . $data_tab[$i]["sso"] . "' />\n";
 					echo "</td>\n";
 					echo "</tr>\n";
 				}
