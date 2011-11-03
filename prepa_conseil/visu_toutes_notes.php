@@ -1271,7 +1271,7 @@ while($i < $lignes_groupes) {
 
 	//========================================
 	//================================
-        $col_csv='';
+	$col_csv=array();
 	if($temoin_graphe=="oui"){
 		if($i==$lignes_groupes-1){
 			for($loop=0;$loop<$nb_lignes_tableau;$loop++){
