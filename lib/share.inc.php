@@ -143,15 +143,15 @@ function verif_mot_de_passe($password,$flag) {
  */
 function test_unique_login($s) {
     // On vérifie que le login ne figure pas déjà dans la base utilisateurs
-    $test1 = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE (login='$s' OR login='".strtoupper($s)."')"));
+    $test1 = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE (login='$s' OR login='".my_strtoupper($s)."')"));
     if ($test1 != "0") {
         return 'no';
     } else {
-        $test2 = mysql_num_rows(mysql_query("SELECT login FROM eleves WHERE (login='$s' OR login = '".strtoupper($s)."')"));
+        $test2 = mysql_num_rows(mysql_query("SELECT login FROM eleves WHERE (login='$s' OR login = '".my_strtoupper($s)."')"));
         if ($test2 != "0") {
             return 'no';
         } else {
-			$test3 = mysql_num_rows(mysql_query("SELECT login FROM resp_pers WHERE (login='$s' OR login='".strtoupper($s)."')"));
+			$test3 = mysql_num_rows(mysql_query("SELECT login FROM resp_pers WHERE (login='$s' OR login='".my_strtoupper($s)."')"));
 			if ($test3 != "0") {
 				return 'no';
 			} else {
@@ -183,7 +183,7 @@ function test_unique_e_login($s, $indice) {
     } else {
         // Si le login ne figure pas dans une des bases élève des années passées ni dans la base
         // utilisateurs, on vérifie qu'un même login ne vient pas d'être attribué !
-        $test_tempo2 = mysql_num_rows(mysql_query("SELECT col2 FROM tempo2 WHERE (col2='$s' or col2='".strtoupper($s)."')"));
+        $test_tempo2 = mysql_num_rows(mysql_query("SELECT col2 FROM tempo2 WHERE (col2='$s' or col2='".my_strtoupper($s)."')"));
         if ($test_tempo2 != "0") {
             return 'no';
         } else {
@@ -326,7 +326,7 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 		$temp1 = preg_replace("/-/","_", $temp1);
 		$temp1 = preg_replace("/'/","", $temp1);
 	} elseif ($_mode == "lcs") {
-		$temp1 = strtolower($_nom);
+		$temp1 = my_strtolower($_nom);
 		if (preg_match("/\s/",$temp1)) {
 			$noms = preg_split("/\s/",$temp1);
 			$temp1 = $noms[0];
@@ -334,7 +334,7 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 				$temp1 .= "_". $noms[1];
 			}
 		}
-		$temp1 = strtolower(mb_substr($_prenom,0,1)). $temp1;
+		$temp1 = my_strtolower(mb_substr($_prenom,0,1)). $temp1;
 	} else {
 		return FALSE;
 	}
@@ -343,7 +343,7 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 		$temp1=strtoupper($temp1);
 	}
 	elseif($_casse=='min') {
-		$temp1=strtolower($temp1);
+		$temp1=my_strtolower($temp1);
 	}
 
 	$login_user = $temp1;
