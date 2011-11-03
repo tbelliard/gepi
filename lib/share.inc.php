@@ -2794,7 +2794,7 @@ function casse_prenom($prenom) {
 		if($i>0) {
 			$retour.="-";
 		}
-		$tab[$i]=ucwords(strtolower($tab[$i]));
+		$tab[$i]=casse_mot($tab[$i],'majf2');
 		$retour.=$tab[$i];
 	}
 
