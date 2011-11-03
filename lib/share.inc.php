@@ -507,24 +507,6 @@ function genDateSelector($prefix, $day, $month, $year, $option)
     echo "</select>\n";
 }
 
-
-/**
- * Remplit un fichier de suivi des actions
- * 
- * Passer la variable $local_debug à "y" pour activer le remplissage du fichier "/tmp/calcule_moyenne.txt" de debug
- * 
- * @param string $texte 
- */
-function fdebug($texte){
-	$local_debug="n";
-	if($local_debug=="y") {
-		$fich=fopen("/tmp/calcule_moyenne.txt","a+");
-		fwrite($fich,$texte);
-		fclose($fich);
-	}
-}
-
-
 /**
  * Vérifie que la page est bien accessible par l'utilisateur
  *
