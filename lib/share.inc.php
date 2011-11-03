@@ -2766,37 +2766,7 @@ $GLOBALS['debug'] = '';
  */
 $GLOBALS['tab_instant'] = array();
 
-/**
- * 
- *
- * @global array
- * @global string
- * @param type $motif
- * @param string $texte 
- */
-function decompte_debug($motif,$texte) {
-	global $tab_instant, $debug;
-	if($debug=="y") {
-		$instant=microtime();
-		if(isset($tab_instant[$motif])) {
-			$tmp_tab1=explode(" ",$instant);
-			$tmp_tab2=explode(" ",$tab_instant[$motif]);
-			if($tmp_tab1[1]!=$tmp_tab2[1]) {
-				$diff=$tmp_tab1[1]-$tmp_tab2[1];
-			}
-			else {
-				$diff=$tmp_tab1[0]-$tmp_tab2[0];
-			}
-				echo "<p style='color:green;'>$texte: ".$diff." s</p>\n";
-		}
-		else {
-				echo "<p style='color:green;'>$texte</p>\n";
-		}
-		$tab_instant[$motif]=$instant;
-	}
-}
 
- 
 /**
  * Retourne l'URI des élèves pour les flux rss
  *
