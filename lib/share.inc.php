@@ -1567,24 +1567,6 @@ function nettoyer_caracteres_nom($chaine){
     return preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe",$chaine))));
 }
 
-/**
- * Fonction qui renvoie le login d'un élève en échange de son ele_id
- *
- * @param int $id_eleve ele_id de l'élève
- * @return string login de l'élève
- */
-function get_login_eleve($id_eleve){
-
-	$sql = "SELECT login FROM eleves WHERE id_eleve = '".$id_eleve."'";
-	$query = mysql_query($sql) OR trigger_error('Impossible de récupérer le login de cet élève.', E_USER_ERROR);
-	if ($query) {
-		$retour = mysql_result($query, 0,"login");
-	}else{
-		$retour = 'erreur';
-	}
-	return $retour;
-
-}
 
 /**
  * fonction qui renvoie le nom de la classe d'un élève pour chaque période
