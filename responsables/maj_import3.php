@@ -4295,7 +4295,7 @@ $update_tempo4=mysql_query($sql);
 					//===========================
 					// A FAIRE: boireaus 20071129
 					//          Ajouter l'association avec le PP et le CPE
-					$sql="SELECT login, nom, prenom FROM utilisateurs WHERE statut='cpe' ORDER BY nom, prenom;";
+					$sql="SELECT login, nom, prenom FROM utilisateurs WHERE statut='cpe' AND etat='actif' ORDER BY nom, prenom;";
 					info_debug($sql);
 					$res_cpe=mysql_query($sql);
 
