@@ -1611,7 +1611,7 @@ function ensure_ascii($chaine){
 function nettoyer_caracteres_nom($chaine){
 	global $liste_caracteres_accentues;
     //return preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe",preg_replace("/[^A-Za-z$liste_caracteres_accentues \-]/", "", $chaine)))));
-    return preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe",$chaine))));
+	return preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe",trim(ensure_utf8($chaine))))));
 }
 
 /**

@@ -101,18 +101,12 @@ if (!isset($_POST["action"])) {
 
 		echo "<p><em>On remplit/complète la table 'j_eleves_groupes'&nbsp;:</em> ";
 
-		//$go = true;
 		$i = 0;
 		// Compteur d'erreurs
 		$error = 0;
 		// Compteur d'enregistrement
 		$total = 0;
-		//while ($go) {
 		while ($lig=mysql_fetch_object($res_temp)) {
-			/*
-			$reg_id_int = $_POST["ligne".$i."_id_int"];
-			$reg_options = $_POST["ligne".$i."_options"];
-			*/
 			$reg_id_int = $lig->col1;
 			$reg_options = $lig->col2;
 
@@ -182,7 +176,7 @@ if (!isset($_POST["action"])) {
 										$reg = mysql_query("INSERT INTO j_eleves_groupes SET id_groupe = '" . $group_id . "', login = '" . $login_eleve . "', periode = '" . $p . "'");
 										if (!$reg) {
 											$error++;
-											echo mysql_error();
+											echo "<span style='color:red'>".mysql_error().'<span><br />';
 										} else {
 											if ($p == 1) $total++;
 										}
@@ -195,7 +189,6 @@ if (!isset($_POST["action"])) {
 			}
 
 			$i++;
-			//if (!isset($_POST['ligne'.$i.'_id_int'])) $go = false;
 		}
 
 		if ($error > 0) {echo "<p><font color='red'>Il y a eu " . $error . " erreurs.</font></p>\n";}
@@ -260,17 +253,13 @@ if (!isset($_POST["action"])) {
 						$tabligne[1] = preg_replace("/[^A-Za-z0-9.\-!]/","",trim($tabligne[1]));
 						if (mb_strlen($tabligne[1]) > 2000) $tabligne[1] = mb_substr($tabligne[1], 0, 2000);
 
-
 						$data_tab[$k] = array();
-
-
 
 						$data_tab[$k]["id_int"] = $tabligne[0];
 						$data_tab[$k]["options"] = $tabligne[1];
 
 						$k++;
 					}
-					//$k++;
 				}
 
 				fclose($fp);
@@ -295,7 +284,7 @@ if (!isset($_POST["action"])) {
                     echo "<tr class='lig$alt'>\n";
 					echo "<td>\n";
 					$sql="INSERT INTO tempo2 SET col1='".$data_tab[$i]["id_int"]."',
-					col2='".addslashes($data_tab[$i]["options"])."';";
+					col2='".mysql_real_escape_string($data_tab[$i]["options"])."';";
 					$insert=mysql_query($sql);
 					if(!$insert) {
 						echo "<span style='color:red'>";
@@ -306,11 +295,9 @@ if (!isset($_POST["action"])) {
 					else {
 						echo $data_tab[$i]["id_int"];
 					}
-					//echo "<input type='hidden' name='ligne".$i."_id_int' value='" . $data_tab[$i]["id_int"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["options"];
-					//echo "<input type='hidden' name='ligne".$i."_options' value='" . $data_tab[$i]["options"] . "' />\n";
 					echo "</td>\n";
 					echo "</tr>\n";
 				}
