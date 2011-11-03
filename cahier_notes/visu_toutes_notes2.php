@@ -948,26 +948,11 @@ while($i < $lignes_groupes){
 
 	$temp = @mysql_result($call_moyenne, 0, "moyenne");
 
-/*
-	//========================================
-	// AJOUT: boireaus
-	if($chaine_moy_classe==""){
-		$chaine_moy_classe=$temp;
-	}
-	else{
-		$chaine_moy_classe.="|".$temp;
-	}
-*/
 	//================================
-	// AJOUT: boireaus
-        $col_csv='';
+	$col_csv=array();
 	if($temoin_graphe=="oui"){
 		if($i==$lignes_groupes-1){
 			for($loop=0;$loop<$nb_lignes_tableau;$loop++){
-				//$col[1][$loop+$ligne_supl]="<a href='../visualisation/draw_graphe?".rawurlencode($chaine_matieres[$loop+$ligne_supl])."'>".$col[1][$loop+$ligne_supl]."</a>";
-
-				//$col[1][$loop+$ligne_supl]="<a href='../visualisation/draw_graphe?".$chaine_matieres[$loop+$ligne_supl]."'>".$col[1][$loop+$ligne_supl]."</a>";
-				//$col[1][$loop+$ligne_supl]="<a href='draw_graphe.php?".
 
 				if(isset($chaine_moy_eleve1[$loop+$ligne_supl])) {
 
