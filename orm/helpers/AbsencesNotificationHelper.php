@@ -112,13 +112,11 @@ class AbsencesNotificationHelper {
 
     if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER) {
 	//on va mettre les champs dans des variables simple
-	//echo $notification->getAdresse()->getResponsableEleves()->count();
+	//on fait un petit traitement pour bien formatter ça si on a un ou deux responsables, avec le même nom de famille ou pas.
 	if ($notification->getAdresse() != null && $notification->getResponsableEleves()->count() == 1) {
-	    //echo 'dest1';
 	    $responsable = $notification->getResponsableEleves()->getFirst();
 	    $destinataire = $responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.strtoupper($responsable->getPrenom());
-	} elseif ($notification->getAdresse() != null) {
-	    //echo 'dest2';
+	} elseif ($notification->getAdresse() != null&& $notification->getResponsableEleves()->count() == 2) {
 	    $responsable1 = $notification->getResponsableEleves()->getFirst();
 	    $responsable2 = $notification->getResponsableEleves()->getNext();
 	    if (strtoupper($responsable1->getNom()) == strtoupper($responsable2->getNom())) {
@@ -163,15 +161,17 @@ class AbsencesNotificationHelper {
    */
   public static function MergeInfosEtab($modele){
         // load the TinyButStrong libraries
-    include_once('../tbs/tbs_class.php'); // TinyButStrong template engine    
-    include_once('../tbs/plugins/tbsdb_php.php');
+    include_once(dirname(__FILE__).'/../../tbs/tbs_class.php'); // TinyButStrong template engine    
+    include_once(dirname(__FILE__).'/../../tbs/plugins/tbsdb_php.php');
 
     $TBS = new clsTinyButStrong; // new instance of TBS
     if (mb_substr($modele, -3) == "odt" ||mb_substr($modele, -3) == "ods") {
-	include_once('../tbs/plugins/tbs_plugin_opentbs.php');
+	include_once(dirname(__FILE__).'/../../tbs/plugins/tbs_plugin_opentbs.php');
 	$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
-    }
     $TBS->LoadTemplate($modele, OPENTBS_ALREADY_UTF8);
+    } else {
+    $TBS->LoadTemplate($modele);
+    }
     //merge des champs commun
     $TBS->MergeField('nom_etab',getSettingValue("gepiSchoolName"));
     $TBS->MergeField('tel_etab',getSettingValue("gepiSchoolTel"));

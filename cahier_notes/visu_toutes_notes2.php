@@ -960,6 +960,7 @@ while($i < $lignes_groupes){
 */
 	//================================
 	// AJOUT: boireaus
+        $col_csv='';
 	if($temoin_graphe=="oui"){
 		if($i==$lignes_groupes-1){
 			for($loop=0;$loop<$nb_lignes_tableau;$loop++){
