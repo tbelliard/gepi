@@ -386,7 +386,7 @@ class Eleve extends BaseEleve {
 	    $start_string = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getId().'_filterByPlageTemps_deb_';
 	    $start_len = strlen($start_string);
 	    foreach($_REQUEST as $key => $value) {
-	        if (substr($key,0,$start_len) == $start_string) {
+	        if (mb_substr($key,0,$start_len) == $start_string) {
 	            unset($_REQUEST[$key]);
 	        }
 	    }
@@ -996,8 +996,8 @@ class Eleve extends BaseEleve {
 					$photo=$chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg";
 				} else {
 					for($i=0;$i<5;$i++){
-						if(substr($_elenoet_ou_login,$i,1)=="0"){
-							$test_photo=substr($_elenoet_ou_login,$i+1);
+						if(mb_substr($_elenoet_ou_login,$i,1)=="0"){
+							$test_photo=mb_substr($_elenoet_ou_login,$i+1);
 							//if(file_exists($chemin."../photos/eleves/".$test_photo.".jpg")){
 							if(($test_photo!='')&&(file_exists($chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg"))) {
 								$photo=$chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg";
@@ -1885,11 +1885,13 @@ class Eleve extends BaseEleve {
 		// préférence admin pour la demi journée
 	    $heure_demi_journee = 11;
 	    $minute_demi_journee = 50;
-	    try {
-			$dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
-			$heure_demi_journee = $dt_demi_journee->format('H');
-			$minute_demi_journee = $dt_demi_journee->format('i');
-	    } catch (Exception $x) {
+	    if (getSettingValue("abs2_heure_demi_journee") != null) {
+    	    try {
+    			$dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
+    			$heure_demi_journee = $dt_demi_journee->format('H');
+    			$minute_demi_journee = $dt_demi_journee->format('i');
+    	    } catch (Exception $x) {
+    	    }
 	    }
 	    
 	    //on initialise le début de l'itération pour creer les entrées si aucune date n'est précisée

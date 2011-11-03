@@ -302,7 +302,7 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 			                        $requete_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes WHERE ('.$selection_classe.') AND '.$prefix_base.'j_eleves_classes.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'eleves.nom ASC');
 				  		while ($donner_eleve = mysql_fetch_array($requete_eleve))
 					  	 {
-						   ?><option value="<?php echo $donner_eleve['login']; ?>" <?php if(!empty($eleve) and in_array($donner_eleve['login'], $eleve)) { ?> selected="selected"<?php } ?>><?php echo strtoupper($donner_eleve['nom'])." ".ucfirst($donner_eleve['prenom']); ?></option>
+						   ?><option value="<?php echo $donner_eleve['login']; ?>" <?php if(!empty($eleve) and in_array($donner_eleve['login'], $eleve)) { ?> selected="selected"<?php } ?>><?php echo my_strtoupper($donner_eleve['nom'])." ".casse_mot($donner_eleve['prenom'],'majf2'); ?></option>
 							<?php
 						 }
 					}
@@ -608,7 +608,7 @@ if (isset($id_classe) and $format != 'pdf' and $modele === '') {
 		echo "<select id='liste_login_ele' name='liste_login_ele[]' multiple='yes' size='5' onchange=\"document.getElementById('selection_ele').checked=true;affiche_nb_ele_select();\">\n";
 		
 		while($lig_ele=mysql_fetch_object($res_ele)){
-			echo "<option value='$lig_ele->login'>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</option>\n";
+			echo "<option value='$lig_ele->login'>".my_strtoupper($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2')."</option>\n";
 		}
 		echo "</select>\n";
 		echo "</td>\n";

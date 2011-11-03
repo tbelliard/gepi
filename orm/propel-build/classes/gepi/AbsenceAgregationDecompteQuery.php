@@ -38,14 +38,18 @@ class AbsenceAgregationDecompteQuery extends BaseAbsenceAgregationDecompteQuery 
 
         $heure_demi_journee = 11;
         $minute_demi_journee = 50;
-        
-        try {
-            $dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
-            $heure_demi_journee = $dt_demi_journee->format('H');
-            $minute_demi_journee = $dt_demi_journee->format('i');
-        } catch (Exception $x) {
-            
-        }        
+        if (getSettingValue("abs2_heure_demi_journee") != null) {
+            try {
+                $dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
+                $heure_demi_journee = $dt_demi_journee->format('H');
+                $minute_demi_journee = $dt_demi_journee->format('i');
+            } catch (Exception $x) {
+                
+            }
+        }
+        if (!isset($dt_demi_journee) || $dt_demi_journee == null) {
+            $dt_demi_journee = new DateTime($heure_demi_journee.':'.$minute_demi_journee);
+        }
         if ($date_debut->format('Hi') < $heure_demi_journee . $minute_demi_journee) {
             $date_debut->setTime(0, 0, 0);
         } else {

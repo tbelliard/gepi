@@ -83,7 +83,7 @@ function LETTRE_COLONNE($num_col) {
 
 	if($num_col<26) {
 		$n=$num_col-1;
-		return substr($alpha,$n,1);
+		return mb_substr($alpha,$n,1);
 	}
 	else {
 		return "";

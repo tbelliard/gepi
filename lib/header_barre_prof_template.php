@@ -47,6 +47,8 @@ if (!$_SESSION["login"]) {
 // Fonction générant le menu Plugins
 include("tbs_menu_plugins.inc.php");
 
+$utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "light"))?"yes":"no";
+
 	//=======================================================
 	$mes_groupes=get_groups_for_prof($_SESSION['login'],NULL,array('classes', 'periodes'));
 	$tmp_mes_classes=array();
@@ -140,7 +142,7 @@ include("tbs_menu_plugins.inc.php");
 		foreach($mes_groupes as $tmp_group) {
 			$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_notes/index.php?id_groupe='.$tmp_group['id'];
 			$tmp_sous_menu[$cpt_sous_menu]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
-			if(getPref($_SESSION["login"], "utiliserMenuBarre", "yes") != "light") {
+			if($utiliserMenuBarreLight=="no") {
 				$tmp_sous_menu2=array();
 				$cpt_sous_menu2=0;
 				for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
@@ -205,7 +207,7 @@ include("tbs_menu_plugins.inc.php");
 				$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/saisie/index.php?id_groupe='.$tmp_group['id'];
 				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
 	
-				if(getPref($_SESSION["login"], "utiliserMenuBarre", "yes") != "light") {
+				if($utiliserMenuBarreLight=="no") {
 					$tmp_sous_menu3=array();
 					$cpt_sous_menu3=0;
 		
@@ -240,7 +242,7 @@ include("tbs_menu_plugins.inc.php");
 				$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/saisie/index.php?id_groupe='.$tmp_group['id'];
 				$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
 
-				if(getPref($_SESSION["login"], "utiliserMenuBarre", "yes") != "light") {
+				if($utiliserMenuBarreLight=="no") {
 					$tmp_sous_menu3=array();
 					$cpt_sous_menu3=0;
 		
@@ -411,6 +413,11 @@ include("tbs_menu_plugins.inc.php");
 			$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
 			$cpt_sous_menu2++;
 		}
+
+		$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/mod_trombinoscopes/plan_de_classe.php';
+		$tmp_sous_menu2[$cpt_sous_menu2]['texte']='Plan de classe';
+		$cpt_sous_menu2++;
+
 		$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
 		$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
 

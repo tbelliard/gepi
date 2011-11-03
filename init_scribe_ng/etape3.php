@@ -158,7 +158,7 @@ if ($_POST['step'] == "3") {
         for ($i=0;$i<$nb_eleves_a_charge;$i++) {
             $eleve_uid = explode(",",$responsables[$nb]['entauxpersreleleveeleve'][$i]);
 
-            $eleve_associe_login = substr($eleve_uid[0], 4);
+            $eleve_associe_login = mb_substr($eleve_uid[0], 4);
             
             $req_eleid = mysql_query("SELECT ele_id FROM eleves WHERE login = '$eleve_associe_login'");
             

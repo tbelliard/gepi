@@ -341,7 +341,7 @@ else{
 		//if($chaine!=""){
 		if($temoin_encore_des_classes>0) {
 			// Pour faire sauter un "' ":
-			//echo "<p>Classes restant à traiter: ".substr($chaine,2)."</p>\n";
+			//echo "<p>Classes restant à traiter: ".mb_substr($chaine,2)."</p>\n";
 			echo "<p>Classes restant à traiter: ".$chaine."</p>\n";
 		}
 		else {
@@ -880,7 +880,7 @@ else{
 			$chaine.=", ".get_nom_classe($id_classe[$i]);
 		}
 		if($chaine!=""){
-			echo "<p>Classes restant à traiter: ".substr($chaine,2)."</p>\n";
+			echo "<p>Classes restant à traiter: ".mb_substr($chaine,2)."</p>\n";
 		}
 		*/
 

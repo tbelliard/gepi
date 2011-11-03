@@ -189,21 +189,23 @@ if (!isset($_POST["action"])) {
 			//==========================
 
 			// On nettoie et on vérifie :
-			$reg_nom = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($reg_nom)))))));
+			$reg_nom=nettoyer_caracteres_nom(trim(my_strtoupper($reg_nom)));
+			$reg_nom=preg_replace("/'/", " ", $reg_nom);
 
-			if (strlen($reg_nom) > 50) $reg_nom = substr($reg_nom, 0, 50);
-			$reg_prenom = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_prenom))))));
+			if (mb_strlen($reg_nom) > 50) $reg_nom = mb_substr($reg_nom, 0, 50);
+			$reg_prenom=nettoyer_caracteres_nom(trim($reg_prenom));
+			$reg_prenom=preg_replace("/'/", " ", $reg_prenom);
 
-			if (strlen($reg_prenom) > 50) $reg_prenom = substr($reg_prenom, 0, 50);
+			if (mb_strlen($reg_prenom) > 50) $reg_prenom = mb_substr($reg_prenom, 0, 50);
 			$naissance = explode("/", $reg_naissance);
-			if (!preg_match("/[0-9]/", $naissance[0]) OR strlen($naissance[0]) > 2 OR strlen($naissance[0]) == 0) $naissance[0] = "00";
-			if (strlen($naissance[0]) == 1) $naissance[0] = "0" . $naissance[0];
+			if (!preg_match("/[0-9]/", $naissance[0]) OR mb_strlen($naissance[0]) > 2 OR mb_strlen($naissance[0]) == 0) $naissance[0] = "00";
+			if (mb_strlen($naissance[0]) == 1) $naissance[0] = "0" . $naissance[0];
 
-			if (!preg_match("/[0-9]/", $naissance[1]) OR strlen($naissance[1] OR strlen($naissance[1]) == 0) > 2) $naissance[1] = "00";
-			if (strlen($naissance[1]) == 1) $naissance[1] = "0" . $naissance[1];
+			if (!preg_match("/[0-9]/", $naissance[1]) OR mb_strlen($naissance[1] OR mb_strlen($naissance[1]) == 0) > 2) $naissance[1] = "00";
+			if (mb_strlen($naissance[1]) == 1) $naissance[1] = "0" . $naissance[1];
 
-			if (!preg_match("/[0-9]/", $naissance[2]) OR strlen($naissance[2]) > 4 OR strlen($naissance[2]) == 3 OR strlen($naissance[2]) == 1) $naissance[2] = "00";
-			if (strlen($naissance[2]) == 1) $naissance[2] = "0" . $naissance[2];
+			if (!preg_match("/[0-9]/", $naissance[2]) OR mb_strlen($naissance[2]) > 4 OR mb_strlen($naissance[2]) == 3 OR mb_strlen($naissance[2]) == 1) $naissance[2] = "00";
+			if (mb_strlen($naissance[2]) == 1) $naissance[2] = "0" . $naissance[2];
 
 			//$reg_naissance = mktime(0, 0, 0, $naissance[1], $naissance[0], $naissance[2]);
 			$reg_naissance = $naissance[2] . "-" . $naissance[1] . "-" . $naissance[0];
@@ -213,11 +215,11 @@ if (!isset($_POST["action"])) {
 
 			$reg_etab_prec = preg_replace("/[^A-Z0-9]/","",trim($reg_etab_prec));
 
-			$reg_double = trim(strtoupper($reg_double));
+			$reg_double = trim(my_strtoupper($reg_double));
 			if ($reg_double != "OUI" AND $reg_double != "NON") $reg_double = "NON";
 
 
-			$reg_regime = trim(strtoupper($reg_regime));
+			$reg_regime = trim(my_strtoupper($reg_regime));
 			if ($reg_regime != "INTERN" AND $reg_regime != "EXTERN" AND $reg_regime != "IN.EX." AND $reg_regime != "DP DAN") $reg_regime = "DP DAN";
 
 			if ($reg_sexe != "F" AND $reg_sexe != "M") $reg_sexe = "F";
@@ -269,8 +271,8 @@ if (!isset($_POST["action"])) {
 				$sql="INSERT INTO eleves SET " .
 						"no_gep = '" . $reg_id_nat . "', " .
 						"login = '" . $reg_login . "', " .
-						"nom = '" . $reg_nom . "', " .
-						"prenom = '" . $reg_prenom . "', " .
+						"nom = '" . mysql_real_escape_string($reg_nom) . "', " .
+						"prenom = '" . mysql_real_escape_string($reg_prenom) . "', " .
 						"sexe = '" . $reg_sexe . "', " .
 						"naissance = '" . $reg_naissance . "', " .
 						"elenoet = '" . $reg_id_int . "', " .
@@ -291,7 +293,7 @@ if (!isset($_POST["action"])) {
 						if(mysql_num_rows($res_tmp_u)>0) {
 							$lig_tmp_u=mysql_fetch_object($res_tmp_u);
 
-							$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".$reg_nom."', prenom='".$reg_prenom."', ";
+							$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".mysql_real_escape_string($reg_nom)."', prenom='".mysql_real_escape_string($reg_prenom)."', ";
 							if($reg_sexe=='M') {
 								$sql.="civilite='M', ";
 							}
@@ -321,7 +323,7 @@ if (!isset($_POST["action"])) {
 									if (!$insert_etab) {
 										//echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab_prec.</p>\n";
 										$error++;
-										echo mysql_error();
+										echo "<span style='color:red'>".mysql_error().'<span><br />';
 									}
 								}
 								else {
@@ -330,7 +332,7 @@ if (!isset($_POST["action"])) {
 									if (!$update_etab) {
 										//echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab_prec.</p>\n";
 										$error++;
-										echo mysql_error();
+										echo "<span style='color:red'>".mysql_error().'<span><br />';
 									}
 								}
 							}
@@ -348,7 +350,7 @@ if (!isset($_POST["action"])) {
 								if (!$insert_etab) {
 									//echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab_prec.</p>\n";
 									$error++;
-									echo mysql_error();
+									echo "<span style='color:red'>".mysql_error().'<span><br />';
 								}
 							}
 						}
@@ -375,7 +377,7 @@ if (!isset($_POST["action"])) {
 					$insert3 = mysql_query("INSERT INTO j_eleves_regime SET login = '" . $reg_login . "', doublant = '" . $reg_double . "', regime = '" . $reg_regime . "'");
 					if (!$insert3) {
 						$error++;
-						echo mysql_error();
+						echo "<span style='color:red'>".mysql_error().'<span><br />';
 					}
 				}
 
@@ -404,7 +406,7 @@ if (!isset($_POST["action"])) {
 
 		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
 		// autant forcer l'utilisateur à être rigoureux
-		if(strtolower($csv_file['name']) == "g_eleves.csv") {
+		if(my_strtolower($csv_file['name']) == "g_eleves.csv") {
 
 			// Le nom est ok. On ouvre le fichier
 			$fp=fopen($csv_file['tmp_name'],"r");
@@ -431,7 +433,7 @@ if (!isset($_POST["action"])) {
 				$k = 0;
 				$nat_num = array();
 				while (!feof($fp)) {
-					$ligne = fgets($fp, 4096);
+					$ligne = ensure_utf8(fgets($fp, 4096));
 					if(trim($ligne)!="") {
 
 						$tabligne=explode(";",$ligne);
@@ -448,39 +450,32 @@ if (!isset($_POST["action"])) {
 
 						// On nettoie et on vérifie :
 						//=====================================
-						// MODIF: boireaus
-						//$tabligne[0] = preg_replace("/[^A-Za-z .\-]/","",trim(strtoupper($tabligne[0])));
-						//$tabligne[0] = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[0])));
-						$tabligne[0] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[0])))))));
-						//=====================================
-						if (strlen($tabligne[0]) > 50) {$tabligne[0] = substr($tabligne[0], 0, 50);}
+						$tabligne[0]=nettoyer_caracteres_nom($tabligne[0]);
+						$tabligne[0]=preg_replace("/'/", " ", $tabligne[0]);
+						if (mb_strlen($tabligne[0]) > 50) {$tabligne[0] = mb_substr($tabligne[0], 0, 50);}
 
-						//=====================================
-						// MODIF: boireaus
-						//$tabligne[1] = preg_replace("/[^A-Za-z .\-éèüëïäê]/","",trim($tabligne[1]));
-						//$tabligne[1] = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]));
-						$tabligne[1] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]))))));
-						//=====================================
-						if (strlen($tabligne[1]) > 50) $tabligne[1] = substr($tabligne[1], 0, 50);
+						$tabligne[1]=nettoyer_caracteres_nom($tabligne[1]);
+						$tabligne[1]=preg_replace("/'/", " ", $tabligne[1]);
+						if (mb_strlen($tabligne[1]) > 50) $tabligne[1] = mb_substr($tabligne[1], 0, 50);
 
 						$naissance = explode("/", $tabligne[2]);
-						if (!preg_match("/[0-9]/", $naissance[0]) OR strlen($naissance[0]) > 2 OR strlen($naissance[0]) == 0) $naissance[0] = "00";
-						if (strlen($naissance[0]) == 1) $naissance[0] = "0" . $naissance[0];
+						if (!preg_match("/[0-9]/", $naissance[0]) OR mb_strlen($naissance[0]) > 2 OR mb_strlen($naissance[0]) == 0) $naissance[0] = "00";
+						if (mb_strlen($naissance[0]) == 1) $naissance[0] = "0" . $naissance[0];
 
 						// Au cas où la date de naissance serait vraiment mal fichue:
 						if(!isset($naissance[1])) {
 							$naissance[1]="00";
 						}
 
-						if (!preg_match("/[0-9]/", $naissance[1]) OR strlen($naissance[1] OR strlen($naissance[1]) == 0) > 2) $naissance[1] = "00";
-						if (strlen($naissance[1]) == 1) $naissance[1] = "0" . $naissance[1];
+						if (!preg_match("/[0-9]/", $naissance[1]) OR mb_strlen($naissance[1] OR mb_strlen($naissance[1]) == 0) > 2) $naissance[1] = "00";
+						if (mb_strlen($naissance[1]) == 1) $naissance[1] = "0" . $naissance[1];
 
 						// Au cas où la date de naissance serait vraiment mal fichue:
 						if(!isset($naissance[2])) {
 							$naissance[2]="0000";
 						}
 
-						if (!preg_match("/[0-9]/", $naissance[2]) OR strlen($naissance[2]) > 4 OR strlen($naissance[2]) == 3 OR strlen($naissance[2]) < 2) $naissance[2] = "0000";
+						if (!preg_match("/[0-9]/", $naissance[2]) OR mb_strlen($naissance[2]) > 4 OR mb_strlen($naissance[2]) == 3 OR mb_strlen($naissance[2]) < 2) $naissance[2] = "0000";
 
 						$tabligne[2] = $naissance[0] . "/" . $naissance[1] . "/" . $naissance[2];
 
@@ -492,16 +487,16 @@ if (!isset($_POST["action"])) {
 						$tabligne[5] = preg_replace("/[^A-Z0-9]/","",trim($tabligne[5]));
 						$tabligne[5] = preg_replace("/\"/", "", $tabligne[5]);
 
-						$tabligne[6] = trim(strtoupper($tabligne[6]));
+						$tabligne[6] = trim(my_strtoupper($tabligne[6]));
 						$tabligne[6] = preg_replace("/\"/", "", $tabligne[6]);
 						if ($tabligne[6] != "OUI" AND $tabligne[6] != "NON") $tabligne[6] = "NON";
 
 
-						$tabligne[7] = trim(strtoupper($tabligne[7]));
+						$tabligne[7] = trim(my_strtoupper($tabligne[7]));
 						$tabligne[7] = preg_replace("/\"/", "", $tabligne[7]);
 						if ($tabligne[7] != "INTERN" AND $tabligne[7] != "EXTERN" AND $tabligne[7] != "IN.EX." AND $tabligne[7] != "DP DAN") $tabligne[7] = "DP DAN";
 
-						$tabligne[8] = trim(strtoupper($tabligne[8]));
+						$tabligne[8] = trim(my_strtoupper($tabligne[8]));
 						$tabligne[8] = preg_replace("/\"/", "", $tabligne[8]);
 						if ($tabligne[8] != "F" AND $tabligne[8] != "M") $tabligne[8] = "F";
 
@@ -578,15 +573,15 @@ if (!isset($_POST["action"])) {
 					echo "<td>\n";
 
 					$sql="INSERT INTO temp_gep_import2 SET id_tempo='$i',
-					elenom='".addslashes($data_tab[$i]["nom"])."',
-					elepre='".addslashes($data_tab[$i]["prenom"])."',
-					elesexe='".addslashes($data_tab[$i]["sexe"])."',
-					eledatnais='".addslashes($data_tab[$i]["naissance"])."',
-					elenoet='".addslashes($data_tab[$i]["id_int"])."',
-					elenonat='".addslashes($data_tab[$i]["id_nat"])."',
-					etocod_ep='".addslashes($data_tab[$i]["etab_prec"])."',
-					eledoubl='".addslashes($data_tab[$i]["doublement"])."',
-					elereg='".addslashes($data_tab[$i]["regime"])."';";
+					elenom='".mysql_real_escape_string($data_tab[$i]["nom"])."',
+					elepre='".mysql_real_escape_string($data_tab[$i]["prenom"])."',
+					elesexe='".mysql_real_escape_string($data_tab[$i]["sexe"])."',
+					eledatnais='".mysql_real_escape_string($data_tab[$i]["naissance"])."',
+					elenoet='".mysql_real_escape_string($data_tab[$i]["id_int"])."',
+					elenonat='".mysql_real_escape_string($data_tab[$i]["id_nat"])."',
+					etocod_ep='".mysql_real_escape_string($data_tab[$i]["etab_prec"])."',
+					eledoubl='".mysql_real_escape_string($data_tab[$i]["doublement"])."',
+					elereg='".mysql_real_escape_string($data_tab[$i]["regime"])."';";
 					$insert=mysql_query($sql);
 					if(!$insert) {
 						echo "<span style='color:red'>".$data_tab[$i]["nom"]."</span>";

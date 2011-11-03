@@ -28,12 +28,12 @@ $gepiPath="/gepi";
 /**
  * Connexion permanente à la base
  * 
- * Décommenter la ligne et remplacer NULL par "oui" pour activer les connexions non permanentes
+ * Décommenter la ligne et remplacer "false" par "true" pour activer les connexions non permanentes
  *
  * @global int $GLOBALS['db_nopersist']
  * @name $db_nopersist
  */
-//$GLOBALS['db_nopersist']=NULL;
+//$GLOBALS['db_nopersist']=false;
 
 
 /* Base de l'URL (sans le chemin relatif défini ci-dessus)

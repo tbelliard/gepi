@@ -49,21 +49,21 @@ class Adresse extends BaseAdresse {
 		$result .= $this->getAdr1();
 	    }
 	    if ($this->getAdr2() != null && $this->getAdr2() != '') {
-		if ($result != '' && substr($result, -2) != ', ') {$result .= ', ';}
+		if ($result != '' && mb_substr($result, -2) != ', ') {$result .= ', ';}
 		$result .= $this->getAdr2();
 	    }
 	    if ($this->getAdr3() != null && $this->getAdr3() != '') {
-		if ($result != '' && substr($result, -2) != ', ') {$result .= ', ';}
+		if ($result != '' && mb_substr($result, -2) != ', ') {$result .= ', ';}
 		$result .= $this->getAdr3();
 	    }
 	    if ($this->getAdr4() != null && $this->getAdr4() != '') {
-		if ($result != '' && substr($result, -2) != ', ') {$result .= ', ';}
+		if ($result != '' && mb_substr($result, -2) != ', ') {$result .= ', ';}
 		$result .= $this->getAdr4();
 	    }
-	    if ($result != '' && substr($result, -2) != ', ') {$result .= ', ';}
+	    if ($result != '' && mb_substr($result, -2) != ', ') {$result .= ', ';}
 	    $result .= $this->getCp().' '.$this->getCommune();
 	    if ($this->getPays() != null && $this->getPays() != '') {
-		if ($result != '' && substr($result, -2) != ', ') {$result .= ', ';}
+		if ($result != '' && mb_substr($result, -2) != ', ') {$result .= ', ';}
 		$result .= $this->getPays();
 	    }
 

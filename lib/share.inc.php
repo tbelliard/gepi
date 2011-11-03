@@ -88,10 +88,9 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
  *
 
  * @param string $password Mot de passe
- * @param boolean $flag Si $flag = 1, il faut également au moins un caractères spécial (voir $char_spec dans global.inc)
+ * @param boolean $flag Si $flag = 1, il faut également au moins un caractères spécial
  * @return boolean TRUE si le mot de passe est valable
  * @see getSettingValue()
- * @todo on déclare $char_spec alors qu'on ne l'utilise pas, n'y aurait-il pas un problème ?
  */
 function verif_mot_de_passe($password,$flag) {
 	global $info_verif_mot_de_passe;
@@ -109,7 +108,7 @@ function verif_mot_de_passe($password,$flag) {
 			if(preg_match("/^[A-Za-z0-9]*$/", $password)) {
 				$info_verif_mot_de_passe="Le mot de passe doit comporter au moins un caractère spécial (#, *,...).";
 			}
-			elseif (strlen($password) < getSettingValue("longmin_pwd")) {
+			elseif (mb_strlen($password) < getSettingValue("longmin_pwd")) {
 				$info_verif_mot_de_passe="La longueur du mot de passe doit être supérieure ou égale à ".getSettingValue("longmin_pwd").".";
 				return FALSE;
 			}
@@ -125,7 +124,7 @@ function verif_mot_de_passe($password,$flag) {
 			$info_verif_mot_de_passe="Le mot de passe ne doit pas être uniquement numérique ou uniquement alphabétique.";
 			return FALSE;
 		}
-		elseif (strlen($password) < getSettingValue("longmin_pwd")) {
+		elseif (mb_strlen($password) < getSettingValue("longmin_pwd")) {
 			$info_verif_mot_de_passe="La longueur du mot de passe doit être supérieure ou égale à ".getSettingValue("longmin_pwd").".";
 			return FALSE;
 		}
@@ -144,15 +143,15 @@ function verif_mot_de_passe($password,$flag) {
  */
 function test_unique_login($s) {
     // On vérifie que le login ne figure pas déjà dans la base utilisateurs
-    $test1 = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE (login='$s' OR login='".strtoupper($s)."')"));
+    $test1 = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE (login='$s' OR login='".my_strtoupper($s)."')"));
     if ($test1 != "0") {
         return 'no';
     } else {
-        $test2 = mysql_num_rows(mysql_query("SELECT login FROM eleves WHERE (login='$s' OR login = '".strtoupper($s)."')"));
+        $test2 = mysql_num_rows(mysql_query("SELECT login FROM eleves WHERE (login='$s' OR login = '".my_strtoupper($s)."')"));
         if ($test2 != "0") {
             return 'no';
         } else {
-			$test3 = mysql_num_rows(mysql_query("SELECT login FROM resp_pers WHERE (login='$s' OR login='".strtoupper($s)."')"));
+			$test3 = mysql_num_rows(mysql_query("SELECT login FROM resp_pers WHERE (login='$s' OR login='".my_strtoupper($s)."')"));
 			if ($test3 != "0") {
 				return 'no';
 			} else {
@@ -184,7 +183,7 @@ function test_unique_e_login($s, $indice) {
     } else {
         // Si le login ne figure pas dans une des bases élève des années passées ni dans la base
         // utilisateurs, on vérifie qu'un même login ne vient pas d'être attribué !
-        $test_tempo2 = mysql_num_rows(mysql_query("SELECT col2 FROM tempo2 WHERE (col2='$s' or col2='".strtoupper($s)."')"));
+        $test_tempo2 = mysql_num_rows(mysql_query("SELECT col2 FROM tempo2 WHERE (col2='$s' or col2='".my_strtoupper($s)."')"));
         if ($test_tempo2 != "0") {
             return 'no';
         } else {
@@ -226,7 +225,6 @@ function test_unique_e_login($s, $indice) {
  * @param string $_mode Le mode de génération ou NULL
  * @param string $_casse La casse du login ('maj', 'min', '') par défaut la casse n'est pas modifiée
  * @return string|booleanLe login généré ou FALSE si on obtient un login vide
->>>>>>> .merge_file_NwcuRB
  * @see test_unique_login()
  */
 function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
@@ -261,20 +259,20 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 		$temp1 = preg_replace("/ /","", $temp1);
 		$temp1 = preg_replace("/-/","_", $temp1);
 		$temp1 = preg_replace("/'/","", $temp1);
-		$temp1 = substr($temp1,0,8);
+		$temp1 = mb_substr($temp1,0,8);
 	} elseif ($_mode == "name9_p") {
 		// Format d'origine des comptes élèves dans Gepi
 		$temp1 = $_nom;
 		$temp1 = preg_replace("/ /","", $temp1);
 		$temp1 = preg_replace("/-/","", $temp1);
 		$temp1 = preg_replace("/'/","", $temp1);
-		$temp1 = substr($temp1,0,9);
+		$temp1 = mb_substr($temp1,0,9);
 		if($_prenom!='') {
 			$temp2 = preg_replace("/ /","", $_prenom);
 			$temp2 = preg_replace("/-/","_", $temp2);
 			$temp2 = preg_replace("/'/","", $temp2);
 			if($temp2!='') {
-				$temp1 .= '_'.substr($temp2,0,1);
+				$temp1 .= '_'.mb_substr($temp2,0,1);
 			}
 		}
 	} elseif ($_mode == "fname8") {
@@ -283,14 +281,14 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 		$temp1 = preg_replace("/ /","", $temp1);
 		$temp1 = preg_replace("/-/","_", $temp1);
 		$temp1 = preg_replace("/'/","", $temp1);
-		$temp1 = substr($temp1,0,8);
+		$temp1 = mb_substr($temp1,0,8);
 	} elseif ($_mode == "fname19") {
 		if($_prenom=='') {return FALSE;}
 		$temp1 = $_prenom{0} . $_nom;
 		$temp1 = preg_replace("/ /","", $temp1);
 		$temp1 = preg_replace("/-/","_", $temp1);
 		$temp1 = preg_replace("/'/","", $temp1);
-		$temp1 = substr($temp1,0,19);
+		$temp1 = mb_substr($temp1,0,19);
 	} elseif ($_mode == "firstdotname") {
 		if($_prenom=='') {return FALSE;}
 
@@ -320,23 +318,23 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 
 		$temp1 = preg_replace("/ /","", $temp1);
 		$temp1 = preg_replace("/'/","", $temp1);
-		$temp1 = substr($temp1,0,19);
+		$temp1 = mb_substr($temp1,0,19);
 	} elseif ($_mode == "namef8") {
 		if($_prenom=='') {return FALSE;}
-		$temp1 =  substr($_nom,0,7) . $_prenom{0};
+		$temp1 =  mb_substr($_nom,0,7) . $_prenom{0};
 		$temp1 = preg_replace("/ /","", $temp1);
 		$temp1 = preg_replace("/-/","_", $temp1);
 		$temp1 = preg_replace("/'/","", $temp1);
 	} elseif ($_mode == "lcs") {
-		$temp1 = strtolower($_nom);
+		$temp1 = my_strtolower($_nom);
 		if (preg_match("/\s/",$temp1)) {
 			$noms = preg_split("/\s/",$temp1);
 			$temp1 = $noms[0];
-			if (strlen($noms[0]) < 4) {
+			if (mb_strlen($noms[0]) < 4) {
 				$temp1 .= "_". $noms[1];
 			}
 		}
-		$temp1 = strtolower(substr($_prenom,0,1)). $temp1;
+		$temp1 = my_strtolower(mb_substr($_prenom,0,1)). $temp1;
 	} else {
 		return FALSE;
 	}
@@ -345,25 +343,25 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 		$temp1=strtoupper($temp1);
 	}
 	elseif($_casse=='min') {
-		$temp1=strtolower($temp1);
+		$temp1=my_strtolower($temp1);
 	}
 
 	$login_user = $temp1;
 
 	// Nettoyage final
-	$login_user = substr($login_user, 0, 50);
+	$login_user = mb_substr($login_user, 0, 50);
 	$login_user = preg_replace("/[^A-Za-z0-9._\-]/","",trim($login_user));
 
 	$test1 = $login_user{0};
 	while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
-		$login_user = substr($login_user, 1);
+		$login_user = mb_substr($login_user, 1);
 		$test1 = $login_user{0};
 	}
 
-	$test1 = $login_user{strlen($login_user)-1};
+	$test1 = $login_user{mb_strlen($login_user)-1};
 	while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
-		$login_user = substr($login_user, 0, strlen($login_user)-1);
-		$test1 = $login_user{strlen($login_user)-1};
+		$login_user = mb_substr($login_user, 0, mb_strlen($login_user)-1);
+		$test1 = $login_user{mb_strlen($login_user)-1};
 	}
 
 	// On teste l'unicité du login que l'on vient de créer
@@ -403,8 +401,8 @@ function affiche_utilisateur($login,$id_classe) {
     $i='';
     if ((($format == 'ni') OR ($format == 'in') OR ($format == 'cni') OR ($format == 'cin')) AND ($prenom != '')) {
         $temp = explode("-", $prenom);
-        $i = substr($temp[0], 0, 1);
-        if (isset($temp[1]) and ($temp[1] != '')) $i .= "-".substr($temp[1], 0, 1);
+        $i = mb_substr($temp[0], 0, 1);
+        if (isset($temp[1]) and ($temp[1] != '')) $i .= "-".mb_substr($temp[1], 0, 1);
         $i .= ". ";
     }
     switch( $format ) {
@@ -509,24 +507,6 @@ function genDateSelector($prefix, $day, $month, $year, $option)
     echo "</select>\n";
 }
 
-
-/**
- * Remplit un fichier de suivi des actions
- * 
- * Passer la variable $local_debug à "y" pour activer le remplissage du fichier "/tmp/calcule_moyenne.txt" de debug
- * 
- * @param string $texte 
- */
-function fdebug($texte){
-	$local_debug="n";
-	if($local_debug=="y") {
-		$fich=fopen("/tmp/calcule_moyenne.txt","a+");
-		fwrite($fich,$texte);
-		fclose($fich);
-	}
-}
-
-
 /**
  * Vérifie que la page est bien accessible par l'utilisateur
  *
@@ -541,20 +521,20 @@ function checkAccess() {
 
     	$sql = "SELECT autorisation
 	    from droits_speciaux
-    	where nom_fichier = '" . substr($url['path'], strlen($gepiPath)) . "'
+    	where nom_fichier = '" . mb_substr($url['path'], mb_strlen($gepiPath)) . "'
 		AND id_statut = '" . $_SESSION['statut_special_id'] . "'";
 
     }else{
 
 		$sql = "select " . $_SESSION['statut'] . "
 	    from droits
-    	where id = '" . substr($url['path'], strlen($gepiPath)) . "'
+    	where id = '" . mb_substr($url['path'], mb_strlen($gepiPath)) . "'
     	;";
 
 	}
 
     $dbCheckAccess = sql_query1($sql);
-    if (substr($url['path'], 0, strlen($gepiPath)) != $gepiPath) {
+    if (mb_substr($url['path'], 0, mb_strlen($gepiPath)) != $gepiPath) {
         tentative_intrusion(2, "Tentative d'accès avec modification sauvage de gepiPath");
         return (FALSE);
     } else {
@@ -564,34 +544,6 @@ function checkAccess() {
             tentative_intrusion(1, "Tentative d'accès à un fichier sans avoir les droits nécessaires");
             return (FALSE);
         }
-    }
-}
-
-
-/**
- * Vérifie qu'un enseignant enseigne une matière dans une classe
- *
- * @deprecated la table j_classes_matieres_professeurs n'existe plus
- * @param string $login Login de l'enseignant
- * @param int $id_classe Id de la classe
- * @param type $matiere
- * @return boolean
- */
-function Verif_prof_classe_matiere ($login,$id_classe,$matiere) {
-    if(empty($login) || empty($id_classe) || empty($matiere)) {return FALSE;}
-    $call_prof = mysql_query("SELECT id_professeur FROM j_classes_matieres_professeurs WHERE (id_classe='".$id_classe."' AND id_matiere='".$matiere."')");
-    $nb_profs = mysql_num_rows($call_prof);
-    $k = 0;
-    $flag = 0;
-    while ($k < $nb_profs) {
-        $prof = @mysql_result($call_prof, $k, "id_professeur");
-        if (strtolower($login) == strtolower($prof)) {$flag = 1;}
-        $k++;
-    }
-    if ($flag == 0) {
-        return FALSE;
-    } else {
-        return TRUE;
     }
 }
 
@@ -615,7 +567,7 @@ return $email;
  * @return string le texte avec les lettres accentuées
  */
 function dbase_filter($s){
-  for($i = 0; $i < strlen($s); $i++){
+  for($i = 0; $i < mb_strlen($s); $i++){
     $code = ord($s[$i]);
     switch($code){
     case 129:    $s[$i] = "ü"; break;
@@ -761,23 +713,23 @@ function detect_browser($HTTP_USER_AGENT) {
  * @return string la date formatée
  */
 function affiche_date_naissance($date) {
-    if (strlen($date) == 10) {
+    if (mb_strlen($date) == 10) {
         // YYYY-MM-DD
-        $annee = substr($date, 0, 4);
-        $mois = substr($date, 5, 2);
-        $jour = substr($date, 8, 2);
+        $annee = mb_substr($date, 0, 4);
+        $mois = mb_substr($date, 5, 2);
+        $jour = mb_substr($date, 8, 2);
     }
-    elseif (strlen($date) == 8 ) {
+    elseif (mb_strlen($date) == 8 ) {
         // YYYYMMDD
-        $annee = substr($date, 0, 4);
-        $mois = substr($date, 4, 2);
-        $jour = substr($date, 6, 2);
+        $annee = mb_substr($date, 0, 4);
+        $mois = mb_substr($date, 4, 2);
+        $jour = mb_substr($date, 6, 2);
     }
-    elseif (strlen($date) == 19 ) {
+    elseif (mb_strlen($date) == 19 ) {
         // YYYY-MM-DD xx:xx:xx
-        $annee = substr($date, 0, 4);
-        $mois = substr($date, 5, 2);
-        $jour = substr($date, 8, 2);
+        $annee = mb_substr($date, 0, 4);
+        $mois = mb_substr($date, 5, 2);
+        $jour = mb_substr($date, 8, 2);
     }
 
     else {
@@ -886,7 +838,7 @@ function check_backup_directory() {
         	$handle=opendir('./backup');
 
         	while ($file = readdir($handle)) {
-            	if (strlen($file) > 34 and is_dir('./backup/'.$file)) $backupDirName = $file;
+            	if (mb_strlen($file) > 34 and is_dir('./backup/'.$file)) $backupDirName = $file;
         	}
 
         	closedir($handle);
@@ -899,7 +851,7 @@ function check_backup_directory() {
             // Il n'existe pas
             // On crée le répertoire de backup
             $length = rand(35, 45);
-            for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
+            for($len=$length,$r='';mb_strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
             $dirname = $pref_multi.$r;
             $create = mkdir("./backup/" . $dirname, 0700);
             copy("./backup/index.html","./backup/".$dirname."/index.html");
@@ -939,7 +891,7 @@ function check_backup_directory() {
     if ($current_time-$lastchange > 172800) {
         $dirname = getSettingValue("backup_directory");
         $length = rand(35, 45);
-        for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2) ? mt_rand(48,57):(!mt_rand(0,1)?mt_rand(65,90):mt_rand(97,122))));
+        for($len=$length,$r='';mb_strlen($r)<$len;$r.=chr(!mt_rand(0,2) ? mt_rand(48,57):(!mt_rand(0,1)?mt_rand(65,90):mt_rand(97,122))));
         $newdirname = $pref_multi.$r;
         if (rename("./backup/".$dirname, "./backup/".$newdirname)) {
             saveSetting("backup_directory",$newdirname);
@@ -1007,7 +959,7 @@ function tentative_intrusion($_niveau, $_description) {
 	$adresse_ip = $_SERVER['REMOTE_ADDR'];
 	$date = strftime("%Y-%m-%d %H:%M:%S");
 	$url = parse_url($_SERVER['REQUEST_URI']);
-    $fichier = substr($url['path'], strlen($gepiPath));
+    $fichier = mb_substr($url['path'], mb_strlen($gepiPath));
 	$res = mysql_query("INSERT INTO tentatives_intrusion SET " .
 			"login = '".$user_login."', " .
 			"adresse_ip = '".$adresse_ip."', " .
@@ -1131,7 +1083,7 @@ function check_temp_directory(){
 		// Il n'existe pas
 		// On créé le répertoire temp
 		$length = rand(35, 45);
-		for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
+		for($len=$length,$r='';mb_strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
 		$dirname = $r;
 		$create = mkdir("./temp/".$dirname, 0700);
 
@@ -1185,7 +1137,7 @@ function check_user_temp_directory(){
 			// Le dossier n'existe pas
 			// On créé le répertoire temp
 			$length = rand(35, 45);
-			for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
+			for($len=$length,$r='';mb_strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
 			$dirname = $pref_multi.$_SESSION['login']."_".$r;
 			$create = mkdir("./temp/".$dirname, 0700);
 
@@ -1278,7 +1230,7 @@ function get_user_temp_directory(){
 		$lig_temp_dir=mysql_fetch_object($res_temp_dir);
 		$dirname=$lig_temp_dir->temp_dir;
 
-		if(($dirname!="")&&(strlen(preg_replace("/[A-Za-z0-9_.]/","",$dirname))==0)) {
+		if(($dirname!="")&&(mb_strlen(preg_replace("/[A-Za-z0-9_.]/","",$dirname))==0)) {
 			if(file_exists("temp/".$dirname)){
 				return $dirname;
 			}
@@ -1426,12 +1378,6 @@ function ensure_utf8($str, $from_encoding = null) {
     }
 	$result = null;
     if ($encoding !== false && $encoding != null) {
-    	//test : est-ce que iconv est bien implémenté sur ce système ?
-        $test = 'c\'est un bel ete' === iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", 'c\'est un bel été');
-        if ($test) {
-            //on utilise iconv pour la conversion
-            $result = @iconv("UTF-8", $encoding."//TRANSLIT//IGNORE", $str);
-        }
         if ($result == null && function_exists('mb_convert_encoding')) {
             $result = mb_convert_encoding($str, 'UTF-8', $encoding);
         }
@@ -1585,36 +1531,42 @@ function remplace_accents($chaine,$mode=''){
 	} elseif($mode == 'all_nospace'){
 		return preg_replace('#[^a-zA-Z0-9\-\._ ]#', '_', $str);
 	} else {
-		return preg_replace('#[^a-zA-Z0-9\-\._"\' ]#', '_', $str);
+		return preg_replace('#[^a-zA-Z0-9\-\._"\' ;]#', '_', $str);
 	}
 }
-
-function enleve_accents($chaine,$mode=''){
-    return remplace_accents();
-}
-
-function accents_enleve($chaine,$mode=''){
-    return remplace_accents();
-}
-    
 /**
- * Fonction qui renvoie le login d'un élève en échange de son ele_id
- *
- * @param int $id_eleve ele_id de l'élève
- * @return string login de l'élève
- */
-function get_login_eleve($id_eleve){
-
-	$sql = "SELECT login FROM eleves WHERE id_eleve = '".$id_eleve."'";
-	$query = mysql_query($sql) OR trigger_error('Impossible de récupérer le login de cet élève.', E_USER_ERROR);
-	if ($query) {
-		$retour = mysql_result($query, 0,"login");
-	}else{
-		$retour = 'erreur';
-	}
-	return $retour;
-
+ * @see remplace_accent($chaine,$mode='')
+**/
+function enleve_accents($chaine,$mode=''){
+    return remplace_accents($chaine,$mode='');
 }
+/**
+ * @see remplace_accent($chaine,$mode='')
+**/
+function accents_enleve($chaine,$mode=''){
+    return remplace_accents($chaine,$mode='');
+}
+/**
+ * @see remplace_accent($chaine,$mode='')
+**/
+function ensure_ascii($chaine){
+    return remplace_accents($chaine);
+}
+
+/**
+ * Nettoyage des caractères d'un nom ou prénom
+ * On ne conserve que les lettres (accentuées incluses), l'espace et le tiret
+ *
+ * @global string 
+ * @param type $chaine La chaine à traiter
+ * @return La chaine corrigée
+ */
+function nettoyer_caracteres_nom($chaine){
+	global $liste_caracteres_accentues;
+    //return preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe",preg_replace("/[^A-Za-z$liste_caracteres_accentues \-]/", "", $chaine)))));
+	return preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe",trim(ensure_utf8($chaine))))));
+}
+
 
 /**
  * fonction qui renvoie le nom de la classe d'un élève pour chaque période
@@ -1834,7 +1786,7 @@ function formate_date($date) {
  * @return string Le régime dans Gépi
  */
 function traite_regime_sconet($code_regime){
-	$premier_caractere_code_regime=substr($code_regime,0,1);
+	$premier_caractere_code_regime=mb_substr($code_regime,0,1);
 	switch($premier_caractere_code_regime){
 		case "0":
 			// 0       EXTERN  EXTERNE LIBRE
@@ -2520,8 +2472,8 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 					$photo=$chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg";
 				} else {
 					for($i=0;$i<5;$i++){
-						if(substr($_elenoet_ou_login,$i,1)=="0"){
-							$test_photo=substr($_elenoet_ou_login,$i+1);
+						if(mb_substr($_elenoet_ou_login,$i,1)=="0"){
+							$test_photo=mb_substr($_elenoet_ou_login,$i+1);
 							if(($test_photo!='')&&(file_exists($chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg"))) {
 								$photo=$chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg";
 								break;
@@ -2598,54 +2550,6 @@ $GLOBALS['photo_largeur_max'] = 0;
 $GLOBALS['photo_hauteur_max'] = 0;
 
 /**
- * Redimensionne une image
- *
- * @global int 
- * @global int 
- * @param string $photo l'adresse de la photo
- * @return array Les nouvelles dimensions de l'image (largeur, hauteur)
- */
-function redimensionne_image2($photo){
-	global $photo_largeur_max, $photo_hauteur_max;
-
-	// prendre les informations sur l'image
-	$info_image=getimagesize($photo);
-	// largeur et hauteur de l'image d'origine
-	$largeur=$info_image[0];
-	$hauteur=$info_image[1];
-
-	// calcule le ratio de redimensionnement
-	$ratio_l=$largeur/$photo_largeur_max;
-	$ratio_h=$hauteur/$photo_hauteur_max;
-	$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
-
-	// définit largeur et hauteur pour la nouvelle image
-	$nouvelle_largeur=round($largeur/$ratio);
-	$nouvelle_hauteur=round($hauteur/$ratio);
-
-	return array($nouvelle_largeur, $nouvelle_hauteur);
-}
-
-/**
- * Enregistre les calculs de moyennes dans un fichier
- * 
- * Passer à 1 la variable $debug pour générer un fichier de debug...
- *
- * @param string $texte Le calcul à enregistrer
- * @see get_user_temp_directory()
- */
-function calc_moy_debug($texte){
-	$debug=0;
-	if($debug==1){
-		$tmp_dir=get_user_temp_directory();
-		if((!$tmp_dir)||(!file_exists("../temp/".$tmp_dir))) {$tmp_dir="/tmp";} else {$tmp_dir="../temp/".$tmp_dir;}
-		$fich=fopen($tmp_dir."/calc_moy_debug.txt","a+");
-		fwrite($fich,$texte);
-		fclose($fich);
-	}
-}
-
-/**
  * Renvoie le nom d'une classe à partir de son Id
  *
  * @param int $id_classe Id de la classe recherchée
@@ -2708,7 +2612,7 @@ function mail_connexion() {
 				$result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
 			}
 			else if($active_hostbyaddr == "no_local") {
-				if ((substr($adresse_ip,0,3) == 127) or (substr($adresse_ip,0,3) == 10.) or (substr($adresse_ip,0,7) == 192.168)) {
+				if ((mb_substr($adresse_ip,0,3) == 127) or (mb_substr($adresse_ip,0,3) == 10.) or (mb_substr($adresse_ip,0,7) == 192.168)) {
 					$result_hostbyaddr = "";
 				}
 				else{
@@ -2778,7 +2682,7 @@ function mail_alerte($sujet,$texte,$informer_admin='n') {
 			$result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
 		}
 		else if($active_hostbyaddr == "no_local") {
-			if ((substr($adresse_ip,0,3) == 127) or (substr($adresse_ip,0,3) == 10.) or (substr($adresse_ip,0,7) == 192.168)) {
+			if ((mb_substr($adresse_ip,0,3) == 127) or (mb_substr($adresse_ip,0,3) == 10.) or (mb_substr($adresse_ip,0,7) == 192.168)) {
 				$result_hostbyaddr = "";
 			}
 			else{
@@ -2862,84 +2766,6 @@ $GLOBALS['debug'] = '';
  */
 $GLOBALS['tab_instant'] = array();
 
-/**
- * 
- *
- * @global array
- * @global string
- * @param type $motif
- * @param string $texte 
- */
-function decompte_debug($motif,$texte) {
-	global $tab_instant, $debug;
-	if($debug=="y") {
-		$instant=microtime();
-		if(isset($tab_instant[$motif])) {
-			$tmp_tab1=explode(" ",$instant);
-			$tmp_tab2=explode(" ",$tab_instant[$motif]);
-			if($tmp_tab1[1]!=$tmp_tab2[1]) {
-				$diff=$tmp_tab1[1]-$tmp_tab2[1];
-			}
-			else {
-				$diff=$tmp_tab1[0]-$tmp_tab2[0];
-			}
-				echo "<p style='color:green;'>$texte: ".$diff." s</p>\n";
-		}
-		else {
-				echo "<p style='color:green;'>$texte</p>\n";
-		}
-		$tab_instant[$motif]=$instant;
-	}
-}
-
- 
-/**
- * Retourne l'URI des élèves pour les flux rss
- *
- * @global string
- * @param string $eleve Login de l'élève
- * @param string $https La page est-elle sécurisée ? en https si 'y'
- * @param string $type 'cdt' ou ''
- * @return string
- * @see getSettingValue()
- */
-function retourneUri($eleve, $https, $type){
-
-	global $gepiPath;
-	$rep = array();
-
-	// on vérifie que la table en question existe déjà
-	$test_table = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'rss_users'"));
-	if ($test_table >= 1) {
-
-		$sql = "SELECT user_uri FROM rss_users WHERE user_login = '".$eleve."' LIMIT 1";
-		$query = mysql_query($sql);
-		$nbre = mysql_num_rows($query);
-		if ($nbre == 1) {
-			$uri = mysql_fetch_array($query);
-			if ($https == 'y') {
-				$web = 'https://';
-			}else{
-				$web = 'http://';
-			}
-			if ($type == 'cdt') {
-				$rep["uri"] = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?rne='.getSettingValue("gepiSchoolRne").'&amp;ele_l='.$_SESSION["login"].'&amp;type=cdt&amp;uri='.$uri["user_uri"];
-				$rep["text"] = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?rne='.getSettingValue("gepiSchoolRne").'&amp;ele_l='.$_SESSION["login"].'&amp;type=cdt&amp;uri='.$uri["user_uri"];
-			}
-
-		}else{
-			$rep["text"] = 'erreur1';
-			$rep["uri"] = '#';
-		}
-	}else{
-
-		$rep["text"] = 'Demandez à votre administrateur de générer les URI.';
-		$rep["uri"] = '#';
-
-	}
-
-	return $rep;
-}
 
 /**
  * Met une date en français
@@ -2968,7 +2794,7 @@ function casse_prenom($prenom) {
 		if($i>0) {
 			$retour.="-";
 		}
-		$tab[$i]=ucwords(strtolower($tab[$i]));
+		$tab[$i]=casse_mot($tab[$i],'majf2');
 		$retour.=$tab[$i];
 	}
 
@@ -3073,30 +2899,88 @@ function my_echo_debug($texte) {
  * $mode
  * - 'maj'   -> tout en majuscules
  * - 'min'   -> tout en minuscules
- * - 'majf'  -> PremiÃ¨re lettre en majuscule
- * - 'majf2' -> PremiÃ¨re lettre de tous les mots en majuscule
+ * - 'majf'  -> Première lettre en majuscule, le reste en minuscule
+ * - 'majf2' -> Première lettre de tous les mots en majuscule, le reste en minuscule
  *
- * @param type $mot chaine Ã  modifier
+ * @param type $mot chaine à modifier
  * @param type $mode Mode de conversion
  * @return type chaine mise en forme
  */
 function casse_mot($mot,$mode='maj') {
-	if($mode=='maj') {
-		return mb_convert_case(ensure_utf8($mot), MB_CASE_UPPER);
-	}
-	elseif($mode=='min') {
-		return mb_convert_case(ensure_utf8($mot), MB_CASE_LOWER);
-	}
-	elseif($mode=='majf') {
-		return mb_convert_case(mb_substr($mot,0,1), MB_CASE_UPPER);
-	}
-	elseif($mode=='majf2') {
-		return mb_convert_case(ensure_utf8($mot), MB_CASE_TITLE);
-	}
-	elseif($mode=='majf3') {
-	    $temp = mb_convert_case(ensure_utf8($mot), MB_CASE_LOWER);
-		return mb_convert_case($temp, MB_CASE_TITLE);
-	}
+    
+    if (function_exists('mb_convert_case')) {
+    	if($mode=='maj') {
+    		return mb_convert_case(($mot), MB_CASE_UPPER);
+    	}
+    	elseif($mode=='min') {
+    		return mb_convert_case(($mot), MB_CASE_LOWER);
+    	}
+    	elseif($mode=='majf') {
+    	    $temp = mb_convert_case(($mot), MB_CASE_LOWER);
+    		return mb_convert_case(mb_substr($temp,0,1), MB_CASE_UPPER).mb_substr($temp,1);
+    	}
+    	elseif($mode=='majf2') {
+    	    $temp = mb_convert_case(($mot), MB_CASE_LOWER);
+    		return mb_convert_case(($temp), MB_CASE_TITLE);
+    	}
+    } else {
+        $str = ensure_ascii($mot);
+    	if($mode=='maj') {
+    		return strtoupper($str);
+    	}
+    	elseif($mode=='min') {
+    		return strtolower($str);
+    	}
+    	elseif($mode=='majf') {
+    		if(mb_strlen($str)>1) {
+    			return strtoupper(mb_substr($str,0,1)).strtolower(substr($str,1));
+    		}
+    		else {
+    			return strtoupper($str);
+    		}
+    	}
+    	elseif($mode=='majf2') {
+    		$chaine="";
+    		$tab=explode(" ",$str);
+    		for($i=0;$i<count($tab);$i++) {
+    			if($i>0) {$chaine.=" ";}
+    			$tab2=explode("-",$tab[$i]);
+    			for($j=0;$j<count($tab2);$j++) {
+    				if($j>0) {$chaine.="-";}
+    				if(mb_strlen($tab2[$j])>1) {
+    					$chaine.=strtoupper(mb_substr($tab2[$j],0,1)).strtolower(mb_substr($tab2[$j],1));
+    				}
+    				else {
+    					$chaine.=strtoupper($tab2[$j]);
+    				}
+    			}
+    		}
+    		return $chaine;
+    	}
+    }
+    throw new Exception('Parametre '.$mode.' non reconnu');
+}
+
+/**
+ * Retourne une chaine utf-8 passée en minuscules avec casse_mot()
+ * Fonction destinée à remplacer rapidement les appels strtolower() dans les pages
+ *
+ * @param type $mot chaine à modifier
+ * @return type chaine mise en forme
+ */
+function my_strtolower($mot) {
+	return casse_mot($mot,'min');
+}
+
+/**
+ * Retourne une chaine utf-8 passée en majuscules avec casse_mot()
+ * Fonction destinée à remplacer rapidement les appels strtoupper() dans les pages
+ *
+ * @param type $mot chaine à modifier
+ * @return type chaine mise en forme
+ */
+function my_strtoupper($mot) {
+	return casse_mot($mot,'maj');
 }
 
 /**
@@ -3209,7 +3093,7 @@ function civ_nom_prenom($login,$mode='prenom') {
 		}
 		else {
 			// Initiale
-			$retour.=strtoupper($lig_user->nom)." ".strtoupper(substr($lig_user->prenom,0,1));
+			$retour.=strtoupper($lig_user->nom)." ".strtoupper(mb_substr($lig_user->prenom,0,1));
 		}
 	}
 	return $retour;
@@ -3744,78 +3628,6 @@ function acces($id,$statut)
 	}
 }
 
-/**
- * Vérifie que le dossier (et ses sous-dossiers) contient bien un fichier index.html
- *
- * @global int
- * @param string $dossier Le dossier
- * @return string Un message formaté
- */
-function ajout_index_sous_dossiers($dossier) {
-	global $niveau_arbo;
-
-	$nb_creation=0;
-	$nb_erreur=0;
-	$nb_fich_existant=0;
-
-	$retour="";
-
-	//$dossier="../documents";
-	$dir= opendir($dossier);
-	if(!$dir) {
-		$retour.="<p style='color:red'>Erreur lors de l'accès au dossier '$dossier'.</p>\n";
-	}
-	else {
-		$retour.="<p style='color:green'>Succès de l'accès au dossier '$dossier'.</p>\n";
-		while($entree=@readdir($dir)) {
-			if(is_dir($dossier.'/'.$entree)&&($entree!='.')&&($entree!='..')) {
-				if(!file_exists($dossier."/".$entree."/index.html")) {
-					if ($f = @fopen($dossier.'/'.$entree."/index.html", "w")) {
-						if((!isset($niveau_arbo))||($niveau_arbo==1)) {
-							@fputs($f, '<script type="text/javascript">document.location.replace("../login.php")</script>');
-						}
-						elseif($niveau_arbo==0) {
-							@fputs($f, '<script type="text/javascript">document.location.replace("./login.php")</script>');
-						}
-						elseif($niveau_arbo==2) {
-							@fputs($f, '<script type="text/javascript">document.location.replace("../../login.php")</script>');
-						}
-						else {
-							@fputs($f, '<script type="text/javascript">document.location.replace("../../../login.php")</script>');
-						}
-						@fclose($f);
-						$nb_creation++;
-					}
-					else {
-						$retour.="<span style='color:red'>Erreur lors de la création de '$dir/$entree/index.html'.</span><br />\n";
-						$nb_erreur++;
-					}
-				}
-				else {
-					$nb_fich_existant++;
-				}
-			}
-		}
-
-		if($nb_erreur>0) {
-			$retour.="<p style='color:red'>$nb_erreur erreur(s) lors du traitement.</p>\n";
-		}
-		else {
-			$retour.="<p style='color:green'>Aucune erreur lors de la création des fichiers index.html</p>\n";
-		}
-	
-		if($nb_creation>0) {
-			$retour.="<p style='color:green'>Création de $nb_creation fichier(s) index.html</p>\n";
-		}
-		else {
-			$retour.="<p style='color:green'>Aucune création de fichiers index.html n'a été effectuée.</p>\n";
-		}
-		$retour.="<p style='color:blue'>Il existait avant l'opération $nb_fich_existant fichier(s) index.html</p>\n";
-	}
-
-	return $retour;
-}
-
 // Méthode pour envoyer les en-têtes HTTP nécessaires au téléchargement de fichier.
 // Le content-type est obligatoire, ainsi que le nom du fichier.
 /**
@@ -3828,7 +3640,7 @@ function ajout_index_sous_dossiers($dossier) {
  */
 function send_file_download_headers($content_type, $filename, $content_disposition = 'attachment') {
 
-  //header('Content-Encoding: utf-8');
+  header('Content-Encoding: utf-8');
   header('Content-Type: '.$content_type);
   header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
   header('Content-Disposition: '.$content_disposition.'; filename="' . $filename . '"');

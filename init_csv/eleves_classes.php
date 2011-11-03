@@ -127,26 +127,22 @@ if (!isset($_POST["action"])) {
 		echo "<br />\n";
 		echo "<p><em>On remplit les tables 'classes', 'periodes' et 'j_eleves_classes'&nbsp;:</em> ";
 
-		//$go = true;
 		$i = 0;
 		// Compteur d'erreurs
 		$error = 0;
 		// Compteur d'enregistrement
 		$total = 0;
-		//while ($go) {
 		while ($lig=mysql_fetch_object($res_temp)) {
-			/*
-			$reg_id_int = $_POST["ligne".$i."_id_int"];
-			$reg_classe = $_POST["ligne".$i."_classe"];
-			*/
 			$reg_id_int = $lig->col1;
 			$reg_classe = $lig->col2;
 
 			// On nettoie et on vérifie :
 			$reg_id_int = preg_replace("/[^0-9]/","",trim($reg_id_int));
-			if (strlen($reg_id_int) > 50) $reg_id_int = substr($reg_id_int, 0, 50);
+			if (mb_strlen($reg_id_int) > 50) $reg_id_int = mb_substr($reg_id_int, 0, 50);
+
 			$reg_classe = preg_replace("/[^A-Za-z0-9.\-]/","",trim($reg_classe));
-			if (strlen($reg_classe) > 100) $reg_classe = substr($reg_classe, 0, 100);
+			//$reg_classe=nettoyer_caracteres_nom($reg_classe);
+			if (mb_strlen($reg_classe) > 100) $reg_classe = mb_substr($reg_classe, 0, 100);
 
 
 			if(($reg_id_int!='')&&($reg_classe!='')){
@@ -159,7 +155,7 @@ if (!isset($_POST["action"])) {
 
 					// Maintenant que tout est propre et que l'élève existe, on fait un test sur la table pour voir si la classe existe
 
-					$sql="SELECT id FROM classes WHERE classe = '" . $reg_classe . "'";
+					$sql="SELECT id FROM classes WHERE classe = '" . mysql_real_escape_string($reg_classe) . "'";
 					//echo "$sql<br />";
 					$test = mysql_query($sql);
 
@@ -167,8 +163,8 @@ if (!isset($_POST["action"])) {
 						// Test négatif : aucune classe avec ce nom court... on créé !
 
 						$sql="INSERT INTO classes SET " .
-							"classe = '" . $reg_classe . "', " .
-							"nom_complet = '" . $reg_classe . "', " .
+							"classe = '" . mysql_real_escape_string($reg_classe) . "', " .
+							"nom_complet = '" . mysql_real_escape_string($reg_classe) . "', " .
 							"format_nom = 'np', " .
 							"display_rang = 'n', " .
 							"display_address = 'n', " .
@@ -210,7 +206,7 @@ if (!isset($_POST["action"])) {
 
 					if (!$insert) {
 						$error++;
-						echo mysql_error();
+						echo "<span style='color:red'>".mysql_error()."</span><br />\n";
 					} else {
 						$total++;
 					}
@@ -240,7 +236,7 @@ if (!isset($_POST["action"])) {
 
 		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
 		// autant forcer l'utilisateur à être rigoureux
-		if(strtolower($csv_file['name']) == "g_eleves_classes.csv") {
+		if(my_strtolower($csv_file['name']) == "g_eleves_classes.csv") {
 
 			// Le nom est ok. On ouvre le fichier
 			$fp=fopen($csv_file['tmp_name'],"r");
@@ -274,17 +270,16 @@ if (!isset($_POST["action"])) {
 						// 0 : ID interne de l'élève
 						// 1 : nom court de la classe
 
-
 						// On nettoie et on vérifie :
 						$tabligne[0] = preg_replace("/[^0-9]/","",trim($tabligne[0]));
-						if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
-						$tabligne[1] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($tabligne[1]));
-						if (strlen($tabligne[1]) > 100) $tabligne[1] = substr($tabligne[1], 0, 100);
+						if (mb_strlen($tabligne[0]) > 50) $tabligne[0] = mb_substr($tabligne[0], 0, 50);
 
+						//$tabligne[1] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($tabligne[1]));
+						$tabligne[1]=preg_replace("/[^A-Za-z0-9.\-]/","",trim(remplace_accents($tabligne[1])));
+						//$tabligne[1]=nettoyer_caracteres_nom($tabligne[1]);
+						if (mb_strlen($tabligne[1]) > 100) $tabligne[1] = mb_substr($tabligne[1], 0, 100);
 
 						$data_tab[$k] = array();
-
-
 
 						$data_tab[$k]["id_int"] = $tabligne[0];
 						$data_tab[$k]["classe"] = $tabligne[1];
@@ -292,7 +287,6 @@ if (!isset($_POST["action"])) {
 						$k++;
 
 					}
-					//$k++;
 				}
 
 				fclose($fp);
@@ -317,7 +311,7 @@ if (!isset($_POST["action"])) {
                     echo "<tr class='lig$alt'>\n";
 					echo "<td>\n";
 					$sql="INSERT INTO tempo2 SET col1='".$data_tab[$i]["id_int"]."',
-					col2='".addslashes($data_tab[$i]["classe"])."';";
+					col2='".mysql_real_escape_string($data_tab[$i]["classe"])."';";
 					$insert=mysql_query($sql);
 					if(!$insert) {
 						echo "<span style='color:red'>";
@@ -328,11 +322,9 @@ if (!isset($_POST["action"])) {
 					else {
 						echo $data_tab[$i]["id_int"];
 					}
-					//echo "<input type='hidden' name='ligne".$i."_id_int' value='" . $data_tab[$i]["id_int"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["classe"];
-					//echo "<input type='hidden' name='ligne".$i."_classe' value='" . $data_tab[$i]["classe"] . "' />\n";
 					echo "</td>\n";
 					echo "</tr>\n";
 				}

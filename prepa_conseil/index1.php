@@ -1237,7 +1237,7 @@ function checkbox_change(champ, cpt) {
 		}
 
 		// Vérifier si $col_tri est bien un entier compris entre 0 et $nb_col ou $nb_col+1
-		if((strlen(preg_replace("/[0-9]/","",$col_tri))==0)&&($col_tri>0)&&($col_tri<=$nb_colonnes)) {
+		if((mb_strlen(preg_replace("/[0-9]/","",$col_tri))==0)&&($col_tri>0)&&($col_tri<=$nb_colonnes)) {
 			//echo "<table>";
 			//echo "<tr><td valign='top'>";
 			unset($tmp_tab);

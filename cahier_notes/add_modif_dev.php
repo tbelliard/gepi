@@ -356,9 +356,9 @@ if (isset($_POST['ok'])) {
 
     if ($_POST['display_date']) {
         if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $_POST['display_date'])) {
-            $annee = substr($_POST['display_date'],6,4);
-            $mois = substr($_POST['display_date'],3,2);
-            $jour = substr($_POST['display_date'],0,2);
+            $annee = mb_substr($_POST['display_date'],6,4);
+            $mois = mb_substr($_POST['display_date'],3,2);
+            $jour = mb_substr($_POST['display_date'],0,2);
         } else {
             $annee = strftime("%Y");
             $mois = strftime("%m");
@@ -377,9 +377,9 @@ if (isset($_POST['ok'])) {
 	//====================================================
     if ($_POST['date_ele_resp']) {
         if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $_POST['date_ele_resp'])) {
-            $annee = substr($_POST['date_ele_resp'],6,4);
-            $mois = substr($_POST['date_ele_resp'],3,2);
-            $jour = substr($_POST['date_ele_resp'],0,2);
+            $annee = mb_substr($_POST['date_ele_resp'],6,4);
+            $mois = mb_substr($_POST['date_ele_resp'],3,2);
+            $jour = mb_substr($_POST['date_ele_resp'],0,2);
         } else {
             $annee = strftime("%Y");
             $mois = strftime("%m");
@@ -496,15 +496,15 @@ if ($id_devoir)  {
     $date = mysql_result($appel_devoir, 0, 'date');
     $id_conteneur = mysql_result($appel_devoir, 0, 'id_conteneur');
 
-    $annee = substr($date,0,4);
-    $mois =  substr($date,5,2);
-    $jour =  substr($date,8,2);
+    $annee = mb_substr($date,0,4);
+    $mois =  mb_substr($date,5,2);
+    $jour =  mb_substr($date,8,2);
     $display_date = $jour."/".$mois."/".$annee;
 
     $date = mysql_result($appel_devoir, 0, 'date_ele_resp');
-    $annee = substr($date,0,4);
-    $mois =  substr($date,5,2);
-    $jour =  substr($date,8,2);
+    $annee = mb_substr($date,0,4);
+    $mois =  mb_substr($date,5,2);
+    $jour =  mb_substr($date,8,2);
     $date_ele_resp = $jour."/".$mois."/".$annee;
 
 } else {

@@ -76,18 +76,13 @@
 				//if(ctype_digit($tabmatieres[$j]['fb_col'][1])){$SUR_TOTAL[1]+=$tabmatieres[$j]['fb_col'][1];}
 				//if(ctype_digit($tabmatieres[$j]['fb_col'][2])){$SUR_TOTAL[2]+=$tabmatieres[$j]['fb_col'][2];}
 
-				/*
-				if(strlen(my_ereg_replace("[0-9]","",$tabmatieres[$j]['fb_col'][1]))==0){$SUR_TOTAL[1]+=$tabmatieres[$j]['fb_col'][1];}
-				if(strlen(my_ereg_replace("[0-9]","",$tabmatieres[$j]['fb_col'][2]))==0){$SUR_TOTAL[2]+=$tabmatieres[$j]['fb_col'][2];}
-				*/
-
 				// ************************************
 				// A REVOIR
 				// PROBLEME AVEC CES TOTAUX: SI UN ELEVE EST AB, DI ou NN, IL NE FAUDRAIT PAS AUGMENTER???...
-				if((strlen(my_ereg_replace("[0-9]","",$tabmatieres[$j]['fb_col'][1]))==0)&&($tabmatieres[$j][-1]!='PTSUP')){
+				if((mb_strlen(my_ereg_replace("[0-9]","",$tabmatieres[$j]['fb_col'][1]))==0)&&($tabmatieres[$j][-1]!='PTSUP')){
 					$SUR_TOTAL[1]+=$tabmatieres[$j]['fb_col'][1];
 				}
-				if((strlen(my_ereg_replace("[0-9]","",$tabmatieres[$j]['fb_col'][2]))==0)&&($tabmatieres[$j][-1]!='PTSUP')){
+				if((mb_strlen(my_ereg_replace("[0-9]","",$tabmatieres[$j]['fb_col'][2]))==0)&&($tabmatieres[$j][-1]!='PTSUP')){
 					$SUR_TOTAL[2]+=$tabmatieres[$j]['fb_col'][2];
 				}
 				// ************************************
@@ -194,7 +189,7 @@
 
 						//echo ": ".$lig_mat_fac->mat;
 					}
-					elseif(substr(ucfirst(strtolower($tabmatieres[$j][0])),0,14)=='Langue vivante') {
+					elseif(mb_substr(ucfirst(strtolower($tabmatieres[$j][0])),0,14)=='Langue vivante') {
 						echo "<p class='discipline'>";
 						echo ucfirst(strtolower($tabmatieres[$j][0]))." : ";
 

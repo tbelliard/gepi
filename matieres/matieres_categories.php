@@ -55,15 +55,15 @@ if (isset($_POST['action'])) {
         // On filtre un peu
         if (!is_numeric($_POST['priority'])) $_POST['priority'] = "0";
         // Le reste passera sans soucis, mais on coupe quand même si jamais c'est trop long
-        if (strlen($_POST['nom_court']) > 250) $_POST['nom_court'] = substr($_POST['nom_court'], 0, 250);
-        if (strlen($_POST['nom_complet']) > 250) $_POST['nom_complet'] = substr($_POST['nom_complet'], 0, 250);
+        if (mb_strlen($_POST['nom_court']) > 250) $_POST['nom_court'] = mb_substr($_POST['nom_court'], 0, 250);
+        if (mb_strlen($_POST['nom_complet']) > 250) $_POST['nom_complet'] = mb_substr($_POST['nom_complet'], 0, 250);
         // On enregistre
         if ($_POST['nom_court'] == '') {
             $msg .= "Le nom court ne peut pas être vide.<br/>";
             $error = true;
             $res = false;
         }
-        if (strtolower($_POST['nom_court']) == 'aucune') {
+        if (my_strtolower($_POST['nom_court']) == 'aucune') {
             $msg .= "Le nom court ne peut pas être 'Aucune'.<br/>";
             $error = true;
             $res = false;
@@ -87,15 +87,15 @@ if (isset($_POST['action'])) {
         if (!is_numeric($_POST['priority'])) $_POST['priority'] = "0";
         if (!is_numeric($_POST['categorie_id'])) $_POST['categorie_id'] = "0";
         // Le reste passera sans soucis, mais on coupe quand même si jamais c'est trop long
-        if (strlen($_POST['nom_court']) > 250) $_POST['nom_court'] = substr($_POST['nom_court'], 0, 250);
-        if (strlen($_POST['nom_complet']) > 250) $_POST['nom_complet'] = substr($_POST['nom_complet'], 0, 250);
+        if (mb_strlen($_POST['nom_court']) > 250) $_POST['nom_court'] = mb_substr($_POST['nom_court'], 0, 250);
+        if (mb_strlen($_POST['nom_complet']) > 250) $_POST['nom_complet'] = mb_substr($_POST['nom_complet'], 0, 250);
 
         if ($_POST['nom_court'] == '') {
             $msg .= "Le nom court ne peut pas être vide.<br/>";
             $error = true;
             $res = false;
         }
-        if (strtolower($_POST['nom_court']) == 'aucune') {
+        if (my_strtolower($_POST['nom_court']) == 'aucune') {
             $msg .= "Le nom court ne peut pas être 'Aucune'.<br/>";
             $error = true;
             $res = false;
@@ -205,8 +205,10 @@ if (isset($_GET['action'])) {
 			echo add_token_field();
             echo "<input type='hidden' name='action' value='edit'>";
             echo "<input type='hidden' name='categorie_id' value='".$current_cat["id"] . "'>";
-            echo "<p>Nom court (utilisé dans les outils de configuration) : <input type='text' name='nom_court' value='".html_entity_decode($current_cat["nom_court"]) ."' /></p>";
-            echo "<p>Intitulé complet (utilisé sur les documents officiels) : <input type='text' name='nom_complet' value='".html_entity_decode($current_cat["nom_complet"]) ."' /></p>";
+            //echo "<p>Nom court (utilisé dans les outils de configuration) : <input type='text' name='nom_court' value='".html_entity_decode($current_cat["nom_court"]) ."' /></p>";
+            //echo "<p>Intitulé complet (utilisé sur les documents officiels) : <input type='text' name='nom_complet' value='".html_entity_decode($current_cat["nom_complet"]) ."' /></p>";
+            echo "<p>Nom court (utilisé dans les outils de configuration) : <input type='text' name='nom_court' value='".$current_cat["nom_court"] ."' /></p>";
+            echo "<p>Intitulé complet (utilisé sur les documents officiels) : <input type='text' name='nom_complet' value='".$current_cat["nom_complet"] ."' /></p>";
             echo "<p>Priorité d'affichage par défaut : ";
             echo "<select name='priority' size='1'>";
             for ($i=0;$i<11;$i++) {
@@ -230,7 +232,7 @@ if (isset($_GET['action'])) {
     // Pas d'action. On affiche la liste des rubriques
     ?>
     <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href="matieres_categories.php?action=add">Ajouter une catégorie</a></p>
-    <p>Remarque : la catégorie par défaut ne peut pas être supprimée. Elle est automatiquement associée aux matières existantes et aux nouvelles matières, et pour tous les groupes. Vous pouvez la renommer (Autres, Hors catégories, etc.), mais laissez toujours un nom générique.</p>
+    <p><em>Remarque&nbsp;:</em> la catégorie par défaut ne peut pas être supprimée. Elle est automatiquement associée aux matières existantes et aux nouvelles matières, et pour tous les groupes. Vous pouvez la renommer (<em>Autres, Hors catégories, etc.</em>), mais laissez toujours un nom générique.</p>
 
     <table class='boireaus' width='100%' border='1' cellpadding='5' summary='Tableau des catégories'>
 <tr>
@@ -246,8 +248,10 @@ if (isset($_GET['action'])) {
     while ($current_cat = mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$alt=$alt*(-1);
         echo "<tr class='lig$alt white_hover'>\n";
-        echo "<td><a href='matieres_categories.php?action=edit&categorie_id=".$current_cat["id"]."'>".html_entity_decode($current_cat["nom_court"])."</a></td>\n";
-        echo "<td>".html_entity_decode($current_cat["nom_complet"])."</td>\n";
+        //echo "<td><a href='matieres_categories.php?action=edit&categorie_id=".$current_cat["id"]."'>".html_entity_decode($current_cat["nom_court"])."</a></td>\n";
+        //echo "<td>".html_entity_decode($current_cat["nom_complet"])."</td>\n";
+        echo "<td><a href='matieres_categories.php?action=edit&categorie_id=".$current_cat["id"]."'>".$current_cat["nom_court"]."</a></td>\n";
+        echo "<td>".$current_cat["nom_complet"]."</td>\n";
         echo "<td>".$current_cat["priority"]."</td>\n";
         echo "<td>";
         if ($current_cat["id"] != "1") {
@@ -257,7 +261,7 @@ if (isset($_GET['action'])) {
             echo "<input type='hidden' name='categorie_id' value='".$current_cat["id"]."' />\n";
             echo "<input type='submit' value='Supprimer' />\n</form>\n";
         } else {
-            echo "Catégorie par défaut (suppression impossible)";
+            echo "Catégorie par défaut (<em>suppression impossible</em>)";
         }
 		echo "</td>\n";
         echo "</tr>\n";

@@ -253,7 +253,7 @@ if (isset($is_posted )) {
                                     $valid = 0;
                                 }
                             } else {
-                                $tempo = strtolower($data[$c]);
+                                $tempo = my_strtolower($data[$c]);
                                 if (($tempo == "disp") or ($tempo == "abs") or ($tempo == "-")) {
                                     //echo "<td><p>$data[$c]</p></td>";
                                     echo "<td><p>$data[$c]</p>\n";

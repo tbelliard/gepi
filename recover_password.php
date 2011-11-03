@@ -79,7 +79,7 @@ if (isset($_POST['login'])) {
 			//On envoie un mail!
 			// On génère le ticket
 	        $length = rand(85, 100);
-	        for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
+	        for($len=$length,$r='';mb_strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
 	        $ticket = $r;
 	        // On enregistre le ticket dans la base
 	        $expiration_timestamp = time()+15*60;
@@ -210,7 +210,7 @@ if (isset($_GET['ticket']) and !isset($update_successful)) {
 	// Un ticket a été proposé. Il a déjà été filtré contre les injections.
 	$error = false;
 	$ticket = $_GET['ticket'];
-	if (strlen($ticket) < 85) {
+	if (mb_strlen($ticket) < 85) {
 		$error = true;
 	} else {
 		$test = mysql_query("SELECT statut FROM utilisateurs WHERE password_ticket = '" . $ticket . "'");
@@ -231,7 +231,7 @@ if (isset($_GET['ticket']) and !isset($update_successful)) {
 <form action="recover_password.php?ticket=<?php echo $ticket; ?>" method="post" style="width: 100%; margin-top: 24px; margin-bottom: 48px;">
 <?php    echo "<p style='margin-top: 50px; color:red; margin-bottom: 30px;width: 80%;margin-left: auto; margin-right: auto;'><b>Attention : le mot de passe doit comporter ".getSettingValue("longmin_pwd") ." caractères minimum. ";
     if ($flag == 1)
-        echo "Il doit comporter au moins une lettre, au moins un chiffre et au moins un caractère spécial parmi&nbsp;: ".htmlspecialchars($char_spec);
+        echo "Il doit comporter au moins une lettre, au moins un chiffre et au moins un caractère spécial (#, *,...).";
     else
         echo "Il doit comporter au moins une lettre et au moins un chiffre.";
 ?>

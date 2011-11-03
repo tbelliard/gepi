@@ -509,7 +509,7 @@ if((!isset($page))&&($_SESSION['statut']=="administrateur")){
 	echo "<ul>\n";
 	echo "<li><a href='".$_SERVER['PHP_SELF']."?page=accueil_simpl'>Page d'accueil simplifiée pour les ".$gepiSettings['denomination_professeurs']."</a></li>\n";
 	echo "<li><a href='".$_SERVER['PHP_SELF']."?page=add_modif_dev'>Page de création d'évaluation</a></li>\n";
-	echo "<li><a href='".$_SERVER['PHP_SELF']."?page=add_modif_conteneur'>Page de création de ".strtolower(getSettingValue("gepi_denom_boite"))."</a></li>\n";
+	echo "<li><a href='".$_SERVER['PHP_SELF']."?page=add_modif_conteneur'>Page de création de ".my_strtolower(getSettingValue("gepi_denom_boite"))."</a></li>\n";
 	echo "</ul>\n";
 
 }
@@ -719,7 +719,7 @@ else{
 			//echo "<td id='td_nomprenom_".$i."'>";
 			echo "<td id='td_nomprenom_".$i."_accueil_simpl'>";
 			//echo strtoupper($lig_prof->nom)." ".ucfirst(strtolower($lig_prof->prenom));
-			echo strtoupper($prof[$i]['nom'])." ".ucfirst(strtolower($prof[$i]['prenom']));
+			echo my_strtoupper($prof[$i]['nom'])." ".casse_mot($prof[$i]['prenom'],'majf2');
 			//echo "<input type='hidden' name='prof[$i]' value='$lig_prof->login' />";
 			echo "<input type='hidden' name='prof[$i]' value='".$prof[$i]['login']."' />";
 			echo "</td>\n";
@@ -908,7 +908,7 @@ else{
 		}
 		$lignes_entete.="<th>Date</th>\n";
 		$lignes_entete.="<th>Date ele/resp</th>\n";
-		$lignes_entete.="<th>".ucfirst(strtolower(getSettingValue("gepi_denom_boite")))."</th>\n";
+		$lignes_entete.="<th>".casse_mot(getSettingValue("gepi_denom_boite"),'majf2')."</th>\n";
 		$lignes_entete.="</tr>\n";
 
 		// 3ème ligne
@@ -937,7 +937,7 @@ else{
 			//echo "<td id='td_nomprenom_".$i."'>";
 			echo "<td id='td_nomprenom_".$i."_add_modif_dev'>";
 			//echo strtoupper($lig_prof->nom)." ".ucfirst(strtolower($lig_prof->prenom));
-			echo strtoupper($prof[$i]['nom'])." ".ucfirst(strtolower($prof[$i]['prenom']));
+			echo my_strtoupper($prof[$i]['nom'])." ".casse_mot($prof[$i]['prenom'],'majf2');
 			//echo "<input type='hidden' name='prof[$i]' value='$lig_prof->login' />";
 			echo "<input type='hidden' name='prof[$i]' value='".$prof[$i]['login']."' />";
 			echo "</td>\n";
@@ -966,7 +966,7 @@ else{
 
 
 	if(($page=="add_modif_conteneur")||($_SESSION['statut']=='professeur')){
-		echo "<p>Paramétrage de la page de <b>création de ".ucfirst(strtolower(getSettingValue("gepi_denom_boite")))."</b> pour les ".$gepiSettings['denomination_professeurs']."</p>\n";
+		echo "<p>Paramétrage de la page de <b>création de ".casse_mot(getSettingValue("gepi_denom_boite"),'majf2')."</b> pour les ".$gepiSettings['denomination_professeurs']."</p>\n";
 
 		$tabchamps=array('add_modif_conteneur_simpl','add_modif_conteneur_nom_court','add_modif_conteneur_nom_complet','add_modif_conteneur_description','add_modif_conteneur_coef','add_modif_conteneur_boite','add_modif_conteneur_aff_display_releve_notes','add_modif_conteneur_aff_display_bull');
 
@@ -994,7 +994,7 @@ else{
 		$lignes_entete.="<th>Nom complet</th>\n";
 		$lignes_entete.="<th>Description</th>\n";
 		$lignes_entete.="<th>Coefficient</th>\n";
-		$lignes_entete.="<th>".ucfirst(strtolower(getSettingValue("gepi_denom_boite")))."</th>\n";
+		$lignes_entete.="<th>".casse_mot(getSettingValue("gepi_denom_boite"),'majf2')."</th>\n";
 		$lignes_entete.="<th>Afficher sur le relevé de notes</th>\n";
 		$lignes_entete.="<th>Afficher sur le bulletin</th>\n";
 		$lignes_entete.="</tr>\n";
@@ -1025,7 +1025,7 @@ else{
 			//echo "<td id='td_nomprenom_".$i."'>";
 			echo "<td id='td_nomprenom_".$i."_add_modif_conteneur'>";
 			//echo strtoupper($lig_prof->nom)." ".ucfirst(strtolower($lig_prof->prenom));
-			echo strtoupper($prof[$i]['nom'])." ".ucfirst(strtolower($prof[$i]['prenom']));
+			echo my_strtoupper($prof[$i]['nom'])." ".casse_mot($prof[$i]['prenom'],'majf2');
 			//echo "<input type='hidden' name='prof[$i]' value='$lig_prof->login' />";
 			echo "<input type='hidden' name='prof[$i]' value='".$prof[$i]['login']."' />";
 			echo "</td>\n";
@@ -1205,10 +1205,10 @@ if (getSettingValue('active_mod_discipline')!='n') {
 }
 
 	// On ajoute le réglage pour le menu en barre horizontale
-	$aff = "non";
+$aff = "non";
 if ($_SESSION["statut"] == "administrateur") {
 	$aff = "oui";
-}elseif($_SESSION["statut"] == "professeur" AND getSettingValue("utiliserMenuBarre") == "yes") {
+}elseif($_SESSION["statut"] != "administrateur" && getSettingValue("utiliserMenuBarre") != "no") {
 	$aff = "oui";
 }else {
 	$aff = "non";
@@ -1226,28 +1226,30 @@ if ($aff == "oui") {
 	<fieldset id="afficherBarreMenu" style="border: 1px solid grey;">
 		<legend style="border: 1px solid grey;">Gérer la barre horizontale du menu</legend>
 			<input type="hidden" name="modifier_le_menu" value="ok" />
-';
-	echo '
-		<p>
-			<label for="visibleMenu" id="texte_visibleMenu">Rendre visible la barre de menu horizontale';
-	if($_SESSION['statut']=='professeur') {echo " (<em>complete</em>)";}
-	echo ' sous l\'en-tête.</label>
-			<input type="radio" id="visibleMenu" name="afficher_menu" value="yes"'.eval_checked("utiliserMenuBarre", "yes", $_SESSION["statut"], $_SESSION["login"]).' onclick="document.change_menu.submit();" />
-		</p>
-';
+		</p>';
 
-	if($_SESSION['statut']=='professeur') {
+	if(($_SESSION["statut"] != "administrateur" && getSettingValue("utiliserMenuBarre") == "yes") || $_SESSION["statut"] == "administrateur") {
 		echo '
 		<p>
-			<label for="visibleMenu_light" id="texte_visibleMenu_light">Rendre visible la barre de menu horizontale (<em>allégée</em>) sous l\'en-tête.</label>
+			<label for="visibleMenu" id="texte_visibleMenu">Rendre visible la barre de menu horizontale complète  sous l\'en-tête.</label>
+			<input type="radio" id="visibleMenu" name="afficher_menu" value="yes"'.eval_checked("utiliserMenuBarre", "yes", $_SESSION["statut"], $_SESSION["login"]).' onclick="document.change_menu.submit();" />
+		</p>';
+	}
+
+		echo '
+		<p>
+			<label for="visibleMenu_light" id="texte_visibleMenu_light">Rendre visible la barre de menu horizontale allégée sous l\'en-tête.</label>
 			<input type="radio" id="visibleMenu_light" name="afficher_menu" value="light"'.eval_checked("utiliserMenuBarre", "light", $_SESSION["statut"], $_SESSION["login"]).' onclick="document.change_menu.submit();" />
 		</p>
 ';
-	}
+
 	echo '
 		<p>
 			<label for="invisibleMenu" id="texte_invisibleMenu">Ne pas utiliser la barre de menu horizontale.</label>
 			<input type="radio" id="invisibleMenu" name="afficher_menu" value="no"'.eval_checked("utiliserMenuBarre", "no", $_SESSION["statut"], $_SESSION["login"]).' onclick="document.change_menu.submit();" />
+		</p>
+		<p>
+			<em>La barre de menu horizontale allégée a une arborescence moins profonde pour que les menus \'professeurs\' s\'affichent plus rapidement au cas où le serveur serait saturé.</em>
 		</p>
 	</fieldset>
 		</form>

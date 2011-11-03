@@ -419,9 +419,9 @@ if ($current_group) {
 		if(mysql_num_rows($res_prof)>0){
 			$texte_alternatif="";
 			while($ligne=mysql_fetch_object($res_prof)){
-				$texte_alternatif.=", ".ucfirst(strtolower($ligne->prenom))." ".strtoupper($ligne->nom);
+				$texte_alternatif.=", ".casse_mot($ligne->prenom,'majf2')." ".my_strtoupper($ligne->nom);
 			}
-			$texte_alternatif=substr($texte_alternatif,2);
+			$texte_alternatif=mb_substr($texte_alternatif,2);
 		}
 
 		//echo "<a href='index.php?id_groupe=" . $group["id"] . "'>" . $group["description"] . "</a> - \n";

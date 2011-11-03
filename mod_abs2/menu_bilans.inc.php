@@ -64,11 +64,16 @@ if(($_SESSION['statut']=='cpe')||
     echo "<li><a href='bilan_individuel.php' ";
     if($onglet_abs=='bilan_individuel.php') {echo "class='current' ";}
     echo "title='Bilan individuel'>Bilan individuel</a></li>\n";
-    
+	
     echo "<li><a href='statistiques.php' ";
     if($onglet_abs=='statistiques.php') {echo "class='current' ";}
     echo "title='Taux d'absentéisme'>Taux d'absentéisme</a></li>\n";
     
+	
+    echo "<li><a href='stat_justifications.php' ";
+    if($onglet_abs=='stat_justifications.php') {echo "class='current' ";}
+    echo "title='Statistiques des justifications'>Justifications</a></li>\n";
+
     echo "</ul>\n";
 
 }

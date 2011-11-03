@@ -51,7 +51,7 @@ if (param_edt($_SESSION["statut"]) != "yes") {
 // Initialisation des variables
 $M_couleur = isset($_GET["var1"]) ? $_GET["var1"] : NULL;
 $nouvelle_couleur = isset($_GET["var2"]) ? $_GET["var2"] : "non";
-$matiere = isset($M_couleur) ? substr($M_couleur, 2) : NULL; // pour récupérer le nom court de la matière
+$matiere = isset($M_couleur) ? mb_substr($M_couleur, 2) : NULL; // pour récupérer le nom court de la matière
 $couleur = "";
 
 // on récupère les éléments sur la matière en question

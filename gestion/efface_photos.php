@@ -69,7 +69,7 @@ if((isset($_POST['is_posted']))&&(isset($_POST['supprimer']))) {
 	while ($file = readdir($handle)) {
 		if((my_eregi(".jpg$",$file))||(my_eregi(".jpeg$",$file))){
 
-			$prefixe=substr($file,0,strrpos($file,"."));
+			$prefixe=mb_substr($file,0,strrpos($file,"."));
 			$sql="SELECT 1=1 FROM eleves WHERE elenoet='$prefixe'";
 			//echo "<br />$sql<br />\n";
 			$test=mysql_query($sql);
@@ -113,7 +113,7 @@ else {
 		if((my_eregi(".jpg$",$file))||(my_eregi(".jpeg$",$file))){
 			$nbjpg++;
 
-			$prefixe=substr($file,0,strrpos($file,"."));
+			$prefixe=mb_substr($file,0,strrpos($file,"."));
 			$sql="SELECT 1=1 FROM eleves WHERE elenoet='$prefixe'";
 			//echo "<br />$sql<br />\n";
 			$test=mysql_query($sql);

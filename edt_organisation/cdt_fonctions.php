@@ -44,7 +44,7 @@ function AfficheIconePlusNew_CDT($id_groupe, $login_edt, $type_edt, $heuredeb_de
 {
 
     // On envoie le lien si et seulement si c'est un administrateur ou un scolarite ou si l'admin a donné le droit aux professeurs
-    if (($_SESSION["statut"] == "administrateur" OR $_SESSION["statut"] == "scolarite" OR ($_SESSION["statut"] == "professeur" AND strtolower($login_edt) == strtolower($_SESSION["login"]))) AND $type_edt == "prof") {
+    if (($_SESSION["statut"] == "administrateur" OR $_SESSION["statut"] == "scolarite" OR ($_SESSION["statut"] == "professeur" AND my_strtolower($login_edt) == my_strtolower($_SESSION["login"]))) AND $type_edt == "prof") {
         $deb = "milieu";
         if ($heuredeb_dec == 0) 
         {

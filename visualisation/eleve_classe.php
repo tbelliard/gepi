@@ -274,7 +274,7 @@ if (!isset($id_classe)) {
         $eleve_prenom = mysql_result($call_eleve_info, "0", "prenom");
 
         if ($periode != 'annee') {
-                $temp = strtolower($nom_periode[$periode]);
+                $temp = my_strtolower($nom_periode[$periode]);
         } else {
                 $temp = 'Année complète';
         }

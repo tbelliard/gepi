@@ -13,7 +13,7 @@
  * - $id_classe : la classe concernée
  * - $periode_num : la période concernée
  * 
- * @copyright Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL
  * @package Notes
  * @subpackage scripts
@@ -21,17 +21,25 @@
  * @see get_group()
  */
 
-/*
+/**
+ * Enregistre les calculs de moyennes dans un fichier
+ * 
+ * Passer à 1 la variable $debug pour générer un fichier de debug...
+ *
+ * @param string $texte Le calcul à enregistrer
+ * @see get_user_temp_directory()
+ */
 function calc_moy_debug($texte){
-	// Passer à 1 la variable pour générer un fichier de debug...
 	$debug=0;
 	if($debug==1){
-		$fich=fopen("/tmp/calc_moy_debug.txt","a+");
+		$tmp_dir=get_user_temp_directory();
+		if((!$tmp_dir)||(!file_exists("../temp/".$tmp_dir))) {$tmp_dir="/tmp";} else {$tmp_dir="../temp/".$tmp_dir;}
+		$fich=fopen($tmp_dir."/calc_moy_debug.txt","a+");
 		fwrite($fich,$texte);
 		fclose($fich);
 	}
 }
-*/
+
 
 // Ce parametre n'est pas pris en compte... si on l'augmente, des filtrages ont lieu plus loin hors de ce fichier
 $nb_chiffres_moy=1;
@@ -347,7 +355,7 @@ while ($j < $nombre_groupes) {
 		$current_eleve_login[$i] = mysql_result($appel_liste_eleves, $i, "login");
 		//===============
 		// Ajout J.Etheve
-		$tab_login_indice[strtoupper($current_eleve_login[$i])]=$i;
+		$tab_login_indice[my_strtoupper($current_eleve_login[$i])]=$i;
 		//===============
 
 		if($current_eleve_login[$i]==$ele_login_debug) {

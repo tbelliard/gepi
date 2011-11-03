@@ -290,7 +290,7 @@ elseif(!isset($ele_login)) {
 		}
 
 		//echo "<br />\n";
-		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=$periode_num&amp;ele_login=$lig_ele->login'>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</a>";
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=$periode_num&amp;ele_login=$lig_ele->login'>".my_strtoupper($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2')."</a>";
 		echo "<br />\n";
 		$i++;
 	}
@@ -418,7 +418,7 @@ else {
 		die();
 	}
 	$lig_ele=mysql_fetch_object($res_ele);
-	$info_ele=strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom));
+	$info_ele=my_strtoupper($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2');
 
 	include "../lib/periodes.inc.php";
 

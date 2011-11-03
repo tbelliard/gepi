@@ -252,7 +252,7 @@
 	***************************************************/
 	public function setLanguage($language)
 	{
-		if(!empty($language) && (2 === strlen($language)))
+		if(!empty($language) && (2 === mb_strlen($language)))
 		{
 			$this->_language = $language;
 		}

@@ -757,12 +757,12 @@ width:".$largeur1."%;\n";
 				foreach ($tab_tmp_classe as $key => $value){
 					//echo "\$key=$key et \$value=$value et my_ereg_replace(\"[0-9]\",\"\",$key)=".my_ereg_replace("[0-9]","",$key)."<br />";
 					// Avant il n'y avait qu'un $key=$id_classe... maintenant, on a aussi $key=id$id_classe dans get_class_from_ele_login() (de /lib/share.inc.php)
-					if(strlen(my_ereg_replace("[0-9]","",$key))==0) {
+					if(mb_strlen(my_ereg_replace("[0-9]","",$key))==0) {
 						//$chaine.=", <a href='../classes/classes_const.php?id_classe=$key'>$value</a>";
 						$chaine.=", $value";
 					}
 				}
-				$chaine=substr($chaine,2);
+				$chaine=mb_substr($chaine,2);
 				echo $chaine;
 			}
 			echo "</span></td></tr>\n";
@@ -1108,12 +1108,12 @@ width:".$largeur1."%;\n";
 				foreach ($tab_tmp_classe as $key => $value){
 					//echo "\$key=$key et \$value=$value et my_ereg_replace(\"[0-9]\",\"\",$key)=".my_ereg_replace("[0-9]","",$key)."<br />";
 					// Avant il n'y avait qu'un $key=$id_classe... maintenant, on a aussi $key=id$id_classe dans get_class_from_ele_login() (de /lib/share.inc.php)
-					if(strlen(my_ereg_replace("[0-9]","",$key))==0) {
+					if(mb_strlen(my_ereg_replace("[0-9]","",$key))==0) {
 						//$chaine.=", <a href='../classes/classes_const.php?id_classe=$key'>$value</a>";
 						$chaine.=", $value";
 					}
 				}
-				$chaine=substr($chaine,2);
+				$chaine=mb_substr($chaine,2);
 				echo $chaine;
 
 			}
@@ -1128,7 +1128,7 @@ width:".$largeur1."%;\n";
 				//$chaine.=", <a href='../classes/classes_const.php?id_classe=$key'>$value</a>";
 				$chaine.=", $value";
 			}
-			$chaine=substr($chaine,2);
+			$chaine=mb_substr($chaine,2);
 			echo $chaine;
 		}
 		echo "</span></td></tr>\n";

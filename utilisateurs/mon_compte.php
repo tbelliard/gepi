@@ -20,6 +20,35 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+/**
+ * Redimensionne une image
+ *
+ * @global int 
+ * @global int 
+ * @param string $photo l'adresse de la photo
+ * @return array Les nouvelles dimensions de l'image (largeur, hauteur)
+ */
+function redimensionne_image2($photo){
+	global $photo_largeur_max, $photo_hauteur_max;
+
+	// prendre les informations sur l'image
+	$info_image=getimagesize($photo);
+	// largeur et hauteur de l'image d'origine
+	$largeur=$info_image[0];
+	$hauteur=$info_image[1];
+
+	// calcule le ratio de redimensionnement
+	$ratio_l=$largeur/$photo_largeur_max;
+	$ratio_h=$hauteur/$photo_hauteur_max;
+	$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
+
+	// définit largeur et hauteur pour la nouvelle image
+	$nouvelle_largeur=round($largeur/$ratio);
+	$nouvelle_hauteur=round($hauteur/$ratio);
+
+	return array($nouvelle_largeur, $nouvelle_hauteur);
+}
+
 // On indique qu'il faut crée des variables non protégées (voir fonction cree_variables_non_protegees())
 $variables_non_protegees = 'yes';
 
@@ -392,7 +421,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 			// Envoi de la photo
 			if(isset($reg_no_gep)) {
 				if($reg_no_gep!="") {
-					if(strlen(my_ereg_replace("[0-9]","",$reg_no_gep))==0) {
+					if(mb_strlen(my_ereg_replace("[0-9]","",$reg_no_gep))==0) {
 						if(isset($_POST['suppr_filephoto'])) {
 							if($_POST['suppr_filephoto']=='y') {
 
@@ -605,20 +634,14 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 
 $tab_statuts_barre=array('professeur', 'cpe', 'scolarite', 'administrateur');
 $modifier_barre=isset($_POST['modifier_barre']) ? $_POST['modifier_barre'] : NULL;
-if((isset($modifier_barre))&&(strtolower(substr(getSettingValue('utiliserMenuBarre'),0,1))=='y')&&(in_array($_SESSION['statut'], $tab_statuts_barre))) {
+if((isset($modifier_barre))&&(in_array($_SESSION['statut'], $tab_statuts_barre))) {
 	$afficher_menu=isset($_POST['afficher_menu']) ? $_POST['afficher_menu'] : NULL;
-	if((strtolower(substr($afficher_menu,0,1))!='y')&&(strtolower(substr($afficher_menu,0,1))!='n')) {
-		if($msg!="") {$msg.="<br />";}
-		$msg.="Le choix '$afficher_menu' pour l'affichage ou non de la barre de menu est invalide.<br />\n";
+	if(!savePref($_SESSION['login'], 'utiliserMenuBarre', $afficher_menu)) {
+		$msg.="Erreur lors de la sauvegarde de la préférence d'affichage de la barre de menu.<br />\n";
 	}
 	else {
-		if(!savePref($_SESSION['login'], 'utiliserMenuBarre', $afficher_menu)) {
-			$msg.="Erreur lors de la sauvegarde de la préférence d'affichage ou non de la barre de menu.<br />\n";
+		$msg.="Sauvegarde de la préférence d'affichage de la barre de menu effectuée.<br />\n";
 		}
-		else {
-			$msg.="Sauvegarde de la préférence d'affichage ou non de la barre de menu effectué.<br />\n";
-		}
-	}
 }
 
 
@@ -978,7 +1001,7 @@ if ($editable_user) {
 	echo "<hr /><a name=\"changemdp\"></a><H2>Changement du mot de passe</H2>\n";
 	echo "<p><b>Attention : le mot de passe doit comporter ".getSettingValue("longmin_pwd") ." caractères minimum. ";
 	if ($flag == 1)
-		echo "Il doit comporter au moins une lettre, au moins un chiffre et au moins un caractère spécial parmi&nbsp;: ".htmlentities($char_spec);
+		echo "Il doit comporter au moins une lettre, au moins un chiffre et au moins un caractère spécial (#, *,...)";
 	else
 		echo "Il doit comporter au moins une lettre et au moins un chiffre.";
 
@@ -1011,17 +1034,10 @@ if ($affiche_bouton_submit=='yes')
 echo "</form>\n";
 echo "  <hr />\n";
 
-if((strtolower(substr(getSettingValue('utiliserMenuBarre'),0,1))=='y')&&(in_array($_SESSION['statut'], $tab_statuts_barre))) {
-	$aff_barre="n";
-	$sql="SELECT value FROM preferences WHERE login='".$_SESSION['login']."' AND name='utiliserMenuBarre';";
-	$res_barre=mysql_query($sql);
-	if(mysql_num_rows($res_barre)==0) {
-		$aff_barre="y";
-	}
-	else {
-		$lig_barre=mysql_fetch_object($res_barre);
-		$aff_barre=strtolower(substr($lig_barre->value,0,1));
-	}
+
+// On affiche si c'est autorisé
+if (getSettingValue("utiliserMenuBarre") != "no") {
+	$aff_checked=getPref($_SESSION['login'],"utiliserMenuBarre","");
 
 	echo "<form enctype=\"multipart/form-data\" action=\"mon_compte.php\" method=\"post\">\n";
 	echo add_token_field();
@@ -1030,22 +1046,32 @@ if((strtolower(substr(getSettingValue('utiliserMenuBarre'),0,1))=='y')&&(in_arra
 	echo "<legend style='border: 1px solid grey;'>Gérer la barre horizontale du menu</legend>\n";
 	echo "<input type='hidden' name='modifier_barre' value='ok' />\n";
 
-	echo "<p>\n";
-	echo "<label for='visibleMenu' id='texte_visibleMenu'>Rendre visible la barre de menu horizontale sous l'en-tête.</label>\n";
-	echo "<input type='radio' id='visibleMenu' name='afficher_menu' value='yes'";
-	if($aff_barre=="y") {
-		echo " checked";
+	if (getSettingValue("utiliserMenuBarre") == "yes") {
+		echo "<p>\n";
+		echo "<label for='visibleMenu' id='texte_visibleMenu'>Rendre visible la barre de menu horizontale complète sous l'en-tête.</label>\n";
+		echo "<input type='radio' id='visibleMenu' name='afficher_menu' value='yes'";
+		if($aff_checked=="yes") echo " checked";
+		echo " />\n";
+		echo "</p>\n";
 	}
+
+	echo "<p>\n";
+	echo "<label for='visibleMenu' id='texte_visibleMenu'>Rendre visible la barre de menu horizontale allégée sous l'en-tête.</label>\n";
+	echo "<input type='radio' id='visibleMenu' name='afficher_menu' value='light'";
+	if($aff_checked=="light") echo " checked";
 	echo " />\n";
 	echo "</p>\n";
+
 	echo "<p>\n";
 	echo "<label for='invisibleMenu' id='texte_invisibleMenu'>Ne pas utiliser la barre de menu horizontale.</label>\n";
 	echo "<input type='radio' id='invisibleMenu' name='afficher_menu' value='no'";
-	if($aff_barre!="y") {
-		echo " checked";
-	}
+	if($aff_checked=="no") echo " checked";
 	echo " />\n";
 	echo "</p>\n";
+
+	echo "<p>
+			<em>La barre de menu horizontale allégée a une arborescence moins profonde pour que les menus \'professeurs\' s\'affichent plus rapidement au cas où le serveur serait saturé.</em>
+		</p>\n";
 
 	echo "<br /><center><input type=\"submit\" value=\"Enregistrer\" /></center>\n";
 	echo "</fieldset>\n";
@@ -1063,168 +1089,5 @@ $duree = '7';
 
 journal_connexions($_SESSION['login'],$duree);
 
-/*
-
-switch( $duree ) {
-case 7:
-$display_duree="une semaine";
-break;
-case 15:
-$display_duree="quinze jours";
-break;
-case 30:
-$display_duree="un mois";
-break;
-case 60:
-$display_duree="deux mois";
-break;
-case 183:
-$display_duree="six mois";
-break;
-case 365:
-$display_duree="un an";
-break;
-case 'all':
-$display_duree="le début";
-break;
-}
-
-echo "<h2>Journal de vos connexions depuis <b>".$display_duree."</b>**</h2>\n";
-$requete = '';
-if ($duree != 'all') {$requete = "and START > now() - interval " . $duree . " day";}
-
-$sql = "select START, SESSION_ID, REMOTE_ADDR, USER_AGENT, AUTOCLOSE, END from log where LOGIN = '".$_SESSION['login']."' ".$requete." order by START desc";
-
-$day_now   = date("d");
-$month_now = date("m");
-$year_now  = date("Y");
-$hour_now  = date("H");
-$minute_now = date("i");
-$seconde_now = date("s");
-$now = mktime($hour_now, $minute_now, $seconde_now, $month_now, $day_now, $year_now);
-
-?>
-<ul>
-<li>Les lignes en rouge signalent une tentative de connexion avec un mot de passe erroné.</li>
-<li>Les lignes en orange signalent une session close pour laquelle vous ne vous êtes pas déconnecté correctement.</li>
-<li>Les lignes en noir signalent une session close normalement.</li>
-<li>Les lignes en vert indiquent les sessions en cours (cela peut correspondre à une connexion actuellement close mais pour laquelle vous ne vous êtes pas déconnecté correctement).</li>
-</ul>
-<table class="col" style="width: 90%; margin-left: auto; margin-right: auto; margin-bottom: 32px;" cellpadding="5" cellspacing="0" summary='Connexions'>
-	<tr>
-		<th class="col">Début session</th>
-		<th class="col">Fin session</th>
-		<th class="col">Adresse IP et nom de la machine cliente</th>
-		<th class="col">Navigateur</th>
-	</tr>
-<?php
-$res = sql_query($sql);
-if ($res) {
-	for ($i = 0; ($row = sql_row($res, $i)); $i++)
-	{
-		$annee_b = substr($row[0],0,4);
-		$mois_b =  substr($row[0],5,2);
-		$jour_b =  substr($row[0],8,2);
-		$heures_b = substr($row[0],11,2);
-		$minutes_b = substr($row[0],14,2);
-		$secondes_b = substr($row[0],17,2);
-		$date_debut = $jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b;
-
-		$annee_f = substr($row[5],0,4);
-		$mois_f =  substr($row[5],5,2);
-		$jour_f =  substr($row[5],8,2);
-		$heures_f = substr($row[5],11,2);
-		$minutes_f = substr($row[5],14,2);
-		$secondes_f = substr($row[5],17,2);
-		$date_fin = $jour_f."/".$mois_f."/".$annee_f." à ".$heures_f." h ".$minutes_f;
-		$end_time = mktime($heures_f, $minutes_f, $secondes_f, $mois_f, $jour_f, $annee_f);
-
-		$temp1 = '';
-		$temp2 = '';
-		if ($end_time > $now) {
-			$temp1 = "<font color='green'>";
-			$temp2 = "</font>";
-		} else if (($row[4] == 1) or ($row[4] == 2) or ($row[4] == 3)) {
-			//$temp1 = "<font color=orange>\n";
-			$temp1 = "<font color='#FFA500'>";
-			$temp2 = "</font>";
-		} else if ($row[4] == 4) {
-			$temp1 = "<b><font color='red'>";
-			$temp2 = "</font></b>";
-
-		}
-
-		echo "<tr>\n";
-		echo "<td class=\"col\">".$temp1.$date_debut.$temp2."</td>\n";
-		if ($row[4] == 2) {
-			echo "<td class=\"col\">".$temp1."Tentative de connexion<br />avec mot de passe erroné.".$temp2."</td>\n";
-		}
-		else {
-			echo "<td class=\"col\">".$temp1.$date_fin.$temp2."</td>\n";
-		}
-		if (!(isset($active_hostbyaddr)) or ($active_hostbyaddr == "all")) {
-			$result_hostbyaddr = " - ".@gethostbyaddr($row[2]);
-		}
-		else if ($active_hostbyaddr == "no_local") {
-			if ((substr($row[2],0,3) == 127) or
-				(substr($row[2],0,3) == 10.) or
-				(substr($row[2],0,7) == 192.168)) {
-				$result_hostbyaddr = "";
-			}
-			else {
-				$tabip=explode(".",$row[2]);
-				if(($tabip[0]==172)&&($tabip[1]>=16)&&($tabip[1]<=31)) {
-					$result_hostbyaddr = "";
-				}
-				else {
-					$result_hostbyaddr = " - ".@gethostbyaddr($row[2]);
-				}
-			}
-		}
-		else {
-			$result_hostbyaddr = "";
-		}
-
-		echo "<td class=\"col\"><span class='small'>".$temp1.$row[2].$result_hostbyaddr.$temp2. "</span></td>\n";
-		echo "<td class=\"col\">".$temp1. detect_browser($row[3]) .$temp2. "</td>\n";
-		echo "</tr>\n";
-		flush();
-	}
-}
-
-
-echo "</table>\n";
-
-echo "<form action=\"".$_SERVER['PHP_SELF']."\" name=\"form_affiche_log\" method=\"post\">\n";
-echo "Afficher le journal des connexions depuis : <select name=\"duree\" size=\"1\">\n";
-echo "<option ";
-if ($duree == 7) echo "selected";
-echo " value=7>Une semaine</option>\n";
-echo "<option ";
-if ($duree == 15) echo "selected";
-echo " value=15 >Quinze jours</option>\n";
-echo "<option ";
-if ($duree == 30) echo "selected";
-echo " value=30>Un mois</option>\n";
-echo "<option ";
-if ($duree == 60) echo "selected";
-echo " value=60>Deux mois</option>\n";
-echo "<option ";
-if ($duree == 183) echo "selected";
-echo " value=183>Six mois</option>\n";
-echo "<option ";
-if ($duree == 365) echo "selected";
-echo " value=365>Un an</option>\n";
-echo "<option ";
-if ($duree == 'all') echo "selected";
-echo " value='all'>Le début</option>\n";
-echo "</select>\n";
-echo "<input type=\"submit\" name=\"Valider\" value=\"Valider\" />\n";
-
-echo "</form>\n";
-
-echo "<p class='small'>** Les renseignements ci-dessus peuvent vous permettre de vérifier qu'une connexion pirate n'a pas été effectuée sur votre compte.
-Dans le cas d'une connexion inexpliquée, vous devez immédiatement en avertir l'<a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">administrateur</a>.</p>\n";
-*/
 require("../lib/footer.inc.php");
 ?>

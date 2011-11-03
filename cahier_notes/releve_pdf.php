@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
 *
 * This file is part of GEPI.
 *
@@ -221,7 +221,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
 		$w=$this->w-$this->rMargin-$this->x;
 	$wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
 	$s=str_replace("\r",'',$txt);
-	$nb=strlen($s);
+	$nb=mb_strlen($s);
 	if($nb>0 and $s[$nb-1]=="\n")
 		$nb--;
 	$b=0;
@@ -262,7 +262,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
 				if ($prn==1) $this->_out('0 Tw');
 			}
 			if ($prn==1) {
-				$this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
+				$this->Cell($w,$h,mb_substr($s,$j,$i-$j),$b,2,$align,$fill);
 			}
 			$i++;
 			$sep=-1;
@@ -273,7 +273,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
 			if($border and $nl==2)
 				$b=$b2;
 			if ( $maxline && $nl > $maxline )
-				return substr($s,$i);
+				return mb_substr($s,$i);
 			continue;
 		}
 		if($c==' ')
@@ -296,7 +296,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
 					if ($prn==1) $this->_out('0 Tw');
 				}
 				if ($prn==1) {
-					$this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
+					$this->Cell($w,$h,mb_substr($s,$j,$i-$j),$b,2,$align,$fill);
 				}
 			}
 			else
@@ -307,7 +307,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
 					if ($prn==1) $this->_out(sprintf('%.3f Tw',$this->ws*$this->k));
 				}
 				if ($prn==1){
-					$this->Cell($w,$h,substr($s,$j,$sep-$j),$b,2,$align,$fill);
+					$this->Cell($w,$h,mb_substr($s,$j,$sep-$j),$b,2,$align,$fill);
 				}
 				$i=$sep+1;
 			}
@@ -319,7 +319,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
 			if($border and $nl==2)
 				$b=$b2;
 			if ( $maxline && $nl > $maxline )
-				return substr($s,$i);
+				return mb_substr($s,$i);
 		}
 		else
 			$i++;
@@ -333,7 +333,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
 	if($border and is_int(strpos($border,'B')))
 		$b.='B';
 	if ($prn==1) {
-		$this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
+		$this->Cell($w,$h,mb_substr($s,$j,$i-$j),$b,2,$align,$fill);
 	}
 	$this->x=$this->lMargin;
 	return $nl;
@@ -1124,7 +1124,7 @@ while (($nb_eleves_i <= $nb_eleves) and ($nb_boucle < $nb_boucle_a_faire))
 		//BLOC IDENTITE ELEVE
 			$pdf->SetXY($X_cadre_eleve,$Y_cadre_eleve);
 			$pdf->SetFont('DejaVu','B',14);
-			$pdf->Cell(90,7,strtoupper($nom[$nb_eleves_i])." ".ucfirst($prenom[$nb_eleves_i]),0,2,'');
+			$pdf->Cell(90,7,my_strtoupper($nom[$nb_eleves_i])." ".casse_mot($prenom[$nb_eleves_i],'majf2'),0,2,'');
 			$pdf->SetFont('DejaVu','',10);
 			//$pdf->Cell(90,5,'Né le '.affiche_date_naissance($naissance[$nb_eleves_i]).', demi-pensionnaire',0,2,'');
 			if($sexe[$nb_eleves_i]=="M"){$e_au_feminin="";}else{$e_au_feminin="e";}

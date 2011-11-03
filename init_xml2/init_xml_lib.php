@@ -69,8 +69,8 @@ function champ_select_prof($defaut='', $avec_nb_mat='n', $form_onchange_submit='
 	while($lig=mysql_fetch_object($res)) {
 		$tab[$cpt]['login']=$lig->login;
 		$tab[$cpt]['nom_prenom']=$lig->nom." ".casse_mot($lig->prenom,'majf2');
-		if(strlen($lig->nom." ".$lig->prenom)>$l_max) {
-			$l_max=strlen($lig->nom." ".$lig->prenom);
+		if(mb_strlen($lig->nom." ".$lig->prenom)>$l_max) {
+			$l_max=mb_strlen($lig->nom." ".$lig->prenom);
 		}
 		if($avec_nb_mat=='y') {
 			$sql="SELECT * FROM j_professeurs_matieres WHERE id_professeur='".$lig->login."';";
@@ -90,7 +90,7 @@ function champ_select_prof($defaut='', $avec_nb_mat='n', $form_onchange_submit='
 		$retour.=">".$tab[$i]['nom_prenom'];
 		if($avec_nb_mat=='y') {
 			$retour.=" ";
-			for($loop=0;$loop<$l_max-strlen($tab[$i]['nom_prenom']);$loop++) {$retour.="&nbsp;";}
+			for($loop=0;$loop<$l_max-mb_strlen($tab[$i]['nom_prenom']);$loop++) {$retour.="&nbsp;";}
 			if($tab[$i]['nb_matieres']>0) {$retour.="(".$tab[$i]['nb_matieres']." matière(s))";}
 		}
 		$retour.="</option>\n";
@@ -183,8 +183,8 @@ function champ_select_matiere($defaut='', $avec_nb_prof='n', $form_onchange_subm
 	while($lig=mysql_fetch_object($res)) {
 		$tab[$cpt]['matiere']=$lig->matiere;
 		$tab[$cpt]['nom_complet']=$lig->nom_complet;
-		if(strlen($lig->nom_complet)>$l_max) {
-			$l_max=strlen($lig->nom_complet);
+		if(mb_strlen($lig->nom_complet)>$l_max) {
+			$l_max=mb_strlen($lig->nom_complet);
 		}
 		if($avec_nb_prof=='y') {
 			$sql="SELECT jpm.* FROM j_professeurs_matieres jpm, utilisateurs u WHERE jpm.id_professeur=u.login AND jpm.id_matiere='".$lig->matiere."' AND u.etat='actif';";
@@ -203,7 +203,7 @@ function champ_select_matiere($defaut='', $avec_nb_prof='n', $form_onchange_subm
 		$retour.=">".$tab[$i]['nom_complet'];
 		if($avec_nb_prof=='y') {
 			$retour.=" ";
-			for($loop=0;$loop<$l_max-strlen($tab[$i]['nom_complet']);$loop++) {$retour.="&nbsp;";}
+			for($loop=0;$loop<$l_max-mb_strlen($tab[$i]['nom_complet']);$loop++) {$retour.="&nbsp;";}
 			if($tab[$i]['nb_profs']>0) {$retour.="(".$tab[$i]['nb_profs']." professeur(s))";}
 		}
 		$retour.="</option>\n";

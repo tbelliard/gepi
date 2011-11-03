@@ -58,7 +58,7 @@ $heure_mysql = date("H:i:s");
 
 // ++== Traitements des données == ++
 	$test = phpversion();
-		$version = substr($test, 0, 1);
+		$version = mb_substr($test, 0, 1);
 	if ($version != 5) {
 		// rien à faire
 	}else{

@@ -153,37 +153,6 @@ $timestamp_fin_export=max(getSettingValue("end_bookings"),$date_fin_tmp);
 // Permettre de choisir l'ordre dans lequel exporter?
 $current_ordre='ASC';
 
-//echo "\$action=$action<br />";
-
-/*
-if($action=='acces') {
-	$length = rand(35, 45);
-	for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
-	$dirname = "acces_cdt_".$r;
-	$create = mkdir("../documents/".$dirname, 0700);
-	if(!$create) {
-		echo "<p style='color:red;'>Problème avec le dossier temporaire../documents/".$dirname."</p>\n";
-		require($prefixe_arbo_acces_cdt."/lib/footer.inc.php");
-		die();
-	}
-
-	// Enregistrement dans la base de cet accès ouvert
-	// Il faut y stocker la liste des login profs concernés pour afficher en page d'accueil la présence d'un cdt ouvert en consultation
-	$date1_acces="$annee-$mois-$jour $heure:$minute:00";
-	$date2_acces=isset($_POST['date2_acces']) ? $_POST['date2_acces'] : "";
-
-	if($date2_acces=='') {
-		$date2_acces=$date1_acces;
-	}
-	else {
-		$tab_tmp_date=explode('/',$date2_acces);
-		$date2_acces=$tab_tmp_date[2]."-".$tab_tmp_date[1]."-".$tab_tmp_date[0]." $heure:$minute:00";
-	}
-
-	$description_acces=isset($_POST['description_acces']) ? $_POST['description_acces'] : "Test";
-}
-*/
-//echo "\$dirname=$dirname<br />";
 
 
 	$chaine_info_prof="";

@@ -13,25 +13,14 @@ function nbsp_au_lieu_de_vide($texte) {
 	}
 }
 
-
-/*
-function decompte_debug($motif,$texte) {
-	global $tab_instant, $debug;
-	$instant=time();
-	if(isset($tab_instant[$motif])) {
-		$diff=$instant-$tab_instant[$motif];
-		if($debug=="y") {
-			echo "<p>$texte: ".$diff." s</p>\n";
-		}
-	}
-	else {
-		if($debug=="y") {
-			echo "<p>$texte</p>\n";
-		}
-	}
-	$tab_instant[$motif]=$instant;
-}
-
+/**
+ * 
+ *
+ * @global array
+ * @global string
+ * @param type $motif
+ * @param string $texte 
+ */
 function decompte_debug($motif,$texte) {
 	global $tab_instant, $debug;
 	if($debug=="y") {
@@ -45,19 +34,15 @@ function decompte_debug($motif,$texte) {
 			else {
 				$diff=$tmp_tab1[0]-$tmp_tab2[0];
 			}
-			//if($debug=="y") {
 				echo "<p style='color:green;'>$texte: ".$diff." s</p>\n";
-			//}
 		}
 		else {
-			//if($debug=="y") {
 				echo "<p style='color:green;'>$texte</p>\n";
-			//}
 		}
 		$tab_instant[$motif]=$instant;
 	}
 }
-*/
+ 
 
 function regime($id_reg) {
 	switch($id_reg) {
@@ -263,20 +248,20 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 					(isset($tab_bull['eleve'][$i]['resp'][1]['commune']))
 				) {
 					// Le deuxième responsable existe et est renseigné
-				if ((strtolower($tab_bull['eleve'][$i]['resp'][0]['adr_id'])==strtolower($tab_bull['eleve'][$i]['resp'][1]['adr_id'])) OR
+				if (($tab_bull['eleve'][$i]['resp'][0]['adr_id']==$tab_bull['eleve'][$i]['resp'][1]['adr_id']) OR
 					(
-						(strtolower($tab_bull['eleve'][$i]['resp'][0]['adr1'])==strtolower($tab_bull['eleve'][$i]['resp'][1]['adr1']))&&
-						(strtolower($tab_bull['eleve'][$i]['resp'][0]['adr2'])==strtolower($tab_bull['eleve'][$i]['resp'][1]['adr2']))&&
-						(strtolower($tab_bull['eleve'][$i]['resp'][0]['adr3'])==strtolower($tab_bull['eleve'][$i]['resp'][1]['adr3']))&&
-						(strtolower($tab_bull['eleve'][$i]['resp'][0]['adr4'])==strtolower($tab_bull['eleve'][$i]['resp'][1]['adr4']))&&
-						(strtolower($tab_bull['eleve'][$i]['resp'][0]['cp'])==strtolower($tab_bull['eleve'][$i]['resp'][1]['cp']))&&
-						(strtolower($tab_bull['eleve'][$i]['resp'][0]['commune'])==strtolower($tab_bull['eleve'][$i]['resp'][1]['commune']))
+						(my_strtolower($tab_bull['eleve'][$i]['resp'][0]['adr1'])==my_strtolower($tab_bull['eleve'][$i]['resp'][1]['adr1']))&&
+						(my_strtolower($tab_bull['eleve'][$i]['resp'][0]['adr2'])==my_strtolower($tab_bull['eleve'][$i]['resp'][1]['adr2']))&&
+						(my_strtolower($tab_bull['eleve'][$i]['resp'][0]['adr3'])==my_strtolower($tab_bull['eleve'][$i]['resp'][1]['adr3']))&&
+						(my_strtolower($tab_bull['eleve'][$i]['resp'][0]['adr4'])==my_strtolower($tab_bull['eleve'][$i]['resp'][1]['adr4']))&&
+						(my_strtolower($tab_bull['eleve'][$i]['resp'][0]['cp'])==my_strtolower($tab_bull['eleve'][$i]['resp'][1]['cp']))&&
+						(my_strtolower($tab_bull['eleve'][$i]['resp'][0]['commune'])==my_strtolower($tab_bull['eleve'][$i]['resp'][1]['commune']))
 					)
 				) {
 						// Les adresses sont identiques
 						$nb_bulletins=1;
 
-					if((strtolower($tab_bull['eleve'][$i]['resp'][0]['nom'])!=strtolower($tab_bull['eleve'][$i]['resp'][1]['nom']))&&
+					if((my_strtolower($tab_bull['eleve'][$i]['resp'][0]['nom'])!=my_strtolower($tab_bull['eleve'][$i]['resp'][1]['nom']))&&
 							($tab_bull['eleve'][$i]['resp'][1]['nom']!="")) {
 							// Les noms des responsables sont différents
 							//$tab_adr_ligne1[0]=$tab_bull['eleve'][$i]['resp'][0]['civilite']." ".$tab_bull['eleve'][$i]['resp'][0]['nom']." ".$tab_bull['eleve'][$i]['resp'][0]['prenom']." et ".$tab_bull['eleve'][$i]['resp'][1]['civilite']." ".$tab_bull['eleve'][$i]['resp'][1]['nom']." ".$tab_bull['eleve'][$i]['resp'][1]['prenom'];
@@ -307,7 +292,7 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 						}
 						$tab_adr_ligne3[0]=$tab_bull['eleve'][$i]['resp'][0]['cp']." ".$tab_bull['eleve'][$i]['resp'][0]['commune'];
 
-						if(($tab_bull['eleve'][$i]['resp'][0]['pays']!="")&&(strtolower($tab_bull['eleve'][$i]['resp'][0]['pays'])!=strtolower($gepiSchoolPays))) {
+						if(($tab_bull['eleve'][$i]['resp'][0]['pays']!="")&&(my_strtolower($tab_bull['eleve'][$i]['resp'][0]['pays'])!=my_strtolower($gepiSchoolPays))) {
 							if($tab_adr_ligne3[0]!=" "){
 								$tab_adr_ligne3[0].="<br />";
 							}
@@ -348,7 +333,7 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 							}
 							$tab_adr_ligne3[$cpt]=$tab_bull['eleve'][$i]['resp'][$cpt]['cp']." ".$tab_bull['eleve'][$i]['resp'][$cpt]['commune'];
 
-							if(($tab_bull['eleve'][$i]['resp'][$cpt]['pays']!="")&&(strtolower($tab_bull['eleve'][$i]['resp'][$cpt]['pays'])!=strtolower($gepiSchoolPays))) {
+							if(($tab_bull['eleve'][$i]['resp'][$cpt]['pays']!="")&&(my_strtolower($tab_bull['eleve'][$i]['resp'][$cpt]['pays'])!=my_strtolower($gepiSchoolPays))) {
 								if($tab_adr_ligne3[$cpt]!=" "){
 									$tab_adr_ligne3[$cpt].="<br />";
 								}
@@ -389,7 +374,7 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 							}
 							$tab_adr_ligne3[$cpt]=$tab_bull['eleve'][$i]['resp'][$cpt]['cp']." ".$tab_bull['eleve'][$i]['resp'][$cpt]['commune'];
 
-							if(($tab_bull['eleve'][$i]['resp'][$cpt]['pays']!="")&&(strtolower($tab_bull['eleve'][$i]['resp'][$cpt]['pays'])!=strtolower($gepiSchoolPays))) {
+							if(($tab_bull['eleve'][$i]['resp'][$cpt]['pays']!="")&&(my_strtolower($tab_bull['eleve'][$i]['resp'][$cpt]['pays'])!=my_strtolower($gepiSchoolPays))) {
 								if($tab_adr_ligne3[$cpt]!=" "){
 									$tab_adr_ligne3[$cpt].="<br />";
 								}
@@ -421,7 +406,7 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 				}
 				$tab_adr_ligne3[0]=$tab_bull['eleve'][$i]['resp'][0]['cp']." ".$tab_bull['eleve'][$i]['resp'][0]['commune'];
 
-				if(($tab_bull['eleve'][$i]['resp'][0]['pays']!="")&&(strtolower($tab_bull['eleve'][$i]['resp'][0]['pays'])!=strtolower($gepiSchoolPays))) {
+				if(($tab_bull['eleve'][$i]['resp'][0]['pays']!="")&&(my_strtolower($tab_bull['eleve'][$i]['resp'][0]['pays'])!=my_strtolower($gepiSchoolPays))) {
 					if($tab_adr_ligne3[0]!=" "){
 						$tab_adr_ligne3[0].="<br />";
 					}
@@ -647,7 +632,7 @@ width:".$largeur1."%;\n";
 			echo "</td>\n";
 			echo "<td style='width:".$addressblock_classe_annee2."%;'>\n";
 			echo "<p class='bulletin' align='center'><span class=\"bgrand\">Classe de ".$tab_bull['eleve'][$i]['classe_nom_complet']."<br />Année scolaire ".$gepiYear."</span><br />\n";
-			$temp = strtolower($tab_bull["nom_periode"]);
+			$temp = my_strtolower($tab_bull["nom_periode"]);
 			echo "Bulletin&nbsp;";
 			if($genre_periode=="M"){
 				echo "du ";
@@ -769,7 +754,7 @@ width:".$largeur1."%;\n";
 
 			if ($tab_bull['affiche_adresse'] != "y") {
 				echo "<p class='bulletin'><span class=\"bgrand\">Classe de ".$tab_bull['eleve'][$i]['classe_nom_complet']."<br />Année scolaire ".$gepiYear."</span><br />\n";
-				$temp = strtolower($tab_bull['nom_periode']);
+				$temp = my_strtolower($tab_bull['nom_periode']);
 				echo "Bulletin&nbsp;";
 				if($genre_periode=="M"){
 					echo "du ";
@@ -1154,12 +1139,12 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				// Le deuxième responsable existe et est renseigné
 				if (($tab_bull['eleve'][$i]['resp'][0]['adr_id']==$tab_bull['eleve'][$i]['resp'][1]['adr_id']) OR
 					(
-						(strtolower($tab_bull['eleve'][$i]['resp'][0]['adr1'])==strtolower($tab_bull['eleve'][$i]['resp'][1]['adr1']))&&
-						(strtolower($tab_bull['eleve'][$i]['resp'][0]['adr2'])==strtolower($tab_bull['eleve'][$i]['resp'][1]['adr2']))&&
-						(strtolower($tab_bull['eleve'][$i]['resp'][0]['adr3'])==strtolower($tab_bull['eleve'][$i]['resp'][1]['adr3']))&&
-						(strtolower($tab_bull['eleve'][$i]['resp'][0]['adr4'])==strtolower($tab_bull['eleve'][$i]['resp'][1]['adr4']))&&
+						(my_strtolower($tab_bull['eleve'][$i]['resp'][0]['adr1'])==my_strtolower($tab_bull['eleve'][$i]['resp'][1]['adr1']))&&
+						(my_strtolower($tab_bull['eleve'][$i]['resp'][0]['adr2'])==my_strtolower($tab_bull['eleve'][$i]['resp'][1]['adr2']))&&
+						(my_strtolower($tab_bull['eleve'][$i]['resp'][0]['adr3'])==my_strtolower($tab_bull['eleve'][$i]['resp'][1]['adr3']))&&
+						(my_strtolower($tab_bull['eleve'][$i]['resp'][0]['adr4'])==my_strtolower($tab_bull['eleve'][$i]['resp'][1]['adr4']))&&
 						($tab_bull['eleve'][$i]['resp'][0]['cp']==$tab_bull['eleve'][$i]['resp'][1]['cp'])&&
-						(strtolower($tab_bull['eleve'][$i]['resp'][0]['commune'])==strtolower($tab_bull['eleve'][$i]['resp'][1]['commune']))
+						(my_strtolower($tab_bull['eleve'][$i]['resp'][0]['commune'])==my_strtolower($tab_bull['eleve'][$i]['resp'][1]['commune']))
 					)
 				) {
 					// Les adresses sont identiques
@@ -1200,7 +1185,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					$tab_adr_ligne5[0]=$tab_bull['eleve'][$i]['resp'][0]['cp']." ".$tab_bull['eleve'][$i]['resp'][0]['commune'];
 
 
-					if(($tab_bull['eleve'][$i]['resp'][0]['pays']!="")&&(strtolower($tab_bull['eleve'][$i]['resp'][0]['pays'])!=strtolower($gepiSchoolPays))) {
+					if(($tab_bull['eleve'][$i]['resp'][0]['pays']!="")&&(my_strtolower($tab_bull['eleve'][$i]['resp'][0]['pays'])!=my_strtolower($gepiSchoolPays))) {
 						$tab_adr_ligne6[0]=$tab_bull['eleve'][$i]['resp'][0]['pays'];
 					}
 
@@ -1241,7 +1226,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						*/
 						$tab_adr_ligne5[$cpt]=$tab_bull['eleve'][$i]['resp'][$cpt]['cp']." ".$tab_bull['eleve'][$i]['resp'][$cpt]['commune'];
 
-						if(($tab_bull['eleve'][$i]['resp'][$cpt]['pays']!="")&&(strtolower($tab_bull['eleve'][$i]['resp'][$cpt]['pays'])!=strtolower($gepiSchoolPays))) {
+						if(($tab_bull['eleve'][$i]['resp'][$cpt]['pays']!="")&&(my_strtolower($tab_bull['eleve'][$i]['resp'][$cpt]['pays'])!=my_strtolower($gepiSchoolPays))) {
 							$tab_adr_ligne6[$cpt]=$tab_bull['eleve'][$i]['resp'][$cpt]['pays'];
 						}
 					}
@@ -1280,7 +1265,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					*/
 					$tab_adr_ligne5[$cpt]=$tab_bull['eleve'][$i]['resp'][$cpt]['cp']." ".$tab_bull['eleve'][$i]['resp'][$cpt]['commune'];
 
-					if(($tab_bull['eleve'][$i]['resp'][$cpt]['pays']!="")&&(strtolower($tab_bull['eleve'][$i]['resp'][$cpt]['pays'])!=strtolower($gepiSchoolPays))) {
+					if(($tab_bull['eleve'][$i]['resp'][$cpt]['pays']!="")&&(my_strtolower($tab_bull['eleve'][$i]['resp'][$cpt]['pays'])!=my_strtolower($gepiSchoolPays))) {
 						$tab_adr_ligne6[$cpt]=$tab_bull['eleve'][$i]['resp'][$cpt]['pays'];
 					}
 				}
@@ -1311,7 +1296,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			*/
 			$tab_adr_ligne5[0]=$tab_bull['eleve'][$i]['resp'][0]['cp']." ".$tab_bull['eleve'][$i]['resp'][0]['commune'];
 
-			if(($tab_bull['eleve'][$i]['resp'][0]['pays']!="")&&(strtolower($tab_bull['eleve'][$i]['resp'][0]['pays'])!=strtolower($gepiSchoolPays))) {
+			if(($tab_bull['eleve'][$i]['resp'][0]['pays']!="")&&(my_strtolower($tab_bull['eleve'][$i]['resp'][0]['pays'])!=my_strtolower($gepiSchoolPays))) {
 				$tab_adr_ligne6[0]=$tab_bull['eleve'][$i]['resp'][0]['pays'];
 			}
 		}
@@ -1376,7 +1361,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 		// Bloc identification etablissement
 		$logo = '../images/'.getSettingValue('logo_etab');
-		$format_du_logo = strtolower(str_replace('.','',strstr(getSettingValue('logo_etab'), '.')));
+		$format_du_logo = my_strtolower(str_replace('.','',strstr(getSettingValue('logo_etab'), '.')));
 
 		// Logo
 		//if($tab_modele_pdf["affiche_logo_etab"][$classe_id]==='1' and file_exists($logo) and getSettingValue('logo_etab') != '' and ($format_du_logo==='jpg' or $format_du_logo==='png'))
@@ -1703,7 +1688,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 
 			//============================
-			//if((strtolower($gepiSchoolPays)!=strtolower($pays_parents[$ident_eleve_aff][$responsable_place]))&&($pays_parents[$ident_eleve_aff][$responsable_place]!="")) {
+			//if((my_strtolower($gepiSchoolPays)!=my_strtolower($pays_parents[$ident_eleve_aff][$responsable_place]))&&($pays_parents[$ident_eleve_aff][$responsable_place]!="")) {
 			if(isset($tab_adr_ligne6[$num_resp_bull])) {
 				$texte_1_responsable = $tab_adr_ligne6[$num_resp_bull];
 				$hauteur_caractere=10;
@@ -1951,7 +1936,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			// On n'affiche pas l'établissement d'origine si c'est le même que l'établissement actuel: $RneEtablissement
 			//if($tab_modele_pdf["affiche_etab_origine"][$classe_id]==='1' and !empty($etablissement_origine[$i]) ) {
 			//if($tab_modele_pdf["affiche_etab_origine"][$classe_id]==='1' and isset($tab_bull['eleve'][$i]['etab_id']) and !empty($tab_bull['eleve'][$i]['etab_id']) ) {
-			if(($tab_modele_pdf["affiche_etab_origine"][$classe_id]==='1')&&(isset($tab_bull['eleve'][$i]['etab_id']))&&(!empty($tab_bull['eleve'][$i]['etab_id']))&&(strtolower($tab_bull['eleve'][$i]['etab_id'])!=strtolower($RneEtablissement))) {
+			if(($tab_modele_pdf["affiche_etab_origine"][$classe_id]==='1')&&(isset($tab_bull['eleve'][$i]['etab_id']))&&(!empty($tab_bull['eleve'][$i]['etab_id']))&&(my_strtolower($tab_bull['eleve'][$i]['etab_id'])!=my_strtolower($RneEtablissement))) {
 				$pdf->SetX($X_eleve_2);
 				$hauteur_caractere_etaborigine = '10';
 				$pdf->SetFont('DejaVu','',$hauteur_caractere_etaborigine);
@@ -3410,7 +3395,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 									/*
 									$text_prof=$tab_bull['groupe'][$m]["profs"]["users"]["$tmp_login_prof"]["civilite"];
 									$text_prof.=" ".$tab_bull['groupe'][$m]["profs"]["users"]["$tmp_login_prof"]["nom"];
-									$text_prof.=" ".substr($tab_bull['groupe'][$m]["profs"]["users"]["$tmp_login_prof"]["prenom"],0,1);
+									$text_prof.=" ".mb_substr($tab_bull['groupe'][$m]["profs"]["users"]["$tmp_login_prof"]["prenom"],0,1);
 									*/
 									//if($loop_prof_grp>0) {$text_prof.=", ";}
 									$text_prof=affiche_utilisateur($tmp_login_prof,$tab_bull['eleve'][$i]['id_classe']);
@@ -5350,7 +5335,7 @@ $hauteur_pris_app_abs=$hauteur_pris;
 				$pdf->SetFontSize(10);
 				$pdf->SetXY(20,20);
 				$pdf->SetFont('DejaVu','B',14);
-				$pdf->Cell(90,7,"Relevé de notes non trouvé pour ".strtoupper($tab_bull['eleve'][$i]['nom'])." ".ucfirst($tab_bull['eleve'][$i]['prenom']),0,2,'');
+				$pdf->Cell(90,7,"Relevé de notes non trouvé pour ".my_strtoupper($tab_bull['eleve'][$i]['nom'])." ".casse_mot($tab_bull['eleve'][$i]['prenom'],'majf2'),0,2,'');
 
 			}
 		}
@@ -5500,7 +5485,7 @@ function releve_pdf_20090429($tab_rel,$i) {
 					$tab_adr_ligne5[0]=$tab_rel['eleve'][$i]['resp'][0]['cp']." ".$tab_rel['eleve'][$i]['resp'][0]['commune'];
 
 
-					if(($tab_rel['eleve'][$i]['resp'][0]['pays']!="")&&(strtolower($tab_rel['eleve'][$i]['resp'][0]['pays'])!=strtolower($gepiSchoolPays))) {
+					if(($tab_rel['eleve'][$i]['resp'][0]['pays']!="")&&(my_strtolower($tab_rel['eleve'][$i]['resp'][0]['pays'])!=my_strtolower($gepiSchoolPays))) {
 						$tab_adr_ligne6[0]=$tab_rel['eleve'][$i]['resp'][0]['pays'];
 					}
 
@@ -5541,7 +5526,7 @@ function releve_pdf_20090429($tab_rel,$i) {
 						*/
 						$tab_adr_ligne5[$cpt]=$tab_rel['eleve'][$i]['resp'][$cpt]['cp']." ".$tab_rel['eleve'][$i]['resp'][$cpt]['commune'];
 
-						if(($tab_rel['eleve'][$i]['resp'][$cpt]['pays']!="")&&(strtolower($tab_rel['eleve'][$i]['resp'][$cpt]['pays'])!=strtolower($gepiSchoolPays))) {
+						if(($tab_rel['eleve'][$i]['resp'][$cpt]['pays']!="")&&(my_strtolower($tab_rel['eleve'][$i]['resp'][$cpt]['pays'])!=my_strtolower($gepiSchoolPays))) {
 							$tab_adr_ligne6[$cpt]=$tab_rel['eleve'][$i]['resp'][$cpt]['pays'];
 						}
 					}
@@ -5580,7 +5565,7 @@ function releve_pdf_20090429($tab_rel,$i) {
 					*/
 					$tab_adr_ligne5[$cpt]=$tab_rel['eleve'][$i]['resp'][$cpt]['cp']." ".$tab_rel['eleve'][$i]['resp'][$cpt]['commune'];
 
-					if(($tab_rel['eleve'][$i]['resp'][$cpt]['pays']!="")&&(strtolower($tab_rel['eleve'][$i]['resp'][$cpt]['pays'])!=strtolower($gepiSchoolPays))) {
+					if(($tab_rel['eleve'][$i]['resp'][$cpt]['pays']!="")&&(my_strtolower($tab_rel['eleve'][$i]['resp'][$cpt]['pays'])!=my_strtolower($gepiSchoolPays))) {
 						$tab_adr_ligne6[$cpt]=$tab_rel['eleve'][$i]['resp'][$cpt]['pays'];
 					}
 				}
@@ -5611,7 +5596,7 @@ function releve_pdf_20090429($tab_rel,$i) {
 			*/
 			$tab_adr_ligne5[0]=$tab_rel['eleve'][$i]['resp'][0]['cp']." ".$tab_rel['eleve'][$i]['resp'][0]['commune'];
 
-			if(($tab_rel['eleve'][$i]['resp'][0]['pays']!="")&&(strtolower($tab_rel['eleve'][$i]['resp'][0]['pays'])!=strtolower($gepiSchoolPays))) {
+			if(($tab_rel['eleve'][$i]['resp'][0]['pays']!="")&&(my_strtolower($tab_rel['eleve'][$i]['resp'][0]['pays'])!=my_strtolower($gepiSchoolPays))) {
 				$tab_adr_ligne6[0]=$tab_rel['eleve'][$i]['resp'][0]['pays'];
 			}
 		}
@@ -5699,7 +5684,7 @@ function releve_pdf_20090429($tab_rel,$i) {
 		//BLOC IDENTITE ELEVE
 		$pdf->SetXY($X_cadre_eleve,$Y_cadre_eleve);
 		$pdf->SetFont('DejaVu','B',14);
-		$pdf->Cell(90,7,strtoupper($tab_rel['eleve'][$i]['nom'])." ".ucfirst($tab_rel['eleve'][$i]['prenom']),0,2,'');
+		$pdf->Cell(90,7,my_strtoupper($tab_rel['eleve'][$i]['nom'])." ".casse_mot($tab_rel['eleve'][$i]['prenom'],'majf2'),0,2,'');
 		$pdf->SetFont('DejaVu','',10);
 		//$pdf->Cell(90,5,'Né le '.affiche_date_naissance($naissance[$nb_eleves_i]).', demi-pensionnaire',0,2,'');
 		if($tab_rel['eleve'][$i]['sexe']=="M"){$e_au_feminin="";}else{$e_au_feminin="e";}

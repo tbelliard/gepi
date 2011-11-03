@@ -125,7 +125,7 @@ if ($mode=='module_discipline') {
 			$res3=mysql_query($sql);
 			if(mysql_num_rows($res3)>0) {
 				$lig3=mysql_fetch_object($res3);
-				$donnee_tab_protagonistes[$cpt]['nom']=$lig3->civilite." ".strtoupper($lig3->nom)." ".ucfirst(substr($lig3->prenom,0,1));
+				$donnee_tab_protagonistes[$cpt]['nom']=$lig3->civilite." ".strtoupper($lig3->nom)." ".ucfirst(mb_substr($lig3->prenom,0,1));
 			}
 			else {
 				echo "ERREUR: Login $lig2->login inconnu";
@@ -196,7 +196,7 @@ if ($mode=='module_discipline') {
 		if(mysql_num_rows($res)>0) {
 			$lig=mysql_fetch_object($res);
 			//var modèle
-			$nom_resp = $lig->civilite." ".strtoupper($lig->nom)." ".ucfirst(substr($lig->prenom,0,1)).".";
+			$nom_resp = $lig->civilite." ".strtoupper($lig->nom)." ".ucfirst(mb_substr($lig->prenom,0,1)).".";
 		}
 		else {
 			echo "ERREUR: Login $lig_incident->declarant";

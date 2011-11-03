@@ -429,7 +429,7 @@ if ($nombreligne == '0') {
 			echo "<tr class='lig$alt'><td>\n";
 
 			//echo "<input type='hidden' name='log_eleve[$ki]' value=\"$login_eleve\" />\n";
-			echo "<p>".strtoupper($nom_eleve)." $prenom_eleve</p></td>\n";
+			echo "<p>".my_strtoupper($nom_eleve)." ".casse_mot($prenom_eleve,'majf2')."</p></td>\n";
 
 			if($classes_ajout_sans_regime!="y") {
 				echo "<td><p>Ext.|Int.|D/P|I-ext.<br /><input type='radio' name='regime_$id_eleve' value='ext.'";
@@ -471,7 +471,7 @@ if ($nombreligne == '0') {
 				//echo $ajout_login[$i]."<br>";
 				$elementlist .= "'".$ajout_login[$i]."',";
 			}
-			$elementlist = substr($elementlist, 0, -1);
+			$elementlist = mb_substr($elementlist, 0, -1);
 
 			echo "<td><center><a href=\"javascript:CocheLigne($id_eleve);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne($id_eleve);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></center></td>\n";
 			echo "</tr>\n";

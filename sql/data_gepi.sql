@@ -551,7 +551,7 @@ INSERT INTO setting VALUES ('longmax_login', '10');
 INSERT INTO setting VALUES ('autorise_edt_tous', 'y');
 INSERT INTO setting VALUES ('autorise_edt_admin', 'y');
 INSERT INTO setting VALUES ('autorise_edt_eleve', 'no');
-INSERT INTO setting VALUES ('utiliserMenuBarre', 'no');
+INSERT INTO setting VALUES ('utiliserMenuBarre', 'yes');
 INSERT INTO setting VALUES ('active_absences_parents', 'no');
 INSERT INTO setting VALUES ('creneau_different', 'n');
 INSERT INTO setting VALUES ('active_inscription', 'n');
@@ -875,6 +875,7 @@ INSERT INTO droits VALUES ('/mod_abs2/generer_notifications_par_lot.php','F', 'F
 INSERT INTO droits VALUES ('/mod_abs2/bilan_individuel.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'V', 'Bilan individuel des absences eleve', '');
 INSERT INTO droits VALUES ('/mod_abs2/totaux_du_jour.php', 'F', 'F', 'V', 'V', 'F', 'F', 'F', 'V', 'Totaux du jour des absences', '');
 INSERT INTO droits VALUES ('/mod_abs2/statistiques.php', 'F', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Statistiques des absences', '');
+INSERT INTO droits VALUES ('/mod_abs2/stat_justifications.php', 'F', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Statistiques des justifications des absences', '');
 INSERT INTO droits VALUES ( '/bulletin/autorisation_exceptionnelle_saisie_app.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Autorisation exceptionnelle de saisie d appréciation', '');
 INSERT INTO droits SET id='/init_csv/export_tables.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Initialisation CSV: Export tables',statut='';
 INSERT INTO droits VALUES ('/cahier_texte_2/index.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de textes', '1');
@@ -953,4 +954,3 @@ INSERT INTO droits VALUES ('/mod_sso_table/index.php', 'V', 'F', 'F', 'F', 'F', 
 INSERT INTO droits SET id='/gestion/changement_d_annee.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Changement d\'année.',statut='';
 INSERT INTO droits VALUES ('/absences/import_absences_csv.php', 'F', 'F', 'V', 'F', 'F', 'F', 'V', 'F', 'Saisie des absences', '');
 INSERT INTO droits SET id='/statistiques/stat_connexions.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Statistiques de connexion',statut='';
-INSERT INTO setting VALUES ('abs2_heure_demi_journee', '11:50');

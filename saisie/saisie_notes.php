@@ -195,7 +195,7 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
 		if (isset($modif[$k]) and ($modif[$k] == 'yes')) {
 			$recalcul_rang = sql_query1("select recalcul_rang from groupes
 			where id='".$current_group["id"]."' limit 1");
-			$long = strlen($recalcul_rang);
+			$long = mb_strlen($recalcul_rang);
 			if ($long >= $k) {
 				$recalcul_rang = substr_replace ( $recalcul_rang, "y", $k-1, $k);
 			} else {

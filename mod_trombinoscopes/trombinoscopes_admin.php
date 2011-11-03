@@ -284,8 +284,8 @@ function aplanir_tree($chemin,$destination) {
 // déplace tous les fichiers du dossier $chemin dans le dossier $destination
 // ! si deux fichiers de même nom se trouvent dans $chemin un seul sera déplacé
 	$erreurs="";
-    if ($chemin[strlen($chemin)-1]!="/") $chemin.= "/";
-    if ($destination[strlen($destination)-1]!="/") $destination.= "/";
+    if ($chemin[mb_strlen($chemin)-1]!="/") $chemin.= "/";
+    if ($destination[mb_strlen($destination)-1]!="/") $destination.= "/";
     if (is_dir($chemin)) {
 		$dossier = opendir($chemin);
 		while ($fichier = readdir($dossier)) {
@@ -309,7 +309,7 @@ function aplanir_tree($chemin,$destination) {
 function del_tree($chemin) {
 	// supprime le dossier ou le fichier $chemin
 	$erreurs="";
-    if ($chemin[strlen($chemin)-1] != "/") $chemin.= "/";
+    if ($chemin[mb_strlen($chemin)-1] != "/") $chemin.= "/";
     if (is_dir($chemin)) {
 		$dossier = opendir($chemin);
 		while ($fichier = readdir($dossier)) {
@@ -368,7 +368,7 @@ if (isset($_GET['liste_eleves']) and ($_GET['liste_eleves']=='oui'))  {
 	check_token();
 	header("Content-Description: File Transfer");
 	header("Content-Disposition: attachment; filename=eleves_".getSettingValue("gepiYear").".csv");
-	header("Content-Type: text/csv; charset=ISO-8859-1");
+	header("Content-Type: text/csv; charset=utf-8");
 	header("Content-Transfer-Encoding: base64");
 	// pb de download avec IE
 	if (isset($_SERVER['HTTP_USER_AGENT']) && (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false))

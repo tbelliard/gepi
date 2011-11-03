@@ -85,7 +85,7 @@ if(isset($id_groupe)) {
 		$enseignement="VIE SCOLAIRE";
 	}
 	else{
-		if(strlen(my_ereg_replace("[0-9]","",$id_groupe))!=0){
+		if(mb_strlen(my_ereg_replace("[0-9]","",$id_groupe))!=0){
 			header("Location: ../accueil.php?msg=Numero_de_groupe_non_valide");
 			die();
 		}
@@ -97,7 +97,7 @@ if(isset($id_groupe)) {
 	if(isset($id_classe)){
 
 		// A FAIRE: TESTER LE CARACTERE NUMERIQUE DE $id_classe
-		if(strlen(my_ereg_replace("[0-9]","",$id_classe))!=0){
+		if(mb_strlen(my_ereg_replace("[0-9]","",$id_classe))!=0){
 			header("Location: ../accueil.php?msg=Numero_de_classe_non_valide");
 			die();
 		}

@@ -174,14 +174,14 @@ if (isset($_POST['notes'])) {
 	$temp = my_ereg_replace("\\\\n","\n",$temp);
 	//echo "\$temp=$temp<br />";
 	//echo "</pre>";
-	$longueur = strlen($temp);
+	$longueur = mb_strlen($temp);
 	$i = 0;
 	$fin_note = 'yes';
 	$indice = $_POST['debut_import']-2;
 	$tempo = '';
 	if(!isset($note_sur_dev_choisi)) {$note_sur_dev_choisi=20;}
 	while (($i < $longueur) and ($indice < $_POST['fin_import'])) {
-		$car = substr($temp, $i, 1);
+		$car = mb_substr($temp, $i, 1);
 		//echo "<p>\$car='$car'<br />";
 		//if (my_ereg ("^[0-9\.\,\a-z\A-Z\-]{1}$", $car)) {
 		if (my_ereg('^[0-9.,a-zA-Z-]{1}$', $car)) {
@@ -212,39 +212,7 @@ if (isset($_POST['notes'])) {
 		$i++;
 	}
 }
-/*
-// Ajout delineau -> fonctionnalité de copier/coller d'appréciations
-//-------------------------------------------------------------------------------------------------------------------
-if (isset($_POST['appreciations'])) {
-	check_token();
 
-	$temp = $_POST['appreciations']." 1";
-	$temp = my_ereg_replace("\\\\r","`",$temp);
-	$temp = my_ereg_replace("\\\\n","",$temp);
-	$temp = unslashes($temp);
- 	$longueur = strlen($temp);
-	$i = 0;
-	$fin_app = 'yes';
-	$indice = $_POST['debut_import']-2;
-	$tempo = "";
-	while (($i < $longueur) and ($indice < $_POST['fin_import'])) {
-		$car = substr($temp, $i, 1);
-		if (!my_ereg ("^[`]{1}$", $car)) {
-			if (($fin_app=='yes') or ($i == $longueur-1)) {
-				$fin_app = 'no';
-				$appreciations_import[$indice] = $tempo;
-				$indice++;
-				$tempo = '';
-			}
-			$tempo=$tempo.$car;
-		} else {
-  			$fin_app = 'yes';
-		}
-		$i++;
-	}
-}
-// Fin ajout delineau -> fonctionnalité de copier/coller d'appréciations
-*/
 
 
 if (isset($_POST['is_posted'])) {
@@ -657,7 +625,7 @@ foreach ($liste_eleves as $eleve) {
 	*/
 
 	echo "<input type='text' name='note_eleve[$i]' size='4' autocomplete='off' id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onfocus=\"javascript:this.select()";
-	if($elenoet!="") {echo ";affiche_photo('".nom_photo($elenoet)."','".addslashes(strtoupper($eleve_nom[$i])." ".ucfirst(strtolower($eleve_prenom[$i])))."')";}
+	if($elenoet!="") {echo ";affiche_photo('".nom_photo($elenoet)."','".addslashes(my_strtoupper($eleve_nom[$i])." ".casse_mot($eleve_prenom[$i],'majf2'))."')";}
 	echo "\" onchange=\"verifcol($num_id);changement();\" value='";
 	if ((isset($note_import[$current_displayed_line])) and  ($note_import[$current_displayed_line] != '')) {
 		echo $note_import[$current_displayed_line];

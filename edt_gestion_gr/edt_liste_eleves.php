@@ -23,6 +23,25 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+/**
+ * Fonction qui renvoie le login d'un élève en échange de son ele_id
+ *
+ * @param int $id_eleve ele_id de l'élève
+ * @return string login de l'élève
+ */
+function get_login_eleve($id_eleve){
+
+	$sql = "SELECT login FROM eleves WHERE id_eleve = '".$id_eleve."'";
+	$query = mysql_query($sql) OR trigger_error('Impossible de récupérer le login de cet élève.', E_USER_ERROR);
+	if ($query) {
+		$retour = mysql_result($query, 0,"login");
+	}else{
+		$retour = 'erreur';
+	}
+	return $retour;
+
+}
+
 // ========== Initialisation =============
 
 $titre_page = "Gérer les groupes de l'EdT<br />Elèves";

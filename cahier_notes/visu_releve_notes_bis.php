@@ -116,7 +116,7 @@ $choix_parametres=isset($_POST['choix_parametres']) ? $_POST['choix_parametres']
 // Un prof peut choisir un groupe plutôt qu'une liste de classes
 $id_groupe=($_SESSION['statut']=='professeur') ? (isset($_POST['id_groupe']) ? $_POST['id_groupe'] : NULL) : NULL;
 if(isset($id_groupe)) {
-	if(($id_groupe=='')||(strlen(my_ereg_replace("[0-9]","",$id_groupe))!=0)) {
+	if(($id_groupe=='')||(mb_strlen(my_ereg_replace("[0-9]","",$id_groupe))!=0)) {
 		tentative_intrusion(2, "Tentative d'un professeur de manipuler l'identifiant id_groupe en y mettant des caractères non numériques ou un identifiant de groupe vide.");
 		echo "<p>L'identifiant de groupe est erroné.</p>\n";
 
@@ -1522,7 +1522,7 @@ else {
 		/*****************************************
 		* début de la génération du fichier PDF  *
 		* ****************************************/
-		header('Content-type: application/pdf');
+		//header('Content-type: application/pdf');
 		//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
 		$pdf=new bul_PDF('p', 'mm', 'A4');
 		$nb_eleve_aff = 1;
@@ -1731,7 +1731,13 @@ else {
 		// Envoyer le PDF et quitter
 		$nom_releve = date("Ymd_Hi");
 		$nom_fichier = 'releve_notes_'.$nom_releve.'.pdf';
-		$pdf->Output($nom_fichier,'I');
+
+		if(((isset($bull_pdf_debug))&&($bull_pdf_debug=='y'))||((isset($releve_pdf_debug))&&($releve_pdf_debug=='y'))) {
+			echo $pdf->Output($nom_fichier,'S');
+		}
+		else {
+			$pdf->Output($nom_fichier,'I');
+		}
 
 		die();
 	}

@@ -137,7 +137,7 @@ if (isset($action) and ($action == 'protect'))  {
         $msg = "Problème : l'identifiant est vide.";
         $error = 1;
     } else {
-        $_login = strtolower(unslashes($_POST['login_backup']));
+        $_login = my_strtolower(unslashes($_POST['login_backup']));
         if(is_array($user)) {
             foreach($user as $key => $value) {
                 if($_login == $key) {
@@ -393,12 +393,12 @@ function restoreMySqlDump($duree) {
 
 			//echo $TPSCOUR."<br />";
 			$buffer=gzgets($fileHandle);
-			if (substr($buffer,strlen($buffer),1)==0) {
-				$buffer=substr($buffer,0,strlen($buffer)-1);
+			if (mb_substr($buffer,mb_strlen($buffer),1)==0) {
+				$buffer=mb_substr($buffer,0,mb_strlen($buffer)-1);
 			}
 			//echo $buffer."<br />";
 
-			if(substr($buffer, 0, 1) != "#" AND substr($buffer, 0, 1) != "/") {
+			if(mb_substr($buffer, 0, 1) != "#" AND mb_substr($buffer, 0, 1) != "/") {
 				if (!isset($debut_req))  $debut_req = $buffer;
 				$formattedQuery .= $buffer;
 				//echo $formattedQuery."<hr />";
@@ -518,12 +518,12 @@ function restoreMySqlDump($duree) {
 	
 						//echo $TPSCOUR."<br />";
 						$buffer=gzgets($fileHandle);
-						if (substr($buffer,strlen($buffer),1)==0) {
-							$buffer=substr($buffer,0,strlen($buffer)-1);
+						if (mb_substr($buffer,mb_strlen($buffer),1)==0) {
+							$buffer=mb_substr($buffer,0,mb_strlen($buffer)-1);
 						}
 						//echo $buffer."<br />";
 	
-						if(substr($buffer, 0, 1) != "#" AND substr($buffer, 0, 1) != "/") {
+						if(mb_substr($buffer, 0, 1) != "#" AND mb_substr($buffer, 0, 1) != "/") {
 							if (!isset($debut_req))  $debut_req = $buffer;
 							$formattedQuery .= $buffer;
 							//echo $formattedQuery."<hr />";
@@ -657,7 +657,7 @@ function extractMySqlDump($dumpFile,$duree) {
         $buffer=gzgets($fileHandle);
 
 		// On ne met pas les lignes de commentaire, ni les lignes vides
-		if(substr($buffer, 0, 1) != "#" AND substr($buffer, 0, 1) != "/" AND trim($buffer)!='') {
+		if(mb_substr($buffer, 0, 1) != "#" AND mb_substr($buffer, 0, 1) != "/" AND trim($buffer)!='') {
 			if(preg_match("/^DROP TABLE /",$buffer)) {
 				if(isset($fich)) {fclose($fich);}
 				//$fich=fopen("../backup/".$dirname."/base_extraite_table_".$num_table.".sql","w+");
@@ -753,13 +753,13 @@ function restoreMySqlDump_old($dumpFile,$duree) {
         }
         //echo $TPSCOUR."<br />";
         $buffer=gzgets($fileHandle);
-        if (substr($buffer,strlen($buffer),1)==0)
-            $buffer=substr($buffer,0,strlen($buffer)-1);
-
+        if (mb_substr($buffer,mb_strlen($buffer),1)==0) {
+            $buffer=mb_substr($buffer,0,mb_strlen($buffer)-1);
+        }
         //echo $buffer."<br />";
 
-        if(substr($buffer, 0, 1) != "#" AND substr($buffer, 0, 1) != "/") {
-            if (!isset($debut_req))  $debut_req = $buffer;
+        if(mb_substr($buffer, 0, 1) != "#" AND mb_substr($buffer, 0, 1) != "/") {
+            if (!isset($debut_req)) {$debut_req = $buffer;}
             $formattedQuery .= $buffer;
               //echo $formattedQuery."<hr />";
             if ($formattedQuery) {
@@ -770,14 +770,15 @@ function restoreMySqlDump_old($dumpFile,$duree) {
                     $formattedQuery = "";
                     unset($debut_req);
                     $cpt++;
-                    //echo $cpt;
+                    //echo "$cpt requêtes exécutées avec succès jusque là.<br />";
                 }
             }
         }
     }
 
-    if (mysql_error())
+    if (mysql_error()) {
         echo "<hr />\nERREUR à partir de [$formattedQuery]<br />".mysql_error()."<hr />\n";
+    }
 
     gzclose($fileHandle);
     $offset=-1;
@@ -953,6 +954,8 @@ if (isset($action) and ($action == 'restaure'))  {
 
 	$restauration_old_way=isset($_POST["restauration_old_way"]) ? $_POST["restauration_old_way"] : (isset($_GET["restauration_old_way"]) ? $_GET["restauration_old_way"] : "n");
 
+	$cpt=isset($_POST["cpt"]) ? $_POST["cpt"] : (isset($_GET["cpt"]) ? $_GET["cpt"] : 0);
+
 	if($restauration_old_way=='y') {
 		//===============================================
 		init_time(); //initialise le temps
@@ -977,6 +980,8 @@ if (isset($action) and ($action == 'restaure'))  {
 		flush();
 		if ($offset!=-1) {
 			if (restoreMySqlDump_old($path.$file,$duree)) {
+				echo "$cpt requête(s) exécutée(s) avec succès jusque là.<br />";
+
 				if (isset($debug)) {
 					echo "<br />\n<b>Cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way".add_token_in_url()."\">ici</a> pour poursuivre la restauration</b>\n";
 				}
@@ -992,6 +997,7 @@ if (isset($action) and ($action == 'restaure'))  {
 				exit;
 			}
 		} else {
+			echo "<p style='text-align:center'>$cpt requête(s) exécutée(s) avec succès en tout.</p>";
 
 			echo "<div align='center'><p>Restauration Terminée.<br /><br />Votre session GEPI n'est plus valide, vous devez vous reconnecter<br /><a href = \"../login.php\">Se connecter</a></p></div>\n";
 			require("../lib/footer.inc.php");
@@ -1327,10 +1333,10 @@ if (isset($action) and ($action == 'system_dump'))  {
 
 	$req_version = mysql_result(mysql_query("SELECT version();"), 0);
 	$ver_mysql = explode(".", $req_version);
-	if (!is_numeric(substr($ver_mysql[2], 1, 1))) {
-		$ver_mysql[2] = substr($ver_mysql[2], 0, 1);
+	if (!is_numeric(mb_substr($ver_mysql[2], 1, 1))) {
+		$ver_mysql[2] = mb_substr($ver_mysql[2], 0, 1);
 	} else {
-		$ver_mysql[2] = substr($ver_mysql[2], 0, 2);
+		$ver_mysql[2] = mb_substr($ver_mysql[2], 0, 2);
 	}
 
 	if ($ver_mysql[0] == "5" OR ($ver_mysql[0] == "4" AND $ver_mysql[1] >= "1")) {

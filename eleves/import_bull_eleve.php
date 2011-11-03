@@ -68,10 +68,10 @@ function get_nom_prenom_from_login($ele_login,$mode) {
 		$lig=mysql_fetch_object($res);
 
 		if($mode=="np") {
-			$retour=strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
+			$retour=my_strtoupper($lig->nom)." ".casse_mot($lig->prenom,'majf2');
 		}
 		else {
-			$retour=ucfirst(strtolower($lig->prenom))." ".strtoupper($lig->nom);
+			$retour=casse_mot($lig->prenom,'majf2')." ".my_strtoupper($lig->nom);
 		}
 	}
 
@@ -91,10 +91,10 @@ function get_infos_from_ele_login($ele_login,$mode) {
 		$lig=mysql_fetch_object($res);
 
 		if($mode=="np") {
-			$retour['denomination']=strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
+			$retour['denomination']=my_strtoupper($lig->nom)." ".casse_mot($lig->prenom,'majf2');
 		}
 		else {
-			$retour['denomination']=ucfirst(strtolower($lig->prenom))." ".strtoupper($lig->nom);
+			$retour['denomination']=casse_mot($lig->prenom,'majf2')." ".my_strtoupper($lig->nom);
 		}
 
 		$retour['nom']=$lig->nom;
@@ -349,7 +349,7 @@ else {
 		while (!feof($fich)) {
 			$ligne=fgets($fich, 4096);
 			if(trim($ligne)!="") {
-				if(substr($ligne,0,20)=="INFOS_ETABLISSEMENT;") {
+				if(mb_substr($ligne,0,20)=="INFOS_ETABLISSEMENT;") {
 					$tab_tmp=explode(";",$ligne);
 					$nom_etab_ori=$tab_tmp[1];
 					$ville_etab_ori=$tab_tmp[2];
@@ -600,7 +600,7 @@ else {
 		while (!feof($fich)) {
 			$ligne=fgets($fich, 4096);
 			if(trim($ligne)!="") {
-				if(substr($ligne,0,20)=="AVIS_CONSEIL_CLASSE;") {
+				if(mb_substr($ligne,0,20)=="AVIS_CONSEIL_CLASSE;") {
 					$tab_tmp=explode(";",$ligne);
 
 					$periode=$tab_tmp[1];
@@ -678,7 +678,7 @@ else {
 					}
 				}
 				//else {
-				elseif(substr($ligne,0,9)=="ABSENCES;") {
+				elseif(mb_substr($ligne,0,9)=="ABSENCES;") {
 
 					$tab_tmp=explode(";",$ligne);
 
@@ -718,7 +718,7 @@ else {
 						}
 					}
 				}
-				elseif((substr($ligne,0,20)!="INFOS_ETABLISSEMENT;")&&(substr($ligne,0,12)!="INFOS_ELEVE;")&&(substr($ligne,0,9)!="ABSENCES;")) {
+				elseif((mb_substr($ligne,0,20)!="INFOS_ETABLISSEMENT;")&&(mb_substr($ligne,0,12)!="INFOS_ELEVE;")&&(mb_substr($ligne,0,9)!="ABSENCES;")) {
 					// $ligne devrait correspondre à une matière
 					// Il faudrait identifier auparavant les matières et les associer aux matières du nouvel établissement...
 

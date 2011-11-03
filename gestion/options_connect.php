@@ -173,7 +173,7 @@ if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1"
 	
   	if (isset($_POST['sacocheUrl'])) {
 		$sacocheUrl = $_POST['sacocheUrl'];
-		if (substr($sacocheUrl,strlen($sacocheUrl)-1,1) == '/') {$sacocheUrl = substr($sacocheUrl,0, strlen($sacocheUrl)-1);} //on enleve le / a  la fin
+		if (mb_substr($sacocheUrl,mb_strlen($sacocheUrl)-1,1) == '/') {$sacocheUrl = substr($sacocheUrl,0, mb_strlen($sacocheUrl)-1);} //on enleve le / a  la fin
   		saveSetting("sacocheUrl", $_POST['sacocheUrl']);
 	}
 		
@@ -546,9 +546,9 @@ $sql = "select START from log order by END";
 $res = sql_query($sql);
 $logs_number = sql_count($res);
 $row = sql_row($res, 0);
-$annee = substr($row[0],0,4);
-$mois =  substr($row[0],5,2);
-$jour =  substr($row[0],8,2);
+$annee = mb_substr($row[0],0,4);
+$mois =  mb_substr($row[0],5,2);
+$jour =  mb_substr($row[0],8,2);
 echo "<p>Nombre d'entrées actuellement présentes dans le journal de connexion : <b>".$logs_number."</b><br />\n";
 echo "Actuellement, le journal contient l'historique des connexions depuis le <b>".$jour."/".$mois."/".$annee."</b></p>\n";
 echo "<p><b>ATTENTION : </b>En validant le bouton ci-dessous, <b>toutes les entrées du journal de connexion (hormis les connexions en cours) seront supprimées</b>.</p>\n";

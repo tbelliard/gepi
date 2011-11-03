@@ -865,7 +865,7 @@ elseif($mode=='uploader') {
 		echo "<br />\n";
 
 		$max_file_uploads=ini_get('max_file_uploads');
-		if(($max_file_uploads!="")&&(strlen(my_ereg_replace("[^0-9]","",$max_file_uploads))==strlen($max_file_uploads))&&($max_file_uploads>0)) {
+		if(($max_file_uploads!="")&&(mb_strlen(my_ereg_replace("[^0-9]","",$max_file_uploads))==mb_strlen($max_file_uploads))&&($max_file_uploads>0)) {
 			echo "<p><i>Note</i>&nbsp;: L'upload des photos est limité à $max_file_uploads fichier(s) simultanément.</p>\n";
 		}
 	}

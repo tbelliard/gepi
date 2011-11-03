@@ -17,13 +17,10 @@ $weekstarts = 1;
 // Cette longueur est liée avec le réglage longmax_login de la table setting (voir /lib/initialisations.inc.php)
 $longmax_login = "10";
 
-// caracteres speciaux pour les mots de passe
-$char_spec = "&\"'-|=}+<>,?;.:/!§%";
-
 // labels des périodes
 $gepiClosedPeriodLabel = "période close";
 $gepiOpenPeriodLabel = "période ouverte";
-// La fonction gethostbyaddr utilisée dans le script gestion_connect.php et mon_compte.php retourne le nom d'hôte correspondant ? une IP ("r?solution inverse").
+// La fonction gethostbyaddr utilisée dans le script gestion_connect.php et mon_compte.php retourne le nom d'hÃ´te correspondant ? une IP ("r?solution inverse").
 // Chez certains hébergeurs, ou dans certaines configurations de serveurs, le temps d'exécution peut être très long.
 // Une solution consiste donc à ne pas faire de gethostbyaddr sur les IP locales , c'est-à-dire qui commence par 127., 10., 192.168.
 // Une solution plus radicale consiste à ne pas faire du tout de gethostbyaddr
@@ -43,13 +40,6 @@ $gepiOpenPeriodLabel = "période ouverte";
 $block_sso = false ; // false|true
 
 $style_screen_ajout = "n";
-
-# Apres installation de GEPI, si vous avez le message "Fatal error: Call to undefined function: html_entity_decode() ...",
-# votre version de PHP est inferieure a 4.3.0.
-# En effet, la fonction html_entity_decode() est disponible a partir de la version 4.3.0 de php.
-# Vous devriez mettre a jour votre version de php.
-# Sinon, positionnez la variable suivante a "0"; (valeur par defaut = 1)
-$use_function_html_entity_decode = 1;
 
 // Gepi est configur?s de mani?re ? bloquer temporairement le compte d'un utilisateur
 // apr?s un certain nombre de tentatives de connexion infructueuses (voir interface en ligne de gestion des connexions).
@@ -192,7 +182,7 @@ $gepiAuthors = array(
     "Julien Jocal" => "collegerb@free.fr"
 );
 
-// Affichage des dates en français
+// Affichage des dates en franÃ§ais
 @setlocale(LC_TIME,'fr-utf-8','fr_FR.utf-8','fr_FR.utf8','fr_FR.UTF-8','fr_FR.UTF8','fr_FR.ISO8859-1','French','france','fra','french','FR','fr_FR','fr_FR@euro', 'French_France.1252');
 
 $gepiShowGenTime = "no"; // Pour afficher le temps de génération de certaines pages.
@@ -247,13 +237,5 @@ $type_etablissement2["prive"]["aucun"] = "";
 // ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 // Une sécurité... il suffit de passer la variable $style_screen_ajout à 'n' pour désactiver le fichier CSS style_screen_ajout.css et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
 $style_screen_ajout='y';
-
-// Liste des balises autorisées pour InputFilter:
-$aAllowedTags = array("a", "b", "blink", "blockquote", "br", "caption", "center", "col", "colgroup", "comment", "em", "font", "h1", "h2", "h3", "h4", "h5", "h6", "hr", "i", "img", "li", "marquee", "ol", "p", "pre", "s", "small", "span", "strike", "strong", "sub", "sup", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "tt", "u", "ul", "color");
-// N'ajoutez pas de balises sans y réfléchir à deux fois... ou demander avis sur la liste gepi-users
-// Liste des attributs autorisés:
-$aAllowedAttr = array("abbr", "align", "alt", "axis", "background", "behavior", "bgcolor", "border", "bordercolor", "bordercolordark", "bordercolorlight", "bottompadding", "cellpadding", "cellspacing", "char", "charoff", "cite", "clear", "color", "cols", "direction", "face", "font-weight", "headers", "height", "href", "hspace", "leftpadding", "loop", "noshade", "nowrap", "point-size", "rel", "rev", "rightpadding", "rowspan", "rules", "scope", "scrollamount", "scrolldelay", "size", "span", "src", "start", "summary", "target", "title", "toppadding", "type", "valign", "value", "vspace", "width", "wrap", "style");
-//$aAllowedAttr = array("abbr", "align", "alt", "axis", "background", "behavior", "bgcolor", "border", "bordercolor", "bordercolordark", "bordercolorlight", "bottompadding", "cellpadding", "cellspacing", "char", "charoff", "cite", "clear", "color", "cols", "direction", "face", "font-weight", "headers", "height", "hspace", "leftpadding", "loop", "noshade", "nowrap", "point-size", "rel", "rev", "rightpadding", "rowspan", "rules", "scope", "scrollamount", "scrolldelay", "size", "span", "start", "summary", "target", "title", "toppadding", "type", "valign", "value", "vspace", "width", "wrap", "style");
-//=============================
 
 ?>

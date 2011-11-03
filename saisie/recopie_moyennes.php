@@ -490,7 +490,7 @@ else{
 							echo "<td>&nbsp;</td>\n";
 						}
 						//echo "<td>".$lig_ele->login."</td>\n";
-						echo "<td>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</td>\n";
+						echo "<td>".my_strtoupper($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2')."</td>\n";
 
 						$sql="SELECT * FROM cn_notes_conteneurs WHERE login='$lig_ele->login' AND id_conteneur='$id_racine' AND statut='y'";
 						$res_moy_carnet=mysql_query($sql);

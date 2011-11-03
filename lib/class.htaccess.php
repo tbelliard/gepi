@@ -268,7 +268,7 @@ class htaccess
                 foreach($users as $key => $value)
                 {
                     $str = $key.':'.$value.$nl;
-                    fputs($f, $str, strlen($str));
+                    fputs($f, $str, mb_strlen($str));
                 }
             
                 flock($f,3);
@@ -292,7 +292,7 @@ class htaccess
                 foreach($this->user as $key => $value)
                 {
                     $str = $key.':'.$value.$nl;
-                    fputs($f, $str, strlen($str));
+                    fputs($f, $str, mb_strlen($str));
                 }
                 
                 flock($f,3);

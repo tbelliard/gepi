@@ -401,7 +401,7 @@
 					// Si c'est un élève
 					elseif (($_SESSION['statut'] == 'eleve') AND
 							(getSettingValue("GepiAccesReleveEleve") == "yes") AND
-							strtolower($current_eleve_login[$i])==strtolower($_SESSION['login'])) {
+							my_strtolower($current_eleve_login[$i])==my_strtolower($_SESSION['login'])) {
 						$autorisation_acces='y';
 					}
 					// Si c'est un responsable
@@ -763,6 +763,14 @@
 									$tab_ele['etab_type']= $type_etablissement2[$tab_ele['etab_type']][$tab_ele['etab_niveau']];
 								}
 							}
+						}
+						else {
+							$tab_ele['etab_id'] = "";
+							$tab_ele['etab_nom'] = "Non renseigné";
+							$tab_ele['etab_niveau'] = "";
+							$tab_ele['etab_type'] = "";
+							$tab_ele['etab_cp'] = "";
+							$tab_ele['etab_ville'] = "";
 						}
 
 						// Récup infos CPE

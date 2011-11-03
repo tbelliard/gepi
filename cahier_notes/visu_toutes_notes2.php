@@ -340,7 +340,7 @@ while($j < $nb_lignes_tableau) {
     if ($aff_date_naiss){
 		$tmpdate=mysql_result($appel_donnees_eleves, $j, "naissance");
 		$tmptab=explode("-",$tmpdate);
-		if(strlen($tmptab[0])==4){$tmptab[0]=substr($tmptab[0],2,2);}
+		if(mb_strlen($tmptab[0])==4){$tmptab[0]=mb_substr($tmptab[0],2,2);}
         $col[$ind][$j+$ligne_supl]=$tmptab[2]."/".$tmptab[1]."/".$tmptab[0];
         $ind++;
 	}
@@ -960,6 +960,7 @@ while($i < $lignes_groupes){
 */
 	//================================
 	// AJOUT: boireaus
+        $col_csv='';
 	if($temoin_graphe=="oui"){
 		if($i==$lignes_groupes-1){
 			for($loop=0;$loop<$nb_lignes_tableau;$loop++){
@@ -1056,9 +1057,9 @@ while($i < $lignes_groupes){
 	}
 
 	$nom_complet_matiere = $current_group["description"];
-	$nom_complet_coupe = (strlen($nom_complet_matiere) > 20)? urlencode(substr($nom_complet_matiere,0,20)."...") : urlencode($nom_complet_matiere);
+	$nom_complet_coupe = (mb_strlen($nom_complet_matiere) > 20)? urlencode(mb_substr($nom_complet_matiere,0,20)."...") : urlencode($nom_complet_matiere);
 
-	$nom_complet_coupe_csv=(strlen($nom_complet_matiere) > 20) ? substr($nom_complet_matiere,0,20) : $nom_complet_matiere;
+	$nom_complet_coupe_csv=(mb_strlen($nom_complet_matiere) > 20) ? mb_substr($nom_complet_matiere,0,20) : $nom_complet_matiere;
 	$nom_complet_coupe_csv=preg_replace("/;/","",$nom_complet_coupe_csv);
 
 	//$ligne1[$k] = "<IMG SRC=\"../lib/create_im_mat.php?texte=$nom_complet_coupe&width=22\" WIDTH=\"22\" BORDER=\"0\" />";
@@ -1336,7 +1337,7 @@ if((isset($_POST['col_tri']))&&($_POST['col_tri']!='')) {
 	}
 
 	// Vérifier si $col_tri est bien un entier compris entre 0 et $nb_col ou $nb_col+1
-	if((strlen(preg_replace("/[0-9]/","",$col_tri))==0)&&($col_tri>0)&&($col_tri<=$nb_colonnes)) {
+	if((mb_strlen(preg_replace("/[0-9]/","",$col_tri))==0)&&($col_tri>0)&&($col_tri<=$nb_colonnes)) {
 		my_echo("<table>");
 		my_echo("<tr><td valign='top'>");
 		unset($tmp_tab);
@@ -1504,10 +1505,11 @@ if(isset($_GET['mode'])) {
 
 		$now = gmdate('D, d M Y H:i:s') . ' GMT';
 
-		$nom_fic=$chaine_titre."_".$now.".csv";
+		$nom_fic=$chaine_titre."_".$now;
 
 		// Filtrer les caractères dans le nom de fichier:
 		$nom_fic=preg_replace("/[^a-zA-Z0-9_.-]/","",remplace_accents($nom_fic,'all'));
+		$nom_fic.=".csv";
 
 		/*
 		header('Content-Type: text/x-csv');
@@ -1678,7 +1680,7 @@ function affiche_tableau2($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bo
 				echo "<td class='small' ";
 				//echo $bg_color;
 				if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
-					if(strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
+					if(mb_strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
 						for($loop=0;$loop<count($vtn_borne_couleur);$loop++) {
 							if(preg_replace('/,/','.',$col[$j][$i])<=preg_replace('/,/','.',$vtn_borne_couleur[$loop])) {
 								echo " style='";
@@ -1695,7 +1697,7 @@ function affiche_tableau2($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bo
 				echo "<td align=\"center\" class='small' ";
 				//echo $bg_color;
 				if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
-					if(strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
+					if(mb_strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
 						for($loop=0;$loop<count($vtn_borne_couleur);$loop++) {
 							if(preg_replace('/,/','.',$col[$j][$i])<=preg_replace('/,/','.',$vtn_borne_couleur[$loop])) {
 								echo " style='";

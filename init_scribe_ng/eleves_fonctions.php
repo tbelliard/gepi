@@ -45,9 +45,9 @@ function vider_table_seule($table_name) {
 
 function formater_date_pour_mysql($date) {
     if ($date != '') {
-        $annee = substr($date, 0, 4);
-        $mois = substr($date, 4, 2);
-        $jour = substr($date, 6, 2);
+        $annee = mb_substr($date, 0, 4);
+        $mois = mb_substr($date, 4, 2);
+        $jour = mb_substr($date, 6, 2);
         return "$annee-$mois-$jour";
     }
     else return '';

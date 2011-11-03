@@ -251,7 +251,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 			foreach ($temp["classes"]["classes"] as $classe) {
 				$str .= $classe["classe"] . ", ";
 			}
-			$str = substr($str, 0, -2);
+			$str = mb_substr($str, 0, -2);
 			$temp["classlist_string"] = $str;
 		}
 	
@@ -275,7 +275,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 				$civilite = mysql_result($get_profs, $i, "civilite");
 				$temp["profs"]["list"][] = $p_login;
 				$temp["profs"]["users"][$p_login] = array("login" => $p_login, "nom" => $p_nom, "prenom" => $p_prenom, "civilite" => $civilite);
-				$temp["profs"]["proflist_string"].=$civilite." ".$p_nom." ".strtoupper(substr($p_prenom,0,1));
+				$temp["profs"]["proflist_string"].=$civilite." ".$p_nom." ".my_strtoupper(mb_substr($p_prenom,0,1));
 			}
 		}
 	

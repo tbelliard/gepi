@@ -59,8 +59,8 @@ function anti_inject(&$_value, $_key) {
 function cree_variables_non_protegees() {
     global $NON_PROTECT;
     foreach ($_POST as $key => $value) {
-        if (substr($key,0,15) == "no_anti_inject_") {
-            $temp = substr($key,15,strlen($key));
+        if (mb_substr($key,0,15) == "no_anti_inject_") {
+            $temp = mb_substr($key,15,mb_strlen($key));
             if (get_magic_quotes_gpc())
                 $NON_PROTECT[$temp] = stripslashes($_POST[$key]);
             else
@@ -183,7 +183,7 @@ if (isset($_ajouter_fichier_anti_inject)){
 
 $url = parse_url($_SERVER['REQUEST_URI']);
 // On traite les données postées si nécessaire avec l'anti-injection mysql
-if ((!(in_array(substr($url['path'], strlen($gepiPath)),$liste_scripts_non_traites))) OR ((in_array(substr($url['path'], strlen($gepiPath)),$liste_scripts_non_traites)) AND (!(isset($traite_anti_inject)) OR (isset($traite_anti_inject) AND $traite_anti_inject !="no")))) {
+if ((!(in_array(mb_substr($url['path'], mb_strlen($gepiPath)),$liste_scripts_non_traites))) OR ((in_array(mb_substr($url['path'], mb_strlen($gepiPath)),$liste_scripts_non_traites)) AND (!(isset($traite_anti_inject)) OR (isset($traite_anti_inject) AND $traite_anti_inject !="no")))) {
   array_walk($_GET, 'anti_inject');
   array_walk($_POST, 'anti_inject');
   array_walk($_REQUEST, 'anti_inject');

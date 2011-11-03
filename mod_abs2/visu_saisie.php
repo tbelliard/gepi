@@ -136,7 +136,7 @@ echo $saisie->getPrimaryKey();
     	echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getDeletedAt('U')));
     	$suppr_utilisateur = UtilisateurProfessionnelQuery::create()->findPK($saisie->getDeletedBy());
     	if ($suppr_utilisateur != null) {
-    		echo ' par '.  $suppr_utilisateur->getCivilite().' '.$suppr_utilisateur->getNom().' '.substr($suppr_utilisateur->getPrenom(), 0, 1).'.';;
+    		echo ' par '.  $suppr_utilisateur->getCivilite().' '.$suppr_utilisateur->getNom().' '.mb_substr($suppr_utilisateur->getPrenom(), 0, 1).'.';;
     	}
     	echo ')</font> ';
     }
@@ -395,7 +395,7 @@ echo '<tr><td>';
 echo 'Saisie le : ';
 echo '</td><td colspan="2">';
 echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getCreatedAt('U')));
-echo ' par '.  $saisie->getUtilisateurProfessionnel()->getCivilite().' '.$saisie->getUtilisateurProfessionnel()->getNom().' '.substr($saisie->getUtilisateurProfessionnel()->getPrenom(), 0, 1).'.';
+echo ' par '.  $saisie->getUtilisateurProfessionnel()->getCivilite().' '.$saisie->getUtilisateurProfessionnel()->getNom().' '.mb_substr($saisie->getUtilisateurProfessionnel()->getPrenom(), 0, 1).'.';
 echo '</td></tr>';
 
 if ($saisie->getCreatedAt('U') != $saisie->getVersionCreatedAt('U')) {
@@ -405,7 +405,7 @@ if ($saisie->getCreatedAt('U') != $saisie->getVersionCreatedAt('U')) {
     echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getVersionCreatedAt('U')));
     $modifie_par_utilisateur = UtilisateurProfessionnelQuery::create()->filterByLogin($saisie->getVersionCreatedBy())->findOne();
     if ($modifie_par_utilisateur != null) {
-		echo ' par '.  $modifie_par_utilisateur->getCivilite().' '.$modifie_par_utilisateur->getNom().' '.substr($modifie_par_utilisateur->getPrenom(), 0, 1).'.';
+		echo ' par '.  $modifie_par_utilisateur->getCivilite().' '.$modifie_par_utilisateur->getNom().' '.mb_substr($modifie_par_utilisateur->getPrenom(), 0, 1).'.';
     }
     echo '</td></tr>';
 }
@@ -484,7 +484,7 @@ if (($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite")
 	    echo (strftime("%a %d/%m/%Y %H:%M", $version->getVersionCreatedAt('U')));
 	    $modifie_par_utilisateur = UtilisateurProfessionnelQuery::create()->filterByLogin($version->getVersionCreatedBy())->findOne();
 	    if ($modifie_par_utilisateur != null) {
-			echo ' par '.  $modifie_par_utilisateur->getCivilite().' '.$modifie_par_utilisateur->getNom().' '.substr($modifie_par_utilisateur->getPrenom(), 0, 1).'.';
+			echo ' par '.  $modifie_par_utilisateur->getCivilite().' '.$modifie_par_utilisateur->getNom().' '.mb_substr($modifie_par_utilisateur->getPrenom(), 0, 1).'.';
 	    }
 	    echo '</td>';
     	echo '<td>';

@@ -160,7 +160,7 @@ if ($test_new >= 1) {
 
 	}
 	// On récupère les nom_u, prenom_u et identite_u
-	$complement_req = substr($requete_c, 0, -4);
+	$complement_req = mb_substr($requete_c, 0, -4);
 	$sql_c = "SELECT * FROM ldap_bx WHERE (" . $complement_req . ")";
 	$query_c = mysql_query($sql_c) OR DIE('<br />Erreur dans la requête SQL <br /> --> ' . $sql_c . '<br />' . mysql_error());
 

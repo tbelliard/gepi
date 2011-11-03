@@ -41,7 +41,7 @@ if (!checkAccess()) {
 	die();
 }
 
-if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+if(strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
 	header("Location: ../accueil.php?msg=$mess");
@@ -773,14 +773,14 @@ if(!isset($id_incident)) {
 			    $res1_declarant=mysql_query($sql_declarant);
 				if(mysql_num_rows($res1_declarant)>0) {
 					$lig1_declarant=mysql_fetch_object($res1_declarant);
-					$chaine=strtoupper($lig1_declarant->nom)." ".ucfirst(substr($lig1_declarant->prenom,0,1));
+					$chaine=strtoupper($lig1_declarant->nom)." ".ucfirst(mb_substr($lig1_declarant->prenom,0,1));
 					//echo $lig_declarant->civilite." ".strtoupper($lig_declarant->nom)." ".ucfirst(substr($lig_declarant->prenom,0,1)).".";	
 				}
 				else {
 					echo "ERREUR: Login $lig1_declarant->declarant inconnu";
 				}
 			
-				echo ">".substr($chaine,0,40)."</option>\n";
+				echo ">".mb_substr($chaine,0,40)."</option>\n";
 			}
 			else {
 				echo ">(vide)</option>\n";
@@ -817,7 +817,7 @@ if(!isset($id_incident)) {
 		if($nature_incident==$lig_nature->nature) {echo " selected='selected'";}
 		if($lig_nature->nature!='') {
 			//echo ">".$lig_nature->nature."</option>\n";
-			echo ">".substr($lig_nature->nature,0,40)."</option>\n";
+			echo ">".mb_substr($lig_nature->nature,0,40)."</option>\n";
 		}
 		else {
 			echo ">(vide)</option>\n";
@@ -1011,7 +1011,7 @@ if(!isset($id_incident)) {
 				$res_declarant=mysql_query($sql_declarant);
 				if(mysql_num_rows($res_declarant)>0) {
 					$lig_declarant=mysql_fetch_object($res_declarant);
-					echo $lig_declarant->civilite." ".strtoupper($lig_declarant->nom)." ".ucfirst(substr($lig_declarant->prenom,0,1)).".";	
+					echo $lig_declarant->civilite." ".strtoupper($lig_declarant->nom)." ".ucfirst(mb_substr($lig_declarant->prenom,0,1)).".";	
 				}
 				else {
 					echo "ERREUR: Login $lig->declarant inconnu";
@@ -1063,10 +1063,10 @@ if(!isset($id_incident)) {
 						if(mysql_num_rows($res3)>0) {
 							$lig3=mysql_fetch_object($res3);
 							//echo ucfirst(strtolower($lig3->prenom))." ".strtoupper($lig3->nom);
-							echo $lig3->civilite." ".strtoupper($lig3->nom)." ".ucfirst(substr($lig3->prenom,0,1)).".";
+							echo $lig3->civilite." ".strtoupper($lig3->nom)." ".ucfirst(mb_substr($lig3->prenom,0,1)).".";
 
 							if($liste_protagonistes!="") {$liste_protagonistes.=", ";}
-							$liste_protagonistes.=$lig3->civilite." ".strtoupper($lig3->nom)." ".ucfirst(substr($lig3->prenom,0,1)).".";
+							$liste_protagonistes.=$lig3->civilite." ".strtoupper($lig3->nom)." ".ucfirst(mb_substr($lig3->prenom,0,1)).".";
 						}
 						else {
 							echo "ERREUR: Login $lig2->login inconnu";
@@ -1113,19 +1113,19 @@ if(!isset($id_incident)) {
 					if(mysql_num_rows($res_mail)>0) {
 						$lig_mail=mysql_fetch_object($res_mail);
 
-						//$texte="<a href=\"mailto:".$lig_mail->email."?subject=Incident sans détails&bcc=".$_SESSION['email']."&body=Bonjour ".$lig_mail->civilite." ".$lig_mail->nom." ".substr(ucfirst($lig_mail->prenom),0,1).".,%0A%0aVous avez déclaré un incident (numéro $lig->id_incident) sans en préciser les détails.%0A%0aPourriez-vous préciser?%0A%0aMerci.\">";
+						//$texte="<a href=\"mailto:".$lig_mail->email."?subject=Incident sans détails&bcc=".$_SESSION['email']."&body=Bonjour ".$lig_mail->civilite." ".$lig_mail->nom." ".mb_substr(ucfirst($lig_mail->prenom),0,1).".,%0A%0aVous avez déclaré un incident (numéro $lig->id_incident) sans en préciser les détails.%0A%0aPourriez-vous préciser?%0A%0aMerci.\">";
 						/*
 						$texte="<a href=\"mailto:".$lig_mail->email."?subject=".rawurlencode("Incident sans détails");
 						if($email_visiteur!='') {
 							$texte.="&amp;bcc=".$email_visiteur;
 						}
-						$texte.="&amp;body=Bonjour%20".$lig_mail->civilite."%20".$lig_mail->nom."%20".substr(ucfirst($lig_mail->prenom),0,1).".,%0A%0a".rawurlencode("Vous avez déclaré un incident (numéro $lig->id_incident) sans en préciser la nature, les détails.")."%0A%0a".rawurlencode("L'incident a eu lieu le ".formate_date($lig->date)." en $lig->heure avec pour protagonistes: $liste_protagonistes")."%0A%0a".rawurlencode("Pourriez-vous préciser?")."%0A%0a".rawurlencode("Merci.")."\">";
+						$texte.="&amp;body=Bonjour%20".$lig_mail->civilite."%20".$lig_mail->nom."%20".mb_substr(ucfirst($lig_mail->prenom),0,1).".,%0A%0a".rawurlencode("Vous avez déclaré un incident (numéro $lig->id_incident) sans en préciser la nature, les détails.")."%0A%0a".rawurlencode("L'incident a eu lieu le ".formate_date($lig->date)." en $lig->heure avec pour protagonistes: $liste_protagonistes")."%0A%0a".rawurlencode("Pourriez-vous préciser?")."%0A%0a".rawurlencode("Merci.")."\">";
 						*/
 						$texte="<a href=\"mailto:".$lig_mail->email."?subject="."Incident sans détails";
 						if($email_visiteur!='') {
 							$texte.="&amp;bcc=".$email_visiteur;
 						}
-						$texte.="&amp;body=Bonjour%20".$lig_mail->civilite."%20".$lig_mail->nom."%20".substr(ucfirst($lig_mail->prenom),0,1).".,%0A%0a"."Vous avez déclaré un incident (numéro $lig->id_incident) sans en préciser la nature, les détails."."%0A%0a"."L'incident a eu lieu le ".formate_date($lig->date)." en $lig->heure avec pour protagonistes: $liste_protagonistes"."%0A%0a"."Pourriez-vous préciser?"."%0A%0a"."Merci."."\">";
+						$texte.="&amp;body=Bonjour%20".$lig_mail->civilite."%20".$lig_mail->nom."%20".mb_substr(ucfirst($lig_mail->prenom),0,1).".,%0A%0a"."Vous avez déclaré un incident (numéro $lig->id_incident) sans en préciser la nature, les détails."."%0A%0a"."L'incident a eu lieu le ".formate_date($lig->date)." en $lig->heure avec pour protagonistes: $liste_protagonistes"."%0A%0a"."Pourriez-vous préciser?"."%0A%0a"."Merci."."\">";
 
 						$texte.="Aucun détail n'a été saisi.";
 						$texte.="</a>";

@@ -352,9 +352,9 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
 
         // Il s'agit d'un devoir à faire : on récupère la date à l'aide de $_POST['display_date']
         if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $_POST['display_date'])) {
-            $_year = substr($_POST['display_date'],6,4);
-            $_month = substr($_POST['display_date'],3,2);
-            $_day = substr($_POST['display_date'],0,2);
+            $_year = mb_substr($_POST['display_date'],6,4);
+            $_month = mb_substr($_POST['display_date'],3,2);
+            $_day = mb_substr($_POST['display_date'],0,2);
             $date_travail_a_faire=mktime(0,0,0,$_month,$_day,$_year);
         } else {
             $msg_error_date = "La date choisie pour le travail à faire n'est pas conforme";
@@ -508,7 +508,7 @@ foreach($groups as $group) {
             foreach ($group["classes"]["classes"] as $classe) {
                 $str .= $classe["classe"] . ", ";
             }
-            $str = substr($str, 0, -2);
+            $str = mb_substr($str, 0, -2);
             echo $str . ")&nbsp;</p>\n";
         } else {
         	echo "<span style=\"font-weight: bold;\">";
@@ -518,7 +518,7 @@ foreach($groups as $group) {
             foreach ($group["classes"]["classes"] as $classe) {
                 $str .= $classe["classe"] . ", ";
             }
-            $str = substr($str, 0, -2);
+            $str = mb_substr($str, 0, -2);
             echo $str . ")</a>&nbsp;</span>\n";
         }
         //echo "</b>\n";

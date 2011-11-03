@@ -40,7 +40,7 @@ if (!checkAccess()) {
 	die();
 }
 
-if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+if(strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
 	header("Location: ../accueil.php?msg=$mess");
@@ -334,7 +334,7 @@ if(!isset($id_incident)) {
 		echo "<option value='$lig_nature->nature'";
 		if($nature_incident==$lig_nature->nature) {echo " selected='selected'";}
 		//echo ">".$lig_nature->nature."</option>\n";
-		echo ">".substr($lig_nature->nature,0,40)."</option>\n";
+		echo ">".mb_substr($lig_nature->nature,0,40)."</option>\n";
 	}
 	echo "</select>\n";
 	echo "</th>\n";

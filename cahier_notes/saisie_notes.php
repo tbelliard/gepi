@@ -237,14 +237,14 @@ if (isset($_POST['notes'])) {
 	$temp = $_POST['notes']." 1";
 	$temp = my_ereg_replace("\\\\r","\r",$temp);
 	$temp = my_ereg_replace("\\\\n","\n",$temp);
-	$longueur = strlen($temp);
+	$longueur = mb_strlen($temp);
 	$i = 0;
 	$fin_note = 'yes';
 	$indice = $_POST['debut_import']-2;
 	$tempo = '';
 	if(!isset($note_sur_dev_choisi)) {$note_sur_dev_choisi=20;}
 	while (($i < $longueur) and ($indice < $_POST['fin_import'])) {
-		$car = substr($temp, $i, 1);
+		$car = mb_substr($temp, $i, 1);
 		if (my_ereg('^[0-9.,a-zA-Z-]{1}$', $car)) {
 			if (($fin_note=='yes') or ($i == $longueur-1)) {
 				$fin_note = 'no';
@@ -292,13 +292,13 @@ if (isset($_POST['appreciations'])) {
 	$temp = my_ereg_replace("\\\\r","`",$temp);
 	$temp = my_ereg_replace("\\\\n","",$temp);
 	$temp = unslashes($temp);
- 	$longueur = strlen($temp);
+ 	$longueur = mb_strlen($temp);
 	$i = 0;
 	$fin_app = 'yes';
 	$indice = $_POST['debut_import']-2;
 	$tempo = "";
 	while (($i < $longueur) and ($indice < $_POST['fin_import'])) {
-		$car = substr($temp, $i, 1);
+		$car = mb_substr($temp, $i, 1);
 		if (!my_ereg ("^[`]{1}$", $car)) {
 			if (($fin_app=='yes') or ($i == $longueur-1)) {
 				$fin_app = 'no';
@@ -462,7 +462,7 @@ if($id_conteneur==$id_racine){
 	}
 }
 else{
-	$titre=casse_mot(getSettingValue("gepi_denom_boite"),'majf3')." : ".$nom_conteneur." (".$nom_periode.")";
+	$titre=casse_mot(getSettingValue("gepi_denom_boite"),'majf2')." : ".$nom_conteneur." (".$nom_periode.")";
 }
 
 $titre_pdf = urlencode(utf8_decode($titre));
@@ -493,9 +493,9 @@ while ($j < $nb_dev) {
 	$facultatif[$j] = mysql_result($appel_dev, $j, 'facultatif');
 	$display_parents[$j] = mysql_result($appel_dev, $j, 'display_parents');
 	$date = mysql_result($appel_dev, $j, 'date');
-	$annee = substr($date,0,4);
-	$mois =  substr($date,5,2);
-	$jour =  substr($date,8,2);
+	$annee = mb_substr($date,0,4);
+	$mois =  mb_substr($date,5,2);
+	$jour =  mb_substr($date,8,2);
 	$display_date[$j] = $jour."/".$mois."/".$annee;
 	$j++;
 }
@@ -668,7 +668,7 @@ if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
 
 	if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "e";}
 
-	echo " ".htmlspecialchars(strtolower(getSettingValue("gepi_denom_boite")))." </a>|";
+	echo " ".htmlspecialchars(my_strtolower(getSettingValue("gepi_denom_boite")))." </a>|";
 
 	echo "<a href='add_modif_dev.php?id_conteneur=$id_racine&amp;mode_navig=retour_saisie&amp;id_retour=$id_conteneur' onclick=\"return confirm_abandon (this, change,'$themessage')\"> Créer une évaluation </a>|";
 }
@@ -730,7 +730,7 @@ if ($id_devoir == 0) {
 	echo " /></td><td><input type=\"submit\" name=\"ok\" value=\"OK\" /></td></tr>\n";
 	$nb_dev_sous_cont = mysql_num_rows(mysql_query("select d.id from cn_devoirs d, cn_conteneurs c where (d.id_conteneur = c.id and c.parent='$id_conteneur')"));
 	if ($nb_dev_sous_cont != 0) {
-		echo "<tr><td>Afficher les évaluations des \"sous-".htmlspecialchars(strtolower(getSettingValue("gepi_denom_boite")))."s\" : </td><td><input type=\"checkbox\" name=\"affiche_tous\"  ";
+		echo "<tr><td>Afficher les évaluations des \"sous-".htmlspecialchars(my_strtolower(getSettingValue("gepi_denom_boite")))."s\" : </td><td><input type=\"checkbox\" name=\"affiche_tous\"  ";
 		if ($_SESSION['affiche_tous'] == 'yes') {echo "checked";}
 		echo " /></td><td></td></tr>\n";
 	}
@@ -752,7 +752,7 @@ else {
 $detail = "Mode de calcul de la moyenne :\\n";
 $detail = $detail."La moyenne s\\'effectue sur les colonnes repérées par les cellules de couleur violette.\\n";
 if (($nb_dev_sous_cont != 0) and ($_SESSION['affiche_tous'] == 'no'))
-	$detail = $detail."ATTENTION : cliquez sur \'Afficher les évaluations des sous-".htmlspecialchars(strtolower(getSettingValue("gepi_denom_boite")))."s\' pour faire apparaître toutes les évaluations qui interviennent dans la moyenne.\\n";
+	$detail = $detail."ATTENTION : cliquez sur \'Afficher les évaluations des sous-".htmlspecialchars(my_strtolower(getSettingValue("gepi_denom_boite")))."s\' pour faire apparaître toutes les évaluations qui interviennent dans la moyenne.\\n";
 if ($arrondir == 's1') $detail = $detail."La moyenne est arrondie au dixième de point supérieur.\\n";
 if ($arrondir == 's5') $detail = $detail."La moyenne est arrondie au demi-point supérieur.\\n";
 if ($arrondir == 'se') $detail = $detail."La moyenne est arrondie au point entier supérieur.\\n";
@@ -767,7 +767,7 @@ if (($nb_dev == 0) and ($nb_sous_cont==0)) {
 
 	echo "<p class=cn>";
 	if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "La ";}else{echo "Le ";}
-	echo htmlspecialchars(strtolower(getSettingValue("gepi_denom_boite")))." $nom_conteneur ne contient aucune évaluation. </p>\n";
+	echo htmlspecialchars(my_strtolower(getSettingValue("gepi_denom_boite")))." $nom_conteneur ne contient aucune évaluation. </p>\n";
 
 /**
  * Pied de page
@@ -994,7 +994,7 @@ foreach ($liste_eleves as $eleve) {
 					if(mysql_num_rows($res_ele)>0) {
 						$lig_ele=mysql_fetch_object($res_ele);
 						if (nom_photo($lig_ele->elenoet)){
-							$mess_note[$i][$k].=";affiche_photo('".nom_photo($lig_ele->elenoet)."','".addslashes(strtoupper($eleve_nom[$i])." ".ucfirst(strtolower($eleve_prenom[$i])))."')";
+							$mess_note[$i][$k].=";affiche_photo('".nom_photo($lig_ele->elenoet)."','".addslashes(my_strtoupper($eleve_nom[$i])." ".casse_mot($eleve_prenom[$i],'majf2'))."')";
 						}
 						else {
 							$mess_note[$i][$k].=";document.getElementById('div_photo_eleve').innerHTML='';";
@@ -1025,7 +1025,7 @@ foreach ($liste_eleves as $eleve) {
 					if(mysql_num_rows($res_ele)>0) {
 						$lig_ele=mysql_fetch_object($res_ele);
 						if (nom_photo($lig_ele->elenoet)){
-							$mess_comment[$i][$k].=";affiche_photo('".nom_photo($lig_ele->elenoet)."','".addslashes(strtoupper($eleve_nom[$i])." ".ucfirst(strtolower($eleve_prenom[$i])))."')";
+							$mess_comment[$i][$k].=";affiche_photo('".nom_photo($lig_ele->elenoet)."','".addslashes(my_strtoupper($eleve_nom[$i])." ".casse_mot($eleve_prenom[$i],'majf2'))."')";
 						}
 						else {
 							$mess_comment[$i][$k].=";document.getElementById('div_photo_eleve').innerHTML='';";
@@ -1106,9 +1106,9 @@ if ($id_devoir==0) {
 				$ramener_sur_referentiel_s_dev[$i][$m] = mysql_result($query_nb_dev, $m, 'ramener_sur_referentiel');
 				$fac_s_dev[$i][$m]  = mysql_result($query_nb_dev, $m, 'facultatif');
 				$date = mysql_result($query_nb_dev, $m, 'date');
-				$annee = substr($date,0,4);
-				$mois =  substr($date,5,2);
-				$jour =  substr($date,8,2);
+				$annee = mb_substr($date,0,4);
+				$mois =  mb_substr($date,5,2);
+				$jour =  mb_substr($date,8,2);
 				$display_date_s_dev[$i][$m] = $jour."/".$mois."/".$annee;
 
 				$m++;

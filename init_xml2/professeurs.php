@@ -59,7 +59,7 @@ function createRandomPassword() {
     //while ($i <= 7) {
     while ($i <= 5) {
         $num = rand() % 33;
-        $tmp = substr($chars, $num, 1);
+        $tmp = mb_substr($chars, $num, 1);
         $pass = $pass . $tmp;
         $i++;
     }
@@ -627,102 +627,7 @@ else {
 	
 						$prof[$k]["prenom"]=traitement_magic_quotes(corriger_caracteres($prof[$k]["prenom"]));
 
-						/*
-						if ($_POST['login_gen_type'] == "name") {
-							$temp1 = $prof[$k]["nom_usage"];
-							$temp1 = strtoupper($temp1);
-							$temp1 = preg_replace("/ /","", $temp1);
-							$temp1 = preg_replace("/-/","_", $temp1);
-							$temp1 = preg_replace("/'/","", $temp1);
-							$temp1 = strtoupper(remplace_accents($temp1,"all"));
-							//$temp1 = substr($temp1,0,8);
-	
-						} elseif ($_POST['login_gen_type'] == "name8") {
-							$temp1 = $prof[$k]["nom_usage"];
-							$temp1 = strtoupper($temp1);
-							$temp1 = preg_replace("/ /","", $temp1);
-							$temp1 = preg_replace("/-/","_", $temp1);
-							$temp1 = preg_replace("/'/","", $temp1);
-							$temp1 = strtoupper(remplace_accents($temp1,"all"));
-							$temp1 = substr($temp1,0,8);
-						} elseif ($_POST['login_gen_type'] == "fname8") {
-							$temp1 = $prof[$k]["prenom"]{0} . $prof[$k]["nom_usage"];
-							$temp1 = strtoupper($temp1);
-							$temp1 = preg_replace("/ /","", $temp1);
-							$temp1 = preg_replace("/-/","_", $temp1);
-							$temp1 = preg_replace("/'/","", $temp1);
-							$temp1 = strtoupper(remplace_accents($temp1,"all"));
-							$temp1 = substr($temp1,0,8);
-						} elseif ($_POST['login_gen_type'] == "fname19") {
-							$temp1 = $prof[$k]["prenom"]{0} . $prof[$k]["nom_usage"];
-							$temp1 = strtoupper($temp1);
-							$temp1 = preg_replace("/ /","", $temp1);
-							$temp1 = preg_replace("/-/","_", $temp1);
-							$temp1 = preg_replace("/'/","", $temp1);
-							$temp1 = strtoupper(remplace_accents($temp1,"all"));
-							$temp1 = substr($temp1,0,19);
-						} elseif ($_POST['login_gen_type'] == "firstdotname") {
-							if ($prenom_compose != '') {
-								$firstname = $prenom_compose;
-							} else {
-								$firstname = $premier_prenom;
-							}
-	
-							$temp1 = $firstname . "." . $prof[$k]["nom_usage"];
-							$temp1 = strtoupper($temp1);
-	
-							$temp1 = preg_replace("/ /","", $temp1);
-							$temp1 = preg_replace("/-/","_", $temp1);
-							$temp1 = preg_replace("/'/","", $temp1);
-							$temp1 = strtoupper(remplace_accents($temp1,"all"));
-							//$temp1 = substr($temp1,0,19);
-						} elseif ($_POST['login_gen_type'] == "firstdotname19") {
-							if ($prenom_compose != '') {
-								$firstname = $prenom_compose;
-							} else {
-								$firstname = $premier_prenom;
-							}
-	
-							$temp1 = $firstname . "." . $prof[$k]["nom_usage"];
-							$temp1 = strtoupper($temp1);
-							$temp1 = preg_replace("/ /","", $temp1);
-							$temp1 = preg_replace("/-/","_", $temp1);
-							$temp1 = preg_replace("/'/","", $temp1);
-							$temp1 = strtoupper(remplace_accents($temp1,"all"));
-							$temp1 = substr($temp1,0,19);
-						} elseif ($_POST['login_gen_type'] == "namef8") {
-							$temp1 =  substr($prof[$k]["nom_usage"],0,7) . $prof[$k]["prenom"]{0};
-							$temp1 = strtoupper($temp1);
-							$temp1 = preg_replace("/ /","", $temp1);
-							$temp1 = preg_replace("/-/","_", $temp1);
-							$temp1 = preg_replace("/'/","", $temp1);
-							$temp1 = strtoupper(remplace_accents($temp1,"all"));
-							//$temp1 = substr($temp1,0,8);
-						} elseif ($_POST['login_gen_type'] == "lcs") {
-							$nom = $prof[$k]["nom_usage"];
-							$nom = strtolower($nom);
-							if (preg_match("/\s/",$nom)) {
-								$noms = preg_split("/\s/",$nom);
-								$nom1 = $noms[0];
-								if (strlen($noms[0]) < 4) {
-									$nom1 .= "_". $noms[1];
-									$separator = " ";
-								} else {
-									$separator = "-";
-								}
-							} else {
-								$nom1 = $nom;
-								$sn = ucfirst($nom);
-							}
-							$firstletter_nom = $nom1{0};
-							$firstletter_nom = strtoupper($firstletter_nom);
-							$prenom = $prof[$k]["prenom"];
-							$prenom1 = $prof[$k]["prenom"]{0};
-							$temp1 = $prenom1 . $nom1;
-							$temp1 = remplace_accents($temp1,"all");
-						}
-						else
-						*/
+
 						if($_POST['login_gen_type'] == 'ent'){
 	
 							if (getSettingValue("use_ent") == "y") {
@@ -778,13 +683,12 @@ else {
 	
 						$changemdp = 'y';
 	
-						//echo "<tr><td colspan='4'>strlen($affiche[5])=".strlen($affiche[5])."<br />\$affiche[4]=$affiche[4]<br />\$_POST['sso']=".$_POST['sso']."</td></tr>";
 						if(getSettingValue('auth_sso')=="lcs") {
 							$pwd = '';
 							$mess_mdp = "aucun (sso)";
 							$changemdp = 'n';
 						}
-						elseif (strlen($mdp)>2 and (!isset($prof[$k]["fonction"]) or $prof[$k]["fonction"]=="ENS") and $_POST['sso'] == "no") {
+						elseif (mb_strlen($mdp)>2 and (!isset($prof[$k]["fonction"]) or $prof[$k]["fonction"]=="ENS") and $_POST['sso'] == "no") {
 							//
 							$pwd = md5(trim($mdp));
 							//$mess_mdp = "NUMEN";
