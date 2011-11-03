@@ -547,34 +547,6 @@ function checkAccess() {
     }
 }
 
-
-/**
- * Vérifie qu'un enseignant enseigne une matière dans une classe
- *
- * @deprecated la table j_classes_matieres_professeurs n'existe plus
- * @param string $login Login de l'enseignant
- * @param int $id_classe Id de la classe
- * @param type $matiere
- * @return boolean
- */
-function Verif_prof_classe_matiere ($login,$id_classe,$matiere) {
-    if(empty($login) || empty($id_classe) || empty($matiere)) {return FALSE;}
-    $call_prof = mysql_query("SELECT id_professeur FROM j_classes_matieres_professeurs WHERE (id_classe='".$id_classe."' AND id_matiere='".$matiere."')");
-    $nb_profs = mysql_num_rows($call_prof);
-    $k = 0;
-    $flag = 0;
-    while ($k < $nb_profs) {
-        $prof = @mysql_result($call_prof, $k, "id_professeur");
-        if (strtolower($login) == strtolower($prof)) {$flag = 1;}
-        $k++;
-    }
-    if ($flag == 0) {
-        return FALSE;
-    } else {
-        return TRUE;
-    }
-}
-
 /**
  * Recherche dans la base l'adresse courriel d'un utilisateur
  *
