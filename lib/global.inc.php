@@ -17,9 +17,6 @@ $weekstarts = 1;
 // Cette longueur est liée avec le réglage longmax_login de la table setting (voir /lib/initialisations.inc.php)
 $longmax_login = "10";
 
-// caracteres speciaux pour les mots de passe
-$char_spec = "&\"'-|=}+<>,?;.:/!Â§%";
-
 // labels des périodes
 $gepiClosedPeriodLabel = "période close";
 $gepiOpenPeriodLabel = "période ouverte";

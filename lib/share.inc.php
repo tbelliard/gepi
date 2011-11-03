@@ -88,10 +88,9 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
  *
 
  * @param string $password Mot de passe
- * @param boolean $flag Si $flag = 1, il faut également au moins un caractères spécial (voir $char_spec dans global.inc)
+ * @param boolean $flag Si $flag = 1, il faut également au moins un caractères spécial
  * @return boolean TRUE si le mot de passe est valable
  * @see getSettingValue()
- * @todo on déclare $char_spec alors qu'on ne l'utilise pas, n'y aurait-il pas un problème ?
  */
 function verif_mot_de_passe($password,$flag) {
 	global $info_verif_mot_de_passe;
