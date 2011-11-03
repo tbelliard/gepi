@@ -2550,25 +2550,6 @@ $GLOBALS['photo_largeur_max'] = 0;
 $GLOBALS['photo_hauteur_max'] = 0;
 
 /**
- * Enregistre les calculs de moyennes dans un fichier
- * 
- * Passer à 1 la variable $debug pour générer un fichier de debug...
- *
- * @param string $texte Le calcul à enregistrer
- * @see get_user_temp_directory()
- */
-function calc_moy_debug($texte){
-	$debug=0;
-	if($debug==1){
-		$tmp_dir=get_user_temp_directory();
-		if((!$tmp_dir)||(!file_exists("../temp/".$tmp_dir))) {$tmp_dir="/tmp";} else {$tmp_dir="../temp/".$tmp_dir;}
-		$fich=fopen($tmp_dir."/calc_moy_debug.txt","a+");
-		fwrite($fich,$texte);
-		fclose($fich);
-	}
-}
-
-/**
  * Renvoie le nom d'une classe à partir de son Id
  *
  * @param int $id_classe Id de la classe recherchée
