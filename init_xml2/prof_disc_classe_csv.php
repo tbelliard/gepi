@@ -91,9 +91,6 @@ require_once("init_xml_lib.php");
 <p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
-// On vérifie si l'extension d_base est active
-//verif_active_dbase();
-
 echo "<center><h3 class='gepi'>Cinquième phase d'initialisation" .
 		"<br />Affectation des matières à chaque professeur," .
 		"<br />Affectation des professeurs dans chaque classe," .
@@ -133,24 +130,8 @@ if(!$tempdir){
 //if (!isset($is_posted)) {
 if (!isset($suite)) {
 
-	//if(isset($_POST['temoin_nettoyage_a_faire'])) {
-	//	check_token(false);
-		$del = @mysql_query("DELETE FROM j_groupes_professeurs");
-		$del = @mysql_query("DELETE FROM j_professeurs_matieres");
-	//}
-
-	/*
-	echo "<p>Importation des fichiers <b>F_men.csv</b> et <b>F_gpd.csv</b> contenant les données de relations entre professeurs, matière et classes.";
-	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method=post>";
-	echo "<p>Veuillez préciser le nom complet du fichier <b>F_men.csv</b>.";
-	echo "<p><input type='file' size='80' name='dbf_file' />";
-	echo "<p>Veuillez préciser le nom complet du fichier <b>F_gpd.csv</b>.";
-	echo "<p><input type='file' size='80' name='dbf_file2' />";
-	echo "<input type='hidden' name='is_posted' value='yes' />";
-	echo "<input type='hidden' name='step1' value='y' />";
-	echo "<p><input type='submit' value='Valider' />";
-	echo "</form>";
-	*/
+	$del = @mysql_query("DELETE FROM j_groupes_professeurs");
+	$del = @mysql_query("DELETE FROM j_professeurs_matieres");
 
 	$dest_file="../temp/".$tempdir."/sts.xml";
 
@@ -162,7 +143,7 @@ if (!isset($suite)) {
 	}
 
 	$nom_racine=$sts_xml->getName();
-	if(strtoupper($nom_racine)!='STS_EDT') {
+	if(my_strtoupper($nom_racine)!='STS_EDT') {
 		echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML STS_EMP_&lt;RNE&gt;_&lt;ANNEE&gt;.<br />Sa racine devrait être 'STS_EDT'.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
@@ -176,8 +157,9 @@ if (!isset($suite)) {
 		$divisions[$i]=array();
 
 		foreach($objet_division->attributes() as $key => $value) {
-			if(strtoupper($key)=='CODE') {
-				$divisions[$i]['code']=preg_replace('/"/','',trim(traite_utf8($value)));
+			if(my_strtoupper($key)=='CODE') {
+				//$divisions[$i]['code']=preg_replace('/"/','',trim(traite_utf8($value)));
+				$divisions[$i]['code']=preg_replace("/'/","",preg_replace('/"/','',trim($value)));
 				//echo "<p>\$divisions[$i]['code']=".$divisions[$i]['code']."<br />";
 				break;
 			}
@@ -188,8 +170,9 @@ if (!isset($suite)) {
 
 		foreach($objet_division->SERVICES->children() as $service) {
 			foreach($service->attributes() as $key => $value) {
-				$divisions[$i]["services"][$j][strtolower($key)]=trim(traite_utf8($value));
-				//echo "\$divisions[$i][\"services\"][$j][".strtolower($key)."]=trim(traite_utf8($value))<br />";
+				//$divisions[$i]["services"][$j][my_strtolower($key)]=trim(traite_utf8($value));
+				$divisions[$i]["services"][$j][my_strtolower($key)]=trim($value);
+				//echo "\$divisions[$i][\"services\"][$j][".my_strtolower($key)."]=trim(traite_utf8($value))<br />";
 			}
 
 			$k=0;
@@ -197,9 +180,10 @@ if (!isset($suite)) {
 
 				foreach($enseignant->attributes() as $key => $value) {
 					//<ENSEIGNANT ID="8949" TYPE="epp">
-					//$divisions[$i]["services"][$j]["enseignants"][$k][strtolower($key)]=trim(traite_utf8($value));
-					if(strtoupper($key)=="ID") {
-						$divisions[$i]["services"][$j]["enseignants"][$k]["id"]=trim(traite_utf8($value));
+					//$divisions[$i]["services"][$j]["enseignants"][$k][my_strtolower($key)]=trim(traite_utf8($value));
+					if(my_strtoupper($key)=="ID") {
+						//$divisions[$i]["services"][$j]["enseignants"][$k]["id"]=trim(traite_utf8($value));
+						$divisions[$i]["services"][$j]["enseignants"][$k]["id"]=trim($value);
 						break;
 					}
 				}
@@ -219,8 +203,9 @@ if (!isset($suite)) {
 		$groupes[$i]=array();
 
 		foreach($objet_groupe->attributes() as $key => $value) {
-			if(strtoupper($key)=='CODE') {
-				$groupes[$i]['code']=preg_replace('/"/',"",trim(traite_utf8($value)));
+			if(my_strtoupper($key)=='CODE') {
+				//$groupes[$i]['code']=preg_replace('/"/',"",trim(traite_utf8($value)));
+				$groupes[$i]['code']=preg_replace("/'/","",preg_replace('/"/','',trim($value)));
 				//echo("<p>\$groupes[$i]['code']=".$groupes[$i]['code']."<br />");
 				break;
 			}
@@ -228,8 +213,9 @@ if (!isset($suite)) {
 
 		// Champs enfants du groupe
 		foreach($objet_groupe->children() as $key => $value) {
-			if(in_array(strtoupper($key),$tab_champs_groupe)) {
-				$groupes[$i][strtolower($key)]=preg_replace('/"/',"",trim(traite_utf8($value)));
+			if(in_array(my_strtoupper($key),$tab_champs_groupe)) {
+				//$groupes[$i][my_strtolower($key)]=preg_replace('/"/',"",trim(traite_utf8($value)));
+				$groupes[$i][my_strtolower($key)]=preg_replace('/"/',"",trim($value));
 			}
 		}
 
@@ -240,7 +226,8 @@ if (!isset($suite)) {
 		$j=0;
 		foreach($objet_groupe->DIVISIONS_APPARTENANCE->children() as $objet_division_apartenance) {
 			foreach($objet_division_apartenance->attributes() as $key => $value) {
-				$groupes[$i]["divisions"][$j][strtolower($key)]=preg_replace('/"/',"",trim(traite_utf8($value)));
+				//$groupes[$i]["divisions"][$j][my_strtolower($key)]=preg_replace('/"/',"",trim(traite_utf8($value)));
+				$groupes[$i]["divisions"][$j][my_strtolower($key)]=preg_replace('/"/',"",preg_replace("/'/","",trim($value)));
 			}
 			$j++;
 		}
@@ -248,10 +235,11 @@ if (!isset($suite)) {
 		$j=0;
 		foreach($objet_groupe->SERVICES->children() as $service) {
 			foreach($service->attributes() as $key => $value) {
-				//$groupes[$i]["service"][$j][strtolower($key)]=trim(traite_utf8($value));
-				$groupes[$i]["grp"][$j][strtolower($key)]=trim(traite_utf8($value));
+				//$groupes[$i]["service"][$j][my_strtolower($key)]=trim(traite_utf8($value));
+				//$groupes[$i]["grp"][$j][my_strtolower($key)]=trim(traite_utf8($value));
+				$groupes[$i]["grp"][$j][my_strtolower($key)]=trim($value);
 				// Remarque: Pour les divisions, c'est ["services"] au lieu de ["service"]
-				//           $divisions[$i]["services"][$j][strtolower($key)]=trim(traite_utf8($value));
+				//           $divisions[$i]["services"][$j][my_strtolower($key)]=trim(traite_utf8($value));
 			}
 
 			$k=0;
@@ -259,10 +247,11 @@ if (!isset($suite)) {
 
 				foreach($enseignant->attributes() as $key => $value) {
 					//<ENSEIGNANT ID="8949" TYPE="epp">
-					//$divisions[$i]["services"][$j]["enseignants"][$k][strtolower($key)]=trim(traite_utf8($value));
-					if(strtoupper($key)=="ID") {
+					//$divisions[$i]["services"][$j]["enseignants"][$k][my_strtolower($key)]=trim(traite_utf8($value));
+					if(my_strtoupper($key)=="ID") {
 						//$groupes[$i]["service"][$j]["enseignant"][$k]["id"]=trim(traite_utf8($value));
-						$groupes[$i]["grp"][$j]["enseignant"][$k]["id"]=trim(traite_utf8($value));
+						//$groupes[$i]["grp"][$j]["enseignant"][$k]["id"]=trim(traite_utf8($value));
+						$groupes[$i]["grp"][$j]["enseignant"][$k]["id"]=trim($value);
 						break;
 					}
 				}
@@ -314,7 +303,7 @@ if (!isset($suite)) {
 		$sql="SELECT * from matieres WHERE matiere='$matiere_name';";
 		$verif=mysql_query($sql);;
 		if(mysql_num_rows($verif)==0) {
-			$sql="INSERT INTO matieres SET matiere='".addslashes($matiere_name)."', nom_complet='".addslashes($matiere_nom_complet)."', priority='".$matiere_priorite."', categorie_id = '" . $matiere_categorie . "',matiere_aid='n',matiere_atelier='n';";
+			$sql="INSERT INTO matieres SET matiere='".mysql_real_escape_string($matiere_name)."', nom_complet='".mysql_real_escape_string($matiere_nom_complet)."', priority='".$matiere_priorite."', categorie_id = '" . $matiere_categorie . "',matiere_aid='n',matiere_atelier='n';";
 			$insert=mysql_query($sql);
 		}
 	}
@@ -583,7 +572,7 @@ if (!isset($suite)) {
 					echo "Association des élèves:<br />";
 					echo "<blockquote>\n";
 
-					$sql="SELECT login FROM eleves e, temp_grp t WHERE e.ele_id=t.ELE_ID AND t.NOM_GRP='".addslashes($code_groupe)."';";
+					$sql="SELECT login FROM eleves e, temp_grp t WHERE e.ele_id=t.ELE_ID AND t.NOM_GRP='".mysql_real_escape_string($code_groupe)."';";
 					$get_login_ele=mysql_query($sql);
 					if(mysql_num_rows($get_login_ele)==0) {
 						// On va mettre tous les élèves dans le groupe
@@ -707,7 +696,7 @@ if (!isset($suite)) {
 						echo "Association des élèves:<br />";
 						echo "<blockquote>\n";
 
-						$sql="SELECT login FROM eleves e, temp_grp t WHERE e.ele_id=t.ELE_ID AND t.NOM_GRP='".addslashes($code_groupe)."';";
+						$sql="SELECT login FROM eleves e, temp_grp t WHERE e.ele_id=t.ELE_ID AND t.NOM_GRP='".mysql_real_escape_string($code_groupe)."';";
 						$get_login_ele=mysql_query($sql);
 						if(mysql_num_rows($get_login_ele)==0) {
 							// On va mettre tous les élèves dans le groupe
@@ -1127,8 +1116,8 @@ else {
 
 										$matiere_nom = mysql_result(mysql_query("SELECT nom_complet FROM matieres WHERE matiere = '" . $affiche[0] . "'"), 0);
 										if($temoin_groupe_deja_cree=="non"){
-											$res = mysql_query("insert into groupes set name = '" . $affiche[0] . "', description = '" . $matiere_nom . "', recalcul_rang = 'y'");
-											affiche_debug("insert into groupes set name = '" . $affiche[0] . "', description = '" . $matiere_nom . "', recalcul_rang = 'y'<br />\n");
+											$res = mysql_query("insert into groupes set name = '" . $affiche[0] . "', description = '" . mysql_real_escape_string($matiere_nom) . "', recalcul_rang = 'y'");
+											affiche_debug("insert into groupes set name = '" . $affiche[0] . "', description = '" . mysql_real_escape_string($matiere_nom) . "', recalcul_rang = 'y'<br />\n");
 											$group_id = mysql_insert_id();
 											$temoin_groupe_deja_cree=$group_id;
 

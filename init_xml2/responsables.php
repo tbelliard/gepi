@@ -29,7 +29,7 @@
 
 	function extr_valeur($lig){
 		unset($tabtmp);
-		$tabtmp=explode(">",my_ereg_replace("<",">",$lig));
+		$tabtmp=explode(">",preg_replace("/</",">",$lig));
 		return trim($tabtmp[2]);
 	}
 
@@ -46,9 +46,9 @@
 		$new_chaine="";
 		for($i=0;$i<count($tmp_tab1);$i++){
 			$tmp_tab2=explode("-",$tmp_tab1[$i]);
-			$new_chaine.=ucfirst(strtolower($tmp_tab2[0]));
+			$new_chaine.=casse_mot($tmp_tab2[0],'majf2');
 			for($j=1;$j<count($tmp_tab2);$j++){
-				$new_chaine.="-".ucfirst(strtolower($tmp_tab2[$j]));
+				$new_chaine.="-".casse_mot($tmp_tab2[$j],'majf2');
 			}
 			$new_chaine.=" ";
 		}
@@ -281,7 +281,7 @@
 					// $unzipped_max_filesize < 0    extraction zip désactivée
 					if($unzipped_max_filesize>=0) {
 						$fichier_emis=$xml_file['name'];
-						$extension_fichier_emis=strtolower(strrchr($fichier_emis,"."));
+						$extension_fichier_emis=my_strtolower(mb_strrchr($fichier_emis,"."));
 						if (($extension_fichier_emis==".zip")||($xml_file['type']=="application/zip"))
 							{
 							require_once('../lib/pclzip.lib.php');
@@ -375,7 +375,7 @@
 						}
 
 						$nom_racine=$resp_xml->getName();
-						if(strtoupper($nom_racine)!='BEE_RESPONSABLES') {
+						if(my_strtoupper($nom_racine)!='BEE_RESPONSABLES') {
 							echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Responsables.<br />Sa racine devrait être 'BEE_RESPONSABLES'.</p>\n";
 							require("../lib/footer.inc.php");
 							die();
@@ -411,12 +411,16 @@
 
 							foreach($personne->attributes() as $key => $value) {
 								// <PERSONNE PERSONNE_ID="294435">
-								$personnes[$i][strtolower($key)]=traitement_magic_quotes(corriger_caracteres(trim($value)));
+								//$personnes[$i][my_strtolower($key)]=traitement_magic_quotes(corriger_caracteres(trim($value)));
+								$personnes[$i][my_strtolower($key)]=trim($value);
 							}
 
 							foreach($personne->children() as $key => $value) {
-								if(in_array(strtoupper($key),$tab_champs_personne)) {
-									$personnes[$i][strtolower($key)]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',trim(traite_utf8($value)))));
+								if(in_array(my_strtoupper($key),$tab_champs_personne)) {
+									//$personnes[$i][my_strtolower($key)]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',trim(traite_utf8($value)))));
+									//$personnes[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)));
+									//$personnes[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',$value));
+									$personnes[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'$/","",preg_replace("/^'/"," ",$value))));
 									//echo "\$structure->$key=".$value."<br />";
 								}
 							}
@@ -436,10 +440,10 @@
 							//$sql="INSERT INTO temp_resp_pers_import SET ";
 							$sql="INSERT INTO resp_pers SET ";
 							$sql.="pers_id='".$personnes[$i]["personne_id"]."', ";
-							$sql.="nom='".$personnes[$i]["nom"]."', ";
-							$sql.="prenom='".$personnes[$i]["prenom"]."', ";
+							$sql.="nom='".mysql_real_escape_string($personnes[$i]["nom"])."', ";
+							$sql.="prenom='".mysql_real_escape_string($personnes[$i]["prenom"])."', ";
 							if(isset($personnes[$i]["lc_civilite"])){
-								$sql.="civilite='".ucfirst(strtolower($personnes[$i]["lc_civilite"]))."', ";
+								$sql.="civilite='".casse_mot($personnes[$i]["lc_civilite"],'majf2')."', ";
 							}
 							if(isset($personnes[$i]["tel_personnel"])){
 								$sql.="tel_pers='".$personnes[$i]["tel_personnel"]."', ";
@@ -451,7 +455,7 @@
 								$sql.="tel_prof='".$personnes[$i]["tel_professionnel"]."', ";
 							}
 							if(isset($personnes[$i]["mel"])){
-								$sql.="mel='".$personnes[$i]["mel"]."', ";
+								$sql.="mel='".mysql_real_escape_string($personnes[$i]["mel"])."', ";
 							}
 							if(isset($personnes[$i]["adresse_id"])){
 								$sql.="adr_id='".$personnes[$i]["adresse_id"]."';";
@@ -466,7 +470,7 @@
 							affiche_debug("$sql<br />\n");
 							$res_insert=mysql_query($sql);
 							if(!$res_insert){
-								echo "Erreur lors de la requête $sql<br />\n";
+								echo "<span style='color:red'>Erreur lors de la requête $sql</span><br />\n";
 								flush();
 								$nb_err++;
 							}
@@ -478,11 +482,11 @@
 								if(mysql_num_rows($res_tmp_u)>0) {
 									$lig_tmp_u=mysql_fetch_object($res_tmp_u);
 
-									$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".$personnes[$i]["nom"]."', prenom='".$personnes[$i]["prenom"]."', ";
+									$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".mysql_real_escape_string($personnes[$i]["nom"])."', prenom='".mysql_real_escape_string($personnes[$i]["prenom"])."', ";
 									if(isset($personnes[$i]["lc_civilite"])){
-										$sql.="civilite='".ucfirst(strtolower($personnes[$i]["lc_civilite"]))."', ";
+										$sql.="civilite='".casse_mot($personnes[$i]["lc_civilite"],'majf2')."', ";
 									}
-									$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".$lig_tmp_u->email."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
+									$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".mysql_real_escape_string($lig_tmp_u->email)."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
 									if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 									$insert_u=mysql_query($sql);
 									if(!$insert_u) {
@@ -534,7 +538,7 @@
 				}
 
 				$nom_racine=$resp_xml->getName();
-				if(strtoupper($nom_racine)!='BEE_RESPONSABLES') {
+				if(my_strtoupper($nom_racine)!='BEE_RESPONSABLES') {
 					echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Responsables.<br />Sa racine devrait être 'BEE_RESPONSABLES'.</p>\n";
 					require("../lib/footer.inc.php");
 					die();
@@ -588,8 +592,9 @@
 					$responsables[$i]=array();
 
 					foreach($responsable_eleve->children() as $key => $value) {
-						if(in_array(strtoupper($key),$tab_champs_responsable)) {
-							$responsables[$i][strtolower($key)]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',trim(traite_utf8($value)))));
+						if(in_array(my_strtoupper($key),$tab_champs_responsable)) {
+							//$responsables[$i][my_strtolower($key)]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',trim(traite_utf8($value)))));
+							$responsables[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)));
 							//echo "\$structure->$key=".$value."<br />";
 						}
 					}
@@ -622,7 +627,7 @@
 						affiche_debug("$sql<br />\n");
 						$res_insert=mysql_query($sql);
 						if(!$res_insert){
-							echo "Erreur lors de la requête $sql<br />\n";
+							echo "<span style='color:red'>Erreur lors de la requête $sql</span><br />\n";
 							flush();
 							$nb_err++;
 						}
@@ -712,7 +717,7 @@
 				}
 
 				$nom_racine=$resp_xml->getName();
-				if(strtoupper($nom_racine)!='BEE_RESPONSABLES') {
+				if(my_strtoupper($nom_racine)!='BEE_RESPONSABLES') {
 					echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Responsables.<br />Sa racine devrait être 'BEE_RESPONSABLES'.</p>\n";
 					require("../lib/footer.inc.php");
 					die();
@@ -735,13 +740,6 @@
 				$sql="TRUNCATE TABLE resp_adr;";
 				$vide_table = mysql_query($sql);
 
-				/*
-				echo "<p>Lecture du fichier Responsables...<br />\n";
-				while(!feof($fp)){
-					$ligne[]=fgets($fp,4096);
-				}
-				fclose($fp);
-				*/
 				flush();
 
 
@@ -773,12 +771,15 @@
 
 					foreach($adresse->attributes() as $key => $value) {
 						// <ADRESSE ADRESSE_ID="228114">
-						$adresses[$i][strtolower($key)]=$value;
+						$adresses[$i][my_strtolower($key)]=trim($value);
 					}
 
 					foreach($adresse->children() as $key => $value) {
-						if(in_array(strtoupper($key),$tab_champs_adresse)) {
-							$adresses[$i][strtolower($key)]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',trim(traite_utf8($value)))));
+						if(in_array(my_strtoupper($key),$tab_champs_adresse)) {
+							//$adresses[$i][my_strtolower($key)]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',trim(traite_utf8($value)))));
+							//$adresses[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)));
+							//$adresses[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',$value));
+							$adresses[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'$/","",preg_replace("/^'/"," ",$value))));
 							//echo "\$structure->$key=".$value."<br />";
 						}
 					}
@@ -798,34 +799,34 @@
 					$sql="INSERT INTO resp_adr SET ";
 					$sql.="adr_id='".$adresses[$i]["adresse_id"]."', ";
 					if(isset($adresses[$i]["ligne1_adresse"])){
-						$sql.="adr1='".$adresses[$i]["ligne1_adresse"]."', ";
+						$sql.="adr1='".mysql_real_escape_string($adresses[$i]["ligne1_adresse"])."', ";
 					}
 					if(isset($adresses[$i]["ligne2_adresse"])){
-						$sql.="adr2='".$adresses[$i]["ligne2_adresse"]."', ";
+						$sql.="adr2='".mysql_real_escape_string($adresses[$i]["ligne2_adresse"])."', ";
 					}
 					if(isset($adresses[$i]["ligne3_adresse"])){
-						$sql.="adr3='".$adresses[$i]["ligne3_adresse"]."', ";
+						$sql.="adr3='".mysql_real_escape_string($adresses[$i]["ligne3_adresse"])."', ";
 					}
 					if(isset($adresses[$i]["ligne4_adresse"])){
-						$sql.="adr4='".$adresses[$i]["ligne4_adresse"]."', ";
+						$sql.="adr4='".mysql_real_escape_string($adresses[$i]["ligne4_adresse"])."', ";
 					}
 					if(isset($adresses[$i]["code_postal"])){
 						$sql.="cp='".$adresses[$i]["code_postal"]."', ";
 					}
 					if(isset($adresses[$i]["ll_pays"])){
-						$sql.="pays='".$adresses[$i]["ll_pays"]."', ";
+						$sql.="pays='".mysql_real_escape_string($adresses[$i]["ll_pays"])."', ";
 					}
 					if(isset($adresses[$i]["libelle_postal"])){
-						$sql.="commune='".$adresses[$i]["libelle_postal"]."', ";
+						$sql.="commune='".mysql_real_escape_string($adresses[$i]["libelle_postal"])."', ";
 					} elseif(isset($adresses[$i]["commune_etrangere"])) {
-						$sql.="commune='".$adresses[$i]["commune_etrangere"]."', ";
+						$sql.="commune='".mysql_real_escape_string($adresses[$i]["commune_etrangere"])."', ";
 					}
 					$sql=mb_substr($sql,0,mb_strlen($sql)-2);
 					$sql.=";";
 					affiche_debug("$sql<br />\n");
 					$res_insert=mysql_query($sql);
 					if(!$res_insert){
-						echo "Erreur lors de la requête $sql<br />\n";
+						echo "<span style='color:red'>Erreur lors de la requête $sql</span><br />\n";
 						flush();
 						$nb_err++;
 					}

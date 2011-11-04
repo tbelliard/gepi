@@ -333,6 +333,8 @@ echo "Navigation";
 echo "</a>";
 //=========================
 
+echo " | <a href='../init_xml2/init_alternatif.php?cat=classes' onclick=\"return confirm_abandon (this, change, '$themessage')\">Création par lots</a>";
+
 echo "</p>\n";
 echo "</form>\n";
 

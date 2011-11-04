@@ -119,12 +119,13 @@ if((isset($maj))||(isset($_REQUEST['action']))) {
 	check_token();
 }
 
+/*
 //if (($_POST['maj'])=="9") {
 if ($maj=="9") {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
 	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a></p>\n";
 }
-
+*/
 //debug_var();
 
 function init_time() {

@@ -41,11 +41,6 @@ if (!checkAccess()) {
     die();
 }
 
-
-// MODIF A FAIRE:
-// ALTER TABLE `eleves` ADD `ele_id` VARCHAR( 10 ) NOT NULL ;
-
-
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation des élèves - Etape 3";
 require_once("../lib/header.inc");
@@ -78,8 +73,18 @@ if (isset($is_posted) and ($is_posted == "yes")) {
         $reg_login = @mysql_result($req, 0, 'col2');
 
         $no_gep = @mysql_result($call_data, $i, "ELENONAT");
-        $reg_nom = traitement_magic_quotes(corriger_caracteres(@mysql_result($call_data, $i, "ELENOM")));
+
+        //$reg_nom = traitement_magic_quotes(corriger_caracteres(@mysql_result($call_data, $i, "ELENOM")));
+        $reg_nom = @mysql_result($call_data, $i, "ELENOM");
+        $reg_nom = nettoyer_caracteres_nom($reg_nom);
+        $reg_nom = trim(preg_replace("/'/", " ", $reg_nom));
+
         $reg_prenom = @mysql_result($call_data, $i, "ELEPRE");
+        $tab_prenom = explode(" ",$reg_prenom);
+        //$reg_prenom = traitement_magic_quotes(corriger_caracteres($tab_prenom[0]));
+        $tab_prenom[0] = nettoyer_caracteres_nom($tab_prenom[0]);
+        $reg_prenom = preg_replace("/'/", "", $tab_prenom[0]);
+
         $reg_elenoet = @mysql_result($call_data, $i, "ELENOET");
         //$reg_ereno = @mysql_result($call_data, $i, "ERENO");
         $reg_ele_id = @mysql_result($call_data, $i, "ELE_ID");
@@ -88,8 +93,6 @@ if (isset($is_posted) and ($is_posted == "yes")) {
         $reg_doublant = @mysql_result($call_data, $i, "ELEDOUBL");
         $reg_classe = @mysql_result($call_data, $i, "DIVCOD");
         $reg_etab = @mysql_result($call_data, $i, "ETOCOD_EP");
-        $tab_prenom = explode(" ",$reg_prenom);
-        $reg_prenom = traitement_magic_quotes(corriger_caracteres($tab_prenom[0]));
         $reg_regime = mysql_result($call_data, $i, "ELEREG");
 
         $reg_lieu_naissance = mysql_result($call_data, $i, "LIEU_NAISSANCE");
@@ -98,7 +101,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
         if ($reg_naissance == '') {$reg_naissance = "19000101";}
         $maj_tempo = mysql_query("UPDATE temp_gep_import2 SET LOGIN='$reg_login' WHERE ID_TEMPO='$id_tempo'");
 
-        $reg_eleve = mysql_query("INSERT INTO eleves SET no_gep='$no_gep',login='$reg_login',nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='$reg_elenoet',ele_id='$reg_ele_id', lieu_naissance='$reg_lieu_naissance'");
+        $reg_eleve = mysql_query("INSERT INTO eleves SET no_gep='$no_gep',login='$reg_login',nom='".mysql_real_escape_string($reg_nom)."',prenom='".mysql_real_escape_string($reg_prenom)."',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='$reg_elenoet',ele_id='$reg_ele_id', lieu_naissance='$reg_lieu_naissance'");
 
         if (!$reg_eleve) {echo "<p>Erreur lors de l'enregistrement de l'élève $reg_nom $reg_prenom.</p>\n";}
 		else {
@@ -108,14 +111,14 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 			if(mysql_num_rows($res_tmp_u)>0) {
 				$lig_tmp_u=mysql_fetch_object($res_tmp_u);
 
-				$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".$reg_nom."', prenom='".$reg_prenom."', ";
+				$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".mysql_real_escape_string($reg_nom)."', prenom='".mysql_real_escape_string($reg_prenom)."', ";
 				if($reg_sexe=='M') {
 					$sql.="civilite='M', ";
 				}
 				else {
 					$sql.="civilite='MLLE', ";
 				}
-				$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".$lig_tmp_u->email."', statut='eleve', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
+				$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".mysql_real_escape_string($lig_tmp_u->email)."', statut='eleve', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
 				if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 				$insert_u=mysql_query($sql);
 				if(!$insert_u) {
@@ -250,8 +253,17 @@ else {
 			$ligne_pb = 'no';
 			$id_tempo = mysql_result($call_data, $i, "ID_TEMPO");
 			$no_gep = mysql_result($call_data, $i, "ELENONAT");
+
 			$reg_nom = mysql_result($call_data, $i, "ELENOM");
+			$reg_nom = nettoyer_caracteres_nom($reg_nom);
+			$reg_nom = trim(preg_replace("/'/", " ", $reg_nom));
+
 			$reg_prenom = mysql_result($call_data, $i, "ELEPRE");
+			$tab_prenom = explode(" ",$reg_prenom);
+			$reg_prenom = $tab_prenom[0];
+			$reg_prenom = nettoyer_caracteres_nom($tab_prenom[0]);
+			$reg_prenom = preg_replace("/'/", "", $tab_prenom[0]);
+
 			$reg_elenoet = mysql_result($call_data, $i, "ELENOET");
 			//$reg_ereno = mysql_result($call_data, $i, "ERENO");
 			$reg_ele_id = mysql_result($call_data, $i, "ELE_ID");
@@ -260,13 +272,12 @@ else {
 			$reg_doublant = mysql_result($call_data, $i, "ELEDOUBL");
 			$reg_classe = mysql_result($call_data, $i, "DIVCOD");
 			$reg_etab = mysql_result($call_data, $i, "ETOCOD_EP");
-			$tab_prenom = explode(" ",$reg_prenom);
-			$reg_prenom = $tab_prenom[0];
+
 			$reg_regime = mysql_result($call_data, $i, "ELEREG");
 			if ($no_gep != '') {
 				$no_gep_aff = $no_gep;
 			} else {
-				$no_gep_aff = "<font color = 'red'>ND</font>";
+				$no_gep_aff = "<span style='color:red'>ND</span>";
 				$ligne_pb = 'yes';
 			}
 	
@@ -291,19 +302,8 @@ else {
 			if (($no_gep == '') or ($nouv_login=='yes')) {
 				$login_eleve="";
 	
-				$reg_nom = strtr($reg_nom,"àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
-				$reg_prenom = strtr($reg_prenom,"àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
-				/*
-				$temp1 = strtoupper($reg_nom);
-				$temp1 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp1);
-				$temp1 = strtr($temp1, " '-", "___");
-				$temp1 = mb_substr($temp1,0,7);
-				$temp2 = strtoupper($reg_prenom);
-				$temp2 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp2);
-				$temp2 = strtr($temp2, " '-", "___");
-				$temp2 = mb_substr($temp2,0,1);
-				$login_eleve = $temp1.'_'.$temp2;
-				*/
+				//$reg_nom = remplace_accents($reg_nom);
+				//$reg_prenom = remplace_accents($reg_prenom);
 
 				if($reg_ele_id!='') {
 					$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant1='".$reg_ele_id."' AND statut='eleve';";
@@ -338,6 +338,7 @@ else {
 						$login_eleve = "erreur_".$id_tempo;
 					}
 				}
+
 				//echo "Avant auth_sso<br />";
 				//if(getSettingValue('use_sso')=="lcs") {
 				if(getSettingValue('auth_sso')=="lcs") {
@@ -370,7 +371,7 @@ else {
 					$test_unicite = 'no';
 					$temp = $login_eleve;
 					while ($test_unicite != 'yes') {
-						// test_unique_e_login() contrôle l'existence du login dans la table 'utilisateurs' et renseigne la table 'tempo2'
+						// test_unique_e_login() contrôle l'existence du login dans la table 'utilisateurs' et ***renseigne la table 'tempo2'***
 						//$test_unicite = test_unique_e_login($login_eleve,$i);
 						$test_unicite = test_unique_e_login($login_eleve,$id_tempo);
 						if ($test_unicite != 'yes') {
@@ -384,19 +385,19 @@ else {
 			if ($reg_nom != '') {
 				$reg_nom_aff = $reg_nom;
 			} else {
-				$reg_nom_aff = "<font color = 'red'>ND</font>";
+				$reg_nom_aff = "<span style='color:red'>ND</span>";
 				$ligne_pb = 'yes';
 			}
 			if ($reg_prenom != '') {
 				$reg_prenom_aff = $reg_prenom;
 			} else {
-				$reg_prenom_aff = "<font color = 'red'>ND</font>";
+				$reg_prenom_aff = "<span style='color:red'>ND</span>";
 				$ligne_pb = 'yes';
 			}
 			if (($reg_sexe == "M") or ($reg_sexe == "F")) {
 				$reg_sexe_aff = $reg_sexe;
 			} else {
-				$reg_sexe_aff = "<font color = 'red'>ND</font>";
+				$reg_sexe_aff = "<span style='color:red'>ND</span>";
 				$ligne_pb = 'yes';
 			}
 			if ($reg_naissance != '') {
@@ -410,7 +411,7 @@ else {
 	
 			$reg_regime_aff=traite_regime_sconet($reg_regime);
 			if($reg_regime_aff=="ERR"){
-				$reg_regime_aff="<font color = 'red'>ND</font>";
+				$reg_regime_aff="<span style='color:red'>ND</span>";
 				$ligne_pb = 'yes';
 			}
 			//=========================
@@ -420,7 +421,7 @@ else {
 			} else if ($reg_doublant == "O") {
 				$reg_doublant_aff = "O";
 			} else {
-				$reg_doublant_aff = "<font color = 'red'>ND</font>";
+				$reg_doublant_aff = "<span style='color:red'>ND</span>";
 				$ligne_pb = 'yes';
 			}
 	
@@ -437,7 +438,7 @@ else {
 				$j++;
 			}
 			if ($classe_error == 'yes') {
-				$classe_aff = "<font color = 'red'>ND</font>";
+				$classe_aff = "<span style='color:red'>ND</span>";
 				$ligne_pb = 'yes';
 			}
 			if ($reg_etab != '') {
@@ -449,11 +450,11 @@ else {
 					$etab_ville = @mysql_result($calletab, 0, "ville");
 					$reg_etab_aff = "$etab_nom, $etab_cp $etab_ville";
 				} else {
-					$reg_etab_aff = "<font color = 'red'>RNE : $reg_etab, étab. non répertorié</font>";
+					$reg_etab_aff = "<span style='color:red'>RNE : $reg_etab, étab. non répertorié</span>";
 					$ligne_pb = 'yes';
 				}
 			} else {
-				$reg_etab_aff = "<font color = 'red'>ND</font>";
+				$reg_etab_aff = "<span style='color:red'>ND</span>";
 				$ligne_pb = 'yes';
 			}
 	

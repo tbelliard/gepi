@@ -374,12 +374,12 @@
 								if(($tab[$tabindice[1]]!='')&&(!in_array($tab[$tabindice[1]],$udt_matiere))) {$udt_matiere[]=$tab[$tabindice[1]];}
 								if(($tab[$tabindice[2]]!='')&&(!in_array($tab[$tabindice[2]],$udt_prof))) {$udt_prof[]=$tab[$tabindice[2]];}
 	
-								$div=my_ereg_replace("[^a-zA-Z0-9_. -]", "", $tab[$tabindice[0]]);
-								$matiere=my_ereg_replace("[^a-zA-Z0-9_. -]","", $tab[$tabindice[1]]);
-								$professeur=my_ereg_replace("[^a-zA-Z_. -]","", $tab[$tabindice[2]]);
-								$groupe=my_ereg_replace("[^a-zA-Z0-9_. -]","", $tab[$tabindice[3]]);
-								$regroup=my_ereg_replace("[^a-zA-Z0-9_. -]","", $tab[$tabindice[4]]);
-								$mo=strtoupper($tab[$tabindice[5]]);
+								$div=preg_replace("/[^a-zA-Z0-9_. -]/", "", $tab[$tabindice[0]]);
+								$matiere=preg_replace("/[^a-zA-Z0-9_. -]/","", $tab[$tabindice[1]]);
+								$professeur=preg_replace("/[^a-zA-Z_. -]/","", $tab[$tabindice[2]]);
+								$groupe=preg_replace("/[^a-zA-Z0-9_. -]/","", $tab[$tabindice[3]]);
+								$regroup=preg_replace("/[^a-zA-Z0-9_. -]/","", $tab[$tabindice[4]]);
+								$mo=my_strtoupper($tab[$tabindice[5]]);
 	
 								//if($mo=="MO") {
 								if($regroup!="") {
@@ -444,7 +444,7 @@
 							for($j=0;$j<count($tab_classe);$j++) {
 								echo "<option value='$tab_classe[$j]'";
 								//echo "<option value='$tab_id_classe[$j]'";
-								if(strtolower($tab_classe[$j])==strtolower($udt_div[$i])) {echo " selected='true'";}
+								if(my_strtolower($tab_classe[$j])==my_strtolower($udt_div[$i])) {echo " selected='true'";}
 								echo ">$tab_classe[$j]</option>\n";
 							}
 							echo "</select>\n";
@@ -502,8 +502,8 @@
 							for($j=0;$j<count($tab_matiere);$j++) {
 								echo "<option value='$tab_matiere[$j]'";
 								//if(strtolower($tab_matiere[$j])==strtolower($udt_matiere[$i])) {echo " selected='true'";}
-								if((strtolower($tab_matiere[$j])==strtolower($udt_matiere[$i]))||
-								((isset($tab_udt_matiere[$tab_matiere[$j]]))&&(strtolower($tab_udt_matiere[$tab_matiere[$j]])==strtolower($udt_matiere[$i])))) {
+								if((my_strtolower($tab_matiere[$j])==my_strtolower($udt_matiere[$i]))||
+								((isset($tab_udt_matiere[$tab_matiere[$j]]))&&(my_strtolower($tab_udt_matiere[$tab_matiere[$j]])==my_strtolower($udt_matiere[$i])))) {
 									echo " selected='true'";
 									$matiere_trouvee="y";
 								}
@@ -565,8 +565,8 @@
 
 						while($lig=mysql_fetch_object($res)) {
 							$tab_login_prof[]=$lig->login;
-							$tab_nom_prof[]=strtoupper($lig->nom);
-							$tab_prenom_prof[]=strtoupper($lig->prenom);
+							$tab_nom_prof[]=my_strtoupper($lig->nom);
+							$tab_prenom_prof[]=my_strtoupper($lig->prenom);
 						}
 
 						// Identifier les profs
@@ -600,19 +600,19 @@
 							for($j=0;$j<count($tab_login_prof);$j++) {
 								echo "<option value='$tab_login_prof[$j]'";
 
-								if((isset($tab_udt_prof[$tab_login_prof[$j]]))&&(strtolower($tab_udt_prof[$tab_login_prof[$j]])==strtolower($udt_prof[$i]))) {
+								if((isset($tab_udt_prof[$tab_login_prof[$j]]))&&(my_strtolower($tab_udt_prof[$tab_login_prof[$j]])==my_strtolower($udt_prof[$i]))) {
 									echo " selected='true'";
 									$prof_trouve="y";
 								}
 								else {
-									if($tab_nom_prof[$j]==strtoupper($udt_nom_suppose)) {
-										if($tab_prenom_prof[$j]==strtoupper($udt_prenom_suppose)) {
+									if($tab_nom_prof[$j]==my_strtoupper($udt_nom_suppose)) {
+										if($tab_prenom_prof[$j]==my_strtoupper($udt_prenom_suppose)) {
 											echo " selected='true'";
 											$prof_trouve="y";
 										}
 									}
 								}
-								echo ">$tab_nom_prof[$j] ".ucfirst(strtolower($tab_prenom_prof[$j]))."</option>\n";
+								echo ">$tab_nom_prof[$j] ".casse_mot($tab_prenom_prof[$j],'majf2')."</option>\n";
 							}
 							echo "</select>\n";
 							echo "</td>\n";
@@ -752,7 +752,7 @@ $
 					die();
 				}
 				while($lig_profs=mysql_fetch_object($res_profs)) {
-					$nom_prenom_prof[$lig_profs->login]=$lig_profs->civilite." ".strtoupper($lig_profs->nom)." ".casse_mot($lig_profs->prenom,'majf2');
+					$nom_prenom_prof[$lig_profs->login]=$lig_profs->civilite." ".my_strtoupper($lig_profs->nom)." ".casse_mot($lig_profs->prenom,'majf2');
 				}
 
 				$lignes_deja_traitees=array();
