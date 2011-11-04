@@ -83,7 +83,8 @@ if (!isset($_POST["action"])) {
 	echo "<br /><br /><p>Quelle formule appliquer pour la génération du login ?<br />\n";
 
 	if(getSettingValue("use_ent")!='y') {
-		$default_login_gen_type=getSettingValue('login_gen_type');
+		//$default_login_gen_type=getSettingValue('login_gen_type');
+		$default_login_gen_type=getSettingValue('mode_generation_login');
 		if($default_login_gen_type=='') {$default_login_gen_type='name';}
 	}
 	else {
