@@ -69,7 +69,6 @@ function AfficheDatesDebutFinSemaine() {
         while (date("D", $ts) != "Mon") {
         $ts-=86400;
         }
-        setlocale (LC_TIME, 'fr_FR','fra');
         echo strftime("%d %b ", $ts);
         $ts+=86400*5;
         echo " - ";
@@ -118,7 +117,6 @@ function RecupereTimestampJour ($jour) {
 function RecupereLundisVendredis () {
 
     $tab_select_semaine = array();
-    setlocale (LC_TIME, 'fr_FR','fra');
     
     if ((1<=date("n")) AND (date("n") <=8)) {
 	    $annee = date("Y");
@@ -169,7 +167,6 @@ function RecupereLundisVendredis () {
 function RecupereJoursSemaine () {
 
     $tab_select_semaine = array();
-    setlocale (LC_TIME, 'fr_FR','fra');
     
     if ((1<=date("n")) AND (date("n") <=8)) {
 	    $annee = date("Y");

@@ -311,7 +311,6 @@ echo "\" />\n";
 if (isset($info)) {
 	$titre = "Informations Générales : ";
 } elseif (!isset($info)) {
-	setlocale (LC_TIME, 'fr_FR','fra');
 	$titre = strftime("%A %d %B %Y", $ctCompteRendu->getDateCt());
 }
 
