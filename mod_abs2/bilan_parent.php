@@ -282,7 +282,7 @@ include('menu_bilans.inc.php');
     </p>
     <p>
       <span style="background-color:fuchsia;">&nbsp;RNJ&nbsp;</span>
-              	Manquement aux obligations scolaires : Retard non justifiée
+              	Manquement aux obligations scolaires : Retard non justifié
     </p>
     <p>
       <span style="background-color:blue;">&nbsp;&nbsp;&nbsp;J&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -290,7 +290,7 @@ include('menu_bilans.inc.php');
     </p>
     <p>
       <span style="background-color:aqua;">&nbsp;&nbsp;RJ&nbsp;&nbsp;</span>
-              	Manquement aux obligations scolaires : Retard justifiée
+              	Manquement aux obligations scolaires : Retard justifié
     </p>
 
     <!-- Absences totales -->
