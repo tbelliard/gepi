@@ -22,56 +22,6 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-/*
-function decompte_debug($motif,$texte) {
-	global $tab_instant, $debug;
-	if($debug=="y") {
-		$instant=microtime();
-		if(isset($tab_instant[$motif])) {
-			$tmp_tab1=explode(" ",$instant);
-			$tmp_tab2=explode(" ",$tab_instant[$motif]);
-			if($tmp_tab1[1]!=$tmp_tab2[1]) {
-				$diff=$tmp_tab1[1]-$tmp_tab2[1];
-			}
-			else {
-				$diff=$tmp_tab1[0]-$tmp_tab2[0];
-			}
-			//if($debug=="y") {
-				echo "<p style='color:green;'>$texte: ".$diff." s</p>\n";
-			//}
-		}
-		else {
-			//if($debug=="y") {
-				echo "<p style='color:green;'>$texte</p>\n";
-			//}
-		}
-		$tab_instant[$motif]=$instant;
-	}
-}
-
-function regime($id_reg) {
-	switch($id_reg) {
-		case "d/p":
-			$regime="demi-pensionnaire";
-			break;
-		case "ext.":
-			$regime="externe";
-			break;
-		case "int.":
-			$regime="interne";
-			break;
-		case "i-e":
-			$regime="interne-externé";
-			break;
-		default:
-			$regime="Régime inconnu???";
-			break;
-	}
-
-	return $regime;
-}
-*/
-
 function fich_debug($texte) {
 	$fich=fopen("/tmp/visu_releve.txt","a+");
 	fwrite($fich,$texte);
@@ -101,23 +51,6 @@ function redimensionne_image_releve($photo){
 
 	return array($nouvelle_largeur, $nouvelle_hauteur);
 }
-
-//echo "\$releve_photo_largeur_max=$releve_photo_largeur_max<br />";
-//echo "\$releve_photo_hauteur_max=$releve_photo_hauteur_max<br />";
-
-/*
-function texte_html_ou_pas($texte){
-	// Si le texte contient des < et >, on affiche tel quel
-	if((strstr($texte,">"))||(strstr($texte,"<"))){
-		$retour=$texte;
-	}
-	// Sinon, on transforme les retours à la ligne en <br />
-	else{
-		$retour=nl2br($texte);
-	}
-	return $retour;
-}
-*/
 
 
 function decompteAbsences ($loginEleve,$choix_periode,$tab_rel) {

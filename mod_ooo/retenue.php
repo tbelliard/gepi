@@ -324,6 +324,7 @@ include_once ("./lib/chemin.inc.php");
 
 // instantiate a TBS OOo class
 $OOo = new clsTinyButStrongOOo;
+$OOo->SetDataCharset('UTF-8');
 // setting the object
 $OOo->SetProcessDir($nom_dossier_temporaire ); //dossier où se fait le traitement (décompression / traitement / compression)
 // create a new openoffice document from the template with an unique id 

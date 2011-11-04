@@ -13,25 +13,14 @@ function nbsp_au_lieu_de_vide($texte) {
 	}
 }
 
-
-/*
-function decompte_debug($motif,$texte) {
-	global $tab_instant, $debug;
-	$instant=time();
-	if(isset($tab_instant[$motif])) {
-		$diff=$instant-$tab_instant[$motif];
-		if($debug=="y") {
-			echo "<p>$texte: ".$diff." s</p>\n";
-		}
-	}
-	else {
-		if($debug=="y") {
-			echo "<p>$texte</p>\n";
-		}
-	}
-	$tab_instant[$motif]=$instant;
-}
-
+/**
+ * 
+ *
+ * @global array
+ * @global string
+ * @param type $motif
+ * @param string $texte 
+ */
 function decompte_debug($motif,$texte) {
 	global $tab_instant, $debug;
 	if($debug=="y") {
@@ -45,19 +34,15 @@ function decompte_debug($motif,$texte) {
 			else {
 				$diff=$tmp_tab1[0]-$tmp_tab2[0];
 			}
-			//if($debug=="y") {
 				echo "<p style='color:green;'>$texte: ".$diff." s</p>\n";
-			//}
 		}
 		else {
-			//if($debug=="y") {
 				echo "<p style='color:green;'>$texte</p>\n";
-			//}
 		}
 		$tab_instant[$motif]=$instant;
 	}
 }
-*/
+ 
 
 function regime($id_reg) {
 	switch($id_reg) {

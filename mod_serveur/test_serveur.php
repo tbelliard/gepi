@@ -163,7 +163,7 @@ if ($test->versionGd()) {
 	if (function_exists('mb_convert_encoding')) {
 	    echo "mbstring est installé sur votre système<br />";
 	} else {
-	    echo "mbstring n'est pas installé sur votre système, il n'est pas garanti que les accentuations seront gérées correctement par votre application<br />";
+	    echo "<p style=\"color:red;\">mbstring (Chaînes de caractères multi-octets) n'est pas installé sur votre système, c'est nécessaire à partir de la version 1.6.0</p>";
 	}
 	
 	echo "<p style=\"color:red;\">";
@@ -197,6 +197,18 @@ if ($test->versionGd()) {
 	    echo "</p>réussite de test_casse_mot()<br />\n";
 	}
 	echo "<br />\n";
+	
+	echo "<hr />\n";
+	echo "<h4>Locales du système : </h4>\n";
+	$locale = setlocale(LC_TIME,0);
+	echo "locale actuellement utilisée : $locale";
+	if (!strstr(strtolower($locale), 'utf')) {
+	    echo "<p style=\"color:red;\">";
+	    echo 'Votre système ne semble pas avoir de locale utf-8 d\'installée. Il est possible que sans locale utf-8 certains affichages de dates soient inéstétiques.</p>';
+	}
+	echo "<br />\n";
+	
+	
 	echo "<hr />\n";
 	echo "<h4>Droits sur les dossiers : </h4>\n";
 	echo "Certains dossiers doivent être accessibles en écriture pour Gepi.<br />\n";

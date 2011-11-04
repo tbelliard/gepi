@@ -88,10 +88,9 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
  *
 
  * @param string $password Mot de passe
- * @param boolean $flag Si $flag = 1, il faut également au moins un caractères spécial (voir $char_spec dans global.inc)
+ * @param boolean $flag Si $flag = 1, il faut également au moins un caractères spécial
  * @return boolean TRUE si le mot de passe est valable
  * @see getSettingValue()
- * @todo on déclare $char_spec alors qu'on ne l'utilise pas, n'y aurait-il pas un problème ?
  */
 function verif_mot_de_passe($password,$flag) {
 	global $info_verif_mot_de_passe;
@@ -144,15 +143,15 @@ function verif_mot_de_passe($password,$flag) {
  */
 function test_unique_login($s) {
     // On vérifie que le login ne figure pas déjà dans la base utilisateurs
-    $test1 = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE (login='$s' OR login='".strtoupper($s)."')"));
+    $test1 = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE (login='$s' OR login='".my_strtoupper($s)."')"));
     if ($test1 != "0") {
         return 'no';
     } else {
-        $test2 = mysql_num_rows(mysql_query("SELECT login FROM eleves WHERE (login='$s' OR login = '".strtoupper($s)."')"));
+        $test2 = mysql_num_rows(mysql_query("SELECT login FROM eleves WHERE (login='$s' OR login = '".my_strtoupper($s)."')"));
         if ($test2 != "0") {
             return 'no';
         } else {
-			$test3 = mysql_num_rows(mysql_query("SELECT login FROM resp_pers WHERE (login='$s' OR login='".strtoupper($s)."')"));
+			$test3 = mysql_num_rows(mysql_query("SELECT login FROM resp_pers WHERE (login='$s' OR login='".my_strtoupper($s)."')"));
 			if ($test3 != "0") {
 				return 'no';
 			} else {
@@ -184,7 +183,7 @@ function test_unique_e_login($s, $indice) {
     } else {
         // Si le login ne figure pas dans une des bases élève des années passées ni dans la base
         // utilisateurs, on vérifie qu'un même login ne vient pas d'être attribué !
-        $test_tempo2 = mysql_num_rows(mysql_query("SELECT col2 FROM tempo2 WHERE (col2='$s' or col2='".strtoupper($s)."')"));
+        $test_tempo2 = mysql_num_rows(mysql_query("SELECT col2 FROM tempo2 WHERE (col2='$s' or col2='".my_strtoupper($s)."')"));
         if ($test_tempo2 != "0") {
             return 'no';
         } else {
@@ -325,7 +324,7 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 		$temp1 = preg_replace("/-/","_", $temp1);
 		$temp1 = preg_replace("/'/","", $temp1);
 	} elseif ($_mode == "lcs") {
-		$temp1 = strtolower($_nom);
+		$temp1 = my_strtolower($_nom);
 		if (preg_match("/\s/",$temp1)) {
 			$noms = preg_split("/\s/",$temp1);
 			$temp1 = $noms[0];
@@ -333,7 +332,7 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 				$temp1 .= "_". $noms[1];
 			}
 		}
-		$temp1 = strtolower(mb_substr($_prenom,0,1)). $temp1;
+		$temp1 = my_strtolower(mb_substr($_prenom,0,1)). $temp1;
 	} else {
 		return FALSE;
 	}
@@ -342,7 +341,7 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 		$temp1=strtoupper($temp1);
 	}
 	elseif($_casse=='min') {
-		$temp1=strtolower($temp1);
+		$temp1=my_strtolower($temp1);
 	}
 
 	$login_user = $temp1;
@@ -506,24 +505,6 @@ function genDateSelector($prefix, $day, $month, $year, $option)
     echo "</select>\n";
 }
 
-
-/**
- * Remplit un fichier de suivi des actions
- * 
- * Passer la variable $local_debug à "y" pour activer le remplissage du fichier "/tmp/calcule_moyenne.txt" de debug
- * 
- * @param string $texte 
- */
-function fdebug($texte){
-	$local_debug="n";
-	if($local_debug=="y") {
-		$fich=fopen("/tmp/calcule_moyenne.txt","a+");
-		fwrite($fich,$texte);
-		fclose($fich);
-	}
-}
-
-
 /**
  * Vérifie que la page est bien accessible par l'utilisateur
  *
@@ -561,34 +542,6 @@ function checkAccess() {
             tentative_intrusion(1, "Tentative d'accès à un fichier sans avoir les droits nécessaires");
             return (FALSE);
         }
-    }
-}
-
-
-/**
- * Vérifie qu'un enseignant enseigne une matière dans une classe
- *
- * @deprecated la table j_classes_matieres_professeurs n'existe plus
- * @param string $login Login de l'enseignant
- * @param int $id_classe Id de la classe
- * @param type $matiere
- * @return boolean
- */
-function Verif_prof_classe_matiere ($login,$id_classe,$matiere) {
-    if(empty($login) || empty($id_classe) || empty($matiere)) {return FALSE;}
-    $call_prof = mysql_query("SELECT id_professeur FROM j_classes_matieres_professeurs WHERE (id_classe='".$id_classe."' AND id_matiere='".$matiere."')");
-    $nb_profs = mysql_num_rows($call_prof);
-    $k = 0;
-    $flag = 0;
-    while ($k < $nb_profs) {
-        $prof = @mysql_result($call_prof, $k, "id_professeur");
-        if (strtolower($login) == strtolower($prof)) {$flag = 1;}
-        $k++;
-    }
-    if ($flag == 0) {
-        return FALSE;
-    } else {
-        return TRUE;
     }
 }
 
@@ -1612,24 +1565,6 @@ function nettoyer_caracteres_nom($chaine){
 	return preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe",trim(ensure_utf8($chaine))))));
 }
 
-/**
- * Fonction qui renvoie le login d'un élève en échange de son ele_id
- *
- * @param int $id_eleve ele_id de l'élève
- * @return string login de l'élève
- */
-function get_login_eleve($id_eleve){
-
-	$sql = "SELECT login FROM eleves WHERE id_eleve = '".$id_eleve."'";
-	$query = mysql_query($sql) OR trigger_error('Impossible de récupérer le login de cet élève.', E_USER_ERROR);
-	if ($query) {
-		$retour = mysql_result($query, 0,"login");
-	}else{
-		$retour = 'erreur';
-	}
-	return $retour;
-
-}
 
 /**
  * fonction qui renvoie le nom de la classe d'un élève pour chaque période
@@ -2613,54 +2548,6 @@ $GLOBALS['photo_largeur_max'] = 0;
 $GLOBALS['photo_hauteur_max'] = 0;
 
 /**
- * Redimensionne une image
- *
- * @global int 
- * @global int 
- * @param string $photo l'adresse de la photo
- * @return array Les nouvelles dimensions de l'image (largeur, hauteur)
- */
-function redimensionne_image2($photo){
-	global $photo_largeur_max, $photo_hauteur_max;
-
-	// prendre les informations sur l'image
-	$info_image=getimagesize($photo);
-	// largeur et hauteur de l'image d'origine
-	$largeur=$info_image[0];
-	$hauteur=$info_image[1];
-
-	// calcule le ratio de redimensionnement
-	$ratio_l=$largeur/$photo_largeur_max;
-	$ratio_h=$hauteur/$photo_hauteur_max;
-	$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
-
-	// définit largeur et hauteur pour la nouvelle image
-	$nouvelle_largeur=round($largeur/$ratio);
-	$nouvelle_hauteur=round($hauteur/$ratio);
-
-	return array($nouvelle_largeur, $nouvelle_hauteur);
-}
-
-/**
- * Enregistre les calculs de moyennes dans un fichier
- * 
- * Passer à 1 la variable $debug pour générer un fichier de debug...
- *
- * @param string $texte Le calcul à enregistrer
- * @see get_user_temp_directory()
- */
-function calc_moy_debug($texte){
-	$debug=0;
-	if($debug==1){
-		$tmp_dir=get_user_temp_directory();
-		if((!$tmp_dir)||(!file_exists("../temp/".$tmp_dir))) {$tmp_dir="/tmp";} else {$tmp_dir="../temp/".$tmp_dir;}
-		$fich=fopen($tmp_dir."/calc_moy_debug.txt","a+");
-		fwrite($fich,$texte);
-		fclose($fich);
-	}
-}
-
-/**
  * Renvoie le nom d'une classe à partir de son Id
  *
  * @param int $id_classe Id de la classe recherchée
@@ -2877,84 +2764,6 @@ $GLOBALS['debug'] = '';
  */
 $GLOBALS['tab_instant'] = array();
 
-/**
- * 
- *
- * @global array
- * @global string
- * @param type $motif
- * @param string $texte 
- */
-function decompte_debug($motif,$texte) {
-	global $tab_instant, $debug;
-	if($debug=="y") {
-		$instant=microtime();
-		if(isset($tab_instant[$motif])) {
-			$tmp_tab1=explode(" ",$instant);
-			$tmp_tab2=explode(" ",$tab_instant[$motif]);
-			if($tmp_tab1[1]!=$tmp_tab2[1]) {
-				$diff=$tmp_tab1[1]-$tmp_tab2[1];
-			}
-			else {
-				$diff=$tmp_tab1[0]-$tmp_tab2[0];
-			}
-				echo "<p style='color:green;'>$texte: ".$diff." s</p>\n";
-		}
-		else {
-				echo "<p style='color:green;'>$texte</p>\n";
-		}
-		$tab_instant[$motif]=$instant;
-	}
-}
-
- 
-/**
- * Retourne l'URI des élèves pour les flux rss
- *
- * @global string
- * @param string $eleve Login de l'élève
- * @param string $https La page est-elle sécurisée ? en https si 'y'
- * @param string $type 'cdt' ou ''
- * @return string
- * @see getSettingValue()
- */
-function retourneUri($eleve, $https, $type){
-
-	global $gepiPath;
-	$rep = array();
-
-	// on vérifie que la table en question existe déjà
-	$test_table = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'rss_users'"));
-	if ($test_table >= 1) {
-
-		$sql = "SELECT user_uri FROM rss_users WHERE user_login = '".$eleve."' LIMIT 1";
-		$query = mysql_query($sql);
-		$nbre = mysql_num_rows($query);
-		if ($nbre == 1) {
-			$uri = mysql_fetch_array($query);
-			if ($https == 'y') {
-				$web = 'https://';
-			}else{
-				$web = 'http://';
-			}
-			if ($type == 'cdt') {
-				$rep["uri"] = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?rne='.getSettingValue("gepiSchoolRne").'&amp;ele_l='.$_SESSION["login"].'&amp;type=cdt&amp;uri='.$uri["user_uri"];
-				$rep["text"] = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?rne='.getSettingValue("gepiSchoolRne").'&amp;ele_l='.$_SESSION["login"].'&amp;type=cdt&amp;uri='.$uri["user_uri"];
-			}
-
-		}else{
-			$rep["text"] = 'erreur1';
-			$rep["uri"] = '#';
-		}
-	}else{
-
-		$rep["text"] = 'Demandez à votre administrateur de générer les URI.';
-		$rep["uri"] = '#';
-
-	}
-
-	return $rep;
-}
 
 /**
  * Met une date en français
@@ -2976,7 +2785,17 @@ function get_date_php() {
  * @return type Le prénom traité
  */
 function casse_prenom($prenom) {
-	$retour=casse_mot($prenom,'majf2');
+	$tab=explode("-",$prenom);
+
+	$retour="";
+	for($i=0;$i<count($tab);$i++) {
+		if($i>0) {
+			$retour.="-";
+		}
+		$tab[$i]=casse_mot($tab[$i],'majf2');
+		$retour.=$tab[$i];
+	}
+
 	return $retour;
 }
 
@@ -3805,78 +3624,6 @@ function acces($id,$statut)
 			}
 		}
 	}
-}
-
-/**
- * Vérifie que le dossier (et ses sous-dossiers) contient bien un fichier index.html
- *
- * @global int
- * @param string $dossier Le dossier
- * @return string Un message formaté
- */
-function ajout_index_sous_dossiers($dossier) {
-	global $niveau_arbo;
-
-	$nb_creation=0;
-	$nb_erreur=0;
-	$nb_fich_existant=0;
-
-	$retour="";
-
-	//$dossier="../documents";
-	$dir= opendir($dossier);
-	if(!$dir) {
-		$retour.="<p style='color:red'>Erreur lors de l'accès au dossier '$dossier'.</p>\n";
-	}
-	else {
-		$retour.="<p style='color:green'>Succès de l'accès au dossier '$dossier'.</p>\n";
-		while($entree=@readdir($dir)) {
-			if(is_dir($dossier.'/'.$entree)&&($entree!='.')&&($entree!='..')) {
-				if(!file_exists($dossier."/".$entree."/index.html")) {
-					if ($f = @fopen($dossier.'/'.$entree."/index.html", "w")) {
-						if((!isset($niveau_arbo))||($niveau_arbo==1)) {
-							@fputs($f, '<script type="text/javascript">document.location.replace("../login.php")</script>');
-						}
-						elseif($niveau_arbo==0) {
-							@fputs($f, '<script type="text/javascript">document.location.replace("./login.php")</script>');
-						}
-						elseif($niveau_arbo==2) {
-							@fputs($f, '<script type="text/javascript">document.location.replace("../../login.php")</script>');
-						}
-						else {
-							@fputs($f, '<script type="text/javascript">document.location.replace("../../../login.php")</script>');
-						}
-						@fclose($f);
-						$nb_creation++;
-					}
-					else {
-						$retour.="<span style='color:red'>Erreur lors de la création de '$dir/$entree/index.html'.</span><br />\n";
-						$nb_erreur++;
-					}
-				}
-				else {
-					$nb_fich_existant++;
-				}
-			}
-		}
-
-		if($nb_erreur>0) {
-			$retour.="<p style='color:red'>$nb_erreur erreur(s) lors du traitement.</p>\n";
-		}
-		else {
-			$retour.="<p style='color:green'>Aucune erreur lors de la création des fichiers index.html</p>\n";
-		}
-	
-		if($nb_creation>0) {
-			$retour.="<p style='color:green'>Création de $nb_creation fichier(s) index.html</p>\n";
-		}
-		else {
-			$retour.="<p style='color:green'>Aucune création de fichiers index.html n'a été effectuée.</p>\n";
-		}
-		$retour.="<p style='color:blue'>Il existait avant l'opération $nb_fich_existant fichier(s) index.html</p>\n";
-	}
-
-	return $retour;
 }
 
 // Méthode pour envoyer les en-têtes HTTP nécessaires au téléchargement de fichier.

@@ -231,7 +231,7 @@ if (isset($_GET['ticket']) and !isset($update_successful)) {
 <form action="recover_password.php?ticket=<?php echo $ticket; ?>" method="post" style="width: 100%; margin-top: 24px; margin-bottom: 48px;">
 <?php    echo "<p style='margin-top: 50px; color:red; margin-bottom: 30px;width: 80%;margin-left: auto; margin-right: auto;'><b>Attention : le mot de passe doit comporter ".getSettingValue("longmin_pwd") ." caractères minimum. ";
     if ($flag == 1)
-        echo "Il doit comporter au moins une lettre, au moins un chiffre et au moins un caractère spécial parmi&nbsp;: ".htmlspecialchars($char_spec);
+        echo "Il doit comporter au moins une lettre, au moins un chiffre et au moins un caractère spécial (#, *,...).";
     else
         echo "Il doit comporter au moins une lettre et au moins un chiffre.";
 ?>
