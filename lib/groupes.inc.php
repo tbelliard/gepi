@@ -351,7 +351,14 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 					$e_login = mysql_result($get_eleves, $i, "login");
 					$e_nom = mysql_result($get_eleves, $i, "nom");
 					$e_prenom = mysql_result($get_eleves, $i, "prenom");
-					$e_classe = mysql_result(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE (login = '" . $e_login . "' and periode = '" . $key . "')"), 0);
+					$sql="SELECT id_classe FROM j_eleves_classes WHERE (login = '" . $e_login . "' and periode = '" . $key . "')";
+					$res_classe_eleve_periode=mysql_query($sql);
+					if(mysql_num_rows($res_classe_eleve_periode)>0) {
+						$e_classe = mysql_result($res_classe_eleve_periode, 0);
+					}
+					else {
+						$e_classe=-1;
+					}
 					$e_sconet_id = mysql_result($get_eleves, $i, "ele_id");
 					$e_elenoet = mysql_result($get_eleves, $i, "elenoet");
 					$temp["eleves"][$key]["list"][] = $e_login;
