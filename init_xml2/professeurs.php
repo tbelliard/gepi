@@ -203,7 +203,8 @@ if (!isset($is_posted)) {
 	echo "<br /><br /><p>Quelle formule appliquer pour la génération du login ?</p>\n";
 
 	if(getSettingValue("use_ent")!='y') {
-		$default_login_gen_type=getSettingValue('login_gen_type');
+		//$default_login_gen_type=getSettingValue('login_gen_type');
+		$default_login_gen_type=getSettingValue('mode_generation_login');
 		if($default_login_gen_type=='') {$default_login_gen_type='name';}
 	}
 	else {
@@ -336,7 +337,7 @@ else {
 	}
 
 	$nom_racine=$sts_xml->getName();
-	if(strtoupper($nom_racine)!='STS_EDT') {
+	if(my_strtoupper($nom_racine)!='STS_EDT') {
 		echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML STS_EMP_&lt;RNE&gt;_&lt;ANNEE&gt;.<br />Sa racine devrait être 'STS_EDT'.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
@@ -367,35 +368,40 @@ else {
 
 		foreach($individu->attributes() as $key => $value) {
 			// <INDIVIDU ID="4189" TYPE="epp">
-			$prof[$i][strtolower($key)]=trim(traite_utf8($value));
+			//$prof[$i][my_strtolower($key)]=trim(traite_utf8($value));
+			$prof[$i][my_strtolower($key)]=trim($value);
 		}
 
 		// Champs de l'individu
 		foreach($individu->children() as $key => $value) {
-			if(in_array(strtoupper($key),$tab_champs_personnels)) {
-				if(strtoupper($key)=='SEXE') {
+			if(in_array(my_strtoupper($key),$tab_champs_personnels)) {
+				if(my_strtoupper($key)=='SEXE') {
 					$prof[$i]["sexe"]=trim(preg_replace("/[^1-2]/","",$value));
 				}
-				elseif(strtoupper($key)=='CIVILITE') {
+				elseif(my_strtoupper($key)=='CIVILITE') {
 					$prof[$i]["civilite"]=trim(preg_replace("/[^1-3]/","",$value));
 				}
-				elseif((strtoupper($key)=='NOM_USAGE')||
-				(strtoupper($key)=='NOM_PATRONYMIQUE')||
-				(strtoupper($key)=='NOM_USAGE')) {
-					$prof[$i][strtolower($key)]=trim(preg_replace("/[^A-Za-z -]/","",traite_utf8($value)));
+				elseif((my_strtoupper($key)=='NOM_USAGE')||
+				(my_strtoupper($key)=='NOM_PATRONYMIQUE')||
+				(my_strtoupper($key)=='NOM_USAGE')) {
+					//$prof[$i][my_strtolower($key)]=trim(preg_replace("/[^A-Za-z -]/","",traite_utf8($value)));
+					$prof[$i][my_strtolower($key)]=trim(preg_replace("/[^A-Za-z -]/","",remplace_accents($value)));
 				}
-				elseif(strtoupper($key)=='PRENOM') {
-					$prof[$i][strtolower($key)]=trim(preg_replace("/[^A-Za-zÆæ¼½".$liste_caracteres_accentues." -]/","",traite_utf8($value)));
+				elseif(my_strtoupper($key)=='PRENOM') {
+					//$prof[$i][my_strtolower($key)]=trim(preg_replace("/[^A-Za-zÆæ¼½".$liste_caracteres_accentues." -]/","",traite_utf8($value)));
+					$prof[$i][my_strtolower($key)]=trim(preg_replace('/"/','',preg_replace("/'/","",nettoyer_caracteres_nom($value))));
 				}
-				elseif(strtoupper($key)=='DATE_NAISSANCE') {
-					$prof[$i][strtolower($key)]=trim(preg_replace("/[^0-9-]/","",traite_utf8($value)));
+				elseif(my_strtoupper($key)=='DATE_NAISSANCE') {
+					//$prof[$i][my_strtolower($key)]=trim(preg_replace("/[^0-9-]/","",traite_utf8($value)));
+					$prof[$i][my_strtolower($key)]=trim(preg_replace("/[^0-9-]/","",$value));
 				}
-				elseif((strtoupper($key)=='GRADE')||
-					(strtoupper($key)=='FONCTION')) {
-					$prof[$i][strtolower($key)]=trim(preg_replace('/"/','',traite_utf8($value)));
+				elseif((my_strtoupper($key)=='GRADE')||
+					(my_strtoupper($key)=='FONCTION')) {
+					//$prof[$i][my_strtolower($key)]=trim(preg_replace('/"/','',traite_utf8($value)));
+					$prof[$i][my_strtolower($key)]=trim(preg_replace('/"/','',preg_replace("/'/"," ",$value)));
 				}
 				else {
-					$prof[$i][strtolower($key)]=trim(traite_utf8($value));
+					$prof[$i][my_strtolower($key)]=trim($value);
 				}
 				//echo "\$prof[$i][".strtolower($key)."]=".$prof[$i][strtolower($key)]."<br />";
 			}
@@ -407,7 +413,8 @@ else {
 			foreach($individu->PROFS_PRINC->children() as $prof_princ) {
 				//$prof[$i]["prof_princ"]=array();
 				foreach($prof_princ->children() as $key => $value) {
-					$prof[$i]["prof_princ"][$j][strtolower($key)]=trim(traite_utf8(preg_replace('/"/',"",$value)));
+					//$prof[$i]["prof_princ"][$j][my_strtolower($key)]=trim(traite_utf8(preg_replace('/"/',"",$value)));
+					$prof[$i]["prof_princ"][$j][my_strtolower($key)]=trim(preg_replace('/"/',"",$value));
 					$temoin_au_moins_un_prof_princ="oui";
 				}
 				$j++;
@@ -419,14 +426,16 @@ else {
 			$j=0;
 			foreach($individu->DISCIPLINES->children() as $discipline) {
 				foreach($discipline->attributes() as $key => $value) {
-					if(strtoupper($key)=='CODE') {
-						$prof[$i]["disciplines"][$j]["code"]=trim(traite_utf8(preg_replace('/"/',"",$value)));
+					if(my_strtoupper($key)=='CODE') {
+						//$prof[$i]["disciplines"][$j]["code"]=trim(traite_utf8(preg_replace('/"/',"",$value)));
+						$prof[$i]["disciplines"][$j]["code"]=trim(preg_replace('/"/',"",$value));
 						break;
 					}
 				}
 
 				foreach($discipline->children() as $key => $value) {
-					$prof[$i]["disciplines"][$j][strtolower($key)]=trim(traite_utf8(preg_replace('/"/',"",$value)));
+					//$prof[$i]["disciplines"][$j][my_strtolower($key)]=trim(traite_utf8(preg_replace('/"/',"",$value)));
+					$prof[$i]["disciplines"][$j][my_strtolower($key)]=trim(preg_replace('/"/',"",$value));
 				}
 				$j++;
 			}
@@ -522,7 +531,7 @@ else {
 					$info_pb_mdp.="<p style='color:red'>".$prof[$k]["nom_usage"]." ".casse_mot($prof[$k]["prenom"],'majf2')." n'a pas de date de naissance renseignée.<br />Son mot de passe est généré aléatoirement.</p>\n";
 				}
 				else{
-					$date=str_replace("-","",$prof[$k]["date_naissance"]);
+					$date=preg_replace("/-/","",$prof[$k]["date_naissance"]);
 					$mdp=$date;
 				}
 
@@ -637,8 +646,8 @@ else {
 								if (isset($bx) AND $bx == 'oui') {
 									// On va chercher le login de l'utilisateur dans la table créée
 									$sql_p = "SELECT login_u FROM ldap_bx
-												WHERE nom_u = '".strtoupper($prof[$k]["nom_usage"])."'
-												AND prenom_u = '".strtoupper($prof[$k]["prenom"])."'
+												WHERE nom_u = '".my_strtoupper($prof[$k]["nom_usage"])."'
+												AND prenom_u = '".my_strtoupper($prof[$k]["prenom"])."'
 												AND statut_u = 'teacher'";
 									$query_p = mysql_query($sql_p);
 									$nbre = mysql_num_rows($query_p);
@@ -716,7 +725,7 @@ else {
 	
 						// utilise le prénom composé s'il existe, plutôt que le premier prénom
 	
-						$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".$prof[$k]["nom_usage"]."', prenom='$premier_prenom', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='".$changemdp."', numind='P".$prof[$k]["id"]."'";
+						$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".mysql_real_escape_string($prof[$k]["nom_usage"])."', prenom='".mysql_real_escape_string($premier_prenom)."', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='".$changemdp."', numind='P".$prof[$k]["id"]."'";
 						if(getSettingValue('auth_sso')=='lcs') {
 							$sql.=", auth_mode='sso'";
 						}
@@ -734,7 +743,7 @@ else {
 						echo "<td><p><font color='red'>".$login_prof."</font></p></td><td><p>".$prof[$k]["nom_usage"]."</p></td><td><p>".$premier_prenom."</p></td><td>".$mess_mdp."</td></tr>\n";
 					} else {
 						// On corrige aussi les nom/prénom/civilité et numind parce que la reconnaissance a aussi pu se faire sur le nom/prénom
-						$sql="UPDATE utilisateurs set etat='actif', nom='".$prof[$k]["nom_usage"]."', prenom='$premier_prenom', civilite='$civilite', numind='P".$prof[$k]["id"]."'";
+						$sql="UPDATE utilisateurs set etat='actif', nom='".mysql_real_escape_string($prof[$k]["nom_usage"])."', prenom='".mysql_real_escape_string($premier_prenom)."', civilite='$civilite', numind='P".$prof[$k]["id"]."'";
 						if(getSettingValue('auth_sso')=='lcs') {
 							$sql.=", auth_mode='sso'";
 						}

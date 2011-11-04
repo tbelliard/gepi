@@ -234,7 +234,6 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 		$_mode = "fname8";
 	}
 	// On génère le login
-	//$_prenom = strtr($_prenom, "çéèëêÉÈËÊüûùÜÛïîÏÎäâàÄÂÀôöÔÖÇ", "ceeeeEEEEuuuUUiiIIaaaAAAooOOC");
 	$_prenom = remplace_accents($_prenom);
 
 	$prenoms = explode(" ",$_prenom);
@@ -244,7 +243,6 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 
 	$_prenom = preg_replace("/[^a-zA-Z.\-]/", "", $_prenom);
 
-	//$_nom = strtr($_nom, "çéèëêÉÈËÊüûùÜÛïîÏÎäâàÄÂÀôöÔÖÇ", "ceeeeEEEEuuuUUiiIIaaaAAAooOOC");
 	$_nom = remplace_accents($_nom);
 	$_nom = preg_replace("/[^a-zA-Z.\-]/", "", $_nom);
 
@@ -2978,17 +2976,7 @@ function get_date_php() {
  * @return type Le prénom traité
  */
 function casse_prenom($prenom) {
-	$tab=explode("-",$prenom);
-
-	$retour="";
-	for($i=0;$i<count($tab);$i++) {
-		if($i>0) {
-			$retour.="-";
-		}
-		$tab[$i]=ucwords(strtolower($tab[$i]));
-		$retour.=$tab[$i];
-	}
-
+	$retour=casse_mot($prenom,'majf2');
 	return $retour;
 }
 
