@@ -211,12 +211,25 @@ if(isset($_GET['suppr_groupe'])) {
 		$msg.="Le groupe n°".$_GET['suppr_groupe']." n'existe pas.<br />\n";
 	}
 	else {
-		$delete=delete_group($_GET['suppr_groupe']);
-		if($delete) {
-			$msg.="Le groupe n°".$_GET['suppr_groupe']." a été supprimé.<br />\n";
+		if(test_before_group_deletion($_GET['suppr_groupe'])) {
+			$sql="SELECT 1=1 FROM cn_cahier_notes ccn, cn_conteneurs cc, cn_devoirs cd, cn_notes_devoirs cnd WHERE ccn.id_cahier_notes=cc.id_racine AND cc.id=cd.id_conteneur AND cd.id=cnd.id_devoir AND ccn.id_groupe='".$_GET['suppr_groupe']."';";
+			$test=mysql_query($sql);
+			if(mysql_num_rows($test)>0) {
+				$msg.="Le groupe n°".$_GET['suppr_groupe']." ne peut pas être supprimé car des notes de devoirs ont été saisies.<br />\n";
+			}
+			else {
+
+				$delete=delete_group($_GET['suppr_groupe']);
+				if($delete) {
+					$msg.="Le groupe n°".$_GET['suppr_groupe']." a été supprimé.<br />\n";
+				}
+				else {
+					$msg.="Erreur lors de la suppression du groupe n°".$_GET['suppr_groupe'].".<br />\n";
+				}
+			}
 		}
 		else {
-			$msg.="Erreur lors de la suppression du groupe n°".$_GET['suppr_groupe'].".<br />\n";
+			$msg.="Le groupe n°".$_GET['suppr_groupe']." ne peut pas être supprimé car des bulletins ne sont pas vides.<br />\n";
 		}
 	}
 }
@@ -266,12 +279,27 @@ if(isset($_POST['add_groupes_classes'])) {
 					$description=mysql_result($res_mat, 0);
 				}
 
+				//echo "<br /><p>\$matiere[$j]=".$matiere[$j]."<br />";
+				//echo "\$description=".$description."<br />";
+				//echo "\$id_classe[$i]=".$id_classe[$i]." (".get_nom_classe($id_classe[$i]).")<br />";
+
 				$creation=create_group($matiere[$j], $description, $matiere[$j], array($id_classe[$i]), -1);
 				//echo "create_group($matiere[$j], $description, $matiere[$j], array($id_classe[$i]), -1)<br />";
 				if((!$creation)||(!preg_match('/^[0-9]*$/',$creation))) {
 					$msg.="Erreur lors de la création d'un groupe de $matiere[$j] en ".get_nom_classe($id_classe[$i]).".<br />\n";
 				}
 				else {
+					/*
+					echo "Profs:<br />";
+					echo "<pre>";
+					print_r($tab_profs[$j]);
+					echo "</pre><br />";
+					
+					echo "Eleves:<br />";
+					echo "<pre>";
+					print_r($tab_eleves);
+					echo "</pre><br />";
+					*/
 					//$id_groupe=mysql_insert_id();
 					$id_groupe=$creation;
 					$update=update_group($id_groupe, $matiere[$j], $description, $matiere[$j], array($id_classe[$i]), $tab_profs[$j], $tab_eleves);
@@ -320,8 +348,13 @@ if(!isset($cat)) {
 	echo "<li><p><a href='".$_SERVER['PHP_SELF']."?cat=profs'>Associer les matières aux professeurs</a></p></li>\n";
 	echo "<li><p><a href='".$_SERVER['PHP_SELF']."?cat=classes'>Créer des enseignements dans des sélections de classes</a></p></li>\n";
 	// style='color:red'
-	echo "<li><p>Une fois les enseignements créés, il faut poursuivre ici pour faire le ménage des affectations d'élèves dans les enseignements en tenant compte des saisies d'options dans Sconet.<br /><a href='init_options.php?a=a".add_token_in_url()."'>Prise en compte des options</a></p></li>\n";
+	echo "<li><p>Une fois les enseignements créés, il faut poursuivre ici pour faire le ménage des affectations d'élèves dans les enseignements en tenant compte des saisies d'options dans Sconet.<br /><a href='init_options.php?a=a".add_token_in_url()."'>Prise en compte des options</a><br /><b style='color:red'>ATTENTION&nbsp;:</b> Cette étape ne doit être réalisée que lors de l'initialisation de l'année (<em>pas en cours d'année</em>).</p></li>\n";
 	echo "</ol>\n";
+
+
+	echo "<p style='text-indent:-4em; margin-left:4em'><em>NOTE&nbsp;:</em><br />\n";
+	echo "Dans cette phase, aucune table n'est vidée.<br />Il est donc possible de se servir de cette page pour ajouter des associations en cours d'année.</p>\n";
+
 }
 //===================================================================================
 elseif($cat=='profs') {
@@ -778,9 +811,10 @@ function checkbox_change(cpt) {
 			$res_grp=mysql_query($sql);
 			$groups=array();
 			while($lig=mysql_fetch_object($res_grp)) {
+				//echo "Groupe n°$lig->id<br />";
 				$groups[]=get_group($lig->id);
+				//echo "<br />";
 			}
-
 			echo "<form method=\"post\" class='boireaus' action=\"".$_SERVER['PHP_SELF']."#profs_grp_id_classe_".$tab_classe[$i]['id_classe']."\" name='form3'>\n";
 
 			$alt=1;
@@ -791,29 +825,36 @@ function checkbox_change(cpt) {
 				echo "<input type='hidden' name='id_groupe[$cpt_groupe]' value='".$current_group['id']."' />\n";
 				echo "<a href='".$_SERVER['PHP_SELF']."?cat=classes&amp;suppr_groupe=".$current_group['id'].add_token_in_url()."#profs_grp_id_classe_".$tab_classe[$i]['id_classe']."'";
 				echo " onclick=\"return confirm_suppr_groupe (this, change, '$themessage')\"";
-				echo "><img src='../images/delete16.png' width='16' height='16' alt='Supprimer cet enseignement' title='Supprimer cet enseignement' /></a> ";
-				echo $current_group['name']." (<em>".$current_group['description']."</em>)";
+				echo "><img src='../images/delete16.png' width='16' height='16' alt='Supprimer cet enseignement' title='Supprimer cet enseignement' /></a> \n";
+				echo $current_group['name']." (<em>".$current_group['description']."</em>)\n";
 				if((isset($current_group['profs']['proflist_string']))&&($current_group['profs']['proflist_string']!="")) {
-					echo "<br />";
+					echo "<br />\n";
 					echo "&nbsp;&nbsp;&nbsp;&nbsp;";
 					echo "<span style='font-size:x-small;'>".$current_group['profs']['proflist_string']."<span>\n";
 				}
-				echo " <a id='lien_profs_$cpt_groupe' style='display:none' href=\"javascript:affiche_choix_prof($cpt_groupe)\"><img src='../images/add_user.png' width='16' height='16' alt='Ajouter un ou des professeurs' title='Ajouter un ou des professeurs' /></a>\n";
 
-				echo "<div id='choix_prof_$cpt_groupe'>\n";
 
 				$sql="SELECT u.login, u.nom, u.prenom FROM utilisateurs u, j_professeurs_matieres jpm WHERE u.login=jpm.id_professeur AND jpm.id_matiere='".$current_group['matiere']['matiere']."' ORDER BY nom, prenom;";
 				$res_prof=mysql_query($sql);
-				$cpt_prof=0;
-				while($lig_prof=mysql_fetch_object($res_prof)) {
-					echo "<input type='checkbox' name='login_prof_".$cpt_groupe."[]' id='login_prof_".$cpt_groupe."_".$cpt_prof."' value='".$lig_prof->login."' ";
-					echo "onchange='test_form_classe(".$tab_classe[$i]['id_classe'].");checkbox_change_prof($cpt_groupe, $cpt_prof); changement();' ";
-					if(in_array($lig_prof->login,$current_group['profs']['list'])) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
-					echo "/><label for='login_prof_".$cpt_groupe."_".$cpt_prof."' id='texte_login_prof_".$cpt_groupe."_".$cpt_prof."'$temp_style> $lig_prof->nom ".casse_mot($lig_prof->prenom,"majf2")."</label><br />\n";
-					$cpt_prof++;
+				if(mysql_num_rows($res_prof)==0) {
+					echo "<span style='color:red'>Aucun professeur pour cette matière</span>\n";
 				}
+				else {
+					echo " <a id='lien_profs_$cpt_groupe' style='display:none' href=\"javascript:affiche_choix_prof($cpt_groupe);affiche_info_ajout_prof()\"><img src='../images/icons/add_user.png' width='16' height='16' alt='Ajouter un ou des professeurs' title='Ajouter un ou des professeurs' /></a>\n";
+	
+					echo "<div id='choix_prof_$cpt_groupe'>\n";
 
-				echo "</div>\n";
+					$cpt_prof=0;
+					while($lig_prof=mysql_fetch_object($res_prof)) {
+						echo "<input type='checkbox' name='login_prof_".$cpt_groupe."[]' id='login_prof_".$cpt_groupe."_".$cpt_prof."' value='".$lig_prof->login."' ";
+						echo "onchange='test_form_classe(".$tab_classe[$i]['id_classe'].");checkbox_change_prof($cpt_groupe, $cpt_prof); changement();' ";
+						if(in_array($lig_prof->login,$current_group['profs']['list'])) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
+						echo "/><label for='login_prof_".$cpt_groupe."_".$cpt_prof."' id='texte_login_prof_".$cpt_groupe."_".$cpt_prof."'$temp_style> $lig_prof->nom ".casse_mot($lig_prof->prenom,"majf2")."</label><br />\n";
+						$cpt_prof++;
+					}
+	
+					echo "</div>\n";
+				}
 				echo "</div>\n";
 				//echo "</p>\n";
 				$cpt_groupe++;
@@ -830,6 +871,10 @@ function checkbox_change(cpt) {
 
 		echo "<input type='hidden' name='id_classe_form_prof_en_cours' id='id_classe_form_prof_en_cours' value='' />\n";
 
+		$titre_infobulle="Ajout de professeurs";
+		$texte_infobulle="Il n'est possible d'associer les professeurs aux enseignements que classe par classe (<em>un formulaire par classe</em>).<br />Pensez à valider le formulaire de la classe avant d'associer des professeurs à des enseignements d'une autre classe.";
+		$tabdiv_infobulle[]=creer_div_infobulle('div_info_ajout_prof',$titre_infobulle,"",$texte_infobulle,"",18,0,'y','y','n','n');
+
 		echo "<script type='text/javascript'>
 var change='no';
 
@@ -841,6 +886,11 @@ for(i=0;i<$cpt_groupe;i++) {
 			document.getElementById('choix_prof_'+i).style.display='none';
 		}
 	}
+}
+
+function affiche_info_ajout_prof() {
+	afficher_div('div_info_ajout_prof','y',80,20);
+	setTimeout(\"cacher_div('div_info_ajout_prof')\",5000);
 }
 
 function affiche_choix_prof(i) {
@@ -903,7 +953,7 @@ function test_form_classe(id_classe) {
 		Pour cela, la procédure est <b>Gestion des bases/Gestion des classes/&lt;Une_des_classes&gt;/Enseignements/&lt;Le_nom_de_l_enseignement&gt;/fusionner le groupe avec un ou des groupes existants</b></p>
 	</li>
 	<li>
-		<p>A ce stade, les enseignements créés contiennent tous les élèves de la classe correspondante.<br />La table 'temp_gep_import2' contient les options suivies par les élèves comme saisi dans Sconet.<br />Une fois les enseignements créés, il faut poursuivre ici pour faire le ménage des affectations d'élèves dans les enseignements en tenant compte des saisies d'options dans Sconet.<br /><b><a href='init_options.php?a=a".add_token_in_url()."'>Prise en compte des options</a></b></p>
+		<p>A ce stade, les enseignements créés contiennent tous les élèves de la classe correspondante.<br />La table 'temp_gep_import2' contient les options suivies par les élèves comme saisi dans Sconet.<br />Une fois les enseignements créés, il faut poursuivre ici pour faire le ménage des affectations d'élèves dans les enseignements en tenant compte des saisies d'options dans Sconet.<br /><b><a href='init_options.php?a=a".add_token_in_url()."'>Prise en compte des options</a></b><br /><b style='color:red'>ATTENTION&nbsp;:</b> Cette étape ne doit être réalisée que lors de l'initialisation de l'année (<em>pas en cours d'année</em>).</p>
 	</li>
 </ul>\n";
 
