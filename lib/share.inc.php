@@ -1471,6 +1471,122 @@ function remplace_accents($chaine,$mode=''){
 }
 
 /**
+ * Cette méthode prend une chaîne de caractères et s'assure qu'elle est bien retournée en UTF-8
+ * Attention, certain encodages sont très similaire et ne peuve pas être théoriquement distingué sur une chaine de caractere.
+ * Si vous connaissez déjà l'encodage de votre chaine de départ, il est préférable de le préciser
+ * 
+ * @param string $str La chaine à encoder
+ * @param string $encoding L'encodage de départ
+ * @return string La chaine en utf8
+ * @throws Exception si la chaine n'a pas pu être encodée correctement
+ */
+function ensure_utf8($str, $from_encoding = null) {
+    if ($str === null || $str === '') {
+        return $str;
+    } else if ($from_encoding == null && check_utf8($str)) {
+	    return $str;
+	}
+	
+    if ($from_encoding != null) {
+        $encoding =  $from_encoding;
+    } else {
+	    $encoding = detect_encoding($str);
+    }
+	$result = null;
+    if ($encoding !== false && $encoding != null) {
+        if ($result == null && function_exists('mb_convert_encoding')) {
+            $result = mb_convert_encoding($str, 'UTF-8', $encoding);
+        }
+    }
+	if ($result === null || !check_utf8($result)) {
+	    throw new Exception('Impossible de convertir la chaine vers l\'utf8');
+	}
+	return $result;
+}
+
+
+/**
+ * Cette méthode prend une chaîne de caractères et teste si elle est bien encodée en UTF-8
+ * 
+ * @param string $str La chaine à tester
+ * @return boolean
+ */
+function check_utf8 ($str) {
+  
+    // From http://w3.org/International/questions/qa-forms-utf-8.html
+    $preg_match_result = 1 == preg_match('%^(?:
+          [\x09\x0A\x0D\x20-\x7E]            # ASCII
+        | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
+        |  \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs
+        | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
+        |  \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates
+        |  \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3
+        | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
+        |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
+    )*$%xs', $str);
+    
+    if ($preg_match_result) {
+        return true;
+    } else {
+        //le test preg renvoie faux, et on va vérifier avec d'autres fonctions
+        $result = true;
+        $test_done = false;
+        if (function_exists('mb_check_encoding')) {
+            $test_done = true;
+            $result = $result && @mb_check_encoding($str, 'UTF-8');
+        }
+        if (function_exists('mb_detect_encoding')) {
+            $test_done = true;
+            $result = $result && @mb_detect_encoding($str, 'UTF-8', true);
+        }
+        if (function_exists('iconv')) {
+            $test_done = true;
+            $result = $result && ($str === (@iconv('UTF-8', 'UTF-8//IGNORE', $str)));
+        }
+        if (function_exists('mb_convert_encoding')) {
+            $test_done = true;
+            $result && ($str === @mb_convert_encoding ( @mb_convert_encoding ( $str, 'UTF-32', 'UTF-8' ), 'UTF-8', 'UTF-32' ));
+        }
+        return $test_done && $result;
+    }
+}
+    
+    
+/**
+ * Cette méthode prend une chaîne de caractères et détecte son encodage
+ * 
+ * @param string $str La chaine à tester
+ * @return l'encodage ou false si indétectable
+ */
+function detect_encoding($str) {
+    //on commence par vérifier si c'est de l'utf8
+    if (check_utf8($str)) {
+        return 'UTF-8';
+    }
+    
+    //on va commencer par tester ces encodages
+    static $encoding_list = array('UTF-8', 'ISO-8859-15','windows-1251');
+    foreach ($encoding_list as $item) {
+        if (function_exists('iconv')) {
+            $sample = @iconv($item, $item, $str);
+            if (md5($sample) == md5($str)) {
+                return $item;
+            }
+        } else if (function_exists('mb_detect_encoding')) {
+            if (@mb_detect_encoding($str, $item, true)) {
+                return $item;
+            }
+        }
+    }
+    
+    //la méthode précédente n'a rien donnée
+    if (function_exists('mb_detect_encoding')) {
+        return mb_detect_encoding($str);
+    } else {
+        return false;
+    }
+}
+/**
  * Fonction qui renvoie le login d'un élève en échange de son ele_id
  *
  * @param int $id_eleve ele_id de l'élève

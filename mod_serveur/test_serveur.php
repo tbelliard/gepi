@@ -37,6 +37,9 @@ require_once("../lib/initialisations.inc.php");
 // Définition de la classe php
 require_once("../class_php/serveur_infos.class.php");
 
+//fonction de tests d'encodage
+require_once(dirname(__FILE__)."/test_encoding_functions.php");
+
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -150,6 +153,38 @@ if ($test->versionGd()) {
 
 	echo "<br />\n";
 	echo "<hr />\n";
+       echo "<h4>Encodage des caractères : </h4>\n";
+       if (function_exists('iconv')) {
+           echo "iconv est installé sur votre système<br />";
+       } else {
+           echo "iconv n'est pas installé sur votre système, ça n'est pas indispensable mais c'est recomandé<br />";
+       }
+       if (function_exists('mb_convert_encoding')) {
+           echo "mbstring est installé sur votre système<br />";
+       } else {
+           echo "<p style=\"color:red;\">mbstring (Chaînes de caractères multi-octets) n'est pas installé sur votre système, c'est nécessaire à partir de la version 1.6.0</p>";
+       }
+
+       echo "<p style=\"color:red;\">";
+       if (!test_check_utf8()) {
+           echo ' : échec de test_check_utf8()</p>';
+       } else {
+           echo "</p>réussite de test_check_utf8()<br />\n";
+       }
+       echo "<p style=\"color:red;\">";
+       if (!test_detect_encoding()) {
+           echo ' : échec de test_detect_encoding()</p>';
+       } else {
+        echo "</p>réussite de test_detect_encoding()<br />\n";
+       }
+       echo "<p style=\"color:red;\">";
+       if (!test_ensure_utf8()) {
+           echo ' : échec de test_ensure_utf8()</p>';
+       } else {
+           echo "</p>réussite de test_ensure_utf8()<br />\n";
+       }
+       echo "<br />\n";
+       echo "<hr />\n";
 	echo "<h4>Droits sur les dossiers : </h4>\n";
 	echo "Certains dossiers doivent être accessibles en écriture pour Gepi.<br />\n";
 	test_ecriture_dossier();
