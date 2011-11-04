@@ -197,6 +197,18 @@ if ($test->versionGd()) {
 	    echo "</p>réussite de test_casse_mot()<br />\n";
 	}
 	echo "<br />\n";
+	
+	echo "<hr />\n";
+	echo "<h4>Locales du système : </h4>\n";
+	$locale = setlocale(LC_TIME,0);
+	echo "locale actuellement utilisée : $locale";
+	if (!strstr(strtolower($locale), 'utf')) {
+	    echo "<p style=\"color:red;\">";
+	    echo 'Votre système ne semble pas avoir de locale utf-8 d\'installée. Il est possible que sans locale utf-8 certains affichages de dates soient inéstétiques.</p>';
+	}
+	echo "<br />\n";
+	
+	
 	echo "<hr />\n";
 	echo "<h4>Droits sur les dossiers : </h4>\n";
 	echo "Certains dossiers doivent être accessibles en écriture pour Gepi.<br />\n";

@@ -183,7 +183,7 @@ $gepiAuthors = array(
 );
 
 // Affichage des dates en franÃ§ais
-@setlocale(LC_ALL,'fr-utf-8','fr_FR.utf-8','fr_FR.utf8','fr_FR.UTF-8','fr_FR.UTF8','fr_FR.ISO8859-1','French','france','fra','french','FR','fr_FR','fr_FR@euro', 'French_France.1252');
+@setlocale(LC_ALL,'fr-utf-8','fr_FR.utf-8','fr_FR.utf8','fr_FR.UTF-8','fr_FR.UTF8','C');
 
 $gepiShowGenTime = "no"; // Pour afficher le temps de génération de certaines pages.
 $pageload_starttime = microtime(true);
