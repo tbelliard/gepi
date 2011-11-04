@@ -100,6 +100,7 @@ else{
 
 // Création d'une classe  TBS OOo class
 $OOo = new clsTinyButStrongOOo;
+$OOo->SetDataCharset('UTF-8');
 
 // setting the object
 $OOo->SetProcessDir($nom_dossier_temporaire ); //dossier où se fait le traitement (décompression / traitement / compression)
