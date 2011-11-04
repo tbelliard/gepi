@@ -163,7 +163,7 @@ if ($test->versionGd()) {
 	if (function_exists('mb_convert_encoding')) {
 	    echo "mbstring est installé sur votre système<br />";
 	} else {
-	    echo "mbstring n'est pas installé sur votre système, il n'est pas garanti que les accentuations seront gérées correctement par votre application<br />";
+	    echo "<p style=\"color:red;\">mbstring (Chaînes de caractères multi-octets) n'est pas installé sur votre système, c'est nécessaire à partir de la version 1.6.0</p>";
 	}
 	
 	echo "<p style=\"color:red;\">";
