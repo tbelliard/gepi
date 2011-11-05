@@ -100,9 +100,9 @@
 	</p>
 	<form action="trombinoscopes_admin.php" id="form1" method="post" title="Configuration générale">
 	  <fieldset>
-<?php
-echo add_token_field();
-?>
+	<?php
+	echo add_token_field();
+	?>
 		<legend class="bold">Élèves :</legend>
 		<input type="radio"
 			   name="activer"
@@ -113,7 +113,7 @@ echo add_token_field();
 		<label for='activer_y' style='cursor:pointer'>
 		  Activer le module trombinoscope
 		</label>
-		<br />
+		<br/>
 		<input type="radio"
 			   name="activer"
 			   id='activer_n'
@@ -138,7 +138,7 @@ echo add_token_field();
 		<label for='activer_personnels_y' style='cursor:pointer'>
 		  Activer le module trombinoscope des personnels
 		</label>
-		<br />
+		<br/>
 		<input type="radio"
 			   name="activer_personnels"
 			   id='activer_personnels_n'
@@ -257,10 +257,10 @@ echo add_token_field();
 		  Activer le redimensionnement des photos en 
 		  <?php echo getSettingValue("l_resize_trombinoscopes");?>x<?php echo getSettingValue("h_resize_trombinoscopes");?>
 		</label>
-	  <br />
+	  <br/>
 		<strong>Remarque</strong> attention GD doit être actif sur le serveur de GEPI pour utiliser 
 		le redimensionnement.
-	  <br />
+	  <br/>
 		<input type="radio" 
 			   name="activer_redimensionne" 
 			   id="activer_redimensionne_n" 
@@ -383,9 +383,6 @@ if (!isset($aid_trouve)) {
 		<strong>Remarque :</strong> Si "aucune" AID n'est définie, <strong>tous les élèves</strong> peuvent
 		envoyer/modifier leur photo (<em>sauf ceux sans elenoet</em>).
 	  </p>
-<?php
-}
-?>
 	  <p class="center">
 		<input type="hidden" 
 			   name="is_posted" 
@@ -394,48 +391,59 @@ if (!isset($aid_trouve)) {
 			   value="Enregistrer"
 			   style="font-variant: small-caps;" />
 	  </p>
-
-	<hr/>
+<?php
+}
+?>
+	</form>
 
 	<h2>Gestion des fichiers</h2>
 <?php if(!file_exists('../photos/'.$repertoire.'eleves/') && !file_exists('../photos/'.$repertoire.'eleves/')) {?>
 	  <p>
 		Les dossiers photos n'existent pas
 	  </p>
-<?php } else { ?>
+<?php } else 
+{ ?>
+	<form action="trombinoscopes_admin.php" id="form2" method="post" title="Gestion des fichiers">
+	<?php
+	echo add_token_field();
+	?>
 	  <fieldset>
 		<legend class="bold">
-		  <input type="checkbox"
-				 name="supprime"
-				 id='supprime'
-				 value="yes"/>
 		  <label for="supprime">Suppression</label>
 		</legend>
-		<em>Pour pouvoir supprimer des fichiers photos, vous devez cocher la case ci-dessus</em>
-		<br/>
-		Un fichier de sauvegarde sera créé, pensez à le récupérer puis le supprimer dans le module de gestion des sauvegardes
-		<br/>
 <?php if( file_exists('../photos/'.$repertoire.'personnels/') ) { ?>
-		<input type="radio"
-			   name="sousrub"
-			   id='supprime_personnel'
-			   value="dp"
+		<input type="checkbox"
+			   name="sup_pers"
+			   id='supprime_personnels'
+			   value="oui"
 			   />
 		<label for="supprime_personnel" id='sup_pers'>
 		  Vider le dossier photos des personnels
 		</label>
 <?php } if( file_exists('../photos/'.$repertoire.'eleves/') ) {  ?>
 		<br/>
-		<input type="radio"
-			   name="sousrub"
-			   id='supprime_eleve'
-			   value="de" />
+		<input type="checkbox"
+			   name="supp_eleve"
+			   id='supprime_eleves'
+			   value="oui" />
 		<label for="supprime_eleve" id='sup_ele'>
 		  Vider le dossier photos des élèves
 		</label>
+		<br/><em>Un fichier de sauvegarde sera créé, pensez à le récupérer puis le supprimer dans le module de gestion des sauvegardes.</em>
 	  </fieldset>
-
 <?php } ?>
+	  <p class="center">
+		<input type="submit" 
+			   value="Vider le(s) dossier(s)"
+			   style="font-variant: small-caps;" />
+	  </p>
+	 </form>
+
+
+	<form action="trombinoscopes_admin.php" id="form3" method="post" title="Gestion des fichiers">
+	<?php
+	echo add_token_field();
+	?>
 	<fieldset>
 		<legend class="bold">
 		  Gestion
@@ -446,7 +454,7 @@ if (!isset($aid_trouve)) {
 			   id='voir_personnel'
 			   value="yes" />
 		<label for="voir_personnel">
-		  Voir les professeurs n'ayant pas de photos
+		  Lister les professeurs n'ayant pas de photos
 		</label>
   <?php } if( file_exists('../photos/'.$repertoire.'eleves/') ) {?>
 		<br/>
@@ -455,32 +463,99 @@ if (!isset($aid_trouve)) {
 			   id='voir_eleve'
 			   value="yes" />
 		<label for="voir_eleve">
-		  Voir les élèves n'ayant pas de photos
+		  Lister les élèves n'ayant pas de photos
 		</label>
   <?php } ?>
 	  </fieldset>
 	  <p class="center">
 		<input type="submit" 
-			   value="Enregistrer"
+			   value="Lister"
 			   style="font-variant: small-caps;" />
 	  </p>
-
 	</form>
 
-	<hr/>
-	
-	<form method="post" action="trombinoscopes_admin.php" id="formEnvoi" enctype="multipart/form-data">
-	  <fieldset>
-<?php
-echo add_token_field();
-?>
+	<?php if( file_exists('../photos/'.$repertoire.'eleves/') ) {?>
+	<form action="trombinoscopes_admin.php" id="form4" method="post" title="Purger les photos">
+	<?php
+	echo add_token_field();
+	?>
+	<p>
+	<fieldset>
+		<legend class="bold">Purger le dossier des photos</legend>
+		Supprimer les photos des élèves et des professeurs qui ne sont plus référencés dans la base.<br/>
+		<input type="hidden" name="purge_dossier_photos" value="oui">
+		<input type="checkbox"
+			   name="cpts_inactifs"
+			   id='cpts_inactifs'
+			   value="oui" />
+		<label for="purge_dossier_photos">
+		  Effacer également les photos des élèves et des professeurs dont le compte est désactivé.
+		</label>
+		<br/><em>Un fichier de sauvegarde sera créé, pensez à le récupérer puis le supprimer dans le module de gestion des sauvegardes.</em>
+ 	  </fieldset>
+	  <p class="center">
+		<input type="submit" 
+			   value="Purger"
+			   style="font-variant: small-caps;" />
+	</p>
+	</form>
+ <?php 
+ } ?>
+ 
+	<h2>Télécharger les photos</h2>
+	<form method="post" action="trombinoscopes_admin.php" id="formEnvoi1" enctype="multipart/form-data">
+	<fieldset>
+	<?php
+	echo add_token_field();
+	?>
 		<legend class="bold">
-			Uploader et restaurer les photos à partir d'un fichier ZIP
+			Télécharger les photos des élèves à partir d'un fichier ZIP
+		</legend>
+		<input type="hidden" name="action" value="upload_photos_eleves" />
+		<input type="file" name="nom_du_fichier" title="Nom du fichier à télécharger"/>
+		<input type="submit" value="Télécharger"/>
+		<br/>
+		<input type="checkbox"
+			   name="ecraser"
+			   id='ecrase_photo'
+			   value="yes" />
+		<label for="ecrase_photo">
+		  Ecraser les photos si les noms correspondent
+		</label>
+		<p>
+		  <em>
+			Si cochée, les photos déjà présentes seront remplacées par les nouvelles.
+			Sinon, les anciennes photos seront conservées
+		  </em>
+		</p>
+
+		<p>Le fichier ZIP doit contenir :<br/>
+		<span style="margin-left: 40px;">
+		- soit les photos  encodées au format JPEG nommées d'après les ELENOET des élèves (<em>ELENOET.jpg</em>) ou pour, un GEPI multisite, les login des élèves (<em>login.jpg</em>) ;<br/>
+		</span><span style="margin-left: 40px;">
+		- soit les photos  encodées au format JPEG et un fichier au <a href="http://fr.wikipedia.org/wiki/Comma-separated_values" target="_blank">format CSV</a>, <b>impérativement nommé <em>correspondances.csv</em></b>, établissant les correspondances entre (premier champ) les noms des fichiers photos et (second champ) les ELENOET des élèves ou, pour un GEPI multisite, les login des élèves (<a href="correspondances.csv" target="_blank">exemple de fichier correspondances.csv</a>) ; pour générer le fichier correspondances.csv vous pouvez <a href="trombinoscopes_admin.php?liste_eleves=oui<?php echo add_token_in_url(); ?>">récupérer la liste</a> des élèves avec prénom, nom, eleonet et login.  <br/>
+		</span>
+		</p>
+
+		<p>La <b>taille maximale</b> d'un fichier téléchargé vers le serveur est de <b><?php echo ini_get('upload_max_filesize');?>.</b><br/>Effectuez si nécessaire votre téléchargement en plusieurs fichiers Zip.</p>
+
+	  </fieldset>
+	</form>
+
+	<br/>
+
+	<form method="post" action="trombinoscopes_admin.php" id="formEnvoi2" enctype="multipart/form-data">
+	<fieldset>
+	<?php
+	echo add_token_field();
+	?>
+		<legend class="bold">
+			Restaurer les photos à partir d'une sauvegarde (ou d'un fichier ZIP)
 		</legend>
 		<input type="hidden" name="action" value="upload" />
 		<input type="file" name="nom_du_fichier" title="Nom du fichier à télécharger"/>
-		<input type="submit" value="Envoyer"/>
-		<br />
+		<input type="submit" value="Restaurer"/>
+		<br/>
 		<input type="checkbox"
 			   name="ecraser"
 			   id='ecrase_photo'
@@ -495,9 +570,9 @@ echo add_token_field();
 		  </em>
 		</p>
 
-		<p>Le fichier ZIP doit contenir une arborescence <b>photos/eleves/</b> et les photos dans le sous-dossier doivent être nommée d'après les ELENOET des élèves (<em>photos/eleves/ELENOET.jpg</em>)<br />Et pour les photos des personnels, elles doivent se trouver dans un sous-dossier <b>photos/personnels/</b></p>
+		<p>Le fichier ZIP doit contenir une arborescence <b>photos/eleves</b> et/ou <b>photos/personnels</b> contenant respectivement les photos des élèves et des personnels encodées au format JPEG. Les photos des élèves doivent être nommées d'après les ELENOET des élèves (<em>ELENOET.jpg</em>) ou, pour un GEPI multisite, d'après les login des élèves (<em>login.jpg</em>).
 
-		<p>La <b>taille maximale</b> d'un fichier uploadé vers le serveur est de <b><?php echo ini_get('upload_max_filesize');?></b><br />Effectuez si nécessaire votre upload en plusieurs fichiers Zip.</p>
+		<p>La <b>taille maximale</b> d'un fichier téléchargé vers le serveur est de <b><?php echo ini_get('upload_max_filesize');?>.</b><br/>Effectuez si nécessaire votre téléchargement en plusieurs fichiers ZIP.</p>
 
 	  </fieldset>
 	</form>
