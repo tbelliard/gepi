@@ -21,10 +21,23 @@ if (!checkAccess()) {
 	die();
 }
 
+if(isset($_GET['ad_retour'])){
+	$_SESSION['ad_retour']=$_GET['ad_retour'];
+}
+
 //**************** EN-TETE *****************
 $titre_page = "XML de STS: Génération de CSV";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+
+echo "<p class=bold><a href='";
+if(isset($_SESSION['ad_retour'])){
+	echo $_SESSION['ad_retour'];
+}
+else{
+	echo "index.php";
+}
+echo "'> <img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 require_once("../init_xml2/init_xml_lib.php");
 
@@ -412,16 +425,13 @@ if (browser.isNS) {
 						foreach($objet_matiere->children() as $key => $value) {
 							if(in_array(my_strtoupper($key),$tab_champs_matiere)) {
 								if(my_strtoupper($key)=='CODE_GESTION') {
-									//$matiere[$i][my_strtolower($key)]=trim(preg_replace("/[^a-zA-Z0-9&_. -]/","",html_entity_decode(traite_utf8($value))));
-									$matiere[$i][my_strtolower($key)]=trim(preg_replace("/[^a-zA-Z0-9&_. -]/","",nettoyer_caracteres_nom(remplace_accents($value))));
+									$matiere[$i][my_strtolower($key)]=trim(preg_replace("/[^a-zA-Z0-9&_. -]/","",nettoyer_caracteres_nom(remplace_accents($value),"an", "&_. -", "")));
 								}
 								elseif(my_strtoupper($key)=='LIBELLE_COURT') {
-									//$matiere[$i][my_strtolower($key)]=trim(preg_replace("/[^A-Za-zÆæ¼½".$liste_caracteres_accentues."0-9&_. -]/","",html_entity_decode(traite_utf8($value))));
-									$matiere[$i][my_strtolower($key)]=trim(preg_replace("/'/"," ",preg_replace('/"/',' ',nettoyer_caracteres_nom($value))));
+									$matiere[$i][my_strtolower($key)]=trim(preg_replace("/'/"," ",preg_replace('/"/',' ',nettoyer_caracteres_nom($value,"an", "&_. -", ""))));
 								}
 								else {
-									//$matiere[$i][my_strtolower($key)]=traitement_magic_quotes(corriger_caracteres(trim(preg_replace('/"/','',traite_utf8($value)))));
-									$matiere[$i][my_strtolower($key)]=trim(preg_replace("/'/"," ",preg_replace('/"/',' ',nettoyer_caracteres_nom($value))));
+									$matiere[$i][my_strtolower($key)]=trim(preg_replace("/'/"," ",preg_replace('/"/',' ',nettoyer_caracteres_nom($value,"an", "&_. -", ""))));
 								}
 							}
 						}
@@ -516,7 +526,7 @@ if (browser.isNS) {
 								}
 								elseif(my_strtoupper($key)=='PRENOM') {
 									//$prof[$i][my_strtolower($key)]=trim(preg_replace("/[^A-Za-zÆæ¼½".$liste_caracteres_accentues." -]/","",traite_utf8($value)));
-									$prof[$i][my_strtolower($key)]=trim(preg_replace('/"/','',preg_replace("/'/","",nettoyer_caracteres_nom($value))));
+									$prof[$i][my_strtolower($key)]=trim(preg_replace('/"/','',preg_replace("/'/","",nettoyer_caracteres_nom($value,"a"," '_-",""))));
 								}
 								elseif(my_strtoupper($key)=='DATE_NAISSANCE') {
 									//$prof[$i][my_strtolower($key)]=trim(preg_replace("/[^0-9-]/","",traite_utf8($value)));

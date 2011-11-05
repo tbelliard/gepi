@@ -111,7 +111,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 		$current_group=get_group($groupe);
 		$entete = "Groupe : ".$donnees_qui['name']." (".$current_group['classlist_string'].")";
 	}
-	if ( $action_affiche === 'equipepeda' ) { $entete = "Equipe pédagogique : ".$donnees_qui['nom_complet']." (".$donnees_qui['classe'].")"; }
+	if ( $action_affiche === 'equipepeda' ) { $entete = "Équipe pédagogique : ".$donnees_qui['nom_complet']." (".$donnees_qui['classe'].")"; }
 	if ( $action_affiche === 'discipline' ) { $entete = "Discipline : ".$donnees_qui['nom_complet']." (".$donnees_qui['matiere'].")"; }
 	if ( $action_affiche === 'statusgepi' ) { $entete = "Statut : ".my_ereg_replace("scolarite","scolarité",$statusgepi); }
 
@@ -406,7 +406,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 				if(isset($nom_trombinoscope[$cpt])) {
 					//$texte=$tab_ele[$cpt]['login'];
 					//$texte=strtoupper($tab_ele[$cpt]['nom'])." ".casse_mot($tab_ele[$cpt]['prenom'],'majf2');
-					$texte=strtoupper($nom_trombinoscope[$cpt])." ".casse_mot($prenom_trombinoscope[$cpt],'majf2');
+					$texte=my_strtoupper($nom_trombinoscope[$cpt])." ".casse_mot($prenom_trombinoscope[$cpt],'majf2');
 
 					if(count($tab_classes)>1) {
 						$texte.=" (".$classe_trombinoscope[$cpt].")";

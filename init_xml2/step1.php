@@ -27,44 +27,12 @@
 
 	require_once("init_xml_lib.php");
 
-	function extr_valeur($lig){
-		unset($tabtmp);
-		$tabtmp=explode(">",preg_replace("/</",">",$lig));
-		return trim($tabtmp[2]);
-	}
-
-	function ouinon($nombre){
-		if($nombre==1){return "O";}elseif($nombre==0){return "N";}else{return "";}
-	}
-	function sexeMF($nombre){
-		//if($nombre==2){return "F";}else{return "M";}
-		if($nombre==2){return "F";}elseif($nombre==1){return "M";}else{return "";}
-	}
-
-	function affiche_debug($texte){
-		// Passer à 1 la variable pour générer l'affichage des infos de debug...
-		$debug=0;
-		if($debug==1){
-			echo "<font color='green'>".$texte."</font>";
-			flush();
-		}
-	}
-
-	function maj_min_comp($chaine){
-		$tmp_tab1=explode(" ",$chaine);
-		$new_chaine="";
-		for($i=0;$i<count($tmp_tab1);$i++){
-			$tmp_tab2=explode("-",$tmp_tab1[$i]);
-			$new_chaine.=casse_mot($tmp_tab2[0],'majf2');
-			for($j=1;$j<count($tmp_tab2);$j++){
-				$new_chaine.="-".casse_mot($tmp_tab2[$j],'majf2');
-			}
-			$new_chaine.=" ";
-		}
-		$new_chaine=trim($new_chaine);
-		return $new_chaine;
-	}
-
+	/*
+	$chaine_test="Il^ était! une§ fois* à% StBenoîtµ, blablabla";
+	echo "\$chaine_test=$chaine_test<br />";
+	echo "Nettoyée : ".preg_replace("/[^A-Za-z$liste_caracteres_accentues ]/","",$chaine_test)."<br />";
+	echo "Nettoyée avec /u : ".preg_replace("/[^A-Za-z$liste_caracteres_accentues ]/u","",$chaine_test)."<br />";
+	*/
 
 	// Etape...
 	$step=isset($_POST['step']) ? $_POST['step'] : (isset($_GET['step']) ? $_GET['step'] : NULL);
@@ -395,14 +363,11 @@
 
 										$eleves[$i]["structures"]=array();
 										$j=0;
-										//foreach($objet_structures->STRUCTURES_ELEVE->children() as $structure) {
 										foreach($structures_eleve->children() as $structure) {
 											$eleves[$i]["structures"][$j]=array();
 											foreach($structure->children() as $key => $value) {
 												if(in_array(my_strtoupper($key),$tab_champs_struct)) {
-													//$eleves[$i]["structures"][$j][strtolower($key)]=preg_replace('/"/','',trim(traite_utf8($value)));
 													$eleves[$i]["structures"][$j][my_strtolower($key)]=preg_replace("/'/","",preg_replace('/"/','',trim($value)));
-													//echo("\$structure->$key=".$value."<br />)";
 												}
 											}
 											$j++;
@@ -418,8 +383,7 @@
 							}
 						}
 
-						//if(count($eleves)==0) {
-						if(!isset($eleves)) {
+						if((!isset($eleves))||(count($eleves)==0)) {
 							echo "<p style='color:red'>Les classes d'affectation des élèves ne sont pas définies dans le fichier XML.<br />Votre secrétaire n'a pas encore remonté cette information dans Sconet... ou bien la remontée n'est pas encore prise en compte dans les XML.<br />Pendant un temps, la saisie n'était prise en compte dans les XML que le lendemain de la saisie.</p>\n";
 							require("../lib/footer.inc.php");
 							die();
@@ -479,7 +443,6 @@
 						$stat=$id_tempo-1-$nb_err;
 						echo "<p>$stat associations identifiant élève/classe ont été inséré(s) dans la table 'temp_gep_import2'.</p>\n";
 
-						//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=1'>Suite</a></p>\n";
 						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1".add_token_in_url()."'>Suite</a></p>\n";
 
 						require("../lib/footer.inc.php");
@@ -591,24 +554,12 @@
 			
 					foreach($eleve->attributes() as $key => $value) {
 						//echo "$key=".$value."<br />";
-			
-						//$eleves[$i][strtolower($key)]=trim(traite_utf8($value));
 						$eleves[$i][my_strtolower($key)]=trim($value);
-						/*
-						if(strtoupper($key)=='ELEVE_ID') {
-							$indice_from_eleve_id["$value"]=$i;
-						}
-						elseif(strtoupper($key)=='ELENOET') {
-							$indice_from_elenoet["$value"]=$i;
-						}
-						*/
 					}
 
 					foreach($eleve->children() as $key => $value) {
 						if(in_array(my_strtoupper($key),$tab_champs_eleve)) {
-							//$eleves[$i][strtolower($key)]=preg_replace('/"/','',trim(traite_utf8($value)));
-							//$eleves[$i][my_strtolower($key)]=preg_replace('/"/','',trim($value));
-							$eleves[$i][my_strtolower($key)]=preg_replace('/"/','',preg_replace("/'$/","",preg_replace("/^'/"," ",trim($value))));
+							$eleves[$i][my_strtolower($key)]=preg_replace('/"/','',preg_replace("/'$/","",preg_replace("/^'/","",trim($value))));
 							//echo "\$eleve->$key=".$value."<br />";
 						}
 
@@ -1576,30 +1527,12 @@
 					}
 				}
 
-				echo "<p>Suite: <a href='step2.php'>Classes et périodes</a></p>\n";
+				echo "<p>Suite: <a href='step2.php?a=a".add_token_in_url()."'>Classes et périodes</a></p>\n";
 
 				require("../lib/footer.inc.php");
 				die();
 			}
 
-
-
-			/*
-			if(count($remarques)>0){
-				echo "<a name='remarques'></a><h3>Remarques</h3>\n";
-				if(count($remarques)==1){
-					echo "<p>Une anomalie a été notée lors du parcours de vos fichiers:</p>\n";
-				}
-				else{
-					echo "<p>Des anomalies ont été notées lors du parcours de vos fichiers:</p>\n";
-				}
-				echo "<ul>\n";
-				for($i=0;$i<count($remarques);$i++){
-					echo "<li>".$remarques[$i]."</li>\n";
-				}
-				echo "</ul>\n";
-			}
-			*/
 		}
 	}
 	require("../lib/footer.inc.php");

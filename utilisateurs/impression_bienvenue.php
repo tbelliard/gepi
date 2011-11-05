@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -499,7 +499,7 @@ width:".$largeur1."%;\n";
 		echo "Mot de passe&nbsp;: \n";
 		echo "</td>\n";
 		echo "<td>\n";
-		echo "<span class = \"bold\">$mot_de_passe</span>";
+		echo "<span class = \"bold\">".stripslashes($mot_de_passe)."</span>";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}

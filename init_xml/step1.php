@@ -183,10 +183,10 @@ if (!isset($is_posted)) {
 
 							$ind = $tabindice[$i];
 							// On vire en plus les apostrophes dans les noms,...
-							$affiche = preg_replace("/'/"," ",dbase_filter(trim($tabligne[$ind])));
+							$affiche = trim(preg_replace("/'/"," ",nettoyer_caracteres_nom($tabligne[$ind], "an", " '_-", "")));
 							if($tabchamps[$ind]!=''){
 								$query = $query.",";
-								$query = $query."$tabchamps[$ind]='".$affiche."'";
+								$query = $query."$tabchamps[$ind]='".mysql_real_escape_string($affiche)."'";
 							}
 							if (($en_tete[$ind] == 'DIVCOD') and ($affiche == '')) {$enregistre = "no";}
 						}

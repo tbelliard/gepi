@@ -193,7 +193,7 @@ if (isset($is_posted)) {
         // On teste d'abord :
         $test = mysql_result(mysql_query("SELECT count(*) FROM classes WHERE (classe='$classe')"),0);
         if ($test == "0") {
-            $reg_classe = mysql_query("INSERT INTO classes SET classe='".traitement_magic_quotes(corriger_caracteres($classe))."',nom_complet='".traitement_magic_quotes(corriger_caracteres($reg_nom_complet[$classe]))."',suivi_par='".traitement_magic_quotes(corriger_caracteres($reg_suivi[$classe]))."',formule='".html_entity_decode(traitement_magic_quotes(corriger_caracteres($reg_formule[$classe])))."', format_nom='cni'");
+            $reg_classe = mysql_query("INSERT INTO classes SET classe='".mysql_real_escape_string(nettoyer_caracteres_nom($classe, "an", " -_", ""))."',nom_complet='".mysql_real_escape_string(nettoyer_caracteres_nom($reg_nom_complet[$classe], "an", " '-_", ""))."',suivi_par='".mysql_real_escape_string(nettoyer_caracteres_nom($reg_suivi[$classe], "an", " .,'-_", ""))."',formule='".html_entity_decode(mysql_real_escape_string(nettoyer_caracteres_nom($reg_formule[$classe], "an", " .,'-_", "")))."', format_nom='cni'");
 
 			$id_classe=mysql_insert_id();
 			for($loop=0;$loop<count($tab_user_scol);$loop++) {
@@ -208,7 +208,7 @@ if (isset($is_posted)) {
 			}
 
         } else {
-            $reg_classe = mysql_query("UPDATE classes SET classe='".traitement_magic_quotes(corriger_caracteres($classe))."',nom_complet='".traitement_magic_quotes(corriger_caracteres($reg_nom_complet[$classe]))."',suivi_par='".traitement_magic_quotes(corriger_caracteres($reg_suivi[$classe]))."',formule='".html_entity_decode(traitement_magic_quotes(corriger_caracteres($reg_formule[$classe])))."', format_nom='cni' WHERE classe='$classe'");
+            $reg_classe = mysql_query("UPDATE classes SET classe='".mysql_real_escape_string(nettoyer_caracteres_nom($classe, "an", " -_", ""))."',nom_complet='".mysql_real_escape_string(nettoyer_caracteres_nom($reg_nom_complet[$classe], "an", " '-_", ""))."',suivi_par='".mysql_real_escape_string(nettoyer_caracteres_nom($reg_suivi[$classe], "an", " .,'-_", ""))."',formule='".html_entity_decode(mysql_real_escape_string(nettoyer_caracteres_nom($reg_formule[$classe], "an", " .,'-_", "")))."', format_nom='cni' WHERE classe='$classe'");
         }
         if (!$reg_classe) {echo "<p style='color:red'>Erreur lors de l'enregistrement de la classe $classe.";}
 

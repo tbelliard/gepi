@@ -3,7 +3,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -50,9 +50,6 @@ $liste_tables_del = $liste_tables_del_etape_professeurs;
 $titre_page = "Outil d'initialisation de l'année : Importation des matières";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-
-// On vérifie si l'extension d_base est active
-//verif_active_dbase();
 
 ?>
 <p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
@@ -279,7 +276,7 @@ if (!isset($is_posted)) {
 					if(trim($ligne)!=""){
 						$tabligne=explode(";",$ligne);
 						for($i = 0; $i < count($tabchamps); $i++) {
-							$affiche[$i] = dbase_filter(trim($tabligne[$tabindice[$i]]));
+							$affiche[$i] = nettoyer_caracteres_nom($tabligne[$tabindice[$i]], "an", "' ._-", "");
 						}
 						//Civilité
 						$civilite = '';
@@ -328,8 +325,8 @@ if (!isset($is_posted)) {
 							if ($result_test == 0) {
 								// On tente ensuite une reconnaissance sur nom/prénom, si le test NUMIND a échoué
 								$sql="select login from utilisateurs where (
-								nom='".traitement_magic_quotes($affiche[0])."' and
-								prenom = '".traitement_magic_quotes($premier_prenom)."' and
+								nom='".mysql_real_escape_string($affiche[0])."' and
+								prenom = '".mysql_real_escape_string($premier_prenom)."' and
 								statut='professeur')";
 								// Pour debug:
 								//echo "$sql<br />";
@@ -339,8 +336,8 @@ if (!isset($is_posted)) {
 									if ($prenom_compose != '') {
 										$test_exist2 = mysql_query("select login from utilisateurs
 										where (
-										nom='".traitement_magic_quotes($affiche[0])."' and
-										prenom = '".traitement_magic_quotes($prenom_compose)."' and
+										nom='".mysql_real_escape_string($affiche[0])."' and
+										prenom = '".mysql_real_escape_string($prenom_compose)."' and
 										statut='professeur'
 										)");
 										$result_test2 = mysql_num_rows($test_exist2);
@@ -375,7 +372,7 @@ if (!isset($is_posted)) {
 
 								// Aucun professeur ne porte le même nom dans la base GEPI. On va donc rentrer ce professeur dans la base
 	
-								$affiche[1] = traitement_magic_quotes(corriger_caracteres($affiche[1]));
+								$affiche[1] = nettoyer_caracteres_nom($affiche[1], "a", " _-", "");
 
 
 								$temp1=generate_unique_login($affiche[0], $affiche[1], $_POST['login_gen_type']);
@@ -392,7 +389,7 @@ if (!isset($is_posted)) {
 										$m++;
 									}
 								}
-								$affiche[0] = traitement_magic_quotes(corriger_caracteres($affiche[0]));
+								$affiche[0] = nettoyer_caracteres_nom($affiche[0], "a", " _-", "");
 								// Mot de passe
 								if (mb_strlen($affiche[5])>2 and $affiche[4]=="ENS" and $_POST['sso'] == "no") {
 									//
@@ -413,7 +410,7 @@ if (!isset($is_posted)) {
 	
 								// utilise le prénom composé s'il existe, plutôt que le premier prénom
 	
-								$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='$affiche[0]', prenom='$premier_prenom', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='y', numind='$affiche[3]'";
+								$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".mysql_real_escape_string($affiche[0])."', prenom='".mysql_real_escape_string($premier_prenom)."', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='y', numind='$affiche[3]'";
 								$res = mysql_query($sql);
 								// Pour debug:
 								//echo "<tr><td colspan='4'>$sql</td></tr>";

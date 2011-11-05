@@ -27,43 +27,6 @@
 
 	require_once("init_xml_lib.php");
 
-	function extr_valeur($lig){
-		unset($tabtmp);
-		$tabtmp=explode(">",preg_replace("/</",">",$lig));
-		return trim($tabtmp[2]);
-	}
-
-	function ouinon($nombre){
-		if($nombre==1){return "O";}elseif($nombre==0){return "N";}else{return "";}
-	}
-	function sexeMF($nombre){
-		//if($nombre==2){return "F";}else{return "M";}
-		if($nombre==2){return "F";}elseif($nombre==1){return "M";}else{return "";}
-	}
-
-	function maj_min_comp($chaine){
-		$tmp_tab1=explode(" ",$chaine);
-		$new_chaine="";
-		for($i=0;$i<count($tmp_tab1);$i++){
-			$tmp_tab2=explode("-",$tmp_tab1[$i]);
-			$new_chaine.=casse_mot($tmp_tab2[0],'majf2');
-			for($j=1;$j<count($tmp_tab2);$j++){
-				$new_chaine.="-".casse_mot($tmp_tab2[$j],'majf2');
-			}
-			$new_chaine.=" ";
-		}
-		$new_chaine=trim($new_chaine);
-		return $new_chaine;
-	}
-
-	function affiche_debug($texte){
-		// Passer à 1 la variable pour générer l'affichage des infos de debug...
-		$debug=0;
-		if($debug==1){
-			echo "<font color='green'>".$texte."</font>";
-		}
-	}
-
 	// Etape...
 	$step=isset($_POST['step']) ? $_POST['step'] : (isset($_GET['step']) ? $_GET['step'] : NULL);
 
@@ -411,17 +374,13 @@
 
 							foreach($personne->attributes() as $key => $value) {
 								// <PERSONNE PERSONNE_ID="294435">
-								//$personnes[$i][my_strtolower($key)]=traitement_magic_quotes(corriger_caracteres(trim($value)));
-								$personnes[$i][my_strtolower($key)]=trim($value);
+								//$personnes[$i][my_strtolower($key)]=trim($value);
+								$personnes[$i][my_strtolower($key)]=trim(nettoyer_caracteres_nom($value, "an", " .@'-", ""));
 							}
 
 							foreach($personne->children() as $key => $value) {
 								if(in_array(my_strtoupper($key),$tab_champs_personne)) {
-									//$personnes[$i][my_strtolower($key)]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',trim(traite_utf8($value)))));
-									//$personnes[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)));
-									//$personnes[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',$value));
-									$personnes[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'$/","",preg_replace("/^'/"," ",$value))));
-									//echo "\$structure->$key=".$value."<br />";
+									$personnes[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'$/","",preg_replace("/^'/"," ",$value))), "an", " .@'_-", "");
 								}
 							}
 
@@ -432,7 +391,6 @@
 							}
 						}
 
-						//traitement_magic_quotes(corriger_caracteres())
 						$nb_err=0;
 						$stat=0;
 						$i=0;
@@ -482,24 +440,34 @@
 								if(mysql_num_rows($res_tmp_u)>0) {
 									$lig_tmp_u=mysql_fetch_object($res_tmp_u);
 
-									$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".mysql_real_escape_string($personnes[$i]["nom"])."', prenom='".mysql_real_escape_string($personnes[$i]["prenom"])."', ";
-									if(isset($personnes[$i]["lc_civilite"])){
-										$sql.="civilite='".casse_mot($personnes[$i]["lc_civilite"],'majf2')."', ";
-									}
-									$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".mysql_real_escape_string($lig_tmp_u->email)."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
-									if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-									$insert_u=mysql_query($sql);
-									if(!$insert_u) {
-										echo "Erreur lors de la création du compte utilisateur pour ".$personnes[$i]["nom"]." ".$personnes[$i]["prenom"].".<br />";
+									$sql="SELECT statut FROM utilisateurs WHERE login='".$lig_tmp_u->login."';";
+									$test_u=mysql_query($sql);
+									if(mysql_num_rows($test_u)>0) {
+										$lig_test_u=mysql_fetch_object($test_u);
+										if($lig_test_u->statut!='responsable') {
+											echo "<span style='color:red;'>ANOMALIE&nbsp;:</span> Un compte d'uilisateur <b>$lig_test_u->statut</b> existait pour le login <b>$lig_tmp_u->login</b> mis en réserve pour ".$personnes[$i]["nom"]." ".$personnes[$i]["prenom"]."&nbsp;:<br /><span style='color:red;'>$sql</span><br />";
+										}
 									}
 									else {
-										$sql="UPDATE resp_pers SET login='".$lig_tmp_u->login."' WHERE pers_id='".$personnes[$i]["personne_id"]."';";
+										$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".mysql_real_escape_string($personnes[$i]["nom"])."', prenom='".mysql_real_escape_string($personnes[$i]["prenom"])."', ";
+										if(isset($personnes[$i]["lc_civilite"])){
+											$sql.="civilite='".casse_mot($personnes[$i]["lc_civilite"],'majf2')."', ";
+										}
+										$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".mysql_real_escape_string($lig_tmp_u->email)."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
 										if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-										$update_rp=mysql_query($sql);
-
-										$sql="UPDATE tempo_utilisateurs SET temoin='recree' WHERE identifiant1='".$personnes[$i]["personne_id"]."';";
-										if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-										$update_tmp_u=mysql_query($sql);
+										$insert_u=mysql_query($sql);
+										if(!$insert_u) {
+											echo "<span style='color:red;'>Erreur</span> lors de la création du compte utilisateur pour ".$personnes[$i]["nom"]." ".$personnes[$i]["prenom"]."&nbsp;:<br /><span style='color:red;'>$sql</span><br />";
+										}
+										else {
+											$sql="UPDATE resp_pers SET login='".$lig_tmp_u->login."' WHERE pers_id='".$personnes[$i]["personne_id"]."';";
+											if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+											$update_rp=mysql_query($sql);
+	
+											$sql="UPDATE tempo_utilisateurs SET temoin='recree' WHERE identifiant1='".$personnes[$i]["personne_id"]."';";
+											if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+											$update_tmp_u=mysql_query($sql);
+										}
 									}
 								}
 
@@ -557,13 +525,6 @@
 				$sql="TRUNCATE TABLE responsables2;";
 				$vide_table = mysql_query($sql);
 
-				/*
-				echo "<p>Lecture du fichier Responsables...<br />\n";
-				while(!feof($fp)){
-					$ligne[]=fgets($fp,4096);
-				}
-				fclose($fp);
-				*/
 				flush();
 
 				echo "<p>";
@@ -593,9 +554,8 @@
 
 					foreach($responsable_eleve->children() as $key => $value) {
 						if(in_array(my_strtoupper($key),$tab_champs_responsable)) {
-							//$responsables[$i][my_strtolower($key)]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',trim(traite_utf8($value)))));
-							$responsables[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)));
-							//echo "\$structure->$key=".$value."<br />";
+							//$responsables[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)), "an", " .@'-", "");
+							$responsables[$i][my_strtolower($key)]=preg_replace('/[^0-9]/', '', $value);
 						}
 					}
 
@@ -776,11 +736,8 @@
 
 					foreach($adresse->children() as $key => $value) {
 						if(in_array(my_strtoupper($key),$tab_champs_adresse)) {
-							//$adresses[$i][my_strtolower($key)]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',trim(traite_utf8($value)))));
-							//$adresses[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)));
-							//$adresses[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',$value));
-							$adresses[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'$/","",preg_replace("/^'/"," ",$value))));
-							//echo "\$structure->$key=".$value."<br />";
+							//$adresses[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'$/","",preg_replace("/^'/"," ",$value))), "an", " .'-", " ");
+							$adresses[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace("/'$/","",preg_replace("/^'/"," ",$value)), "an", " .'-", " ");
 						}
 					}
 
@@ -864,15 +821,6 @@
 					}
 				}
 
-				/*
-				if(($nb_reg_no1==0)&&($nb_reg_no2==0)&&($nb_reg_no3==0)){
-					echo "<p>Vous pouvez à présent retourner à l'accueil et effectuer toutes les autres opérations d'initialisation manuellement ou bien procéder à la troixième phase d'importation des matières et de définition des options suivies par les élèves.</p>\n";
-					echo "<center><p><a href='../accueil.php'>Retourner à l'accueil</a></p></center>\n";
-					echo "<center><p><a href='disciplines_csv.php'>Procéder à la troisième phase</a>.</p></center>\n";
-				}
-				*/
-
-				//echo "<center><p><a href='../accueil.php'>Retourner à l'accueil</a></p></center>\n";
 				echo "<center><p><a href='matieres.php'>Procéder à la troisième phase</a>.</p></center>\n";
 
 				require("../lib/footer.inc.php");

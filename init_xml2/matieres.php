@@ -27,28 +27,6 @@
 
 	require_once("init_xml_lib.php");
 
-	function extr_valeur($lig){
-		unset($tabtmp);
-		$tabtmp=explode(">",preg_replace("/</",">",$lig));
-		return trim($tabtmp[2]);
-	}
-
-	function ouinon($nombre){
-		if($nombre==1){return "O";}elseif($nombre==0){return "N";}else{return "";}
-	}
-	function sexeMF($nombre){
-		//if($nombre==2){return "F";}else{return "M";}
-		if($nombre==2){return "F";}elseif($nombre==1){return "M";}else{return "";}
-	}
-
-	function affiche_debug($texte){
-		// Passer à 1 la variable pour générer l'affichage des infos de debug...
-		$debug=0;
-		if($debug==1){
-			echo "<font color='green'>".$texte."</font>";
-		}
-	}
-
 		// Etape...
 	$step=isset($_POST['step']) ? $_POST['step'] : (isset($_GET['step']) ? $_GET['step'] : NULL);
 
@@ -136,7 +114,6 @@
 				$flag=0;
 				$chaine_tables="";
 				while (($j < count($liste_tables_del)) and ($flag==0)) {
-					//if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
 					$sql="SELECT 1=1 FROM $liste_tables_del[$j];";
 					//echo "$sql<br />";
 					$test_del=mysql_query($sql);
@@ -276,20 +253,6 @@
 						$sql="TRUNCATE TABLE temp_matieres_import;";
 						$vide_table = mysql_query($sql);
 
-
-						/*
-						// On va lire plusieurs fois le fichier pour remplir des tables temporaires.
-						$fp=fopen($dest_file,"r");
-						if($fp){
-							echo "<p>Lecture du fichier STS Emploi du temps...<br />\n";
-							//echo "<blockquote>\n";
-							while(!feof($fp)){
-								$ligne[]=fgets($fp,4096);
-							}
-							fclose($fp);
-							//echo "<p>Terminé.</p>\n";
-						}
-						*/
 						flush();
 
 						$sts_xml=simplexml_load_file($dest_file);
@@ -327,7 +290,6 @@
 				
 							foreach($objet_matiere->attributes() as $key => $value) {
 								// <MATIERE CODE="090100">
-								//$matiere[$i][my_strtolower($key)]=trim(traite_utf8($value));
 								$matiere[$i][my_strtolower($key)]=trim($value);
 							}
 				
@@ -335,16 +297,13 @@
 							foreach($objet_matiere->children() as $key => $value) {
 								if(in_array(my_strtoupper($key),$tab_champs_matiere)) {
 									if(my_strtoupper($key)=='CODE_GESTION') {
-										//$matiere[$i][my_strtolower($key)]=trim(preg_replace("/[^a-zA-Z0-9&_. -]/","",html_entity_decode(traite_utf8($value))));
-										$matiere[$i][my_strtolower($key)]=trim(preg_replace("/[^a-zA-Z0-9&_. -]/","",nettoyer_caracteres_nom(remplace_accents($value))));
+										$matiere[$i][my_strtolower($key)]=nettoyer_caracteres_nom(remplace_accents($value),"an","&_. -","");
 									}
 									elseif(my_strtoupper($key)=='LIBELLE_COURT') {
-										//$matiere[$i][my_strtolower($key)]=trim(preg_replace("/[^A-Za-zÆæ¼½".$liste_caracteres_accentues."0-9&_. -]/","",html_entity_decode(traite_utf8($value))));
-										$matiere[$i][my_strtolower($key)]=trim(preg_replace("/'/"," ",preg_replace('/"/',' ',nettoyer_caracteres_nom($value))));
+										$matiere[$i][my_strtolower($key)]=trim(preg_replace("/'/"," ",preg_replace('/"/',' ',nettoyer_caracteres_nom($value, "an", " .'_&-", ""))));
 									}
 									else {
-										//$matiere[$i][my_strtolower($key)]=traitement_magic_quotes(corriger_caracteres(trim(preg_replace('/"/','',traite_utf8($value)))));
-										$matiere[$i][my_strtolower($key)]=trim(preg_replace("/'/"," ",preg_replace('/"/',' ',nettoyer_caracteres_nom($value))));
+										$matiere[$i][my_strtolower($key)]=trim(preg_replace('/"/',' ',nettoyer_caracteres_nom($value, "an", " .'_&-", "")));
 									}
 								}
 							}
@@ -437,7 +396,6 @@
 					
 							foreach($objet_division->attributes() as $key => $value) {
 								if(my_strtoupper($key)=='CODE') {
-									//$divisions[$i]['code']=preg_replace('/"/','',trim(traite_utf8($value)));
 									$divisions[$i]['code']=preg_replace("/'/","",preg_replace('/"/','',trim($value)));
 									//echo "<p>\$divisions[$i]['code']=".$divisions[$i]['code']."<br />";
 									break;
@@ -448,8 +406,6 @@
 							foreach($objet_division->MEFS_APPARTENANCE->children() as $mef_appartenance) {
 								foreach($mef_appartenance->attributes() as $key => $value) {
 									// Normalement, on ne devrait faire qu'un tour:
-									//$divisions[$i]["mef_code"][]=trim(traite_utf8($value));
-									//$tab_mef_code[]=trim(traite_utf8($value));
 									$divisions[$i]["mef_code"][]=trim($value);
 									$tab_mef_code[]=trim($value);
 									//echo "\$divisions[$i][\"mef_code\"][]=trim(traite_utf8($value))<br />";
@@ -477,7 +433,6 @@
 					
 							foreach($objet_mef->attributes() as $key => $value) {
 								if(my_strtoupper($key)=='CODE') {
-									//$mefs[$i]['code']=preg_replace('/"/','',trim(traite_utf8($value)));
 									$mefs[$i]['code']=preg_replace('/"/','',preg_replace("/'/","",trim($value)));
 									break;
 								}
@@ -487,8 +442,7 @@
 								// Champs MEF
 								foreach($objet_mef->children() as $key => $value) {
 									if(in_array(my_strtoupper($key),$tab_champs_mef)) {
-										//$mefs[$i][my_strtolower($key)]=trim(preg_replace("/[^A-Za-zÆæ¼½".$liste_caracteres_accentues."0-9&_. -]/","",html_entity_decode(traite_utf8($value))));
-										$mefs[$i][my_strtolower($key)]=trim(preg_replace('/"/','',preg_replace("/'/","",nettoyer_caracteres_nom($value))));
+										$mefs[$i][my_strtolower($key)]=trim(preg_replace('/"/','',preg_replace("/'/","",nettoyer_caracteres_nom($value, "an", " .'_&-", ""))));
 									}
 								}
 								$i++;

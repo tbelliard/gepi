@@ -189,11 +189,11 @@ if (!isset($_POST["action"])) {
 			//==========================
 
 			// On nettoie et on vérifie :
-			$reg_nom=nettoyer_caracteres_nom(trim(my_strtoupper($reg_nom)));
+			$reg_nom=nettoyer_caracteres_nom(my_strtoupper($reg_nom), "a", " '_-", "");
 			$reg_nom=preg_replace("/'/", " ", $reg_nom);
 
 			if (mb_strlen($reg_nom) > 50) $reg_nom = mb_substr($reg_nom, 0, 50);
-			$reg_prenom=nettoyer_caracteres_nom(trim($reg_prenom));
+			$reg_prenom=nettoyer_caracteres_nom($reg_prenom, "a", " '_-", "");
 			$reg_prenom=preg_replace("/'/", " ", $reg_prenom);
 
 			if (mb_strlen($reg_prenom) > 50) $reg_prenom = mb_substr($reg_prenom, 0, 50);
@@ -300,7 +300,7 @@ if (!isset($_POST["action"])) {
 							else {
 								$sql.="civilite='MLLE', ";
 							}
-							$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".$lig_tmp_u->email."', statut='eleve', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
+							$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".mysql_real_escape_string($lig_tmp_u->email)."', statut='eleve', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
 							if($debug_ele=='y') {echo "<span style='color:blue;'>$sql</span><br />";}
 							$insert_u=mysql_query($sql);
 							if(!$insert_u) {
@@ -450,11 +450,11 @@ if (!isset($_POST["action"])) {
 
 						// On nettoie et on vérifie :
 						//=====================================
-						$tabligne[0]=nettoyer_caracteres_nom($tabligne[0]);
+						$tabligne[0]=nettoyer_caracteres_nom($tabligne[0], "a", " '_-", "");
 						$tabligne[0]=preg_replace("/'/", " ", $tabligne[0]);
 						if (mb_strlen($tabligne[0]) > 50) {$tabligne[0] = mb_substr($tabligne[0], 0, 50);}
 
-						$tabligne[1]=nettoyer_caracteres_nom($tabligne[1]);
+						$tabligne[1]=nettoyer_caracteres_nom($tabligne[1], "a", " '_-", "");
 						$tabligne[1]=preg_replace("/'/", " ", $tabligne[1]);
 						if (mb_strlen($tabligne[1]) > 50) $tabligne[1] = mb_substr($tabligne[1], 0, 50);
 
@@ -590,40 +590,30 @@ if (!isset($_POST["action"])) {
 					else {
 						echo $data_tab[$i]["nom"];
 					}
-					//echo $data_tab[$i]["nom"];
-					//echo "<input type='hidden' name='ligne".$i."_nom' value='" . $data_tab[$i]["nom"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["prenom"];
-					//echo "<input type='hidden' name='ligne".$i."_prenom' value='" . $data_tab[$i]["prenom"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["sexe"];
-					//echo "<input type='hidden' name='ligne".$i."_sexe' value='" . $data_tab[$i]["sexe"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["naissance"];
-					//echo "<input type='hidden' name='ligne".$i."_naissance' value='" . $data_tab[$i]["naissance"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["id_int"];
-					//echo "<input type='hidden' name='ligne".$i."_id_int' value='" . $data_tab[$i]["id_int"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["id_nat"];
-					//echo "<input type='hidden' name='ligne".$i."_id_nat' value='" . $data_tab[$i]["id_nat"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["etab_prec"];
-					//echo "<input type='hidden' name='ligne".$i."_etab_prec' value='" . $data_tab[$i]["etab_prec"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["doublement"];
-					//echo "<input type='hidden' name='ligne".$i."_doublement' value='" . $data_tab[$i]["doublement"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["regime"];
-					//echo "<input type='hidden' name='ligne".$i."_regime' value='" . $data_tab[$i]["regime"] . "' />\n";
 					echo "</td>\n";
 					echo "</tr>\n";
 				}

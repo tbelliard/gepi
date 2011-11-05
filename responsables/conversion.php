@@ -96,7 +96,7 @@ if($temoin==1){
 	$test=mysql_query($sql);
 	$temoin_ele_id="";
 	while($tabtmp=mysql_fetch_array($test)){
-		if(strtolower($tabtmp[0])=="ele_id"){
+		if(my_strtolower($tabtmp[0])=="ele_id"){
 			$temoin_ele_id="oui";
 		}
 	}
@@ -347,7 +347,7 @@ if($temoin==1){
 										}
 
 										//$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='$lig2->nom1',prenom='$lig2->prenom1',adr_id='$adr_id'";
-										$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='".addslashes($lig2->nom1)."',prenom='".addslashes($lig2->prenom1)."',adr_id='$adr_id'";
+										$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='".mysql_real_escape_string($lig2->nom1)."',prenom='".mysql_real_escape_string($lig2->prenom1)."',adr_id='$adr_id'";
 										//echo "$sql<br />\n";
 										$res_insert2=mysql_query($sql);
 										if(!$res_insert2){
@@ -359,7 +359,7 @@ if($temoin==1){
 										}
 
 										//$sql="INSERT INTO resp_adr SET adr1='$lig2->adr1',adr2='$lig2->adr1_comp',cp='$lig2->cp1',commune='$lig2->commune1',adr_id='$adr_id'";
-										$sql="INSERT INTO resp_adr SET adr1='".addslashes($lig2->adr1)."',adr2='".addslashes($lig2->adr1_comp)."',cp='$lig2->cp1',commune='".addslashes($lig2->commune1)."',adr_id='$adr_id'";
+										$sql="INSERT INTO resp_adr SET adr1='".mysql_real_escape_string($lig2->adr1)."',adr2='".mysql_real_escape_string($lig2->adr1_comp)."',cp='$lig2->cp1',commune='".mysql_real_escape_string($lig2->commune1)."',adr_id='$adr_id'";
 										//echo "$sql<br />\n";
 										$res_insert3=mysql_query($sql);
 										if(!$res_insert3){
@@ -385,7 +385,7 @@ if($temoin==1){
 												echo "Le deuxième responsable n'a pas la même adresse.<br />\n";
 
 												//$sql="INSERT INTO resp_adr SET adr1='$lig2->adr2',adr2='$lig2->adr2_comp',cp='$lig2->cp2',commune='$lig2->commune2',adr_id='$adr_id'";
-												$sql="INSERT INTO resp_adr SET adr1='".addslashes($lig2->adr2)."',adr2='".addslashes($lig2->adr2_comp)."',cp='$lig2->cp2',commune='".addslashes($lig2->commune2)."',adr_id='$adr_id'";
+												$sql="INSERT INTO resp_adr SET adr1='".mysql_real_escape_string($lig2->adr2)."',adr2='".mysql_real_escape_string($lig2->adr2_comp)."',cp='$lig2->cp2',commune='".mysql_real_escape_string($lig2->commune2)."',adr_id='$adr_id'";
 												//echo "$sql<br />\n";
 												$res_insert3=mysql_query($sql);
 												if(!$res_insert3){
@@ -410,7 +410,7 @@ if($temoin==1){
 										}
 
 										//$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='$lig2->nom2',prenom='$lig2->prenom2',adr_id='$adr_id'";
-										$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='".addslashes($lig2->nom2)."',prenom='".addslashes($lig2->prenom2)."',adr_id='$adr_id'";
+										$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='".mysql_real_escape_string($lig2->nom2)."',prenom='".mysql_real_escape_string($lig2->prenom2)."',adr_id='$adr_id'";
 										//echo "$sql<br />\n";
 										$res_insert2=mysql_query($sql);
 										if(!$res_insert2){
@@ -469,7 +469,7 @@ if($temoin==1){
 			$tab_elenoet_non_trouves=array();
 
 			$csv_file = isset($_FILES["ele_file"]) ? $_FILES["ele_file"] : NULL;
-			if(strtoupper($csv_file['name']) == "ELEVES.CSV"){
+			if(my_strtoupper($csv_file['name']) == "ELEVES.CSV"){
 				//$fp = dbase_open($csv_file['tmp_name'], 0);
 				$fp=fopen($csv_file['tmp_name'],"r");
 
@@ -549,7 +549,7 @@ if($temoin==1){
 								$tabligne=explode(";",$ligne);
 								$affiche=array();
 								for($i = 0; $i < count($tabchamps); $i++) {
-									$affiche[$i] = traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($tabligne[$tabindice[$i]]))));
+									$affiche[$i] = nettoyer_caracteres_nom($tabligne[$tabindice[$i]],"an"," ._-","");
 									//echo "A l'indice $i, on a \$tabligne[\$tabindice[$i]]=\$tabligne[$tabindice[$i]]=".$tabligne[$tabindice[$i]]."<br />";
 								}
 
@@ -640,7 +640,7 @@ if($temoin==1){
 
 			$csv_file = isset($_FILES["pers_file"]) ? $_FILES["pers_file"] : NULL;
 			//echo strtoupper($csv_file['name'])."<br />";
-			if(strtoupper($csv_file['name']) == "PERSONNES.CSV") {
+			if(my_strtoupper($csv_file['name']) == "PERSONNES.CSV") {
 				$fp=fopen($csv_file['tmp_name'],"r");
 				if(!$fp){
 					echo "<p>Impossible d'ouvrir le fichier PERSONNES.CSV.</p>\n";
@@ -714,7 +714,7 @@ if($temoin==1){
 								$tabligne=explode(";",$ligne);
 								for($i = 0; $i < count($tabchamps); $i++) {
 									//$ind = $tabindice[$i];
-									$affiche[$i] = traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($tabligne[$tabindice[$i]]))));
+									$affiche[$i] = nettoyer_caracteres_nom($tabligne[$tabindice[$i]],"an", " '._-", "");
 									//echo "A l'indice $i, on a \$tabligne[\$tabindice[$i]]=\$tabligne[$tabindice[$i]]=".$tabligne[$tabindice[$i]]."<br />";
 								}
 
@@ -732,13 +732,13 @@ if($temoin==1){
 
 								$sql="insert into resp_pers set
 											pers_id = '$affiche[0]',
-											nom = '$affiche[1]',
-											prenom = '$affiche[2]',
-											civilite = '".ucfirst(strtolower($affiche[3]))."',
-											tel_pers = '$affiche[4]',
-											tel_port = '$affiche[5]',
-											tel_prof = '$affiche[6]',
-											mel = '$affiche[7]',
+											nom = '".mysql_real_escape_string($affiche[1])."',
+											prenom = '".mysql_real_escape_string($affiche[2])."',
+											civilite = '".mysql_real_escape_string(casse_mot($affiche[3],'majf2'))."',
+											tel_pers = '".mysql_real_escape_string($affiche[4])."',
+											tel_port = '".mysql_real_escape_string($affiche[5])."',
+											tel_prof = '".mysql_real_escape_string($affiche[6])."',
+											mel = '".mysql_real_escape_string($affiche[7])."',
 											adr_id = '$affiche[8]'
 											";
 								//echo "$sql<br />\n";
@@ -753,12 +753,12 @@ if($temoin==1){
 
 									if($login_resp!="") {
 										$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".$affiche[1]."', prenom='".$affiche[2]."', ";
-										$sql.="civilite='".ucfirst(strtolower($affiche[3]))."', ";
+										$sql.="civilite='".casse_mot($affiche[3],'majf2')."', ";
 										$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".$lig_tmp_u->email."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
 										if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 										$insert_u=mysql_query($sql);
 										if(!$insert_u) {
-											echo "Erreur lors de la création du compte utilisateur pour ".$affiche[1]." ".$affiche[2].".<br />";
+											echo "<span style='color:red'>Erreur</span> lors de la création du compte utilisateur pour ".$affiche[1]." ".$affiche[2]."&nbsp;:<br /><span style='color:red'>$sql</span><br />";
 										}
 										else {
 											$sql="UPDATE resp_pers SET login='".$lig_tmp_u->login."' WHERE pers_id='".$affiche[0]."';";
@@ -805,7 +805,7 @@ if($temoin==1){
 
 			$csv_file = isset($_FILES["resp_file"]) ? $_FILES["resp_file"] : NULL;
 			//echo strtoupper($csv_file['name'])."<br />";
-			if(strtoupper($csv_file['name']) == "RESPONSABLES.CSV") {
+			if(my_strtoupper($csv_file['name']) == "RESPONSABLES.CSV") {
 				$fp=fopen($csv_file['tmp_name'],"r");
 				if(!$fp){
 					echo "<p>Impossible d'ouvrir le fichier RESPONSABLES.CSV.</p>";
@@ -878,7 +878,7 @@ if($temoin==1){
 								$tabligne=explode(";",$ligne);
 								for($i = 0; $i < count($tabchamps); $i++) {
 									//$ind = $tabindice[$i];
-									$affiche[$i] = traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($tabligne[$tabindice[$i]]))));
+									$affiche[$i] = preg_replace("/[^0-9]/",""$tabligne[$tabindice[$i]]);
 								}
 								$sql="insert into responsables2 set
 											ele_id = '$affiche[0]',
@@ -930,7 +930,7 @@ if($temoin==1){
 
 			$csv_file = isset($_FILES["adr_file"]) ? $_FILES["adr_file"] : NULL;
 			//echo strtoupper($csv_file['name'])."<br />";
-			if(strtoupper($csv_file['name']) == "ADRESSES.CSV") {
+			if(my_strtoupper($csv_file['name']) == "ADRESSES.CSV") {
 				$fp=fopen($csv_file['tmp_name'],"r");
 				if(!$fp){
 					echo "<p>Impossible d'ouvrir le fichier ADRESSES.CSV.</p>";
@@ -1003,17 +1003,17 @@ if($temoin==1){
 								$tabligne=explode(";",$ligne);
 								for($i = 0; $i < count($tabchamps); $i++) {
 									//$ind = $tabindice[$i];
-									$affiche[$i] = traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($tabligne[$tabindice[$i]]))));
+									$affiche[$i] = nettoyer_caracteres_nom($tabligne[$tabindice[$i]], "an", " .'_-", "");
 								}
 								$sql="insert into resp_adr set
 											adr_id = '$affiche[0]',
-											adr1 = '$affiche[1]',
-											adr2 = '$affiche[2]',
-											adr3 = '$affiche[3]',
-											adr4 = '$affiche[4]',
-											cp = '$affiche[5]',
-											pays = '$affiche[6]',
-											commune = '$affiche[7]'
+											adr1 = '".mysql_real_escape_string($affiche[1])."',
+											adr2 = '".mysql_real_escape_string($affiche[2])."',
+											adr3 = '".mysql_real_escape_string($affiche[3])."',
+											adr4 = '".mysql_real_escape_string($affiche[4])."',
+											cp = '".mysql_real_escape_string($affiche[5])."',
+											pays = '".mysql_real_escape_string($affiche[6])."',
+											commune = '".mysql_real_escape_string($affiche[7])."'
 											";
 								//echo "$sql<br />\n";
 								$req = mysql_query($sql);
