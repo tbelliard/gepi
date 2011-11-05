@@ -69,14 +69,6 @@ if(isset($_GET['debug'])){
 	}
 }
 
-function affiche_debug($texte){
-	global $debug;
-	if($debug==1){
-		echo "<font color='green'>$texte</font>\n";
-		flush();
-	}
-}
-
 //$debug=1;
 //=====================================
 
@@ -158,7 +150,6 @@ if (!isset($suite)) {
 
 		foreach($objet_division->attributes() as $key => $value) {
 			if(my_strtoupper($key)=='CODE') {
-				//$divisions[$i]['code']=preg_replace('/"/','',trim(traite_utf8($value)));
 				$divisions[$i]['code']=preg_replace("/'/","",preg_replace('/"/','',trim($value)));
 				//echo "<p>\$divisions[$i]['code']=".$divisions[$i]['code']."<br />";
 				break;
@@ -170,9 +161,7 @@ if (!isset($suite)) {
 
 		foreach($objet_division->SERVICES->children() as $service) {
 			foreach($service->attributes() as $key => $value) {
-				//$divisions[$i]["services"][$j][my_strtolower($key)]=trim(traite_utf8($value));
 				$divisions[$i]["services"][$j][my_strtolower($key)]=trim($value);
-				//echo "\$divisions[$i][\"services\"][$j][".my_strtolower($key)."]=trim(traite_utf8($value))<br />";
 			}
 
 			$k=0;
@@ -180,9 +169,7 @@ if (!isset($suite)) {
 
 				foreach($enseignant->attributes() as $key => $value) {
 					//<ENSEIGNANT ID="8949" TYPE="epp">
-					//$divisions[$i]["services"][$j]["enseignants"][$k][my_strtolower($key)]=trim(traite_utf8($value));
 					if(my_strtoupper($key)=="ID") {
-						//$divisions[$i]["services"][$j]["enseignants"][$k]["id"]=trim(traite_utf8($value));
 						$divisions[$i]["services"][$j]["enseignants"][$k]["id"]=trim($value);
 						break;
 					}
@@ -204,9 +191,7 @@ if (!isset($suite)) {
 
 		foreach($objet_groupe->attributes() as $key => $value) {
 			if(my_strtoupper($key)=='CODE') {
-				//$groupes[$i]['code']=preg_replace('/"/',"",trim(traite_utf8($value)));
 				$groupes[$i]['code']=preg_replace("/'/","",preg_replace('/"/','',trim($value)));
-				//echo("<p>\$groupes[$i]['code']=".$groupes[$i]['code']."<br />");
 				break;
 			}
 		}
@@ -214,7 +199,6 @@ if (!isset($suite)) {
 		// Champs enfants du groupe
 		foreach($objet_groupe->children() as $key => $value) {
 			if(in_array(my_strtoupper($key),$tab_champs_groupe)) {
-				//$groupes[$i][my_strtolower($key)]=preg_replace('/"/',"",trim(traite_utf8($value)));
 				$groupes[$i][my_strtolower($key)]=preg_replace('/"/',"",trim($value));
 			}
 		}
@@ -226,7 +210,6 @@ if (!isset($suite)) {
 		$j=0;
 		foreach($objet_groupe->DIVISIONS_APPARTENANCE->children() as $objet_division_apartenance) {
 			foreach($objet_division_apartenance->attributes() as $key => $value) {
-				//$groupes[$i]["divisions"][$j][my_strtolower($key)]=preg_replace('/"/',"",trim(traite_utf8($value)));
 				$groupes[$i]["divisions"][$j][my_strtolower($key)]=preg_replace('/"/',"",preg_replace("/'/","",trim($value)));
 			}
 			$j++;
@@ -235,11 +218,10 @@ if (!isset($suite)) {
 		$j=0;
 		foreach($objet_groupe->SERVICES->children() as $service) {
 			foreach($service->attributes() as $key => $value) {
-				//$groupes[$i]["service"][$j][my_strtolower($key)]=trim(traite_utf8($value));
-				//$groupes[$i]["grp"][$j][my_strtolower($key)]=trim(traite_utf8($value));
+				//$groupes[$i]["service"][$j][my_strtolower($key)]=trim($value);
 				$groupes[$i]["grp"][$j][my_strtolower($key)]=trim($value);
 				// Remarque: Pour les divisions, c'est ["services"] au lieu de ["service"]
-				//           $divisions[$i]["services"][$j][my_strtolower($key)]=trim(traite_utf8($value));
+				//           $divisions[$i]["services"][$j][my_strtolower($key)]=trim($value);
 			}
 
 			$k=0;
@@ -247,10 +229,8 @@ if (!isset($suite)) {
 
 				foreach($enseignant->attributes() as $key => $value) {
 					//<ENSEIGNANT ID="8949" TYPE="epp">
-					//$divisions[$i]["services"][$j]["enseignants"][$k][my_strtolower($key)]=trim(traite_utf8($value));
 					if(my_strtoupper($key)=="ID") {
-						//$groupes[$i]["service"][$j]["enseignant"][$k]["id"]=trim(traite_utf8($value));
-						//$groupes[$i]["grp"][$j]["enseignant"][$k]["id"]=trim(traite_utf8($value));
+						//$groupes[$i]["service"][$j]["enseignant"][$k]["id"]=trim($value);
 						$groupes[$i]["grp"][$j]["enseignant"][$k]["id"]=trim($value);
 						break;
 					}

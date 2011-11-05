@@ -225,10 +225,10 @@ if (!isset($_POST["action"])) {
 			$reg_sso = $lig->sso;
 
 			// On nettoie et on vérifie :
-			$reg_nom=my_strtoupper(nettoyer_caracteres_nom($reg_nom));
+			$reg_nom=my_strtoupper(nettoyer_caracteres_nom($reg_nom, "a", " '_-", ""));
 			if (mb_strlen($reg_nom) > 50) $reg_nom = mb_substr($reg_nom, 0, 50);
 
-			$reg_prenom=nettoyer_caracteres_nom($reg_prenom);
+			$reg_prenom=nettoyer_caracteres_nom($reg_prenom, "a", " '_-", "");
 			if (mb_strlen($reg_prenom) > 50) $reg_prenom = mb_substr($reg_prenom, 0, 50);
 
 			if ($reg_civilite != "M." AND $reg_civilite != "MME" AND $reg_civilite != "MLLE") { $reg_civilite = "";}
@@ -353,11 +353,11 @@ if (!isset($_POST["action"])) {
 						// 3 : Adresse email
 
 						// On nettoie et on vérifie :
-						$tabligne[0]=my_strtoupper(nettoyer_caracteres_nom($tabligne[0]));
+						$tabligne[0]=my_strtoupper(nettoyer_caracteres_nom($tabligne[0], "a", " '_-", ""));
 						$tabligne[0]=preg_replace("/'/"," ",$tabligne[0]);
 						if (mb_strlen($tabligne[0]) > 50) $tabligne[0] = mb_substr($tabligne[0], 0, 50);
 
-						$tabligne[1]=nettoyer_caracteres_nom($tabligne[1]);
+						$tabligne[1]=nettoyer_caracteres_nom($tabligne[1], "a", " '_-", "");
 						$tabligne[1]=preg_replace("/'/"," ",$tabligne[1]);
 						if (mb_strlen($tabligne[1]) > 50) $tabligne[1] = mb_substr($tabligne[1], 0, 50);
 

@@ -42,15 +42,6 @@ if (!checkAccess()) {
 
 require_once("init_xml_lib.php");
 
-function affiche_debug($texte){
-	// Passer à 1 la variable pour générer l'affichage des infos de debug...
-	$debug=0;
-	if($debug==1) {
-		echo "<font color='green'>".$texte."</font>";
-		flush();
-	}
-}
-
 $msg="";
 
 $cat=isset($_POST['cat']) ? $_POST['cat'] : (isset($_GET['cat']) ? $_GET['cat'] : NULL);

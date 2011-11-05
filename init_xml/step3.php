@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -81,7 +81,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
         $reg_login = @mysql_result($req, 0, 'col2');
 
         $no_gep = @mysql_result($call_data, $i, "ELENONAT");
-        $reg_nom = traitement_magic_quotes(corriger_caracteres(@mysql_result($call_data, $i, "ELENOM")));
+        $reg_nom = mysql_real_escape_string(nettoyer_caracteres_nom(@mysql_result($call_data, $i, "ELENOM", "an", " '_-","")));
         $reg_prenom = @mysql_result($call_data, $i, "ELEPRE");
         $reg_elenoet = @mysql_result($call_data, $i, "ELENOET");
         //$reg_ereno = @mysql_result($call_data, $i, "ERENO");
@@ -92,14 +92,14 @@ if (isset($is_posted) and ($is_posted == "yes")) {
         $reg_classe = @mysql_result($call_data, $i, "DIVCOD");
         $reg_etab = @mysql_result($call_data, $i, "ETOCOD_EP");
         $tab_prenom = explode(" ",$reg_prenom);
-        $reg_prenom = traitement_magic_quotes(corriger_caracteres($tab_prenom[0]));
+        $reg_prenom = mysql_real_escape_string(nettoyer_caracteres_nom($tab_prenom[0], "an", " '_-",""));
         $reg_regime = mysql_result($call_data, $i, "ELEREG");
         if (($reg_sexe != "M") and ($reg_sexe != "F")) {$reg_sexe = "M";}
         if ($reg_naissance == '') {$reg_naissance = "19000101";}
 
         $maj_tempo = mysql_query("UPDATE temp_gep_import2 SET LOGIN='$reg_login' WHERE ID_TEMPO='$id_tempo'");
 
-		$sql="INSERT INTO eleves SET no_gep='$no_gep',login='$reg_login',nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='$reg_elenoet',ele_id='$reg_ele_id'";
+		$sql="INSERT INTO eleves SET no_gep='$no_gep',login='$reg_login',nom='".mysql_real_escape_string($reg_nom)."',prenom='".mysql_real_escape_string($reg_prenom)."',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='$reg_elenoet',ele_id='$reg_ele_id'";
 		if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
         $reg_eleve = mysql_query($sql);
         if (!$reg_eleve) {
@@ -112,14 +112,14 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 			if(mysql_num_rows($res_tmp_u)>0) {
 				$lig_tmp_u=mysql_fetch_object($res_tmp_u);
 
-				$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".$reg_nom."', prenom='".$reg_prenom."', ";
+				$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".mysql_real_escape_string($reg_nom)."', prenom='".mysql_real_escape_string($reg_prenom)."', ";
 				if($reg_sexe=='M') {
 					$sql.="civilite='M', ";
 				}
 				else {
 					$sql.="civilite='MLLE', ";
 				}
-				$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".$lig_tmp_u->email."', statut='eleve', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
+				$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".mysql_real_escape_string($lig_tmp_u->email)."', statut='eleve', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
 				if($debug_ele=='y') {echo "<span style='color:blue;'>$sql</span><br />";}
 				$insert_u=mysql_query($sql);
 				if(!$insert_u) {
@@ -264,8 +264,17 @@ else {
 			$ligne_pb = 'no';
 			$id_tempo = mysql_result($call_data, $i, "ID_TEMPO");
 			$no_gep = mysql_result($call_data, $i, "ELENONAT");
+
 			$reg_nom = mysql_result($call_data, $i, "ELENOM");
+			$reg_nom = nettoyer_caracteres_nom($reg_nom, "a", " '_-", "");
+			$reg_nom = trim(preg_replace("/'/", " ", $reg_nom));
+
 			$reg_prenom = mysql_result($call_data, $i, "ELEPRE");
+			$tab_prenom = explode(" ",$reg_prenom);
+			$reg_prenom = $tab_prenom[0];
+			$reg_prenom = nettoyer_caracteres_nom($tab_prenom[0], "a", " '_-", "");
+			$reg_prenom = preg_replace("/'/", "", $tab_prenom[0]);
+
 			$reg_elenoet = mysql_result($call_data, $i, "ELENOET");
 			//$reg_ereno = mysql_result($call_data, $i, "ERENO");
 			$reg_ele_id = mysql_result($call_data, $i, "ELE_ID");
@@ -295,19 +304,8 @@ else {
 			if (($no_gep == '') or ($nouv_login=='yes')) {
 				$login_eleve="";
 
-				$reg_nom = strtr($reg_nom,"àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
-				$reg_prenom = strtr($reg_prenom,"àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
-				/*
-				$temp1 = strtoupper($reg_nom);
-				$temp1 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp1);
-				$temp1 = strtr($temp1, " '-", "___");
-				$temp1 = mb_substr($temp1,0,7);
-				$temp2 = strtoupper($reg_prenom);
-				$temp2 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp2);
-				$temp2 = strtr($temp2, " '-", "___");
-				$temp2 = mb_substr($temp2,0,1);
-				$login_eleve = $temp1.'_'.$temp2;
-				*/
+				//$reg_nom = remplace_accents($reg_nom);
+				//$reg_prenom = remplace_accents($reg_prenom);
 
 				if($reg_ele_id!='') {
 					$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant1='".$reg_ele_id."' AND statut='eleve';";

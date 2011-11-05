@@ -68,16 +68,6 @@ function createRandomPassword() {
 }
 //================================================
 
-function affiche_debug($texte){
-	// Passer à 1 la variable pour générer l'affichage des infos de debug...
-	$debug=0;
-	if($debug==1){
-		echo "<font color='green'>".$texte."</font>";
-		flush();
-	}
-}
-
-
 include("../lib/initialisation_annee.inc.php");
 $liste_tables_del = $liste_tables_del_etape_professeurs;
 
@@ -320,14 +310,6 @@ else {
 	}
 
 	$dest_file="../temp/".$tempdir."/sts.xml";
-	/*
-	$fp=fopen($dest_file,"r");
-	if(!$fp){
-		echo "<p>Le XML STS Emploi du temps n'a pas l'air présent dans le dossier temporaire.<br />Auriez-vous sauté une étape???</p>\n";
-		require("../lib/footer.inc.php");
-		die();
-	}
-	*/
 
 	$sts_xml=simplexml_load_file($dest_file);
 	if(!$sts_xml) {
@@ -368,7 +350,6 @@ else {
 
 		foreach($individu->attributes() as $key => $value) {
 			// <INDIVIDU ID="4189" TYPE="epp">
-			//$prof[$i][my_strtolower($key)]=trim(traite_utf8($value));
 			$prof[$i][my_strtolower($key)]=trim($value);
 		}
 
@@ -384,20 +365,16 @@ else {
 				elseif((my_strtoupper($key)=='NOM_USAGE')||
 				(my_strtoupper($key)=='NOM_PATRONYMIQUE')||
 				(my_strtoupper($key)=='NOM_USAGE')) {
-					//$prof[$i][my_strtolower($key)]=trim(preg_replace("/[^A-Za-z -]/","",traite_utf8($value)));
 					$prof[$i][my_strtolower($key)]=trim(preg_replace("/[^A-Za-z -]/","",remplace_accents($value)));
 				}
 				elseif(my_strtoupper($key)=='PRENOM') {
-					//$prof[$i][my_strtolower($key)]=trim(preg_replace("/[^A-Za-zÆæ¼½".$liste_caracteres_accentues." -]/","",traite_utf8($value)));
-					$prof[$i][my_strtolower($key)]=trim(preg_replace('/"/','',preg_replace("/'/","",nettoyer_caracteres_nom($value))));
+					$prof[$i][my_strtolower($key)]=trim(preg_replace('/"/','',preg_replace("/'/","",nettoyer_caracteres_nom($value,"a"," -",""))));
 				}
 				elseif(my_strtoupper($key)=='DATE_NAISSANCE') {
-					//$prof[$i][my_strtolower($key)]=trim(preg_replace("/[^0-9-]/","",traite_utf8($value)));
 					$prof[$i][my_strtolower($key)]=trim(preg_replace("/[^0-9-]/","",$value));
 				}
 				elseif((my_strtoupper($key)=='GRADE')||
 					(my_strtoupper($key)=='FONCTION')) {
-					//$prof[$i][my_strtolower($key)]=trim(preg_replace('/"/','',traite_utf8($value)));
 					$prof[$i][my_strtolower($key)]=trim(preg_replace('/"/','',preg_replace("/'/"," ",$value)));
 				}
 				else {
@@ -408,12 +385,10 @@ else {
 		}
 
 		if(isset($individu->PROFS_PRINC)) {
-		//if($temoin_prof_princ>0) {
 			$j=0;
 			foreach($individu->PROFS_PRINC->children() as $prof_princ) {
 				//$prof[$i]["prof_princ"]=array();
 				foreach($prof_princ->children() as $key => $value) {
-					//$prof[$i]["prof_princ"][$j][my_strtolower($key)]=trim(traite_utf8(preg_replace('/"/',"",$value)));
 					$prof[$i]["prof_princ"][$j][my_strtolower($key)]=trim(preg_replace('/"/',"",$value));
 					$temoin_au_moins_un_prof_princ="oui";
 				}
@@ -421,20 +396,17 @@ else {
 			}
 		}
 
-		//if($temoin_discipline>0) {
 		if(isset($individu->DISCIPLINES)) {
 			$j=0;
 			foreach($individu->DISCIPLINES->children() as $discipline) {
 				foreach($discipline->attributes() as $key => $value) {
 					if(my_strtoupper($key)=='CODE') {
-						//$prof[$i]["disciplines"][$j]["code"]=trim(traite_utf8(preg_replace('/"/',"",$value)));
 						$prof[$i]["disciplines"][$j]["code"]=trim(preg_replace('/"/',"",$value));
 						break;
 					}
 				}
 
 				foreach($discipline->children() as $key => $value) {
-					//$prof[$i]["disciplines"][$j][my_strtolower($key)]=trim(traite_utf8(preg_replace('/"/',"",$value)));
 					$prof[$i]["disciplines"][$j][my_strtolower($key)]=trim(preg_replace('/"/',"",$value));
 				}
 				$j++;
@@ -482,8 +454,6 @@ else {
 
 	$alt=1;
 	for($k=0;$k<count($prof);$k++){
-		//if(isset($prof[$k]["fonction"])) {
-		//	if($prof[$k]["fonction"]=="ENS"){
 
 		if(((isset($prof[$k]["fonction"]))&&($prof[$k]["fonction"]=="ENS"))||
 			((!isset($prof[$k]["fonction"]))&&(isset($prof[$k]["nom_usage"]))&&(isset($prof[$k]["prenom"])))) {
@@ -579,8 +549,8 @@ else {
 					if ($result_test == 0) {
 						// On tente ensuite une reconnaissance sur nom/prénom, si le test NUMIND a échoué
 						$sql="select login from utilisateurs where (
-						nom='".traitement_magic_quotes($prof[$k]["nom_usage"])."' and
-						prenom = '".traitement_magic_quotes($premier_prenom)."' and
+						nom='".mysql_real_escape_string($prof[$k]["nom_usage"])."' and
+						prenom = '".mysql_real_escape_string($premier_prenom)."' and
 						statut='professeur')";
 	
 						// Pour debug:
@@ -591,8 +561,8 @@ else {
 							if ($prenom_compose != '') {
 								$test_exist2 = mysql_query("select login from utilisateurs
 								where (
-								nom='".traitement_magic_quotes($prof[$k]["nom_usage"])."' and
-								prenom = '".traitement_magic_quotes($prenom_compose)."' and
+								nom='".mysql_real_escape_string($prof[$k]["nom_usage"])."' and
+								prenom = '".mysql_real_escape_string($prenom_compose)."' and
 								statut='professeur'
 								)");
 								$result_test2 = mysql_num_rows($test_exist2);
@@ -634,7 +604,7 @@ else {
 	
 						// Aucun professeur ne porte le même nom dans la base GEPI. On va donc rentrer ce professeur dans la base
 	
-						$prof[$k]["prenom"]=traitement_magic_quotes(corriger_caracteres($prof[$k]["prenom"]));
+						$prof[$k]["prenom"]=nettoyer_caracteres_nom($prof[$k]["prenom"],"a"," _-","");
 
 
 						if($_POST['login_gen_type'] == 'ent'){
@@ -687,7 +657,7 @@ else {
 								}
 							}
 						}
-						$prof[$k]["nom_usage"] = traitement_magic_quotes(corriger_caracteres($prof[$k]["nom_usage"]));
+						$prof[$k]["nom_usage"] = nettoyer_caracteres_nom($prof[$k]["nom_usage"],"a"," _-","");
 						// Mot de passe et change_mdp
 	
 						$changemdp = 'y';
@@ -770,7 +740,7 @@ else {
 		for($i=0;$i<count($tab_nouveaux_profs);$i++) {
 			$tmp_tab=explode('|',$tab_nouveaux_profs[$i]);
 			echo "<input type='hidden' name='user_login[]' value='$tmp_tab[0]' />\n";
-			echo "<input type='hidden' name='mot_de_passe[]' value='$tmp_tab[1]' />\n";
+			echo "<input type='hidden' name='mot_de_passe[]' value=\"$tmp_tab[1]\" />\n";
 		}
 		echo "<input type='submit' value='Imprimer' /></p>\n";
 		echo "</form>\n";

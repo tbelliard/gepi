@@ -193,4 +193,83 @@ function js_confirm_changement_matiere($formulaire, $indice_matiere) {
 	return $retour;
 }
 
+function ouinon($nombre){
+	if($nombre==1){return "O";}elseif($nombre==0){return "N";}else{return "";}
+}
+function sexeMF($nombre){
+	//if($nombre==2){return "F";}else{return "M";}
+	if($nombre==2){return "F";}elseif($nombre==1){return "M";}else{return "";}
+}
+
+function affiche_debug($texte){
+	// Passer à 1 la variable pour générer l'affichage des infos de debug...
+	$debug=0;
+	if($debug==1){
+		echo "<font color='green'>".$texte."</font>";
+		flush();
+	}
+}
+
+function maj_min_comp($chaine){
+	$tmp_tab1=explode(" ",$chaine);
+	$new_chaine="";
+	for($i=0;$i<count($tmp_tab1);$i++){
+		$tmp_tab2=explode("-",$tmp_tab1[$i]);
+		$new_chaine.=casse_mot($tmp_tab2[0],'majf2');
+		for($j=1;$j<count($tmp_tab2);$j++){
+			$new_chaine.="-".casse_mot($tmp_tab2[$j],'majf2');
+		}
+		$new_chaine.=" ";
+	}
+	$new_chaine=trim($new_chaine);
+	return $new_chaine;
+}
+
+function maj_ini_prenom($prenom){
+	$prenom2="";
+	$tab1=explode("-",$prenom);
+	for($i=0;$i<count($tab1);$i++){
+		if($i>0){
+			$prenom2.="-";
+		}
+		$tab2=explode(" ",$tab1[$i]);
+		for($j=0;$j<count($tab2);$j++){
+			if($j>0){
+				$prenom2.=" ";
+			}
+			$prenom2.=casse_mot($tab2[$j],'majf2');
+		}
+	}
+	return $prenom2;
+}
+
+function extr_valeur($lig){
+	unset($tabtmp);
+	$tabtmp=explode(">",preg_replace("/</",">",$lig));
+	return trim($tabtmp[2]);
+}
+
+function info_debug($texte,$mode=0) {
+	global $step;
+	global $dirname;
+
+	$debug=0;
+	if($debug==1) {
+		if($mode==1) {
+			$fich_debug=fopen("../backup/".$dirname."/debug_maj_import2.txt","w+");
+			fwrite($fich_debug,"$step;$texte;".time()."\n");
+			fclose($fich_debug);
+		}
+		elseif($mode==2) {
+			echo "<p><a href='../backup/".$dirname."/debug_maj_import2.txt' target='_blank'>Fichier debug</a></p>";
+		}
+		else {
+			//$fich_debug=fopen("/tmp/debug_maj_import2.txt","a+");
+			$fich_debug=fopen("../backup/".$dirname."/debug_maj_import2.txt","a+");
+			fwrite($fich_debug,"$step;$texte;".time()."\n");
+			fclose($fich_debug);
+		}
+	}
+}
+
 ?>

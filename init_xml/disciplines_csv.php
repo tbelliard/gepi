@@ -160,17 +160,21 @@ if (!isset($is_posted)) {
 				if(!feof($fp)){
 					$ligne = preg_replace('/"/','',fgets($fp, 4096));
 					if(trim($ligne)!=""){
+						//echo "<tr><td>";
 						$tabligne=explode(";",$ligne);
 						for($i = 0; $i < count($tabchamps); $i++) {
-							$affiche[$i] = traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($tabligne[$tabindice[$i]]))));
+							$affiche[$i] = nettoyer_caracteres_nom($tabligne[$tabindice[$i]], "an", "&_.' -", "");
+							//echo "\$tabligne[".$tabindice[$i]."]=".$tabligne[$tabindice[$i]]."<br />";
+							//echo "\$affiche[$i]=$affiche[$i]<br />";
 						}
+						//echo "</td></tr>";
 
 						$alt=$alt*(-1);
 
 						$verif = mysql_query("select matiere, nom_complet from matieres where matiere='$affiche[0]'");
 						$resverif = mysql_num_rows($verif);
 						if($resverif == 0) {
-							$req = mysql_query("insert into matieres set matiere='$affiche[0]', nom_complet='$affiche[1]', priority='0',matiere_aid='n',matiere_atelier='n'");
+							$req = mysql_query("insert into matieres set matiere='".mysql_real_escape_string(nettoyer_caracteres_nom(remplace_accents($affiche[0],''),"an","_-",""))."', nom_complet='".mysql_real_escape_string($affiche[1])."', priority='0',matiere_aid='n',matiere_atelier='n'");
 							if(!$req) {
 								$nb_reg_no++; echo mysql_error();
 							} else {

@@ -74,15 +74,13 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 
         $no_gep = @mysql_result($call_data, $i, "ELENONAT");
 
-        //$reg_nom = traitement_magic_quotes(corriger_caracteres(@mysql_result($call_data, $i, "ELENOM")));
         $reg_nom = @mysql_result($call_data, $i, "ELENOM");
-        $reg_nom = nettoyer_caracteres_nom($reg_nom);
+        $reg_nom = nettoyer_caracteres_nom($reg_nom, "a", " '_-", "");
         $reg_nom = trim(preg_replace("/'/", " ", $reg_nom));
 
         $reg_prenom = @mysql_result($call_data, $i, "ELEPRE");
         $tab_prenom = explode(" ",$reg_prenom);
-        //$reg_prenom = traitement_magic_quotes(corriger_caracteres($tab_prenom[0]));
-        $tab_prenom[0] = nettoyer_caracteres_nom($tab_prenom[0]);
+        $tab_prenom[0] = nettoyer_caracteres_nom($tab_prenom[0], "a", " '_-", "");
         $reg_prenom = preg_replace("/'/", "", $tab_prenom[0]);
 
         $reg_elenoet = @mysql_result($call_data, $i, "ELENOET");
@@ -255,13 +253,13 @@ else {
 			$no_gep = mysql_result($call_data, $i, "ELENONAT");
 
 			$reg_nom = mysql_result($call_data, $i, "ELENOM");
-			$reg_nom = nettoyer_caracteres_nom($reg_nom);
+			$reg_nom = nettoyer_caracteres_nom($reg_nom, "a", " '_-", "");
 			$reg_nom = trim(preg_replace("/'/", " ", $reg_nom));
 
 			$reg_prenom = mysql_result($call_data, $i, "ELEPRE");
 			$tab_prenom = explode(" ",$reg_prenom);
 			$reg_prenom = $tab_prenom[0];
-			$reg_prenom = nettoyer_caracteres_nom($tab_prenom[0]);
+			$reg_prenom = nettoyer_caracteres_nom($tab_prenom[0], "a", " '_-", "");
 			$reg_prenom = preg_replace("/'/", "", $tab_prenom[0]);
 
 			$reg_elenoet = mysql_result($call_data, $i, "ELENOET");
@@ -319,6 +317,7 @@ else {
 					$login_ele_gen_type=getSettingValue('login_ele_gen_type');
 					if($login_ele_gen_type=='') {$login_ele_gen_type='name9_p';}
 					$login_eleve=generate_unique_login($reg_nom, $reg_prenom, 'name9_p', 'maj');
+					if($debug_ele=='y') {echo "<span style='color:blue;'>Login nouvellement généré pour '$reg_nom $reg_prenom' : '$login_eleve'</span><br />";}
 				}
 	
 				// Dans le cas où Gepi est intégré à un ENT, il ne doit pas générer de login mais récupérer celui qui existe déjà
@@ -379,6 +378,7 @@ else {
 							$k++;
 						}
 					}
+					if($debug_ele=='y') {echo "<span style='color:coral;'>Login après contrôle d'unicité : $login_eleve</span><br />";}
 				}
 			}
 	

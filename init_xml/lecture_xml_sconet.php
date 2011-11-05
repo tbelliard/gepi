@@ -438,7 +438,8 @@ function extr_valeur($lig){
 										foreach($eleve->children() as $key => $value) {
 											if(in_array(my_strtoupper($key),$tab_champs_eleve)) {
 												//$eleves[$i][my_strtolower($key)]=preg_replace('/"/','',trim($value));
-												$eleves[$i][my_strtolower($key)]=preg_replace('/"/','',preg_replace("/'$/","",preg_replace("/^'/"," ",trim($value))));
+												//$eleves[$i][my_strtolower($key)]=preg_replace('/"/','',preg_replace("/'$/","",preg_replace("/^'/","",trim($value))));
+												$eleves[$i][my_strtolower($key)]=preg_replace('/"/','',preg_replace("/'/","",trim($value)));
 											}
 					
 											if(($avec_scolarite_an_dernier=='y')&&(my_strtoupper($key)=='SCOLARITE_AN_DERNIER')) {
@@ -1496,15 +1497,13 @@ function extr_valeur($lig){
 	
 								foreach($personne->attributes() as $key => $value) {
 									// <PERSONNE PERSONNE_ID="294435">
-									//$personnes[$i][my_strtolower($key)]=traitement_magic_quotes(corriger_caracteres(trim($value)));
-									$personnes[$i][my_strtolower($key)]=trim($value);
+									//$personnes[$i][my_strtolower($key)]=trim($value);
+									$personnes[$i][my_strtolower($key)]=trim(nettoyer_caracteres_nom($value, "an", " .@'-", ""));
 								}
 	
 								foreach($personne->children() as $key => $value) {
 									if(in_array(my_strtoupper($key),$tab_champs_personne)) {
-										//$personnes[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)));
-										//$personnes[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',$value));
-										$personnes[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'$/","",preg_replace("/^'/"," ",$value))));
+										$personnes[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'$/","",preg_replace("/^'/"," ",$value))), "an", " .@'_-", "");
 									}
 								}
 	
@@ -1543,7 +1542,8 @@ function extr_valeur($lig){
 			
 								foreach($responsable_eleve->children() as $key => $value) {
 									if(in_array(my_strtoupper($key),$tab_champs_responsable)) {
-										$responsables[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)));
+										//$responsables[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)), "an", " .@'-", "");
+										$responsables[$i][my_strtolower($key)]=preg_replace('/[^0-9]/', '', $value);
 									}
 								}
 			
@@ -1588,8 +1588,7 @@ function extr_valeur($lig){
 			
 								foreach($adresse->children() as $key => $value) {
 									if(in_array(my_strtoupper($key),$tab_champs_adresse)) {
-										//$adresses[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)));
-										$adresses[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'$/","",preg_replace("/^'/"," ",$value))));
+										$adresses[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)), "an", " .'-", " ");
 									}
 								}
 			

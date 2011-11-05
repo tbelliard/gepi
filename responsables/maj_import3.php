@@ -101,74 +101,8 @@ if($auth_sso=='lcs') {
 
 }
 
-function extr_valeur($lig){
-	unset($tabtmp);
-	//$tabtmp=explode(">",my_ereg_replace("<",">",$lig));
-	//$tabtmp=explode(">",strtr($lig,"<",">"));
-	$tabtmp=explode(">",preg_replace("/</",">",$lig));
-	return trim($tabtmp[2]);
-}
-
-function ouinon($nombre){
-	if($nombre==1){return "O";}elseif($nombre==0){return "N";}else{return "";}
-}
-function sexeMF($nombre){
-	//if($nombre==2){return "F";}else{return "M";}
-	if($nombre==2){return "F";}elseif($nombre==1){return "M";}else{return "";}
-}
-
-function affiche_debug($texte){
-	// Passer à 1 la variable pour générer l'affichage des infos de debug...
-	$debug=0;
-	if($debug==1){
-		echo "<font color='green'>".$texte."</font>";
-		flush();
-	}
-}
-
 // Initialisation du répertoire actuel de sauvegarde
 $dirname = getSettingValue("backup_directory");
-
-function info_debug($texte,$mode=0) {
-	global $step;
-	global $dirname;
-
-	$debug=0;
-	if($debug==1) {
-		if($mode==1) {
-			$fich_debug=fopen("../backup/".$dirname."/debug_maj_import2.txt","w+");
-			fwrite($fich_debug,"$step;$texte;".time()."\n");
-			fclose($fich_debug);
-		}
-		elseif($mode==2) {
-			echo "<p><a href='../backup/".$dirname."/debug_maj_import2.txt' target='_blank'>Fichier debug</a></p>";
-		}
-		else {
-			//$fich_debug=fopen("/tmp/debug_maj_import2.txt","a+");
-			$fich_debug=fopen("../backup/".$dirname."/debug_maj_import2.txt","a+");
-			fwrite($fich_debug,"$step;$texte;".time()."\n");
-			fclose($fich_debug);
-		}
-	}
-}
-
-function maj_ini_prenom($prenom){
-	$prenom2="";
-	$tab1=explode("-",$prenom);
-	for($i=0;$i<count($tab1);$i++){
-		if($i>0){
-			$prenom2.="-";
-		}
-		$tab2=explode(" ",$tab1[$i]);
-		for($j=0;$j<count($tab2);$j++){
-			if($j>0){
-				$prenom2.=" ";
-			}
-			$prenom2.=casse_mot($tab2[$j],'majf2');
-		}
-	}
-	return $prenom2;
-}
 
 // Etape...
 $step=isset($_POST['step']) ? $_POST['step'] : (isset($_GET['step']) ? $_GET['step'] : NULL);
@@ -754,16 +688,13 @@ else{
 							$eleves[$i]=array();
 
 							$eleves[$i]['eleve_id']=$value;
-							//if($eleves[$i]['eleve_id']=='596023') {echo "\$eleves[$i]['eleve_id']=".$value."<br />";}
 							$eleves[$i]["structures"]=array();
 							$j=0;
-							//foreach($objet_structures->STRUCTURES_ELEVE->children() as $structure) {
 							foreach($structures_eleve->children() as $structure) {
 								$eleves[$i]["structures"][$j]=array();
 								foreach($structure->children() as $key => $value) {
 									//echo("\$structure->$key=".$value."<br />");
 									if(in_array(my_strtoupper($key),$tab_champs_struct)) {
-										//$eleves[$i]["structures"][$j][strtolower($key)]=preg_replace('/"/','',trim(traite_utf8($value)));
 										$eleves[$i]["structures"][$j][my_strtolower($key)]=preg_replace('/"/','',preg_replace("/'/","",trim($value)));
 										//my_echo("\$structure->$key=".$value."<br />");
 									}
@@ -972,7 +903,8 @@ else{
 
 				foreach($eleve->children() as $key => $value) {
 					if(in_array(my_strtoupper($key),$tab_champs_eleve)) {
-						$eleves[$i][my_strtolower($key)]=preg_replace('/"/','',trim($value));
+						//$eleves[$i][my_strtolower($key)]=preg_replace('/"/','',trim($value));
+						$eleves[$i][my_strtolower($key)]=preg_replace('/"/','',preg_replace("/'$/","",preg_replace("/^'/","",trim($value))));
 						//echo "\$eleve->$key=".$value."<br />";
 					}
 
@@ -990,8 +922,7 @@ else{
 
 				if(isset($eleves[$i]["prenom"])){
 					$tab_prenom = explode(" ",$eleves[$i]["prenom"]);
-					//$reg_prenom = traitement_magic_quotes(corriger_caracteres($tab_prenom[0]));
-					$tab_prenom[0] = nettoyer_caracteres_nom($tab_prenom[0]);
+					$tab_prenom[0] = nettoyer_caracteres_nom($tab_prenom[0], "a", " '-", "");
 					$eleves[$i]["prenom"] = preg_replace("/'/", "", $tab_prenom[0]);
 				}
 
@@ -1267,8 +1198,6 @@ else{
 
 				$eleves[$i]["options"]=array();
 				$j=0;
-				//foreach($option->OPTIONS_ELEVE->children() as $key => $value) {
-	
 				// $option fait référence à un élève
 				// Les enfants sont des OPTIONS_ELEVE
 				foreach($option->children() as $options_eleve) {
@@ -2433,44 +2362,28 @@ $update_tempo4=mysql_query($sql);
 						$lig=mysql_fetch_object($res1);
 						$affiche=array();
 
-						$affiche[0]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->ELENOM))));
+						$affiche[0]=nettoyer_caracteres_nom($lig->ELENOM, "a", " '_-", "");
 						// IL FAUDRAIT FAIRE ICI LE MEME TRAITEMENT QUE DANS /init_xml/step3.php POUR LES PRENOMS COMPOSéS ET SAISIE DE PLUSIEURS PRéNOMS...
-						$affiche[1]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->ELEPRE))));
-						$affiche[2]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->ELESEXE))));
-						$affiche[3]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->ELEDATNAIS))));
-						$affiche[4]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->ELENOET))));
-						$affiche[5]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->ELE_ID))));
-						$affiche[6]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->ELEDOUBL))));
-						$affiche[7]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->ELENONAT))));
-						$affiche[8]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->ELEREG))));
-						$affiche[9]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->DIVCOD))));
+						$affiche[1]=nettoyer_caracteres_nom($lig->ELEPRE, "a", " '_-", "");
+						$affiche[2]=nettoyer_caracteres_nom($lig->ELESEXE, "an", "", "");
+						$affiche[3]=nettoyer_caracteres_nom($lig->ELEDATNAIS, "a", "-", "");
+						$affiche[4]=nettoyer_caracteres_nom($lig->ELENOET, "an", "", "");
+						$affiche[5]=nettoyer_caracteres_nom($lig->ELE_ID, "an", "", "");
+						$affiche[6]=nettoyer_caracteres_nom($lig->ELEDOUBL, "an", "", "");
+						$affiche[7]=nettoyer_caracteres_nom($lig->ELENONAT, "an", "", "");
+						$affiche[8]=nettoyer_caracteres_nom($lig->ELEREG, "an", "", "");
+						$affiche[9]=nettoyer_caracteres_nom($lig->DIVCOD, "an", " '_-", "");
 
 						//echo "<tr><td colspan='13' style='text-align:left;'>'$lig->ELENOM' et '$affiche[0]' - '$lig->ELEPRE' et '$affiche[1]'</td></tr>\n";
 
-						$affiche[10]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->ETOCOD_EP))));
+						$affiche[10]=nettoyer_caracteres_nom($lig->ETOCOD_EP, "an", "_-", "");
 
 						if($ele_lieu_naissance=="y") {
-							$affiche[11]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->LIEU_NAISSANCE))));
-
-							/*
-							if($affiche[0]=='KILIC') {
-								echo "<tr><td colspan='13' style='text-align:left;'>DEBUG: ";
-								echo "\$lig->LIEU_NAISSANCE=$lig->LIEU_NAISSANCE<br />";
-								echo "corriger_caracteres(dbase_filter(trim(\$lig->LIEU_NAISSANCE)))=".corriger_caracteres(dbase_filter(trim($lig->LIEU_NAISSANCE)))."<br />";
-								echo "\$affiche[11]=$affiche[11]<br />";
-								echo "</td></tr>\n";
-							}
-							*/
+							$affiche[11]=nettoyer_caracteres_nom($lig->LIEU_NAISSANCE, "an", " @'_-", "");
 						}
 
-						$affiche[12]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->MEL))));
+						$affiche[12]=nettoyer_caracteres_nom($lig->MEL, "an", " @._-", "");
 
-						//if(trim($ligne)!=""){
-							//$tabligne=explode(";",$ligne);
-							//$affiche=array();
-							//for($i = 0; $i < count($tabchamps); $i++) {
-							//	$affiche[$i] = traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($tabligne[$tabindice[$i]]))));
-							//}
 
 							//$sql="SELECT * FROM eleves WHERE elenoet='$affiche[4]'";
 							$sql="SELECT * FROM eleves WHERE (elenoet='$affiche[4]' OR elenoet='".sprintf("%05d",$affiche[4])."')";
@@ -3678,7 +3591,7 @@ $update_tempo4=mysql_query($sql);
 								// On remplit aussi une table pour l'association avec la classe:
 								// On fait le même traitement que dans step2.php
 								// (dans step1.php, on a fait le même traitement que pour le remplissage de temp_gep_import2 ici)
-								$classe=traitement_magic_quotes(corriger_caracteres($lig->DIVCOD));
+								$classe=preg_replace("/'/","",preg_replace('/"/','',trim($lig->DIVCOD)));
 								$sql="INSERT INTO temp_ele_classe SET ele_id='".$lig->ELE_ID."', divcod='$classe'";
 								info_debug($sql);
 								$insert=mysql_query($sql);
@@ -4793,14 +4706,12 @@ $update_tempo4=mysql_query($sql);
 
 						foreach($personne->attributes() as $key => $value) {
 							// <PERSONNE PERSONNE_ID="294435">
-							$personnes[$i][my_strtolower($key)]=traitement_magic_quotes(corriger_caracteres(trim($value)));
+							$personnes[$i][my_strtolower($key)]=trim(nettoyer_caracteres_nom($value, "an", " .@'-", ""));
 						}
 
 						foreach($personne->children() as $key => $value) {
 							if(in_array(my_strtoupper($key),$tab_champs_personne)) {
-								//$personnes[$i][my_strtolower($key)]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',trim(traite_utf8($value)))));
-								$personnes[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)));
-								//echo "\$structure->$key=".$value."<br />";
+								$personnes[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'$/","",preg_replace("/^'/"," ",$value))), "an", " .@'_-", "");
 							}
 						}
 
@@ -4812,7 +4723,6 @@ $update_tempo4=mysql_query($sql);
 					}
 
 
-						//traitement_magic_quotes(corriger_caracteres())
 						$nb_err=0;
 						$stat=0;
 						$i=0;
@@ -5007,9 +4917,8 @@ $update_tempo4=mysql_query($sql);
 
 					foreach($responsable_eleve->children() as $key => $value) {
 						if(in_array(my_strtoupper($key),$tab_champs_responsable)) {
-							//$responsables[$i][my_strtolower($key)]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',trim(traite_utf8($value)))));
-							$responsables[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)));
-							//echo "\$structure->$key=".$value."<br />";
+							//$responsables[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)), "an", " .@'-", "");
+							$responsables[$i][my_strtolower($key)]=preg_replace('/[^0-9]/', '', $value);
 						}
 					}
 
@@ -5165,14 +5074,12 @@ $update_tempo4=mysql_query($sql);
 
 					foreach($adresse->attributes() as $key => $value) {
 						// <ADRESSE ADRESSE_ID="228114">
-						$adresses[$i][my_strtolower($key)]=$value;
+						$adresses[$i][my_strtolower($key)]=trim($value);
 					}
 
 					foreach($adresse->children() as $key => $value) {
 						if(in_array(my_strtoupper($key),$tab_champs_adresse)) {
-							//$adresses[$i][my_strtolower($key)]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',trim(traite_utf8($value)))));
-							$adresses[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)));
-							//echo "\$structure->$key=".$value."<br />";
+							$adresses[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)), "an", " .'-", " ");
 						}
 					}
 

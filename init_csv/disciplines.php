@@ -118,7 +118,7 @@ if (!isset($_POST["action"])) {
 			$reg_nom_court = preg_replace("/[^A-Za-z0-9.\-]/","",trim(my_strtoupper($reg_nom_court)));
 			if (mb_strlen($reg_nom_court) > 50) $reg_nom_court = mb_substr($reg_nom_court, 0, 50);
 
-			$reg_nom_long=nettoyer_caracteres_nom($reg_nom_long);
+			$reg_nom_long=nettoyer_caracteres_nom($reg_nom_long, "an", " &'_-", "");
 			if (mb_strlen($reg_nom_long) > 200) $reg_nom_long = mb_substr($reg_nom_long, 0, 200);
 
 			// Maintenant que tout est propre, on fait un test sur la table pour voir si la matière existe déjà ou pas
@@ -234,7 +234,7 @@ if (!isset($_POST["action"])) {
 							$tabligne[0] = preg_replace("/[^A-Za-z0-9.\-]/","",trim(my_strtoupper($tabligne[0])));
 							if (mb_strlen($tabligne[0]) > 50) $tabligne[0] = mb_substr($tabligne[0], 0, 50);
 
-							$tabligne[1]=nettoyer_caracteres_nom($tabligne[1]);
+							$tabligne[1]=nettoyer_caracteres_nom($tabligne[1], "an", " .&'_-", "");
 							$tabligne[1]=preg_replace("/'/"," ",$tabligne[1]);
 							if (mb_strlen($tabligne[1]) > 200) $tabligne[1] = mb_substr($tabligne[1], 0, 200);
 

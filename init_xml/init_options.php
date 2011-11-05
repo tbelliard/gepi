@@ -51,8 +51,6 @@ require_once("../lib/header.inc");
 ?>
 <p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
-// On vérifie si l'extension d_base est active
-//verif_active_dbase();
 
 echo "<center><h3 class='gepi'>Cinquième phase d'initialisation<br />Affectation des matières à chaque professeur,<br />Affectation des professeurs dans chaque classe,<br />Importation des options suivies par les élèves</h3></center>";
 

@@ -3,7 +3,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -204,14 +204,13 @@ if (!isset($is_posted)) {
 			//=========================
 			for($k = 1; ($k < $nblignes2+1); $k++){
 				// Pour chaque ligne du fichier F_GPD, on récupère dans $affiche[0] le GROCOD et dans $affiche[1] le DIVCOD
-				//$ligne = dbase_get_record($fp2,$k);
 				if(!feof($fp2)){
 					$ligne = fgets($fp2, 4096);
 					if(trim($ligne)!=""){
 						$tabligne=explode(";",$ligne);
 						for($i = 0; $i < count($tabchamps2); $i++) {
 							//$affiche[$i] = dbase_filter(trim($ligne[$tabindice2[$i]]));
-							$affiche[$i] = dbase_filter(trim($tabligne[$tabindice2[$i]]));
+							$affiche[$i] = nettoyer_caracteres_nom($tabligne[$tabindice2[$i]], "an", "_ -", "");
 							affiche_debug("\$affiche[$i]=$affiche[$i]<br />\n");
 						}
 						$tab_groupe[$affiche[0]] = $affiche[1];
@@ -269,40 +268,11 @@ if (!isset($is_posted)) {
 			}
 			fclose ($fp);
 
-/*
-			if (@dbase_get_record_with_names($fp,1)) {
-				$temp = @dbase_get_record_with_names($fp,1);
-			} else {
-				echo "<p>Le fichier sélectionné n'est pas valide !<br />";
-				echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>";
-				die();
-			}
-
-			$nb = 0;
-			foreach($temp as $key => $val){
-				$en_tete[$nb] = "$key";
-				affiche_debug("\$en_tete[$nb]=$en_tete[$nb]<br />\n");
-				$nb++;
-			}
-			affiche_debug("==========================<br />\n");
-*/
 			// On range dans tabindice les indices des champs retenus
 			affiche_debug("count(\$tabchamps)=".count($tabchamps)."<br />\n");
 			//affiche_debug("count(\$en_tete)=".count($en_tete)."<br />\n");
 			affiche_debug("count(\$en_tete2)=".count($en_tete2)."<br />\n");
-			/*
-			for ($k = 0; $k < count($tabchamps); $k++) {
-				//for ($i = 0; $i < count($en_tete); $i++) {
-				for ($i = 0; $i < count($en_tete2); $i++) {
-					//echo "\$en_tete2[$i]=".$en_tete2[$i]." et \$tabchamps[$k]=".$tabchamps[$k]."<br />\n";
-					//if ($en_tete2[$i] == $tabchamps[$k]) {
-					if (trim($en_tete2[$i]) == $tabchamps[$k]) {
-						$tabindice[] = $i;
-						affiche_debug("\$tabindice[]=$i<br />\n");
-					}
-				}
-			}
-			*/
+
 			$cpt_tmp=0;
 			for ($k = 0; $k < count($tabchamps); $k++) {
 				for ($i = 0; $i < count($en_tete2); $i++) {
@@ -323,19 +293,14 @@ if (!isset($is_posted)) {
 			//=========================
 			$nb_reg_no = 0;
 			for($k = 1; ($k < $nblignes+1); $k++){
-				//$ligne = dbase_get_record($fp,$k);
 				if(!feof($fp)){
-					//=========================
-					// MODIF: boireaus 20071024
-					//$ligne = fgets($fp, 4096);
 					$ligne = my_ereg_replace('"','',fgets($fp, 4096));
-					//=========================
 					if(trim($ligne)!=""){
 						$tabligne=explode(";",$ligne);
 						for($i = 0; $i < count($tabchamps); $i++) {
 							//$affiche[$i] = dbase_filter(trim($ligne[$tabindice[$i]]));
 							//affiche_debug("\$affiche[$i]=dbase_filter(trim(\$ligne[$tabindice[$i]]))=$affiche[$i]<br />\n");
-							$affiche[$i] = dbase_filter(trim($tabligne[$tabindice[$i]]));
+							$affiche[$i] = nettoyer_caracteres_nom($tabligne[$tabindice[$i]], "an", "_ -", "");
 							affiche_debug("\$affiche[$i]=dbase_filter(trim(\$tabligne[".$tabindice[$i]."]))=".$affiche[$i]."<br />\n");
 						}
 						affiche_debug("==========================<br />\n");

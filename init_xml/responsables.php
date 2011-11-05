@@ -228,24 +228,23 @@ if (!isset($is_posted)) {
 						$tabligne=explode(";",$ligne);
 						for($i = 0; $i < count($tabchamps); $i++) {
 							//$ind = $tabindice[$i];
-							$affiche[$i] = traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($tabligne[$tabindice[$i]]))));
+							$affiche[$i] = trim(preg_replace("/'/"," ",nettoyer_caracteres_nom($tabligne[$tabindice[$i]], "an", " '_-", "")));
 						}
 						$sql="insert into resp_pers set
-									pers_id = '$affiche[0]',
-									nom = '$affiche[1]',
-									prenom = '$affiche[2]',
-									civilite = '".ucfirst(strtolower($affiche[3]))."',
-									tel_pers = '$affiche[4]',
-									tel_port = '$affiche[5]',
-									tel_prof = '$affiche[6]',
-									mel = '$affiche[7]',
-									adr_id = '$affiche[8]'
+									pers_id = '".preg_replace("/[^0-9]/","",$affiche[0])."',
+									nom = '".mysql_real_escape_string($affiche[1])."',
+									prenom = '".mysql_real_escape_string($affiche[2])."',
+									civilite = '".mysql_real_escape_string(casse_mot($affiche[3],'majf2'))."',
+									tel_pers = '".mysql_real_escape_string($affiche[4])."',
+									tel_port = '".mysql_real_escape_string($affiche[5])."',
+									tel_prof = '".mysql_real_escape_string($affiche[6])."',
+									mel = '".mysql_real_escape_string($affiche[7])."',
+									adr_id = '".preg_replace("/[^0-9]/","",$affiche[8])."'
 									";
 						$req = mysql_query($sql);
 						if(!$req) {
-							echo "Erreur lors de la requête $sql<br />\n";
+							echo "<span style='color:red'>".mysql_error()."</span> sur <span style='color:red'>".$sql."</span><br />\n";
 							$nb_reg_no3++;
-							echo mysql_error();
 						} else {
 							$nb_record3++;
 
@@ -255,24 +254,35 @@ if (!isset($is_posted)) {
 							if(mysql_num_rows($res_tmp_u)>0) {
 								$lig_tmp_u=mysql_fetch_object($res_tmp_u);
 
-								$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".$affiche[1]."', prenom='".$affiche[2]."', ";
-								if(isset($affiche[3])){
-									$sql.="civilite='".ucfirst(strtolower($affiche[3]))."', ";
-								}
-								$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".$lig_tmp_u->email."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
-								if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-								$insert_u=mysql_query($sql);
-								if(!$insert_u) {
-									echo "Erreur lors de la création du compte utilisateur pour ".$affiche[1]." ".$affiche[2].".<br />";
+								$sql="SELECT statut FROM utilisateurs WHERE login='".$lig_tmp_u->login."';";
+								$test_u=mysql_query($sql);
+								if(mysql_num_rows($test_u)>0) {
+									$lig_test_u=mysql_fetch_object($test_u);
+									if($lig_test_u->statut!='responsable') {
+										echo "<span style='color:red;'>ANOMALIE&nbsp;:</span> Un compte d'uilisateur <b>$lig_test_u->statut</b> existait pour le login <b>$lig_tmp_u->login</b> mis en réserve pour ".$personnes[$i]["nom"]." ".$personnes[$i]["prenom"]."&nbsp;:<br /><span style='color:red;'>$sql</span><br />";
+									}
 								}
 								else {
-									$sql="UPDATE resp_pers SET login='".$lig_tmp_u->login."' WHERE pers_id='".$affiche[0]."';";
-									if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-									$update_rp=mysql_query($sql);
 
-									$sql="UPDATE tempo_utilisateurs SET temoin='recree' WHERE identifiant1='".$affiche[0]."';";
+									$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".mysql_real_escape_string($affiche[1])."', prenom='".mysql_real_escape_string($affiche[2])."', ";
+									if(isset($affiche[3])){
+										$sql.="civilite='".mysql_real_escape_string(casse_mot($affiche[3],'majf2'))."', ";
+									}
+									$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".mysql_real_escape_string($lig_tmp_u->email)."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
 									if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-									$update_tmp_u=mysql_query($sql);
+									$insert_u=mysql_query($sql);
+									if(!$insert_u) {
+										echo "Erreur lors de la création du compte utilisateur pour ".$affiche[1]." ".$affiche[2].".<br />";
+									}
+									else {
+										$sql="UPDATE resp_pers SET login='".$lig_tmp_u->login."' WHERE pers_id='".$affiche[0]."';";
+										if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+										$update_rp=mysql_query($sql);
+	
+										$sql="UPDATE tempo_utilisateurs SET temoin='recree' WHERE identifiant1='".$affiche[0]."';";
+										if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+										$update_tmp_u=mysql_query($sql);
+									}
 								}
 							}
 
@@ -283,7 +293,7 @@ if (!isset($is_posted)) {
 			fclose($fp);
 
 			if ($nb_reg_no3 != 0) {
-				echo "<p>Lors de l'enregistrement des données de PERSONNES.CSV, il y a eu $nb_reg_no3 erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
+				echo "<p>Lors de l'enregistrement des données de PERSONNES.CSV, il y a eu <span style='color:red'>$nb_reg_no3 erreurs</span>. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
 			} else {
 				echo "<p>L'importation des personnes (<em>responsables</em>) dans la base GEPI a été effectuée avec succès (<em>".$nb_record3." enregistrements au total</em>).</p>\n";
 			}
@@ -361,17 +371,18 @@ if (!isset($is_posted)) {
 						$tabligne=explode(";",$ligne);
 						for($i = 0; $i < count($tabchamps); $i++) {
 							//$ind = $tabindice[$i];
-							$affiche[$i] = traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($tabligne[$tabindice[$i]]))));
+							$affiche[$i] = nettoyer_caracteres_nom($tabligne[$tabindice[$i]], "an", "", "");
 						}
-						$req = mysql_query("insert into responsables2 set
+						$sql="insert into responsables2 set
 									ele_id = '$affiche[0]',
 									pers_id = '$affiche[1]',
 									resp_legal = '$affiche[2]',
 									pers_contact = '$affiche[3]'
-									");
+									";
+						$req = mysql_query($sql);
 						if(!$req) {
 							$nb_reg_no1++;
-							echo mysql_error();
+							echo "<span style='color:red'>".mysql_error()."</span> sur <span style='color:red'>".$sql."</span><br />\n";
 						} else {
 							$nb_record1++;
 						}
@@ -403,7 +414,7 @@ if (!isset($is_posted)) {
 
 
 			if ($nb_reg_no1 != 0) {
-				echo "<p>Lors de l'enregistrement des données de RESPONSABLES.CSV, il y a eu $nb_reg_no1 erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
+				echo "<p>Lors de l'enregistrement des données de RESPONSABLES.CSV, il y a eu <span style='color:red'>$nb_reg_no1 erreurs</span>. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
 			}
 			else {
 				echo "<p>L'importation des relations eleves/responsables dans la base GEPI a été effectuée avec succès (<em>".$nb_record1." enregistrements au total</em>).</p>\n";
@@ -479,21 +490,22 @@ if (!isset($is_posted)) {
 						$tabligne=explode(";",$ligne);
 						for($i = 0; $i < count($tabchamps); $i++) {
 							//$ind = $tabindice[$i];
-							$affiche[$i] = traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($tabligne[$tabindice[$i]]))));
+							$affiche[$i] = preg_replace("/'$/","",preg_replace("/^'/"," ", nettoyer_caracteres_nom($tabligne[$tabindice[$i]],"an", " .'-", " ")));
 						}
-						$req = mysql_query("insert into resp_adr set
-									adr_id = '$affiche[0]',
-									adr1 = '$affiche[1]',
-									adr2 = '$affiche[2]',
-									adr3 = '$affiche[3]',
-									adr4 = '$affiche[4]',
-									cp = '$affiche[5]',
-									pays = '$affiche[6]',
-									commune = '$affiche[7]'
-									");
+						$sql="insert into resp_adr set
+									adr_id = '".preg_replace("/[^0-9]/","",$affiche[0])."',
+									adr1 = '".mysql_real_escape_string($affiche[1])."',
+									adr2 = '".mysql_real_escape_string($affiche[2])."',
+									adr3 = '".mysql_real_escape_string($affiche[3])."',
+									adr4 = '".mysql_real_escape_string($affiche[4])."',
+									cp = '".mysql_real_escape_string($affiche[5])."',
+									pays = '".mysql_real_escape_string($affiche[6])."',
+									commune = '".mysql_real_escape_string($affiche[7])."'
+									";
+						$req = mysql_query($sql);
 						if(!$req) {
 							$nb_reg_no2++;
-							echo mysql_error();
+							echo "<span style='color:red'>".mysql_error()."</span> sur <span style='color:red'>".$sql."</span><br />\n";
 						} else {
 							$nb_record2++;
 						}
@@ -503,7 +515,7 @@ if (!isset($is_posted)) {
 			fclose($fp);
 
 			if ($nb_reg_no2 != 0) {
-				echo "<p>Lors de l'enregistrement des données de ADRESSES.CSV, il y a eu $nb_reg_no2 erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
+				echo "<p>Lors de l'enregistrement des données de ADRESSES.CSV, il y a eu <span style='color:red'>$nb_reg_no2 erreurs</span>. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
 			} else {
 				echo "<p>L'importation des adresses de responsables dans la base GEPI a été effectuée avec succès (<em>".$nb_record2." enregistrements au total</em>).</p>\n";
 			}
