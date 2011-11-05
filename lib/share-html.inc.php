@@ -1624,4 +1624,85 @@ function js_checkbox_change_style($nom_js_func='checkbox_change', $prefixe_texte
 	return $retour;
 }
 
+$tableau_type_login=array('name', 'name8', 'fname8', 'fname19', 'firstdotname', 'firstdotname19', 'namef8', 'lcs', 'name9_p', 'p_name9', 'name9-p', 'p-name9', 'name9.p', 'p.name9', 'name9_ppp', 'ppp_name9', 'name9-ppp', 'ppp-name9', 'name9.ppp', 'ppp.name9');
+$tableau_type_login_description=array('nom', 
+'nom (<em>tronqué à 8 caractères</em>)', 
+'pnom (<em>tronqué à 8 caractères</em>)', 
+'pnom (<em>tronqué à 19 caractères</em>)', 
+'prenom.nom', 
+'prenom.nom (<em>tronqué à 19 caractères</em>)', 
+'nomp (<em>tronqué à 8 caractères</em>)', 
+'pnom (<em>façon LCS</em>)', 
+'nom tronqué à 9 caractères + _ + initiale du prénom', 
+'initiale du prénom + _ + nom tronqué à 9 caractères', 
+'nom tronqué à 9 caractères + - + initiale du prénom', 
+'initiale du prénom + - + nom tronqué à 9 caractères', 
+'nom tronqué à 9 caractères +  + initiale du prénom', 
+'initiale du prénom + . + nom tronqué à 9 caractères', 
+'nom tronqué à 9 caractères + _ + 3 premiers caractères du prénom', 
+'3 premiers caractères du prénom + _ + nom tronqué à 9 caractères', 
+'nom tronqué à 9 caractères + - + 3 premiers caractères du prénom', 
+'3 premiers caractères du prénom + - + nom tronqué à 9 caractères', 
+'nom tronqué à 9 caractères + . + 3 premiers caractères du prénom', 
+'3 premiers caractères du prénom + . + nom tronqué à 9 caractères');
+
+/**
+ * Insère les champs radio de choix du format de login
+ * @param string $nom_champ : le nom du champ de formulaire
+ * @param string $default_login_gen_type : le format par défaut
+ * @return string Les champs radio
+ */
+function champs_radio_choix_format_login($nom_champ, $default_login_gen_type="name") {
+	global $tableau_type_login, $tableau_type_login_description;
+
+	$retour="";
+
+	for($i=0;$i<count($type_login);$i++) {
+		$retour.="<input type='radio' name='".$nom_champ."' id='".$nom_champ."_".$tableau_type_login[$i]."' value='".$tableau_type_login[$i]."' ";
+		if($default_login_gen_type==$tableau_type_login[$i]) {
+			$retour.="checked ";
+		}
+		$retour.=" onchange='changement()'";
+		$retour.="/> <label for='".$nom_champ."_".$tableau_type_login[$i]."'  style='cursor: pointer;'>".$tableau_type_login_description[$i]."</label>\n";
+		$retour.="<br />\n";
+	}
+
+	if (getSettingValue("use_ent") == "y") {
+		$retour.="<input type='radio' name='".$nom_champ."' id='".$nom_champ."_ent' value='ent' checked=\"checked\" ";
+		$retour.="onchange='changement()' ";
+		$retour.="/>\n";
+		$retour.="<label for='".$nom_champ."_ent'  style='cursor: pointer;'>
+			Les logins sont produits par un ENT (<span title=\"Vous devez adapter le code du fichier ci-dessus vers la ligne 710.\">Attention !</span>)</label>\n";
+		$retour.="<br />\n";
+	}
+	$retour.="<br />\n";
+
+	return $retour;
+}
+
+/**
+ * Insère le champ select de choix du format de login
+ * @param string $nom_champ : le nom du champ de formulaire
+ * @param string $default_login_gen_type : le format par défaut
+ * @return string Le champ select avec ses options
+ */
+function champs_select_choix_format_login($nom_champ, $default_login_gen_type="name") {
+	global $tableau_type_login, $tableau_type_login_description;
+
+	$retour="<select name='".$nom_champ."' onchange='changement()'>\n";
+
+	for($i=0;$i<count($tableau_type_login);$i++) {
+		$retour.="<option value='".$tableau_type_login[$i]."'";
+		if($default_login_gen_type==$tableau_type_login[$i]) {
+			$retour.=" selected='true'";
+		}
+		$retour.=" onchange='changement()'";
+		$retour.=">".$tableau_type_login_description[$i]."</option>\n";
+	}
+
+	$retour.="</select>\n";
+
+	return $retour;
+}
+
 ?>

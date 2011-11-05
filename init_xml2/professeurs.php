@@ -78,9 +78,6 @@ require_once("../lib/header.inc");
 
 require_once("init_xml_lib.php");
 
-// On vérifie si l'extension d_base est active
-//verif_active_dbase();
-
 ?>
 <p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
@@ -205,6 +202,8 @@ if (!isset($is_posted)) {
 		echo "<span style='color:red'>Votre Gepi utilise une authentification LCS; Le format de login ci-dessous ne sera pas pris en compte. Les comptes doivent avoir été importés dans l'annuaire LDAP du LCS avant d'effectuer l'import dans GEPI.</span><br />\n";
 	}
 
+	echo champs_radio_choix_format_login('login_gen_type', $default_login_gen_type);
+	/*
 	echo "<input type='radio' name='login_gen_type' id='login_gen_type_name' value='name' ";
 	if($default_login_gen_type=='name') {
 		echo "checked ";
@@ -268,6 +267,7 @@ if (!isset($is_posted)) {
 		echo "<br />\n";
 	}
 	echo "<br />\n";
+	*/
 
 	// Modifications jjocal dans le cas où c'est un serveur CAS qui s'occupe de tout
 	if((getSettingValue("use_sso") == "cas")||(getSettingValue('auth_sso')=="lcs")) {

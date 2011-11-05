@@ -40,6 +40,9 @@ if (!checkAccess()) {
     die();
 }
 
+$longmax_login_eleve=getSettingValue('longmax_login_eleve');
+if($longmax_login_eleve=="") {$longmax_login_eleve=$longmax_login;}
+
 //**************** EN-TETE *****************
 $titre_page = "Outil de gestion | Importation";
 require_once("../lib/header.inc");
@@ -69,7 +72,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
     <?php
     echo "<p>Le fichier d'importation doit être au format csv (séparateur : point-virgule)<br />";
     echo "Le fichier doit contenir les différents champs suivants, tous obligatoires :<br />";
-    echo "--> <B>IDENTIFIANT</B> : l'identifiant de l'élève (".$longmax_login." caractères maximum)<br />";
+    echo "--> <B>IDENTIFIANT</B> : l'identifiant de l'élève (".$longmax_login_eleve." caractères maximum)<br />";
     echo "--> <B>Nom</B><br />";
     echo "--> <B>Prénom</B><br />";
     echo "--> <B>Sexe</B>  : F ou M<br />";
@@ -115,7 +118,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                     switch ($c) {
                     case 0:
                         //login
-                        if (preg_match ("/^[a-zA-Z0-9_]{1,".$longmax_login."}$/", $data[$c])) {
+                        if (preg_match ("/^[a-zA-Z0-9_]{1,".$longmax_login_eleve."}$/", $data[$c])) {
                             $reg_login = "reg_".$row."_login";
                             $reg_statut = "reg_".$row."_statut";
                             $data[$c] =    my_strtoupper($data[$c]);

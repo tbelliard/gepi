@@ -457,30 +457,137 @@ if (isset($_POST['is_posted'])) {
 				$msg .= "Erreur lors de l'enregistrement du numéro d'enregistrement à la CNIL !";
 			}
 		}
-		
+
 		if (isset($_POST['mode_generation_login'])) {
 			if (!saveSetting("mode_generation_login", $_POST['mode_generation_login'])) {
-				$msg .= "Erreur lors de l'enregistrement du mode de génération des logins !";
+				$msg .= "Erreur lors de l'enregistrement du mode de génération des logins personnels !";
 			}
 			// On en profite pour mettre à jour la variable $longmax_login -> settings : longmax_login
-					$nbre_carac = 12;
-				if ($_POST['mode_generation_login'] == 'name8' OR $_POST['mode_generation_login'] == 'fname8' OR $_POST['mode_generation_login'] == 'namef8') {
-					$nbre_carac = 8;
-				}
-				elseif ($_POST['mode_generation_login'] == 'fname19' OR $_POST['mode_generation_login'] == 'firstdotname19') {
-					$nbre_carac = 19;
-				}
-				elseif ($_POST['mode_generation_login'] == 'firstdotname') {
-					$nbre_carac = 30;
-				}
-				else {
-					$nbre_carac = 12;
-				}
+			$nbre_carac = 12;
+			if ($_POST['mode_generation_login'] == 'name8' OR 
+				$_POST['mode_generation_login'] == 'fname8' OR 
+				$_POST['mode_generation_login'] == 'namef8') {
+				$nbre_carac = 8;
+			}
+			elseif ($_POST['mode_generation_login'] == 'name9_p' OR 
+				$_POST['mode_generation_login'] == 'p_name9' OR 
+				$_POST['mode_generation_login'] == 'name9-p' OR 
+				$_POST['mode_generation_login'] == 'p-name9' OR 
+				$_POST['mode_generation_login'] == 'name9.p' OR 
+				$_POST['mode_generation_login'] == 'p.name9') {
+				$nbre_carac = 11;
+			}
+			elseif ($_POST['mode_generation_login'] == 'name9_ppp' OR 
+				$_POST['mode_generation_login'] == 'ppp_name9' OR 
+				$_POST['mode_generation_login'] == 'name9-ppp' OR 
+				$_POST['mode_generation_login'] == 'ppp-name9' OR 
+				$_POST['mode_generation_login'] == 'name9.ppp' OR 
+				$_POST['mode_generation_login'] == 'ppp.name9') {
+				$nbre_carac = 13;
+			}
+			elseif ($_POST['mode_generation_login'] == 'fname19' OR 
+				$_POST['mode_generation_login'] == 'firstdotname19') {
+				$nbre_carac = 19;
+			}
+			elseif ($_POST['mode_generation_login'] == 'firstdotname' OR 
+				$_POST['mode_generation_login'] == 'lcs') {
+				$nbre_carac = 30;
+			}
+			else {
+				$nbre_carac = 12;
+			}
 			$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login'";
 			$modif_maxlong = mysql_query($req);
 		}
-		
-		
+
+
+		if (isset($_POST['mode_generation_login_eleve'])) {
+			if (!saveSetting("mode_generation_login_eleve", $_POST['mode_generation_login_eleve'])) {
+				$msg .= "Erreur lors de l'enregistrement du mode de génération des logins élèves !";
+			}
+			// On en profite pour mettre à jour la variable $longmax_login -> settings : longmax_login
+			$nbre_carac = 12;
+			if ($_POST['mode_generation_login_eleve'] == 'name8' OR 
+				$_POST['mode_generation_login_eleve'] == 'fname8' OR 
+				$_POST['mode_generation_login_eleve'] == 'namef8') {
+				$nbre_carac = 8;
+			}
+			elseif ($_POST['mode_generation_login_eleve'] == 'name9_p' OR 
+				$_POST['mode_generation_login_eleve'] == 'p_name9' OR 
+				$_POST['mode_generation_login_eleve'] == 'name9-p' OR 
+				$_POST['mode_generation_login_eleve'] == 'p-name9' OR 
+				$_POST['mode_generation_login_eleve'] == 'name9.p' OR 
+				$_POST['mode_generation_login_eleve'] == 'p.name9') {
+				$nbre_carac = 11;
+			}
+			elseif ($_POST['mode_generation_login_eleve'] == 'name9_ppp' OR 
+				$_POST['mode_generation_login_eleve'] == 'ppp_name9' OR 
+				$_POST['mode_generation_login_eleve'] == 'name9-ppp' OR 
+				$_POST['mode_generation_login_eleve'] == 'ppp-name9' OR 
+				$_POST['mode_generation_login_eleve'] == 'name9.ppp' OR 
+				$_POST['mode_generation_login_eleve'] == 'ppp.name9') {
+				$nbre_carac = 13;
+			}
+			elseif ($_POST['mode_generation_login_eleve'] == 'fname19' OR 
+				$_POST['mode_generation_login_eleve'] == 'firstdotname19') {
+				$nbre_carac = 19;
+			}
+			elseif ($_POST['mode_generation_login_eleve'] == 'firstdotname' OR 
+				$_POST['mode_generation_login_eleve'] == 'lcs') {
+				$nbre_carac = 30;
+			}
+			else {
+				$nbre_carac = 12;
+			}
+			$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login_eleve'";
+			$modif_maxlong = mysql_query($req);
+		}
+
+
+
+		if (isset($_POST['mode_generation_login_responsable'])) {
+			if (!saveSetting("mode_generation_login_responsable", $_POST['mode_generation_login_responsable'])) {
+				$msg .= "Erreur lors de l'enregistrement du mode de génération des logins responsables !";
+			}
+			// On en profite pour mettre à jour la variable $longmax_login -> settings : longmax_login
+			$nbre_carac = 12;
+			if ($_POST['mode_generation_login_responsable'] == 'name8' OR 
+				$_POST['mode_generation_login_responsable'] == 'fname8' OR 
+				$_POST['mode_generation_login_responsable'] == 'namef8') {
+				$nbre_carac = 8;
+			}
+			elseif ($_POST['mode_generation_login_responsable'] == 'name9_p' OR 
+				$_POST['mode_generation_login_responsable'] == 'p_name9' OR 
+				$_POST['mode_generation_login_responsable'] == 'name9-p' OR 
+				$_POST['mode_generation_login_responsable'] == 'p-name9' OR 
+				$_POST['mode_generation_login_responsable'] == 'name9.p' OR 
+				$_POST['mode_generation_login_responsable'] == 'p.name9') {
+				$nbre_carac = 11;
+			}
+			elseif ($_POST['mode_generation_login_responsable'] == 'name9_ppp' OR 
+				$_POST['mode_generation_login_responsable'] == 'ppp_name9' OR 
+				$_POST['mode_generation_login_responsable'] == 'name9-ppp' OR 
+				$_POST['mode_generation_login_responsable'] == 'ppp-name9' OR 
+				$_POST['mode_generation_login_responsable'] == 'name9.ppp' OR 
+				$_POST['mode_generation_login_responsable'] == 'ppp.name9') {
+				$nbre_carac = 13;
+			}
+			elseif ($_POST['mode_generation_login_responsable'] == 'fname19' OR 
+				$_POST['mode_generation_login_responsable'] == 'firstdotname19') {
+				$nbre_carac = 19;
+			}
+			elseif ($_POST['mode_generation_login_responsable'] == 'firstdotname' OR 
+				$_POST['mode_generation_login_responsable'] == 'lcs') {
+				$nbre_carac = 30;
+			}
+			else {
+				$nbre_carac = 12;
+			}
+			$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login_responsable'";
+			$modif_maxlong = mysql_query($req);
+		}
+
+
 		if (isset($_POST['unzipped_max_filesize'])) {
 			$unzipped_max_filesize=$_POST['unzipped_max_filesize'];
 			if(mb_substr($unzipped_max_filesize,0,1)=="-") {$unzipped_max_filesize=-1;}
@@ -847,17 +954,48 @@ echo add_token_field();
 		<td style="font-variant: small-caps;">
 
 		<a name='format_login_resp'></a>
-		Mode de génération automatique des logins :</td>
+		Mode de génération automatique des logins personnels&nbsp;:</td>
 	<td>
-	<select name='mode_generation_login' onchange='changement()'>
+		<?php
+			echo champs_select_choix_format_login('mode_generation_login', "namef8");
+		?>
+	<!--select name='mode_generation_login' onchange='changement()'>
 			<option value='name8'<?php if (getSettingValue("mode_generation_login")=='name8') echo " SELECTED"; ?>> nom (tronqué à 8 caractères)</option>
 			<option value='fname8'<?php if (getSettingValue("mode_generation_login")=='fname8') echo " SELECTED"; ?>> pnom (tronqué à 8 caractères)</option>
 			<option value='fname19'<?php if (getSettingValue("mode_generation_login")=='fname19') echo " SELECTED"; ?>> pnom (tronqué à 19 caractères)</option>
 			<option value='firstdotname'<?php if (getSettingValue("mode_generation_login")=='firstdotname') echo " SELECTED"; ?>> prenom.nom (tronqué à 30 caractères)</option>
 			<option value='firstdotname19'<?php if (getSettingValue("mode_generation_login")=='firstdotname19') echo " SELECTED"; ?>> prenom.nom (tronqué à 19 caractères)</option>
 			<option value='namef8'<?php if (getSettingValue("mode_generation_login")=='namef8') echo " SELECTED"; ?>> nomp (tronqué à 8 caractères)</option>
-	</select>
+	</select-->
 	</td>
+	</tr>
+
+	<tr>
+		<td style="font-variant: small-caps;">
+			<a name='format_login_resp'></a>
+			Mode de génération automatique des logins élèves&nbsp;:
+		</td>
+		<td>
+			<?php
+				$mode_generation_login_eleve=getSettingValue('mode_generation_login_eleve');
+				if($mode_generation_login_eleve=='') {$mode_generation_login_eleve="name9_p";}
+				echo champs_select_choix_format_login('mode_generation_login_eleve', $mode_generation_login_eleve);
+			?>
+		</td>
+	</tr>
+
+	<tr>
+		<td style="font-variant: small-caps;">
+			<a name='format_login_resp'></a>
+			Mode de génération automatique des logins responsables&nbsp;:
+		</td>
+		<td>
+			<?php
+				$mode_generation_login_responsable=getSettingValue('mode_generation_login_responsable');
+				if($mode_generation_login_responsable=='') {$mode_generation_login_responsable="name";}
+				echo champs_select_choix_format_login('mode_generation_login_responsable', $mode_generation_login_responsable);
+			?>
+		</td>
 	</tr>
 
 

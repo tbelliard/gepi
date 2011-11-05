@@ -23,6 +23,9 @@
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
+$longmax_login_eleve=getSettingValue('longmax_login_eleve');
+if($longmax_login_eleve=="") {$longmax_login_eleve=$longmax_login;}
+
 unset($reg_login);
 $reg_login = isset($_POST["reg_login"]) ? $_POST["reg_login"] : NULL;
 unset($reg_nom);
@@ -129,7 +132,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 	if (($continue == 'yes') and (isset($reg_login))) {
 		$msg = '';
 		$ok = 'yes';
-		if (preg_match("/^[a-zA-Z_]{1}[a-zA-Z0-9_.]{0,".($longmax_login-1)."}$/", $reg_login)) {
+		if (preg_match("/^[a-zA-Z_]{1}[a-zA-Z0-9_.]{0,".($longmax_login_eleve-1)."}$/", $reg_login)) {
 			if ($reg_no_gep != '') {
 				$test1 = mysql_query("SELECT login FROM eleves WHERE elenoet='$reg_no_gep'");
 				$count1 = mysql_num_rows($test1);
@@ -580,7 +583,7 @@ echo "<tr>\n";
         echo " /></td>\n";
     } else {
         echo "<td>Identifiant GEPI * : </td>
-        <td><input type=text name=reg_login size=20 value=\"\" maxlength='".$longmax_login."' /> (<i>max.$longmax_login caractères</i>)</td>\n";
+        <td><input type=text name=reg_login size=20 value=\"\" maxlength='".$longmax_login_eleve."' /> (<i>max.$longmax_login_eleve caractères</i>)</td>\n";
     }
     ?>
 </tr>

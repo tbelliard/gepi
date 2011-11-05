@@ -314,9 +314,9 @@ else {
 				}
 	
 				if($login_eleve=="") {
-					$login_ele_gen_type=getSettingValue('login_ele_gen_type');
+					$login_ele_gen_type=getSettingValue('mode_generation_login_eleve');
 					if($login_ele_gen_type=='') {$login_ele_gen_type='name9_p';}
-					$login_eleve=generate_unique_login($reg_nom, $reg_prenom, 'name9_p', 'maj');
+					$login_eleve=generate_unique_login($reg_nom, $reg_prenom, $login_ele_gen_type, 'maj');
 					if($debug_ele=='y') {echo "<span style='color:blue;'>Login nouvellement généré pour '$reg_nom $reg_prenom' : '$login_eleve'</span><br />";}
 				}
 	

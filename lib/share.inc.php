@@ -261,9 +261,7 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 	} elseif ($_mode == "name9_p") {
 		// Format d'origine des comptes élèves dans Gepi
 		$temp1 = $_nom;
-		$temp1 = preg_replace("/ /","", $temp1);
-		$temp1 = preg_replace("/-/","", $temp1);
-		$temp1 = preg_replace("/'/","", $temp1);
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
 		$temp1 = mb_substr($temp1,0,9);
 		if($_prenom!='') {
 			$temp2 = preg_replace("/ /","", $_prenom);
@@ -271,6 +269,149 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 			$temp2 = preg_replace("/'/","", $temp2);
 			if($temp2!='') {
 				$temp1 .= '_'.mb_substr($temp2,0,1);
+			}
+		}
+	} elseif ($_mode == "name9-p") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
+		$temp1 = mb_substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 .= '-'.mb_substr($temp2,0,1);
+			}
+		}
+	} elseif ($_mode == "name9.p") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
+		$temp1 = mb_substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 .= '.'.mb_substr($temp2,0,1);
+			}
+		}
+	} elseif ($_mode == "p_name9") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
+		$temp1 = mb_substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 = mb_substr($temp2,0,1)."_".$temp1;
+			}
+		}
+	} elseif ($_mode == "p-name9") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
+		$temp1 = mb_substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 = mb_substr($temp2,0,1)."-".$temp1;
+			}
+		}
+	} elseif ($_mode == "p.name9") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
+		$temp1 = mb_substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 = mb_substr($temp2,0,1).".".$temp1;
+			}
+		}
+	} elseif ($_mode == "name9_ppp") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
+		$temp1 = mb_substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 .= '_'.mb_substr($temp2,0,3);
+			}
+		}
+	} elseif ($_mode == "name9-ppp") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
+		$temp1 = mb_substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 .= '-'.mb_substr($temp2,0,3);
+			}
+		}
+	} elseif ($_mode == "name9.ppp") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
+		$temp1 = mb_substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 .= '.'.mb_substr($temp2,0,3);
+			}
+		}
+	} elseif ($_mode == "ppp_name9") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
+		$temp1 = mb_substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 = mb_substr($temp2,0,3)."_".$temp1;
+			}
+		}
+	} elseif ($_mode == "ppp-name9") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
+		$temp1 = mb_substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 = mb_substr($temp2,0,3)."-".$temp1;
+			}
+		}
+	} elseif ($_mode == "ppp.name9") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
+		$temp1 = mb_substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 = mb_substr($temp2,0,3).".".$temp1;
 			}
 		}
 	} elseif ($_mode == "fname8") {

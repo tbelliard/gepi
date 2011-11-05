@@ -253,9 +253,9 @@ if (!isset($_POST["action"])) {
 				}
 	
 				if($reg_login=="") {
-					$login_ele_gen_type=getSettingValue('login_ele_gen_type');
+					$login_ele_gen_type=getSettingValue('mode_generation_login_eleve');
 					if($login_ele_gen_type=='') {$login_ele_gen_type='name9_p';}
-					$reg_login=generate_unique_login($reg_nom, $reg_prenom, 'name9_p', 'maj');
+					$reg_login=generate_unique_login($reg_nom, $reg_prenom, $login_ele_gen_type, 'maj');
 					if($debug_ele=='y') {echo "<span style='color:orange;'>Le login $reg_login est nouvellement généré</span><br />";}
 				}
 
