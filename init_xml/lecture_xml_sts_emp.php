@@ -526,7 +526,7 @@ if (browser.isNS) {
 								}
 								elseif(my_strtoupper($key)=='PRENOM') {
 									//$prof[$i][my_strtolower($key)]=trim(preg_replace("/[^A-Za-zÆæ¼½".$liste_caracteres_accentues." -]/","",traite_utf8($value)));
-									$prof[$i][my_strtolower($key)]=trim(preg_replace('/"/','',preg_replace("/'/","",nettoyer_caracteres_nom($value))));
+									$prof[$i][my_strtolower($key)]=trim(preg_replace('/"/','',preg_replace("/'/","",nettoyer_caracteres_nom($value,"a"," '_-",""))));
 								}
 								elseif(my_strtoupper($key)=='DATE_NAISSANCE') {
 									//$prof[$i][my_strtolower($key)]=trim(preg_replace("/[^0-9-]/","",traite_utf8($value)));

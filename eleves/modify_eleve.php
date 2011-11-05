@@ -1217,7 +1217,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
 			$afficher_tous_les_resp=isset($_POST['afficher_tous_les_resp']) ? $_POST['afficher_tous_les_resp'] : "n";
 			//$critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/", "", $critere_recherche);
-			$critere_recherche=preg_replace("/[^a-zA-Z_ -]/", "%", nettoyer_caracteres_nom($critere_recherche));
+			$critere_recherche=preg_replace("/[^a-zA-Z_ -]/", "%", nettoyer_caracteres_nom($critere_recherche,"a"," _-",""));
 
 			if($critere_recherche==""){
 				$critere_recherche=mb_substr($eleve_nom,0,3);
