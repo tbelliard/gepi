@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id: include_chargement.php 7822 2011-08-18 18:56:42Z dblanqui $
  *
  * Copyright 2010 Josselin Jacquard
  *
@@ -26,7 +25,7 @@
  */
 
 header('Content-Type: text/html; charset=utf-8');
-$compteur = isset($_GET['compteur']) ? (int) htmlentities($_GET['compteur']) : Null;
+$compteur = isset($_GET['compteur']) ? (int) htmlspecialchars($_GET['compteur']) : Null;
 if (!is_int($compteur)) {
     die();
 }

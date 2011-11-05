@@ -15,8 +15,8 @@ Released under the GNU LGPL license
 http://www.gnu.org/copyleft/lesser.html
 ********************************************************
 Modification Eric ABGRALL pour Gepi :
-Classe modifiée afin d'utiliser la classe PCLZIP au lieu de Zip et Unzip
-Elagage de certaines méthodes (gestion du cache pour la suppression)
+Classe modifiï¿½e afin d'utiliser la classe PCLZIP au lieu de Zip et Unzip
+Elagage de certaines mï¿½thodes (gestion du cache pour la suppression)
 */
 
 class clsTinyButStrongOOo extends clsTinyButStrong
@@ -133,7 +133,7 @@ class clsTinyButStrongOOo extends clsTinyButStrong
 
     // store the merge result in place of the XML source file
     $fdw = fopen($this->_ooo_basename.'/'.$this->_xml_filename, "w");
-    fwrite($fdw, $this->Source, strlen($this->Source));
+    fwrite($fdw, $this->Source, mb_strlen($this->Source));
     fclose ($fdw);
 
     // test if XML file exist
@@ -148,7 +148,7 @@ class clsTinyButStrongOOo extends clsTinyButStrong
 	$this->_nom_fic_archive = $this->_ooo_basename.'.'.$this->_ooo_file_ext; //le nom du fichier ODF (copie unique ID)
 	
 	$archive = new PclZip($this->_ooo_basename.'.'.$this->_ooo_file_ext);
-	// il faut supprimer le fichier dans l'archive. Un add n'écrase pas le fichier !!
+	// il faut supprimer le fichier dans l'archive. Un add n'ï¿½crase pas le fichier !!
 	$v_list = $archive->delete(PCLZIP_OPT_BY_NAME, $this->_xml_filename);  //on supprime content.xml
 	                       
     if ($v_list == 0) {
@@ -225,7 +225,7 @@ class clsTinyButStrongOOo extends clsTinyButStrong
   {
     if (strpos($path_quote, ' ') !== false) {
       $path_quote = (strpos($path_quote, '"') === 0 ? '' : '"').$path_quote;
-      $path_quote = $path_quote.((strrpos($path_quote, '"') == strlen($path_quote)-1) ? '' : '"');
+      $path_quote = $path_quote.((strrpos($path_quote, '"') == mb_strlen($path_quote)-1) ? '' : '"');
     }
     return $path_quote;
   }
@@ -242,13 +242,15 @@ class clsTinyButStrongOOo extends clsTinyButStrong
       // OOo XML charset is utf8
       case 'UTF8': // no encode
         break;
+      case 'UTF-8': // no encode
+        break;
       case 'ISO 8859-1': // encode ISO 8859-1 to UTF8
       default:
         $string_encode = utf8_encode($string_encode); 
         break;
     }
     // work-around for EURO caracter
-    $string_encode = str_replace(chr(0xC2).chr(0x80) , chr(0xE2).chr(0x82).chr(0xAC),  $string_encode); // €
+    $string_encode = str_replace(chr(0xC2).chr(0x80) , chr(0xE2).chr(0x82).chr(0xAC),  $string_encode); // ï¿½
     return $string_encode;
   }
 
@@ -264,11 +266,11 @@ class clsTinyButStrongOOo extends clsTinyButStrong
 				continue;
 			}
 			if(is_dir("$dir/$file")){
-				// On ne cherche pas à vider récursivement.
+				// On ne cherche pas ï¿½ vider rï¿½cursivement.
 				$statut=false;
 
 				echo "<!-- DOSSIER: $dir/$file -->\n";
-				// En ajoutant un paramètre à la fonction, on pourrait activer la suppression récursive (avec une profondeur par exemple) lancer ici vider_dir("$dir/$file");
+				// En ajoutant un paramï¿½tre ï¿½ la fonction, on pourrait activer la suppression rï¿½cursive (avec une profondeur par exemple) lancer ici vider_dir("$dir/$file");
 			}
 			else{
 				if(!unlink($dir."/".$file)) {
@@ -294,11 +296,11 @@ class clsTinyButStrongOOo extends clsTinyButStrong
 			continue;
 		}
 		if(is_dir("$dir/$file")){
-			// On ne cherche pas à vider récursivement.
+			// On ne cherche pas ï¿½ vider rï¿½cursivement.
 			$statut=false;
 
 			echo "<!-- DOSSIER: $dir/$file -->\n";
-			// En ajoutant un paramètre à la fonction, on pourrait activer la suppression récursive (avec une profondeur par exemple) lancer ici vider_dir("$dir/$file");
+			// En ajoutant un paramï¿½tre ï¿½ la fonction, on pourrait activer la suppression rï¿½cursive (avec une profondeur par exemple) lancer ici vider_dir("$dir/$file");
 		}
 		else{
 			if(!unlink($dir."/".$file)) {

@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: import_pays.php 6618 2011-03-03 18:25:55Z crob $
+ * $Id$
  *
  * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -274,12 +274,12 @@ else {
 						$tabligne=explode(";",preg_replace('/"/','',$ligne));
 	
 						$code_pays[]=preg_replace("/[^0-9]/","",corriger_caracteres($tabligne[$tabindice[0]]));
-						//$nom_pays[]=my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]","",corriger_caracteres(html_entity_decode_all_version(my_ereg_replace("&#039;","'",$tabligne[$tabindice[1]]))));
-						//echo $tabligne[$tabindice[1]]." -&gt; ".my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]","",corriger_caracteres(html_entity_decode_all_version(my_ereg_replace("&#039;","'",$tabligne[$tabindice[1]]))))."</p>";
+						//$nom_pays[]=my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]","",corriger_caracteres(html_entity_decode(my_ereg_replace("&#039;","'",$tabligne[$tabindice[1]]))));
+						//echo $tabligne[$tabindice[1]]." -&gt; ".my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]","",corriger_caracteres(html_entity_decode(my_ereg_replace("&#039;","'",$tabligne[$tabindice[1]]))))."</p>";
 
 
-						$nom_pays[]=preg_replace("/[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]/","",corriger_caracteres(html_entity_decode_all_version(preg_replace("/&#039;/","'",$tabligne[$tabindice[1]]))));
-						//echo $tabligne[$tabindice[1]]." -&gt; ".preg_replace("/[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]/","",corriger_caracteres(html_entity_decode_all_version(my_ereg_replace("&#039;","'",$tabligne[$tabindice[1]]))))."</p>";
+						$nom_pays[]=preg_replace("/[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]/","",corriger_caracteres(html_entity_decode(preg_replace("/&#039;/","'",$tabligne[$tabindice[1]]))));
+						//echo $tabligne[$tabindice[1]]." -&gt; ".preg_replace("/[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]/","",corriger_caracteres(html_entity_decode(my_ereg_replace("&#039;","'",$tabligne[$tabindice[1]]))))."</p>";
 					}
 				}
 				fclose($fp);
@@ -409,10 +409,10 @@ else {
 			for($i=0;$i<$nb_pays;$i++) {
 				if(isset($code_pays[$i])) {
 					if(in_array($code_pays[$i],$tab_code_pays_connus)) {
-						$sql="UPDATE pays SET nom_pays='".addslashes(preg_replace("/[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]/","",corriger_caracteres(html_entity_decode_all_version(preg_replace("/&#039;/","'",$nom_pays[$i])))))."' WHERE code_pays='$code_pays[$i]';";
+						$sql="UPDATE pays SET nom_pays='".addslashes(preg_replace("/[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]/","",corriger_caracteres(html_entity_decode(preg_replace("/&#039;/","'",$nom_pays[$i])))))."' WHERE code_pays='$code_pays[$i]';";
 					}
 					else {
-						$sql="INSERT INTO pays SET nom_pays='".addslashes(preg_replace("/[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]/","",corriger_caracteres(html_entity_decode_all_version(preg_replace("/&#039;/","'",$nom_pays[$i])))))."', code_pays='$code_pays[$i]';";
+						$sql="INSERT INTO pays SET nom_pays='".addslashes(preg_replace("/[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]/","",corriger_caracteres(html_entity_decode(preg_replace("/&#039;/","'",$nom_pays[$i])))))."', code_pays='$code_pays[$i]';";
 					}
 					//echo "$sql<br />";
 					$res=mysql_query($sql);

@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id: voir_edt_classe.php 4059 2010-01-31 20:03:48Z adminpaulbert $
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

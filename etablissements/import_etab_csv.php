@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id: import_etab_csv.php 6613 2011-03-03 16:06:02Z crob $
+* $Id$
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -209,7 +209,7 @@ if (!isset($is_posted)) {
 						break;
 					case 3:
 						// Type public/privé
-						$tempo = strtolower($data[$c]);
+						$tempo = my_strtolower($data[$c]);
 						$valid='yes';
 						switch($tempo) {
 							case "public":

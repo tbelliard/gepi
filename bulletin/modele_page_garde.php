@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: modele_page_garde.php 1725 2008-04-19 19:21:49Z crob $
+ * @version $Id$
  *
  * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

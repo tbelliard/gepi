@@ -1,6 +1,5 @@
 <?php
 /*
-* @version: $Id: see_all.php 7938 2011-08-24 07:57:41Z jjocal $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
 *
@@ -234,7 +233,7 @@ echo "<div class='centre_table'>\n";
 				$i=0;
 				foreach ($current_group["profs"]["users"] as $prof) {
 					if ($i != 0) {echo ", ";}
-					echo substr($prof["prenom"],0,1) . ". " . $prof["nom"];
+					echo mb_substr($prof["prenom"],0,1) . ". " . $prof["nom"];
 					$i++;
 				}
 				echo ")</strong>";
@@ -401,9 +400,9 @@ if(($id_groupe=='Toutes_matieres')&&
 				echo "<td width='20%'><span style='font-size:x-small'>".$tab_grp[$tab_id_grp[$j]]['name']."</span><br /><span style='font-weight:bold'>".$tab_grp[$tab_id_grp[$j]]['matiere']['nom_complet']."</span><br />";
 				$str="";
 				foreach ($tab_grp[$tab_id_grp[$j]]['profs']['users'] as $tmp_prof) {
-					$str.=$tmp_prof["civilite"]." ".strtoupper($tmp_prof["nom"])." ".strtoupper(substr($tmp_prof["prenom"],0,1)).", ";
+					$str.=$tmp_prof["civilite"]." ".my_strtoupper($tmp_prof["nom"])." ".my_strtoupper(mb_substr($tmp_prof["prenom"],0,1)).", ";
 				}
-				$str = substr($str, 0, -2);
+				$str = mb_substr($str, 0, -2);
 				echo "<span style='font-size:small'>";
 				echo $str;
 				echo "</span>";

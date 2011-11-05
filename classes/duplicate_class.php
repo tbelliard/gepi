@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: duplicate_class.php 6605 2011-03-03 13:59:15Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

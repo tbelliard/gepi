@@ -1,7 +1,6 @@
 <?php
 
 /*
-* $Id: index.php 7509 2011-07-24 11:55:29Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -46,7 +45,7 @@ if (!checkAccess()) {
 	die();
 }
 
-if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+if(strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
 	header("Location: ../accueil.php?msg=$mess");
@@ -92,7 +91,7 @@ id_lieu INT( 11 ) NOT NULL ,
 nature VARCHAR( 255 ) NOT NULL ,
 description TEXT NOT NULL,
 etat VARCHAR( 20 ) NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $creation=mysql_query($sql);
 // Avec cette table on ne gère pas un historique des modifications de déclaration...
 
@@ -107,7 +106,7 @@ if(mysql_num_rows($test_table)==0) {
 	$sql="CREATE TABLE IF NOT EXISTS s_qualites (
 	id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 	qualite VARCHAR( 50 ) NOT NULL
-	);";
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$creation=mysql_query($sql);
 	if($creation) {
 		$tab_qualite=array("Responsable","Victime","Témoin","Autre");
@@ -130,7 +129,7 @@ if(mysql_num_rows($test_table)==0) {
 	$sql="CREATE TABLE IF NOT EXISTS s_types_sanctions (
 	id_nature INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 	nature VARCHAR( 255 ) NOT NULL
-	);";
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$creation=mysql_query($sql);
 	if($creation) {
 		$tab_type=array("Avertissement travail","Avertissement comportement");
@@ -151,7 +150,7 @@ id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 id_sanction INT( 11 ) NOT NULL ,
 id_nature INT( 11 ) NOT NULL ,
 description TEXT NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $creation=mysql_query($sql);
 
 $sql="SHOW TABLES LIKE 's_mesures';";
@@ -162,7 +161,7 @@ if(mysql_num_rows($test_table)==0) {
 	type ENUM('prise','demandee') ,
 	mesure VARCHAR( 50 ) NOT NULL ,
 	commentaire TEXT NOT NULL
-	);";
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$creation=mysql_query($sql);
 	if($creation) {
 		// Mesures prises
@@ -196,22 +195,13 @@ if ($test1 == 0) {
 	$query = mysql_query("ALTER TABLE s_mesures ADD commentaire TEXT NOT NULL AFTER mesure;");
 }
 
-/*
-$sql="CREATE TABLE IF NOT EXISTS s_traitement_incident (
-id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-id_incident INT( 11 ) NOT NULL ,
-login_ele VARCHAR( 50 ) NOT NULL ,
-login_u VARCHAR( 50 ) NOT NULL ,
-mesure VARCHAR( 50 ) NOT NULL
-);";
-*/
 $sql="CREATE TABLE IF NOT EXISTS s_traitement_incident (
 id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 id_incident INT( 11 ) NOT NULL ,
 login_ele VARCHAR( 50 ) NOT NULL ,
 login_u VARCHAR( 50 ) NOT NULL ,
 id_mesure INT( 11 ) NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $creation=mysql_query($sql);
 
 $sql="SHOW TABLES LIKE 's_lieux_incidents';";
@@ -220,7 +210,7 @@ if(mysql_num_rows($test_table)==0) {
 	$sql="CREATE TABLE IF NOT EXISTS s_lieux_incidents (
 	id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 	lieu VARCHAR( 255 ) NOT NULL
-	);";
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$creation=mysql_query($sql);
 	if($creation) {
 		$tab_lieu=array("Classe","Couloir","Cour","Réfectoire","Autre");
@@ -243,7 +233,7 @@ login VARCHAR( 50 ) NOT NULL ,
 statut VARCHAR( 50 ) NOT NULL ,
 qualite VARCHAR( 50 ) NOT NULL,
 avertie ENUM('N','O') NOT NULL DEFAULT 'N'
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $creation=mysql_query($sql);
 
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_protagonistes LIKE 'avertie'"));
@@ -258,7 +248,7 @@ description TEXT NOT NULL ,
 nature VARCHAR( 255 ) NOT NULL ,
 effectuee ENUM( 'N', 'O' ) NOT NULL ,
 id_incident INT( 11 ) NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $creation=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS s_communication (
@@ -267,18 +257,8 @@ id_incident INT( 11 ) NOT NULL ,
 login VARCHAR( 50 ) NOT NULL ,
 nature VARCHAR( 255 ) NOT NULL ,
 description TEXT NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $creation=mysql_query($sql);
-
-/*
-$sql="CREATE TABLE IF NOT EXISTS s_comm_incident (
-id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-id_incident INT( 11 ) NOT NULL ,
-login VARCHAR( 50 ) NOT NULL ,
-avertie ENUM('N','O') NOT NULL
-);";
-$creation=mysql_query($sql);
-*/
 
 $sql="CREATE TABLE IF NOT EXISTS s_travail (
 id_travail INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -286,7 +266,7 @@ id_sanction INT( 11 ) NOT NULL ,
 date_retour DATE NOT NULL ,
 heure_retour VARCHAR( 20 ) NOT NULL ,
 travail TEXT NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $creation=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS s_retenues (
@@ -297,7 +277,7 @@ heure_debut VARCHAR( 20 ) NOT NULL ,
 duree FLOAT NOT NULL ,
 travail TEXT NOT NULL ,
 lieu VARCHAR( 255 ) NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $creation=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS s_exclusions (
@@ -309,10 +289,10 @@ date_fin DATE NOT NULL ,
 heure_fin VARCHAR( 20 ) NOT NULL,
 travail TEXT NOT NULL ,
 lieu VARCHAR( 255 ) NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $creation=mysql_query($sql);
 
-$sql="CREATE TABLE IF NOT EXISTS s_alerte_mail (id int(11) unsigned NOT NULL auto_increment, id_classe smallint(6) unsigned NOT NULL, destinataire varchar(50) NOT NULL default '', PRIMARY KEY (id), INDEX (id_classe,destinataire));";
+$sql="CREATE TABLE IF NOT EXISTS s_alerte_mail (id int(11) unsigned NOT NULL auto_increment, id_classe smallint(6) unsigned NOT NULL, destinataire varchar(50) NOT NULL default '', PRIMARY KEY (id), INDEX (id_classe,destinataire)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $creation=mysql_query($sql);
 
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_incidents LIKE 'message_id';"));

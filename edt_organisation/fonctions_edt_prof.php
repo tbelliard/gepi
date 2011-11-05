@@ -2,7 +2,6 @@
 /**
  * Ensemble des fonctions qui permettent d'afficher les emplois du temps des profs
  *
- * @version $Id: fonctions_edt_prof.php $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
@@ -520,6 +519,7 @@ if ($type_edt=="prof") {
 			print_r($rep_creneau);
 			echo "</pre>";
 		}
+
 
         // ========================================== créneau vide
         if ($nb_rows == 0) {

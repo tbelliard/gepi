@@ -1,7 +1,6 @@
 <?php
 
 /*
-* $Id: index.php 7800 2011-08-17 08:38:57Z dblanqui $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

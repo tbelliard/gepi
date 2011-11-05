@@ -1,7 +1,6 @@
 <?php
 @set_time_limit(0);
 /*
-* $Id: prof_disc_classes.php 8572 2011-10-29 12:48:54Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -135,36 +134,28 @@ if (!isset($_POST["action"])) {
 		echo "<br />\n";
 		echo "<p><em>On remplit les tables 'matieres', 'groupes', 'j_groupes_matieres', 'j_groupes_professeurs', 'j_groupes_classes' et 'j_eleves_groupes'&nbsp;:</em> ";
 
-		//$go = true;
 		$i = 0;
 		// Compteur d'erreurs
 		$error = 0;
 		// Compteur d'enregistrement
 		$total = 0;
-		//while ($go) {
 		while ($lig=mysql_fetch_object($res_tempo4)) {
-			/*
-			$reg_prof = $_POST["ligne".$i."_prof"];
-			$reg_matiere = $_POST["ligne".$i."_matiere"];
-			$reg_classes = $_POST["ligne".$i."_classes"];
-			$reg_type = $_POST["ligne".$i."_type"];
-			*/
 			$reg_prof = $lig->col1;
 			$reg_matiere = $lig->col2;
 			$reg_classes = $lig->col3;
 			$reg_type = $lig->col4;
 
 			// On nettoie et on vérifie :
-			$reg_prof = preg_replace("/[^A-Za-z0-9._]/","",trim(strtoupper($reg_prof)));
-			if (strlen($reg_prof) > 50) $reg_prof = substr($reg_prof, 0, 50);
+			$reg_prof = preg_replace("/[^A-Za-z0-9._]/","",trim(my_strtoupper($reg_prof)));
+			if (mb_strlen($reg_prof) > 50) $reg_prof = mb_substr($reg_prof, 0, 50);
 
-			$reg_matiere = preg_replace("/[^A-Za-z0-9.\-]/","",trim(strtoupper($reg_matiere)));
-			if (strlen($reg_matiere) > 50) $reg_matiere = substr($reg_matiere, 0, 50);
+			$reg_matiere = preg_replace("/[^A-Za-z0-9.\-]/","",trim(my_strtoupper($reg_matiere)));
+			if (mb_strlen($reg_matiere) > 50) $reg_matiere = mb_substr($reg_matiere, 0, 50);
 
 			$reg_classes = preg_replace("/[^A-Za-z0-9.\-!]/","",trim($reg_classes));
-			if (strlen($reg_classes) > 2000) $reg_classes = substr($reg_classes, 0, 2000); // C'est juste pour éviter une tentative d'overflow...
+			if (mb_strlen($reg_classes) > 2000) $reg_classes = mb_substr($reg_classes, 0, 2000); // C'est juste pour éviter une tentative d'overflow...
 
-			$reg_type = preg_replace("/[^A-Za-z]/","",trim(strtoupper($reg_type)));
+			$reg_type = preg_replace("/[^A-Za-z]/","",trim(my_strtoupper($reg_type)));
 			if ($reg_type != "CG" AND $reg_type != "OPT") $reg_type = "";
 
 
@@ -210,19 +201,27 @@ if (!isset($_POST["action"])) {
 
 						$new_group = mysql_query("INSERT INTO groupes SET name = '" . $reg_matiere . "', description = '" . html_entity_decode($reg_matiere_complet) . "'");
 						$group_id = mysql_insert_id();
-						if (!$new_group) echo mysql_error();
+						if (!$new_group) {
+							echo "<span style='color:red'>".mysql_error().'<span><br />';
+						}
 						// Le groupe est créé. On associe la matière.
 						$res = mysql_query("INSERT INTO j_groupes_matieres SET id_groupe = '".$group_id."', id_matiere = '" . $reg_matiere . "'");
-						if (!$res) echo mysql_error();
+						if (!$res) {
+							echo "<span style='color:red'>".mysql_error().'<span><br />';
+						}
 						// On associe le prof
 						$res = mysql_query("INSERT INTO j_groupes_professeurs SET id_groupe = '" . $group_id . "', login = '" . $reg_prof . "'");
-						if (!$res) echo mysql_error();
+						if (!$res) {
+							echo "<span style='color:red'>".mysql_error().'<span><br />';
+						}
 						// On associe la matière au prof
 						$res = mysql_query("INSERT INTO j_professeurs_matieres SET id_professeur = '" . $reg_prof . "', id_matiere = '" . $reg_matiere . "'");
 						// On associe le groupe aux classes (ou à la classe)
 						foreach ($valid_classes as $classe_id) {
 							$res = mysql_query("INSERT INTO j_groupes_classes SET id_groupe = '" . $group_id . "', id_classe = '" . $classe_id ."'");
-							if (!$res) echo mysql_error();
+							if (!$res) {
+								echo "<span style='color:red'>".mysql_error().'<span><br />';
+							}
 						}
 
 						// Si le type est à "CG", on associe les élèves de la classe au groupe
@@ -236,7 +235,9 @@ if (!isset($_POST["action"])) {
 								$current_eleve = mysql_result($get_eleves, $e, "login");
 								for ($p=1;$p<=$periods;$p++) {
 									$res = mysql_query("INSERT INTO j_eleves_groupes SET login = '" . $current_eleve . "', id_groupe = '" . $group_id . "', periode = '" . $p . "'");
-									if (!$res) echo mysql_error();
+									if (!$res) {
+										echo "<span style='color:red'>".mysql_error().'<span><br />';
+									}
 								}
 							}
 						}
@@ -252,11 +253,10 @@ if (!isset($_POST["action"])) {
 			} // -> Fin du test où le prof existe
 
 			$i++;
-			//if (!isset($_POST['ligne'.$i.'_prof'])) {$go = false;}
 		}
 
 		echo "<p>Opération terminée.</p>\n";
-		if ($error > 0) echo "<p><font color='red'>Il y a eu " . $error . " erreurs.</font></p>\n";
+		if ($error > 0) echo "<p style='color:red'>Il y a eu " . $error . " erreurs.</p>\n";
 		if ($total > 0) echo "<p>" . $total . " groupes ont été enregistrés.</p>\n";
 
 		echo "<p><a href='index.php#prof_disc_classes'>Revenir à la page précédente</a></p>\n";
@@ -274,7 +274,7 @@ if (!isset($_POST["action"])) {
 
 		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
 		// autant forcer l'utilisateur à être rigoureux
-		if(strtolower($csv_file['name']) == "g_prof_disc_classes.csv") {
+		if(my_strtolower($csv_file['name']) == "g_prof_disc_classes.csv") {
 
 			// Le nom est ok. On ouvre le fichier
 			$fp=fopen($csv_file['tmp_name'],"r");
@@ -312,19 +312,17 @@ if (!isset($_POST["action"])) {
 
 
 						// On nettoie et on vérifie :
-						$tabligne[0] = preg_replace("/[^A-Za-z0-9._]/","",trim(strtoupper($tabligne[0])));
-						if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
+						$tabligne[0] = preg_replace("/[^A-Za-z0-9._]/","",trim(my_strtoupper($tabligne[0])));
+						if (mb_strlen($tabligne[0]) > 50) $tabligne[0] = mb_substr($tabligne[0], 0, 50);
 			
-						$tabligne[1] = preg_replace("/[^A-Za-z0-9.\-]/","",trim(strtoupper($tabligne[1])));
-						if (strlen($tabligne[1]) > 50) $tabligne[1] = substr($tabligne[1], 0, 50);
+						$tabligne[1] = preg_replace("/[^A-Za-z0-9.\-]/","",trim(my_strtoupper($tabligne[1])));
+						if (mb_strlen($tabligne[1]) > 50) $tabligne[1] = mb_substr($tabligne[1], 0, 50);
 			
 						$tabligne[2] = preg_replace("/[^A-Za-z0-9.\-!]/","",trim($tabligne[2]));
-						if (strlen($tabligne[2]) > 2000) $tabligne[2] = substr($tabligne[2], 0, 2000);
+						if (mb_strlen($tabligne[2]) > 2000) $tabligne[2] = mb_substr($tabligne[2], 0, 2000);
 			
-						$tabligne[3] = preg_replace("/[^A-Za-z]/","",trim(strtoupper($tabligne[3])));
+						$tabligne[3] = preg_replace("/[^A-Za-z]/","",trim(my_strtoupper($tabligne[3])));
 						if ($tabligne[3] != "CG" AND $tabligne[3] != "OPT") $tabligne[3] = "";
-
-
 
 						$data_tab[$k] = array();
 
@@ -360,10 +358,10 @@ if (!isset($_POST["action"])) {
 					$alt=$alt*(-1);
 					echo "<tr class='lig$alt'>\n";
 					echo "<td>\n";
-					$sql="INSERT INTO tempo4 SET col1='".addslashes($data_tab[$i]["prof"])."',
-					col2='".addslashes($data_tab[$i]["matiere"])."',
-					col3='".addslashes($data_tab[$i]["classes"])."',
-					col4='".addslashes($data_tab[$i]["type"])."';";
+					$sql="INSERT INTO tempo4 SET col1='".mysql_real_escape_string($data_tab[$i]["prof"])."',
+					col2='".mysql_real_escape_string($data_tab[$i]["matiere"])."',
+					col3='".mysql_real_escape_string($data_tab[$i]["classes"])."',
+					col4='".mysql_real_escape_string($data_tab[$i]["type"])."';";
 					$insert=mysql_query($sql);
 					if(!$insert) {
 						echo "<span style='color:red'>";
@@ -374,19 +372,15 @@ if (!isset($_POST["action"])) {
 					else {
 						echo $data_tab[$i]["prof"];
 					}
-					//echo "<input type='hidden' name='ligne".$i."_prof' value='" . $data_tab[$i]["prof"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["matiere"];
-					//echo "<input type='hidden' name='ligne".$i."_matiere' value='" . $data_tab[$i]["matiere"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["classes"];
-					//echo "<input type='hidden' name='ligne".$i."_classes' value='" . $data_tab[$i]["classes"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["type"];
-					//echo "<input type='hidden' name='ligne".$i."_type' value='" . $data_tab[$i]["type"] . "' />\n";
 					echo "</td>\n";
 					echo "</tr>\n";
 				}

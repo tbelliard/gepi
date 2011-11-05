@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: changement_eleve_classe.php 7741 2011-08-13 22:32:15Z regis $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -45,9 +44,9 @@ if (!checkAccess()) {
 
 
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
-if((strlen(my_ereg_replace("[0-9]","",$id_classe))!=0)||($id_classe=='')) {unset($id_classe);}
+if((mb_strlen(my_ereg_replace("[0-9]","",$id_classe))!=0)||($id_classe=='')) {unset($id_classe);}
 $periode_num=isset($_POST['periode_num']) ? $_POST['periode_num'] : (isset($_GET['periode_num']) ? $_GET['periode_num'] : NULL);
-if((strlen(my_ereg_replace("[0-9]","",$periode_num))!=0)||($periode_num=='')) {unset($periode_num);}
+if((mb_strlen(my_ereg_replace("[0-9]","",$periode_num))!=0)||($periode_num=='')) {unset($periode_num);}
 $login_eleve=isset($_POST['login_eleve']) ? $_POST['login_eleve'] : (isset($_GET['login_eleve']) ? $_GET['login_eleve'] : NULL);
 
 //debug_var();
@@ -73,24 +72,24 @@ include "../lib/periodes.inc.php";
 $_SESSION['chemin_retour'] = $gepiPath."/classes/classes_const.php?id_classe=".$id_classe;
 
 $id_future_classe=isset($_POST['id_future_classe']) ? $_POST['id_future_classe'] : (isset($_GET['id_future_classe']) ? $_GET['id_future_classe'] : NULL);
-if((strlen(my_ereg_replace("[0-9]","",$id_future_classe))!=0)||($id_future_classe=='')) {unset($id_future_classe);}
+if((mb_strlen(my_ereg_replace("[0-9]","",$id_future_classe))!=0)||($id_future_classe=='')) {unset($id_future_classe);}
 
 $id_grp=isset($_POST['id_grp']) ? $_POST['id_grp'] : (isset($_GET['id_grp']) ? $_GET['id_grp'] : NULL);
-//if((strlen(my_ereg_replace("[0-9]","",$grp))!=0)||($grp=='')) {unset($grp);}
+//if((mb_strlen(my_ereg_replace("[0-9]","",$grp))!=0)||($grp=='')) {unset($grp);}
 if(!is_array($id_grp)) {unset($id_grp);}
 else {
 	for($i=0;$i<count($id_grp);$i++) {
-		if((strlen(my_ereg_replace("[0-9]","",$id_grp[$i]))!=0)||($id_grp[$i]=='')) {unset($id_grp);break;}
+		if((mb_strlen(my_ereg_replace("[0-9]","",$id_grp[$i]))!=0)||($id_grp[$i]=='')) {unset($id_grp);break;}
 	}
 }
 
 $id_grp_fut=isset($_POST['id_grp_fut']) ? $_POST['id_grp_fut'] : (isset($_GET['id_grp_fut']) ? $_GET['id_grp_fut'] : NULL);
-//if((strlen(my_ereg_replace("[0-9]","",$grp_fut))!=0)||($grp_fut=='')) {unset($grp_fut);}
+//if((mb_strlen(my_ereg_replace("[0-9]","",$grp_fut))!=0)||($grp_fut=='')) {unset($grp_fut);}
 if(!is_array($id_grp_fut)) {unset($id_grp_fut);}
 else {
 	for($i=0;$i<count($id_grp_fut);$i++) {
 		// $grp_fut[$i] peut être vide si on abandonne les notes de la matière...
-		if(strlen(my_ereg_replace("[0-9]","",$id_grp_fut[$i]))!=0) {unset($id_grp_fut);break;}
+		if(mb_strlen(my_ereg_replace("[0-9]","",$id_grp_fut[$i]))!=0) {unset($id_grp_fut);break;}
 	}
 }
 
@@ -150,7 +149,7 @@ if(mysql_num_rows($res_ele)==0) {
 }
 $lig_ele=mysql_fetch_object($res_ele);
 
-echo "<p>Vous souhaitez changer <b>".ucfirst(strtolower($lig_ele->prenom))." ".strtoupper($lig_ele->nom)."</b> de classe sur la période <b>".$nom_periode[$periode_num]."</b>";
+echo "<p>Vous souhaitez changer <b>".casse_mot($lig_ele->prenom,'majf2')." ".my_strtoupper($lig_ele->nom)."</b> de classe sur la période <b>".$nom_periode[$periode_num]."</b>";
 if($chgt_periode_sup=='y') {echo " et suivantes";}
 echo ".<br />\n";
 
@@ -308,7 +307,7 @@ else {
 				echo "<tr class='lig$alt'>\n";
 				echo "<td>\n";
 				echo "<input type='hidden' name='id_grp[$cpt]' value='".$group['id']."' />\n";
-				echo htmlentities($group['name'])." (<i>".htmlentities($group['matiere']['nom_complet'])."</i>)";
+				echo htmlspecialchars($group['name'])." (<i>".htmlspecialchars($group['matiere']['nom_complet'])."</i>)";
 				echo " (<i style='color:green;'>$lig_grp->id</i>)";
 				echo "</td>\n";
 
@@ -320,7 +319,7 @@ else {
 					$chaine_profs="";
 					foreach($tab_group_fut[$j]["profs"]["users"] as $tab_prof) {
 						if($chaine_profs!="") {$chaine_profs.=", ";}
-						$chaine_profs.=ucfirst(strtolower($tab_prof['nom']))." ".ucfirst(substr($tab_prof['prenom'],0,1));
+						$chaine_profs.=casse_mot($tab_prof['nom'],'majf2')." ".my_strtoupper(mb_substr($tab_prof['prenom'],0,1));
 					}
 
 					echo "<option value='".$tab_group_fut[$j]['id']."'";
@@ -460,7 +459,7 @@ Evitez les 'fantaisies';o).</p>
 
 		for($i=0;$i<count($id_grp);$i++) {
 			$group=get_group($id_grp[$i]);
-			echo "<p><b>".htmlentities($group['name'])." (<i>".htmlentities($group['matiere']['nom_complet'])." en ".$group["classlist_string"]."</i>)"."</b><br />\n";
+			echo "<p><b>".htmlspecialchars($group['name'])." (<i>".htmlspecialchars($group['matiere']['nom_complet'])." en ".$group["classlist_string"]."</i>)"."</b><br />\n";
 
             affiche_debug("\$id_grp[$i]=$id_grp[$i]<br />");
             affiche_debug("\$id_grp_fut[$i]=$id_grp_fut[$i]<br />");
@@ -527,7 +526,7 @@ Evitez les 'fantaisies';o).</p>
 							}
 							else {
 								$group_fut=get_group($id_grp_fut[$i]);
-								echo "Transfert des notes/devoirs vers ".htmlentities($group_fut['name'])." (<i>".htmlentities($group_fut['matiere']['nom_complet'])." en ".$group_fut["classlist_string"]."</i>)"."<br />";
+								echo "Transfert des notes/devoirs vers ".htmlspecialchars($group_fut['name'])." (<i>".htmlspecialchars($group_fut['matiere']['nom_complet'])." en ".$group_fut["classlist_string"]."</i>)"."<br />";
 	
 								// Recherche du carnet de notes du nouveau groupe
 								$sql="SELECT * FROM cn_cahier_notes WHERE id_groupe='".$id_grp_fut[$i]."' AND periode='$current_periode_num'";

@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: gestion_base_test.php 7953 2011-08-24 14:23:50Z regis $
  *
  * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -114,7 +113,7 @@ if (isset($action) and ($action == 'protect'))  {
         $msg = "Problème : l'identifiant est vide.";
         $error = 1;
     } else {
-        $_login = strtolower(unslashes($_POST['login_backup']));
+        $_login = my_strtolower(unslashes($_POST['login_backup']));
         if(is_array($user)) {
             foreach($user as $key => $value) {
                 if($_login == $key) {
@@ -142,10 +141,6 @@ if (isset($action) and ($action == 'del_protect'))  {
    if ((@unlink("../backup/".$dirname."/.htaccess")) and (@unlink("../backup/".$dirname."/.htpasswd"))) {
        $msg = "Les fichiers .htaccess et .htpasswd ont été supprimés. Le répertoire /backup n'est plus protégé\n";
    }
-}
-
-function charset_to_iso($string, $method = "mbstring") {
-    	return $string;
 }
 
 function deplacer_fichier_upload($source, $dest) {
@@ -231,10 +226,10 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
     while ($t = mysql_fetch_array($result)) {
 	if ($t[0] == "log" ||
 	    $t[0] == "tentatives_intrusion" ||
-	    substr($t[0], 0,4) == "temp" ||
-	    substr($t[0], 0,3) == "tmp" ||
-	    substr($t[0], 0,4) == "a_tm" ||
-	    substr($t[0], 0,15) == "modele_bulletin") {
+	    mb_substr($t[0], 0,4) == "temp" ||
+	    mb_substr($t[0], 0,3) == "tmp" ||
+	    mb_substr($t[0], 0,4) == "a_tm" ||
+	    mb_substr($t[0], 0,15) == "modele_bulletin") {
 	    
 	    continue;
 	}
@@ -305,10 +300,10 @@ function extractMySqlDump($dumpFile,$duree,$force) {
 	    $query = trim($query);
 	    //=============================================
 	    // MODIF: boireaus 20080218
-	    //if (substr($query,-1)==";") {
-	    if((substr($query,-1)==";")&&(substr($query,0,3)!="-- ")) {
+	    //if (mb_substr($query,-1)==";") {
+	    if((mb_substr($query,-1)==";")&&(mb_substr($query,0,3)!="-- ")) {
 	    //=============================================
-		    $query = "REPLACE" . substr($query,6, strlen($query));
+		    $query = "REPLACE" . mb_substr($query,6, mb_strlen($query));
 		    $reg = mysql_query($query);
 		    echo "<p>$query</p>\n";
 		    if (!$reg) {
@@ -333,13 +328,6 @@ function debug_pb($ligne) {
 
 function get_def($db, $table) {
     $def="\n\n#\n# table $table\n#\n";
-    //$def .="DROP TABLE IF EXISTS `$table`;\n";
-    // requete de creation de la table
-//    $query = "SHOW CREATE TABLE $table";
-//    $resCreate = mysql_query($query);
-//    $row = mysql_fetch_array($resCreate);
-//    $schema = $row[1].";";
-//    $def .="$schema\n";
     return $def;
 }
 

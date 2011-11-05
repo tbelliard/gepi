@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: dedoublonnage_adresses.php 6581 2011-03-02 16:50:37Z crob $
  *
  * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

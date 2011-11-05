@@ -32,8 +32,9 @@ Modifications:
 */
 
 if (!defined('FPDF_VERSION')) {
-	require_once('fpdf.php');
+	require_once(dirname(__FILE__).'/fpdf.php');
 }
+
 require_once("class.string_tags.php");
 
 if (!defined('PARAGRAPH_STRING')) define('PARAGRAPH_STRING', '~~~');
@@ -112,7 +113,7 @@ var $wt_TempData; //some temporary info
 		$style = & $this->TagStyle[$tag];
 
 		if (isset($style)){
-            $this->SetFont($style['family'], $style['style'], $style['size']);
+            $this->SetFont('DejaVu', $style['style'], $style['size']);
             //this is textcolor in FPDF format
             if (isset($style['textcolor_fpdf'])) {
             	$this->TextColor = $style['textcolor_fpdf'];

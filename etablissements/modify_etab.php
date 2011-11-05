@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id: modify_etab.php 5912 2010-11-20 10:37:24Z crob $
+* $Id$
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

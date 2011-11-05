@@ -2,7 +2,6 @@
 /**
  * Fonctions de évaluation cumule
  * 
-* $Id: cc_lib.php 7730 2011-08-13 15:26:33Z regis $
 *
 * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * 

@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id: visu_traitement.php 7768 2011-08-15 20:39:18Z jjacquard $
  *
  * Copyright 2010 Josselin Jacquard
  *
@@ -114,14 +113,16 @@ echo '</td></tr>';
 echo '<tr><TD>';
 echo 'Créé par : ';
 echo '</TD><TD>';
-echo $traitement->getUtilisateurProfessionnel()->getCivilite().' '.$traitement->getUtilisateurProfessionnel()->getNom().' '.substr($traitement->getUtilisateurProfessionnel()->getPrenom(), 0, 1).'.';
+if ($traitement->getUtilisateurProfessionnel() != null) {
+	echo $traitement->getUtilisateurProfessionnel()->getCivilite().' '.$traitement->getUtilisateurProfessionnel()->getNom().' '.mb_substr($traitement->getUtilisateurProfessionnel()->getPrenom(), 0, 1).'.';
+}
 echo '</TD></tr>';
 
 if ($traitement->getModifieParUtilisateurId() != null && $traitement->getUtilisateurId() != $traitement->getModifieParUtilisateurId()) {
     echo '<tr><TD>';
     echo 'Modifié par : ';
     echo '</TD><TD>';
-    echo $traitement->getModifieParUtilisateur()->getCivilite().' '.$traitement->getModifieParUtilisateur()->getNom().' '.substr($traitement->getModifieParUtilisateur()->getPrenom(), 0, 1).'.';
+    echo $traitement->getModifieParUtilisateur()->getCivilite().' '.$traitement->getModifieParUtilisateur()->getNom().' '.mb_substr($traitement->getModifieParUtilisateur()->getPrenom(), 0, 1).'.';
     echo '</TD></tr>';
 }
 

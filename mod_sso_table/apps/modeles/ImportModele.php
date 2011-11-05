@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: ImportModele.php 7744 2011-08-14 13:07:15Z dblanqui $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -267,7 +266,7 @@ class ImportModele {
 					`tuteur2` varchar(50) COMMENT 'uid tuteur2',
 					PRIMARY KEY  (`id`)
 					) ENGINE=MyISAM AUTO_INCREMENT=4
-					DEFAULT CHARSET=latin1
+					CHARACTER SET utf8 COLLATE utf8_general_ci
 					COMMENT='Liste des utilisateurs présents dans l''ENT';";
     $this->res = mysql_query($this->req) or die(mysql_error());
   }

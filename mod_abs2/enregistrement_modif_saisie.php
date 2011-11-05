@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id: enregistrement_modif_saisie.php 7437 2011-07-18 19:20:27Z dblanqui $
  *
  * Copyright 2010 Josselin Jacquard
  *
@@ -212,13 +211,14 @@ if ($saisie->validate()) {
     }
 } else {
     $no_br = true;
-    foreach ($saisie->getValidationFailures() as $erreurs) {
-	$message_enregistrement .= $erreurs;
-	if ($no_br) {
-	    $no_br = false;
-	} else {
-	    $message_enregistrement .= '<br/>';
-	}
+    $error_message = "\n";
+    foreach ($saisie->getValidationFailures() as $failure) {
+    	$message_enregistrement .= $failure->getMessage();
+    	if ($no_br) {
+    	    $no_br = false;
+    	} else {
+    	    $message_enregistrement .= '<br/>';
+    	}
     }
     $saisie->reload();
 }

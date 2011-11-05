@@ -6,7 +6,7 @@
 * Date:     2005/12/08                                                      *
 * Author:   Bintintan Andrei  -- klodoma@ar-sd.net                          *
 *                                                                           *
-* $Id: class.string_tags.php 7774 2011-08-15 22:50:16Z regis $
+* $Id$
 *                                                                           *
 *                                                                           *
 * License:  Free for non-commercial use	                                    *

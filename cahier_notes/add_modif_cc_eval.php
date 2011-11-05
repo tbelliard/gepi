@@ -2,7 +2,6 @@
 /**
  * Ajouter, modifier une évaluation cumule
  * 
- * $Id: add_modif_cc_eval.php 7742 2011-08-13 23:37:55Z regis $
  * 
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -186,9 +185,9 @@ if (isset($_POST['ok'])) {
 
 		if ($_POST['display_date']) {
 			if (my_ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date'])) {
-				$annee=substr($_POST['display_date'],6,4);
-				$mois=substr($_POST['display_date'],3,2);
-				$jour=substr($_POST['display_date'],0,2);
+				$annee=mb_substr($_POST['display_date'],6,4);
+				$mois=mb_substr($_POST['display_date'],3,2);
+				$jour=mb_substr($_POST['display_date'],0,2);
 			} else {
 				$annee=strftime("%Y");
 				$mois=strftime("%m");

@@ -2,7 +2,7 @@
 /**
  * Plan de classe
  * 
- * $Id: plan_de_classe.php 8545 2011-10-26 09:57:39Z crob $
+ * $Id$
  *
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  * 

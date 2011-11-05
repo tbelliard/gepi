@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: Class.Filter.php 7799 2011-08-17 08:38:10Z dblanqui $
  *
  * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Didier Blanqui
  *

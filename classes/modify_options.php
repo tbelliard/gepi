@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: modify_options.php 6604 2011-03-03 13:46:55Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -234,7 +233,7 @@ $nombre_lignes = mysql_num_rows($appel_donnees_eleves);
 
             echo "<td>";
 
-            $elements[$k] = substr($elements[$k], 0, -1);
+            $elements[$k] = mb_substr($elements[$k], 0, -1);
 
             echo "<a href=\"javascript:CochePeriode($elements[$k])\">Tout</a> <br/> <a href=\"javascript:DecochePeriode($elements[$k])\">Aucun</a></td>";
 
@@ -364,7 +363,7 @@ while($i < $nombre_lignes) {
 
     }
 
-    $elementlist = substr($elementlist, 0, -1);
+    $elementlist = mb_substr($elementlist, 0, -1);
 
     echo "<td><a href=\"javascript:CochePeriode($elementlist)\">Tout</a> // <a href=\"javascript:DecochePeriode($elementlist)\">Aucun</a></td>";
 

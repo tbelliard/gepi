@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * @version $Id: serveur_infos.class.php 7857 2011-08-21 12:50:45Z jjocal $
+ * @version $Id$
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
@@ -51,10 +51,10 @@ class infos{
 	function versionPhp(){
 		$test = phpversion();
 		// on teste le premier chiffre
-		$version = substr($test, 0, 1);
+		$version = mb_substr($test, 0, 1);
 		if ($version == 5) {
 			$retour = '<span style="color: green;">'.phpversion().' (Gepi nécessite php 5.2.x minimum)</span>';
-		}elseif($version == 4 AND substr($test, 2, 2) >= 3){
+		}elseif($version == 4 AND mb_substr($test, 2, 2) >= 3){
 			$retour = '<span style="color: green;">'.phpversion().'(Attention, Gepi ne fonctionne pas avec cette version, elle est trop ancienne)</span>';
 		}else{
 			$retour = '<span style="color: red;">'.phpversion().'(version ancienne !)</span>';
@@ -72,7 +72,7 @@ class infos{
 	function versionMysql(){
 		$test = mysql_get_server_info();
 		// On regarde si c'est une version 4 ou 5
-		$version = substr($test, 0, 1);
+		$version = mb_substr($test, 0, 1);
 		if ($version == 4 OR $version == 5) {
 			$retour = '<span style="color: green;">'.mysql_get_server_info().'</span>';
 		}else{

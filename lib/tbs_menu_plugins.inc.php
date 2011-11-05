@@ -2,7 +2,6 @@
 /**
  * Construction de la barre de menu des gabarits
  *
- * @version $Id: tbs_menu_plugins.inc.php 7995 2011-08-26 10:06:02Z mleygnac $
  * @copyright 2008-2011
  * @license GNU/GPL v2
  * @package General
@@ -58,8 +57,8 @@ function tbs_menu_plugins()
 						if ($autorise)
 							{
 							$nb_items++;
-							$tmp_sous_menu_plugins[]=array('lien'=>"/mod_plugins/".$plugin['nom']."/".$menu_script,'title'=>utf8_decode($menu_script->attributes()->description),'texte'=>utf8_decode($menu_script->attributes()->titre));
-							$tmp_sous_menu_plugins_solo=array('lien'=>"/mod_plugins/".$plugin['nom']."/".$menu_script,'title'=>utf8_decode($menu_script->attributes()->description),'texte'=>$plugin['description']);
+							$tmp_sous_menu_plugins[]=array('lien'=>"/mod_plugins/".$plugin['nom']."/".$menu_script,'title'=>$menu_script->attributes()->description,'texte'=>$menu_script->attributes()->titre);
+							$tmp_sous_menu_plugins_solo=array('lien'=>"/mod_plugins/".$plugin['nom']."/".$menu_script,'title'=>$menu_script->attributes()->description,'texte'=>$plugin['description']);
 							}
 						}
 					}

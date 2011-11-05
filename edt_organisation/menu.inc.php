@@ -3,7 +3,6 @@
 /**
  * EdT Gepi : le menu pour les includes require_once().
  *
- * @version $Id: menu.inc.php 5396 2010-09-21 21:56:12Z adminpaulbert $
  *
  * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

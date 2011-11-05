@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * $Id: function_abs.php 6468 2011-02-06 17:21:41Z crob $
+ * $Id$
  *
  *
  */

@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: change_pwd.php 8387 2011-09-29 15:10:32Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -165,7 +164,7 @@ if (strtoupper($user_login) != strtoupper($_SESSION['login'])) {
     echo "<p>Il est fortement conseillé de ne pas choisir un mot de passe trop simple.
     <br /><br /><b>Attention : le mot de passe doit comporter ".getSettingValue("longmin_pwd")." caractères minimum. ";
     if ($flag == 1)
-        echo "Il doit comporter au moins une lettre, au moins un chiffre et au moins un caractère spécial parmi&nbsp;: ".$char_spec;
+        echo "Il doit comporter au moins une lettre, au moins un chiffre et au moins un caractère spécial (#, *,...)";
     else
         echo "Il doit comporter au moins une lettre et au moins un chiffre.";
     echo "</b></p>\n";

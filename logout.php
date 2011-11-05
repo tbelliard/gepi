@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: logout.php 7960 2011-08-25 09:41:05Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

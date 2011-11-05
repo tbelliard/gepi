@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: tmp_test.php 2199 2008-07-26 14:01:11Z crob $
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -48,7 +47,6 @@ if($_SESSION['statut']!='administrateur') {
     die();
 }
 
-$revision_svn='$Id: tmp_test.php 2199 2008-07-26 14:01:11Z crob $';
 
 //**************** EN-TETE *********************
 $titre_page = "Page de test";

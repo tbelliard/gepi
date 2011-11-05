@@ -3,7 +3,6 @@
 /**
  * Module EDT
  *
- * @version $Id: $
  *
  * Copyright 2011 Pascal Fautrero
  *

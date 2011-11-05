@@ -1,5 +1,5 @@
 /*
-* $Id: cadre_info.js 1338 2008-01-12 15:17:04Z crob $
+* $Id$
 */
 IE4 = (document.all) ? 1 : 0;
 NS4 = (document.layers) ? 1 : 0;

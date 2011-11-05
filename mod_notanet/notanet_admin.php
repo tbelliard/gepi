@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: notanet_admin.php 5951 2010-11-22 17:05:48Z crob $
+ * $Id$
  *
  * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

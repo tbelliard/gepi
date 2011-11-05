@@ -3,7 +3,6 @@
 /**
  *
  *
- * @version $Id: edt_liste_eleves.php 2147 2008-07-23 09:01:04Z tbelliard $
  *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
@@ -23,6 +22,25 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
+/**
+ * Fonction qui renvoie le login d'un élève en échange de son ele_id
+ *
+ * @param int $id_eleve ele_id de l'élève
+ * @return string login de l'élève
+ */
+function get_login_eleve($id_eleve){
+
+	$sql = "SELECT login FROM eleves WHERE id_eleve = '".$id_eleve."'";
+	$query = mysql_query($sql) OR trigger_error('Impossible de récupérer le login de cet élève.', E_USER_ERROR);
+	if ($query) {
+		$retour = mysql_result($query, 0,"login");
+	}else{
+		$retour = 'erreur';
+	}
+	return $retour;
+
+}
 
 // ========== Initialisation =============
 

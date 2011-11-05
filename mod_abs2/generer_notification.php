@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id: generer_notification.php 7238 2011-06-17 18:39:21Z jjacquard $
  *
  * Copyright 2010 Josselin Jacquard
  *

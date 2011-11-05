@@ -1,5 +1,5 @@
 <?php
-	/* $Id: fb_appreciation.inc.php 3181 2009-06-03 09:31:02Z crob $ */
+	/* $Id$ */
 
 	//=====================
 	// on va chercher les appréciations si besoin

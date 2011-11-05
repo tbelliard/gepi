@@ -2,7 +2,7 @@
 
 /**
  *
- * @version $Id: absences.php 6281 2011-01-04 17:26:47Z crob $
+ * @version $Id$
  *
  * Fichier destiné à gérer les accès responsables et élèves du module absences
  *
@@ -45,11 +45,11 @@ if (!checkAccess()) {
 }
 
 //On vérifie si le module est activé
-if (substr(getSettingValue("active_module_absence"),0,1)!='y') {
+if (mb_substr(getSettingValue("active_module_absence"),0,1)!='y') {
 	header("Location: ../accueil.php");
     die("Le module n'est pas activé.");
 }
-elseif (substr(getSettingValue("active_absences_parents"),0,1)!='y'){
+elseif (mb_substr(getSettingValue("active_absences_parents"),0,1)!='y'){
 	// On vérifie aussi que l'accès parents est bien autorisé
 	header("Location: ../accueil.php");
 	die("Le module n'est pas activé.");

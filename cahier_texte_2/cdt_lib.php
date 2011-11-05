@@ -1,6 +1,5 @@
 <?php
 /*
-* @version: $Id: cdt_lib.php 7926 2011-08-23 16:24:17Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
 *
@@ -20,8 +19,6 @@
 * along with GEPI; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-
-
 
 	function html_entete($titre='Cahier de textes',$n_arbo=1,$avec_init_php='n',$chaine_login_prof="") {
 		$entete="";
@@ -503,7 +500,8 @@ require_once("'.$pref_arbo.'/entete.php");
 					chemin VARCHAR(255) NOT NULL DEFAULT '',
 					date1 DATETIME NOT NULL default '0000-00-00 00:00:00',
 					date2 DATETIME NOT NULL default '0000-00-00 00:00:00',
-					PRIMARY KEY (id));";
+					PRIMARY KEY (id)
+					) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$create_table=mysql_query($sql);
 			if(!$create_table) {
 				echo "<p style='color:red'>Erreur lors de la création de la table 'acces_cdt':<br />$sql</p>\n";
@@ -513,7 +511,8 @@ require_once("'.$pref_arbo.'/entete.php");
 				$sql="CREATE TABLE IF NOT EXISTS acces_cdt_groupes (id INT(11) NOT NULL auto_increment,
 						id_acces INT(11) NOT NULL,
 						id_groupe INT(11) NOT NULL,
-						PRIMARY KEY (id));";
+						PRIMARY KEY (id)
+						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 				$create_table=mysql_query($sql);
 				if(!$create_table) {
 					echo "<p style='color:red'>Erreur lors de la création de la table 'acces_cdt_groupes':<br />$sql</p>\n";

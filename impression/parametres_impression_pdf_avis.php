@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: parametres_impression_pdf_avis.php 8060 2011-08-30 21:58:08Z jjacquard $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
 *
@@ -35,7 +34,6 @@ require_once("../lib/initialisations.inc.php");
 if (!defined('FPDF_VERSION')) {
 	require_once('../fpdf/fpdf.php');
 }
-require('../fpdf/ex_fpdf.php');
 
 define('FPDF_FONTPATH','../fpdf/font/');
 define('LargeurPage','210');

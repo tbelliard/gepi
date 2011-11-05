@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id: generer_csv.php 7257 2011-06-19 13:09:45Z crob $
+* $Id$
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -171,7 +171,7 @@ else {
 			}
 		}
 	}
-	elseif((preg_match("/[0-9]/",$extract_mode))&&(strlen(preg_replace("/[0-9]/","",$extract_mode))==0)) {
+	elseif((preg_match("/[0-9]/",$extract_mode))&&(mb_strlen(preg_replace("/[0-9]/","",$extract_mode))==0)) {
 		$type_brevet=$extract_mode;
 
 		/*

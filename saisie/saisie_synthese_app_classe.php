@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: saisie_synthese_app_classe.php 6727 2011-03-29 15:14:30Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

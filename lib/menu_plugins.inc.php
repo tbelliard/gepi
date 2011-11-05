@@ -1,7 +1,6 @@
 <?php
 /**
  * Construction du menu des plugins
- * @version $Id:  $
  * @license GNU/GPL 
  * @package General
  * @subpackage Affichage
@@ -54,8 +53,8 @@ function menu_plugins()
 						if ($autorise)
 							{
 							$nb_items++;
-							$tmp_sous_menu_plugins.="						<li><a href=\"".$gepiPath."/mod_plugins/".$plugin['nom']."/".$menu_script."\" title=\"".utf8_decode($menu_script->attributes()->description)."\">".utf8_decode($menu_script->attributes()->titre)."</a></li>\n";
-							$tmp_sous_menu_plugins_solo="						<li><a href=\"".$gepiPath."/mod_plugins/".$plugin['nom']."/".$menu_script."\" title=\"".utf8_decode($menu_script->attributes()->description)."\">".$plugin['description']."&nbsp;"."</a></li>\n";
+							$tmp_sous_menu_plugins.="						<li><a href=\"".$gepiPath."/mod_plugins/".$plugin['nom']."/".$menu_script."\" title=\"".$menu_script->attributes()->description."\">".$menu_script->attributes()->titre."</a></li>\n";
+							$tmp_sous_menu_plugins_solo="						<li><a href=\"".$gepiPath."/mod_plugins/".$plugin['nom']."/".$menu_script."\" title=\"".$menu_script->attributes()->description."\">".$plugin['description']."&nbsp;"."</a></li>\n";
 							}
 						}
 					}

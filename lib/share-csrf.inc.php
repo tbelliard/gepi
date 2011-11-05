@@ -2,7 +2,6 @@
 /** 
  * Fonctions de manipulation du gepi_alea contre les attaques CSRF
  * 
- * $Id: share-csrf.inc.php 7667 2011-08-09 20:02:54Z regis $
  * 
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * 
@@ -21,7 +20,7 @@
 function generate_token() {
     if (!isset($_SESSION["gepi_alea"])) {
 		$length = rand(35, 45);
-		for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
+		for($len=$length,$r='';mb_strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
 		// Virer le gepi_alea par la suite
 		$_SESSION["gepi_alea"] = $r;
 	

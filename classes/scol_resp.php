@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: scol_resp.php 5920 2010-11-20 21:04:58Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -40,29 +39,17 @@ if (!checkAccess()) {
     die();
 }
 
-/*
-CREATE TABLE `j_scol_classes` (
-`login` VARCHAR( 50 ) NOT NULL ,
-`id_classe` INT( 11 ) NOT NULL
-);
-*/
 
 $quitter_la_page=isset($_POST['quitter_la_page']) ? $_POST['quitter_la_page'] : (isset($_GET['quitter_la_page']) ? $_GET['quitter_la_page'] : NULL);
 
-//if (isset($_POST['action']) and ($_POST['action'] == "reg_scolresp")) {
 if (isset($_POST['action']) and ($_POST['action'] == "reg_scolresp")) {
 	check_token();
 
 	$msg = '';
 	$notok = false;
-	//$res_clas = mysql_query("SELECT * FROM classes ORDER BY classe");
-	//$nombre_lignes = mysql_num_rows($call_data);
-
+	
 	$scol_login=$_POST['scol_login'];
 	$tab_id_clas=$_POST['tab_id_clas'];
-
-	//while($lig_clas=mysql_fetch_object($res_clas)){
-		//$id_classe=$lig_clas->id;
 
 	for($j=0;$j<count($tab_id_clas);$j++){
 		for($i=0;$i<count($scol_login);$i++){

@@ -3,8 +3,6 @@
 /**
  * Fichier de traitement des demandes en ajax pour les aid
  *
- * @version $Id: aid_ajax_eleves.php 1469 2008-02-07 11:47:33Z jjocal $
- *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.

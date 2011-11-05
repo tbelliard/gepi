@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: savebackup.php 6370 2011-01-19 08:54:56Z tbelliard $
  *
  * Copyright 2001-2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

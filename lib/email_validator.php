@@ -12,10 +12,10 @@ function validEmail($email) {
 	$isValid = false;
     }
     else {
-	$domain = substr($email, $atIndex+1);
-	$local = substr($email, 0, $atIndex);
-	$localLen = strlen($local);
-	$domainLen = strlen($domain);
+	$domain = mb_substr($email, $atIndex+1);
+	$local = mb_substr($email, 0, $atIndex);
+	$localLen = mb_strlen($local);
+	$domainLen = mb_strlen($domain);
 	if ($localLen < 1 || $localLen > 64) {
 	    // local part length exceeded
 	    $isValid = false;

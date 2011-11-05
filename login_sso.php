@@ -1,6 +1,5 @@
 <?php
-/* $Id: login_sso.php 7827 2011-08-19 10:28:36Z dblanqui $
-*
+/*
 * Copyright 2001, 2008 Thomas Belliard
 *
 * This file is part of GEPI.

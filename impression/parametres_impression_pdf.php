@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: parametres_impression_pdf.php 8060 2011-08-30 21:58:08Z jjacquard $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
@@ -35,7 +34,6 @@ require_once("../lib/initialisations.inc.php");
 if (!defined('FPDF_VERSION')) {
 	require_once('../fpdf/fpdf.php');
 }
-require('../fpdf/ex_fpdf.php');
 
 define('FPDF_FONTPATH','../fpdf/font/');
 define('LargeurPage','210');
@@ -87,7 +85,7 @@ login varchar(50) NOT NULL default '',
 nom_modele varchar(255) NOT NULL,
 par_defaut ENUM('y','n') DEFAULT 'n',
 PRIMARY KEY (id_modele)
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 //echo "$sql<br />";
 $create_table=mysql_query($sql);
 
@@ -96,7 +94,7 @@ id_modele INT(11) NOT NULL,
 nom varchar(255) NOT NULL default '',
 valeur varchar(255) NOT NULL,
 INDEX id_modele_champ (id_modele, nom)
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 //echo "$sql<br />";
 $create_table=mysql_query($sql);
 

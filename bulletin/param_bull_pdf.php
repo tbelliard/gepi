@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id: param_bull_pdf.php 8390 2011-09-30 12:52:05Z crob $
+* $Id$
 *
 * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -43,16 +43,6 @@ if (!checkAccess()) {
 	die();
 }
 
-
-// réglage pour le utf8
-$decode = isset($_POST["decode"]) ? $_POST["decode"] : 'n';
-$ok = isset($_POST["ok"]) ? $_POST["ok"] : NULL;
-if ($ok == "Enregistrer") {
-	check_token();
-	// On peut alors tester les variables envoyées et mettre à jour les réglages pour l'utf8
-		// On vérifie si le setting existe
-	$operation = saveSetting('decode_pdf_utf8', $decode) OR DIE('Erreur dans le saveSetting().');
-}
 
 $reg_ok = 'yes';
 $msg = '';
@@ -892,21 +882,6 @@ function DecocheCheckbox() {
 			echo " />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
-		// Possibilité d'ajouter la fonction utf8-decode() dans certains cas sur les bulletins pdf.
-		// Ce réglage est ensuite directement récupéré dans fpdf.php et ex_fpdf.php
-		if (getSettingValue("decode_pdf_utf8") == "y") {
-			$selected = ' checked="checked"';
-		}
-		else{
-			$selected = '';
-		}
-		echo '
-		<tr><td style="font-variant: small-caps; color: brown;">
-		<label for="decodeUtf8">Sur certains serveurs web, il y a un problème d\'encodage dans la génération des pdf, ce coche devrait résoudre le problème :</label>
-		</td><td style="text-align: center;">
-		<input type="checkbox" id="decodeUtf8" name="decode" value="y"'.$selected.' />
-		</td></tr>
-		';
 		echo "</table>\n<hr />\n";
 
 		/*

@@ -1,6 +1,5 @@
 <?php
 /**
- * @version : $Id: index.php 7841 2011-08-20 09:33:35Z mleygnac $
  *
  * Copyright 2001, 2011 Thomas Belliard, Julien Jocal
  *

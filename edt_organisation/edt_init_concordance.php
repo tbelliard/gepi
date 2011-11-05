@@ -1,7 +1,6 @@
 <?php
 
 /**
- * @version $Id: edt_init_concordance.php 2147 2008-07-23 09:01:04Z tbelliard $
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
  *

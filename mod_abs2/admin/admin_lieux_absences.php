@@ -1,7 +1,6 @@
 <?php
 /*
  *
- * $Id: admin_lieux_absences.php 6359 2011-01-16 18:44:23Z dblanqui $
  *
  * Copyright 2010-2011 Josselin Jacquard
  *

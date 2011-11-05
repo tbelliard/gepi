@@ -1,5 +1,4 @@
 <?php
-/* $Id: index.php 7298 2011-06-22 15:36:15Z crob $ */
 /*
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -75,7 +74,7 @@ id smallint(6) unsigned NOT NULL auto_increment,
 projet VARCHAR( 255 ) NOT NULL ,
 commentaire TEXT NOT NULL ,
 PRIMARY KEY ( id )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS gc_divisions (
@@ -85,7 +84,7 @@ id_classe smallint(6) unsigned NOT NULL,
 classe varchar(100) NOT NULL default '',
 statut enum( 'actuelle', 'future', 'red', 'arriv' ) NOT NULL DEFAULT 'future',
 PRIMARY KEY ( id )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS gc_options (
@@ -96,7 +95,7 @@ type ENUM('lv1','lv2','lv3','autre') NOT NULL ,
 obligatoire ENUM('o','n') NOT NULL ,
 exclusive smallint(6) unsigned NOT NULL,
 PRIMARY KEY ( id )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 //echo "$sql<br />";
 $create_table=mysql_query($sql);
 
@@ -107,15 +106,15 @@ opt_exclue VARCHAR( 255 ) NOT NULL ,
 classe_future VARCHAR( 255 ) NOT NULL ,
 commentaire TEXT NOT NULL ,
 PRIMARY KEY ( id )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS gc_ele_arriv_red (
-login VARCHAR( 255 ) NOT NULL,
+login VARCHAR( 50 ) NOT NULL,
 statut ENUM('Arriv','Red') NOT NULL ,
 projet VARCHAR( 255 ) NOT NULL ,
 PRIMARY KEY ( login , projet )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 //echo "$sql<br />";
 $create_table=mysql_query($sql);
 
@@ -129,7 +128,7 @@ projet VARCHAR( 255 ) NOT NULL ,
 type VARCHAR(255) NOT NULL,
 valeur varchar(255) NOT NULL,
 PRIMARY KEY ( id )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 
@@ -146,7 +145,7 @@ id_classe_actuelle VARCHAR(255) NOT NULL ,
 classe_future VARCHAR(255) NOT NULL ,
 liste_opt VARCHAR( 255 ) NOT NULL ,
 PRIMARY KEY ( id )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 //echo "$sql<br />";
 $create_table=mysql_query($sql);
 

@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: edit_class_grp_lot.php 7192 2011-06-10 19:30:33Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -334,6 +333,8 @@ echo "Navigation";
 echo "</a>";
 //=========================
 
+echo " | <a href='../init_xml2/init_alternatif.php?cat=classes' onclick=\"return confirm_abandon (this, change, '$themessage')\">Création par lots</a>";
+
 echo "</p>\n";
 echo "</form>\n";
 
@@ -470,7 +471,7 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 	if($groupe_existant!="trop" and $display_current) {
 		echo "<td style='text-align:left;'>\n";
 		echo "<label for='checkmat_".$cpt."' style='cursor:pointer;'>";
-		echo htmlentities($ligne_matiere->nom_complet);
+		echo htmlspecialchars($ligne_matiere->nom_complet);
 		echo "</label>\n";
 		echo "</td>\n";
 		//$sql="SELECT jpm.id_professeur,u.nom,u.prenom,u.civilite FROM j_professeurs_matieres jpm, matieres m, utilisateurs u WHERE jpm.id_matiere=m.matiere AND m.matiere='$ligne_matiere->matiere' AND u.login=jpm.id_professeur ORDER BY jpm.id_professeur";
@@ -491,7 +492,7 @@ while($ligne_matiere=mysql_fetch_object($result_matiere)){
 					$selected=" selected";
 				}
 			}
-			echo "<option value='$ligne_prof->id_professeur'$selected>".ucfirst(strtolower($ligne_prof->prenom))." ".strtoupper($ligne_prof->nom)."</option>\n";
+			echo "<option value='$ligne_prof->id_professeur'$selected>".casse_mot($ligne_prof->prenom,'majf2')." ".my_strtoupper($ligne_prof->nom)."</option>\n";
 		}
 		echo "</select>\n";
 		echo "</td>\n";

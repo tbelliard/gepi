@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: trombino.inc.php 5339 2010-09-18 11:12:21Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 */

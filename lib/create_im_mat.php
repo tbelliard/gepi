@@ -40,7 +40,7 @@ $texte = isset($_GET["texte"]) ? unslashes($_GET["texte"]) : NULL;
 unset($colortxt);
 $colortxt = isset($_GET["colortxt"]) ? $_GET["colortxt"] : NULL;
 
-$long_chaine = strlen($texte);
+$long_chaine = mb_strlen($texte);
 if ($height != '') {
     $haut_im = $height;
 } else {
@@ -56,10 +56,10 @@ Header("Content-Type: image/png");
 $texte = urldecode($texte);
 if ($colortxt != '') {
     $colortxt = urldecode($colortxt);
-    if (substr($colortxt ,0,1)=="#") $color_bg=substr($colortxt,1,6);
-    $col_txt[0] = hexdec(substr($colortxt, 0, 2));
-    $col_txt[1] = hexdec(substr($colortxt, 2, 2));
-    $col_txt[2] = hexdec(substr($colortxt, 4, 2));
+    if (mb_substr($colortxt ,0,1)=="#") $color_bg=mb_substr($colortxt,1,6);
+    $col_txt[0] = hexdec(mb_substr($colortxt, 0, 2));
+    $col_txt[1] = hexdec(mb_substr($colortxt, 2, 2));
+    $col_txt[2] = hexdec(mb_substr($colortxt, 4, 2));
 } else {
     $col_txt[0] = 0;
     $col_txt[1] = 0;
@@ -76,10 +76,9 @@ imagecolortransparent ($im,$color_back);
 $y = ($haut_im+$long_chaine*8)/2;
 if ($y > $haut_im) $y=$haut_im;
 //$x = ($larg_im)/2;
-$x = ($larg_im)/2-5;
+$x = ($larg_im)*0.65;
 
-//imagettftext($im, 10, 90, $x, $y, $color_text, "../jpgraph1_5_2/fonts/verdanai.ttf", $texte);
-imagestringup($im,3,$x,$y,$texte,$color_text);
+imagettftext($im, 9, 90, $x, $y, $color_text, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $texte);
 imagepng($im);
 imagedestroy($im);
 ?>

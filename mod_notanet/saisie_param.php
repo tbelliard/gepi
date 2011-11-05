@@ -1,5 +1,5 @@
 <?php
-/* $Id: saisie_param.php 5984 2010-11-24 14:54:46Z crob $ */
+/* $Id$ */
 /*
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

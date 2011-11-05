@@ -1,6 +1,5 @@
 <?php
 /**
- *  $Id: transfert_cn.php 7748 2011-08-14 14:10:02Z regis $
  * 
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @package Epreuve_blanche
@@ -392,7 +391,7 @@ while($lig=mysql_fetch_object($res_grp)) {
 	$cpt2=0;
 	while($lig_prof=mysql_fetch_object($res_prof)) {
 		if($cpt2>0) {$prof_list.=", ";}
-		$prof_list.=$lig_prof->civilite." ".casse_mot($lig_prof->nom)." ".strtoupper(substr($lig_prof->prenom,0,1));
+		$prof_list.=$lig_prof->civilite." ".casse_mot($lig_prof->nom)." ".strtoupper(mb_substr($lig_prof->prenom,0,1));
 		$cpt2++;
 	}
 	$tab_grp[$cpt]['profs_list']=$prof_list;

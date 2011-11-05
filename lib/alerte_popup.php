@@ -1,7 +1,6 @@
 <?php
 /** Affiche un popup
  * 
- * $Id: alerte_popup.php 8458 2011-10-10 13:09:56Z crob $
  * 
  * @package General
  * @subpackage Alertes

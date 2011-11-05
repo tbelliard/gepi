@@ -1,8 +1,6 @@
 <?php
 
 /*
-* $Id: saisie_absences.php 6665 2011-03-17 17:33:19Z crob $
-*
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
@@ -127,7 +125,7 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 			$nb_nj=$nb_nj_ele[$num_eleve];
 			$nb_retard=$nb_retard_ele[$num_eleve];
 			//$ap=$app_ele[$num_eleve];
-			//$ap = traitement_magic_quotes(corriger_caracteres(html_entity_decode_all_version($ap)));
+			//$ap = traitement_magic_quotes(corriger_caracteres(html_entity_decode($ap)));
 
 
 			$app_ele_courant="app_eleve_".$num_eleve;
@@ -197,7 +195,7 @@ echo add_token_field(true);
 $call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = mysql_result($call_classe, "0", "classe");
 ?>
-<p><b>Classe de <?php echo "$classe"; ?> - Saisie des absences : <?php $temp = strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b>
+<p><b>Classe de <?php echo "$classe"; ?> - Saisie des absences : <?php $temp = my_strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b>
 <br />
 <!--table border=1 cellspacing=2 cellpadding=5-->
 <table class='boireaus' cellspacing='2' cellpadding='5'>
@@ -235,7 +233,7 @@ while($i < $nombre_lignes) {
 	$current_eleve_login_ap = $current_eleve_login."_ap";
 
 	$alt=$alt*(-1);
-	echo "<tr class='lig$alt'><td align='center'>".strtoupper($current_eleve_nom)." $current_eleve_prenom\n";
+	echo "<tr class='lig$alt'><td align='center'>".my_strtoupper($current_eleve_nom)." ".casse_mot($current_eleve_prenom,'majf2')."\n";
 	//=========================
 	// MODIF: boireaus 20071010
 	echo "<input type='hidden' name='log_eleve[$i]' value='$current_eleve_login' />\n";

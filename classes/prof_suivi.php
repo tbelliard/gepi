@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: prof_suivi.php 8097 2011-09-01 11:41:25Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -73,7 +72,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 		// Récupération du numéro de l'élève dans les saisies:
 		$num_eleve=-1;
 		for($i=0;$i<count($log_eleve);$i++){
-			if(strtolower($login_eleve)==strtolower($log_eleve[$i])){
+			if(my_strtolower($login_eleve)==my_strtolower($log_eleve[$i])){
 				$num_eleve=$i;
 				break;
 			}
@@ -250,7 +249,7 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 				$k++;
 			}
 			//echo ">$prof_prenom $prof_nom</option>\n";
-			echo ">".ucwords(strtolower($prof_prenom))." ".strtoupper($prof_nom)."</option>\n";
+			echo ">".casse_mot($prof_prenom,'majf2')." ".my_strtoupper($prof_nom)."</option>\n";
 			$j++;
 		}
 		echo "</select></p>\n";
@@ -322,7 +321,7 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt'>\n";
-				echo "<td><p>".strtoupper($nom_eleve)." $prenom_eleve\n";
+				echo "<td><p>".my_strtoupper($nom_eleve)." ".casse_mot($prenom_eleve,'majf2')."\n";
 				//=========================
 				// AJOUT: boireaus 20071010
 				echo "<input type='hidden' name='log_eleve[$k]' value=\"$login_eleve\" />\n";

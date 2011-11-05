@@ -1,7 +1,6 @@
 <?php
 
 /*
- * $Id: occupation_lieu_heure.php 7138 2011-06-05 17:37:14Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -41,7 +40,7 @@ if (!checkAccess()) {
 	die();
 }
 
-if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+if(strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
 	header("Location: ../accueil.php?msg=$mess");
@@ -64,13 +63,13 @@ if(!checkdate($tmp_date[1],$tmp_date[0],$tmp_date[2])) {
 	$msg.="La date saisie n'est pas valide.<br />";
 }
 
-$l_duree=strlen($duree);
+$l_duree=mb_strlen($duree);
 $duree=preg_replace("/,/",".",preg_replace("/[^0-9.]/","",$duree));
 if($duree=="") {
 	$duree=1;
 	$msg.="La durée de retenue saisie n'était pas correcte. Elle a été remplacée par '1'.<r />";
 }
-elseif($l_duree!=strlen($duree)) {
+elseif($l_duree!=mb_strlen($duree)) {
 	$msg.="La durée de retenue saisie n'était pas correcte. Elle a été modifiée.<r />";
 }
 

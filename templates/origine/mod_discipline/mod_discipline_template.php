@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <?php
 /*
-* $Id: mod_discipline_template.php 4973 2010-07-31 16:50:27Z regis $
+* $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -109,7 +109,7 @@
 ?>
 				<div class='div_tableau'>
 				  <h3 class="colonne ie_gauche">
-					  <a href="<?php echo "../".substr($newentree->chemin,1) ?>">
+					  <a href="<?php echo "../".mb_substr($newentree->chemin,1) ?>">
 						  <?php echo $newentree->titre ?>
 					  </a>
 				  </h3>

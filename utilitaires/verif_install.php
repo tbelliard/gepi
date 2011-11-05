@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: verif_install.php 7854 2011-08-21 12:33:55Z jjocal $
+ * $Id$
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -20,7 +20,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
+header('Content-Type: text/html; charset=UTF-8');
 if (file_exists("./secure/connect.inc.php")) {
     require_once("./secure/connect.inc.php");
     $correct_install = 'yes';

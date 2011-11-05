@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id: tableau.php 7953 2011-08-24 14:23:50Z regis $
+* $Id$
 *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *

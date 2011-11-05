@@ -1,7 +1,6 @@
 <?php
 /** Outils complémentaires de gestion des AID
  * 
- * $Id: share-aid.inc.php 7692 2011-08-11 00:26:10Z regis $
  * 
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * 

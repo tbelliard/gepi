@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id: absences_du_jour.php 8358 2011-09-25 16:07:47Z dblanqui $
  *
  * Copyright 2010 Josselin Jacquard
  *

@@ -2,7 +2,6 @@
 
 /**
  *
- * @version $Id: rss_cdt_admin.php 5951 2010-11-22 17:05:48Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
@@ -93,7 +92,7 @@ if (getSettingValue("rss_cdt_eleve") == "y" AND $genereflux == "y") {
 	$result .= '<p>Gepi vérifie si la table nécessaire est bien dans la base.</p>';
 
     if ($test_table == 0) {
-		$query1 = mysql_query("CREATE TABLE `rss_users` (`id` int(11) NOT NULL auto_increment, `user_login` varchar(30) NOT NULL, `user_uri` varchar(30) NOT NULL, PRIMARY KEY  (`id`));");
+		$query1 = mysql_query("CREATE TABLE `rss_users` (`id` int(11) NOT NULL auto_increment, `user_login` varchar(30) NOT NULL, `user_uri` varchar(30) NOT NULL, PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
         if ($query1) {
             $result .= "<span class='green'>La table nécessaire est bien créée !</span><br />";
 			$creeTable=1;

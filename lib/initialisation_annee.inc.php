@@ -1,5 +1,4 @@
 <?php
-/* $Id: initialisation_annee.inc.php 7871 2011-08-21 15:41:32Z crob $ */
 
 // Nettoyage des tables
 

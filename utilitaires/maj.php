@@ -2,7 +2,7 @@
 /**
  * Mise à jour des bases
  * 
- * $Id: maj.php 8548 2011-10-26 12:14:15Z crob $
+ * $Id$
  *
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL,
@@ -232,9 +232,9 @@ if (isset ($_POST['maj'])) {
 	if (($force_maj == 'yes') or (quelle_maj("1.5.5"))) {
             require 'updates/154_to_155.inc.php';
 	}
-
-	if (($force_maj == 'yes') or (quelle_maj("1.5.6"))) {
-            require 'updates/155_to_156.inc.php';
+	
+	if (($force_maj == 'yes') or (quelle_maj("dev"))) {
+            require 'updates/155_to_dev.inc.php';
 	}
 
 	// Mise à jour du numéro de version

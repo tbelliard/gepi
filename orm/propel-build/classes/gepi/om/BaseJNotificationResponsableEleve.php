@@ -75,7 +75,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 	 * cle etrangere des personnes
 	 * @return     string
 	 */
-	public function getPersId()
+	public function getResponsableEleveId()
 	{
 		return $this->pers_id;
 	}
@@ -110,7 +110,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 	 * @param      string $v new value
 	 * @return     JNotificationResponsableEleve The current object (for fluent API support)
 	 */
-	public function setPersId($v)
+	public function setResponsableEleveId($v)
 	{
 		if ($v !== null) {
 			$v = (string) $v;
@@ -121,12 +121,12 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 			$this->modifiedColumns[] = JNotificationResponsableElevePeer::PERS_ID;
 		}
 
-		if ($this->aResponsableEleve !== null && $this->aResponsableEleve->getPersId() !== $v) {
+		if ($this->aResponsableEleve !== null && $this->aResponsableEleve->getResponsableEleveId() !== $v) {
 			$this->aResponsableEleve = null;
 		}
 
 		return $this;
-	} // setPersId()
+	} // setResponsableEleveId()
 
 	/**
 	 * Indicates whether the columns in this object are only set to default values.
@@ -196,7 +196,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 		if ($this->aAbsenceEleveNotification !== null && $this->a_notification_id !== $this->aAbsenceEleveNotification->getId()) {
 			$this->aAbsenceEleveNotification = null;
 		}
-		if ($this->aResponsableEleve !== null && $this->pers_id !== $this->aResponsableEleve->getPersId()) {
+		if ($this->aResponsableEleve !== null && $this->pers_id !== $this->aResponsableEleve->getResponsableEleveId()) {
 			$this->aResponsableEleve = null;
 		}
 	} // ensureConsistency
@@ -510,7 +510,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 				return $this->getANotificationId();
 				break;
 			case 1:
-				return $this->getPersId();
+				return $this->getResponsableEleveId();
 				break;
 			default:
 				return null;
@@ -542,7 +542,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 		$keys = JNotificationResponsableElevePeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getANotificationId(),
-			$keys[1] => $this->getPersId(),
+			$keys[1] => $this->getResponsableEleveId(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aAbsenceEleveNotification) {
@@ -586,7 +586,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 				$this->setANotificationId($value);
 				break;
 			case 1:
-				$this->setPersId($value);
+				$this->setResponsableEleveId($value);
 				break;
 		} // switch()
 	}
@@ -613,7 +613,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 		$keys = JNotificationResponsableElevePeer::getFieldNames($keyType);
 
 		if (array_key_exists($keys[0], $arr)) $this->setANotificationId($arr[$keys[0]]);
-		if (array_key_exists($keys[1], $arr)) $this->setPersId($arr[$keys[1]]);
+		if (array_key_exists($keys[1], $arr)) $this->setResponsableEleveId($arr[$keys[1]]);
 	}
 
 	/**
@@ -657,7 +657,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 	{
 		$pks = array();
 		$pks[0] = $this->getANotificationId();
-		$pks[1] = $this->getPersId();
+		$pks[1] = $this->getResponsableEleveId();
 
 		return $pks;
 	}
@@ -671,7 +671,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 	public function setPrimaryKey($keys)
 	{
 		$this->setANotificationId($keys[0]);
-		$this->setPersId($keys[1]);
+		$this->setResponsableEleveId($keys[1]);
 	}
 
 	/**
@@ -680,7 +680,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 	 */
 	public function isPrimaryKeyNull()
 	{
-		return (null === $this->getANotificationId()) && (null === $this->getPersId());
+		return (null === $this->getANotificationId()) && (null === $this->getResponsableEleveId());
 	}
 
 	/**
@@ -697,7 +697,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
 		$copyObj->setANotificationId($this->getANotificationId());
-		$copyObj->setPersId($this->getPersId());
+		$copyObj->setResponsableEleveId($this->getResponsableEleveId());
 		if ($makeNew) {
 			$copyObj->setNew(true);
 		}
@@ -800,9 +800,9 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 	public function setResponsableEleve(ResponsableEleve $v = null)
 	{
 		if ($v === null) {
-			$this->setPersId(NULL);
+			$this->setResponsableEleveId(NULL);
 		} else {
-			$this->setPersId($v->getPersId());
+			$this->setResponsableEleveId($v->getResponsableEleveId());
 		}
 
 		$this->aResponsableEleve = $v;

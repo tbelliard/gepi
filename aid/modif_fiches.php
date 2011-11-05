@@ -1,7 +1,5 @@
 <?php
 /*
- *  $Id: modif_fiches.php 6588 2011-03-02 17:53:54Z crob $
- *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
@@ -92,8 +90,8 @@ if (isset($_POST["is_posted"])) {
     // Résumé
     if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'resume','W',$annee)) and (isset($_POST["reg_resume"]))) {
       $reg_resume = isset($_POST["reg_resume"]) ? $_POST["reg_resume"] : NULL;
-      if (strlen($reg_resume) > 600) {
-        $reg_resume = substr($reg_resume,0,597)."...";
+      if (mb_strlen($reg_resume) > 600) {
+        $reg_resume = mb_substr($reg_resume,0,597)."...";
         $msg .= "Erreur : Votre résumé excède 600 caractères.<br />";
       }
       if ($met_virgule=='y') $sql_aid .=",";
@@ -103,10 +101,10 @@ if (isset($_POST["is_posted"])) {
     // Divers
     if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'divers','W',$annee)) and (isset($_POST["reg_divers"]))) {
       $reg_divers = isset($_POST["reg_divers"]) ? $_POST["reg_divers"] : NULL;
-      if (strlen($reg_divers) > 600) {
+      if (mb_strlen($reg_divers) > 600) {
         if ($msg != "") $msg .= "<br />";
         $msg .= "Erreur : le champs divers excède 600 caractères.<br />";
-        $reg_divers = substr($reg_divers,0,597)."...";
+        $reg_divers = mb_substr($reg_divers,0,597)."...";
       }
       if ($met_virgule=='y') $sql_aid .=",";
       $sql_aid .= "divers = '".$reg_divers."'";
@@ -115,10 +113,10 @@ if (isset($_POST["is_posted"])) {
     // Contacts
     if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'contacts','W',$annee)) and (isset($_POST["reg_contacts"]))) {
       $reg_contacts = isset($_POST["reg_contacts"]) ? $_POST["reg_contacts"] : NULL;
-      if (strlen($reg_contacts) > 600) {
+      if (mb_strlen($reg_contacts) > 600) {
         if ($msg != "") $msg .= "<br />";
         $msg .= "Erreur : le champs \"Contacts Extérieurs\" excède 600 caractères.<br />";
-        $reg_contacts = substr($reg_contacts,0,597)."...";
+        $reg_contacts = mb_substr($reg_contacts,0,597)."...";
       }
       if ($met_virgule=='y') $sql_aid .=",";
       $sql_aid .= "contacts = '".$reg_contacts."'";
@@ -462,36 +460,36 @@ if ($annee=='') {
  If ($action != "visu") {
   if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'perso1','W',$annee)) {
     echo "<br /><span class = 'bold'>".LibelleChampAid("perso1")." : </span>\n";
-    echo "<input type=\"text\" name=\"reg_perso1\" value=\"".htmlentities($reg_perso1)."\" size=\"40\" />";
+    echo "<input type=\"text\" name=\"reg_perso1\" value=\"".htmlspecialchars($reg_perso1)."\" size=\"40\" />";
   }
  } else {
   if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'perso1','R',$annee)) {
     echo "<br /><span class = 'bold'>".LibelleChampAid("perso1")." : </span>\n";
-    echo htmlentities($reg_perso1)."\n";
+    echo htmlspecialchars($reg_perso1)."\n";
   }
  }
  // perso2
  If ($action != "visu") {
   if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'perso2','W',$annee)) {
     echo "<br /><span class = 'bold'>".LibelleChampAid("perso2")." : </span>\n";
-    echo "<input type=\"text\" name=\"reg_perso2\" value=\"".htmlentities($reg_perso2)."\" size=\"40\" />";
+    echo "<input type=\"text\" name=\"reg_perso2\" value=\"".htmlspecialchars($reg_perso2)."\" size=\"40\" />";
   }
  } else {
   if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'perso2','R',$annee)) {
     echo "<br /><span class = 'bold'>".LibelleChampAid("perso2")." : </span>\n";
-    echo htmlentities($reg_perso2)."\n";
+    echo htmlspecialchars($reg_perso2)."\n";
   }
  }
  // perso3
  If ($action != "visu") {
   if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'perso3','W',$annee)) {
     echo "<br /><span class = 'bold'>".LibelleChampAid("perso3")." : </span>\n";
-    echo "<input type=\"text\" name=\"reg_perso3\" value=\"".htmlentities($reg_perso3)."\" size=\"40\" />";
+    echo "<input type=\"text\" name=\"reg_perso3\" value=\"".htmlspecialchars($reg_perso3)."\" size=\"40\" />";
   }
  } else {
   if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'perso3','R',$annee)) {
     echo "<br /><span class = 'bold'>".LibelleChampAid("perso3")." : </span>\n";
-    echo htmlentities($reg_perso3)."\n";
+    echo htmlspecialchars($reg_perso3)."\n";
   }
  }
 }
@@ -502,7 +500,7 @@ if ($_SESSION["statut"]=="administrateur") {
     echo "<div class='bloc'>\n";
     If ($action != "visu") {
         //nom
-        echo "<p>Nom : <input type=\"text\" name=\"reg_nom\" size=\"50\" value=\"".htmlentities($aid_nom)."\" /></p>\n";
+        echo "<p>Nom : <input type=\"text\" name=\"reg_nom\" size=\"50\" value=\"".htmlspecialchars($aid_nom)."\" /></p>\n";
         if ($annee=='') {
           //numero
           echo "<p>Numéro (fac.) : <input type=\"text\" name=\"reg_num\" size=\"4\" value=\"".$reg_num."\" /></p>\n";
@@ -584,7 +582,7 @@ if ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'resume',"W",$annee)) {
     echo "<div class='bloc'><span class = 'bold'>Résumé</span> (limité à 600 caractères) :\n";
     echo "<br /><i>Présentation du projet, objectifs, réalisations, ....</i>\n";
-    echo "<br /><textarea name=\"reg_resume\" rows=\"6\" cols=\"100\" onKeyPress=\"CaracMax(this, 600)\" >".htmlentities($reg_resume)."</textarea>\n";
+    echo "<br /><textarea name=\"reg_resume\" rows=\"6\" cols=\"100\" onKeyPress=\"CaracMax(this, 600)\" >".htmlspecialchars($reg_resume)."</textarea>\n";
   }
 } else {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'resume',"R",$annee)) {
@@ -592,7 +590,7 @@ if ($action != "visu") {
     if ($reg_resume == "")
         echo "<br />".$non_defini."\n";
     else
-        echo "<br />".htmlentities($reg_resume)."\n";
+        echo "<br />".htmlspecialchars($reg_resume)."\n";
   }
 }
 echo "</div>\n";
@@ -644,7 +642,7 @@ If ($action != "visu")  {
     echo "<table><tr>";
     $k = 0;
     while ($k < 5) {
-        echo "<td><input type=\"text\" name=\"mc".$k."\" value=\"".htmlentities($mc[$k])."\" size=\"15\" /></td>\n";
+        echo "<td><input type=\"text\" name=\"mc".$k."\" value=\"".htmlspecialchars($mc[$k])."\" size=\"15\" /></td>\n";
         $k++;
     }
     echo "</tr></table>";
@@ -785,7 +783,7 @@ echo "<div class='bloc'>\n";
 If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'adresse1',"W",$annee)) {
     echo "<span class = 'bold'>Indiquez éventuellemenet ci-dessous un <b>lien public de type internet</B> qui donne accès à la production :</span>\n";
-    echo "<br /><input type=\"text\" name=\"reg_adresse1\" value=\"".htmlentities($reg_adresse1)."\" size=\"50\" />\n";
+    echo "<br /><input type=\"text\" name=\"reg_adresse1\" value=\"".htmlspecialchars($reg_adresse1)."\" size=\"50\" />\n";
   }
 } else {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'adresse1',"R",$annee)) {
@@ -802,7 +800,7 @@ If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'adresse2',"W",$annee)) {
     echo "<span class = 'bold'>Indiquez ci-dessous un <b>lien à accès restreint</B>
     <br />(par exemple, <b>chemin d'accès à la production sur un serveur</b>) :</span>\n";
-    echo "<br /><input type=\"text\" name=\"reg_adresse2\" value=\"".htmlentities($reg_adresse2)."\" size=\"50\" />\n";
+    echo "<br /><input type=\"text\" name=\"reg_adresse2\" value=\"".htmlspecialchars($reg_adresse2)."\" size=\"50\" />\n";
   }
 } else {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'adresse2',"R",$annee)) {
@@ -818,7 +816,7 @@ If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'contacts',"W",$annee)) {
     echo "<div class='bloc'><span class = 'bold'>Contacts pris à l'extérieur de l'établissement, personnes ressources...</span> (limité à 600 caractères) :\n";
     echo "<br /><i>Liste des contacts extérieurs (nom, prénom, association, raison sociale, ... )</i>\n";
-    echo "<br /><textarea name=\"reg_contacts\" rows=\"6\" cols=\"100\" onKeyPress=\"CaracMax(this, 600)\" >".htmlentities($reg_contacts)."</textarea>\n";
+    echo "<br /><textarea name=\"reg_contacts\" rows=\"6\" cols=\"100\" onKeyPress=\"CaracMax(this, 600)\" >".htmlspecialchars($reg_contacts)."</textarea>\n";
   }
 } else {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'contacts',"R",$annee)) {
@@ -826,7 +824,7 @@ If ($action != "visu") {
     if ($reg_contacts == "")
         echo "<br />".$non_defini."\n";
     else
-        echo "<br />".htmlentities($reg_contacts)."\n";
+        echo "<br />".htmlspecialchars($reg_contacts)."\n";
   }
 }
 echo "</div>\n";
@@ -920,7 +918,7 @@ echo "</div>\n";
 If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'divers',"W",$annee)) {
     echo "<div class='bloc'><span class = 'bold'>Divers</span> (limité à 600 caractères) :\n";
-    echo "<br /><textarea name=\"reg_divers\" rows=\"6\" cols=\"100\" onKeyPress=\"CaracMax(this, 600)\" >".htmlentities($reg_divers)."</textarea>\n";
+    echo "<br /><textarea name=\"reg_divers\" rows=\"6\" cols=\"100\" onKeyPress=\"CaracMax(this, 600)\" >".htmlspecialchars($reg_divers)."</textarea>\n";
   }
 } else {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'divers',"R",$annee)) {
@@ -928,7 +926,7 @@ If ($action != "visu") {
     if ($reg_divers == "")
         echo "<br />".$non_defini."\n";
     else
-        echo "<br />".htmlentities($reg_divers)."\n";
+        echo "<br />".htmlspecialchars($reg_divers)."\n";
    }
 }
 echo "</div>\n";

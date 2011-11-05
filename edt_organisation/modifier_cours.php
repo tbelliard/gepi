@@ -3,7 +3,6 @@
 /**
  * Fichier destiné à permettre la modification d'un cours
  *
- * @version $Id: modifier_cours.php 4592 2010-06-18 13:39:41Z adminpaulbert $
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

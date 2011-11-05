@@ -1,5 +1,4 @@
 <?php
-/* $Id: liste_options.php 7706 2011-08-11 17:46:10Z crob $ */
 /*
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -84,7 +83,7 @@ function LETTRE_COLONNE($num_col) {
 
 	if($num_col<26) {
 		$n=$num_col-1;
-		return substr($alpha,$n,1);
+		return mb_substr($alpha,$n,1);
 	}
 	else {
 		return "";

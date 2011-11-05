@@ -24,7 +24,6 @@ nombase		= essai2
 pathname	= /gepi
 
 ;
-; @version $Id: multisite-modele.ini.php 7920 2011-08-23 12:14:07Z jjacquard $
 ;
 ; Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane Boireau, Julien Jocal
 ;

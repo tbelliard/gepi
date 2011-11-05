@@ -1,7 +1,6 @@
 <?php
 @set_time_limit(0);
 /*
-* $Id: disciplines.php 8572 2011-10-29 12:48:54Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -110,15 +109,17 @@ if (!isset($_POST["action"])) {
 			//$reg_nom_court = $_POST["ligne".$i."_nom_court"];
 			//$reg_nom_long = $_POST["ligne".$i."_nom_long"];
 
+
 			$reg_nom_court = $lig->col1;
 			$reg_nom_long = $lig->col2;
 
 			// On nettoie et on vérifie :
-			$reg_nom_court = preg_replace("/[^A-Za-z0-9.\-]/","",trim(strtoupper($reg_nom_court)));
-			if (strlen($reg_nom_court) > 50) $reg_nom_court = substr($reg_nom_court, 0, 50);
-			//$reg_nom_long = preg_replace("/[^A-Za-z0-9 .\-éèüëïäêç]/","",trim($reg_nom_long));
-			$reg_nom_long = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($reg_nom_long))))));
-			if (strlen($reg_nom_long) > 200) $reg_nom_long = substr($reg_nom_long, 0, 200);
+			$reg_nom_court = remplace_accents($reg_nom_court);
+			$reg_nom_court = preg_replace("/[^A-Za-z0-9.\-]/","",trim(my_strtoupper($reg_nom_court)));
+			if (mb_strlen($reg_nom_court) > 50) $reg_nom_court = mb_substr($reg_nom_court, 0, 50);
+
+			$reg_nom_long=nettoyer_caracteres_nom($reg_nom_long);
+			if (mb_strlen($reg_nom_long) > 200) $reg_nom_long = mb_substr($reg_nom_long, 0, 200);
 
 			// Maintenant que tout est propre, on fait un test sur la table pour voir si la matière existe déjà ou pas
 
@@ -129,12 +130,12 @@ if (!isset($_POST["action"])) {
 
 				$insert = mysql_query("INSERT INTO matieres SET " .
 						"matiere = '" . $reg_nom_court . "', " .
-						"nom_complet = '" . $reg_nom_long . "',priority='0',matiere_aid='n',matiere_atelier='n'");
-						//"nom_complet = '" . htmlentities($reg_nom_long) . "'");
+						"nom_complet = '" . mysql_real_escape_string($reg_nom_long) . "',priority='0',matiere_aid='n',matiere_atelier='n'");
+						//"nom_complet = '" . htmlspecialchars($reg_nom_long) . "'");
 
 				if (!$insert) {
 					$error++;
-					echo mysql_error();
+					echo "<span style='color:red'>".mysql_error().'<span><br />';
 				} else {
 					$total++;
 				}
@@ -193,7 +194,7 @@ if (!isset($_POST["action"])) {
 
 		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
 		// autant forcer l'utilisateur à être rigoureux
-		if(strtolower($csv_file['name']) == "g_disciplines.csv") {
+		if(my_strtolower($csv_file['name']) == "g_disciplines.csv") {
 
 			// Le nom est ok. On ouvre le fichier
 			$fp=fopen($csv_file['tmp_name'],"r");
@@ -229,11 +230,13 @@ if (!isset($_POST["action"])) {
 
 
 							// On nettoie et on vérifie :
-							$tabligne[0] = preg_replace("/[^A-Za-z0-9.\-]/","",trim(strtoupper($tabligne[0])));
-							if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
-							//$tabligne[1] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäêç]/","",trim($tabligne[1]));
-							$tabligne[1] = preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe",preg_replace("/[^A-Za-z0-9 .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim($tabligne[1]))))));
-							if (strlen($tabligne[1]) > 200) $tabligne[1] = substr($tabligne[1], 0, 200);
+							$tabligne[0]=remplace_accents($tabligne[0]);
+							$tabligne[0] = preg_replace("/[^A-Za-z0-9.\-]/","",trim(my_strtoupper($tabligne[0])));
+							if (mb_strlen($tabligne[0]) > 50) $tabligne[0] = mb_substr($tabligne[0], 0, 50);
+
+							$tabligne[1]=nettoyer_caracteres_nom($tabligne[1]);
+							$tabligne[1]=preg_replace("/'/"," ",$tabligne[1]);
+							if (mb_strlen($tabligne[1]) > 200) $tabligne[1] = mb_substr($tabligne[1], 0, 200);
 
 							$data_tab[$k] = array();
 
@@ -260,7 +263,7 @@ if (!isset($_POST["action"])) {
 				echo add_token_field();
 				echo "<input type='hidden' name='action' value='save_data' />\n";
 				echo "<table border='1' class='boireaus' summary='Tableau des matières'>\n";
-				echo "<tr><th>Nom court (unique)</th><th>Nom long</th></tr>\n";
+				echo "<tr><th>Nom court (<em>unique</em>)</th><th>Nom long</th></tr>\n";
 
 
 				$alt=1;
@@ -269,7 +272,7 @@ if (!isset($_POST["action"])) {
                     echo "<tr class='lig$alt'>\n";
 					echo "<td>\n";
 					$sql="INSERT INTO tempo2 SET col1='".$data_tab[$i]["nom_court"]."',
-					col2='".addslashes($data_tab[$i]["nom_long"])."';";
+					col2='".mysql_real_escape_string($data_tab[$i]["nom_long"])."';";
 					$insert=mysql_query($sql);
 					if(!$insert) {
 						echo "<span style='color:red'>";

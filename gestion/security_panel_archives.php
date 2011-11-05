@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: security_panel_archives.php 6696 2011-03-25 18:19:38Z crob $
  *
  * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

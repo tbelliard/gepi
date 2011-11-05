@@ -1,8 +1,7 @@
 <?php
 /*
-* $Id: bulletin_simple.inc.php 7467 2011-07-21 10:18:17Z crob $
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 */
 $delais_apres_cloture=getSettingValue('delais_apres_cloture');
 //echo "\$delais_apres_cloture=$delais_apres_cloture<br />";
@@ -117,17 +116,17 @@ $alt=1;
 $tab_statuts_signalement_faute_autorise=array('administrateur', 'professeur', 'cpe', 'scolarite');
 $afficher_signalement_faute="n";
 if(in_array($_SESSION['statut'],$tab_statuts_signalement_faute_autorise)) {
-	if(($_SESSION['statut']=='professeur')&&(substr(getSettingValue('autoriser_signalement_faute_app_prof'),0,1)=='y')) {
+	if(($_SESSION['statut']=='professeur')&&(mb_substr(getSettingValue('autoriser_signalement_faute_app_prof'),0,1)=='y')) {
 		$afficher_signalement_faute="y";
 	}
-	elseif(($_SESSION['statut']=='professeur')&&(substr(getSettingValue('autoriser_signalement_faute_app_pp'),0,1)=='y')) {
+	elseif(($_SESSION['statut']=='professeur')&&(mb_substr(getSettingValue('autoriser_signalement_faute_app_pp'),0,1)=='y')) {
 		// Tester si le prof est pp de la classe
 		if(is_pp($_SESSION['login'],$id_classe)) {$afficher_signalement_faute="y";}
 	}
-	elseif(($_SESSION['statut']=='scolarite')&&(substr(getSettingValue('autoriser_signalement_faute_app_scol'),0,1)=='y')) {
+	elseif(($_SESSION['statut']=='scolarite')&&(mb_substr(getSettingValue('autoriser_signalement_faute_app_scol'),0,1)=='y')) {
 		$afficher_signalement_faute="y";
 	}
-	elseif(($_SESSION['statut']=='cpe')&&(substr(getSettingValue('autoriser_signalement_faute_app_cpe'),0,1)=='y')) {
+	elseif(($_SESSION['statut']=='cpe')&&(mb_substr(getSettingValue('autoriser_signalement_faute_app_cpe'),0,1)=='y')) {
 		$afficher_signalement_faute="y";
 	}
 }
@@ -260,7 +259,7 @@ if ($on_continue == 'yes') {
 		}
 		echo ".</span>";
 	} else {
-		$temp = strtolower($nom_periode[$periode1]);
+		$temp = my_strtolower($nom_periode[$periode1]);
 		echo "Résultats du $temp.</span>";
 	
 	}
@@ -364,7 +363,7 @@ if ($on_continue == 'yes') {
 	
 	$cat_names = array();
 	foreach ($categories as $cat_id) {
-		$cat_names[$cat_id] = html_entity_decode_all_version(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
+		$cat_names[$cat_id] = html_entity_decode(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
 	}
 	
 	$total_cat_eleve = array();
@@ -423,7 +422,8 @@ if ($on_continue == 'yes') {
 	
 	$cat_names = array();
 	foreach ($categories as $cat_id) {
-		$cat_names[$cat_id] = html_entity_decode_all_version(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
+		//$cat_names[$cat_id] = html_entity_decode(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
+		$cat_names[$cat_id] = mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0);
 	}
 
 	// Nombre de groupes sur la classe
@@ -436,9 +436,9 @@ if ($on_continue == 'yes') {
 		//$tab_login_indice[$nb]=$tab_moy['periodes'][$nb]['tab_login_indice'][$current_eleve_login];
 		// Un élève qui arrive ou part en cours d'année ne sera pas dans la classe ni dans les groupes sur certaines périodes
 		//if(isset($tab_moy['periodes'][$nb]['tab_login_indice'][$current_eleve_login])) {
-		if(isset($tab_moy['periodes'][$nb]['tab_login_indice'][strtoupper($current_eleve_login)])) {
+		if(isset($tab_moy['periodes'][$nb]['tab_login_indice'][my_strtoupper($current_eleve_login)])) {
 			//$tab_login_indice[$nb]=$tab_moy['periodes'][$nb]['tab_login_indice'][$current_eleve_login];
-			$tab_login_indice[$nb]=$tab_moy['periodes'][$nb]['tab_login_indice'][strtoupper($current_eleve_login)];
+			$tab_login_indice[$nb]=$tab_moy['periodes'][$nb]['tab_login_indice'][my_strtoupper($current_eleve_login)];
 			//echo "\$tab_login_indice[$nb]=$tab_login_indice[$nb]<br />";
 		}
 		/*
@@ -525,8 +525,8 @@ if ($on_continue == 'yes') {
 			if(
 				(
 					(in_array($current_eleve_login, $current_group["eleves"][$nb]["list"])) or
-					(in_array(strtolower($current_eleve_login), $current_group["eleves"][$nb]["list"])) or
-					(in_array(strtoupper($current_eleve_login), $current_group["eleves"][$nb]["list"]))
+					(in_array(my_strtolower($current_eleve_login), $current_group["eleves"][$nb]["list"])) or
+					(in_array(my_strtoupper($current_eleve_login), $current_group["eleves"][$nb]["list"]))
 				) and 
 				($test_eleve_app!=0)
 			) {
@@ -644,7 +644,7 @@ if ($on_continue == 'yes') {
 			echo "<td ";
 			if ($nb_periodes > 1) echo " rowspan= ".$nb_periodes;
 			//echo" width=\"$larg_col1\" class='bull_simpl'><b>$current_matiere_nom_complet</b>";
-			echo " width=\"$larg_col1\" class='bull_simpl'><b>".htmlentities($current_matiere_nom_complet)."</b>";
+			echo " width=\"$larg_col1\" class='bull_simpl'><b>".htmlspecialchars($current_matiere_nom_complet)."</b>";
 			$k = 0;
 			//echo "(".$current_group['id'].")";
 			$liste_email_profs_du_groupe="";

@@ -1,6 +1,5 @@
 <?php
 /*
- * @version: $Id: modify_type_doc.php 5940 2010-11-21 20:23:57Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

@@ -1,7 +1,6 @@
 <?php
 @set_time_limit(0);
 /*
-* $Id: eleves_options.php 8572 2011-10-29 12:48:54Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -69,6 +68,7 @@ if (!isset($_POST["action"])) {
 			"</ul>\n";
 	echo "<p style='margin-left:6em; text-indent:-6em;'><em>Remarque&nbsp;:</em> vous pouvez ne spécifier qu'une seule ligne par élève, en indiquant toutes les matières suivies dans le deuxième champ en séparant les identifiants de matières avec un point d'exclamation, mais vous pouvez également avoir une ligne pour une association simple, et avoir autant de lignes que d'enseignements suivis par l'élève.</p>\n";
 	echo "<p>Veuillez préciser le nom complet du fichier <b>g_eleves_options.csv</b>.\n";
+
 	echo "<form enctype='multipart/form-data' action='eleves_options.php' method='post'>\n";
 	echo add_token_field();
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
@@ -101,26 +101,20 @@ if (!isset($_POST["action"])) {
 
 		echo "<p><em>On remplit/complète la table 'j_eleves_groupes'&nbsp;:</em> ";
 
-		//$go = true;
 		$i = 0;
 		// Compteur d'erreurs
 		$error = 0;
 		// Compteur d'enregistrement
 		$total = 0;
-		//while ($go) {
 		while ($lig=mysql_fetch_object($res_temp)) {
-			/*
-			$reg_id_int = $_POST["ligne".$i."_id_int"];
-			$reg_options = $_POST["ligne".$i."_options"];
-			*/
 			$reg_id_int = $lig->col1;
 			$reg_options = $lig->col2;
 
 			// On nettoie et on vérifie :
 			$reg_id_int = preg_replace("/[^0-9]/","",trim($reg_id_int));
-			if (strlen($reg_id_int) > 50) $reg_id_int = substr($reg_id_int, 0, 50);
+			if (mb_strlen($reg_id_int) > 50) $reg_id_int = mb_substr($reg_id_int, 0, 50);
 			$reg_options = preg_replace("/[^A-Za-z0-9.\-!]/","",trim($reg_options));
-			if (strlen($reg_options) > 2000) $reg_options = substr($reg_options, 0, 2000); // Juste pour éviter une tentative d'overflow...
+			if (mb_strlen($reg_options) > 2000) $reg_options = mb_substr($reg_options, 0, 2000); // Juste pour éviter une tentative d'overflow...
 
 
 			// Première étape : on s'assure que l'élève existe et on récupère son login... S'il n'existe pas, on laisse tomber.
@@ -182,7 +176,7 @@ if (!isset($_POST["action"])) {
 										$reg = mysql_query("INSERT INTO j_eleves_groupes SET id_groupe = '" . $group_id . "', login = '" . $login_eleve . "', periode = '" . $p . "'");
 										if (!$reg) {
 											$error++;
-											echo mysql_error();
+											echo "<span style='color:red'>".mysql_error().'<span><br />';
 										} else {
 											if ($p == 1) $total++;
 										}
@@ -195,7 +189,6 @@ if (!isset($_POST["action"])) {
 			}
 
 			$i++;
-			//if (!isset($_POST['ligne'.$i.'_id_int'])) $go = false;
 		}
 
 		if ($error > 0) {echo "<p><font color='red'>Il y a eu " . $error . " erreurs.</font></p>\n";}
@@ -217,7 +210,7 @@ if (!isset($_POST["action"])) {
 
 		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
 		// autant forcer l'utilisateur à être rigoureux
-		if(strtolower($csv_file['name']) == "g_eleves_options.csv") {
+		if(my_strtolower($csv_file['name']) == "g_eleves_options.csv") {
 
 			// Le nom est ok. On ouvre le fichier
 			$fp=fopen($csv_file['tmp_name'],"r");
@@ -254,23 +247,19 @@ if (!isset($_POST["action"])) {
 
 						// On nettoie et on vérifie :
 						$tabligne[0] = preg_replace("/[^0-9]/","",trim($tabligne[0]));
-						if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
+						if (mb_strlen($tabligne[0]) > 50) $tabligne[0] = mb_substr($tabligne[0], 0, 50);
 
 						if(!isset($tabligne[1])) {$tabligne[1]="";}
 						$tabligne[1] = preg_replace("/[^A-Za-z0-9.\-!]/","",trim($tabligne[1]));
-						if (strlen($tabligne[1]) > 2000) $tabligne[1] = substr($tabligne[1], 0, 2000);
-
+						if (mb_strlen($tabligne[1]) > 2000) $tabligne[1] = mb_substr($tabligne[1], 0, 2000);
 
 						$data_tab[$k] = array();
-
-
 
 						$data_tab[$k]["id_int"] = $tabligne[0];
 						$data_tab[$k]["options"] = $tabligne[1];
 
 						$k++;
 					}
-					//$k++;
 				}
 
 				fclose($fp);
@@ -295,7 +284,7 @@ if (!isset($_POST["action"])) {
                     echo "<tr class='lig$alt'>\n";
 					echo "<td>\n";
 					$sql="INSERT INTO tempo2 SET col1='".$data_tab[$i]["id_int"]."',
-					col2='".addslashes($data_tab[$i]["options"])."';";
+					col2='".mysql_real_escape_string($data_tab[$i]["options"])."';";
 					$insert=mysql_query($sql);
 					if(!$insert) {
 						echo "<span style='color:red'>";
@@ -306,11 +295,9 @@ if (!isset($_POST["action"])) {
 					else {
 						echo $data_tab[$i]["id_int"];
 					}
-					//echo "<input type='hidden' name='ligne".$i."_id_int' value='" . $data_tab[$i]["id_int"] . "' />\n";
 					echo "</td>\n";
 					echo "<td>\n";
 					echo $data_tab[$i]["options"];
-					//echo "<input type='hidden' name='ligne".$i."_options' value='" . $data_tab[$i]["options"] . "' />\n";
 					echo "</td>\n";
 					echo "</tr>\n";
 				}

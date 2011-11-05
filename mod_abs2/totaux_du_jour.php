@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id: totaux_du_jour.php 8358 2011-09-25 16:07:47Z dblanqui $
  *
  * Copyright 2010 Josselin Jacquard
  *
@@ -279,7 +278,7 @@ $eleve_col = $query
                    case'ext.':
                        $nb_ext++; 
                 }
-                $eleves_absents[$eleve->getIdEleve()]=$eleve->getIdEleve();
+                $eleves_absents[$eleve->getId()]=$eleve->getId();
             }           
         }        
         echo'<tr align="center">

@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: select.php 4380 2010-04-30 07:23:44Z crob $
+ * $Id$
  *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
@@ -135,7 +135,7 @@ if ($_SESSION["statut"] == 'autre') {
 				} else {
 					$selected = "";
 				}?>
-            	<option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?> onclick="javascript:document.form1.submit()"><?php echo substr($data_liste_classe['nom_complet'], 0, 40)." (".$data_liste_classe['classe'].")"; ?></option>
+            	<option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?> onclick="javascript:document.form1.submit()"><?php echo mb_substr($data_liste_classe['nom_complet'], 0, 40)." (".$data_liste_classe['classe'].")"; ?></option>
     		<?php
 			} ?>
             </select>

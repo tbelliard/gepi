@@ -1,5 +1,4 @@
 /*
-$Id: lib_exb.js 3746 2009-11-20 08:58:25Z crob $
 */
 
 // fonction permettant d'augmenter/réduire un nombre via onKeyDown

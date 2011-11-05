@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * @version $Id: stat_connexions.php 8554 2011-10-26 19:16:35Z crob $
+ * @version $Id$
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
@@ -119,7 +119,7 @@ function tableau_php_tableau_html($tab) {
 */
 
 if(!isset($mode)) {
-	echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 	
 	if($nb_classes==0) {
 		echo "<p style='color:red'>Aucune classe n'existe encore.</p>\n";

@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: import_communes.php 6746 2011-04-04 05:59:18Z crob $
  *
  * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -498,7 +497,7 @@ else {
 				// $unzipped_max_filesize < 0    extraction zip désactivée
 				if($unzipped_max_filesize>=0) {
 					$fichier_emis=$csv_file['name'];
-					$extension_fichier_emis=strtolower(strrchr($fichier_emis,"."));
+					$extension_fichier_emis=my_strtolower(strrchr($fichier_emis,"."));
 					if (($extension_fichier_emis==".zip")||($csv_file['type']=="application/zip"))
 						{
 

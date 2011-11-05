@@ -1,7 +1,6 @@
 <?php
 
 /*
-$Id: mincals.inc 3875 2009-12-05 17:29:29Z crob $
 */
 
 

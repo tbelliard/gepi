@@ -57,7 +57,7 @@ class Request
 		foreach ($args as $arg) {
 			$pos = strpos($arg, "action=");		
 			if ($pos !== false) {
-				$matches['action'] = substr($arg, $pos+7);
+				$matches['action'] = mb_substr($arg, $pos+7);
 			}		
 		}
         return $matches;

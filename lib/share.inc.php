@@ -1,7 +1,6 @@
 <?php
 /** Fonctions accessibles dans toutes les pages
  * 
- * $Id: share.inc.php 8577 2011-10-30 10:53:54Z crob $
  * 
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * 
@@ -56,7 +55,7 @@ include_once dirname(__FILE__).'/share-pdf.inc.php';
  * @param string $sujet Le sujet du message
  * @param string $message Le message
  * @param string $destinataire Le destinataire
- * @param string $ajout_headers Text ‡ ajouter dans le header
+ * @param string $ajout_headers Text √† ajouter dans le header
  */
 function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
 
@@ -65,11 +64,11 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
 	if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 
   $subject = $gepiPrefixeSujetMail."GEPI : $sujet";
-  $subject = "=?ISO-8859-1?B?".base64_encode($subject)."?=\r\n";
+  $subject = "=?UTF-8?B?".base64_encode($subject)."?=\r\n";
   
   $headers = "X-Mailer: PHP/" . phpversion()."\r\n";
   $headers .= "MIME-Version: 1.0\r\n";
-  $headers .= "Content-type: text/plain; charset=iso-8859-1\r\n";
+  $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
   $headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
   $headers .= $ajout_headers;
 
@@ -81,25 +80,24 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
 }
 
 /**
- * Verification de la validitÈ d'un mot de passe
+ * Verification de la validit√© d'un mot de passe
  * 
  * longueur : getSettingValue("longmin_pwd") minimum
  * 
- * composÈ de lettres et d'au moins un chiffre
+ * compos√© de lettres et d'au moins un chiffre
  *
 
  * @param string $password Mot de passe
- * @param boolean $flag Si $flag = 1, il faut Ègalement au moins un caractËres spÈcial (voir $char_spec dans global.inc)
+ * @param boolean $flag Si $flag = 1, il faut √©galement au moins un caract√®res sp√©cial
  * @return boolean TRUE si le mot de passe est valable
  * @see getSettingValue()
- * @todo on dÈclare $char_spec alors qu'on ne l'utilise pas, n'y aurait-il pas un problËme ?
  */
 function verif_mot_de_passe($password,$flag) {
 	global $info_verif_mot_de_passe;
 
 	if ($flag == 1) {
 		if(preg_match("/(^[a-zA-Z]*$)|(^[0-9]*$)/", $password)) {
-			$info_verif_mot_de_passe="Le mot de passe ne doit pas Ítre uniquement numÈrique ou uniquement alphabÈtique.";
+			$info_verif_mot_de_passe="Le mot de passe ne doit pas √™tre uniquement num√©rique ou uniquement alphab√©tique.";
 			return FALSE;
 		}
 		elseif(preg_match("/^[[:alnum:]\W]{".getSettingValue("longmin_pwd").",}$/", $password) and preg_match("/[\W]+/", $password) and preg_match("/[0-9]+/", $password)) {
@@ -108,14 +106,14 @@ function verif_mot_de_passe($password,$flag) {
 		}
 		else {
 			if(preg_match("/^[A-Za-z0-9]*$/", $password)) {
-				$info_verif_mot_de_passe="Le mot de passe doit comporter au moins un caractËre spÈcial (#, *,...).";
+				$info_verif_mot_de_passe="Le mot de passe doit comporter au moins un caract√®re sp√©cial (#, *,...).";
 			}
-			elseif (strlen($password) < getSettingValue("longmin_pwd")) {
-				$info_verif_mot_de_passe="La longueur du mot de passe doit Ítre supÈrieure ou Ègale ‡ ".getSettingValue("longmin_pwd").".";
+			elseif (mb_strlen($password) < getSettingValue("longmin_pwd")) {
+				$info_verif_mot_de_passe="La longueur du mot de passe doit √™tre sup√©rieure ou √©gale √† ".getSettingValue("longmin_pwd").".";
 				return FALSE;
 			}
 			else {
-				// Euh... qu'est-ce qui a ÈtÈ saisi?
+				// Euh... qu'est-ce qui a √©t√© saisi?
 				$info_verif_mot_de_passe="";
 			}
 			return FALSE;
@@ -123,11 +121,11 @@ function verif_mot_de_passe($password,$flag) {
 	}
 	else {
 		if(preg_match("/(^[a-zA-Z]*$)|(^[0-9]*$)/", $password)) {
-			$info_verif_mot_de_passe="Le mot de passe ne doit pas Ítre uniquement numÈrique ou uniquement alphabÈtique.";
+			$info_verif_mot_de_passe="Le mot de passe ne doit pas √™tre uniquement num√©rique ou uniquement alphab√©tique.";
 			return FALSE;
 		}
-		elseif (strlen($password) < getSettingValue("longmin_pwd")) {
-			$info_verif_mot_de_passe="La longueur du mot de passe doit Ítre supÈrieure ou Ègale ‡ ".getSettingValue("longmin_pwd").".";
+		elseif (mb_strlen($password) < getSettingValue("longmin_pwd")) {
+			$info_verif_mot_de_passe="La longueur du mot de passe doit √™tre sup√©rieure ou √©gale √† ".getSettingValue("longmin_pwd").".";
 			return FALSE;
 		}
 		else {
@@ -138,22 +136,22 @@ function verif_mot_de_passe($password,$flag) {
 }
 
 /**
- * Teste si le login existe dÈj‡ dans la base
+ * Teste si le login existe d√©j√† dans la base
  *
- * @param string $s le login testÈ
+ * @param string $s le login test√©
  * @return string yes si le login existe, no sinon
  */
 function test_unique_login($s) {
-    // On vÈrifie que le login ne figure pas dÈj‡ dans la base utilisateurs
-    $test1 = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE (login='$s' OR login='".strtoupper($s)."')"));
+    // On v√©rifie que le login ne figure pas d√©j√† dans la base utilisateurs
+    $test1 = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE (login='$s' OR login='".my_strtoupper($s)."')"));
     if ($test1 != "0") {
         return 'no';
     } else {
-        $test2 = mysql_num_rows(mysql_query("SELECT login FROM eleves WHERE (login='$s' OR login = '".strtoupper($s)."')"));
+        $test2 = mysql_num_rows(mysql_query("SELECT login FROM eleves WHERE (login='$s' OR login = '".my_strtoupper($s)."')"));
         if ($test2 != "0") {
             return 'no';
         } else {
-			$test3 = mysql_num_rows(mysql_query("SELECT login FROM resp_pers WHERE (login='$s' OR login='".strtoupper($s)."')"));
+			$test3 = mysql_num_rows(mysql_query("SELECT login FROM resp_pers WHERE (login='$s' OR login='".my_strtoupper($s)."')"));
 			if ($test3 != "0") {
 				return 'no';
 			} else {
@@ -164,28 +162,28 @@ function test_unique_login($s) {
 }
 
 /**
- * VÈrifie l'unicitÈ du login
+ * V√©rifie l'unicit√© du login
  * 
- * On vÈrifie que le login ne figure pas dÈj‡ dans une des bases ÈlËve des annÈes passÈes 
+ * On v√©rifie que le login ne figure pas d√©j√† dans une des bases √©l√®ve des ann√©es pass√©es 
  *
- * @param string $s le login ‡ vÈrifier
+ * @param string $s le login √† v√©rifier
  * @param <type> $indice ??
  * @return string yes si le login existe, no sinon
  */
 function test_unique_e_login($s, $indice) {
-    // On vÈrifie que le login ne figure pas dÈj‡ dans la base utilisateurs
+    // On v√©rifie que le login ne figure pas d√©j√† dans la base utilisateurs
     //$test7 = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE (login='$s' OR login='".strtoupper($s)."')"));
     //if ($test7 != "0") {
 
     $test7 = test_unique_login($s);
     if ($test7 == "no") {
-        // Si le login figure dÈj‡ dans une des bases ÈlËve des annÈes passÈes ou bien
+        // Si le login figure d√©j√† dans une des bases √©l√®ve des ann√©es pass√©es ou bien
         // dans la base utilisateurs, on retourne 'no' !
         return 'no';
     } else {
-        // Si le login ne figure pas dans une des bases ÈlËve des annÈes passÈes ni dans la base
-        // utilisateurs, on vÈrifie qu'un mÍme login ne vient pas d'Ítre attribuÈ !
-        $test_tempo2 = mysql_num_rows(mysql_query("SELECT col2 FROM tempo2 WHERE (col2='$s' or col2='".strtoupper($s)."')"));
+        // Si le login ne figure pas dans une des bases √©l√®ve des ann√©es pass√©es ni dans la base
+        // utilisateurs, on v√©rifie qu'un m√™me login ne vient pas d'√™tre attribu√© !
+        $test_tempo2 = mysql_num_rows(mysql_query("SELECT col2 FROM tempo2 WHERE (col2='$s' or col2='".my_strtoupper($s)."')"));
         if ($test_tempo2 != "0") {
             return 'no';
         } else {
@@ -196,37 +194,37 @@ function test_unique_e_login($s, $indice) {
 }
 
 /**
- * GÈnÈre le login ‡ partir du nom et du prÈnom
+ * G√©n√©re le login √† partir du nom et du pr√©nom
  * 
- * GÈnËre puis nettoie un login pour qu'il soit valide et unique
+ * G√©n√®re puis nettoie un login pour qu'il soit valide et unique
  * 
- * Le mode de gÈnÈration doit Ítre passÈ en argument
+ * Le mode de g√©n√©ration doit √™tre pass√© en argument
  * 
- * name             ‡ partir du nom
+ * name             √† partir du nom
  * 
- * name8            ‡ partir du nom, rÈduit ‡ 8 caractËres
+ * name8            √† partir du nom, r√©duit √† 8 caract√®res
  * 
- * name9_p          ‡ partir du nom, rÈduit ‡ 9 caractËres + _ + premiËre lettre du prÈnom (format historique du login ÈlËve dans Gepi)
+ * name9_p          √† partir du nom, r√©duit √† 9 caract√®res + _ + premi√®re lettre du pr√©nom (format historique du login √©l√®ve dans Gepi)
  * 
- * fname8           premiËre lettre du prÈnom + nom, rÈduit ‡ 8 caractËres
+ * fname8           premi√®re lettre du pr√©nom + nom, r√©duit √† 8 caract√®res
  * 
- * fname19          premiËre lettre du prÈnom + nom, rÈduit ‡ 19 caractËres
+ * fname19          premi√®re lettre du pr√©nom + nom, r√©duit √† 19 caract√®res
  * 
- * firstdotname     prÈnom.nom
+ * firstdotname     pr√©nom.nom
  * 
- * firstdotname19   prÈnom.nom rÈduit ‡ 19 caractËres
+ * firstdotname19   pr√©nom.nom r√©duit √† 19 caract√®res
  * 
- * namef8           nom rÈduit ‡ 7 caractËres + premiËre lettre du prÈnom
+ * namef8           nom r√©duit √† 7 caract√®res + premi√®re lettre du pr√©nom
  * 
- * lcs              premiËre lettre du prÈnom + premier nom (+ _ + deuxiËme nom si le 1er nom fait moins de 4 caractËres)
+ * lcs              premi√®re lettre du pr√©nom + premier nom (+ _ + deuxi√®me nom si le 1er nom fait moins de 4 caract√®res)
  * 
- * si $_mode est NULL, fname8 est utilisÈ
+ * si $_mode est NULL, fname8 est utilis√©
  * 
  * @param string $_nom nom de l'utilisateur
- * @param string $_prenom prÈnom de l'utilisateur
- * @param string $_mode Le mode de gÈnÈration ou NULL
- * @param string $_casse La casse du login ('maj', 'min', '') par dÈfaut la casse n'est pas modifiÈe
- * @return string|booleanLe login gÈnÈrÈ ou FALSE si on obtient un login vide
+ * @param string $_prenom pr√©nom de l'utilisateur
+ * @param string $_mode Le mode de g√©n√©ration ou NULL
+ * @param string $_casse La casse du login ('maj', 'min', '') par d√©faut la casse n'est pas modifi√©e
+ * @return string|booleanLe login g√©n√©r√© ou FALSE si on obtient un login vide
  * @see test_unique_login()
  */
 function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
@@ -234,8 +232,7 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 	if ($_mode == NULL) {
 		$_mode = "fname8";
 	}
-	// On gÈnËre le login
-	//$_prenom = strtr($_prenom, "ÁÈËÎÍ…»À ¸˚˘‹€ÔÓœŒ‰‚‡ƒ¬¿Ùˆ‘÷«", "ceeeeEEEEuuuUUiiIIaaaAAAooOOC");
+	// On g√©n√®re le login
 	$_prenom = remplace_accents($_prenom);
 
 	$prenoms = explode(" ",$_prenom);
@@ -245,7 +242,6 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 
 	$_prenom = preg_replace("/[^a-zA-Z.\-]/", "", $_prenom);
 
-	//$_nom = strtr($_nom, "ÁÈËÎÍ…»À ¸˚˘‹€ÔÓœŒ‰‚‡ƒ¬¿Ùˆ‘÷«", "ceeeeEEEEuuuUUiiIIaaaAAAooOOC");
 	$_nom = remplace_accents($_nom);
 	$_nom = preg_replace("/[^a-zA-Z.\-]/", "", $_nom);
 
@@ -261,20 +257,20 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 		$temp1 = preg_replace("/ /","", $temp1);
 		$temp1 = preg_replace("/-/","_", $temp1);
 		$temp1 = preg_replace("/'/","", $temp1);
-		$temp1 = substr($temp1,0,8);
+		$temp1 = mb_substr($temp1,0,8);
 	} elseif ($_mode == "name9_p") {
-		// Format d'origine des comptes ÈlËves dans Gepi
+		// Format d'origine des comptes √©l√®ves dans Gepi
 		$temp1 = $_nom;
 		$temp1 = preg_replace("/ /","", $temp1);
 		$temp1 = preg_replace("/-/","", $temp1);
 		$temp1 = preg_replace("/'/","", $temp1);
-		$temp1 = substr($temp1,0,9);
+		$temp1 = mb_substr($temp1,0,9);
 		if($_prenom!='') {
 			$temp2 = preg_replace("/ /","", $_prenom);
 			$temp2 = preg_replace("/-/","_", $temp2);
 			$temp2 = preg_replace("/'/","", $temp2);
 			if($temp2!='') {
-				$temp1 .= '_'.substr($temp2,0,1);
+				$temp1 .= '_'.mb_substr($temp2,0,1);
 			}
 		}
 	} elseif ($_mode == "fname8") {
@@ -283,14 +279,14 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 		$temp1 = preg_replace("/ /","", $temp1);
 		$temp1 = preg_replace("/-/","_", $temp1);
 		$temp1 = preg_replace("/'/","", $temp1);
-		$temp1 = substr($temp1,0,8);
+		$temp1 = mb_substr($temp1,0,8);
 	} elseif ($_mode == "fname19") {
 		if($_prenom=='') {return FALSE;}
 		$temp1 = $_prenom{0} . $_nom;
 		$temp1 = preg_replace("/ /","", $temp1);
 		$temp1 = preg_replace("/-/","_", $temp1);
 		$temp1 = preg_replace("/'/","", $temp1);
-		$temp1 = substr($temp1,0,19);
+		$temp1 = mb_substr($temp1,0,19);
 	} elseif ($_mode == "firstdotname") {
 		if($_prenom=='') {return FALSE;}
 
@@ -320,23 +316,23 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 
 		$temp1 = preg_replace("/ /","", $temp1);
 		$temp1 = preg_replace("/'/","", $temp1);
-		$temp1 = substr($temp1,0,19);
+		$temp1 = mb_substr($temp1,0,19);
 	} elseif ($_mode == "namef8") {
 		if($_prenom=='') {return FALSE;}
-		$temp1 =  substr($_nom,0,7) . $_prenom{0};
+		$temp1 =  mb_substr($_nom,0,7) . $_prenom{0};
 		$temp1 = preg_replace("/ /","", $temp1);
 		$temp1 = preg_replace("/-/","_", $temp1);
 		$temp1 = preg_replace("/'/","", $temp1);
 	} elseif ($_mode == "lcs") {
-		$temp1 = strtolower($_nom);
+		$temp1 = my_strtolower($_nom);
 		if (preg_match("/\s/",$temp1)) {
 			$noms = preg_split("/\s/",$temp1);
 			$temp1 = $noms[0];
-			if (strlen($noms[0]) < 4) {
+			if (mb_strlen($noms[0]) < 4) {
 				$temp1 .= "_". $noms[1];
 			}
 		}
-		$temp1 = strtolower(substr($_prenom,0,1)). $temp1;
+		$temp1 = my_strtolower(mb_substr($_prenom,0,1)). $temp1;
 	} else {
 		return FALSE;
 	}
@@ -345,28 +341,28 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 		$temp1=strtoupper($temp1);
 	}
 	elseif($_casse=='min') {
-		$temp1=strtolower($temp1);
+		$temp1=my_strtolower($temp1);
 	}
 
 	$login_user = $temp1;
 
 	// Nettoyage final
-	$login_user = substr($login_user, 0, 50);
+	$login_user = mb_substr($login_user, 0, 50);
 	$login_user = preg_replace("/[^A-Za-z0-9._\-]/","",trim($login_user));
 
 	$test1 = $login_user{0};
 	while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
-		$login_user = substr($login_user, 1);
+		$login_user = mb_substr($login_user, 1);
 		$test1 = $login_user{0};
 	}
 
-	$test1 = $login_user{strlen($login_user)-1};
+	$test1 = $login_user{mb_strlen($login_user)-1};
 	while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
-		$login_user = substr($login_user, 0, strlen($login_user)-1);
-		$test1 = $login_user{strlen($login_user)-1};
+		$login_user = mb_substr($login_user, 0, mb_strlen($login_user)-1);
+		$test1 = $login_user{mb_strlen($login_user)-1};
 	}
 
-	// On teste l'unicitÈ du login que l'on vient de crÈer
+	// On teste l'unicit√© du login que l'on vient de cr√©er
 	$m = '';
 	$test_unicite = 'no';
 	while ($test_unicite != 'yes') {
@@ -386,11 +382,11 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 }
 
 /**
- * Fonction qui propose l'ordre d'affichage du nom, prÈnom et de la civilitÈ en fonction des rÈglages de la classe de l'ÈlËve
+ * Fonction qui propose l'ordre d'affichage du nom, pr√©nom et de la civilit√© en fonction des r√©glages de la classe de l'√©l√®ve
  *
  * @param string $login login de l'utilisateur
  * @param integer $id_classe Id de la classe
- * @return string nom, prÈnom, civilitÈ formatÈ
+ * @return string nom, pr√©nom, civilit√© format√©
  */
 function affiche_utilisateur($login,$id_classe) {
     $req = mysql_query("select nom, prenom, civilite from utilisateurs where login = '".$login."'");
@@ -403,8 +399,8 @@ function affiche_utilisateur($login,$id_classe) {
     $i='';
     if ((($format == 'ni') OR ($format == 'in') OR ($format == 'cni') OR ($format == 'cin')) AND ($prenom != '')) {
         $temp = explode("-", $prenom);
-        $i = substr($temp[0], 0, 1);
-        if (isset($temp[1]) and ($temp[1] != '')) $i .= "-".substr($temp[1], 0, 1);
+        $i = mb_substr($temp[0], 0, 1);
+        if (isset($temp[1]) and ($temp[1] != '')) $i .= "-".mb_substr($temp[1], 0, 1);
         $i .= ". ";
     }
     switch( $format ) {
@@ -450,22 +446,22 @@ function affiche_utilisateur($login,$id_classe) {
  */
 function verif_active_dbase() {
     if (!function_exists("dbase_open"))  {
-        echo "<center><p class=grand>ATTENTION : PHP n'est pas configurÈ pour gÈrer les fichiers GEP (dbf).
-        <br />L'extension d_base n'est pas active. Adressez-vous ‡ l'administrateur du serveur pour corriger le problËme.</p></center></body></html>";
+        echo "<center><p class=grand>ATTENTION : PHP n'est pas configur√© pour g√©rer les fichiers GEP (dbf).
+        <br />L'extension d_base n'est pas active. Adressez-vous √† l'administrateur du serveur pour corriger le probl√®me.</p></center></body></html>";
         die();
     }
 }
 
 /**
- * Ecrit une balise <select> de date jour mois annÈe
- * correction W3C : ajout de la balise de fin </option> ‡ la fin de $out_html
- * CrÈation d'un label pour passer les tests WAI
+ * Ecrit une balise <select> de date jour mois ann√©e
+ * correction W3C : ajout de la balise de fin </option> √† la fin de $out_html
+ * Cr√©ation d'un label pour passer les tests WAI
  *
  * @param string $prefix l'attribut name sera de la forme $prefixday, $prefixMois,...
  * @param integer $day
  * @param integer $month
  * @param integer $year
- * @param string $option Si = more_years, on ajoute +5 et -5 annÈes aux annÈes possibles
+ * @param string $option Si = more_years, on ajoute +5 et -5 ann√©es aux ann√©es possibles
  * @see getSettingValue()
  */
 function genDateSelector($prefix, $day, $month, $year, $option)
@@ -494,7 +490,7 @@ function genDateSelector($prefix, $day, $month, $year, $option)
 
     echo "</select>\n";
 
-	 echo "\n<label for=\"${prefix}annee\"><span style='display:none;'>AnnÈe</span></label>\n";
+	 echo "\n<label for=\"${prefix}annee\"><span style='display:none;'>Ann√©e</span></label>\n";
     echo "<select id=\"${prefix}annee\" name=\"${prefix}year\">\n";
 
     $min = strftime("%Y", getSettingValue("begin_bookings"));
@@ -509,26 +505,8 @@ function genDateSelector($prefix, $day, $month, $year, $option)
     echo "</select>\n";
 }
 
-
 /**
- * Remplit un fichier de suivi des actions
- * 
- * Passer la variable $local_debug ‡ "y" pour activer le remplissage du fichier "/tmp/calcule_moyenne.txt" de debug
- * 
- * @param string $texte 
- */
-function fdebug($texte){
-	$local_debug="n";
-	if($local_debug=="y") {
-		$fich=fopen("/tmp/calcule_moyenne.txt","a+");
-		fwrite($fich,$texte);
-		fclose($fich);
-	}
-}
-
-
-/**
- * VÈrifie que la page est bien accessible par l'utilisateur
+ * V√©rifie que la page est bien accessible par l'utilisateur
  *
  * @global string 
  * @return booleanTRUE si la page est accessible, FALSE sinon
@@ -541,57 +519,29 @@ function checkAccess() {
 
     	$sql = "SELECT autorisation
 	    from droits_speciaux
-    	where nom_fichier = '" . substr($url['path'], strlen($gepiPath)) . "'
+    	where nom_fichier = '" . mb_substr($url['path'], mb_strlen($gepiPath)) . "'
 		AND id_statut = '" . $_SESSION['statut_special_id'] . "'";
 
     }else{
 
 		$sql = "select " . $_SESSION['statut'] . "
 	    from droits
-    	where id = '" . substr($url['path'], strlen($gepiPath)) . "'
+    	where id = '" . mb_substr($url['path'], mb_strlen($gepiPath)) . "'
     	;";
 
 	}
 
     $dbCheckAccess = sql_query1($sql);
-    if (substr($url['path'], 0, strlen($gepiPath)) != $gepiPath) {
-        tentative_intrusion(2, "Tentative d'accËs avec modification sauvage de gepiPath");
+    if (mb_substr($url['path'], 0, mb_strlen($gepiPath)) != $gepiPath) {
+        tentative_intrusion(2, "Tentative d'acc√®s avec modification sauvage de gepiPath");
         return (FALSE);
     } else {
         if ($dbCheckAccess == 'V') {
             return (TRUE);
         } else {
-            tentative_intrusion(1, "Tentative d'accËs ‡ un fichier sans avoir les droits nÈcessaires");
+            tentative_intrusion(1, "Tentative d'acc√®s √† un fichier sans avoir les droits n√©cessaires");
             return (FALSE);
         }
-    }
-}
-
-
-/**
- * VÈrifie qu'un enseignant enseigne une matiËre dans une classe
- *
- * @deprecated la table j_classes_matieres_professeurs n'existe plus
- * @param string $login Login de l'enseignant
- * @param int $id_classe Id de la classe
- * @param type $matiere
- * @return boolean
- */
-function Verif_prof_classe_matiere ($login,$id_classe,$matiere) {
-    if(empty($login) || empty($id_classe) || empty($matiere)) {return FALSE;}
-    $call_prof = mysql_query("SELECT id_professeur FROM j_classes_matieres_professeurs WHERE (id_classe='".$id_classe."' AND id_matiere='".$matiere."')");
-    $nb_profs = mysql_num_rows($call_prof);
-    $k = 0;
-    $flag = 0;
-    while ($k < $nb_profs) {
-        $prof = @mysql_result($call_prof, $k, "id_professeur");
-        if (strtolower($login) == strtolower($prof)) {$flag = 1;}
-        $k++;
-    }
-    if ($flag == 0) {
-        return FALSE;
-    } else {
-        return TRUE;
     }
 }
 
@@ -609,30 +559,30 @@ return $email;
 }
 
 /**
- * Renvoie une chaine dÈbarassÈe de l'encodage ASCII
+ * Renvoie une chaine d√©barass√©e de l'encodage ASCII
  *
- * @param string $s le texte ‡ convertir
- * @return string le texte avec les lettres accentuÈes
+ * @param string $s le texte √† convertir
+ * @return string le texte avec les lettres accentu√©es
  */
 function dbase_filter($s){
-  for($i = 0; $i < strlen($s); $i++){
+  for($i = 0; $i < mb_strlen($s); $i++){
     $code = ord($s[$i]);
     switch($code){
-    case 129:    $s[$i] = "¸"; break;
-    case 130:   $s[$i] = "È"; break;
-    case 131:    $s[$i] = "‚"; break;
-    case 132:    $s[$i] = "‰"; break;
-    case 133:    $s[$i] = "‡"; break;
-    case 135:    $s[$i] = "Á"; break;
-    case 136:    $s[$i] = "Í"; break;
-    case 137:    $s[$i] = "Î"; break;
-    case 138:    $s[$i] = "Ë"; break;
-    case 139:    $s[$i] = "Ô"; break;
-    case 140:    $s[$i] = "Ó"; break;
-    case 147:    $s[$i] = "Ù"; break;
-    case 148:    $s[$i] = "ˆ"; break;
-    case 150:    $s[$i] = "˚"; break;
-    case 151:    $s[$i] = "˘"; break;
+    case 129:    $s[$i] = "√º"; break;
+    case 130:   $s[$i] = "√©"; break;
+    case 131:    $s[$i] = "√¢"; break;
+    case 132:    $s[$i] = "√§"; break;
+    case 133:    $s[$i] = "√†"; break;
+    case 135:    $s[$i] = "√ß"; break;
+    case 136:    $s[$i] = "√™"; break;
+    case 137:    $s[$i] = "√´"; break;
+    case 138:    $s[$i] = "√®"; break;
+    case 139:    $s[$i] = "√Ø"; break;
+    case 140:    $s[$i] = "√Æ"; break;
+    case 147:    $s[$i] = "√¥"; break;
+    case 148:    $s[$i] = "√∂"; break;
+    case 150:    $s[$i] = "√ª"; break;
+    case 151:    $s[$i] = "√π"; break;
     }
   }
   return $s;
@@ -645,7 +595,7 @@ function dbase_filter($s){
  * @return string navigateur - version
  */
 function detect_browser($HTTP_USER_AGENT) {
-	// D'aprËs le fichier db_details_common.php de phpmyadmin
+	// D'apr√®s le fichier db_details_common.php de phpmyadmin
 	/*
 	$f=fopen("/tmp/detect_browser.txt","a+");
 	fwrite($f,date("d/m/Y His").": $HTTP_USER_AGENT\n");
@@ -751,33 +701,33 @@ function detect_browser($HTTP_USER_AGENT) {
 }
 
 /**
- * Formate une date en jour/mois/annÈe
+ * Formate une date en jour/mois/ann√©e
  * 
  * Accepte les dates aux formats YYYY-MM-DD ou YYYYMMDD ou YYYY-MM-DD xx:xx:xx
  * 
- * Retourne la date passÈe en argument si le format n'est pas bon
+ * Retourne la date pass√©e en argument si le format n'est pas bon
  *
- * @param date $date La date ‡ formater
- * @return string la date formatÈe
+ * @param date $date La date √† formater
+ * @return string la date format√©e
  */
 function affiche_date_naissance($date) {
-    if (strlen($date) == 10) {
+    if (mb_strlen($date) == 10) {
         // YYYY-MM-DD
-        $annee = substr($date, 0, 4);
-        $mois = substr($date, 5, 2);
-        $jour = substr($date, 8, 2);
+        $annee = mb_substr($date, 0, 4);
+        $mois = mb_substr($date, 5, 2);
+        $jour = mb_substr($date, 8, 2);
     }
-    elseif (strlen($date) == 8 ) {
+    elseif (mb_strlen($date) == 8 ) {
         // YYYYMMDD
-        $annee = substr($date, 0, 4);
-        $mois = substr($date, 4, 2);
-        $jour = substr($date, 6, 2);
+        $annee = mb_substr($date, 0, 4);
+        $mois = mb_substr($date, 4, 2);
+        $jour = mb_substr($date, 6, 2);
     }
-    elseif (strlen($date) == 19 ) {
+    elseif (mb_strlen($date) == 19 ) {
         // YYYY-MM-DD xx:xx:xx
-        $annee = substr($date, 0, 4);
-        $mois = substr($date, 5, 2);
-        $jour = substr($date, 8, 2);
+        $annee = mb_substr($date, 0, 4);
+        $mois = mb_substr($date, 5, 2);
+        $jour = mb_substr($date, 8, 2);
     }
 
     else {
@@ -792,7 +742,7 @@ function affiche_date_naissance($date) {
  * @global mixed 
  * @global mixed 
  * @global mixed 
- * @return booleanTRUE si on a une nouvelle version 
+ * @return boolean TRUE si on a une nouvelle version 
  */
 function test_maj() {
     global $gepiVersion, $gepiRcVersion, $gepiBetaVersion;
@@ -800,7 +750,7 @@ function test_maj() {
     $versionRc_old = getSettingValue("versionRc");
     $versionBeta_old = getSettingValue("versionBeta");
 
-   if ($version_old =='') {
+    if ($version_old =='') {
        return TRUE;
        die();
    }
@@ -812,7 +762,7 @@ function test_maj() {
    if (($gepiVersion == $version_old) and ($versionRc_old!='')) {
         // On avait une RC
        if (($gepiRcVersion > $versionRc_old) or ($gepiRcVersion=='')) {
-            // Soit on a une nouvelle RC, soit on est passÈ de RC ‡ stable
+            // Soit on a une nouvelle RC, soit on est pass√© de RC √† stable
            return TRUE;
            die();
        }
@@ -820,7 +770,7 @@ function test_maj() {
    if (($gepiVersion == $version_old) and ($versionBeta_old!='')) {
         // On avait une Beta
        if (($gepiBetaVersion > $versionBeta_old) or ($gepiBetaVersion=='')) {
-            // Soit on a une nouvelle Beta, soit on est passÈ ‡ une RC ou une stable
+            // Soit on a une nouvelle Beta, soit on est pass√© √† une RC ou une stable
            return TRUE;
            die();
        }
@@ -829,13 +779,13 @@ function test_maj() {
 }
 
 /**
- * Recherche si la mise ‡ jour est ‡ faire
+ * Recherche si la mise √† jour est √† faire
  *
  * @global mixed 
  * @global mixed 
  * @global mixed 
- * @param mixed $num le numÈro de version
- * @return booleanTRUE s'il faut faire la mise ‡ jour
+ * @param mixed $num le num√©ro de version
+ * @return booleanTRUE s'il faut faire la mise √† jour
  */
 function quelle_maj($num) {
     global $gepiVersion, $gepiRcVersion, $gepiBetaVersion;
@@ -864,7 +814,7 @@ function quelle_maj($num) {
 /**
  *
  * @global text
- * @return booleanTRUE si tout c'est bien passÈ 
+ * @return booleanTRUE si tout c'est bien pass√© 
  * @see getSettingValue()
  * @see saveSetting()
  */
@@ -882,24 +832,24 @@ function check_backup_directory() {
     if (!file_exists("./backup/".$current_backup_dir)) {
         $backupDirName = NULL;
         if ($multisite != 'y') {
-        	// On regarde d'abord si le rÈpertoire de backup n'existerait pas dÈj‡...
+        	// On regarde d'abord si le r√©pertoire de backup n'existerait pas d√©j√†...
         	$handle=opendir('./backup');
 
         	while ($file = readdir($handle)) {
-            	if (strlen($file) > 34 and is_dir('./backup/'.$file)) $backupDirName = $file;
+            	if (mb_strlen($file) > 34 and is_dir('./backup/'.$file)) $backupDirName = $file;
         	}
 
         	closedir($handle);
         }
 
         if ($backupDirName != NULL) {
-            // Il existe : on met simplement ‡ jour le nom du rÈpertoire...
+            // Il existe : on met simplement √† jour le nom du r√©pertoire...
             $update = saveSetting("backup_directory",$backupDirName);
         } else {
             // Il n'existe pas
-            // On crÈe le rÈpertoire de backup
+            // On cr√©e le r√©pertoire de backup
             $length = rand(35, 45);
-            for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
+            for($len=$length,$r='';mb_strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
             $dirname = $pref_multi.$r;
             $create = mkdir("./backup/" . $dirname, 0700);
             copy("./backup/index.html","./backup/".$dirname."/index.html");
@@ -911,7 +861,7 @@ function check_backup_directory() {
                 die();
             }
 
-            // On dÈplace les Èventuels fichiers .sql dans ce nouveau rÈpertoire
+            // On d√©place les √©ventuels fichiers .sql dans ce nouveau r√©pertoire
 
             $handle=opendir('./backup');
             $tab_file = array();
@@ -930,16 +880,16 @@ function check_backup_directory() {
         }
     }
 
-    // On vÈrifie la date du dernier changement, et on change le nom
-    // du rÈpertoire si le dernier changement a eu lieu il y a plus de 48h
+    // On v√©rifie la date du dernier changement, et on change le nom
+    // du r√©pertoire si le dernier changement a eu lieu il y a plus de 48h
     $lastchange = getSettingValue("backupdir_lastchange");
     $current_time = time();
 
-    // Si le dernier changement a eu lieu il y a plus de 48h, on change le nom du rÈpertoire
+    // Si le dernier changement a eu lieu il y a plus de 48h, on change le nom du r√©pertoire
     if ($current_time-$lastchange > 172800) {
         $dirname = getSettingValue("backup_directory");
         $length = rand(35, 45);
-        for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2) ? mt_rand(48,57):(!mt_rand(0,1)?mt_rand(65,90):mt_rand(97,122))));
+        for($len=$length,$r='';mb_strlen($r)<$len;$r.=chr(!mt_rand(0,2) ? mt_rand(48,57):(!mt_rand(0,1)?mt_rand(65,90):mt_rand(97,122))));
         $newdirname = $pref_multi.$r;
         if (rename("./backup/".$dirname, "./backup/".$newdirname)) {
             saveSetting("backup_directory",$newdirname);
@@ -955,10 +905,10 @@ function check_backup_directory() {
 }
 
 /**
- * Fonction qui retourne le nombre de pÈriodes pour une classe
+ * Fonction qui retourne le nombre de p√©riodes pour une classe
  *
- * @param int identifiant numÈrique de la classe
- * @return int Nombre de periodes dÈfinies pour cette classe
+ * @param int identifiant num√©rique de la classe
+ * @return int Nombre de periodes d√©finies pour cette classe
  */
 function get_period_number($_id_classe) {
     $periode_query = mysql_query("SELECT count(*) FROM periodes WHERE id_classe = '" . $_id_classe . "'");
@@ -967,10 +917,10 @@ function get_period_number($_id_classe) {
 }
 
 /**
- * Renvoie le numÈro et le nom de la premiËre pÈriode active pour une classe
+ * Renvoie le num√©ro et le nom de la premi√®re p√©riode active pour une classe
  *
  * @param int $_id_classe identifiant unique de la classe
- * @return array numÈro de la pÈriode 'num' et son nom 'nom'
+ * @return array num√©ro de la p√©riode 'num' et son nom 'nom'
  */
 function get_periode_active($_id_classe){
   $periode_query  = mysql_query("SELECT num_periode, nom_periode FROM periodes WHERE id_classe = '" . $_id_classe . "' AND verouiller = 'N'");
@@ -981,39 +931,14 @@ function get_periode_active($_id_classe){
 }
 
 /**
- *  Equivalent ‡ html_entity_decode()
- * 
- * Pour les utilisateurs ayant des versions antÈrieures ‡ PHP 4.3.0 :
- * la fonction html_entity_decode() est disponible a partir de la version 4.3.0 de php.
- * 
- * @deprecated GEPI ne fonctionne plus sans php 5.2 et plus
- * @param string $string
- * @return type 
- */
-function html_entity_decode_all_version ($string)
-{
-   global $use_function_html_entity_decode;
-   if (isset($use_function_html_entity_decode) and ($use_function_html_entity_decode == 0)) {
-       // Remplace les entitÈs numÈriques
-       $string = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $string);
-       $string = preg_replace('~&#([0-9]+);~e', 'chr(\\1)', $string);
-       // Remplace les entitÈs litÈrales
-       $trans_tbl = get_html_translation_table (HTML_ENTITIES);
-       $trans_tbl = array_flip ($trans_tbl);
-       return strtr ($string, $trans_tbl);
-   } else
-       return html_entity_decode($string);
-}
-
-/**
- * Cette fonction est ‡ appeler dans tous les cas o˘ une tentative
- * d'utilisation illÈgale de Gepi est manifestement avÈrÈe.
- * Elle est ‡ appeler notamment dans tous les tests de sÈcuritÈ lorsqu'un test est nÈgatif.
- * PossibilitÈ d'envoyer un mail ‡ l'administrateur et de bloquer l'utilisateur
+ * Cette fonction est √† appeler dans tous les cas o√π une tentative
+ * d'utilisation ill√©gale de Gepi est manifestement av√©r√©e.
+ * Elle est √† appeler notamment dans tous les tests de s√©curit√© lorsqu'un test est n√©gatif.
+ * Possibilit√© d'envoyer un mail √† l'administrateur et de bloquer l'utilisateur
  *
  * @global string
- * @param integer $_niveau Niveau d'intrusion enregistrÈ
- * @param string $_description Message enregistrÈ pour cette tentative
+ * @param integer $_niveau Niveau d'intrusion enregistr√©
+ * @param string $_description Message enregistr√© pour cette tentative
  * @see getSettingValue()
  * @see mail()
  */
@@ -1024,7 +949,7 @@ function tentative_intrusion($_niveau, $_description) {
 	// On commence par enregistrer la tentative en question
 
 	if (!isset($_SESSION['login'])) {
-		// Ici, Áa veut dire que l'attaque est extÈrieure. Il n'y a pas d'utilisateur loguÈ.
+		// Ici, √ßa veut dire que l'attaque est ext√©rieure. Il n'y a pas d'utilisateur logu√©.
 		$user_login = "-";
 	} else {
 		$user_login = $_SESSION['login'];
@@ -1032,7 +957,7 @@ function tentative_intrusion($_niveau, $_description) {
 	$adresse_ip = $_SERVER['REMOTE_ADDR'];
 	$date = strftime("%Y-%m-%d %H:%M:%S");
 	$url = parse_url($_SERVER['REQUEST_URI']);
-    $fichier = substr($url['path'], strlen($gepiPath));
+    $fichier = mb_substr($url['path'], mb_strlen($gepiPath));
 	$res = mysql_query("INSERT INTO tentatives_intrusion SET " .
 			"login = '".$user_login."', " .
 			"adresse_ip = '".$adresse_ip."', " .
@@ -1042,9 +967,9 @@ function tentative_intrusion($_niveau, $_description) {
 			"description = '".addslashes($_description)."', " .
 			"statut = 'new'");
 
-	// On a enregistrÈ.
+	// On a enregistr√©.
 
-	// On initialise des marqueurs pour les deux actions possibles : envoie d'un email ‡ l'admin
+	// On initialise des marqueurs pour les deux actions possibles : envoie d'un email √† l'admin
 	// et blocage du compte de l'utilisateur
 
 	$send_email = FALSE;
@@ -1055,22 +980,22 @@ function tentative_intrusion($_niveau, $_description) {
 		$send_email = TRUE;
 	}
 
-	// Si la tentative d'intrusion a ÈtÈ effectuÈe par un utilisateur connectÈ ‡ Gepi,
-	// on regarde si des seuils ont ÈtÈ dÈpassÈs et si certaines actions doivent Ítre
-	// effectuÈes.
+	// Si la tentative d'intrusion a √©t√© effectu√©e par un utilisateur connect√© √† Gepi,
+	// on regarde si des seuils ont √©t√© d√©pass√©s et si certaines actions doivent √™tre
+	// effectu√©es.
 
 	if ($user_login != "-") {
-		// On rÈcupËre quelques infos
+		// On r√©cup√®re quelques infos
 		$req = mysql_query("SELECT nom, prenom, statut, niveau_alerte, observation_securite FROM utilisateurs WHERE (login = '".$user_login."')");
 		$user = mysql_fetch_object($req);
-		// On va utiliser Áa pour gÈnÈrer automatiquement les noms de settings, Áa fait du code en moins...
+		// On va utiliser √ßa pour g√©n√©rer automatiquement les noms de settings, √ßa fait du code en moins...
 		if ($user->observation_securite == "1") {
 			$obs = "probation";
 		} else {
 			$obs = "normal";
 		}
 
-		// D'abord, on met ‡ jour le niveau cumulÈ
+		// D'abord, on met √† jour le niveau cumul√©
 		$nouveau_cumul = (int)$user->niveau_alerte+(int)$_niveau;
 
 		$res = mysql_query("UPDATE utilisateurs SET niveau_alerte = '".$nouveau_cumul ."' WHERE (login = '".$user_login."')");
@@ -1092,44 +1017,44 @@ function tentative_intrusion($_niveau, $_description) {
 			$seuil2 = TRUE;
 		}
 
-		// On dÈsactive le compte de l'utilisateur si nÈcessaire :
+		// On d√©sactive le compte de l'utilisateur si n√©cessaire :
 		if ($block_user) {
 			$res = mysql_query("UPDATE utilisateurs SET etat = 'inactif' WHERE (login = '".$user_login."')");
 		}
 	} // Fin : if ($user_login != "-")
 
-	// On envoie un email ‡ l'administrateur si nÈcessaire
+	// On envoie un email √† l'administrateur si n√©cessaire
 	if ($send_email) {
-		$message = "** Alerte automatique sÈcuritÈ Gepi **\n\n";
-		$message .= "Une nouvelle tentative d'intrusion a ÈtÈ dÈtectÈe par Gepi. Les dÈtails suivants ont ÈtÈ enregistrÈs dans la base de donnÈes :\n\n";
+		$message = "** Alerte automatique s√©curit√© Gepi **\n\n";
+		$message .= "Une nouvelle tentative d'intrusion a √©t√© d√©tect√©e par Gepi. Les d√©tails suivants ont √©t√© enregistr√©s dans la base de donn√©es :\n\n";
 		$message .= "Date : ".$date."\n";
-		$message .= "Fichier visÈ : ".$fichier."\n";
-		$message .= "Niveau de gravitÈ : ".$_niveau."\n";
+		$message .= "Fichier vis√© : ".$fichier."\n";
+		$message .= "Niveau de gravit√© : ".$_niveau."\n";
 		$message .= "Description : ".$_description."\n\n";
 		if ($user_login == "-") {
-			$message .= "La tentative d'intrusion a ÈtÈ effectuÈe par un utilisateur non connectÈ ‡ Gepi.\n";
+			$message .= "La tentative d'intrusion a √©t√© effectu√©e par un utilisateur non connect√© √† Gepi.\n";
 			$message .= "Adresse IP : ".$adresse_ip."\n";
 		} else {
 			$message .= "Informations sur l'utilisateur :\n";
 			$message .= "Login : ".$user_login."\n";
 			$message .= "Nom : ".$user->prenom . " ".$user->nom."\n";
 			$message .= "Statut : ".$user->statut."\n";
-			$message .= "Score cumulÈ : ".$nouveau_cumul."\n\n";
-			if ($seuil1) $message .= "L'utilisateur a dÈpassÈ le seuil d'alerte 1.\n\n";
-			if ($seuil2) $message .= "L'utilisateur a dÈpassÈ le seuil d'alerte 2.\n\n";
-			if ($block_user) $message .= "Le compte de l'utilisateur a ÈtÈ dÈsactivÈ.\n";
+			$message .= "Score cumul√© : ".$nouveau_cumul."\n\n";
+			if ($seuil1) $message .= "L'utilisateur a d√©pass√© le seuil d'alerte 1.\n\n";
+			if ($seuil2) $message .= "L'utilisateur a d√©pass√© le seuil d'alerte 2.\n\n";
+			if ($block_user) $message .= "Le compte de l'utilisateur a √©t√© d√©sactiv√©.\n";
 		}
 
 		$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
 		if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 
-    $subject = $gepiPrefixeSujetMail."GEPI : Alerte sÈcuritÈ -- Tentative d'intrusion";
+    $subject = $gepiPrefixeSujetMail."GEPI : Alerte s√©curit√© -- Tentative d'intrusion";
     $subject = "=?ISO-8859-1?B?".base64_encode($subject)."?=\r\n";
 
     
     $headers = "X-Mailer: PHP/" . phpversion()."\r\n";
     $headers .= "MIME-Version: 1.0\r\n";
-    $headers .= "Content-type: text/plain; charset=iso-8859-1\r\n";
+    $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
     $headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
 
 		// On envoie le mail
@@ -1141,11 +1066,11 @@ function tentative_intrusion($_niveau, $_description) {
 }
 
 /**
- * Fonction destinÈe ‡ crÈer un dossier temporaire alÈatoire /temp/<alea>
+ * Fonction destin√©e √† cr√©er un dossier temporaire al√©atoire /temp/<alea>
  * 
- * Test le dossier en Ècriture et le crÈe au besoin
+ * Test le dossier en √©criture et le cr√©e au besoin
  *
- * @return booleanTRUE si tout c'est bien passÈ
+ * @return booleanTRUE si tout c'est bien pass√©
  * @see getSettingValue()
  * @see saveSetting()
  */
@@ -1154,9 +1079,9 @@ function check_temp_directory(){
 	$dirname=getSettingValue("temp_directory");
 	if(($dirname=='')||(!file_exists("./temp/$dirname"))){
 		// Il n'existe pas
-		// On crÈÈ le rÈpertoire temp
+		// On cr√©√© le r√©pertoire temp
 		$length = rand(35, 45);
-		for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
+		for($len=$length,$r='';mb_strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
 		$dirname = $r;
 		$create = mkdir("./temp/".$dirname, 0700);
 
@@ -1180,12 +1105,12 @@ function check_temp_directory(){
 }
 
 /**
- * Fonction destinÈe ‡ crÈer un dossier /temp/<alea> propre au professeur
+ * Fonction destin√©e √† cr√©er un dossier /temp/<alea> propre au professeur
  * 
- * Test le dossier en Ècriture et le crÈe au besoin
- * La fonction est appelÈe depuis la racine de l'arborescence GEPI (sinon Áa peut bugger)
+ * Test le dossier en √©criture et le cr√©e au besoin
+ * La fonction est appel√©e depuis la racine de l'arborescence GEPI (sinon √ßa peut bugger)
  *
- * @return booleanTRUE si tout c'est bien passÈ
+ * @return booleanTRUE si tout c'est bien pass√©
  */
 function check_user_temp_directory(){
 	global $multisite;
@@ -1199,7 +1124,7 @@ function check_user_temp_directory(){
 	$res_temp_dir=mysql_query($sql);
 
 	if(mysql_num_rows($res_temp_dir)==0){
-		// Cela revient ‡ dire que l'utilisateur n'est pas dans la table utilisateurs???
+		// Cela revient √† dire que l'utilisateur n'est pas dans la table utilisateurs???
 		return FALSE;
 	}
 	else{
@@ -1208,9 +1133,9 @@ function check_user_temp_directory(){
 
 		if($dirname=="") {
 			// Le dossier n'existe pas
-			// On crÈÈ le rÈpertoire temp
+			// On cr√©√© le r√©pertoire temp
 			$length = rand(35, 45);
-			for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
+			for($len=$length,$r='';mb_strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
 			$dirname = $pref_multi.$_SESSION['login']."_".$r;
 			$create = mkdir("./temp/".$dirname, 0700);
 
@@ -1256,7 +1181,7 @@ function check_user_temp_directory(){
 
 			if(!file_exists("./temp/".$dirname)){
 				// Le dossier n'existe pas
-				// On crÈÈ le rÈpertoire temp
+				// On cr√©√© le r√©pertoire temp
 				$create = mkdir("./temp/".$dirname, 0700);
 
 				if($create){
@@ -1274,7 +1199,7 @@ function check_user_temp_directory(){
 			}
 			else{
 				$fich=fopen("./temp/".$dirname."/test_ecriture.tmp","w+");
-				$ecriture=fwrite($fich,'Test d Ècriture.');
+				$ecriture=fwrite($fich,'Test d √©criture.');
 				$fermeture=fclose($fich);
 				if(file_exists("./temp/".$dirname."/test_ecriture.tmp")){
 					unlink("./temp/".$dirname."/test_ecriture.tmp");
@@ -1292,9 +1217,9 @@ function check_user_temp_directory(){
 }
 
 /**
- * Renvoie le nom du rÈpertoire temporaire de l'utilisateur
+ * Renvoie le nom du r√©pertoire temporaire de l'utilisateur
  *
- * @return bool|string retourne FALSE s'il n'existe pas et le nom du rÈpertoire s'il existe, sans le chemin
+ * @return bool|string retourne FALSE s'il n'existe pas et le nom du r√©pertoire s'il existe, sans le chemin
  */
 function get_user_temp_directory(){
 	$sql="SELECT temp_dir FROM utilisateurs WHERE login='".$_SESSION['login']."'";
@@ -1303,7 +1228,7 @@ function get_user_temp_directory(){
 		$lig_temp_dir=mysql_fetch_object($res_temp_dir);
 		$dirname=$lig_temp_dir->temp_dir;
 
-		if(($dirname!="")&&(strlen(preg_replace("/[A-Za-z0-9_.]/","",$dirname))==0)) {
+		if(($dirname!="")&&(mb_strlen(preg_replace("/[A-Za-z0-9_.]/","",$dirname))==0)) {
 			if(file_exists("temp/".$dirname)){
 				return $dirname;
 			}
@@ -1327,10 +1252,10 @@ function get_user_temp_directory(){
 }
 
 /**
- * Retourne un nombre formatÈ en Mo, ko ou o suivant Áa taille
+ * Retourne un nombre format√© en Mo, ko ou o suivant √ßa taille
  *
- * @param int $volume le nombre ‡ formater
- * @return string le nombre formatÈ
+ * @param int $volume le nombre √† formater
+ * @return string le nombre format√©
  */
 function volume_human($volume){
 	if($volume>=1048576){
@@ -1347,11 +1272,11 @@ function volume_human($volume){
 }
 
 /**
- * Renvoie la taille d'un rÈpertoire
+ * Renvoie la taille d'un r√©pertoire
  *
  * @global int 
- * @param string $dir Le rÈpertoire ‡ tester
- * @return string la taille formatÈe 
+ * @param string $dir Le r√©pertoire √† tester
+ * @return string la taille format√©e 
  * @see volume_dir()
  * @see volume_human()
  */
@@ -1364,11 +1289,11 @@ function volume_dir_human($dir){
 }
 
 /**
- * Additionne la taille des rÈpertoires et sous-rÈpertoires
+ * Additionne la taille des r√©pertoires et sous-r√©pertoires
  *
  * @global int
- * @param string $dir rÈpertoire ‡ parser
- * @return int la taille totale du rÈpertoire
+ * @param string $dir r√©pertoire √† parser
+ * @return int la taille totale du r√©pertoire
  */
 function volume_dir($dir){
 	global $totalsize;
@@ -1395,9 +1320,9 @@ function volume_dir($dir){
 /**
  * Supprime les fichiers d'un dossier
  *
- * @param string $dir le rÈpertoire ‡ vider
- * @return boolean TRUE si tout c'est bien passÈ
- * @todo En ajoutant un paramËtre ‡ la fonction, on pourrait activer la suppression rÈcursive (avec une profondeur par exemple)
+ * @param string $dir le r√©pertoire √† vider
+ * @return boolean TRUE si tout c'est bien pass√©
+ * @todo En ajoutant un param√®tre √† la fonction, on pourrait activer la suppression r√©cursive (avec une profondeur par exemple)
  */
 function vider_dir($dir){
 	$statut=TRUE;
@@ -1407,11 +1332,11 @@ function vider_dir($dir){
 			continue;
 		}
 		if(is_dir("$dir/$file")){
-			// On ne cherche pas ‡ vider rÈcursivement.
+			// On ne cherche pas √† vider r√©cursivement.
 			$statut=FALSE;
 
 			echo "<!-- DOSSIER: $dir/$file -->\n";
-			// En ajoutant un paramËtre ‡ la fonction, on pourrait activer la suppression rÈcursive (avec une profondeur par exemple) lancer ici vider_dir("$dir/$file");
+			// En ajoutant un param√®tre √† la fonction, on pourrait activer la suppression r√©cursive (avec une profondeur par exemple) lancer ici vider_dir("$dir/$file");
 		}
 		else{
 			if(!unlink($dir."/".$file)) {
@@ -1428,72 +1353,132 @@ function vider_dir($dir){
 
 
 /**
- * Cette mÈthode prend une chaÓne de caractËres et s'assure qu'elle est bien
- * retournÈe en UTF-8.
+ * Cette m√©thode prend une cha√Æne de caract√®res et s'assure qu'elle est bien retourn√©e en UTF-8
+ * Attention, certain encodages sont tr√®s similaire et ne peuve pas √™tre th√©oriquement distingu√© sur une chaine de caractere.
+ * Si vous connaissez d√©j√† l'encodage de votre chaine de d√©part, il est pr√©f√©rable de le pr√©ciser
  * 
- * On ne devrait plus l'utiliser mais utiliser ensure_utf8() ‡ la place
- * 
- * @param string La chaine ‡ tester
- * @return string La chaine traitÈe
+ * @param string $str La chaine √† encoder
+ * @param string $encoding L'encodage de d√©part
+ * @return string La chaine en utf8
+ * @throws Exception si la chaine n'a pas pu √™tre encod√©e correctement
  */
-function ensure_iso8859_1($str) {
-	$encoding = mb_detect_encoding($str);
-	if ($encoding == 'UTF-8') {
-		return $str;
-	} else {
-		return mb_convert_encoding($str, 'UTF-8');
+function ensure_utf8($str, $from_encoding = null) {
+    if ($str === null || $str === '') {
+        return $str;
+    } else if ($from_encoding == null && check_utf8($str)) {
+	    return $str;
 	}
+	
+    if ($from_encoding != null) {
+        $encoding =  $from_encoding;
+    } else {
+	    $encoding = detect_encoding($str);
+    }
+	$result = null;
+    if ($encoding !== false && $encoding != null) {
+        if ($result == null && function_exists('mb_convert_encoding')) {
+            $result = mb_convert_encoding($str, 'UTF-8', $encoding);
+        }
+    }
+	if ($result === null || !check_utf8($result)) {
+	    throw new Exception('Impossible de convertir la chaine vers l\'utf8');
+	}
+	return $result;
+}
+
+
+/**
+ * Cette m√©thode prend une cha√Æne de caract√®res et teste si elle est bien encod√©e en UTF-8
+ * 
+ * @param string $str La chaine √† tester
+ * @return boolean
+ */
+function check_utf8 ($str) {
+  
+    // From http://w3.org/International/questions/qa-forms-utf-8.html
+    $preg_match_result = 1 == preg_match('%^(?:
+          [\x09\x0A\x0D\x20-\x7E]            # ASCII
+        | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
+        |  \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs
+        | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
+        |  \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates
+        |  \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3
+        | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
+        |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
+    )*$%xs', $str);
+    
+    if ($preg_match_result) {
+        return true;
+    } else {
+        //le test preg renvoie faux, et on va v√©rifier avec d'autres fonctions
+        $result = true;
+        $test_done = false;
+        if (function_exists('mb_check_encoding')) {
+            $test_done = true;
+            $result = $result && @mb_check_encoding($str, 'UTF-8');
+        }
+        if (function_exists('mb_detect_encoding')) {
+            $test_done = true;
+            $result = $result && @mb_detect_encoding($str, 'UTF-8', true);
+        }
+        if (function_exists('iconv')) {
+            $test_done = true;
+            $result = $result && ($str === (@iconv('UTF-8', 'UTF-8//IGNORE', $str)));
+        }
+        if (function_exists('mb_convert_encoding')) {
+            $test_done = true;
+            $result && ($str === @mb_convert_encoding ( @mb_convert_encoding ( $str, 'UTF-32', 'UTF-8' ), 'UTF-8', 'UTF-32' ));
+        }
+        return $test_done && $result;
+    }
+}
+    
+    
+/**
+ * Cette m√©thode prend une cha√Æne de caract√®res et d√©tecte son encodage
+ * 
+ * @param string $str La chaine √† tester
+ * @return l'encodage ou false si ind√©tectable
+ */
+function detect_encoding($str) {
+    //on commence par v√©rifier si c'est de l'utf8
+    if (check_utf8($str)) {
+        return 'UTF-8';
+    }
+    
+    //on va commencer par tester ces encodages
+    static $encoding_list = array('UTF-8', 'ISO-8859-15','windows-1251');
+    foreach ($encoding_list as $item) {
+        if (function_exists('iconv')) {
+            $sample = @iconv($item, $item, $str);
+            if (md5($sample) == md5($str)) {
+                return $item;
+            }
+        } else if (function_exists('mb_detect_encoding')) {
+            if (@mb_detect_encoding($str, $item, true)) {
+                return $item;
+            }
+        }
+    }
+    
+    //la m√©thode pr√©c√©dente n'a rien donn√©e
+    if (function_exists('mb_detect_encoding')) {
+        return mb_detect_encoding($str);
+    } else {
+        return false;
+    }
 }
 
 /**
- * Encode une chaine en utf8
- * 
- * @param string $chaine La chaine ‡ tester
- * @return string La chaine traitÈe
- */
-function caract_ooo($chaine){
-	if(function_exists('utf8_encode')){
-		$retour=utf8_encode($chaine);
-	}
-	else{
-		$caract_accent=array("¿","‡","¬","‚","ƒ","‰","…","È","»","Ë"," ","Í","À","Î","Œ","Ó","œ","Ô","‘","Ù","÷","ˆ","Ÿ","˘","€","˚","‹","¸");
-		$caract_utf8=array("¿","‡","¬","‚","ƒ","‰","…","È","»","Ë"," ","Í","À","Î","Œ","Ó","œ","Ô","‘","Ù","÷","ˆ","Ÿ","˘","€","˚","‹","¸");
-
-		$retour=$chaine;
-		for($i=0;$i<count($caract_accent);$i++){
-			$retour=str_replace($caract_accent[$i],$caract_utf8[$i],$retour);
-		}
-	}
-
-	$caract_special=array("&",
-							'"',
-							"'",
-							"<",
-							">");
-
-	$caract_sp_encode=array("&amp;",
-							"&quot;",
-							"&apos;",
-							"&lt;",
-							"&gt;");
-
-	for($i=0;$i<count($caract_special);$i++){
-		$retour=str_replace($caract_special[$i],$caract_sp_encode[$i],$retour);
-	}
-
-	return $retour;
-}
-
-/**
- * Correspondances de caractËres accentuÈs/dÈsaccentuÈs
+ * Correspondances de caract√®res accentu√©s/d√©saccentu√©s
  * 
  * @global string $GLOBALS['liste_caracteres_accentues']
  * @name $liste_caracteres_accentues
  */
-$GLOBALS['liste_caracteres_accentues']="¬ƒ¿¡√≈« À»…ŒœÃÕ—‘÷“”’ÿ¶€‹Ÿ⁄›æ¥·‡‚‰„ÂÁÈËÍÎÓÔÏÌÒÙˆÚÛı¯®˚¸˘˙˝ˇ∏";
+$GLOBALS['liste_caracteres_accentues']="√Ç√Ñ√Ä√Å√É√Ö√á√ä√ã√à√â√é√è√å√ç√ë√î√ñ√í√ì√ï√ò¬¶√õ√ú√ô√ö√ù¬æ¬¥√°√†√¢√§√£√•√ß√©√®√™√´√Æ√Ø√¨√≠√±√¥√∂√∞√≤√≥√µ√∏¬®√ª√º√π√∫√Ω√ø¬∏";
 
 /**
- * Correspondances de caractËres accentuÈs/dÈsaccentuÈs
+ * Correspondances de caract√®res accentu√©s/d√©saccentu√©s
  * 
  * @global string $GLOBALS['liste_caracteres_desaccentues']
  * @name $liste_caracteres_desaccentues
@@ -1503,62 +1488,89 @@ $GLOBALS['liste_caracteres_desaccentues']="AAAAAACEEEEIIIINOOOOOOSUUUUYYZaaaaaac
 /**
  * Remplace les accents dans une chaine
  * 
- * $mode = 'all' On remplace espaces et apostrophes par des '_' et les caractËres accentuÈs par leurs Èquivalents non accentuÈs.
+ * $mode = 'all' On remplace espaces et apostrophes par des '_' et les caract√®res accentu√©s par leurs √©quivalents non accentu√©s.
  * 
- * $mode = 'all_nospace' On remplace apostrophes par des '_' et les caractËres accentuÈs par leurs Èquivalents non accentuÈs.
+ * $mode = 'all_nospace' On remplace apostrophes par des '_' et les caract√®res accentu√©s par leurs √©quivalents non accentu√©s.
  * 
- *  Sinon, on remplace les caractËres accentuÈs par leurs Èquivalents non accentuÈs.
+ *  Sinon, on remplace les caract√®res accentu√©s par leurs √©quivalents non accentu√©s.
  *
  * @global string 
  * @global string 
- * @param type $chaine La chaine ‡ tester
+ * @param type $chaine La chaine √† tester
  * @param type $mode Mode de conversion
  * @return type 
  */
 function remplace_accents($chaine,$mode=''){
-	global $liste_caracteres_accentues, $liste_caracteres_desaccentues;
-
+	if ($chaine == null || $chaine == '') {
+	    return $chaine;
+	}
+	
+	$chaine = ensure_utf8($chaine);
+	$str = null;
+	if (function_exists('iconv')) {
+	    //test : est-ce que iconv est bien impl√©ment√© sur ce syst√®me ?
+	    $test = 'c\'est un bel ete' === iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", 'c\'est un bel √©t√©');
+        if ($test) {
+            //on utilise iconv pour la conversion
+            $str = @iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", $chaine);
+        }
+	}
+	if ($str === null) {
+        //on utilise pas iconv pour la conversion
+    	$translit = array('√Å'=>'A','√Ä'=>'A','√Ç'=>'A','√Ñ'=>'A','√É'=>'A','√Ö'=>'A','√á'=>'C','√â'=>'E','√à'=>'E','√ä'=>'E','√ã'=>'E','√ç'=>'I','√è'=>'I','√é'=>'I','√å'=>'I','√ë'=>'N','√ì'=>'O','√í'=>'O','√î'=>'O','√ñ'=>'O','√ï'=>'O','√ö'=>'U','√ô'=>'U','√õ'=>'U','√ú'=>'U','√ù'=>'Y','√°'=>'a','√†'=>'a','√¢'=>'a','√§'=>'a','√£'=>'a','√•'=>'a','√ß'=>'c','√©'=>'e','√®'=>'e','√™'=>'e','√´'=>'e','√≠'=>'i','√¨'=>'i','√Æ'=>'i','√Ø'=>'i','√±'=>'n','√≥'=>'o','√≤'=>'o','√¥'=>'o','√∂'=>'o','√µ'=>'o','√∫'=>'u','√π'=>'u','√ª'=>'u','√º'=>'u','√Ω'=>'y','√ø'=>'y');
+    	$str = strtr($chaine, $translit);
+    }
+    if (function_exists('mb_convert_encoding')) {
+        $str = @mb_convert_encoding($str,'ASCII','UTF-8');
+    }   
+	
 	if($mode == 'all'){
-		// On remplace espaces et apostrophes par des '_' et les caractËres accentuÈs par leurs Èquivalents non accentuÈs.
-		$retour=strtr(preg_replace("/∆/","AE",preg_replace("/Ê/","ae",preg_replace("/º/","OE",preg_replace("/Ω/","oe","$chaine"))))," '$liste_caracteres_accentues","__$liste_caracteres_desaccentues");
+		return preg_replace('#[^a-zA-Z0-9\-\_]#', '_', $str); // Pour des noms de fichiers par exemple
+	} elseif($mode == 'all_nospace'){
+		return preg_replace('#[^a-zA-Z0-9\-\._ ]#', '_', $str);
+	} else {
+		return preg_replace('#[^a-zA-Z0-9\-\._"\' ;]#', '_', $str);
 	}
-	elseif($mode == 'all_nospace'){
-		// On remplace apostrophes par des '_' et les caractËres accentuÈs par leurs Èquivalents non accentuÈs.
-		$retour1=strtr(preg_replace("/∆/","AE",preg_replace("/Ê/","ae",preg_replace("/º/","OE",preg_replace("/Ω/","oe","$chaine")))),"'$liste_caracteres_accentues"," $liste_caracteres_desaccentues");
-		// On enlËve aussi les guillemets
-		$retour = preg_replace('/"/', '', $retour1);
-	}
-	else {
-		// On remplace les caractËres accentuÈs par leurs Èquivalents non accentuÈs.
-		$retour=strtr(preg_replace("/∆/","AE",preg_replace("/Ê/","ae",preg_replace("/º/","OE",preg_replace("/Ω/","oe","$chaine")))),"$liste_caracteres_accentues","$liste_caracteres_desaccentues");
-	}
-	return $retour;
+}
+/**
+ * @see remplace_accent($chaine,$mode='')
+**/
+function enleve_accents($chaine,$mode=''){
+    return remplace_accents($chaine,$mode='');
+}
+/**
+ * @see remplace_accent($chaine,$mode='')
+**/
+function accents_enleve($chaine,$mode=''){
+    return remplace_accents($chaine,$mode='');
+}
+/**
+ * @see remplace_accent($chaine,$mode='')
+**/
+function ensure_ascii($chaine){
+    return remplace_accents($chaine);
 }
 
 /**
- * Fonction qui renvoie le login d'un ÈlËve en Èchange de son ele_id
+ * Nettoyage des caract√®res d'un nom ou pr√©nom
+ * On ne conserve que les lettres (accentu√©es incluses), l'espace et le tiret
  *
- * @param int $id_eleve ele_id de l'ÈlËve
- * @return string login de l'ÈlËve
+ * @global string 
+ * @param type $chaine La chaine √† traiter
+ * @return La chaine corrig√©e
  */
-function get_login_eleve($id_eleve){
-
-	$sql = "SELECT login FROM eleves WHERE id_eleve = '".$id_eleve."'";
-	$query = mysql_query($sql) OR trigger_error('Impossible de rÈcupÈrer le login de cet ÈlËve.', E_USER_ERROR);
-	if ($query) {
-		$retour = mysql_result($query, 0,"login");
-	}else{
-		$retour = 'erreur';
-	}
-	return $retour;
-
+function nettoyer_caracteres_nom($chaine){
+	global $liste_caracteres_accentues;
+    //return preg_replace("/√Ü/","AE",preg_replace("/√¶/","ae",preg_replace("/≈í/","OE",preg_replace("/≈ì/","oe",preg_replace("/[^A-Za-z$liste_caracteres_accentues \-]/", "", $chaine)))));
+	return preg_replace("/√Ü/","AE",preg_replace("/√¶/","ae",preg_replace("/≈í/","OE",preg_replace("/≈ì/","oe",trim(ensure_utf8($chaine))))));
 }
 
+
 /**
- * fonction qui renvoie le nom de la classe d'un ÈlËve pour chaque pÈriode
+ * fonction qui renvoie le nom de la classe d'un √©l√®ve pour chaque p√©riode
  *
- * @param string $ele_login login de l'ÈlËve
- * @return array Tableau des classes en fonction des pÈriodes
+ * @param string $ele_login login de l'√©l√®ve
+ * @return array Tableau des classes en fonction des p√©riodes
  */
 function get_class_from_ele_login($ele_login){
 	$sql="SELECT DISTINCT jec.id_classe, c.classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$ele_login' ORDER BY periode,classe;";
@@ -1586,9 +1598,9 @@ function get_class_from_ele_login($ele_login){
 }
 
 /**
- * Retourne les classes d'un ÈlËve ordonnÈes par pÈriodes puis classes
+ * Retourne les classes d'un √©l√®ve ordonn√©es par p√©riodes puis classes
  *
- * @param string $ele_login Login de l'ÈlËve
+ * @param string $ele_login Login de l'√©l√®ve
  * @return array 
  */
 function get_noms_classes_from_ele_login($ele_login){
@@ -1605,7 +1617,7 @@ function get_noms_classes_from_ele_login($ele_login){
 }
 
 /**
- * Renvoie les ÈlËves liÈs ‡ un responsable
+ * Renvoie les √©l√®ves li√©s √† un responsable
  *
  * @param string $resp_login Login du responsable
  * @param string $mode Si avec_classe renvoie aussi la classe
@@ -1646,7 +1658,7 @@ function get_enfants_from_resp_login($resp_login,$mode='simple'){
 }
 
 /**
- * Renvoie les ÈlËves liÈs ‡ un responsable
+ * Renvoie les √©l√®ves li√©s √† un responsable
  *
  * @param string $pers_id identifiant sconet du responsable
  * @param string $mode Si avec_classe renvoie aussi la classe
@@ -1689,8 +1701,8 @@ function get_enfants_from_pers_id($pers_id,$mode='simple'){
 /**
  * Renvoie le statut avec des accents
  *
- * @param string $user_statut Statut ‡ corriger
- * @return string Le statut corrigÈ
+ * @param string $user_statut Statut √† corriger
+ * @return string Le statut corrig√©
  */
 function statut_accentue($user_statut){
 	switch($user_statut){
@@ -1698,7 +1710,7 @@ function statut_accentue($user_statut){
 			$chaine="administrateur";
 			break;
 		case "scolarite":
-			$chaine="scolaritÈ";
+			$chaine="scolarit√©";
 			break;
 		case "professeur":
 			$chaine="professeur";
@@ -1710,7 +1722,7 @@ function statut_accentue($user_statut){
 			$chaine="cpe";
 			break;
 		case "eleve":
-			$chaine="ÈlËve";
+			$chaine="√©l√®ve";
 			break;
 		case "responsable":
 			$chaine="responsable";
@@ -1723,7 +1735,7 @@ function statut_accentue($user_statut){
 }
 
 /**
- * Renvoie le nom d'une classe ‡ partir de son Id
+ * Renvoie le nom d'une classe √† partir de son Id
  * 
  * Renvoie classes.classe
  *
@@ -1748,7 +1760,7 @@ function get_nom_classe($id_classe){
  * Formate une date au format jj/mm/aa
  *
  * @param string $date
- * @return string La date formatÈe
+ * @return string La date format√©e
  */
 function formate_date($date) {
 	$tmp_date=explode(" ",$date);
@@ -1766,13 +1778,13 @@ function formate_date($date) {
 }
 
 /**
- * Convertit les codes rÈgimes de Sconet
+ * Convertit les codes r√©gimes de Sconet
  *
  * @param int $code_regime Le code Sconet
- * @return string Le rÈgime dans GÈpi
+ * @return string Le r√©gime dans G√©pi
  */
 function traite_regime_sconet($code_regime){
-	$premier_caractere_code_regime=substr($code_regime,0,1);
+	$premier_caractere_code_regime=mb_substr($code_regime,0,1);
 	switch($premier_caractere_code_regime){
 		case "0":
 			// 0       EXTERN  EXTERNE LIBRE
@@ -1829,11 +1841,11 @@ function traite_regime_sconet($code_regime){
 }
 
 /**
- * Renvoie les prÈfÈrences d'un utilisateur pour un item en interrogeant la table preferences
+ * Renvoie les pr√©f√©rences d'un utilisateur pour un item en interrogeant la table preferences
  *
  * @param string $login Login de l'utilisateur
- * @param string $item Item recherchÈ
- * @param string $default Valeur par dÈfaut
+ * @param string $item Item recherch√©
+ * @param string $default Valeur par d√©faut
  * @return string La valeur de l'item
  */
 function getPref($login,$item,$default){
@@ -1850,12 +1862,12 @@ function getPref($login,$item,$default){
 }
 
 /**
- * Enregistre les prÈfÈrences d'un utilisateur pour un item dans la table preferences
+ * Enregistre les pr√©f√©rences d'un utilisateur pour un item dans la table preferences
  *
  * @param string $login Login de l'utilisateur
- * @param string $item Item recherchÈ
- * @param string $valeur Valeur ‡ enregistrer
- * @return boolean TRUE si tout c'est bien passÈ
+ * @param string $item Item recherch√©
+ * @param string $valeur Valeur √† enregistrer
+ * @return boolean TRUE si tout c'est bien pass√©
  */
 function savePref($login,$item,$valeur){
 	$sql="SELECT value FROM preferences WHERE login='$login' AND name='$item'";
@@ -1894,7 +1906,7 @@ $GLOBALS['tabid_infobulle'] = array();
 $GLOBALS['unite_div_infobulle'] = '';
 
 /**
- * Les infobulles ne sont pas dÈcallÈes si ‡ oui
+ * Les infobulles ne sont pas d√©call√©es si √† oui
  * 
  * @global string $GLOBALS['pas_de_decalage_infobulle']
  * @name $pas_de_decalage_infobulle
@@ -1910,13 +1922,13 @@ $GLOBALS['pas_de_decalage_infobulle'] = '';
 $GLOBALS['class_special_infobulle'] = '';
 
 /**
- * $bg_titre: Si $bg_titre est vide, on utilise la couleur par dÈfaut correspondant ‡ .infobulle_entete (dÈfini dans style.css et Èventuellement modifiÈ dans style_screen_ajout.css)
+ * $bg_titre: Si $bg_titre est vide, on utilise la couleur par d√©faut correspondant √† .infobulle_entete (d√©fini dans style.css et √©ventuellement modifi√© dans style_screen_ajout.css)
  * 
- * $bg_texte: Si $bg_texte est vide, on utilise la couleur par dÈfaut correspondant ‡ .infobulle_corps (dÈfini dans style.css et Èventuellement modifiÈ dans style_screen_ajout.css)
+ * $bg_texte: Si $bg_texte est vide, on utilise la couleur par d√©faut correspondant √† .infobulle_corps (d√©fini dans style.css et √©ventuellement modifi√© dans style_screen_ajout.css)
  * 
- * $hauteur: En mettant 0, on laisse le DIV s'adapter au contenu (se rÈduire/s'ajuster)
+ * $hauteur: En mettant 0, on laisse le DIV s'adapter au contenu (se r√©duire/s'ajuster)
  * 
- * $bouton_close: S'il est affichÈ, c'est dans la barre de titre. Si la barre de titre n'est pas affichÈe, ce bouton ne peut pas Ítre affichÈ.
+ * $bouton_close: S'il est affich√©, c'est dans la barre de titre. Si la barre de titre n'est pas affich√©e, ce bouton ne peut pas √™tre affich√©.
 		
  * 
  * @global type 
@@ -1973,13 +1985,13 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 	if($hauteur!=0){
 		$div.="height: ".$hauteur.$unite_div_infobulle."; ";
 	}
-	// Position horizontale initiale pour permettre un affichage sans superposition si Javascript est dÈsactivÈ:
+	// Position horizontale initiale pour permettre un affichage sans superposition si Javascript est d√©sactiv√©:
 	$div.="left:".$posDiv_infobulle.$unite_div_infobulle.";";
 	$div.="'>\n";
 
 
 	// Barre de titre:
-	// Elle n'est affichÈe que si le titre est non vide
+	// Elle n'est affich√©e que si le titre est non vide
 	if($titre!=""){
 		if($bg_titre==''){
 			$div.="<div class='infobulle_entete' style='$style_bar width: ".$largeur.$unite_div_infobulle.";'";
@@ -1988,7 +2000,7 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 			$div.="<div style='$style_bar background-color: $bg_titre; width: ".$largeur.$unite_div_infobulle.";'";
 		}
 		if($drag=="y"){
-			// L‡ on utilise les fonctions de http://www.brainjar.com stockÈes dans brainjar_drag.js
+			// L√† on utilise les fonctions de http://www.brainjar.com stock√©es dans brainjar_drag.js
 			$div.=" onmousedown=\"dragStart(event, '$id')\"";
 		}
 		$div.=">\n";
@@ -2043,9 +2055,9 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 
 	$div.="</div>\n";
 
-	// Les div vont s'afficher cÙte ‡ cÙte sans superposition en bas de page si JavaScript est dÈsactivÈ:
+	// Les div vont s'afficher c√¥te √† c√¥te sans superposition en bas de page si JavaScript est d√©sactiv√©:
 	if (isset($pas_de_decalage_infobulle) AND $pas_de_decalage_infobulle == "oui") {
-		// on ne dÈcale pas les div des infobulles
+		// on ne d√©cale pas les div des infobulles
 		$posDiv_infobulle = $posDiv_infobulle;
 	}else{
 		$posDiv_infobulle = $posDiv_infobulle+$largeur;
@@ -2055,7 +2067,7 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 }
 
 /**
- * tableau des variables transmises d'une page ‡ l'autre
+ * tableau des variables transmises d'une page √† l'autre
  * 
  * @global array $GLOBALS['debug_var_count']
  * @name $debug_var_count
@@ -2071,7 +2083,7 @@ $GLOBALS['debug_var_count']=array();
 $GLOBALS['cpt_debug_debug_var']=0;
 
 /**
- * Affiche les variables transmises d'une page ‡ l'autre: GET, POST, SERVER et SESSION
+ * Affiche les variables transmises d'une page √† l'autre: GET, POST, SERVER et SESSION
  *
  * @global array
  * @global int
@@ -2091,7 +2103,7 @@ function debug_var() {
 
 	$debug_var_count['FILES']=0;
 
-	// Fonction destinÈe ‡ afficher les variables transmises d'une page ‡ l'autre: GET, POST et SESSION
+	// Fonction destin√©e √† afficher les variables transmises d'une page √† l'autre: GET, POST et SESSION
 	echo "<div style='border: 1px solid black; background-color: white; color: black;'>\n";
 
 	$cpt_debug_debug_var=0;
@@ -2103,7 +2115,7 @@ function debug_var() {
 	$cpt_debug_debug_var++;
 
 	echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
-	echo "<p>Variables envoyÈes en POST: ";
+	echo "<p>Variables envoy√©es en POST: ";
 	if(count($_POST)==0) {
 		echo "aucune";
 	}
@@ -2190,7 +2202,7 @@ function debug_var() {
 
 
 	echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
-	echo "<p>Variables envoyÈes en GET: ";
+	echo "<p>Variables envoy√©es en GET: ";
 	if(count($_GET)==0) {
 		echo "aucune";
 	}
@@ -2227,7 +2239,7 @@ function debug_var() {
 
 
 	echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
-	echo "<p>Variables envoyÈes en SESSION: ";
+	echo "<p>Variables envoy√©es en SESSION: ";
 	if(count($_SESSION)==0) {
 		echo "aucune";
 	}
@@ -2262,7 +2274,7 @@ function debug_var() {
 
 
 	echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
-	echo "<p>Variables envoyÈes en SERVER: ";
+	echo "<p>Variables envoy√©es en SERVER: ";
 	if(count($_SERVER)==0) {
 		echo "aucune";
 	}
@@ -2285,7 +2297,7 @@ function debug_var() {
 
 
 	echo "<a name='ancre_debug_var_$cpt_debug_debug_var'></a>\n";
-	echo "<p>Variables envoyÈes en FILES: ";
+	echo "<p>Variables envoy√©es en FILES: ";
 	if((!isset($_FILES))||(count($_FILES)==0)) {
 		echo "aucune";
 	}
@@ -2361,7 +2373,7 @@ function debug_var() {
 		if(document.getElementById('container_debug_var_'+i)) {
 			affiche_debug_var('container_debug_var_'+i,-1);
 		}
-		// Variable destinÈe ‡ alterner affichage/masquage
+		// Variable destin√©e √† alterner affichage/masquage
 		tab_etat_debug_var[i]=-1;
 	}
 </script>\n";
@@ -2371,10 +2383,10 @@ function debug_var() {
 }
 
 /**
- *permet de vÈrifier si tel statut peut avoir accËs ‡ l'EdT en fonction des settings de l'admin
+ *permet de v√©rifier si tel statut peut avoir acc√®s √† l'EdT en fonction des settings de l'admin
  * 
- * @param string $statut Statut testÈ
- * @return string yes si peut avoir accËs ‡ l'EdT, no sinon
+ * @param string $statut Statut test√©
+ * @return string yes si peut avoir acc√®s √† l'EdT, no sinon
  * @see getSettingValue()
  */
 function param_edt($statut){
@@ -2388,7 +2400,7 @@ function param_edt($statut){
 	} else {
 		$verif = "";
 	}
-	// On vÈrifie $verif et on renvoie le return
+	// On v√©rifie $verif et on renvoie le return
 	if ($verif == "y" or $verif == "yes") {
 		return "yes";
 	} else {
@@ -2397,14 +2409,14 @@ function param_edt($statut){
 }
 
 /**
- * Renvoie le nom de la photo de l'ÈlËve ou du prof
+ * Renvoie le nom de la photo de l'√©l√®ve ou du prof
  *
  * Renvoie NULL si :
  *
- * - le module trombinoscope n'est pas activÈ
+ * - le module trombinoscope n'est pas activ√©
  * - la photo n'existe pas.
  *
- * @param string $_elenoet_ou_login selon les cas, soit l'elenoet de l'ÈlËve soit le login du professeur
+ * @param string $_elenoet_ou_login selon les cas, soit l'elenoet de l'√©l√®ve soit le login du professeur
  * @param string $repertoire "eleves" ou "personnels"
  * @param int $arbo niveau d'aborescence (1 ou 2).
  * @return string Le chemin vers la photo ou NULL
@@ -2422,20 +2434,20 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 	}
 		$photo=NULL;
 
-	// En multisite, on ajoute le rÈpertoire RNE
+	// En multisite, on ajoute le r√©pertoire RNE
 	if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-		  // On rÈcupËre le RNE de l'Ètablissement
+		  // On r√©cup√®re le RNE de l'√©tablissement
       $repertoire2=$_COOKIE['RNE']."/";
 	}else{
 	  $repertoire2="";
 	}
 
-	// Cas des ÈlËves
+	// Cas des √©l√®ves
 	if ($repertoire == "eleves") {
 	  
 	  if($_elenoet_ou_login!='') {
 
-		// on vÈrifie si la photo existe
+		// on v√©rifie si la photo existe
 
 		if(file_exists($chemin."../photos/".$repertoire2."eleves/".$_elenoet_ou_login.".jpg")) {
 			$photo=$chemin."../photos/".$repertoire2."eleves/".$_elenoet_ou_login.".jpg";
@@ -2444,7 +2456,7 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 		{
 		  // En multisite, on recherche aussi avec les logins
 		  if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-			// On rÈcupËre le login de l'ÈlËve
+			// On r√©cup√®re le login de l'√©l√®ve
 			$sql = 'SELECT login FROM eleves WHERE elenoet = "'.$_elenoet_ou_login.'"';
 			$query = mysql_query($sql);
 			$_elenoet_ou_login = mysql_result($query, 0,'login');
@@ -2458,8 +2470,8 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 					$photo=$chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg";
 				} else {
 					for($i=0;$i<5;$i++){
-						if(substr($_elenoet_ou_login,$i,1)=="0"){
-							$test_photo=substr($_elenoet_ou_login,$i+1);
+						if(mb_substr($_elenoet_ou_login,$i,1)=="0"){
+							$test_photo=mb_substr($_elenoet_ou_login,$i+1);
 							if(($test_photo!='')&&(file_exists($chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg"))) {
 								$photo=$chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg";
 								break;
@@ -2473,7 +2485,7 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 
 	  }
 	}
-	// Cas des non-ÈlËves
+	// Cas des non-√©l√®ves
 	else {
 
 		$_elenoet_ou_login = md5(strtolower($_elenoet_ou_login));
@@ -2488,7 +2500,7 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 
 
 /**
- * Le message ‡ afficher
+ * Le message √† afficher
  * 
  * @global string $GLOBALS['themessage']
  * @name $themessage
@@ -2496,9 +2508,9 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 $GLOBALS['themessage'] = '';
 
 /**
- * Affiche un fenÍtre de confirmation via javascript
+ * Affiche un fen√™tre de confirmation via javascript
  * 
- * Ajoute un attribut onclick ‡ une balise pour appeler une fonction javascript contenant le message
+ * Ajoute un attribut onclick √† une balise pour appeler une fonction javascript contenant le message
  *
  * @global string
  * @return  string l'attribut onclick ou vide
@@ -2520,7 +2532,7 @@ function insert_confirm_abandon(){
 }
 
 /**
- * Largeur maximum dÈsirÈe
+ * Largeur maximum d√©sir√©e
  * 
  * @global int $GLOBALS['photo_largeur_max']
  * @name $photo_largeur_max
@@ -2528,7 +2540,7 @@ function insert_confirm_abandon(){
 $GLOBALS['photo_largeur_max'] = 0;
 
 /**
- * Hauteur maximum dÈsirÈe;
+ * Hauteur maximum d√©sir√©e;
  * 
  * @global int $GLOBALS['photo_hauteur_max']
  * @name $photo_hauteur_max
@@ -2536,57 +2548,9 @@ $GLOBALS['photo_largeur_max'] = 0;
 $GLOBALS['photo_hauteur_max'] = 0;
 
 /**
- * Redimensionne une image
+ * Renvoie le nom d'une classe √† partir de son Id
  *
- * @global int 
- * @global int 
- * @param string $photo l'adresse de la photo
- * @return array Les nouvelles dimensions de l'image (largeur, hauteur)
- */
-function redimensionne_image2($photo){
-	global $photo_largeur_max, $photo_hauteur_max;
-
-	// prendre les informations sur l'image
-	$info_image=getimagesize($photo);
-	// largeur et hauteur de l'image d'origine
-	$largeur=$info_image[0];
-	$hauteur=$info_image[1];
-
-	// calcule le ratio de redimensionnement
-	$ratio_l=$largeur/$photo_largeur_max;
-	$ratio_h=$hauteur/$photo_hauteur_max;
-	$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
-
-	// dÈfinit largeur et hauteur pour la nouvelle image
-	$nouvelle_largeur=round($largeur/$ratio);
-	$nouvelle_hauteur=round($hauteur/$ratio);
-
-	return array($nouvelle_largeur, $nouvelle_hauteur);
-}
-
-/**
- * Enregistre les calculs de moyennes dans un fichier
- * 
- * Passer ‡ 1 la variable $debug pour gÈnÈrer un fichier de debug...
- *
- * @param string $texte Le calcul ‡ enregistrer
- * @see get_user_temp_directory()
- */
-function calc_moy_debug($texte){
-	$debug=0;
-	if($debug==1){
-		$tmp_dir=get_user_temp_directory();
-		if((!$tmp_dir)||(!file_exists("../temp/".$tmp_dir))) {$tmp_dir="/tmp";} else {$tmp_dir="../temp/".$tmp_dir;}
-		$fich=fopen($tmp_dir."/calc_moy_debug.txt","a+");
-		fwrite($fich,$texte);
-		fclose($fich);
-	}
-}
-
-/**
- * Renvoie le nom d'une classe ‡ partir de son Id
- *
- * @param int $id_classe Id de la classe recherchÈe
+ * @param int $id_classe Id de la classe recherch√©e
  * @return type nom de la classe (classe.classes)
  */
 function get_class_from_id($id_classe) {
@@ -2608,7 +2572,7 @@ function get_class_from_id($id_classe) {
 
 /*
 function fdebug_mail_connexion($texte){
-	// Passer la variable ‡ "y" pour activer le remplissage du fichier de debug pour calcule_moyenne()
+	// Passer la variable √† "y" pour activer le remplissage du fichier de debug pour calcule_moyenne()
 	$local_debug="n";
 	if($local_debug=="y") {
 		$fich=fopen("/tmp/mail_connexion.txt","a+");
@@ -2628,7 +2592,7 @@ function mail_connexion() {
 	$test_envoi_mail=getSettingValue("envoi_mail_connexion");
 
 	//$date = strftime("%Y-%m-%d %H:%M:%S");
-	//$date = ucfirst(strftime("%A %d-%m-%Y ‡ %H:%M:%S"));
+	//$date = ucfirst(strftime("%A %d-%m-%Y √† %H:%M:%S"));
 	//fdebug_mail_connexion("\$_SESSION['login']=".$_SESSION['login']."\n\$test_envoi_mail=$test_envoi_mail\n\$date=$date\n====================\n");
 
 	if($test_envoi_mail=="y") {
@@ -2640,13 +2604,13 @@ function mail_connexion() {
 			$lig_user=mysql_fetch_object($res_user);
 
 			$adresse_ip = $_SERVER['REMOTE_ADDR'];
-			$date = ucfirst(strftime("%A %d-%m-%Y ‡ %H:%M:%S"));
+			$date = ucfirst(strftime("%A %d-%m-%Y √† %H:%M:%S"));
 
 			if (!(isset($active_hostbyaddr)) or ($active_hostbyaddr == "all")) {
 				$result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
 			}
 			else if($active_hostbyaddr == "no_local") {
-				if ((substr($adresse_ip,0,3) == 127) or (substr($adresse_ip,0,3) == 10.) or (substr($adresse_ip,0,7) == 192.168)) {
+				if ((mb_substr($adresse_ip,0,3) == 127) or (mb_substr($adresse_ip,0,3) == 10.) or (mb_substr($adresse_ip,0,7) == 192.168)) {
 					$result_hostbyaddr = "";
 				}
 				else{
@@ -2665,18 +2629,18 @@ function mail_connexion() {
 
 			$message = "** Mail connexion Gepi **\n\n";
 			$message .= "\n";
-			$message .= "Vous (*) vous Ítes connectÈ ‡ GEPI :\n\n";
-			$message .= "IdentitÈ                : ".strtoupper($lig_user->nom)." ".ucfirst(strtolower($lig_user->prenom))."\n";
+			$message .= "Vous (*) vous √™tes connect√© √† GEPI :\n\n";
+			$message .= "Identit√©                : ".strtoupper($lig_user->nom)." ".ucfirst(strtolower($lig_user->prenom))."\n";
 			$message .= "Login                   : ".$user_login."\n";
 			$message .= "Date                    : ".$date."\n";
 			$message .= "Origine de la connexion : ".$adresse_ip."\n";
 			if($result_hostbyaddr!="") {
-				$message .= "Adresse IP rÈsolue en   : ".$result_hostbyaddr."\n";
+				$message .= "Adresse IP r√©solue en   : ".$result_hostbyaddr."\n";
 			}
 			$message .= "\n";
-			$message .= "Ce message, s'il vous parvient alors que vous ne vous Ítes pas connectÈ ‡ la date/heure indiquÈe, est susceptible d'indiquer que votre identitÈ a pu Ítre usurpÈe.\nVous devriez contrÙler vos donnÈes, changer votre mot de passe et avertir l'administrateur (et/ou l'administration de l'Ètablissement) pour qu'il puisse prendre les mesures appropriÈes.\n";
+			$message .= "Ce message, s'il vous parvient alors que vous ne vous √™tes pas connect√© √† la date/heure indiqu√©e, est susceptible d'indiquer que votre identit√© a pu √™tre usurp√©e.\nVous devriez contr√¥ler vos donn√©es, changer votre mot de passe et avertir l'administrateur (et/ou l'administration de l'√©tablissement) pour qu'il puisse prendre les mesures appropri√©es.\n";
 			$message .= "\n";
-			$message .= "(*) Vous ou une personne tentant d'usurper votre identitÈ.\n";
+			$message .= "(*) Vous ou une personne tentant d'usurper votre identit√©.\n";
 
 			// On envoie le mail
 			//fdebug_mail_connexion("\$message=$message\n====================\n");
@@ -2688,12 +2652,12 @@ function mail_connexion() {
 }
 
 /**
- * Envoi un courriel ‡ un utilisateur en cas de connexion avec son compte
+ * Envoi un courriel √† un utilisateur en cas de connexion avec son compte
  *
  * @global string
  * @param string $sujet Sujet du message
  * @param string $texte Texte du message
- * @param type $informer_admin Envoi aussi un courriel ‡ l'administrateur si pas ‡ 'n'
+ * @param type $informer_admin Envoi aussi un courriel √† l'administrateur si pas √† 'n'
  * @see envoi_mail()
  * @see getSettingValue()
  */
@@ -2709,14 +2673,14 @@ function mail_alerte($sujet,$texte,$informer_admin='n') {
 
 		$adresse_ip = $_SERVER['REMOTE_ADDR'];
 		//$date = strftime("%Y-%m-%d %H:%M:%S");
-		$date = ucfirst(strftime("%A %d-%m-%Y ‡ %H:%M:%S"));
+		$date = ucfirst(strftime("%A %d-%m-%Y √† %H:%M:%S"));
 		//$url = parse_url($_SERVER['REQUEST_URI']);
 
 		if (!(isset($active_hostbyaddr)) or ($active_hostbyaddr == "all")) {
 			$result_hostbyaddr = " - ".@gethostbyaddr($adresse_ip);
 		}
 		else if($active_hostbyaddr == "no_local") {
-			if ((substr($adresse_ip,0,3) == 127) or (substr($adresse_ip,0,3) == 10.) or (substr($adresse_ip,0,7) == 192.168)) {
+			if ((mb_substr($adresse_ip,0,3) == 127) or (mb_substr($adresse_ip,0,3) == 10.) or (mb_substr($adresse_ip,0,7) == 192.168)) {
 				$result_hostbyaddr = "";
 			}
 			else{
@@ -2737,18 +2701,18 @@ function mail_alerte($sujet,$texte,$informer_admin='n') {
 		//$message = "** Mail connexion Gepi **\n\n";
 		$message=$texte;
 		$message .= "\n";
-		$message .= "Vous (*) vous Ítes connectÈ ‡ GEPI :\n\n";
-		$message .= "IdentitÈ                : ".strtoupper($lig_user->nom)." ".ucfirst(strtolower($lig_user->prenom))."\n";
+		$message .= "Vous (*) vous √™tes connect√© √† GEPI :\n\n";
+		$message .= "Identit√©                : ".strtoupper($lig_user->nom)." ".ucfirst(strtolower($lig_user->prenom))."\n";
 		$message .= "Login                   : ".$user_login."\n";
 		$message .= "Date                    : ".$date."\n";
 		$message .= "Origine de la connexion : ".$adresse_ip."\n";
 		if($result_hostbyaddr!="") {
-			$message .= "Adresse IP rÈsolue en   : ".$result_hostbyaddr."\n";
+			$message .= "Adresse IP r√©solue en   : ".$result_hostbyaddr."\n";
 		}
 		$message .= "\n";
-		$message .= "Ce message, s'il vous parvient alors que vous ne vous Ítes pas connectÈ ‡ la date/heure indiquÈe, est susceptible d'indiquer que votre identitÈ a pu Ítre usurpÈe.\nVous devriez contrÙler vos donnÈes, changer votre mot de passe et avertir l'administrateur (et/ou l'administration de l'Ètablissement) pour qu'il puisse prendre les mesures appropriÈes.\n";
+		$message .= "Ce message, s'il vous parvient alors que vous ne vous √™tes pas connect√© √† la date/heure indiqu√©e, est susceptible d'indiquer que votre identit√© a pu √™tre usurp√©e.\nVous devriez contr√¥ler vos donn√©es, changer votre mot de passe et avertir l'administrateur (et/ou l'administration de l'√©tablissement) pour qu'il puisse prendre les mesures appropri√©es.\n";
 		$message .= "\n";
-		$message .= "(*) Vous ou une personne tentant d'usurper votre identitÈ.\n";
+		$message .= "(*) Vous ou une personne tentant d'usurper votre identit√©.\n";
 
 		$ajout="";
 		if(($informer_admin!='n')&&(getSettingValue("gepiAdminAdress")!='')) {
@@ -2769,10 +2733,10 @@ function mail_alerte($sujet,$texte,$informer_admin='n') {
  * Formate un texte
  * 
  * - Si le texte contient des < et >, on affiche tel quel
- * - Sinon, on transforme les retours ‡ la ligne en <br />
+ * - Sinon, on transforme les retours √† la ligne en <br />
  *
- * @param string $texte Le texte ‡ formater
- * @return string Le texte formatÈ
+ * @param string $texte Le texte √† formater
+ * @return string Le texte format√©
  */
 function texte_html_ou_pas($texte){
 	if((strstr($texte,">"))||(strstr($texte,"<"))){
@@ -2800,155 +2764,42 @@ $GLOBALS['debug'] = '';
  */
 $GLOBALS['tab_instant'] = array();
 
-/**
- * 
- *
- * @global array
- * @global string
- * @param type $motif
- * @param string $texte 
- */
-function decompte_debug($motif,$texte) {
-	global $tab_instant, $debug;
-	if($debug=="y") {
-		$instant=microtime();
-		if(isset($tab_instant[$motif])) {
-			$tmp_tab1=explode(" ",$instant);
-			$tmp_tab2=explode(" ",$tab_instant[$motif]);
-			if($tmp_tab1[1]!=$tmp_tab2[1]) {
-				$diff=$tmp_tab1[1]-$tmp_tab2[1];
-			}
-			else {
-				$diff=$tmp_tab1[0]-$tmp_tab2[0];
-			}
-				echo "<p style='color:green;'>$texte: ".$diff." s</p>\n";
-		}
-		else {
-				echo "<p style='color:green;'>$texte</p>\n";
-		}
-		$tab_instant[$motif]=$instant;
-	}
-}
-
- 
-/**
- * Retourne l'URI des ÈlËves pour les flux rss
- *
- * @global string
- * @param string $eleve Login de l'ÈlËve
- * @param string $https La page est-elle sÈcurisÈe ? en https si 'y'
- * @param string $type 'cdt' ou ''
- * @return string
- * @see getSettingValue()
- */
-function retourneUri($eleve, $https, $type){
-
-	global $gepiPath;
-	$rep = array();
-
-	// on vÈrifie que la table en question existe dÈj‡
-	$test_table = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'rss_users'"));
-	if ($test_table >= 1) {
-
-		$sql = "SELECT user_uri FROM rss_users WHERE user_login = '".$eleve."' LIMIT 1";
-		$query = mysql_query($sql);
-		$nbre = mysql_num_rows($query);
-		if ($nbre == 1) {
-			$uri = mysql_fetch_array($query);
-			if ($https == 'y') {
-				$web = 'https://';
-			}else{
-				$web = 'http://';
-			}
-			if ($type == 'cdt') {
-				$rep["uri"] = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?rne='.getSettingValue("gepiSchoolRne").'&amp;ele_l='.$_SESSION["login"].'&amp;type=cdt&amp;uri='.$uri["user_uri"];
-				$rep["text"] = $web.$_SERVER["SERVER_NAME"].$gepiPath.'/class_php/syndication.php?rne='.getSettingValue("gepiSchoolRne").'&amp;ele_l='.$_SESSION["login"].'&amp;type=cdt&amp;uri='.$uri["user_uri"];
-			}
-
-		}else{
-			$rep["text"] = 'erreur1';
-			$rep["uri"] = '#';
-		}
-	}else{
-
-		$rep["text"] = 'Demandez ‡ votre administrateur de gÈnÈrer les URI.';
-		$rep["uri"] = '#';
-
-	}
-
-	return $rep;
-}
 
 /**
- * Met une date en franÁais
+ * Met une date en fran√ßais
  *
- * @return text La date formatÈe 
+ * @return text La date format√©e 
  */
 function get_date_php() {
 	$eng_words = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
-	$french_words = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche', 'Janvier', 'FÈvrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao˚t', 'Septembre', 'Octobre', 'Novembre', 'DÈcembre');
+	$french_words = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche', 'Janvier', 'F√©vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao√ªt', 'Septembre', 'Octobre', 'Novembre', 'D√©cembre');
 	$date_str = date('l').' '.date('d').' '.date('F').' '.date('Y');
 	$date_str = str_replace($eng_words, $french_words, $date_str);
 	return $date_str;
 }
 
 /**
- * Met en forme un prÈnom
+ * Met en forme un pr√©nom
  *
- * @param type $prenom Le prÈnom ‡ traiter
- * @return type Le prÈnom traitÈ
+ * @param type $prenom Le pr√©nom √† traiter
+ * @return type Le pr√©nom trait√©
  */
 function casse_prenom($prenom) {
-	$tab=explode("-",$prenom);
-
-	$retour="";
-	for($i=0;$i<count($tab);$i++) {
-		if($i>0) {
-			$retour.="-";
-		}
-		$tab[$i]=ucwords(strtolower($tab[$i]));
-		$retour.=$tab[$i];
-	}
-
+	$retour=casse_mot($prenom,'majf2');
 	return $retour;
 }
 
 /**
- * Drapeau pour encoder un texte en utf8 si ‡ "y"
+ * Arrondi un nombre avec un certain nombre de chiffres apr√®s la virgule
  *
- * @global string  $GLOBALS['mode_utf8_pdf']
- * @name $mode_utf8_pdf
- */
-$GLOBALS['mode_utf8_pdf'] = '';
-
-/**
- * Encode une chaine en utf8 si $mode_utf8_pdf="y"
- *
- * @global type 
- * @param type $chaine Chaine ‡ encoder
- * @return type 
- */
-function traite_accents_utf8($chaine) {
-	global $mode_utf8_pdf;
-	if($mode_utf8_pdf=="y") {
-		return utf8_encode($chaine);
-	}
-	else {
-		return $chaine;
-	}
-}
-
-/**
- * Arrondi un nombre avec un certain nombre de chiffres aprËs la virgule
- *
- * @param type $nombre Le nombre ‡ convertir
+ * @param type $nombre Le nombre √† convertir
  * @param type $nb_chiffre_apres_virgule
  * @return decimal Le nombre arrondi
  */
 function nf($nombre,$nb_chiffre_apres_virgule=1) {
 	// Formatage des nombres
 	// Precision:
-	// Pour Ítre s˚r d'avoir un entier
+	// Pour √™tre s√ªr d'avoir un entier
 	$nb_chiffre_apres_virgule=floor($nb_chiffre_apres_virgule);
 	if($nb_chiffre_apres_virgule<1) {
 		$precision=0.1;
@@ -2971,7 +2822,7 @@ function nf($nombre,$nb_chiffre_apres_virgule=1) {
 
 
 /**
- * Envoit les informations de debug dans un fichier si ‡ 'fichier', vers l'Ècran sinon
+ * Envoit les informations de debug dans un fichier si √† 'fichier', vers l'√©cran sinon
  *
  * @global string $GLOBALS['mode_my_echo_debug']
  * @name $mode_my_echo_debug
@@ -2979,7 +2830,7 @@ function nf($nombre,$nb_chiffre_apres_virgule=1) {
 $GLOBALS['mode_my_echo_debug'] = '';
 
 /**
- * …crit les informations de debug si ‡ 1
+ * √âcrit les informations de debug si √† 1
  *
  * @global int $GLOBALS['my_echo_debug']
  * @name $my_echo_debug
@@ -2987,9 +2838,9 @@ $GLOBALS['mode_my_echo_debug'] = '';
 $GLOBALS['my_echo_debug'] = NULL;
 
 /**
- * Ecrit des informations de debug dans un fichier ou ‡ l'Ècran
+ * Ecrit des informations de debug dans un fichier ou √† l'√©cran
  * 
- * $dossier est ‡ "/tmp" pour simplifier en debug sur une machine perso sous *nix,
+ * $dossier est √† "/tmp" pour simplifier en debug sur une machine perso sous *nix,
  * Commenter la ligne au besoin
  * 
  * @global string 
@@ -3031,59 +2882,101 @@ function my_echo_debug($texte) {
 }
 
 /**
- * Retourne une chaine avec la bonne casse
+ * Retourne une chaine utf-8 avec la bonne casse
  * 
  * $mode
  * - 'maj'   -> tout en majuscules
  * - 'min'   -> tout en minuscules
- * - 'majf'  -> PremiËre lettre en majuscule
- * - 'majf2' -> PremiËre lettre de tous les mots en majuscule
+ * - 'majf'  -> Premi√®re lettre en majuscule, le reste en minuscule
+ * - 'majf2' -> Premi√®re lettre de tous les mots en majuscule, le reste en minuscule
  *
- * @param type $mot chaine ‡ modifier
+ * @param type $mot chaine √† modifier
  * @param type $mode Mode de conversion
  * @return type chaine mise en forme
  */
 function casse_mot($mot,$mode='maj') {
-	if($mode=='maj') {
-		return strtr(strtoupper($mot),"‰‚‡·Â„ÈËÎÍÚÛÙıˆ¯ÏÌÓÔ˘˙˚¸˝ÒÁ˛ˇÊΩ¯","ƒ¬¿¡≈√…»À “”‘’÷ÿÃÕŒœŸ⁄€‹›—«ﬁ›∆º–ÿ");
-	}
-	elseif($mode=='min') {
-		return strtr(strtolower($mot),"ƒ¬¿¡≈√…»À “”‘’÷ÿÃÕŒœŸ⁄€‹›—«ﬁ›∆º–ÿ","‰‚‡·Â„ÈËÎÍÚÛÙıˆ¯ÏÌÓÔ˘˙˚¸˝ÒÁ˛ˇÊΩ¯");
-	}
-	elseif($mode=='majf') {
-		if(strlen($mot)>1) {
-			return strtr(strtoupper(substr($mot,0,1)),"‰‚‡·Â„ÈËÎÍÚÛÙıˆ¯ÏÌÓÔ˘˙˚¸˝ÒÁ˛ˇÊΩ¯","ƒ¬¿¡≈√…»À “”‘’÷ÿÃÕŒœŸ⁄€‹›—«ﬁ›∆º–ÿ").strtr(strtolower(substr($mot,1)),"ƒ¬¿¡≈√…»À “”‘’÷ÿÃÕŒœŸ⁄€‹›—«ﬁ›∆º–ÿ","‰‚‡·Â„ÈËÎÍÚÛÙıˆ¯ÏÌÓÔ˘˙˚¸˝ÒÁ˛ˇÊΩ¯");
-		}
-		else {
-			return strtr(strtoupper($mot),"‰‚‡·Â„ÈËÎÍÚÛÙıˆ¯ÏÌÓÔ˘˙˚¸˝ÒÁ˛ˇÊΩ¯","ƒ¬¿¡≈√…»À “”‘’÷ÿÃÕŒœŸ⁄€‹›—«ﬁ›∆º–ÿ");
-		}
-	}
-	elseif($mode=='majf2') {
-		$chaine="";
-		$tab=explode(" ",$mot);
-		for($i=0;$i<count($tab);$i++) {
-			if($i>0) {$chaine.=" ";}
-			$tab2=explode("-",$tab[$i]);
-			for($j=0;$j<count($tab2);$j++) {
-				if($j>0) {$chaine.="-";}
-				if(strlen($tab2[$j])>1) {
-					$chaine.=strtr(strtoupper(substr($tab2[$j],0,1)),"‰‚‡·Â„ÈËÎÍÚÛÙıˆ¯ÏÌÓÔ˘˙˚¸˝ÒÁ˛ˇÊΩ¯","ƒ¬¿¡≈√…»À “”‘’÷ÿÃÕŒœŸ⁄€‹›—«ﬁ›∆º–ÿ").strtr(strtolower(substr($tab2[$j],1)),"ƒ¬¿¡≈√…»À “”‘’÷ÿÃÕŒœŸ⁄€‹›—«ﬁ›∆º–ÿ","‰‚‡·Â„ÈËÎÍÚÛÙıˆ¯ÏÌÓÔ˘˙˚¸˝ÒÁ˛ˇÊΩ¯");
-				}
-				else {
-					$chaine.=strtr(strtoupper($tab2[$j]),"‰‚‡·Â„ÈËÎÍÚÛÙıˆ¯ÏÌÓÔ˘˙˚¸˝ÒÁ˛ˇÊΩ¯","ƒ¬¿¡≈√…»À “”‘’÷ÿÃÕŒœŸ⁄€‹›—«ﬁ›∆º–ÿ");
-				}
-			}
-		}
-		return $chaine;
-	}
+    
+    if (function_exists('mb_convert_case')) {
+    	if($mode=='maj') {
+    		return mb_convert_case(($mot), MB_CASE_UPPER);
+    	}
+    	elseif($mode=='min') {
+    		return mb_convert_case(($mot), MB_CASE_LOWER);
+    	}
+    	elseif($mode=='majf') {
+    	    $temp = mb_convert_case(($mot), MB_CASE_LOWER);
+    		return mb_convert_case(mb_substr($temp,0,1), MB_CASE_UPPER).mb_substr($temp,1);
+    	}
+    	elseif($mode=='majf2') {
+    	    $temp = mb_convert_case(($mot), MB_CASE_LOWER);
+    		return mb_convert_case(($temp), MB_CASE_TITLE);
+    	}
+    } else {
+        $str = ensure_ascii($mot);
+    	if($mode=='maj') {
+    		return strtoupper($str);
+    	}
+    	elseif($mode=='min') {
+    		return strtolower($str);
+    	}
+    	elseif($mode=='majf') {
+    		if(mb_strlen($str)>1) {
+    			return strtoupper(mb_substr($str,0,1)).strtolower(substr($str,1));
+    		}
+    		else {
+    			return strtoupper($str);
+    		}
+    	}
+    	elseif($mode=='majf2') {
+    		$chaine="";
+    		$tab=explode(" ",$str);
+    		for($i=0;$i<count($tab);$i++) {
+    			if($i>0) {$chaine.=" ";}
+    			$tab2=explode("-",$tab[$i]);
+    			for($j=0;$j<count($tab2);$j++) {
+    				if($j>0) {$chaine.="-";}
+    				if(mb_strlen($tab2[$j])>1) {
+    					$chaine.=strtoupper(mb_substr($tab2[$j],0,1)).strtolower(mb_substr($tab2[$j],1));
+    				}
+    				else {
+    					$chaine.=strtoupper($tab2[$j]);
+    				}
+    			}
+    		}
+    		return $chaine;
+    	}
+    }
+    throw new Exception('Parametre '.$mode.' non reconnu');
 }
 
 /**
- * Renvoie le nom et le prÈnom d'un ÈlËve
- * 
- * ou civilitÈ nom prÈnom (non-ÈlËve) si ce n'est pas un ÈlËve
+ * Retourne une chaine utf-8 pass√©e en minuscules avec casse_mot()
+ * Fonction destin√©e √† remplacer rapidement les appels strtolower() dans les pages
  *
- * @param string $login_ele Login de l'ÈlËve
+ * @param type $mot chaine √† modifier
+ * @return type chaine mise en forme
+ */
+function my_strtolower($mot) {
+	return casse_mot($mot,'min');
+}
+
+/**
+ * Retourne une chaine utf-8 pass√©e en majuscules avec casse_mot()
+ * Fonction destin√©e √† remplacer rapidement les appels strtoupper() dans les pages
+ *
+ * @param type $mot chaine √† modifier
+ * @return type chaine mise en forme
+ */
+function my_strtoupper($mot) {
+	return casse_mot($mot,'maj');
+}
+
+/**
+ * Renvoie le nom et le pr√©nom d'un √©l√®ve
+ * 
+ * ou civilit√© nom pr√©nom (non-√©l√®ve) si ce n'est pas un √©l√®ve
+ *
+ * @param string $login_ele Login de l'√©l√®ve
  * @param string $mode si 'avec_classe' on retourne aussi la(les) classe(s)
  * @return string 
  * @see civ_nom_prenom()
@@ -3094,14 +2987,14 @@ function get_nom_prenom_eleve($login_ele,$mode='simple') {
 	$sql="SELECT nom,prenom FROM eleves WHERE login='$login_ele';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		// Si ce n'est pas un ÈlËve, c'est peut-Ítre un utilisateur prof, cpe, responsable,...
+		// Si ce n'est pas un √©l√®ve, c'est peut-√™tre un utilisateur prof, cpe, responsable,...
 		$sql="SELECT 1=1 FROM utilisateurs WHERE login='$login_ele';";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)>0) {
-			return civ_nom_prenom($login_ele)." (non-ÈlËve)";
+			return civ_nom_prenom($login_ele)." (non-√©l√®ve)";
 		}
 		else {
-			return "ElËve inconnu ($login_ele)";
+			return "El√®ve inconnu ($login_ele)";
 		}
 	}
 	else {
@@ -3120,12 +3013,12 @@ function get_nom_prenom_eleve($login_ele,$mode='simple') {
 }
 
 /**
- * Retourne une commune ‡ partir de son code insee
+ * Retourne une commune √† partir de son code insee
  * 
  * $mode :
  * - 0 -> la commune
- * - 1 -> la commune (<em>le dÈpartement</em>)
- * - 2 -> la commune (le dÈpartement)
+ * - 1 -> la commune (<em>le d√©partement</em>)
+ * - 2 -> la commune (le d√©partement)
  * 
  * @param string $code_commune_insee
  * @param int $mode
@@ -3135,7 +3028,7 @@ function get_commune($code_commune_insee,$mode){
 	$retour="";
 
 	if(strstr($code_commune_insee,'@')) {
-		// On a affaire ‡ une commune ÈtrangËre
+		// On a affaire √† une commune √©trang√®re
 		$tmp_tab=explode('@',$code_commune_insee);
 		$sql="SELECT * FROM pays WHERE code_pays='$tmp_tab[0]';";
 		//echo "$sql<br />";
@@ -3168,11 +3061,11 @@ function get_commune($code_commune_insee,$mode){
 }
 
 /**
- * Renvoi civilite nom prÈnom d'un utilisateur
+ * Renvoi civilite nom pr√©nom d'un utilisateur
  *
- * @param string $login Login de l'utilisateur recherchÈ
- * @param string $mode si 'prenom' inverse le nom et le prÈnom
- * @return string civilite nom prÈnom de l'utilisateur
+ * @param string $login Login de l'utilisateur recherch√©
+ * @param string $mode si 'prenom' inverse le nom et le pr√©nom
+ * @return string civilite nom pr√©nom de l'utilisateur
  */
 function civ_nom_prenom($login,$mode='prenom') {
 	$retour="";
@@ -3188,18 +3081,18 @@ function civ_nom_prenom($login,$mode='prenom') {
 		}
 		else {
 			// Initiale
-			$retour.=strtoupper($lig_user->nom)." ".strtoupper(substr($lig_user->prenom,0,1));
+			$retour.=strtoupper($lig_user->nom)." ".strtoupper(mb_substr($lig_user->prenom,0,1));
 		}
 	}
 	return $retour;
 }
 
 /**
- *Enleve le numÈro des titres numÈrotÈs ("1. Titre" -> "Titre")
+ *Enleve le num√©ro des titres num√©rot√©s ("1. Titre" -> "Titre")
  * 
  * Exemple :  "12. Titre"  donne "Titre"
- * @param string $texte Le titre de dÈpart
- * @return string  Le titre formatÈ
+ * @param string $texte Le titre de d√©part
+ * @return string  Le titre format√©
  */
 function supprimer_numero($texte) {
  return preg_replace(",^[[:space:]]*([0-9]+)([.)])[[:space:]]+,S","", $texte);
@@ -3207,9 +3100,9 @@ function supprimer_numero($texte) {
 
 
 /**
- * Teste si style_screen_ajout.css existe et est accessible en Ècriture
+ * Teste si style_screen_ajout.css existe et est accessible en √©criture
  *
- * @return boolean TRUE si on peut Ècrire dans le fichier
+ * @return boolean TRUE si on peut √©crire dans le fichier
  */
 function test_ecriture_style_screen_ajout() {
 	$nom_fichier='style_screen_ajout.css';
@@ -3229,37 +3122,37 @@ function test_ecriture_style_screen_ajout() {
  **********************************************************************************************/
 
 /**
- * CrÈe les rÈpertoires photos/RNE_Etablissement, photos/RNE_Etablissement/eleves et
+ * Cr√©e les r√©pertoires photos/RNE_Etablissement, photos/RNE_Etablissement/eleves et
  * photos/RNE_Etablissement/personnels s'ils n'existent pas
- * @return boolean TRUE si tout se passe bien ou FALSE si la crÈation d'un rÈpertoire Èchoue
+ * @return boolean TRUE si tout se passe bien ou FALSE si la cr√©ation d'un r√©pertoire √©choue
  * @see getSettingValue()
  */
 function cree_repertoire_multisite() {
   if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-		// On rÈcupËre le RNE de l'Ètablissement
+		// On r√©cup√®re le RNE de l'√©tablissement
 	if (!$repertoire=$_COOKIE['RNE'])
 	  return FALSE;
-	//on vÈrifie que le dossier photos/RNE_Etablissement n'existe pas
+	//on v√©rifie que le dossier photos/RNE_Etablissement n'existe pas
 	if (!is_dir("../photos/".$repertoire)){
-	  // On crÈe le rÈpertoire photos/RNE_Etablissement
+	  // On cr√©e le r√©pertoire photos/RNE_Etablissement
 	  if (!mkdir("../photos/".$repertoire, 0700))
 		return FALSE;
 	  // On enregistre un fichier index.html dans photos/RNE_Etablissement
 	  if (!copy  (  "../photos/index.html"  ,  "../photos/".$repertoire."/index.html" ))
 		return FALSE;
 	}
-	//on vÈrifie que le dossier photos/RNE_Etablissement/eleves n'existe pas
+	//on v√©rifie que le dossier photos/RNE_Etablissement/eleves n'existe pas
 	if (!is_dir("../photos/".$repertoire."/eleves")){
-	  // On crÈe le rÈpertoire photos/RNE_Etablissement/eleves
+	  // On cr√©e le r√©pertoire photos/RNE_Etablissement/eleves
 	  if (!mkdir("../photos/".$repertoire."/eleves", 0700))
 		return FALSE;
 	  // On enregistre un fichier index.html dans photos/RNE_Etablissement/eleves
 	  if (!copy  (  "../photos/index.html"  ,  "../photos/".$repertoire."/eleves/index.html" ))
 		return FALSE;
 	 }
-	//on vÈrifie que le dossier photos/RNE_Etablissement/personnels n'existe pas
+	//on v√©rifie que le dossier photos/RNE_Etablissement/personnels n'existe pas
 	if (!is_dir("../photos/".$repertoire."/personnels")){
-	  // On crÈe le rÈpertoire photos/RNE_Etablissement/personnels
+	  // On cr√©e le r√©pertoire photos/RNE_Etablissement/personnels
 	  if (!mkdir("../photos/".$repertoire."/personnels", 0700))
 		return FALSE;
 	  // On enregistre un fichier index.html dans photos/RNE_Etablissement/personnels
@@ -3271,9 +3164,9 @@ function cree_repertoire_multisite() {
 }
 
 /**
- * Recherche les ÈlËves sans photos
+ * Recherche les √©l√®ves sans photos
  *
- * @return array tableau de login - nom - prÈnom - classe - classe court - eleonet
+ * @return array tableau de login - nom - pr√©nom - classe - classe court - eleonet
  * @see nom_photo()
  */
 function recherche_eleves_sans_photo() {
@@ -3296,7 +3189,7 @@ function recherche_eleves_sans_photo() {
 
 /**
  *
- * @param string $statut statut recherchÈ
+ * @param string $statut statut recherch√©
  * @return array tableau des personnels sans photo ou NULL
  * @see nom_photo()
  */
@@ -3316,9 +3209,9 @@ function recherche_personnel_sans_photo($statut='professeur') {
 }
 
 /**
- * Efface le dossier photo passÈ en argument
- * @param string $photos le dossier ‡ effacer personnels ou eleves
- * @return string L'Ètat de la suppression
+ * Efface le dossier photo pass√© en argument
+ * @param string $photos le dossier √† effacer personnels ou eleves
+ * @return string L'√©tat de la suppression
  * @see cree_zip_archive()
  * @see getSettingValue()
  */
@@ -3329,9 +3222,9 @@ function efface_photos($photos) {
   if (cree_zip_archive("photos")==TRUE){
 	$fichier_sup=array();
 	if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-		  // On rÈcupËre le RNE de l'Ètablissement
+		  // On r√©cup√®re le RNE de l'√©tablissement
 	  if (!$repertoire=$_COOKIE['RNE'])
-		return ("Erreur lors de la rÈcupÈration du dossier Ètablissement.");
+		return ("Erreur lors de la r√©cup√©ration du dossier √©tablissement.");
 	} else {
 	  $repertoire="";
 	}
@@ -3353,19 +3246,19 @@ function efface_photos($photos) {
 		  @unlink($fic_efface);
 		  if(file_exists($fic_efface)) {
 			$nb_erreurs++;
-			$erreurs.="Le fichier  <strong>".$fic_efface."</strong> n'a pas pu Ítre effacÈ.<br />";
+			$erreurs.="Le fichier  <strong>".$fic_efface."</strong> n'a pas pu √™tre effac√©.<br />";
 		  }
 		}
 	  }
 	  unset ($fic_efface);
 	  if ($nb_erreurs>0) {
-		if ($nb_erreurs>10) return $nb_erreurs." fichiers n'ont pu Ítre effacÈs.";
+		if ($nb_erreurs>10) return $nb_erreurs." fichiers n'ont pu √™tre effac√©s.";
 			else return $erreurs;
 	  }
-		else return ("Le dossier <strong>".$folder."</strong> a ÈtÈ vidÈ.") ;
+		else return ("Le dossier <strong>".$folder."</strong> a √©t√© vid√©.") ;
 	}
   }else{
-	return ("Erreur lors de la crÈation de l'archive.") ;
+	return ("Erreur lors de la cr√©ation de l'archive.") ;
   }
 
 }
@@ -3380,8 +3273,8 @@ function efface_photos($photos) {
 /**
  * gestion du fil d'ariane en remplissant le tableau $_SESSION['ariane']
  * @param string $lien page atteinte par le lien
- * @param string $texte texte ‡ afficher dans le fil d'ariane
- * @return boolean True si tout s'est bien passÈ, False sinon
+ * @param string $texte texte √† afficher dans le fil d'ariane
+ * @return boolean True si tout s'est bien pass√©, False sinon
  */
 function suivi_ariane($lien,$texte){
   if (!isset($_SESSION['ariane'])){
@@ -3411,10 +3304,10 @@ function suivi_ariane($lien,$texte){
 /**
  * Affiche le fil d'Ariane
  * 
- * une validation sera demandÈe en cas de modification de la page si validation est ‡ TRUE 
- * et si le javascript est activÈ
+ * une validation sera demand√©e en cas de modification de la page si validation est √† TRUE 
+ * et si le javascript est activ√©
  * @param <boolean> $validation validation si TRUE,
- * @param <texte> $themessage message ‡ afficher lors de la confirmation
+ * @param <texte> $themessage message √† afficher lors de la confirmation
  */
 function affiche_ariane($validation= FALSE,$themessage="" ){
   if (isset($_SESSION['ariane'])){
@@ -3443,7 +3336,7 @@ function affiche_ariane($validation= FALSE,$themessage="" ){
  **********************************************************************************************/
 
 /**
- * Renvoie le chemin relatif pour remonter ‡ la racine du site
+ * Renvoie le chemin relatif pour remonter √† la racine du site
  * @param int $niveau niveau dans l'arborescence
  * @return string chemin relatif vers la racine
  */
@@ -3464,9 +3357,9 @@ function path_niveau($niveau=1){
 }
 
 /**
- * CrÈe une archive Zip des dossiers documents ou photos
+ * Cr√©e une archive Zip des dossiers documents ou photos
  *
- * @param string $dossier_a_archiver limitÈ ‡ documents ou photos
+ * @param string $dossier_a_archiver limit√© √† documents ou photos
  * @param int $niveau niveau dans l'arborescence de la page appelante, racine = 0
  * @return boolean
  */
@@ -3480,17 +3373,17 @@ function cree_zip_archive($dossier_a_archiver,$niveau=1) {
 	$suffixe_zip="_le_".date("Y_m_d_\a_H\hi");
 	switch ($dossier_a_archiver) {
 	case "documents":
-	  $chemin_stockage = $path.$dirname."_cdt".$suffixe_zip.".zip"; //l'endroit o˘ sera stockÈe l'archive
-	  $dossier_a_traiter = $path.'documents/'; //le dossier ‡ traiter
-	  $dossier_dans_archive = 'documents'; //le nom du dossier dans l'archive crÈÈe
+	  $chemin_stockage = $path.$dirname."_cdt".$suffixe_zip.".zip"; //l'endroit o√π sera stock√©e l'archive
+	  $dossier_a_traiter = $path.'documents/'; //le dossier √† traiter
+	  $dossier_dans_archive = 'documents'; //le nom du dossier dans l'archive cr√©√©e
 	  break;
 	case "photos":
 	  $chemin_stockage = $path.$dirname."_photos".$suffixe_zip.".zip";
-	  $dossier_a_traiter = $path.'photos/'; //le dossier ‡ traiter
+	  $dossier_a_traiter = $path.'photos/'; //le dossier √† traiter
 	  if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 		$dossier_a_traiter .=$_COOKIE['RNE']."/";
 	  }
-	  $dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive crÈer
+	  $dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive cr√©er
 	  break;
 	default:
 	  $chemin_stockage = '';
@@ -3512,8 +3405,8 @@ function cree_zip_archive($dossier_a_archiver,$niveau=1) {
 }
 
 /**
- * DÈplace un fichier de $source vers $dest
- * @param string $source : emplacement du fichier ‡ dÈplacer
+ * D√©place un fichier de $source vers $dest
+ * @param string $source : emplacement du fichier √† d√©placer
  * @param string $dest : Nouvel emplacement du fichier
  * @return bool
  */
@@ -3524,7 +3417,7 @@ function deplacer_upload($source, $dest) {
 }
 
 /**
- * TÈlÈcharge un fichier dans $dirname aprËs avoir nettoyer son nom 
+ * T√©l√©charge un fichier dans $dirname apr√®s avoir nettoyer son nom 
  * 
  * si tout se passe bien :
  * $sav_file['name']=my_ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $sav_file['name'])
@@ -3535,18 +3428,18 @@ function deplacer_upload($source, $dest) {
  */
 function telecharge_fichier($sav_file,$dirname,$ext="",$type=""){
   if (!isset($sav_file['tmp_name']) or ($sav_file['tmp_name'] =='')) {
-	return ("Erreur de tÈlÈchargement.");
+	return ("Erreur de t√©l√©chargement.");
   } else if (!file_exists($sav_file['tmp_name'])) {
-	return ("Erreur de tÈlÈchargement 2.");
+	return ("Erreur de t√©l√©chargement 2.");
   } else if (($ext!="") && (!preg_match('/'.$ext.'$/i',$sav_file['name']))){
-	return ("Erreur : seuls les fichiers ayant l'extension .".$ext." sont autorisÈs.");
+	return ("Erreur : seuls les fichiers ayant l'extension .".$ext." sont autoris√©s.");
   //} else if ($sav_file['type']!=$type ){
   } else if (($type!="") && (strripos($type,$sav_file['type'])===false)) {
-	return ("Erreur : seuls les fichiers de type '".$type."' sont autorisÈs<br />Votre fichier est de type ".$sav_file['type']);
+	return ("Erreur : seuls les fichiers de type '".$type."' sont autoris√©s<br />Votre fichier est de type ".$sav_file['type']);
   } else {
 	$nom_corrige = preg_replace("/[^.a-zA-Z0-9_=-]+/", "_", $sav_file['name']);
 	if (!deplacer_upload($sav_file['tmp_name'], $dirname."/".$nom_corrige)) {
-	  return ("ProblËme de transfert : le fichier n'a pas pu Ítre transfÈrÈ sur le rÈpertoire ".$dirname);
+	  return ("Probl√®me de transfert : le fichier n'a pas pu √™tre transf√©r√© sur le r√©pertoire ".$dirname);
 	} else {
 	  $sav_file['name']=$nom_corrige;
 	  return ("ok");
@@ -3556,8 +3449,8 @@ function telecharge_fichier($sav_file,$dirname,$ext="",$type=""){
 
 /**
  * Extrait une archive Zip
- * @param string $fichier le nom du fichier ‡ dÈzipper
- * @param string $repertoire le rÈpertoire de destination
+ * @param string $fichier le nom du fichier √† d√©zipper
+ * @param string $repertoire le r√©pertoire de destination
  * @param int $niveau niveau dans l'arborescence de la page appelante
  * @return string ok ou message d'erreur
  */
@@ -3567,7 +3460,7 @@ function dezip_PclZip_fichier($fichier,$repertoire,$niveau=1){
   $archive = new PclZip($fichier);
   //if ($archive->extract() == 0) {
 if ($archive->extract(PCLZIP_OPT_PATH, $repertoire) == 0) {
-	return "Une erreur a ÈtÈ rencontrÈe lors de l'extraction du fichier zip";
+	return "Une erreur a √©t√© rencontr√©e lors de l'extraction du fichier zip";
   }else {
 	return "ok";
   }
@@ -3577,10 +3470,10 @@ if ($archive->extract(PCLZIP_OPT_PATH, $repertoire) == 0) {
  *                              Fin Manipulation de fichiers
  **********************************************************************************************/
 /**
- * VÈrifie qu'un statut ‡ les droits sur une page
+ * V√©rifie qu'un statut √† les droits sur une page
  *
- * @param string $id le lien vers la page ‡ tester
- * @param string $statut Le statut ‡ tester
+ * @param string $id le lien vers la page √† tester
+ * @param string $statut Le statut √† tester
  * @return int  
  */
 function check_droit_acces($id,$statut) {
@@ -3595,13 +3488,13 @@ function check_droit_acces($id,$statut) {
 }
 
 /**
- * Renvoie des balises option contenant les ÈlËves
+ * Renvoie des balises option contenant les √©l√®ves
  * 
- * Renvoie une chaine contenant une balise option par ÈlËve ‡ insÈrer dans un select
+ * Renvoie une chaine contenant une balise option par √©l√®ve √† ins√©rer dans un select
  *
  * @param int $id_classe Id de la classe
- * @param string $login_eleve_courant Login de l'ÈlËve qui sera sÈlectionnÈ par dÈfaut
- * @param request $sql_ele requÍte ‡ utiliser
+ * @param string $login_eleve_courant Login de l'√©l√®ve qui sera s√©lectionn√© par d√©faut
+ * @param request $sql_ele requ√™te √† utiliser
  * @return string Les balises options
  */
 function lignes_options_select_eleve($id_classe,$login_eleve_courant,$sql_ele="") {
@@ -3654,17 +3547,17 @@ function lignes_options_select_eleve($id_classe,$login_eleve_courant,$sql_ele=""
 }
 
 /**
- *VÈrifie si un utilisateur est prof principal (gepi_prof_suivi)
+ *V√©rifie si un utilisateur est prof principal (gepi_prof_suivi)
  * 
  * $id_classe : identifiant de la classe (si vide, on teste juste si le prof est PP 
- * (Èventuellement pour un ÈlËve particulier si login_eleve est non vide))
+ * (√©ventuellement pour un √©l√®ve particulier si login_eleve est non vide))
  * 
- * $login_eleve : login de l'ÈlËve ‡ tester (si vide, on teste juste si le prof est PP 
- * (Èventuellement pour la classe si id_classe est non vide))
+ * $login_eleve : login de l'√©l√®ve √† tester (si vide, on teste juste si le prof est PP 
+ * (√©ventuellement pour la classe si id_classe est non vide))
  * 
- * @param type $login_prof login de l'utilisateur ‡ tester
+ * @param type $login_prof login de l'utilisateur √† tester
  * @param type $id_classe identifiant de la classe
- * @param type $login_eleve login de l'ÈlËve
+ * @param type $login_eleve login de l'√©l√®ve
  * @return boolean 
  */
 function is_pp($login_prof,$id_classe="",$login_eleve="") {
@@ -3686,12 +3579,12 @@ function is_pp($login_prof,$id_classe="",$login_eleve="") {
 }
 
 /**
- * VÈrifie qu'un utilisateur a le droit de voir la page en lien
+ * V√©rifie qu'un utilisateur a le droit de voir la page en lien
  *
- * @param string $id l'adresse de la page telle qu'enregistrÈe dans la table droits
+ * @param string $id l'adresse de la page telle qu'enregistr√©e dans la table droits
  * @param string $statut le statut de l'utilisateur
  * @return entier 1 si l'utilisateur a le droit de voir la page 0 sinon
- * @todo Je l'ai dÈj‡ vu au-dessus dans le fichier
+ * @todo Je l'ai d√©j√† vu au-dessus dans le fichier
  */
 function acces($id,$statut) 
 { 
@@ -3723,96 +3616,24 @@ function acces($id,$statut)
 	}
 }
 
-/**
- * VÈrifie que le dossier (et ses sous-dossiers) contient bien un fichier index.html
- *
- * @global int
- * @param string $dossier Le dossier
- * @return string Un message formatÈ
- */
-function ajout_index_sous_dossiers($dossier) {
-	global $niveau_arbo;
-
-	$nb_creation=0;
-	$nb_erreur=0;
-	$nb_fich_existant=0;
-
-	$retour="";
-
-	//$dossier="../documents";
-	$dir= opendir($dossier);
-	if(!$dir) {
-		$retour.="<p style='color:red'>Erreur lors de l'accËs au dossier '$dossier'.</p>\n";
-	}
-	else {
-		$retour.="<p style='color:green'>SuccËs de l'accËs au dossier '$dossier'.</p>\n";
-		while($entree=@readdir($dir)) {
-			if(is_dir($dossier.'/'.$entree)&&($entree!='.')&&($entree!='..')) {
-				if(!file_exists($dossier."/".$entree."/index.html")) {
-					if ($f = @fopen($dossier.'/'.$entree."/index.html", "w")) {
-						if((!isset($niveau_arbo))||($niveau_arbo==1)) {
-							@fputs($f, '<script type="text/javascript">document.location.replace("../login.php")</script>');
-						}
-						elseif($niveau_arbo==0) {
-							@fputs($f, '<script type="text/javascript">document.location.replace("./login.php")</script>');
-						}
-						elseif($niveau_arbo==2) {
-							@fputs($f, '<script type="text/javascript">document.location.replace("../../login.php")</script>');
-						}
-						else {
-							@fputs($f, '<script type="text/javascript">document.location.replace("../../../login.php")</script>');
-						}
-						@fclose($f);
-						$nb_creation++;
-					}
-					else {
-						$retour.="<span style='color:red'>Erreur lors de la crÈation de '$dir/$entree/index.html'.</span><br />\n";
-						$nb_erreur++;
-					}
-				}
-				else {
-					$nb_fich_existant++;
-				}
-			}
-		}
-
-		if($nb_erreur>0) {
-			$retour.="<p style='color:red'>$nb_erreur erreur(s) lors du traitement.</p>\n";
-		}
-		else {
-			$retour.="<p style='color:green'>Aucune erreur lors de la crÈation des fichiers index.html</p>\n";
-		}
-	
-		if($nb_creation>0) {
-			$retour.="<p style='color:green'>CrÈation de $nb_creation fichier(s) index.html</p>\n";
-		}
-		else {
-			$retour.="<p style='color:green'>Aucune crÈation de fichiers index.html n'a ÈtÈ effectuÈe.</p>\n";
-		}
-		$retour.="<p style='color:blue'>Il existait avant l'opÈration $nb_fich_existant fichier(s) index.html</p>\n";
-	}
-
-	return $retour;
-}
-
-// MÈthode pour envoyer les en-tÍtes HTTP nÈcessaires au tÈlÈchargement de fichier.
+// M√©thode pour envoyer les en-t√™tes HTTP n√©cessaires au t√©l√©chargement de fichier.
 // Le content-type est obligatoire, ainsi que le nom du fichier.
 /**
- * MÈthode pour envoyer les en-tÍtes HTTP nÈcessaires au tÈlÈchargement de fichier.
+ * M√©thode pour envoyer les en-t√™tes HTTP n√©cessaires au t√©l√©chargement de fichier.
  * 
  * Le content-type est obligatoire, ainsi que le nom du fichier.
  * @param string $content_type type Mime
  * @param string $filename Nom du fichier
- * @param type $content_disposition Content-Disposition 'attachment' par dÈfaut
+ * @param type $content_disposition Content-Disposition 'attachment' par d√©faut
  */
 function send_file_download_headers($content_type, $filename, $content_disposition = 'attachment') {
 
-  //header('Content-Encoding: utf-8');
+  header('Content-Encoding: utf-8');
   header('Content-Type: '.$content_type);
   header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
   header('Content-Disposition: '.$content_disposition.'; filename="' . $filename . '"');
   
-  // Contournement d'un bug IE lors d'un tÈlÈchargement en HTTPS...
+  // Contournement d'un bug IE lors d'un t√©l√©chargement en HTTPS...
   if (isset($_SERVER['HTTP_USER_AGENT']) && (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== FALSE)) {
     header('Pragma: private');
     header('Cache-Control: private, must-revalidate');
@@ -3822,13 +3643,13 @@ function send_file_download_headers($content_type, $filename, $content_dispositi
 }
 
 /**
- * Enregistrer une action ‡ effectuer pour qu'elle soit par la suite affichÈe en page d'accueil pour tels ou tels utilisateurs
+ * Enregistrer une action √† effectuer pour qu'elle soit par la suite affich√©e en page d'accueil pour tels ou tels utilisateurs
  *
  * @param string $titre titre de l'action/info
- * @param string $description le dÈtail de l'action ‡ effectuer avec autant que possible un lien vers la page et paramËtres utiles pour l'action
- * @param string $destinataire le tableau des login ou statuts des utilisateurs pour lesquels l'affichage sera rÈalisÈ
- * @param string $mode vaut 'individu' si $destinataire dÈsigne des logins et 'statut' si ce sont des statuts
- * @return int|boolean Id de l'enregistrement s'est bien effectuÈ FALSE sinon
+ * @param string $description le d√©tail de l'action √† effectuer avec autant que possible un lien vers la page et param√®tres utiles pour l'action
+ * @param string $destinataire le tableau des login ou statuts des utilisateurs pour lesquels l'affichage sera r√©alis√©
+ * @param string $mode vaut 'individu' si $destinataire d√©signe des logins et 'statut' si ce sont des statuts
+ * @return int|boolean Id de l'enregistrement s'est bien effectu√© FALSE sinon
  *
  *
  */
@@ -3861,15 +3682,15 @@ function enregistre_infos_actions($titre,$texte,$destinataire,$mode) {
 }
 
 /**
- * Supprime une action ‡ effectuer de la base
+ * Supprime une action √† effectuer de la base
  *
  * @param type $id_info Id de l'action a effacer de la base
- * @return boolean TRUE si l'action a ÈtÈ effacÈe de la base 
+ * @return boolean TRUE si l'action a √©t√© effac√©e de la base 
  */
 function del_info_action($id_info) {
-	// Dans le cas des infos destinÈes ‡ un statut... c'est le premier qui supprime qui vire pour tout le monde?
-	// S'il s'agit bien de loguer des actions ‡ effectuer... elle ne doit Ítre effectuÈe qu'une fois.
-	// Ou alors il faudrait ajouter des champs pour marquer les actions comme effectuÈes et n'afficher par dÈfaut que les actions non effectuÈes
+	// Dans le cas des infos destin√©es √† un statut... c'est le premier qui supprime qui vire pour tout le monde?
+	// S'il s'agit bien de loguer des actions √† effectuer... elle ne doit √™tre effectu√©e qu'une fois.
+	// Ou alors il faudrait ajouter des champs pour marquer les actions comme effectu√©es et n'afficher par d√©faut que les actions non effectu√©es
 
 	$sql="SELECT 1=1 FROM infos_actions_destinataires WHERE id_info='$id_info' AND ((nature='statut' AND valeur='".$_SESSION['statut']."') OR (nature='individu' AND valeur='".$_SESSION['login']."'));";
 	$test=mysql_query($sql);
@@ -3893,16 +3714,16 @@ function del_info_action($id_info) {
 }
 
 /**
- * affiche sous la forme JJ/MM/AAAA la date de sortie d'un ÈlËve 
- * prÈsente dans la base comme un timestamp
+ * affiche sous la forme JJ/MM/AAAA la date de sortie d'un √©l√®ve 
+ * pr√©sente dans la base comme un timestamp
  *
  * @param date $date_sortie date (timestamp)
- * @return string La date formatÈe 
+ * @return string La date format√©e 
  */
 function affiche_date_sortie($date_sortie) {
 	//
     $eleve_date_de_sortie_time=strtotime($date_sortie);
-	//rÈcupÈration du jour, du mois et de l'annÈe
+	//r√©cup√©ration du jour, du mois et de l'ann√©e
 	$eleve_date_sortie_jour=date('j', $eleve_date_de_sortie_time); 
 	$eleve_date_sortie_mois=date('m', $eleve_date_de_sortie_time);
 	$eleve_date_sortie_annee=date('Y', $eleve_date_de_sortie_time); 
@@ -3910,7 +3731,7 @@ function affiche_date_sortie($date_sortie) {
 }
 
 /**
- * Traite une chaine de caractËres JJ/MM/AAAA vers un timestamp AAAA-MM-JJ 00:00:00
+ * Traite une chaine de caract√®res JJ/MM/AAAA vers un timestamp AAAA-MM-JJ 00:00:00
  * 
  * @param string $date_sortie date (JJ/MM/AAAA)
  * @return date date (timestamp)
@@ -3926,10 +3747,10 @@ function traite_date_sortie_to_timestamp($date_sortie) {
 }
 
 /**
- * Supprime les accËs au cahier de textes
+ * Supprime les acc√®s au cahier de textes
  *
  * @param int $id_acces Id du cahier de texte
- * @return boolean TRUE si tout c'est bien passÈ 
+ * @return boolean TRUE si tout c'est bien pass√© 
  */
 function del_acces_cdt($id_acces) {
 
@@ -3957,14 +3778,14 @@ function del_acces_cdt($id_acces) {
 				$sql="DELETE FROM acces_cdt_groupes WHERE id_acces='$id_acces';";
 				$del=mysql_query($sql);
 				if(!$del) {
-					echo "<p><span style='color:red'>Erreur lors de la suppression des groupes associÈs ‡ l'accËs n∞$id_acces</span></p>";
+					echo "<p><span style='color:red'>Erreur lors de la suppression des groupes associ√©s √† l'acc√®s n¬∞$id_acces</span></p>";
 					return FALSE;
 				}
 				else {
 					$sql="DELETE FROM acces_cdt WHERE id='$id_acces';";
 					$del=mysql_query($sql);
 					if(!$del) {
-						echo "<p><span style='color:red'>Erreur lors de la suppression de l'accËs n∞$id_acces</span></p>";
+						echo "<p><span style='color:red'>Erreur lors de la suppression de l'acc√®s n¬∞$id_acces</span></p>";
 						return FALSE;
 					}
 					else {
@@ -3977,18 +3798,18 @@ function del_acces_cdt($id_acces) {
 }
 
 //=======================================================
-// Fonction rÈcupÈrÈe dans /mod_ooo/lib/lib_mod_ooo.php
+// Fonction r√©cup√©r√©e dans /mod_ooo/lib/lib_mod_ooo.php
 
 /**
  * Supprime une arborescence
  * 
- * Retourne TRUE si tout s'est bien passÈ,
- * FALSE si un fichier est restÈ (problËme de permission ou attribut lecture sous Win.
- * Dans tous les cas, le maximum possible est supprimÈ.
+ * Retourne TRUE si tout s'est bien pass√©,
+ * FALSE si un fichier est rest√© (probl√®me de permission ou attribut lecture sous Win.
+ * Dans tous les cas, le maximum possible est supprim√©.
  * @staticvar int $niv niveau dans l'arborescence
- * @param string $rep Le rÈpertoire de dÈpart
+ * @param string $rep Le r√©pertoire de d√©part
  * @param boolean $repaussi TRUE ~> efface aussi $rep
- * @return boolean TRUE si tout s'est bien passÈ
+ * @return boolean TRUE si tout s'est bien pass√©
  */
 function deltree($rep,$repaussi=TRUE) {
 	static $niv=0;
@@ -4039,12 +3860,12 @@ function check_mail($email,$mode='simple') {
 
 
 /**
- * Fonction destinÈe ‡ prendre une date mysql aaaa-mm-jj HH:MM:SS 
- * et ‡ retourner une date au format jj/mm/aaaa
+ * Fonction destin√©e √† prendre une date mysql aaaa-mm-jj HH:MM:SS 
+ * et √† retourner une date au format jj/mm/aaaa
  * 
  * @param date $mysql_date date (aaaa-mm-jj HH:MM:SS)
  * @return string  date (jj/mm/aaaa)
- * @todo on a dÈj‡ cette fonction
+ * @todo on a d√©j√† cette fonction
  */
 function get_date_slash_from_mysql_date($mysql_date) {
 	$tmp_tab=explode(" ",$mysql_date);
@@ -4054,19 +3875,19 @@ function get_date_slash_from_mysql_date($mysql_date) {
 			return $tmp_tab2[2]."/".$tmp_tab2[1]."/".$tmp_tab2[0];
 		}
 		else {
-			return "Date '".$tmp_tab[0]."' mal formatÈe?";
+			return "Date '".$tmp_tab[0]."' mal format√©e?";
 		}
 	}
 	else {
-		return "Date '$mysql_date' mal formatÈe?";
+		return "Date '$mysql_date' mal format√©e?";
 	}
 }
 
-// Fonction destinÈe ‡ prendre une date mysql aaaa-mm-jj HH:MM:SS et ‡ retourner une heure au format HH:MM
+// Fonction destin√©e √† prendre une date mysql aaaa-mm-jj HH:MM:SS et √† retourner une heure au format HH:MM
 
 /**
- * Fonction destinÈe ‡ prendre une date mysql aaaa-mm-jj HH:MM:SS 
- * et ‡ retourner une heure au format HH:MM
+ * Fonction destin√©e √† prendre une date mysql aaaa-mm-jj HH:MM:SS 
+ * et √† retourner une heure au format HH:MM
  * 
  * @param date $mysql_date date (aaaa-mm-jj HH:MM:SS)
  * @return string  heure (HH:MM)
@@ -4079,17 +3900,17 @@ function get_heure_2pt_minute_from_mysql_date($mysql_date) {
 			return $tmp_tab2[0].":".$tmp_tab2[1];
 		}
 		else {
-			return "Heure '".$tmp_tab[1]."' mal formatÈe?";
+			return "Heure '".$tmp_tab[1]."' mal format√©e?";
 		}
 	}
 	else {
-		return "Date '$mysql_date' mal formatÈe?";
+		return "Date '$mysql_date' mal format√©e?";
 	}
 }
 
 /**
- * Fonction destinÈe ‡ prendre une date mysql aaaa-mm-jj HH:MM:SS 
- * et ‡ retourner une date  au format jj/mm/aaaa HH:MM
+ * Fonction destin√©e √† prendre une date mysql aaaa-mm-jj HH:MM:SS 
+ * et √† retourner une date  au format jj/mm/aaaa HH:MM
  * 
  * @param date $mysql_date date (aaaa-mm-jj HH:MM:SS)
  * @return string  heure (jj/mm/aaaa HH:MM)
@@ -4107,15 +3928,15 @@ function mysql_date_to_unix_timestamp($mysql_date) {
 	$tmp_tab=explode(" ",$mysql_date);
 	$tmp_tab2=explode("-",$tmp_tab[0]);
 	if((!isset($tmp_tab[1]))||(!isset($tmp_tab2[2]))) {
-		// Ces retours ne sont pas adaptÈs... on fait gÈnÈralement une comparaison sur le retour de cette fonction
-		return "Date '$mysql_date' mal formatÈe?";
+		// Ces retours ne sont pas adapt√©s... on fait g√©n√©ralement une comparaison sur le retour de cette fonction
+		return "Date '$mysql_date' mal format√©e?";
 	}
 	else {
 		$tmp_tab3=explode(":",$tmp_tab[1]);
 
 		if(!isset($tmp_tab3[2])) {
-			// Ces retours ne sont pas adaptÈs... on fait gÈnÈralement une comparaison sur le retour de cette fonction
-			return "Date '$mysql_date' mal formatÈe?";
+			// Ces retours ne sont pas adapt√©s... on fait g√©n√©ralement une comparaison sur le retour de cette fonction
+			return "Date '$mysql_date' mal format√©e?";
 		}
 		else {
 			$jour=$tmp_tab2[2];
@@ -4160,23 +3981,23 @@ function get_tab_prof_suivi($id_classe) {
  * Enregistre pour Affichage un message sur la page d'accueil du destinataire (ML 5/2011)
  * 
  * Les appels possibles
- * - message_accueil_utilisateur("UNTEL","Bonjour Untel") : affiche le message "Bonjour Untel" sur la page d'accueil du destinataire de login "UNTEL" dËs l'appel de la fonction, pour une durÈe de 7 jours, avec dÈcompte sur le 7iËme jour
- * - message_accueil_utilisateur("UNTEL","Bonjour Untel",130674844) : affiche le message "Bonjour Untel" sur la page du destinataire de login "UNTEL" ‡ partir de la date 130674844, pour une durÈe de 7 jours, avec dÈcompte sur le 7iËme jour	
- *  - message_accueil_utilisateur("UNTEL","Bonjour Untel",130674844,130684567) : affiche le message "Bonjour Untel" sur la page du destinataire de login "UNTEL" ‡ partir de la date 130674844, jusqu'‡ la date 130684567, avec dÈcompte sur la date 130684567
- * - message_accueil_utilisateur("UNTEL","Bonjour Untel",130674844,130684567,130690844) : affiche le message "Bonjour Untel" sur la page du destinataire de login "UNTEL" ‡ partir de la date 130674844, jusqu'‡ la date 130684567, avec dÈcompte sur la date 130690844
+ * - message_accueil_utilisateur("UNTEL","Bonjour Untel") : affiche le message "Bonjour Untel" sur la page d'accueil du destinataire de login "UNTEL" d√®s l'appel de la fonction, pour une dur√©e de 7 jours, avec d√©compte sur le 7i√®me jour
+ * - message_accueil_utilisateur("UNTEL","Bonjour Untel",130674844) : affiche le message "Bonjour Untel" sur la page du destinataire de login "UNTEL" √† partir de la date 130674844, pour une dur√©e de 7 jours, avec d√©compte sur le 7i√®me jour	
+ *  - message_accueil_utilisateur("UNTEL","Bonjour Untel",130674844,130684567) : affiche le message "Bonjour Untel" sur la page du destinataire de login "UNTEL" √† partir de la date 130674844, jusqu'√† la date 130684567, avec d√©compte sur la date 130684567
+ * - message_accueil_utilisateur("UNTEL","Bonjour Untel",130674844,130684567,130690844) : affiche le message "Bonjour Untel" sur la page du destinataire de login "UNTEL" √† partir de la date 130674844, jusqu'√† la date 130684567, avec d√©compte sur la date 130690844
  * 
  * @param type $login_destinataire login du destinataire (obligatoire)
- * @param type $texte texte du message contenant Èventuellement des balises HTML et encodÈ en utf-8 (obligatoire)
- * @param type $date_debut date ‡ partir de laquelle est affichÈ le message (timestamp, optionnel)
- * @param type $date_fin date ‡ laquelle le message n'est plus affichÈ (timestamp, optionnel)
- * @param type $date_decompte date butoir du dÈcompte, la chaÓne _DECOMPTE_ dans $texte est remplacÈe par un dÈcompte (timestamp, optionnel)
- * @return type TRUE ou FALSE selon que le message a ÈtÈ enregistrÈ ou pas
+ * @param type $texte texte du message contenant √©ventuellement des balises HTML et encod√© en iso-8859-1 (obligatoire)
+ * @param type $date_debut date √† partir de laquelle est affich√© le message (timestamp, optionnel)
+ * @param type $date_fin date √† laquelle le message n'est plus affich√© (timestamp, optionnel)
+ * @param type $date_decompte date butoir du d√©compte, la cha√Æne _DECOMPTE_ dans $texte est remplac√©e par un d√©compte (timestamp, optionnel)
+ * @return type TRUE ou FALSE selon que le message a √©t√© enregistr√© ou pas
  */
 function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$date_fin=0,$date_decompte=0)
 {
-	// On arrondit le timestamp d'appel ‡ l'heure (pas nÈceassaire mais pour l'esthÈtique)
+	// On arrondit le timestamp d'appel √† l'heure (pas n√©ceassaire mais pour l'esth√©tique)
 	$t_appel=time()-(time()%3600);
-	// suivant le nombre de paramËtres passÈs :
+	// suivant le nombre de param√®tres pass√©s :
 	switch (func_num_args())
 		{
 		case 3:
@@ -4189,7 +4010,7 @@ function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$d
 		case 5:
 			break;
 		default :
-			// valeurs par dÈfaut
+			// valeurs par d√©faut
 			$date_debut=$t_appel;
 			$date_fin=$t_appel + 3600*24*7;
 			$date_decompte=$date_fin;		
@@ -4199,9 +4020,9 @@ function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$d
 }
 
 /**
- * Transforme un tableau en chaine, les lignes sont sÈparÈes par une ,
+ * Transforme un tableau en chaine, les lignes sont s√©par√©es par une ,
  *
- * @param array $tableau Le tableau ‡ parser
+ * @param array $tableau Le tableau √† parser
  * @return string La chaine produite 
  */
 function array_to_chaine($tableau) {
@@ -4218,9 +4039,9 @@ function array_to_chaine($tableau) {
 }
 
 /**
- * Supprime les sauts de lignes dupliquÈs
+ * Supprime les sauts de lignes dupliqu√©s
  * 
- * @param string $chaine La chaine  ‡ parser
+ * @param string $chaine La chaine  √† parser
  * @return string La chaine produite 
  */
 function suppression_sauts_de_lignes_surnumeraires($chaine) {
@@ -4235,8 +4056,8 @@ function suppression_sauts_de_lignes_surnumeraires($chaine) {
  *
  * @param string $type "notes" pour voir les notes sinon commentaires
  * @param int $id_groupe Id du groupe
- * @param int $periode_num numÈro de la pÈriode
- * @param string $mode Si "couleur" le texte est sur fond orange si tous les ÈlËves ne sont pas notÈs
+ * @param int $periode_num num√©ro de la p√©riode
+ * @param string $mode Si "couleur" le texte est sur fond orange si tous les √©l√®ves ne sont pas not√©s
  * @return string le nombre de notes ou commentaires saisis
  */
 function nb_saisies_bulletin($type, $id_groupe, $periode_num, $mode="") {
@@ -4257,12 +4078,12 @@ function nb_saisies_bulletin($type, $id_groupe, $periode_num, $mode="") {
 
 	if($mode=="couleur") {
 		if($nb_saisies_bulletin==$effectif_groupe){
-			$retour="<span style='font-size: x-small;' title='Saisies complËtes'>";
+			$retour="<span style='font-size: x-small;' title='Saisies compl√®tes'>";
 			$retour.="($nb_saisies_bulletin/$effectif_groupe)";
 			$retour.="</span>";
 		}
 		else {
-			$retour="<span style='font-size: x-small; background-color: orangered;' title='Saisies incomplËtes ou non encore effectuÈes'>";
+			$retour="<span style='font-size: x-small; background-color: orangered;' title='Saisies incompl√®tes ou non encore effectu√©es'>";
 			$retour.="($nb_saisies_bulletin/$effectif_groupe)";
 			$retour.="</span>";
 		}
@@ -4275,11 +4096,11 @@ function nb_saisies_bulletin($type, $id_groupe, $periode_num, $mode="") {
 }
 
 /**
- * CrÈe un fichier index.html de redirection vers login.php
+ * Cr√©e un fichier index.html de redirection vers login.php
  *
- * @param string $chemin_relatif Le rÈpertoire ‡ protÈger
+ * @param string $chemin_relatif Le r√©pertoire √† prot√©ger
  * @param int $niveau_arbo Niveau dans l'arborescence GEPI
- * @return boolean TRUE si le fichier est crÈÈ
+ * @return boolean TRUE si le fichier est cr√©√©
  */
 function creation_index_redir_login($chemin_relatif,$niveau_arbo=1) {
 	$retour=TRUE;
@@ -4318,8 +4139,8 @@ function creation_index_redir_login($chemin_relatif,$niveau_arbo=1) {
 /**
  * Renvoie un tableau des fichiers contenus dans le dossier
  *
- * @param string $path Le dossier ‡ parser
- * @param array $tab_exclusion Fichiers ‡ ne pas prendre en compte
+ * @param string $path Le dossier √† parser
+ * @param array $tab_exclusion Fichiers √† ne pas prendre en compte
  * @return array Tableau des fichiers
  */
 function get_tab_file($path,$tab_exclusion=array(".", "..", "remove.txt", ".htaccess", ".htpasswd", "index.html")) {
@@ -4350,10 +4171,10 @@ function get_tab_file($path,$tab_exclusion=array(".", "..", "remove.txt", ".htac
 $GLOBALS['tableau_des_mentions_sur_le_bulletin'] = array();
 
 /**
- * Retourne une mention pour les bulletins ‡ partir de son Id
+ * Retourne une mention pour les bulletins √† partir de son Id
  * 
  * @global array
- * @param int $code Id de la mention recherchÈe
+ * @param int $code Id de la mention recherch√©e
  * @return string 
  * @see get_mentions()
  */
@@ -4398,9 +4219,9 @@ function get_mentions($id_classe=NULL) {
 }
 
 /**
- * Retourne un tableau des mentions dÈj‡ utilisÈes dans les bulletins
+ * Retourne un tableau des mentions d√©j√† utilis√©es dans les bulletins
  *
- * Pour interdire la suppression d'une mention saisie pour un ÈlËve
+ * Pour interdire la suppression d'une mention saisie pour un √©l√®ve
  * 
  * @param int $id_classe Id de la classe
  * @return array Le tableau des mentions
@@ -4427,7 +4248,7 @@ function get_tab_mentions_affectees($id_classe=NULL) {
  *
  * @param string $nom_champ_select valeur des attribut name et id du select
  * @param int $id_classe Id de la classe
- * @param string $id_mention_selected Id de la mention ‡ sÈlectionner par dÈfaut
+ * @param string $id_mention_selected Id de la mention √† s√©lectionner par d√©faut
  * @return string La balise
  */
 function champ_select_mention($nom_champ_select,$id_classe,$id_mention_selected='') {
@@ -4453,7 +4274,7 @@ function champ_select_mention($nom_champ_select,$id_classe,$id_mention_selected=
 }
 
 /**
- * Teste s'il y a des mentions de bulletin dÈfinies pour une classe
+ * Teste s'il y a des mentions de bulletin d√©finies pour une classe
  *
  * @param type $id_classe Id de la classe
  * @return boolean TRUE si il y a des mentions 
@@ -4473,7 +4294,7 @@ function test_existence_mentions_classe($id_classe) {
 /**
  * Teste si un compte est actif
  * 
- * - 0 si l'utilisateur n'est pas trouvÈ
+ * - 0 si l'utilisateur n'est pas trouv√©
  * - 1 compte actif
  * - 2 compte non-actif
  *
@@ -4498,18 +4319,18 @@ function check_compte_actif($login) {
 }
 
 /**
- * CrÈe un lien derriËre une image pour modifier les donnÈes d'un utilisateur
+ * Cr√©e un lien derri√®re une image pour modifier les donn√©es d'un utilisateur
  *
  * @global string
- * @param string $login id de l'utilisateur cherchÈ
- * @param string $statut statut de l'utilisateur (si '', il sera cherchÈ avec get_statut_from_login())
- * @param string $target pour ouvrir dans une autre fenÍtre
- * @param string $avec_lien 'y' ou absent pour crÈer un lien
+ * @param string $login id de l'utilisateur cherch√©
+ * @param string $statut statut de l'utilisateur (si '', il sera cherch√© avec get_statut_from_login())
+ * @param string $target pour ouvrir dans une autre fen√™tre
+ * @param string $avec_lien 'y' ou absent pour cr√©er un lien
  * @return string Le code html
  * @see check_compte_actif()
  * @see get_statut_from_login()
  * @see get_infos_from_login_utilisateur()
- * @todo si $target='_blank' il faudrait ajouter un argument title pour prÈvenir
+ * @todo si $target='_blank' il faudrait ajouter un argument title pour pr√©venir
  */
 function lien_image_compte_utilisateur($login, $statut='', $target='', $avec_lien='y') {
 	global $gepiPath;
@@ -4567,7 +4388,7 @@ function lien_image_compte_utilisateur($login, $statut='', $target='', $avec_lie
 }
 
 /**
- * Renvoie le statut d'un utilisateur ‡ partir de son login
+ * Renvoie le statut d'un utilisateur √† partir de son login
  *
  * @param string $login Login de l'utilisateur
  * @return string Le statut
@@ -4585,7 +4406,7 @@ function get_statut_from_login($login) {
 }
 
 /**
- * Renvoie dans un tableau les informations d'un utilisateur ‡ partir de son login
+ * Renvoie dans un tableau les informations d'un utilisateur √† partir de son login
  * 
  * Champs disponibles dans le tableau
  * - tout utilisateur ->  'nom', 'prenom', 'civilite', 'email','show_email','statut','etat','change_mdp','date_verrouillage','ticket_expiration','niveau_alerte','observation_securite','temp_dir','numind','auth_mode'
@@ -4593,10 +4414,10 @@ function get_statut_from_login($login) {
  * - eleve -> 'no_gep','sexe','naissance','lieu_naissance','elenoet','ereno','ele_id','id_eleve','id_mef','date_sortie'
  * 
  * @param string $login Login de l'utilisateur
- * @param string $tab_champs Tableau non utilisÈ
+ * @param string $tab_champs Tableau non utilis√©
  * @return array Le tableau des informations
- * @todo $tab_champs n'est pas utilisÈ pour l'instant
- * @todo DÈterminer les champs supplÈmentaires pour le statut autre
+ * @todo $tab_champs n'est pas utilis√© pour l'instant
+ * @todo D√©terminer les champs suppl√©mentaires pour le statut autre
  */
 function get_infos_from_login_utilisateur($login, $tab_champs=array()) {
 	$tab=array();
@@ -4619,7 +4440,7 @@ function get_infos_from_login_utilisateur($login, $tab_champs=array()) {
 				$tab['pers_id']=$lig->pers_id;
 
 				if(in_array('enfants', $tab_champs)) {
-					// A complÈter
+					// A compl√©ter
 				}
 			}
 		}
@@ -4636,13 +4457,13 @@ function get_infos_from_login_utilisateur($login, $tab_champs=array()) {
                 unset ($key, $value);
 
 				if(in_array('parents', $tab_champs)) {
-					// A complÈter
+					// A compl√©ter
 				}
 			}
 
 		}
 		elseif($tab['statut']=='autre') {
-			// A complÈter
+			// A compl√©ter
 			$tab['statut_autre']="A EXTRAIRE";
 		}
 	}
@@ -4650,10 +4471,10 @@ function get_infos_from_login_utilisateur($login, $tab_champs=array()) {
 }
 
 /**
- * VÈrifie qu'un responsable a accËs au module discipline
+ * V√©rifie qu'un responsable a acc√®s au module discipline
  *
  * @param string $login_resp Login du responsable
- * @return boolean TRUE si le responsable a accËs
+ * @return boolean TRUE si le responsable a acc√®s
  * @see check_compte_actif()
  * @see getSettingValue()
  */
@@ -4667,10 +4488,10 @@ function acces_resp_disc($login_resp) {
 }
 
 /**
- * VÈrifie qu'un ÈlËve a accËs au module discipline
+ * V√©rifie qu'un √©l√®ve a acc√®s au module discipline
  *
- * @param string $login_ele Login de l'ÈlËve
- * @return boolean TRUE si l'ÈlËve a accËs
+ * @param string $login_ele Login de l'√©l√®ve
+ * @return boolean TRUE si l'√©l√®ve a acc√®s
  * @see check_compte_actif()
  * @see getSettingValue()
  */
@@ -4684,11 +4505,11 @@ function acces_ele_disc($login_ele) {
 }
 
 /**
- * Renvoie un tableau des responsables d'un ÈlËve
+ * Renvoie un tableau des responsables d'un √©l√®ve
  * 
  * $tab[indice] = array('login','nom','prenom','civilite','designation'=>civilite nom prenom)
  *
- * @param string $ele_login Login de l'ÈlËve
+ * @param string $ele_login Login de l'√©l√®ve
  * @return array Le tableau
  */
 function get_resp_from_ele_login($ele_login) {
@@ -4738,21 +4559,5 @@ function array_map_deep($callback, $array) {
     else $new = call_user_func($callback, $array);
     return $new;
 } 
-
-/**
- * VÈrifie si une variable est en UTF8 et la rÈencode au besoin
- * @param string $var La variable ‡ vÈrifier
- * @return string La variable dÈcodÈe 
- */
-function check_utf8_and_convert($var) {
-	if(function_exists("mb_check_encoding")) {
-		if (!mb_check_encoding($var, 'UTF-8')) {
-    		return utf8_encode($var);
-    	} else {
-    		return $var;
-    	}
-	}
-} 
-
 
 ?>

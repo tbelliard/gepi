@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: choix_couleurs.php 5969 2010-11-23 18:39:40Z crob $
+ * $Id$
  *
  * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

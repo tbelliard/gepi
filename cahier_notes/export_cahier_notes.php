@@ -2,7 +2,6 @@
 /**
  * Export du carnet de notes
  * 
- * $Id: export_cahier_notes.php 7758 2011-08-15 00:04:41Z regis $
  * 
  * @copyright Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL, 
@@ -106,7 +105,7 @@ else {
 				$msg="Vous tentez de supprimer des fichiers qui ne vous appartiennent pas.";
 			}
 			else {
-				if(strlen(preg_replace("/[a-zA-Z0-9_\.]/","",strtr($nettoyage,"-","_")))!=0) {
+				if(mb_strlen(preg_replace("/[a-zA-Z0-9_\.]/","",strtr($nettoyage,"-","_")))!=0) {
 					$msg="Le fichier proposé n'est pas valide: '".preg_replace("/[a-zA-Z0-9_\.]/","",strtr($nettoyage,"-","_"))."'";
 				}
 				else{
@@ -194,7 +193,7 @@ if(!isset($type_export)) {
 	require_once("../lib/header.inc");
 	//**************** FIN EN-TETE *****************
 
-	$titre=htmlentities($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")";
+	$titre=htmlspecialchars($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")";
 	$titre.=" - EXPORT";
 
 	// Mettre la ligne de liens de retour,...
@@ -202,7 +201,7 @@ if(!isset($type_export)) {
 	echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"".$_SERVER['PHP_SELF']."\" method=\"get\">\n";
     echo "<p class='bold'>\n";
 
-    echo "<a href='index.php?id_groupe=".$current_group["id"]."&amp;periode_num=$periode_num'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour ".htmlentities($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")"." </a>|\n";
+    echo "<a href='index.php?id_groupe=".$current_group["id"]."&amp;periode_num=$periode_num'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour ".htmlspecialchars($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")"." </a>|\n";
 
 	if($_SESSION['statut']=='professeur') {
 		$login_prof_groupe_courant=$_SESSION["login"];
@@ -510,7 +509,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 		$date_dev[$cpt]=$tmptab[0];
 		// Pour le fichier ODS, on veut des dates au format aaaa-mm-jj
 		$tmptab2=explode("-",$tmptab[0]);
-		if(strlen($tmptab2[0])==4) {$tmptab2[0]=substr($tmptab2[0],2,2);}
+		if(mb_strlen($tmptab2[0])==4) {$tmptab2[0]=mb_substr($tmptab2[0],2,2);}
 		$date_dev_fr[$cpt]=$tmptab2[2]."/".$tmptab2[1]."/".$tmptab2[0];
 
 
@@ -666,11 +665,11 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 
 	$alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	$tabcol=array();
-	for($i=0;$i<strlen($alphabet);$i++) {
-		$tabcol[$i]=substr($alphabet,$i,1);
+	for($i=0;$i<mb_strlen($alphabet);$i++) {
+		$tabcol[$i]=mb_substr($alphabet,$i,1);
 	}
-	for($i=strlen($alphabet);$i<2*strlen($alphabet);$i++) {
-		$tabcol[$i]="A".substr($alphabet,$i-strlen($alphabet),1);
+	for($i=mb_strlen($alphabet);$i<2*mb_strlen($alphabet);$i++) {
+		$tabcol[$i]="A".mb_substr($alphabet,$i-mb_strlen($alphabet),1);
 	}
 
 	// OpenOffice recalcule les valeurs lors de l'ouverture du document...
@@ -738,7 +737,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-row table:style-name="ro2">');
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell office:value-type="string"><text:p>GEPI_LOGIN_ELEVE</text:p></table:table-cell>');
 
-		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell office:value-type="string"><text:p>'.$eleve_login[$i].'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.caract_ooo($eleve_nom[$i]).'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.caract_ooo($eleve_prenom[$i]).'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.caract_ooo($eleve_classe[$i]).'</text:p></table:table-cell>');
+		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell office:value-type="string"><text:p>'.$eleve_login[$i].'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.$eleve_nom[$i].'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.$eleve_prenom[$i].'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.$eleve_classe[$i].'</text:p></table:table-cell>');
 
 		// OpenOffice recalcule les valeurs lors de l'ouverture du document...
 		$valeur_defaut=0;
@@ -849,13 +848,13 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 	require_once("../lib/header.inc");
 	//**************** FIN EN-TETE *****************
 
-	$titre=htmlentities($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")";
+	$titre=htmlspecialchars($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")";
 	$titre.=" - EXPORT";
 
 	// Mettre la ligne de liens de retour,...
     echo "<div class='norme'><p class='bold'>\n";
     echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|\n";
-    echo "<a href='index.php?id_groupe=".$current_group["id"]."&amp;periode_num=$periode_num'> ".htmlentities($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")"." </a>|\n";
+    echo "<a href='index.php?id_groupe=".$current_group["id"]."&amp;periode_num=$periode_num'> ".htmlspecialchars($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")"." </a>|\n";
 	echo "</div>\n";
 
 

@@ -1,7 +1,6 @@
 <?php
 
 /**
- * @version $Id: index.php 7950 2011-08-24 13:53:46Z jjocal $
  *
  * Module d'intégration de Gepi dans un ENT réalisé au moment de l'intégration de Gepi dans ARGOS dans l'académie de Bordeaux
  * Fichier permettant de récupérer de nouveaux élèves dans le ldap de l'ENT
@@ -84,7 +83,8 @@ if ($etape == 2) {
 					`prenom_u` VARCHAR( 200 ) NOT NULL ,
 					`statut_u` VARCHAR( 50 ) NOT NULL ,
 					`identite_u` VARCHAR( 50 ) NOT NULL ,
-					PRIMARY KEY ( `id` ));";
+					PRIMARY KEY ( `id` )
+					) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 		$query = mysql_query($sql);
 		if ($query) {
 			$msg = "<font style=\"color: green;\">Ok !</font><br />";

@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: modify_user.php 8583 2011-10-31 10:08:56Z mleygnac $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -416,7 +415,7 @@ check_token();
 			}
 		} // elseif...
 		else {
-			if (strlen($_POST['new_login']) > $longmax_login) {
+			if (mb_strlen($_POST['new_login']) > $longmax_login) {
 				$msg = "L'identifiant est trop long, il ne doit pas dépasser ".$longmax_login." caractères.";
 			}
 			else {
@@ -875,7 +874,7 @@ while ($k < $nb_mat+1) {
 		$matiere_list = mysql_result($calldata, $i, "matiere");
 		$matiere_complet_list = mysql_result($calldata, $i, "nom_complet");
 		//echo "<option value=$matiere_list "; if (isset($user_matiere[$k]) and ($matiere_list == $user_matiere[$k])) {echo " selected";} echo ">$matiere_list | $matiere_complet_list</option>\n";
-		echo "<option value=$matiere_list "; if (isset($user_matiere[$k]) and ($matiere_list == $user_matiere[$k])) {echo " selected";} echo ">$matiere_list | ".htmlentities($matiere_complet_list)."</option>\n";
+		echo "<option value=$matiere_list "; if (isset($user_matiere[$k]) and ($matiere_list == $user_matiere[$k])) {echo " selected";} echo ">$matiere_list | ".htmlspecialchars($matiere_complet_list)."</option>\n";
 		$i++;
 	}
 	echo "</select><br />\n";
@@ -897,12 +896,12 @@ if (isset($user_login) and ($user_login!='')) {
 	$seconde_now = date("s");
 	$now = mktime($hour_now, $minute_now, $seconde_now, $month_now, $day_now, $year_now);
 
-	$annee_verrouillage = substr($date_verrouillage,0,4);
-	$mois_verrouillage =  substr($date_verrouillage,5,2);
-	$jour_verrouillage =  substr($date_verrouillage,8,2);
-	$heures_verrouillage = substr($date_verrouillage,11,2);
-	$minutes_verrouillage = substr($date_verrouillage,14,2);
-	$secondes_verrouillage = substr($date_verrouillage,17,2);
+	$annee_verrouillage = mb_substr($date_verrouillage,0,4);
+	$mois_verrouillage =  mb_substr($date_verrouillage,5,2);
+	$jour_verrouillage =  mb_substr($date_verrouillage,8,2);
+	$heures_verrouillage = mb_substr($date_verrouillage,11,2);
+	$minutes_verrouillage = mb_substr($date_verrouillage,14,2);
+	$secondes_verrouillage = mb_substr($date_verrouillage,17,2);
 	$date_verrouillage = mktime($heures_verrouillage, $minutes_verrouillage, $secondes_verrouillage, $mois_verrouillage, $jour_verrouillage, $annee_verrouillage);
 	if ($date_verrouillage  > ($now- getSettingValue("temps_compte_verrouille")*60)) {
 		echo "<br /><center><table border=\"1\" cellpadding=\"5\" width = \"90%\" bgcolor=\"#FFB0B8\"  summary='Verrouillage'><tr><td>\n";

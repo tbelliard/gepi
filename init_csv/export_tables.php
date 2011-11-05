@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: export_tables.php 8564 2011-10-28 10:06:14Z crob $
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

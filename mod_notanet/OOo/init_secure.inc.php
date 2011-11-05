@@ -1,5 +1,5 @@
 <?php
-/* $Id: init_secure.inc.php 3242 2009-06-22 20:02:27Z crob $ */
+/* $Id$ */
 // include("../lib/initialisationsPropel.inc.php");
 require_once("../../lib/initialisations.inc.php");
 

@@ -1,4 +1,9 @@
 <?php
+
+if (!defined('FPDF_VERSION')) {
+	require_once(dirname(__FILE__).'/fpdf.php');
+}
+
 /**
  * FPDF class extension
  * 
@@ -12,25 +17,25 @@
  * @package externe
  * @subpackage FPDF
  */
-class PDF extends FPDF
+class Ex_FPDF extends FPDF
 {
 var $B;
 var $I;
 var $U;
 var $HREF;
 
-function PDF($orientation='P',$unit='mm',$format='A4')
+function __construct($orientation='P',$unit='mm',$format='A4')
 {
     //Appel au constructeur parent
-    $this->FPDF($orientation,$unit,$format);
+    parent::__construct($orientation,$unit,$format);
 }
 
 function Footer()
 {
     //Positionnement à 1,5 cm du bas
     $this->SetY(-15);
-    //Police Arial italique 8
-    $this->SetFont('Arial','I',8);
+    //Police DejaVu italique 8
+    $this->SetFont('DejaVu','I',8);
     //Numéro de page centré
     $this->Cell(0,8,'Page '.$this->PageNo(),"T",0,'C');
 }
@@ -38,7 +43,7 @@ function Footer()
 function Header()
 {
     $bord = 0;
-    //Police Arial gras 15
+    //Police DejaVu gras 15
     //$this->Image("../images/logo.gif", 0, 0, 50, 50);
     $nom = $_SESSION['prenom'] . " " . $_SESSION['nom'];
     if ($_SESSION['statut'] != "professeur") {
@@ -55,8 +60,8 @@ function Header()
     $etab_text = getSettingValue("gepiSchoolName"). " - année scolaire " . getSettingValue("gepiYear");
     $gepi_text = "GEPI - Solution libre de Gestion des élèves par Internet";
 
-    $this->SetFont('Arial','',8);
-
+    $this->SetFont('DejaVu','',8);
+    
     //Calcul de la largeur des cellules
     $l = (LargeurPage - LeftMargin - LeftMargin)/2;
 
@@ -65,15 +70,14 @@ function Header()
     $y=$this->GetY();
     // on imprime du texte à gauche
     //$this->MultiCell($l, 5, $gepi_text,$bord, "L",0);
-    $this->MultiCell($l, 5, traite_accents_utf8($gepi_text),$bord, "L",0);
+    $this->MultiCell($l, 5, $gepi_text,$bord, "L",0);
     // déplace le curseur
     $this->SetXY($x+$l,$y);
     // on imprime du texte à droite
     //$this->MultiCell($l, 5, $etab_text,$bord, "R",0);
-    $this->MultiCell($l, 5, traite_accents_utf8($etab_text),$bord, "R",0);
+    $this->MultiCell($l, 5, $etab_text,$bord, "R",0);
 
-    //$this->MultiCell($l, 5, $nom." - ".$user_statut, $bord, "L",0);
-    $this->MultiCell($l, 5, traite_accents_utf8($nom." - ".$user_statut), $bord, "L",0);
+    $this->MultiCell($l, 5, $nom." - ".$user_statut, $bord, "L",0);
     // on trace un trait horizontal
     $this->cell(0,2,"","T",0);
     // Saut de ligne et retour à la marge
@@ -96,7 +100,7 @@ function Header()
         $this->SetTextColor(0);
         $this->SetDrawColor(0,0,0);
         $this->SetLineWidth(.3);
-        $this->SetFont('','B');
+        $this->SetFont('DejaVu','B');
         //En-tête
 
         // on calcule la hauteur des cellules de la première ligne ($max)
@@ -246,9 +250,8 @@ function Header()
     function MultiCellBlt($w,$h,$blt,$txt,$border=0,$align='J',$fill=0)
     {
     	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
-	    if (getSettingValue('decode_pdf_utf8') == 'y') {
-    		$txt = utf8_decode($txt);
-    	}
+	    $txt = utf8_decode($txt);
+	    
         //Get bullet width including margins
         $blt_width = $this->GetStringWidth($blt)+$this->cMargin*2;
 
@@ -285,11 +288,7 @@ function Header()
     //    * b : bas
     //    Valeur par défaut : 0.
     function Cell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0,$link='')
-{
-	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
-    if (getSettingValue('decode_pdf_utf8') == 'y') {
-    	$txt = utf8_decode($txt);
-    }
+{    
     //Output a cell
     $k=$this->k;
     if($this->y+$h>$this->PageBreakTrigger and !$this->InFooter and $this->AcceptPageBreak())
@@ -366,13 +365,20 @@ function Header()
                 else
                     $dx=$this->cMargin;
 
-                $txt=str_replace(')','\\)',str_replace('(','\\(',str_replace('\\','\\\\',$txt)));
+    			if ($this->unifontSubset)
+    			{
+    				$txt2 = '('.$this->_escape($this->UTF8ToUTF16BE($txt, false)).')';
+    				foreach($this->UTF8StringToArray($txt) as $uni)
+    					$this->CurrentFont['subset'][$uni] = $uni;
+    			}
+    			else
+    				$txt2='('.str_replace(')','\\)',str_replace('(','\\(',str_replace('\\','\\\\',$txt))).')';
                 if($this->ColorFlag)
                     $s.='q '.$this->TextColor.' ';
                 $s.=sprintf('BT %.2f %.2f Td (%s) Tj ET ',
                     ($this->x+$dx)*$k,
                     ($this->h-($this->y+.5*$h+(.7+$l-$lines/2)*$this->FontSize))*$k,
-                    $txt);
+                    $txt2);
                 if($this->underline)
                     $s.=' '.$this->_dounderline($this->x+$dx,$this->y+.5*$h+.3*$this->FontSize,$txt);
                 if($this->ColorFlag)
@@ -394,13 +400,20 @@ function Header()
                 $dx=($w-$w_txt)/2;
             else
                 $dx=$this->cMargin;
-            $txt=str_replace(')','\\)',str_replace('(','\\(',str_replace('\\','\\\\',$txt)));
+			if ($this->unifontSubset)
+			{
+				$txt2 = '('.$this->_escape($this->UTF8ToUTF16BE($txt, false)).')';
+				foreach($this->UTF8StringToArray($txt) as $uni)
+					$this->CurrentFont['subset'][$uni] = $uni;
+			}
+			else
+				$txt2='('.str_replace(')','\\)',str_replace('(','\\(',str_replace('\\','\\\\',$txt))).')';
             if($this->ColorFlag)
                 $s.='q '.$this->TextColor.' ';
-            $s.=sprintf('q BT %.2f %.2f Td %.2f Tz (%s) Tj ET Q ',
+            $s.=sprintf('q BT %.2f %.2f Td %.2f Tz %s Tj ET Q ',
                         ($this->x+$dx)*$k,
                         ($this->h-($this->y+.5*$h+.3*$this->FontSize))*$k,
-                        $Tz,$txt);
+                        $Tz,$txt2);
             if($this->underline)
                 $s.=' '.$this->_dounderline($this->x+$dx,$this->y+.5*$h+.3*$this->FontSize,$txt);
             if($this->ColorFlag)
@@ -427,10 +440,7 @@ function Header()
 
 function VCell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0)
 {
-	// Ajout suite au souci sur l'encodage utf8 (merci à l'académie de Guyane)
-    if (getSettingValue('decode_pdf_utf8') == 'y') {
-    	$txt = utf8_decode($txt);
-    }
+    
     //Output a cell
     $k=$this->k;
     if($this->y+$h>$this->PageBreakTrigger and !$this->InFooter and $this->AcceptPageBreak())
@@ -506,12 +516,19 @@ function VCell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0)
                     $dy=$h-$this->cMargin;
                 else
                     $dy=($h+$w_txt)/2;
-                $txt=str_replace(')','\\)',str_replace('(','\\(',str_replace('\\','\\\\',$txt)));
+    			if ($this->unifontSubset)
+    			{
+    				$txt2 = '('.$this->_escape($this->UTF8ToUTF16BE($txt, false)).')';
+    				foreach($this->UTF8StringToArray($txt) as $uni)
+    					$this->CurrentFont['subset'][$uni] = $uni;
+    			}
+    			else
+    				$txt2='('.str_replace(')','\\)',str_replace('(','\\(',str_replace('\\','\\\\',$txt))).')';
                 if($this->ColorFlag)
                     $s.='q '.$this->TextColor.' ';
                 $s.=sprintf('BT 0 1 -1 0 %.2f %.2f Tm (%s) Tj ET ',
                     ($this->x+.5*$w+(.7+$l-$lines/2)*$this->FontSize)*$k,
-                    ($this->h-($this->y+$dy))*$k,$txt);
+                    ($this->h-($this->y+$dy))*$k,$txt2);
                 if($this->ColorFlag)
                     $s.='Q ';
             }
@@ -529,12 +546,19 @@ function VCell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0)
                 $dy=$h-$this->cMargin;
             else
                 $dy=($h+$w_txt)/2;
-            $txt=str_replace(')','\\)',str_replace('(','\\(',str_replace('\\','\\\\',$txt)));
+			if ($this->unifontSubset)
+			{
+				$txt2 = '('.$this->_escape($this->UTF8ToUTF16BE($txt, false)).')';
+				foreach($this->UTF8StringToArray($txt) as $uni)
+					$this->CurrentFont['subset'][$uni] = $uni;
+			}
+			else
+				$txt2='('.str_replace(')','\\)',str_replace('(','\\(',str_replace('\\','\\\\',$txt))).')';
             if($this->ColorFlag)
                 $s.='q '.$this->TextColor.' ';
-            $s.=sprintf('q BT 0 1 -1 0 %.2f %.2f Tm %.2f Tz (%s) Tj ET Q ',
+            $s.=sprintf('q BT 0 1 -1 0 %.2F %.2F Tm %.2f Tz %s Tj ET Q ',
                         ($this->x+.5*$w+.3*$this->FontSize)*$k,
-                        ($this->h-($this->y+$dy))*$k,$Tz,$txt);
+                        ($this->h-($this->y+$dy))*$k,$Tz,$txt2);
             if($this->ColorFlag)
                 $s.='Q ';
         }

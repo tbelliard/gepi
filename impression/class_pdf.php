@@ -19,9 +19,11 @@ global $avec_emplacement_trous;
 	$this->SetDash();
 	$this->SetLineWidth(0.2);
     // on trace un trait horizontal
-	$this->SetRightMargin(5);    $this->SetXY(5,287);
+	$this->SetRightMargin(5);
+    $this->SetXY(5,287);
     $this->cell(0,2,"","T",0);
-		$this->SetFont('arial','',7.5);	
+	
+	$this->SetFont('DejaVu','',7.5);	
 	$this->SetXY(5,287); 
 	$this->Cell(0,5,'GEPI - Solution libre de Gestion des élèves par Internet',0,1,''); 
 	
@@ -130,7 +132,7 @@ http://www.fpdf.org/fr/script/script62.php
         if($this->CurrentFont['type']=='Type0')
         {
             $len = 0;
-            $nbbytes = strlen($s);
+            $nbbytes = mb_strlen($s);
             for ($i = 0; $i < $nbbytes; $i++)
             {
                 if (ord($s[$i])<128)
@@ -144,7 +146,7 @@ http://www.fpdf.org/fr/script/script62.php
             return $len;
         }
         else
-            return strlen($s);
+            return mb_strlen($s);
     }
 
 /*
@@ -213,7 +215,7 @@ function Circle($x,$y,$r,$style='')
 * This function is provided by TUFaT.com
 */
 function drawTextBox($strText, $w, $h, $align='L', $valign='T', $border=1)
-{
+{   
     $xi=$this->GetX();
     $yi=$this->GetY();
     
@@ -247,7 +249,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
         $w=$this->w-$this->rMargin-$this->x;
     $wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
     $s=str_replace("\r",'',$txt);
-    $nb=strlen($s);
+    $nb=mb_strlen($s);
     if($nb>0 and $s[$nb-1]=="\n")
         $nb--;
     $b=0;
@@ -288,7 +290,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
                 if ($prn==1) $this->_out('0 Tw');
             }
             if ($prn==1) {
-                $this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
+                $this->Cell($w,$h,mb_substr($s,$j,$i-$j),$b,2,$align,$fill);
             }
             $i++;
             $sep=-1;
@@ -299,7 +301,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
             if($border and $nl==2)
                 $b=$b2;
             if ( $maxline && $nl > $maxline )
-                return substr($s,$i);
+                return mb_substr($s,$i);
             continue;
         }
         if($c==' ')
@@ -322,7 +324,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
                     if ($prn==1) $this->_out('0 Tw');
                 }
                 if ($prn==1) {
-                    $this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
+                    $this->Cell($w,$h,mb_substr($s,$j,$i-$j),$b,2,$align,$fill);
                 }
             }
             else
@@ -333,7 +335,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
                     if ($prn==1) $this->_out(sprintf('%.3f Tw',$this->ws*$this->k));
                 }
                 if ($prn==1){
-                    $this->Cell($w,$h,substr($s,$j,$sep-$j),$b,2,$align,$fill);
+                    $this->Cell($w,$h,mb_substr($s,$j,$sep-$j),$b,2,$align,$fill);
                 }
                 $i=$sep+1;
             }
@@ -345,7 +347,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
             if($border and $nl==2)
                 $b=$b2;
             if ( $maxline && $nl > $maxline )
-                return substr($s,$i);
+                return mb_substr($s,$i);
         }
         else
             $i++;
@@ -359,7 +361,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
     if($border and is_int(strpos($border,'B')))
         $b.='B';
     if ($prn==1) {
-        $this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
+        $this->Cell($w,$h,mb_substr($s,$j,$i-$j),$b,2,$align,$fill);
     }
     $this->x=$this->lMargin;
     return $nl;

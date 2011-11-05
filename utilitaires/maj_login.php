@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: maj_login.php 2147 2008-07-23 09:01:04Z tbelliard $
+ * $Id$
  *
  * Cette procédure spéciale de mise à jour de la base MySql permet de régler les problèmes liés
  * à la présence dans certains identifiants d'élèves du caractère \"-\".

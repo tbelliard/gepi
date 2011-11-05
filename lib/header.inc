@@ -2,7 +2,6 @@
 /**
  * Entête de la page
  * 
- * $Id: header.inc 8584 2011-11-01 17:34:07Z mleygnac $
  *
  * @copyright Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Patrick Duthilleul
  * 
@@ -179,14 +178,14 @@ if(isset($javascript_specifique)) {
 
 	if(is_array($javascript_specifique)) {
 		foreach($javascript_specifique as $current_javascript_specifique) {
-			if(strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$current_javascript_specifique))==0) {
+			if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$current_javascript_specifique))==0) {
 				// Javascript spécifique à une page:
 				echo "<script type='text/javascript' src='$gepiPath/$current_javascript_specifique.js'></script>\n";
 			}
 		}
 	}
 	else {
-		if(strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$javascript_specifique))==0) {
+		if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$javascript_specifique))==0) {
 			// Javascript spécifique à une page:
 			echo "<script type='text/javascript' src='$gepiPath/$javascript_specifique.js'></script>\n";
 		}
@@ -364,14 +363,14 @@ if(isset($style_specifique)) {
 
 	if(is_array($style_specifique)) {
 		foreach($style_specifique as $current_style_specifique) {
-			if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$current_style_specifique))==0) {
+			if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$current_style_specifique))==0) {
 				// Styles spécifiques à une page:
 				echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$current_style_specifique.css' />\n";
 			}
 		}
 	}
 	else {
-		if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0) {
+		if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0) {
 			// Styles spécifiques à une page:
 			echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$style_specifique.css' />\n";
 		}
@@ -537,18 +536,6 @@ if (isset($titre_page)) {
 						echo "</a>";
 				}
 
-				if(getSettingValue('afficher_temoin_filtrage_html')=='y') {
-					if($filtrage_html=='htmlpurifier') {
-						echo " <img src='$gepiPath/images/bulle_verte.png' width='9' height='9' alt='Filtrage HTML avec HTMLPurifier' title='Filtrage HTML avec HTMLPurifier' />\n";
-					}
-					elseif($filtrage_html=='inputfilter') {
-						echo " <img src='$gepiPath/images/bulle_bleue.png' width='9' height='9' alt='Filtrage HTML avec InputFilter' title='Filtrage HTML avec InputFilter' />\n";
-					}
-					else {
-						echo " <img src='$gepiPath/images/bulle_rouge.png' width='9' height='9' alt='Pas de filtrage HTML' title='Pas de filtrage HTML' />\n";
-					}
-				}
-
 				//=== Titre de la page ===
 				echo "<h1>".$titre_page."</h1>\n";
 				echo "<!-- Dernière connexion -->\n";
@@ -588,7 +575,7 @@ if (isset($titre_page)) {
 						$nom_complet_matiere = sql_query1("select nom_complet from matieres
 						where matiere = '".$_SESSION['matiere']."'");
 						if ($nom_complet_matiere != '-1') {
-							echo("Professeur de : " . htmlentities($nom_complet_matiere));
+							echo("Professeur de : " . htmlspecialchars($nom_complet_matiere));
 						} else {
 							echo "Invité";
 						}
@@ -713,22 +700,32 @@ if (isset($titre_page)) {
 
 		 //=== Affichage de la version de Gepi ===
 				if ($_SESSION['statut'] == "administrateur") {
-					  $version_gepi = '';
-					  if ($gepiVersion == 'trunk') {
-							// On a une version trunk
-							$version_gepi .= "gepi-trunk";
-					  } else {
-							// On a une version numérotée
-							$version_gepi .= "v".$gepiVersion;
-							if ($gepiRcVersion != '') $version_gepi .= "-RC".$gepiRcVersion;
-							if ($gepiBetaVersion != '') $version_gepi .= "-beta".$gepiBetaVersion;
-							if ($gepiVersionMaintenance != '') $version_gepi .= ".".$gepiVersionMaintenance;
-					  }
-					  if ($gepiSvnRev != '') $version_gepi .= " r".$gepiSvnRev;
-
+					$version_gepi = 'version '.$gepiVersion;
+                    if ($gepiSvnRev != null) {
+						$version_gepi .= ' svn r'.$gepiSvnRev;
+                    } else {
+                        if ($gepiGitCommit == null) {//on va essayer de trouver les infos dans l'arborescence actuelle
+    						if (file_exists(dirname(__FILE__).'/../.git/HEAD')) {
+    							$git_ref = file_get_contents((dirname(__FILE__).'/../.git/HEAD'));
+    							if ($git_ref != null) {
+    								if (substr($git_ref,0,4) == 'ref:') {
+    									//on a une référence de branche git
+    									$gepiGitBranch = trim(substr($git_ref, 1+strrpos( $git_ref  , '/')));
+    									$gepiGitCommit = file_get_contents((dirname(__FILE__).'/../.git/refs/heads/'.$gepiGitBranch));
+    								} else {
+    									//on a un commit git dans le HEAD
+    									$gepiGitCommit = $git_ref;
+    								}
+    								
+    							}
+    						}
+                        }
+                        if ($gepiGitCommit != null) {
+                            $version_gepi .= ' git '.$gepiGitBranch.' '.substr($gepiGitCommit, 0, 6);
+                        }
+					}
 					echo "<p id='num_version'>".$version_gepi."</p>";
-				}
-				else{
+				} else {
 					echo "<p id='num_version'>&nbsp;</p>"; // nécessaire pour recaler le bandeau dans tous les navigateurs
 				}
 

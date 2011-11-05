@@ -1,5 +1,4 @@
 <?php
-/* $Id: select_classes.php 7706 2011-08-11 17:46:10Z crob $ */
 /*
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

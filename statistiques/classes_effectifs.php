@@ -1,7 +1,6 @@
 <?php
 /*
  *
- * @version $Id: classes_effectifs.php 8354 2011-09-25 13:07:33Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

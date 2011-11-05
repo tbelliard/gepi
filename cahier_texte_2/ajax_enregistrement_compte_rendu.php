@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: ajax_enregistrement_compte_rendu.php 8520 2011-10-24 08:38:16Z crob $
  *
  * Copyright 2009-2011 Josselin Jacquard
  *

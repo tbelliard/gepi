@@ -1,8 +1,6 @@
 <?php
 
 /*
-* $Id: index.php 8547 2011-10-26 12:07:49Z crob $
-*
 * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.

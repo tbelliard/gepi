@@ -1,6 +1,5 @@
 <?php
 /*
-$Id: saisie_sanction.inc.php 7140 2011-06-06 14:57:51Z crob $
 */
 
 // Page incluse dans saisie_sanction.php ou appelée via ajax depuis saisie_sanction.php->ajout_sanction.php

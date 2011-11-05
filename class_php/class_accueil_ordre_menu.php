@@ -1,9 +1,9 @@
 <?php
 
 /*
- * $Id: class_accueil_ordre_menu.php 5752 2010-10-25 12:08:35Z jjacquard $
+ * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -966,15 +966,13 @@ class class_accueil_ordre_menu extends class_page_accueil {
 
 		if (($menuItem->user_statut == $this->statutUtilisateur) and ($result_autorisation)) {
 		  $this->creeNouveauItemPlugin("/".$menuItem->lien_item,
-				supprimer_numero($menuItem->titre_item),
-				$menuItem->description_item);
+				supprimer_numero($menuItem->titre_item),$menuItem->description_item);
 		}
 
 	  }
 
 	  if ($this->b>0){
-		$descriptionPlugin= $plugin->description;
-		$this->creeNouveauTitre('accueil',"$descriptionPlugin",'images/icons/package.png');
+		$this->creeNouveauTitre('accueil',$plugin->description,'images/icons/package.png');
 		$this->chargeAutreNom('bloc_plugin_'.$nomPlugin);
 	  }
 

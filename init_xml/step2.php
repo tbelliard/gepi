@@ -1,7 +1,7 @@
 <?php
 @set_time_limit(0);
 /*
- * $Id: step2.php 8580 2011-10-30 10:54:09Z crob $
+ * $Id$
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

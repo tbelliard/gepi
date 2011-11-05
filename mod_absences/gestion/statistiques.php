@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id: statistiques.php 3413 2009-09-12 08:05:14Z crob $
+* $Id$
 *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *

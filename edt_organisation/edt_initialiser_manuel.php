@@ -3,7 +3,6 @@
 /**
  *
  *
- * @version $Id: edt_initialiser_manuel.php 4190 2010-03-28 12:30:43Z adminpaulbert $
  * @copyright 2008
  */
 // Initialisations files

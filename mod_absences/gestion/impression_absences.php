@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id: impression_absences.php 3717 2009-11-11 15:45:50Z jjocal $
+* $Id$
 *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
@@ -1041,8 +1041,8 @@ affichercacher('div_1');
            $execution_1 = mysql_query($requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.mysql_error());
            while ( $data_1 = mysql_fetch_array($execution_1))
                {
-           if ($niveau == "") { if (substr($data_1['nom_complet'],0,1) != substr($niveau_v,0,1)) { ?><tr bgcolor="#5E938C"><td colspan="3"><div class="norme_absence_blanc"><strong><?php echo substr($data_1['nom_complet'],0,-1); $ic='2'; ?></strong></div></td></tr><?php $niveau_v =$data_1['nom_complet'];} }
-           if ($niveau != "") { if (substr($niveau,0,1) != substr($niveau_v,0,1)) { ?><tr bgcolor="#5E938C"><td colspan="3"><div class="norme_absence_blanc"><strong><?php echo $niveau; ?></strong></div></td></tr><?php $niveau_v =$data_1['nom_complet'];} }
+           if ($niveau == "") { if (mb_substr($data_1['nom_complet'],0,1) != mb_substr($niveau_v,0,1)) { ?><tr bgcolor="#5E938C"><td colspan="3"><div class="norme_absence_blanc"><strong><?php echo mb_substr($data_1['nom_complet'],0,-1); $ic='2'; ?></strong></div></td></tr><?php $niveau_v =$data_1['nom_complet'];} }
+           if ($niveau != "") { if (mb_substr($niveau,0,1) != mb_substr($niveau_v,0,1)) { ?><tr bgcolor="#5E938C"><td colspan="3"><div class="norme_absence_blanc"><strong><?php echo $niveau; ?></strong></div></td></tr><?php $niveau_v =$data_1['nom_complet'];} }
               if ($ic === '1') { $ic = '2'; $couleur_cellule = 'td_tableau_absence_1'; } else { $couleur_cellule = 'td_tableau_absence_2'; $ic = '1'; }
                 ?>
                   <tr class="<?php echo $couleur_cellule; ?>">

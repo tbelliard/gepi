@@ -1,7 +1,6 @@
 <?php
 
 /*
- * $Id: gestion_ent_profs.php 6602 2011-03-03 11:38:21Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane boireau, Julien Jocal
  *

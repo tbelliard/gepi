@@ -3,7 +3,6 @@
 /**
  * Fichier qui permet de construire la barre de menu
  *
- * @version $Id: header_barre_menu.php 8584 2011-11-01 17:34:07Z mleygnac $
  * @copyright 2008-2011
  * @license GNU/GPL v2
  * @package General
@@ -387,6 +386,7 @@ echo '<!--[if lt IE 7]>
 		foreach($mes_groupes as $tmp_group) {
 			$barre_eleve.= '            <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombino_pdf.php?classe=&groupe='.$tmp_group['id'].'&equipepeda=&discipline=&statusgepi=&affdiscipline="'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)</a></li>'."\n";
 		}
+		$barre_eleve.= '            <li><a href="'.$gepiPath.'/mod_trombinoscopes/plan_de_classe.php"'.insert_confirm_abandon().'>Plan de classe</a></li>'."\n";
 		$barre_eleve.= '         </ul>'."\n";
 		$barre_eleve.= '      </li>'."\n";
 	}

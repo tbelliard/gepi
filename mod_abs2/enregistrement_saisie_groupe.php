@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id: enregistrement_saisie_groupe.php 6607 2011-03-03 14:10:16Z crob $
  *
  * Copyright 2010 Josselin Jacquard
  *
@@ -258,7 +257,7 @@ for($i=0; $i<$total_eleves; $i++) {
     $message_erreur_eleve[$id_eleve] = "";
 
     $saisie = new AbsenceEleveSaisie();
-    $saisie->setEleveId($eleve->getIdEleve());
+    $saisie->setEleveId($eleve->getId());
     $saisie->setIdEdtCreneau($id_creneau);
     $saisie->setIdEdtEmplacementCours($id_cours);
     $saisie->setIdGroupe($id_groupe);
@@ -389,8 +388,8 @@ function verif_debut_fin_saisie(DateTime $dt_date_debut_appel, DateTime $dt_date
 function format_verif_failures($saisie) {
 	$message = '';
 	$no_br = true;
-	foreach ($saisie->getValidationFailures() as $erreurs) {
-	    $message .= $erreurs;
+	foreach ($saisie->getValidationFailures() as $failure) {
+	    $message .= $failure->getMessage();
 	    if ($no_br) {
 		$no_br = false;
 	    } else {

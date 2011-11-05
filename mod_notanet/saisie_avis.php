@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id: saisie_avis.php 7154 2011-06-07 13:10:29Z crob $
+* $Id$
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
 *
@@ -221,7 +221,7 @@ else {
 		favorable ENUM( 'O', 'N' ) NOT NULL ,
 		avis TEXT NOT NULL ,
 		PRIMARY KEY ( login )
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$create_table=mysql_query($sql);
 
 

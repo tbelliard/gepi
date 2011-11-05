@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id: liste_traitements.php 7826 2011-08-19 10:26:47Z dblanqui $
  *
  * Copyright 2010 Josselin Jacquard
  *
@@ -227,7 +226,7 @@ if ($affichage == 'tableur') {
 
     // Load the template
     $extraction_traitement=repertoire_modeles('absence_extraction_traitements.ods');
-    $TBS->LoadTemplate($extraction_traitement);
+    $TBS->LoadTemplate($extraction_traitement, OPENTBS_ALREADY_UTF8);
 
     $titre = 'Extrait des traitement d\'absences';
 

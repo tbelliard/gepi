@@ -1,7 +1,7 @@
 <?php
 /*
 *
-*$Id: ajout_abs.php 4878 2010-07-24 13:54:01Z regis $
+*$Id$
 *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
@@ -1024,11 +1024,9 @@ if (!isset($eleve_absent[1]) and empty($eleve_absent[1]) and $mode != "classe")
 			/* if ($mode=="groupe") { ?><strong><?php echo $data_id['nom_groupe']; ?></strong><br /><?php $id_groupe = $data_id['id_groupe']; ?><br /><?php } */
 		}
 		if (getSettingValue("active_module_trombinoscopes")=='y') {
-			$nom_photo = '';
-			$nom_photo = nom_photo($id_eleve_photo,"eleves",2);
-			//$photo = "../../photos/eleves/".$nom_photo;
-			//if ( $nom_photo === '' or !file_exists($photo) ) {
-			if ( $nom_photo === NULL or !file_exists($photo) ) {
+			$photo = '';
+			$photo = nom_photo($id_eleve_photo,"eleves",2);
+			if ( $photo === NULL or !file_exists($photo) ) {
 				$photo = "../../mod_trombinoscopes/images/trombivide.jpg";
 			}
 			$valeur=redimensionne_image($photo);

@@ -1,7 +1,6 @@
 <?php
 
 /*
- * $Id: saisie_incident.php 8384 2011-09-29 10:43:22Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -43,7 +42,7 @@ if (!checkAccess()) {
 	die();
 }
 
-if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+if(strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
 	header("Location: ../accueil.php?msg=$mess");
@@ -130,7 +129,7 @@ function recherche_ele($rech_nom,$page) {
 			echo "<input type='checkbox' name='ele_login[]' id='ele_login_$cpt1' value=\"$ele_login\" />\n";
 			echo "</td>\n";
 			echo "<td>\n";
-			echo "<label for='ele_login_$cpt1' style='cursor:pointer;'>".htmlentities("$ele_nom $ele_prenom")."</label>";
+			echo "<label for='ele_login_$cpt1' style='cursor:pointer;'>".htmlspecialchars("$ele_nom $ele_prenom")."</label>";
 
 			$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.login='$ele_login' AND c.id=jec.id_classe ORDER BY jec.periode;";
 			$res_clas=mysql_query($sql);
@@ -145,7 +144,7 @@ function recherche_ele($rech_nom,$page) {
 				while($lig_clas=mysql_fetch_object($res_clas)) {
 					if($cpt>0) {echo ", ";}
 					//echo $lig_clas->classe;
-					echo htmlentities($lig_clas->classe);
+					echo htmlspecialchars($lig_clas->classe);
 					$cpt++;
 				}
 				echo "</td>\n";
@@ -191,7 +190,7 @@ function recherche_utilisateur($rech_nom,$page) {
 			echo "<input type='checkbox' name='u_login[]' id='u_login_$cpt1' value=\"$utilisateur_login\" />\n";
 			echo "</td>\n";
 			echo "<td>\n";
-			echo "<label for='u_login_$cpt1' style='cursor:pointer;'>".htmlentities("$utilisateur_nom $utilisateur_prenom")."</label>";
+			echo "<label for='u_login_$cpt1' style='cursor:pointer;'>".htmlspecialchars("$utilisateur_nom $utilisateur_prenom")."</label>";
             echo "</td>\n";
 
             echo "</tr>\n";
@@ -390,13 +389,13 @@ if($etat_incident!='clos') {
 				}
 				else {
 					
-					//$annee = substr($display_date,0,4);
-					//$mois =  substr($display_date,5,2);
-					//$jour =  substr($display_date,8,2);
+					//$annee = mb_substr($display_date,0,4);
+					//$mois =  mb_substr($display_date,5,2);
+					//$jour =  mb_substr($display_date,8,2);
 					
-					$jour =  substr($display_date,0,2);
-					$mois =  substr($display_date,3,2);
-					$annee = substr($display_date,6,4);
+					$jour =  mb_substr($display_date,0,2);
+					$mois =  mb_substr($display_date,3,2);
+					$annee = mb_substr($display_date,6,4);
 				}
 	
 				if(!checkdate($mois,$jour,$annee)) {
@@ -448,10 +447,10 @@ if($etat_incident!='clos') {
 				}
 	
 				// ALTER TABLE s_incidents ADD message_id VARCHAR(50) NOT NULL;
-				//$message_id=strftime("%Y%m%d%H%M%S",time()).".".substr(md5(microtime()),0,6);
+				//$message_id=strftime("%Y%m%d%H%M%S",time()).".".mb_substr(md5(microtime()),0,6);
 				// Pour ne pas spammer tant que la nature n'est pas saisie
 				if($nature!='') {
-					$message_id=$id_incident.".".strftime("%Y%m%d%H%M%S",time()).".".substr(md5(microtime()),0,6);
+					$message_id=$id_incident.".".strftime("%Y%m%d%H%M%S",time()).".".mb_substr(md5(microtime()),0,6);
 				}
 				else {
 					$message_id="";
@@ -486,13 +485,13 @@ if($etat_incident!='clos') {
 				$sql="UPDATE s_incidents SET ";
 				if(isset($display_date)) {
 					/*
-					$annee = substr($display_date,0,4);
-					$mois =  substr($display_date,5,2);
-					$jour =  substr($display_date,8,2);
+					$annee = mb_substr($display_date,0,4);
+					$mois =  mb_substr($display_date,5,2);
+					$jour =  mb_substr($display_date,8,2);
 					*/
-					$jour =  substr($display_date,0,2);
-					$mois =  substr($display_date,3,2);
-					$annee = substr($display_date,6,4);
+					$jour =  mb_substr($display_date,0,2);
+					$mois =  mb_substr($display_date,3,2);
+					$annee = mb_substr($display_date,6,4);
 					/*
 					echo "\$jour=$jour<br />";
 					echo "\$mois=$mois<br />";
@@ -573,7 +572,7 @@ if($etat_incident!='clos') {
 			//	$res_mi=mysql_query($sql_mi);
 			//	$lig_mi=mysql_fetch_object($res_mi);
 			//	if($lig_mi->message_id=="") {
-			//		$message_id=$id_incident.".".strftime("%Y%m%d%H%M%S",time()).".".substr(md5(microtime()),0,6);
+			//		$message_id=$id_incident.".".strftime("%Y%m%d%H%M%S",time()).".".mb_substr(md5(microtime()),0,6);
 			//		$temoin_modif="y";
 			//		$sql.=" message_id='$message_id', ";
 			//	}
@@ -584,7 +583,7 @@ if($etat_incident!='clos') {
 
 	
 				// Pour faire sauter le ", " en fin de $sql:
-				$sql=substr($sql,0,strlen($sql)-2);
+				$sql=mb_substr($sql,0,mb_strlen($sql)-2);
 	
 				$sql.=" WHERE id_incident='$id_incident';";
 	
@@ -743,7 +742,7 @@ if($etat_incident!='clos') {
 							else{
 								if(!file_exists($document_joint['tmp_name'])) {
 									if($document_joint['name']!="") {
-										$extension_tmp=substr(strrchr($document_joint['name'],'.'),1);
+										$extension_tmp=mb_substr(strrchr($document_joint['name'],'.'),1);
 										if(!in_array($extension, $AllowedFilesExtensions)) {
 											$msg.="Vous avez proposé : ".$document_joint['name']."<br />L'extension $extension n'est pas autorisée.<br />\n";
 										}
@@ -905,7 +904,7 @@ if($etat_incident!='clos') {
 						$res_mi=mysql_query($sql_mi);
 						$lig_mi=mysql_fetch_object($res_mi);
 						if($lig_mi->message_id=="") {
-							$message_id=$id_incident.".".strftime("%Y%m%d%H%M%S",time()).".".substr(md5(microtime()),0,6);
+							$message_id=$id_incident.".".strftime("%Y%m%d%H%M%S",time()).".".mb_substr(md5(microtime()),0,6);
 							$sql="UPDATE s_incidents SET message_id='$message_id' WHERE id_incident='$id_incident';";
 							$update=mysql_query($sql);
 						}
@@ -1740,7 +1739,7 @@ elseif($step==1) {
 			echo "</td>\n";
 			echo "<td>\n";
 			//echo "<label for='u_login_$i' style='cursor:pointer;'>".$lig2->civilite." ".ucwords(strtolower($lig2->prenom))." ".strtoupper($lig2->nom)."</label>";
-			echo "<label for='u_login_$i' style='cursor:pointer;'>".$lig2->civilite." ".strtoupper($lig2->nom)." ".ucfirst(substr($lig2->prenom,0,1)).".</label>";
+			echo "<label for='u_login_$i' style='cursor:pointer;'>".$lig2->civilite." ".strtoupper($lig2->nom)." ".ucfirst(mb_substr($lig2->prenom,0,1)).".</label>";
 			echo "</td>\n";
 
 			$sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du

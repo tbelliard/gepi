@@ -1,6 +1,5 @@
 <?php
 /**
- * @version : $Id: creer_sequence.php 8297 2011-09-21 14:16:42Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
@@ -74,7 +73,7 @@ if ($enregistrer == "Enregistrer"){
 
   // On pense à vérifier quelques trucs comme les entités html
   $sequence = new CahierTexteSequence();
-  $sequence->setTitre(htmlentities($titresequence));
+  $sequence->setTitre($titresequence);
   $sequence->setDescription($descsequence);
   $sequence->save();
 

@@ -1,6 +1,5 @@
 <?php
 	/*
-	$Id: tableau_choix_parametres_releves_notes.php 8470 2011-10-13 11:24:28Z crob $
 	*/
 
 	echo "<table class='boireaus' border='1' summary='Tableau des items'>\n";
@@ -34,6 +33,9 @@
 	$tab_traduc['rn_sign_pp']="Avec case pour signature du $gepiProfSuivi";
 	$tab_item[]='rn_sign_resp';
 	$tab_traduc['rn_sign_resp']="Avec case pour signature des responsables";
+	
+	$tab_item[]='rn_abs_2';
+	$tab_traduc['rn_abs_2']="Afficher les absences (ABS2 et relevé HTML)";
 
 	/*
 	$tab_item[]='rn_sign_nblig';
@@ -96,7 +98,7 @@
 				if(mysql_num_rows($res_class_tmp)>0){
 					$lig_class_tmp=mysql_fetch_object($res_class_tmp);
 
-					if($lig_class_tmp->$tab_item[$k]=="y") {echo "checked ";}
+					if($lig_class_tmp->$tab_item[$k]=="y") {echo "checked ='checked' ";}
 				}
 				echo "/>\n";
 				echo "</td>\n";
@@ -253,7 +255,7 @@
 		echo "</td>\n";
 		echo "</tr>\n";
 
-
+		// Nombre de lignes pour la signature
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<td style='text-align:left;'>Nombre de lignes pour la signature\n";

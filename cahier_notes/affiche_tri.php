@@ -1,6 +1,5 @@
 <?php
 /**
-* $Id: affiche_tri.php 7751 2011-08-14 20:38:17Z regis $
 *
 * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

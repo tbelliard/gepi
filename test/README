@@ -1,0 +1,42 @@
+= Running The Gepi Unit Tests =
+
+== Background ==
+
+Gepi uses [http://www.phpunit.de PHPUnit] to test the build and runtime frameworks.
+
+You can find the unit test classes and support files in the test/testsuite directory.
+
+== Install PHPUnit ==
+
+In order to run the tests, you must install PHPUnit:
+{{{
+> pear channel-discover pear.phpunit.de
+> pear install phpunit/PHPUnit
+}}}
+
+== Configure the Database to be Used in the Tests ==
+
+You must configure test/fixtures/config/connect.test.inc.php file
+
+If you test on MySQL, the following SQL script will create all the necessary test databases and grant access to the anonymous user, so the unit tests should pass without any special configuration:
+#!sql
+CREATE DATABASE test;
+GRANT ALL ON test.* TO ''@'localhost';
+
+Run the tools/setup_new_database.php script with the command line
+
+== Run the Unit Tests ==
+
+Run all the unit tests at once using the `phpunit` command:
+> cd /path/to/gepi/test
+> phpunit testsuite
+
+== How the Tests Work ==
+
+Every method in the test classes that begins with 'test' is run as a test case by PHPUnit.  All tests are run in isolation; the `setUp()` method is called at the beginning of ''each'' test and the `tearDown()` method is called at the end.
+
+
+== Writing Tests ==
+
+If you've made a change to a gepi orm file, the right thing to do is write a unit test that ensures that it works properly -- and continues to work in the future.
+

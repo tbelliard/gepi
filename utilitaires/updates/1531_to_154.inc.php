@@ -2,7 +2,7 @@
 /**
  * Fichier de mise à jour de la version 1.5.3 à la version 1.5.4
  * 
- * $Id: 1531_to_154.inc.php 7923 2011-08-23 12:36:29Z regis $
+ * $Id$
  *
  * Le code PHP présent ici est exécuté tel quel.
  * Pensez à conserver le code parfaitement compatible pour une application

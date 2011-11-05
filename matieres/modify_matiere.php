@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: modify_matiere.php 8249 2011-09-16 11:29:39Z crob $
+ * $Id$
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -62,7 +62,7 @@ if (isset($_POST['isposted'])) {
                 // Quand on poste un &, c'est un &amp; qui est reçu.
                 //$matiere_nom_complet = $_POST['matiere_nom_complet'];
 				//echo "\$matiere_nom_complet=$matiere_nom_complet<br />\n";
-                $matiere_nom_complet = html_entity_decode_all_version($_POST['matiere_nom_complet']);
+                $matiere_nom_complet = html_entity_decode($_POST['matiere_nom_complet']);
 				//echo "\$matiere_nom_complet=$matiere_nom_complet<br />\n";
                 //========================
                 $matiere_priorite = $_POST['matiere_priorite'];
@@ -86,7 +86,7 @@ if (isset($_POST['isposted'])) {
     } else {
 
         $matiere_nom_complet = $_POST['matiere_nom_complet'];
-		$matiere_nom_complet = html_entity_decode_all_version($_POST['matiere_nom_complet']);
+		$matiere_nom_complet = html_entity_decode($_POST['matiere_nom_complet']);
         $matiere_priorite = $_POST['matiere_priorite'];
         $matiere_name = $_POST['matiere_name'];
         if (!is_numeric($_POST['matiere_categorie'])) {
@@ -120,6 +120,7 @@ if (isset($_POST['isposted'])) {
         //$msg = rawurlencode($sql);
         $req = mysql_query($sql);
     }
+
 
 	if($ok=='yes') {
 		$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : NULL;
@@ -157,6 +158,7 @@ if (isset($_POST['isposted'])) {
 						$nb_inser++;
 					}
 				}
+
 			}
 	
 			if($nb_inser>0) {
@@ -195,6 +197,7 @@ if (isset($_POST['isposted'])) {
 			}
 	
 		}
+
 	}
 
 	//$msg = rawurlencode($msg);
@@ -273,7 +276,7 @@ if (isset($_GET['current_matiere'])) {
 			echo "<input type='checkbox' name='login_prof[]' id='login_prof_$cpt' value='$lig->login' ";
 			echo "onchange=\"checkbox_change($cpt)\" ";
 			if(in_array($lig->login,$tab_profs_associes)) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
-			echo "/><label for='login_prof_$cpt'><span id='texte_login_prof_$cpt'$temp_style>".$lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1).".</span></label><br />\n";
+			echo "/><label for='login_prof_$cpt'><span id='texte_login_prof_$cpt'$temp_style>".$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1).".</span></label><br />\n";
 			$cpt++;
 		}
 	}
@@ -340,7 +343,7 @@ if ($test == 0) {
     while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
         echo "<option value='".$row["id"]."'";
         if ($matiere_cat_id == $row["id"]) echo " SELECTED";
-        echo ">".html_entity_decode_all_version($row["nom_court"])."</option>";
+        echo ">".html_entity_decode($row["nom_court"])."</option>";
     }
 }
 echo "</select>";

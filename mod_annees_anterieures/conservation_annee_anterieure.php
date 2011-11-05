@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: conservation_annee_anterieure.php 7904 2011-08-22 15:04:03Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -342,7 +341,7 @@ else{
 		//if($chaine!=""){
 		if($temoin_encore_des_classes>0) {
 			// Pour faire sauter un "' ":
-			//echo "<p>Classes restant à traiter: ".substr($chaine,2)."</p>\n";
+			//echo "<p>Classes restant à traiter: ".mb_substr($chaine,2)."</p>\n";
 			echo "<p>Classes restant à traiter: ".$chaine."</p>\n";
 		}
 		else {
@@ -881,7 +880,7 @@ else{
 			$chaine.=", ".get_nom_classe($id_classe[$i]);
 		}
 		if($chaine!=""){
-			echo "<p>Classes restant à traiter: ".substr($chaine,2)."</p>\n";
+			echo "<p>Classes restant à traiter: ".mb_substr($chaine,2)."</p>\n";
 		}
 		*/
 

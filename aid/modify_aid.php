@@ -1,7 +1,5 @@
 <?php
 /*
- * $Id: modify_aid.php 5907 2010-11-19 20:30:52Z crob $
- *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
@@ -354,7 +352,7 @@ if ($flag == "prof") { ?>
         $nom_el = mysql_result($call_prof, $i, 'nom');
         $prenom_el = mysql_result($call_prof, $i, 'prenom');
 
-        echo "<option value=\"".$login_prof."\">".strtoupper($nom_el)." ".ucfirst(strtolower($prenom_el))."</option>\n";
+        echo "<option value=\"".$login_prof."\">".my_strtoupper($nom_el)." ".casse_mot($prenom_el,'majf2')."</option>\n";
     $i++;
     }
     ?>
@@ -453,8 +451,7 @@ if ($flag == "prof_gest") { ?>
         $login_prof = mysql_result($call_prof, $i, 'login');
         $nom_el = mysql_result($call_prof, $i, 'nom');
         $prenom_el = mysql_result($call_prof, $i, 'prenom');
-        //echo "<option value=\"".$login_prof."\">".$nom_el." ".$prenom_el."</option>\n";
-        echo "<option value=\"".$login_prof."\">".strtoupper($nom_el)." ".ucfirst(strtolower($prenom_el))."</option>\n";
+        echo "<option value=\"".$login_prof."\">".my_strtoupper($nom_el)." ".casse_mot($prenom_el,'majf2')."</option>\n";
     $i++;
     }
     ?>
@@ -621,8 +618,7 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
             if ($affiche_ligne == "yes") {
             $call_classe = mysql_query("SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$eleve' and j.id_classe = c.id) order by j.periode DESC");
             $classe_eleve = @mysql_result($call_classe, '0', "classe");
-            //echo "<option value=\"$eleve\">$nom_el  $prenom_el $classe_eleve</option>\n";
-	        echo "<option value=\"".$eleve."\">".strtoupper($nom_el)." ".ucfirst(strtolower($prenom_el))." $classe_eleve</option>\n";
+	        echo "<option value=\"".$eleve."\">".my_strtoupper($nom_el)." ".casse_mot($prenom_el,'majf2')." $classe_eleve</option>\n";
             }
         $i++;
         }

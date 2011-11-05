@@ -1,5 +1,4 @@
 <?php
-/* $Id: saisie_contraintes_opt_classe.php 3288 2009-07-08 16:55:55Z crob $ */
 /*
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

@@ -1,6 +1,5 @@
 <?php
 /*
-$Id: lib_eb.php 3821 2009-11-27 08:33:24Z crob $
 */
 /*
 function get_nom_prenom_eleve($login_ele) {
@@ -23,7 +22,7 @@ function get_denomination_prof($login) {
 	}
 	else {
 		$lig=mysql_fetch_object($res);
-		return $lig->civilite." ".casse_mot($lig->nom)." ".strtoupper(substr($lig->prenom,0,1));
+		return $lig->civilite." ".casse_mot($lig->nom)." ".strtoupper(mb_substr($lig->prenom,0,1));
 	}
 }
 

@@ -1,5 +1,4 @@
 <?php
-/* $Id: select_arriv_red.php 3323 2009-08-05 10:06:18Z crob $ */
 /*
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

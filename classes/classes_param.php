@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: classes_param.php 5920 2010-11-20 21:04:58Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -149,6 +148,11 @@ if (isset($_POST['is_posted'])) {
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
 
+					if (isset($_POST['rn_abs_2_'.$per])) {
+						$register = mysql_query("UPDATE classes SET rn_abs_2='".$_POST['rn_abs_2_'.$per]."' where id='".$id_classe."'");
+						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+					}
+
 					if (isset($_POST['rn_sign_chefetab_'.$per])) {
 						$register = mysql_query("UPDATE classes SET rn_sign_chefetab='".$_POST['rn_sign_chefetab_'.$per]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
@@ -165,7 +169,7 @@ if (isset($_POST['is_posted'])) {
 					}
 
 
-					if(strlen(my_ereg_replace("[0-9]","",$_POST['rn_sign_nblig_'.$per]))!=0){$_POST['rn_sign_nblig_'.$per]=3;}
+					if(mb_strlen(my_ereg_replace("[0-9]","",$_POST['rn_sign_nblig_'.$per]))!=0){$_POST['rn_sign_nblig_'.$per]=3;}
 
 					if (isset($_POST['rn_sign_nblig_'.$per])) {
 						$register = mysql_query("UPDATE classes SET rn_sign_nblig='".$_POST['rn_sign_nblig_'.$per]."' where id='".$id_classe."'");
@@ -391,7 +395,7 @@ function checkAll(){
 		//if(type==\"checkbox\"){
 		name=champs_input[i].getAttribute('name');
 		//alert('name='+name+'\\ntype='+type)
-		if((type==\"checkbox\")&&(name.substr(0,5)=='case_')){
+		if((type==\"checkbox\")&&(name.mb_substr(0,5)=='case_')){
 			champs_input[i].checked=true;
 		}
 	}
@@ -403,7 +407,7 @@ function UncheckAll(){
 		type=champs_input[i].getAttribute('type');
 		//if(type==\"checkbox\"){
 		name=champs_input[i].getAttribute('name');
-		if((type==\"checkbox\")&&(name.substr(0,5)=='case_')){
+		if((type==\"checkbox\")&&(name.mb_substr(0,5)=='case_')){
 			champs_input[i].checked=false;
 		}
 	}
@@ -644,7 +648,7 @@ while ($per < $max_periode) {
 			echo "<select name='matiere_nouvel_enseignement' id='matiere_nouvel_enseignement' onchange=\"document.getElementById('creer_enseignement').checked=true;maj_prof_enseignement();\">\n";
 			echo "<option value=''>---</option>\n";
 			while($lig_mat=mysql_fetch_object($res_mat)) {
-				echo "<option value='$lig_mat->matiere'>".htmlentities($lig_mat->nom_complet)."</option>\n";
+				echo "<option value='$lig_mat->matiere'>".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
 			}
 			echo "</select>\n";
 			echo "</td>\n";
@@ -893,6 +897,14 @@ while ($per < $max_periode) {
 	<td>
 		<input type="radio" name="<?php echo "rn_datedev_".$per; ?>" value="y" />Oui
 		<input type="radio" name="<?php echo "rn_datedev_".$per; ?>" value="n" />Non
+	</td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps;">Afficher les absences (ABS2 et relevé HTML)&nbsp;:</td>
+	<td>
+		<input type="radio" name="<?php echo "rn_abs_2_".$per; ?>" value="y" />Oui
+		<input type="radio" name="<?php echo "rn_abs_2_".$per; ?>" value="n" />Non
 	</td>
 </tr>
 

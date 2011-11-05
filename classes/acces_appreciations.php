@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: acces_appreciations.php 6722 2011-03-28 20:20:08Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -68,7 +67,7 @@ $sql="CREATE TABLE IF NOT EXISTS `matieres_appreciations_acces` (
 `periode` INT( 11 ) NOT NULL ,
 `date` DATE NOT NULL ,
 `acces` ENUM( 'y', 'n', 'date', 'd' ) NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $creation_table=mysql_query($sql);
 /*
 if(isset($_POST['submit'])) {
@@ -257,7 +256,7 @@ elseif(isset($_POST['modif_manuelle_periode'])) {
 	check_token(false);
 
 	$periode=isset($_POST['periode']) ? $_POST['periode'] : NULL;
-	if(strlen(preg_replace('/[0-9]/','',$periode))!=0) {$periode=NULL;}
+	if(mb_strlen(preg_replace('/[0-9]/','',$periode))!=0) {$periode=NULL;}
 	if($periode=='') {$periode=NULL;}
 
 	$acces=isset($_POST['acces']) ? $_POST['acces'] : NULL;

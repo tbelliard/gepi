@@ -2,7 +2,6 @@
 /**
  *
  *
- * @version $Id: edt_ajax_win.php 2147 2008-07-23 09:01:04Z tbelliard $
  *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
@@ -50,10 +49,10 @@ if (!checkAccess()) {
 $id_gr = isset($_GET["id_gr"]) ? $_GET["id_gr"] : NULL;
 $classe = isset($_GET["classe"]) ? $_GET["classe"] : NULL;
 $action = isset($_GET["action"]) ? $_GET["action"] : NULL;
-$id = isset($id_gr) ? substr($id_gr, 3) : NULL;
-$id2 = isset($id_gr) ? substr($id_gr, 4) : NULL;
-$id3 = isset($id_gr) ? substr($id_gr, 5) : NULL;
-$id4 = isset($id_gr) ? substr($id_gr, 6) : NULL;
+$id = isset($id_gr) ? mb_substr($id_gr, 3) : NULL;
+$id2 = isset($id_gr) ? mb_substr($id_gr, 4) : NULL;
+$id3 = isset($id_gr) ? mb_substr($id_gr, 5) : NULL;
+$id4 = isset($id_gr) ? mb_substr($id_gr, 6) : NULL;
 
 // ==========================fin des variables ==================
 
@@ -155,7 +154,7 @@ if ($action == 'modifier') {
 
 		$nom =  ($classe) ? urldecode($classe) : NULL;; // car on garde la variable du début
 		// On enregistre la modification
-		$sql_nom = "UPDATE edt_gr_nom SET nom = '".utf8_decode($nom)."' WHERE id = '".$id3."'";
+		$sql_nom = "UPDATE edt_gr_nom SET nom = '".$nom."' WHERE id = '".$id3."'";
 		$query_nom = mysql_query($sql_nom);
 
 		if ($query_nom) {
@@ -177,7 +176,7 @@ if ($action == 'modifier') {
 
 		$nom_lg =  ($classe) ? urldecode($classe) : NULL;; // car on garde la variable du début
 		// On enregistre la modification
-		$sql_nom_lg = "UPDATE edt_gr_nom SET nom_long = '".utf8_decode($nom_lg)."' WHERE id = '".$id4."'";
+		$sql_nom_lg = "UPDATE edt_gr_nom SET nom_long = '".$nom_lg."' WHERE id = '".$id4."'";
 		$query_nom_lg = mysql_query($sql_nom_lg);
 
 		if ($query_nom_lg) {

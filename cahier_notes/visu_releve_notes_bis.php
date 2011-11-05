@@ -1,7 +1,6 @@
 <?php
 /*
 *
-* $Id: visu_releve_notes_bis.php 8505 2011-10-20 10:53:38Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
 *
@@ -23,6 +22,7 @@
 */
 
 // Initialisations files
+require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 
 // Resume session
@@ -55,20 +55,11 @@ if (!checkAccess()) {
 //+++++++++++++++++++++++++
 
 $contexte_document_produit="releve_notes";
-/*
-$deux_releves_par_page=isset($_POST('deux_releves_par_page']) ? $_POST('deux_releves_par_page'] : "non";
-
-if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
-	$deux_releves_par_page="non";
-	//$un_seul_bull_par_famille="oui";
-}
-*/
 
 $releve_pdf_debug=isset($_POST['releve_pdf_debug']) ? $_POST['releve_pdf_debug'] : "n";
 
 //====================================================
 //=============== ENTETE STANDARD ====================
-//if (!isset($_POST['valide_select_eleves'])) {
 if(!isset($_POST['choix_parametres'])) {
 	//**************** EN-TETE *********************
 	$titre_page = "Visualisation relevé de notes";
@@ -86,9 +77,6 @@ elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='html')) {
 //====================================================
 //============== ENTETE BULLETIN PDF ================
 elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='pdf')) {
-	$mode_utf8_pdf=getSettingValue("mode_utf8_bulletins_pdf");
-	if($mode_utf8_pdf=="") {$mode_utf8_pdf="n";}
-
 	if($releve_pdf_debug=='y') {
 		echo "<p style='color:red'>DEBUG:<br />
 La génération du PDF va échouer parce qu'on affiche ces informations de debuggage,<br />
@@ -128,7 +116,7 @@ $choix_parametres=isset($_POST['choix_parametres']) ? $_POST['choix_parametres']
 // Un prof peut choisir un groupe plutôt qu'une liste de classes
 $id_groupe=($_SESSION['statut']=='professeur') ? (isset($_POST['id_groupe']) ? $_POST['id_groupe'] : NULL) : NULL;
 if(isset($id_groupe)) {
-	if(($id_groupe=='')||(strlen(my_ereg_replace("[0-9]","",$id_groupe))!=0)) {
+	if(($id_groupe=='')||(mb_strlen(my_ereg_replace("[0-9]","",$id_groupe))!=0)) {
 		tentative_intrusion(2, "Tentative d'un professeur de manipuler l'identifiant id_groupe en y mettant des caractères non numériques ou un identifiant de groupe vide.");
 		echo "<p>L'identifiant de groupe est erroné.</p>\n";
 
@@ -1256,21 +1244,6 @@ echo "</script>\n";
 						echo "<td>-</td>\n";
 					}
 				}
-			/*
-			if($choix_periode=='periode') {
-				$sql="SELECT 1=1 FROM j_eleves_classes jec
-					WHERE jec.id_classe='".$tab_id_classe[$i]."' AND
-							jec.periode='".$periode."';";
-				$test=mysql_query($sql);
-				if(mysql_num_rows($test)>0) {
-					echo "<td>\n";
-					echo "<input type='checkbox' name='tab_selection_ele_".$i."_".$periode."[]' id='tab_selection_ele_".$i."_".$periode."_".$cpt."' value=\"".$lig_ele->login."\" checked />\n";
-					echo "</td>\n";
-				}
-				else {
-					echo "<td>-</td>\n";
-				}
-			*/
 			}
 			else {
 				echo "<td>\n";
@@ -1461,237 +1434,7 @@ cocher_tous_eleves();
 	echo "<p><input type='button' name='bouton_valide_select_eleves2' value='Valider' onclick='test_check_ele()' /></p>\n";
 	echo "</form>\n";
 }
-//=======================================================
-//================CHOIX DES PARAMETRES===================
-/*
-elseif(!isset($choix_parametres)) {
 
-	echo "<p class='bold'><a href='index.php'>Retour à l'index</a>";
-	echo "| <a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
-	echo " | <a href='".$_SERVER['PHP_SELF']."' onClick=\"document.forms['form_retour'].submit();return false;\">Choisir d'autres périodes</a>\n";
-	echo " | <a href='".$_SERVER['PHP_SELF']."' onClick=\"document.forms['form_retour_eleves'].submit();return false;\">Choisir d'autres élèves</a>\n";
-	if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='administrateur')) {
-		echo " | <a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
-	}
-	echo "</p>\n";
-
-
-	//===========================
-	// FORMULAIRE POUR LE RETOUR AU CHOIX DES PERIODES
-	echo "\n<!-- Formulaire de retour au choix des périodes -->\n";
-	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='form_retour_periode'>\n";
-	for($i=0;$i<count($tab_id_classe);$i++) {
-		echo "<input type='hidden' name='tab_id_classe[$i]' value='".$tab_id_classe[$i]."' />\n";
-	}
-	//echo "<input type='hidden' name='choix_periode' value='$choix_periode' />\n";
-	if($choix_periode=='periode') {
-		//echo "<input type='hidden' name='periode' value='$periode' />\n";
-		for($j=0;$j<count($tab_periode_num);$j++) {
-			echo "<input type='hidden' name='tab_periode_num[$j]' value='".$tab_periode_num[$j]."' />\n";
-		}
-	}
-	else {
-		$periode="intervalle";
-		echo "<input type='hidden' name='display_date_debut' value='$display_date_debut' />\n";
-		echo "<input type='hidden' name='display_date_fin' value='$display_date_fin' />\n";
-	}
-	if(isset($id_groupe)) {
-		// Cas d'un prof (on a forcé plus haut à NULL $id_groupe si on n'a pas affaire à un prof)
-		echo "<input type='hidden' name='id_groupe' value='".$id_groupe."' />\n";
-	}
-	echo "</form>\n";
-	//===========================
-	// FORMULAIRE POUR LE RETOUR AU CHOIX DES ELEVES
-	echo "\n<!-- Formulaire de retour au choix des élèves -->\n";
-	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='form_retour_eleves'>\n";
-	for($i=0;$i<count($tab_id_classe);$i++) {
-		echo "<input type='hidden' name='tab_id_classe[$i]' value='".$tab_id_classe[$i]."' />\n";
-	}
-
-	echo "<input type='hidden' name='choix_periode' value='$choix_periode' />\n";
-	if($choix_periode=='periode') {
-		//echo "<input type='hidden' name='periode' value='$periode' />\n";
-		for($j=0;$j<count($tab_periode_num);$j++) {
-			echo "<input type='hidden' name='tab_periode_num[$j]' value='".$tab_periode_num[$j]."' />\n";
-		}
-	}
-	else {
-		$periode="intervalle";
-		echo "<input type='hidden' name='display_date_debut' value='$display_date_debut' />\n";
-		echo "<input type='hidden' name='display_date_fin' value='$display_date_fin' />\n";
-	}
-
-	for($i=0;$i<count($tab_id_classe);$i++) {
-		if($choix_periode=='periode') {
-			for($j=0;$j<count($tab_periode_num);$j++) {
-				unset($tab_selection_eleves);
-				$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_'.$j]) ? $_POST['tab_selection_ele_'.$i.'_'.$j] : array();
-				for($k=0;$k<count($tab_selection_eleves);$k++) {
-					echo "<input type='hidden' name='tab_selection_ele_".$i."_".$j."[]' value=\"".$tab_selection_eleves[$k]."\" />\n";
-				}
-			}
-		}
-		else {
-			unset($tab_selection_eleves);
-			$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_intervalle']) ? $_POST['tab_selection_ele_'.$i.'_intervalle'] : array();
-			for($k=0;$k<count($tab_selection_eleves);$k++) {
-				echo "<input type='hidden' name='tab_selection_ele_".$i."_intervalle[]' value=\"".$tab_selection_eleves[$k]."\" />\n";
-			}
-		}
-	}
-	if(isset($id_groupe)) {
-		// Cas d'un prof (on a forcé plus haut à NULL $id_groupe si on n'a pas affaire à un prof)
-		echo "<input type='hidden' name='id_groupe' value='".$id_groupe."' />\n";
-	}
-	echo "</form>\n";
-	//===========================
-
-
-
-	//+++++++++++++++++++++++++++++++++++
-	// A FAIRE
-	// Contrôler les paramètres proposés en fonction de
-	// GepiAccesOptionsReleveParent
-	// GepiAccesOptionsReleveEleve
-	//+++++++++++++++++++++++++++++++++++
-
-	echo "\n<!-- Formulaire de choix des paramètres -->\n";
-	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire' target='_blank'>\n";
-
-	// Classes:
-
-	echo "<p class='bold'>Choix des paramètres pour la sélection d'élèves parmi les élèves de ";
-
-
-	for($i=0;$i<count($tab_id_classe);$i++) {
-		if($i>0) {echo ", ";}
-		echo get_class_from_id($tab_id_classe[$i]);
-		echo "<input type='hidden' name='tab_id_classe[$i]' value='".$tab_id_classe[$i]."' />\n";
-	}
-	if($choix_periode=='periode') {
-		if(count($tab_periode_num)==1) {
-			echo " pour la période ".$tab_periode_num[0];
-		}
-		else {
-			echo " pour les périodes ";
-			for($j=0;$j<count($tab_periode_num);$j++) {
-				if($j>0) {echo ", ";}
-				echo $tab_periode_num[$j];
-			}
-		}
-	}
-	else {
-		echo "<br />pour une extraction des notes entre le $display_date_debut et le $display_date_fin";
-	}
-	echo ":</p>\n";
-
-
-	// Période d'affichage:
-	echo "<input type='hidden' name='choix_periode' value='$choix_periode' />\n";
-	if($choix_periode=='periode') {
-		//echo "<input type='hidden' name='periode' value='$periode' />\n";
-		//echo "count(\$tab_periode_num)=".count($tab_periode_num)."<br />";
-		for($j=0;$j<count($tab_periode_num);$j++) {
-			echo "<input type='hidden' name='tab_periode_num[$j]' value='".$tab_periode_num[$j]."' />\n";
-		}
-	}
-	else {
-		$periode="intervalle";
-		echo "<input type='hidden' name='display_date_debut' value='$display_date_debut' />\n";
-		echo "<input type='hidden' name='display_date_fin' value='$display_date_fin' />\n";
-	}
-
-	// Sélection d'élèves:
-	for($i=0;$i<count($tab_id_classe);$i++) {
-		echo "<!-- Eleves de ".get_class_from_id($tab_id_classe[$i])." -->\n";
-		if($choix_periode=='periode') {
-			//echo "count(\$tab_periode_num)=".count($tab_periode_num);
-			for($j=0;$j<count($tab_periode_num);$j++) {
-				unset($tab_selection_eleves);
-				echo "<!-- Eleves de ".get_class_from_id($tab_id_classe[$i])." sur la période ".$tab_periode_num[$j]." -->\n";
-				$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_'.$j]) ? $_POST['tab_selection_ele_'.$i.'_'.$j] : array();
-				for($k=0;$k<count($tab_selection_eleves);$k++) {
-					echo "<input type='hidden' name='tab_selection_ele_".$i."_".$j."[]' value=\"".$tab_selection_eleves[$k]."\" />\n";
-				}
-			}
-		}
-		else {
-			unset($tab_selection_eleves);
-			echo "<!-- Eleves de ".get_class_from_id($tab_id_classe[$i])." sur la période ".$display_date_debut." à ".$display_date_fin." -->\n";
-			$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_intervalle']) ? $_POST['tab_selection_ele_'.$i.'_intervalle'] : array();
-			for($k=0;$k<count($tab_selection_eleves);$k++) {
-				echo "<input type='hidden' name='tab_selection_ele_".$i."_intervalle[]' value=\"".$tab_selection_eleves[$k]."\" />\n";
-			}
-		}
-	}
-
-
-	//=======================================
-	// A remplacer par la suite par un choix:
-	echo "<input type='hidden' name='mode_bulletin' value='html' />\n";
-	//echo "<input type='hidden' name='un_seul_bull_par_famille' value='non' />\n";
-	//=======================================
-
-	if (($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
-		echo "<table border='0'>\n";
-		echo "<tr><td valign='top'><input type='checkbox' name='un_seul_bull_par_famille' id='un_seul_bull_par_famille' value='oui' /></td><td><label for='un_seul_bull_par_famille' style='cursor: pointer;'>Ne pas imprimer de relevé de notes pour le deuxième parent<br />(<i>même dans le cas de parents séparés</i>).</label></td></tr>\n";
-		echo "</table>\n";
-	}
-	else {
-		echo "<input type='hidden' name='un_seul_bull_par_famille' value='oui' />\n";
-	}
-
-	// AJOUTER LES PARAMETRES...
-	//echo "<hr width='100' />\n";
-
-	//=======================================
-	// Tableau des paramètres mis dans un fichier externe pour permettre la même exploitation dans le cas d'insertion des relevés de notes entre les bulletins
-	include("tableau_choix_parametres_releves_notes.php");
-	//=======================================
-
-	echo "<input type='hidden' name='valide_select_eleves' value='y' />\n";
-	echo "<p><input type='submit' name='choix_parametres' value='Valider' /></p>\n";
-	echo "</form>\n";
-
-	echo "<script type='text/javascript'>
-function CocheLigne(item) {
-	for (var i=0;i<".count($tab_id_classe).";i++) {
-		if(document.getElementById(item+'_'+i)){
-			document.getElementById(item+'_'+i).checked = true;
-		}
-	}
-}
-
-function DecocheLigne(item) {
-	for (var i=0;i<".count($tab_id_classe).";i++) {
-		if(document.getElementById(item+'_'+i)){
-			document.getElementById(item+'_'+i).checked = false;
-		}
-	}
-}
-
-function ToutCocher() {
-";
-	for($k=0;$k<count($tab_item);$k++) {
-		echo "	CocheLigne('".$tab_item[$k]."');\n";
-	}
-	echo "	CocheLigne('rn_app');
-	CocheLigne('rn_adr_resp');
-}
-
-function ToutDeCocher() {
-";
-	for($k=0;$k<count($tab_item);$k++) {
-		echo "	DecocheLigne('".$tab_item[$k]."');\n";
-	}
-	echo "	DecocheLigne('rn_app');
-	DecocheLigne('rn_adr_resp');
-}
-
-</script>\n";
-
-}
-*/
 //=======================================================
 //===EXTRACTION DES DONNEES PUIS AFFICHAGE DES RELEVES===
 else {
@@ -1779,7 +1522,7 @@ else {
 		/*****************************************
 		* début de la génération du fichier PDF  *
 		* ****************************************/
-		header('Content-type: application/pdf');
+		//header('Content-type: application/pdf');
 		//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
 		$pdf=new bul_PDF('p', 'mm', 'A4');
 		$nb_eleve_aff = 1;
@@ -1791,7 +1534,7 @@ else {
 		$pdf->SetSubject('Releve_de_notes');
 		$pdf->SetTitle('Releve_de_notes');
 		$pdf->SetDisplayMode('fullwidth', 'single');
-		$pdf->SetCompression(TRUE);
+		//$pdf->SetCompression(TRUE);
 		$pdf->SetAutoPageBreak(TRUE, 5);
 
 		$responsable_place = 0;
@@ -1967,11 +1710,9 @@ else {
 	
 									}
 	
-									//$compteur_releve++;
 									$compteur_releve_bis++;
 	
 								}
-							//}
 						}
 					}
 				}
@@ -1979,31 +1720,7 @@ else {
 		}
 	}
 
-	/*
-	echo "<style type='text/css'>
-	@media screen{
-		.espacement_bulletins {
-			width: 100%;
-			height: 50px;
-			border:1px solid red;
-			background-color: white;
-		}
-	}
-	@media print{
-		.espacement_bulletins {
-			display:none;
-		}
-
-		#remarques_bas_de_page {
-			display:none;
-		}
-
-		.alerte_erreur {
-			display:none;
-		}
-	}
-</style>\n";
-*/
+	
 
 	if($mode_bulletin!="pdf") {
 		echo "<script type='text/javascript'>
@@ -2014,7 +1731,13 @@ else {
 		// Envoyer le PDF et quitter
 		$nom_releve = date("Ymd_Hi");
 		$nom_fichier = 'releve_notes_'.$nom_releve.'.pdf';
-		$pdf->Output($nom_fichier,'I');
+
+		if(((isset($bull_pdf_debug))&&($bull_pdf_debug=='y'))||((isset($releve_pdf_debug))&&($releve_pdf_debug=='y'))) {
+			echo $pdf->Output($nom_fichier,'S');
+		}
+		else {
+			$pdf->Output($nom_fichier,'I');
+		}
 
 		die();
 	}

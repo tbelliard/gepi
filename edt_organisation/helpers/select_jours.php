@@ -3,8 +3,7 @@
 /**
  *
  *
- * @version $Id: select_jours.php 1807 2008-05-09 15:26:10Z jjocal $
- * @copyright 2008
+ * @copyright 2008-2011
  *
  * Fichier qui renvoie un select des jours ouvrés de l'établissement
  * pour l'intégrer dans un fomulaire
@@ -39,7 +38,7 @@ $query = mysql_query("SELECT * FROM horaires_etablissement LIMIT 0, 7")
 
 while($jours = mysql_fetch_array($query)){
 	// le selected
-	if (strtoupper($jours["jour_horaire_etablissement"]) == $nom_selected) {
+	if (my_strtoupper($jours["jour_horaire_etablissement"]) == $nom_selected) {
 		$selected = ' selected="selected"';
 	}else{
 		$selected = '';

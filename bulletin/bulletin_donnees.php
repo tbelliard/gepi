@@ -3,7 +3,7 @@
 /**
  *
  *
- * @version $Id: bulletin_donnees.php 1499 2008-02-12 22:09:24Z jjocal $
+ * @version $Id$
  * @copyright 2008
  */
 

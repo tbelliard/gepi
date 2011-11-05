@@ -1,5 +1,5 @@
 <?php
-/* $Id: fiches_brevet.php 7174 2011-06-09 08:42:24Z crob $ */
+/* $Id$ */
 /*
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -91,7 +91,7 @@ $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id
 
 $type_brevet = isset($_POST['type_brevet']) ? $_POST['type_brevet'] : (isset($_GET['type_brevet']) ? $_GET['type_brevet'] : NULL);
 if(isset($type_brevet)) {
-	if((!my_ereg("[0-9]",$type_brevet))||(strlen(my_ereg_replace("[0-9]","",$type_brevet))!=0)) {
+	if((!my_ereg("[0-9]",$type_brevet))||(mb_strlen(my_ereg_replace("[0-9]","",$type_brevet))!=0)) {
 		$type_brevet=NULL;
 	}
 }
@@ -797,7 +797,7 @@ for($i=0;$i<count($id_classe);$i++){
 				$lig_avis=mysql_fetch_object($res_avis);
 				if($lig_avis->favorable=="O") {$tab_eleves_OOo[$nb_eleve]['decision']="Avis favorable";}
 				elseif($lig_avis->favorable=="N") {$tab_eleves_OOo[$nb_eleve]['decision']="Avis défavorable";}
-				//$tab_eleves_OOo[$nb_eleve]['appreciation']= htmlentities($lig_avis->avis);
+				//$tab_eleves_OOo[$nb_eleve]['appreciation']= htmlspecialchars($lig_avis->avis);
 				$tab_eleves_OOo[$nb_eleve]['appreciation']= $lig_avis->avis;
 				$tab_eleves_OOo[$nb_eleve]['avis']=$lig_avis->favorable;
 			}

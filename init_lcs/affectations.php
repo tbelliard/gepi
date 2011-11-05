@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: affectations.php 7847 2011-08-20 15:45:45Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

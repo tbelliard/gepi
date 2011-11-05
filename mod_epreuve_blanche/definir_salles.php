@@ -1,5 +1,4 @@
 <?php
-/* $Id: definir_salles.php 6760 2011-04-09 17:54:37Z crob $ */
 /*
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -650,7 +649,7 @@ else {
 			$tab_cpt_eleve[]=$cpt;
 	
 			$current_group=get_group($lig->id);
-			echo "<p>"."<b>".$current_group['classlist_string']."</b> ".htmlentities($lig->name)." (<i>".htmlentities($lig->description)."</i>)"."</p>\n";
+			echo "<p>"."<b>".$current_group['classlist_string']."</b> ".htmlspecialchars($lig->name)." (<i>".htmlspecialchars($lig->description)."</i>)"."</p>\n";
 			echo "<blockquote>\n";
 	
 			//$sql="SELECT * FROM eb_copies ec, eb_groupes eg WHERE id_epreuve='$id_epreuve' AND...;";

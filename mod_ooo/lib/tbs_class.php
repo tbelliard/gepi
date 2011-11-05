@@ -112,7 +112,7 @@ function DataPrepare(&$SrcId,&$oTBS) {
 			$x = str_replace('-','_',$x);
 			$Function = '';
 			$i = 0;
-			$iMax = strlen($x);
+			$iMax = mb_strlen($x);
 			while ($i<$iMax) {
 				if (($x[$i]==='_') or (($x[$i]>='a') and ($x[$i]<='z')) or (($x[$i]>='0') and ($x[$i]<='9'))) {
 					$Function .= $x[$i];
@@ -247,7 +247,7 @@ function DataOpen(&$Query,&$PageSize,&$PageNum,&$RecStop) {
 				$Keys = array();
 			} else {
 				$VarName = substr($Query,0,$Pos);
-				$Keys = substr($Query,$Pos+1,strlen($Query)-$Pos-2);
+				$Keys = substr($Query,$Pos+1,mb_strlen($Query)-$Pos-2);
 				$Keys = explode('][',$Keys);
 			}
 			// Check variable and sub-keys
@@ -540,7 +540,7 @@ var $MaxEnd = '...';
 function clsTinyButStrong($Chrs='',$VarPrefix='') {
 	if ($Chrs!=='') {
 		$Ok = false;
-		$Len = strlen($Chrs);
+		$Len = mb_strlen($Chrs);
 		if ($Len===2) { // For compatibility
 			$this->ChrOpen = $Chrs[0];
 			$this->ChrClose = $Chrs[1];
@@ -744,7 +744,7 @@ function meth_Locator_FindTbs(&$Txt,$Name,$Pos,$ChrSub) {
 // Find a TBS Locator
 
 	$PosEnd = false;
-	$PosMax = strlen($Txt) -1;
+	$PosMax = mb_strlen($Txt) -1;
 	$Start = $this->ChrOpen.$Name;
 
 	do {
@@ -758,7 +758,7 @@ function meth_Locator_FindTbs(&$Txt,$Name,$Pos,$ChrSub) {
 		} else {
 			$Loc = new clsTbsLocator;
 			$ReadPrm = false;
-			$PosX = $Pos + strlen($Start);
+			$PosX = $Pos + mb_strlen($Start);
 			$x = $Txt[$PosX];
 
 			if ($x===$this->ChrClose) {
@@ -1018,7 +1018,7 @@ function meth_Locator_Replace(&$Txt,&$Loc,&$Value,$CheckSub) {
 	// MaxLength
 	if (isset($Loc->PrmLst['max'])) {
 		$x = intval($Loc->PrmLst['max']);
-		if (strlen($CurrVal)>$x) {
+		if (mb_strlen($CurrVal)>$x) {
 			if ($Loc->ConvHtml or ($this->HtmlCharSet===false)) {
 				$CurrVal = substr($CurrVal,0,$x-1).$this->MaxEnd;
 			} else {
@@ -1111,7 +1111,7 @@ function meth_Locator_Replace(&$Txt,&$Loc,&$Value,$CheckSub) {
 		}
 		$NewEnd = $Loc->PosBeg; // Useful when mtype='m+m'
 	} else {
-		$NewEnd = $Loc->PosBeg + strlen($CurrVal);
+		$NewEnd = $Loc->PosBeg + mb_strlen($CurrVal);
 	}
 
 	$Txt = substr_replace($Txt,$CurrVal,$Loc->PosBeg,$Loc->PosEnd-$Loc->PosBeg+1);
@@ -1702,7 +1702,7 @@ function meth_Merge_PhpVar(&$Txt,$HtmlConv) {
 // Merge the PHP global variables of the main script.
 
 	$Pref =& $this->VarPrefix;
-	$PrefL = strlen($Pref);
+	$PrefL = mb_strlen($Pref);
 	$PrefOk = ($PrefL>0);
 
 	if ($HtmlConv===false) {
@@ -1839,7 +1839,7 @@ function meth_Merge_SectionNormal(&$LocR,&$BlockId,&$CurrRec,&$RecNum,&$RecKey,&
 	if ($NoFct) {
 		$LocLst =& $LocR->BlockLoc[$BlockId];
 		$iMax = $LocLst[0];
-		$PosMax = strlen($Txt);
+		$PosMax = mb_strlen($Txt);
 		$DoUnCached =& $LocR->BlockChk[$BlockId];
 	} else {
 		$Txt0 = $Txt;
@@ -1848,7 +1848,7 @@ function meth_Merge_SectionNormal(&$LocR,&$BlockId,&$CurrRec,&$RecNum,&$RecKey,&
 		if ($Txt0===$Txt) {
 			$LocLst =& $LocR->BlockLoc[$BlockId];
 			$iMax = $LocLst[0];
-			$PosMax = strlen($Txt);
+			$PosMax = mb_strlen($Txt);
 			$DoUnCached =& $LocR->BlockChk[$BlockId];
 		} else {
 			$iMax = 0;
@@ -2211,7 +2211,7 @@ function meth_Misc_ChangeMode($Init,&$Loc,&$CurrVal,$Switch,$GetOb) {
 			$this->_CacheFile = false;
 			$this->_Mode = 1;
 			$File = $Loc->PrmLst['subtpl'];
-			if (is_string($File) and (strlen($File)>0)) {
+			if (is_string($File) and (mb_strlen($File)>0)) {
 				$this->meth_Merge_PhpVar($File,false);
 				$File = str_replace($this->ChrVal,$CurrVal,$File);
 				if (tbs_Misc_GetFile($this->Source,$File)) {
@@ -2316,7 +2316,7 @@ function tbs_Misc_GetStrId($Txt) {
 	$Txt = str_replace('-','_',$Txt);
 	$x = '';
 	$i = 0;
-	$iMax = strlen($Txt2);
+	$iMax = mb_strlen($Txt2);
 	while ($i<$iMax) {
 		if (($Txt[$i]==='_') or (($Txt[$i]>='a') and ($Txt[$i]<='z')) or (($Txt[$i]>='0') and ($Txt[$i]<='9'))) {
 			$x .= $Txt[$i];
@@ -2334,7 +2334,7 @@ function tbs_Misc_CheckCondition($Str) {
 	// Find operator and position
 	$Ope = '=';
 	$Len = 1;
-	$Max = strlen($Str)-1;
+	$Max = mb_strlen($Str)-1;
 	$Pos = strpos($Str,$Ope);
 	if ($Pos===false) {
 		$Ope = '+';
@@ -2397,7 +2397,7 @@ function tbs_Misc_CheckCondition($Str) {
 
 function tbs_Misc_DelDelimiter(&$Txt,$Delim) {
 // Delete the string delimiters
-	$len = strlen($Txt);
+	$len = mb_strlen($Txt);
 	if (($len>1) and ($Txt[0]===$Delim)) {
 		if ($Txt[$len-1]===$Delim) $Txt = substr($Txt,1,$len-2);
 		return false;
@@ -2604,7 +2604,7 @@ function tbs_Misc_FormatSave(&$FrmStr) {
 		$FrmLOC = '';
 		$Local = false;
 		$StrIn = false;
-		$iMax = strlen($FrmStr);
+		$iMax = mb_strlen($FrmStr);
 		$Cnt = 0;
 
 		for ($i=0;$i<$iMax;$i++) {
@@ -2716,7 +2716,7 @@ function tbs_Locator_SectionAddGrp(&$LocR,$Bid,$Type,$Field) {
 function tbs_Locator_PrmRead(&$Txt,$Pos,$HtmlTag,$DelimChrs,$BegStr,$EndStr,&$Loc,&$PosEnd) {
 
 	// À mettre dans la classe TBS
-	$BegLen = strlen($BegStr);
+	$BegLen = mb_strlen($BegStr);
 	$BegChr = $BegStr[0];
 	$BegIs1 = ($BegLen===1);
 
@@ -2852,7 +2852,7 @@ function tbs_Locator_PrmRead(&$Txt,$Pos,$HtmlTag,$DelimChrs,$BegStr,$EndStr,&$Lo
 	
 	}
 	
-	$PosEnd = $PosEnd + (strlen($EndStr)-1);
+	$PosEnd = $PosEnd + (mb_strlen($EndStr)-1);
 
 }
 
@@ -2874,7 +2874,7 @@ function tbs_Locator_PrmCompute(&$Txt,&$Loc,&$SubName,$Status,$HtmlTag,$DelimChr
 			$v = trim(substr($Txt,$PosVal,$Pos-$PosVal));
 			if ($DelimCnt===1) { // Delete quotes inside the value
 				if ($v[0]===$DelimChr) {
-					$len = strlen($v);
+					$len = mb_strlen($v);
 					if ($v[$len-1]===$DelimChr) {
 						$v = substr($v,1,$len-2);
 						$v = str_replace($DelimChr.$DelimChr,$DelimChr,$v);
@@ -2902,7 +2902,7 @@ This is because of the calling function.
 	do {
 		$Pos = strrpos(substr($Txt,0,$Pos),$StrBeg[0]);
 		if ($Pos!==false) {
-			if (substr($Txt,$Pos,strlen($StrBeg))===$StrBeg) $Ok = true;
+			if (substr($Txt,$Pos,mb_strlen($StrBeg))===$StrBeg) $Ok = true;
 		}
 	} while ( (!$Ok) and ($Pos!==false) );
 
@@ -2912,7 +2912,7 @@ This is because of the calling function.
 			$Ok = false;
 		} else {
 			$Loc->PosBeg = $Pos;
-			$Loc->PosEnd = $PosEnd + strlen($StrEnd) - 1;
+			$Loc->PosEnd = $PosEnd + mb_strlen($StrEnd) - 1;
 		}
 	}
 
@@ -3007,7 +3007,7 @@ function tbs_Locator_EnlargeToTag(&$Txt,&$Loc,$Tag,$IsBlock,$ReturnSrc) {
 function tbs_Html_Max(&$Txt,&$Nbr) {
 // Limit the number of HTML chars
 
-	$pMax = strlen($Txt)-1;
+	$pMax = mb_strlen($Txt)-1;
 	$p=0;
 	$n=0;
 	$in = false;
@@ -3042,11 +3042,11 @@ function tbs_Html_IsHtml(&$Txt) {
 
 	// Search for opening and closing tags
 	$pos = strpos($Txt,'<');
-	if ( ($pos!==false) and ($pos<strlen($Txt)-1) ) {
+	if ( ($pos!==false) and ($pos<mb_strlen($Txt)-1) ) {
 		$pos = strpos($Txt,'>',$pos + 1);
-		if ( ($pos!==false) and ($pos<strlen($Txt)-1) ) {
+		if ( ($pos!==false) and ($pos<mb_strlen($Txt)-1) ) {
 			$pos = strpos($Txt,'</',$pos + 1);
-			if ( ($pos!==false)and ($pos<strlen($Txt)-1) ) {
+			if ( ($pos!==false)and ($pos<mb_strlen($Txt)-1) ) {
 				$pos = strpos($Txt,'>',$pos + 1);
 				if ($pos!==false) return true;
 			}
@@ -3055,11 +3055,11 @@ function tbs_Html_IsHtml(&$Txt) {
 
 	// Search for special char
 	$pos = strpos($Txt,'&');
-	if ( ($pos!==false) and ($pos<strlen($Txt)-1) ) {
+	if ( ($pos!==false) and ($pos<mb_strlen($Txt)-1) ) {
 		$pos2 = strpos($Txt,';',$pos+1);
 		if ($pos2!==false) {
 			$x = substr($Txt,$pos+1,$pos2-$pos-1); // We extract the found text between the couple of tags
-			if (strlen($x)<=10) {
+			if (mb_strlen($x)<=10) {
 				if (strpos($x,' ')===false) return true;
 			}
 		}
@@ -3151,12 +3151,12 @@ To ignore encapsulation and opengin/closing just set $Encaps=0.
 
 		if ($Pos!==false) {
 			// Check the name of the tag
-			if (strcasecmp(substr($Txt,$Pos+1,strlen($Tag)),$Tag)==0) {
-				$PosX = $Pos + 1 + strlen($Tag); // The next char
+			if (strcasecmp(substr($Txt,$Pos+1,mb_strlen($Tag)),$Tag)==0) {
+				$PosX = $Pos + 1 + mb_strlen($Tag); // The next char
 				$TagOk = true;
 				$TagIsOpening = true;
-			} elseif (strcasecmp(substr($Txt,$Pos+1,strlen($TagClosing)),$TagClosing)==0) {
-				$PosX = $Pos + 1 + strlen($TagClosing); // The next char
+			} elseif (strcasecmp(substr($Txt,$Pos+1,mb_strlen($TagClosing)),$TagClosing)==0) {
+				$PosX = $Pos + 1 + mb_strlen($TagClosing); // The next char
 				$TagOk = true;
 				$TagIsOpening = false;
 			}
@@ -3246,7 +3246,7 @@ function tbs_Html_MergeItems(&$Txt,&$Loc,&$SelValue,&$SelArray,&$NewEnd) {
 				$Item0Ok = false;
 			} else {
 				// We delete the merged value
-				$MainSrc = substr_replace($MainSrc,'',$Loc->PosBeg - ($TagO->PosEnd+1), strlen($SelValue));
+				$MainSrc = substr_replace($MainSrc,'',$Loc->PosBeg - ($TagO->PosEnd+1), mb_strlen($SelValue));
 			}
 
 			// Now, we going to scan all of the item tags
@@ -3260,21 +3260,21 @@ function tbs_Html_MergeItems(&$Txt,&$Loc,&$SelValue,&$SelArray,&$NewEnd) {
 				if ($IsList) {
 					// Look for the end of the item
 					$OptCPos = strpos($MainSrc,'<',$ItemLoc->PosEnd+1);
-					if ($OptCPos===false) $OptCPos = strlen($MainSrc);
+					if ($OptCPos===false) $OptCPos = mb_strlen($MainSrc);
 					if (($Item0Ok===false) and ($ItemLoc->PosBeg<$Item0Beg) and ($Item0Beg<=$OptCPos)) {
 						// If it's the original item, we save it and delete it.
-						if (($OptCPos+1<strlen($MainSrc)) and ($MainSrc[$OptCPos+1]==='/')) {
+						if (($OptCPos+1<mb_strlen($MainSrc)) and ($MainSrc[$OptCPos+1]==='/')) {
 							$OptCPos = strpos($MainSrc,'>',$OptCPos);
 							if ($OptCPos===false) {
-								$OptCPos = strlen($MainSrc);
+								$OptCPos = mb_strlen($MainSrc);
 							} else {
 								$OptCPos++;
 							}
 						}
 						$Item0Src = substr($MainSrc,$ItemLoc->PosBeg,$OptCPos-$ItemLoc->PosBeg);
-						$MainSrc = substr_replace($MainSrc,'',$ItemLoc->PosBeg,strlen($Item0Src));
+						$MainSrc = substr_replace($MainSrc,'',$ItemLoc->PosBeg,mb_strlen($Item0Src));
 						if (!isset($ItemLoc->PrmLst[$ItemPrm])) tbs_Html_InsertAttribute($Item0Src,$ItemPrmZ,$ItemLoc->PosEnd-$ItemLoc->PosBeg);
-						$OptCPos = min($ItemLoc->PosBeg,strlen($MainSrc)-1);
+						$OptCPos = min($ItemLoc->PosBeg,mb_strlen($MainSrc)-1);
 						$Select = false;
 						$Item0Ok = true;
 					} else {
@@ -3312,8 +3312,8 @@ function tbs_Html_MergeItems(&$Txt,&$Loc,&$SelValue,&$SelArray,&$NewEnd) {
 					if ($Select) {
 						if (!isset($ItemLoc->PrmLst[$ItemPrm])) {
 							tbs_Html_InsertAttribute($MainSrc,$ItemPrmZ,$ItemLoc->PosEnd);
-							$Pos = $Pos + strlen($ItemPrmZ);
-							if ($IsList and ($ItemLoc->PosBeg<$Item0Beg)) $Item0Beg = $Item0Beg + strlen($ItemPrmZ);
+							$Pos = $Pos + mb_strlen($ItemPrmZ);
+							if ($IsList and ($ItemLoc->PosBeg<$Item0Beg)) $Item0Beg = $Item0Beg + mb_strlen($ItemPrmZ);
 						}
 						$SelNbr++;
 					}
@@ -3352,8 +3352,8 @@ function tbs_Cache_IsValide($CacheFile,$TimeOut) {
 
 function tbs_Cache_File($Dir,$CacheId,$Mask) {
 // Return the cache file path for a given Id.
-	if (strlen($Dir)>0) {
-		if ($Dir[strlen($Dir)-1]<>'/') {
+	if (mb_strlen($Dir)>0) {
+		if ($Dir[mb_strlen($Dir)-1]<>'/') {
 			$Dir .= '/';
 		}
 	}
@@ -3362,23 +3362,23 @@ function tbs_Cache_File($Dir,$CacheId,$Mask) {
 
 function tbs_Cache_DeleteAll($Dir,$Mask) {
 
-	if (strlen($Dir)==0) {
+	if (mb_strlen($Dir)==0) {
 		$Dir = '.';
 	}
-	if ($Dir[strlen($Dir)-1]<>'/') {
+	if ($Dir[mb_strlen($Dir)-1]<>'/') {
 		$Dir .= '/';
 	}
 	$DirObj = dir($Dir);
 	$Nbr = 0;
 	$PosL = strpos($Mask,'*');
-	$PosR = strlen($Mask) - $PosL - 1;
+	$PosR = mb_strlen($Mask) - $PosL - 1;
 
 	// Get the list of cache files
 	$FileLst = array();
 	while ($FileName = $DirObj->read()) {
 		$FullPath = $Dir.$FileName;
 		if (strtolower(filetype($FullPath))==='file') {
-			if (strlen($FileName)>=strlen($Mask)) {
+			if (mb_strlen($FileName)>=mb_strlen($Mask)) {
 				if ((substr($FileName,0,$PosL)===substr($Mask,0,$PosL)) and (substr($FileName,-$PosR)===substr($Mask,-$PosR))) {
 					$FileLst[] = $FullPath;
 				}

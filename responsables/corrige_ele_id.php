@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: corrige_ele_id.php 6582 2011-03-02 16:57:41Z crob $
  *
  * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -383,7 +382,7 @@ else{
 					`ELEOPT11` varchar(40) $chaine_mysql_collate NOT NULL default '',
 					`ELEOPT12` varchar(40) $chaine_mysql_collate NOT NULL default '',
 					`LIEU_NAISSANCE` varchar(50) $chaine_mysql_collate NOT NULL default ''
-					);";
+					) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 					$create_table = mysql_query($sql);
 
 					$sql="TRUNCATE TABLE temp_gep_import2;";
@@ -427,7 +426,7 @@ else{
 									$i++;
 									$eleves[$i]=array();
 
-									//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
+									//echo "<p><b>".htmlspecialchars($ligne[$cpt])."</b><br />\n";
 									unset($tabtmp);
 									//$tabtmp=explode('"',strstr($ligne[$cpt]," ELEVE_ID="));
 									$tabtmp=explode('"',strstr($ligne," ELEVE_ID="));
@@ -628,7 +627,7 @@ else{
 				//while($cpt<count($ligne)){
 				while(!feof($fp)){
 					$ligne=fgets($fp,4096);
-					//echo "<p>".htmlentities($ligne[$cpt])."<br />\n";
+					//echo "<p>".htmlspecialchars($ligne[$cpt])."<br />\n";
 					//if(strstr($ligne[$cpt],"<ELEVES>")){
 					if(strstr($ligne,"<ELEVES>")){
 						echo "Début de la section ELEVES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
@@ -649,7 +648,7 @@ else{
 							$eleves[$i]=array();
 							$eleves[$i]["scolarite_an_dernier"]=array();
 
-							//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
+							//echo "<p><b>".htmlspecialchars($ligne[$cpt])."</b><br />\n";
 							unset($tabtmp);
 							//$tabtmp=explode('"',strstr($ligne[$cpt]," ELEVE_ID="));
 							$tabtmp=explode('"',strstr($ligne," ELEVE_ID="));
@@ -797,7 +796,7 @@ else{
 						$sql.="eledoubl='".ouinon($eleves[$i]["doublement"])."', ";
 						if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){$sql.="etocod_ep='".$eleves[$i]["scolarite_an_dernier"]["code_rne"]."', ";}
 						if(isset($eleves[$i]["code_regime"])){$sql.="elereg='".$eleves[$i]["code_regime"]."', ";}
-						$sql=substr($sql,0,strlen($sql)-2);
+						$sql=mb_substr($sql,0,mb_strlen($sql)-2);
 						$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
 						affiche_debug("$sql<br />\n");
 						$res_insert=mysql_query($sql);

@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: recopie_moyennes.php 6611 2011-03-03 15:23:08Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -455,7 +454,7 @@ else{
 				echo "<tr class='lig$alt'>\n";
 				//echo "<td>".$current_group["classlist_string"]."</td>\n";
 				echo "<td>".$tmp_classe[0]."</td>\n";
-				echo "<td>".htmlentities($current_group['description'])."</td>\n";
+				echo "<td>".htmlspecialchars($current_group['description'])."</td>\n";
 
 				/*
 				$sql="SELECT login FROM j_groupes_classes jgc,j_eleves_classes jec WHERE
@@ -491,7 +490,7 @@ else{
 							echo "<td>&nbsp;</td>\n";
 						}
 						//echo "<td>".$lig_ele->login."</td>\n";
-						echo "<td>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</td>\n";
+						echo "<td>".my_strtoupper($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2')."</td>\n";
 
 						$sql="SELECT * FROM cn_notes_conteneurs WHERE login='$lig_ele->login' AND id_conteneur='$id_racine' AND statut='y'";
 						$res_moy_carnet=mysql_query($sql);

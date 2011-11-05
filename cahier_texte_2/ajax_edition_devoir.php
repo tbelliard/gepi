@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: ajax_edition_devoir.php 8520 2011-10-24 08:38:16Z crob $
  *
  * Copyright 2009-2011 Josselin Jacquard
  *
@@ -108,7 +107,7 @@ if ($ctTravailAFaire != null) {
 }
 
 // Vérification : est-ce que l'utilisateur a le droit de modifier cette entré ?
-if ((strtolower($ctTravailAFaire->getIdLogin()) != strtolower($utilisateur->getLogin()))&&
+if ((my_strtolower($ctTravailAFaire->getIdLogin()) != my_strtolower($utilisateur->getLogin()))&&
 (getSettingValue("cdt_autoriser_modif_multiprof")!="yes")) {
 	echo("Erreur edition de devoir : vous n'avez pas le droit de modifier cette notice car elle appartient à un autre professeur.");
 	die();

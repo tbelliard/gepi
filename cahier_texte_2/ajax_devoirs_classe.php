@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: ajax_devoirs_classe.php 6856 2011-04-30 17:18:39Z crob $
  *
  * Copyright 2009-2011 Josselin Jacquard, Stephane Boireau
  *
@@ -22,6 +21,7 @@
  */
 
 header('Content-Type: text/html; charset=utf-8');
+
 // On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) {$traite_anti_inject = "yes";}
 include("../lib/initialisationsPropel.inc.php");

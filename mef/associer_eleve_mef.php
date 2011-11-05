@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id: associer_eleve_mef.php 7953 2011-08-24 14:23:50Z regis $
  *
  * Copyright 2010 Josselin Jacquard
  *
@@ -138,7 +137,7 @@ if (isset($message_enregistrement)) {
 $eleve_col = new PropelCollection();
 if ($type_selection == 'id_eleve') {
     $query = EleveQuery::create();
-    $eleve = $query->filterByIdEleve($id_eleve)->findOne();
+    $eleve = $query->filterById($id_eleve)->findOne();
     if ($eleve != null) {
 	$eleve_col->append($eleve);
     }
@@ -207,7 +206,7 @@ foreach($eleve_col as $eleve) {
 ?>
 			<td style="width:580px;" >
 			<p>
-				<input type="hidden" name="id_eleve_mef[<?php echo $eleve_col->getPosition(); ?>]" value="<?php echo $eleve->getIdEleve(); ?>" />
+				<input type="hidden" name="id_eleve_mef[<?php echo $eleve_col->getPosition(); ?>]" value="<?php echo $eleve->getId(); ?>" />
 <?php
 		  echo '<span>'.strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).' ('.$eleve->getCivilite().')';
 			if(!isset($current_classe)){
@@ -215,8 +214,8 @@ foreach($eleve_col as $eleve) {
                         }
                         echo'</span>';
                         //echo '</a>';
-			if (isset($message_erreur_eleve[$eleve->getIdEleve()]) && $message_erreur_eleve[$eleve->getIdEleve()] != '') {
-			    echo "<br/>Erreur : ".$message_erreur_eleve[$eleve->getIdEleve()];
+			if (isset($message_erreur_eleve[$eleve->getId()]) && $message_erreur_eleve[$eleve->getId()] != '') {
+			    echo "<br/>Erreur : ".$message_erreur_eleve[$eleve->getId()];
 			}
 			echo("</p></td>");
 

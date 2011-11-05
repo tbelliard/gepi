@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: ajax_edition_notice_privee.php 8520 2011-10-24 08:38:16Z crob $
  *
  * Copyright 2009-2011 Josselin Jacquard
  *
@@ -22,6 +21,7 @@
  */
 
 header('Content-Type: text/html; charset=utf-8');
+
 // On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 require_once("../lib/initialisationsPropel.inc.php");
@@ -103,7 +103,7 @@ if ($cahierTexteNoticePrivee != null) {
 }
 
 // Vérification : est-ce que l'utilisateur a le droit de modifier cette entré ?
-if (strtolower($cahierTexteNoticePrivee->getIdLogin()) != strtolower($utilisateur->getLogin())) {
+if (my_strtolower($cahierTexteNoticePrivee->getIdLogin()) != my_strtolower($utilisateur->getLogin())) {
 	echo("Erreur edition de notice privee : vous n'avez pas le droit de modifier cette notice car elle appartient à un autre professeur.");
 	die();
 }

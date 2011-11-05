@@ -72,7 +72,7 @@ if(mysql_num_rows($res_model)>0) {
 		id_model_bulletin INT( 11 ) NOT NULL ,
 		nom VARCHAR( 255 ) NOT NULL ,
 		valeur VARCHAR( 255 ) NOT NULL
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$res_model=mysql_query($sql);
 	if(!$res_model) {
 		echo "<p>ERREUR sur $sql</p>\n";

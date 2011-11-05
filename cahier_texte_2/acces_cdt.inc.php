@@ -1,6 +1,5 @@
 <?php
 /*
-* @version: $Id: acces_cdt.inc.php 6844 2011-04-28 16:39:42Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
 *
@@ -28,9 +27,6 @@
 $niveau_arbo=2;
 $prefixe_arbo_acces_cdt="../..";
 
-// Initialisations files
-//require_once($prefixe_arbo_acces_cdt."/lib/initialisations.inc.php");
-//require_once($prefixe_arbo_acces_cdt."/lib/transform_functions.php");
 
 /*
 // Resume session
@@ -157,37 +153,6 @@ $timestamp_fin_export=max(getSettingValue("end_bookings"),$date_fin_tmp);
 // Permettre de choisir l'ordre dans lequel exporter?
 $current_ordre='ASC';
 
-//echo "\$action=$action<br />";
-
-/*
-if($action=='acces') {
-	$length = rand(35, 45);
-	for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
-	$dirname = "acces_cdt_".$r;
-	$create = mkdir("../documents/".$dirname, 0700);
-	if(!$create) {
-		echo "<p style='color:red;'>Problème avec le dossier temporaire../documents/".$dirname."</p>\n";
-		require($prefixe_arbo_acces_cdt."/lib/footer.inc.php");
-		die();
-	}
-
-	// Enregistrement dans la base de cet accès ouvert
-	// Il faut y stocker la liste des login profs concernés pour afficher en page d'accueil la présence d'un cdt ouvert en consultation
-	$date1_acces="$annee-$mois-$jour $heure:$minute:00";
-	$date2_acces=isset($_POST['date2_acces']) ? $_POST['date2_acces'] : "";
-
-	if($date2_acces=='') {
-		$date2_acces=$date1_acces;
-	}
-	else {
-		$tab_tmp_date=explode('/',$date2_acces);
-		$date2_acces=$tab_tmp_date[2]."-".$tab_tmp_date[1]."-".$tab_tmp_date[0]." $heure:$minute:00";
-	}
-
-	$description_acces=isset($_POST['description_acces']) ? $_POST['description_acces'] : "Test";
-}
-*/
-//echo "\$dirname=$dirname<br />";
 
 
 	$chaine_info_prof="";
@@ -200,6 +165,7 @@ if($action=='acces') {
 
 	// Préparation de l'arborescence
 	//$nom_export="export_cdt_".$login_prof."_".strftime("%Y%m%d_%H%M%S");
+
 /*
 	if($action=='acces') {
 		$chemin_acces="documents/".$dirname."/".$nom_export."/index.html";
@@ -218,7 +184,6 @@ if($action=='acces') {
 
 	// Générer la page d'index
 	$html="";
-	//$html.=html_entete();
 	$html.="<h1 style='text-align:center;'>Cahiers de textes $chaine_info_prof<br />(".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
 	$html.="<p>Cahier de textes (<i>$display_date_debut - $display_date_fin</i>) de&nbsp;:</p>\n";
 	$html.="<ul>\n";
@@ -253,7 +218,6 @@ if($action=='acces') {
 		$html.="<li><a id='lien_id_groupe_$id_groupe[$i]' href='cahier_texte/$nom_page_html_groupe'>".$current_group['name']." (<i>".$current_group['description']." en (".$current_group['classlist_string'].")</i>)</a></li>\n";
 	}
 	$html.="</ul>\n";
-	//$html.=html_pied_de_page();
 	
 	//================================================================
 	// Affichage dans la page d'export de ce qui va être fourni en zip
@@ -279,15 +243,6 @@ if($action=='acces') {
 	$html=html_entete("Index des cahiers de textes",0).$html;
 	$html.=html_pied_de_page();
 
-/*
-	$f=fopen($dossier_export."/index.html","w+");
-	fwrite($f,$html);
-	fclose($f);
-	
-	$tab_fichiers_a_zipper[]=$dossier_export."/index.html";
-*/
-//require($prefixe_arbo_acces_cdt."/lib/footer.inc.php");
-//die();
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -297,8 +252,7 @@ echo "<hr width='200px' />\n";
 
 // Dans la page générée, permettre de masquer via JavaScript telle ou telle catégorie Notices ou devoirs,...
 for($i=0;$i<count($id_groupe);$i++) {
-	//echo "\$id_groupe[$i]=$id_groupe[$i]<br />";
-
+	
 	unset($chaine_cpt_classe);
 
 	$tab_dates=array();
@@ -309,8 +263,7 @@ for($i=0;$i<count($id_groupe);$i++) {
 	$tab_dev=array();
 
 	$html="";
-	//$html.=html_entete();
-
+	
 		// On a choisi un professeur
 		$html.="<div id='div_lien_retour_".$id_groupe[$i]."' class='noprint' style='float:right; width:6em'><a id='lien_retour_".$id_groupe[$i]."' href='../index.html'>Retour</a></div>\n";
 
@@ -326,12 +279,10 @@ for($i=0;$i<count($id_groupe);$i++) {
 		AND date_ct <= '".$timestamp_fin_export."'
 		AND id_groupe='".$id_groupe[$i]."'
 		) ORDER BY date_ct DESC, heure_entry DESC;";
-	//echo "$sql<br />";
 	$res=mysql_query($sql);
 	$cpt=0;
 	while($lig=mysql_fetch_object($res)) {
 
-		//echo "$lig->date_ct<br />";
 		$date_notice=strftime("%a %d %b %y", $lig->date_ct);
 		if(!in_array($date_notice,$tab_dates)) {
 			$tab_dates[]=$date_notice;
@@ -340,7 +291,6 @@ for($i=0;$i<count($id_groupe);$i++) {
 		$tab_notices[$date_notice][$cpt]['id_ct']=$lig->id_ct;
 		$tab_notices[$date_notice][$cpt]['id_login']=$lig->id_login;
 		$tab_notices[$date_notice][$cpt]['contenu']=$lig->contenu;
-		//echo " <span style='color:red'>\$tab_notices[$date_notice][$cpt]['contenu']=$lig->contenu</span><br />";
 		$cpt++;
 
 	}
@@ -351,11 +301,9 @@ for($i=0;$i<count($id_groupe);$i++) {
 		AND date_ct <= '".$timestamp_fin_export."'
 		AND id_groupe='".$id_groupe[$i]."'
 		) ORDER BY date_ct DESC;";
-	//echo "$sql<br />";
 	$res=mysql_query($sql);
 	$cpt=0;
 	while($lig=mysql_fetch_object($res)) {
-		//echo "$lig->date_ct<br />";
 		$date_dev=strftime("%a %d %b %y", $lig->date_ct);
 		if(!in_array($date_dev,$tab_dates)) {
 			$tab_dates[]=$date_dev;
@@ -364,11 +312,8 @@ for($i=0;$i<count($id_groupe);$i++) {
 		$tab_dev[$date_dev][$cpt]['id_ct']=$lig->id_ct;
 		$tab_dev[$date_dev][$cpt]['id_login']=$lig->id_login;
 		$tab_dev[$date_dev][$cpt]['contenu']=$lig->contenu;
-		//echo " <span style='color:green'>\$tab_dev[$date_dev][$cpt]['contenu']=$lig->contenu</span><br />";
 		$cpt++;
 	}
-	//echo "\$current_ordre=$current_ordre<br />";
-	//sort($tab_dates);
 	if($current_ordre=='ASC') {
 		array_multisort ($tab_dates, SORT_DESC, SORT_NUMERIC, $tab_dates2, SORT_ASC, SORT_NUMERIC);
 	}
@@ -407,165 +352,9 @@ for($i=0;$i<count($id_groupe);$i++) {
 
 	$html=html_entete("CDT: ".$nom_detaille_groupe_non_html[$id_groupe[$i]],1).$html;
 	$html.=html_pied_de_page();
-/*
-	$f=fopen($dossier_export."/cahier_texte/".$nom_fichier[$id_groupe[$i]],"w+");
-	fwrite($f,$html);
-	fclose($f);
 
-	$tab_fichiers_a_zipper[]=$dossier_export."/cahier_texte/".$nom_fichier[$id_groupe[$i]];
-
-	if(count($tab_chemin_url)) {
-		$fichier_url=$dossier_export."/url_documents.txt";
-		$f=fopen($fichier_url,"a+");
-		for($k=0;$k<count($tab_chemin_url);$k++) {
-			fwrite($f,$tab_chemin_url[$k]."\n");
-		}
-		fclose($f);
-
-		$tab_fichiers_a_zipper[]=$fichier_url;
-	}
-*/
 	echo "<hr width='200px' />\n";
 }
-
-
-// Générer des fichiers URL_documents.txt (URL seule), URL_documents.csv (chemin;URL), script bash/batch/auto-it pour télécharger en créant/parcourant l'arborescence des documents
-/*
-if(isset($_SERVER['HTTP_REFERER'])) {
-	$tmp=explode("?",$_SERVER['HTTP_REFERER']);
-	//$chemin_site=my_ereg_replace("/cahier_texte_2/export_cdt.php$","",$tmp[0]);
-	$chemin_site=preg_replace("#/cahier_texte_2#","",dirname($tmp[0]));
-
-	$fichier_url_site=$dossier_export."/url_site.txt";
-	$f=fopen($fichier_url_site,"a+");
-	fwrite($f,$chemin_site."\n");
-	fclose($f);
-
-	$tab_fichiers_a_zipper[]=$fichier_url_site;
-}
-
-if($action=='export_zip') {
-	require_once("../lib/pclzip.lib.php");
-	
-	$fichier_archive="../temp/$dirname/".$nom_export.".zip";
-	$archive = new PclZip($fichier_archive);
-	$v_list = $archive->create($tab_fichiers_a_zipper,"","../temp/$dirname/");
-	if($v_list==0) {
-		echo "<p>Cahiers de textes extraits&nbsp;: <a href='$dossier_export'>$dossier_export</a></p>\n";
-	
-		echo "<p style='color:red;'>ERREUR lors de la création de l'archive&nbsp;:<br />";
-		echo $archive->errorInfo(true);
-		echo "</p>\n";
-	}
-	else {
-		$basename_fichier_archive=basename($fichier_archive);
-		echo "<p class='bold'>Archive des cahiers de textes extraits&nbsp;: <a href='$fichier_archive'>$basename_fichier_archive</a></p>\n";
-	
-		echo "<script type='text/javascript'>
-	if(document.getElementById('div_archive_zip')) {
-		document.getElementById('div_archive_zip').innerHTML=\"<p class='bold'>Archive des cahiers de textes extraits&nbsp;: <a href='$fichier_archive'>$basename_fichier_archive</a></p>\"
-	}
-</script>\n";
-	}
-
-	// On fait le ménage
-	for($i=0;$i<count($tab_fichiers_a_zipper);$i++) {
-		//echo "unlink($tab_fichiers_a_zipper[$i]);<br />";
-		unlink($tab_fichiers_a_zipper[$i]);
-	}
-	
-	rmdir($dossier_export."/cahier_texte");
-	rmdir($dossier_export."/css");
-	rmdir($dossier_export);
-}
-elseif($action=='acces') {
-
-	$chaine_info_texte="<br /><p><b>Information&nbsp;:</b><br />Le(s) cahier(s) de textes extrait(s) est(sont) accessible(s) sans authentification à l'adresse suivante&nbsp;:<br /><a href='$dossier_export/index.html' target='_blank'>$dossier_export/index.html</a><br />Consultez la page, copiez l'adresse en barre d'adresse et transmettez la à qui vous souhaitez.<br />N'oubliez pas de supprimer cet accès lorsqu'il ne sera plus utile.<br />&nbsp;</p>";
-
-	echo $chaine_info_texte;
-
-	echo "<script type='text/javascript'>
-
-	if(document.getElementById('div_archive_zip')) {
-		document.getElementById('div_archive_zip').innerHTML=\"$chaine_info_texte\";
-	}
-
-	//url=document.location;
-	//alert(url);
-	//var reg = new RegExp('cahier_texte_2/export_cdt.*','');
-	//alert(document.location.replace(reg,''));
-</script>\n";
-
-}
-*/
-
-
-/*
-require('../fpdf/fpdf.php');
-require('../fpdf/ex_fpdf.php');
-
-define('FPDF_FONTPATH','../fpdf/font/');
-define('LargeurPage','210');
-define('HauteurPage','297');
-
-require_once("../impression/class_pdf.php");
-require_once ("../impression/liste.inc.php");
-
-$marge_haut = 10 ;
-$marge_droite = 10 ;
-$marge_gauche = 10 ;
-$marge_bas = 10 ;
-$marge_reliure = 1 ;
-$avec_emplacement_trous = 1 ;
-
-if ($marge_reliure==1) {
-  if ($marge_gauche < 18) {$marge_gauche = 18;}
-}
-
-
-//Calcul de la Zone disponible
-$EspaceX = LargeurPage - $marge_droite - $marge_gauche ;
-$EspaceY = HauteurPage - $marge_haut - $marge_bas;
-
-$X_tableau = $marge_gauche;
-
-
-//entête classe et année scolaire
-$L_entete_classe = 65;
-$H_entete_classe = 14;
-$X_entete_classe = $EspaceX - $L_entete_classe + $marge_gauche;
-$Y_entete_classe = $marge_haut;
-
-$X_entete_matiere = $marge_gauche;
-$Y_entete_matiere = $marge_haut;
-$L_entete_discipline = 65;
-$H_entete_discipline = 14;
-
-$pdf=new rel_PDF("P","mm","A4");
-$pdf->SetTopMargin($marge_haut);
-$pdf->SetRightMargin($marge_droite);
-$pdf->SetLeftMargin($marge_gauche);
-$pdf->SetAutoPageBreak(true, $marge_bas);
-
-$pdf->AddPage("P"); //ajout d'une page au document
-$pdf->SetDrawColor(0,0,0);
-$pdf->SetFont('Arial');
-$pdf->SetXY(20,20);
-$pdf->SetFontSize(14);
-$pdf->Cell(90,7, "TEST",0,2,'');
-
-$pdf->SetXY(20,40);
-$pdf->SetFontSize(10);
-$pdf->Cell(150,7, "Blablabla.",0,2,'');
-
-$nom_releve=date("Ymd_Hi");
-$nom_releve = 'Test'.'.pdf';
-//send_file_download_headers('application/pdf',$nom_releve);
-$pdf->Output("../temp/".get_user_temp_directory()."/".$nom_releve,'F');
-
-echo "<p><a href='../temp/".get_user_temp_directory()."/".$nom_releve."'>$nom_releve</a></p>";
-//die();
-*/
 
 echo "<p><br /></p>\n";
 require($prefixe_arbo_acces_cdt."/lib/footer.inc.php");

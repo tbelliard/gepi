@@ -1,7 +1,7 @@
 <?php
 @set_time_limit(0);
 /*
-* $Id: responsables.php 8580 2011-10-30 10:54:09Z crob $
+* $Id$
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -104,7 +104,7 @@ if (!isset($is_posted)) {
 	`pers_id` VARCHAR( 10 ) NOT NULL ,
 	`resp_legal` VARCHAR( 1 ) NOT NULL ,
 	`pers_contact` VARCHAR( 1 ) NOT NULL
-	);";
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$res_create_table1=mysql_query($sql);
 
 	$sql="CREATE TABLE IF NOT EXISTS `resp_adr` (
@@ -117,7 +117,7 @@ if (!isset($is_posted)) {
 	`pays` VARCHAR( 50 ) NOT NULL ,
 	`commune` VARCHAR( 50 ) NOT NULL ,
 	PRIMARY KEY ( `adr_id` )
-	);";
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$res_create_table2=mysql_query($sql);
 
 	$sql="CREATE TABLE IF NOT EXISTS `resp_pers` (
@@ -132,7 +132,7 @@ if (!isset($is_posted)) {
 	`mel` varchar(100) NOT NULL,
 	`adr_id` varchar(10) NOT NULL,
 	PRIMARY KEY  (`pers_id`)
-	);";
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$res_create_table3=mysql_query($sql);
 
 

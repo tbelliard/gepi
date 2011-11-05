@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id: tableau_des_appels.php 8213 2011-09-13 21:25:49Z dblanqui $
  *
  * Copyright 2010 Josselin Jacquard
  *
@@ -226,7 +225,7 @@ foreach($classe_col as $classe){
 	    if ($edtCours->getUtilisateurProfessionnel() != null) {
 		$echo_str .= $edtCours->getUtilisateurProfessionnel()->getCivilite().' '
 			.$edtCours->getUtilisateurProfessionnel()->getNom().' '
-			.strtoupper(substr($edtCours->getUtilisateurProfessionnel()->getPrenom(), 0 ,1)).'. ';
+			.strtoupper(mb_substr($edtCours->getUtilisateurProfessionnel()->getPrenom(), 0 ,1)).'. ';
 	    }
 	    if ($edtCours->getEdtSalle() != null) {
 		$echo_str .= '- <span style="font-style: italic;">('.$edtCours->getEdtSalle()->getNumeroSalle().')</span>';
@@ -241,7 +240,7 @@ foreach($classe_col as $classe){
 			->find();
     $test_saisies_sorti=false;
     foreach($abs_col as $abs){
-        if($abs->isSaisieEleveSorti($dt_debut_creneau)){
+        if($abs->getEleve()!=null && $abs->getEleve()->isEleveSorti($dt_debut_creneau)){
             $test_saisies_sorti=true;
         }else{
             $test_saisies_sorti=false;
@@ -258,8 +257,8 @@ foreach($classe_col as $classe){
 		$appel_manquant = false;
 	    }
 	    foreach ($abs_col as $abs) {//$abs = new AbsenceEleveSaisie();
-        if($abs->isSaisieEleveSorti($dt_debut_creneau)){
-            continue;
+        if($abs->getEleve()!=null && $abs->getEleve()->isEleveSorti($dt_debut_creneau)){
+                continue;
         }
 		$affiche = false;
 		if ($abs->getIdClasse()!=null && !in_array(Array($abs->getIdClasse(), $abs->getUtilisateurId()), $classe_deja_sorties)) {
@@ -277,7 +276,7 @@ foreach($classe_col as $classe){
 		if ($affiche) {//on affiche un appel donc on va afficher les infos du prof
 		    $echo_str .= ' '.$abs->getUtilisateurProfessionnel()->getCivilite().' '
 			    .$abs->getUtilisateurProfessionnel()->getNom().' '
-			    .strtoupper(substr($abs->getUtilisateurProfessionnel()->getPrenom(), 0 ,1)).'. ';
+			    .strtoupper(mb_substr($abs->getUtilisateurProfessionnel()->getPrenom(), 0 ,1)).'. ';
 		    $prof_deja_sortis[] = $abs->getUtilisateurProfessionnel()->getPrimaryKey();
 		    $echo_str .= '<br/>';
 		}
@@ -304,13 +303,13 @@ foreach($classe_col as $classe){
 	}
         $current_eleve=Null;
 	foreach ($abs_col as $absenceSaisie) {
-        if($absenceSaisie->isSaisieEleveSorti($dt_debut_creneau)){
+        if($absenceSaisie->getEleve()!=null && $absenceSaisie->getEleve()->isEleveSorti($dt_debut_creneau)){
             continue;
         }
         if($absenceSaisie->getManquementObligationPresenceSpecifie_NON_PRECISE()){
             continue;
         }
-        if ($absenceSaisie->getEleve()->getIdEleve() !== $current_eleve) {
+        if ($absenceSaisie->getEleve()->getId() !== $current_eleve) {
             if($current_eleve !=null) echo '<br/>';
             $num_saisie=1;
                 if ($utilisateur->getAccesFicheEleve($absenceSaisie->getEleve())) {
@@ -326,7 +325,7 @@ foreach($classe_col as $classe){
             echo "<a style='color: ".$absenceSaisie->getColor().";'  href='visu_saisie.php?id_saisie=".$absenceSaisie->getPrimaryKey()."'>";            
 	    echo ($num_saisie);
 	    echo "</a>";	    
-	    $current_eleve=$absenceSaisie->getEleve()->getIdEleve();
+	    $current_eleve=$absenceSaisie->getEleve()->getId();
             $num_saisie++;
         if($abs_col->isLast()){
             echo '<br /><br />';
@@ -355,7 +354,7 @@ foreach($classe_col as $classe){
         $aid_deja_sorties = Array();
         $current_eleve = Null;
         foreach ($abs_col as $absenceSaisie) {
-            if ($absenceSaisie->isSaisieEleveSorti($dt_debut_creneau)) {
+            if($absenceSaisie->getEleve()!=null && $absenceSaisie->getEleve()->isEleveSorti($dt_debut_creneau)){
                 continue;
             }
             if ($absenceSaisie->getManquementObligationPresenceSpecifie_NON_PRECISE()) {
@@ -366,12 +365,12 @@ foreach($classe_col as $classe){
                 echo $absenceSaisie->getAidDetails()->getNom() . ' ';
                 echo $absenceSaisie->getUtilisateurProfessionnel()->getCivilite() . ' '
                 . $absenceSaisie->getUtilisateurProfessionnel()->getNom() . ' '
-                . strtoupper(substr($absenceSaisie->getUtilisateurProfessionnel()->getPrenom(), 0, 1)) . '. ';
+                . strtoupper(mb_substr($absenceSaisie->getUtilisateurProfessionnel()->getPrenom(), 0, 1)) . '. ';
                 $aid_deja_sorties[] = $absenceSaisie->getAidDetails()->getId();
                 echo '<br/>';
             }
             if ($absenceSaisie->getEleve() != null) {
-                if ($absenceSaisie->getEleve()->getIdEleve() !== $current_eleve) {
+                if ($absenceSaisie->getEleve()->getId() !== $current_eleve) {
                     if($current_eleve !=null) echo '<br/>';
                     $num_saisie = 1;
                     if ($utilisateur->getAccesFicheEleve($absenceSaisie->getEleve())) {
@@ -387,7 +386,7 @@ foreach($classe_col as $classe){
                 echo "<a style='color: " . $absenceSaisie->getColor() . ";'  href='visu_saisie.php?id_saisie=" . $absenceSaisie->getPrimaryKey() . "'>";
                 echo ($num_saisie);
                 echo "</a>";
-                $current_eleve = $absenceSaisie->getEleve()->getIdEleve();
+                $current_eleve = $absenceSaisie->getEleve()->getId();
                 $num_saisie++;
                 if($abs_col->isLast()){
                     echo '<br /><br />';

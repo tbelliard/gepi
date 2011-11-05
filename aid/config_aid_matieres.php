@@ -1,7 +1,5 @@
 <?php
 /*
- * @version: $Id: config_aid_matieres.php 6588 2011-03-02 17:53:54Z crob $
- *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.

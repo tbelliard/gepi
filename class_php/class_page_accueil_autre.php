@@ -1,5 +1,5 @@
 <?php
-/* $Id: class_page_accueil_autre.php 4934 2010-07-28 20:57:14Z regis $
+/* $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -700,15 +700,13 @@ class class_page_accueil_autre {
 
 		if (($menuItem->user_statut == $this->statutUtilisateur) and ($result_autorisation)) {
 		  $this->creeNouveauItemPlugin("/".$menuItem->lien_item,
-				supprimer_numero($menuItem->titre_item),
-				$menuItem->description_item);
+				supprimer_numero($menuItem->titre_item),$menuItem->description_item);
 		}
 
 	  }
 
 	  if ($this->b>0){
-		$descriptionPlugin= $plugin->description;
-		$this->creeNouveauTitre('accueil',"$descriptionPlugin",'images/icons/package.png');
+		$this->creeNouveauTitre('accueil',$plugin->description,'images/icons/package.png');
 	  }
 
 	}

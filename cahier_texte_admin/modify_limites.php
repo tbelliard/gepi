@@ -1,6 +1,5 @@
 <?php
 /*
- * @version: $Id: modify_limites.php 8497 2011-10-19 16:39:31Z crob $
  *
  * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

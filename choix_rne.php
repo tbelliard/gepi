@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: choix_rne.php 2225 2008-07-27 23:09:32Z jjocal $
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
  *

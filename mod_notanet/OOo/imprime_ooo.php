@@ -1,5 +1,5 @@
 <?php
-/* $Id: imprime_ooo.php 4478 2010-05-21 08:40:40Z regis $ */
+/* $Id$ */
 /*
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

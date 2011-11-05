@@ -2,7 +2,7 @@
 /**
  * Fichier de mise à jour de la version 1.5.1 à la version 1.5.2
  * 
- * $Id: 151_to_152.inc.php 8241 2011-09-15 15:39:49Z crob $
+ * $Id$
  *
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL,

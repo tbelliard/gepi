@@ -1,6 +1,5 @@
 <?php
 /*
- *  $Id: impression_avis.php 6653 2011-03-11 17:26:42Z eabgrall $
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

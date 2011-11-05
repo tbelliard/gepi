@@ -1,7 +1,7 @@
 <?php
 @set_time_limit(0);
 /*
- * $Id: init_options.php 5936 2010-11-21 17:32:17Z crob $
+ * $Id$
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -99,7 +99,7 @@ while ($classe_row = mysql_fetch_object($appel_donnees_classes)) {
         $tempo .= "ELEOPT".$i.", ";
         $i++;
     }
-    $tempo = substr($tempo, 0, -2);
+    $tempo = mb_substr($tempo, 0, -2);
 
     //$call_data = mysql_query("SELECT $tempo FROM temp_gep_import WHERE DIVCOD = '$classe'");
     $call_data = mysql_query("SELECT $tempo FROM temp_gep_import2 WHERE DIVCOD = '$classe'");

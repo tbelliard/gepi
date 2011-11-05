@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: save_csv.php 2147 2008-07-23 09:01:04Z tbelliard $
+ * $Id$
  *
  * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

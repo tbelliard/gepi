@@ -1,6 +1,5 @@
 <?php
 /*
-*$Id: trombi_impr.php 6426 2011-01-26 17:38:04Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
 *
@@ -152,7 +151,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 		//$entete = "Groupe : ".$donnees_qui['name'];
 
 		$current_group=get_group($groupe);
-		$entete = "Groupe : ".htmlentities($donnees_qui['name'])." (<i>".$current_group['classlist_string']."</i>)";
+		$entete = "Groupe : ".htmlspecialchars($donnees_qui['name'])." (<i>".$current_group['classlist_string']."</i>)";
 
 	}
 	if ( $action_affiche === 'equipepeda' ) { $entete = "Equipe pédagogique : ".$donnees_qui['nom_complet']." (<i>".$donnees_qui['classe']."</i>)"; }
@@ -313,7 +312,7 @@ function matiereprof($prof, $equipepeda) {
 
 			$tmp_clas=get_class_from_ele_login($_SESSION['login']);
 			foreach($tmp_clas as $key_tmp => $value_tmp) {
-				if(strlen(my_ereg_replace("[0-9]","",$key_tmp))==0) {
+				if(mb_strlen(my_ereg_replace("[0-9]","",$key_tmp))==0) {
 					$tmp_id_classe=$key_tmp;
 					break;
 				}
@@ -328,7 +327,7 @@ function matiereprof($prof, $equipepeda) {
 				if(isset($tmp_tab_enfants[$loop])) {
 					$tmp_clas=get_class_from_ele_login($tmp_tab_enfants[$loop]);
 					foreach($tmp_clas as $key_tmp => $value_tmp) {
-						if(strlen(my_ereg_replace("[0-9]","",$key_tmp))==0) {
+						if(mb_strlen(my_ereg_replace("[0-9]","",$key_tmp))==0) {
 							$tmp_id_classe=$key_tmp;
 							break;
 						}

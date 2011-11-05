@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: saisie_cmnt_type_prof.php 5969 2010-11-23 18:39:40Z crob $
  *
  * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -64,7 +63,7 @@ $sql="CREATE TABLE commentaires_types_profs (
 id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 login VARCHAR( 255 ) NOT NULL ,
 app TEXT NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $resultat_creation_table=mysql_query($sql);
 
 ?>

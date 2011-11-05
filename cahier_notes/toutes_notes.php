@@ -1,8 +1,7 @@
 <?php
 /*
- * @version: $Id: toutes_notes.php 3209 2009-06-11 12:14:09Z crob $
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -32,7 +31,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -240,9 +239,9 @@ while ($num_per < $nb_cahier_note) {
         $ramener_sur_referentiel[$j] = mysql_result($appel_dev, $k, 'ramener_sur_referentiel');
         $facultatif[$j] = mysql_result($appel_dev, $k, 'facultatif');
         $date = mysql_result($appel_dev, $k, 'date');
-        $annee = substr($date,0,4);
-        $mois =  substr($date,5,2);
-        $jour =  substr($date,8,2);
+        $annee = mb_substr($date,0,4);
+        $mois =  mb_substr($date,5,2);
+        $jour =  mb_substr($date,8,2);
         $display_date[$j] = $jour."/".$mois."/".$annee;
         $k++;
     }
@@ -318,7 +317,7 @@ echo "</tr>\n";
 
 // Affichage deuxième ligne
 //echo "<tr><td class=cn><b>Boite :</b></td>\n";
-echo "<tr><td class=cn><b>".ucfirst(strtolower(getSettingValue("gepi_denom_boite")))." :</b></td>\n";
+echo "<tr><td class=cn><b>".casse_mot(getSettingValue("gepi_denom_boite",'majf2'))." :</b></td>\n";
 $num_per = 0;
 while ($num_per < $nb_cahier_note) {
     $nb_colspan = $nb_dev[$num_per]-$nb_dev[$num_per-1];
@@ -339,9 +338,9 @@ while ($num_per < $nb_cahier_note) {
             $ramener_sur_referentiel_s_dev[$i][$m]  = mysql_result($query_nb_dev, $m, 'ramener_sur_referentiel');
             $fac_s_dev[$i][$m]  = mysql_result($query_nb_dev, $m, 'facultatif');
             $date = mysql_result($query_nb_dev, $m, 'date');
-            $annee = substr($date,0,4);
-            $mois =  substr($date,5,2);
-            $jour =  substr($date,8,2);
+            $annee = mb_substr($date,0,4);
+            $mois =  mb_substr($date,5,2);
+            $jour =  mb_substr($date,8,2);
             $display_date_s_dev[$i][$m] = $jour."/".$mois."/".$annee;
             $m++;
         }

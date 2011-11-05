@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: visu_mes_listes.php 6529 2011-02-23 12:40:32Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -118,17 +117,17 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 						}
 						$cpt++;
 					}
-					$chaine_class=substr($chaine_class,1);
+					$chaine_class=mb_substr($chaine_class,1);
 
 				}
 
 				echo "<td>\n";
-				echo "<b>$chaine_class</b>: ".htmlentities($lig_grp->description);
+				echo "<b>$chaine_class</b>: ".htmlspecialchars($lig_grp->description);
 				echo "</td>\n";
 				for($i=0;$i<count($tabnumper);$i++) {
 					if($i>0) {echo "<td> - </td>\n";}
 					echo "<td>\n";
-					echo "<a href='popup.php?id_groupe=$lig_grp->id&amp;periode_num=$tabnumper[$i]' onclick=\"ouvre_popup_visu_groupe('$lig_grp->id','','$tabnumper[$i]');return false;\" target='_blank'>".htmlentities($tabnomper[$i])."</a>\n";
+					echo "<a href='popup.php?id_groupe=$lig_grp->id&amp;periode_num=$tabnumper[$i]' onclick=\"ouvre_popup_visu_groupe('$lig_grp->id','','$tabnumper[$i]');return false;\" target='_blank'>".htmlspecialchars($tabnomper[$i])."</a>\n";
 					echo "</td>\n";
 				}
 				echo "</tr>\n";

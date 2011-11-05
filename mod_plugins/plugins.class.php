@@ -1,6 +1,5 @@
 <?php
 /**
- * @version : $Id: plugins.class.php 4976 2010-08-01 11:43:03Z regis $
  *
  * Copyright 2001, 2009 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
@@ -68,7 +67,7 @@ class gepiPlugIn {
     }else{
       // On s'attache à vérifier les droits de ce statut
       $this->_droits = $this->_plugin->getPlugInAutorisations();
-      $fichier = substr($url['path'], (strlen($gepiPath) + 1));
+      $fichier = mb_substr($url['path'], (mb_strlen($gepiPath) + 1));
 
       $autorisation = false;
       foreach($this->_droits as $_droit){

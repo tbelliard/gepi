@@ -1,7 +1,6 @@
 <?php
 /*
  *
- * $Id: admin_types_absences.php 8247 2011-09-15 19:00:38Z jjacquard $
  *
  * Copyright 2010-2011 Josselin Jacquard
  *

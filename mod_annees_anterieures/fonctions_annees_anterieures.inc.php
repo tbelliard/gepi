@@ -1,7 +1,6 @@
 <?php
 
 /*
-$Id: fonctions_annees_anterieures.inc.php 7484 2011-07-22 11:45:59Z crob $
 */
 
 function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_periode,$ine=""){
@@ -271,14 +270,14 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 			while($lig_mat=mysql_fetch_object($res_mat)){
 				echo "<tr>\n";
 				echo "<td>";
-				echo "<b>".htmlentities(stripslashes($lig_mat->matiere))."</b><br />\n";
-				echo "<span class='info_prof'>".htmlentities(stripslashes($lig_mat->prof))."</span>\n";
+				echo "<b>".htmlspecialchars(stripslashes($lig_mat->matiere))."</b><br />\n";
+				echo "<span class='info_prof'>".htmlspecialchars(stripslashes($lig_mat->prof))."</span>\n";
 				echo "</td>\n";
 				echo "<td class='td_note_classe'>$lig_mat->moymin</td>\n";
 				echo "<td class='td_note_classe'>$lig_mat->moyclasse</td>\n";
 				echo "<td class='td_note_classe'>$lig_mat->moymax</td>\n";
 				echo "<td class='td_note'>$lig_mat->note</td>\n";
-				echo "<td>".htmlentities(stripslashes($lig_mat->appreciation))."</td>\n";
+				echo "<td>".htmlspecialchars(stripslashes($lig_mat->appreciation))."</td>\n";
 				echo "</tr>\n";
 			}
 		}
@@ -309,8 +308,8 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 			while($lig_aid=mysql_fetch_object($res_aid)){
 				echo "<tr>\n";
 				echo "<td>";
-				echo "<b>".htmlentities(stripslashes($lig_aid->type_nom))." : ".htmlentities(stripslashes($lig_aid->nom_aid))."</b><br />\n";
-				echo "<span class='info_prof'>".htmlentities(stripslashes($lig_aid->responsables))."</span>\n";
+				echo "<b>".htmlspecialchars(stripslashes($lig_aid->type_nom))." : ".htmlspecialchars(stripslashes($lig_aid->nom_aid))."</b><br />\n";
+				echo "<span class='info_prof'>".htmlspecialchars(stripslashes($lig_aid->responsables))."</span>\n";
 				echo "</td>\n";
 				echo "<td class='td_note_classe'>$lig_aid->moyenne_aid</td>\n";
 				echo "<td class='td_note_classe'>$lig_aid->min_aid</td>\n";
@@ -322,7 +321,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 					echo "(note sur ".$lig_aid->note_sur_aid.") ";
 				}
 
-				echo htmlentities(stripslashes($lig_aid->appreciation))."</td>\n";
+				echo htmlspecialchars(stripslashes($lig_aid->appreciation))."</td>\n";
 				echo "</tr>\n";
 			}
 		}

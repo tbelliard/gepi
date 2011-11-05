@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <?php
 /*
- * $Id: accueil_template.php 8581 2011-10-30 10:54:17Z crob $
+ * $Id$
 */
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
@@ -340,7 +340,7 @@
 ?>
 
 				  <h3 class="colonne ie_gauche">
-					  <a href="<?php echo substr($newentree->chemin,1) ?>">
+					  <a href="<?php echo mb_substr($newentree->chemin,1) ?>">
 						  <?php echo $newentree->titre ?>
 					  </a>
 				  </h3>

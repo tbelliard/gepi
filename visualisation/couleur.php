@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id: couleur.php 5969 2010-11-23 18:39:40Z crob $
+* $Id$
 *
 * Modification... Stephane Boireau
 *
@@ -101,7 +101,7 @@ $titre_page = "Choix d'une couleur";
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="fr">
 <head>
-<meta HTTP-EQUIV="Content-Type" content="text/html; utf-8" />
+<meta HTTP-EQUIV="Content-Type" content="text/html; charset=utf-8" />
 <META HTTP-EQUIV="Pragma" CONTENT="no-cache" />
 <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache" />
 <META HTTP-EQUIV="Expires" CONTENT="0" />
@@ -263,7 +263,7 @@ function show_message_deconnexion(){
          where matiere = '".$_SESSION['matiere']."'");
          if ($nom_complet_matiere != '-1') {
             //echo("Professeur de : " . $nom_complet_matiere);
-            echo("Professeur de : " . htmlentities($nom_complet_matiere));
+            echo("Professeur de : " . htmlspecialchars($nom_complet_matiere));
          } else {
             echo "Invité";
          }

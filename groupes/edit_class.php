@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: edit_class.php 8530 2011-10-25 12:52:57Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -513,9 +512,11 @@ echo "Navigation";
 echo "</a>";
 //=========================
 
-echo " | <a href='menage_eleves_groupes.php?id_classe=$id_classe'>Désinscriptions par lots</a>";
+echo " | <a href='menage_eleves_groupes.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Désinscriptions par lots</a>";
 
-echo " | <a href='../groupes/repartition_ele_grp.php'>Répartir des élèves entre plusieurs groupes</a>";
+echo " | <a href='../groupes/repartition_ele_grp.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Répartir des élèves entre plusieurs groupes</a>";
+
+echo " | <a href='../init_xml2/init_alternatif.php?cat=classes' onclick=\"return confirm_abandon (this, change, '$themessage')\">Création par lots</a>";
 
 echo "</p>\n";
 echo "</form>\n";
@@ -546,7 +547,8 @@ for ($i=0;$i<$nb_mat;$i++) {
     $nom_matiere = mysql_result($query, $i, "nom_complet");
     //echo "<option value='" . $matiere . "'";
     echo "<option value='" . $matiere . "'";
-    echo ">" . htmlentities($nom_matiere) . "</option>\n";
+    //echo ">" . htmlspecialchars($nom_matiere) . "</option>\n";
+    echo ">" . htmlspecialchars($nom_matiere,ENT_QUOTES,"UTF-8") . "</option>\n";
 }
 echo "</select>\n";
 echo "</td>\n";
@@ -873,7 +875,8 @@ for($i=0;$i<10;$i++){
 			if ($current_group["classes"]["classes"][$id_classe]["categorie_id"] == $cat->id) {
 			echo " selected";
 			}
-			echo ">".html_entity_decode_all_version($cat->nom_court)."</option>\n";
+			//echo ">".html_entity_decode_all_version($cat->nom_court)."</option>\n";
+			echo ">".htmlspecialchars($cat->nom_court)."</option>\n";
 		}
 		echo "</select>\n";
 

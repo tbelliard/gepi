@@ -1,6 +1,6 @@
 <?php
-	/* $Id: textes.inc.php 7120 2011-06-05 08:59:33Z crob $
-	
+
+	/*
 		Fichier destiné à stocker des portions de texte susceptibles d'être appelées dans diverses pages.
 		Exemple:
 			require("../lib/textes.inc.php");

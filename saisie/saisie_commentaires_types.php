@@ -32,7 +32,7 @@
 	//echo "<p>gepiPath=".$gepiPath."</p>\n";
 
 	$tmp_chemin=$gepiPath."/saisie/saisie_avis2.php";
-	if(substr($_SERVER['REQUEST_URI'],0,strlen($tmp_chemin))!=$tmp_chemin){
+	if(mb_substr($_SERVER['REQUEST_URI'],0,mb_strlen($tmp_chemin))!=$tmp_chemin){
 		/*
 		echo "<html>\n";
 		echo "<head>\n";
@@ -72,11 +72,11 @@
 						<p>Blabla<br>
 						Blibli</p>
 					*/
-					echo "<option>".htmlentities(stripslashes(trim($ligne_commentaire->commentaire)))."</option>\n";
+					echo "<option>".htmlspecialchars(stripslashes(trim($ligne_commentaire->commentaire)))."</option>\n";
 				}
 				else{
 					//Si le commentaire ne contient pas de code HTML, on remplace les retours à la ligne par des <br>:
-					echo "<option>".htmlentities(stripslashes(nl2br(trim($ligne_commentaire->commentaire))))."</option>\n";
+					echo "<option>".htmlspecialchars(stripslashes(nl2br(trim($ligne_commentaire->commentaire))))."</option>\n";
 				}
 			}
 			echo "</select>\n";

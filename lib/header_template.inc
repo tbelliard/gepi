@@ -1,7 +1,6 @@
 <?php
 /**
  * Construit les tableaux nécessaires au header des gabarits
- * $Id: header_template.inc 8584 2011-11-01 17:34:07Z mleygnac $
  * 
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Patrick Duthilleul, Bouguin Régis
  * 
@@ -164,14 +163,14 @@ if(isset($javascript_specifique)) {
 
 	if(is_array($javascript_specifique)) {
 		foreach($javascript_specifique as $current_javascript_specifique) {
-			if(strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$current_javascript_specifique))==0) {
+			if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$current_javascript_specifique))==0) {
 				// Javascript spécifique à une page:
               $tbs_librairies[]=$gepiPath."/".$current_javascript_specifique.'.js';
 			}
 		}
 	}
 	else {
-		if(strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$javascript_specifique))==0) {
+		if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$javascript_specifique))==0) {
 			// Javascript spécifique à une page:
 			$tbs_librairies[]=$gepiPath."/".$javascript_specifique.'.js';
 		}
@@ -225,7 +224,7 @@ if(isset($style_specifique)) {
 
   if(is_array($style_specifique)) {
 	foreach($style_specifique as $current_style_specifique) {
-	  if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$current_style_specifique))==0) {
+	  if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$current_style_specifique))==0) {
 		//// Styles spécifiques à une page:
 		$tbs_CSS[]=array("fichier"=> $gepiPath."/".$current_style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
 
@@ -233,7 +232,7 @@ if(isset($style_specifique)) {
 
 	}
   } else {
-	if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0) {
+	if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0) {
 	  // Styles spécifiques à une page:
 	  $tbs_CSS[]=array("fichier"=> $gepiPath."/".$style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
 	}
@@ -360,8 +359,6 @@ if (isset($titre_page)) {
 		$tbs_bouton_taille=$gepiPath;
 	}
 
-	$tbs_afficher_temoin_filtrage_html=getSettingValue('afficher_temoin_filtrage_html');
-	
 	//=== Nom Prénom utilisateur ===
 	if((!isset($_SESSION['prenom']))||(!isset($_SESSION['nom']))) {
 		$sql="SELECT nom, prenom FROM utilisateurs WHERE login='".$_SESSION['login']."';";
@@ -484,23 +481,37 @@ if (isset($titre_page)) {
 	$tbs_deux_menu[]=array("lien"=>"$gepiPath/gestion/info_vie_privee.php" , "onclick"=> "onclick=\"centrerpopup('$gepiPath/gestion/info_vie_privee.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes'); return false;\""  , "texte"=>"Vie privée");
 	
 		 //=== Affichage de la version de Gepi ===
+		 //=== Affichage de la version de Gepi ===
 	if ($_SESSION['statut'] == "administrateur") {
-		$version_gepi = '';
-		if ($gepiVersion == 'trunk') {
-				// On a une version trunk
-			$version_gepi .= "gepi-trunk";
-		} else {
-				// On a une version numérotée
-				$version_gepi .= "v".$gepiVersion;
-			if ($gepiRcVersion != '') $version_gepi .= "-RC".$gepiRcVersion;
-			if ($gepiBetaVersion != '') $version_gepi .= "-beta".$gepiBetaVersion;
-			if ($gepiVersionMaintenance != '') $version_gepi .= ".".$gepiVersionMaintenance;
+		$version_gepi = 'version '.$gepiVersion;
+        if ($gepiSvnRev != null) {
+			$version_gepi .= ' svn r'.$gepiSvnRev;
+        } else {
+            if ($gepiGitCommit == null) {//on va essayer de trouver les infos dans l'arborescence actuelle
+				if (file_exists(dirname(__FILE__).'/../.git/HEAD')) {
+				    $git_ref = file_get_contents((dirname(__FILE__).'/../.git/HEAD'));
+					if ($git_ref != null) {
+						if (substr($git_ref,0,4) == 'ref:') {
+						    //on a une référence de branche git
+							$gepiGitBranch = trim(substr($git_ref, 1+strrpos( $git_ref  , '/')));
+							$gepiGitCommit = file_get_contents((dirname(__FILE__).'/../.git/refs/heads/'.$gepiGitBranch));
+						} else {
+							//on a un commit git dans le HEAD
+						    $gepiGitCommit = $git_ref;
+						}
+				
+					}
+				}
+            }
+            if ($gepiGitCommit != null) {
+                $version_gepi .= ' git '.$gepiGitBranch.' '.substr($gepiGitCommit, 0, 6);
+            }
 		}
-		if ($gepiSvnRev != '') $version_gepi .= " r".$gepiSvnRev;
-		$tbs_version_gepi=$version_gepi;
-	}else{
+		$tbs_version_gepi = $version_gepi;
+	} else {
 		$tbs_version_gepi=" ";			// nécessaire pour recaler le bandeau dans tous les navigateurs
 	}
+
 	// Fin du conteneur de Header
 
 // ----- Régis : fin des modifications du bandeau -----

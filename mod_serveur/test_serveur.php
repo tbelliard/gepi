@@ -4,7 +4,6 @@
  * Fichier temporaire uniquement présent dans les versions RC pour teter les configurations serveur
  * et d'autres paramètres pour comprendre certaines erreurs.
  *
- * @version $Id: test_serveur.php 7849 2011-08-20 18:19:12Z regis $ 1.5.1RC1
  *
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
@@ -26,6 +25,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+
+
 // On initialise
 $titre_page = "Administration - Paramètres du serveur";
 $affiche_connexion = 'yes';
@@ -36,6 +37,9 @@ require_once("../lib/initialisations.inc.php");
 
 // Définition de la classe php
 require_once("../class_php/serveur_infos.class.php");
+
+//fonction de tests d'encodage
+require_once(dirname(__FILE__)."/test_encoding_functions.php");
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -150,6 +154,62 @@ if ($test->versionGd()) {
 
 	echo "<br />\n";
 	echo "<hr />\n";
+	echo "<h4>Encodage des caractères : </h4>\n";
+	if (function_exists('iconv')) {
+	    echo "iconv est installé sur votre système<br />";
+	} else {
+	    echo "iconv n'est pas installé sur votre système, ça n'est pas indispensable mais c'est recomandé<br />";
+	}
+	if (function_exists('mb_convert_encoding')) {
+	    echo "mbstring est installé sur votre système<br />";
+	} else {
+	    echo "<p style=\"color:red;\">mbstring (Chaînes de caractères multi-octets) n'est pas installé sur votre système, c'est nécessaire à partir de la version 1.6.0</p>";
+	}
+	
+	echo "<p style=\"color:red;\">";
+	if (!test_check_utf8()) {
+	    echo ' : échec de test_check_utf8()</p>';
+	} else {
+	    echo "</p>réussite de test_check_utf8()<br />\n";
+	}
+	echo "<p style=\"color:red;\">";
+	if (!test_detect_encoding()) {
+	    echo ' : échec de test_detect_encoding()</p>';
+	} else {
+        echo "</p>réussite de test_detect_encoding()<br />\n";
+	}
+	echo "<p style=\"color:red;\">";
+	if (!test_ensure_utf8()) {
+	    echo ' : échec de test_ensure_utf8()</p>';
+	} else {
+	    echo "</p>réussite de test_ensure_utf8()<br />\n";
+	}
+	echo "<p style=\"color:red;\">";
+	if (!test_remplace_accents()) {
+	    echo ' : échec de test_remplace_accents()</p>';
+	} else {
+	    echo "</p>réussite de test_remplace_accents()<br />\n";
+	}
+	echo "<p style=\"color:red;\">";
+	if (!test_casse_mot()) {
+	    echo ' : échec de test_casse_mot()</p>';
+	} else {
+	    echo "</p>réussite de test_casse_mot()<br />\n";
+	}
+	echo "<br />\n";
+	
+	echo "<hr />\n";
+	echo "<h4>Locales du système : </h4>\n";
+	$locale = setlocale(LC_TIME,0);
+	echo "locale actuellement utilisée : $locale";
+	if (!strstr(strtolower($locale), 'utf')) {
+	    echo "<p style=\"color:red;\">";
+	    echo 'Votre système ne semble pas avoir de locale utf-8 d\'installée. Il est possible que sans locale utf-8 certains affichages de dates soient inéstétiques.</p>';
+	}
+	echo "<br />\n";
+	
+	
+	echo "<hr />\n";
 	echo "<h4>Droits sur les dossiers : </h4>\n";
 	echo "Certains dossiers doivent être accessibles en écriture pour Gepi.<br />\n";
 	test_ecriture_dossier();
@@ -157,13 +217,18 @@ if ($test->versionGd()) {
 
 	echo "<br />\n";
 	echo "<p>Test d'écriture dans le fichier de personnalisation des couleurs (<i>voir <a href='../gestion/param_couleurs.php'>Gestion générale/Paramétrage des couleurs</a></i>)&nbsp;:<br />";
-	$test=test_ecriture_style_screen_ajout();
-	if($test) {
-		echo "Le fichier style_screen_ajout.css à la racine de l'arborescence Gepi est accessible en écriture.\n";
-	}
-	else {
-		echo "<sapn style='color:red'><b>ERREUR</b>&nbsp;: Le fichier style_screen_ajout.css à la racine de l'arborescence Gepi n'a pas pu être créé ou n'est pas accessible en écriture.</span>\n";
-	}
+	if(file_exists('../style_screen_ajout.css')){
+            $test=test_ecriture_style_screen_ajout();
+            if($test) {
+                echo "Le fichier style_screen_ajout.css à la racine de l'arborescence Gepi est accessible en écriture.\n";
+            } else {
+                echo "<span style='color:red'><b>ERREUR</b>&nbsp;: Le fichier style_screen_ajout.css à la racine de l'arborescence Gepi n'a pas pu être créé ou n'est pas accessible en écriture.</span>\n";
+            }
+        }elseif(file_exists('../style_screen_ajout.css.ori')) {
+            echo "<span style='color:red'> Le fichier style_screen_ajout.css.ori à la racine de l'arborescence Gepi doit être renommé en style_screen_ajout.css et être accessible en écriture.</span>\n";
+        }else{
+            echo "<span style='color:red'><b>ERREUR</b>&nbsp;: Le fichier style_screen_ajout.css à la racine de l'arborescence Gepi est manquant. Il faut en créer un vide qui doit être accessible en écriture.</span>\n";
+        } 
 	echo "</p>\n";
 
 echo '<br /><br /><br />';

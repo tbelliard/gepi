@@ -1,6 +1,5 @@
 <?php
 /**
- * @version : $Id: traiterXml.class.php 3248 2009-06-24 20:06:15Z jjocal $
  *
  * Copyright 2001, 2009 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
@@ -107,7 +106,7 @@ class traiterXml {
       $noeud = $this->_noeuds[$a];
 
       if (!isset($this->_xml->$noeud) OR $this->_xml->$noeud == ''){
-        $this->retourneErreur(1, htmlentities('<'.$noeud.'>'));
+        $this->retourneErreur(1, htmlspecialchars('<'.$noeud.'>'));
         return false;
       }
     }

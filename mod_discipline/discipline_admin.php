@@ -1,6 +1,5 @@
 <?php
 /*
- * @version: $Id: discipline_admin.php 5951 2010-11-22 17:05:48Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -50,7 +49,7 @@ if (!checkAccess()) {
 
 /*
 // SURTOUT PAS: Cette page sert à activer/désactiver le module.
-if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+if(strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
 	header("Location: ../accueil.php?msg=$mess");

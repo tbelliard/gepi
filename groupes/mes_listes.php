@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: mes_listes.php 6750 2011-04-06 13:14:44Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -127,21 +126,21 @@ if($_SESSION['statut']=='professeur'){
 					}
 					$cpt++;
 				}
-				$chaine_class=substr($chaine_class,1);
+				$chaine_class=mb_substr($chaine_class,1);
 
 			}
 
-			//echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$lig_grp->id&amp;ok=y'>".htmlentities($lig_grp->description)." ($chaine_class)</a><br />\n";
-			//echo "<a href='get_csv.php?id_groupe=$lig_grp->id'>".htmlentities($lig_grp->description)." ($chaine_class)</a><br />\n";
+			//echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$lig_grp->id&amp;ok=y'>".htmlspecialchars($lig_grp->description)." ($chaine_class)</a><br />\n";
+			//echo "<a href='get_csv.php?id_groupe=$lig_grp->id'>".htmlspecialchars($lig_grp->description)." ($chaine_class)</a><br />\n";
 			//echo "<td style='font-weight:bold;'>\n";
-			//echo htmlentities($lig_grp->description)." ($chaine_class):";
+			//echo htmlspecialchars($lig_grp->description)." ($chaine_class):";
 			echo "<td>\n";
-			echo "<b>$chaine_class</b>: ".htmlentities($lig_grp->description);
+			echo "<b>$chaine_class</b>: ".htmlspecialchars($lig_grp->description,ENT_QUOTES,"UTF-8");
 			echo "</td>\n";
 			for($i=0;$i<count($tabnumper);$i++){
 				if($i>0){echo "<td> - </td>\n";}
 				echo "<td>\n";
-				echo "<a href='get_csv.php?id_groupe=$lig_grp->id&amp;periode_num=$tabnumper[$i]'>".htmlentities($tabnomper[$i])."</a>\n";
+				echo "<a href='get_csv.php?id_groupe=$lig_grp->id&amp;periode_num=$tabnumper[$i]'>".htmlspecialchars($tabnomper[$i],ENT_QUOTES,"UTF-8")."</a>\n";
 				echo "</td>\n";
 			}
 			echo "</tr>\n";

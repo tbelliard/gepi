@@ -1,6 +1,5 @@
 <?php
 /*
-$Id: config_lcs-modele.inc.php 7920 2011-08-23 12:14:07Z jjacquard $
 */
 ##############################################################
 # Parametres propres a une authentification sur un serveur LCS

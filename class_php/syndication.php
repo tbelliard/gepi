@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version $Id: syndication.php 4869 2010-07-22 13:32:34Z jjocal $
+ * @version $Id$
  *
  * @copyright 2008
  *
@@ -73,8 +73,8 @@ if ($type_rss == "cdt") {
 require('RSSFeed/RSSFeed.class.php');
 
  // Création des entêtes du flux RSS
-$oRssFeed = new RSSFeed('utf-8');
-//$oRssFeed = new RSSFeed('ISO-8859-1');
+//$oRssFeed = new RSSFeed('utf-8');
+$oRssFeed = new RSSFeed('UTF-8');
 $oRssFeed->setCloud($_SERVER["SERVER_NAME"], $_SERVER["REMOTE_PORT"], $gepiPath, '', 'http');
 $oRssFeed->setProtectString(true);
 $oRssFeed->setTitle($title_rss);
@@ -152,6 +152,6 @@ if ($items["cdt_dev"]["count"] != 0) {
  // Sauvegarde du flux RSS
 $oRssFeed->save('../temp/rss-news.xml');
 // Affichage sur la sortie standard
-header('Content-Type: text/xml; charset=utf-8');
+header('Content-Type: text/xml; charset=UTF-8');
 $oRssFeed->display();
 ?>

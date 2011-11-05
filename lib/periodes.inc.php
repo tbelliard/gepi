@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: periodes.inc.php 7791 2011-08-16 17:36:19Z crob $
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

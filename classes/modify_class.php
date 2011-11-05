@@ -4,7 +4,6 @@
  */
 
 /*
- * $Id: modify_class.php 6604 2011-03-03 13:46:55Z crob $
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -376,7 +375,7 @@ while ($i < $nombre_ligne) {
             $tmpInscrits .= $inscrits . "-";
         }
 
-        $nombre_inscrits = substr($tmpInscrits, 0, -1);
+        $nombre_inscrits = mb_substr($tmpInscrits, 0, -1);
 
 
 

@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: init_options.php 6604 2011-03-03 13:46:55Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

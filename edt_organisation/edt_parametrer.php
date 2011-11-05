@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id: edt_parametrer.php 6918 2011-05-14 09:01:04Z adminpaulbert $
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

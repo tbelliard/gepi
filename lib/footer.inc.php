@@ -2,7 +2,6 @@
 /**
  * Pied de page
  * 
- * $Id: footer.inc.php 8082 2011-08-31 15:49:48Z crob $
  * 
  * @package General
  * @subpackage Affichage

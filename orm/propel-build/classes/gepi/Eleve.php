@@ -52,7 +52,7 @@ class Eleve extends BaseEleve {
     /**
 	 * @var        mode de debuggage pour abs2
 	 */
-    private $debug=true;
+    private $debug=false;
      
 
     function __construct() {
@@ -64,51 +64,65 @@ class Eleve extends BaseEleve {
 	/**
 	 *
 	 * Renvoi sous forme d'un tableau la liste des classes d'un eleves.
-	 * Manually added for N:M relationship
+	 * Il peut y avoir dans le modèle plusieurs classes associés à un élève, mais il faut l'éviter en pratique
 	 *
-	 * @periode integer numero de la periode ou objet periodeNote
+	 * @param      mixed $periode numeric, DateTime ou PeriodeNote
 	 * @return     PropelObjectCollection Classes[]
 	 *
 	 */
-	public function getClasses($periode) {
-		$periode = $this->getPeriodeNote($periode);
-		require_once("helpers/PeriodeNoteHelper.php");
-		$periode_num = PeriodeNoteHelper::getNumPeriode($periode);
+	public function getClasses($periode = null) {
+		if ($periode != null && !is_numeric($periode) &&  !($periode instanceOf PeriodeNote) && !($periode instanceOf DateTime)) {
+			throw new PropelException('$periode doit être de type numeric|DateTime|PeriodeNote');
+		}
+		//on va récupérer le numéro de période $periode_num
+		if (is_numeric($periode)) {
+			$periode_num = $periode;
+		} else {
+			if ($periode instanceOf PeriodeNote) {
+				$periode_num = $periode->getNumPeriode();
+			} else {
+				//$periode devrait maintenant être un DateTime (ou null)
+				$periode = $this->getPeriodeNote($periode);//on récupère un objet période qui englobe la date
+				if ($periode != null) {
+					$periode_num = $periode->getNumPeriode();
+				} else {
+					return new PropelObjectCollection();//si la période est nulle, c'est que aucune classe n'a été assignée pour le paramêtre passé
+				}
+			}
+		}
+		
 		if(!isset($this->collClasses[$periode_num]) || null === $this->collClasses[$periode_num]) {
 			if ($this->isNew() && null === $this->collClasses[$periode_num]) {
 				// return empty collection
 				$this->initClasses($periode_num);
 			} else {
+				//on optimise si les jointure sont déjà hydratées, sinon on fait une requete
 				$classe_hydrated = false;
 				if (null !== $this->collJEleveClasses) {
 				    //on teste si la collection de collJEleveClasses est hydratee avec les classes
 				    if ($this->collJEleveClasses->getFirst() != null) {
-					if ($this->collJEleveClasses->getFirst()->isClasseHydrated()) {
-					    $classe_hydrated = true;
-					}
+						if ($this->collJEleveClasses->getFirst()->isClasseHydrated()) {
+						    $classe_hydrated = true;
+						}
 				    }
 				}
 
 				if ($classe_hydrated) {
 				    foreach ($this->getJEleveClasses() as $JEleveClasse) {
-					if ($JEleveClasse->getClasse() != null) {
-					    if(!isset($this->collClasses[$JEleveClasse->getPeriode()]) || null === $this->collClasses[$JEleveClasse->getPeriode()]) {
-						$this->initClasses($JEleveClasse->getPeriode());
-					    }
-					    $this->collClasses[$JEleveClasse->getPeriode()]->add($JEleveClasse->getClasse());
-					}
+						if ($JEleveClasse->getClasse() != null) {
+						    if(!isset($this->collClasses[$JEleveClasse->getPeriode()]) || null === $this->collClasses[$JEleveClasse->getPeriode()]) {
+							$this->initClasses($JEleveClasse->getPeriode());
+						    }
+						    $this->collClasses[$JEleveClasse->getPeriode()]->add($JEleveClasse->getClasse());
+						}
 				    }
-				    if ($this->collClasses[$periode_num] == null) {
-					//rien n'a Ã©tÃ© trouvÃ© pour cette pÃ©riode, on renvoi une collection vide
-					$this->initClasses($periode_num);
+				    if (!isset($this->collClasses[$periode_num]) || $this->collClasses[$periode_num] == null) {
+						//rien n'a été trouvé pour cette période, on renvoi une collection vide
+						$this->initClasses($periode_num);
 				    }
 				} else {
 				    $query = ClasseQuery::create();
-				    if ($periode != null) {
-					    $query->useJEleveClasseQuery()->filterByEleve($this)->filterByPeriode($periode_num)->endUse();
-				    } else {
-					    $query->useJEleveClasseQuery()->filterByEleve($this)->endUse();
-				    }
+				    $query->useJEleveClasseQuery()->filterByEleve($this)->filterByPeriode($periode_num)->endUse();
 				    $query->orderByNomComplet()->distinct();
 				    $this->collClasses[$periode_num] = $query->find();
 				}
@@ -121,7 +135,7 @@ class Eleve extends BaseEleve {
 	 *
 	 * Renvoi la classe d'un eleve. Si un eleve est affecté dans plusieurs classes, seule une classe est renvoyée
 	 *
-	 * @param      integer $periode numero de la periode ou objet periodeNote
+	 * @param      mixed $periode numeric, DateTime ou PeriodeNote
 	 * @return     Classe
 	 *
 	 */
@@ -133,7 +147,7 @@ class Eleve extends BaseEleve {
 	 *
 	 * Renvoi le nom de la classe d'un eleve. Si un eleve est affecté dans plusieurs classes, seule une% nom est renvoyée
 	 *
-	 * @param      integer $periode numero de la periode ou objet periodeNote
+	 * @param      mixed $periode numeric, DateTime ou PeriodeNote
 	 * @return     Classe
 	 *
 	 */
@@ -151,7 +165,7 @@ class Eleve extends BaseEleve {
 	 * Renvoi le nom de la classe d'un eleve. Si un eleve est affecté dans plusieurs classes, seul un nom est renvoyée
 	 * Si pas de classe trouvée, renvoi null
 	 *
-	 * @param      integer $periode numero de la periode ou objet periodeNote
+	 * @param      mixed $periode numeric, DateTime ou PeriodeNote
 	 * @return     string
 	 *
 	 */
@@ -170,7 +184,7 @@ class Eleve extends BaseEleve {
 	 * @param      integer $periode numero de la periode ou objet periodeNote
 	 * @return     void
 	 */
-	public function initClasses($periode_num)
+	protected function initClasses($periode_num)
 	{
 		$this->collClasses[$periode_num] = new PropelObjectCollection();
 		$this->collClasses[$periode_num]->setModel('Classe');
@@ -181,7 +195,7 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return     void
 	 */
-	public function initPeriodeNotes()
+	protected function initPeriodeNotes()
 	{
 		$this->collPeriodeNotes = new PropelObjectCollection();
 		$this->collPeriodeNotes->setModel('Classe');
@@ -193,7 +207,7 @@ class Eleve extends BaseEleve {
 	 * @param      strind $date_string clé date du jour format('d/m/Y')
 	 * @return     void
 	 */
-	public function initAbsenceEleveSaisiesParJour($date_string)
+	protected function initAbsenceEleveSaisiesParJour($date_string)
 	{
 		$this->collAbsenceEleveSaisiesParJour[$date_string] = new PropelObjectCollection();
 		$this->collAbsenceEleveSaisiesParJour[$date_string]->setModel('AbsenceEleveSaisie');
@@ -237,12 +251,13 @@ class Eleve extends BaseEleve {
 	 */
 	public function reload($deep = false, PropelPDO $con = null)
 	{
-	    parent::reload($deep,$con);
 	    $this->collPeriodeNotes = null;
+	    $this->collCachePeriodeNotesResult = null;
 	    $this->collClasses = null;
 	    $this->collGroupes = null;
 	    $this->collAbsenceEleveSaisiesParJour = null;
 	    $this->periodeNoteOuverte = null;
+	    parent::reload($deep,$con);
 	}
 
 	/**
@@ -255,8 +270,33 @@ class Eleve extends BaseEleve {
 	 * @param      boolean $deep Whether to also clear the references on all associated objects.
 	 */
 	public function clearAllReferences($deep = false) {
+	    $this->clearAbsenceEleveSaisiesParJour($deep);
+	    
 	    parent::clearAllReferences($deep);
+	    if ($deep) {
+			if ($this->collPeriodeNotes) {
+				foreach ($this->collPeriodeNotes as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collCachePeriodeNotesResult) {
+				foreach ($this->collCachePeriodeNotesResult as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collClasses) {
+				foreach ($this->collClasses as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collGroupes) {
+				foreach ($this->collGroupes as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+	    }
 	    $this->collPeriodeNotes = null;
+	    $this->collCachePeriodeNotesResult = null;
 	    $this->collClasses = null;
 	    $this->collGroupes = null;
 	    $this->collAbsenceEleveSaisiesParJour = null;
@@ -266,40 +306,47 @@ class Eleve extends BaseEleve {
 	/**
 	 *
 	 * Renvoi sous forme d'un tableau la liste des groupes d'un eleve pour une période donnée.
-	 * Manually added for N:M relationship
 	 *
-	 * @periode integer numero de la periode
+	 * @param      mixed $periode numeric, DateTime ou PeriodeNote
 	 * @return     PropelObjectCollection Groupes[]
 	 *
 	 */
 	public function getGroupes($periode = null) {
-		//$periode = $this->getPeriodeNote($periode); on ne vérifie pas si l'objet période existe vraiment
-		require_once("helpers/PeriodeNoteHelper.php");
-		$periode_key = PeriodeNoteHelper::getNumPeriode($periode);
-                if ($periode_key === null) {
-                    $periode_key = 'null'; // utile pour le clés du vecteur $this->collGroupes
-                }
-		if(!isset($this->collGroupes[$periode_key]) || null === $this->collGroupes[$periode_key]) {
-			if ($this->isNew() && null === $this->collGroupes[$periode_key]) {
-				// return empty collection
-				$this->initGroupes($periode_key);
+		if ($periode != null && !is_numeric($periode) &&  !($periode instanceOf PeriodeNote) && !($periode instanceOf DateTime)) {
+			throw new PropelException('$periode doit être de type numeric|DateTime|PeriodeNote');
+		}
+		//on va récupérer le numéro de période $periode_num
+		if (is_numeric($periode)) {
+			$periode_num = $periode;
+		} else {
+			if ($periode instanceOf PeriodeNote) {
+				$periode_num = $periode->getNumPeriode();
 			} else {
-				$query = GroupeQuery::create();
-				if ($periode_key != 'null') {
-					$query->useJEleveGroupeQuery()
-					    ->filterByEleve($this)
-					    ->filterByPeriode($periode_key)
-					    ->endUse();
+				//$periode devrait maintenant être un DateTime (ou null)
+				$periode = $this->getPeriodeNote($periode);//on récupère un objet période qui englobe la date
+				if ($periode != null) {
+					$periode_num = $periode->getNumPeriode();
 				} else {
-					$query->useJEleveGroupeQuery()
-					    ->filterByEleve($this)
-					    ->endUse();
+					return new PropelObjectCollection();//si la période est nulle, c'est que aucune classe n'a été assignée pour cette élève pour le paramêtre passé
 				}
-				$query->orderByName()->distinct();
-				$this->collGroupes[$periode_key] = $query->find();
 			}
 		}
-		return $this->collGroupes[$periode_key];
+		
+		if(!isset($this->collGroupes[$periode_num]) || null === $this->collGroupes[$periode_num]) {
+			if ($this->isNew() && null === $this->collGroupes[$periode_num]) {
+				// return empty collection
+				$this->initGroupes($periode_num);
+			} else {
+				$query = GroupeQuery::create();
+				$query->useJEleveGroupeQuery()
+					    ->filterByEleve($this)
+					    ->filterByPeriode($periode_num)
+					    ->endUse();
+				$query->orderByName()->distinct();
+				$this->collGroupes[$periode_num] = $query->find();
+			}
+		}
+		return $this->collGroupes[$periode_num];
 	}
 
 	/**
@@ -307,7 +354,7 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return     void
 	 */
-	public function initGroupes($periode_num)
+	protected function initGroupes($periode_num)
 	{
 		$this->collGroupes[$periode_num] = new PropelObjectCollection();
 		$this->collGroupes[$periode_num]->setModel('Groupe');
@@ -334,13 +381,39 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return     void
 	 */
-	public function clearAbsenceEleveSaisiesParJour()
+	public function clearAbsenceEleveSaisiesParJour($deep = false)
 	{
-		$this->collAbsenceEleveSaisiesParJour = null; // important to set this to NULL since that means it is uninitialized
+	    $start_string = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getId().'_filterByPlageTemps_deb_';
+	    $start_len = strlen($start_string);
+	    foreach($_REQUEST as $key => $value) {
+	        if (mb_substr($key,0,$start_len) == $start_string) {
+	            unset($_REQUEST[$key]);
+	        }
+	    }
+	    if ($deep) {
+			if ($this->collAbsenceEleveSaisiesParJour) {
+				foreach ($this->collAbsenceEleveSaisiesParJour as $key => $o) {
+				    foreach ($o as $saisie) {
+					    $saisie->clearAllReferences($deep);
+				    }
+				    unset($this->collAbsenceEleveSaisiesParJour[$key]);
+				}
+			}
+	    }
+	    $this->collAbsenceEleveSaisiesParJour = null; // important to set this to NULL since that means it is uninitialized
 	}
 
 	
-    public function getGroupesByCategories($periode) {
+	/**
+	 *
+	 * Renvoi sous forme d'un tableau la liste des groupes d'un eleve pour une période donnée, sous forme d'un table multi-dimensionnel, qui contient les catégories
+	 * dans le bon ordre, et les groupes sous chaque catégorie..
+	 *
+	 * @param      mixed $periode numeric, DateTime ou PeriodeNote
+	 * @return     Array
+	 *
+	 */
+	public function getGroupesByCategories($periode) {
         // On commence par récupérer tous les groupes
         $groupes = $this->getGroupes($periode);
         // Ensuite, il nous faut les catégories. Pour ça, on passe par les classes.
@@ -553,7 +626,7 @@ class Eleve extends BaseEleve {
 
 	    $edtCoursCol = $this->getEdtEmplacementCourssPeriodeCalendrierActuelle($v);
 
-	    require_once("helpers/EdtEmplacementCoursHelper.php");
+	    require_once(dirname(__FILE__)."/../../../helpers/EdtEmplacementCoursHelper.php");
 	    return EdtEmplacementCoursHelper::getEdtEmplacementCoursActuel($edtCoursCol, $v);
 	}
 
@@ -623,7 +696,7 @@ class Eleve extends BaseEleve {
 	    }
 	    $edtCoursCol->addCollection($query->find());
 
-	    require_once("helpers/EdtEmplacementCoursHelper.php");
+	    require_once(dirname(__FILE__)."/../../../helpers/EdtEmplacementCoursHelper.php");
 	    EdtEmplacementCoursHelper::orderChronologically($edtCoursCol);
 
 	    return $edtCoursCol;
@@ -669,7 +742,7 @@ class Eleve extends BaseEleve {
 				//si on a une seule periode partiellement ouverte et aucune ouverte alors c'est la periode actuelle
 				$periode_result = $periode_verrouiller_p;
 			    } else {
-				//on va prendre la periode de numero la plus petite non verrouillee
+				//on va prendre la periode de numero la plus grande non verrouillee
 				if ($periode_verrouiller_n != null) {
 				    $periode_result = $periode_verrouiller_n;
 				} elseif ($periode_verrouiller_p != null) {
@@ -873,16 +946,14 @@ class Eleve extends BaseEleve {
 	    return $result;
 	}
 	
-	/*
-	Renvoie le nom de la photo de l'élève
-	Renvoie NULL si :
-	- le module trombinoscope n'est pas activé
-	- ou bien la photo n'existe pas.
-
-	$_elenoet_ou_loginc : selon les cas, soir l'elenoet de l'élève ou bien lelogin du professeur
-	$repertoire : "eleves"
-	$arbo : niveau d'aborescence (1 ou 2).
-	*/
+	/**
+	 * Renvoie le nom de la photo de l'élève
+	 * Renvoie NULL si :
+	 * - le module trombinoscope n'est pas activé
+	 * - ou bien la photo n'existe pas.
+	 * 
+	 * @param $arbo : niveau d'aborescence (1 ou 2).
+	 */
 	public function getNomPhoto($arbo=1) {
 		if ($arbo==2) {$chemin = "../";} else {$chemin = "";}
 		$repertoire = "eleves";
@@ -925,8 +996,8 @@ class Eleve extends BaseEleve {
 					$photo=$chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg";
 				} else {
 					for($i=0;$i<5;$i++){
-						if(substr($_elenoet_ou_login,$i,1)=="0"){
-							$test_photo=substr($_elenoet_ou_login,$i+1);
+						if(mb_substr($_elenoet_ou_login,$i,1)=="0"){
+							$test_photo=mb_substr($_elenoet_ou_login,$i+1);
 							//if(file_exists($chemin."../photos/eleves/".$test_photo.".jpg")){
 							if(($test_photo!='')&&(file_exists($chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg"))) {
 								$photo=$chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg";
@@ -964,17 +1035,16 @@ class Eleve extends BaseEleve {
 		} elseif ($this->getSexe()=="F") {
 			return "Mlle";
 		}
-		return "";
 	}
 
 
 	/**
 	 *
-	 * Retourne l'objet periode correspondant a partir
+	 * Retourne l'objet periode correspondant a partir :
 	 * d'un parametre numerique (numero de periode)
-	 * ou d'un parametre qui est deja un objet PeriodeNote (on renvoi le parametre)
+	 * ou d'un parametre qui est deja un objet PeriodeNote (on renvoi le parametre sans modification)
 	 * ou d'une date DateTime , auquel cas on renvoi la periode de l'epoque ou null si pas de periode trouvee
-	 * ou d'un parametre null, auquel cas on renvoi la periode courante
+	 * ou d'un parametre null, auquel cas on renvoi la periode courante (période en cours temporellement), ou la dernière période si aucune période en cours
 	 *
 	 * @param      mixed $periode numeric or PeriodeNote value or DateTime
 	 *
@@ -983,29 +1053,28 @@ class Eleve extends BaseEleve {
 	public function getPeriodeNote($periode_param = null) {
 	    $result = null;
 	    if ($periode_param instanceof DateTime) {
-		foreach ($this->getPeriodeNotes() as $periode_temp) {
-		    if ($periode_temp->getDateDebut('U') <= $periode_param->format('U')
-			    && ($periode_temp->getDateFin(null) === null || $periode_temp->getDateFin('U') > $periode_param->format('U')))
-		    {
-			$result = $periode_temp;
-			break;
-		    }
-		}
+			foreach ($this->getPeriodeNotes() as $periode_temp) {
+			    if ($periode_temp->getDateDebut('U') <= $periode_param->format('U')
+				    && ($periode_temp->getDateFin(null) === null || $periode_temp->getDateFin('U') > $periode_param->format('U')))
+				    {
+					$result = $periode_temp;
+					//break;
+			    }
+			}
 	    } else if ($periode_param === null) {
-		$periode = $this->getPeriodeNoteOuverte();
-		if ($periode == null) {
-			$now = new DateTime('now');
-			$result = $this->getPeriodeNote($now);
-		}
-	    } else if (is_numeric($periode_param)) {
-		foreach ($this->getPeriodeNotes() as $periode_temp) {
-		    if ($periode_temp->getNumPeriode() == $periode_param) {
-			$result = $periode_temp;
-			break;
+			$result = $this->getPeriodeNote(new DateTime('now'));//on récupére la période en cours temporellement
+		    if ($periode_param == null && $result == null) {//si on a rien précisé, et qu'on ne trouve pas de période en cours, on renvoit la dernière période
+		    	return $this->getPeriodeNotes()->getLast();
 		    }
-		}
+	    } else if (is_numeric($periode_param)) {
+			foreach ($this->getPeriodeNotes() as $periode_temp) {
+			    if ($periode_temp->getNumPeriode() == $periode_param) {
+					$result = $periode_temp;
+					break;
+			    }
+			}
 	    } else if ($periode_param instanceof PeriodeNote) {
-		$result = $periode_param;
+			$result = $periode_param;
 	    } else {
 		    throw new PropelException('Argument $periode doit etre de type numerique ou une instance de PeriodeNote ou un DateTime.');
 	    }
@@ -1025,16 +1094,16 @@ class Eleve extends BaseEleve {
 	 * @return PropelCollection DateTime[]
 	 */
 	public function getDemiJourneesAbsence($date_debut=null, $date_fin = null) {
-	    $abs_saisie_col = $this->getAbsColDecompteDemiJournee($date_debut, $date_fin);
-            return ($this->getDemiJourneesAbsenceParCollection($abs_saisie_col,$date_debut, $date_fin));
-        }
+        $abs_saisie_col = $this->getAbsColDecompteDemiJournee($date_debut, $date_fin);
+        return ($this->getDemiJourneesAbsenceParCollection($abs_saisie_col,$date_debut, $date_fin));
+    }
 
 	/**
 	 *
 	 * Retourne une collection contenant sous forme de DateTime les demi journees d'absence
 	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
 	 * Pour l'apres midi la date est 23/05/2010 à 12:30
-         * Il faut en entré une collection de saisies ordonnée par date de debut
+     * Il faut en entré une collection de saisies ordonnée par date de debut
 	 *
 	 * @param      PropelObjectCollection $abs_saisie_col collection de saisies d'absence ordonne par date de début
 	 *
@@ -1049,39 +1118,43 @@ class Eleve extends BaseEleve {
 	    $abs_saisie_col_filtre = new PropelCollection();
 	    $abs_saisie_col_2 = clone $abs_saisie_col;
 	    foreach ($abs_saisie_col as $saisie) {
-		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence()) {
-		    $contra = false;
-		    if (getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y') {
-			//on va vérifier si il n'y a pas une saisie contradictoire simultanée
-			foreach ($abs_saisie_col_2 as $saisie_contra) {
-			    if ($saisie_contra->getId() != $saisie->getId()
-				    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
-				    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
-				    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()
-				    //si c'est une saisie specifiquement a non precise c'est du type erreur de saisie on ne la prend pas en compte
-				    && ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence())) {
-				$contra = true;
-				break;
-			    }
-			}
-		    }
-		    if (!$contra) {
-			$abs_saisie_col_filtre->append($saisie);
-		    }
-		}
+	        if ($saisie->getEleveId() != $this->getId()) {
+	            continue;
+	        }
+    		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence()) {
+    		    $contra = false;
+    		    if (getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y') {
+    			//on va vérifier si il n'y a pas une saisie contradictoire simultanée
+    			foreach ($abs_saisie_col_2 as $saisie_contra) {
+        	        if ($saisie_contra->getEleveId() != $this->getId()) {
+        	            continue;
+        	        }
+    			    if ($saisie_contra->getId() != $saisie->getId()
+    				    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
+    				    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
+    				    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()
+    				    //si c'est une saisie specifiquement a non precise c'est du type erreur de saisie on ne la prend pas en compte
+    				    && ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence())) {
+    				$contra = true;
+    				break;
+    			    }
+    			}
+    		    }
+    		    if (!$contra) {
+    			$abs_saisie_col_filtre->append($saisie);
+    		    }
+    		}
 	    }
+        if ($date_fin != null) {
+            $date_fin_iteration = clone $date_fin;
+        } else {
+            $date_fin_iteration = null;
+        }
+        if ($this->getDateSortie() != null && ($date_fin_iteration == null || $this->getDateSortie('U') < $date_fin_iteration->format('U'))) {
+            $date_fin_iteration = $this->getDateSortie(null);
+        }
 
-	    if ($date_fin != null) {
-		$date_fin_iteration = clone $date_fin;
-	    } else {
-		$date_fin_iteration = new DateTime('now');
-		$date_fin_iteration->setTime(23,59);
-	    }
-            if ($this->getDateSortie() != null && $this->getDateSortie('U') < $date_fin_iteration->format('U')) {
-                $date_fin_iteration = $this->getDateSortie(null);
-            }
-
-	    require_once("helpers/AbsencesEleveSaisieHelper.php");
+	    require_once(dirname(__FILE__)."/../../../helpers/AbsencesEleveSaisieHelper.php");
 	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
 	}
 
@@ -1095,8 +1168,8 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return PropelCollection  AbsenceEleveSaisie[]
 	 */
-	private function getAbsColDecompteDemiJournee($date_debut= null, $date_fin= null) {
-	    $request_query_hash = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getIdEleve().'_filterByPlageTemps_deb_';
+	public function getAbsColDecompteDemiJournee($date_debut= null, $date_fin= null) {
+	    $request_query_hash = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getId().'_filterByPlageTemps_deb_';
 	    if ($date_debut != null) { $request_query_hash .= $date_debut->format('U');}
 	    else {$request_query_hash .= 'null';}
 	    $request_query_hash .= '_fin_';
@@ -1139,7 +1212,6 @@ class Eleve extends BaseEleve {
 	    if ($date_debut  == null)  {
 		return new PropelObjectCollection();
 	    }
-
 	    return $this->getDemiJourneesAbsence($periode_obj->getDateDebut(null), $periode_obj->getDateFin(null));
 	}
 
@@ -1159,7 +1231,8 @@ class Eleve extends BaseEleve {
 	    $abs_saisie_col = $this->getAbsColDecompteDemiJournee($date_debut, $date_fin);
 	    return ($this->getDemiJourneesNonJustifieesAbsenceParCollection($abs_saisie_col,$date_debut, $date_fin));
 	}
-/**
+	
+	/**
 	 *
 	 * Retourne une collection contenant sous forme de DateTime les demi journees d'absence non justifiees
 	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
@@ -1173,18 +1246,24 @@ class Eleve extends BaseEleve {
 	 */
 	public function getDemiJourneesNonJustifieesAbsenceParCollection($abs_saisie_col,$date_debut=null,$date_fin=null) {
 	    if ($abs_saisie_col->isEmpty()) {
-		return new PropelCollection();
+			return new PropelCollection();
 	    }
 
 	    //on filtre les saisie qu'on ne veut pas compter
 	    $abs_saisie_col_filtre = new PropelCollection();
 	    $abs_saisie_col_2 = clone $abs_saisie_col;
 	    foreach ($abs_saisie_col as $saisie) {
-		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence() && !$saisie->getJustifiee()) {
+	        if ($saisie->getEleveId() != $this->getId()) {
+	            continue;
+	        }
+	        if (!$saisie->getRetard() && $saisie->getManquementObligationPresence() && !$saisie->getJustifiee()) {
 		    $contra = false;
 		    if (getSettingValue("abs2_saisie_multi_type_non_justifiee")!='y') {
 			//on va vérifier si il n'y a pas une saisie contradictoire simultanée
 			foreach ($abs_saisie_col_2 as $saisie_contra) {
+    	        if ($saisie_contra->getEleveId() != $this->getId()) {
+    	            continue;
+    	        }
 			    if ($saisie_contra->getId() != $saisie->getId()
 				    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
 				    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
@@ -1212,7 +1291,7 @@ class Eleve extends BaseEleve {
                 $date_fin_iteration = $this->getDateSortie(null);
             }
 
-	    require_once("helpers/AbsencesEleveSaisieHelper.php");
+	    require_once(dirname(__FILE__)."/../../../helpers/AbsencesEleveSaisieHelper.php");
 	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
 	}
 
@@ -1241,7 +1320,7 @@ class Eleve extends BaseEleve {
 
   	/**
 	 *
-	 * Retourne une collection contenant des saisies comptée comme absence pour le décompte officiel
+	 * Retourne une collection contenant des saisies comptée comme retard pour le décompte officiel
 	 *
 	 * @param      mixed $periode numeric or PeriodeNote value.
 	 *
@@ -1257,15 +1336,21 @@ class Eleve extends BaseEleve {
 	    $abs_saisie_col_2 = clone $abs_saisie_col;
 	    //on va faire le décompte officiel des retard
 	    foreach ($abs_saisie_col as $saisie) {
-			if ($saisie->getRetard() && $saisie->getManquementObligationPresence()) {
+	        if ($saisie->getEleveId() != $this->getId()) {
+	            continue;
+	        }
+	        if ($saisie->getRetard() && $saisie->getManquementObligationPresence()) {
 			    $contra = false;
 	    		//on va vérifier si il n'y a pas une saisie contradictoire simultanée
 				foreach ($abs_saisie_col_2 as $saisie_contra) {
+        	        if ($saisie_contra->getEleveId() != $this->getId()) {
+        	            continue;
+        	        }
 				    if ($saisie_contra->getId() != $saisie->getId()
 					    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
 					    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
 					    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()) {
-					    	if ($saisie_contra->getManquementObligationPresence()) {
+					    	if ($saisie_contra->getManquementObligationPresence() && !$saisie_contra->getRetard()) {
 					    		//on a une saisie plus large qui est aussi un manquement à l'obligation de présence, donc on ne compte pas celle qui est englobée
 								$contra = true;
 								break;
@@ -1281,7 +1366,17 @@ class Eleve extends BaseEleve {
 			    }
 			}
 	    }
-	    return $result;
+	    
+	    //on va enlever les retards qui sont sur des périodes non ouvertes de l'établissement
+        require_once(dirname(__FILE__)."/../../../helpers/EdtHelper.php");
+        $result_final = new PropelCollection();
+        foreach ($result as $saisie) {
+            if (EdtHelper::isJourneeOuverte($saisie->getDebutAbs(null))
+                && EdtHelper::isHoraireOuvert($saisie->getDebutAbs(null))) {
+                $result_final->append($saisie);
+            }
+        }
+	    return $result_final;
 	}
 
  	/**
@@ -1319,8 +1414,8 @@ class Eleve extends BaseEleve {
 			    // return empty collection
 			    $this->initPeriodeNotes();
 		    } else {
-			    $sql = "SELECT /* log pour sql manuel */ DISTINCT periodes.NOM_PERIODE, periodes.NUM_PERIODE, periodes.VEROUILLER, periodes.ID_CLASSE, periodes.DATE_VERROUILLAGE, periodes.DATE_FIN FROM `periodes` INNER JOIN classes ON (periodes.ID_CLASSE=classes.ID) INNER JOIN j_eleves_classes ON (classes.ID=j_eleves_classes.ID_CLASSE) WHERE j_eleves_classes.LOGIN='".$this->getLogin()."' AND j_eleves_classes.periode = periodes.num_periode";
-			    $con = Propel::getConnection(PeriodeNotePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			    $sql = "SELECT /* log pour sql manuel */ DISTINCT periodes.NOM_PERIODE, periodes.NUM_PERIODE, periodes.VEROUILLER, periodes.ID_CLASSE, periodes.DATE_VERROUILLAGE, periodes.DATE_FIN FROM `periodes` INNER JOIN classes ON (periodes.ID_CLASSE=classes.ID) INNER JOIN j_eleves_classes ON (classes.ID=j_eleves_classes.ID_CLASSE) WHERE j_eleves_classes.LOGIN='".$this->getLogin()."' AND j_eleves_classes.periode = periodes.num_periode ORDER by periodes.NUM_PERIODE";
+			    $con = Propel::getConnection(null, Propel::CONNECTION_READ);
 			    $stmt = $con->prepare($sql);
 			    $stmt->execute();
 
@@ -1571,6 +1666,7 @@ class Eleve extends BaseEleve {
         $timestamp = microtime(true);
         print_r('Temps d\'execution depuis le lancement : '.($timestamp - $this->timestamp_start).'<br />');        
     }
+
 	/**
 	 *
 	 * Mets à jour la table d'agrégation des absences pour cet élève
@@ -1582,13 +1678,11 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function checkSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
-		throw new Exception('Not fully tested');
-		
         if ($this->debug) {
             if(is_null($this->timestamp_start)){
                 $this->timestamp_start = microtime(true);
             }
-			print_r('<br/>Vérification pour l eleve '.$this->getIdEleve().'<br/>');
+			print_r('<br/>Vérification pour l eleve '.$this->getId().'<br/>');
 		}
 		$dateDebutClone = null;
 		$dateFinClone = null;
@@ -1634,22 +1728,22 @@ class Eleve extends BaseEleve {
 		$query = 'select ELEVE_ID is not null as marqueur_calcul, union_date, updated_at, count_demi_jounee, now() as now
 		
 		FROM
-			(SELECT  a_agregation_decompte.ELEVE_ID from  a_agregation_decompte WHERE a_agregation_decompte.ELEVE_ID='.$this->getIdEleve().' AND a_agregation_decompte.DATE_DEMI_JOUNEE IS NULL
+			(SELECT  a_agregation_decompte.ELEVE_ID from  a_agregation_decompte WHERE a_agregation_decompte.ELEVE_ID='.$this->getId().' AND a_agregation_decompte.DATE_DEMI_JOUNEE IS NULL
 			) as a_agregation_decompte_null_select
 			
 		LEFT JOIN (
 			(SELECT count(a_agregation_decompte.eleve_id) as count_demi_jounee, max(updated_at) as updated_at
-			FROM a_agregation_decompte WHERE a_agregation_decompte.eleve_id='.$this->getIdEleve().' and '.$date_agregation_selection.'	
+			FROM a_agregation_decompte WHERE a_agregation_decompte.eleve_id='.$this->getId().' and '.$date_agregation_selection.'	
 			group by eleve_id) as updated_at_select
 		) ON 1=1
 		
 		LEFT JOIN (
 			(SELECT union_date from 
-				(	SELECT GREATEST(IFNULL(max(updated_at),0),IFNULL(max(deleted_at),0)) as union_date FROM a_saisies WHERE eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.' group by eleve_id
+				(	SELECT GREATEST(IFNULL(max(updated_at),CAST(0 as DATETIME)),IFNULL(max(deleted_at),CAST(0 as DATETIME))) as union_date FROM a_saisies WHERE eleve_id='.$this->getId().' and '.$date_saisies_selection.' group by eleve_id
 				UNION ALL
-					SELECT GREATEST(IFNULL(max(a_saisies_version.updated_at),0),IFNULL(max(a_saisies_version.deleted_at),0)) as union_date FROM a_saisies_version WHERE eleve_id='.$this->getIdEleve().' and '.$date_saisies_version_selection.' group by eleve_id
+					SELECT GREATEST(IFNULL(max(a_saisies_version.updated_at),CAST(0 as DATETIME)),IFNULL(max(a_saisies_version.deleted_at),CAST(0 as DATETIME))) as union_date FROM a_saisies_version WHERE eleve_id='.$this->getId().' and '.$date_saisies_version_selection.' group by eleve_id
 				UNION ALL
-					SELECT GREATEST(IFNULL(max(a_traitements.updated_at),0),IFNULL(max(a_traitements.deleted_at),0)) as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_saisies.eleve_id='.$this->getIdEleve().' and '.$date_saisies_selection.' group by eleve_id
+					SELECT GREATEST(IFNULL(max(a_traitements.updated_at),CAST(0 as DATETIME)),IFNULL(max(a_traitements.deleted_at),CAST(0 as DATETIME))) as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_saisies.eleve_id='.$this->getId().' and '.$date_saisies_selection.' group by eleve_id
 
 				ORDER BY union_date DESC LIMIT 1
 				) AS union_date_union_all_select
@@ -1677,13 +1771,13 @@ class Eleve extends BaseEleve {
                 $this->affiche_duree();
 			}
 			return false;
-		} else if ($row['union_date'] && $row['union_date']  > $row['now']) {
-			if ($debug) {
+		} else if ($row['updated_at'] && $row['updated_at']  > $row['now']) {
+			if ($this->debug) {
 				print_r('faux : Date de mise a jour des agregation ne peut pas etre dans le futur<br/>');
 			}
 			return false;
-		} else if ($row['updated_at'] && $row['updated_at']  > $row['now']) {
-			if ($debug) {
+		} else if ($row['union_date'] && $row['union_date']  > $row['now']) {
+			if ($this->debug) {
 				print_r('faux : Date de mise a jour des saisie ou traitements ne peut pas etre dans le futur<br/>');
 			}
 			return false;
@@ -1697,7 +1791,7 @@ class Eleve extends BaseEleve {
 		} else if ($dateDebutClone == null || $dateFinClone == null){
             if ($this->debug) {
                 $this->affiche_duree();
-                }            
+                }        
 			return true;//on ne vérifie pas le nombre d'entrée car les dates ne sont pas précisée
 		} else {
 			$nbre_demi_journees=(int)(($dateFinClone->format('U')+3600*6-$dateDebutClone->format('U'))/(3600*12)); // on compte les tranches de 12h
@@ -1729,8 +1823,7 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function updateAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
-		throw new Exception('Not fully tested');
-		
+
 		$dateDebutClone = null;
 		$dateFinClone = null;
         if($this->debug){
@@ -1741,20 +1834,33 @@ class Eleve extends BaseEleve {
 			throw new PropelException('Erreur: la date de debut ne peut être postérieure à la date de fin');
 		}
 		
-		//on initialise les date clone qui seront manipulés dans l'algoritme, c'est nécessaire pour ne pas modifier les date passée en paramêtre.
 		if ($dateDebut != null) {
-	        if($this->debug){
-	            print_r('Date Début '.$dateDebut->format('Y-m-d H:i').' à ');
-	        }
-			$dateDebutClone = clone $dateDebut;
-			$dateDebutClone->setTime(0,0);
+		    $now = new DateTime();
+		    if (abs($dateDebut->format('U') - $now->format('U')) > 3600*24*265*3) {
+			    throw new PropelException('Erreur: la date de debut ne peut pas être éloignées de plus de 3 ans de la date courante');
+		    }
 		}
 		if ($dateFin != null) {
+		    $now = new DateTime();
+		    if (abs($dateFin->format('U') - $now->format('U')) > 3600*24*265*3) {
+			    throw new PropelException('Erreur: la date de fin ne peut pas être éloignées de plus de 3 ans de la date courante');
+		    }
+		}
+		
+		//on initialise les date clone qui seront manipulés dans l'algoritme, c'est nécessaire pour ne pas modifier les date passée en paramêtre.
+		if ($dateDebut != null) {
+			$dateDebutClone = clone $dateDebut;
+			$dateDebutClone->setTime(0,0);
 	        if($this->debug){
-	            print_r('Date fin '.$dateFin->format('Y-m-d H:i').'<br/>');
+	            print_r('Date Début '.$dateDebutClone->format('Y-m-d H:i').' à ');
 	        }
+		}
+		if ($dateFin != null) {
 			$dateFinClone = clone $dateFin;
 			$dateFinClone->setTime(23,59);
+	        if($this->debug){
+	            print_r('Date fin '.$dateFinClone->format('Y-m-d H:i').'<br/>');
+	        }
 		}
 		
 		
@@ -1779,11 +1885,13 @@ class Eleve extends BaseEleve {
 		// préférence admin pour la demi journée
 	    $heure_demi_journee = 11;
 	    $minute_demi_journee = 50;
-	    try {
-			$dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
-			$heure_demi_journee = $dt_demi_journee->format('H');
-			$minute_demi_journee = $dt_demi_journee->format('i');
-	    } catch (Exception $x) {
+	    if (getSettingValue("abs2_heure_demi_journee") != null) {
+    	    try {
+    			$dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
+    			$heure_demi_journee = $dt_demi_journee->format('H');
+    			$minute_demi_journee = $dt_demi_journee->format('i');
+    	    } catch (Exception $x) {
+    	    }
 	    }
 	    
 	    //on initialise le début de l'itération pour creer les entrées si aucune date n'est précisée
@@ -1818,7 +1926,7 @@ class Eleve extends BaseEleve {
 			$DMabsencesCol_start_compute = false;//obligatoire pour tester la fin de la collection car le pointeur retourne au début
 			$retards_start_compute = false;
 			//on va creer une collections d'entrées dans la table d'agrégation
-			//dans la boucle while on utilise les tests isFirst pour vérifier qu'on a pas fini les collections et qu'on est pas retourné au débxyut
+			//dans la boucle while on utilise les tests isFirst pour vérifier qu'on a pas fini les collections et qu'on est pas retourné au début
 			do {
 				$newAgregation = new AbsenceAgregationDecompte();
 				$newAgregation->setEleve($this);
@@ -1826,11 +1934,11 @@ class Eleve extends BaseEleve {
 				if (($DMabsencesCol->getCurrent() != null) && $dateDemiJourneeIteration->format('d/m/Y H') == $DMabsencesCol->getCurrent()->format('d/m/Y H')) {
 					$DMabsencesCol_start_compute = true;
 					$newAgregation->setManquementObligationPresence(true);
-					$newAgregation->setJustifiee(true);
+					$newAgregation->setNonJustifiee(false);
 					$DMabsencesCol->getNext();
 					//on regarde si l'absence est non justifiée
 					if (($DMabsenceNonJustifiesCol->getCurrent() != null) && $dateDemiJourneeIteration->format('d/m/Y H') == $DMabsenceNonJustifiesCol->getCurrent()->format('d/m/Y H')) {
-						$newAgregation->setJustifiee(false);
+						$newAgregation->setNonJustifiee(true);
 						$DMabsenceNonJustifiesCol->getNext();
 					}
 					
@@ -1873,9 +1981,9 @@ class Eleve extends BaseEleve {
 				}
 				while ($retards->getCurrent() != null && $retards->getCurrent()->getDebutAbs('U')<$date_fin_decompte_retard->format('U')) {
 					$retards_start_compute = true;
-					$newAgregation->setNbRetards($newAgregation->getNbRetards() + 1);
-					if ($retards->getCurrent()->getJustifiee()) {
-						$newAgregation->setNbRetardsJustifies($newAgregation->getNbRetardsJustifies() + 1);
+					$newAgregation->setRetards($newAgregation->getRetards() + 1);
+					if (!$retards->getCurrent()->getJustifiee()) {
+						$newAgregation->setRetardsNonJustifies($newAgregation->getRetardsNonJustifies() + 1);
 					}
 			    	if ($retards->getCurrent()->getMotif() != null) {
 			    		foreach ($retards->getCurrent()->getAbsenceEleveTraitements() as $traitement) {
@@ -1889,12 +1997,12 @@ class Eleve extends BaseEleve {
 				$newAgregation->save();
 				
 				$dateDemiJourneeIteration->modify("+12 hours");
+				
 			} while (//on s'arrete si on a dépassé la date de fin
-					($dateFinClone != null && $dateDemiJourneeIteration->format('U') <= $dateFinClone->format('U'))
-					//on s'arrete si la date de fin n'est pas précisé et qu'on a épuisé toutes les absences
-					|| ($dateFinClone == null && (!$DMabsencesCol->isFirst() || !$DMabsencesCol_start_compute) && (!$retards->isFirst() || !$retards_start_compute) )
-					);
-			
+					($dateFinClone != null && $dateDemiJourneeIteration <= $dateFinClone)
+					//on s'arrete si la date de fin n'est pas précisé et qu'on a épuisé toutes les absences et retards
+					|| ($dateFinClone == null && ((!$DMabsencesCol->isFirst() || !$DMabsencesCol_start_compute) || (!$retards->isFirst() || !$retards_start_compute)) )
+					);			
 		}
 		
 		
@@ -1923,7 +2031,6 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function checkAndUpdateSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
-		throw new Exception('Not fully tested');
 		//on va vérifier que avant et après les dates précisées, la table est bien synchronisée sur l'année en cours
 		require_once(dirname(__FILE__)."/../../../helpers/EdtHelper.php");
 		assert('$dateDebut == null || $dateFin == null || $dateDebut <= $dateFin');
@@ -1991,5 +2098,31 @@ class Eleve extends BaseEleve {
 			$this->updateAbsenceAgregationTable($dateDebut, $dateFin);
 		}
 	}
+	
+	
+    /**
+	 *
+	 * Renvoi true/false selon que l'élève est sorti ou non de l'établissement (désinscription)
+	 *
+	 * @param DateTime $date_debut_test date de fin pour le test de sortie de l'élève. Si null, la date courrante est utilisée
+	 * @return Boolean
+	 *
+	 */
+    public function isEleveSorti($date_debut_test = null) {
+        if ($date_debut_test == null) {
+            $date_debut_test = new DateTime('now');
+        }
+        $date_sortie_eleve = $this->getDateSortie();            
+        if (is_null($date_sortie_eleve) || $date_sortie_eleve == 0) {
+            return false;
+        } else {
+            if ($date_debut_test > $date_sortie_eleve) {
+                return(true);
+            } else {
+                return(false);
+            }
+        }
+    }
+    
 	
 } // Eleve

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version $Id: bilan_absences_quotidien.php 4152 2010-03-21 23:32:16Z adminpaulbert $
+ * @version $Id$
  *
  * Fichier destiné à visionner le bilan de la journée des absences heure par heure et cours par cours
  * en ordonnant le classement des élèves par classe et par ordre alphabétique.

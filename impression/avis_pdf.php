@@ -1,8 +1,7 @@
 <?php
 /*
- * $Id: avis_pdf.php 8060 2011-08-30 21:58:08Z jjacquard $
  *
- * Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -40,7 +39,6 @@ require_once("../lib/initialisations.inc.php");
 if (!defined('FPDF_VERSION')) {
 	require_once('../fpdf/fpdf.php');
 }
-require('../fpdf/ex_fpdf.php');
 
 define('FPDF_FONTPATH','../fpdf/font/');
 define('LargeurPage','210');
@@ -270,14 +268,14 @@ echo "</pre>";
 		$pdf->SetDrawColor(0,0,0);
 
 		// caractère utilisé dans le document
-		$caractere_utilise = 'arial';
+		$caractere_utilise = 'DejaVu';
 
 		// on appelle une nouvelle page pdf
 		$nb_eleves_i = 0;
 
 //Entête du PDF
 			$pdf->SetLineWidth(0.7);
-			$pdf->SetFont($caractere_utilise,'B',14);
+			$pdf->SetFont('DejaVu','B',14);
 			$pdf->Setxy($X_entete_classe,$Y_entete_classe);
 
 			if ($id_classe != NULL) {
@@ -291,7 +289,7 @@ echo "</pre>";
 
 			if (($option_affiche_pp==1)) {
 			   $pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,'Classe de '.$current_classe,'LTR',2,'C');
-			   $pdf->SetFont($caractere_utilise,'I',8.5);
+			   $pdf->SetFont('DejaVu','I',8.5);
 
 			   //PP de la classe
 			  if ($id_groupe != NULL) {
@@ -314,7 +312,7 @@ echo "</pre>";
 			}
 
 			$pdf->Setxy($X_entete_matiere,$Y_entete_matiere);
-			$pdf->SetFont($caractere_utilise,'B',14);
+			$pdf->SetFont('DejaVu','B',14);
 
 			
 			//Si on peut connaître le nom de la matière (id_groupe existe !)
@@ -323,11 +321,11 @@ echo "</pre>";
 				$matiere = $current_group["description"];
                  //echo $matiere."<br/>";
 				$pdf->CellFitScale($L_entete_discipline,$H_entete_discipline /2 ,$matiere,'LTR',2,'C');
-				$pdf->SetFont($caractere_utilise,'I',11);
+				$pdf->SetFont('DejaVu','I',11);
 				$pdf->Cell($L_entete_classe,$H_entete_classe / 2,'Année scolaire '.getSettingValue('gepiYear'),'LRB',2,'C');
 			} else {
 			    // On demande une classe ==> on ajoute la période.
-				$pdf->SetFont($caractere_utilise,'I',11);
+				$pdf->SetFont('DejaVu','I',11);
 				
 				
 				if ($nb_periodes==1) {				
@@ -357,7 +355,7 @@ echo "</pre>";
 // requete à faire pour récupérer les Avis pour la classe / la période !!!
 		//debut tableau;
 			$pdf->SetLineWidth(0.3);
-			$pdf->SetFont($caractere_utilise,'',9);
+			$pdf->SetFont('DejaVu','',9);
 			$y_tmp = $Y_courant;
 
 			// Le tableau
@@ -371,10 +369,10 @@ echo "</pre>";
 
 				$y_tmp = $pdf->GetY();
 				$pdf->Setxy($X_tableau,$y_tmp);
-				$pdf->SetFont($caractere_utilise,'B',9);
+				$pdf->SetFont('DejaVu','B',9);
 				//$texte = strtoupper($donnees_eleves['nom'][$nb_eleves_i])." ".ucfirst($donnees_eleves['prenom'][$nb_eleves_i]);
 				
-				$texte = strtoupper($donnees_eleves[$nb_eleves_i]['nom'])." ".ucfirst($donnees_eleves[$nb_eleves_i]['prenom']);
+				$texte = my_strtoupper($donnees_eleves[$nb_eleves_i]['nom'])." ".casse_mot($donnees_eleves[$nb_eleves_i]['prenom'],'majf2');
 				
 				$pdf->CellFitScale($l_cell_nom,$h_cell,$texte,1,0,'L',0); //$l_cell_nom.' - '.$h_cell.' / '.$X_tableau.' - '.$y_tmp
 			
@@ -402,7 +400,7 @@ echo "</pre>";
 				
 				//$avis = $sql_current_eleve_avis;
 				
-				$pdf->SetFont($caractere_utilise,'',7.5);
+				$pdf->SetFont('DejaVu','',7.5);
 				//$pdf->CellFitScale($l_cell_avis,$h_cell,$avis,1,0,'L',0); //le quadrillage
 
 				$taille_texte_total = $pdf->GetStringWidth($avis);
@@ -416,7 +414,7 @@ echo "</pre>";
 					if($taille_texte_max < $taille_texte_total)
 					{
 						$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
-						$pdf->SetFont($caractere_utilse[$classe_id],'',$hauteur_caractere_appreciation);
+						$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
 						$taille_texte_total = $pdf->GetStringWidth($avis);
 					} else { $grandeur_texte='ok'; }
 				}
@@ -424,7 +422,7 @@ echo "</pre>";
 				
 				$pdf->drawTextBox($avis, $largeur_appreciation2, $h_cell, 'J', 'M', 1);
 				
-				$pdf->SetFont($caractere_utilise,'',7.5);
+				$pdf->SetFont('DejaVu','',7.5);
 
 				$pdf->Setxy($X_tableau+$l_cell_nom,$y_tmp+$h_cell);
 				

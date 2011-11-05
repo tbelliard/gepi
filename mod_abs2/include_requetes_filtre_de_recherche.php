@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id: include_requetes_filtre_de_recherche.php 7294 2011-06-22 15:06:01Z jjacquard $
  *
  * Copyright 2010 Josselin Jacquard
  *

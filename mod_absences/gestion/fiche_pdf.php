@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id: fiche_pdf.php 4878 2010-07-24 13:54:01Z regis $
+* $Id$
 *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
@@ -57,11 +57,7 @@ if (!checkAccess()) {
 die();
 }
 
-$mode_utf8_pdf=getSettingValue('mode_utf8_abs_pdf');
-if($mode_utf8_pdf!="y") {$mode_utf8_pdf="";}
-
 require('../../fpdf/fpdf.php');
-require('../../fpdf/ex_fpdf.php');
 
 function redimensionne_logo($photo, $L_max, $H_max)
  {
@@ -163,7 +159,7 @@ function microtime_float_img() {
 
 // variable fixe
 	// global
-	$caractere_utilse = 'Arial';
+	$caractere_utilse = 'DejaVu';
 
 	// cadre de datation du bulletin
 	$active_bloc_datation = '1'; // fait - afficher les informations de datation du bulletin
@@ -349,7 +345,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
         $w=$this->w-$this->rMargin-$this->x;
     $wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
     $s=str_replace("\r",'',$txt);
-    $nb=strlen($s);
+    $nb=mb_strlen($s);
     if($nb>0 and $s[$nb-1]=="\n")
         $nb--;
     $b=0;
@@ -390,7 +386,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
                 if ($prn==1) $this->_out('0 Tw');
             }
             if ($prn==1) {
-                $this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
+                $this->Cell($w,$h,mb_substr($s,$j,$i-$j),$b,2,$align,$fill);
             }
             $i++;
             $sep=-1;
@@ -401,7 +397,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
             if($border and $nl==2)
                 $b=$b2;
             if ( $maxline && $nl > $maxline )
-                return substr($s,$i);
+                return mb_substr($s,$i);
             continue;
         }
         if($c==' ')
@@ -424,7 +420,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
                     if ($prn==1) $this->_out('0 Tw');
                 }
                 if ($prn==1) {
-                    $this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
+                    $this->Cell($w,$h,mb_substr($s,$j,$i-$j),$b,2,$align,$fill);
                 }
             }
             else
@@ -435,7 +431,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
                     if ($prn==1) $this->_out(sprintf('%.3f Tw',$this->ws*$this->k));
                 }
                 if ($prn==1){
-                    $this->Cell($w,$h,substr($s,$j,$sep-$j),$b,2,$align,$fill);
+                    $this->Cell($w,$h,mb_substr($s,$j,$sep-$j),$b,2,$align,$fill);
                 }
                 $i=$sep+1;
             }
@@ -447,7 +443,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
             if($border and $nl==2)
                 $b=$b2;
             if ( $maxline && $nl > $maxline )
-                return substr($s,$i);
+                return mb_substr($s,$i);
         }
         else
             $i++;
@@ -461,7 +457,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
     if($border and is_int(strpos($border,'B')))
         $b.='B';
     if ($prn==1) {
-        $this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
+        $this->Cell($w,$h,mb_substr($s,$j,$i-$j),$b,2,$align,$fill);
     }
     $this->x=$this->lMargin;
     return $nl;
@@ -511,7 +507,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
     {
 	    global $prefix_base;
 			$X_etab = '10'; $Y_etab = '10';
-		        $caractere_utilse = 'Arial';
+		        $caractere_utilse = 'DejaVu';
 			$affiche_filigrame='0'; // affiche un filigramme
 			$texte_filigrame='DOCUMENT DE TEST'; // texte du filigrame
 			$affiche_logo_etab='1';
@@ -523,7 +519,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
     //Affiche le filigrame
     if($affiche_filigrame==='1')
      {
-      $this->SetFont('Arial','B',50);
+      $this->SetFont('DejaVu','B',50);
       $this->SetTextColor(255,192,203);
       $this->TextWithRotation(40,190,$texte_filigrame,45);
       $this->SetTextColor(0,0,0);
@@ -544,19 +540,17 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 
 	//adresse
  	 $this->SetXY($X_etab,$Y_etab);
- 	 $this->SetFont($caractere_utilse,'',14);
+ 	 $this->SetFont('DejaVu','',14);
 	  //$gepiSchoolName = getSettingValue('gepiSchoolName');
-	$gepiSchoolName = traite_accents_utf8(getSettingValue('gepiSchoolName'));
-	  //$gepiSchoolName = utf8_decode(getSettingValue('gepiSchoolName'));
-	  //$gepiSchoolName = utf8_encode(getSettingValue('gepiSchoolName'));
+	$gepiSchoolName = (getSettingValue('gepiSchoolName'));
 	 $this->Cell(90,7, $gepiSchoolName,0,2,'');
-	 $this->SetFont($caractere_utilse,'',10);
-	  $gepiSchoolAdress1 = traite_accents_utf8(getSettingValue('gepiSchoolAdress1'));
+	 $this->SetFont('DejaVu','',10);
+	  $gepiSchoolAdress1 = (getSettingValue('gepiSchoolAdress1'));
 	 $this->Cell(90,5, $gepiSchoolAdress1,0,2,'');
-	  $gepiSchoolAdress2 = traite_accents_utf8(getSettingValue('gepiSchoolAdress2'));
+	  $gepiSchoolAdress2 = (getSettingValue('gepiSchoolAdress2'));
 	 $this->Cell(90,5, $gepiSchoolAdress2,0,2,'');
-	  $gepiSchoolZipCode = traite_accents_utf8(getSettingValue('gepiSchoolZipCode'));
-	  $gepiSchoolCity = traite_accents_utf8(getSettingValue('gepiSchoolCity'));
+	  $gepiSchoolZipCode = (getSettingValue('gepiSchoolZipCode'));
+	  $gepiSchoolCity = (getSettingValue('gepiSchoolCity'));
 	 $this->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,'');
 	  $gepiSchoolTel = getSettingValue('gepiSchoolTel');
 	  $gepiSchoolFax = getSettingValue('gepiSchoolFax');
@@ -577,9 +571,9 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
     {
         //Positionnement à 1 cm du bas et 0,5cm + 0,5cm du coté gauche
    	$this->SetXY(5,-10);
-        //Police Arial Gras 6
-        $this->SetFont('Arial','B',8);
-        $this->Cell(0,4.5, traite_accents_utf8("Fiche récapitulative des absences - GEPI : solution libre de gestion et de suivi des résultats scolaires."),0,0,'C');
+        //Police DejaVu Gras 6
+        $this->SetFont('DejaVu','B',8);
+        $this->Cell(0,4.5, ("Fiche récapitulative des absences - GEPI : solution libre de gestion et de suivi des résultats scolaires."),0,0,'C');
     }
 }
 
@@ -599,7 +593,7 @@ while ( !empty($id_eleve[$cpt_eleve]) ) {
 
 $pdf->AddPage();
 
-$pdf->SetFont('arial','',10);
+$pdf->SetFont('DejaVu','',10);
 $pdf->SetTextColor(0,0,0);
 $pdf->SetFillColor(255,255,255);
 
@@ -607,7 +601,7 @@ $pdf->SetFillColor(255,255,255);
 // bloc affichage information sur l'élèves
 	if ( $active_bloc_eleve === '1' ) {
 	 $pdf->SetXY($X_eleve,$Y_eleve);
- 	 $pdf->SetFont($caractere_utilse,'B',14);
+ 	 $pdf->SetFont('DejaVu','B',14);
 	 $longeur_cadre_eleve = $pdf->GetStringWidth($nom_eleve[$cpt_eleve]." ".$prenom_eleve[$cpt_eleve]);
 	 $rajout_cadre_eleve = 100 - $longeur_cadre_eleve;
 	 $longeur_cadre_eleve = $longeur_cadre_eleve + $rajout_cadre_eleve;
@@ -627,23 +621,23 @@ $pdf->SetFillColor(255,255,255);
 		}
 
  	 $pdf->SetXY($X_eleve_2,$Y_eleve_2);
-	 $pdf->Cell(90,7, traite_accents_utf8($nom_eleve[$cpt_eleve]." ".$prenom_eleve[$cpt_eleve]),0,2,'');
-	 $pdf->SetFont($caractere_utilse,'',10);
+	 $pdf->Cell(90,7, ($nom_eleve[$cpt_eleve]." ".$prenom_eleve[$cpt_eleve]),0,2,'');
+	 $pdf->SetFont('DejaVu','',10);
 	 if ( $affiche_date_naissance === '1' ) {
-	  if($date_naissance[$cpt_eleve]!="") { $pdf->Cell(90,5, traite_accents_utf8($date_naissance[$cpt_eleve]),0,2,''); }
+	  if($date_naissance[$cpt_eleve]!="") { $pdf->Cell(90,5, ($date_naissance[$cpt_eleve]),0,2,''); }
 	 }
 	 if( $affiche_dp === '1' ) {
-	  if( $dp_eleve[$cpt_eleve] != '' ) { $pdf->Cell(90,4, traite_accents_utf8($dp_eleve[$cpt_eleve]),0,2,''); }
+	  if( $dp_eleve[$cpt_eleve] != '' ) { $pdf->Cell(90,4, ($dp_eleve[$cpt_eleve]),0,2,''); }
 	 }
 	 if ( $affiche_doublement === '1' ) {
 	  if($doublement_eleve[$cpt_eleve]!="") { $pdf->Cell(90,4.5, $doublement_eleve[$cpt_eleve],0,2,''); }
 	 }
 	 if( $affiche_nom_court === '1' ) {
-	  if($classe_nomcour_eleve[$cpt_eleve]!="") { $pdf->Cell(90,4.5, traite_accents_utf8(unhtmlentities($classe_nomcour_eleve[$cpt_eleve])),0,2,''); }
+	  if($classe_nomcour_eleve[$cpt_eleve]!="") { $pdf->Cell(90,4.5, (unhtmlentities($classe_nomcour_eleve[$cpt_eleve])),0,2,''); }
 	 }
 	 if ( $affiche_effectif_classe === '1' ) {
 	  if ( $info_bulletin[$ident_eleve_aff][$id_periode]['effectif']!="") {
-		$pdf->Cell(45,4.5, traite_accents_utf8('Effectif : '.$info_bulletin[$ident_eleve_aff][$id_periode]['effectif'].' élèves'),0,0,''); }
+		$pdf->Cell(45,4.5, ('Effectif : '.$info_bulletin[$ident_eleve_aff][$id_periode]['effectif'].' élèves'),0,0,''); }
 	 }
 	 if ( $affiche_numero_impression === '1' ) {
 	  $num_ordre = $cpt_eleve;
@@ -654,19 +648,19 @@ $pdf->SetFillColor(255,255,255);
 	// bloc affichage datation du bulletin
 	if($active_bloc_datation==='1') {
  	 $pdf->SetXY($X_datation_bul, $Y_datation_bul);
- 	 $pdf->SetFont($caractere_utilse,'B',14);
+ 	 $pdf->SetFont('DejaVu','B',14);
 	 $longeur_cadre_datation_bul = 95;
 	 $nb_ligne_datation_bul = 3; $hauteur_ligne_datation_bul = 6;
 	 $hauteur_cadre_datation_bul = $nb_ligne_datation_bul*$hauteur_ligne_datation_bul;
 	 if($cadre_datation_bul!=0) { $pdf->Rect($X_datation_bul, $Y_datation_bul, $longeur_cadre_datation_bul, $hauteur_cadre_datation_bul, 'D'); }
-	 $pdf->Cell(90,7, "Classe de ".traite_accents_utf8(unhtmlentities($classe_nomlong_eleve[$cpt_eleve])),0,2,'C');
-	 $pdf->SetFont($caractere_utilse,'',12);
-	 $pdf->Cell(90,5, traite_accents_utf8("Année scolaire ".$annee_scolaire),0,2,'C');
-	 $pdf->SetFont($caractere_utilse,'',10);
-	 $pdf->Cell(90,5, traite_accents_utf8("Fiche récapitulative des absences"),0,2,'C');
-	 $pdf->SetFont($caractere_utilse,'',8);
+	 $pdf->Cell(90,7, "Classe de ".(unhtmlentities($classe_nomlong_eleve[$cpt_eleve])),0,2,'C');
+	 $pdf->SetFont('DejaVu','',12);
+	 $pdf->Cell(90,5, ("Année scolaire ".$annee_scolaire),0,2,'C');
+	 $pdf->SetFont('DejaVu','',10);
+	 $pdf->Cell(90,5, ("Fiche récapitulative des absences"),0,2,'C');
+	 $pdf->SetFont('DejaVu','',8);
 	 $pdf->Cell(95,7, $date_bulletin,0,2,'R');
-	 $pdf->SetFont($caractere_utilse,'',10);
+	 $pdf->SetFont('DejaVu','',10);
 	}
 
 
@@ -691,10 +685,10 @@ $pdf->SetFillColor(255,255,255);
  	$pdf->SetXY($x_divers,$y_divers);
 	// nombre de lettre expédié à la famille
         $cpt_lettre_envoye = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."'"),0);
-	$pdf->Cell($l_divers, $h_divers, traite_accents_utf8('Nombre de lettres expédiées : ').$cpt_lettre_envoye, 0, 2, 'L', 0);
+	$pdf->Cell($l_divers, $h_divers, ('Nombre de lettres expédiées : ').$cpt_lettre_envoye, 0, 2, 'L', 0);
 	// nombre de lettre resté sans réponse
         $cpt_lettre_envoye_sans_reponse = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND quireception_lettre_suivi = ''"),0);
-	$pdf->Cell($l_divers, $h_divers, traite_accents_utf8('Lettres restées sans réponse : ').$cpt_lettre_envoye_sans_reponse, 0, 2, 'L', 0);
+	$pdf->Cell($l_divers, $h_divers, ('Lettres restées sans réponse : ').$cpt_lettre_envoye_sans_reponse, 0, 2, 'L', 0);
 	// nombre d'avertissement
         $cpt_lettre_avertissement = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."lettres_suivis, ".$prefix_base."lettres_types WHERE quirecois_lettre_suivi = '".$id_eleve[$cpt_eleve]."' AND id_lettre_type = type_lettre_suivi AND titre_lettre_type LIKE '%avertissement%'"),0);
 	$pdf->Cell($l_divers, $h_divers, 'Nombre d\'avertissements : '.$cpt_lettre_avertissement, 0, 2, 'L', 0);
@@ -900,9 +894,9 @@ $annuel = $mois;
 	// ligne des absences non justifé
 	// décaler y par rapport à la première ligne
 	$y_annuel = $y_annuel + $h_annuel;
-	$pdf->SetFont('arial','',9);
+	$pdf->SetFont('DejaVu','',9);
 	$pdf->SetXY($x_annuel, $y_annuel);
-	$pdf->Cell($l_intituler, $h_intituler, traite_accents_utf8('Absence non justifiée'), 1, 0, 'L', 0);
+	$pdf->Cell($l_intituler, $h_intituler, ('Absence non justifiée'), 1, 0, 'L', 0);
 		$i = '0'; $total = '0';
 		while ( !empty($annuel[$i]) ) {
 				$texte = '';
@@ -921,7 +915,7 @@ $annuel = $mois;
 
 	$y_annuel = $y_annuel + $h_annuel;
 	$x_sous_decal = $x_annuel + $l_intituler;
-	$pdf->SetFont('arial','',9);
+	$pdf->SetFont('DejaVu','',9);
 	$pdf->SetXY($x_sous_decal, $y_annuel);
 		$i = '0'; $total = '0';
 		while ( !empty($annuel[$i]) ) {
@@ -942,7 +936,7 @@ $annuel = $mois;
 	// ligne des absences justifé
 	$y_annuel = $y_annuel + $h_annuel;
 	$pdf->SetXY($x_annuel, $y_annuel);
-	$pdf->Cell($l_intituler, $h_intituler, traite_accents_utf8('Absence justifiée'), 1, 0, 'L', 0);
+	$pdf->Cell($l_intituler, $h_intituler, ('Absence justifiée'), 1, 0, 'L', 0);
 		$i = '0'; $total = '0';
 		while ( !empty($annuel[$i]) ) {
 				$texte = '';
@@ -961,7 +955,7 @@ $annuel = $mois;
 
 	$y_annuel = $y_annuel + $h_annuel;
 	$x_sous_decal = $x_annuel + $l_intituler;
-	$pdf->SetFont('arial','',9);
+	$pdf->SetFont('DejaVu','',9);
 	$pdf->SetXY($x_sous_decal, $y_annuel);
 		$i = '0'; $total = '0';
 		while ( !empty($annuel[$i]) ) {
@@ -981,9 +975,9 @@ $annuel = $mois;
 
 	// ligne des retards non justifié
 	$y_annuel = $y_annuel + $h_annuel;
-	$pdf->SetFont('arial','',9);
+	$pdf->SetFont('DejaVu','',9);
 	$pdf->SetXY($x_annuel, $y_annuel);
-	$pdf->Cell($l_intituler, $h_annuel, traite_accents_utf8('Retard non justifié'), 1, 0, 'L', 0);
+	$pdf->Cell($l_intituler, $h_annuel, ('Retard non justifié'), 1, 0, 'L', 0);
 		$i = '0'; $total = '0';
 		while ( !empty($annuel[$i]) ) {
 				$texte = '';
@@ -1003,7 +997,7 @@ $annuel = $mois;
 	// ligne des retards justifié
 	$y_annuel = $y_annuel + $h_annuel;
 	$pdf->SetXY($x_annuel, $y_annuel);
-	$pdf->Cell($l_intituler, $h_annuel, traite_accents_utf8('Retard justifié'), 1, 0, 'L', 0);
+	$pdf->Cell($l_intituler, $h_annuel, ('Retard justifié'), 1, 0, 'L', 0);
 		$i = '0'; $total = '0';
 		while ( !empty($annuel[$i]) ) {
 				$texte = '';
@@ -1021,7 +1015,7 @@ $annuel = $mois;
 	// ligne sous le tableau qui affiche les totaux
 	$y_annuel = $y_annuel + $h_annuel;
 	$pdf->SetXY($x_annuel, $y_annuel);
-	$pdf->SetFont('arial','',10);
+	$pdf->SetFont('DejaVu','',10);
 
 // a changer par la suite corrige une erreur
 //$total_absence_heure = my_eregi_replace("[-]{1}",'',$total_absence_heure);
@@ -1062,9 +1056,9 @@ if ( isset($semaine_horaire['samedi']['ouverture']) ) { $semaine[$i]['jour'] = '
 		// entête des jours
 		$i = '0';
 		while ( !empty($semaine[$i]) ) {
-			$pdf->SetFont('arial','',9);
+			$pdf->SetFont('DejaVu','',9);
 			$pdf->Cell($l_semaine, $h_semaine, $semaine[$i]['jour'], 1, 0, 'C', 0);
-			$pdf->SetFont('arial','',10);
+			$pdf->SetFont('DejaVu','',10);
 		$i = $i + 1;
 		}
 
@@ -1133,9 +1127,9 @@ $i = '0';
 		// entête des jours
 		$i = '0';
 		while ( !empty($semaine[$i]) ) {
-			$pdf->SetFont('arial','',9);
+			$pdf->SetFont('DejaVu','',9);
 			$pdf->Cell($l_semaine, $h_semaine, $semaine[$i]['jour'], 1, 0, 'C', 0);
-			$pdf->SetFont('arial','',10);
+			$pdf->SetFont('DejaVu','',10);
 		$i = $i + 1;
 		}
 

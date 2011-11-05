@@ -3,7 +3,6 @@
 /**
  * Fichier qui gère une requête ajax et qui renvoie la bonne couleur pour la matière
  *
- * @version $Id: ajax_edtcouleurs.php 5502 2010-09-29 21:22:05Z adminpaulbert $
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
@@ -52,7 +51,7 @@ if (param_edt($_SESSION["statut"]) != "yes") {
 // Initialisation des variables
 $M_couleur = isset($_GET["var1"]) ? $_GET["var1"] : NULL;
 $nouvelle_couleur = isset($_GET["var2"]) ? $_GET["var2"] : "non";
-$matiere = isset($M_couleur) ? substr($M_couleur, 2) : NULL; // pour récupérer le nom court de la matière
+$matiere = isset($M_couleur) ? mb_substr($M_couleur, 2) : NULL; // pour récupérer le nom court de la matière
 $couleur = "";
 
 // on récupère les éléments sur la matière en question
@@ -72,7 +71,7 @@ $verif_couleur = GetSettingEdt($M_couleur);
 
 if ($nouvelle_couleur == "non") {
 	echo '
-<td>'.htmlentities($aff_matiere_long).'</td>
+<td>'.htmlspecialchars($aff_matiere_long).'</td>
 <td>'.$matiere.'</td>
 <td class="cadreCouleur'.$couleur.'">
 	<form id="choixCouleur" method="get" action="">
@@ -121,7 +120,7 @@ if ($nouvelle_couleur == "non") {
 	}
 
 	echo '
-<td>'.htmlentities($aff_matiere_long).'</td>
+<td>'.htmlspecialchars($aff_matiere_long).'</td>
 <td>'.$matiere.'</td>
 <td class="cadreCouleur'.$nouvelle_couleur.'">
 	<p onclick="couleursEdtAjax(\''.$M_couleur.'\', \'non\');">'.MODIFY.'</p>

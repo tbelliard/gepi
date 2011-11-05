@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: import_note_app.php 6609 2011-03-03 15:06:35Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -122,7 +121,7 @@ echo "</p>\n";
 
 echo "<p><span class = 'grand'>Première phase d'importation des moyennes et appréciations </span>";
 //echo "<p class = 'bold'>Groupe : " . $current_group["description"] ." (" . $current_group["classlist_string"] . ")| Matière : " . $current_group["matiere"]["nom_complet"] . " | Période : $nom_periode[$periode_num]</p>";
-echo "<p class = 'bold'>Groupe : " . htmlentities($current_group["description"]) ." (" . $current_group["classlist_string"] . ")| Matière : " . htmlentities($current_group["matiere"]["nom_complet"]) . " | Période : $nom_periode[$periode_num]";
+echo "<p class = 'bold'>Groupe : " . htmlspecialchars($current_group["description"]) ." (" . $current_group["classlist_string"] . ")| Matière : " . htmlspecialchars($current_group["matiere"]["nom_complet"]) . " | Période : $nom_periode[$periode_num]";
 echo "</p>\n";
 
 
@@ -254,7 +253,7 @@ if (isset($is_posted )) {
                                     $valid = 0;
                                 }
                             } else {
-                                $tempo = strtolower($data[$c]);
+                                $tempo = my_strtolower($data[$c]);
                                 if (($tempo == "disp") or ($tempo == "abs") or ($tempo == "-")) {
                                     //echo "<td><p>$data[$c]</p></td>";
                                     echo "<td><p>$data[$c]</p>\n";

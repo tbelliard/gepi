@@ -2,7 +2,6 @@
 
 /*
  *
- * @version $Id$
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
@@ -69,10 +68,10 @@ function get_nom_prenom_from_login($ele_login,$mode) {
 		$lig=mysql_fetch_object($res);
 
 		if($mode=="np") {
-			$retour=strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
+			$retour=my_strtoupper($lig->nom)." ".casse_mot($lig->prenom,'majf2');
 		}
 		else {
-			$retour=ucfirst(strtolower($lig->prenom))." ".strtoupper($lig->nom);
+			$retour=casse_mot($lig->prenom,'majf2')." ".my_strtoupper($lig->nom);
 		}
 	}
 
@@ -92,10 +91,10 @@ function get_infos_from_ele_login($ele_login,$mode) {
 		$lig=mysql_fetch_object($res);
 
 		if($mode=="np") {
-			$retour['denomination']=strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
+			$retour['denomination']=my_strtoupper($lig->nom)." ".casse_mot($lig->prenom,'majf2');
 		}
 		else {
-			$retour['denomination']=ucfirst(strtolower($lig->prenom))." ".strtoupper($lig->nom);
+			$retour['denomination']=casse_mot($lig->prenom,'majf2')." ".my_strtoupper($lig->nom);
 		}
 
 		$retour['nom']=$lig->nom;
@@ -337,7 +336,7 @@ else {
 			$ligne=fgets($fich, 4096);
 			if(trim($ligne)!="") {
 				//echo $ligne."<br />\n";
-				echo htmlentities($ligne)."<br />\n";
+				echo htmlspecialchars($ligne)."<br />\n";
 			}
 		}
 		echo "</div>\n";
@@ -350,7 +349,7 @@ else {
 		while (!feof($fich)) {
 			$ligne=fgets($fich, 4096);
 			if(trim($ligne)!="") {
-				if(substr($ligne,0,20)=="INFOS_ETABLISSEMENT;") {
+				if(mb_substr($ligne,0,20)=="INFOS_ETABLISSEMENT;") {
 					$tab_tmp=explode(";",$ligne);
 					$nom_etab_ori=$tab_tmp[1];
 					$ville_etab_ori=$tab_tmp[2];
@@ -601,7 +600,7 @@ else {
 		while (!feof($fich)) {
 			$ligne=fgets($fich, 4096);
 			if(trim($ligne)!="") {
-				if(substr($ligne,0,20)=="AVIS_CONSEIL_CLASSE;") {
+				if(mb_substr($ligne,0,20)=="AVIS_CONSEIL_CLASSE;") {
 					$tab_tmp=explode(";",$ligne);
 
 					$periode=$tab_tmp[1];
@@ -679,7 +678,7 @@ else {
 					}
 				}
 				//else {
-				elseif(substr($ligne,0,9)=="ABSENCES;") {
+				elseif(mb_substr($ligne,0,9)=="ABSENCES;") {
 
 					$tab_tmp=explode(";",$ligne);
 
@@ -719,7 +718,7 @@ else {
 						}
 					}
 				}
-				elseif((substr($ligne,0,20)!="INFOS_ETABLISSEMENT;")&&(substr($ligne,0,12)!="INFOS_ELEVE;")&&(substr($ligne,0,9)!="ABSENCES;")) {
+				elseif((mb_substr($ligne,0,20)!="INFOS_ETABLISSEMENT;")&&(mb_substr($ligne,0,12)!="INFOS_ELEVE;")&&(mb_substr($ligne,0,9)!="ABSENCES;")) {
 					// $ligne devrait correspondre à une matière
 					// Il faudrait identifier auparavant les matières et les associer aux matières du nouvel établissement...
 
@@ -783,7 +782,7 @@ else {
 						$sql="SELECT 1=1 FROM matieres WHERE matiere='$matiere';";
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
-							echo "<p>Inscription de la matière '".htmlentities($matiere)."' dans la table 'matieres': ";
+							echo "<p>Inscription de la matière '".htmlspecialchars($matiere)."' dans la table 'matieres': ";
 							$sql="INSERT INTO matieres SET matiere='$matiere', nom_complet='$matiere_nom_complet';";
 							$res=mysql_query($sql);
 							if($res) {
@@ -802,7 +801,7 @@ else {
 						$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_matiere='$matiere' AND id_professeur='$login_etab';";
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
-							echo "<p>Inscription de l'association professeur '$login_etab' / matière '".htmlentities($matiere)."' dans la table 'j_professeurs_matieres': ";
+							echo "<p>Inscription de l'association professeur '$login_etab' / matière '".htmlspecialchars($matiere)."' dans la table 'j_professeurs_matieres': ";
 							$sql="INSERT INTO j_professeurs_matieres SET id_matiere='$matiere', id_professeur='$login_etab';";
 							$res=mysql_query($sql);
 							if($res) {
@@ -867,7 +866,7 @@ else {
 						$sql="SELECT 1=1 FROM j_groupes_professeurs WHERE id_groupe='$current_id_groupe' AND login='$login_etab';";
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
-							echo "<p>Inscription de l'association professeur '$login_etab' / groupe '".htmlentities($current_id_groupe)."' dans la table 'j_groupes_professeurs': ";
+							echo "<p>Inscription de l'association professeur '$login_etab' / groupe '".htmlspecialchars($current_id_groupe)."' dans la table 'j_groupes_professeurs': ";
 							$sql="INSERT INTO j_groupes_professeurs SET id_groupe='$current_id_groupe', login='$login_etab';";
 							$res=mysql_query($sql);
 							if($res) {
@@ -925,7 +924,7 @@ else {
 						$res=mysql_query($sql);
 						if(mysql_num_rows($res)==0) {
 						*/
-							echo "<p>Inscription de l'appréciation pour la matière '".htmlentities($matiere)."' sur la période '$periode': ";
+							echo "<p>Inscription de l'appréciation pour la matière '".htmlspecialchars($matiere)."' sur la période '$periode': ";
 							//$sql="INSERT INTO matieres_appreciations SET login='$ele_login', periode='$periode', id_groupe='$current_id_groupe', appreciation='$app';";
 							$sql="INSERT INTO matieres_appreciations SET login='$ele_login', periode='$periode', id_groupe='$current_id_groupe', appreciation='".my_ereg_replace("_POINT_VIRGULE_",";",$app)."';";
 							$res=mysql_query($sql);

@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: traitement_csv.php 6609 2011-03-03 15:06:35Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -167,7 +166,7 @@ for ($row=1; $row<$nb_row; $row++) {
 			$eleve_id_classe = $current_group["classes"]["classes"][$current_group["eleves"][$periode_num]["users"][$reg_login]["classe"]]["id"];
 			if (($current_group["classe"]["ver_periode"][$eleve_id_classe][$periode_num]=="N")||
 			(($current_group["classe"]["ver_periode"][$eleve_id_classe][$periode_num]!="O")&&($_SESSION['statut']=='secours'))) {
-				$reg_note_min = strtolower($reg_note);
+				$reg_note_min = my_strtolower($reg_note);
 				if (preg_match ("/^[0-9\.\,]{1,}$/", $reg_note)) {
 					$reg_note = str_replace(",", ".", "$reg_note");
 					//$test_num = settype($reg_note,"double");
@@ -241,7 +240,7 @@ for ($row=1; $row<$nb_row; $row++) {
 if ($modif == 'yes') {
     $recalcul_rang = sql_query1("select recalcul_rang from groupes
     where id='".$id_groupe."' limit 1 ");
-    $long = strlen($recalcul_rang);
+    $long = mb_strlen($recalcul_rang);
     if ($long >= $periode_num) {
         $recalcul_rang = substr_replace ( $recalcul_rang, "y", $periode_num-1, $periode_num);
     } else {

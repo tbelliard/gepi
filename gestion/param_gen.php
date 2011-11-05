@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: param_gen.php 8378 2011-09-28 16:39:49Z crob $
 *
 * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -72,7 +71,7 @@ if (isset($_POST['valid_logo'])) {
 	//$match=array();
 	//if (my_ereg("\.([^.]+)$", $doc_file['name'], $match)) {
 	if (((function_exists("mb_ereg"))&&(mb_ereg("\.([^.]+)$", $doc_file['name'], $match)))||((function_exists("ereg"))&&(ereg("\.([^.]+)$", $doc_file['name'], $match)))) {
-		$ext = strtolower($match[1]);
+		$ext = my_strtolower($match[1]);
 		if ($ext!='jpg' and $ext!='png'and $ext!='gif') {
 		//if ($ext!='jpg' and $ext!='jpeg' and $ext!='png'and $ext!='gif') {
 			$msg = "les seules extensions autorisées sont gif, png et jpg";
@@ -128,7 +127,7 @@ if (isset($_POST['is_posted'])) {
 		if (isset($_POST['gepiSchoolRne'])) {
 			$enregistrer_gepiSchoolRne='y';
 			if(($multisite=='y')&&(isset($_COOKIE['RNE']))) {
-				if(($_POST['gepiSchoolRne']!='')&&(strtoupper($_POST['gepiSchoolRne'])!=strtoupper($_COOKIE['RNE']))) {
+				if(($_POST['gepiSchoolRne']!='')&&(my_strtoupper($_POST['gepiSchoolRne'])!=my_strtoupper($_COOKIE['RNE']))) {
 					$msg .= "Erreur lors de l'enregistrement du numéro RNE de l'établissement !<br />Le paramètre choisi risque de vous empêcher de vous connecter.<br />Enregistrement refusé!";
 					$enregistrer_gepiSchoolRne='n';
 				}
@@ -333,52 +332,6 @@ if (isset($_POST['is_posted'])) {
 				}
 			}
 		}
-
-		//===============================================================
-		// Traitement des problemes de points d'interrogation à la place des accents
-		if (isset($_POST['mode_utf8_bulletins_pdf'])) {
-			if (!saveSetting("mode_utf8_bulletins_pdf", $_POST['mode_utf8_bulletins_pdf'])) {
-				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_bulletins_pdf !";
-			}
-		}
-		else{
-			if (!saveSetting("mode_utf8_bulletins_pdf", 'n')) {
-				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_bulletins_pdf !";
-			}
-		}
-		/*
-		if (isset($_POST['mode_utf8_listes_pdf'])) {
-			if (!saveSetting("mode_utf8_listes_pdf", $_POST['mode_utf8_listes_pdf'])) {
-				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_listes_pdf !";
-			}
-		}
-		else{
-			if (!saveSetting("mode_utf8_listes_pdf", 'n')) {
-				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_listes_pdf !";
-			}
-		}
-		*/
-		if (isset($_POST['mode_utf8_visu_notes_pdf'])) {
-			if (!saveSetting("mode_utf8_visu_notes_pdf", $_POST['mode_utf8_visu_notes_pdf'])) {
-				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_visu_notes_pdf !";
-			}
-		}
-		else{
-			if (!saveSetting("mode_utf8_visu_notes_pdf", 'n')) {
-				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_visu_notes_pdf !";
-			}
-		}
-
-		if (isset($_POST['mode_utf8_listes_pdf'])) {
-			if (!saveSetting("mode_utf8_listes_pdf", $_POST['mode_utf8_listes_pdf'])) {
-				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_listes_pdf !";
-			}
-		}
-		else{
-			if (!saveSetting("mode_utf8_listes_pdf", 'n')) {
-				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_listes_pdf !";
-			}
-		}
 	
 		if (isset($_POST['type_bulletin_par_defaut'])) {
 			if(($_POST['type_bulletin_par_defaut']=='html')||($_POST['type_bulletin_par_defaut']=='pdf')) {
@@ -390,19 +343,6 @@ if (isset($_POST['is_posted'])) {
 				$msg .= "Valeur erronée pour l'enregistrement du paramètre type_bulletin_par_defaut !";
 			}
 		}
-	
-		/*
-		if (isset($_POST['mode_utf8_releves_pdf'])) {
-			if (!saveSetting("mode_utf8_releves_pdf", $_POST['mode_utf8_releves_pdf'])) {
-				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_releves_pdf !";
-			}
-		}
-		else{
-			if (!saveSetting("mode_utf8_releves_pdf", 'n')) {
-				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_releves_pdf !";
-			}
-		}
-		*/
 	
 		if (isset($_POST['exp_imp_chgt_etab'])) {
 			if (!saveSetting("exp_imp_chgt_etab", $_POST['exp_imp_chgt_etab'])) {
@@ -543,8 +483,8 @@ if (isset($_POST['is_posted'])) {
 		
 		if (isset($_POST['unzipped_max_filesize'])) {
 			$unzipped_max_filesize=$_POST['unzipped_max_filesize'];
-			if(substr($unzipped_max_filesize,0,1)=="-") {$unzipped_max_filesize=-1;}
-			elseif(strlen(my_ereg_replace("[0-9]","",$unzipped_max_filesize))!=0) {
+			if(mb_substr($unzipped_max_filesize,0,1)=="-") {$unzipped_max_filesize=-1;}
+			elseif(mb_strlen(my_ereg_replace("[0-9]","",$unzipped_max_filesize))!=0) {
 				$unzipped_max_filesize=10;
 				$msg .= "Caractères invalides pour le paramètre unzipped_max_filesize<br />Initialisation à 10 Mo !";
 			}
@@ -905,6 +845,7 @@ echo add_token_field();
 
 	<tr>
 		<td style="font-variant: small-caps;">
+
 		<a name='format_login_resp'></a>
 		Mode de génération automatique des logins :</td>
 	<td>
@@ -973,61 +914,6 @@ echo add_token_field();
 	</tr>
 
 
-	<!-- Traitement des problemes de points d'interrogation à la place des accents -->
-<?php
-/*
-	// Apparemment, ce n'est pas utile...
-	<tr>
-		<td style="font-variant: small-caps;" valign='top'>
-		<label for='mode_utf8_releves_pdf' style='cursor: pointer;'>Traitement UTF8 des caractères accentués des relevés de notes PDF&nbsp;:</label>
-		</td>
-		<td>
-		<input type="checkbox" id='mode_utf8_releves_pdf' name="mode_utf8_releves_pdf" value="y"
-		<?php
-			if(getSettingValue("mode_utf8_releves_pdf")=='y'){echo " checked";}
-		?>
-		/>
-		</td>
-	</tr>
-*/
-?>
-	<tr>
-		<td style="font-variant: small-caps;" valign='top'>
-		<label for='mode_utf8_visu_notes_pdf' style='cursor: pointer;'>Traitement UTF8 des caractères accentués dans la visualisation des notes du carnet de notes&nbsp;:</label>
-		</td>
-		<td>
-		<input type="checkbox" id='mode_utf8_visu_notes_pdf' name="mode_utf8_visu_notes_pdf" value="y"
-		<?php
-			if(getSettingValue("mode_utf8_visu_notes_pdf")=='y'){echo " checked";}
-		?>
-		onchange='changement()' />
-		</td>
-	</tr>
-	<tr>
-		<td style="font-variant: small-caps;" valign='top'>
-		<label for='mode_utf8_listes_pdf' style='cursor: pointer;'>Traitement UTF8 des caractères accentués dans les listes PDF&nbsp;:</label>
-		</td>
-		<td>
-		<input type="checkbox" id='mode_utf8_listes_pdf' name="mode_utf8_listes_pdf" value="y"
-		<?php
-			if(getSettingValue("mode_utf8_listes_pdf")=='y'){echo " checked";}
-		?>
-		onchange='changement()' />
-		</td>
-	</tr>
-	<tr>
-		<td style="font-variant: small-caps;" valign='top'>
-		<label for='mode_utf8_bulletins_pdf' style='cursor: pointer;'>Traitement UTF8 des caractères accentués des bulletins PDF&nbsp;:</label>
-		</td>
-		<td>
-		<input type="checkbox" id='mode_utf8_bulletins_pdf' name="mode_utf8_bulletins_pdf" value="y"
-		<?php
-			if(getSettingValue("mode_utf8_bulletins_pdf")=='y'){echo " checked";}
-		?>
-		onchange='changement()' />
-		</td>
-	</tr>
-
 	<tr>
 		<td style="font-variant: small-caps;" valign='top'>
 		Type de bulletins par défaut&nbsp;:
@@ -1046,23 +932,7 @@ echo add_token_field();
 		</td>
 	</tr>
 
-<?php
-/*
-	// Apparemment, ce n'est pas utile...
-	<tr>
-		<td style="font-variant: small-caps;" valign='top'>
-		<label for='mode_utf8_listes_pdf' style='cursor: pointer;'>Traitement UTF8 des caractères accentués des listes PDF&nbsp;:</label>
-		</td>
-		<td>
-		<input type="checkbox" id='mode_utf8_listes_pdf' name="mode_utf8_listes_pdf" value="y"
-		<?php
-			if(getSettingValue("mode_utf8_listes_pdf")=='y'){echo " checked";}
-		?>
-		/>
-		</td>
-	</tr>
-*/
-?>
+
 	<tr>
 		<td style="font-variant: small-caps;">
 		Feuille de style à utiliser :</td>

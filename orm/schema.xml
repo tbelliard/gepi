@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <database name="gepi" defaultIdMethod="native">
 
 	<table name="utilisateurs" phpName="UtilisateurProfessionnel" description="Utilisateur de gepi">
@@ -89,7 +89,7 @@
 		<column name="id_classe" type="INTEGER" size="11" required="true" primaryKey="true" description="identifiant numerique de la classe." />
 		<foreign-key foreignTable="classes" onDelete="cascade"><reference local="id_classe" foreign="id"/></foreign-key>
 		<column name="date_verrouillage" type="TIMESTAMP" required="false" description="date de verrouillage de la periode" />
-		<column name="date_fin" type="TIMESTAMP" required="false" description="date de verrouillage de la periode" />
+		<column name="date_fin" type="TIMESTAMP" required="false" description="date de fin de la periode (utilisé notamment pour le décompte des absences)" />
 	</table>
 
 	<table name="j_scol_classes" description="Table permettant le jointure entre un utilisateur scolarite et une classe.">
@@ -103,7 +103,7 @@
 		</foreign-key>
 	</table>
 
-	<table name="j_groupes_classes" description="Table permettant la jointure entre groupe d'enseignement et une classe. Cette jointure permet de definir un enseignement, c'est à dire un groupe d'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe">
+	<table name="j_groupes_classes" isCrossRef="true" description="Table permettant la jointure entre groupe d'enseignement et une classe. Cette jointure permet de definir un enseignement, c'est à dire un groupe d'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe">
 		<column name="id_groupe" type="INTEGER" required="true" primaryKey="true" description="Cle primaire du groupe"/>
 		<foreign-key foreignTable="groupes" onDelete="cascade">
 			<reference local="id_groupe" foreign="id"/>
@@ -115,9 +115,9 @@
 		<column name="priorite" type="SMALLINT" required="true"/>
 		<column name="coef" type="DECIMAL" required="true"/>
 		<column name="categorie_id" type="INTEGER" required="true"/>
-		<foreign-key foreignTable="matieres_categories">
+		<!--foreign-key foreignTable="matieres_categories" onDelete="cascade">Commenté car se superpose avec j_categorie_matiere_classe
 			<reference local="categorie_id" foreign="id"/>
-		</foreign-key>
+		</foreign-key-->
 		<column name="saisie_ects" type="BOOLEAN" required="false" default="0" description="Active ou non la saisie ECTS pour cet enseignement"/>
 		<column name="valeur_ects" type="DECIMAL" required="false" description="Valeur par défaut des ECTS pour cet enseignement"/>
 	</table>
@@ -229,7 +229,7 @@
 		<column name="ereno" required="true" type="VARCHAR" size="50" description="Plus utilise"/>
 		<column name="ele_id" required="true" type="VARCHAR" size="10" default="" description="cle utilise par Sconet dans ses fichiers xml"/>
 		<column name="email" required="true" type="VARCHAR" size="255" default="" description="Courriel de l'eleve"/>
-		<column name="id_eleve" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire autoincremente"/>
+		<column name="id_eleve" phpName="Id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire autoincremente"/>
                 <column name="date_sortie" required="false" type="TIMESTAMP" default="NULL" description="Timestamp de sortie de l'élève de l'établissement (fin d'inscription)"/>
 		<column name="mef_code" required="false" type="INTEGER" description="code mef de la formation de l'eleve"/>
 		<foreign-key foreignTable="mef" onDelete="setnull"><reference local="mef_code" foreign="mef_code"/></foreign-key>
@@ -272,8 +272,6 @@
 		<foreign-key foreignTable="eleves" onDelete="cascade"><reference local="login" foreign="login"/></foreign-key>
 		<column name="professeur" required="true" primaryKey="true" type="VARCHAR" size="50" description="cle etrangere, login du professeur (utilisateur professionnel)"/>
 		<foreign-key foreignTable="utilisateurs" onDelete="cascade"><reference local="professeur" foreign="login"/></foreign-key>
-		<column name="id_classe" required="true" primaryKey="true" type="INTEGER" size="11" description="cle etrangere, id de la classe"/>
-		<foreign-key foreignTable="classes" onDelete="cascade"><reference local="id_classe" foreign="id"/></foreign-key>
 	</table>
 
 	<table name="j_eleves_regime" phpName="EleveRegimeDoublant" description="Mention du redoublement eventuel de l'eleve ainsi que son regime de presence (externe, demi-pensionnaire, ...)">
@@ -286,14 +284,14 @@
 	<table name="responsables2" phpName="ResponsableInformation" description="Table de jointure entre les eleves et leurs responsables legaux avec mention du niveau de ces responsables">
 		<column name="ele_id" primaryKey="true" required="true" type="VARCHAR" size="10" description="cle etrangere, ele_id de l'eleve"/>
 		<foreign-key foreignTable="eleves" onDelete="cascade"><reference local="ele_id" foreign="ele_id"/></foreign-key>
-		<column name="pers_id" required="true" type="VARCHAR" size="10" description="cle etrangere vers le responsable"/>
+		<column name="pers_id" phpName="ResponsableEleveId" required="true" type="VARCHAR" size="10" description="cle etrangere vers le responsable"/>
 		<foreign-key foreignTable="resp_pers" onDelete="cascade"><reference local="pers_id" foreign="pers_id"/></foreign-key>
-		<column name="resp_legal" primaryKey="true" required="true" type="VARCHAR" size="1" description="Niveau de responsabilite du responsable legal"/>
-		<column name="pers_contact" required="true" type="VARCHAR" size="1" description=""/>
+		<column name="resp_legal" phpName="NiveauResponsabilite" primaryKey="true" required="true" type="VARCHAR" size="1" description="Niveau de responsabilite"/>
+		<column name="pers_contact" description="Champ sconet non utilise" required="false" type="VARCHAR" size="1"/>
 	</table>
 	
 	<table name="resp_pers" phpName="ResponsableEleve" description="Liste des responsables legaux des eleves">
-		<column name="pers_id" required="true" primaryKey="true" type="VARCHAR" size="10" description="cle primaire genere par sconet"/>
+		<column name="pers_id" phpName="ResponsableEleveId" required="true" primaryKey="true" type="VARCHAR" size="10" description="cle primaire genere par sconet"/>
 		<column name="login" required="true" type="VARCHAR" size="50" description="cle primaire du responsable, login utilise comme utilisateur"/>
 		<column name="nom" required="true" type="VARCHAR" size="30" description="Nom du responsable legal"/>
 		<column name="prenom" required="true" type="VARCHAR" size="30" description="Prenom du responsable legal"/>
@@ -302,12 +300,12 @@
 		<column name="tel_port" required="true" type="VARCHAR" size="255" description="Telephone portable du responsable legal"/>
 		<column name="tel_prof" required="true" type="VARCHAR" size="255" description="Telephone professionnel du responsable lega"/>
 		<column name="mel" required="true" type="VARCHAR" size="100" description="Courriel du responsable legal"/>
-		<column name="adr_id" type="VARCHAR" size="10" description="cle etrangere vers l'adresse du responsable lega"/>
+		<column name="adr_id" phpName="AdresseId" type="VARCHAR" size="10" description="cle etrangere vers l'adresse du responsable lega"/>
 		<foreign-key foreignTable="resp_adr" onDelete="setnull"><reference local="adr_id" foreign="adr_id"/></foreign-key>
 	</table>
 
-	<table name="resp_adr" phpName="ResponsableEleveAdresse" description="Table de jointure entre les responsables legaux et leur adresse">
-		<column name="adr_id" required="true" primaryKey="true" type="VARCHAR" size="10" description="cle primaire, genere par sconet"/>
+	<table name="resp_adr" phpName="Adresse" description="Adresse">
+		<column name="adr_id" phpName="Id" required="true" primaryKey="true" type="VARCHAR" size="10" description="cle primaire, genere par sconet"/>
 		<column name="adr1" required="true" type="VARCHAR" size="100" description="1ere ligne adresse"/>
 		<column name="adr2" required="true" type="VARCHAR" size="100" description="2eme ligne adresse"/>
 		<column name="adr3" required="true" type="VARCHAR" size="100" description="3eme ligne adresse"/>
@@ -334,7 +332,7 @@
   </table>
 
   <table name="aid" phpName="AidDetails" description="Liste des AID (Activites Inter-Disciplinaires)">
-    <column name="id" required="true" autoIncrement="true" primaryKey="true" type="VARCHAR" size="100" description="cle primaire auto-incremente"/>
+    <column name="id" required="true" primaryKey="true" type="VARCHAR" size="100" description="cle primaire auto-incremente"/>
     <column name="nom" required="true" type="VARCHAR" size="100" default="" description="Nom de l'AID"/>
     <column name="numero" required="true" type="VARCHAR" size="8" default="0" description="Numero d'ordre d'affichage"/>
     <column name="indice_aid" required="true" type="INTEGER" size="11" default="0" description="Cle etrangere, vers la liste des categories d'AID (aid_config)"/>
@@ -516,7 +514,7 @@
     <column name="type_notification" required="false" type="ENUM" valueSet="courrier, email, sms, communication telephonique" default="null" description="type de notification (0 : courrier, 1 : email, 2 : sms, 3 : telephone"/>
     <column name="email" required="false" type="VARCHAR" size="100" description="email de destination (pour le type email)"/>
     <column name="telephone" required="false" type="VARCHAR" size="100" description="numero du telephone de destination (pour le type sms)"/>
-    <column name="adr_id" required="false" type="VARCHAR" size="10" description="cle etrangere vers l'adresse de destination (pour le type courrier)"/>
+    <column name="adr_id" phpName="AdresseId" required="false" type="VARCHAR" size="10" description="cle etrangere vers l'adresse de destination (pour le type courrier)"/>
     <foreign-key foreignTable="resp_adr" onDelete="setnull"><reference local="adr_id" foreign="adr_id"/></foreign-key>
     <!--foreign-key foreignTable="a_type_envois" onDelete="setnull"><reference local="id_type_envoi" foreign="id"/></foreign-key-->
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
@@ -529,7 +527,7 @@
   <table name="j_notifications_resp_pers" phpName="JNotificationResponsableEleve" description="Table de jointure entre la notification et les personnes dont on va mettre le nom dans le message." isCrossRef="true">
     <column name="a_notification_id" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere de la notification"/>
     <foreign-key foreignTable="a_notifications" onDelete="cascade"><reference local="a_notification_id" foreign="id"/></foreign-key>
-    <column name="pers_id" required="true" primaryKey="true" type="VARCHAR" size="10" description="cle etrangere des personnes"/>
+    <column name="pers_id" phpName="ResponsableEleveId" required="true" primaryKey="true" type="VARCHAR" size="10" description="cle etrangere des personnes"/>
     <foreign-key foreignTable="resp_pers" onDelete="cascade"><reference local="pers_id" foreign="pers_id"/></foreign-key>
   </table>
 
@@ -538,10 +536,10 @@
     <foreign-key foreignTable="eleves" onDelete="cascade"><reference local="eleve_id" foreign="id_eleve"/></foreign-key>
     <column name="date_demi_jounee" type="TIMESTAMP" default="0000-00-00 00:00:00" required="true" primaryKey="true" description="Date de la demi journée agrégée : 00:00 pour une matinée, 12:00 pour une après midi"/>
     <column name="manquement_obligation_presence" default="false" type="BOOLEAN" description="Cette demi journée est comptée comme absence"/>
-    <column name="justifiee" default="false" type="BOOLEAN" description="Si cette demi journée est compté comme absence, y a-t-il une justification"/>
+    <column name="non_justifiee" default="false" type="BOOLEAN" description="Si cette demi journée est compté comme absence, y a-t-il une justification"/>
     <column name="notifiee" default="false" type="BOOLEAN" description="Si cette demi journée est compté comme absence, y a-t-il une notification à la famille"/>
-    <column name="nb_retards" default="0" type="INTEGER" description="Nombre de retards décomptés dans la demi journée"/>
-    <column name="nb_retards_justifies" default="0" type="INTEGER" description="Nombre de retards justifiés décomptés dans la demi journée"/>
+    <column name="retards" default="0" type="INTEGER" description="Nombre de retards total décomptés dans la demi journée"/>
+    <column name="retards_non_justifies" default="0" type="INTEGER" description="Nombre de retards non justifiés décomptés dans la demi journée"/>
     <column name="motifs_absences" type="ARRAY" description="Liste des motifs (table a_motifs) associés à cette demi-journée d'absence"/>
     <column name="motifs_retards" type="ARRAY" description="Liste des motifs (table a_motifs) associés aux retard de cette demi-journée"/>
     <behavior name="timestampable"/>    

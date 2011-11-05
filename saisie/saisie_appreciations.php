@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: saisie_appreciations.php 8416 2011-10-04 12:28:15Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -298,7 +297,7 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 			// Il y avait une appréciation saisie
 			// Si l'autorisation de proposition de correction est donnée, c'est OK
 			// Sinon, on contrôle quand même s'il y a une autorisation exceptionnelle
-			if(substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y') {
+			if(mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y') {
 				$saisie_valide='y';
 			}
 			elseif($autorisation_exceptionnelle_de_saisie=='y') {
@@ -331,8 +330,8 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 		
 				$correction_nom_prenom_eleve=get_nom_prenom_eleve($correction_login_eleve);
 		
-				if((strlen(preg_replace('/[A-Za-z0-9._-]/','',$correction_login_eleve))!=0)||
-				(strlen(preg_replace('/[0-9]/','',$correction_periode))!=0)) {
+				if((mb_strlen(preg_replace('/[A-Za-z0-9._-]/','',$correction_login_eleve))!=0)||
+				(mb_strlen(preg_replace('/[0-9]/','',$correction_periode))!=0)) {
 					$msg.="Des caractères invalides sont proposés pour le login élève $correction_nom_prenom_eleve ou pour la période $correction_periode.<br />";
 				}
 				else {
@@ -660,7 +659,7 @@ $insert_mass_appreciation_type=getSettingValue("insert_mass_appreciation_type");
 if ($insert_mass_appreciation_type=="y") {
 	// INSERT INTO setting SET name='insert_mass_appreciation_type', value='y';
 
-	$sql="CREATE TABLE IF NOT EXISTS b_droits_divers (login varchar(50) NOT NULL default '', nom_droit varchar(50) NOT NULL default '', valeur_droit varchar(50) NOT NULL default '');";
+	$sql="CREATE TABLE IF NOT EXISTS b_droits_divers (login varchar(50) NOT NULL default '', nom_droit varchar(50) NOT NULL default '', valeur_droit varchar(50) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$create_table=mysql_query($sql);
 
 	// Pour tester:
@@ -716,7 +715,7 @@ echo "<h2 class='gepi'>Bulletin scolaire - Saisie des appréciations</h2>\n";
 echo "<p>Vous pouvez faire apparaître dans votre appréciation la liste des notes de l'élève pour la période en insérant la chaine de caractères <b>@@Notes</b><br />(<i>les notes apparaîtront alors lors de la visualisation/impression du bulletin</i>)</p>\n";
 
 //echo "<p><b>Groupe : " . $current_group["description"] ." | Matière : $matiere_nom</b></p>\n";
-echo "<p><b>Groupe : " . htmlentities($current_group["description"]) ." (".$current_group["classlist_string"].")</b></p>\n";
+echo "<p><b>Groupe : " . htmlspecialchars($current_group["description"]) ." (".$current_group["classlist_string"].")</b></p>\n";
 
 if ($multiclasses) {
 	echo "<p>Affichage :";
@@ -843,7 +842,7 @@ while ($k < $nb_periode) {
 	if(((($current_group["classe"]["ver_periode"]['all'][$k] == 0)||($current_group["classe"]["ver_periode"]['all'][$k] == 1))&&($_SESSION['statut']!='secours'))||
 	(($current_group["classe"]["ver_periode"]['all'][$k]==0)&&($_SESSION['statut']=='secours'))) {
 
-		//$mess[$k].=htmlentities(nl2br($app_grp[$k]));
+		//$mess[$k].=htmlspecialchars(nl2br($app_grp[$k]));
 		$mess[$k].=nl2br($app_grp[$k]);
 
 	}
@@ -1045,15 +1044,15 @@ foreach ($liste_eleves as $eleve_login) {
 				if(mysql_num_rows($test_cn_moy)>0) {
 					$lig_cnc=mysql_fetch_object($test_cn_moy);
 					//$notes_conteneurs.="<center>\n";
-					//$notes_conteneurs.="<b>".ucfirst(htmlentities($lig_cnc->nom_complet))."&nbsp;:</b> ";
-					$notes_conteneurs.="<b>".ucfirst(htmlentities($lig_cnc->nom_court))."&nbsp;:</b> ";
+					//$notes_conteneurs.="<b>".ucfirst(htmlspecialchars($lig_cnc->nom_complet))."&nbsp;:</b> ";
+					$notes_conteneurs.="<b>".ucfirst(htmlspecialchars($lig_cnc->nom_court))."&nbsp;:</b> ";
 					if($lig_cnc->statut=='y') {$notes_conteneurs.=$lig_cnc->note;} else {$notes_conteneurs.=$lig_cnc->statut;}
 
 					$cpt_cnc=1;
 					while($lig_cnc=mysql_fetch_object($test_cn_moy)) {
 						$notes_conteneurs.=", ";
-						//$notes_conteneurs.="<b>".ucfirst(htmlentities($lig_cnc->nom_complet))."&nbsp;:</b> ";
-						$notes_conteneurs.="<b>".ucfirst(htmlentities($lig_cnc->nom_court))."&nbsp;:</b> ";
+						//$notes_conteneurs.="<b>".ucfirst(htmlspecialchars($lig_cnc->nom_complet))."&nbsp;:</b> ";
+						$notes_conteneurs.="<b>".ucfirst(htmlspecialchars($lig_cnc->nom_court))."&nbsp;:</b> ";
 						if($lig_cnc->statut=='y') {$notes_conteneurs.=$lig_cnc->note;} else {$notes_conteneurs.=$lig_cnc->statut;}
 					}
 					//$notes_conteneurs.="</center><br />\n";
@@ -1125,7 +1124,7 @@ foreach ($liste_eleves as $eleve_login) {
 				//if(($_SESSION['statut']=='professeur')&&($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]=="P")) {
 				if(($_SESSION['statut']=='professeur')&&($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]=="P")) {
 
-					if((($eleve_app!='')&&(substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y'))||
+					if((($eleve_app!='')&&(mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y'))||
 					($tab_autorisation_exceptionnelle_de_saisie[$k]=='y')) {
 
 						//$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"document.getElementById('correction_login_eleve').value='$eleve_login';document.getElementById('span_correction_login_eleve').innerHTML='$eleve_login';document.getElementById('correction_periode').value='$k';document.getElementById('span_correction_periode').innerHTML='$k';document.getElementById('correction_app_eleve').value=addslashes('$eleve_app');afficher_div('div_correction','y',-100,20);return false;\" title='Proposer une correction'><img src='../images/edit16.png' width='16' height='16' alt='Proposer une correction' /></a></div>\n";
@@ -1284,7 +1283,7 @@ foreach ($liste_eleves as $eleve_login) {
 						//if(file_exists($_photo_eleve.".jpg")) {
 							//$mess[$k].=";affiche_photo('".$_photo_eleve.".jpg','".addslashes(strtoupper($eleve_nom)." ".ucfirst(strtolower($eleve_prenom)))."')";
 						if(file_exists($_photo_eleve)) {
-							$mess[$k].=";affiche_photo('".$_photo_eleve."','".addslashes(strtoupper($eleve_nom)." ".ucfirst(strtolower($eleve_prenom)))."')";
+							$mess[$k].=";affiche_photo('".$_photo_eleve."','".addslashes(my_strtoupper($eleve_nom)." ".casse_mot($eleve_prenom,'majf2'))."')";
 						}
 						else {
 							$mess[$k].="document.getElementById('div_photo_eleve').innerHTML='';";
@@ -1591,7 +1590,7 @@ echo "</script>\n";
 // =======================
 // 20100604
 if(($_SESSION['statut']=='professeur')&&
-((substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y')||($une_autorisation_exceptionnelle_de_saisie_au_moins=='y'))) {
+((mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y')||($une_autorisation_exceptionnelle_de_saisie_au_moins=='y'))) {
 	$titre="Correction d'une appréciation";
 	$texte="<form enctype=\"multipart/form-data\" action=\"saisie_appreciations.php\" name='form_correction' method=\"post\">\n";
 	$texte.=add_token_field();

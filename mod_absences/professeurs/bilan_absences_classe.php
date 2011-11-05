@@ -2,7 +2,7 @@
 
 /**
  *
- * @version $Id: bilan_absences_classe.php 2147 2008-07-23 09:01:04Z tbelliard $
+ * @version $Id$
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

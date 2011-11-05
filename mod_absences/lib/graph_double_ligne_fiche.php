@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id: graph_double_ligne_fiche.php 2147 2008-07-23 09:01:04Z tbelliard $
+* $Id$
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.

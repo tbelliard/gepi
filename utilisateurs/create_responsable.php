@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: create_responsable.php 8568 2011-10-28 15:48:24Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -516,10 +515,12 @@ else{
 				//echo "<td valign='top'>\n";
 				echo "<td>\n";
 				echo "<input type='submit' value='Créer' onclick=\"$('create_pers_id').value='".$current_parent->pers_id."'; $('form_create_one_resp').submit();\" />\n";
-				echo "<td>".strtoupper($current_parent->nom)." ".ucfirst(strtolower($current_parent->prenom))."</td>\n";
+				//echo "<td>".strtoupper($current_parent->nom)." ".ucfirst(strtolower($current_parent->prenom))."</td>\n";
+				echo "<td>".casse_mot($current_parent->nom,'maj')." ".casse_mot($current_parent->prenom,'majf2')."</td>\n";
 				echo "<td>\n";
 				while($lig_ele=mysql_fetch_object($test)){
-					echo "Responsable légal $lig_ele->resp_legal de ".ucfirst(strtolower($lig_ele->prenom))." ".strtoupper($lig_ele->nom)." (<i>$lig_ele->classe</i>)<br />\n";
+					//echo "Responsable légal $lig_ele->resp_legal de ".ucfirst(strtolower($lig_ele->prenom))." ".strtoupper($lig_ele->nom)." (<i>$lig_ele->classe</i>)<br />\n";
+					echo "Responsable légal $lig_ele->resp_legal de ".casse_mot($lig_ele->prenom,'majf2')." ".casse_mot($lig_ele->nom,'maj')." (<i>$lig_ele->classe</i>)<br />\n";
 				}
 				echo "</td>\n";
 			echo "</tr>\n";

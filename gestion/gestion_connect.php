@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: gestion_connect.php 8051 2011-08-30 08:32:48Z crob $
  *
  * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -227,6 +226,7 @@ $sql = "select u.login, concat(u.prenom, ' ', u.nom) utilisa, u.email, u.auth_mo
 $res = sql_query($sql);
 if ($res) {
     for ($i = 0; ($row = sql_row($res, $i)); $i++) {
+
 		echo("<li>" . $row[1]. " | <a href=\"mailto:" . $row[2] . "\">Envoyer un mail</a>");
 
 		$afficher_deconnecter_et_changer_mdp="n";
@@ -541,9 +541,9 @@ $sql = "select START from log order by END";
 $res = sql_query($sql);
 $logs_number = sql_count($res);
 $row = sql_row($res, 0);
-$annee = substr($row[0],0,4);
-$mois =  substr($row[0],5,2);
-$jour =  substr($row[0],8,2);
+$annee = mb_substr($row[0],0,4);
+$mois =  mb_substr($row[0],5,2);
+$jour =  mb_substr($row[0],8,2);
 echo "<p>Nombre d'entrées actuellement présentes dans le journal de connexion : <span style='font-weight:bold'>".$logs_number."</span><br />";
 echo "Actuellement, le journal contient l'historique des connexions depuis le <span style='font-weight:bold'>".$jour."/".$mois."/".$annee."</span></p>";
 echo "<p><span style='font-weight:bold'>ATTENTION : </span>En validant le bouton ci-dessous, <span style='font-weight:bold'>toutes les entrées du journal de connexion (hormis les connexions en cours) seront supprimées</span>.</p>";
@@ -754,21 +754,21 @@ $nb_ligne = 1;
 
 if ($res) {
     for ($i = 0; ($row = sql_row($res, $i)); $i++) {
-        $annee_f = substr($row[8],0,4);
-        $mois_f =  substr($row[8],5,2);
-        $jour_f =  substr($row[8],8,2);
-        $heures_f = substr($row[8],11,2);
-        $minutes_f = substr($row[8],14,2);
-        $secondes_f = substr($row[8],17,2);
+        $annee_f = mb_substr($row[8],0,4);
+        $mois_f =  mb_substr($row[8],5,2);
+        $jour_f =  mb_substr($row[8],8,2);
+        $heures_f = mb_substr($row[8],11,2);
+        $minutes_f = mb_substr($row[8],14,2);
+        $secondes_f = mb_substr($row[8],17,2);
         //$date_fin_f = $jour_f."/".$mois_f."/".$annee_f." à ".$heures_f." h ".$minutes_f;
         $date_fin_f = $jour_f."/".$mois_f."/".$annee_f." à ".$heures_f."&nbsp;h&nbsp;".$minutes_f;
         $end_time = mktime($heures_f, $minutes_f, $secondes_f, $mois_f, $jour_f, $annee_f);
-        $annee_b = substr($row[2],0,4);
-        $mois_b =  substr($row[2],5,2);
-        $jour_b =  substr($row[2],8,2);
-        $heures_b = substr($row[2],11,2);
-        $minutes_b = substr($row[2],14,2);
-        $secondes_b = substr($row[2],17,2);
+        $annee_b = mb_substr($row[2],0,4);
+        $mois_b =  mb_substr($row[2],5,2);
+        $jour_b =  mb_substr($row[2],8,2);
+        $heures_b = mb_substr($row[2],11,2);
+        $minutes_b = mb_substr($row[2],14,2);
+        $secondes_b = mb_substr($row[2],17,2);
         //$date_debut = $jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b;
         $date_debut = $jour_b."/".$mois_b."/".$annee_b." à ".$heures_b."&nbsp;h&nbsp;".$minutes_b;
         $temp1 = '';
@@ -807,7 +807,7 @@ if ($res) {
             $result_hostbyaddr = " - ".@gethostbyaddr($row[4]);
 		}
         else if($active_hostbyaddr == "no_local") {
-            if ((substr($row[4],0,3) == 127) or (substr($row[4],0,3) == 10.) or (substr($row[4],0,7) == 192.168)) {
+            if ((mb_substr($row[4],0,3) == 127) or (mb_substr($row[4],0,3) == 10.) or (mb_substr($row[4],0,7) == 192.168)) {
                 $result_hostbyaddr = "";
             }
 			else{

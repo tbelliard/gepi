@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: index.php 7192 2011-06-10 19:30:33Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -70,7 +69,7 @@ if ($current_group) {
 
     echo " | <a href='index.php'>Mes enseignements</a></p>\n";
     //echo "<p class='grand'> Groupe : " . $current_group["description"] . " ($classes) | Matière : $matiere_nom</p>";
-    echo "<p class='grand'> Groupe : " . htmlentities($current_group["description"]) . " ($classes) | Matière : ".htmlentities($matiere_nom)."</p>\n";
+    echo "<p class='grand'> Groupe : " . htmlspecialchars($current_group["description"]) . " ($classes) | Matière : ".htmlspecialchars($matiere_nom)."</p>\n";
     //echo "<p class='bold'>Saisie manuelle (tous trimestres) :</p>\n<ul>\n";
 
 	/*
@@ -391,10 +390,10 @@ if ($current_group) {
 			$test_jgv=mysql_query($sql);
 			if(mysql_num_rows($test_jgv)==0) {
 				//echo "<p><a href='index.php?id_groupe=" . $group["id"] . "'>" . $group["description"] . "</a> (" . $group["classlist_string"] . ")</p>\n";
-				//echo "<p><a href='index.php?id_groupe=" . $group["id"] . "'>" . htmlentities($group["description"]) . "</a> (" . $group["classlist_string"] . ")</p>\n";
-				//echo "<p><a href='index.php?id_groupe=" . $group["id"] . "'>" . htmlentities($group["description"]) . "</a> (" . $group["classlist_string"] . ")</p>\n";
+				//echo "<p><a href='index.php?id_groupe=" . $group["id"] . "'>" . htmlspecialchars($group["description"]) . "</a> (" . $group["classlist_string"] . ")</p>\n";
+				//echo "<p><a href='index.php?id_groupe=" . $group["id"] . "'>" . htmlspecialchars($group["description"]) . "</a> (" . $group["classlist_string"] . ")</p>\n";
 				echo "<p><span class='norme'><b>" . $group["classlist_string"] . "</b> : ";
-				echo "<a href='index.php?id_groupe=" . $group["id"] ."'>" . htmlentities($group["description"]) . "</a>";
+				echo "<a href='index.php?id_groupe=" . $group["id"] ."'>" . htmlspecialchars($group["description"]) . "</a>";
 				echo "</span></p>\n";
 			}
         }
@@ -420,13 +419,13 @@ if ($current_group) {
 		if(mysql_num_rows($res_prof)>0){
 			$texte_alternatif="";
 			while($ligne=mysql_fetch_object($res_prof)){
-				$texte_alternatif.=", ".ucfirst(strtolower($ligne->prenom))." ".strtoupper($ligne->nom);
+				$texte_alternatif.=", ".casse_mot($ligne->prenom,'majf2')." ".my_strtoupper($ligne->nom);
 			}
-			$texte_alternatif=substr($texte_alternatif,2);
+			$texte_alternatif=mb_substr($texte_alternatif,2);
 		}
 
 		//echo "<a href='index.php?id_groupe=" . $group["id"] . "'>" . $group["description"] . "</a> - \n";
-		echo "<a href='index.php?id_groupe=" . $group["id"] . "' title='$texte_alternatif'>" . htmlentities($group["description"]) . "</a> - \n";
+		echo "<a href='index.php?id_groupe=" . $group["id"] . "' title='$texte_alternatif'>" . htmlspecialchars($group["description"]) . "</a> - \n";
             }
             $i++;
             echo "</span>\n";

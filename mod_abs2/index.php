@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id: index.php 8120 2011-09-04 13:46:17Z dblanqui $
  *
  * Copyright 2010 Josselin Jacquard
  *

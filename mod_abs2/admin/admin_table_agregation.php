@@ -1,7 +1,6 @@
 <?php
 /*
  *
- *  @version $Id: admin_table_agregation.php 7939 2011-08-24 08:33:52Z dblanqui $
  *
  * Copyright 2010-2011 Josselin Jacquard
  *

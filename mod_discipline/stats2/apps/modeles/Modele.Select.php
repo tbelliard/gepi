@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: Modele.Select.php 8198 2011-09-11 18:14:54Z dblanqui $
  *
  * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Didier Blanqui
  *

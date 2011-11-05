@@ -1,6 +1,5 @@
 <?php
 
-/* $Id: couleurs_ccm.php 2500 2008-09-30 17:52:57Z crob $ */
 
 $couleurs_ccm=array('aliceblue', '240', '248', '255',
 'antiquewhite', '250', '235', '215',

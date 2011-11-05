@@ -2,7 +2,7 @@
 
 /**
  *
- * @version $Id: edt_cours.class.php 4869 2010-07-22 13:32:34Z jjocal $
+ * @version $Id$
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
@@ -309,7 +309,7 @@ class edtAfficher{
 			for($a = 0 ; $a < $rep["nbre"] ; $a++){
 				$rep[$a]["id"] = mysql_result($query, $a, "id_definie_periode");
 				$rep[$a]["nom"] = mysql_result($query, $a, "nom_definie_periode");
-				$rep[$a]["horaire"] = substr(mysql_result($query, $a, "heuredebut_definie_periode"), 0, 5);
+				$rep[$a]["horaire"] = mb_substr(mysql_result($query, $a, "heuredebut_definie_periode"), 0, 5);
 			}
 
 		}
@@ -366,7 +366,7 @@ class edtAfficher{
 
 		$liste_cours = $this->edt_jour($jour, $prof);
 		// petite verif sur le contenu
-		if (!is_array($liste_cours) AND substr($liste_cours, 0, 7) == 'Ce_mode') {
+		if (!is_array($liste_cours) AND mb_substr($liste_cours, 0, 7) == 'Ce_mode') {
 			return $liste_cours;
 			exit;
 		}
@@ -521,7 +521,7 @@ class edtAfficher{
 		$matiere = $cours->matiere();
 
 		$contenu .= '<p style="text-align: center;">'.
-			$prof["civilite"].$prof["nom"].' '.substr($prof["prenom"], 0, 1).'.<br />'.
+			$prof["civilite"].$prof["nom"].' '.mb_substr($prof["prenom"], 0, 1).'.<br />'.
 			$matiere["name"].'<br /><i>salle&nbsp;'.$cours->edt_salle.'</i>
 			</p>';
 

@@ -1,7 +1,6 @@
 <?php
 
 /*
- * $Id: liste_sanctions_jour.php 7136 2011-06-05 14:20:55Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -41,7 +40,7 @@ if (!checkAccess()) {
 	die();
 }
 
-if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+if(strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
 	header("Location: ../accueil.php?msg=$mess");
@@ -100,9 +99,9 @@ if(!isset($jour_sanction)) {
 	$jour_sanction=$jour."/".$mois."/".$annee;
 }
 else {
-	$jour=substr($jour_sanction,0,2);
-	$mois=substr($jour_sanction,3,2);
-	$annee=substr($jour_sanction,6,4);
+	$jour=mb_substr($jour_sanction,0,2);
+	$mois=mb_substr($jour_sanction,3,2);
+	$annee=mb_substr($jour_sanction,6,4);
 }
 
 $timestamp=mktime(0,0,0,$mois,$jour,$annee);
@@ -153,9 +152,9 @@ $cpt_sanctions=0;
 $login_declarant="";
 
 /*
-$jour =  substr($jour_sanction,0,2);
-$mois =  substr($jour_sanction,3,2);
-$annee = substr($jour_sanction,6,4);
+$jour =  mb_substr($jour_sanction,0,2);
+$mois =  mb_substr($jour_sanction,3,2);
+$annee = mb_substr($jour_sanction,6,4);
 */
 $mysql_jour_sanction=$annee."-".$mois."-".$jour;
 

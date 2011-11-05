@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: index.php 8561 2011-10-28 10:00:38Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -338,7 +337,7 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 				$msg.="Erreur de téléchargement niveau 1 (<i>photo n°$cpt_photo</i>).<br />";
 			} else if (!file_exists($sav_photo['tmp_name'][$cpt_photo])) {
 				$msg.="Erreur de téléchargement niveau 2 (<i>photo n°$cpt_photo</i>).<br />";
-			} else if (strtolower($sav_photo['type'][$cpt_photo])!="image/jpeg") {
+			} else if (my_strtolower($sav_photo['type'][$cpt_photo])!="image/jpeg") {
 				$msg.="Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés (<i>".$sav_photo['name'][$cpt_photo]."&nbsp;: ".$sav_photo['type'][$cpt_photo]."</i>)<br />";
 			} else if (!(preg_match('/jpg$/i',$sav_photo['name'][$cpt_photo]) || preg_match('/jpeg$/i',$sav_photo['name'][$cpt_photo]))) {
 				$msg.="Erreur : seuls les fichiers ayant l'extension .jpg ou .jpeg sont autorisés (<i>".$sav_photo['name'][$cpt_photo]."</i>)<br />";
@@ -1236,7 +1235,7 @@ if(isset($quelles_classes)) {
 			");
 			*/
 			/*
-			if(substr($order_type,0,6)=='regime') {
+			if(mb_substr($order_type,0,6)=='regime') {
 				$tmp_order_type=my_ereg_replace('^regime,','',$order_type);
 			}
 			else {
@@ -1829,7 +1828,7 @@ if(isset($quelles_classes)) {
 	echo "<br />\n";
 	$temoin_notes_bas_de_page="n";
 	$max_file_uploads=ini_get('max_file_uploads');
-	if(($max_file_uploads!="")&&(strlen(preg_replace("/[^0-9]/","",$max_file_uploads))==strlen($max_file_uploads))&&($max_file_uploads>0)) {
+	if(($max_file_uploads!="")&&(mb_strlen(preg_replace("/[^0-9]/","",$max_file_uploads))==mb_strlen($max_file_uploads))&&($max_file_uploads>0)) {
 		echo "<p><i>Notes</i>&nbsp;:</p>\n";
 		echo "<ul>\n";
 		echo "<li><p>L'upload des photos est limité à $max_file_uploads fichier(s) simultanément.</p></li>\n";

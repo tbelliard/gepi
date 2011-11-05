@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version $Id: interface_abs.php 2147 2008-07-23 09:01:04Z tbelliard $
+ * @version $Id$
  *
  * Fichier de paramétrage de l'interface professeur pour la saisie des absences
  *

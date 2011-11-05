@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: index.php 5907 2010-11-19 20:30:52Z crob $
+ * $Id$
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

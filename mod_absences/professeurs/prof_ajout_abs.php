@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * $Id: prof_ajout_abs.php 8584 2011-11-01 17:34:07Z mleygnac $
+ * $Id$
  *
  * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
@@ -726,7 +726,7 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 		foreach ($group["classes"]["classes"] as $classe) {
 			$str .= $classe["classe"] . ", ";
 		}
-		$str = substr($str, 0, -2);
+		$str = mb_substr($str, 0, -2);
 		echo $str . ")</option>";
 	}
 	// Et on ajoute les AID

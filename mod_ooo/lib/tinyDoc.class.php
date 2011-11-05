@@ -278,7 +278,7 @@ class tinyDoc extends clsTinyButStrong
       default:
         // save the merged result
         $fdw = fopen($this->getProcessDir().DIRECTORY_SEPARATOR.$this->getBasename().DIRECTORY_SEPARATOR.$this->getXmlFilename(), "w");
-        fwrite($fdw, $this->Source, strlen($this->Source));
+        fwrite($fdw, $this->Source, mb_strlen($this->Source));
         fclose ($fdw);
 
         // change the current directory to basename in process dir
@@ -886,7 +886,7 @@ class tinyDoc extends clsTinyButStrong
     {
       $unzipBinary = self::escapeShellCommand($unzipBinary);
 
-      if (strlen(shell_exec($unzipBinary.' -h')) == 0)
+      if (mb_strlen(shell_exec($unzipBinary.' -h')) == 0)
       {
         throw new tinyDocException(sprintf('"%s" not executable', $unzipBinary));
       }
@@ -918,7 +918,7 @@ class tinyDoc extends clsTinyButStrong
     {
       $zipBinary = self::escapeShellCommand($zipBinary);
 
-      if (strlen(shell_exec($zipBinary.' -h')) == 0)
+      if (mb_strlen(shell_exec($zipBinary.' -h')) == 0)
       {
         throw new tinyDocException(sprintf('"%s" not executable', $zipBinary));
       }
@@ -1069,7 +1069,7 @@ class tinyDoc extends clsTinyButStrong
       $Txt = substr_replace($Txt, $newContainer, $Loc->PosBeg, $Loc->PosEnd - $Loc->PosBeg + 1 );
 
       // correct 'Loc' to include the change of the new cell container
-      $delta = strlen($newContainer) - strlen($container);
+      $delta = mb_strlen($newContainer) - mb_strlen($container);
       $Loc->PosBeg   = $posBeg + $delta;
       $Loc->PosEnd   = $posEnd + $delta;
       $Loc->Enlarged = null;
@@ -1221,7 +1221,7 @@ class tinyDoc extends clsTinyButStrong
     if (strpos($command, ' ') !== false)
     {
       $command = (strpos($command, '"') === 0 ? '' : '"').$command;
-      $command = $command.((strrpos($command, '"') == strlen($command)-1) ? '' : '"');
+      $command = $command.((strrpos($command, '"') == mb_strlen($command)-1) ? '' : '"');
     }
     return $command;
   }

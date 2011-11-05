@@ -7,7 +7,6 @@
  * against a SQL database.
  *
  * @package simpleSAMLphp
- * @version $Id$
  */
 class sspmod_gepiauth_Auth_Source_LocalDB extends sspmod_core_Auth_UserPassOrgBase {
 

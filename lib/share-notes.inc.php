@@ -1,7 +1,6 @@
 <?php
 /** Fonctions de manipulation des conteneurs
  * 
- * $Id: share-notes.inc.php 8539 2011-10-25 14:35:35Z crob $
  * 
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * 
@@ -73,10 +72,23 @@ function mise_a_jour_moyennes_conteneurs($_current_group, $periode_num,$id_racin
 }
 
 
+/**
+ * Remplit un fichier de suivi des actions
+ * 
+ * Passer la variable $local_debug à "y" pour activer le remplissage du fichier "/tmp/calcule_moyenne.txt" de debug
+ * 
+ * @param string $texte 
+ */
+function fdebug($texte){
+	$local_debug="n";
+	if($local_debug=="y") {
+		$fich=fopen("/tmp/calcule_moyenne.txt","a+");
+		fwrite($fich,$texte);
+		fclose($fich);
+	}
+}
 
-//
-// 
-//
+
 /**
  *Liste des sous-conteneurs d'un conteneur
  * 

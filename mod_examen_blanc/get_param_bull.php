@@ -1,6 +1,5 @@
 <?php
 /*
-$Id: get_param_bull.php 3746 2009-11-20 08:58:25Z crob $
 */
 
 	$val_defaut_champ_bull_pdf["nom_model_bulletin"]="Nom du modèle";
@@ -33,7 +32,7 @@ $Id: get_param_bull.php 3746 2009-11-20 08:58:25Z crob $
 	$val_defaut_champ_bull_pdf["affiche_nom_court"]=0;
 	$val_defaut_champ_bull_pdf["affiche_effectif_classe"]=0;
 	$val_defaut_champ_bull_pdf["affiche_numero_impression"]=0;
-	$val_defaut_champ_bull_pdf["caractere_utilse"]="Arial";
+	$val_defaut_champ_bull_pdf["caractere_utilse"]="DejaVu";
 	$val_defaut_champ_bull_pdf["X_parent"]=110;
 	$val_defaut_champ_bull_pdf["Y_parent"]=40;
 	$val_defaut_champ_bull_pdf["X_eleve"]=5;

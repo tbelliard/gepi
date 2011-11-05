@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: ImportCtrl.php 7805 2011-08-17 13:43:12Z dblanqui $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

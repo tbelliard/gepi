@@ -1,5 +1,5 @@
 <?php
-/* $Id: select_eleves.php 5984 2010-11-24 14:54:46Z crob $ */
+/* $Id$ */
 /*
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -55,7 +55,6 @@ if (!checkAccess()) {
 // Tableau des classes:
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 // Vérifier s'il peut y avoir des accents dans un id_classe.
-//if((strlen(my_ereg_replace("[0-9a-zA-Z_ ]","",$id_classe))!=0)||($id_classe=="")){$id_classe=NULL;}
 
 // Type de brevet:
 $type_brevet=isset($_POST['type_brevet']) ? $_POST['type_brevet'] : (isset($_GET['type_brevet']) ? $_GET['type_brevet'] : NULL);
@@ -84,7 +83,7 @@ if((isset($type_brevet))&&(isset($choix_eleves))&&(isset($ele_login))) {
 login VARCHAR( 50 ) NOT NULL ,
 type_brevet TINYINT NOT NULL ,
 PRIMARY KEY ( login )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$res=mysql_query($sql);
 	if(!$res) {
 		$msg.="ERREUR lors de la création de la table 'notanet_ele_type'.<br />";

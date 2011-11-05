@@ -1,9 +1,8 @@
 <?php
 
 /*
- * $Id: classes_ajax_lib.php 3323 2009-08-05 10:06:18Z crob $
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -65,7 +64,7 @@ if($mode=='classes_param') {
 			//echo "<option value=''>---</option>\n";
 			if(mysql_num_rows($res_prof)>0) {
 				while($lig_prof=mysql_fetch_object($res_prof)) {
-					echo "<option value='$lig_prof->login'>".strtoupper($lig_prof->nom)." ".ucfirst(strtolower($lig_prof->prenom))."</option>\n";
+					echo "<option value='$lig_prof->login'>".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom,'majf2')."</option>\n";
 				}
 			}
 			echo "</select>\n";

@@ -3,7 +3,6 @@
 /**
  * Fichier qui permet de construire la barre de menu scolarité
  * 
- * $Id: header_barre_scolarite_template.php 8300 2011-09-21 14:42:31Z crob $
  *
  * Variables envoyées au gabarit : liens de la barre de menu scolarité
  * - $tbs_menu_admin = array(li)

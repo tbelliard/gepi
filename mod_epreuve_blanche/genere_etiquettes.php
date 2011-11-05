@@ -1,5 +1,4 @@
 <?php
-/* $Id: genere_etiquettes.php 8060 2011-08-30 21:58:08Z jjacquard $ */
 /*
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -71,7 +70,7 @@ type VARCHAR( 255 ) NOT NULL ,
 nom VARCHAR( 255 ) NOT NULL ,
 valeur smallint(6) unsigned NOT NULL ,
 PRIMARY KEY ( id )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 // Enregistrement des valeurs
@@ -174,10 +173,9 @@ if((isset($mode))&&($mode=='imprime')) {
 			$id_salle[]=$lig_salle->id;
 		}
 
-if (!defined('FPDF_VERSION')) {
-	require_once('../fpdf/fpdf.php');
-}
-		require('../fpdf/ex_fpdf.php');
+		if (!defined('FPDF_VERSION')) {
+		  require_once('../fpdf/fpdf.php');
+		}
 		
 		define('FPDF_FONTPATH','../fpdf/font/');
 		//define('LargeurPage','210');
@@ -208,7 +206,7 @@ if (!defined('FPDF_VERSION')) {
 				if($no_footer=='n') {
 
 					$this->SetXY(5,$hauteur_page-10);
-					$this->SetFont('arial','',7.5);
+					$this->SetFont('DejaVu','',7.5);
 	
 					//$texte=getSettingValue("gepiSchoolName")."  ";
 					$texte=$intitule_epreuve." ($date_epreuve) - ".$salle_courante;
@@ -237,7 +235,7 @@ if (!defined('FPDF_VERSION')) {
 		$pdf->SetDrawColor(0,0,0);
 		$pdf->SetLineWidth(0.2);
 
-		$fonte='arial';
+		$fonte='DejaVu';
 		$fs=10;
 		$sc_interligne=1.3;
 
@@ -260,7 +258,7 @@ if (!defined('FPDF_VERSION')) {
 				//Entête du PDF
 				//$pdf->SetLineWidth(0.7);
 				/*
-				$pdf->SetFont($fonte,'B',14);
+				$pdf->SetFont('DejaVu','B',14);
 				$pdf->Setxy(10,10);
 				$pdf->Cell($largeur_page-$MargeDroite-$MargeGauche,20,getSettingValue('gepiSchoolName').' - Année scolaire '.getSettingValue('gepiYear'),'LRBT',1,'C');
 
@@ -268,7 +266,7 @@ if (!defined('FPDF_VERSION')) {
 				$y1=$pdf->GetY();
 				*/
 
-				$pdf->SetFont($fonte,'',10);
+				$pdf->SetFont('DejaVu','',10);
 				$pdf->SetXY($x0,$y0);
 
 				// Paramètres pour cell_ajustee()

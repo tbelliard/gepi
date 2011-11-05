@@ -1,4 +1,3 @@
-/* $Id: style.css 3953 2009-12-21 18:32:30Z regis $ */
 
 body {
 	padding: 0em;
@@ -53,3 +52,21 @@ a:active {
 	margin-left:1em;
 }
 
+h1.gepi {
+	font-family: Tahoma;
+	font-style: normal;
+	font-variant: small-caps;
+	font-weight: normal;
+	font-size: 14pt;
+	text-align: center;
+	letter-spacing: 2px;
+	line-height: 200%;
+}
+
+p {
+	font-family: Verdana, sans-serif;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: normal;
+	font-size: 11pt;
+}

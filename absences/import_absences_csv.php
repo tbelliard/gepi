@@ -1,7 +1,7 @@
 <?php
 @set_time_limit(0);
 /*
-* $Id: import_absences_csv.php 8547 2011-10-26 12:07:49Z crob $
+* $Id$
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

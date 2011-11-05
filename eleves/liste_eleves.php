@@ -2,7 +2,6 @@
 
 /*
  *
- * @version $Id: liste_eleves.php 6810 2011-04-20 19:26:12Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

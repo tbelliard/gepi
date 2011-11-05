@@ -2,7 +2,6 @@
 /**
  * Import de devoirs dans le carnet de notes
  * 
- * $Id: import_cahier_notes.php 7757 2011-08-14 23:52:26Z regis $
  *
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * 
@@ -142,7 +141,7 @@ require_once("../lib/header.inc");
 <p class='bold'><a href="index.php?id_racine=<?php echo $id_racine;?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a></p>
 <?php
 
-$titre=htmlentities($current_group['description'])." (".$nom_periode.")";
+$titre=htmlspecialchars($current_group['description'])." (".$nom_periode.")";
 $titre .= " - IMPORT";
 
 echo "<center><h3 class='gepi'>Import de devoirs dans le cahier de notes</h3></center>\n";
@@ -295,17 +294,17 @@ else {
 									// Dans le cas d'un import de CSV réalisé depuis l'enregistrement ODS->CSV, on a 46 colonnes de devoirs
 									// Le tabeau $date_dev[] est rempli jusqu'à l'indice 45.
 									// Par contre, pour les devoirs, ne sont créés que ceux dont le nomc_dev[] est non vide
-									if((strlen(preg_replace("#[0-9/]#","",$tabligne[$i]))!=0)||($tabligne[$i]=="")){
+									if((mb_strlen(preg_replace("#[0-9/]#","",$tabligne[$i]))!=0)||($tabligne[$i]=="")){
 										$tabligne[$i]="$jour/$mois/$annee";
 									}
 									
 									$tmpdate=explode("/",$tabligne[$i]);
-									if(strlen($tmpdate[0])==4){
+									if(mb_strlen($tmpdate[0])==4){
 										// Ce cas ne devrait pas se produire...
 										$date="$tmpdate[0]-$tmpdate[1]-$tmpdate[2] 00:00:00";
 									}
 									else{
-										if(strlen($tmpdate[2])==2){
+										if(mb_strlen($tmpdate[2])==2){
 											$tmpdate[2]="20".$tmpdate[2];
 										}
 										$date="$tmpdate[2]-$tmpdate[1]-$tmpdate[0] 00:00:00";
@@ -320,7 +319,7 @@ else {
 									$tab_dev[$cpt_ele]['login']=$tabligne[$tabindice[1]];
 									// Il faudrait tester qu'il n'y a pas de caractères invalides dans le login...
 
-									if(strlen(preg_replace("/[A-Z0-9_]/","",$tabligne[$tabindice[1]]))==0){
+									if(mb_strlen(preg_replace("/[A-Z0-9_]/","",$tabligne[$tabindice[1]]))==0){
 										// L'élève fait-il partie du groupe?
 										$sql="SELECT 1=1 FROM j_eleves_groupes WHERE (login='".$tab_dev[$cpt_ele]['login']."' AND id_groupe='$id_groupe' AND periode='$periode_num')";
 										$test=mysql_query($sql);
@@ -630,15 +629,15 @@ else {
 						if(isset($id_dev[$j])){
 							if(isset($tab_dev_note[$i][$j])) {
 
-								if(strtolower($tab_dev_note[$i][$j])=="abs"){
+								if(my_strtolower($tab_dev_note[$i][$j])=="abs"){
 									$note=0;
 									$elev_statut="abs";
 								}
-								elseif(strtolower($tab_dev_note[$i][$j])=="disp"){
+								elseif(my_strtolower($tab_dev_note[$i][$j])=="disp"){
 									$note=0;
 									$elev_statut="disp";
 								}
-								elseif(strtolower($tab_dev_note[$i][$j])=="-"){
+								elseif(my_strtolower($tab_dev_note[$i][$j])=="-"){
 									$note=0;
 									$elev_statut="-";
 								}

@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * @version $Id: infos_parents.php 8552 2011-10-26 16:59:35Z crob $
+ * @version $Id$
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

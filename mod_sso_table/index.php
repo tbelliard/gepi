@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: index.php 7916 2011-08-23 09:50:31Z dblanqui $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -43,7 +42,7 @@ if (!checkAccess()) {
 $sql="CREATE TABLE IF NOT EXISTS `sso_table_correspondance` ( `login_gepi` varchar(100) NOT NULL
                 default '', `login_sso` varchar(100) NOT NULL
                 default '', PRIMARY KEY (`login_gepi`) )
-                ENGINE=MyISAM;";
+                 ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $test=mysql_query($sql);
 
 // **************** EN-TETE *****************

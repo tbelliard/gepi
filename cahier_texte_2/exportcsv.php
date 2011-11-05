@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: exportcsv.php 7938 2011-08-24 07:57:41Z jjocal $
  *
  * Copyright 2009 Josselin Jacquard
  *
@@ -82,7 +81,7 @@ $now = gmdate('D, d M Y H:i:s') . ' GMT';
 header('Expires: ' . $now);
 // lem9 & loic1: IE need specific headers
 //nom du fichier à telecharger
-$str = substr($current_group["description"],0 , 4);
+$str = mb_substr($current_group["description"],0 , 4);
 foreach ($current_group["classes"]["classes"] as $classe) {
     $str .= $classe["classe"];
 }

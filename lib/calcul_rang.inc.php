@@ -1,7 +1,6 @@
 <?php
 /** Mise à jour des rangs
  * 
- * $Id: calcul_rang.inc.php 7765 2011-08-15 15:03:46Z regis $
  * 
  * Script à appeler dans le code
  * 
@@ -110,7 +109,7 @@ while ($j < $nombre_groupes) {
 
     if ($recalcul_rang == "-1") $recalcul_rang = '';
 
-    if (substr($recalcul_rang, $periode_num-1, 1) != 'n') {
+    if (mb_substr($recalcul_rang, $periode_num-1, 1) != 'n') {
         $calcul_moy_gen = 'yes';
         // le recalcul du rang est nécessaire
         $k= 0;
@@ -144,7 +143,7 @@ while ($j < $nombre_groupes) {
 		$update_rang_non_notes=mysql_query($sql);
 
         // On indique que le recalcul du rang n'est plus nécessaire
-        $long = strlen($recalcul_rang);
+        $long = mb_strlen($recalcul_rang);
         if ($long >= $periode_num) {
             $recalcul_rang = substr_replace( $recalcul_rang, "n", $periode_num-1, $periode_num);
         } else {

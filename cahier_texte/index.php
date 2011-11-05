@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: index.php 7192 2011-06-10 19:30:33Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
  *
@@ -48,7 +47,6 @@ if ($resultat_session == 'c') {
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
-    //header("Location: ../logout.php?auto=1&amp;pb_checkAccess=y");
     die();
 }
 
@@ -354,9 +352,9 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
 
         // Il s'agit d'un devoir à faire : on récupère la date à l'aide de $_POST['display_date']
         if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $_POST['display_date'])) {
-            $_year = substr($_POST['display_date'],6,4);
-            $_month = substr($_POST['display_date'],3,2);
-            $_day = substr($_POST['display_date'],0,2);
+            $_year = mb_substr($_POST['display_date'],6,4);
+            $_month = mb_substr($_POST['display_date'],3,2);
+            $_day = mb_substr($_POST['display_date'],0,2);
             $date_travail_a_faire=mktime(0,0,0,$_month,$_day,$_year);
         } else {
             $msg_error_date = "La date choisie pour le travail à faire n'est pas conforme";
@@ -388,7 +386,8 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
     } else {
         // Cas d'une notice
         isset($_POST['info']) ? $temp = '' : $temp = $today;
-        $contenu_cor = traitement_magic_quotes(corriger_caracteres($_POST['notes']),'');
+        //$contenu_cor = traitement_magic_quotes(corriger_caracteres($_POST['notes']),'');
+        $contenu_cor = traitement_magic_quotes(($_POST['notes']),'');
         if ($contenu_cor == '') $contenu_cor="...";
         if (isset($id_ct)) {
             $req = mysql_query("UPDATE ct_entry SET contenu = '$contenu_cor', id_login='".$_SESSION['login']."' WHERE id_ct='$id_ct' AND id_groupe='".$current_group["id"]."'");
@@ -509,7 +508,7 @@ foreach($groups as $group) {
             foreach ($group["classes"]["classes"] as $classe) {
                 $str .= $classe["classe"] . ", ";
             }
-            $str = substr($str, 0, -2);
+            $str = mb_substr($str, 0, -2);
             echo $str . ")&nbsp;</p>\n";
         } else {
         	echo "<span style=\"font-weight: bold;\">";
@@ -519,7 +518,7 @@ foreach($groups as $group) {
             foreach ($group["classes"]["classes"] as $classe) {
                 $str .= $classe["classe"] . ", ";
             }
-            $str = substr($str, 0, -2);
+            $str = mb_substr($str, 0, -2);
             echo $str . ")</a>&nbsp;</span>\n";
         }
         //echo "</b>\n";
@@ -1105,7 +1104,6 @@ $ty = date("Y",$i);
 $tm = date("m",$i);
 $td = date("d",$i);
 
-//echo "id_ct=$id_ct<br />";
 
 // Si c'est une notice de devoir
 if (isset($edit_devoir)) {

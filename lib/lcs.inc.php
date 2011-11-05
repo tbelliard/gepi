@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: lcs.inc.php 7109 2011-06-04 17:06:50Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *

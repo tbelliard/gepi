@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: pop.calendrier_id.php 2281 2008-08-17 09:22:44Z crob $
  */
 
              

@@ -2,7 +2,6 @@
 /**
  * Ajouter, modifier un devoir dans une évaluation cumule
  * 
- * $Id: add_modif_cc_dev.php 7742 2011-08-13 23:37:55Z regis $
  *
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

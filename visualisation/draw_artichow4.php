@@ -1,6 +1,6 @@
 <?php
 /*
- $Id: draw_artichow4.php 7854 2011-08-21 12:33:55Z jjocal $
+ $Id$
  *
  * Copyright 2001, 2011 Thomas Belliard, Stephane Boireau, Julien Jocal
  *

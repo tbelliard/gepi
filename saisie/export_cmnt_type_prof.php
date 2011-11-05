@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: export_cmnt_type_prof.php 3323 2009-08-05 10:06:18Z crob $
  *
  * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <?php
 /*
-* $Id: accueil_modules_template.php 4896 2010-07-25 20:22:14Z regis $
+* $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -100,7 +100,7 @@
 							<img src="<?php echo $newentree->icone['chemin'] ?>" width='19' height='19' title="<?php echo $newentree->icone['titre'] ?>" alt="<?php echo $newentree->icone['alt'] ?>" />
 						</p>
 						<h3 class="colonne3 colonne3centre">
-							<a href="<?php echo substr($newentree->chemin,1) ?>">
+							<a href="<?php echo mb_substr($newentree->chemin,1) ?>">
 								<?php echo $newentree->titre ?>
 							</a>
 						</h3>

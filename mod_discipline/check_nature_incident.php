@@ -1,7 +1,6 @@
 <?php
 
 /*
- * $Id: check_nature_incident.php 7503 2011-07-23 19:50:02Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -43,7 +42,7 @@ if (!checkAccess()) {
 	die();
 }
 
-if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+if(strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
 	header("Location: ../accueil.php?msg=$mess");
@@ -68,7 +67,7 @@ if(isset($chaine_rech)) {
 
 	//$chaine_mysql="(";
 	$chaine_mysql=" 1 AND (";
-	//$tab=explode("_",substr($chaine_rech,1)); // On vire le _ de début de chaine
+	//$tab=explode("_",mb_substr($chaine_rech,1)); // On vire le _ de début de chaine
 	//$tab=explode("_",preg_replace("/^_/","",$chaine_rech)); // On vire le _ de début de chaine
 	$tab=explode(" ",$chaine_rech); // On vire le _ de début de chaine
 	for($i=0;$i<count($tab);$i++) {

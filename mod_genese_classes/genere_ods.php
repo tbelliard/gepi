@@ -1,5 +1,4 @@
 <?php
-/* $Id: genere_ods.php 7341 2011-06-27 10:37:37Z crob $ */
 /*
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -125,7 +124,7 @@ if (!checkAccess()) {
 		$fich_source_csv=fopen("../temp/".$user_temp_directory."/$fichier_csv","r");
 		while(!feof($fich_source_csv)) {
 			$ligne=fgets($fich_source_csv,4096);
-			$n=strlen(preg_replace("/[^;]/","",$ligne));
+			$n=mb_strlen(preg_replace("/[^;]/","",$ligne));
 			if($n>$nb_ptvirg) {$nb_ptvirg=$n;}
 		}
 		$nb_ptvirg=$nb_ptvirg-1; // On supprime le point virgule en fin de ligne
@@ -159,7 +158,7 @@ if (!checkAccess()) {
 					$ecriture=fwrite($fichier_content_xml,'</table:table-row>');
 				}
 				elseif(!isset($tabligne[1])) {
-					if(substr($tabligne[0],0,9)=="Requete n") {
+					if(mb_substr($tabligne[0],0,9)=="Requete n") {
 						$ecriture=fwrite($fichier_content_xml,'<table:table-row table:style-name="ro1">');
 						$ecriture=fwrite($fichier_content_xml,'<table:table-cell table:style-name="ce1" office:value-type="string"><text:p>'.$tabligne[0].'</text:p></table:table-cell>');
 						$ecriture=fwrite($fichier_content_xml,'<table:table-cell table:style-name="ce7" table:number-columns-repeated="'.($nb_ptvirg-1).'"/>');
@@ -205,7 +204,7 @@ if (!checkAccess()) {
 					//$ecriture=fwrite($fichier_content_xml,'<table:table-cell/>');
 					$ecriture=fwrite($fichier_content_xml,'</table:table-row>');
 				}
-				elseif(substr($tabligne[0],0,12)=="Eff.select :") {
+				elseif(mb_substr($tabligne[0],0,12)=="Eff.select :") {
 					$ecriture=fwrite($fichier_content_xml,'<table:table-row table:style-name="ro1">');
 					$ecriture=fwrite($fichier_content_xml,'<table:table-cell table:style-name="ce3" office:value-type="string"><text:p>'.$tabligne[0].'</text:p></table:table-cell>');
 					$ecriture=fwrite($fichier_content_xml,'<table:table-cell table:style-name="ce10" office:value-type="string"><text:p>'.$tabligne[1].'</text:p></table:table-cell>');
@@ -341,7 +340,7 @@ if (!checkAccess()) {
 					$ecriture=fwrite($fichier_content_xml,'</table:table-row>');
 				}
 				elseif(!isset($tabligne[1])) {
-					if(substr($tabligne[0],0,9)=="Requete n") {
+					if(mb_substr($tabligne[0],0,9)=="Requete n") {
 						$ecriture=fwrite($fichier_content_xml,'<table:table-row table:style-name="ro1">');
 						$ecriture=fwrite($fichier_content_xml,'<table:table-cell table:style-name="ce1" office:value-type="string"><text:p>'.$tabligne[0].'</text:p></table:table-cell>');
 						$ecriture=fwrite($fichier_content_xml,'<table:table-cell table:style-name="ce6" table:number-columns-repeated="4"/><table:table-cell/>');
@@ -363,7 +362,7 @@ if (!checkAccess()) {
 					$ecriture=fwrite($fichier_content_xml,'<table:table-cell table:style-name="ce7" table:number-columns-repeated="4"/><table:table-cell/>');
 					$ecriture=fwrite($fichier_content_xml,'</table:table-row>');
 				}
-				elseif(substr($tabligne[0],0,12)=="Eff.select :") {
+				elseif(mb_substr($tabligne[0],0,12)=="Eff.select :") {
 					$ecriture=fwrite($fichier_content_xml,'<table:table-row table:style-name="ro1">');
 					$ecriture=fwrite($fichier_content_xml,'<table:table-cell table:style-name="ce3" office:value-type="string"><text:p>'.$tabligne[0].'</text:p></table:table-cell>');
 					$ecriture=fwrite($fichier_content_xml,'<table:table-cell table:style-name="ce8"/>');

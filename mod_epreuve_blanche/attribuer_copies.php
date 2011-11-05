@@ -1,5 +1,4 @@
 <?php
-/* $Id: attribuer_copies.php 6768 2011-04-10 17:51:29Z eabgrall $ */
 /*
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -159,9 +158,9 @@ $info_prof=array();
 $eff_habituel_prof=array();
 while($lig=mysql_fetch_object($res)) {
 	//if($liste_profs!="") {$liste_profs.=",";}
-	//$liste_profs.=$lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1);
+	//$liste_profs.=$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1);
 	$login_prof[]=$lig->login;
-	$info_prof[]=$lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1);
+	$info_prof[]=$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1);
 
 	$sql="SELECT DISTINCT jeg.login FROM j_eleves_groupes jeg, j_groupes_professeurs jgp, eb_groupes eg, groupes g WHERE id_epreuve='$id_epreuve' AND eg.id_groupe=g.id AND jgp.id_groupe=jeg.id_groupe AND jeg.id_groupe=g.id AND jgp.login='".$lig->login."';";
 	$res_eff_prof=mysql_query($sql);
@@ -228,7 +227,7 @@ if($tri=='groupe') {
 	
 		$current_group=get_group($lig->id);
 
-		echo "<p>"."<b>".$current_group['classlist_string']."</b> ".htmlentities($lig->name)." (<i>".htmlentities($lig->description)."</i>) (<i>";
+		echo "<p>"."<b>".$current_group['classlist_string']."</b> ".htmlspecialchars($lig->name)." (<i>".htmlspecialchars($lig->description)."</i>) (<i>";
 		for($k=0;$k<count($current_group["profs"]["list"]);$k++) {
 			if($k>0) {echo ", ";}
 			echo get_denomination_prof($current_group["profs"]["list"][$k]);

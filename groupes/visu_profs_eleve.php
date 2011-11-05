@@ -1,8 +1,7 @@
 <?php
 /*
- * $Id: visu_profs_eleve.php 2345 2008-09-02 20:16:07Z crob $
  *
- *  Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ *  Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -33,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -60,7 +59,7 @@ if ($_SESSION['statut'] == "responsable") {
 
 } else if ($_SESSION['statut'] == "eleve") {
 	// Si l'utilisateur identifié est un élève, pas le choix, il ne peut consulter que son équipe pédagogique
-	if ($login_eleve != null and (strtoupper($login_eleve) != strtoupper($_SESSION['login']))) {
+	if ($login_eleve != null and (my_strtoupper($login_eleve) != my_strtoupper($_SESSION['login']))) {
 		tentative_intrusion(2, "Tentative d'un élève d'accéder à l'équipe pédagogique d'un autre élève.");
 	}
 	$login_eleve = $_SESSION['login'];
@@ -220,7 +219,7 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 		// On est dans la boucle 'groupes'. On traite les groupes un par un.
 
         // Matière correspondant au groupe:
-        echo "<tr valign='top'><td>".htmlentities($groupe->nom_complet)."</td>\n";
+        echo "<tr valign='top'><td>".htmlspecialchars($groupe->nom_complet)."</td>\n";
 
         // Professeurs
         echo "<td>";

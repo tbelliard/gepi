@@ -1,6 +1,5 @@
 <?php
-/* $Id: login.php 7937 2011-08-24 07:17:49Z jjocal $
-*
+/*
 * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
@@ -53,10 +52,10 @@ table à ajouter pour pouvoir utiliser plusieurs gabarits et données du gabarit
 
 CREATE TABLE `gabarits` (
 `index` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-`texte` VARCHAR( 32 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ,
-`repertoire` VARCHAR( 16 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ,
-`pardefaut` CHAR( 1 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT 'n'
-) ENGINE = MYISAM ;
+`texte` VARCHAR( 32 ) NOT NULL ,
+`repertoire` VARCHAR( 16 ) NOT NULL ,
+`pardefaut` CHAR( 1 ) NOT NULL DEFAULT 'n'
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci ;
 
 INSERT INTO `gabarits` (
 `index` ,

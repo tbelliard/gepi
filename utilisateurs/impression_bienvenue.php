@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: impression_bienvenue.php 3722 2009-11-13 17:05:44Z crob $
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

@@ -1,7 +1,6 @@
 <?php
 /*
  *
- * @version $Id: export_donnees_bulletins.php 5857 2010-11-13 16:51:31Z eabgrall $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

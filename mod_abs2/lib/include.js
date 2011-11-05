@@ -1,6 +1,5 @@
 /**
  *
- * @version $Id: include.js 7541 2011-07-31 16:26:31Z dblanqui $
  *
  * Copyright 2010 Josselin Jacquard
  *

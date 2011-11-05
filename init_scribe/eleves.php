@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: eleves.php 7858 2011-08-21 13:12:55Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -395,9 +394,9 @@ if (isset($_POST['step'])) {
 
             // function add_eleve($_login, $_nom, $_prenom, $_sexe, $_naissance, $_elenoet) {
 
-            $date_naissance = substr($info[$i]["datenaissance"][0], 0, 4) . "-" .
-                                substr($info[$i]["datenaissance"][0], 4, 2) . "-" .
-                                substr($info[$i]["datenaissance"][0], 6, 2);
+            $date_naissance = mb_substr($info[$i]["datenaissance"][0], 0, 4) . "-" .
+                                mb_substr($info[$i]["datenaissance"][0], 4, 2) . "-" .
+                                mb_substr($info[$i]["datenaissance"][0], 6, 2);
 
             // -----
             // DEPRECIATION : les lignes ci-dessous ne sont plus nécessaire, Gepi a été mis à jour

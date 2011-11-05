@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: eleve_options.php 6604 2011-03-03 13:46:55Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -384,7 +383,7 @@ while ($i < $nombre_ligne) {
 	$id_groupe = mysql_result($call_group, $i, "id");
 	$nom_groupe = mysql_result($call_group, $i, "name");
 	//$description_groupe = mysql_result($call_group, $i, "description");
-	$description_groupe = htmlentities(mysql_result($call_group, $i, "description"));
+	$description_groupe = htmlspecialchars(mysql_result($call_group, $i, "description"));
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt white_hover'>\n";
 	echo "<td>";
@@ -398,9 +397,9 @@ while ($i < $nombre_ligne) {
 	if(mysql_num_rows($res_prof)>0){
 		$texte_alternatif="";
 		while($ligne=mysql_fetch_object($res_prof)){
-			$texte_alternatif.=", ".ucfirst(strtolower($ligne->prenom))." ".strtoupper($ligne->nom);
+			$texte_alternatif.=", ".casse_mot($ligne->prenom,'majf2')." ".my_strtoupper($ligne->nom);
 		}
-		$texte_alternatif=substr($texte_alternatif,2);
+		$texte_alternatif=mb_substr($texte_alternatif,2);
 	}
 
 	$sql="SELECT DISTINCT c.classe FROM classes c, j_groupes_classes jgc WHERE jgc.id_groupe='$id_groupe' AND c.id=jgc.id_classe ORDER BY c.classe;";
@@ -409,7 +408,7 @@ while ($i < $nombre_ligne) {
 	while($lig_classe=mysql_fetch_object($res_clas_grp)) {
 		$liste_classes_du_groupe.=", ".$lig_classe->classe;
 	}
-	if($liste_classes_du_groupe!='') {$liste_classes_du_groupe=substr($liste_classes_du_groupe,2);}
+	if($liste_classes_du_groupe!='') {$liste_classes_du_groupe=mb_substr($liste_classes_du_groupe,2);}
 
 	$texte_alternatif.=" (".$liste_classes_du_groupe.")";
 
@@ -459,7 +458,7 @@ while ($i < $nombre_ligne) {
 						$temoin=$clas_tmp;
 					}
 				}
-				//if($liste_classes_du_groupe!='') {$liste_classes_du_groupe=substr($liste_classes_du_groupe,2);}
+				//if($liste_classes_du_groupe!='') {$liste_classes_du_groupe=mb_substr($liste_classes_du_groupe,2);}
 
 				echo "<td style='text-align:center'>";
 				if($temoin!="") {

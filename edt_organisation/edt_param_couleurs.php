@@ -3,7 +3,6 @@
 /**
  * Fichiers qui permet de paramétrer les couleurs de chaque matière des emplois du temps
  *
- * @version $Id: edt_param_couleurs.php 6919 2011-05-14 09:26:25Z adminpaulbert $
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

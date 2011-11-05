@@ -3,7 +3,6 @@
 /**
  *
  *
- * @version $Id: edt_aff_gr.php 4070 2010-02-05 19:43:06Z adminpaulbert $
  *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

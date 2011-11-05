@@ -1,7 +1,6 @@
 <?php
 
 /**
- * @version $Id: select_aid_groupes.php 7526 2011-07-27 19:21:30Z crob $
  * @copyright 2008-2011
  *
  * Fichier qui renvoie un select des professeurs de l'établissement

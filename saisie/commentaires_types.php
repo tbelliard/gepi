@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: commentaires_types.php 8450 2011-10-07 11:56:52Z crob $
  *
  * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -61,7 +60,7 @@ $sql="CREATE TABLE IF NOT EXISTS `commentaires_types` (
 `commentaire` TEXT NOT NULL ,
 `num_periode` INT NOT NULL ,
 `id_classe` INT NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $resultat_creation_table=mysql_query($sql);
 
 

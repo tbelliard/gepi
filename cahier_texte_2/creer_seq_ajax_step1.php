@@ -1,6 +1,5 @@
 <?php
 /**
- * @version : $Id: creer_seq_ajax_step1.php 7938 2011-08-24 07:57:41Z jjocal $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: accueil_admin.php 7787 2011-08-16 12:19:46Z dblanqui $
  *
  * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -86,7 +85,7 @@ function affiche_ligne($chemin_,$statut_) {
 	$tmp_tab=explode("#",$chemin_);
 	//if (acces($chemin_,$statut_)==1)  {
 	if (acces($tmp_tab[0],$statut_)==1)  {
-		$temp = substr($chemin_,1);
+		$temp = mb_substr($chemin_,1);
 	/*
 		  echo "<tr>";
 		  //echo "<td width='30%'><a href=$temp>$titre_</a></span>";

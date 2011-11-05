@@ -36,7 +36,7 @@ class AidDetailsTableMap extends TableMap
 		$this->setPhpName('AidDetails');
 		$this->setClassname('AidDetails');
 		$this->setPackage('gepi');
-		$this->setUseIdGenerator(true);
+		$this->setUseIdGenerator(false);
 		// columns
 		$this->addPrimaryKey('ID', 'Id', 'VARCHAR', true, 100, null);
 		$this->addColumn('NOM', 'Nom', 'VARCHAR', true, 100, '');

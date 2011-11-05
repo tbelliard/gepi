@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: visu_toutes_notes_bis.php 3994 2010-01-07 18:56:20Z crob $
 *
 * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

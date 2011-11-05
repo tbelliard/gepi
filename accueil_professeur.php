@@ -1,8 +1,7 @@
 <?php
 /*
- * $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -97,7 +96,7 @@ function acces($id,$statut) {
 
 function affiche_ligne($chemin_, $titre_, $expli_, $statut_) {
 	if (acces($chemin_,$statut_)==1)  {
-		$temp = substr($chemin_,1);
+		$temp = mb_substr($chemin_,1);
 		echo "<tr>\n";
 		echo "<td class='acc_prof'><a href=\"$temp\" title=\"$expli_\" >";
 		echo "&nbsp; <img src=\"./images/info_p1.png\" alt=\"En savoir plus\" title=\"$expli_\" /> - $titre_</a></td>\n";

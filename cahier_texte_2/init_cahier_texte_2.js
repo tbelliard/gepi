@@ -1,5 +1,4 @@
 /*
- * $Id$
  *
  * Copyright 2009-2011 Josselin Jacquard
  *
@@ -37,7 +36,18 @@ function initPage () {
 	    id_groupe = id_groupe_init;
 	    getWinDernieresNotices().hide();
 	    getWinListeNotices();
-		
+		/*
+	    new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe_init, {encoding: 'utf-8'});
+	    getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=' + id_groupe_init + '&today='+getCalendarUnixDate(), {
+		    encoding: 'utf-8',
+		    onComplete :
+		    function() {
+			    initWysiwyg();
+				debut_alert = new Date();
+				    }
+			    }
+	    );
+		*/
 		// On ajoute un délais pour que le calendrier soit chargé avant
 		setTimeout('initFenetreNotice('+id_groupe_init+')',500);
 	} else {
@@ -65,9 +75,9 @@ function temporiser_init() {
 }
 
 function initFenetreNotice(id_groupe_init) {
-	    new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe_init, {encoding: 'utf-8'});
+	    new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe_init, {encoding: 'UTF-8'});
 	    getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=' + id_groupe_init + '&today='+getCalendarUnixDate(), {
-		    encoding: 'utf-8',
+		    encoding: 'UTF-8',
 		    onComplete :
 		    function() {
 			    initWysiwyg();
@@ -151,7 +161,7 @@ function getWinEditionNotice() {
 	if (typeof winEditionNotice=="undefined") {
 		winEditionNotice = new Window(
 				{id: 'win_edition_notice',
-				title: 'Edition de Notice',
+				title: 'Édition de Notice',
 				showEffect: Element.show,
 				hideEffect: Element.hide,
 				top:160,
@@ -452,7 +462,7 @@ function initWysiwyg() {
 			skin : 'kama',
 			resize_enabled : false,
 			startupFocus : true,
-                        removePlugins : 'elementspath',
+      removePlugins : 'elementspath',
 			toolbar :
 			[
 			    ['Source','Cut','Copy','Paste','PasteText','PasteFromWord'],
@@ -589,11 +599,6 @@ function completeEnregistrementCompteRenduCallback(response) {
 		id_ct_en_cours = response;
 		var url;
 		if ($F('passer_a') == 'passer_devoir') {
-			/*
-			url = './ajax_edition_devoir.php?today=' + getTomorrowCalendarUnixDate() +'&id_groupe=' + id_groupe;
-			object_en_cours_edition = 'devoir';
-			updateCalendarWithUnixDate(getTomorrowCalendarUnixDate());
-			*/
 			url = './ajax_edition_devoir.php?today=' + GetNextOpenDayUnixDate() +'&id_groupe=' + id_groupe;
 			object_en_cours_edition = 'devoir';
 			updateCalendarWithUnixDate(GetNextOpenDayUnixDate());

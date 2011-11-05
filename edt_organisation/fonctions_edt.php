@@ -3,7 +3,6 @@
 /**
  * Fonctions pour l'EdT
  *
- * @version     $Id: fonctions_edt.php 8442 2011-10-06 13:51:06Z crob $
  * @package		GEPI
  * @subpackage	EmploisDuTemps
  * @copyright	Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Pascal Fautrero
@@ -249,13 +248,15 @@ function VerifierTablesDelestage()
     $sql = "CREATE TABLE IF NOT EXISTS j_eleves_groupes_delestage (
                 login VARCHAR(50),
                 id_groupe INT(11),
-                periode INT(11))";
+                periode INT(11)
+                ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci";
     $req_creation = mysql_query($sql) or die(mysql_error());
 	// ======= table pour optimiser les requêtes sql
     $sql = "CREATE TABLE IF NOT EXISTS j_eleves_groupes_delestage2 (
                 login VARCHAR(50),
                 id_groupe INT(11),
-                periode INT(11))";
+                periode INT(11)
+                ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci";
     $req_creation = mysql_query($sql) or die(mysql_error());
 }	
 

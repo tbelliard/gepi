@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: index.php 3317 2009-07-30 19:41:37Z jjacquard $
  *
  * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
  *
@@ -129,7 +128,7 @@ if ($current_group) {
   $i=0;
   foreach ($current_group["profs"]["users"] as $prof) {
     if ($i != 0) echo ", ";
-    echo substr($prof["prenom"],0,1) . ". " . $prof["nom"];
+    echo mb_substr($prof["prenom"],0,1) . ". " . $prof["nom"];
     $i++;
   }
   echo ")</b>\n";
@@ -187,7 +186,7 @@ if (($nb_test == 0) and ($id_classe != -1) and ($delai != 0)) {
                 $chaine = "";
                 for ($k=0;$prof=sql_row($res_prof,$k);$k++) {
                   if ($k != 0) $chaine .= ", ";
-                  $chaine .= htmlspecialchars($prof[0])." ".substr(htmlspecialchars($prof[1]),0,1).".";
+                  $chaine .= htmlspecialchars($prof[0])." ".mb_substr(htmlspecialchars($prof[1]),0,1).".";
                 }
                 $html = "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["f"]."; padding: 2px; margin: 2px;\"><font color='".$color_police_matieres."' style='font-variant: small-caps;'><small><b><u>".$matiere_devoirs." (".$chaine."):</u></b></small></font>".$html;
                 // fichier joint
@@ -274,7 +273,7 @@ if ($delai != 0) {
                 $chaine = "";
                 for ($k=0;$prof=sql_row($res_prof,$k);$k++) {
                   if ($k != 0) $chaine .= ", ";
-                  $chaine .= htmlspecialchars($prof[0])." ".substr(htmlspecialchars($prof[1]),0,1).".";
+                  $chaine .= htmlspecialchars($prof[0])." ".mb_substr(htmlspecialchars($prof[1]),0,1).".";
                 }
                 $html = "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["f"]."; padding: 2px; margin: 2px;\"><font color='".$color_police_matieres."' style='font-variant: small-caps;'><small><b><u>".$matiere_devoirs." (".$chaine.") :</u></b></small></font>\n".$html;
                 // fichier joint

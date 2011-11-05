@@ -6,6 +6,13 @@
  * @package Initialisation
  * @subpackage initialisation
  */
+/* Utilise l'encodage interne UTF-8 */
+ini_set('mbstring.language','UTF-8');
+ini_set('mbstring.internal_encoding','UTF-8');
+if (function_exists('mb_internal_encoding')) {
+    mb_internal_encoding("UTF-8");
+}
+header('Content-Type: text/html; charset=UTF-8');
 
 /**
  * Niveau de la page dans l'arborescence de GEPI
@@ -176,7 +183,7 @@ if($is_lcs_plugin=='yes') {
 
 }
 
-$version = substr(phpversion(), 0, 1);
+$version = mb_substr(phpversion(), 0, 1);
 if ($version == 4) {
   $ldap_class = "/lib/LDAPServer.php4.class.php";
   $session_class = "/lib/Session.php4.class.php";
@@ -213,24 +220,7 @@ if (isset($_REQUEST["source"])) {
   */
    require_once($chemin_relatif_gepi."/lib/global.inc.php");
  /**
-  * Filtrage html
-  */
-   require_once($chemin_relatif_gepi."/lib/filtrage_html.inc.php");
-	if($filtrage_html=="htmlpurifier") {
- /**
-  * Utilisation de HTMLPurifier.standalone pour filtrer les saisies
-  */
-		require_once($chemin_relatif_gepi."/lib/HTMLPurifier.standalone.php");
-	}
-	elseif($filtrage_html=="inputfilter") {
- /**
-  * Utilisation de class.inputfilter_clean.php pour filtrer les saisies
-  */
-		require_once($chemin_relatif_gepi."/lib/class.inputfilter_clean.php");
-	}
-
- /**
-  * Traitement des données
+  * Traitement des données (filtrage de sécurité)
   */
    require_once($chemin_relatif_gepi."/lib/traitement_data.inc.php");
  /**

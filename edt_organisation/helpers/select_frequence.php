@@ -3,7 +3,6 @@
 /**
  *
  *
- * @version $Id: select_frequence.php 1593 2008-03-06 23:01:30Z jjocal $
  * @copyright 2008
  *
  * Fichier qui renvoie un select des types de semaine ainsiq ue des différentes périodes du calendier de l'établissement

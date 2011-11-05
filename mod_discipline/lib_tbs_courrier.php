@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: lib_tbs_courrier.php 6463 2011-02-05 17:57:13Z eabgrall $
  */
 //fonction tirée de la gestion des adresses pour les bulletins PDF
 function adresse_responsables($login_eleve) {	

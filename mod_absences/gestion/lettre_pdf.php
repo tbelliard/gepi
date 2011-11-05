@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * $Id: lettre_pdf.php 8411 2011-10-03 16:15:58Z tbelliard $
+ * $Id$
  *
  * Last modification  : 19/03/2007
  *
@@ -350,9 +350,6 @@ if ( $lettre_action === 'originaux' ) {
 	 }
 }
 
-$mode_utf8_pdf=getSettingValue('mode_utf8_abs_pdf');
-if($mode_utf8_pdf!="y") {$mode_utf8_pdf="";}
-
 define('PARAGRAPH_STRING', '~~~');
 define('FPDF_FONTPATH','../../fpdf/font/');
 require_once("../../fpdf/class.multicelltag.php");
@@ -369,7 +366,7 @@ while(!empty($id_eleve[$i])) {
 
 $pdf->AddPage();
 
-$pdf->SetFont('arial','',11);
+$pdf->SetFont('DejaVu','',11);
 $pdf->SetTextColor(0,0,0);
 $pdf->SetFillColor(255,255,255);
 
@@ -381,13 +378,13 @@ $pdf->SetFillColor(255,255,255);
 	$pdf->SetStyle2("u","times","U",11,"0,0,0");
 	$pdf->SetStyle2("decal","times","",11,"0,0,120");
 	$pdf->SetStyle2("pb","times","B",11,"0,0,0");
-	$pdf->SetStyle2("t1","arial","",11,"254,252,222");
-	$pdf->SetStyle2("t1","arial","",11,"0,151,200");
-	$pdf->SetStyle2("t2","arial","",11,"0,151,200");
+	$pdf->SetStyle2("t1","DejaVu","",11,"254,252,222");
+	$pdf->SetStyle2("t1","DejaVu","",11,"0,151,200");
+	$pdf->SetStyle2("t2","DejaVu","",11,"0,151,200");
 	$pdf->SetStyle2("t3","times","B",14,"203,0,48");
-	$pdf->SetStyle2("t4","arial","BI",11,"0,151,200");
+	$pdf->SetStyle2("t4","DejaVu","BI",11,"0,151,200");
 	$pdf->SetStyle2("hh","times","B",11,"255,189,12");
-	$pdf->SetStyle2("ss","arial","",7,"203,0,48");
+	$pdf->SetStyle2("ss","DejaVu","",7,"203,0,48");
 	$pdf->SetStyle2("font","helvetica","",10,"0,0,255");
 	$pdf->SetStyle2("style","helvetica","BI",10,"0,0,220");
 	$pdf->SetStyle2("size","times","BI",13,"0,0,120");
@@ -419,30 +416,30 @@ $type_lettre = $lettre_type_selectionne[$i];
 		       }
 
 // BLOC ADRESSE ETABLISSEMENT
-		$caractere_utilse='arial';
+		$caractere_utilse='DejaVu';
 		$affiche_logo_etab='1'; // affiché le logo de l'établissement
 		$entente_mel='1'; // afficher dans l'entête le mel de l'établissement
 		$entente_tel='1'; // afficher dans l'entête le téléphone de l'établissement
 		$entente_fax='1'; // afficher dans l'entête le fax de l'établissement
 	 	 $pdf->SetXY($X_etab,$Y_etab);
-	 	 $pdf->SetFont($caractere_utilse,'',14);
+	 	 $pdf->SetFont('DejaVu','',14);
 		  $gepiSchoolName = getSettingValue('gepiSchoolName');
-		 $pdf->Cell(90,7, traite_accents_utf8($gepiSchoolName),0,2,'');
-		 $pdf->SetFont($caractere_utilse,'',10);
+		 $pdf->Cell(90,7, ($gepiSchoolName),0,2,'');
+		 $pdf->SetFont('DejaVu','',10);
 	   	  $gepiSchoolAdress1 = getSettingValue('gepiSchoolAdress1');
-		 $pdf->Cell(90,5, traite_accents_utf8($gepiSchoolAdress1),0,2,'');
+		 $pdf->Cell(90,5, ($gepiSchoolAdress1),0,2,'');
 		  $gepiSchoolAdress2 = getSettingValue('gepiSchoolAdress2');
-		 $pdf->Cell(90,5, traite_accents_utf8($gepiSchoolAdress2),0,2,'');
+		 $pdf->Cell(90,5, ($gepiSchoolAdress2),0,2,'');
 		  $gepiSchoolZipCode = getSettingValue('gepiSchoolZipCode');
 		  $gepiSchoolCity = getSettingValue('gepiSchoolCity');
-		 $pdf->Cell(90,5, traite_accents_utf8($gepiSchoolZipCode." ".$gepiSchoolCity),0,2,'');
+		 $pdf->Cell(90,5, ($gepiSchoolZipCode." ".$gepiSchoolCity),0,2,'');
 		  $gepiSchoolTel = getSettingValue('gepiSchoolTel');
 		  $gepiSchoolFax = getSettingValue('gepiSchoolFax');
 		if($entente_tel==='1' and $entente_fax==='1') { $entete_communic = 'Tél: '.$gepiSchoolTel.' / Fax: '.$gepiSchoolFax; }
 		if($entente_tel==='1' and empty($entete_communic)) { $entete_communic = 'Tél: '.$gepiSchoolTel; }
 		if($entente_fax==='1' and empty($entete_communic)) { $entete_communic = 'Fax: '.$gepiSchoolFax; }
 		if(isset($entete_communic) and $entete_communic!='') {
-		 $pdf->Cell(90,5, traite_accents_utf8($entete_communic),0,2,'');
+		 $pdf->Cell(90,5, ($entete_communic),0,2,'');
 		}
 		if($entente_mel==='1') {
 		  $gepiSchoolEmail = getSettingValue('gepiSchoolEmail');
@@ -492,7 +489,7 @@ while($cpt_i_cadre<$i_cadre)
 
 	$text = str_replace($variable, $remplacer_par, $text);
 
-	$pdf->ext_MultiCellTag($l_cadre[$type_lettre][$cpt_i_cadre], $h_cadre[$type_lettre][$cpt_i_cadre], traite_accents_utf8($text), $encadre_cadre[$type_lettre][$cpt_i_cadre], "J", '');
+	$pdf->ext_MultiCellTag($l_cadre[$type_lettre][$cpt_i_cadre], $h_cadre[$type_lettre][$cpt_i_cadre], ($text), $encadre_cadre[$type_lettre][$cpt_i_cadre], "J", '');
 	$cpt_i_cadre = $cpt_i_cadre + 1;
  }
 

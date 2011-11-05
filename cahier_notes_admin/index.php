@@ -8,7 +8,6 @@
  * $_POST['note_autre_que_sur_referentiel'] note autre que sur referentiel
  * $_POST['is_posted']
  * 
- * @version: $Id: index.php 7849 2011-08-20 18:19:12Z regis $
  *
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL, 
@@ -110,7 +109,7 @@ if(isset($_POST['is_posted'])) {
 
 	if (isset($_POST['sacocheUrl'])) {
 		$sacocheUrl = $_POST['sacocheUrl'];
-		if (substr($sacocheUrl,strlen($sacocheUrl)-1,1) == '/') {$sacocheUrl = substr($sacocheUrl,0, strlen($sacocheUrl)-1);} //on enleve le / a  la fin
+		if (mb_substr($sacocheUrl,mb_strlen($sacocheUrl)-1,1) == '/') {$sacocheUrl = mb_substr($sacocheUrl,0, mb_strlen($sacocheUrl)-1);} //on enleve le / a  la fin
 	  	saveSetting("sacocheUrl", $_POST['sacocheUrl']);
 	}
 

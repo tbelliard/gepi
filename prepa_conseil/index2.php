@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: index2.php 6627 2011-03-04 15:37:19Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
@@ -387,8 +386,8 @@ if (isset($id_classe)) {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
 		echo "<td>$lig_cg->id_groupe</td>\n";
-		echo "<td>".htmlentities($lig_cg->name)."</td>\n";
-		echo "<td>".htmlentities($lig_cg->description)."</td>\n";
+		echo "<td>".htmlspecialchars($lig_cg->name)."</td>\n";
+		echo "<td>".htmlspecialchars($lig_cg->description)."</td>\n";
 		echo "<td>\n";
 		$val_coef_perso=$lig_cg->coef;
 		$nom_matiere='';
@@ -486,13 +485,13 @@ if (isset($id_classe)) {
 	$res_pref=mysql_query($sql);
 	if(mysql_num_rows($res_pref)>0) {
 		while($lig_pref=mysql_fetch_object($res_pref)) {
-			if(substr($lig_pref->name,0,17)=='vtn_couleur_texte') {
+			if(mb_substr($lig_pref->name,0,17)=='vtn_couleur_texte') {
 				$vtn_couleur_texte[]=$lig_pref->value;
 			}
-			elseif(substr($lig_pref->name,0,19)=='vtn_couleur_cellule') {
+			elseif(mb_substr($lig_pref->name,0,19)=='vtn_couleur_cellule') {
 				$vtn_couleur_cellule[]=$lig_pref->value;
 			}
-			elseif(substr($lig_pref->name,0,17)=='vtn_borne_couleur') {
+			elseif(mb_substr($lig_pref->name,0,17)=='vtn_borne_couleur') {
 				$vtn_borne_couleur[]=$lig_pref->value;
 			}
 		}

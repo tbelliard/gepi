@@ -62,6 +62,7 @@ class GroupeTableMap extends TableMap
 		$this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null, 'EdtEmplacementCourss');
 		$this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null, 'UtilisateurProfessionnels');
 		$this->addRelation('Matiere', 'Matiere', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null, 'Matieres');
+		$this->addRelation('Classe', 'Classe', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null, 'Classes');
 	} // buildRelations()
 
 } // GroupeTableMap

@@ -1,7 +1,7 @@
 <?php
 @set_time_limit(0);
 /*
-* $Id: prof_disc_classe_csv.php 5936 2010-11-21 17:32:17Z crob $
+* $Id$
 *
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

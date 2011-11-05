@@ -1,6 +1,6 @@
 <?php
 /*
- * @version: $Id: page_garde.php 1360 2008-01-13 20:03:09Z jjocal $
+ * @version: $Id$
  *
  * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

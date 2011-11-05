@@ -1,7 +1,6 @@
 <?php
 
 /*
- * $Id: ajax_signaler_faute.php 6678 2011-03-22 17:58:07Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

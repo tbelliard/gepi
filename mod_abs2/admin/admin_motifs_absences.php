@@ -1,7 +1,6 @@
 <?php
 /*
  *
- * $Id: admin_motifs_absences.php 5946 2010-11-22 16:02:12Z crob $
  *
  * Copyright 2010-2011 Josselin Jacquard
  *

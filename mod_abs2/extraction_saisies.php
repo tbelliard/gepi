@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id: extraction_saisies.php 8191 2011-09-10 15:13:01Z dblanqui $
  *
  * Copyright 2010 Josselin Jacquard
  *
@@ -177,7 +176,7 @@ if ($affichage != null && $affichage != '') {
 
     $saisie_query = AbsenceEleveSaisieQuery::create()
 	->filterByPlageTemps($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)
-	->filterByEleveId($eleve_col->toKeyValue('IdEleve', 'IdEleve'));
+	->filterByEleveId($eleve_col->toKeyValue('Id', 'Id'));
 
     if ($type_extrait == '1') {
 		$saisie_query->filterByManquementObligationPresence(true);
@@ -239,7 +238,7 @@ if ($affichage == 'html') {
 
     // Load the template
 	$extraction_saisies=repertoire_modeles('absence_extraction_saisies.ods');
-    $TBS->LoadTemplate($extraction_saisies);
+    $TBS->LoadTemplate($extraction_saisies, OPENTBS_ALREADY_UTF8);
 
     $titre = 'Extrait des absences du '.$dt_date_absence_eleve_debut->format('d/m/Y').' au '.$dt_date_absence_eleve_fin->format('d/m/Y');
     $classe = null;

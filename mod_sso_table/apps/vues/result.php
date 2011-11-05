@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: result.php 7744 2011-08-14 13:07:15Z dblanqui $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

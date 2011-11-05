@@ -27,45 +27,6 @@ class Groupe extends BaseGroupe {
 	 */
 	protected $nameAvecClasses;
 
-
-	/**
-	 * @var        array Classe[] Collection to store aggregation of Classes objects.
-	 */
-	protected $collClasses;
-
-	/**
-	 *
-	 * Renvoi sous forme d'un tableau la liste des classes d'un groupe.
-	 * Manually added for N:M relationship
-	 *
-	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
-	 * @return     PropelObjectCollection Classes[]
-	 *
-	 */
-	public function getClasses($con = null) {
-		if(null === $this->collClasses) {
-			if ($this->isNew() && null === $this->collClasses) {
-				// return empty collection
-				$this->initClasses();
-			} else {
-				$collClasses = new PropelObjectCollection();
-				$collClasses->setModel('Classe');
-				if ($this->collJGroupesClassess !== null) {
-				    $collJGroupesClasses = $this->collJGroupesClassess;
-				} else {
-				    $collJGroupesClasses = $this->getJGroupesClassessJoinClasse($con);
-				}
-				foreach($collJGroupesClasses as $ref) {
-				    if ($ref != null) {
-					$collClasses->append($ref->getClasse());
-				    }
-				}
-				$this->collClasses = $collClasses;
-			}
-		}
-		return $this->collClasses;
-	}
-
 	/**
 	 * Initializes the collClasses collection.
 	 *
@@ -123,7 +84,7 @@ class Groupe extends BaseGroupe {
 			foreach ($this->getClasses() as $classe) {
 				$str .= $classe->getNom() . ",&nbsp;";
 			}
-			$str = substr($str, 0, -7);
+			$str = mb_substr($str, 0, -7);
 			$str.= ")";
 			$this->descriptionAvecClasses = $str;
 			return $str;
@@ -289,14 +250,14 @@ class Groupe extends BaseGroupe {
     }
 
 	public function getCategorieMatiere($id_classe) {
-		$profs = array();
 		$criteria = new Criteria();
 		$criteria->add(JGroupesClassesPeer::ID_CLASSE,$id_classe);
 		$g = $this->getJGroupesClassess($criteria);
 		if ($g->isEmpty()) {
 		    return false;
 		} else {
-		    return $g->getFirst()->getCategorieMatiere();
+		    $jGroupeClasse = $g->getFirst();
+	        return CategorieMatiereQuery::create()->findOneById($jGroupeClasse->getCategorieId());
 		}
 	}
 
@@ -310,7 +271,7 @@ class Groupe extends BaseGroupe {
 	 * @return     array Eleves[]
 	 */
 	public function addEleve(Eleve $eleve, $num_periode_notes = null) {
-		if ($eleve->getIdEleve() == null) {
+		if ($eleve->getId() == null) {
 			throw new PropelException("Eleve id ne doit pas etre null");
 		}
 		if ($num_periode_notes == null) {

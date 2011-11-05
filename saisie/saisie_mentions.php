@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: saisie_mentions.php 7478 2011-07-21 19:07:03Z crob $
  *
  * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -247,7 +246,8 @@ $test=mysql_query($sql);
 if(mysql_num_rows($test)==0) {
 	$sql="CREATE TABLE IF NOT EXISTS mentions (
 	id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-	mention VARCHAR(255) NOT NULL);";
+	mention VARCHAR(255) NOT NULL
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	//echo "$sql<br />";
 	$resultat_creation_table=mysql_query($sql);
 
@@ -258,7 +258,8 @@ $sql="CREATE TABLE IF NOT EXISTS j_mentions_classes (
 id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 id_mention INT(11) NOT NULL ,
 id_classe INT(11) NOT NULL ,
-ordre TINYINT(4) NOT NULL);";
+ordre TINYINT(4) NOT NULL
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $resultat_creation_table=mysql_query($sql);
 
 echo "<p class='bold'><a href='../accueil.php'>Retour</a>";

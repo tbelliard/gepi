@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: security_policy.php 6675 2011-03-22 16:57:28Z crob $
  *
  * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -199,81 +198,27 @@ if (isset($_POST) and !empty($_POST)) {
 
 }
 
-//echo "\$filtrage_html=$filtrage_html<br />";
-if (isset($_POST['filtrage_html'])) {
+if (isset($_POST['csrf_mode'])) {
 	check_token();
-	if(($_POST['filtrage_html']=='inputfilter')||
-		($_POST['filtrage_html']=='htmlpurifier')||
-		($_POST['filtrage_html']=='pas_de_filtrage_html')) {
 
-		if (!saveSetting(("filtrage_html"), $_POST['filtrage_html'])) {
-			$msg = "Erreur lors de l'enregistrement de filtrage_html !";
-		}
-	}
-
-	if (isset($_POST['utiliser_no_php_in_img'])) {
-		if (!saveSetting(("utiliser_no_php_in_img"), 'y')) {
-			$msg = "Erreur lors de l'enregistrement de utiliser_no_php_in_img !";
-		}
+	if (!saveSetting(("csrf_mode"), $_POST['csrf_mode'])) {
+		$msg = "Erreur lors de l'enregistrement de csrf_mode !";
 	}
 	else {
-		if (!saveSetting(("utiliser_no_php_in_img"), 'n')) {
-			$msg = "Erreur lors de l'enregistrement de utiliser_no_php_in_img !";
-		}
-	}
-
-	$utiliser_no_php_in_img=getSettingValue('utiliser_no_php_in_img');
-
-
-	if (isset($_POST['csrf_mode'])) {
-		if (!saveSetting(("csrf_mode"), $_POST['csrf_mode'])) {
-			$msg = "Erreur lors de l'enregistrement de csrf_mode !";
-		}
-		else {
-			$sql="SELECT * FROM infos_actions WHERE titre='Paramétrage csrf_mode requis';";
-			$res_test=mysql_query($sql);
-			if(mysql_num_rows($res_test)>0) {
-				while($lig_ia=mysql_fetch_object($res_test)) {
-					$sql="DELETE FROM infos_actions_destinataires WHERE id_info='$lig_ia->id';";
+		$sql="SELECT * FROM infos_actions WHERE titre='Paramétrage csrf_mode requis';";
+		$res_test=mysql_query($sql);
+		if(mysql_num_rows($res_test)>0) {
+			while($lig_ia=mysql_fetch_object($res_test)) {
+				$sql="DELETE FROM infos_actions_destinataires WHERE id_info='$lig_ia->id';";
+				$del=mysql_query($sql);
+				if($del) {
+					$sql="DELETE FROM infos_actions WHERE id='$lig_ia->id';";
 					$del=mysql_query($sql);
-					if($del) {
-						$sql="DELETE FROM infos_actions WHERE id='$lig_ia->id';";
-						$del=mysql_query($sql);
-					}
 				}
 			}
 		}
 	}
-
 }
-
-
-// Fin : if isset($_POST)
-
-$htmlpurifier_autorise='y';
-$tab_version_php=explode(".",phpversion());
-if($tab_version_php[0]==4) {
-	$htmlpurifier_autorise='n';
-}
-elseif(($tab_version_php[0]==5)&&($tab_version_php[1]==0)&&($tab_version_php[2]<5)) {
-	$htmlpurifier_autorise='n';
-}
-
-$filtrage_html=getSettingValue('filtrage_html');
-if(($filtrage_html=='htmlpurifier')&&($htmlpurifier_autorise=='n')) {
-	saveSetting(("filtrage_html"), 'inputfilter');
-	$filtrage_html='inputfilter';
-}
-
-//echo "\$filtrage_html=$filtrage_html<br />";
-if(($filtrage_html!='inputfilter')&&
-	($filtrage_html!='htmlpurifier')&&
-	($filtrage_html!='pas_de_filtrage_html')) {
-	saveSetting(("filtrage_html"), 'htmlpurifier');
-
-	$filtrage_html=getSettingValue('filtrage_html');
-}
-//echo "\$filtrage_html=$filtrage_html<br />";
 
 //**************** EN-TETE *********************
 $titre_page = "Politique de sécurité";
@@ -436,89 +381,6 @@ echo "<div style='margin-left:3em;'>\n";
 	echo "</div>\n";
 echo "</div>\n";
 
-// Filtrage HTML
-echo "<h2>Filtrage HTML</h2>\n";
-echo "<div style='margin-left:3em;'>\n";
-
-	echo "<p>Pour prévenir des tentatives d'injection de code HTML malicieux dans les formulaires, GEPI propose deux dispositifs&nbsp;:</p>\n";
-	echo "<table summary='Mode de filtrage'>\n";
-	echo "<tr>\n";
-	echo "<td valign='top'>\n";
-	echo "<input type='radio' name='filtrage_html' id='filtrage_html_inputfilter' value='inputfilter' ";
-	if($filtrage_html=='inputfilter') {echo "checked ";}
-	echo "/>\n";
-	echo "</td>\n";
-	echo "<td>\n";
-	echo "<label for='filtrage_html_inputfilter'> InputFilter (<i>php4/php5</i>)</label><br />\n";
-	echo "<span style='font-size:small'>\n";
-	echo "Ce dispositif n'autorise que les balises et attributs suivants&nbsp;:<br />";
-	echo "<b>Balises&nbsp;:</b> ";
-	for($i=0;$i<count($aAllowedTags);$i++) {
-		if($i>0) {echo ", ";}
-		echo $aAllowedTags[$i];
-	}
-	echo "<br />\n";
-	echo "<b>Attributs&nbsp;:</b> ";
-	for($i=0;$i<count($aAllowedAttr);$i++) {
-		if($i>0) {echo ", ";}
-		echo $aAllowedAttr[$i];
-	}
-	echo "</span>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td valign='top'>\n";
-
-	if($htmlpurifier_autorise=='n') {
-		echo "<img src='../images/disabled.png' width='20' height='20' alt='Mode non accessible' />\n";
-		echo "</td>\n";
-		echo "<td>\n";
-		echo " HTMLpurifier (<i color='red'>php>=5.0.5</i>)<br />\n";
-	}
-	else {
-		echo "<input type='radio' name='filtrage_html' id='filtrage_html_htmlpurifier' value='htmlpurifier' ";
-		if($filtrage_html=='htmlpurifier') {echo "checked ";}
-		echo "/>\n";
-		echo "</td>\n";
-		echo "<td>\n";
-		echo "<label for='filtrage_html_htmlpurifier'> HTMLpurifier (<i>php>=5.0.5</i>)</label><br />\n";
-	}
-	echo "<span style='font-size:small'>\n";
-	echo "Plus complet qu'InputFilter dans les filtrages réalisés.<br />\n";
-	echo "Il tente également de rendre le code HTML plus correct/valide au sens W3C.<br />\n";
-	echo "<i>A noter&nbsp;:</i> HTMLpurifier ne fonctionne pas bien lorsque les magic_quotes_gpc sont activées (<i>cf. <a href='http://htmlpurifier.org/docs#toclink4'>http://htmlpurifier.org/docs#toclink4</a></i>).<br />\nCe dispositif doit disparaître à terme avec PHP6, mais s'il est activé, on bascule de HTMLpurifier à InputFilter pour éviter le problème.";
-	echo "</span>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td valign='top'>\n";
-	echo "<input type='radio' name='filtrage_html' id='pas_de_filtrage_html' value='pas_de_filtrage_html' ";
-	if($filtrage_html=='pas_de_filtrage_html') {echo "checked ";}
-	echo "/>\n";
-	echo "</td>\n";
-	echo "<td>\n";
-	echo "<label for='pas_de_filtrage_html'> Pas de filtrage HTML</label><br />\n";
-	echo "<span style='font-size:small'>\n";
-	echo "Si vous optez pour ce choix, il est possible à des utilisateurs malintentionnés de déposer dans les formulaires du code dangereux.<br />\n";
-	echo "</span>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "</table>\n";
-
-	echo "<p style='font-weight:bold; color:red;'>Il est très fortement déconseillé de désactiver le filtrage.</p>\n";
-
-	echo "<br />";
-
-	echo "<p><input type='checkbox' id='utiliser_no_php_in_img' name='utiliser_no_php_in_img' value='y' ";
-	if($utiliser_no_php_in_img=='y') {echo "checked ";}
-	echo "/><label for='utiliser_no_php_in_img'> Interdire d'insérer dans des appréciations, des notices de cahiers de textes des images générées par PHP</label>.</p>\n";
-
-	echo "<br />";
-
-echo "</div>\n";
 
 echo "<h2><a name='csrf_mode'></a>CSRF</h2>";
 echo "<div style='margin-left:3em;'>\n";

@@ -43,17 +43,17 @@ abstract class BaseAbsenceAgregationDecomptePeer {
 	/** the column name for the MANQUEMENT_OBLIGATION_PRESENCE field */
 	const MANQUEMENT_OBLIGATION_PRESENCE = 'a_agregation_decompte.MANQUEMENT_OBLIGATION_PRESENCE';
 
-	/** the column name for the JUSTIFIEE field */
-	const JUSTIFIEE = 'a_agregation_decompte.JUSTIFIEE';
+	/** the column name for the NON_JUSTIFIEE field */
+	const NON_JUSTIFIEE = 'a_agregation_decompte.NON_JUSTIFIEE';
 
 	/** the column name for the NOTIFIEE field */
 	const NOTIFIEE = 'a_agregation_decompte.NOTIFIEE';
 
-	/** the column name for the NB_RETARDS field */
-	const NB_RETARDS = 'a_agregation_decompte.NB_RETARDS';
+	/** the column name for the RETARDS field */
+	const RETARDS = 'a_agregation_decompte.RETARDS';
 
-	/** the column name for the NB_RETARDS_JUSTIFIES field */
-	const NB_RETARDS_JUSTIFIES = 'a_agregation_decompte.NB_RETARDS_JUSTIFIES';
+	/** the column name for the RETARDS_NON_JUSTIFIES field */
+	const RETARDS_NON_JUSTIFIES = 'a_agregation_decompte.RETARDS_NON_JUSTIFIES';
 
 	/** the column name for the MOTIFS_ABSENCES field */
 	const MOTIFS_ABSENCES = 'a_agregation_decompte.MOTIFS_ABSENCES';
@@ -86,11 +86,11 @@ abstract class BaseAbsenceAgregationDecomptePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	protected static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('EleveId', 'DateDemiJounee', 'ManquementObligationPresence', 'Justifiee', 'Notifiee', 'NbRetards', 'NbRetardsJustifies', 'MotifsAbsences', 'MotifsRetards', 'CreatedAt', 'UpdatedAt', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('eleveId', 'dateDemiJounee', 'manquementObligationPresence', 'justifiee', 'notifiee', 'nbRetards', 'nbRetardsJustifies', 'motifsAbsences', 'motifsRetards', 'createdAt', 'updatedAt', ),
-		BasePeer::TYPE_COLNAME => array (self::ELEVE_ID, self::DATE_DEMI_JOUNEE, self::MANQUEMENT_OBLIGATION_PRESENCE, self::JUSTIFIEE, self::NOTIFIEE, self::NB_RETARDS, self::NB_RETARDS_JUSTIFIES, self::MOTIFS_ABSENCES, self::MOTIFS_RETARDS, self::CREATED_AT, self::UPDATED_AT, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ELEVE_ID', 'DATE_DEMI_JOUNEE', 'MANQUEMENT_OBLIGATION_PRESENCE', 'JUSTIFIEE', 'NOTIFIEE', 'NB_RETARDS', 'NB_RETARDS_JUSTIFIES', 'MOTIFS_ABSENCES', 'MOTIFS_RETARDS', 'CREATED_AT', 'UPDATED_AT', ),
-		BasePeer::TYPE_FIELDNAME => array ('eleve_id', 'date_demi_jounee', 'manquement_obligation_presence', 'justifiee', 'notifiee', 'nb_retards', 'nb_retards_justifies', 'motifs_absences', 'motifs_retards', 'created_at', 'updated_at', ),
+		BasePeer::TYPE_PHPNAME => array ('EleveId', 'DateDemiJounee', 'ManquementObligationPresence', 'NonJustifiee', 'Notifiee', 'Retards', 'RetardsNonJustifies', 'MotifsAbsences', 'MotifsRetards', 'CreatedAt', 'UpdatedAt', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('eleveId', 'dateDemiJounee', 'manquementObligationPresence', 'nonJustifiee', 'notifiee', 'retards', 'retardsNonJustifies', 'motifsAbsences', 'motifsRetards', 'createdAt', 'updatedAt', ),
+		BasePeer::TYPE_COLNAME => array (self::ELEVE_ID, self::DATE_DEMI_JOUNEE, self::MANQUEMENT_OBLIGATION_PRESENCE, self::NON_JUSTIFIEE, self::NOTIFIEE, self::RETARDS, self::RETARDS_NON_JUSTIFIES, self::MOTIFS_ABSENCES, self::MOTIFS_RETARDS, self::CREATED_AT, self::UPDATED_AT, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ELEVE_ID', 'DATE_DEMI_JOUNEE', 'MANQUEMENT_OBLIGATION_PRESENCE', 'NON_JUSTIFIEE', 'NOTIFIEE', 'RETARDS', 'RETARDS_NON_JUSTIFIES', 'MOTIFS_ABSENCES', 'MOTIFS_RETARDS', 'CREATED_AT', 'UPDATED_AT', ),
+		BasePeer::TYPE_FIELDNAME => array ('eleve_id', 'date_demi_jounee', 'manquement_obligation_presence', 'non_justifiee', 'notifiee', 'retards', 'retards_non_justifies', 'motifs_absences', 'motifs_retards', 'created_at', 'updated_at', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
 	);
 
@@ -101,11 +101,11 @@ abstract class BaseAbsenceAgregationDecomptePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	protected static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('EleveId' => 0, 'DateDemiJounee' => 1, 'ManquementObligationPresence' => 2, 'Justifiee' => 3, 'Notifiee' => 4, 'NbRetards' => 5, 'NbRetardsJustifies' => 6, 'MotifsAbsences' => 7, 'MotifsRetards' => 8, 'CreatedAt' => 9, 'UpdatedAt' => 10, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('eleveId' => 0, 'dateDemiJounee' => 1, 'manquementObligationPresence' => 2, 'justifiee' => 3, 'notifiee' => 4, 'nbRetards' => 5, 'nbRetardsJustifies' => 6, 'motifsAbsences' => 7, 'motifsRetards' => 8, 'createdAt' => 9, 'updatedAt' => 10, ),
-		BasePeer::TYPE_COLNAME => array (self::ELEVE_ID => 0, self::DATE_DEMI_JOUNEE => 1, self::MANQUEMENT_OBLIGATION_PRESENCE => 2, self::JUSTIFIEE => 3, self::NOTIFIEE => 4, self::NB_RETARDS => 5, self::NB_RETARDS_JUSTIFIES => 6, self::MOTIFS_ABSENCES => 7, self::MOTIFS_RETARDS => 8, self::CREATED_AT => 9, self::UPDATED_AT => 10, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ELEVE_ID' => 0, 'DATE_DEMI_JOUNEE' => 1, 'MANQUEMENT_OBLIGATION_PRESENCE' => 2, 'JUSTIFIEE' => 3, 'NOTIFIEE' => 4, 'NB_RETARDS' => 5, 'NB_RETARDS_JUSTIFIES' => 6, 'MOTIFS_ABSENCES' => 7, 'MOTIFS_RETARDS' => 8, 'CREATED_AT' => 9, 'UPDATED_AT' => 10, ),
-		BasePeer::TYPE_FIELDNAME => array ('eleve_id' => 0, 'date_demi_jounee' => 1, 'manquement_obligation_presence' => 2, 'justifiee' => 3, 'notifiee' => 4, 'nb_retards' => 5, 'nb_retards_justifies' => 6, 'motifs_absences' => 7, 'motifs_retards' => 8, 'created_at' => 9, 'updated_at' => 10, ),
+		BasePeer::TYPE_PHPNAME => array ('EleveId' => 0, 'DateDemiJounee' => 1, 'ManquementObligationPresence' => 2, 'NonJustifiee' => 3, 'Notifiee' => 4, 'Retards' => 5, 'RetardsNonJustifies' => 6, 'MotifsAbsences' => 7, 'MotifsRetards' => 8, 'CreatedAt' => 9, 'UpdatedAt' => 10, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('eleveId' => 0, 'dateDemiJounee' => 1, 'manquementObligationPresence' => 2, 'nonJustifiee' => 3, 'notifiee' => 4, 'retards' => 5, 'retardsNonJustifies' => 6, 'motifsAbsences' => 7, 'motifsRetards' => 8, 'createdAt' => 9, 'updatedAt' => 10, ),
+		BasePeer::TYPE_COLNAME => array (self::ELEVE_ID => 0, self::DATE_DEMI_JOUNEE => 1, self::MANQUEMENT_OBLIGATION_PRESENCE => 2, self::NON_JUSTIFIEE => 3, self::NOTIFIEE => 4, self::RETARDS => 5, self::RETARDS_NON_JUSTIFIES => 6, self::MOTIFS_ABSENCES => 7, self::MOTIFS_RETARDS => 8, self::CREATED_AT => 9, self::UPDATED_AT => 10, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ELEVE_ID' => 0, 'DATE_DEMI_JOUNEE' => 1, 'MANQUEMENT_OBLIGATION_PRESENCE' => 2, 'NON_JUSTIFIEE' => 3, 'NOTIFIEE' => 4, 'RETARDS' => 5, 'RETARDS_NON_JUSTIFIES' => 6, 'MOTIFS_ABSENCES' => 7, 'MOTIFS_RETARDS' => 8, 'CREATED_AT' => 9, 'UPDATED_AT' => 10, ),
+		BasePeer::TYPE_FIELDNAME => array ('eleve_id' => 0, 'date_demi_jounee' => 1, 'manquement_obligation_presence' => 2, 'non_justifiee' => 3, 'notifiee' => 4, 'retards' => 5, 'retards_non_justifies' => 6, 'motifs_absences' => 7, 'motifs_retards' => 8, 'created_at' => 9, 'updated_at' => 10, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
 	);
 
@@ -181,10 +181,10 @@ abstract class BaseAbsenceAgregationDecomptePeer {
 			$criteria->addSelectColumn(AbsenceAgregationDecomptePeer::ELEVE_ID);
 			$criteria->addSelectColumn(AbsenceAgregationDecomptePeer::DATE_DEMI_JOUNEE);
 			$criteria->addSelectColumn(AbsenceAgregationDecomptePeer::MANQUEMENT_OBLIGATION_PRESENCE);
-			$criteria->addSelectColumn(AbsenceAgregationDecomptePeer::JUSTIFIEE);
+			$criteria->addSelectColumn(AbsenceAgregationDecomptePeer::NON_JUSTIFIEE);
 			$criteria->addSelectColumn(AbsenceAgregationDecomptePeer::NOTIFIEE);
-			$criteria->addSelectColumn(AbsenceAgregationDecomptePeer::NB_RETARDS);
-			$criteria->addSelectColumn(AbsenceAgregationDecomptePeer::NB_RETARDS_JUSTIFIES);
+			$criteria->addSelectColumn(AbsenceAgregationDecomptePeer::RETARDS);
+			$criteria->addSelectColumn(AbsenceAgregationDecomptePeer::RETARDS_NON_JUSTIFIES);
 			$criteria->addSelectColumn(AbsenceAgregationDecomptePeer::MOTIFS_ABSENCES);
 			$criteria->addSelectColumn(AbsenceAgregationDecomptePeer::MOTIFS_RETARDS);
 			$criteria->addSelectColumn(AbsenceAgregationDecomptePeer::CREATED_AT);
@@ -193,10 +193,10 @@ abstract class BaseAbsenceAgregationDecomptePeer {
 			$criteria->addSelectColumn($alias . '.ELEVE_ID');
 			$criteria->addSelectColumn($alias . '.DATE_DEMI_JOUNEE');
 			$criteria->addSelectColumn($alias . '.MANQUEMENT_OBLIGATION_PRESENCE');
-			$criteria->addSelectColumn($alias . '.JUSTIFIEE');
+			$criteria->addSelectColumn($alias . '.NON_JUSTIFIEE');
 			$criteria->addSelectColumn($alias . '.NOTIFIEE');
-			$criteria->addSelectColumn($alias . '.NB_RETARDS');
-			$criteria->addSelectColumn($alias . '.NB_RETARDS_JUSTIFIES');
+			$criteria->addSelectColumn($alias . '.RETARDS');
+			$criteria->addSelectColumn($alias . '.RETARDS_NON_JUSTIFIES');
 			$criteria->addSelectColumn($alias . '.MOTIFS_ABSENCES');
 			$criteria->addSelectColumn($alias . '.MOTIFS_RETARDS');
 			$criteria->addSelectColumn($alias . '.CREATED_AT');

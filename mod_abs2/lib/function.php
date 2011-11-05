@@ -1,6 +1,5 @@
 <?php
 /* 
- * @version $Id: function.php 5114 2010-08-26 15:29:50Z crob $
  * multisite
  * Les dossiers contenant les modèles Gepi et mes modèles. Il faut un / à la fin du chemin.
 */

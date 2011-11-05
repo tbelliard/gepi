@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * $Id$
  *
  * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stephane Boireau, Julien Jocal
  *

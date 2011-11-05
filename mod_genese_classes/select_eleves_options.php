@@ -1,5 +1,4 @@
 <?php
-/* $Id: select_eleves_options.php 7357 2011-07-01 16:35:26Z crob $ */
 /*
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

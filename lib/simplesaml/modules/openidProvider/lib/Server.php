@@ -7,7 +7,6 @@ set_include_path(get_include_path() . PATH_SEPARATOR . dirname(dirname(dirname(d
  * Helper class for the OpenID provider code.
  *
  * @package simpleSAMLphp
- * @version $Id$
  */
 class sspmod_openidProvider_Server {
 

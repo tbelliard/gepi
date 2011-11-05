@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: transform.php 2060 2008-07-08 16:46:12Z crob $
  *
 */
 $InlineImages = "png|jpg|gif";
@@ -22,7 +21,7 @@ for ($index = 0; $index < $numlines; $index++) {
   $replacements = array();
   $tmpline = $tab_content[$index];
 
-  if (!strlen($tmpline) || $tmpline == "\r") {
+  if (!mb_strlen($tmpline) || $tmpline == "\r") {
     // this is a blank line, send <p>
     $html .= SetHTMLOutputMode('', "0", 0);
     continue; //passage à l'itération suivante
@@ -48,7 +47,7 @@ for ($index = 0; $index < $numlines; $index++) {
   $oldn = $ntokens;
   $tmpline = tokenize($tmpline, '\[\s*\d+\s*\]', $replacements, $ntokens);
   while ($oldn < $ntokens) {
-    $num = (int) substr($replacements[$oldn], 1);
+    $num = (int) mb_substr($replacements[$oldn], 1);
     if (! empty($embedded[$num]))
       $replacements[$oldn] = $embedded[$num];
     $oldn++;
@@ -64,7 +63,7 @@ for ($index = 0; $index < $numlines; $index++) {
   $tmpline = tokenize($tmpline, "!?\b($AllowedProtocols):[^\s<>\[\]\"'()]*[^\s<>\[\]\"'(),.?]", $replacements, $ntokens);
   while ($oldn < $ntokens) {
     if($replacements[$oldn][0] == '!')
-      $replacements[$oldn] = substr($replacements[$oldn], 1);
+      $replacements[$oldn] = mb_substr($replacements[$oldn], 1);
     else
       $replacements[$oldn] = LinkURL($replacements[$oldn]);
     $oldn++;
@@ -90,14 +89,14 @@ for ($index = 0; $index < $numlines; $index++) {
   $tmpline = preg_replace("|(_g_)(.*?)(_g_)|", "<font color='grey'>\\2</font>", $tmpline);
   $tmpline = preg_replace("|('')(.*?)('')|",  "<em>\\2</em>", $tmpline);
   if (preg_match("/(^\t+)(.*?)(:\t)(.*$)/", $tmpline, $matches)) {
-    $numtabs = strlen($matches[1]);
+    $numtabs = mb_strlen($matches[1]);
     $html .= SetHTMLOutputMode('dl', "1", $numtabs);
     $tmpline = '';
     if(trim($matches[2]))
         $tmpline = '<dt>' . $matches[2];
     $tmpline .= '<dd>' . $matches[4];
   } elseif (preg_match("/(^\t+)(\*|\d+|#)/", $tmpline, $matches)) {
-      $numtabs = strlen($matches[1]);
+      $numtabs = mb_strlen($matches[1]);
       if ($matches[2] == '*') {
          $listtag = 'ul';
       } else {
@@ -107,17 +106,17 @@ for ($index = 0; $index < $numlines; $index++) {
       $html .= SetHTMLOutputMode($listtag, "1", $numtabs);
       $html .= '<li>';
   } elseif (preg_match("/^([#*]*\*)[^#]/", $tmpline, $matches)) {
-      $numtabs = strlen($matches[1]);
+      $numtabs = mb_strlen($matches[1]);
       $tmpline = preg_replace("/^([#*]*\*)/", '', $tmpline);
       $html .= SetHTMLOutputMode('ul', "1", $numtabs);
       $html .= '<li>';
   } elseif (preg_match("/^([#*]*\#)/", $tmpline, $matches)) {
-     $numtabs = strlen($matches[1]);
+     $numtabs = mb_strlen($matches[1]);
      $tmpline = preg_replace("/^([#*]*\#)/", "", $tmpline);
      $html .= SetHTMLOutputMode('ol', "1", $numtabs);
      $html .= '<li>';
   } elseif (preg_match("/(^;+)(.*?):(.*$)/", $tmpline, $matches)) {
-     $numtabs = strlen($matches[1]);
+     $numtabs = mb_strlen($matches[1]);
      $html .= SetHTMLOutputMode('dl', "1", $numtabs);
      $tmpline = '';
      if(trim($matches[2]))

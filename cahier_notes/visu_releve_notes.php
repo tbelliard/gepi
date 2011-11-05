@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: visu_releve_notes.php 6721 2011-03-28 19:47:06Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -223,7 +222,7 @@ if(!isset($choix_edit)){
 			$rn_sign_pp=$lig_class_tmp->rn_sign_pp;
 			$rn_sign_resp=$lig_class_tmp->rn_sign_resp;
 			$rn_sign_nblig=$lig_class_tmp->rn_sign_nblig;
-			$rn_formule=htmlentities($lig_class_tmp->rn_formule);
+			$rn_formule=htmlspecialchars($lig_class_tmp->rn_formule);
 			*/
 			$avec_nom_devoir=$lig_class_tmp->rn_nomdev;
 			$avec_appreciation_devoir="";
@@ -235,7 +234,7 @@ if(!isset($choix_edit)){
 			$rn_sign_pp=$lig_class_tmp->rn_sign_pp;
 			$rn_sign_resp=$lig_class_tmp->rn_sign_resp;
 			$rn_sign_nblig=$lig_class_tmp->rn_sign_nblig;
-			$rn_formule=htmlentities($lig_class_tmp->rn_formule);
+			$rn_formule=htmlspecialchars($lig_class_tmp->rn_formule);
 
 			$chaine_coef="coef.: ";
 		}
@@ -595,7 +594,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 			$current_matiere_nom_complet_query = mysql_query("SELECT nom_complet FROM matieres WHERE matiere='$current_matiere'");
 			$current_matiere_nom_complet = mysql_result($current_matiere_nom_complet_query, 0, "nom_complet");
 
-			echo "<tr><td class='bull_simpl'><strong>".htmlentities($current_matiere_nom_complet)."</strong>";
+			echo "<tr><td class='bull_simpl'><strong>".htmlspecialchars($current_matiere_nom_complet)."</strong>";
 			$k = 0;
 			While ($k < $nombre_profs) {
 				echo "<br /><em>".affiche_utilisateur($current_matiere_professeur_login[$k],$id_classe)."</em>";
@@ -837,7 +836,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 	}
 
 	if($rn_formule!=""){
-		echo "<p>".htmlentities($rn_formule)."</p>\n";
+		echo "<p>".htmlspecialchars($rn_formule)."</p>\n";
 	}
 }
 
@@ -1079,7 +1078,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 										}
 										$requete_eleve = mysql_query('SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes WHERE ('.$selection_classe.') AND '.$prefix_base.'j_eleves_classes.login='.$prefix_base.'eleves.login GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'eleves.nom ASC');
 						  				while ($donner_eleve = mysql_fetch_array($requete_eleve)) {
-											?><option value="<?php echo $donner_eleve['login']; ?>"  <?php if(!empty($eleve) and in_array($donner_eleve['login'], $eleve)) { ?>selected="selected"<?php } ?>><?php echo strtoupper($donner_eleve['nom'])." ".ucfirst($donner_eleve['prenom']); ?></option><?php
+											?><option value="<?php echo $donner_eleve['login']; ?>"  <?php if(!empty($eleve) and in_array($donner_eleve['login'], $eleve)) { ?>selected="selected"<?php } ?>><?php echo my_strtoupper($donner_eleve['nom'])." ".casse_mot($donner_eleve['prenom'],'majf2'); ?></option><?php
 										}
 									}
 									if(empty($classe[0]) and empty($eleve)) {
@@ -2118,7 +2117,7 @@ if ($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") {
 	}
 
 	if ($_SESSION['statut'] == "eleve") {
-		if (strtoupper($login_eleve) != strtoupper($_SESSION['login'])) {
+		if (my_strtoupper($login_eleve) != my_strtoupper($_SESSION['login'])) {
 			tentative_intrusion(3, "Tentative d'un élève de visualiser les relevés de notes d'un autre élève.");
 			echo "Vous ne pouvez visualiser que vos relevés de notes.\n";
 			require("../lib/footer.inc.php");
@@ -2146,9 +2145,9 @@ if ($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") {
     // Affichage du relevé de notes
 
 if (my_ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date_debut'])) {
-	$anneed = substr($_POST['display_date_debut'],6,4);
-	$moisd = substr($_POST['display_date_debut'],3,2);
-	$jourd = substr($_POST['display_date_debut'],0,2);
+	$anneed = mb_substr($_POST['display_date_debut'],6,4);
+	$moisd = mb_substr($_POST['display_date_debut'],3,2);
+	$jourd = mb_substr($_POST['display_date_debut'],0,2);
 
 	//=========================
 	// AJOUT: boireaus 20071118
@@ -2162,9 +2161,9 @@ $_SESSION['display_date_debut']=$_POST['display_date_debut'];
 }
 
 if (my_ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date_fin'])) {
-	$anneef= substr($_POST['display_date_fin'],6,4);
-	$moisf= substr($_POST['display_date_fin'],3,2);
-	$jourf = substr($_POST['display_date_fin'],0,2);
+	$anneef= mb_substr($_POST['display_date_fin'],6,4);
+	$moisf= mb_substr($_POST['display_date_fin'],3,2);
+	$jourf = mb_substr($_POST['display_date_fin'],0,2);
 
 		//=========================
 		// AJOUT: boireaus 20071118

@@ -1,7 +1,6 @@
 <?php
 
 /*
- * $Id: info_gepi.php 4446 2010-05-15 19:39:28Z delineau $
  *
  * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -46,25 +45,25 @@ require_once("../lib/header.inc");
 
 ?>
 
-<h1 class='gepi'>GEPI - Informations générales</h1>
+<h1 class='gepi'>GEPI - Informations gÃ©nÃ©rales</h1>
 
 <?php
 
-echo "Vous êtes actuellement connecté sur l'application <b>GEPI (".getSettingValue("gepiSchoolName").")</b>.
+echo "Vous Ã¢tes actuellement connectÃ© sur l'application <b>GEPI (".getSettingValue("gepiSchoolName").")</b>.
 
-<br />Par sécurité, si vous n'envoyez aucune information au serveur (activation d'un lien ou soumission d'un formulaire) pendant plus de <b>".getSettingValue("sessionMaxLength")." minutes</b>, vous serez automatiquement déconnecté de l'application.";
+<br />Par sÃ©curitÃ©, si vous n'envoyez aucune information au serveur (activation d'un lien ou soumission d'un formulaire) pendant plus de <b>".getSettingValue("sessionMaxLength")." minutes</b>, vous serez automatiquement dÃ©connectÃ© de l'application.";
 
 echo "<h2>Administration de l'application GEPI</h2>\n";
 
 echo "<table cellpadding='5' summary='Infos'>\n";
 
-echo "<tr><td>Nom et prénom de l'administrateur : </td><td><b>".getSettingValue("gepiAdminNom")." ".getSettingValue("gepiAdminPrenom")."</b></td></tr>\n";
+echo "<tr><td>Nom et prÃ©nom de l'administrateur : </td><td><b>".getSettingValue("gepiAdminNom")." ".getSettingValue("gepiAdminPrenom")."</b></td></tr>\n";
 
 echo "<tr><td>Fonction de l'administrateur : </td><td><b>".getSettingValue("gepiAdminFonction")."</b></td></tr>\n";
 
 echo "<tr><td>Email de l'administrateur : </td><td><b><a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">".getSettingValue("gepiAdminAdress")."</a></b></td></tr>\n";
 
-echo "<tr><td>Nom de l'établissement : </td><td><b>".getSettingValue("gepiSchoolName")."</b></td></tr>\n";
+echo "<tr><td>Nom de l'Ã©tablissement : </td><td><b>".getSettingValue("gepiSchoolName")."</b></td></tr>\n";
 
 echo "<tr><td Valign='top'>Adresse : </td><td><b>".getSettingValue("gepiSchoolAdress1")."<br />".getSettingValue("gepiSchoolAdress2")."<br />".getSettingValue("gepiSchoolZipCode").", ".getSettingValue("gepiSchoolCity")."</b></td></tr>\n";
 
@@ -74,97 +73,94 @@ echo "</table>\n";
 
 echo "<h2>Objectifs de l'application GEPI</h2>\n";
 
-echo "L'objectif de GEPI est la <b>gestion pédagogique des élèves et de leur scolarité</b>.
+echo "L'objectif de GEPI est la <b>gestion pÃ©dagogique des Ã©lÃ¨ves et de leur scolaritÃ©</b>.
 
-Dans ce but, des données sont collectées et stockées dans une base unique de type MySql.";
+Dans ce but, des donnÃ©es sont collectÃ©es et stockÃ©es dans une base unique de type MySql.";
 
 
 
 echo "<h2>Obligations de l'utilisateur</h2>\n";
 
-echo "Les membres de l'équipe pédagogique sont tenus de remplir les rubriques qui leur ont été affectées par l'administrateur
+echo "Les membres de l'Ã©quipe pÃ©dagogique sont tenus de remplir les rubriques qui leur ont Ã©tÃ© affectÃ©es par l'administrateur
 
-lors du paramétrage de l'application.";
+lors du paramÃ©trage de l'application.";
 
-echo "<br />Il est possible de modifier le contenu d'une rubrique tant que la période concernée n'a pas été close par l'administrateur.";
+echo "<br />Il est possible de modifier le contenu d'une rubrique tant que la pÃ©riode concernÃ©e n'a pas Ã©tÃ© close par l'administrateur.";
 
 
 
-echo "<h2>Destinataires des données relatives au bulletin scolaire</h2>\n";
+echo "<h2>Destinataires des donnÃ©es relatives au bulletin scolaire</h2>\n";
 
-echo "Concernant le bulletin scolaire, les données suivantes sont récoltées auprès des membres de l'équipe pédagogique :
+echo "Concernant le bulletin scolaire, les donnÃ©es suivantes sont rÃ©coltÃ©es auprÃ¨s des membres de l'Ã©quipe pÃ©dagogique :
 
-<ul><li>absences (pour chaque période : nombre de demi-journées d'absence, nombre d'absences non justifiées, nombre de retards, observations)</li>
+<ul><li>absences (pour chaque pÃ©riode : nombre de demi-journÃ©es d'absence, nombre d'absences non justifiÃ©es, nombre de retards, observations)</li>
 
-<li>moyennes et appréciations par matière,</li>
+<li>moyennes et apprÃ©ciations par matiÃ¨re,</li>
 
-<li>moyennes et appréciations par projet inter-disciplinaire,</li>
+<li>moyennes et apprÃ©ciations par projet inter-disciplinaire,</li>
 
 <li>avis du conseil de classe.</li>
 
 </ul>
 
-Toutes ces informations sont intégralement reproduites sur un bulletin à la fin de chaque période (voir ci-dessous).
+Toutes ces informations sont intÃ©gralement reproduites sur un bulletin Ã  la fin de chaque pÃ©riode (voir ci-dessous).
 
 <br /><br />
 
-Ces données servent à :
+Ces donnÃ©es servent Ã  :
 
 <ul>
 
-<li>l'élaboration d'un bulletin à la fin de chaque période, édité par le service scolarité et communiqué à l’élève
+<li>l'Ã©laboration d'un bulletin Ã  la fin de chaque pÃ©riode, Ã©ditÃ© par le service scolaritÃ© et communiquÃ© Ã  l'Ã©lÃ¨ve
 
-et à ses responsables légaux : notes obtenues, absences, moyennes, appréciations des enseignants, avis du conseil de classe.</li>
+et Ã  ses responsables lÃ©gaux : notes obtenues, absences, moyennes, apprÃ©ciations des enseignants, avis du conseil de classe.</li>
 
-<li>l'élaboration d'un document de travail reprenant les informations du bulletin officiel et disponible pour les membres de l'équipe pédagogique de la classe concernée</li>
+<li>l'Ã©laboration d'un document de travail reprenant les informations du bulletin officiel et disponible pour les membres de l'Ã©quipe pÃ©dagogique de la classe concernÃ©e</li>
 
 </ul>\n";
 
 
 
-
-
-//On vérifie si le module cahiers de texte est activé
-
+//On vÃ©rifie si le module cahiers de texte est activÃ©
 if (getSettingValue("active_cahiers_texte")=='y') {
 
-    echo "<h2>Destinataires des données relatives au cahier de texte</h2>\n";
+    echo "<h2>Destinataires des donnÃ©es relatives au cahier de texte</h2>\n";
 
-    echo "Conformément aux directives de l'Education Nationale, chaque professeur dispose dans GEPI d'un cahier de texte pour chacune de ses classes qu'il peut tenir à jour
+    echo "ConformÃ©ment aux directives de l'Education Nationale, chaque professeur dispose dans GEPI d'un cahier de texte pour chacune de ses classes qu'il peut tenir ï¿½ jour
 
-    en étant connecté.
+    en Ã©tant connectÃ©.
 
     <br />
 
-    Le cahier de texte relate le travail réalisé en classe :
+    Le cahier de texte relate le travail rÃ©alisÃ© en classe :
 
     <ul>
 
-    <li>projet de l'équipe pédagogique,</li>
+    <li>projet de l'Ã©quipe pÃ©dagogique,</li>
 
-    <li>contenu pédagogique de chaque séance, chronologie, objectif visé, travail à faire ...</li>
+    <li>contenu pÃ©dagogique de chaque sÃ©ance, chronologie, objectif visÃ©, travail Ã  faire ...</li>
 
     <li>documents divers,</li>
 
-    <li>évaluations, ...</li>
+    <li>Ã©valuations, ...</li>
 
     </ul>
 
-    Il constitue un outil de communication pour l'élève, les équipes disciplinaires
+    Il constitue un outil de communication pour l'Ã©lÃ¨ve, les Ã©quipes disciplinaires
 
-    et pluridisciplinaires, l'administration, le chef d'établissement, les corps d'inspection et les familles.
+    et pluridisciplinaires, l'administration, le chef d'Ã©tablissement, les corps d'inspection et les familles.
 
     <br /> Les cahiers de texte sont accessibles en ligne.";
 
     if ((getSettingValue("cahiers_texte_login_pub") != '') and (getSettingValue("cahiers_texte_passwd_pub") != '')) {
 
-       echo " <b>En raison du caractère personnel du contenu, l'accès à l'interface de consultation publique est restreint</b>. Pour accéder aux cahiers de texte, il est nécessaire de demander auprès de l'administrateur,
+       echo " <b>En raison du caractÃ©re personnel du contenu, l'accÃ©s Ã  l'interface de consultation publique est restreint</b>. Pour accÃ©der aux cahiers de texte, il est nï¿½cessaire de demander auprï¿½s de l'administrateur,
 
        le nom d'utilisateur et le mot de passe valides.";
 
     } else {
 
-       echo " <b>L'accès à l'interface de consultation publique est entièrement libre et n'est soumise à aucune restriction.</b>\n";
+       echo " <b>L'accÃ¨s Ã  l'interface de consultation publique est entiÃ©rement libre et n'est soumise Ã  aucune restriction.</b>\n";
 
     }
 
@@ -172,52 +168,51 @@ if (getSettingValue("active_cahiers_texte")=='y') {
 
 }
 
-//On vérifie si le module carnet de notes est activé
-
+//On vÃ©rifie si le module carnet de notes est activÃ©
 if (getSettingValue("active_carnets_notes")=='y') {
 
-    echo "<h2>Destinataires des données relatives au carnet de notes</h2>\n";
+    echo "<h2>Destinataires des donnÃ©es relatives au carnet de notes</h2>\n";
 
-    echo "Chaque professeur dispose dans GEPI d'un carnet de notes pour chacune de ses classes, qu'il peut tenir à jour
+    echo "Chaque professeur dispose dans GEPI d'un carnet de notes pour chacune de ses classes, qu'il peut tenir Ã  jour
 
-    en étant connecté.
+    en Ã©tant connectÃ©.
 
     <br />
 
-    Le carnet de note permet la saisie des notes et/ou des commentaires de tout type d'évaluation (formatives, sommatives, oral, TP, TD, ...).
+    Le carnet de note permet la saisie des notes et/ou des commentaires de tout type d'Ã©valuation (formatives, sommatives, oral, TP, TD, ...).
 
-    <br /><b>Le professeur s'engage à ne faire figurer dans le carnet de notes que des notes et commentaires portés à la connaissance de l'élève (note et commentaire portés sur la copie, ...).</b>
+    <br /><b>Le professeur s'engage Ã  ne faire figurer dans le carnet de notes que des notes et commentaires portÃ©s Ã  la connaissance de l'Ã©lÃ ve (note et commentaire portï¿½s sur la copie, ...).</b>
 
-    Ces données stockées dans GEPI n'ont pas d'autre destinataire que le professeur lui-même et le ou les professeurs principaux de la classe.
+    Ces donnÃ©es stockÃ©es dans GEPI n'ont pas d'autre destinataire que le professeur lui-mÃªme et le ou les professeurs principaux de la classe.
 
-    <br />Les notes peuvent servir à l'élaboration d'une moyenne qui figurera dans le bulletin officiel à la fin de chaque période.";
+    <br />Les notes peuvent servir Ã  l'Ã©laboration d'une moyenne qui figurera dans le bulletin officiel Ã  la fin de chaque pÃ©riode.";
 
 }
 
-//On vérifie si le plugin suivi_eleves est activé
+//On vÃ©rifie si le plugin suivi_eleves est activÃ©
 $test_plugin = sql_query1("select ouvert from plugins where nom='suivi_eleves'");
 if ($test_plugin=='y') {
-    echo "<h2>Destinataires des données relatives au module de suivi des élèves</h2>\n";
+    echo "<h2>Destinataires des donnÃ©es relatives au module de suivi des Ã©lÃ¨ves</h2>\n";
 
-    echo "Chaque professeur dispose dans GEPI d'un outil de suivi des élèves (\"observatoire\") pour chacune de ses classes, qu'il peut tenir à jour
+    echo "Chaque professeur dispose dans GEPI d'un outil de suivi des Ã©lÃ¨ves (\"observatoire\") pour chacune de ses classes, qu'il peut tenir Ã  jour
 
-    en étant connecté.
+    en Ã©tant connectÃ©.
 
     <br />
 
-    Dans l'observatoire, le professeur a la possibilité d'attribuer à chacun de ses élèves un code pour chaque période.
+    Dans l'observatoire, le professeur a la possibilitÃ© d'attribuer Ã  chacun de ses Ã©lÃ ves un code pour chaque pÃ©riode.
 
-    Ces codes et leur signification sont paramétrables par les administrateurs de l'observatoire désignés par l'administrateur général de GEPI.
+    Ces codes et leur signification sont paramÃ©trables par les administrateurs de l'observatoire dÃ©signÃ©s par l'administrateur gÃ©nÃ©ral de GEPI.
 
     <br />.
 
-    Le professeur dispose également de la possibilité de saisir un commentaire pour chacun de ses élèves
+    Le professeur dispose Ã©galement de la possibilitÃ© de saisir un commentaire pour chacun de ses Ã©lÃ¨ves
 
     dans le respect de la loi et dans le cadre strict de l'Education Nationale.
 
-    <br /><br />L'observatoire et les données qui y figurent sont accessibles à l'ensemble de l'équipe pédagogique de l'établissement.
+    <br /><br />L'observatoire et les donnÃ©es qui y figurent sont accessibles Ã  l'ensemble de l'Ã©quipe pÃ©dagogique de l'Ã©tablissement.
 
-    <br /><br />Dans le respect de la loi informatique et liberté 78-17 du 6 janvier 1978, chaque élève a également accès dans son espace GEPI aux données qui le concernent";
+    <br /><br />Dans le respect de la loi informatique et libertÃ© 78-17 du 6 janvier 1978, chaque Ã©lÃ¨ve a Ã©galement accÃ¨s dans son espace GEPI aux donnÃ©es qui le concernent";
 
 }
 require("../lib/footer.inc.php");

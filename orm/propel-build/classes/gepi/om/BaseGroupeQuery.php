@@ -1056,6 +1056,23 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	}
 	
 	/**
+	 * Filter the query by a related Classe object
+	 * using the j_groupes_classes table as cross reference
+	 *
+	 * @param     Classe $classe the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    GroupeQuery The current query, for fluid interface
+	 */
+	public function filterByClasse($classe, $comparison = Criteria::EQUAL)
+	{
+		return $this
+			->useJGroupesClassesQuery()
+				->filterByClasse($classe, $comparison)
+			->endUse();
+	}
+	
+	/**
 	 * Exclude object from result
 	 *
 	 * @param     Groupe $groupe Object to remove from the list of results

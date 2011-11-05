@@ -1,7 +1,7 @@
 <?php
 
 /*
- * $Id: class_accueil_change_menu.php 6743 2011-04-03 19:22:58Z regis $
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

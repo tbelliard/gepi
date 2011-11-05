@@ -2,7 +2,6 @@
 /**
  * Création d'évaluations cumules
  * 
- * @version: $Id: index_cc.php 8414 2011-10-04 12:19:20Z crob $
  *
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL, 

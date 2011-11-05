@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id: voir_edt_eleve.php 4067 2010-02-03 22:08:35Z adminpaulbert $
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

@@ -5,7 +5,6 @@
  * 
  * 
  * 
- * $Id: header_barre_admin_template.php 7899 2011-08-22 13:13:49Z crob $
  *
  * @license GNU/GPL v2
  * @package General

@@ -1,7 +1,6 @@
 <?php
 /**
  * Administration du trombinoscope
-* $Id: trombinoscopes_admin.php 8586 2011-11-01 17:41:09Z mleygnac $
 *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
@@ -285,8 +284,8 @@ function aplanir_tree($chemin,$destination) {
 // déplace tous les fichiers du dossier $chemin dans le dossier $destination
 // ! si deux fichiers de même nom se trouvent dans $chemin un seul sera déplacé
 	$erreurs="";
-    if ($chemin[strlen($chemin)-1]!="/") $chemin.= "/";
-    if ($destination[strlen($destination)-1]!="/") $destination.= "/";
+    if ($chemin[mb_strlen($chemin)-1]!="/") $chemin.= "/";
+    if ($destination[mb_strlen($destination)-1]!="/") $destination.= "/";
     if (is_dir($chemin)) {
 		$dossier = opendir($chemin);
 		while ($fichier = readdir($dossier)) {
@@ -310,7 +309,7 @@ function aplanir_tree($chemin,$destination) {
 function del_tree($chemin) {
 	// supprime le dossier ou le fichier $chemin
 	$erreurs="";
-    if ($chemin[strlen($chemin)-1] != "/") $chemin.= "/";
+    if ($chemin[mb_strlen($chemin)-1] != "/") $chemin.= "/";
     if (is_dir($chemin)) {
 		$dossier = opendir($chemin);
 		while ($fichier = readdir($dossier)) {

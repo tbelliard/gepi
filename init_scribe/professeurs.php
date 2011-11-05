@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: professeurs.php 5939 2010-11-21 18:41:12Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

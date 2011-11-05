@@ -1,7 +1,6 @@
 <?php
 	@set_time_limit(0);
 
-	// $Id: step1.php 8576 2011-10-30 10:53:50Z crob $
 
 	// Initialisations files
 	require_once("../lib/initialisations.inc.php");
@@ -56,9 +55,9 @@
 		$new_chaine="";
 		for($i=0;$i<count($tmp_tab1);$i++){
 			$tmp_tab2=explode("-",$tmp_tab1[$i]);
-			$new_chaine.=ucfirst(strtolower($tmp_tab2[0]));
+			$new_chaine.=casse_mot($tmp_tab2[0],'majf2');
 			for($j=1;$j<count($tmp_tab2);$j++){
-				$new_chaine.="-".ucfirst(strtolower($tmp_tab2[$j]));
+				$new_chaine.="-".casse_mot($tmp_tab2[$j],'majf2');
 			}
 			$new_chaine.=" ";
 		}
@@ -246,7 +245,7 @@
 					// $unzipped_max_filesize < 0    extraction zip désactivée
 					if($unzipped_max_filesize>=0) {
 						$fichier_emis=$xml_file['name'];
-						$extension_fichier_emis=strtolower(strrchr($fichier_emis,"."));
+						$extension_fichier_emis=my_strtolower(mb_strrchr($fichier_emis,"."));
 						if (($extension_fichier_emis==".zip")||($xml_file['type']=="application/zip"))
 							{
 							require_once('../lib/pclzip.lib.php');
@@ -335,7 +334,7 @@
 						`ELEOPT11` varchar(40) $chaine_mysql_collate NOT NULL default '',
 						`ELEOPT12` varchar(40) $chaine_mysql_collate NOT NULL default '',
 						`LIEU_NAISSANCE` varchar(50) $chaine_mysql_collate NOT NULL default ''
-						);";
+						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 						$create_table = mysql_query($sql);
 
 
@@ -362,7 +361,7 @@
 						}
 
 						$nom_racine=$ele_xml->getName();
-						if(strtoupper($nom_racine)!='BEE_ELEVES') {
+						if(my_strtoupper($nom_racine)!='BEE_ELEVES') {
 							echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Elèves.<br />Sa racine devrait être 'BEE_ELEVES'.</p>\n";
 							require("../lib/footer.inc.php");
 							die();
@@ -383,7 +382,7 @@
 							foreach($structures_eleve->attributes() as $key => $value) {
 								//echo("$key=".$value."<br />");
 
-								if(strtoupper($key)=='ELEVE_ID') {
+								if(my_strtoupper($key)=='ELEVE_ID') {
 									// On teste si l'ELEVE_ID existe déjà: ça ne devrait pas arriver
 									if(in_array($value,$tab_ele_id)) {
 										echo "<b style='color:red;'>ANOMALIE&nbsp;:</b> Il semble qu'il y a plusieurs sections STRUCTURES_ELEVE pour l'ELEVE_ID '$value'.<br />";
@@ -400,8 +399,9 @@
 										foreach($structures_eleve->children() as $structure) {
 											$eleves[$i]["structures"][$j]=array();
 											foreach($structure->children() as $key => $value) {
-												if(in_array(strtoupper($key),$tab_champs_struct)) {
-													$eleves[$i]["structures"][$j][strtolower($key)]=preg_replace('/"/','',trim(traite_utf8($value)));
+												if(in_array(my_strtoupper($key),$tab_champs_struct)) {
+													//$eleves[$i]["structures"][$j][strtolower($key)]=preg_replace('/"/','',trim(traite_utf8($value)));
+													$eleves[$i]["structures"][$j][my_strtolower($key)]=preg_replace("/'/","",preg_replace('/"/','',trim($value)));
 													//echo("\$structure->$key=".$value."<br />)";
 												}
 											}
@@ -441,7 +441,7 @@
 											$eleves[$i]["classe"]=$eleves[$i]["structures"][$j]["code_structure"];
 										}
 										elseif($eleves[$i]["structures"][$j]["type_structure"]=="G") {
-											$sql="INSERT INTO temp_grp SET ele_id='".$eleves[$i]['eleve_id']."', nom_grp='".addslashes($eleves[$i]["structures"][$j]["code_structure"])."';";
+											$sql="INSERT INTO temp_grp SET ele_id='".$eleves[$i]['eleve_id']."', nom_grp='".mysql_real_escape_string($eleves[$i]["structures"][$j]["code_structure"])."';";
 											$insert_assoc_grp=mysql_query($sql);
 										}
 									}
@@ -498,7 +498,7 @@
 												`cp` int(10) NOT NULL default '0',
 												`ville` char(50) NOT NULL default '',
 												PRIMARY KEY  (`id`)
-												);";
+												) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 				$create_table = mysql_query($sql);
 
 				$sql="TRUNCATE TABLE temp_etab_import;";
@@ -574,7 +574,7 @@
 				}
 
 				$nom_racine=$ele_xml->getName();
-				if(strtoupper($nom_racine)!='BEE_ELEVES') {
+				if(my_strtoupper($nom_racine)!='BEE_ELEVES') {
 					echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Elèves.<br />Sa racine devrait être 'BEE_ELEVES'.</p>\n";
 					require("../lib/footer.inc.php");
 					die();
@@ -592,7 +592,8 @@
 					foreach($eleve->attributes() as $key => $value) {
 						//echo "$key=".$value."<br />";
 			
-						$eleves[$i][strtolower($key)]=trim(traite_utf8($value));
+						//$eleves[$i][strtolower($key)]=trim(traite_utf8($value));
+						$eleves[$i][my_strtolower($key)]=trim($value);
 						/*
 						if(strtoupper($key)=='ELEVE_ID') {
 							$indice_from_eleve_id["$value"]=$i;
@@ -604,18 +605,21 @@
 					}
 
 					foreach($eleve->children() as $key => $value) {
-						if(in_array(strtoupper($key),$tab_champs_eleve)) {
-							$eleves[$i][strtolower($key)]=preg_replace('/"/','',trim(traite_utf8($value)));
+						if(in_array(my_strtoupper($key),$tab_champs_eleve)) {
+							//$eleves[$i][strtolower($key)]=preg_replace('/"/','',trim(traite_utf8($value)));
+							//$eleves[$i][my_strtolower($key)]=preg_replace('/"/','',trim($value));
+							$eleves[$i][my_strtolower($key)]=preg_replace('/"/','',preg_replace("/'$/","",preg_replace("/^'/"," ",trim($value))));
 							//echo "\$eleve->$key=".$value."<br />";
 						}
 
-						if(($avec_scolarite_an_dernier=='y')&&(strtoupper($key)=='SCOLARITE_AN_DERNIER')) {
+						if(($avec_scolarite_an_dernier=='y')&&(my_strtoupper($key)=='SCOLARITE_AN_DERNIER')) {
 							$eleves[$i]["scolarite_an_dernier"]=array();
 			
 							foreach($eleve->SCOLARITE_AN_DERNIER->children() as $key2 => $value2) {
 								//echo "\$eleve->SCOLARITE_AN_DERNIER->$key2=$value2<br />";
-								if(in_array(strtoupper($key2),$tab_champs_scol_an_dernier)) {
-									$eleves[$i]["scolarite_an_dernier"][strtolower($key2)]=preg_replace('/"/','',trim(traite_utf8($value2)));
+								if(in_array(my_strtoupper($key2),$tab_champs_scol_an_dernier)) {
+									//$eleves[$i]["scolarite_an_dernier"][strtolower($key2)]=preg_replace('/"/','',trim(traite_utf8($value2)));
+									$eleves[$i]["scolarite_an_dernier"][my_strtolower($key2)]=preg_replace('/"/','',trim($value2));
 								}
 							}
 						}
@@ -698,8 +702,8 @@
 							$sql="UPDATE temp_gep_import2 SET ";
 							$sql.="elenoet='".$eleves[$i]['elenoet']."', ";
 							if(isset($eleves[$i]['id_national'])) {$sql.="elenonat='".$eleves[$i]['id_national']."', ";}
-							$sql.="elenom='".addslashes($eleves[$i]['nom'])."', ";
-							$sql.="elepre='".addslashes($eleves[$i]['prenom'])."', ";
+							$sql.="elenom='".mysql_real_escape_string($eleves[$i]['nom'])."', ";
+							$sql.="elepre='".mysql_real_escape_string($eleves[$i]['prenom'])."', ";
 							if(!isset($eleves[$i]["code_sexe"])) {
 								$eleves[$i]["code_sexe"]=1;
 								$info_anomalie.="Le sexe de ".$eleves[$i]['nom']." ".$eleves[$i]['prenom']." n'est pas renseigné dans le fichier XML.<br />\n";
@@ -712,7 +716,7 @@
 
 							if(isset($eleves[$i]["code_commune_insee_naiss"])){$sql.="lieu_naissance='".$eleves[$i]["code_commune_insee_naiss"]."', ";}
 
-							$sql=substr($sql,0,strlen($sql)-2);
+							$sql=mb_substr($sql,0,mb_strlen($sql)-2);
 							$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
 							affiche_debug("$sql<br />\n");
 							$res_insert=mysql_query($sql);
@@ -739,7 +743,7 @@
 										$tab_list_etab[]=$eleves[$i]["scolarite_an_dernier"]["code_rne"];
 
 										if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){
-											$sql.="id='".addslashes($eleves[$i]["scolarite_an_dernier"]["code_rne"])."'";
+											$sql.="id='".mysql_real_escape_string($eleves[$i]["scolarite_an_dernier"]["code_rne"])."'";
 											$cpt_debut_requete++;
 										}
 
@@ -779,16 +783,16 @@
 											}
 											$nom_etab=trim(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["denom_compl"]));
 											if($nom_etab=="") {
-												$nom_etab=ucfirst(strtolower($chaine));
+												$nom_etab=casse_mot($chaine,'majf2');
 											}
 											//$sql.="nom='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["denom_compl"]))."'";
-											$sql.="nom='".addslashes($nom_etab)."'";
+											$sql.="nom='".mysql_real_escape_string($nom_etab)."'";
 											$cpt_debut_requete++;
 										}
 										else{
 											$sql.=", ";
-											$nom_etab=ucfirst(strtolower($chaine));
-											$sql.="nom='".addslashes($nom_etab)."'";
+											$nom_etab=casse_mot($chaine,'majf2');
+											$sql.="nom='".mysql_real_escape_string($nom_etab)."'";
 											$cpt_debut_requete++;
 										}
 
@@ -822,7 +826,7 @@
 											// *****************************************
 											// PROBLEME: code_commune_insee!=code_postal
 											// *****************************************
-											$sql.="cp='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["code_commune_insee"]))."'";
+											$sql.="cp='".mysql_real_escape_string(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["code_commune_insee"]))."'";
 											$cpt_debut_requete++;
 										}
 
@@ -831,7 +835,7 @@
 											if($cpt_debut_requete>0){
 												$sql.=", ";
 											}
-											$sql.="ville='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["ll_commune_insee"]))."'";
+											$sql.="ville='".mysql_real_escape_string(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["ll_commune_insee"]))."'";
 											$cpt_debut_requete++;
 										}
 
@@ -918,7 +922,7 @@
 				}
 
 				$nom_racine=$ele_xml->getName();
-				if(strtoupper($nom_racine)!='BEE_ELEVES') {
+				if(my_strtoupper($nom_racine)!='BEE_ELEVES') {
 					echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Elèves.<br />Sa racine devrait être 'BEE_ELEVES'.</p>\n";
 					require("../lib/footer.inc.php");
 					die();
@@ -941,7 +945,8 @@
 			
 					foreach($option->attributes() as $key => $value) {
 						//echo "$key=".$value."<br />";
-						$eleves[$i][strtolower($key)]=trim(traite_utf8($value));
+						//$eleves[$i][strtolower($key)]=trim(traite_utf8($value));
+						$eleves[$i][my_strtolower($key)]=trim($value);
 					}
 
 					$eleves[$i]["options"]=array();
@@ -951,8 +956,9 @@
 					foreach($option->children() as $options_eleve) {
 						foreach($options_eleve->children() as $key => $value) {
 							// Les enfants indiquent NUM_OPTION, CODE_MODALITE_ELECT, CODE_MATIERE
-							if(in_array(strtoupper($key),$tab_champs_opt)) {
-								$eleves[$i]["options"][$j][strtolower($key)]=preg_replace('/"/','',trim(traite_utf8($value)));
+							if(in_array(my_strtoupper($key),$tab_champs_opt)) {
+								//$eleves[$i]["options"][$j][strtolower($key)]=preg_replace('/"/','',trim(traite_utf8($value)));
+								$eleves[$i]["options"][$j][my_strtolower($key)]=preg_replace('/"/','',trim($value));
 								//echo "\$eleve->$key=".$value."<br />";
 								//echo "\$eleves[$i][\"options\"][$j][".strtolower($key)."]=".$value."<br />";
 							}
@@ -1085,7 +1091,7 @@
 					// $unzipped_max_filesize < 0    extraction zip désactivée
 					if($unzipped_max_filesize>=0) {
 						$fichier_emis=$xml_file['name'];
-						$extension_fichier_emis=strtolower(strrchr($fichier_emis,"."));
+						$extension_fichier_emis=my_strtolower(mb_strrchr($fichier_emis,"."));
 						if (($extension_fichier_emis==".zip")||($xml_file['type']=="application/zip"))
 							{
 							require_once('../lib/pclzip.lib.php');
@@ -1153,7 +1159,7 @@
 						}
 	
 						$nom_racine=$nomenclature_xml->getName();
-						if(strtoupper($nom_racine)!='BEE_NOMENCLATURES') {
+						if(my_strtoupper($nom_racine)!='BEE_NOMENCLATURES') {
 							echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Nomenclatures.<br />Sa racine devrait être 'BEE_NOMENCLATURES'.</p>\n";
 							require("../lib/footer.inc.php");
 							die();
@@ -1183,12 +1189,14 @@
 								// <MATIERE CODE_MATIERE="001400">
 								//echo "$key=".$value."<br />";
 					
-								$matieres[$i][strtolower($key)]=trim(traite_utf8($value));
+								//$matieres[$i][strtolower($key)]=trim(traite_utf8($value));
+								$matieres[$i][my_strtolower($key)]=trim($value);
 							}
 	
 							foreach($matiere->children() as $key => $value) {
-								if(in_array(strtoupper($key),$tab_champs_matiere)) {
-									$matieres[$i][strtolower($key)]=preg_replace('/"/','',trim(traite_utf8($value)));
+								if(in_array(my_strtoupper($key),$tab_champs_matiere)) {
+									//$matieres[$i][strtolower($key)]=preg_replace('/"/','',trim(traite_utf8($value)));
+									$matieres[$i][my_strtolower($key)]=preg_replace('/"/','',trim($value));
 									//echo "\$matiere->$key=".$value."<br />";
 								}
 							}
@@ -1240,7 +1248,7 @@
 							}
 
 							if($temoin>0){
-								$sql=substr($sql,0,strlen($sql)-2);
+								$sql=mb_substr($sql,0,mb_strlen($sql)-2);
 								$sql.=" WHERE ele_id='$lig->ELE_ID';";
 								affiche_debug($sql."<br />\n");
 								$res2=mysql_query($sql);

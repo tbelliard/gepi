@@ -1,5 +1,4 @@
 
-@version $Id: changelog.txt 7785 2011-08-16 10:42:29Z crob $
 
 |==================|
 |= CHANGELOG GEPI =|
@@ -7,6 +6,13 @@
 
 Gepi-trunk (12/08/2011)
 ===========================
+Identification:
+- Ajout de la librairie simplesamlphp pour l'authentification et la fourniture d'identité pour des applications tierces
+- Intégration du plugin plugin_sso directement dans l'authentification gepi (pour utiliser un CAS et une table de correspondance avec les login gepi)
+
+Configuration:
+- Modification des fichiers de configurations du répertoire secure pour plus de lisibilité et de sécurité
+
 Bulletins:
 - Possibilité de ne pas faire apparaître un enseignement sur les bulletins sans passer par les catégories de matières.
 - Possibilité de définir des "mentions" (Félicitations, Encouragements, Avertissement,...) à saisir avec l'avis du conseil de classe.
@@ -29,6 +35,8 @@ Interface:
 
 Absences:
 - Ajout d'un filtrage sur la page bilan indviduel du module abs2 et ajout d'un texte optionnel sur l'export odt de cette page
+- Possiblité de modifier, supprimer une saisie, avec un archivage permanent de toutes les modification effectuées, et la possiblité d'un retour en arrière
+- Extraction des saisies sur l'année pour un archivage selon les recommandations officielles (archivage de 10 ans pour exploitation judiciaire)
 
 Discipline:
 - Possibilité de restreindre les natures d'incident à une liste réduite.

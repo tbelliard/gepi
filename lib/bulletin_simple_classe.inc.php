@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: bulletin_simple_classe.inc.php 6149 2010-12-16 10:31:02Z crob $
 *
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 */
@@ -76,7 +75,7 @@ if ($periode1 < $periode2) {
 	}
 	echo ".</span>";
 } else {
-	$temp = strtolower($nom_periode[$periode1]);
+	$temp = my_strtolower($nom_periode[$periode1]);
 	echo "Résultats du $temp.</span>";
 
 }
@@ -181,7 +180,8 @@ while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 
 $cat_names = array();
 foreach ($categories as $cat_id) {
-	$cat_names[$cat_id] = html_entity_decode_all_version(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
+	//$cat_names[$cat_id] = html_entity_decode(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
+	$cat_names[$cat_id] = mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0);
 }
 
 // Nombre de groupes sur la classe
@@ -407,7 +407,7 @@ for($j=0;$j<$nombre_groupes;$j++) {
 		echo "<td ";
 		if ($nb_periodes > 1) echo " rowspan= ".$nb_periodes;
 		//echo" width=\"$larg_col1\" class='bull_simpl'><b>$current_matiere_nom_complet</b>";
-		echo " width=\"$larg_col1\" class='bull_simpl'><b>".htmlentities($current_matiere_nom_complet)."</b>";
+		echo " width=\"$larg_col1\" class='bull_simpl'><b>".htmlspecialchars($current_matiere_nom_complet)."</b>";
 		$k = 0;
 		while ($k < count($current_matiere_professeur_login)) {
 			echo "<br /><i>".affiche_utilisateur($current_matiere_professeur_login[$k],$id_classe)."</i>";

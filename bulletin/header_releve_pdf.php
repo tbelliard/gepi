@@ -1,6 +1,6 @@
 <?php
 /*
-$Id: header_releve_pdf.php 8461 2011-10-10 20:03:13Z crob $
+$Id$
 */
 
 // fonction qui recoit une date heure est recompose la date en français
@@ -43,6 +43,7 @@ function date_frc($var)
 	return($var);
 
 }
+
 /*
 function unhtmlentities($chaineHtml)
 {
@@ -77,14 +78,7 @@ function redimensionne_image($photo, $L_max, $H_max)
 	$nouvelle_largeur = $largeur / $ratio;
 	$nouvelle_hauteur = $hauteur / $ratio;
 
-	// des Pixels vers Millimetres
-	$nouvelle_largeur = $nouvelle_largeur / 2.8346;
-	$nouvelle_hauteur = $nouvelle_hauteur / 2.8346;
 
-	return array($nouvelle_largeur, $nouvelle_hauteur);
-
-}
-*/
 //============================================================
 
 // class rel_PDF
@@ -134,7 +128,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
 		$w=$this->w-$this->rMargin-$this->x;
 	$wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
 	$s=str_replace("\r",'',$txt);
-	$nb=strlen($s);
+	$nb=mb_strlen($s);
 	if($nb>0 and $s[$nb-1]=="\n")
 		$nb--;
 	$b=0;
@@ -175,7 +169,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
 				if ($prn==1) $this->_out('0 Tw');
 			}
 			if ($prn==1) {
-				$this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
+				$this->Cell($w,$h,mb_substr($s,$j,$i-$j),$b,2,$align,$fill);
 			}
 			$i++;
 			$sep=-1;
@@ -186,7 +180,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
 			if($border and $nl==2)
 				$b=$b2;
 			if ( $maxline && $nl > $maxline )
-				return substr($s,$i);
+				return mb_substr($s,$i);
 			continue;
 		}
 		if($c==' ')
@@ -209,7 +203,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
 					if ($prn==1) $this->_out('0 Tw');
 				}
 				if ($prn==1) {
-					$this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
+					$this->Cell($w,$h,mb_substr($s,$j,$i-$j),$b,2,$align,$fill);
 				}
 			}
 			else
@@ -220,7 +214,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
 					if ($prn==1) $this->_out(sprintf('%.3f Tw',$this->ws*$this->k));
 				}
 				if ($prn==1){
-					$this->Cell($w,$h,substr($s,$j,$sep-$j),$b,2,$align,$fill);
+					$this->Cell($w,$h,mb_substr($s,$j,$sep-$j),$b,2,$align,$fill);
 				}
 				$i=$sep+1;
 			}
@@ -232,7 +226,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
 			if($border and $nl==2)
 				$b=$b2;
 			if ( $maxline && $nl > $maxline )
-				return substr($s,$i);
+				return mb_substr($s,$i);
 		}
 		else
 			$i++;
@@ -246,7 +240,7 @@ function drawRows($w,$h,$txt,$border=0,$align='J',$fill=0,$maxline=0,$prn=0)
 	if($border and is_int(strpos($border,'B')))
 		$b.='B';
 	if ($prn==1) {
-		$this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
+		$this->Cell($w,$h,mb_substr($s,$j,$i-$j),$b,2,$align,$fill);
 	}
 	$this->x=$this->lMargin;
 	return $nl;
@@ -291,7 +285,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 	$this->_out($s);
 }
 
-}
+
 // fin de la class
 
 //============================================================
@@ -300,7 +294,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 
 	// entête
 	$X_entete_etab='5';
-	$caractere_utilse='arial'; // caractère utilisé dans le document
+	$caractere_utilse='DejaVu'; // caractère utilisé dans le document
 	$affiche_logo_etab='1'; // affiché le logo de l'établissement
 	$entente_mel='0'; // afficher dans l'entête le mel de l'établissement
 	$entente_tel='0'; // afficher dans l'entête le téléphone de l'établissement
@@ -341,6 +335,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 
 
 	// Définition de la page
+	require_once(dirname(__FILE__).'/../impression/class_pdf.php');
 	$pdf=new rel_PDF("P","mm","A4");
 	$pdf->SetTopMargin(TopMargin);
 	$pdf->SetRightMargin(RightMargin);
@@ -351,17 +346,7 @@ function TextWithRotation($x,$y,$txt,$txt_angle,$font_angle=0)
 	$pdf->SetDrawColor(0,0,0);
 
 	// Caractéres utilisée
-	$caractere_utilse = 'arial';
-
-
-
-/*
-		$nom_releve=date("Ymd_Hi");
-		$nom_releve = 'Releve_'.$nom_releve.'.pdf';
-		$pdf->Output($nom_releve,'I');
-*/
-
-
+	$caractere_utilse = 'DejaVu';
 
 
 	$releve_affiche_formule=getSettingValue("releve_affiche_formule") ? getSettingValue("releve_affiche_formule") : "y";

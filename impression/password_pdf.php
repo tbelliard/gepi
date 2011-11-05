@@ -1,8 +1,6 @@
 <?php
 /*
- * Last modification  : 10/02/2007
- *
- * Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -22,30 +20,22 @@
  */
 
 //INSERT INTO droits VALUES ('/impression/password_pdf.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','Impression des des mots de passe. Module PDF', '');
- 
-// Global configuration file
-// Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
-//Le problème peut être résolu en ajoutant la ligne suivante :
-Header('Pragma: public');
 
-header('Content-Type: application/pdf');
 //=============================
-// REMONTé:
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 //=============================
 
-require('../fpdf/fpdf.php');
-require('../fpdf/ex_fpdf.php');
+$date=date("Ymd_Hi");
+$nom_releve = "export_csv_password_".$date.".pdf";
+
+send_file_download_headers('application/pdf',$nom_releve);
+
+require_once('../fpdf/fpdf.php');
 
 define('FPDF_FONTPATH','../fpdf/font/');
 define('LargeurPage','210');
 define('HauteurPage','297');
-
-/*
-// Initialisations files
-require_once("../lib/initialisations.inc.php");
-*/
 
 require_once("./class_pdf.php");
 require_once ("./liste.inc.php"); //fonction qui retourne le nombre d'élèves par classe (ou groupe) pour une période donnée.
@@ -64,7 +54,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -106,8 +96,8 @@ $texte_presentation = 'Attention : Votre mot de passe est confidentiel. A votre 
 //recherche du dossier racine de GEPI pour obtenir l'adresse de l'application à saisir dans le navigateur
 $url = parse_url($_SERVER['REQUEST_URI']);
 $temp = $url['path'];
-$d = strlen($temp) - strlen("impression/password_pdf.php") ;
-$gepi_path = substr($temp, 0, $d);
+$d = mb_strlen($temp) - mb_strlen("impression/password_pdf.php") ;
+$gepi_path = mb_substr($temp, 0, $d);
 
 if (!isset($_SERVER['HTTPS']) OR (isset($_SERVER['HTTPS']) AND strtolower($_SERVER['HTTPS']) != "on")) {
    $adresse_site_gepi = "HTTP://".$_SERVER["SERVER_NAME"] . $gepi_path;         
@@ -119,7 +109,7 @@ $pdf->AddPage("P");
 // Couleur des traits
 $pdf->SetDrawColor(0,0,0);
 // caractère utilisé dans le document
-$caractere_utilise = 'arial';
+$caractere_utilise = 'DejaVu';
 $y_tmp = $MargeHaut;
 $j=0;
 if (($donnees_personne_csv)) {
@@ -134,12 +124,12 @@ if (($donnees_personne_csv)) {
 		$email = $donnees_personne_csv['user_email'][$i];
 		
 		$pdf->SetLineWidth(0.2);
-		$pdf->SetFont($caractere_utilise,'',9);
+		$pdf->SetFont('DejaVu','',9);
 		$pdf->SetDash(4,4);
 
 
 		$pdf->Setxy($X_tableau,$y_tmp);
-		$pdf->SetFont($caractere_utilise,'B',8);
+		$pdf->SetFont('DejaVu','B',8);
 		$texte = "\nA l'attention de ".$prenom." ".$nom." , classe de ".$classe.
 				 " :                         Voici vos identifiant et mot de passe pour accéder à vos notes.\nIdentifiant : ".$login.
 				 "\nMot de passe : ".$password.
@@ -176,8 +166,7 @@ if (($donnees_personne_csv)) {
 // problème de variable de session
   $pdf->CellFitScale($l_cell_avis,$h_cell,"Erreur de session export PDF",1,0,'L',0); //le quadrillage
 }
-	// sortie PDF sur écran
-	$date=date("Ymd_Hi");
-	$nom_releve = "export_csv_password_".$date.".pdf";
-	$pdf->Output($nom_releve,'I');
+
+// sortie PDF sur écran
+$pdf->Output($nom_releve,'I');
 ?>

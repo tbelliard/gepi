@@ -1,7 +1,6 @@
 <?php
 
 /*
- * $Id: edit_limite.inc.php 6822 2011-04-26 12:07:42Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

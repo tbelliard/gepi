@@ -1,7 +1,5 @@
 <?php
 /*
- * @version: $Id: config_aid_productions.php 6588 2011-03-02 17:53:54Z crob $
- *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
@@ -118,7 +116,7 @@ while ($i < $nb_lignes) {
     $nom = mysql_result($res,$i,"nom");
     echo "<tr class='lig$alt'>";
     echo "<td>".$id."</td>\n";
-    echo "<td><input type=\"text\" name=\"".$id."\" value =\"".htmlentities($nom)."\" size=\"40\" /></td>\n";
+    echo "<td><input type=\"text\" name=\"".$id."\" value =\"".htmlspecialchars($nom)."\" size=\"40\" /></td>\n";
     echo "</tr>\n";
     $alt=$alt*(-1);
     $i++;

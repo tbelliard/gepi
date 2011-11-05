@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: add_group.php 7979 2011-08-25 19:59:03Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -71,8 +70,8 @@ if (isset($_POST['is_posted'])) {
 	check_token();
 
     $error = false;
-    $reg_nom_groupe = html_entity_decode_all_version($_POST['groupe_nom_court']);
-    $reg_nom_complet = html_entity_decode_all_version($_POST['groupe_nom_complet']);
+    $reg_nom_groupe = html_entity_decode($_POST['groupe_nom_court']);
+    $reg_nom_complet = html_entity_decode($_POST['groupe_nom_complet']);
     $reg_matiere = $_POST['matiere'];
     $reg_categorie = $_POST['categorie'];
 	//echo "\$reg_categorie=$reg_categorie<br />";
@@ -216,7 +215,7 @@ for ($i=0;$i<$nb_mat;$i++) {
     echo "<option value='" . $matiere . "'";
     if ($reg_matiere == $matiere) {echo " SELECTED";}
     //echo ">" . $nom_matiere . "</option>\n";
-    echo ">" . htmlentities($nom_matiere) . "</option>\n";
+    echo ">" . htmlspecialchars($nom_matiere) . "</option>\n";
 }
 echo "</select>\n";
 echo "</p>\n";
@@ -335,7 +334,7 @@ echo ">Aucune</option>\n";
 while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
     echo "<option value='".$row["id"]."'";
     if ($matiere_categorie == $row["id"]) {echo " SELECTED";}
-    echo ">".html_entity_decode_all_version($row["nom_court"])."</option>\n";
+    echo ">".html_entity_decode($row["nom_court"])."</option>\n";
 }
 echo "</select>\n";
 

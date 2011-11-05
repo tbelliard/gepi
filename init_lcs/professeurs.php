@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: professeurs.php 5938 2010-11-21 18:14:45Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -160,13 +159,13 @@ if (isset($_POST['is_posted'])) {
                      $gecos = $info2[0]["gecos"][0];
                      $tmp = split ("[\,\]",$info2[0]["gecos"][0],4);
                      $ret_people = array (
-                     "nom"         => stripslashes( utf8_decode($info2[0]["sn"][0]) ),
-                     "fullname"        => stripslashes( utf8_decode($info2[0]["cn"][0]) ),
+                     "nom"         => stripslashes($info2[0]["sn"][0]),
+                     "fullname"    => stripslashes($info2[0]["cn"][0]),
                      "email"       => $info2[0]["mail"][0],
-                     "sexe"            => $tmp[2],
+                     "sexe"        => $tmp[2],
                      );
-                     $long = strlen($ret_people["fullname"]) - strlen($ret_people["nom"]);
-                     $prenom = substr($ret_people["fullname"], 0, $long) ;
+                     $long = mb_strlen($ret_people["fullname"]) - mb_strlen($ret_people["nom"]);
+                     $prenom = mb_substr($ret_people["fullname"], 0, $long) ;
                  }
                  @ldap_free_result ( $result2 );
              }

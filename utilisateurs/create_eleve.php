@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: create_eleve.php 8493 2011-10-19 05:41:15Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

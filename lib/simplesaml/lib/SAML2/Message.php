@@ -7,7 +7,6 @@
  * samlp:StatusResponseType element types.
  *
  * @package simpleSAMLphp
- * @version $Id$
  */
 abstract class SAML2_Message implements SAML2_SignedElement {
 

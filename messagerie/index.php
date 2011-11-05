@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: index.php 7393 2011-07-05 17:58:38Z mleygnac $
+ * $Id$
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -107,9 +107,9 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
         $record = 'no';
     }
     if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $_POST['display_date_debut'])) {
-        $anneed = substr($_POST['display_date_debut'],6,4);
-        $moisd = substr($_POST['display_date_debut'],3,2);
-        $jourd = substr($_POST['display_date_debut'],0,2);
+        $anneed = mb_substr($_POST['display_date_debut'],6,4);
+        $moisd = mb_substr($_POST['display_date_debut'],3,2);
+        $jourd = mb_substr($_POST['display_date_debut'],0,2);
         while ((!checkdate($moisd, $jourd, $anneed)) and ($jourd > 0)) $jourd--;
         $date_debut=mktime(0,0,0,$moisd,$jourd,$anneed);
     } else {
@@ -118,9 +118,9 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 
     }
     if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $_POST['display_date_fin'])) {
-        $anneef = substr($_POST['display_date_fin'],6,4);
-        $moisf = substr($_POST['display_date_fin'],3,2);
-        $jourf = substr($_POST['display_date_fin'],0,2);
+        $anneef = mb_substr($_POST['display_date_fin'],6,4);
+        $moisf = mb_substr($_POST['display_date_fin'],3,2);
+        $jourf = mb_substr($_POST['display_date_fin'],0,2);
         while ((!checkdate($moisf, $jourf, $anneef)) and ($jourf > 0)) $jourf--;
         $date_fin=mktime(23,59,0,$moisf,$jourf,$anneef);
     } else {
@@ -130,9 +130,9 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 
     if ($record == 'yes') {
 		if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $_POST['display_date_decompte'])) {
-			$anneed = substr($_POST['display_date_decompte'],6,4);
-			$moisd = substr($_POST['display_date_decompte'],3,2);
-			$jourd = substr($_POST['display_date_decompte'],0,2);
+			$anneed = mb_substr($_POST['display_date_decompte'],6,4);
+			$moisd = mb_substr($_POST['display_date_decompte'],3,2);
+			$jourd = mb_substr($_POST['display_date_decompte'],0,2);
 			//echo "$jourd/$moisd/$anneed<br />";
 			while ((!checkdate($moisf, $jourf, $anneef)) and ($jourf > 0)) {
 				$jourf--;
@@ -142,8 +142,8 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 			//echo strftime("%d/%m/%Y à %H:%M",$date_decompte)."<br />";
 
 			if (preg_match("/([0-9]{1,2}):([0-9]{0,2})/", str_ireplace('h',':',$_POST['display_heure_decompte']))) {
-				$heured = substr($_POST['display_heure_decompte'],0,2);
-				$minuted = substr($_POST['display_heure_decompte'],3,2);
+				$heured = mb_substr($_POST['display_heure_decompte'],0,2);
+				$minuted = mb_substr($_POST['display_heure_decompte'],3,2);
 				$date_decompte=$date_decompte+$heured*3600+$minuted*60;
 				//echo strftime("%d/%m/%Y à %H:%M",$date_decompte)."<br />";
 			} else {
@@ -438,8 +438,8 @@ echo "<tr><td  colspan=\"4\" >\n";
 	$initiale_courante=0;
 	while($utilisateur=mysql_fetch_array($R_utilisateurs))
 		{
-		$nom=strtoupper($utilisateur['nom'])." ".$utilisateur['prenom'];
-		$initiale=ord(strtoupper($utilisateur['login']));
+		$nom=my_strtoupper($utilisateur['nom'])." ".$utilisateur['prenom'];
+		$initiale=ord(my_strtoupper($utilisateur['login']));
 		if ($initiale!=$initiale_courante)
 			{
 			$initiale_courante=$initiale;

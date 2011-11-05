@@ -43,14 +43,14 @@ function motif_de($nc_motif) {
 // fonction pour présenter les numéro de téléphone
 function present_tel($tel)
 {
-	$compt_nb_chiffre = strlen ($tel);
+	$compt_nb_chiffre = mb_strlen ($tel);
 	if ( $compt_nb_chiffre > 10 ) { $tel = $tel; }
 	elseif ( $compt_nb_chiffre === 10 ) {
-			//$tel1 = substr($tel, 0, 1);
-			//$tel2 = substr($tel, 2, 3);
-			//$tel3 = substr($tel, 4, 5);
-			//$tel4 = substr($tel, 6, 7);
-			//$tel5 = substr($tel, 8, 9);
+			//$tel1 = mb_substr($tel, 0, 1);
+			//$tel2 = mb_substr($tel, 2, 3);
+			//$tel3 = mb_substr($tel, 4, 5);
+			//$tel4 = mb_substr($tel, 6, 7);
+			//$tel5 = mb_substr($tel, 8, 9);
 			$tel =  $tel[0].$tel[1].' '.$tel[2].$tel[3].' '.$tel[4].$tel[5].' '.$tel[6].$tel[7].' '.$tel[8].$tel[9];
 			$tel = $tel;
 		}
@@ -1973,13 +1973,13 @@ function motif_type_abs($motif_absence)
 // fonction pour tronquer un texte
 function tronquer_texte($texte, $longeur_max)
 {
-    if (strlen($texte) > $longeur_max)
+    if (mb_strlen($texte) > $longeur_max)
     {
-    $texte = substr($texte, 0, $longeur_max);
+    $texte = mb_substr($texte, 0, $longeur_max);
 	// on ne coupe pas au dernier espace mais au carcatére pret
 	// $dernier_espace = strrpos($texte, "");
 	$dernier_espace = $longeur_max;
-    $texte = substr($texte, 0, $dernier_espace)."...";
+    $texte = mb_substr($texte, 0, $dernier_espace)."...";
     }
 
     return $texte;

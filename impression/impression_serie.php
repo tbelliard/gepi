@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: impression_serie.php 6551 2011-02-28 14:43:33Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

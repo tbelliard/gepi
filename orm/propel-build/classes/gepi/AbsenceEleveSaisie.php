@@ -49,6 +49,8 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 * @var        boolean to store if saisie is contradictoire
 	 */
 	protected $boolSaisiesContradictoiresManquementObligation;
+	
+	protected $oldVersion;
 
 	/**
 	 *
@@ -184,7 +186,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	}
     /**
 	 *
-	 * Renvoi true ou false si un type est defini ou non
+	 * Renvoi true ou false si un type de saisie est defini ou non
 	 *
 	 * @return     boolean
 	 *
@@ -192,7 +194,9 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	public function hasTypeSaisie() {
 	    $traitements = $this->getAbsenceEleveTraitements();
 	    foreach ($traitements as $traitement) {
-		if ($traitement->getAbsenceEleveType() != null ) {
+		if ($traitement->getAbsenceEleveType() != null 
+		    && $traitement->getAbsenceEleveType()->getTypeSaisie() != null 
+		    && $traitement->getAbsenceEleveType()->getTypeSaisie() != AbsenceEleveType::TYPE_SAISIE_NON_PRECISE ) {
 		    return true;
 		}
 	    }
@@ -274,24 +278,29 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 */
 	public function getRetard() {
 	    if (!isset($this->retard) || $this->retard === null) {
-		$retard = false;
-		$nb_min = getSettingValue("abs2_retard_critere_duree");
-		if ($nb_min == null
-			|| $nb_min == '') {
-		    $nb_min = 30;
-		} if (($this->getFinAbs('U') - $this->getDebutAbs('U')) < 60*$nb_min) {
-		    $retard = true;
-		} else {
-		    //on va regarder si il y a un retard dans les types
-		    foreach ($this->getAbsenceEleveTraitements() as $traitement) {
-			if ($traitement->getAbsenceEleveType() != null) {
-			    if ($traitement->getAbsenceEleveType()->getRetardBulletin() == AbsenceEleveType::RETARD_BULLETIN_VRAI) {
-				$retard = true;
-				break;
-			    }
-			}
-		    }
-		}
+	        if (!$this->getManquementObligationPresence()) {//si ça n'est pas un manquement à l'obligation de présence, on ne le compte pas comme retard
+	            $this->retard = false;
+	            return false;
+	        }
+    		$retard = false;
+    		$nb_min = getSettingValue("abs2_retard_critere_duree");
+    		if ($nb_min == null
+    			|| $nb_min == '') {
+    		    $nb_min = 30;
+    		}
+    		if (($this->getFinAbs('U') - $this->getDebutAbs('U')) < 60*$nb_min) {
+    		    $retard = true;
+    		} else {
+    		    //on va regarder si il y a un retard dans les types
+    		    foreach ($this->getAbsenceEleveTraitements() as $traitement) {
+        			if ($traitement->getAbsenceEleveType() != null) {
+        			    if ($traitement->getAbsenceEleveType()->getRetardBulletin() == AbsenceEleveType::RETARD_BULLETIN_VRAI) {
+        				$retard = true;
+        				break;
+        			    }
+        			}
+    		    }
+    		}
 		$this->retard = $retard;
 	    }
 	    return $this->retard;
@@ -334,8 +343,8 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		    $sousResponsabiliteEtablissement = true;
 		} else {//c'est le dernier cas : ($type_avec == false && $type_sans == false && $type_non_precise == true)
 		    //si on a un type de responsabilite specifie a non_precise (comme le type 'erreur de saisie'),
-		    //on renvoi une resp etab (sinon l'utilisateur aurait specifier un type MANQU_OBLIG_PRESE_VRAI)
-		    $sousResponsabiliteEtablissement = true;
+		    //on renvoi le réglage par défaut
+		    $sousResponsabiliteEtablissement = (getSettingValue("abs2_saisie_par_defaut_sous_responsabilite_etab")=='y');
 		}
 		$this->sousResponsabiliteEtablissement = $sousResponsabiliteEtablissement;
 	    }
@@ -394,7 +403,8 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 *
 	 *
 	 * Renvoi true ou false si la saisie a un type de manquement spécifié a 'non précisé'
-	 * Cette propriété est calculé par l'intermediaire des types de traitement
+	 * Cette propriété est calculé par l'intermediaire des types de traitement.
+	 * Pour renvoyer vrai, la saisie ne doit comporter que des types dont le manquement est AbsenceEleveType::MANQU_OBLIG_PRESE_NON_PRECISE
 	 *
 	 * @return     boolean
 	 *
@@ -523,7 +533,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		}
 
 		if ($justifiee_avec && $justifiee_sans ) {
-		    //on a aucune information on renvoit le reglage adequat
+		    //on a plusieurs informations contradictoires, on renvoit le reglage adequat
 		    $this->justifiee = (getSettingValue("abs2_saisie_multi_type_non_justifiee")!='y');
 		} else if ($justifiee_avec) {
 		    $this->justifiee =  true;
@@ -576,7 +586,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 
 	/**
 	 *
-	 * Renvoi true si une notification a ete recue par la famille
+	 * Renvoi true si une notification a ete recue avec succès par la famille
 	 *
 	 * @return     boolean
 	 *
@@ -642,7 +652,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 					//on utilise du sql directement pour optimiser la requete
 					//WARNING WARNING WARNING WARNING
 					//si le modele change ca va bugger, il faut utiliser la requete AbsenceEleveTraitementQuery en dessous
-					//le sql a ete generer en activant les logs propel et en recuperant le sql de la requete ci-dessous
+					//le sql a ete generer en activant les logs propel et en recuperant le sql de la requete plus bas
 					$sql = "SELECT /* comment_getAbsenceEleveTraitements */ 
 								a_traitements.ID, a_traitements.UTILISATEUR_ID, a_traitements.A_TYPE_ID, a_traitements.A_MOTIF_ID, a_traitements.A_JUSTIFICATION_ID, a_traitements.COMMENTAIRE, a_traitements.MODIFIE_PAR_UTILISATEUR_ID, a_traitements.CREATED_AT, a_traitements.UPDATED_AT, a_traitements.DELETED_AT,
 								a_types.ID, a_types.NOM, a_types.JUSTIFICATION_EXIGIBLE, a_types.SOUS_RESPONSABILITE_ETABLISSEMENT, a_types.MANQUEMENT_OBLIGATION_PRESENCE, a_types.RETARD_BULLETIN, a_types.TYPE_SAISIE, a_types.COMMENTAIRE, a_types.ID_LIEU, a_types.SORTABLE_RANK, a_types.CREATED_AT, a_types.UPDATED_AT,
@@ -655,7 +665,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 
 					$this->collAbsenceEleveTraitements = AbsenceEleveSaisie::getTraitementFormatter()->format($stmt);
 
-
+//                    Cette requete est celle faite avec l'objet query, utile si on veut récupérer le sql pour la requete manuelle ci-dessus
 //					$this->collAbsenceEleveTraitements = AbsenceEleveTraitementQuery::create()
 //						->setComment('comment_getAbsenceEleveTraitements')
 //						->useJTraitementSaisieEleveQuery()->filterByASaisieId($this->getId())->endUse()
@@ -664,6 +674,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 //						->leftJoinWith('AbsenceEleveJustification')
 //						->find();
 
+					// DEBUG
 //					foreach ($this->collAbsenceEleveTraitements as $traitement) {
 //					    echo $this->getId().'sql $traitement->isTypeHydrated() : '.$traitement->isTypeHydrated().'<br/>';
 //					    echo $this->getId().'sql $traitement->isNotificationHydrated() : '.$traitement->isNotificationHydrated().'<br/>';
@@ -678,6 +689,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 					    $this->collAbsenceEleveTraitements->append($jTraitementSaisieEleve->getAbsenceEleveTraitement());
 					}
 				    }
+					// DEBUG
 //				    foreach ($this->collAbsenceEleveTraitements as $traitement) {
 //					echo $this->getId().'collJ $traitement->isTypeHydrated() : '.$traitement->isTypeHydrated().'<br/>';
 //					echo $this->getId().'collJ $traitement->isNotificationHydrated() : '.$traitement->isNotificationHydrated().'<br/>';
@@ -969,21 +981,11 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	}
 
 	/**
-	 * Ajout manuel : renseignement automatique de l'utilisateur qui a créé ou modifié la saisie
-	 * Persists this object to the database.
-	 *
-	 * If the object is new, it inserts it; otherwise an update is performed.
-	 * All modified related objects will also be persisted in the doSave()
-	 * method.  This method wraps all precipitate database operations in a
-	 * single transaction.
-	 *
-	 * @param      PropelPDO $con
-	 * @return     int The number of rows affected by this insert/update and any referring fk objects' save() operations.
-	 * @throws     PropelException
-	 * @see        doSave()
+	 * Code to be run after persisting the object
+	 * @param PropelPDO $con
 	 */
-	public function save(PropelPDO $con = null)
-	{
+	public function preSave(PropelPDO $con = null) {
+	    $this->oldVersion = $this->version;
 	    if ($this->isNew()) {
 			if ($this->getUtilisateurId() == null) {
 			    $utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
@@ -999,12 +1001,51 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		    }
 		}
 
-		//on regarde les changements avec l'ancienne version pour mettre à jour la table d'agrégation
-		$oldVersionNumber = $this->version;
-		
-		$result = parent::save($con);
-				
-		return $result;
+		if (!$this->validate()) {  
+		    $error_message = "\n";
+		    foreach ($this->getValidationFailures() as $failure) {
+                $error_message .= $failure->getMessage() . "\n";
+            }
+		    
+		    throw new PropelException('AbsenceEleveSaisie ne passe pas la validation : '.$error_message);
+		}
+		return true;
+	} 
+
+	/**
+	 * Code to be run after persisting the object
+	 * @param PropelPDO $con
+	 */
+	public function postSave(PropelPDO $con = null) { 
+		if (AbsenceEleveSaisiePeer::isAgregationEnabled() && $this->getEleve() != null) {
+			//on va mettre à jour la table d'agrégation pour cet élève. Il faut mettre à jour cette table
+			//sur les date de l'ancienne version et de la nouvelle version
+			$oldDebutAbs = null;
+			$oldFinAbs = null;
+			//si $oldVersionNumber = 0 c'est qu'il n'y avait pas d'ancienne version
+			if ($this->oldVersion != 0 && $this->oldVersion != $this->version) {
+				$oldVersionObject = $this->getOneVersion($this->oldVersion);
+				if ($oldVersionObject != null) {
+					$oldDebutAbs = $oldVersionObject->getDebutAbs(null);
+					$oldFinAbs = $oldVersionObject->getFinAbs(null);
+				}
+			}
+			
+			if ($oldDebutAbs != null && $oldDebutAbs->format('U') < $this->getDebutAbs('U')) {
+				$debut = $oldDebutAbs;
+			} else {
+				$debut = $this->getDebutAbs(null);
+			}
+			
+			if ($oldFinAbs != null && $oldFinAbs->format('U') > $this->getFinAbs('U')) {
+				$fin = $oldFinAbs;
+			} else {
+				$fin = $this->getFinAbs(null);
+			}
+			$this->getEleve()->clearAbsenceEleveSaisiesParJour();
+			$this->getEleve()->updateAbsenceAgregationTable($debut,$fin);
+			$this->getEleve()->checkAndUpdateSynchroAbsenceAgregationTable($debut,$fin);
+		}
 	}
 	
 	/**
@@ -1050,32 +1091,6 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
             }
         }
 
-     /**
-	 *
-	 * Renvoi true/false selon que l'élève est sorti ou non de l'établissement
-	 *
-	 * @return Boolean
-	 *
-	 */
-    public function isSaisieEleveSorti($date_debut_test) {
-
-        $eleve = $this->getEleve();
-        if (!is_null($eleve)) {
-            $date_sortie_eleve = $eleve->getDateSortie('U');            
-            if (is_null($date_sortie_eleve) || $date_sortie_eleve == 0) {
-                return false;
-            } else {
-                if ($date_debut_test->format('U') > $date_sortie_eleve) {
-                    return(true);
-                } else {
-                    return(false);
-                }
-            }
-        }else{
-            return(false);
-        }
-    }
-    
     /**
 	 * Undelete a row that was soft_deleted with no versionning
 	 *
@@ -1142,4 +1157,57 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 			$this->setUpdatedAt('now');
 		}
         
+	/**
+	 * Reloads this object from datastore based on primary key and (optionally) resets all associated objects.
+	 * Ajouté manuellement : suppression du cache des $sousResponsabiliteEtablissement; $manquementObligationPresence; $manquementObligationPresenceSpecifie_NON_PRECISE;
+	 * $justifiee; $retard; $collectionSaisiesContradictoiresManquementObligation; $boolSaisiesContradictoiresManquementObligation;
+	 *
+	 * This will only work if the object has been saved and has a valid primary key set.
+	 *
+	 * @param      boolean $deep (optional) Whether to also de-associated any related objects.
+	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
+	 * @return     void
+	 * @throws     PropelException - if this object is deleted, unsaved or doesn't have pk match in db
+	 */
+	public function reload($deep = false, PropelPDO $con = null) {
+	    parent::reload($deep, $con);
+	    if ($deep) {
+    	    $this->sousResponsabiliteEtablissement = null;
+    	    $this->manquementObligationPresence = null;
+    	    $this->manquementObligationPresenceSpecifie_NON_PRECISE = null;
+    	    $this->justifiee = null;
+    	    $this->boolSaisiesContradictoiresManquementObligation = null;
+    	    $this->retard = null;
+    	    $this->collectionSaisiesContradictoiresManquementObligation = null;
+    	    $this->collAbsenceEleveTraitements = null;
+    	    $this->oldVersion = null;
+	    }
+	}
+	
+	/**
+	 * Resets all references to other model objects or collections of model objects.
+	 *
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
+	 *
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
+	 */
+	public function clearAllReferences($deep = false)
+	{
+	    parent::clearAllReferences($deep);
+	    $this->sousResponsabiliteEtablissement = null;
+	    $this->manquementObligationPresence = null;
+	    $this->manquementObligationPresenceSpecifie_NON_PRECISE = null;
+	    $this->justifiee = null;
+	    $this->boolSaisiesContradictoiresManquementObligation = null;
+	    $this->retard = null;
+	    $this->collectionSaisiesContradictoiresManquementObligation = null;
+	    $this->oldVersion = null;
+	}
+	
+	public function getAlreadyInSave() {
+		return $this->alreadyInSave;
+	}
+	
 } // AbsenceEleveSaisie

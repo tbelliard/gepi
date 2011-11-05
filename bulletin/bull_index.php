@@ -2,7 +2,7 @@
 /**
  * Edition des bulletins
  *
- * $Id: bull_index.php 8085 2011-08-31 16:00:32Z crob $
+ * $Id$
  *
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
  * @todo Les bulletins HTML utilisent les infos display_rang, display_coef,... de la table 'classes'.
@@ -129,9 +129,6 @@ elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='html')) {
 //============== ENTETE BULLETIN HTML ================
 elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='pdf')) {
 
-	$mode_utf8_pdf=getSettingValue("mode_utf8_bulletins_pdf");
-	if($mode_utf8_pdf=="") {$mode_utf8_pdf="n";}
-
 	// DEBUG Décommenter la ligne ci-dessous pour débugger
 	//echo "<p style='color:red;'>Insertion d'une ligne avant le Header pour provoquer l'affichage dans le navigateur et ainsi repérer des erreurs.</p>";
 	//echo "\$bull_pdf_debug=$bull_pdf_debug<br />";
@@ -173,14 +170,14 @@ mais il se peut que vous ayez ainsi des précisions sur ce qui pose problème.<b
 	$pdf->SetAutoPageBreak(TRUE, 5);
 
 	$pdf->AddPage(); //ajout d'une page au document
-	$pdf->SetFont('Arial');
+	$pdf->SetFont('DejaVu');
 
 	if ( !isset($X_etab) or empty($X_etab) ) {
 		$X_etab = '5';
 		$Y_etab = '5';
 	}
 	$pdf->SetXY($X_etab,$Y_etab);
-	$pdf->SetFont('Arial','',14);
+	$pdf->SetFont('DejaVu','',14);
 	$gepiSchoolName=getSettingValue("gepiSchoolName") ? getSettingValue("gepiSchoolName") : "gepiSchoolName";
 	$pdf->Cell(90,7, $gepiSchoolName,0,2,'');
 
@@ -373,7 +370,7 @@ elseif((!isset($choix_periode_num))||(!isset($tab_periode_num))) {
 	$max_per=0;
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		// Est-ce bien un entier?
-		if((strlen(preg_replace("/[0-9]/","",$tab_id_classe[$i])))||($tab_id_classe[$i]=="")) {
+		if((mb_strlen(preg_replace("/[0-9]/","",$tab_id_classe[$i])))||($tab_id_classe[$i]=="")) {
 			echo "<p>Identifiant de classe erroné: <span style='color:red'>".$tab_id_classe[$i]."</span></p>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -824,7 +821,7 @@ function ToutDeCocher() {
 	$max_eff_classe=0;
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		// Est-ce bien un entier?
-		if((strlen(preg_replace("/[0-9]/","",$tab_id_classe[$i])))||($tab_id_classe[$i]=="")) {
+		if((mb_strlen(preg_replace("/[0-9]/","",$tab_id_classe[$i])))||($tab_id_classe[$i]=="")) {
 			echo "<p>Identifiant de classe erroné: <span style='color:red'>".$tab_id_classe[$i]."</span></p></form>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -839,7 +836,7 @@ function ToutDeCocher() {
 		echo "<th>Elèves</th>\n";
 		for($j=0;$j<count($tab_periode_num);$j++) {
 			// Est-ce bien un entier?
-			if((strlen(preg_replace("/[0-9]/","",$tab_periode_num[$j])))||($tab_periode_num[$j]=="")) {
+			if((mb_strlen(preg_replace("/[0-9]/","",$tab_periode_num[$j])))||($tab_periode_num[$j]=="")) {
 				echo "<td>Identifiant de période erroné: <span style='color:red'>".$tab_periode_num[$j]."</span></td></tr></table></form>\n";
 				require("../lib/footer.inc.php");
 				die();
@@ -1277,7 +1274,6 @@ else {
 			$tab_modele_pdf["active_rang"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher le rang de l'élève
 			$tab_modele_pdf["active_graphique_niveau"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher le graphique des niveaux
 			$tab_modele_pdf["active_appreciation"][$tab_id_classe[$loop_classe]] = '1'; // fait - afficher les appréciations des professeurs
-
 			$tab_modele_pdf["affiche_doublement"][$tab_id_classe[$loop_classe]] = '1'; // affiche si l'élève à doubler
 			$tab_modele_pdf["affiche_date_naissance"][$tab_id_classe[$loop_classe]] = '1'; // affiche la date de naissance de l'élève
 			$tab_modele_pdf["affiche_lieu_naissance"][$tab_id_classe[$loop_classe]] = '0'; // affiche le lieu de naissance de l'élève
@@ -1286,7 +1282,6 @@ else {
 			$tab_modele_pdf["affiche_effectif_classe"][$tab_id_classe[$loop_classe]] = '1'; // affiche l'effectif de la classe
 			$tab_modele_pdf["affiche_numero_impression"][$tab_id_classe[$loop_classe]] = '1'; // affiche le numéro d'impression des bulletins
 			$tab_modele_pdf["affiche_etab_origine"][$tab_id_classe[$loop_classe]] = '0'; // affiche l'établissement d'origine
-
 			$tab_modele_pdf["toute_moyenne_meme_col"][$tab_id_classe[$loop_classe]]='0'; // afficher les information moyenne classe/min/max sous la moyenne général de l'élève
 			$active_coef_sousmoyene = '1'; //afficher le coeficent en dessous de la moyenne de l'élève
 
@@ -1294,7 +1289,7 @@ else {
 			$tab_modele_pdf["ordre_entete_model_bulletin"][$tab_id_classe[$loop_classe]] = '1'; // ordre des entêtes tableau du bulletin
 
 			// information paramétrage
-			$tab_modele_pdf["caractere_utilse"][$tab_id_classe[$loop_classe]] = 'Arial';
+			$tab_modele_pdf["caractere_utilse"][$tab_id_classe[$loop_classe]] = 'DejaVu';
 			// cadre identitée parents
 			$tab_modele_pdf["X_parent"][$tab_id_classe[$loop_classe]]=110; $tab_modele_pdf["Y_parent"][$tab_id_classe[$loop_classe]]=40;
 			$tab_modele_pdf["imprime_pour"][$tab_id_classe[$loop_classe]] = 1;
@@ -1386,7 +1381,7 @@ else {
 			$tab_modele_pdf["affiche_ine"][$tab_id_classe[$loop_classe]] = '0'; // affiche l'INE de l'élève
 
 			$tab_modele_pdf["affiche_moyenne_general_coef_1"][$tab_id_classe[$loop_classe]] = '0'; // affichage des moyennes générales avec coef 1 en plus des autres coeff saisis dans Gestion des classes/<Classe> Enseignements
-			
+	
 			$tab_modele_pdf["affiche_numero_responsable"][$tab_id_classe[$loop_classe]] = '0'; // affichage du numéro du responsable legal de l'élève dont le bulletin est imprimé. 1 ==> affiche 0 ==> n'affiche pas
 			*/
 
@@ -1468,7 +1463,7 @@ else {
 		//$id_classe=2;
 		$id_classe=$tab_id_classe[$loop_classe];
 		// Est-ce bien un entier?
-		if((strlen(preg_replace("/[0-9]/","",$id_classe)))||($id_classe=="")) {
+		if((mb_strlen(preg_replace("/[0-9]/","",$id_classe)))||($id_classe=="")) {
 			echo "<p>Identifiant de classe erroné: <span style='color:red'>$id_classe</span></p>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -1577,7 +1572,7 @@ else {
 			$periode_num=$tab_periode_num[$loop_periode_num];
 
 			// Est-ce bien un entier?
-			if((strlen(preg_replace("/[0-9]/","",$periode_num)))||($periode_num=="")) {
+			if((mb_strlen(preg_replace("/[0-9]/","",$periode_num)))||($periode_num=="")) {
 				echo "<p>Identifiant de période erroné: <span style='color:red'>".$periode_num."</span></p>\n";
 				require("../lib/footer.inc.php");
 				die();
@@ -1790,7 +1785,7 @@ else {
 							$pdf->SetAutoPageBreak(TRUE, 5);
 
 							$pdf->AddPage(); //ajout d'une page au document
-							$pdf->SetFont('Arial');
+							$pdf->SetFont('DejaVu');
 							$pdf->SetXY(20,20);
 							$pdf->SetFontSize(14);
 							$pdf->Cell(90,7, "ERREUR",0,2,'');
@@ -2065,7 +2060,7 @@ else {
 			if($mode_bulletin=="pdf") { // affichage du numéro du responsable
 				$tab_bulletin[$id_classe][$periode_num]['affiche_numero_responsable']=$tab_modele_pdf["affiche_numero_responsable"][$tab_id_classe[$loop_classe]];
 			}
-			
+		
 			// Variables récupérées de calcul_moy_gen.inc.php
 			// Quartiles au niveau moyenne générale:
 			// $place_eleve_classe est un tableau d'indice [$i] le numéro de l'élève
@@ -2279,13 +2274,13 @@ else {
 							}
 							else {
 								//$tab_ele['etab_type']= $type_etablissement2[remplace_accents($tab_ele['etab_type'],'')][remplace_accents($tab_ele['etab_niveau'],'')];
-								if(strtoupper($tab_ele['etab_niveau'])=='EREA') {
+								if(my_strtoupper($tab_ele['etab_niveau'])=='EREA') {
 									$tmp_etab_niveau='EREA';
 								}
 								else {
-									$tmp_etab_niveau=strtolower(remplace_accents($tab_ele['etab_niveau'],''));
+									$tmp_etab_niveau=my_strtolower(remplace_accents($tab_ele['etab_niveau'],''));
 								}
-								$tab_ele['etab_type']= $type_etablissement2[strtolower(remplace_accents($tab_ele['etab_type'],''))][$tmp_etab_niveau];
+								$tab_ele['etab_type']= $type_etablissement2[my_strtolower(remplace_accents($tab_ele['etab_type'],''))][$tmp_etab_niveau];
 								//echo "\$type_etablissement2[".$tab_ele['etab_type']."][".$tab_ele['etab_niveau']."]=".$type_etablissement2[remplace_accents($tab_ele['etab_type'],'')][remplace_accents($tab_ele['etab_niveau'],'')]."<br />\n";
 							}
 						}
@@ -2971,6 +2966,7 @@ else {
 		/*****************************************
 		* début de la génération du fichier PDF  *
 		* ****************************************/
+
 		if((!isset($bull_pdf_debug))||($bull_pdf_debug!='y')) {
 			send_file_download_headers('application/pdf','bulletin.pdf');
 		}

@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id: statistiques.php 7875 2011-08-21 18:48:15Z jjacquard $
  *
  * Copyright 2010 Josselin Jacquard
  *
@@ -133,7 +132,7 @@ if ($affichage != 'ods') {
         $eleve_query->filterByNom('%' . $nom_eleve . '%');
     }
     if ($id_eleve !== null && $id_eleve != '') {
-        $eleve_query->filterByIdEleve($id_eleve);
+        $eleve_query->filterById($id_eleve);
     }
     $eleve_col = $eleve_query->orderByNom()->orderByPrenom()->distinct()->find();
     if ($eleve_col->isEmpty()) {
@@ -202,7 +201,7 @@ if ($affichage != 'ods') {
                             ->filterByEleve($eleve)
                             ->filterByDateIntervalle($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)
                             ->filterByManquementObligationPresence(true)
-                            ->filterByJustifiee(false)
+                            ->filterByNonJustifiee(true)
                             ->count());
             //$eleve->setVirtualColumn('RetardsPreRempli', AbsenceAgregationDecompteQuery::create()
             //             ->filterByEleve($eleve)
@@ -240,7 +239,7 @@ if ($affichage != 'ods') {
                 </h2>
                 <?php
                 if ($id_eleve !== null && $id_eleve != '') {
-                    $eleve = EleveQuery::create()->filterByIdEleve($id_eleve)->findOne();
+                    $eleve = EleveQuery::create()->filterById($id_eleve)->findOne();
                     $nom_eleve = $eleve->getNom();
                     $id_classe = $eleve->getClasse()->getId();
                 }
@@ -447,7 +446,7 @@ if ($affichage != 'ods') {
             $TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
             // Load the template
             $extraction_taux_absenteisme = repertoire_modeles('absence_taux_absenteisme.ods');
-            $TBS->LoadTemplate($extraction_taux_absenteisme);
+            $TBS->LoadTemplate($extraction_taux_absenteisme, OPENTBS_ALREADY_UTF8);
 
             $titre = 'Extrait du Taux d\'absentéisme d\'absences du ' . $dt_date_absence_eleve_debut->format('d/m/Y') . ' au ' . $dt_date_absence_eleve_fin->format('d/m/Y');
             $classe = null;
@@ -518,7 +517,7 @@ if ($affichage != 'ods') {
                         $$nom_variable = $$nom_variable + $eleve->$nom_colonne();
                     }
                 }
-                $donnees_indiv[$eleve->getIdEleve()] = $enregistrements;
+                $donnees_indiv[$eleve->getId()] = $enregistrements;
                 $nb_demijournees = $nb_demijournees + $eleve->getDemiJourneesAbsencePreRempli();
                 $nb_nonjustifiees = $nb_nonjustifiees + $eleve->getDemiJourneesNonJustifieesPreRempli();
                 $nb_justifiees = $nb_justifiees + $eleve->getDemiJourneesAbsencePreRempli() - $eleve->getDemiJourneesNonJustifieesPreRempli();

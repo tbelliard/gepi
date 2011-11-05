@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: index.php 8356 2011-09-25 13:11:56Z crob $
  *
  * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -562,7 +561,7 @@ if(!isset($debut)){
 	$debut=0;
 }
 else{
-	if(strlen(my_ereg_replace("[0-9]","",$debut))){
+	if(mb_strlen(my_ereg_replace("[0-9]","",$debut))){
 		$debut=0;
 	}
 }

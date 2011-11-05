@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id: edt_chercher.php 6929 2011-05-14 15:59:04Z adminpaulbert $
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

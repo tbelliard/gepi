@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: ajouter_periode.php 7271 2011-06-20 11:46:28Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -462,7 +461,7 @@ else {
 
 	echo "<p class='bold'>Terminé.</p>\n";
 
-	if((substr(getSettingValue('autorise_edt_tous'),0,1)=='y')||(substr(getSettingValue('autorise_edt_admin'),0,1)=='y')||(substr(getSettingValue('autorise_edt_eleve'),0,1)=='y')) {
+	if((mb_substr(getSettingValue('autorise_edt_tous'),0,1)=='y')||(mb_substr(getSettingValue('autorise_edt_admin'),0,1)=='y')||(mb_substr(getSettingValue('autorise_edt_eleve'),0,1)=='y')) {
 		echo "<p><br /></p>\n";
 		echo "<p>Pensez à contrôler que vous avez bien défini les dates de périodes dans le <a href='../edt_organisation/edt_calendrier.php'>calendrier</a>.</p>\n";
 		echo "<p><br /></p>\n";

@@ -1,7 +1,6 @@
 <?php
 /** Manipulation de la table setting
  * 
- * $Id: settings.inc 8495 2011-10-19 10:02:47Z mleygnac $
  * 
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
@@ -78,13 +77,14 @@ function loadSettings()
  *
  * @global array 
  * @param text $_name Le nom du réglage que vous cherchez
- * @return text La valeur correspondant à $_name
+ * @return text La valeur correspondant à $_name ou null si le setting n'est pas présent
  * 
  */
 function getSettingValue($_name)
 {
     global $gepiSettings;
     if (isset($gepiSettings[$_name])) return ($gepiSettings[$_name]);
+    else return null;
 }
 
 /**

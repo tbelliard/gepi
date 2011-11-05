@@ -36,7 +36,6 @@
    * @author      Simon Josefsson <simon@yubico.com>
    * @copyright   2008 Simon Josefsson
    * @license     http://opensource.org/licenses/bsd-license.php New BSD License
-   * @version     CVS: $Id: Yubico.php,v 1.7 2007-10-22 12:56:14 jas Exp $
    * @link        http://yubico.com/
    */
 

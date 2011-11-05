@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id: saisie_app.php 7063 2011-05-30 13:02:20Z crob $
+* $Id$
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
 *

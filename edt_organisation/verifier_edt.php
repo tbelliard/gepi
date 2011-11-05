@@ -3,7 +3,6 @@
 /**
  *
  *
- * @version $Id: verifier_edt.php $
  *
  * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
@@ -208,7 +207,7 @@ if (!strstr($ua, "MSIE 6.0")) {
             </p>';
     }
     else {
-        echo '<p style="text-align:center;font-size:1.2em;border-bottom:1px solid black;"><strong>Test 2</strong></p>';
+	    echo '<p style="text-align:center;font-size:1.2em;border-bottom:1px solid black;"><strong>Test 2</strong></p>';
         echo '<p style="text-align:center;">Il y a concordance parfaite entre enseignements enregistrés sur GEPI et ceux enregistrés dans les emplois du temps</p>';
 
     }

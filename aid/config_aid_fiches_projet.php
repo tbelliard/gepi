@@ -1,7 +1,5 @@
 <?php
 /*
- * @version: $Id: config_aid_fiches_projet.php 6588 2011-03-02 17:53:54Z crob $
- *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
@@ -127,9 +125,9 @@ while ($i < $nb_lignes) {
     else
         echo "<td>".$id."</td>\n";
     if (($id=="perso1") or ($id=="perso2") or ($id=="perso3")) {
-        echo "<td><input type=\"text\" name=\"description_".$id."\" value=\"".htmlentities($description)."\" size=\"20\" /></td>\n";
+        echo "<td><input type=\"text\" name=\"description_".$id."\" value=\"".htmlspecialchars($description)."\" size=\"20\" /></td>\n";
     } else {
-        echo "<td><input type=\"hidden\" name=\"description_".$id."\" value=\"".htmlentities($description)."\" /> - </td>\n";
+        echo "<td><input type=\"hidden\" name=\"description_".$id."\" value=\"".htmlspecialchars($description)."\" /> - </td>\n";
 
     }
 

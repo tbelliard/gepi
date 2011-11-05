@@ -362,6 +362,7 @@
 							$('cache_modal').setStyle({display: 'none'}); 
 							$('params_new_period').setStyle({display: 'none'});
 
+
 							if (Prototype.Browser.IE) {
 								document.documentElement.scroll = "yes";
 								document.documentElement.style.overflow = 'scroll';
@@ -412,6 +413,7 @@
 												$('div'+i).className = "calendar_cell_period";
 											}										
 										}
+
 									},
 									onFailure: function(){ alert('Impossible de transmettre votre requête') }
 								  });

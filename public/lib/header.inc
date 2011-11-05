@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: header.inc 3136 2009-05-14 15:28:47Z crob $
  *
  * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

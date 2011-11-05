@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id: construire_edt_jour.php 4152 2010-03-21 23:32:16Z adminpaulbert $
  *
  * Copyright 2001, 2010 Pascal Fautrero
  *

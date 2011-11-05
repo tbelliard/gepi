@@ -1,5 +1,4 @@
 <?php
-/* $Id: bilan.php 8060 2011-08-30 21:58:08Z jjacquard $ */
 /*
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -117,10 +116,10 @@ if(isset($imprime)) {
 
 		if($mode=='pdf') {
 
-if (!defined('FPDF_VERSION')) {
-	require_once('../fpdf/fpdf.php');
-}
-			require('../fpdf/ex_fpdf.php');
+
+            if (!defined('FPDF_VERSION')) {
+            	require_once('../fpdf/fpdf.php');
+            }
 			
 			define('FPDF_FONTPATH','../fpdf/font/');
 			define('LargeurPage','210');
@@ -147,7 +146,7 @@ if (!defined('FPDF_VERSION')) {
 					//global $decompte_page;
 
 					$this->SetXY(5,287);
-					$this->SetFont('arial','',7.5);
+					$this->SetFont('DejaVu','',7.5);
 
 					//$texte=getSettingValue("gepiSchoolName")."  ";
 					//$texte=$intitule_epreuve." ($date_epreuve) - ".$salle_courante;
@@ -178,7 +177,6 @@ if (!defined('FPDF_VERSION')) {
 			$pdf->SetDrawColor(0,0,0);
 			$pdf->SetLineWidth(0.2);
 
-			$fonte='arial';
 			$sc_interligne=1.3;
 
 			$num_page=0;
@@ -204,32 +202,32 @@ if (!defined('FPDF_VERSION')) {
 
 					//Entête du PDF
 					//$pdf->SetLineWidth(0.7);
-					$pdf->SetFont($fonte,'B',14);
+					$pdf->SetFont('DejaVu','B',14);
 					$pdf->Setxy(10,10);
 					$pdf->Cell($largeur_page-$MargeDroite-$MargeGauche,20,getSettingValue('gepiSchoolName').' - Année scolaire '.getSettingValue('gepiYear'),'LRBT',1,'C');
 
 					$x1=$pdf->GetX();
 					$y1=$pdf->GetY();
 
-					$pdf->SetFont($fonte,'B',12);
+					$pdf->SetFont('DejaVu','B',12);
 					$texte='Epreuve : ';
 					$largeur_tmp=$pdf->GetStringWidth($texte);
 					$pdf->Cell($largeur_tmp,$pdf->FontSize*$sc_interligne,$texte,'',0,'L');
-					$pdf->SetFont($fonte,'',12);
+					$pdf->SetFont('DejaVu','',12);
 					$texte=$intitule_epreuve;
 					$pdf->Cell($pdf->GetStringWidth($texte),$pdf->FontSize*$sc_interligne,$texte,'',1,'L');
 
-					$pdf->SetFont($fonte,'B',12);
+					$pdf->SetFont('DejaVu','B',12);
 					$texte='Date : ';
 					$pdf->Cell($largeur_tmp,$pdf->FontSize*$sc_interligne,$texte,'',0,'L');
-					$pdf->SetFont($fonte,'',12);
+					$pdf->SetFont('DejaVu','',12);
 					$texte=$date_epreuve;
 					$pdf->Cell($pdf->GetStringWidth($texte),$pdf->FontSize*$sc_interligne,$texte,'',1,'L');
 
 					//$x2=$pdf->GetX();
 					$y2=$pdf->GetY();
 
-					$pdf->SetFont($fonte,'B',12);
+					$pdf->SetFont('DejaVu','B',12);
 					//$texte="Salle $salle[$i]";
 					$texte=$current_group;
 					$larg_tmp=$sc_interligne*($pdf->GetStringWidth($texte));
@@ -245,7 +243,7 @@ if (!defined('FPDF_VERSION')) {
 					$pdf->SetXY($x,$y);
 					*/
 
-					$pdf->SetFont($fonte,'B',10);
+					$pdf->SetFont('DejaVu','B',10);
 					$tab_nom=array();
 					$tab_n_anonymat=array();
 					$tab_note=array();
@@ -289,7 +287,6 @@ if (!defined('FPDF_VERSION')) {
 						$pdf->Cell($larg_col1,$h_cell,$texte,'LRBT',0,'C');
 					}
 
-					//$pdf->SetFont($fonte,'B',10);
 					$texte='Nom prénom';
 					//$larg_col1=$pdf->GetStringWidth($texte);
 					$larg_col2=$larg_max+4;
@@ -341,8 +338,7 @@ if (!defined('FPDF_VERSION')) {
 					//$larg_col3=$largeur_page-$MargeDroite-$MargeGauche-$larg_col1-$larg_col2;
 					//$pdf->Cell($larg_col3,$h_cell,$texte,'LRBT',1,'C');
 
-					//$pdf->SetFont($fonte,'B',10);
-					$pdf->SetFont($fonte,'',10);
+					$pdf->SetFont('DejaVu','',10);
 					/*
 					while($lig=mysql_fetch_object($res)) {
 						$texte=casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2');
@@ -387,56 +383,56 @@ if (!defined('FPDF_VERSION')) {
 					//===========================================================
 
 					$pdf->SetY($pdf->GetY()+$h_cell);
-					$pdf->SetFont($fonte,'B',10);
+					$pdf->SetFont('DejaVu','B',10);
 					$pdf->Cell($largeur_page,$h_cell,"Statistiques :",'',1,'L');
 
-					$pdf->SetFont($fonte,'',10);
+					$pdf->SetFont('DejaVu','',10);
 					$tab_stat=calcul_moy_med($tab_note);
 
-					$pdf->SetFont($fonte,'B',10);
+					$pdf->SetFont('DejaVu','B',10);
 					$texte="1er quartile";
 					$larg_col1=$pdf->GetStringWidth($texte)+4;
 					$larg_col2=$pdf->GetStringWidth("20.0")+4;
 
-					$pdf->SetFont($fonte,'B',10);
+					$pdf->SetFont('DejaVu','B',10);
 					$texte="Moyenne";
 					$pdf->Cell($larg_col1,$h_cell,$texte,'LRBT',0,'L');
-					$pdf->SetFont($fonte,'',10);
+					$pdf->SetFont('DejaVu','',10);
 					$texte=$tab_stat['moyenne'];
 					$pdf->Cell($larg_col2,$h_cell,$texte,'LRBT',1,'C');
 
-					$pdf->SetFont($fonte,'B',10);
+					$pdf->SetFont('DejaVu','B',10);
 					$texte="1er quartile";
 					$pdf->Cell($larg_col1,$h_cell,$texte,'LRBT',0,'L');
-					$pdf->SetFont($fonte,'',10);
+					$pdf->SetFont('DejaVu','',10);
 					$texte=$tab_stat['q1'];
 					$pdf->Cell($larg_col2,$h_cell,$texte,'LRBT',1,'C');
 
-					$pdf->SetFont($fonte,'B',10);
+					$pdf->SetFont('DejaVu','B',10);
 					$texte="Médiane";
 					$pdf->Cell($larg_col1,$h_cell,$texte,'LRBT',0,'L');
-					$pdf->SetFont($fonte,'',10);
+					$pdf->SetFont('DejaVu','',10);
 					$texte=$tab_stat['mediane'];
 					$pdf->Cell($larg_col2,$h_cell,$texte,'LRBT',1,'C');
 
-					$pdf->SetFont($fonte,'B',10);
+					$pdf->SetFont('DejaVu','B',10);
 					$texte="3è quartile";
 					$pdf->Cell($larg_col1,$h_cell,$texte,'LRBT',0,'L');
-					$pdf->SetFont($fonte,'',10);
+					$pdf->SetFont('DejaVu','',10);
 					$texte=$tab_stat['q3'];
 					$pdf->Cell($larg_col2,$h_cell,$texte,'LRBT',1,'C');
 
-					$pdf->SetFont($fonte,'B',10);
+					$pdf->SetFont('DejaVu','B',10);
 					$texte="Min";
 					$pdf->Cell($larg_col1,$h_cell,$texte,'LRBT',0,'L');
-					$pdf->SetFont($fonte,'',10);
+					$pdf->SetFont('DejaVu','',10);
 					$texte=$tab_stat['min'];
 					$pdf->Cell($larg_col2,$h_cell,$texte,'LRBT',1,'C');
 
-					$pdf->SetFont($fonte,'B',10);
+					$pdf->SetFont('DejaVu','B',10);
 					$texte="Max";
 					$pdf->Cell($larg_col1,$h_cell,$texte,'LRBT',0,'L');
-					$pdf->SetFont($fonte,'',10);
+					$pdf->SetFont('DejaVu','',10);
 					$texte=$tab_stat['max'];
 					$pdf->Cell($larg_col2,$h_cell,$texte,'LRBT',1,'C');
 
@@ -461,7 +457,6 @@ if (!defined('FPDF_VERSION')) {
 				$csv.='Num.anonymat;';
 			}
 
-			//$pdf->SetFont($fonte,'B',10);
 			$csv.='Nom prénom;';
 			
 			if($avec_sexe=='y') {

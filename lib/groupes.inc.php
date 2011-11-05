@@ -1,7 +1,6 @@
 <?php
 /** Fonctions de gestion des groupes
  * 
- * $Id: groupes.inc.php 8414 2011-10-04 12:19:20Z crob $
  * 
  * @package Initialisation
  * @subpackage groupes
@@ -252,7 +251,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 			foreach ($temp["classes"]["classes"] as $classe) {
 				$str .= $classe["classe"] . ", ";
 			}
-			$str = substr($str, 0, -2);
+			$str = mb_substr($str, 0, -2);
 			$temp["classlist_string"] = $str;
 		}
 	
@@ -276,7 +275,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 				$civilite = mysql_result($get_profs, $i, "civilite");
 				$temp["profs"]["list"][] = $p_login;
 				$temp["profs"]["users"][$p_login] = array("login" => $p_login, "nom" => $p_nom, "prenom" => $p_prenom, "civilite" => $civilite);
-				$temp["profs"]["proflist_string"].=$civilite." ".$p_nom." ".strtoupper(substr($p_prenom,0,1));
+				$temp["profs"]["proflist_string"].=$civilite." ".$p_nom." ".my_strtoupper(mb_substr($p_prenom,0,1));
 			}
 		}
 	
@@ -352,7 +351,14 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 					$e_login = mysql_result($get_eleves, $i, "login");
 					$e_nom = mysql_result($get_eleves, $i, "nom");
 					$e_prenom = mysql_result($get_eleves, $i, "prenom");
-					$e_classe = mysql_result(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE (login = '" . $e_login . "' and periode = '" . $key . "')"), 0);
+					$sql="SELECT id_classe FROM j_eleves_classes WHERE (login = '" . $e_login . "' and periode = '" . $key . "')";
+					$res_classe_eleve_periode=mysql_query($sql);
+					if(mysql_num_rows($res_classe_eleve_periode)>0) {
+						$e_classe = mysql_result($res_classe_eleve_periode, 0);
+					}
+					else {
+						$e_classe=-1;
+					}
 					$e_sconet_id = mysql_result($get_eleves, $i, "ele_id");
 					$e_elenoet = mysql_result($get_eleves, $i, "elenoet");
 					$temp["eleves"][$key]["list"][] = $e_login;

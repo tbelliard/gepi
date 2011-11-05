@@ -1,7 +1,6 @@
 <?php
 @set_time_limit(0);
 /*
-* $Id: clean_temp.php 6246 2010-12-28 16:21:53Z crob $
 *
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: saisie_vocabulaire.php 6649 2011-03-10 20:58:21Z crob $
  *
  * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

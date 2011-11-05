@@ -1,7 +1,6 @@
 <?php
 
 	/*
-		$Id: graphe_svg.php 2752 2008-12-09 21:32:27Z jjocal $
 	*/
 	// graphe_svg.php
 
@@ -126,7 +125,7 @@
 	}
 
 	echo "<!-- Titre du graphe -->\n";
-	$xtext=round($largeurTotale/2)-round(strlen($titre)*$fontsizetext/2);
+	$xtext=round($largeurTotale/2)-round(mb_strlen($titre)*$fontsizetext/2);
 	$ytext=$marge-15;
 	echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:$axes; font-size:$fontsizetext;\">$titre</text>\n";
 

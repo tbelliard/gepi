@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * $Id: alert_suivi.php 4878 2010-07-24 13:54:01Z regis $
+ * $Id$
  *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
@@ -148,12 +148,12 @@ die();
               $DATEFRAN = date("d/m/Y");
 
             // calcul de mon age d'après la date de naissance $ddn
-              $annais = substr("$ddn", 0, 4);
-              $anjour = substr("$DATEFRAN", 6, 4);
-              $moisnais = substr("$ddn", 4, 2);
-              $moisjour = substr("$DATEFRAN", 3, 2);
-              $journais = substr("$ddn", 6, 2);
-              $jourjour = substr("$DATEFRAN", 0, 2);
+              $annais = mb_substr("$ddn", 0, 4);
+              $anjour = mb_substr("$DATEFRAN", 6, 4);
+              $moisnais = mb_substr("$ddn", 4, 2);
+              $moisjour = mb_substr("$DATEFRAN", 3, 2);
+              $journais = mb_substr("$ddn", 6, 2);
+              $jourjour = mb_substr("$DATEFRAN", 0, 2);
 
               $age = $anjour-$annais;
               if ($moisjour<$moisnais){$age=$age-1;}

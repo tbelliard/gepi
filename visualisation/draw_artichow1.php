@@ -1,6 +1,6 @@
 <?php
 /*
- $Id: draw_artichow1.php 1337 2008-01-12 15:16:09Z crob $
+ $Id$
 */
 
 // On précise de ne pas traiter les données avec la fonction anti_inject

@@ -2,7 +2,7 @@
 
 @set_time_limit(0);
 /*
- * $Id: clean_tables.php 5937 2010-11-21 17:42:55Z crob $
+ * $Id$
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

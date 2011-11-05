@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: ajax_affichage_dernieres_notices.php 7938 2011-08-24 07:57:41Z jjocal $
  *
  * Copyright 2009 Josselin Jacquard
  *

@@ -2,7 +2,6 @@
 
 /**
  *
- * @version $Id: visu_prof_jour.php 7938 2011-08-24 07:57:41Z jjocal $
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

@@ -371,7 +371,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * cle primaire autoincremente
 	 * @return     int
 	 */
-	public function getIdEleve()
+	public function getId()
 	{
 		return $this->id_eleve;
 	}
@@ -652,7 +652,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * @param      int $v new value
 	 * @return     Eleve The current object (for fluent API support)
 	 */
-	public function setIdEleve($v)
+	public function setId($v)
 	{
 		if ($v !== null) {
 			$v = (int) $v;
@@ -664,7 +664,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		}
 
 		return $this;
-	} // setIdEleve()
+	} // setId()
 
 	/**
 	 * Sets the value of [date_sortie] column to a normalized version of the date/time value specified.
@@ -1008,7 +1008,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 
 					$pk = BasePeer::doInsert($criteria, $con);
 					$affectedRows += 1;
-					$this->setIdEleve($pk);  //[IMV] update autoincrement primary key
+					$this->setId($pk);  //[IMV] update autoincrement primary key
 					$this->setNew(false);
 				} else {
 					$affectedRows += ElevePeer::doUpdate($this, $con);
@@ -1371,7 +1371,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 				return $this->getEmail();
 				break;
 			case 11:
-				return $this->getIdEleve();
+				return $this->getId();
 				break;
 			case 12:
 				return $this->getDateSortie();
@@ -1419,7 +1419,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$keys[8] => $this->getEreno(),
 			$keys[9] => $this->getEleId(),
 			$keys[10] => $this->getEmail(),
-			$keys[11] => $this->getIdEleve(),
+			$keys[11] => $this->getId(),
 			$keys[12] => $this->getDateSortie(),
 			$keys[13] => $this->getMefCode(),
 		);
@@ -1531,7 +1531,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 				$this->setEmail($value);
 				break;
 			case 11:
-				$this->setIdEleve($value);
+				$this->setId($value);
 				break;
 			case 12:
 				$this->setDateSortie($value);
@@ -1574,7 +1574,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		if (array_key_exists($keys[8], $arr)) $this->setEreno($arr[$keys[8]]);
 		if (array_key_exists($keys[9], $arr)) $this->setEleId($arr[$keys[9]]);
 		if (array_key_exists($keys[10], $arr)) $this->setEmail($arr[$keys[10]]);
-		if (array_key_exists($keys[11], $arr)) $this->setIdEleve($arr[$keys[11]]);
+		if (array_key_exists($keys[11], $arr)) $this->setId($arr[$keys[11]]);
 		if (array_key_exists($keys[12], $arr)) $this->setDateSortie($arr[$keys[12]]);
 		if (array_key_exists($keys[13], $arr)) $this->setMefCode($arr[$keys[13]]);
 	}
@@ -1628,7 +1628,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 */
 	public function getPrimaryKey()
 	{
-		return $this->getIdEleve();
+		return $this->getId();
 	}
 
 	/**
@@ -1639,7 +1639,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 */
 	public function setPrimaryKey($key)
 	{
-		$this->setIdEleve($key);
+		$this->setId($key);
 	}
 
 	/**
@@ -1648,7 +1648,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 */
 	public function isPrimaryKeyNull()
 	{
-		return null === $this->getIdEleve();
+		return null === $this->getId();
 	}
 
 	/**
@@ -1764,7 +1764,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 
 		if ($makeNew) {
 			$copyObj->setNew(true);
-			$copyObj->setIdEleve(NULL); // this is a auto-increment column, so set to default value
+			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
 		}
 	}
 
@@ -2462,31 +2462,6 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	{
 		$query = JEleveProfesseurPrincipalQuery::create(null, $criteria);
 		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
-
-		return $this->getJEleveProfesseurPrincipals($query, $con);
-	}
-
-
-	/**
-	 * If this collection has already been initialized with
-	 * an identical criteria, it returns the collection.
-	 * Otherwise if this Eleve is new, it will return
-	 * an empty collection; or if this Eleve has previously
-	 * been saved, it will retrieve related JEleveProfesseurPrincipals from storage.
-	 *
-	 * This method is protected by default in order to keep the public
-	 * api reasonable.  You can provide public methods for those you
-	 * actually need in Eleve.
-	 *
-	 * @param      Criteria $criteria optional Criteria object to narrow the query
-	 * @param      PropelPDO $con optional connection object
-	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array JEleveProfesseurPrincipal[] List of JEleveProfesseurPrincipal objects
-	 */
-	public function getJEleveProfesseurPrincipalsJoinClasse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$query = JEleveProfesseurPrincipalQuery::create(null, $criteria);
-		$query->joinWith('Classe', $join_behavior);
 
 		return $this->getJEleveProfesseurPrincipals($query, $con);
 	}

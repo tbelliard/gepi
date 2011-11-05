@@ -2,7 +2,6 @@
 
 /*
 
- * $Id: traitement_csv.php 6609 2011-03-03 15:06:35Z crob $
 
  *
 

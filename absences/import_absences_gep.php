@@ -1,8 +1,6 @@
 <?php
 @set_time_limit(0);
 /*
-* @version: $Id: import_absences_gep.php 5971 2010-11-23 20:19:04Z crob $
-*
 * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
@@ -551,8 +549,8 @@ if ($step == 0) {
 						if (($affiche[0] == 'A') and ($affiche[2] != '') and ($affiche[3] != '') and ($affiche[4] != '') and ($affiche[5] != ''))  {
 							affiche_debug("\$previous_eleve=$previous_eleve<br />");
 
-							$debut_a = mktime(0, 0, 0, substr($affiche[2],4,2), substr($affiche[2],6,2), substr($affiche[2],0,4));
-							$fin_a = mktime(0, 0, 0, substr($affiche[3],4,2), substr($affiche[3],6,2), substr($affiche[3],0,4));
+							$debut_a = mktime(0, 0, 0, mb_substr($affiche[2],4,2), mb_substr($affiche[2],6,2), mb_substr($affiche[2],0,4));
+							$fin_a = mktime(0, 0, 0, mb_substr($affiche[3],4,2), mb_substr($affiche[3],6,2), mb_substr($affiche[3],0,4));
 
 							affiche_debug("\$debut_a=$debut_a<br />");
 							affiche_debug("\$fin_a=$fin_a<br />");

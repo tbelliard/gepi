@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id: enregistrement_modif_traitement.php 7437 2011-07-18 19:20:27Z dblanqui $
  *
  * Copyright 2010 Josselin Jacquard
  *

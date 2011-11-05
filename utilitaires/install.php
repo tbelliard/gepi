@@ -1,10 +1,15 @@
 <?php
-/*
-* $Id: install.php 8587 2011-11-01 18:17:13Z mleygnac $
-*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
-*
-* This file is part of GEPI.
+/**
+ * $Id$
+ *
+ * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * 
+ * @package General
+ * @subpackage Installation
+ * @todo à corriger W3C
+*/
+
+/* This file is part of GEPI.
 *
 * GEPI is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -24,6 +29,7 @@
 if (version_compare(PHP_VERSION, '5') < 0) {
     die('GEPI nécessite PHP5 pour fonctionner');
 }
+header('Content-Type: text/html; charset=UTF-8');
 require_once("../lib/global.inc.php");
 $nom_fic = "../secure/connect.inc.php";
 
@@ -40,33 +46,34 @@ function test_ecriture_secure() {
 
 
 function begin_html() {
-	?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html>
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+
 <title>Installation de GEPI</title>
-<meta HTTP-EQUIV="Content-Type" content="text/html; charset=utf-8" />
-<META HTTP-EQUIV="Pragma" CONTENT="no-cache" />
-<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache" />
-<META HTTP-EQUIV="Expires" CONTENT="0" />
-<LINK REL="stylesheet" href="../style.css" type="text/css" />
+
+<link rel="stylesheet" href="../css/style.css" type="text/css" />
 <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
 <link rel="icon" type="image/ico" href="../favicon.ico" />
 </head>
 <body>
-<center>
-<table width="450">
-<tr><td width="450">
-	<?php
+	<div style="width: 30em; margin: auto;">
+<?php
 }
 
 function end_html() {
-	echo '
-	</td></tr></table>
-	</center>
-	</body>
-	</html>
-	';
+	?>
+	</div>
+</body>
+</html>
+<?php
 }
 
 unset($etape);
@@ -77,7 +84,7 @@ if (file_exists($nom_fic)) {
 	require_once("../secure/connect.inc.php");
 	if (@mysql_connect("$dbHost", "$dbUser", "$dbPass")) {
 		if (@mysql_select_db("$dbDb")) {
-			$call_test = @mysql_query("SELECT * FROM setting WHERE NAME='sessionMaxLength'");
+			$call_test = @mysql_query("SELECT * FROM setting WHERE name='sessionMaxLength'");
 			$test2 = @mysql_num_rows($call_test);
 			$call_test = @mysql_query("SELECT * FROM utilisateurs");
 			$test3 = @mysql_num_rows($call_test);
@@ -116,6 +123,9 @@ if ($etape == 4) {
 		$sel_db = $_POST['choix_db'];
 	}
 	mysql_select_db("$sel_db");
+	mysql_query("SET NAMES UTF8");
+	$queryBase = mysql_query("ALTER DATABASE  CHARACTER SET utf8 COLLATE utf8_general_ci");
+	
 
 	$fd = fopen("../sql/structure_gepi.sql", "r");
 	$result_ok = 'yes';
@@ -127,15 +137,15 @@ if ($etape == 4) {
 		//$query = fgets($fd, 8000);
 		//=============================================
 		$query=" ";
-		while ((substr($query,-1)!=";") && (!feof($fd))) {
+		while ((mb_substr($query,-1)!=";") && (!feof($fd))) {
 			$t_query = fgets($fd, 8000);
-			if (substr($t_query,0,3)!="-- ") $query.=$t_query;
+			if (mb_substr($t_query,0,3)!="-- ") $query.=$t_query;
 			$query = trim($query); 
 		}
 		//=============================================
 		// MODIF: boireaus 20080218
-		//if (substr($query,-1)==";") {
-		//if((substr($query,-1)==";")&&(substr($query,0,3)!="-- ")) {
+		//if (mb_substr($query,-1)==";") {
+		//if((mb_substr($query,-1)==";")&&(mb_substr($query,0,3)!="-- ")) {
 		//=============================================
 		if ($query!="") {
 			$reg = mysql_query($query);
@@ -155,8 +165,8 @@ if ($etape == 4) {
 			$query = trim($query);
 			//=============================================
 			// MODIF: boireaus 20080218
-			//if (substr($query,-1)==";") {
-			if((substr($query,-1)==";")&&(substr($query,0,3)!="-- ")) {
+			//if (mb_substr($query,-1)==";") {
+			if((mb_substr($query,-1)==";")&&(mb_substr($query,0,3)!="-- ")) {
 			//=============================================
 				$reg = mysql_query($query);
 				if (!$reg) {
@@ -180,7 +190,7 @@ if ($etape == 4) {
 			$url = parse_url($_SERVER['REQUEST_URI']);
 			//$pathgepi = explode("/",$url['path']);
 			//$gepipath = "/".$pathgepi[1];
-			$gepipath = substr($url['path'], 0, -24);
+			$gepipath = mb_substr($url['path'], 0, -24);
 			$conn = "<"."?php\n";
 			$conn .= "# La ligne suivante est à modifier si vous voulez utiliser le multisite\n";
                         $conn .= "# Regardez le fichier modeles/connect-modele.inc.php pour information\n";
@@ -223,7 +233,7 @@ if ($etape == 4) {
 	}
 
 	if (($result_ok != 'yes') or ($ok != 'yes')) {
-		echo "<p><B>L'opération a échoué.</B> Retournez à la page précédente, sélectionnez une autre base ou créez-en une nouvelle. Vérifiez les informations fournies par votre hébergeur.</p>\n";
+		echo "<p><strong>L'opération a échoué.</strong> Retournez à la page précédente, sélectionnez une autre base ou créez-en une nouvelle. Vérifiez les informations fournies par votre hébergeur.</p>\n";
 	}
 
 	end_html();
@@ -234,51 +244,50 @@ else if ($etape == 3) {
 
 	begin_html();
 
-	echo "<br /><h2 class='gepi'>Troisième étape : Choix de votre base</h2>\n";
-
+	echo "<h1 class='gepi'>Troisième étape : Choix de votre base</h1>\n";
 	echo "<p>&nbsp;</p>\n";
 
-	echo "<FORM ACTION='install.php' METHOD='post'>\n";
-	echo "<INPUT TYPE='hidden' NAME='etape' VALUE='4' />\n";
-	echo "<INPUT TYPE='hidden' NAME='adresse_db'  VALUE=\"".$_POST['adresse_db']."\" SIZE='40' />\n";
-	echo "<INPUT TYPE='hidden' NAME='login_db' VALUE=\"".$_POST['login_db']."\" />\n";
-	echo "<INPUT TYPE='hidden' NAME='pass_db' VALUE=\"".$_POST['pass_db']."\" />\n";
+	echo "<form action='install.php' method='post'>\n";
+	echo "<p><input type='hidden' name='etape' value='4' />\n";
+	echo "<input type='hidden' name='adresse_db'  value=\"".$_POST['adresse_db']."\" size='40' />\n";
+	echo "<input type='hidden' name='login_db' value=\"".$_POST['login_db']."\" />\n";
+	echo "<input type='hidden' name='pass_db' value=\"".$_POST['pass_db']."\" /></p>\n";
 
 	$link = @mysql_connect($_POST['adresse_db'],$_POST['login_db'],$_POST['pass_db']);
 	$result = @mysql_list_dbs();
 
-	echo "<fieldset><label><B>Choisissez votre base :</B><br /></label>\n";
+	echo "<fieldset><label><strong>Choisissez votre base :</strong><br /></label>\n";
 	$checked = false;
 	if ($result AND (($n = @mysql_num_rows($result)) > 0)) {
-		echo "<p><B>Le serveur MySQL contient plusieurs bases de données.<br />Sélectionnez celle dans laquelle vous voulez implanter GEPI</b></p>\n";
-		echo "<UL>\n";
+		echo "<p><strong>Le serveur MySQL contient plusieurs bases de données.<br />Sélectionnez celle dans laquelle vous voulez implanter GEPI</strong></p>\n";
+		echo "<ul>\n";
 		$bases = "";
 		for ($i = 0; $i < $n; $i++) {
 			$table_nom = mysql_dbname($result, $i);
-			//$base = "<INPUT NAME=\"choix_db\" VALUE=\"".$table_nom."\" TYPE=Radio id='tab$i'";
+			//$base = "<input name=\"choix_db\" value=\"".$table_nom."\" type='radio' id='tab$i'";
 			//$base_fin = " /><label for='tab$i'>".$table_nom."</label><br />\n";
-			$base = "<li style='list-style-type:none;'><INPUT NAME=\"choix_db\" VALUE=\"".$table_nom."\" TYPE=Radio id='tab$i'";
+			$base = "<li style='list-style-type:none;'><input name=\"choix_db\" value=\"".$table_nom."\" type='radio' id='tab$i'";
 			$base_fin = " /><label for='tab$i'>".$table_nom."</label></li>\n";
 			if ($table_nom == $_POST['login_db']) {
-				$bases = "$base CHECKED$base_fin".$bases;
+				$bases = "$base checked='checked'$base_fin".$bases;
 				$checked = true;
 			}
 			else {
 				$bases .= "$base$base_fin\n";
 			}
 		}
-		echo $bases."</UL>\n";
-		echo "ou... ";
+		echo $bases."</ul>\n";
+		echo "<p>ou... </p>";
 	}
 	else {
-		echo "<B>Le programme d'installation n'a pas pu lire les noms des bases de données installées.</B>Soit aucune base n'est disponible, soit la fonction permettant de lister les bases a été désactivée pour des raisons de sécurité.<p>\n";
+		echo "<strong>Le programme d'installation n'a pas pu lire les noms des bases de données installées.</strong>Soit aucune base n'est disponible, soit la fonction permettant de lister les bases a été désactivée pour des raisons de sécurité.</p>\n";
 		if ($_POST['login_db']) {
-			echo "Dans la seconde alternative, il est probable qu'une base portant votre nom de connexion soit utilisable :\n";
-			echo "<UL>\n";
-			echo "<INPUT NAME=\"choix_db\" VALUE=\"".$_POST['login_db']."\" TYPE=Radio id='stand' CHECKED />\n";
+			echo "<p>Dans la seconde alternative, il est probable qu'une base portant votre nom de connexion soit utilisable :<p>\n";
+			echo "<ul>\n";
+			echo "<input name=\"choix_db\" value=\"".$_POST['login_db']."\" type='radio' id='stand' CHECKED />\n";
 			echo "<label for='stand'>".$_POST['login_db']."</label><br />\n";
-			echo "</UL>\n";
-			echo "ou... ";
+			echo "</ul>\n";
+			echo "<p>ou... </p>";
 			$checked = true;
 		}
 	}
@@ -291,10 +300,10 @@ else if ($etape == 3) {
 	if (file_exists($nom_fic)) echo "<li>le fichier \"".$nom_fic."\" sera actualisé avec les données que vous avez fourni,</li>\n";
 	echo "<LI>les tables GEPI seront créées dans la base sélectionnée. Si celle-ci contient déjà des tables GEPI, ces tables, ainsi que les données qu'elles contiennent, seront supprimées et remplacées par une nouvelle structure.</LI>\n</ul>\n";
 
-	echo "<DIV align='right'><INPUT TYPE='submit' CLASS='fondl' NAME='Valider' VALUE='Suivant >>' /></div>\n";
+	echo "<div style='text-align:right'><input type='submit' class='fondl' name='Valider' value='Suivant >>' /></div>\n";
 
 
-	echo "</FORM>\n";
+	echo "</form>\n";
 
 	end_html();
 
@@ -310,20 +319,20 @@ else if ($etape == 2) {
 	$db_connect = mysql_errno();
 	echo "-->\n";
 
-	//echo "<P>\n";
+	//echo "<p>\n";
 
 	if (($db_connect=="0") && $link){
 		echo "<B>La connexion a réussi.</B><p> Vous pouvez passer à l'étape suivante.</p>\n";
 
-		echo "<FORM ACTION='install.php' METHOD='post'>\n";
-		echo "<INPUT TYPE='hidden' NAME='etape' VALUE='3' />\n";
-		echo "<INPUT TYPE='hidden' NAME='adresse_db'  VALUE=\"".$_POST['adresse_db']."\" SIZE='40' />\n";
-		echo "<INPUT TYPE='hidden' NAME='login_db' VALUE=\"".$_POST['login_db']."\" />\n";
-		echo "<INPUT TYPE='hidden' NAME='pass_db' VALUE=\"".$_POST['pass_db']."\" />\n";
+		echo "<form action='install.php' method='post'>\n";
+		echo "<p><input type='hidden' name='etape' value='3' />\n";
+		echo "<input type='hidden' name='adresse_db'  value=\"".$_POST['adresse_db']."\" size='40' />\n";
+		echo "<input type='hidden' name='login_db' value=\"".$_POST['login_db']."\" />\n";
+		echo "<input type='hidden' name='pass_db' value=\"".$_POST['pass_db']."\" /></p>\n";
 
-		echo "<DIV align='right'><INPUT TYPE='submit' CLASS='fondl' NAME='Valider' VALUE='Suivant >>' /></div>\n";
+		echo "<div style='text-align:right'><p><input type='submit' class='fondl' name='Valider' value='Suivant >>' /></p></div>\n";
 
-		echo "</FORM>\n";
+		echo "</form>\n";
 	}
 	else {
 		echo "<B>La connexion au serveur MySQL a échoué.</B>\n";
@@ -351,15 +360,15 @@ else if ($etape == 1) {
 	echo "<fieldset><label><B>Adresse de la base de donnée</B><br /></label>\n";
 	echo "(Souvent cette adresse correspond à celle de votre site, parfois elle correspond à la mention &laquo;localhost&raquo;, parfois elle est laissée totalement vide.)<br />\n";
 	echo "<INPUT  TYPE='text' NAME='adresse_db' CLASS='formo' VALUE=\"$adresse_db\" SIZE='40' /></fieldset><br />\n";
+        
+        echo "<fieldset><label><B>L'identifiant de connexion</B><br /></label>\n";
+        echo "<INPUT TYPE='text' NAME='login_db' CLASS='formo' VALUE=\"$login_db\" SIZE='40' /></fieldset><br />\n";
 
-	echo "<fieldset><label><B>L'identifiant de connexion</B><br /></label>\n";
-	echo "<INPUT TYPE='text' NAME='login_db' CLASS='formo' VALUE=\"$login_db\" SIZE='40' /></fieldset><br />\n";
+	echo "<fieldset style='margin:.5em'><label><strong>Le mot de passe de connexion</strong><br /></label>\n";
+	echo "<input type='password' name='pass_db' class='formo' value=\"$pass_db\" size='40' /></fieldset>\n";
 
-	echo "<fieldset><label><B>Le mot de passe de connexion</B><br /></label>\n";
-	echo "<INPUT TYPE='password' NAME='pass_db' CLASS='formo' VALUE=\"$pass_db\" SIZE='40' /></fieldset><br />\n";
-
-	echo "<DIV align='right'><INPUT TYPE='submit' CLASS='fondl' NAME='Valider' VALUE='Suivant >>' /></div>\n";
-	echo "</FORM>\n";
+	echo "<div style='text-align:right'><p><input type='submit' class='fondl' name='Valider' value='Suivant >>' /></p></div>\n";
+	echo "</form>\n";
 
 	end_html();
 
@@ -376,15 +385,15 @@ else if ($etape == 1) {
 
 	if ($affiche_etape0 == 'yes') {
 		begin_html();
-		echo "<h2 class='gepi'>Installation de la base Mysql</h2>\n";
-		echo "<FORM ACTION='install.php' METHOD='post'>\n";
+		echo "<h1 class='gepi'>Installation de la base Mysql</h1>\n";
+		echo "<form action='install.php' method='post'>\n";
 		if ($test_write == 'no') {
 			echo "<h3 class='gepi'>Problème de droits d'accès :</h3>\n";
 			echo "<p>Le répertoire \"/secure\" n'est pas accessible en écriture.</p>\n";
 			echo "<P>Utilisez votre client FTP afin de régler ce problème ou bien contactez l'administrateur technique. Une fois cette manipulation effectuée, vous pourrez continuer en cliquant sur le bouton en bas de la page.</p>\n";
 			echo "<INPUT TYPE='hidden' NAME='etape' VALUE='' />\n";
 		} else {
-			echo "<INPUT TYPE='hidden' NAME='etape' VALUE='1' />\n";
+			echo "<input type='hidden' name='etape' value='1' /></p>\n";
 		}
 		if ($file_existe == 'yes') {
 			echo "<h3 class='gepi'>Présence d'un fichier ".$nom_fic." :</h3>\n";
@@ -394,8 +403,8 @@ else if ($etape == 1) {
 		}
 
 
-		echo "<INPUT TYPE='submit' CLASS='fondl' Value = 'Continuer' NAME='Continuer' />\n";
-		echo "</FORM>\n";
+		echo "<p><input type='submit' class='fondl' Value = 'Continuer' name='Continuer' /></p>\n";
+		echo "</form>\n";
 		end_html();
 	} else {
 		header("Location: ./install.php?etape=1");

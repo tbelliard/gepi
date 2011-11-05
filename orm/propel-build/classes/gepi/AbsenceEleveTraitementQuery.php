@@ -20,29 +20,30 @@ class AbsenceEleveTraitementQuery extends BaseAbsenceEleveTraitementQuery {
 	 *
 	 * @param     boolean $value
 	 *
-	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
+	 * @return    AbsenceEleveTraitementQuery The current query, for fluid interface
 	 */
-        public function filterByManquementObligationPresence($value = true) {
-	    if ($value === true) {
-		if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")!='y') {
-		    $this->useAbsenceEleveTypeQuery('', Criteria::LEFT_JOIN)
-			    ->filterByManquementObligationPresence(Array(null, AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI))
-			    ->endUse();
-		} else if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")=='y') {
-		    $this->useAbsenceEleveTypeQuery('', Criteria::LEFT_JOIN)
-			    ->filterByManquementObligationPresence(Array(AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI))
-			    ->endUse();
-		}
-	    } else {
-		if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")!='y') {
-		    $this->useAbsenceEleveTypeQuery('', Criteria::LEFT_JOIN)
-			    ->filterByManquementObligationPresence(Array(null, AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI), Criteria::NOT_IN)
-			    ->endUse();
-		} else if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")=='y') {
-		    $this->useAbsenceEleveTypeQuery('', Criteria::LEFT_JOIN)
-			    ->filterByManquementObligationPresence(Array(AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI), Criteria::NOT_IN)
-			    ->endUse();
-		}
+    public function filterByManquementObligationPresence($value = true) {
+	    if ($value) {
+    		if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")=='y') {
+    		    $this->joinAbsenceEleveType()
+    		         ->where('AbsenceEleveType.ManquementObligationPresence = ?',AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI);
+    		} else {//les saisies par défaut sont considérées comme des manquements
+    		    $this->leftJoinAbsenceEleveType()
+    			     ->where('AbsenceEleveType.Id IS NULL')
+    			     ->_or()
+    			     ->where('AbsenceEleveType.ManquementObligationPresence = ?',AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI);
+    		}
+	    } else {//on cherche les traitements qui ne sont pas des manquement à l'obligation de présence
+    		if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")=='y') {
+    		    $this->leftJoinAbsenceEleveType()
+    			     ->where('AbsenceEleveType.Id IS NULL')
+    			     ->_or()
+    		         ->where('AbsenceEleveType.ManquementObligationPresence <> ?',AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI);
+    		} else {//les saisies par défaut sont considérées comme des manquements
+    		    $this->joinAbsenceEleveType()
+		             ->where('AbsenceEleveType.Id IS NOT NULL')
+    			     ->where('AbsenceEleveType.ManquementObligationPresence <> ?',AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI);
+    		}
 	    }
 	    return $this;
 	}

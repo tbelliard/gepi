@@ -3,7 +3,6 @@
 /**
  *
  *
- * @version $Id: voir_groupe.php 4053 2010-01-29 20:41:31Z adminpaulbert $
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

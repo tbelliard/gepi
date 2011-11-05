@@ -1,6 +1,5 @@
 <?php
 /**
- * $Id: accueil.php 8542 2011-10-25 15:14:04Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * 
@@ -271,14 +270,14 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture 
 					$res_resp=mysql_query($sql);
 					if(mysql_num_rows($res_resp)!=0) {
 						$lig_resp=mysql_fetch_object($res_resp);
-						$afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login,"pers_id"=>$lig_resp->pers_id);
+						$afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>my_strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login,"pers_id"=>$lig_resp->pers_id);
 					}
 					else {
-						$afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login);
+						$afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>my_strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login);
 					}
 				}
 				else {
-					$afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login);
+					$afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>my_strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login);
 				}
 			}
 		}

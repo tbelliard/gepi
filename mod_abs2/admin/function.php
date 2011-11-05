@@ -1,7 +1,6 @@
 <?php
 /*
  *
- * $Id: function.php 7239 2011-06-17 18:39:28Z jjacquard $
  *
  * Copyright 2010 Josselin Jacquard
  *
@@ -323,7 +322,7 @@ function ajoutTypesParDefaut() {
 	$type->setJustificationExigible(false);
 	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::SOUS_RESP_ETAB_VRAI);
 	$type->setManquementObligationPresence(AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX);
-	$type->setTypeSaisie(AbsenceEleveType::$TYPE_SAISIE_DISCIPLINE);
+	$type->setTypeSaisie(AbsenceEleveType::TYPE_SAISIE_DISCIPLINE);
     $type->setIdLieu($id_lieu_etab);
 
 	$statut = new AbsenceEleveTypeStatutAutorise();

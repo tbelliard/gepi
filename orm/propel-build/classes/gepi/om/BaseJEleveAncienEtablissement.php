@@ -119,7 +119,7 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 			$this->modifiedColumns[] = JEleveAncienEtablissementPeer::ID_ELEVE;
 		}
 
-		if ($this->aEleve !== null && $this->aEleve->getIdEleve() !== $v) {
+		if ($this->aEleve !== null && $this->aEleve->getId() !== $v) {
 			$this->aEleve = null;
 		}
 
@@ -219,7 +219,7 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 	public function ensureConsistency()
 	{
 
-		if ($this->aEleve !== null && $this->id_eleve !== $this->aEleve->getIdEleve()) {
+		if ($this->aEleve !== null && $this->id_eleve !== $this->aEleve->getId()) {
 			$this->aEleve = null;
 		}
 		if ($this->aAncienEtablissement !== null && $this->id_etablissement !== $this->aAncienEtablissement->getId()) {
@@ -779,7 +779,7 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 		if ($v === null) {
 			$this->setIdEleve(NULL);
 		} else {
-			$this->setIdEleve($v->getIdEleve());
+			$this->setIdEleve($v->getId());
 		}
 
 		$this->aEleve = $v;

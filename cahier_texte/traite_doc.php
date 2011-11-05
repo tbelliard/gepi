@@ -1,6 +1,5 @@
 <?php
 /*
- * @version: $Id: traite_doc.php 7940 2011-08-24 10:08:54Z jjocal $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -77,7 +76,7 @@ function ajout_doc($doc_file,$id_ct,$doc_name,$cpt_doc) {
     /* Vérification du type de fichier */
     //if (my_ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)) {
     if (((function_exists("mb_ereg"))&&(mb_ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)))||((function_exists("ereg"))&&(ereg("\.([^.]+)$", $doc_file['name'][$cpt_doc], $match)))) {
-        $ext = corriger_caracteres(strtolower($match[1]));
+        $ext = corriger_caracteres(my_strtolower($match[1]));
         $ext = corriger_extension($ext);
     } else {
         $ext = '';
@@ -135,7 +134,7 @@ function ajout_doc($doc_file,$id_ct,$doc_name,$cpt_doc) {
       return "Problème d'écriture sur le répertoire. Veuillez signaler ce problème à l'administrateur du site";
       die();
     }
-    $nom_sans_ext = substr(basename($doc_file['name'][$cpt_doc]),0,strlen(basename($doc_file['name'][$cpt_doc]))-(strlen($ext)+1));
+    $nom_sans_ext = mb_substr(basename($doc_file['name'][$cpt_doc]),0,mb_strlen(basename($doc_file['name'][$cpt_doc]))-(mb_strlen($ext)+1));
     $nom_sans_ext = my_ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $nom_sans_ext);
     if (strstr($nom_sans_ext, "..")) {
         return "Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire. Veuillez signaler ce problème à l'administrateur du site";

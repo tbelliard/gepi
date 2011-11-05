@@ -1,6 +1,5 @@
 <?php
 /*
-$Id: liste.inc.php 6784 2011-04-14 05:16:15Z crob $
 */
 
 // Traitement des données pour une classe référencée par id_classe et id_periode

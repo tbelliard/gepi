@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * $Id: bilan_absence.php 4098 2010-02-26 18:33:42Z crob $
+ * $Id$
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
@@ -62,9 +62,6 @@ if (!checkAccess()) {
 die();
 }
 
-$mode_utf8_pdf=getSettingValue('mode_utf8_abs_pdf');
-if($mode_utf8_pdf!="y") {$mode_utf8_pdf="";}
-
 define('FPDF_FONTPATH','../../fpdf/font/');
 require('../../fpdf/fpdf.php');
 
@@ -120,7 +117,7 @@ class bilan_PDF extends FPDF
     {
 	    global $prefix_base;
 			$X_etab = '10'; $Y_etab = '10';
-		        $caractere_utilse = 'Arial';
+		        $caractere_utilse = 'DejaVu';
 			$affiche_logo_etab='1';
 			$entente_mel='0'; // afficher l'adresse mel dans l'entête
 			$entente_tel='0'; // afficher le numéro de téléphone dans l'entête
@@ -144,17 +141,17 @@ class bilan_PDF extends FPDF
 
 	//adresse
  	 $this->SetXY($X_etab,$Y_etab);
- 	 $this->SetFont($caractere_utilse,'',14);
+ 	 $this->SetFont('DejaVu','',14);
 	  //$gepiSchoolName = getSettingValue('gepiSchoolName');
-	  $gepiSchoolName = traite_accents_utf8(getSettingValue('gepiSchoolName'));
+	  $gepiSchoolName = (getSettingValue('gepiSchoolName'));
 	 $this->Cell(90,7, $gepiSchoolName,0,2,'');
-	 $this->SetFont($caractere_utilse,'',10);
-	  $gepiSchoolAdress1 = traite_accents_utf8(getSettingValue('gepiSchoolAdress1'));
+	 $this->SetFont('DejaVu','',10);
+	  $gepiSchoolAdress1 = (getSettingValue('gepiSchoolAdress1'));
 	 $this->Cell(90,5, $gepiSchoolAdress1,0,2,'');
-	  $gepiSchoolAdress2 = traite_accents_utf8(getSettingValue('gepiSchoolAdress2'));
+	  $gepiSchoolAdress2 = (getSettingValue('gepiSchoolAdress2'));
 	 $this->Cell(90,5, $gepiSchoolAdress2,0,2,'');
-	  $gepiSchoolZipCode = traite_accents_utf8(getSettingValue('gepiSchoolZipCode'));
-	  $gepiSchoolCity = traite_accents_utf8(getSettingValue('gepiSchoolCity'));
+	  $gepiSchoolZipCode = (getSettingValue('gepiSchoolZipCode'));
+	  $gepiSchoolCity = (getSettingValue('gepiSchoolCity'));
 	 $this->Cell(90,5, $gepiSchoolZipCode." ".$gepiSchoolCity,0,2,'');
 	  $gepiSchoolTel = getSettingValue('gepiSchoolTel');
 	  $gepiSchoolFax = getSettingValue('gepiSchoolFax');
@@ -187,12 +184,12 @@ class bilan_PDF extends FPDF
 
         //Positionnement à 1 cm du bas et 0,5cm + 0,5cm du coté gauche
    	$this->SetXY(5,-10);
-        //Police Arial Gras 6
-        $this->SetFont('Arial','B',8);
+        //Police DejaVu Gras 6
+        $this->SetFont('DejaVu','B',8);
 	$this->SetLineWidth(0,2);
 	$this->SetDrawColor(0, 0, 0);
 	$this->Line(10, 280, 200, 280);
-	$this->SetFont('Arial','',10);
+	$this->SetFont('DejaVu','',10);
 	$this->SetY(280);
 	$adresse = $nom_etab." - ".$adresse1_etab." - ".$cp_etab." ".$ville_etab." ".$cedex_etab;
 	if($adresse2_etab!="")
@@ -216,8 +213,8 @@ class bilan_PDF extends FPDF
 	  $adresse2 = "Tél : ".$telephone_etab." - Fax : ".$fax_etab;
 	}
 
-	$this->Cell(0, 4.5, traite_accents_utf8($adresse), 0, 1, 'C', '');
-	$this->Cell(0, 4.5, traite_accents_utf8($adresse2), 0, 1, 'C', '');
+	$this->Cell(0, 4.5, ($adresse), 0, 1, 'C', '');
+	$this->Cell(0, 4.5, ($adresse2), 0, 1, 'C', '');
     }
 }
 
@@ -225,12 +222,12 @@ class bilan_PDF extends FPDF
 //requete dans la base de donnée
   	//etablissement
     $niveau_etab = "";
-    $nom_etab = traite_accents_utf8(getSettingValue("gepiSchoolName"));
-	//$nom_etab = traite_accents_utf8(getSettingValue('gepiSchoolName'));
-    $adresse1_etab = traite_accents_utf8(getSettingValue("gepiSchoolAdress1"));
-    $adresse2_etab = traite_accents_utf8(getSettingValue("gepiSchoolAdress2"));
-    $cp_etab = traite_accents_utf8(getSettingValue("gepiSchoolZipCode"));
-    $ville_etab = traite_accents_utf8(getSettingValue("gepiSchoolCity"));
+    $nom_etab = (getSettingValue("gepiSchoolName"));
+	//$nom_etab = (getSettingValue('gepiSchoolName'));
+    $adresse1_etab = (getSettingValue("gepiSchoolAdress1"));
+    $adresse2_etab = (getSettingValue("gepiSchoolAdress2"));
+    $cp_etab = (getSettingValue("gepiSchoolZipCode"));
+    $ville_etab = (getSettingValue("gepiSchoolCity"));
     $cedex_etab = "";
     $telephone_etab = getSettingValue("gepiSchoolTel");
     $fax_etab = getSettingValue("gepiSchoolFax");
@@ -387,18 +384,18 @@ while ( $page < $nb_page )
 	/* *********************************** */
 	/*            DEBUT - ENTETE           */
 
-	$pdf->SetFont('Arial','',12);
+	$pdf->SetFont('DejaVu','',12);
 	$pdf->SetY(20);
 	$pdf->SetX(65);
 
-	$pdf->SetFont('Arial','B',18);
+	$pdf->SetFont('DejaVu','B',18);
 	$pdf->Cell(0, 6, 'RELEVE DES ABSENCES', 0, 1, 'C', '');
 
-	$pdf->SetFont('Arial','',10);
+	$pdf->SetFont('DejaVu','',10);
 	if ( $absencenj === '1' ) { $pdf->SetX(65); $pdf->Cell(0, 4, 'avec option absence sans justification', 0, 1, 'C', ''); }
 	if ( $retardnj === '1' ) { $pdf->SetX(65); $pdf->Cell(0, 4, 'avec option retard sans justification', 0, 1, 'C', ''); }
 
-	$pdf->SetFont('Arial','',14);
+	$pdf->SetFont('DejaVu','',14);
 	$duu = "du ".date_frl(date_sql($du));
 	$auu = "au ".date_frl(date_sql($au));
 
@@ -421,8 +418,8 @@ while ( $page < $nb_page )
 
 	$pdf->SetX(30);
 	$pdf->SetY(52);
-    $pdf->SetFont('Arial','',9.5);
-    $pdf->Cell(55, 5, traite_accents_utf8('Nom et Prénom'), 1, 0, 'C', '');
+    $pdf->SetFont('DejaVu','',9.5);
+    $pdf->Cell(55, 5, ('Nom et Prénom'), 1, 0, 'C', '');
     $pdf->Cell(17, 5, 'Classe', 1, 0, 'C', '');
     $pdf->Cell(42, 5, 'Motif', 1, 0, 'C', '');
     $pdf->Cell(38, 5, 'Du', 1, 0, 'C', '');
@@ -436,13 +433,13 @@ while ( $page < $nb_page )
     	if ( !empty($tableau[$cpt]['identite']) )
     	{
 
-        	$pdf->SetFont('Arial','',9);
-        	$pdf->SetFont('Arial','',9);
-			$pdf->Cell(55, 5, traite_accents_utf8($tableau[$cpt]['identite']), 1, 0, '', '');
-        	$pdf->Cell(17, 5, traite_accents_utf8($tableau[$cpt]['classe']), 1, 0, '', '');
-			$pdf->Cell(42, 5, traite_accents_utf8($tableau[$cpt]['motif']), 1, 0, '', '');
-        	$pdf->Cell(38, 5, traite_accents_utf8($tableau[$cpt]['debut']), 1, 0, '', '');
-        	$pdf->Cell(38, 5, traite_accents_utf8($tableau[$cpt]['fin']), 1, 1, '', '');
+        	$pdf->SetFont('DejaVu','',9);
+        	$pdf->SetFont('DejaVu','',9);
+			$pdf->Cell(55, 5, ($tableau[$cpt]['identite']), 1, 0, '', '');
+        	$pdf->Cell(17, 5, ($tableau[$cpt]['classe']), 1, 0, '', '');
+			$pdf->Cell(42, 5, ($tableau[$cpt]['motif']), 1, 0, '', '');
+        	$pdf->Cell(38, 5, ($tableau[$cpt]['debut']), 1, 0, '', '');
+        	$pdf->Cell(38, 5, ($tableau[$cpt]['fin']), 1, 1, '', '');
 
         }
 

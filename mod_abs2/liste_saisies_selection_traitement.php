@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id: liste_saisies_selection_traitement.php 8156 2011-09-08 17:36:03Z dblanqui $
  *
  * Copyright 2010 Josselin Jacquard
  *
@@ -381,8 +380,8 @@ echo '<form method="post" action="liste_saisies_selection_traitement.php" name="
 		Ajouter les saisies au traitement 
 		<?php 
 	    $desc = $traitement->getDescription();
-	    if (strlen($desc)>300) {
-	    	echo substr($desc,0,300).' ... ';
+	    if (mb_strlen($desc)>300) {
+	    	echo mb_substr($desc,0,300).' ... ';
 	    } else {
 	    	echo $desc;
 	    }
@@ -1054,7 +1053,7 @@ foreach ($results as $saisie) {
 	    echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getDeletedAt('U')));
     	$suppr_utilisateur = UtilisateurProfessionnelQuery::create()->findPK($saisie->getDeletedBy());
     	if ($suppr_utilisateur != null) {
-    		echo ' par '.  $suppr_utilisateur->getCivilite().' '.$suppr_utilisateur->getNom().' '.substr($suppr_utilisateur->getPrenom(), 0, 1).'.';;
+    		echo ' par '.  $suppr_utilisateur->getCivilite().' '.$suppr_utilisateur->getNom().' '.mb_substr($suppr_utilisateur->getPrenom(), 0, 1).'.';;
     	}
 	    echo "</a>";
 	    echo '</td>';
@@ -1214,8 +1213,8 @@ foreach ($results as $saisie) {
 	echo "<table width='100%'><tr><td>";
 	echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%;'> ";
     $desc = $traitement->getDescription();
-    if (strlen($desc)>300) {
-    	echo substr($desc,0,300).' ... ';
+    if (mb_strlen($desc)>300) {
+    	echo mb_substr($desc,0,300).' ... ';
     } else {
     	echo $desc;
     }

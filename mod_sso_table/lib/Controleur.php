@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: Controleur.php 7826 2011-08-19 10:26:47Z dblanqui $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

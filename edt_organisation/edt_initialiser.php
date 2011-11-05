@@ -3,7 +3,6 @@
 /**
  * Fichier d'initialisation de l'EdT
  * Pour effacer la table avant une nouvelle initialisation il faut faire un TRUNCATE TABLE nom_table;
- * @version $Id: edt_initialiser.php 4592 2010-06-18 13:39:41Z adminpaulbert $
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

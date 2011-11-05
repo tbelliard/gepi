@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version $Id: bulletin_fonctions.php 1570 2008-03-03 20:19:56Z jjocal $
+ * @version $Id$
  *
  * Les fonctions utiles pour les bulletins pdf
  *

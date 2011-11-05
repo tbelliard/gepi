@@ -2,7 +2,6 @@
 /**
  * Extrait les données pour les relevés de notes
  * 
- * $Id: extraction_donnees_releves_notes.php 8470 2011-10-13 11:24:28Z crob $
  * 
  * @package Notes
  * @subpackage scripts
@@ -71,6 +70,8 @@
 
 	// Bloc observation sur la droite pour le relevé PDF:
 	$tab_rn_bloc_obs=isset($_POST['rn_bloc_obs']) ? $_POST['rn_bloc_obs'] : array();
+	
+	$tab_rn_bloc_abs2=isset($_POST['rn_abs_2']) ? $_POST['rn_abs_2'] : array();
 
 	$tab_rn_aff_classe_nom=isset($_POST['rn_aff_classe_nom']) ? $_POST['rn_aff_classe_nom'] : array();
 
@@ -232,6 +233,9 @@
 				$tab_releve[$id_classe][$periode_num]['nom_periode']=$lig_per->nom_periode;
 				$tab_releve[$id_classe][$periode_num]['verouiller']=$lig_per->verouiller;
 			}
+			
+			// Bloc absence sur le relevé HTML
+			$tab_releve[$id_classe][$periode_num]['rn_abs_2']=isset($tab_rn_bloc_abs2[$loop_classe]) ? $tab_rn_bloc_abs2[$loop_classe] : "n";
 
 			// Liste des élèves à éditer/afficher/imprimer (sélection):
 			if($choix_periode=="intervalle") {
@@ -397,7 +401,7 @@
 					// Si c'est un élève
 					elseif (($_SESSION['statut'] == 'eleve') AND
 							(getSettingValue("GepiAccesReleveEleve") == "yes") AND
-							strtolower($current_eleve_login[$i])==strtolower($_SESSION['login'])) {
+							my_strtolower($current_eleve_login[$i])==my_strtolower($_SESSION['login'])) {
 						$autorisation_acces='y';
 					}
 					// Si c'est un responsable
@@ -759,6 +763,14 @@
 									$tab_ele['etab_type']= $type_etablissement2[$tab_ele['etab_type']][$tab_ele['etab_niveau']];
 								}
 							}
+						}
+						else {
+							$tab_ele['etab_id'] = "";
+							$tab_ele['etab_nom'] = "Non renseigné";
+							$tab_ele['etab_niveau'] = "";
+							$tab_ele['etab_type'] = "";
+							$tab_ele['etab_cp'] = "";
+							$tab_ele['etab_ville'] = "";
 						}
 
 						// Récup infos CPE

@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id: saisie_b2i_a2.php 5984 2010-11-24 14:54:46Z crob $
+* $Id$
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
 *
@@ -249,7 +249,7 @@ else {
 		a2 ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL ,
 		lv VARCHAR( 50 ) NOT NULL ,
 		PRIMARY KEY ( login )
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$create_table=mysql_query($sql);
 
 

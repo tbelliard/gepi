@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: eleves.php 7858 2011-08-21 13:12:55Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -469,20 +468,20 @@ if (isset($_POST['step'])) {
                             $gecos = $info2[0]["gecos"][0];
                             $tmp = split ("[\,\]",$info2[0]["gecos"][0],4);
                             $ret_people = array (
-                            "uid"         => $info2[0]["uid"][0],
-                            "nom"         => stripslashes( utf8_decode($info2[0]["sn"][0]) ),
-                            "fullname"        => stripslashes( utf8_decode($info2[0]["cn"][0]) ),
-                            "pseudo"      => utf8_decode($info2[0]["givenname"][0]),
-                            "email"       => $info2[0]["mail"][0],
+                            "uid"        			=> $info2[0]["uid"][0],
+                            "nom"        			=> stripslashes($info2[0]["sn"][0]),
+                            "fullname"        => stripslashes($info2[0]["cn"][0]),
+                            "pseudo"      		=> $info2[0]["givenname"][0],
+                            "email"       		=> $info2[0]["mail"][0],
                             "homedirectory"   => $info2[0]["homedirectory"][0],
-                            "description" => utf8_decode($info2[0]["description"][0]),
+                            "description" 		=> $info2[0]["description"][0],
                             "shell"           => $info2[0]["loginshell"][0],
                             "sexe"            => $tmp[2],
                             "naissance"       => $tmp[1],
                             "no_gep"          => $info2[0]["employeenumber"][0]
                             );
-                            $long = strlen($ret_people["fullname"]) - strlen($ret_people["nom"]);
-                            $prenom = substr($ret_people["fullname"], 0, $long) ;
+                            $long = mb_strlen($ret_people["fullname"]) - mb_strlen($ret_people["nom"]);
+                            $prenom = mb_substr($ret_people["fullname"], 0, $long) ;
 
 
                             $add = add_eleve($uid,$ret_people["nom"],$prenom,$tmp[2],$tmp[1],$ret_people["no_gep"]);
@@ -502,7 +501,7 @@ if (isset($_POST['step'])) {
                         }
                         @ldap_free_result ( $result2 );
                     }
-                    $date_naissance = substr($tmp[1],6,2)."-".substr($tmp[1],4,2)."-".substr($tmp[1],0,4) ;
+                    $date_naissance = mb_substr($tmp[1],6,2)."-".mb_substr($tmp[1],4,2)."-".mb_substr($tmp[1],0,4) ;
                     echo "<tr><td>".$current_classe."</td><td>".$uid."</td><td>".$ret_people["nom"]."</td><td>".$prenom."</td><td>".$tmp[2]."</td><td>".$date_naissance."</td><td>".$ret_people["no_gep"]."</td></tr>\n";
                   }
                 }

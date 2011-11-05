@@ -2,7 +2,6 @@
 /**
  *
  *
- * @version $Id$
  *
  * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stephane Boireau, Julien Jocal
  *
@@ -51,7 +50,7 @@ class AbsencesNotificationHelper {
 
     foreach ($eleve_col as $eleve) {
             $saisies_string_col = new PropelCollection();
-            $saisies_col = AbsenceEleveSaisieQuery::create()->filterByEleveId($eleve->getIdEleve())
+            $saisies_col = AbsenceEleveSaisieQuery::create()->filterByEleveId($eleve->getId())
                     ->useJTraitementSaisieEleveQuery()
                     ->filterByATraitementId($notification->getAbsenceEleveTraitement()->getId())->endUse()
                     ->orderBy("DebutAbs", Criteria::ASC)
@@ -65,16 +64,18 @@ class AbsencesNotificationHelper {
                 $saisies_string_col->append($str);
                 
             }
-            $TBS->MergeBlock('saisies_string_eleve_id_'.$eleve->getIdEleve(), $saisies_string_col);
+            $TBS->MergeBlock('saisies_string_eleve_id_'.$eleve->getId(), $saisies_string_col);
     }
 
     $heure_demi_journee = 11;
     $minute_demi_journee = 50;
-    try {
-	$dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
-	$heure_demi_journee = $dt_demi_journee->format('H');
-	$minute_demi_journee = $dt_demi_journee->format('i');
-    } catch (Exception $x) {
+    if (getSettingValue("abs2_heure_demi_journee") != null) {
+        try {
+    	$dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
+    	$heure_demi_journee = $dt_demi_journee->format('H');
+    	$minute_demi_journee = $dt_demi_journee->format('i');
+        } catch (Exception $x) {
+        }
     }
     $temps_demi_journee = $heure_demi_journee.$minute_demi_journee;
 
@@ -106,18 +107,16 @@ class AbsencesNotificationHelper {
 	}
 	//var_dump($demi_journee_string_col);die;
 	//if (count($demi_journee_string_col) == 0) die;
-	$TBS->MergeBlock('demi_j_string_eleve_id_'.$eleve->getIdEleve(), $demi_journee_string_col);
+	$TBS->MergeBlock('demi_j_string_eleve_id_'.$eleve->getId(), $demi_journee_string_col);
     }
 
     if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER) {
 	//on va mettre les champs dans des variables simple
-	//echo $notification->getResponsableEleveAdresse()->getResponsableEleves()->count();
-	if ($notification->getResponsableEleveAdresse() != null && $notification->getResponsableEleves()->count() == 1) {
-	    //echo 'dest1';
+	//on fait un petit traitement pour bien formatter ça si on a un ou deux responsables, avec le même nom de famille ou pas.
+	if ($notification->getAdresse() != null && $notification->getResponsableEleves()->count() == 1) {
 	    $responsable = $notification->getResponsableEleves()->getFirst();
 	    $destinataire = $responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.strtoupper($responsable->getPrenom());
-	} elseif ($notification->getResponsableEleveAdresse() != null) {
-	    //echo 'dest2';
+	} elseif ($notification->getAdresse() != null&& $notification->getResponsableEleves()->count() == 2) {
 	    $responsable1 = $notification->getResponsableEleves()->getFirst();
 	    $responsable2 = $notification->getResponsableEleves()->getNext();
 	    if (strtoupper($responsable1->getNom()) == strtoupper($responsable2->getNom())) {
@@ -131,9 +130,9 @@ class AbsencesNotificationHelper {
 	}
 	$TBS->MergeField('destinataire',$destinataire);
 
-	$adr = $notification->getResponsableEleveAdresse();
+	$adr = $notification->getAdresse();
 	if ($adr == null) {
-	    $adr = new ResponsableEleveAdresse();
+	    $adr = new Adresse();
 	}
 	$TBS->MergeField('adr',$adr);	
 
@@ -162,15 +161,17 @@ class AbsencesNotificationHelper {
    */
   public static function MergeInfosEtab($modele){
         // load the TinyButStrong libraries
-    include_once('../tbs/tbs_class.php'); // TinyButStrong template engine    
-    include_once('../tbs/plugins/tbsdb_php.php');
+    include_once(dirname(__FILE__).'/../../tbs/tbs_class.php'); // TinyButStrong template engine    
+    include_once(dirname(__FILE__).'/../../tbs/plugins/tbsdb_php.php');
 
     $TBS = new clsTinyButStrong; // new instance of TBS
-    if (substr($modele, -3) == "odt" ||substr($modele, -3) == "ods") {
-	include_once('../tbs/plugins/tbs_plugin_opentbs.php');
+    if (mb_substr($modele, -3) == "odt" ||mb_substr($modele, -3) == "ods") {
+	include_once(dirname(__FILE__).'/../../tbs/plugins/tbs_plugin_opentbs.php');
 	$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
-    }
+    $TBS->LoadTemplate($modele, OPENTBS_ALREADY_UTF8);
+    } else {
     $TBS->LoadTemplate($modele);
+    }
     //merge des champs commun
     $TBS->MergeField('nom_etab',getSettingValue("gepiSchoolName"));
     $TBS->MergeField('tel_etab',getSettingValue("gepiSchoolTel"));
@@ -181,7 +182,7 @@ class AbsencesNotificationHelper {
     }
     $TBS->MergeField('mail_etab', $email_abs_etab);
     $TBS->MergeField('annee_scolaire', getSettingValue("gepiYear"));
-    $adr_etablissement = new ResponsableEleveAdresse();
+    $adr_etablissement = new Adresse();
 	$adr_etablissement->setAdr1(getSettingValue("gepiSchoolAdress1"));
 	$adr_etablissement->setAdr2(getSettingValue("gepiSchoolAdress2"));
 	$adr_etablissement->setCp(getSettingValue("gepiSchoolZipCode"));
@@ -258,8 +259,8 @@ class AbsencesNotificationHelper {
 	    $param['msg'] = $message; // message que l'on désire envoyer
 
 	    $tel = $notification->getTelephone();
-	    if (substr($tel, 0, 1) == '0') {
-		$tel = '33'.substr($tel, 1, 9);
+	    if (mb_substr($tel, 0, 1) == '0') {
+		$tel = '33'.mb_substr($tel, 1, 9);
 	    }
 	    $param['to'] = $tel; // numéros de téléphones auxquels on envoie le message
 	    $param['from'] = getSettingValue("gepiSchoolName"); // expéditeur du message (first class uniquement)
@@ -287,8 +288,8 @@ class AbsencesNotificationHelper {
 		$tel = str_replace(".","",$tel);
 		$tel = str_replace("-","",$tel);
 		$tel = str_replace("/","",$tel);
-	    if (substr($tel, 0, 1) == '0') { //Ajout indicatif 33
-		$tel = '33'.substr($tel, 1, 9);
+	    if (mb_substr($tel, 0, 1) == '0') { //Ajout indicatif 33
+		$tel = '33'.mb_substr($tel, 1, 9);
 	    }
         $param['to'] = $tel; // numéro de téléphone auxquel on envoie le message
 	    $param['from'] = str_replace(" ","",getSettingValue("gepiSchoolTel")); // expéditeur du message (facultatif)
@@ -348,7 +349,7 @@ class AbsencesNotificationHelper {
 
 	//traitement de la réponse
 	if (getSettingValue("abs2_sms_prestataire")=='tm4b') {
-	    if (substr($reponse, 0, 5) == 'error') {
+	    if (mb_substr($reponse, 0, 5) == 'error') {
 		$return_message = 'Erreur : message non envoyé. Code erreur : '.$reponse;
 		$notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC);
 		$notification->setErreurMessageEnvoi($reponse);
@@ -364,7 +365,7 @@ class AbsencesNotificationHelper {
 		$notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC);
 	    }
 	} else if (getSettingValue("abs2_sms_prestataire")=='pluriware') {
-            if (substr($reponse, 0, 3) == 'ERR') {
+            if (mb_substr($reponse, 0, 3) == 'ERR') {
                 $return_message = 'Erreur : message non envoyé. Code erreur : '.$reponse;
                 $notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC);
                 $notification->setErreurMessageEnvoi($reponse);

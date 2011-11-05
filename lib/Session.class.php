@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: Session.class.php 8587 2011-11-01 18:17:13Z mleygnac $
  *
  * Copyright 2001, 2011 Thomas Belliard
  *
@@ -175,7 +174,7 @@ class Session {
 
 		if ($_login != null && strtoupper($_login) != strtoupper($this->login)) {
 			//on a une connexion sous un nouveau login, on purge la session
-			$this->reset("4");
+			$this->reset("10");
 		}
 
 		if($debug_test_mdp=="y") {
@@ -621,7 +620,7 @@ class Session {
 		# 0 : logout normal
 		# 2 : logout renvoyé par la fonction checkAccess (problème gepiPath ou accès interdit)
 		# 3 : logout lié à un timeout
-		# 4 : logout lié à une nouvelle connexion sous un nouveau profil
+		# 10 : logout lié à une nouvelle connexion sous un nouveau profil
 
 	    # On teste 'start' simplement pour simplement vérifier que la session n'a pas encore été fermée.
 	    if ($this->start) {
@@ -740,7 +739,7 @@ class Session {
                             //on va tester avec le md5
                             if ($db_password == md5($_password)) {
                             } else {
-                                    if(getSettingValue('filtrage_html')=='htmlpurifier') {
+                                    if(getSettingValue('filtrage_html')=='htmlpurifier') {//utilse pour les ancienne base (2011-05-14)
                                             $tmp_mdp = array_flip (get_html_translation_table(HTML_ENTITIES));
                                             $_password_unhtmlentities = strtr ($_password, $tmp_mdp);
                                             if ($db_password == md5($_password_unhtmlentities)) {
@@ -907,9 +906,10 @@ if (getSettingValue("sso_cas_table") == 'yes') {
       if (!empty($code_attribut)) {
       	if (isset($tab[$code_attribut])) {
         	$valeur = $tab[$code_attribut];
-					if (!empty($valeur)){						// L'attribut est trouvé et non vide, on l'assigne pour mettre à jour l'utilisateur
-						// On s'assure que la chaîne est bien enregistrée en iso-UTF-8.
-						$valeur = ensure_utf8($valeur);
+					if (!empty($valeur)){
+					    // L'attribut est trouvé et non vide, on l'assigne pour mettre à jour l'utilisateur
+						// On s'assure que la chaîne est bien enregistrée en UTF-8.
+						$valeur = ensure_utf_8($valeur);
 						$this->cas_extra_attributes[$attribut] = trim(mysql_real_escape_string($valeur));
 					}
         }
@@ -1028,12 +1028,12 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 			# les informations de l'utilisateur dans la base.
 			$lcs_tab_login["nom"] = $user["nom"];
 			$lcs_tab_login["email"] = $user["email"];
-			$long = strlen($user["fullname"]) - strlen($user["nom"]);
-			$lcs_tab_login["fullname"] = substr($user["fullname"], 0, $long) ;
+			$long = mb_strlen($user["fullname"]) - mb_strlen($user["nom"]);
+			$lcs_tab_login["fullname"] = mb_substr($user["fullname"], 0, $long) ;
 
 			// A ce stade, l'utilisateur est authentifié
 			// Etablir à nouveau la connexion à la base
-			if (!$db_nopersist)
+			if (empty($db_nopersist))
 				$db_c = mysql_pconnect($dbHost, $dbUser, $dbPass);
 			else
 				$db_c = mysql_connect($dbHost, $dbUser, $dbPass);
@@ -1129,11 +1129,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 
 	    }
 
-		/*
-		$length = rand(35, 45);
-		for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
-		$_SESSION["gepi_alea"] = $r;
-		*/
+		
 		//generate_token($_SESSION['login']);
 		generate_token();
 
@@ -1330,9 +1326,9 @@ if (getSettingValue("sso_cas_table") == 'yes') {
             
             $naissance = $user['raw']['entpersondatenaissance'][0];
             if ($naissance != '') {
-              $annee = substr($naissance, 0, 4);
-              $mois = substr($naissance, 4, 2);
-              $jour = substr($naissance, 6, 2);
+              $annee = mb_substr($naissance, 0, 4);
+              $mois = mb_substr($naissance, 4, 2);
+              $jour = mb_substr($naissance, 6, 2);
             } else {
               $annee = '0000';
               $mois = '00';
@@ -1428,12 +1424,12 @@ if (getSettingValue("sso_cas_table") == 'yes') {
           $resp->setTelProf($user['raw']['telephonenumber'][0]);
           $resp->setTelPort($user['raw']['mobile'][0]);
           $resp->setMel($user['email']);
-          $resp->setPersId($user['raw']['intid'][0]);
+          $resp->setAdresseId($user['raw']['intid'][0]);
                     
           // On créé l'adresse associée
           
-          $adr = new ResponsableEleveAdresse();
-          $adr->setAdrId($user['raw']['intid'][0]);
+          $adr = new Adresse();
+          $adr->setAdresseId($user['raw']['intid'][0]);
           $adr->setAdr1($user['raw']['entpersonadresse'][0]);
           $adr->setAdr2('');
           $adr->setAdr3('');
@@ -1442,7 +1438,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
           $adr->setCp($user['raw']['entpersoncodepostal'][0]);
           $adr->setPays($user['raw']['entpersonpays'][0]);
           
-          $resp->setResponsableEleveAdresse($adr);
+          $resp->setAdresse($adr);
           
           $resp->save();
 
@@ -1451,7 +1447,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
           //pour chaque dn d'eleve
           for ($i=0;$i<$nb_eleves_a_charge;$i++) {
               $eleve_uid = explode(",",$user['raw']['entauxpersreleleveeleve'][$i]);
-              $eleve_associe_login = substr($eleve_uid[0], 4);
+              $eleve_associe_login = mb_substr($eleve_uid[0], 4);
               $eleve_query = mysql_query("SELECT ele_id FROM eleves WHERE login = '$eleve_associe_login'");
               if (mysql_num_rows($eleve_query) == 1) {
                 $eleve_associe_ele_id = mysql_result($eleve_query, 0);
@@ -1472,7 +1468,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
                 }
 
                 // Ajout de la relation entre Responsable et Eleve dans la table "responsables2" pour chaque eleve
-                $req_ajout_lien_eleve_resp = "INSERT INTO responsables2 VALUES('$eleve_associe_ele_id','".$resp->getPersId()."','$numero_responsable','')";
+                $req_ajout_lien_eleve_resp = "INSERT INTO responsables2 VALUES('$eleve_associe_ele_id','".$resp->getResponsableEleveId()."','$numero_responsable','')";
                 mysql_query($req_ajout_lien_eleve_resp);
               } // Fin test si élève existe
           }
@@ -1571,9 +1567,9 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 		$offset_sign = $offset < 0 == "-" ? "-" : "+";
 		$offset = abs($offset);
 		$offset_hours = $offset / 3600 % 24;
-		$offset_hours = strlen($offset_hours) == '1' ? "0".$offset_hours : $offset_hours;
+		$offset_hours = mb_strlen($offset_hours) == '1' ? "0".$offset_hours : $offset_hours;
 		$offset_minutes = $offset / 60 % 60;
-		$offset_minutes = strlen($offset_minutes) == '1' ? "0".$offset_minutes : $offset_minutes;
+		$offset_minutes = mb_strlen($offset_minutes) == '1' ? "0".$offset_minutes : $offset_minutes;
 		$mysql_offset = $offset_sign . $offset_hours . ":" . $offset_minutes;
 		$test = mysql_query("SET time_zone = '".$mysql_offset."'");
 	    }

@@ -1,6 +1,5 @@
 <?php
 /*
- * @version: $Id: liste_tous_devoirs.php 7938 2011-08-24 07:57:41Z jjocal $
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

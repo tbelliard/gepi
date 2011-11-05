@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: edit_responsable.php 8502 2011-10-20 05:44:55Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Eric Lebrun
  *
@@ -480,7 +479,8 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 		}
 		else{
 			while($current_enfant=mysql_fetch_object($res_enfants)){
-				echo ucfirst(strtolower($current_enfant->prenom))." ".strtoupper($current_enfant->nom)." (<i>".$current_enfant->classe."</i>)<br />\n";
+				//echo ucfirst(strtolower($current_enfant->prenom))." ".strtoupper($current_enfant->nom)." (<i>".$current_enfant->classe."</i>)<br />\n";
+				echo casse_mot($current_enfant->prenom,'majf2')." ".casse_mot($current_enfant->nom,'maj')." (<i>".$current_enfant->classe."</i>)<br />\n";
 			}
 		}
 		echo "</td>\n";

@@ -1,6 +1,5 @@
 <?php
 /**
- * @version : $Id: traiterRequetes.class.php 7996 2011-08-26 10:11:59Z mleygnac $
  *
  * Copyright 2001, 2009 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

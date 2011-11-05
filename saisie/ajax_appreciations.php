@@ -4,7 +4,6 @@
  * ajax_appreciations.php
  * Fichier qui permet la sauvegarde automatique des appréciations au fur et à mesure de leur saisie
  *
- * @version $Id: ajax_appreciations.php 7004 2011-05-25 17:36:10Z crob $
  * @copyright 2007-2011
  */
 
@@ -108,8 +107,9 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='cpe') || (($tem
 		$sql="CREATE TABLE IF NOT EXISTS vocabulaire (id INT(11) NOT NULL auto_increment,
 			terme VARCHAR(255) NOT NULL DEFAULT '',
 			terme_corrige VARCHAR(255) NOT NULL DEFAULT '',
-			PRIMARY KEY (id)) ENGINE=MyISAM;";
-		//echo "$sql<br />";
+			PRIMARY KEY (id)
+			) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		
 		log_ajax_app($sql);
 		$create_table=mysql_query($sql);
 		if(!$create_table) {
@@ -152,7 +152,7 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='cpe') || (($tem
 		$test_app_enregistree=mysql_query($sql);
 		if(mysql_num_rows($test_app_enregistree)>0) {
 			$lig_app_enregistree=mysql_fetch_object($test_app_enregistree);
-			if($lig_app_enregistree->appreciation==utf8_decode($appreciation)) {
+			if($lig_app_enregistree->appreciation==$appreciation) {
 				// On supprime l'enregistrement tempo pour éviter de conserver un tempo qui est déjà enregistré dans la table principale.
 				$sql="DELETE FROM matieres_appreciations_tempo WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."';";
 				log_ajax_app($sql);
@@ -166,13 +166,13 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='cpe') || (($tem
 			$verif_appreciation = mysql_query("SELECT appreciation FROM matieres_appreciations_tempo WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."'");
 			// Si elle existe, on la met à jour
 			if (mysql_num_rows($verif_appreciation) == 1) {
-				$sql="UPDATE matieres_appreciations_tempo SET appreciation = '".utf8_decode($appreciation)."' WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."'";
+				$sql="UPDATE matieres_appreciations_tempo SET appreciation = '".$appreciation."' WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."'";
 				log_ajax_app($sql);
 				$miseajour = mysql_query($sql);
 			} else {
 				//sinon on crée une nouvelle appréciation si l'appréciation n'est pas vide
 				if ($appreciation != "") {
-					$sql="INSERT INTO matieres_appreciations_tempo SET login = '".$verif_var1[0]."', id_groupe = '".$var2."', periode = '".$verif_var1[1]."', appreciation = '".utf8_decode($appreciation)."'";
+					$sql="INSERT INTO matieres_appreciations_tempo SET login = '".$verif_var1[0]."', id_groupe = '".$var2."', periode = '".$verif_var1[1]."', appreciation = '".$appreciation."'";
 					log_ajax_app($sql);
 					$sauvegarde = mysql_query($sql);
 				}

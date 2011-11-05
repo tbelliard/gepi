@@ -1,7 +1,6 @@
 <?php
 @set_time_limit(0);
 /*
-* $Id: init_options.php 7602 2011-08-07 14:17:29Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -59,8 +58,6 @@ require_once("../lib/header.inc");
 ?>
 <p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
-// On vérifie si l'extension d_base est active
-//verif_active_dbase();
 
 echo "<center><h3 class='gepi'>Cinquième phase d'initialisation<br />Affectation des matières à chaque professeur,<br />Affectation des professeurs dans chaque classe,<br />Importation des options suivies par les élèves</h3></center>";
 
@@ -69,11 +66,13 @@ echo "<h3 class='gepi'>Deuxième étape : importation des options suivies par le
 $test1 = mysql_result(mysql_query("SELECT count(*) FROM eleves"),0);
 if ($test1 ==0) {
 	echo "<p class='grand'>Aucun élève actuellement dans la base : la procédure d'initialisation des options ne peut continuer !</p>";
+	require("../lib/footer.inc.php");
 	die();
 } else {
 	$test2 = mysql_result(mysql_query("SELECT count(*) FROM j_eleves_classes"),0);
 	if ($test2 ==0) {
 		echo "<p class='grand'>Les classes n'ont pas encore été constituées : la procédure d'initialisation des options ne peut continuer !</p>";
+		require("../lib/footer.inc.php");
 		die();
 	} else {
 
@@ -82,11 +81,37 @@ if ($test1 ==0) {
 		if ($test3 ==0) {
 			//echo "<p class='grand'>Afin de procéder à la phase de définition des options suivies par les élèves, vous devez d'abord effectuer la première phase d'importation des élèves à partir du fichier ELEVES.CSV</p>";
 			echo "<p class='grand'>Afin de procéder à la phase de définition des options suivies par les élèves, vous devez d'abord effectuer la première phase d'importation des élèves à partir du fichier ElevesSansAdresses.xml</p>";
+			require("../lib/footer.inc.php");
 			die();
 		}
 	}
 }
-//$del = @mysql_query("delete from j_eleves_groupes");
+
+if(!isset($_GET['confirmer'])) {
+	$sql="SELECT 1=1 FROM matieres_notes;";
+	$test1=mysql_query($sql);
+
+	$sql="SELECT 1=1 FROM matieres_appreciations;";
+	$test2=mysql_query($sql);
+
+	$sql="SELECT 1=1 FROM cn_cahier_notes ccn, cn_conteneurs cc, cn_devoirs cd, cn_notes_devoirs cnd WHERE ccn.id_cahier_notes=cc.id_racine AND cc.id=cd.id_conteneur AND cd.id=cnd.id_devoir;";
+	$test3=mysql_query($sql);
+
+	if((mysql_num_rows($test1)!=0)||(mysql_num_rows($test2)!=0)||(mysql_num_rows($test3)!=0)) {
+		echo "<p><span style='font-weight:bold; color:red'>ATTENTION&nbsp;:</span> Il existe des notes de devoirs, des notes sur les bulletins ou des appréciations sur les bulletins.</p>\n";
+
+		echo "<p>En poursuivant ici, vous risquez de suprimer ces informations pour certains élèves (<em>plus pécisemment, vous risquez de désinscrire des élèves de groupes dans lesquels ils ont des notes ou appréciations</em>).</p>\n";
+
+		echo "<p>La présente page n'est normalement consultée qu'en début d'année pour l'initialisation de l'année.</p>\n";
+
+		echo "<p>Etes-vous sûr de vouloir poursuivre&nbsp;?</p>\n";
+
+		echo "<p><a href='".$_SERVER['PHP_SELF']."?confirmer=y".add_token_in_url()."'>Confirmer malgré tout la prise en compte des options de la table 'temp_gep_import2'</a></p>\n";
+
+		require("../lib/footer.inc.php");
+		die();
+	}
+}
 
 $sql="SELECT id, classe FROM classes;";
 //echo "$sql<br />\n";
@@ -112,7 +137,7 @@ while ($classe_row = mysql_fetch_object($appel_donnees_classes)) {
 		$tempo .= "ELEOPT".$i.", ";
 		$i++;
 	}
-	$tempo = substr($tempo, 0, -2);
+	$tempo = mb_substr($tempo, 0, -2);
 
 	//$call_data = mysql_query("SELECT $tempo FROM temp_gep_import WHERE DIVCOD = '$classe'");
 	$sql="SELECT $tempo FROM temp_gep_import2 WHERE DIVCOD = '$classe'";

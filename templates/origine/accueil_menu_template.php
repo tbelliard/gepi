@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: accueil_menu_template.php 5622 2010-10-09 17:41:43Z regis $
+ * $Id$
 */
 ?>
 <!-- menus général -->

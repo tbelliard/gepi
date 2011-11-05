@@ -2,7 +2,7 @@
 
 /**
  *
- * @version $Id: voir_absences_viescolaire.php 4230 2010-04-02 15:38:48Z adminpaulbert $
+ * @version $Id$
  *
  * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
@@ -58,7 +58,7 @@ $heure_mysql = date("H:i:s");
 
 // ++== Traitements des données == ++
 	$test = phpversion();
-		$version = substr($test, 0, 1);
+		$version = mb_substr($test, 0, 1);
 	if ($version != 5) {
 		// rien à faire
 	}else{

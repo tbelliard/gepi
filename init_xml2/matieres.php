@@ -1,7 +1,6 @@
 <?php
 	@set_time_limit(0);
 
-	// $Id: matieres.php 8336 2011-09-23 17:04:51Z crob $
 
 	// Initialisations files
 	require_once("../lib/initialisations.inc.php");
@@ -271,7 +270,7 @@
 								libelle_court varchar(40) NOT NULL default '',
 								libelle_long varchar(255) NOT NULL default '',
 								libelle_edition varchar(255) NOT NULL default ''
-								);";
+								) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 						$create_table = mysql_query($sql);
 
 						$sql="TRUNCATE TABLE temp_matieres_import;";
@@ -301,10 +300,10 @@
 						}
 		
 						$nom_racine=$sts_xml->getName();
-						if(strtoupper($nom_racine)!='STS_EDT') {
+						if(my_strtoupper($nom_racine)!='STS_EDT') {
 							echo "<p style='color:red;'><b>ERREUR&nbsp;:</b> Le fichier XML fourni n'a pas l'air d'être un fichier XML STS_EMP_&lt;RNE&gt;_&lt;ANNEE&gt;.<br />Sa racine devrait être 'STS_EDT'.</p>\n";
 
-							if(strtoupper($nom_racine)=='EDT_STS') {
+							if(my_strtoupper($nom_racine)=='EDT_STS') {
 								echo "<p style='color:red;'>Vous vous êtes trompé d'export.<br />Vous avez probablement utilisé un export de votre logiciel EDT d'Index Education, au lieu de l'export XML provenant de STS.</p>\n";
 							}
 
@@ -328,20 +327,24 @@
 				
 							foreach($objet_matiere->attributes() as $key => $value) {
 								// <MATIERE CODE="090100">
-								$matiere[$i][strtolower($key)]=trim(traite_utf8($value));
+								//$matiere[$i][my_strtolower($key)]=trim(traite_utf8($value));
+								$matiere[$i][my_strtolower($key)]=trim($value);
 							}
 				
 							// Champs de la matière
 							foreach($objet_matiere->children() as $key => $value) {
-								if(in_array(strtoupper($key),$tab_champs_matiere)) {
-									if(strtoupper($key)=='CODE_GESTION') {
-										$matiere[$i][strtolower($key)]=trim(preg_replace("/[^a-zA-Z0-9&_. -]/","",html_entity_decode_all_version(traite_utf8($value))));
+								if(in_array(my_strtoupper($key),$tab_champs_matiere)) {
+									if(my_strtoupper($key)=='CODE_GESTION') {
+										//$matiere[$i][my_strtolower($key)]=trim(preg_replace("/[^a-zA-Z0-9&_. -]/","",html_entity_decode(traite_utf8($value))));
+										$matiere[$i][my_strtolower($key)]=trim(preg_replace("/[^a-zA-Z0-9&_. -]/","",nettoyer_caracteres_nom(remplace_accents($value))));
 									}
-									elseif(strtoupper($key)=='LIBELLE_COURT') {
-										$matiere[$i][strtolower($key)]=trim(preg_replace("/[^A-Za-zÆæ¼½".$liste_caracteres_accentues."0-9&_. -]/","",html_entity_decode_all_version(traite_utf8($value))));
+									elseif(my_strtoupper($key)=='LIBELLE_COURT') {
+										//$matiere[$i][my_strtolower($key)]=trim(preg_replace("/[^A-Za-zÆæ¼½".$liste_caracteres_accentues."0-9&_. -]/","",html_entity_decode(traite_utf8($value))));
+										$matiere[$i][my_strtolower($key)]=trim(preg_replace("/'/"," ",preg_replace('/"/',' ',nettoyer_caracteres_nom($value))));
 									}
 									else {
-										$matiere[$i][strtolower($key)]=traitement_magic_quotes(corriger_caracteres(trim(preg_replace('/"/','',traite_utf8($value)))));
+										//$matiere[$i][my_strtolower($key)]=traitement_magic_quotes(corriger_caracteres(trim(preg_replace('/"/','',traite_utf8($value)))));
+										$matiere[$i][my_strtolower($key)]=trim(preg_replace("/'/"," ",preg_replace('/"/',' ',nettoyer_caracteres_nom($value))));
 									}
 								}
 							}
@@ -362,14 +365,14 @@
 							//$sql="INSERT INTO temp_resp_pers_import SET ";
 							$sql="INSERT INTO temp_matieres_import SET ";
 							$sql.="code='".$matiere[$i]["code"]."', ";
-							$sql.="code_gestion='".$matiere[$i]["code_gestion"]."', ";
-							$sql.="libelle_court='".$matiere[$i]["libelle_court"]."', ";
-							$sql.="libelle_long='".$matiere[$i]["libelle_long"]."', ";
-							$sql.="libelle_edition='".$matiere[$i]["libelle_edition"]."';";
+							$sql.="code_gestion='".mysql_real_escape_string($matiere[$i]["code_gestion"])."', ";
+							$sql.="libelle_court='".mysql_real_escape_string($matiere[$i]["libelle_court"])."', ";
+							$sql.="libelle_long='".mysql_real_escape_string($matiere[$i]["libelle_long"])."', ";
+							$sql.="libelle_edition='".mysql_real_escape_string($matiere[$i]["libelle_edition"])."';";
 							affiche_debug("$sql<br />\n");
 							$res_insert=mysql_query($sql);
 							if(!$res_insert){
-								echo "Erreur lors de la requête $sql<br />\n";
+								echo "<span style='color:red'>Erreur lors de la requête $sql</span><br />\n";
 								flush();
 								$nb_err++;
 							}
@@ -399,22 +402,22 @@
 							$verif=mysql_query($sql);
 							$resverif = mysql_num_rows($verif);
 							if($resverif==0) {
-								$sql="insert into matieres set matiere='".$matiere[$i]['code_gestion']."', nom_complet='".$matiere[$i]['libelle_court']."', priority='0',matiere_aid='n',matiere_atelier='n';";
+								$sql="insert into matieres set matiere='".mysql_real_escape_string($matiere[$i]['code_gestion'])."', nom_complet='".mysql_real_escape_string($matiere[$i]['libelle_court'])."', priority='0',matiere_aid='n',matiere_atelier='n';";
 								$req=mysql_query($sql);
 								if(!$req) {
 									$nb_reg_no++;
-									echo mysql_error();
+									echo "<span style='color:red'>".mysql_error()."</span><br />\n";
 								}
 								else {
 									$alt=$alt*(-1);
 									echo "<tr class='lig$alt'>\n";
-									echo "<td><p><font color='red'>".$matiere[$i]['code_gestion']."</font></p></td><td><p>".htmlentities($matiere[$i]['libelle_court'])."</p></td></tr>\n";
+									echo "<td><p><font color='red'>".$matiere[$i]['code_gestion']."</font></p></td><td><p>".htmlspecialchars($matiere[$i]['libelle_court'])."</p></td></tr>\n";
 								}
 							} else {
 								$nom_complet = mysql_result($verif,0,'nom_complet');
 								$alt=$alt*(-1);
 								echo "<tr class='lig$alt'>\n";
-								echo "<td><p><font color='green'>".$matiere[$i]['code_gestion']."</font></p></td><td><p>".htmlentities($nom_complet)."</p></td></tr>\n";
+								echo "<td><p><font color='green'>".$matiere[$i]['code_gestion']."</font></p></td><td><p>".htmlspecialchars($nom_complet)."</p></td></tr>\n";
 							}
 
 							$i++;
@@ -433,8 +436,9 @@
 							$divisions[$i]=array();
 					
 							foreach($objet_division->attributes() as $key => $value) {
-								if(strtoupper($key)=='CODE') {
-									$divisions[$i]['code']=preg_replace('/"/','',trim(traite_utf8($value)));
+								if(my_strtoupper($key)=='CODE') {
+									//$divisions[$i]['code']=preg_replace('/"/','',trim(traite_utf8($value)));
+									$divisions[$i]['code']=preg_replace("/'/","",preg_replace('/"/','',trim($value)));
 									//echo "<p>\$divisions[$i]['code']=".$divisions[$i]['code']."<br />";
 									break;
 								}
@@ -444,8 +448,10 @@
 							foreach($objet_division->MEFS_APPARTENANCE->children() as $mef_appartenance) {
 								foreach($mef_appartenance->attributes() as $key => $value) {
 									// Normalement, on ne devrait faire qu'un tour:
-									$divisions[$i]["mef_code"][]=trim(traite_utf8($value));
-									$tab_mef_code[]=trim(traite_utf8($value));
+									//$divisions[$i]["mef_code"][]=trim(traite_utf8($value));
+									//$tab_mef_code[]=trim(traite_utf8($value));
+									$divisions[$i]["mef_code"][]=trim($value);
+									$tab_mef_code[]=trim($value);
 									//echo "\$divisions[$i][\"mef_code\"][]=trim(traite_utf8($value))<br />";
 								}
 							}
@@ -454,7 +460,7 @@
 
 						for($i=0;$i<count($divisions);$i++) {
 							if(isset($divisions[$i]["mef_code"][0])) {
-								$sql="UPDATE eleves SET mef_code='".$divisions[$i]["mef_code"][0]."' WHERE login IN (SELECT j.login FROM j_eleves_classes j, classes c WHERE j.id_classe=c.id AND c.classe='".addslashes($divisions[$i]["code"])."');";
+								$sql="UPDATE eleves SET mef_code='".$divisions[$i]["mef_code"][0]."' WHERE login IN (SELECT j.login FROM j_eleves_classes j, classes c WHERE j.id_classe=c.id AND c.classe='".mysql_real_escape_string($divisions[$i]["code"])."');";
 								//echo "$sql<br />";
 								$update_mef=mysql_query($sql);
 							}
@@ -470,8 +476,9 @@
 							$mefs[$i]=array();
 					
 							foreach($objet_mef->attributes() as $key => $value) {
-								if(strtoupper($key)=='CODE') {
-									$mefs[$i]['code']=preg_replace('/"/','',trim(traite_utf8($value)));
+								if(my_strtoupper($key)=='CODE') {
+									//$mefs[$i]['code']=preg_replace('/"/','',trim(traite_utf8($value)));
+									$mefs[$i]['code']=preg_replace('/"/','',preg_replace("/'/","",trim($value)));
 									break;
 								}
 							}
@@ -479,8 +486,9 @@
 							if(in_array($mefs[$i]['code'],$tab_mef_code)) {
 								// Champs MEF
 								foreach($objet_mef->children() as $key => $value) {
-									if(in_array(strtoupper($key),$tab_champs_mef)) {
-										$mefs[$i][strtolower($key)]=trim(preg_replace("/[^A-Za-zÆæ¼½".$liste_caracteres_accentues."0-9&_. -]/","",html_entity_decode_all_version(traite_utf8($value))));
+									if(in_array(my_strtoupper($key),$tab_champs_mef)) {
+										//$mefs[$i][my_strtolower($key)]=trim(preg_replace("/[^A-Za-zÆæ¼½".$liste_caracteres_accentues."0-9&_. -]/","",html_entity_decode(traite_utf8($value))));
+										$mefs[$i][my_strtolower($key)]=trim(preg_replace('/"/','',preg_replace("/'/","",nettoyer_caracteres_nom($value))));
 									}
 								}
 								$i++;
@@ -493,14 +501,14 @@
 							if(mysql_num_rows($test)>0) {
 								$sql="UPDATE mef SET ";
 								if(isset($mefs[$i]["libelle_court"])) {
-									$sql.=" libelle_court='".$mefs[$i]["libelle_court"]."',";
+									$sql.=" libelle_court='".mysql_real_escape_string($mefs[$i]["libelle_court"])."',";
 								}
 								//elseif(isset($mefs[$i]["libelle_long"])) {$sql.=" libelle_court='".$mefs[$i]["libelle_long"]."',";}
 								else {
 									$sql.=" libelle_court='',";
 								}
-								if(isset($mefs[$i]["libelle_long"])) {$sql.=" libelle_long='".$mefs[$i]["libelle_long"]."',";}
-								if(isset($mefs[$i]["libelle_edition"])) {$sql.=" libelle_edition='".$mefs[$i]["libelle_edition"]."',";}
+								if(isset($mefs[$i]["libelle_long"])) {$sql.=" libelle_long='".mysql_real_escape_string($mefs[$i]["libelle_long"])."',";}
+								if(isset($mefs[$i]["libelle_edition"])) {$sql.=" libelle_edition='".mysql_real_escape_string($mefs[$i]["libelle_edition"])."',";}
 								$sql.=" mef_code='".$mefs[$i]["code"]."' WHERE mef_code='".$mefs[$i]["code"]."';";
 								//echo "$sql<br />";
 								$update_mef=mysql_query($sql);
@@ -509,14 +517,14 @@
 								$sql="INSERT INTO mef SET ";
 								//if(isset($mefs[$i]["libelle_court"])) {$sql.=" libelle_court='".$mefs[$i]["libelle_court"]."',";} elseif(isset($mefs[$i]["libelle_long"])) {$sql.=" libelle_court='".$mefs[$i]["libelle_long"]."',";}
 								if(isset($mefs[$i]["libelle_court"])) {
-									$sql.=" libelle_court='".$mefs[$i]["libelle_court"]."',";
+									$sql.=" libelle_court='".mysql_real_escape_string($mefs[$i]["libelle_court"])."',";
 								}
 								//elseif(isset($mefs[$i]["libelle_long"])) {$sql.=" libelle_court='".$mefs[$i]["libelle_long"]."',";}
 								else {
 									$sql.=" libelle_court='',";
 								}
-								if(isset($mefs[$i]["libelle_long"])) {$sql.=" libelle_long='".$mefs[$i]["libelle_long"]."',";}
-								if(isset($mefs[$i]["libelle_edition"])) {$sql.=" libelle_edition='".$mefs[$i]["libelle_edition"]."',";}
+								if(isset($mefs[$i]["libelle_long"])) {$sql.=" libelle_long='".mysql_real_escape_string($mefs[$i]["libelle_long"])."',";}
+								if(isset($mefs[$i]["libelle_edition"])) {$sql.=" libelle_edition='".mysql_real_escape_string($mefs[$i]["libelle_edition"])."',";}
 								$sql.=" mef_code='".$mefs[$i]["code"]."';";
 								//echo "$sql<br />";
 								$insert=mysql_query($sql);

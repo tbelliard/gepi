@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: bandeau_template.php 7902 2011-08-22 14:02:17Z regis $
+ * $Id$
 */
 ?>
 
@@ -26,22 +26,6 @@
 		<a class='change_taille_pt' href="#" onclick="modifier_taille_bandeau();change_mode_header('n', '<?php echo $tbs_bouton_taille;?>');return false;">
 			<img src="<?php echo $tbs_bouton_taille;?>/images/down.png" alt='Afficher le bandeau' title='Afficher le bandeau' />
 		</a>
-
-		<?php
-			//=====================================
-			if($tbs_afficher_temoin_filtrage_html=='y') {
-				if($filtrage_html=='htmlpurifier') {
-					echo " <img src='$gepiPath/images/bulle_verte.png' width='9' height='9' alt='Filtrage HTML avec HTMLPurifier' title='Filtrage HTML avec HTMLPurifier' />\n";
-				}
-				elseif($filtrage_html=='inputfilter') {
-					echo " <img src='$gepiPath/images/bulle_bleue.png' width='9' height='9' alt='Filtrage HTML avec InputFilter' title='Filtrage HTML avec InputFilter' />\n";
-				}
-				else {
-					echo " <img src='$gepiPath/images/bulle_rouge.png' width='9' height='9' alt='Pas de filtrage HTML' title='Pas de filtrage HTML' />\n";
-				}
-			}
-			//=====================================
-		?>
 
 	<!-- titre de la page -->	
 		<h1><?php echo $titre_page; ?></h1>
@@ -221,7 +205,7 @@
 			if ($tab['lien']=="") {
 				echo $tab['texte']."\n";
 			}
-			elseif (substr($tab['lien'],0,4) == 'http') {
+			elseif (mb_substr($tab['lien'],0,4) == 'http') {
 				echo "<a href=\"".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle.">".$tab['texte']."</a>\n";
 			}
 			else {
@@ -247,7 +231,7 @@
 			if ($tab['lien']=="") {
 				echo $tab['texte']."\n";
 			}
-			elseif (substr($tab['lien'],0,4) == 'http') {
+			elseif (mb_substr($tab['lien'],0,4) == 'http') {
 				echo "<a href=\"".$tab['lien']."\"".insert_confirm_abandon().$afficheTitle.">".$tab['texte']."</a>\n";
 			}
 			else {

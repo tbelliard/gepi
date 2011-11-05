@@ -1,5 +1,4 @@
 <?php
-/* $Id: index.php 6949 2011-05-18 16:47:33Z crob $ */
 /*
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -81,7 +80,7 @@ date DATE NOT NULL default '0000-00-00',
 etat VARCHAR( 255 ) NOT NULL ,
 note_sur int(11) unsigned not null default '20',
 PRIMARY KEY ( id )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS eb_copies (
@@ -94,7 +93,7 @@ note float(10,1) NOT NULL default '0.0',
 statut VARCHAR(255) NOT NULL default '',
 id_epreuve int(11) unsigned NOT NULL,
 PRIMARY KEY ( id )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS eb_salles (
@@ -102,7 +101,7 @@ id int(11) unsigned NOT NULL auto_increment,
 salle VARCHAR( 255 ) NOT NULL ,
 id_epreuve int(11) unsigned NOT NULL,
 PRIMARY KEY ( id )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS eb_groupes (
@@ -111,7 +110,7 @@ id_epreuve int(11) unsigned NOT NULL,
 id_groupe int(11) unsigned NOT NULL,
 transfert varchar(1) NOT NULL DEFAULT 'n',
 PRIMARY KEY ( id )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 //echo "$sql<br />";
 $create_table=mysql_query($sql);
 
@@ -120,7 +119,7 @@ id int(11) unsigned NOT NULL auto_increment,
 id_epreuve int(11) unsigned NOT NULL,
 login_prof VARCHAR(255) NOT NULL default '',
 PRIMARY KEY ( id )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 //echo "$sql<br />";
 $create_table=mysql_query($sql);
 
@@ -181,7 +180,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$msg.="Valeur de note_sur invalide<br />";
 		}
 
-		if(strlen(preg_replace("/[A-Za-z0-9 _\.-]/","",remplace_accents($intitule,'all')))!=0) {$intitule=preg_replace("/[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸0-9_.-]/"," ",$intitule);}
+		if(mb_strlen(preg_replace("/[A-Za-z0-9 _\.-]/","",remplace_accents($intitule,'all')))!=0) {$intitule=preg_replace("/[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸0-9_.-]/"," ",$intitule);}
 		if($intitule=="") {$intitule="Epreuve blanche";}
 
 		$tab_anonymat=array('elenoet','ele_id','no_gep','alea','chrono');
@@ -1258,9 +1257,9 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						$cpt++;
 					}
 
-					//echo "<b>".$current_group['classlist_string']."</b> <a href='#'>".htmlentities($lig->name)."</a> (<i>".htmlentities($lig->description)."</i>)";
-					//echo "<b>".$current_group['classlist_string']."</b> ".htmlentities($lig->name)." (<i>".htmlentities($lig->description)."</i>)";
-					echo "<b>".$classlist_string."</b> ".htmlentities($lig->name)." (<i>".htmlentities($lig->description)."</i>)";
+					//echo "<b>".$current_group['classlist_string']."</b> <a href='#'>".htmlspecialchars($lig->name)."</a> (<i>".htmlspecialchars($lig->description)."</i>)";
+					//echo "<b>".$current_group['classlist_string']."</b> ".htmlspecialchars($lig->name)." (<i>".htmlspecialchars($lig->description)."</i>)";
+					echo "<b>".$classlist_string."</b> ".htmlspecialchars($lig->name)." (<i>".htmlspecialchars($lig->description)."</i>)";
 					if($etat!='clos') {
 						echo " - <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;id_groupe=$lig->id&amp;mode=suppr_groupe".add_token_in_url()."' onclick=\"return confirm('Etes vous sûr de vouloir supprimer le groupe de l épreuve?')\">Supprimer</a>\n";
 					}
@@ -1292,8 +1291,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				echo "<p><b>Liste des professeurs heureux correcteurs désignés pour l'épreuve&nbsp;:</b></p>\n";
 				echo "<blockquote>\n";
 				while($lig=mysql_fetch_object($res_profs)) {
-					//echo "<a href='#'>".$lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1)."<br />\n";
-					echo $lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1);
+					//echo "<a href='#'>".$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1)."<br />\n";
+					echo $lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1);
 					//echo " <span style='color:red'>Compter les copies attribuées</span>";
 
 					$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_prof='".$lig->login."';";
@@ -1571,7 +1570,7 @@ function checkbox_change(cpt) {
 						echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_$cpt' value='$lig->id' ";
 						echo "onchange=\"checkbox_change($cpt)\" ";
 						if(in_array($lig->id,$tab_groupes_inscrits)) {echo "checked ";$temp_style="style='font-weight:bold;'";} else {$temp_style="";}
-						echo "/><label for='id_groupe_$cpt' style='cursor: pointer;'><span id='texte_id_groupe_$cpt' $temp_style>".htmlentities($lig->name)." (<span style='font-style:italic;font-size:x-small;'>".htmlentities($lig->description)."</span>)</span></label><br />\n";
+						echo "/><label for='id_groupe_$cpt' style='cursor: pointer;'><span id='texte_id_groupe_$cpt' $temp_style>".htmlspecialchars($lig->name)." (<span style='font-style:italic;font-size:x-small;'>".htmlspecialchars($lig->description)."</span>)</span></label><br />\n";
 						$cpt++;
 					}
 				}
@@ -1668,9 +1667,9 @@ function checkbox_change(cpt) {
 					echo "<input type='checkbox' name='login_prof[]' id='login_prof_$cpt' value='$lig->login' ";
 					echo "onchange=\"checkbox_change($cpt)\" ";
 					//if(in_array($lig->login,$tab_profs_deja_punis)) {echo "checked ";}
-					//echo "/><label for='login_prof_$cpt'>".$lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1).".</span></label><br />\n";
+					//echo "/><label for='login_prof_$cpt'>".$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1).".</span></label><br />\n";
 					if(in_array($lig->login,$tab_profs_deja_punis)) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
-					echo "/><label for='login_prof_$cpt'><span id='texte_login_prof_$cpt'$temp_style>".$lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1).".</span></label><br />\n";
+					echo "/><label for='login_prof_$cpt'><span id='texte_login_prof_$cpt'$temp_style>".$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1).".</span></label><br />\n";
 					$cpt++;
 				}
 			}
@@ -1703,7 +1702,7 @@ function checkbox_change(cpt) {
 					echo "<input type='checkbox' name='login_prof[]' id='login_prof_$cpt' value='$lig->login' ";
 					echo "onchange=\"checkbox_change($cpt)\" ";
 					if(in_array($lig->login,$tab_profs_deja_punis)) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
-					echo "/><label for='login_prof_$cpt'><span id='texte_login_prof_$cpt'$temp_style>".$lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1).".</span></label><br />\n";
+					echo "/><label for='login_prof_$cpt'><span id='texte_login_prof_$cpt'$temp_style>".$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1).".</span></label><br />\n";
 					$cpt++;
 
 					$i++;
@@ -1716,7 +1715,7 @@ function checkbox_change(cpt) {
 				while($lig=mysql_fetch_object($res_profs)) {
 					echo "<input type='checkbox' name='login_prof[]' id='login_prof_$cpt' value='$lig->login' ";
 					if(in_array($lig->login,$tab_profs_deja_punis)) {echo "checked ";}
-					echo "/><label for='login_prof_$cpt'>".$lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1).".</label><br />\n";
+					echo "/><label for='login_prof_$cpt'>".$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1).".</label><br />\n";
 					$cpt++;
 				}
 				*/

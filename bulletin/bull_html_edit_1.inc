@@ -92,7 +92,7 @@ if ($bull_affiche_aid == 'y') {
 		for($z=0;$z<count($tab_bull['eleve'][$i]['aid_b']);$z++) {
 			echo "<tr>\n";
 
-			echo "<td><span class='bulletin'>".htmlentities($tab_bull['eleve'][$i]['aid_b'][$z]['nom_complet']);
+			echo "<td><span class='bulletin'>".htmlspecialchars($tab_bull['eleve'][$i]['aid_b'][$z]['nom_complet']);
 			echo "<br />";
 			$cpt=0;
 			foreach($tab_bull['eleve'][$i]['aid_b'][$z]['aid_prof_resp_login'] as $current_aid_prof_login) {
@@ -259,7 +259,7 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 		}
 
 		echo "<tr>\n";
-		//echo "<td$chaine_rowspan style='text-align: left;'><span class='bulletin'>".htmlentities($tab_bull['groupe'][$j]['matiere']['nom_complet'])."</span>";
+		//echo "<td$chaine_rowspan style='text-align: left;'><span class='bulletin'>".htmlspecialchars($tab_bull['groupe'][$j]['matiere']['nom_complet'])."</span>";
 
 		echo "<td$chaine_rowspan style='text-align: left;'>";
 		if(getSettingValue('bul_rel_nom_matieres')=='nom_groupe') {
@@ -277,7 +277,7 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 				$info_nom_matiere=$tab_bull['groupe'][$j]['name']." (".$tab_bull['groupe'][$j]['id'].")";
 			}
 		}
-		echo "<span class='bulletin'>".htmlentities($info_nom_matiere)."</span>";
+		echo "<span class='bulletin'>".htmlspecialchars($info_nom_matiere)."</span>";
 
 		echo "<br />\n";
 		echo "<span class='bulletin'>";
@@ -399,7 +399,7 @@ if ($bull_affiche_aid == 'y') {
 		for($z=0;$z<count($tab_bull['eleve'][$i]['aid_e']);$z++) {
 			echo "<tr>\n";
 
-			echo "<td style='text-align: center;'><span class='bulletin'>".htmlentities($tab_bull['eleve'][$i]['aid_e'][$z]['nom_complet']);
+			echo "<td style='text-align: center;'><span class='bulletin'>".htmlspecialchars($tab_bull['eleve'][$i]['aid_e'][$z]['nom_complet']);
 			echo "<br />";
 			$cpt=0;
 			foreach($tab_bull['eleve'][$i]['aid_e'][$z]['aid_prof_resp_login'] as $current_aid_prof_login) {

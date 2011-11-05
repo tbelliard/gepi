@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: classes_ajout.php 8178 2011-09-10 09:00:50Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -93,6 +92,7 @@ if (isset($is_posted) and ($is_posted == 1)) {
 		$login_eleve = mysql_result($call_eleves, $k, 'login');
 		$id_eleve = mysql_result($call_eleves, $k, 'id_eleve');
 
+
 		if(isset($_POST['ajout_eleve_'.$id_eleve])) {
 			$i=1;
 			while ($i < $nb_periode) {
@@ -120,6 +120,7 @@ if (isset($is_posted) and ($is_posted == 1)) {
 							$reg_data = mysql_query($sql);
 							if (!($reg_data))  {$reg_ok = 'no';}
 						}
+
 		
 						// UPDATE: Ajouter l'élève à tous les groupes pour la période:
 						$sql="SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe'";
@@ -294,6 +295,7 @@ function DecocheLigne(ki) {
 
 <form enctype="multipart/form-data" action="classes_ajout.php" name="form1" method=post>
 
+
 <p class="bold">
 <a href="classes_const.php?id_classe=<?php echo $id_classe;?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à la page de gestion des élèves</a>
 
@@ -348,6 +350,7 @@ if ($nombreligne == '0') {
 	$eleves_non_affectes = 'no';
 	echo "<table class='boireaus' cellpadding='5'>\n";
 	echo "<tr>\n";
+
 	echo "<th><p><b>Nom Prénom </b></p></th>\n";
 	if($classes_ajout_sans_regime!="y") {
 		echo "<th><p><b>Régime</b></p></th>\n";
@@ -359,12 +362,14 @@ if ($nombreligne == '0') {
 		$i++;
 	}
 
+
 	echo "<th><p style='font-weight:bold; text-align:center;'>cocher / décocher <br />toutes périodes</p></th>\n";
 	echo "</tr>";
 	$k = '0';
 	//=========================
 	// AJOUT: boireaus 20071010
 	// Compteur des élèves effectivement non affectés:
+
 	//$ki=0;
 	//=========================
 	$alt=1;
@@ -424,7 +429,7 @@ if ($nombreligne == '0') {
 			echo "<tr class='lig$alt'><td>\n";
 
 			//echo "<input type='hidden' name='log_eleve[$ki]' value=\"$login_eleve\" />\n";
-			echo "<p>".strtoupper($nom_eleve)." $prenom_eleve</p></td>\n";
+			echo "<p>".my_strtoupper($nom_eleve)." ".casse_mot($prenom_eleve,'majf2')."</p></td>\n";
 
 			if($classes_ajout_sans_regime!="y") {
 				echo "<td><p>Ext.|Int.|D/P|I-ext.<br /><input type='radio' name='regime_$id_eleve' value='ext.'";
@@ -466,7 +471,8 @@ if ($nombreligne == '0') {
 				//echo $ajout_login[$i]."<br>";
 				$elementlist .= "'".$ajout_login[$i]."',";
 			}
-			$elementlist = substr($elementlist, 0, -1);
+			$elementlist = mb_substr($elementlist, 0, -1);
+
 			echo "<td><center><a href=\"javascript:CocheLigne($id_eleve);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne($id_eleve);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></center></td>\n";
 			echo "</tr>\n";
 

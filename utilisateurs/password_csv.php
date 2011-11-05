@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: password_csv.php 5476 2010-09-29 12:10:48Z delineau $
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

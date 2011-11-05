@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: header_template.php 8458 2011-10-10 13:09:56Z crob $
+ * $Id$
 */
 ?>
  

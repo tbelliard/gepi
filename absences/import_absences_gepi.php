@@ -1,8 +1,6 @@
 <?php
 @set_time_limit(0);
 /*
- * $Id: import_absences_gepi.php 6615 2011-03-03 17:47:06Z crob $
- *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
@@ -251,7 +249,7 @@ if ( $etape === '1' ) {
 <div style="text-align: center;">
 
 	<span style="font: normal small-caps normal 14pt Verdana; line-height: 125%;">Classe de <?php echo "$classe"; ?> - Importation des absences de GEPI</span>
-	<br />pour le : <b><?php $temp = strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b>
+	<br />pour le : <b><?php $temp = my_strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b>
 	<br /><br />
 
 

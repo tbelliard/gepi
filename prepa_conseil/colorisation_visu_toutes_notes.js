@@ -1,5 +1,4 @@
 /*
-$Id: colorisation_visu_toutes_notes.js 4508 2010-05-28 06:49:44Z crob $
 */
 
 	var cpt_couleur=1;

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * $Id: autorisation_exceptionnelle_saisie_app.php 7192 2011-06-10 19:30:33Z crob $
+ * $Id$
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
@@ -84,9 +84,9 @@ if((isset($is_posted))&&(isset($_POST['no_anti_inject_message_autorisation_excep
 if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($periode))&&(isset($display_date_limite))&&(isset($display_heure_limite))) {
 	check_token();
 	if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $_POST['display_date_limite'])) {
-		$annee = substr($_POST['display_date_limite'],6,4);
-		$mois = substr($_POST['display_date_limite'],3,2);
-		$jour = substr($_POST['display_date_limite'],0,2);
+		$annee = mb_substr($_POST['display_date_limite'],6,4);
+		$mois = mb_substr($_POST['display_date_limite'],3,2);
+		$jour = mb_substr($_POST['display_date_limite'],0,2);
 		//echo "$jourd/$moisd/$anneed<br />";
 
 		if(!checkdate($mois, $jour, $annee)) {
@@ -94,8 +94,8 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 		}
 		else {
 			if (preg_match("/([0-9]{1,2}):([0-9]{0,2})/", str_ireplace('h',':',$display_heure_limite))) {
-				$heure = substr($_POST['display_heure_limite'],0,2);
-				$minute = substr($_POST['display_heure_limite'],3,2);
+				$heure = mb_substr($_POST['display_heure_limite'],0,2);
+				$minute = mb_substr($_POST['display_heure_limite'],3,2);
 
 				if(($heure>23)||($heure<0)||($minute<0)||($minute>59)) {
 					$msg.="ERREUR : L'heure $heure/$minute n'est pas valide.<br />";
@@ -171,7 +171,7 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 
 								$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header);
 
-								if($envoi) {$msg.="Email expédié à ".htmlentities($email_destinataires)."<br />";}
+								if($envoi) {$msg.="Email expédié à ".htmlspecialchars($email_destinataires)."<br />";}
 							}
 			
 						}

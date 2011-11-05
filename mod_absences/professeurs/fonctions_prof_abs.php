@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version $Id: fonctions_prof_abs.php 4152 2010-03-21 23:32:16Z adminpaulbert $
+ * @version $Id$
  *
  * Fichier de fonctions pour prof_ajout_abs.php
  *

@@ -54,12 +54,14 @@ class calendar {
 		// ===============================================================
 		$sql = "CREATE TABLE IF NOT EXISTS edt_j_calendar_classes (
 					id_calendar INT,
-					id_classe INT)";
+					id_classe INT
+					) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci";
 		$req_creation = mysql_query($sql);
 		$sql = "CREATE TABLE IF NOT EXISTS edt_calendrier_manager (
 					id INT AUTO_INCREMENT,
 					nom_calendrier TEXT,
-					PRIMARY KEY (id))";
+					PRIMARY KEY (id)
+					) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci";
 		$req_creation = mysql_query($sql);
 		$sql = "SELECT id FROM edt_calendrier_manager";
 		$req_calendar = mysql_query($sql);
@@ -372,7 +374,6 @@ class calendar {
  *******************************************************************/
 	public static function getDayNumber($num_jour) {
 		$result = array();
-		setlocale (LC_TIME, 'fr_FR','fra');
 		
 		if ((1<=date("n")) AND (date("n") <=8)) {
 			$annee = date("Y");
@@ -418,7 +419,6 @@ class calendar {
         while (date("D", $ts) != "Mon") {
         $ts-=86400;
         }
-        setlocale (LC_TIME, 'fr_FR','fra');
         $result .= strftime("%d %b ", $ts);
         $ts+=86400*5;
         $result.= " - ";
@@ -529,7 +529,6 @@ class calendar {
 	public static function getDaysTable () {
 
     $tab_select_semaine = array();
-    setlocale (LC_TIME, 'fr_FR','fra');
     
     if ((1<=date("n")) AND (date("n") <=8)) {
 	    $annee = date("Y");
@@ -633,7 +632,6 @@ class calendar {
 
 	public static function getTimestampFromDay ($day) {
 
-		setlocale (LC_TIME, 'fr_FR','fra');
 		if ((1<=date("n")) AND (date("n") <=8)) {
 			$annee = date("Y");
 		}
@@ -677,7 +675,6 @@ class calendar {
 		$period = PeriodeCalendaire::getPeriods($id_calendar);
 		$tab_period = array();
 		
-		setlocale (LC_TIME, 'fr_FR','fra');
 		if ((1<=date("n")) AND (date("n") <=8)) {
 			$annee = date("Y");
 		}
@@ -741,7 +738,6 @@ class calendar {
 	public static function getFrontiersPeriods (&$debut, &$fin, $id_calendar) {
 
 		$period = PeriodeCalendaire::getPeriods($id_calendar);
-		setlocale (LC_TIME, 'fr_FR','fra');
 		if ((1<=date("n")) AND (date("n") <=8)) {
 			$annee = date("Y");
 		}
@@ -797,7 +793,6 @@ class calendar {
 	public static function getFrontiersPeriodID (&$debut, &$fin, $id) {
 
 		$period = PeriodeCalendaire::getPeriods(null);
-		setlocale (LC_TIME, 'fr_FR','fra');
 		if ((1<=date("n")) AND (date("n") <=8)) {
 			$annee = date("Y");
 		}

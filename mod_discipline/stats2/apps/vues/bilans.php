@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: bilans.php 7799 2011-08-17 08:38:10Z dblanqui $
  *
  * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Didier Blanqui
  *
@@ -48,7 +47,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
           } else { ?>
         <li><a href="#tab<?php echo $i;?>" name="<?php echo $titre;?>-onglet-01" title="Bilan des incidents">
                 <?php if (isset($infos_individus[$titre])) {
-                  echo substr($infos_individus[$titre]['prenom'],0,1).'.'.$infos_individus[$titre]['nom'];
+                  echo mb_substr($infos_individus[$titre]['prenom'],0,1).'.'.$infos_individus[$titre]['nom'];
                   if (isset($infos_individus[$titre]['classe'])) echo'('.$infos_individus[$titre]['classe'].')';
                 }
                 else echo $titre;?></a>

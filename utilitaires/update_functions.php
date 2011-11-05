@@ -2,7 +2,7 @@
 /**
  * Ensemble de méthodes utilisées par le script d'initialisation
  * 
- * $Id: update_functions.php 7923 2011-08-23 12:36:29Z regis $
+ * $Id$
  * 
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL,

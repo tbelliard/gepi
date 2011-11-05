@@ -1,7 +1,6 @@
 <?php
 /**
  * Initialisation des couleurs
- * @version $Id: maj_coul_global.inc 7849 2011-08-20 18:19:12Z regis $
  * @license GNU/GPL 
  * @package Initialisation
  * @subpackage initialisation

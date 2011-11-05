@@ -1,7 +1,6 @@
 <?php
 
 /*
- * $Id: ajax_modif_eleve.php 6162 2010-12-16 20:26:17Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

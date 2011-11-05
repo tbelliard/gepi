@@ -476,7 +476,7 @@ abstract class HTMLPurifier_AttrDef
     protected function expandCSSEscape($string) {
         // flexibly parse it
         $ret = '';
-        for ($i = 0, $c = strlen($string); $i < $c; $i++) {
+        for ($i = 0, $c = mb_strlen($string); $i < $c; $i++) {
             if ($string[$i] === '\\') {
                 $i++;
                 if ($i >= $c) {
@@ -2898,7 +2898,7 @@ class HTMLPurifier_Encoder
         $out = '';
         $char = '';
 
-        $len = strlen($str);
+        $len = mb_strlen($str);
         for($i = 0; $i < $len; $i++) {
             $in = ord($str{$i});
             $char .= $str[$i]; // append byte to char
@@ -3175,7 +3175,7 @@ class HTMLPurifier_Encoder
         $bytesleft = 0;
         $result = '';
         $working = 0;
-        $len = strlen($str);
+        $len = mb_strlen($str);
         for( $i = 0; $i < $len; $i++ ) {
             $bytevalue = ord( $str[$i] );
             if( $bytevalue <= 0x7F ) { //0xxx xxxx
@@ -4370,7 +4370,7 @@ class HTMLPurifier_HTMLDefinition extends HTMLPurifier_Definition
             }
         }
         foreach ($forbidden_attributes as $key => $v) {
-            if (strlen($key) < 2) continue;
+            if (mb_strlen($key) < 2) continue;
             if ($key[0] != '*') continue;
             if ($key[1] == '.') {
                 trigger_error("Error with $key: *.attr syntax not supported for HTML.ForbiddenAttributes; use attr instead", E_USER_WARNING);
@@ -4415,7 +4415,7 @@ class HTMLPurifier_HTMLDefinition extends HTMLPurifier_Definition
             }
             if ($element !== '*') $elements[$element] = true;
             if (!$attr) continue;
-            $attr = substr($attr, 0, strlen($attr) - 1); // remove trailing ]
+            $attr = substr($attr, 0, mb_strlen($attr) - 1); // remove trailing ]
             $attr = explode('|', $attr);
             foreach ($attr as $key) {
                 $attributes["$element.$key"] = true;
@@ -6033,7 +6033,7 @@ class HTMLPurifier_Lexer
 
         // subtracts amps that cannot possibly be escaped
         $num_amp = substr_count($string, '&') - substr_count($string, '& ') -
-            ($string[strlen($string)-1] === '&' ? 1 : 0);
+            ($string[mb_strlen($string)-1] === '&' ? 1 : 0);
 
         if (!$num_amp) return $string; // abort if no entities
         $num_esc_amp = substr_count($string, '&amp;');
@@ -6041,7 +6041,7 @@ class HTMLPurifier_Lexer
 
         // code duplication for sake of optimization, see above
         $num_amp_2 = substr_count($string, '&') - substr_count($string, '& ') -
-            ($string[strlen($string)-1] === '&' ? 1 : 0);
+            ($string[mb_strlen($string)-1] === '&' ? 1 : 0);
 
         if ($num_amp_2 <= $num_esc_amp) return $string;
 
@@ -6213,7 +6213,7 @@ class HTMLPurifier_PercentEncoder
 
         // extra letters not to escape
         if ($preserve !== false) {
-            for ($i = 0, $c = strlen($preserve); $i < $c; $i++) {
+            for ($i = 0, $c = mb_strlen($preserve); $i < $c; $i++) {
                 $this->preserve[ord($preserve[$i])] = true;
             }
         }
@@ -6231,7 +6231,7 @@ class HTMLPurifier_PercentEncoder
      */
     public function encode($string) {
         $ret = '';
-        for ($i = 0, $c = strlen($string); $i < $c; $i++) {
+        for ($i = 0, $c = mb_strlen($string); $i < $c; $i++) {
             if ($string[$i] !== '%' && !isset($this->preserve[$int = ord($string[$i])]) ) {
                 $ret .= '%' . sprintf('%02X', $int);
             } else {
@@ -6253,7 +6253,7 @@ class HTMLPurifier_PercentEncoder
         $parts = explode('%', $string);
         $ret = array_shift($parts);
         foreach ($parts as $part) {
-            $length = strlen($part);
+            $length = mb_strlen($part);
             if ($length < 2) {
                 $ret .= '%25' . $part;
                 continue;
@@ -6383,7 +6383,7 @@ class HTMLPurifier_PropertyListIterator extends FilterIterator
      */
     public function __construct(Iterator $iterator, $filter = null) {
         parent::__construct($iterator);
-        $this->l = strlen($filter);
+        $this->l = mb_strlen($filter);
         $this->filter = $filter;
     }
 
@@ -6870,7 +6870,7 @@ class HTMLPurifier_URI
             $this->path = $segments_encoder->encode($this->path);
         } elseif ($this->path !== '' && $this->path[0] === '/') {
             // path-absolute (hier and relative)
-            if (strlen($this->path) >= 2 && $this->path[1] === '/') {
+            if (mb_strlen($this->path) >= 2 && $this->path[1] === '/') {
                 // This shouldn't ever happen!
                 $this->path = '';
             } else {
@@ -7440,9 +7440,9 @@ class HTMLPurifier_UnitConverter
         $n = ltrim($n, '0+-');
         $dp = strpos($n, '.'); // decimal position
         if ($dp === false) {
-            $sigfigs = strlen(rtrim($n, '0'));
+            $sigfigs = mb_strlen(rtrim($n, '0'));
         } else {
-            $sigfigs = strlen(ltrim($n, '0.')); // eliminate extra decimal character
+            $sigfigs = mb_strlen(ltrim($n, '0.')); // eliminate extra decimal character
             if ($dp !== 0) $sigfigs--;
         }
         return $sigfigs;
@@ -7488,7 +7488,7 @@ class HTMLPurifier_UnitConverter
                 // This algorithm partially depends on the standardized
                 // form of numbers that comes out of bcmath.
                 $n = bcadd($n, $neg . '5' . str_repeat('0', $new_log - $sigfigs), 0);
-                $n = substr($n, 0, $sigfigs + strlen($neg)) . str_repeat('0', $new_log - $sigfigs + 1);
+                $n = substr($n, 0, $sigfigs + mb_strlen($neg)) . str_repeat('0', $new_log - $sigfigs + 1);
             }
             return $n;
         } else {
@@ -7508,7 +7508,7 @@ class HTMLPurifier_UnitConverter
             // look something like 4652999999999.9234. We grab one more digit
             // than we need to precise from $r and then use that to round
             // appropriately.
-            $precise = (string) round(substr($r, 0, strlen($r) + $scale), -1);
+            $precise = (string) round(substr($r, 0, mb_strlen($r) + $scale), -1);
             // Now we return it, truncating the zero that was rounded off.
             return substr($precise, 0, -1) . str_repeat('0', -$scale + 1);
         }
@@ -7826,7 +7826,7 @@ class HTMLPurifier_AttrDef_Enum extends HTMLPurifier_AttrDef
      *      case sensitive
      */
     public function make($string) {
-        if (strlen($string) > 2 && $string[0] == 's' && $string[1] == ':') {
+        if (mb_strlen($string) > 2 && $string[0] == 's' && $string[1] == ':') {
             $string = substr($string, 2);
             $sensitive = true;
         } else {
@@ -7934,7 +7934,7 @@ class HTMLPurifier_AttrDef_Lang extends HTMLPurifier_AttrDef
         if ($num_subtags == 0) return false; // sanity check
 
         // process primary subtag : $subtags[0]
-        $length = strlen($subtags[0]);
+        $length = mb_strlen($subtags[0]);
         switch ($length) {
             case 0:
                 return false;
@@ -7959,7 +7959,7 @@ class HTMLPurifier_AttrDef_Lang extends HTMLPurifier_AttrDef
         if ($num_subtags == 1) return $new_string;
 
         // process second subtag : $subtags[1]
-        $length = strlen($subtags[1]);
+        $length = mb_strlen($subtags[1]);
         if ($length == 0 || ($length == 1 && $subtags[1] != 'x') || $length > 8 || !ctype_alnum($subtags[1])) {
             return $new_string;
         }
@@ -7970,7 +7970,7 @@ class HTMLPurifier_AttrDef_Lang extends HTMLPurifier_AttrDef
 
         // process all other subtags, index 2 and up
         for ($i = 2; $i < $num_subtags; $i++) {
-            $length = strlen($subtags[$i]);
+            $length = mb_strlen($subtags[$i]);
             if ($length == 0 || $length > 8 || !ctype_alnum($subtags[$i])) {
                 return $new_string;
             }
@@ -8496,7 +8496,7 @@ class HTMLPurifier_AttrDef_CSS_Color extends HTMLPurifier_AttrDef
 
         if (strpos($color, 'rgb(') !== false) {
             // rgb literal handling
-            $length = strlen($color);
+            $length = mb_strlen($color);
             if (strpos($color, ')') !== $length - 1) return false;
             $triad = substr($color, 4, $length - 4 - 1);
             $parts = explode(',', $triad);
@@ -8506,7 +8506,7 @@ class HTMLPurifier_AttrDef_CSS_Color extends HTMLPurifier_AttrDef
             foreach ($parts as $part) {
                 $part = trim($part);
                 if ($part === '') return false;
-                $length = strlen($part);
+                $length = mb_strlen($part);
                 if ($part[$length - 1] === '%') {
                     // handle percents
                     if (!$type) {
@@ -8541,7 +8541,7 @@ class HTMLPurifier_AttrDef_CSS_Color extends HTMLPurifier_AttrDef
                 $hex = $color;
                 $color = '#' . $color;
             }
-            $length = strlen($hex);
+            $length = mb_strlen($hex);
             if ($length !== 3 && $length !== 6) return false;
             if (!ctype_xdigit($hex)) return false;
         }
@@ -8858,7 +8858,7 @@ class HTMLPurifier_AttrDef_CSS_FontFamily extends HTMLPurifier_AttrDef
             }
             // match a quoted name
             if ($font[0] === '"' || $font[0] === "'") {
-                $length = strlen($font);
+                $length = mb_strlen($font);
                 if ($length <= 2) continue;
                 $quote = $font[0];
                 if ($font[$length - 1] !== $quote) continue;
@@ -8925,10 +8925,10 @@ class HTMLPurifier_AttrDef_CSS_ImportantDecorator extends HTMLPurifier_AttrDef
         $string = trim($string);
         $is_important = false;
         // :TODO: optimization: test directly for !important and ! important
-        if (strlen($string) >= 9 && substr($string, -9) === 'important') {
+        if (mb_strlen($string) >= 9 && substr($string, -9) === 'important') {
             $temp = rtrim(substr($string, 0, -9));
             // use a temp, because we might want to restore important
-            if (strlen($temp) >= 1 && substr($temp, -1) === '!') {
+            if (mb_strlen($temp) >= 1 && substr($temp, -1) === '!') {
                 $string = rtrim(substr($temp, 0, -1));
                 $is_important = true;
             }
@@ -8966,7 +8966,7 @@ class HTMLPurifier_AttrDef_CSS_Length extends HTMLPurifier_AttrDef
         // Optimizations
         if ($string === '') return false;
         if ($string === '0') return '0';
-        if (strlen($string) === 1) return false;
+        if (mb_strlen($string) === 1) return false;
 
         $length = HTMLPurifier_Length::make($string);
         if (!$length->isValid()) return false;
@@ -9152,7 +9152,7 @@ class HTMLPurifier_AttrDef_CSS_Percentage extends HTMLPurifier_AttrDef
         $string = $this->parseCDATA($string);
 
         if ($string === '') return false;
-        $length = strlen($string);
+        $length = mb_strlen($string);
         if ($length === 1) return false;
         if ($string[$length - 1] !== '%') return false;
 
@@ -9232,13 +9232,13 @@ class HTMLPurifier_AttrDef_CSS_URI extends HTMLPurifier_AttrDef_URI
         $uri_string = $this->parseCDATA($uri_string);
         if (strpos($uri_string, 'url(') !== 0) return false;
         $uri_string = substr($uri_string, 4);
-        $new_length = strlen($uri_string) - 1;
+        $new_length = mb_strlen($uri_string) - 1;
         if ($uri_string[$new_length] != ')') return false;
         $uri = trim(substr($uri_string, 0, $new_length));
 
         if (!empty($uri) && ($uri[0] == "'" || $uri[0] == '"')) {
             $quote = $uri[0];
-            $new_length = strlen($uri) - 1;
+            $new_length = mb_strlen($uri) - 1;
             if ($uri[$new_length] !== $quote) return false;
             $uri = substr($uri, 1, $new_length - 1);
         }
@@ -9397,7 +9397,7 @@ class HTMLPurifier_AttrDef_HTML_Color extends HTMLPurifier_AttrDef
         if ($string[0] === '#') $hex = substr($string, 1);
         else $hex = $string;
 
-        $length = strlen($hex);
+        $length = mb_strlen($hex);
         if ($length !== 3 && $length !== 6) return false;
         if (!ctype_xdigit($hex)) return false;
         if ($length === 3) $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2];
@@ -9522,7 +9522,7 @@ class HTMLPurifier_AttrDef_HTML_Pixels extends HTMLPurifier_AttrDef
         $string = trim($string);
         if ($string === '0') return $string;
         if ($string === '')  return false;
-        $length = strlen($string);
+        $length = mb_strlen($string);
         if (substr($string, $length - 2) == 'px') {
             $string = substr($string, 0, $length - 2);
         }
@@ -9572,7 +9572,7 @@ class HTMLPurifier_AttrDef_HTML_Length extends HTMLPurifier_AttrDef_HTML_Pixels
         $parent_result = parent::validate($string, $config, $context);
         if ($parent_result !== false) return $parent_result;
 
-        $length = strlen($string);
+        $length = mb_strlen($string);
         $last_char = $string[$length - 1];
 
         if ($last_char !== '%') return false;
@@ -9667,7 +9667,7 @@ class HTMLPurifier_AttrDef_HTML_MultiLength extends HTMLPurifier_AttrDef_HTML_Le
         $parent_result = parent::validate($string, $config, $context);
         if ($parent_result !== false) return $parent_result;
 
-        $length = strlen($string);
+        $length = mb_strlen($string);
         $last_char = $string[$length - 1];
 
         if ($last_char !== '*') return false;
@@ -9732,7 +9732,7 @@ class HTMLPurifier_AttrDef_URI_Host extends HTMLPurifier_AttrDef
     }
 
     public function validate($string, $config, $context) {
-        $length = strlen($string);
+        $length = mb_strlen($string);
         if ($string === '') return '';
         if ($length > 1 && $string[0] === '[' && $string[$length-1] === ']') {
             //IPv6
@@ -9837,7 +9837,7 @@ class HTMLPurifier_AttrDef_URI_IPv6 extends HTMLPurifier_AttrDef_URI_IPv4
         {
                 if (preg_match('#' . $pre . '$#s', $aIP, $find))
                 {
-                        $aIP = substr($aIP, 0, 0-strlen($find[0]));
+                        $aIP = substr($aIP, 0, 0-mb_strlen($find[0]));
                         unset($find);
                 }
                 else
@@ -9849,7 +9849,7 @@ class HTMLPurifier_AttrDef_URI_IPv6 extends HTMLPurifier_AttrDef_URI_IPv4
         //      IPv4-compatiblity check
         if (preg_match('#(?<=:'.')' . $this->ip4 . '$#s', $aIP, $find))
         {
-                $aIP = substr($aIP, 0, 0-strlen($find[0]));
+                $aIP = substr($aIP, 0, 0-mb_strlen($find[0]));
                 $ip = explode('.', $find[0]);
                 $ip = array_map('dechex', $ip);
                 $aIP .= $ip[0] . $ip[1] . ':' . $ip[2] . $ip[3];
@@ -11186,7 +11186,7 @@ class HTMLPurifier_DefinitionCache_Serializer extends
         while (false !== ($filename = readdir($dh))) {
             if (empty($filename)) continue;
             if ($filename[0] === '.') continue;
-            $key = substr($filename, 0, strlen($filename) - 4);
+            $key = substr($filename, 0, mb_strlen($filename) - 4);
             if ($this->isOld($key, $config)) unlink($dir . '/' . $filename);
         }
     }
@@ -13807,7 +13807,7 @@ class HTMLPurifier_Lexer_DirectLex extends HTMLPurifier_Lexer
         if ($maintain_line_numbers) {
             $current_line = 1;
             $current_col  = 0;
-            $length = strlen($html);
+            $length = mb_strlen($html);
         } else {
             $current_line = false;
             $current_col  = false;
@@ -13841,7 +13841,7 @@ class HTMLPurifier_Lexer_DirectLex extends HTMLPurifier_Lexer
 
                 // Column number is cheap, so we calculate it every round.
                 // We're interested at the *end* of the newline string, so
-                // we need to add strlen($nl) == 1 to $nl_pos before subtracting it
+                // we need to add mb_strlen($nl) == 1 to $nl_pos before subtracting it
                 // from our "rcursor" position.
                 $nl_pos = strrpos($html, $nl, $rcursor - $length);
                 $current_col = $rcursor - (is_bool($nl_pos) ? 0 : $nl_pos + 1);
@@ -13888,7 +13888,7 @@ class HTMLPurifier_Lexer_DirectLex extends HTMLPurifier_Lexer
             } elseif (!$inside_tag) {
                 // We are not inside tag but there are no more tags
                 // If we're already at the end, break
-                if ($cursor === strlen($html)) break;
+                if ($cursor === mb_strlen($html)) break;
                 // Create Text of rest of string
                 $token = new
                     HTMLPurifier_Token_Text(
@@ -13932,7 +13932,7 @@ class HTMLPurifier_Lexer_DirectLex extends HTMLPurifier_Lexer
                         // infinity. Can't be helped: set comment
                         // end position to end of string
                         if ($e) $e->send(E_WARNING, 'Lexer: Unclosed comment');
-                        $position_comment_end = strlen($html);
+                        $position_comment_end = mb_strlen($html);
                         $end = true;
                     } else {
                         $end = false;
@@ -14117,14 +14117,14 @@ class HTMLPurifier_Lexer_DirectLex extends HTMLPurifier_Lexer
             }
             if (!$quoted_value) return array($key => '');
             $first_char = @$quoted_value[0];
-            $last_char  = @$quoted_value[strlen($quoted_value)-1];
+            $last_char  = @$quoted_value[mb_strlen($quoted_value)-1];
 
             $same_quote = ($first_char == $last_char);
             $open_quote = ($first_char == '"' || $first_char == "'");
 
             if ( $same_quote && $open_quote) {
                 // well behaved
-                $value = substr($quoted_value, 1, strlen($quoted_value) - 2);
+                $value = substr($quoted_value, 1, mb_strlen($quoted_value) - 2);
             } else {
                 // not well behaved
                 if ($open_quote) {
@@ -14141,7 +14141,7 @@ class HTMLPurifier_Lexer_DirectLex extends HTMLPurifier_Lexer
         // setup loop environment
         $array  = array(); // return assoc array of attributes
         $cursor = 0; // current position in string (moves forward)
-        $size   = strlen($string); // size of the string (stays the same)
+        $size   = mb_strlen($string); // size of the string (stays the same)
 
         // if we have unquoted attributes, the parser expects a terminating
         // space, so let's guarantee that there's always a terminating space.

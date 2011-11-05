@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* $Id: ajout_ret.php 4878 2010-07-24 13:54:01Z regis $
+* $Id$
 *
  * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *

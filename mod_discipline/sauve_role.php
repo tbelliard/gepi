@@ -1,7 +1,6 @@
 <?php
 
 /*
- * $Id: sauve_role.php 5989 2010-11-25 11:51:39Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -42,7 +41,7 @@ if (!checkAccess()) {
 	die();
 }
 
-if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+if(strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
 	header("Location: ../accueil.php?msg=$mess");
@@ -67,11 +66,11 @@ if((isset($id_incident))&&(isset($login))&&(isset($qualite))) {
 	$update=mysql_query($sql);
 	if($update) {
 		//echo "Mise &agrave; jour de la qualit&eacute; \"$qualite\" effectu&eacute;e pour $login.";
-		echo "Mise &agrave; jour du r&ocirc;le \"".htmlentities($qualite)."\" effectu&eacute; pour $login.";
+		echo "Mise &agrave; jour du r&ocirc;le \"".htmlspecialchars($qualite)."\" effectu&eacute; pour $login.";
 	}
 	else {
 		//echo "Echec de la mise &agrave; jour de la qualit&eacute; \"$qualite\" pour $login.";
-		echo "Echec de la mise &agrave; jour du r&ocirc;le \"".htmlentities($qualite)."\" pour $login.";
+		echo "Echec de la mise &agrave; jour du r&ocirc;le \"".htmlspecialchars($qualite)."\" pour $login.";
 	}
 }
 ?>

@@ -1,7 +1,6 @@
 <?php
 
 /*
- * $Id: saisie_sanction.php 7993 2011-08-26 10:03:34Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -44,7 +43,7 @@ if (!checkAccess()) {
 	die();
 }
 
-if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+if(strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
 	header("Location: ../accueil.php?msg=$mess");
@@ -93,9 +92,9 @@ if(isset($_POST['enregistrer_sanction'])) {
 			//$display_date = $jour."/".$mois."/".$annee;
 		}
 		else {
-			$jour =  substr($date_retenue,0,2);
-			$mois =  substr($date_retenue,3,2);
-			$annee = substr($date_retenue,6,4);
+			$jour =  mb_substr($date_retenue,0,2);
+			$mois =  mb_substr($date_retenue,3,2);
+			$annee = mb_substr($date_retenue,6,4);
 		}
 
 		if(!checkdate($mois,$jour,$annee)) {
@@ -247,9 +246,9 @@ if(isset($_POST['enregistrer_sanction'])) {
 			//$display_date = $jour."/".$mois."/".$annee;
 		}
 		else {
-			$jour =  substr($date_debut,0,2);
-			$mois =  substr($date_debut,3,2);
-			$annee = substr($date_debut,6,4);
+			$jour =  mb_substr($date_debut,0,2);
+			$mois =  mb_substr($date_debut,3,2);
+			$annee = mb_substr($date_debut,6,4);
 		}
 
 		if(!checkdate($mois,$jour,$annee)) {
@@ -269,15 +268,15 @@ if(isset($_POST['enregistrer_sanction'])) {
 				$jour = strftime("%d");
 			}
 			else {
-				$jour =  substr($date_debut,0,2);
-				$mois =  substr($date_debut,3,2);
-				$annee = substr($date_debut,6,4);
+				$jour =  mb_substr($date_debut,0,2);
+				$mois =  mb_substr($date_debut,3,2);
+				$annee = mb_substr($date_debut,6,4);
 			}
 		}
 		else {
-			$jour =  substr($date_fin,0,2);
-			$mois =  substr($date_fin,3,2);
-			$annee = substr($date_fin,6,4);
+			$jour =  mb_substr($date_fin,0,2);
+			$mois =  mb_substr($date_fin,3,2);
+			$annee = mb_substr($date_fin,6,4);
 		}
 
 		if(!checkdate($mois,$jour,$annee)) {
@@ -402,9 +401,9 @@ if(isset($_POST['enregistrer_sanction'])) {
 			//$display_date = $jour."/".$mois."/".$annee;
 		}
 		else {
-			$jour =  substr($date_retour,0,2);
-			$mois =  substr($date_retour,3,2);
-			$annee = substr($date_retour,6,4);
+			$jour =  mb_substr($date_retour,0,2);
+			$mois =  mb_substr($date_retour,3,2);
+			$annee = mb_substr($date_retour,6,4);
 		}
 
 		if(!checkdate($mois,$jour,$annee)) {
@@ -1258,7 +1257,6 @@ elseif($mode=='ajout') {
 	if(mysql_num_rows($res)>0) {
 		while($lig=mysql_fetch_object($res)) {
 			$tab_autres_sanctions[$lig->id_nature]=$lig->nature;
-			//if(strlen($lig->nature)>$largeur_champ_select) {$largeur_champ_select=strlen($lig->nature);}
 		}
 		$largeur_champ_select=20;
 		// On peut quand même se retrouver avec une superposition.

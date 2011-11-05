@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: saisie_message_connexion.php 5920 2010-11-20 21:04:58Z crob $
  *
  * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -60,7 +59,7 @@ $sql="CREATE TABLE message_login (
 id int(11) NOT NULL auto_increment,
 texte text NOT NULL,
 PRIMARY KEY  (id)
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $resultat_creation_table=mysql_query($sql);
 
 ?>

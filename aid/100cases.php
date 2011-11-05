@@ -1,7 +1,5 @@
 <?php
 /*
- *  $Id: 100cases.php 1472 2008-02-07 21:48:38Z delineau $
- *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
  *
  * This file is part of GEPI.

@@ -1,6 +1,6 @@
 <?php
 /*
-* $Id: evol_eleve_classe.php 7120 2011-06-05 08:59:33Z crob $
+* $Id$
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -312,7 +312,7 @@ if (!isset($id_classe)) {
 				$prev_cat_id = $current_group["classes"]["classes"][$id_classe]["categorie_id"];
 				// On est dans une nouvelle catégorie
 				// On récupère les infos nécessaires, et on affiche une ligne
-				$cat_name = html_entity_decode_all_version(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
+				$cat_name = html_entity_decode(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
 				// On détermine le nombre de colonnes pour le colspan
 				$nb_total_cols = 1;
 				$k = '1';
@@ -330,7 +330,7 @@ if (!isset($id_classe)) {
 		}
 
 			$alt=$alt*(-1);
-			echo "<tr class='lig$alt'><td><p>" . htmlentities($current_group["description"]) . "</p></td>\n";
+			echo "<tr class='lig$alt'><td><p>" . htmlspecialchars($current_group["description"]) . "</p></td>\n";
 			$k = '1';
 			while ($k < $nb_periode) {
 				$note_eleve_query=mysql_query("SELECT * FROM matieres_notes WHERE (login='$v_eleve' AND periode='$k' AND id_groupe='" . $current_group["id"] . "')");

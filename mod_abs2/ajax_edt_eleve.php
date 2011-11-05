@@ -1,7 +1,6 @@
 <?php
 /**
  *
- * @version $Id: ajax_edt_eleve.php 6685 2011-03-24 15:12:25Z jjacquard $
  *
  * Copyright 2010 Josselin Jacquard
  *

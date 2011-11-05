@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <?php
 /*
-* $Id: index_template.php 8046 2011-08-30 07:54:48Z crob $
+* $Id$
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -32,6 +32,79 @@
  *
  * @author regis
  */
+
+/**
+ * Vérifie que le dossier (et ses sous-dossiers) contient bien un fichier index.html
+ *
+ * @global int
+ * @param string $dossier Le dossier
+ * @return string Un message formaté
+ */
+function ajout_index_sous_dossiers($dossier) {
+	global $niveau_arbo;
+
+	$nb_creation=0;
+	$nb_erreur=0;
+	$nb_fich_existant=0;
+
+	$retour="";
+
+	//$dossier="../documents";
+	$dir= opendir($dossier);
+	if(!$dir) {
+		$retour.="<p style='color:red'>Erreur lors de l'accès au dossier '$dossier'.</p>\n";
+	}
+	else {
+		$retour.="<p style='color:green'>Succès de l'accès au dossier '$dossier'.</p>\n";
+		while($entree=@readdir($dir)) {
+			if(is_dir($dossier.'/'.$entree)&&($entree!='.')&&($entree!='..')) {
+				if(!file_exists($dossier."/".$entree."/index.html")) {
+					if ($f = @fopen($dossier.'/'.$entree."/index.html", "w")) {
+						if((!isset($niveau_arbo))||($niveau_arbo==1)) {
+							@fputs($f, '<script type="text/javascript">document.location.replace("../login.php")</script>');
+						}
+						elseif($niveau_arbo==0) {
+							@fputs($f, '<script type="text/javascript">document.location.replace("./login.php")</script>');
+						}
+						elseif($niveau_arbo==2) {
+							@fputs($f, '<script type="text/javascript">document.location.replace("../../login.php")</script>');
+						}
+						else {
+							@fputs($f, '<script type="text/javascript">document.location.replace("../../../login.php")</script>');
+						}
+						@fclose($f);
+						$nb_creation++;
+					}
+					else {
+						$retour.="<span style='color:red'>Erreur lors de la création de '$dir/$entree/index.html'.</span><br />\n";
+						$nb_erreur++;
+					}
+				}
+				else {
+					$nb_fich_existant++;
+				}
+			}
+		}
+
+		if($nb_erreur>0) {
+			$retour.="<p style='color:red'>$nb_erreur erreur(s) lors du traitement.</p>\n";
+		}
+		else {
+			$retour.="<p style='color:green'>Aucune erreur lors de la création des fichiers index.html</p>\n";
+		}
+	
+		if($nb_creation>0) {
+			$retour.="<p style='color:green'>Création de $nb_creation fichier(s) index.html</p>\n";
+		}
+		else {
+			$retour.="<p style='color:green'>Aucune création de fichiers index.html n'a été effectuée.</p>\n";
+		}
+		$retour.="<p style='color:blue'>Il existait avant l'opération $nb_fich_existant fichier(s) index.html</p>\n";
+	}
+
+	return $retour;
+}
+
 
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">

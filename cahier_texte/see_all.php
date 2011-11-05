@@ -1,6 +1,5 @@
 <?php
 /*
- * @version: $Id: see_all.php 7191 2011-06-10 19:24:39Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
  *
@@ -195,7 +194,7 @@ echo "<div class='centre_table'>\n";
 				$i=0;
 			  foreach ($current_group["profs"]["users"] as $prof) {
 					if ($i != 0) echo ", ";
-					echo substr($prof["prenom"],0,1) . ". " . $prof["nom"];
+					echo mb_substr($prof["prenom"],0,1) . ". " . $prof["nom"];
 					$i++;
 				}
 				echo ")</strong>";

@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: maj_import2.php 8231 2011-09-14 19:05:52Z crob $
  *
  * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -85,7 +84,7 @@ if($auth_sso=='lcs') {
 function extr_valeur($lig){
 	unset($tabtmp);
 	//$tabtmp=explode(">",my_ereg_replace("<",">",$lig));
-	$tabtmp=explode(">",strtr($lig,"<",">"));
+	$tabtmp=explode(">",preg_replace("/</",">",$lig));
 	return trim($tabtmp[2]);
 }
 
@@ -144,7 +143,7 @@ function maj_ini_prenom($prenom){
 			if($j>0){
 				$prenom2.=" ";
 			}
-			$prenom2.=ucfirst(strtolower($tab2[$j]));
+			$prenom2.=casse_mot($tab2[$j],'majf2');
 		}
 	}
 	return $prenom2;
@@ -211,7 +210,8 @@ $sql="show full columns from eleves WHERE Field='nom';";
 $res_col_eleves=mysql_query($sql);
 if(mysql_num_rows($res_col_eleves)>0) {
 	$lig_col_eleves=mysql_fetch_object($res_col_eleves);
-	if($lig_col_eleves->Collation!='utf8_unicode_ci') {$chaine_collate="COLLATE latin1_bin ";}
+	//echo "\$lig_col_eleves->Collation=$lig_col_eleves->Collation<br />";
+	if(($lig_col_eleves->Collation!='utf8_unicode_ci')&&($lig_col_eleves->Collation!='utf8_general_ci')) {$chaine_collate="COLLATE latin1_bin ";}
 }
 // A REVOIR: Avec cette recherche, on pourrait créer temp_gep_import2 avec la bonne collation.
 
@@ -579,7 +579,7 @@ else{
 				// $unzipped_max_filesize < 0    extraction zip désactivée
 				if($unzipped_max_filesize>=0) {
 					$fichier_emis=$xml_file['name'];
-					$extension_fichier_emis=strtolower(strrchr($fichier_emis,"."));
+					$extension_fichier_emis=my_strtolower(mb_strrchr($fichier_emis,"."));
 					if (($extension_fichier_emis==".zip")||($xml_file['type']=="application/zip"))
 						{
 						require_once('../lib/pclzip.lib.php');
@@ -671,7 +671,7 @@ else{
 					`ELEOPT12` varchar(40) $chaine_mysql_collate NOT NULL default '',
 					`LIEU_NAISSANCE` varchar(50) $chaine_mysql_collate NOT NULL default '',
 					`MEL` varchar(255) $chaine_mysql_collate NOT NULL default ''
-					);";
+					) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 					info_debug($sql);
 					$create_table = mysql_query($sql);
 
@@ -795,7 +795,7 @@ else{
 			}
 
 			$nom_racine=$ele_xml->getName();
-			if(strtoupper($nom_racine)!='BEE_ELEVES') {
+			if(my_strtoupper($nom_racine)!='BEE_ELEVES') {
 				echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Elèves.<br />Sa racine devrait être 'BEE_ELEVES'.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
@@ -817,7 +817,7 @@ else{
 				foreach($structures_eleve->attributes() as $key => $value) {
 					//echo("$key=".$value."<br />");
 
-					if(strtoupper($key)=='ELEVE_ID') {
+					if(my_strtoupper($key)=='ELEVE_ID') {
 						// On teste si l'ELEVE_ID existe déjà: ça ne devrait pas arriver
 						if(in_array($value,$tab_ele_id)) {
 							echo "<b style='color:red;'>ANOMALIE&nbsp;:</b> Il semble qu'il y a plusieurs sections STRUCTURES_ELEVE pour l'ELEVE_ID '$value'.<br />";
@@ -834,10 +834,10 @@ else{
 							foreach($structures_eleve->children() as $structure) {
 								$eleves[$i]["structures"][$j]=array();
 								foreach($structure->children() as $key => $value) {
-									//echo("\$structure->$key=".$value."<br />");
-									if(in_array(strtoupper($key),$tab_champs_struct)) {
-										$eleves[$i]["structures"][$j][strtolower($key)]=preg_replace('/"/','',trim(traite_utf8($value)));
-										//my_echo("\$structure->$key=".$value."<br />");
+									if(in_array(my_strtoupper($key),$tab_champs_struct)) {
+										//$eleves[$i]["structures"][$j][my_strtolower($key)]=preg_replace('/"/','',trim(traite_utf8($value)));
+										$eleves[$i]["structures"][$j][my_strtolower($key)]=preg_replace("/'/","",preg_replace('/"/','',trim($value)));
+										//echo("\$structure->$key=".$value."<br />)";
 									}
 								}
 								$j++;
@@ -953,7 +953,7 @@ else{
 				}
 
 				$nom_racine=$ele_xml->getName();
-				if(strtoupper($nom_racine)!='BEE_ELEVES') {
+				if(my_strtoupper($nom_racine)!='BEE_ELEVES') {
 					echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Elèves.<br />Sa racine devrait être 'BEE_ELEVES'.</p>\n";
 					require("../lib/footer.inc.php");
 					die();
@@ -1043,7 +1043,7 @@ else{
 				}
 
 				$nom_racine=$ele_xml->getName();
-				if(strtoupper($nom_racine)!='BEE_ELEVES') {
+				if(my_strtoupper($nom_racine)!='BEE_ELEVES') {
 					echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Elèves.<br />Sa racine devrait être 'BEE_ELEVES'.</p>\n";
 					require("../lib/footer.inc.php");
 					die();
@@ -1059,25 +1059,35 @@ else{
 					foreach($eleve->attributes() as $key => $value) {
 						//echo "$key=".$value."<br />";
 			
-						$eleves[$i][strtolower($key)]=trim(traite_utf8($value));
+						//$eleves[$i][strtolower($key)]=trim(traite_utf8($value));
+						$eleves[$i][my_strtolower($key)]=trim($value);
 					}
 
 					foreach($eleve->children() as $key => $value) {
-						if(in_array(strtoupper($key),$tab_champs_eleve)) {
-							$eleves[$i][strtolower($key)]=preg_replace('/"/','',trim(traite_utf8($value)));
+						if(in_array(my_strtoupper($key),$tab_champs_eleve)) {
+							//$eleves[$i][strtolower($key)]=preg_replace('/"/','',trim(traite_utf8($value)));
+							$eleves[$i][my_strtolower($key)]=preg_replace('/"/','',trim($value));
 							//echo "\$eleve->$key=".$value."<br />";
 						}
 
-						if(($avec_scolarite_an_dernier=='y')&&(strtoupper($key)=='SCOLARITE_AN_DERNIER')) {
+						if(($avec_scolarite_an_dernier=='y')&&(my_strtoupper($key)=='SCOLARITE_AN_DERNIER')) {
 							$eleves[$i]["scolarite_an_dernier"]=array();
 			
 							foreach($eleve->SCOLARITE_AN_DERNIER->children() as $key2 => $value2) {
 								//echo "\$eleve->SCOLARITE_AN_DERNIER->$key2=$value2<br />";
-								if(in_array(strtoupper($key2),$tab_champs_scol_an_dernier)) {
-									$eleves[$i]["scolarite_an_dernier"][strtolower($key2)]=preg_replace('/"/','',trim(traite_utf8($value2)));
+								if(in_array(my_strtoupper($key2),$tab_champs_scol_an_dernier)) {
+									//$eleves[$i]["scolarite_an_dernier"][strtolower($key2)]=preg_replace('/"/','',trim(traite_utf8($value2)));
+									$eleves[$i]["scolarite_an_dernier"][my_strtolower($key2)]=preg_replace('/"/','',trim($value2));
 								}
 							}
 						}
+					}
+
+					if(isset($eleves[$i]["prenom"])){
+						$tab_prenom = explode(" ",$eleves[$i]["prenom"]);
+						//$reg_prenom = traitement_magic_quotes(corriger_caracteres($tab_prenom[0]));
+						$tab_prenom[0] = nettoyer_caracteres_nom($tab_prenom[0]);
+						$eleves[$i]["prenom"] = preg_replace("/'/", "", $tab_prenom[0]);
 					}
 
 					if(isset($eleves[$i]["date_naiss"])){
@@ -1169,20 +1179,20 @@ else{
 							$sql="UPDATE temp_gep_import2 SET ";
 							$sql.="elenoet='".$eleves[$i]['elenoet']."', ";
 							if(isset($eleves[$i]['id_national'])) {$sql.="elenonat='".$eleves[$i]['id_national']."', ";}
-							//$sql.="elenom='".addslashes($eleves[$i]['nom'])."', ";
-							$sql.="elenom='".addslashes(strtoupper($eleves[$i]['nom']))."', ";
+							//$sql.="elenom='".mysql_real_escape_string($eleves[$i]['nom'])."', ";
+							$sql.="elenom='".mysql_real_escape_string(my_strtoupper($eleves[$i]['nom']))."', ";
 
-							//$sql.="elepre='".addslashes($eleves[$i]['prenom'])."', ";
+							//$sql.="elepre='".mysql_real_escape_string($eleves[$i]['prenom'])."', ";
 							// On ne retient que le premier prénom:
 							$tab_prenom = explode(" ",$eleves[$i]['prenom']);
-							$sql.="elepre='".addslashes(maj_ini_prenom($tab_prenom[0]))."'";
+							$sql.="elepre='".mysql_real_escape_string(maj_ini_prenom($tab_prenom[0]))."'";
 
 							//$sql.="elesexe='".sexeMF($eleves[$i]["code_sexe"])."', ";
 							if(isset($eleves[$i]["code_sexe"])) {
 								$sql.=", elesexe='".sexeMF($eleves[$i]["code_sexe"])."'";
 							}
 							else {
-								echo "<span style='color:red'>Sexe non défini dans Sconet pour ".maj_ini_prenom($tab_prenom[0])." ".strtoupper($eleves[$i]['nom'])."</span><br />\n";
+								echo "<span style='color:red'>Sexe non défini dans Sconet pour ".maj_ini_prenom($tab_prenom[0])." ".my_strtoupper($eleves[$i]['nom'])."</span><br />\n";
 								$sql.=", elesexe='M'";
 							}
 							$sql.=", eledatnais='".$eleves[$i]['date_naiss']."'";
@@ -1197,7 +1207,7 @@ else{
 
 							if((isset($eleves[$i]["code_pays"]))&&($eleves[$i]["code_pays"]!='')&&
 								(isset($eleves[$i]["ville_naiss"]))&&($eleves[$i]["ville_naiss"]!='')) {
-									$sql.=", lieu_naissance='".$eleves[$i]["code_pays"]."@".addslashes($eleves[$i]["ville_naiss"])."'";
+									$sql.=", lieu_naissance='".$eleves[$i]["code_pays"]."@".mysql_real_escape_string($eleves[$i]["ville_naiss"])."'";
 							}
 							elseif(isset($eleves[$i]["code_commune_insee_naiss"])) {
 								$sql.=", lieu_naissance='".$eleves[$i]["code_commune_insee_naiss"]."'";
@@ -1205,7 +1215,6 @@ else{
 
 							if(isset($eleves[$i]['mel'])) {$sql.=", mel='".$eleves[$i]['mel']."'";}
 
-							//$sql=substr($sql,0,strlen($sql)-2);
 							$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
 							affiche_debug("$sql<br />\n");
 							info_debug($sql);
@@ -1317,7 +1326,7 @@ else{
 				}
 
 				$nom_racine=$ele_xml->getName();
-				if(strtoupper($nom_racine)!='BEE_ELEVES') {
+				if(my_strtoupper($nom_racine)!='BEE_ELEVES') {
 					echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Elèves.<br />Sa racine devrait être 'BEE_ELEVES'.</p>\n";
 					require("../lib/footer.inc.php");
 					die();
@@ -1382,20 +1391,20 @@ else{
 			
 					foreach($option->attributes() as $key => $value) {
 						//echo "$key=".$value."<br />";
-						$eleves[$i][strtolower($key)]=trim(traite_utf8($value));
+						//$eleves[$i][strtolower($key)]=trim(traite_utf8($value));
+						$eleves[$i][my_strtolower($key)]=trim($value);
 					}
 
 					$eleves[$i]["options"]=array();
 					$j=0;
-					//foreach($option->OPTIONS_ELEVE->children() as $key => $value) {
-		
 					// $option fait référence à un élève
 					// Les enfants sont des OPTIONS_ELEVE
 					foreach($option->children() as $options_eleve) {
 						foreach($options_eleve->children() as $key => $value) {
 							// Les enfants indiquent NUM_OPTION, CODE_MODALITE_ELECT, CODE_MATIERE
-							if(in_array(strtoupper($key),$tab_champs_opt)) {
-								$eleves[$i]["options"][$j][strtolower($key)]=preg_replace('/"/','',trim(traite_utf8($value)));
+							if(in_array(my_strtoupper($key),$tab_champs_opt)) {
+								//$eleves[$i]["options"][$j][strtolower($key)]=preg_replace('/"/','',trim(traite_utf8($value)));
+								$eleves[$i]["options"][$j][my_strtolower($key)]=preg_replace('/"/','',trim($value));
 								//echo "\$eleve->$key=".$value."<br />";
 								//echo "\$eleves[$i][\"options\"][$j][".strtolower($key)."]=".$value."<br />";
 							}
@@ -1546,7 +1555,7 @@ else{
 					if(mysql_num_rows($res_ele)>0) {
 						$lig_ele=mysql_fetch_object($res_ele);
 	
-						echo "<p>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</p>\n";
+						echo "<p>".my_strtoupper($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2')."</p>\n";
 						echo "<blockquote>\n";
 						// On cherche les périodes pour lesquelles l'élève n'a pas de notes ni d'appréciations ni dans le carnet de notes ni sur le bulletin.
 						$sql="SELECT DISTINCT jec.id_classe, c.classe, jec.periode FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$lig_ele->login' ORDER BY periode,classe;";
@@ -1727,7 +1736,7 @@ else{
 					$res_ele=mysql_query($sql);
 					$lig_ele=mysql_fetch_object($res_ele);
 
-					echo "Désinscription des classes et des enseignements de ".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))." pour la période $periode: ";
+					echo "Désinscription des classes et des enseignements de ".my_strtoupper($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2')." pour la période $periode: ";
 
 					$sql="DELETE FROM j_eleves_groupes WHERE login='$ele_login' AND periode='$periode';";
 					info_debug($sql);
@@ -1909,7 +1918,7 @@ else{
 				while($lig=mysql_fetch_object($res2)){
 					//$tab_naissance=explode("-",$lig->naissance);
 					//$naissance=$tab_naissance[0].$tab_naissance[1].$tab_naissance[2];
-					$naissance=substr($lig->ELEDATNAIS,0,4)."-".substr($lig->ELEDATNAIS,4,2)."-".substr($lig->ELEDATNAIS,6,2);
+					$naissance=mb_substr($lig->ELEDATNAIS,0,4)."-".mb_substr($lig->ELEDATNAIS,4,2)."-".mb_substr($lig->ELEDATNAIS,6,2);
 					//$sql="INSERT INTO tempo2 SET col1='$lig->ele_id', col2='$naissance';";
 					$sql="INSERT INTO tempo2 SET col1='$lig->ELE_ID', col2='$naissance';";
 					info_debug($sql);
@@ -2169,7 +2178,7 @@ else{
 						$rne_ancien_etab2="";
 					}
 
-					if((strtolower($rne_ancien_etab)!=strtolower($rne_ancien_etab2))&&(strtolower($rne_ancien_etab2)!=strtolower($gepiSchoolRne))) {
+					if((my_strtolower($rne_ancien_etab)!=my_strtolower($rne_ancien_etab2))&&(my_strtolower($rne_ancien_etab2)!=my_strtolower($gepiSchoolRne))) {
 						$temoin_chgt_ancien_etab="y";
 						//echo "\$temoin_chgt_ancien_etab=$temoin_chgt_ancien_etab<br />";
 					}
@@ -2314,7 +2323,7 @@ else{
 							if(mysql_num_rows($test_clas2)>0) {
 								$lig_clas2=mysql_fetch_object($test_clas2);
 		
-								if(strtolower($lig_clas1->classe)!=strtolower($lig_clas2->DIVCOD)) {
+								if(my_strtolower($lig_clas1->classe)!=my_strtolower($lig_clas2->DIVCOD)) {
 									if($cpt==0){
 										echo "<p>Une ou des différences ont été trouvées dans la tranche étudiée à cette phase.";
 										echo "<br />\n";
@@ -2667,7 +2676,7 @@ else{
 								}
 
 
-								$new_date=substr($affiche[3],0,4)."-".substr($affiche[3],4,2)."-".substr($affiche[3],6,2);
+								$new_date=mb_substr($affiche[3],0,4)."-".mb_substr($affiche[3],4,2)."-".mb_substr($affiche[3],6,2);
 
 								// Des stripslashes() pour les apostrophes dans les noms
 								if($ele_lieu_naissance=="y") {
@@ -2790,7 +2799,7 @@ else{
 									if(mysql_num_rows($test_clas1)>0) {
 										$lig_clas1=mysql_fetch_object($test_clas1);
 
-										if(strtolower($lig_clas1->classe)!=strtolower($lig->DIVCOD)) {
+										if(my_strtolower($lig_clas1->classe)!=my_strtolower($lig->DIVCOD)) {
 											$temoin_chgt_classe="y";
 											$temoin_modif='y';
 											$cpt_modif++;
@@ -2822,8 +2831,8 @@ else{
 								}
 
 								//if(strtolower($affiche[10])!=strtolower($gepiSchoolRne)) {
-								if((strtolower($affiche[10])!=strtolower($gepiSchoolRne))&&($alert_diff_etab_origine=='y')) {
-									if(strtolower($affiche[10])!=strtolower($rne_etab_prec)) {
+								if((my_strtolower($affiche[10])!=my_strtolower($gepiSchoolRne))&&($alert_diff_etab_origine=='y')) {
+									if(my_strtolower($affiche[10])!=my_strtolower($rne_etab_prec)) {
 										$temoin_modif='y';
 										$cpt_modif++;
 									}
@@ -3126,7 +3135,7 @@ else{
 								}
 
 								//if(strtolower($affiche[10])!=strtolower($gepiSchoolRne)) {
-								if((strtolower($affiche[10])!=strtolower($gepiSchoolRne))&&($alert_diff_etab_origine=='y')) {
+								if((my_strtolower($affiche[10])!=my_strtolower($gepiSchoolRne))&&($alert_diff_etab_origine=='y')) {
 									echo "<td";
 									if($rne_ancien_etab!=$affiche[10]){
 										echo " class='modif'>";
@@ -3202,7 +3211,7 @@ else{
 								echo "<input type='hidden' name='new_".$cpt."_sexe' value='$affiche[2]' />\n";
 								echo "</td>\n";
 
-								$new_date=substr($affiche[3],0,4)."-".substr($affiche[3],4,2)."-".substr($affiche[3],6,2);
+								$new_date=mb_substr($affiche[3],0,4)."-".mb_substr($affiche[3],4,2)."-".mb_substr($affiche[3],6,2);
 								echo "<td style='text-align: center;'>";
 								echo "$new_date";
 								if($ele_lieu_naissance=="y") {
@@ -3287,7 +3296,7 @@ else{
 
 
 								echo "<td style='text-align: center;'>";
-								if(strtolower($affiche[10])!=strtolower($gepiSchoolRne)) {
+								if(my_strtolower($affiche[10])!=my_strtolower($gepiSchoolRne)) {
 									echo "$affiche[10]";
 									echo "<input type='hidden' name='new_".$cpt."_id_etab' value='$affiche[10]' />\n";
 								}
@@ -3392,7 +3401,7 @@ else{
 
 					if($cpt>0){echo ", ";}
 
-					$naissance=substr($lig->ELEDATNAIS,0,4)."-".substr($lig->ELEDATNAIS,4,2)."-".substr($lig->ELEDATNAIS,6,2);
+					$naissance=mb_substr($lig->ELEDATNAIS,0,4)."-".mb_substr($lig->ELEDATNAIS,4,2)."-".mb_substr($lig->ELEDATNAIS,6,2);
 
 					/*
 					switch($lig->ELEREG){
@@ -3426,18 +3435,18 @@ else{
 							break;
 					}
 
-					$sql="UPDATE eleves SET nom='".addslashes($lig->ELENOM)."',
-											prenom='".addslashes($lig->ELEPRE)."',
+					$sql="UPDATE eleves SET nom='".mysql_real_escape_string($lig->ELENOM)."',
+											prenom='".mysql_real_escape_string($lig->ELEPRE)."',
 											sexe='".$lig->ELESEXE."',
 											naissance='".$naissance."',
 											no_gep='".$lig->ELENONAT."'";
 
 					if($ele_lieu_naissance=="y") {
-						$sql.=", lieu_naissance='".addslashes($lig->LIEU_NAISSANCE)."'";
+						$sql.=", lieu_naissance='".mysql_real_escape_string($lig->LIEU_NAISSANCE)."'";
 					}
 
 					if(getSettingValue('mode_email_ele')!="mon_compte") {
-						$sql.=", email='".addslashes($lig->MEL)."'";
+						$sql.=", email='".mysql_real_escape_string($lig->MEL)."'";
 					}
 
 					// Je ne pense pas qu'on puisse corriger un ELENOET manquant...
@@ -3509,7 +3518,7 @@ else{
 							$sql.=", ele_id='".$lig->ELE_ID."'";
 
 							if(getSettingValue('mode_email_ele')!="mon_compte") {
-								$sql.=", email='".addslashes($lig->$MEL)."'";
+								$sql.=", email='".mysql_real_escape_string($lig->$MEL)."'";
 							}
 
 							$login_eleve=$lig_tmp->login;
@@ -3566,7 +3575,7 @@ else{
 						}
 					}
 
-					if(strtolower($lig->ETOCOD_EP)!=strtolower($gepiSchoolRne)) {
+					if(my_strtolower($lig->ETOCOD_EP)!=my_strtolower($gepiSchoolRne)) {
 						$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$lig->ELENOET';";
 						info_debug($sql);
 						$test_ee=mysql_query($sql);
@@ -3608,7 +3617,7 @@ else{
 				$sql="CREATE TABLE IF NOT EXISTS temp_ele_classe (
 				`ele_id` varchar(40) $chaine_mysql_collate NOT NULL default '',
 				`divcod` varchar(40) $chaine_mysql_collate NOT NULL default ''
-				);";
+				) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 				info_debug($sql);
 				$create_table = mysql_query($sql);
 
@@ -3636,7 +3645,7 @@ else{
 						$test=mysql_query($sql);
 						if(mysql_num_rows($test)==0){
 							if($cpt>0){echo ", ";}
-							echo addslashes($lig->ELENOM)." ".addslashes($lig->ELEPRE);
+							echo mysql_real_escape_string($lig->ELENOM)." ".mysql_real_escape_string($lig->ELEPRE);
 							$cpt++;
 						}
 					}
@@ -3657,7 +3666,7 @@ else{
 	
 							if($cpt>0){echo ", ";}
 	
-							$naissance=substr($lig->ELEDATNAIS,0,4)."-".substr($lig->ELEDATNAIS,4,2)."-".substr($lig->ELEDATNAIS,6,2);
+							$naissance=mb_substr($lig->ELEDATNAIS,0,4)."-".mb_substr($lig->ELEDATNAIS,4,2)."-".mb_substr($lig->ELEDATNAIS,6,2);
 	
 							/*
 							switch($lig->ELEREG){
@@ -3724,59 +3733,7 @@ else{
 									}
 									elseif($info[0]["uid"]["count"]==1) {
 										$login_eleve=$info[0]["uid"][0];
-	
-										/*
-										for ( $u = 0; $u < $info[0]["uid"]["count"] ; $u++ ) {
-											$uid = $info[0]["memberuid"][$u] ;
-											if (trim($uid) !="") {
-												$eleve_de[$current_classe_id]=$uid;
-												// Extraction des infos sur l'élève :
-												$result2 = @ldap_read ( $ds, "uid=".$uid.",".$lcs_ldap_people_dn, "(objectclass=posixAccount)", $ldap_people_attr );
-												if ($result2) {
-													$info2 = @ldap_get_entries ( $ds, $result2 );
-													if ( $info2["count"]) {
-														// Traitement du champ gecos pour extraction de date de naissance, sexe
-														$gecos = $info2[0]["gecos"][0];
-														$tmp = split ("[\,\]",$info2[0]["gecos"][0],4);
-														$ret_people = array (
-														"uid"         => $info2[0]["uid"][0],
-														"nom"         => stripslashes( utf8_decode($info2[0]["sn"][0]) ),
-														"fullname"        => stripslashes( utf8_decode($info2[0]["cn"][0]) ),
-														"pseudo"      => utf8_decode($info2[0]["givenname"][0]),
-														"email"       => $info2[0]["mail"][0],
-														"homedirectory"   => $info2[0]["homedirectory"][0],
-														"description" => utf8_decode($info2[0]["description"][0]),
-														"shell"           => $info2[0]["loginshell"][0],
-														"sexe"            => $tmp[2],
-														"naissance"       => $tmp[1],
-														"no_gep"          => $info2[0]["employeenumber"][0]
-														);
-														$long = strlen($ret_people["fullname"]) - strlen($ret_people["nom"]);
-														$prenom = substr($ret_people["fullname"], 0, $long) ;
-							
-							
-														$add = add_eleve($uid,$ret_people["nom"],$prenom,$tmp[2],$tmp[1],$ret_people["no_gep"]);
-														$get_periode_num = mysql_result(mysql_query("SELECT count(*) FROM periodes WHERE (id_classe = '" . $current_classe_id . "')"), 0);
-														$check = mysql_result(mysql_query("SELECT count(*) FROM j_eleves_classes WHERE (login = '" . $uid . "')"), 0);
-														if ($check > 0)
-															$del = mysql_query("DELETE from j_eleves_classes WHERE login = '" . $uid . "'");
-														for ($k=1;$k<$get_periode_num+1;$k++) {
-															$res = mysql_query("INSERT into j_eleves_classes SET login = '" . $uid . "', id_classe = '" . $current_classe_id . "', periode = '" . $k . "'");
-														}
-														$check = mysql_result(mysql_query("SELECT count(*) FROM j_eleves_regime WHERE (login = '" . $uid . "')"), 0);
-														if ($check > 0)
-															$del = mysql_query("DELETE from j_eleves_regime WHERE login = '" . $uid . "'");
-														$res = mysql_query("INSERT into j_eleves_regime SET login = '" . $uid . "',
-														regime  = 'd/p',
-														doublant  = '-'");
-													}
-													@ldap_free_result ( $result2 );
-												}
-												$date_naissance = substr($tmp[1],6,2)."-".substr($tmp[1],4,2)."-".substr($tmp[1],0,4) ;
-												echo "<tr><td>".$current_classe."</td><td>".$uid."</td><td>".$ret_people["nom"]."</td><td>".$prenom."</td><td>".$tmp[2]."</td><td>".$date_naissance."</td><td>".$ret_people["no_gep"]."</td></tr>\n";
-											}
-										}
-										*/
+
 									}
 
 									@ldap_free_result ( $result );
@@ -3788,19 +3745,23 @@ else{
 							else {
 								// Génération d'un login élève type auth_native_gepi: NOM_P
 
-								$tmp_nom=strtr($lig->ELENOM,"àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
-								$tmp_prenom=strtr($lig->ELEPRE,"àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
+								$tmp_nom=remplace_accents($lig->ELENOM);
+								$tmp_prenom=remplace_accents($lig->ELEPRE);
 		
-								// Générer un login...
-								$temp1 = strtoupper($tmp_nom);
+								/*
+								$temp1 = my_strtoupper($tmp_nom);
 								$temp1 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp1);
-								$temp1 = strtr($temp1, " '-", "___");
-								$temp1 = substr($temp1,0,7);
-								$temp2 = strtoupper($tmp_prenom);
+								$temp1 = my_strtr($temp1, " '-", "___");
+								$temp1 = mb_substr($temp1,0,7);
+								$temp2 = my_strtoupper($tmp_prenom);
 								$temp2 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp2);
-								$temp2 = strtr($temp2, " '-", "___");
-								$temp2 = substr($temp2,0,1);
+								$temp2 = my_strtr($temp2, " '-", "___");
+								$temp2 = mb_substr($temp2,0,1);
 								$login_eleve = $temp1.'_'.$temp2;
+								*/
+								$login_ele_gen_type=getSettingValue('login_ele_gen_type');
+								if($login_ele_gen_type=='') {$login_ele_gen_type='name9_p';}
+								$login_eleve=generate_unique_login($tmp_nom, $tmp_prenom, 'name9_p', 'maj');
 		
 								// On teste l'unicité du login que l'on vient de créer
 								$k = 2;
@@ -3822,8 +3783,8 @@ else{
 							else {
 								// On ne renseigne plus l'ERENO et on n'a pas l'EMAIL dans temp_gep_import2
 								$sql="INSERT INTO eleves SET login='$login_eleve',
-														nom='".addslashes($lig->ELENOM)."',
-														prenom='".addslashes($lig->ELEPRE)."',
+														nom='".mysql_real_escape_string($lig->ELENOM)."',
+														prenom='".mysql_real_escape_string($lig->ELEPRE)."',
 														sexe='".$lig->ELESEXE."',
 														naissance='".$naissance."',
 														no_gep='".$lig->ELENONAT."',
@@ -3859,7 +3820,7 @@ else{
 								}
 		
 		
-								if(strtolower($lig->ETOCOD_EP)!=strtolower($gepiSchoolRne)) {
+								if(my_strtolower($lig->ETOCOD_EP)!=my_strtolower($gepiSchoolRne)) {
 									$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$lig->ELENOET';";
 									info_debug($sql);
 									$test_ee=mysql_query($sql);
@@ -4103,7 +4064,7 @@ else{
 								echo "<option value=''>---</option>\n";
 								while($lig_classe=mysql_fetch_object($res_classe)){
 									echo "<option value='$lig_classe->id'";
-									if(strtolower($lig_ele->divcod)==strtolower($lig_classe->classe)) {echo " selected='true'";}
+									if(my_strtolower($lig_ele->divcod)==my_strtolower($lig_classe->classe)) {echo " selected='true'";}
 									echo ">$lig_classe->classe</option>\n";
 								}
 								echo "</select>\n";
@@ -4468,7 +4429,7 @@ else{
 					//===========================
 					// A FAIRE: boireaus 20071129
 					//          Ajouter l'association avec le PP et le CPE
-					$sql="SELECT login, nom, prenom FROM utilisateurs WHERE statut='cpe' ORDER BY nom, prenom;";
+					$sql="SELECT login, nom, prenom FROM utilisateurs WHERE statut='cpe' AND etat='actif' ORDER BY nom, prenom;";
 					info_debug($sql);
 					$res_cpe=mysql_query($sql);
 
@@ -4580,9 +4541,9 @@ else{
 						//for($loop=0;$loop<count($tmp_group[])) {}
 						foreach($tmp_group["profs"]["users"] as $login_prof) {
 							$chaine_profs.=", ";
-							$chaine_profs.=$login_prof['civilite']."&nbsp;".$login_prof['nom']." ".substr($login_prof['prenom'],0,1);
+							$chaine_profs.=$login_prof['civilite']."&nbsp;".$login_prof['nom']." ".mb_substr($login_prof['prenom'],0,1);
 						}
-						if($chaine_profs!='') {$chaine_profs=substr($chaine_profs,2);}
+						if($chaine_profs!='') {$chaine_profs=mb_substr($chaine_profs,2);}
 
 						$alt=$alt*(-1);
 						/*
@@ -4853,7 +4814,7 @@ else{
 				// $unzipped_max_filesize < 0    extraction zip désactivée
 				if($unzipped_max_filesize>=0) {
 					$fichier_emis=$xml_file['name'];
-					$extension_fichier_emis=strtolower(strrchr($fichier_emis,"."));
+					$extension_fichier_emis=my_strtolower(mb_strrchr($fichier_emis,"."));
 					if (($extension_fichier_emis==".zip")||($xml_file['type']=="application/zip"))
 						{
 						require_once('../lib/pclzip.lib.php');
@@ -4911,21 +4872,6 @@ else{
 				else{
 					echo "<p>La copie du fichier vers le dossier temporaire a réussi.</p>\n";
 
-					//$sql="CREATE TABLE IF NOT EXISTS resp_pers (
-					/*
-					$sql="CREATE TABLE IF NOT EXISTS temp_resp_pers_import (
-							`pers_id` varchar(10) NOT NULL,
-							`login` varchar(50) NOT NULL,
-							`nom` varchar(30) NOT NULL,
-							`prenom` varchar(30) NOT NULL,
-							`civilite` varchar(5) NOT NULL,
-							`tel_pers` varchar(255) NOT NULL,
-							`tel_port` varchar(255) NOT NULL,
-							`tel_prof` varchar(255) NOT NULL,
-							`mel` varchar(100) NOT NULL,
-							`adr_id` varchar(10) NOT NULL,
-						PRIMARY KEY  (`pers_id`));";
-					*/
 					$sql="DROP TABLE IF EXISTS temp_resp_pers_import;";
 					info_debug($sql);
 					$nettoyage = mysql_query($sql);
@@ -4942,7 +4888,8 @@ else{
 							`mel` varchar(100) $chaine_mysql_collate NOT NULL,
 							`adr_id` varchar(10) $chaine_mysql_collate NOT NULL,
 							`statut` varchar(100) $chaine_mysql_collate NOT NULL,
-						PRIMARY KEY  (`pers_id`));";
+							PRIMARY KEY  (`pers_id`)
+							) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 					info_debug($sql);
 					$create_table = mysql_query($sql);
 
@@ -4965,7 +4912,7 @@ else{
 					}
 	
 					$nom_racine=$resp_xml->getName();
-					if(strtoupper($nom_racine)!='BEE_RESPONSABLES') {
+					if(my_strtoupper($nom_racine)!='BEE_RESPONSABLES') {
 						echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Responsables.<br />Sa racine devrait être 'BEE_RESPONSABLES'.</p>\n";
 						require("../lib/footer.inc.php");
 						die();
@@ -4996,17 +4943,18 @@ else{
 						$i++;
 						$personnes[$i]=array();
 
-						foreach($personne->attributes() as $key => $value) {
-							// <PERSONNE PERSONNE_ID="294435">
-							$personnes[$i][strtolower($key)]=traitement_magic_quotes(corriger_caracteres(trim($value)));
-						}
-
-						foreach($personne->children() as $key => $value) {
-							if(in_array(strtoupper($key),$tab_champs_personne)) {
-								$personnes[$i][strtolower($key)]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',trim(traite_utf8($value)))));
-								//echo "\$structure->$key=".$value."<br />";
+							foreach($personne->attributes() as $key => $value) {
+								// <PERSONNE PERSONNE_ID="294435">
+								$personnes[$i][my_strtolower($key)]=traitement_magic_quotes(corriger_caracteres(trim($value)));
 							}
-						}
+
+							foreach($personne->children() as $key => $value) {
+								if(in_array(my_strtoupper($key),$tab_champs_personne)) {
+									//$personnes[$i][my_strtolower($key)]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',trim(traite_utf8($value)))));
+									$personnes[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)));
+									//echo "\$structure->$key=".$value."<br />";
+								}
+							}
 
 						if($debug_import=='y') {
 							echo "<pre style='color:green;'><b>Tableau \$personnes[$i]&nbsp;:</b>";
@@ -5024,10 +4972,10 @@ else{
 							$sql="INSERT INTO temp_resp_pers_import SET ";
 							//$sql="INSERT INTO resp_pers SET ";
 							$sql.="pers_id='".$personnes[$i]["personne_id"]."', ";
-							$sql.="nom='".$personnes[$i]["nom"]."', ";
-							$sql.="prenom='".$personnes[$i]["prenom"]."', ";
+							$sql.="nom='".mysql_real_escape_string($personnes[$i]["nom"])."', ";
+							$sql.="prenom='".mysql_real_escape_string($personnes[$i]["prenom"])."', ";
 							if(isset($personnes[$i]["lc_civilite"])){
-								$sql.="civilite='".ucfirst(strtolower($personnes[$i]["lc_civilite"]))."', ";
+								$sql.="civilite='".casse_mot($personnes[$i]["lc_civilite"],'majf2')."', ";
 							}
 							if(isset($personnes[$i]["tel_personnel"])){
 								$sql.="tel_pers='".$personnes[$i]["tel_personnel"]."', ";
@@ -5039,7 +4987,7 @@ else{
 								$sql.="tel_prof='".$personnes[$i]["tel_professionnel"]."', ";
 							}
 							if(isset($personnes[$i]["mel"])){
-								$sql.="mel='".$personnes[$i]["mel"]."', ";
+								$sql.="mel='".mysql_real_escape_string($personnes[$i]["mel"])."', ";
 							}
 							if(isset($personnes[$i]["adresse_id"])){
 								$sql.="adr_id='".$personnes[$i]["adresse_id"]."';";
@@ -5055,7 +5003,7 @@ else{
 							info_debug($sql);
 							$res_insert=mysql_query($sql);
 							if(!$res_insert){
-								echo "Erreur lors de la requête $sql<br />\n";
+								echo "<span style='color:red'>Erreur lors de la requête $sql</span><br />\n";
 								flush();
 								$nb_err++;
 							}
@@ -5149,7 +5097,7 @@ else{
 				}
 
 				$nom_racine=$resp_xml->getName();
-				if(strtoupper($nom_racine)!='BEE_RESPONSABLES') {
+				if(my_strtoupper($nom_racine)!='BEE_RESPONSABLES') {
 					echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Responsables.<br />Sa racine devrait être 'BEE_RESPONSABLES'.</p>\n";
 					require("../lib/footer.inc.php");
 					die();
@@ -5160,13 +5108,12 @@ else{
 				info_debug($sql);
 				$nettoyage = mysql_query($sql);
 
-				//$sql="CREATE TABLE IF NOT EXISTS responsables2 (
 				$sql="CREATE TABLE IF NOT EXISTS temp_responsables2_import (
 						`ele_id` varchar(10) $chaine_mysql_collate NOT NULL,
 						`pers_id` varchar(10) $chaine_mysql_collate NOT NULL,
 						`resp_legal` varchar(1) $chaine_mysql_collate NOT NULL,
 						`pers_contact` varchar(1) $chaine_mysql_collate NOT NULL
-						);";
+						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 				info_debug($sql);
 				$create_table = mysql_query($sql);
 
@@ -5210,8 +5157,9 @@ else{
 					$responsables[$i]=array();
 
 					foreach($responsable_eleve->children() as $key => $value) {
-						if(in_array(strtoupper($key),$tab_champs_responsable)) {
-							$responsables[$i][strtolower($key)]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',trim(traite_utf8($value)))));
+						if(in_array(my_strtoupper($key),$tab_champs_responsable)) {
+							//$responsables[$i][my_strtolower($key)]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',trim(traite_utf8($value)))));
+							$responsables[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)));
 							//echo "\$structure->$key=".$value."<br />";
 						}
 					}
@@ -5308,7 +5256,7 @@ else{
 				}
 
 				$nom_racine=$resp_xml->getName();
-				if(strtoupper($nom_racine)!='BEE_RESPONSABLES') {
+				if(my_strtoupper($nom_racine)!='BEE_RESPONSABLES') {
 					echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Responsables.<br />Sa racine devrait être 'BEE_RESPONSABLES'.</p>\n";
 					require("../lib/footer.inc.php");
 					die();
@@ -5328,7 +5276,8 @@ else{
 						`pays` varchar(50) $chaine_mysql_collate NOT NULL,
 						`commune` varchar(50) $chaine_mysql_collate NOT NULL,
 						`statut` varchar(100) $chaine_mysql_collate NOT NULL,
-					PRIMARY KEY  (`adr_id`));";
+						PRIMARY KEY  (`adr_id`)
+						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 				info_debug($sql);
 				//echo "$sql<br />";
 				$create_table = mysql_query($sql);
@@ -5375,12 +5324,13 @@ else{
 
 					foreach($adresse->attributes() as $key => $value) {
 						// <ADRESSE ADRESSE_ID="228114">
-						$adresses[$i][strtolower($key)]=$value;
+						$adresses[$i][my_strtolower($key)]=$value;
 					}
 
 					foreach($adresse->children() as $key => $value) {
-						if(in_array(strtoupper($key),$tab_champs_adresse)) {
-							$adresses[$i][strtolower($key)]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',trim(traite_utf8($value)))));
+						if(in_array(my_strtoupper($key),$tab_champs_adresse)) {
+							//$adresses[$i][my_strtolower($key)]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',trim(traite_utf8($value)))));
+							$adresses[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)));
 							//echo "\$structure->$key=".$value."<br />";
 						}
 					}
@@ -5400,29 +5350,29 @@ else{
 					//$sql="INSERT INTO resp_adr SET ";
 					$sql.="adr_id='".$adresses[$i]["adresse_id"]."', ";
 					if(isset($adresses[$i]["ligne1_adresse"])){
-						$sql.="adr1='".$adresses[$i]["ligne1_adresse"]."', ";
+						$sql.="adr1='".mysql_real_escape_string($adresses[$i]["ligne1_adresse"])."', ";
 					}
 					if(isset($adresses[$i]["ligne2_adresse"])){
-						$sql.="adr2='".$adresses[$i]["ligne2_adresse"]."', ";
+						$sql.="adr2='".mysql_real_escape_string($adresses[$i]["ligne2_adresse"])."', ";
 					}
 					if(isset($adresses[$i]["ligne3_adresse"])){
-						$sql.="adr3='".$adresses[$i]["ligne3_adresse"]."', ";
+						$sql.="adr3='".mysql_real_escape_string($adresses[$i]["ligne3_adresse"])."', ";
 					}
 					if(isset($adresses[$i]["ligne4_adresse"])){
-						$sql.="adr4='".$adresses[$i]["ligne4_adresse"]."', ";
+						$sql.="adr4='".mysql_real_escape_string($adresses[$i]["ligne4_adresse"])."', ";
 					}
 					if(isset($adresses[$i]["code_postal"])){
 						$sql.="cp='".$adresses[$i]["code_postal"]."', ";
 					}
 					if(isset($adresses[$i]["ll_pays"])){
-						$sql.="pays='".$adresses[$i]["ll_pays"]."', ";
+						$sql.="pays='".mysql_real_escape_string($adresses[$i]["ll_pays"])."', ";
 					}
 					if(isset($adresses[$i]["libelle_postal"])){
-						$sql.="commune='".$adresses[$i]["libelle_postal"]."', ";
+						$sql.="commune='".mysql_real_escape_string($adresses[$i]["libelle_postal"])."', ";
 					} elseif(isset($adresses[$i]["commune_etrangere"])) {
-						$sql.="commune='".$adresses[$i]["commune_etrangere"]."', ";
+						$sql.="commune='".mysql_real_escape_string($adresses[$i]["commune_etrangere"])."', ";
 					}
-					$sql=substr($sql,0,strlen($sql)-2);
+					$sql=mb_substr($sql,0,mb_strlen($sql)-2);
 					$sql.=";";
 					affiche_debug("$sql<br />\n");
 					info_debug($sql);
@@ -6271,7 +6221,7 @@ else{
 					}
 					else {
 						$lig=mysql_fetch_object($res);
-						echo "<p>Suppression du responsable n°".$valid_pers_id[$i].": $lig->civilite ".strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom)).":<br />\n";
+						echo "<p>Suppression du responsable n°".$valid_pers_id[$i].": $lig->civilite ".my_strtoupper($lig->nom)." ".casse_mot($lig->prenom,'majf2').":<br />\n";
 						// Supprimer les responsabilités
 						echo "Suppression des responsabilités: ";
 						$sql="DELETE FROM responsables2 WHERE pers_id='".$valid_pers_id[$i]."';";
@@ -6735,7 +6685,7 @@ else{
 					//======================================
 					$ligne_parent.="<td";
 					if($nouveau==0){
-						if(ucfirst(strtolower(stripslashes($lig_pers2->civilite)))!=ucfirst(strtolower(stripslashes($civilite1)))){
+						if(casse_mot(stripslashes($lig_pers2->civilite),'majf2')!=casse_mot(stripslashes($civilite1),'majf2')) {
 							$ligne_parent.=" class='modif'>";
 							if($civilite1!=''){
 								$ligne_parent.=stripslashes($civilite1)." <font color='red'>-&gt;</font>\n";
@@ -6750,7 +6700,7 @@ else{
 					else{
 						$ligne_parent.=">";
 					}
-					$ligne_parent.=ucfirst(strtolower(stripslashes($lig_pers2->civilite)));
+					$ligne_parent.=casse_mot(stripslashes($lig_pers2->civilite),'majf2');
 					$ligne_parent.="</td>\n";
 					//======================================
 
@@ -6841,6 +6791,7 @@ else{
 						$ligne_parent.="</td>\n";
 						$ligne_parent.="</tr>\n";
 
+
 						if($alert_diff_mail_resp=="y") {
 							$ligne_parent.="<tr>\n";
 							$ligne_parent.="<td style='text-align:center; font-weight:bold;'>mel</td>\n";
@@ -6871,6 +6822,7 @@ else{
 														enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
 													}
 													else {
+
 														if($lig_email_resp->email!=$lig_pers2->mel) {
 															// L'email Sconet diffère de celui non vide déclaré dans Gérer mon compte
 															$ligne_parent.=" class='modif'>";
@@ -7355,16 +7307,16 @@ else{
 						$test=mysql_query($sql);
 
 						if(mysql_num_rows($test)==0){
-							// prenom='".addslashes(ucfirst(strtolower($lig->prenom)))."',
+							// prenom='".mysql_real_escape_string(ucfirst(strtolower($lig->prenom)))."',
 
 							$sql="INSERT INTO resp_pers SET pers_id='$lig1->col2',
-													nom='".addslashes(strtoupper($lig->nom))."',
-													prenom='".addslashes(maj_ini_prenom($lig->prenom))."',
-													civilite='".ucfirst(strtolower($lig->civilite))."',
-													tel_pers='".addslashes($lig->tel_pers)."',
-													tel_port='".addslashes($lig->tel_port)."',
-													tel_prof='".addslashes($lig->tel_prof)."',
-													mel='".addslashes($lig->mel)."',
+													nom='".mysql_real_escape_string(my_strtoupper($lig->nom))."',
+													prenom='".mysql_real_escape_string(maj_ini_prenom($lig->prenom))."',
+													civilite='".casse_mot($lig->civilite,'majf2')."',
+													tel_pers='".mysql_real_escape_string($lig->tel_pers)."',
+													tel_port='".mysql_real_escape_string($lig->tel_port)."',
+													tel_prof='".mysql_real_escape_string($lig->tel_prof)."',
+													mel='".mysql_real_escape_string($lig->mel)."',
 													adr_id='".$lig->adr_id."';";
 							info_debug($sql);
 							$insert=mysql_query($sql);
@@ -7379,14 +7331,14 @@ else{
 							echo "</span>";
 						}
 						else{
-							$sql="UPDATE resp_pers SET nom='".addslashes(strtoupper($lig->nom))."',
-													prenom='".addslashes(maj_ini_prenom($lig->prenom))."',
-													civilite='".ucfirst(strtolower($lig->civilite))."',
-													tel_pers='".addslashes($lig->tel_pers)."',
-													tel_port='".addslashes($lig->tel_port)."',
-													tel_prof='".addslashes($lig->tel_prof)."',";
+							$sql="UPDATE resp_pers SET nom='".mysql_real_escape_string(my_strtoupper($lig->nom))."',
+													prenom='".mysql_real_escape_string(maj_ini_prenom($lig->prenom))."',
+													civilite='".casse_mot($lig->civilite,'majf2')."',
+													tel_pers='".mysql_real_escape_string($lig->tel_pers)."',
+													tel_port='".mysql_real_escape_string($lig->tel_port)."',
+													tel_prof='".mysql_real_escape_string($lig->tel_prof)."',";
 							if((getSettingValue('mode_email_resp')=='')||(getSettingValue('mode_email_resp')=='sconet')) {
-								$sql.="						mel='".addslashes($lig->mel)."',";
+								$sql.="						mel='".mysql_real_escape_string($lig->mel)."',";
 							}
 							else {
 								// Plusieurs cas peuvent survenir
@@ -7413,7 +7365,7 @@ else{
 								// Si le responsable n'a pas de compte
 								else {
 									// Alors on fait la mise à jour
-									$sql.="						mel='".addslashes($lig->mel)."',";
+									$sql.="						mel='".mysql_real_escape_string($lig->mel)."',";
 									info_debug("Il n'y a pas d'email dans la table utilisateurs; on met à jour d'apres le XML: $lig->mel");
 								}
 							}
@@ -7428,7 +7380,7 @@ else{
 								echo "\n<span style='color:darkgreen;'>";
 
 								if(getSettingValue('mode_email_resp')=='sconet') {
-									$sql="UPDATE utilisateurs SET email='".addslashes($lig->mel)."' WHERE statut='responsable' AND login IN (SELECT login FROM resp_pers WHERE pers_id='$lig1->col2');";
+									$sql="UPDATE utilisateurs SET email='".mysql_real_escape_string($lig->mel)."' WHERE statut='responsable' AND login IN (SELECT login FROM resp_pers WHERE pers_id='$lig1->col2');";
 									info_debug($sql);
 									$update_utilisateurs=mysql_query($sql);
 								}
@@ -7477,13 +7429,13 @@ else{
 									$commune1=$lig_adr1->commune;
 									$pays1=$lig_adr1->pays;
 
-									$sql="UPDATE resp_adr SET adr1='".addslashes($adr1_2)."',
-																adr2='".addslashes($adr2_2)."',
-																adr3='".addslashes($adr3_2)."',
-																adr4='".addslashes($adr4_2)."',
-																cp='".addslashes($cp2)."',
-																commune='".addslashes($commune2)."',
-																pays='".addslashes($pays2)."'
+									$sql="UPDATE resp_adr SET adr1='".mysql_real_escape_string($adr1_2)."',
+																adr2='".mysql_real_escape_string($adr2_2)."',
+																adr3='".mysql_real_escape_string($adr3_2)."',
+																adr4='".mysql_real_escape_string($adr4_2)."',
+																cp='".mysql_real_escape_string($cp2)."',
+																commune='".mysql_real_escape_string($commune2)."',
+																pays='".mysql_real_escape_string($pays2)."'
 														WHERE adr_id='$lig->adr_id'";
 									info_debug($sql);
 									$update=mysql_query($sql);
@@ -7501,13 +7453,13 @@ else{
 									$commune1="";
 									$pays1="";
 
-									$sql="INSERT INTO resp_adr SET adr1='".addslashes($adr1_2)."',
-																adr2='".addslashes($adr2_2)."',
-																adr3='".addslashes($adr3_2)."',
-																adr4='".addslashes($adr4_2)."',
-																cp='".addslashes($cp2)."',
-																commune='".addslashes($commune2)."',
-																pays='".addslashes($pays2)."',
+									$sql="INSERT INTO resp_adr SET adr1='".mysql_real_escape_string($adr1_2)."',
+																adr2='".mysql_real_escape_string($adr2_2)."',
+																adr3='".mysql_real_escape_string($adr3_2)."',
+																adr4='".mysql_real_escape_string($adr4_2)."',
+																cp='".mysql_real_escape_string($cp2)."',
+																commune='".mysql_real_escape_string($commune2)."',
+																pays='".mysql_real_escape_string($pays2)."',
 																adr_id='$lig->adr_id'";
 									info_debug($sql);
 									$insert=mysql_query($sql);
@@ -8494,13 +8446,13 @@ else{
 
 								$ligne_courante.="<td style='text-align:center;'>\n";
 								$ligne_courante.="$lig2->nom";
-								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_nom' value=\"".addslashes($lig2->nom)."\" />\n";
+								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_nom' value=\"".mysql_real_escape_string($lig2->nom)."\" />\n";
 								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_nom' value=\"".$lig2->nom."\" />\n";
 								$ligne_courante.="</td>\n";
 
 								$ligne_courante.="<td style='text-align:center;'>\n";
 								$ligne_courante.="$lig2->prenom";
-								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_prenom' value=\"".addslashes($lig2->nom)."\" />\n";
+								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_prenom' value=\"".mysql_real_escape_string($lig2->nom)."\" />\n";
 								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_prenom' value=\"".$lig2->prenom."\" />\n";
 								$ligne_courante.="</td>\n";
 
@@ -8546,13 +8498,13 @@ else{
 									$lig4=mysql_fetch_object($res4);
 									$ligne_courante.="<td style='text-align:center;'>\n";
 									$ligne_courante.="$lig4->nom";
-									//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_ele_nom' value=\"".addslashes($lig4->nom)."\" />\n";
+									//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_ele_nom' value=\"".mysql_real_escape_string($lig4->nom)."\" />\n";
 									//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_ele_nom' value=\"".$lig4->nom."\" />\n";
 									$ligne_courante.="</td>\n";
 
 									$ligne_courante.="<td style='text-align:center;'>\n";
 									$ligne_courante.="$lig4->prenom";
-									//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_ele_prenom' value=\"".addslashes($lig4->prenom)."\" />\n";
+									//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_ele_prenom' value=\"".mysql_real_escape_string($lig4->prenom)."\" />\n";
 									//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_ele_prenom' value=\"".$lig4->prenom."\" />\n";
 									$ligne_courante.="</td>\n";
 

@@ -1,7 +1,7 @@
 <?php
 /** Calcule les moyennes d'un conteneur
  * 
- * $Id: recalcul_moy_conteneurs.php 7748 2011-08-14 14:10:02Z regis $
+ * $Id$
  *
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @package Notes
@@ -244,8 +244,8 @@ else{
 
 						/*
 						echo "<tr>\n";
-						echo "<td align='center'>".htmlentities($current_group["classlist_string"])."</td>\n";
-						echo "<td align='center'>".htmlentities($current_group['description'])."</td>\n";
+						echo "<td align='center'>".htmlspecialchars($current_group["classlist_string"])."</td>\n";
+						echo "<td align='center'>".htmlspecialchars($current_group['description'])."</td>\n";
 						echo "<td align='center'>\n";
 						*/
 
@@ -313,8 +313,8 @@ else{
 						$alt=$alt*(-1);
 						echo " class='lig$alt'";
 						echo ">\n";
-						echo "<td align='center' width='33%'>".htmlentities($current_group["classlist_string"])."</td>\n";
-						echo "<td align='center' width='33%'>".htmlentities($current_group['description'])."</td>\n";
+						echo "<td align='center' width='33%'>".htmlspecialchars($current_group["classlist_string"])."</td>\n";
+						echo "<td align='center' width='33%'>".htmlspecialchars($current_group['description'])."</td>\n";
 						echo "<td align='center' width='34%'>\n";
 						echo $chaine."&nbsp;";
 						echo "</td>\n";

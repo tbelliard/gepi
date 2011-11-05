@@ -1,7 +1,6 @@
 <?php
 /**
  * Appel des fichiers de configuration de Propel
- * @version $Id: initialisationsPropel.inc.php 7849 2011-08-20 18:19:12Z regis $
  *
  * @Copyright 2001, 2009 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane Boireau, Julien Jocal
  *

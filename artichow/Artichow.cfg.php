@@ -77,6 +77,7 @@ define('ARTICHOW_DRIVER', 'gd');
  * Fonts to use
  */
 $fonts = array(
+	'DejaVu',
 	'Tuffy',
 	'TuffyBold',
 	'TuffyBoldItalic',

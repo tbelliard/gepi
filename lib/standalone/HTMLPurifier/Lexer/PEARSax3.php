@@ -107,7 +107,7 @@ class HTMLPurifier_Lexer_PEARSax3 extends HTMLPurifier_Lexer
         if (strpos($data, '--') === 0) {
             // remove trailing and leading double-dashes
             $data = substr($data, 2);
-            if (strlen($data) >= 2 && substr($data, -2) == "--") {
+            if (mb_strlen($data) >= 2 && substr($data, -2) == "--") {
                 $data = substr($data, 0, -2);
             }
             if (isset($this->stack[sizeof($this->stack) - 1]) &&
@@ -121,7 +121,7 @@ class HTMLPurifier_Lexer_PEARSax3 extends HTMLPurifier_Lexer
         // CDATA is handled elsewhere, but if it was handled here:
         //if (strpos($data, '[CDATA[') === 0) {
         //    $this->tokens[] = new HTMLPurifier_Token_Text(
-        //        substr($data, 7, strlen($data) - 9) );
+        //        substr($data, 7, mb_strlen($data) - 9) );
         //}
         return true;
     }

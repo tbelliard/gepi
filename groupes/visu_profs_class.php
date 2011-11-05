@@ -1,8 +1,7 @@
 <?php
 /*
-* $Id: visu_profs_class.php 6529 2011-02-23 12:40:32Z crob $
 *
-*  Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+*  Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -208,11 +207,11 @@ if(isset($id_classe)){
 
 				echo "<td>";
 				if($lig_cpe->email!=""){
-					echo "<a href='mailto:$lig_cpe->email?".urlencode("subject=[GEPI] classe=".$classe['classe'])."'>$lig_cpe->nom ".ucfirst(strtolower($lig_cpe->prenom))."</a>";
+					echo "<a href='mailto:$lig_cpe->email?".urlencode("subject=[GEPI] classe=".$classe['classe'])."'>".my_strtoupper($lig_cpe->nom)." ".casse_mot($lig_cpe->prenom,'majf2')."</a>";
 					$tabmail[]=$lig_cpe->email;
 				}
 				else{
-					echo "$lig_cpe->nom ".ucfirst(strtolower($lig_cpe->prenom));
+					echo my_strtoupper($lig_cpe->nom)." ".casse_mot($lig_cpe->prenom,'majf2');
 				}
 				echo "</td></tr>\n";
 			}
@@ -242,7 +241,7 @@ if(isset($id_classe)){
 
 
 			// Matière correspondant au groupe:
-			echo "<tr valign='top'><td>".htmlentities($lig_grp->nom_complet)."</td>\n";
+			echo "<tr valign='top'><td>".htmlspecialchars($lig_grp->nom_complet)."</td>\n";
 
 			echo "<td>";
 			echo "<a href='javascript:ouvre_popup(\"$lig_grp->id_groupe\",\"$id_classe\");'>".$nb_eleves." ";
@@ -270,11 +269,11 @@ if(isset($id_classe)){
 			$result_prof=mysql_query($sql);
 			while($lig_prof=mysql_fetch_object($result_prof)){
 				if($lig_prof->email!=""){
-					echo "<a href='mailto:$lig_prof->email?".urlencode("subject=[GEPI] classe=".$classe['classe'])."'>$lig_prof->nom ".ucfirst(strtolower($lig_prof->prenom))."</a>";
+					echo "<a href='mailto:$lig_prof->email?".urlencode("subject=[GEPI] classe=".$classe['classe'])."'>".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom,'majf2')."</a>";
 					$tabmail[]=$lig_prof->email;
 				}
 				else{
-					echo "$lig_prof->nom ".ucfirst(strtolower($lig_prof->prenom));
+					echo my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom,'majf2');
 				}
 
 				// Le prof est-il PP d'au moins un élève de la classe?
@@ -352,7 +351,7 @@ else{
 	for ($i=0;$i<$nb_classes;$i++) {
 		$classe=mysql_result($query, $i, "classe");
 		$id_classe=mysql_result($query, $i, "id");
-		echo "<option value='$id_classe'>" . htmlentities($classe) . "</option>\n";
+		echo "<option value='$id_classe'>" . htmlspecialchars($classe) . "</option>\n";
 	}
 	*/
 	if(mysql_num_rows($result_classes)==0){
@@ -372,8 +371,8 @@ else{
 				//echo "<td style='padding: 0 10px 0 10px'>\n";
 				echo "<td>\n";
 			}
-			//echo "<option value='$lig_class->id'>" . htmlentities("$lig_class->classe") . "</option>\n";
-			echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$lig_class->id'>".htmlentities("$lig_class->classe") . "</a><br />\n";
+			//echo "<option value='$lig_class->id'>" . htmlspecialchars("$lig_class->classe") . "</option>\n";
+			echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$lig_class->id'>".htmlspecialchars("$lig_class->classe") . "</a><br />\n";
 			$cpt++;
 		}
 		echo "</td>\n";

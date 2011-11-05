@@ -1,7 +1,7 @@
 <?php
 /**
  * Fichier de mise à jour de la version 1.5.2 à la version 1.5.3
- * $Id: 152_to_153.inc.php 7930 2011-08-23 17:05:35Z dblanqui $
+ * $Id$
  *
  * Le code PHP présent ici est exécuté tel quel.
  * Pensez à conserver le code parfaitement compatible pour une application

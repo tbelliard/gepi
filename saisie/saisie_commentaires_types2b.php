@@ -1,5 +1,4 @@
 <?php
-	// $Id: saisie_commentaires_types2b.php 6727 2011-03-29 15:14:30Z crob $
 
 	// Initialisations files
 	require_once("../lib/initialisations.inc.php");
@@ -35,7 +34,7 @@
 
 	$tmp_chemin1=$gepiPath."/saisie/saisie_avis1.php";
 	$tmp_chemin2=$gepiPath."/saisie/saisie_avis2.php";
-	if((substr($_SERVER['REQUEST_URI'],0,strlen($tmp_chemin1))!=$tmp_chemin1)&&(substr($_SERVER['REQUEST_URI'],0,strlen($tmp_chemin2))!=$tmp_chemin2)){
+	if((mb_substr($_SERVER['REQUEST_URI'],0,mb_strlen($tmp_chemin1))!=$tmp_chemin1)&&(mb_substr($_SERVER['REQUEST_URI'],0,mb_strlen($tmp_chemin2))!=$tmp_chemin2)){
 		/*
 		echo "<html>\n";
 		echo "<head>\n";
@@ -102,7 +101,7 @@
 				}
 				echo ">\n";
 
-				echo "<input type='hidden' name='commentaire_type_$cpt' id='commentaire_type_$cpt' value=\" ".htmlentities(stripslashes(trim($ligne_commentaire->commentaire)))."\" />\n";
+				echo "<input type='hidden' name='commentaire_type_$cpt' id='commentaire_type_$cpt' value=\" ".htmlspecialchars(stripslashes(trim($ligne_commentaire->commentaire)))."\" />\n";
 
 				if(!preg_match("/firefox/i",$_SERVER['HTTP_USER_AGENT'])){
 					// Avec konqueror, pour document.getElementById('textarea_courant').value, on obtient [Object INPUT]
@@ -116,11 +115,11 @@
 						<p>Blabla<br>
 						Blibli</p>
 					*/
-					echo htmlentities(stripslashes(trim($ligne_commentaire->commentaire)));
+					echo htmlspecialchars(stripslashes(trim($ligne_commentaire->commentaire)));
 				}
 				else{
 					//Si le commentaire ne contient pas de code HTML, on remplace les retours à la ligne par des <br>:
-					echo htmlentities(stripslashes(nl2br(trim($ligne_commentaire->commentaire))));
+					echo htmlspecialchars(stripslashes(nl2br(trim($ligne_commentaire->commentaire))));
 				}
 
 				if(!preg_match("/firefox/i",$_SERVER['HTTP_USER_AGENT'])){

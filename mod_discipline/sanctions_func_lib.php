@@ -1,6 +1,5 @@
 <?php
 /*
-$Id: sanctions_func_lib.php 8265 2011-09-17 10:45:08Z crob $
 */
 
 // Paramètres concernant le délais avant affichage d'une infobulle via delais_afficher_div()
@@ -45,7 +44,7 @@ function u_p_nom($u_login) {
 	if(mysql_num_rows($res3)>0) {
 		$lig3=mysql_fetch_object($res3);
 		//echo ucfirst(strtolower($lig3->prenom))." ".strtoupper($lig3->nom);
-		return $lig3->civilite." ".strtoupper($lig3->nom)." ".ucfirst(substr($lig3->prenom,0,1)).".";
+		return $lig3->civilite." ".strtoupper($lig3->nom)." ".ucfirst(mb_substr($lig3->prenom,0,1)).".";
 	}
 	else {
 		return "LOGIN INCONNU";
@@ -1114,9 +1113,6 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 
 function get_destinataires_mail_alerte_discipline($tab_id_classe) {
 	$retour="";
-
-	//DROP TABLE IF EXISTS s_alerte_mail;
-	//CREATE TABLE IF NOT EXISTS s_alerte_mail (id int(11) unsigned NOT NULL auto_increment, id_classe smallint(6) unsigned NOT NULL, destinataire varchar(50) NOT NULL default '', PRIMARY KEY (id), INDEX (id_classe,destinataire));
 
 	$tab_dest=array();
     $temoin=false;

@@ -1,7 +1,7 @@
 <?php
 @set_time_limit(0);
 /*
-* $Id: clean_tables.php 8529 2011-10-25 12:52:10Z crob $
+* $Id$
 *
 * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 * This file is part of GEPI.
@@ -119,12 +119,13 @@ if((isset($maj))||(isset($_REQUEST['action']))) {
 	check_token();
 }
 
+/*
 //if (($_POST['maj'])=="9") {
 if ($maj=="9") {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
 	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a></p>\n";
 }
-
+*/
 //debug_var();
 
 function init_time() {
@@ -1265,7 +1266,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 		$sql="CREATE TABLE tempo2 (
 col1 varchar(100) NOT NULL default '',
 col2 varchar(100) NOT NULL default ''
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 		$create_table=mysql_query($sql);
 
 		$sql="TRUNCATE tempo2;";
@@ -1321,8 +1322,8 @@ col2 varchar(100) NOT NULL default ''
 			while($lig_ele=mysql_fetch_object($res_ele)) {
 				$texte_info_action="";
 
-				if(strtoupper(substr($lig_ele->login,0,1))!=$ini){
-					$ini=strtoupper(substr($lig_ele->login,0,1));
+				if(strtoupper(mb_substr($lig_ele->login,0,1))!=$ini){
+					$ini=strtoupper(mb_substr($lig_ele->login,0,1));
 					echo "<p>\n<i>Parcours des logins commençant par la lettre $ini</i></p>\n";
 				}
 
@@ -1508,7 +1509,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="10")) or (isset($_GET['maj'
 		$sql="CREATE TABLE tempo2 (
 col1 varchar(100) NOT NULL default '',
 col2 varchar(100) NOT NULL default ''
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 		$create_table=mysql_query($sql);
 
 		$sql="TRUNCATE tempo2;";

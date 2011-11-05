@@ -1,7 +1,6 @@
 <?php
 
 /*
- * $Id: ajax_bulletins.php 6090 2010-12-11 12:55:19Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -213,14 +212,14 @@ if($acces=="y") {
 					$alt=$alt*(-1);
 					echo "<tr class='lig$alt'>\n";
 					echo "<td>";
-					echo "<b>".htmlentities(stripslashes($lig_mat->matiere))."</b><br />\n";
-					echo "<span class='info_prof'>".htmlentities(stripslashes($lig_mat->prof))."</span>\n";
+					echo "<b>".htmlspecialchars(stripslashes($lig_mat->matiere))."</b><br />\n";
+					echo "<span class='info_prof'>".htmlspecialchars(stripslashes($lig_mat->prof))."</span>\n";
 					echo "</td>\n";
 					echo "<td class='td_note_classe'>$lig_mat->moymin</td>\n";
 					echo "<td class='td_note_classe'>$lig_mat->moyclasse</td>\n";
 					echo "<td class='td_note_classe'>$lig_mat->moymax</td>\n";
 					echo "<td class='td_note'>$lig_mat->note</td>\n";
-					echo "<td>".htmlentities(stripslashes($lig_mat->appreciation))."</td>\n";
+					echo "<td>".htmlspecialchars(stripslashes($lig_mat->appreciation))."</td>\n";
 					echo "</tr>\n";
 				}
 			}
@@ -243,8 +242,8 @@ if($acces=="y") {
 					$alt=$alt*(-1);
 					echo "<tr class='lig$alt'>\n";
 					echo "<td>";
-					echo "<b>".htmlentities(stripslashes($lig_aid->type_nom))." : ".htmlentities(stripslashes($lig_aid->nom_aid))."</b><br />\n";
-					echo "<span class='info_prof'>".htmlentities(stripslashes($lig_aid->responsables))."</span>\n";
+					echo "<b>".htmlspecialchars(stripslashes($lig_aid->type_nom))." : ".htmlspecialchars(stripslashes($lig_aid->nom_aid))."</b><br />\n";
+					echo "<span class='info_prof'>".htmlspecialchars(stripslashes($lig_aid->responsables))."</span>\n";
 					echo "</td>\n";
 					echo "<td class='td_note_classe'>$lig_aid->moyenne_aid</td>\n";
 					echo "<td class='td_note_classe'>$lig_aid->min_aid</td>\n";
@@ -256,7 +255,7 @@ if($acces=="y") {
 						echo "(note sur ".$lig_aid->note_sur_aid.") ";
 					}
 	
-					echo htmlentities(stripslashes($lig_aid->appreciation))."</td>\n";
+					echo htmlspecialchars(stripslashes($lig_aid->appreciation))."</td>\n";
 					echo "</tr>\n";
 				}
 			}

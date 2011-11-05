@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: saisie_secours_eleve.php 6727 2011-03-29 15:14:30Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -291,7 +290,7 @@ elseif(!isset($ele_login)) {
 		}
 
 		//echo "<br />\n";
-		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=$periode_num&amp;ele_login=$lig_ele->login'>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</a>";
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=$periode_num&amp;ele_login=$lig_ele->login'>".my_strtoupper($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2')."</a>";
 		echo "<br />\n";
 		$i++;
 	}
@@ -419,7 +418,7 @@ else {
 		die();
 	}
 	$lig_ele=mysql_fetch_object($res_ele);
-	$info_ele=strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom));
+	$info_ele=my_strtoupper($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2');
 
 	include "../lib/periodes.inc.php";
 
@@ -493,8 +492,8 @@ else {
 			echo "<tr class='lig$alt'>\n";
 
 			echo "<td>\n";
-			echo htmlentities($matiere_nom_complet);
-			if($matiere_nom_complet!=$description_groupe) {echo "<br /><span style='font-size:x-small;'>".htmlentities($description_groupe)."</span>\n";}
+			echo htmlspecialchars($matiere_nom_complet);
+			if($matiere_nom_complet!=$description_groupe) {echo "<br /><span style='font-size:x-small;'>".htmlspecialchars($description_groupe)."</span>\n";}
 			echo "<input type='hidden' name='id_groupe[$cpt]' value='$id_groupe' />\n";
 			echo "</td>\n";
 

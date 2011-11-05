@@ -2,7 +2,6 @@
 /**
  * Visualisation des moyennes des carnets de notes
  * 
- * $Id: index2.php 7849 2011-08-20 18:19:12Z regis $
  *
  * @copyright Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL, 
@@ -407,13 +406,13 @@ if (isset($id_classe)) {
 	$res_pref=mysql_query($sql);
 	if(mysql_num_rows($res_pref)>0) {
 		while($lig_pref=mysql_fetch_object($res_pref)) {
-			if(substr($lig_pref->name,0,17)=='vtn_couleur_texte') {
+			if(mb_substr($lig_pref->name,0,17)=='vtn_couleur_texte') {
 				$vtn_couleur_texte[]=$lig_pref->value;
 			}
-			elseif(substr($lig_pref->name,0,19)=='vtn_couleur_cellule') {
+			elseif(mb_substr($lig_pref->name,0,19)=='vtn_couleur_cellule') {
 				$vtn_couleur_cellule[]=$lig_pref->value;
 			}
-			elseif(substr($lig_pref->name,0,17)=='vtn_borne_couleur') {
+			elseif(mb_substr($lig_pref->name,0,17)=='vtn_borne_couleur') {
 				$vtn_borne_couleur[]=$lig_pref->value;
 			}
 		}

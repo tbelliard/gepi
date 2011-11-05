@@ -1,6 +1,6 @@
 <?php
 /*
- * @version: $Id: edit_1.inc 2779 2008-12-20 12:05:42Z crob $
+ * @version: $Id$
  */
 
 	//echo "\$test_coef=$test_coef<br />\n";
@@ -182,7 +182,7 @@
                         // On est dans une nouvelle catégorie
 
                         // On récupère les infos nécessaires, et on affiche une ligne
-                        $cat_name = html_entity_decode_all_version(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group[$j]["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
+                        $cat_name = html_entity_decode(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group[$j]["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
                         // On détermine le nombre de colonnes pour le colspan
 
 
@@ -264,7 +264,7 @@
                     echo "<tr>\n";
                     if ($cn == 0) {
                         //echo "<td style=\"height: ".getSettingValue("col_hauteur")."px; width: ".$col_matiere_largeur."px;\" rowspan=\"".$nb_ligne_par_matiere."\"><span class='bulletin'><b>".$current_matiere_nom_complet[$j]."</b>";
-                        echo "<td style=\"height: ".$col_hauteur."px; width: ".$col_matiere_largeur."px;\" rowspan=\"".$nb_ligne_par_matiere."\"><span class='bulletin'><b>".htmlentities($current_matiere_nom_complet[$j])."</b>";
+                        echo "<td style=\"height: ".$col_hauteur."px; width: ".$col_matiere_largeur."px;\" rowspan=\"".$nb_ligne_par_matiere."\"><span class='bulletin'><b>".htmlspecialchars($current_matiere_nom_complet[$j])."</b>";
                         $k = 0;
                         foreach($current_group[$j]["profs"]["list"] as $current_prof_login) {
                             echo "<br /><i>".affiche_utilisateur($current_prof_login,$id_classe)."</i>";
@@ -424,7 +424,7 @@
                         if ($nb_ligne_cn == 0){
                             echo "<td colspan=\"2\" >";
                         } else {
-                            // Il faudrait peut-être ci-dessous un htmlentities() sur $cn_nom[$cn]
+                            // Il faudrait peut-être ci-dessous un htmlspecialchars() sur $cn_nom[$cn]
                             echo "<td style=\"width: ".$col_boite_largeur."px;\">
                             <span class='bulletin'>".$cn_nom[$cn]."&nbsp;:&nbsp;".$cn_note[$cn]."</span></td>\n";
                             if ($cn == 0){echo "<td rowspan=\"".$nb_ligne_cn."\">";}

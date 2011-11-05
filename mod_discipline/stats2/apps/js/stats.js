@@ -1,5 +1,4 @@
 /*
- * $Id: stats.js 5098 2010-08-23 11:13:03Z eabgrall $
  */
 
 Event.observe(window, 'load', function() {

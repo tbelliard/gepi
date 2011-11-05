@@ -1,6 +1,6 @@
 <?php
 /*
-* @version: $Id: verrouillage.php 8452 2011-10-07 11:58:03Z crob $
+* @version: $Id$
 *
 * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -86,6 +86,7 @@ if (isset($_POST['ok'])) {
 					if ((isset($_POST["date_fin_".$nom_classe]))&&($_POST["date_fin_".$nom_classe]!=""))  {
 						try {
 						    $date_fin = new DateTime(str_replace("/",".",$_POST["date_fin_".$nom_classe]));
+						    $date_fin->setTime(23,59,59);
 						    if ($date_fin->format('U') != $row_per[1]) {
 							$register = sql_query("UPDATE periodes SET date_fin='".$date_fin->format('Y-m-d')."' WHERE (num_periode='".$t."' and id_classe='".$id_classe."')");
 							if (!$register) {$pb_reg_ver = 'yes';}

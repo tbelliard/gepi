@@ -1,12 +1,12 @@
 <?php
 
 /*
-	$Id: recherche_eleve.php 6810 2011-04-20 19:26:12Z crob $
 */
 if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")){
-	$string = "ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸";
+	$string = "Ã‚Ã„Ã€ÃÃƒÃ„Ã…Ã‡ÃŠÃ‹ÃˆÃ‰ÃŽÃÃŒÃÃ‘Ã”Ã–Ã’Ã“Ã•Å Ã›ÃœÃ™ÃšÃÅ¸Å½Ã¡Ã Ã¢Ã¤Ã£Ã¥Ã§Ã©Ã¨ÃªÃ«Ã®Ã¯Ã¬Ã­Ã±Ã´Ã¶Ã°Ã²Ã³ÃµÅ¡Ã»Ã¼Ã¹ÃºÃ½Ã¿Å¾";
 	$encoding = mb_detect_encoding($string, "UTF-8, ISO-8859-1");
 	$string = mb_convert_encoding($string, "UTF-8", $encoding);
+	//$string = mb_convert_encoding($string, "ISO-8859-1", $encoding);
 } else {
 	$string = "";
 }
@@ -15,19 +15,12 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 	$rech_nom=isset($_POST['rech_nom']) ? $_POST['rech_nom'] : (isset($_GET['rech_nom']) ? $_GET['rech_nom'] : NULL);
 	$rech_prenom=isset($_POST['rech_prenom']) ? $_POST['rech_prenom'] : (isset($_GET['rech_prenom']) ? $_GET['rech_prenom'] : NULL);
 
-
-	//$page=isset($_POST['page']) ? $_POST['page'] : "";
 	$page=isset($_POST['page']) ? $_POST['page'] : (isset($_GET['page']) ? $_GET['page'] : "");
 
-	//if(($page!="visu_eleve.php")&&($page!="export_bull_eleve.php.php")) {
-	//if(($page!="visu_eleve.php")&&($page!="export_bull_eleve.php")&&($page!="import_bull_eleve.php")) {
 	if(($page!="fiche_eleve.php")&&($page!="visu_eleve.php")&&($page!="export_bull_eleve.php")&&($page!="import_bull_eleve.php")) {
 		$page="../logout.php?auto=2";
 		// Remarque: Cela n'empÃªche pas de bricoler l'adresse destination des liens affichÃ©s...
 	}
-
-	//echo "rech_prenom=$rech_prenom<br />";
-	//echo "string=$string<br />";
 
 	$nb_ele=0;
 
@@ -102,7 +95,7 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 			echo "<tr class='lig$alt'>\n";
 			echo "<td>\n";
 			//echo "<a href='visu_eleve.php?ele_login=$ele_login'>$ele_nom $ele_prenom</a>";
-			echo "<a href='$page?ele_login=$ele_login'>".htmlentities("$ele_nom $ele_prenom")."</a>";
+			echo "<a href='$page?ele_login=$ele_login'>".htmlspecialchars("$ele_nom $ele_prenom")."</a>";
 
 			$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.login='$ele_login' AND c.id=jec.id_classe ORDER BY jec.periode;";
 			$res_clas=mysql_query($sql);
@@ -121,7 +114,7 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 				while($lig_clas=mysql_fetch_object($res_clas)) {
 					if($cpt>0) {echo ", ";}
 					//echo $lig_clas->classe;
-					echo htmlentities($lig_clas->classe);
+					echo htmlspecialchars($lig_clas->classe);
 					$cpt++;
 				}
 				//echo "</i>)";

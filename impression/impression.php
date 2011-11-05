@@ -174,17 +174,17 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez im
 						}
 						$cpt++;
 					}
-					$chaine_class=substr($chaine_class,1);
+					$chaine_class=mb_substr($chaine_class,1);
 
 				}
 
 				echo "<td>\n";
-				echo "<b>".htmlentities($lig_grp->description)."</b> ($chaine_class) : ";
+				echo "<b>".htmlspecialchars($lig_grp->description)."</b> ($chaine_class) : ";
 				echo "</td>\n";
 				for($i=0;$i<count($tabnumper);$i++){
 					if($i>0){echo "<td> - </td>\n";}
 					echo "<td>\n";
-					echo htmlentities($tabnomper[$i])." : Tri <a href='liste_pdf.php?id_groupe=$lig_grp->id&amp;periode_num=$tabnumper[$i]' target='_blank'>Alpha</a> - <a href='liste_pdf.php?id_groupe=$lig_grp->id&amp;periode_num=$tabnumper[$i]&amp;tri=classes' target='_blank'>Classe</a>\n";
+					echo htmlspecialchars($tabnomper[$i])." : Tri <a href='liste_pdf.php?id_groupe=$lig_grp->id&amp;periode_num=$tabnumper[$i]' target='_blank'>Alpha</a> - <a href='liste_pdf.php?id_groupe=$lig_grp->id&amp;periode_num=$tabnumper[$i]&amp;tri=classes' target='_blank'>Classe</a>\n";
 					echo "</td>\n";
 				}
 				echo "</tr>\n";

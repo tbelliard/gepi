@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: import_class_csv.php 4374 2010-04-29 12:19:47Z crob $
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

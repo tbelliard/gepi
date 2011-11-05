@@ -1,6 +1,5 @@
 <?php
 /*
-* $Id: repartition_ele_grp.php 8445 2011-10-07 05:25:59Z crob $
 *
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *

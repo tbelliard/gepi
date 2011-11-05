@@ -2,7 +2,6 @@
 
 /*
  *
- * @version $Id: edt_calendrier.php 7007 2011-05-25 19:44:17Z adminpaulbert $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
@@ -382,8 +381,8 @@ if (isset($data['calendrier']) AND isset($data['modifier'])) {
 		$exp_jourfin = explode("-", $rep_modif["jourfin_calendrier"]);
 		$aff_jourfin = $exp_jourfin[2]."/".$exp_jourfin[1]."/".$exp_jourfin[0];
 			// On enlève les secondes à l'affichage des heures
-		$aff_heuredeb = substr($rep_modif["heuredebut_calendrier"], 0, -3);
-		$aff_heurefin = substr($rep_modif["heurefin_calendrier"], 0, -3);
+		$aff_heuredeb = mb_substr($rep_modif["heuredebut_calendrier"], 0, -3);
+		$aff_heurefin = mb_substr($rep_modif["heurefin_calendrier"], 0, -3);
 		
 		$req_periodes = mysql_query("SELECT nom_periode, num_periode FROM periodes WHERE id_classe = '1'");
 		$nbre_periodes = mysql_num_rows($req_periodes);	

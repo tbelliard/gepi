@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: import_app_cons.php 6611 2011-03-03 15:23:08Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

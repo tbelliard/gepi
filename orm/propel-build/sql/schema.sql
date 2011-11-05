@@ -143,7 +143,7 @@ CREATE TABLE periodes
 	verouiller VARCHAR(1) DEFAULT 'O' NOT NULL COMMENT 'Verrouillage de la periode : O pour verouillee, N pour non verrouillee, P pour partiel (pied de bulletin)',
 	id_classe INTEGER(11) NOT NULL COMMENT 'identifiant numerique de la classe.',
 	date_verrouillage DATETIME COMMENT 'date de verrouillage de la periode',
-	date_fin DATETIME COMMENT 'date de verrouillage de la periode',
+	date_fin DATETIME COMMENT 'date de fin de la periode (utilisé notamment pour le décompte des absences)',
 	PRIMARY KEY (num_periode,id_classe),
 	INDEX periodes_FI_1 (id_classe),
 	CONSTRAINT periodes_FK_1
@@ -191,7 +191,6 @@ CREATE TABLE j_groupes_classes
 	valeur_ects DECIMAL COMMENT 'Valeur par défaut des ECTS pour cet enseignement',
 	PRIMARY KEY (id_groupe,id_classe),
 	INDEX j_groupes_classes_FI_2 (id_classe),
-	INDEX j_groupes_classes_FI_3 (categorie_id),
 	CONSTRAINT j_groupes_classes_FK_1
 		FOREIGN KEY (id_groupe)
 		REFERENCES groupes (id)
@@ -199,10 +198,7 @@ CREATE TABLE j_groupes_classes
 	CONSTRAINT j_groupes_classes_FK_2
 		FOREIGN KEY (id_classe)
 		REFERENCES classes (id)
-		ON DELETE CASCADE,
-	CONSTRAINT j_groupes_classes_FK_3
-		FOREIGN KEY (categorie_id)
-		REFERENCES matieres_categories (id)
+		ON DELETE CASCADE
 ) ENGINE=MyISAM COMMENT='Table permettant la jointure entre groupe d\'enseignement et une classe. Cette jointure permet de definir un enseignement, c\'est à dire un groupe d\'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe';
 
 -- ---------------------------------------------------------------------
@@ -493,10 +489,8 @@ CREATE TABLE j_eleves_professeurs
 (
 	login VARCHAR(50) NOT NULL COMMENT 'cle etrangere, login de l\'eleve',
 	professeur VARCHAR(50) NOT NULL COMMENT 'cle etrangere, login du professeur (utilisateur professionnel)',
-	id_classe INTEGER(11) NOT NULL COMMENT 'cle etrangere, id de la classe',
-	PRIMARY KEY (login,professeur,id_classe),
+	PRIMARY KEY (login,professeur),
 	INDEX j_eleves_professeurs_FI_2 (professeur),
-	INDEX j_eleves_professeurs_FI_3 (id_classe),
 	CONSTRAINT j_eleves_professeurs_FK_1
 		FOREIGN KEY (login)
 		REFERENCES eleves (login)
@@ -504,10 +498,6 @@ CREATE TABLE j_eleves_professeurs
 	CONSTRAINT j_eleves_professeurs_FK_2
 		FOREIGN KEY (professeur)
 		REFERENCES utilisateurs (login)
-		ON DELETE CASCADE,
-	CONSTRAINT j_eleves_professeurs_FK_3
-		FOREIGN KEY (id_classe)
-		REFERENCES classes (id)
 		ON DELETE CASCADE
 ) ENGINE=MyISAM COMMENT='Table de jointure entre les professeurs principaux et les eleves';
 
@@ -539,8 +529,8 @@ CREATE TABLE responsables2
 (
 	ele_id VARCHAR(10) NOT NULL COMMENT 'cle etrangere, ele_id de l\'eleve',
 	pers_id VARCHAR(10) NOT NULL COMMENT 'cle etrangere vers le responsable',
-	resp_legal VARCHAR(1) NOT NULL COMMENT 'Niveau de responsabilite du responsable legal',
-	pers_contact VARCHAR(1) NOT NULL,
+	resp_legal VARCHAR(1) NOT NULL COMMENT 'Niveau de responsabilite',
+	pers_contact VARCHAR(1) COMMENT 'Champ sconet non utilise',
 	PRIMARY KEY (ele_id,resp_legal),
 	INDEX responsables2_FI_2 (pers_id),
 	CONSTRAINT responsables2_FK_1
@@ -596,7 +586,7 @@ CREATE TABLE resp_adr
 	pays VARCHAR(50) NOT NULL COMMENT 'Pays (quand il est autre que France)',
 	commune VARCHAR(50) NOT NULL COMMENT 'Commune de residence',
 	PRIMARY KEY (adr_id)
-) ENGINE=MyISAM COMMENT='Table de jointure entre les responsables legaux et leur adresse';
+) ENGINE=MyISAM COMMENT='Adresse';
 
 -- ---------------------------------------------------------------------
 -- j_eleves_etablissements
@@ -645,7 +635,7 @@ DROP TABLE IF EXISTS aid;
 
 CREATE TABLE aid
 (
-	id VARCHAR(100) NOT NULL AUTO_INCREMENT COMMENT 'cle primaire auto-incremente',
+	id VARCHAR(100) NOT NULL COMMENT 'cle primaire auto-incremente',
 	nom VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'Nom de l\'AID',
 	numero VARCHAR(8) DEFAULT '0' NOT NULL COMMENT 'Numero d\'ordre d\'affichage',
 	indice_aid INTEGER(11) DEFAULT 0 NOT NULL COMMENT 'Cle etrangere, vers la liste des categories d\'AID (aid_config)',
@@ -1055,10 +1045,10 @@ CREATE TABLE a_agregation_decompte
 	eleve_id INTEGER(11) NOT NULL COMMENT 'id de l\'eleve',
 	date_demi_jounee DATETIME DEFAULT '0000-00-00 00:00:00' NOT NULL COMMENT 'Date de la demi journée agrégée : 00:00 pour une matinée, 12:00 pour une après midi',
 	manquement_obligation_presence TINYINT DEFAULT 0 COMMENT 'Cette demi journée est comptée comme absence',
-	justifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journée est compté comme absence, y a-t-il une justification',
+	non_justifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journée est compté comme absence, y a-t-il une justification',
 	notifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journée est compté comme absence, y a-t-il une notification à la famille',
-	nb_retards INTEGER DEFAULT 0 COMMENT 'Nombre de retards décomptés dans la demi journée',
-	nb_retards_justifies INTEGER DEFAULT 0 COMMENT 'Nombre de retards justifiés décomptés dans la demi journée',
+	retards INTEGER DEFAULT 0 COMMENT 'Nombre de retards total décomptés dans la demi journée',
+	retards_non_justifies INTEGER DEFAULT 0 COMMENT 'Nombre de retards non justifiés décomptés dans la demi journée',
 	motifs_absences TEXT COMMENT 'Liste des motifs (table a_motifs) associés à cette demi-journée d\'absence',
 	motifs_retards TEXT COMMENT 'Liste des motifs (table a_motifs) associés aux retard de cette demi-journée',
 	created_at DATETIME,

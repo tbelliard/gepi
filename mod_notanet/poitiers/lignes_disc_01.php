@@ -1,5 +1,5 @@
 <?php
-	/* $Id: lignes_disc_01.php 6936 2011-05-17 15:26:38Z crob $ */
+	/* $Id$ */
 
 	echo "<tr>\n";
 
@@ -77,18 +77,15 @@
 				//if(ctype_digit($tabmatieres[$j]['fb_col'][1])){$SUR_TOTAL[1]+=$tabmatieres[$j]['fb_col'][1];}
 				//if(ctype_digit($tabmatieres[$j]['fb_col'][2])){$SUR_TOTAL[2]+=$tabmatieres[$j]['fb_col'][2];}
 
-				/*
-				if(strlen(my_ereg_replace("[0-9]","",$tabmatieres[$j]['fb_col'][1]))==0){$SUR_TOTAL[1]+=$tabmatieres[$j]['fb_col'][1];}
-				if(strlen(my_ereg_replace("[0-9]","",$tabmatieres[$j]['fb_col'][2]))==0){$SUR_TOTAL[2]+=$tabmatieres[$j]['fb_col'][2];}
-				*/
+				
 
 				// ************************************
 				// A REVOIR
 				// PROBLEME AVEC CES TOTAUX: SI UN ELEVE EST AB, DI ou NN, IL NE FAUDRAIT PAS AUGMENTER???...
-				if((strlen(my_ereg_replace("[0-9]","",$tabmatieres[$j]['fb_col'][1]))==0)&&($tabmatieres[$j][-1]!='PTSUP')){
+				if((mb_strlen(my_ereg_replace("[0-9]","",$tabmatieres[$j]['fb_col'][1]))==0)&&($tabmatieres[$j][-1]!='PTSUP')){
 					$SUR_TOTAL[1]+=$tabmatieres[$j]['fb_col'][1];
 				}
-				if((strlen(my_ereg_replace("[0-9]","",$tabmatieres[$j]['fb_col'][2]))==0)&&($tabmatieres[$j][-1]!='PTSUP')){
+				if((mb_strlen(my_ereg_replace("[0-9]","",$tabmatieres[$j]['fb_col'][2]))==0)&&($tabmatieres[$j][-1]!='PTSUP')){
 					$SUR_TOTAL[2]+=$tabmatieres[$j]['fb_col'][2];
 				}
 				// ************************************
@@ -190,7 +187,7 @@
 
 						//echo ": ".$lig_mat_fac->mat;
 					}
-					elseif(substr(ucfirst(strtolower($tabmatieres[$j][0])),0,14)=='Langue vivante') {
+					elseif(mb_substr(ucfirst(strtolower($tabmatieres[$j][0])),0,14)=='Langue vivante') {
 						echo "<p class='discipline'>";
 						echo ucfirst(accent_min(strtolower($tabmatieres[$j][0])))." : ";
 
@@ -628,50 +625,7 @@
 			// CAS PARTICULIER DE LA LIGNE DECOUVERTE PROFESSIONNELLE INUTILE MAIS PRESENTE POUR LES SERIES TECHNOLOGIQUE SANS DP6 ET PROFESSIONNELLE SANS DP6
 
 			// CETTE LIGNE SPECIALE N'EST PLUS UTILISEE
-			/*
-			if(isset($tabmatieres[$j]["lig_speciale"])) {
-				echo "<tr>\n";
-
-				if(strlen(my_ereg_replace("[0-9]","",$tabmatieres[$j]['fb_col'][2]))==0){
-					$SUR_TOTAL[2]+=$tabmatieres[$j]['fb_col'][2];
-				}
-
-				// Discipline
-				echo "<td style='border: 1px solid black; text-align:left;'>\n";
-				echo "<p class='discipline'>";
-				echo ucfirst(strtolower($tabmatieres[$j]["lig_speciale"]));
-				echo "</p>\n";
-				echo "</td>\n";
-
-				// Moyenne classe
-				echo "<td style='border: 1px solid black; text-align:center;'>\n";
-				echo "&nbsp;";
-				echo "</td>\n";
-
-				// Moyenne élève
-				echo "<td style='border: 1px solid black; text-align:center;'>\n";
-				echo "&nbsp;";
-				echo "</td>\n";
-
-				// Appréciation
-				echo "<td style='border: 1px solid black; text-align:center;'>\n";
-				echo "&nbsp;";
-				echo "</td>\n";
-
-
-				echo "<td style='border: 1px solid black; text-align:center; background-color: gray;'>\n";
-				echo "&nbsp;";
-				echo "</td>\n";
-
-				echo "<td style='border: 1px solid black; text-align:right;'>\n";
-				echo "&nbsp;";
-				echo " / ".$tabmatieres[$j]['fb_col'][2];
-				echo "</td>\n";
-
-				echo "</tr>\n";
-
-			}
-			*/
+			
 			// Fin du isset($tabmatieres[$j]["lig_speciale"])
 		}
 	}

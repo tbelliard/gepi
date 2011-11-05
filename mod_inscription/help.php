@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: help.php 4950 2010-07-29 13:10:01Z regis $
  *
  * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *

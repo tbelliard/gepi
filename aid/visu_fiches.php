@@ -1,7 +1,5 @@
 <?php
 /*
- * $Id: visu_fiches.php 4590 2010-06-18 07:27:33Z delineau $
- *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.

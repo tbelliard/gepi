@@ -3,7 +3,6 @@
 /**
  *
  *
- * @version $Id: transferer_edt.php $
  *
  * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *

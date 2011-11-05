@@ -3,7 +3,7 @@
 /**
  *
  *
- * @version $Id: bilan_absences_classe.php 1427 2008-01-30 10:36:23Z jjocal $
+ * @version $Id$
  * @copyright 2007
  */
 

@@ -1,5 +1,5 @@
 <?php
-/* $Id: extract_moy.php 7260 2011-06-19 13:12:04Z crob $ */
+/* $Id$ */
 /*
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -476,7 +476,7 @@ function retablir_notes_enregistrees() {
 			$sql="DELETE FROM notanet;";
 			$nettoyage=mysql_query($sql);
 		}
-		elseif((preg_match("/[0-9]/",$extract_mode))&&(strlen(preg_replace("/[0-9]/","",$extract_mode))==0)) {
+		elseif((preg_match("/[0-9]/",$extract_mode))&&(mb_strlen(preg_replace("/[0-9]/","",$extract_mode))==0)) {
 			$sql="SELECT login FROM notanet_ele_type WHERE type_brevet='$extract_mode';";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)>0) {
@@ -589,7 +589,7 @@ function retablir_notes_enregistrees() {
 												}
 											}
 											if($test_valeur_speciale_autorisee!="oui"){
-												if(strlen(preg_replace("/[0-9\.]/","",$moy[$j][$k][$m]))!=0){
+												if(mb_strlen(preg_replace("/[0-9\.]/","",$moy[$j][$k][$m]))!=0){
 													echo "<br /><span style='color:red'>ERREUR</span>: La valeur saisie n'est pas valide: ";
 													echo $id_matiere[$j][$k]."=".$moy[$j][$k][$m];
 													echo "<br />\n";
@@ -657,7 +657,7 @@ function retablir_notes_enregistrees() {
 											}
 										}
 										if($test_valeur_speciale_autorisee!="oui"){
-											if(strlen(preg_replace("/[0-9\.]/","",$moy[$j][$k][$m]))!=0){
+											if(mb_strlen(preg_replace("/[0-9\.]/","",$moy[$j][$k][$m]))!=0){
 												echo "<br /><span style='color:red'>ERREUR</span>: La valeur saisie n'est pas valide: ";
 												echo $tabmatieres[$j][0]."=".$moy[$j][$k][$m];
 												echo "<br />\n";

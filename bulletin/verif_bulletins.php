@@ -1,8 +1,8 @@
 <?php
 /*
-* $Id: verif_bulletins.php 8452 2011-10-07 11:58:03Z crob $
+* $Id$
 *
-* Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -652,7 +652,7 @@ if (!(isset($id_classe))) {
 						// MODIF: boireaus
 						// Pour les matières comme Histoire & Géo,...
 						//echo "<br />--> " . $current_group["description"] . " (" . $current_group["classlist_string"] . ")  --  (";
-						echo "<br />--> " . htmlentities($current_group["description"]) . " (" . $current_group["classlist_string"] . ")  --  (";
+						echo "<br />--> " . htmlspecialchars($current_group["description"]) . " (" . $current_group["classlist_string"] . ")  --  (";
 						//============================================
 						$m=0;
 						$virgule = 1;
@@ -676,17 +676,17 @@ if (!(isset($id_classe))) {
 								//echo "\$tab_alerte_prof[$login_prof]['groupe'][$group_id]['info']=".$tab_alerte_prof["$login_prof"]['groupe'][$group_id]['info']."<br />";
 							}
 
-							$tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante'][]=strtoupper($eleve_nom[$j])." ".ucfirst(strtolower($eleve_prenom[$j]));
+							$tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante'][]=my_strtoupper($eleve_nom[$j])." ".casse_mot($eleve_prenom[$j],'majf2');
 							//echo "\$tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante'][]=".strtoupper($eleve_nom[$j])." ".ucfirst(strtolower($eleve_prenom[$j]))."<br />";
 
 							//if($email!="") {
 							if(($email!="")&&(check_mail($email))) {
 								$sujet_mail="[Gepi]: Appreciation non remplie: ".$id_eleve[$j];
 								$message_mail="Bonjour,\r\n\r\nCordialement";
-								echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
+								echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof)."</a>";
 							}
 							else{
-								echo ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof);
+								echo casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof);
 							}
 							$m++;
 							if ($m == count($current_group["profs"]["list"])) {$virgule = 0;}
@@ -735,7 +735,7 @@ if (!(isset($id_classe))) {
 						// MODIF: boireaus
 						// Pour les matières comme Histoire & Géo,...
 						//echo "<br />--> " . $current_group["description"] . " (" . $current_group["classlist_string"] . ")  --  (";
-						echo "<br />--> ".htmlentities($current_group["description"])." (" . $current_group["classlist_string"] . ")  --   (";
+						echo "<br />--> ".htmlspecialchars($current_group["description"])." (" . $current_group["classlist_string"] . ")  --   (";
 						//============================================
 						$m=0;
 						$virgule = 1;
@@ -760,17 +760,17 @@ if (!(isset($id_classe))) {
 								//echo "\$tab_alerte_prof[$login_prof]['groupe'][$group_id]['info']=".$tab_alerte_prof["$login_prof"]['groupe'][$group_id]['info']."<br />";
 							}
 
-							$tab_alerte_prof[$login_prof]['groupe'][$group_id]['moy_manquante'][]=strtoupper($eleve_nom[$j])." ".ucfirst(strtolower($eleve_prenom[$j]));
+							$tab_alerte_prof[$login_prof]['groupe'][$group_id]['moy_manquante'][]=my_strtoupper($eleve_nom[$j])." ".casse_mot($eleve_prenom[$j],'majf2');
 							//echo "\$tab_alerte_prof[$login_prof]['groupe'][$group_id]['moy_manquante'][]=".strtoupper($eleve_nom[$j])." ".ucfirst(strtolower($eleve_prenom[$j]))."<br />";
 
 							//if($email!="") {
 							if(($email!="")&&(check_mail($email))) {
 								$sujet_mail="[Gepi]: Moyenne manquante: ".$eleve_nom[$j];
 								$message_mail="Bonjour,\r\n\r\nCordialement";
-								echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
+								echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof)."</a>";
 							}
 							else{
-								echo ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof);
+								echo casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof);
 							}
 							$m++;
 							if ($m == count($current_group["profs"]["list"])) {$virgule = 0;}
@@ -818,10 +818,10 @@ if (!(isset($id_classe))) {
 					if(($email!="")&&(check_mail($email))) {
 						$sujet_mail="[Gepi]: Avis du conseil manquant: ".$id_eleve[$j];
 						$message_mail="Bonjour,\r\n\r\nCordialement";
-						echo "(<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>)";
+						echo "(<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof)."</a>)";
 					}
 					else{
-						echo "(".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof).")";
+						echo "(".casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof).")";
 					}
 
 				} else {
@@ -884,10 +884,10 @@ if (!(isset($id_classe))) {
 								if(($email!="")&&(check_mail($email))) {
 									$sujet_mail="[Gepi]: Appreciation AID manquante: ".$eleve_nom[$j];
 									$message_mail="Bonjour,\r\n\r\nCordialement";
-									echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
+									echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof)."</a>";
 								}
 								else{
-									echo ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof);
+									echo casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof);
 								}
 								$m++;
 								if ($m == $nb_prof) {$virgule = 0;}
@@ -932,10 +932,10 @@ if (!(isset($id_classe))) {
 									if(($email!="")&&(check_mail($email))) {
 										$sujet_mail="[Gepi]: Moyenne AID manquante: ".$eleve_nom[$j];
 										$message_mail="Bonjour,\r\n\r\nCordialement";
-										echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
+										echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof)."</a>";
 									}
 									else{
-										echo ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof);
+										echo casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof);
 									}
 									$m++;
 									if ($m == $nb_prof) {$virgule = 0;}
@@ -986,10 +986,10 @@ if (!(isset($id_classe))) {
 					if(($email!="")&&(check_mail($email))) {
 						$sujet_mail="[Gepi]: Absences non remplies: ".$id_eleve[$j];
 						$message_mail="Bonjour,\r\n\r\nCordialement";
-						echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
+						echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof)."</a>";
 					}
 					else{
-						echo ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof);
+						echo casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof);
 					}
 					$m++;
 					if ($m == $nb_prof) {$virgule = 0;}
@@ -1036,10 +1036,10 @@ if (!(isset($id_classe))) {
                             if(($email!="")&&(check_mail($email))) {
 								$sujet_mail="[Gepi]: ECTS non remplis: ".$eleve_nom[$j];
 								$message_mail="Bonjour,\r\n\r\nCordialement";
-								echo " (<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>)";
+								echo " (<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof)."</a>)";
                             }
                             else{
-                                echo " (".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof).")";
+                                echo " (".casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof).")";
                             }
 
                         } else {

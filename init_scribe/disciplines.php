@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: disciplines.php 7858 2011-08-21 13:12:55Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -86,9 +85,9 @@ if (isset($_POST['is_posted'])) {
             }
 
             if (!in_array($matiere, $matieres)) {
-                $reg_matiere = mysql_query("INSERT INTO matieres SET matiere='".$matiere."',nom_complet='".htmlentities($_POST['reg_nom_complet'][$matiere])."', priority='11',matiere_aid='n',matiere_atelier='n'");
+                $reg_matiere = mysql_query("INSERT INTO matieres SET matiere='".$matiere."',nom_complet='".($_POST['reg_nom_complet'][$matiere])."', priority='11',matiere_aid='n',matiere_atelier='n'");
             } else {
-                $reg_matiere = mysql_query("UPDATE matieres SET nom_complet='".htmlentities($_POST['reg_nom_complet'][$matiere])."' WHERE matiere = '" . $matiere . "'");
+                $reg_matiere = mysql_query("UPDATE matieres SET nom_complet='".($_POST['reg_nom_complet'][$matiere])."' WHERE matiere = '" . $matiere . "'");
             }
             if (!$reg_matiere) echo "<p>Erreur lors de l'enregistrement de la matière $matiere.";
             $new_matieres[] = $matiere;
@@ -135,7 +134,7 @@ if (isset($_POST['is_posted'])) {
                 $matiere = $info[$i]["cn"][0];
                 $matiere = traitement_magic_quotes(corriger_caracteres(trim($matiere)));
                 $nom_court = preg_replace("/[^A-Za-z0-9.\-]/","",strtoupper($matiere));
-                $nom_long = htmlentities($matiere);
+                $nom_long = htmlspecialchars($matiere);
                 $test_exist = mysql_query("SELECT * FROM matieres WHERE matiere='$nom_court'");
                 $nb_test_matiere_exist = mysql_num_rows($test_exist);
 

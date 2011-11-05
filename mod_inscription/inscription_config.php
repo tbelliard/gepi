@@ -1,6 +1,5 @@
 <?php
 /*
- * $Id: inscription_config.php 6608 2011-03-03 14:50:57Z crob $
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -120,9 +119,9 @@ if (isset($_GET['action']) and ($_GET['action'] == "ajout")) {
 
     if (isset($id_inter)) {
         $req = mysql_query("select * from inscription_items where id='".$id_inter."'");
-        $date = htmlentities(@mysql_result($req, 0, "date"));
-        $heure = htmlentities(@mysql_result($req, 0, "heure"));
-        $description = htmlentities(@mysql_result($req, 0, "description"));
+        $date = htmlspecialchars(@mysql_result($req, 0, "date"));
+        $heure = htmlspecialchars(@mysql_result($req, 0, "heure"));
+        $description = htmlspecialchars(@mysql_result($req, 0, "description"));
         echo "<input type=\"hidden\" name=\"is_posted\" value=\"modif\" />\n";
         echo "<input type=\"hidden\" name=\"id_inter\" value=\"".$id_inter."\" />\n";
     } else {
@@ -180,9 +179,9 @@ if ($nombre_lignes != 0) {
     $heure = mysql_result($call_data, $i, "heure");
     $description = mysql_result($call_data, $i, "description");
 
-    $day = substr($date, 8, 2);
-    $month = substr($date, 5, 2);
-    $year = substr($date, 0, 4);
+    $day = mb_substr($date, 8, 2);
+    $month = mb_substr($date, 5, 2);
+    $year = mb_substr($date, 0, 4);
     $date = mktime(0,0,0,$month,$day,$year);
     $date = strftime("%A %d %B %Y", $date);
 
