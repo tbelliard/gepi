@@ -1559,10 +1559,20 @@ function ensure_ascii($chaine){
  * @param type $chaine La chaine à traiter
  * @return La chaine corrigée
  */
-function nettoyer_caracteres_nom($chaine){
+function nettoyer_caracteres_nom($chaine, $mode="a", $chaine_autres_caracteres_acceptes="", $caractere_remplacement="") {
 	global $liste_caracteres_accentues;
-    //return preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe",preg_replace("/[^A-Za-z$liste_caracteres_accentues \-]/", "", $chaine)))));
-	return preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe",trim(ensure_utf8($chaine))))));
+
+	$retour=preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe",trim(ensure_utf8($chaine))))));
+
+	// Le /u sur les preg_replace permet de traiter correctement des chaines utf8
+	if($mode=='a') {
+		$retour=preg_replace("/[^A-Za-z".$liste_caracteres_accentues.$chaine_autres_caracteres_acceptes."]/u","$caractere_remplacement", $retour);
+	}
+	elseif($mode=='an') {
+		$retour=preg_replace("/[^A-Za-z0-9".$liste_caracteres_accentues.$chaine_autres_caracteres_acceptes."]/u","$caractere_remplacement", $retour);
+	}
+
+	return $retour;
 }
 
 
