@@ -55,16 +55,18 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == 1)) {
     if ($_POST['confirm']=='Oui') {
 		check_token(false);
 
-		echo add_token_field();
         ?>
         <center><p class='grand'><font color='red'><b>ATTENTION, la suppression des données est irréversible !</b></font></p>
         <form action="efface_base.php" method="post" name="formulaire">
-        <!--table border = 10 bordercolor='red'-->
-        <!--table style='border:10px solid red'-->
+		<?php
+			echo add_token_field();
+		?>
         <table class='bordercolor10'>
         <tr><td><INPUT TYPE=SUBMIT value ="EFFACER LES DONNEES <?php echo my_strtoupper($gepiSettings['denomination_eleves']);?>" /></td></tr></table>
         <INPUT TYPE=HIDDEN name=is_posted value = 2 />
-        </FORM></center>
+        </form>
+		<p><br /></p>
+		</center>
         <?php
     }
 }
@@ -85,14 +87,17 @@ if (!isset($_POST['is_posted'])) {
     <li>Les cahiers de texte</li>
     </ul>";
 
+    echo "<p><b>Etes-vous sûr de vouloir continuer ?</b></p>";
+    echo "<form action=\"efface_base.php\" method=\"post\" name=\"formulaire\">";
 
 	echo add_token_field();
 
-    echo "<p><b>Etes-vous sûr de vouloir continuer ?</b></p>";
-    echo "<form action=\"efface_base.php\" method=\"post\" name=\"formulaire\">";
     echo "<INPUT TYPE=HIDDEN name=is_posted value = '1' /> ";
+	echo "<p>";
     echo "<INPUT TYPE=SUBMIT name='confirm' value = 'Oui' />";
-    echo "<INPUT TYPE=SUBMIT name='confirm' value = 'Non' />";
+    echo " <INPUT TYPE=SUBMIT name='confirm' value = 'Non' />";
+	echo "</p>";
+	echo "<p><br /></p>";
     echo "</FORM>";
 
 }
