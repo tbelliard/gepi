@@ -878,7 +878,7 @@ if($temoin==1){
 								$tabligne=explode(";",$ligne);
 								for($i = 0; $i < count($tabchamps); $i++) {
 									//$ind = $tabindice[$i];
-									$affiche[$i] = preg_replace("/[^0-9]/",""$tabligne[$tabindice[$i]]);
+									$affiche[$i] = preg_replace("/[^0-9]/","",$tabligne[$tabindice[$i]]);
 								}
 								$sql="insert into responsables2 set
 											ele_id = '$affiche[0]',
