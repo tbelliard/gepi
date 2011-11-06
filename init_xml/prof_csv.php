@@ -131,8 +131,7 @@ if (!isset($is_posted)) {
 
 	if (getSettingValue("use_ent") == "y") {
 		echo "<input type='radio' name='login_gen_type' id='login_gen_type_ent' value='ent' checked=\"checked\" />\n";
-		echo "<label for='login_gen_type_ent'  style='cursor: pointer;'>
-			Les logins sont produits par un ENT (<span title=\"Vous devez adapter le code du fichier ci-dessus vers la ligne 710.\">Attention !</span>)</label>\n";
+		echo "<label for='login_gen_type_ent'  style='cursor: pointer;'>Les logins sont produits par un ENT (<span title=\"cette case permet l'utilisation de la table 'ldap_bx', assurez vous qu'elle soit remplie avec les bonnes informations.\">Attention !</span>)</label>\n";
 		echo "<br />\n";
 	}
 	echo "<br />\n";
