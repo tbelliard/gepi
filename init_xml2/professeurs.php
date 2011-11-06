@@ -190,9 +190,8 @@ if (!isset($is_posted)) {
 	echo "<br /><br /><p>Quelle formule appliquer pour la génération du login ?</p>\n";
 
 	if(getSettingValue("use_ent")!='y') {
-		//$default_login_gen_type=getSettingValue('login_gen_type');
 		$default_login_gen_type=getSettingValue('mode_generation_login');
-		if($default_login_gen_type=='') {$default_login_gen_type='name';}
+		if(($default_login_gen_type=='')||(!check_format_login($default_login_gen_type))) {$default_login_gen_type='nnnnnnnnnnnnnnnnnnnn';}
 	}
 	else {
 		$default_login_gen_type="";
@@ -202,63 +201,8 @@ if (!isset($is_posted)) {
 		echo "<span style='color:red'>Votre Gepi utilise une authentification LCS; Le format de login ci-dessous ne sera pas pris en compte. Les comptes doivent avoir été importés dans l'annuaire LDAP du LCS avant d'effectuer l'import dans GEPI.</span><br />\n";
 	}
 
-	echo champs_radio_choix_format_login('login_gen_type', $default_login_gen_type);
-	/*
-	echo "<input type='radio' name='login_gen_type' id='login_gen_type_name' value='name' ";
-	if($default_login_gen_type=='name') {
-		echo "checked ";
-	}
-	echo "/> <label for='login_gen_type_name'  style='cursor: pointer;'>nom</label>\n";
-	echo "<br />\n";
-
-	echo "<input type='radio' name='login_gen_type' id='login_gen_type_name8' value='name8' ";
-	if($default_login_gen_type=='name8') {
-		echo "checked ";
-	}
-	echo "/> <label for='login_gen_type_name8'  style='cursor: pointer;'>nom (<em>tronqué à 8 caractères</em>)</label>\n";
-	echo "<br />";
-
-	echo "<input type='radio' name='login_gen_type' id='login_gen_type_fname8' value='fname8' ";
-	if($default_login_gen_type=='fname8') {
-		echo "checked ";
-	}
-	echo "/> <label for='login_gen_type_fname8'  style='cursor: pointer;'>pnom (<em>tronqué à 8 caractères</em>)</label>\n";
-	echo "<br />\n";
-
-	echo "<input type='radio' name='login_gen_type' id='login_gen_type_fname19' value='fname19' ";
-	if($default_login_gen_type=='fname19') {
-		echo "checked ";
-	}
-	echo "/> <label for='login_gen_type_fname19'  style='cursor: pointer;'>pnom (<em>tronqué à 19 caractères</em>)</label>\n";
-	echo "<br />\n";
-
-	echo "<input type='radio' name='login_gen_type' id='login_gen_type_firstdotname' value='firstdotname' ";
-	if($default_login_gen_type=='firstdotname') {
-		echo "checked ";
-	}
-	echo "/> <label for='login_gen_type_firstdotname'  style='cursor: pointer;'>prenom.nom</label>\n";
-	echo "<br />\n";
-
-	echo "<input type='radio' name='login_gen_type' id='login_gen_type_firstdotname19' value='firstdotname19' ";
-	if($default_login_gen_type=='firstdotname19') {
-		echo "checked ";
-	}
-	echo "/> <label for='login_gen_type_firstdotname19'  style='cursor: pointer;'>prenom.nom (<em>tronqué à 19 caractères</em>)</label>\n";
-	echo "<br />\n";
-
-	echo "<input type='radio' name='login_gen_type' id='login_gen_type_namef8' value='namef8' ";
-	if($default_login_gen_type=='namef8') {
-		echo "checked ";
-	}
-	echo "/> <label for='login_gen_type_namef8'  style='cursor: pointer;'>nomp (<em>tronqué à 8 caractères</em>)</label>\n";
-	echo "<br />\n";
-
-	echo "<input type='radio' name='login_gen_type' id='login_gen_type_lcs' value='lcs' ";
-	if($default_login_gen_type=='lcs') {
-		echo "checked ";
-	}
-	echo "/> <label for='login_gen_type_lcs'  style='cursor: pointer;'>pnom (<em>façon LCS</em>)</label>\n";
-	echo "<br />\n";
+	//echo champs_radio_choix_format_login('login_gen_type', $default_login_gen_type);
+	echo champ_input_choix_format_login('login_gen_type', $default_login_gen_type);
 
 	if (getSettingValue("use_ent") == "y") {
 		echo "<input type='radio' name='login_gen_type' id='login_gen_type_ent' value='ent' checked=\"checked\" />\n";
@@ -267,7 +211,6 @@ if (!isset($is_posted)) {
 		echo "<br />\n";
 	}
 	echo "<br />\n";
-	*/
 
 	// Modifications jjocal dans le cas où c'est un serveur CAS qui s'occupe de tout
 	if((getSettingValue("use_sso") == "cas")||(getSettingValue('auth_sso')=="lcs")) {
@@ -634,7 +577,7 @@ else {
 							}
 						}
 						else {
-							$temp1=generate_unique_login($prof[$k]["nom_usage"], $prof[$k]["prenom"], $_POST['login_gen_type']);
+							$temp1=generate_unique_login($prof[$k]["nom_usage"], $prof[$k]["prenom"], $_POST['login_gen_type'], $_POST['login_gen_type_casse']);
 						}
 
 						if(getSettingValue('auth_sso')=='lcs') {

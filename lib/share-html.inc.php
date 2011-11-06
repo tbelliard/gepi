@@ -1705,4 +1705,110 @@ function champs_select_choix_format_login($nom_champ, $default_login_gen_type="n
 	return $retour;
 }
 
+
+/**
+ * Insère un champ input de choix du format de login
+ * @param string $nom_champ : le nom du champ de formulaire
+ * @param string $default_login_gen_type : le format par défaut
+ * @return string Le champ input
+*/
+function champ_input_choix_format_login($nom_champ, $default_login_gen_type="nnnnnnnnnnnnnnnnnnnn", $longueur_champ=20, $longueur_max_champ=48, $avec_infobulle_explication='y') {
+	global $posDiv_infobulle;
+	global $tabid_infobulle;
+	global $unite_div_infobulle;
+	global $niveau_arbo;
+	global $pas_de_decalage_infobulle;
+	global $class_special_infobulle;
+	global $tabdiv_infobulle;
+
+	$retour="<input type='text' name='$nom_champ' id='$nom_champ' value='$default_login_gen_type' size='$longueur_champ' maxlength='$longueur_max_champ' />\n";
+
+	if($avec_infobulle_explication=='y') {
+		$titre_infobulle="Formats de login";
+
+		$texte_infobulle="<h4>Contraintes sur le format</h4>
+<ul>
+	<li>Au maximum 48 caractères.</li>
+	<li>Au moins une lettre du prénom et une lettre du nom (<em>quel que soit l'ordre</em>).</li>
+	<li>Un caractère entre le prénom et le nom parmi \"<b>.-_</b>\", ou aucun.</li>
+</ul>
+<hr />
+<h4>Méthode employée</h4>
+<p>
+	Le modèle est indiqué à l'aide d'une suite de caractères.<br />
+	Exemples pour un utilisateur se nommant <b>Jean Aimarre</b>.
+</p>
+<ul>
+	<li>\"<b>ppp.nnnnnnnn</b>\" donnera \"<b>jea.aimarre</b>\"</li>
+
+	<li>\"<b>ppp-nnn</b>\" donnera \"<b>jea-aim</b>\"</li>
+	<li>\"<b>p_nnnnnnnnnnn</b>\" donnera \"<b>j_aimarre</b>\"</li>
+	<li>\"<b>pnnnnn</b>\" donnera \"<b>jaimar</b>\"</li>
+
+	<li>\"<b>nnnnnnnnp</b>\" donnera \"<b>aimarrej</b>\"</li>
+	<li>\"<b>n.ppp</b>\" donnera \"<b>a.jea</b>\"</li>
+</ul>\n";
+
+		$tabdiv_infobulle[]=creer_div_infobulle('div_explication_formats_login_'.$nom_champ,$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+		//$retour.=creer_div_infobulle('div_explication_formats_login',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+
+		$retour.=" <a href='#' onclick=\"afficher_div('div_explication_formats_login_$nom_champ','y',20,20); return false\" onmouseover=\"delais_afficher_div('div_explication_formats_login_$nom_champ','y',20,20,1000,20,20)\" onmouseout=\"cacher_div('div_explication_formats_login_.$nom_champ')\"><img src='../images/icons/ico_question_petit.png' width='15' height='15' /></a>";
+	}
+
+	$retour.="<br />\n";
+	$retour.="Casse du login&nbsp;: <label for='".$nom_champ."_casse_min'>minuscules</label><input type='radio' name='".$nom_champ."_casse' id='".$nom_champ."_casse_min' value='min' ";
+	if((getSettingValue($nom_champ.'_casse')=='min')||(getSettingValue($nom_champ.'_casse')=='')) {$retour.="checked ";}
+	$retour.="/> / \n";
+	$retour.="<input type='radio' name='".$nom_champ."_casse' id='".$nom_champ."_casse_maj' value='maj' ";
+	if(getSettingValue($nom_champ.'_casse')=='maj') {$retour.="checked ";}
+	$retour.="/><label for='".$nom_champ."_casse_maj'> majuscules</label>\n";
+
+	return $retour;
+}
+
+/**
+ * Test du format de login proposé
+ * @param string $format_login : le format de login proposé
+ * @return boolean : true/false selon que le format est valide ou non
+*/
+function check_format_login($format_login) {
+	if($format_login=="") {
+		$test_profil = false;
+	}
+	elseif(mb_strlen($format_login)>48) {
+		$test_profil = false;
+	}
+	else {
+		$test_profil = (preg_match("#^p*[._-]?n*$#", $format_login)) ? true : false;
+		$test_profil = (preg_match("#^n*[._-]?p*$#", $format_login)) ? true : $test_profil;
+	}
+	return $test_profil;
+}
+
+/**
+ * Test JavaScript du format de login proposé pour vérification avant submit
+ * @param string $nom_js_func : le nom de la fonction JS à insérer
+ * @param string $avec_balise_script 'n': On ne renvoye que le texte de la fonction
+ *                                   'y': On renvoye le texte entre balises <script>
+ * @return boolean : true/false selon que le format est valide ou non
+*/
+function insere_js_check_format_login($nom_js_func, $avec_balise_script="n") {
+	$retour="";
+	if($avec_balise_script!="n") {$retour.="<script type='text/javascript'>\n";}
+	$retour.="
+	function $nom_js_func(format) {
+		if((format=='')||(format.length>48)) {
+			test = false;
+		}
+		else {
+			var reg1 = new RegExp(\"^p*[._-]?n*$\",\"g\");
+			var reg2 = new RegExp(\"^n*[._-]?p*$\",\"g\");
+			test = ( reg1.test(format) || reg2.test(format) ) ? true : false ;
+		}
+		return test;
+	}\n";
+	if($avec_balise_script!="n") {$retour.="</script>\n";}
+	return $retour;
+}
+
 ?>

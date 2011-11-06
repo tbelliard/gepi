@@ -146,13 +146,13 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					else {
 						// Il faudrait alors proposer une alternative à ce cas et permettre de chercher à la main le bon responsable dans la source
 						//$reg_login = "erreur_".$k; // en attendant une solution viable, on génère le login du responsable
-						$reg_login = generate_unique_login($current_parent->nom, $current_parent->prenom, getSettingValue("mode_generation_login_responsable"));
+						$reg_login = generate_unique_login($current_parent->nom, $current_parent->prenom, getSettingValue("mode_generation_login_responsable"), getSettingValue("mode_generation_login_responsable_casse"));
 					}
 				}
 			} else {
 				// Création du compte utilisateur pour le responsable considéré
 				//echo "\$reg_login = generate_unique_login($current_parent->nom, $current_parent->prenom, ".getSettingValue("mode_generation_login").");<br />\n";
-				$reg_login = generate_unique_login($current_parent->nom, $current_parent->prenom, getSettingValue("mode_generation_login_responsable"));
+				$reg_login = generate_unique_login($current_parent->nom, $current_parent->prenom, getSettingValue("mode_generation_login_responsable"), getSettingValue("mode_generation_login_responsable_casse"));
 				// generate_unique_login() peut retourner 'false' en cas de pb
 			}
 

@@ -319,9 +319,13 @@ else {
 				}
 	
 				if($login_eleve=="") {
-					$login_ele_gen_type=getSettingValue('mode_generation_login_eleve');
-					if($login_ele_gen_type=='') {$login_ele_gen_type='name9_p';}
-					$login_eleve=generate_unique_login($reg_nom, $reg_prenom, $login_ele_gen_type, 'maj');
+					$default_login_gen_type=getSettingValue('mode_generation_login_eleve');
+					if(($default_login_gen_type=='')||(!check_format_login($default_login_gen_type))) {$default_login_gen_type='nnnnnnnnn_p';}
+
+					$default_login_gen_type_casse=getSettingValue('mode_generation_login_eleve_casse');
+					if(($default_login_gen_type_casse!='min')&&($default_login_gen_type_casse!='maj')) {$default_login_gen_type_casse='min';}
+
+					$login_eleve=generate_unique_login($reg_nom, $reg_prenom, $default_login_gen_type, $default_login_gen_type_casse);
 					if($debug_ele=='y') {echo "<span style='color:blue;'>Login nouvellement généré pour '$reg_nom $reg_prenom' : '$login_eleve'</span><br />";}
 				}
 	
@@ -343,6 +347,7 @@ else {
 					}
 					if($debug_ele=='y') {echo "<span style='color:lime;'>Login récupéré de ldap_bx : $login_eleve</span><br />";}
 				}
+
 				//echo "Avant auth_sso<br />";
 				//if(getSettingValue('use_sso')=="lcs") {
 				if(getSettingValue('auth_sso')=="lcs") {

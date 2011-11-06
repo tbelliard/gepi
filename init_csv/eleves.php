@@ -253,10 +253,15 @@ if (!isset($_POST["action"])) {
 				}
 	
 				if($reg_login=="") {
-					$login_ele_gen_type=getSettingValue('mode_generation_login_eleve');
-					if($login_ele_gen_type=='') {$login_ele_gen_type='name9_p';}
-					$reg_login=generate_unique_login($reg_nom, $reg_prenom, $login_ele_gen_type, 'maj');
-					if($debug_ele=='y') {echo "<span style='color:orange;'>Le login $reg_login est nouvellement généré</span><br />";}
+					$default_login_gen_type=getSettingValue('mode_generation_login_eleve');
+					if(($default_login_gen_type=='')||(!check_format_login($default_login_gen_type))) {$default_login_gen_type='nnnnnnnnn_p';}
+
+					$default_login_gen_type_casse=getSettingValue('mode_generation_login_eleve_casse');
+					if(($default_login_gen_type_casse!='min')&&($default_login_gen_type_casse!='maj')) {$default_login_gen_type_casse='min';}
+
+					//$reg_login=generate_unique_login($reg_nom, $reg_prenom, $default_login_gen_type, 'maj');
+					$reg_login=generate_unique_login($reg_nom, $reg_prenom, $default_login_gen_type, $default_login_gen_type_casse);
+					if($debug_ele=='y') {echo "<span style='color:blue;'>Login nouvellement généré pour '$reg_nom $reg_prenom' : '$reg_login'</span><br />";}
 				}
 
 				// Normalement on a maintenant un login dont on est sûr qu'il est unique...
