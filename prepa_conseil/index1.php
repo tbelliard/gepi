@@ -355,7 +355,8 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 			$pdf->SetXY($x2, $y2);
 
 			$largeur_dispo=$largeur_col[$i];
-			$texte=$tab[$i-1];
+			//$texte=$tab[$i-1];
+			$texte=stripslashes(preg_replace("/\\\\r\\\\n/","\r\n",$tab[$i-1]));
 			if(preg_match("/^App/", $ligne1_csv[$i])) {
 				cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$taille_min_police,'LRBT');
 			}
