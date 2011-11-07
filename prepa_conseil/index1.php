@@ -62,7 +62,7 @@ if (count($current_group["classes"]["list"]) > 1) {
     $order_by = "nom";
 }
 
-$couleur_alterne=isset($_POST['couleur_alterne']) ? $_POST['couleur_alterne'] : "n";
+$couleur_alterne=isset($_POST['couleur_alterne']) ? $_POST['couleur_alterne'] : (isset($_GET['couleur_alterne']) ? $_GET['couleur_alterne'] : "n");
 
 if((isset($_POST['col_tri']))&&($_POST['col_tri']==1)) {
 	$order_by = "nom";
@@ -106,6 +106,7 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='csv')) {
 	echo $fd;
 	die();
 }
+
 if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 
 	$now = gmdate('D, d M Y H:i:s') . ' GMT';
@@ -123,7 +124,6 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	//include("get_param_pdf.php");
 
 	// Extraire les infos générales sur l'établissement
-	//require("../bulletin/header_bulletin_pdf.php");
 
 	require('../fpdf/fpdf.php');
 	require('../fpdf/ex_fpdf.php');
@@ -138,14 +138,6 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	require_once("../bulletin/bulletin_donnees.php");
 
 	define('FPDF_FONTPATH','../fpdf/font/');
-	/*
-	define('TopMargin','5');
-	define('RightMargin','2');
-	define('LeftMargin','2');
-	define('BottomMargin','5');
-	define('LargeurPage','210');
-	define('HauteurPage','297');
-	*/
 	session_cache_limiter('private');
 
 	$X1 = 0; $Y1 = 0; $X2 = 0; $Y2 = 0;
@@ -260,7 +252,7 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	$graisse='B';
 	$alignement='C';
 	$bordure='';
-	cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$hauteur_caractere,$fonte,$graisse,$alignement,$bordure);
+	cell_ajustee_une_ligne(traite_accents_utf8(unhtmlentities($texte)),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$hauteur_caractere,$fonte,$graisse,$alignement,$bordure);
 	$y2=$y0+$h_ligne_titre_tableau;
 
 
@@ -275,7 +267,7 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	//$alignement='L';
 	$alignement='C';
 	$bordure='LRBT';
-	cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+	cell_ajustee_une_ligne(traite_accents_utf8(unhtmlentities($texte)),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 
 	$alignement='C';
 	$largeur_dispo=$largeur_col_nom_ele;
@@ -284,9 +276,11 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 		$pdf->SetXY($x2, $y2);
 		$largeur_dispo=$largeur_col[$i];
 
-		$texte=" ".$ligne1_csv[$i]." ";
+		//echo $ligne1_csv[$i]."<br />\n";
+
+		$texte=" ".unhtmlentities($ligne1_csv[$i])." ";
 		//cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$taille_min_police,'LRBT');
-		cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+		cell_ajustee_une_ligne(traite_accents_utf8(unhtmlentities($texte)),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 
 		$x2+=$largeur_dispo;
 	}
@@ -299,15 +293,8 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	$y2=$y2+$h_ligne_titre_tableau;
 	$k=1;
 	for($j=0;$j<count($lignes_csv);$j++) {
-		$tab=explode(";", $lignes_csv[$j]);
-		if(($tab[0]!='Moyenne')&&($tab[0]!='Min.')&&($tab[0]!='Max.')&&($tab[0]!='Quartile 1')&&($tab[0]!='Médiane')&&($tab[0]!='Quartile 3')) {
-			$h_ligne=$h_cell;
-			$graisse="";
-		}
-		else {
-			$h_ligne=$h_ligne_titre_tableau;
-			$graisse="B";
-		}
+		//$tab=explode(";", $lignes_csv[$j]);
+		$tab=explode(";", preg_replace("/&#039;/","'",unhtmlentities($lignes_csv[$j])));
 
 		//if($y0+$k*$h_cell>$hauteur_page-5-$h_cell) {
 		if($y2+$h_ligne>$hauteur_page-$marge_basse) {
@@ -324,7 +311,8 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 			//$alignement='L';
 			$alignement='C';
 			$bordure='LRBT';
-			cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+
+			cell_ajustee_une_ligne(traite_accents_utf8(unhtmlentities($texte)),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 		
 			$alignement='C';
 			$largeur_dispo=$largeur_col_nom_ele;
@@ -337,7 +325,7 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 				$texte=" ".$ligne1_csv[$i]." ";
 				//$texte=$ligne1_csv[$i];
 				//cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$taille_min_police,'LRBT');
-				cell_ajustee_une_ligne(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+				cell_ajustee_une_ligne(traite_accents_utf8(unhtmlentities($texte)),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
 		
 				$x2+=$largeur_dispo;
 			}
@@ -353,11 +341,24 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 		}
 		$x2=$x0;
 
+		if(($tab[0]!='Moyenne')&&($tab[0]!='Min.')&&($tab[0]!='Max.')&&($tab[0]!='Quartile 1')&&($tab[0]!='Médiane')&&($tab[0]!='Quartile 3')) {
+			$h_ligne=$h_cell;
+			$graisse="";
+		}
+		else {
+			$h_ligne=$h_ligne_titre_tableau;
+			$graisse="B";
+		}
+
 		for($i=1;$i<=count($ligne1_csv);$i++) {
 			$pdf->SetXY($x2, $y2);
 
 			$largeur_dispo=$largeur_col[$i];
-			$texte=$tab[$i-1];
+			//$texte=$tab[$i-1];
+			$texte=preg_replace("/\\\\r\\\\n/","\r\n",$tab[$i-1]);
+
+			//echo $texte."<br />\n";
+
 			if(preg_match("/^App/", $ligne1_csv[$i])) {
 				cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$taille_min_police,'LRBT');
 			}
@@ -372,13 +373,11 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	}
 
 	send_file_download_headers('application/pdf',$nom_fic);
+	//echo "plop";
 	$pdf->Output($nom_fic,'I');
 	die();
 }
 //=====================================================
-
-
-
 
 include "../lib/periodes.inc.php";
 //**************** EN-TETE *****************
@@ -486,13 +485,6 @@ if (!$current_group) {
 
 				if ($flag2 == "yes") {
 					$display_class = mysql_result($appel_donnees, $i, "classe");
-					//echo "<span class='norme'>";
-					//if ($aff_class == 'no') {echo "<span class='norme'><b>$display_class</b> : ";$aff_class = 'yes';}
-					//if ($aff_class == 'no') {echo "<b>$display_class</b> : ";$aff_class = 'yes';}
-					//echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . $group["description"] . "</a> - ";
-					//echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . htmlentities($group["description"]) . "</a></span> - \n";
-
-
 					if ($aff_class == 'no') {
 						echo "<tr>\n";
 						echo "<td valign='top'>\n";
@@ -575,85 +567,35 @@ if (!$current_group) {
 			$id_grp_prec=0;
 			$id_grp_suiv=0;
 			$temoin_tmp=0;
-			//foreach($tab_groups as $tmp_group) {
 			for($loop=0;$loop<count($tab_groups);$loop++) {
 				if($tab_groups[$loop]['id']==$id_groupe){
 					$num_groupe=$loop;
 
-					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 					$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 
 					$temoin_tmp=1;
 					if(isset($tab_groups[$loop+1])){
 						$id_grp_suiv=$tab_groups[$loop+1]['id'];
-
-						//$chaine_options_classes.="<option value='".$tab_groups[$loop+1]['id']."'>".$tab_groups[$loop+1]['name']." (".$tab_groups[$loop+1]['classlist_string'].")</option>\n";
 					}
 					else{
 						$id_grp_suiv=0;
 					}
 				}
 				else {
-					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 					$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 				}
 
 				if($temoin_tmp==0){
 					$id_grp_prec=$tab_groups[$loop]['id'];
-
-					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 				}
 			}
 			// =================================
 
-			/*
-			if(isset($id_grp_prec)){
-				if($id_grp_prec!=0){
-					echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_num=$periode_num";
-					echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement précédent</a>";
-				}
-			}
-			*/
-
 			if(($chaine_options_classes!="")&&($nb_groupes_suivies>1)) {
-				/*
-				echo "<script type='text/javascript'>
-	// Initialisation
-	change='no';
-
-	function confirm_changement_classe(thechange, themessage)
-	{
-		if (!(thechange)) thechange='no';
-		if (thechange != 'yes') {
-			document.form1.submit();
-		}
-		else{
-			var is_confirmed = confirm(themessage);
-			if(is_confirmed){
-				document.form1.submit();
-			}
-			else{
-				document.getElementById('id_groupe').selectedIndex=$num_groupe;
-			}
-		}
-	}
-</script>\n";
-				*/
-
 				echo " | <select name='id_groupe' onchange=\"document.forms['form1'].submit();\">\n";
-				//echo "<select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
 				echo $chaine_options_classes;
 				echo "</select>\n";
 			}
-
-			/*
-			if(isset($id_grp_suiv)){
-				if($id_grp_suiv!=0){
-					echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_suiv&amp;periode_num=$periode_num";
-					echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement suivant</a>";
-					}
-			}
-			*/
 		}
 		// =================================
 	}
@@ -702,35 +644,11 @@ if (!$current_group) {
     }
 
 	//==========================================
-	// MODIF: boireaus 20080407
 	// Le rang doit-il être affiché
 	// On autorise le prof à obtenir les rangs même si on ne les met pas sur le bulletin
 	// Et le calcul des rangs est effectué après soumission du formulaire si l'option rang est cochée
 	$aff_rang="y";
 	$affiche_categories="n";
-	/*
-	for($i=0;$i<count($current_group["classes"]["list"]);$i++) {
-		$sql="SELECT display_rang FROM classes WHERE id='".$current_group["classes"]["list"][$i]."';";
-		$test_rang=mysql_query($sql);
-		$lig_rang=mysql_fetch_object($test_rang);
-		if($lig_rang->display_rang=="y") {
-			$id_classe=$current_group["classes"]["list"][$i];
-
-			$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
-
-			$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe';";
-			$res_per=mysql_query($sql);
-			while($lig_per=mysql_fetch_object($res_per)) {
-				$periode_num=$lig_per->num_periode;
-				include("../lib/calcul_rang.inc.php");
-			}
-		}
-		else {
-			$aff_rang="n";
-			break;
-		}
-	}
-	*/
 	if($aff_rang=="y") {
 		$name="vmm_afficher_rang";
 	    echo "<p><input type='checkbox' name='afficher_rang' id='afficher_rang' value='yes' ";
@@ -840,7 +758,8 @@ function checkbox_change(champ, cpt) {
 	// Le rang doit-il être affiché
 	// On autorise le prof à obtenir les rangs même si on ne les met pas sur le bulletin
 	$aff_rang="n";
-	if((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes")) {
+	//if((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes")) {
+	if(((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes"))||((isset($_GET['afficher_rang']))&&($_GET['afficher_rang']=="yes"))) {
 		$aff_rang="y";
 		$affiche_categories="n";
 		for($i=0;$i<count($current_group["classes"]["list"]);$i++) {
@@ -1398,7 +1317,8 @@ function checkbox_change(champ, cpt) {
 					$col[$j][$nb_lignes] = "<center>-</center>";
 					$col[$j][$nb_lignes+1] = "<center>-</center>";
 					$col[$j][$nb_lignes+2] = "<center>-</center>";
-					if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+					//if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+					if(((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes"))||((isset($_GET['afficher_mediane']))&&($_GET['afficher_mediane']=="yes"))) {
 						$col[$j][$nb_lignes+3] = "<center>-</center>";
 						$col[$j][$nb_lignes+4] = "<center>-</center>";
 						$col[$j][$nb_lignes+5] = "<center>-</center>";
@@ -1406,7 +1326,8 @@ function checkbox_change(champ, cpt) {
                     $col_csv[$j][$nb_lignes] = '-' ;
                     $col_csv[$j][$nb_lignes+1] = '-' ;
                     $col_csv[$j][$nb_lignes+2] = '-' ;
-					if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+					//if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+					if(((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes"))||((isset($_GET['afficher_mediane']))&&($_GET['afficher_mediane']=="yes"))) {
 						$col_csv[$j][$nb_lignes+3] = '-' ;
 						$col_csv[$j][$nb_lignes+4] = '-' ;
 						$col_csv[$j][$nb_lignes+5] = '-' ;
@@ -1452,7 +1373,8 @@ function checkbox_change(champ, cpt) {
                     $col_csv[$j][$nb_lignes+2] = '-' ;
                 }
 
-				if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+				//if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+				if(((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes"))||((isset($_GET['afficher_mediane']))&&($_GET['afficher_mediane']=="yes"))) {
 					//echo "\$col[$j][0]=".$col[$j][0]."<br />";
 					//echo "\$col[$j][1]=".$col[$j][1]."<br />";
 					$tab_notes_ele=array();
@@ -1491,7 +1413,8 @@ function checkbox_change(champ, cpt) {
                 $col[$j][$nb_lignes] = '-';
                 $col[$j][$nb_lignes+1] = '-';
                 $col[$j][$nb_lignes+2] = '-';
-				if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+				//if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+				if(((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes"))||((isset($_GET['afficher_mediane']))&&($_GET['afficher_mediane']=="yes"))) {
 					$col[$j][$nb_lignes+3] = '-';
 					$col[$j][$nb_lignes+4] = '-';
 					$col[$j][$nb_lignes+5] = '-';
@@ -1499,7 +1422,8 @@ function checkbox_change(champ, cpt) {
                 $col_csv[$j][$nb_lignes] = '-';
                 $col_csv[$j][$nb_lignes+1] = '-';
                 $col_csv[$j][$nb_lignes+2] = '-';
-				if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+				//if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+				if(((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes"))||((isset($_GET['afficher_mediane']))&&($_GET['afficher_mediane']=="yes"))) {
 					$col_csv[$j][$nb_lignes+3] = '-';
 					$col_csv[$j][$nb_lignes+4] = '-';
 					$col_csv[$j][$nb_lignes+5] = '-';
@@ -1518,7 +1442,8 @@ function checkbox_change(champ, cpt) {
 				$col[$nb_col][$nb_lignes+2] = "<center>".number_format($max_notes,1,',','')."</center>";
 				$col_csv[$nb_col][$nb_lignes+2] = number_format($max_notes,1,',','');
 
-				if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+				//if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+				if(((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes"))||((isset($_GET['afficher_mediane']))&&($_GET['afficher_mediane']=="yes"))) {
 					$tab_notes_ele=array();
 					for($loop_ele=0;$loop_ele<$nb_lignes;$loop_ele++) {
 						$tab_notes_ele[]=$col_csv[$nb_col][$loop_ele];
@@ -1558,7 +1483,8 @@ function checkbox_change(champ, cpt) {
 				$col[$nb_col][$nb_lignes+2] = "<center>-</center>";
 				$col_csv[$nb_col][$nb_lignes+2] = "-";
 
-				if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+				//if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+				if(((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes"))||((isset($_GET['afficher_mediane']))&&($_GET['afficher_mediane']=="yes"))) {
 					$col[$nb_col][$nb_lignes+3] = "<center>-</center>";
 					$col_csv[$nb_col][$nb_lignes+3] = "-";
 					$col[$nb_col][$nb_lignes+4] = "<center>-</center>";
@@ -1596,7 +1522,8 @@ function checkbox_change(champ, cpt) {
         $col[1][$nb_lignes] = '<b>Moyenne</b>';
         $col[1][$nb_lignes+1] = '<b>Min.</b>';
         $col[1][$nb_lignes+2] = '<b>Max.</b>';
-		if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+		//if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+		if(((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes"))||((isset($_GET['afficher_mediane']))&&($_GET['afficher_mediane']=="yes"))) {
 			$col[1][$nb_lignes+3] = '<b>Quartile 1</b>';
 			$col[1][$nb_lignes+4] = '<b>Médiane</b>';
 			$col[1][$nb_lignes+5] = '<b>Quartile 3</b>';
@@ -1604,7 +1531,8 @@ function checkbox_change(champ, cpt) {
         $col_csv[1][$nb_lignes] = 'Moyenne';
         $col_csv[1][$nb_lignes+1] = 'Min.';
         $col_csv[1][$nb_lignes+2] = 'Max.';
-		if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+		//if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+		if(((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes"))||((isset($_GET['afficher_mediane']))&&($_GET['afficher_mediane']=="yes"))) {
 			$col_csv[1][$nb_lignes+3] = 'Quartile 1';
 			$col_csv[1][$nb_lignes+4] = 'Médiane';
 			$col_csv[1][$nb_lignes+5] = 'Quartile 3';
@@ -1614,7 +1542,8 @@ function checkbox_change(champ, cpt) {
             $col[2][$nb_lignes] = '&nbsp;';
             $col[2][$nb_lignes+1] = '&nbsp;';
             $col[2][$nb_lignes+2] = '&nbsp;';
-			if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+			//if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+			if(((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes"))||((isset($_GET['afficher_mediane']))&&($_GET['afficher_mediane']=="yes"))) {
 				$col[2][$nb_lignes+3] = '&nbsp;';
 				$col[2][$nb_lignes+4] = '&nbsp;';
 				$col[2][$nb_lignes+5] = '&nbsp;';
@@ -1623,13 +1552,15 @@ function checkbox_change(champ, cpt) {
             $col_csv[2][$nb_lignes] = '';
             $col_csv[2][$nb_lignes+1] = '';
             $col_csv[2][$nb_lignes+2] = '';
-			if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+			//if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+			if(((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes"))||((isset($_GET['afficher_mediane']))&&($_GET['afficher_mediane']=="yes"))) {
 				$col_csv[2][$nb_lignes+3] = '';
 				$col_csv[2][$nb_lignes+4] = '';
 				$col_csv[2][$nb_lignes+5] = '';
 			}
         }
-		if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+		//if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+		if(((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes"))||((isset($_GET['afficher_mediane']))&&($_GET['afficher_mediane']=="yes"))) {
 			$nb_lignes = $nb_lignes + 6;
 		}
 		else {
@@ -1649,7 +1580,8 @@ function checkbox_change(champ, cpt) {
         $col[$nb_col][$nb_lignes-1] = "<center>-</center>";
         $col[$nb_col][$nb_lignes-2] = "<center>-</center>";
         $col[$nb_col][$nb_lignes-3] = "<center>-</center>";
-		if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+		//if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+		if(((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes"))||((isset($_GET['afficher_mediane']))&&($_GET['afficher_mediane']=="yes"))) {
 			$col[$nb_col][$nb_lignes-4] = "<center>-</center>";
 			$col[$nb_col][$nb_lignes-5] = "<center>-</center>";
 			$col[$nb_col][$nb_lignes-6] = "<center>-</center>";
@@ -1657,14 +1589,15 @@ function checkbox_change(champ, cpt) {
         $col_csv[$nb_col][$nb_lignes-1] = '-';
         $col_csv[$nb_col][$nb_lignes-2] = '-';
         $col_csv[$nb_col][$nb_lignes-3] = '-';
-		if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+		//if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+		if(((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes"))||((isset($_GET['afficher_mediane']))&&($_GET['afficher_mediane']=="yes"))) {
 			$col_csv[$nb_col][$nb_lignes-4] = '-';
 			$col_csv[$nb_col][$nb_lignes-5] = '-';
 			$col_csv[$nb_col][$nb_lignes-6] = '-';
 		}
 	}
 	//==============================================
-
+	//debug_var();
     //
     // Affichage du tableau
     //
@@ -1675,7 +1608,6 @@ function checkbox_change(champ, cpt) {
     //echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire1\"";
     if ($en_tete == "yes") {
 		//echo " target=\"_blank\">\n";
-
 		echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"".$_SERVER['PHP_SELF']."\" method=\"get\">\n";
 		echo "<p class='bold'><a href=\"index1.php?id_groupe=$id_groupe\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
@@ -1703,86 +1635,35 @@ function checkbox_change(champ, cpt) {
 				$id_grp_prec=0;
 				$id_grp_suiv=0;
 				$temoin_tmp=0;
-				//foreach($tab_groups as $tmp_group) {
 				for($loop=0;$loop<count($tab_groups);$loop++) {
 					if($tab_groups[$loop]['id']==$id_groupe){
 						$num_groupe=$loop;
 
-						//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 						$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 
 						$temoin_tmp=1;
 						if(isset($tab_groups[$loop+1])){
 							$id_grp_suiv=$tab_groups[$loop+1]['id'];
-
-							//$chaine_options_classes.="<option value='".$tab_groups[$loop+1]['id']."'>".$tab_groups[$loop+1]['name']." (".$tab_groups[$loop+1]['classlist_string'].")</option>\n";
 						}
 						else{
 							$id_grp_suiv=0;
 						}
 					}
 					else {
-						//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 						$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 					}
 
 					if($temoin_tmp==0){
 						$id_grp_prec=$tab_groups[$loop]['id'];
-
-						//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 					}
 				}
 				// =================================
 
-				/*
-				if(isset($id_grp_prec)){
-					if($id_grp_prec!=0){
-						echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_num=$periode_num";
-						echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement précédent</a>";
-					}
-				}
-				*/
-
 				if(($chaine_options_classes!="")&&($nb_groupes_suivies>1)) {
-					/*
-					echo "<script type='text/javascript'>
-	// Initialisation
-	change='no';
-
-	function confirm_changement_classe(thechange, themessage)
-	{
-		if (!(thechange)) thechange='no';
-		if (thechange != 'yes') {
-			document.form1.submit();
-		}
-		else{
-			var is_confirmed = confirm(themessage);
-			if(is_confirmed){
-				document.form1.submit();
-			}
-			else{
-				document.getElementById('id_groupe').selectedIndex=$num_groupe;
-			}
-		}
-	}
-</script>\n";
-					*/
-
-					//echo "<input type='hidden' name='periode_num' value='$periode_num' />\n";
 					echo " | <select name='id_groupe' onchange=\"document.forms['form1'].submit();\">\n";
-					//echo "Période $periode_num: <select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
 					echo $chaine_options_classes;
 					echo "</select> | \n";
 				}
-
-				/*
-				if(isset($id_grp_suiv)){
-					if($id_grp_suiv!=0){
-						echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_suiv&amp;periode_num=$periode_num";
-						echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement suivant</a>";
-						}
-				}
-				*/
 			}
 			// =================================
 		}
@@ -1804,19 +1685,35 @@ function checkbox_change(champ, cpt) {
 			$k++;
 		}
 
-		if (isset($_POST['afficher_rang']) or isset($_GET['afficher_rang'])) {
+		// Pour conserver les memes choix en changeant de groupe:
+
+		if(((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes"))||((isset($_GET['afficher_rang']))&&($_GET['afficher_rang']=="yes"))) {
 			echo "<input type='hidden' name='afficher_rang' value='yes' />\n";
 		}
 
-		if (isset($_POST['stat']) or isset($_GET['stat'])) {
+		if(((isset($_POST['stat']))&&($_POST['stat']=="yes"))||((isset($_GET['stat']))&&($_GET['stat']=="yes"))) {
 			echo "<input type='hidden' name='stat' value='yes' />\n";
 		}
 
-		if (isset($_POST['choix_visu']) or isset($_GET['choix_visu'])) {
+		if(((isset($_POST['choix_visu']))&&($_POST['choix_visu']=="yes"))||((isset($_GET['choix_visu']))&&($_GET['choix_visu']=="yes"))) {
 			echo "<input type='hidden' name='choix_visu' value='yes' />\n";
 		}
 
+		if(((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes"))||((isset($_GET['afficher_mediane']))&&($_GET['afficher_mediane']=="yes"))) {
+			echo "<input type='hidden' name='afficher_mediane' value='$afficher_mediane' />\n";
+		}
+
+		echo "<input type='hidden' name='couleur_alterne' value='$couleur_alterne' />\n";
+		echo "<input type='hidden' name='larg_tab' value='$larg_tab' />\n";
+		echo "<input type='hidden' name='bord' value='$bord' />\n";
+		echo "<input type='hidden' name='bord' value='$stat' />\n";
+		if(isset($order_by)){
+			echo "<p><input type='hidden' name='order_by' value='$order_by' />\n";
+		}
+
 		echo "</form>\n";
+
+		//====================================================================================
 
 		echo "\n<!-- Formulaire pour l'affichage sans entête -->\n";
 		echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire1\"  target=\"_blank\">\n";
@@ -1828,18 +1725,6 @@ function checkbox_change(champ, cpt) {
 		echo "\n<!-- Formulaire pour l'affichage sans entête -->\n";
 		echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire1\"  target=\"_blank\">\n";
 	}
-	/*
-	else {
-		echo ">\n";
-	}
-	*/
-	//=========================
-	// MODIF: boireaus 20080421
-	// Pour permettre de trier autrement...
-	// Ligne de test:
-	// echo "<input type=\"button\" value=\"Visualiser sans l'en-tête et tri col 2\" onclick=\"document.getElementById('col_tri').value='2';document.forms['formulaire1'].submit();\" /><br />\n";
-    //echo "<input type='hidden' name='col_tri' id='col_tri' value='' />\n";
-	//=========================
 
     echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
     echo "<input type='hidden' name='choix_visu' value='yes' />\n";
@@ -1864,11 +1749,14 @@ function checkbox_change(champ, cpt) {
         $i++;
     }
 	//=========================
-	// MODIF: boireaus 20080421
 	// Pour avoir le rang sur le tableau sans entête
 	//if((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes")) {
 	if(((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes"))||((isset($_GET['afficher_rang']))&&($_GET['afficher_rang']=="yes"))) {
 		echo "<input type='hidden' name='afficher_rang' value='yes' />\n";
+	}
+
+	if(((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes"))||((isset($_GET['afficher_mediane']))&&($_GET['afficher_mediane']=="yes"))) {
+		echo "<input type='hidden' name='afficher_mediane' value='$afficher_mediane' />\n";
 	}
 	//=========================
     echo "<input type='hidden' name='en_tete' value='no' />\n";
@@ -1916,10 +1804,12 @@ function checkbox_change(champ, cpt) {
         $i++;
     }
 
-	if((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes")) {
+	//if((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes")) {
+	if(((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes"))||((isset($_GET['afficher_rang']))&&($_GET['afficher_rang']=="yes"))) {
 		echo "<input type='hidden' name='afficher_rang' value='yes' />\n";
 	}
-	if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+	//if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+	if(((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes"))||((isset($_GET['afficher_mediane']))&&($_GET['afficher_mediane']=="yes"))) {
 		echo "<input type='hidden' name='afficher_mediane' value='yes' />\n";
 	}
     if ($en_tete == "yes") {
@@ -2059,13 +1949,15 @@ function checkbox_change(champ, cpt) {
 
 	if(isset($order_by)) {echo "<input type='hidden' name='order_by' value='$order_by' />\n";}
 
-	if((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes")) {
+	//if((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes")) {
+	if(((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes"))||((isset($_GET['afficher_rang']))&&($_GET['afficher_rang']=="yes"))) {
 		echo "<input type='hidden' name='afficher_rang' value='yes' />\n";
 		$_SESSION['vmm_afficher_rang']="yes";
 	}
 	elseif(isset($_SESSION['vmm_afficher_rang'])) {unset($_SESSION['vmm_afficher_rang']);}
 
-	if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+	//if((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes")) {
+	if(((isset($_POST['afficher_mediane']))&&($_POST['afficher_mediane']=="yes"))||((isset($_GET['afficher_mediane']))&&($_GET['afficher_mediane']=="yes"))) {
 		echo "<input type='hidden' name='afficher_mediane' value='yes' />\n";
 		$_SESSION['vmm_afficher_mediane']="yes";
 	}
