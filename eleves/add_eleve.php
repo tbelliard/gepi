@@ -24,7 +24,7 @@
 require_once("../lib/initialisations.inc.php");
 
 $longmax_login_eleve=getSettingValue('longmax_login_eleve');
-if($longmax_login_eleve=="") {$longmax_login_eleve=$longmax_login;}
+//if($longmax_login_eleve=="") {$longmax_login_eleve=$longmax_login;}
 
 unset($reg_login);
 $reg_login = isset($_POST["reg_login"]) ? $_POST["reg_login"] : NULL;
@@ -533,11 +533,25 @@ $titre_page = "Gestion des élèves | Ajouter/Modifier une fiche élève";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-
 if ((isset($order_type)) and (isset($quelles_classes))) {
     echo "<p class=bold><a href=\"index.php?quelles_classes=$quelles_classes&amp;order_type=$order_type\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 } else {
     echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+}
+
+$longmax_login_eleve=getSettingValue('longmax_login_eleve');
+if($longmax_login_eleve=="") {
+	$mode_generation_login_eleve=getSettingValue('mode_generation_login_eleve');
+	if(!check_format_login($mode_generation_login_eleve)) {
+		echo "<p style='color:red'>Le format de login élève est invalide.<br />Veuillez définir le format dans <a href='../gestion/param_gen.php'>Configuration générale</a></p>\n";
+
+		require("../lib/footer.inc.php");
+		die();
+	}
+	else {
+		$longmax_login_eleve=mb_strlen($mode_generation_login_eleve);
+		saveSetting('longmax_login_eleve',$longmax_login_eleve);
+	}
 }
 
 ?>

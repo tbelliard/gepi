@@ -466,45 +466,12 @@ if (isset($_POST['is_posted'])) {
 				if (!saveSetting("mode_generation_login", $_POST['mode_generation_login'])) {
 					$msg .= "Erreur lors de l'enregistrement du mode de génération des logins personnels !";
 				}
+				else {
+					$nbre_carac = mb_strlen($_POST['mode_generation_login']);
+					$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login'";
+					$modif_maxlong = mysql_query($req);
+				}
 			}
-			/*
-			// On en profite pour mettre à jour la variable $longmax_login -> settings : longmax_login
-			$nbre_carac = 12;
-			if ($_POST['mode_generation_login'] == 'name8' OR 
-				$_POST['mode_generation_login'] == 'fname8' OR 
-				$_POST['mode_generation_login'] == 'namef8') {
-				$nbre_carac = 8;
-			}
-			elseif ($_POST['mode_generation_login'] == 'name9_p' OR 
-				$_POST['mode_generation_login'] == 'p_name9' OR 
-				$_POST['mode_generation_login'] == 'name9-p' OR 
-				$_POST['mode_generation_login'] == 'p-name9' OR 
-				$_POST['mode_generation_login'] == 'name9.p' OR 
-				$_POST['mode_generation_login'] == 'p.name9') {
-				$nbre_carac = 11;
-			}
-			elseif ($_POST['mode_generation_login'] == 'name9_ppp' OR 
-				$_POST['mode_generation_login'] == 'ppp_name9' OR 
-				$_POST['mode_generation_login'] == 'name9-ppp' OR 
-				$_POST['mode_generation_login'] == 'ppp-name9' OR 
-				$_POST['mode_generation_login'] == 'name9.ppp' OR 
-				$_POST['mode_generation_login'] == 'ppp.name9') {
-				$nbre_carac = 13;
-			}
-			elseif ($_POST['mode_generation_login'] == 'fname19' OR 
-				$_POST['mode_generation_login'] == 'firstdotname19') {
-				$nbre_carac = 19;
-			}
-			elseif ($_POST['mode_generation_login'] == 'firstdotname' OR 
-				$_POST['mode_generation_login'] == 'lcs') {
-				$nbre_carac = 30;
-			}
-			else {
-				$nbre_carac = 12;
-			}
-			$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login'";
-			$modif_maxlong = mysql_query($req);
-			*/
 		}
 
 		if (isset($_POST['mode_generation_login_casse'])) {
@@ -525,6 +492,11 @@ if (isset($_POST['is_posted'])) {
 			else {
 				if (!saveSetting("mode_generation_login_eleve", $_POST['mode_generation_login_eleve'])) {
 					$msg .= "Erreur lors de l'enregistrement du mode de génération des logins élèves !";
+				}
+				else {
+					$nbre_carac = mb_strlen($_POST['mode_generation_login_eleve']);
+					$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login_eleve'";
+					$modif_maxlong = mysql_query($req);
 				}
 			}
 		}
@@ -547,6 +519,11 @@ if (isset($_POST['is_posted'])) {
 			else {
 				if (!saveSetting("mode_generation_login_responsable", $_POST['mode_generation_login_responsable'])) {
 					$msg .= "Erreur lors de l'enregistrement du mode de génération des logins responsables !";
+				}
+				else {
+					$nbre_carac = mb_strlen($_POST['mode_generation_login_responsable']);
+					$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login_responsable'";
+					$modif_maxlong = mysql_query($req);
 				}
 			}
 		}
@@ -1299,9 +1276,7 @@ responsables&nbsp;:<br />
 
 <?php
 	echo "<script type='text/javascript'>
-	document.getElementById('button_form_1').style.display='';
-
-\n";
+	document.getElementById('button_form_1').style.display='';\n";
 	echo insere_js_check_format_login('test_format_login', 'n');
 
 	echo "
