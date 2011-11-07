@@ -5,7 +5,7 @@
  *
  * @version $Id$
 
-Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
 
 This file is part of GEPI.
 
@@ -63,6 +63,7 @@ require_once("./menu.inc.php");
 $_SESSION["retour"] = "edt_init_csv2";
 // +++++++++++++++++++FIN GESTION RETOUR vers absences++++++++++++++++
 //debug_var();
+$debug_init="n";
 
 /*
 $tab_udt_lignes=array();
@@ -366,12 +367,16 @@ if ($action == "upload_file") {
 					$aff_enregistrer = 'Enregistrer ces salles';
 				}
             } elseif ($etape == 12) {
+				$sql="TRUNCATE tempo2;";
+				$menage=mysql_query($sql);
+
                 echo '
 				<form name="edtInitCsv2" action="edt_init_concordance2.php" method="post">';
                 $b = 0; // c'est pour le while
 
                 // C'est là qu'on enregistre les cours en se servant des données recueillies auparavant
                 while ($tab = fgetcsv($fp, 1024, ";")) {
+					if($debug_init=="y") {echo "<br /><p>";}
                     $nbre_lignes = $b;
                     $toutelaligne = null;
                     // On rentre toutes les cellules de la ligne dans une seule variable
@@ -379,12 +384,18 @@ if ($action == "upload_file") {
 
                         // On élimine les guillemets et l'apostrophe qui mettent la pagaille
                         //$toutelaligne .= my_ereg_replace("'", "wkzx", my_ereg_replace('"', "zxwk", $tab[$t])) . '|';
-                        $toutelaligne .= remplace_accents($tab[$t], 'all_nospace'). '|';
+						if(isset($tab[$t])) {
+							$toutelaligne .= remplace_accents($tab[$t], 'all_nospace');
+							if($debug_init=="y") {echo "\$tab[$t]=$tab[$t]<br />";}
+						}
+                        $toutelaligne .= '|';
 
                     }
 
-                    echo '
-					<input type="hidden" name="ligne_' . $b . '" value="' . $toutelaligne . '" />';
+                    //echo '					<input type="hidden" name="ligne_' . $b . '" value="' . $toutelaligne . '" />';
+					$sql="INSERT INTO tempo2 SET col1='".mysql_real_escape_string($toutelaligne)."';";
+					$insert=mysql_query($sql);
+
                     $b++; // on incrémente le compteur pour le name
                 }
                 echo 'Votre fichier comporte ' . $nbre_lignes . ' cours.';
