@@ -3660,7 +3660,10 @@ function path_niveau($niveau=1){
 function cree_zip_archive($dossier_a_archiver,$niveau=1) {
   $path = path_niveau();
   $dirname = "backup/".getSettingValue("backup_directory")."/";
-  define( 'PCLZIP_TEMPORARY_DIR', $path.$dirname );
+  if (!defined('PCLZIP_TEMPORARY_DIR') || constant('PCLZIP_TEMPORARY_DIR')!=$path.$dirname) {
+    define( 'PCLZIP_TEMPORARY_DIR', $path.$dirname );
+  }
+
   require_once($path.'lib/pclzip.lib.php');
 
   if (isset($dossier_a_archiver)) {
