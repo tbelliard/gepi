@@ -671,7 +671,7 @@ if (isset($user_login)) {
 <!--span class = "norme"-->
 <div class = "norme">
 <b>Identifiant <?php
-if (!isset($user_login)) echo "(" . $longmax_login . " caractères maximum) ";?>:</b>
+if (!isset($user_login)) echo "(<em>" . $longmax_login . " caractères maximum</em>) ";?>:</b>
 <?php
 if (isset($user_login) and ($user_login!='')) {
 	echo "<b>".$user_login."</b>\n";

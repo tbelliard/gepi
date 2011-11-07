@@ -1,6 +1,6 @@
 <?php
 /**
- * Fichier de mise à jour de la version 1.5.4 à la version 1.5.5
+ * Fichier de mise à jour de la version 1.5.5 à la version 1.6.0
  * 
  * $Id$
  *
@@ -82,6 +82,7 @@ if ($query) {
 		$result .= msj_erreur(mysql_error());
 }
 
+$result .= "<br />";
 $result .= "<strong>Ajout d'une table 'temp_abs_import' :</strong><br />";
 $test = sql_query1("SHOW TABLES LIKE 'temp_abs_import'");
 if ($test == -1) {
@@ -104,6 +105,7 @@ if ($test == -1) {
 		$result .= msj_present("La table existe déjà");
 }
 
+$result .= "<br />";
 $req_test=mysql_query("SELECT value FROM setting WHERE name = 'utiliserMenuBarre'");
 $res_test=mysql_num_rows($req_test);
 if ($res_test==0){
@@ -117,6 +119,107 @@ if ($res_test==0){
   $result .= msj_present("Le paramètre utiliserMenuBarre existe déjà dans la table setting.");
 }
 
+$result .= "<br />";
+$result .= "<strong>Test des formats de login</strong><br />";
+$tab_formats_login_a_tester=array('mode_generation_login', 'mode_generation_login_eleve', 'mode_generation_login_responsable');
+for($loop=0;$loop<count($tab_formats_login_a_tester);$loop++) {
+	$valeur_current_mode_generation_login=getSettingValue($tab_formats_login_a_tester[$loop]);
+	if(!check_format_login($valeur_current_mode_generation_login)) {
+
+		$result .= "Format de login ";
+		if($tab_formats_login_a_tester[$loop]=='mode_generation_login') {$result .= "<b>personnels</b>";}
+		elseif($tab_formats_login_a_tester[$loop]=='mode_generation_login_eleve') {$result .= "<b>élèves</b>";}
+		elseif($tab_formats_login_a_tester[$loop]=='mode_generation_login_responsable') {$result .= "<b>responsables</b>";}
+
+		$result .= " invalide : $valeur_current_mode_generation_login<br />";
+		if($valeur_current_mode_generation_login=="name") {
+			$result .= "Conversion en 'nnnnnnnnnnnnnnnnnnnn' : ";
+			if(saveSetting($tab_formats_login_a_tester[$loop], 'nnnnnnnnnnnnnnnnnnnn')) {$result .= msj_ok("Ok !");} else {$result .= msj_erreur("ECHEC");}
+		}
+		elseif($valeur_current_mode_generation_login=="name8") {
+			$result .= "Conversion en 'nnnnnnnn' : ";
+			if(saveSetting($tab_formats_login_a_tester[$loop], 'nnnnnnnn')) {$result .= msj_ok("Ok !");} else {$result .= msj_erreur("ECHEC");}
+		}
+		elseif($valeur_current_mode_generation_login=="fname19") {
+			$result .= "Conversion en 'pnnnnnnnnnnnnnnnnnn' : ";
+			if(saveSetting($tab_formats_login_a_tester[$loop], 'pnnnnnnnnnnnnnnnnnn')) {$result .= msj_ok("Ok !");} else {$result .= msj_erreur("ECHEC");}
+		}
+		elseif(($valeur_current_mode_generation_login=="firstdotname")||($valeur_current_mode_generation_login=="lcs")) {
+			$result .= "Conversion en 'pppppppppppppppppppp.nnnnnnnnnnnnnnnnnnnn' : ";
+			if(saveSetting($tab_formats_login_a_tester[$loop], 'pppppppppppppppppppp.nnnnnnnnnnnnnnnnnnnn')) {$result .= msj_ok("Ok !");} else {$result .= msj_erreur("ECHEC");}
+		}
+		elseif($valeur_current_mode_generation_login=="firstdotname19") {
+			$result .= "Conversion en 'pppppppppp.nnnnnnnn' : ";
+			if(saveSetting($tab_formats_login_a_tester[$loop], 'pppppppppp.nnnnnnnn')) {$result .= msj_ok("Ok !");} else {$result .= msj_erreur("ECHEC");}
+		}
+		elseif($valeur_current_mode_generation_login=="namef8") {
+			$result .= "Conversion en 'nnnnnnnp' : ";
+			if(saveSetting($tab_formats_login_a_tester[$loop], 'nnnnnnnp')) {$result .= msj_ok("Ok !");} else {$result .= msj_erreur("ECHEC");}
+		}
+		elseif($valeur_current_mode_generation_login=="name9_p") {
+			$result .= "Conversion en 'nnnnnnnnn_p' : ";
+			if(saveSetting($tab_formats_login_a_tester[$loop], 'nnnnnnnnn_p')) {$result .= msj_ok("Ok !");} else {$result .= msj_erreur("ECHEC");}
+		}
+		elseif($valeur_current_mode_generation_login=="name9-p") {
+			$result .= "Conversion en 'nnnnnnnnn-p' : ";
+			if(saveSetting($tab_formats_login_a_tester[$loop], 'nnnnnnnnn-p')) {$result .= msj_ok("Ok !");} else {$result .= msj_erreur("ECHEC");}
+		}
+		elseif($valeur_current_mode_generation_login=="name9.p") {
+			$result .= "Conversion en 'nnnnnnnnn.p' : ";
+			if(saveSetting($tab_formats_login_a_tester[$loop], 'nnnnnnnnn.p')) {$result .= msj_ok("Ok !");} else {$result .= msj_erreur("ECHEC");}
+		}
+		elseif($valeur_current_mode_generation_login=="p_name9") {
+			$result .= "Conversion en 'p_nnnnnnnnn' : ";
+			if(saveSetting($tab_formats_login_a_tester[$loop], 'p_nnnnnnnnn')) {$result .= msj_ok("Ok !");} else {$result .= msj_erreur("ECHEC");}
+		}
+		elseif($valeur_current_mode_generation_login=="p-name9") {
+			$result .= "Conversion en 'p-nnnnnnnnn' : ";
+			if(saveSetting($tab_formats_login_a_tester[$loop], 'p-nnnnnnnnn')) {$result .= msj_ok("Ok !");} else {$result .= msj_erreur("ECHEC");}
+		}
+		elseif($valeur_current_mode_generation_login=="p.name9") {
+			$result .= "Conversion en 'p.nnnnnnnnn' : ";
+			if(saveSetting($tab_formats_login_a_tester[$loop], 'p.nnnnnnnnn')) {$result .= msj_ok("Ok !");} else {$result .= msj_erreur("ECHEC");}
+		}
+		elseif($valeur_current_mode_generation_login=="name9_ppp") {
+			$result .= "Conversion en 'nnnnnnnnn_ppp' : ";
+			if(saveSetting($tab_formats_login_a_tester[$loop], 'nnnnnnnnn_ppp')) {$result .= msj_ok("Ok !");} else {$result .= msj_erreur("ECHEC");}
+		}
+		elseif($valeur_current_mode_generation_login=="name9-ppp") {
+			$result .= "Conversion en 'nnnnnnnnn-ppp' : ";
+			if(saveSetting($tab_formats_login_a_tester[$loop], 'nnnnnnnnn-ppp')) {$result .= msj_ok("Ok !");} else {$result .= msj_erreur("ECHEC");}
+		}
+		elseif($valeur_current_mode_generation_login=="name9.ppp") {
+			$result .= "Conversion en 'nnnnnnnnn.ppp' : ";
+			if(saveSetting($tab_formats_login_a_tester[$loop], 'nnnnnnnnn.ppp')) {$result .= msj_ok("Ok !");} else {$result .= msj_erreur("ECHEC");}
+		}
+		elseif($valeur_current_mode_generation_login=="ppp_name9") {
+			$result .= "Conversion en 'ppp_nnnnnnnnn' : ";
+			if(saveSetting($tab_formats_login_a_tester[$loop], 'ppp_nnnnnnnnn')) {$result .= msj_ok("Ok !");} else {$result .= msj_erreur("ECHEC");}
+		}
+		elseif($valeur_current_mode_generation_login=="ppp-name9") {
+			$result .= "Conversion en 'ppp_nnnnnnnnn' : ";
+			if(saveSetting($tab_formats_login_a_tester[$loop], 'ppp-nnnnnnnnn')) {$result .= msj_ok("Ok !");} else {$result .= msj_erreur("ECHEC");}
+		}
+		elseif($valeur_current_mode_generation_login=="ppp.name9") {
+			$result .= "Conversion en 'ppp_nnnnnnnnn' : ";
+			if(saveSetting($tab_formats_login_a_tester[$loop], 'ppp.nnnnnnnnn')) {$result .= msj_ok("Ok !");} else {$result .= msj_erreur("ECHEC");}
+		}
+		else {
+			if($tab_formats_login_a_tester[$loop]=='mode_generation_login') {
+				$format_login="nnnnnnnp";
+			}
+			elseif($tab_formats_login_a_tester[$loop]=='mode_generation_login_eleve') {
+				$format_login="nnnnnnnnn_p";
+			}
+			elseif($tab_formats_login_a_tester[$loop]=='mode_generation_login_responsable') {
+				$format_login="nnnnnnnnn.p";
+			}
+
+			$result .= "Conversion en '$format_login' : ";
+			if(saveSetting($tab_formats_login_a_tester[$loop], "$format_login")) {$result .= msj_ok("Ok !");} else {$result .= msj_erreur("ECHEC");}
+		}
+	}
+}
 
 $result.="<br />Fin mise à jour<br/>";
 ?>
