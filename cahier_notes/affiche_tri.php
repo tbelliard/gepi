@@ -113,12 +113,14 @@ echo "<td>\n";
 		echo "</td>\n";
 	
 		echo "<td>\n";
+		if (isset ($tab2[$i])) {
 		echo $tab2[$i];
-		if(($tab2[$i]!='')&&(preg_match("/^[0-9.]*$/",$tab2[$i]))&&($tab2[$i]>=0)) {
-			$tab3[$i]=$tab2[$i];
-		}
-		else {
-			$tab3[$i]=-1;
+		  if(($tab2[$i]!='')&&(preg_match("/^[0-9.]*$/",$tab2[$i]))&&($tab2[$i]>=0)) {
+			  $tab3[$i]=$tab2[$i];
+		  }
+		  else {
+			  $tab3[$i]=-1;
+		  }
 		}
 		echo "</td>\n";
 	
@@ -145,7 +147,9 @@ echo "<td>\n";
 		echo "</td>\n";
 	
 		echo "<td>\n";
-		echo $tab2[$rg[$i]];
+		if (isset ($tab2[$i])) {
+		  echo $tab2[$rg[$i]];
+		}
 		echo "</td>\n";
 	
 		echo "</tr>\n";
