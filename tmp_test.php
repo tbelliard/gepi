@@ -35,13 +35,6 @@ if ($resultat_session == 'c') {
     die();
 };
 
-/*
-if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-    die();
-}
-*/
-
 if($_SESSION['statut']!='administrateur') {
     header("Location: ./logout.php?auto=1");
     die();
