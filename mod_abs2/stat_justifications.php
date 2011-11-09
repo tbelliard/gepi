@@ -219,7 +219,7 @@ function afficheChargement($indice,$nbEleves) {
     document.location.replace("stat_justifications.php")
 
 </script>
-<a href="stat_justifications.php">Cliquez sur ce lien pour continuez</a>
+<a href="stat_justifications.php">Cliquez sur ce lien pour continuer</a>
 <?php
   die ();
 }
