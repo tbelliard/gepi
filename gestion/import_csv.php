@@ -45,6 +45,23 @@ $titre_page = "Outil de gestion | Importation";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
+
+$longmax_login_eleve=getSettingValue('longmax_login_eleve');
+if($longmax_login_eleve=="") {
+	$mode_generation_login_eleve=getSettingValue('mode_generation_login_eleve');
+	if(!check_format_login($mode_generation_login_eleve)) {
+		echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a></p>";
+
+		echo "<p style='color:red'>Le format de login élève est invalide.<br />Veuillez définir le format dans <a href='../gestion/param_gen.php'>Configuration générale</a></p>\n";
+
+		require("../lib/footer.inc.php");
+		die();
+	}
+
+	$longmax_login_eleve=mb_strlen($mode_generation_login_eleve);
+	saveSetting('longmax_login_eleve',$longmax_login_eleve);
+}
+
 // $long_max : doit être plus grand que la plus grande ligne trouvée dans le fichier CSV
 $long_max = 8000;
 if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
@@ -69,7 +86,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
     <?php
     echo "<p>Le fichier d'importation doit être au format csv (séparateur : point-virgule)<br />";
     echo "Le fichier doit contenir les différents champs suivants, tous obligatoires :<br />";
-    echo "--> <B>IDENTIFIANT</B> : l'identifiant de l'élève (".$longmax_login." caractères maximum)<br />";
+    echo "--> <B>IDENTIFIANT</B> : l'identifiant de l'élève (".$longmax_login_eleve." caractères maximum)<br />";
     echo "--> <B>Nom</B><br />";
     echo "--> <B>Prénom</B><br />";
     echo "--> <B>Sexe</B>  : F ou M<br />";
@@ -115,7 +132,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                     switch ($c) {
                     case 0:
                         //login
-                        if (preg_match ("/^[a-zA-Z0-9_]{1,".$longmax_login."}$/", $data[$c])) {
+                        if (preg_match ("/^[a-zA-Z0-9_]{1,".$longmax_login_eleve."}$/", $data[$c])) {
                             $reg_login = "reg_".$row."_login";
                             $reg_statut = "reg_".$row."_statut";
                             $data[$c] =    my_strtoupper($data[$c]);

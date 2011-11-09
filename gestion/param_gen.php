@@ -457,30 +457,89 @@ if (isset($_POST['is_posted'])) {
 				$msg .= "Erreur lors de l'enregistrement du numéro d'enregistrement à la CNIL !";
 			}
 		}
-		
+
 		if (isset($_POST['mode_generation_login'])) {
-			if (!saveSetting("mode_generation_login", $_POST['mode_generation_login'])) {
-				$msg .= "Erreur lors de l'enregistrement du mode de génération des logins !";
+			if(!check_format_login($_POST['mode_generation_login'])) {
+				$msg .= "Format de login invalide pour les personnels !";
 			}
-			// On en profite pour mettre à jour la variable $longmax_login -> settings : longmax_login
-					$nbre_carac = 12;
-				if ($_POST['mode_generation_login'] == 'name8' OR $_POST['mode_generation_login'] == 'fname8' OR $_POST['mode_generation_login'] == 'namef8') {
-					$nbre_carac = 8;
-				}
-				elseif ($_POST['mode_generation_login'] == 'fname19' OR $_POST['mode_generation_login'] == 'firstdotname19') {
-					$nbre_carac = 19;
-				}
-				elseif ($_POST['mode_generation_login'] == 'firstdotname') {
-					$nbre_carac = 30;
+			else {
+				if (!saveSetting("mode_generation_login", $_POST['mode_generation_login'])) {
+					$msg .= "Erreur lors de l'enregistrement du mode de génération des logins personnels !";
 				}
 				else {
-					$nbre_carac = 12;
+					$nbre_carac = mb_strlen($_POST['mode_generation_login']);
+					$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login'";
+					$modif_maxlong = mysql_query($req);
 				}
-			$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login'";
-			$modif_maxlong = mysql_query($req);
+			}
 		}
-		
-		
+
+		if (isset($_POST['mode_generation_login_casse'])) {
+			if(($_POST['mode_generation_login_casse']!='min')&&($_POST['mode_generation_login_casse']!='maj')) {
+				$msg .= "Casse invalide pour le format de login invalide pour les personnels !";
+			}
+			else {
+				if (!saveSetting("mode_generation_login_casse", $_POST['mode_generation_login_casse'])) {
+					$msg .= "Erreur lors de l'enregistrement de la casse du format de login des personnels !";
+				}
+			}
+		}
+
+		if (isset($_POST['mode_generation_login_eleve'])) {
+			if(!check_format_login($_POST['mode_generation_login_eleve'])) {
+				$msg .= "Format de login invalide pour les élèves !";
+			}
+			else {
+				if (!saveSetting("mode_generation_login_eleve", $_POST['mode_generation_login_eleve'])) {
+					$msg .= "Erreur lors de l'enregistrement du mode de génération des logins élèves !";
+				}
+				else {
+					$nbre_carac = mb_strlen($_POST['mode_generation_login_eleve']);
+					$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login_eleve'";
+					$modif_maxlong = mysql_query($req);
+				}
+			}
+		}
+
+		if (isset($_POST['mode_generation_login_eleve_casse'])) {
+			if(($_POST['mode_generation_login_eleve_casse']!='min')&&($_POST['mode_generation_login_eleve_casse']!='maj')) {
+				$msg .= "Casse invalide pour le format de login invalide pour les élèves !";
+			}
+			else {
+				if (!saveSetting("mode_generation_login_eleve_casse", $_POST['mode_generation_login_eleve_casse'])) {
+					$msg .= "Erreur lors de l'enregistrement de la casse du format de login des élèves !";
+				}
+			}
+		}
+
+		if (isset($_POST['mode_generation_login_responsable'])) {
+			if(!check_format_login($_POST['mode_generation_login_responsable'])) {
+				$msg .= "Format de login invalide pour les responsables !";
+			}
+			else {
+				if (!saveSetting("mode_generation_login_responsable", $_POST['mode_generation_login_responsable'])) {
+					$msg .= "Erreur lors de l'enregistrement du mode de génération des logins responsables !";
+				}
+				else {
+					$nbre_carac = mb_strlen($_POST['mode_generation_login_responsable']);
+					$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login_responsable'";
+					$modif_maxlong = mysql_query($req);
+				}
+			}
+		}
+
+		if (isset($_POST['mode_generation_login_responsable_casse'])) {
+			if(($_POST['mode_generation_login_responsable_casse']!='min')&&($_POST['mode_generation_login_responsable_casse']!='maj')) {
+				$msg .= "Casse invalide pour le format de login invalide pour les responsables !";
+			}
+			else {
+				if (!saveSetting("mode_generation_login_responsable_casse", $_POST['mode_generation_login_responsable_casse'])) {
+					$msg .= "Erreur lors de l'enregistrement de la casse du format de login des responsables !";
+				}
+			}
+		}
+
+
 		if (isset($_POST['unzipped_max_filesize'])) {
 			$unzipped_max_filesize=$_POST['unzipped_max_filesize'];
 			if(mb_substr($unzipped_max_filesize,0,1)=="-") {$unzipped_max_filesize=-1;}
@@ -847,17 +906,53 @@ echo add_token_field();
 		<td style="font-variant: small-caps;">
 
 		<a name='format_login_resp'></a>
-		Mode de génération automatique des logins :</td>
+		Mode de génération automatique des logins personnels&nbsp;:</td>
 	<td>
-	<select name='mode_generation_login' onchange='changement()'>
+		<?php
+			$default_login_gen_type=getSettingValue('mode_generation_login');
+			if(($default_login_gen_type=='')||(!check_format_login($default_login_gen_type))) {$default_login_gen_type="nnnnnnnp";}
+			//echo champs_select_choix_format_login('mode_generation_login', "namef8");
+			echo champ_input_choix_format_login('mode_generation_login', $default_login_gen_type);
+		?>
+	<!--select name='mode_generation_login' onchange='changement()'>
 			<option value='name8'<?php if (getSettingValue("mode_generation_login")=='name8') echo " SELECTED"; ?>> nom (tronqué à 8 caractères)</option>
 			<option value='fname8'<?php if (getSettingValue("mode_generation_login")=='fname8') echo " SELECTED"; ?>> pnom (tronqué à 8 caractères)</option>
 			<option value='fname19'<?php if (getSettingValue("mode_generation_login")=='fname19') echo " SELECTED"; ?>> pnom (tronqué à 19 caractères)</option>
 			<option value='firstdotname'<?php if (getSettingValue("mode_generation_login")=='firstdotname') echo " SELECTED"; ?>> prenom.nom (tronqué à 30 caractères)</option>
 			<option value='firstdotname19'<?php if (getSettingValue("mode_generation_login")=='firstdotname19') echo " SELECTED"; ?>> prenom.nom (tronqué à 19 caractères)</option>
 			<option value='namef8'<?php if (getSettingValue("mode_generation_login")=='namef8') echo " SELECTED"; ?>> nomp (tronqué à 8 caractères)</option>
-	</select>
+	</select-->
 	</td>
+	</tr>
+
+	<tr>
+		<td style="font-variant: small-caps;">
+			<a name='format_login_resp'></a>
+			Mode de génération automatique des logins élèves&nbsp;:
+		</td>
+		<td>
+			<?php
+				$default_login_gen_type=getSettingValue('mode_generation_login_eleve');
+				if(($default_login_gen_type=='')||(!check_format_login($default_login_gen_type))) {$default_login_gen_type="nnnnnnnnn_p";}
+				//echo champs_select_choix_format_login('mode_generation_login_eleve', $mode_generation_login_eleve);
+				echo champ_input_choix_format_login('mode_generation_login_eleve', $default_login_gen_type);
+			?>
+		</td>
+	</tr>
+
+	<tr>
+		<td style="font-variant: small-caps;">
+			<a name='format_login_resp'></a>
+			Mode de génération automatique des logins responsables&nbsp;:
+		</td>
+		<td>
+			<?php
+				$default_login_gen_type=getSettingValue('mode_generation_login_responsable');
+				if(($default_login_gen_type=='')||(!check_format_login($default_login_gen_type))) {$default_login_gen_type="nnnnnnnnnnnnnnnnnnnn";}
+				//echo champs_select_choix_format_login('mode_generation_login_responsable', $default_login_gen_type);
+				echo champ_input_choix_format_login('mode_generation_login_responsable', $default_login_gen_type);
+			?>
+		</td>
 	</tr>
 
 
@@ -1171,8 +1266,42 @@ responsables&nbsp;:<br />
 	</tr>
 </table>
 <input type="hidden" name="is_posted" value="1" />
-<center><input type="submit" name = "OK" value="Enregistrer" style="font-variant: small-caps;" /></center>
+<center>
+	<input type="button" id="button_form_1" name = "OK" value="Enregistrer" style="font-variant: small-caps; display:none;" onclick="test_puis_submit()" />
+	<noscript>
+		<input type="submit" name = "OK" value="Enregistrer" style="font-variant: small-caps;" />
+	</noscript>
+</center>
 </form>
+
+<?php
+	echo "<script type='text/javascript'>
+	document.getElementById('button_form_1').style.display='';\n";
+	echo insere_js_check_format_login('test_format_login', 'n');
+
+	echo "
+	function test_puis_submit() {
+		if(!test_format_login(document.getElementById('mode_generation_login').value)) {
+			alert('Le format de login des personnels est invalide');
+		}
+		else {
+			if(!test_format_login(document.getElementById('mode_generation_login_eleve').value)) {
+				alert('Le format de login des élèves est invalide');
+			}
+			else {
+				if(!test_format_login(document.getElementById('mode_generation_login_responsable').value)) {
+					alert('Le format de login des responsables est invalide');
+				}
+				else {
+					document.form1.submit();
+				}
+			}
+		}
+	}
+</script>\n";
+
+?>
+
 <hr />
 <form enctype="multipart/form-data" action="param_gen.php" method="post" name="form2" style="width: 100%;">
 <?php

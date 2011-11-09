@@ -76,7 +76,7 @@ if (!isset($step1)) {
 		echo "<p><b>ATTENTION ...</b><br />";
 		echo "Des données concernant les professeurs sont actuellement présentes dans la base GEPI<br /></p>";
 		echo "<p>Si vous poursuivez la procédure les données telles que notes, appréciations, ... seront effacées.</p>";
-		echo "<ul><li>Seules la table contenant les utilisateurs (professeurs, admin, ...) et la table mettant en relation les matières et les professeurs seront conservées.</li>";
+		echo "<ul><li>Seules la table contenant les utilisateurs (<em>professeurs, admin,...</em>) et la table mettant en relation les matières et les professeurs seront conservées.</li>";
 		echo "<li>Les professeurs de l'année passée présents dans la base GEPI et non présents dans la base CSV de cette année ne sont pas effacés de la base GEPI mais simplement déclarés \"inactifs\".</li>";
 		echo "</ul>";
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>";
@@ -85,8 +85,8 @@ if (!isset($step1)) {
 		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />";
 		echo "</form>";
 		echo "</div>";
-		echo "</body>";
-		echo "</html>";
+		echo "<p><br /></p>";
+		require("../lib/footer.inc.php");
 		die();
 	}
 }
@@ -116,9 +116,8 @@ if (!isset($is_posted)) {
 	echo "<br /><br /><p>Quelle formule appliquer pour la génération du login ?</p>\n";
 
 	if(getSettingValue("use_ent")!='y') {
-		//$default_login_gen_type=getSettingValue('login_gen_type');
 		$default_login_gen_type=getSettingValue('mode_generation_login');
-		if($default_login_gen_type=='') {$default_login_gen_type='name';}
+		if(($default_login_gen_type=='')||(!check_format_login($default_login_gen_type))) {$default_login_gen_type='nnnnnnnnnnnnnnnnnnnn';}
 	}
 	else {
 		$default_login_gen_type="";
@@ -128,66 +127,11 @@ if (!isset($is_posted)) {
 		echo "<span style='color:red'>Votre Gepi utilise une authentification LCS; Le format de login ci-dessous ne sera pas pris en compte. Les comptes doivent avoir été importés dans l'annuaire LDAP du LCS avant d'effectuer l'import dans GEPI.</span><br />\n";
 	}
 
-	echo "<input type='radio' name='login_gen_type' id='login_gen_type_name' value='name' ";
-	if($default_login_gen_type=='name') {
-		echo "checked ";
-	}
-	echo "/> <label for='login_gen_type_name'  style='cursor: pointer;'>nom</label>\n";
-	echo "<br />\n";
-
-	echo "<input type='radio' name='login_gen_type' id='login_gen_type_name8' value='name8' ";
-	if($default_login_gen_type=='name8') {
-		echo "checked ";
-	}
-	echo "/> <label for='login_gen_type_name8'  style='cursor: pointer;'>nom (<em>tronqué à 8 caractères</em>)</label>\n";
-	echo "<br />";
-
-	echo "<input type='radio' name='login_gen_type' id='login_gen_type_fname8' value='fname8' ";
-	if($default_login_gen_type=='fname8') {
-		echo "checked ";
-	}
-	echo "/> <label for='login_gen_type_fname8'  style='cursor: pointer;'>pnom (<em>tronqué à 8 caractères</em>)</label>\n";
-	echo "<br />\n";
-
-	echo "<input type='radio' name='login_gen_type' id='login_gen_type_fname19' value='fname19' ";
-	if($default_login_gen_type=='fname19') {
-		echo "checked ";
-	}
-	echo "/> <label for='login_gen_type_fname19'  style='cursor: pointer;'>pnom (<em>tronqué à 19 caractères</em>)</label>\n";
-	echo "<br />\n";
-
-	echo "<input type='radio' name='login_gen_type' id='login_gen_type_firstdotname' value='firstdotname' ";
-	if($default_login_gen_type=='firstdotname') {
-		echo "checked ";
-	}
-	echo "/> <label for='login_gen_type_firstdotname'  style='cursor: pointer;'>prenom.nom</label>\n";
-	echo "<br />\n";
-
-	echo "<input type='radio' name='login_gen_type' id='login_gen_type_firstdotname19' value='firstdotname19' ";
-	if($default_login_gen_type=='firstdotname19') {
-		echo "checked ";
-	}
-	echo "/> <label for='login_gen_type_firstdotname19'  style='cursor: pointer;'>prenom.nom (<em>tronqué à 19 caractères</em>)</label>\n";
-	echo "<br />\n";
-
-	echo "<input type='radio' name='login_gen_type' id='login_gen_type_namef8' value='namef8' ";
-	if($default_login_gen_type=='namef8') {
-		echo "checked ";
-	}
-	echo "/> <label for='login_gen_type_namef8'  style='cursor: pointer;'>nomp (<em>tronqué à 8 caractères</em>)</label>\n";
-	echo "<br />\n";
-
-	echo "<input type='radio' name='login_gen_type' id='login_gen_type_lcs' value='lcs' ";
-	if($default_login_gen_type=='lcs') {
-		echo "checked ";
-	}
-	echo "/> <label for='login_gen_type_lcs'  style='cursor: pointer;'>pnom (<em>façon LCS</em>)</label>\n";
-	echo "<br />\n";
+	echo champ_input_choix_format_login('login_gen_type', $default_login_gen_type);
 
 	if (getSettingValue("use_ent") == "y") {
 		echo "<input type='radio' name='login_gen_type' id='login_gen_type_ent' value='ent' checked=\"checked\" />\n";
-		echo "<label for='login_gen_type_ent'  style='cursor: pointer;'>
-			Les logins sont produits par un ENT (<span title=\"Vous devez adapter le code du fichier ci-dessus vers la ligne 710.\">Attention !</span>)</label>\n";
+		echo "<label for='login_gen_type_ent'  style='cursor: pointer;'>Les logins sont produits par un ENT (<span title=\"cette case permet l'utilisation de la table 'ldap_bx', assurez vous qu'elle soit remplie avec les bonnes informations.\">Attention !</span>)</label>\n";
 		echo "<br />\n";
 	}
 	echo "<br />\n";
@@ -374,8 +318,34 @@ if (!isset($is_posted)) {
 	
 								$affiche[1] = nettoyer_caracteres_nom($affiche[1], "a", " _-", "");
 
-
-								$temp1=generate_unique_login($affiche[0], $affiche[1], $_POST['login_gen_type']);
+								if($_POST['login_gen_type'] == 'ent'){
+									if (getSettingValue("use_ent") == "y") {
+										// Charge à l'organisme utilisateur de pourvoir à cette fonctionnalité
+										// le code suivant n'est qu'une méthode proposée pour relier Gepi à un ENT
+										$bx = 'oui';
+										if (isset($bx) AND $bx == 'oui') {
+											// On va chercher le login de l'utilisateur dans la table créée
+											$sql_p = "SELECT login_u FROM ldap_bx
+														WHERE nom_u = '".my_strtoupper($affiche[0])."'
+														AND prenom_u = '".my_strtoupper($affiche[1])."'
+														AND statut_u = 'teacher'";
+											$query_p = mysql_query($sql_p);
+											$nbre = mysql_num_rows($query_p);
+											if ($nbre >= 1 AND $nbre < 2) {
+												$temp1 = mysql_result($query_p, 0,"login_u");
+											}else{
+												// Il faudrait alors proposer une alternative à ce cas
+												$temp1 = "erreur_".$k;
+											}
+										}
+									}
+									else{
+										die('Vous n\'avez pas autorisé Gepi à utiliser un ENT');
+									}
+								}
+								else {
+									$temp1=generate_unique_login($affiche[0], $affiche[1], $_POST['login_gen_type'], $_POST['login_gen_type_casse']);
+								}
 
 								$login_prof = $temp1;
 								// On teste l'unicité du login que l'on vient de créer

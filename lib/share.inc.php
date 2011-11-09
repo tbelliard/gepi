@@ -200,6 +200,138 @@ function test_unique_e_login($s, $indice) {
  * 
  * Le mode de génération doit être passé en argument
  * 
+ * cf. http://sacoche.sesamath.net/appel_doc.php?fichier=support_administrateur__gestion_format_logins
+ * 
+ * @param string $_nom nom de l'utilisateur
+ * @param string $_prenom prénom de l'utilisateur
+ * @param string $_mode Le mode de génération ou NULL
+ * @param string $_casse La casse du login ('maj', 'min') est par défaut en minuscules
+ * @return string|boolean Le login généré ou false si on obtient un login vide
+ * @see test_unique_login()
+ */
+function generate_unique_login($_nom, $_prenom, $_mode, $_casse='min') {
+
+	if(($_mode == NULL)||(!check_format_login($_mode))) {
+		$_mode = "nnnnnnnnnnnnnnnnnnnn";
+	}
+
+	//==========================
+	// Nettoyage des caractères du nom et du prénom
+
+	$_prenom = remplace_accents($_prenom);
+
+	$prenoms = explode(" ",$_prenom);
+	$premier_prenom = $prenoms[0];
+	$prenom_compose = '';
+	if (isset($prenoms[1])) {$prenom_compose = $prenoms[0]."-".$prenoms[1];}
+
+	$_prenom = preg_replace("/[^a-zA-Z.\-]/", "", $_prenom);
+
+	$_nom = remplace_accents($_nom);
+	$_nom = preg_replace("/[^a-zA-Z.\-]/", "", $_nom);
+
+	//==========================
+	// Nettoyage historique... éventuellement à revoir
+
+	$_nom = preg_replace("/[ ']/","", $_nom);
+	$_nom = preg_replace("/-/","_", $_nom);
+
+	$_prenom = preg_replace("/[ ']/","", $_prenom);
+	$_prenom = preg_replace("/-/","_", $_prenom);
+
+	//==========================
+	// On génère le login
+
+	if((preg_match('/n/', $_mode))&&($_nom=="")) {return false;}
+	elseif((preg_match('/p/', $_mode))&&($_prenom=="")) {return false;}
+	else {
+		$nb_n=mb_strlen(preg_replace('/[^n]/', '', $_mode));
+		$nb_p=mb_strlen(preg_replace('/[^p]/', '', $_mode));
+		$separateur=preg_replace('/[^._-]/', '', $_mode);
+		//echo "<br />";
+		//echo "\$_prenom=$_prenom<br />";
+		//echo "\$_nom=$_nom<br />";
+
+		$part_prenom=mb_substr($_prenom,0,min($nb_p,mb_strlen($_prenom)));
+		$part_nom=mb_substr($_nom,0,min($nb_n,mb_strlen($_nom)));
+
+		//echo "\$part_prenom=$part_prenom<br />";
+		//echo "\$part_nom=$part_nom<br />";
+
+		if(preg_match('/^p/', $_mode)) {
+			// C'est un mode commençant par une portion de prénom
+			$temp1=$part_prenom.$separateur.$part_nom;
+		}
+		else {
+			// C'est un mode commençant par une portion de nom
+			$temp1=$part_nom.$separateur.$part_prenom;
+		}
+		//echo "\$temp1=$temp1<br />";
+
+		// Révision de la casse
+		if($_casse=='maj') {
+			$temp1=my_strtoupper($temp1);
+		}
+		//elseif($_casse=='min') {
+		else {
+			$temp1=my_strtolower($temp1);
+		}
+
+		$login_user = $temp1;
+
+		//==========================
+		// Nettoyage final
+		$login_user = mb_substr($login_user, 0, 50);
+		$login_user = preg_replace("/[^A-Za-z0-9._\-]/","",trim($login_user));
+
+		$test1 = $login_user{0};
+		while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
+			$login_user = mb_substr($login_user, 1);
+			$test1 = $login_user{0};
+		}
+	
+		$test1 = $login_user{mb_strlen($login_user)-1};
+		while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
+			$login_user = mb_substr($login_user, 0, mb_strlen($login_user)-1);
+			$test1 = $login_user{mb_strlen($login_user)-1};
+		}
+
+		//==========================
+		// On teste l'unicité du login que l'on vient de créer
+		$m = '';
+		$test_unicite = 'no';
+		while ($test_unicite != 'yes') {
+			if(($m!='') &&($m>99)) {
+				$login_user=false;
+				break;
+			}
+			else {
+				$test_unicite = test_unique_login($login_user.$m);
+				if ($test_unicite != 'yes') {
+					if ($m == '') {
+						$m = 2;
+					} else {
+						$m++;
+					}
+				} else {
+					$login_user = $login_user.$m;
+				}
+			}
+		}
+
+		//echo "\$login_user=$login_user<br />";
+
+		return $login_user;
+	}
+}
+
+/**
+ * Génére le login à partir du nom et du prénom
+ * 
+ * Génère puis nettoie un login pour qu'il soit valide et unique
+ * 
+ * Le mode de génération doit être passé en argument
+ * 
  * name             à partir du nom
  * 
  * name8            à partir du nom, réduit à 8 caractères
@@ -227,7 +359,7 @@ function test_unique_e_login($s, $indice) {
  * @return string|booleanLe login généré ou FALSE si on obtient un login vide
  * @see test_unique_login()
  */
-function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
+function generate_unique_login_old($_nom, $_prenom, $_mode, $_casse='') {
 
 	if ($_mode == NULL) {
 		$_mode = "fname8";
@@ -261,9 +393,7 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 	} elseif ($_mode == "name9_p") {
 		// Format d'origine des comptes élèves dans Gepi
 		$temp1 = $_nom;
-		$temp1 = preg_replace("/ /","", $temp1);
-		$temp1 = preg_replace("/-/","", $temp1);
-		$temp1 = preg_replace("/'/","", $temp1);
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
 		$temp1 = mb_substr($temp1,0,9);
 		if($_prenom!='') {
 			$temp2 = preg_replace("/ /","", $_prenom);
@@ -271,6 +401,149 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='') {
 			$temp2 = preg_replace("/'/","", $temp2);
 			if($temp2!='') {
 				$temp1 .= '_'.mb_substr($temp2,0,1);
+			}
+		}
+	} elseif ($_mode == "name9-p") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
+		$temp1 = mb_substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 .= '-'.mb_substr($temp2,0,1);
+			}
+		}
+	} elseif ($_mode == "name9.p") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
+		$temp1 = mb_substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 .= '.'.mb_substr($temp2,0,1);
+			}
+		}
+	} elseif ($_mode == "p_name9") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
+		$temp1 = mb_substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 = mb_substr($temp2,0,1)."_".$temp1;
+			}
+		}
+	} elseif ($_mode == "p-name9") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
+		$temp1 = mb_substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 = mb_substr($temp2,0,1)."-".$temp1;
+			}
+		}
+	} elseif ($_mode == "p.name9") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
+		$temp1 = mb_substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 = mb_substr($temp2,0,1).".".$temp1;
+			}
+		}
+	} elseif ($_mode == "name9_ppp") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
+		$temp1 = mb_substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 .= '_'.mb_substr($temp2,0,3);
+			}
+		}
+	} elseif ($_mode == "name9-ppp") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
+		$temp1 = mb_substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 .= '-'.mb_substr($temp2,0,3);
+			}
+		}
+	} elseif ($_mode == "name9.ppp") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
+		$temp1 = mb_substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 .= '.'.mb_substr($temp2,0,3);
+			}
+		}
+	} elseif ($_mode == "ppp_name9") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
+		$temp1 = mb_substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 = mb_substr($temp2,0,3)."_".$temp1;
+			}
+		}
+	} elseif ($_mode == "ppp-name9") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
+		$temp1 = mb_substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 = mb_substr($temp2,0,3)."-".$temp1;
+			}
+		}
+	} elseif ($_mode == "ppp.name9") {
+		// Format d'origine des comptes élèves dans Gepi
+		$temp1 = $_nom;
+		$temp1 = preg_replace("/[ '-]/","", $temp1);
+		$temp1 = mb_substr($temp1,0,9);
+		if($_prenom!='') {
+			$temp2 = preg_replace("/ /","", $_prenom);
+			$temp2 = preg_replace("/-/","_", $temp2);
+			$temp2 = preg_replace("/'/","", $temp2);
+			if($temp2!='') {
+				$temp1 = mb_substr($temp2,0,3).".".$temp1;
 			}
 		}
 	} elseif ($_mode == "fname8") {
@@ -2016,7 +2289,8 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 		$div.=">\n";
 
 		if($bouton_close=="y"){
-			$div.="<div style='$style_close'><a href='#' onclick=\"cacher_div('$id');return FALSE;\">";
+			//$div.="<div style='$style_close'><a href='#' onclick=\"cacher_div('$id'); return false;\">";
+			$div.="<div style='$style_close'><a href=\"javascript:cacher_div('$id')\">";
 			if(isset($niveau_arbo)&&$niveau_arbo==0){
 				$div.="<img src='./images/icons/close16.png' width='16' height='16' alt='Fermer' />";
 			}
@@ -2026,9 +2300,9 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 			else if(isset($niveau_arbo)&&$niveau_arbo==2) {
 				$div.="<img src='../../images/icons/close16.png' width='16' height='16' alt='Fermer' />";
 			}
-      else {
+			else {
 				$div.="<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />";
-      }
+			}
 			$div.="</a></div>\n";
 		}
 		$div.="<span style='padding-left: 1px;'>\n";
@@ -3386,7 +3660,10 @@ function path_niveau($niveau=1){
 function cree_zip_archive($dossier_a_archiver,$niveau=1) {
   $path = path_niveau();
   $dirname = "backup/".getSettingValue("backup_directory")."/";
-  define( 'PCLZIP_TEMPORARY_DIR', $path.$dirname );
+  if (!defined('PCLZIP_TEMPORARY_DIR') || constant('PCLZIP_TEMPORARY_DIR')!=$path.$dirname) {
+    define( 'PCLZIP_TEMPORARY_DIR', $path.$dirname );
+  }
+
   require_once($path.'lib/pclzip.lib.php');
 
   if (isset($dossier_a_archiver)) {

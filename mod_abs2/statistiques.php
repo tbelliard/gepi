@@ -504,14 +504,14 @@ if ($affichage != 'ods') {
                 $enregistrements[$colonnes_individu[1]] = $eleve->getNom();
                 $enregistrements[$colonnes_individu[2]] = $eleve->getPrenom();
                 $enregistrements[$colonnes_individu[3]] = $eleve->getClasseNom();
-                $enregistrements[$colonnes_donnes[1]] = getTauxAbsenteisme($eleve->getDemiJourneesAbsencePreRempli(), $nbre_demi_journees, 1);
-                $enregistrements[$colonnes_donnes[2]] = getTauxAbsenteisme($eleve->getDemiJourneesNonJustifieesPreRempli(), $nbre_demi_journees, 1);
-                $enregistrements[$colonnes_donnes[3]] = getTauxAbsenteisme($eleve->getDemiJourneesAbsencePreRempli() - $eleve->getDemiJourneesNonJustifieesPreRempli(), $nbre_demi_journees, 1);
+                $enregistrements[$colonnes_donnes[1]] = str_replace(",",".",getTauxAbsenteisme($eleve->getDemiJourneesAbsencePreRempli(), $nbre_demi_journees, 1));
+                $enregistrements[$colonnes_donnes[2]] = str_replace(",",".",getTauxAbsenteisme($eleve->getDemiJourneesNonJustifieesPreRempli(), $nbre_demi_journees, 1));
+                $enregistrements[$colonnes_donnes[3]] = str_replace(",",".",getTauxAbsenteisme($eleve->getDemiJourneesAbsencePreRempli() - $eleve->getDemiJourneesNonJustifieesPreRempli(), $nbre_demi_journees, 1));
                 if ($affichage_motifs) {
                     $indice = 4;
                     foreach ($motifs_col as $motif) {
                         $nom_colonne = 'getDemiJourneesAbsencePreRempliMotif' . $motif->getId();
-                        $enregistrements[$colonnes_donnes[$indice]] = getTauxAbsenteisme($eleve->$nom_colonne(), $nbre_demi_journees, 1);
+                        $enregistrements[$colonnes_donnes[$indice]] = str_replace(",",".",getTauxAbsenteisme($eleve->$nom_colonne(), $nbre_demi_journees, 1));
                         $indice++;
                         $nom_variable = 'nb_demijourneesMotif' . $motif->getId();
                         $$nom_variable = $$nom_variable + $eleve->$nom_colonne();
@@ -524,14 +524,14 @@ if ($affichage != 'ods') {
             }
             //remplissage du tableau de donnes moyennes
             $enregistrements_moy = Array();
-            $enregistrements_moy[$colonnes_donnes[1]] = getTauxAbsenteisme($nb_demijournees, $nbre_demi_journees, $nombre_eleve_requete);
-            $enregistrements_moy[$colonnes_donnes[2]] = getTauxAbsenteisme($nb_nonjustifiees, $nbre_demi_journees, $nombre_eleve_requete);
-            $enregistrements_moy[$colonnes_donnes[3]] = getTauxAbsenteisme($nb_justifiees, $nbre_demi_journees, $nombre_eleve_requete);
+            $enregistrements_moy[$colonnes_donnes[1]] = str_replace(",",".",getTauxAbsenteisme($nb_demijournees, $nbre_demi_journees, $nombre_eleve_requete));
+            $enregistrements_moy[$colonnes_donnes[2]] = str_replace(",",".",getTauxAbsenteisme($nb_nonjustifiees, $nbre_demi_journees, $nombre_eleve_requete));
+            $enregistrements_moy[$colonnes_donnes[3]] = str_replace(",",".",getTauxAbsenteisme($nb_justifiees, $nbre_demi_journees, $nombre_eleve_requete));
             if ($affichage_motifs) {
                 $indice = 4;
                 foreach ($motifs_col as $motif) {
                     $test = 'nb_demijourneesMotif' . $motif->getId();
-                    $enregistrements_moy[$colonnes_donnes[$indice]] = getTauxAbsenteisme($$test, $nbre_demi_journees, $nombre_eleve_requete);
+                    $enregistrements_moy[$colonnes_donnes[$indice]] = str_replace(",",".",getTauxAbsenteisme($$test, $nbre_demi_journees, $nombre_eleve_requete));
                     $indice++;
                 }
             }

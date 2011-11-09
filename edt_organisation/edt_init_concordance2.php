@@ -4,7 +4,7 @@
  * Fichier qui enregistre les concordances et les cours du fichier edt_init_csv2.php
  *
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -54,16 +54,11 @@ $debug = NULL; $aff_create = NULL;
 //$ = isset($_POST[""]) ? $_POST[""] : NULL;
 $msg_enreg = '';
 
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html lang="fr">
-<head>
-	<title>Enregistrer les concordances(2) pour l'import de l'EdT</title>
-	<link rel="stylesheet" type="text/css" href="../style.css" />
-	<LINK REL="SHORTCUT ICON" href="/gepi_trunk/favicon.ico" />
-</head>
-<body>
-<?php
+//=================================
+//$titre_page="Enregistrer les concordances(2) pour l'import de l'EdT";
+require_once("../lib/header.inc");
+//=================================
+
 echo "<div id='header'>
 	<br />
 	<p style='text-align: center;'>Concordances</p>
@@ -137,9 +132,14 @@ if ($etape != NULL) {
 	}elseif($etape == 12){
 
 		// Ce sont les cours qui arrivent, car on a terminé les concordances
-		for($i = 0; $i < $nbre_lignes; $i++){
+		//for($i = 0; $i < $nbre_lignes; $i++){
+		$sql="SELECT * FROM tempo2;";
+		$res_tempo=mysql_query($sql);
+		while($lig_tempo=mysql_fetch_object($res_tempo)) {
 			// On initialise toutes les variables et on affiche la valeur de chaque cours
-			$ligne = isset($_POST["ligne_".$i]) ? $_POST["ligne_".$i] : NULL;
+			//$ligne = isset($_POST["ligne_".$i]) ? $_POST["ligne_".$i] : NULL;
+			$ligne=$lig_tempo->col1;
+
 			//echo $ligne.'<br />';
 			// On explose la variable pour récupérer toutes les données
 			$tab = explode("|", $ligne);
@@ -165,7 +165,7 @@ if ($etape != NULL) {
 				if ($aff_infos == 'oui' OR $debug == 'ok') {
 					$msg_enreg .= 'La ligne '.$i.' a bien été enregistrée.<br />';
 				}
-			}elseif($enregistre["reponse"] == 'non'){
+			} elseif($enregistre["reponse"] == 'non') {
 
 				if ($aff_infos == 'oui' OR getSettingValue("mod_edt_gr") == 'y' OR $debug == 'ok') {
 
@@ -193,7 +193,7 @@ if ($etape != NULL) {
 
 					} // if (getSettingValue("mod_edt_gr") == 'y'
 
-					$msg_enreg .= '<p title="'.$tab[0].'|'.$tab[1].'|'.$tab[2].'|'.$tab[3].'|'.$tab[4].'|'.$tab[5].'|'.$tab[6].'|'.$tab[7].'|'.$tab[8].'|'.$tab[9].'|'.$tab[10].'|'.$tab[11].'">La ligne '.$i.' n\'a pas été reconnue.'.$enregistre["msg_erreur"].''.$aff_create.'</p>'."\n";
+					$msg_enreg .= '<p title="'.$tab[0].'|'.$tab[1].'|'.$tab[2].'|'.$tab[3].'|'.$tab[4].'|'.$tab[5].'|'.$tab[6].'|'.$tab[7].'|'.$tab[8].'|'.$tab[9].'|'.$tab[10].'|'.$tab[11].'">La ligne '.$i.' n\'a pas été reconnue. '.$enregistre["msg_erreur"].' '.$aff_create.'</p>'."\n";
 				}
 			}else{
 				echo '(ligne '.$i.')&nbsp;->&nbsp;Il y a eu un souci car ce n\'est pas ok ou non qui arrive mais '.$enregistre["msg_erreur"].'.<br />';
@@ -225,6 +225,5 @@ if ($etape != NULL) {
 	}
 } // on a terminé le travail de concordances
 
+require("../lib/footer.inc.php");
 ?>
-</body>
-</html>
