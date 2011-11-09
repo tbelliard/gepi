@@ -226,6 +226,12 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 		// On propose de mettre à zéro les mots de passe et d'imprimer les fiches bienvenue seulement
 		// si au moins un utilisateur a été créé et si on n'est pas en mode SSO (sauf accès LDAP en écriture).
 
+		// nouveaux_seulement
+		$chaine_nouveaux_seulement="";
+		if((isset($_POST['nouveaux_seulement']))&&($_POST['nouveaux_seulement'])) {
+			$chaine_nouveaux_seulement="&amp;nouveaux_seulement=y";
+		}
+
 		if ($nb_comptes > 0 && ($_POST['reg_auth_mode'] == "auth_locale" || $gepiSettings['ldap_write_access'] == "yes")) {
 			if ($create_mode == "individual") {
 				// Mode de création de compte individuel. On fait un lien spécifique pour la fiche de bienvenue
@@ -237,14 +243,14 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 				// Si on opère sur toutes les classes, on ne spécifie aucune classe
 				// =====================
 				if ($_POST['classe'] == "all") {
-				    $msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=html&amp;creation_comptes_classe=y".add_token_in_url()."'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
-				    $msg .= " ou <a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=html&amp;affiche_adresse_resp=y&amp;creation_comptes_classe=y".add_token_in_url()."'>(Impression HTML avec adresse)</a>";
-					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=csv&amp;creation_comptes_classe=y".add_token_in_url()."'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
+				    $msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=html&amp;creation_comptes_classe=y".$chaine_nouveaux_seulement.add_token_in_url()."'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
+				    $msg .= " ou <a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=html&amp;affiche_adresse_resp=y&amp;creation_comptes_classe=y".$chaine_nouveaux_seulement.add_token_in_url()."'>(Impression HTML avec adresse)</a>";
+					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=csv&amp;creation_comptes_classe=y".$chaine_nouveaux_seulement.add_token_in_url()."'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
 					$msg.="<br/>";
 				} elseif (is_numeric($_POST['classe'])) {
-					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html&amp;creation_comptes_classe=y".add_token_in_url()."'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
-					$msg .= " ou <a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html&amp;affiche_adresse_resp=y&amp;creation_comptes_classe=y".add_token_in_url()."'>(Impression HTML avec adresse)</a>";
-					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=csv&amp;creation_comptes_classe=y".add_token_in_url()."'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
+					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html&amp;creation_comptes_classe=y".$chaine_nouveaux_seulement.add_token_in_url()."'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
+					$msg .= " ou <a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html&amp;affiche_adresse_resp=y&amp;creation_comptes_classe=y".$chaine_nouveaux_seulement.add_token_in_url()."'>(Impression HTML avec adresse)</a>";
+					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=csv&amp;creation_comptes_classe=y".$chaine_nouveaux_seulement.add_token_in_url()."'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
 					$msg.="<br/>";
 				}
 				// =====================
@@ -278,7 +284,7 @@ if(getSettingValue('auth_sso')=='lcs') {
 
 $afficher_tous_les_resp=isset($_POST['afficher_tous_les_resp']) ? $_POST['afficher_tous_les_resp'] : "n";
 $critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
-$critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/", "", $critere_recherche);
+$critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/u", "", $critere_recherche);
 
 //$quels_parents = mysql_query("SELECT * FROM resp_pers WHERE login='' ORDER BY nom,prenom");
 //$quels_parents = mysql_query("SELECT * FROM resp_pers WHERE login='' ORDER BY nom,prenom");
@@ -381,6 +387,10 @@ else{
 		echo "<option value='".$current_classe->id."'>".$current_classe->classe."</option>\n";
 	}
 	echo "</select>\n";
+
+	echo "<br />\n";
+	echo "<input type='checkbox' name='nouveaux_seulement' id='nouveaux_seulement' value='y' /><label for='nouveaux_seulement'> Ne pas générer de fiche bienvenue pour les comptes existants</label><br />\n";
+
 	echo "<input type='submit' name='Valider' value='Valider' />\n";
 	echo "</form>\n";
 
