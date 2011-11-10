@@ -104,7 +104,7 @@ if ($barre_plugin!="") {
 			$menus .= '            </ul>'."\n";
 			$menus .= '     </li>'."\n";
 	
-			$menus .= '     <li class="plus">Vérif. et accès</a>'."\n";
+			$menus .= '     <li class="plus">Vérif. et accès'."\n";
 			$menus .= '            <ul class="niveau3">'."\n";
 			$menus .= '                <li><a href="'.$gepiPath.'/bulletin/verif_bulletins.php"'.insert_confirm_abandon().'>Vérif. remplissage bull</a></li>'."\n";
 			$menus .= '                <li><a href="'.$gepiPath.'/bulletin/verrouillage.php"'.insert_confirm_abandon().'>Vérrouillage périodes</a></li>'."\n";

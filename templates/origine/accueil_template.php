@@ -455,7 +455,7 @@
 ?>
 						<tr  class='<?php echo $newentree['style']; ?>'>
 							<td>
-                               <a href='mailto:<?php echo $newentree['courriel']; ?>' alt='Envoyer un mail' title='Envoyer un mail'>
+                               <a href='mailto:<?php echo $newentree['courriel']; ?>' title='Envoyer un mail'>
 									<?php echo $newentree['texte']; ?>
 								</a>
 							</td>
@@ -463,30 +463,32 @@
 								<?php
 									if(isset($newentree['login'])) {
 										if($newentree['statut']=='responsable') {
-											if(isset($newentree['pers_id'])) {
-												echo "<a href='$gepiPath/responsables/modify_resp.php?pers_id=".$newentree['pers_id']."' alt='Accéder à la fiche du responsable' title='Accéder à la fiche du responsable'>";
-												echo $newentree['statut'];
-												echo "</a>";
+											if(isset($newentree['pers_id'])) { ?>
+												<a href='<?php echo $gepiPath; ?>/responsables/modify_resp.php?pers_id=<?php echo $newentree['pers_id']; ?>' title='Accéder à la fiche du responsable'>;
+												<?php echo $newentree['statut']; ?>
+												</a>
+								<?php
 											}
 											else {
 												echo $newentree['statut'];
 											}
 										}
-										elseif($newentree['statut']=='eleve') {
-											echo "<a href='$gepiPath/eleves/modify_eleve.php?eleve_login=".$newentree['login']."' alt=\"Accéder à la fiche de l'élève\" title=\"Accéder à la fiche de l'élève\">";
-											echo $newentree['statut'];
-											echo "</a>";
+										elseif($newentree['statut']=='eleve') { ?>
+											<a href='<?php echo $gepiPath; ?>/eleves/modify_eleve.php?eleve_login=<?php echo $newentree['login']; ?>' title="Accéder à la fiche de l'élève">;
+											<?php echo $newentree['statut']; ?>
+											</a>
+								<?php
 										}
-										else {
-											echo "<a href='$gepiPath/utilisateurs/modify_user.php?user_login=".$newentree['login']."' alt=\"Accéder à la fiche de l'utilisateur\" title=\"Accéder à la fiche de l'utilisateur\">";
-											echo $newentree['statut'];
-											echo "</a>";
+										else { ?>
+											<a href='<?php echo $gepiPath; ?>/utilisateurs/modify_user.php?user_login=<?php echo $newentree['login']; ?>' title="Accéder à la fiche de l'utilisateur">";
+											<?php echo $newentree['statut']; ?>
+											</a>
+								<?php
 										}
 									}
 									else {
 										echo $newentree['statut'];
 									}
-									//foreach($newentree as $key => $value) {echo "\$newentree[$key]=$value<br />";}
 								?>
 							</td>
 						</tr>
