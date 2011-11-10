@@ -3336,7 +3336,7 @@ $update_tempo4=mysql_query($sql);
 							$sql.=", ele_id='".$lig->ELE_ID."'";
 
 							if(getSettingValue('mode_email_ele')!="mon_compte") {
-								$sql.=", email='".addslashes($lig->$MEL)."'";
+								$sql.=", email='".addslashes($lig->MEL)."'";
 							}
 
 							$login_eleve=$lig_tmp->login;
