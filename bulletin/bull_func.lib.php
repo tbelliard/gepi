@@ -931,9 +931,31 @@ width:".$largeur1."%;\n";
 				}
 			}
 			else {
-				echo "&nbsp;";
-				// Si il n'y a pas d'avis, on rajoute des lignes vides selon les paramètres d'impression
+				// Compteur des lignes vides à ajouter
 				$n = 0;
+
+				// **** AJOUT POUR LES MENTIONS ****
+				if(getSettingValue('bull_affich_mentions')!="n") {
+					if((!isset($tableau_des_mentions_sur_le_bulletin))||(!is_array($tableau_des_mentions_sur_le_bulletin))||(count($tableau_des_mentions_sur_le_bulletin)==0)) {
+						$tableau_des_mentions_sur_le_bulletin=get_mentions();
+					}
+					//if((trim($tab_bull['id_mention'][$i])!="")||($avec_coches_mentions=="y")) {
+					if(isset($tableau_des_mentions_sur_le_bulletin[$tab_bull['id_mention'][$i]])) {
+						echo "<br/>\n";
+						if(getSettingValue('bull_affich_intitule_mentions')!="n") {
+							echo "<b>".ucfirst($gepi_denom_mention)." : </b>";
+						}
+						echo texte_html_ou_pas(traduction_mention($tab_bull['id_mention'][$i]));
+						$n++;
+					}
+				}
+				// **** FIN D'AJOUT POUR LES MENTIONS ****
+
+				if($n==0) {
+					echo "&nbsp;";
+				}
+
+				// Si il n'y a pas d'avis, on rajoute des lignes vides selon les paramètres d'impression
 				if ($bull_espace_avis >0){
 					while ($n < $bull_espace_avis) {
 						echo "<br />\n";
