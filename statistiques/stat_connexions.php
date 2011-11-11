@@ -94,18 +94,32 @@ require_once("../lib/header.inc");
 
 //debug_var();
 
-function tableau_php_tableau_html($tab) {
+function tableau_php_tableau_html($tab, $nb_lig_max=5) {
 	$retour="";
 
-	$retour="<table class='boireaus'>\n";
+	//$retour.="<div float:left; width: 15em;'>\n";
+	$retour.="<table class='boireaus'>\n";
 	$alt=1;
+	//$compteur=0;
 	for($loop=0;$loop<count($tab);$loop++) {
+		/*
+		if($compteur>$nb_lig_max) {
+			$retour.="</table>\n";
+			$retour.="</div>\n";
+
+			$retour.="<div float:left; width: 10em;'>\n";
+			$retour.="<table class='boireaus'>\n";
+			$compteur=0;
+		}
+		*/
 		$alt=$alt*(-1);
 		$retour.="<tr class='lig$alt white_hover'>\n";
 		$retour.="<td>".civ_nom_prenom($tab[$loop])."</td>\n";
 		$retour.="</tr>\n";
+		//$compteur++;
 	}
 	$retour.="</table>\n";
+	//$retour.="</div>\n";
 
 	return $retour;
 }
@@ -132,9 +146,9 @@ if(!isset($mode)) {
 	echo "<ul>\n";
 	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=1'>Statistiques globales de connexions élèves et responsables</a></li>\n";
 	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=2'>Statistiques des connexions parents d'une classe</a></li>\n";
+	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=3'>Statistiques des connexions élèves d'une classe</a></li>\n";
 	echo "</ul>\n";
 
-	echo "<p style='color:red'>Faire une autre graphique avec les connexions élèves.</p>";
 	echo "<p style='color:red'>Faire une autre graphique avec le nombre de connexions par semaine.</p>";
 }
 elseif($mode==1) {
@@ -195,8 +209,8 @@ elseif($mode==1) {
 					$tab_ele[]=$lig->login;
 				}
 			}
-			$titre_infobulle="Elèves connectés au moins une fois\n";
-			$texte_infobulle=tableau_php_tableau_html($tab_ele);
+			$titre_infobulle="Elèves connectés au moins une fois (<em>".$tab_classe[$i]['classe']."</em>)\n";
+			$texte_infobulle="<div align='center'>".tableau_php_tableau_html($tab_ele)."</div>";
 			$tabdiv_infobulle[]=creer_div_infobulle('div_ele_'.$i,$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
 	
 			$sql="SELECT DISTINCT l.login FROM log l, resp_pers rp, eleves e, j_eleves_classes jec, responsables2 r WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose>='0' AND l.autoclose<='3' AND l.login!='' AND START>='$mysql_begin_bookings' ORDER BY l.login;";
@@ -239,7 +253,7 @@ elseif($mode==1) {
 			}
 			*/
 			$titre_infobulle="Parents en échec de connexion\n";
-			$texte_infobulle=tableau_php_tableau_html($tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes);
+			$texte_infobulle="<div align='center'>".tableau_php_tableau_html($tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes)."</div>";
 			$tabdiv_infobulle[]=creer_div_infobulle('div_resp_echec_'.$i,$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
 	
 			$sql="SELECT DISTINCT jec.login FROM log l, resp_pers rp, eleves e, j_eleves_classes jec, responsables2 r WHERE jec.id_classe='".$tab_classe[$i]['id']."' AND jec.login=e.login AND e.ele_id=r.ele_id AND rp.pers_id=r.pers_id AND rp.login=l.login AND l.autoclose>='0' AND l.autoclose<='3' AND START>='$mysql_begin_bookings' ORDER BY l.login;";
@@ -259,7 +273,8 @@ elseif($mode==1) {
 	
 			if($nb_ele>0) {
 				echo "<td>";
-				echo "<a href=\"#\" onclick=\"afficher_div('div_ele_$i','y',10,10);return false;\"  onmouseover=\"delais_afficher_div('div_ele_$i','y',10,10,20,20,1000);\"  onmouseout=\"cacher_div('div_ele_$i');\">";
+				//echo "<a href=\"#\" onclick=\"afficher_div('div_ele_$i','y',10,10);return false;\"  onmouseover=\"delais_afficher_div('div_ele_$i','y',10,10,20,20,1000);\"  onmouseout=\"cacher_div('div_ele_$i');\">";
+				echo "<a href=\"#\" onclick=\"afficher_div_stat('div_ele_$i');return false;\"  onmouseover=\"afficher_div_stat('div_ele_$i')\">";
 				echo $nb_ele."/".$tab_classe[$i]['effectif'];
 				echo "</a>";
 				echo "</td>\n";
@@ -279,7 +294,8 @@ elseif($mode==1) {
 	
 			echo "<td>";
 			if($nb_parents>0) {
-				echo "<a href=\"#\" onclick=\"afficher_div('div_resp_$i','y',10,10);return false;\" onmouseover=\"delais_afficher_div('div_resp_$i','y',10,10,20,20,1000);\" onmouseout=\"cacher_div('div_resp_$i');\">";
+				//echo "<a href=\"#\" onclick=\"afficher_div('div_resp_$i','y',10,10);return false;\" onmouseover=\"delais_afficher_div('div_resp_$i','y',10,10,20,20,1000);\" onmouseout=\"cacher_div('div_resp_$i');\">";
+				echo "<a href=\"#\" onclick=\"afficher_div_stat('div_resp_$i');return false;\"  onmouseover=\"afficher_div_stat('div_resp_$i')\">";
 				echo $nb_parents;
 				//echo "<br />".(round(100*10*$nb_parents/$tab_classe[$i]['effectif'])/10)."%";
 				echo "</a>";
@@ -310,7 +326,8 @@ elseif($mode==1) {
 	
 			echo "<td>";
 			if($nb_parents_erreur_mdp_et_jamais_connectes_avec_succes>0) {
-				echo "<a href=\"#\" onclick=\"afficher_div('div_resp_echec_$i','y',10,10);return false;\"  onmouseover=\"delais_afficher_div('div_resp_echec_$i','y',10,10,20,20,1000);\"  onmouseout=\"cacher_div('div_resp_echec_$i');\" style='color:red'>";
+				//echo "<a href=\"#\" onclick=\"afficher_div('div_resp_echec_$i','y',10,10);return false;\"  onmouseover=\"delais_afficher_div('div_resp_echec_$i','y',10,10,20,20,1000);\"  onmouseout=\"cacher_div('div_resp_echec_$i');\" style='color:red'>";
+				echo "<a href=\"#\" onclick=\"afficher_div_stat('div_resp_echec_$i');return false;\"  onmouseover=\"afficher_div_stat('div_resp_echec_$i')\" style='color:red'>";
 				echo $nb_parents_erreur_mdp_et_jamais_connectes_avec_succes;
 				//echo "<br />".(round(100*10*$nb_parents_erreur_mdp_et_jamais_connectes_avec_succes/$tab_classe[$i]['effectif'])/10)."%";
 				echo "</a>";
@@ -326,11 +343,26 @@ elseif($mode==1) {
 
 	echo "<p><br /></p>\n";
 
+	echo "<script type='text/javascript'>
+	function afficher_div_stat(id) {
+		if(document.getElementById(id)) {
+			for(i=0;i<".count($tab_classe).";i++) {
+				if(document.getElementById('div_ele_'+i)) {cacher_div('div_ele_'+i);}
+				if(document.getElementById('div_resp_'+i)) {cacher_div('div_resp_'+i);}
+				if(document.getElementById('div_resp_echec_'+i)) {cacher_div('div_resp_echec_'+i);}
+			}
+			afficher_div(id,'y',10,10);
+		}
+	}
+</script>\n";
 }
-elseif($mode==2) {
+elseif(($mode==2)||($mode==3)) {
 	echo "<p class='bold'><a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
-	echo "<p class='bold'>Connexions parents&nbsp;:</p>\n";
+	$categorie_utilisateur[2]="responsable";
+	$categorie_utilisateur[3]="élève";
+
+	echo "<p class='bold'>Connexions ".$categorie_utilisateur[$mode]."s&nbsp;:</p>\n";
 
 	//=======================
 	//Configuration du calendrier
@@ -436,11 +468,15 @@ elseif($mode==2) {
 	$date_mysql_fin="$annee_fin-$mois_fin-$jour_fin 00:00:00";
 
 	if($id_classe!='') {
-		$sql="SELECT DISTINCT l.login, l.START from log l, resp_pers rp, responsables2 r, eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND e.login=jec.login AND r.ele_id=e.ele_id AND r.pers_id=rp.pers_id AND rp.login=l.login AND l.login!='' AND autoclose>='0' AND autoclose<='3' AND START>='".$date_mysql_debut."' AND END<='".$date_mysql_fin."' ORDER BY l.START, l.login;";
+		$sql_partie[2]="SELECT DISTINCT l.login, l.START from log l, resp_pers rp, responsables2 r, eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND e.login=jec.login AND r.ele_id=e.ele_id AND r.pers_id=rp.pers_id AND rp.login=l.login AND l.login!='' AND autoclose>='0' AND autoclose<='3' AND START>='".$date_mysql_debut."' AND END<='".$date_mysql_fin."' ORDER BY l.START, l.login;";
+
+		$sql_partie[3]="SELECT DISTINCT l.login, l.START from log l, eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND e.login=jec.login AND e.login=l.login AND l.login!='' AND autoclose>='0' AND autoclose<='3' AND START>='".$date_mysql_debut."' AND END<='".$date_mysql_fin."' ORDER BY l.START, l.login;";
+
+		$sql=$sql_partie[$mode];
 		//echo "$sql<br />";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
-			echo "<p>Aucun compte parent n'a encore essayé de (<em>ou réussi à</em>) se connecter.</p>\n";
+			echo "<p>Aucun compte ".$categorie_utilisateur[$mode]." n'a encore essayé de (<em>ou réussi à</em>) se connecter.</p>\n";
 		}
 		else {
 			$tab_connexions=array();
@@ -628,7 +664,11 @@ elseif($mode==2) {
 	context.fill();
 	context.fillStyle = '#000';
 	*/
-	
+
+	context.fillStyle = 'black';
+	context.lineWidth = '1.0';
+	context.fillText('Connexions ".$categorie_utilisateur[$mode]."s', x0+20, -$hauteur_totale_min+10);
+
 	mois_precedent='';
 	for (i=0; i<jour.length; i++) {
 		context.fillStyle = 'steelblue';
