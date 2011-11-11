@@ -3816,7 +3816,7 @@ function lignes_options_select_eleve($id_classe,$login_eleve_courant,$sql_ele=""
 		$temoin_tmp=0;
 		while($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)){
 			if($lig_ele_tmp->login==$login_eleve_courant){
-				$chaine_options_login_eleves.="<option value='$lig_ele_tmp->login' selected='TRUE'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
+				$chaine_options_login_eleves.="<option value='$lig_ele_tmp->login' selected='selected'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
 	
 				$num_eleve=$cpt_eleve;
 	
