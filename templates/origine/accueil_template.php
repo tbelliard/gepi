@@ -464,7 +464,7 @@
 									if(isset($newentree['login'])) {
 										if($newentree['statut']=='responsable') {
 											if(isset($newentree['pers_id'])) { ?>
-												<a href='<?php echo $gepiPath; ?>/responsables/modify_resp.php?pers_id=<?php echo $newentree['pers_id']; ?>' title='Accéder à la fiche du responsable'>;
+												<a href='<?php echo $gepiPath; ?>/responsables/modify_resp.php?pers_id=<?php echo $newentree['pers_id']; ?>' title='Accéder à la fiche du responsable'>
 												<?php echo $newentree['statut']; ?>
 												</a>
 								<?php
@@ -474,13 +474,13 @@
 											}
 										}
 										elseif($newentree['statut']=='eleve') { ?>
-											<a href='<?php echo $gepiPath; ?>/eleves/modify_eleve.php?eleve_login=<?php echo $newentree['login']; ?>' title="Accéder à la fiche de l'élève">;
+											<a href='<?php echo $gepiPath; ?>/eleves/modify_eleve.php?eleve_login=<?php echo $newentree['login']; ?>' title="Accéder à la fiche de l'élève">
 											<?php echo $newentree['statut']; ?>
 											</a>
 								<?php
 										}
 										else { ?>
-											<a href='<?php echo $gepiPath; ?>/utilisateurs/modify_user.php?user_login=<?php echo $newentree['login']; ?>' title="Accéder à la fiche de l'utilisateur">";
+											<a href='<?php echo $gepiPath; ?>/utilisateurs/modify_user.php?user_login=<?php echo $newentree['login']; ?>' title="Accéder à la fiche de l'utilisateur">
 											<?php echo $newentree['statut']; ?>
 											</a>
 								<?php
