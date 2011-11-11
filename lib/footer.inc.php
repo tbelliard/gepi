@@ -182,7 +182,7 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
  */
 	
 	echo '<!-- Alarme sonore -->';
-	echo joueAlarme();
+	echo joueAlarme($niveau_arbo);
 	echo '<!-- Fin alarme sonore -->';
 	
 	include('alerte_popup.php');
