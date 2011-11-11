@@ -4857,4 +4857,38 @@ function array_map_deep($callback, $array) {
     return $new;
 } 
 
+/**
+ * Création de la balise audio pour l'alarme sonore de fin de session
+ * 
+ * @return string Balises audio
+ */
+function joueAlarme() {
+  $retour ="";
+  	$footer_sound= isset ($_SESSION['login']) ? getPref($_SESSION['login'],'footer_sound',"") : NULL;
+	if($footer_sound===NULL) {
+		$footer_sound=getSettingValue('footer_sound');
+		if($footer_sound=='') {
+			$footer_sound="KDE_Beep_Pop.wav";
+		}
+	}
+	
+	if($footer_sound!=='') {
+		
+		$chemin_sound = dirname(dirname(__FILE__))."/sounds/".$footer_sound;
+		if(file_exists($chemin_sound)) { 
+  $retour ="<audio id='id_footer_sound' preload='auto' autobuffer>
+	<source src=".$chemin_sound." />
+</audio>
+<script type='text/javascript'>
+  function play_footer_sound() {
+	  if(document.getElementById('id_footer_sound')) {
+		  document.getElementById('id_footer_sound').play();
+	  }
+  }
+  </script>";
+		}
+	}
+	return $retour;
+} 
+  
 ?>

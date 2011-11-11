@@ -136,7 +136,7 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 			echo "<div id='div_info_formulaires' style='color:red; border:1px solid black; background-color: white; width: 40em; display:none; margin: 1em;'></div>\n";
 		}
 	}
-
+/**
 	$footer_sound= isset ($_SESSION['login']) ? getPref($_SESSION['login'],'footer_sound',"") : NULL;
 	if($footer_sound===NULL) {
 		$footer_sound=getSettingValue('footer_sound');
@@ -144,7 +144,7 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 			$footer_sound="KDE_Beep_Pop.wav";
 		}
 	}
-	echo 'footer_sound :'.$footer_sound;
+	
 	if($footer_sound!=='') {
     
 	  if ($niveau_arbo == "0") {
@@ -179,7 +179,11 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
   ";
 	  }
 	}
-
+ */
+	
+	echo '<!-- Alarme sonore -->';
+	echo joueAlarme();
+	echo '<!-- Fin alarme sonore -->';
 	
 	include('alerte_popup.php');
 

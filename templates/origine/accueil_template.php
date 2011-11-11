@@ -543,40 +543,12 @@
    			";
 		}
 ?>
+
+<!-- Alarme sonore -->
 <?php
-	//$footer_sound=getPref($_SESSION['login'],'footer_sound',"");
-	$footer_sound= isset ($_SESSION['login']) ? getPref($_SESSION['login'],'footer_sound',"") : NULL;
-	if($footer_sound===NULL) {
-		$footer_sound=getSettingValue('footer_sound');
-		if($footer_sound=='') {
-			$footer_sound="KDE_Beep_Pop.wav";
-		}
-	}
-	
-	if($footer_sound!=='') {
-
-	if ($niveau_arbo == "0") {
-		$chemin_sound="./sounds/".$footer_sound;
-	} elseif ($niveau_arbo == "1") {
-		$chemin_sound="../sounds/".$footer_sound;
-	} elseif ($niveau_arbo == "2") {
-		$chemin_sound="../../sounds/".$footer_sound;
-	} elseif ($niveau_arbo == "3") {
-		$chemin_sound="../../../sounds/".$footer_sound;
-	}
+	echo joueAlarme();
 ?>
-
-<?php if(file_exists($chemin_sound)) : ?>
-<audio id='id_footer_sound' preload='auto' autobuffer><source src='<?php echo $chemin_sound; ?>' /></audio>
-<script type='text/javascript'>
-	function play_footer_sound() {
-		if ($('id_footer_sound')) {
-			$('id_footer_sound').play();
-		}
-	}
-</script>
-<?php endif ;
-	} ?>
+<!-- Fin alarme sonore -->
 
 <div id="alert_cache" style="z-index:2000;
 							display:none;
