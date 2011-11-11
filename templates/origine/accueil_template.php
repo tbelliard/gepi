@@ -544,13 +544,16 @@
 		}
 ?>
 <?php
-	$footer_sound=getPref($_SESSION['login'],'footer_sound',"");
-	if($footer_sound=='') {
+	//$footer_sound=getPref($_SESSION['login'],'footer_sound',"");
+	$footer_sound= isset ($_SESSION['login']) ? getPref($_SESSION['login'],'footer_sound',"") : NULL;
+	if($footer_sound===NULL) {
 		$footer_sound=getSettingValue('footer_sound');
 		if($footer_sound=='') {
 			$footer_sound="KDE_Beep_Pop.wav";
 		}
 	}
+	
+	if($footer_sound!=='') {
 
 	if ($niveau_arbo == "0") {
 		$chemin_sound="./sounds/".$footer_sound;
@@ -572,7 +575,8 @@
 		}
 	}
 </script>
-<?php endif ?>
+<?php endif ;
+	} ?>
 
 <div id="alert_cache" style="z-index:2000;
 							display:none;

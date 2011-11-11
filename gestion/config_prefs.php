@@ -93,7 +93,7 @@ if($_SESSION['statut']!="administrateur"){
 	}
 	$tab_sound=get_tab_file($chemin_sound);
 
-	if((count($tab_sound)>0)&&(isset($_POST['footer_sound']))&&(in_array($_POST['footer_sound'],$tab_sound))&&(preg_match('/\.wav/i',$_POST['footer_sound']))&&(file_exists($chemin_sound.$_POST['footer_sound']))) {
+	if((count($tab_sound)>0)&&(isset($_POST['footer_sound']))&&(((in_array($_POST['footer_sound'],$tab_sound))&&(preg_match('/\.wav/i',$_POST['footer_sound']))&&(file_exists($chemin_sound.$_POST['footer_sound'])))|| $_POST['footer_sound']=='')) {  
 		$footer_sound_pour_qui=isset($_POST['footer_sound_pour_qui']) ? $_POST['footer_sound_pour_qui'] : 'perso';
 		$statut_sound=array();
 		$nb_err_sound=0;
