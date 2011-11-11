@@ -370,16 +370,19 @@ aff_time();
 
 	$afficher_tous_les_resp=isset($_POST['afficher_tous_les_resp']) ? $_POST['afficher_tous_les_resp'] : "n";
 	$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
-	$critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/", "", $critere_recherche);
+	//$critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/u", "", $critere_recherche);
+	$critere_recherche=nettoyer_caracteres_nom($critere_recherche, 'a', ' -','');
   	$critere_recherche_login=isset($_POST['critere_recherche_login']) ? $_POST['critere_recherche_login'] : "";
-	$critere_recherche_login=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/", "", $critere_recherche_login);
+	//$critere_recherche_login=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/u", "", $critere_recherche_login);
+	$critere_recherche_login=nettoyer_caracteres_nom($critere_recherche_login, 'a', ' -','');
 
+	$critere_id_classe=isset($_POST['critere_id_classe']) ? preg_replace('/[^0-9]/', '', $_POST['critere_id_classe']) : "";
 	//====================================
 
 	echo "<form enctype='multipart/form-data' name='form_rech' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	echo "<table style='border:1px solid black;' summary=\"Filtrage\">\n";
 	echo "<tr>\n";
-	echo "<td valign='top' rowspan='4'>\n";
+	echo "<td valign='top' rowspan='5'>\n";
 	echo "Filtrage:";
 	echo "</td>\n";
 	echo "<td>\n";
@@ -387,10 +390,29 @@ aff_time();
 	echo "<input type='text' name='critere_recherche' value='$critere_recherche' />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
+
 	echo "<tr>\n";
 	echo "<td>\n";
 	echo "<input type='submit' name='filtrage' value='Afficher' /> les responsables ayant un <b>login</b> qui contient: ";
 	echo "<input type='text' name='critere_recherche_login' value='$critere_recherche_login' />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td>\n";
+	echo "<input type='submit' name='filtrage' value='Afficher' /> les responsables (<em>ayant un login</em>) d'élève(s) de la <b>classe</b> de: ";
+	echo "<select name='critere_id_classe'>\n";
+	echo "<option value=''>---</option>\n";
+	$sql="SELECT DISTINCT id, classe FROM classes c, j_eleves_classes jec, eleves e, utilisateurs u, resp_pers rp, responsables2 r WHERE c.id=jec.id_classe AND jec.login=e.login AND e.ele_id=r.ele_id AND r.pers_id=rp.pers_id AND rp.login=u.login ORDER BY classe;";
+	$res_classes=mysql_query($sql);
+	if(mysql_num_rows($res_classes)>0) {
+		while($lig_classe=mysql_fetch_object($res_classes)) {
+			echo "<option value='$lig_classe->id'";
+			if($lig_classe->id==$critere_id_classe) {echo " selected='true'";}
+			echo ">$lig_classe->classe</option>\n";
+		}
+	}
+	echo "</select>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -424,7 +446,12 @@ aff_time();
 <?php
 //$quels_parents = mysql_query("SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login) ORDER BY u.nom,u.prenom");
 
-$sql="SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login";
+if($critere_id_classe=='') {
+	$sql="SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login";
+}
+else {
+	$sql="SELECT DISTINCT u.*, r.pers_id FROM classes c, j_eleves_classes jec, eleves e, utilisateurs u, resp_pers rp, responsables2 r WHERE (u.statut = 'responsable' AND rp.login=u.login";
+}
 
 if($afficher_tous_les_resp!='y'){
 	if($critere_recherche!=""){
@@ -434,6 +461,10 @@ if($afficher_tous_les_resp!='y'){
 			$sql.=" AND u.login like '%".$critere_recherche_login."%'";
 		}
     }
+
+	if($critere_id_classe!='') {
+		$sql.=" AND rp.login = u.login AND jec.id_classe='$critere_id_classe' AND jec.login=e.login AND e.ele_id=r.ele_id AND r.pers_id=rp.pers_id";
+	}
 }
 $sql.=") ORDER BY u.nom,u.prenom";
 
@@ -441,11 +472,11 @@ $sql.=") ORDER BY u.nom,u.prenom";
 //$nb1 = mysql_num_rows(mysql_query($sql));
 
 if($afficher_tous_les_resp!='y'){
-	if($critere_recherche==""){
+	if(($critere_recherche=="")&&($critere_recherche_login=="")&&($critere_id_classe=="")) {
 		$sql.=" LIMIT 20";
 	}
 }
-
+//echo "$sql<br />";
 $quels_parents = mysql_query($sql);
 
 // Effectif sans login avec filtrage sur le nom:

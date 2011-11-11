@@ -383,11 +383,15 @@ echo "<p><br /></p>\n";
 echo "<p><b>Liste des comptes élèves existants</b> :</p>\n";
 echo "<blockquote>\n";
 
+//====================================
 $afficher_tous_les_eleves=isset($_POST['afficher_tous_les_eleves']) ? $_POST['afficher_tous_les_eleves'] : "n";
 $critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
-$critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/", "", $critere_recherche);
+//$critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/", "", $critere_recherche);
+$critere_recherche=nettoyer_caracteres_nom($critere_recherche, 'a', ' -','');
 
+$critere_id_classe=isset($_POST['critere_id_classe']) ? preg_replace('/[^0-9]/', '', $_POST['critere_id_classe']) : "";
 //====================================
+
 echo "<form enctype='multipart/form-data' name='form_rech' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 echo "<table style='border:1px solid black;' summary=\"Filtrage\">\n";
 echo "<tr>\n";
@@ -399,6 +403,27 @@ echo "<input type='submit' name='filtrage' value='Afficher' /> les élèves ayan
 echo "<input type='text' name='critere_recherche' value='$critere_recherche' />\n";
 echo "</td>\n";
 echo "</tr>\n";
+
+
+echo "<tr>\n";
+echo "<td>\n";
+echo "<input type='submit' name='filtrage' value='Afficher' /> les élève de la <b>classe</b> de: ";
+echo "<select name='critere_id_classe'>\n";
+echo "<option value=''>---</option>\n";
+$sql="SELECT DISTINCT id, classe FROM classes c, j_eleves_classes jec, utilisateurs u WHERE c.id=jec.id_classe AND jec.login=u.login ORDER BY classe;";
+$res_classes=mysql_query($sql);
+if(mysql_num_rows($res_classes)>0) {
+	while($lig_classe=mysql_fetch_object($res_classes)) {
+		echo "<option value='$lig_classe->id'";
+		if($lig_classe->id==$critere_id_classe) {echo " selected='true'";}
+		echo ">$lig_classe->classe</option>\n";
+	}
+}
+echo "</select>\n";
+echo "</td>\n";
+echo "</tr>\n";
+
+
 echo "<tr>\n";
 echo "<td>\n";
 echo "ou";
@@ -425,23 +450,35 @@ echo "<br />\n";
 <?php
 //$quels_eleves = mysql_query("SELECT * FROM utilisateurs WHERE statut = 'eleve' ORDER BY nom,prenom");
 
-$sql="SELECT * FROM utilisateurs u WHERE u.statut='eleve'";
+if($critere_id_classe=='') {
+	$sql="SELECT * FROM utilisateurs u WHERE (u.statut='eleve'";
+}
+else {
+	$sql="SELECT DISTINCT u.* FROM classes c, j_eleves_classes jec, utilisateurs u WHERE (u.statut='eleve' AND jec.login=u.login";
+}
+
 
 if($afficher_tous_les_eleves!='y'){
 	if($critere_recherche!=""){
 		$sql.=" AND u.nom like '%".$critere_recherche."%'";
 	}
 }
-$sql.=" ORDER BY u.nom,u.prenom";
+
+if($critere_id_classe!='') {
+	$sql.=" AND jec.id_classe='$critere_id_classe'";
+}
+
+$sql.=") ORDER BY u.nom,u.prenom";
 
 // Effectif sans login avec filtrage sur le nom:
 $nb1 = mysql_num_rows(mysql_query($sql));
 
 if($afficher_tous_les_eleves!='y'){
-	if($critere_recherche==""){
+	if(($critere_recherche=="")&&($critere_id_classe=='')) {
 		$sql.=" LIMIT 20";
 	}
 }
+echo "$sql<br />";
 $quels_eleves = mysql_query($sql);
 
 $alt=1;
