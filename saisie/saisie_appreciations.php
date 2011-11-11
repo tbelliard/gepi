@@ -712,7 +712,7 @@ echo "</div>\n";
 
 echo "<h2 class='gepi'>Bulletin scolaire - Saisie des appréciations</h2>\n";
 
-echo "<p>Vous pouvez faire apparaître dans votre appréciation la liste des notes de l'élève pour la période en insérant la chaine de caractères <b>@@Notes</b><br />(<i>les notes apparaîtront alors lors de la visualisation/impression du bulletin</i>)</p>\n";
+echo "<p>Vous pouvez faire apparaître dans votre appréciation la liste des notes de l'élève pour la période en insérant la chaine de caractères <b>@@Notes</b><br />(<i>les notes apparaîtront alors lors de la visualisation/impression du bulletin</i>)<br />Insérer d'un clic @@Notes <a href=\"javascript:inserer_notes_dans_app('debut');changement()\">au début</a> ou <a href=\"javascript:inserer_notes_dans_app('fin');changement()\">à la fin</a> de toutes les appréciations.</p>\n";
 
 //echo "<p><b>Groupe : " . $current_group["description"] ." | Matière : $matiere_nom</b></p>\n";
 echo "<p><b>Groupe : " . htmlspecialchars($current_group["description"]) ." (".$current_group["classlist_string"].")</b></p>\n";
@@ -749,6 +749,23 @@ if ($order_by != "classe") {
 
 // Fonction de renseignement du champ qui doit obtenir le focus après validation
 echo "<script type='text/javascript'>
+
+function inserer_notes_dans_app(position) {
+	champs_textarea=document.getElementsByTagName('textarea');
+	//alert('champs_textarea.length='+champs_textarea.length);
+	for(i=0;i<champs_textarea.length;i++){
+		if(champs_textarea[i].name.substring(0,24)=='no_anti_inject_app_eleve') {
+			if(champs_textarea[i].value.indexOf('@@Notes')=='-1') {
+				if(position=='debut') {
+					champs_textarea[i].value='@@Notes '+champs_textarea[i].value;
+				}
+				else {
+					champs_textarea[i].value=champs_textarea[i].value+' @@Notes';
+				}
+			}
+		}
+	}
+}
 
 function focus_suivant(num){
 	temoin='';

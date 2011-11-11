@@ -39,21 +39,6 @@ if (!checkAccess()) {
     die();
 }
 
-
-/*
-function getPref($login,$item,$default){
-	$sql="SELECT value FROM preferences WHERE login='$login' AND name='$item'";
-	$res_prefs=mysql_query($sql);
-
-	if(mysql_num_rows($res_prefs)>0){
-		$ligne=mysql_fetch_object($res_prefs);
-		return $ligne->value;
-	}
-	else{
-		return $default;
-	}
-}
-*/
 // Ajout de la possibilité d'afficher ou pas le menu en barre horizontale
 $afficherMenu = isset($_POST["afficher_menu"]) ? $_POST["afficher_menu"] : NULL;
 $modifier_le_menu = isset($_POST["modifier_le_menu"]) ? $_POST["modifier_le_menu"] : NULL;
@@ -73,10 +58,6 @@ if($_SESSION['statut']!="administrateur"){
 	function eval_checked($Settings, $yn, $statut, $nom){
 		$aff_check = '';
 		if ($statut == "professeur") {
-			/*
-			$req_setting = mysql_fetch_array(mysql_query("SELECT value FROM preferences WHERE login = '".$nom."' AND name = '".$Settings."'"))
-								OR DIE ('Erreur requête eval_setting (prof) : '.mysql_error());
-			*/
 			$test=mysql_query("SELECT value FROM preferences WHERE login = '".$nom."' AND name = '".$Settings."'");
 			if(mysql_num_rows($test)>0) {
 				$req_setting = mysql_fetch_array($test);
@@ -112,7 +93,7 @@ if($_SESSION['statut']!="administrateur"){
 	}
 	$tab_sound=get_tab_file($chemin_sound);
 
-	if((count($tab_sound)>0)&&(isset($_POST['footer_sound']))&&(in_array($_POST['footer_sound'],$tab_sound))&&(preg_match('/\.wav/i',$_POST['footer_sound']))&&(file_exists($chemin_sound.$_POST['footer_sound']))) {
+	if((count($tab_sound)>0)&&(isset($_POST['footer_sound']))&&(((in_array($_POST['footer_sound'],$tab_sound))&&(preg_match('/\.wav/i',$_POST['footer_sound']))&&(file_exists($chemin_sound.$_POST['footer_sound'])))|| $_POST['footer_sound']=='')) {  
 		$footer_sound_pour_qui=isset($_POST['footer_sound_pour_qui']) ? $_POST['footer_sound_pour_qui'] : 'perso';
 		$statut_sound=array();
 		$nb_err_sound=0;
