@@ -4862,7 +4862,7 @@ function array_map_deep($callback, $array) {
  * 
  * @return string Balises audio
  */
-function joueAlarme() {
+function joueAlarme($niveau_arbo = "0") {
   $retour ="";
   	$footer_sound= isset ($_SESSION['login']) ? getPref($_SESSION['login'],'footer_sound',"") : NULL;
 	if($footer_sound===NULL) {
@@ -4872,11 +4872,23 @@ function joueAlarme() {
 		}
 	}
 	
-	if($footer_sound!=='') {
-		
-		$chemin_sound = dirname(dirname(__FILE__))."/sounds/".$footer_sound;
-		if(file_exists($chemin_sound)) { 
-  $retour ="<audio id='id_footer_sound' preload='auto' autobuffer>
+	  if($footer_sound!=='') {
+
+	  if ($niveau_arbo == "0") {
+		  $chemin_sound="./sounds/".$footer_sound;
+	  } elseif ($niveau_arbo == "1") {
+		  $chemin_sound="../sounds/".$footer_sound;
+	  } elseif ($niveau_arbo == "2") {
+		  $chemin_sound="../../sounds/".$footer_sound;
+	  } elseif ($niveau_arbo == "3") {
+		  $chemin_sound="../../../sounds/".$footer_sound;
+	  }
+	  else {
+		  $chemin_sound="../sounds/".$footer_sound;
+	  }
+
+	  if(file_exists($chemin_sound)) { 
+		$retour ="<audio id='id_footer_sound' preload='auto' autobuffer>
 	<source src=".$chemin_sound." />
 </audio>
 <script type='text/javascript'>
@@ -4886,7 +4898,7 @@ function joueAlarme() {
 	  }
   }
   </script>";
-		}
+	  }
 	}
 	return $retour;
 } 
