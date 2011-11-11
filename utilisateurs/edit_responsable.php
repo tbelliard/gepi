@@ -442,7 +442,7 @@ $sql.=") ORDER BY u.nom,u.prenom";
 //$nb1 = mysql_num_rows(mysql_query($sql));
 
 if($afficher_tous_les_resp!='y'){
-	if($critere_recherche==""){
+	if(($critere_recherche=="")&&($critere_recherche_login=="")) {
 		$sql.=" LIMIT 20";
 	}
 }
