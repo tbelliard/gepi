@@ -748,6 +748,25 @@ function recherche_enfant($id_parent_tmp){
 }
 
 
+/**
+ * Enregistre les calculs de moyennes dans un fichier
+ * 
+ * Passer à 1 la variable $debug pour générer un fichier de debug...
+ *
+ * @param string $texte Le calcul à enregistrer
+ * @see get_user_temp_directory()
+ */
+function calc_moy_debug($texte){
+	$debug=0;
+	if($debug==1){
+		$tmp_dir=get_user_temp_directory();
+		if((!$tmp_dir)||(!file_exists("../temp/".$tmp_dir))) {$tmp_dir="/tmp";} else {$tmp_dir="../temp/".$tmp_dir;}
+		$fich=fopen($tmp_dir."/calc_moy_debug.txt","a+");
+		fwrite($fich,$texte);
+		fclose($fich);
+	}
+}
+
 
 
 
