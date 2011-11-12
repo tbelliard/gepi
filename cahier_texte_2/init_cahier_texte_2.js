@@ -442,9 +442,10 @@ function initWysiwyg() {
 			resize_enabled : false,
 			startupFocus : true,
                         removePlugins : 'elementspath',
+			extraPlugins : 'equation',
 			toolbar :
 			[
-			    ['Source','Cut','Copy','Paste','PasteText','PasteFromWord'],
+			    ['equation','Source','Cut','Copy','Paste','PasteText','PasteFromWord'],
 			    ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
 			    ['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
 			    ['NumberedList','BulletedList'],
@@ -462,10 +463,11 @@ function initWysiwyg() {
 			skin : 'kama',
 			resize_enabled : false,
 			startupFocus : true,
-      removePlugins : 'elementspath',
+		        removePlugins : 'elementspath',
+			extraPlugins : 'equation',
 			toolbar :
 			[
-			    ['Source','Cut','Copy','Paste','PasteText','PasteFromWord'],
+			    ['equation','Source','Cut','Copy','Paste','PasteText','PasteFromWord'],
 			    ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
 			    ['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
 			    ['NumberedList','BulletedList'],
