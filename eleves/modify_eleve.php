@@ -1984,18 +1984,22 @@ if(isset($eleve_login)){
 		echo "</table>\n";
 
 		echo "<br />\n";
+		echo "<div style='border: 1px solid black; text-align:center;'>\n";
+		echo "<a href='visu_eleve.php?ele_login=".$eleve_login."'>Consultation élève</a>";
+		echo "</div>\n";
+		echo "<br />\n";
 		//=========================
 
-		echo "<div style='border: 1px solid black;'>\n";
+		echo "<div style='border: 1px solid black; text-align:center;'>\n";
 		$sql="SELECT jec.id_classe,c.classe, jec.periode FROM j_eleves_classes jec, classes c WHERE jec.login='$eleve_login' AND jec.id_classe=c.id GROUP BY jec.id_classe ORDER BY jec.periode";
 		$res_grp1=mysql_query($sql);
 		if(mysql_num_rows($res_grp1)==0){
 			echo "L'élève n'est encore associé à aucune classe.";
 		}
-		else{
+		else {
 			while($lig_classe=mysql_fetch_object($res_grp1)){
 				//echo "Enseignements suivis en <a href='../classes/eleve_options.php?login_eleve=$eleve_login&amp;id_classe=$lig_classe->id_classe' target='_blank'>$lig_classe->classe</a><br />\n";
-				echo "<a href='../classes/eleve_options.php?login_eleve=$eleve_login&amp;id_classe=$lig_classe->id_classe&amp;quitter_la_page=y' target='_blank'>Enseignements suivis</a> en $lig_classe->classe\n";
+				echo "<a href='../classes/eleve_options.php?login_eleve=$eleve_login&amp;id_classe=$lig_classe->id_classe&amp;quitter_la_page=y' target='_blank'>Enseignements suivis</a> en ".preg_replace("/ /","&nbsp;",$lig_classe->classe)."\n";
 				echo "<br />\n";
 
 				//echo "Définir/consulter <a href='../classes/classes_const.php?id_classe=$lig_classe->id_classe&amp;quitter_la_page=y' target='_blank'>le régime, le professeur principal, le CPE responsable</a> de l'élève.\n";

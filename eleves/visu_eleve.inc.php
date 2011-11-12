@@ -313,6 +313,9 @@ else {
 			echo ">".ucfirst($gepiSettings['denomination_eleve'])." suivant</a>";
 		}
 
+		if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
+			echo " | <a href='modify_eleve.php?eleve_login=".$ele_login."'>Gestion de l'élève</a>";
+		}
 		//echo "</p>\n";
 
 		echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
