@@ -11,7 +11,7 @@ $conf = array (
       array (
         'classname' => 'PropelPDO',
 //        'classname' => 'DebugPDO',
-        'dsn' => 'mysql:dbname='.$GLOBALS["dbDb"].';host='.$GLOBALS["dbHost"],
+        'dsn' => 'mysql:dbname='.$GLOBALS["dbDb"].';host='.$GLOBALS["dbHost"].';charset=UTF8',
         'user' => $GLOBALS["dbUser"],
         'password' => $GLOBALS["dbPass"],
         'options' => 
