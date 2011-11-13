@@ -50,51 +50,11 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 		if($ine=="") {
 			$ine=$lig_ele->no_gep;
 		}
-		//$nom=$lig_ele->nom;
-		//$prenom=$lig_ele->prenom;
 		$ele_nom=$lig_ele->nom;
 		$ele_prenom=$lig_ele->prenom;
 		$naissance=$lig_ele->naissance;
-		//$naissance2=formate_date($lig_ele->naissance);
-
 		// Classe actuelle:
 		$classe=get_nom_classe($id_classe);
-
-		/*
-						// A DEPLACER VERS styles.css
-						echo "<style type='text/css'>
-			.table_annee_anterieure{
-				border: 1px solid black;
-				border-collapse: collapse;
-			}
-
-			.table_annee_anterieure th{
-				border: 1px solid black;
-				font-weight: bold;
-				text-align: center;
-			}
-
-			.table_annee_anterieure td{
-				border: 1px solid black;
-				padding: 0.1em;
-			}
-
-			.table_annee_anterieure td.td_note{
-				text-align: center;
-			}
-
-			.table_annee_anterieure td.td_note_classe, th.td_note_classe{
-				text-align: center;
-				font-size: small;
-			}
-
-			.table_annee_anterieure .info_prof{
-				font-style: italic;
-				font-size: small;
-			}
-
-		</style>\n";
-		*/
 
 		// Liste des années conservées pour l'élève choisi:
 		$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee";
@@ -130,7 +90,6 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 			// Ca ne doit pas arriver...
 		}
 		else{
-			//echo "<p><b>$annee_scolaire</b>: ";
 			echo "<ul style='list-style-type: none; margin-bottom:0;'>\n";
 			if($gecko){
 				echo "<li style='display:inline; border: 1px solid black; background-image: url(\"../images/background/opacite50.png\"); padding: 0.2em 0.2em 0 0.2em;'>";
@@ -166,21 +125,6 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 
 			echo "</li>\n";
 
-
-
-			/*
-			if($gecko){
-				echo "<li style='display:inline; border: 1px solid black; background-image: url(\"../images/background/opacite50.png\"); padding: 0.2em 0.2em 0 0.2em;'>";
-			}
-			else{
-				echo "<li style='display:inline; border: 1px solid black; background-color: white; padding: 0.2em 0.2em 0 0.2em;'>";
-			}
-			echo "$classe";
-			echo "</li>\n";
-			*/
-
-
-			//echo "<div style='display:block; border: 1px solid black; background-color: white; width:20%;'><b>$annee_scolaire</b></div>\n";
 			$cpt=0;
 			while($lig_periode=mysql_fetch_object($res_periodes)){
 				//if($cpt>0){echo " - ";}
@@ -221,7 +165,6 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 			echo "<div style='border: 1px solid black; background-color: white; padding: 3px;'>\n";
 		}
 
-		//$sql="SELECT DISTINCT nom_periode FROM archivage_disciplines WHERE ine='$ine' AND num_periode='$num_periode' AND annee='$annee_scolaire'";
 		$sql="SELECT DISTINCT nom_periode, classe FROM archivage_disciplines WHERE ine='$ine' AND num_periode='$num_periode' AND annee='$annee_scolaire'";
 		$res_per=mysql_query($sql);
 
@@ -257,7 +200,6 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 		echo "<th class='td_note_classe'>max</th>\n";
 		echo "</tr>\n";
 
-		//$sql="SELECT * FROM archivage_disciplines WHERE annee='$annee_scolaire' AND num_periode='$num_periode' AND ine='$ine' AND special='' ORDER BY matiere";
 		$sql="SELECT * FROM archivage_disciplines WHERE annee='$annee_scolaire' AND num_periode='$num_periode' AND ine='$ine' AND special='' ORDER BY ordre_matiere, matiere;";
 		//echo "$sql<br />\n";
 		$res_mat=mysql_query($sql);

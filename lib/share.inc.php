@@ -3816,7 +3816,7 @@ function lignes_options_select_eleve($id_classe,$login_eleve_courant,$sql_ele=""
 		$temoin_tmp=0;
 		while($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)){
 			if($lig_ele_tmp->login==$login_eleve_courant){
-				$chaine_options_login_eleves.="<option value='$lig_ele_tmp->login' selected='TRUE'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
+				$chaine_options_login_eleves.="<option value='$lig_ele_tmp->login' selected='selected'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
 	
 				$num_eleve=$cpt_eleve;
 	
@@ -4857,4 +4857,50 @@ function array_map_deep($callback, $array) {
     return $new;
 } 
 
+/**
+ * Création de la balise audio pour l'alarme sonore de fin de session
+ * 
+ * @return string Balises audio
+ */
+function joueAlarme($niveau_arbo = "0") {
+  $retour ="";
+  	$footer_sound= isset ($_SESSION['login']) ? getPref($_SESSION['login'],'footer_sound',"") : NULL;
+	if($footer_sound===NULL) {
+		$footer_sound=getSettingValue('footer_sound');
+		if($footer_sound=='') {
+			$footer_sound="KDE_Beep_Pop.wav";
+		}
+	}
+	
+	  if($footer_sound!=='') {
+
+	  if ($niveau_arbo == "0") {
+		  $chemin_sound="./sounds/".$footer_sound;
+	  } elseif ($niveau_arbo == "1") {
+		  $chemin_sound="../sounds/".$footer_sound;
+	  } elseif ($niveau_arbo == "2") {
+		  $chemin_sound="../../sounds/".$footer_sound;
+	  } elseif ($niveau_arbo == "3") {
+		  $chemin_sound="../../../sounds/".$footer_sound;
+	  }
+	  else {
+		  $chemin_sound="../sounds/".$footer_sound;
+	  }
+
+	  if(file_exists($chemin_sound)) { 
+		$retour ="<audio id='id_footer_sound' preload='auto' autobuffer>
+	<source src=".$chemin_sound." />
+</audio>
+<script type='text/javascript'>
+  function play_footer_sound() {
+	  if(document.getElementById('id_footer_sound')) {
+		  document.getElementById('id_footer_sound').play();
+	  }
+  }
+  </script>";
+	  }
+	}
+	return $retour;
+} 
+  
 ?>

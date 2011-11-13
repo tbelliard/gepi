@@ -1,25 +1,4 @@
-<?php
-/*
 
-
-if(!empty($this->data['htmlinject']['htmlContentPost'])) {
-	foreach($this->data['htmlinject']['htmlContentPost'] AS $c) {
-		echo $c;
-	}
-}
-*/
-
-?>
-
-
-
-		<!--hr />
-
-		<img src="/<?php echo $this->data['baseurlpath']; ?>resources/icons/ssplogo-fish-small.png" alt="Small fish logo" style="float: right" />		
-		Copyright &copy; 2007-2010 <a href="http://rnd.feide.no/">Feide RnD</a>
-		
-		<br style="clear: right" /-->
-	
 	</div><!-- #content -->
 
 </div><!-- #wrap -->
@@ -37,11 +16,6 @@ if(!empty($this->data['htmlinject']['htmlContentPost'])) {
 		, <a href="mailto:st%65phane&#46;boireau%40ac%2drouen%2efr?subject=GEPI">Stéphane Boireau</a> 
 
 		, <a href="mailto:coll%65gerb%40f&#114;ee.%66r?subject=GEPI">Julien Jocal</a>
-				<!--<a href="javascript:pigeon('thomas.belliard','free.fr');">Thomas Belliard</a>
-		, <a href="javascript:pigeon('laurent.delineau','ac-poitiers.fr');">Laurent Delineau</a> 
-		, <a href="javascript:pigeon('eric.lebrun','ac-poitiers.fr');">Eric Lebrun</a> 
-		, <a href="javascript:pigeon('stephane.boireau','ac-rouen.fr');">Stéphane Boireau</a> 
-		, <a href="javascript:pigeon('collegerb','free.fr');">Julien Jocal</a>  --> 
 	</div> 
 
 </body>
