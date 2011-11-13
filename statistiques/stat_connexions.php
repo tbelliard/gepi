@@ -445,7 +445,7 @@ elseif(($mode==2)||($mode==3)) {
 	echo "<label for='choix_periode_dates' style='cursor: pointer;'><a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 	echo "<br />\n";
 	echo " (<i>Veillez à respecter le format jj/mm/aaaa</i>)\n";
-	echo "<input type='hidden' name='mode' value='2' />\n";
+	echo "<input type='hidden' name='mode' value='$mode' />\n";
 	echo "<input type='submit' value='Valider' />\n";
 	echo "</fieldset>\n";
 	echo "</form>\n";
