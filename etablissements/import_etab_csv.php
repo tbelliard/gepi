@@ -85,6 +85,8 @@ if (!isset($is_posted)) {
 */
 	echo "<p>Choisir un autre fichier de votre choix :<br />
 	<form enctype=\"multipart/form-data\" action=\"import_etab_csv.php\" method=\"post\" name=\"formulaire2\">\n";
+	echo add_token_field();
+
 	$csv_file = "";
 	echo "<input type='file' name=\"csv_file\" />\n";
 	echo "<input type='submit' value='Valider' />\n";
