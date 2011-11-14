@@ -293,7 +293,7 @@ echo "<div id=\"dupplication_notice\" style='display: none;'>oulalala</div>";
 echo "<div id=\"deplacement_notice\" style='display: none;'>oulalala</div>";
 echo "<form enctype=\"multipart/form-data\" name=\"modification_compte_rendu_form\" id=\"modification_compte_rendu_form\" action=\"ajax_enregistrement_compte_rendu.php\" method=\"post\" onsubmit=\"return AIM.submit(this, {'onComplete' : completeEnregistrementCompteRenduCallback})\" style=\"width: 100%;\">\n";
 echo add_token_field();
-// uid de pour ne pas refaire renvoyer plusieurs fois le mÃªme formulaire
+// uid de pour ne pas refaire renvoyer plusieurs fois le même formulaire
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
 $uid = md5(uniqid(microtime(), 1));
 echo("<input type='hidden' name='uid_post' value='".$uid."' />");

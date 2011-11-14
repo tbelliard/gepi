@@ -45,7 +45,7 @@ if (getSettingValue("active_cahiers_texte")!='y') {
     die("Le module n'est pas activé.");
 }
 
-// Vérification : est-ce que l'utilisateur a le droit d'Ãªtre ici ?
+// Vérification : est-ce que l'utilisateur a le droit d'être ici ?
 if (isset($current_group["id"]) AND ($current_group["id"] != "") ) {
     if (!check_prof_groupe($_SESSION['login'],$current_group["id"])) {
         header("Location: ../logout.php?auto=1");

@@ -156,7 +156,7 @@ $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
 $dojo=true;
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
-//suppression des donnÃ©es en session (sauf dans le cas d'un export html et odt ou d'un clic dur le bouton filtrage)
+//suppression des données en session (sauf dans le cas d'un export html et odt ou d'un clic dur le bouton filtrage)
 if(isset($_SESSION['donnees_bilan']) && (is_null($affichage) || ($affichage=='html' && $click_filtrage!="ok" && $raz!=="ok"))){
     unset($_SESSION['donnees_bilan']);
 }
@@ -174,7 +174,7 @@ if(getSettingValue('Abs2DebrideBilanIndividuelLogins')){
 $limite_jours=7;
 
 if(($id_classe=='-1' && $affichage=='html' && $click_filtrage!="ok" && $raz!=="ok") && (is_null($id_eleve) || $id_eleve=='') && (is_null($nom_eleve) || mb_strlen($nom_eleve)<2)){
-    //si limitation de temps et si la limite de temps est dÃ©passÃ©e en mode toutes les classes on ne lance pas de calculs 
+    //si limitation de temps et si la limite de temps est dépassée en mode toutes les classes on ne lance pas de calculs 
     if($limite_temps && ($dt_date_absence_eleve_fin->format('U')-$dt_date_absence_eleve_debut->format('U'))>($limite_jours*24*3600) ){
         $message=' L\'intervalle de temps choisi pour toutes les classes doit être inférieur à 7 jours ';
         $affichage='';

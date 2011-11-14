@@ -29,7 +29,7 @@ class itemGeneral {
 	public $indexMenu = 0;
 	public $indexItem = 0;
 	public $icone = array('chemin'=>'','titre'=>'','alt'=>'');	//données de l'icône
-	public $key_setting = '' ;																	//test dans setting pour choisir l'icÃ´ne
+	public $key_setting = '' ;																	//test dans setting pour choisir l'icône
 	public $chemin="" ;																						//chemin du lien
 	public $titre="" ;																					//titre court
 	public $expli="" ;																				//explications
