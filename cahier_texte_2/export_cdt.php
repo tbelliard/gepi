@@ -110,7 +110,12 @@ require_once("../lib/header.inc");
 
 echo "<p class='bold'>";
 if($_SESSION['statut']=='professeur') {
-	echo "<a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	if(getSettingValue("GepiCahierTexteVersion")=='2') {
+		echo "<a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	}
+	else {
+		echo "<a href='../cahier_texte/index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	}
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Export de mes CDT</a>";
 }
 else {
