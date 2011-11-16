@@ -843,6 +843,18 @@ autre='F',
 description='Statistiques de connexion',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/groupes/check_enseignements.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Controle des enseignements',
+statut='';";
+
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
         foreach ($tab_req as $key => $value) {

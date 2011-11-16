@@ -1,8 +1,6 @@
 <?php
 /*
-* Last modification  : 29/11/2006
-*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -33,7 +31,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 //INSERT INTO droits VALUES ('/impression/impression.php', 'V', 'V', 'V', 'V', 'V', 'V', 'Impression des listes (PDF)', '');
 if (!checkAccess()) {
@@ -41,10 +39,15 @@ if (!checkAccess()) {
     die();
 }
 
+if(isset($_POST['choix_modele'])) {
+	$_SESSION['id_modele']=$_POST['id_modele'];
+}
+
 //**************** EN-TETE **************************************
 $titre_page = "Impression de listes au format PDF";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
+//debug_var();
 
 echo "<p class='bold'>";
 echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
@@ -57,6 +60,32 @@ $id_classe=isset($_GET['id_classe']) ? $_GET["id_classe"] : NULL;
 $id_groupe=isset($_GET['id_groupe']) ? $_GET["id_groupe"] : NULL;
 $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 
+
+$sql="SELECT * FROM modeles_grilles_pdf WHERE login='".$_SESSION['login']."' ORDER BY nom_modele;";
+$res_modeles=mysql_query($sql);
+if(mysql_num_rows($res_modeles)>0) {
+	echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>";
+	echo "<p>Modèle de grille&nbsp;: ";
+	echo "<select name='id_modele'>\n";
+	while($lig_modele=mysql_fetch_object($res_modeles)) {
+		echo "<option value='$lig_modele->id_modele'";
+		if(isset($_SESSION['id_modele'])) {
+			if($_SESSION['id_modele']==$lig_modele->id_modele) {
+				echo " selected='true'";
+			}
+		}
+		elseif($lig_modele->par_defaut=='y') {
+			echo " selected='true'";
+		}
+		echo ">$lig_modele->nom_modele";
+		//echo " ($lig_modele->id_modele)";
+		echo "</option>\n";
+	}
+	echo "</select>\n";
+	echo "<input type='submit' name='choix_modele' value='Choisir' />";
+	echo "</p>\n";
+	echo "</form>\n";
+}
 
 echo "<h3>Liste des classes : </h3>\n";
 

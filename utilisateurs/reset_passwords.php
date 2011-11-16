@@ -357,6 +357,12 @@ if(($mode_impression!='pdf')&&($mode_impression!='csv')) {
 }
 // =====================
 
+
+$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
+if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
+$sujet_mail=$gepiPrefixeSujetMail." Compte et mot de passe";
+
+
 $p = 0;
 $pcsv=0;
 $saut = 1;
@@ -420,6 +426,7 @@ while ($p < $nb_users) {
 		// =====================
 
 		$liste_elv_resp="";
+		$liste_elv_resp_non_html="";
 
 		$i = 0;
 		while ($i < $nb_elv_resp){
@@ -446,9 +453,11 @@ while ($p < $nb_users) {
 
 			if($i>0){
 				$liste_elv_resp.=", ";
+				$liste_elv_resp_non_html.=", ";
 			}
 			//$liste_elv_resp.=strtoupper($elv_resp['nom'][$i])." ".ucfirst(strtolower($elv_resp['prenom'][$i]))." (<i>".$elv_resp['classe'][$i]."</i>)";
 			$liste_elv_resp.=casse_mot($elv_resp['nom'][$i],'maj')." ".casse_mot($elv_resp['prenom'][$i],'majf2')." (<i>".$elv_resp['classe'][$i]."</i>)";
+			$liste_elv_resp_non_html.=casse_mot($elv_resp['nom'][$i],'maj')." ".casse_mot($elv_resp['prenom'][$i],'majf2')." (".$elv_resp['classe'][$i].")";
 
 			/*
 			echo "\$elv_resp['nom'][$i]=".$elv_resp['nom'][$i]."<br />";
@@ -728,7 +737,10 @@ width:".$largeur1."%;\n";
 				echo "'>\n";
 	
 			}
-	
+
+			$texte_email="A l'attention de $user_prenom $user_nom\n";
+			$texte_email.="Identifiant : $user_login\n";
+
 			echo "<table border='0' summary=\"$user_login\">\n";
 			echo "<tr><td>A l'attention de </td><td><span class = \"bold\">" . $user_prenom . " " . $user_nom . "</span></td></tr>\n";
 			//echo "<tr><td>Nom de login : </td><td><span class = \"bold\">" . $user_login . "</span></td></tr>\n";
@@ -736,10 +748,13 @@ width:".$largeur1."%;\n";
 			if ($user_auth_mode != "gepi" && $gepiSettings['ldap_write_access'] != 'yes') {
 				// En mode SSO ou LDAP sans accès en écriture, le mot de passe n'est pas modifiable par Gepi.
 				echo "<tr><td>Le mot de passe de cet utilisateur n'est pas géré par Gepi.</td></tr>\n";
+				$texte_email.="Le mot de passe de cet utilisateur n'est pas géré par Gepi.\n";
 			}
 			else {
 				echo "<tr><td>Mot de passe : </td><td><span class = \"bold\">" . $new_password . "</span></td></tr>\n";
+				$texte_email.="Mot de passe : $new_password\n";
 			}//if($cas_traite!=0){
+
 			if ($user_statut == "responsable") {
 				echo "<tr><td>Responsable de : </td><td><span class = \"bold\">";
 				if($liste_elv_resp==""){
@@ -752,6 +767,8 @@ width:".$largeur1."%;\n";
 				//echo "<br />".$classe_resp;
 	
 				echo "</span></td></tr>\n";
+
+				$texte_email.="Responsable de $liste_elv_resp_non_html\n";
 			}
 			//else{
 			elseif ($user_statut == "eleve") {
@@ -768,12 +785,15 @@ width:".$largeur1."%;\n";
 					}
 					$chaine=mb_substr($chaine,2);
 					echo $chaine;
+
+					$texte_email.="Classe : $chaine\n";
 				}
 				echo "</span></td></tr>\n";
 			}
-	
-	
-			echo "<tr><td>Adresse de courriel : </td><td><span class = \"bold\">" . $user_email . "&nbsp;</span></td></tr>\n";
+
+			echo "<tr><td>Adresse de courriel : </td><td><span class = \"bold\">";
+			if($user_email!='') {echo "<a href='mailto:$user_email?subject=".rawurlencode($sujet_mail)."&amp;body=".rawurlencode($texte_email)."'>".$user_email."</a>";}
+			echo "&nbsp;</span></td></tr>\n";
 			echo "</table>\n";
 	
 			if($affiche_adresse_resp=='y') {

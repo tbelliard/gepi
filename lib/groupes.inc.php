@@ -150,6 +150,36 @@ function get_groups_for_class($_id_classe, $ordre="", $d_apres_categories="n") {
 	return $temp;
 }
 
+/** Renvoie un tableau des profs d'un groupe
+ *
+ * @param int $_id_groupe Id du groupe
+ * @return array Le tableau des profs
+ */
+function get_profs_for_group($_id_groupe) {
+	$temp["list"] = array();
+	$temp["users"] = array();
+	$temp["proflist_string"] = "";
+
+	$get_profs = mysql_query("SELECT u.login, u.nom, u.prenom, u.civilite 
+		FROM utilisateurs u, j_groupes_professeurs j 
+		WHERE (u.login = j.login and j.id_groupe = '".$_id_groupe."') 
+		ORDER BY u.nom, u.prenom");
+
+	$nb = mysql_num_rows($get_profs);
+	for ($i=0;$i<$nb;$i++){
+		if($i>0) {$temp["proflist_string"].=", ";}
+		$p_login = mysql_result($get_profs, $i, "login");
+		$p_nom = mysql_result($get_profs, $i, "nom");
+		$p_prenom = mysql_result($get_profs, $i, "prenom");
+		$civilite = mysql_result($get_profs, $i, "civilite");
+		$temp["list"][] = $p_login;
+		$temp["users"][$p_login] = array("login" => $p_login, "nom" => $p_nom, "prenom" => $p_prenom, "civilite" => $civilite);
+		$temp["proflist_string"].=$civilite." ".$p_nom." ".my_strtoupper(mb_substr($p_prenom,0,1));
+	}
+
+	return $temp;
+}
+
 /**
  * Renvoie les informations sur le groupe demandé
  *

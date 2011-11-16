@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009 Josselin Jacquard
+ * Copyright 2009-2012 Josselin Jacquard
  *
  * This file is part of GEPI.
  *
@@ -48,12 +48,12 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
-//if (!checkAccess()) {
-//    header("Location: ../logout.php?auto=1");
-//    die();
-//}
+if (!checkAccess()) {
+    header("Location: ../logout.php?auto=1");
+    die();
+}
 
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
