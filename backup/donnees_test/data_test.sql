@@ -49,11 +49,11 @@ INSERT INTO aid_familles  values ('6', '16', 'Techniques, sciences appliquées, 
 INSERT INTO aid_familles  values ('7', '17', 'Arts, loisirs et sports');
 INSERT INTO aid_familles  values ('8', '18', 'Littérature, théâtre, poésie');
 INSERT INTO aid_familles  values ('9', '19', 'Géographie et Histoire, civilisations anciennes');
-INSERT INTO aid_familles  values ('1', '11', 'Philosophie et psychologie, pensÃ©e');
-INSERT INTO aid_familles  values ('3', '13', 'Sciences sociales, sociÃ©tÃ©, humanitaire');
-INSERT INTO aid_familles  values ('6', '16', 'Techniques, sciences appliquÃ©es, mÃ©decine, cuisine...');
-INSERT INTO aid_familles  values ('8', '18', 'LittÃ©rature, thÃ©Ã¢tre, poÃ©sie');
-INSERT INTO aid_familles  values ('9', '19', 'GÃ©ographie et Histoire, civilisations anciennes');
+INSERT INTO aid_familles  values ('1', '11', 'Philosophie et psychologie, pensée');
+INSERT INTO aid_familles  values ('3', '13', 'Sciences sociales, société, humanitaire');
+INSERT INTO aid_familles  values ('6', '16', 'Techniques, sciences appliquées, médecine, cuisine...');
+INSERT INTO aid_familles  values ('8', '18', 'Littérature, théâtre, poésie');
+INSERT INTO aid_familles  values ('9', '19', 'Géographie et Histoire, civilisations anciennes');
 
 
 #
@@ -87,9 +87,9 @@ INSERT INTO aid_public  values ('1', '3', 'Ecoliers');
 INSERT INTO aid_public  values ('6', '4', 'Grand public');
 INSERT INTO aid_public  values ('5', '5', 'Experts (ou spécialistes)');
 INSERT INTO aid_public  values ('4', '6', 'Etudiants');
-INSERT INTO aid_public  values ('3', '1', 'LycÃ©ens');
-INSERT INTO aid_public  values ('2', '2', 'CollÃ¨giens');
-INSERT INTO aid_public  values ('5', '5', 'Experts (ou spÃ©cialistes)');
+INSERT INTO aid_public  values ('3', '1', 'Lycéens');
+INSERT INTO aid_public  values ('2', '2', 'Collégiens');
+INSERT INTO aid_public  values ('5', '5', 'Experts (ou spécialistes)');
 
 
 #

@@ -51,7 +51,7 @@ require_once "../../artichow/LinePlot.class.php";
 // Mes fonctions
 //	include("functions.php");
 
-// Variable prÃ©dÃ©finit
+// Variable prédéfinit
 date_default_timezone_set ('Europe/Paris');
 //	date_default_timezone_set('Europe/Paris');
 /*		if ( function_exists('date_default_timezone_get') ) {
@@ -87,14 +87,14 @@ date_default_timezone_set ('Europe/Paris');
 //$graph = new Graph(388, 200);
 $graph = new Graph(370, 200);
 
-   // dÃ©finition des couleur bleu et rouge
+   // définition des couleur bleu et rouge
    $bleu = new Color(0, 0, 200);
    $rouge = new Color(200, 0, 0);
 
    $group = new PlotGroup;
    // padding du graphique
    $group->setPadding(40, 40);
-   // dÃ©calement du 0 et de la fin
+   // décalement du 0 et de la fin
 //   $group->setSpace(4, 4, 10, 0);
    // couleur de fond du graphique
    $group->setBackgroundColor(
@@ -113,7 +113,7 @@ $graph = new Graph(370, 200);
    $plot = new LinePlot($values_absences);
    $plot->setColor($rouge);
    $plot->setYAxis(PLOT_LEFT); //Plot::LEFT
-	// Ã©paisseur du trait
+	// épaisseur du trait
 	$plot->setThickness(2);
 
 	// point rouge sur le graphique
@@ -121,7 +121,7 @@ $graph = new Graph(370, 200);
 	$plot->mark->setType(MARK_SQUARE);
 
    $group->add($plot);
-	// pas de chiffre aprÃ¨s la virgule
+	// pas de chiffre après la virgule
 	   $group->axis->left->setLabelPrecision(1);
    $group->axis->left->setColor($rouge);
    $group->axis->left->title->move(-5, 0);
@@ -159,7 +159,7 @@ $graph = new Graph(370, 200);
 */
 
    $group->add($plot);
-	// pas de chiffre aprÃ¨s la virgule
+	// pas de chiffre après la virgule
 	   $group->axis->right->setLabelPrecision(1);
    $group->axis->right->setColor($bleu);
    $group->axis->right->title->set("Retard");
@@ -167,11 +167,11 @@ $graph = new Graph(370, 200);
 
 // AXE X
 
-	// donnÃ©e de l'axe X
+	// donnée de l'axe X
 	$group->axis->bottom->setLabelText($x);
-        // police de caractÃ¨re de l'axe X
+        // police de caractère de l'axe X
 	$group->axis->bottom->label->setFont(new Tuffy(8));
-	// rotation du texte de l'axe X en degrÃ©
+	// rotation du texte de l'axe X en degré
 	$group->axis->bottom->label->setAngle("30");
 	// positionement du texte de l'axe X
 	$group->axis->bottom->label->move(10, 0);

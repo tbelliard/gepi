@@ -114,25 +114,11 @@ foreach ($this->data['stateparams'] as $name => $value) {
 	</a>
 </p>
 
-<?php
-/*
-if(!empty($this->data['links'])) {
-	echo '<ul class="links" style="margin-top: 2em">';
-	foreach($this->data['links'] AS $l) {
-		echo '<li><a href="' . htmlspecialchars($l['href']) . '">' . htmlspecialchars($this->t($l['text'])) . '</a></li>';
-	}
-	echo '</ul>';
-}
-
-
-
-
-echo('<h2>' . $this->t('{login:help_header}') . '</h2>');
-echo('<p>' . $this->t('{login:help_text}') . '</p>');
-*/
-$this->includeAtTemplateBase('includes/footer.php');
-?>
 <script type="text/javascript">
  document.getElementById("wrap").style.width = "27em";
 </script>
+
+<?php
+$this->includeAtTemplateBase('includes/footer.php');
+?>
 

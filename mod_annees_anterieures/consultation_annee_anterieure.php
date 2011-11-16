@@ -53,11 +53,8 @@ if(getSettingValue('active_annees_anterieures')!="y"){
 	die();
 }
 
-
-//$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
 $id_classe=isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL;
 
-//$logineleve=isset($_POST['logineleve']) ? $_POST['logineleve'] : NULL;
 $logineleve=isset($_GET['logineleve']) ? $_GET['logineleve'] : NULL;
 
 $annee_scolaire=isset($_GET['annee_scolaire']) ? $_GET['annee_scolaire'] : NULL;
@@ -130,13 +127,6 @@ elseif($_SESSION['statut']=="professeur"){
 
 		// On vérifie qu'il n'y a pas tentative d'intrusion illicite:
 		if(isset($logineleve)){
-			/*
-			$sql="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_classes jgc, j_groupes_professeurs jgp
-							WHERE jeg.login='$logineleve' AND
-									jeg.id_groupe=jgc.id_groupe AND
-									jgc.id_groupe=jgp.id_groupe AND
-									jgp.login='".$_SESSION['login']."';";
-			*/
 			$sql="SELECT 1=1 FROM j_eleves_classes jec, j_groupes_classes jgc, j_groupes_professeurs jgp
 							WHERE jec.login='$logineleve' AND
 									jec.id_classe=jgc.id_classe AND
@@ -464,7 +454,6 @@ if($acces!="y"){
 	tentative_intrusion(1, "Tentative illicite d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder à des données d'Années antérieures.");
 
 	header("Location: ../logout.php?auto=1");
-	//echo "\$acces=$acces";
 	die();
 }
 
@@ -472,16 +461,6 @@ if($acces!="y"){
 
 
 $msg="";
-/*
-if(isset($enregistrer)){
-
-	if($msg==""){
-		$msg="Enregistrement réussi.";
-	}
-
-	unset($page);
-}
-*/
 
 $style_specifique="mod_annees_anterieures/annees_anterieures";
 
@@ -513,7 +492,6 @@ if(($_SESSION['statut']=='administrateur')&&(isset($_GET['ine']))) {
 		echo "</div>\n";
 
 		echo "<h2 style='text-align: center;'>Choix des informations antérieures</h2>\n";
-		//tab_choix_anterieure($logineleve);
 		tab_choix_anterieure('','',$_GET['ine']);
 	}
 	else {
@@ -521,7 +499,6 @@ if(($_SESSION['statut']=='administrateur')&&(isset($_GET['ine']))) {
 		echo "</p>\n";
 		echo "</div>\n";
 
-		//if($mode=='bull_simp'){
 			echo "<h2 style='text-align: center;'>Bulletin simplifié d'une année antérieure</h2>\n";
 			if(!isset($annee_scolaire)){
 				echo "<p><strong>ERREUR:</strong> L'année scolaire antérieure ne semble pas avoir été choisie.</p>\n";
@@ -529,26 +506,9 @@ if(($_SESSION['statut']=='administrateur')&&(isset($_GET['ine']))) {
 			elseif(!isset($num_periode)){
 				echo "<p><strong>ERREUR:</strong> La période ne semble pas avoir été choisie.</p>\n";
 			}
-			/*
-			elseif(!isset($id_classe)){
-				echo "<p><strong>ERREUR:</strong> L'identifiant de la classe actuelle de cet ".$gepiSettings['denomination_eleve']." ne semble pas avoir été fourni.</p>\n";
-			}
-			*/
 			else{
 				bull_simp_annee_anterieure('', '', $annee_scolaire, $num_periode, $_GET['ine']);
 			}
-		/*
-		}
-		elseif($mode=='avis_conseil'){
-			echo "<h2 style='text-align: center;'>Avis des Conseils de classe d'une année antérieure</h2>\n";
-			if(!isset($annee_scolaire)){
-				echo "<p><strong>ERREUR:</strong> L'année scolaire antérieure ne semble pas avoir été choisie.</p>\n";
-			}
-			else{
-				avis_conseils_de_classes_annee_anterieure('',$annee_scolaire, $_GET['ine']);
-			}
-		}
-		*/
 	}
 
 	require("../lib/footer.inc.php");
@@ -564,10 +524,6 @@ if(!isset($id_classe)){
 	echo "<h2>Choix de la classe</h2>\n";
 
 	echo "<p>Choisissez la classe dans laquelle se trouve actuellement un ".$gepiSettings['denomination_eleve']." pour lequel vous souhaitez consulter les données d'années antérieures.</p>";
-
-
-	//$sql="SELECT id,classe FROM classes ORDER BY classe";
-	//$res1=mysql_query($sql);
 
 	if(!isset($sql_classes)){
 		echo "<p>ERREUR: Il semble que la requête de choix de la classe n'ait pas été initialisée.</p>\n";
@@ -603,7 +559,6 @@ if(!isset($id_classe)){
 
 		$lig_classe=mysql_fetch_object($res1);
 
-		//echo "<input type='checkbox' id='classe".$i."' name='id_classe[]' value='$lig_classe->id' /> $lig_classe->classe<br />\n";
 		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$lig_classe->id'>$lig_classe->classe</a><br />\n";
 
 		$i++;
@@ -612,21 +567,16 @@ if(!isset($id_classe)){
 	echo "</tr>\n";
 	echo "</table>\n";
 
-	//echo "<center><input type=\"submit\" name='ok' value=\"Valider\" style=\"font-variant: small-caps;\" /></center>\n";
-	//echo "</form>\n";
-
 }
 else{
 	if($_SESSION['statut']!='eleve') {
 		echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>";
 	}
 
-	//if(!isset($logineleve)){
 	if((!isset($logineleve))&&(!isset($aff_classe))) {
 		echo "</p></form>\n";
 		echo "</div>\n";
 
-		//$sql="SELECT DISTINCT e.nom,e.prenom,e.login FROM eleves e,j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.login=e.login ORDER BY e.nom,e.prenom";
 		if(!isset($sql_ele)){
 			echo "<p>ERREUR: Il semble que la requête de choix de l'".$gepiSettings['denomination_eleve']." n'ait pas été initialisée.</p>\n";
 			require("../lib/footer.inc.php");
@@ -666,7 +616,6 @@ else{
 
 				$lig_ele=mysql_fetch_object($res_ele);
 
-				//echo "<input type='checkbox' id='classe".$i."' name='id_classe[]' value='$lig_classe->id' /> $lig_classe->classe<br />\n";
 				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;logineleve=$lig_ele->login'>$lig_ele->nom $lig_ele->prenom</a><br />\n";
 
 				$i++;
@@ -676,46 +625,6 @@ else{
 			echo "</table>\n";
 			flush();
 
-			/*
-			// ===========================================================
-			// Dispositif temporaire de test:
-			echo "<hr />\n";
-
-			$sql="SELECT DISTINCT e.nom,e.prenom,e.login FROM eleves e,j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.login=e.login ORDER BY e.nom,e.prenom";
-			$res_ele=mysql_query($sql);
-
-			$nb_eleves=mysql_num_rows($res_ele);
-
-			// Affichage sur 3 colonnes
-			$nb_par_colonne=round($nb_eleves/3);
-
-			echo "<table width='100%'>\n";
-			echo "<tr valign='top' align='center'>\n";
-
-			$i = 0;
-
-			echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
-			echo "<td align='left'>\n";
-
-			while ($i < $nb_eleves) {
-
-				if(($i>0)&&(round($i/$nb_par_colonne)==$i/$nb_par_colonne)){
-					echo "</td>\n";
-					echo "<td align='left'>\n";
-				}
-
-				$lig_ele=mysql_fetch_object($res_ele);
-
-				//echo "<input type='checkbox' id='classe".$i."' name='id_classe[]' value='$lig_classe->id' /> $lig_classe->classe<br />\n";
-				echo "<a href='popup_annee_anterieure.php?logineleve=$lig_ele->login' target='_blank'>$lig_ele->nom $lig_ele->prenom</a><br />\n";
-
-				$i++;
-			}
-			echo "</td>\n";
-			echo "</tr>\n";
-			echo "</table>\n";
-			// ===========================================================
-			*/
 		}
 
 
@@ -733,7 +642,6 @@ else{
 			//echo "$sql<br />\n";
 			$res_ant=mysql_query($sql);
 			if(mysql_num_rows($res_ant)==0){
-				//echo "<p>Aucun résultat antérieur n'a été conservé pour cet élève.</p>\n";
 				echo "<p>Aucun résultat antérieur n'a été conservé pour cette classe.</p>\n";
 			}
 			else{
@@ -757,7 +665,6 @@ else{
 					}
 					echo "<td style='font-weight:bold;'>$lig_ant->annee : </td>\n";
 
-					//$sql="SELECT DISTINCT num_periode,nom_periode FROM archivage_disciplines WHERE ine='$ine' AND annee='$lig_ant->annee' ORDER BY num_periode ASC";
 					$sql="SELECT DISTINCT num_periode,nom_periode FROM archivage_disciplines WHERE annee='$lig_ant->annee' ORDER BY num_periode ASC";
 					$res_ant2=mysql_query($sql);
 
@@ -777,7 +684,6 @@ else{
 				}
 				echo "</table>\n";
 
-				//echo "<br />\n";
 				echo "<p><br /></p>";
 
 				$alt=1;
@@ -809,18 +715,15 @@ else{
 
 
 	}
-	//elseif(isset($aff_classe)) {
 	elseif((isset($aff_classe))&&(isset($sql_ele))&&(
 		($_SESSION['statut']=='administrateur')||
 		($_SESSION['statut']=='scolarite')||
 		($_SESSION['statut']=='cpe')||
 		($_SESSION['statut']=='professeur')
 	)) {
-		//if($_SESSION['statut']!='eleve'){
 			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Choisir une autre période ou ".$gepiSettings['denomination_eleve']."</a></p>\n";
 			echo "</form>\n";
 			echo "</div>\n";
-		//}
 
 		$res_liste_ele=mysql_query($sql_ele);
 		if(mysql_num_rows($res_liste_ele)==0) {
@@ -866,31 +769,24 @@ else{
 
 		require("fonctions_annees_anterieures.inc.php");
 
-		//echo $_SERVER['HTTP_USER_AGENT']."<br />\n";
 		if(my_eregi("gecko",$_SERVER['HTTP_USER_AGENT'])){
 			//echo "gecko=true<br />";
 			$gecko=true;
 		}
 		else{
-			//echo "gecko=false<br />";
 			$gecko=false;
 		}
 
-		//if(!isset($logineleve)){
 		if((!isset($logineleve))||(($mode!='bull_simp')&&($mode!='avis_conseil'))) {
 			echo "</p></form>\n";
 			echo "</div>\n";
 			echo "<h2 style='text-align: center;'>Choix des informations antérieures</h2>\n";
-			//tab_choix_anterieure($logineleve);
 			tab_choix_anterieure($logineleve,$id_classe);
 		}
 		else{
 			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;logineleve=$logineleve'>Choix des informations</a>\n";
 			echo "</p></form>\n";
 			echo "</div>\n";
-			//echo "<div style='float:right; width:3em; text-align:center;'><a href='".$_SERVER['PHP_SELF']."?logineleve=$logineleve'>Retour</a></div>\n";
-			//echo "<div style='float:left; width:5em; text-align:center;'><a href='".$_SERVER['PHP_SELF']."?logineleve=$logineleve'><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a></div>\n";
-
 			if($mode=='bull_simp'){
 				echo "<h2 style='text-align: center;'>Bulletin simplifié d'une année antérieure</h2>\n";
 				if(!isset($annee_scolaire)){
@@ -903,12 +799,6 @@ else{
 					echo "<p><strong>ERREUR:</strong> L'identifiant de la classe actuelle de cet ".$gepiSettings['denomination_eleve']." ne semble pas avoir été fourni.</p>\n";
 				}
 				else{
-					/*
-					if(!isset($num_periode)){
-						$num_periode=1;
-					}
-					// Il n'est pas certain que GEPI ait été mis en place dès la période 1 cette année là.
-					*/
 					bull_simp_annee_anterieure($logineleve, $id_classe, $annee_scolaire, $num_periode);
 				}
 			}
@@ -923,90 +813,8 @@ else{
 			}
 		}
 
-
-		/*
-
-		if(!isset($num_periode)){
-			echo "</div>\n";
-
-
-			$sql="SELECT * FROM eleves WHERE login='$logineleve';";
-			$res_ele=mysql_query($sql);
-
-			if(mysql_num_rows($res_ele)==0){
-				//echo "<p>Aucun élève dans la classe $classe pour la période '$nom_periode'.</p>\n";
-				echo "<p>L'élève dont le login serait $logineleve n'est pas dans la table 'eleves'.</p>\n";
-			}
-			else{
-				$lig_ele=mysql_fetch_object($res_ele);
-
-				// Infos élève
-				$ine=$lig_ele->no_gep;
-				//$nom=$lig_ele->nom;
-				//$prenom=$lig_ele->prenom;
-				$ele_nom=$lig_ele->nom;
-				$ele_prenom=$lig_ele->prenom;
-				$naissance=$lig_ele->naissance;
-				//$naissance2=formate_date($lig_ele->naissance);
-
-				$classe=get_nom_classe($id_classe);
-
-				echo "<p>Liste des années scolaires et périodes pour lesquelles des données concernant $ele_prenom $ele_nom (<i>$classe</i>) ont été conservées:</p>\n";
-
-				// Récupérer les années-scolaires et périodes pour lesquelles on trouve l'INE dans annees_anterieures
-				//$sql="SELECT DISTINCT annee,num_periode,nom_periode FROM annees_anterieures WHERE ine='$ine' ORDER BY annee DESC, num_periode ASC";
-				$sql="SELECT DISTINCT annee FROM annees_anterieures WHERE ine='$ine' ORDER BY annee DESC";
-				$res_ant=mysql_query($sql);
-
-				if(mysql_num_rows($res_ant)==0){
-					echo "<p>Aucun résultat antérieur n'a été conservé pour cet élève.</p>\n";
-				}
-				else{
-					echo "<table border='0'>\n";
-					while($lig_ant=mysql_fetch_object($res_ant)){
-						echo "<tr>\n";
-						echo "<td style='font-weight:bold;'>$lig_ant->annee : </td>\n";
-
-						$sql="SELECT DISTINCT num_periode,nom_periode FROM annees_anterieures WHERE ine='$ine' AND annee='$lig_ant->annee' ORDER BY num_periode ASC";
-						$res_ant2=mysql_query($sql);
-
-						if(mysql_num_rows($res_ant2)==0){
-							echo "<td>Aucun résultat antérieur n'a été conservé pour cet élève.</td>\n";
-						}
-						else{
-							$cpt=0;
-							while($lig_ant2=mysql_fetch_object($res_ant2)){
-								if($cpt>0){echo "<td> - </td>\n";}
-								echo "<td style='text-align:center;'><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;logineleve=$logineleve&amp;annee_scolaire=$lig_ant->annee&amp;num_periode=$lig_ant2->num_periode'>$lig_ant2->nom_periode</a></td>\n";
-								$cpt++;
-							}
-						}
-						echo "</tr>\n";
-					}
-					echo "</table>\n";
-				}
-			}
-
-
-		}
-		else{
-			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;logineleve=$logineleve'>Choisir une autre année/période</a>";
-			echo "</div>\n";
-
-			require("fonctions_annees_anterieures.inc.php");
-
-			bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_periode,'bull_simp');
-			//bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_periode,'avis');
-
-		}
-
-		*/
 	}
 }
 
-//echo "<center><input type=\"submit\" name='ok' value=\"Valider\" style=\"font-variant: small-caps;\" /></center>\n";
-
-//echo "</form>\n";
-//echo "<br />\n";
 require("../lib/footer.inc.php");
 ?>
