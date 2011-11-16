@@ -143,6 +143,7 @@ if(isset($_POST['id_modele'])) {
 				$nom_champ=$lig_modele->nom;
 				$$nom_champ=$lig_modele->valeur;
 				/*
+				echo "1<br />";
 				echo "\$nom_champ=$lig_modele->nom<br >\n";
 				echo "\$$nom_champ=$lig_modele->valeur<br >\n";
 				echo "\$$nom_champ=".$$nom_champ."<br >\n\n";
@@ -158,8 +159,30 @@ if(isset($_POST['id_modele'])) {
 		unset($_SESSION['id_modele']);
 	}
 }
+elseif(isset($_SESSION['id_modele'])) {
+	// On verifie que le modele existe et on recupere les valeurs
+	$sql="SELECT * FROM modeles_grilles_pdf_valeurs WHERE id_modele='".$_SESSION['id_modele']."';";
+	//echo "$sql<br >\n";
+	$res_modele=mysql_query($sql);
+	if(mysql_num_rows($res_modele)) {
+		while($lig_modele=mysql_fetch_object($res_modele)) {
+			$nom_champ=$lig_modele->nom;
+			$$nom_champ=$lig_modele->valeur;
+			/*
+			echo "2<br />";
+			echo "\$nom_champ=$lig_modele->nom<br >\n";
+			echo "\$$nom_champ=$lig_modele->valeur<br >\n";
+			echo "\$$nom_champ=".$$nom_champ."<br >\n\n";
+			*/
+		}
+	}
+	else {
+		unset($_SESSION['id_modele']);
+	}
+}
 
 //debug_var();
+//die();
 
 $nb_ligne_avant_initial = $nb_ligne_avant; //pour l'enchainemenet de PDF !
 
