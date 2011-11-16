@@ -1956,8 +1956,8 @@ if ($id_devoir) {
 			num=tab_indices[i];
 
 			if(document.getElementById('n'+num)) {
-				if(chaine1!='') {chaine1=chaine1+'|';}
-				if(chaine2!='') {chaine2=chaine2+'|';}
+				if(chaine1!='') {chaine1=chaine1+'|';chaine2=chaine2+'|';}
+				//if(chaine2!='') {chaine2=chaine2+'|';}
 
 				chaine1=chaine1+document.getElementById('log_eleve_'+i).value;
 				chaine2=chaine2+document.getElementById('n'+num).value;
@@ -1978,8 +1978,8 @@ if ($id_devoir) {
 			num=tab_indices[i];
 
 			if(document.getElementById('n'+num)) {
-				if(chaine1!='') {chaine1=chaine1+'|';}
-				if(chaine2!='') {chaine2=chaine2+'|';}
+				if(chaine1!='') {chaine1=chaine1+'|';chaine2=chaine2+'|';}
+				//if(chaine2!='') {chaine2=chaine2+'|';}
 
 				chaine1=chaine1+document.getElementById('log_eleve_'+i).value;
 				chaine2=chaine2+document.getElementById('n'+num).value;

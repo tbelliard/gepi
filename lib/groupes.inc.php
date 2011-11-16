@@ -715,7 +715,11 @@ function delete_group($_id_groupe) {
     if (!$del6) $errors .= "Erreur lors de la suppression des données relatives au carnet de notes lié au groupe.<br/>";
     $text_ct = sql_query1("SELECT count(id_groupe) from ct_entry WHERE (ct_entry.id_groupe = '" . $_id_groupe . "'");
     if ($text_ct > 0) $errors .= "Attention un cahier de textes lié au groupe supprimé est maintenant \"orphelin\". Rendez-vous dans le module \"cahier de textes\" pour régler le problème.<br/>";
-    
+    $del7 = mysql_query("DELETE from j_signalement WHERE id = '" . $_id_groupe . "'");
+    if (!$del7) $errors .= "Erreur lors de la suppression du groupe.<br/>";
+    $del8 = mysql_query("DELETE from j_groupes_visibilite WHERE id = '" . $_id_groupe . "'");
+    if (!$del8) $errors .= "Erreur lors de la suppression du groupe.<br/>";
+
     if (!empty($errors)) {
         return $errors;
     } else {

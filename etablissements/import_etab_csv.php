@@ -85,6 +85,8 @@ if (!isset($is_posted)) {
 */
 	echo "<p>Choisir un autre fichier de votre choix :<br />
 	<form enctype=\"multipart/form-data\" action=\"import_etab_csv.php\" method=\"post\" name=\"formulaire2\">\n";
+	echo add_token_field();
+
 	$csv_file = "";
 	echo "<input type='file' name=\"csv_file\" />\n";
 	echo "<input type='submit' value='Valider' />\n";
@@ -343,7 +345,7 @@ if (!isset($is_posted)) {
 
 		for ($j=0; $j<count($table_etab[$c]); $j++) {
 			// Pour l'affichage final, on enlève les caractère \ qu'on a rajouté avec traitement_magic_quotes plus haut
-			echo "<td>".StripSlashes($table_etab[$c][$j])."</td>\n";
+			echo "<td>".stripSlashes($table_etab[$c][$j])."</td>\n";
 		}
 		echo "</tr>\n";
 	}

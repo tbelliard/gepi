@@ -53,6 +53,7 @@ $mdp_INE=isset($_GET["mdp_INE"]) ? $_GET["mdp_INE"] : NULL;
 
 $affiche_adresse_resp=isset($_GET["affiche_adresse_resp"]) ? $_GET["affiche_adresse_resp"] : "n";
 
+$nouveaux_seulement=isset($_GET["nouveaux_seulement"]) ? $_GET["nouveaux_seulement"] : "n";
 
 //comme il y a une redirection pour une page Csv ou PDF, il ne faut pas envoyer les entêtes dans ces 2 cas
 if (!(($mode_impression=='csv') or ($mode_impression=='pdf'))) {
@@ -598,6 +599,9 @@ while ($p < $nb_users) {
 	echo "\$user_status=$user_status<br />";
 	echo "\$mode_impression=$mode_impression<br />";
 	*/
+
+	// nouveaux_seulement
+	if((!isset($nouveaux_seulement))||($nouveaux_seulement!="y")||(!preg_match("/Non modifié/i", $new_password))) {
 
 	// Ajout Eric
 	switch ($mode_impression) {
@@ -1160,9 +1164,12 @@ width:".$largeur1."%;\n";
 
 	} //fin switch
 
+	} // FIN nouveaux_seulement
+
 	$p++;
 
 }
+
 
 // redirection à la fin de la génération des mots de passe
 switch ($mode_impression) {
