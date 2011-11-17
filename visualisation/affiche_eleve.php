@@ -4240,8 +4240,8 @@ function eleve_suivant() {
 				
 			if($afficher_absences=="y") {
 				if((getSettingValue("active_module_absence")=='y')||
-					(getSettingValue("abs2_import_manuel_bulletin")=='y')||
-					((count($tab_ele['absences'])!=0)&&(getSettingValue("active_module_absence")!='y')&&(getSettingValue("abs2_import_manuel_bulletin")!='y'))) {
+					(getSettingValue("active_module_absence")=='2'&& getSettingValue("abs2_import_manuel_bulletin")=='y')||
+					((count($tab_ele['absences'])!=0)&&(getSettingValue("active_module_absence")!='y' && getSettingValue("active_module_absence")!='2'))) {
 
 					/*
 					$tmp_p=$num_periode_choisie-1;
