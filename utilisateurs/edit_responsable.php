@@ -441,7 +441,8 @@ aff_time();
 	<th>Nom Prénom</th>
 	<th>Responsable de</th>
 	<th>Etat</th>
-	<th>Actions</th>
+	<th>Supprimer</th>
+	<th colspan="4">Réinitialiser le mot de passe</th>
 </tr>
 <?php
 //$quels_parents = mysql_query("SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login) ORDER BY u.nom,u.prenom");
@@ -485,7 +486,7 @@ $nb1 = mysql_num_rows($quels_parents);
 $alt=1;
 while ($current_parent = mysql_fetch_object($quels_parents)) {
 	$alt=$alt*(-1);
-	echo "<tr class='lig$alt' style='text-align:center;'>\n";
+	echo "<tr class='lig$alt white_hover' style='text-align:center;'>\n";
 		echo "<td>";
 			echo "<a href='../responsables/modify_resp.php?pers_id=".$current_parent->pers_id."&amp;journal_connexions=y'>".$current_parent->login."</a>";
 		echo "</td>\n";
@@ -529,16 +530,25 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 		echo "</td>\n";
 		echo "<td>";
 		echo "<a href='edit_responsable.php?action=supprimer&amp;mode=individual&amp;parent_login=".$current_parent->login.add_token_in_url()."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir supprimer l\'utilisateur ?')\">Supprimer</a>";
+		echo "</td>";
 
 		if($current_parent->etat == "actif" && ($current_parent->auth_mode == "gepi" || $gepiSettings['ldap_write_access'] == "yes")) {
-			echo "<br />";
-			echo "Réinitialiser le mot de passe : <a href=\"reset_passwords.php?user_login=".$current_parent->login."&amp;user_status=responsable&amp;mode=html".add_token_in_url()."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Aléatoirement</a>";
-
-			echo " - <a href=\"reset_passwords.php?user_login=".$current_parent->login."&amp;user_status=responsable&amp;mode=html&amp;affiche_adresse_resp=y".add_token_in_url()."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Aléa.avec&nbsp;adresse</a>";
-
-			echo " - <a href=\"change_pwd.php?user_login=".$current_parent->login.add_token_in_url()."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci réinitialisera le mot de passe de l\'utilisateur avec un mot de passe que vous choisirez.\\n En cliquant sur OK, vous lancerez une page qui vous demandera de saisir un mot de passe et de le valider.')\" target='_blank'>Choisi </a>";
+			echo "<td>";
+			//echo "<br />";
+			echo "<a href=\"reset_passwords.php?user_login=".$current_parent->login."&amp;user_status=responsable&amp;mode=html".add_token_in_url()."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Aléatoirement</a>";
+			echo "</td>";
+			echo "<td>";
+			echo "<a href=\"reset_passwords.php?user_login=".$current_parent->login."&amp;user_status=responsable&amp;mode=html&amp;affiche_adresse_resp=y".add_token_in_url()."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Aléa.avec&nbsp;adresse</a>";
+			echo "</td>";
+			echo "<td>";
+			echo "<a href=\"change_pwd.php?user_login=".$current_parent->login.add_token_in_url()."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci réinitialisera le mot de passe de l\'utilisateur avec un mot de passe que vous choisirez.\\n En cliquant sur OK, vous lancerez une page qui vous demandera de saisir un mot de passe et de le valider.')\" target='_blank'>Choisi </a>";
+			echo "</td>\n";
 		}
-		echo "</td>\n";
+		else {
+			echo "<td colspan='3'>\n";
+			echo "&nbsp;";
+			echo "</td>\n";
+		}
 	echo "</tr>\n";
 	flush();
 }
