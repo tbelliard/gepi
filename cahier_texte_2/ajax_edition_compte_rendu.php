@@ -401,15 +401,7 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 
 		echo "<textarea name=\"contenu\" style=\"background-color: white;\" id=\"contenu\">".$ctCompteRendu->getContenu()."</textarea>";
 
-		// lancement de FCKeditor
-//		$oFCKeditor = new FCKeditor('contenu') ;
-//		$oFCKeditor->BasePath = '../fckeditor/' ;
-//		$oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
-//		$oFCKeditor->ToolbarSet = 'Basic' ;
-//		$oFCKeditor->Value = $ctCompteRendu->getContenu() ;
-//		$oFCKeditor->Create() ;
-
-		//// gestion des fichiers attaché
+		// gestion des fichiers attaché
 		echo '<div style="border-style:solid; border-width:1px; border-color: '.$couleur_bord_tableau_notice.'; background-color: '.$couleur_cellule[$type_couleur].';  padding: 2px; margin: 2px;">';
 		echo "<b>Fichier(s) attaché(s) : </b><br />";
 		echo '<div id="div_fichier">';

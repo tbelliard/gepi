@@ -38,7 +38,6 @@ if ($resultat_session == 'c') {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
-include("../fckeditor/fckeditor.php") ;
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/cahier_notes/param_releve_html.php';";

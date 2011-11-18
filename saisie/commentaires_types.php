@@ -38,7 +38,6 @@ if ($resultat_session == 'c') {
     header("Location: ../logout.php?auto=1");
 	die();
 }
-//include("../fckeditor/fckeditor.php") ;
 
 // Check access
 // INSERT INTO droits VALUES ('/saisie/commentaires_types.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'Saisie de commentaires-types', '');

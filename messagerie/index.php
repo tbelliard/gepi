@@ -27,7 +27,7 @@ $action = isset($_POST["action"]) ? $_POST["action"] :(isset($_GET["action"]) ? 
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
 // Dans le cas ou on poste un message, pas de traitement anti_inject
-// Pour ne pas interférer avec fckeditor
+// Pour ne pas interférer avec ckeditor
 if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) and isset($_POST['ok']))
     $traite_anti_inject = 'no';
 

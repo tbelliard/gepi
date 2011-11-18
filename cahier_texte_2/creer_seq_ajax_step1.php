@@ -25,7 +25,6 @@
 require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 include("../fckeditor/fckeditor.php");
-//include_once('./lib/tinyButStrong.class.php');
 
 // Resume session
 $resultat_session = $session_gepi->security_check();

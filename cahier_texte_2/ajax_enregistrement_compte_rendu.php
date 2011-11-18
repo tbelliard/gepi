@@ -30,7 +30,7 @@ $filtrage_extensions_fichiers_table_ct_types_documents='y';
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
 // Dans le cas ou on poste une notice ou un devoir, pas de traitement anti_inject
-// Pour ne pas interférer avec fckeditor
+// Pour ne pas interférer avec l'échappement mysql déjà géré par propel
 $traite_anti_inject = 'no';
 
 require_once("../lib/initialisationsPropel.inc.php");

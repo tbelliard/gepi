@@ -8,7 +8,6 @@
  <exclude-pattern>*/lib/standalone/*</exclude-pattern>
  <exclude-pattern>*/tbs/*</exclude-pattern>
  <exclude-pattern>*/ckeditor/*</exclude-pattern>
- <exclude-pattern>*/fckeditor/*</exclude-pattern>
  <exclude-pattern>*/artishow/*</exclude-pattern>
  <exclude-pattern>*/fpdf/*</exclude-pattern>
  <rule ref="PEAR"/>
