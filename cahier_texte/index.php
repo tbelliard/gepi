@@ -23,12 +23,17 @@
 // On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) {$traite_anti_inject = "yes";}
 
+// Dans le cas ou on poste une notice ou un devoir, pas de traitement anti_inject
+// Pour ne pas interférer avec ckeditor
+if (isset($_POST['notes'])) {$traite_anti_inject = 'no';}
+
 $filtrage_extensions_fichiers_table_ct_types_documents='y';
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 require_once("../lib/transform_functions.php");
 require_once("../public/lib/functions.inc");
+include("../ckeditor/ckeditor.php") ;
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -290,11 +295,6 @@ if ((isset($_GET['action'])) and ($_GET['action'] == 'sup_devoirs') and $valide_
 //
 if (isset($_POST['notes']) and $valide_form=='yes') {
    check_token();
-    $notes = str_replace("\\r", '', $_POST['notes']);
-    $notes = str_replace("<br />\\n", '<br />', $notes);
-    $notes = str_replace("\\n", '<br />', $notes);
-    $contenu_cor = $notes;
-    if ($contenu_cor == '') {$contenu_cor="...";}
 
     // Cas des devoirs
 	if (isset($edit_devoir)) {
@@ -359,6 +359,8 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
         } else {
             $msg_error_date = "La date choisie pour le travail à faire n'est pas conforme";
 		}
+        $contenu_cor = traitement_magic_quotes(corriger_caracteres($_POST['notes']),'');
+        if ($contenu_cor == '') {$contenu_cor="...";}
 
         if (!isset($msg_error_date)) {
           if (isset($id_ct))  {
@@ -384,6 +386,9 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
     } else {
         // Cas d'une notice
         isset($_POST['info']) ? $temp = '' : $temp = $today;
+        //$contenu_cor = traitement_magic_quotes(corriger_caracteres($_POST['notes']),'');
+        $contenu_cor = traitement_magic_quotes(($_POST['notes']),'');
+        if ($contenu_cor == '') $contenu_cor="...";
         if (isset($id_ct)) {
             $req = mysql_query("UPDATE ct_entry SET contenu = '$contenu_cor', id_login='".$_SESSION['login']."' WHERE id_ct='$id_ct' AND id_groupe='".$current_group["id"]."'");
         } else {
@@ -1162,14 +1167,14 @@ echo "</tr>\n";
 echo "\n";
 ?>
 <tr><td colspan="4">
-<textarea name="notes" style="background-color: white; width: 590px; height: 120px;" id="notes">
-<?php 
-$contenu = str_replace("<br />", "\n", $contenu);
-echo $contenu 
-?>
-</textarea>
-
 <?php
+// lancement de CKeditor
+$oCKeditor = new CKeditor() ;
+$oCKeditor->BasePath = '../ckeditor/' ;
+$oCKeditor->editor('notes',$contenu) ;
+
+//echo "<a href=\"#\" onclick=\"javascript: document.getElementById('notes').value='TRUC'; return false;\">CLIC</a>";
+//echo "<a href=\"#\" onclick=\"javascript: alert(document.getElementById('notes').value); return false;\">CLOC</a>";
 
 // gestion des fichiers attachés
 echo '<div style="border-style:solid; border-width:1px; border-color: '.$couleur_bord_tableau_notice.'; background-color: '.$couleur_cellule[$type_couleur].';  padding: 2px; margin: 2px;">

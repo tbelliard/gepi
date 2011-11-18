@@ -44,7 +44,7 @@ if ($resultat_session == 'c') {
     header("Location: ../logout.php?auto=1");
     die();
 }
-include("../fckeditor/fckeditor.php") ;
+include("../ckeditor/ckeditor.php") ;
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -465,12 +465,9 @@ echo "<tr><td  colspan=\"4\">\n";
 
 echo "<i>Mise en forme du message :</i>\n";
 
-$oFCKeditor = new FCKeditor('message') ;
-$oFCKeditor->BasePath = '../fckeditor/' ;  // '/FCKeditor/' is the default value.
-$oFCKeditor->Config['DefaultLanguage']      = 'fr' ;
-$oFCKeditor->ToolbarSet = 'Basic' ;
-$oFCKeditor->Value      = $contenu ;
-$oFCKeditor->Create() ;
+$oCKeditor = new CKeditor() ;
+$oCKeditor->BasePath = '../ckeditor/' ;
+$oCKeditor->editor('message',$contenu) ;
 
 echo "</td></tr></table>\n";
 echo "</form></td></tr></table>\n";
