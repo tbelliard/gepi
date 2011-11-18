@@ -800,24 +800,32 @@ function imposer_cpe() {
 				//=========================
 				// MODIF: boireaus 20071010
 				//echo "<td><p align='center'><input type='checkbox' name='$delete_login[$i]' id='case_".$i."_".$k."' value='yes' /></p></td>\n";
-				echo "<td><p align='center'><input type='checkbox' name='delete_".$k."[$i]' id='case_".$i."_".$k."' value='yes'";
-				echo " onchange='changement()'";
-				echo " />";
+				echo "<td>";
+				echo "<p align='center'>";
 
-				if($_SESSION['statut']=='administrateur') {
-					// Tester s'il y a des notes/app dans le bulletin
-					$sql="SELECT 1=1 FROM matieres_notes WHERE login='".$login_eleve."' AND periode='".$i."';";
-					$verif=mysql_query($sql);
-					$sql="SELECT 1=1 FROM matieres_appreciations WHERE login='".$login_eleve."' AND periode='".$i."';";
-					$verif2=mysql_query($sql);
+				// Tester s'il y a des notes/app dans le bulletin
+				$sql="SELECT 1=1 FROM matieres_notes WHERE login='".$login_eleve."' AND periode='".$i."';";
+				$verif=mysql_query($sql);
+				$sql="SELECT 1=1 FROM matieres_appreciations WHERE login='".$login_eleve."' AND periode='".$i."';";
+				$verif2=mysql_query($sql);
 
-					if((mysql_num_rows($verif)==0)&&(mysql_num_rows($verif2)==0)) {
+				if((mysql_num_rows($verif)==0)&&(mysql_num_rows($verif2)==0)) {
+
+					echo "<input type='checkbox' name='delete_".$k."[$i]' id='case_".$i."_".$k."' value='yes'";
+					echo " onchange='changement()'";
+					echo " />";
+	
+					if($_SESSION['statut']=='administrateur') {
 						echo "<br />\n";
 						echo "<span style='font-size:x-small'><a href='changement_eleve_classe.php?login_eleve=$login_eleve&amp;id_classe=$id_classe&amp;periode_num=$i'>Changer de classe</a></span>";
 					}
 				}
+				else {
+					echo "<img src='../images/icons/bulletin_16.png' width='16' height='16' title=\"Bulletin non vide : L'élève ne peut pas être retiré de la classe\" alt=\"Bulletin non vide : L'élève ne peut pas être retiré de la classe\" />";
+				}
 
-				echo "</p></td>\n";
+				echo "</p>";
+				echo "</td>\n";
 				//=========================
 			} else {
 				$call_classe = mysql_query("SELECT c.classe FROM classes c, j_eleves_classes j WHERE (c.id = j.id_classe and j.periode = '$i' and j.login = '$login_eleve')");
