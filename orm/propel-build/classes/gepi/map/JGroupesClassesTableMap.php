@@ -37,13 +37,14 @@ class JGroupesClassesTableMap extends TableMap
 		$this->setClassname('JGroupesClasses');
 		$this->setPackage('gepi');
 		$this->setUseIdGenerator(false);
+		$this->setIsCrossRef(true);
 		// columns
 		$this->addForeignPrimaryKey('ID_GROUPE', 'IdGroupe', 'INTEGER' , 'groupes', 'ID', true, null, null);
 		$this->addForeignPrimaryKey('ID_CLASSE', 'IdClasse', 'INTEGER' , 'classes', 'ID', true, null, null);
 		$this->addColumn('PRIORITE', 'Priorite', 'SMALLINT', true, null, null);
 		$this->addColumn('COEF', 'Coef', 'DECIMAL', true, null, null);
 		$this->addColumn('CATEGORIE_ID', 'CategorieId', 'INTEGER', true, null, null);
-		$this->addColumn('SAISIE_ECTS', 'SaisieEcts', 'BOOLEAN', false, null, false);
+		$this->addColumn('SAISIE_ECTS', 'SaisieEcts', 'BOOLEAN', false, 1, false);
 		$this->addColumn('VALEUR_ECTS', 'ValeurEcts', 'DECIMAL', false, null, null);
 		// validators
 	} // initialize()

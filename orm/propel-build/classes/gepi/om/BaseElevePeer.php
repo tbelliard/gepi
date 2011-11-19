@@ -24,7 +24,7 @@ abstract class BaseElevePeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'EleveTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 14;
 
@@ -78,7 +78,7 @@ abstract class BaseElevePeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-	
+
 	/**
 	 * An identiy map to hold any loaded instances of Eleve objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -409,43 +409,43 @@ abstract class BaseElevePeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in JEleveClassePeer instance pool, 
+		// Invalidate objects in JEleveClassePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JEleveClassePeer::clearInstancePool();
-		// Invalidate objects in JEleveCpePeer instance pool, 
+		// Invalidate objects in JEleveCpePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JEleveCpePeer::clearInstancePool();
-		// Invalidate objects in JEleveGroupePeer instance pool, 
+		// Invalidate objects in JEleveGroupePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JEleveGroupePeer::clearInstancePool();
-		// Invalidate objects in JEleveProfesseurPrincipalPeer instance pool, 
+		// Invalidate objects in JEleveProfesseurPrincipalPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JEleveProfesseurPrincipalPeer::clearInstancePool();
-		// Invalidate objects in EleveRegimeDoublantPeer instance pool, 
+		// Invalidate objects in EleveRegimeDoublantPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		EleveRegimeDoublantPeer::clearInstancePool();
-		// Invalidate objects in ResponsableInformationPeer instance pool, 
+		// Invalidate objects in ResponsableInformationPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		ResponsableInformationPeer::clearInstancePool();
-		// Invalidate objects in JEleveAncienEtablissementPeer instance pool, 
+		// Invalidate objects in JEleveAncienEtablissementPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JEleveAncienEtablissementPeer::clearInstancePool();
-		// Invalidate objects in JAidElevesPeer instance pool, 
+		// Invalidate objects in JAidElevesPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JAidElevesPeer::clearInstancePool();
-		// Invalidate objects in AbsenceEleveSaisiePeer instance pool, 
+		// Invalidate objects in AbsenceEleveSaisiePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		AbsenceEleveSaisiePeer::clearInstancePool();
-		// Invalidate objects in AbsenceAgregationDecomptePeer instance pool, 
+		// Invalidate objects in AbsenceAgregationDecomptePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		AbsenceAgregationDecomptePeer::clearInstancePool();
-		// Invalidate objects in CreditEctsPeer instance pool, 
+		// Invalidate objects in CreditEctsPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		CreditEctsPeer::clearInstancePool();
-		// Invalidate objects in CreditEctsGlobalPeer instance pool, 
+		// Invalidate objects in CreditEctsGlobalPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		CreditEctsGlobalPeer::clearInstancePool();
-		// Invalidate objects in ArchiveEctsPeer instance pool, 
+		// Invalidate objects in ArchiveEctsPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		ArchiveEctsPeer::clearInstancePool();
 	}
@@ -470,7 +470,7 @@ abstract class BaseElevePeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -567,9 +567,9 @@ abstract class BaseElevePeer {
 		if (!$criteria->hasSelectClause()) {
 			ElevePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -683,9 +683,9 @@ abstract class BaseElevePeer {
 		if (!$criteria->hasSelectClause()) {
 			ElevePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 

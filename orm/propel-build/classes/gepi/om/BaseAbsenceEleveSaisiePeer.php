@@ -24,7 +24,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'AbsenceEleveSaisieTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 20;
 
@@ -96,7 +96,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-	
+
 	/**
 	 * An identiy map to hold any loaded instances of AbsenceEleveSaisie objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -458,10 +458,10 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in JTraitementSaisieElevePeer instance pool, 
+		// Invalidate objects in JTraitementSaisieElevePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JTraitementSaisieElevePeer::clearInstancePool();
-		// Invalidate objects in AbsenceEleveSaisieVersionPeer instance pool, 
+		// Invalidate objects in AbsenceEleveSaisieVersionPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		AbsenceEleveSaisieVersionPeer::clearInstancePool();
 	}
@@ -486,7 +486,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -583,9 +583,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveSaisiePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -639,9 +639,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveSaisiePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -695,9 +695,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveSaisiePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -751,9 +751,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveSaisiePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -807,9 +807,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveSaisiePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -863,9 +863,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveSaisiePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -919,9 +919,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveSaisiePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -975,9 +975,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveSaisiePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1607,9 +1607,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveSaisiePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1904,7 +1904,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(AbsenceEleveSaisiePeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1912,9 +1912,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveSaisiePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1972,7 +1972,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(AbsenceEleveSaisiePeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1980,9 +1980,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveSaisiePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -2040,7 +2040,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(AbsenceEleveSaisiePeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -2048,9 +2048,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveSaisiePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -2108,7 +2108,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(AbsenceEleveSaisiePeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -2116,9 +2116,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveSaisiePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -2176,7 +2176,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(AbsenceEleveSaisiePeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -2184,9 +2184,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveSaisiePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -2244,7 +2244,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(AbsenceEleveSaisiePeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -2252,9 +2252,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveSaisiePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -2312,7 +2312,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(AbsenceEleveSaisiePeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -2320,9 +2320,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveSaisiePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -2380,7 +2380,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(AbsenceEleveSaisiePeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -2388,9 +2388,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveSaisiePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -4604,19 +4604,19 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		if ($values instanceof Criteria) {
 			// rename for clarity
 			$selectCriteria = clone $values;
-		} elseif ($values instanceof AbsenceEleveSaisie) {
+	 	} elseif ($values instanceof AbsenceEleveSaisie) {
 			// create criteria based on pk values
 			$selectCriteria = $values->buildPkeyCriteria();
 		} else {
 			// it must be the primary key
 			$selectCriteria = new Criteria(self::DATABASE_NAME);
-			$selectCriteria->add(AbsenceEleveSaisiePeer::ID, (array) $values, Criteria::IN);
+	 		$selectCriteria->add(AbsenceEleveSaisiePeer::ID, (array) $values, Criteria::IN);
 		}
 		// Set the correct dbName
 		$selectCriteria->setDbName(AbsenceEleveSaisiePeer::DATABASE_NAME);
 		$updateCriteria = new Criteria(self::DATABASE_NAME);
-		$updateCriteria->add(AbsenceEleveSaisiePeer::DELETED_AT, time());
-		return BasePeer::doUpdate($selectCriteria, $updateCriteria, $con);
+	    $updateCriteria->add(AbsenceEleveSaisiePeer::DELETED_AT, time());
+	 	return BasePeer::doUpdate($selectCriteria, $updateCriteria, $con);
 	}
 	
 	/**
@@ -4635,7 +4635,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 			return AbsenceEleveSaisiePeer::doSoftDelete($values, $con);
 		} else {
 			return AbsenceEleveSaisiePeer::doForceDelete($values, $con);
-		} 
+		}
 	}
 	/**
 	 * Method to soft delete all rows from the a_saisies table.
@@ -4672,7 +4672,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 			return AbsenceEleveSaisiePeer::doSoftDeleteAll($con);
 		} else {
 			return AbsenceEleveSaisiePeer::doForceDeleteAll($con);
-		} 
+		}
 	}
 
 	// versionable behavior
