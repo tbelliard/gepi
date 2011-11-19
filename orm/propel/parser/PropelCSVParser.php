@@ -22,15 +22,15 @@ class PropelCSVParser extends PropelParser
 	const QUOTE_ALL = 1;
 	const QUOTE_NONNUMERIC = 2;
 	const QUOTE_MINIMAL = 3;
-	
+
 	// these settings are predefined for Excel CSV format
-	
+
 	public $delimiter = ',';
 	public $lineTerminator = "\r\n";
 	public $quotechar = '"';
 	public $escapechar = "\\";
 	public $quoting = self::QUOTE_MINIMAL;
-	
+
 	/**
 	 * Converts data from an associative array to CSV.
 	 *
@@ -56,20 +56,20 @@ class PropelCSVParser extends PropelParser
 			}
 			$rows[] = implode($this->formatRow($array), $this->delimiter);
 		}
-		
+
 		return implode($rows, $this->lineTerminator) . $this->lineTerminator;
 	}
-	
+
 	public function listFromArray($array)
 	{
 		return $this->fromArray($array, true);
 	}
-	
+
 	/**
 	 * Accepts a row of data and returns it formatted
-	 * 
-	 * @param array An array of data to be formatted for output to the file
-	 * @return array The formatted array
+	 *
+	 * @param array	$row	An array of data to be formatted for output to the file
+	 * @return array	The formatted array
 	 */
 	protected function formatRow($row)
 	{
@@ -103,8 +103,8 @@ class PropelCSVParser extends PropelParser
 	/**
 	* Escapes a column (escapes quotechar with escapechar)
 	*
-	* @param string A single value to be escaped for output
-	* @return string Escaped input value
+	* @param string $input	A single value to be escaped for output
+	* @return string	Escaped input value
 	*/
 	protected function escape($input)
 	{
@@ -118,8 +118,8 @@ class PropelCSVParser extends PropelParser
 	/**
 	 * Quotes a column with quotechar
 	 *
-	 * @param string A single value to be quoted for output
-	 * @return string Quoted input value
+	 * @param string $input	A single value to be quoted for output
+	 * @return string	Quoted input value
 	 */
 	protected function quote($input)
 	{
@@ -129,8 +129,8 @@ class PropelCSVParser extends PropelParser
 	/**
 	 * Returns true if input contains quotechar, delimiter or any of the characters in lineTerminator
 	 *
-	 * @param string A single value to be checked for special characters
-	 * @return boolean True if contains any special characters
+	 * @param string $input	A single value to be checked for special characters
+	 * @return boolean	True if contains any special characters
 	 */
 	protected function containsSpecialChars($input)
 	{
@@ -146,12 +146,15 @@ class PropelCSVParser extends PropelParser
 
 	/**
 	 * Serializes a value to place it into a CSV output
+	 *
+	 * @param  mixed $input
+	 * @return string
 	 */
 	protected function serialize($input)
 	{
 		return serialize($input);
 	}
-	
+
 	/**
 	 * Alias for PropelCSVParser::fromArray()
 	 *
@@ -204,7 +207,7 @@ class PropelCSVParser extends PropelParser
 				$array = array_combine($keys, $values);
 			}
 		}
-		
+
 		return $array;
 	}
 
@@ -219,10 +222,10 @@ class PropelCSVParser extends PropelParser
 		preg_match_all('/(".+?"|[^' . $delim . ']+)(' . $delim . '|$)/', $row, $matches);
 		return $matches[1];
 	}
-	
+
 	/**
 	 * Accepts a formatted row of data and returns it raw
-	 * 
+	 *
 	 * @param array An array of data from a CSV output
 	 * @return array The cleaned up array
 	 */
@@ -242,13 +245,13 @@ class PropelCSVParser extends PropelParser
 		}
 		return $row;
 	}
-	
+
 	protected function isQuoted($input)
 	{
 		$quote = preg_quote($this->quotechar, '/');
 		return preg_match('/^' . $quote . '.*' . $quote . '$/', $input);
 	}
-	
+
 	protected function unescape($input)
 	{
 		return str_replace(
@@ -257,12 +260,12 @@ class PropelCSVParser extends PropelParser
 			$input
 		);
 	}
-	
+
 	protected function unquote($input)
 	{
 		return trim($input, $this->quotechar);
 	}
-	
+
 	/**
 	 * Checks whether a value from CSV output is serialized
 	 */
@@ -273,12 +276,15 @@ class PropelCSVParser extends PropelParser
 
 	/**
 	 * Unserializes a value from CSV output
+	 *
+	 * @param  string $input
+	 * @return mixed
 	 */
 	protected function unserialize($input)
 	{
 		return unserialize($input);
 	}
-	
+
 	/**
 	 * Alias for PropelCSVParser::toArray()
 	 *
@@ -292,5 +298,5 @@ class PropelCSVParser extends PropelParser
 	{
 		return $this->toArray($data, $isList, $includeHeading);
 	}
-	
+
 }

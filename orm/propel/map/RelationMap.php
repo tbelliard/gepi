@@ -34,9 +34,10 @@ class RelationMap
     // representations
     LOCAL_TO_FOREIGN = 0,
     LEFT_TO_RIGHT = 1;
-    
-  protected 
+
+  protected
     $name,
+    $pluralName,
     $type,
     $localTable,
     $foreignTable,
@@ -48,12 +49,14 @@ class RelationMap
    * Constructor.
    *
    * @param      string $name Name of the relation.
+   * @param      string $pluralName Plural Name of the relation.
+   *                                Defaults to the Name of the relation concatenated with 's'.
    */
   public function __construct($name)
   {
     $this->name = $name;
   }
-  
+
   /**
    * Get the name of this relation.
    *
@@ -62,6 +65,21 @@ class RelationMap
   public function getName()
   {
     return $this->name;
+  }
+
+  public function setPluralName($pluralName)
+  {
+    $this->pluralName = $pluralName;
+  }
+
+  /**
+   * Get the plural name of this relation.
+   *
+   * @return     string The plural name of the relation.
+   */
+  public function getPluralName()
+  {
+    return null !== $this->pluralName ? $this->pluralName : ($this->name . 's');
   }
 
   /**
@@ -123,7 +141,7 @@ class RelationMap
   {
     return $this->foreignTable;
   }
-  
+
   /**
    * Get the left table of the relation
    *
@@ -143,7 +161,7 @@ class RelationMap
   {
   	return ($this->getType() == RelationMap::MANY_TO_ONE) ? $this->getForeignTable() : $this->getLocalTable();
   }
-  
+
   /**
    * Add a column mapping
    *
@@ -155,7 +173,7 @@ class RelationMap
     $this->localColumns[] = $local;
     $this->foreignColumns[] = $foreign;
   }
-  
+
 	/**
 	 * Get an associative array mapping local column names to foreign column names
 	 * The arrangement of the returned array depends on the $direction parameter:
@@ -180,7 +198,7 @@ class RelationMap
 		}
 		return $h;
 	}
-	
+
 	/**
 	 * Returns true if the relation has more than one column mapping
 	 *
@@ -190,7 +208,7 @@ class RelationMap
 	{
 		return $this->countColumnMappings() > 1;
 	}
-	
+
 	/**
 	 * Return the number of column mappings
 	 *
@@ -200,7 +218,7 @@ class RelationMap
 	{
 		return count($this->localColumns);
 	}
-  
+
   /**
    * Get the local columns
    *
@@ -210,7 +228,7 @@ class RelationMap
   {
     return $this->localColumns;
   }
-  
+
   /**
    * Get the foreign columns
    *
@@ -220,7 +238,7 @@ class RelationMap
   {
     return $this->foreignColumns;
   }
-  
+
 	/**
    * Get the left columns of the relation
    *
@@ -261,7 +279,7 @@ class RelationMap
   {
     return $this->onUpdate;
   }
-  
+
   /**
    * Set the onDelete behavior
    *
@@ -281,7 +299,7 @@ class RelationMap
   {
     return $this->onDelete;
   }
-  
+
   /**
    * Gets the symmetrical relation
    *
