@@ -5079,7 +5079,8 @@ $update_tempo4=mysql_query($sql);
 
 					foreach($adresse->children() as $key => $value) {
 						if(in_array(my_strtoupper($key),$tab_champs_adresse)) {
-							$adresses[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)), "an", " .'-", " ");
+							//$adresses[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)), "an", " .'-", " ");
+							$adresses[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',$value), "an", " .'-", " ");
 						}
 					}
 
@@ -7170,6 +7171,11 @@ $update_tempo4=mysql_query($sql);
 
 							if((isset($update_utilisateurs))&&(!$update_utilisateurs)) {echo " <span style='color:red;'>Erreur lors de la mise à jour du mail du compte utilisateur.</span><br />\n";}
 
+							$sql_tmp="UPDATE utilisateurs SET nom='".mysql_real_escape_string(my_strtoupper($lig->nom))."',
+													prenom='".mysql_real_escape_string(maj_ini_prenom($lig->prenom))."',
+													civilite='".casse_mot($lig->civilite,'majf2')."' WHERE statut='responsable' AND login IN (SELECT login FROM resp_pers WHERE pers_id='$lig1->col2' AND login!='');";
+							info_debug($sql_tmp);
+							$update_nom_prenom_utilisateur=mysql_query($sql_tmp);
 						}
 
 						if($lig->adr_id!=""){
