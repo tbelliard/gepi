@@ -90,7 +90,7 @@ echo "<div class='css-panes' style='background-color:#ebedb5;' id='containDiv' s
 $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
 if ($traitement == null) {
     $criteria = new Criteria();
-    $criteria->addDescendingOrderByColumn(AbsenceElevetraitementPeer::UPDATED_AT);
+    $criteria->addDescendingOrderByColumn(AbsenceEleveTraitementPeer::UPDATED_AT);
     $criteria->setLimit(1);
     $traitement = $utilisateur->getAbsenceEleveTraitements($criteria)->getFirst();
     if ($traitement == null) {
