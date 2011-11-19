@@ -3361,9 +3361,9 @@ function get_commune($code_commune_insee,$mode){
  * @param string $mode si 'prenom' inverse le nom et le prénom
  * @return string civilite nom prénom de l'utilisateur
  */
-function civ_nom_prenom($login,$mode='prenom') {
+function civ_nom_prenom($login,$mode='prenom',$avec_statut="n") {
 	$retour="";
-	$sql="SELECT nom,prenom,civilite FROM utilisateurs WHERE login='$login';";
+	$sql="SELECT nom,prenom,civilite,statut FROM utilisateurs WHERE login='$login';";
 	$res_user=mysql_query($sql);
 	if (mysql_num_rows($res_user)>0) {
 		$lig_user=mysql_fetch_object($res_user);
@@ -3371,11 +3371,26 @@ function civ_nom_prenom($login,$mode='prenom') {
 			$retour.=$lig_user->civilite." ";
 		}
 		if($mode=='prenom') {
-			$retour.=strtoupper($lig_user->nom)." ".ucfirst(strtolower($lig_user->prenom));
+			$retour.=my_strtoupper($lig_user->nom)." ".casse_mot($lig_user->prenom,'majf2');
 		}
 		else {
 			// Initiale
-			$retour.=strtoupper($lig_user->nom)." ".strtoupper(mb_substr($lig_user->prenom,0,1));
+			$retour.=my_strtoupper($lig_user->nom)." ".my_strtoupper(mb_substr($lig_user->prenom,0,1));
+		}
+		if($avec_statut=='y') {
+			if($lig_user->statut=='autre') {
+				$sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du
+												WHERE du.login_user = '".$login."'
+												AND du.id_statut = ds.id;";
+				$res_statut=mysql_query($sql);
+				if(mysql_num_rows($res_statut)>0) {
+					$lig_statut=mysql_fetch_object($res_statut);
+					$retour.=" ($lig_statut->nom_statut)";
+				}
+			}
+			else {
+				$retour.=" ($lig_user->statut)";
+			}
 		}
 	}
 	return $retour;
