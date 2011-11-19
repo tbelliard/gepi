@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * $Id$
 */
 ?>
@@ -31,7 +31,6 @@
 		<h1><?php echo $titre_page; ?></h1>
 		
 	<!-- Dernière connexion -->
-		<!-- <p id='dern_connect'> -->
 		<?php
 			if ($tbs_last_connection!=""){
 				echo "
@@ -97,7 +96,6 @@
 	<!-- 	christian -->
 	<!-- 	menus de droite -->
 	<!-- 	menu accueil -->
-	<!-- <ol id='premier_menu'> -->
 	<ol>
 		<?php
 			if (count($tbs_premier_menu)) {
@@ -121,10 +119,8 @@
 	</ol>
 		
 	<!-- sépare les 2 menus -->
-		<!-- <div class='spacer'> </div> -->
 	
 	<!-- menu contact	 -->
-		<!-- <ol id='deux_menu'> -->
 		<ol id="bandeau_menu_deux">
 		<?php
 			if (count($tbs_deux_menu)) {
@@ -199,8 +195,7 @@
 				echo " class='plus'";
 			}
 			echo ">\n";
-			//echo "<a href=\"$gepiPath/".$tab['lien']." ".insert_confirm_abandon()."\">".$tab['texte']."</a>\n";
-
+			
 			// éventuellement le lien peut être vide
 			if ($tab['lien']=="") {
 				echo $tab['texte']."\n";
@@ -225,8 +220,7 @@
 				echo " class='li_inline'";
 			}
 			echo ">";
-			//echo "<a href=\"$gepiPath/".$tab['lien']."\" ".insert_confirm_abandon().">".$tab['texte']."</a>";
-
+			
 			// éventuellement le lien peut être vide
 			if ($tab['lien']=="") {
 				echo $tab['texte']."\n";
@@ -248,7 +242,6 @@
 		echo "<div id='menu_barre'>\n";
 		echo "<ul class='niveau1'>\n";
 		foreach($tbs_menu_prof as $key => $value) {
-			//echo "<pre>\$tbs_menu_prof[$i]:<br />".print_r($tbs_menu_prof[$i])."</pre>";
 			ligne_menu_barre($value,1);
 		}
 		echo "</ul>\n";
