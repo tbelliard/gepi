@@ -372,7 +372,7 @@ aff_time();
 	$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
 	//$critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/u", "", $critere_recherche);
 	$critere_recherche=nettoyer_caracteres_nom($critere_recherche, 'a', ' -','');
-  	$critere_recherche_login=isset($_POST['critere_recherche_login']) ? $_POST['critere_recherche_login'] : "";
+  	$critere_recherche_login=isset($_POST['critere_recherche_login']) ? $_POST['critere_recherche_login'] : (isset($_GET['critere_recherche_login']) ? $_GET['critere_recherche_login'] : "");
 	//$critere_recherche_login=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/u", "", $critere_recherche_login);
 	$critere_recherche_login=nettoyer_caracteres_nom($critere_recherche_login, 'a', ' -','');
 
