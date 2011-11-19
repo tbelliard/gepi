@@ -184,10 +184,10 @@ if(isset($_GET['del_id_info'])) {
 	if(!isset($msg)) {$msg="";}
 
 	if(del_info_action($_GET['del_id_info'])) {
-		$msg.="Action nÂ° ".$_GET['del_id_info']." supprimée.<br />";
+		$msg.="Action n° ".$_GET['del_id_info']." supprimée.<br />";
 	}
 	else {
-		$msg.="Erreur lors de la suppression de l'action nÂ° ".$_GET['del_id_info'].".<br />";
+		$msg.="Erreur lors de la suppression de l'action n° ".$_GET['del_id_info'].".<br />";
 	}
 }
 
@@ -197,10 +197,10 @@ if((($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite'))
 	if(!isset($msg)) {$msg="";}
 
 	if(del_acces_cdt($_GET['del_id_acces_cdt'])) {
-		$msg.="Accès CDT nÂ° ".$_GET['del_id_acces_cdt']." supprimé.<br />";
+		$msg.="Accès CDT n° ".$_GET['del_id_acces_cdt']." supprimé.<br />";
 	}
 	else {
-		$msg.="Erreur lors de la suppression de l'accès CDT nÂ° ".$_GET['del_id_acces_cdt'].".<br />";
+		$msg.="Erreur lors de la suppression de l'accès CDT n° ".$_GET['del_id_acces_cdt'].".<br />";
 	}
 }
 
