@@ -53,54 +53,38 @@ class PropelModelPager implements IteratorAggregate, Countable
 	public function init($con = null)
 	{
 		$this->con = $con;
-		if (!$this->getQuery()->isWithOneToMany()) {
-			$hasMaxRecordLimit = ($this->getMaxRecordLimit() !== false);
-			$maxRecordLimit = $this->getMaxRecordLimit();
+		$hasMaxRecordLimit = ($this->getMaxRecordLimit() !== false);
+		$maxRecordLimit = $this->getMaxRecordLimit();
 
-			$qForCount = clone $this->getQuery();
-			$count = $qForCount
-				->offset(0)
-				->limit(0)
-				->count($this->con);
+		$qForCount = clone $this->getQuery();
+		$count = $qForCount
+			->offset(0)
+			->limit(0)
+			->count($this->con);
 
-			$this->setNbResults($hasMaxRecordLimit ? min($count, $maxRecordLimit) : $count);
+		$this->setNbResults($hasMaxRecordLimit ? min($count, $maxRecordLimit) : $count);
 
-			$q = $this->getQuery()
-				->offset(0)
-				->limit(0);
+		$q = $this->getQuery()
+			->offset(0)
+			->limit(0);
 
-			if (($this->getPage() == 0 || $this->getMaxPerPage() == 0)) {
-				$this->setLastPage(0);
-			} else {
-				$this->setLastPage(ceil($this->getNbResults() / $this->getMaxPerPage()));
-
-				$offset = ($this->getPage() - 1) * $this->getMaxPerPage();
-				$q->offset($offset);
-
-				if ($hasMaxRecordLimit) {
-					$maxRecordLimit = $maxRecordLimit - $offset;
-					if ($maxRecordLimit > $this->getMaxPerPage()) {
-						$q->limit($this->getMaxPerPage());
-					} else {
-						$q->limit($maxRecordLimit);
-					}
-				} else {
-					$q->limit($this->getMaxPerPage());
-				}
-			}
+		if (($this->getPage() == 0 || $this->getMaxPerPage() == 0)) {
+			$this->setLastPage(0);
 		} else {
-			if ($this->getMaxRecordLimit() !== false) {
-				throw new PropelException('Cannot use MaxRecordLimit in conjunction with with() on a one-to-many relationship with a PropelModelPager. Please remove the with() call, or the MaxRecordLimit argument.');
-			}
+			$this->setLastPage(ceil($this->getNbResults() / $this->getMaxPerPage()));
 
-			$qForCount = clone $this->getQuery();
+			$offset = ($this->getPage() - 1) * $this->getMaxPerPage();
+			$q->offset($offset);
 
-			$this->setNbResults($this->getQuery()->find($this->con)->count());
-
-			if (($this->getPage() == 0 || $this->getMaxPerPage() == 0)) {
-				$this->setLastPage(0);
+			if ($hasMaxRecordLimit) {
+				$maxRecordLimit = $maxRecordLimit - $offset;
+				if ($maxRecordLimit > $this->getMaxPerPage()) {
+					$q->limit($this->getMaxPerPage());
+				} else {
+					$q->limit($maxRecordLimit);
+				}
 			} else {
-				$this->setLastPage(ceil($this->getNbResults() / $this->getMaxPerPage()));
+				$q->limit($this->getMaxPerPage());
 			}
 		}
 	}
@@ -113,24 +97,8 @@ class PropelModelPager implements IteratorAggregate, Countable
 	public function getResults()
 	{
 		if (null === $this->results) {
-			if (!$this->getQuery()->isWithOneToMany()) {
-				$this->results = $this->getQuery()
-				    ->find($this->con);
-			} else {
-				$result = $this->getQuery()
-					    ->find($this->con);
-
-				$offset = ($this->getPage() - 1) * $this->getMaxPerPage();
-
-				for($i = 0; $i < $offset && !$result->isEmpty(); $i = $i + 1) {
-					$result->shift();
-				}
-				$temp_count = $result->count();
-				for($i = 0; $i < $temp_count - $this->getMaxPerPage() && !$result->isEmpty(); $i = $i + 1) {
-					$result->pop();
-				}
-				$this->results = $result;
-			}
+			$this->results = $this->getQuery()
+				->find($this->con);
 		}
 		return $this->results;
 	}
