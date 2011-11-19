@@ -89,6 +89,7 @@ if ($test == -1) {
 	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS temp_abs_import (
 		id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 		login varchar(50) NOT NULL default '',
+		cpe_login varchar(50) NOT NULL default '',
 		elenoet varchar(50) NOT NULL default '',
 		libelle varchar(50) NOT NULL default '',
 		nbAbs INT(11) NOT NULL default '0',
@@ -103,6 +104,19 @@ if ($test == -1) {
 	}
 } else {
 		$result .= msj_present("La table existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'cpe_login' à la table 'temp_abs_import'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM temp_abs_import LIKE 'cpe_login';"));
+if ($test_champ==0) {
+	$query = mysql_query("ALTER TABLE temp_abs_import ADD cpe_login varchar(50) NOT NULL default '';");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
 }
 
 $result .= "<br />";
