@@ -685,15 +685,11 @@ function imposer_cpe() {
 		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<td><p>";
 
-		//echo "<a href='../eleves/modify_eleve.php?eleve_login=".$login_eleve."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title='Editer la fiche élève' target='_blank' style='color: black;'>";
 		echo "<a href='../eleves/modify_eleve.php?eleve_login=".$login_eleve."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title='Editer la fiche élève' target='_blank'>";
  		echo my_strtoupper($nom_eleve)." ".casse_mot($prenom_eleve,'majf2');
 		echo "</a>\n";
 
-		//=========================
-		// AJOUT: boireaus 20071010
 		echo "<input type='hidden' name='log_eleve[$k]' value=\"$login_eleve\" />\n";
-		//=========================
 
 		$ancre_login_eleve=preg_replace("/[^A-Za-z0-9_]/","",$login_eleve);
 		echo "<a name='$ancre_login_eleve'></a>\n";
@@ -706,22 +702,6 @@ function imposer_cpe() {
 
 		echo "<table style='border-collaspe: collapse;' summary='Régime'>\n";
 		echo "<tr>\n";
-		//=========================
-		// MODIF: boireaus 20071010
-		/*
-		echo "<td style='text-align: center; border: 0px;'>I-ext<br /><input type='radio' name='$regime_login' value='i-e'";
-		if ($regime == 'i-e') {echo " checked";}
-		echo " /></td>\n";
-		echo "<td style='text-align: center; border: 0px; border-left: 1px solid #AAAAAA;'>Int<br/><input type='radio' name='$regime_login' value='int.'";
-		if ($regime == 'int.') {echo " checked";}
-		echo " /></td>\n";
-		echo "<td style='text-align: center; border: 0px; border-left: 1px solid #AAAAAA;'>D/P<br/><input type='radio' name='$regime_login' value='d/p'";
-		if ($regime == 'd/p') {echo " checked";}
-		echo " /></td>\n";
-		echo "<td style='text-align: center; border: 0px; border-left: 1px solid #AAAAAA;'>Ext<br/><input type='radio' name='$regime_login' value='ext.'";
-		if ($regime == 'ext.') {echo " checked";}
-		//echo " /></p></td><td><p><center><input type='checkbox' name='$doublant_login' value='yes'";
-		*/
 
 		echo "<td style='text-align: center; border: 0px;'>I-ext<br /><input type='radio' name='regime_eleve[$k]' value='i-e' ";
 		if ($regime == 'i-e') {echo " checked";}
@@ -745,20 +725,12 @@ function imposer_cpe() {
 
 		echo "</td>\n";
 
-		//=========================
-		// MODIF: boireaus 20071010
-		//echo "<td><p align='center'><input type='checkbox' name='$doublant_login' value='yes' ";
 		echo "<td><p align='center'><input type='checkbox' name='doublant_eleve[$k]' value='yes' ";
-		//=========================
 		if ($doublant == 'R') {echo " checked";}
-		//echo " /></center></p></td><td><p><select size='1' name='$prof_login'>";
 		echo " onchange='changement()'";
 		echo " /></p></td>\n";
 
 		echo "<td>\n";
-		//=========================
-		// MODIF: boireaus 20071010
-		//echo "<p><select size='1' name='$prof_login'>\n";
 		echo "<p><select size='1' name='prof_principal[$k]' id='prof_principal_$k'";
 		echo " onchange='changement()'";
 		echo ">\n";
@@ -774,13 +746,10 @@ function imposer_cpe() {
 		echo "</td>\n";
 
 		echo "<td>\n";
-		//=========================
-		// MODIF: boireaus 20071010
-		//echo "<p><select size='1' name='$cpe_login'>\n";
 		echo "<p><select size='1' name='cpe_resp[$k]' id='cpe_resp_$k'";
 		echo " onchange='changement()'";
 		echo ">\n";
-		//=========================
+
 		$cperesp = "(vide)";
 		echo "<option value='$cperesp'>(vide)</option>\n";
 		for($loop=0;$loop<count($tab_cperesp);$loop++) {
@@ -796,10 +765,6 @@ function imposer_cpe() {
 			$call_trim = mysql_query("SELECT periode FROM j_eleves_classes WHERE (id_classe = '$id_classe' and periode = '$i' and login = '$login_eleve')");
 			$nb_ligne = mysql_num_rows($call_trim);
 			if ($nb_ligne != 0) {
-				//echo "<td><p><center><input type='checkbox' name='$delete_login[$i]' value='yes' /></center></p></td>";
-				//=========================
-				// MODIF: boireaus 20071010
-				//echo "<td><p align='center'><input type='checkbox' name='$delete_login[$i]' id='case_".$i."_".$k."' value='yes' /></p></td>\n";
 				echo "<td>";
 				echo "<p align='center'>";
 
@@ -830,7 +795,7 @@ function imposer_cpe() {
 			} else {
 				$call_classe = mysql_query("SELECT c.classe FROM classes c, j_eleves_classes j WHERE (c.id = j.id_classe and j.periode = '$i' and j.login = '$login_eleve')");
 				$nom_classe = @mysql_result($call_classe, 0, "classe");
-				//echo "<td><p><center>$nom_classe&nbsp;</center></p></td>";
+
 				if($nom_classe!="") {
 					echo "<td><p align='center'>$nom_classe</p></td>\n";
 				}
