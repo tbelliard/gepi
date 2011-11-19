@@ -385,9 +385,9 @@ echo "<blockquote>\n";
 
 //====================================
 $afficher_tous_les_eleves=isset($_POST['afficher_tous_les_eleves']) ? $_POST['afficher_tous_les_eleves'] : "n";
-$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
+$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : (isset($_GET['critere_recherche']) ? $_GET['critere_recherche'] : "");
 //$critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/", "", $critere_recherche);
-$critere_recherche=nettoyer_caracteres_nom($critere_recherche, 'a', ' -','');
+$critere_recherche=nettoyer_caracteres_nom($critere_recherche, 'a', ' -','%');
 
 $critere_id_classe=isset($_POST['critere_id_classe']) ? preg_replace('/[^0-9]/', '', $_POST['critere_id_classe']) : "";
 //====================================
@@ -478,7 +478,7 @@ if($afficher_tous_les_eleves!='y'){
 		$sql.=" LIMIT 20";
 	}
 }
-echo "$sql<br />";
+//echo "$sql<br />";
 $quels_eleves = mysql_query($sql);
 
 $alt=1;
