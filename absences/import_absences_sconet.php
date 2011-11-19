@@ -356,19 +356,10 @@ require_once("../lib/header.inc");
 									$i++;
 								}
 
-								$sql="CREATE TABLE IF NOT EXISTS temp_abs_import (
-								id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-								login varchar(50) NOT NULL default '',
-								elenoet varchar(50) NOT NULL default '',
-								libelle varchar(50) NOT NULL default '',
-								nbAbs INT(11) NOT NULL default '0',
-								nbNonJustif INT(11) NOT NULL default '0',
-								nbRet INT(11) NOT NULL default '0',
-								UNIQUE KEY elenoet (elenoet));";
-								$create_table=mysql_query($sql);
-				
-								$sql="TRUNCATE TABLE temp_abs_import;";
-								$menage=mysql_query($sql);
+								// Menage:
+								$sql="DELETE FROM temp_abs_import WHERE cpe_login='".$_SESSION['login']."';";
+								//echo "$sql<br />";
+								$res=mysql_query($sql);
 				
 								echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 								// On a fait en sorte à l'étape précédente, qu'il n'y ait qu'une classe ou plusieurs, que l'on transmette un tableau id_classe[]
@@ -474,6 +465,7 @@ require_once("../lib/header.inc");
 				
 													if((isset($eleves[$i]['elenoet']))&&(isset($eleves[$i]['nbAbs']))&&(isset($eleves[$i]['nbNonJustif']))&&(isset($eleves[$i]['nbRet']))) {
 														$sql="INSERT INTO temp_abs_import SET login='$lig1->login',
+																							cpe_login='".$_SESSION['login']."',
 																							elenoet='".$eleves[$i]['elenoet']."',
 																							nbAbs='".$eleves[$i]['nbAbs']."',
 																							nbNonJustif='".$eleves[$i]['nbNonJustif']."',
@@ -545,7 +537,8 @@ require_once("../lib/header.inc");
 							}
 							if($etape==2) {
 
-								$sql="SELECT * FROM temp_abs_import;";
+								// Pour ne retenir que les saisies du cpe courant (dans de gros etab, il se peut que plusieurs cpe gerent differentes classes,...)
+								$sql="SELECT * FROM temp_abs_import WHERE cpe_login='".$_SESSION['login']."';";
 								$res_t_a_i=mysql_query($sql);
 								if(mysql_num_rows($res_t_a_i)==0) {
 									echo "<p style='color:red'>Aucune absence, retard,... n'ont été trouvés&nbsp;???</p>\n";
