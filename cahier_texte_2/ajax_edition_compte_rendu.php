@@ -361,17 +361,15 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 			$hier = $today - 3600*24;
 			$demain = $today + 3600*24;
 
+			$test_hier=get_timestamp_jour_precedent($today);
+			if($test_hier) {$hier=$test_hier;}
+
+			$test_demain=get_timestamp_jour_suivant($today);
+			if($test_demain) {$demain=$test_demain;}
+
+			// Semaine precedente et suivante
 			$semaine_precedente= $today - 3600*24*7;
 			$semaine_suivante= $today + 3600*24*7;
-			/*
-			if(count($tab_jours_ouverture)>0) {
-				$cpt_jo=0; // Pour éviter une boucle infinie en cas de blague
-				while((!in_array(my_strtolower(strftime("%a",$demain)),$tab_jours_ouverture))&&($cpt_jo<7)) {
-					$demain = $today + 3600*24;
-					$cpt_jo++;
-				}
-			}
-			*/
 			echo "</td>\n";
 
 			echo "<td>\n";
