@@ -4768,7 +4768,7 @@ function get_infos_from_login_utilisateur($login, $tab_champs=array()) {
 			if(mysql_num_rows($res)>0) {
 				$lig=mysql_fetch_object($res);
 
-				$tab_champs_eleve=array('no_gep','sexe','naissance','lieu_naissance','elenoet','ereno','ele_id','id_eleve','id_mef','date_sortie');
+				$tab_champs_eleve=array('no_gep','sexe','naissance','lieu_naissance','elenoet','ereno','ele_id','id_eleve','mef_code','date_sortie');
 				foreach($tab_champs_eleve as $key => $value) {
 					$tab[$value]=$lig->$value;
 				}
