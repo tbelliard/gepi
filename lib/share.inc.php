@@ -4077,16 +4077,22 @@ function del_acces_cdt($id_acces) {
 			return FALSE;
 		}
 		else {
-                  if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')){
-                    $test = explode("?", $chemin);
-                    $chemin = count($test) > 1 ? $test[0] : $chemin;
-                  }
-			$suppr=deltree($chemin,TRUE);
-			if(!$suppr) {
-				echo "<p><span style='color:red'>Erreur lors de la suppression de $chemin</span></p>";
-				return FALSE;
+			if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')){
+				$test = explode("?", $chemin);
+				$chemin = count($test) > 1 ? $test[0] : $chemin;
 			}
-			else {
+
+			$nettoyer_acces="y";
+			if(file_exists($chemin)) {
+				$suppr=deltree($chemin,TRUE);
+				if(!$suppr) {
+					echo "<p><span style='color:red'>Erreur lors de la suppression de $chemin</span></p>";
+					return FALSE;
+					$nettoyer_acces="n";
+				}
+			}
+
+			if($nettoyer_acces=="y") {
 				$sql="DELETE FROM acces_cdt_groupes WHERE id_acces='$id_acces';";
 				$del=mysql_query($sql);
 				if(!$del) {
