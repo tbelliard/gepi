@@ -453,9 +453,10 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 			//-------------------------------
 
 			echo "\n<!-- Début du cadre entête -->\n";
-			echo "<div";
-			if($addressblock_debug=="y"){echo " style='border:1px solid red;'";}
-			echo ">\n";
+			echo "<div style='";
+			if($addressblock_debug=="y"){echo "border:1px solid red;";}
+			else {echo "border:1px dashed white;";}
+			echo "'>\n";
 
 			// Pour éviter que le cadre Adresse responsable ne vienne remonter sur la page précédente:
 			echo "<div style='clear: both; font-size: xx-small;'>&nbsp;</div>\n";
