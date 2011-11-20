@@ -268,6 +268,12 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 		$hier = $today - 3600*24;
 		$demain = $today + 3600*24;
 
+		$test_hier=get_timestamp_jour_precedent($today);
+		if($test_hier) {$hier=$test_hier;}
+
+		$test_demain=get_timestamp_jour_suivant($today);
+		if($test_demain) {$demain=$test_demain;}
+
 		$semaine_precedente= $today - 3600*24*7;
 		$semaine_suivante= $today + 3600*24*7;
 		echo "</td>\n";

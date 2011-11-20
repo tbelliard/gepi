@@ -4923,7 +4923,80 @@ function joueAlarme($niveau_arbo = "0") {
 	}
 	return $retour;
 } 
-  
 
+/**
+ * Recupere le timestamp unix du jour ouvert precedent
+ *
+ * @param int $timestamp du jour courant
+ * @return int $timestamp du jour precedent
+ */
+function get_timestamp_jour_precedent($timestamp_today) {
+	$hier=false;
 
+	$tab_nom_jour=array('dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi');
+	$sql="select * from horaires_etablissement WHERE ouverture_horaire_etablissement!=fermeture_horaire_etablissement AND ouvert_horaire_etablissement!='0' ORDER BY id_horaire_etablissement;";
+	$res_jours_ouverts=mysql_query($sql);
+	if(mysql_num_rows($res_jours_ouverts)>0) {
+		$tab_jours_ouverture=array();
+		while($lig_j=mysql_fetch_object($res_jours_ouverts)) {
+			$tab_jours_ouverture[]=$lig_j->jour_horaire_etablissement;
+			//echo "\$tab_jours_ouverture[]=".$lig_j->jour_horaire_etablissement."<br />";
+		}
+
+		$compteur=0;
+		$j_prec = $timestamp_today - 3600*24;
+		while((isset($tab_nom_jour[strftime("%w",$j_prec)]))&&(!in_array($tab_nom_jour[strftime("%w",$j_prec)],$tab_jours_ouverture))&&($compteur<8)) {
+			$j_prec -= 3600*24;
+			$compteur++;
+		}
+		if($compteur<7) {
+			$hier=$j_prec;
+		}
+	}
+
+	return $hier;
+}
+
+/**
+ * Recupere le timestamp unix du jour ouvert suivant
+ *
+ * @param int $timestamp du jour courant
+ * @return int $timestamp du jour suivant
+ */
+function get_timestamp_jour_suivant($timestamp_today) {
+	$demain=false;
+
+	$tab_nom_jour=array('dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi');
+	$sql="select * from horaires_etablissement WHERE ouverture_horaire_etablissement!=fermeture_horaire_etablissement AND ouvert_horaire_etablissement!='0' ORDER BY id_horaire_etablissement;";
+	$res_jours_ouverts=mysql_query($sql);
+	if(mysql_num_rows($res_jours_ouverts)>0) {
+		$tab_jours_ouverture=array();
+		while($lig_j=mysql_fetch_object($res_jours_ouverts)) {
+			$tab_jours_ouverture[]=$lig_j->jour_horaire_etablissement;
+			//echo "\$tab_jours_ouverture[]=".$lig_j->jour_horaire_etablissement."<br />";
+		}
+
+		$compteur=0;
+		$j_prec = $timestamp_today - 3600*24;
+		while((isset($tab_nom_jour[strftime("%w",$j_prec)]))&&(!in_array($tab_nom_jour[strftime("%w",$j_prec)],$tab_jours_ouverture))&&($compteur<8)) {
+			$j_prec -= 3600*24;
+			$compteur++;
+		}
+		if($compteur<7) {
+			$hier=$j_prec;
+		}
+
+		$compteur=0;
+		$j_suiv = $timestamp_today + 3600*24;
+		while((isset($tab_nom_jour[strftime("%w",$j_suiv)]))&&(!in_array($tab_nom_jour[strftime("%w",$j_suiv)],$tab_jours_ouverture))&&($compteur<8)) {
+			$j_suiv += 3600*24;
+			$compteur++;
+		}
+		if($compteur<7) {
+			$demain=$j_suiv;
+		}
+	}
+
+	return $demain;
+}
 ?>
