@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -113,7 +113,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 				$res_update=mysql_query($sql);
 				if(!$res_update){
 					$msg.="Erreur lors de la mise à jour dans 'resp_pers'. ";
-				} elseif((getSettingValue('mode_email_resp')!='mon_compte')&&(isset($mel))) {
+				} else {
 					// On met également à jour la table utilisateurs si le responsable a un compte
 					$test1_login = mysql_result(mysql_query("SELECT login FROM resp_pers WHERE pers_id = '$pers_id'"), 0);
 					//echo "\$test1_login=$test1_login<br />\n";
@@ -122,7 +122,11 @@ if (isset($is_posted) and ($is_posted == '1')) {
 						//echo "$sql<br />\n";
 						$test2_login = mysql_result(mysql_query($sql), 0);
 						if ($test2_login == 1) {
-							$sql="UPDATE utilisateurs SET nom = '".$resp_nom."', prenom = '" . $resp_prenom . "', email = '" . $mel . "' WHERE login ='" . $test1_login ."'";
+							$sql="UPDATE utilisateurs SET nom = '".$resp_nom."', prenom = '" . $resp_prenom . "', civilite='$civilite'";
+							if((getSettingValue('mode_email_resp')!='mon_compte')&&(isset($mel))) {
+								$sql.=", email = '" . $mel . "'";
+							}
+							$sql.=" WHERE login ='" . $test1_login ."'";
 							//echo "$sql<br />\n";
 							$res = mysql_query($sql);
 						}
@@ -371,94 +375,8 @@ if (isset($is_posted) and ($is_posted == '1')) {
 					header("Location: choix_adr_existante.php?pers_id=$pers_id");
 					die();
 				}
-
-				/*
-				// Insertion du nouvel utilisateur dans resp_pers:
-				$sql="INSERT INTO resp_pers SET pers_id='$pers_id',
-									nom='$nom',
-									prenom='$prenom',
-									tel_pers='$tel_pers',
-									tel_port='$tel_port',
-									tel_prof='$tel_prof',
-									mel='$mel',
-									adr_id='$adr_id'";
-				//echo "$sql<br />\n";
-				$res_insert=mysql_query($sql);
-				if(!$res_insert){
-					$msg.="Erreur lors de l'insertion dans 'resp_pers'. ";
-				}
-				//$sql="SELECT adr_id";
-				*/
 			}
 		}
-
-
-		/*
-		// Partie élèves:
-		//if(isset($cpt)){
-		if((isset($cpt))&&(isset($pers_id))&&($msg=='')){
-			//echo "1<br />";
-			for($i=0;$i<$cpt;$i++){
-				//echo " $i<br />";
-				if(isset($suppr_ele_id[$i])){
-					//echo "\$suppr_ele_id[$i]=".$suppr_ele_id[$i]."<br />";
-					$sql="DELETE FROM responsables2 WHERE pers_id='$pers_id' AND ele_id='$suppr_ele_id[$i]'";
-					//echo "$sql<br />\n";
-					$res_suppr=mysql_query($sql);
-					if(!$res_suppr){
-						$msg.="Erreur lors de la suppression de l'association avec l'élève $suppr_ele_id[$i] dans 'responsables2'. ";
-					}
-				}
-				else{
-					if(!isset($resp_erreur[$i])){
-						if($resp_legal[$i]==1){$resp_legal2=2;}else{$resp_legal2=1;}
-
-						$temoin_erreur="non";
-						if(isset($pers_id2[$i])){
-							$sql="UPDATE responsables2 SET resp_legal='$resp_legal2' WHERE pers_id='$pers_id2[$i]' AND ele_id='$ele_id[$i]'";
-							//echo "$sql<br />\n";
-							$res_update=mysql_query($sql);
-							if(!$res_update){
-								$msg.="Erreur lors de la mise à jour de 'resp_legal' pour l'autre responsable ($pers_id2[$i]). ";
-								$temoin_erreur="oui";
-							}
-						}
-
-						if($temoin_erreur!="oui"){
-							$sql="UPDATE responsables2 SET resp_legal='$resp_legal[$i]' WHERE pers_id='$pers_id' AND ele_id='$ele_id[$i]'";
-							//echo "$sql<br />\n";
-							$res_update=mysql_query($sql);
-							if(!$res_update){
-								$msg.="Erreur lors de la mise à jour de 'resp_legal' pour le responsable $pers_id. ";
-							}
-						}
-					}
-				}
-			}
-		}
-
-		if((isset($add_ele_id))&&(isset($pers_id))&&($msg=='')){
-			if($add_ele_id!=''){
-				$sql="SELECT 1=1 FROM responsables2 WHERE pers_id!='$pers_id' AND ele_id='$add_ele_id'";
-				$test=mysql_query($sql);
-				if(mysql_num_rows($test)==0){
-					$resp_legal=1;
-				}
-				else{
-					$sql="SELECT resp_legal FROM responsables2 WHERE ele_id='$add_ele_id'";
-					$res_tmp=mysql_query($sql);
-					$ligtmp=mysql_fetch_object($res_tmp);
-					if($ligtmp->resp_legal==1){$resp_legal=2;}else{$resp_legal=1;}
-				}
-
-				$sql="INSERT INTO responsables2 SET pers_id='$pers_id', ele_id='$add_ele_id', resp_legal='$resp_legal'";
-				$res_update=mysql_query($sql);
-				if(!$res_update){
-					$msg.="Erreur lors de l'ajout de l'élève $add_ele_id. ";
-				}
-			}
-		}
-		*/
 
 		if($msg==""){
 			$msg="Enregistrement réussi.";
@@ -612,7 +530,7 @@ if(isset($associer_eleve)) {
 					echo "<input type='hidden' name='quitter_la_page' value='$quitter_la_page' />\n";
 				}
 
-				echo "<p>Sélectionner l'élève à associer à ".ucfirst(strtolower($lig_pers->prenom))." ".strtoupper($lig_pers->nom)."<br />\n";
+				echo "<p>Sélectionner l'élève à associer à ".casse_mot($lig_pers->prenom,'majf2')." ".my_strtoupper($lig_pers->nom)."<br />\n";
 
 				//echo "<p align='center'>\n";
 				echo "<select name='add_ele_id'";
@@ -622,7 +540,7 @@ if(isset($associer_eleve)) {
 			}
 
 			if($lig_ele->ele_id!='') {
-				echo "<option value='$lig_ele->ele_id'>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</option>\n";
+				echo "<option value='$lig_ele->ele_id'>".my_strtoupper($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2')."</option>\n";
 			}
 			else {
 				$tab_anomalie_ele_id[]=$lig_ele->login;
@@ -790,7 +708,7 @@ echo "<td valign='top'>\n";
 	echo "<input type='hidden' name='tab_nom_prenom_resp' value='y' />\n";
 
 	// Affichage du tableau de la saisie des nom, prenom, adresse, tel,...
-	echo "<p><b>Responsable:</b>\n";
+	echo "<p><b>Responsable&nbsp;:</b>\n";
 	if(isset($pers_id)){
 		echo " (<i>n°$pers_id</i>)";
 
@@ -803,7 +721,7 @@ echo "<td valign='top'>\n";
 			$resp_login=$lig_resp_login->login;
 			$resp_u_email=$lig_resp_login->email;
 
-			echo " (<em title=\"Compte d'utilisateur\">$resp_login</em>)";
+			echo " (<em title=\"Compte d'utilisateur\"><a href='../utilisateurs/edit_responsable.php?critere_recherche_login=$resp_login'>$resp_login</a></em>)";
 		}
 		else {
 			$compte_resp_existe="n";

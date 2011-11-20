@@ -3361,9 +3361,9 @@ function get_commune($code_commune_insee,$mode){
  * @param string $mode si 'prenom' inverse le nom et le prénom
  * @return string civilite nom prénom de l'utilisateur
  */
-function civ_nom_prenom($login,$mode='prenom') {
+function civ_nom_prenom($login,$mode='prenom',$avec_statut="n") {
 	$retour="";
-	$sql="SELECT nom,prenom,civilite FROM utilisateurs WHERE login='$login';";
+	$sql="SELECT nom,prenom,civilite,statut FROM utilisateurs WHERE login='$login';";
 	$res_user=mysql_query($sql);
 	if (mysql_num_rows($res_user)>0) {
 		$lig_user=mysql_fetch_object($res_user);
@@ -3371,11 +3371,26 @@ function civ_nom_prenom($login,$mode='prenom') {
 			$retour.=$lig_user->civilite." ";
 		}
 		if($mode=='prenom') {
-			$retour.=strtoupper($lig_user->nom)." ".ucfirst(strtolower($lig_user->prenom));
+			$retour.=my_strtoupper($lig_user->nom)." ".casse_mot($lig_user->prenom,'majf2');
 		}
 		else {
 			// Initiale
-			$retour.=strtoupper($lig_user->nom)." ".strtoupper(mb_substr($lig_user->prenom,0,1));
+			$retour.=my_strtoupper($lig_user->nom)." ".my_strtoupper(mb_substr($lig_user->prenom,0,1));
+		}
+		if($avec_statut=='y') {
+			if($lig_user->statut=='autre') {
+				$sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du
+												WHERE du.login_user = '".$login."'
+												AND du.id_statut = ds.id;";
+				$res_statut=mysql_query($sql);
+				if(mysql_num_rows($res_statut)>0) {
+					$lig_statut=mysql_fetch_object($res_statut);
+					$retour.=" ($lig_statut->nom_statut)";
+				}
+			}
+			else {
+				$retour.=" ($lig_user->statut)";
+			}
 		}
 	}
 	return $retour;
@@ -4062,16 +4077,22 @@ function del_acces_cdt($id_acces) {
 			return FALSE;
 		}
 		else {
-                  if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')){
-                    $test = explode("?", $chemin);
-                    $chemin = count($test) > 1 ? $test[0] : $chemin;
-                  }
-			$suppr=deltree($chemin,TRUE);
-			if(!$suppr) {
-				echo "<p><span style='color:red'>Erreur lors de la suppression de $chemin</span></p>";
-				return FALSE;
+			if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')){
+				$test = explode("?", $chemin);
+				$chemin = count($test) > 1 ? $test[0] : $chemin;
 			}
-			else {
+
+			$nettoyer_acces="y";
+			if(file_exists($chemin)) {
+				$suppr=deltree($chemin,TRUE);
+				if(!$suppr) {
+					echo "<p><span style='color:red'>Erreur lors de la suppression de $chemin</span></p>";
+					return FALSE;
+					$nettoyer_acces="n";
+				}
+			}
+
+			if($nettoyer_acces=="y") {
 				$sql="DELETE FROM acces_cdt_groupes WHERE id_acces='$id_acces';";
 				$del=mysql_query($sql);
 				if(!$del) {
@@ -4902,7 +4923,80 @@ function joueAlarme($niveau_arbo = "0") {
 	}
 	return $retour;
 } 
-  
 
+/**
+ * Recupere le timestamp unix du jour ouvert precedent
+ *
+ * @param int $timestamp du jour courant
+ * @return int $timestamp du jour precedent
+ */
+function get_timestamp_jour_precedent($timestamp_today) {
+	$hier=false;
 
+	$tab_nom_jour=array('dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi');
+	$sql="select * from horaires_etablissement WHERE ouverture_horaire_etablissement!=fermeture_horaire_etablissement AND ouvert_horaire_etablissement!='0' ORDER BY id_horaire_etablissement;";
+	$res_jours_ouverts=mysql_query($sql);
+	if(mysql_num_rows($res_jours_ouverts)>0) {
+		$tab_jours_ouverture=array();
+		while($lig_j=mysql_fetch_object($res_jours_ouverts)) {
+			$tab_jours_ouverture[]=$lig_j->jour_horaire_etablissement;
+			//echo "\$tab_jours_ouverture[]=".$lig_j->jour_horaire_etablissement."<br />";
+		}
+
+		$compteur=0;
+		$j_prec = $timestamp_today - 3600*24;
+		while((isset($tab_nom_jour[strftime("%w",$j_prec)]))&&(!in_array($tab_nom_jour[strftime("%w",$j_prec)],$tab_jours_ouverture))&&($compteur<8)) {
+			$j_prec -= 3600*24;
+			$compteur++;
+		}
+		if($compteur<7) {
+			$hier=$j_prec;
+		}
+	}
+
+	return $hier;
+}
+
+/**
+ * Recupere le timestamp unix du jour ouvert suivant
+ *
+ * @param int $timestamp du jour courant
+ * @return int $timestamp du jour suivant
+ */
+function get_timestamp_jour_suivant($timestamp_today) {
+	$demain=false;
+
+	$tab_nom_jour=array('dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi');
+	$sql="select * from horaires_etablissement WHERE ouverture_horaire_etablissement!=fermeture_horaire_etablissement AND ouvert_horaire_etablissement!='0' ORDER BY id_horaire_etablissement;";
+	$res_jours_ouverts=mysql_query($sql);
+	if(mysql_num_rows($res_jours_ouverts)>0) {
+		$tab_jours_ouverture=array();
+		while($lig_j=mysql_fetch_object($res_jours_ouverts)) {
+			$tab_jours_ouverture[]=$lig_j->jour_horaire_etablissement;
+			//echo "\$tab_jours_ouverture[]=".$lig_j->jour_horaire_etablissement."<br />";
+		}
+
+		$compteur=0;
+		$j_prec = $timestamp_today - 3600*24;
+		while((isset($tab_nom_jour[strftime("%w",$j_prec)]))&&(!in_array($tab_nom_jour[strftime("%w",$j_prec)],$tab_jours_ouverture))&&($compteur<8)) {
+			$j_prec -= 3600*24;
+			$compteur++;
+		}
+		if($compteur<7) {
+			$hier=$j_prec;
+		}
+
+		$compteur=0;
+		$j_suiv = $timestamp_today + 3600*24;
+		while((isset($tab_nom_jour[strftime("%w",$j_suiv)]))&&(!in_array($tab_nom_jour[strftime("%w",$j_suiv)],$tab_jours_ouverture))&&($compteur<8)) {
+			$j_suiv += 3600*24;
+			$compteur++;
+		}
+		if($compteur<7) {
+			$demain=$j_suiv;
+		}
+	}
+
+	return $demain;
+}
 ?>

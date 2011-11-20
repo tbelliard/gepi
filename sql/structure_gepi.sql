@@ -739,6 +739,7 @@ DROP TABLE IF EXISTS temp_abs_import;
 CREATE TABLE IF NOT EXISTS temp_abs_import (
 id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 login varchar(50) NOT NULL default '',
+cpe_login varchar(50) NOT NULL default '',
 elenoet varchar(50) NOT NULL default '',
 libelle varchar(50) NOT NULL default '',
 nbAbs INT(11) NOT NULL default '0',

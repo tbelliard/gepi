@@ -200,7 +200,7 @@ if (!$error) {
 				$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;mode=html".add_token_in_url()."\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a> - ou (<a href=\"reset_passwords.php?user_status=responsable&amp;mode=html&amp;affiche_adresse_resp=y".add_token_in_url()."\" target='_blank'>Impression HTML avec adresse</a>)";
 				$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;mode=csv".add_token_in_url()."\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
 			} else if (is_numeric($_POST['classe'])) {
-				$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'responsable' pour cette classe.<br />Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
+				$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'responsable' pour la classe de ".get_class_from_id($_POST['classe']).".<br />Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
 				$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html".add_token_in_url()."\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a> - ou (<a href=\"reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html&amp;affiche_adresse_resp=y".add_token_in_url()."\" target='_blank'>Impression HTML avec adresse</a>)";
 				$msg .= "<br /><a href=\"reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=csv".add_token_in_url()."\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
 			}
@@ -283,6 +283,8 @@ $titre_page = "Modifier des comptes responsables";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
+//debug_var();
+
 aff_time();
 
 ?>
@@ -331,7 +333,9 @@ aff_time();
 										ORDER BY classe");
 
 	while ($current_classe = mysql_fetch_object($quelles_classes)) {
-		echo "<option value='".$current_classe->id."'>".$current_classe->classe."</option>\n";
+		echo "<option value='".$current_classe->id."'";
+		if((isset($_POST['classe']))&&($_POST['classe']==$current_classe->id)) {echo " selected='selected'";}
+		echo ">".$current_classe->classe."</option>\n";
 	}
 	//flush();
 	echo "</select>\n";
@@ -348,13 +352,21 @@ aff_time();
 	}
 	echo "<input type='radio' name='action' id='action_supprimer' value='supprimer' style='margin-left: 20px;' /> <label for='action_supprimer' style='cursor:pointer;'>Supprimer</label><br />\n";
 	echo "<input type='radio' name='action' value='change_auth_mode' /> Modifier authentification : ";
-	?>
-	<select id="select_auth_mode" name="reg_auth_mode" size="1">
-	<option value='gepi'>Locale (base Gepi)</option>
-	<option value='ldap'>LDAP</option>
-	<option value='sso'>SSO (Cas, LCS, LemonLDAP)</option>
-	</select>
-	<?php
+
+
+	echo "<select id='select_auth_mode' name='reg_auth_mode' size='1'>\n";
+	echo "<option value='gepi'";
+	if((isset($_POST['reg_auth_mode']))&&($_POST['reg_auth_mode']=='gepi')) {echo " selected='selected'";}
+	echo ">Locale (base Gepi)</option>\n";
+	echo "<option value='ldap'";
+	if((isset($_POST['reg_auth_mode']))&&($_POST['reg_auth_mode']=='ldap')) {echo " selected='selected'";}
+	echo ">LDAP</option>\n";
+	echo "<option value='sso'";
+	if((isset($_POST['reg_auth_mode']))&&($_POST['reg_auth_mode']=='sso')) {echo " selected='selected'";}
+	echo ">SSO (Cas, LCS, LemonLDAP)</option>\n";
+	echo "</select>\n";
+
+
 	echo "<br />\n";
 	echo "&nbsp;<input type='submit' name='Valider' value='Valider' />\n";
 	echo "</p>\n";
@@ -372,11 +384,11 @@ aff_time();
 	$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
 	//$critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/u", "", $critere_recherche);
 	$critere_recherche=nettoyer_caracteres_nom($critere_recherche, 'a', ' -','');
-  	$critere_recherche_login=isset($_POST['critere_recherche_login']) ? $_POST['critere_recherche_login'] : "";
+  	$critere_recherche_login=isset($_POST['critere_recherche_login']) ? $_POST['critere_recherche_login'] : (isset($_GET['critere_recherche_login']) ? $_GET['critere_recherche_login'] : "");
 	//$critere_recherche_login=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/u", "", $critere_recherche_login);
 	$critere_recherche_login=nettoyer_caracteres_nom($critere_recherche_login, 'a', ' -','');
 
-	$critere_id_classe=isset($_POST['critere_id_classe']) ? preg_replace('/[^0-9]/', '', $_POST['critere_id_classe']) : "";
+	$critere_id_classe=isset($_POST['critere_id_classe']) ? preg_replace('/[^0-9]/', '', $_POST['critere_id_classe']) : (isset($_POST['classe']) ? preg_replace('/[^0-9]/', '', $_POST['classe']) : "");
 	//====================================
 
 	echo "<form enctype='multipart/form-data' name='form_rech' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
