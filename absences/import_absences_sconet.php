@@ -533,7 +533,7 @@ function get_nom_class_from_id($id){
 									$create_table = mysql_query($sql);
 
 									//$sql="TRUNCATE TABLE $temp_table_abs;";
-									$sql="SELECT * FROM $temp_table_abs WHERE cpe_login='".$_SESSION['login']."';";
+									$sql="DELETE FROM $temp_table_abs WHERE cpe_login='".$_SESSION['login']."';";
 									//echo "$sql<br />";
 									$res=mysql_query($sql);
 
