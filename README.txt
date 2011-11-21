@@ -2,7 +2,7 @@ GEPI-developpement
 ==============
 
 Eric ABGRALL <eric.abgrall@free.fr>
-Thomas BELLIARD <thomas.belliard@free.fr>
+Thomas BELLIARD <thomas.belliard@sylogix.net>
 Didier BLANQUI <didier.blanqui@ac-toulouse.fr>
 Stephane BOIREAU <stephane.boireau@ac-rouen.fr>
 Regis BOUGUIN <regis.bouguin@laposte.net>
