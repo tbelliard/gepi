@@ -41,19 +41,6 @@ if (!checkAccess()) {
     die();
 }
 
-/*
-// Initialisation
-$saisie_matiere = isset($_POST['saisie_matiere']) ? $_POST['saisie_matiere'] : (isset($_GET['saisie_matiere']) ? $_GET['saisie_matiere'] : NULL);
-
-$id_groupe = isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
-if (is_numeric($id_groupe) && $id_groupe > 0) {
-    $current_group = get_group($id_groupe);
-} else {
-    $current_group = false;
-}
-
-include "../lib/periodes.inc.php";
-*/
 $msg="";
 $tab_id_classe=isset($_POST['tab_id_classe']) ? $_POST['tab_id_classe'] : NULL;
 if(isset($_POST['action_corrections'])) {
@@ -78,72 +65,144 @@ if(isset($_POST['action_corrections'])) {
 
 		$current_group=get_group($current_id_groupe);
 
-		$current_nom_prenom_eleve=get_nom_prenom_eleve($current_login_ele);
+		if($current_login_ele=='') {
+			// Appréciation de groupe
 
-		if((mb_strlen(my_ereg_replace('[A-Za-z0-9._-]','',$current_login_ele))==0)&&
-		(mb_strlen(my_ereg_replace('[0-9]','',$current_id_groupe))==0)&&
-		(mb_strlen(my_ereg_replace('[0-9]','',$current_periode))==0)) {
-
-			if ((isset($action[$i]))&&(in_array($action[$i],$tab_actions_valides))) {
-				if (isset($NON_PROTECT["appreciation".$i])) {
-					$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["appreciation".$i]));
-					// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-					$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
-
-					if($action[$i]=='supprimer') {
-						$sql="DELETE FROM matieres_app_corrections WHERE (login='$current_login_ele' AND id_groupe='$current_id_groupe' AND periode='$current_periode');";
-						$del=mysql_query($sql);
-						if($del) {
-							$msg.="Suppression de l'enregistrement temporaire $enregistrement[$i].<br />";
-							//$nb_reg++;
-							// Envoyer un mail... problème... il serait bien de n'envoyer qu'un seul mail par destinataire, plutôt que un mail par correction
-							if(!isset($texte_email[$current_id_groupe])) {$texte_email[$current_id_groupe]="";}
-							//$texte_email[$current_id_groupe].="Votre proposition de correction pour $enregistrement[$i] a été refusée/supprimée.\n";
-							$texte_email[$current_id_groupe].="Votre proposition de correction pour ".$current_nom_prenom_eleve." en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].") sur la période $current_periode a été refusée/supprimée.\n";
-						}
-						else {
-							$msg.="Erreur lors de la suppression de l'enregistrement temporaire $enregistrement[$i].<br />";
-						}
-					}
-					elseif($action[$i]=='valider') {
-						//$sql="UPDATE matieres_appreciations SET appreciation='$app' WHERE (login='$current_login_ele' AND id_groupe='$current_id_groupe' AND periode='$current_periode');";
-						$sql="DELETE FROM matieres_appreciations WHERE (login='$current_login_ele' AND id_groupe='$current_id_groupe' AND periode='$current_periode');";
-						$menage=mysql_query($sql);
-
-						$sql="INSERT INTO matieres_appreciations SET login='$current_login_ele', id_groupe='$current_id_groupe', periode='$current_periode', appreciation='$app';";
-						$insert=mysql_query($sql);
-						if($insert) {
-							$sql="DELETE FROM matieres_app_corrections WHERE (login='$current_login_ele' AND id_groupe='$current_id_groupe' AND periode='$current_periode');";
+			if((mb_strlen(my_ereg_replace('[0-9]','',$current_id_groupe))==0)&&
+			(mb_strlen(my_ereg_replace('[0-9]','',$current_periode))==0)) {
+	
+				if ((isset($action[$i]))&&(in_array($action[$i],$tab_actions_valides))) {
+					if (isset($NON_PROTECT["appreciation".$i])) {
+						$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["appreciation".$i]));
+						// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+						$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
+	
+						if($action[$i]=='supprimer') {
+							$sql="DELETE FROM matieres_app_corrections WHERE (login='' AND id_groupe='$current_id_groupe' AND periode='$current_periode');";
 							$del=mysql_query($sql);
 							if($del) {
-								$nb_reg++;
 								$msg.="Suppression de l'enregistrement temporaire $enregistrement[$i].<br />";
+								//$nb_reg++;
 								// Envoyer un mail... problème... il serait bien de n'envoyer qu'un seul mail par destinataire, plutôt que un mail par correction
 								if(!isset($texte_email[$current_id_groupe])) {$texte_email[$current_id_groupe]="";}
-								$texte_email[$current_id_groupe].="Votre proposition de correction pour ".$current_nom_prenom_eleve." en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].") sur la période $current_periode a été validée.\n";
-
-								if(!in_array($current_periode,$tab_periode_num)) {$tab_periode_num[]=$current_periode;}
-								//$reimprimer_bulletins.="<input type='hidden' name='preselection_eleves[$current_periode][]' value='$current_login_ele' />\n";
-								if(!isset($reimprimer_bulletins[$current_periode])) {$reimprimer_bulletins[$current_periode]="|";}
-								$reimprimer_bulletins[$current_periode].="$current_login_ele|";
+								//$texte_email[$current_id_groupe].="Votre proposition de correction pour $enregistrement[$i] a été refusée/supprimée.\n";
+								$texte_email[$current_id_groupe].="Votre proposition de correction pour l'appréciation de groupe en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].") sur la période $current_periode a été refusée/supprimée.\n";
 							}
 							else {
 								$msg.="Erreur lors de la suppression de l'enregistrement temporaire $enregistrement[$i].<br />";
 							}
 						}
-						else {
-							$msg.="Erreur lors de la mise à jour de l'enregistrement $enregistrement[$i] sur le bulletin.<br />";
+						elseif($action[$i]=='valider') {
+							//$sql="UPDATE matieres_appreciations SET appreciation='$app' WHERE (login='$current_login_ele' AND id_groupe='$current_id_groupe' AND periode='$current_periode');";
+							$sql="DELETE FROM matieres_appreciations_grp WHERE (id_groupe='$current_id_groupe' AND periode='$current_periode');";
+							$menage=mysql_query($sql);
+	
+							$sql="INSERT INTO matieres_appreciations_grp SET id_groupe='$current_id_groupe', periode='$current_periode', appreciation='$app';";
+							$insert=mysql_query($sql);
+							if($insert) {
+								$sql="DELETE FROM matieres_app_corrections WHERE (login='' AND id_groupe='$current_id_groupe' AND periode='$current_periode');";
+								$del=mysql_query($sql);
+								if($del) {
+									$nb_reg++;
+									$msg.="Suppression de l'enregistrement temporaire $enregistrement[$i].<br />";
+									// Envoyer un mail... problème... il serait bien de n'envoyer qu'un seul mail par destinataire, plutôt que un mail par correction
+									if(!isset($texte_email[$current_id_groupe])) {$texte_email[$current_id_groupe]="";}
+									$texte_email[$current_id_groupe].="Votre proposition de correction pour l'appreciation de groupe en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].") sur la période $current_periode a été validée.\n";
+	
+									/*
+									if(!in_array($current_periode,$tab_periode_num)) {$tab_periode_num[]=$current_periode;}
+									//$reimprimer_bulletins.="<input type='hidden' name='preselection_eleves[$current_periode][]' value='$current_login_ele' />\n";
+									if(!isset($reimprimer_bulletins[$current_periode])) {$reimprimer_bulletins[$current_periode]="|";}
+									$reimprimer_bulletins[$current_periode].="$current_login_ele|";
+									*/
+								}
+								else {
+									$msg.="Erreur lors de la suppression de l'enregistrement temporaire $enregistrement[$i].<br />";
+								}
+							}
+							else {
+								$msg.="Erreur lors de la mise à jour de l'enregistrement $enregistrement[$i] sur le bulletin.<br />";
+							}
 						}
+	
 					}
-
+					else {
+						$msg.="Action $action[$i] invalide.<br />";
+					}
 				}
-				else {
-					$msg.="Action $action[$i] invalide.<br />";
-				}
+			}
+			else {
+				$msg.="Des caractères invalides sont proposés pour $enregistrement[$i].<br />";
 			}
 		}
 		else {
-			$msg.="Des caractères invalides sont proposés pour $enregistrement[$i].<br />";
+			$current_nom_prenom_eleve=get_nom_prenom_eleve($current_login_ele);
+
+			if((mb_strlen(my_ereg_replace('[A-Za-z0-9._-]','',$current_login_ele))==0)&&
+			(mb_strlen(my_ereg_replace('[0-9]','',$current_id_groupe))==0)&&
+			(mb_strlen(my_ereg_replace('[0-9]','',$current_periode))==0)) {
+	
+				if ((isset($action[$i]))&&(in_array($action[$i],$tab_actions_valides))) {
+					if (isset($NON_PROTECT["appreciation".$i])) {
+						$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["appreciation".$i]));
+						// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+						$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
+	
+						if($action[$i]=='supprimer') {
+							$sql="DELETE FROM matieres_app_corrections WHERE (login='$current_login_ele' AND id_groupe='$current_id_groupe' AND periode='$current_periode');";
+							$del=mysql_query($sql);
+							if($del) {
+								$msg.="Suppression de l'enregistrement temporaire $enregistrement[$i].<br />";
+								//$nb_reg++;
+								// Envoyer un mail... problème... il serait bien de n'envoyer qu'un seul mail par destinataire, plutôt que un mail par correction
+								if(!isset($texte_email[$current_id_groupe])) {$texte_email[$current_id_groupe]="";}
+								//$texte_email[$current_id_groupe].="Votre proposition de correction pour $enregistrement[$i] a été refusée/supprimée.\n";
+								$texte_email[$current_id_groupe].="Votre proposition de correction pour ".$current_nom_prenom_eleve." en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].") sur la période $current_periode a été refusée/supprimée.\n";
+							}
+							else {
+								$msg.="Erreur lors de la suppression de l'enregistrement temporaire $enregistrement[$i].<br />";
+							}
+						}
+						elseif($action[$i]=='valider') {
+							//$sql="UPDATE matieres_appreciations SET appreciation='$app' WHERE (login='$current_login_ele' AND id_groupe='$current_id_groupe' AND periode='$current_periode');";
+							$sql="DELETE FROM matieres_appreciations WHERE (login='$current_login_ele' AND id_groupe='$current_id_groupe' AND periode='$current_periode');";
+							$menage=mysql_query($sql);
+	
+							$sql="INSERT INTO matieres_appreciations SET login='$current_login_ele', id_groupe='$current_id_groupe', periode='$current_periode', appreciation='$app';";
+							$insert=mysql_query($sql);
+							if($insert) {
+								$sql="DELETE FROM matieres_app_corrections WHERE (login='$current_login_ele' AND id_groupe='$current_id_groupe' AND periode='$current_periode');";
+								$del=mysql_query($sql);
+								if($del) {
+									$nb_reg++;
+									$msg.="Suppression de l'enregistrement temporaire $enregistrement[$i].<br />";
+									// Envoyer un mail... problème... il serait bien de n'envoyer qu'un seul mail par destinataire, plutôt que un mail par correction
+									if(!isset($texte_email[$current_id_groupe])) {$texte_email[$current_id_groupe]="";}
+									$texte_email[$current_id_groupe].="Votre proposition de correction pour ".$current_nom_prenom_eleve." en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].") sur la période $current_periode a été validée.\n";
+	
+									if(!in_array($current_periode,$tab_periode_num)) {$tab_periode_num[]=$current_periode;}
+									//$reimprimer_bulletins.="<input type='hidden' name='preselection_eleves[$current_periode][]' value='$current_login_ele' />\n";
+									if(!isset($reimprimer_bulletins[$current_periode])) {$reimprimer_bulletins[$current_periode]="|";}
+									$reimprimer_bulletins[$current_periode].="$current_login_ele|";
+								}
+								else {
+									$msg.="Erreur lors de la suppression de l'enregistrement temporaire $enregistrement[$i].<br />";
+								}
+							}
+							else {
+								$msg.="Erreur lors de la mise à jour de l'enregistrement $enregistrement[$i] sur le bulletin.<br />";
+							}
+						}
+	
+					}
+					else {
+						$msg.="Action $action[$i] invalide.<br />";
+					}
+				}
+			}
+			else {
+				$msg.="Des caractères invalides sont proposés pour $enregistrement[$i].<br />";
+			}
 		}
 	}
 
@@ -346,6 +405,55 @@ else {
 				// Elèves avec correction associés au groupe
 				//$sql="SELECT DISTINCT mac.*, ma.appreciation AS old_app FROM matieres_app_corrections mac, matieres_appreciations ma, j_eleves_classes jec WHERE jec.id_classe='$tab_id_classe[$i]' AND jec.periode=mac.periode AND jec.login=mac.login AND mac.id_groupe='$lig->id_groupe' AND mac.periode=ma.periode AND mac.id_groupe=ma.id_groupe AND mac.login=ma.login ORDER BY ma.login;";
 				// On ne récupérait pas d'élèves si le prof n'avait pas rempli d'appréciation pour la période (ça ne fonctionnait que pour une correction, pas pour une proposition de première saisie après la date de verrouillage)
+
+				$sql="SELECT DISTINCT mac.* FROM matieres_app_corrections mac WHERE mac.id_groupe='$lig->id_groupe' AND mac.login='';";
+				//echo "$sql<br />\n";
+				$res_grp=mysql_query($sql);
+
+				if(mysql_num_rows($res_grp)>0) {
+					$lig_grp=mysql_fetch_object($res_grp);
+
+					$alt=$alt*(-1);
+					echo "<tr class='lig$alt'>\n";
+					$liste_profs="";
+					foreach($current_group["profs"]["list"] as $key => $prof_login) {
+						if($liste_profs!="") {$liste_profs.=", ";}
+						$liste_profs.=civ_nom_prenom($prof_login);
+					}
+
+					echo "<td valign='top'>".$current_group['name']."<br /><span style='font-size:small;'>(".$current_group["description"]." en ".$current_group["classlist_string"].")</span><br /><span style='font-size:small;'>".$liste_profs."</span></td>\n";
+
+					echo "<td>Groupe<input type='hidden' name='enregistrement[$compteur]' value='|".$lig_grp->id_groupe."|".$lig_grp->periode."' /></td>\n";
+					echo "<td>$lig_grp->periode</td>\n";
+					echo "<td>";
+					echo "<div style='border: 1px solid black; margin: 2px;'>\n";
+					echo "<b>Appréciation enregistrée&nbsp;:</b> ";
+					//echo nl2br($lig_ele->old_app);
+					$sql="SELECT * FROM matieres_appreciations_grp WHERE periode='$lig_grp->periode' AND id_groupe='$lig_grp->id_groupe';";
+					$res_old_app=mysql_query($sql);
+					if(mysql_num_rows($res_old_app)>0) {
+						$lig_old=mysql_fetch_object($res_old_app);
+						echo nl2br($lig_old->appreciation);
+					}
+					else {
+						echo "<span style='color:red'>Aucune appréciation n'a été enregistrée avant la proposition de correction.</span>\n";
+					}
+					echo "</div>\n";
+					echo "<div style='border: 1px solid black; margin: 2px;'>\n";
+					echo "<b>Correction proposée&nbsp;:</b> ";
+					echo "<textarea id=\"n".$compteur."\" class='wrap' onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_appreciation".$compteur."\" cols='70' rows='2'>".$lig_grp->appreciation."</textarea>\n";
+					echo "</div>\n";
+					echo "</td>\n";
+
+					echo "<td><input type='radio' name='action[$compteur]' id='action_attente_$compteur' value='en_attente' checked /></td>\n";
+					echo "<td><input type='radio' name='action[$compteur]' id='action_valider_$compteur' value='valider' /></td>\n";
+					echo "<td><input type='radio' name='action[$compteur]' id='action_supprimer_$compteur' value='supprimer' /></td>\n";
+
+					echo "</tr>\n";
+
+					$compteur++;
+				}
+
 				$sql="SELECT DISTINCT mac.* FROM matieres_app_corrections mac, j_eleves_classes jec WHERE jec.id_classe='$tab_id_classe[$i]' AND jec.periode=mac.periode AND jec.login=mac.login AND mac.id_groupe='$lig->id_groupe' ORDER BY mac.login;";
 				//echo "$sql<br />\n";
 				$res_ele=mysql_query($sql);
