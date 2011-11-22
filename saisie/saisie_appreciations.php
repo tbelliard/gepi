@@ -555,7 +555,10 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 		
 					if($envoi_mail_actif=='y') {
 						$email_destinataires="";
-						$sql="select email from utilisateurs where statut='secours' AND email!='';";
+						//$sql="select email from utilisateurs where statut='secours' AND email!='';";
+						$sql="(select email from utilisateurs where statut='secours' AND email!='')";
+						$sql.=" UNION (select email from utilisateurs u, j_scol_classes jsc, j_groupes_classes jgc where u.statut='scolarite' AND u.email!='' AND u.login=jsc.login AND jsc.id_classe=jgc.id_classe AND jgc.id_groupe='$id_groupe')";
+						//echo "$sql<br />";
 						$req=mysql_query($sql);
 						if(mysql_num_rows($req)>0) {
 							$lig_u=mysql_fetch_object($req);
