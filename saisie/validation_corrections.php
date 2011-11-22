@@ -57,6 +57,8 @@ if(isset($_POST['action_corrections'])) {
 	$reimprimer_bulletins=array();
 	$tab_periode_num=array();
 
+	$tab_liste_id_groupe=array();
+
 	for($i=0;$i<count($enregistrement);$i++) {
 		$tab_tmp=explode("|",$enregistrement[$i]);
 		$current_login_ele=$tab_tmp[0];
@@ -68,15 +70,17 @@ if(isset($_POST['action_corrections'])) {
 		if($current_login_ele=='') {
 			// Appréciation de groupe
 
-			if((mb_strlen(my_ereg_replace('[0-9]','',$current_id_groupe))==0)&&
-			(mb_strlen(my_ereg_replace('[0-9]','',$current_periode))==0)) {
+			if((mb_strlen(preg_replace('/[0-9]/','',$current_id_groupe))==0)&&
+			(mb_strlen(preg_replace('/[0-9]/','',$current_periode))==0)) {
 	
 				if ((isset($action[$i]))&&(in_array($action[$i],$tab_actions_valides))) {
 					if (isset($NON_PROTECT["appreciation".$i])) {
 						$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["appreciation".$i]));
 						// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-						$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
-	
+						$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
+						$app=preg_replace('/(\\\r)+/',"\r",$app);
+						$app=preg_replace('/(\\\n)+/',"\n",$app);
+
 						if($action[$i]=='supprimer') {
 							$sql="DELETE FROM matieres_app_corrections WHERE (login='' AND id_groupe='$current_id_groupe' AND periode='$current_periode');";
 							$del=mysql_query($sql);
@@ -124,7 +128,10 @@ if(isset($_POST['action_corrections'])) {
 								$msg.="Erreur lors de la mise à jour de l'enregistrement $enregistrement[$i] sur le bulletin.<br />";
 							}
 						}
-	
+
+						if(!in_array($current_id_groupe,$tab_liste_id_groupe)) {
+							$tab_liste_id_groupe[]=$current_id_groupe;
+						}
 					}
 					else {
 						$msg.="Action $action[$i] invalide.<br />";
@@ -138,15 +145,17 @@ if(isset($_POST['action_corrections'])) {
 		else {
 			$current_nom_prenom_eleve=get_nom_prenom_eleve($current_login_ele);
 
-			if((mb_strlen(my_ereg_replace('[A-Za-z0-9._-]','',$current_login_ele))==0)&&
-			(mb_strlen(my_ereg_replace('[0-9]','',$current_id_groupe))==0)&&
-			(mb_strlen(my_ereg_replace('[0-9]','',$current_periode))==0)) {
+			if((mb_strlen(preg_replace('/[A-Za-z0-9._-]/','',$current_login_ele))==0)&&
+			(mb_strlen(preg_replace('/[0-9]/','',$current_id_groupe))==0)&&
+			(mb_strlen(preg_replace('/[0-9]/','',$current_periode))==0)) {
 	
 				if ((isset($action[$i]))&&(in_array($action[$i],$tab_actions_valides))) {
 					if (isset($NON_PROTECT["appreciation".$i])) {
 						$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["appreciation".$i]));
 						// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-						$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
+						$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
+						$app=preg_replace('/(\\\r)+/',"\r",$app);
+						$app=preg_replace('/(\\\n)+/',"\n",$app);
 	
 						if($action[$i]=='supprimer') {
 							$sql="DELETE FROM matieres_app_corrections WHERE (login='$current_login_ele' AND id_groupe='$current_id_groupe' AND periode='$current_periode');";
@@ -194,6 +203,9 @@ if(isset($_POST['action_corrections'])) {
 							}
 						}
 	
+						if(!in_array($current_id_groupe,$tab_liste_id_groupe)) {
+							$tab_liste_id_groupe[]=$current_id_groupe;
+						}
 					}
 					else {
 						$msg.="Action $action[$i] invalide.<br />";
@@ -219,7 +231,13 @@ if(isset($_POST['action_corrections'])) {
 			if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 
 			$email_reply="";
-			$sql="select nom, prenom, civilite, email from utilisateurs where login = '".$_SESSION['login']."';";
+			//$sql="select nom, prenom, civilite, email from utilisateurs where login = '".$_SESSION['login']."';";
+			$sql="(select nom, prenom, civilite, email from utilisateurs where login = '".$_SESSION['login']."')";
+
+			for($loop=0;$loop<count($tab_liste_id_groupe);$loop++) {
+				$sql.=" UNION (select nom, prenom, civilite, email from utilisateurs u, j_scol_classes jsc, j_groupes_classes jgc where u.statut='scolarite' AND u.email!='' AND u.login=jsc.login AND jsc.id_classe=jgc.id_classe AND jgc.id_groupe='".$tab_liste_id_groupe[$loop]."')";
+			}
+			//echo "$sql<br />";
 			$req=mysql_query($sql);
 			if(mysql_num_rows($req)>0) {
 				$lig_u=mysql_fetch_object($req);
