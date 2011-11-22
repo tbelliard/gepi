@@ -263,6 +263,14 @@ echo '<!--[if lt IE 7]>
 				$barre_note.= '		</li>'."\n";
 			}
 
+
+			// Saisie des avis de conseil de classe
+			if((getSettingValue("GepiRubConseilProf") == "yes")&&(is_pp($_SESSION['login']))) {
+				$barre_note.= '		<li><a href="'.$gepiPath.'/saisie/saisie_avis.php"'.insert_confirm_abandon().'>Saisie des avis de conseils de classe</a>'."\n";
+				$barre_note.= '		</li>'."\n";
+			}
+
+
 			//$affiche_li_bull_simp="n";
 			if ((getSettingValue("GepiAccesBulletinSimpleProf") == "yes")||(getSettingValue("GepiAccesBulletinSimpleProfTousEleves") == "yes")) {
 				//$affiche_li_bull_simp="y";
