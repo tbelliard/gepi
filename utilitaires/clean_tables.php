@@ -3,7 +3,7 @@
 /*
 * $Id$
 *
-* Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 * This file is part of GEPI.
 *
 * GEPI is free software; you can redistribute it and/or modify
@@ -66,6 +66,28 @@ function get_tab_utilisateurs_responsables_fantomes() {
 
 function menage_utilisateurs_responsables() {
 	$sql="delete from utilisateurs where statut='responsable' and login not in (select login from resp_pers);";
+	$res=mysql_query($sql);
+	if(!$res) {
+		return false;
+	}
+	else {
+		return true;
+	}
+}
+
+function desactivation_utilisateurs_responsables_sans_eleve() {
+	$sql="update utilisateurs set statut='inactif' where statut='responsable' and login not in (select login from resp_pers);";
+	$res=mysql_query($sql);
+	if(!$res) {
+		return false;
+	}
+	else {
+		return true;
+	}
+}
+
+function desactivation_utilisateurs_responsables_sans_eleve_scolarise() {
+	$sql="update utilisateurs set statut='inactif' where statut='responsable' and login in (SELECT rp.login FROM resp_pers rp, responsables2 r, eleves e WHERE rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND e.login NOT IN (SELECT login FROM j_eleves_classes));";
 	$res=mysql_query($sql);
 	if(!$res) {
 		return false;
@@ -1525,6 +1547,13 @@ col2 varchar(100) NOT NULL default ''
 
 	}
 	else {
+		// Suppression d'anomalies
+		$sql="DELETE FROM resp_pers WHERE pers_id='';";
+		$menage=mysql_query($sql);
+		$sql="DELETE FROM responsables2 WHERE pers_id='';";
+		$menage=mysql_query($sql);
+
+
 		$cpt_suppr=isset($_POST['cpt_suppr']) ? $_POST['cpt_suppr'] : 0;
 
 		$cpt_suppr_etape=0;
@@ -1561,6 +1590,22 @@ col2 varchar(100) NOT NULL default ''
 
 						$cpt_affichage_info++;
 					}
+					else {
+						$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$lig1->col1';";
+						$res2=mysql_query($sql);
+						if(mysql_num_rows($res2)==0) {
+							if($cpt_affichage_info==0) {$texte_info_action.="<p>";}
+	
+							$texte_info_action.="L'élève $lig1->col1 n'est dans aucune classe, son compte utilisateur doit être supprimé.<br />\n";
+							$sql="DELETE FROM utilisateurs WHERE login='$lig1->col1';";
+							//echo "$sql<br />\n";
+							$suppr=mysql_query($sql);
+	
+							$cpt_suppr_etape++;
+	
+							$cpt_affichage_info++;
+						}
+					}
 				}
 				else {
 					$sql="SELECT rp.pers_id FROM resp_pers rp WHERE rp.login='$lig1->col1';";
@@ -1576,7 +1621,7 @@ col2 varchar(100) NOT NULL default ''
 						$cpt_affichage_info++;
 					}
 					else {
-						$sql="SELECT 1=1 FROM eleves e, resp_pers rp, responsables2 r WHERE rp.login='$lig1->col1' AND r.pers_id=rp.pers_id AND e.ele_id=r.ele_id;";
+						$sql="SELECT e.login FROM eleves e, resp_pers rp, responsables2 r WHERE rp.login='$lig1->col1' AND r.pers_id=rp.pers_id AND e.ele_id=r.ele_id;";
 						//echo "$sql<br />\n";
 						$res2=mysql_query($sql);
 						if(mysql_num_rows($res2)==0) {
@@ -1607,6 +1652,28 @@ col2 varchar(100) NOT NULL default ''
 
 							$cpt_suppr_etape++;
 							$cpt_affichage_info++;
+						}
+						else {
+							// L'élève est-il encore dans une classe?
+							$temoin_eleve_classe="n";
+							while($lig_ele_clas=mysql_fetch_object($res2)) {
+								$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$lig_ele_clas->login';";
+								$test_ele_clas=mysql_query($sql);
+								if(mysql_num_rows($test_ele_clas)>0) {
+									$temoin_eleve_classe="y";
+									break;
+								}
+							}
+
+							if($temoin_eleve_classe=="n") {
+								$texte_info_action.="Désactivation du responsable $lig1->col1 dans 'utilisateurs' qui n'a plus d'élève dans aucune classe.<br />\n";
+								$sql="UPDATE utilisateurs SET etat='inactif' WHERE login='$lig1->col1';";
+								//echo "$sql<br />\n";
+								$suppr=mysql_query($sql);
+	
+								$cpt_suppr_etape++;
+								$cpt_affichage_info++;
+							}
 						}
 					}
 				}
