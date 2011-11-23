@@ -476,7 +476,7 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 		$res_enfants=mysql_query($sql);
 		//echo "$sql<br />";
 		if(mysql_num_rows($res_enfants)==0){
-			echo "<span style='color:red;'>Aucun élève</span>";
+			echo "<span style='color:red;' title='Aucun élève, ou plus des élèves qui ne sont plus dans aucune classe'>Aucun élève</span>";
 		}
 		else{
 			while($current_enfant=mysql_fetch_object($res_enfants)){
