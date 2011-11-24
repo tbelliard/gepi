@@ -564,12 +564,16 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 		echo "<td align='center'>";
 			if ($current_parent->etat == "actif") {
 				echo "<font color='green'>".$current_parent->etat."</font>";
-				echo "<br />";
-				echo "<a href='edit_responsable.php?action=rendre_inactif&amp;mode=individual&amp;parent_login=".$current_parent->login.add_token_in_url()."'>Désactiver";
+				if($current_parent->login!='') {
+					echo "<br />";
+					echo "<a href='edit_responsable.php?action=rendre_inactif&amp;mode=individual&amp;parent_login=".$current_parent->login.add_token_in_url()."'>Désactiver";
+				}
 			} else {
 				echo "<font color='red'>".$current_parent->etat."</font>";
-				echo "<br />";
-				echo "<a href='edit_responsable.php?action=rendre_actif&amp;mode=individual&amp;parent_login=".$current_parent->login.add_token_in_url()."'>Activer";
+				if($current_parent->login!='') {
+					echo "<br />";
+					echo "<a href='edit_responsable.php?action=rendre_actif&amp;mode=individual&amp;parent_login=".$current_parent->login.add_token_in_url()."'>Activer";
+				}
 			}
 			echo "</a>";
 		echo "</td>\n";
