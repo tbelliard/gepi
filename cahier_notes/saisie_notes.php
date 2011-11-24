@@ -84,6 +84,9 @@ if (!checkAccess()) {
 if (getSettingValue("active_carnets_notes")!='y') {
 	die("Le module n'est pas activé.");
 }
+
+$msg="";
+
 unset($id_devoir);
 $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] : (isset($_GET["id_devoir"]) ? $_GET["id_devoir"] : NULL);
 unset($affiche_message);
@@ -428,6 +431,8 @@ if((isset($_GET['recalculer']))&&(isset($id_conteneur))&&(isset($periode_num))&&
 	if((isset($id_conteneur))&&($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)) {
 
 		recherche_enfant($id_conteneur);
+
+		$msg.="Recalcul des moyennes du carnet de notes effectué.<br />";
 	}
 }
 if (isset($_POST['import_sacoche'])) {

@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -394,7 +394,7 @@ aff_time();
 	echo "<form enctype='multipart/form-data' name='form_rech' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	echo "<table style='border:1px solid black;' summary=\"Filtrage\">\n";
 	echo "<tr>\n";
-	echo "<td valign='top' rowspan='5'>\n";
+	echo "<td valign='top' rowspan='7'>\n";
 	echo "Filtrage:";
 	echo "</td>\n";
 	echo "<td>\n";
@@ -428,11 +428,39 @@ aff_time();
 	echo "</td>\n";
 	echo "</tr>\n";
 
+
+	$sql="SELECT u.*,rp.pers_id FROM utilisateurs u, resp_pers rp, responsables2 r, eleves e  WHERE u.statut='responsable' AND rp.login=u.login AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND e.login NOT IN (SELECT login FROM j_eleves_classes) ORDER BY u.nom,u.prenom;";
+	//echo "$sql<br />";
+	$test_parents = mysql_query($sql);
+	if(mysql_num_rows($test_parents)>0) {
+		$nb_resp_anormaux_actifs=0;
+		while($lig_resp_anormaux=mysql_fetch_object($test_parents)) {
+			if($lig_resp_anormaux->etat=='actif') {
+				$nb_resp_anormaux_actifs++;
+			}
+		}
+		echo "<tr>\n";
+		echo "<td>\n";
+		echo "ou";
+		echo "</td>\n";
+		echo "</tr>\n";
+	
+		echo "<tr>\n";
+		echo "<td>\n";
+		echo "<input type='button' name='button_afficher_resp_eleves_sans_classe' value=\"Afficher tous les responsables d'élèves hors classe\" onClick=\"document.getElementById('afficher_resp_eleves_sans_classe').value='y'; document.form_rech.submit();\" /> (<em>".mysql_num_rows($test_parents)." dont ".$nb_resp_anormaux_actifs." actif";
+		if($nb_resp_anormaux_actifs>0) {echo "s";}
+		echo "</em>)\n";
+		echo "<input type='hidden' name='afficher_resp_eleves_sans_classe' id='afficher_resp_eleves_sans_classe' value='n' />\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+
 	echo "<tr>\n";
 	echo "<td>\n";
 	echo "ou";
 	echo "</td>\n";
 	echo "</tr>\n";
+
 	echo "<tr>\n";
 	echo "<td>\n";
 	echo "<input type='button' name='afficher_tous' value='Afficher tous les responsables ayant un login' onClick=\"document.getElementById('afficher_tous_les_resp').value='y'; document.form_rech.submit();\" />\n";
@@ -459,35 +487,40 @@ aff_time();
 <?php
 //$quels_parents = mysql_query("SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login) ORDER BY u.nom,u.prenom");
 
-if($critere_id_classe=='') {
-	$sql="SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login";
+if((!isset($_POST['afficher_resp_eleves_sans_classe']))||($_POST['afficher_resp_eleves_sans_classe']!='y')) {
+	if($critere_id_classe=='') {
+		$sql="SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login";
+	}
+	else {
+		$sql="SELECT DISTINCT u.*, r.pers_id FROM classes c, j_eleves_classes jec, eleves e, utilisateurs u, resp_pers rp, responsables2 r WHERE (u.statut = 'responsable' AND rp.login=u.login";
+	}
+
+	if($afficher_tous_les_resp!='y'){
+		if($critere_recherche!=""){
+			$sql.=" AND u.nom like '%".$critere_recherche."%'";
+		} else {
+			if($critere_recherche_login!=""){
+				$sql.=" AND u.login like '%".$critere_recherche_login."%'";
+			}
+		}
+	
+		if($critere_id_classe!='') {
+			$sql.=" AND rp.login = u.login AND jec.id_classe='$critere_id_classe' AND jec.login=e.login AND e.ele_id=r.ele_id AND r.pers_id=rp.pers_id";
+		}
+	}
+	$sql.=") ORDER BY u.nom,u.prenom";
+
+	// Effectif sans login avec filtrage sur le nom:
+	//$nb1 = mysql_num_rows(mysql_query($sql));
+	
+	if($afficher_tous_les_resp!='y'){
+		if(($critere_recherche=="")&&($critere_recherche_login=="")&&($critere_id_classe=="")) {
+			$sql.=" LIMIT 20";
+		}
+	}
 }
 else {
-	$sql="SELECT DISTINCT u.*, r.pers_id FROM classes c, j_eleves_classes jec, eleves e, utilisateurs u, resp_pers rp, responsables2 r WHERE (u.statut = 'responsable' AND rp.login=u.login";
-}
-
-if($afficher_tous_les_resp!='y'){
-	if($critere_recherche!=""){
-		$sql.=" AND u.nom like '%".$critere_recherche."%'";
-	} else {
-		if($critere_recherche_login!=""){
-			$sql.=" AND u.login like '%".$critere_recherche_login."%'";
-		}
-    }
-
-	if($critere_id_classe!='') {
-		$sql.=" AND rp.login = u.login AND jec.id_classe='$critere_id_classe' AND jec.login=e.login AND e.ele_id=r.ele_id AND r.pers_id=rp.pers_id";
-	}
-}
-$sql.=") ORDER BY u.nom,u.prenom";
-
-// Effectif sans login avec filtrage sur le nom:
-//$nb1 = mysql_num_rows(mysql_query($sql));
-
-if($afficher_tous_les_resp!='y'){
-	if(($critere_recherche=="")&&($critere_recherche_login=="")&&($critere_id_classe=="")) {
-		$sql.=" LIMIT 20";
-	}
+	$sql="SELECT u.*,rp.pers_id FROM utilisateurs u, resp_pers rp, responsables2 r, eleves e  WHERE u.statut='responsable' AND rp.login=u.login AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND e.login NOT IN (SELECT login FROM j_eleves_classes) ORDER BY u.nom,u.prenom;";
 }
 //echo "$sql<br />";
 $quels_parents = mysql_query($sql);
@@ -519,7 +552,7 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 		$res_enfants=mysql_query($sql);
 		//echo "$sql<br />";
 		if(mysql_num_rows($res_enfants)==0){
-			echo "<span style='color:red;'>Aucun élève</span>";
+			echo "<span style='color:red;' title='Aucun élève, ou plus des élèves qui ne sont plus dans aucune classe'>Aucun élève</span>";
 		}
 		else{
 			while($current_enfant=mysql_fetch_object($res_enfants)){
@@ -531,12 +564,16 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 		echo "<td align='center'>";
 			if ($current_parent->etat == "actif") {
 				echo "<font color='green'>".$current_parent->etat."</font>";
-				echo "<br />";
-				echo "<a href='edit_responsable.php?action=rendre_inactif&amp;mode=individual&amp;parent_login=".$current_parent->login.add_token_in_url()."'>Désactiver";
+				if($current_parent->login!='') {
+					echo "<br />";
+					echo "<a href='edit_responsable.php?action=rendre_inactif&amp;mode=individual&amp;parent_login=".$current_parent->login.add_token_in_url()."'>Désactiver";
+				}
 			} else {
 				echo "<font color='red'>".$current_parent->etat."</font>";
-				echo "<br />";
-				echo "<a href='edit_responsable.php?action=rendre_actif&amp;mode=individual&amp;parent_login=".$current_parent->login.add_token_in_url()."'>Activer";
+				if($current_parent->login!='') {
+					echo "<br />";
+					echo "<a href='edit_responsable.php?action=rendre_actif&amp;mode=individual&amp;parent_login=".$current_parent->login.add_token_in_url()."'>Activer";
+				}
 			}
 			echo "</a>";
 		echo "</td>\n";

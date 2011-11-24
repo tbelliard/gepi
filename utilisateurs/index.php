@@ -562,36 +562,86 @@ while ($i < $nombreligne){
     }
     if ($col[$i][4]=='') {$col[$i][4] = "&nbsp;";}
 
-    // Affichage des classes/enseignements
-    $sql="SELECT g.id group_id, g.name name, c.classe classe, c.id classe_id " .
-            "FROM j_groupes_professeurs jgp, j_groupes_classes jgc, groupes g, classes c WHERE (" .
-            "jgp.login = '$user_login' and " .
-            "g.id = jgp.id_groupe and " .
-            "jgc.id_groupe = jgp.id_groupe and " .
-            "c.id = jgc.id_classe) order by c.classe;";
-    $call_classes = mysql_query($sql);
-    $nb_classes = mysql_num_rows($call_classes);
-    $k = 0;
-    $col[$i][5] = '';
-    while ($k < $nb_classes) {
-        $user_classe['classe_nom_court'] = mysql_result($call_classes, $k, "classe");
-        $user_classe['matiere_nom_court'] = mysql_result($call_classes, $k, "name");
-        $user_classe['classe_id'] = mysql_result($call_classes, $k, "classe_id");
-        $user_classe['group_id'] = mysql_result($call_classes, $k, "group_id");
 
-    //======================================
-    // MODIF: boireaus
-        //$col[$i][5] = $col[$i][5]."<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&id_groupe=".$user_classe["group_id"] . "'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a><br />";
-        //$col[$i][5] = $col[$i][5]."<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&amp;id_groupe=".$user_classe["group_id"] . "&amp;retour=oui'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a><br />";
-        $col[$i][5] .= "<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&amp;id_groupe=".$user_classe["group_id"] . "&amp;chemin_retour=$chemin_retour&amp;ancre=$user_login'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a>\n";
+	$col[$i][5] = '';
+	// Pour les professeurs
+	if ($user_statut == "professeur") {
+		// Affichage des classes/enseignements
+		$sql="SELECT g.id group_id, g.name name, c.classe classe, c.id classe_id " .
+				"FROM j_groupes_professeurs jgp, j_groupes_classes jgc, groupes g, classes c WHERE (" .
+				"jgp.login = '$user_login' and " .
+				"g.id = jgp.id_groupe and " .
+				"jgc.id_groupe = jgp.id_groupe and " .
+				"c.id = jgc.id_classe) order by c.classe;";
+		$call_classes = mysql_query($sql);
+		$nb_classes = mysql_num_rows($call_classes);
+		$k = 0;
+		while ($k < $nb_classes) {
+			$user_classe['classe_nom_court'] = mysql_result($call_classes, $k, "classe");
+			$user_classe['matiere_nom_court'] = mysql_result($call_classes, $k, "name");
+			$user_classe['classe_id'] = mysql_result($call_classes, $k, "classe_id");
+			$user_classe['group_id'] = mysql_result($call_classes, $k, "group_id");
+	
+			$col[$i][5] .= "<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&amp;id_groupe=".$user_classe["group_id"] . "&amp;chemin_retour=$chemin_retour&amp;ancre=$user_login'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a>\n";
+	
+			// Génération d'un CSV du groupe
+			//$col[$i][5] .= "<a href='../groupes/mes_listes.php?id_groupe=".$user_classe["group_id"] . "' target='_blank'><img src='../images/icons/document.png' width='16' height='16' /></a>\n";
+	
+			$col[$i][5] .= "<br />\n";
+	
+			$k++;
+		}
+	}
 
-		// Génération d'un CSV du groupe
-        //$col[$i][5] .= "<a href='../groupes/mes_listes.php?id_groupe=".$user_classe["group_id"] . "' target='_blank'><img src='../images/icons/document.png' width='16' height='16' /></a>\n";
+	// Pour les CPE
+	if ($user_statut == "cpe") {
+		$sql="SELECT DISTINCT c.id, c.classe " .
+				"FROM j_eleves_cpe jecpe, j_eleves_classes jec, classes c WHERE (" .
+				"jecpe.cpe_login = '$user_login' and " .
+				"jecpe.e_login = jec.login and " .
+				"jec.id_classe = c.id) order by c.classe;";
+		//echo "$sql<br />";
+		$call_classes = mysql_query($sql);
+		$nb_classes = mysql_num_rows($call_classes);
+		$k = 0;
+		$col[$i][5] = '';
+		while ($k < $nb_classes) {
+			$user_classe['classe_nom_court'] = mysql_result($call_classes, $k, "classe");
+			$user_classe['classe_id'] = mysql_result($call_classes, $k, "id");
+	
+			//$col[$i][5] .= "<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&amp;id_groupe=".$user_classe["group_id"] . "&amp;chemin_retour=$chemin_retour&amp;ancre=$user_login'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a>\n";
+			$col[$i][5] .= $user_classe['classe_nom_court'];
+	
+			$col[$i][5] .= "<br />\n";
+	
+			$k++;
+		}
+	}
 
-        $col[$i][5] .= "<br />\n";
-    //======================================
-        $k++;
-    }
+	// Pour les comptes scolarité
+	if ($user_statut == "scolarite") {
+		$sql="SELECT DISTINCT c.id, c.classe " .
+				"FROM j_scol_classes jsc, classes c WHERE (" .
+				"jsc.login = '$user_login' and " .
+				"jsc.id_classe = c.id) order by c.classe;";
+		//echo "$sql<br />";
+		$call_classes = mysql_query($sql);
+		$nb_classes = mysql_num_rows($call_classes);
+		$k = 0;
+		$col[$i][5] = '';
+		while ($k < $nb_classes) {
+			$user_classe['classe_nom_court'] = mysql_result($call_classes, $k, "classe");
+			$user_classe['classe_id'] = mysql_result($call_classes, $k, "id");
+	
+			//$col[$i][5] .= "<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&amp;id_groupe=".$user_classe["group_id"] . "&amp;chemin_retour=$chemin_retour&amp;ancre=$user_login'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a>\n";
+			$col[$i][5] .= $user_classe['classe_nom_court'];
+	
+			$col[$i][5] .= "<br />\n";
+	
+			$k++;
+		}
+	}
+
     if ($col[$i][5]=='') {$col[$i][5] = "&nbsp;";}
 
     // Affichage de la classe suivie

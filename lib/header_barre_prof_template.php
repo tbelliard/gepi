@@ -299,6 +299,11 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 				$cpt_sous_menu++;
 			}
 
+			// Saisie des avis de conseil de classe
+			if((getSettingValue("GepiRubConseilProf") == "yes")&&(is_pp($_SESSION['login']))) {
+				$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/saisie/saisie_avis.php' , "texte"=>"Saisie des avis de conseils de classe");
+				$cpt_sous_menu++;
+			}
 
 			// Visualisation des bulletins simplifiés
 			$affiche_li_bull_simp="n";
