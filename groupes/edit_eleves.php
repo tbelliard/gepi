@@ -464,9 +464,9 @@ echo "<p>Cochez les élèves qui suivent cet enseignement, pour chaque période 
 
 echo "<table border='1' class='boireaus' summary='Suivi de cet enseignement par les élèves en fonction des périodes'>\n";
 echo "<tr>\n";
-echo "<th><a href='edit_eleves.php?id_groupe=$id_groupe&amp;id_classe=$id_classe&amp;order_by=nom'>Nom/Prénom</a></th>\n";
+echo "<th><a href='edit_eleves.php?id_groupe=$id_groupe&amp;id_classe=$id_classe&amp;order_by=nom' onclick=\"return confirm_abandon (this, change, '$themessage')\">Nom/Prénom</a></th>\n";
 if ($multiclasses) {
-	echo "<th><a href='edit_eleves.php?id_groupe=$id_groupe&amp;id_classe=$id_classe&amp;order_by=classe'>Classe</a></th>\n";
+	echo "<th><a href='edit_eleves.php?id_groupe=$id_groupe&amp;id_classe=$id_classe&amp;order_by=classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe</a></th>\n";
 }
 foreach ($current_group["periodes"] as $period) {
 	if($period["num_periode"]!=""){
@@ -568,6 +568,10 @@ foreach ($current_group["periodes"] as $period) {
 
 		if(count($total_eleves)>0) {
 			echo "<a href=\"javascript:CocheColonne(".$period["num_periode"].");changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' title='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(".$period["num_periode"].");changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' title='Tout décocher' /></a>";
+
+			if($period["num_periode"]>1) {
+				echo " / <a href=\"javascript:copieElevesPeriode1(".$period["num_periode"].");changement();\"><img src='../images/icons/copy-16.png' width='16' height='16' alt='Copier les affectations de la première période' title='Copier les affectations de la première période' /></a>";
+			}
 		}
 		//=========================
 		echo "<br/>Inscrits : " . count($current_group["eleves"][$period["num_periode"]]["list"]);
@@ -831,6 +835,14 @@ if(count($total_eleves)>0) {
 		for (var ki=0;ki<$nb_eleves;ki++) {
 			if((document.getElementById('case_'+i+'_'+ki))&&(!document.getElementById('img_bull_non_vide_'+i+'_'+ki))&&(!document.getElementById('img_cn_non_vide_'+i+'_'+ki))) {
 				document.getElementById('case_'+i+'_'+ki).checked = false;
+			}
+		}
+	}
+
+	function copieElevesPeriode1(num_periode) {
+		for (var ki=0;ki<$nb_eleves;ki++) {
+			if((document.getElementById('case_1_'+ki))&&(document.getElementById('case_'+num_periode+'_'+ki))) {
+				document.getElementById('case_'+num_periode+'_'+ki).checked=document.getElementById('case_1_'+ki).checked;
 			}
 		}
 	}
