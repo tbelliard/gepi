@@ -2045,7 +2045,8 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 		$div.=">\n";
 
 		if($bouton_close=="y"){
-			$div.="<div style='$style_close'><a href='#' onclick=\"cacher_div('$id');return FALSE;\">";
+			//$div.="<div style='$style_close'><a href='#' onclick=\"cacher_div('$id');return FALSE;\">";
+			$div.="<div style='$style_close'><a href=\"javascript:cacher_div('$id')\">";
 			if(isset($niveau_arbo)&&$niveau_arbo==0){
 				$div.="<img src='./images/icons/close16.png' width='16' height='16' alt='Fermer' />";
 			}

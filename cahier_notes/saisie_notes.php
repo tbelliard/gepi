@@ -810,9 +810,12 @@ function verifcol(num_id){
 	}
 	note=document.getElementById('n'+num_id).value;
 	if((note!='-')&&(note!='disp')&&(note!='abs')&&(note!='')){
+		note=note.replace(',','.');
+
 		//if((note.search(/^[0-9.]+$/)!=-1)&&(note.lastIndexOf('.')==note.indexOf('.',0))){
+
 		if(((note.search(/^[0-9.]+$/)!=-1)&&(note.lastIndexOf('.')==note.indexOf('.',0)))||
-	((note.search(/^[0-9,]+$/)!=-1)&&(note.lastIndexOf(',')==note.indexOf(',',0)))){
+		((note.search(/^[0-9,]+$/)!=-1)&&(note.lastIndexOf(',')==note.indexOf(',',0)))){
 			if((note>".$note_sur_verif.")||(note<0)){
 				couleur='red';
 			}
