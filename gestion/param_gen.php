@@ -827,13 +827,13 @@ echo add_token_field();
 			}
 		?></span>
 		</td>
-		<td><input type="text" name="sessionMaxLength" size="20" value="<?php echo(getSettingValue("sessionMaxLength")); ?>" onchange='changement()' />
+		<td><input type="text" name="sessionMaxLength" id="sessionMaxLength" size="20" value="<?php echo(getSettingValue("sessionMaxLength")); ?>" onchange='changement()' onkeydown="clavier_2(this.id,event,1,600)" />
 		</td>
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
 		Longueur minimale du mot de passe :</td>
-		<td><input type="text" name="longmin_pwd" size="20" value="<?php echo(getSettingValue("longmin_pwd")); ?>" onchange='changement()' />
+		<td><input type="text" name="longmin_pwd" id="longmin_pwd" size="20" value="<?php echo(getSettingValue("longmin_pwd")); ?>" onchange='changement()' onkeydown="clavier_2(this.id,event,1,50)" />
 		</td>
 	</tr>
 		<?php 
@@ -1068,7 +1068,7 @@ echo add_token_field();
 Par prudence, il convient de fixer une limite à la taille d'un fichier extrait.<br />
 En mettant zéro, vous ne fixez aucune limite.<br />
 En mettant une valeur négative, vous désactivez le désarchivage</i>)</td>\n";
-			echo "<td valign='top'><input type='text' name='unzipped_max_filesize' value='";
+			echo "<td valign='top'><input type='text' name='unzipped_max_filesize' id='unzipped_max_filesize' value='";
 			$unzipped_max_filesize=getSettingValue('unzipped_max_filesize');
 			if($unzipped_max_filesize==""){
 				echo '10';
@@ -1076,7 +1076,7 @@ En mettant une valeur négative, vous désactivez le désarchivage</i>)</td>\n";
 			else {
 				echo $unzipped_max_filesize;
 			}
-			echo "' size='3' onchange='changement()' /> Mo";
+			echo "' size='3' onchange='changement()' onkeydown=\"clavier_2(this.id,event,0,600)\" /> Mo";
 			echo "</td>\n";
 		}
 		else{
@@ -1179,7 +1179,7 @@ responsables&nbsp;:<br />
 			$delais_apres_cloture=getSettingValue("delais_apres_cloture");
 			if($delais_apres_cloture=="") {$delais_apres_cloture=0;}
 
-			echo "<input type='radio' name='acces_app_ele_resp' id='acces_app_ele_resp_periode_close' value='periode_close' onchange='changement()' ";
+			echo "<input type='radio' name='acces_app_ele_resp' id='acces_app_ele_resp_periode_close' value='periode_close' onchange='changement()' onkeydown='clavier_2(this.id,event,1,600)' ";
 			if($acces_app_ele_resp=='periode_close') {echo "checked ";}
 			echo "/><label for='acces_app_ele_resp_periode_close'> <input type='text' name='delais_apres_cloture' value='$delais_apres_cloture' size='1' onchange='changement()' /> jours après la clôture de la période</label>\n";
 			?>
