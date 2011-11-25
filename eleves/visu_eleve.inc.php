@@ -32,11 +32,7 @@ if(($_SERVER['SCRIPT_NAME']!="$gepiPath/eleves/visu_eleve.php")&&
 
 $Recherche_sans_js=isset($_POST['Recherche_sans_js']) ? $_POST['Recherche_sans_js'] : (isset($_GET['Recherche_sans_js']) ? $_GET['Recherche_sans_js'] : NULL);
 
-//echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 
-//if(!isset($ele_login)) {
-
-//if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 if((!isset($ele_login))&&(!isset($Recherche_sans_js))) {
 	echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 	echo "</p>\n";
@@ -149,23 +145,11 @@ if(document.getElementById('rech_nom')) {document.getElementById('rech_nom').foc
 		if(mysql_num_rows($res_ele)>0) {
 			echo "<p>".ucfirst($gepiSettings['denomination_eleves'])." de la classe de ".get_class_from_id($id_classe).":</p>\n";
 
-			/*
-			echo "<table class='boireaus' border='1' summary='Tableau des élèves'>\n";
-			echo "<tr>\n";
-			echo "<th>Nom</th>\n";
-			echo "<th>Prénom</th>\n";
-			echo "</tr>\n";
-			while($lig_ele=mysql_query($res_ele)) {
-				echo "";
-			}
-			*/
-
 			$tab_txt=array();
 			$tab_lien=array();
 
 			while($lig_ele=mysql_fetch_object($res_ele)) {
 				$tab_txt[]=casse_mot($lig_ele->prenom,'majf2')." ".my_strtoupper($lig_ele->nom);
-				//$tab_lien[]=$_SERVER['PHP_SELF']."?ele_login=".$lig_ele->login;
 				$tab_lien[]=$_SERVER['PHP_SELF']."?ele_login=".$lig_ele->login."&amp;id_classe=".$id_classe;
 			}
 
@@ -213,7 +197,6 @@ if(document.getElementById('rech_nom')) {document.getElementById('rech_nom').foc
 	//=============================================
 
 }
-//elseif(isset($_POST['Recherche_sans_js'])) {
 elseif(isset($Recherche_sans_js)) {
 	// On ne passe ici que si JavaScript est désactivé
 	echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
@@ -221,8 +204,6 @@ elseif(isset($Recherche_sans_js)) {
 	echo "</p>\n";
 	echo "</div>\n";
 
-	//include("recherche_eleve.php");
-	//include("$gepiPath/eleves/recherche_eleve.php");
 	include("../eleves/recherche_eleve.php");
 }
 else {
@@ -230,7 +211,6 @@ else {
 
 	echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 
-	//echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre élève</a>\n";
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre ".$gepiSettings['denomination_eleve']."/classe</a>\n";
 
 	if(!isset($id_classe)) {
@@ -243,21 +223,6 @@ else {
 	}
 
 	if(isset($id_classe)) {
-		/*
-		if($_SESSION['statut']=='administrateur') {
-			$sql="SELECT e.nom,e.prenom,e.login FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login ORDER BY e.nom, e.prenom;";
-		}
-		elseif($_SESSION['statut']=='scolarite') {
-			$sql="SELECT 1=1 FROM j_scol_classes jsc, j_eleves_classes jec WHERE jec.id_classe=jsc.id_classe AND jsc.login='".$_SESSION['login']."' AND jec.login='".$ele_login."';";
-			$test=mysql_query($sql);
-		}
-		elseif($_SESSION['statut']=='cpe') {
-			$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."' AND e_login='".$ele_login."';";
-			$test=mysql_query($sql);
-		}
-		elseif($_SESSION['statut']=='professeur') {
-		}
-		*/
 
 		$sql="SELECT DISTINCT e.nom,e.prenom,e.login FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' ORDER BY e.nom, e.prenom;";
 
@@ -316,7 +281,6 @@ else {
 		if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
 			echo " | <a href='modify_eleve.php?eleve_login=".$ele_login."'>Gestion de l'élève</a>";
 		}
-		//echo "</p>\n";
 
 		echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 
@@ -476,8 +440,6 @@ Patientez pendant l'extraction des données... merci.
 				}
 				else {
 					$AAScolResp=getSettingValue('AAScolResp');
-					//if(()&&($AAScolResp=="yes")) {
-					// On filtre plus haut: un compte scolarité n'a accès qu'aux élèves dont il est "responsable"
 					if($AAScolResp=="yes") {
 						$acces_anna="y";
 					}
@@ -518,8 +480,6 @@ Patientez pendant l'extraction des données... merci.
 				}
 				else {
 					$AACpeResp=getSettingValue('AACpeResp');
-					//if(()&&($AACpeResp=="yes")) {
-					// On filtre plus haut: un compte cpe n'a accès qu'aux élèves dont il est "responsable"
 					if($AACpeResp=="yes") {
 						$acces_anna="y";
 					}
@@ -607,22 +567,8 @@ Patientez pendant l'extraction des données... merci.
 				}
 				else {
 					$GepiAccesReleveProfTousEleves=getSettingValue('GepiAccesReleveProfTousEleves');
-					//echo "\$GepiAccesReleveProfTousEleves=$GepiAccesReleveProfTousEleves<br />";
 					if($GepiAccesReleveProfTousEleves=='yes') {
-						/*
-						$sql="SELECT 1=1 FROM j_eleves_classes jec,
-											j_groupes_classes jgc,
-											j_groupes_professeurs jgp
-										WHERE jec.login='".$ele_login."' AND
-												jec.id_classe=jgc.id_classe AND
-												jgc.id_groupe=jgp.id_groupe AND
-												jgp.login='".$_SESSION['login']."';";
-						//echo "$sql<br />";
-						$test_eleve_classe_prof=mysql_query($sql);
-
-						if(mysql_num_rows($test_eleve_classe_prof)>0) {
-						*/
-
+						
 						if($eleve_classe_prof=='y') {
 							$acces_releves="y";
 							//$eleve_classe_prof="y";
@@ -630,24 +576,11 @@ Patientez pendant l'extraction des données... merci.
 					}
 
 					if($acces_releves=='n') {
-						//echo "\$GepiAccesReleveProf=$GepiAccesReleveProf<br />";
 						$GepiAccesReleveProf=getSettingValue('GepiAccesReleveProf');
 						if($GepiAccesReleveProf=='yes') {
-							/*
-							$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
-												j_groupes_professeurs jgp
-											WHERE jeg.login='".$ele_login."' AND
-													jeg.id_groupe=jgp.id_groupe AND
-													jgp.login='".$_SESSION['login']."';";
-							//echo "$sql<br />";
-							$test_eleve_groupe_prof=mysql_query($sql);
-
-							if(mysql_num_rows($test_eleve_groupe_prof)>0) {
-							*/
 
 							if($eleve_groupe_prof=='y') {
 								$acces_releves="y";
-								//$eleve_groupe_prof="y";
 							}
 						}
 					}
@@ -662,9 +595,6 @@ Patientez pendant l'extraction des données... merci.
 				(($eleve_groupe_prof=="y")&&(mb_substr(getSettingValue('visuDiscProfGroupes'),0,1)=='y'))) {
 				$acces_discipline="y";
 			}
-
-
-			//echo "\$acces_releves=$acces_releves<br />";
 
 			// Contrôle de l'accès du prof aux bulletins:
 			$GepiAccesBulletinSimplePP=getSettingValue('GepiAccesBulletinSimplePP');
@@ -684,19 +614,6 @@ Patientez pendant l'extraction des données... merci.
 							$acces_bulletins="y";
 						}
 						else {
-							/*
-							$sql="SELECT 1=1 FROM j_eleves_classes jec,
-												j_groupes_classes jgc,
-												j_groupes_professeurs jgp
-											WHERE jec.login='".$ele_login."' AND
-													jec.id_classe=jgc.id_classe AND
-													jgc.id_groupe=jgp.id_groupe AND
-													jgp.login='".$_SESSION['login']."';";
-							//echo "$sql<br />";
-							$test=mysql_query($sql);
-
-							if(mysql_num_rows($test)>0) {
-							*/
 							if($eleve_classe_prof=='y') {
 								$acces_bulletins="y";
 							}
@@ -710,17 +627,6 @@ Patientez pendant l'extraction des données... merci.
 								$acces_bulletins="y";
 							}
 							else {
-								/*
-								$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
-													j_groupes_professeurs jgp
-												WHERE jeg.login='".$ele_login."' AND
-														jeg.id_groupe=jgp.id_groupe AND
-														jgp.login='".$_SESSION['login']."';";
-								//echo "$sql<br />";
-								$test=mysql_query($sql);
-
-								if(mysql_num_rows($test)>0) {
-								*/
 								if($eleve_groupe_prof=='y') {
 									$acces_bulletins="y";
 								}
@@ -743,19 +649,6 @@ Patientez pendant l'extraction des données... merci.
 							$acces_anna="y";
 						}
 						else {
-							/*
-							$sql="SELECT 1=1 FROM j_eleves_classes jec,
-												j_groupes_classes jgc,
-												j_groupes_professeurs jgp
-											WHERE jec.login='".$ele_login."' AND
-													jec.id_classe=jgc.id_classe AND
-													jgc.id_groupe=jgp.id_groupe AND
-													jgp.login='".$_SESSION['login']."';";
-							//echo "$sql<br />";
-							$test=mysql_query($sql);
-
-							if(mysql_num_rows($test)>0) {
-							*/
 							if($eleve_classe_prof=='y') {
 								$acces_anna="y";
 							}
@@ -768,17 +661,6 @@ Patientez pendant l'extraction des données... merci.
 								$acces_anna="y";
 							}
 							else {
-								/*
-								$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
-													j_groupes_professeurs jgp
-												WHERE jeg.login='".$ele_login."' AND
-														jeg.id_groupe=jgp.id_groupe AND
-														jgp.login='".$_SESSION['login']."';";
-								//echo "$sql<br />";
-								$test=mysql_query($sql);
-
-								if(mysql_num_rows($test)>0) {
-								*/
 								if($eleve_groupe_prof=='y') {
 									$acces_anna="y";
 								}
@@ -862,8 +744,6 @@ Patientez pendant l'extraction des données... merci.
 
 		// Photo si module trombino actif
 		$active_module_trombinoscopes=getSettingValue("active_module_trombinoscopes");
-		//$bull_photo_largeur_max=getSettingValue("bull_photo_largeur_max") ? getSettingValue("bull_photo_largeur_max") : 100;
-		//$bull_photo_hauteur_max=getSettingValue("bull_photo_hauteur_max") ? getSettingValue("bull_photo_hauteur_max") : 100;
 		$photo_largeur_max=150;
 		$photo_hauteur_max=150;
 
@@ -875,33 +755,6 @@ Patientez pendant l'extraction des données... merci.
 		$p_releve_margin=getSettingValue("p_releve_margin") ? getSettingValue("p_releve_margin") : "";
 		$releve_textsize=getSettingValue("releve_textsize") ? getSettingValue("releve_textsize") : 10;
 		$releve_titlesize=getSettingValue("releve_titlesize") ? getSettingValue("releve_titlesize") : 16;
-/*
-		echo "<style type='text/css'>
-	.releve_grand {
-		color: #000000;
-		font-size: ".$releve_titlesize."pt;
-		font-style: normal;
-	}
-
-	.releve {
-		color: #000000;
-		font-size: ".$releve_textsize."pt;
-		font-style: normal;\n";
-		if($p_releve_margin!=""){
-			echo "      margin-top: ".$p_releve_margin."pt;\n";
-			echo "      margin-bottom: ".$p_releve_margin."pt;\n";
-		}
-		echo "}\n";
-
-		echo "td.releve_empty{
-		width:auto;
-		padding-right: 20%;
-	}
-
-	.boireaus td {
-		text-align:left;
-	}\n";
-		*/
 
 		$active_cahiers_texte=getSettingValue("active_cahiers_texte") ? getSettingValue("active_cahiers_texte") : "n";
 
@@ -1009,8 +862,6 @@ Patientez pendant l'extraction des données... merci.
 
 
 		// Bibliothèque de fonctions:
-		//include("visu_ele_func.lib.php");
-		//include("$gepiPath/eleves/visu_ele_func.lib.php");
 		include("../eleves/visu_ele_func.lib.php");
 
 		// On extrait un tableau de l'ensemble des infos sur l'élève (bulletins, relevés de notes,... inclus)
@@ -1020,12 +871,6 @@ Patientez pendant l'extraction des données... merci.
 	document.getElementById('patience').style.display='none';
 </script>\n";
 
-		/*
-		// Initialisation
-		if(!isset($onglet)) {
-			$onglet="eleve";
-		}
-		*/
 		//====================================
 		// Onglet Informations générales sur l'élève
 		echo "<div id='t_eleve' class='t_onglet' style='";
@@ -2130,7 +1975,6 @@ Patientez pendant l'extraction des données... merci.
 		// Onglet ABSENCES
 		//========================
 
-		// $tab_ele['absences']
 
 		if($acces_absences=="y") {
 			echo "<div id='absences' class='onglet' style='";
@@ -2144,7 +1988,8 @@ Patientez pendant l'extraction des données... merci.
 				    echo "<p>Aucun bilan d'absences n'est enregistré.</p>\n";
 			    }
 			    else {
-				    echo "<table class='boireaus' summary='Bilan des absences'>\n";
+				    echo "<table class='boireaus'>\n";
+				    echo "<caption>'Bilan des absences'</caption>\n";
 				    echo "<tr>\n";
 				    echo "<th>Période</th>\n";
 				    echo "<th>Nombre d'absences</th>\n";
@@ -2203,7 +2048,8 @@ Patientez pendant l'extraction des données... merci.
 			    require_once("../lib/initialisationsPropel.inc.php");
 			    $eleve = EleveQuery::create()->findOneByLogin($ele_login);
 
-			    echo "<table class='boireaus' summary='Bilan des absences'>\n";
+			    echo "<table class='boireaus'>\n";
+				echo "<caption>Bilan des absences</caption>\n";
 			    echo "<tr>\n";
 			    echo "<th>Période</th>\n";
 			    echo "<th>Nombre d'absences<br/>(1/2 journées)</th>\n";
@@ -2213,7 +2059,6 @@ Patientez pendant l'extraction des données... merci.
 			    echo "</tr>\n";
 			    $alt=1;
 			    foreach($eleve->getPeriodeNotes() as $periode_note) {
-				    //$periode_note = new PeriodeNote();
 				    if ($periode_note->getDateDebut() == null) {
 					//periode non commencee
 					continue;

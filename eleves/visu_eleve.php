@@ -44,10 +44,6 @@ if ($resultat_session == "c") {
     die();
 }
 
-// Sécurité
-// SQL : INSERT INTO droits VALUES ( '/eleves/visu_eleve.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Consultation_d_un_eleve', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/eleves/visu_eleve.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Consultation_d_un_eleve', '');";
-//
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
@@ -65,8 +61,6 @@ $onglet=isset($_POST['onglet']) ? $_POST['onglet'] : (isset($_GET['onglet']) ? $
 $onglet2=isset($_POST['onglet2']) ? $_POST['onglet2'] : (isset($_GET['onglet2']) ? $_GET['onglet2'] : NULL);
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 
-//$date_debut_disc=isset($_POST['date_debut_disc']) ? $_POST['date_debut_disc'] : "";
-//$date_fin_disc=isset($_POST['date_fin_disc']) ? $_POST['date_fin_disc'] : "";
 
 $annee = strftime("%Y");
 $mois = strftime("%m");
