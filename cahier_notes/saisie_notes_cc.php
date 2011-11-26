@@ -265,11 +265,11 @@ if (isset($_POST['is_posted'])) {
 	//for($i=0;$i<count($log_eleve);$i++){
 	for($i=0;$i<$indice_max_log_eleve;$i++){
 		if(isset($log_eleve[$i])) {
-			// La période est-elle ouverte?
+			// La période est-elle ouverte? On s'en fiche: les évaluations cumul peuvent être à cheval sur plusieurs périodes avant de donner lieu à une note dans le carnet de notes
 			$reg_eleve_login=$log_eleve[$i];
 			if(isset($current_group["eleves"][$periode_num]["users"][$reg_eleve_login]["classe"])){
 				$id_classe = $current_group["eleves"][$periode_num]["users"][$reg_eleve_login]["classe"];
-				if ($current_group["classe"]["ver_periode"][$id_classe][$periode_num] == "N") {
+				//if ($current_group["classe"]["ver_periode"][$id_classe][$periode_num] == "N") {
 					$note=$note_eleve[$i];
 					$elev_statut='';
 
@@ -331,7 +331,7 @@ if (isset($_POST['is_posted'])) {
 						$register = mysql_query("INSERT INTO cc_notes_eval SET login='".$reg_eleve_login."', id_eval='".$id_eval."',note='".$note."',statut='".$elev_statut."',comment='".$comment."'");
 					}
 
-				}
+				//}
 			}
 		}
 	}
