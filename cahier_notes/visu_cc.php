@@ -577,10 +577,10 @@ echo "</p>\n";
 
 echo "<h2 class='noprint'>$nom_cc n°$id_dev&nbsp;: $nom_court_dev (<i>$nom_complet_dev</i>)</h2>\n";
 
+$cc_eval=array();
 $sql="SELECT * FROM cc_eval WHERE id_dev='$id_dev' ORDER BY date, nom_court;";
 $res2=mysql_query($sql);
 if(mysql_num_rows($res2)>0) {
-	$cc_eval=array();
 	$i=0;
 	while($lig2=mysql_fetch_object($res2)) {
 		$cc_eval[$i]=array();
@@ -609,6 +609,11 @@ if(mysql_num_rows($res2)>0) {
 		$i++;
 	}
 	echo "</ul>\n";
+}
+else {
+	echo "<p>Aucune évaluation n'a encore été définie.</p>";
+	require("../lib/footer.inc.php");
+	die();
 }
 
 $nb_eval=$i;
