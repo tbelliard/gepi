@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -464,7 +464,7 @@ while ($i < $nombre_ligne) {
 				if($temoin!="") {
 					echo $temoin;
 					if($_SESSION['statut']=="administrateur") {
-						echo "<input type='hidden' name=".$id_groupe."_".$j." value='checked' />";
+						echo "<input type='hidden' name='".$id_groupe."_".$j."' value='y' />";
 					}
 					else {
 						echo "<img src='../images/enabled.png' width='15' height='15' alt='Inscrit' />";
@@ -515,7 +515,7 @@ while ($i < $nombre_ligne) {
 
 			echo "<td style='text-align:center'>\n";
 			if($_SESSION['statut']=="administrateur"){
-				echo "<input type=checkbox id=case".$i."_".$j." name=".$id_groupe."_".$j." onchange='changement();' \n";
+				echo "<input type='checkbox' id='case".$i."_".$j."' name='".$id_groupe."_".$j."' onchange='changement();' value='y' ";
 				if (mysql_num_rows($test)>0) {
 					echo "checked ";
 				}
@@ -593,6 +593,8 @@ while ($i < $nombre_ligne) {
 	echo "</tr>\n";
 	$i++;
 }
+
+
 echo "</table>\n";
 
 
