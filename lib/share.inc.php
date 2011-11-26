@@ -4999,4 +4999,18 @@ function get_timestamp_jour_suivant($timestamp_today) {
 
 	return $demain;
 }
+
+/**
+ * Retourne la chaine nettoyee des retours à la ligne en trop
+ *
+ * @param string $texte Texte à nettoyer
+ * @return string Texte nettoyé
+ */
+function netoyage_retours_ligne_surnumeraires($texte) {
+	$retour=preg_replace('/(\\\r\\\n)+/',"\r\n",$texte);
+	$retour=preg_replace('/(\\\r)+/',"\r",$retour);
+	$retour=preg_replace('/(\\\n)+/',"\n",$retour);
+
+	return $retour;
+}
 ?>
