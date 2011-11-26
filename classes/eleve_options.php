@@ -356,6 +356,11 @@ while ($j < $nb_periode) {
 		//echo "<input type='button' name='decoche_col_$j' value='D' onClick='modif_case($j,\"col\",false)' />\n";
 		echo "<a href='javascript:modif_case($j,\"col\",true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
 		echo "<a href='javascript:modif_case($j,\"col\",false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+
+		if($j>1) {
+			echo "/<a href=\"javascript:copieEnseignementsPeriode1(".$j.")\"><img src='../images/icons/copy-16.png' width='16' height='16' alt='Copier les affectations de la première période' title='Copier les affectations de la première période' /></a>";
+		}
+
 	}
 	echo "</th>\n";
 
@@ -485,21 +490,21 @@ while ($i < $nombre_ligne) {
 
 				// Test sur la présence de notes dans cn ou de notes/app sur bulletin
 				if (!test_before_eleve_removal($login_eleve, $id_groupe, $j)) {
-					echo "<img id='img_bull_non_vide_".$j."_".$i."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
+					echo "<img id='img_bull_non_vide_".$i."_".$j."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
 				}
 	
 				$sql="SELECT DISTINCT id_devoir FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '".$login_eleve."' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '".$id_groupe."' AND ccn.periode = '".$j."')";
 				$test_cn=mysql_query($sql);
 				$nb_notes_cn=mysql_num_rows($test_cn);
 				if($nb_notes_cn>0) {
-					echo "<img id='img_cn_non_vide_".$j."_".$i."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' />";
+					echo "<img id='img_cn_non_vide_".$i."_".$j."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' />";
 					//echo "$sql<br />";
 				}
 
 				//echo "A".$tab_sig[$j][$id_groupe]."<br />";
 				if((isset($tab_sig[$j]))&&(isset($tab_sig[$j][$id_groupe]))) {
 					$info_erreur=$tab_sig[$j][$id_groupe];
-					echo "<img id='img_erreur_affect_".$j."_".$i."' src='../images/icons/flag2.gif' width='17' height='18' title='".$info_erreur."' alt='".$info_erreur."' />";
+					echo "<img id='img_erreur_affect_".$i."_".$j."' src='../images/icons/flag2.gif' width='17' height='18' title='".$info_erreur."' alt='".$info_erreur."' />";
 				}
 
 				echo "</td>\n";
@@ -532,20 +537,20 @@ while ($i < $nombre_ligne) {
 
 			// Test sur la présence de notes dans cn ou de notes/app sur bulletin
 			if (!test_before_eleve_removal($login_eleve, $id_groupe, $j)) {
-				echo "<img id='img_bull_non_vide_".$j."_".$i."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
+				echo "<img id='img_bull_non_vide_".$i."_".$j."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
 			}
 
 			$sql="SELECT DISTINCT id_devoir FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '".$login_eleve."' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '".$id_groupe."' AND ccn.periode = '".$j."')";
 			$test_cn=mysql_query($sql);
 			$nb_notes_cn=mysql_num_rows($test_cn);
 			if($nb_notes_cn>0) {
-				echo "<img id='img_cn_non_vide_".$j."_".$i."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' />";
+				echo "<img id='img_cn_non_vide_".$i."_".$j."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' />";
 				//echo "$sql<br />";
 			}
 
 			if((isset($tab_sig[$j]))&&(isset($tab_sig[$j][$id_groupe]))) {
 				$info_erreur=$tab_sig[$j][$id_groupe];
-				echo "<img id='img_erreur_affect_".$j."_".$i."' src='../images/icons/flag2.gif' width='17' height='18' title='".$info_erreur."' alt='".$info_erreur."' />";
+				echo "<img id='img_erreur_affect_".$i."_".$j."' src='../images/icons/flag2.gif' width='17' height='18' title='".$info_erreur."' alt='".$info_erreur."' />";
 			}
 
 			echo "</td>\n";
@@ -594,6 +599,23 @@ while ($i < $nombre_ligne) {
 	$i++;
 }
 
+echo "<tr>\n";
+echo "<th>\n";
+echo "&nbsp;";
+echo "</th>\n";
+$j = 1;
+while ($j < $nb_periode) {
+
+	echo "<th>\n";
+	echo "<a href='javascript:DecocheColonne_si_bull_et_cn_vide($j)'><img src='../images/icons/wizard.png' width='16' height='16' alt='Décocher les élèves sans note/app sur les bulletin et carnet de notes' title='Décocher les élèves sans note/app sur les bulletin et carnet de notes' /></a>\n";
+	echo "</th>\n";
+
+	$j++;
+}
+echo "<th>\n";
+echo "&nbsp;";
+echo "</th>\n";
+echo "</tr>\n";
 
 echo "</table>\n";
 
@@ -601,6 +623,23 @@ echo "</table>\n";
 //============================================
 // AJOUT: boireaus
 echo "<script type='text/javascript' language='javascript'>
+	function DecocheColonne_si_bull_et_cn_vide(i) {
+		for (var ki=0;ki<$nombre_ligne;ki++) {
+			if((document.getElementById('case'+ki+'_'+i))&&(!document.getElementById('img_bull_non_vide_'+ki+'_'+i))&&(!document.getElementById('img_cn_non_vide_'+ki+'_'+i))) {
+				document.getElementById('case'+ki+'_'+i).checked = false;
+			}
+		}
+		changement();
+	}
+
+	function copieEnseignementsPeriode1(num_periode) {
+		for (var ki=0;ki<$nombre_ligne;ki++) {
+			if((document.getElementById('case'+ki+'_1'))&&(document.getElementById('case'+ki+'_'+num_periode))) {
+				document.getElementById('case'+ki+'_'+num_periode).checked=document.getElementById('case'+ki+'_1').checked;
+			}
+		}
+	}
+
 	function modif_case(rang,type,statut){
 		// type: col ou lig
 		// rang: le numéro de la colonne ou de la ligne
