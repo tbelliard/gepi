@@ -97,7 +97,7 @@ if ($id_dev)  {
 		$id_cn_dev = mysql_result($query, 0, 'id_cn_dev');
 		$nom_court = mysql_result($query, 0, 'nom_court');
 		$nom_complet = mysql_result($query, 0, 'nom_complet');
-		$description = mysql_result($query, 0, 'description');
+		$description = netoyage_retours_ligne_surnumeraires(mysql_result($query, 0, 'description'));
 	    $precision = mysql_result($query, 0, 'arrondir');
 	}
 	else {
