@@ -1258,7 +1258,7 @@ if (isset($action) and ($action == 'dump'))  {
 			// La sauvegarde est terminée. On compresse le fichier
 			$compress = gzip($fichier, 9);
 			if ($compress) {
-				$filetype = ".sql.gz";
+				$filetype = "sql.gz";
 			}
 			@unlink($fichier);
 
@@ -1282,12 +1282,14 @@ if (isset($action) and ($action == 'dump'))  {
 			}
 			closedir($handle);
 			rsort($tab_file);
-
+                        
+                        $nom_fichier=str_replace($path,'',$fichier);
+                        $nom_fichier=str_replace('.sql','',$nom_fichier);
 			$fileid=null;
 			if ($n > 0) {
 				for($m=0;$m<count($tab_file);$m++){
 					//echo "\$tab_file[$m]=$tab_file[$m]<br />";
-					if($tab_file[$m]=="$nomsql.$filetype"){
+					if($tab_file[$m]==$nom_fichier.'.'.$filetype){
 						$fileid=$m;
 					}
 				}
