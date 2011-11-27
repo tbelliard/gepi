@@ -516,7 +516,7 @@ while ($i < $nombre_ligne) {
 
 			echo "<td style='text-align:center'>\n";
 			if($_SESSION['statut']=="administrateur"){
-				echo "<input type=checkbox id=case".$i."_".$j." name=".$id_groupe."_".$j." onchange='changement();' \n";
+				echo "<input type=checkbox id=case".$i."_".$j." name=".$id_groupe."_".$j." onchange='changement();' ";
 				if (mysql_num_rows($test)>0) {
 					echo "checked ";
 				}
