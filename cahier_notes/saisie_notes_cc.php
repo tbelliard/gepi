@@ -670,7 +670,9 @@ foreach ($liste_eleves as $eleve) {
 	"</td>\n";
 
 	echo "<td>\n";
-	echo "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='comment_eleve[$i]' rows='1' cols='60' class='wrap' onchange=\"changement()\">";
+	echo "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='comment_eleve[$i]' rows='1' cols='60' class='wrap' onfocus=\"javascript:this.select()";
+	if($elenoet!="") {echo ";affiche_photo('".nom_photo($elenoet)."','".addslashes(strtoupper($eleve_nom[$i])." ".ucfirst(strtolower($eleve_prenom[$i])))."')";}
+	echo "\" onchange=\"changement()\">";
 	if(isset($commentaire[$eleve_login[$i]])) {echo $commentaire[$eleve_login[$i]];}
 	echo "</textarea>\n";
 	"</td>\n";
