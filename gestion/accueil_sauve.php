@@ -1237,10 +1237,12 @@ if (isset($action) and ($action == 'dump'))  {
             <br/>A la fin de la sauvegarde, Gepi vous proposera automatiquement de télécharger le fichier.
             <br/><br/>Progression ".$percent."%</td></tr>\n<tr><td>\n<table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table>\n</td></tr>\n</table>\n</div>\n";
         }
-        if (ob_get_contents()) {
-            ob_flush();
+        if ($percent != 100) {
+            if (ob_get_contents()) {
+                ob_flush();
+            }
+            flush();
         }
-        flush();
         if ($offsettable>=0){
             if (backupMySql($dbDb,$fichier,$duree,$rowlimit)) {
                 if (isset($debug)&&$debug!='') {
