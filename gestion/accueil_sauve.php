@@ -825,9 +825,13 @@ function get_content($db, $table,$from,$limit) {
               while($rowdata = mysql_fetch_row($resData)) {
                   $lesDonnees = "";
                   for ($mp = 0; $mp < $num_fields; $mp++) {
-                  $lesDonnees .= "'" . str_replace($search, $replace, traitement_magic_quotes($rowdata[$mp])) . "'";
+                      if (is_null($rowdata[$mp])) {
+                          $lesDonnees .= "NULL";
+                          } else {
+                              $lesDonnees .= "'" . str_replace($search, $replace, traitement_magic_quotes($rowdata[$mp])) . "'";
+                          }
                   //on ajoute à la fin une virgule si nécessaire
-                      if ($mp<$num_fields-1) $lesDonnees .= ", ";
+                      if ($mp<$num_fields-1) $lesDonnees .= ",";
                   }
                   $lesDonnees = "$sInsert($lesDonnees);\n";
                   $def .="$lesDonnees";
