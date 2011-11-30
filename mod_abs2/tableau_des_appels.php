@@ -113,7 +113,7 @@ include('menu_bilans.inc.php');
             </td>    
         </tr>
         <tr>
-            <td style="background-color:green;">Appel fait.
+            <td style="background-color:#9f9;">Appel fait.
             </td>
         </tr>
     </table>    
@@ -286,7 +286,7 @@ foreach($classe_col as $classe){
 	if ($appel_manquant) {
 	    echo '<td style="min-width: 350px;">';
 	} else {
-	    echo '<td style="min-width: 350px; background-color:green">';
+	    echo '<td style="min-width: 350px; background-color:#9f9">';
 	}
 	echo $echo_str;
 
