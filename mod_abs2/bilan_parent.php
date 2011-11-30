@@ -241,7 +241,7 @@ include('menu_bilans.inc.php');
             } else {
               $priorite = 5;
               foreach ($abs_col as $abs) {
-                if (get_priorite($abs) < $priorite) {
+                if ($abs->getTraitee() && get_priorite($abs) < $priorite) {
                   $priorite = get_priorite($abs);
                 }
               }
@@ -384,7 +384,7 @@ include('menu_bilans.inc.php');
               } else {
                 $priorite = 5;
                 foreach ($abs_col as $abs) {
-                  if (get_priorite($abs) < $priorite) {
+                  if ($abs->getTraitee() && get_priorite($abs) < $priorite) {
                     $priorite = get_priorite($abs);
                   }
                 }
