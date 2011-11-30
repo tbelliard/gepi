@@ -709,6 +709,23 @@ foreach($eleve_col as $eleve) {
 					    }
 					}
 
+					//on va afficher des renseignements sur les heures précédente
+					$traitee = false;
+					$hover = 'traitements - ';
+                                        foreach ($absences_du_creneau as $abs_saisie) {
+                                            if ($abs_saisie->getTraitee() && $abs_saisie->getManquementObligationPresence()) {
+                                                $traitee = true;
+                                                $txt = $abs_saisie->getTypesDescription();
+                                                if ($txt != '') {
+                                                    $hover .= $abs_saisie->getTypesDescription().'; ';
+                                                }
+                                            }
+                                        }
+                                        if ($traitee) {
+                                            echo '&nbsp<span title="'.htmlspecialchars($hover).'">t</span>';
+                                        }
+
+
 					if ($nb_creneau_a_saisir > 0) {
 					    $i = $i + $nb_creneau_a_saisir - 1;
 					    //le message d'erreur de l'enregistrement precedent provient du fichier enregistrement_saisies_groupe.php
