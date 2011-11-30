@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -108,6 +108,10 @@ if (isset($_POST['is_posted'])) {
     } else {
         $msg .= "<br/>Mise à jour effectuée.";
     }
+}
+
+if(isset($_GET['msg'])) {
+	$_GET['msg']=html_entity_decode($_GET['msg']);
 }
 
 $themessage = 'Des modifications ont été effectuées. Voulez-vous vraiment quitter sans enregistrer ?';

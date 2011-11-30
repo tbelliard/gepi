@@ -466,6 +466,8 @@ function get_nom_class_from_id($id){
 
 									// PARTIE <ELEVES>
 									$i=-1;
+									// Pour les fichiers XML bricoles sans les sections precedentes:
+									$cpt=0;
 									while($cpt<count($ligne)){
 										if(strstr($ligne[$cpt],"<eleve ")){
 											$i++;
@@ -496,6 +498,12 @@ function get_nom_class_from_id($id){
 										}
 										$cpt++;
 									}
+
+									/*
+									echo "<pre>";
+									print_r($eleves);
+									echo "</pre>";
+									*/
 
 									/*
 									echo "<table border='1'>";
@@ -573,6 +581,7 @@ function get_nom_class_from_id($id){
 											// Est-ce que l'élève fait bien partie d'une des classes importées pour la période importée?
 											//$sql="SELECT 1=1 FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND e.no_gep='".$eleves[$i]['elenoet']."' AND periode='$num_periode' AND $chaine_liste_classes;";
 											$sql="SELECT 1=1 FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND (e.elenoet='".$eleves[$i]['elenoet']."' OR e.elenoet='0".$eleves[$i]['elenoet']."') AND periode='$num_periode' AND $chaine_liste_classes;";
+											//echo "$sql<br />";
 											//echo "<!--\n$sql\n-->\n";
 											$test=mysql_query($sql);
 
@@ -587,6 +596,7 @@ function get_nom_class_from_id($id){
 												$sql="SELECT e.login,e.nom,e.prenom,e.elenoet
 															FROM eleves e
 															WHERE (e.elenoet='".$eleves[$i]['elenoet']."' OR e.elenoet='0".$eleves[$i]['elenoet']."')";
+												//echo "$sql<br />";
 												//echo "<!--\n$sql\n-->\n";
 												$res1=mysql_query($sql);
 												if(mysql_num_rows($res1)==0){
@@ -604,6 +614,7 @@ function get_nom_class_from_id($id){
 													// Le CPE a-t-il bien cet élève:
 													//$sql="SELECT 1=1 FROM j_eleves_cpe jec, eleves e WHERE jec.e_login=e.login AND jec.cpe_login='".$_SESSION['login']."'";
 													$sql="SELECT 1=1 FROM j_eleves_cpe jec WHERE jec.e_login='$lig1->login' AND jec.cpe_login='".$_SESSION['login']."'";
+													//echo "$sql<br />";
 													//echo "<!--\n$sql\n-->\n";
 													$test=mysql_query($sql);
 
@@ -693,6 +704,7 @@ function get_nom_class_from_id($id){
 														}
 
 														if($temoin_erreur!="y") {
+															//echo "$sql_tmp_abs<br />";
 															$insert_tmp=mysql_query($sql_tmp_abs);
 														}
 
