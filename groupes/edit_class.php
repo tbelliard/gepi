@@ -789,8 +789,10 @@ for($i=0;$i<10;$i++){
 		} else {
 			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=regroupement'>";
 		}
-		echo htmlentities($group["description"]) . "</a></b>";
-		echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".htmlentities($group["description"])."\" />\n";
+		//echo htmlentities($group["description"]) . "</a></b>";
+		//echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".htmlentities($group["description"])."\" />\n";
+		echo $group["description"] . "</a></b>";
+		echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".$group["description"]."\" />\n";
 
 		$j= 1;
 		if ($total > 1) {
@@ -901,12 +903,12 @@ for($i=0;$i<10;$i++){
 		for($loop=0;$loop<count($tab_domaines);$loop++) {
 			if(!in_array($current_group["id"],$invisibilite_groupe[$tab_domaines[$loop]])) {
 				echo "<td>";
-				echo "<input type='checkbox' name='visibilite_groupe_".$tab_domaines[$loop]."[]' value='".$current_group["id"]."' checked />\n";
+				echo "<input type='checkbox' name='visibilite_groupe_".$tab_domaines[$loop]."[]' value='".$current_group["id"]."' checked title='Visibilité ".$tab_domaines[$loop]."' />\n";
 				echo "</td>\n";
 			}
 			else {
 				echo "<td style='background-color: grey;'>";
-				echo "<input type='checkbox' name='visibilite_groupe_".$tab_domaines[$loop]."[]' value='".$current_group["id"]."' />\n";
+				echo "<input type='checkbox' name='visibilite_groupe_".$tab_domaines[$loop]."[]' value='".$current_group["id"]."' title='Visibilité ".$tab_domaines[$loop]."' />\n";
 
 				$tab_visib_dom[$tab_domaines_sigle[$loop]][]=$cpt_grp;
 
