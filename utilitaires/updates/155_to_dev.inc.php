@@ -27,7 +27,7 @@ $result .= "<h3 class='titreMaJ'>Mise à jour vers la version courante :</h3>";
 
 require 'updates/ISO_to_UTF8.inc.php';
 $result.="<br />";
-$result.="<strong>Ajout des accents dans la table utilisateurs</strong>";
+$result.="<strong>Ajout des accents dans la table etablissement</strong>";
 $result.="<br />";
 
 $query = mysql_query("UPDATE `etablissements` SET `niveau` ='collège' WHERE `niveau` = 'college'");
