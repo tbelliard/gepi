@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -508,6 +508,10 @@ elseif (($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre')) {
 	if(mysql_num_rows($test)>0) {
 		echo " | <a href='incidents_sans_protagonistes.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Incidents sans protagonistes</a>\n";
 	}
+}
+
+if((file_exists('mod_discipline_extraction_ooo.php'))&&(($_SESSION['statut']=='cpe')||($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite'))) {
+	echo " | <a href='mod_discipline_extraction_ooo.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Export ODT</a>\n";
 }
 
 if(!isset($id_incident)) {
