@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -2351,11 +2351,13 @@ if($temoin_note_sup10=='y') {
 
 if($temoin_note_bonus=='y') {
 	if($temoin_note_bonus==1) {
-		echo "<p>Il y a une matière à bonus&nbsp;: On ne compte que les points au-dessus de 10 coefficientés, mais sans que les coefficient soit pris en compte dans le total des coefficients.</p>\n";
+		echo "<p>Il y a une matière à bonus&nbsp;: ";
 	}
 	else {
-		echo "<p>Il y a ".$temoin_note_bonus." matières à bonus&nbsp;: On ne compte que les points au-dessus de 10 coefficientés, mais sans que les coefficient soit pris en compte dans le total des coefficients.</p>\n";
+		echo "<p>Il y a ".$temoin_note_bonus." matières à bonus&nbsp;: ";
 	}
+
+	echo "seuls les points au-dessus de 10/20 comptent (<em>éventuellement pondérés</em>), mais leur coefficient n'est pas intégré dans le total des coefficients. (<em>règle appliquée aux options du Baccalauréat, par ex.</em>)'</p>\n";
 }
 
 if($vtn_coloriser_resultats=='y') {
