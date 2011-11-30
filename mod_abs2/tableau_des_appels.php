@@ -309,16 +309,26 @@ foreach($classe_col as $classe){
         }
         if($absenceSaisie->getManquementObligationPresenceSpecifie_NON_PRECISE()){
             continue;
-        }
-        echo "<a style='color: ".$absenceSaisie->getColor().";'  href='visu_saisie.php?id_saisie=".$absenceSaisie->getPrimaryKey()."'>";
+        }        
         if ($absenceSaisie->getEleve()->getIdEleve() !== $current_eleve) {
             if($current_eleve !=null) echo '<br/>';
             $num_saisie=1;
+               if ($utilisateur->getAccesFicheEleve($absenceSaisie->getEleve())) {
+                    echo "<a style='color: ".$absenceSaisie->getColor().";' href='../eleves/visu_eleve.php?ele_login=" . $absenceSaisie->getEleve()->getLogin() . "' target='_blank'>";
                     echo $absenceSaisie->getEleve()->getCivilite() . ' ' . $absenceSaisie->getEleve()->getNom() . ' ' . $absenceSaisie->getEleve()->getPrenom().' : ';
+                    echo "</a>";
+                } else {
+                    echo $absenceSaisie->getEleve()->getCivilite() . ' ' . $absenceSaisie->getEleve()->getNom() . ' ' . $absenceSaisie->getEleve()->getPrenom().' : ';
+                }
+         }else{
+                 echo'-';
+             } 
+            echo "<a style='color: ".$absenceSaisie->getColor().";'  href='visu_saisie.php?id_saisie=".$absenceSaisie->getPrimaryKey()."'>";             
+	    if($num_saisie==1){
+                echo ('Saisie '.$num_saisie); 
             }else{
-                echo'-';
-            }        
-	    echo ($num_saisie);
+                echo ($num_saisie);
+            }           
 	    echo "</a>";	    
 	    $current_eleve=$absenceSaisie->getEleve()->getIdEleve();
             $num_saisie++;
