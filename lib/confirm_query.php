@@ -390,6 +390,8 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $test_nb[] = "SELECT * FROM j_eleves_regime WHERE login ='$cible1'";
     $req[] = "DELETE FROM j_eleves_regime WHERE login ='$cible1'";
 
+	$nombre_req++;
+
 	$test_existence=mysql_query("SHOW TABLES LIKE 'j_signalement';");
 	if(mysql_num_rows($test_existence)>0){
 		$mess[] = "Table des signalements d'erreurs d'affectation";
@@ -399,6 +401,9 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 		$nombre_req++;
 	}
 
+	$mess[] = "Table jointure élève/cpe :";
+	$test_nb[] = "SELECT * FROM j_eleves_cpe WHERE e_login ='$cible1'";
+	$req[] = "DELETE FROM j_eleves_cpe WHERE e_login ='$cible1'";
 	$nombre_req++;
 
     break;
