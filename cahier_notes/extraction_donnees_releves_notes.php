@@ -428,7 +428,8 @@
 							"jgc.categorie_id = jmcc.categorie_id AND " .
 							"jgc.id_classe = '".$id_classe."' AND " .
 							"jgm.id_groupe = jgc.id_groupe AND " .
-							"m.matiere = jgm.id_matiere";
+							"m.matiere = jgm.id_matiere" .
+							" AND jgc.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='cahier_notes' AND visible='n')";
 
 							if($choix_periode!="intervalle") {$sql.=" AND jeg.periode='$periode_num'";}
 
@@ -441,14 +442,15 @@
 							"jeg.login = '" . $current_eleve_login[$i] . "' AND " .
 							"jgc.id_groupe = jeg.id_groupe AND " .
 							"jgc.id_classe = '".$id_classe."' AND " .
-							"jgm.id_groupe = jgc.id_groupe";
+							"jgm.id_groupe = jgc.id_groupe" .
+							" AND jgc.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='cahier_notes' AND visible='n')";
 
 							if($choix_periode!="intervalle") {$sql.=" AND jeg.periode='$periode_num'";}
 
 							$sql.=") " .
 							"ORDER BY jgc.priorite,jgm.id_matiere";
 						}
-//echo "$sql<br />\n";
+						//echo "$sql<br />\n";
 						$appel_liste_groupes = mysql_query($sql);
 						$nombre_groupes = mysql_num_rows($appel_liste_groupes);
 

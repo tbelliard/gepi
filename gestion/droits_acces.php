@@ -2021,7 +2021,7 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 		 */
 $statutItem='responsable';
 $titreItem='active_absences_parents';
-$texteItem="a accès aux absences des ".$gepiSettings['denomination_eleves']." dont il est responsable";
+$texteItem="a accès aux absences des ".$gepiSettings['denomination_eleves']." dont il est responsable (affichage des saisies non traitées 4 heures après la création)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
