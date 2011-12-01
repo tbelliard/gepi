@@ -240,8 +240,10 @@ include('menu_bilans.inc.php');
       <?php
             } else {
               $priorite = 5;
+              $current_minus_4 = new DateTime();
+              $current_minus_4->modify('-4 hours');
               foreach ($abs_col as $abs) {
-                if ($abs->getTraitee() && get_priorite($abs) < $priorite) {
+                if (($abs->getTraitee() || $abs->getCreatedAt(null) < $current_minus_4) && get_priorite($abs) < $priorite) {
                   $priorite = get_priorite($abs);
                 }
               }
