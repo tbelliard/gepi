@@ -515,6 +515,18 @@ else {
 		//echo "<input type='hidden' name='cpt' value='$cpt' />\n";
 		echo "<p><input type='submit' name='is_posted' value='Enregistrer' /></p>\n";
 		echo "</form>\n";
+
+		echo "<p><a href='javascript:tout_vider()'>Vider toutes les notes et appréciations de cet(te) élève</a>.</p>\n";
+
+		echo "<script type='text/javascript'>
+	function tout_vider() {
+		if(confirm('Etes-vous sûr de vouloir vider toutes les notes et appreciations ?')) {
+			for(i=0;i<$num_id;i++) {
+				if(document.getElementById('n'+i)) {document.getElementById('n'+i).value='';}
+			}
+		}
+	}
+</script>\n";
 	}
 }
 require("../lib/footer.inc.php");
