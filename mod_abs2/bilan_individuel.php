@@ -119,6 +119,7 @@ if($dt_date_absence_eleve_debut->format("U")>$dt_date_absence_eleve_fin->format(
     $_SESSION['date_absence_eleve_fin'] = $dt_date_absence_eleve_fin->format('d/m/Y');
 }
 // fonction de formatage des dates de debut et de fin
+/*
 function getDateDescription($date_debut,$date_fin) {
 	    $message = '';
 	    if (strftime("%a %d/%m/%Y", $date_debut)==strftime("%a %d/%m/%Y", $date_fin)) {
@@ -137,6 +138,8 @@ function getDateDescription($date_debut,$date_fin) {
 	    }
 	    return $message;
 	}
+ */
+
 //paramétrage des options affichées en fonction du statut
 $affichage_liens=true;
 $affichage_commentaires_html=true;
@@ -740,7 +743,7 @@ foreach ($donnees as $id => $eleve) {
                 }
                 echo '<td class="'.$style.'">';
                 if($affichage_liens){
-                    echo '<a href="./liste_saisies_selection_traitement.php?saisies=' . serialize($value['saisies']) . '" target="_blank">' . getDateDescription($value['dates']['debut'], $value['dates']['fin']) . '<a>';
+                    echo '<a href="./liste_saisies_selection_traitement.php?saisies=' . serialize($value['saisies']) . '" target="_blank">' . getDateDescription($value['dates']['debut'], $value['dates']['fin']) . '</a>';
                 }else{
                     echo getDateDescription($value['dates']['debut'], $value['dates']['fin']) ;
                 }

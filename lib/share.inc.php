@@ -5013,4 +5013,30 @@ function netoyage_retours_ligne_surnumeraires($texte) {
 
 	return $retour;
 }
+
+/** fonction de formatage des dates de debut et de fin de saisie d'absence
+ *
+ * @param date $date_debut
+ * @param date $date_fin
+ * @return string Les dates formatées 
+ */
+function getDateDescription($date_debut,$date_fin) {
+	$message = '';
+	if (strftime("%a %d/%m/%Y", $date_debut)==strftime("%a %d/%m/%Y", $date_fin)) {
+	$message .= 'le ';
+	$message .= (strftime("%a %d/%m/%Y", $date_debut));
+	$message .= ' entre  ';
+	$message .= (strftime("%H:%M", $date_debut));
+	$message .= ' et ';
+	$message .= (strftime("%H:%M", $date_fin));
+
+	} else {
+	$message .= ' entre le ';
+	$message .= (strftime("%a %d/%m/%Y %H:%M", $date_debut));
+	$message .= ' et le ';
+	$message .= (strftime("%a %d/%m/%Y %H:%M", $date_fin));
+	}
+	return $message;
+}
+
 ?>

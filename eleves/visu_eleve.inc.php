@@ -2087,6 +2087,8 @@ Patientez pendant l'extraction des données... merci.
 				    echo "</tr>\n";
 			    }
 			    echo "</table>\n";
+				
+				include 'visu_eleve_abs2.inc.php';
 			}
 			echo "</div>\n";
 		}
