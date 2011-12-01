@@ -26,36 +26,6 @@
 $result .= "<h3 class='titreMaJ'>Mise à jour vers la version courante :</h3>";
 
 require 'updates/ISO_to_UTF8.inc.php';
-// Ajout des accents dans la table établissements : college, lycee, prive, ecole
-$result.="<br />";
-$result.="<strong>Ajout des accents dans la table etablissement</strong>";
-$result.="<br />";
-
-$query = mysql_query("UPDATE `etablissements` SET `niveau` ='collège' WHERE `niveau` = 'college'");
-if ($query) {
-$result .= msj_ok();
-} else {
-$result .= msj_erreur(mysql_error());
-}
-$query = mysql_query("UPDATE `etablissements` SET `niveau` ='lycée' WHERE `niveau` = 'lycee'");
-if ($query) {
-$result .= msj_ok();
-} else {
-$result .= msj_erreur(mysql_error());
-}
-$query = mysql_query("UPDATE `etablissements` SET `niveau` ='école' WHERE `niveau` = 'ecole'");
-if ($query) {
-$result .= msj_ok();
-} else {
-$result .= msj_erreur(mysql_error());
-}
-
-$query = mysql_query("UPDATE `etablissements` SET `type` ='privé' WHERE `type` = 'prive'");
-if ($query) {
-$result .= msj_ok();
-} else {
-$result .= msj_erreur(mysql_error());
-}
 
 $result.="<br />";
 $result.="<strong>Module relevé de notes :</strong>";
