@@ -277,33 +277,36 @@ foreach($eleve->getPeriodeNotes() as $periode_note) {
 
 
 <div id="sortie_ecran">
-  <table  style="border:1px; cellspacing:0; text-align: center; width:100%; background-color: #e5e3e1;">
+  <table class="sortable" 
+		 id="saisie" 
+		 style="border:1px; cellspacing:0; text-align: center; width:100%; background-color: #e5e3e1;"
+		 >
 	<tr >
-	  <th style="text-align: center;">
+	  <th  style="text-align: center; cursor: pointer;" title='cliquez pour triez sur la colonne'>
+		N°
+	  </th>
+	  <th style="text-align: center; cursor: pointer;" title='cliquez pour triez sur la colonne' >
 		Saisies
 	  </th>
-	  <th align="center">
+	  <th  style="text-align: center; cursor: pointer;" title='cliquez pour triez sur la colonne'>
 		Type
 	  </th>
-	  <th align="center">
+	  <th  style="text-align: center; cursor: pointer;" title='cliquez pour triez sur la colonne'>
 		Motif
 	  </th>
-	  <th align="center">
+	  <th  style="text-align: center; cursor: pointer;" title='cliquez pour triez sur la colonne'>
 		Justification
 	  </th>
-	  <th align="center">
+	  <th  style="text-align: center; cursor: pointer;" title='cliquez pour triez sur la colonne'>
 		Commentaire(s)
 	  </th>
 	</tr>
 
 <?php
-$ligne1 = TRUE;
+$ligne = 0;
 foreach ($donnees as $id => $eleve) {
     if(!isset($eleve['infos_saisies'])){
         continue;
-    }
-    if($tri!=null && $tri!='') {
-        ksort($eleve['infos_saisies']);
     }
     foreach ($eleve['infos_saisies'] as $type_tab=>$value2) {
         foreach ($value2 as $journee) {
@@ -311,8 +314,12 @@ foreach ($donnees as $id => $eleve) {
                 $style=$value['type_css'];
 ?>
 	<tr>
+	  <?php $ligne++; ?>
 
 	  
+	  <td  align="center" class="<?php echo $style; ?>">
+		<?php echo $ligne; ?>
+	  </td>
 	  <td  align="center" class="<?php echo $style; ?>">
 		<?php echo getDateDescription($value['dates']['debut'], $value['dates']['fin']) ; ?>
 	  </td>

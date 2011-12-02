@@ -52,9 +52,10 @@ if (!checkAccess()) {
 // ======================== CSS et js particuliers ========================
 $utilisation_win = "oui";
 $utilisation_jsdivdrag = "oui";
-//$javascript_specifique = ".js";
+
 if (getSettingValue("active_module_absence")=='2') {
   $style_specifique[] = "mod_abs2/lib/abs_style";
+  $javascript_specifique[] = "lib/tri_tableau";
 $dojo=true;
 }
 $style_specifique[] = "eleves/visu_eleve";
