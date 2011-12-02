@@ -191,10 +191,11 @@ class class_page_accueil_autre {
 				  AND du.login_user='".$this->loginUtilisateur."');" ;
 	$result=mysql_query($sql);
 	if (!$result) {
-	  return TRUE;
+	  return FALSE;
 	} else {
 	  $row = mysql_fetch_row($result) ;
 	  if ($row[0]=='V' || $row[0]=='v'){
+	if ($chemin='bulletin/bull_index.php') echo ("on a bien les bulletins");
 		return TRUE;
 	  } else {
 		return FALSE;
@@ -416,11 +417,7 @@ class class_page_accueil_autre {
 	$this->creeNouveauItem("/groupes/visu_profs_class.php",
 			"Visualisation des équipes pédagogiques",
 			"Ceci vous permet de connaître tous les ".$this->gepiSettings['denomination_professeurs']." des classes dans lesquelles vous intervenez, ainsi que les compositions des groupes concernés.");
-/*
-	$this->creeNouveauItem("/eleves/liste_eleves.php",
-			"Visualisation des équipes pédagogiques",
-			"Ceci vous permet de connaître tous les ".$this->gepiSettings['denomination_professeurs']." des classes dans lesquelles vous intervenez, ainsi que les compositions des groupes concernés.");
-*/
+
 	$this->creeNouveauItem("/eleves/visu_eleve.php",
 			"Consultation d'un ".$this->gepiSettings['denomination_eleve'],
 			"Ce menu vous permet de consulter dans une même page les informations concernant un ".$this->gepiSettings['denomination_eleve']." (enseignements suivis, bulletins, relevés de notes, ".$this->gepiSettings['denomination_responsables'].",...). Certains éléments peuvent n'être accessibles que pour certaines catégories de visiteurs.");
