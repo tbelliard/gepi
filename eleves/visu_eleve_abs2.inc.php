@@ -7,7 +7,6 @@
 $non_traitees=1;
 $tri='';
 $type_extrait = 1; // filtrer par manquement aux obligations scolaires
-$type_semaine = 'retard';
 
 
 // Initialisation de l'élève
@@ -204,87 +203,7 @@ foreach ($saisie_col as $saisie) {
 	// On récupère le style css
 	$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['type_css'] = $type_css;
   }        
-}
-
-// extraction des créneaux de cours
-$semaine = array();
-for ($i=0;$i<7;$i++) {
-  // On vérifie si on est dans un jour différent ou pas
-  if ($i == getSettingValue("creneau_different")) {
-	  $table = 'edt_creneaux_bis';
-  }else{
-	  $table = 'edt_creneaux';
-  }
-  $query = mysql_query("SELECT * FROM ".$table." WHERE type_creneaux = 'cours'");
-  if ($query) {
-	while ($row = mysql_fetch_assoc($query)) {
-	  $semaine[$i][]=$row;
-	}  
-  } else {
-	$semaine[$i] = array();
-  }
-}
-
-foreach ($semaine as $jour=>$heures) {
-  echo $jour.' -> ';
-// $jour : 0 = dimanche
-  foreach ($heures as $key=>$creneaux) {
-// $key : 0 = 1er créneau de cours	
-	//echo '<br />- '.$key.' ';
-	foreach ($creneaux as $cle_creneau=>$creneau) {
-/*
-- - id_definie_periode 1
-- - nom_definie_periode M1
-- - heuredebut_definie_periode 08:15:00
-- - heurefin_definie_periode 09:10:00
-- - suivi_definie_periode 1
-- - type_creneaux cours
-- - jour_creneau 
-*/
-	  //echo '<br />- - '.$cle_creneau.' '.$creneau;
-	}
-	//echo '<br />';
-  }
-}
-
-
-
-
-
-// remplir le tableau semaine par les données Ne pas utiliser $donnees mais $saisie_col
-foreach ($donnees as $id => $eleve2) {
-  foreach ($eleve2['infos_saisies'] as $type_tab=>$value2) {
-	foreach ($value2 as $journee) {
-	  foreach ($journee as $key => $value) {
-		if (date("z",$value['dates']['debut'])==date("z",$value['dates']['fin'])) {
-		  // la saisie couvre une journée
-		  foreach ($semaine as $jour=>$heures) { // $jour : 0 = dimanche
-			if (date("w",$value['dates']['debut']) != $jour) {
-			  continue;
-			}
-			echo '<br />Même jour : '.$value['dates']['debut'].' => '.$jour.'<br />';
-			foreach ($heures as $cle_creneau=>$creneau) {// $key : 0 = 1er créneau de cours
-				//echo 'creneau1 '.$creneau['nom_definie_periode'].'<br /> ';
-			  //foreach ($creneaux as $cle_creneau=>$creneau) {
-				echo 'creneau '.$cle_creneau.' - '.$creneau['nom_definie_periode'].' - '. $creneau['heuredebut_definie_periode'].'<br /> ';
-				if ((date("H:i:s",$value['dates']['debut'])<= $creneau['heuredebut_definie_periode']) &&
-						(date("H:i:s",$value['dates']['fin'])>= $creneau['heurefin_definie_periode'])) {
-				  echo ' heure dans l\'absence<br />';
-				}
-			  //}
-			}
-		  }
-		  
-		} else {
-		  // la saisie couvre plusieurs jours
-		  echo '<br />Du : '.$value['dates']['debut'].' au '.$value['dates']['fin'];
-		}
-	  }  
-	}
-  }             
-}
-
-
+}  
 
 // inclusion des éléments Dojo
 $javascript_footer_texte_specifique = '<script type="text/javascript">
@@ -384,7 +303,6 @@ foreach ($donnees as $id => $eleve) {
         continue;
     }
     if($tri!=null && $tri!='') {
-	  // TODO : ajouter un tri sur les colonnes
         ksort($eleve['infos_saisies']);
     }
     foreach ($eleve['infos_saisies'] as $type_tab=>$value2) {

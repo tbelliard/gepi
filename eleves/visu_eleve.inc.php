@@ -207,7 +207,7 @@ elseif(isset($Recherche_sans_js)) {
 	include("../eleves/recherche_eleve.php");
 }
 else {
-	echo "<form action='".$_SERVER['PHP_SELF']."' id='form1' method='post'>\n";
+	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 
 	echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 
@@ -235,7 +235,7 @@ else {
 			$temoin_tmp=0;
 			while($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)) {
 				if($lig_ele_tmp->login==$ele_login) {
-					$chaine_options_eleves.="<option value='$lig_ele_tmp->login' selected='selected'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
+					$chaine_options_eleves.="<option value='$lig_ele_tmp->login' selected='true'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
 					$temoin_tmp=1;
 					if($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)) {
 						$chaine_options_eleves.="<option value='$lig_ele_tmp->login'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
@@ -290,16 +290,16 @@ else {
 	echo "</p>\n";
 	echo "</div>\n";
 
-	echo "<p><input type='hidden' name='onglet' id='onglet_courant' value='";
+	echo "<input type='hidden' name='onglet' id='onglet_courant' value='";
 	if(isset($onglet)) {echo $onglet;}
-	echo "' /></p>\n";
+	echo "' />\n";
 	echo "</form>\n";
 
 	// Affichage des onglets pour l'élève choisi
 
 	echo "<div id='patience'>
 <noscript>
-<p>Patientez pendant l'extraction des données... merci.</p>
+Patientez pendant l'extraction des données... merci.
 </noscript>
 </div>\n";
 	// Avec ça, le message ne disparait pas quand on a désactivé JavaScript...
@@ -314,6 +314,7 @@ else {
 		else {
 			onglet='eleve';
 		}
+		//alert('".$_SERVER['PHP_SELF']."?id_classe='+id_classe+'&ele_login='+ele_login+'&onglet='+onglet);
 		document.location.replace('".$_SERVER['PHP_SELF']."?id_classe='+id_classe+'&ele_login='+ele_login+'&onglet='+onglet);
 	}
 </script>\n";
