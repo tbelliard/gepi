@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * @version $Id$
+ * @version $Id: saisir_groupe.php 8680 2011-11-30 17:34:56Z jjacquard $
  *
  * Copyright 2010 Josselin Jacquard
  *
@@ -722,7 +722,7 @@ foreach($eleve_col as $eleve) {
                                             }
                                         }
                                         if ($traitee) {
-                                            echo '&nbsp<span title="'.htmlspecialchars($hover).'">t</span>';
+					echo '&nbsp<span title="'.htmlspecialchars($hover).'"><img src="../images/info_traitement.png" /></span>';
                                         }
 
 
