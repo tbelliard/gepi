@@ -249,7 +249,7 @@ else {
 		echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$lig->id&amp;action=suppr_dev".add_token_in_url()."'>Supprimer</a>";
 		echo " | ";
 		if(file_exists("transfert_cc_vers_cn.php")) {
-			echo "<a href='transfert_cc_vers_cn.php?id_racine=$id_racine&amp;id_dev=$lig->id".add_token_in_url()."'>Transférer vers le carnet de notes</a>";
+			echo "<a href='transfert_cc_vers_cn.php?id_racine=$id_racine&amp;id_dev_cc=$lig->id".add_token_in_url()."'>Transférer vers le carnet de notes</a>";
 		}
 		else {
 			echo "Transférer vers le carnet de notes (<span style='color:red'>A FAIRE</span>)";
