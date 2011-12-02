@@ -722,7 +722,7 @@ foreach($eleve_col as $eleve) {
                                             }
                                         }
                                         if ($traitee) {
-                                            echo '&nbsp<span title="'.htmlspecialchars($hover).'">t</span>';
+					echo '<span title="'.htmlspecialchars($hover).'"><img src="../images/info_traitement.png" /></span>';
                                         }
 
 
