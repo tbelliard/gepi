@@ -212,7 +212,7 @@ function afficheChargement($indice,$nbEleves) {
   <?php echo round(($indice*100)/$nbEleves); ?>%
 </p>
 <p style ="display: block; width: 50%; margin:1em auto; text-align: center; ">
-  Veuillez patienter...
+  Veuillez patienter, cette opération peut-être très longue...
 </p>
 <script type="text/javascript">
 
@@ -278,6 +278,7 @@ if (!isset($_SESSION['statJustifie'])) {
 	unset ($_SESSION['statJustifie']);
 	die("Aucun élève trouvé.");
   }
+  
   $_SESSION['statJustifie']['eleve_col'] = serialize($eleve_col);
   // on initialise le parcours du tableau
   $_SESSION['statJustifie']['dernierePosition'] = -1;
@@ -286,6 +287,7 @@ if (!isset($_SESSION['statJustifie'])) {
   
 } elseif (isset($_SESSION['statJustifie']['dernierePosition']) && ($_SESSION['statJustifie']['dernierePosition'] !== NULL)) {
 /***** On a commencé mais tous les élèves n'ont pas été traité *****/
+  
   // set_time_limit(8);  // à décommenter pour tester le rechargement de la page
   // On récupère max_execution_time et on se garde 2 secondes
   $max_time = ini_get('max_execution_time') - 2;
@@ -324,6 +326,13 @@ if (!isset($_SESSION['statJustifie'])) {
 	}
 	// on met à jour l'index  
 	$_SESSION['statJustifie']['dernierePosition'] = $dernierePosition = $eleve_col->getPosition();
+	
+	// On recharge tous les 10% du nombre d'élèves
+  // on recherche 10% des élèves
+  $dixieme = floor(count($eleve_col)/10);
+	if (0 == ($_SESSION['statJustifie']['dernierePosition'] % $dixieme)) {
+	  afficheChargement($_SESSION['statJustifie']['dernierePosition'], count($eleve_col));
+	}
 
 	// Si on est trop long, recharger la page (on pourrait aussi utiliser set_time_limit())
 	$tempsScript = time() - $timeDebut;
