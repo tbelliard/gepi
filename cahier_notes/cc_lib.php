@@ -3,7 +3,7 @@
  * Fonctions de évaluation cumule
  * 
 *
-* @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* @copyright Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * 
  * @package Carnet_de_notes
  * @subpackage Evaluation_cumule
@@ -61,6 +61,19 @@ function precision_arrondi($moyenne,$arrondir) {
 		$moyenne = number_format(round(strval($moyenne)),1,'.','');
 	}
 	return $moyenne;
+}
+
+function get_infos_devoir($id_devoir) {
+	$retour="";
+	$sql="SELECT * FROM cn_devoirs cd WHERE cd.id='$id_devoir';";
+	//echo "$sql<br />";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$lig=mysql_fetch_object($res);
+
+		$retour=$lig->nom_court." (".formate_date($lig->date).")";
+	}
+	return $retour;
 }
 
 ?>
