@@ -277,27 +277,27 @@ foreach($eleve->getPeriodeNotes() as $periode_note) {
 
 
 <div id="sortie_ecran">
-  <table class="sortable" 
+  <table class="sortable resizable" 
 		 id="saisie" 
 		 style="border:1px; cellspacing:0; text-align: center; width:100%; background-color: #e5e3e1;"
 		 >
 	<tr >
-	  <th  style="text-align: center; cursor: pointer;" title='cliquez pour triez sur la colonne'>
+	  <th class="number" title='cliquez pour triez sur la colonne'>
 		N°
 	  </th>
-	  <th style="text-align: center; cursor: pointer;" title='cliquez pour triez sur la colonne' >
+	  <th title='cliquez pour triez sur la colonne' >
 		Saisies
 	  </th>
-	  <th  style="text-align: center; cursor: pointer;" title='cliquez pour triez sur la colonne'>
+	  <th title='cliquez pour triez sur la colonne'>
 		Type
 	  </th>
-	  <th  style="text-align: center; cursor: pointer;" title='cliquez pour triez sur la colonne'>
+	  <th title='cliquez pour triez sur la colonne'>
 		Motif
 	  </th>
-	  <th  style="text-align: center; cursor: pointer;" title='cliquez pour triez sur la colonne'>
+	  <th title='cliquez pour triez sur la colonne'>
 		Justification
 	  </th>
-	  <th  style="text-align: center; cursor: pointer;" title='cliquez pour triez sur la colonne'>
+	  <th title='cliquez pour triez sur la colonne'>
 		Commentaire(s)
 	  </th>
 	</tr>
