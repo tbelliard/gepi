@@ -187,32 +187,32 @@ if(isset($imprime)) {
 					//global $num_page;
 					//global $decompte_page;
 
-					$pdf->SetFont('DejaVu','B',14);
+					$this->SetFont('DejaVu','B',14);
 					$this->Setxy(10,10);
 					$this->Cell($largeur_page-$MargeDroite-$MargeGauche,20,getSettingValue('gepiSchoolName').' - Année scolaire '.getSettingValue('gepiYear'),'LRBT',1,'C');
 
 					$x1=$this->GetX();
 					$y1=$this->GetY();
 
-					$pdf->SetFont('DejaVu','B',12);
+					$this->SetFont('DejaVu','B',12);
 					$texte='Epreuve : ';
 					$largeur_tmp=$this->GetStringWidth($texte);
 					$this->Cell($largeur_tmp,$this->FontSize*$sc_interligne,$texte,'',0,'L');
-					$pdf->SetFont('DejaVu','',12);
+					$this->SetFont('DejaVu','',12);
 					$texte=$intitule_epreuve;
 					$this->Cell($this->GetStringWidth($texte),$this->FontSize*$sc_interligne,$texte,'',1,'L');
 
-					$pdf->SetFont('DejaVu','B',12);
+					$this->SetFont('DejaVu','B',12);
 					$texte='Date : ';
 					$this->Cell($largeur_tmp,$this->FontSize*$sc_interligne,$texte,'',0,'L');
-					$pdf->SetFont('DejaVu','',12);
+					$this->SetFont('DejaVu','',12);
 					$texte=$date_epreuve;
 					$this->Cell($this->GetStringWidth($texte),$this->FontSize*$sc_interligne,$texte,'',1,'L');
 
 					//$x2=$this->GetX();
 					$y2=$this->GetY();
 
-					$pdf->SetFont('DejaVu','B',12);
+					$this->SetFont('DejaVu','B',12);
 					$texte="Salle $salle[$i]";
 					$larg_tmp=$sc_interligne*($this->GetStringWidth($texte));
 					$this->SetXY($largeur_page-$larg_tmp-$MargeDroite,$y1+($y2-$y1)/4);
