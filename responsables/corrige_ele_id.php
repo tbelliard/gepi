@@ -79,7 +79,7 @@ function maj_ini_prenom($prenom){
 			if($j>0){
 				$prenom2.=" ";
 			}
-			$prenom2.=ucfirst(strtolower($tab2[$j]));
+			$prenom2.=ucfirst(mb_strtolower($tab2[$j]));
 		}
 	}
 	return $prenom2;
@@ -293,7 +293,7 @@ else{
 				// $unzipped_max_filesize < 0    extraction zip désactivée
 				if($unzipped_max_filesize>=0) {
 					$fichier_emis=$xml_file['name'];
-					$extension_fichier_emis=strtolower(strrchr($fichier_emis,"."));
+					$extension_fichier_emis=mb_strtolower(strrchr($fichier_emis,"."));
 					if (($extension_fichier_emis==".zip")||($xml_file['type']=="application/zip"))
 						{
 						require_once('../lib/pclzip.lib.php');
@@ -458,7 +458,7 @@ else{
 										for($loop=0;$loop<count($tab_champs_struct);$loop++){
 											//if(strstr($ligne[$cpt],"<".$tab_champs_struct[$loop].">")){
 											if(strstr($ligne,"<".$tab_champs_struct[$loop].">")){
-												$tmpmin=strtolower($tab_champs_struct[$loop]);
+												$tmpmin=mb_strtolower($tab_champs_struct[$loop]);
 												//$eleves[$i]["structures"][$j]["$tmpmin"]=extr_valeur($ligne[$cpt]);
 
 												//$eleves[$i]["structures"][$j]["$tmpmin"]=extr_valeur($ligne);
@@ -680,7 +680,7 @@ else{
 								for($loop=0;$loop<count($tab_champs_eleve);$loop++){
 									//if(strstr($ligne[$cpt],"<".$tab_champs_eleve[$loop].">")){
 									if(strstr($ligne,"<".$tab_champs_eleve[$loop].">")){
-										$tmpmin=strtolower($tab_champs_eleve[$loop]);
+										$tmpmin=mb_strtolower($tab_champs_eleve[$loop]);
 										//$eleves[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
 
 										// Suppression des guillemets éventuels
@@ -729,7 +729,7 @@ else{
 									//if(strstr($ligne[$cpt],"<".$tab_champs_scol_an_dernier[$loop].">")){
 									if(strstr($ligne,"<".$tab_champs_scol_an_dernier[$loop].">")){
 										//echo "$i - ";
-										$tmpmin=strtolower($tab_champs_scol_an_dernier[$loop]);
+										$tmpmin=mb_strtolower($tab_champs_scol_an_dernier[$loop]);
 										//$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne[$cpt]);
 										// Suppression des guillemets éventuels
 										//$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne);
@@ -767,24 +767,16 @@ else{
 				$nb_err=0;
 				for($i=0;$i<count($eleves);$i++){
 					if(in_array($eleves[$i]['eleve_id'],$tab_ele_id)){
-						/*
-						if(!isset($eleves[$i]["code_sexe"])){
-							$remarques[]="Le sexe de l'élève <a href='#sexe_manquant_".$i."'>".$eleves[$i]["nom"]." ".$eleves[$i]["prenom"]."</a> n'est pas renseigné dans Sconet.";
-						}
-						*/
 
 						$sql="UPDATE temp_gep_import2 SET ";
 						$sql.="elenoet='".$eleves[$i]['elenoet']."', ";
 						if(isset($eleves[$i]['id_national'])) {$sql.="elenonat='".$eleves[$i]['id_national']."', ";}
-						//$sql.="elenom='".addslashes($eleves[$i]['nom'])."', ";
 						$sql.="elenom='".addslashes(mb_strtoupper($eleves[$i]['nom']))."', ";
 
-						//$sql.="elepre='".addslashes($eleves[$i]['prenom'])."', ";
 						// On ne retient que le premier prénom:
 						$tab_prenom = explode(" ",$eleves[$i]['prenom']);
 						$sql.="elepre='".addslashes(maj_ini_prenom($tab_prenom[0]))."', ";
 
-						//$sql.="elesexe='".sexeMF($eleves[$i]["code_sexe"])."', ";
 						if(isset($eleves[$i]["code_sexe"])) {
 							$sql.="elesexe='".sexeMF($eleves[$i]["code_sexe"])."', ";
 						}

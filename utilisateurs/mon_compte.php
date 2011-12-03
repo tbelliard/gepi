@@ -300,18 +300,9 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 
 
 
-		$ancien_code_photo = md5(strtolower($user_login));
+		$ancien_code_photo = md5(mb_strtolower($user_login));
 		$nouveau_code_photo = $ancien_code_photo;
 
-		/*
-		// si on modify le nom ou le prénom de la personne et s'il y a une photo on renomme alors la photo.
-		if ( $ancien_nom != $_POST['reg_nom'] or $ancien_prenom != $_POST['reg_prenom'] ) {
-			$ancien_nom_fichier = $repertoire.$ancien_code_photo.'.jpg';
-			$nouveau_nom_fichier = $repertoire.$nouveau_code_photo.'.jpg';
-
-			@rename($ancien_nom_fichier, $nouveau_nom_fichier);
-		}
-		*/
 
 		// DEBUG:
 		//echo "\$ancien_code_photo=$ancien_code_photo<br />\n";
@@ -744,10 +735,7 @@ if(($_SESSION['statut']=='administrateur')||
 ) {
 	$user_login=$_SESSION['login'];
 
-	//echo "active_module_trombino_pers=".getSettingValue("active_module_trombino_pers")."<br />";
-	//echo "active_module_trombinoscopes=".getSettingValue("active_module_trombinoscopes")."<br />";
 
-	//if(getSettingValue("active_module_trombinoscopes")=='y') {
 	if((($_SESSION['statut']=='eleve')&&(getSettingValue("active_module_trombinoscopes")=='y'))||
 		(($_SESSION['statut']!='eleve')&&(getSettingValue("active_module_trombino_pers")=='y'))) {
 
@@ -755,7 +743,7 @@ if(($_SESSION['statut']=='administrateur')||
 		$photo_largeur_max=150;
 		$photo_hauteur_max=150;
 
-		$GepiAccesModifMaPhoto='GepiAccesModifMaPhoto'.ucfirst(strtolower($_SESSION['statut']));
+		$GepiAccesModifMaPhoto='GepiAccesModifMaPhoto'.ucfirst(mb_strtolower($_SESSION['statut']));
 
 		if($_SESSION['statut']=='eleve') {
 			$sql="SELECT elenoet FROM eleves WHERE login='".$_SESSION['login']."';";
@@ -863,7 +851,7 @@ if(($_SESSION['statut']=='administrateur')||
 					$repertoire="../photos/personnels/";
 				}
 
-				$code_photo = md5(strtolower($user_login));
+				$code_photo = md5(mb_strtolower($user_login));
 
 				$photo=$repertoire.$code_photo.".jpg";
 				$temoin_photo="non";

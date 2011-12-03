@@ -629,7 +629,7 @@
 								$pdf->SetFont('DejaVu','B',$fs_txt);
 	
 								// Colonne Disciplines
-								$texte=ucfirst(accent_min(strtolower($tabmatieres[$j][0])));
+								$texte=ucfirst(accent_min(mb_strtolower($tabmatieres[$j][0])));
 	
 								//if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){
 								if($tabmatieres[$j][0]=="OPTION FACULTATIVE"){

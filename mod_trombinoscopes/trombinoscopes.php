@@ -947,8 +947,8 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 		$nom_trombinoscope[$cpt_photo] = $donnee_trombi['nom'];
 		$prenom_trombinoscope[$cpt_photo] = $donnee_trombi['prenom'];
 
-		if ( $action_affiche === 'classe' ) { $id_photo_trombinoscope[$cpt_photo] = strtolower($donnee_trombi['elenoet']); }
-		if ( $action_affiche === 'groupe' ) { $id_photo_trombinoscope[$cpt_photo] = strtolower($donnee_trombi['elenoet']); }
+		if ( $action_affiche === 'classe' ) { $id_photo_trombinoscope[$cpt_photo] = mb_strtolower($donnee_trombi['elenoet']); }
+		if ( $action_affiche === 'groupe' ) { $id_photo_trombinoscope[$cpt_photo] = mb_strtolower($donnee_trombi['elenoet']); }
 		if ( $action_affiche === 'equipepeda' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
 		if ( $action_affiche === 'discipline' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
 		if ( $action_affiche === 'statusgepi' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }

@@ -1494,7 +1494,7 @@ else {
 						$tab_ele_toutes_requetes[]=$lig->login;
 
 						$eff_tot_select++;
-						if(strtoupper($lig->sexe)=='F') {$eff_tot_select_F++;} else {$eff_tot_select_M++;}
+						if(mb_strtoupper($lig->sexe)=='F') {$eff_tot_select_F++;} else {$eff_tot_select_M++;}
 
 						//$num_eleve2_id_classe_actuelle[$j]=$cpt;
 
@@ -1505,18 +1505,17 @@ else {
 						$contenu_affichage_requete_courante.="<a name='eleve$cpt'></a>\n";
 						//if(file_exists("../photos/eleves/".$lig->elenoet.".jpg")) {
 						if(nom_photo($lig->elenoet)) {
-							//$contenu_affichage_requete_courante.="<a href='#eleve$cpt' onmouseover=\"affiche_photo('".$lig->elenoet.".jpg','".addslashes(strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);\" onmouseout=\"cacher_div('div_photo')\" onclick=\"return false;\">";
-							$contenu_affichage_requete_courante.="<a href='#eleve$cpt' onmouseover=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);\" onmouseout=\"cacher_div('div_photo')\" onclick=\"return false;\">";
+							$contenu_affichage_requete_courante.="<a href='#eleve$cpt' onmouseover=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);\" onmouseout=\"cacher_div('div_photo')\" onclick=\"return false;\">";
 
-							$contenu_affichage_requete_courante.=strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
+							$contenu_affichage_requete_courante.=mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
 							$contenu_affichage_requete_courante.="</a>\n";
 						}
 						else {
-							$contenu_affichage_requete_courante.=strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
+							$contenu_affichage_requete_courante.=mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
 						}
 						$contenu_affichage_requete_courante.="<input type='hidden' name='eleve[$cpt]' value='$lig->login' />\n";
 						$contenu_affichage_requete_courante.="</td>\n";
-						$lignes_tab.=strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom)).";";
+						$lignes_tab.=mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom)).";";
 
 						//===================================
 						// Initialisations
@@ -1546,7 +1545,7 @@ else {
 							$tmp_tab=explode("|",$lig_opt->liste_opt);
 							for($n=0;$n<count($tmp_tab);$n++) {
 								if($tmp_tab[$n]!="") {
-									$tab_ele_opt[]=strtoupper($tmp_tab[$n]);
+									$tab_ele_opt[]=mb_strtoupper($tmp_tab[$n]);
 								}
 							}
 						}
@@ -1556,7 +1555,7 @@ else {
 							$res_opt=mysql_query($sql);
 							if(mysql_num_rows($res_opt)>0) {
 								while($lig_opt=mysql_fetch_object($res_opt)) {
-									$tab_ele_opt[]=strtoupper($lig_opt->id_matiere);
+									$tab_ele_opt[]=mb_strtoupper($lig_opt->id_matiere);
 								}
 							}
 						}
@@ -1627,7 +1626,7 @@ else {
 						if(count($lv1)>0) {
 							$contenu_affichage_requete_courante.="<td>\n";
 							for($i=0;$i<count($lv1);$i++) {
-								if(in_array(strtoupper($lv1[$i]),$tab_ele_opt)) {
+								if(in_array(mb_strtoupper($lv1[$i]),$tab_ele_opt)) {
 									$contenu_affichage_requete_courante.=$lv1[$i];
 
 									$contenu_affichage_requete_courante.="<input type='hidden' name='ele_lv1[$cpt]' id='lv1_".$cpt."' value='$lv1[$i]' />\n";
@@ -1643,7 +1642,7 @@ else {
 						if(count($lv2)>0) {
 							$contenu_affichage_requete_courante.="<td>\n";
 							for($i=0;$i<count($lv2);$i++) {
-								if(in_array(strtoupper($lv2[$i]),$tab_ele_opt)) {
+								if(in_array(mb_strtoupper($lv2[$i]),$tab_ele_opt)) {
 									$contenu_affichage_requete_courante.=$lv2[$i];
 									$contenu_affichage_requete_courante.="<input type='hidden' name='ele_lv2[$cpt]' id='lv2_".$cpt."' value='$lv2[$i]' />\n";
 
@@ -1656,7 +1655,7 @@ else {
 						if(count($lv3)>0) {
 							$contenu_affichage_requete_courante.="<td>\n";
 							for($i=0;$i<count($lv3);$i++) {
-								if(in_array(strtoupper($lv3[$i]),$tab_ele_opt)) {
+								if(in_array(mb_strtoupper($lv3[$i]),$tab_ele_opt)) {
 									$contenu_affichage_requete_courante.=$lv3[$i];
 									$contenu_affichage_requete_courante.="<input type='hidden' name='ele_lv3[$cpt]' id='lv3_".$cpt."' value='$lv3[$i]' />\n";
 
@@ -1671,7 +1670,7 @@ else {
 							$contenu_affichage_requete_courante.="<td>\n";
 							$cpt_autre_opt=0;
 							for($i=0;$i<count($autre_opt);$i++) {
-								if(in_array(strtoupper($autre_opt[$i]),$tab_ele_opt)) {
+								if(in_array(mb_strtoupper($autre_opt[$i]),$tab_ele_opt)) {
 									if($cpt_autre_opt>0) {$contenu_affichage_requete_courante.=" ";}
 									$contenu_affichage_requete_courante.=$autre_opt[$i];
 
@@ -1690,7 +1689,7 @@ else {
 							}
 						}
 
-						$titre_chgt_classe="Changement classe ".strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
+						$titre_chgt_classe="Changement classe ".mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
 						$texte_chgt_classe="<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 						$texte_chgt_classe.="<div align='center'>\n";
 						$texte_chgt_classe.="<table class='boireaus'>\n";
@@ -1846,7 +1845,7 @@ else {
 			$sql="SELECT nom,prenom FROM eleves WHERE login='$tab_exclus[$loop]';";
 			$res=mysql_query($sql);
 			$lig=mysql_fetch_object($res);
-			echo strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
+			echo mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
 			echo "</td>\n";
 
 			echo "<td>\n";

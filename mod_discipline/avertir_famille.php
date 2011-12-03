@@ -42,7 +42,7 @@ if (!checkAccess()) {
 	die();
 }
 
-if(strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+if(mb_strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
 	header("Location: ../accueil.php?msg=$mess");
@@ -65,7 +65,7 @@ $titre_page = "Discipline: Avertir la famille";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-$gepiSchoolPays=strtolower(getSettingValue('gepiSchoolPays'));
+$gepiSchoolPays=mb_strtolower(getSettingValue('gepiSchoolPays'));
 
 /*
 loadSettings();
@@ -282,7 +282,7 @@ elseif($nb_adr==1) {
 				if($tab_resp[0]['adr4']!="") {echo $tab_resp[0]['adr4']."<br />\n";}
 				if($tab_resp[0]['cp']!="") {echo $tab_resp[0]['cp'].", \n";}
 				if($tab_resp[0]['commune']!="") {echo $tab_resp[0]['commune']."\n";}
-				if(($tab_resp[0]['pays']!="")&&(strtolower($tab_resp[0]['pays'])!=$gepiSchoolPays)) {echo "<br />\n".$tab_resp[0]['pays'];}
+				if(($tab_resp[0]['pays']!="")&&(mb_strtolower($tab_resp[0]['pays'])!=$gepiSchoolPays)) {echo "<br />\n".$tab_resp[0]['pays'];}
 			}
 			else {
 				if($tab_resp[1]['adr1']!="") {echo $tab_resp[1]['adr1']."<br />\n";}
@@ -291,7 +291,7 @@ elseif($nb_adr==1) {
 				if($tab_resp[1]['adr4']!="") {echo $tab_resp[1]['adr4']."<br />\n";}
 				if($tab_resp[1]['cp']!="") {echo $tab_resp[1]['cp'].", \n";}
 				if($tab_resp[1]['commune']!="") {echo $tab_resp[1]['commune']."\n";}
-				if(($tab_resp[1]['pays']!="")&&(strtolower($tab_resp[1]['pays'])!=$gepiSchoolPays)) {echo "<br />\n".$tab_resp[1]['pays'];}
+				if(($tab_resp[1]['pays']!="")&&(mb_strtolower($tab_resp[1]['pays'])!=$gepiSchoolPays)) {echo "<br />\n".$tab_resp[1]['pays'];}
 			}
 			echo "</td>\n";
 		}
@@ -331,7 +331,7 @@ else {
 			if($tab_resp[$i]['adr4']!="") {echo $tab_resp[$i]['adr4']."<br />\n";}
 			if($tab_resp[$i]['cp']!="") {echo $tab_resp[$i]['cp'].", \n";}
 			if($tab_resp[$i]['commune']!="") {echo $tab_resp[$i]['commune']."\n";}
-			if(($tab_resp[$i]['pays']!="")&&(strtolower($tab_resp[$i]['pays'])!=$gepiSchoolPays)) {echo "<br />\n".$tab_resp[$i]['pays'];}
+			if(($tab_resp[$i]['pays']!="")&&(mb_strtolower($tab_resp[$i]['pays'])!=$gepiSchoolPays)) {echo "<br />\n".$tab_resp[$i]['pays'];}
 		}
 		echo "</td>\n";
 

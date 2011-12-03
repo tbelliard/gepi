@@ -254,7 +254,7 @@ if ( $etiquette_action === 'originaux' ) {
 			$classe_nomlong_eleve[$i] = $donne_persone['nom_complet'];
 			$classe_nomcour_eleve[$i] = $donne_persone['classe'];
 
-        $nom_photo = nom_photo(strtolower($donne_persone['elenoet']),"eleves",2);
+        $nom_photo = nom_photo(mb_strtolower($donne_persone['elenoet']),"eleves",2);
         //if ($nom_photo != ""){
         if ($nom_photo){
 			//$photo_eleve[$i] = "../../photos/eleves/".$nom_photo;
@@ -326,9 +326,9 @@ function drawTextBox($strText, $w, $h, $align='L', $valign='T', $border=1)
         $this->Rect($xi,$yi,$w,$h,'DF');
 
     $dy=0;
-    if (strtoupper($valign)=='M')
+    if (mb_strtoupper($valign)=='M')
         $dy=($h-$rows*$this->FontSize)/2;
-    if (strtoupper($valign)=='B')
+    if (mb_strtoupper($valign)=='B')
         $dy=$h-$rows*$this->FontSize;
 
     $this->SetY($yi+$dy);

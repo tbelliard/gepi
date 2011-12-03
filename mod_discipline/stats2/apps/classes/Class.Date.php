@@ -92,7 +92,7 @@ Class Gepi_Date {
   public static function calcule_duree_exclusion($date_debut,$heure_debut,$date_fin,$heure_fin) {
     $date1=$date_debut.' '.$heure_debut;
     $date2=$date_fin.' '.$heure_fin;
-    return($nbjours = ceil((strtotime($date2) - strtotime($date1))/(60*60*24)));
+    return($nbjours = ceil((mb_strtotime($date2) - strtotime($date1))/(60*60*24)));
   }
 
   public static function compare_nb_heures($ele1, $ele2){

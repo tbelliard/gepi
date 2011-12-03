@@ -122,8 +122,7 @@ if (!isset($is_posted)) {
 } else {
 	$dbf_file = isset($_FILES["dbf_file"]) ? $_FILES["dbf_file"] : NULL;
 	$dbf_file2 = isset($_FILES["dbf_file2"]) ? $_FILES["dbf_file2"] : NULL;
-	//if ((strtoupper($dbf_file['name']) == "F_MEN.DBF") or (strtoupper($dbf_file2['name']) == "F_GPD.DBF")) {
-	if ((strtoupper($dbf_file['name']) == "F_MEN.CSV") or (strtoupper($dbf_file2['name']) == "F_GPD.CSV")) {
+	if ((mb_strtoupper($dbf_file['name']) == "F_MEN.CSV") or (mb_strtoupper($dbf_file2['name']) == "F_GPD.CSV")) {
 
 		//$fp = @dbase_open($dbf_file['tmp_name'], 0);
 		//$fp2 = @dbase_open($dbf_file2['tmp_name'], 0);

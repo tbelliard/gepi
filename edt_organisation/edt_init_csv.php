@@ -309,7 +309,7 @@ if ($aff_infos != "oui") {
 		$aff_depart = "non";
 		echo "<hr /><a href=\"./edt_init_csv.php\">Revenir à l'initialisation par csv.</a>";
 
-		} //if(strtolower($csv_file['name']) =....
+		} 
 		else {
 			echo '
 			<h3>Ce n\'est pas le bon nom de fichier !</h3>

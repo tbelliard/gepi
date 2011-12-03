@@ -430,7 +430,6 @@
 							$matiere_trouvee="n";
 							for($j=0;$j<count($tab_matiere);$j++) {
 								echo "<option value='$tab_matiere[$j]'";
-								//if(strtolower($tab_matiere[$j])==strtolower($udt_matiere[$i])) {echo " selected='true'";}
 								if((my_strtolower($tab_matiere[$j])==my_strtolower($udt_matiere[$i]))||
 								((isset($tab_udt_matiere[$tab_matiere[$j]]))&&(my_strtolower($tab_udt_matiere[$tab_matiere[$j]])==my_strtolower($udt_matiere[$i])))) {
 									echo " selected='true'";

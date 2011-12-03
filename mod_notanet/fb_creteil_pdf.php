@@ -601,7 +601,7 @@
 							$pdf->SetFont('DejaVu','',$fs_txt);
 
 							// Colonne Disciplines
-							$texte=ucfirst(accent_min(strtolower($tabmatieres[$j][0])));
+							$texte=ucfirst(accent_min(mb_strtolower($tabmatieres[$j][0])));
 							$font_size=adjust_size_font($texte,$larg_col_disc,$fs_txt,0.3);
 							$pdf->SetFontSize($font_size);
 							$pdf->Cell($larg_col_disc,$h_par_matiere, $texte,'LRBT',2,'L');
@@ -825,7 +825,7 @@
 							$pdf->SetFont('DejaVu','',$fs_txt);
 
 							// Colonne Disciplines
-							$texte=ucfirst(accent_min(strtolower($tabmatieres[$j][0])));
+							$texte=ucfirst(accent_min(mb_strtolower($tabmatieres[$j][0])));
 	
 							// recherche de la matière facultative pour l'élève
 							$sql_mat_fac="SELECT matiere FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
@@ -1048,7 +1048,7 @@
 							$pdf->SetFont('DejaVu','',$fs_txt);
 
 							// Colonne Disciplines
-							$texte=ucfirst(accent_min(strtolower($tabmatieres[$j][0])));
+							$texte=ucfirst(accent_min(mb_strtolower($tabmatieres[$j][0])));
 							$font_size=adjust_size_font($texte,$larg_col_disc,$fs_txt,0.3);
 							$pdf->SetFontSize($font_size);
 							$pdf->Cell($larg_col_disc,$h_par_matiere, $texte,'LRBT',0,'L');

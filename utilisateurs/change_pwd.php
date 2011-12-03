@@ -143,8 +143,7 @@ if ($auth_mode != "gepi" && $gepiSettings['ldap_write_access'] != "yes") {
 }
 
 echo "<p class='grand'>Changement du mot de passe</p>\n";
-//if ($user_login != $_SESSION['login']) {
-if (strtoupper($user_login) != strtoupper($_SESSION['login'])) {
+if (mb_strtoupper($user_login) != mb_strtoupper($_SESSION['login'])) {
     if (($user_statut == 'professeur') or ($user_statut == 'cpe') or ($user_statut == 'responsable')) {
         // Mot de passe comportant des lettres et des chiffres
         $flag = 0;

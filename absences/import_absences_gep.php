@@ -181,7 +181,7 @@ if ($step == 0) {
 	// On enregistre les données du fichier F_NOMA.DBF dans la table absences_gep
 
 	$dbf_file = isset($_FILES["dbf_file"]) ? $_FILES["dbf_file"] : NULL;
-	if(strtoupper($dbf_file['name']) == "F_NOMA.DBF") {
+	if(mb_strtoupper($dbf_file['name']) == "F_NOMA.DBF") {
 			if (is_uploaded_file($dbf_file['tmp_name'])) {
 			$fp = dbase_open($dbf_file['tmp_name'], 0);
 			if(!$fp) {
@@ -439,7 +439,7 @@ if ($step == 0) {
 	}
 	$dbf_file = isset($_FILES["dbf_file"]) ? $_FILES["dbf_file"] : NULL;
 	if ($dbf_file!= null AND !is_uploaded_file($dbf_file['tmp_name'])) $dbf_file = null;
-	if(strtoupper($dbf_file['name']) == "F_EABS.DBF") {
+	if(mb_strtoupper($dbf_file['name']) == "F_EABS.DBF") {
 		$fp = dbase_open($dbf_file['tmp_name'], 0);
 		if(!$fp) {
 			echo "<p>Impossible d'ouvrir le fichier dbf</p>\n";

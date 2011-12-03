@@ -517,11 +517,6 @@ if ($on_continue == 'yes') {
 		while ($nb < $periode2+1) {
 			// Test supplémentaire pour savoir si l'élève appartient à la classe pour la période considérée
 			$test_eleve_app = sql_query1("select count(login) from j_eleves_classes where login='".$current_eleve_login."' and id_classe='".$id_classe."' and periode='".$nb."'");
-			/*
-			if (((in_array(strtolower($current_eleve_login), $current_group["eleves"][$nb]["list"])) or
-			(in_array(strtoupper($current_eleve_login), $current_group["eleves"][$nb]["list"]))) and $test_eleve_app !=0)
-			{
-			*/
 			if(
 				(
 					(in_array($current_eleve_login, $current_group["eleves"][$nb]["list"])) or
@@ -531,9 +526,6 @@ if ($on_continue == 'yes') {
 				($test_eleve_app!=0)
 			) {
 				$inser_ligne='yes';
-				/*
-				$current_eleve_note_query = mysql_query("SELECT * FROM matieres_notes mn, j_eleves_classes jec WHERE (mn.login='$current_eleve_login' AND mn.periode='$nb' AND mn.id_groupe='".$current_group["id"]."' and jec.periode='$nb' and jec.login='$current_eleve_login' and jec.id_classe='$id_classe')");
-				*/
 				$current_eleve_note[$nb]=$tab_moy['periodes'][$nb]['current_eleve_note'][$j][$tab_login_indice[$nb]];
 				$current_eleve_statut[$nb]=$tab_moy['periodes'][$nb]['current_eleve_statut'][$j][$tab_login_indice[$nb]];
 

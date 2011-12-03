@@ -634,7 +634,7 @@ for($i=0;$i<count($id_classe);$i++){
 			$tab_eleves_OOo[$nb_eleve]['adresse2']=$gepiSchoolAdress2;
 			$tab_eleves_OOo[$nb_eleve]['codeposte']=$gepiSchoolZipCode;
 			$tab_eleves_OOo[$nb_eleve]['commune']=$gepiSchoolCity;
-			$tab_eleves_OOo[$nb_eleve]['acad']=strtoupper($fb_academie);
+			$tab_eleves_OOo[$nb_eleve]['acad']=mb_strtoupper($fb_academie);
 			$tab_eleves_OOo[$nb_eleve]['departe']=$fb_departement;
 			$tab_eleves_OOo[$nb_eleve]['session']=$fb_session;
 
@@ -703,7 +703,7 @@ for($i=0;$i<count($id_classe);$i++){
 									$res_mat_fac=mysql_query($sql_mat_fac);
 									if(mysql_num_rows($res_mat_fac)>0){
 										$lig_mat_fac=mysql_fetch_object($res_mat_fac);
-										$tab_eleves_OOo[$nb_eleve][$j][2]=ucfirst(accent_min(strtolower($lig_mat_fac->matiere)));
+										$tab_eleves_OOo[$nb_eleve][$j][2]=ucfirst(accent_min(mb_strtolower($lig_mat_fac->matiere)));
 									}
 									// on calcule la moyenne de la matière
 									include("fb_moyenne.inc.php");
@@ -725,7 +725,7 @@ for($i=0;$i<count($id_classe);$i++){
 									$res_mat_fac=mysql_query($sql_mat_fac);
 									if(mysql_num_rows($res_mat_fac)>0){
 										$lig_mat_fac=mysql_fetch_object($res_mat_fac);
-										$tab_eleves_OOo[$nb_eleve][$j][2]=ucfirst(accent_min(strtolower($lig_mat_fac->matiere)));
+										$tab_eleves_OOo[$nb_eleve][$j][2]=ucfirst(accent_min(mb_strtolower($lig_mat_fac->matiere)));
 									}
 
 									// On calcule la note coefficientée

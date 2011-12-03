@@ -77,8 +77,6 @@ FRANC;FRANCAIS
 }
 else {
     $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
-    //if(strtoupper($csv_file['name']) == "F_TMT.DBF") {
-        //$fp = dbase_open($csv_file['tmp_name'], 0);
         $fp=fopen($csv_file['tmp_name'],"r");
         if(!$fp) {
             echo "<p>Impossible d'ouvrir le fichier CSV</p>\n";

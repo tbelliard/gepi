@@ -611,7 +611,7 @@ function generate_unique_login_old($_nom, $_prenom, $_mode, $_casse='') {
 	}
 
 	if($_casse=='maj') {
-		$temp1=strtoupper($temp1);
+		$temp1=my_strtoupper($temp1);
 	}
 	elseif($_casse=='min') {
 		$temp1=my_strtolower($temp1);
@@ -1930,10 +1930,10 @@ function get_enfants_from_resp_login($resp_login,$mode='simple'){
 					$tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
 				}
 
-				$tab_ele[]=ucfirst(strtolower($lig_tmp->prenom))." ".strtoupper($lig_tmp->nom).$tmp_chaine_classes;
+				$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$tmp_chaine_classes;
 			}
 			else {
-				$tab_ele[]=ucfirst(strtolower($lig_tmp->prenom))." ".strtoupper($lig_tmp->nom);
+				$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom);
 			}
 		}
 	}
@@ -1971,10 +1971,10 @@ function get_enfants_from_pers_id($pers_id,$mode='simple'){
 					$tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
 				}
 
-				$tab_ele[]=ucfirst(strtolower($lig_tmp->prenom))." ".strtoupper($lig_tmp->nom).$tmp_chaine_classes;
+				$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$tmp_chaine_classes;
 			}
 			else {
-				$tab_ele[]=ucfirst(strtolower($lig_tmp->prenom))." ".strtoupper($lig_tmp->nom);
+				$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom);
 			}
 		}
 	}
@@ -2772,7 +2772,7 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 	// Cas des non-élèves
 	else {
 
-		$_elenoet_ou_login = md5(strtolower($_elenoet_ou_login));
+		$_elenoet_ou_login = md5(mb_strtolower($_elenoet_ou_login));
 			if(file_exists($chemin."../photos/".$repertoire2."personnels/$_elenoet_ou_login.jpg")){
 				$photo=$chemin."../photos/".$repertoire2."personnels/$_elenoet_ou_login.jpg";
 			} else {
@@ -2914,7 +2914,7 @@ function mail_connexion() {
 			$message = "** Mail connexion Gepi **\n\n";
 			$message .= "\n";
 			$message .= "Vous (*) vous êtes connecté à GEPI :\n\n";
-			$message .= "Identité                : ".strtoupper($lig_user->nom)." ".ucfirst(strtolower($lig_user->prenom))."\n";
+			$message .= "Identité                : ".mb_strtoupper($lig_user->nom)." ".ucfirst(mb_strtolower($lig_user->prenom))."\n";
 			$message .= "Login                   : ".$user_login."\n";
 			$message .= "Date                    : ".$date."\n";
 			$message .= "Origine de la connexion : ".$adresse_ip."\n";
@@ -2986,7 +2986,7 @@ function mail_alerte($sujet,$texte,$informer_admin='n') {
 		$message=$texte;
 		$message .= "\n";
 		$message .= "Vous (*) vous êtes connecté à GEPI :\n\n";
-		$message .= "Identité                : ".strtoupper($lig_user->nom)." ".ucfirst(strtolower($lig_user->prenom))."\n";
+		$message .= "Identité                : ".mb_strtoupper($lig_user->nom)." ".ucfirst(mb_strtolower($lig_user->prenom))."\n";
 		$message .= "Login                   : ".$user_login."\n";
 		$message .= "Date                    : ".$date."\n";
 		$message .= "Origine de la connexion : ".$adresse_ip."\n";
@@ -3230,10 +3230,10 @@ function casse_mot($mot,$mode='maj') {
     			for($j=0;$j<count($tab2);$j++) {
     				if($j>0) {$chaine.="-";}
     				if(mb_strlen($tab2[$j])>1) {
-    					$chaine.=strtoupper(mb_substr($tab2[$j],0,1)).strtolower(mb_substr($tab2[$j],1));
+    					$chaine.=mb_strtoupper(mb_substr($tab2[$j],0,1)).strtolower(mb_substr($tab2[$j],1));
     				}
     				else {
-    					$chaine.=strtoupper($tab2[$j]);
+    					$chaine.=mb_strtoupper($tab2[$j]);
     				}
     			}
     		}
@@ -3540,7 +3540,7 @@ function efface_photos($photos) {
 	$folder = "../photos/".$repertoire.$photos."/";
 	$dossier = opendir($folder);
 	while ($Fichier = readdir($dossier)) {
-	  if (strtolower(pathinfo($Fichier,PATHINFO_EXTENSION))=="jpg") {
+	  if (mb_strtolower(pathinfo($Fichier,PATHINFO_EXTENSION))=="jpg") {
 		$nomFichier = $folder."".$Fichier;
 		$fichier_sup[] = $nomFichier;
 	  }
@@ -4034,7 +4034,7 @@ function del_info_action($id_info) {
  */
 function affiche_date_sortie($date_sortie) {
 	//
-    $eleve_date_de_sortie_time=strtotime($date_sortie);
+    $eleve_date_de_sortie_time=mb_strtotime($date_sortie);
 	//récupération du jour, du mois et de l'année
 	$eleve_date_sortie_jour=date('j', $eleve_date_de_sortie_time); 
 	$eleve_date_sortie_mois=date('m', $eleve_date_de_sortie_time);
@@ -4467,7 +4467,7 @@ function get_tab_file($path,$tab_exclusion=array(".", "..", "remove.txt", ".htac
 	$handle=opendir($path);
 	$n=0;
 	while ($file = readdir($handle)) {
-		if (!in_array(strtolower($file), $tab_exclusion)) {
+		if (!in_array(mb_strtolower($file), $tab_exclusion)) {
 			$tab_file[] = $file;
 			$n++;
 		}

@@ -166,7 +166,7 @@ if(!isset($choix)) {
 			$sql="SELECT nom,prenom FROM eleves WHERE login='$lig->login';";
 			$res2=mysql_query($sql);
 			$lig2=mysql_fetch_object($res2);
-			echo strtoupper($lig2->nom)." ".ucfirst(strtolower($lig2->prenom));
+			echo strtoupper($lig2->nom)." ".ucfirst(mb_strtolower($lig2->prenom));
 			echo "</td>\n";
 			echo "<td>\n";
 			echo $lig->statut;
