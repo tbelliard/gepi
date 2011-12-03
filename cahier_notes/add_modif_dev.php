@@ -658,7 +658,7 @@ if($interface_simplifiee=="y"){
 		echo "<tr>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Coefficient:</td>\n";
 		echo "<td>\n";
-		echo "<input type='text' name = 'coef' id='coef' size='4' value = \"".$coef."\"  onkeydown=\"clavier_2(this.id,event,0,10);\" />\n";
+		echo "<input type='text' name = 'coef' id='coef' size='4' value = \"".$coef."\" onkeydown=\"clavier_2(this.id,event,0,10);\" autocomplete=\"off\" />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}

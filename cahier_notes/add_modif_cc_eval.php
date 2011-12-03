@@ -307,7 +307,7 @@ if($aff_note_sur=='y'){
 	echo "<tr>\n";
 	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Note sur&nbsp;:</td>\n";
 	echo "<td>\n";
-	echo "<input type='text' name='note_sur' size='4' autocomplete='off' onfocus=\"javascript:this.select()\" value=\"".$note_sur."\" onkeydown=\"clavier_2(this.id,event,1,100);\" autocomplete=\"off\" />\n";
+	echo "<input type='text' name='note_sur' id='note_sur' size='4' onfocus=\"javascript:this.select()\" value=\"".$note_sur."\" onkeydown=\"clavier_2(this.id,event,1,100);\" autocomplete=\"off\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 }

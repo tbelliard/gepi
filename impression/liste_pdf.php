@@ -455,7 +455,10 @@ if ($id_liste_groupes!=NULL) {
 			$pdf->SetFont('DejaVu','',9);
 			$y_tmp = $Y_courant;
 			//Nb de ligne AVANT dans le tableau
+//echo "\$nb_ligne_avant=$nb_ligne_avant<br />";die();
 			if ($nb_ligne_avant > 0) {
+
+//echo "\$h_ligne1_avant=$h_ligne1_avant<br />\n";echo "\$h_ligne=$h_ligne<br />\n";die();
 
 				//la première ligne peut être plus haute
 				if ($h_ligne1_avant > $h_ligne) {
@@ -466,11 +469,13 @@ if ($id_liste_groupes!=NULL) {
 					if (($afficher_effectif == 1) and ($nb_ligne_avant == 1)) {
 					  //on indique ici le nombre d'élève dans la classe (option)
 					  $texte = 'Effectif : '.$nb_eleves;
-					  $pdf->Cell($l_nomprenom,$h_ligne1_avant,$texte,'R',2,'C',2);
+					  //$pdf->Cell($l_nomprenom,$h_ligne1_avant,$texte,'R',2,'C',2);
+					  $pdf->Cell($l_nomprenom,$h_ligne1_avant,$texte,'R',2,'C',0);
 					} else {
 						//$pdf->Cell($l_nomprenom,$h_ligne1_avant,' ','R',2,'C',2);
 						// Avec le 'R' pas de bordure
 						$pdf->Cell($l_nomprenom,$h_ligne1_avant,' ','R',2,'L',0);
+						//$pdf->Cell($l_nomprenom,$h_ligne1_avant,' Plop ','R',2,'C',2);
 					}
 
 					//la fin du quadrillage
@@ -504,32 +509,30 @@ if ($id_liste_groupes!=NULL) {
 					//echo $nb_ligne_avant."<br>";;
 
 					if (($afficher_effectif == 1) and ($nb_ligne_avant == 1)) { // Attention possibilite de cas non traité
-
-					  //on indique ici le nombre d'élève dans la classe (option)
-					//on indique ici le nombre d'élève dans la classe (option)
-					$texte = 'Effectif : '.$nb_eleves;
+						//on indique ici le nombre d'élève dans la classe (option)
+						//on indique ici le nombre d'élève dans la classe (option)
+						$texte = 'Effectif : '.$nb_eleves;
 					}
 					if (($afficher_effectif == 1) and ($j == $nb_ligne_avant-2)) {
-
-					  $pdf->Cell($l_nomprenom,$h_ligne1_avant,$texte,'R',0,'C',0);
+						$pdf->Cell($l_nomprenom,$h_ligne1_avant,$texte,'R',0,'C',0);
 					} else {
-						  if (($nb_ligne_avant-2 <=0) and ($nb_ligne_avant < 2)) {
+						if (($nb_ligne_avant-2 <=0) and ($nb_ligne_avant < 2)) {
 							$pdf->Cell($l_nomprenom,$h_ligne,$texte,'R',0,'C',0);
-						  } else {
+						} else {
 							$pdf->Cell($l_nomprenom,$h_ligne,'','R',0,'C',0);
-						  }
+						}
 					}
-
+	
 					for($i=0; $i < $nb_colonne ; $i++) {
 						$pdf->Setxy($X_tableau+$l_nomprenom + $i*$l_colonne,$y_tmp);
 						if ($i<$nb_cellules_quadrillees) {
-						   $pdf->Cell($l_colonne,$h_ligne,'',1,0,'C',0); //le quadrillage
+							$pdf->Cell($l_colonne,$h_ligne,'',1,0,'C',0); //le quadrillage
 						} else {
-						   if ($i < ($nb_colonne-1)) {
-							 $pdf->Cell($l_colonne,$h_ligne,'','TB',0,'C',0); //suivant le type : plus de quadrillage
-						   } else {
-							   $pdf->Cell($l_colonne,$h_ligne,'','TBR',0,'C',0); // pour le dernier, on clos le tableau
-						   }
+							if ($i < ($nb_colonne-1)) {
+								$pdf->Cell($l_colonne,$h_ligne,'','TB',0,'C',0); //suivant le type : plus de quadrillage
+							} else {
+								$pdf->Cell($l_colonne,$h_ligne,'','TBR',0,'C',0); // pour le dernier, on clos le tableau
+							}
 						}
 					}
 					$y_tmp = $y_tmp + $h_ligne;
@@ -540,6 +543,7 @@ if ($id_liste_groupes!=NULL) {
 
 				$nb_ligne_avant = $nb_ligne_avant_initial;
 			}
+
 
 			// Le tableau
 			while($nb_eleves_i < $nb_eleves) {
