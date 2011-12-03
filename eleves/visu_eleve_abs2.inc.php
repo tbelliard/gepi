@@ -282,22 +282,22 @@ foreach($eleve->getPeriodeNotes() as $periode_note) {
 		 style="border:1px; cellspacing:0; text-align: center; width:100%; background-color: #e5e3e1;"
 		 >
 	<tr >
-	  <th class="number" title='cliquez pour triez sur la colonne'>
+	  <th class="number" title='cliquez pour trier sur la colonne'>
 		N°
 	  </th>
-	  <th title='cliquez pour triez sur la colonne' >
+	  <th title='cliquez pour trier sur la colonne' >
 		Saisies
 	  </th>
-	  <th title='cliquez pour triez sur la colonne'>
+	  <th title='cliquez pour trier sur la colonne'>
 		Type
 	  </th>
-	  <th title='cliquez pour triez sur la colonne'>
+	  <th title='cliquez pour trier sur la colonne'>
 		Motif
 	  </th>
-	  <th title='cliquez pour triez sur la colonne'>
+	  <th title='cliquez pour trier sur la colonne'>
 		Justification
 	  </th>
-	  <th title='cliquez pour triez sur la colonne'>
+	  <th title='cliquez pour trier sur la colonne'>
 		Commentaire(s)
 	  </th>
 	</tr>

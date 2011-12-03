@@ -959,7 +959,7 @@ if (isset($eleve_login)) {
 	
 	//echo "Date de sortie de l'élève dans la base :  $eleve_date_de_sortie <br/>";
     //conversion en seconde (timestamp)
-    $eleve_date_de_sortie_time=mb_strtotime($eleve_date_de_sortie);
+    $eleve_date_de_sortie_time=strtotime($eleve_date_de_sortie);
 
 	if ($eleve_date_de_sortie!=0) {
 	//récupération du jour, du mois et de l'année

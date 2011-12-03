@@ -4034,7 +4034,7 @@ function del_info_action($id_info) {
  */
 function affiche_date_sortie($date_sortie) {
 	//
-    $eleve_date_de_sortie_time=mb_strtotime($date_sortie);
+    $eleve_date_de_sortie_time=strtotime($date_sortie);
 	//récupération du jour, du mois et de l'année
 	$eleve_date_sortie_jour=date('j', $eleve_date_de_sortie_time); 
 	$eleve_date_sortie_mois=date('m', $eleve_date_de_sortie_time);
