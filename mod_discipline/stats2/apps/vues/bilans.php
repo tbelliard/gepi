@@ -36,8 +36,8 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
         foreach ($incidents as $titre=>$incidents_titre) :?>
           <?php if($titre=='L\'Etablissement') {
             if($affichage_etab) : ?>
-        <li><a href="#tab<?php echo $i;?>" title="Bilan des incidents" name="<?php echo $titre;?>-onglet-01"><?php echo $titre;?></a></li>
-        <li><a href="#tab<?php echo $i+1;?>" name="<?php echo $titre;?>-onglet-02"><img src="apps/img/user.png" alt="Synthèse individuelle" title="Synthèse individuelle"/></a>&nbsp;&nbsp;</li>
+        <li><a href="#tab<?php echo $i;?>" title="Bilan des incidents" name="Etablissement-onglet-01"><?php echo $titre;?></a></li>
+        <li><a href="#tab<?php echo $i+1;?>" name="Etablissement-onglet-02"><img src="apps/img/user.png" alt="Synthèse individuelle" title="Synthèse individuelle"/></a>&nbsp;&nbsp;</li>
               <?php $i=$i+2;
             endif;
           } else if ($titre=='Tous les élèves' ||$titre=='Tous les personnels' ) { ?>
