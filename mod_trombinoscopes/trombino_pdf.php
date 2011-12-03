@@ -306,8 +306,6 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 	}
 	//======================================
 	$pdf=new trombino_PDF("P","mm","A4");
-	//$pdf=new rel_PDF("P","mm","A4");
-	//$pdf=new FPDF("P","mm","A4");
 	$pdf->SetTopMargin($MargeHaut);
 	$pdf->SetRightMargin($MargeDroite);
 	$pdf->SetLeftMargin($MargeGauche);
@@ -326,7 +324,6 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 
 	$nb_total_pages=0;
 
-	//$nb_pages=Ceil($cpt/$nb_cell);
 	$nb_pages=Ceil($total/$nb_cell);
 	//echo "\$nb_pages=$nb_pages<br />";
 	$cpt=0;
@@ -349,14 +346,6 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 		// On n'arrive pas à centrer avec cell_ajustee()
 		// Difficulté avec le mode de remplissage avec myWriteHTML()
 		$largeur_dispo=$larg_cadre;
-		/*
-		$h_cell=$hauteur_info_eleve;
-		$hauteur_max_font=$fonte_size;
-		$hauteur_min_font=4;
-		$bordure='';
-		$v_align='C';
-		$align='C';
-		*/
 
 		for($m=0;$m<$trombino_pdf_nb_lig;$m++) {
 			for($k=0;$k<$trombino_pdf_nb_col;$k++) {

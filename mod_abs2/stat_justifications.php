@@ -380,6 +380,9 @@ if (!isset($_SESSION['statJustifie'])) {
 
   } elseif ($_POST['valide'] == "csv") {
   /***** On crée et envoie un fichier .csv *****/
+	if (!isset ($_SESSION['statJustifie']['donnees'])) {
+	  $_SESSION['statJustifie']['donnees']=array();
+	}
 	creeCSV($_SESSION['statJustifie']['donnees'], unserialize($_SESSION['statJustifie']['justifications']));
   } else {
   /***** On a changer les dates ou le mode de calcul ou on ne veut que les erreurs *****/
