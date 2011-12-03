@@ -112,73 +112,6 @@ echo "</select>\n";
 echo "</td>\n";
 echo "</tr>\n";
 
-/*
-$sql="SELECT rp.nom, rp.prenom, rp.civilite, rp.pers_id, rp.adr_id, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.ele_id=r.ele_id AND r.pers_id=rp.pers_id AND e.login='$ele_login' ORDER BY r.resp_legal;";
-$res_dest=mysql_query($sql);
-if(mysql_num_rows($res_dest)==0) {
-	echo "<tr class='lig-1'>\n";
-	echo "<td style='font-weight:bold; text-align:left; vertical-align: top;'>Destinataires&nbsp;:</td>\n";
-	echo "<td colspan='4'>Aucun destinataire n'a été trouvé dans la table 'resp_pers'.</td>\n";
-	echo "</tr>\n";
-}
-else {
-	echo "<tr class='lig-1'>\n";
-	echo "<td style='font-weight:bold; text-align:left; vertical-align: top;' rowspan='".mysql_num_rows($res_dest)."'>Destinataires&nbsp;:</td>\n";
-	$cpt=0;
-	while($lig_dest=mysql_fetch_object($res_dest)) {
-		if($cpt>0) {echo "<tr class='lig-1'>";}
-		echo "<td style='text-align:left;'>\n";
-
-		// Adresse:
-		$sql="SELECT * FROM resp_adr WHERE adr_id='$lig_dest->adr_id';";
-		$res_adr=mysql_query($sql);
-		if(mysql_num_rows($res_adr)==0) {
-			echo "<span style='color:red;'>-</span>\n";
-		}
-		else {
-			echo "<input type='checkbox' name='destinataire[]' id='destinataire_".$lig_dest->pers_id."' value='$lig_dest->pers_id' />";
-			//echo "<input type='checkbox' name='destinataire[]' id='destinataire_".$lig_dest->pers_id."' value='$lig_dest->resp_legal' />";
-		}
-		echo "</td>\n";
-
-		echo "<td style='text-align:left;'>\n";
-		echo "<label for='destinataire_".$lig_dest->pers_id."' style='cursor: pointer;'>\n";
-		echo " ".$lig_dest->civilite." ".strtoupper($lig_dest->nom)." ".ucwords(strtolower($lig_dest->prenom));
-		echo "</label>\n";
-		echo "</td>\n";
-
-		echo "<td style='text-align:center;'>\n";
-		echo " (<em>resp.légal ".$lig_dest->resp_legal."</em>)";
-		echo "</td>\n";
-
-		echo "<td style='text-align:left; font-size: x-small;'>\n";
-		// Adresse:
-		//$sql="SELECT * FROM resp_adr WHERE adr_id='$lig_dest->adr_id';";
-		//$res_adr=mysql_query($sql);
-		if(mysql_num_rows($res_adr)==0) {
-			echo "<span style='color:red;'>Pas d'adresse</span>\n";
-		}
-		else {
-			$lig_adr=mysql_fetch_object($res_adr);
-
-			if($lig_adr->adr1!="") {echo $lig_adr->adr1."<br />\n";}
-			if($lig_adr->adr2!="") {echo $lig_adr->adr2."<br />\n";}
-			if($lig_adr->adr3!="") {echo $lig_adr->adr3."<br />\n";}
-			if($lig_adr->adr4!="") {echo $lig_adr->adr4."<br />\n";}
-			if($lig_adr->cp!="") {echo $lig_adr->cp.", \n";}
-			if($lig_adr->commune!="") {echo $lig_adr->commune.", \n";}
-			if(($lig_adr->pays!="")&&(strtolower($lig_adr->pays)!=$gepiSchoolPays)) {echo "<br />\n$lig_adr->pays";}
-
-		}
-		echo "</td>\n";
-		//echo "<br />\n";
-		echo "</tr>\n";
-		$cpt++;
-	}
-}
-//echo "</td>\n";
-//echo "</tr>\n";
-*/
 
 
 $sql="SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e WHERE e.ele_id=r.ele_id AND r.pers_id=rp.pers_id AND e.login='$ele_login' AND (r.resp_legal='1' OR r.resp_legal='2') ORDER BY r.resp_legal;";
@@ -324,7 +257,7 @@ elseif($nb_adr==1) {
 		if($i>0) {echo "<tr class='lig-1'>\n";}
 		echo "<td style='text-align: left;'>\n";
 		echo "<label for='destinataire_".$cpt."' style='cursor: pointer;'>\n";
-		echo " ".$tab_resp[$i]['civilite']." ".strtoupper($tab_resp[$i]['nom'])." ".ucwords(strtolower($tab_resp[$i]['prenom']));
+		echo " ".$tab_resp[$i]['civilite']." ".mb_strtoupper($tab_resp[$i]['nom'])." ".ucwords(mb_strtolower($tab_resp[$i]['prenom']));
 		echo "</label>\n";
 
 		//echo "<span style='color:green;'>".$tab_resp[$i]['adr_id']."</span>";
@@ -383,7 +316,7 @@ else {
 
 		echo "<td style='text-align: left;'>\n";
 		echo "<label for='destinataire_".$i."' style='cursor: pointer;'>\n";
-		echo " ".$tab_resp[$i]['civilite']." ".strtoupper($tab_resp[$i]['nom'])." ".ucwords(strtolower($tab_resp[$i]['prenom']));
+		echo " ".$tab_resp[$i]['civilite']." ".mb_strtoupper($tab_resp[$i]['nom'])." ".ucwords(mb_strtolower($tab_resp[$i]['prenom']));
 		echo "</label>\n";
 		echo "</td>\n";
 

@@ -932,7 +932,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 				$res2=mysql_query($sql);
 				if(mysql_num_rows($res2)>0) {
 					$lig2=mysql_fetch_object($res2);
-					echo ucfirst(strtolower($lig2->prenom))." ".strtoupper($lig2->nom);
+					echo ucfirst(mb_strtolower($lig2->prenom))." ".mb_strtoupper($lig2->nom);
 					echo infobulle_photo($lig->login);
 				}
 				else {
@@ -954,7 +954,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 				$res2=mysql_query($sql);
 				if(mysql_num_rows($res2)>0) {
 					$lig2=mysql_fetch_object($res2);
-					echo ucfirst(strtolower($lig2->prenom))." ".strtoupper($lig2->nom);
+					echo ucfirst(mb_strtolower($lig2->prenom))." ".mb_strtoupper($lig2->nom);
 				}
 				else {
 					echo "ERREUR: Login inconnu";

@@ -773,8 +773,7 @@ if(!isset($id_incident)) {
 			    $res1_declarant=mysql_query($sql_declarant);
 				if(mysql_num_rows($res1_declarant)>0) {
 					$lig1_declarant=mysql_fetch_object($res1_declarant);
-					$chaine=strtoupper($lig1_declarant->nom)." ".ucfirst(mb_substr($lig1_declarant->prenom,0,1));
-					//echo $lig_declarant->civilite." ".strtoupper($lig_declarant->nom)." ".ucfirst(substr($lig_declarant->prenom,0,1)).".";	
+					$chaine=mb_strtoupper($lig1_declarant->nom)." ".ucfirst(mb_substr($lig1_declarant->prenom,0,1));
 				}
 				else {
 					echo "ERREUR: Login $lig1_declarant->declarant inconnu";
@@ -1011,7 +1010,7 @@ if(!isset($id_incident)) {
 				$res_declarant=mysql_query($sql_declarant);
 				if(mysql_num_rows($res_declarant)>0) {
 					$lig_declarant=mysql_fetch_object($res_declarant);
-					echo $lig_declarant->civilite." ".strtoupper($lig_declarant->nom)." ".ucfirst(mb_substr($lig_declarant->prenom,0,1)).".";	
+					echo $lig_declarant->civilite." ".mb_strtoupper($lig_declarant->nom)." ".ucfirst(mb_substr($lig_declarant->prenom,0,1)).".";	
 				}
 				else {
 					echo "ERREUR: Login $lig->declarant inconnu";
@@ -1039,10 +1038,10 @@ if(!isset($id_incident)) {
 						$res3=mysql_query($sql);
 						if(mysql_num_rows($res3)>0) {
 							$lig3=mysql_fetch_object($res3);
-							echo ucfirst(strtolower($lig3->prenom))." ".strtoupper($lig3->nom);
+							echo ucfirst(mb_strtolower($lig3->prenom))." ".mb_strtoupper($lig3->nom);
 
 							if($liste_protagonistes!="") {$liste_protagonistes.=", ";}
-							$liste_protagonistes.=ucfirst(strtolower($lig3->prenom))." ".strtoupper($lig3->nom);
+							$liste_protagonistes.=ucfirst(mb_strtolower($lig3->prenom))." ".mb_strtoupper($lig3->nom);
 						}
 						else {
 							echo "ERREUR: Login $lig2->login inconnu";
@@ -1062,11 +1061,10 @@ if(!isset($id_incident)) {
 						$res3=mysql_query($sql);
 						if(mysql_num_rows($res3)>0) {
 							$lig3=mysql_fetch_object($res3);
-							//echo ucfirst(strtolower($lig3->prenom))." ".strtoupper($lig3->nom);
-							echo $lig3->civilite." ".strtoupper($lig3->nom)." ".ucfirst(mb_substr($lig3->prenom,0,1)).".";
+							echo $lig3->civilite." ".mb_strtoupper($lig3->nom)." ".ucfirst(mb_substr($lig3->prenom,0,1)).".";
 
 							if($liste_protagonistes!="") {$liste_protagonistes.=", ";}
-							$liste_protagonistes.=$lig3->civilite." ".strtoupper($lig3->nom)." ".ucfirst(mb_substr($lig3->prenom,0,1)).".";
+							$liste_protagonistes.=$lig3->civilite." ".mb_strtoupper($lig3->nom)." ".ucfirst(mb_substr($lig3->prenom,0,1)).".";
 						}
 						else {
 							echo "ERREUR: Login $lig2->login inconnu";

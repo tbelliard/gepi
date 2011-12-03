@@ -362,7 +362,7 @@ function matiereprof($prof, $equipepeda) {
 		if ($i < $total) {
 			$nom_photo = nom_photo($id_photo_trombinoscope[$i],$repertoire);
 
-			$nom_es = strtoupper($nom_trombinoscope[$i]);
+			$nom_es = mb_strtoupper($nom_trombinoscope[$i]);
 			$prenom_es = ucfirst($prenom_trombinoscope[$i]);
 
 			if (($action_affiche=='equipepeda')||

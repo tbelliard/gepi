@@ -1239,7 +1239,7 @@ if(isset($id_incident)) {
 					$ele_login[]=$lig->login;
 
 					$lig2=mysql_fetch_object($res2);
-					echo ucfirst(strtolower($lig2->prenom))." ".strtoupper($lig2->nom);
+					echo ucfirst(mb_strtolower($lig2->prenom))." ".mb_strtoupper($lig2->nom);
 				}
 				else {
 					echo "ERREUR: Login inconnu";
@@ -1284,7 +1284,7 @@ if(isset($id_incident)) {
 				$res2=mysql_query($sql);
 				if(mysql_num_rows($res2)>0) {
 					$lig2=mysql_fetch_object($res2);
-					echo ucfirst(strtolower($lig2->prenom))." ".strtoupper($lig2->nom);
+					echo ucfirst(mb_strtolower($lig2->prenom))." ".mb_strtoupper($lig2->nom);
 				}
 				else {
 					echo "ERREUR: Login inconnu";
@@ -1575,7 +1575,7 @@ if($step==0) {
 				echo "<input type='checkbox' name='ele_login[]' id='ele_login_$i' value=\"$lig_ele->login\" />\n";
 				echo "</td>\n";
 				echo "<td>\n";
-				echo "<label for='ele_login_$i' style='cursor:pointer;'>".ucfirst(strtolower($lig_ele->prenom))." ".strtoupper($lig_ele->nom)."</label>";
+				echo "<label for='ele_login_$i' style='cursor:pointer;'>".ucfirst(mb_strtolower($lig_ele->prenom))." ".mb_strtoupper($lig_ele->nom)."</label>";
 				echo "</td>\n";
 				echo "</tr>\n";
 
@@ -1739,7 +1739,7 @@ elseif($step==1) {
 			echo "</td>\n";
 			echo "<td>\n";
 			//echo "<label for='u_login_$i' style='cursor:pointer;'>".$lig2->civilite." ".ucwords(strtolower($lig2->prenom))." ".strtoupper($lig2->nom)."</label>";
-			echo "<label for='u_login_$i' style='cursor:pointer;'>".$lig2->civilite." ".strtoupper($lig2->nom)." ".ucfirst(mb_substr($lig2->prenom,0,1)).".</label>";
+			echo "<label for='u_login_$i' style='cursor:pointer;'>".$lig2->civilite." ".mb_strtoupper($lig2->nom)." ".ucfirst(mb_substr($lig2->prenom,0,1)).".</label>";
 			echo "</td>\n";
 
 			$sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du

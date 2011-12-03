@@ -393,8 +393,6 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 				$texte="";
 				//if(isset($tab_ele[$cpt])) {
 				if(isset($nom_trombinoscope[$cpt])) {
-					//$texte=$tab_ele[$cpt]['login'];
-					//$texte=strtoupper($tab_ele[$cpt]['nom'])." ".casse_mot($tab_ele[$cpt]['prenom'],'majf2');
 					$texte=my_strtoupper($nom_trombinoscope[$cpt])." ".casse_mot($prenom_trombinoscope[$cpt],'majf2');
 
 					if(count($tab_classes)>1) {

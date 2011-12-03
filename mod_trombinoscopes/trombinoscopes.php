@@ -1047,7 +1047,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 			//	echo "<td>\n";
 			echo "<div style='float:left; width: ".$largeur_div."px; margin: ".$marge."px; padding: ".$marge."px; border: 1px solid black;'>\n";
 				if ($i < $total) {
-					$nom_es = strtoupper($nom_trombinoscope[$i]);
+					$nom_es = mb_strtoupper($nom_trombinoscope[$i]);
 					$prenom_es = ucfirst($prenom_trombinoscope[$i]);
 	
 					if (($action_affiche=='equipepeda')||
@@ -1141,7 +1141,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 		for($j=0;$j<3;$j++){
 			echo "<td>\n";
 			if ($i < $total) {
-				$nom_es = strtoupper($nom_trombinoscope[$i]);
+				$nom_es = mb_strtoupper($nom_trombinoscope[$i]);
 				$prenom_es = ucfirst($prenom_trombinoscope[$i]);
 
 				if (($action_affiche=='equipepeda')||

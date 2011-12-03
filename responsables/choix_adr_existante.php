@@ -492,9 +492,9 @@ else{
 			$res_pers=mysql_query($sql);
 			if(mysql_num_rows($res_pers)>0){
 				$ligtmp=mysql_fetch_object($res_pers);
-				$chaine="<a href='modify_resp.php?pers_id=$ligtmp->pers_id' target='_blank'>".strtoupper($ligtmp->nom)." ".ucfirst(strtolower($ligtmp->prenom))."</a>";
+				$chaine="<a href='modify_resp.php?pers_id=$ligtmp->pers_id' target='_blank'>".mb_strtoupper($ligtmp->nom)." ".ucfirst(strtolower($ligtmp->prenom))."</a>";
 				while($ligtmp=mysql_fetch_object($res_pers)){
-					$chaine.=",<br />\n<a href='modify_resp.php?pers_id=$ligtmp->pers_id' target='_blank'>".strtoupper($ligtmp->nom)." ".ucfirst(strtolower($ligtmp->prenom))."</a>";
+					$chaine.=",<br />\n<a href='modify_resp.php?pers_id=$ligtmp->pers_id' target='_blank'>".mb_strtoupper($ligtmp->nom)." ".ucfirst(strtolower($ligtmp->prenom))."</a>";
 				}
 				echo "$chaine";
 			}
@@ -564,9 +564,9 @@ else{
 			$res_pers=mysql_query($sql);
 			if(mysql_num_rows($res_pers)>0){
 				$ligtmp=mysql_fetch_object($res_pers);
-				$chaine="<a href='modify_resp.php?pers_id=$ligtmp->pers_id' target='_blank'>".strtoupper($ligtmp->nom)." ".ucfirst(strtolower($ligtmp->prenom))."</a>";
+				$chaine="<a href='modify_resp.php?pers_id=$ligtmp->pers_id' target='_blank'>".mb_strtoupper($ligtmp->nom)." ".ucfirst(strtolower($ligtmp->prenom))."</a>";
 				while($ligtmp=mysql_fetch_object($res_pers)){
-					$chaine.=",<br />\n<a href='modify_resp.php?pers_id=$ligtmp->pers_id' target='_blank'>".strtoupper($ligtmp->nom)." ".ucfirst(strtolower($ligtmp->prenom))."</a>";
+					$chaine.=",<br />\n<a href='modify_resp.php?pers_id=$ligtmp->pers_id' target='_blank'>".mb_strtoupper($ligtmp->nom)." ".ucfirst(strtolower($ligtmp->prenom))."</a>";
 				}
 				echo "$chaine";
 			}
@@ -575,79 +575,8 @@ else{
 		//}
 	}
 
-	/*
-	$cpt=0;
-	while($lig_adr=mysql_fetch_object($res_adr)){
-		if(($lig_adr->adr1!="")||($lig_adr->adr2!="")||($lig_adr->adr3!="")||($lig_adr->adr4!="")||($lig_adr->commune!="")){
-			echo "<tr>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value=\"$lig_adr->adr_id\" /></td>\n";
-			echo "<td style='text-align:center;'>$lig_adr->adr_id</td>\n";
-			echo "<td style='text-align:center;'>\n";
-			//$chaine_adr='';
-			//$adr1='';
-			if($lig_adr->adr1!=""){
-				echo $lig_adr->adr1;
-				//$adr1=$lig_adr->adr1;
-			}
-			//echo "<input type='hidden' name='adr1_$cpt' id='id_adr1_$cpt' value=\"$adr1\" />\n";
-
-			//$adr2='';
-			if($lig_adr->adr2!=""){
-				echo "-".$lig_adr->adr2;
-				//$adr2=$lig_adr->adr2;
-			}
-			//echo "<input type='hidden' name='adr2_$cpt' id='id_adr2_$cpt' value=\"$adr2\" />\n";
-
-			//$adr3='';
-			if($lig_adr->adr3!=""){
-				echo "-".$lig_adr->adr3;
-				//$adr3=$lig_adr->adr3;
-			}
-			//echo "<input type='hidden' name='adr3_$cpt' id='id_adr3_$cpt' value=\"$adr3\" />\n";
-
-			//$adr4='';
-			if($lig_adr->adr4!=""){
-				echo "-".$lig_adr->adr4;
-				//$adr4=$lig_adr->adr4;
-			}
-			//echo "<input type='hidden' name='adr4_$cpt' id='id_adr4_$cpt' value=\"$adr4\" />\n";
-
-			echo "</td>\n";
-			echo "<td style='text-align:center;'>$lig_adr->cp\n";
-			//echo "<input type='hidden' name='cp_$cpt' id='id_cp_$cpt' value='$lig_adr->cp' />\n";
-			echo "</td>\n";
-			echo "<td style='text-align:center;'>$lig_adr->commune\n";
-			//echo "<input type='hidden' name='commune_$cpt' id='id_commune_$cpt' value='$lig_adr->commune' />\n";
-			echo "</td>\n";
-			echo "<td style='text-align:center;'>$lig_adr->pays\n";
-			//echo "<input type='hidden' name='pays_$cpt' id='id_pays_$cpt' value='$lig_adr->pays' />\n";
-			echo "</td>\n";
-
-			echo "<td style='text-align:center;'>";
-			$sql="SELECT nom,prenom,pers_id FROM resp_pers WHERE adr_id='$lig_adr->adr_id'";
-			$res_pers=mysql_query($sql);
-			if(mysql_num_rows($res_pers)>0){
-				$ligtmp=mysql_fetch_object($res_pers);
-				//$chaine="<a href='modify_resp.php?pers_id=$pers_id'>".strtoupper($ligtmp->nom)." ".ucfirst(strtolower($ligtmp->prenom))."</a>";
-				$chaine="<a href='modify_resp.php?pers_id=$ligtmp->pers_id' target='_blank'>".strtoupper($ligtmp->nom)." ".ucfirst(strtolower($ligtmp->prenom))."</a>";
-				while($ligtmp=mysql_fetch_object($res_pers)){
-					//$chaine.=",<br />\n<a href='modify_resp.php?pers_id=$pers_id'>".strtoupper($ligtmp->nom)." ".ucfirst(strtolower($ligtmp->prenom))."</a>";
-					$chaine.=",<br />\n<a href='modify_resp.php?pers_id=$ligtmp->pers_id' target='_blank'>".strtoupper($ligtmp->nom)." ".ucfirst(strtolower($ligtmp->prenom))."</a>";
-				}
-				echo "$chaine";
-			}
-			echo "</td>\n";
-
-			//echo "<td style='text-align:center;'><input type='checkbox' name='suppr_ad[]' value='$lig_adr->adr_id' /></td>\n";
-			echo "</tr>\n";
-			$cpt++;
-		}
-	}
-	*/
 
 	echo "</table>\n";
-	//echo "<center><input type='submit' value='Enregistrer' /></center>\n";
-	//echo "<center><input type='button' value='Valider' onClick='reporter_valeur()' /></center>\n";
 	echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
 	echo "</div>\n";
 

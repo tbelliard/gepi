@@ -777,7 +777,7 @@ else{
 						$sql.="elenoet='".$eleves[$i]['elenoet']."', ";
 						if(isset($eleves[$i]['id_national'])) {$sql.="elenonat='".$eleves[$i]['id_national']."', ";}
 						//$sql.="elenom='".addslashes($eleves[$i]['nom'])."', ";
-						$sql.="elenom='".addslashes(strtoupper($eleves[$i]['nom']))."', ";
+						$sql.="elenom='".addslashes(mb_strtoupper($eleves[$i]['nom']))."', ";
 
 						//$sql.="elepre='".addslashes($eleves[$i]['prenom'])."', ";
 						// On ne retient que le premier prénom:
@@ -789,7 +789,7 @@ else{
 							$sql.="elesexe='".sexeMF($eleves[$i]["code_sexe"])."', ";
 						}
 						else {
-							echo "<span style='color:red'>Sexe non défini dans Sconet pour ".maj_ini_prenom($tab_prenom[0])." ".strtoupper($eleves[$i]['nom'])."</span><br />\n";
+							echo "<span style='color:red'>Sexe non défini dans Sconet pour ".maj_ini_prenom($tab_prenom[0])." ".mb_strtoupper($eleves[$i]['nom'])."</span><br />\n";
 							$sql.="elesexe='M', ";
 						}
 						$sql.="eledatnais='".$eleves[$i]['date_naiss']."', ";

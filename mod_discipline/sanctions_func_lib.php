@@ -26,10 +26,10 @@ function p_nom($ele_login,$mode="pn") {
 	if(mysql_num_rows($res_ele)>0) {
 		$lig_ele=mysql_fetch_object($res_ele);
 		if($mode=="pn") {
-			return ucfirst(strtolower($lig_ele->prenom))." ".strtoupper($lig_ele->nom);
+			return ucfirst(mb_strtolower($lig_ele->prenom))." ".mb_strtoupper($lig_ele->nom);
 		}
 		else {
-			return strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom));
+			return mb_strtoupper($lig_ele->nom)." ".ucfirst(mb_strtolower($lig_ele->prenom));
 		}
 	}
 	else {
@@ -43,8 +43,7 @@ function u_p_nom($u_login) {
 	$res3=mysql_query($sql);
 	if(mysql_num_rows($res3)>0) {
 		$lig3=mysql_fetch_object($res3);
-		//echo ucfirst(strtolower($lig3->prenom))." ".strtoupper($lig3->nom);
-		return $lig3->civilite." ".strtoupper($lig3->nom)." ".ucfirst(mb_substr($lig3->prenom,0,1)).".";
+		return $lig3->civilite." ".mb_strtoupper($lig3->nom)." ".ucfirst(mb_substr($lig3->prenom,0,1)).".";
 	}
 	else {
 		return "LOGIN INCONNU";

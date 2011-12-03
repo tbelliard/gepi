@@ -97,7 +97,7 @@ else{
 			echo "<input type='hidden' name='step' value='2' />\n";
 
 			$csv_file = isset($_FILES["ele_file"]) ? $_FILES["ele_file"] : NULL;
-			if(strtoupper($csv_file['name']) == "ELEVES.CSV"){
+			if(mb_strtoupper($csv_file['name']) == "ELEVES.CSV"){
 				//$fp = dbase_open($csv_file['tmp_name'], 0);
 				$fp=fopen($csv_file['tmp_name'],"r");
 
@@ -773,11 +773,11 @@ else{
 					$nonat=$_POST['new_'.$cpt.'_nonat'];
 
 					// Générer un login...
-					$temp1 = strtoupper($nom);
-					$temp1 = strtr($temp1, " '-", "___");
+					$temp1 = mb_strtoupper($nom);
+					$temp1 = mb_strtr($temp1, " '-", "___");
 					$temp1 = mb_substr($temp1,0,7);
-					$temp2 = strtoupper($prenom);
-					$temp2 = strtr($temp2, " '-", "___");
+					$temp2 = mb_strtoupper($prenom);
+					$temp2 = mb_strtr($temp2, " '-", "___");
 					$temp2 = mb_substr($temp2,0,1);
 					$login_eleve = $temp1.'_'.$temp2;
 
@@ -907,8 +907,7 @@ else{
 
 
 			$csv_file = isset($_FILES["adr_file"]) ? $_FILES["adr_file"] : NULL;
-			//echo strtoupper($csv_file['name'])."<br />";
-			if(strtoupper($csv_file['name']) == "ADRESSES.CSV") {
+			if(mb_strtoupper($csv_file['name']) == "ADRESSES.CSV") {
 				$fp=fopen($csv_file['tmp_name'],"r");
 				if(!$fp){
 					echo "<p>Impossible d'ouvrir le fichier ADRESSES.CSV.</p>";
@@ -1109,8 +1108,7 @@ else{
 
 
 			$csv_file = isset($_FILES["pers_file"]) ? $_FILES["pers_file"] : NULL;
-			//echo strtoupper($csv_file['name'])."<br />";
-			if(strtoupper($csv_file['name']) == "PERSONNES.CSV") {
+			if(mb_strtoupper($csv_file['name']) == "PERSONNES.CSV") {
 				$fp=fopen($csv_file['tmp_name'],"r");
 				if(!$fp){
 					echo "<p>Impossible d'ouvrir le fichier PERSONNES.CSV.</p>\n";
@@ -2162,8 +2160,7 @@ else{
 
 			$cpt=0;
 			$csv_file = isset($_FILES["resp_file"]) ? $_FILES["resp_file"] : NULL;
-			//echo strtoupper($csv_file['name'])."<br />";
-			if(strtoupper($csv_file['name']) == "RESPONSABLES.CSV") {
+			if(mb_strtoupper($csv_file['name']) == "RESPONSABLES.CSV") {
 				$fp=fopen($csv_file['tmp_name'],"r");
 				if(!$fp){
 					echo "<p>Impossible d'ouvrir le fichier RESPONSABLES.CSV.</p>";
