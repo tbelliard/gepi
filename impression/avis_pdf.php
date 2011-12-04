@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -31,7 +31,7 @@ Header('Pragma: public');
 header('Content-Type: application/pdf');
 */
 //=============================
-// REMONTé:
+// REMONTÉ:
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 //=============================
@@ -276,7 +276,7 @@ echo "</pre>";
 //Entête du PDF
 			$pdf->SetLineWidth(0.7);
 			$pdf->SetFont('DejaVu','B',14);
-			$pdf->Setxy($X_entete_classe,$Y_entete_classe);
+			$pdf->SetXY($X_entete_classe,$Y_entete_classe);
 
 			if ($id_classe != NULL) {
 			  $calldata = mysql_query("SELECT * FROM classes WHERE id = '$id_classe'");
@@ -311,7 +311,7 @@ echo "</pre>";
 			  $pdf->CellFitScale($L_entete_classe,$H_entete_classe,'Classe de '.$current_classe,'LTRB',2,'C');
 			}
 
-			$pdf->Setxy($X_entete_matiere,$Y_entete_matiere);
+			$pdf->SetXY($X_entete_matiere,$Y_entete_matiere);
 			$pdf->SetFont('DejaVu','B',14);
 
 			
@@ -346,7 +346,7 @@ echo "</pre>";
 			}
 
 			$Y_courant=$pdf->GetY()+2.5;
-			$pdf->Setxy($MargeGauche,$Y_courant);
+			$pdf->SetXY($MargeGauche,$Y_courant);
 
 		//La ligne de texte après les entêtes
 				$pdf->CellFitScale(0,10,$ligne_texte,'',2,'C');
@@ -368,22 +368,16 @@ echo "</pre>";
                 $current_eleve_avis = @mysql_result($current_eleve_avis_query, 0, "avis");
 
 				$y_tmp = $pdf->GetY();
-				$pdf->Setxy($X_tableau,$y_tmp);
+				$pdf->SetXY($X_tableau,$y_tmp);
 				$pdf->SetFont('DejaVu','B',9);
 				//$texte = strtoupper($donnees_eleves['nom'][$nb_eleves_i])." ".ucfirst($donnees_eleves['prenom'][$nb_eleves_i]);
 				
 				$texte = my_strtoupper($donnees_eleves[$nb_eleves_i]['nom'])." ".casse_mot($donnees_eleves[$nb_eleves_i]['prenom'],'majf2');
 				
-				//$pdf->CellFitScale($l_cell_nom,$h_cell,$texte,1,0,'L',0); //$l_cell_nom.' - '.$h_cell.' / '.$X_tableau.' - '.$y_tmp
-
-				$taille_max_police=9;
-				$taille_min_police=ceil($taille_max_police/3);
-				$largeur_dispo=$l_cell_nom;
-				//cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
-				cell_ajustee("<b>".$texte."</b>",$pdf->GetX(),$y_tmp,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
-
-				//$y_tmp = $pdf->GetY();
-				$pdf->Setxy($X_tableau+$l_cell_nom,$y_tmp);
+				$pdf->CellFitScale($l_cell_nom,$h_cell,$texte,1,0,'L',0); //$l_cell_nom.' - '.$h_cell.' / '.$X_tableau.' - '.$y_tmp
+			
+				$y_tmp = $pdf->GetY();
+				$pdf->SetXY($X_tableau+$l_cell_nom,$y_tmp);
 				
 				$l_cell_avis=$EspaceX - $l_cell_nom;
 				
@@ -410,8 +404,9 @@ echo "</pre>";
 				//$pdf->CellFitScale($l_cell_avis,$h_cell,$avis,1,0,'L',0); //le quadrillage
 
 				$taille_texte_total = $pdf->GetStringWidth($avis);
+
 				$largeur_appreciation2 = $l_cell_avis ;
-				/*
+
 				$nb_ligne_app = '4.8';
 				$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2-4);
 				$grandeur_texte='test';
@@ -424,19 +419,23 @@ echo "</pre>";
 					} else { $grandeur_texte='ok'; }
 				}
 				$grandeur_texte='test';
-
-				//$avis=ensure_utf8($avis);
-				$pdf->drawTextBox($avis, $largeur_appreciation2, $h_cell, 'J', 'M', 1);
-				*/
+				
+				//$pdf->drawTextBox($avis, $largeur_appreciation2, $h_cell, 'J', 'M', 1);
+				
 				$hauteur_caractere_appreciation=9;
-				$taille_max_police=$hauteur_caractere_appreciation;
-				$taille_min_police=ceil($taille_max_police/3);
-				$largeur_dispo=$largeur_appreciation2;
-				cell_ajustee($avis,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
-
+-				$taille_max_police=$hauteur_caractere_appreciation;
+-				$taille_min_police=ceil($taille_max_police/3);
+-				$largeur_dispo=$largeur_appreciation2;
+-				cell_ajustee($avis,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+-
+				
+				
 				$pdf->SetFont('DejaVu','',7.5);
 
-				$pdf->Setxy($X_tableau+$l_cell_nom,$y_tmp+$h_cell);
+				$pdf->SetXY($X_tableau+$l_cell_nom,$y_tmp+$h_cell);
+				
+				
+				
 				
 				$nb_eleves_i = $nb_eleves_i + 1;
 			}
