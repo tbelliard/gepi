@@ -2016,7 +2016,7 @@ Patientez pendant l'extraction des données... merci.
 				    echo '<br /><p class="bold">Le détail des absences enregistrées : </p>';
 
 				    echo '
-				    <table class="boireaus" style="margin-left: 4em;" summary="D&eacute;tail des absences">
+				    <table class="boireaus" style="margin-left: 4em;" summary="Détail des absences">
 					    <tr>
 						    <th>R/A</th>
 						    <th>Jour</th>
@@ -2042,6 +2042,13 @@ Patientez pendant l'extraction des données... merci.
 				    }
 				    echo '</table>'."\n";
 			    }
+				
+				if (getSettingValue("abs2_import_manuel_bulletin")=='y') {
+				  require_once("../lib/initialisationsPropel.inc.php");
+				  $eleve = EleveQuery::create()->findOneByLogin($ele_login);
+				  include 'visu_eleve_abs2.inc.php';
+			    }
+				
 			} elseif (getSettingValue("active_module_absence")=='2') {
 			    echo "<h2>Absences et retards de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 			    // Initialisations files
@@ -2087,6 +2094,8 @@ Patientez pendant l'extraction des données... merci.
 				    echo "</tr>\n";
 			    }
 			    echo "</table>\n";
+				
+				include 'visu_eleve_abs2.inc.php';
 			}
 			echo "</div>\n";
 		}

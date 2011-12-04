@@ -143,7 +143,7 @@ else {
 			$unzipped_max_filesize=getSettingValue('unzipped_max_filesize')*1024*1024;
 			if($unzipped_max_filesize>=0) {
 				$fichier_emis=$csv_file['name'];
-				$extension_fichier_emis=strtolower(strrchr($fichier_emis,"."));
+				$extension_fichier_emis=mb_strtolower(strrchr($fichier_emis,"."));
 				if (($extension_fichier_emis==".zip")||($csv_file['type']=="application/zip"))
 					{
 
@@ -234,7 +234,7 @@ else {
 				$temoin=0;
 				for($k=0;$k<count($tabchamps);$k++){
 					for($i=0;$i<count($en_tete);$i++){
-						if(strtolower(trim($en_tete[$i]))==strtolower($tabchamps[$k])) {
+						if(mb_strtolower(trim($en_tete[$i]))==mb_strtolower($tabchamps[$k])) {
 							$tabindice[$k]=$i;
 							//echo "\$tabindice[$k]=$tabindice[$k]<br />";
 							$temoin++;

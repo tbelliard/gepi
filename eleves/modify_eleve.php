@@ -1220,7 +1220,6 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 						echo "checked ";
 					}
 					echo "onchange='changement();' /></td>\n";
-					//echo "<td><a href='../responsables/modify_resp.php?pers_id=$lig_resp->pers_id' target='_blank'>".strtoupper($lig_resp->nom)." ".ucfirst(strtolower($lig_resp->prenom))."</a></td>\n";
 					echo "<td><a href='../responsables/modify_resp.php?pers_id=$lig_resp->pers_id&amp;quitter_la_page=y' target='_blank'>".my_strtoupper($lig_resp->nom)." ".casse_mot($lig_resp->prenom,'majf2')."</a></td>\n";
 					echo "<td>";
 
@@ -2221,16 +2220,12 @@ if(isset($eleve_login)){
 					echo "<td>".casse_mot($lig_resp->prenom,'majf2')." ".my_strtoupper($lig_resp->nom)."</td>\n";
 				}
 				else{
-					//echo "<td><a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2' target='_blank'>".ucfirst(strtolower($lig_resp->prenom))." ".strtoupper($lig_resp->nom)."</a></td>\n";
-					//echo "<td><a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y' onclick=\"affiche_message_raffraichissement(); return confirm_abandon (this, change, '$themessage');\" target='_blank'>".ucfirst(strtolower($lig_resp->prenom))." ".strtoupper($lig_resp->nom)."</a></td>\n";
 					echo "<td><a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y' onclick=\"return confirm_abandon (this, change, '$themessage');\" target='_blank'>".casse_mot($lig_resp->prenom,'majf2')." ".my_strtoupper($lig_resp->nom)."</a></td>\n";
 
-					//echo "<td><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=2'>Modifier l'association</a></td>\n";
 					echo "<td><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=2";
 					if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 					if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 					if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
-					//echo "'>Modifier le responsable</a></td>\n";
 					echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Changer de responsable</a></td>\n";
 				}
 				echo "</tr>\n";
@@ -2411,8 +2406,7 @@ if((isset($eleve_login))&&(isset($reg_no_gep))&&($reg_no_gep!="")) {
 					echo "<br />\n";
 
 					echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y";
-					//echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;reg_no_gep=$reg_no_gep&amp;definir_etab=y";
-
+					
 					if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 					if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 					if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
@@ -2424,7 +2418,6 @@ if((isset($eleve_login))&&(isset($reg_no_gep))&&($reg_no_gep!="")) {
 			else{
 				echo "<p>L'établissement d'origine de l'élève est&nbsp;:<br />\n";
 				$lig_etab2=mysql_fetch_object($res_etab2);
-				//echo "&nbsp;&nbsp;&nbsp;".ucfirst(strtolower($lig_etab2->niveau))." ".$lig_etab2->type." ".$lig_etab2->nom.", ".$lig_etab2->cp.", ".$lig_etab2->ville." (<i>$lig_etab->id_etablissement</i>)<br />\n";
 				echo "&nbsp;&nbsp;&nbsp;";
 				if($lig_etab2->niveau=="college"){
 					echo "Collège";
@@ -2439,7 +2432,6 @@ if((isset($eleve_login))&&(isset($reg_no_gep))&&($reg_no_gep!="")) {
 				if($_SESSION['statut']!="professeur") {
 					echo "<br />\n";
 					echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y";
-					//echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;reg_no_gep=$reg_no_gep&amp;definir_etab=y";
 					if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 					if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 					if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}

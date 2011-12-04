@@ -571,19 +571,19 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 	if(mysql_num_rows($res)>0) {
 		while($lig=mysql_fetch_object($res)) {
 			$num_eleve2_id_classe_actuelle[$j]=$cpt;
-			if(strtoupper($lig->sexe)=='F') {$eff_tot_classe_F++;$eff_tot_F++;} else {$eff_tot_classe_M++;$eff_tot_M++;}
+			if(mb_strtoupper($lig->sexe)=='F') {$eff_tot_classe_F++;$eff_tot_F++;} else {$eff_tot_classe_M++;$eff_tot_M++;}
 
 			echo "<tr id='tr_eleve_$cpt' class='white_hover'>\n";
 			echo "<td>\n";
 			echo "<a name='eleve$cpt'></a>\n";
 			//if(file_exists("../photos/eleves/".$lig->elenoet.".jpg")) {
 			if(nom_photo($lig->elenoet)) {
-				echo "<a href='#eleve$cpt' onclick=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);return false;\">";
-				echo strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
+				echo "<a href='#eleve$cpt' onclick=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);return false;\">";
+				echo strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
 				echo "</a>\n";
 			}
 			else {
-				echo strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
+				echo mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
 			}
 			//echo "<input type='hidden' name='eleve[$cpt]' value='$lig->login' />\n";
 			echo "<input type='hidden' name='eleve[$cpt]' id='id_eleve_$cpt' value='$lig->login' />\n";
@@ -712,7 +712,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 				$tmp_tab=explode("|",$lig_opt->liste_opt);
 				for($loop=0;$loop<count($tmp_tab);$loop++) {
 					if($tmp_tab[$loop]!="") {
-						$tab_ele_opt[]=strtoupper($tmp_tab[$loop]);
+						$tab_ele_opt[]=mb_strtoupper($tmp_tab[$loop]);
 					}
 				}
 			}
@@ -722,7 +722,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 				$res_opt=mysql_query($sql);
 				if(mysql_num_rows($res_opt)>0) {
 					while($lig_opt=mysql_fetch_object($res_opt)) {
-						$tab_ele_opt[]=strtoupper($lig_opt->id_matiere);
+						$tab_ele_opt[]=mb_strtoupper($lig_opt->id_matiere);
 					}
 				}
 			}
@@ -742,7 +742,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 
 				if($coche_possible=='y') {
 					echo "<input type='radio' name='classe_fut[$cpt]' id='classe_fut_".$i."_".$cpt."' value='$classe_fut[$i]' ";
-					if(strtoupper($fut_classe)==strtoupper($classe_fut[$i])) {echo "checked ";}
+					if(mb_strtoupper($fut_classe)==mb_strtoupper($classe_fut[$i])) {echo "checked ";}
 					//alert('bip');
 					echo "onchange=\"calcule_effectif('classe_fut',".count($classe_fut).");colorise_ligne('classe_fut',$cpt,$i);changement();\" ";
 					//echo "title=\"$lig->login/$classe_fut[$i]\" ";
@@ -767,7 +767,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			for($i=0;$i<count($lv1);$i++) {
 				echo "<td>\n";
 				echo "<input type='radio' name='lv1[$cpt]' id='lv1_".$i."_".$cpt."' value='$lv1[$i]' ";
-				if(in_array(strtoupper($lv1[$i]),$tab_ele_opt)) {echo "checked ";}
+				if(in_array(mb_strtoupper($lv1[$i]),$tab_ele_opt)) {echo "checked ";}
 				echo "onchange=\"calcule_effectif('lv1',".count($lv1).");colorise_ligne('lv1',$cpt,$i);changement();\" ";
 				echo "title=\"$lig->login/$lv1[$i]\" ";
 				echo "/>\n";
@@ -778,7 +778,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			for($i=0;$i<count($lv2);$i++) {
 				echo "<td>\n";
 				echo "<input type='radio' name='lv2[$cpt]' id='lv2_".$i."_".$cpt."' value='$lv2[$i]' ";
-				if(in_array(strtoupper($lv2[$i]),$tab_ele_opt)) {echo "checked ";}
+				if(in_array(mb_strtoupper($lv2[$i]),$tab_ele_opt)) {echo "checked ";}
 				echo "onchange=\"calcule_effectif('lv2',".count($lv2).");colorise_ligne('lv2',$cpt,$i);changement();\" ";
 				echo "title=\"$lig->login/$lv2[$i]\" ";
 				echo "/>\n";
@@ -789,7 +789,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			for($i=0;$i<count($lv3);$i++) {
 				echo "<td>\n";
 				echo "<input type='radio' name='lv3[$cpt]' id='lv3_".$i."_".$cpt."' value='$lv3[$i]' ";
-				if(in_array(strtoupper($lv3[$i]),$tab_ele_opt)) {echo "checked ";}
+				if(in_array(mb_strtoupper($lv3[$i]),$tab_ele_opt)) {echo "checked ";}
 				echo "onchange=\"calcule_effectif('lv3',".count($lv3).");colorise_ligne('lv3',$cpt,$i);changement();\" ";
 				echo "title=\"$lig->login/$lv3[$i]\" ";
 				echo "/>\n";
@@ -799,7 +799,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			for($i=0;$i<count($autre_opt);$i++) {
 				echo "<td>\n";
 				echo "<input type='checkbox' name='autre_opt_".$i."[$cpt]' id='autre_opt_".$i."_".$cpt."' value='$autre_opt[$i]' ";
-				if(in_array(strtoupper($autre_opt[$i]),$tab_ele_opt)) {echo "checked ";}
+				if(in_array(mb_strtoupper($autre_opt[$i]),$tab_ele_opt)) {echo "checked ";}
 				echo "onchange=\"calcule_effectif('autre_opt',".count($autre_opt).");changement();\" ";
 				echo "title=\"$lig->login/$autre_opt[$i]\" ";
 				echo "/>\n";

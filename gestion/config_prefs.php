@@ -688,8 +688,6 @@ else{
 			$lignes_entete.="</tr>\n";
 		}
 
-		//$i=0;
-		//while($lig_prof=mysql_fetch_object($res_prof)){
 		for($i=0;$i<count($prof);$i++){
 			if($i-ceil($i/10)*10==0){
 				echo $lignes_entete;
@@ -697,29 +695,13 @@ else{
 
 			echo "<tr>\n";
 
-			//echo "<td id='td_nomprenom_".$i."'>";
 			echo "<td id='td_nomprenom_".$i."_accueil_simpl'>";
-			//echo strtoupper($lig_prof->nom)." ".ucfirst(strtolower($lig_prof->prenom));
 			echo my_strtoupper($prof[$i]['nom'])." ".casse_mot($prof[$i]['prenom'],'majf2');
-			//echo "<input type='hidden' name='prof[$i]' value='$lig_prof->login' />";
 			echo "<input type='hidden' name='prof[$i]' value='".$prof[$i]['login']."' />";
 			echo "</td>\n";
 
-			/*
-			cellule_checkbox($prof[$i]['login'],'accueil_simpl',$i,'y');
-
-			cellule_checkbox($prof[$i]['login'],'accueil_ct',$i,'');
-			cellule_checkbox($prof[$i]['login'],'accueil_trombino',$i,'');
-			cellule_checkbox($prof[$i]['login'],'accueil_cn',$i,'');
-			cellule_checkbox($prof[$i]['login'],'accueil_bull',$i,'');
-			cellule_checkbox($prof[$i]['login'],'accueil_visu',$i,'');
-			cellule_checkbox($prof[$i]['login'],'accueil_liste_pdf',$i,'');
-			*/
-
 			$j=0;
-			//cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'y');
 			cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'accueil_simpl');
-			//for($j=0;$j<count($tabchamps);$j++){
 			for($j=1;$j<count($tabchamps);$j++){
 				cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'');
 			}
@@ -905,8 +887,6 @@ else{
 			$lignes_entete.="</tr>\n";
 		}
 
-		//$i=0;
-		//while($lig_prof=mysql_fetch_object($res_prof)){
 		for($i=0;$i<count($prof);$i++){
 			if($i-ceil($i/10)*10==0){
 				echo $lignes_entete;
@@ -914,19 +894,13 @@ else{
 
 			echo "<tr>\n";
 
-			//echo "<td>";
-			//echo "<td id='td_nomprenom_".$i."'>";
 			echo "<td id='td_nomprenom_".$i."_add_modif_dev'>";
-			//echo strtoupper($lig_prof->nom)." ".ucfirst(strtolower($lig_prof->prenom));
 			echo my_strtoupper($prof[$i]['nom'])." ".casse_mot($prof[$i]['prenom'],'majf2');
-			//echo "<input type='hidden' name='prof[$i]' value='$lig_prof->login' />";
 			echo "<input type='hidden' name='prof[$i]' value='".$prof[$i]['login']."' />";
 			echo "</td>\n";
 
 			$j=0;
-			//cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'y');
 			cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'add_modif_dev');
-			//for($j=0;$j<count($tabchamps);$j++){
 			for($j=1;$j<count($tabchamps);$j++){
 				cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'');
 			}
@@ -939,7 +913,6 @@ else{
 			}
 
 			echo "</tr>\n";
-			//$i++;
 		}
 
 		echo "</table>\n";
@@ -993,8 +966,6 @@ else{
 			$lignes_entete.="</tr>\n";
 		}
 
-		//$i=0;
-		//while($lig_prof=mysql_fetch_object($res_prof)){
 		for($i=0;$i<count($prof);$i++){
 			if($i-ceil($i/10)*10==0){
 				echo $lignes_entete;
@@ -1002,19 +973,13 @@ else{
 
 			echo "<tr>\n";
 
-			//echo "<td>";
-			//echo "<td id='td_nomprenom_".$i."'>";
 			echo "<td id='td_nomprenom_".$i."_add_modif_conteneur'>";
-			//echo strtoupper($lig_prof->nom)." ".ucfirst(strtolower($lig_prof->prenom));
 			echo my_strtoupper($prof[$i]['nom'])." ".casse_mot($prof[$i]['prenom'],'majf2');
-			//echo "<input type='hidden' name='prof[$i]' value='$lig_prof->login' />";
 			echo "<input type='hidden' name='prof[$i]' value='".$prof[$i]['login']."' />";
 			echo "</td>\n";
 
 			$j=0;
-			//cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'y');
 			cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'add_modif_conteneur');
-			//for($j=0;$j<count($tabchamps);$j++){
 			for($j=1;$j<count($tabchamps);$j++){
 				cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'');
 			}
@@ -1026,7 +991,6 @@ else{
 				echo "</th>\n";
 			}
 			echo "</tr>\n";
-			//$i++;
 		}
 
 		echo "</table>\n";

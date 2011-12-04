@@ -97,7 +97,7 @@ else{
 			echo "<input type='hidden' name='step' value='2' />\n";
 
 			$csv_file = isset($_FILES["ele_file"]) ? $_FILES["ele_file"] : NULL;
-			if(strtoupper($csv_file['name']) == "ELEVES.CSV"){
+			if(mb_strtoupper($csv_file['name']) == "ELEVES.CSV"){
 				//$fp = dbase_open($csv_file['tmp_name'], 0);
 				$fp=fopen($csv_file['tmp_name'],"r");
 
@@ -773,11 +773,11 @@ else{
 					$nonat=$_POST['new_'.$cpt.'_nonat'];
 
 					// Générer un login...
-					$temp1 = strtoupper($nom);
-					$temp1 = strtr($temp1, " '-", "___");
+					$temp1 = mb_strtoupper($nom);
+					$temp1 = mb_strtr($temp1, " '-", "___");
 					$temp1 = mb_substr($temp1,0,7);
-					$temp2 = strtoupper($prenom);
-					$temp2 = strtr($temp2, " '-", "___");
+					$temp2 = mb_strtoupper($prenom);
+					$temp2 = mb_strtr($temp2, " '-", "___");
 					$temp2 = mb_substr($temp2,0,1);
 					$login_eleve = $temp1.'_'.$temp2;
 
@@ -907,8 +907,7 @@ else{
 
 
 			$csv_file = isset($_FILES["adr_file"]) ? $_FILES["adr_file"] : NULL;
-			//echo strtoupper($csv_file['name'])."<br />";
-			if(strtoupper($csv_file['name']) == "ADRESSES.CSV") {
+			if(mb_strtoupper($csv_file['name']) == "ADRESSES.CSV") {
 				$fp=fopen($csv_file['tmp_name'],"r");
 				if(!$fp){
 					echo "<p>Impossible d'ouvrir le fichier ADRESSES.CSV.</p>";
@@ -1109,8 +1108,7 @@ else{
 
 
 			$csv_file = isset($_FILES["pers_file"]) ? $_FILES["pers_file"] : NULL;
-			//echo strtoupper($csv_file['name'])."<br />";
-			if(strtoupper($csv_file['name']) == "PERSONNES.CSV") {
+			if(mb_strtoupper($csv_file['name']) == "PERSONNES.CSV") {
 				$fp=fopen($csv_file['tmp_name'],"r");
 				if(!$fp){
 					echo "<p>Impossible d'ouvrir le fichier PERSONNES.CSV.</p>\n";
@@ -1210,12 +1208,10 @@ else{
 
 								// Stockage des données:
 								$personne[$affiche[0]]=array();
-								//echo "<p>\n";
 								for($i=1;$i<count($tabchamps);$i++) {
 									$personne[$affiche[0]]["$tabchamps[$i]"]=$affiche[$i];
 									//echo "\$personne[$affiche[0]][\"$tabchamps[$i]\"]=\$affiche[$i]=".$affiche[$i]."<br />\n";
 								}
-								//echo "</p>\n";
 
 								$sql="SELECT * FROM resp_pers WHERE (pers_id='$affiche[0]')";
 								$res1=mysql_query($sql);
@@ -1224,12 +1220,11 @@ else{
 									//echo "Ajout de pers_id=$affiche[0] pour $affiche[1] $affiche[2]<br />\n";
 								}
 								else{
-									//(ucfirst(strtolower(stripslashes($lig->civilite)))!=ucfirst(strtolower(stripslashes($affiche[3]))))||
 
 									$lig=mysql_fetch_object($res1);
 									if((stripslashes($lig->nom)!=stripslashes($affiche[1]))||
 									(stripslashes($lig->prenom)!=stripslashes($affiche[2]))||
-									(strtolower(stripslashes($lig->civilite))!=(strtolower(stripslashes($affiche[3]))))||
+									(mb_strtolower(stripslashes($lig->civilite))!=(mb_strtolower(stripslashes($affiche[3]))))||
 									(stripslashes($lig->tel_pers)!=stripslashes($affiche[4]))||
 									(stripslashes($lig->tel_port)!=stripslashes($affiche[5]))||
 									(stripslashes($lig->tel_prof)!=stripslashes($affiche[6]))||
@@ -1336,29 +1331,17 @@ else{
 						while($lig1=mysql_fetch_object($res1)){
 							$pers_id=$lig1->pers_id;
 							$personne[$pers_id]=array();
-							/*
-							for($j=1;$j<count($tabchamps);$j++) {
-								$pers_modif[]=$pers_id;
-								//$personne[$pers_id]["$tabchamps[$j]"]=$lig1->$tabchamps[$j];
-								$champtmp=$tabchamps[$j];
-								$personne[$pers_id]["$tabchamps[$j]"]=$lig1->$champtmp;
-								echo "\$personne[$pers_id][\"$tabchamps[$j]\"]=".$personne[$pers_id]["$tabchamps[$j]"]."<br />\n";
-							}
-							*/
 
 							$pers_modif[]=$pers_id;
 							$personne[$pers_id]["nom"]=$lig1->nom;
 							$personne[$pers_id]["prenom"]=$lig1->prenom;
-							$personne[$pers_id]["civilite"]=ucfirst(strtolower($lig1->civilite));
+							$personne[$pers_id]["civilite"]=ucfirst(mb_strtolower($lig1->civilite));
 							$personne[$pers_id]["tel_pers"]=$lig1->tel_pers;
 							$personne[$pers_id]["tel_port"]=$lig1->tel_port;
 							$personne[$pers_id]["tel_prof"]=$lig1->tel_prof;
 							$personne[$pers_id]["mel"]=$lig1->mel;
 							$personne[$pers_id]["adr_id"]=$adr_modif[$i];
 
-							//echo "<p>\$personne[$pers_id][\"nom\"]=".$personne[$pers_id]["nom"]."<br />\n";
-							//echo "\$personne[$pers_id][\"prenom\"]=".$personne[$pers_id]["prenom"]."<br />\n";
-							//echo "\$personne[$pers_id][\"adr_id\"]=".$personne[$pers_id]["adr_id"]."</p>\n";
 
 						}
 					}
@@ -1471,8 +1454,7 @@ else{
 
 				//======================================
 				echo "<td style='text-align:center;";
-				//if(stripslashes($lig1->civilite)!=stripslashes($personne[$pers_id]["civilite"])){
-				if(ucfirst(strtolower(stripslashes($lig1->civilite)))!=ucfirst(strtolower(stripslashes($personne[$pers_id]["civilite"])))) {
+				if(ucfirst(mb_strtolower(stripslashes($lig1->civilite)))!=ucfirst(mb_strtolower(stripslashes($personne[$pers_id]["civilite"])))) {
 					echo " background-color:lightgreen;'>";
 					if($lig1->civilite!=''){
 						echo stripslashes($lig1->civilite)." <font color='red'>-&gt;</font>\n";
@@ -1482,9 +1464,8 @@ else{
 					echo "'>";
 				}
 				//echo stripslashes($personne[$pers_id]["civilite"]);
-				echo ucfirst(strtolower(stripslashes($personne[$pers_id]["civilite"])));
-				echo "<input type='hidden' name='modif_".$cpt."_civilite' value=\"".ucfirst(strtolower(stripslashes($personne[$pers_id]["civilite"])))."\" />\n";
-				//echo "<input type='text' name='modif_".$cpt."_civilite' value=\"".stripslashes($personne[$pers_id]["civilite"])."\" />\n";
+				echo ucfirst(mb_strtolower(stripslashes($personne[$pers_id]["civilite"])));
+				echo "<input type='hidden' name='modif_".$cpt."_civilite' value=\"".ucfirst(mb_strtolower(stripslashes($personne[$pers_id]["civilite"])))."\" />\n";
 				echo "</td>\n";
 				//======================================
 
@@ -1737,9 +1718,8 @@ else{
 
 				//======================================
 				echo "<td style='text-align:center;'>\n";
-				//echo stripslashes($personne[$pers_id]["civilite"]);
-				echo ucfirst(strtolower(stripslashes($personne[$pers_id]["civilite"])));
-				echo "<input type='hidden' name='new_".$cpt."_civilite' value=\"".ucfirst(strtolower(stripslashes($personne[$pers_id]["civilite"])))."\" />\n";
+				echo ucfirst(mb_strtolower(stripslashes($personne[$pers_id]["civilite"])));
+				echo "<input type='hidden' name='new_".$cpt."_civilite' value=\"".ucfirst(mb_strtolower(stripslashes($personne[$pers_id]["civilite"])))."\" />\n";
 				echo "</td>\n";
 				//======================================
 
@@ -2162,8 +2142,7 @@ else{
 
 			$cpt=0;
 			$csv_file = isset($_FILES["resp_file"]) ? $_FILES["resp_file"] : NULL;
-			//echo strtoupper($csv_file['name'])."<br />";
-			if(strtoupper($csv_file['name']) == "RESPONSABLES.CSV") {
+			if(mb_strtoupper($csv_file['name']) == "RESPONSABLES.CSV") {
 				$fp=fopen($csv_file['tmp_name'],"r");
 				if(!$fp){
 					echo "<p>Impossible d'ouvrir le fichier RESPONSABLES.CSV.</p>";

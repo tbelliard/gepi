@@ -839,7 +839,7 @@ if(isset($pers_id)){
 		while($lig_ele=mysql_fetch_object($res1)){
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
-			echo "<td style='text-align:center;'><input type='hidden' name='ele_id[$cpt]' value='$lig_ele->ele_id' /><a href='../eleves/modify_eleve.php?eleve_login=".$lig_ele->login."'>".ucfirst(strtolower($lig_ele->prenom))." ".strtoupper($lig_ele->nom)."</a></td>\n";
+			echo "<td style='text-align:center;'><input type='hidden' name='ele_id[$cpt]' value='$lig_ele->ele_id' /><a href='../eleves/modify_eleve.php?eleve_login=".$lig_ele->login."'>".ucfirst(mb_strtolower($lig_ele->prenom))." ".mb_strtoupper($lig_ele->nom)."</a></td>\n";
 
 			$resp_legal1=$lig_ele->resp_legal;
 
@@ -871,30 +871,18 @@ if(isset($pers_id)){
 			echo "<td style='text-align:center;'><input type='checkbox' name='suppr_ele_id[$cpt]' value='$lig_ele->ele_id' onchange='changement();' /></td>\n";
 
 			echo "<td style='text-align:center;'>\n";
-			//$sql="SELECT rp.nom,rp.prenom,rp.pers_id FROM resp_pers rp, responsables2 r WHERE rp.pers_id!='$pers_id' AND r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND (r.resp_legal='1' OR r.resp_legal='2')";
-			//echo "$sql<br />\n";
-			//$res_resp=mysql_query($sql);
-			/*
-			if(mysql_num_rows($res_resp)>0){
-				while($lig_resp=mysql_fetch_object($res_resp)){
-					echo "<a href='modify_resp.php?pers_id=$lig_resp->pers_id'>".strtoupper($lig_resp->nom)." ".ucfirst(strtolower($lig_resp->prenom))."</a>\n";
-					//echo "<input type='hidden' name='pers_id[]' value='$lig_resp->pers_id' />\n";
-					echo "<input type='hidden' name='pers_id2_".$cpt."[]' value='$lig_resp->pers_id' />\n";
-				}
-			}
-			*/
+			
 			if(mysql_num_rows($res_resp)>0){
 				if(mysql_num_rows($res_resp)==1){
 					$lig_resp=mysql_fetch_object($res_resp);
-					echo "<a href='modify_resp.php?pers_id=$lig_resp->pers_id' onclick=\"return confirm_abandon (this, change, '$themessage')\">".strtoupper($lig_resp->nom)." ".ucfirst(strtolower($lig_resp->prenom))."</a>\n";
-					//echo "<input type='hidden' name='pers_id[]' value='$lig_resp->pers_id' />\n";
+					echo "<a href='modify_resp.php?pers_id=$lig_resp->pers_id' onclick=\"return confirm_abandon (this, change, '$themessage')\">".mb_strtoupper($lig_resp->nom)." ".ucfirst(mb_strtolower($lig_resp->prenom))."</a>\n";
 					echo "<input type='hidden' name='pers_id2[".$cpt."]' value='$lig_resp->pers_id' />\n";
 				}
 				else{
 					echo "<input type='hidden' name='resp_erreur[".$cpt."]' value='y' />\n";
 					echo "<font color='red'>L'élève a trop de responsables légaux. Faites le ménage!</font><br />\n";
 					while($lig_resp=mysql_fetch_object($res_resp)){
-						echo "<a href='modify_resp.php?pers_id=$lig_resp->pers_id' onclick=\"return confirm_abandon (this, change, '$themessage')\">".strtoupper($lig_resp->nom)." ".ucfirst(strtolower($lig_resp->prenom))."</a><br />\n";
+						echo "<a href='modify_resp.php?pers_id=$lig_resp->pers_id' onclick=\"return confirm_abandon (this, change, '$themessage')\">".mb_strtoupper($lig_resp->nom)." ".ucfirst(mb_strtolower($lig_resp->prenom))."</a><br />\n";
 					}
 				}
 			}
@@ -920,54 +908,6 @@ if(isset($pers_id)) {
 	echo ">Ajouter l'association avec un élève</a></p>\n";
 }
 
-/*
-// Ajout de l'association avec un élève existant:
-//echo "Ajouter un élève: ";
-echo "<p align='center'>\n";
-echo "<select name='add_ele_id'>\n";
-echo "<option value=''>--- Ajouter un élève ---</option>\n";
-//$sql="SELECT ele_id,nom,prenom FROM eleves ORDER BY nom,prenom";
-*/
-
-	/*
-	// *************************
-	// A REVOIR: Si aucun responsable n'est encore saisi, on ne récupère pas l'ensemble des élèves...
-	//           Le mode de "détection/listage" n'est pas valide.
-	// *************************
-	$sql="SELECT DISTINCT e.ele_id,e.nom,e.prenom FROM eleves e, responsables2 r WHERE e.ele_id=r.ele_id ORDER BY e.nom,e.prenom";
-	$res_ele=mysql_query($sql);
-	$compteur=0;
-	while($lig_ele=mysql_fetch_object($res_ele)){
-		// On ne propose que les élèves n'ayant pas déjà leurs deux responsables légaux
-		//$sql="SELECT * FROM responsables2 WHERE ele_id='$lig_ele->ele_id'";
-		$sql="SELECT * FROM responsables2 WHERE ele_id='$lig_ele->ele_id' AND (resp_legal='1' OR resp_legal='2')";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)<2){
-			echo "<option value='$lig_ele->ele_id'>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</option>\n";
-			$compteur++;
-		}
-	}
-	*/
-
-/*
-$sql="SELECT DISTINCT e.ele_id,e.nom,e.prenom FROM eleves e ORDER BY e.nom,e.prenom";
-$res_ele=mysql_query($sql);
-$compteur=0;
-while($lig_ele=mysql_fetch_object($res_ele)){
-	// On ne propose que les élèves n'ayant pas déjà leurs deux responsables légaux
-	//$sql="SELECT * FROM responsables2 WHERE ele_id='$lig_ele->ele_id'";
-	$sql="SELECT * FROM responsables2 WHERE ele_id='$lig_ele->ele_id' AND (resp_legal='1' OR resp_legal='2')";
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)<2){
-		echo "<option value='$lig_ele->ele_id'>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</option>\n";
-		$compteur++;
-	}
-}
-
-echo "</select>\n";
-echo "<br />\n(<i>$compteur élèves n'ont pas leurs deux responsables légaux</i>)\n";
-echo "</p>\n";
-*/
 
 echo "</td>\n";
 echo "</tr>\n";
@@ -1023,45 +963,7 @@ echo "<tr><td>Code postal ** : </td><td><input type=text size=6 name=cp value = 
 echo " ou Pays ** : <input type=text size=20 name=pays value = \"".$pays."\" onchange='changement();' />\n";
 echo "</td></tr>\n";
 echo "<tr><td>Commune * : </td><td><input type=text size=50 name=commune value = \"".$commune."\" onchange='changement();' /></td></tr>\n";
-//echo "<tr><td>Pays : </td><td><input type=text size=50 name=pays value = \"".$pays."\" /></td></tr>\n";
 
-/*
-$sql="SELECT DISTINCT adr1,adr2,adr3,adr4,cp,commune,adr_id FROM resp_adr ORDER BY commune,cp,adr1,adr2,adr3,adr4";
-$res_adr=mysql_query($sql);
-if(mysql_num_rows($res_adr)>0){
-	echo "<tr><td><b>ou</b></td>";
-	echo "<td><select name='adr_id_existant'>\n";
-	echo "<option value=''>--- Sélectionner une adresse existante ---</option>\n";
-	while($lig_adr=mysql_fetch_object($res_adr)){
-		if(($lig_adr->adr1!="")||($lig_adr->adr2!="")||($lig_adr->adr3!="")||($lig_adr->adr4!="")||($lig_adr->commune!="")){
-			echo "<option value='$lig_adr->adr_id'>";
-
-			$sql="SELECT nom,prenom FROM resp_pers WHERE adr_id='$lig_adr->adr_id'";
-			$res_pers=mysql_query($sql);
-			if(mysql_num_rows($res_pers)>0){
-				$ligtmp=mysql_fetch_object($res_pers);
-				$chaine=strtoupper($ligtmp->nom)." ".ucfirst(strtolower($ligtmp->prenom));
-				while($ligtmp=mysql_fetch_object($res_pers)){
-					$chaine.=",".strtoupper($ligtmp->nom)." ".ucfirst(strtolower($ligtmp->prenom));
-				}
-				echo "($chaine)";
-			}
-			//echo "-adr_id=".$lig_adr->adr_id."-";
-
-			if($lig_adr->adr1!=""){echo $lig_adr->adr1."-";}
-			if($lig_adr->adr2!=""){echo $lig_adr->adr2."-";}
-			if($lig_adr->adr3!=""){echo $lig_adr->adr3."-";}
-			if($lig_adr->adr4!=""){echo $lig_adr->adr4."-";}
-			if($lig_adr->cp!=""){echo $lig_adr->cp."-";}
-			if($lig_adr->commune!=""){echo $lig_adr->commune;}
-			//$lig_adr->adr2."-".$lig_adr->adr3."-".$lig_adr->adr4."-".$lig_adr->cp."-".$lig_adr->commune.
-			echo "</option>\n";
-		}
-	}
-	echo "</select>\n";
-	echo "</td></tr>\n";
-}
-*/
 echo "</table>\n";
 
 if(isset($pers_id)){
@@ -1077,8 +979,6 @@ if(isset($pers_id)){
 	echo ">Choisir une adresse existante.</a></p>\n";
 }
 else{
-	//echo "<p>Ou <a href='".$_SERVER['PHP_SELF']."?choisir_adr_existante=oui' onClick=''>Choisir une adresse existante.</a></p>";
-
 	echo "<script type='text/javascript'>
 	function creer_pers_id_puis_choisir_adr_exist(theLink, thechange, themessage){
 		if (!(thechange)) thechange='no';
@@ -1114,117 +1014,10 @@ echo "<center><input type='submit' value='Enregistrer' /></center>\n";
 
 echo "<p>(*): saisie obligatoire<br />(**): un des deux champs au moins doit être rempli</p>\n";
 
-/*
-$sql="SELECT DISTINCT adr1,adr2,adr3,adr4,cp,commune,pays,adr_id FROM resp_adr ORDER BY commune,cp,adr1,adr2,adr3,adr4";
-$res_adr=mysql_query($sql);
-if(mysql_num_rows($res_adr)>0){
-	echo "<b>ou</b> <input type='checkbox' name='select_ad_existante' id='select_ad_existante' value='y' onchange='modif_div_ad()' /> Sélectionner une adresse existante.";
-
-	echo "<div id='div_ad_existante'>\n";
-	echo "<table border='1'>\n";
-	echo "<tr>\n";
-	echo "<td style='text-align:center; font-weight:bold;'>&nbsp;</td>\n";
-	echo "<td style='text-align:center; font-weight:bold; background-color:#AAE6AA;'>Identifiant</td>\n";
-	echo "<td style='text-align:center; font-weight:bold; background-color:#AAE6AA;'>Lignes de l'adresse</td>\n";
-	echo "<td style='text-align:center; font-weight:bold; background-color:#AAE6AA;'>Code postal</td>\n";
-	echo "<td style='text-align:center; font-weight:bold; background-color:#AAE6AA;'>";
-	echo "Commune";
-*/
-
-/*
-	// AJOUTER un champ SELECT avec javascript pour n'afficher que telle ou telle commune
-	$sql="SELECT DISTINCT commune FROM resp_adr ORDER BY commune";
-	$res_comm=mysql_query($sql);
-	if(mysql_num_rows($res_comm)>1){
-		echo "<select name='select_commune' onchange='select_commune()'>\n";
-		echo "<option value=''>--- Toutes ---</option>\n";
-		while($lig_comm=mysql_fetch_object($res_comm)){
-			echo "<option value='$lig_comm->commune'>$lig_comm->commune</option>\n";
-		}
-		echo "</select>\n";
-	}
-*/
-/*
-	echo "</td>\n";
-	echo "<td style='text-align:center; font-weight:bold; background-color:#AAE6AA;'>Pays</td>\n";
-	echo "<td style='text-align:center; font-weight:bold; background-color:#96C8F0;'>Responsable associé</td>\n";
-	echo "<td style='text-align:center; font-weight:bold; background-color:red;'>Supprimer adresse(s)</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value='' checked /></td>\n";
-	echo "<td style='text-align:center; background-color:#FAFABE;' colspan='7'>Ne pas utiliser une adresse existante</td>\n";
-	echo "</tr>\n";
-
-	while($lig_adr=mysql_fetch_object($res_adr)){
-		if(($lig_adr->adr1!="")||($lig_adr->adr2!="")||($lig_adr->adr3!="")||($lig_adr->adr4!="")||($lig_adr->commune!="")){
-			echo "<tr>\n";
-			echo "<td style='text-align:center;'><input type='radio' name='adr_id_existant' value='$lig_adr->adr_id' /></td>\n";
-			echo "<td style='text-align:center;'>$lig_adr->adr_id</td>\n";
-			echo "<td style='text-align:center;'>\n";
-			if($lig_adr->adr1!=""){echo $lig_adr->adr1;}
-			if($lig_adr->adr2!=""){echo "-".$lig_adr->adr2;}
-			if($lig_adr->adr3!=""){echo "-".$lig_adr->adr3;}
-			if($lig_adr->adr4!=""){echo "-".$lig_adr->adr4;}
-			echo "</td>\n";
-			echo "<td style='text-align:center;'>$lig_adr->cp</td>\n";
-			echo "<td style='text-align:center;'>$lig_adr->commune</td>\n";
-			echo "<td style='text-align:center;'>$lig_adr->pays</td>\n";
-
-			echo "<td style='text-align:center;'>";
-			$sql="SELECT nom,prenom,pers_id FROM resp_pers WHERE adr_id='$lig_adr->adr_id'";
-			$res_pers=mysql_query($sql);
-			if(mysql_num_rows($res_pers)>0){
-				$ligtmp=mysql_fetch_object($res_pers);
-				//$chaine="<a href='modify_resp.php?pers_id=$pers_id'>".strtoupper($ligtmp->nom)." ".ucfirst(strtolower($ligtmp->prenom))."</a>";
-				$chaine="<a href='modify_resp.php?pers_id=$ligtmp->pers_id'>".strtoupper($ligtmp->nom)." ".ucfirst(strtolower($ligtmp->prenom))."</a>";
-				while($ligtmp=mysql_fetch_object($res_pers)){
-					//$chaine.=",<br />\n<a href='modify_resp.php?pers_id=$pers_id'>".strtoupper($ligtmp->nom)." ".ucfirst(strtolower($ligtmp->prenom))."</a>";
-					$chaine.=",<br />\n<a href='modify_resp.php?pers_id=$ligtmp->pers_id'>".strtoupper($ligtmp->nom)." ".ucfirst(strtolower($ligtmp->prenom))."</a>";
-				}
-				echo "$chaine";
-			}
-			echo "</td>\n";
-
-			echo "<td style='text-align:center;'><input type='checkbox' name='suppr_ad[]' value='$lig_adr->adr_id' /></td>\n";
-			echo "</tr>\n";
-		}
-	}
-
-	echo "</table>\n";
-	echo "<center><input type='submit' value='Enregistrer' /></center>\n";
-	echo "</div>\n";
-
-
-	echo "<script type='text/javascript'>
-	//function modif_div_ad(mode){
-	//	if(mode=='cacher'){
-	function modif_div_ad(){
-		//alert('Changement');
-		//if(document.getElementById('select_ad_existante').checked=='true'){
-		if(document.getElementById('select_ad_existante').checked){
-			document.getElementById('div_saisie_ad').style.display='none';
-			document.getElementById('div_ad_existante').style.display='';
-		}
-		else{
-			document.getElementById('div_saisie_ad').style.display='';
-			document.getElementById('div_ad_existante').style.display='none';
-		}
-	}
-
-	// Initialisation:
-	document.getElementById('div_ad_existante').style.display='none';
-</script>\n";
-
-}
-*/
-
 echo "<input type='hidden' name='is_posted' value='1' />\n";
 echo "</form>\n";
 
 if((isset($pers_id))&&($compte_resp_existe=="y")&&($journal_connexions=='n')&&(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite"))) {
-	//$journal_connexions=isset($_POST['journal_connexions']) ? $_POST['journal_connexions'] : (isset($_GET['journal_connexions']) ? $_GET['journal_connexions'] : 'n');
-	//$duree=isset($_POST['duree']) ? $_POST['duree'] : NULL;
 
 	echo "<hr />\n";
 	echo "<p><a href='".$_SERVER['PHP_SELF']."?pers_id=$pers_id&amp;journal_connexions=y#connexion' title='Journal des connexions'>Journal des connexions</a></p>\n";

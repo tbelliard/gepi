@@ -79,7 +79,7 @@ else {
 		if(mysql_num_rows($res_ele_courant)>0) {
 			$lig_ele_courant=mysql_fetch_object($res_ele_courant);
 
-			echo htmlspecialchars(strtoupper($lig_ele_courant->nom))." ".htmlspecialchars(ucfirst(strtolower($lig_ele_courant->prenom)));
+			echo htmlspecialchars(mb_strtoupper($lig_ele_courant->nom))." ".htmlspecialchars(ucfirst(mb_strtolower($lig_ele_courant->prenom)));
 			if($avec_classe_origine) {
 				$tmp_tab_clas=get_class_from_ele_login($ele_login);
 				if(isset($tmp_tab_clas['liste'])) {
@@ -112,8 +112,7 @@ else {
 	
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt'>\n";
-				//echo "<td style='font-size:x-small;'>".htmlspecialchars(strtoupper($lig_ele_clas_fut->nom))." ".htmlspecialchars(ucfirst(strtolower($lig_ele_clas_fut->prenom)))."</td>\n";
-				echo "<td>".htmlspecialchars(strtoupper($lig_ele_clas_fut->nom))." ".htmlspecialchars(ucfirst(strtolower($lig_ele_clas_fut->prenom)));
+				echo "<td>".htmlspecialchars(mb_strtoupper($lig_ele_clas_fut->nom))." ".htmlspecialchars(ucfirst(mb_strtolower($lig_ele_clas_fut->prenom)));
 				if($avec_classe_origine) {
 					$tmp_tab_clas=get_class_from_ele_login($lig_ele_clas_fut->login);
 					if(isset($tmp_tab_clas['liste'])) {
@@ -162,8 +161,7 @@ else {
 	
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt'>\n";
-				//echo "<td style='font-size:x-small;'>".htmlspecialchars(strtoupper($lig_ele_clas_fut->nom))." ".htmlspecialchars(ucfirst(strtolower($lig_ele_clas_fut->prenom)))."</td>\n";
-				echo "<td>".htmlspecialchars(strtoupper($lig_ele_clas_fut->nom))." ".htmlspecialchars(ucfirst(strtolower($lig_ele_clas_fut->prenom)));
+				echo "<td>".htmlspecialchars(mb_strtoupper($lig_ele_clas_fut->nom))." ".htmlspecialchars(ucfirst(mb_strtolower($lig_ele_clas_fut->prenom)));
 				if($avec_classe_origine) {
 					$tmp_tab_clas=get_class_from_ele_login($lig_ele_clas_fut->login);
 					if(isset($tmp_tab_clas['liste'])) {

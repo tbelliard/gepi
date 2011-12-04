@@ -110,8 +110,7 @@ if (!isset($is_posted)) {
 
 } else {
 	$dbf_file = isset($_FILES["dbf_file"]) ? $_FILES["dbf_file"] : NULL;
-	//if(strtoupper($dbf_file['name']) == "F_TMT.DBF") {
-	if(strtoupper($dbf_file['name']) == "F_DIV.CSV") {
+	if(mb_strtoupper($dbf_file['name']) == "F_DIV.CSV") {
 		//$fp = dbase_open($dbf_file['tmp_name'], 0);
 		$fp = fopen($dbf_file['tmp_name'],"r");
 		if(!$fp) {

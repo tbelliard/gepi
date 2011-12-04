@@ -220,7 +220,7 @@ elseif($mode==1) {
 			$tab_resp=array();
 			if($nb_parents>0) {
 				while($lig=mysql_fetch_object($res)) {
-					$tab_resp[]=strtoupper($lig->login);
+					$tab_resp[]=mb_strtoupper($lig->login);
 					
 				}
 			}
@@ -241,7 +241,7 @@ elseif($mode==1) {
 			$tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes=array();
 			if($nb_parents_erreur_mdp>0) {
 				while($lig=mysql_fetch_object($res)) {
-					if(!in_array(strtoupper($lig->login), $tab_resp)) {
+					if(!in_array(mb_strtoupper($lig->login), $tab_resp)) {
 						$nb_parents_erreur_mdp_et_jamais_connectes_avec_succes++;
 						$tab_liste_parents_erreur_mdp_et_jamais_connectes_avec_succes[]=$lig->login;
 					}
@@ -495,8 +495,8 @@ elseif(($mode==2)||($mode==3)) {
 				if(!isset($tab_connexions[$date]['login'])) {
 					$tab_connexions[$date]['login']=array();
 				}
-				if(!in_array(strtoupper($lig->login), $tab_connexions[$date]['login'])) {
-					$tab_connexions[$date]['login'][]=strtoupper($lig->login);
+				if(!in_array(mb_strtoupper($lig->login), $tab_connexions[$date]['login'])) {
+					$tab_connexions[$date]['login'][]=mb_strtoupper($lig->login);
 				}
 			}
 	

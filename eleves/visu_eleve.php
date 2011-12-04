@@ -52,9 +52,13 @@ if (!checkAccess()) {
 // ======================== CSS et js particuliers ========================
 $utilisation_win = "oui";
 $utilisation_jsdivdrag = "oui";
-//$javascript_specifique = ".js";
-$style_specifique = "eleves/visu_eleve";
 
+if (getSettingValue("active_module_absence")=='2') {
+  $style_specifique[] = "mod_abs2/lib/abs_style";
+  $javascript_specifique[] = "lib/tablekit";
+$dojo=true;
+}
+$style_specifique[] = "eleves/visu_eleve";
 
 $ele_login=isset($_POST['ele_login']) ? $_POST['ele_login'] : (isset($_GET['ele_login']) ? $_GET['ele_login'] : NULL);
 $onglet=isset($_POST['onglet']) ? $_POST['onglet'] : (isset($_GET['onglet']) ? $_GET['onglet'] : NULL);

@@ -44,46 +44,7 @@ function date_frc($var)
 
 }
 
-/*
-function unhtmlentities($chaineHtml)
-{
 
-		$tmp = get_html_translation_table(HTML_ENTITIES);
-		$tmp = array_flip ($tmp);
-		$chaineTmp = strtr ($chaineHtml, $tmp);
-
-		return $chaineTmp;
-
-}
-
-// fonction de redimensionnement d'image
-function redimensionne_image($photo, $L_max, $H_max)
-{
-
-	// prendre les informations sur l'image
-	$info_image = getimagesize($photo);
-	// largeur et hauteur de l'image d'origine
-	$largeur = $info_image[0];
-	$hauteur = $info_image[1];
-	// largeur et/ou hauteur maximum à afficher en pixel
-	$taille_max_largeur = $L_max;
-	$taille_max_hauteur = $H_max;
-
-	// calcule le ratio de redimensionnement
-	$ratio_l = $largeur / $taille_max_largeur;
-	$ratio_h = $hauteur / $taille_max_hauteur;
-	$ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
-
-	// définit largeur et hauteur pour la nouvelle image
-	$nouvelle_largeur = $largeur / $ratio;
-	$nouvelle_hauteur = $hauteur / $ratio;
-
-
-//============================================================
-
-// class rel_PDF
-class rel_PDF extends FPDF
-{
 
 /**
 * Draws text within a box defined by width = w, height = h, and aligns
@@ -109,9 +70,9 @@ function drawTextBox($strText, $w, $h, $align='L', $valign='T', $border=1)
 		$this->Rect($xi,$yi,$w,$h,'DF');
 
 	$dy=0;
-	if (strtoupper($valign)=='M')
+	if (mb_strtoupper($valign)=='M')
 		$dy=($h-$rows*$this->FontSize)/2;
-	if (strtoupper($valign)=='B')
+	if (mb_strtoupper($valign)=='B')
 		$dy=$h-$rows*$this->FontSize;
 
 	$this->SetY($yi+$dy);

@@ -1544,7 +1544,7 @@ $_POST['projet']=	4eme_vers_3eme
 		if(mysql_num_rows($res)>0) {
 			while($lig=mysql_fetch_object($res)) {
 
-				if(strtoupper($lig->sexe)=='F') {$eff_tot_classe_F++;$eff_tot_F++;} else {$eff_tot_classe_M++;$eff_tot_M++;}
+				if(mb_strtoupper($lig->sexe)=='F') {$eff_tot_classe_F++;$eff_tot_F++;} else {$eff_tot_classe_M++;$eff_tot_M++;}
 
 				if(!in_array($lig->login,$tab_ele)) {
 
@@ -1556,13 +1556,12 @@ $_POST['projet']=	4eme_vers_3eme
 						// On récupère la classe future s'il y a déjà un enregistrement
 						while($lig_clas=mysql_fetch_object($res_clas)) {
 							// On ne devrait faire qu'un tour dans la boucle
-							//$fut_classe=strtoupper($lig_clas->classe);
-							$fut_classe=strtoupper($lig_clas->classe_future);
+							$fut_classe=mb_strtoupper($lig_clas->classe_future);
 						}
 					}
 
 					for($i=0;$i<count($classe_fut);$i++) {
-						if($fut_classe==strtoupper($classe_fut[$i])) {
+						if($fut_classe==mb_strtoupper($classe_fut[$i])) {
 							$eff_fut_classe_hors_selection[$i]++;
 							if($lig->sexe=='F') {
 								$eff_fut_classe_hors_selection_F[$i]++;
@@ -1576,26 +1575,21 @@ $_POST['projet']=	4eme_vers_3eme
 
 				}
 				else {
-					//$num_eleve2_id_classe_actuelle[$j]=$cpt;
 		
 					echo "<tr id='tr_eleve_$cpt' class='white_hover'>\n";
 					echo "<td>\n";
 					echo "<a name='eleve$cpt'></a>\n";
-					//if(file_exists("../photos/eleves/".$lig->elenoet.".jpg")) {
 					if(nom_photo($lig->elenoet)) {
-						// echo "<a href='#eleve$cpt' onclick=\"affiche_photo('".$lig->elenoet.".jpg','".addslashes(strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);return false;\">";
-						echo "<a href='#eleve$cpt' onclick=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);return false;\">";
-						echo strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
+						echo "<a href='#eleve$cpt' onclick=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);return false;\">";
+						echo mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
 						echo "</a>\n";
 					}
 					else {
-						echo strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
+						echo mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
 					}
 					echo "<input type='hidden' name='eleve[$cpt]' value='$lig->login' />\n";
 					echo "</td>\n";
-					//echo "<td id='eleve_sexe_$cpt'>";
 					echo "<td>";
-					//echo $lig->sexe;
 					echo "<span style='display:none' id='eleve_sexe_$cpt'>".$lig->sexe."</span>";
 					echo image_sexe($lig->sexe);
 					echo "</td>\n";
@@ -1629,7 +1623,7 @@ $_POST['projet']=	4eme_vers_3eme
 						$tmp_tab=explode("|",$lig_opt->liste_opt);
 						for($loop=0;$loop<count($tmp_tab);$loop++) {
 							if($tmp_tab[$loop]!="") {
-								$tab_ele_opt[]=strtoupper($tmp_tab[$loop]);
+								$tab_ele_opt[]=mb_strtoupper($tmp_tab[$loop]);
 							}
 						}
 					}
@@ -1640,7 +1634,7 @@ $_POST['projet']=	4eme_vers_3eme
 						$res_opt=mysql_query($sql);
 						if(mysql_num_rows($res_opt)>0) {
 							while($lig_opt=mysql_fetch_object($res_opt)) {
-								$tab_ele_opt[]=strtoupper($lig_opt->id_matiere);
+								$tab_ele_opt[]=mb_strtoupper($lig_opt->id_matiere);
 							}
 						}
 					}
@@ -1710,7 +1704,7 @@ $_POST['projet']=	4eme_vers_3eme
 
 						if($coche_possible=='y') {
 							echo "<input type='radio' name='classe_fut[$cpt]' id='classe_fut_".$i."_".$cpt."' value='$classe_fut[$i]' ";
-							if($fut_classe==strtoupper($classe_fut[$i])) {
+							if($fut_classe==mb_strtoupper($classe_fut[$i])) {
 								echo "checked ";
 	
 								$eff_selection_classe_fut[$i]++;
@@ -1736,7 +1730,7 @@ $_POST['projet']=	4eme_vers_3eme
 		
 					for($i=0;$i<count($lv1);$i++) {
 						echo "<td>\n";
-						if(in_array(strtoupper($lv1[$i]),$tab_ele_opt)) {
+						if(in_array(mb_strtoupper($lv1[$i]),$tab_ele_opt)) {
 							echo "<div style='display:none;'><input type='checkbox' name='lv1[$cpt]' id='lv1_".$i."_".$cpt."' value='$lv1[$i]' checked /></div>\n";
 							echo "<span title='$lv1[$i]'>X</span>";
 							$eff_selection_lv1[$i]++;
@@ -1757,7 +1751,7 @@ $_POST['projet']=	4eme_vers_3eme
 		
 					for($i=0;$i<count($lv2);$i++) {
 						echo "<td>\n";
-						if(in_array(strtoupper($lv2[$i]),$tab_ele_opt)) {
+						if(in_array(mb_strtoupper($lv2[$i]),$tab_ele_opt)) {
 							echo "<div style='display:none;'><input type='checkbox' name='lv2[$cpt]' id='lv2_".$i."_".$cpt."' value='$lv2[$i]' checked /></div>\n";
 							echo "<span title='$lv2[$i]'>X</span>";
 							$eff_selection_lv2[$i]++;
@@ -1777,7 +1771,7 @@ $_POST['projet']=	4eme_vers_3eme
 		
 					for($i=0;$i<count($lv3);$i++) {
 						echo "<td>\n";
-						if(in_array(strtoupper($lv3[$i]),$tab_ele_opt)) {
+						if(in_array(mb_strtoupper($lv3[$i]),$tab_ele_opt)) {
 							echo "<div style='display:none;'><input type='checkbox' name='lv3[$cpt]' id='lv3_".$i."_".$cpt."' value='$lv3[$i]' checked /></div>\n";
 							echo "<span title='$lv3[$i]'>X</span>";
 							$eff_selection_lv3[$i]++;
@@ -1796,7 +1790,7 @@ $_POST['projet']=	4eme_vers_3eme
 		
 					for($i=0;$i<count($autre_opt);$i++) {
 						echo "<td>\n";
-						if(in_array(strtoupper($autre_opt[$i]),$tab_ele_opt)) {
+						if(in_array(mb_strtoupper($autre_opt[$i]),$tab_ele_opt)) {
 							echo "<div style='display:none;'><input type='checkbox' name='autre_opt[$cpt]' id='autre_opt_".$i."_".$cpt."' value='$autre_opt[$i]' checked /></div>\n";
 							echo "<span title='$autre_opt[$i]'>X</span>";
 							$eff_selection_autre_opt[$i]++;

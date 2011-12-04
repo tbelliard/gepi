@@ -65,12 +65,12 @@ function adresse_responsables($login_eleve) {
 				// Le deuxième responsable existe et est renseigné
 				if (($tab_ele['resp'][0]['adr_id']==$tab_ele['resp'][1]['adr_id']) OR
 					(
-						(strtolower($tab_ele['resp'][0]['adr1'])==strtolower($tab_ele['resp'][1]['adr1']))&&
-						(strtolower($tab_ele['resp'][0]['adr2'])==strtolower($tab_ele['resp'][1]['adr2']))&&
-						(strtolower($tab_ele['resp'][0]['adr3'])==strtolower($tab_ele['resp'][1]['adr3']))&&
-						(strtolower($tab_ele['resp'][0]['adr4'])==strtolower($tab_ele['resp'][1]['adr4']))&&
+						(mb_strtolower($tab_ele['resp'][0]['adr1'])==mb_strtolower($tab_ele['resp'][1]['adr1']))&&
+						(mb_strtolower($tab_ele['resp'][0]['adr2'])==mb_strtolower($tab_ele['resp'][1]['adr2']))&&
+						(mb_strtolower($tab_ele['resp'][0]['adr3'])==mb_strtolower($tab_ele['resp'][1]['adr3']))&&
+						(mb_strtolower($tab_ele['resp'][0]['adr4'])==mb_strtolower($tab_ele['resp'][1]['adr4']))&&
 						($tab_ele['resp'][0]['cp']==$tab_ele['resp'][1]['cp'])&&
-						(strtolower($tab_ele['resp'][0]['commune'])==strtolower($tab_ele['resp'][1]['commune']))
+						(mb_strtolower($tab_ele['resp'][0]['commune'])==mb_strtolower($tab_ele['resp'][1]['commune']))
 					)
 				   ) 
 				{
@@ -106,7 +106,7 @@ function adresse_responsables($login_eleve) {
 					//}
 					$tab_adresse[0]['cp_ville']=$tab_ele['resp'][0]['cp']." ".$tab_ele['resp'][0]['commune'];
 
-					if(($tab_ele['resp'][0]['pays']!="")&&(strtolower($tab_ele['resp'][0]['pays'])!=strtolower($gepiSchoolPays))) {
+					if(($tab_ele['resp'][0]['pays']!="")&&(mb_strtolower($tab_ele['resp'][0]['pays'])!=mb_strtolower($gepiSchoolPays))) {
 						$tab_adresse[0]['pays']=$tab_ele['resp'][0]['pays'];
 					}
 				}
@@ -154,7 +154,7 @@ function adresse_responsables($login_eleve) {
 						
 						$tab_adresse[$cpt]['cp_ville']=$tab_ele['resp'][$cpt]['cp']." ".$tab_ele['resp'][$cpt]['commune'];
 
-						if(($tab_ele['resp'][$cpt]['pays']!="")&&(strtolower($tab_ele['resp'][$cpt]['pays'])!=strtolower($gepiSchoolPays))) {
+						if(($tab_ele['resp'][$cpt]['pays']!="")&&(mb_strtolower($tab_ele['resp'][$cpt]['pays'])!=mb_strtolower($gepiSchoolPays))) {
 							$tab_adresse[$cpt]['pays']=$tab_ele['resp'][$cpt]['pays'];
 						}
 					}
@@ -195,7 +195,7 @@ function adresse_responsables($login_eleve) {
 					*/
 					$tab_adresse[$cpt]['cp_ville']=$tab_ele['resp'][$cpt]['cp']." ".$tab_ele['resp'][$cpt]['commune'];
 
-					if(($tab_ele['resp'][$cpt]['pays']!="")&&(strtolower($tab_ele['resp'][$cpt]['pays'])!=strtolower($gepiSchoolPays))) {
+					if(($tab_ele['resp'][$cpt]['pays']!="")&&(mb_strtolower($tab_ele['resp'][$cpt]['pays'])!=mb_strtolower($gepiSchoolPays))) {
 						$tab_adresse[$cpt]['pays']=$tab_ele['resp'][$cpt]['pays'];
 					}
 				}
@@ -223,26 +223,13 @@ function adresse_responsables($login_eleve) {
 			if($tab_ele['resp'][0]['adr3']!=""){
 				$tab_adresse[0]['adresse3']=$tab_ele['resp'][0]['adr3'];
 			}
-			/*
-			if($tab_ele['resp'][0]['adr4']!=""){
-				$tab_adresse[0]['adresse4']="<br />\n".$tab_ele['resp'][0]['adr4'];
-			}
-			*/
 			$tab_adresse[0]['cp_ville']=$tab_ele['resp'][0]['cp']." ".$tab_ele['resp'][0]['commune'];
 
-			if(($tab_ele['resp'][0]['pays']!="")&&(strtolower($tab_ele['resp'][0]['pays'])!=strtolower($gepiSchoolPays))) {
+			if(($tab_ele['resp'][0]['pays']!="")&&(mb_strtolower($tab_ele['resp'][0]['pays'])!=mb_strtolower($gepiSchoolPays))) {
 				$tab_adresse[0]['pays']=$tab_ele['resp'][0]['pays'];
 			}
 		}
 	}
-/*
-echo "<pre>";
-print_r($tab_ele);
-echo "</pre>";
-echo "<pre>";
-print_r($tab_adresse);
-echo "</pre>";
-*/
 
 return $tab_adresse;
 }

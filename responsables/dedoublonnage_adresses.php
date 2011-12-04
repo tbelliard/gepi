@@ -331,7 +331,7 @@ else{
 							//echo " <span style='color:red'>$lig3->pers_id</span>";
 							if($cpt==0) {echo "<p><b>Dédoublonnage pour:</b> ";} else {echo " - ";}
 
-							echo strtoupper($lig1->nom)." ".ucfirst(strtolower($lig1->prenom))." (<i>".strtoupper($lig3->nom)." ".ucfirst(strtolower($lig3->prenom))."</i>)";
+							echo mb_strtoupper($lig1->nom)." ".ucfirst(mb_strtolower($lig1->prenom))." (<i>".mb_strtoupper($lig3->nom)." ".ucfirst(mb_strtolower($lig3->prenom))."</i>)";
 
 							$cpt++;
 						}

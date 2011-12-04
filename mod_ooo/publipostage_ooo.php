@@ -264,7 +264,7 @@ if(!isset($num_fich)) {
 				echo "<p style='color:red'>Pas de fichier indiqué ! Il faut recommencer...</p>\n";
 			}
 			else {
-				$fichiercopie=strtolower($monfichiername);
+				$fichiercopie=mb_strtolower($monfichiername);
 
 				$cible=array();
 				if($_SESSION['statut']=='administrateur') {

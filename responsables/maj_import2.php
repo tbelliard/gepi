@@ -2718,16 +2718,6 @@ else{
 											$cpt_modif++;
 											$cpt_chgt_classe++;
 										}
-										/*
-										$sql="SELECT DIVCOD FROM temp_gep_import2 t WHERE t.ELE_ID='$tab_ele_id[$i]';"
-										$test_clas2=mysql_query($sql);
-										if(mysql_num_rows($test_clas2)>0) {
-											$lig_clas2=mysql_fetch_object($test_clas2);
-					
-											if(strtolower($lig_clas1->classe)!=strtolower($lig_clas2->DIVCOD)) {
-											}
-										}
-										*/
 									}
 								}
 
@@ -2743,7 +2733,6 @@ else{
 									$rne_etab_prec="";
 								}
 
-								//if(strtolower($affiche[10])!=strtolower($gepiSchoolRne)) {
 								if((my_strtolower($affiche[10])!=my_strtolower($gepiSchoolRne))&&($alert_diff_etab_origine=='y')) {
 									if(my_strtolower($affiche[10])!=my_strtolower($rne_etab_prec)) {
 										$temoin_modif='y';
@@ -3047,7 +3036,6 @@ else{
 									$rne_ancien_etab="";
 								}
 
-								//if(strtolower($affiche[10])!=strtolower($gepiSchoolRne)) {
 								if((my_strtolower($affiche[10])!=my_strtolower($gepiSchoolRne))&&($alert_diff_etab_origine=='y')) {
 									echo "<td";
 									if($rne_ancien_etab!=$affiche[10]){
@@ -3065,11 +3053,7 @@ else{
 								}
 								else {
 									echo "<td>";
-									//echo "$affiche[10]";
-									//echo "<input type='hidden' name='modif_".$cpt."_id_etab' value='$affiche[10]' />\n";
-									//echo "&nbsp;";
 									echo $rne_ancien_etab;
-									//echo "<input type='hidden' name='modif_".$cpt."_id_etab' value='' />\n";
 									echo "</td>\n";
 								}
 
@@ -7214,7 +7198,6 @@ else{
 						$test=mysql_query($sql);
 
 						if(mysql_num_rows($test)==0){
-							// prenom='".mysql_real_escape_string(ucfirst(strtolower($lig->prenom)))."',
 
 							$sql="INSERT INTO resp_pers SET pers_id='$lig1->col2',
 													nom='".mysql_real_escape_string(my_strtoupper($lig->nom))."',

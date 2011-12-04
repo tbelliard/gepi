@@ -63,7 +63,7 @@ if ($_SESSION['statut'] == "responsable") {
 	// Si le nombre d'élèves associés est supérieur à 1, alors soit $login_eleve a été déjà défini, soit il faut présenter un choix.
 
 } else if ($_SESSION['statut'] == "eleve") {
-	if ($login_eleve != null and (strtoupper($login_eleve) != strtoupper($_SESSION['login']))) {
+	if ($login_eleve != null and (mb_strtoupper($login_eleve) != mb_strtoupper($_SESSION['login']))) {
 		tentative_intrusion(2, "Tentative d'un ".$gepiSettings['denomination_eleve']." de visualiser le bulletin simplifié d'un autre ".$gepiSettings['denomination_eleve'].".");
 	}
 	// Si l'utilisateur identifié est un élève, pas le choix, il ne peut consulter que son équipe pédagogique

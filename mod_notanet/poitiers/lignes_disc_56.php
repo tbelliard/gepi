@@ -111,108 +111,12 @@
 
 				if(!isset($tabmatieres[$j]["lig_speciale"])) {
 
-					/*
-					// Il n'y a pas d'option facultative en série PROFESSIONNELLE
-					// ET la langue vivante correspond à une lig_speciale
-
-					//if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){echo ": ".$tabmatieres[$j][-5];}
-					//if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){
-					if($tabmatieres[$j][0]=="OPTION FACULTATIVE") {
-						echo "<p class='discipline' style='font-style:italic; font-weight:bold;'>Option facultative</p>\n";
-						echo "</td>\n";
-						echo "<td colspan='2' style='font-size:".$fb_textetab."pt;'>\n";
-						echo "Points au-dessus de 10";
-						echo "</td>\n";
-						// Colonne Moy classe
-						echo "<td>&nbsp;</td>\n";
-						// Colonne App
-						echo "<td>&nbsp;</td>\n";
-						echo "</tr>\n";
-
-
-						$lignes_opt_facultative_alternative="<tr>\n";
-						$lignes_opt_facultative_alternative.="<td colspan='4' style='font-size:".$fb_textetab."pt;'><p class='discipline'>\n";
-						if($type_brevet==0) {
-							$lignes_opt_facultative_alternative.="Latin ou grec ou langue vivante 2\n";
-							$lignes_opt_facultative_alternative.="</p></td>\n";
-							$lignes_opt_facultative_alternative.="<td style='background-color:lightgrey;'>&nbsp;</td>\n";
-							$lignes_opt_facultative_alternative.="<td>&nbsp;</td>\n";
-						}
-						elseif($type_brevet==1) {
-							$lignes_opt_facultative_alternative.="Latin ou grec<br />ou découverte professionnelle 3 h\n";
-							$lignes_opt_facultative_alternative.="</p></td>\n";
-							$lignes_opt_facultative_alternative.="<td>&nbsp;</td>\n";
-							$lignes_opt_facultative_alternative.="<td style='background-color:lightgrey;'>&nbsp;</td>\n";
-						}
-						$lignes_opt_facultative_alternative.="<td>&nbsp;</td>\n";
-						$lignes_opt_facultative_alternative.="<td>&nbsp;</td>\n";
-						$lignes_opt_facultative_alternative.="</tr>\n";
-
-						if($type_brevet==1) {
-							// Pour le brevet COLLEGE DP6, on insère la ligne alternative correspondant au brevet COLLEGE série LV2
-							echo $lignes_opt_facultative_alternative;
-						}
-
-
-						echo "<tr>\n";
-						echo "<td colspan='4' style='font-size:".$fb_textetab."pt;'>\n";
 						echo "<p class='discipline'>";
-						//echo ucfirst(strtolower($tabmatieres[$j][0]));
-
-						$nom_opt="";
-						if($type_brevet==0) {
-							//echo "Latin, grec ou DP3";
-							$nom_opt="Latin, grec ou DP3";
-						}
-						elseif($type_brevet==1) {
-							//echo "Latin, grec ou LV2";
-							$nom_opt="Latin, grec ou LV2";
-						}
-						echo "$nom_opt";
-
-						// ==============================
-						// recherche de la matière facultative pour l'élève
-						//$sql_mat_fac="SELECT mat FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
-						$sql_mat_fac="SELECT m.nom_complet AS matiere FROM notanet n, matieres m WHERE n.login='$lig1->login' AND n.id_classe='$id_classe[$i]' AND n.notanet_mat='".$tabmatieres[$j][0]."' AND m.matiere=n.matiere";
-						$res_mat_fac=mysql_query($sql_mat_fac);
-						if(mysql_num_rows($res_mat_fac)>0){
-							$lig_mat_fac=mysql_fetch_object($res_mat_fac);
-
-							//echo ": ".$lig_mat_fac->mat;
-							//echo ": ".ucfirst(strtolower($lig_mat_fac->matiere));
-
-							echo " : ";
-
-							echo ucfirst(strtolower($lig_mat_fac->matiere));
-						}
-						// ==============================
-
-						//echo ": ".$lig_mat_fac->mat;
-					}
-					elseif(mb_substr(ucfirst(strtolower($tabmatieres[$j][0])),0,14)=='Langue vivante') {
-						echo "<p class='discipline'>";
-						echo ucfirst(strtolower($tabmatieres[$j][0]))." : ";
-
-						// ==============================
-						// recherche de la langue vivante pour l'élève
-						//$sql_mat_fac="SELECT mat FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
-						$sql_mat_lv="SELECT m.nom_complet AS matiere FROM notanet n, matieres m WHERE n.login='$lig1->login' AND n.id_classe='$id_classe[$i]' AND n.notanet_mat='".$tabmatieres[$j][0]."' AND m.matiere=n.matiere";
-						$res_mat_lv=mysql_query($sql_mat_lv);
-						if(mysql_num_rows($res_mat_lv)>0){
-							$lig_mat_lv=mysql_fetch_object($res_mat_lv);
-
-							echo ucfirst(strtolower($lig_mat_lv->matiere));
-						}
-					}
-					else {
-					*/
-						echo "<p class='discipline'>";
-						echo ucfirst(accent_min(strtolower($tabmatieres[$j][0])));
-					//}
+						echo ucfirst(accent_min(mb_strtolower($tabmatieres[$j][0])));
 				}
 				else{
 					echo "<p class='discipline'>";
-					echo ucfirst(accent_min(strtolower($tabmatieres[$j]["lig_speciale"])));
+					echo ucfirst(accent_min(mb_strtolower($tabmatieres[$j]["lig_speciale"])));
 				}
 				//echo "</span>\n";
 				echo "</p>\n";
@@ -322,11 +226,6 @@
 					*/
 					echo "style='border: 1px solid black; font-size:".$fb_textetab."pt;";
 
-					/*
-					if(($tabmatieres[$j][0]=="OPTION FACULTATIVE")&&($nom_opt=='Latin, grec ou LV2')) {
-						echo " background-color:lightgrey;";
-					}
-					*/
 
 					if($num_fb_col==1){
 						echo " text-align:center;";
@@ -335,7 +234,6 @@
 					}
 					else{
 						echo " text-align:right;";
-						//if (strtolower($tabmatieres[$j][0])=='découverte professionnelle 6 heures') {echo " background-color:lightgrey;";}
 						if($tabmatieres[$j]['fb_col'][1]=="X") {
 							echo " background-color:lightgrey;";
 						}
@@ -346,7 +244,7 @@
 					//$nb=$tabmatieres[$j][-2]*20;
 					//echo " / $nb";
 					//if($tabmatieres[$j][-1]!='PTSUP'){
-					if(($tabmatieres[$j][-1]!='PTSUP')&&(strtolower($tabmatieres[$j][0])!='découverte professionnelle 6 heures')) {
+					if(($tabmatieres[$j][-1]!='PTSUP')&&(mb_strtolower($tabmatieres[$j][0])!='découverte professionnelle 6 heures')) {
 						if($tabmatieres[$j]['fb_col'][1]!="X"){
 							if(($temoin_note_non_numerique=="n")||($num_fb_col==2)) {
 								echo " / ".$tabmatieres[$j]['fb_col'][1];
@@ -365,28 +263,11 @@
 				// COLONNE série DP6
 				//echo "style='border: 1px solid black; text-align:center;'>\n";
 				echo "<td ";
-				/*
-				if($tabmatieres[$j][-1]=='PTSUP'){
-					echo "style='border: 1px solid black; text-align:center;'>\n";
-					echo "<b>Points > à 10</b>";
-				}
-				else{
-				*/
-					/*
-					echo "style='border: 1px solid black; text-align:right;'>\n";
-					// TRICHE... Mon dispositif ne permet pas de gérer correctement ce double affichage
-					// Il faudrait /40 pour la 2è LV ou découverte professionnelle 6H.
-					if($tabmatieres[$j][0]=='DEUXIEME LANGUE VIVANTE'){
-						echo " / 40";
-					}
-					else{
-						echo " / 20";
-					}
-					*/
+				
 					//echo "style='border: 1px solid black; text-align:right;'>\n";
 					echo "style='border: 1px solid black; font-size:".$fb_textetab."pt;";
 
-					if(strtolower($tabmatieres[$j][0])=='langue vivante 2') {
+					if(mb_strtolower($tabmatieres[$j][0])=='langue vivante 2') {
 						echo "background-color:lightgrey;";
 					}
 
@@ -397,11 +278,6 @@
 					}
 					else{
 						echo " text-align:right;";
-						/*
-						if($tabmatieres[$j][0]=="OPTION FACULTATIVE"){
-							echo " background-color:lightgrey;";
-						}
-						*/
 						echo "'>\n";
 						echo "&nbsp;";
 					}
@@ -409,7 +285,7 @@
 					//$nb=$tabmatieres[$j][-2]*20;
 					//echo " / $nb";
 					//if($tabmatieres[$j][-1]!='PTSUP'){
-					if(($tabmatieres[$j][-1]!='PTSUP')&&(strtolower($tabmatieres[$j][0])!='langue vivante 2')) {
+					if(($tabmatieres[$j][-1]!='PTSUP')&&(mb_strtolower($tabmatieres[$j][0])!='langue vivante 2')) {
 						if(($temoin_note_non_numerique=="n")||($num_fb_col==1)) {
 							echo " / ".$tabmatieres[$j]['fb_col'][2];
 						}
@@ -613,39 +489,12 @@
 
 					echo "<td colspan='4' style='border: 1px solid black; text-align:left; font-size:".$fb_textetab."pt;'>\n";
 					echo "<p class='discipline'>";
-					echo ucfirst(accent_min(strtolower($tabmatieres[$j][0])));
+					echo ucfirst(accent_min(mb_strtolower($tabmatieres[$j][0])));
 					//echo "</p>";
 					//echo "</td>\n";
 					echo " : ";
 
-					/*
-					// Moyenne de la classe
-					echo "<td style='border: 1px solid black; text-align:center;'>\n";
-					//echo $moy_classe[$j];
-					if($fb_mode_moyenne==1){
-						echo $moy_classe[$j];
-					}
-					else{
-						//$sql="SELECT mat FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND matiere='".$tabmatieres[$j][0]."'";
-						$sql="SELECT matiere FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
-						$res_mat=mysql_query($sql);
-						if(mysql_num_rows($res_mat)>0){
-							$lig_mat=mysql_fetch_object($res_mat);
-							//echo "$lig_mat->mat: ";
-
-							//$sql="SELECT ROUND(AVG(note),1) moyenne_mat FROM notanet WHERE id_classe='$id_classe[$i]' AND mat='".$lig_mat->mat."'";
-							//$sql="SELECT ROUND(AVG(note),1) moyenne_mat FROM notanet WHERE id_classe='$id_classe[$i]' AND matiere='".$lig_mat->matiere."';";
-							$sql="SELECT ROUND(AVG(note),1) moyenne_mat FROM notanet WHERE id_classe='$id_classe[$i]' AND matiere='".$lig_mat->matiere."' AND note!='AB' AND note!='DI' AND note!='NN';";
-							//echo "$sql<br />";
-							$res_moy=mysql_query($sql);
-							if(mysql_num_rows($res_moy)>0){
-								$lig_moy=mysql_fetch_object($res_moy);
-								echo "$lig_moy->moyenne_mat";
-							}
-						}
-					}
-					echo "</td>\n";
-					*/
+					
 
 					// Moyenne de l'élève
 					//echo "<td style='border: 1px solid black; text-align:center;'>\n";
@@ -756,48 +605,15 @@
 
 					echo "<td colsapn='4' style='border: 1px solid black; text-align:left; font-size:".$fb_textetab."pt;'>\n";
 					echo "<p class='discipline'>";
-					echo ucfirst(accent_min(strtolower($tabmatieres[$j][0])));
+					echo ucfirst(accent_min(mb_strtolower($tabmatieres[$j][0])));
 					echo "</p>";
 					echo "</td>\n";
 
-					/*
-					echo "<td style='border: 1px solid black; text-align:center;'>\n";
-					echo "&nbsp;";
-					echo "</td>\n";
-
-					echo "<td style='border: 1px solid black; text-align:center;'>\n";
-					echo "&nbsp;";
-					echo "</td>\n";
-
-					echo "<td style='border: 1px solid black; text-align:center;'>\n";
-					echo "&nbsp;";
-					echo "</td>\n";
-					*/
-
+					
 					if($num_lig==0){
 						$nb_info=$temoin_NOTNONCA;
 
-						/*
-						//echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:right;'>\n";
-						if($num_fb_col==1){
-							echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:center;'>\n";
-							echo "$TOTAL / 220";
-							echo "</td>\n";
-
-							echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:right;'>\n";
-							echo "/ 240";
-							echo "</td>\n";
-						}
-						else{
-							echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:right;'>\n";
-							echo "/ 220";
-							echo "</td>\n";
-
-							echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:center;'>\n";
-							echo "$TOTAL / 240";
-							echo "</td>\n";
-						}
-						*/
+						
 						//echo "</td>\n";
 						if($num_fb_col==1){
 							echo "<td rowspan='$nb_info' style='border: 1px solid black; text-align:center;' font-size:".$fb_textetab."pt;>\n";

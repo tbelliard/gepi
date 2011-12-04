@@ -109,7 +109,7 @@ if ($mode=='module_discipline') {
 			$res3=mysql_query($sql);
 			if(mysql_num_rows($res3)>0) {
 				$lig3=mysql_fetch_object($res3);					
-				$donnee_tab_protagonistes[$cpt]['nom']=ucfirst(strtolower($lig3->prenom))." ".strtoupper($lig3->nom);				
+				$donnee_tab_protagonistes[$cpt]['nom']=ucfirst(mb_strtolower($lig3->prenom))." ".strtoupper($lig3->nom);				
 			}
 			else {
 				echo "ERREUR: Login $lig2->login inconnu";

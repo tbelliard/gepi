@@ -351,7 +351,7 @@ else {
 				while($lig=mysql_fetch_object($res)) {
 					$alt=$alt*(-1);
 					echo "<tr class='lig$alt'>\n";
-					echo "<td><label for='ele_$cpt' style='cursor: pointer;'>".strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom))."</label></td>\n";
+					echo "<td><label for='ele_$cpt' style='cursor: pointer;'>".mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom))."</label></td>\n";
 					echo "<td>";
 
 					//echo "<input type='checkbox' name='ele_login[]' id='ele_$cpt' value=\"$lig->login\" ";

@@ -43,7 +43,7 @@ if (!checkAccess()) {
 	die();
 }
 
-if(strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+if(mb_strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
 	header("Location: ../accueil.php?msg=$mess");
@@ -932,7 +932,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 				$res2=mysql_query($sql);
 				if(mysql_num_rows($res2)>0) {
 					$lig2=mysql_fetch_object($res2);
-					echo ucfirst(strtolower($lig2->prenom))." ".strtoupper($lig2->nom);
+					echo ucfirst(mb_strtolower($lig2->prenom))." ".mb_strtoupper($lig2->nom);
 					echo infobulle_photo($lig->login);
 				}
 				else {
@@ -954,7 +954,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 				$res2=mysql_query($sql);
 				if(mysql_num_rows($res2)>0) {
 					$lig2=mysql_fetch_object($res2);
-					echo ucfirst(strtolower($lig2->prenom))." ".strtoupper($lig2->nom);
+					echo ucfirst(mb_strtolower($lig2->prenom))." ".mb_strtoupper($lig2->nom);
 				}
 				else {
 					echo "ERREUR: Login inconnu";

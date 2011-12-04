@@ -78,29 +78,6 @@ $bull_pdf_debug=isset($_POST['bull_pdf_debug']) ? $_POST['bull_pdf_debug'] : "n"
 
 //debug_var();
 
-// Fonction de recherche des conteneurs derniers enfants (sans enfants (non parents, en somme))
-// avec recalcul des moyennes lancé...
-/*
-function recherche_enfant($id_parent_tmp){
-	global $current_group, $periode_num, $id_racine;
-	$sql="SELECT * FROM cn_conteneurs WHERE parent='$id_parent_tmp'";
-	//echo "<!-- $sql -->\n";
-	$res_enfant=mysql_query($sql);
-	if(mysql_num_rows($res_enfant)>0){
-		while($lig_conteneur_enfant=mysql_fetch_object($res_enfant)){
-			recherche_enfant($lig_conteneur_enfant->id);
-		}
-	}
-	else{
-		$arret = 'no';
-		$id_conteneur_enfant=$id_parent_tmp;
-		// Mise_a_jour_moyennes_conteneurs pour un enfant non parent...
-		mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_conteneur_enfant,$arret);
-		//echo "<!-- ========================================== -->\n";
-	}
-}
-*/
-
 //====================================================
 //=============== ENTETE STANDARD ====================
 if (!isset($_POST['valide_select_eleves'])) {
@@ -153,41 +130,6 @@ mais il se peut que vous ayez ainsi des précisions sur ce qui pose problème.<b
 	}
 	//=============================================
 
-/*
-	//=========================================
-	//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
-	$pdf=new bul_PDF('p', 'mm', 'A4');
-	$nb_eleve_aff = 1;
-	$categorie_passe = '';
-	$categorie_passe_count = 0;
-	$pdf->SetCreator($gepiSchoolName);
-	$pdf->SetAuthor($gepiSchoolName);
-	$pdf->SetKeywords('');
-	$pdf->SetSubject('Bulletin');
-	$pdf->SetTitle('Bulletin');
-	$pdf->SetDisplayMode('fullwidth', 'single');
-	$pdf->SetCompression(TRUE);
-	$pdf->SetAutoPageBreak(TRUE, 5);
-
-	$pdf->AddPage(); //ajout d'une page au document
-	$pdf->SetFont('DejaVu');
-
-	if ( !isset($X_etab) or empty($X_etab) ) {
-		$X_etab = '5';
-		$Y_etab = '5';
-	}
-	$pdf->SetXY($X_etab,$Y_etab);
-	$pdf->SetFont('DejaVu','',14);
-	$gepiSchoolName=getSettingValue("gepiSchoolName") ? getSettingValue("gepiSchoolName") : "gepiSchoolName";
-	$pdf->Cell(90,7, $gepiSchoolName,0,2,'');
-
-
-	//fermeture du fichier pdf et lecture dans le navigateur 'nom', 'I/D'
-	$nom_bulletin = 'bulletin_'.$nom_bulletin.'.pdf';
-	$pdf->Output($nom_bulletin,'I');
-	die();
-	//=========================================
-*/
 }
 //============ FIN ENTETE BULLETIN HTML ==============
 
@@ -207,9 +149,6 @@ if((!isset($_POST['mode_bulletin']))||($_POST['mode_bulletin']!='pdf')) {
 	//==============================
 }
 
-//$tab_id_classe=isset($_POST['tab_id_classe']) ? $_POST['tab_id_classe'] : NULL;
-//$tab_periode_num=isset($_POST['tab_periode_num']) ? $_POST['tab_periode_num'] : NULL;
-//$choix_periode_num=isset($_POST['choix_periode_num']) ? $_POST['choix_periode_num'] : NULL;
 $tab_id_classe=isset($_POST['tab_id_classe']) ? $_POST['tab_id_classe'] : (isset($_GET['tab_id_classe']) ? $_GET['tab_id_classe'] : NULL);
 $tab_periode_num=isset($_POST['tab_periode_num']) ? $_POST['tab_periode_num'] : (isset($_GET['tab_periode_num']) ? $_GET['tab_periode_num'] : NULL);
 $choix_periode_num=isset($_POST['choix_periode_num']) ? $_POST['choix_periode_num'] : (isset($_GET['choix_periode_num']) ? $_GET['choix_periode_num'] : NULL);
@@ -224,7 +163,9 @@ if(!isset($tab_id_classe)) {
 	(($_SESSION['statut']=='administrateur')&&(getSettingValue('GepiAdminImprBulSettings')=='yes'))) {
 		echo " | <a href='param_bull.php' target='_blank'>Paramètres d'impression des bulletins</a>";
 	}
-	echo " | <a href='index.php'>Ancien dispositif</a>";
+	if($_SESSION['statut']!='autre') {
+	  echo " | <a href='index.php'>Ancien dispositif</a>";
+	}
 	echo "</p>\n";
 
 	echo "<p class='bold'>Choix des classes:</p>\n";
@@ -243,10 +184,8 @@ if(!isset($tab_id_classe)) {
 
 		$message_0="Aucune classe (<i>avec élève</i>) ne vous est affectée.";
 	}
-	//elseif ($_SESSION["statut"] == "administrateur") {
-	elseif (($_SESSION["statut"] == "administrateur")||($_SESSION["statut"] == "secours")) {
+	elseif (($_SESSION["statut"] == "administrateur")||($_SESSION["statut"] == "secours")||($_SESSION["statut"] == "autre")) {
 		// On selectionne toutes les classes
-		//$sql="SELECT DISTINCT c.* FROM classes c WHERE 1";
 		$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) ORDER BY c.classe;";
 
 		$message_0="Aucune classe avec élève n'a été trouvée.";
@@ -1477,7 +1416,7 @@ else {
 			$sql="SELECT 1=1 FROM classes c, j_scol_classes jsc, j_eleves_classes jec WHERE (jec.id_classe=c.id AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' AND c.id='$id_classe');";
 		}
 		//elseif ($_SESSION["statut"] == "administrateur") {
-		elseif (($_SESSION["statut"] == "administrateur")||($_SESSION["statut"] == "secours")) {
+		elseif (($_SESSION["statut"] == "administrateur")||($_SESSION["statut"] == "secours")||($_SESSION["statut"] == "autre")) {
 			// On selectionne toutes les classes
 			//$sql="SELECT DISTINCT c.* FROM classes c WHERE 1";
 			$sql="SELECT 1=1 FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) LIMIT 1;";

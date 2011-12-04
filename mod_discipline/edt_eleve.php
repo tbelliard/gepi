@@ -33,14 +33,12 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-// SQL : INSERT INTO droits VALUES ( '/mod_discipline/edt_eleve.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: EDT élève', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/edt_eleve.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: EDT élève', '');;";
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 	die();
 }
 
-if(strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+if(mb_strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
 	header("Location: ../accueil.php?msg=$mess");
@@ -50,9 +48,6 @@ if(strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 require('sanctions_func_lib.php');
 include("../class_php/edt_cours.class.php");
 
-//$msg="";
-
-//$id_sanction=isset($_POST['id_sanction']) ? $_POST['id_sanction'] : (isset($_GET['id_sanction']) ? $_GET['id_sanction'] : NULL);
 $ele_login=isset($_GET['ele_login']) ? $_GET['ele_login'] : NULL;
 $sem = isset($_GET["sem"]) ? $_GET["sem"] : 0;
 $aff_precedent = isset($_GET["sem"]) ? ($_GET["sem"] - 1) : (-1);

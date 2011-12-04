@@ -281,7 +281,7 @@ else { // passage 2 : le nom du fichier a été choisi
         echo "</script>\n";
 
 
-        $fichiercopie=strtolower($monfichiername);
+        $fichiercopie=mb_strtolower($monfichiername);
         //alert("fichier copié : ".$fichiercopie);
 
         $cible=$nom_dossier_modeles_ooo_mes_modeles.$rne.$fich_cible;

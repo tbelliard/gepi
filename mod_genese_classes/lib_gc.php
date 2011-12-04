@@ -161,7 +161,7 @@ function necessaire_bull_simple() {
 }
 
 function image_sexe($sexe) {
-	if(strtolower($sexe)=='f') {
+	if(mb_strtolower($sexe)=='f') {
 		return "<img src='../images/symbole_femme16.png' width='16' height='16' title='F' />";
 	}
 	else {
@@ -465,7 +465,7 @@ function ligne_choix_classe_future($ele_login) {
 		$tmp_tab=explode("|",$lig_opt->liste_opt);
 		for($loop=0;$loop<count($tmp_tab);$loop++) {
 			if($tmp_tab[$loop]!="") {
-				$tab_ele_opt[]=strtoupper($tmp_tab[$loop]);
+				$tab_ele_opt[]=mb_strtoupper($tmp_tab[$loop]);
 			}
 		}
 	}
@@ -475,7 +475,7 @@ function ligne_choix_classe_future($ele_login) {
 		$res_opt=mysql_query($sql);
 		if(mysql_num_rows($res_opt)>0) {
 			while($lig_opt=mysql_fetch_object($res_opt)) {
-				$tab_ele_opt[]=strtoupper($lig_opt->id_matiere);
+				$tab_ele_opt[]=mb_strtoupper($lig_opt->id_matiere);
 			}
 		}
 	}
@@ -496,7 +496,7 @@ function ligne_choix_classe_future($ele_login) {
 		if($coche_possible=='y') {
 			//$retour.="<input type='radio' name='classe_fut[$cpt]' id='classe_fut_".$i."_".$cpt."' value='$classe_fut[$i]' ";
 			$retour.="<input type='radio' name='classe_fut' id='classe_fut_choisie' value='$classe_fut[$i]' ";
-			if(strtoupper($fut_classe)==strtoupper($classe_fut[$i])) {$retour.="checked ";}
+			if(mb_strtoupper($fut_classe)==mb_strtoupper($classe_fut[$i])) {$retour.="checked ";}
 			//alert('bip');
 			//$retour.="onchange=\"calcule_effectif('classe_fut',".count($classe_fut).");colorise_ligne('classe_fut',$cpt,$i);changement();\" ";
 			//$retour.="title=\"$lig->login/$classe_fut[$i]\" ";
