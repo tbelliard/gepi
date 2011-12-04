@@ -328,8 +328,9 @@ if (!isset($_SESSION['statJustifie'])) {
 	$_SESSION['statJustifie']['dernierePosition'] = $dernierePosition = $eleve_col->getPosition();
 	
 	// On recharge tous les 10% du nombre d'élèves
-  // on recherche 10% des élèves
-  $dixieme = floor(count($eleve_col)/10);
+	
+	// on recherche 10% des élèves
+	$dixieme = floor(count($eleve_col)/10);
 	if (0 == ($_SESSION['statJustifie']['dernierePosition'] % $dixieme)) {
 	  afficheChargement($_SESSION['statJustifie']['dernierePosition'], count($eleve_col));
 	}
