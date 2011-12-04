@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -374,9 +374,15 @@ echo "</pre>";
 				
 				$texte = my_strtoupper($donnees_eleves[$nb_eleves_i]['nom'])." ".casse_mot($donnees_eleves[$nb_eleves_i]['prenom'],'majf2');
 				
-				$pdf->CellFitScale($l_cell_nom,$h_cell,$texte,1,0,'L',0); //$l_cell_nom.' - '.$h_cell.' / '.$X_tableau.' - '.$y_tmp
-			
-				$y_tmp = $pdf->GetY();
+				//$pdf->CellFitScale($l_cell_nom,$h_cell,$texte,1,0,'L',0); //$l_cell_nom.' - '.$h_cell.' / '.$X_tableau.' - '.$y_tmp
+
+				$taille_max_police=9;
+				$taille_min_police=ceil($taille_max_police/3);
+				$largeur_dispo=$l_cell_nom;
+				//cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+				cell_ajustee("<b>".$texte."</b>",$pdf->GetX(),$y_tmp,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+
+				//$y_tmp = $pdf->GetY();
 				$pdf->Setxy($X_tableau+$l_cell_nom,$y_tmp);
 				
 				$l_cell_avis=$EspaceX - $l_cell_nom;
@@ -404,9 +410,8 @@ echo "</pre>";
 				//$pdf->CellFitScale($l_cell_avis,$h_cell,$avis,1,0,'L',0); //le quadrillage
 
 				$taille_texte_total = $pdf->GetStringWidth($avis);
-
 				$largeur_appreciation2 = $l_cell_avis ;
-
+				/*
 				$nb_ligne_app = '4.8';
 				$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2-4);
 				$grandeur_texte='test';
@@ -419,9 +424,16 @@ echo "</pre>";
 					} else { $grandeur_texte='ok'; }
 				}
 				$grandeur_texte='test';
-				
+
+				//$avis=ensure_utf8($avis);
 				$pdf->drawTextBox($avis, $largeur_appreciation2, $h_cell, 'J', 'M', 1);
-				
+				*/
+				$hauteur_caractere_appreciation=9;
+				$taille_max_police=$hauteur_caractere_appreciation;
+				$taille_min_police=ceil($taille_max_police/3);
+				$largeur_dispo=$largeur_appreciation2;
+				cell_ajustee($avis,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+
 				$pdf->SetFont('DejaVu','',7.5);
 
 				$pdf->Setxy($X_tableau+$l_cell_nom,$y_tmp+$h_cell);

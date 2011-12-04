@@ -713,14 +713,14 @@
 			$ytmp=$ytmp+15;
 
 			$tmp=$x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
-			$image_func_str = "imagettftext(\$img, ".($taille_police*5).", 0, $tmp, $ytmp5, .$couleureleve[$k], ".dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf, $moyenne[$k][$i])\n";
+			$image_func_str = "imagettftext(\$img, ".($taille_police*5).", 0, $tmp, $ytmp, .$couleureleve[$k], ".dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf, $moyenne[$k][$i])\n";
 			writinfo('/tmp/infos_graphe.txt','a+',$image_func_str);
 
 			//$largeur_texte=30;	// A REVOIR... COMMENT LE CALCULER EN SVG?
 			//$largeur_texte=0;	// A REVOIR... COMMENT LE CALCULER EN SVG?
 			$largeur_texte = mb_strlen($moyenne[$k][$i]) * $l_txt_px;
 
-			$xtext=$x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
+			$xtext=round($x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2));
 			//$ytext=$ytmp;
 			$ytext=$ytmp+$fontsizetext;
 			//$fontsizetext=Floor($taille_police*3.5);
@@ -870,7 +870,7 @@ BLA
 	// Il faudrait être sûr que l'espace ne va pas devenir négatif...
 	//$espace=($largeur-$total_largeur_eleves)/($nb_series+1);
 	//$espace=($largeur-$total_largeur_chaines)/($nb_series+1);
-	$espace=($largeurTotale-$total_largeur_chaines)/($nb_series+1);
+	$espace=ceil(($largeurTotale-$total_largeur_chaines)/($nb_series+1));
 
 	// Positionnement des noms d'élèves:
 	//$xtmp=$largeurGrad;
@@ -886,7 +886,7 @@ BLA
 		echo "<text x=\"$xtext\" y=\"$ytext\" style=\"fill:".$couleureleve[$k]."; font-size:$fontsizetext;\">".strtr($chaine[$k],"_"," ")."</text>\n";
 
 
-		$xtmp=$xtmp+$largeur_chaine[$k];
+		$xtmp=$xtmp+ceil($largeur_chaine[$k]);
 	}
 
 	
