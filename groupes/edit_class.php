@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -789,9 +789,9 @@ for($i=0;$i<10;$i++){
 		} else {
 			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=regroupement'>";
 		}
-		echo $group["description"] . "</a></b>";
-		echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".$group["description"]."\" />\n";
 
+		echo $group["description"] . "</a></strong>";
+		echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".$group["description"]."\" />\n";
 
 		$j= 1;
 		if ($total > 1) {

@@ -60,6 +60,7 @@ http://www.fpdf.org/fr/script/script62.php
     {
         //Get string width
         $str_width=$this->GetStringWidth($txt);
+        //$str_width=$this->MBGetStringLength($txt,1);
 
         //Calculate ratio to fit cell
         if($w==0)
