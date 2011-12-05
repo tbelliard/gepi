@@ -377,60 +377,57 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 	$y_tmp_ini = $y_tmp;
 
 	// Le tableau
-	//============================================================================
-	// A FAIRE: REVOIR LA SUITE POUR DEFINIR LES COORDONNEES SANS UTILISER $pdf->GetY()...
-	//          Ca bugue avec cell_ajustee() quand on passe sur plusieurs pages
-	if ($option_tout_une_page == 1) {
-		$use_cell_ajustee="y";
-	}
-	else {
-		$use_cell_ajustee="n";
-	}
-	//============================================================================
 
+	// Haut du tableau pour la premiere page de la classe (tenant compte de l'entete)
+	$y_top_tableau=$y_tmp;
+
+	// Largeur de la colonne Avis du conseil:
+	$l_cell_avis=$EspaceX - $l_cell_nom;
+
+	// Boucle sur les eleves de la classe courante:
+	$compteur_eleves_page=0;
 	while($nb_eleves_i < $nb_eleves) {	
-		//$login_elv = $donnees_eleves['login'][$nb_eleves_i];
 		$login_elv = $donnees_eleves[$nb_eleves_i]['login'];
 		$sql_current_eleve_avis = "SELECT avis FROM avis_conseil_classe WHERE (login='$login_elv' AND periode='".$donnees_eleves[$nb_eleves_i]['id_periode']."')";
 		//echo "$sql_current_eleve_avis<br />\n";
 		$current_eleve_avis_query = mysql_query($sql_current_eleve_avis);
 		$current_eleve_avis = @mysql_result($current_eleve_avis_query, 0, "avis");
 
-		if($use_cell_ajustee=="y") {
-			if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-5) {
-				$pdf->AddPage("P");
-				//$pdf->Setxy($X_entete_classe,$Y_entete_classe);
-				$pdf->Setxy($X_entete_classe,$y_tmp_ini);
-			}
+		//if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-5) {
+		if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-$h_cell-5) {
+			// Haut du tableau pour la deuxieme, troisieme,... page de la classe
+			// Pour la deuxieme, troisieme,... page d'une classe, on n'a pas d'entete:
+			$y_top_tableau=$MargeHaut;
+
+			$pdf->AddPage("P");
+			$pdf->Setxy($X_entete_classe,$y_top_tableau);
+			$compteur_eleves_page=0;
 		}
 
-		$y_tmp = $pdf->GetY();
-		$pdf->Setxy($X_tableau,$y_tmp);
-		$pdf->SetFont('DejaVu','B',9);
-		//$texte = strtoupper($donnees_eleves['nom'][$nb_eleves_i])." ".ucfirst($donnees_eleves['prenom'][$nb_eleves_i]);
-		
+		// Ordonnee courante pour l'eleve n°$compteur_eleves_page de la page:
+		$y_tmp = $y_top_tableau+$compteur_eleves_page*$h_cell;
+
+		// Colonne Nom_Prenom
+		$pdf->SetXY($X_tableau,$y_tmp);
+		$pdf->SetFont('DejaVu','B',9);		
 		$texte = my_strtoupper($donnees_eleves[$nb_eleves_i]['nom'])." ".casse_mot($donnees_eleves[$nb_eleves_i]['prenom'],'majf2');
 
-		if($use_cell_ajustee!="y") {
-			$pdf->CellFitScale($l_cell_nom,$h_cell,$texte,1,0,'L',0); //$l_cell_nom.' - '.$h_cell.' / '.$X_tableau.' - '.$y_tmp
-			$y_tmp = $pdf->GetY();
-		}
-		else {
-			$taille_max_police=9;
-			$taille_min_police=ceil($taille_max_police/3);
-			$largeur_dispo=$l_cell_nom;
-			//cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
-			$y_tmp_0=$y_tmp;
-			//$info_debug=$y_tmp;
-			$info_debug="";
-			cell_ajustee("<b>".$texte."</b>".$info_debug,$pdf->GetX(),$y_tmp,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
-			$y_tmp=$y_tmp_0;
-		}
+		$taille_max_police=9;
+		$taille_min_police=ceil($taille_max_police/3);
+		$largeur_dispo=$l_cell_nom;
+		//$info_debug=$y_tmp;
+		$info_debug="";
+		//cell_ajustee("<b>".$texte."</b>".$info_debug,$pdf->GetX(),$y_tmp,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+		cell_ajustee("<b>".$texte."</b>".$info_debug,$X_tableau,$y_tmp,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+
+		//================================
+		// Colonne Avis du conseil de classe:
+
+		// On reforce l'ordonnee pour la colonne Avis du conseil de classe
+		$y_tmp = $y_top_tableau+$compteur_eleves_page*$h_cell;
 
 		$pdf->Setxy($X_tableau+$l_cell_nom,$y_tmp);
-		
-		$l_cell_avis=$EspaceX - $l_cell_nom;
-		
+
 		if ($nb_periodes==1) {
 			if ($current_eleve_avis != '') {
 				$avis = $current_eleve_avis;
@@ -446,49 +443,25 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 			}
 		}
 		
-		
-		//$avis = $sql_current_eleve_avis;
-		
 		$pdf->SetFont('DejaVu','',7.5);
 		//$pdf->CellFitScale($l_cell_avis,$h_cell,$avis,1,0,'L',0); //le quadrillage
 
-		$taille_texte_total = $pdf->GetStringWidth($avis);
-		$largeur_appreciation2 = $l_cell_avis ;
-
-		if($use_cell_ajustee!="y") {
-			$nb_ligne_app = '4.8';
-			$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2-4);
-			$grandeur_texte='test';
-			while($grandeur_texte!='ok') {
-				if($taille_texte_max < $taille_texte_total)
-				{
-					$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
-					$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
-					$taille_texte_total = $pdf->GetStringWidth($avis);
-				} else { $grandeur_texte='ok'; }
-			}
-			$grandeur_texte='test';
-	
-			//$avis=ensure_utf8($avis);
-			$pdf->drawTextBox($avis, $largeur_appreciation2, $h_cell, 'J', 'M', 1);
-		}
-		else {
-			$hauteur_caractere_appreciation=9;
-			$taille_max_police=$hauteur_caractere_appreciation;
-			$taille_min_police=ceil($taille_max_police/3);
-			$largeur_dispo=$largeur_appreciation2;
-			//cell_ajustee($avis,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
-			cell_ajustee($avis,$pdf->GetX(),$y_tmp,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
-		}
+		$hauteur_caractere_appreciation=9;
+		$taille_max_police=$hauteur_caractere_appreciation;
+		$taille_min_police=ceil($taille_max_police/3);
+		$largeur_dispo=$l_cell_avis;
+		//cell_ajustee($avis,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+		cell_ajustee($avis,$pdf->GetX(),$y_tmp,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
 
 		$pdf->SetFont('DejaVu','',7.5);
 
-		$pdf->Setxy($X_tableau+$l_cell_nom,$y_tmp+$h_cell);
-		
-		$nb_eleves_i = $nb_eleves_i + 1;
+		//$pdf->Setxy($X_tableau+$l_cell_nom,$y_tmp+$h_cell);
+
+		$nb_eleves_i++;
+		$compteur_eleves_page++;
 	}
 	$y_tmp = $pdf->GetY();
-} // FOR
+} // FOR (boucle classe)
 		
 // sortie PDF sur écran
 $nom_releve=date("Ymd_Hi");
