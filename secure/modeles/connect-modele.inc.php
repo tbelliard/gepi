@@ -89,4 +89,11 @@ if ($multisite == "y" AND $_SERVER["SCRIPT_NAME"] != "/login.php") {
 
 $mode_debug = false;
 $debug_log_file = '/var/log/gepi.log';
+
+// En mettant la variable suivante à 'dump' ou 'system_dump', vous pouvez
+// forcer le type de sauvegarde réalisé, sans laisser le choix à
+// l'administrateur.
+// - dump : le backup basé sur un ensemble de requêtes SQL (lourd, mais passe partout)
+// - system_dump : utilise la commande système 'mysqldump', beaucoup plus rapide mais nécessite un système permettant l'exécution de la commande
+$force_backup_mode = false;
 ?>
