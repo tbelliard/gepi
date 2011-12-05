@@ -2600,6 +2600,10 @@ function eleve_suivant() {
 			}
 
 			$mgen[1]=$moy_gen_eleve[$indice_eleve1];
+			if(preg_match("/^[0-9.,]*$/", $mgen[1])) {
+				$mgen[1]=round(preg_replace('/,/', '.', $mgen[1]),1);
+			}
+
 
 			// On recherche l'élève2 et on récupère la moyenne générale 2:
 			$indice_eleve2=-1;
@@ -2623,6 +2627,10 @@ function eleve_suivant() {
 			}
 			elseif($eleve2=='moymax') {
 				$mgen[2]=$moy_max_classe;
+			}
+
+			if(preg_match("/^[0-9.,]*$/", $mgen[2])) {
+				$mgen[2]=round(preg_replace('/,/', '.', $mgen[2]),1);
 			}
 
 			// On remplit $liste_matieres, $serie[1], les tableaux d'appréciations et on génère les infobulles
@@ -3545,6 +3553,11 @@ function eleve_suivant() {
 						}
 					}
 				}
+
+				if((isset($mgen[$cpt]))&&(preg_match("/^[0-9.,]*$/", $mgen[$cpt]))) {
+					$mgen[$cpt]=round(preg_replace('/,/', '.', $mgen[$cpt]),1);
+				}
+
 				$cpt++;
 			}
 
