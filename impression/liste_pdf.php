@@ -455,10 +455,10 @@ if ($id_liste_groupes!=NULL) {
 			$pdf->SetFont('DejaVu','',9);
 			$y_tmp = $Y_courant;
 			//Nb de ligne AVANT dans le tableau
-//echo "\$nb_ligne_avant=$nb_ligne_avant<br />";die();
+			//echo "\$nb_ligne_avant=$nb_ligne_avant<br />";die();
 			if ($nb_ligne_avant > 0) {
 
-//echo "\$h_ligne1_avant=$h_ligne1_avant<br />\n";echo "\$h_ligne=$h_ligne<br />\n";die();
+				//echo "\$h_ligne1_avant=$h_ligne1_avant<br />\n";echo "\$h_ligne=$h_ligne<br />\n";die();
 
 				//la première ligne peut être plus haute
 				if ($h_ligne1_avant > $h_ligne) {
@@ -545,9 +545,26 @@ if ($id_liste_groupes!=NULL) {
 			}
 
 
+			// Ordonnee premier eleve pour la premiere page de la classe/groupe
+			$y_top_tableau=$y_tmp;
+
 			// Le tableau
+			$compteur_eleves_page=0;
 			while($nb_eleves_i < $nb_eleves) {
-				$y_tmp = $pdf->GetY();
+
+				if(strtr($y_tmp,",",".")+strtr($h_ligne,",",".")>297-$marge_haut-$marge_bas-$h_ligne-5) {
+					// Haut du tableau pour la deuxieme, troisieme,... page de la classe
+					// Pour la deuxieme, troisieme,... page d'une classe, on n'a pas d'entete:
+					$y_top_tableau=$marge_haut;
+
+					$pdf->AddPage("P");
+					$pdf->Setxy($X_tableau,$y_top_tableau);
+					$compteur_eleves_page=0;
+				}
+
+				//$y_tmp = $pdf->GetY();
+				$y_tmp = $y_top_tableau+$compteur_eleves_page*$h_ligne;
+
 				$pdf->Setxy($X_tableau,$y_tmp);
 				$pdf->SetFont('DejaVu','',9);
 				if ($flag_groupe==true) {
@@ -555,9 +572,15 @@ if ($id_liste_groupes!=NULL) {
 				} else {
 					$texte = (($donnees_eleves[$nb_eleves_i]['nom'])." ".($donnees_eleves[$nb_eleves_i]['prenom']));
 				}
-				$pdf->CellFitScale($l_nomprenom,$h_ligne,$texte,1,0,'L',0); //$l_nomprenom.' - '.$h_ligne.' / '.$X_tableau.' - '.$y_tmp
+
+				//$pdf->CellFitScale($l_nomprenom,$h_ligne,$texte,1,0,'L',0); //$l_nomprenom.' - '.$h_ligne.' / '.$X_tableau.' - '.$y_tmp
+
+				$taille_max_police=9;
+				$taille_min_police=ceil($taille_max_police/3);
+				cell_ajustee($texte,$pdf->GetX(),$y_tmp,$l_nomprenom,$h_ligne,$taille_max_police,$taille_min_police,'LRBT');
+
 				for($i=0; $i < $nb_colonne ; $i++) {
-					$y_tmp = $pdf->GetY();
+					//$y_tmp = $pdf->GetY();
 					$pdf->Setxy($X_tableau+$l_nomprenom + $i*$l_colonne,$y_tmp);
 					if ($i<$nb_cellules_quadrillees) {
 					   $pdf->Cell($l_colonne,$h_ligne,'',1,0,'C',0); //le quadrillage
@@ -569,9 +592,12 @@ if ($id_liste_groupes!=NULL) {
 					   }
 					}
 				}
+
 				$pdf->ln();
 				$nb_eleves_i = $nb_eleves_i + 1;
 				//$y_tmp = $y_tmp + $h_ligne;
+
+				$compteur_eleves_page++;
 			}
 			$y_tmp = $pdf->GetY();
 
