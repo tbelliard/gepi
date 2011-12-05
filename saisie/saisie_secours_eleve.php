@@ -485,7 +485,12 @@ else {
 			$res_note=mysql_query($sql);
 			if(mysql_num_rows($res_note)>0) {
 				$lig_note=mysql_fetch_object($res_note);
-				$note=$lig_note->note;
+				if($lig_note->statut=='') {
+					$note=$lig_note->note;
+				}
+				else {
+					$note=$lig_note->statut;
+				}
 			}
 
 			$alt=$alt*(-1);
@@ -521,7 +526,7 @@ else {
 		echo "<script type='text/javascript'>
 	function tout_vider() {
 		if(confirm('Etes-vous sûr de vouloir vider toutes les notes et appreciations ?')) {
-			for(i=0;i<$num_id;i++) {
+			for(i=0;i<=$num_id;i++) {
 				if(document.getElementById('n'+i)) {document.getElementById('n'+i).value='';}
 			}
 		}
