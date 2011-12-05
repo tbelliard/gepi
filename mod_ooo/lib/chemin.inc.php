@@ -8,6 +8,7 @@ if ($_SESSION['rne']!='') {
 } else {
 	$rne='';
 }
+
 $nom_dossier_modeles_ooo_par_defaut='modeles_gepi/'; 
 $nom_dossier_modeles_ooo_mes_modeles='mes_modeles/';
 
