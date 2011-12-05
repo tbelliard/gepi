@@ -394,13 +394,14 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		$current_eleve_avis = @mysql_result($current_eleve_avis_query, 0, "avis");
 
 		//if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-5) {
-		if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-$h_cell-5) {
+		//if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-$h_cell-5) {
+		if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-$MargeHaut-5) {
 			// Haut du tableau pour la deuxieme, troisieme,... page de la classe
 			// Pour la deuxieme, troisieme,... page d'une classe, on n'a pas d'entete:
 			$y_top_tableau=$MargeHaut;
 
 			$pdf->AddPage("P");
-			$pdf->Setxy($X_entete_classe,$y_top_tableau);
+			$pdf->Setxy($X_tableau,$y_top_tableau);
 			$compteur_eleves_page=0;
 		}
 
