@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -1031,7 +1031,7 @@ while ($k < $nb_periode) {
 			$mess[$k].="<div style='color:darkgreen; border: 1px solid red;'><b>Proposition de correction en attente&nbsp;:</b><br />".nl2br($lig_correct_app->appreciation)."</div>\n";
 		}
 
-		if((($app_grp[$k]!='')&&(mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y'))||
+		if(((($app_grp[$k]!='')||(mb_substr(getSettingValue('autoriser_correction_bulletin_hors_delais'),0,1)=='y')))&&(mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y'))||
 		($tab_autorisation_exceptionnelle_de_saisie[$k]=='y')) {
 			//$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"affiche_div_correction_groupe('$k','$cpt_correction');return false;\" alt='Proposer une correction' title='Proposer une correction'><img src='../images/edit16.png' width='16' height='16' alt='Proposer une correction' title='Proposer une correction' /></a>";
 			//$chaine_champs_textarea_correction.="<textarea name='reserve_correction_app_eleve_$cpt_correction' id='reserve_correction_app_eleve_$cpt_correction'>".$app_grp[$k]."</textarea>\n";
@@ -1275,7 +1275,7 @@ foreach ($liste_eleves as $eleve_login) {
 				//===============================
 				if(($_SESSION['statut']=='professeur')&&($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]=="P")) {
 
-					if((($eleve_app!='')&&(mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y'))||
+					if(((($eleve_app!='')||(mb_substr(getSettingValue('autoriser_correction_bulletin_hors_delais'),0,1)=='y'))&&(mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y'))||
 					($tab_autorisation_exceptionnelle_de_saisie[$k]=='y')) {
 	
 						$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"affiche_div_correction('$eleve_login','$k','$cpt_correction');return false;\" alt='Proposer une correction' title='Proposer une correction'><img src='../images/edit16.png' width='16' height='16' alt='Proposer une correction' title='Proposer une correction' /></a>";
@@ -1369,7 +1369,6 @@ foreach ($liste_eleves as $eleve_login) {
 
 				$mess[$k]="<td>".$note."</td>\n";
 				$mess[$k].="<td>Contenu du carnet de notes : ";
-				
 				if($liste_notes_detaillees!='') {
 
 					$titre="Notes de $eleve_nom $eleve_prenom sur la période $k";
@@ -1391,12 +1390,10 @@ foreach ($liste_eleves as $eleve_login) {
 				}
 				$mess[$k].="<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$eleve_login_t[$k]."\" />\n";
 
-				
 				$chaine_champs_input_prenom.="<input type='hidden' name='prenom_eleve_".$k."[$i]' id='prenom_eleve_".$k.$num_id."' value=\"".$eleve_prenom."\" />\n";
 
 				$chaine_champs_input_login.="<input type='hidden' name='login_eleve_".$k."[$i]' id='login_eleve_".$k.$num_id."' value=\"".$eleve_login_t[$k]."\" />\n";
 
-				
 				$mess[$k].="<textarea id=\"n".$k.$num_id."\" class='wrap' onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows='2' cols='100' onchange=\"changement();";
 				$mess[$k].="ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');";
 				$mess[$k].="ajaxVerifAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');";
@@ -1417,7 +1414,6 @@ foreach ($liste_eleves as $eleve_login) {
 					if(mysql_num_rows($res_ele)>0) {
 						$lig_ele=mysql_fetch_object($res_ele);
 						$_photo_eleve = nom_photo($lig_ele->elenoet);
-						
 						if(file_exists($_photo_eleve)) {
 							$mess[$k].=";affiche_photo('".$_photo_eleve."','".addslashes(my_strtoupper($eleve_nom)." ".casse_mot($eleve_prenom,'majf2'))."')";
 						}
