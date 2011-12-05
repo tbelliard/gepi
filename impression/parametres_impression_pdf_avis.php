@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
 *
 * This file is part of GEPI.
 *
@@ -77,7 +77,9 @@ if ($ok==0) {
 	$titre_page = "Impression des avis (PDF) | Choix des paramètres";
 	require_once("../lib/header.inc");
 	//**************** FIN EN-TETE **********************************
-	
+
+	//debug_var();
+
 	echo "<p class='bold'>";
 	echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 	echo " | <a href='../saisie/impression_avis.php'>Impression des avis</a>";
@@ -94,24 +96,58 @@ if ($ok==0) {
 
 	echo "<b>Définition des marges du document&nbsp;:</b></p>\n";
 	echo "<table style='margin-left: 1em;' border='0'>\n";
-	echo "<tr><td>Marge à gauche&nbsp;:</td><td><input type=\"text\" name=\"marge_gauche\" size=\"2\" maxlength=\"2\" value=\"10\" /></td></tr>\n";
-	echo "<tr><td>Marge à droite&nbsp;:</td><td><input type=\"text\" name=\"marge_droite\" size=\"2\" maxlength=\"2\" value=\"10\" /></td></tr>\n";
-	echo "<tr><td>Marge du haut&nbsp;:</td><td><input type=\"text\" name=\"marge_haut\" size=\"2\" maxlength=\"2\" value=\"10\" /></td></tr>\n";
-	echo "<tr><td>Marge du bas&nbsp;:</td><td><input type=\"text\" name=\"marge_bas\" size=\"2\" maxlength=\"2\" value=\"10\" /></td></tr>\n";
+	$valeur=getPref($_SESSION['login'],'avis_pdf_marge_gauche',10);
+	echo "<tr><td>Marge à gauche&nbsp;:</td><td><input type=\"text\" name=\"marge_gauche\" id=\"marge_gauche\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,100);\" autocomplete=\"off\" /></td></tr>\n";
+	$valeur=getPref($_SESSION['login'],'avis_pdf_marge_droite',10);
+	echo "<tr><td>Marge à droite&nbsp;:</td><td><input type=\"text\" name=\"marge_droite\" id=\"marge_droite\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,100);\" autocomplete=\"off\" /></td></tr>\n";
+	$valeur=getPref($_SESSION['login'],'avis_pdf_marge_haut',10);
+	echo "<tr><td>Marge du haut&nbsp;:</td><td><input type=\"text\" name=\"marge_haut\" id=\"marge_haut\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,150);\" autocomplete=\"off\" /></td></tr>\n";
+	$valeur=getPref($_SESSION['login'],'avis_pdf_marge_bas',10);
+	echo "<tr><td>Marge du bas&nbsp;:</td><td><input type=\"text\" name=\"marge_bas\" id=\"marge_bas\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,150);\" autocomplete=\"off\" /></td></tr>\n";
+	$valeur=getPref($_SESSION['login'],'avis_pdf_marge_reliure',1);
 	echo "<tr><td>Option marge reliure ?</td><td><input type=\"radio\" name=\"marge_reliure\" id=\"marge_reliure_1\" value=\"1\" checked /><label for='marge_reliure_1'> Oui</label> <input type=\"radio\" name=\"marge_reliure\" id=\"marge_reliure_0\" value=\"0\" /><label for='marge_reliure_0'> Non</label></td></tr>\n";
-	echo "<tr><td>Option emplacement des<br />perforations classeur  ?</td><td><input type=\"radio\" name=\"avec_emplacement_trous\" id=\"avec_emplacement_trous_1\" value=\"1\" checked /><label for='avec_emplacement_trous_1'> Oui</label> <input type=\"radio\" name=\"avec_emplacement_trous\" id=\"avec_emplacement_trous_0\" value=\"0\" /><label for='avec_emplacement_trous_0'> Non</label></td></tr>\n";
+	$valeur=getPref($_SESSION['login'],'avis_pdf_avec_emplacement_trous',1);
+	echo "<tr><td>Option emplacement des<br />perforations classeur  ?</td><td><input type=\"radio\" name=\"avec_emplacement_trous\" id=\"avec_emplacement_trous_1\" value=\"1\" ";
+	if("$valeur"!="0") {
+		echo "checked ";
+	}
+	echo "/><label for='avec_emplacement_trous_1'> Oui</label> <input type=\"radio\" name=\"avec_emplacement_trous\" id=\"avec_emplacement_trous_0\" value=\"0\" ";
+	if("$valeur"=="0") {
+		echo "checked ";
+	}
+	echo "/><label for='avec_emplacement_trous_0'> Non</label></td></tr>\n";
 	echo "</table>\n";
 	echo "<br />\n";
 
 	echo "<b>Informations à afficher sur le document&nbsp;:</b><br />\n";
-	echo "&nbsp;&nbsp;Afficher le professeur responsable de la classe ? <input type=\"radio\" name=\"affiche_pp\" id=\"affiche_pp_1\" value=\"1\" checked /><label for='affiche_pp_1'> Oui</label> <input type=\"radio\" id=\"affiche_pp_0\" name=\"affiche_pp\" value=\"0\" /><label for='affiche_pp_0'> Non</label><br />\n";
+	$valeur=getPref($_SESSION['login'],'avis_pdf_affiche_pp',1);
+	echo "&nbsp;&nbsp;Afficher le professeur responsable de la classe ? <input type=\"radio\" name=\"affiche_pp\" id=\"affiche_pp_1\" value=\"1\" ";
+	if("$valeur"!="0") {
+		echo "checked ";
+	}
+	echo "/><label for='affiche_pp_1'> Oui</label> <input type=\"radio\" id=\"affiche_pp_0\" name=\"affiche_pp\" value=\"0\" ";
+	if("$valeur"=="0") {
+		echo "checked ";
+	}
+	echo "/><label for='affiche_pp_0'> Non</label><br />\n";
 	echo "<br />\n";
 
 	echo "<b>Styles du tableau&nbsp;: </b><br />\n";
 	echo "<table style='margin-left: 1em;' border='0'>\n";
-	echo "<tr><td>Tout sur une seule page ?</td><td><input type=\"radio\" name=\"une_seule_page\" id=\"une_seule_page_1\" value=\"1\" checked /><label for='une_seule_page_1'> Oui</label> <input type=\"radio\" name=\"une_seule_page\" id=\"une_seule_page_0\" value=\"0\" /><label for='une_seule_page_0'> Non</label></td></tr>\n";
-	echo "<tr><td>Hauteur d'une ligne&nbsp;:</td><td><input type=\"text\" name=\"h_ligne\" size=\"2\" maxlength=\"2\" value=\"8\" /> </td></tr>\n";
-	echo "<tr><td>Largeur colonne Nom / Prénom&nbsp;:</td><td><input type=\"text\" name=\"l_nomprenom\" size=\"2\" maxlength=\"2\" value=\"40\" /></td></tr>\n";
+	$valeur=getPref($_SESSION['login'],'avis_pdf_une_seule_page',1);
+	echo "<tr><td>Tout sur une seule page ?</td><td><input type=\"radio\" name=\"une_seule_page\" id=\"une_seule_page_1\" value=\"1\" ";
+	if("$valeur"!="0") {
+		echo "checked ";
+	}
+	echo "/><label for='une_seule_page_1'> Oui</label> <input type=\"radio\" name=\"une_seule_page\" id=\"une_seule_page_0\" value=\"0\" ";
+	if("$valeur"=="0") {
+		echo "checked ";
+	}
+	echo "/><label for='une_seule_page_0'> Non</label></td></tr>\n";
+	$valeur=getPref($_SESSION['login'],'avis_pdf_h_ligne',8);
+	echo "<tr><td>Hauteur d'une ligne&nbsp;:</td><td><input type=\"text\" name=\"h_ligne\" id=\"h_ligne\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,100);\" autocomplete=\"off\" /> </td></tr>\n";
+	$valeur=getPref($_SESSION['login'],'avis_pdf_l_nomprenom',40);
+	echo "<tr><td>Largeur colonne Nom / Prénom&nbsp;:</td><td><input type=\"text\" name=\"l_nomprenom\" id=\"l_nomprenom\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,100);\" autocomplete=\"off\" /></td></tr>\n";
 	echo "</table>\n";
 	echo "<input value=\"1\" name=\"ok\" type=\"hidden\" />\n";
 	echo "<br />\n";
@@ -125,17 +161,36 @@ if ($ok==0) {
 
 } else { // if OK
 	// On enregistre dans la session et on redirige vers impression_serie.php
-	$_SESSION['marge_gauche']=isset($_POST['marge_gauche']) ? $_POST["marge_gauche"] : 10;
-	$_SESSION['marge_droite']=isset($_POST['marge_droite']) ? $_POST["marge_droite"] : 10;
-	$_SESSION['marge_haut']=isset($_POST['marge_haut']) ? $_POST["marge_haut"] : 10;
-	$_SESSION['marge_bas']=isset($_POST['marge_bas']) ? $_POST["marge_bas"] : 10;
-	$_SESSION['marge_reliure']=isset($_POST['marge_reliure']) ? $_POST["marge_reliure"] : 1;
-	$_SESSION['avec_emplacement_trous']=isset($_POST['avec_emplacement_trous']) ? $_POST["avec_emplacement_trous"] : 1;
-	$_SESSION['affiche_pp']=isset($_POST['affiche_pp']) ? $_POST["affiche_pp"] : 1;
-	$_SESSION['une_seule_page']=isset($_POST['une_seule_page']) ? $_POST["une_seule_page"] : 1;
-	$_SESSION['h_ligne']=isset($_POST['h_ligne']) ? $_POST["h_ligne"] : 8;
-	$_SESSION['l_nomprenom']=isset($_POST['l_nomprenom']) ? $_POST["l_nomprenom"] : 40;
-	
+	$_SESSION['avis_pdf_marge_gauche']=isset($_POST['marge_gauche']) ? $_POST["marge_gauche"] : 10;
+	savePref($_SESSION['login'],'avis_pdf_marge_gauche',$_SESSION['avis_pdf_marge_gauche']);
+
+	$_SESSION['avis_pdf_marge_droite']=isset($_POST['marge_droite']) ? $_POST["marge_droite"] : 10;
+	savePref($_SESSION['login'],'avis_pdf_marge_droite',$_SESSION['avis_pdf_marge_droite']);
+
+	$_SESSION['avis_pdf_marge_haut']=isset($_POST['marge_haut']) ? $_POST["marge_haut"] : 10;
+	savePref($_SESSION['login'],'avis_pdf_marge_haut',$_SESSION['avis_pdf_marge_haut']);
+
+	$_SESSION['avis_pdf_marge_bas']=isset($_POST['marge_bas']) ? $_POST["marge_bas"] : 10;
+	savePref($_SESSION['login'],'avis_pdf_marge_bas',$_SESSION['avis_pdf_marge_bas']);
+
+	$_SESSION['avis_pdf_marge_reliure']=isset($_POST['marge_reliure']) ? $_POST["marge_reliure"] : 1;
+	savePref($_SESSION['login'],'avis_pdf_marge_reliure',$_SESSION['avis_pdf_marge_reliure']);
+
+	$_SESSION['avis_pdf_avec_emplacement_trous']=isset($_POST['avec_emplacement_trous']) ? $_POST["avec_emplacement_trous"] : 1;
+	savePref($_SESSION['login'],'avis_pdf_avec_emplacement_trous',$_SESSION['avis_pdf_avec_emplacement_trous']);
+
+	$_SESSION['avis_pdf_affiche_pp']=isset($_POST['affiche_pp']) ? $_POST["affiche_pp"] : 1;
+	savePref($_SESSION['login'],'avis_pdf_affiche_pp',$_SESSION['avis_pdf_affiche_pp']);
+
+	$_SESSION['avis_pdf_une_seule_page']=isset($_POST['une_seule_page']) ? $_POST["une_seule_page"] : 1;
+	savePref($_SESSION['login'],'avis_pdf_une_seule_page',$_SESSION['avis_pdf_une_seule_page']);
+
+	$_SESSION['avis_pdf_h_ligne']=isset($_POST['h_ligne']) ? $_POST["h_ligne"] : 8;
+	savePref($_SESSION['login'],'avis_pdf_h_ligne',$_SESSION['avis_pdf_h_ligne']);
+
+	$_SESSION['avis_pdf_l_nomprenom']=isset($_POST['l_nomprenom']) ? $_POST["l_nomprenom"] : 40;
+	savePref($_SESSION['login'],'avis_pdf_l_nomprenom',$_SESSION['avis_pdf_l_nomprenom']);
+
 	header("Location: ../saisie/impression_avis.php");
 	die();
 }
