@@ -934,7 +934,7 @@ function extr_valeur($lig){
 							while($i<count($matieres)){
 								echo "<tr>\n";
 								for($j=0;$j<count($tab_champs_matiere);$j++){
-									$tmpmin=strtolower($tab_champs_matiere[$j]);
+									$tmpmin=mb_strtolower($tab_champs_matiere[$j]);
 									echo "<td>".$matieres[$i]["$tmpmin"]."</td>\n";
 								}
 								echo "</tr>\n";
@@ -1119,9 +1119,9 @@ function extr_valeur($lig){
 								$new_chaine="";
 								for($i=0;$i<count($tmp_tab1);$i++){
 									$tmp_tab2=explode("-",$tmp_tab1[$i]);
-									$new_chaine.=ucfirst(strtolower($tmp_tab2[0]));
+									$new_chaine.=ucfirst(mb_strtolower($tmp_tab2[0]));
 									for($j=1;$j<count($tmp_tab2);$j++){
-										$new_chaine.="-".ucfirst(strtolower($tmp_tab2[$j]));
+										$new_chaine.="-".ucfirst(mb_strtolower($tmp_tab2[$j]));
 									}
 									$new_chaine.=" ";
 								}
@@ -1167,24 +1167,7 @@ function extr_valeur($lig){
 												echo "<tr>\n";
 												//$chaine="";
 												//echo "<td>$i: ".$eleves[$i]["nom"]."</td>\n";
-												/*
-												for($j=0;$j<count($tab_champs_scol_an_dernier);$j++){
-													$tmpmin=strtolower($tab_champs_scol_an_dernier[$j]);
-													echo "<td>";
-													if(isset($eleves[$i]["scolarite_an_dernier"]["$tmpmin"])){
-														echo $eleves[$i]["scolarite_an_dernier"]["$tmpmin"];
-														$chaine.=$eleves[$i]["scolarite_an_dernier"]["$tmpmin"];
-													}
-													else{
-														echo "&nbsp;";
-													}
-													echo "</td>\n";
-	
-													//$chaine.=$eleves[$i]["scolarite_an_dernier"]["$tmpmin"].";";
-													$chaine.=";";
-												}
-												*/
-	
+												
 												// RNE
 												echo "<td>";
 												if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){
@@ -1612,7 +1595,7 @@ function extr_valeur($lig){
 							while($i<count($personnes)){
 								echo "<tr>\n";
 								for($j=0;$j<count($tab_champs_personne);$j++){
-									$tmpmin=strtolower($tab_champs_personne[$j]);
+									$tmpmin=mb_strtolower($tab_champs_personne[$j]);
 									echo "<td>";
 									if(isset($personnes[$i]["$tmpmin"])){
 										echo $personnes[$i]["$tmpmin"];
@@ -1639,7 +1622,7 @@ function extr_valeur($lig){
 							while($i<count($responsables)){
 								echo "<tr>\n";
 								for($j=0;$j<count($tab_champs_responsable);$j++){
-									$tmpmin=strtolower($tab_champs_responsable[$j]);
+									$tmpmin=mb_strtolower($tab_champs_responsable[$j]);
 									echo "<td>";
 									if(isset($responsables[$i]["$tmpmin"])){
 										echo $responsables[$i]["$tmpmin"];
@@ -1667,7 +1650,7 @@ function extr_valeur($lig){
 							while($i<count($adresses)){
 								echo "<tr>\n";
 								for($j=0;$j<count($tab_champs_adresse);$j++){
-									$tmpmin=strtolower($tab_champs_adresse[$j]);
+									$tmpmin=mb_strtolower($tab_champs_adresse[$j]);
 									echo "<td>";
 									if(isset($adresses[$i]["$tmpmin"])){
 										echo $adresses[$i]["$tmpmin"];

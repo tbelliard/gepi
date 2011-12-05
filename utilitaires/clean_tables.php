@@ -1344,8 +1344,8 @@ col2 varchar(100) NOT NULL default ''
 			while($lig_ele=mysql_fetch_object($res_ele)) {
 				$texte_info_action="";
 
-				if(strtoupper(mb_substr($lig_ele->login,0,1))!=$ini){
-					$ini=strtoupper(mb_substr($lig_ele->login,0,1));
+				if(mb_strtoupper(mb_substr($lig_ele->login,0,1))!=$ini){
+					$ini=mb_strtoupper(mb_substr($lig_ele->login,0,1));
 					echo "<p>\n<i>Parcours des logins commençant par la lettre $ini</i></p>\n";
 				}
 
@@ -2014,7 +2014,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				$info=mysql_query($sql);
 				if(mysql_num_rows($info)>0) {
 					$lig2=mysql_fetch_object($info);
-					$eleve=ucfirst(strtolower($lig2->prenom))." ".strtoupper($lig2->nom);
+					$eleve=ucfirst(mb_strtolower($lig2->prenom))." ".mb_strtoupper($lig2->nom);
 				}
 				else {
 					$eleve=$lig->e_login;
@@ -2067,7 +2067,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				$info=mysql_query($sql);
 				if(mysql_num_rows($info)>0) {
 					$lig2=mysql_fetch_object($info);
-					$eleve=ucfirst(strtolower($lig2->prenom))." ".strtoupper($lig2->nom);
+					$eleve=ucfirst(mb_strtolower($lig2->prenom))." ".mb_strtoupper($lig2->nom);
 				}
 				else {
 					$eleve=$lig->login;

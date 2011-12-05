@@ -2547,16 +2547,6 @@ $update_tempo4=mysql_query($sql);
 											$cpt_modif++;
 											$cpt_chgt_classe++;
 										}
-										/*
-										$sql="SELECT DIVCOD FROM temp_gep_import2 t WHERE t.ELE_ID='$tab_ele_id[$i]';"
-										$test_clas2=mysql_query($sql);
-										if(mysql_num_rows($test_clas2)>0) {
-											$lig_clas2=mysql_fetch_object($test_clas2);
-					
-											if(strtolower($lig_clas1->classe)!=strtolower($lig_clas2->DIVCOD)) {
-											}
-										}
-										*/
 									}
 								}
 
@@ -2572,7 +2562,6 @@ $update_tempo4=mysql_query($sql);
 									$rne_etab_prec="";
 								}
 
-								//if(strtolower($affiche[10])!=strtolower($gepiSchoolRne)) {
 								if((my_strtolower($affiche[10])!=my_strtolower($gepiSchoolRne))&&($alert_diff_etab_origine=='y')) {
 									if(my_strtolower($affiche[10])!=my_strtolower($rne_etab_prec)) {
 										$temoin_modif='y';
@@ -2876,7 +2865,6 @@ $update_tempo4=mysql_query($sql);
 									$rne_ancien_etab="";
 								}
 
-								//if(strtolower($affiche[10])!=strtolower($gepiSchoolRne)) {
 								if((my_strtolower($affiche[10])!=my_strtolower($gepiSchoolRne))&&($alert_diff_etab_origine=='y')) {
 									echo "<td";
 									if($rne_ancien_etab!=$affiche[10]){
@@ -2889,16 +2877,11 @@ $update_tempo4=mysql_query($sql);
 										echo ">";
 									}
 									echo "$affiche[10]";
-//									echo "<input type='hidden' name='modif_".$cpt."_id_etab' value='$affiche[10]' />\n";
 									echo "</td>\n";
 								}
 								else {
 									echo "<td>";
-									//echo "$affiche[10]";
-									//echo "<input type='hidden' name='modif_".$cpt."_id_etab' value='$affiche[10]' />\n";
-									//echo "&nbsp;";
 									echo $rne_ancien_etab;
-									//echo "<input type='hidden' name='modif_".$cpt."_id_etab' value='' />\n";
 									echo "</td>\n";
 								}
 
@@ -2906,41 +2889,24 @@ $update_tempo4=mysql_query($sql);
 								echo "</tr>\n";
 							}
 							elseif($temoin_nouveau=='y'){
-								//echo "<tr style='background-color:yellow;'>\n";
-								//echo "<tr>\n";
 								$alt=$alt*(-1);
-								/*
-								echo "<tr style='background-color:";
-								if($alt==1){
-									echo "silver";
-								}
-								else{
-									echo "white";
-								}
-								echo ";'>\n";
-								*/
 								echo "<tr class='lig$alt'>\n";
 
-								//echo "<td style='text-align: center;'><input type='checkbox' id='check_".$cpt."' name='new[]' value='$cpt' /></td>\n";
 								echo "<td style='text-align: center;'><input type='checkbox' id='check_".$cpt."' name='new[]' value='$affiche[5]' /></td>\n";
 
-								//echo "<td style='text-align: center; background-color: rgb(150, 200, 240);'>Nouveau</td>\n";
 								echo "<td class='nouveau'>Nouveau</td>\n";
 
 
 								echo "<td style='text-align: center;'>";
 								echo "$affiche[4]";
-//								echo "<input type='hidden' name='new_".$cpt."_elenoet' value='$affiche[4]' />\n";
 								echo "</td>\n";
 
 								echo "<td style='text-align: center;'>";
 								echo "$affiche[5]";
-//								echo "<input type='hidden' name='new_".$cpt."_eleid' value='$affiche[5]' />\n";
 								echo "</td>\n";
 
 								echo "<td style='text-align: center;'>";
 								echo stripslashes($affiche[0]);
-//								echo "<input type='hidden' name='new_".$cpt."_nom' value=\"$affiche[0]\" />\n";
 								echo "</td>\n";
 
 								echo "<td style='text-align: center;'>";
@@ -7082,7 +7048,6 @@ $update_tempo4=mysql_query($sql);
 						$test=mysql_query($sql);
 
 						if(mysql_num_rows($test)==0){
-							// prenom='".mysql_real_escape_string(ucfirst(strtolower($lig->prenom)))."',
 
 							$sql="INSERT INTO resp_pers SET pers_id='$lig1->col2',
 													nom='".mysql_real_escape_string(my_strtoupper($lig->nom))."',

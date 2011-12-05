@@ -241,11 +241,11 @@ if (isset($is_posted) and ($is_posted == "yes")) {
         // on crée un login !
 
         if (($no_gep == '') or ($nouv_login=='yes')) {
-            $temp1 = strtoupper($reg_nom);
-            $temp1 = strtr($temp1, " '-", "___");
+            $temp1 = mb_strtoupper($reg_nom);
+            $temp1 = mb_strtr($temp1, " '-", "___");
             $temp1 = mb_substr($temp1,0,7);
-            $temp2 = strtoupper($reg_prenom);
-            $temp2 = strtr($temp2, " '-", "___");
+            $temp2 = mb_strtoupper($reg_prenom);
+            $temp2 = mb_strtr($temp2, " '-", "___");
             $temp2 = mb_substr($temp2,0,1);
             $login_eleve = $temp1.'_'.$temp2;
 

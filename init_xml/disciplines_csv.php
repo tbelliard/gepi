@@ -108,7 +108,7 @@ if (!isset($is_posted)) {
 	check_token(false);
 
 	$dbf_file = isset($_FILES["dbf_file"]) ? $_FILES["dbf_file"] : NULL;
-	if(strtoupper($dbf_file['name']) == "F_TMT.CSV") {
+	if(mb_strtoupper($dbf_file['name']) == "F_TMT.CSV") {
 		$fp = fopen($dbf_file['tmp_name'],"r");
 		if(!$fp) {
 			echo "<p>Impossible d'ouvrir le fichier dbf</p>";

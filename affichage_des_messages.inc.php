@@ -18,7 +18,6 @@ $appel_messages = mysql_query($sql);
 
 
 $nb_messages = mysql_num_rows($appel_messages);
-//echo "\$nb_messages=$nb_messages<br />";
 $ind = 0;
 $texte_messages = '';
 $texte_messages_simpl_prof = ''; // variable uniquement utilisée dans accueil_simpl_prof.php
@@ -29,7 +28,6 @@ while ($ind < $nb_messages) {
 	$autre_message = "";
 
 	if ((strpos($statuts_destinataires1, mb_substr($_SESSION['statut'], 0, 1))) || ($_SESSION['login']==$login_destinataire1)) {
-	//if ((strtolower($_SESSION['login'])==strtolower($statuts_destinataires1)) || ((strpos(strtolower($statuts_destinataires1), mb_substr((strtolower($_SESSION['statut']), 0, 1)))&&(mb_substr($statuts_destinataires1,0,1)=="_"))) {
 		if ($affiche_messages == 'yes') {
 			$autre_message = "hr";
 			$texte_messages_simpl_prof .= "<hr />";

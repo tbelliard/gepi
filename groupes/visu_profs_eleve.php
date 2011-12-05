@@ -197,10 +197,8 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
     		getSettingValue("GepiAccesEquipePedaEmailEleve") == "yes")
     		)
     	)){
-        //echo "<a href='mailto:".$cpe->email."?".urlencode("subject=[GEPI] eleve : ".$prenom_eleve . " ".$nom_eleve)."'>".$cpe->nom . " ".ucfirst(strtolower($cpe->prenom))."</a>";
         echo "<a href='mailto:".$cpe->email."?".urlencode("subject=[GEPI] eleve : ".$prenom_eleve . " ".$nom_eleve)."'>".affiche_utilisateur($cpe->cpe_login,$id_classe)."</a>";
     } else {
-        //echo $cpe->nom." ".ucfirst(strtolower($cpe->prenom));
 		echo affiche_utilisateur($cpe->cpe_login,$id_classe);
     }
     echo "</td></tr>\n";
@@ -245,11 +243,9 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 		    		 )
 		    	)
 		    	)){
-                //echo "<a href='mailto:$lig_prof->email?".urlencode("subject=[GEPI] eleve : ".$prenom_eleve . " " . $nom_eleve)."'>$lig_prof->nom ".ucfirst(strtolower($lig_prof->prenom))."</a>";
                 echo "<a href='mailto:$lig_prof->email?".urlencode("subject=[GEPI] eleve : ".$prenom_eleve . " " . $nom_eleve)."'>".affiche_utilisateur($lig_prof->login,$id_classe)."</a>";
             }
             else{
-                //echo "$lig_prof->nom ".ucfirst(strtolower($lig_prof->prenom));
 				echo affiche_utilisateur($lig_prof->login,$id_classe);
             }
 

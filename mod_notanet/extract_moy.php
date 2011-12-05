@@ -245,7 +245,7 @@ else {
 						flush();
 					}
 					else {
-						echo "<p><b>".strtoupper($ligne->nom)." ".ucfirst(strtolower($ligne->prenom))."</b>: <span style='color:red;'>Pas d'associations de matières effectuées pour <b>".$tab_type_brevet[$ligne->type_brevet]."</b></span></p>\n";
+						echo "<p><b>".mb_strtoupper($ligne->nom)." ".ucfirst(mb_strtolower($ligne->prenom))."</b>: <span style='color:red;'>Pas d'associations de matières effectuées pour <b>".$tab_type_brevet[$ligne->type_brevet]."</b></span></p>\n";
 
 						echo "INE: <input type='hidden' name='INE[$num_eleve]' value='$ligne->no_gep' onchange='changement()' />\n";
 						echo "<input type='hidden' name='nom_eleve[$num_eleve]' value=\"".$tab_ele['nom']." ".$tab_ele['prenom']." ($classe)\" />\n";
@@ -371,7 +371,7 @@ else {
 						flush();
 					}
 					else {
-						echo "<p><b>".strtoupper($ligne->nom)." ".ucfirst(strtolower($ligne->prenom))."</b>: <span style='color:red;'>Pas d'associations de matières effectuées pour <b>".$tab_type_brevet[$ligne->type_brevet]."</b></span></p>\n";
+						echo "<p><b>".mb_strtoupper($ligne->nom)." ".ucfirst(mb_strtolower($ligne->prenom))."</b>: <span style='color:red;'>Pas d'associations de matières effectuées pour <b>".$tab_type_brevet[$ligne->type_brevet]."</b></span></p>\n";
 
 						echo "INE: <input type='hidden' name='INE[$num_eleve]' value='$ligne->no_gep' onchange='changement()' />\n";
 						echo "<input type='hidden' name='nom_eleve[$num_eleve]' value=\"".$tab_ele['nom']." ".$tab_ele['prenom']." ($classe)\" />\n";

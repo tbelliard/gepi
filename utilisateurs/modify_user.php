@@ -438,7 +438,7 @@ check_token();
 		  $repertoire="../photos/personnels/";
 		}
 			//$repertoire = '../photos/personnels/';
-			$code_photo = md5(strtolower($user_login));
+			$code_photo = md5(mb_strtolower($user_login));
 
 
 
@@ -559,18 +559,18 @@ if (isset($user_login) and ($user_login!='')) {
 		$liste_options_user="";
 		while($lig_user_tmp=mysql_fetch_object($res_liste_user)){
 			if("$lig_user_tmp->login"=="$user_login"){
-				$liste_options_user.="<option value='$lig_user_tmp->login' selected='true'>".strtoupper($lig_user_tmp->nom)." ".ucfirst(strtolower($lig_user_tmp->prenom))."</option>\n";
+				$liste_options_user.="<option value='$lig_user_tmp->login' selected='true'>".mb_strtoupper($lig_user_tmp->nom)." ".ucfirst(mb_strtolower($lig_user_tmp->prenom))."</option>\n";
 				$temoin_tmp=1;
 				if($lig_user_tmp=mysql_fetch_object($res_liste_user)){
 					$login_user_suiv=$lig_user_tmp->login;
-					$liste_options_user.="<option value='$lig_user_tmp->login'>".strtoupper($lig_user_tmp->nom)." ".ucfirst(strtolower($lig_user_tmp->prenom))."</option>\n";
+					$liste_options_user.="<option value='$lig_user_tmp->login'>".mb_strtoupper($lig_user_tmp->nom)." ".ucfirst(mb_strtolower($lig_user_tmp->prenom))."</option>\n";
 				}
 				else{
 					$login_user_suiv="";
 				}
 			}
 			else{
-					$liste_options_user.="<option value='$lig_user_tmp->login'>".strtoupper($lig_user_tmp->nom)." ".ucfirst(strtolower($lig_user_tmp->prenom))."</option>\n";
+					$liste_options_user.="<option value='$lig_user_tmp->login'>".mb_strtoupper($lig_user_tmp->nom)." ".ucfirst(mb_strtolower($lig_user_tmp->prenom))."</option>\n";
 			}
 			if($temoin_tmp==0){
 				$login_user_prec=$lig_user_tmp->login;
@@ -751,7 +751,7 @@ if(getSettingValue("active_module_trombinoscopes")=='y'){
 	  $repertoire="../photos/personnels/";
 	}
 	if ((isset($user_login))and($user_login!='')&&(isset($user_nom))and($user_nom!='')&&(isset($user_prenom))and($user_prenom!='')) {
-		$code_photo = md5(strtolower($user_login));
+		$code_photo = md5(mb_strtolower($user_login));
 		$photo=$repertoire.$code_photo.".jpg";
 		echo "<table style='text-align: center;' summary='Photo'>\n";
 		echo "<tr>\n";

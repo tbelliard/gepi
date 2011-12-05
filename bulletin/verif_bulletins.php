@@ -674,13 +674,9 @@ if (!(isset($id_classe))) {
 							if(!isset($tab_alerte_prof[$login_prof]['groupe'][$group_id])) {
 								$tab_alerte_prof["$login_prof"]['groupe'][$group_id]['info']=$current_group["description"]." (".$current_group["classlist_string"].")";
 
-								//echo "\$tab_alerte_prof[$login_prof]['groupe'][$group_id]['info']=".$tab_alerte_prof["$login_prof"]['groupe'][$group_id]['info']."<br />";
 							}
 
 							$tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante'][]=my_strtoupper($eleve_nom[$j])." ".casse_mot($eleve_prenom[$j],'majf2');
-							//echo "\$tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante'][]=".strtoupper($eleve_nom[$j])." ".ucfirst(strtolower($eleve_prenom[$j]))."<br />";
-
-							//if($email!="") {
 							if(($email!="")&&(check_mail($email))) {
 								$sujet_mail="[Gepi]: Appreciation non remplie: ".$id_eleve[$j];
 								$message_mail="Bonjour,\r\n\r\nCordialement";
@@ -759,13 +755,10 @@ if (!(isset($id_classe))) {
 							if(!isset($tab_alerte_prof[$login_prof]['groupe'][$group_id])) {
 								$tab_alerte_prof["$login_prof"]['groupe'][$group_id]['info']=$current_group["description"]." (".$current_group["classlist_string"].")";
 
-								//echo "\$tab_alerte_prof[$login_prof]['groupe'][$group_id]['info']=".$tab_alerte_prof["$login_prof"]['groupe'][$group_id]['info']."<br />";
 							}
 
 							$tab_alerte_prof[$login_prof]['groupe'][$group_id]['moy_manquante'][]=my_strtoupper($eleve_nom[$j])." ".casse_mot($eleve_prenom[$j],'majf2');
-							//echo "\$tab_alerte_prof[$login_prof]['groupe'][$group_id]['moy_manquante'][]=".strtoupper($eleve_nom[$j])." ".ucfirst(strtolower($eleve_prenom[$j]))."<br />";
 
-							//if($email!="") {
 							if(($email!="")&&(check_mail($email))) {
 								$sujet_mail="[Gepi]: Moyenne manquante: ".$eleve_nom[$j];
 								$message_mail="Bonjour,\r\n\r\nCordialement";

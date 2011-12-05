@@ -35,14 +35,12 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-// SQL : INSERT INTO droits VALUES ( '/mod_discipline/saisie_incident.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Saisie incident', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/saisie_incident.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Saisie incident', '');;";
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 	die();
 }
 
-if(strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+if(mb_strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
 	header("Location: ../accueil.php?msg=$mess");
@@ -932,7 +930,7 @@ if($etat_incident!='clos') {
 									$texte_mail.=civ_nom_prenom($lig_prot->login)." ($lig_prot->statut) ($lig_prot->qualite)\n";
 								}
 	
-								if(strtolower($lig_prot->qualite)=='responsable') {
+								if(mb_strtolower($lig_prot->qualite)=='responsable') {
 									$sql="SELECT DISTINCT c.classe FROM classes c,j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='$lig_prot->login' ORDER BY jec.periode DESC limit 1;";
 									//echo "$sql<br />";
 									$res_prot_classe=mysql_query($sql);
@@ -1239,7 +1237,7 @@ if(isset($id_incident)) {
 					$ele_login[]=$lig->login;
 
 					$lig2=mysql_fetch_object($res2);
-					echo ucfirst(strtolower($lig2->prenom))." ".strtoupper($lig2->nom);
+					echo ucfirst(mb_strtolower($lig2->prenom))." ".mb_strtoupper($lig2->nom);
 				}
 				else {
 					echo "ERREUR: Login inconnu";
@@ -1284,7 +1282,7 @@ if(isset($id_incident)) {
 				$res2=mysql_query($sql);
 				if(mysql_num_rows($res2)>0) {
 					$lig2=mysql_fetch_object($res2);
-					echo ucfirst(strtolower($lig2->prenom))." ".strtoupper($lig2->nom);
+					echo ucfirst(mb_strtolower($lig2->prenom))." ".mb_strtoupper($lig2->nom);
 				}
 				else {
 					echo "ERREUR: Login inconnu";
@@ -1575,7 +1573,7 @@ if($step==0) {
 				echo "<input type='checkbox' name='ele_login[]' id='ele_login_$i' value=\"$lig_ele->login\" />\n";
 				echo "</td>\n";
 				echo "<td>\n";
-				echo "<label for='ele_login_$i' style='cursor:pointer;'>".ucfirst(strtolower($lig_ele->prenom))." ".strtoupper($lig_ele->nom)."</label>";
+				echo "<label for='ele_login_$i' style='cursor:pointer;'>".ucfirst(mb_strtolower($lig_ele->prenom))." ".mb_strtoupper($lig_ele->nom)."</label>";
 				echo "</td>\n";
 				echo "</tr>\n";
 
@@ -1738,8 +1736,7 @@ elseif($step==1) {
 			echo "<input type='checkbox' name='u_login[]' id='u_login_$i' value=\"$lig2->login\" />\n";
 			echo "</td>\n";
 			echo "<td>\n";
-			//echo "<label for='u_login_$i' style='cursor:pointer;'>".$lig2->civilite." ".ucwords(strtolower($lig2->prenom))." ".strtoupper($lig2->nom)."</label>";
-			echo "<label for='u_login_$i' style='cursor:pointer;'>".$lig2->civilite." ".strtoupper($lig2->nom)." ".ucfirst(mb_substr($lig2->prenom,0,1)).".</label>";
+			echo "<label for='u_login_$i' style='cursor:pointer;'>".$lig2->civilite." ".mb_strtoupper($lig2->nom)." ".ucfirst(mb_substr($lig2->prenom,0,1)).".</label>";
 			echo "</td>\n";
 
 			$sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du
@@ -1751,7 +1748,6 @@ elseif($step==1) {
 
 			echo "</tr>\n";
 
-			//echo "<br />\n";
 			$i++;
 		}
 			echo "</table>\n";

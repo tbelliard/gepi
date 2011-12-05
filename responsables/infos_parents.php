@@ -98,15 +98,15 @@ if(isset($_GET['export_csv'])) {
 				while($lig_resp=mysql_fetch_object($res_resp)) {
 	
 					$csv.=$tab_classe[$i]['classe'].";";
-					$csv.=strtoupper($lig_ele->nom).";";
+					$csv.=mb_strtoupper($lig_ele->nom).";";
 					$csv.=casse_mot($lig_ele->prenom,'majf2').";";
 					$csv.=$lig_ele->sexe.";";
 					$csv.=formate_date($lig_ele->naissance).";";
 					$csv.=$lig_ele->login.";";
 					$csv.=$lig_ele->ele_id.";";
 
-					$csv.=$lig_resp->civilite." ".strtoupper($lig_resp->nom)." ".casse_mot($lig_resp->prenom,'majf2').";";
-					$csv.=$lig_resp->civilite.";".strtoupper($lig_resp->nom).";".casse_mot($lig_resp->prenom,'majf2').";";
+					$csv.=$lig_resp->civilite." ".mb_strtoupper($lig_resp->nom)." ".casse_mot($lig_resp->prenom,'majf2').";";
+					$csv.=$lig_resp->civilite.";".mb_strtoupper($lig_resp->nom).";".casse_mot($lig_resp->prenom,'majf2').";";
 					$csv.=$lig_resp->tel_pers.";";
 					$csv.=$lig_resp->tel_port.";";
 					$csv.=$lig_resp->tel_prof.";";
@@ -217,48 +217,48 @@ if(isset($_GET['export_csv'])) {
 				if(count($tab_ele)>0) {
 					$designation="";
 					if((isset($resp[1]['nom']))&&(isset($resp[2]['nom']))) {
-						if(strtoupper($resp[1]['nom'])==strtoupper($resp[2]['nom'])) {
+						if(mb_strtoupper($resp[1]['nom'])==mb_strtoupper($resp[2]['nom'])) {
 							if($resp[1]['civilite']!="") {
 								if($resp[2]['civilite']!="") {
-									$designation=$resp[1]['civilite']." et ".$resp[2]['civilite']." ".strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".casse_mot($resp[2]['prenom'],'majf2');
+									$designation=$resp[1]['civilite']." et ".$resp[2]['civilite']." ".mb_strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".casse_mot($resp[2]['prenom'],'majf2');
 								}
 								else {
-									$designation="M et Mme ".strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".casse_mot($resp[2]['prenom'],'majf2');
+									$designation="M et Mme ".mb_strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".casse_mot($resp[2]['prenom'],'majf2');
 								}
 							}
 							else {
-								$designation="M et Mme ".strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".casse_mot($resp[2]['prenom'],'majf2');
+								$designation="M et Mme ".mb_strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".casse_mot($resp[2]['prenom'],'majf2');
 							}
 						}
 						else {
 							if($resp[1]['civilite']!="") {
 								if($resp[2]['civilite']!="") {
-									$designation=$resp[1]['civilite']." ".strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".$resp[2]['civilite']." ".strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
+									$designation=$resp[1]['civilite']." ".mb_strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".$resp[2]['civilite']." ".mb_strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
 								}
 								else {
-									$designation="M et Mme ".strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
+									$designation="M et Mme ".mb_strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".mb_strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
 								}
 							}
 							else {
-								$designation="M et Mme ".strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
+								$designation="M et Mme ".mb_strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".mb_strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
 							}
 						}
 					}
 					else {
 						if(isset($resp[1]['nom'])) {
 							if($resp[1]['civilite']!="") {
-								$designation=$resp[1]['civilite']." ".strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2');
+								$designation=$resp[1]['civilite']." ".mb_strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2');
 							}
 							else {
-								$designation="M ou Mme ".strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2');
+								$designation="M ou Mme ".mb_strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2');
 							}
 						}
 						elseif(isset($resp[2]['nom'])) {
 							if($resp[2]['civilite']!="") {
-								$designation=$resp[2]['civilite']." ".strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
+								$designation=$resp[2]['civilite']." ".mb_strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
 							}
 							else {
-								$designation="M ou Mme ".strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
+								$designation="M ou Mme ".mb_strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
 							}
 						}
 					}
@@ -283,7 +283,7 @@ if(isset($_GET['export_csv'])) {
 							$adresse.=$lig_adr->commune;
 						}
 		
-						if(($lig_adr->pays!="")&&(strtoupper($lig_adr->pays)!=strtoupper(getSettingValue('gepiSchoolPays')))) {
+						if(($lig_adr->pays!="")&&(mb_strtoupper($lig_adr->pays)!=mb_strtoupper(getSettingValue('gepiSchoolPays')))) {
 							$adresse.=", ";
 							$adresse.=$lig_adr->pays;
 						}
@@ -293,7 +293,7 @@ if(isset($_GET['export_csv'])) {
 							$adresse.=$lig_adr->commune;
 						}
 		
-						if(($lig_adr->pays!="")&&(strtoupper($lig_adr->pays)!=strtoupper(getSettingValue('gepiSchoolPays')))) {
+						if(($lig_adr->pays!="")&&(mb_strtoupper($lig_adr->pays)!=mb_strtoupper(getSettingValue('gepiSchoolPays')))) {
 							$adresse.=", ";
 							$adresse.=$lig_adr->pays;
 						}
@@ -391,7 +391,7 @@ if((!isset($mode))||($mode==1)) {
 				$rowspan=" rowspan='".mysql_num_rows($res_resp)."'";
 			}
 			echo "<td$rowspan>".$tab_classe[$i]['classe']."</td>\n";
-			echo "<td$rowspan>".strtoupper($lig_ele->nom)."</td>\n";
+			echo "<td$rowspan>".mb_strtoupper($lig_ele->nom)."</td>\n";
 			echo "<td$rowspan>".casse_mot($lig_ele->prenom,'majf2')."</td>\n";
 			echo "<td$rowspan>".$lig_ele->sexe."</td>\n";
 			echo "<td$rowspan>".formate_date($lig_ele->naissance)."</td>\n";
@@ -404,7 +404,7 @@ if((!isset($mode))||($mode==1)) {
 					echo "<tr class='lig$alt white_hover'>\n";
 				}
 				echo "<td>";
-				echo $lig_resp->civilite." ".strtoupper($lig_resp->nom)." ".casse_mot($lig_resp->prenom,'majf2');
+				echo $lig_resp->civilite." ".mb_strtoupper($lig_resp->nom)." ".casse_mot($lig_resp->prenom,'majf2');
 				echo "</td>\n";
 				echo "<td>$lig_resp->tel_pers</td>\n";
 				echo "<td>$lig_resp->tel_port</td>\n";
@@ -548,47 +548,47 @@ else {
 
 			$designation="";
 			if((isset($resp[1]['nom']))&&(isset($resp[2]['nom']))) {
-				if(strtoupper($resp[1]['nom'])==strtoupper($resp[2]['nom'])) {
+				if(mb_strtoupper($resp[1]['nom'])==mb_strtoupper($resp[2]['nom'])) {
 					if($resp[1]['civilite']!="") {
 						if($resp[2]['civilite']!="") {
-							$designation=$resp[1]['civilite']." et ".$resp[2]['civilite']." ".strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".casse_mot($resp[2]['prenom'],'majf2');
+							$designation=$resp[1]['civilite']." et ".$resp[2]['civilite']." ".mb_strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".casse_mot($resp[2]['prenom'],'majf2');
 						}
 						else {
-							$designation="M et Mme ".strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".casse_mot($resp[2]['prenom'],'majf2');
+							$designation="M et Mme ".mb_strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".casse_mot($resp[2]['prenom'],'majf2');
 						}
 					}
 					else {
-						$designation="M et Mme ".strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".casse_mot($resp[2]['prenom'],'majf2');
+						$designation="M et Mme ".mb_strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".casse_mot($resp[2]['prenom'],'majf2');
 					}
 				}
 				else {
 					if($resp[1]['civilite']!="") {
 						if($resp[2]['civilite']!="") {
-							$designation=$resp[1]['civilite']." ".strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".$resp[2]['civilite']." ".strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
+							$designation=$resp[1]['civilite']." ".mb_strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".$resp[2]['civilite']." ".mb_strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
 						}
 						else {
-							$designation="M et Mme ".strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
+							$designation="M et Mme ".mb_strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".mb_strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
 						}
 					}
 					else {
-						$designation="M et Mme ".strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
+						$designation="M et Mme ".mb_strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2')." et ".mb_strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
 					}
 				}
 			}
 			elseif(isset($resp[1]['nom'])) {
 				if($resp[1]['civilite']!="") {
-					$designation=$resp[1]['civilite']." ".strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2');
+					$designation=$resp[1]['civilite']." ".mb_strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2');
 				}
 				else {
-					$designation=strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2');
+					$designation=mb_strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'],'majf2');
 				}
 			}
 			elseif(isset($resp[2]['nom'])) {
 				if($resp[2]['civilite']!="") {
-					$designation=$resp[2]['civilite']." ".strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
+					$designation=$resp[2]['civilite']." ".mb_strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
 				}
 				else {
-					$designation=strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
+					$designation=mb_strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'],'majf2');
 				}
 			}
 			else {
@@ -625,7 +625,7 @@ else {
 					$adresse.=$lig_adr->commune;
 				}
 
-				if(($lig_adr->pays!="")&&(strtoupper($lig_adr->pays)!=strtoupper(getSettingValue('gepiSchoolPays')))) {
+				if(($lig_adr->pays!="")&&(mb_strtoupper($lig_adr->pays)!=mb_strtoupper(getSettingValue('gepiSchoolPays')))) {
 					$adresse.="<br />";
 					$adresse.=$lig_adr->pays;
 				}
@@ -635,7 +635,7 @@ else {
 					$adresse.=$lig_adr->commune;
 				}
 
-				if(($lig_adr->pays!="")&&(strtoupper($lig_adr->pays)!=strtoupper(getSettingValue('gepiSchoolPays')))) {
+				if(($lig_adr->pays!="")&&(mb_strtoupper($lig_adr->pays)!=mb_strtoupper(getSettingValue('gepiSchoolPays')))) {
 					$adresse.="<br />";
 					$adresse.=$lig_adr->pays;
 				}
@@ -648,7 +648,7 @@ else {
 			echo "<td>$adresse</td>\n";
 			echo "<td>";
 			if(isset($resp[1]['nom'])) {
-				echo $resp[1]['civilite']." ".strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'], 'majf2');
+				echo $resp[1]['civilite']." ".mb_strtoupper($resp[1]['nom'])." ".casse_mot($resp[1]['prenom'], 'majf2');
 			}
 			else {
 				echo "&nbsp;";
@@ -682,7 +682,7 @@ else {
 			echo "</td>\n";
 			echo "<td>";
 			if(isset($resp[2]['nom'])) {
-				echo $resp[2]['civilite']." ".strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'], 'majf2');
+				echo $resp[2]['civilite']." ".mb_strtoupper($resp[2]['nom'])." ".casse_mot($resp[2]['prenom'], 'majf2');
 			}
 			else {
 				echo "&nbsp;";

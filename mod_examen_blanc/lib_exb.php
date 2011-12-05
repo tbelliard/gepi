@@ -126,7 +126,7 @@ function bull_exb($tab_ele,$i) {
 					$tab_adr_ligne5[0]=$tab_ele['resp'][0]['cp']." ".$tab_ele['resp'][0]['commune'];
 
 
-					if(($tab_ele['resp'][0]['pays']!="")&&(strtolower($tab_ele['resp'][0]['pays'])!=strtolower($gepiSchoolPays))) {
+					if(($tab_ele['resp'][0]['pays']!="")&&(mb_strtolower($tab_ele['resp'][0]['pays'])!=mb_strtolower($gepiSchoolPays))) {
 						$tab_adr_ligne6[0]=$tab_ele['resp'][0]['pays'];
 					}
 
@@ -163,7 +163,7 @@ function bull_exb($tab_ele,$i) {
 						
 						$tab_adr_ligne5[$cpt]=$tab_ele['resp'][$cpt]['cp']." ".$tab_ele['resp'][$cpt]['commune'];
 
-						if(($tab_ele['resp'][$cpt]['pays']!="")&&(strtolower($tab_ele['resp'][$cpt]['pays'])!=strtolower($gepiSchoolPays))) {
+						if(($tab_ele['resp'][$cpt]['pays']!="")&&(mb_strtolower($tab_ele['resp'][$cpt]['pays'])!=mb_strtolower($gepiSchoolPays))) {
 							$tab_adr_ligne6[$cpt]=$tab_ele['resp'][$cpt]['pays'];
 						}
 					}
@@ -198,7 +198,7 @@ function bull_exb($tab_ele,$i) {
 					
 					$tab_adr_ligne5[$cpt]=$tab_ele['resp'][$cpt]['cp']." ".$tab_ele['resp'][$cpt]['commune'];
 
-					if(($tab_ele['resp'][$cpt]['pays']!="")&&(strtolower($tab_ele['resp'][$cpt]['pays'])!=strtolower($gepiSchoolPays))) {
+					if(($tab_ele['resp'][$cpt]['pays']!="")&&(mb_strtolower($tab_ele['resp'][$cpt]['pays'])!=mb_strtolower($gepiSchoolPays))) {
 						$tab_adr_ligne6[$cpt]=$tab_ele['resp'][$cpt]['pays'];
 					}
 				}
@@ -225,7 +225,7 @@ function bull_exb($tab_ele,$i) {
 			
 			$tab_adr_ligne5[0]=$tab_ele['resp'][0]['cp']." ".$tab_ele['resp'][0]['commune'];
 
-			if(($tab_ele['resp'][0]['pays']!="")&&(strtolower($tab_ele['resp'][0]['pays'])!=strtolower($gepiSchoolPays))) {
+			if(($tab_ele['resp'][0]['pays']!="")&&(mb_strtolower($tab_ele['resp'][0]['pays'])!=mb_strtolower($gepiSchoolPays))) {
 				$tab_adr_ligne6[0]=$tab_ele['resp'][0]['pays'];
 			}
 		}
@@ -581,7 +581,6 @@ function bull_exb($tab_ele,$i) {
 
 
 			//= = = == = = == = = == = = == = = == = = == = = =
-			//if((strtolower($gepiSchoolPays)!=strtolower($pays_parents[$ident_eleve_aff][$responsable_place]))&&($pays_parents[$ident_eleve_aff][$responsable_place]!="")) {
 			if(isset($tab_adr_ligne6[$num_resp_bull])) {
 				$texte_1_responsable = $tab_adr_ligne6[$num_resp_bull];
 				$hauteur_caractere=10;
@@ -780,7 +779,7 @@ function bull_exb($tab_ele,$i) {
 			// On n'affiche pas l'établissement d'origine si c'est le même que l'établissement actuel: $RneEtablissement
 			//if($tab_modele_pdf["affiche_etab_origine"][$classe_id]=='1' and !empty($etablissement_origine[$i]) ) {
 			//if($tab_modele_pdf["affiche_etab_origine"][$classe_id]=='1' and isset($tab_ele['etab_id']) and !empty($tab_ele['etab_id']) ) {
-			if(($tab_modele_pdf["affiche_etab_origine"][$classe_id]=='1')&&(isset($tab_ele['etab_id']))&&(!empty($tab_ele['etab_id']))&&(strtolower($tab_ele['etab_id'])!=strtolower($RneEtablissement))) {
+			if(($tab_modele_pdf["affiche_etab_origine"][$classe_id]=='1')&&(isset($tab_ele['etab_id']))&&(!empty($tab_ele['etab_id']))&&(mb_strtolower($tab_ele['etab_id'])!=mb_strtolower($RneEtablissement))) {
 				$pdf->SetX($X_eleve_2);
 				$hauteur_caractere_etaborigine = '10';
 				$pdf->SetFont('DejaVu','',$hauteur_caractere_etaborigine);

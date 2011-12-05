@@ -195,7 +195,7 @@ if (!isset($_POST["action"])) {
 
 		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
 		// autant forcer l'utilisateur à être rigoureux
-		if(strtolower($csv_file['name']) == "eleves_options.csv") {
+		if(mb_strtolower($csv_file['name']) == "eleves_options.csv") {
 			
 			// Le nom est ok. On ouvre le fichier
 			$fp=fopen($csv_file['tmp_name'],"r");

@@ -83,7 +83,7 @@ if (!isset($is_posted)) {
 } else {
 	check_token(false);
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
-	if(strtoupper($csv_file['name']) == "ELEVES.CSV"){
+	if(mb_strtoupper($csv_file['name']) == "ELEVES.CSV"){
 		//$fp = dbase_open($csv_file['tmp_name'], 0);
 		$fp=fopen($csv_file['tmp_name'],"r");
 

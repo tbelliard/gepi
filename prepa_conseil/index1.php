@@ -507,9 +507,9 @@ if (!$current_group) {
 						$nb_profs = mysql_num_rows($result_prof_groupe);
 						while($lig_prof=mysql_fetch_object($result_prof_groupe)){
 							if (($nb_profs !=1) AND ($cpt<$nb_profs-1)){
-							echo "$lig_prof->nom ".ucfirst(strtolower($lig_prof->prenom))." - ";
+							echo "$lig_prof->nom ".ucfirst(mb_strtolower($lig_prof->prenom))." - ";
 							} else {
-							echo "$lig_prof->nom ".ucfirst(strtolower($lig_prof->prenom));
+							echo "$lig_prof->nom ".ucfirst(mb_strtolower($lig_prof->prenom));
 							}
 							$cpt++;
 						}

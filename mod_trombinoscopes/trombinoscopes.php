@@ -807,8 +807,6 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 	$donnees_qui = mysql_fetch_array($execute_qui) or die('Erreur SQL !'.$execute_qui.'<br />'.mysql_error());
 
 	if ( $action_affiche === 'classe' ) {
-		//echo "Classe : ".htmlspecialchars($donnees_qui['nom_complet']);
-		//echo ' ('.htmlspecialchars(ucwords($donnees_qui['classe'])).')';
 		echo "Classe : ".$donnees_qui['nom_complet'];
 		echo ' ('.ucwords($donnees_qui['classe']).')';
 
@@ -824,7 +822,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 
 	if ( $action_affiche === 'groupe' ) {
 		$current_group=get_group($groupe);
-		echo "Groupe : ".htmlspecialchars($donnees_qui['name'])." (<i>".$current_group['classlist_string']."</i>)";
+		echo "Groupe : ".htmlspecialchars($donnees_qui['name'])." (<em>".$current_group['classlist_string']."</em>)";
 
 		$repertoire = 'eleves';
 
@@ -852,11 +850,8 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 		}
 		//echo "$requete_trombi<br />";
 	}
-	//if ( $action_affiche === 'equipepeda' ) { echo "Equipe pédagogique : ".htmlspecialchars($donnees_qui['nom_complet']); }
-	//if ( $action_affiche === 'discipline' ) { echo "Discipline : ".htmlspecialchars($donnees_qui['nom_complet'])." (".htmlspecialchars($donnees_qui['matiere']).")"; }
-
 	if ( $action_affiche === 'equipepeda' ) {
-		echo "Equipe pédagogique : ".$donnees_qui['nom_complet']." (<i>".$donnees_qui['classe']."</i>)";
+		echo "Equipe pédagogique : ".$donnees_qui['nom_complet']." (<em>".$donnees_qui['classe']."</em>)";
 
 		$repertoire = 'personnels';
 
@@ -952,8 +947,8 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 		$nom_trombinoscope[$cpt_photo] = $donnee_trombi['nom'];
 		$prenom_trombinoscope[$cpt_photo] = $donnee_trombi['prenom'];
 
-		if ( $action_affiche === 'classe' ) { $id_photo_trombinoscope[$cpt_photo] = strtolower($donnee_trombi['elenoet']); }
-		if ( $action_affiche === 'groupe' ) { $id_photo_trombinoscope[$cpt_photo] = strtolower($donnee_trombi['elenoet']); }
+		if ( $action_affiche === 'classe' ) { $id_photo_trombinoscope[$cpt_photo] = mb_strtolower($donnee_trombi['elenoet']); }
+		if ( $action_affiche === 'groupe' ) { $id_photo_trombinoscope[$cpt_photo] = mb_strtolower($donnee_trombi['elenoet']); }
 		if ( $action_affiche === 'equipepeda' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
 		if ( $action_affiche === 'discipline' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
 		if ( $action_affiche === 'statusgepi' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
@@ -1052,7 +1047,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 			//	echo "<td>\n";
 			echo "<div style='float:left; width: ".$largeur_div."px; margin: ".$marge."px; padding: ".$marge."px; border: 1px solid black;'>\n";
 				if ($i < $total) {
-					$nom_es = strtoupper($nom_trombinoscope[$i]);
+					$nom_es = mb_strtoupper($nom_trombinoscope[$i]);
 					$prenom_es = ucfirst($prenom_trombinoscope[$i]);
 	
 					if (($action_affiche=='equipepeda')||
@@ -1146,7 +1141,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 		for($j=0;$j<3;$j++){
 			echo "<td>\n";
 			if ($i < $total) {
-				$nom_es = strtoupper($nom_trombinoscope[$i]);
+				$nom_es = mb_strtoupper($nom_trombinoscope[$i]);
 				$prenom_es = ucfirst($prenom_trombinoscope[$i]);
 
 				if (($action_affiche=='equipepeda')||

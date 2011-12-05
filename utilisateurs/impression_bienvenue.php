@@ -434,7 +434,7 @@ function fiche_bienvenue($user_login, $mot_de_passe=NULL) {
 			}
 			$ligne3=$lig_adr_resp->cp." ".$lig_adr_resp->commune;
 
-			if(($lig_adr_resp->pays!="")&&(strtolower($lig_adr_resp->pays)!=strtolower(getSettingValue('gepiSchoolPays')))) {
+			if(($lig_adr_resp->pays!="")&&(mb_strtolower($lig_adr_resp->pays)!=mb_strtolower(getSettingValue('gepiSchoolPays')))) {
 				if($ligne3!=" "){
 					$ligne3.="<br />";
 				}

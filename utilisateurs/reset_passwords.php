@@ -455,16 +455,8 @@ while ($p < $nb_users) {
 				$liste_elv_resp.=", ";
 				$liste_elv_resp_non_html.=", ";
 			}
-			//$liste_elv_resp.=strtoupper($elv_resp['nom'][$i])." ".ucfirst(strtolower($elv_resp['prenom'][$i]))." (<i>".$elv_resp['classe'][$i]."</i>)";
 			$liste_elv_resp.=casse_mot($elv_resp['nom'][$i],'maj')." ".casse_mot($elv_resp['prenom'][$i],'majf2')." (<i>".$elv_resp['classe'][$i]."</i>)";
 			$liste_elv_resp_non_html.=casse_mot($elv_resp['nom'][$i],'maj')." ".casse_mot($elv_resp['prenom'][$i],'majf2')." (".$elv_resp['classe'][$i].")";
-
-			/*
-			echo "\$elv_resp['nom'][$i]=".$elv_resp['nom'][$i]."<br />";
-			echo "\$elv_resp['prenom'][$i]=".$elv_resp['prenom'][$i]."<br />";
-			echo "\$elv_resp['classe'][$i]=".$elv_resp['classe'][$i]."<br />";
-			echo "\$elv_resp['nom_complet_classe'][$i]=".$elv_resp['nom_complet_classe'][$i]."<br />";
-			*/
 
 			$i++;
 		}
@@ -698,7 +690,6 @@ while ($p < $nb_users) {
 					}
 					$ligne3=$lig_adr_resp->cp." ".$lig_adr_resp->commune;
 	
-					//if(($lig_adr_resp->pays!="")&&(strtolower($lig_adr_resp->pays)!=strtolower(getSettingValue('gepiSchoolPays')))) {
 					if(($lig_adr_resp->pays!="")&&(casse_mot($lig_adr_resp->pays,'min')!=casse_mot(getSettingValue('gepiSchoolPays'),'min'))) {
 						if($ligne3!=" "){
 							$ligne3.="<br />";
@@ -1059,7 +1050,6 @@ width:".$largeur1."%;\n";
 					}
 					$ligne3=$lig_adr_resp->cp." ".$lig_adr_resp->commune;
 	
-					//if(($lig_adr_resp->pays!="")&&(strtolower($lig_adr_resp->pays)!=strtolower(getSettingValue('gepiSchoolPays')))) {
 					if(($lig_adr_resp->pays!="")&&(casse_mot($lig_adr_resp->pays,'min')!=casse_mot(getSettingValue('gepiSchoolPays'),'min'))) {
 						if($ligne3!=" "){
 							$ligne3.="<br />";

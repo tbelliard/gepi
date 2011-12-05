@@ -243,7 +243,7 @@ foreach($Eleves as $Eleve) {
                     $ligne2.="<br />\n".$adr4_resp[1];
             }
             $ligne3=$cp_resp[1]." ".$commune_resp[1];
-            if(($pays_resp[1]!="")&&(strtolower($pays_resp[1])!=strtolower($gepiSettings['gepiSchoolPays']))) {
+            if(($pays_resp[1]!="")&&(mb_strtolower($pays_resp[1])!=mb_strtolower($gepiSettings['gepiSchoolPays']))) {
                     if($ligne3!=" "){
                             $ligne3.="<br />";
                     }
