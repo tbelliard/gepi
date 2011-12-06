@@ -371,34 +371,7 @@ if (
 	die();
 }
 
-
-
-//echo '<link rel="stylesheet" type="text/css" media="print" href="impression.css" />';
-//echo "\n";
-
-
-/*
-$datay1 = array();
-$datay2 = array();
-$etiquette = array();
-$graph_title = "";
-$v_legend1 = "";
-$v_legend2 = "";
-
-$id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
-$periode = isset($_POST['periode']) ? $_POST['periode'] : (isset($_GET['periode']) ? $_GET['periode'] : NULL);
-$suiv = isset($_GET['suiv']) ? $_GET['suiv'] : 'no';
-$prec = isset($_GET['prec']) ? $_GET['prec'] : 'no';
-$v_eleve = isset($_POST['v_eleve']) ? $_POST['v_eleve'] : (isset($_GET['v_eleve']) ? $_GET['v_eleve'] : NULL);
-*/
-
 // Récupération des variables:
-/*
-unset($id_classe);
-$id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
-// Vérifier s'il peut y avoir des accents dans un id_classe.
-if(!is_numeric($id_classe)) {$id_classe=NULL;}
-*/
 
 unset($login_eleve);
 $login_eleve = isset($_POST["login_eleve"]) ? $_POST["login_eleve"] : (isset($_GET["login_eleve"]) ? $_GET["login_eleve"] : NULL);
@@ -461,38 +434,22 @@ include "../lib/periodes.inc.php";
 // Cette bibliothèque permet de récupérer des tableaux de $nom_periode et $ver_periode (et $nb_periode)
 // pour la classe considérée (valeur courante de $id_classe).
 
-//echo "<p>$id_classe</p>\n";
-
-
 // Choix de la classe:
 if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") {
 	echo "<div class='noprint'>\n";
 	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a></p>\n";
 	echo "</div>\n";
 
-	//echo "<form action='$_PHP_SELF' name='form_choix_classe' method='post'>\n";
-	//echo "<form action='".$_SERVER['PHP_SELF']."' name='form_choix_classe' method='post'>\n";
 	echo "<p>Sélectionnez la classe : </p>\n";
 	echo "<blockquote>\n";
-	//$call_data = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
 	if($_SESSION['statut']=='scolarite') {
-		//$call_data = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
 		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
 	elseif($_SESSION['statut']=='professeur') {
-		//$call_data=mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe");
 		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
 	}
 	elseif($_SESSION['statut']=='cpe') {
-		/*
-		$call_data=mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
-			p.id_classe = c.id AND
-			jec.id_classe=c.id AND
-			jec.periode=p.num_periode AND
-			jecpe.e_login=jec.login AND
-			jecpe.cpe_login='".$_SESSION['login']."'
-			ORDER BY classe");
-		*/
+		
 		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
 			p.id_classe = c.id AND
 			jec.id_classe=c.id AND
@@ -532,19 +489,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	tab_liste($txt_classe,$lien_classe,3);
 
-	/*
-	echo "<select name='id_classe' size='".min($nombre_lignes,10)."'>\n";
-	$i = 0;
-	while ($i < $nombre_lignes) {
-		$classe = mysql_result($call_data, $i, "classe");
-		$ide_classe = mysql_result($call_data, $i, "id");
-		//echo "<a href='eleve_classe.php?id_classe=$ide_classe'>$classe</a><br />\n";
-		echo "<option value='$ide_classe'>$classe</option>\n";
-		$i++;
-	}
-	echo "</select><br />\n";
-	echo "<input type='submit' name='choix_classe' value='Envoyer' />\n";
-	*/
+	
 	echo "</blockquote>\n";
 	//echo "</p>\n";
 	//echo "</form>\n";
@@ -653,7 +598,6 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 	else {
 		// Pas de limitations d'accès pour les autres statuts.
-		//for($i=$periode1;$i<=$periode2;$i++) {
 		for($i=1;$i<=$nb_periode;$i++) {
 			$tab_acces_app[$i]="y";
 		}
@@ -856,11 +800,6 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	if((isset($eleve1b))&&($eleve1b!='')) {
 		$eleve1=$eleve1b;
 	}
-	/*
-	// Modif: pour éviter une fausse alerte en 'responsable' sur la valeur de $eleve2
-	//$eleve2=isset($_POST['eleve2']) ? $_POST['eleve2'] : NULL;
-	$eleve2=isset($_POST['eleve2']) ? $_POST['eleve2'] : "moyclasse";
-	*/
 	$eleve2=isset($_POST['eleve2']) ? $_POST['eleve2'] : NULL;
 
 	// Possibilité de désactiver l'affichage des infobulles via un JavaScript:
@@ -1012,40 +951,6 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 
 
-	/*
-	if(isset($_POST['type_graphe'])) {
-
-		//echo "\$_POST['type_graphe']=".$_POST['type_graphe']."<br />\n";
-
-		if($_POST['type_graphe']=='etoile') {
-			$type_graphe='etoile';
-		}
-		else{
-			$type_graphe='courbe';
-		}
-	}
-	elseif(isset($_GET['type_graphe'])) {
-
-		//echo "\$_GET['type_graphe']=".$_GET['type_graphe']."<br />\n";
-
-		if($_GET['type_graphe']=='etoile') {
-			$type_graphe='etoile';
-		}
-		else{
-			$type_graphe='courbe';
-		}
-	}
-	else{
-		if(getSettingValue('graphe_type_graphe')) {
-			$type_graphe=getSettingValue('graphe_type_graphe');
-		}
-		else{
-			$type_graphe='courbe';
-		}
-	}
-
-	//echo "\$type_graphe=".$type_graphe."<br />\n";
-	*/
 
 	if(isset($_POST['largeur_graphe'])) {
 		$largeur_graphe=$_POST['largeur_graphe'];
@@ -1345,8 +1250,6 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "</td></tr>\n";
 
 			//$affiche_moy_annuelle
-			//if($affiche_moy_annuelle=='oui') {$checked=" checked='yes'";} else {$checked="";}
-			//echo "<tr valign='top'><td><label for='affiche_moy_annuelle' style='cursor: pointer;'>Afficher les moyennes annuelles:<br />(<i>en mode 'Toutes_les_periodes' uniquement</i>)</label></td><td><input type='checkbox' name='affiche_moy_annuelle' id='affiche_moy_annuelle' value='oui'$checked /></td></tr>\n";
 			echo "<tr valign='top'><td>Afficher les moyennes annuelles:<br />(<i>en mode 'Toutes_les_periodes' uniquement</i>)</td><td>";
 			if($affiche_moy_annuelle=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<input type='radio' name='affiche_moy_annuelle' id='affiche_moy_annuelle_oui' value='oui'$checked /><label for='affiche_moy_annuelle_oui' style='cursor: pointer;'> Oui </label>/\n";
@@ -1857,156 +1760,7 @@ function eleve_suivant() {
 	echo "<input type='hidden' name='parametrer_affichage' value='' />\n";
 	echo "<a href='".$_SERVER['PHP_SELF']."' onClick='document.forms[\"form_choix_eleves\"].parametrer_affichage.value=\"y\";document.forms[\"form_choix_eleves\"].submit();return false;'>Paramétrer l'affichage</a>.<br />\n";
 
-/*
-	echo "<script type='text/javascript'>
-	function display_div() {
-		if(document.getElementById('id_params').checked==true) {
-			document.getElementById('div_params').style.display='block';
-			for(i=1;i<=4;i++) {
-				if(document.getElementById('div_categorie_params'+i).checked==true) {
-					document.getElementById('div_params_'+i).style.display='block';
-				}
-				else{
-					document.getElementById('div_params_'+i).style.display='none';
-				}
-			}
-		}
-		else{
-			document.getElementById('div_params').style.display='none';
-		}
 
-	}
-</script>\n";
-
-
-	echo "<input type='checkbox' name='params' id='id_params' value='oui' onchange='display_div()' /> <b>Afficher les paramètres</b><br />\n";
-
-	echo "<div id='div_params' style='display:block;'>\n";
-
-	echo "<table border='0'>\n";
-
-	echo "<tr><td><input type='radio' name='div_categorie_params' id='div_categorie_params1' value='1' onchange='display_div()' /> </td><td>Moyennes et périodes</td></tr>\n";
-	echo "<tr><td><input type='radio' name='div_categorie_params' id='div_categorie_params2' value='2' onchange='display_div()' /> </td><td>Dimensions</td></tr>\n";
-	echo "<tr><td><input type='radio' name='div_categorie_params' id='div_categorie_params3' value='3' onchange='display_div()' /> </td><td>Photo</td></tr>\n";
-
-	if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
-		echo "<tr><td><input type='radio' name='div_categorie_params' id='div_categorie_params4' value='4' onchange='display_div()' /> </td><td>Couleurs</td></tr>\n";
-	}
-
-	echo "</table>\n";
-
-
-
-	echo "<div id='div_params_1' style='display:block; border: 1px solid black;'>";
-	echo "<b>Moyennes et périodes</b><br />";
-
-	if($affiche_mgen=='oui') {$checked=" checked='yes'";}else{$checked="";}
-	echo "<table border='0'>\n";
-	echo "<tr valign='top'><td>Afficher la moyenne générale:</td><td><input type='checkbox' name='affiche_mgen' value='oui'$checked /></td></tr>\n";
-
-	if($affiche_minmax=='oui') {$checked=" checked='yes'";}else{$checked="";}
-	echo "<tr valign='top'><td>Afficher les bandes Min/max:<br />(<i>pas en mode 'Toutes_les_periodes'</i>)</td><td><input type='checkbox' name='affiche_minmax' value='oui'$checked /></td></tr>\n";
-
-	//$affiche_moy_annuelle
-	if($affiche_moy_annuelle=='oui') {$checked=" checked='yes'";}else{$checked="";}
-	echo "<tr valign='top'><td>Moyennes annuelles:<br />(<i>en mode 'Toutes_les_periodes' uniquement</i>)</td><td><input type='checkbox' name='affiche_moy_annuelle' value='oui'$checked /></td></tr>\n";
-
-	echo "</table>\n";
-
-	echo "</div>\n";
-	//echo "<hr width='150' />\n";
-
-	// Paramètres d'affichage:
-	// - dimensions de l'image
-	echo "<div id='div_params_2' style='display:block; border: 1px solid black;'>";
-	echo "<b>Graphe</b><br />\n";
-	echo "<table border='0'>\n";
-	echo "<tr><td>Largeur:</td><td><input type='text' name='largeur_graphe' value='$largeur_graphe' size='3' /></td></tr>\n";
-	//echo " - \n";
-	echo "<tr><td>Hauteur:</td><td><input type='text' name='hauteur_graphe' value='$hauteur_graphe' size='3' /></td></tr>\n";
-
-	// - taille des polices
-	echo "<tr><td>Taille des polices:</td><td><select name='taille_police'>\n";
-	for($i=1;$i<=6;$i++) {
-		if($taille_police==$i) {$selected=" selected='yes'";}else{$selected="";}
-		echo "<option value='$i'$selected>$i</option>\n";
-	}
-	echo "</select></td></tr>\n";
-
-	// - epaisseur des traits
-	echo "<tr><td>Epaisseur des courbes:</td><td><select name='epaisseur_traits'>\n";
-	for($i=1;$i<=6;$i++) {
-		if($epaisseur_traits==$i) {$selected=" selected='yes'";}else{$selected="";}
-		echo "<option value='$i'$selected>$i</option>\n";
-	}
-	echo "</select></td></tr>\n";
-
-	// - modèle de couleurs
-
-	//if($temoin_imageps=='oui') {$checked=" checked='yes'";}else{$checked="";}
-	if($temoin_image_escalier=='oui') {$checked=" checked='yes'";}else{$checked="";}
-	//echo "Utiliser ImagePs: <input type='checkbox' name='temoin_imageps' value='oui'$checked /><br />\n";
-	echo "<tr><td>Afficher les noms<br />longs de matières:</td><td><input type='checkbox' name='temoin_image_escalier' value='oui'$checked /></td></tr>\n";
-
-	//echo "<tr><td>Tronquer le nom court<br />de matière à <a href='javascript:alert(\"A zéro caractères, on ne tronque pas le nom court de matière affiché en haut du graphe.\")'>X</a> caractères:</td><td><select name='tronquer_nom_court'>\n";
-	echo "<tr><td>Tronquer le nom court<br />de matière à <a href='#' onclick='alert(\"A zéro caractères, on ne tronque pas le nom court de matière affiché en haut du graphe.\")'>X</a> caractères:</td><td><select name='tronquer_nom_court'>\n";
-	for($i=0;$i<=10;$i++) {
-		if($tronquer_nom_court==$i) {$selected=" selected='yes'";}else{$selected="";}
-		echo "<option value='$i'$selected>$i</option>\n";
-	}
-	echo "</select></td></tr>\n";
-	echo "</table>\n";
-
-
-
-	echo "</div>\n";
-	//echo "<hr width='150' />\n";
-
-
-	// - Affichage de la photo
-	echo "<div id='div_params_3' style='display:block; border: 1px solid black;'>";
-	echo "<b>Paramètres des photos</b><br />\n";
-	if(($affiche_photo=='')||($affiche_photo=='oui')) {$checked=" checked='yes'";}else{$checked="";}
-	echo "Afficher: <input type='radio' name='affiche_photo' value='oui'$checked />O / \n";
-	if($affiche_photo=='non') {$checked=" checked='yes'";}else{$checked="";}
-	echo "N<input type='radio' name='affiche_photo' value='non'$checked /><br />\n";
-
-	// - Largeur imposée pour la photo
-	echo "Largeur photo: <input type='text' name='largeur_imposee_photo' value='$largeur_imposee_photo' size='3' />\n";
-	//echo "</p>\n";
-	echo "</div>\n";
-
-
-
-
-	//echo "<b>Paramètres des photos</b><br />";
-	echo "<div id='div_params_4' style='display:block; border: 1px solid black;'>";
-	if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
-		echo "<b>Couleurs</b><br />\n";
-		//echo "<hr width='150' />\n";
-		//echo "<p>\n";
-		echo "<a href='choix_couleurs.php' target='blank'>Modifier les couleurs</a>\n";
-		//echo "</p>\n";
-	}
-	echo "</div>\n";
-
-	if($_SESSION['statut']=='scolarite') {
-		//echo "<input type='checkbox' name='save_params' value='y' /> <b>Enregistrer les paramètres</b>\n";
-		echo "<input type='hidden' name='save_params' value='' />\n";
-		echo "<input type='button' onClick=\"document.forms['form_choix_eleves'].save_params.value='y';document.forms['form_choix_eleves'].submit();\" name='Enregistrer' value='Enregistrer les paramètres' />\n";
-	}
-	echo "</div>\n";
-
-
-	echo "<script type='text/javascript'>
-	// On cache les div de paramètres au chargement de la page
-	document.getElementById('div_params').style.display='none';
-	document.getElementById('div_params_1').style.display='none';
-	document.getElementById('div_params_2').style.display='none';
-	document.getElementById('div_params_3').style.display='none';
-	document.getElementById('div_params_4').style.display='none';
-	</script>\n";
-*/
 
 	//======================================================================
 	//======================================================================
@@ -2445,10 +2199,7 @@ function eleve_suivant() {
 
 	// Récupération des infos personnelles sur l'élève (nom, prénom, sexe, date de naissance et redoublant)
 	// Et calcul de l'age (si le serveur est à l'heure;o).
-	/*
-	if((isset($eleve1) AND $_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve")
-		OR (($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") AND $periode != "")) {
-	*/
+	
 	if((isset($eleve1) AND $_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve")
 		OR (($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") AND $periode != "")
 		OR (($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") AND $choix_periode == "toutes_periodes")) {
@@ -2579,8 +2330,7 @@ function eleve_suivant() {
 			}
 
 			if($indice_eleve1==-1) {
-				//echo "<p><span style='font-weight:bold; color:red;'>ERREUR:</span> L'élève $eleve1 n'a pas été trouvé lors de l'extraction des moyennes sur la période $periode.<br />Cela peut s'expliquer si l'élève a changé de classe ou quitté l'établissement.</p>\n";
-
+				
 				echo "<div style='margin: 5% 2em; padding: 1em; border: 1px dotted #2a6167'>\n";
 				echo "<div style='text-align: center; margin-bottom: 1em; font-weight: bold; color: #ee2222'>";
 				if((isset($tab_nom_prenom_eleve))&&isset($tab_nom_prenom_eleve["$eleve1"])) {
