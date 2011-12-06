@@ -90,8 +90,14 @@ $nom_dossier_temporaire = $tempdirOOo;
 $nom_fichier_xml_a_traiter ='content.xml';
 //les chemins contenant les données
 $fb_gab_perso=getSettingValue("fb_gab_perso");
-if($fb_gab_perso=="1"){
-  $nom_dossier_modele_a_utiliser="../../mod_ooo/mes_modeles/";
+if($fb_gab_perso=="1"){ 
+  // Gestion du multisite
+  if ($_SESSION['rne']!='') {
+	$rne=$_SESSION['rne']."/";
+  } else {
+	$rne='';
+  }
+  $nom_dossier_modele_a_utiliser="../../mod_ooo/mes_modeles/".$rne;
 }
 else{
   $nom_dossier_modele_a_utiliser="../../mod_ooo/modeles_gepi/";
