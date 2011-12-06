@@ -167,6 +167,13 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 			echo " (<strong>".$gepiClosedPeriodLabel."</strong>) ";
 		}
 		echo "- <a href='saisie_notes.php?id_conteneur=$id_cont'>Visualisation</a> - <a href = 'add_modif_conteneur.php?id_conteneur=$id_cont&amp;mode_navig=retour_index'>Configuration</a>\n";
+
+		$ponderation_cont=mysql_result($appel_conteneurs, 0, 'ponderation');
+		if($ponderation_cont!='0.0') {
+			$message_ponderation="La meilleure note de la ".getSettingValue("gepi_denom_boite")." est pondérée dun coefficient $ponderation_cont";
+			echo " - <img src='../images/icons/flag.png' width='17' height='18' alt=\"$message_ponderation\" title=\"$message_ponderation\" />";
+		}
+
 		$appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont' order by date");
 		$nb_dev  = mysql_num_rows($appel_dev);
 		if ($nb_dev != 0) {$empty = 'no';}
@@ -246,6 +253,11 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 
 					echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a>";
 
+					$note_sur=mysql_result($appel_dev, $j, 'note_sur');
+					if($note_sur!='20') {
+						echo " (<em><span title='Note sur $note_sur'>/$note_sur</span></em>)";
+					}
+
 					$display_parents=mysql_result($appel_dev, $j, 'display_parents');
 					$coef=mysql_result($appel_dev, $j, 'coef');
 					echo " (<i><span title='Coefficient $coef'>$coef</span> ";
@@ -282,6 +294,12 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					if($display_bulletin==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='$gepi_denom_boite visible sur le bulletin' alt='$gepi_denom_boite visible sur le bulletin' />";}
 					else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='$gepi_denom_boite non visible sur le bulletin' alt='$gepi_denom_boite non visible sur le bulletin' />\n";}
 					echo "</i>)";
+
+					$ponderation_cont=mysql_result($appel_conteneurs, 0, 'ponderation');
+					if($ponderation_cont!='0.0') {
+						$message_ponderation="La meilleure note de la ".getSettingValue("gepi_denom_boite")." est pondérée dun coefficient $ponderation_cont";
+						echo " - <img src='../images/icons/flag.png' width='17' height='18' alt=\"$message_ponderation\" title=\"$message_ponderation\" />";
+					}
 
 					$appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont' order by date");
 					$nb_dev  = mysql_num_rows($appel_dev);
@@ -341,6 +359,11 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 							}
 
 							echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a>";
+
+							$note_sur=mysql_result($appel_dev, $j, 'note_sur');
+							if($note_sur!='20') {
+								echo " (<em><span title='Note sur $note_sur'>/$note_sur</span></em>)";
+							}
 
 							$display_parents=mysql_result($appel_dev, $j, 'display_parents');
 							$coef=mysql_result($appel_dev, $j, 'coef');

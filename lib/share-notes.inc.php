@@ -105,9 +105,10 @@ function fdebug($texte){
  * @param array $id_sous_cont Id des sous-conteneurs
  * @param array $display_bulletin_sous_cont y si le sous conteneur doit être affiché (passé par référence)
  * @param text $type all pour rechercher aussi les sous-sous-conteneurs
+ * @param array $ponderation_sous_cont ponderation des sous-conteneurs
  * @see fdebug()
  */
-function sous_conteneurs($id_conteneur,&$nb_sous_cont,&$nom_sous_cont,&$coef_sous_cont,&$id_sous_cont,&$display_bulletin_sous_cont,$type) {
+function sous_conteneurs($id_conteneur,&$nb_sous_cont,&$nom_sous_cont,&$coef_sous_cont,&$id_sous_cont,&$display_bulletin_sous_cont,$type,$ponderation_sous_cont) {
 	fdebug("===================================\n");
 	fdebug("LANCEMENT DE sous_conteneurs() SUR\n");
 	fdebug("id_conteneur=$id_conteneur avec type=$type\n");
@@ -123,7 +124,7 @@ function sous_conteneurs($id_conteneur,&$nb_sous_cont,&$nom_sous_cont,&$coef_sou
         $temp = $id_sous_cont[$nb_sous_cont];
         $nb_sous_cont++;
         if ($type=='all') {
-            sous_conteneurs($temp,$nb_sous_cont,$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'all');
+            sous_conteneurs($temp,$nb_sous_cont,$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'all',$ponderation_sous_cont);
         }
         $i++;
     }
@@ -169,13 +170,14 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
     $nom_sous_cont = array();
     $id_sous_cont  = array();
     $coef_sous_cont = array();
+    $ponderation_sous_cont=array();
     $nb_sous_cont = 0;
     if ($mode==1) {
         //la moyenne s'effectue sur toutes les notes contenues à la racine ou dans les sous-conteneurs
         // sans tenir compte des options définies dans cette(ces) boîte(s).
 
         // on s'intéresse à tous les conteneurs fils, petit-fils, ...
-        sous_conteneurs($id_conteneur,$nb_sous_cont,$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'all');
+        sous_conteneurs($id_conteneur,$nb_sous_cont,$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'all',$ponderation_sous_cont);
         //
         // On fait la moyenne des devoirs du conteneur et des sous-conteneurs
         $nb_boucle = $nb_sous_cont+1;
@@ -191,7 +193,7 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
         //et sur les moyennes du ou des sous-conteneurs, en tenant compte des options dans ce(s) boîte(s).
 
         // On s'intéresse uniquement aux conteneurs fils
-        sous_conteneurs($id_conteneur,$nb_sous_cont,$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'');
+        sous_conteneurs($id_conteneur,$nb_sous_cont,$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'',$ponderation_sous_cont);
         //
         // on ne fait la moyenne que des devoirs du conteneur
         $nb_boucle = 1;

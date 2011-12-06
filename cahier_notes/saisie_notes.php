@@ -223,14 +223,15 @@ $nom_periode = mysql_result($periode_query, $periode_num-1, "nom_periode");
 $nom_sous_cont = array();
 $id_sous_cont  = array();
 $coef_sous_cont = array();
+$ponderation_sous_cont = array();
 $display_bulletin_sous_cont = array();
 $nb_sous_cont = 0;
 if ($mode==1) {
 	// on s'intéresse à tous les conteneurs fils, petit-fils, ...
-	sous_conteneurs($id_conteneur,$nb_sous_cont,$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'all');
+	sous_conteneurs($id_conteneur,$nb_sous_cont,$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'all',$ponderation_sous_cont);
 } else {
 	// On s'intéresse uniquement au conteneurs fils
-	sous_conteneurs($id_conteneur,$nb_sous_cont,$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'');
+	sous_conteneurs($id_conteneur,$nb_sous_cont,$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'',$ponderation_sous_cont);
 }
 
 //debug_var();
@@ -1092,6 +1093,11 @@ if ($nb_dev != 0) {
 		echo "<div style='float:right; width:16;'><a href='javascript:affichage_quartiles();'><img src='../images/icons/histogramme.png' width='16' height='16' alt='Afficher les quartiles' title='Afficher les quartiles' /></a></div>\n";
 
 		echo "$nom_conteneur\n";
+
+		if($ponderation!='0.0') {
+			$message_ponderation="La meilleure note de la ".getSettingValue("gepi_denom_boite")." est pondérée dun coefficient $ponderation";
+			echo " <img src='../images/icons/flag.png' width='17' height='18' alt=\"$message_ponderation\" title=\"$message_ponderation\" />";
+		}
 		echo "</th>\n";
 	}
 	else{
@@ -1150,7 +1156,13 @@ if ($id_devoir==0) {
 // En mode saisie, on n'affiche que le devoir à saisir
 if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) and ($id_devoir==0)){
 	if($nom_conteneur!=""){
-		echo "<td class=cn  valign='top'><center><b>$nom_conteneur</b><br />";
+		echo "<td class=cn  valign='top'><center><b>$nom_conteneur</b>";
+
+		if($ponderation!='0.0') {
+			$message_ponderation="La meilleure note de la ".getSettingValue("gepi_denom_boite")." est pondérée dun coefficient $ponderation";
+			echo " <img src='../images/icons/flag.png' width='17' height='18' alt=\"$message_ponderation\" title=\"$message_ponderation\" />";
+		}
+		echo "<br />";
 	}
 	else{
 		echo "<td class=cn  valign='top'><center><b>&nbsp;</b><br />";
