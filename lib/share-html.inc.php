@@ -295,7 +295,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='$gepi_denom_boite non visible sur le bulletin' alt='$gepi_denom_boite non visible sur le bulletin' />\n";}
 					echo "</i>)";
 
-					$ponderation_cont=mysql_result($appel_conteneurs, 0, 'ponderation');
+					$ponderation_cont=mysql_result($appel_conteneurs, $i, 'ponderation');
 					if($ponderation_cont!='0.0') {
 						$message_ponderation="La meilleure note de la ".getSettingValue("gepi_denom_boite")." est pondérée dun coefficient $ponderation_cont";
 						echo " - <img src='../images/icons/flag.png' width='17' height='18' alt=\"$message_ponderation\" title=\"$message_ponderation\" />";
