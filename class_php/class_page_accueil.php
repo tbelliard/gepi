@@ -1114,6 +1114,10 @@ class class_page_accueil {
 		$this->creeNouveauItem("/saisie/saisie_mentions.php",
 			  ucfirst($gepi_denom_mention)."s des bulletins",
 			  "Cet outil vous permet de définir les ".$gepi_denom_mention."s (<i>Félicitations, Encouragements,...</i>) des bulletins.");
+
+		$this->creeNouveauItem("/saisie/saisie_vocabulaire.php",
+			  "Lapsus ou fautes de frappe",
+			  "Cet outil vous permet de définir les associations de mots avec et sans faute de frappe à contrôler lors de la saisie des bulletins.<br />Il arrive qu'un professeur fasse une faute de frappe, mais que le mot obtenu existe bien (<em>Il n'est alors pas souligné par le navigateur comme erroné... et la fute passe inaperçu</em>)");
 	}
 
 	if ($this->b>0){

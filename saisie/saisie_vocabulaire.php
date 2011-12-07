@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -59,7 +59,8 @@ if((isset($export_vocab))&&($export_vocab=="y")) {
 	while($lig=mysql_fetch_object($txt)){
 		$fd.=$lig->terme.";".$lig->terme_corrige."\r\n";
 	}
-	echo $fd;
+	//echo $fd;
+	echo echo_csv_encoded($fd);
 	die();
 }
 
@@ -317,9 +318,9 @@ echo "<p><br /></p>\n";
 
 echo "<p><i>NOTES&nbsp;:</i></p>\n";
 echo "<ul>
-	<li>Les couples sont enregistrés en minuscules pour contourner.</li>
+	<li>Les couples sont enregistrés en minuscules pour limiter le nombre de versions à prendre en compte.</li>
 	<li>Il ne s'agit pas de fournir un dictionnaire, mais de signaler des fautes de frappe qui correspondent malgré tout à des mots du dictionnaire et peuvent donner des résultats malheureux.</li>
-	<li>Le principe dans la page de saisie des appréciations est le suivant&nbsp;: L'appréciation saisie est reformatée en remplaçant les points, virgules, points-virgules par des espaces pour rechercher si l'appréciation contient des chaines ressemblant à celles jugées comme mal tapées ou orthographiées.<br />Si une possible erreur est détectée, un message est affiché.</li>
+	<li>Le principe dans la page de saisie des appréciations est le suivant&nbsp;: L'appréciation saisie est reformatée en remplaçant les points, virgules, points-virgules par des espaces pour rechercher si l'appréciation contient des chaines ressemblant à celles jugées comme mal tapées ou orthographiées.<br />Si une possible erreur est détectée, un message est affiché en guise de suggestion de correction.</li>
 </ul>\n";
 echo "<p><br /></p>\n";
 

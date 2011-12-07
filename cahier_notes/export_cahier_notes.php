@@ -475,7 +475,7 @@ if($type_export=="CSV") {
 	}
 
 	// On renvoye le fichier vers le navigateur:
-	echo $fd;
+	echo echo_csv_encoded($fd);
 	die();
 }
 elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
