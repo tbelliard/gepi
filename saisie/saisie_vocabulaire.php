@@ -317,9 +317,9 @@ echo "<p><br /></p>\n";
 
 echo "<p><i>NOTES&nbsp;:</i></p>\n";
 echo "<ul>
-	<li>Les couples sont enregistrés en minuscules pour contourner.</li>
+	<li>Les couples sont enregistrés en minuscules pour limiter le nombre de versions à prendre en compte.</li>
 	<li>Il ne s'agit pas de fournir un dictionnaire, mais de signaler des fautes de frappe qui correspondent malgré tout à des mots du dictionnaire et peuvent donner des résultats malheureux.</li>
-	<li>Le principe dans la page de saisie des appréciations est le suivant&nbsp;: L'appréciation saisie est reformatée en remplaçant les points, virgules, points-virgules par des espaces pour rechercher si l'appréciation contient des chaines ressemblant à celles jugées comme mal tapées ou orthographiées.<br />Si une possible erreur est détectée, un message est affiché.</li>
+	<li>Le principe dans la page de saisie des appréciations est le suivant&nbsp;: L'appréciation saisie est reformatée en remplaçant les points, virgules, points-virgules par des espaces pour rechercher si l'appréciation contient des chaines ressemblant à celles jugées comme mal tapées ou orthographiées.<br />Si une possible erreur est détectée, un message est affiché en guise de suggestion de correction.</li>
 </ul>\n";
 echo "<p><br /></p>\n";
 
