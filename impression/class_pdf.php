@@ -86,7 +86,6 @@ http://www.fpdf.org/fr/script/script62.php
                     //Calculate horizontal scaling
                     $horiz_scale=$ratio*100.0;
                     //Set horizontal scaling
-                    //$this->_out(sprintf('BT %.2f Tz ET',$horiz_scale));
                     $this->_out(sprintf('BT %d Tz ET',$horiz_scale));
                     break;
 

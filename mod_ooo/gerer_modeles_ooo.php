@@ -164,7 +164,7 @@ else {
 $titre_page = "Modèle Open Office - gérer ses modèles";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-echo "<SCRIPT LANGUAGE=\"Javascript\" SRC=\"./lib/mod_ooo.js\"> </SCRIPT>";
+echo "<script language=\"Javascript\" src=\"./lib/mod_ooo.js\"> </script>";
 //debug_var();
 
 if (isset($_GET['op'])) { $op=$_GET["op"]; }
@@ -183,7 +183,7 @@ echo "<br />\n";
 
 if ((isset($op)) && ($op=="supp")) { //Supprimer un fichier perso
      // alert("EFFACER $fic");
-	  @unlink("$nom_dossier_modeles_ooo_mes_modeles$rne$fic");
+	  @unlink($nom_dossier_modeles_ooo_mes_modeles.$rne.$fic);
 }
 
 echo "<body>";
@@ -219,26 +219,26 @@ if (!isset($btn)) { //premier passage : formulaire
 	      echo "<td colspan=\"6\"></br></br><b>$entete_section[$i]</br></br></b></br></br></td>";
 		  echo "</tr>";
 	  }
-	  echo "<tr class='lig$alt'><form name=\"form$i\" method='post' ENCTYPE='multipart/form-data' action='$PHP_SELF' onsubmit=\"return bonfich('$i')\" >\n";
+	  echo "<tr class='lig$alt'>\n<form name=\"form$i\" method='post' ENCTYPE='multipart/form-data' action='$PHP_SELF' onsubmit=\"return bonfich('$i')\" >\n";
 	echo add_token_field();
 	  echo "<input type=\"hidden\" name=fich_cible value=$fich[$i] >\n";
 		 $type_ext = renvoi_nom_image(extension_nom_fichier($fich[$i]));
-		 echo "<td align='center'><a href=\"$nom_dossier_modeles_ooo_par_defaut$fich[$i]\"><img src=\"./images/$type_ext\" border=\"0\" title=\"Consulter le modèle par défaut\"></a>\n";
+		 echo "<td align='center'>\n<a href=\"$nom_dossier_modeles_ooo_par_defaut$fich[$i]\"><img src=\"./images/$type_ext\" border=\"0\" title=\"Consulter le modèle par défaut\"></a>\n";
 		 echo "</td>\n";
 	  if  (file_exists($nom_dossier_modeles_ooo_mes_modeles.$rne.$fich[$i]))   {
-		 echo "<td align='center'><a href=\"$PHP_SELF?op=supp&fic=$fich[$i]".add_token_in_url()."\" onclick='return confirmer()'><img src=\"./images/poubelle.gif\" border=\"0\" title=\"ATTENTION, suppression immédiate !\"></a>\n";
-		 echo "&nbsp;&nbsp;<a HREF=\"$nom_dossier_modeles_ooo_mes_modeles$rne$fich[$i]\"><img src=\"./images/$type_ext\" border=\"0\" title=\"Consulter le nouveau modèle\"></a>\n";
+		 echo "<td align='center'>\n<a href=\"$PHP_SELF?op=supp&fic=$fich[$i]".add_token_in_url()."\" onclick='return confirmer()'><img src=\"./images/poubelle.gif\" border=\"0\" title=\"ATTENTION, suppression immédiate !\"></a>\n";
+		 echo "&nbsp;&nbsp;<a href=\"$nom_dossier_modeles_ooo_mes_modeles.$rne.$fich[$i]\"><img src=\"./images/$type_ext\" border=\"0\" title=\"Consulter le nouveau modèle\"></a>\n";
 		 echo "</td>\n";
 	  } else {
 		 echo "</td>\n<td>&nbsp;</td>\n";
 	  }
 
-	  echo "<td>$fich[$i]</td><td>\n";
-	  echo "$utilisation[$i]</td><td>\n";
-	  echo "<INPUT TYPE=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"512000\">";
+	  echo "<td>$fich[$i]</td>\n<td>\n";
+	  echo "$utilisation[$i]</td>\n<td>\n";
+	  echo "<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"512000\">";
 	  echo "<input type='file' name='monfichier' value='il a cliqué le bougre'>&nbsp;</td><td>\n";
 	  echo "&nbsp;&nbsp;<input type='submit' name='btn' Align='middle' value='Envoyer' />&nbsp;&nbsp;  \n";
-	  echo "</td></form>\n";
+	  echo "</td>\n</form>\n";
 	  echo "</tr>\n";
     }
     echo "</table>\n";
@@ -289,7 +289,7 @@ else { // passage 2 : le nom du fichier a été choisi
         if (!move_uploaded_file($monfichiertmp_name,$cible)) {
             echo "Erreur de copie<br />\n";
             echo "origine     : $monfichiername <br />\n";
-            echo "destination : $nom_dossier_modeles_ooo_mes_modeles$rne".$fichiercopie;
+            echo "destination : $nom_dossier_modeles_ooo_mes_modeles.$rne".$fichiercopie;
             $me="La copie ne s'est pas effectuée !\n Vérifiez la taille du fichier (max 512ko)\n";
             alert($me);
             $dest=$desterreur;
@@ -297,7 +297,7 @@ else { // passage 2 : le nom du fichier a été choisi
         else {
             //echo "<p>$cible a été copié</p>";
             $dest.="?fichier=$cible";
-            echo($fich_cible." a été copié correctement :<br />");
+            echo($fich_cible." a été copié correctement dans : ".$nom_dossier_modeles_ooo_mes_modeles.$rne.$fichiercopie."<br />");
             echo "<p align='center'>";
             unset($monfichiername);
             echo "<form name='retour' method='POST' action='$PHP_SELF'>\n";

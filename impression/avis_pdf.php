@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -31,7 +31,7 @@ Header('Pragma: public');
 header('Content-Type: application/pdf');
 */
 //=============================
-// REMONTé:
+// REMONTÉ:
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 //=============================
@@ -408,6 +408,7 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		// Ordonnee courante pour l'eleve n°$compteur_eleves_page de la page:
 		$y_tmp = $y_top_tableau+$compteur_eleves_page*$h_cell;
 
+
 		// Colonne Nom_Prenom
 		$pdf->SetXY($X_tableau,$y_tmp);
 		$pdf->SetFont('DejaVu','B',9);		
@@ -429,12 +430,14 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 
 		$pdf->Setxy($X_tableau+$l_cell_nom,$y_tmp);
 
+
 		if ($nb_periodes==1) {
 			if ($current_eleve_avis != '') {
 				$avis = $current_eleve_avis;
 			} else {
 				$avis =' ';
 			}
+
 		} else { // Si plusieurs périodes, on indique la période concernée entre parenthèse à côté du nom.
 			$texte = "P".$donnees_eleves[$nb_eleves_i]['id_periode']." : ";
 			if ($current_eleve_avis != '') {
