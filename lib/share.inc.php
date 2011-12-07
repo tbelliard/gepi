@@ -5006,7 +5006,7 @@ function get_timestamp_jour_suivant($timestamp_today) {
  * @param string $texte Texte à nettoyer
  * @return string Texte nettoyé
  */
-function netoyage_retours_ligne_surnumeraires($texte) {
+function nettoyage_retours_ligne_surnumeraires($texte) {
 	$retour=preg_replace('/(\\\r\\\n)+/',"\r\n",$texte);
 	$retour=preg_replace('/(\\\r)+/',"\r",$retour);
 	$retour=preg_replace('/(\\\n)+/',"\n",$retour);
