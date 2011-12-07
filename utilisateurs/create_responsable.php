@@ -274,12 +274,15 @@ $titre_page = "Créer des comptes d'accès responsables";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href="edit_responsable.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+<p class='bold'><a href="edit_responsable.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 </p>
 <?php
 
 if(getSettingValue('auth_sso')=='lcs') {
-	echo "<p style='color:red'><b>ATTENTION&nbsp;:</b> Il convient de choisir pour les parents un format de login différent de celui des comptes des utilisateurs élèves et professeurs (<em>comptes de l'annuaire LDAP</em>).<br />Sinon, avec l'arrivée de nouveaux élèves en cours d'année, il peut arriver qu'un élève obtienne un login déjà attribué à un responsable dans Gepi.<br />Pour choisir le format de login des responsables, consultez la page <a href='../gestion/param_gen.php#format_login_resp'>Configuration générale</a>.</p>\n";
+	echo "<p style='color:red; text-indent: -7em; margin-left: 7em;'><b>ATTENTION&nbsp;:</b> Il convient de choisir pour les parents un format de login différent de celui des comptes des utilisateurs élèves et professeurs (<em>comptes de l'annuaire LDAP</em>).<br />Sinon, avec l'arrivée de nouveaux élèves en cours d'année, il peut arriver qu'un élève obtienne un login déjà attribué à un responsable dans Gepi.<br />Pour choisir le format de login des responsables, consultez la page <a href='../gestion/param_gen.php#format_login_resp'>Configuration générale</a>.<br />";
+	$mode_generation_login_responsable=getSettingValue('mode_generation_login_responsable');
+	echo "Le format de login responsable est actuellement <strong>$mode_generation_login_responsable</strong>";
+	echo "</p>\n";
 }
 
 $afficher_tous_les_resp=isset($_POST['afficher_tous_les_resp']) ? $_POST['afficher_tous_les_resp'] : "n";
