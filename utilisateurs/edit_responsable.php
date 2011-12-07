@@ -303,6 +303,8 @@ aff_time();
 
 	echo " | <a href='import_prof_csv.php?export_statut=responsable'>Export CSV</a>";
 
+	echo " | <a href='edit_eleve.php'>Comptes élèves</a>";
+
 	echo "</p>\n";
 
 	aff_time();
