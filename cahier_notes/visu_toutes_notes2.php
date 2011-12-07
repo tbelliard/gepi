@@ -1513,7 +1513,8 @@ if(isset($_GET['mode'])) {
 
 		$fd="";
 		$fd.=affiche_tableau_csv2($nb_lignes_tableau, $nb_col, $ligne1_csv, $col, $col_csv);
-		echo $fd;
+		//echo $fd;
+		echo echo_csv_encoded($fd);
 		die();
 	}
 }

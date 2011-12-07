@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -59,7 +59,8 @@ if((isset($export_vocab))&&($export_vocab=="y")) {
 	while($lig=mysql_fetch_object($txt)){
 		$fd.=$lig->terme.";".$lig->terme_corrige."\r\n";
 	}
-	echo $fd;
+	//echo $fd;
+	echo echo_csv_encoded($fd);
 	die();
 }
 

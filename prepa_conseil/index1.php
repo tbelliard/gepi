@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -102,7 +102,8 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='csv')) {
 	}
 
 	send_file_download_headers('text/x-csv',$nom_fic);
-	echo $fd;
+	//echo $fd;
+	echo echo_csv_encoded($fd);
 	die();
 }
 if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {

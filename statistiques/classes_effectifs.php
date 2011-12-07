@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -99,7 +99,8 @@ if(isset($_GET['export_csv'])) {
 			$csv.=mysql_num_rows($res_eff).";\r\n";
 		}
 		send_file_download_headers('text/x-csv',$nom_fic);
-		echo $csv;
+		//echo $csv;
+		echo echo_csv_encoded($csv);
 		die();
 	}
 	elseif($_GET['export_csv']=='effectifs_sexe') {
@@ -125,7 +126,8 @@ if(isset($_GET['export_csv'])) {
 			$csv.=mysql_num_rows($res_eff).";\r\n";
 		}
 		send_file_download_headers('text/x-csv',$nom_fic);
-		echo $csv;
+		//echo $csv;
+		echo echo_csv_encoded($csv);
 		die();
 	}
 }

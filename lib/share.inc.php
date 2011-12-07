@@ -5039,4 +5039,17 @@ function getDateDescription($date_debut,$date_fin) {
 	return $message;
 }
 
+/** fonction retournant une chaine encodée pour le download d'un CSV
+ *
+ * @param string $texte_csv
+ * @return string La chaine encodée 
+ */
+function echo_csv_encoded($texte_csv) {
+	// D'après http://www.oxeron.com/2008/09/15/probleme-daccent-dans-un-export-csv-en-php
+
+	//$retour=$texte_csv;
+	$retour=chr(255).chr(254).mb_convert_encoding($texte_csv, 'UTF-16LE', 'UTF-8');
+
+	return $retour;
+}
 ?>
