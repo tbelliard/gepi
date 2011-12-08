@@ -119,6 +119,7 @@ if($dt_date_absence_eleve_debut->format("U")>$dt_date_absence_eleve_fin->format(
     $_SESSION['date_absence_eleve_fin'] = $dt_date_absence_eleve_fin->format('d/m/Y');
 }
 // fonction de formatage des dates de debut et de fin
+/*
 function getDateDescription($date_debut,$date_fin) {
 	    $message = '';
 	    if (strftime("%a %d/%m/%Y", $date_debut)==strftime("%a %d/%m/%Y", $date_fin)) {
@@ -137,6 +138,8 @@ function getDateDescription($date_debut,$date_fin) {
 	    }
 	    return $message;
 	}
+ */
+
 //paramétrage des options affichées en fonction du statut
 $affichage_liens=true;
 $affichage_commentaires_html=true;
@@ -156,7 +159,7 @@ $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
 $dojo=true;
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
-//suppression des donnÃ©es en session (sauf dans le cas d'un export html et odt ou d'un clic dur le bouton filtrage)
+//suppression des données en session (sauf dans le cas d'un export html et odt ou d'un clic dur le bouton filtrage)
 if(isset($_SESSION['donnees_bilan']) && (is_null($affichage) || ($affichage=='html' && $click_filtrage!="ok" && $raz!=="ok"))){
     unset($_SESSION['donnees_bilan']);
 }
@@ -174,7 +177,7 @@ if(getSettingValue('Abs2DebrideBilanIndividuelLogins')){
 $limite_jours=7;
 
 if(($id_classe=='-1' && $affichage=='html' && $click_filtrage!="ok" && $raz!=="ok") && (is_null($id_eleve) || $id_eleve=='') && (is_null($nom_eleve) || mb_strlen($nom_eleve)<2)){
-    //si limitation de temps et si la limite de temps est dÃ©passÃ©e en mode toutes les classes on ne lance pas de calculs 
+    //si limitation de temps et si la limite de temps est dépassée en mode toutes les classes on ne lance pas de calculs 
     if($limite_temps && ($dt_date_absence_eleve_fin->format('U')-$dt_date_absence_eleve_debut->format('U'))>($limite_jours*24*3600) ){
         $message=' L\'intervalle de temps choisi pour toutes les classes doit être inférieur à 7 jours ';
         $affichage='';
@@ -390,7 +393,7 @@ if ($id_eleve !== null && $id_eleve != '') {
 }
 $eleve_query->orderByNom()->orderByPrenom()->distinct();
 $table_synchro_ok = AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable($dt_date_absence_eleve_debut,$dt_date_absence_eleve_fin);
-    if (!$table_synchro_ok) {//la table n'est pas synchronisée. On va vérifier individuellement les élèves qui se sont pas synchronisés
+    if (!$table_synchro_ok) {//la table n'est pas synchronisée. On va vérifier individuellement les élèves qui ne sont pas synchronisés
 		$eleve_col = $eleve_query->find();
 		if ($eleve_col->count()>150) {
 			echo 'Il semble que vous demander des statistiques sur trop d\'élèves et votre table de statistiques n\'est pas synchronisée. Veuillez faire une demande pour moins d\'élèves ou demander à votre administreteur de remplir la table d\'agrégation.';
@@ -740,7 +743,7 @@ foreach ($donnees as $id => $eleve) {
                 }
                 echo '<td class="'.$style.'">';
                 if($affichage_liens){
-                    echo '<a href="./liste_saisies_selection_traitement.php?saisies=' . serialize($value['saisies']) . '" target="_blank">' . getDateDescription($value['dates']['debut'], $value['dates']['fin']) . '<a>';
+                    echo '<a href="./liste_saisies_selection_traitement.php?saisies=' . serialize($value['saisies']) . '" target="_blank">' . getDateDescription($value['dates']['debut'], $value['dates']['fin']) . '</a>';
                 }else{
                     echo getDateDescription($value['dates']['debut'], $value['dates']['fin']) ;
                 }

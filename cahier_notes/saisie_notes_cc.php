@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -232,11 +232,11 @@ if (isset($_POST['is_posted'])) {
 	//for($i=0;$i<count($log_eleve);$i++){
 	for($i=0;$i<$indice_max_log_eleve;$i++){
 		if(isset($log_eleve[$i])) {
-			// La période est-elle ouverte?
+			// La période est-elle ouverte? On s'en fiche: les évaluations cumul peuvent être à cheval sur plusieurs périodes avant de donner lieu à une note dans le carnet de notes
 			$reg_eleve_login=$log_eleve[$i];
 			if(isset($current_group["eleves"][$periode_num]["users"][$reg_eleve_login]["classe"])){
 				$id_classe = $current_group["eleves"][$periode_num]["users"][$reg_eleve_login]["classe"];
-				if ($current_group["classe"]["ver_periode"][$id_classe][$periode_num] == "N") {
+				//if ($current_group["classe"]["ver_periode"][$id_classe][$periode_num] == "N") {
 					$note=$note_eleve[$i];
 					$elev_statut='';
 
@@ -293,12 +293,16 @@ if (isset($_POST['is_posted'])) {
 					$test_eleve_note_query = mysql_query("SELECT * FROM cc_notes_eval WHERE (login='$reg_eleve_login' AND id_eval = '$id_eval')");
 					$test = mysql_num_rows($test_eleve_note_query);
 					if ($test != "0") {
-						$register = mysql_query("UPDATE cc_notes_eval SET comment='".$comment."', note='$note',statut='$elev_statut' WHERE (login='".$reg_eleve_login."' AND id_eval='".$id_eval."')");
+						$sql="UPDATE cc_notes_eval SET comment='".$comment."', note='$note',statut='$elev_statut' WHERE (login='".$reg_eleve_login."' AND id_eval='".$id_eval."')";
+						//echo "$sql<br />";
+						$register = mysql_query($sql);
 					} else {
-						$register = mysql_query("INSERT INTO cc_notes_eval SET login='".$reg_eleve_login."', id_eval='".$id_eval."',note='".$note."',statut='".$elev_statut."',comment='".$comment."'");
+						$sql="INSERT INTO cc_notes_eval SET login='".$reg_eleve_login."', id_eval='".$id_eval."',note='".$note."',statut='".$elev_statut."',comment='".$comment."'";
+						//echo "$sql<br />";
+						$register = mysql_query($sql);
 					}
 
-				}
+				//}
 			}
 		}
 	}
@@ -637,7 +641,9 @@ foreach ($liste_eleves as $eleve) {
 	"</td>\n";
 
 	echo "<td>\n";
-	echo "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='comment_eleve[$i]' rows='1' cols='60' class='wrap' onchange=\"changement()\">";
+	echo "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='comment_eleve[$i]' rows='1' cols='60' class='wrap' onfocus=\"javascript:this.select()";
+	if($elenoet!="") {echo ";affiche_photo('".nom_photo($elenoet)."','".addslashes(my_strtoupper($eleve_nom[$i])." ".casse_mot($eleve_prenom[$i],'majf2'))."')";}
+	echo "\" onchange=\"changement()\">";
 	if(isset($commentaire[$eleve_login[$i]])) {echo $commentaire[$eleve_login[$i]];}
 	echo "</textarea>\n";
 	"</td>\n";

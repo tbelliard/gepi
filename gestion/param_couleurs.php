@@ -48,7 +48,7 @@ $tab_panneau_affichage=array('fil_blanc','fil_noir','fil_bleu','fil_vert','filet
 $comp=array('R','V','B');
 
 function hex2nb($carac) {
-	switch(strtoupper($carac)) {
+	switch(mb_strtoupper($carac)) {
 		case "A":
 			return 10;
 			break;

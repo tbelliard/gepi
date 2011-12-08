@@ -148,7 +148,7 @@ if (!isset($is_posted)) {
 
 } else {
     $dbf_file = isset($_FILES["dbf_file"]) ? $_FILES["dbf_file"] : NULL;
-    if(strtoupper($dbf_file['name']) == "F_TMT.DBF") {
+    if(mb_strtoupper($dbf_file['name']) == "F_TMT.DBF") {
         $fp = dbase_open($dbf_file['tmp_name'], 0);
         if(!$fp) {
             echo "<p>Impossible d'ouvrir le fichier dbf</p>";

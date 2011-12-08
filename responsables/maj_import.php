@@ -106,8 +106,8 @@ else{
 			echo "<td>".$lig->ele_id."</td>\n";
 			echo "<td>".$lig->elenoet."</td>\n";
 			echo "<td>".$lig->login."</td>\n";
-			echo "<td>".strtoupper($lig->nom)."</td>\n";
-			echo "<td>".ucfirst(strtolower($lig->prenom))."</td>\n";
+			echo "<td>".mb_strtoupper($lig->nom)."</td>\n";
+			echo "<td>".ucfirst(mb_strtolower($lig->prenom))."</td>\n";
 			echo "<td>\n";
 
 			$sql="SELECT DISTINCT c.classe FROM classes c, j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='$lig->login';";
@@ -166,8 +166,8 @@ else{
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
 			echo "<td>".$lig->pers_id."</td>\n";
-			echo "<td>".strtoupper($lig->nom)."</td>\n";
-			echo "<td>".ucfirst(strtolower($lig->prenom))."</td>\n";
+			echo "<td>".mb_strtoupper($lig->nom)."</td>\n";
+			echo "<td>".ucfirst(mb_strtolower($lig->prenom))."</td>\n";
 			echo "<td>\n";
 
 			$sql="SELECT e.login,e.nom,e.prenom FROM eleves e, responsables2 r WHERE e.ele_id=r.ele_id AND r.pers_id='$lig->pers_id';";
@@ -179,7 +179,7 @@ else{
 				$cpt_ele=0;
 				while($lig2=mysql_fetch_object($res_resp)){
 					if($cpt_ele>0){echo "<br />\n";}
-					echo ucfirst(strtolower($lig2->prenom))." ".strtoupper($lig2->nom);
+					echo ucfirst(mb_strtolower($lig2->prenom))." ".mb_strtoupper($lig2->nom);
 					$sql="SELECT DISTINCT c.classe FROM classes c, j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='$lig2->login';";
 					$res_clas=mysql_query($sql);
 					if(mysql_num_rows($res_clas)==0){

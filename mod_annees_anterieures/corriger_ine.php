@@ -477,7 +477,7 @@ else{
 	while($lig_ele=mysql_fetch_object($res1)){
 		echo "<tr style='text-align:center;' id='tr_$cpt'>\n";
 		echo "<td><input type='checkbox' name='suppr[]' id='suppr_$cpt' value='$lig_ele->INE' onchange=\"modif_une_coche('$cpt');\" /></td>\n";
-		echo "<td>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</td>\n";
+		echo "<td>".strtoupper($lig_ele->nom)." ".ucfirst(mb_strtolower($lig_ele->prenom))."</td>\n";
 		echo "<td>".formate_date($lig_ele->naissance)."</td>\n";
 		echo "<td>";
 		if(mb_substr($lig_ele->INE,0,6)=="LOGIN_") {echo "<span style='color:red;'>";}

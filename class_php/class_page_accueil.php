@@ -448,10 +448,22 @@ class class_page_accueil {
 			  "Bulletin : saisie des moyennes et des appréciations par matière",
 			  "Cet outil permet de saisir directement, sans passer par le carnet de notes, les moyennes et les appréciations du bulletin");
 
-	if($afficher_correction_validation=="y")
-	  $this->creeNouveauItem("/saisie/validation_corrections.php",
+	if($afficher_correction_validation=="y") {
+		$texte_item="Cet outil vous permet de valider les corrections d'appréciations proposées par des professeurs après la clôture d'une période.";
+		if($_SESSION['statut']=='scolarite') {
+			$sql="SELECT 1=1 FROM matieres_app_corrections map, j_scol_classes jsc, j_groupes_classes jgc where jsc.login='".$_SESSION['login']."' AND jsc.id_classe=jgc.id_classe AND jgc.id_groupe=map.id_groupe;";
+			$test_map=mysql_query($sql);
+			if(mysql_num_rows($test_map)>0) {
+				$texte_item.="<br /><span style='color:red;'>Une ou des propositions requièrent votre attention.</span>\n";
+			}
+		}
+		else {
+			$texte_item.="<br /><span style='color:red;'>Une ou des propositions requièrent votre attention.</span>\n";
+		}
+		$this->creeNouveauItem("/saisie/validation_corrections.php",
 			  "Correction des bulletins",
-			  "Cet outil vous permet de valider les corrections d'appréciations proposées par des professeurs après la clôture d'une période.<br /><span style='color:red;'>Une ou des propositions requièrent votre attention.</span>\n");
+			  $texte_item);
+	}
 
 	if ((($this->test_prof_suivi != "0") and (getSettingValue("GepiRubConseilProf")=='yes'))
 			or (($this->statutUtilisateur!='professeur') and (getSettingValue("GepiRubConseilScol")=='yes') )

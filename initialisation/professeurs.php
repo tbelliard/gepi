@@ -166,7 +166,7 @@ if (!isset($is_posted)) {
  // on efface la ligne "display_users" dans la table "setting" de façon à afficher tous les utilisateurs dans la page  /utilisateurs/index.php
     $req = mysql_query("DELETE from setting where NAME = 'display_users'");
 
-    if(strtoupper($dbf_file['name']) == "F_WIND.DBF") {
+    if(mb_strtoupper($dbf_file['name']) == "F_WIND.DBF") {
         $fp = @dbase_open($dbf_file['tmp_name'], 0);
         if(!$fp) {
             echo "<p>Impossible d'ouvrir le fichier dbf !</p>";
@@ -260,7 +260,7 @@ if (!isset($is_posted)) {
 
                     if ($_POST['login_gen_type'] == "name") {
                         $temp1 = $affiche[0];
-                        $temp1 = strtoupper($temp1);
+                        $temp1 = mb_strtoupper($temp1);
                         $temp1 = my_ereg_replace(" ","", $temp1);
                         $temp1 = my_ereg_replace("-","_", $temp1);
                         $temp1 = my_ereg_replace("'","", $temp1);
@@ -268,21 +268,21 @@ if (!isset($is_posted)) {
 
                     } elseif ($_POST['login_gen_type'] == "name8") {
                         $temp1 = $affiche[0];
-                        $temp1 = strtoupper($temp1);
+                        $temp1 = mb_strtoupper($temp1);
                         $temp1 = my_ereg_replace(" ","", $temp1);
                         $temp1 = my_ereg_replace("-","_", $temp1);
                         $temp1 = my_ereg_replace("'","", $temp1);
                         $temp1 = mb_substr($temp1,0,8);
                     } elseif ($_POST['login_gen_type'] == "fname8") {
                         $temp1 = $affiche[1]{0} . $affiche[0];
-                        $temp1 = strtoupper($temp1);
+                        $temp1 = mb_strtoupper($temp1);
                         $temp1 = my_ereg_replace(" ","", $temp1);
                         $temp1 = my_ereg_replace("-","_", $temp1);
                         $temp1 = my_ereg_replace("'","", $temp1);
                         $temp1 = mb_substr($temp1,0,8);
                     } elseif ($_POST['login_gen_type'] == "fname19") {
                         $temp1 = $affiche[1]{0} . $affiche[0];
-                        $temp1 = strtoupper($temp1);
+                        $temp1 = mb_strtoupper($temp1);
                         $temp1 = my_ereg_replace(" ","", $temp1);
                         $temp1 = my_ereg_replace("-","_", $temp1);
                         $temp1 = my_ereg_replace("'","", $temp1);
@@ -295,7 +295,7 @@ if (!isset($is_posted)) {
                         }
 
                         $temp1 = $firstname . "." . $affiche[0];
-                        $temp1 = strtoupper($temp1);
+                        $temp1 = mb_strtoupper($temp1);
 
                        $temp1 = my_ereg_replace(" ","", $temp1);
                         $temp1 = my_ereg_replace("-","_", $temp1);
@@ -309,14 +309,14 @@ if (!isset($is_posted)) {
                         }
 
                         $temp1 = $firstname . "." . $affiche[0];
-                        $temp1 = strtoupper($temp1);
+                        $temp1 = mb_strtoupper($temp1);
                         $temp1 = my_ereg_replace(" ","", $temp1);
                         $temp1 = my_ereg_replace("-","_", $temp1);
                         $temp1 = my_ereg_replace("'","", $temp1);
                         $temp1 = mb_substr($temp1,0,19);
                     } elseif ($_POST['login_gen_type'] == "namef8") {
                         $temp1 =  mb_substr($affiche[0],0,7) . $affiche[1]{0};
-                        $temp1 = strtoupper($temp1);
+                        $temp1 = mb_strtoupper($temp1);
                         $temp1 = my_ereg_replace(" ","", $temp1);
                         $temp1 = my_ereg_replace("-","_", $temp1);
                         $temp1 = my_ereg_replace("'","", $temp1);
@@ -338,7 +338,7 @@ if (!isset($is_posted)) {
                             $sn = ucfirst($nom);
                         }
                         $firstletter_nom = $nom1{0};
-                        $firstletter_nom = strtoupper($firstletter_nom);
+                        $firstletter_nom = mb_strtoupper($firstletter_nom);
                         $prenom = $affiche[1];
                         $prenom1 = $affiche[1]{0};
                         $temp1 = $prenom1 . $nom1;

@@ -485,7 +485,12 @@ else {
 			$res_note=mysql_query($sql);
 			if(mysql_num_rows($res_note)>0) {
 				$lig_note=mysql_fetch_object($res_note);
-				$note=$lig_note->note;
+				if($lig_note->statut=='') {
+					$note=$lig_note->note;
+				}
+				else {
+					$note=$lig_note->statut;
+				}
 			}
 
 			$alt=$alt*(-1);
@@ -515,6 +520,18 @@ else {
 		//echo "<input type='hidden' name='cpt' value='$cpt' />\n";
 		echo "<p><input type='submit' name='is_posted' value='Enregistrer' /></p>\n";
 		echo "</form>\n";
+
+		echo "<p><a href='javascript:tout_vider()'>Vider toutes les notes et appréciations de cet(te) élève</a>.</p>\n";
+
+		echo "<script type='text/javascript'>
+	function tout_vider() {
+		if(confirm('Etes-vous sûr de vouloir vider toutes les notes et appreciations ?')) {
+			for(i=0;i<=$num_id;i++) {
+				if(document.getElementById('n'+i)) {document.getElementById('n'+i).value='';}
+			}
+		}
+	}
+</script>\n";
 	}
 }
 require("../lib/footer.inc.php");

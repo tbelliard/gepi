@@ -1503,7 +1503,7 @@ else {
 								//echo "<span class='discipline'>";
 
 								if(!isset($tabmatieres[$j]["lig_speciale"])){
-									echo ucfirst(accent_min(strtolower($tabmatieres[$j][0])));
+									echo ucfirst(accent_min(mb_strtolower($tabmatieres[$j][0])));
 									//if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){echo ": ".$tabmatieres[$j][-5];}
 									if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){
 
@@ -1525,7 +1525,7 @@ else {
 								}
 								else{
 									// Lignes spéciales: LV2 ou DP6
-									echo ucfirst(accent_min(strtolower($tabmatieres[$j]["lig_speciale"])));
+									echo ucfirst(accent_min(mb_strtolower($tabmatieres[$j]["lig_speciale"])));
 								}
 								//echo "</span>\n";
 								echo "</p>\n";
@@ -1896,7 +1896,7 @@ else {
 								// Discipline
 								echo "<td style='border: 1px solid black; text-align:left;'>\n";
 								echo "<p class='discipline fb'>";
-								echo ucfirst(strtolower($tabmatieres[$j]["lig_speciale"]));
+								echo ucfirst(mb_strtolower($tabmatieres[$j]["lig_speciale"]));
 								echo "</p>\n";
 								echo "</td>\n";
 
@@ -2000,7 +2000,7 @@ else {
 
 									echo "<td style='border: 1px solid black; text-align:left;'>\n";
 									echo "<p class='discipline fb'>";
-									echo ucfirst(accent_min(strtolower($tabmatieres[$j][0])));
+									echo ucfirst(accent_min(mb_strtolower($tabmatieres[$j][0])));
 									echo "</p>";
 									echo "</td>\n";
 
@@ -2136,7 +2136,7 @@ else {
 
 									echo "<td style='border: 1px solid black; text-align:left;'>\n";
 									echo "<p class='discipline fb'>";
-									echo ucfirst(strtolower($tabmatieres[$j][0]));
+									echo ucfirst(mb_strtolower($tabmatieres[$j][0]));
 									echo "</p>";
 									echo "</td>\n";
 
@@ -2393,7 +2393,7 @@ else {
 								echo "<p class='discipline fb'>";
 								//echo "<span class='discipline'>";
 								if(!isset($tabmatieres[$j]["lig_speciale"])){
-									echo ucfirst(strtolower($tabmatieres[$j][0]));
+									echo ucfirst(mb_strtolower($tabmatieres[$j][0]));
 									//if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){echo ": ".$tabmatieres[$j][-5];}
 									if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){
 
@@ -2415,7 +2415,7 @@ else {
 								}
 								else{
 									// Lignes spéciales: LV2 ou DP6
-									echo ucfirst(strtolower($tabmatieres[$j]["lig_speciale"]));
+									echo ucfirst(mb_strtolower($tabmatieres[$j]["lig_speciale"]));
 								}
 								//echo "</span>\n";
 								echo "</p>\n";
@@ -2783,7 +2783,7 @@ else {
 								// Discipline
 								echo "<td style='border: 1px solid black; text-align:left;'>\n";
 								echo "<p class='discipline fb'>";
-								echo ucfirst(strtolower($tabmatieres[$j]["lig_speciale"]));
+								echo ucfirst(mb_strtolower($tabmatieres[$j]["lig_speciale"]));
 								echo "</p>\n";
 								echo "</td>\n";
 
@@ -2944,7 +2944,7 @@ else {
 					echo ">\n";
 					echo "<p class='discipline fb'>";
 					//echo "GRRRRRRRRR";
-					echo ucfirst(strtolower($tabmatieres[$j]["lig_speciale"]));
+					echo ucfirst(mb_strtolower($tabmatieres[$j]["lig_speciale"]));
 					echo "</p>\n";
 					echo "</td>\n";
 
@@ -3077,7 +3077,7 @@ else {
 								echo "<p class='discipline fb'>";
 								//echo "<span class='discipline'>";
 								if(!isset($tabmatieres[$j]["lig_speciale"])){
-									echo ucfirst(strtolower($tabmatieres[$j][0]));
+									echo ucfirst(mb_strtolower($tabmatieres[$j][0]));
 									//if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){echo ": ".$tabmatieres[$j][-5];}
 									if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){
 
@@ -3099,7 +3099,7 @@ else {
 								}
 								else{
 									// Lignes spéciales: LV2 ou DP6
-									echo ucfirst(strtolower($tabmatieres[$j]["lig_speciale"]));
+									echo ucfirst(mb_strtolower($tabmatieres[$j]["lig_speciale"]));
 								}
 								//echo "</span>\n";
 								echo "</p>\n";
@@ -3473,7 +3473,7 @@ else {
 								// Discipline
 								echo "<td style='border: 1px solid black; text-align:left;'>\n";
 								echo "<p class='discipline fb'>";
-								echo ucfirst(strtolower($tabmatieres[$j]["lig_speciale"]));
+								echo ucfirst(mb_strtolower($tabmatieres[$j]["lig_speciale"]));
 								echo "</p>\n";
 								echo "</td>\n";
 
@@ -3574,7 +3574,7 @@ else {
 
 									echo "<td style='border: 1px solid black; text-align:left;'>\n";
 									echo "<p class='discipline fb'>";
-									echo ucfirst(strtolower($tabmatieres[$j][0]));
+									echo ucfirst(mb_strtolower($tabmatieres[$j][0]));
 									echo "</p>";
 									echo "</td>\n";
 
@@ -3708,7 +3708,7 @@ else {
 
 									echo "<td style='border: 1px solid black; text-align:left;'>\n";
 									echo "<p class='discipline fb'>";
-									echo ucfirst(strtolower($tabmatieres[$j][0]));
+									echo ucfirst(mb_strtolower($tabmatieres[$j][0]));
 									echo "</p>";
 									echo "</td>\n";
 
@@ -3918,7 +3918,7 @@ else {
 								echo "<p class='discipline fb'>";
 								//echo "<span class='discipline'>";
 								if(!isset($tabmatieres[$j]["lig_speciale"])){
-									echo ucfirst(strtolower($tabmatieres[$j][0]));
+									echo ucfirst(mb_strtolower($tabmatieres[$j][0]));
 									//if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){echo ": ".$tabmatieres[$j][-5];}
 									if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){
 
@@ -3940,7 +3940,7 @@ else {
 								}
 								else{
 									// Lignes spéciales: LV2 ou DP6
-									echo ucfirst(strtolower($tabmatieres[$j]["lig_speciale"]));
+									echo ucfirst(mb_strtolower($tabmatieres[$j]["lig_speciale"]));
 								}
 								//echo "</span>\n";
 								echo "</p>\n";
@@ -4259,7 +4259,7 @@ else {
 
 									echo "<td style='border: 1px solid black; text-align:left;'>\n";
 									echo "<p class='discipline fb'>";
-									echo ucfirst(strtolower($tabmatieres[$j][0]));
+									echo ucfirst(mb_strtolower($tabmatieres[$j][0]));
 									echo "</p>";
 									echo "</td>\n";
 
@@ -4359,7 +4359,7 @@ else {
 
 									echo "<td style='border: 1px solid black; text-align:left;'>\n";
 									echo "<p class='discipline fb'>";
-									echo ucfirst(strtolower($tabmatieres[$j][0]));
+									echo ucfirst(mb_strtolower($tabmatieres[$j][0]));
 									echo "</p>";
 									echo "</td>\n";
 

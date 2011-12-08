@@ -229,16 +229,7 @@ if($gepi_prof_suivi==""){
 				$alt=$alt*(-1);
                 echo "<tr valign='top' class='lig$alt white_hover'><th>CPE:</th>\n";
                 echo "<td>";
-                /*
-				if($lig_cpe->email!=""){
-                    echo "<a href='mailto:$lig_cpe->email?".urlencode("subject=[GEPI] classe=".$classe['classe'])."'>$lig_cpe->nom ".ucfirst(strtolower($lig_cpe->prenom))."</a>";
-                    $tabmail[]=$lig_cpe->email;
-                }
-                else{
-				*/
-                    //echo strtoupper($lig_cpe->nom)." ".ucfirst(strtolower($lig_cpe->prenom));
 					echo affiche_utilisateur($lig_cpe->login,$id_classe);
-                //}
                 echo "</td></tr>\n";
             }
 			echo "</table>\n";
@@ -313,14 +304,7 @@ if($gepi_prof_suivi==""){
 		echo ":</th>\n";
 		echo "<td class='lig-1'>";
 		while($lig_prof=mysql_fetch_object($result_prof)){
-			/*
-			if($lig_prof->email!=""){
-				echo "<a href='mailto:$lig_prof->email?".urlencode("subject=[GEPI] classe=".$classe['classe'])."'>$lig_prof->nom ".ucfirst(strtolower($lig_prof->prenom))."</a>";
-				$tabmail[]=$lig_prof->email;
-			}
-			else{
-			*/
-				//echo strtoupper($lig_prof->nom)." ".ucfirst(strtolower($lig_prof->prenom));
+
 				echo affiche_utilisateur($lig_prof->login,$id_classe);
 			//}
 

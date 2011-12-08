@@ -333,7 +333,7 @@ if (isset($retour_cn)) {
 echo " | <a href='saisie_appreciations.php?id_groupe=" . $current_group["id"] . "&amp;periode_cn=$periode_cn' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisir les appréciations</a>";
 // enregistrement du chemin de retour pour la fonction imprimer
 $_SESSION['chemin_retour'] = $_SERVER['PHP_SELF']."?". $_SERVER['QUERY_STRING'];
-echo " | <a href='../prepa_conseil/index1.php?id_groupe=$id_groupe'>Imprimer</a>";
+echo " | <a href='../prepa_conseil/index1.php?id_groupe=$id_groupe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Imprimer</a>";
 
 //=========================
 // AJOUT: boireaus 20071108
@@ -635,10 +635,10 @@ echo add_token_field();
 	echo "<table border='1' cellspacing='2' cellpadding='1' class='boireaus' summary='Saisie'>\n";
 	//echo "<table border='1' cellspacing='2' cellpadding='1'>\n";
 	echo "<tr>\n";
-	echo "<td><b><a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_cn&amp;order_by=nom'>Nom Prénom</a></b></td>\n";
+	echo "<td><b><a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_cn&amp;order_by=nom' onclick=\"return confirm_abandon (this, change, '$themessage')\">Nom Prénom</a></b></td>\n";
 
 	if ($multiclasses) {
-		echo "<td><b><a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_cn&amp;order_by=classe'>Classe</a></b></td>";
+		echo "<td><b><a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_cn&amp;order_by=classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe</a></b></td>";
 	}
 	$i = 1;
 	while ($i < $nb_periode) {
@@ -664,7 +664,7 @@ echo add_token_field();
 		else{
 			echo "colspan=\"2\"><b><a href='saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$i";
 			if(isset($retour_cn)){echo "&amp;retour_cn=yes";}
-			echo "'>".ucfirst($nom_periode[$i])."</a></b>";
+			echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">".ucfirst($nom_periode[$i])."</a></b>";
 		}
 		/*
 		//echo "colspan=\"2\"><b>".ucfirst($nom_periode[$i])."</b></th>\n";
@@ -688,14 +688,20 @@ echo add_token_field();
 
 	$i = 1;
 	while ($i < $nb_periode) {
-		//if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
-		//if ($current_group["classe"]["ver_periode"]["all"][$i] >= 1) {
-		//if ($current_group["classe"]["ver_periode"]["all"][$i]!=0) {
-		//if ($current_group["classe"]["ver_periode"]["all"][$i] >= 2) {
 		if (($current_group["classe"]["ver_periode"]["all"][$i]>=2)||
 			(($current_group["classe"]["ver_periode"]["all"][$i]!=0)&&($_SESSION['statut']=='secours'))) {
 			if ($periode_cn == $i) {
-				echo "<td bgcolor=\"$couleur_moy_cn\" style='text-align:center;'>Carnet<br />de notes</td><td bgcolor=\"$couleur_fond\"  style='text-align:center;'>Bulletin</td>\n";
+				echo "<td bgcolor=\"$couleur_moy_cn\" style='text-align:center;'>Carnet<br />de notes";
+				if($_SESSION['statut']=='professeur') {
+					$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE id_groupe='$id_groupe' AND periode='$periode_cn';";
+					$res_cn=mysql_query($sql);
+					if(mysql_num_rows($res_cn)>0) {
+						$lig_cn=mysql_fetch_object($res_cn);
+						echo "<br /><a href='../cahier_notes/saisie_notes.php?id_conteneur=".$lig_cn->id_cahier_notes."&amp;recalculer=y".add_token_in_url()."' style='font-size:x-small' onclick=\"return confirm_abandon (this, change, '$themessage')\">Recalculer</a>";
+					}
+				}
+				echo "</td>\n";
+				echo "<td bgcolor=\"$couleur_fond\" style='text-align:center;'>Bulletin</td>\n";
 			} else {
 				//echo "<td>&nbsp;</td>\n";
 				echo "<td style='text-align:center;'>Carnet<br />de notes</td><td style='text-align:center;'>Bulletin</td>\n";
@@ -705,7 +711,6 @@ echo add_token_field();
 			if ($periode_cn == $i) {echo " bgcolor='$couleur_fond'";}
 			echo "><b>".ucfirst($gepiClosedPeriodLabel)."</b></td>\n";
 		}
-		//echo "</td>\n";
 		$i++;
 	}
 	?>
@@ -740,7 +745,6 @@ $eleve_login = null;
 $num_id = 10;
 $prev_classe = null;
 //=========================
-// AJOUT: boireaus 20071010
 // Compteur pour les élèves
 $i=0;
 //=========================
@@ -751,7 +755,6 @@ foreach ($liste_eleves as $eleve_login) {
 	$alt=$alt*(-1);
 
 	//==================
-	// AJOUT boireaus 20080523
 	$temoin_num_id="n";
 	//==================
 
@@ -796,24 +799,12 @@ foreach ($liste_eleves as $eleve_login) {
 					$moy = '&nbsp;';
 				}
 
-				//if ($current_group["classe"]["ver_periode"]["all"][$k] >= 1) {
-				//if ($current_group["classe"]["ver_periode"]["all"][$k]!=0) {
-				//if ($current_group["classe"]["ver_periode"]["all"][$k]>=2) {
 				if (($current_group["classe"]["ver_periode"]["all"][$k]>=2)||
 					(($current_group["classe"]["ver_periode"]["all"][$k]!=0)&&($_SESSION['statut']=='secours'))) {
 					// La période n'est pas complètement verrouillée pour tous.
 
 					if ($periode_cn == $k) {
 						// Affichage de la colonne du carnet de notes
-						/*
-						$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login' AND id_conteneur='$id_racine')");
-						$statut_moy = @mysql_result($moyenne_query, 0, "statut");
-						if ($statut_moy == 'y') {
-							$moy = @mysql_result($moyenne_query, 0, "note");
-						} else {
-							$moy = '&nbsp;';
-						}
-						*/
 						$mess[$k] = "<td bgcolor=\"$couleur_moy_cn\"><center>$moy</center></td>\n";
 						$temp = " bgcolor='$couleur_fond'";
 
@@ -867,15 +858,6 @@ foreach ($liste_eleves as $eleve_login) {
 
 				if ($periode_cn == $k) {
 					// Affichage de la colonne du carnet de notes
-					/*
-					$moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login' AND id_conteneur='$id_racine')");
-					$statut_moy = @mysql_result($moyenne_query, 0, "statut");
-					if ($statut_moy == 'y') {
-						$moy = @mysql_result($moyenne_query, 0, "note");
-					} else {
-						$moy = '&nbsp;';
-					}
-					*/
 					$mess[$k] = "<td bgcolor=\"$couleur_moy_cn\"><center>$moy</center></td>\n";
 					$temp = "bgcolor=$couleur_fond";
 				} else {
@@ -893,7 +875,6 @@ foreach ($liste_eleves as $eleve_login) {
 					//==================
 
 					// ========================
-					// MODIF: boireaus 20071010
 					$mess[$k].="<td id=\"td_".$k.$num_id."\" ".$temp."><center>\n";
 					$mess[$k].="<input type='hidden' name=\"log_eleve_".$k."[$i]\" value=\"$eleve_login\" />\n";
 
@@ -943,17 +924,7 @@ foreach ($liste_eleves as $eleve_login) {
 			// si l'élève n'est pas dans le groupe pour la période
 			//
 			$suit_option[$k] = 'no';
-			/*
-			if (($periode_cn == $k) and ($current_group["classe"]["ver_periode"]["all"][$k] >= 2)) {
-				$mess[$k] = "<td bgcolor=\"$couleur_moy_cn\"><center>-</center></td><td bgcolor=\"$couleur_fond\"><center>-</center></td>\n";
-			} else {
-			$mess[$k] = "<td><center>-</center></td>\n";
-			}
-			*/
 
-			//if ($current_group["classe"]["ver_periode"]["all"][$k] >= 1) {
-			//if ($current_group["classe"]["ver_periode"]["all"][$k]!=0) {
-			//if ($current_group["classe"]["ver_periode"]["all"][$k]>=2) {
 			if (($current_group["classe"]["ver_periode"]["all"][$k]>=2)||
 				(($current_group["classe"]["ver_periode"]["all"][$k]!=0)&&($_SESSION['statut']=='secours'))) {
 				if ($periode_cn == $k) {
@@ -985,7 +956,6 @@ foreach ($liste_eleves as $eleve_login) {
 	}
 	if ($display_eleve=='yes') {
 		//==================
-		// MODIF boireaus 20080523
 		if($temoin_num_id=='y') {
 			$num_id++;
 		}
@@ -1029,25 +999,12 @@ echo "Moyennes :</td>\n";
 $k='1';
 $temp = '';
 while ($k < $nb_periode) {
-	//if (($periode_cn == $k) and ($current_group["classe"]["ver_periode"]["all"][$k] >= 2)) {
-	//if ($current_group["classe"]["ver_periode"]["all"][$k] >= 1) {
-	//if ($current_group["classe"]["ver_periode"]["all"][$k]!=0) {
-	//if ($current_group["classe"]["ver_periode"]["all"][$k]>=2) {
 	if (($current_group["classe"]["ver_periode"]["all"][$k]>=2)||
 		(($current_group["classe"]["ver_periode"]["all"][$k]!=0)&&($_SESSION['statut']=='secours'))) {
 
 		$appel_cahier_notes_periode = mysql_query("SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe = '" . $current_group["id"] . "' and periode='$k')");
 		$id_racine_periode = @mysql_result($appel_cahier_notes_periode, 0, 'id_cahier_notes');
-		/*
-		$call_moy_moy = mysql_query("SELECT round(avg(n.note),1) moyenne FROM cn_notes_conteneurs n, j_eleves_groupes j WHERE
-		(
-		j.id_groupe='" . $current_group["id"] ."' AND
-		j.periode = '$periode_cn' AND
-		n.login = j.login AND
-		n.statut='y' AND
-		n.id_conteneur='$id_racine'
-		)");
-		*/
+
 		$call_moy_moy = mysql_query("SELECT round(avg(n.note),1) moyenne FROM cn_notes_conteneurs n, j_eleves_groupes j WHERE
 		(
 		j.id_groupe='" . $current_group["id"] ."' AND
@@ -1080,8 +1037,6 @@ while ($k < $nb_periode) {
 		}
 	}
 
-	//if (($is_posted=='bascule') and (($periode_cn == $k) and ($current_group["classe"]["ver_periode"]["all"][$k] >= 2))) {
-	//if (($is_posted=='bascule') and (($periode_cn == $k) and ($current_group["classe"]["ver_periode"]["all"][$k]!=0))) {
 	if (($is_posted=='bascule') and (($periode_cn == $k) and
 		(($current_group["classe"]["ver_periode"]["all"][$k]>=2)||(($current_group["classe"]["ver_periode"]["all"][$k]!=0)&&($_SESSION['statut']=='secours'))))) {
 		echo "<td><center><b>$affiche_moy</b></center></td>\n";
@@ -1143,8 +1098,6 @@ if ($is_posted == 'bascule') {
 <?php
 if (isset($retour_cn)) echo "<input type=\"hidden\" name=\"retour_cn\" value=\"".$retour_cn."\" />\n";
 
-//if ($current_group["classe"]["ver_periode"]["all"][$periode_cn]!=0) {
-//if ($current_group["classe"]["ver_periode"]["all"][$periode_cn]>=2) {
 if (($current_group["classe"]["ver_periode"]["all"][$periode_cn]>=2)||
 (($current_group["classe"]["ver_periode"]["all"][$periode_cn]!=0)&&($_SESSION['statut']=='secours'))
 ) {
@@ -1171,15 +1124,5 @@ if (($current_group["classe"]["ver_periode"]["all"][$periode_cn]>=2)||
 		document.getElementById('n310').focus();
 	}
 </script>
-
-<?php
-	/*
-	echo "<div style='position: fixed; top: 220px; right: 200px; text-align:center;'>\n";
-	javascript_tab_stat('tab_stat_',$nb_periode.$num_id);
-	echo "</div>\n";
-
-	//calcule_moy_mediane_quartiles($tmp_tab_test);
-	*/
-?>
 <p><br /></p>
 <?php require("../lib/footer.inc.php");?>

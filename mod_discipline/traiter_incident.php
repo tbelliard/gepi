@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -34,14 +34,12 @@ if ($resultat_session == 'c') {
 }
 
 
-// SQL : INSERT INTO droits VALUES ( '/mod_discipline/traiter_incident.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Traitement', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/traiter_incident.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Traitement', '');;";
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 	die();
 }
 
-if(strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+if(mb_strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
 	header("Location: ../accueil.php?msg=$mess");
@@ -510,6 +508,10 @@ elseif (($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre')) {
 	}
 }
 
+if((file_exists('mod_discipline_extraction_ooo.php'))&&(($_SESSION['statut']=='cpe')||($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite'))) {
+	echo " | <a href='mod_discipline_extraction_ooo.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Export ODT</a>\n";
+}
+
 if(!isset($id_incident)) {
 	$chaine_criteres="";
 	//$sql="SELECT * FROM s_incidents si, s_protagonistes sp ORDER BY date,heure,login;";
@@ -773,8 +775,7 @@ if(!isset($id_incident)) {
 			    $res1_declarant=mysql_query($sql_declarant);
 				if(mysql_num_rows($res1_declarant)>0) {
 					$lig1_declarant=mysql_fetch_object($res1_declarant);
-					$chaine=strtoupper($lig1_declarant->nom)." ".ucfirst(mb_substr($lig1_declarant->prenom,0,1));
-					//echo $lig_declarant->civilite." ".strtoupper($lig_declarant->nom)." ".ucfirst(substr($lig_declarant->prenom,0,1)).".";	
+					$chaine=mb_strtoupper($lig1_declarant->nom)." ".ucfirst(mb_substr($lig1_declarant->prenom,0,1));
 				}
 				else {
 					echo "ERREUR: Login $lig1_declarant->declarant inconnu";
@@ -1011,7 +1012,7 @@ if(!isset($id_incident)) {
 				$res_declarant=mysql_query($sql_declarant);
 				if(mysql_num_rows($res_declarant)>0) {
 					$lig_declarant=mysql_fetch_object($res_declarant);
-					echo $lig_declarant->civilite." ".strtoupper($lig_declarant->nom)." ".ucfirst(mb_substr($lig_declarant->prenom,0,1)).".";	
+					echo $lig_declarant->civilite." ".mb_strtoupper($lig_declarant->nom)." ".ucfirst(mb_substr($lig_declarant->prenom,0,1)).".";	
 				}
 				else {
 					echo "ERREUR: Login $lig->declarant inconnu";
@@ -1039,10 +1040,10 @@ if(!isset($id_incident)) {
 						$res3=mysql_query($sql);
 						if(mysql_num_rows($res3)>0) {
 							$lig3=mysql_fetch_object($res3);
-							echo ucfirst(strtolower($lig3->prenom))." ".strtoupper($lig3->nom);
+							echo ucfirst(mb_strtolower($lig3->prenom))." ".mb_strtoupper($lig3->nom);
 
 							if($liste_protagonistes!="") {$liste_protagonistes.=", ";}
-							$liste_protagonistes.=ucfirst(strtolower($lig3->prenom))." ".strtoupper($lig3->nom);
+							$liste_protagonistes.=ucfirst(mb_strtolower($lig3->prenom))." ".mb_strtoupper($lig3->nom);
 						}
 						else {
 							echo "ERREUR: Login $lig2->login inconnu";
@@ -1062,11 +1063,10 @@ if(!isset($id_incident)) {
 						$res3=mysql_query($sql);
 						if(mysql_num_rows($res3)>0) {
 							$lig3=mysql_fetch_object($res3);
-							//echo ucfirst(strtolower($lig3->prenom))." ".strtoupper($lig3->nom);
-							echo $lig3->civilite." ".strtoupper($lig3->nom)." ".ucfirst(mb_substr($lig3->prenom,0,1)).".";
+							echo $lig3->civilite." ".mb_strtoupper($lig3->nom)." ".ucfirst(mb_substr($lig3->prenom,0,1)).".";
 
 							if($liste_protagonistes!="") {$liste_protagonistes.=", ";}
-							$liste_protagonistes.=$lig3->civilite." ".strtoupper($lig3->nom)." ".ucfirst(mb_substr($lig3->prenom,0,1)).".";
+							$liste_protagonistes.=$lig3->civilite." ".mb_strtoupper($lig3->nom)." ".ucfirst(mb_substr($lig3->prenom,0,1)).".";
 						}
 						else {
 							echo "ERREUR: Login $lig2->login inconnu";

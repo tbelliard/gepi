@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -309,7 +309,7 @@ if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['c
 	// On va détailler ce qui serait supprimé en cas de confirmation
 	$tmp_group=get_group($_GET['id_groupe']);
 	echo "<div style='border: 2px solid red;'>\n";
-	echo "<p><b>ATTENTION&nbsp;:</b> Vous souhaitez supprimer l'enseignement suivant&nbsp;: ".$tmp_group['name']." (<i>".$tmp_group['description']."</i>) en ".$tmp_group['classlist_string']."<br />\n";
+	echo "<p><strong>ATTENTION&nbsp;:</strong> Vous souhaitez supprimer l'enseignement suivant&nbsp;: ".$tmp_group['name']." (<i>".$tmp_group['description']."</i>) en ".$tmp_group['classlist_string']."<br />\n";
 	echo "Voici quelques éléments sur l'enseignement&nbsp;:</p>\n";
 	$suppression_possible='y';
 
@@ -783,14 +783,14 @@ for($i=0;$i<10;$i++){
 
 		// Enseignement
 		echo "<td class='norme' style='text-align:left;'>";
-		echo "<b>";
+		echo "<strong>";
 		if ($total == "1") {
 			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=groupe'>";
 		} else {
 			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=regroupement'>";
 		}
-		echo htmlentities($group["description"]) . "</a></b>";
-		echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".htmlentities($group["description"])."\" />\n";
+		echo $group["description"] . "</a></strong>";
+		echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".$group["description"]."\" />\n";
 
 		$j= 1;
 		if ($total > 1) {
@@ -901,12 +901,12 @@ for($i=0;$i<10;$i++){
 		for($loop=0;$loop<count($tab_domaines);$loop++) {
 			if(!in_array($current_group["id"],$invisibilite_groupe[$tab_domaines[$loop]])) {
 				echo "<td>";
-				echo "<input type='checkbox' name='visibilite_groupe_".$tab_domaines[$loop]."[]' value='".$current_group["id"]."' checked />\n";
+				echo "<input type='checkbox' name='visibilite_groupe_".$tab_domaines[$loop]."[]' value='".$current_group["id"]."' checked title='Visibilité ".$tab_domaines[$loop]."' />\n";
 				echo "</td>\n";
 			}
 			else {
 				echo "<td style='background-color: grey;'>";
-				echo "<input type='checkbox' name='visibilite_groupe_".$tab_domaines[$loop]."[]' value='".$current_group["id"]."' />\n";
+				echo "<input type='checkbox' name='visibilite_groupe_".$tab_domaines[$loop]."[]' value='".$current_group["id"]."' title='Visibilité ".$tab_domaines[$loop]."' />\n";
 
 				$tab_visib_dom[$tab_domaines_sigle[$loop]][]=$cpt_grp;
 
@@ -1003,7 +1003,7 @@ for($i=0;$i<10;$i++){
 
 if(isset($temoin_anomalie_categorie)&&($temoin_anomalie_categorie=='y')) {
 	$titre="Anomalie d'association enseignement/catégorie";
-	$texte="<p>Cet enseignement est associé à une catégorie qui n'existe pas ou plus.<br />Veuillez contrôler les paramètres et cliquer sur <b>Enregistrer</b> pour corriger.";
+	$texte="<p>Cet enseignement est associé à une catégorie qui n'existe pas ou plus.<br />Veuillez contrôler les paramètres et cliquer sur <strong>Enregistrer</strong> pour corriger.";
 	$tabdiv_infobulle[]=creer_div_infobulle('association_anormale_enseignement_categorie',$titre,"",$texte,"",30,0,'y','y','n','n');
 }
 

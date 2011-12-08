@@ -198,7 +198,7 @@ if(($afficher_les_alertes_d_un_compte=="y")&&($user_login!='')) {
 			if($_SESSION['email']!='') {
 				$lien_mail.="&amp;bcc=".$_SESSION['email'];
 			}
-			$lien_mail.="&amp;body=Bonjour%20".$user['civilite']."%20".$user['nom']."%20".mb_substr(ucfirst($user['prenom']),0,1).".,%0A%0a"."%0A%0a"."%0A%0a"."%0A%0a"."Cordialement."."-- "."%0A%0a".$_SESSION['prenom']."%20".$_SESSION['nom']."\">";
+			$lien_mail.="&amp;body=Bonjour%20".$user['civilite']."%20".$user['nom']."%20".mb_substr(my_strtoupper($user['prenom']),0,1).".,%0A%0a"."%0A%0a"."%0A%0a"."%0A%0a"."Cordialement."."-- "."%0A%0a".$_SESSION['prenom']."%20".$_SESSION['nom']."\">";
 	
 			$lien_mail.=" <img src='../images/icons/mail.png' width='16' height='16' />";
 	

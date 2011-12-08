@@ -164,7 +164,7 @@ if (!isset($is_posted)) {
 	// on efface la ligne "display_users" dans la table "setting" de façon à afficher tous les utilisateurs dans la page  /utilisateurs/index.php
 	$req = mysql_query("DELETE from setting where NAME = 'display_users'");
 
-	if(strtoupper($dbf_file['name']) == "F_WIND.CSV") {
+	if(mb_strtoupper($dbf_file['name']) == "F_WIND.CSV") {
 		$fp=fopen($dbf_file['tmp_name'],"r");
 		if(!$fp) {
 		echo "<p>Impossible d'ouvrir le fichier CSV !</p>";

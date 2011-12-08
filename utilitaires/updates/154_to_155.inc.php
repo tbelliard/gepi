@@ -1090,7 +1090,9 @@ if ($test_tempo_utilisateurs!=-1) {
 		//$test = sql_query1("SELECT 1=1 FROM tempo_utilisateurs_resp;");
 		//if ($test != -1) {
 			$result .= "<strong>Migration des données de la table 'tempo_utilisateurs_resp' à la table 'tempo_utilisateurs' :</strong><br />";
-			$sql="INSERT INTO tempo_utilisateurs SELECT login, password, salt, email, pers_id, pers_id, statut, auth_mode, '0000-00-00', statut FROM tempo_utilisateurs_resp;";
+			//on vide tempo_utilisateurs
+			$test2 = mysql_query("TRUNCATE `tempo_utilisateurs`;");
+			$sql="INSERT INTO `tempo_utilisateurs` SELECT login, password, salt, email, pers_id, pers_id, statut, auth_mode, '0000-00-00', statut FROM `tempo_utilisateurs_resp` ";
 			$result_inter = traite_requete($sql);
 			if ($result_inter == '') {
 				$result .= msj_ok("SUCCES !");

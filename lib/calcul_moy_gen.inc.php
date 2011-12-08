@@ -31,6 +31,13 @@ $nb_chiffres_moy=1;
 $tab_login_indice = array();
 //===============
 
+$current_eleve_login = array();
+
+$moy_min_classe_grp = array();
+$current_classe_matiere_moyenne = array();
+$moy_max_classe_grp = array();
+$place_eleve_grp = array();
+
 $quartile1_classe_gen = 0;
 $quartile2_classe_gen = 0;
 $quartile3_classe_gen = 0;

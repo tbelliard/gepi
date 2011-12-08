@@ -95,7 +95,7 @@ function purge_dossier_photos($type_utilisateurs) {
 		while ($pt<mysql_num_rows($R_identifiants))
 			{
 			$identifiant=mysql_result($R_identifiants,$pt++);
-			if ($type_utilisateurs=="personnels") $identifiant=md5(strtolower($identifiant));
+			if ($type_utilisateurs=="personnels") $identifiant=md5(mb_strtolower($identifiant));
 			$tab_identifiants[]=$identifiant;
 			}
 		}
@@ -116,7 +116,7 @@ function purge_dossier_photos($type_utilisateurs) {
 				{
 				// dans tous les cas (élèves ou personnels) on cherchera parmi les fichiers login.jpg
 				$identifiant=mysql_result($R_inactifs,$pt,'login');
-				if ($type_utilisateurs=="personnels") $identifiant=md5(strtolower($identifiant));
+				if ($type_utilisateurs=="personnels") $identifiant=md5(mb_strtolower($identifiant));
 				$tab_identifiants_inactifs[]=$identifiant;
 				// dans le cas des élèves on cherchera également parmi les fichiers elenoet.jpg
 				if ($type_utilisateurs=="eleves")

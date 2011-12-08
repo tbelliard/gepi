@@ -198,7 +198,7 @@ $gepiSettings = array();
 $prefix_base = "";
 
 $type_etablissement = array();
-$type_etablissement["ecole"] = "Ecole";
+$type_etablissement["ecole"] = "École";
 $type_etablissement["college"] = "Collège";
 $type_etablissement["lycee"] = "Lycée";
 $type_etablissement["lprof"] = "Lyc. Prof.";

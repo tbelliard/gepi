@@ -859,7 +859,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 				echo "<p class='bulletin'>\n";
 				echo "<b><span class=\"releve_grand\">".$tab_rel['eleve'][$i]['nom']." ".$tab_rel['eleve'][$i]['prenom']."</span></b><br />";
 				echo "Né";
-				if (strtoupper($tab_rel['eleve'][$i]['sexe'])== "F") {echo "e";}
+				if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])== "F") {echo "e";}
 				echo "&nbsp;le&nbsp;".$tab_rel['eleve'][$i]['naissance'];
 				//Eric Ajout
 				echo "<br />";
@@ -868,14 +868,14 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 				if ($tab_rel['eleve'][$i]['regime'] == "int.") {echo "Interne";}
 				if ($tab_rel['eleve'][$i]['regime'] == "i-e"){
 					echo "Interne&nbsp;externé";
-					if (strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
+					if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
 				}
 				//Eric Ajout
 				if ($releve_mention_doublant == 'yes'){
 					if ($tab_rel['eleve'][$i]['doublant'] == 'R'){
 					echo "<br />";
 					echo "Redoublant";
-					if (strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
+					if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
 					}
 				}
 
@@ -892,19 +892,19 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 				echo "<p class='bulletin'>\n";
 				echo "<b><span class=\"releve_grand\">".$tab_rel['eleve'][$i]['nom']." ".$tab_rel['eleve'][$i]['prenom']."</span></b><br />";
 				echo "Né";
-				if (strtoupper($tab_rel['eleve'][$i]['sexe'])== "F") {echo "e";}
+				if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])== "F") {echo "e";}
 				echo "&nbsp;le&nbsp;".$tab_rel['eleve'][$i]['naissance'];
 				if ($tab_rel['eleve'][$i]['regime'] == "d/p") {echo ", Demi-pensionnaire";}
 				if ($tab_rel['eleve'][$i]['regime'] == "ext.") {echo ", Externe";}
 				if ($tab_rel['eleve'][$i]['regime'] == "int.") {echo ", Interne";}
 				if ($tab_rel['eleve'][$i]['regime'] == "i-e"){
 					echo ", Interne&nbsp;externé";
-					if (strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
+					if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
 				}
 				if ($releve_mention_doublant == 'yes'){
 					if ($tab_rel['eleve'][$i]['doublant'] == 'R'){
 						echo ", Redoublant";
-						if (strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
+						if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
 					}
 				}
 				if ($releve_mention_nom_court == 'yes') {
@@ -1001,7 +1001,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 				echo "<p class='bulletin'>\n";
 				echo "<b><span class=\"releve_grand\">".$tab_rel['eleve'][$i]['nom']." ".$tab_rel['eleve'][$i]['prenom']."</span></b><br />";
 				echo "Né";
-				if (strtoupper($tab_rel['eleve'][$i]['sexe'])== "F") {echo "e";}
+				if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])== "F") {echo "e";}
 				echo "&nbsp;le&nbsp;".$tab_rel['eleve'][$i]['naissance'];
 				//Eric Ajout
 				echo "<br />";
@@ -1010,14 +1010,14 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 				if ($tab_rel['eleve'][$i]['regime'] == "int.") {echo "Interne";}
 				if ($tab_rel['eleve'][$i]['regime'] == "i-e"){
 					echo "Interne&nbsp;externé";
-					if (strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
+					if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
 				}
 				//Eric Ajout
 				if ($releve_mention_doublant == 'yes'){
 					if ($tab_rel['eleve'][$i]['doublant'] == 'R'){
 					echo "<br />";
 					echo "Redoublant";
-					if (strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
+					if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
 					}
 				}
 
@@ -1035,7 +1035,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 				echo "<p class='bulletin'>\n";
 				echo "<b><span class=\"releve_grand\">".$tab_rel['eleve'][$i]['nom']." ".$tab_rel['eleve'][$i]['prenom']."</span></b><br />";
 				echo "Né";
-				if (strtoupper($tab_rel['eleve'][$i]['sexe'])== "F") {echo "e";}
+				if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])== "F") {echo "e";}
 				echo "&nbsp;le&nbsp;".$tab_rel['eleve'][$i]['naissance'];
 
 				if ($tab_rel['eleve'][$i]['regime'] == "d/p") {echo ", Demi-pensionnaire";}
@@ -1043,13 +1043,13 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 				if ($tab_rel['eleve'][$i]['regime'] == "int.") {echo ", Interne";}
 				if ($tab_rel['eleve'][$i]['regime'] == "i-e"){
 					echo ", Interne&nbsp;externé";
-					if (strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
+					if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
 				}
 				//Eric Ajout
 				if ($releve_mention_doublant == 'yes'){
 					if ($tab_rel['eleve'][$i]['doublant'] == 'R'){
 					echo ", Redoublant";
-					if (strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
+					if (mb_strtoupper($tab_rel['eleve'][$i]['sexe'])!= "F") {echo "e";}
 					}
 				}
 				if ($releve_mention_nom_court == 'yes') {

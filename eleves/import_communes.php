@@ -84,83 +84,16 @@ function info_debug($texte) {
 		fclose($fich_debug);
 	}
 }
-/*
-function maj_ini_prenom($prenom) {
-	$prenom2="";
-	$tab1=explode("-",$prenom);
-	for($i=0;$i<count($tab1);$i++) {
-		if($i>0) {
-			$prenom2.="-";
-		}
-		$tab2=explode(" ",$tab1[$i]);
-		for($j=0;$j<count($tab2);$j++) {
-			if($j>0) {
-				$prenom2.=" ";
-			}
-			$prenom2.=ucfirst(strtolower($tab2[$j]));
-		}
-	}
-	return $prenom2;
-}
-*/
 
-/*
-function get_commune($code_commune_insee,$mode) {
-	$retour="";
-
-	$sql="SELECT * FROM communes WHERE code_commune_insee='$code_commune_insee';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		$lig=mysql_fetch_object($res);
-		if($mode==0) {
-			$retour=$lig->commune;
-		}
-		else {
-			$retour=$lig->commune." (<i>".$lig->departement."</i>)";
-		}
-	}
-	return $retour;
-}
-*/
 
 // Etape...
 $step=isset($_POST['step']) ? $_POST['step'] : (isset($_GET['step']) ? $_GET['step'] : NULL);
 
 $parcours_diff=isset($_POST['parcours_diff']) ? $_POST['parcours_diff'] : NULL;
 
-//$tab_ele_id=isset($_POST['tab_ele_id']) ? $_POST['tab_ele_id'] : NULL;
-//$tab_ele_id_diff=isset($_POST['tab_ele_id_diff']) ? $_POST['tab_ele_id_diff'] : NULL;
 
 $nb_parcours=isset($_POST['nb_parcours']) ? $_POST['nb_parcours'] : NULL;
 
-/*
-$tab_pers_id=isset($_POST['tab_pers_id']) ? $_POST['tab_pers_id'] : NULL;
-$tab_pers_id_diff=isset($_POST['tab_pers_id_diff']) ? $_POST['tab_pers_id_diff'] : NULL;
-
-$total_pers_diff=isset($_POST['total_pers_diff']) ? $_POST['total_pers_diff'] : NULL;
-
-$valid_pers_id=isset($_POST['valid_pers_id']) ? $_POST['valid_pers_id'] : NULL;
-$liste_pers_id=isset($_POST['liste_pers_id']) ? $_POST['liste_pers_id'] : NULL;
-
-$tab_adr_id=isset($_POST['tab_adr_id']) ? $_POST['tab_adr_id'] : NULL;
-$tab_adr_id_diff=isset($_POST['tab_adr_id_diff']) ? $_POST['tab_adr_id_diff'] : NULL;
-*/
-
-/*
-$tab_resp_id=isset($_POST['tab_resp_id']) ? $_POST['tab_resp_id'] : NULL;
-$tab_resp_id_diff=isset($_POST['tab_resp_id_diff']) ? $_POST['tab_resp_id_diff'] : NULL;
-*/
-
-/*
-$tab_resp=isset($_POST['tab_resp']) ? $_POST['tab_resp'] : NULL;
-$tab_resp_diff=isset($_POST['tab_resp_diff']) ? $_POST['tab_resp_diff'] : NULL;
-
-$total_diff=isset($_POST['total_diff']) ? $_POST['total_diff'] : NULL;
-
-$liste_assoc=isset($_POST['liste_assoc']) ? $_POST['liste_assoc'] : NULL;
-
-$ne_pas_proposer_resp_sans_eleve=isset($_POST['ne_pas_proposer_resp_sans_eleve']) ? $_POST['ne_pas_proposer_resp_sans_eleve'] : (isset($_GET['ne_pas_proposer_resp_sans_eleve']) ? $_GET['ne_pas_proposer_resp_sans_eleve'] : (isset($_SESSION['ne_pas_proposer_resp_sans_eleve']) ? $_SESSION['ne_pas_proposer_resp_sans_eleve'] : "si"));
-*/
 
 $stop=isset($_POST['stop']) ? $_POST['stop'] : (isset($_GET['stop']) ? $_GET['stop'] :'n');
 

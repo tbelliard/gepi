@@ -403,7 +403,7 @@
 				//$pdf->SetFont('DejaVu');
 				$pdf->SetFont('DejaVu','',$fs_titre);
 				$pdf->SetXY($marge,$marge);
-				$texte="NOMS et PRENOMS : ".strtoupper($lig1->nom)." ".ucfirst(strtolower($lig1->prenom));
+				$texte="NOMS et PRENOMS : ".mb_strtoupper($lig1->nom)." ".ucfirst(mb_strtolower($lig1->prenom));
 				$pdf->Cell($pdf->GetStringWidth($texte),$pdf->FontSize*$sc_interligne, $texte,0,0,'L');
 
 				$texte1="FICHE SCOLAIRE BREVET - ";
@@ -634,7 +634,7 @@
 							$pdf->SetFont('DejaVu','B',$fs_txt);
 
 							// Colonne Disciplines
-							$texte=ucfirst(accent_min(strtolower($tabmatieres[$j][0])));
+							$texte=ucfirst(accent_min(mb_strtolower($tabmatieres[$j][0])));
 	
 							//if($tabmatieres[$j][0]=="OPTION FACULTATIVE (1)"){
 							if($tabmatieres[$j][0]=="OPTION FACULTATIVE") {

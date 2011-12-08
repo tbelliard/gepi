@@ -428,7 +428,7 @@ CREATE TABLE mef
 	libelle_long VARCHAR(300)  NOT NULL COMMENT 'libelle de la formation',
 	libelle_edition VARCHAR(300)  NOT NULL COMMENT 'libelle de la formation pour presentation',
 	PRIMARY KEY (id)
-) ENGINE=MyISAM COMMENT='Module Ã©lÃ©mentaire de formation';
+) ENGINE=MyISAM COMMENT='Module élémentaire de formation';
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {

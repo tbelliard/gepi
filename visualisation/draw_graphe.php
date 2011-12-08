@@ -2,6 +2,9 @@
 	// On précise de ne pas traiter les données avec la fonction anti_inject
 	$traite_anti_inject = 'no';
 
+	//$rapport_imageString_imagettftext=4;
+	$rapport_imageString_imagettftext=2;
+
 	// Initialisations files
 	require_once("../lib/initialisations.inc.php");
 	//send_file_download_headers("Content-type:image/png", "image.png", "inline");
@@ -35,17 +38,6 @@
 			fclose($fich);
 		}
 	}
-
-	/*
-	// Fonction déplacée vers /lib/share.inc.php avec ajout du remplacement des espaces et apostrophes par des tirets '_'
-	function remplace_accents($chaine){
-		//$retour=strtr(my_ereg_replace("¼","OE",my_ereg_replace("½","oe",$chaine)),"ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü","AAAEEEEIIOOUUUCcaaaeeeeiioouuu");
-		//$retour=strtr(my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe","$chaine"))))," 'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸","__AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
-		$retour=strtr(my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe","$chaine")))),"ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸","AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
-		return $retour;
-	}
-	*/
-
 
 	//============================================
 	writinfo('/tmp/infos_graphe.txt','w+',"Avant la récupération des moyennes.\n");
@@ -104,6 +96,8 @@
 	if((mb_strlen(preg_replace("/[0-9]/","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")){
 		$taille_police=3;
 	}
+
+	writinfo('/tmp/infos_graphe.txt','a+',"\n\$taille_police=$taille_police<br />\n");
 
 	//$epaisseur_traits=2;
 	$epaisseur_traits=isset($_GET['epaisseur_traits']) ? $_GET['epaisseur_traits'] : '2';
@@ -494,7 +488,7 @@
 		//$yg=round($hauteurMoy+$hauteur-$i*($hauteur/(20/$pas)));
 		$yg=round($hauteurMoy+$hauteur-$i*($hauteur/20));
 		imageLine($img,$x1,$yg,$x2,$yg,$axes);
-		imagettftext($img, $taille_police*4, 0, $x1-20, $yg-10, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $i);
+		imagettftext($img, $taille_police*$rapport_imageString_imagettftext, 0, $x1-20, $yg-10, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $i);
 		
 
 		//imagedashedline($img,$largeurGrad,$yg,$largeur+$largeurGrad,$yg,$axes);
@@ -592,7 +586,7 @@
 		writinfo('/tmp/infos_graphe.txt','a+',"\$matiere_tronquee=$matiere_tronquee\n");
 
 		$largeur_texte = mb_strlen($matiere_tronquee) * ImageFontWidth($taille_police);
-		imagettftext($img, $taille_police*4, 0, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp+10, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $matiere_tronquee);
+		imagettftext($img, $taille_police*$rapport_imageString_imagettftext, 0, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp+10, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $matiere_tronquee);
 
 		writinfo('/tmp/infos_graphe.txt','a+',"\$taille_police=$taille_police\n");
 		writinfo('/tmp/infos_graphe.txt','a+',"\$largeur_texte=$largeur_texte\n");
@@ -602,20 +596,20 @@
 			$largeur_texte = mb_strlen(nf($moyenne[$k][$i])) * ImageFontWidth($taille_police);
 
 			$tmp=$x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
-			writinfo('/tmp/infos_graphe.txt','a+',"imagettftext($img, ".($taille_police*4).", 0, ".($x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2)).", ".($ytmp+10).", $couleureleve[$k], ".dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf, ".nf($moyenne[$k][$i]).")\n");
-            imagettftext($img, $taille_police*4, 0, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp+10, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", nf($moyenne[$k][$i]));
+			writinfo('/tmp/infos_graphe.txt','a+',"imagettftext($img, ".($taille_police*$rapport_imageString_imagettftext).", 0, ".($x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2)).", ".($ytmp+10).", $couleureleve[$k], ".dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf, ".nf($moyenne[$k][$i]).")\n");
+            imagettftext($img, $taille_police*$rapport_imageString_imagettftext, 0, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp+10, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", nf($moyenne[$k][$i]));
 		}
 		//===========================================================================
 
 
 		//===========================================================================
 		if($temoin_image_escalier=="oui"){
-            imagettftext($img, $taille_police*4, -45, $x1-15, $hauteur+$hauteurMoy+5+10, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $matiere_nom_long[$i]);
+            imagettftext($img, $taille_police*$rapport_imageString_imagettftext, -45, $x1-15, $hauteur+$hauteurMoy+5+10, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $matiere_nom_long[$i]);
 		}
 		else{
 			//Affichage des matières dans la partie basse du graphique:
 			$largeur_texte = mb_strlen($matiere_tronquee) * ImageFontWidth($taille_police);
-            imagettftext($img, $taille_police*4, 0, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $hauteur+$hauteurMoy+5+10, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $matiere_tronquee);
+            imagettftext($img, $taille_police*$rapport_imageString_imagettftext, 0, $x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $hauteur+$hauteurMoy+5+10, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $matiere_tronquee);
 		}
 	}
 
@@ -624,7 +618,7 @@
 		$ytmp=20;
 
 		$largeur_texte = mb_strlen("M.GEN") * ImageFontWidth($taille_police);
-        imagettftext($img, $taille_police*4, 0, $x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp+10, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", "M.GEN");
+        imagettftext($img, $taille_police*$rapport_imageString_imagettftext, 0, $x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp+10, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", "M.GEN");
 
 		$total_tmp=0;
 		$cpt_tmp=0;
@@ -632,7 +626,7 @@
 		for($k=1;$k<=$nb_series;$k++){
 			$ytmp=$ytmp+15;
 			$largeur_texte = mb_strlen(nf($mgen[$k])) * ImageFontWidth($taille_police);
-            imagettftext($img, $taille_police*4, 0, $x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp+10, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $mgen[$k]);
+            imagettftext($img, $taille_police*$rapport_imageString_imagettftext, 0, $x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp+10, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $mgen[$k]);
 
 			if($mgen[$k]!="-"){
 				$total_tmp=$total_tmp+$mgen[$k];
@@ -650,7 +644,7 @@
 
 			$ytmp=$ytmp+15;
 			$largeur_texte = mb_strlen(nf($mgen_annuelle)) * ImageFontWidth($taille_police);
-            imagettftext($img, $taille_police*4, 0, $x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp+10, $couleureleve[$nb_series_bis], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $mgen_annuelle);
+            imagettftext($img, $taille_police*$rapport_imageString_imagettftext, 0, $x1+round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2), $ytmp+10, $couleureleve[$nb_series_bis], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $mgen_annuelle);
 		}
 	}
 
@@ -691,7 +685,7 @@
 	$xtmp=0;
 	for($k=1;$k<=$nb_series;$k++){
 		$xtmp=$xtmp+$espace;
-        imagettftext($img, $taille_police*4, 0, $xtmp, 15, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", strtr($chaine[$k],"_"," "));
+        imagettftext($img, $taille_police*$rapport_imageString_imagettftext, 0, $xtmp, 15, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", strtr($chaine[$k],"_"," "));
 		$xtmp=$xtmp+$largeur_chaine[$k];
 	}
 	//=======================================================================

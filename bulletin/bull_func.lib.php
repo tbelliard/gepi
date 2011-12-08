@@ -453,9 +453,10 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 			//-------------------------------
 
 			echo "\n<!-- Début du cadre entête -->\n";
-			echo "<div";
-			if($addressblock_debug=="y"){echo " style='border:1px solid red;'";}
-			echo ">\n";
+			echo "<div style='";
+			if($addressblock_debug=="y"){echo "border:1px solid red;";}
+			else {echo "border:1px dashed white;";}
+			echo "'>\n";
 
 			// Pour éviter que le cadre Adresse responsable ne vienne remonter sur la page précédente:
 			echo "<div style='clear: both; font-size: xx-small;'>&nbsp;</div>\n";
@@ -542,7 +543,7 @@ width:".$largeur1."%;\n";
 				echo "<p class='bulletin'>\n";
 				echo "<b><span class=\"bgrand\">".$tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']."</span></b><br />";
 				echo "Né";
-				if (strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
+				if (mb_strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
 				echo "&nbsp;le&nbsp;".$tab_bull['eleve'][$i]['naissance'];
 				//Eric Ajout
 				echo "<br />";
@@ -551,14 +552,14 @@ width:".$largeur1."%;\n";
 				if ($tab_bull['eleve'][$i]['regime'] == "int.") {echo "Interne";}
 				if ($tab_bull['eleve'][$i]['regime'] == "i-e"){
 					echo "Interne&nbsp;externé";
-					if (strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
+					if (mb_strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
 				}
 				//Eric Ajout
 				if ($bull_mention_doublant == 'yes'){
 					if ($tab_bull['eleve'][$i]['doublant'] == 'R'){
 					echo "<br />";
 					echo "Redoublant";
-					if (strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
+					if (mb_strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
 					}
 				}
 
@@ -575,19 +576,19 @@ width:".$largeur1."%;\n";
 				echo "<p class='bulletin'>\n";
 				echo "<b><span class=\"bgrand\">".$tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']."</span></b><br />";
 				echo "Né";
-				if (strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
+				if (mb_strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
 				echo "&nbsp;le&nbsp;".$tab_bull['eleve'][$i]['naissance'];
 				if ($tab_bull['eleve'][$i]['regime'] == "d/p") {echo ", Demi-pensionnaire";}
 				if ($tab_bull['eleve'][$i]['regime'] == "ext.") {echo ", Externe";}
 				if ($tab_bull['eleve'][$i]['regime'] == "int.") {echo ", Interne";}
 				if ($tab_bull['eleve'][$i]['regime'] == "i-e"){
 					echo ", Interne&nbsp;externé";
-					if (strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
+					if (mb_strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
 				}
 				if ($bull_mention_doublant == 'yes'){
 					if ($tab_bull['eleve'][$i]['doublant'] == 'R'){
 						echo ", Redoublant";
-						if (strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
+						if (mb_strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
 					}
 				}
 				if ($bull_mention_nom_court == 'yes') {
@@ -678,7 +679,7 @@ width:".$largeur1."%;\n";
 				echo "<p class='bulletin'>\n";
 				echo "<b><span class=\"bgrand\">".$tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']."</span></b><br />";
 				echo "Né";
-				if (strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
+				if (mb_strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
 				echo "&nbsp;le&nbsp;".$tab_bull['eleve'][$i]['naissance'];
 				//Eric Ajout
 				echo "<br />";
@@ -687,14 +688,14 @@ width:".$largeur1."%;\n";
 				if ($tab_bull['eleve'][$i]['regime'] == "int.") {echo "Interne";}
 				if ($tab_bull['eleve'][$i]['regime'] == "i-e"){
 					echo "Interne&nbsp;externé";
-					if (strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
+					if (mb_strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
 				}
 				//Eric Ajout
 				if ($bull_mention_doublant == 'yes'){
 					if ($tab_bull['eleve'][$i]['doublant'] == 'R'){
 					echo "<br />";
 					echo "Redoublant";
-					if (strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
+					if (mb_strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
 					}
 				}
 
@@ -712,7 +713,7 @@ width:".$largeur1."%;\n";
 				echo "<p class='bulletin'>\n";
 				echo "<b><span class=\"bgrand\">".$tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']."</span></b><br />";
 				echo "Né";
-				if (strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
+				if (mb_strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
 				echo "&nbsp;le&nbsp;".$tab_bull['eleve'][$i]['naissance'];
 
 				if ($tab_bull['eleve'][$i]['regime'] == "d/p") {echo ", Demi-pensionnaire";}
@@ -720,13 +721,13 @@ width:".$largeur1."%;\n";
 				elseif ($tab_bull['eleve'][$i]['regime'] == "int.") {echo ", Interne";}
 				elseif ($tab_bull['eleve'][$i]['regime'] == "i-e"){
 					echo ", Interne&nbsp;externé";
-					if (strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
+					if (mb_strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
 				}
 				//Eric Ajout
 				if ($bull_mention_doublant == 'yes'){
 					if ($tab_bull['eleve'][$i]['doublant'] == 'R'){
 					echo ", Redoublant";
-					if (strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
+					if (mb_strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
 					}
 				}
 				if ($bull_mention_nom_court == 'yes') {
@@ -1963,20 +1964,24 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$pdf->SetX($X_eleve_2);
 				$hauteur_caractere_etaborigine = '10';
 				$pdf->SetFont('DejaVu','',$hauteur_caractere_etaborigine);
-				$val = $pdf->GetStringWidth('Etab. Origine : '.$tab_bull['eleve'][$i]['etab_niveau']." ".$tab_bull['eleve'][$i]['etab_nom']." (".$tab_bull['eleve'][$i]['etab_ville'].")");
+
+				$chaine_etab_origine='Etab. Origine : '.$tab_bull['eleve'][$i]['etab_niveau_nom']." ".$tab_bull['eleve'][$i]['etab_nom']." (".$tab_bull['eleve'][$i]['etab_ville'].")";
+				//$chaine_etab_origine='Etab. Origine : '.$tab_bull['eleve'][$i]['etab_niveau_nom']." ".$tab_bull['eleve'][$i]['etab_type'].." ".$tab_bull['eleve'][$i]['etab_nom']." (".$tab_bull['eleve'][$i]['etab_ville'].")";
+				$val = $pdf->GetStringWidth($chaine_etab_origine);
+
 				$taille_texte = $longeur_cadre_eleve-3;
 				$grandeur_texte='test';
 				while($grandeur_texte!='ok') {
 					if($taille_texte<$val) {
 						$hauteur_caractere_etaborigine = $hauteur_caractere_etaborigine-0.3;
 						$pdf->SetFont('DejaVu','',$hauteur_caractere_etaborigine);
-						$val = $pdf->GetStringWidth('Etab. Origine : '.$tab_bull['eleve'][$i]['etab_niveau']." ".$tab_bull['eleve'][$i]['etab_nom']." (".$tab_bull['eleve'][$i]['etab_ville'].")");
+						$val = $pdf->GetStringWidth($chaine_etab_origine);
 					} else {
 						$grandeur_texte='ok';
 					}
 				}
 				$grandeur_texte='test';
-				$pdf->Cell(90,4, ('Etab. Origine : '.$tab_bull['eleve'][$i]['etab_niveau']." ".$tab_bull['eleve'][$i]['etab_nom']." (".$tab_bull['eleve'][$i]['etab_ville'].")"),0,2);
+				$pdf->Cell(90,4, $chaine_etab_origine,0,2);
 				$pdf->SetFont('DejaVu','',10);
 			}
 		} // fin du bloc affichage information sur l'élèves

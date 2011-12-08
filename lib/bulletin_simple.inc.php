@@ -517,11 +517,6 @@ if ($on_continue == 'yes') {
 		while ($nb < $periode2+1) {
 			// Test supplémentaire pour savoir si l'élève appartient à la classe pour la période considérée
 			$test_eleve_app = sql_query1("select count(login) from j_eleves_classes where login='".$current_eleve_login."' and id_classe='".$id_classe."' and periode='".$nb."'");
-			/*
-			if (((in_array(strtolower($current_eleve_login), $current_group["eleves"][$nb]["list"])) or
-			(in_array(strtoupper($current_eleve_login), $current_group["eleves"][$nb]["list"]))) and $test_eleve_app !=0)
-			{
-			*/
 			if(
 				(
 					(in_array($current_eleve_login, $current_group["eleves"][$nb]["list"])) or
@@ -531,9 +526,6 @@ if ($on_continue == 'yes') {
 				($test_eleve_app!=0)
 			) {
 				$inser_ligne='yes';
-				/*
-				$current_eleve_note_query = mysql_query("SELECT * FROM matieres_notes mn, j_eleves_classes jec WHERE (mn.login='$current_eleve_login' AND mn.periode='$nb' AND mn.id_groupe='".$current_group["id"]."' and jec.periode='$nb' and jec.login='$current_eleve_login' and jec.id_classe='$id_classe')");
-				*/
 				$current_eleve_note[$nb]=$tab_moy['periodes'][$nb]['current_eleve_note'][$j][$tab_login_indice[$nb]];
 				$current_eleve_statut[$nb]=$tab_moy['periodes'][$nb]['current_eleve_statut'][$j][$tab_login_indice[$nb]];
 
@@ -1240,16 +1232,25 @@ $current_group["classe"]["ver_periode"][$id_classe][$nb]
 
 		// Ajouter par la suite une option pour faire apparaître les mentions même si c'est "-"
 		//if(($current_eleve_mention[$nb]=="F")||($current_eleve_mention[$nb]=="M")||($current_eleve_mention[$nb]=="E")) {
-		if((!isset($tableau_des_mentions_sur_le_bulletin))||(!is_array($tableau_des_mentions_sur_le_bulletin))||(count($tableau_des_mentions_sur_le_bulletin)==0)) {
-			$tableau_des_mentions_sur_le_bulletin=get_mentions();
+		$afficher_les_mentions="y";
+		if (($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+			if($tab_acces_app[$nb]!="y") {
+				$afficher_les_mentions="n";
+			}
 		}
 
-		if(isset($tableau_des_mentions_sur_le_bulletin[$current_eleve_mention[$nb]])) {
-			echo "<br />\n";
-			echo "<br />\n";
-			echo "<b>".$gepi_denom_mention." : </b>";
-			echo $tableau_des_mentions_sur_le_bulletin[$current_eleve_mention[$nb]];
-			//else {echo "-";}
+		if($afficher_les_mentions=="y") {
+			if((!isset($tableau_des_mentions_sur_le_bulletin))||(!is_array($tableau_des_mentions_sur_le_bulletin))||(count($tableau_des_mentions_sur_le_bulletin)==0)) {
+				$tableau_des_mentions_sur_le_bulletin=get_mentions();
+			}
+	
+			if(isset($tableau_des_mentions_sur_le_bulletin[$current_eleve_mention[$nb]])) {
+				echo "<br />\n";
+				echo "<br />\n";
+				echo "<b>".$gepi_denom_mention." : </b>";
+				echo $tableau_des_mentions_sur_le_bulletin[$current_eleve_mention[$nb]];
+				//else {echo "-";}
+			}
 		}
 
 		echo "</td>\n";

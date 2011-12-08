@@ -63,7 +63,7 @@ $doc_masque = isset($_POST["doc_masque"]) ? $_POST["doc_masque"] :(isset($_GET["
 $doc_name_modif = isset($_POST["doc_name_modif"]) ? $_POST["doc_name_modif"] :(isset($_GET["doc_name_modif"]) ? $_GET["doc_name_modif"] :NULL);
 $id_document = isset($_POST["id_document"]) ? $_POST["id_document"] :(isset($_GET["id_document"]) ? $_GET["id_document"] :NULL);
 
-// uid de pour ne pas refaire renvoyer plusieurs fois le mÃªme formulaire
+// uid de pour ne pas refaire renvoyer plusieurs fois le même formulaire
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
 $uid_prime = isset($_SESSION['uid_prime']) ? $_SESSION['uid_prime'] : 1;
 // Pour tester la mise en place d'une copie de sauvegarde, décommenter la ligne ci-dessous:

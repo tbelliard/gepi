@@ -611,7 +611,7 @@ function generate_unique_login_old($_nom, $_prenom, $_mode, $_casse='') {
 	}
 
 	if($_casse=='maj') {
-		$temp1=strtoupper($temp1);
+		$temp1=my_strtoupper($temp1);
 	}
 	elseif($_casse=='min') {
 		$temp1=my_strtolower($temp1);
@@ -1930,10 +1930,10 @@ function get_enfants_from_resp_login($resp_login,$mode='simple'){
 					$tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
 				}
 
-				$tab_ele[]=ucfirst(strtolower($lig_tmp->prenom))." ".strtoupper($lig_tmp->nom).$tmp_chaine_classes;
+				$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$tmp_chaine_classes;
 			}
 			else {
-				$tab_ele[]=ucfirst(strtolower($lig_tmp->prenom))." ".strtoupper($lig_tmp->nom);
+				$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom);
 			}
 		}
 	}
@@ -1971,10 +1971,10 @@ function get_enfants_from_pers_id($pers_id,$mode='simple'){
 					$tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
 				}
 
-				$tab_ele[]=ucfirst(strtolower($lig_tmp->prenom))." ".strtoupper($lig_tmp->nom).$tmp_chaine_classes;
+				$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$tmp_chaine_classes;
 			}
 			else {
-				$tab_ele[]=ucfirst(strtolower($lig_tmp->prenom))." ".strtoupper($lig_tmp->nom);
+				$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom);
 			}
 		}
 	}
@@ -2772,7 +2772,7 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 	// Cas des non-élèves
 	else {
 
-		$_elenoet_ou_login = md5(strtolower($_elenoet_ou_login));
+		$_elenoet_ou_login = md5(mb_strtolower($_elenoet_ou_login));
 			if(file_exists($chemin."../photos/".$repertoire2."personnels/$_elenoet_ou_login.jpg")){
 				$photo=$chemin."../photos/".$repertoire2."personnels/$_elenoet_ou_login.jpg";
 			} else {
@@ -2914,7 +2914,7 @@ function mail_connexion() {
 			$message = "** Mail connexion Gepi **\n\n";
 			$message .= "\n";
 			$message .= "Vous (*) vous êtes connecté à GEPI :\n\n";
-			$message .= "Identité                : ".strtoupper($lig_user->nom)." ".ucfirst(strtolower($lig_user->prenom))."\n";
+			$message .= "Identité                : ".mb_strtoupper($lig_user->nom)." ".ucfirst(mb_strtolower($lig_user->prenom))."\n";
 			$message .= "Login                   : ".$user_login."\n";
 			$message .= "Date                    : ".$date."\n";
 			$message .= "Origine de la connexion : ".$adresse_ip."\n";
@@ -2986,7 +2986,7 @@ function mail_alerte($sujet,$texte,$informer_admin='n') {
 		$message=$texte;
 		$message .= "\n";
 		$message .= "Vous (*) vous êtes connecté à GEPI :\n\n";
-		$message .= "Identité                : ".strtoupper($lig_user->nom)." ".ucfirst(strtolower($lig_user->prenom))."\n";
+		$message .= "Identité                : ".mb_strtoupper($lig_user->nom)." ".ucfirst(mb_strtolower($lig_user->prenom))."\n";
 		$message .= "Login                   : ".$user_login."\n";
 		$message .= "Date                    : ".$date."\n";
 		$message .= "Origine de la connexion : ".$adresse_ip."\n";
@@ -3230,10 +3230,10 @@ function casse_mot($mot,$mode='maj') {
     			for($j=0;$j<count($tab2);$j++) {
     				if($j>0) {$chaine.="-";}
     				if(mb_strlen($tab2[$j])>1) {
-    					$chaine.=strtoupper(mb_substr($tab2[$j],0,1)).strtolower(mb_substr($tab2[$j],1));
+    					$chaine.=mb_strtoupper(mb_substr($tab2[$j],0,1)).strtolower(mb_substr($tab2[$j],1));
     				}
     				else {
-    					$chaine.=strtoupper($tab2[$j]);
+    					$chaine.=mb_strtoupper($tab2[$j]);
     				}
     			}
     		}
@@ -3361,9 +3361,9 @@ function get_commune($code_commune_insee,$mode){
  * @param string $mode si 'prenom' inverse le nom et le prénom
  * @return string civilite nom prénom de l'utilisateur
  */
-function civ_nom_prenom($login,$mode='prenom') {
+function civ_nom_prenom($login,$mode='prenom',$avec_statut="n") {
 	$retour="";
-	$sql="SELECT nom,prenom,civilite FROM utilisateurs WHERE login='$login';";
+	$sql="SELECT nom,prenom,civilite,statut FROM utilisateurs WHERE login='$login';";
 	$res_user=mysql_query($sql);
 	if (mysql_num_rows($res_user)>0) {
 		$lig_user=mysql_fetch_object($res_user);
@@ -3371,11 +3371,26 @@ function civ_nom_prenom($login,$mode='prenom') {
 			$retour.=$lig_user->civilite." ";
 		}
 		if($mode=='prenom') {
-			$retour.=strtoupper($lig_user->nom)." ".ucfirst(strtolower($lig_user->prenom));
+			$retour.=my_strtoupper($lig_user->nom)." ".casse_mot($lig_user->prenom,'majf2');
 		}
 		else {
 			// Initiale
-			$retour.=strtoupper($lig_user->nom)." ".strtoupper(mb_substr($lig_user->prenom,0,1));
+			$retour.=my_strtoupper($lig_user->nom)." ".my_strtoupper(mb_substr($lig_user->prenom,0,1));
+		}
+		if($avec_statut=='y') {
+			if($lig_user->statut=='autre') {
+				$sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du
+												WHERE du.login_user = '".$login."'
+												AND du.id_statut = ds.id;";
+				$res_statut=mysql_query($sql);
+				if(mysql_num_rows($res_statut)>0) {
+					$lig_statut=mysql_fetch_object($res_statut);
+					$retour.=" ($lig_statut->nom_statut)";
+				}
+			}
+			else {
+				$retour.=" ($lig_user->statut)";
+			}
 		}
 	}
 	return $retour;
@@ -3525,7 +3540,7 @@ function efface_photos($photos) {
 	$folder = "../photos/".$repertoire.$photos."/";
 	$dossier = opendir($folder);
 	while ($Fichier = readdir($dossier)) {
-	  if (strtolower(pathinfo($Fichier,PATHINFO_EXTENSION))=="jpg") {
+	  if (mb_strtolower(pathinfo($Fichier,PATHINFO_EXTENSION))=="jpg") {
 		$nomFichier = $folder."".$Fichier;
 		$fichier_sup[] = $nomFichier;
 	  }
@@ -4062,16 +4077,22 @@ function del_acces_cdt($id_acces) {
 			return FALSE;
 		}
 		else {
-                  if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')){
-                    $test = explode("?", $chemin);
-                    $chemin = count($test) > 1 ? $test[0] : $chemin;
-                  }
-			$suppr=deltree($chemin,TRUE);
-			if(!$suppr) {
-				echo "<p><span style='color:red'>Erreur lors de la suppression de $chemin</span></p>";
-				return FALSE;
+			if ((isset($GLOBALS['multisite']))&&($GLOBALS['multisite'] == 'y')){
+				$test = explode("?", $chemin);
+				$chemin = count($test) > 1 ? $test[0] : $chemin;
 			}
-			else {
+
+			$nettoyer_acces="y";
+			if(file_exists($chemin)) {
+				$suppr=deltree($chemin,TRUE);
+				if(!$suppr) {
+					echo "<p><span style='color:red'>Erreur lors de la suppression de $chemin</span></p>";
+					return FALSE;
+					$nettoyer_acces="n";
+				}
+			}
+
+			if($nettoyer_acces=="y") {
 				$sql="DELETE FROM acces_cdt_groupes WHERE id_acces='$id_acces';";
 				$del=mysql_query($sql);
 				if(!$del) {
@@ -4446,7 +4467,7 @@ function get_tab_file($path,$tab_exclusion=array(".", "..", "remove.txt", ".htac
 	$handle=opendir($path);
 	$n=0;
 	while ($file = readdir($handle)) {
-		if (!in_array(strtolower($file), $tab_exclusion)) {
+		if (!in_array(mb_strtolower($file), $tab_exclusion)) {
 			$tab_file[] = $file;
 			$n++;
 		}
@@ -4747,7 +4768,7 @@ function get_infos_from_login_utilisateur($login, $tab_champs=array()) {
 			if(mysql_num_rows($res)>0) {
 				$lig=mysql_fetch_object($res);
 
-				$tab_champs_eleve=array('no_gep','sexe','naissance','lieu_naissance','elenoet','ereno','ele_id','id_eleve','id_mef','date_sortie');
+				$tab_champs_eleve=array('no_gep','sexe','naissance','lieu_naissance','elenoet','ereno','ele_id','id_eleve','mef_code','date_sortie');
 				foreach($tab_champs_eleve as $key => $value) {
 					$tab[$value]=$lig->$value;
 				}
@@ -4902,7 +4923,120 @@ function joueAlarme($niveau_arbo = "0") {
 	}
 	return $retour;
 } 
-  
 
+/**
+ * Recupere le timestamp unix du jour ouvert precedent
+ *
+ * @param int $timestamp du jour courant
+ * @return int $timestamp du jour precedent
+ */
+function get_timestamp_jour_precedent($timestamp_today) {
+	$hier=false;
+
+	$tab_nom_jour=array('dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi');
+	$sql="select * from horaires_etablissement WHERE ouverture_horaire_etablissement!=fermeture_horaire_etablissement AND ouvert_horaire_etablissement!='0' ORDER BY id_horaire_etablissement;";
+	$res_jours_ouverts=mysql_query($sql);
+	if(mysql_num_rows($res_jours_ouverts)>0) {
+		$tab_jours_ouverture=array();
+		while($lig_j=mysql_fetch_object($res_jours_ouverts)) {
+			$tab_jours_ouverture[]=$lig_j->jour_horaire_etablissement;
+			//echo "\$tab_jours_ouverture[]=".$lig_j->jour_horaire_etablissement."<br />";
+		}
+
+		$compteur=0;
+		$j_prec = $timestamp_today - 3600*24;
+		while((isset($tab_nom_jour[strftime("%w",$j_prec)]))&&(!in_array($tab_nom_jour[strftime("%w",$j_prec)],$tab_jours_ouverture))&&($compteur<8)) {
+			$j_prec -= 3600*24;
+			$compteur++;
+		}
+		if($compteur<7) {
+			$hier=$j_prec;
+		}
+	}
+
+	return $hier;
+}
+
+/**
+ * Recupere le timestamp unix du jour ouvert suivant
+ *
+ * @param int $timestamp du jour courant
+ * @return int $timestamp du jour suivant
+ */
+function get_timestamp_jour_suivant($timestamp_today) {
+	$demain=false;
+
+	$tab_nom_jour=array('dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi');
+	$sql="select * from horaires_etablissement WHERE ouverture_horaire_etablissement!=fermeture_horaire_etablissement AND ouvert_horaire_etablissement!='0' ORDER BY id_horaire_etablissement;";
+	$res_jours_ouverts=mysql_query($sql);
+	if(mysql_num_rows($res_jours_ouverts)>0) {
+		$tab_jours_ouverture=array();
+		while($lig_j=mysql_fetch_object($res_jours_ouverts)) {
+			$tab_jours_ouverture[]=$lig_j->jour_horaire_etablissement;
+			//echo "\$tab_jours_ouverture[]=".$lig_j->jour_horaire_etablissement."<br />";
+		}
+
+		$compteur=0;
+		$j_prec = $timestamp_today - 3600*24;
+		while((isset($tab_nom_jour[strftime("%w",$j_prec)]))&&(!in_array($tab_nom_jour[strftime("%w",$j_prec)],$tab_jours_ouverture))&&($compteur<8)) {
+			$j_prec -= 3600*24;
+			$compteur++;
+		}
+		if($compteur<7) {
+			$hier=$j_prec;
+		}
+
+		$compteur=0;
+		$j_suiv = $timestamp_today + 3600*24;
+		while((isset($tab_nom_jour[strftime("%w",$j_suiv)]))&&(!in_array($tab_nom_jour[strftime("%w",$j_suiv)],$tab_jours_ouverture))&&($compteur<8)) {
+			$j_suiv += 3600*24;
+			$compteur++;
+		}
+		if($compteur<7) {
+			$demain=$j_suiv;
+		}
+	}
+
+	return $demain;
+}
+
+/**
+ * Retourne la chaine nettoyee des retours à la ligne en trop
+ *
+ * @param string $texte Texte à nettoyer
+ * @return string Texte nettoyé
+ */
+function netoyage_retours_ligne_surnumeraires($texte) {
+	$retour=preg_replace('/(\\\r\\\n)+/',"\r\n",$texte);
+	$retour=preg_replace('/(\\\r)+/',"\r",$retour);
+	$retour=preg_replace('/(\\\n)+/',"\n",$retour);
+
+	return $retour;
+}
+
+/** fonction de formatage des dates de debut et de fin de saisie d'absence
+ *
+ * @param date $date_debut
+ * @param date $date_fin
+ * @return string Les dates formatées 
+ */
+function getDateDescription($date_debut,$date_fin) {
+	$message = '';
+	if (strftime("%a %d/%m/%Y", $date_debut)==strftime("%a %d/%m/%Y", $date_fin)) {
+	$message .= 'le ';
+	$message .= (strftime("%a %d/%m/%Y", $date_debut));
+	$message .= ' entre  ';
+	$message .= (strftime("%H:%M", $date_debut));
+	$message .= ' et ';
+	$message .= (strftime("%H:%M", $date_fin));
+
+	} else {
+	$message .= ' entre le ';
+	$message .= (strftime("%a %d/%m/%Y %H:%M", $date_debut));
+	$message .= ' et le ';
+	$message .= (strftime("%a %d/%m/%Y %H:%M", $date_fin));
+	}
+	return $message;
+}
 
 ?>

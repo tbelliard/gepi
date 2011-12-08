@@ -153,7 +153,7 @@ else{
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover' style='text-align:center;' id='tr_$cpt'>\n";
 		echo "<td><input type='checkbox' name='suppr[]' id='suppr_$cpt' value='$lig_ele->ine' onchange=\"modif_une_coche('$cpt');\" /></td>\n";
-		echo "<td>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</td>\n";
+		echo "<td>".mb_strtoupper($lig_ele->nom)." ".ucfirst(mb_strtolower($lig_ele->prenom))."</td>\n";
 		echo "<td>".formate_date($lig_ele->naissance)."</td>\n";
 		echo "<td>";
 		echo "<a href='consultation_annee_anterieure.php?ine=$lig_ele->ine'>";

@@ -288,7 +288,7 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
         // Dump de la strucutre table
         if ($offsetrow==-1){
             $todump = get_def($db,$tables[$offsettable]);
-            if (isset($debug)) echo "<b><br />Dump de la structure de la table ".$tables[$offsettable]."</b><br />\n";
+            if (isset($debug)&&$debug!='') echo "<b><br />Dump de la structure de la table ".$tables[$offsettable]."</b><br />\n";
             fwrite($fileHandle,$todump);
             $offsetrow++;
             $cpt++;
@@ -296,7 +296,7 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
         current_time();
         if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
             return TRUE;
-        if (isset($debug)) echo "<b><br />Dump des données de la table ".$tables[$offsettable]."<br /></b>\n";
+        if (isset($debug)&&$debug!='') echo "<b><br />Dump des données de la table ".$tables[$offsettable]."<br /></b>\n";
         $fin=0;
         while (!$fin){
             $todump = get_content($db,$tables[$offsettable],$offsetrow,$rowlimit);
@@ -308,14 +308,14 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
                 if ($rowtodump<$rowlimit) $fin=1;
                 current_time();
                 if ($duree>0 and $TPSCOUR>=$duree) {//on atteint la fin du temps imparti
-                    if (isset($debug)) echo "<br /><br /><b>Nombre de lignes actuellement dans le fichier : ".$cpt."</b><br />\n";
+                    if (isset($debug)&&$debug!='') echo "<br /><br /><b>Nombre de lignes actuellement dans le fichier : ".$cpt."</b><br />\n";
                     return TRUE;
                 }
             } else {
                 $fin=1;$offsetrow=-1;
             }
         }
-        if (isset($debug)) echo "Pour cette table, nombre de lignes sauvegardées : ".$offsetrow."<br />\n";
+        if (isset($debug)&&$debug!='') echo "Pour cette table, nombre de lignes sauvegardées : ".$offsetrow."<br />\n";
         if ($fin) $offsetrow=-1;
         current_time();
         if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
@@ -825,9 +825,13 @@ function get_content($db, $table,$from,$limit) {
               while($rowdata = mysql_fetch_row($resData)) {
                   $lesDonnees = "";
                   for ($mp = 0; $mp < $num_fields; $mp++) {
-                  $lesDonnees .= "'" . str_replace($search, $replace, traitement_magic_quotes($rowdata[$mp])) . "'";
+                      if (is_null($rowdata[$mp])) {
+                          $lesDonnees .= "NULL";
+                          } else {
+                              $lesDonnees .= "'" . str_replace($search, $replace, traitement_magic_quotes($rowdata[$mp])) . "'";
+                          }
                   //on ajoute à la fin une virgule si nécessaire
-                      if ($mp<$num_fields-1) $lesDonnees .= ", ";
+                      if ($mp<$num_fields-1) $lesDonnees .= ",";
                   }
                   $lesDonnees = "$sInsert($lesDonnees);\n";
                   $def .="$lesDonnees";
@@ -977,20 +981,23 @@ if (isset($action) and ($action == 'restaure'))  {
 			$percentwitdh=$percent*4;
 			echo "<div align='center'><table class='tab_cadre' width='400'><tr><td width='400' align='center'><b>Restauration en cours</b><br /><br />Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>\n";
 		}
-		flush();
+		if (ob_get_contents()) {
+                    ob_flush();
+                }
+                flush();
 		if ($offset!=-1) {
 			if (restoreMySqlDump_old($path.$file,$duree)) {
 				echo "$cpt requête(s) exécutée(s) avec succès jusque là.<br />";
 
-				if (isset($debug)) {
+				if (isset($debug)&&$debug!='') {
 					echo "<br />\n<b>Cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way".add_token_in_url()."\">ici</a> pour poursuivre la restauration</b>\n";
 				}
 
-				if (!isset($debug)) {
+				if (!isset($debug)||$debug=='') {
 					echo "<br />\n<b>Redirection automatique sinon cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way".add_token_in_url()."\">ici</a></b>\n";
 				}
 
-				if (!isset($debug)) {
+				if (!isset($debug)||$debug=='') {
 					echo "<script>window.location=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way".add_token_in_url(false)."\";</script>\n";
 				}
 				flush();
@@ -1230,22 +1237,27 @@ if (isset($action) and ($action == 'dump'))  {
             <br/>A la fin de la sauvegarde, Gepi vous proposera automatiquement de télécharger le fichier.
             <br/><br/>Progression ".$percent."%</td></tr>\n<tr><td>\n<table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table>\n</td></tr>\n</table>\n</div>\n";
         }
-        flush();
+        if ($percent != 100) {
+            if (ob_get_contents()) {
+                ob_flush();
+            }
+            flush();
+        }
         if ($offsettable>=0){
             if (backupMySql($dbDb,$fichier,$duree,$rowlimit)) {
-                if (isset($debug)) {
+                if (isset($debug)&&$debug!='') {
 					echo "<br />\n<b>Cliquez <a href=\"accueil_sauve.php?action=dump&amp;duree=$duree&amp;rowlimit=$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt&amp;fichier=$fichier&amp;path=$path";
 					if(isset($quitter_la_page)) {echo "&amp;quitter_la_page=y";}
 					echo add_token_in_url();
 					echo "\">ici</a> pour poursuivre la sauvegarde.</b>\n";
 				}
-                if (!isset($debug)) {
+                if (!isset($debug)||$debug=='') {
 					echo "<br />\n<b>Redirection automatique sinon cliquez <a href=\"accueil_sauve.php?action=dump&amp;duree=$duree&amp;rowlimit=$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt&amp;fichier=$fichier&amp;path=$path";
 					if(isset($quitter_la_page)) {echo "&amp;quitter_la_page=y";}
 					echo add_token_in_url();
 					echo "\">ici</a></b>\n";
 				}
-                if (!isset($debug)) {
+                if (!isset($debug)||$debug=='') {
 					echo "<script>window.location=\"accueil_sauve.php?action=dump&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier&path=$path";
 					if(isset($quitter_la_page)) {echo "&quitter_la_page=y";}
 					echo add_token_in_url(false);
@@ -1258,7 +1270,7 @@ if (isset($action) and ($action == 'dump'))  {
 			// La sauvegarde est terminée. On compresse le fichier
 			$compress = gzip($fichier, 9);
 			if ($compress) {
-				$filetype = ".sql.gz";
+				$filetype = "sql.gz";
 			}
 			@unlink($fichier);
 
@@ -1282,12 +1294,14 @@ if (isset($action) and ($action == 'dump'))  {
 			}
 			closedir($handle);
 			rsort($tab_file);
-
+                        
+                        $nom_fichier=str_replace($path,'',$fichier);
+                        $nom_fichier=str_replace('.sql','',$nom_fichier);
 			$fileid=null;
 			if ($n > 0) {
 				for($m=0;$m<count($tab_file);$m++){
 					//echo "\$tab_file[$m]=$tab_file[$m]<br />";
-					if($tab_file[$m]=="$nomsql.$filetype"){
+					if($tab_file[$m]==$nom_fichier.'.'.$filetype){
 						$fileid=$m;
 					}
 				}

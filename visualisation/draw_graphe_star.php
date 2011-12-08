@@ -5,6 +5,9 @@
 
 	header("Content-type:image/png");
 
+	//$rapport_imageString_imagettftext=5;
+	$rapport_imageString_imagettftext=2;
+
 	// On précise de ne pas traiter les données avec la fonction anti_inject
 	$traite_anti_inject = 'no';
 	// En quoi cela consiste-t-il?
@@ -39,17 +42,6 @@
 			fclose($fich);
 		}
 	}
-
-	/*
-	// Fonction déplacée vers /lib/share.inc.php avec ajout du remplacement des espaces et apostrophes par des tirets '_'
-	function remplace_accents($chaine){
-		//$retour=strtr(my_ereg_replace("¼","OE",my_ereg_replace("½","oe",$chaine)),"ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü","AAAEEEEIIOOUUUCcaaaeeeeiioouuu");
-		//$retour=strtr(my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe","$chaine"))))," 'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸","__AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
-		$retour=strtr(my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe","$chaine")))),"ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸","AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
-		return $retour;
-	}
-	*/
-
 
 	//============================================
 	writinfo('/tmp/infos_graphe.txt','w+',"Avant la récupération des moyennes.\n");
@@ -745,7 +737,7 @@
 		writinfo('/tmp/infos_graphe.txt','a+',"\$x=$x\n");
 		writinfo('/tmp/infos_graphe.txt','a+',"\$y=$y\n");
 
-		imagettftext($img, $tmp_taille_police*4, 0, $x, $y, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", strtr($texte,"_"," "));
+		imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, $x, $y, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", strtr($texte,"_"," "));
 
 
 
@@ -757,7 +749,7 @@
 		if(($angle>270)&&($angle<360)){$xtmp=$x+30;}else{$xtmp=$x;}
 		//**************
 		for($k=1;$k<=$nb_series_bis;$k++){
-            imagettftext($img, $tmp_taille_police*4, 0, $xtmp, $ytmp, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", nf($moyenne[$k][$i+1]));
+            imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, $xtmp, $ytmp, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", nf($moyenne[$k][$i+1]));
 			$xtmp=$xtmp+mb_strlen(nf($moyenne[$k][$i+1])." ")*ImageFontWidth($taille_police_inf);
 		}
 	}
@@ -803,7 +795,7 @@
 	if($legendy[2]=='Toutes_les_périodes'){
 		$chaine=$nom_periode;
 
-		imagettftext($img, $tmp_taille_police*4, 0, round(($largeurTotale-mb_strlen($nom_eleve[1]) * ImageFontWidth($taille_police))/2), 5, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $nom_eleve[1]);
+		imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, round(($largeurTotale-mb_strlen($nom_eleve[1]) * ImageFontWidth($taille_police))/2), 5, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $nom_eleve[1]);
 
 		// Positionnement des noms d'élèves:
 		//$xtmp=$largeurGrad;
@@ -817,7 +809,7 @@
 			else {
 				$chaine_mgen="";
 			}
-            imagettftext($img, $tmp_taille_police*4, 0, $xtmp, ImageFontHeight($taille_police)+5, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", strtr($chaine[$k],"_"," ").$chaine_mgen);
+            imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, $xtmp, ImageFontHeight($taille_police)+5, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", strtr($chaine[$k],"_"," ").$chaine_mgen);
 
 			$xtmp=$xtmp+$largeur_chaine[$k];
 		}
@@ -839,7 +831,7 @@
 			else {
 				$chaine_mgen="";
 			}
-		    imagettftext($img, $tmp_taille_police*4, 0, $xtmp, 12, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", strtr($chaine[$k],"_"," ").$chaine_mgen);
+		    imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, $xtmp, 12, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", strtr($chaine[$k],"_"," ").$chaine_mgen);
 			$xtmp=$xtmp+$largeur_chaine[$k];
 		}
 	}

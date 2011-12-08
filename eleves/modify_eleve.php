@@ -467,94 +467,8 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 							ele_id = '".$ele_id."'
 							");
 
-
-						/*
-						$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
-						$test_resp1=mysql_query($sql);
-						if(mysql_num_rows($test_resp1)>0){
-							// Il y a déjà une association élève/responsable (c'est bizarre pour un élève que l'on inscrit maintenant???)
-							$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1' AND resp_legal='2'";
-							$test_resp1b=mysql_query($sql);
-							if(mysql_num_rows($test_resp1b)==1){
-								// Le responsable 2 devient responsable 1.
-								$temoin_maj_resp="";
-								$sql="SELECT pers_id FROM responsables2 WHERE ele_id='$ele_id' AND pers_id!='$reg_resp1' AND resp_legal='1'";
-								$test_resp1c=mysql_query($sql);
-								if(mysql_num_rows($test_resp1c)==1){
-									$lig_autre_resp=mysql_fetch_object($test_resp1c);
-									$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='$ele_id' AND pers_id='$lig_autre_resp->pers_id'";
-									$res_update=mysql_query($sql);
-									if(!$res_update){
-										$msg.="Erreur lors de la mise à jour du responsable $lig_autre_resp->pers_id en responsable légal n°2.<br />\n";
-										$temoin_maj_resp="PB";
-									}
-								}
-
-								if($temoin_maj_resp==""){
-									$sql="UPDATE responsables2 SET resp_legal='1' WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
-									$res_update=mysql_query($sql);
-									if(!$res_update){
-										$msg.="Erreur lors de la mise à jour du responsable $reg_resp1 en responsable légal n°1.<br />\n";
-									}
-								}
-							}
-							// Sinon, l'association est déjà la bonne... pas de changement.
-						}
-						else{
-							// Il n'y a pas encore d'association entre cet élève et ce responsable
-							$temoin_maj_resp="";
-							$sql="SELECT pers_id FROM responsables2 WHERE ele_id='$ele_id' AND pers_id!='$reg_resp1' AND resp_legal='1'";
-							$test_resp1c=mysql_query($sql);
-							//if(mysql_num_rows($test_resp1c)==1){
-							if(mysql_num_rows($test_resp1c)>0){
-								$lig_autre_resp=mysql_fetch_object($test_resp1c);
-
-								// Y avait-il un autre responsable légal n°2?
-								$sql="DELETE FROM responsables2 WHERE ele_id='$ele_id' AND resp_legal='2'";
-								$res_menage=mysql_query($sql);
-								if(!$res_menage){
-									$msg.="Erreur lors de la suppression de l'association avec le précédent responsable légal n°2.<br />";
-									$temoin_maj_resp="PB";
-								}
-								else{
-									// L'ancien resp_legal 1 devient resp_legal 2
-									$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='$ele_id' AND pers_id='$lig_autre_resp->pers_id'";
-									$res_update=mysql_query($sql);
-									if(!$res_update){
-										$msg.="Erreur lors de la mise à jour du responsable $lig_autre_resp->pers_id en responsable légal n°2.<br />\n";
-										$temoin_maj_resp="PB";
-									}
-								}
-							}
-
-							if($temoin_maj_resp==""){
-								$sql="INSERT INTO responsables2 SET ele_id='$ele_id', pers_id='$reg_resp1', resp_legal='1', pers_contact='1'";
-								$reg_data2b=mysql_query($sql);
-								if(!$reg_data2b){
-									$msg.="Erreur lors de la mise à jour du responsable $reg_resp1 en responsable légal n°1.<br />\n";
-								}
-							}
-						}
-						*/
-
 						// Régime:
 						$reg_data3 = mysql_query("INSERT INTO j_eleves_regime SET login='$reg_login', doublant='-', regime='d/p'");
-						/*
-						// Régime et établissement d'origine:
-						$call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve = '$reg_login'");
-						$count2 = mysql_num_rows($call_test);
-						if ($count2 == "0") {
-							if ($reg_etab != "(vide)") {
-								$reg_data2 = mysql_query("INSERT INTO j_eleves_etablissements VALUES ('$reg_login','$reg_etab')");
-							}
-						} else {
-							if ($reg_etab != "(vide)") {
-								$reg_data2 = mysql_query("UPDATE j_eleves_etablissements SET id_etablissement = '$reg_etab' WHERE id_eleve='$reg_login'");
-							} else {
-								$reg_data2 = mysql_query("DELETE FROM j_eleves_etablissements WHERE id_eleve='$reg_login'");
-							}
-						}
-						*/
 						if ((!$reg_data1) or (!$reg_data3)) {
 							$msg = "Erreur lors de l'enregistrement des données";
 						} elseif ($mode == "unique") {
@@ -594,7 +508,6 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 			}
 			$sql.=" WHERE login='".$eleve_login."'";
 
-			// On nettoie les windozeries
 			$reg_data = mysql_query($sql);
 			if (!$reg_data) {
 				$msg = "Erreur lors de l'enregistrement des données";
@@ -607,7 +520,9 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 				}
 			}
 
-
+			// Corriger le compte d'utilisateur
+			$sql="UPDATE utilisateurs SET nom='$reg_nom', prenom='$reg_prenom', civilite='".(($reg_sexe=='M') ? 'M.' : 'Mlle')."' WHERE login = '".$eleve_login."' AND statut='eleve';";
+			$update_utilisateur=mysql_query($sql);
 
 
 			if(isset($reg_doublant)){
@@ -1305,7 +1220,6 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 						echo "checked ";
 					}
 					echo "onchange='changement();' /></td>\n";
-					//echo "<td><a href='../responsables/modify_resp.php?pers_id=$lig_resp->pers_id' target='_blank'>".strtoupper($lig_resp->nom)." ".ucfirst(strtolower($lig_resp->prenom))."</a></td>\n";
 					echo "<td><a href='../responsables/modify_resp.php?pers_id=$lig_resp->pers_id&amp;quitter_la_page=y' target='_blank'>".my_strtoupper($lig_resp->nom)." ".casse_mot($lig_resp->prenom,'majf2')."</a></td>\n";
 					echo "<td>";
 
@@ -1708,7 +1622,14 @@ function redimensionne_image($photo){
 
 if (isset($eleve_login)) {
 	echo "<th style='text-align:left;'>Identifiant GEPI * : </th>
-	<td>".$eleve_login."<input type=hidden name='eleve_login' size=20 ";
+	<td>";
+	if(($compte_eleve_existe=="y")&&($_SESSION['statut']=="administrateur")) {
+		echo "<a href='../utilisateurs/edit_eleve.php?critere_recherche=$eleve_nom'>".$eleve_login."</a>";
+	}
+	else {
+		echo $eleve_login;
+	}
+	echo "<input type=hidden name='eleve_login' size=20 ";
 	if ($eleve_login) echo "value='$eleve_login'";
 	echo " /></td>\n";
 } else {
@@ -2299,16 +2220,12 @@ if(isset($eleve_login)){
 					echo "<td>".casse_mot($lig_resp->prenom,'majf2')." ".my_strtoupper($lig_resp->nom)."</td>\n";
 				}
 				else{
-					//echo "<td><a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2' target='_blank'>".ucfirst(strtolower($lig_resp->prenom))." ".strtoupper($lig_resp->nom)."</a></td>\n";
-					//echo "<td><a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y' onclick=\"affiche_message_raffraichissement(); return confirm_abandon (this, change, '$themessage');\" target='_blank'>".ucfirst(strtolower($lig_resp->prenom))." ".strtoupper($lig_resp->nom)."</a></td>\n";
 					echo "<td><a href='../responsables/modify_resp.php?pers_id=$eleve_no_resp2&amp;quitter_la_page=y' onclick=\"return confirm_abandon (this, change, '$themessage');\" target='_blank'>".casse_mot($lig_resp->prenom,'majf2')." ".my_strtoupper($lig_resp->nom)."</a></td>\n";
 
-					//echo "<td><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=2'>Modifier l'association</a></td>\n";
 					echo "<td><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_resp=2";
 					if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 					if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 					if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
-					//echo "'>Modifier le responsable</a></td>\n";
 					echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Changer de responsable</a></td>\n";
 				}
 				echo "</tr>\n";
@@ -2489,8 +2406,7 @@ if((isset($eleve_login))&&(isset($reg_no_gep))&&($reg_no_gep!="")) {
 					echo "<br />\n";
 
 					echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y";
-					//echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;reg_no_gep=$reg_no_gep&amp;definir_etab=y";
-
+					
 					if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 					if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 					if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
@@ -2502,7 +2418,6 @@ if((isset($eleve_login))&&(isset($reg_no_gep))&&($reg_no_gep!="")) {
 			else{
 				echo "<p>L'établissement d'origine de l'élève est&nbsp;:<br />\n";
 				$lig_etab2=mysql_fetch_object($res_etab2);
-				//echo "&nbsp;&nbsp;&nbsp;".ucfirst(strtolower($lig_etab2->niveau))." ".$lig_etab2->type." ".$lig_etab2->nom.", ".$lig_etab2->cp.", ".$lig_etab2->ville." (<i>$lig_etab->id_etablissement</i>)<br />\n";
 				echo "&nbsp;&nbsp;&nbsp;";
 				if($lig_etab2->niveau=="college"){
 					echo "Collège";
@@ -2517,7 +2432,6 @@ if((isset($eleve_login))&&(isset($reg_no_gep))&&($reg_no_gep!="")) {
 				if($_SESSION['statut']!="professeur") {
 					echo "<br />\n";
 					echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;definir_etab=y";
-					//echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;reg_no_gep=$reg_no_gep&amp;definir_etab=y";
 					if (isset($order_type)) {echo "&amp;order_type=$order_type";}
 					if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 					if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}

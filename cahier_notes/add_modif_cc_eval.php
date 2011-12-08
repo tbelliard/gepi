@@ -113,10 +113,12 @@ else {
 $id_eval=isset($_POST["id_eval"]) ? $_POST["id_eval"] : (isset($_GET["id_eval"]) ? $_GET["id_eval"] : NULL);
 if(isset($id_eval))  {
 	$sql="SELECT * FROM cc_eval WHERE id='$id_eval';";
+	//echo "$sql<br />";
 	$query=mysql_query($sql);
 	if($query) {
 		// Vérifier que l'évaluation est bien associée au CC.
 		$sql="SELECT * FROM cc_eval WHERE id='$id_eval' AND id_dev='$id_dev';";
+		//echo "$sql<br />";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)==0) {
 			$mess="L'évaluation n°$id_eval n'est pas associée au $nom_cc n°$id_dev.<br />";
@@ -124,10 +126,11 @@ if(isset($id_eval))  {
 			die();
 		}
 
-		$id_cn_dev=mysql_result($query, 0, 'id_cn_dev');
+		//$id_cn_dev=mysql_result($query, 0, 'id_cn_dev');
 		$nom_court=mysql_result($query, 0, 'nom_court');
 		$nom_complet=mysql_result($query, 0, 'nom_complet');
-		$description=mysql_result($query, 0, 'description');
+		$description=netoyage_retours_ligne_surnumeraires(mysql_result($query, 0, 'description'));
+
 		$display_date=mysql_result($query, 0, 'date');
 		$note_sur=mysql_result($query, 0, 'note_sur');
 	}
@@ -295,7 +298,7 @@ else{
 	echo "<tr style='display:none;'>\n";
 	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Description&nbsp;:</td>\n";
 	echo "<td>\n";
-	echo "<input type='hidden' name='description' value='$description' />\n";
+	echo "<input type='hidden' name='description' value=\"$description\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 }
@@ -304,7 +307,7 @@ if($aff_note_sur=='y'){
 	echo "<tr>\n";
 	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Note sur&nbsp;:</td>\n";
 	echo "<td>\n";
-	echo "<input type='text' name='note_sur' size='4' autocomplete='off' onfocus=\"javascript:this.select()\" value=\"".$note_sur."\" />\n";
+	echo "<input type='text' name='note_sur' id='note_sur' size='4' onfocus=\"javascript:this.select()\" value=\"".$note_sur."\" onkeydown=\"clavier_2(this.id,event,1,100);\" autocomplete=\"off\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 }

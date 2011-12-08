@@ -388,6 +388,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $mess[] = "Table de jointure élève/régime";
     $test_nb[] = "SELECT * FROM j_eleves_regime WHERE login ='$cible1'";
     $req[] = "DELETE FROM j_eleves_regime WHERE login ='$cible1'";
+	$nombre_req++;
 
 	$test_existence=mysql_query("SHOW TABLES LIKE 'j_signalement';");
 	if(mysql_num_rows($test_existence)>0){
@@ -398,9 +399,13 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 		$nombre_req++;
 	}
 
+	$mess[] = "Table jointure élève/cpe :";
+	$test_nb[] = "SELECT * FROM j_eleves_cpe WHERE e_login ='$cible1'";
+	$req[] = "DELETE FROM j_eleves_cpe WHERE e_login ='$cible1'";
 	$nombre_req++;
 
     break;
+
     case "del_classe":
     //Suppression d'une classe
     $mess[0] = "Table des classes :";

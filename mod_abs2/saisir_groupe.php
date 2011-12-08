@@ -61,6 +61,19 @@ if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_a
     die("Le module n'est pas activé.");
 }
 
+// $affiche_debug=debug_var();
+// Initialiser la requète
+if (isset($_POST["initialise"]) && $_POST["initialise"]==TRUE) {
+  unset ($_SESSION['id_groupe_abs'],
+  $_SESSION['id_classe_abs'],
+  $_SESSION['id_aid'],
+  $_SESSION['id_creneau'],
+  $_SESSION['id_cours'],
+  $_SESSION['type_selection'],
+  $_SESSION['date_absence_eleve'],
+  $_SESSION['id_semaine']);
+}
+
 //récupération des paramètres de la requète
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :(isset($_SESSION["id_groupe_abs"]) ? $_SESSION["id_groupe_abs"] : NULL));
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_classe"]) ? $_GET["id_classe"] :(isset($_SESSION["id_classe_abs"]) ? $_SESSION["id_classe_abs"] : NULL));
@@ -196,6 +209,13 @@ require_once("../lib/header.inc");
 include('menu_abs2.inc.php');
 //===========================
 echo "<div class='css-panes' id='containDiv'>\n";
+
+echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
+echo "<p>\n";
+echo "<button type='submit' style='width:25em;margin:0 auto;' name='initialise' value=TRUE>";
+echo "Ré-initialiser la page</button>\n";
+echo "</p>\n";
+echo "</form >\n";
 
 echo "<table cellspacing='15px' cellpadding='5px'><tr>";
 //on affiche une boite de selection avec les groupes et les creneaux
@@ -708,6 +728,23 @@ foreach($eleve_col as $eleve) {
 					    }
 					}
 
+					//on va afficher des renseignements sur les heures pr�c�dente
+					$traitee = false;
+					$hover = 'traitements - ';
+                                        foreach ($absences_du_creneau as $abs_saisie) {
+                                            if ($abs_saisie->getTraitee() && $abs_saisie->getManquementObligationPresence()) {
+                                                $traitee = true;
+                                                $txt = $abs_saisie->getTypesDescription();
+                                                if ($txt != '') {
+                                                    $hover .= $abs_saisie->getTypesDescription().'; ';
+                                                }
+                                            }
+                                        }
+                                        if ($traitee) {
+                                            echo '&nbsp<span title="'.htmlspecialchars($hover).'">t</span>';
+                                        }
+
+
 					if ($nb_creneau_a_saisir > 0) {
 					    $i = $i + $nb_creneau_a_saisir - 1;
 					    //le message d'erreur de l'enregistrement precedent provient du fichier enregistrement_saisies_groupe.php
@@ -858,5 +895,7 @@ function redimensionne_image_petit($photo)
 	    echo ' Le '.$dt_date_absence_eleve->format('d/m/Y').' ';
 	}
  }
+ 
+ // $affiche_debug=debug_var();
  
 ?>

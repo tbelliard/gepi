@@ -202,9 +202,9 @@ function drawTextBox($strText, $w, $h, $align='L', $valign='T', $border=1)
 		$this->Rect($xi,$yi,$w,$h,'DF');
 
 	$dy=0;
-	if (strtoupper($valign)=='M')
+	if (mb_strtoupper($valign)=='M')
 		$dy=($h-$rows*$this->FontSize)/2;
-	if (strtoupper($valign)=='B')
+	if (mb_strtoupper($valign)=='B')
 		$dy=$h-$rows*$this->FontSize;
 
 	$this->SetY($yi+$dy);

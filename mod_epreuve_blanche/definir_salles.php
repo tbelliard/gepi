@@ -491,7 +491,7 @@ if(!isset($mode)) {
 				echo "<input type='text' name='salle[]' value='$tab_salles[$loop]' onchange='changement();' /><br />\n";
 			}
 			else {
-				echo $lig->salle;
+				echo $tab_id_salles[$loop];
 			}
 			//echo "<br />\n";
 			echo "</td>\n";

@@ -171,8 +171,7 @@ if (!isset($is_posted)) {
 	$nb_reg_no3=-1;
 
 	$csv_file = isset($_FILES["pers_file"]) ? $_FILES["pers_file"] : NULL;
-	//echo strtoupper($csv_file['name'])."<br />";
-	if(strtoupper($csv_file['name']) == "PERSONNES.CSV") {
+	if(mb_strtoupper($csv_file['name']) == "PERSONNES.CSV") {
 		$fp=fopen($csv_file['tmp_name'],"r");
 		if(!$fp){
 			echo "<p>Impossible d'ouvrir le fichier PERSONNES.CSV.</p>\n";
@@ -314,8 +313,7 @@ if (!isset($is_posted)) {
 
 
 	$csv_file = isset($_FILES["resp_file"]) ? $_FILES["resp_file"] : NULL;
-	//echo strtoupper($csv_file['name'])."<br />";
-	if(strtoupper($csv_file['name']) == "RESPONSABLES.CSV") {
+	if(mb_strtoupper($csv_file['name']) == "RESPONSABLES.CSV") {
 		$fp=fopen($csv_file['tmp_name'],"r");
 		if(!$fp){
 			echo "<p>Impossible d'ouvrir le fichier RESPONSABLES.CSV.</p>";
@@ -433,8 +431,7 @@ if (!isset($is_posted)) {
 
 
 	$csv_file = isset($_FILES["adr_file"]) ? $_FILES["adr_file"] : NULL;
-	//echo strtoupper($csv_file['name'])."<br />";
-	if(strtoupper($csv_file['name']) == "ADRESSES.CSV") {
+	if(mb_strtoupper($csv_file['name']) == "ADRESSES.CSV") {
 		$fp=fopen($csv_file['tmp_name'],"r");
 		if(!$fp){
 			echo "<p>Impossible d'ouvrir le fichier ADRESSES.CSV.</p>";

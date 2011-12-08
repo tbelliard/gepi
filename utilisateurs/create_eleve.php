@@ -250,8 +250,9 @@ else{
 	if ($session_gepi->auth_sso) {
 		echo "<option value='auth_sso'";
 		if((getSettingValue('use_sso')=="lcs")||(getSettingValue('auth_sso')=="lcs")||(getSettingValue('use_sso')=="ldap_scribe")||(getSettingValue('auth_sso')=="ldap_scribe")) {
-			echo ">Authentification unique (SSO)</option>";
+			echo " selected='selected'";
 		}
+		echo ">Authentification unique (SSO)</option>\n";
 	}
 	echo "</select>";
 
@@ -401,8 +402,9 @@ else{
 	if ($session_gepi->auth_sso) {
 		echo "<option value='auth_sso'";
 		if((getSettingValue('use_sso')=="lcs")||(getSettingValue('auth_sso')=="lcs")||(getSettingValue('use_sso')=="ldap_scribe")||(getSettingValue('auth_sso')=="ldap_scribe")) {
-			echo ">Authentification unique (SSO)</option>";
+			echo " selected='selected'";
 		}
+		echo ">Authentification unique (SSO)</option>\n";
 	}
 	echo "</select>";
 	echo "</p>";

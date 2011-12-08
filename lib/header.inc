@@ -180,6 +180,7 @@ if(isset($javascript_specifique)) {
 		foreach($javascript_specifique as $current_javascript_specifique) {
 			if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$current_javascript_specifique))==0) {
 				// Javascript spécifique à une page:
+			echo '<!-- $javascript specifique '.$javascript_specifique.' -->';
 				echo "<script type='text/javascript' src='$gepiPath/$current_javascript_specifique.js'></script>\n";
 			}
 		}
@@ -187,6 +188,7 @@ if(isset($javascript_specifique)) {
 	else {
 		if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$javascript_specifique))==0) {
 			// Javascript spécifique à une page:
+			echo '<!-- $javascript specifique '.$javascript_specifique.' -->';
 			echo "<script type='text/javascript' src='$gepiPath/$javascript_specifique.js'></script>\n";
 		}
 	}
@@ -458,7 +460,13 @@ if (isset($use_observeur) AND $use_observeur == 'ok') {
 <!-- ************************* -->
 <!-- Début du corps de la page -->
 <!-- ************************* -->
-<body onload="show_message_deconnexion();<?php echo $charger_observeur; ?>" <?php if (isset($dojo)) {echo 'class=" claro " style="font:11pt Verdana,sans-serif;"';}?> >
+<?php
+if (isset($pas_de_message_deconnexion) && $pas_de_message_deconnexion) {
+    $show_deco = '';
+} else {
+    $show_deco = 'show_message_deconnexion();';
+}?>
+<body onload="<?php echo $show_deco; ?><?php echo $charger_observeur; ?>" <?php if (isset($dojo)) {echo 'class=" claro " style="font:11pt Verdana,sans-serif;"';}?> >
 
 <?php
 if (getSettingValue("impose_petit_entete_prof") == 'y' AND $_SESSION['statut'] == 'professeur') {

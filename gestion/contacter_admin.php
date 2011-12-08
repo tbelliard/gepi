@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Patrick Duthilleul
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Patrick Duthilleul
  *
  * This file is part of GEPI.
  *
@@ -30,7 +30,7 @@ $resultat_session = $session_gepi->security_check();
 if ($resultat_session == '0') {
    header("Location: ../logout.php?auto=1");
    die();
-};
+}
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
@@ -60,24 +60,18 @@ switch($action)
 {
 //envoi du message
 case "envoi":
-	//N.B. pour peaufiner, mettre un script de vérification de l'adresse email et du contenu du message !
+	// N.B. pour peaufiner, mettre un script de verification de l'adresse email et du contenu du message !
 
 	$corps_message=$message;
 
 	$message = "Demande d'aide depuis GEPI :\n";
 	$message .= "Demandeur : ".$nama."\n";
 	$message .= "Statut : ".$_SESSION['statut']."\n";
-	// ===============
-	// Modif 20070927:
-	//$message .= "Etablissement : ".getSettingValue("gepiSchoolName")."\n".unslashes($message);
 	$message .= "Etablissement : ".getSettingValue("gepiSchoolName")."\n";
-	// ===============
 
 	$message.="\n".$corps_message."\n";
 
 	if ($_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve") {
-		//$message .= "\n\nMode de réponse : ".($email_reponse =="" ? "dans le casier =>$casier" :"par email.");
-		//$message .= "\n\nMode de réponse : ".($email_reponse =="" ? "dans le casier =>$casier" :"par email (<a href='mailto:$email_reponse'>$email_reponse</a>).");
 		$message .= "\n\nMode de réponse : ".($email_reponse =="" ? "dans le casier =>$casier" :"par email ($email_reponse).");
 	} else {
 		$message .= "\n\nMode de réponse : par email ";
@@ -97,22 +91,9 @@ case "envoi":
 		$message.="Bizarrerie: L'identité POSTée est: $nama\n            Et l'identité de connexion est: ".$_SESSION['prenom']." ".$_SESSION['nom'];
 	}
 
-	// ===============
-	// Ajout 20070927:
 	unslashes($message);
-	// ===============
 
-	/*
-	$envoi = mail(getSettingValue("gepiAdminAdress"),
-		"Demande d'aide dans GEPI",
-		$message,
-	"From: ".($email_reponse != "" ? "$nama <$email_reponse>" : getSettingValue("gepiAdminAdress"))."\r\n"
-	.($email_reponse != "" ? "Reply-To: $nama <$email_reponse>\r\n" :"")
-	."X-Mailer: PHP/" . phpversion());
-	*/
-	//$gepiPrefixeSujetMail="[clg-tartemplume]";
 	$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
-	//$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail");
 	if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 
 	$gepiAdminAdress=getSettingValue("gepiAdminAdress");
@@ -122,7 +103,6 @@ case "envoi":
 		die();
 	}
 
-	//$objet_msg=isset($_POST['objet_msg']) ? $_POST['objet_msg'] : "Demande d'aide dans GEPI";
 	$objet_msg=trim($objet_msg);
 	unslashes($objet_msg);
 	//echo "\$objet_msg=$objet_msg<br />";
@@ -157,7 +137,7 @@ case "envoi":
 		if($email_reponse!="") {
 			echo ", vous recevrez rapidement<br />une réponse dans votre boîte aux lettres électronique, veuillez la consulter régulièrement.";
 
-			if(!my_ereg("[a-zA-Z0-9_.-]+@[a-zA-Z0-9.-]{2,}[.][a-zA-Z]{2,3}",$email_reponse)) {
+			if(!preg_match("/[a-zA-Z0-9_.-]+@[a-zA-Z0-9.-]{2,}[.][a-zA-Z]{2,3}/",$email_reponse)) {
 				echo "</p>\n";
 				echo "<p style=\"text-align: center\">L'adresse <span style='color:red'>$email_reponse</span> ne semble pas correctement formatée.<br />Si l'adresse est correcte, ne tenez pas compte de cette remarque.<br />Sinon, vous ne pourrez pas obtenir de réponse par courriel/email.\n";
 			}
@@ -239,11 +219,13 @@ default://formulaire d'envoi
 	echo "</p>\n";
 
 	echo "<p align='center'>";
-	//echo "<input type='submit' value='Envoyer le message' />\n";
-	echo "<input type='button' value='Envoyer le message' onClick='verif_et_valide_envoi();' />\n";
+
+	echo "<input type='button' id='bouton_validation_form_envoi' value='Envoyer le message' onClick='verif_et_valide_envoi();' style='display:none' />\n";
 	echo "</p>\n";
 
 	echo "<script type='text/javascript'>
+	document.getElementById('bouton_validation_form_envoi').style.display='';
+
 	function verif_et_valide_envoi() {
 		if(document.getElementById('objet_msg').value=='') {
 			alert('Aucun sujet n\\' a été précisé. Veuillez corriger.')
@@ -254,7 +236,6 @@ default://formulaire d'envoi
 				email=document.getElementById('email_reponse').value;
 	
 				if(email=='') {
-					//confirmation=confirm('Vous n avez pas saisi d adresse courriel/email.\\nVous ne pourrez pas recevoir de réponse par courrier électronique.\\nSouhaitez-vous néanmoins poster le message?');
 					confirmation=confirm('Vous n\\'avez pas saisi d\\'adresse courriel/email.\\nVous ne pourrez pas recevoir de réponse par courrier électronique.\\nSouhaitez-vous néanmoins poster le message?');
 	
 					if(confirmation) {	
@@ -262,10 +243,6 @@ default://formulaire d'envoi
 					}
 				}
 				else {
-					//var verif = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9-]{2,}[.][a-zA-Z]{2,3}$/
-					//var verif2 = /^[a-zA-Z0-9_-]{1,}[.][a-zA-Z0-9_-]+@[a-zA-Z0-9-]{2,}[.][a-zA-Z]{2,3}$/
-					//if (verif.exec(email) == null) {
-					//if ((verif.exec(email) == null)&&(verif2.exec(email) == null)) {
 					var verif = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9.-]{2,}[.][a-zA-Z]{2,3}$/
 					if (verif.exec(email) == null) {
 						confirmation=confirm('L\\'adresse courriel/email saisie ne semble pas valide.\\nVeuillez contrôler la saisie et confirmer votre envoi si l\\'adresse est correcte.\\nSouhaitez-vous néanmoins poster le message?');

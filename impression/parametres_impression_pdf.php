@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -425,10 +425,10 @@ echo "<div>\n
 
 		echo "<b>Définition des marges du document&nbsp;:</b></p>\n";
 		echo "<table style='margin-left: 1em;' border='0'>\n";
-		echo "<tr><td>Marge à gauche&nbsp;:</td><td><input type=\"text\" name=\"marge_gauche\" size=\"2\" maxlength=\"2\" value=\"$marge_gauche\" /></td></tr>\n";
-		echo "<tr><td>Marge à droite&nbsp;:</td><td><input type=\"text\" name=\"marge_droite\" size=\"2\" maxlength=\"2\" value=\"$marge_droite\" /></td></tr>\n";
-		echo "<tr><td>Marge du haut&nbsp;:</td><td><input type=\"text\" name=\"marge_haut\" size=\"2\" maxlength=\"2\" value=\"$marge_haut\" /></td></tr>\n";
-		echo "<tr><td>Marge du bas&nbsp;:</td><td><input type=\"text\" name=\"marge_bas\" size=\"2\" maxlength=\"2\" value=\"$marge_bas\" /></td></tr>\n";
+		echo "<tr><td>Marge à gauche&nbsp;:</td><td><input type=\"text\" name=\"marge_gauche\" id=\"marge_gauche\" size=\"2\" maxlength=\"2\" value=\"$marge_gauche\" onkeydown=\"clavier_2(this.id,event,0,100);\" autocomplete=\"off\" /></td></tr>\n";
+		echo "<tr><td>Marge à droite&nbsp;:</td><td><input type=\"text\" name=\"marge_droite\" id=\"marge_droite\" size=\"2\" maxlength=\"2\" value=\"$marge_droite\" onkeydown=\"clavier_2(this.id,event,0,100);\" autocomplete=\"off\" /></td></tr>\n";
+		echo "<tr><td>Marge du haut&nbsp;:</td><td><input type=\"text\" name=\"marge_haut\" id=\"marge_haut\" size=\"2\" maxlength=\"2\" value=\"$marge_haut\" onkeydown=\"clavier_2(this.id,event,0,150);\" autocomplete=\"off\" /></td></tr>\n";
+		echo "<tr><td>Marge du bas&nbsp;:</td><td><input type=\"text\" name=\"marge_bas\" id=\"marge_bas\" size=\"2\" maxlength=\"2\" value=\"$marge_bas\" onkeydown=\"clavier_2(this.id,event,0,150);\" autocomplete=\"off\" /></td></tr>\n";
 
 		echo "<tr><td>Option marge reliure ?</td><td><input type=\"radio\" name=\"marge_reliure\" id=\"marge_reliure_1\" value=\"1\" ";
 		if($marge_reliure==1) {echo "checked ";}
@@ -472,18 +472,18 @@ echo "<div>\n
 		echo "/><label for='une_seule_page_1'> Oui</label> <input type=\"radio\" name=\"une_seule_page\" id=\"une_seule_page_0\" value=\"0\" ";
 		if($une_seule_page!=1) {echo "checked ";}
 		echo "/><label for='une_seule_page_0'> Non</label></td></tr>\n";
-		echo "<tr><td>Hauteur d'une ligne&nbsp;:</td><td><input type=\"text\" name=\"h_ligne\" size=\"2\" maxlength=\"2\" value=\"$h_ligne\" /> </td></tr>\n";
-		echo "<tr><td>Largeur d'une colonne&nbsp;:</td><td><input type=\"text\" name=\"l_colonne\" size=\"2\" maxlength=\"2\" value=\"$l_colonne\" /> </td></tr>\n";
-		echo "<tr><td>Largeur colonne Nom / Prénom&nbsp;:</td><td><input type=\"text\" name=\"l_nomprenom\" size=\"2\" maxlength=\"2\" value=\"$l_nomprenom\" /> </td></tr>\n";
-		echo "<tr><td>Nombre ligne(s) avant&nbsp;:</td><td><input type=\"text\" name=\"nb_ligne_avant\" size=\"2\" maxlength=\"2\" value=\"$nb_ligne_avant\" /> \n";
-		echo "<tr><td>Hauteur de la première ligne avant&nbsp;:</td><td><input type=\"text\" name=\"h_ligne1_avant\" size=\"2\" maxlength=\"$h_ligne1_avant\" value=\"25\" /> </td></tr>\n";
-		echo "<tr><td>Nombre ligne(s) après&nbsp;:</td><td><input type=\"text\" name=\"nb_ligne_apres\" size=\"2\" maxlength=\"2\" value=\"$nb_ligne_apres\" /> </td></tr>\n";
+		echo "<tr><td>Hauteur d'une ligne&nbsp;:</td><td><input type=\"text\" name=\"h_ligne\" id=\"h_ligne\" size=\"2\" maxlength=\"2\" value=\"$h_ligne\" onkeydown=\"clavier_2(this.id,event,0,300);\" autocomplete=\"off\" /> </td></tr>\n";
+		echo "<tr><td>Largeur d'une colonne&nbsp;:</td><td><input type=\"text\" name=\"l_colonne\" id=\"l_colonne\" size=\"2\" maxlength=\"2\" value=\"$l_colonne\" onkeydown=\"clavier_2(this.id,event,0,300);\" autocomplete=\"off\" /> </td></tr>\n";
+		echo "<tr><td>Largeur colonne Nom / Prénom&nbsp;:</td><td><input type=\"text\" name=\"l_nomprenom\" id=\"l_nomprenom\" size=\"2\" maxlength=\"2\" value=\"$l_nomprenom\" onkeydown=\"clavier_2(this.id,event,0,300);\" autocomplete=\"off\" /> </td></tr>\n";
+		echo "<tr><td>Nombre ligne(s) avant&nbsp;:</td><td><input type=\"text\" name=\"nb_ligne_avant\" id=\"nb_ligne_avant\" size=\"2\" maxlength=\"2\" value=\"$nb_ligne_avant\" onkeydown=\"clavier_2(this.id,event,0,300);\" autocomplete=\"off\" /> \n";
+		echo "<tr><td>Hauteur de la première ligne avant&nbsp;:</td><td><input type=\"text\" name=\"h_ligne1_avant\" id=\"h_ligne1_avant\" size=\"2\" maxlength=\"$h_ligne1_avant\" onkeydown=\"clavier_2(this.id,event,0,300);\" autocomplete=\"off\" value=\"25\" /> </td></tr>\n";
+		echo "<tr><td>Nombre ligne(s) après&nbsp;:</td><td><input type=\"text\" name=\"nb_ligne_apres\" id=\"nb_ligne_apres\" size=\"2\" maxlength=\"2\" value=\"$nb_ligne_apres\" onkeydown=\"clavier_2(this.id,event,0,300);\" autocomplete=\"off\" /> </td></tr>\n";
 		echo "<tr><td>Quadrillage total des cellules ?</td><td><input type=\"radio\" name=\"encadrement_total_cellules\" id=\"encadrement_total_cellules_1\" value=\"1\" ";
 		if($encadrement_total_cellules==1) {echo "checked ";}
 		echo "/><label for='encadrement_total_cellules_1'> Oui</label> [ <input type=\"radio\" name=\"encadrement_total_cellules\" id=\"encadrement_total_cellules_0\" value=\"0\" ";
 		if($encadrement_total_cellules!=1) {echo "checked ";}
 		echo "/><label for='encadrement_total_cellules_0'> Non</label> \n";
-		echo "<tr><td>&nbsp;</td><td>Nombre de cellules quadrillées après le nom&nbsp;: <input type=\"text\" name=\"nb_cellules_quadrillees\" size=\"2\" maxlength=\"2\" value=\"$nb_cellules_quadrillees\" /> ] </td></tr>\n";
+		echo "<tr><td>&nbsp;</td><td>Nombre de cellules quadrillées après le nom&nbsp;: <input type=\"text\" name=\"nb_cellules_quadrillees\" id=\"nb_cellules_quadrillees\" size=\"2\" maxlength=\"2\" value=\"$nb_cellules_quadrillees\" onkeydown=\"clavier_2(this.id,event,0,300);\" autocomplete=\"off\" /> ] </td></tr>\n";
 		echo "</table>\n";
 		echo "<br />\n";
 
@@ -493,7 +493,7 @@ echo "<div>\n
 		echo "/><label for='zone_vide_1'> Oui</label> <input type=\"radio\" name=\"zone_vide\" id=\"zone_vide_0\" value=\"0\" ";
 		if($zone_vide!=1) {echo "checked ";}
 		echo "/><label for='zone_vide_0'> Non</label><br />\n";
-		echo "&nbsp;&nbsp;Hauteur de la zone&nbsp;: <input type=\"text\" name=\"hauteur_zone_finale\" size=\"2\" maxlength=\"2\" value=\"$hauteur_zone_finale\" /> (0 tout ce qui reste)<br />\n";
+		echo "&nbsp;&nbsp;Hauteur de la zone&nbsp;: <input type=\"text\" name=\"hauteur_zone_finale\" id=\"hauteur_zone_finale\" size=\"2\" maxlength=\"2\" value=\"$hauteur_zone_finale\" onkeydown=\"clavier_2(this.id,event,0,290);\" autocomplete=\"off\" /> (0 tout ce qui reste)<br />\n";
 
 		//echo "<input value=\"1\" name=\"ok\" type=\"hidden\" />\n";
 		echo "<input type=\"hidden\" name=\"enregistrer_parametres\" value=\"1\" />\n";

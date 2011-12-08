@@ -519,7 +519,7 @@ if(isset($generer_pdf)) {
 							$texte="";
 							if(isset($tab_ele[$cpt])) {
 								//$texte=$tab_ele[$cpt]['login'];
-								$texte=strtoupper($tab_ele[$cpt]['nom'])." ".casse_mot($tab_ele[$cpt]['prenom'],'majf2');
+								$texte=mb_strtoupper($tab_ele[$cpt]['nom'])." ".casse_mot($tab_ele[$cpt]['prenom'],'majf2');
 		
 								$sql="INSERT INTO trombino_decoupe SET id_grille='$id_grille', classe='$classe', elenoet='".$tab_ele[$cpt]['elenoet']."', x='$k', y='$m', page='$j', page_global='$nb_total_pages';";
 								$insert=mysql_query($sql);

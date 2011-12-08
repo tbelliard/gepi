@@ -71,7 +71,7 @@ if(isset($_POST['nom'])) {
       case('personnels'):
         echo '<span class="informal" style="display:none;" id="login_cache">'.$resultat['login'].'</span>';
         if (getSettingValue("active_module_trombinoscopes")=='y') {
-          $photo=$repertoire.md5(strtolower($resultat['login'])).'.jpg';
+          $photo=$repertoire.md5(mb_strtolower($resultat['login'])).'.jpg';
           if (!file_exists($photo)) $photo = '../../mod_trombinoscopes/images/trombivide.jpg';
           echo '<img height="71px" src="'.$photo.'"/>';
         }

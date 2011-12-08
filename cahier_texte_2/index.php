@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009 Josselin Jacquard
+ * Copyright 2009-2012 Josselin Jacquard
  *
  * This file is part of GEPI.
  *
@@ -48,12 +48,12 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
-//if (!checkAccess()) {
-//    header("Location: ../logout.php?auto=1");
-//    die();
-//}
+if (!checkAccess()) {
+    header("Location: ../logout.php?auto=1");
+    die();
+}
 
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
@@ -103,7 +103,7 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6' ) !== FALSE) {
 //
 //=================================
 include("../edt_organisation/cdt_initialisation.php");
-
+$pas_de_message_deconnexion = 1;
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
 //-----------------------------------------------------------------------------------

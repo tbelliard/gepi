@@ -713,7 +713,7 @@ $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/statistiques.php', 'F', 'F',
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/generer_notifications_par_lot.php','F', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Génération groupée des courriers', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/bilan_parent.php', 'F', 'F', 'F', 'F', 'F', 'V', 'F', 'F', 'Affichage parents des absences de leurs enfants', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/stat_justifications.php', 'F', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Statistiques des justifications des absences', '');";
-$tab_req[] = "INSERT INTO droits VALUES ('/saisie/validation_corrections.php', 'F', 'F', 'F', 'F', 'F', 'F', 'V', 'F', 'Validation des corrections proposées par des professeurs après la cloture d une période', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/saisie/validation_corrections.php', 'F', 'F', 'F', 'V', 'F', 'F', 'V', 'F', 'Validation des corrections proposées par des professeurs après la cloture d une période', '');";
 
 $tab_req[] = "INSERT INTO droits VALUES ('/gestion/param_ordre_item.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Modifier l ordre des items dans les menus', '');";
 
@@ -841,6 +841,18 @@ responsable='F',
 secours='F',
 autre='F',
 description='Statistiques de connexion',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/groupes/check_enseignements.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Controle des enseignements',
 statut='';";
 
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));

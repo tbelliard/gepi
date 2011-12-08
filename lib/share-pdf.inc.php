@@ -301,17 +301,17 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 				// On tient compte des balises
 				if($valeur{0}=='/') {
 					// On referme une balise
-					if(strtoupper($valeur)=='/B') {
+					if(mb_strtoupper($valeur)=='/B') {
 						$style_courant=preg_replace("/B/i","",$style_courant);
 						$pdf->SetFont('DejaVu',$style_courant);
 						$ligne[$cpt].="</B>";
 					}
-					elseif(strtoupper($valeur)=='/I') {
+					elseif(mb_strtoupper($valeur)=='/I') {
 						$style_courant=preg_replace("/I/i","",$style_courant);
 						$pdf->SetFont('DejaVu',$style_courant);
 						$ligne[$cpt].="</I>";
 					}
-					elseif(strtoupper($valeur)=='/U') {
+					elseif(mb_strtoupper($valeur)=='/U') {
 						$style_courant=preg_replace("/U/i","",$style_courant);
 						$pdf->SetFont('DejaVu',$style_courant);
 						$ligne[$cpt].="</U>";
@@ -319,17 +319,17 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 				}
 				else {
 					// On ouvre une balise
-					if(strtoupper($valeur)=='B') {
+					if(mb_strtoupper($valeur)=='B') {
 						$style_courant=$style_courant.'B';
 						$pdf->SetFont('DejaVu',$style_courant);
 						$ligne[$cpt].="<B>";
 					}
-					elseif(strtoupper($valeur)=='I') {
+					elseif(mb_strtoupper($valeur)=='I') {
 						$style_courant=$style_courant.'I';
 						$pdf->SetFont('DejaVu',$style_courant);
 						$ligne[$cpt].="<I>";
 					}
-					elseif(strtoupper($valeur)=='U') {
+					elseif(mb_strtoupper($valeur)=='U') {
 						$style_courant=$style_courant.'U';
 						$pdf->SetFont('DejaVu',$style_courant);
 						$ligne[$cpt].="<U>";

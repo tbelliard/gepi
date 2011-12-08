@@ -60,6 +60,7 @@ http://www.fpdf.org/fr/script/script62.php
     {
         //Get string width
         $str_width=$this->GetStringWidth($txt);
+        //$str_width=$this->MBGetStringLength($txt,1);
 
         //Calculate ratio to fit cell
         if($w==0)
@@ -85,7 +86,8 @@ http://www.fpdf.org/fr/script/script62.php
                     //Calculate horizontal scaling
                     $horiz_scale=$ratio*100.0;
                     //Set horizontal scaling
-                    $this->_out(sprintf('BT %.2f Tz ET',$horiz_scale));
+                    //$this->_out(sprintf('BT %.2f Tz ET',$horiz_scale));
+                    $this->_out(sprintf('BT %d Tz ET',$horiz_scale));
                     break;
 
             }
@@ -230,9 +232,9 @@ function drawTextBox($strText, $w, $h, $align='L', $valign='T', $border=1)
         $this->Rect($xi,$yi,$w,$h,'DF');
 
     $dy=0;
-    if (strtoupper($valign)=='M')
+    if (mb_strtoupper($valign)=='M')
         $dy=($h-$rows*$this->FontSize)/2;
-    if (strtoupper($valign)=='B')
+    if (mb_strtoupper($valign)=='B')
         $dy=$h-$rows*$this->FontSize;
 
     $this->SetY($yi+$dy);

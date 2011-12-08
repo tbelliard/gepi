@@ -143,6 +143,7 @@ if(isset($_POST['id_modele'])) {
 				$nom_champ=$lig_modele->nom;
 				$$nom_champ=$lig_modele->valeur;
 				/*
+				echo "1<br />";
 				echo "\$nom_champ=$lig_modele->nom<br >\n";
 				echo "\$$nom_champ=$lig_modele->valeur<br >\n";
 				echo "\$$nom_champ=".$$nom_champ."<br >\n\n";
@@ -158,8 +159,30 @@ if(isset($_POST['id_modele'])) {
 		unset($_SESSION['id_modele']);
 	}
 }
+elseif(isset($_SESSION['id_modele'])) {
+	// On verifie que le modele existe et on recupere les valeurs
+	$sql="SELECT * FROM modeles_grilles_pdf_valeurs WHERE id_modele='".$_SESSION['id_modele']."';";
+	//echo "$sql<br >\n";
+	$res_modele=mysql_query($sql);
+	if(mysql_num_rows($res_modele)) {
+		while($lig_modele=mysql_fetch_object($res_modele)) {
+			$nom_champ=$lig_modele->nom;
+			$$nom_champ=$lig_modele->valeur;
+			/*
+			echo "2<br />";
+			echo "\$nom_champ=$lig_modele->nom<br >\n";
+			echo "\$$nom_champ=$lig_modele->valeur<br >\n";
+			echo "\$$nom_champ=".$$nom_champ."<br >\n\n";
+			*/
+		}
+	}
+	else {
+		unset($_SESSION['id_modele']);
+	}
+}
 
 //debug_var();
+//die();
 
 $nb_ligne_avant_initial = $nb_ligne_avant; //pour l'enchainemenet de PDF !
 
@@ -432,7 +455,10 @@ if ($id_liste_groupes!=NULL) {
 			$pdf->SetFont('DejaVu','',9);
 			$y_tmp = $Y_courant;
 			//Nb de ligne AVANT dans le tableau
+			//echo "\$nb_ligne_avant=$nb_ligne_avant<br />";die();
 			if ($nb_ligne_avant > 0) {
+
+				//echo "\$h_ligne1_avant=$h_ligne1_avant<br />\n";echo "\$h_ligne=$h_ligne<br />\n";die();
 
 				//la première ligne peut être plus haute
 				if ($h_ligne1_avant > $h_ligne) {
@@ -443,11 +469,13 @@ if ($id_liste_groupes!=NULL) {
 					if (($afficher_effectif == 1) and ($nb_ligne_avant == 1)) {
 					  //on indique ici le nombre d'élève dans la classe (option)
 					  $texte = 'Effectif : '.$nb_eleves;
-					  $pdf->Cell($l_nomprenom,$h_ligne1_avant,$texte,'R',2,'C',2);
+					  //$pdf->Cell($l_nomprenom,$h_ligne1_avant,$texte,'R',2,'C',2);
+					  $pdf->Cell($l_nomprenom,$h_ligne1_avant,$texte,'R',2,'C',0);
 					} else {
 						//$pdf->Cell($l_nomprenom,$h_ligne1_avant,' ','R',2,'C',2);
 						// Avec le 'R' pas de bordure
 						$pdf->Cell($l_nomprenom,$h_ligne1_avant,' ','R',2,'L',0);
+						//$pdf->Cell($l_nomprenom,$h_ligne1_avant,' Plop ','R',2,'C',2);
 					}
 
 					//la fin du quadrillage
@@ -481,32 +509,30 @@ if ($id_liste_groupes!=NULL) {
 					//echo $nb_ligne_avant."<br>";;
 
 					if (($afficher_effectif == 1) and ($nb_ligne_avant == 1)) { // Attention possibilite de cas non traité
-
-					  //on indique ici le nombre d'élève dans la classe (option)
-					//on indique ici le nombre d'élève dans la classe (option)
-					$texte = 'Effectif : '.$nb_eleves;
+						//on indique ici le nombre d'élève dans la classe (option)
+						//on indique ici le nombre d'élève dans la classe (option)
+						$texte = 'Effectif : '.$nb_eleves;
 					}
 					if (($afficher_effectif == 1) and ($j == $nb_ligne_avant-2)) {
-
-					  $pdf->Cell($l_nomprenom,$h_ligne1_avant,$texte,'R',0,'C',0);
+						$pdf->Cell($l_nomprenom,$h_ligne1_avant,$texte,'R',0,'C',0);
 					} else {
-						  if (($nb_ligne_avant-2 <=0) and ($nb_ligne_avant < 2)) {
+						if (($nb_ligne_avant-2 <=0) and ($nb_ligne_avant < 2)) {
 							$pdf->Cell($l_nomprenom,$h_ligne,$texte,'R',0,'C',0);
-						  } else {
+						} else {
 							$pdf->Cell($l_nomprenom,$h_ligne,'','R',0,'C',0);
-						  }
+						}
 					}
-
+	
 					for($i=0; $i < $nb_colonne ; $i++) {
 						$pdf->Setxy($X_tableau+$l_nomprenom + $i*$l_colonne,$y_tmp);
 						if ($i<$nb_cellules_quadrillees) {
-						   $pdf->Cell($l_colonne,$h_ligne,'',1,0,'C',0); //le quadrillage
+							$pdf->Cell($l_colonne,$h_ligne,'',1,0,'C',0); //le quadrillage
 						} else {
-						   if ($i < ($nb_colonne-1)) {
-							 $pdf->Cell($l_colonne,$h_ligne,'','TB',0,'C',0); //suivant le type : plus de quadrillage
-						   } else {
-							   $pdf->Cell($l_colonne,$h_ligne,'','TBR',0,'C',0); // pour le dernier, on clos le tableau
-						   }
+							if ($i < ($nb_colonne-1)) {
+								$pdf->Cell($l_colonne,$h_ligne,'','TB',0,'C',0); //suivant le type : plus de quadrillage
+							} else {
+								$pdf->Cell($l_colonne,$h_ligne,'','TBR',0,'C',0); // pour le dernier, on clos le tableau
+							}
 						}
 					}
 					$y_tmp = $y_tmp + $h_ligne;
@@ -518,9 +544,27 @@ if ($id_liste_groupes!=NULL) {
 				$nb_ligne_avant = $nb_ligne_avant_initial;
 			}
 
+
+			// Ordonnee premier eleve pour la premiere page de la classe/groupe
+			$y_top_tableau=$y_tmp;
+
 			// Le tableau
+			$compteur_eleves_page=0;
 			while($nb_eleves_i < $nb_eleves) {
-				$y_tmp = $pdf->GetY();
+
+				if(strtr($y_tmp,",",".")+strtr($h_ligne,",",".")>297-$marge_haut-$marge_bas-$h_ligne-5) {
+					// Haut du tableau pour la deuxieme, troisieme,... page de la classe
+					// Pour la deuxieme, troisieme,... page d'une classe, on n'a pas d'entete:
+					$y_top_tableau=$marge_haut;
+
+					$pdf->AddPage("P");
+					$pdf->Setxy($X_tableau,$y_top_tableau);
+					$compteur_eleves_page=0;
+				}
+
+				//$y_tmp = $pdf->GetY();
+				$y_tmp = $y_top_tableau+$compteur_eleves_page*$h_ligne;
+
 				$pdf->Setxy($X_tableau,$y_tmp);
 				$pdf->SetFont('DejaVu','',9);
 				if ($flag_groupe==true) {
@@ -528,9 +572,15 @@ if ($id_liste_groupes!=NULL) {
 				} else {
 					$texte = (($donnees_eleves[$nb_eleves_i]['nom'])." ".($donnees_eleves[$nb_eleves_i]['prenom']));
 				}
-				$pdf->CellFitScale($l_nomprenom,$h_ligne,$texte,1,0,'L',0); //$l_nomprenom.' - '.$h_ligne.' / '.$X_tableau.' - '.$y_tmp
+
+				//$pdf->CellFitScale($l_nomprenom,$h_ligne,$texte,1,0,'L',0); //$l_nomprenom.' - '.$h_ligne.' / '.$X_tableau.' - '.$y_tmp
+
+				$taille_max_police=9;
+				$taille_min_police=ceil($taille_max_police/3);
+				cell_ajustee($texte,$pdf->GetX(),$y_tmp,$l_nomprenom,$h_ligne,$taille_max_police,$taille_min_police,'LRBT');
+
 				for($i=0; $i < $nb_colonne ; $i++) {
-					$y_tmp = $pdf->GetY();
+					//$y_tmp = $pdf->GetY();
 					$pdf->Setxy($X_tableau+$l_nomprenom + $i*$l_colonne,$y_tmp);
 					if ($i<$nb_cellules_quadrillees) {
 					   $pdf->Cell($l_colonne,$h_ligne,'',1,0,'C',0); //le quadrillage
@@ -542,9 +592,12 @@ if ($id_liste_groupes!=NULL) {
 					   }
 					}
 				}
+
 				$pdf->ln();
 				$nb_eleves_i = $nb_eleves_i + 1;
 				//$y_tmp = $y_tmp + $h_ligne;
+
+				$compteur_eleves_page++;
 			}
 			$y_tmp = $pdf->GetY();
 

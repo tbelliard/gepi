@@ -84,6 +84,9 @@ if (!checkAccess()) {
 if (getSettingValue("active_carnets_notes")!='y') {
 	die("Le module n'est pas activé.");
 }
+
+$msg="";
+
 unset($id_devoir);
 $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] : (isset($_GET["id_devoir"]) ? $_GET["id_devoir"] : NULL);
 unset($affiche_message);
@@ -428,6 +431,8 @@ if((isset($_GET['recalculer']))&&(isset($id_conteneur))&&(isset($periode_num))&&
 	if((isset($id_conteneur))&&($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)) {
 
 		recherche_enfant($id_conteneur);
+
+		$msg.="Recalcul des moyennes du carnet de notes effectué.<br />";
 	}
 }
 if (isset($_POST['import_sacoche'])) {
@@ -813,11 +818,16 @@ function verifcol(num_id){
 	if(document.getElementById('n'+num_id).value=='n'){
 		document.getElementById('n'+num_id).value='-';
 	}
+
 	note=document.getElementById('n'+num_id).value;
+
 	if((note!='-')&&(note!='disp')&&(note!='abs')&&(note!='')){
+		note=note.replace(',','.');
+
 		//if((note.search(/^[0-9.]+$/)!=-1)&&(note.lastIndexOf('.')==note.indexOf('.',0))){
+
 		if(((note.search(/^[0-9.]+$/)!=-1)&&(note.lastIndexOf('.')==note.indexOf('.',0)))||
-	((note.search(/^[0-9,]+$/)!=-1)&&(note.lastIndexOf(',')==note.indexOf(',',0)))){
+		((note.search(/^[0-9,]+$/)!=-1)&&(note.lastIndexOf(',')==note.indexOf(',',0)))){
 			if((note>".$note_sur_verif.")||(note<0)){
 				couleur='red';
 			}

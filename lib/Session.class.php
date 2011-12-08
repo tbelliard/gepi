@@ -127,7 +127,7 @@ class Session {
 			  $this->reset(2);
 	          header("Location:".$logout_path."?auto=0&session_id=".session_id());
 	          exit();
-            } elseif ((getSettingValue('gepiSchoolRne')!='')&&(strtoupper($_COOKIE['RNE']) != strtoupper(getSettingValue('gepiSchoolRne')))) {
+            } elseif ((getSettingValue('gepiSchoolRne')!='')&&(mb_strtoupper($_COOKIE['RNE']) != mb_strtoupper(getSettingValue('gepiSchoolRne')))) {
 			  //le rne ne correspond pas à celui de la base
 			  $this->reset(2);
 	          header("Location:".$logout_path."?auto=2&session_id=".session_id());
@@ -172,7 +172,7 @@ class Session {
 		  die();
 		}
 
-		if ($_login != null && strtoupper($_login) != strtoupper($this->login)) {
+		if ($_login != null && mb_strtoupper($_login) != mb_strtoupper($this->login)) {
 			//on a une connexion sous un nouveau login, on purge la session
 			$this->reset("10");
 		}
@@ -500,7 +500,7 @@ class Session {
 			die();
 		}
 
-		$req = mysql_query("SELECT auth_mode FROM utilisateurs WHERE UPPER(login) = '".strtoupper($_login)."'");
+		$req = mysql_query("SELECT auth_mode FROM utilisateurs WHERE UPPER(login) = '".mb_strtoupper($_login)."'");
 		if (mysql_num_rows($req) == 0) {
 			return false;
 		} else {
@@ -700,24 +700,6 @@ class Session {
 			$this->current_auth_mode 	= $_SESSION['current_auth_mode'] != null ? $_SESSION["current_auth_mode"] : false;
 		}
 	}
-
-	/*
-	// Supprimé en trunk (après la 1.5.3.1)
-
-	# Cette fonction permet de tester sous quelle forme le login est stocké dans la base
-	# de données. Elle renvoie true ou false.
-	private function use_uppercase_login($_login) {
-		// On détermine si l'utilisateur a un login en majuscule ou minuscule
-		$test_uppercase = "SELECT login FROM utilisateurs WHERE (login = '" . strtoupper($_login) . "')";
-		if (sql_count(sql_query($test_uppercase)) == "1") {
-			return true;
-		} else {
-			# On a false soit si l'utilisateur n'est pas présent dans la base, soit s'il est
-			# en minuscule.
-			return false;
-		}
-	}
-	*/
 
 	function authenticate_gepi($_login,$_password) {
 		global $debug_test_mdp, $debug_test_mdp_file;
@@ -1070,15 +1052,6 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 		} elseif (isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == 'y') {
 			$this->rne = $_COOKIE['RNE'];
 		}
-
-		/*
-		// Supprimé en trunk (après la 1.5.3.1)
-		# On regarde si on doit utiliser un login en majuscule. Si c'est le cas, il faut impérativement
-		# le faire *après* un éventuel import externe.
-		if ($this->use_uppercase_login($this->login)) {
-			$this->login = strtoupper($this->login);
-		}
-		*/
 
 		# On interroge la base de données
 		$query = mysql_query("SELECT login, nom, prenom, email, statut, etat, now() start, change_mdp, auth_mode FROM utilisateurs WHERE (login = '".$this->login."')");

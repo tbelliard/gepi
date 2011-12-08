@@ -658,7 +658,7 @@ if($interface_simplifiee=="y"){
 		echo "<tr>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Coefficient:</td>\n";
 		echo "<td>\n";
-		echo "<input type='text' name = 'coef' id='coef' size='4' value = \"".$coef."\"  onkeydown=\"clavier_2(this.id,event,0,10);\" />\n";
+		echo "<input type='text' name = 'coef' id='coef' size='4' value = \"".$coef."\" onkeydown=\"clavier_2(this.id,event,0,10);\" autocomplete=\"off\" />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -676,7 +676,7 @@ if($interface_simplifiee=="y"){
 		if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
 			echo "<tr>\n";
 			echo "<td style='background-color: #aae6aa; font-weight: bold;'>Note sur : </td>\n";
-	   		echo "<td><input type='text' name = 'note_sur' id='note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" /></td>\n";
+	   		echo "<td><input type='text' name = 'note_sur' id='note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" autocomplete=\"off\" /></td>\n";
 			echo "</tr>\n";
 			echo "<tr>\n";
 			echo "<td style='background-color: #aae6aa; font-weight: bold; vertical-align: top;'>Ramener la note sur ".getSettingValue("referentiel_note")."<br />lors du calcul de la moyenne : </td>\n";
@@ -822,7 +822,7 @@ else{
 	if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
 	    echo "<h3 class='gepi'>Notation</h3>\n";
 	    echo "<table summary='Referentiel'><tr><td>Note sur : </td>";
-	    echo "<td><input type='text' name = 'note_sur' id='note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" /></td></tr>\n";
+	    echo "<td><input type='text' name = 'note_sur' id='note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" autocomplete=\"off\" /></td></tr>\n";
 	    echo "<tr><td>Ramener la note sur ".getSettingValue("referentiel_note")." lors du calcul de la moyenne : <br />";
 		echo "<span style=\"font-size: x-small;\">Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5<br />";
 		echo "Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20<br />";

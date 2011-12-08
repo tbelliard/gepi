@@ -33,33 +33,18 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-// SQL : INSERT INTO droits VALUES ( '/mod_discipline/disc_stat.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Statistiques', '');
-// maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/disc_stat.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Statistiques', '');";
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 	die();
 }
 
-if(strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+if(mb_strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
 	header("Location: ../accueil.php?msg=$mess");
 	die();
 }
 
-/*
-function get_nom_prenom_eleve($login_ele) {
-	$sql="SELECT nom,prenom FROM eleves WHERE login='$login_ele';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
-		return "Elève inconnu";
-	}
-	else {
-		$lig=mysql_fetch_object($res);
-		return casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2');
-	}
-}
-*/
 function get_denomination_prof($login) {
 	$sql="SELECT nom,prenom,civilite FROM utilisateurs WHERE login='$login';";
 	$res=mysql_query($sql);
@@ -68,7 +53,7 @@ function get_denomination_prof($login) {
 	}
 	else {
 		$lig=mysql_fetch_object($res);
-		return $lig->civilite." ".casse_mot($lig->nom)." ".strtoupper(mb_substr($lig->prenom,0,1));
+		return $lig->civilite." ".casse_mot($lig->nom)." ".mb_strtoupper(mb_substr($lig->prenom,0,1));
 	}
 }
 

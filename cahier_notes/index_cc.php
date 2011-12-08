@@ -3,7 +3,7 @@
  * Création d'évaluations cumules
  * 
  *
- * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL, 
  * @package Carnet_de_notes
  * @subpackage affichage
@@ -189,7 +189,7 @@ echo "<form enctype=\"multipart/form-data\" name= \"form0\" action=\"".$_SERVER[
 echo "<div class='norme'>\n";
 echo "<p class='bold'>\n";
 echo "<a href='index.php?id_racine=$id_racine'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
-echo " | <a href='add_modif_cc_dev.php?id_racine=$id_racine'>Ajouter un $nom_cc</a>";
+echo " | <a href='add_modif_cc_dev.php?id_racine=$id_racine'>Ajouter une $nom_cc</a>";
 
 $sql="SELECT DISTINCT ccn.id_cahier_notes, g.*, c.classe FROM cn_cahier_notes ccn, groupes g, j_groupes_professeurs jgp, j_groupes_classes jgc, classes c WHERE (login='".$_SESSION['login']."'
 						AND jgp.id_groupe=ccn.id_groupe
@@ -215,6 +215,30 @@ while($lig=mysql_fetch_object($res_grp)) {
 	}
 }
 echo "</select>\n";
+
+echo " | ";
+if($periode_num>1) {
+	$periode_prec=$periode_num-1;
+	$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE id_groupe='$id_groupe' AND periode='$periode_prec';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$lig=mysql_fetch_object($res);
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$lig->id_cahier_notes'><img src='../images/icons/back.png' width='16' height='16' title='Période $periode_prec' alt='Période $periode_prec' /></a> ";
+	}
+}
+echo "Période $periode_num";
+if($periode_num<$current_group['nb_periode']) {
+	$periode_suiv=$periode_num+1;
+	$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE id_groupe='$id_groupe' AND periode='$periode_suiv';";
+	//echo "$sql<br />";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$lig=mysql_fetch_object($res);
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$lig->id_cahier_notes'><img src='../images/icons/forward.png' width='16' height='16' title='Période $periode_suiv' alt='Période $periode_suiv' /></a>";
+	}
+}
+
+
 echo "</p>\n";
 echo "</div>\n";
 echo "</form>\n";
@@ -227,12 +251,15 @@ echo "<h2>".$current_group['name']." (<i>".$current_group['description']."</i>) 
 $liste_eleves = $current_group["eleves"][$periode_num]["users"];
 $nb_eleves=count($current_group["eleves"][$periode_num]["users"]);
 
-echo "<p>Liste des $nom_cc non rattachées à un devoir du carnet de notes&nbsp;: <br />\n";
-$sql="SELECT * FROM cc_dev WHERE id_groupe='$id_groupe' AND id_cn_dev NOT IN (SELECT id FROM cn_devoirs);";
+//echo "<p>Liste des $nom_cc non rattachées à un devoir du carnet de notes&nbsp;: <br />\n";
+echo "<p>Liste des $nom_cc&nbsp;: <br />\n";
+//$sql="SELECT * FROM cc_dev WHERE id_groupe='$id_groupe' AND id_cn_dev NOT IN (SELECT id FROM cn_devoirs);";
+$sql="SELECT * FROM cc_dev WHERE id_groupe='$id_groupe';";
 //echo "$sql<br />\n";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	echo "Aucun $nom_cc non rattachée n'est encore définie.</p>\n";
+	//echo "Aucun $nom_cc non rattachée n'est encore définie.</p>\n";
+	echo "Aucun $nom_cc n'est encore définie.</p>\n";
 }
 else {
 	echo "<ul>\n";
@@ -248,7 +275,22 @@ else {
 		echo " | ";
 		echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$lig->id&amp;action=suppr_dev".add_token_in_url()."'>Supprimer</a>";
 		echo " | ";
-		echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$lig->id".add_token_in_url()."'></a>Transférer vers le carnet de notes (<span style='color:red'>A FAIRE</span>)";
+		if($ver_periode[$periode_num]=='N') {
+			if(file_exists("transfert_cc_vers_cn.php")) {
+				echo "<a href='transfert_cc_vers_cn.php?id_racine=$id_racine&amp;id_dev_cc=$lig->id".add_token_in_url()."'>Transférer vers le carnet de notes</a>";
+			}
+			else {
+				echo "Transférer vers le carnet de notes (<span style='color:red'>A FAIRE</span>)";
+			}
+		}
+		else {
+			echo "Transfert impossible vers le carnet de notes (<em>Période $periode_num fermée</em>)";
+		}
+
+		if($lig->id_cn_dev!='0') {
+			echo " <img src='../images/icons/chaine.png' width='16' height='16' title='Devoir rattaché à ".get_infos_devoir($lig->id_cn_dev)."' />";
+		}
+
 		echo "<br />\n";
 		$sql="SELECT * FROM cc_eval WHERE id_dev='$lig->id' ORDER BY date, nom_court;";
 		$res2=mysql_query($sql);
@@ -275,11 +317,13 @@ else {
 	echo "</ul>\n";
 }
 
-echo "<p>Liste des $nom_cc rattachées à un devoir du carnet de notes&nbsp;: <br />\n";
-echo "<span style='color:red'>A FAIRE</span>";
+//echo "<p>Liste des $nom_cc rattachées à un devoir du carnet de notes&nbsp;: <br />\n";
+//echo "<span style='color:red'>A FAIRE</span>";
 
 echo "</form>\n";
 echo "<br />\n";
+
+echo "<p style='text-indent:-3em; margin-left:3em;'><em>NOTE&nbsp;:</em><br />Les $nom_cc ne sont pas rattachées à une période.<br />Elles peuvent être à cheval sur plusieurs périodes.<br />Cependant, le transfert des notes vers un carnet de notes n'est possible que vers une période ouverte en saisie.</p>\n";
 
 /**
  * inclusion du pied de page

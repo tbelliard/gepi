@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
 *
 * This file is part of GEPI.
 *
@@ -110,7 +110,12 @@ require_once("../lib/header.inc");
 
 echo "<p class='bold'>";
 if($_SESSION['statut']=='professeur') {
-	echo "<a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	if(getSettingValue("GepiCahierTexteVersion")=='2') {
+		echo "<a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	}
+	else {
+		echo "<a href='../cahier_texte/index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	}
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Export de mes CDT</a>";
 }
 else {
@@ -286,6 +291,7 @@ if(!isset($id_groupe)) {
 				echo "</th>\n";
 				echo "<th>Enseignement</th>\n";
 				echo "<th>Description</th>\n";
+				//echo "<th>Professeurs</th>\n";
 				echo "<th>Classes</th>\n";
 				echo "</tr>\n";
 				$alt=1;
@@ -303,6 +309,12 @@ if(!isset($id_groupe)) {
 					echo $current_group['description'];
 					echo "</label>";
 					echo "</td>\n";
+					/*
+					echo "<td>\n";
+					$profs_grp=get_profs_for_group($current_group['id']);
+					echo $profs_grp['proflist_string'];
+					echo "</td>\n";
+					*/
 					echo "<td>\n";
 					echo $current_group['classlist_string'];
 					echo "</td>\n";
@@ -323,6 +335,11 @@ if(!isset($id_groupe)) {
 				echo "&nbsp;à la date : </label>";
 				echo "<input type='text' name = 'display_date_fin' id = 'display_date_fin' size='10' value = \"".$display_date_fin."\" onfocus=\"document.getElementById('choix_periode_dates').checked=true;\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
 				echo "<label for='choix_periode_dates' style='cursor: pointer;'><a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+
+
+				$date_end_bookings=strftime("%d/%m/%Y", getSettingValue('end_bookings'));
+				echo " <a href=\"#\" onclick=\"document.getElementById('display_date_fin').value='".$date_end_bookings."';return false;\"><img src='../images/icons/wizard.png' width='16' height='16' alt=\"Prendre la date de fin d'année scolaire : ".getSettingValue('end_bookings')."\" title=\"Prendre la date de fin d'année scolaire : ".getSettingValue('end_bookings')."\" /></a>";
+
 				echo "<br />\n";
 				echo " (<i>Veillez à respecter le format jj/mm/aaaa</i>)</label>\n";
 				echo "</p>\n";
@@ -416,6 +433,7 @@ if(!isset($id_groupe)) {
 					echo "</th>\n";
 					echo "<th>Enseignement</th>\n";
 					echo "<th>Description</th>\n";
+					echo "<th>Professeurs</th>\n";
 					echo "<th>Classes</th>\n";
 					echo "</tr>\n";
 					$alt=1;
@@ -432,6 +450,10 @@ if(!isset($id_groupe)) {
 						echo "<label for='id_groupe_$cpt'>";
 						echo $current_group['description'];
 						echo "</label>";
+						echo "</td>\n";
+						echo "<td>\n";
+						$profs_grp=get_profs_for_group($current_group['id']);
+						echo $profs_grp['proflist_string'];
 						echo "</td>\n";
 						echo "<td>\n";
 						echo $current_group['classlist_string'];

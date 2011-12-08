@@ -47,17 +47,6 @@ if (!checkAccess()) {
   die();
 }
 
-/*
-// SURTOUT PAS: Cette page sert à activer/désactiver le module.
-if(strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
-	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
-	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
-	header("Location: ../accueil.php?msg=$mess");
-	die();
-}
-*/
-
-//$msg = '';
 if ((isset($_POST['is_posted']))&&(isset($_POST['activer']))) {
 	check_token();
     if (!saveSetting("active_mod_discipline", $_POST['activer'])) {
@@ -74,10 +63,6 @@ if (isset($_POST['is_posted']) and ($msg=='')) {
   $msg = "Les modifications ont été enregistrées !";
   $post_reussi=TRUE;
 }
-// header
-//$titre_page = "Gestion du module Discipline";
-//require_once("../lib/header.inc");
-
 
 // ====== Inclusion des balises head et du bandeau =====
 include_once("../lib/header_template.inc");

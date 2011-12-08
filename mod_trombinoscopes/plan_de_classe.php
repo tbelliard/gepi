@@ -300,7 +300,7 @@ while($lig=mysql_fetch_object($res)) {
 	$nom_photo = nom_photo($lig->elenoet,$repertoire);
 	$photo = $nom_photo;
 
-	$alt_nom_prenom_aff=strtoupper($lig->nom)." ".casse_mot($lig->prenom,'majf2');
+	$alt_nom_prenom_aff=mb_strtoupper($lig->nom)." ".casse_mot($lig->prenom,'majf2');
 
 	if (($nom_photo) and (file_exists($photo))) {
 		$info_image = getimagesize($photo);
