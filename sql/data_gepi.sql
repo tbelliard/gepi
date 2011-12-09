@@ -955,3 +955,4 @@ INSERT INTO droits SET id='/gestion/changement_d_annee.php',administrateur='V',p
 INSERT INTO droits VALUES ('/absences/import_absences_csv.php', 'F', 'F', 'V', 'F', 'F', 'F', 'V', 'F', 'Saisie des absences', '');
 INSERT INTO droits SET id='/statistiques/stat_connexions.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Statistiques de connexion',statut='';
 INSERT INTO droits SET id='/groupes/check_enseignements.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Controle des enseignements',statut='';
+INSERT INTO droits VALUES ('/bulletin/index.php', 'V', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Edition des bulletins', '1');
