@@ -262,11 +262,11 @@ elseif(!isset($ele_login)) {
 	echo "</p>\n";
 	echo "</div>\n";
 
-	echo "<p>Choisissez un élève:</p>\n";
+	echo "<p>Choisissez un élève&nbsp;:</p>\n";
 
 	echo "<blockquote>\n";
 
-	$sql="SELECT e.nom, e.prenom, e.login FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND jec.id_classe='$id_classe' AND jec.periode='$periode_num';";
+	$sql="SELECT e.nom, e.prenom, e.login FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND jec.id_classe='$id_classe' AND jec.periode='$periode_num' ORDER BY e.nom, e.prenom;";
 	$res_ele=mysql_query($sql);
 
 	$nombreligne=mysql_num_rows($res_ele);
@@ -360,7 +360,7 @@ else {
 	if("$login_eleve_prec"!="0"){
 		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=$periode_num&amp;ele_login=$login_eleve_prec'";
 		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-		echo ">Elève précédent</a>";
+		echo ">Élève précédent</a>";
 	}
 
 
@@ -400,7 +400,7 @@ else {
 	if("$login_eleve_suiv"!="0"){
 		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=$periode_num&amp;ele_login=$login_eleve_suiv'";
 		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-		echo ">Elève suivant</a>";
+		echo ">Élève suivant</a>";
 	}
 
 	echo "</p>\n";
@@ -469,6 +469,7 @@ else {
 			$id_groupe=$lig_grp->id_groupe;
 			$matiere_nom_complet=$lig_grp->nom_complet;
 			$description_groupe=$lig_grp->description;
+			$current_group=get_group($id_groupe,array('classes', 'profs'));
 
 			$app="";
 			$sql="SELECT appreciation FROM matieres_appreciations WHERE id_groupe='$id_groupe' AND login='$ele_login' AND periode='$periode_num';";
@@ -498,7 +499,13 @@ else {
 
 			echo "<td>\n";
 			echo htmlspecialchars($matiere_nom_complet);
+			if(count($current_group["classes"]["list"])>1) {
+				echo " (<em style='font-size:small'>en ".$current_group["classlist_string"]."</em>)";
+			}
 			if($matiere_nom_complet!=$description_groupe) {echo "<br /><span style='font-size:x-small;'>".htmlspecialchars($description_groupe)."</span>\n";}
+			echo "<br />\n";
+			echo "<em style='font-size:small'>".$current_group["profs"]["proflist_string"]."</em>";
+
 			echo "<input type='hidden' name='id_groupe[$cpt]' value='$id_groupe' />\n";
 			echo "</td>\n";
 
@@ -532,6 +539,8 @@ else {
 		}
 	}
 </script>\n";
+
+		echo "<br />";
 	}
 }
 require("../lib/footer.inc.php");

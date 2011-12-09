@@ -274,12 +274,15 @@ $titre_page = "Créer des comptes d'accès responsables";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href="edit_responsable.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+<p class='bold'><a href="edit_responsable.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 </p>
 <?php
 
 if(getSettingValue('auth_sso')=='lcs') {
-	echo "<p style='color:red'><b>ATTENTION&nbsp;:</b> Il convient de choisir pour les parents un format de login différent de celui des comptes des utilisateurs élèves et professeurs (<em>comptes de l'annuaire LDAP</em>).<br />Sinon, avec l'arrivée de nouveaux élèves en cours d'année, il peut arriver qu'un élève obtienne un login déjà attribué à un responsable dans Gepi.<br />Pour choisir le format de login des responsables, consultez la page <a href='../gestion/param_gen.php#format_login_resp'>Configuration générale</a>.</p>\n";
+	echo "<p style='color:red; text-indent: -7em; margin-left: 7em;'><b>ATTENTION&nbsp;:</b> Il convient de choisir pour les parents un format de login différent de celui des comptes des utilisateurs élèves et professeurs (<em>comptes de l'annuaire LDAP</em>).<br />Sinon, avec l'arrivée de nouveaux élèves en cours d'année, il peut arriver qu'un élève obtienne un login déjà attribué à un responsable dans Gepi.<br />Pour choisir le format de login des responsables, consultez la page <a href='../gestion/param_gen.php#format_login_resp'>Configuration générale</a>.<br />";
+	$mode_generation_login_responsable=getSettingValue('mode_generation_login_responsable');
+	echo "Le format de login responsable est actuellement <strong>$mode_generation_login_responsable</strong>";
+	echo "</p>\n";
 }
 
 $afficher_tous_les_resp=isset($_POST['afficher_tous_les_resp']) ? $_POST['afficher_tous_les_resp'] : "n";
@@ -537,6 +540,38 @@ else{
 	echo "</form>";
 	echo "</blockquote>\n";
 }
+echo "<p><br /></p>\n";
+
+echo "<p><em>NOTES&nbsp;:</em></p>
+<a name='bloc_adresse'></a>
+<blockquote>
+<p>Si vous générez des Fiches bienvenue avec Bloc adresse du responsable de l'élève, il peut arriver que si les paramètres sont mal choisis, l'adresse n'apparaisse pas... ou hors champ.</p>\n";
+
+echo "<p>Contrôler les paramétrages aberrants pour un format <a href='".$_SERVER['PHP_SELF']."?check_param_bloc_adresse_html=a4#bloc_adresse'>A4</a> ou un un format <a href='".$_SERVER['PHP_SELF']."?check_param_bloc_adresse_html=a3#bloc_adresse'>A3</a></p>";
+
+if(isset($_GET['check_param_bloc_adresse_html'])) {
+	if($_GET['check_param_bloc_adresse_html']=='a4') {
+		echo "<p>Contrôle des paramètres pour la version A4&nbsp;:</p>";
+		$retour_check=check_param_bloc_adresse_html('a4');
+	}
+	else {
+		echo "<p>Contrôle des paramètres pour la version A3&nbsp;:</p>";
+		$retour_check=check_param_bloc_adresse_html('a3');
+	}
+
+	if($retour_check=='') {
+		echo "<p style='color:green'>";
+		echo "Pas de valeur aberrante trouvée.";
+	}
+	else {
+		echo "<p style='color:red'>";
+		echo "".$retour_check;
+	}
+	echo "</p>";
+}
+
+echo "<br /><p style='text-indent: -6em; margin-left: 6em;'><em>Remarque&nbsp;:</em> Le bloc adresse des responsables d'un élève est positionné dans les bulletins HTML et Fiches Bienvenue avec les mêmes paramètres.<br />Ils sont définis dans la page <a href='../bulletin/param_bull.php#bloc_adresse'>Paramètres d'impression des bulletins</a></p>\n";
+echo "</blockquote>\n";
 echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>

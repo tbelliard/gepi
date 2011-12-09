@@ -194,6 +194,7 @@ $nom_sous_cont = array();
 $coef_sous_cont = array();
 $display_bulletin_sous_cont = array();
 $nb_sous_cont = array();
+$ponderation_sous_cont = array();
 
 // Initialisation
 $nb_dev[-1] = 0;
@@ -202,6 +203,7 @@ $nom_sous_cont[-1] = 0;
 $coef_sous_cont[-1] = 0;
 $display_bulletin_sous_cont[-1] = 0;
 $nb_sous_cont[-1] = 0;
+$ponderation_sous_cont[-1] = 0;
 
 $j=0;
 $num_per = 0;
@@ -224,7 +226,7 @@ while ($num_per < $nb_cahier_note) {
     // Détermination des sous-conteneurs
     //
     $nb_sous_cont[$num_per] = $nb_sous_cont[$num_per-1];
-    sous_conteneurs($id_conteneur[$num_per],$nb_sous_cont[$num_per],$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'all');
+    sous_conteneurs($id_conteneur[$num_per],$nb_sous_cont[$num_per],$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'all',$ponderation_sous_cont);
 
     // Détermination du nombre de devoirs à afficher
     $appel_dev = mysql_query("select * from cn_devoirs where (id_conteneur='".$id_conteneur[$num_per]."' and id_racine='".$id_conteneur[$num_per]."') order by date");

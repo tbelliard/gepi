@@ -5006,7 +5006,7 @@ function get_timestamp_jour_suivant($timestamp_today) {
  * @param string $texte Texte à nettoyer
  * @return string Texte nettoyé
  */
-function netoyage_retours_ligne_surnumeraires($texte) {
+function nettoyage_retours_ligne_surnumeraires($texte) {
 	$retour=preg_replace('/(\\\r\\\n)+/',"\r\n",$texte);
 	$retour=preg_replace('/(\\\r)+/',"\r",$retour);
 	$retour=preg_replace('/(\\\n)+/',"\n",$retour);
@@ -5039,4 +5039,17 @@ function getDateDescription($date_debut,$date_fin) {
 	return $message;
 }
 
+/** fonction retournant une chaine encodée pour le download d'un CSV
+ *
+ * @param string $texte_csv
+ * @return string La chaine encodée 
+ */
+function echo_csv_encoded($texte_csv) {
+	// D'après http://www.oxeron.com/2008/09/15/probleme-daccent-dans-un-export-csv-en-php
+
+	//$retour=$texte_csv;
+	$retour=chr(255).chr(254).mb_convert_encoding($texte_csv, 'UTF-16LE', 'UTF-8');
+
+	return $retour;
+}
 ?>

@@ -614,7 +614,8 @@ if ($test == -1) {
 	}
 
 	// A titre d'exemple
-	$tab_vocab=array('il peu','il peut',
+	$tab_vocab=array('jute','juste',
+						'il peu','il peut',
 						'elle peu','elle peut',
 						'un peut', 'un peu',
 						'trop peut','trop peu',

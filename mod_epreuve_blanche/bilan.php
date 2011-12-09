@@ -616,7 +616,8 @@ if(isset($imprime)) {
 	
 			$now = gmdate('D, d M Y H:i:s') . ' GMT';
 			send_file_download_headers('text/x-csv',$nom_fic);	
-			echo $csv;
+			//echo $csv;
+			echo echo_csv_encoded($csv);
 			die();
 
 		}

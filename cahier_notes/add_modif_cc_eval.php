@@ -129,7 +129,7 @@ if(isset($id_eval))  {
 		//$id_cn_dev=mysql_result($query, 0, 'id_cn_dev');
 		$nom_court=mysql_result($query, 0, 'nom_court');
 		$nom_complet=mysql_result($query, 0, 'nom_complet');
-		$description=netoyage_retours_ligne_surnumeraires(mysql_result($query, 0, 'description'));
+		$description=nettoyage_retours_ligne_surnumeraires(mysql_result($query, 0, 'description'));
 
 		$display_date=mysql_result($query, 0, 'date');
 		$note_sur=mysql_result($query, 0, 'note_sur');

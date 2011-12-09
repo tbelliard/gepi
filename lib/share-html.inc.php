@@ -167,6 +167,13 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 			echo " (<strong>".$gepiClosedPeriodLabel."</strong>) ";
 		}
 		echo "- <a href='saisie_notes.php?id_conteneur=$id_cont'>Visualisation</a> - <a href = 'add_modif_conteneur.php?id_conteneur=$id_cont&amp;mode_navig=retour_index'>Configuration</a>\n";
+
+		$ponderation_cont=mysql_result($appel_conteneurs, 0, 'ponderation');
+		if($ponderation_cont!='0.0') {
+			$message_ponderation="La meilleure note de la ".getSettingValue("gepi_denom_boite")." est pondérée d'un coefficient +$ponderation_cont";
+			echo " - <img src='../images/icons/flag.png' width='17' height='18' alt=\"$message_ponderation\" title=\"$message_ponderation\" />";
+		}
+
 		$appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont' order by date");
 		$nb_dev  = mysql_num_rows($appel_dev);
 		if ($nb_dev != 0) {$empty = 'no';}
@@ -246,6 +253,11 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 
 					echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a>";
 
+					$note_sur=mysql_result($appel_dev, $j, 'note_sur');
+					if($note_sur!='20') {
+						echo " (<em><span title='Note sur $note_sur'>/$note_sur</span></em>)";
+					}
+
 					$display_parents=mysql_result($appel_dev, $j, 'display_parents');
 					$coef=mysql_result($appel_dev, $j, 'coef');
 					echo " (<i><span title='Coefficient $coef'>$coef</span> ";
@@ -282,6 +294,12 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					if($display_bulletin==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='$gepi_denom_boite visible sur le bulletin' alt='$gepi_denom_boite visible sur le bulletin' />";}
 					else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='$gepi_denom_boite non visible sur le bulletin' alt='$gepi_denom_boite non visible sur le bulletin' />\n";}
 					echo "</i>)";
+
+					$ponderation_cont=mysql_result($appel_conteneurs, $i, 'ponderation');
+					if($ponderation_cont!='0.0') {
+						$message_ponderation="La meilleure note de la ".getSettingValue("gepi_denom_boite")." est pondérée d'un coefficient +$ponderation_cont";
+						echo " - <img src='../images/icons/flag.png' width='17' height='18' alt=\"$message_ponderation\" title=\"$message_ponderation\" />";
+					}
 
 					$appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont' order by date");
 					$nb_dev  = mysql_num_rows($appel_dev);
@@ -341,6 +359,11 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 							}
 
 							echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a>";
+
+							$note_sur=mysql_result($appel_dev, $j, 'note_sur');
+							if($note_sur!='20') {
+								echo " (<em><span title='Note sur $note_sur'>/$note_sur</span></em>)";
+							}
 
 							$display_parents=mysql_result($appel_dev, $j, 'display_parents');
 							$coef=mysql_result($appel_dev, $j, 'coef');
@@ -1808,6 +1831,78 @@ function insere_js_check_format_login($nom_js_func, $avec_balise_script="n") {
 		return test;
 	}\n";
 	if($avec_balise_script!="n") {$retour.="</script>\n";}
+	return $retour;
+}
+
+function check_param_bloc_adresse_html($a4_ou_a3="a4") {
+	if($a4_ou_a3=="a4") {
+		$largeur_page=210;
+		$hauteur_page=297;
+	}
+	else {
+		$largeur_page=297;
+		$hauteur_page=420;
+	}
+	
+	$retour="";
+	
+	$temoin_erreur="n";
+	
+	$addressblock_padding_right=getSettingValue('addressblock_padding_right');
+	if(($addressblock_padding_right=='')||(!preg_match('/^[0-9]*$/',$addressblock_padding_right))) {
+		$retour.="La valeur de l'espace à droite du bloc adresse n'est pas valide&nbsp;: '$addressblock_padding_right'<br />";
+		$temoin_erreur="y";
+	}
+	
+	$addressblock_length=getSettingValue('addressblock_length');
+	if(($addressblock_length=='')||(!preg_match('/^[0-9]*$/',$addressblock_length))) {
+		$retour.="La valeur de la longueur du bloc adresse n'est pas valide&nbsp;: '$addressblock_length'<br />";
+		$temoin_erreur="y";
+	}
+	
+	if($temoin_erreur!="y") {
+		if($addressblock_padding_right+$addressblock_length>=$largeur_page) {
+			$retour.="La somme des longueur du bloc adresse et de l'espace à droite du bloc adresse dépasse la largeur de la page&nbsp;: $addressblock_padding_right + $addressblock_length >= $largeur_page<br />";
+		}
+	}
+	
+	$temoin_erreur="n";
+	
+	$addressblock_padding_top=getSettingValue('addressblock_padding_top');
+	$addressblock_padding_text=getSettingValue('addressblock_padding_text');
+	if(($addressblock_padding_top=='')||(!preg_match('/^[0-9]*$/',$addressblock_padding_top))) {
+		$retour.="La valeur de l'espace au-dessus du bloc adresse n'est pas valide&nbsp;: '$addressblock_padding_top'<br />";
+		$temoin_erreur="y";
+	}
+	
+	if(($addressblock_padding_text=='')||(!preg_match('/^[0-9]*$/',$addressblock_padding_text))) {
+		$retour.="La valeur de l'espace au-dessous du bloc adresse n'est pas valide&nbsp;: '$addressblock_padding_text'<br />";
+		$temoin_erreur="y";
+	}
+	
+	if($temoin_erreur!="y") {
+		if($addressblock_padding_top+$addressblock_padding_text>=$hauteur_page) {
+			$retour.="La somme des espaces au-dessus et au-dessous du bloc adresse dépassent la hauteur de la page&nbsp;: $addressblock_padding_top + $addressblock_padding_text >= $hauteur_page<br />";
+		}
+	}
+	
+	// Pourcentages:
+	$addressblock_logo_etab_prop=getSettingValue('addressblock_logo_etab_prop');
+	if(($addressblock_logo_etab_prop=='')||(!preg_match('/^[0-9]*$/',$addressblock_logo_etab_prop))) {
+		$retour.="La valeur de la proportion horizontale allouée au logo de l'établissement n'est pas valide&nbsp;: '$addressblock_logo_etab_prop'<br />";
+	}
+	elseif($addressblock_logo_etab_prop>100) {
+		$retour.="La valeur de la proportion horizontale allouée au logo de l'établissement dépasse les 100%&nbsp;: '$addressblock_logo_etab_prop'<br />";
+	}
+	
+	$addressblock_classe_annee=getSettingValue('addressblock_classe_annee');
+	if(($addressblock_classe_annee=='')||(!preg_match('/^[0-9]*$/',$addressblock_classe_annee))) {
+		$retour.="La valeur de la proportion horizontale allouée au bloc 'Classe, année, période' n'est pas valide&nbsp;: '$addressblock_classe_annee'<br />";
+	}
+	elseif($addressblock_classe_annee>100) {
+		$retour.="La valeur de la proportion horizontale allouée au bloc 'Classe, année, période' n'est pas valide&nbsp;: '$addressblock_classe_annee'<br />";
+	}
+	
 	return $retour;
 }
 

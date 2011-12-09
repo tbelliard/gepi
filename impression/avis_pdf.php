@@ -19,19 +19,12 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
-//INSERT INTO droits VALUES ('/impression/avis_pdf.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F','Impression des avis trimestrielles des conseils de classe. Module PDF', '');
  
 // Global configuration file
 // Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
 //Le problème peut être résolu en ajoutant la ligne suivante :
-/*
-Header('Pragma: public');
 
-header('Content-Type: application/pdf');
-*/
 //=============================
-// REMONTé:
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 //=============================
@@ -43,11 +36,6 @@ if (!defined('FPDF_VERSION')) {
 define('FPDF_FONTPATH','../fpdf/font/');
 define('LargeurPage','210');
 define('HauteurPage','297');
-
-/*
-// Initialisations files
-require_once("../lib/initialisations.inc.php");
-*/
 
 require_once("./class_pdf.php");
 require_once ("./liste.inc.php"); //fonction qui retourne le nombre d'élèves par classe (ou groupe) pour une période donnée.
@@ -66,7 +54,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");

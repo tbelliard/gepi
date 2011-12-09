@@ -163,9 +163,12 @@ if(isset($_GET['mode'])){
 
 		$nb_ligne = count($ligne_csv);
 
+		$fd="";
 		for ($i=0;$i<$nb_ligne;$i++) {
-		  echo $ligne_csv[$i];
+		  $fd.=$ligne_csv[$i];
 		}
+
+		echo echo_csv_encoded($fd);
 		die();
 	}
 }

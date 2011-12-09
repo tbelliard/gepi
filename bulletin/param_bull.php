@@ -703,6 +703,7 @@ $msg = "Enregistrement réussi !";
 }
 
 
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 // End standart header
 require_once("../lib/header.inc");
 if (!loadSettings()) {
@@ -749,6 +750,7 @@ function SetDefaultValues(nb){
 	}
 }
 // fin du script -->
+change='no';
 </script>
 
 <p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>
@@ -789,7 +791,7 @@ echo add_token_field();
         <td style="font-variant: small-caps;">
         <label for='bull_body_marginleft' style='cursor: pointer;'>Marge gauche de la page (en pixels) :</label>
         </td>
-        <td><input type="text" name="bull_body_marginleft" id="bull_body_marginleft" size="20" value="<?php
+        <td><input type="text" name="bull_body_marginleft" id="bull_body_marginleft" size="20" onchange="changement()" value="<?php
 			if(getSettingValue("bull_body_marginleft")) {
 				echo getSettingValue("bull_body_marginleft");
 			}
@@ -1565,12 +1567,44 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 
 
 <hr />
+<a name='bloc_adresse'></a>
 <H3>Bloc adresse</H3>
 <center><table border="1" cellpadding="10" width="90%" summary='Bloc adresse'><tr><td>
-Ces options contrôlent le positionnement du bloc adresse du responsable de l'élève directement sur le bulletin (et non sur la page de garde - voir ci-dessous). L'affichage de ce bloc est contrôlé classe par classe, au niveau du paramétrage de la classe.
+Ces options contrôlent le positionnement du bloc adresse du responsable de l'élève directement sur le bulletin (<em>et non sur la page de garde - voir ci-dessous</em>). L'affichage ou non de ce bloc est contrôlé classe par classe, au niveau du paramétrage de la classe.<br />
+<br />
+<?php
+
+	echo "Contrôler les paramétrages aberrants pour un format <a href='".$_SERVER['PHP_SELF']."?check_param_bloc_adresse_html=a4#bloc_adresse' onclick=\"return confirm_abandon (this, change, '$themessage')\">A4</a> ou un un format <a href='".$_SERVER['PHP_SELF']."?check_param_bloc_adresse_html=a3#bloc_adresse' onclick=\"return confirm_abandon (this, change, '$themessage')\">A3</a>";
+
+
+	if(isset($_GET['check_param_bloc_adresse_html'])) {
+		echo "<br />\n";
+		if($_GET['check_param_bloc_adresse_html']=='a4') {
+			echo "<p>Contrôle des paramètres pour la version A4&nbsp;:</p>\n";
+			$retour_check=check_param_bloc_adresse_html('a4');
+		}
+		else {
+			echo "<p>Contrôle des paramètres pour la version A3&nbsp;:</p>\n";
+			$retour_check=check_param_bloc_adresse_html('a3');
+		}
+
+		if($retour_check=='') {
+			echo "<p style='color:green'>";
+			echo "Pas de valeur aberrante trouvée.";
+		}
+		else {
+			echo "<p style='color:red'>";
+			echo $retour_check;
+		}
+		echo "</p>\n";
+	}
+
+	echo "<br />\n<p style='text-indent: -4em; margin-left: 4em;'><em>NOTE&nbsp;:</em> Le bloc adresse des responsables d'un élève est positionné dans les bulletins HTML et Fiches Bienvenue avec les mêmes paramètres.</p>\n";
+?>
+
 </td></tr></table></center>
 
-<table cellpadding="8" cellspacing="0" width="100%" border="0" summary='Bloca adresse'>
+<table cellpadding="8" cellspacing="0" width="100%" border="0" summary='Bloc adresse'>
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;;$nb_ligne++;?>>
         <td colspan='2' style="font-variant: small-caps;">

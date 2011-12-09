@@ -3135,6 +3135,36 @@ else {
 	echo "</div>\n";
 
 	echo "<hr />\n";
+
+	echo "<h2>Bloc adresse des bulletins HTML et Fiches Bienvenue HTML</h2>";
+	echo "<p>Contrôler les paramétrages aberrants pour un format <a href='".$_SERVER['PHP_SELF']."?check_param_bloc_adresse_html=a4'>A4</a> ou un un format <a href='".$_SERVER['PHP_SELF']."?check_param_bloc_adresse_html=a3'>A3</a></p>";
+
+	if(isset($_GET['check_param_bloc_adresse_html'])) {
+		if($_GET['check_param_bloc_adresse_html']=='a4') {
+			echo "<p>Contrôle des paramètres pour la version A4&nbsp;:</p>";
+			$retour_check=check_param_bloc_adresse_html('a4');
+		}
+		else {
+			echo "<p>Contrôle des paramètres pour la version A3&nbsp;:</p>";
+			$retour_check=check_param_bloc_adresse_html('a3');
+		}
+
+		if($retour_check=='') {
+			echo "<p style='color:green'>";
+			echo "Pas de valeur aberrante trouvée.";
+		}
+		else {
+			echo "<p style='color:red'>";
+			echo "".$retour_check;
+		}
+		echo "</p>";
+	}
+
+	echo "<br /><p style='text-indent: -4em; margin-left: 4em;'><em>NOTE&nbsp;:</em> Le bloc adresse des responsables d'un élève est positionné dans les bulletins HTML et Fiches Bienvenue avec les mêmes paramètres.<br />Ils sont définis dans la page <a href='../bulletin/param_bull.php#bloc_adresse'>Paramètres d'impression des bulletins</a></p>\n";
+
+	echo "<hr />\n";
+
+
 	//====================================================
 
 	echo "<h2>Nettoyages</h2>\n";
