@@ -311,16 +311,19 @@ if(!isset($associer_mentions_classes)) {
 		<p>Pour que le champ de saisie d'une $gepi_denom_mention n'apparaisse pas (<i>lors de la saisie de l'avis du conseil de classe</i>) pour une classe donnée, il suffit qu'aucune $gepi_denom_mention ne soit associée à la classe.</p>
 	</li>
 	<li>
-		<p>L'article Article R511-13 du code de l'éducation rappelle que dans les lycées et collèges relevant du ministre chargé de l'éducation, les sanctions qui peuvent être prononcées à l'encontre des élèves sont les suivantes :</p>
+		<p><b>Extrait de l'article R511-13 du code de l'éducation : </b>Il rappelle que dans les lycées et collèges relevant du ministre chargé de l'éducation, les sanctions qui peuvent être prononcées à l'encontre des élèves sont les suivantes :</p>
 		<ol>
-			<li>L'avertissement</li>
+			<li>L'avertissement ;</li>
 			<li>Le blâme ;</li>
-			<li>L'exclusion temporaire, qui ne peut excéder un mois, de l'établissement ou de l'un de ses services annexes ;</li>
+			<li>La mesure de responsabilisation ;</li>
+			<li>L'exclusion temporaire de la classe. Pendant l'accomplissement de la sanction, l'élève est accueilli dans l'établissement. La durée de cette exclusion ne peut excéder huit jours ;</li>
+			<li>L'exclusion temporaire de l'établissement ou de l'un de ses services annexes. La durée de cette exclusion ne peut excéder huit jours ;</li>
 			<li>L'exclusion définitive de l'établissement ou de l'un de ses services annexes.</li>
 		</ol>
 		<p>Les sanctions peuvent être assorties d'un sursis total ou partiel.<br />
-		<b>Toute sanction, hormis l'exclusion définitive, est effacée du dossier administratif de l'élève au bout d'un an</b>
-		Le règlement intérieur reproduit l'échelle des sanctions. En outre, il peut prévoir des mesures de prévention, d'accompagnement et de réparation.<br />
+		<b>L'avertissement, le blâme et la mesure de responsabilisation sont effacés du dossier administratif de l'élève à l'issue de l'année scolaire.</b></br> 
+		Les autres sanctions, hormis l'exclusion définitive, sont effacées du dossier administratif de l'élève au bout d'un an.</br></br>
+		Le règlement intérieur reproduit l'échelle des sanctions et prévoit les mesures de prévention et d'accompagnement ainsi que les modalités de la mesure de responsabilisation.<br />
 		<a href='http://www.legifrance.gouv.fr/affichCodeArticle.do?cidTexte=LEGITEXT000006071191&idArticle=LEGIARTI000020663068&dateTexte=&categorieLien=cid'>Le lien sur Légifrance</a>.</p>
 	</li>
 </ul>\n";

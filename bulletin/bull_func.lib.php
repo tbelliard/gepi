@@ -1983,20 +1983,25 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$pdf->SetX($X_eleve_2);
 				$hauteur_caractere_etaborigine = '10';
 				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_etaborigine);
-				$val = $pdf->GetStringWidth('Etab. Origine : '.$tab_bull['eleve'][$i]['etab_niveau']." ".$tab_bull['eleve'][$i]['etab_nom']." (".$tab_bull['eleve'][$i]['etab_ville'].")");
+				//$val = $pdf->GetStringWidth('Etab. Origine : '.$tab_bull['eleve'][$i]['etab_niveau']." ".$tab_bull['eleve'][$i]['etab_nom']." (".$tab_bull['eleve'][$i]['etab_ville'].")");
+
+				$chaine_etab_origine='Etab. Origine : '.$tab_bull['eleve'][$i]['etab_niveau_nom']." ".$tab_bull['eleve'][$i]['etab_nom']." (".$tab_bull['eleve'][$i]['etab_ville'].")";
+				//$chaine_etab_origine='Etab. Origine : '.$tab_bull['eleve'][$i]['etab_niveau_nom']." ".$tab_bull['eleve'][$i]['etab_type'].." ".$tab_bull['eleve'][$i]['etab_nom']." (".$tab_bull['eleve'][$i]['etab_ville'].")";
+				$val = $pdf->GetStringWidth($chaine_etab_origine);
+
 				$taille_texte = $longeur_cadre_eleve-3;
 				$grandeur_texte='test';
 				while($grandeur_texte!='ok') {
 					if($taille_texte<$val) {
 						$hauteur_caractere_etaborigine = $hauteur_caractere_etaborigine-0.3;
 						$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_etaborigine);
-						$val = $pdf->GetStringWidth('Etab. Origine : '.$tab_bull['eleve'][$i]['etab_niveau']." ".$tab_bull['eleve'][$i]['etab_nom']." (".$tab_bull['eleve'][$i]['etab_ville'].")");
+						$val = $pdf->GetStringWidth($chaine_etab_origine);
 					} else {
 						$grandeur_texte='ok';
 					}
 				}
 				$grandeur_texte='test';
-				$pdf->Cell(90,4, traite_accents_utf8('Etab. Origine : '.$tab_bull['eleve'][$i]['etab_niveau']." ".$tab_bull['eleve'][$i]['etab_nom']." (".$tab_bull['eleve'][$i]['etab_ville'].")"),0,2);
+				$pdf->Cell(90,4, traite_accents_utf8($chaine_etab_origine),0,2);
 				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 			}
 		} // fin du bloc affichage information sur l'élèves
@@ -2436,6 +2441,18 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				*/
 				//$nb_categories_select=count($tab_bull['cat_id']);
 				$nb_categories_select=count(array_count_values($tab_bull['cat_id']));
+
+				// Il faut revoir le compte des catégories pour ne retenir que celles de l'élève
+				// celles dans lesquelles l'élève est inscrit à une des matières
+				/*
+				$nb_categories_select=0;
+				for($m=0; $m<count($tab_bull['groupe']); $m++) {
+					// Si c'est une matière suivie par l'élève
+					if(isset($tab_bull['note'][$m][$i])) {
+						$nb_categories_select++;
+					}
+				}
+				*/
 			}
 
 			fich_debug_bull("======================\n");
@@ -5156,7 +5173,8 @@ $hauteur_pris_app_abs=$hauteur_pris;
 				$pdf->SetXY($tab_modele_pdf["X_avis_cons"][$classe_id]+2.5,$Y_avis_cons_init+5);
 
 				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
-				$texteavis = $tab_bull['avis'][$i];
+				//$texteavis = $tab_bull['avis'][$i];
+				$texteavis = preg_replace("/&#8217;/","'", $tab_bull['avis'][$i]);
 				// ***** AJOUT POUR LES MENTIONS *****
 				//$textmention = $tab_bull['id_mention'][$i];
 

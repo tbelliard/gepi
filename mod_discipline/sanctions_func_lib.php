@@ -895,6 +895,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 			$retour.="<td style='padding: 2px;'>";
 
 			$sql="SELECT * FROM s_protagonistes WHERE id_incident='$lig->id_incident' ORDER BY qualite;";
+			//echo "$sql<br />\n";
 			$res_prot=mysql_query($sql);
 			if(mysql_num_rows($res_prot)>0) {
 				$retour.="<table class='boireaus' border='1' summary='Protagonistes de l incident n°$lig->id_incident'>\n";
@@ -933,13 +934,13 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 								$retour.="<td>prise par ".u_p_nom($lig_suivi->login_u)."</td>\n";
 
 								if($temoin_eleve_responsable_de_l_incident=='y') {
-									if(isset($tab_mesure[addslashes($lig_suivi->mesure)])) {
-										if ($lig_suivi->login_ele==$ele_login) {  //Ajout ERIC test pour ne compter que pour l'élève demandé
+									if ($lig_suivi->login_ele==$ele_login) {  //Ajout ERIC test pour ne compter que pour l'élève demandé
+										if(isset($tab_mesure[addslashes($lig_suivi->mesure)])) {
 										   $tab_mesure[addslashes($lig_suivi->mesure)]++;
 										}
-									}
-									else {
-										$tab_mesure[addslashes($lig_suivi->mesure)]=1;
+										else {
+											$tab_mesure[addslashes($lig_suivi->mesure)]=1;
+										}
 									}
 								}
 							}
@@ -976,18 +977,19 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 							$retour.="<td>";
 
 							if($temoin_eleve_responsable_de_l_incident=='y') {
-								if(isset($tab_sanction[addslashes($lig_suivi->nature)])) {
-									if ($lig_suivi->login==$ele_login) { //Ajout ERIC test pour ne compter que pour l'élève demandé
-									   $tab_sanction[addslashes($lig_suivi->nature)]++;
+								if ($lig_suivi->login==$ele_login) { //Ajout ERIC test pour ne compter que pour l'élève demandé
+									if(isset($tab_sanction[addslashes($lig_suivi->nature)])) {
+										$tab_sanction[addslashes($lig_suivi->nature)]++;
 									}
-								}
-								else {
-									$tab_sanction[addslashes($lig_suivi->nature)]=1;
+									else {
+										$tab_sanction[addslashes($lig_suivi->nature)]=1;
+									}
 								}
 							}
 
 							if($lig_suivi->nature=='retenue') {
 								$sql="SELECT * FROM s_retenues WHERE id_sanction='$lig_suivi->id_sanction';";
+								//echo "$sql<br />\n";
 								$res_retenue=mysql_query($sql);
 								if(mysql_num_rows($res_retenue)>0) {
 									$lig_retenue=mysql_fetch_object($res_retenue);
@@ -999,6 +1001,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 							}
 							elseif($lig_suivi->nature=='exclusion') {
 								$sql="SELECT * FROM s_exclusions WHERE id_sanction='$lig_suivi->id_sanction';";
+								//echo "$sql<br />\n";
 								$res_exclusion=mysql_query($sql);
 								if(mysql_num_rows($res_exclusion)>0) {
 									$lig_exclusion=mysql_fetch_object($res_exclusion);
@@ -1010,6 +1013,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 							}
 							elseif($lig_suivi->nature=='travail') {
 								$sql="SELECT * FROM s_travail WHERE id_sanction='$lig_suivi->id_sanction';";
+								//echo "$sql<br />\n";
 								$res_travail=mysql_query($sql);
 								if(mysql_num_rows($res_travail)>0) {
 									$lig_travail=mysql_fetch_object($res_travail);

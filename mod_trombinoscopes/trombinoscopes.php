@@ -182,6 +182,10 @@ function reactiver(mavar) {
 		echo " | <a href='trombino_decoupe.php'>Découpe trombinoscope</a>";
 	}
 
+	if(($_SESSION['statut']=='professeur')&&(file_exists("./plan_de_classe.php"))) {
+		echo " | <a href='plan_de_classe.php'>Plan de classe</a>";
+	}
+
 	if( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $equipepeda != 'toutes' and $discipline != 'toutes' and ( $classe != '' or $groupe != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '' ) ) {
 		//echo " | <a href='trombinoscopes.php'>Retour à la sélection</a>";
 

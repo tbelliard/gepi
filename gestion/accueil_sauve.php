@@ -35,6 +35,22 @@ $action = isset($_POST["action"]) ? $_POST["action"] : (isset($_GET["action"]) ?
 
 $dossier_a_archiver=isset($_POST['dossier']) ? $_POST['dossier'] : (isset($_GET['dossier']) ? $_GET['dossier'] : '');
 
+// On vérifie la cohérence de la variable $force_backup_mode :
+if (!isset($force_backup_mode) or ($force_backup_mode && $force_backup_mode != 'dump' && $force_backup_mode != 'system_dump')) {
+  $force_backup_mode = false;
+}
+
+// Le cas échéant, on force le type 
+if ($force_backup_mode && isset($action) && ($action == 'dump' || $action == 'system_dump')) {
+  if ($force_backup_mode == 'dump') {
+    $action = 'dump';
+  }
+  if ($force_backup_mode == 'system_dump') {
+    $action = 'system_dump';
+  }
+}
+
+
 //debug_var();
 
 // Resume session
@@ -1588,10 +1604,31 @@ La seconde méthode est lourde en ressources mais passera sur toutes les configur
 	echo add_token_field();
 ?>
 <center><input type="submit" value="Sauvegarder" />
+
+<?php
+
+if ($force_backup_mode == 'system_dump') {
+?>
+<input type='hidden' name='action' value='system_dump' />
+<b>avec mysqldump</b> (cette option a été forcée par votre hébergeur)
+
+<?php
+} else if ($force_backup_mode == 'dump') {
+?>
+<input type='hidden' name='action' value='system_dump' />
+<b>sans mysqldump</b> (cette option a été forcée par votre hébergeur)
+<?php
+} else {
+?>
 <select name='action' size='1'>
 <option value='system_dump'<?php if (getSettingValue("mode_sauvegarde") == "mysqldump") echo " SELECTED";?>>avec mysqldump</option>
 <option value='dump'<?php if (getSettingValue("mode_sauvegarde") == "gepi") echo " SELECTED";?>>sans mysqldump</option>
 </select>
+
+<?php
+}
+?>
+
 </center>
 
 <span class='small'><b>Remarques</b> :</span>
