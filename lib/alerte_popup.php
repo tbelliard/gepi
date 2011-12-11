@@ -11,7 +11,7 @@
 	
 	if (isset($niveau_arbo)) {
 		//echo "\$niveau_arbo=$niveau_arbo<br />";
-		if($niveau_arbo=="public") {
+		if("$niveau_arbo"=="public") {
 			$image_path.="../";
 		}
 		else {
