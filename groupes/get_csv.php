@@ -301,5 +301,7 @@ if($current_group) {
 		$i++;
 	}
 }
+
 echo echo_csv_encoded($fd);
+
 ?>

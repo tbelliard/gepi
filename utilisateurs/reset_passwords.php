@@ -205,7 +205,7 @@ if ($user_login) {
 		$call_user_info = mysql_query($sql_user_info);
 	}
 	*/
-	else{
+	else {
 		$sql="SELECT * FROM utilisateurs WHERE (" .
 				"login = '" . $user_login ."' and " .
 				"etat='actif' and " .
@@ -276,7 +276,7 @@ else {
 					"statut = '" . $user_status . "')");*/
 				//$sql_user_info =   "SELECT DISTINCT (e.ele_id), u.civilite, u.statut, u.password, u.email, u.auth_mode, rp.login, rp.nom, rp.prenom, rp.civilite, rp.pers_id, ra.* , r2.ele_id, r2.resp_legal, e.login, jec.id_classe
 				$sql_user_info =   "SELECT DISTINCT (e.ele_id), u.civilite, u.statut, u.password, u.email, u.auth_mode, rp.login, rp.nom, rp.prenom, rp.civilite, rp.pers_id, ra.* , r2.ele_id, r2.resp_legal, jec.id_classe
-									FROM utilisateurs u, resp_pers rp, resp_adr ra, responsables2 r2, eleves e, j_eleves_classes jec
+									FROM utilisateurs u, resp_pers rp, resp_adr ra, responsables2 r2, eleves e, j_eleves_classes jec, classes c
 									WHERE (
 									u.login != 'ADMIN'
 									AND u.etat = 'actif'
@@ -287,8 +287,9 @@ else {
 									AND r2.ele_id = e.ele_id
 									AND jec.login = e.login
 									AND (r2.resp_legal='1' OR r2.resp_legal='2')
+									AND jec.id_classe=c.id
 									)
-									ORDER BY jec.id_classe, rp.nom, rp.prenom";
+									ORDER BY c.classe, rp.nom, rp.prenom";
 				//echo $sql_user_info;
 				$call_user_info = mysql_query($sql_user_info);
 				$cas_traite=2;
@@ -296,12 +297,14 @@ else {
 			} elseif ($user_status == "eleve"){
 				$login_en_cours = $_SESSION['login'];
 				$sql_user_info = "SELECT DISTINCT (u.login), u.nom, u.prenom, u.statut, u.password, u.email, u.auth_mode, jec.id_classe
-								FROM utilisateurs u, j_eleves_classes jec
+								FROM utilisateurs u, j_eleves_classes jec, classes c
 								WHERE ( u.login != 'ADMIN'
 								AND jec.login = u.login
 								AND u.etat = 'actif'
-								AND u.statut = 'eleve' )
-								ORDER BY jec.id_classe ASC, u.nom ASC";
+								AND u.statut = 'eleve'
+								AND jec.id_classe=c.id
+								)
+								ORDER BY c.classe ASC, u.nom ASC";
 				//echo $sql_user_info;
 				$call_user_info = mysql_query($sql_user_info);
 			}
@@ -518,10 +521,10 @@ while ($p < $nb_users) {
 
 				$tab_password[$user_login]=$new_password;
 
-                                $save_new_pass = Session::change_password_gepi($user_login,$new_password);
-                                if ($save_new_pass) {
-                                    mysql_query("UPDATE utilisateurs SET change_mdp = 'y' WHERE login='$user_login'");
-                                }
+				$save_new_pass = Session::change_password_gepi($user_login,$new_password);
+				if ($save_new_pass) {
+					mysql_query("UPDATE utilisateurs SET change_mdp = 'y' WHERE login='$user_login'");
+				}
 			}
 		}
 	}
@@ -570,10 +573,10 @@ while ($p < $nb_users) {
 					$new_password = '';
 				}
 			} else {
-                                $save_new_pass = Session::change_password_gepi($user_login,$new_password);
-                                if ($save_new_pass) {
-                                    mysql_query("UPDATE utilisateurs SET change_mdp = 'y' WHERE login='$user_login'");
-                                }
+				$save_new_pass = Session::change_password_gepi($user_login,$new_password);
+				if ($save_new_pass) {
+					mysql_query("UPDATE utilisateurs SET change_mdp = 'y' WHERE login='$user_login'");
+				}
 			}
 		}
 	}
