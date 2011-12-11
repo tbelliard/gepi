@@ -1801,6 +1801,8 @@ function remplace_accents($chaine,$mode=''){
 		return preg_replace('#[^a-zA-Z0-9\-\_]#', '_', $str); // Pour des noms de fichiers par exemple
 	} elseif($mode == 'all_nospace'){
 		return preg_replace('#[^a-zA-Z0-9\-\._ ]#', '_', $str);
+	} elseif($mode == 'csv'){
+		return preg_replace('#[^a-zA-Z0-9\-\._;,\\n ]#', '_', $str);
 	} else {
 		return preg_replace('#[^a-zA-Z0-9\-\._"\' ;]#', '_', $str);
 	}
@@ -5046,9 +5048,29 @@ function getDateDescription($date_debut,$date_fin) {
  */
 function echo_csv_encoded($texte_csv) {
 	// D'après http://www.oxeron.com/2008/09/15/probleme-daccent-dans-un-export-csv-en-php
-
 	//$retour=$texte_csv;
-	$retour=chr(255).chr(254).mb_convert_encoding($texte_csv, 'UTF-16LE', 'UTF-8');
+	//$retour=chr(255).chr(254).mb_convert_encoding($texte_csv, 'UTF-16LE', 'UTF-8');
+
+	$choix_encodage_csv=getPref($_SESSION['login'], "choix_encodage_csv", "");
+	if(!in_array($choix_encodage_csv, array("", "ascii", "utf-8", "windows-1252"))) {$choix_encodage_csv="ascii";}
+
+	if($choix_encodage_csv=="") {
+		if($_SESSION['statut']=='administrateur') {
+			$retour=$texte_csv;
+		}
+		else {
+			//$retour=mb_convert_encoding($texte_csv, 'ASCII', 'utf-8');
+			$retour=remplace_accents($texte_csv,'csv');
+		}
+	}
+	else {
+		if($choix_encodage_csv=="ascii") {
+			$retour=remplace_accents($texte_csv,'csv');
+		}
+		else {
+			$retour=mb_convert_encoding($texte_csv, $choix_encodage_csv, 'utf-8');
+		}
+	}
 
 	return $retour;
 }
