@@ -27,7 +27,7 @@ $gepiOpenPeriodLabel = "période ouverte";
 // $active_hostbyaddr = "all" : la résolution inverse de toutes les adresses IP est activée
 // $active_hostbyaddr = "no" : la résolution inverse des adresses IP est désactivée
 // $active_hostbyaddr = "no_local" : la r?solution inverse des adresses IP locales est désactivée
-$active_hostbyaddr = "all";
+$active_hostbyaddr = "no_local";
 
 
 // labels des périodes
