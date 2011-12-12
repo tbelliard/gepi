@@ -725,7 +725,12 @@ echo "<td valign='top'>\n";
 			$resp_login=$lig_resp_login->login;
 			$resp_u_email=$lig_resp_login->email;
 
-			echo " (<em title=\"Compte d'utilisateur\"><a href='../utilisateurs/edit_responsable.php?critere_recherche_login=$resp_login'>$resp_login</a></em>)";
+			if($_SESSION['statut']=='administrateur') {
+				echo " (<em title=\"Compte d'utilisateur\"><a href='../utilisateurs/edit_responsable.php?critere_recherche_login=$resp_login'>$resp_login</a></em>)";
+			}
+			else {
+				echo " (<em title=\"Compte d'utilisateur\">$resp_login</em>)";
+			}
 		}
 		else {
 			$compte_resp_existe="n";
