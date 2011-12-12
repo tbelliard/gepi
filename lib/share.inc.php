@@ -1640,7 +1640,7 @@ function vider_dir($dir){
 function ensure_utf8($str, $from_encoding = null) {
     if ($str === null || $str === '') {
         return $str;
-    //} else if ($from_encoding == null && check_utf8($str)) {
+   // } else if ($from_encoding == null && check_utf8($str)) {
     } else if ($from_encoding == null) {
 	    return $str;
 	}
@@ -1682,7 +1682,6 @@ function check_utf8 ($str) {
         | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
         |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
     )*$%xs', $str);
-    
     if ($preg_match_result) {
         return true;
     } else {
@@ -1693,6 +1692,7 @@ function check_utf8 ($str) {
             $test_done = true;
             $result = $result && @mb_check_encoding($str, 'UTF-8');
         }
+    die ('coucou');
         if (function_exists('mb_detect_encoding')) {
             $test_done = true;
             $result = $result && @mb_detect_encoding($str, 'UTF-8', true);
@@ -1782,6 +1782,7 @@ function remplace_accents($chaine,$mode=''){
 	}
 	
 	$chaine = ensure_utf8($chaine);
+	
 	$str = null;
 	if (function_exists('iconv')) {
 	    //test : est-ce que iconv est bien implémenté sur ce système ?
@@ -3946,6 +3947,8 @@ function acces($id,$statut)
 function send_file_download_headers($content_type, $filename, $content_disposition = 'attachment') {
 
   header('Content-Encoding: utf-8');
+  header('Content-Encoding: iso-8859');
+  
   header('Content-Type: '.$content_type);
   header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
   header('Content-Disposition: '.$content_disposition.'; filename="' . $filename . '"');
@@ -5053,7 +5056,7 @@ function echo_csv_encoded($texte_csv) {
 	// D'après http://www.oxeron.com/2008/09/15/probleme-daccent-dans-un-export-csv-en-php
 	//$retour=$texte_csv;
 	//$retour=chr(255).chr(254).mb_convert_encoding($texte_csv, 'UTF-16LE', 'UTF-8');
-
+  
 	$choix_encodage_csv=getPref($_SESSION['login'], "choix_encodage_csv", "");
 	if(!in_array($choix_encodage_csv, array("", "ascii", "utf-8", "windows-1252"))) {$choix_encodage_csv="ascii";}
 
@@ -5072,6 +5075,7 @@ function echo_csv_encoded($texte_csv) {
 		if($choix_encodage_csv=="ascii") {
 			//echo "=======================================<br />\n";
 			//echo $texte_csv;
+		  
 			$retour=remplace_accents($texte_csv,'csv');
 			//echo "=======================================<br />\n";
 			//echo $retour;
