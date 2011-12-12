@@ -256,6 +256,61 @@ function creeCSV($donnees, $justifications) {
   die ();
 }
 
+/**
+ * Crée et envoie un fichier .ods avec le tableau des justifications
+ * @param array $donnees
+ * @param objet $justifications 
+ */
+function creeODS($donnees, $justifications) {
+  $date = date("d-m-Y_H-i");
+  $nom_fichier = "Justifications_".$date.".ods";
+  
+  $nbre_colonnes = count($justifications);
+  foreach ($justifications as $justifie) {
+	$libelle[] = $justifie->getNom();
+  }
+  
+  $titre = 'extraction des justifications du ';
+  $titre .= unserialize($_SESSION['statJustifie']['date_absence_eleve_debut']);
+  $titre .= ' au ';
+  $titre .= unserialize($_SESSION['statJustifie']['date_absence_eleve_fin']); 
+  if (isset ($_SESSION['statJustifie']['erreur']) && $_SESSION['statJustifie']['erreur']) {
+	$titre .=  ' (Total des justifications différent des absences justifiées)';
+  }
+  
+  $colonnes_individu = array();
+  $colonnes_individu[1] = 'nom';
+  $colonnes_individu[2] = 'classe';
+  
+  if (count($donnees)) {
+  	foreach ($donnees as &$donnee) {
+	  $j=1;
+	  foreach ($donnee['traitement'] as $justifie) {
+		$donnee['traite_'.$j] = $justifie;
+		$j++;
+	  }
+	}
+  }
+  
+  // load the TinyButStrong libraries
+  include_once('../tbs/tbs_class.php'); // TinyButStrong template engine
+  $TBS = new clsTinyButStrong; // new instance of TBS
+  include_once('../tbs/plugins/tbs_plugin_opentbs.php');
+  $TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
+  // Load the template
+  $extraction_Justifications = repertoire_modeles('absence_nb_justifications.ods');
+  $TBS->LoadTemplate($extraction_Justifications, OPENTBS_ALREADY_UTF8);
+  
+  $TBS->MergeBlock('c2', 'num', $nbre_colonnes);
+  $TBS->MergeField('titre', $titre);
+  $TBS->MergeBlock('a', $libelle);
+  $TBS->MergeBlock('b2', $donnees);
+  
+  // Output as a download file (some automatic fields are merged here)
+  $TBS->Show(OPENTBS_DOWNLOAD + TBS_EXIT, $nom_fichier);
+  die ();
+}
+
 /* *******************************************************************************
  * Logique de la page
  ******************************************************************************* */
@@ -394,6 +449,13 @@ if (!isset($_SESSION['statJustifie'])) {
 	  $_SESSION['statJustifie']['donnees']=array();
 	}
 	creeCSV($_SESSION['statJustifie']['donnees'], unserialize($_SESSION['statJustifie']['justifications']));
+
+  } elseif ($_POST['valide'] == "ods") {
+  /***** On crée et envoie un fichier .csv *****/
+	if (!isset ($_SESSION['statJustifie']['donnees'])) {
+	  $_SESSION['statJustifie']['donnees']=array();
+	}
+	creeODS($_SESSION['statJustifie']['donnees'], unserialize($_SESSION['statJustifie']['justifications']));
   } else {
   /***** On a changer les dates ou le mode de calcul ou on ne veut que les erreurs *****/
 	// On initialise les données
@@ -454,7 +516,6 @@ if (!isset($_SESSION['statJustifie'])) {
   
 }
 
-unset ($_SESSION['statJustifie']['erreur']);
 
 /* *******************************************************************************
  * Affichage
@@ -515,17 +576,24 @@ include('menu_bilans.inc.php');
 			   value="<?php echo $dt_date_absence_eleve_fin->format('Y-m-d')?>" />
       </p>
 	  <p>      
-		<button type="submit" dojoType="dijit.form.Button" name="valide" value="calcul">
+		<button type="submit" dojoType="dijit.form.Button" name="valide" value="calcul" title="Recalculer la page et afficher le tableau">
 		  Forcer le recalcul des statistiques
 		</button> 
-		<button type="submit" dojoType="dijit.form.Button" name="valide" value="erreur">
+		<button type="submit" 
+				dojoType="dijit.form.Button" 
+				name="valide" 
+				value="erreur" 
+				title="N'afficher que les enregistrements où le total des justifications diffère du nombre d'absences justifiées">
 		  N'afficher que les différences de total
 		</button> 
-		<button type="submit" dojoType="dijit.form.Button" name="valide" value="soumettre">
+		<button type="submit" dojoType="dijit.form.Button" name="valide" value="soumettre" title="Recalculer et afficher le tableau">
 		  Afficher les statistiques avec ces réglages
 		</button> 
-		<button type="submit" dojoType="dijit.form.Button" name="valide" value="csv">
-		  Exporter les statistiques au format .csv
+		<button type="submit" dojoType="dijit.form.Button" name="valide" value="csv" title="Exporter le tableau au format texte (Comma-separated values)">
+		  Export .csv
+		</button>
+		<button type="submit" dojoType="dijit.form.Button" name="valide" value="ods" title="Exporter le tableau au format OpenDocument (OASIS)">
+		  Export .ods
 		</button>
 	  </p>
 	</fieldset>

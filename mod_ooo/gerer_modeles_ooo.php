@@ -226,8 +226,8 @@ if (!isset($btn)) { //premier passage : formulaire
 		 echo "<td align='center'>\n<a href=\"$nom_dossier_modeles_ooo_par_defaut$fich[$i]\"><img src=\"./images/$type_ext\" border=\"0\" title=\"Consulter le modèle par défaut\"></a>\n";
 		 echo "</td>\n";
 	  if  (file_exists($nom_dossier_modeles_ooo_mes_modeles.$rne.$fich[$i]))   {
-		 echo "<td align='center'>\n<a href=\"$PHP_SELF?op=supp&fic=$fich[$i]".add_token_in_url()."\" onclick='return confirmer()'><img src=\"./images/poubelle.gif\" border=\"0\" title=\"ATTENTION, suppression immédiate !\"></a>\n";
-		 echo "&nbsp;&nbsp;<a href=\"$nom_dossier_modeles_ooo_mes_modeles.$rne.$fich[$i]\"><img src=\"./images/$type_ext\" border=\"0\" title=\"Consulter le nouveau modèle\"></a>\n";
+		 echo "<td align='center'><a href=\"$PHP_SELF?op=supp&fic=$fich[$i]".add_token_in_url()."\" onclick='return confirmer()'><img src=\"./images/poubelle.gif\" border=\"0\" title=\"ATTENTION, suppression immédiate !\"></a>\n";
+		 echo "&nbsp;&nbsp;<a HREF='".$nom_dossier_modeles_ooo_mes_modeles.$rne.$fich[$i]."'><img src=\"./images/$type_ext\" border=\"0\" title=\"Consulter le nouveau modèle\"></a>\n";
 		 echo "</td>\n";
 	  } else {
 		 echo "</td>\n<td>&nbsp;</td>\n";
@@ -289,7 +289,7 @@ else { // passage 2 : le nom du fichier a été choisi
         if (!move_uploaded_file($monfichiertmp_name,$cible)) {
             echo "Erreur de copie<br />\n";
             echo "origine     : $monfichiername <br />\n";
-            echo "destination : $nom_dossier_modeles_ooo_mes_modeles.$rne".$fichiercopie;
+            echo "destination : ".$nom_dossier_modeles_ooo_mes_modeles.$rne.$fichiercopie;
             $me="La copie ne s'est pas effectuée !\n Vérifiez la taille du fichier (max 512ko)\n";
             alert($me);
             $dest=$desterreur;
