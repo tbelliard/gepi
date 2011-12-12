@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -206,21 +206,10 @@ if(isset($_GET['export_csv'])) {
 			$csv.="$moy;\r\n";
 		}
 
-		header('Content-Type:  text/x-csv');
-		$now = gmdate('D, d M Y H:i:s') . ' GMT';
-		header('Expires: ' . $now);
-		// lem9 & loic1: IE need specific headers
-		//nom du fichier à telecharger
-	
-		if (preg_match('/MSIE/', $_SERVER['HTTP_USER_AGENT'])) {
-			header('Content-Disposition: inline; filename="cc_dev_'.$id_dev.'_'.date("dmY").'.csv"');
-			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-			header('Pragma: public');
-		} else {
-			header('Content-Disposition: attachment; filename="cc_dev_'.$id_dev.'_'.date("dmY").'.csv"');
-			header('Pragma: no-cache');
-		}
-		echo $csv;
+		$nom_fic="cc_dev_".$id_dev."_".date("dmY").".csv";
+		send_file_download_headers('text/x-csv',$nom_fic);
+		//echo $csv;
+		echo echo_csv_encoded($csv);
 		die();
 	}
 }
