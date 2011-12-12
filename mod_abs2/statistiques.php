@@ -236,6 +236,7 @@ if ($affichage != 'ods') {
                     <input style="width : 8em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve_debut" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('Y-m-d') ?>" />
                     au               
                     <input style="width : 8em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve_fin" name="date_absence_eleve_fin" value="<?php echo $dt_date_absence_eleve_fin->format('Y-m-d') ?>" />
+                    soit <?php echo $nbre_demi_journees;?> demi-journées ouvrées.
                 </h2>
                 <?php
                 if ($id_eleve !== null && $id_eleve != '') {
@@ -460,7 +461,7 @@ if ($affichage != 'ods') {
                 $titre .= ' pour les élèves dont le nom ou le prénom contient ' . $nom_eleve;
             }
             $TBS->MergeField('titre', $titre);
-
+            $TBS->MergeField('dj_ouvrees', $nbre_demi_journees);
 
             $nb_demijournees = 0;
             $nb_nonjustifiees = 0;
