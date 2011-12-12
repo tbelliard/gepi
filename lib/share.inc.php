@@ -1802,7 +1802,7 @@ function remplace_accents($chaine,$mode=''){
 	} elseif($mode == 'all_nospace'){
 		return preg_replace('#[^a-zA-Z0-9\-\._ ]#', '_', $str);
 	} elseif($mode == 'csv'){
-		return preg_replace('#[^a-zA-Z0-9\-\._;,\\n ]#', '_', $str);
+		return preg_replace('#[^a-zA-Z0-9\-\._;,\\n\\r ]#', '_', $str);
 	} else {
 		return preg_replace('#[^a-zA-Z0-9\-\._"\' ;]#', '_', $str);
 	}
@@ -5060,12 +5060,19 @@ function echo_csv_encoded($texte_csv) {
 		}
 		else {
 			//$retour=mb_convert_encoding($texte_csv, 'ASCII', 'utf-8');
-			$retour=remplace_accents($texte_csv,'csv');
+			//$retour=remplace_accents($texte_csv,'csv');
+			// Les autres utilisateurs preferont sans doute ca:
+			$retour=mb_convert_encoding($texte_csv, "windows-1252", 'utf-8');
 		}
 	}
 	else {
 		if($choix_encodage_csv=="ascii") {
+			//echo "=======================================<br />\n";
+			//echo $texte_csv;
 			$retour=remplace_accents($texte_csv,'csv');
+			//echo "=======================================<br />\n";
+			//echo $retour;
+			//echo "=======================================<br />\n";
 		}
 		else {
 			$retour=mb_convert_encoding($texte_csv, $choix_encodage_csv, 'utf-8');
