@@ -195,19 +195,6 @@ if(isset($_POST['valider_param'])) {
 	
 	
 		$nom_fic="options_eleves_gepi_".suppr_accents(preg_replace("/'/","&apos;",preg_replace('/[" ]/','',$projet)))."_".date("Ymd_Hi").".csv";
-		/*
-		$now = gmdate('D, d M Y H:i:s') . ' GMT';
-		header('Content-Type: text/x-csv');
-		header('Expires: ' . $now);
-		if (preg_match('/MSIE/', $_SERVER['HTTP_USER_AGENT'])) {
-			header('Content-Disposition: inline; filename="' . $nom_fic . '"');
-			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-			header('Pragma: public');
-		} else {
-			header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
-			header('Pragma: no-cache');
-		}
-		*/
 		send_file_download_headers('text/x-csv',$nom_fic);
 	
 		//echo $fich;
