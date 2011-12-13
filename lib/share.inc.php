@@ -3943,10 +3943,9 @@ function acces($id,$statut)
  * @param string $filename Nom du fichier
  * @param type $content_disposition Content-Disposition 'attachment' par défaut
  */
-function send_file_download_headers($content_type, $filename, $content_disposition = 'attachment') {
+function send_file_download_headers($content_type, $filename, $content_disposition = 'attachment', $encodeSortie = 'utf-8') {
 
-  header('Content-Encoding: utf-8');
-  header('Content-Encoding: iso-8859');
+  header('Content-Encoding: '.$encodeSortie);
   
   header('Content-Type: '.$content_type);
   header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
