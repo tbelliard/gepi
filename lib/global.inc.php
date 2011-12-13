@@ -177,7 +177,6 @@ $gepiBetaVersion = "";
 // version la plus récente.
 $gepiSvnRev="8726";
 
-
 // Forcer l'utilisation du module de gestion des mise à jour de GEPI
 //
 // Ce paramètre sert à forcer l'utilisation du module de gestion des
@@ -234,7 +233,7 @@ $gepiSettings = array();
 $prefix_base = "";
 
 $type_etablissement = array();
-$type_etablissement["ecole"] = "Ecole";
+$type_etablissement["ecole"] = "École";
 $type_etablissement["college"] = "Collège";
 $type_etablissement["lycee"] = "Lycée";
 $type_etablissement["lprof"] = "Lyc. Prof.";
