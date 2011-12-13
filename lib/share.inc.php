@@ -1302,6 +1302,9 @@ function tentative_intrusion($_niveau, $_description) {
 		$message .= "Une nouvelle tentative d'intrusion a été détectée par Gepi. Les détails suivants ont été enregistrés dans la base de données :\n\n";
 		$message .= "Date : ".$date."\n";
 		$message .= "Fichier visé : ".$fichier."\n";
+		if(isset($_SERVER['HTTP_REFERER'])) {
+			$message .= "Url d'origine : ".$_SERVER['HTTP_REFERER']."\n";
+		}
 		$message .= "Niveau de gravité : ".$_niveau."\n";
 		$message .= "Description : ".$_description."\n\n";
 		if ($user_login == "-") {
@@ -1321,20 +1324,19 @@ function tentative_intrusion($_niveau, $_description) {
 		$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
 		if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 
-    $subject = $gepiPrefixeSujetMail."GEPI : Alerte sécurité -- Tentative d'intrusion";
-    $subject = "=?ISO-8859-1?B?".base64_encode($subject)."?=\r\n";
-
-    
-    $headers = "X-Mailer: PHP/" . phpversion()."\r\n";
-    $headers .= "MIME-Version: 1.0\r\n";
-    $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
-    $headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
+		$subject = $gepiPrefixeSujetMail."GEPI : Alerte sécurité -- Tentative d'intrusion";
+		$subject = "=?ISO-8859-1?B?".base64_encode($subject)."?=\r\n";
+	
+		$headers = "X-Mailer: PHP/" . phpversion()."\r\n";
+		$headers .= "MIME-Version: 1.0\r\n";
+		$headers .= "Content-type: text/plain; charset=UTF-8\r\n";
+		$headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
 
 		// On envoie le mail
 		$envoi = mail(getSettingValue("gepiAdminAdress"),
-		    $subject,
-		    $message,
-        $headers);
+			$subject,
+			$message,
+			$headers);
 	}
 }
 
@@ -1638,7 +1640,8 @@ function vider_dir($dir){
 function ensure_utf8($str, $from_encoding = null) {
     if ($str === null || $str === '') {
         return $str;
-    } else if ($from_encoding == null && check_utf8($str)) {
+    //} else if ($from_encoding == null && check_utf8($str)) {
+    } else if ($from_encoding == null) {
 	    return $str;
 	}
 	
@@ -1702,7 +1705,7 @@ function check_utf8 ($str) {
             $test_done = true;
             $result && ($str === @mb_convert_encoding ( @mb_convert_encoding ( $str, 'UTF-32', 'UTF-8' ), 'UTF-8', 'UTF-32' ));
         }
-        return $test_done && $result;
+        return ($test_done && $result);
     }
 }
     
@@ -1791,7 +1794,7 @@ function remplace_accents($chaine,$mode=''){
 	if ($str === null) {
         //on utilise pas iconv pour la conversion
     	$translit = array('Á'=>'A','À'=>'A','Â'=>'A','Ä'=>'A','Ã'=>'A','Å'=>'A','Ç'=>'C','É'=>'E','È'=>'E','Ê'=>'E','Ë'=>'E','Í'=>'I','Ï'=>'I','Î'=>'I','Ì'=>'I','Ñ'=>'N','Ó'=>'O','Ò'=>'O','Ô'=>'O','Ö'=>'O','Õ'=>'O','Ú'=>'U','Ù'=>'U','Û'=>'U','Ü'=>'U','Ý'=>'Y','á'=>'a','à'=>'a','â'=>'a','ä'=>'a','ã'=>'a','å'=>'a','ç'=>'c','é'=>'e','è'=>'e','ê'=>'e','ë'=>'e','í'=>'i','ì'=>'i','î'=>'i','ï'=>'i','ñ'=>'n','ó'=>'o','ò'=>'o','ô'=>'o','ö'=>'o','õ'=>'o','ú'=>'u','ù'=>'u','û'=>'u','ü'=>'u','ý'=>'y','ÿ'=>'y');
-    	$str = strtr($chaine, $translit);
+    	$str = mb_strtr($chaine, $translit);
     }
     if (function_exists('mb_convert_encoding')) {
         $str = @mb_convert_encoding($str,'ASCII','UTF-8');
