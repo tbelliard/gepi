@@ -1692,7 +1692,6 @@ function check_utf8 ($str) {
             $test_done = true;
             $result = $result && @mb_check_encoding($str, 'UTF-8');
         }
-    die ('coucou');
         if (function_exists('mb_detect_encoding')) {
             $test_done = true;
             $result = $result && @mb_detect_encoding($str, 'UTF-8', true);
