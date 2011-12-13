@@ -1,7 +1,7 @@
 <?php
 
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -71,11 +71,12 @@ if($acces=="n") {
 if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 	check_token();
 
-	if ($_SESSION['statut'] == "cpe") {
-		$quels_eleves = mysql_query("SELECT e.login FROM eleves e, j_eleves_classes c, j_eleves_cpe j WHERE (c.id_classe='$id_classe' AND j.e_login = c.login AND e.login = j.e_login AND j.cpe_login = '".$_SESSION['login'] . "' AND c.periode = '$periode_num')");
+	if ((($_SESSION['statut']=="cpe")&&(getSettingValue('GepiAccesAbsTouteClasseCpe')=='yes'))||($_SESSION['statut']!="cpe")) {
+		$sql="SELECT e.login FROM eleves e, j_eleves_classes c WHERE ( c.id_classe='$id_classe' AND c.login = e.login AND c.periode='$periode_num')";
 	} else {
-		$quels_eleves = mysql_query("SELECT e.login FROM eleves e, j_eleves_classes c WHERE ( c.id_classe='$id_classe' AND c.login = e.login AND c.periode='$periode_num')");
+		$sql="SELECT e.login FROM eleves e, j_eleves_classes c, j_eleves_cpe j WHERE (c.id_classe='$id_classe' AND j.e_login = c.login AND e.login = j.e_login AND j.cpe_login = '".$_SESSION['login'] . "' AND c.periode = '$periode_num')";
 	}
+	$quels_eleves = mysql_query($sql);
 
 	//=========================
 	// AJOUT: boireaus 20071010
@@ -106,20 +107,6 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 			//=========================
 
 			//=========================
-			// MODIF: boireaus 20071007
-			/*
-			$nom_log_nb_abs = $reg_eleve_login."_nb_abs";
-			$nb_absences = $_POST[$nom_log_nb_abs];
-
-			$nom_log_nb_nj = $reg_eleve_login."_nb_nj";
-			$nb_nj = $_POST[$nom_log_nb_nj];
-
-			$nom_log_nb_retard = $reg_eleve_login."_nb_retard";
-			$nb_retard = $_POST[$nom_log_nb_retard];
-
-			$nom_log_ap = $reg_eleve_login."_ap";
-			$ap = $_POST[$nom_log_ap];
-			*/
 
 			$nb_absences=$nb_abs_ele[$num_eleve];
 			$nb_nj=$nb_nj_ele[$num_eleve];
@@ -139,8 +126,7 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 			//echo "\$ap=$ap<br />";
 
 			// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-			//$ap=my_ereg_replace('(\\\r\\\n)+',"\r\n",$ap);
-			$ap=preg_replace('/(\\\r\\\n)+/',"\r\n",$ap);
+			$ap=nettoyage_retours_ligne_surnumeraires($ap);
 			//=========================
 
 			if (!(preg_match ("/^[0-9]{1,}$/", $nb_absences))) {
@@ -207,11 +193,12 @@ $classe = mysql_result($call_classe, "0", "classe");
 	<th align='center'><b>Observations</b></th>
 </tr>
 <?php
-if ($_SESSION['statut'] == "cpe") {
-		$appel_donnees_eleves = mysql_query("SELECT e.* FROM eleves e, j_eleves_classes c, j_eleves_cpe j WHERE (c.id_classe='$id_classe' AND j.e_login = c.login AND e.login = j.e_login AND j.cpe_login = '".$_SESSION['login'] . "' AND c.periode = '$periode_num') order by e.nom, e.prenom");
-	} else {
-		$appel_donnees_eleves = mysql_query("SELECT e.* FROM eleves e, j_eleves_classes c WHERE ( c.id_classe='$id_classe' AND c.login = e.login AND c.periode='$periode_num') order by e.nom, e.prenom");
+if ((($_SESSION['statut']=="cpe")&&(getSettingValue('GepiAccesAbsTouteClasseCpe')=='yes'))||($_SESSION['statut']!="cpe")) {
+	$sql="SELECT e.* FROM eleves e, j_eleves_classes c WHERE ( c.id_classe='$id_classe' AND c.login = e.login AND c.periode='$periode_num') order by e.nom, e.prenom";
+} else {
+	$sql="SELECT e.* FROM eleves e, j_eleves_classes c, j_eleves_cpe j WHERE (c.id_classe='$id_classe' AND j.e_login = c.login AND e.login = j.e_login AND j.cpe_login = '".$_SESSION['login'] . "' AND c.periode = '$periode_num') order by e.nom, e.prenom";
 }
+$appel_donnees_eleves = mysql_query($sql);
 
 $nombre_lignes = mysql_num_rows($appel_donnees_eleves);
 $i = '0';
@@ -235,19 +222,11 @@ while($i < $nombre_lignes) {
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt'><td align='center'>".my_strtoupper($current_eleve_nom)." ".casse_mot($current_eleve_prenom,'majf2')."\n";
 	//=========================
-	// MODIF: boireaus 20071010
 	echo "<input type='hidden' name='log_eleve[$i]' value='$current_eleve_login' />\n";
 	echo "</td>\n";
-	/*
-	echo "<td><input id=\"".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=text size=4 name=$current_eleve_login_nb value=\"".$current_eleve_nb_absences."\" onchange=\"changement()\" /></td>\n";
-	echo "<td><input id=\"1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=text size=4 name=$current_eleve_login_nj value=\"".$current_eleve_nb_nj."\" onchange=\"changement()\" /></td>\n";
-	echo "<td><input id=\"2".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type=text size=4 name=$current_eleve_login_retard value=\"".$current_eleve_nb_retards."\" onchange=\"changement()\" /></td>\n";
-	echo "<td><textarea id=\"3".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onchange=\"changement()\" name=$current_eleve_login_ap rows=2 cols=50  wrap=\"virtual\">$current_eleve_ap_absences</textarea></td></tr>\n";
-	*/
 	echo "<td align='center'><input id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_abs_ele[$i]' value=\"".$current_eleve_nb_absences."\" onchange=\"changement()\" /></td>\n";
 	echo "<td align='center'><input id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_nj_ele[$i]' value=\"".$current_eleve_nb_nj."\" onchange=\"changement()\" /></td>\n";
 	echo "<td align='center'><input id=\"n2".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_retard_ele[$i]' value=\"".$current_eleve_nb_retards."\" onchange=\"changement()\" /></td>\n";
-	//echo "<td><textarea id=\"n3".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onchange=\"changement()\" name='app_ele[$i]' rows='2' cols='50'  wrap=\"virtual\">$current_eleve_ap_absences</textarea></td></tr>\n";
 	echo "<td>\n";
 	echo "<textarea id=\"n3".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onchange=\"changement()\" name='no_anti_inject_app_eleve_$i' rows='2' cols='50'  wrap=\"virtual\" ";
 
