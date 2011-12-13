@@ -1085,7 +1085,15 @@ echo "<fieldset id='choixEncodageCsv' style='border: 1px solid grey;'>\n";
 echo "<legend style='border: 1px solid grey;'>Choix de l'encodage des CSV téléchargés</legend>\n";
 echo "<input type='hidden' name='choix_encodage_csv' value='ok' />\n";
 
-$choix_encodage_csv=getPref($_SESSION['login'], "choix_encodage_csv", "ascii");
+$choix_encodage_csv=getPref($_SESSION['login'], "choix_encodage_csv", "");
+if($choix_encodage_csv=='') {
+	if($_SESSION['statut']=='administrateur') {
+		$choix_encodage_csv="ascii";
+	}
+	else {
+		$choix_encodage_csv="windows-1252";
+	}
+}
 
 echo "<p>\n";
 echo "<input type='radio' id='choix_encodage_csv_ascii' name='choix_encodage_csv' value='ascii'";
