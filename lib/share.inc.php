@@ -1806,7 +1806,7 @@ function remplace_accents($chaine,$mode=''){
 	} elseif($mode == 'all_nospace'){
 		return preg_replace('#[^a-zA-Z0-9\-\._ ]#', '_', $str);
 	} else {
-		return preg_replace('#[^a-zA-Z0-9\-\._"\' ;]#', '_', $str);
+		return preg_replace('#[^a-zA-Z0-9\-\._"\' ;]\c\n#', '_', $str);
 	}
 }
 /**
