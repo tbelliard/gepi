@@ -1640,8 +1640,7 @@ function vider_dir($dir){
 function ensure_utf8($str, $from_encoding = null) {
     if ($str === null || $str === '') {
         return $str;
-   // } else if ($from_encoding == null && check_utf8($str)) {
-    } else if ($from_encoding == null) {
+   } else if ($from_encoding == null && check_utf8($str)) {
 	    return $str;
 	}
 	
@@ -1671,6 +1670,7 @@ function ensure_utf8($str, $from_encoding = null) {
  */
 function check_utf8 ($str) {
   
+	if (mb_strlen($str) < 1000) {
     // From http://w3.org/International/questions/qa-forms-utf-8.html
     $preg_match_result = 1 == preg_match('%^(?:
           [\x09\x0A\x0D\x20-\x7E]            # ASCII
@@ -1682,6 +1682,9 @@ function check_utf8 ($str) {
         | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
         |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
     )*$%xs', $str);
+	} else {
+		$preg_match_result = FALSE;
+	}
     if ($preg_match_result) {
         return true;
     } else {
@@ -1702,7 +1705,7 @@ function check_utf8 ($str) {
         }
         if (function_exists('mb_convert_encoding')) {
             $test_done = true;
-            $result && ($str === @mb_convert_encoding ( @mb_convert_encoding ( $str, 'UTF-32', 'UTF-8' ), 'UTF-8', 'UTF-32' ));
+            $result = $result && ($str === @mb_convert_encoding ( @mb_convert_encoding ( $str, 'UTF-32', 'UTF-8' ), 'UTF-8', 'UTF-32' ));
         }
         return ($test_done && $result);
     }
