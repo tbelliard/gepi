@@ -192,12 +192,10 @@ function get_nom_class_from_id($id){
 					echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre période</a>\n";
 					echo "</p>\n";
 
-					// Il faudra pouvoir gérer les cpe responsables seulement dans certaines classes...
-					//$sql="SELECT * FROM classes ORDER BY classe";
-					if ($_SESSION['statut']=="cpe") {
-						$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_cpe e, j_eleves_classes jc WHERE (e.cpe_login = '".$_SESSION['login']."' AND jc.login = e.e_login AND c.id = jc.id_classe)  ORDER BY classe";
+					if ((($_SESSION['statut']=="cpe")&&(getSettingValue('GepiAccesAbsTouteClasseCpe')=='yes'))||($_SESSION['statut']!="cpe")) {
+						$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  AND p.num_periode='$num_periode' ORDER BY classe;";
 					} else {
-						$sql="SELECT * FROM classes ORDER BY classe";
+						$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_cpe e, j_eleves_classes jc, periodes p WHERE (e.cpe_login = '".$_SESSION['login']."' AND jc.login = e.e_login AND c.id = jc.id_classe AND p.id_classe = c.id  AND p.num_periode='$num_periode')  ORDER BY classe;";
 					}
 					//echo "$sql<br />\n";
 
@@ -611,15 +609,20 @@ function get_nom_class_from_id($id){
 
 													$lig1=mysql_fetch_object($res1);
 
-													// Le CPE a-t-il bien cet élève:
-													//$sql="SELECT 1=1 FROM j_eleves_cpe jec, eleves e WHERE jec.e_login=e.login AND jec.cpe_login='".$_SESSION['login']."'";
-													$sql="SELECT 1=1 FROM j_eleves_cpe jec WHERE jec.e_login='$lig1->login' AND jec.cpe_login='".$_SESSION['login']."'";
-													//echo "$sql<br />";
-													//echo "<!--\n$sql\n-->\n";
-													$test=mysql_query($sql);
-
-													//if(mysql_num_rows($test)>0){
-													if((mysql_num_rows($test)>0)||($_SESSION['statut']=='secours')) {
+													$acces_a_cet_eleve="y";
+													if (($_SESSION['statut']=="cpe")&&(getSettingValue('GepiAccesAbsTouteClasseCpe')!='yes')) {
+														// Le CPE a-t-il bien cet élève:
+														$sql="SELECT 1=1 FROM j_eleves_cpe jec WHERE jec.e_login='$lig1->login' AND jec.cpe_login='".$_SESSION['login']."'";
+														//echo "<!--\n$sql\n-->\n";
+														$test=mysql_query($sql);
+	
+														if((mysql_num_rows($test)==0)) {
+															$acces_a_cet_eleve="n";
+														}
+													}
+	
+													//if((mysql_num_rows($test)>0)||($_SESSION['statut']=='secours')) {
+													if($acces_a_cet_eleve=="y") {
 														$affiche_ligne="y";
 
 														//$lig1=mysql_fetch_object($res1);
@@ -704,6 +707,10 @@ function get_nom_class_from_id($id){
 														}
 
 														if($temoin_erreur!="y") {
+															// Les absences de l'élève ont pu être importées par un autre cpe sans que l'opération soit menée à bout.
+															$sql="DELETE FROM $temp_table_abs WHERE login='$lig1->login';";
+															$menage=mysql_query($sql);
+
 															//echo "$sql_tmp_abs<br />";
 															$insert_tmp=mysql_query($sql_tmp_abs);
 														}
@@ -793,7 +800,7 @@ function get_nom_class_from_id($id){
 									$test_ver=mysql_query($sql);
 
 									if(mysql_num_rows($test_ver)>0) {
-										if($_SESSION['statut']=='secours'){
+										if((($_SESSION['statut']=="cpe")&&(getSettingValue('GepiAccesAbsTouteClasseCpe')=='yes'))||($_SESSION['statut']=='secours')) {
 											$sql="SELECT login FROM j_eleves_classes WHERE id_classe='$id_classe[$i]' AND periode='$num_periode';";
 										}
 										else{
@@ -833,15 +840,18 @@ function get_nom_class_from_id($id){
 											$sql="SELECT 1=1 FROM periodes p,j_eleves_classes jec WHERE p.num_periode='$num_periode' AND (p.verouiller='N' OR p.verouiller='P') AND jec.login='$log_eleve[$i]' AND p.id_classe=jec.id_classe AND p.num_periode=jec.periode;";
 										}
 										else{
-											// L'élève est-il associé au CPE:
-											// Il faudrait vraiment une tentative frauduleuse pour que ce ne soit pas le cas...
-											$sql="SELECT 1=1 FROM j_eleves_cpe jec WHERE jec.e_login='".$log_eleve[$i]."' AND jec.cpe_login='".$_SESSION['login']."';";
-											$res_test0=mysql_query($sql);
-											if(mysql_num_rows($res_test0)!=0){
-												$test0=true;
-											}
-											else{
-												$test0=false;
+											$test0=true;
+											if (($_SESSION['statut']=="cpe")&&(getSettingValue('GepiAccesAbsTouteClasseCpe')!='yes')) {
+												// L'élève est-il associé au CPE:
+												// Il faudrait vraiment une tentative frauduleuse pour que ce ne soit pas le cas...
+												$sql="SELECT 1=1 FROM j_eleves_cpe jec WHERE jec.e_login='".$log_eleve[$i]."' AND jec.cpe_login='".$_SESSION['login']."';";
+												$res_test0=mysql_query($sql);
+												if(mysql_num_rows($res_test0)!=0){
+													$test0=true;
+												}
+												else{
+													$test0=false;
+												}
 											}
 
 											// Requête pour tester que la période est bien close pour cette classe
