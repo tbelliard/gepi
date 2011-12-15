@@ -92,20 +92,6 @@ if ($current_group) {
 //debug_var();
 
 send_file_download_headers('text/x-csv',$nom_fic);
-/*
-$now = gmdate('D, d M Y H:i:s') . ' GMT';
-header('Content-Type: text/x-csv');
-header('Expires: ' . $now);
-// lem9 & loic1: IE need specific headers
-if (preg_match('/MSIE/', $_SERVER['HTTP_USER_AGENT'])) {
-    header('Content-Disposition: inline; filename="' . $nom_fic . '"');
-    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-    header('Pragma: public');
-} else {
-    header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
-    header('Pragma: no-cache');
-}
-*/
 
 include "../lib/periodes.inc.php";
 $fd = '';

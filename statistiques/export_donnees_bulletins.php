@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -391,19 +391,9 @@ if((isset($id_classe))&&
 	// $tab_id_csv_eleve[login]=id_temp
 
 	$nom_fic = "export_donnees_bulletins_".date("Ymd_His").".csv";
-	$now = gmdate('D, d M Y H:i:s') . ' GMT';
-	header('Content-Type: text/x-csv');
-	header('Expires: ' . $now);
-	// lem9 & loic1: IE need specific headers
-	if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
-		header('Content-Disposition: inline; filename="' . $nom_fic . '"');
-		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-		header('Pragma: public');
-	} else {
-		header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
-		header('Pragma: no-cache');
-	}
-	echo $csv;
+	send_file_download_headers('text/x-csv',$nom_fic);
+	//echo $csv;
+	echo echo_csv_encoded($csv);
 	die();
 }
 

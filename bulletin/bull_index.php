@@ -163,11 +163,11 @@ if(!isset($tab_id_classe)) {
 	(($_SESSION['statut']=='administrateur')&&(getSettingValue('GepiAdminImprBulSettings')=='yes'))) {
 		echo " | <a href='param_bull.php' target='_blank'>Paramètres d'impression des bulletins</a>";
 	}
-	/*
-	if($_SESSION['statut']!='autre') {
+	
+	if((getSettingValue('ancien_dispositif_bulletins')=='y')&&($_SESSION['statut']!='autre')) {
 	  echo " | <a href='index.php'>Ancien dispositif</a>";
 	}
-	*/
+	
 	echo "</p>\n";
 
 	echo "<p class='bold'>Choix des classes:</p>\n";

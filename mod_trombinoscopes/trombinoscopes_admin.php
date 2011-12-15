@@ -3,7 +3,7 @@
  * Administration du trombinoscope
 * $Id: trombinoscopes_admin.php 8586 2011-11-01 17:41:09Z mleygnac $
 *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -399,26 +399,37 @@ if (isset($_POST['is_posted']) and ($msg=='')) {
 // Liste des données élève
 if (isset($_GET['liste_eleves']) and ($_GET['liste_eleves']=='oui'))  {
 	check_token();
+
+	/*
 	header("Content-Description: File Transfer");
 	header("Content-Disposition: attachment; filename=eleves_".getSettingValue("gepiYear").".csv");
 	header("Content-Type: text/csv; charset=utf-8");
 	header("Content-Transfer-Encoding: base64");
 	// pb de download avec IE
 	if (isset($_SERVER['HTTP_USER_AGENT']) && (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false))
-		{
+	{
 		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 		header('Pragma: public');
-		} 
+	} 
 		else {header('Pragma: no-cache');
-		}
-	echo "\"classe\",\"nom\",\"prénom\",\"prénom nom\",\"login\",\"elenoet\"\n";
+	}
+	*/
+	$csv="";
+	$csv.="\"classe\",\"nom\",\"prénom\",\"prénom nom\",\"login\",\"elenoet\"\n";
 	$r_sql="SELECT `eleves`.`nom`,`eleves`.`prenom`,`eleves`.`login`,`eleves`.`elenoet`,`classes`.`nom_complet` FROM `eleves`,`j_eleves_classes`,`classes` WHERE (`eleves`.`login`=`j_eleves_classes`.`login` AND `j_eleves_classes`.`id_classe`=`classes`.`id`) GROUP BY `login` ORDER BY `nom_complet`,`nom`,`prenom`";
 	$R_eleves=mysql_query($r_sql);
-	if ($R_eleves)
-		while ($un_eleve=mysql_fetch_assoc($R_eleves))
-			echo "\"".$un_eleve['nom_complet']."\",\"".$un_eleve['nom']."\",\"".$un_eleve['prenom']."\",\"".$un_eleve['prenom']." ".$un_eleve['nom']."\",\"".$un_eleve['login']."\",\"".$un_eleve['elenoet']."\"\n";
-	exit;
+	if ($R_eleves) {
+		while ($un_eleve=mysql_fetch_assoc($R_eleves)) {
+			$csv.="\"".$un_eleve['nom_complet']."\",\"".$un_eleve['nom']."\",\"".$un_eleve['prenom']."\",\"".$un_eleve['prenom']." ".$un_eleve['nom']."\",\"".$un_eleve['login']."\",\"".$un_eleve['elenoet']."\"\n";
+		}
 	}
+
+	$nom_fic="eleves_".getSettingValue("gepiYear").".csv";
+	send_file_download_headers('text/x-csv',$nom_fic);
+	//echo $csv;
+	echo echo_csv_encoded($csv);
+	die();
+}
 	
 // Chargement des photos élèves
 if (isset($_POST['action']) and ($_POST['action']=='upload_photos_eleves'))  {

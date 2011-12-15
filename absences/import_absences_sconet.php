@@ -87,15 +87,6 @@ require_once("../lib/header.inc");
 
 					echo "<p>Choisissez la période à importer:<br />\n";
 
-					/*
-					$sql="SELECT DISTINCT num_periode FROM periodes WHERE MAX(num_periode)= ORDER BY num_periode;";
-					$res_per=mysql_query($sql);
-					while($lig_tmp=mysql_fetch_object($res_per)){
-						// Il ne faudrait proposer que les périodes ouvertes en saisie, non?
-						echo "<input type='radio' name='num_periode' value='$lig_tmp->num_periode' /> Période $lig_tmp->num_periode<br />\n";
-					}
-					*/
-
 					$i=0;
 					for($j=1;$j<=$tab_max_per[$i];$j++){
 						//echo "<input type='radio' name='num_periode' value='$j' /> Période $j<br />\n";
@@ -129,16 +120,6 @@ require_once("../lib/header.inc");
 							}
 							echo "</td>\n";
 
-							/*
-							$sql="SELECT DISTINCT num_periode FROM periodes WHERE MAX(num_periode)='$tab_max_per[$i]' ORDER BY num_periode;";
-							echo "$sql<br />\n";
-							$res_per=mysql_query($sql);
-							while($lig_tmp=mysql_fetch_object($res_per)){
-								// Il ne faudrait proposer que les périodes ouvertes en saisie, non?
-								echo "<input type='radio' name='num_periode' value='$lig_tmp->num_periode' /> Période $lig_tmp->num_periode<br />\n";
-							}
-							*/
-
 							echo "<td valign='top' style='border:0px;'>\n";
 							echo "<input type='hidden' name='max_per' value='$tab_max_per[$i]' />\n";
 							echo "<p><input type='submit' value='Valider' /></p>\n";
@@ -165,13 +146,12 @@ require_once("../lib/header.inc");
 					echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre période</a>\n";
 					echo "</p>\n";
 
-					// Il faudra pouvoir gérer les cpe responsables seulement dans certaines classes...
-					//$sql="SELECT * FROM classes ORDER BY classe";
-					if ($_SESSION['statut']=="cpe") {
-						$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_cpe e, j_eleves_classes jc WHERE (e.cpe_login = '".$_SESSION['login']."' AND jc.login = e.e_login AND c.id = jc.id_classe)  ORDER BY classe";
+					if ((($_SESSION['statut']=="cpe")&&(getSettingValue('GepiAccesAbsTouteClasseCpe')=='yes'))||($_SESSION['statut']!="cpe")) {
+						$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  AND p.num_periode='$num_periode' ORDER BY classe;";
 					} else {
-						$sql="SELECT * FROM classes ORDER BY classe";
+						$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_cpe e, j_eleves_classes jc, periodes p WHERE (e.cpe_login = '".$_SESSION['login']."' AND jc.login = e.e_login AND c.id = jc.id_classe AND p.id_classe = c.id  AND p.num_periode='$num_periode')  ORDER BY classe;";
 					}
+
 					//echo "$sql<br />\n";
 
 					$res_classe=mysql_query($sql);
@@ -424,13 +404,21 @@ require_once("../lib/header.inc");
 											else{
 				
 												$lig1=mysql_fetch_object($res1);
-				
-												// Le CPE a-t-il bien cet élève:
-												$sql="SELECT 1=1 FROM j_eleves_cpe jec WHERE jec.e_login='$lig1->login' AND jec.cpe_login='".$_SESSION['login']."'";
-												//echo "<!--\n$sql\n-->\n";
-												$test=mysql_query($sql);
-				
-												if((mysql_num_rows($test)>0)||($_SESSION['statut']=='secours')) {
+
+												$acces_a_cet_eleve="y";
+												if (($_SESSION['statut']=="cpe")&&(getSettingValue('GepiAccesAbsTouteClasseCpe')!='yes')) {
+													// Le CPE a-t-il bien cet élève:
+													$sql="SELECT 1=1 FROM j_eleves_cpe jec WHERE jec.e_login='$lig1->login' AND jec.cpe_login='".$_SESSION['login']."'";
+													//echo "<!--\n$sql\n-->\n";
+													$test=mysql_query($sql);
+
+													if((mysql_num_rows($test)==0)) {
+														$acces_a_cet_eleve="n";
+													}
+												}
+
+												//if((mysql_num_rows($test)>0)||($_SESSION['statut']=='secours')) {
+												if($acces_a_cet_eleve=="y") {
 													$affiche_ligne="y";
 				
 													$ligne_tableau.="<td>";
@@ -464,6 +452,10 @@ require_once("../lib/header.inc");
 													echo "<td>\n";
 				
 													if((isset($eleves[$i]['elenoet']))&&(isset($eleves[$i]['nbAbs']))&&(isset($eleves[$i]['nbNonJustif']))&&(isset($eleves[$i]['nbRet']))) {
+														// Les absences de l'élève ont pu être importées par un autre cpe sans que l'opération soit menée à bout.
+														$sql="DELETE FROM temp_abs_import WHERE login='$lig1->login';";
+														$menage=mysql_query($sql);
+
 														$sql="INSERT INTO temp_abs_import SET login='$lig1->login',
 																							cpe_login='".$_SESSION['login']."',
 																							elenoet='".$eleves[$i]['elenoet']."',
@@ -573,7 +565,7 @@ require_once("../lib/header.inc");
 									$test_ver=mysql_query($sql);
 
 									if(mysql_num_rows($test_ver)>0) {
-										if($_SESSION['statut']=='secours'){
+										if((($_SESSION['statut']=="cpe")&&(getSettingValue('GepiAccesAbsTouteClasseCpe')=='yes'))||($_SESSION['statut']=='secours')) {
 											$sql="SELECT login FROM j_eleves_classes WHERE id_classe='$id_classe[$i]' AND periode='$num_periode';";
 										}
 										else{
@@ -612,16 +604,19 @@ require_once("../lib/header.inc");
 											// Requête pour tester que la période est bien close ou partiellement close pour cette classe
 											$sql="SELECT 1=1 FROM periodes p,j_eleves_classes jec WHERE p.num_periode='$num_periode' AND (p.verouiller='N' OR p.verouiller='P') AND jec.login='$log_eleve[$i]' AND p.id_classe=jec.id_classe AND p.num_periode=jec.periode;";
 										}
-										else{
-											// L'élève est-il associé au CPE:
-											// Il faudrait vraiment une tentative frauduleuse pour que ce ne soit pas le cas...
-											$sql="SELECT 1=1 FROM j_eleves_cpe jec WHERE jec.e_login='".$log_eleve[$i]."' AND jec.cpe_login='".$_SESSION['login']."';";
-											$res_test0=mysql_query($sql);
-											if(mysql_num_rows($res_test0)!=0){
-												$test0=true;
-											}
-											else{
-												$test0=false;
+										else {
+											$test0=true;
+											if (($_SESSION['statut']=="cpe")&&(getSettingValue('GepiAccesAbsTouteClasseCpe')!='yes')) {
+												// L'élève est-il associé au CPE:
+												// Il faudrait vraiment une tentative frauduleuse pour que ce ne soit pas le cas...
+												$sql="SELECT 1=1 FROM j_eleves_cpe jec WHERE jec.e_login='".$log_eleve[$i]."' AND jec.cpe_login='".$_SESSION['login']."';";
+												$res_test0=mysql_query($sql);
+												if(mysql_num_rows($res_test0)!=0){
+													$test0=true;
+												}
+												else{
+													$test0=false;
+												}
 											}
 
 											// Requête pour tester que la période est bien close pour cette classe
@@ -697,7 +692,7 @@ require_once("../lib/header.inc");
 									echo "<p><br /></p>\n";
 								}
 
-								echo "<p>Contrôler les saisies pour la classe de:</p>\n";
+								echo "<p>Contrôler les saisies pour la classe de&nbsp;:</p>\n";
 
 								$nb_classes=count($id_classe);
 								$nb_class_par_colonne=round($nb_classes/3);

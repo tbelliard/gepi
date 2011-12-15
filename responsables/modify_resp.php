@@ -98,7 +98,9 @@ if (isset($is_posted) and ($is_posted == '1')) {
 								tel_pers='$tel_pers',
 								tel_port='$tel_port',
 								tel_prof='$tel_prof'";
-				if((getSettingValue('mode_email_resp')!='mon_compte')&&($compte_resp_existe=='y')&&(isset($mel))) {
+				// On permet de modifier l'adresse mail même si on est en mode mon_compte (quand on modifie, c'est alors pour dépanner)
+				//if((getSettingValue('mode_email_resp')!='mon_compte')&&($compte_resp_existe=='y')&&(isset($mel))) {
+				if(($compte_resp_existe=='y')&&(isset($mel))) {
 					$sql.=",mel='$mel'";
 				}
 				/*
@@ -123,7 +125,8 @@ if (isset($is_posted) and ($is_posted == '1')) {
 						$test2_login = mysql_result(mysql_query($sql), 0);
 						if ($test2_login == 1) {
 							$sql="UPDATE utilisateurs SET nom = '".$resp_nom."', prenom = '" . $resp_prenom . "', civilite='$civilite'";
-							if((getSettingValue('mode_email_resp')!='mon_compte')&&(isset($mel))) {
+							//if((getSettingValue('mode_email_resp')!='mon_compte')&&(isset($mel))) {
+							if(isset($mel)) {
 								$sql.=", email = '" . $mel . "'";
 							}
 							$sql.=" WHERE login ='" . $test1_login ."'";
@@ -642,6 +645,7 @@ if (isset($pers_id)) {
 	$tel_port=$lig_pers->tel_port;
 	$tel_prof=$lig_pers->tel_prof;
 	$mel=$lig_pers->mel;
+	$mel_resp_pers=$lig_pers->mel;
 
 	if(getSettingValue('mode_email_resp')=='mon_compte') {
 		$sql="SELECT email FROM utilisateurs WHERE login='$resp_login_tmp' and statut='responsable';";
@@ -721,7 +725,12 @@ echo "<td valign='top'>\n";
 			$resp_login=$lig_resp_login->login;
 			$resp_u_email=$lig_resp_login->email;
 
-			echo " (<em title=\"Compte d'utilisateur\"><a href='../utilisateurs/edit_responsable.php?critere_recherche_login=$resp_login'>$resp_login</a></em>)";
+			if($_SESSION['statut']=='administrateur') {
+				echo " (<em title=\"Compte d'utilisateur\"><a href='../utilisateurs/edit_responsable.php?critere_recherche_login=$resp_login'>$resp_login</a></em>)";
+			}
+			else {
+				echo " (<em title=\"Compte d'utilisateur\">$resp_login</em>)";
+			}
 		}
 		else {
 			$compte_resp_existe="n";
@@ -788,10 +797,19 @@ echo "<td valign='top'>\n";
 	if(isset($compte_resp_existe)&&($compte_resp_existe=="y")&&(getSettingValue('mode_email_resp')=='mon_compte')) {
 		// Faudrait-il quand même permettre la saisie en mode mon_compte si le mail est vide?
 		// Pour permettre une récupération de mot de passe?
-		echo $mel;
+
+		echo "<input type='text' size='46' name='mel' value=\"".$resp_u_email."\" onchange='changement();' />";
+
+		if((isset($mel_resp_pers))&&($mel_resp_pers!=$resp_u_email)&&($mel_resp_pers!="")) {
+			$precision_sur_mails="<br />(<em>'$resp_u_email' saisi par le responsable et '$mel_resp_pers' dans la table resp_pers</em>)";
+		}
 	}
 	else {
 		echo "<input type='text' size='46' name='mel' value=\"".$mel."\" onchange='changement();' />";
+
+		if((isset($resp_u_email))&&($mel!=$resp_u_email)&&($resp_u_email!="")) {
+			$precision_sur_mails="<br />(<em>'$resp_u_email' saisi par le responsable et '$mel' dans la table resp_pers</em>)";
+		}
 	}
 	if($mel!='') {
 		$tmp_date=getdate();
@@ -801,6 +819,7 @@ echo "<td valign='top'>\n";
 		echo "<img src='../images/imabulle/courrier.jpg' width='20' height='15' alt='Envoyer un courriel' border='0' />";
 		echo "</a>";
 	}
+	if(isset($precision_sur_mails)) {echo $precision_sur_mails;}
 
 	echo "</td></tr>\n";
 	echo "</table>\n";

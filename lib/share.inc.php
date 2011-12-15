@@ -1302,6 +1302,9 @@ function tentative_intrusion($_niveau, $_description) {
 		$message .= "Une nouvelle tentative d'intrusion a été détectée par Gepi. Les détails suivants ont été enregistrés dans la base de données :\n\n";
 		$message .= "Date : ".$date."\n";
 		$message .= "Fichier visé : ".$fichier."\n";
+		if(isset($_SERVER['HTTP_REFERER'])) {
+			$message .= "Url d'origine : ".$_SERVER['HTTP_REFERER']."\n";
+		}
 		$message .= "Niveau de gravité : ".$_niveau."\n";
 		$message .= "Description : ".$_description."\n\n";
 		if ($user_login == "-") {
@@ -1321,20 +1324,19 @@ function tentative_intrusion($_niveau, $_description) {
 		$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
 		if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 
-    $subject = $gepiPrefixeSujetMail."GEPI : Alerte sécurité -- Tentative d'intrusion";
-    $subject = "=?ISO-8859-1?B?".base64_encode($subject)."?=\r\n";
-
-    
-    $headers = "X-Mailer: PHP/" . phpversion()."\r\n";
-    $headers .= "MIME-Version: 1.0\r\n";
-    $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
-    $headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
+		$subject = $gepiPrefixeSujetMail."GEPI : Alerte sécurité -- Tentative d'intrusion";
+		$subject = "=?ISO-8859-1?B?".base64_encode($subject)."?=\r\n";
+	
+		$headers = "X-Mailer: PHP/" . phpversion()."\r\n";
+		$headers .= "MIME-Version: 1.0\r\n";
+		$headers .= "Content-type: text/plain; charset=UTF-8\r\n";
+		$headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
 
 		// On envoie le mail
 		$envoi = mail(getSettingValue("gepiAdminAdress"),
-		    $subject,
-		    $message,
-        $headers);
+			$subject,
+			$message,
+			$headers);
 	}
 }
 
@@ -1706,7 +1708,7 @@ function check_utf8 ($str) {
             $test_done = true;
             $result && ($str === @mb_convert_encoding ( @mb_convert_encoding ( $str, 'UTF-32', 'UTF-8' ), 'UTF-8', 'UTF-32' ));
         }
-        return $test_done && $result;
+        return ($test_done && $result);
     }
 }
     
@@ -5057,9 +5059,36 @@ function getDateDescription($date_debut,$date_fin) {
  */
 function echo_csv_encoded($texte_csv) {
 	// D'après http://www.oxeron.com/2008/09/15/probleme-daccent-dans-un-export-csv-en-php
-
 	//$retour=$texte_csv;
-	$retour=chr(255).chr(254).mb_convert_encoding($texte_csv, 'UTF-16LE', 'UTF-8');
+	//$retour=chr(255).chr(254).mb_convert_encoding($texte_csv, 'UTF-16LE', 'UTF-8');
+
+	$choix_encodage_csv=getPref($_SESSION['login'], "choix_encodage_csv", "");
+	if(!in_array($choix_encodage_csv, array("", "ascii", "utf-8", "windows-1252"))) {$choix_encodage_csv="ascii";}
+
+	if($choix_encodage_csv=="") {
+		if($_SESSION['statut']=='administrateur') {
+			$retour=$texte_csv;
+		}
+		else {
+			//$retour=mb_convert_encoding($texte_csv, 'ASCII', 'utf-8');
+			//$retour=remplace_accents($texte_csv,'csv');
+			// Les autres utilisateurs preferont sans doute ca:
+			$retour=mb_convert_encoding($texte_csv, "windows-1252", 'utf-8');
+		}
+	}
+	else {
+		if($choix_encodage_csv=="ascii") {
+			//echo "=======================================<br />\n";
+			//echo $texte_csv;
+			$retour=ensure_ascii($texte_csv);
+			//echo "=======================================<br />\n";
+			//echo $retour;
+			//echo "=======================================<br />\n";
+		}
+		else {
+			$retour=mb_convert_encoding($texte_csv, $choix_encodage_csv, 'utf-8');
+		}
+	}
 
 	return $retour;
 }

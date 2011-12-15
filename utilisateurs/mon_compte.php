@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -632,7 +632,18 @@ if((isset($modifier_barre))&&(in_array($_SESSION['statut'], $tab_statuts_barre))
 	}
 	else {
 		$msg.="Sauvegarde de la préférence d'affichage de la barre de menu effectuée.<br />\n";
+	}
+}
+
+if(isset($_POST['choix_encodage_csv'])) {
+	if(in_array($_POST['choix_encodage_csv'],array("ascii", "utf-8", "windows-1252"))) {
+		if(!savePref($_SESSION['login'], 'choix_encodage_csv', $_POST['choix_encodage_csv'])) {
+			$msg.="Erreur lors de la sauvegarde de la préférence d'encodage des fichiers CSV.<br />\n";
 		}
+		else {
+			$msg.="Sauvegarde de la préférence d'encodage des fichiers CSV effectuée.<br />\n";
+		}
+	}
 }
 
 
@@ -1066,6 +1077,52 @@ if (getSettingValue("utiliserMenuBarre") != "no") {
 	echo "</form>\n";
 	echo "  <hr />\n";
 }
+
+echo "<form enctype=\"multipart/form-data\" action=\"mon_compte.php\" method=\"post\">\n";
+echo add_token_field();
+
+echo "<fieldset id='choixEncodageCsv' style='border: 1px solid grey;'>\n";
+echo "<legend style='border: 1px solid grey;'>Choix de l'encodage des CSV téléchargés</legend>\n";
+echo "<input type='hidden' name='choix_encodage_csv' value='ok' />\n";
+
+$choix_encodage_csv=getPref($_SESSION['login'], "choix_encodage_csv", "");
+if($choix_encodage_csv=='') {
+	if($_SESSION['statut']=='administrateur') {
+		$choix_encodage_csv="ascii";
+	}
+	else {
+		$choix_encodage_csv="windows-1252";
+	}
+}
+
+echo "<p>\n";
+echo "<input type='radio' id='choix_encodage_csv_ascii' name='choix_encodage_csv' value='ascii'";
+if($choix_encodage_csv=="ascii") {echo " checked";}
+echo " />\n";
+//echo "<label for='choix_encodage_csv_ascii' id='texte_choix_encodage_csv_ascii'>ASCII (<em>sans accents</em>)</label>\n";
+echo "<label for='choix_encodage_csv_ascii' id='texte_choix_encodage_csv_ascii'>Sans accents</label>\n";
+echo "</p>\n";
+
+echo "<p>\n";
+echo "<input type='radio' id='choix_encodage_csv_utf8' name='choix_encodage_csv' value='utf-8'";
+if($choix_encodage_csv=="utf-8") {echo " checked";}
+echo " />\n";
+echo "<label for='choix_encodage_csv_utf8' id='texte_choix_encodage_csv_utf8'>Accents UTF-8</label>\n";
+echo "</p>\n";
+
+echo "<p>\n";
+echo "<input type='radio' id='choix_encodage_csv_windows_1252' name='choix_encodage_csv' value='windows-1252'";
+if($choix_encodage_csv=="windows-1252") {echo " checked";}
+echo " />\n";
+echo "<label for='choix_encodage_csv_windows_1252' id='texte_choix_encodage_csv_windows_1252'>Accents WINDOWS-1252</label>\n";
+echo "</p>\n";
+
+echo "<br /><center><input type=\"submit\" value=\"Enregistrer\" /></center>\n";
+echo "</fieldset>\n";
+echo "</form>\n";
+echo "  <hr />\n";
+
+
 
 // Journal des connexions
 echo "<a name=\"connexion\"></a>\n";

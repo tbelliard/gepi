@@ -139,21 +139,10 @@ if(isset($_GET['export_csv'])) {
 		}
 	}
 
-	header('Content-Type:  text/x-csv');
-	$now = gmdate('D, d M Y H:i:s') . ' GMT';
-	header('Expires: ' . $now);
-	// lem9 & loic1: IE need specific headers
-	//nom du fichier à telecharger
-
-	if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
-		header('Content-Disposition: inline; filename="cc_dev_'.$id_dev.'_eval_'.$id_eval.'_'.date("dmY").'.csv"');
-		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-		header('Pragma: public');
-	} else {
-		header('Content-Disposition: attachment; filename="cc_dev_'.$id_dev.'_eval_'.$id_eval.'_'.date("dmY").'.csv"');
-		header('Pragma: no-cache');
-	}
-	echo $csv;
+	$nom_fic="cc_dev_".$id_dev."_eval_".$id_eval."_".date("dmY").".csv";
+	send_file_download_headers('text/x-csv',$nom_fic);
+	//echo $csv;
+	echo echo_csv_encoded($csv);
 	die();
 }
 
