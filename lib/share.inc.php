@@ -1696,6 +1696,7 @@ function check_utf8 ($str) {
             $test_done = true;
             $result = $result && @mb_check_encoding($str, 'UTF-8');
         }
+
         if (function_exists('mb_detect_encoding')) {
             $test_done = true;
             $result = $result && @mb_detect_encoding($str, 'UTF-8', true);
@@ -3950,7 +3951,7 @@ function acces($id,$statut)
 function send_file_download_headers($content_type, $filename, $content_disposition = 'attachment', $encodeSortie = 'utf-8') {
 
   header('Content-Encoding: '.$encodeSortie);
-  
+
   header('Content-Type: '.$content_type);
   header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
   header('Content-Disposition: '.$content_disposition.'; filename="' . $filename . '"');
