@@ -1640,8 +1640,7 @@ function vider_dir($dir){
 function ensure_utf8($str, $from_encoding = null) {
     if ($str === null || $str === '') {
         return $str;
-    //} else if ($from_encoding == null && check_utf8($str)) {
-    } else if ($from_encoding == null) {
+   } else if ($from_encoding == null && check_utf8($str)) {
 	    return $str;
 	}
 	
@@ -1671,6 +1670,7 @@ function ensure_utf8($str, $from_encoding = null) {
  */
 function check_utf8 ($str) {
   
+	if (mb_strlen($str) < 1000) {
     // From http://w3.org/International/questions/qa-forms-utf-8.html
     $preg_match_result = 1 == preg_match('%^(?:
           [\x09\x0A\x0D\x20-\x7E]            # ASCII
@@ -1692,7 +1692,7 @@ function check_utf8 ($str) {
             $test_done = true;
             $result = $result && @mb_check_encoding($str, 'UTF-8');
         }
-    die ('coucou');
+
         if (function_exists('mb_detect_encoding')) {
             $test_done = true;
             $result = $result && @mb_detect_encoding($str, 'UTF-8', true);
@@ -1703,7 +1703,7 @@ function check_utf8 ($str) {
         }
         if (function_exists('mb_convert_encoding')) {
             $test_done = true;
-            $result && ($str === @mb_convert_encoding ( @mb_convert_encoding ( $str, 'UTF-32', 'UTF-8' ), 'UTF-8', 'UTF-32' ));
+            $result = $result && ($str === @mb_convert_encoding ( @mb_convert_encoding ( $str, 'UTF-32', 'UTF-8' ), 'UTF-8', 'UTF-32' ));
         }
         return ($test_done && $result);
     }
@@ -3944,11 +3944,10 @@ function acces($id,$statut)
  * @param string $filename Nom du fichier
  * @param type $content_disposition Content-Disposition 'attachment' par défaut
  */
-function send_file_download_headers($content_type, $filename, $content_disposition = 'attachment') {
+function send_file_download_headers($content_type, $filename, $content_disposition = 'attachment', $encodeSortie = 'utf-8') {
 
-  header('Content-Encoding: utf-8');
-  header('Content-Encoding: iso-8859');
-  
+  header('Content-Encoding: '.$encodeSortie);
+
   header('Content-Type: '.$content_type);
   header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
   header('Content-Disposition: '.$content_disposition.'; filename="' . $filename . '"');
