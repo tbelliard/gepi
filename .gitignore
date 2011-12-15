@@ -31,4 +31,6 @@ nbproject
 
 # Ignore others files
 style_screen_ajout.css
+photos/eleves/*
+images/logo.jpg
 
