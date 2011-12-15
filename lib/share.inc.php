@@ -1706,7 +1706,7 @@ function check_utf8 ($str) {
         }
         if (function_exists('mb_convert_encoding')) {
             $test_done = true;
-            $result && ($str === @mb_convert_encoding ( @mb_convert_encoding ( $str, 'UTF-32', 'UTF-8' ), 'UTF-8', 'UTF-32' ));
+            $result = $result && ($str === @mb_convert_encoding ( @mb_convert_encoding ( $str, 'UTF-32', 'UTF-8' ), 'UTF-8', 'UTF-32' ));
         }
         return ($test_done && $result);
     }
@@ -3951,9 +3951,10 @@ function acces($id,$statut)
  * @param string $filename Nom du fichier
  * @param type $content_disposition Content-Disposition 'attachment' par défaut
  */
-function send_file_download_headers($content_type, $filename, $content_disposition = 'attachment') {
+function send_file_download_headers($content_type, $filename, $content_disposition = 'attachment', $encodeSortie = 'utf-8') {
 
-  header('Content-Encoding: utf-8');
+  header('Content-Encoding: '.$encodeSortie);
+  
   header('Content-Type: '.$content_type);
   header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
   header('Content-Disposition: '.$content_disposition.'; filename="' . $filename . '"');
@@ -5061,7 +5062,7 @@ function echo_csv_encoded($texte_csv) {
 	// D'après http://www.oxeron.com/2008/09/15/probleme-daccent-dans-un-export-csv-en-php
 	//$retour=$texte_csv;
 	//$retour=chr(255).chr(254).mb_convert_encoding($texte_csv, 'UTF-16LE', 'UTF-8');
-
+  
 	$choix_encodage_csv=getPref($_SESSION['login'], "choix_encodage_csv", "");
 	if(!in_array($choix_encodage_csv, array("", "ascii", "utf-8", "windows-1252"))) {$choix_encodage_csv="ascii";}
 
