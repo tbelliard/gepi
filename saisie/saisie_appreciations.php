@@ -290,26 +290,30 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 		}
 	
 		$saisie_valide='n';
-	
-		$sql="SELECT 1=1 FROM matieres_appreciations WHERE login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode' AND appreciation!='';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			// Il y avait une appréciation saisie
-			// Si l'autorisation de proposition de correction est donnée, c'est OK
-			// Sinon, on contrôle quand même s'il y a une autorisation exceptionnelle
-			if(mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y') {
-				$saisie_valide='y';
-			}
-			elseif($autorisation_exceptionnelle_de_saisie=='y') {
-				$saisie_valide='y';
-			}
+
+		if(mb_substr(getSettingValue('autoriser_correction_bulletin_hors_delais'),0,1)=='y') {
+			// La proposition de correction est autorisée même si aucune appréciation n'était saisie avant fermeture de la période.
+			$saisie_valide='y';
 		}
 		elseif($autorisation_exceptionnelle_de_saisie=='y') {
 			// Il y a une autorisation exceptionnelle de saisie
 			$saisie_valide='y';
 		}
-	
-	
+		else {
+			// On contrôle s'il y avait une appréciation saisie avant la fermeture de période
+			$sql="SELECT 1=1 FROM matieres_appreciations WHERE login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode' AND appreciation!='';";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				// Il y avait une appréciation saisie
+				// Si l'autorisation de proposition de correction est donnée, c'est OK
+				// Sinon, on contrôle quand même s'il y a une autorisation exceptionnelle
+				if(mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y') {
+					$saisie_valide='y';
+				}
+			}
+		}
+
+
 		if($saisie_valide!='y') {
 			$msg.="ERREUR: La saisie n'est pas autorisée.<br />";
 		}
@@ -322,9 +326,7 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 			if (isset($NON_PROTECT["correction_app_eleve"])) {
 				$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["correction_app_eleve"]));
 				// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-				$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
-				$app=preg_replace('/(\\\r)+/',"\r",$app);
-				$app=preg_replace('/(\\\n)+/',"\n",$app);
+				$app=nettoyage_retours_ligne_surnumeraires($app);
 
 				$texte_mail="";
 		
@@ -473,26 +475,29 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 		}
 	
 		$saisie_valide='n';
-	
-		$sql="SELECT 1=1 FROM matieres_appreciations_grp WHERE id_groupe='$id_groupe' AND periode='$correction_periode' AND appreciation!='';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			// Il y avait une appréciation saisie
-			// Si l'autorisation de proposition de correction est donnée, c'est OK
-			// Sinon, on contrôle quand même s'il y a une autorisation exceptionnelle
-			if(mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y') {
-				$saisie_valide='y';
-			}
-			elseif($autorisation_exceptionnelle_de_saisie=='y') {
-				$saisie_valide='y';
-			}
+
+		if(mb_substr(getSettingValue('autoriser_correction_bulletin_hors_delais'),0,1)=='y') {
+			// La proposition de correction est autorisée même si aucune appréciation n'était saisie avant fermeture de la période.
+			$saisie_valide='y';
 		}
 		elseif($autorisation_exceptionnelle_de_saisie=='y') {
 			// Il y a une autorisation exceptionnelle de saisie
 			$saisie_valide='y';
 		}
-	
-	
+		else {
+			// On contrôle s'il y avait une appréciation saisie avant la fermeture de période
+			$sql="SELECT 1=1 FROM matieres_appreciations_grp WHERE id_groupe='$id_groupe' AND periode='$correction_periode' AND appreciation!='';";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				// Il y avait une appréciation saisie
+				// Si l'autorisation de proposition de correction est donnée, c'est OK
+				// Sinon, on contrôle quand même s'il y a une autorisation exceptionnelle
+				if(mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y') {
+					$saisie_valide='y';
+				}
+			}
+		}
+
 		if($saisie_valide!='y') {
 			$msg.="ERREUR: La saisie n'est pas autorisée.<br />";
 		}
@@ -505,9 +510,7 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 			if (isset($NON_PROTECT["correction_app_groupe"])) {
 				$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["correction_app_groupe"]));
 				// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-				$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
-				$app=preg_replace('/(\\\r)+/',"\r",$app);
-				$app=preg_replace('/(\\\n)+/',"\n",$app);
+				$app=nettoyage_retours_ligne_surnumeraires($app);
 
 				$texte_mail="";
 
@@ -1031,8 +1034,16 @@ while ($k < $nb_periode) {
 			$mess[$k].="<div style='color:darkgreen; border: 1px solid red;'><b>Proposition de correction en attente&nbsp;:</b><br />".nl2br($lig_correct_app->appreciation)."</div>\n";
 		}
 
-		if(((($app_grp[$k]!='')||(mb_substr(getSettingValue('autoriser_correction_bulletin_hors_delais'),0,1)=='y')))&&(mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y'))||
-		($tab_autorisation_exceptionnelle_de_saisie[$k]=='y')) {
+		if(
+			(
+				(
+					($app_grp[$k]!='')||
+					(mb_substr(getSettingValue('autoriser_correction_bulletin_hors_delais'),0,1)=='y')
+				)
+				&&(mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y')
+			)||
+			($tab_autorisation_exceptionnelle_de_saisie[$k]=='y')
+		) {
 			//$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"affiche_div_correction_groupe('$k','$cpt_correction');return false;\" alt='Proposer une correction' title='Proposer une correction'><img src='../images/edit16.png' width='16' height='16' alt='Proposer une correction' title='Proposer une correction' /></a>";
 			//$chaine_champs_textarea_correction.="<textarea name='reserve_correction_app_eleve_$cpt_correction' id='reserve_correction_app_eleve_$cpt_correction'>".$app_grp[$k]."</textarea>\n";
 			$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"affiche_div_correction_groupe('$k');return false;\" alt='Proposer une correction' title='Proposer une correction'><img src='../images/edit16.png' width='16' height='16' alt='Proposer une correction' title='Proposer une correction' /></a>";
@@ -1275,9 +1286,17 @@ foreach ($liste_eleves as $eleve_login) {
 				//===============================
 				if(($_SESSION['statut']=='professeur')&&($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]=="P")) {
 
-					if(((($eleve_app!='')||(mb_substr(getSettingValue('autoriser_correction_bulletin_hors_delais'),0,1)=='y'))&&(mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y'))||
-					($tab_autorisation_exceptionnelle_de_saisie[$k]=='y')) {
-	
+					if(
+						(
+							(
+								($eleve_app!='')||
+								(mb_substr(getSettingValue('autoriser_correction_bulletin_hors_delais'),0,1)=='y')
+							)&&
+							(mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y')
+						)||
+						($tab_autorisation_exceptionnelle_de_saisie[$k]=='y')
+					) {
+
 						$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"affiche_div_correction('$eleve_login','$k','$cpt_correction');return false;\" alt='Proposer une correction' title='Proposer une correction'><img src='../images/edit16.png' width='16' height='16' alt='Proposer une correction' title='Proposer une correction' /></a>";
 	
 						$chaine_champs_textarea_correction.="<textarea name='reserve_correction_app_eleve_$cpt_correction' id='reserve_correction_app_eleve_$cpt_correction'>$eleve_app</textarea>\n";

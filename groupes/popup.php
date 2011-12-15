@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -190,7 +190,14 @@ if($gepi_prof_suivi==""){
 	//echo "<h2>Elèves de l'enseignement $enseignement</h2>\n";
 	if(isset($id_classe)){
 		//echo "<h2>Elèves de l'enseignement ".htmlspecialchars($enseignement)." en ".htmlspecialchars($classe)."</h2>\n";
-		echo "<h2>".htmlspecialchars($enseignement)." en ".htmlspecialchars($classe)."</h2>\n";
+		echo "<h2>".htmlspecialchars($enseignement)." en ";
+		if(acces('/groupes/visu_profs_class.php',$_SESSION['statut'])) {
+			echo "<a href='visu_profs_class.php?id_classe=$id_classe'>".htmlspecialchars($classe)."</a>";
+		}
+		else {
+			echo htmlspecialchars($classe);
+		}
+		echo "</h2>\n";
 	}
 	else{
 		//echo "<h2>Elèves de l'enseignement ".htmlspecialchars($enseignement)."</h2>\n";
