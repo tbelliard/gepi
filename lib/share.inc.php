@@ -1763,9 +1763,44 @@ $GLOBALS['liste_caracteres_accentues']="ÂÄÀÁÃÅÇÊËÈÉÎÏÌÍÑÔÖÒÓ
 $GLOBALS['liste_caracteres_desaccentues']="AAAAAACEEEEIIIINOOOOOOSUUUUYYZaaaaaaceeeeiiiinooooooosuuuuyyz";
 
 /**
- * Remplace les accents dans une chaine
+ * Cette méthode prend une chaîne de caractères et s'assure qu'elle est bien retournée en ASCII
+ * Attention, certain encodages sont très similaire et ne peuve pas être théoriquement distingué sur une chaine de caractere.
+ * Si vous connaissez déjà l'encodage de votre chaine de départ, il est préférable de le préciser
  * 
- * $mode = 'all' On remplace espaces et apostrophes par des '_' et les caractères accentués par leurs équivalents non accentués.
+ * @param string $chaine La chaine à encoder
+ * @param string $encoding L'encodage de départ
+ * @return string La chaine en ascii
+ */
+function ensure_ascii($chaine, $encoding = '') {
+    if ($chaine == null || $chaine == '') {
+        return $chaine;
+    }
+
+    $chaine = ensure_utf8($chaine, $encoding);
+    $str = null;
+    if (function_exists('iconv')) {
+        //test : est-ce que iconv est bien implémenté sur ce système ?
+        $test = 'c\'est un bel ete' === iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", 'c\'est un bel été');
+        if ($test) {
+            //on utilise iconv pour la conversion
+            $str = @iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", $chaine);
+        }
+    }
+    if ($str === null) {
+        //on utilise pas iconv pour la conversion
+    	$translit = array('Á'=>'A','À'=>'A','Â'=>'A','Ä'=>'A','Ã'=>'A','Å'=>'A','Ç'=>'C','É'=>'E','È'=>'E','Ê'=>'E','Ë'=>'E','Í'=>'I','Ï'=>'I','Î'=>'I','Ì'=>'I','Ñ'=>'N','Ó'=>'O','Ò'=>'O','Ô'=>'O','Ö'=>'O','Õ'=>'O','Ú'=>'U','Ù'=>'U','Û'=>'U','Ü'=>'U','Ý'=>'Y','á'=>'a','à'=>'a','â'=>'a','ä'=>'a','ã'=>'a','å'=>'a','ç'=>'c','é'=>'e','è'=>'e','ê'=>'e','ë'=>'e','í'=>'i','ì'=>'i','î'=>'i','ï'=>'i','ñ'=>'n','ó'=>'o','ò'=>'o','ô'=>'o','ö'=>'o','õ'=>'o','ú'=>'u','ù'=>'u','û'=>'u','ü'=>'u','ý'=>'y','ÿ'=>'y');
+    	$str = strtr($chaine, $translit);
+    }
+    if (function_exists('mb_convert_encoding')) {
+        $str = @mb_convert_encoding($str,'ASCII','UTF-8');
+    }  
+    return $str; 
+}
+
+/**
+ * Remplace les accents dans une chaine, et en fonction du paramètre 'mode' remplace les caractères non alphabétiques par des _ (underscore)
+ * 
+ * $mode = 'all' ou mode = '' On remplace espaces et apostrophes par des '_' et les caractères accentués par leurs équivalents non accentués.
  * 
  * $mode = 'all_nospace' On remplace apostrophes par des '_' et les caractères accentués par leurs équivalents non accentués.
  * 
@@ -1778,35 +1813,13 @@ $GLOBALS['liste_caracteres_desaccentues']="AAAAAACEEEEIIIINOOOOOOSUUUUYYZaaaaaac
  * @return type 
  */
 function remplace_accents($chaine,$mode=''){
-	if ($chaine == null || $chaine == '') {
-	    return $chaine;
-	}
-	
-	$chaine = ensure_utf8($chaine);
-	$str = null;
-	if (function_exists('iconv')) {
-	    //test : est-ce que iconv est bien implémenté sur ce système ?
-	    $test = 'c\'est un bel ete' === iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", 'c\'est un bel été');
-        if ($test) {
-            //on utilise iconv pour la conversion
-            $str = @iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", $chaine);
-        }
-	}
-	if ($str === null) {
-        //on utilise pas iconv pour la conversion
-    	$translit = array('Á'=>'A','À'=>'A','Â'=>'A','Ä'=>'A','Ã'=>'A','Å'=>'A','Ç'=>'C','É'=>'E','È'=>'E','Ê'=>'E','Ë'=>'E','Í'=>'I','Ï'=>'I','Î'=>'I','Ì'=>'I','Ñ'=>'N','Ó'=>'O','Ò'=>'O','Ô'=>'O','Ö'=>'O','Õ'=>'O','Ú'=>'U','Ù'=>'U','Û'=>'U','Ü'=>'U','Ý'=>'Y','á'=>'a','à'=>'a','â'=>'a','ä'=>'a','ã'=>'a','å'=>'a','ç'=>'c','é'=>'e','è'=>'e','ê'=>'e','ë'=>'e','í'=>'i','ì'=>'i','î'=>'i','ï'=>'i','ñ'=>'n','ó'=>'o','ò'=>'o','ô'=>'o','ö'=>'o','õ'=>'o','ú'=>'u','ù'=>'u','û'=>'u','ü'=>'u','ý'=>'y','ÿ'=>'y');
-    	$str = strtr($chaine, $translit);
-    }
-    if (function_exists('mb_convert_encoding')) {
-        $str = @mb_convert_encoding($str,'ASCII','UTF-8');
-    }   
-	
+	$str = ensure_ascii($chaine);
 	if($mode == 'all'){
 		return preg_replace('#[^a-zA-Z0-9\-\_]#', '_', $str); // Pour des noms de fichiers par exemple
 	} elseif($mode == 'all_nospace'){
 		return preg_replace('#[^a-zA-Z0-9\-\._ ]#', '_', $str);
 	} else {
-		return preg_replace('#[^a-zA-Z0-9\-\._"\' ;]\c\n#', '_', $str);
+		return preg_replace('#[^a-zA-Z0-9\-\._"\' ;]#', '_', $str);
 	}
 }
 /**
@@ -1820,12 +1833,6 @@ function enleve_accents($chaine,$mode=''){
 **/
 function accents_enleve($chaine,$mode=''){
     return remplace_accents($chaine,$mode='');
-}
-/**
- * @see remplace_accent($chaine,$mode='')
-**/
-function ensure_ascii($chaine){
-    return remplace_accents($chaine);
 }
 
 /**
