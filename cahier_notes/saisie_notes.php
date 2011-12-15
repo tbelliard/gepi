@@ -2169,6 +2169,14 @@ if ($id_devoir) {
 									}
 								}
 
+								if((note_modifiee>".$note_sur_verif.")||(note_modifiee<0)){
+									couleur='red';
+								}
+								else{
+									couleur='$couleur_devoirs';
+								}
+								eval('document.getElementById(\'td_'+num+'\').style.background=couleur');
+
 								if(document.getElementById('n1'+num)) {
 									if(document.getElementById('n1'+num).value!='') {
 										document.getElementById('n1'+num).value=document.getElementById('n1'+num).value+' ('+note+'/'+total_bareme+')';
@@ -2181,6 +2189,9 @@ if ($id_devoir) {
 						}
 					}
 				}
+
+				calcul_moy_med();
+
 				alert('Opération terminée.');
 				cacher_div('div_ramener_sur_N');
 			}
