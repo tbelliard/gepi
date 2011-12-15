@@ -1302,6 +1302,9 @@ function tentative_intrusion($_niveau, $_description) {
 		$message .= "Une nouvelle tentative d'intrusion a été détectée par Gepi. Les détails suivants ont été enregistrés dans la base de données :\n\n";
 		$message .= "Date : ".$date."\n";
 		$message .= "Fichier visé : ".$fichier."\n";
+		if(isset($_SERVER['HTTP_REFERER'])) {
+			$message .= "Url d'origine : ".$_SERVER['HTTP_REFERER']."\n";
+		}
 		$message .= "Niveau de gravité : ".$_niveau."\n";
 		$message .= "Description : ".$_description."\n\n";
 		if ($user_login == "-") {
@@ -1321,20 +1324,19 @@ function tentative_intrusion($_niveau, $_description) {
 		$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
 		if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 
-    $subject = $gepiPrefixeSujetMail."GEPI : Alerte sécurité -- Tentative d'intrusion";
-    $subject = "=?ISO-8859-1?B?".base64_encode($subject)."?=\r\n";
-
-    
-    $headers = "X-Mailer: PHP/" . phpversion()."\r\n";
-    $headers .= "MIME-Version: 1.0\r\n";
-    $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
-    $headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
+		$subject = $gepiPrefixeSujetMail."GEPI : Alerte sécurité -- Tentative d'intrusion";
+		$subject = "=?ISO-8859-1?B?".base64_encode($subject)."?=\r\n";
+	
+		$headers = "X-Mailer: PHP/" . phpversion()."\r\n";
+		$headers .= "MIME-Version: 1.0\r\n";
+		$headers .= "Content-type: text/plain; charset=UTF-8\r\n";
+		$headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
 
 		// On envoie le mail
 		$envoi = mail(getSettingValue("gepiAdminAdress"),
-		    $subject,
-		    $message,
-        $headers);
+			$subject,
+			$message,
+			$headers);
 	}
 }
 
@@ -1638,7 +1640,7 @@ function vider_dir($dir){
 function ensure_utf8($str, $from_encoding = null) {
     if ($str === null || $str === '') {
         return $str;
-   // } else if ($from_encoding == null && check_utf8($str)) {
+    //} else if ($from_encoding == null && check_utf8($str)) {
     } else if ($from_encoding == null) {
 	    return $str;
 	}
