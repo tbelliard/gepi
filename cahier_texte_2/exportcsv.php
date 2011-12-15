@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009 Josselin Jacquard
+ * Copyright 2009-2012 Josselin Jacquard
  *
  * This file is part of GEPI.
  *
@@ -32,7 +32,7 @@ echo   ("Resume session") ;
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
 echo   ("checkAccess") ;
@@ -76,42 +76,37 @@ $req_devoirs =
 $req_union = "select * from (" . $req_notices . ") as notices UNION (" . $req_devoirs . ") order by date_ct desc";
 $sql_union = mysql_query($req_union);
 
-header('Content-Type:  text/x-csv');
-$now = gmdate('D, d M Y H:i:s') . ' GMT';
-header('Expires: ' . $now);
-// lem9 & loic1: IE need specific headers
 //nom du fichier à telecharger
-$str = mb_substr($current_group["description"],0 , 4);
+$nom_fic = mb_substr($current_group["description"],0 , 4);
 foreach ($current_group["classes"]["classes"] as $classe) {
-    $str .= $classe["classe"];
+    $nom_fic .= $classe["classe"];
 }
 
-if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
-    header('Content-Disposition: inline; filename="' . $str.date("dmY") . '.csv"');
-    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-    header('Pragma: public');
-} else {
-    header('Content-Disposition: attachment; filename="' . $str.date("dmY") . '.csv"');
-    header('Pragma: no-cache');
-}
+$nom_fic.="_".date("dmY") . ".csv";
 
+$csv="";
 if (mysql_num_rows($sql_union) == 0) {
-    echo("aucune donnée"); 
+	$csv.="aucune donnée";
 } else {
-    // titre des colonnes
-    echo ("Date,Type,Contenu");
-    echo "\n";
-
-    // données de la table
-    while ($arrSelect = mysql_fetch_array($sql_union, MYSQL_ASSOC)) {
-    	if ($arrSelect["date_ct"] != 0) {
-        echo (strftime("%d/%m/%y", $arrSelect["date_ct"]).",");
-    	} else {
-    		echo "info generale ,";
-    	}
-        echo ($arrSelect["type"].",");
-        echo ("\"".strip_tags(html_entity_decode($arrSelect["contenu"], ENT_NOQUOTES, 'UTF-8'))."\"");
-       echo "\n";
-    }
+	// titre des colonnes
+	$csv.="Date,Type,Contenu";
+	$csv.="\n";
+	
+	// données de la table
+	while ($arrSelect = mysql_fetch_array($sql_union, MYSQL_ASSOC)) {
+		if ($arrSelect["date_ct"] != 0) {
+			$csv.=strftime("%d/%m/%y", $arrSelect["date_ct"]).",";
+		} else {
+			$csv.="info generale ,";
+		}
+		$csv.=($arrSelect["type"].",");
+		$csv.="\"".strip_tags(html_entity_decode($arrSelect["contenu"], ENT_NOQUOTES, 'UTF-8'))."\"";
+		$csv.="\n";
+	}
 }
+
+send_file_download_headers('text/x-csv',$nom_fic);
+//echo $csv;
+echo echo_csv_encoded($csv);
+
 ?>

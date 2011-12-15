@@ -93,7 +93,6 @@ if ($current_group) {
 
 send_file_download_headers('text/x-csv',$nom_fic);
 
-
 include "../lib/periodes.inc.php";
 $fd = '';
 
@@ -301,7 +300,6 @@ if($current_group) {
 		$i++;
 	}
 }
-
 echo echo_csv_encoded($fd);
 
 ?>

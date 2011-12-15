@@ -51,6 +51,7 @@ if(!in_array($export_statut, $tab_statut)) {
 }
 
 $nom_fic = "base_".$export_statut."_gepi.csv";
+send_file_download_headers('text/x-csv',$nom_fic);
 
 $fd = '';
 
@@ -64,6 +65,8 @@ else {
 //echo "$sql<br />";
 $appel_donnees = mysql_query($sql);
 $nombre_lignes = mysql_num_rows($appel_donnees);
+
+//echo "\$nombre_lignes=$nombre_lignes<br />";
 
 $j= 0;
 while($j< $nombre_lignes) {
@@ -86,7 +89,8 @@ while($j< $nombre_lignes) {
 	$fd.=";\n";
 	$j++;
 }
-send_file_download_headers('text/x-csv',$nom_fic);
+
 //echo $fd;
+
 echo echo_csv_encoded($fd);
 ?>
