@@ -289,6 +289,7 @@ else { // passage 2 : le nom du fichier a été choisi
         if (!move_uploaded_file($monfichiertmp_name,$cible)) {
             echo "Erreur de copie<br />\n";
             echo "origine     : $monfichiername <br />\n";
+
             echo "destination : ".$nom_dossier_modeles_ooo_mes_modeles.$rne.$fichiercopie;
             $me="La copie ne s'est pas effectuée !\n Vérifiez la taille du fichier (max 512ko)\n";
             alert($me);
