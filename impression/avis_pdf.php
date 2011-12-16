@@ -261,7 +261,7 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 	if ($option_tout_une_page == 1) {
 		$hauteur_disponible = HauteurPage - $MargeHaut - $MargeBas - $H_entete_classe - 5 - 2.5; //2.5 ==> avant le pied de page
 
-		$hauteur_disponible = $hauteur_disponible - 12.5;
+		$hauteur_disponible = $hauteur_disponible - 14.5;
 		
 		// le nombre de lignes demandées.
 		$nb_ligne_demande = $nb_eleves;
