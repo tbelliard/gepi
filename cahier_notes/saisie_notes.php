@@ -442,6 +442,7 @@ if (isset($_POST['import_sacoche'])) {
 	$message_enregistrement = "Les modifications ont été enregistrées !";
 }
 $themessage  = 'Des notes ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$message_cnil_commentaires="* En conformité avec la CNIL, le professeur s'engage à ne faire figurer dans le carnet de notes que des notes et commentaires portés à la connaissance de l'élève (note et commentaire portés sur la copie, ...).";
 //**************** EN-TETE *****************
 $titre_page = "Saisie des notes";
     /**
@@ -1213,7 +1214,7 @@ while ($i < $nb_dev) {
 		}
 
 		if ((($nocomment[$i]!='yes') and ($_SESSION['affiche_comment'] == 'yes')) or ($id_dev[$i] == $id_devoir)) {
-			echo "<td class=cn  valign='top'><center>Commentaire&nbsp;*\n";
+			echo "<td class=cn  valign='top'><center><span title=\"$message_cnil_commentaires\">Commentaire&nbsp;*</span>\n";
 			echo "</center></td>\n";
 			$header_pdf[] = "Commentaire";
 			$w_pdf[] = $w3;
@@ -2310,9 +2311,10 @@ if ($id_devoir) {
 $aff_quartiles_par_defaut=getPref($_SESSION['login'],'aff_quartiles_cn',"n");
 $aff_photo_cn_par_defaut=getPref($_SESSION['login'],'aff_photo_cn',"n");
 
+echo "<br />";
+echo $message_cnil_commentaires."<br />";
 ?>
-<br />
-* En conformité avec la CNIL, le professeur s'engage à ne faire figurer dans le carnet de notes que des notes et commentaires portés à la connaissance de l'élève (note et commentaire portés sur la copie, ...).
+
 <script type="text/javascript" language="javascript">
 chargement = true;
 
