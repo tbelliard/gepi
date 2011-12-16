@@ -150,6 +150,7 @@ function myWriteHTML($html)
 
 	//Parseur HTML
 	$html=str_replace("\n",' ',$html);
+	$html=str_replace("\r",'',$html);
 	$a=preg_split('/<(.*)>/U',$html,-1,PREG_SPLIT_DELIM_CAPTURE);
 	foreach($a as $i=>$e)
 	{
