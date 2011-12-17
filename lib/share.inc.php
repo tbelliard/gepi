@@ -1669,23 +1669,21 @@ function ensure_utf8($str, $from_encoding = null) {
  * @return boolean
  */
 function check_utf8 ($str) {
-  
-    if (strlen($str) < 1000) {
-        // From http://w3.org/International/questions/qa-forms-utf-8.html
-        $preg_match_result = 1 == preg_match('%^(?:
-              [\x09\x0A\x0D\x20-\x7E]            # ASCII
-            | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
-            |  \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs
-            | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
-            |  \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates
-            |  \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3
-            | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
-            |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
-        )*$%xs', $str);
+    if (mb_strlen($str) < 1000) {
+    // From http://w3.org/International/questions/qa-forms-utf-8.html
+    $preg_match_result = 1 == preg_match('%^(?:
+          [\x09\x0A\x0D\x20-\x7E]            # ASCII
+        | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
+        |  \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs
+        | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
+        |  \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates
+        |  \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3
+        | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
+        |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
+    )*$%xs', $str);
     } else {
-        $preg_match_result = false;
+        $preg_match_result = FALSE;
     }
-    
     if ($preg_match_result) {
         return true;
     } else {
@@ -1817,6 +1815,7 @@ function ensure_ascii($chaine, $encoding = '') {
  */
 function remplace_accents($chaine,$mode=''){
 	$str = ensure_ascii($chaine);
+
 	if($mode == 'all'){
 		return preg_replace('#[^a-zA-Z0-9\-\_]#', '_', $str); // Pour des noms de fichiers par exemple
 	} elseif($mode == 'all_nospace'){
@@ -3955,7 +3954,7 @@ function acces($id,$statut)
 function send_file_download_headers($content_type, $filename, $content_disposition = 'attachment', $encodeSortie = 'utf-8') {
 
   header('Content-Encoding: '.$encodeSortie);
-
+  
   header('Content-Type: '.$content_type);
   header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
   header('Content-Disposition: '.$content_disposition.'; filename="' . $filename . '"');
