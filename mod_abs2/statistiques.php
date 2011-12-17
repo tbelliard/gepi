@@ -134,6 +134,9 @@ if ($affichage != 'ods') {
     if ($id_eleve !== null && $id_eleve != '') {
         $eleve_query->filterById($id_eleve);
     }
+    $eleve_query->where('Eleve.DateSortie<?','0')
+                ->orWhere('Eleve.DateSortie is NULL')
+                ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve_debut->format('U'));
     $eleve_col = $eleve_query->orderByNom()->orderByPrenom()->distinct()->find();
     if ($eleve_col->isEmpty()) {
         echo"<h2 class='no'>Aucun élève avec les paramètres sélectionnés n'a été trouvé.</h2>";
