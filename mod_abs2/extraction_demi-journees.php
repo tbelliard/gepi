@@ -172,6 +172,9 @@ if ($affichage != null && $affichage != '') {
 		$eleve_query->filterByNomOrPrenomLike($nom_eleve);
     }
 
+    $eleve_query->where('Eleve.DateSortie<?','0')
+                ->orWhere('Eleve.DateSortie is NULL')
+                ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve_debut->format('U'));
     
     $eleve_col = $eleve_query->find();
     $table_synchro_ok = AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable($dt_date_absence_eleve_debut,$dt_date_absence_eleve_fin);
