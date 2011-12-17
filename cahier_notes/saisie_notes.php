@@ -2,7 +2,7 @@
 /**
  * saisie des Notes
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * 
@@ -89,6 +89,8 @@ $msg="";
 
 unset($id_devoir);
 $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] : (isset($_GET["id_devoir"]) ? $_GET["id_devoir"] : NULL);
+//if($id_devoir=='') {$id_devoir=NULL;}
+
 unset($affiche_message);
 $affiche_message = isset($_POST["affiche_message"]) ? $_POST["affiche_message"] : (isset($_GET["affiche_message"]) ? $_GET["affiche_message"] : NULL);
 
@@ -650,7 +652,7 @@ $sql="select * from cn_devoirs where id_conteneur='$id_conteneur' order by date;
 $res_devoirs=mysql_query($sql);
 if(mysql_num_rows($res_devoirs)>1) {
 
-	$chaine_options_devoirs="";
+	$chaine_options_devoirs="<option value=''>Choix éval.</option>";
 	$num_devoir=0;
 	$cpt_dev=0;
 	while($lig_dev=mysql_fetch_object($res_devoirs)) {
@@ -2341,7 +2343,7 @@ function affichage_quartiles() {
 if($aff_quartiles_par_defaut=='y') {
 	echo "affichage_quartiles();\n";
 }
-if($aff_photo_cn_par_defaut=='y') {
+if((isset($id_devoir))&&($id_devoir!=NULL)&&($aff_photo_cn_par_defaut=='y')) {
 	echo "affiche_div_photo();\n";
 }
 ?>
