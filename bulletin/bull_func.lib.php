@@ -5315,6 +5315,7 @@ $hauteur_pris_app_abs=$hauteur_pris;
 						}
 						$pdf->SetFont('DejaVu','B',$taille);
 						$pdf->MultiCell($tab_modele_pdf["longeur_sign_chef"][$classe_id],5, ($tab_bull['formule']),0,2,'');
+                        $pdf->SetX($tab_modele_pdf["X_sign_chef"][$classe_id]);
 					}
 					if ( $tab_modele_pdf["taille_texte_identitee_chef"][$classe_id] != '' and $tab_modele_pdf["taille_texte_identitee_chef"][$classe_id] != '0' and $tab_modele_pdf["taille_texte_identitee_chef"][$classe_id] < '15' ) {
 						$taille = $tab_modele_pdf["taille_texte_identitee_chef"][$classe_id];
