@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -98,10 +98,7 @@ if((isset($id_classe))&&(isset($num_periode))) {
 		// On enregistre la synthese
 		$synthese=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["synthese"]));
 
-		//$synthese=my_ereg_replace('(\\\r\\\n)+',"\r\n",$synthese);
-		$synthese=preg_replace('/(\\\r\\\n)+/',"\r\n",$synthese);
-		$synthese=preg_replace('/(\\\r)+/',"\r",$synthese);
-		$synthese=preg_replace('/(\\\n)+/',"\n",$synthese);
+		$synthese=suppression_sauts_de_lignes_surnumeraires($synthese);
 
 		$sql="SELECT 1=1 FROM synthese_app_classe WHERE id_classe='$id_classe' AND periode='$num_periode';";
 		$test=mysql_query($sql);

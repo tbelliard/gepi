@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Sandrine Dangreville
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Sandrine Dangreville
 *
 * This file is part of GEPI.
 *
@@ -96,9 +96,7 @@ if(mb_strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') 
 		$courrier=$NON_PROTECT["courrier"];
 
 		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-		$courrier=preg_replace('/(\\\r\\\n)+/',"\r\n",$courrier);
-		$courrier=preg_replace('/(\\\r)+/',"\r",$courrier);
-		$courrier=preg_replace('/(\\\n)+/',"\n",$courrier);
+		$courrier=suppression_sauts_de_lignes_surnumeraires($courrier);
 
 	}
 	else {
