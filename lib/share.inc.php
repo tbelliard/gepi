@@ -1703,7 +1703,7 @@ function check_utf8 ($str) {
             $test_done = true;
             $result = $result && ($str === (@iconv('UTF-8', 'UTF-8//IGNORE', $str)));
         }
-        if (function_exists('mb_convert_encoding')) {
+        if (function_exists('mb_convert_encoding') && !$test_done) {
             $test_done = true;
             $result = $result && ($str === @mb_convert_encoding ( @mb_convert_encoding ( $str, 'UTF-32', 'UTF-8' ), 'UTF-8', 'UTF-32' ));
         }
