@@ -224,40 +224,6 @@ if ($mode=='module_discipline') {
 
 } //if mode = module discipline  
 
-/*
-if ($mode=='formulaire_rapport_incident') { //les donnée provenant du formulaire 
-   
-    $date = datemysql_to_jj_mois_aaaa($_SESSION['retenue_date'],'/','n');
-	session_unregister("retenue_date");
-	$nom_prenom_eleve =$_SESSION['retenue_nom_prenom_elv'];
-	session_unregister("retenue_nom_prenom_elv");
-	$classe = $_SESSION['retenue_classe_elv'];
-	session_unregister("retenue_classe_elv");	
-	
-	$motif = $_SESSION['retenue_motif'];
-	$motif=traitement_magic_quotes(corriger_caracteres($motif));
-	// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-	$motif=my_ereg_replace('(\\\r\\\n)+',"\r\n",$motif);
-	session_unregister("retenue_motif");
-	
-	$travail = $_SESSION['retenue_travail'];
-	$travail=traitement_magic_quotes(corriger_caracteres($travail));
-	// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-	$travail=my_ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
-	session_unregister("retenue_travail");
-	
-	$nom_resp = $_SESSION['retenue_nom_resp'];
-	session_unregister("retenue_nom_resp");
-	$fct_resp = $_SESSION['retenue_fct_resp'];
-	session_unregister("retenue_fct_resp");
-
-	$date_retenue ='';
-	$duree ='';
-	$h_deb ='';
-	$num_incident = '';
-
-} // formulaire_rapport_incident
-*/
 //
 // Fin zone de traitement Les données qui seront fusionnées au modèle
 //
