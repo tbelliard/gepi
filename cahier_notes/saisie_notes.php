@@ -2,7 +2,7 @@
 /**
  * saisie des Notes
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
  * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * 
@@ -89,6 +89,8 @@ $msg="";
 
 unset($id_devoir);
 $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] : (isset($_GET["id_devoir"]) ? $_GET["id_devoir"] : NULL);
+//if($id_devoir=='') {$id_devoir=NULL;}
+
 unset($affiche_message);
 $affiche_message = isset($_POST["affiche_message"]) ? $_POST["affiche_message"] : (isset($_GET["affiche_message"]) ? $_GET["affiche_message"] : NULL);
 
@@ -442,6 +444,7 @@ if (isset($_POST['import_sacoche'])) {
 	$message_enregistrement = "Les modifications ont été enregistrées !";
 }
 $themessage  = 'Des notes ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+$message_cnil_commentaires="* En conformité avec la CNIL, le professeur s'engage à ne faire figurer dans le carnet de notes que des notes et commentaires portés à la connaissance de l'élève (note et commentaire portés sur la copie, ...).";
 //**************** EN-TETE *****************
 $titre_page = "Saisie des notes";
     /**
@@ -649,7 +652,7 @@ $sql="select * from cn_devoirs where id_conteneur='$id_conteneur' order by date;
 $res_devoirs=mysql_query($sql);
 if(mysql_num_rows($res_devoirs)>1) {
 
-	$chaine_options_devoirs="";
+	$chaine_options_devoirs="<option value=''>Choix éval.</option>";
 	$num_devoir=0;
 	$cpt_dev=0;
 	while($lig_dev=mysql_fetch_object($res_devoirs)) {
@@ -1213,7 +1216,7 @@ while ($i < $nb_dev) {
 		}
 
 		if ((($nocomment[$i]!='yes') and ($_SESSION['affiche_comment'] == 'yes')) or ($id_dev[$i] == $id_devoir)) {
-			echo "<td class=cn  valign='top'><center>Commentaire&nbsp;*\n";
+			echo "<td class=cn  valign='top'><center><span title=\"$message_cnil_commentaires\">Commentaire&nbsp;*</span>\n";
 			echo "</center></td>\n";
 			$header_pdf[] = "Commentaire";
 			$w_pdf[] = $w3;
@@ -2310,9 +2313,10 @@ if ($id_devoir) {
 $aff_quartiles_par_defaut=getPref($_SESSION['login'],'aff_quartiles_cn',"n");
 $aff_photo_cn_par_defaut=getPref($_SESSION['login'],'aff_photo_cn',"n");
 
+echo "<br />";
+echo $message_cnil_commentaires."<br />";
 ?>
-<br />
-* En conformité avec la CNIL, le professeur s'engage à ne faire figurer dans le carnet de notes que des notes et commentaires portés à la connaissance de l'élève (note et commentaire portés sur la copie, ...).
+
 <script type="text/javascript" language="javascript">
 chargement = true;
 
@@ -2339,7 +2343,7 @@ function affichage_quartiles() {
 if($aff_quartiles_par_defaut=='y') {
 	echo "affichage_quartiles();\n";
 }
-if($aff_photo_cn_par_defaut=='y') {
+if((isset($id_devoir))&&($id_devoir!=NULL)&&($aff_photo_cn_par_defaut=='y')) {
 	echo "affiche_div_photo();\n";
 }
 ?>
