@@ -229,7 +229,8 @@ if ($affichage != 'ods') {
             <h3 class="no">Les dates de début et de fin ont été inversés.</h3>
     <?php endif; ?>
         <p>
-            La formule utilisée pour le calcul du taux d'absentéisme est le pourcentage du nombre de demi-journées d'absences par rapport au nombre de demi-journées ouvrées.<br /><br />
+        La formule utilisée pour le calcul du taux d'absentéisme est le pourcentage du nombre de demi-journées d'absences par rapport au nombre de demi-journées ouvrées.<br />
+        Pour les élèves ayant quitté l'établissement durant la période choisie, le nombre de demi-journées ouvrées utilisé pour le calcul est indiqué entre parenthèses.<br /><br />                  
         </p>
         <form dojoType="dijit.form.Form" name="abs_statistiques" id="abs_statistiques" action="statistiques.php" method="post">
             <fieldset>
@@ -240,7 +241,7 @@ if ($affichage != 'ods') {
                     au               
                     <input style="width : 8em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve_fin" name="date_absence_eleve_fin" value="<?php echo $dt_date_absence_eleve_fin->format('Y-m-d') ?>" />
                     soit <?php echo $nbre_demi_journees;?> demi-journées ouvrées.
-                </h2>
+                </h2>                 
                 <?php
                 if ($id_eleve !== null && $id_eleve != '') {
                     $eleve = EleveQuery::create()->filterById($id_eleve)->findOne();
@@ -353,6 +354,7 @@ if ($affichage != 'ods') {
             $nb_justifiees = 0;
             $nb_nonjustifiees = 0;
             $nb_retards = 0;
+            $demi_journees_decompte=0;
             if ($affichage_motifs) {
                 foreach ($motifs_col as $motif) {
                     $nom_variable = 'nb_demijourneesMotif' . $motif->getId();
@@ -360,10 +362,22 @@ if ($affichage != 'ods') {
                 }
             }
             foreach ($eleve_col as $eleve) {
+                $isEleveSorti=false;
+                $nbre_demi_journees_calcul=$nbre_demi_journees;
+                if($eleve->getDateSortie('U')!=Null && $eleve->getDateSortie('U')>0 && $eleve->getDateSortie('U')<$dt_date_absence_eleve_fin->format('U')){
+                    $isEleveSorti=true;
+                    $date_sortie=new DateTime();
+                    $date_sortie->setTimestamp($eleve->getDateSortie('U')); 
+                    $nbre_demi_journees_calcul = EdtHelper::getNbreDemiJourneesEtabOuvert($dt_date_absence_eleve_debut, $date_sortie);
+                }
+                $demi_journees_decompte=$demi_journees_decompte+$nbre_demi_journees_calcul;
                 echo '<tr style="border:1px solid">';
 
                 echo '<td style="border:1px solid;">';
                 echo $eleve->getNom() . ' ' . $eleve->getPrenom();
+                if($isEleveSorti){
+                    echo '<br ><strong>(calcul sur '.$nbre_demi_journees_calcul.' demi-journées)</strong>';
+                }
                 echo '</td>';
 
                 echo '<td style="border:1px solid;">';
@@ -371,18 +385,18 @@ if ($affichage != 'ods') {
                 echo '</td>';
 
                 echo '<td style="border:1px solid;">';
-                echo getTauxAbsenteisme($eleve->getDemiJourneesAbsencePreRempli(), $nbre_demi_journees, 1);
+                echo getTauxAbsenteisme($eleve->getDemiJourneesAbsencePreRempli(), $nbre_demi_journees_calcul);
                 $nb_demijournees = $nb_demijournees + $eleve->getDemiJourneesAbsencePreRempli();
                 echo '</td>';
 
 
                 echo '<td style="border:1px solid;">';
-                echo getTauxAbsenteisme($eleve->getDemiJourneesNonJustifieesPreRempli(), $nbre_demi_journees, 1);
+                echo getTauxAbsenteisme($eleve->getDemiJourneesNonJustifieesPreRempli(), $nbre_demi_journees_calcul);
                 $nb_nonjustifiees = $nb_nonjustifiees + $eleve->getDemiJourneesNonJustifieesPreRempli();
                 echo '</td>';
 
                 echo '<td style="border:1px solid;">';
-                echo getTauxAbsenteisme($eleve->getDemiJourneesAbsencePreRempli() - $eleve->getDemiJourneesNonJustifieesPreRempli(), $nbre_demi_journees, 1);
+                echo getTauxAbsenteisme($eleve->getDemiJourneesAbsencePreRempli() - $eleve->getDemiJourneesNonJustifieesPreRempli(), $nbre_demi_journees_calcul);
                 $nb_justifiees = $nb_justifiees + $eleve->getDemiJourneesAbsencePreRempli() - $eleve->getDemiJourneesNonJustifieesPreRempli();
                 echo '</td>';
 
@@ -390,7 +404,7 @@ if ($affichage != 'ods') {
                     foreach ($motifs_col as $motif) {
                         echo '<td style="border:1px solid;">';
                         $nom_colonne = 'getDemiJourneesAbsencePreRempliMotif' . $motif->getId();
-                        echo getTauxAbsenteisme($eleve->$nom_colonne(), $nbre_demi_journees, 1);
+                        echo getTauxAbsenteisme($eleve->$nom_colonne(), $nbre_demi_journees_calcul);
                         $nom_variable = 'nb_demijourneesMotif' . $motif->getId();
                         $$nom_variable = $$nom_variable + $eleve->$nom_colonne();
                         echo '</td>';
@@ -416,22 +430,22 @@ if ($affichage != 'ods') {
             echo '</td>';
 
             echo '<td style="border:1px solid;">';
-            echo getTauxAbsenteisme($nb_demijournees, $nbre_demi_journees, $nombre_eleve_requete);
+            echo getTauxAbsenteisme($nb_demijournees, $demi_journees_decompte);
             echo '</td>';
 
             echo '<td style="border:1px solid;">';
-            echo getTauxAbsenteisme($nb_nonjustifiees, $nbre_demi_journees, $nombre_eleve_requete);
+            echo getTauxAbsenteisme($nb_nonjustifiees, $demi_journees_decompte);
             echo '</td>';
 
             echo '<td style="border:1px solid;">';
-            echo getTauxAbsenteisme($nb_justifiees, $nbre_demi_journees, $nombre_eleve_requete);
+            echo getTauxAbsenteisme($nb_justifiees, $demi_journees_decompte);
             echo '</td>';
 
             if ($affichage_motifs) {
                 foreach ($motifs_col as $motif) {
                     echo '<td style="border:1px solid;">';
                     $test = 'nb_demijourneesMotif' . $motif->getId();
-                    echo getTauxAbsenteisme($$test, $nbre_demi_journees, $nombre_eleve_requete);
+                    echo getTauxAbsenteisme($$test, $demi_journees_decompte);
                     echo '</td>';
                 }
             }
@@ -469,6 +483,7 @@ if ($affichage != 'ods') {
             $nb_demijournees = 0;
             $nb_nonjustifiees = 0;
             $nb_justifiees = 0;
+            $demi_journees_decompte=0;
 
             if ($affichage_motifs) {
                 $nbre_colonnes = 3 + $motifs_col->count();
@@ -504,18 +519,31 @@ if ($affichage != 'ods') {
             // Remplissage du tableau de données individuelles
             $donnees_indiv = array();
             foreach ($eleve_col as $eleve) {
-                $enregistrements = array();
-                $enregistrements[$colonnes_individu[1]] = $eleve->getNom();
+                $isEleveSorti=false;
+                $nbre_demi_journees_calcul=$nbre_demi_journees;
+                if($eleve->getDateSortie('U')!=Null && $eleve->getDateSortie('U')>0 && $eleve->getDateSortie('U')<$dt_date_absence_eleve_fin->format('U')){
+                    $isEleveSorti=true;
+                    $date_sortie=new DateTime();
+                    $date_sortie->setTimestamp($eleve->getDateSortie('U')); 
+                    $nbre_demi_journees_calcul = EdtHelper::getNbreDemiJourneesEtabOuvert($dt_date_absence_eleve_debut, $date_sortie);
+                }
+                $demi_journees_decompte=$demi_journees_decompte+$nbre_demi_journees_calcul;
+                $enregistrements = array();                
+                if($isEleveSorti){
+                    $enregistrements[$colonnes_individu[1]] = $eleve->getNom().' ('.$nbre_demi_journees_calcul.' demi-journées)';
+                }else{
+                    $enregistrements[$colonnes_individu[1]] = $eleve->getNom();
+                }
                 $enregistrements[$colonnes_individu[2]] = $eleve->getPrenom();
                 $enregistrements[$colonnes_individu[3]] = $eleve->getClasseNom();
-                $enregistrements[$colonnes_donnes[1]] = str_replace(",",".",getTauxAbsenteisme($eleve->getDemiJourneesAbsencePreRempli(), $nbre_demi_journees, 1));
-                $enregistrements[$colonnes_donnes[2]] = str_replace(",",".",getTauxAbsenteisme($eleve->getDemiJourneesNonJustifieesPreRempli(), $nbre_demi_journees, 1));
-                $enregistrements[$colonnes_donnes[3]] = str_replace(",",".",getTauxAbsenteisme($eleve->getDemiJourneesAbsencePreRempli() - $eleve->getDemiJourneesNonJustifieesPreRempli(), $nbre_demi_journees, 1));
+                $enregistrements[$colonnes_donnes[1]] = str_replace(",",".",getTauxAbsenteisme($eleve->getDemiJourneesAbsencePreRempli(), $nbre_demi_journees_calcul));
+                $enregistrements[$colonnes_donnes[2]] = str_replace(",",".",getTauxAbsenteisme($eleve->getDemiJourneesNonJustifieesPreRempli(), $nbre_demi_journees_calcul));
+                $enregistrements[$colonnes_donnes[3]] = str_replace(",",".",getTauxAbsenteisme($eleve->getDemiJourneesAbsencePreRempli() - $eleve->getDemiJourneesNonJustifieesPreRempli(), $nbre_demi_journees_calcul));
                 if ($affichage_motifs) {
                     $indice = 4;
                     foreach ($motifs_col as $motif) {
                         $nom_colonne = 'getDemiJourneesAbsencePreRempliMotif' . $motif->getId();
-                        $enregistrements[$colonnes_donnes[$indice]] = str_replace(",",".",getTauxAbsenteisme($eleve->$nom_colonne(), $nbre_demi_journees, 1));
+                        $enregistrements[$colonnes_donnes[$indice]] = str_replace(",",".",getTauxAbsenteisme($eleve->$nom_colonne(), $nbre_demi_journees_calcul));
                         $indice++;
                         $nom_variable = 'nb_demijourneesMotif' . $motif->getId();
                         $$nom_variable = $$nom_variable + $eleve->$nom_colonne();
@@ -528,14 +556,14 @@ if ($affichage != 'ods') {
             }
             //remplissage du tableau de donnes moyennes
             $enregistrements_moy = Array();
-            $enregistrements_moy[$colonnes_donnes[1]] = str_replace(",",".",getTauxAbsenteisme($nb_demijournees, $nbre_demi_journees, $nombre_eleve_requete));
-            $enregistrements_moy[$colonnes_donnes[2]] = str_replace(",",".",getTauxAbsenteisme($nb_nonjustifiees, $nbre_demi_journees, $nombre_eleve_requete));
-            $enregistrements_moy[$colonnes_donnes[3]] = str_replace(",",".",getTauxAbsenteisme($nb_justifiees, $nbre_demi_journees, $nombre_eleve_requete));
+            $enregistrements_moy[$colonnes_donnes[1]] = str_replace(",",".",getTauxAbsenteisme($nb_demijournees, $demi_journees_decompte));
+            $enregistrements_moy[$colonnes_donnes[2]] = str_replace(",",".",getTauxAbsenteisme($nb_nonjustifiees, $demi_journees_decompte));
+            $enregistrements_moy[$colonnes_donnes[3]] = str_replace(",",".",getTauxAbsenteisme($nb_justifiees, $demi_journees_decompte));
             if ($affichage_motifs) {
                 $indice = 4;
                 foreach ($motifs_col as $motif) {
                     $test = 'nb_demijourneesMotif' . $motif->getId();
-                    $enregistrements_moy[$colonnes_donnes[$indice]] = str_replace(",",".",getTauxAbsenteisme($$test, $nbre_demi_journees, $nombre_eleve_requete));
+                    $enregistrements_moy[$colonnes_donnes[$indice]] = str_replace(",",".",getTauxAbsenteisme($$test, $demi_journees_decompte));
                     $indice++;
                 }
             }
@@ -575,11 +603,11 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
     </script>';
 require_once("../lib/footer.inc.php");
 
-function getTauxAbsenteisme($nbreDemiJourneesAbsences, $nbreTotalDemiJournees, $nbreEleves) {
+function getTauxAbsenteisme($nbreDemiJourneesAbsences, $nbreTotalDemiJournees) {
     if ($nbreTotalDemiJournees == 0) { //l'établissement est fermé sur toute la période
         return 0;
     } else {
-        return(round(100 * (($nbreDemiJourneesAbsences / $nbreTotalDemiJournees) / $nbreEleves), 2));
+        return(round(100 * ($nbreDemiJourneesAbsences / $nbreTotalDemiJournees) , 2));
     }    
 }
 ?>
