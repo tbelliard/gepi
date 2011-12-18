@@ -19,21 +19,48 @@ class ShareIncTest extends PHPUnit_Framework_TestCase
 	public function test_check_utf8()
 	{
 	    $this->assertTrue(test_check_utf8());
+
+            $utf8_str = file_get_contents(dirname(__FILE__) . "/../tools/utf8_str.txt");
+	    $this->assertTrue(check_utf8($utf8_str));
+            $iso_str = file_get_contents(dirname(__FILE__) . "/../tools/iso-8859-1_str.txt");
+	    $this->assertFalse(check_utf8($iso_str));
 	}
 	
 	public function test_detect_encoding()
 	{
 	    $this->assertTrue(test_detect_encoding());
+	    
+            $utf8_str = file_get_contents(dirname(__FILE__) . "/../tools/utf8_str.txt");
+            $this->assertEquals("UTF-8", detect_encoding($utf8_str));
+            $iso_str = file_get_contents(dirname(__FILE__) . "/../tools/iso-8859-1_str.txt");
+            $this->assertEquals("ISO-8859-15", detect_encoding($iso_str));
+	    
 	}
 	
 	public function test_ensure_utf8()
 	{
 	    $this->assertTrue(test_ensure_utf8());
+            
+            $utf8_str = file_get_contents(dirname(__FILE__) . "/../tools/utf8_str.txt");
+	    $this->assertTrue(ensure_utf8($utf8_str) == $utf8_str);
+            $iso_str = file_get_contents(dirname(__FILE__) . "/../tools/iso-8859-1_str.txt");
+	    $this->assertTrue(ensure_utf8($iso_str) == $utf8_str);
 	}
 	
-	public function test_remplace_accents()
+	public function test_ensure_ascii()
 	{
-	    $this->assertTrue(test_remplace_accents());
+	    $this->assertEquals(ensure_ascii("et oui \n é non\n"), "et oui \n e non\n");
+	    $this->assertEquals(ensure_ascii("et oui \r é non\r"), "et oui \r e non\r");
+	    $this->assertEquals(ensure_ascii("et oui \r\n é non\r\n"), "et oui \r\n e non\r\n");
+	    $this->assertEquals(ensure_ascii("et oui
+é non"), "et oui
+e non");
+
+            $utf8_str = file_get_contents(dirname(__FILE__) . "/../tools/utf8_str.txt");
+            $ascii_str = file_get_contents(dirname(__FILE__) . "/../tools/ascii_str.txt");
+	    $this->assertEquals(ensure_ascii($utf8_str), $ascii_str);
+            $iso_str = file_get_contents(dirname(__FILE__) . "/../tools/iso-8859-1_str.txt");
+	    $this->assertEquals(ensure_ascii($iso_str), $ascii_str);
 	}
 	
 	public function test_casse_mot()

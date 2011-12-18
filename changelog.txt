@@ -4,7 +4,20 @@
 |= CHANGELOG GEPI =|
 |==================|
 
-Gepi-trunk (12/08/2011)
+Gepi-1.6.0 (12/08/2011)
+===========================
+html :
+- Utilisation de l'encodage utf-8 pour l'ensemble de gepi
+
+Base de donnée :
+- Changement de l'encodage de toutes les chaînes de caractère de iso-8859-1 à utf-8
+
+Abs2 :
+- Utilisation d'une table d'agrégation pour accélérer les bilans et statistiques
+- Ajout d'informations sur les absences dans la fiche élève
+- Ajout d'un bilan sur les justifications
+
+Gepi-1.5.5 (12/08/2011)
 ===========================
 Identification:
 - Ajout de la librairie simplesamlphp pour l'authentification et la fourniture d'identité pour des applications tierces
