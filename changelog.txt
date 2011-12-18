@@ -4,7 +4,7 @@
 |= CHANGELOG GEPI =|
 |==================|
 
-Gepi-1.6.0 (12/08/2011)
+Gepi-1.6.0 (31/12/2011)
 ===========================
 html :
 - Utilisation de l'encodage utf-8 pour l'ensemble de gepi
@@ -16,6 +16,9 @@ Abs2 :
 - Utilisation d'une table d'agrégation pour accélérer les bilans et statistiques
 - Ajout d'informations sur les absences dans la fiche élève
 - Ajout d'un bilan sur les justifications
+
+Bulletins
+- Possibilité de donner à un statut autre le droit d'éditer les bulletins
 
 Gepi-1.5.5 (12/08/2011)
 ===========================
