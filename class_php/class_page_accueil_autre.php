@@ -195,7 +195,6 @@ class class_page_accueil_autre {
 	} else {
 	  $row = mysql_fetch_row($result) ;
 	  if ($row[0]=='V' || $row[0]=='v'){
-	if ($chemin='bulletin/bull_index.php') echo ("on a bien les bulletins");
 		return TRUE;
 	  } else {
 		return FALSE;
