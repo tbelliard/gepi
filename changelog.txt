@@ -4,6 +4,7 @@
 |= CHANGELOG GEPI =|
 |==================|
 
+
 Gepi-1.6.0 (31/12/2011)
 ===========================
 html :
@@ -19,6 +20,7 @@ Abs2 :
 
 Bulletins
 - Possibilité de donner à un statut autre le droit d'éditer les bulletins
+
 
 Gepi-1.5.5 (12/08/2011)
 ===========================
