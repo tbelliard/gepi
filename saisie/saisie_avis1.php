@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
 *
 * This file is part of GEPI.
 *
@@ -78,9 +78,7 @@ if (isset($_POST['is_posted'])) {
 				$synthese=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["synthese_".$i]));
 		
 				//$synthese=my_ereg_replace('(\\\r\\\n)+',"\r\n",$synthese);
-				$synthese=preg_replace('/(\\\r\\\n)+/',"\r\n",$synthese);
-				$synthese=preg_replace('/(\\\r)+/',"\r",$synthese);
-				$synthese=preg_replace('/(\\\n)+/',"\n",$synthese);
+				$synthese=suppression_sauts_de_lignes_surnumeraires($synthese);
 
 				$sql="SELECT 1=1 FROM synthese_app_classe WHERE id_classe='$id_classe' AND periode='$i';";
 				$test=mysql_query($sql);
@@ -152,6 +150,8 @@ if (isset($_POST['is_posted'])) {
 						// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 
 						$avis = traitement_magic_quotes(corriger_caracteres($NON_PROTECT[$nom_log]));
+						$avis=suppression_sauts_de_lignes_surnumeraires($avis);
+
 						$test_eleve_avis_query = mysql_query("SELECT * FROM avis_conseil_classe WHERE (login='$reg_eleve_login' AND periode='$i')");
 						$test = mysql_num_rows($test_eleve_avis_query);
 						if ($test != "0") {

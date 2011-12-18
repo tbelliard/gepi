@@ -251,7 +251,7 @@ if ($mode=='formulaire_retenue') { //les donnée provenant du formulaire
 		$motif = $_SESSION['retenue_motif'];
 		$motif=traitement_magic_quotes(corriger_caracteres($motif));
 		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-		$motif=my_ereg_replace('(\\\r\\\n)+',"\r\n",$motif);
+		$motif=suppression_sauts_de_lignes_surnumeraires($motif);
 		//session_unregister("retenue_motif");
 	    unset($_SESSION['retenue_motif']);
 	}
@@ -259,7 +259,7 @@ if ($mode=='formulaire_retenue') { //les donnée provenant du formulaire
 		$travail = $_SESSION['retenue_travail'];
 		$travail=traitement_magic_quotes(corriger_caracteres($travail));
 		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-		$travail=my_ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
+		$travail=suppression_sauts_de_lignes_surnumeraires($travail);
 		//session_unregister("retenue_travail");
 	    unset($_SESSION['retenue_travail']);
 	}
@@ -278,7 +278,7 @@ if ($mode=='formulaire_retenue') { //les donnée provenant du formulaire
 		$nature_incident = $_SESSION['retenue_nature_incident'];
 		$nature_incident=traitement_magic_quotes(corriger_caracteres($nature_incident));
 		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-		$nature_incident=my_ereg_replace('(\\\r\\\n)+',"\r\n",$nature_incident);
+		$nature_incident=suppression_sauts_de_lignes_surnumeraires($nature_incident);
 		// session_unregister("retenue_nature_incident");
 	    unset($_SESSION['retenue_nature_incident']);
 	}

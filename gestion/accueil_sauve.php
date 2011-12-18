@@ -1186,9 +1186,7 @@ if (isset($action) and ($action == 'dump'))  {
 
 	if((isset($_POST['description_sauvegarde']))&&($_POST['description_sauvegarde']!='')) {
 		$f_desc=fopen($filename.".txt", "a+");
-		$description_sauvegarde=preg_replace('/(\\\r\\\n)+/',"\r\n",$_POST['description_sauvegarde']);
-		$description_sauvegarde=preg_replace('/(\\\r)+/',"\r",$description_sauvegarde);
-		$description_sauvegarde=preg_replace('/(\\\n)+/',"\n",$description_sauvegarde);
+		$description_sauvegarde=suppression_sauts_de_lignes_surnumeraires($_POST['description_sauvegarde']);
 		fwrite($f_desc, $description_sauvegarde);
 		fclose($f_desc);
 	}
@@ -1295,8 +1293,8 @@ if (isset($action) and ($action == 'dump'))  {
 			closedir($handle);
 			rsort($tab_file);
                         
-                        $nom_fichier=str_replace($path,'',$fichier);
-                        $nom_fichier=str_replace('.sql','',$nom_fichier);
+			$nom_fichier=str_replace($path,'',$fichier);
+			$nom_fichier=str_replace('.sql','',$nom_fichier);
 			$fileid=null;
 			if ($n > 0) {
 				for($m=0;$m<count($tab_file);$m++){
@@ -1369,9 +1367,7 @@ if (isset($action) and ($action == 'system_dump'))  {
 		echo "<center><p style='color: red; font-weight: bold;'>La sauvegarde a été réalisée avec succès.</p></center>\n";
 		if((isset($_POST['description_sauvegarde']))&&($_POST['description_sauvegarde']!='')) {
 			$f_desc=fopen($filename.".txt", "a+");
-			$description_sauvegarde=preg_replace('/(\\\r\\\n)+/',"\r\n",$_POST['description_sauvegarde']);
-			$description_sauvegarde=preg_replace('/(\\\r)+/',"\r",$description_sauvegarde);
-			$description_sauvegarde=preg_replace('/(\\\n)+/',"\n",$description_sauvegarde);
+			$description_sauvegarde=suppression_sauts_de_lignes_surnumeraires($_POST['description_sauvegarde']);
 			fwrite($f_desc, $description_sauvegarde);
 			fclose($f_desc);
 		}

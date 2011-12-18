@@ -108,9 +108,7 @@ if (isset($_POST['is_posted'])) {
 				}
 				//echo "<pre>$k: $app</pre>";
 				// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-				$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
-				$app=preg_replace('/(\\\r)+/',"\r",$app);
-				$app=preg_replace('/(\\\n)+/',"\n",$app);
+				$app=suppression_sauts_de_lignes_surnumeraires($app);
 
 				$test_grp_app_query = mysql_query("SELECT * FROM matieres_appreciations_grp WHERE (id_groupe='" . $current_group["id"]."' AND periode='$k')");
 				$test = mysql_num_rows($test_grp_app_query);
@@ -169,9 +167,7 @@ if (isset($_POST['is_posted'])) {
 							//echo "<pre style='color: red'>$reg_eleve_login: $app</pre>\n";
 
 							// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-							$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
-							$app=preg_replace('/(\\\r)+/',"\r",$app);
-							$app=preg_replace('/(\\\n)+/',"\n",$app);
+							$app=suppression_sauts_de_lignes_surnumeraires($app);
 							//echo "<pre style='color: green'>$reg_eleve_login: $app</pre>\n";
 
 
@@ -215,62 +211,16 @@ if (isset($_POST['is_posted'])) {
 		OR die('Erreur dans l\'effacement de la table temporaire (1) :'.mysql_error());
 	}
 
-	/*
-	foreach ($current_group["eleves"]["all"]["list"] as $reg_eleve_login) {
-		$k=1;
-		while ($k < $nb_periode) {
-			if (in_array($reg_eleve_login, $current_group["eleves"][$k]["list"])) {
-					$eleve_id_classe = $current_group["classes"]["classes"][$current_group["eleves"][$k]["users"][$reg_eleve_login]["classe"]]["id"];
-					if ($current_group["classe"]["ver_periode"][$eleve_id_classe][$k] == "N"){
-						$nom_log = $reg_eleve_login."_t".$k;
-						if (isset($NON_PROTECT[$nom_log]))
-						$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT[$nom_log]));
-						else
-						$app = "";
-
-						// Contrôle des saisies pour supprimer les sauts de lignes surnuméraire.
-						$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
-
-
-						$test_eleve_app_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"]."' AND periode='$k')");
-						$test = mysql_num_rows($test_eleve_app_query);
-						if ($test != "0") {
-							if ($app != "") {
-								$register = mysql_query("UPDATE matieres_appreciations SET appreciation='" . $app . "' WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"]."' AND periode='$k')");
-							} else {
-								$register = mysql_query("DELETE FROM matieres_appreciations WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"]."' AND periode='$k')");
-							}
-							if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des données de la période $k pour l'élève $reg_eleve_login<br />";}
-
-						} else {
-							if ($app != "") {
-								$register = mysql_query("INSERT INTO matieres_appreciations SET login='$reg_eleve_login',id_groupe='" . $current_group["id"]."',periode='$k',appreciation='" . $app . "'");
-								if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des données de la période $k pour l'élève $reg_eleve_login<br />";}
-							}
-						}
-					}
-			}
-			$k++;
-		}
-	}
-	*/
-
 	if($msg=="") {
 		$affiche_message = 'yes';
 	}
 }
-// 20100604
-//elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_periode']))&&(isset($_POST['correction_app_eleve']))&&(isset($_POST['correction_id_groupe']))) {
-//elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_correction_app_eleve']))) {
-//elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_correction_app_eleve']))&&(getSettingValue('autoriser_correction_bulletin')=='y')) {
 elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_correction_app_eleve']))) {
 	check_token();
 
 	// Dispositif pour proposer des corrections une fois la période close.
 	$correction_login_eleve=$_POST['correction_login_eleve'];
 	$correction_periode=$_POST['correction_periode'];
-	//$correction_app_eleve=$_POST['correction_app_eleve'];
-	//$correction_id_groupe=$_POST['correction_id_groupe'];
 
 	// On n'utilise le dispositif que pour des périodes partiellement closes
 	if($ver_periode[$correction_periode]=='P') {

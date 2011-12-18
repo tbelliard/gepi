@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -69,9 +69,7 @@ if((isset($is_posted))&&(isset($_POST['no_anti_inject_message_autorisation_excep
 
 	// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
 	//$message_autorisation_exceptionnelle=my_ereg_replace('(\\\r\\\n)+',"\r\n",$message_autorisation_exceptionnelle);
-	$message_autorisation_exceptionnelle=preg_replace('/(\\\r\\\n)+/',"\r\n",$message_autorisation_exceptionnelle);
-	$message_autorisation_exceptionnelle=preg_replace('/(\\\r)+/',"\r",$message_autorisation_exceptionnelle);
-	$message_autorisation_exceptionnelle=preg_replace('/(\\\n)+/',"\n",$message_autorisation_exceptionnelle);
+	$message_autorisation_exceptionnelle=suppression_sauts_de_lignes_surnumeraires($message_autorisation_exceptionnelle);
 
 	if(!saveSetting('message_autorisation_exceptionnelle',$message_autorisation_exceptionnelle)) {
 		$msg="Erreur lors de l'enregistrement du message personnalisé.<br />";
