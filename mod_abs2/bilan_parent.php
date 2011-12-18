@@ -270,10 +270,10 @@ include('menu_bilans.inc.php');
               }
             }
           }
+        }
       ?>
         </tr>
     <?php
-        }
       }
     ?>
     </table>
