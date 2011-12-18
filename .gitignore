@@ -13,6 +13,8 @@ temp
 *.log
 lib/standalone/HTMLPurifier/DefinitionCache/Serializer
 mod_ooo/mes_modeles/*
+photos/eleves/*
+photos/personnels/*
 
 # Ignore dev files
 .settings
