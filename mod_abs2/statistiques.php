@@ -186,8 +186,7 @@ if ($affichage != 'ods') {
         foreach ($eleve_col as $eleve) {            
             $nbre_demi_journees_calcul=$nbre_demi_journees;
             if($eleve->getDateSortie('U')!=Null && $eleve->getDateSortie('U')>0 && $eleve->getDateSortie('U')<$dt_date_absence_eleve_fin->format('U')){
-                $date_sortie=new DateTime();
-                $date_sortie->setTimestamp($eleve->getDateSortie('U')); 
+                $date_sortie=new DateTime('@'.$eleve->getDateSortie('U'));
                 $nbre_demi_journees_calcul = EdtHelper::getNbreDemiJourneesEtabOuvert($dt_date_absence_eleve_debut, $date_sortie);
                 $eleve->setVirtualColumn('NbreDemiJourneesCalcul',$nbre_demi_journees_calcul);
                 
