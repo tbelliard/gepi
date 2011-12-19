@@ -524,9 +524,11 @@ if (!isset($_SESSION['statJustifie'])) {
 //==============================================
 $style_specifique[] = "edt_organisation/style_edt";
 $style_specifique[] = "templates/DefaultEDT/css/small_edt";
-
 $style_specifique[] = "mod_abs2/lib/abs_style";
+
 $javascript_specifique[] = "mod_abs2/lib/include";
+$javascript_specifique[] = "lib/tablekit";
+
 $titre_page = "Répartition des justifications";
 $utilisation_jsdivdrag = "non";
 $utilisation_scriptaculous="ok";
@@ -599,7 +601,7 @@ include('menu_bilans.inc.php');
 	</fieldset>
   </form>
   
-  <table style ="border:3px groove #aaaaaa;">
+  <table  class="sortable" style ="border:3px groove #aaaaaa;">
 	<caption style ="font-size:larger;" >
 	  Justifications du
 	  <?php echo unserialize($_SESSION['statJustifie']['date_absence_eleve_debut']); ?>
