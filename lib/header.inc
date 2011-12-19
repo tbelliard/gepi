@@ -729,7 +729,7 @@ if (isset($titre_page)) {
     						}
                         }
                         if ($gepiGitCommit != null) {
-                            $version_gepi .= ' git '.$gepiGitBranch.' '.substr($gepiGitCommit, 0, 6);
+                            $version_gepi .= ' '.substr($gepiGitCommit, 0, 6).' '.$gepiGitBranch;
                         }
 					}
 					echo "<p id='num_version'>".$version_gepi."</p>";

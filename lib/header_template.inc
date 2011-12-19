@@ -504,7 +504,7 @@ if (isset($titre_page)) {
 				}
             }
             if ($gepiGitCommit != null) {
-                $version_gepi .= ' git '.$gepiGitBranch.' '.substr($gepiGitCommit, 0, 6);
+                $version_gepi .= ' '.substr($gepiGitCommit, 0, 6).' '.$gepiGitBranch;
             }
 		}
 		$tbs_version_gepi = $version_gepi;
