@@ -67,7 +67,7 @@ if(($_SESSION['statut']=='cpe')||
 	
     echo "<li><a href='statistiques.php' ";
     if($onglet_abs=='statistiques.php') {echo "class='current' ";}
-    echo "title='Taux d'absentéisme'>Taux d'absentéisme</a></li>\n";
+    echo 'title="Taux d\'absentéisme">Taux d\'absentéisme</a></li>';
     
 	
     echo "<li><a href='stat_justifications.php' ";
