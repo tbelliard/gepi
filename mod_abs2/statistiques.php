@@ -368,35 +368,15 @@ if ($affichage != 'ods') {
                     echo '</td>';
                 }
             }
-            echo '</tr>';
-
-            $nb_demijournees = 0;
-            $nb_justifiees = 0;
-            $nb_nonjustifiees = 0;
-            $nb_retards = 0;
-            $demi_journees_decompte=0;
-            if ($affichage_motifs) {
-                foreach ($motifs_col as $motif) {
-                    $nom_variable = 'nb_demijourneesMotif' . $motif->getId();
-                    $$nom_variable = 0;
-                }
-            }
-            foreach ($eleve_col as $eleve) {
-                $isEleveSorti=false;
-                $nbre_demi_journees_calcul=$nbre_demi_journees;
-                if($eleve->getDateSortie('U')!=Null && $eleve->getDateSortie('U')>0 && $eleve->getDateSortie('U')<$dt_date_absence_eleve_fin->format('U')){
-                    $isEleveSorti=true;
-                    $date_sortie=new DateTime();
-                    $date_sortie->setTimestamp($eleve->getDateSortie('U')); 
-                    $nbre_demi_journees_calcul = EdtHelper::getNbreDemiJourneesEtabOuvert($dt_date_absence_eleve_debut, $date_sortie);
-                }
-                $demi_journees_decompte=$demi_journees_decompte+$nbre_demi_journees_calcul;
+            echo '</tr>';           
+            
+            foreach ($eleve_col as $eleve) {                
                 echo '<tr style="border:1px solid">';
 
                 echo '<td>';
                 echo $eleve->getNom() . ' ' . $eleve->getPrenom();
-                if($isEleveSorti){
-                    echo '<br ><strong>(calcul sur '.$nbre_demi_journees_calcul.' demi-journées)</strong>';
+                if($eleve->hasVirtualColumn('NbreDemiJourneesCalcul')){
+                    echo '<br ><strong>(calcul sur '.$eleve->getNbreDemiJourneesCalcul().' demi-journées)</strong>';
                 }
                 echo '</td>';
 
@@ -405,28 +385,23 @@ if ($affichage != 'ods') {
                 echo '</td>';
 
                 echo '<td style="border:1px solid;">';
-                echo getTauxAbsenteisme($eleve->getDemiJourneesAbsencePreRempli(), $nbre_demi_journees_calcul);
-                $nb_demijournees = $nb_demijournees + $eleve->getDemiJourneesAbsencePreRempli();
+                echo $eleve->getTauxDemiJourneesAbsence();                
                 echo '</td>';
 
 
                 echo '<td style="border:1px solid;">';
-                echo getTauxAbsenteisme($eleve->getDemiJourneesNonJustifieesPreRempli(), $nbre_demi_journees_calcul);
-                $nb_nonjustifiees = $nb_nonjustifiees + $eleve->getDemiJourneesNonJustifieesPreRempli();
+                echo $eleve->getTauxDemiJourneesNonJustifiees();                
                 echo '</td>';
 
                 echo '<td style="border:1px solid;">';
-                echo getTauxAbsenteisme($eleve->getDemiJourneesAbsencePreRempli() - $eleve->getDemiJourneesNonJustifieesPreRempli(), $nbre_demi_journees_calcul);
-                $nb_justifiees = $nb_justifiees + $eleve->getDemiJourneesAbsencePreRempli() - $eleve->getDemiJourneesNonJustifieesPreRempli();
+                echo $eleve->getTauxDemiJourneesJustifiees();                
                 echo '</td>';
 
                 if ($affichage_motifs) {
                     foreach ($motifs_col as $motif) {
                         echo '<td style="border:1px solid;">';
-                        $nom_colonne = 'getDemiJourneesAbsencePreRempliMotif' . $motif->getId();
-                        echo getTauxAbsenteisme($eleve->$nom_colonne(), $nbre_demi_journees_calcul);
-                        $nom_variable = 'nb_demijourneesMotif' . $motif->getId();
-                        $$nom_variable = $$nom_variable + $eleve->$nom_colonne();
+                        $nom_colonne = 'getTauxDemiJourneesAbsenceMotif' . $motif->getId();
+                        echo $eleve->$nom_colonne();                        
                         echo '</td>';
                     }
                 }              
@@ -492,11 +467,6 @@ if ($affichage != 'ods') {
             $TBS->MergeField('titre', $titre);
             $TBS->MergeField('dj_ouvrees', $nbre_demi_journees);
 
-            $nb_demijournees = 0;
-            $nb_nonjustifiees = 0;
-            $nb_justifiees = 0;
-            $demi_journees_decompte=0;
-
             if ($affichage_motifs) {
                 $nbre_colonnes = 3 + $motifs_col->count();
             } else {
@@ -528,35 +498,24 @@ if ($affichage != 'ods') {
 
             // Remplissage du tableau de données individuelles
             $donnees_indiv = array();
-            foreach ($eleve_col as $eleve) {
-                $isEleveSorti=false;
-                $nbre_demi_journees_calcul=$nbre_demi_journees;
-                if($eleve->getDateSortie('U')!=Null && $eleve->getDateSortie('U')>0 && $eleve->getDateSortie('U')<$dt_date_absence_eleve_fin->format('U')){
-                    $isEleveSorti=true;
-                    $date_sortie=new DateTime();
-                    $date_sortie->setTimestamp($eleve->getDateSortie('U')); 
-                    $nbre_demi_journees_calcul = EdtHelper::getNbreDemiJourneesEtabOuvert($dt_date_absence_eleve_debut, $date_sortie);
-                }
-                $demi_journees_decompte=$demi_journees_decompte+$nbre_demi_journees_calcul;
+            foreach ($eleve_col as $eleve) {               
                 $enregistrements = array();                
-                if($isEleveSorti){
-                    $enregistrements[$colonnes_individu[1]] = $eleve->getNom().' ('.$nbre_demi_journees_calcul.' demi-journées)';
+                if($eleve->hasVirtualColumn('NbreDemiJourneesCalcul')){
+                    $enregistrements[$colonnes_individu[1]] = $eleve->getNom().' ('.$eleve->getNbreDemiJourneesCalcul().' demi-journées)';
                 }else{
                     $enregistrements[$colonnes_individu[1]] = $eleve->getNom();
                 }
                 $enregistrements[$colonnes_individu[2]] = $eleve->getPrenom();
                 $enregistrements[$colonnes_individu[3]] = $eleve->getClasseNom();
-                $enregistrements[$colonnes_donnes[1]] = str_replace(",",".",getTauxAbsenteisme($eleve->getDemiJourneesAbsencePreRempli(), $nbre_demi_journees_calcul));
-                $enregistrements[$colonnes_donnes[2]] = str_replace(",",".",getTauxAbsenteisme($eleve->getDemiJourneesNonJustifieesPreRempli(), $nbre_demi_journees_calcul));
-                $enregistrements[$colonnes_donnes[3]] = str_replace(",",".",getTauxAbsenteisme($eleve->getDemiJourneesAbsencePreRempli() - $eleve->getDemiJourneesNonJustifieesPreRempli(), $nbre_demi_journees_calcul));
+                $enregistrements[$colonnes_donnes[1]] = str_replace(",",".",$eleve->getTauxDemiJourneesAbsence());
+                $enregistrements[$colonnes_donnes[2]] = str_replace(",",".",$eleve->getTauxDemiJourneesNonJustifiees());
+                $enregistrements[$colonnes_donnes[3]] = str_replace(",",".",$eleve->getTauxDemiJourneesJustifiees());
                 if ($affichage_motifs) {
                     $indice = 4;
                     foreach ($motifs_col as $motif) {
-                        $nom_colonne = 'getDemiJourneesAbsencePreRempliMotif' . $motif->getId();
-                        $enregistrements[$colonnes_donnes[$indice]] = str_replace(",",".",getTauxAbsenteisme($eleve->$nom_colonne(), $nbre_demi_journees_calcul));
-                        $indice++;
-                        $nom_variable = 'nb_demijourneesMotif' . $motif->getId();
-                        $$nom_variable = $$nom_variable + $eleve->$nom_colonne();
+                        $nom_colonne = 'getTauxDemiJourneesAbsenceMotif' . $motif->getId();
+                        $enregistrements[$colonnes_donnes[$indice]] = str_replace(",",".",$eleve->$nom_colonne());
+                        $indice++;                        
                     }
                 }
                 $donnees_indiv[$eleve->getId()] = $enregistrements;                
