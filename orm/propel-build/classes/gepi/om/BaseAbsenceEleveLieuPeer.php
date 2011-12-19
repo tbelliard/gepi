@@ -24,7 +24,7 @@ abstract class BaseAbsenceEleveLieuPeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'AbsenceEleveLieuTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 4;
 
@@ -48,7 +48,7 @@ abstract class BaseAbsenceEleveLieuPeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-	
+
 	/**
 	 * An identiy map to hold any loaded instances of AbsenceEleveLieu objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -366,10 +366,10 @@ abstract class BaseAbsenceEleveLieuPeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in AbsenceEleveTypePeer instance pool, 
+		// Invalidate objects in AbsenceEleveTypePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		AbsenceEleveTypePeer::clearInstancePool();
-		// Invalidate objects in AbsenceEleveSaisiePeer instance pool, 
+		// Invalidate objects in AbsenceEleveSaisiePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		AbsenceEleveSaisiePeer::clearInstancePool();
 	}
@@ -394,7 +394,7 @@ abstract class BaseAbsenceEleveLieuPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -827,7 +827,7 @@ abstract class BaseAbsenceEleveLieuPeer {
 		$c = new Criteria();
 		$c->addSelectColumn('MAX(' . AbsenceEleveLieuPeer::RANK_COL . ')');
 		$stmt = AbsenceEleveLieuPeer::doSelectStmt($c, $con);
-		
+	
 		return $stmt->fetchColumn();
 	}
 	
@@ -847,7 +847,7 @@ abstract class BaseAbsenceEleveLieuPeer {
 	
 		$c = new Criteria;
 		$c->add(AbsenceEleveLieuPeer::RANK_COL, $rank);
-		
+	
 		return AbsenceEleveLieuPeer::doSelectOne($c, $con);
 	}
 	
@@ -866,7 +866,7 @@ abstract class BaseAbsenceEleveLieuPeer {
 		if ($con === null) {
 			$con = Propel::getConnection(AbsenceEleveLieuPeer::DATABASE_NAME);
 		}
-		
+	
 		$con->beginTransaction();
 		try {
 			$ids = array_keys($order);

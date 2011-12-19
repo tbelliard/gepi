@@ -24,7 +24,7 @@ abstract class BaseAbsenceEleveTypeStatutAutorisePeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'AbsenceEleveTypeStatutAutoriseTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 3;
 
@@ -45,7 +45,7 @@ abstract class BaseAbsenceEleveTypeStatutAutorisePeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-	
+
 	/**
 	 * An identiy map to hold any loaded instances of AbsenceEleveTypeStatutAutorise objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -376,7 +376,7 @@ abstract class BaseAbsenceEleveTypeStatutAutorisePeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -473,9 +473,9 @@ abstract class BaseAbsenceEleveTypeStatutAutorisePeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveTypeStatutAutorisePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -589,9 +589,9 @@ abstract class BaseAbsenceEleveTypeStatutAutorisePeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveTypeStatutAutorisePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 

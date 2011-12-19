@@ -80,7 +80,7 @@ $conf = array (
 //    'level' => '7',
 //    'conf' => '',
 //  ),
-  'generator_version' => '1.6.2-dev',
+  'generator_version' => '1.6.4-dev',
 );
 $conf['classmap'] = include(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'classmap-gepi-conf.php');
 return $conf;

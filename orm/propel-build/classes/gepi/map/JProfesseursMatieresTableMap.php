@@ -37,6 +37,7 @@ class JProfesseursMatieresTableMap extends TableMap
 		$this->setClassname('JProfesseursMatieres');
 		$this->setPackage('gepi');
 		$this->setUseIdGenerator(false);
+		$this->setIsCrossRef(true);
 		// columns
 		$this->addForeignPrimaryKey('ID_MATIERE', 'IdMatiere', 'VARCHAR' , 'matieres', 'MATIERE', true, 50, null);
 		$this->addForeignPrimaryKey('ID_PROFESSEUR', 'IdProfesseur', 'VARCHAR' , 'utilisateurs', 'LOGIN', true, 50, null);

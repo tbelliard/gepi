@@ -57,7 +57,7 @@
  */
 abstract class BaseCreditEctsQuery extends ModelCriteria
 {
-
+	
 	/**
 	 * Initializes internal state of BaseCreditEctsQuery object.
 	 *
@@ -94,10 +94,14 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 	}
 
 	/**
-	 * Find object by primary key
+	 * Find object by primary key.
+	 * Propel uses the instance pool to skip the database if the object exists.
+	 * Go fast if the query is untouched.
+	 *
 	 * <code>
 	 * $obj = $c->findPk(array(12, 34, 56, 78), $con);
 	 * </code>
+	 *
 	 * @param     array[$id, $id_eleve, $num_periode, $id_groupe] $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
@@ -105,17 +109,76 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ((null !== ($obj = CreditEctsPeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1], (string) $key[2], (string) $key[3]))))) && $this->getFormatter()->isObjectFormatter()) {
+		if ($key === null) {
+			return null;
+		}
+		if ((null !== ($obj = CreditEctsPeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1], (string) $key[2], (string) $key[3]))))) && !$this->formatter) {
 			// the object is alredy in the instance pool
 			return $obj;
-		} else {
-			// the object has not been requested yet, or the formatter is not an object formatter
-			$criteria = $this->isKeepQuery() ? clone $this : $this;
-			$stmt = $criteria
-				->filterByPrimaryKey($key)
-				->getSelectStatement($con);
-			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
+		if ($con === null) {
+			$con = Propel::getConnection(CreditEctsPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
+		if ($this->formatter || $this->modelAlias || $this->with || $this->select
+		 || $this->selectColumns || $this->asColumns || $this->selectModifiers
+		 || $this->map || $this->having || $this->joins) {
+			return $this->findPkComplex($key, $con);
+		} else {
+			return $this->findPkSimple($key, $con);
+		}
+	}
+
+	/**
+	 * Find object by primary key using raw SQL to go fast.
+	 * Bypass doSelect() and the object formatter by using generated code.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    CreditEcts A model object, or null if the key is not found
+	 */
+	protected function findPkSimple($key, $con)
+	{
+		$sql = 'SELECT ID, ID_ELEVE, NUM_PERIODE, ID_GROUPE, VALEUR, MENTION, MENTION_PROF FROM ects_credits WHERE ID = :p0 AND ID_ELEVE = :p1 AND NUM_PERIODE = :p2 AND ID_GROUPE = :p3';
+		try {
+			$stmt = $con->prepare($sql);
+			$stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
+			$stmt->bindValue(':p1', $key[1], PDO::PARAM_INT);
+			$stmt->bindValue(':p2', $key[2], PDO::PARAM_INT);
+			$stmt->bindValue(':p3', $key[3], PDO::PARAM_INT);
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), $e);
+		}
+		$obj = null;
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$obj = new CreditEcts();
+			$obj->hydrate($row);
+			CreditEctsPeer::addInstanceToPool($obj, serialize(array((string) $row[0], (string) $row[1], (string) $row[2], (string) $row[3])));
+		}
+		$stmt->closeCursor();
+
+		return $obj;
+	}
+
+	/**
+	 * Find object by primary key.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    CreditEcts|array|mixed the result, formatted by the current formatter
+	 */
+	protected function findPkComplex($key, $con)
+	{
+		// As the query uses a PK condition, no limit(1) is necessary.
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
+		$stmt = $criteria
+			->filterByPrimaryKey($key)
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 	}
 
 	/**
@@ -130,10 +193,15 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{
+		if ($con === null) {
+			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		return $this
+		$stmt = $criteria
 			->filterByPrimaryKeys($keys)
-			->find($con);
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->format($stmt);
 	}
 
 	/**
@@ -149,7 +217,7 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 		$this->addUsingAlias(CreditEctsPeer::ID_ELEVE, $key[1], Criteria::EQUAL);
 		$this->addUsingAlias(CreditEctsPeer::NUM_PERIODE, $key[2], Criteria::EQUAL);
 		$this->addUsingAlias(CreditEctsPeer::ID_GROUPE, $key[3], Criteria::EQUAL);
-		
+
 		return $this;
 	}
 
@@ -175,13 +243,13 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 			$cton0->addAnd($cton3);
 			$this->addOr($cton0);
 		}
-		
+
 		return $this;
 	}
 
 	/**
 	 * Filter the query on the id column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterById(1234); // WHERE id = 1234
@@ -207,7 +275,7 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id_eleve column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIdEleve(1234); // WHERE id_eleve = 1234
@@ -235,7 +303,7 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the num_periode column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNumPeriode(1234); // WHERE num_periode = 1234
@@ -261,7 +329,7 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id_groupe column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIdGroupe(1234); // WHERE id_groupe = 1234
@@ -289,7 +357,7 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the valeur column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByValeur(1234); // WHERE valeur = 1234
@@ -329,7 +397,7 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the mention column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByMention('fooValue');   // WHERE mention = 'fooValue'
@@ -357,7 +425,7 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the mention_prof column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByMentionProf('fooValue');   // WHERE mention_prof = 'fooValue'
@@ -409,7 +477,7 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the Eleve relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -419,7 +487,7 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Eleve');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -427,7 +495,7 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -435,7 +503,7 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'Eleve');
 		}
-		
+
 		return $this;
 	}
 
@@ -443,7 +511,7 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 	 * Use the Eleve relation Eleve object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -483,7 +551,7 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the Groupe relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -493,7 +561,7 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Groupe');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -501,7 +569,7 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -509,7 +577,7 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'Groupe');
 		}
-		
+
 		return $this;
 	}
 
@@ -517,7 +585,7 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 	 * Use the Groupe relation Groupe object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -546,8 +614,8 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 			$this->addCond('pruneCond2', $this->getAliasedColName(CreditEctsPeer::NUM_PERIODE), $creditEcts->getNumPeriode(), Criteria::NOT_EQUAL);
 			$this->addCond('pruneCond3', $this->getAliasedColName(CreditEctsPeer::ID_GROUPE), $creditEcts->getIdGroupe(), Criteria::NOT_EQUAL);
 			$this->combine(array('pruneCond0', 'pruneCond1', 'pruneCond2', 'pruneCond3'), Criteria::LOGICAL_OR);
-	  }
-	  
+		}
+
 		return $this;
 	}
 

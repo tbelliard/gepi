@@ -62,6 +62,12 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	protected $alreadyInValidation = false;
 
 	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $edtEmplacementCourssScheduledForDeletion = null;
+
+	/**
 	 * Get the [id_salle] column value.
 	 * cle primaire
 	 * @return     int
@@ -282,18 +288,18 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = EdtSalleQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				EdtSalleQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -345,7 +351,7 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -368,19 +374,24 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
-
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows = 1;
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows = EdtSallePeer::doUpdate($this, $con);
+					$this->doUpdate($con);
 				}
+				$affectedRows += 1;
+				$this->resetModified();
+			}
 
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+			if ($this->edtEmplacementCourssScheduledForDeletion !== null) {
+				if (!$this->edtEmplacementCourssScheduledForDeletion->isEmpty()) {
+					EdtEmplacementCoursQuery::create()
+						->filterByPrimaryKeys($this->edtEmplacementCourssScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->edtEmplacementCourssScheduledForDeletion = null;
+				}
 			}
 
 			if ($this->collEdtEmplacementCourss !== null) {
@@ -396,6 +407,75 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(EdtSallePeer::ID_SALLE)) {
+			$modifiedColumns[':p' . $index++]  = 'ID_SALLE';
+		}
+		if ($this->isColumnModified(EdtSallePeer::NUMERO_SALLE)) {
+			$modifiedColumns[':p' . $index++]  = 'NUMERO_SALLE';
+		}
+		if ($this->isColumnModified(EdtSallePeer::NOM_SALLE)) {
+			$modifiedColumns[':p' . $index++]  = 'NOM_SALLE';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO salle_cours (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case 'ID_SALLE':
+						$stmt->bindValue($identifier, $this->id_salle, PDO::PARAM_INT);
+						break;
+					case 'NUMERO_SALLE':
+						$stmt->bindValue($identifier, $this->numero_salle, PDO::PARAM_STR);
+						break;
+					case 'NOM_SALLE':
+						$stmt->bindValue($identifier, $this->nom_salle, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -755,7 +835,7 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * Avoids crafting an 'init[$relationName]s' method name
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -837,6 +917,30 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of EdtEmplacementCours objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $edtEmplacementCourss A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setEdtEmplacementCourss(PropelCollection $edtEmplacementCourss, PropelPDO $con = null)
+	{
+		$this->edtEmplacementCourssScheduledForDeletion = $this->getEdtEmplacementCourss(new Criteria(), $con)->diff($edtEmplacementCourss);
+
+		foreach ($edtEmplacementCourss as $edtEmplacementCours) {
+			// Fix issue with collection modified by reference
+			if ($edtEmplacementCours->isNew()) {
+				$edtEmplacementCours->setEdtSalle($this);
+			}
+			$this->addEdtEmplacementCours($edtEmplacementCours);
+		}
+
+		$this->collEdtEmplacementCourss = $edtEmplacementCourss;
+	}
+
+	/**
 	 * Returns the number of related EdtEmplacementCours objects.
 	 *
 	 * @param      Criteria $criteria
@@ -869,8 +973,7 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	 * through the EdtEmplacementCours foreign key attribute.
 	 *
 	 * @param      EdtEmplacementCours $l EdtEmplacementCours
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     EdtSalle The current object (for fluent API support)
 	 */
 	public function addEdtEmplacementCours(EdtEmplacementCours $l)
 	{
@@ -878,9 +981,19 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 			$this->initEdtEmplacementCourss();
 		}
 		if (!$this->collEdtEmplacementCourss->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collEdtEmplacementCourss[]= $l;
-			$l->setEdtSalle($this);
+			$this->doAddEdtEmplacementCours($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	EdtEmplacementCours $edtEmplacementCours The edtEmplacementCours object to add.
+	 */
+	protected function doAddEdtEmplacementCours($edtEmplacementCours)
+	{
+		$this->collEdtEmplacementCourss[]= $edtEmplacementCours;
+		$edtEmplacementCours->setEdtSalle($this);
 	}
 
 
@@ -1057,25 +1170,6 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(EdtSallePeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseEdtSalle

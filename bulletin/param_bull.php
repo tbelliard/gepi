@@ -39,7 +39,7 @@ if ($resultat_session == 'c') {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
-include("../fckeditor/fckeditor.php") ;
+include("../ckeditor/ckeditor.php") ;
 
 // Check access
 if (!checkAccess()) {
@@ -1786,15 +1786,12 @@ Veillez à utiliser la fonction "aperçu avant impression" afin de vous rendre c
 	</tr>";
     // Modif : on utilise toute la largeur de la page pour afficher l'éditeur de textes
     echo "
-	<tr><td colspan=\"2\" ><div class='small'>
+	<tr><td colspan=\"2\" ><div class='small' style='width: 820px;'>
 		<i>Mise en forme du message :</i>";
 
-    $oFCKeditor = new FCKeditor('no_anti_inject_page_garde_texte') ;
-    $oFCKeditor->BasePath = '../fckeditor/' ;
-    $oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
-    $oFCKeditor->ToolbarSet = 'Basic' ;
-    $oFCKeditor->Value      = $impression ;
-    $oFCKeditor->Create() ;
+    $oCKeditor = new CKeditor();
+    $oCKeditor->BasePath = '../ckeditor/' ;
+    $oCKeditor->editor('no_anti_inject_page_garde_texte',$impression);
 ?>
 
 		</div>

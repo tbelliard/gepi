@@ -24,7 +24,7 @@ abstract class BaseAidDetailsPeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'AidDetailsTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 24;
 
@@ -108,7 +108,7 @@ abstract class BaseAidDetailsPeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-	
+
 	/**
 	 * An identiy map to hold any loaded instances of AidDetails objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -459,16 +459,16 @@ abstract class BaseAidDetailsPeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in JAidUtilisateursProfessionnelsPeer instance pool, 
+		// Invalidate objects in JAidUtilisateursProfessionnelsPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JAidUtilisateursProfessionnelsPeer::clearInstancePool();
-		// Invalidate objects in JAidElevesPeer instance pool, 
+		// Invalidate objects in JAidElevesPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JAidElevesPeer::clearInstancePool();
-		// Invalidate objects in AbsenceEleveSaisiePeer instance pool, 
+		// Invalidate objects in AbsenceEleveSaisiePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		AbsenceEleveSaisiePeer::clearInstancePool();
-		// Invalidate objects in EdtEmplacementCoursPeer instance pool, 
+		// Invalidate objects in EdtEmplacementCoursPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		EdtEmplacementCoursPeer::clearInstancePool();
 	}
@@ -493,7 +493,7 @@ abstract class BaseAidDetailsPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -590,9 +590,9 @@ abstract class BaseAidDetailsPeer {
 		if (!$criteria->hasSelectClause()) {
 			AidDetailsPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -706,9 +706,9 @@ abstract class BaseAidDetailsPeer {
 		if (!$criteria->hasSelectClause()) {
 			AidDetailsPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 

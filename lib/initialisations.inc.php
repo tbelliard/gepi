@@ -183,14 +183,8 @@ if($is_lcs_plugin=='yes') {
 
 }
 
-$version = mb_substr(phpversion(), 0, 1);
-if ($version == 4) {
-  $ldap_class = "/lib/LDAPServer.php4.class.php";
-  $session_class = "/lib/Session.php4.class.php";
-} else {
-  $ldap_class = "/lib/LDAPServer.class.php";
-  $session_class = "/lib/Session.class.php";
-}
+$ldap_class = "/lib/LDAPServer.class.php";
+$session_class = "/lib/Session.class.php";
 
 // Pour le multisite
 if (isset($_REQUEST['rne'])) {

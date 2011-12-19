@@ -36,7 +36,6 @@ if ($resultat_session == 'c') {
     header("Location: ../logout.php?auto=1");
 	die();
 }
-//include("../fckeditor/fckeditor.php") ;
 
 
 //INSERT INTO droits VALUES ('/gestion/saisie_message_connexion.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Saisie de messages de connexion.', '');

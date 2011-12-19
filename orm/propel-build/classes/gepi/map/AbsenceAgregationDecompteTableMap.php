@@ -40,9 +40,9 @@ class AbsenceAgregationDecompteTableMap extends TableMap
 		// columns
 		$this->addForeignPrimaryKey('ELEVE_ID', 'EleveId', 'INTEGER' , 'eleves', 'ID_ELEVE', true, 11, null);
 		$this->addPrimaryKey('DATE_DEMI_JOUNEE', 'DateDemiJounee', 'TIMESTAMP', true, null, '0000-00-00 00:00:00');
-		$this->addColumn('MANQUEMENT_OBLIGATION_PRESENCE', 'ManquementObligationPresence', 'BOOLEAN', false, null, false);
-		$this->addColumn('NON_JUSTIFIEE', 'NonJustifiee', 'BOOLEAN', false, null, false);
-		$this->addColumn('NOTIFIEE', 'Notifiee', 'BOOLEAN', false, null, false);
+		$this->addColumn('MANQUEMENT_OBLIGATION_PRESENCE', 'ManquementObligationPresence', 'BOOLEAN', false, 1, false);
+		$this->addColumn('NON_JUSTIFIEE', 'NonJustifiee', 'BOOLEAN', false, 1, false);
+		$this->addColumn('NOTIFIEE', 'Notifiee', 'BOOLEAN', false, 1, false);
 		$this->addColumn('RETARDS', 'Retards', 'INTEGER', false, null, 0);
 		$this->addColumn('RETARDS_NON_JUSTIFIES', 'RetardsNonJustifies', 'INTEGER', false, null, 0);
 		$this->addColumn('MOTIFS_ABSENCES', 'MotifsAbsences', 'ARRAY', false, null, null);
@@ -61,9 +61,9 @@ class AbsenceAgregationDecompteTableMap extends TableMap
 	} // buildRelations()
 
 	/**
-	 * 
+	 *
 	 * Gets the list of behaviors registered for this table
-	 * 
+	 *
 	 * @return array Associative array (name => parameters) of behaviors
 	 */
 	public function getBehaviors()
