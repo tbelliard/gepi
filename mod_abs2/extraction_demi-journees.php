@@ -104,6 +104,7 @@ $style_specifique[] = "mod_abs2/lib/abs_style";
 //$javascript_specifique[] = "mod_abs2/lib/include";
 $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
 $dojo=true;
+$utilisation_tablekit="ok";
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
 if ($affichage != 'ods') {// on affiche pas de html
@@ -205,86 +206,91 @@ if ($affichage != null && $affichage != '') {
 
 if ($affichage == 'html') {
     echo 'Total élèves : '.$eleve_col->count();
-    echo '<table style="border:1px solid">';
+    echo '<table class="sortable resizable"  border="1" cellspacing="0">';
     $precedent_eleve_id = null;
-    echo '<tr style="border:1px solid">';
+    echo '<thead>';
+    echo '<tr>';
 
-    echo '<td style="border:1px solid;">';
+    echo '<th title="cliquez pour trier sur la colonne">';
     echo 'Nom Prénom';
-    echo '</td>';
+    echo '</th>';
 
-    echo '<td style="border:1px solid;">';
+    echo '<th title="cliquez pour trier sur la colonne">';
     echo 'Classe';
-    echo '</td>';
+    echo '</th>';
 
-    echo '<td style="border:1px solid;">';
+    echo '<th class="number" title="cliquez pour trier sur la colonne">';
     echo 'nbre de demi-journées d\'absence';
-    echo '</td>';
+    echo '</th>';
 
-    echo '<td style="border:1px solid;">';
+    echo '<th class="number" title="cliquez pour trier sur la colonne">';
     echo 'non justifiees';
-    echo '</td>';
+    echo '</th>';
 
-    echo '<td style="border:1px solid;">';
+    echo '<th  class="number" title="cliquez pour trier sur la colonne">';
     echo 'nbre de retards';
-    echo '</td>';
+    echo '</th>';
 
     echo '</tr>';
-
+    echo '</thead>';
+    echo '<tbody>';
     $nb_demijournees = 0;
     $nb_nonjustifiees = 0;
     $nb_retards = 0;
     foreach ($eleve_col as $eleve) {
-	    echo '<tr style="border:1px solid">';
+	    echo '<tr>';
 	    
-	    echo '<td style="border:1px solid;">';
+	    echo '<td>';
 	    echo $eleve->getNom().' '.$eleve->getPrenom();
 	    echo '</td>';
 
-	    echo '<td style="border:1px solid;">';
+	    echo '<td>';
 	    echo $eleve->getClasseNom();
 	    echo '</td>';
 
-	    echo '<td style="border:1px solid;">';
+	    echo '<td>';
 	    echo $eleve->getNbAbsences();
 	    $nb_demijournees = $nb_demijournees + $eleve->getNbAbsences();
 	    echo '</td>';
 
-	    echo '<td style="border:1px solid;">';
+	    echo '<td>';
 	    echo $eleve->getNbNonJustifiees();
 	    $nb_nonjustifiees = $nb_nonjustifiees + $eleve->getNbNonJustifiees();
 	    echo '</td>';
 
-	    echo '<td style="border:1px solid;">';
+	    echo '<td>';
 	    echo $eleve->getNbRetards();
 	    $nb_retards = $nb_retards + $eleve->getNbRetards();
 	    echo '</td>';
 
 	    echo '</tr>';
     }
-    echo '<tr style="border:1px solid">';
+    echo '<tbody>';
+    echo '<tfoot>';
+    echo '<tr>';
 
-    echo '<td style="border:1px solid;">';
+    echo '<td>';
     echo 'Total élèves : ';
     echo $eleve_col->count();
     echo '</td>';
 
-    echo '<td style="border:1px solid;">';
+    echo '<td>';
     echo '</td>';
 
-    echo '<td style="border:1px solid;">';
+    echo '<td>';
     echo $nb_demijournees;
     echo '</td>';
 
-    echo '<td style="border:1px solid;">';
+    echo '<td>';
     echo $nb_nonjustifiees;
     echo '</td>';
 
-    echo '<td style="border:1px solid;">';
+    echo '<td>';
     echo $nb_retards;
     echo '</td>';
 
     echo '</tr>';
+     echo '</tfoot>';
     echo '<h5>Extraction faite le '.date("d/m/Y - h:i").'</h5>';
 } else if ($affichage == 'ods') {
     // load the TinyButStrong libraries    
