@@ -50,21 +50,22 @@ class AbsenceAgregationDecompteQuery extends BaseAbsenceAgregationDecompteQuery 
         if (!isset($dt_demi_journee) || $dt_demi_journee == null) {
             $dt_demi_journee = new DateTime($heure_demi_journee.':'.$minute_demi_journee);
         }
-        if ($date_debut->format('Hi') < $heure_demi_journee . $minute_demi_journee) {
-            $date_debut->setTime(0, 0, 0);
+        $date_debut_clone=clone $date_debut;
+        if ($date_debut_clone->format('Hi') < $heure_demi_journee . $minute_demi_journee) {
+            $date_debut_clone->setTime(0, 0, 0);
         } else {
-            $date_debut->setTime(12, 0, 0);
+            $date_debut_clone->setTime(12, 0, 0);
         }
         $dt_demi_journee->modify("+1 hour");
         $dt_demi_journee->modify("+35 minutes");
         $heure_demi_journee = $dt_demi_journee->format('H');
         $minute_demi_journee = $dt_demi_journee->format('i'); 
-        
-        if ($date_fin->format('Hi') < $heure_demi_journee . $minute_demi_journee && $date_fin->format('H:i')!="00:00" && $date_debut->format('H:i')=="00:00" ) {
-            $date_fin->setTime(11, 59, 0);
+        $date_fin_clone=clone $date_fin;
+        if ($date_fin_clone->format('Hi') < $heure_demi_journee . $minute_demi_journee && $date_fin_clone->format('H:i')!="00:00" && $date_debut_clone->format('H:i')=="00:00" ) {
+            $date_fin_clone->setTime(11, 59, 0);
         }         
-        $this->filterByDateDemiJounee($date_debut, Criteria::GREATER_EQUAL)
-                ->filterByDateDemiJounee($date_fin, Criteria::LESS_THAN);
+        $this->filterByDateDemiJounee($date_debut_clone, Criteria::GREATER_EQUAL)
+                ->filterByDateDemiJounee($date_fin_clone, Criteria::LESS_THAN);
         return $this;
     }
     
