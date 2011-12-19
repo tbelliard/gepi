@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
 *
 * This file is part of GEPI.
 *
@@ -71,12 +71,7 @@ if (isset($_POST['is_posted'])) {
 		else{
 			$app = "";
 		}
-		//$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
-		$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
-		$app=preg_replace('/(\\\r)+/',"\r",$app);
-		$app=preg_replace('/(\\\n)+/',"\n",$app);
-
-
+		$app=suppression_sauts_de_lignes_surnumeraires($app);
 
 		//if((isset($fav[$i]))||(isset($b2i[$i]))||(isset($b2i[$i]))) {
 		if(isset($favorable[$i])) {

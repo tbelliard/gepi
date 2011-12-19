@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -77,9 +77,7 @@ if(isset($_POST['action_corrections'])) {
 					if (isset($NON_PROTECT["appreciation".$i])) {
 						$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["appreciation".$i]));
 						// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-						$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
-						$app=preg_replace('/(\\\r)+/',"\r",$app);
-						$app=preg_replace('/(\\\n)+/',"\n",$app);
+						$app=suppression_sauts_de_lignes_surnumeraires($app);
 
 						if($action[$i]=='supprimer') {
 							$sql="DELETE FROM matieres_app_corrections WHERE (login='' AND id_groupe='$current_id_groupe' AND periode='$current_periode');";
@@ -153,9 +151,7 @@ if(isset($_POST['action_corrections'])) {
 					if (isset($NON_PROTECT["appreciation".$i])) {
 						$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["appreciation".$i]));
 						// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-						$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
-						$app=preg_replace('/(\\\r)+/',"\r",$app);
-						$app=preg_replace('/(\\\n)+/',"\n",$app);
+						$app=suppression_sauts_de_lignes_surnumeraires($app);
 	
 						if($action[$i]=='supprimer') {
 							$sql="DELETE FROM matieres_app_corrections WHERE (login='$current_login_ele' AND id_groupe='$current_id_groupe' AND periode='$current_periode');";

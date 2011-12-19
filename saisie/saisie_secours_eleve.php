@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -138,9 +138,7 @@ if((isset($_POST['is_posted']))&&
 			//echo "$k: $app<br />";
 			// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
 			//$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
-			$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
-			$app=preg_replace('/(\\\r)+/',"\r",$app);
-			$app=preg_replace('/(\\\n)+/',"\n",$app);
+			$app=suppression_sauts_de_lignes_surnumeraires($app);
 
 			$test_app_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (id_groupe='" . $id_groupe[$k]."' AND periode='$periode_num' AND login='$ele_login')");
 			$test = mysql_num_rows($test_app_query);
