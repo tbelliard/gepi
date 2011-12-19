@@ -290,7 +290,7 @@ class BilansCtrl extends Controleur {
   private function make_array_for_csv($name) {
     $this->traite_filtres();
     $this->traite_incidents_bilans();
-    $csv=Array('Nom,Prenom,Incidents,Mesures prises,% Mesures prises,Sanctions prises,% sanctions prises,Heures de retenues,% heures retenues,Jours d\'exclusion,% jours d\'exclusion');
+    $csv=Array('Nom;Prenom;Incidents;Mesures prises;% Mesures prises;Sanctions prises;% sanctions prises;Heures de retenues;% heures retenues;Jours d\'exclusion;% jours d\'exclusion');
     foreach ($this->liste_eleves[$name] as $eleve) {
       if(!isset($this->totaux_indiv[$eleve]['mesures']))$this->totaux_indiv[$eleve]['mesures']=0;
       if(!isset($this->totaux_indiv[$eleve]['sanctions']))$this->totaux_indiv[$eleve]['sanctions']=0;
@@ -306,10 +306,10 @@ class BilansCtrl extends Controleur {
       $this->totaux_indiv[$eleve]['%jours_exclusions']=round(100*($this->totaux_indiv[$eleve]['jours_exclusions']/$this->totaux['L\'Etablissement']['jours_exclusions']),2);
 
 
-      $csv[]=($this->totaux_indiv[$eleve]['nom'].','.$this->totaux_indiv[$eleve]['prenom'].','.$this->totaux_indiv[$eleve]['incidents'].','.$this->totaux_indiv[$eleve]['mesures'].','.$this->totaux_indiv[$eleve]['%mesures']
-                      .','.$this->totaux_indiv[$eleve]['sanctions'].','.$this->totaux_indiv[$eleve]['%sanctions']
-                      .','.$this->totaux_indiv[$eleve]['heures_retenues'].','.$this->totaux_indiv[$eleve]['%heures_retenues']
-                      .','.$this->totaux_indiv[$eleve]['jours_exclusions'].','.$this->totaux_indiv[$eleve]['%jours_exclusions']);
+      $csv[]=($this->totaux_indiv[$eleve]['nom'].';'.$this->totaux_indiv[$eleve]['prenom'].';'.$this->totaux_indiv[$eleve]['incidents'].';'.$this->totaux_indiv[$eleve]['mesures'].';'.$this->totaux_indiv[$eleve]['%mesures']
+                      .';'.$this->totaux_indiv[$eleve]['sanctions'].';'.$this->totaux_indiv[$eleve]['%sanctions']
+                      .';'.$this->totaux_indiv[$eleve]['heures_retenues'].';'.$this->totaux_indiv[$eleve]['%heures_retenues']
+                      .';'.$this->totaux_indiv[$eleve]['jours_exclusions'].';'.$this->totaux_indiv[$eleve]['%jours_exclusions']);
     }
     return $csv;
   }
