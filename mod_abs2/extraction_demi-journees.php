@@ -103,6 +103,7 @@ $style_specifique[] = "templates/DefaultEDT/css/small_edt";
 $style_specifique[] = "mod_abs2/lib/abs_style";
 //$javascript_specifique[] = "mod_abs2/lib/include";
 $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
+$javascript_specifique[] = "lib/tablekit";
 $dojo=true;
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
@@ -205,29 +206,29 @@ if ($affichage != null && $affichage != '') {
 
 if ($affichage == 'html') {
     echo 'Total élèves : '.$eleve_col->count();
-    echo '<table style="border:1px solid">';
+    echo '<table class="sortable" style="border:1px solid">';
     $precedent_eleve_id = null;
     echo '<tr style="border:1px solid">';
 
-    echo '<td style="border:1px solid;">';
+    echo '<th style="border:1px solid;" title ="Cliquez pour trier sur la colonne">';
     echo 'Nom Prénom';
-    echo '</td>';
+    echo '</th>';
 
-    echo '<td style="border:1px solid;">';
+    echo '<th style="border:1px solid;" title ="Cliquez pour trier sur la colonne">';
     echo 'Classe';
-    echo '</td>';
+    echo '</th>';
 
-    echo '<td style="border:1px solid;">';
+    echo '<th style="border:1px solid;" title ="Cliquez pour trier sur la colonne">';
     echo 'nbre de demi-journées d\'absence';
-    echo '</td>';
+    echo '</th>';
 
-    echo '<td style="border:1px solid;">';
+    echo '<th style="border:1px solid;" title ="Cliquez pour trier sur la colonne">';
     echo 'non justifiees';
-    echo '</td>';
+    echo '</th>';
 
-    echo '<td style="border:1px solid;">';
+    echo '<th style="border:1px solid;" title ="Cliquez pour trier sur la colonne">';
     echo 'nbre de retards';
-    echo '</td>';
+    echo '</th>';
 
     echo '</tr>';
 
