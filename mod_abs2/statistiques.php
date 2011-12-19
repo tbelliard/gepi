@@ -371,7 +371,7 @@ if ($affichage != 'ods') {
             echo '</tr>';           
             
             foreach ($eleve_col as $eleve) {                
-                echo '<tr style="border:1px solid">';
+                echo '<tr>';
 
                 echo '<td>';
                 echo $eleve->getNom() . ' ' . $eleve->getPrenom();
@@ -384,22 +384,22 @@ if ($affichage != 'ods') {
                 echo $eleve->getClasseNom();
                 echo '</td>';
 
-                echo '<td style="border:1px solid;">';
+                echo '<td>';
                 echo $eleve->getTauxDemiJourneesAbsence();                
                 echo '</td>';
 
 
-                echo '<td style="border:1px solid;">';
+                echo '<td>';
                 echo $eleve->getTauxDemiJourneesNonJustifiees();                
                 echo '</td>';
 
-                echo '<td style="border:1px solid;">';
+                echo '<td>';
                 echo $eleve->getTauxDemiJourneesJustifiees();                
                 echo '</td>';
 
                 if ($affichage_motifs) {
                     foreach ($motifs_col as $motif) {
-                        echo '<td style="border:1px solid;">';
+                        echo '<td>';
                         $nom_colonne = 'getTauxDemiJourneesAbsenceMotif' . $motif->getId();
                         echo $eleve->$nom_colonne();                        
                         echo '</td>';
@@ -419,15 +419,15 @@ if ($affichage != 'ods') {
             echo 'Taux moyen  ';
             echo '</td>';
 
-            echo '<td style="border:1px solid;">';
+            echo '<td>';
             echo getTauxAbsenteisme($nb_demijournees, $demi_journees_decompte);
             echo '</td>';
 
-            echo '<td style="border:1px solid;">';
+            echo '<td>';
             echo getTauxAbsenteisme($nb_nonjustifiees, $demi_journees_decompte);
             echo '</td>';
 
-            echo '<td style="border:1px solid;">';
+            echo '<td>';
             echo getTauxAbsenteisme($nb_justifiees, $demi_journees_decompte);
             echo '</td>';
 
