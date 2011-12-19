@@ -49,7 +49,7 @@ class CsvClass {
     //if($this->exists) $this->rename();
     $fp = fopen($this->filename, 'w');
     foreach($data as $line) {
-      fputcsv($fp, split(',',$line),$this->delimiter,$this->enclosure);
+      fputcsv($fp, split(';',$line),$this->delimiter,$this->enclosure);
     }
     fclose($fp);
   }
