@@ -389,23 +389,23 @@ if ($affichage != 'ods') {
                 echo '</td>';
 
                 echo '<td>';
-                echo $eleve->getTauxDemiJourneesAbsence();                
+                echo str_replace(",",".",$eleve->getTauxDemiJourneesAbsence());              
                 echo '</td>';
 
 
                 echo '<td>';
-                echo $eleve->getTauxDemiJourneesNonJustifiees();                
+                echo str_replace(",",".",$eleve->getTauxDemiJourneesNonJustifiees());                
                 echo '</td>';
 
                 echo '<td>';
-                echo $eleve->getTauxDemiJourneesJustifiees();                
+                echo str_replace(",",".",$eleve->getTauxDemiJourneesJustifiees());                
                 echo '</td>';
 
                 if ($affichage_motifs) {
                     foreach ($motifs_col as $motif) {
                         echo '<td>';
                         $nom_colonne = 'getTauxDemiJourneesAbsenceMotif' . $motif->getId();
-                        echo $eleve->$nom_colonne();                        
+                        echo str_replace(",",".",$eleve->$nom_colonne());                        
                         echo '</td>';
                     }
                 }              
@@ -426,22 +426,22 @@ if ($affichage != 'ods') {
             echo '</td>';
 
             echo '<td>';
-            echo getTauxAbsenteisme($nb_demijournees, $demi_journees_decompte);
+            echo str_replace(",",".",getTauxAbsenteisme($nb_demijournees, $demi_journees_decompte));
             echo '</td>';
 
             echo '<td>';
-            echo getTauxAbsenteisme($nb_nonjustifiees, $demi_journees_decompte);
+            echo str_replace(",",".",getTauxAbsenteisme($nb_nonjustifiees, $demi_journees_decompte));
             echo '</td>';
 
             echo '<td>';
-            echo getTauxAbsenteisme($nb_justifiees, $demi_journees_decompte);
+            echo str_replace(",",".",getTauxAbsenteisme($nb_justifiees, $demi_journees_decompte));
             echo '</td>';
 
             if ($affichage_motifs) {
                 foreach ($motifs_col as $motif) {
                     echo '<td>';
                     $test = 'nb_demijourneesMotif' . $motif->getId();
-                    echo getTauxAbsenteisme($$test, $demi_journees_decompte);
+                    echo str_replace(",",".",getTauxAbsenteisme($$test, $demi_journees_decompte));
                     echo '</td>';
                 }
             }            
