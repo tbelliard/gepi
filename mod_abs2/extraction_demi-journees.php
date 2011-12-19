@@ -207,28 +207,28 @@ if ($affichage != null && $affichage != '') {
 
 if ($affichage == 'html') {
     echo 'Total élèves : '.$eleve_col->count();
-    echo '<table class="sortable resizable" style="border:1px solid">';
+    echo '<table class="sortable resizable" style="border-width:1px; border-style:outset">';
     $precedent_eleve_id = null;
     echo '<thead>';
     echo '<tr>';
 
-    echo '<th style="border:1px solid;" title ="Cliquez pour trier sur la colonne">';
+    echo '<th style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
     echo 'Nom Prénom';
     echo '</th>';
 
-    echo '<th style="border:1px solid;" title ="Cliquez pour trier sur la colonne">';
+    echo '<th style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
     echo 'Classe';
     echo '</th>';
 
-    echo '<th style="border:1px solid;" title ="Cliquez pour trier sur la colonne">';
+    echo '<th style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
     echo 'nbre de demi-journées d\'absence';
     echo '</th>';
 
-    echo '<th style="border:1px solid;" title ="Cliquez pour trier sur la colonne">';
+    echo '<th style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
     echo 'non justifiees';
     echo '</th>';
 
-    echo '<th style="border:1px solid;" title ="Cliquez pour trier sur la colonne">';
+    echo '<th style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
     echo 'nbre de retards';
     echo '</th>';
 
@@ -241,25 +241,25 @@ if ($affichage == 'html') {
     foreach ($eleve_col as $eleve) {
 	    echo '<tr>';
 	    
-	    echo '<td>';
+	    echo '<td style="border:1px; border-style: inset;">';
 	    echo $eleve->getNom().' '.$eleve->getPrenom();
 	    echo '</td>';
 
-	    echo '<td>';
+	    echo '<td style="border:1px; border-style: inset;">';
 	    echo $eleve->getClasseNom();
 	    echo '</td>';
 
-	    echo '<td>';
+	    echo '<td style="border:1px; border-style: inset;">';
 	    echo $eleve->getNbAbsences();
 	    $nb_demijournees = $nb_demijournees + $eleve->getNbAbsences();
 	    echo '</td>';
 
-	    echo '<td>';
+	    echo '<td style="border:1px; border-style: inset;">';
 	    echo $eleve->getNbNonJustifiees();
 	    $nb_nonjustifiees = $nb_nonjustifiees + $eleve->getNbNonJustifiees();
 	    echo '</td>';
 
-	    echo '<td>';
+	    echo '<td style="border:1px; border-style: inset;">';
 	    echo $eleve->getNbRetards();
 	    $nb_retards = $nb_retards + $eleve->getNbRetards();
 	    echo '</td>';
@@ -270,25 +270,25 @@ if ($affichage == 'html') {
     echo '<tfoot>';
     echo '<tr>';
 
-    echo '<td>';
+    echo '<th style="border:1px; border-style: inset;">';
     echo 'Total élèves : ';
     echo $eleve_col->count();
-    echo '</td>';
+    echo '</th>';
 
-    echo '<td>';
-    echo '</td>';
+    echo '<th style="border:1px; border-style: inset;">';
+    echo '</th>';
 
-    echo '<td>';
+    echo '<th style="border:1px; border-style: inset;">';
     echo $nb_demijournees;
-    echo '</td>';
+    echo '</th>';
 
-    echo '<td>';
+    echo '<th style="border:1px; border-style: inset;">';
     echo $nb_nonjustifiees;
-    echo '</td>';
+    echo '</th>';
 
-    echo '<td>';
+    echo '<th style="border:1px; border-style: inset;">';
     echo $nb_retards;
-    echo '</td>';
+    echo '</th>';
 
     echo '</tr>';
      echo '</tfoot>';
