@@ -616,23 +616,23 @@ include('menu_bilans.inc.php');
 	</caption>
 	
 	<tr  style ="border:3px groove #aaaaaa;">
-	  <th>
+	  <th title ="Cliquez pour trier sur la colonne">
 		Nom Prénom
 	  </th>
-	  <th>
+	  <th title ="Cliquez pour trier sur la colonne">
 		Classe
 	  </th>
-	  <th>
+	  <th title ="Cliquez pour trier sur la colonne">
 		Retards
 	  </th>
-	  <th>
+	  <th title ="Cliquez pour trier sur la colonne">
 		1/2 journées non justifiées
 	  </th>
-	  <th>
+	  <th title ="Cliquez pour trier sur la colonne">
 		1/2 journées justifiées
 	  </th>
 <?php foreach ($justifie_col as $justifie) {  ?>
-	  <th>
+	  <th title ="Cliquez pour trier sur la colonne">
 		<?php echo $justifie->getNom();  ?>
 	  </th>
 <?php } ?>
