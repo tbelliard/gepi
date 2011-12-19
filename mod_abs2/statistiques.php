@@ -321,50 +321,50 @@ if ($affichage != 'ods') {
         }
         if ($affichage == 'html') {
             echo 'Total élèves : ' . $eleve_col->count();
-            echo '<table style="border:1px solid">';
-            echo '<tr style="border:1px solid;text-align:center;">';
+            echo '<table border="1" cellspacing="0">';
+            echo '<tr style="text-align:center;">';
 
-            echo '<td colspan="2" style="border:1px solid;">';
+            echo '<td colspan="2" >';
             echo 'Informations sur l\'élève';
             echo '</td>';
 
-            echo '<td colspan="3" style="border:1px solid;">';
+            echo '<td colspan="3" >';
             echo 'Taux d\'absentéisme(%)';
             echo '</td>';
 
             if ($affichage_motifs) {
-                echo '<td colspan="' . $nbre_motifs . '" style="border:1px solid;">';
+                echo '<td colspan="' . $nbre_motifs . '" >';
                 echo 'Taux d\'absentéisme total par motifs(%)';
                 echo '</td>';
             }          
 
             echo '</tr>';
 
-            echo '<tr style="border:1px solid">';
+            echo '<tr>';
 
-            echo '<td style="border:1px solid;">';
+            echo '<td>';
             echo 'Nom Prénom';
             echo '</td>';
 
-            echo '<td style="border:1px solid;">';
+            echo '<td>';
             echo 'Classe';
             echo '</td>';
 
-            echo '<td style="border:1px solid;">';
+            echo '<td>';
             echo 'total';
             echo '</td>';
 
-            echo '<td style="border:1px solid;">';
+            echo '<td>';
             echo 'non justifié';
             echo '</td>';
 
-            echo '<td style="border:1px solid;">';
+            echo '<td>';
             echo 'justifié';
             echo '</td>';
 
             if ($affichage_motifs) {
                 foreach ($motifs_col as $motif) {
-                    echo '<td style="border:1px solid;">';
+                    echo '<td>';
                     echo $motif->getNom();
                     echo '</td>';
                 }
@@ -372,35 +372,35 @@ if ($affichage != 'ods') {
             echo '</tr>';           
             
             foreach ($eleve_col as $eleve) {                
-                echo '<tr style="border:1px solid">';
+                echo '<tr>';
 
-                echo '<td style="border:1px solid;">';
+                echo '<td>';
                 echo $eleve->getNom() . ' ' . $eleve->getPrenom();
                 if($eleve->hasVirtualColumn('NbreDemiJourneesCalcul')){
                     echo '<br ><strong>(calcul sur '.$eleve->getNbreDemiJourneesCalcul().' demi-journées)</strong>';
                 }
                 echo '</td>';
 
-                echo '<td style="border:1px solid;">';
+                echo '<td>';
                 echo $eleve->getClasseNom();
                 echo '</td>';
 
-                echo '<td style="border:1px solid;">';
+                echo '<td>';
                 echo $eleve->getTauxDemiJourneesAbsence();                
                 echo '</td>';
 
 
-                echo '<td style="border:1px solid;">';
+                echo '<td>';
                 echo $eleve->getTauxDemiJourneesNonJustifiees();                
                 echo '</td>';
 
-                echo '<td style="border:1px solid;">';
+                echo '<td>';
                 echo $eleve->getTauxDemiJourneesJustifiees();                
                 echo '</td>';
 
                 if ($affichage_motifs) {
                     foreach ($motifs_col as $motif) {
-                        echo '<td style="border:1px solid;">';
+                        echo '<td>';
                         $nom_colonne = 'getTauxDemiJourneesAbsenceMotif' . $motif->getId();
                         echo $eleve->$nom_colonne();                        
                         echo '</td>';
@@ -409,32 +409,32 @@ if ($affichage != 'ods') {
 
                 echo '</tr>';
             }
-            echo '<tr style="border:1px solid">';
+            echo '<tr>';
 
-            echo '<td style="border:1px solid;">';
+            echo '<td>';
             echo 'Nombre d\'élèves : ';
             echo $eleve_col->count();
             echo '</td>';
 
-            echo '<td style="border:1px solid;">';
+            echo '<td>';
             echo 'Taux moyen  ';
             echo '</td>';
 
-            echo '<td style="border:1px solid;">';
+            echo '<td>';
             echo getTauxAbsenteisme($nb_demijournees, $demi_journees_decompte);
             echo '</td>';
 
-            echo '<td style="border:1px solid;">';
+            echo '<td>';
             echo getTauxAbsenteisme($nb_nonjustifiees, $demi_journees_decompte);
             echo '</td>';
 
-            echo '<td style="border:1px solid;">';
+            echo '<td>';
             echo getTauxAbsenteisme($nb_justifiees, $demi_journees_decompte);
             echo '</td>';
 
             if ($affichage_motifs) {
                 foreach ($motifs_col as $motif) {
-                    echo '<td style="border:1px solid;">';
+                    echo '<td>';
                     $test = 'nb_demijourneesMotif' . $motif->getId();
                     echo getTauxAbsenteisme($$test, $demi_journees_decompte);
                     echo '</td>';
