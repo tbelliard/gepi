@@ -98,6 +98,7 @@ if ($dt_date_absence_eleve_debut->format("U") > $dt_date_absence_eleve_fin->form
 $style_specifique[] = "edt_organisation/style_edt";
 $style_specifique[] = "templates/DefaultEDT/css/small_edt";
 $style_specifique[] = "mod_abs2/lib/abs_style";
+$utilisation_tablekit="ok";
 $dojo = true;
 $javascript_specifique[] = "mod_abs2/lib/include";
 //
@@ -320,55 +321,58 @@ if ($affichage != 'ods') {
         }
         if ($affichage == 'html') {
             echo 'Total élèves : ' . $eleve_col->count();
-            echo '<table border="1" cellspacing="0">';
+            echo '<table class="sortable resizable"  border="1" cellspacing="0">';
+            echo '<thead>';
             echo '<tr style="text-align:center;">';
 
-            echo '<td colspan="2" >';
+            echo '<th colspan="2" >';
             echo 'Informations sur l\'élève';
-            echo '</td>';
+            echo '</th>';
 
-            echo '<td colspan="3" >';
+            echo '<th colspan="3" >';
             echo 'Taux d\'absentéisme(%)';
-            echo '</td>';
+            echo '</th>';
 
             if ($affichage_motifs) {
-                echo '<td colspan="' . $nbre_motifs . '" >';
+                echo '<th colspan="' . $nbre_motifs . '" >';
                 echo 'Taux d\'absentéisme total par motifs(%)';
-                echo '</td>';
+                echo '</th>';
             }          
 
             echo '</tr>';
 
             echo '<tr>';
 
-            echo '<td>';
+            echo '<th  title="cliquez pour trier sur la colonne">';
             echo 'Nom Prénom';
-            echo '</td>';
+            echo '</th>';
 
-            echo '<td>';
+            echo '<th  title="cliquez pour trier sur la colonne">';
             echo 'Classe';
-            echo '</td>';
+            echo '</th>';
 
-            echo '<td>';
+            echo '<th class="number" title="cliquez pour trier sur la colonne">';
             echo 'total';
-            echo '</td>';
+            echo '</th>';
 
-            echo '<td>';
+            echo '<th class="number" title="cliquez pour trier sur la colonne">';
             echo 'non justifié';
-            echo '</td>';
+            echo '</th>';
 
-            echo '<td>';
+            echo '<th class="number" title="cliquez pour trier sur la colonne">';
             echo 'justifié';
-            echo '</td>';
+            echo '</th>';
 
             if ($affichage_motifs) {
                 foreach ($motifs_col as $motif) {
-                    echo '<td>';
+                    echo '<th class="number" title="cliquez pour trier sur la colonne">';
                     echo $motif->getNom();
-                    echo '</td>';
+                    echo '</th>';
                 }
             }
-            echo '</tr>';           
+            echo '</tr>';          
+            echo '</thead>';
+            echo '<tbody>';
             
             foreach ($eleve_col as $eleve) {                
                 echo '<tr>';
@@ -408,6 +412,8 @@ if ($affichage != 'ods') {
 
                 echo '</tr>';
             }
+            echo '</tbody>';
+            echo '<tfoot>';
             echo '<tr>';
 
             echo '<td>';
@@ -440,6 +446,7 @@ if ($affichage != 'ods') {
                 }
             }            
             echo '</tr>';
+            echo '</tfoot>';
             echo '<h5>Extraction faite le ' . date("d/m/Y - h:i") . '</h5>';
         } else if ($affichage == 'ods') {
             include_once 'lib/function.php';
