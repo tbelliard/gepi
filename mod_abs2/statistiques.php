@@ -343,11 +343,11 @@ if ($affichage != 'ods') {
 
             echo '<tr>';
 
-            echo '<th  title="cliquez pour trier sur la colonne">';
+            echo '<th  class="text" title="cliquez pour trier sur la colonne">';
             echo 'Nom Prénom';
             echo '</th>';
 
-            echo '<th  title="cliquez pour trier sur la colonne">';
+            echo '<th class="text" title="cliquez pour trier sur la colonne">';
             echo 'Classe';
             echo '</th>';
 
