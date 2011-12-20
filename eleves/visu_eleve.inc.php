@@ -1992,9 +1992,12 @@ Patientez pendant l'extraction des données... merci.
 				    echo "<caption>
 						<strong>Etat périodique de l'absentéisme porté sur le bulletin</strong>
 						</br>
-						<em>Ce bilan est figé le jour de la bascule de l'état sur le bulletin
-						</br>
-						Il peut différer du bilan des saisies ci-dessous (justification tardive, ...)</em>
+						<em>Ce bilan est figé le jour de la bascule de l'état sur le bulletin";
+				if (getSettingValue("active_module_absence")=='2') {
+						echo "</br>
+						Il peut différer du bilan des saisies ci-dessous (justification tardive, ...)";
+						}
+						echo "</em>
 						</caption>\n";
 				    echo "<tr>\n";
 				    echo "<th>Période</th>\n";
@@ -2049,7 +2052,7 @@ Patientez pendant l'extraction des données... merci.
 				    echo '</table>'."\n";
 			    }
 				
-				if (getSettingValue("abs2_import_manuel_bulletin")=='y') {
+				if (getSettingValue("active_module_absence")=='2') {
 				  require_once("../lib/initialisationsPropel.inc.php");
 				  $eleve = EleveQuery::create()->findOneByLogin($ele_login);
 				  include 'visu_eleve_abs2.inc.php';
