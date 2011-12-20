@@ -449,18 +449,18 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = CreditEctsQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				CreditEctsQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -512,7 +512,7 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -554,27 +554,15 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 				$this->setGroupe($this->aGroupe);
 			}
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = CreditEctsPeer::ID;
-			}
-
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(CreditEctsPeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.CreditEctsPeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows += CreditEctsPeer::doUpdate($this, $con);
+					$this->doUpdate($con);
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
 			$this->alreadyInSave = false;
@@ -582,6 +570,110 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = CreditEctsPeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . CreditEctsPeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(CreditEctsPeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = 'ID';
+		}
+		if ($this->isColumnModified(CreditEctsPeer::ID_ELEVE)) {
+			$modifiedColumns[':p' . $index++]  = 'ID_ELEVE';
+		}
+		if ($this->isColumnModified(CreditEctsPeer::NUM_PERIODE)) {
+			$modifiedColumns[':p' . $index++]  = 'NUM_PERIODE';
+		}
+		if ($this->isColumnModified(CreditEctsPeer::ID_GROUPE)) {
+			$modifiedColumns[':p' . $index++]  = 'ID_GROUPE';
+		}
+		if ($this->isColumnModified(CreditEctsPeer::VALEUR)) {
+			$modifiedColumns[':p' . $index++]  = 'VALEUR';
+		}
+		if ($this->isColumnModified(CreditEctsPeer::MENTION)) {
+			$modifiedColumns[':p' . $index++]  = 'MENTION';
+		}
+		if ($this->isColumnModified(CreditEctsPeer::MENTION_PROF)) {
+			$modifiedColumns[':p' . $index++]  = 'MENTION_PROF';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO ects_credits (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case 'ID':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case 'ID_ELEVE':
+						$stmt->bindValue($identifier, $this->id_eleve, PDO::PARAM_INT);
+						break;
+					case 'NUM_PERIODE':
+						$stmt->bindValue($identifier, $this->num_periode, PDO::PARAM_INT);
+						break;
+					case 'ID_GROUPE':
+						$stmt->bindValue($identifier, $this->id_groupe, PDO::PARAM_INT);
+						break;
+					case 'VALEUR':
+						$stmt->bindValue($identifier, $this->valeur, PDO::PARAM_STR);
+						break;
+					case 'MENTION':
+						$stmt->bindValue($identifier, $this->mention, PDO::PARAM_STR);
+						break;
+					case 'MENTION_PROF':
+						$stmt->bindValue($identifier, $this->mention_prof, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1134,25 +1226,6 @@ abstract class BaseCreditEcts extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(CreditEctsPeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseCreditEcts

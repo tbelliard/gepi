@@ -37,6 +37,7 @@ class JTraitementSaisieEleveTableMap extends TableMap
 		$this->setClassname('JTraitementSaisieEleve');
 		$this->setPackage('gepi');
 		$this->setUseIdGenerator(false);
+		$this->setIsCrossRef(true);
 		// columns
 		$this->addForeignPrimaryKey('A_SAISIE_ID', 'ASaisieId', 'INTEGER' , 'a_saisies', 'ID', true, 12, null);
 		$this->addForeignPrimaryKey('A_TRAITEMENT_ID', 'ATraitementId', 'INTEGER' , 'a_traitements', 'ID', true, 12, null);

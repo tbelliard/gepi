@@ -133,7 +133,7 @@
  */
 abstract class BaseEleveQuery extends ModelCriteria
 {
-
+	
 	/**
 	 * Initializes internal state of BaseEleveQuery object.
 	 *
@@ -170,11 +170,14 @@ abstract class BaseEleveQuery extends ModelCriteria
 	}
 
 	/**
-	 * Find object by primary key
-	 * Use instance pooling to avoid a database query if the object exists
+	 * Find object by primary key.
+	 * Propel uses the instance pool to skip the database if the object exists.
+	 * Go fast if the query is untouched.
+	 *
 	 * <code>
 	 * $obj  = $c->findPk(12, $con);
 	 * </code>
+	 *
 	 * @param     mixed $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
@@ -182,17 +185,73 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ((null !== ($obj = ElevePeer::getInstanceFromPool((string) $key))) && $this->getFormatter()->isObjectFormatter()) {
+		if ($key === null) {
+			return null;
+		}
+		if ((null !== ($obj = ElevePeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
 			// the object is alredy in the instance pool
 			return $obj;
-		} else {
-			// the object has not been requested yet, or the formatter is not an object formatter
-			$criteria = $this->isKeepQuery() ? clone $this : $this;
-			$stmt = $criteria
-				->filterByPrimaryKey($key)
-				->getSelectStatement($con);
-			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
+		if ($con === null) {
+			$con = Propel::getConnection(ElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
+		if ($this->formatter || $this->modelAlias || $this->with || $this->select
+		 || $this->selectColumns || $this->asColumns || $this->selectModifiers
+		 || $this->map || $this->having || $this->joins) {
+			return $this->findPkComplex($key, $con);
+		} else {
+			return $this->findPkSimple($key, $con);
+		}
+	}
+
+	/**
+	 * Find object by primary key using raw SQL to go fast.
+	 * Bypass doSelect() and the object formatter by using generated code.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    Eleve A model object, or null if the key is not found
+	 */
+	protected function findPkSimple($key, $con)
+	{
+		$sql = 'SELECT NO_GEP, LOGIN, NOM, PRENOM, SEXE, NAISSANCE, LIEU_NAISSANCE, ELENOET, ERENO, ELE_ID, EMAIL, ID_ELEVE, DATE_SORTIE, MEF_CODE FROM eleves WHERE ID_ELEVE = :p0';
+		try {
+			$stmt = $con->prepare($sql);
+			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), $e);
+		}
+		$obj = null;
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$obj = new Eleve();
+			$obj->hydrate($row);
+			ElevePeer::addInstanceToPool($obj, (string) $row[0]);
+		}
+		$stmt->closeCursor();
+
+		return $obj;
+	}
+
+	/**
+	 * Find object by primary key.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    Eleve|array|mixed the result, formatted by the current formatter
+	 */
+	protected function findPkComplex($key, $con)
+	{
+		// As the query uses a PK condition, no limit(1) is necessary.
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
+		$stmt = $criteria
+			->filterByPrimaryKey($key)
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 	}
 
 	/**
@@ -207,10 +266,15 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{
+		if ($con === null) {
+			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		return $this
+		$stmt = $criteria
 			->filterByPrimaryKeys($keys)
-			->find($con);
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->format($stmt);
 	}
 
 	/**
@@ -239,7 +303,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the no_gep column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNoGep('fooValue');   // WHERE no_gep = 'fooValue'
@@ -267,7 +331,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the login column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByLogin('fooValue');   // WHERE login = 'fooValue'
@@ -295,7 +359,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the nom column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNom('fooValue');   // WHERE nom = 'fooValue'
@@ -323,7 +387,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the prenom column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByPrenom('fooValue');   // WHERE prenom = 'fooValue'
@@ -351,7 +415,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the sexe column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterBySexe('fooValue');   // WHERE sexe = 'fooValue'
@@ -379,7 +443,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the naissance column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNaissance('2011-03-14'); // WHERE naissance = '2011-03-14'
@@ -421,7 +485,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the lieu_naissance column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByLieuNaissance('fooValue');   // WHERE lieu_naissance = 'fooValue'
@@ -449,7 +513,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the elenoet column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByElenoet('fooValue');   // WHERE elenoet = 'fooValue'
@@ -477,7 +541,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the ereno column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEreno('fooValue');   // WHERE ereno = 'fooValue'
@@ -505,7 +569,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the ele_id column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEleId('fooValue');   // WHERE ele_id = 'fooValue'
@@ -533,7 +597,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the email column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEmail('fooValue');   // WHERE email = 'fooValue'
@@ -561,7 +625,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id_eleve column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterById(1234); // WHERE id_eleve = 1234
@@ -587,7 +651,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the date_sortie column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByDateSortie('2011-03-14'); // WHERE date_sortie = '2011-03-14'
@@ -629,7 +693,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the mef_code column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByMefCode(1234); // WHERE mef_code = 1234
@@ -695,7 +759,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the Mef relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -705,7 +769,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Mef');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -713,7 +777,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -721,7 +785,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'Mef');
 		}
-		
+
 		return $this;
 	}
 
@@ -729,7 +793,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 * Use the Mef relation Mef object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -759,7 +823,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} elseif ($jEleveClasse instanceof PropelCollection) {
 			return $this
 				->useJEleveClasseQuery()
-					->filterByPrimaryKeys($jEleveClasse->getPrimaryKeys())
+				->filterByPrimaryKeys($jEleveClasse->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByJEleveClasse() only accepts arguments of type JEleveClasse or PropelCollection');
@@ -768,7 +832,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the JEleveClasse relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -778,7 +842,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JEleveClasse');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -786,7 +850,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -794,7 +858,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'JEleveClasse');
 		}
-		
+
 		return $this;
 	}
 
@@ -802,7 +866,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 * Use the JEleveClasse relation JEleveClasse object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -832,7 +896,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} elseif ($jEleveCpe instanceof PropelCollection) {
 			return $this
 				->useJEleveCpeQuery()
-					->filterByPrimaryKeys($jEleveCpe->getPrimaryKeys())
+				->filterByPrimaryKeys($jEleveCpe->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByJEleveCpe() only accepts arguments of type JEleveCpe or PropelCollection');
@@ -841,7 +905,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the JEleveCpe relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -851,7 +915,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JEleveCpe');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -859,7 +923,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -867,7 +931,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'JEleveCpe');
 		}
-		
+
 		return $this;
 	}
 
@@ -875,7 +939,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 * Use the JEleveCpe relation JEleveCpe object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -905,7 +969,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} elseif ($jEleveGroupe instanceof PropelCollection) {
 			return $this
 				->useJEleveGroupeQuery()
-					->filterByPrimaryKeys($jEleveGroupe->getPrimaryKeys())
+				->filterByPrimaryKeys($jEleveGroupe->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByJEleveGroupe() only accepts arguments of type JEleveGroupe or PropelCollection');
@@ -914,7 +978,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the JEleveGroupe relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -924,7 +988,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JEleveGroupe');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -932,7 +996,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -940,7 +1004,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'JEleveGroupe');
 		}
-		
+
 		return $this;
 	}
 
@@ -948,7 +1012,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 * Use the JEleveGroupe relation JEleveGroupe object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -978,7 +1042,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} elseif ($jEleveProfesseurPrincipal instanceof PropelCollection) {
 			return $this
 				->useJEleveProfesseurPrincipalQuery()
-					->filterByPrimaryKeys($jEleveProfesseurPrincipal->getPrimaryKeys())
+				->filterByPrimaryKeys($jEleveProfesseurPrincipal->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByJEleveProfesseurPrincipal() only accepts arguments of type JEleveProfesseurPrincipal or PropelCollection');
@@ -987,7 +1051,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the JEleveProfesseurPrincipal relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -997,7 +1061,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JEleveProfesseurPrincipal');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1005,7 +1069,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1013,7 +1077,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'JEleveProfesseurPrincipal');
 		}
-		
+
 		return $this;
 	}
 
@@ -1021,7 +1085,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 * Use the JEleveProfesseurPrincipal relation JEleveProfesseurPrincipal object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1051,7 +1115,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} elseif ($eleveRegimeDoublant instanceof PropelCollection) {
 			return $this
 				->useEleveRegimeDoublantQuery()
-					->filterByPrimaryKeys($eleveRegimeDoublant->getPrimaryKeys())
+				->filterByPrimaryKeys($eleveRegimeDoublant->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByEleveRegimeDoublant() only accepts arguments of type EleveRegimeDoublant or PropelCollection');
@@ -1060,7 +1124,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the EleveRegimeDoublant relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1070,7 +1134,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('EleveRegimeDoublant');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1078,7 +1142,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1086,7 +1150,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'EleveRegimeDoublant');
 		}
-		
+
 		return $this;
 	}
 
@@ -1094,7 +1158,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 * Use the EleveRegimeDoublant relation EleveRegimeDoublant object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1124,7 +1188,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} elseif ($responsableInformation instanceof PropelCollection) {
 			return $this
 				->useResponsableInformationQuery()
-					->filterByPrimaryKeys($responsableInformation->getPrimaryKeys())
+				->filterByPrimaryKeys($responsableInformation->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByResponsableInformation() only accepts arguments of type ResponsableInformation or PropelCollection');
@@ -1133,7 +1197,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the ResponsableInformation relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1143,7 +1207,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('ResponsableInformation');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1151,7 +1215,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1159,7 +1223,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'ResponsableInformation');
 		}
-		
+
 		return $this;
 	}
 
@@ -1167,7 +1231,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 * Use the ResponsableInformation relation ResponsableInformation object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1197,7 +1261,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} elseif ($jEleveAncienEtablissement instanceof PropelCollection) {
 			return $this
 				->useJEleveAncienEtablissementQuery()
-					->filterByPrimaryKeys($jEleveAncienEtablissement->getPrimaryKeys())
+				->filterByPrimaryKeys($jEleveAncienEtablissement->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByJEleveAncienEtablissement() only accepts arguments of type JEleveAncienEtablissement or PropelCollection');
@@ -1206,7 +1270,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the JEleveAncienEtablissement relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1216,7 +1280,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JEleveAncienEtablissement');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1224,7 +1288,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1232,7 +1296,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'JEleveAncienEtablissement');
 		}
-		
+
 		return $this;
 	}
 
@@ -1240,7 +1304,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 * Use the JEleveAncienEtablissement relation JEleveAncienEtablissement object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1270,7 +1334,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} elseif ($jAidEleves instanceof PropelCollection) {
 			return $this
 				->useJAidElevesQuery()
-					->filterByPrimaryKeys($jAidEleves->getPrimaryKeys())
+				->filterByPrimaryKeys($jAidEleves->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByJAidEleves() only accepts arguments of type JAidEleves or PropelCollection');
@@ -1279,7 +1343,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the JAidEleves relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1289,7 +1353,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JAidEleves');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1297,7 +1361,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1305,7 +1369,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'JAidEleves');
 		}
-		
+
 		return $this;
 	}
 
@@ -1313,7 +1377,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 * Use the JAidEleves relation JAidEleves object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1343,7 +1407,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} elseif ($absenceEleveSaisie instanceof PropelCollection) {
 			return $this
 				->useAbsenceEleveSaisieQuery()
-					->filterByPrimaryKeys($absenceEleveSaisie->getPrimaryKeys())
+				->filterByPrimaryKeys($absenceEleveSaisie->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByAbsenceEleveSaisie() only accepts arguments of type AbsenceEleveSaisie or PropelCollection');
@@ -1352,7 +1416,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the AbsenceEleveSaisie relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1362,7 +1426,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveSaisie');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1370,7 +1434,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1378,7 +1442,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'AbsenceEleveSaisie');
 		}
-		
+
 		return $this;
 	}
 
@@ -1386,7 +1450,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 * Use the AbsenceEleveSaisie relation AbsenceEleveSaisie object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1416,7 +1480,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} elseif ($absenceAgregationDecompte instanceof PropelCollection) {
 			return $this
 				->useAbsenceAgregationDecompteQuery()
-					->filterByPrimaryKeys($absenceAgregationDecompte->getPrimaryKeys())
+				->filterByPrimaryKeys($absenceAgregationDecompte->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByAbsenceAgregationDecompte() only accepts arguments of type AbsenceAgregationDecompte or PropelCollection');
@@ -1425,7 +1489,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the AbsenceAgregationDecompte relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1435,7 +1499,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceAgregationDecompte');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1443,7 +1507,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1451,7 +1515,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'AbsenceAgregationDecompte');
 		}
-		
+
 		return $this;
 	}
 
@@ -1459,7 +1523,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 * Use the AbsenceAgregationDecompte relation AbsenceAgregationDecompte object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1489,7 +1553,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} elseif ($creditEcts instanceof PropelCollection) {
 			return $this
 				->useCreditEctsQuery()
-					->filterByPrimaryKeys($creditEcts->getPrimaryKeys())
+				->filterByPrimaryKeys($creditEcts->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByCreditEcts() only accepts arguments of type CreditEcts or PropelCollection');
@@ -1498,7 +1562,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the CreditEcts relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1508,7 +1572,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('CreditEcts');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1516,7 +1580,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1524,7 +1588,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'CreditEcts');
 		}
-		
+
 		return $this;
 	}
 
@@ -1532,7 +1596,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 * Use the CreditEcts relation CreditEcts object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1562,7 +1626,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} elseif ($creditEctsGlobal instanceof PropelCollection) {
 			return $this
 				->useCreditEctsGlobalQuery()
-					->filterByPrimaryKeys($creditEctsGlobal->getPrimaryKeys())
+				->filterByPrimaryKeys($creditEctsGlobal->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByCreditEctsGlobal() only accepts arguments of type CreditEctsGlobal or PropelCollection');
@@ -1571,7 +1635,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the CreditEctsGlobal relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1581,7 +1645,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('CreditEctsGlobal');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1589,7 +1653,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1597,7 +1661,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'CreditEctsGlobal');
 		}
-		
+
 		return $this;
 	}
 
@@ -1605,7 +1669,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 * Use the CreditEctsGlobal relation CreditEctsGlobal object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1635,7 +1699,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} elseif ($archiveEcts instanceof PropelCollection) {
 			return $this
 				->useArchiveEctsQuery()
-					->filterByPrimaryKeys($archiveEcts->getPrimaryKeys())
+				->filterByPrimaryKeys($archiveEcts->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByArchiveEcts() only accepts arguments of type ArchiveEcts or PropelCollection');
@@ -1644,7 +1708,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the ArchiveEcts relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1654,7 +1718,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('ArchiveEcts');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1662,7 +1726,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1670,7 +1734,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'ArchiveEcts');
 		}
-		
+
 		return $this;
 	}
 
@@ -1678,7 +1742,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 * Use the ArchiveEcts relation ArchiveEcts object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1705,10 +1769,10 @@ abstract class BaseEleveQuery extends ModelCriteria
 	{
 		return $this
 			->useJEleveAncienEtablissementQuery()
-				->filterByAncienEtablissement($ancienEtablissement, $comparison)
+			->filterByAncienEtablissement($ancienEtablissement, $comparison)
 			->endUse();
 	}
-	
+
 	/**
 	 * Filter the query by a related AidDetails object
 	 * using the j_aid_eleves table as cross reference
@@ -1722,10 +1786,10 @@ abstract class BaseEleveQuery extends ModelCriteria
 	{
 		return $this
 			->useJAidElevesQuery()
-				->filterByAidDetails($aidDetails, $comparison)
+			->filterByAidDetails($aidDetails, $comparison)
 			->endUse();
 	}
-	
+
 	/**
 	 * Exclude object from result
 	 *
@@ -1737,8 +1801,8 @@ abstract class BaseEleveQuery extends ModelCriteria
 	{
 		if ($eleve) {
 			$this->addUsingAlias(ElevePeer::ID_ELEVE, $eleve->getId(), Criteria::NOT_EQUAL);
-	  }
-	  
+		}
+
 		return $this;
 	}
 

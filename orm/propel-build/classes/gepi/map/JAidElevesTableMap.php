@@ -37,6 +37,7 @@ class JAidElevesTableMap extends TableMap
 		$this->setClassname('JAidEleves');
 		$this->setPackage('gepi');
 		$this->setUseIdGenerator(false);
+		$this->setIsCrossRef(true);
 		// columns
 		$this->addForeignPrimaryKey('ID_AID', 'IdAid', 'VARCHAR' , 'aid', 'ID', true, 100, null);
 		$this->addForeignPrimaryKey('LOGIN', 'Login', 'VARCHAR' , 'eleves', 'LOGIN', true, 60, null);

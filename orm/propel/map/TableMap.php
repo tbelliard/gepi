@@ -28,14 +28,14 @@ class TableMap
 {
 
   /**
-   * Columns in the table 
-   * @var array TableMap[] 
+   * Columns in the table
+   * @var array TableMap[]
    */
   protected $columns = array();
 
   /**
-   * Columns in the table, using table phpName as key 
-   * @var array TableMap[] 
+   * Columns in the table, using table phpName as key
+   * @var array TableMap[]
    */
   protected $columnsByPhpName = array();
 
@@ -53,16 +53,19 @@ class TableMap
 
   // The Package for this table
   protected $package;
-  
+
   // Whether to use an id generator for pkey
   protected $useIdGenerator;
 
   // Whether the table uses single table inheritance
   protected $isSingleTableInheritance = false;
-  
+
+  // Whether the table is a Many to Many table
+  protected $isCrossRef = false;
+
   // The primary key columns in the table
   protected $primaryKeys = array();
-  
+
   // The foreign key columns in the table
   protected $foreignKeys = array();
 
@@ -71,10 +74,10 @@ class TableMap
 
   // Relations are lazy loaded. This property tells if the relations are loaded or not
   protected $relationsBuilt = false;
-  
+
   // Object to store information that is needed if the for generating primary keys
   protected $pkInfo;
-  
+
   /**
    * Construct a new TableMap.
    *
@@ -89,7 +92,7 @@ class TableMap
   	}
     $this->initialize();
   }
-  
+
   /**
    * Initialize the TableMap to build columns, relations, etc
    * This method should be overridden by descendents
@@ -107,7 +110,7 @@ class TableMap
   {
     $this->dbMap = $dbMap;
   }
-  
+
   /**
    * Get the DatabaseMap containing this TableMap.
    *
@@ -127,7 +130,7 @@ class TableMap
   {
     $this->tableName = $name;
   }
-  
+
   /**
    * Get the name of the Table.
    *
@@ -147,7 +150,7 @@ class TableMap
   {
     $this->phpName = $phpName;
   }
-  
+
   /**
    * Get the PHP name of the Table.
    *
@@ -176,7 +179,7 @@ class TableMap
   {
     return $this->classname;
   }
-  
+
   /**
    * Get the Peer Classname of the Propel Class belonging to this table.
    * @return     string
@@ -185,7 +188,7 @@ class TableMap
   {
     return constant($this->classname . '::PEER');
   }
-  
+
   /**
    * Set the Package of the Table
    *
@@ -204,7 +207,7 @@ class TableMap
   {
     return $this->package;
   }
-    
+
   /**
    * Set whether or not to use Id generator for primary key.
    * @param      boolean $bit
@@ -250,7 +253,7 @@ class TableMap
   {
     $this->pkInfo = $pkInfo;
   }
-  
+
   /**
    * Get the name of the sequence used to generate a primary key
    *
@@ -287,18 +290,18 @@ class TableMap
       $col->setPrimaryKey(true);
       $this->primaryKeys[$name] = $col;
     }
-    
+
     if ($fkTable && $fkColumn) {
       $col->setForeignKey($fkTable, $fkColumn);
       $this->foreignKeys[$name] = $col;
     }
-    
+
     $this->columns[$name] = $col;
     $this->columnsByPhpName[$phpName] = $col;
 
     return $col;
   }
-  
+
   /**
    * Add a pre-created column to this table. It will replace any
    * existing column.
@@ -311,7 +314,7 @@ class TableMap
     $this->columns[ $cmap->getColumnName() ] = $cmap;
     return $cmap;
   }
-  
+
   /**
    * Does this table contain the specified column?
    *
@@ -328,7 +331,7 @@ class TableMap
     }
     return isset($this->columns[$name]);
   }
-  
+
   /**
    * Get a ColumnMap for the table.
    *
@@ -358,7 +361,7 @@ class TableMap
   {
     return isset($this->columnsByPhpName[$phpName]);
   }
-  
+
   /**
    * Get a ColumnMap for the table.
    *
@@ -373,7 +376,7 @@ class TableMap
     }
     return $this->columnsByPhpName[$phpName];
   }
-  
+
   /**
    * Get a ColumnMap[] of the columns in this table.
    *
@@ -431,7 +434,25 @@ class TableMap
   {
     return $this->addColumn($columnName, $phpName, $type, $isNotNull, $size, $defaultValue, true, $fkTable, $fkColumn);
   }
-  
+
+
+  /**
+   * @return boolean true if the table is a many to many
+   */
+  public function isCrossRef()
+  {
+    return $this->isCrossRef;
+  }
+
+  /**
+   * set the isCrossRef
+   * @param boolean $isCrossRef
+   */
+  public function setIsCrossRef($isCrossRef)
+  {
+    $this->isCrossRef = $isCrossRef;
+  }
+
   /**
    * Returns array of ColumnMap objects that make up the primary key for this table
    *
@@ -441,7 +462,7 @@ class TableMap
   {
     return $this->primaryKeys;
   }
-  
+
   /**
    * Returns array of ColumnMap objects that are foreign keys for this table
    *
@@ -478,7 +499,7 @@ class TableMap
       $col->addValidator($validator);
     }
   }
-  
+
   /**
    * Build relations
    * Relations are lazy loaded for performance reasons
@@ -486,18 +507,21 @@ class TableMap
    */
   public function buildRelations()
   {
-  }  
-  
+  }
+
   /**
    * Adds a RelationMap to the table
-   * 
+   *
    * @param      string $name The relation name
    * @param      string $tablePhpName The related table name
    * @param      integer $type The relation type (either RelationMap::MANY_TO_ONE, RelationMap::ONE_TO_MANY, or RelationMAp::ONE_TO_ONE)
    * @param      array $columnMapping An associative array mapping column names (local => foreign)
+   * @param      string $onDelete SQL behavior upon deletion ('SET NULL', 'CASCADE', ...)
+   * @param      string $onUpdate SQL behavior upon update ('SET NULL', 'CASCADE', ...)
+   * @param      string $pluralName Optional plural name for *_TO_MANY relationships
    * @return     RelationMap the built RelationMap object
    */
-  public function addRelation($name, $tablePhpName, $type, $columnMapping = array(), $onDelete = null, $onUpdate = null)
+  public function addRelation($name, $tablePhpName, $type, $columnMapping = array(), $onDelete = null, $onUpdate = null, $pluralName = null)
   {
     // note: using phpName for the second table allows the use of DatabaseMap::getTableByPhpName()
     // and this method autoloads the TableMap if the table isn't loaded yet
@@ -505,6 +529,9 @@ class TableMap
     $relation->setType($type);
     $relation->setOnUpdate($onUpdate);
     $relation->setOnDelete($onDelete);
+    if (null !== $pluralName) {
+      $relation->setPluralName($pluralName);
+    }
     // set tables
     if ($type == RelationMap::MANY_TO_ONE) {
       $relation->setLocalTable($this);
@@ -529,19 +556,19 @@ class TableMap
    * Gets a RelationMap of the table by relation name
    * This method will build the relations if they are not built yet
    *
-   * @param       String $name The relation name 
+   * @param       String $name The relation name
    * @return      boolean true if the relation exists
    */
   public function hasRelation($name)
   {
     return array_key_exists($name, $this->getRelations());
   }
-  
+
   /**
    * Gets a RelationMap of the table by relation name
    * This method will build the relations if they are not built yet
    *
-   * @param       String $name The relation name 
+   * @param       String $name The relation name
    * @return      RelationMap The relation object
    * @throws      PropelException When called on an inexistent relation
    */
@@ -557,7 +584,7 @@ class TableMap
   /**
    * Gets the RelationMap objects of the table
    * This method will build the relations if they are not built yet
-   * 
+   *
    * @return      Array list of RelationMap objects
    */
   public function getRelations()
@@ -571,7 +598,7 @@ class TableMap
   }
 
   /**
-   * 
+   *
    * Gets the list of behaviors registered for this table
    *
    * @return array
@@ -606,7 +633,7 @@ class TableMap
   }
 
   // Deprecated methods and attributres, to be removed
-  
+
   /**
    * Does this table contain the specified column?
    *
@@ -619,7 +646,7 @@ class TableMap
   {
     return $this->hasColumn($name, $normalize);
   }
-  
+
   /**
    * Normalizes the column name, removing table prefix and uppercasing.
    * article.first_name becomes FIRST_NAME
@@ -632,7 +659,7 @@ class TableMap
   {
     return ColumnMap::normalizeName($name);
   }
-  
+
   /**
    * Returns array of ColumnMap objects that make up the primary key for this table.
    *
@@ -643,11 +670,11 @@ class TableMap
   {
     return array_values($this->primaryKeys);
   }
-    
+
   //---Utility methods for doing intelligent lookup of table names
 
-  /** 
-   * The prefix on the table name. 
+  /**
+   * The prefix on the table name.
    * @deprecated Not used anywhere in Propel
    */
   private $prefix;
@@ -675,7 +702,7 @@ class TableMap
   {
     $this->prefix = $prefix;
   }
-  
+
   /**
    * Tell me if i have PREFIX in my string.
    *

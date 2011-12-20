@@ -26,7 +26,7 @@ $variables_non_protegees = 'yes';
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
-include("../fckeditor/fckeditor.php") ;
+include("../ckeditor/ckeditor.php") ;
 
 
 
@@ -225,14 +225,11 @@ echo "<input type=\"text\" name=\"mod_inscription_titre\" size=\"40\" value=\"".
 echo "<H2>Texte explicatif</H2>\n";
 echo "<p>Le texte ci-dessous sera visible par les personnes accédant au module d'inscription/désincription.</p>\n";
 echo "<input type=\"hidden\" name=\"is_posted_notes\" value=\"yes\" />\n";
-    // lancement de FCKeditor
+    // lancement de CKeditor
 
-    $oFCKeditor = new FCKeditor('no_anti_inject_notes') ;
-    $oFCKeditor->BasePath = '../fckeditor/' ;
-    $oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
-    $oFCKeditor->ToolbarSet = 'Basic' ;
-    $oFCKeditor->Value = $contenu ;
-    $oFCKeditor->Create() ;
+    $oCKeditor = new CKeditor() ;
+    $oCKeditor->BasePath = '../ckeditor/' ;
+    $oCKeditor->editor('no_anti_inject_notes',$contenu) ;
     echo "<br /><br />&nbsp;";
 
 

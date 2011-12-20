@@ -37,10 +37,11 @@ class JCategoriesMatieresClassesTableMap extends TableMap
 		$this->setClassname('JCategoriesMatieresClasses');
 		$this->setPackage('gepi');
 		$this->setUseIdGenerator(false);
+		$this->setIsCrossRef(true);
 		// columns
 		$this->addForeignPrimaryKey('CATEGORIE_ID', 'CategorieId', 'INTEGER' , 'matieres_categories', 'ID', true, 11, null);
 		$this->addForeignPrimaryKey('CLASSE_ID', 'ClasseId', 'INTEGER' , 'classes', 'ID', true, 11, null);
-		$this->addColumn('AFFICHE_MOYENNE', 'AfficheMoyenne', 'BOOLEAN', false, null, false);
+		$this->addColumn('AFFICHE_MOYENNE', 'AfficheMoyenne', 'BOOLEAN', false, 1, false);
 		$this->addColumn('PRIORITY', 'Priority', 'INTEGER', true, 6, null);
 		// validators
 	} // initialize()

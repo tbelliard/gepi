@@ -24,7 +24,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'AbsenceEleveTraitementTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 10;
 
@@ -66,7 +66,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-	
+
 	/**
 	 * An identiy map to hold any loaded instances of AbsenceEleveTraitement objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -401,10 +401,10 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in JTraitementSaisieElevePeer instance pool, 
+		// Invalidate objects in JTraitementSaisieElevePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JTraitementSaisieElevePeer::clearInstancePool();
-		// Invalidate objects in AbsenceEleveNotificationPeer instance pool, 
+		// Invalidate objects in AbsenceEleveNotificationPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		AbsenceEleveNotificationPeer::clearInstancePool();
 	}
@@ -429,7 +429,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -526,9 +526,9 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -582,9 +582,9 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -638,9 +638,9 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -694,9 +694,9 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -750,9 +750,9 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1166,9 +1166,9 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1388,7 +1388,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(AbsenceEleveTraitementPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1396,9 +1396,9 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1448,7 +1448,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(AbsenceEleveTraitementPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1456,9 +1456,9 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1510,7 +1510,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(AbsenceEleveTraitementPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1518,9 +1518,9 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1572,7 +1572,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(AbsenceEleveTraitementPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1580,9 +1580,9 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1634,7 +1634,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(AbsenceEleveTraitementPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1642,9 +1642,9 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -2773,19 +2773,19 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		if ($values instanceof Criteria) {
 			// rename for clarity
 			$selectCriteria = clone $values;
-		} elseif ($values instanceof AbsenceEleveTraitement) {
+	 	} elseif ($values instanceof AbsenceEleveTraitement) {
 			// create criteria based on pk values
 			$selectCriteria = $values->buildPkeyCriteria();
 		} else {
 			// it must be the primary key
 			$selectCriteria = new Criteria(self::DATABASE_NAME);
-			$selectCriteria->add(AbsenceEleveTraitementPeer::ID, (array) $values, Criteria::IN);
+	 		$selectCriteria->add(AbsenceEleveTraitementPeer::ID, (array) $values, Criteria::IN);
 		}
 		// Set the correct dbName
 		$selectCriteria->setDbName(AbsenceEleveTraitementPeer::DATABASE_NAME);
 		$updateCriteria = new Criteria(self::DATABASE_NAME);
-		$updateCriteria->add(AbsenceEleveTraitementPeer::DELETED_AT, time());
-		return BasePeer::doUpdate($selectCriteria, $updateCriteria, $con);
+	    $updateCriteria->add(AbsenceEleveTraitementPeer::DELETED_AT, time());
+	 	return BasePeer::doUpdate($selectCriteria, $updateCriteria, $con);
 	}
 	
 	/**
@@ -2804,7 +2804,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 			return AbsenceEleveTraitementPeer::doSoftDelete($values, $con);
 		} else {
 			return AbsenceEleveTraitementPeer::doForceDelete($values, $con);
-		} 
+		}
 	}
 	/**
 	 * Method to soft delete all rows from the a_traitements table.
@@ -2841,7 +2841,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 			return AbsenceEleveTraitementPeer::doSoftDeleteAll($con);
 		} else {
 			return AbsenceEleveTraitementPeer::doForceDeleteAll($con);
-		} 
+		}
 	}
 
 } // BaseAbsenceEleveTraitementPeer

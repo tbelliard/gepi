@@ -27,7 +27,7 @@ $action = isset($_POST["action"]) ? $_POST["action"] :(isset($_GET["action"]) ? 
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
 // Dans le cas ou on poste un message, pas de traitement anti_inject
-// Pour ne pas interférer avec fckeditor
+// Pour ne pas interférer avec ckeditor
 if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) and isset($_POST['ok']))
     $traite_anti_inject = 'no';
 
@@ -44,7 +44,7 @@ if ($resultat_session == 'c') {
     header("Location: ../logout.php?auto=1");
     die();
 }
-include("../fckeditor/fckeditor.php") ;
+include("../ckeditor/ckeditor.php") ;
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -503,12 +503,9 @@ echo "<tr><td  colspan=\"4\">\n";
 
 echo "<i>Mise en forme du message :</i>\n";
 
-$oFCKeditor = new FCKeditor('message') ;
-$oFCKeditor->BasePath = '../fckeditor/' ;  // '/FCKeditor/' is the default value.
-$oFCKeditor->Config['DefaultLanguage']      = 'fr' ;
-$oFCKeditor->ToolbarSet = 'Basic' ;
-$oFCKeditor->Value      = $contenu ;
-$oFCKeditor->Create() ;
+$oCKeditor = new CKeditor() ;
+$oCKeditor->BasePath = '../ckeditor/' ;
+$oCKeditor->editor('message',$contenu) ;
 
 echo "</td></tr></table>\n";
 echo "</form></td></tr></table>\n";

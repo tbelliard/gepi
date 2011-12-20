@@ -24,7 +24,7 @@
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) {$traite_anti_inject = "yes";}
 
 // Dans le cas ou on poste une notice ou un devoir, pas de traitement anti_inject
-// Pour ne pas interférer avec fckeditor
+// Pour ne pas interférer avec ckeditor
 if (isset($_POST['notes'])) {$traite_anti_inject = 'no';}
 
 $filtrage_extensions_fichiers_table_ct_types_documents='y';
@@ -33,7 +33,7 @@ $filtrage_extensions_fichiers_table_ct_types_documents='y';
 require_once("../lib/initialisations.inc.php");
 require_once("../lib/transform_functions.php");
 require_once("../public/lib/functions.inc");
-include("../fckeditor/fckeditor.php") ;
+include("../ckeditor/ckeditor.php") ;
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -1168,13 +1168,10 @@ echo "\n";
 ?>
 <tr><td colspan="4">
 <?php
-// lancement de FCKeditor
-$oFCKeditor = new FCKeditor('notes') ;
-$oFCKeditor->BasePath = '../fckeditor/' ;
-$oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
-$oFCKeditor->ToolbarSet = 'Basic' ;
-$oFCKeditor->Value = $contenu ;
-$oFCKeditor->Create() ;
+// lancement de CKeditor
+$oCKeditor = new CKeditor() ;
+$oCKeditor->BasePath = '../ckeditor/' ;
+$oCKeditor->editor('notes',$contenu) ;
 
 //echo "<a href=\"#\" onclick=\"javascript: document.getElementById('notes').value='TRUC'; return false;\">CLIC</a>";
 //echo "<a href=\"#\" onclick=\"javascript: alert(document.getElementById('notes').value); return false;\">CLOC</a>";

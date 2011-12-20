@@ -30,7 +30,7 @@ class PropelXMLParser extends PropelParser
 	{
 		$rootNode = $this->getRootNode($rootElementName);
 		$this->arrayToDOM($array, $rootNode, $charset, false);
-		
+
 		return $rootNode->ownerDocument->saveXML();
 	}
 
@@ -38,10 +38,10 @@ class PropelXMLParser extends PropelParser
 	{
 		$rootNode = $this->getRootNode($rootElementName);
 		$this->arrayToDOM($array, $rootNode, $charset, true);
-		
+
 		return $rootNode->ownerDocument->saveXML();
 	}
-	
+
 	/**
 	 * Create a DOMDocument and get the root DOMNode using a root element name
 	 *
@@ -56,7 +56,7 @@ class PropelXMLParser extends PropelParser
 		$xml->formatOutput = true;
 		$rootElement = $xml->createElement($rootElementName);
 		$xml->appendChild($rootElement);
-		
+
 		return $rootElement;
 	}
 
@@ -88,6 +88,15 @@ class PropelXMLParser extends PropelParser
 		return $this->listFromArray($array, $rootElementName, $charset);
 	}
 
+
+	/**
+ 	 * @param  array $array
+	 * @param  DOMElement $rootElement
+	 * @param  string $charset
+	 * @param  boolean $removeNumbersFromKeys
+	 *
+	 * @return DOMElement
+	 */
 	protected function arrayToDOM($array, $rootElement, $charset = null, $removeNumbersFromKeys = false)
 	{
 		foreach ($array as $key => $value) {
@@ -116,7 +125,7 @@ class PropelXMLParser extends PropelParser
 
 		return $rootElement;
 	}
-    
+
 	/**
 	 * Converts data from XML to an associative array.
 	 *
@@ -141,7 +150,11 @@ class PropelXMLParser extends PropelParser
 	{
 		return $this->toArray($data);
 	}
-	
+
+	/**
+	 * @param  DOMNode $data
+	 * @return array
+	 */
 	protected function convertDOMElementToArray(DOMNode $data)
 	{
 		$array = array();
@@ -176,6 +189,10 @@ class PropelXMLParser extends PropelParser
 		return $array;
 	}
 
+	/**
+	 * @param  DomNode $node
+	 * @return boolean
+	 */
 	protected function hasOnlyTextNodes(DomNode $node)
 	{
 		foreach ($node->childNodes as $childNode) {

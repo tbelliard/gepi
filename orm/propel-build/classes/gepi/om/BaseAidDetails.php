@@ -227,6 +227,42 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	protected $alreadyInValidation = false;
 
 	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $utilisateurProfessionnelsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $elevesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $jAidUtilisateursProfessionnelssScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $jAidElevessScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $absenceEleveSaisiesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $edtEmplacementCourssScheduledForDeletion = null;
+
+	/**
 	 * Applies default values to this object.
 	 * This method should be called from the object's constructor (or
 	 * equivalent initialization method).
@@ -527,7 +563,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->nom !== $v || $this->isNew()) {
+		if ($this->nom !== $v) {
 			$this->nom = $v;
 			$this->modifiedColumns[] = AidDetailsPeer::NOM;
 		}
@@ -547,7 +583,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->numero !== $v || $this->isNew()) {
+		if ($this->numero !== $v) {
 			$this->numero = $v;
 			$this->modifiedColumns[] = AidDetailsPeer::NUMERO;
 		}
@@ -567,7 +603,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 			$v = (int) $v;
 		}
 
-		if ($this->indice_aid !== $v || $this->isNew()) {
+		if ($this->indice_aid !== $v) {
 			$this->indice_aid = $v;
 			$this->modifiedColumns[] = AidDetailsPeer::INDICE_AID;
 		}
@@ -871,7 +907,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->eleve_peut_modifier !== $v || $this->isNew()) {
+		if ($this->eleve_peut_modifier !== $v) {
 			$this->eleve_peut_modifier = $v;
 			$this->modifiedColumns[] = AidDetailsPeer::ELEVE_PEUT_MODIFIER;
 		}
@@ -891,7 +927,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->prof_peut_modifier !== $v || $this->isNew()) {
+		if ($this->prof_peut_modifier !== $v) {
 			$this->prof_peut_modifier = $v;
 			$this->modifiedColumns[] = AidDetailsPeer::PROF_PEUT_MODIFIER;
 		}
@@ -911,7 +947,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->cpe_peut_modifier !== $v || $this->isNew()) {
+		if ($this->cpe_peut_modifier !== $v) {
 			$this->cpe_peut_modifier = $v;
 			$this->modifiedColumns[] = AidDetailsPeer::CPE_PEUT_MODIFIER;
 		}
@@ -931,7 +967,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->fiche_publique !== $v || $this->isNew()) {
+		if ($this->fiche_publique !== $v) {
 			$this->fiche_publique = $v;
 			$this->modifiedColumns[] = AidDetailsPeer::FICHE_PUBLIQUE;
 		}
@@ -951,7 +987,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->affiche_adresse1 !== $v || $this->isNew()) {
+		if ($this->affiche_adresse1 !== $v) {
 			$this->affiche_adresse1 = $v;
 			$this->modifiedColumns[] = AidDetailsPeer::AFFICHE_ADRESSE1;
 		}
@@ -971,7 +1007,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->en_construction !== $v || $this->isNew()) {
+		if ($this->en_construction !== $v) {
 			$this->en_construction = $v;
 			$this->modifiedColumns[] = AidDetailsPeer::EN_CONSTRUCTION;
 		}
@@ -1179,18 +1215,18 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = AidDetailsQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				AidDetailsQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -1242,7 +1278,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -1277,19 +1313,54 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 				$this->setAidConfiguration($this->aAidConfiguration);
 			}
 
-
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows += AidDetailsPeer::doUpdate($this, $con);
+					$this->doUpdate($con);
+				}
+				$affectedRows += 1;
+				$this->resetModified();
+			}
+
+			if ($this->utilisateurProfessionnelsScheduledForDeletion !== null) {
+				if (!$this->utilisateurProfessionnelsScheduledForDeletion->isEmpty()) {
+					JAidUtilisateursProfessionnelsQuery::create()
+						->filterByPrimaryKeys($this->utilisateurProfessionnelsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->utilisateurProfessionnelsScheduledForDeletion = null;
 				}
 
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+				foreach ($this->getUtilisateurProfessionnels() as $utilisateurProfessionnel) {
+					if ($utilisateurProfessionnel->isModified()) {
+						$utilisateurProfessionnel->save($con);
+					}
+				}
+			}
+
+			if ($this->elevesScheduledForDeletion !== null) {
+				if (!$this->elevesScheduledForDeletion->isEmpty()) {
+					JAidElevesQuery::create()
+						->filterByPrimaryKeys($this->elevesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->elevesScheduledForDeletion = null;
+				}
+
+				foreach ($this->getEleves() as $eleve) {
+					if ($eleve->isModified()) {
+						$eleve->save($con);
+					}
+				}
+			}
+
+			if ($this->jAidUtilisateursProfessionnelssScheduledForDeletion !== null) {
+				if (!$this->jAidUtilisateursProfessionnelssScheduledForDeletion->isEmpty()) {
+					JAidUtilisateursProfessionnelsQuery::create()
+						->filterByPrimaryKeys($this->jAidUtilisateursProfessionnelssScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->jAidUtilisateursProfessionnelssScheduledForDeletion = null;
+				}
 			}
 
 			if ($this->collJAidUtilisateursProfessionnelss !== null) {
@@ -1297,6 +1368,15 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->jAidElevessScheduledForDeletion !== null) {
+				if (!$this->jAidElevessScheduledForDeletion->isEmpty()) {
+					JAidElevesQuery::create()
+						->filterByPrimaryKeys($this->jAidElevessScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->jAidElevessScheduledForDeletion = null;
 				}
 			}
 
@@ -1308,11 +1388,29 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->absenceEleveSaisiesScheduledForDeletion !== null) {
+				if (!$this->absenceEleveSaisiesScheduledForDeletion->isEmpty()) {
+					AbsenceEleveSaisieQuery::create()
+						->filterByPrimaryKeys($this->absenceEleveSaisiesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->absenceEleveSaisiesScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collAbsenceEleveSaisies !== null) {
 				foreach ($this->collAbsenceEleveSaisies as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->edtEmplacementCourssScheduledForDeletion !== null) {
+				if (!$this->edtEmplacementCourssScheduledForDeletion->isEmpty()) {
+					EdtEmplacementCoursQuery::create()
+						->filterByPrimaryKeys($this->edtEmplacementCourssScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->edtEmplacementCourssScheduledForDeletion = null;
 				}
 			}
 
@@ -1329,6 +1427,201 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(AidDetailsPeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = 'ID';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::NOM)) {
+			$modifiedColumns[':p' . $index++]  = 'NOM';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::NUMERO)) {
+			$modifiedColumns[':p' . $index++]  = 'NUMERO';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::INDICE_AID)) {
+			$modifiedColumns[':p' . $index++]  = 'INDICE_AID';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::PERSO1)) {
+			$modifiedColumns[':p' . $index++]  = 'PERSO1';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::PERSO2)) {
+			$modifiedColumns[':p' . $index++]  = 'PERSO2';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::PERSO3)) {
+			$modifiedColumns[':p' . $index++]  = 'PERSO3';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::PRODUCTIONS)) {
+			$modifiedColumns[':p' . $index++]  = 'PRODUCTIONS';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::RESUME)) {
+			$modifiedColumns[':p' . $index++]  = 'RESUME';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::FAMILLE)) {
+			$modifiedColumns[':p' . $index++]  = 'FAMILLE';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::MOTS_CLES)) {
+			$modifiedColumns[':p' . $index++]  = 'MOTS_CLES';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::ADRESSE1)) {
+			$modifiedColumns[':p' . $index++]  = 'ADRESSE1';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::ADRESSE2)) {
+			$modifiedColumns[':p' . $index++]  = 'ADRESSE2';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::PUBLIC_DESTINATAIRE)) {
+			$modifiedColumns[':p' . $index++]  = 'PUBLIC_DESTINATAIRE';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::CONTACTS)) {
+			$modifiedColumns[':p' . $index++]  = 'CONTACTS';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::DIVERS)) {
+			$modifiedColumns[':p' . $index++]  = 'DIVERS';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::MATIERE1)) {
+			$modifiedColumns[':p' . $index++]  = 'MATIERE1';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::MATIERE2)) {
+			$modifiedColumns[':p' . $index++]  = 'MATIERE2';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::ELEVE_PEUT_MODIFIER)) {
+			$modifiedColumns[':p' . $index++]  = 'ELEVE_PEUT_MODIFIER';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::PROF_PEUT_MODIFIER)) {
+			$modifiedColumns[':p' . $index++]  = 'PROF_PEUT_MODIFIER';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::CPE_PEUT_MODIFIER)) {
+			$modifiedColumns[':p' . $index++]  = 'CPE_PEUT_MODIFIER';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::FICHE_PUBLIQUE)) {
+			$modifiedColumns[':p' . $index++]  = 'FICHE_PUBLIQUE';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::AFFICHE_ADRESSE1)) {
+			$modifiedColumns[':p' . $index++]  = 'AFFICHE_ADRESSE1';
+		}
+		if ($this->isColumnModified(AidDetailsPeer::EN_CONSTRUCTION)) {
+			$modifiedColumns[':p' . $index++]  = 'EN_CONSTRUCTION';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO aid (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case 'ID':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_STR);
+						break;
+					case 'NOM':
+						$stmt->bindValue($identifier, $this->nom, PDO::PARAM_STR);
+						break;
+					case 'NUMERO':
+						$stmt->bindValue($identifier, $this->numero, PDO::PARAM_STR);
+						break;
+					case 'INDICE_AID':
+						$stmt->bindValue($identifier, $this->indice_aid, PDO::PARAM_INT);
+						break;
+					case 'PERSO1':
+						$stmt->bindValue($identifier, $this->perso1, PDO::PARAM_STR);
+						break;
+					case 'PERSO2':
+						$stmt->bindValue($identifier, $this->perso2, PDO::PARAM_STR);
+						break;
+					case 'PERSO3':
+						$stmt->bindValue($identifier, $this->perso3, PDO::PARAM_STR);
+						break;
+					case 'PRODUCTIONS':
+						$stmt->bindValue($identifier, $this->productions, PDO::PARAM_STR);
+						break;
+					case 'RESUME':
+						$stmt->bindValue($identifier, $this->resume, PDO::PARAM_STR);
+						break;
+					case 'FAMILLE':
+						$stmt->bindValue($identifier, $this->famille, PDO::PARAM_INT);
+						break;
+					case 'MOTS_CLES':
+						$stmt->bindValue($identifier, $this->mots_cles, PDO::PARAM_STR);
+						break;
+					case 'ADRESSE1':
+						$stmt->bindValue($identifier, $this->adresse1, PDO::PARAM_STR);
+						break;
+					case 'ADRESSE2':
+						$stmt->bindValue($identifier, $this->adresse2, PDO::PARAM_STR);
+						break;
+					case 'PUBLIC_DESTINATAIRE':
+						$stmt->bindValue($identifier, $this->public_destinataire, PDO::PARAM_STR);
+						break;
+					case 'CONTACTS':
+						$stmt->bindValue($identifier, $this->contacts, PDO::PARAM_STR);
+						break;
+					case 'DIVERS':
+						$stmt->bindValue($identifier, $this->divers, PDO::PARAM_STR);
+						break;
+					case 'MATIERE1':
+						$stmt->bindValue($identifier, $this->matiere1, PDO::PARAM_STR);
+						break;
+					case 'MATIERE2':
+						$stmt->bindValue($identifier, $this->matiere2, PDO::PARAM_STR);
+						break;
+					case 'ELEVE_PEUT_MODIFIER':
+						$stmt->bindValue($identifier, $this->eleve_peut_modifier, PDO::PARAM_STR);
+						break;
+					case 'PROF_PEUT_MODIFIER':
+						$stmt->bindValue($identifier, $this->prof_peut_modifier, PDO::PARAM_STR);
+						break;
+					case 'CPE_PEUT_MODIFIER':
+						$stmt->bindValue($identifier, $this->cpe_peut_modifier, PDO::PARAM_STR);
+						break;
+					case 'FICHE_PUBLIQUE':
+						$stmt->bindValue($identifier, $this->fiche_publique, PDO::PARAM_STR);
+						break;
+					case 'AFFICHE_ADRESSE1':
+						$stmt->bindValue($identifier, $this->affiche_adresse1, PDO::PARAM_STR);
+						break;
+					case 'EN_CONSTRUCTION':
+						$stmt->bindValue($identifier, $this->en_construction, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -2013,7 +2306,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * Avoids crafting an 'init[$relationName]s' method name
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -2104,6 +2397,30 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of JAidUtilisateursProfessionnels objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $jAidUtilisateursProfessionnelss A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setJAidUtilisateursProfessionnelss(PropelCollection $jAidUtilisateursProfessionnelss, PropelPDO $con = null)
+	{
+		$this->jAidUtilisateursProfessionnelssScheduledForDeletion = $this->getJAidUtilisateursProfessionnelss(new Criteria(), $con)->diff($jAidUtilisateursProfessionnelss);
+
+		foreach ($jAidUtilisateursProfessionnelss as $jAidUtilisateursProfessionnels) {
+			// Fix issue with collection modified by reference
+			if ($jAidUtilisateursProfessionnels->isNew()) {
+				$jAidUtilisateursProfessionnels->setAidDetails($this);
+			}
+			$this->addJAidUtilisateursProfessionnels($jAidUtilisateursProfessionnels);
+		}
+
+		$this->collJAidUtilisateursProfessionnelss = $jAidUtilisateursProfessionnelss;
+	}
+
+	/**
 	 * Returns the number of related JAidUtilisateursProfessionnels objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2136,8 +2453,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	 * through the JAidUtilisateursProfessionnels foreign key attribute.
 	 *
 	 * @param      JAidUtilisateursProfessionnels $l JAidUtilisateursProfessionnels
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     AidDetails The current object (for fluent API support)
 	 */
 	public function addJAidUtilisateursProfessionnels(JAidUtilisateursProfessionnels $l)
 	{
@@ -2145,9 +2461,19 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 			$this->initJAidUtilisateursProfessionnelss();
 		}
 		if (!$this->collJAidUtilisateursProfessionnelss->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collJAidUtilisateursProfessionnelss[]= $l;
-			$l->setAidDetails($this);
+			$this->doAddJAidUtilisateursProfessionnels($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	JAidUtilisateursProfessionnels $jAidUtilisateursProfessionnels The jAidUtilisateursProfessionnels object to add.
+	 */
+	protected function doAddJAidUtilisateursProfessionnels($jAidUtilisateursProfessionnels)
+	{
+		$this->collJAidUtilisateursProfessionnelss[]= $jAidUtilisateursProfessionnels;
+		$jAidUtilisateursProfessionnels->setAidDetails($this);
 	}
 
 
@@ -2244,6 +2570,30 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of JAidEleves objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $jAidElevess A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setJAidElevess(PropelCollection $jAidElevess, PropelPDO $con = null)
+	{
+		$this->jAidElevessScheduledForDeletion = $this->getJAidElevess(new Criteria(), $con)->diff($jAidElevess);
+
+		foreach ($jAidElevess as $jAidEleves) {
+			// Fix issue with collection modified by reference
+			if ($jAidEleves->isNew()) {
+				$jAidEleves->setAidDetails($this);
+			}
+			$this->addJAidEleves($jAidEleves);
+		}
+
+		$this->collJAidElevess = $jAidElevess;
+	}
+
+	/**
 	 * Returns the number of related JAidEleves objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2276,8 +2626,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	 * through the JAidEleves foreign key attribute.
 	 *
 	 * @param      JAidEleves $l JAidEleves
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     AidDetails The current object (for fluent API support)
 	 */
 	public function addJAidEleves(JAidEleves $l)
 	{
@@ -2285,9 +2634,19 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 			$this->initJAidElevess();
 		}
 		if (!$this->collJAidElevess->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collJAidElevess[]= $l;
-			$l->setAidDetails($this);
+			$this->doAddJAidEleves($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	JAidEleves $jAidEleves The jAidEleves object to add.
+	 */
+	protected function doAddJAidEleves($jAidEleves)
+	{
+		$this->collJAidElevess[]= $jAidEleves;
+		$jAidEleves->setAidDetails($this);
 	}
 
 
@@ -2384,6 +2743,30 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of AbsenceEleveSaisie objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $absenceEleveSaisies A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setAbsenceEleveSaisies(PropelCollection $absenceEleveSaisies, PropelPDO $con = null)
+	{
+		$this->absenceEleveSaisiesScheduledForDeletion = $this->getAbsenceEleveSaisies(new Criteria(), $con)->diff($absenceEleveSaisies);
+
+		foreach ($absenceEleveSaisies as $absenceEleveSaisie) {
+			// Fix issue with collection modified by reference
+			if ($absenceEleveSaisie->isNew()) {
+				$absenceEleveSaisie->setAidDetails($this);
+			}
+			$this->addAbsenceEleveSaisie($absenceEleveSaisie);
+		}
+
+		$this->collAbsenceEleveSaisies = $absenceEleveSaisies;
+	}
+
+	/**
 	 * Returns the number of related AbsenceEleveSaisie objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2416,8 +2799,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	 * through the AbsenceEleveSaisie foreign key attribute.
 	 *
 	 * @param      AbsenceEleveSaisie $l AbsenceEleveSaisie
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     AidDetails The current object (for fluent API support)
 	 */
 	public function addAbsenceEleveSaisie(AbsenceEleveSaisie $l)
 	{
@@ -2425,9 +2807,19 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 			$this->initAbsenceEleveSaisies();
 		}
 		if (!$this->collAbsenceEleveSaisies->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collAbsenceEleveSaisies[]= $l;
-			$l->setAidDetails($this);
+			$this->doAddAbsenceEleveSaisie($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	AbsenceEleveSaisie $absenceEleveSaisie The absenceEleveSaisie object to add.
+	 */
+	protected function doAddAbsenceEleveSaisie($absenceEleveSaisie)
+	{
+		$this->collAbsenceEleveSaisies[]= $absenceEleveSaisie;
+		$absenceEleveSaisie->setAidDetails($this);
 	}
 
 
@@ -2674,6 +3066,30 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of EdtEmplacementCours objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $edtEmplacementCourss A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setEdtEmplacementCourss(PropelCollection $edtEmplacementCourss, PropelPDO $con = null)
+	{
+		$this->edtEmplacementCourssScheduledForDeletion = $this->getEdtEmplacementCourss(new Criteria(), $con)->diff($edtEmplacementCourss);
+
+		foreach ($edtEmplacementCourss as $edtEmplacementCours) {
+			// Fix issue with collection modified by reference
+			if ($edtEmplacementCours->isNew()) {
+				$edtEmplacementCours->setAidDetails($this);
+			}
+			$this->addEdtEmplacementCours($edtEmplacementCours);
+		}
+
+		$this->collEdtEmplacementCourss = $edtEmplacementCourss;
+	}
+
+	/**
 	 * Returns the number of related EdtEmplacementCours objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2706,8 +3122,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	 * through the EdtEmplacementCours foreign key attribute.
 	 *
 	 * @param      EdtEmplacementCours $l EdtEmplacementCours
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     AidDetails The current object (for fluent API support)
 	 */
 	public function addEdtEmplacementCours(EdtEmplacementCours $l)
 	{
@@ -2715,9 +3130,19 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 			$this->initEdtEmplacementCourss();
 		}
 		if (!$this->collEdtEmplacementCourss->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collEdtEmplacementCourss[]= $l;
-			$l->setAidDetails($this);
+			$this->doAddEdtEmplacementCours($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	EdtEmplacementCours $edtEmplacementCours The edtEmplacementCours object to add.
+	 */
+	protected function doAddEdtEmplacementCours($edtEmplacementCours)
+	{
+		$this->collEdtEmplacementCourss[]= $edtEmplacementCours;
+		$edtEmplacementCours->setAidDetails($this);
 	}
 
 
@@ -2909,6 +3334,37 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of UtilisateurProfessionnel objects related by a many-to-many relationship
+	 * to the current object by way of the j_aid_utilisateurs cross-reference table.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $utilisateurProfessionnels A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setUtilisateurProfessionnels(PropelCollection $utilisateurProfessionnels, PropelPDO $con = null)
+	{
+		$jAidUtilisateursProfessionnelss = JAidUtilisateursProfessionnelsQuery::create()
+			->filterByUtilisateurProfessionnel($utilisateurProfessionnels)
+			->filterByAidDetails($this)
+			->find($con);
+
+		$this->utilisateurProfessionnelsScheduledForDeletion = $this->getJAidUtilisateursProfessionnelss()->diff($jAidUtilisateursProfessionnelss);
+		$this->collJAidUtilisateursProfessionnelss = $jAidUtilisateursProfessionnelss;
+
+		foreach ($utilisateurProfessionnels as $utilisateurProfessionnel) {
+			// Fix issue with collection modified by reference
+			if ($utilisateurProfessionnel->isNew()) {
+				$this->doAddUtilisateurProfessionnel($utilisateurProfessionnel);
+			} else {
+				$this->addUtilisateurProfessionnel($utilisateurProfessionnel);
+			}
+		}
+
+		$this->collUtilisateurProfessionnels = $utilisateurProfessionnels;
+	}
+
+	/**
 	 * Gets the number of UtilisateurProfessionnel objects related by a many-to-many relationship
 	 * to the current object by way of the j_aid_utilisateurs cross-reference table.
 	 *
@@ -2950,12 +3406,20 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 			$this->initUtilisateurProfessionnels();
 		}
 		if (!$this->collUtilisateurProfessionnels->contains($utilisateurProfessionnel)) { // only add it if the **same** object is not already associated
-			$jAidUtilisateursProfessionnels = new JAidUtilisateursProfessionnels();
-			$jAidUtilisateursProfessionnels->setUtilisateurProfessionnel($utilisateurProfessionnel);
-			$this->addJAidUtilisateursProfessionnels($jAidUtilisateursProfessionnels);
+			$this->doAddUtilisateurProfessionnel($utilisateurProfessionnel);
 
 			$this->collUtilisateurProfessionnels[]= $utilisateurProfessionnel;
 		}
+	}
+
+	/**
+	 * @param	UtilisateurProfessionnel $utilisateurProfessionnel The utilisateurProfessionnel object to add.
+	 */
+	protected function doAddUtilisateurProfessionnel($utilisateurProfessionnel)
+	{
+		$jAidUtilisateursProfessionnels = new JAidUtilisateursProfessionnels();
+		$jAidUtilisateursProfessionnels->setUtilisateurProfessionnel($utilisateurProfessionnel);
+		$this->addJAidUtilisateursProfessionnels($jAidUtilisateursProfessionnels);
 	}
 
 	/**
@@ -3022,6 +3486,37 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of Eleve objects related by a many-to-many relationship
+	 * to the current object by way of the j_aid_eleves cross-reference table.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $eleves A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setEleves(PropelCollection $eleves, PropelPDO $con = null)
+	{
+		$jAidElevess = JAidElevesQuery::create()
+			->filterByEleve($eleves)
+			->filterByAidDetails($this)
+			->find($con);
+
+		$this->elevesScheduledForDeletion = $this->getJAidElevess()->diff($jAidElevess);
+		$this->collJAidElevess = $jAidElevess;
+
+		foreach ($eleves as $eleve) {
+			// Fix issue with collection modified by reference
+			if ($eleve->isNew()) {
+				$this->doAddEleve($eleve);
+			} else {
+				$this->addEleve($eleve);
+			}
+		}
+
+		$this->collEleves = $eleves;
+	}
+
+	/**
 	 * Gets the number of Eleve objects related by a many-to-many relationship
 	 * to the current object by way of the j_aid_eleves cross-reference table.
 	 *
@@ -3063,12 +3558,20 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 			$this->initEleves();
 		}
 		if (!$this->collEleves->contains($eleve)) { // only add it if the **same** object is not already associated
-			$jAidEleves = new JAidEleves();
-			$jAidEleves->setEleve($eleve);
-			$this->addJAidEleves($jAidEleves);
+			$this->doAddEleve($eleve);
 
 			$this->collEleves[]= $eleve;
 		}
+	}
+
+	/**
+	 * @param	Eleve $eleve The eleve object to add.
+	 */
+	protected function doAddEleve($eleve)
+	{
+		$jAidEleves = new JAidEleves();
+		$jAidEleves->setEleve($eleve);
+		$this->addJAidEleves($jAidEleves);
 	}
 
 	/**
@@ -3188,25 +3691,6 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(AidDetailsPeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseAidDetails

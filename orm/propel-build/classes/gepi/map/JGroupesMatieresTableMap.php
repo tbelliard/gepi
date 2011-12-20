@@ -37,6 +37,7 @@ class JGroupesMatieresTableMap extends TableMap
 		$this->setClassname('JGroupesMatieres');
 		$this->setPackage('gepi');
 		$this->setUseIdGenerator(false);
+		$this->setIsCrossRef(true);
 		// columns
 		$this->addForeignPrimaryKey('ID_GROUPE', 'IdGroupe', 'INTEGER' , 'groupes', 'ID', true, null, null);
 		$this->addForeignPrimaryKey('ID_MATIERE', 'IdMatiere', 'VARCHAR' , 'matieres', 'MATIERE', true, 255, null);
