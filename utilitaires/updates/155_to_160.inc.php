@@ -23,7 +23,7 @@
  * @see msj_present()
  */
 
-$result .= "<h3 class='titreMaJ'>Mise à jour vers la version courante :</h3>";
+$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.0 </h3>";
 
 require 'updates/ISO_to_UTF8.inc.php';
 
