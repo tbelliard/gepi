@@ -229,7 +229,7 @@ echo "<div class=\"centre_table\">\n";
 			}
 			if ($selected_eleve_login != "") {
 				echo make_matiere_select_html('consultation.php', $selected_eleve_login, $id_groupe, $year, $month, $day);
-				echo "<a href='see_all.php?&year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=Toutes_matieres'>Voir l'ensemble du cahier de textes</a>";
+				echo "<a href='see_all.php?&year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=$selected_eleve_login&amp;id_groupe=Toutes_matieres'>Voir l'ensemble du cahier de textes</a>";
 			}
 		echo "</div>\n";
 		//echo "<td align=\"right\">\n";
