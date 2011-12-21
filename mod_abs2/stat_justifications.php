@@ -175,6 +175,7 @@ function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut, 
 			->useJTraitementSaisieEleveQuery()
 			  ->useAbsenceEleveTraitementQuery()
 				->filterByAJustificationId($justifie->getid())
+						->filterByDeletedAt(NULL)
 			  ->endUse()
 			->endUse()
 			;
