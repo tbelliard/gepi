@@ -212,23 +212,23 @@ if ($affichage == 'html') {
     echo '<thead>';
     echo '<tr>';
 
-    echo '<th style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
+    echo '<th class="text" style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
     echo 'Nom Prénom';
     echo '</th>';
 
-    echo '<th style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
+    echo '<th class="text" style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
     echo 'Classe';
     echo '</th>';
 
-    echo '<th style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
+    echo '<th class="number" style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
     echo 'nbre de demi-journées d\'absence';
     echo '</th>';
 
-    echo '<th style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
+    echo '<th class="number" style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
     echo 'non justifiees';
     echo '</th>';
 
-    echo '<th style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
+    echo '<th class="number" style="border-width:1px; border-style: inset;" title ="Cliquez pour trier sur la colonne">';
     echo 'nbre de retards';
     echo '</th>';
 
