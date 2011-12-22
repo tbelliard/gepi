@@ -127,6 +127,21 @@ class AbsenceEleveSaisieHelperTest extends GepiEmptyTestBase
         $saisie_col = new PropelCollection();
         $saisie_col->append($saisie);
         $this->assertEquals(2,AbsencesEleveSaisieHelper::compte_demi_journee($saisie_col)->count());
+
+        //on va tester les effets de borne d'intervalle pour la bascule de midi
+        saveSetting('abs2_heure_demi_journee','11:55');
+        $saisie_col = new PropelCollection();
+        $saisie = new AbsenceEleveSaisie();
+        $saisie->setDebutAbs('2010-11-05 11:55:00');//cette saisie va compter pour une après midi
+        $saisie->setFinAbs('2010-11-05 12:25:00');
+        $saisie_col->append($saisie);
+        $this->assertEquals('12:00',AbsencesEleveSaisieHelper::compte_demi_journee($saisie_col)->getFirst()->format('H:i'));
+        $saisie_col = new PropelCollection();
+        $saisie = new AbsenceEleveSaisie();
+        $saisie->setDebutAbs('2010-11-05 11:50:00');
+        $saisie->setFinAbs('2010-11-05 12:25:00');
+        $saisie_col->append($saisie);
+        $this->assertEquals('00:00',AbsencesEleveSaisieHelper::compte_demi_journee($saisie_col)->getFirst()->format('H:i'));
 	}
 	
 }
