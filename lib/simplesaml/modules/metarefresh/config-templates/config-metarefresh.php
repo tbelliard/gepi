@@ -2,14 +2,45 @@
 
 $config = array(
 
+	/*
+	 * Global blacklist: entityIDs that should be excluded from ALL sets.
+	 */
+	#'blacklist' = array(
+	#	'http://my.own.uni/idp'
+	#),
+	
+	/*
+	 * Conditional GET requests
+	 * Efficient downloading so polling can be done more frequently.
+	 * Works for sources that send 'Last-Modified' or 'Etag' headers.
+	 * Note that the 'data' directory needs to be writable for this to work.
+	 */
+	#'conditionalGET'	=> TRUE,
+
 	'sets' => array(
 
 		'kalmar' => array(
 			'cron'		=> array('hourly'),
 			'sources'	=> array(
 				array(
-					'src' => 'https://kalmar.feide.no/simplesaml/module.php/aggregator/?id=kalmarcentral&mimetype=text/plain&exclude=norway',
-					'validateFingerprint' => '591d4b4670463eeda91fcc816dc0af2a092aa801',
+					/*
+					 * entityIDs that should be excluded from this src.
+					 */
+					#'blacklist' => array(
+					#	'http://some.other.uni/idp',
+					#),
+
+					/*
+					 * Whitelist: only keep these EntityIDs.
+					 */
+					#'whitelist' => array(
+					#	'http://some.uni/idp',
+					#	'http://some.other.uni/idp',
+					#),
+
+					#'conditionalGET' => TRUE,
+					'src' => 'https://kalmar2.org/simplesaml/module.php/aggregator/?id=kalmarcentral&set=saml2&exclude=norway',
+					'validateFingerprint' => '59:1D:4B:46:70:46:3E:ED:A9:1F:CC:81:6D:C0:AF:2A:09:2A:A8:01',
 					'template' => array(
 						'tags'	=> array('kalmar'),
 						'authproc' => array(

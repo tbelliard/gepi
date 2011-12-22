@@ -325,10 +325,33 @@ class SimpleSAML_IdP {
 			throw new SimpleSAML_Error_NoPassive('Passive authentication not supported.');
 		}
 
-		$state['IdPMetadata'] = $this->getConfig()->toArray();
-		$state['ReturnCallback'] = array('SimpleSAML_IdP', 'postAuth');
-
 		$this->authSource->login($state);
+	}
+
+
+	/**
+	 * Reuthenticate the user.
+	 *
+	 * This function reauthenticates an user with an existing session. This
+	 * gives the authentication source a chance to do additional work when
+	 * reauthenticating for SSO.
+	 *
+	 * Note: This function is not used when ForceAuthn=true.
+	 *
+	 * @param array &$state  The authentication request state.
+	 */
+	private function reauthenticate(array &$state) {
+
+		$sourceImpl = $this->authSource->getAuthSource();
+		if ($sourceImpl === NULL) {
+			/* Backwards-compatibility with non-authsource IdP. */
+			foreach ($this->authSource->getAuthDataArray() as $k => $v) {
+				$state[$k] = $v;
+			}
+			return;
+		}
+
+		$sourceImpl->reauthenticate($state);
 	}
 
 
@@ -356,19 +379,20 @@ class SimpleSAML_IdP {
 			/* Force authentication is in effect. */
 			$needAuth = TRUE;
 		} elseif (isset($state['saml:IDPList']) && sizeof($state['saml:IDPList']) > 0) {
-			$needAuth = TRUE;
+			$needAuth = !in_array($this->authSource->getAuthData('saml:sp:IdP'), $state['saml:IDPList'], TRUE);
 		} else {
 			$needAuth = !$this->isAuthenticated();
 		}
+
+		$state['IdPMetadata'] = $this->getConfig()->toArray();
+		$state['ReturnCallback'] = array('SimpleSAML_IdP', 'postAuth');
 
 		try {
 			if ($needAuth) {
 				$this->authenticate($state);
 				assert('FALSE');
 			} else {
-				foreach ($this->authSource->getAuthDataArray() as $k => $v) {
-					$state[$k] = $v;
-				}
+				$this->reauthenticate($state);
 			}
 			$this->postAuth($state);
 		} catch (SimpleSAML_Error_Exception $e) {
@@ -461,7 +485,7 @@ class SimpleSAML_IdP {
 	 *
 	 * @param string $assocId  The association that is terminated.
 	 * @param string|NULL $relayState  The RelayState from the start of the logout.
-	 * @param SimpleSAML_Error_Exception|NULL $error  The error that occured during session termination (if any).
+	 * @param SimpleSAML_Error_Exception|NULL $error  The error that occurred during session termination (if any).
 	 */
 	public function handleLogoutResponse($assocId, $relayState, SimpleSAML_Error_Exception $error = NULL) {
 		assert('is_string($assocId)');

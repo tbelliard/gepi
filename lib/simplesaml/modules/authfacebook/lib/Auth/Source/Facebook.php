@@ -14,15 +14,29 @@ class sspmod_authfacebook_Auth_Source_Facebook extends SimpleSAML_Auth_Source {
 	 */
 	const STAGE_INIT = 'facebook:init';
 
+
 	/**
 	 * The key of the AuthId field in the state.
 	 */
 	const AUTHID = 'facebook:AuthId';
 
 
+	/**
+	 * Facebook App ID or API Key
+	 */
 	private $api_key;
+
+
+	/**
+	 * Facebook App Secret
+	 */
 	private $secret;
 
+
+	/**
+	 * Which additional data permissions to request from user
+	 */
+	private $req_perms;
 
 
 	/**
@@ -38,18 +52,11 @@ class sspmod_authfacebook_Auth_Source_Facebook extends SimpleSAML_Auth_Source {
 		/* Call the parent constructor first, as required by the interface. */
 		parent::__construct($info, $config);
 
-		if (!array_key_exists('api_key', $config))
-			throw new Exception('Facebook authentication source is not properly configured: missing [api_key]');
+		$cfgParse = SimpleSAML_Configuration::loadFromArray($config, 'authsources[' . var_export($this->authId, TRUE) . ']');
 		
-		$this->api_key = $config['api_key'];
-		
-		if (!array_key_exists('secret', $config))
-			throw new Exception('Facebook authentication source is not properly configured: missing [secret]');
-
-		$this->secret = $config['secret'];
-
-		require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/extlibinc/facebook.php');
-
+		$this->api_key = $cfgParse->getString('api_key');
+		$this->secret = $cfgParse->getString('secret');
+		$this->req_perms = $cfgParse->getString('req_perms', NULL);
 	}
 
 
@@ -63,42 +70,59 @@ class sspmod_authfacebook_Auth_Source_Facebook extends SimpleSAML_Auth_Source {
 
 		/* We are going to need the authId in order to retrieve this authentication source later. */
 		$state[self::AUTHID] = $this->authId;
-		
 		$stateID = SimpleSAML_Auth_State::saveState($state, self::STAGE_INIT);
 		
-		SimpleSAML_Logger::debug('facebook auth state id = ' . $stateID);
+		$facebook = new sspmod_authfacebook_Facebook(array('appId' => $this->api_key, 'secret' => $this->secret), $state);
+		$facebook->clearAllPersistentData();
+
+		$linkback = SimpleSAML_Module::getModuleURL('authfacebook/linkback.php', array('AuthState' => $stateID));
+		$url = $facebook->getLoginUrl(array('redirect_uri' => $linkback, 'scope' => $this->req_perms));
+		SimpleSAML_Auth_State::saveState($state, self::STAGE_INIT);
+
+		SimpleSAML_Utilities::redirect($url);
+	}
 		
-		$facebook = new Facebook($this->api_key, $this->secret);		
-		$u = $facebook->require_login(SimpleSAML_Module::getModuleUrl('authfacebook') . '/linkback.php?next=' . $stateID);
-		# http://developers.facebook.com/documentation.php?v=1.0&method=users.getInfo
-		/* Causes an notice / warning...
-		if ($facebook->api_client->error_code) {
-			throw new Exception('Unable to load profile from facebook');
+
+	public function finalStep(&$state) {
+		assert('is_array($state)');
+
+		$facebook = new sspmod_authfacebook_Facebook(array('appId' => $this->api_key, 'secret' => $this->secret), $state);
+		$uid = $facebook->getUser();
+
+		if (isset($uid)) {
+			try {
+				$info = $facebook->api("/me");
+			} catch (FacebookApiException $e) {
+				throw new SimpleSAML_Error_AuthSource($this->authId, 'Error getting user profile.', $e);
+			}
 		}
-		*/
-		// http://developers.facebook.com/docs/reference/rest/users.getInfo
-		$info = $facebook->api_client->users_getInfo($u, array('uid', 'first_name', 'middle_name', 'last_name', 'name', 'locale', 'current_location', 'affiliations', 'pic_square', 'profile_url', 'sex', 'email', 'pic', 'username', 'about_me', 'status', 'profile_blurb'));
+
+		if (!isset($info)) {
+			throw new SimpleSAML_Error_AuthSource($this->authId, 'Error getting user profile.');
+		}
 		
 		$attributes = array();
-		foreach($info[0] AS $key => $value) {
-			if (is_string($value) && !empty($value))
+		foreach($info AS $key => $value) {
+			if (is_string($value) && !empty($value)) {
 				$attributes['facebook.' . $key] = array((string)$value);
+			}
 		}
 
-		if (array_key_exists('username', $info[0]) )
-			$attributes['facebook_user'] = array($info[0]['username'] . '@facebook.com');
-		else
-			$attributes['facebook_user'] = array($u . '@facebook.com');
+		if (array_key_exists('username', $info)) {
+			$attributes['facebook_user'] = array($info['username'] . '@facebook.com');
+		} else {
+			$attributes['facebook_user'] = array($uid . '@facebook.com');
+		}
 
-		$attributes['facebook_targetedID'] = array('http://facebook.com!' . $u);
-		$attributes['facebook_cn'] = array($info[0]['name']);
+		$attributes['facebook_targetedID'] = array('http://facebook.com!' . $uid);
+		$attributes['facebook_cn'] = array($info['name']);
 
-		SimpleSAML_Logger::debug('Facebook Returned Attributes: '. implode(", ",array_keys($attributes)));
+		SimpleSAML_Logger::debug('Facebook Returned Attributes: '. implode(", ", array_keys($attributes)));
 
 		$state['Attributes'] = $attributes;
-	}
 	
-
+		$facebook->clearAllPersistentData();
+	}
 
 }
 

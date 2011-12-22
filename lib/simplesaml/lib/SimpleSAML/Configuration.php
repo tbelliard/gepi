@@ -108,7 +108,7 @@ class SimpleSAML_Configuration {
 		}
 
 		if (array_key_exists('override.host', $config)) {
-			$host = SimpleSAML_Utilities::getSelfHost();
+			$host = $_SERVER['HTTP_HOST'];
 			if (array_key_exists($host, $config['override.host'])) {
 				$ofs = $config['override.host'][$host];
 				foreach (SimpleSAML_Utilities::arrayize($ofs) AS $of) {
@@ -570,7 +570,7 @@ class SimpleSAML_Configuration {
 
 		if(!is_int($ret)) {
 			throw new Exception($this->location . ': The option ' . var_export($name, TRUE) .
-				' is not a valid string value.');
+				' is not a valid integer value.');
 		}
 
 		return $ret;

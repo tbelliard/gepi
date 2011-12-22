@@ -29,8 +29,16 @@ if (array_key_exists('pageid', $this->data)) {
 }
 // - o - o - o - o - o - o - o - o - o - o - o - o -
 
-
-
+/**
+ * Do not allow to frame simpleSAMLphp pages from another location.
+ * This prevents clickjacking attacks in modern browsers.
+ *
+ * If you don't want any framing at all you can even change this to
+ * 'DENY', or comment it out if you actually want to allow foreign
+ * sites to put simpleSAMLphp in a frame. The latter is however
+ * probably not a good security practice.
+ */
+header('X-Frame-Options: SAMEORIGIN');
 
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
@@ -88,6 +96,11 @@ if(!empty($this->data['htmlinject']['htmlContentHead'])) {
 
 
 
+if ($this->isLanguageRTL()) {
+?>
+	<link rel="stylesheet" type="text/css" href="/<?php echo $this->data['baseurlpath']; ?>resources/default-rtl.css" />
+<?php	
+}
 ?>
 
 	
@@ -159,11 +172,18 @@ if($onLoad !== '') {
 					'hu' => 'Magyar', // Hungarian
 					'pl' => 'Język polski', // Polish
 					'pt' => 'Português', // Portuguese
-					'pt-BR' => 'Português brasileiro', // Portuguese
+					'pt-br' => 'Português brasileiro', // Portuguese
+					'ru' => 'русский язык', // Russian
+					'et' => 'eesti keel',
 					'tr' => 'Türkçe',
 					'el' => 'ελληνικά',
 					'ja' => '日本語',
-					'zh-tw' => '中文',
+					'zh' => '简体中文', // Chinese (simplified)
+					'zh-tw' => '繁體中文', // Chinese (traditional)
+					'ar' => 'العربية', // Arabic
+					'fa' => 'پارسی', // Persian
+					'ur' => 'اردو', // Urdu
+					'he' => 'עִבְרִית', // Hebrew
 		);
 		
 		$textarray = array();

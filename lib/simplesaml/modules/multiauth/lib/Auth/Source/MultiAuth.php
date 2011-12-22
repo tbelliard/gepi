@@ -52,7 +52,41 @@ class sspmod_multiauth_Auth_Source_MultiAuth extends SimpleSAML_Auth_Source {
 			throw new Exception('The required "sources" config option was not found');
 		}
 
-		$this->sources = $config['sources'];
+		$globalConfiguration = SimpleSAML_Configuration::getInstance();
+		$defaultLanguage = $globalConfiguration->getString('language.default', 'en');
+		$authsources = SimpleSAML_Configuration::getConfig('authsources.php');
+		$this->sources = array();
+		foreach($config['sources'] as $source => $info) {
+
+			if (is_int($source)) { // Backwards compatibility 
+				$source = $info;
+				$info = array();
+			}
+
+			if (array_key_exists('text', $info)) {
+				$text = $info['text'];
+			} else {
+				$text = array($defaultLanguage => $source);
+			}
+
+			if (array_key_exists('css-class', $info)) {
+				$css_class = $info['css-class'];
+			} else {
+				/* Use the authtype as the css class */
+				$authconfig = $authsources->getArray($source, NULL);
+				if (!array_key_exists(0, $authconfig) || !is_string($authconfig[0])) {
+					$css_class = "";
+				} else {
+					$css_class = str_replace(":", "-", $authconfig[0]);
+				}
+			}
+
+			$this->sources[] = array(
+				'source' => $source,
+				'text' => $text,
+				'css_class' => $css_class,
+			);
+		}
 	}
 
 	/**
@@ -80,13 +114,13 @@ class sspmod_multiauth_Auth_Source_MultiAuth extends SimpleSAML_Auth_Source {
 		saved state array as a parameter to the login form */
 		$url = SimpleSAML_Module::getModuleURL('multiauth/selectsource.php');
 		$params = array('AuthState' => $id);
-        
-        // Allowes the user to specify the auth souce to be used
-        if(isset($_GET['source'])) {
-            $params['source'] = $_GET['source'];    
-        }
-		
-        SimpleSAML_Utilities::redirect($url, $params);
+
+		// Allowes the user to specify the auth souce to be used
+		if(isset($_GET['source'])) {
+			$params['source'] = $_GET['source'];
+		}
+
+		SimpleSAML_Utilities::redirect($url, $params);
 
 		/* The previous function never returns, so this code is never
 		executed */
@@ -151,6 +185,44 @@ class sspmod_multiauth_Auth_Source_MultiAuth extends SimpleSAML_Auth_Source {
 		$source->logout($state);
 	}
 
+	/**
+	* Set the previous authentication source.
+	*
+	* This method remembers the authentication source that the user selected
+	* by storing its name in a cookie.
+	*
+	* @param string $source Name of the authentication source the user selected.
+	*/
+	public function setPreviousSource($source) {
+		assert('is_string($source)');
+
+		$cookieName = 'multiauth_source_' . $this->authId;
+
+		/* We save the cookies for 90 days. */
+		$saveUntil = time() + 60*60*24*90;
+
+		/* The base path for cookies. 
+		This should be the installation directory for simpleSAMLphp. */
+		$config = SimpleSAML_Configuration::getInstance();
+		$cookiePath = '/' . $config->getBaseUrl();
+
+		setcookie($cookieName, $source, $saveUntil, $cookiePath);
+	}
+
+	/**
+	* Get the previous authentication source.
+	*
+	* This method retrieves the authentication source that the user selected
+	* last time or NULL if this is the first time or remembering is disabled.
+	*/
+	public function getPreviousSource() {
+		$cookieName = 'multiauth_source_' . $this->authId;
+		if(array_key_exists($cookieName, $_COOKIE)) {
+			return $_COOKIE[$cookieName];
+		} else {
+			return NULL;
+		}
+	}
 }
 
 ?>
