@@ -8,7 +8,7 @@
  * @package simpleSAMLphp
  */
 
-require_once('../../../www/_include.php');
+require_once('../../_include.php');
 
 SimpleSAML_Logger::info('Shib1.3 - IdP.SSOService: Accessing Shibboleth 1.3 IdP endpoint SSOService');
 

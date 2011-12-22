@@ -5,6 +5,7 @@
  *
  * @author Andreas Åkre Solberg, UNINETT AS. <andreas.solberg@uninett.no>
  * @package simpleSAMLphp
+ * @version $Id$
  */
 class SimpleSAML_Utilities {
 
@@ -66,14 +67,14 @@ class SimpleSAML_Utilities {
 
 
 	/**
-	 * Will return https://sp.example.org
+	 * Will return https://sp.example.org[:PORT]
 	 */
 	public static function selfURLhost() {
 
 		$url = self::getBaseURL();
 
 		$start = strpos($url,'://') + 3;
-		$length = strcspn($url,'/:',$start) + $start;
+		$length = strcspn($url,'/',$start) + $start;
 
 		return substr($url, 0, $length);
 	}
@@ -116,8 +117,10 @@ class SimpleSAML_Utilities {
 
 		/* Otherwise, HTTPS will be a non-empty string. */
 		return $_SERVER['HTTPS'] !== '';
+
 	}
-	
+
+
 	/**
 	 * Retrieve port number from $_SERVER environment variables
 	 * return it as a string such as ":80" if different from
@@ -138,18 +141,17 @@ class SimpleSAML_Utilities {
 
 	}
 
-	
 	/**
 	 * Will return https://sp.example.org/universities/ruc/baz/simplesaml/saml2/SSOService.php
 	 */
- 	public static function selfURLNoQuery() {
- 	
- 		$selfURLhost = self::selfURLhost();
+	public static function selfURLNoQuery() {
+	
+		$selfURLhost = self::selfURLhost();
 		$selfURLhost .= $_SERVER['SCRIPT_NAME'];
 		if (isset($_SERVER['PATH_INFO'])) {
 			$selfURLhost .= $_SERVER['PATH_INFO'];
 		}
- 		return $selfURLhost;
+		return $selfURLhost;
 	
 	}
 
@@ -210,7 +212,7 @@ class SimpleSAML_Utilities {
 		$globalConfig = SimpleSAML_Configuration::getInstance();
 		$baseURL = $globalConfig->getString('baseurlpath', 'simplesaml/');
 		
-		if (preg_match('#^https?://([^/]*)/(.*)/$#D', $baseURL, $matches)) {
+		if (preg_match('#^https?://.*/$#D', $baseURL, $matches)) {
 			/* full url in baseurlpath, override local server values */
 			return $baseURL;
 		} elseif (
@@ -387,7 +389,7 @@ class SimpleSAML_Utilities {
 		assert('is_null($timestamp) || is_int($timestamp)');
 
 		/* Parse the duration. We use a very strict pattern. */
-		$durationRegEx = '#^(-?)P(?:(?:(?:(\\d+)Y)?(?:(\\d+)M)?(?:(\\d+)D)?(?:T(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+)S)?)?)|(?:(\\d+)W))$#D';
+		$durationRegEx = '#^(-?)P(?:(?:(?:(\\d+)Y)?(?:(\\d+)M)?(?:(\\d+)D)?(?:T(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+)(?:[.,]\d+)?S)?)?)|(?:(\\d+)W))$#D';
 		if (!preg_match($durationRegEx, $duration, $matches)) {
 			throw new Exception('Invalid ISO 8601 duration: ' . $duration);
 		}
@@ -484,15 +486,50 @@ class SimpleSAML_Utilities {
 	static function ipCIDRcheck($cidr, $ip = null) {
 		if ($ip == null) $ip = $_SERVER['REMOTE_ADDR'];
 		list ($net, $mask) = explode('/', $cidr);
-		
-		$ip_net = ip2long ($net);
-		$ip_mask = ~((1 << (32 - $mask)) - 1);
-		
-		$ip_ip = ip2long ($ip);
-		
-		$ip_ip_net = $ip_ip & $ip_mask;
-		
-		return ($ip_ip_net == $ip_net);
+
+		if (strstr($ip, ':') || strstr($net, ':')) {
+			// Validate IPv6 with inet_pton, convert to hex with bin2hex
+			// then store as a long with hexdec
+
+			$ip_pack = inet_pton($ip);
+			$net_pack = inet_pton($net);
+
+			if ($ip_pack === false || $net_pack === false) {
+				// not valid IPv6 address (warning already issued)
+				return false;
+			}
+
+			$ip_ip = str_split(bin2hex($ip_pack),8);
+			foreach ($ip_ip as &$value) {
+				$value = hexdec($value);
+			}
+
+			$ip_net = str_split(bin2hex($net_pack),8);
+			foreach ($ip_net as &$value) {
+				$value = hexdec($value);
+			}
+		} else {
+			$ip_ip[0] = ip2long ($ip);
+			$ip_net[0] = ip2long ($net);
+		}
+
+		for($i = 0; $mask > 0 && $i < sizeof($ip_ip); $i++) {
+			if ($mask > 32) {
+				$iteration_mask = 32;
+			} else {
+				$iteration_mask = $mask;
+			}
+			$mask -= 32;
+
+			$ip_mask = ~((1 << (32 - $iteration_mask)) - 1);
+
+			$ip_net_mask = $ip_net[$i] & $ip_mask;
+			$ip_ip_mask = $ip_ip[$i] & $ip_mask;
+
+			if ($ip_ip_mask != $ip_net_mask)
+				return false;
+		}
+		return true;
 	}
 
 
@@ -796,7 +833,7 @@ class SimpleSAML_Utilities {
 			return array();
 		}
 
-		$languages = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+		$languages = explode(',', strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE']));
 
 		$ret = array();
 
@@ -968,6 +1005,10 @@ class SimpleSAML_Utilities {
 	public static function generateRandomBytes($length, $fallback = TRUE) {
 		static $fp = NULL;
 		assert('is_int($length)');
+
+		if (function_exists('openssl_random_pseudo_bytes')) {
+			return openssl_random_pseudo_bytes($length);
+		}
 
 		if($fp === NULL) {
 			if (@file_exists('/dev/urandom')) {
@@ -1245,7 +1286,7 @@ class SimpleSAML_Utilities {
 	/**
 	 * Retrieve last error message.
 	 *
-	 * This function retrieves the last error message. If no error has occured,
+	 * This function retrieves the last error message. If no error has occurred,
 	 * '[No error message found]' will be returned. If the required function isn't available,
 	 * '[Cannot get error message]' will be returned.
 	 *
@@ -1612,6 +1653,13 @@ class SimpleSAML_Utilities {
 		assert('is_array($post)');
 
 		$config = SimpleSAML_Configuration::getInstance();
+		$httpRedirect = $config->getBoolean('enable.http_post', FALSE);
+
+		if ($httpRedirect && preg_match("#^http:#", $destination) && self::isHTTPS()) {
+			$url = self::createHttpPostRedirectLink($destination, $post);
+			self::redirect($url);
+			assert('FALSE');
+		}
 
 		$p = new SimpleSAML_XHTML_Template($config, 'post.php');
 		$p->data['destination'] = $destination;
@@ -1631,16 +1679,54 @@ class SimpleSAML_Utilities {
 		assert('is_string($destination)');
 		assert('is_array($post)');
 
-		$id = SimpleSAML_Utilities::generateID();
+		$config = SimpleSAML_Configuration::getInstance();
+		$httpRedirect = $config->getBoolean('enable.http_post', FALSE);
+
+		if ($httpRedirect && preg_match("#^http:#", $destination) && self::isHTTPS()) {
+			$url = self::createHttpPostRedirectLink($destination, $post);
+		} else {
+			$postId = SimpleSAML_Utilities::generateID();
+			$postData = array(
+				'post' => $post,
+				'url' => $destination,
+			);
+
+			$session = SimpleSAML_Session::getInstance();
+			$session->setData('core_postdatalink', $postId, $postData);
+
+			$url = SimpleSAML_Module::getModuleURL('core/postredirect.php', array('RedirId' => $postId));
+		}
+
+		return $url;
+	}
+
+
+	/**
+	 * Create a link which will POST data to HTTP in a secure way.
+	 *
+	 * @param string $destination  The destination URL.
+	 * @param array $post  The name-value pairs which will be posted to the destination.
+	 * @return string  An URL which can be accessed to post the data.
+	 */
+	public static function createHttpPostRedirectLink($destination, $post) {
+		assert('is_string($destination)');
+		assert('is_array($post)');
+
+		$postId = SimpleSAML_Utilities::generateID();
 		$postData = array(
 			'post' => $post,
 			'url' => $destination,
 		);
 
 		$session = SimpleSAML_Session::getInstance();
-		$session->setData('core_postdatalink', $id, $postData);
+		$session->setData('core_postdatalink', $postId, $postData);
 
-		return SimpleSAML_Module::getModuleURL('core/postredirect.php', array('RedirId' => $id));
+		$redirInfo = base64_encode(self::aesEncrypt($session->getSessionId() . ':' . $postId));
+
+		$url = SimpleSAML_Module::getModuleURL('core/postredirect.php', array('RedirInfo' => $redirInfo));
+		$url = preg_replace("#^https:#", "http:", $url);
+
+		return $url;
 	}
 
 
@@ -2039,9 +2125,10 @@ class SimpleSAML_Utilities {
 	 *
 	 * @param string $path  The path or URL we should fetch.
 	 * @param array $context  Extra context options. This parameter is optional.
-	 * @return string  The data we fetched.
+	 * @param boolean $getHeaders Whether to also return response headers. Optional.
+	 * @return mixed array if $getHeaders is set, string otherwise
 	 */
-	public static function fetch($path, $context = array()) {
+	public static function fetch($path, $context = array(), $getHeaders = FALSE) {
 		assert('is_string($path)');
 
 		$config = SimpleSAML_Configuration::getInstance();
@@ -2063,7 +2150,97 @@ class SimpleSAML_Utilities {
 			throw new SimpleSAML_Error_Exception('Error fetching ' . var_export($path, TRUE) . ':' . self::getLastError());
 		}
 
+		// Data and headers.
+		if ($getHeaders) {
+
+			$headers = array();
+
+			foreach($http_response_header as $h) {
+				if(preg_match('@^HTTP/1\.[01]\s+\d{3}\s+@', $h)) {
+					$headers = array(); // reset
+					$headers[0] = $h;
+					continue;
+				}
+				$bits = explode(':', $h, 2);
+				if(count($bits) === 2) {
+					$headers[strtolower($bits[0])] = trim($bits[1]);
+				}
+			}
+			return array($data, $headers);
+		}
+
 		return $data;
+	}
+
+
+	/**
+	 * Function to AES encrypt data.
+	 *
+	 * @param string $clear  Data to encrypt.
+	 * @return array  The encrypted data and IV.
+	 */
+	public static function aesEncrypt($clear) {
+		assert('is_string($clear)');
+
+		if (!function_exists("mcrypt_encrypt")) {
+			throw new Exception("aesEncrypt needs mcrypt php module.");
+		}
+
+		$enc = MCRYPT_RIJNDAEL_256;
+		$mode = MCRYPT_MODE_CBC;
+
+		$blockSize = mcrypt_get_block_size($enc, $mode);
+		$ivSize = mcrypt_get_iv_size($enc, $mode);
+		$keySize = mcrypt_get_key_size($enc, $mode);
+
+		$key = hash('sha256', self::getSecretSalt(), TRUE);
+		$key = substr($key, 0, $keySize);
+
+		$len = strlen($clear);
+		$numpad = $blockSize - ($len % $blockSize);
+		$clear = str_pad($clear, $len + $numpad, chr($numpad));
+
+		$iv = self::generateRandomBytes($ivSize);
+
+		$data = mcrypt_encrypt($enc, $key, $clear, $mode, $iv);
+
+		return $iv . $data;
+	}
+
+
+	/**
+	 * Function to AES decrypt data.
+	 *
+	 * @param $data  Encrypted data.
+	 * @param $iv  IV of encrypted data.
+	 * @return string  The decrypted data.
+	 */
+	public static function aesDecrypt($encData) {
+		assert('is_string($encData)');
+
+		if (!function_exists("mcrypt_encrypt")) {
+			throw new Exception("aesDecrypt needs mcrypt php module.");
+		}
+
+		$enc = MCRYPT_RIJNDAEL_256;
+		$mode = MCRYPT_MODE_CBC;
+
+		$ivSize = mcrypt_get_iv_size($enc, $mode);
+		$keySize = mcrypt_get_key_size($enc, $mode);
+
+		$key = hash('sha256', self::getSecretSalt(), TRUE);
+		$key = substr($key, 0, $keySize);
+
+		$iv = substr($encData, 0, $ivSize);
+		$data = substr($encData, $ivSize);
+
+		$clear = mcrypt_decrypt($enc, $key, $data, $mode, $iv);
+
+		$len = strlen($clear);
+		$numpad = ord($clear[$len - 1]);
+		$clear = substr($clear, 0, $len - $numpad);
+
+		return $clear;
 	}
 
 }

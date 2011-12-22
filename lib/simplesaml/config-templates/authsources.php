@@ -64,6 +64,28 @@ $config = array(
 	*/
 
 	/*
+	'crypto-hash' => array(
+		'authcrypt:Hash',
+		// hashed version of 'verysecret', made with bin/pwgen.php
+		'professor:{SSHA256}P6FDTEEIY2EnER9a6P2GwHhI5JDrwBgjQ913oVQjBngmCtrNBUMowA==' => array(
+			'uid' => array('prof_a'),
+			'eduPersonAffiliation' => array('member', 'employee', 'board'),
+		),
+	),
+	*/
+
+	/*
+	'htpasswd' => array(
+		'authcrypt:Htpasswd',
+		'htpasswd_file' => '/var/www/foo.edu/legacy_app/.htpasswd',
+		'static_attributes' => array(
+			'eduPersonAffiliation' => array('member', 'employee'),
+			'Organization' => array('University of Foo'),
+		),
+	),
+	*/
+
+	/*
 	// This authentication source serves as an example of integration with an
 	// external authentication engine. Take a look at the comment in the beginning
 	// of modules/exampleauth/lib/Auth/Source/External.php for a description of
@@ -89,6 +111,8 @@ $config = array(
 		// 'sreg.validate' => FALSE,
 		'attributes.ax_required' => array('http://axschema.org/namePerson/friendly'),
 		'attributes.ax_optional' => array('http://axschema.org/namePerson','http://axschema.org/contact/email'),
+		// Prefer HTTP redirect over POST
+		// 'prefer_http_redirect' => FALSE,
 	),
 	*/
 
@@ -129,8 +153,14 @@ $config = array(
 	/*
 	'facebook' => array(
 		'authfacebook:Facebook',
+		// Register your Facebook application on http://www.facebook.com/developers
+		// App ID or API key (requests with App ID should be faster; https://github.com/facebook/php-sdk/issues/214)
 		'api_key' => 'xxxxxxxxxxxxxxxx',
+		// App Secret
 		'secret' => 'xxxxxxxxxxxxxxxx',
+		// which additional data permissions to request from user
+		// see http://developers.facebook.com/docs/authentication/permissions/ for the full list
+		// 'req_perms' => 'email,user_birthday',
 	),
 	*/
 

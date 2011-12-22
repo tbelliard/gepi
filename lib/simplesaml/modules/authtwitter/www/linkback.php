@@ -3,42 +3,35 @@
 /**
  * Handle linkback() response from Twitter.
  */
-# sspmod_oauth_Consumer::dummy();
 
-// $config = SimpleSAML_Configuration::getInstance();
-$session = SimpleSAML_Session::getInstance();
- 
-$oauthState = $session->getData('oauth', 'oauth');
+if (!array_key_exists('AuthState', $_REQUEST) || empty($_REQUEST['AuthState'])) {
+	throw new SimpleSAML_Error_BadRequest('Missing state parameter on twitter linkback endpoint.');
+}
+$stateID = $_REQUEST['AuthState'];
 
-if (empty($oauthState)) throw new Exception('Could not load oauthstate');
-if (empty($oauthState['stateid'])) throw new Exception('Could not load oauthstate:stateid');
-
-$stateId = $oauthState['stateid'];
-
-// echo 'stateid is ' . $stateId;
-
-$state = SimpleSAML_Auth_State::loadState($stateId, sspmod_authtwitter_Auth_Source_Twitter::STAGE_INIT);
-$state['requestToken'] = $oauthState['requestToken'];
-
-
+$state = SimpleSAML_Auth_State::loadState($stateID, sspmod_authtwitter_Auth_Source_Twitter::STAGE_INIT);
 
 /* Find authentication source. */
-assert('array_key_exists(sspmod_authtwitter_Auth_Source_Twitter::AUTHID, $state)');
+if (!array_key_exists(sspmod_authtwitter_Auth_Source_Twitter::AUTHID, $state)) {
+	throw new SimpleSAML_Error_BadRequest('No data in state for ' . sspmod_authtwitter_Auth_Source_Twitter::AUTHID);
+}
 $sourceId = $state[sspmod_authtwitter_Auth_Source_Twitter::AUTHID];
 
 $source = SimpleSAML_Auth_Source::getById($sourceId);
 if ($source === NULL) {
-	throw new Exception('Could not find authentication source with id ' . $sourceId);
+	throw new SimpleSAML_Error_BadRequest('Could not find authentication source with id ' . var_export($sourceId, TRUE));
 }
 
+try {
+	if (array_key_exists('denied', $_REQUEST)) {
+		throw new SimpleSAML_Error_UserAborted();
+	}
 
-
-$config = SimpleSAML_Configuration::getInstance();
-
-$source->finalStep($state);
-
-
+	$source->finalStep($state);
+} catch (SimpleSAML_Error_Exception $e) {
+	SimpleSAML_Auth_State::throwException($state, $e);
+} catch (Exception $e) {
+	SimpleSAML_Auth_State::throwException($state, new SimpleSAML_Error_AuthSource($sourceId, 'Error on authtwitter linkback endpoint.', $e));
+}
 
 SimpleSAML_Auth_Source::completeAuth($state);
-
-
