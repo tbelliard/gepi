@@ -563,14 +563,15 @@ include('menu_bilans.inc.php');
 
 		<label for="bouton2">½ journées</label>
 	  </p>
-	  <p>Bilan du
+	  <p>
+		  <label for="date_absence_eleve_debut">Bilan du</label>
 		<input style="width : 8em;font-size:14px;" 
 			   type="text" 
 			   dojoType="dijit.form.DateTextBox" 
 			   id="date_absence_eleve_debut" 
 			   name="date_absence_eleve_debut" 
 			   value="<?php echo $dt_date_absence_eleve_debut->format('Y-m-d')?>" />
-		au
+		<label for="date_absence_eleve_fin">au</label>
 		<input style="width : 8em;font-size:14px;" 
 			   type="text" 
 			   dojoType="dijit.form.DateTextBox" 
