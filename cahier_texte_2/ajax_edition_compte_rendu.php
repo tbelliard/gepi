@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009-2011 Josselin Jacquard
+ * Copyright 2009-2012 Josselin Jacquard
  *
  * This file is part of GEPI.
  *
@@ -370,6 +370,9 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 			// Semaine precedente et suivante
 			$semaine_precedente= $today - 3600*24*7;
 			$semaine_suivante= $today + 3600*24*7;
+			
+			//$date_du_jour=getdate();
+			//$date_de_la_notice=getdate($today);
 			echo "</td>\n";
 
 			echo "<td>\n";
@@ -384,7 +387,14 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 			echo "<td style='text-align:center; width: 16px;'>\n";
 			echo "<a title=\"Aller au jour précédent\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($hier);dateChanged(calendarInstanciation);'><img src='../images/icons/arrow-left.png' width='16' height='16' title='Aller au jour précédent' alt='Aller au jour précédent' /></a>\n";
 			echo "</td>\n";
-			echo "<td align='center'>Aujourd'hui</td>\n";
+			echo "<td align='center'>";
+			if(date("d/m/Y")==date("d/m/Y",$today)) {
+				echo "Aujourd'hui";
+			}
+			else {
+				echo jour_fr(date("D",$today),'majf2')." ".date("d/m",$today);
+			}
+			echo "</td>\n";
 			echo "<td style='text-align:center; width: 16px;'>\n";
 			echo "<a title=\"Aller au jour suivant\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($demain);dateChanged(calendarInstanciation);'><img src='../images/icons/arrow-right.png' width='16' height='16' title='Aller au jour suivant' alt='Aller au jour suivant' /></a>\n";
 			echo "</td>\n";
