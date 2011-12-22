@@ -207,7 +207,7 @@ echo add_token_field();
 			 onchange='changement();'
 				<?php if (getSettingValue("active_cahiers_texte")=='y') echo " checked='checked'"; ?> />
 		<label for='activer_y' style='cursor: pointer;'>
-		  Activer les cahiers de textes (consultation et édition)
+		  Activer les cahiers de textes (<em>consultation et édition</em>)
 		</label>
 	  <br />
 		<input type="radio" 
@@ -217,7 +217,7 @@ echo add_token_field();
 			 onchange='changement();'
 				<?php if (getSettingValue("active_cahiers_texte")=='n') echo " checked='checked'"; ?> />
 		<label for='activer_n' style='cursor: pointer;'>
-		  Désactiver les cahiers de textes (consultation et édition)
+		  Désactiver les cahiers de textes (<em>consultation et édition</em>)
 		</label>
 	  </fieldset>
 	  
@@ -251,9 +251,11 @@ echo add_token_field();
 		<label for='version_1' style='cursor: pointer;'>
 		  Cahier de texte version 1
 		</label>
+		<!--
 		(<span class="italic">
 		  le cahier de texte version 1 ne sera plus supporté dans la future version 1.5.3
 		</span>)
+		-->
 		<br />
 		  <input type="radio"
 				 name="version"
@@ -271,7 +273,7 @@ echo add_token_field();
 		Seules les rubriques dont la date est comprise entre la date de début et la date de fin des cahiers
 		de textes sont visibles dans l'interface de consultation publique.
 		<br />
-		L'édition (modification/suppression/ajout) des cahiers de textes par les utilisateurs de GEPI
+		L'édition (<em>modification/suppression/ajout</em>) des cahiers de textes par les utilisateurs de GEPI
 		n'est pas affectée par ces dates.
 	  </p>
 	  <fieldset class="no_bordure">
@@ -305,7 +307,7 @@ echo add_token_field();
 				<?php if (getSettingValue("cahier_texte_acces_public") == "no") echo " checked='checked'";?> /> 
 		<label for='cahier_texte_acces_public_n' style='cursor: pointer;'>
 		  Désactiver la consultation publique des cahiers de textes 
-		  (seuls des utilisateurs logués pourront y avoir accès en consultation, s'ils y sont autorisés)
+		  (<em>seuls des utilisateurs logués pourront y avoir accès en consultation, s'ils y sont autorisés</em>)
 		</label>
 	  <br />
 		  <input type='radio' 
@@ -316,7 +318,7 @@ echo add_token_field();
 				<?php if (getSettingValue("cahier_texte_acces_public") == "yes") echo " checked='checked'";?> /> 
 		<label for='cahier_texte_acces_public_y' style='cursor: pointer;'>
 		  Activer la consultation publique des cahiers de textes 
-		  (tous les cahiers de textes visibles directement, ou par la saisie d'un login/mdp global)
+		  (<em>tous les cahiers de textes visibles directement, ou par la saisie d'un login/mdp global</em>)
 		</label>
 	  </fieldset>
 	  <p>
@@ -442,11 +444,11 @@ echo add_token_field();
 	<ul>
 	  <li><a href='modify_limites.php'>Espace disque maximal, taille maximale d'un fichier</a></li>
 	  <li><a href='modify_type_doc.php'>Types de fichiers autorisés en téléchargement</a></li>
-	  <li><a href='admin_ct.php'>Administration des cahiers de textes</a> (recherche des incohérences, modifications, suppressions)</li>
-	  <li><a href='visa_ct.php'>Viser les cahiers de textes</a> (Signer les cahiers de textes)</li>
+	  <li><a href='admin_ct.php'>Administration des cahiers de textes</a> (<em>recherche des incohérences, modifications, suppressions</em>)</li>
+	  <li><a href='visa_ct.php'>Viser les cahiers de textes</a> (<em>Signer les cahiers de textes</em>)</li>
 	  <li><a href='index.php?ajout_index_documents=y'>Protéger les sous-dossiers de 'documents/' contre des accès anormaux</a></li>
 	  <li><a href='../cahier_texte_2/archivage_cdt.php'>Archivage des cahiers de textes en fin d'année scolaire</a></li>
-	  <li><a href='../cahier_texte_2/export_cdt.php'>Export de cahiers de textes et accès inspecteur (<i>sans authentification</i>)</a></li>
+	  <li><a href='../cahier_texte_2/export_cdt.php'>Export de cahiers de textes et accès inspecteur (<em>sans authentification</em>)</a></li>
 	</ul>
 	
 	<hr />
