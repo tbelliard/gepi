@@ -199,20 +199,21 @@ class EleveTest extends GepiEmptyTestBase
 		$this->assertTrue($saisie_col->getFirst()->getManquementObligationPresence());
 		$demi_j_col = $florence_eleve->getDemiJourneesAbsenceParCollection($saisie_col);
 		$this->assertEquals(8,$demi_j_col->count());
-		# La premième semaine on ne doit avoir que 4 demi-journées d'absences
-		$saisie_col = $florence_eleve->getAbsColDecompteDemiJournee(new DateTime('2010-10-24 00:00:00'),new DateTime('2010-11-30 23:59:59'));
-		$this->assertEquals(1,$saisie_col->count());
-		$this->assertTrue($saisie_col->getFirst()->getManquementObligationPresence());
-		$demi_j_col = $florence_eleve->getDemiJourneesAbsenceParCollection($saisie_col,new DateTime('2010-10-24 00:00:00'),new DateTime('2010-11-30 23:59:59'));
-		$this->assertEquals(4,$demi_j_col->count());
-		# La deuxième semaine on ne doit avoir que 4 demi-journées d'absences
-		/*
-		$saisie_col = $florence_eleve->getAbsColDecompteDemiJournee(new DateTime('2010-10-31 00:00:00'),new DateTime('2010-11-7 23:59:59'));
+		# La première semaine on ne doit avoir que 4 demi-journées d'absences
+		$saisie_col = $florence_eleve->getAbsColDecompteDemiJournee(new DateTime('2010-10-24 00:00:00'),new DateTime('2010-10-30 23:59:59'));
 		$this->assertEquals(1,$saisie_col->count());
 		$this->assertTrue($saisie_col->getFirst()->getManquementObligationPresence());
 		$demi_j_col = $florence_eleve->getDemiJourneesAbsenceParCollection($saisie_col);
+		$this->assertEquals(8,$demi_j_col->count());	# pas de dates -> 8 demi-journées
+		$demi_j_col = $florence_eleve->getDemiJourneesAbsenceParCollection($saisie_col,new DateTime('2010-10-24 00:00:00'),new DateTime('2010-10-30 23:59:59'));
+		$this->assertEquals(4,$demi_j_col->count());	# période bornée -> 4 demi-journées
+		# La deuxième semaine on ne doit avoir que 4 demi-journées d'absences
+		$saisie_col = $florence_eleve->getAbsColDecompteDemiJournee(new DateTime('2010-10-31 00:00:00'),new DateTime('2010-11-7 23:59:59'));
+		$this->assertEquals(1,$saisie_col->count());
+		$this->assertTrue($saisie_col->getFirst()->getManquementObligationPresence());
+		$demi_j_col = $florence_eleve->getDemiJourneesAbsenceParCollection($saisie_col,new DateTime('2010-10-31 00:00:00'),new DateTime('2010-11-7 23:59:59'));
 		$this->assertEquals(4,$demi_j_col->count());
-		*/
+		
 		// $this->assertEquals(7,$florence_eleve->getDemiJourneesAbsenceParPeriode(1)->count());
 		$this->assertEquals(15,$florence_eleve->getDemiJourneesAbsenceParPeriode(1)->count());
 	}

@@ -180,7 +180,7 @@ function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut, 
 			->endUse()
 			;
 		  $traiteEleveDemi_col = $propel_traitEleveDemi->find();
-		  $traiteEleveDemi = $propel_eleve->getDemiJourneesAbsenceParCollection($traiteEleveDemi_col);
+		  $traiteEleveDemi = $propel_eleve->getDemiJourneesAbsenceParCollection($traiteEleveDemi_col,$date_debut,$date_fin);
 		  $donnees[$eleve_id]['traitement'][] = $traiteEleveDemi->count();
 		  $totalDemi += $traiteEleveDemi->count();
 		}
