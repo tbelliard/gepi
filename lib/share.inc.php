@@ -4802,4 +4802,30 @@ function check_utf8_and_convert($var) {
 } 
 
 
+/** fonction retournant le jour traduit en français
+ *
+ * @param string $jour_en Le jour en anglais (Mon, Tue, Wed,...)
+ * @return string La date en français 
+ */
+function jour_fr($jour_en, $mode="") {
+	$tab['mon']="lun";
+	$tab['tue']="mar";
+	$tab['wed']="mer";
+	$tab['thu']="jeu";
+	$tab['fri']="ven";
+	$tab['sat']="sam";
+	$tab['sun']="dim";
+
+	if(isset($tab[mb_strtolower($jour_en)])) {
+		if($mode=='majf2') {
+			return casse_mot($tab[mb_strtolower($jour_en)], 'majf2');
+		}
+		else {
+			return $tab[mb_strtolower($jour_en)];
+		}
+	}
+	else {
+		return $jour_en;
+	}
+}
 ?>
