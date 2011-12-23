@@ -445,13 +445,13 @@ function initWysiwyg() {
 			extraPlugins : 'equation',
 			toolbar :
 			[
-			    ['equation','Source','Cut','Copy','Paste','PasteText','PasteFromWord'],
+			    ['Source','Cut','Copy','Paste','PasteText','PasteFromWord'],
 			    ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
 			    ['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
 			    ['NumberedList','BulletedList'],
 			    ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
 			    ['Outdent','Indent'],
-			    ['Link','Unlink','Table','HorizontalRule','SpecialChar','Image'],
+			    ['Link','Unlink','Table','HorizontalRule','SpecialChar','equation'],
 			    ['Styles','Format','Font','FontSize'],
 			    ['TextColor','BGColor'],
 			    ['Maximize', 'About','-','Print']
@@ -467,14 +467,14 @@ function initWysiwyg() {
 			extraPlugins : 'equation',
 			toolbar :
 			[
-			    ['equation','Source','Cut','Copy','Paste','PasteText','PasteFromWord'],
+			    ['Source','Cut','Copy','Paste','PasteText','PasteFromWord'],
 			    ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
 			    ['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
 			    ['NumberedList','BulletedList'],
 			    ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
 			    '/',
 			    ['Outdent','Indent'],
-			    ['Link','Unlink','Table','HorizontalRule','SpecialChar','Image'],
+			    ['Link','Unlink','Table','HorizontalRule','SpecialChar','equation'],
 			    ['Styles','Format','Font','FontSize'],
 			    ['TextColor','BGColor'],
 			    ['Maximize', 'About','-','Print']
