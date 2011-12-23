@@ -4046,13 +4046,18 @@ function del_info_action($id_info) {
  * @param date $date_sortie date (timestamp)
  * @return string La date formatée 
  */
-function affiche_date_sortie($date_sortie) {
+function affiche_date_sortie($date_sortie,$heure=FALSE) {
 	//
     $eleve_date_de_sortie_time=strtotime($date_sortie);
 	//récupération du jour, du mois et de l'année
 	$eleve_date_sortie_jour=date('j', $eleve_date_de_sortie_time); 
 	$eleve_date_sortie_mois=date('m', $eleve_date_de_sortie_time);
 	$eleve_date_sortie_annee=date('Y', $eleve_date_de_sortie_time); 
+	$eleve_date_sortie_heure=date('H', $eleve_date_de_sortie_time); 
+	$eleve_date_sortie_minute=date('i', $eleve_date_de_sortie_time); 
+	if ($heure) {
+		return $eleve_date_sortie_jour."/".$eleve_date_sortie_mois."/".$eleve_date_sortie_annee." ".$eleve_date_sortie_heure.":".$eleve_date_sortie_minute;
+	}
 	return $eleve_date_sortie_jour."/".$eleve_date_sortie_mois."/".$eleve_date_sortie_annee;
 }
 

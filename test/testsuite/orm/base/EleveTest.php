@@ -214,7 +214,19 @@ class EleveTest extends GepiEmptyTestBase
 		$demi_j_col = $florence_eleve->getDemiJourneesAbsenceParCollection($saisie_col,new DateTime('2010-10-31 00:00:00'),new DateTime('2010-11-7 23:59:59'));
 		$this->assertEquals(4,$demi_j_col->count());
 		
-		// $this->assertEquals(7,$florence_eleve->getDemiJourneesAbsenceParPeriode(1)->count());
+		# Absence 21 du 2011-05-30 Sortir l'élève du collège et vérifier qu'aucune absence n'est retournée
+		$saisie_col = $florence_eleve->getAbsColDecompteDemiJournee(new DateTime('2011-05-30 00:00:00'),new DateTime('2011-05-30 23:59:59'));
+		$this->assertEquals(1,$saisie_col->count());
+		$this->assertTrue($saisie_col->getFirst()->getManquementObligationPresence());
+		$demi_j_col = $florence_eleve->getDemiJourneesAbsenceParCollection($saisie_col);
+		$this->assertEquals(2,$demi_j_col->count());	# L'élève est inscrit -> 2 absences
+	    $florence_eleve->setDateSortie(strtotime('30-05-2011 00:00:00'));
+		$demi_j_col = $florence_eleve->getDemiJourneesAbsenceParCollection($saisie_col);
+		$this->assertEquals(0,$demi_j_col->count());	# L'élève n'est plus dans l'établissement -> 0 absence
+		$this->assertEquals(0,$florence_eleve->getDemiJourneesAbsenceParPeriode(3)->count());
+		$demi_j_col = $florence_eleve->getDemiJourneesNonJustifieesAbsence(new DateTime('2011-05-30 00:00:00'),new DateTime('2011-05-30 23:59:59'));
+		$this->assertEquals(0,$demi_j_col->count());
+				
 		$this->assertEquals(15,$florence_eleve->getDemiJourneesAbsenceParPeriode(1)->count());
 	}
 	

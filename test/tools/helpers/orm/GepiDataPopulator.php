@@ -471,6 +471,13 @@ class GepiDataPopulator
         $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Absence scolaire')->findOne());
         $traitement->setUtilisateurProfessionnel($dolto_cpe);
         $traitement->save();
+		
+        $saisie_21 = new AbsenceEleveSaisie(); //saisie sur 1 journée et sortir l'élève de l'établissement
+        $saisie_21->setEleve($florence_eleve);
+        $saisie_21->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_21->setDebutAbs('2011-05-30 08:00:00');
+        $saisie_21->setFinAbs('2011-05-30 16:30:00');
+        $saisie_21->save();
         
         //on va purger les références, qui peuvent être fausses suite à des ajouts ultérieurs
         GepiDataPopulator::clearAllReferences();

@@ -1152,6 +1152,7 @@ class Eleve extends BaseEleve {
         }
         if ($this->getDateSortie() != null && ($date_fin_iteration == null || $this->getDateSortie('U') < $date_fin_iteration->format('U'))) {
             $date_fin_iteration = $this->getDateSortie(null);
+			$date_fin_iteration->modify('-1 minute');
         }
 
 	    require_once(dirname(__FILE__)."/../../../helpers/AbsencesEleveSaisieHelper.php");
@@ -1289,6 +1290,7 @@ class Eleve extends BaseEleve {
 	    }
             if ($this->getDateSortie() != null && $this->getDateSortie('U') < $date_fin_iteration->format('U')) {
                 $date_fin_iteration = $this->getDateSortie(null);
+				$date_fin_iteration->modify('-1 minute');
             }
 
 	    require_once(dirname(__FILE__)."/../../../helpers/AbsencesEleveSaisieHelper.php");
