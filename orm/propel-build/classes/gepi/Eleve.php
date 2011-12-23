@@ -2125,6 +2125,12 @@ class Eleve extends BaseEleve {
             }
         }
     }
+	
+    public function setEleveSorti($v) {
+		$this->setDateSortie($v);
+		AbsenceAgregationDecompteQuery::create()->filterByEleve($this)->delete();
+	    $this->thinCheckAndUpdateSynchroAbsenceAgregationTable();
+	}
     
 	
 } // Eleve
