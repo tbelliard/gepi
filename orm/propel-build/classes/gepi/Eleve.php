@@ -1329,6 +1329,11 @@ class Eleve extends BaseEleve {
 	 * @return PropelCollection AbsenceEleveSaisie[]
 	 */
 	public function getRetards($date_debut=null, $date_fin = null) {
+
+		if (($date_fin != null) && ($this->getDateSortie() != null && $this->getDateSortie('U') < $date_fin->format('U'))) {
+			$date_fin = $this->getDateSortie(null);
+		}
+		
 	    $abs_saisie_col = $this->getAbsColDecompteDemiJournee($date_debut, $date_fin);
 	    if ($abs_saisie_col->isEmpty()) {
 			return new PropelCollection();

@@ -272,6 +272,17 @@ class EleveTest extends GepiEmptyTestBase
 		
 		$this->assertEquals(6,$florence_eleve->getRetardsParPeriode(1)->count());
 		
+		//Retard saisi alors que l'élève a quitté l'établissement
+		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+		saveSetting('abs2_retard_critere_duree',30);
+		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
+		$this->assertEquals(1,$retard_col->count());
+		$florence_eleve->setEleveSorti(strtotime('2010-10-04 00:00:00'));	# On sort l'élève
+		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
+		$this->assertEquals(0,$retard_col->count());
+		
+		// Un retard justifié doit être décompté
+	    
 		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-18 00:00:00'),new DateTime('2010-10-18 23:59:59'));
 		$this->assertEquals(0,$retard_col->count());
 	}
