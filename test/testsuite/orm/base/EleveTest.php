@@ -281,10 +281,12 @@ class EleveTest extends GepiEmptyTestBase
 		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
 		$this->assertEquals(0,$retard_col->count());
 		
-		// Un retard justifié doit être décompté
-	    
-		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-18 00:00:00'),new DateTime('2010-10-18 23:59:59'));
-		$this->assertEquals(0,$retard_col->count());
+		// 2 retards même créneau doivent être décomptés
+		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
+		saveSetting('abs2_retard_critere_duree',30);
+		$retard_col = $florence_eleve->getRetards(new DateTime('2010-11-09 00:00:00'),new DateTime('2010-11-09 23:59:59'));
+		$this->assertEquals(1,$retard_col->count());
+		
 	}
 
 	public function testGetAbsenceEleveSaisiesManquementObligationPresence() {
