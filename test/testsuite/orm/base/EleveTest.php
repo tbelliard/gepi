@@ -280,7 +280,7 @@ class EleveTest extends GepiEmptyTestBase
 		$florence_eleve->setDateSortie(strtotime('2010-10-04 00:00:00'));	# On sort l'élève
 		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
 		$this->assertEquals(0,$retard_col->count());
-		
+
 		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-18 00:00:00'),new DateTime('2010-10-18 23:59:59'));
 		$this->assertEquals(0,$retard_col->count());
 	}
