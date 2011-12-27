@@ -2060,7 +2060,13 @@ Patientez pendant l'extraction des données... merci.
 				
 			} elseif (getSettingValue("active_module_absence")=='2') {
 			    echo "<h2>Absences et retards de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
-			    // Initialisations files
+			    
+				//affichage de la date de sortie de l'élève de l'établissement
+				if ($tab_ele['date_sortie']!=0) {
+					echo "<p class=\"red\">Date de sortie de l'établissement : le ".affiche_date_sortie($tab_ele['date_sortie'])."</p>";;
+				}
+				
+				// Initialisations files
 			    require_once("../lib/initialisationsPropel.inc.php");
 			    $eleve = EleveQuery::create()->findOneByLogin($ele_login);
 

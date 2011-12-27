@@ -459,6 +459,25 @@ class GepiDataPopulator
         $saisie_19->setDebutAbs('2010-10-19 08:00:00');
         $saisie_19->setFinAbs('2010-10-19 16:30:00');
         $saisie_19->save();
+
+        $saisie_20 = new AbsenceEleveSaisie(); //saisie sur plusieurs journées du jeudi 28-10 au mardi 2-11-2010, 1 seule saisie
+        $saisie_20->setEleve($florence_eleve);
+        $saisie_20->setUtilisateurProfessionnel($dolto_cpe);
+        $saisie_20->setDebutAbs('2010-10-28 08:00:00');
+        $saisie_20->setFinAbs('2010-11-2 17:00:00');
+        $saisie_20->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_20);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Absence scolaire')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
+		
+        $saisie_21 = new AbsenceEleveSaisie(); //saisie sur 1 journée et sortir l'élève de l'établissement
+        $saisie_21->setEleve($florence_eleve);
+        $saisie_21->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_21->setDebutAbs('2011-05-30 08:00:00');
+        $saisie_21->setFinAbs('2011-05-30 16:30:00');
+        $saisie_21->save();
         
         //on va purger les références, qui peuvent être fausses suite à des ajouts ultérieurs
         GepiDataPopulator::clearAllReferences();

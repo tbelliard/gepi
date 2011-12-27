@@ -445,13 +445,13 @@ function initWysiwyg() {
 			extraPlugins : 'equation',
 			toolbar :
 			[
-			    ['equation','Source','Cut','Copy','Paste','PasteText','PasteFromWord'],
+			    ['Source','Cut','Copy','Paste','PasteText','PasteFromWord'],
 			    ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
 			    ['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
 			    ['NumberedList','BulletedList'],
 			    ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
 			    ['Outdent','Indent'],
-			    ['Link','Unlink','Table','HorizontalRule','SpecialChar'],
+			    ['Link','Unlink','Table','HorizontalRule','SpecialChar','equation'],
 			    ['Styles','Format','Font','FontSize'],
 			    ['TextColor','BGColor'],
 			    ['Maximize', 'About','-','Print']
@@ -467,14 +467,14 @@ function initWysiwyg() {
 			extraPlugins : 'equation',
 			toolbar :
 			[
-			    ['equation','Source','Cut','Copy','Paste','PasteText','PasteFromWord'],
+			    ['Source','Cut','Copy','Paste','PasteText','PasteFromWord'],
 			    ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
 			    ['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
 			    ['NumberedList','BulletedList'],
 			    ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
 			    '/',
 			    ['Outdent','Indent'],
-			    ['Link','Unlink','Table','HorizontalRule','SpecialChar'],
+			    ['Link','Unlink','Table','HorizontalRule','SpecialChar','equation'],
 			    ['Styles','Format','Font','FontSize'],
 			    ['TextColor','BGColor'],
 			    ['Maximize', 'About','-','Print']
@@ -608,8 +608,15 @@ function completeEnregistrementCompteRenduCallback(response) {
 		} else {
 			url = './ajax_edition_compte_rendu.php?succes_modification=oui&id_ct=' + id_ct_en_cours + '&id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate();
 		}
-		getWinListeNotices();
-		new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();}});
+
+		// Pour ne pas mettre à jour la fenêtre Liste des notices si on a délié la fenêtre Edition et la fenêtre Liste des notices:
+		if(chaineActive==true) {
+			getWinListeNotices();
+			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();}});
+		}
+		else {
+			//alert('Pas de mise à jour de la fenêtre Liste des notices');
+		}
 		getWinEditionNotice().setAjaxContent(url ,{ onComplete:	function(transport) {initWysiwyg();debut_alert = new Date();	}});
 
 		//on attend 5 secondes et on enleve les messages de confirmation d'enregistrement.
@@ -641,9 +648,16 @@ function completeEnregistrementDevoirCallback(response) {
  		} else {
 			url = './ajax_edition_devoir.php?succes_modification=oui&id_devoir=' + id_ct_en_cours + '&id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate();
  		}
-		getWinListeNotices();
- 		new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();}});
- 		getWinEditionNotice().setAjaxContent(url ,{ onComplete:	function(transport) {initWysiwyg();debut_alert = new Date();	}});
+
+		// Pour ne pas mettre à jour la fenêtre Liste des notices si on a délié la fenêtre Edition et la fenêtre Liste des notices:
+		if(chaineActive==true) {
+			getWinListeNotices();
+	 		new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();}});
+		}
+		else {
+			//alert('Pas de mise à jour de la fenêtre Liste des notices');
+		}
+		getWinEditionNotice().setAjaxContent(url ,{ onComplete:	function(transport) {initWysiwyg();debut_alert = new Date();	}});
 
  		//on attend 5 secondes et on enleve les messages de confirmation d'enregistrement.
        	$('bouton_enregistrer_1');
@@ -662,9 +676,17 @@ function completeEnregistrementNoticePriveeCallback(response) {
 	} else {
 		//si response ne contient pas le mot erreur, il contient l'id du compte rendu
 		id_ct_en_cours = response;
-		getWinListeNotices();
-		new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();}});
+
 		var url = './ajax_edition_notice_privee.php?succes_modification=oui&id_ct=' + id_ct_en_cours + '&id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate();
+
+		// Pour ne pas mettre à jour la fenêtre Liste des notices si on a délié la fenêtre Edition et la fenêtre Liste des notices:
+		if(chaineActive==true) {
+			getWinListeNotices();
+			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();}});
+		}
+		else {
+			//alert('Pas de mise à jour de la fenêtre Liste des notices');
+		}
 		getWinEditionNotice().setAjaxContent(url ,{ onComplete:	function() {initWysiwyg();debut_alert = new Date();	}});
 
 		//on attend 5 secondes et on enleve les messages de confirmation d'enregistrement.
@@ -752,7 +774,17 @@ function updateWindows(message){
 	} else if (object_en_cours_edition == 'notice_privee') {
 		url = 'ajax_edition_notice_privee.php?id_ct=' + $('id_ct').value + '&id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate();
 	}
-	var id_groupe = $('id_groupe').value;
+
+	//alert("id_groupe="+id_groupe+" et id_groupe_colonne_gauche="+$('id_groupe_colonne_gauche').value);
+
+	// Pour ne pas mettre à jour la fenêtre Liste des notices si on a délié la fenêtre Edition et la fenêtre Liste des notices:
+	if(chaineActive==true) {
+		var id_groupe = $('id_groupe').value;
+	}
+	else {
+		var id_groupe = $('id_groupe_colonne_gauche').value;
+	}
+
 	getWinEditionNotice().setAjaxContent(url,
 		{ onComplete: function() {
 				debut_alert = new Date();
@@ -760,6 +792,7 @@ function updateWindows(message){
 				initWysiwyg();
 			}
 		});
+
 	if (message != '') {
 	    alert(message);
 	}

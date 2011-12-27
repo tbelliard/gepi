@@ -123,6 +123,8 @@ class infos{
 
 		if(in_array('suhosin',$extensions)) {$retour.="<span style='color:red'>ATTENTION&nbsp;</span> Il semble que le module '<b>suhosin</b>' soit présent.<br />Si les restrictions imposées par ce module sont trop sévères, certaines pages de Gepi peuvent être perturbées.<br /><em>Exemple de perturbation&nbsp;:</em> Seule une partie des valeurs des formulaires est transmise parce que le module limite le nombre de variables pouvant être envoyées en POST par un formulaire.<br />";}
 
+		if(!in_array('curl',$extensions)) {$retour.= "<span style='color:red'>ATTENTION&nbsp;</span>  Il semble que votre serveur ne soit pas configuré pour l'envoi de SMS.<br />Cette fonctionnalité du module Absence2 nécessite l'extension PHP CURL.<br />";} 
+
 		return $retour;
 	}
 	function memoryLimit(){

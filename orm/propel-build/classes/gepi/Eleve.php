@@ -1152,6 +1152,7 @@ class Eleve extends BaseEleve {
         }
         if ($this->getDateSortie() != null && ($date_fin_iteration == null || $this->getDateSortie('U') < $date_fin_iteration->format('U'))) {
             $date_fin_iteration = $this->getDateSortie(null);
+			$date_fin_iteration->modify('-1 minute');
         }
 
 	    require_once(dirname(__FILE__)."/../../../helpers/AbsencesEleveSaisieHelper.php");
@@ -1289,6 +1290,7 @@ class Eleve extends BaseEleve {
 	    }
             if ($this->getDateSortie() != null && $this->getDateSortie('U') < $date_fin_iteration->format('U')) {
                 $date_fin_iteration = $this->getDateSortie(null);
+				$date_fin_iteration->modify('-1 minute');
             }
 
 	    require_once(dirname(__FILE__)."/../../../helpers/AbsencesEleveSaisieHelper.php");
@@ -1327,6 +1329,11 @@ class Eleve extends BaseEleve {
 	 * @return PropelCollection AbsenceEleveSaisie[]
 	 */
 	public function getRetards($date_debut=null, $date_fin = null) {
+
+		if (($date_fin != null) && ($this->getDateSortie() != null && $this->getDateSortie('U') < $date_fin->format('U'))) {
+			$date_fin = $this->getDateSortie(null);
+		}
+		
 	    $abs_saisie_col = $this->getAbsColDecompteDemiJournee($date_debut, $date_fin);
 	    if ($abs_saisie_col->isEmpty()) {
 			return new PropelCollection();
@@ -1817,13 +1824,15 @@ class Eleve extends BaseEleve {
 	/**
 	 *
 	 * Mets à jour la table d'agrégation des absences pour cet élève
+	 * Pour éviter des calculs trop long par erreurs, l'algorithme est limité à 3 ans dans le passé et le futur
+	 * de la date courante
 	 *
 	 * @param      DateTime $dateDebut date de début pour la prise en compte de la mise à jours
 	 * @param      DateTime $dateFin date de fin pour la prise en compte de la mise à jours
 	 *
 	 */
 	public function updateAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
-
+                $now = new DateTime();
 		$dateDebutClone = null;
 		$dateFinClone = null;
         if($this->debug){
@@ -1835,15 +1844,13 @@ class Eleve extends BaseEleve {
 		}
 		
 		if ($dateDebut != null) {
-		    $now = new DateTime();
-		    if (abs($dateDebut->format('U') - $now->format('U')) > 3600*24*265*3) {
-			    throw new PropelException('Erreur: la date de debut ne peut pas être éloignées de plus de 3 ans de la date courante');
+		    if (abs($dateDebut->format('U') - $now->format('U')) > 3600*24*365*3) {
+			    throw new PropelException('Erreur: la date de debut ne doit pas être éloignées de plus de 3 ans de la date courante');
 		    }
 		}
 		if ($dateFin != null) {
-		    $now = new DateTime();
-		    if (abs($dateFin->format('U') - $now->format('U')) > 3600*24*265*3) {
-			    throw new PropelException('Erreur: la date de fin ne peut pas être éloignées de plus de 3 ans de la date courante');
+		    if (abs($dateFin->format('U') - $now->format('U')) > 3600*24*365*3) {
+			    throw new PropelException('Erreur: la date de fin ne doit pas être éloignées de plus de 3 ans de la date courante');
 		    }
 		}
 		
@@ -1906,6 +1913,9 @@ class Eleve extends BaseEleve {
 					$dateDebutClone->setTime(0,0);
 				}
 			}
+                        if ($dateDebutClone != null && abs($dateDebutClone->format('U') - $now->format('U')) > 3600*24*365*3) {
+                                $dateDebutClone = new DateTime('@'.($now->format('U') - 3600*24*365*3));//on limite la mise à jour à 4 ans en arrière
+                        }
 		}
 		if ($dateDebutClone == null) {
 			//rien à remplir
@@ -1998,11 +2008,10 @@ class Eleve extends BaseEleve {
 				
 				$dateDemiJourneeIteration->modify("+12 hours");
 				
-			} while (//on s'arrete si on a dépassé la date de fin
-					($dateFinClone != null && $dateDemiJourneeIteration <= $dateFinClone)
-					//on s'arrete si la date de fin n'est pas précisé et qu'on a épuisé toutes les absences et retards
-					|| ($dateFinClone == null && ((!$DMabsencesCol->isFirst() || !$DMabsencesCol_start_compute) || (!$retards->isFirst() || !$retards_start_compute)) )
-					);			
+			} while (       ($dateDemiJourneeIteration->format('U') - $now->format('U') < 3600*24*365*3) //on continue si on est pas trop éloigné dans le futur
+					&& (($dateFinClone != null && $dateDemiJourneeIteration <= $dateFinClone)//on continue si on a pas dépassé la date de fin
+					   || ($dateFinClone == null && ((!$DMabsencesCol->isFirst() || !$DMabsencesCol_start_compute) || (!$retards->isFirst() || !$retards_start_compute)) ))//ou continue si la date de fin n'est pas précisé et qu'on a pas encore épuisé toutes les absences et retards
+				);
 		}
 		
 		
@@ -2123,6 +2132,11 @@ class Eleve extends BaseEleve {
             }
         }
     }
+	
+    public function setDateSortie($v) {
+		parent::setDateSortie($v);
+                $this->updateAbsenceAgregationTable();
+	}
     
 	
 } // Eleve

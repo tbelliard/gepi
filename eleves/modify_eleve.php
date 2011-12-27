@@ -519,6 +519,14 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 					//$msg.="TEMOIN test_login puis update<br />";
 				}
 			}
+			
+			if ($date_sortie_annee != "0000") {
+				// On a une date de sortie, on met à jour la table d'agrégation
+				require_once("../lib/initialisationsPropel.inc.php");
+				$eleve = EleveQuery::create()->findOneByLogin($eleve_login);
+				$eleve->updateAbsenceAgregationTable();//pas besoin de sauver dateSortie, c'est déjà fait en mysql ligne 492
+			}
+
 
 			// Corriger le compte d'utilisateur
 			$sql="UPDATE utilisateurs SET nom='$reg_nom', prenom='$reg_prenom', civilite='".(($reg_sexe=='M') ? 'M.' : 'Mlle')."' WHERE login = '".$eleve_login."' AND statut='eleve';";
@@ -699,117 +707,6 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 				$lig_tmp=mysql_fetch_object($res_ele_id_eleve);
 				$ele_id=$lig_tmp->ele_id;
 			}
-
-
-			/*
-			if($temoin_ele_id==""){
-				$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
-				$test_resp1=mysql_query($sql);
-				if(mysql_num_rows($test_resp1)>0){
-					// Il y a déjà une association élève/responsable (c'est bizarre pour un élève que l'on inscrit maintenant???)
-					$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1' AND resp_legal='2'";
-					$test_resp1b=mysql_query($sql);
-					if(mysql_num_rows($test_resp1b)==1){
-						// Le responsable 2 devient responsable 1.
-						$temoin_maj_resp="";
-						$sql="SELECT pers_id FROM responsables2 WHERE ele_id='$ele_id' AND pers_id!='$reg_resp1' AND resp_legal='1'";
-						$test_resp1c=mysql_query($sql);
-						if(mysql_num_rows($test_resp1c)==1){
-							$lig_autre_resp=mysql_fetch_object($test_resp1c);
-							$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='$ele_id' AND pers_id='$lig_autre_resp->pers_id'";
-							$res_update=mysql_query($sql);
-							if(!$res_update){
-								$msg.="Erreur lors de la mise à jour du responsable $lig_autre_resp->pers_id en responsable légal n°2.<br />\n";
-								$temoin_maj_resp="PB";
-							}
-						}
-
-						if($temoin_maj_resp==""){
-							$sql="UPDATE responsables2 SET resp_legal='1' WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
-							$res_update=mysql_query($sql);
-							if(!$res_update){
-								$msg.="Erreur lors de la mise à jour du responsable $reg_resp1 en responsable légal n°1.<br />\n";
-							}
-						}
-					}
-					// Sinon, l'association est déjà la bonne... pas de changement.
-				}
-				else{
-					// Il n'y a pas encore d'association entre cet élève et ce responsable
-					$temoin_maj_resp="";
-					$sql="SELECT pers_id FROM responsables2 WHERE ele_id='$ele_id' AND pers_id!='$reg_resp1' AND resp_legal='1'";
-					$test_resp1c=mysql_query($sql);
-					//if(mysql_num_rows($test_resp1c)==1){
-					if(mysql_num_rows($test_resp1c)>0){
-						$lig_autre_resp=mysql_fetch_object($test_resp1c);
-
-						// Y avait-il un autre responsable légal n°2?
-						$sql="DELETE FROM responsables2 WHERE ele_id='$ele_id' AND resp_legal='2'";
-						$res_menage=mysql_query($sql);
-						if(!$res_menage){
-							$msg.="Erreur lors de la suppression de l'association avec le précédent responsable légal n°2.<br />";
-							$temoin_maj_resp="PB";
-						}
-						else{
-							// L'ancien resp_legal 1 devient resp_legal 2
-							$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='$ele_id' AND pers_id='$lig_autre_resp->pers_id'";
-							$res_update=mysql_query($sql);
-							if(!$res_update){
-								$msg.="Erreur lors de la mise à jour du responsable $lig_autre_resp->pers_id en responsable légal n°2.<br />\n";
-								$temoin_maj_resp="PB";
-							}
-						}
-					}
-
-					if($temoin_maj_resp==""){
-						$sql="INSERT INTO responsables2 SET ele_id='$ele_id', pers_id='$reg_resp1', resp_legal='1', pers_contact='1'";
-						$reg_data2b=mysql_query($sql);
-						if(!$reg_data2b){
-							$msg.="Erreur lors de la mise à jour du responsable $reg_resp1 en responsable légal n°1.<br />\n";
-						}
-					}
-				}
-			}
-			*/
-
-
-
-
-	/*
-			$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
-			$test_resp1=mysql_query($sql);
-			if(mysql_num_rows($test_resp1)){
-				$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='$ele_id' AND pers_id='$reg_resp1' AND resp_legal='2'";
-				$test_resp1b=mysql_query($sql);
-				if(mysql_num_rows($test_resp1b)==1){
-					$sql="SELECT pers_id FROM responsables2 WHERE ele_id='$ele_id' AND pers_id!='$reg_resp1' AND resp_legal='1'";
-					$test_resp1c=mysql_query($sql);
-					if(mysql_num_rows($test_resp1c)==1){
-						$lig_autre_resp=mysql_fetch_object($test_resp1c);
-						$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='$ele_id' AND pers_id='$lig_autre_resp->pers_id'";
-						$res_update=mysql_query($sql);
-					}
-
-					$sql="UPDATE responsables2 SET resp_legal='1' WHERE ele_id='$ele_id' AND pers_id='$reg_resp1'";
-					$res_update=mysql_query($sql);
-				}
-			}
-			else{
-				$sql="SELECT pers_id FROM responsables2 WHERE ele_id='$ele_id' AND pers_id!='$reg_resp1' AND resp_legal='1'";
-				$test_resp1c=mysql_query($sql);
-				if(mysql_num_rows($test_resp1c)==1){
-					$lig_autre_resp=mysql_fetch_object($test_resp1c);
-					$sql="UPDATE responsables2 SET resp_legal='2' WHERE ele_id='$ele_id' AND pers_id='$lig_autre_resp->pers_id'";
-					$res_update=mysql_query($sql);
-				}
-
-				$sql="INSERT INTO responsables2 SET ele_id='$ele_id', pers_id='$reg_resp1', resp_legal='1', pers_contact='1'";
-				$reg_data2b=mysql_query($sql);
-			}
-
-			// AJOUTER DES TESTS DE SUCCES DE LA MàJ.
-	*/
-
 		}
 	}
 

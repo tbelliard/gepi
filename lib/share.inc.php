@@ -4046,13 +4046,18 @@ function del_info_action($id_info) {
  * @param date $date_sortie date (timestamp)
  * @return string La date formatée 
  */
-function affiche_date_sortie($date_sortie) {
+function affiche_date_sortie($date_sortie,$heure=FALSE) {
 	//
     $eleve_date_de_sortie_time=strtotime($date_sortie);
 	//récupération du jour, du mois et de l'année
 	$eleve_date_sortie_jour=date('j', $eleve_date_de_sortie_time); 
 	$eleve_date_sortie_mois=date('m', $eleve_date_de_sortie_time);
 	$eleve_date_sortie_annee=date('Y', $eleve_date_de_sortie_time); 
+	$eleve_date_sortie_heure=date('H', $eleve_date_de_sortie_time); 
+	$eleve_date_sortie_minute=date('i', $eleve_date_de_sortie_time); 
+	if ($heure) {
+		return $eleve_date_sortie_jour."/".$eleve_date_sortie_mois."/".$eleve_date_sortie_annee." ".$eleve_date_sortie_heure.":".$eleve_date_sortie_minute;
+	}
 	return $eleve_date_sortie_jour."/".$eleve_date_sortie_mois."/".$eleve_date_sortie_annee;
 }
 
@@ -5092,5 +5097,32 @@ function echo_csv_encoded($texte_csv) {
 	}
 
 	return $retour;
+}
+
+/** fonction retournant le jour traduit en français
+ *
+ * @param string $jour_en Le jour en anglais (Mon, Tue, Wed,...)
+ * @return string La date en français 
+ */
+function jour_fr($jour_en, $mode="") {
+	$tab['mon']="lun";
+	$tab['tue']="mar";
+	$tab['wed']="mer";
+	$tab['thu']="jeu";
+	$tab['fri']="ven";
+	$tab['sat']="sam";
+	$tab['sun']="dim";
+
+	if(isset($tab[mb_strtolower($jour_en)])) {
+		if($mode=='majf2') {
+			return casse_mot($tab[mb_strtolower($jour_en)], 'majf2');
+		}
+		else {
+			return $tab[mb_strtolower($jour_en)];
+		}
+	}
+	else {
+		return $jour_en;
+	}
 }
 ?>
