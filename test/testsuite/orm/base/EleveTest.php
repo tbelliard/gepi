@@ -277,7 +277,7 @@ class EleveTest extends GepiEmptyTestBase
 		saveSetting('abs2_retard_critere_duree',30);
 		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
 		$this->assertEquals(1,$retard_col->count());
-		$florence_eleve->setEleveSorti(strtotime('2010-10-04 00:00:00'));	# On sort l'élève
+		$florence_eleve->setDateSortie(strtotime('2010-10-04 00:00:00'));	# On sort l'élève
 		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
 		$this->assertEquals(0,$retard_col->count());
 		
@@ -614,7 +614,7 @@ class EleveTest extends GepiEmptyTestBase
 				->filterByManquementObligationPresence(true);	
 	    $this->assertEquals(2,$nbAbs->count());
 		
-	    $florence_eleve->setEleveSorti(strtotime('30-05-2011 00:00:00'));	# On sort l'élève
+	    $florence_eleve->setDateSortie(strtotime('30-05-2011 00:00:00'));	# On sort l'élève
 		
 		$demi_j_col = $florence_eleve->getDemiJourneesAbsenceParCollection($saisie_col);
 		$this->assertEquals(0,$demi_j_col->count());	# L'élève n'est plus dans l'établissement -> 0 absence

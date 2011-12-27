@@ -524,8 +524,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 				// On a une date de sortie, on met à jour la table d'agrégation
 				require_once("../lib/initialisationsPropel.inc.php");
 				$eleve = EleveQuery::create()->findOneByLogin($eleve_login);
-				// $eleve->setEleveSorti($date_sortie_annee.'-'.$date_sortie_mois.'-'.$date_sortie_jour);
-				$eleve->setEleveSorti($date_de_sortie_eleve);
+				$eleve->updateAbsenceAgregationTable();//pas besoin de sauver dateSortie, c'est déjà fait en mysql ligne 492
 			}
 
 
