@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
  *
  * This file is part of GEPI.
  *
@@ -156,6 +156,11 @@ settype($day,"integer");
 settype($year,"integer");
 $minyear = strftime("%Y", getSettingValue("begin_bookings"));
 $maxyear = strftime("%Y", getSettingValue("end_bookings"));
+
+//echo "\$year=$year<br />";
+//echo "\$minyear=$minyear<br />";
+//echo "\$maxyear=$maxyear<br />";
+
 if ($day < 1) {$day = 1;}
 if ($day > 31) {$day = 31;}
 if ($month < 1) {$month = 1;}
@@ -163,8 +168,11 @@ if ($month > 12) {$month = 12;}
 if ($year < $minyear) {$year = $minyear;}
 if ($year > $maxyear) {$year = $maxyear;}
 
+//echo "\$year=$year<br />";
+
 // On empêche un élève ou un parent de voir les CR des jours futurs
   /* --------- Ajout pour les séquences ---------------- */
+/*
 if ($_SESSION["statut"] == 'eleve' OR $_SESSION["statut"] == 'responsable'){
 
   if ($day > date("d")) {$day = date("d");}
@@ -172,6 +180,7 @@ if ($_SESSION["statut"] == 'eleve' OR $_SESSION["statut"] == 'responsable'){
   if ($year > date("Y")) {$year = date("Y");}
 
 }
+*/
 
 # Make the date valid if day is more then number of days in month
 while (!checkdate($month, $day, $year)) $day--;
@@ -181,6 +190,7 @@ $titre_page = "Cahier de textes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
 
+//debug_var();
 
 //echo "<p>\$selected_eleve_login=$selected_eleve_login</p>";
 //echo "<p>id_classe=$id_classe</p>";
@@ -447,7 +457,7 @@ echo "<div class=\"centre_cont_texte\">\n";
     echo "<div class=\"cct_gauche\">\n";
 	 // ?????????????????????????????????????????????????????????
 // ---------------------------- Lien vers see_all.php  ----
-	   echo "<a href='see_all.php?id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe'>Voir l'ensemble du cahier de textes</a>\n<br />\n";
+	   echo "<a href='see_all.php?id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe'>Voir l'ensemble du cahier de textes de ".$matiere_nom."</a>\n<br />\n";
 	// Cela provoque une déconnexion de l'élève et le compte est rendu 'inactif'???
 	// ?????????????????????????????????????????????????????????
 
@@ -681,7 +691,11 @@ $td = date("d",$i);
               from ct_entry
               where (contenu != ''
               and id_groupe='$id_groupe'
-              and date_ct <= '$today'
+              and date_ct <= '$today'";
+          if ($_SESSION["statut"] == 'eleve' OR $_SESSION["statut"] == 'responsable') {
+              $req_notices.="and date_ct <= '".time()."'";
+          }
+          $req_notices.="
               and date_ct != ''
               and date_ct >= '".getSettingValue("begin_bookings")."')
               ORDER BY date_ct DESC, heure_entry DESC limit 10";

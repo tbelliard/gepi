@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
  *
  * This file is part of GEPI.
  *
@@ -156,6 +156,7 @@ if ($year > $maxyear) $year = $maxyear;
 # Make the date valid if day is more then number of days in month
 while (!checkdate($month, $day, $year)) $day--;
 $today=mktime(0,0,0,$month,$day,$year);
+
 //**************** EN-TETE *****************
 $titre_page = "Cahier de textes";
 require_once("../lib/header.inc");
@@ -608,7 +609,11 @@ $td = date("d",$i);
               from ct_entry
               where (contenu != ''
               and id_groupe='$id_groupe'
-              and date_ct <= '$today'
+              and date_ct <= '$today'";
+          if ($_SESSION["statut"] == 'eleve' OR $_SESSION["statut"] == 'responsable') {
+              $req_notices.="and date_ct <= '".time()."'";
+          }
+          $req_notices.="
               and date_ct != ''
               and date_ct >= '".getSettingValue("begin_bookings")."')
               ORDER BY date_ct DESC, heure_entry DESC limit 10";
