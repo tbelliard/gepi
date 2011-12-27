@@ -281,8 +281,6 @@ class EleveTest extends GepiEmptyTestBase
 		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
 		$this->assertEquals(0,$retard_col->count());
 		
-		// Un retard justifié doit être décompté
-	    
 		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-18 00:00:00'),new DateTime('2010-10-18 23:59:59'));
 		$this->assertEquals(0,$retard_col->count());
 	}
@@ -616,7 +614,6 @@ class EleveTest extends GepiEmptyTestBase
 				->filterByManquementObligationPresence(true);	
 	    $this->assertEquals(2,$nbAbs->count());
 		
-	    //$florence_eleve->setDateSortie(strtotime('30-05-2011 00:00:00'));	# Avec setDateSortie() la table d'agrégation n'est pas remise à jour
 	    $florence_eleve->setEleveSorti(strtotime('30-05-2011 00:00:00'));	# On sort l'élève
 		
 		$demi_j_col = $florence_eleve->getDemiJourneesAbsenceParCollection($saisie_col);
