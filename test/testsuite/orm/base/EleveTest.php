@@ -353,9 +353,24 @@ class EleveTest extends GepiEmptyTestBase
 	    $this->assertEquals(5,AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->count());
 	    $this->assertEquals(0, AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByManquementObligationPresence(true)->count());
 	    $this->assertEquals(5, AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->filterByRetards(0)->count());
-	    
 	    AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->delete();
+            $saisie = new AbsenceEleveSaisie();//on va vérifier que la mise à jour de la table d'agrégation est bien limité à 3 ans dans le passé et dans le futur
+            $saisie->setEleve($florence_eleve);
+            $saisie->setUtilisateurProfessionnel(UtilisateurProfessionnelQuery::create()->findOneByLogin('Dolto'));
+            $before = new DateTime();
+            $before->modify('-4 years');
+            $saisie->setDebutAbs($before);
+            $after = new DateTime();
+            $after->modify('+4 years');
+            $saisie->setFinAbs($after);
+            $saisie->save();
+            $now = new DateTime();
 	    $florence_eleve->updateAbsenceAgregationTable();
+            $col = AbsenceAgregationDecompteQuery::create()->filterByEleve($florence_eleve)->orderByDateDemiJounee()->find();
+            $this->assertTrue($now->format('U') - $col->get(1)->getDateDemiJounee('U') < 3600*24*365*3 + 3600*24);
+            $this->assertTrue($now->format('U') - $col->get(1)->getDateDemiJounee('U') > 3600*24*365*3 - 3600*24);
+            $this->assertTrue($col->getLast()->getDateDemiJounee('U') - $now->format('U') < 3600*24*365*3 + 3600*24);
+            $this->assertTrue($col->getLast()->getDateDemiJounee('U') - $now->format('U') > 3600*24*365*3 - 3600*24);
 	    
         try {
             $florence_eleve->updateAbsenceAgregationTable(new DateTime('1980-09-01 00:00:00'),null);
