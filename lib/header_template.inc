@@ -505,9 +505,15 @@ if (isset($titre_page)) {
             }
             if ($gepiGitCommit != null) {
                 $version_gepi .= ' '.substr($gepiGitCommit, 0, 6).' '.$gepiGitBranch;
-            }
-		}
+                try {
+                    $timestamp = exec('cd '.dirname(__FILE__).'; git show  --format=format:%ct '.$gepiGitCommit.'', $output);
+                    $date = new DateTime('@'.$timestamp);
+                    $version_gepi .= ' '.$date->format('d/m/Y H:i');
+                } catch (Exception $e) {
+                }
 		$tbs_version_gepi = $version_gepi;
+            }
+        }
 	} else {
 		$tbs_version_gepi=" ";			// nécessaire pour recaler le bandeau dans tous les navigateurs
 	}
