@@ -1,9 +1,15 @@
-GEPI-1.6.0- Procédure d'installation
+GEPI-trunk- Procédure d'installation
 ==========================================
 
 ****************************************************
 Installation - Etape 0 : téléchargement de l'archive
 ****************************************************
+
+ATTENTION! Ce paquetage contient la version en cours de développement de Gepi, dite "master", ex "trunk", c'est-à-dire une version
+destinée à identifier et corriger les bugs induits par les nouvelles fonctionnalités.
+
+NE PAS UTILISER CETTE VERSION EN PRODUCTION ! Vous exposeriez votre base de données à des incohérences
+qui pourraient la rendre incompatible avec la version stable.
 
 L'ensemble des fichiers nécessaires à l'installation sont rassemblés dans
 l'archive que vous avez téléchargée (secure/modeles/).
@@ -31,6 +37,9 @@ Certains fonctionnalités requièrent les dépendances suivantes :
 
 - SSO avec CAS :
 * module php5-curl
+
+- A partir du 1er janvier 2012 (version 1.6.0 et suivantes)
+* Le module mbstring devient indispensable (encodage utf-8)
 
 
 ************************************************

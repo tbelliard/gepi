@@ -1,4 +1,4 @@
-GEPI-1.6.0- Procédure de mise à jour
+GEPI-master- Procédure de mise à jour
 ==========================================
 
 *************
