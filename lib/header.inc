@@ -730,6 +730,12 @@ if (isset($titre_page)) {
                         }
                         if ($gepiGitCommit != null) {
                             $version_gepi .= ' '.substr($gepiGitCommit, 0, 6).' '.$gepiGitBranch;
+                            try {
+                                $timestamp = exec('cd '.dirname(__FILE__).'; git show  --format=format:%ct '.$gepiGitCommit.'', $output);
+                                $date = new DateTime('@'.$timestamp);
+                                $version_gepi .= ' '.$date->format('d/m/Y H:i');
+                            } catch (Exception $e) {
+                            }
                         }
 					}
 					echo "<p id='num_version'>".$version_gepi."</p>";
