@@ -107,7 +107,7 @@ if(($_SESSION['statut']=='cpe')||
 	echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Saisie_cpe">wiki</a></div>';
     } else if($url_end=='liste_notifications.php') {
 	echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Suivi">wiki</a></div>';
-    } else if($url_end=='tableau_des_appels.php'|| $url_end=='absences_du_jour.php'||$url_end=='bilan_du_jour.php'||$url_end=='totaux_du_jour.php'||$url_end=='extraction_saisies.php'||$url_end=='extraction_demi-journees.php'||$url_end=='bilan_individuel.php'||$url_end=='statistiques.php') {
+    } else if($url_end=='tableau_des_appels.php'|| $url_end=='absences_du_jour.php'||$url_end=='bilan_du_jour.php'||$url_end=='totaux_du_jour.php'||$url_end=='extraction_saisies.php'||$url_end=='extraction_demi-journees.php'||$url_end=='bilan_individuel.php'||$url_end=='statistiques.php'||$url_end=='stat_justifications.php') {
 	echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Bilans">wiki</a></div>';
     } else {
     echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Traitement_notification">wiki</a></div>';
