@@ -588,8 +588,8 @@ if (!$eleve_col->isEmpty()) {
 		<tbody>
 			<tr class="titre_tableau_gestion" style="white-space: nowrap;">
 				<th style="text-align : center;" >Veille</th>
-				<th style="text-align : center;" abbr="élèves">Liste des &eacute;l&egrave;ves</th>
-				<th colspan='"<?php echo (EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime()->count());?>"' class="th_abs_suivi" abbr="Créneaux">Suivi sur la journ&eacute;e</th>
+				<th style="text-align : center;" abbr="élèves">Liste des élèves</th>
+				<th colspan='"<?php echo (EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime()->count());?>"' class="th_abs_suivi" abbr="Créneaux">Suivi sur la journée</th>
 			</tr>
 			<tr>
 				<td></td>
@@ -728,7 +728,7 @@ foreach($eleve_col as $eleve) {
 					    }
 					}
 
-					//on va afficher des renseignements sur les heures pr�c�dente
+					//on va afficher des renseignements sur les heures précédente
 					$traitee = false;
 					$hover = 'traitements - ';
                                         foreach ($absences_du_creneau as $abs_saisie) {
