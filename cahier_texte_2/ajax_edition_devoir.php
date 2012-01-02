@@ -389,7 +389,14 @@ echo "<script type='text/javascript'>
 			echo "<td style='text-align:center; width: 16px;'>\n";
 			echo "<a title=\"Aller au jour précédent\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($hier);dateChanged(calendarInstanciation);'><img src='../images/icons/arrow-left.png' width='16' height='16' title='Aller au jour précédent' alt='Aller au jour précédent' /></a>\n";
 			echo "</td>\n";
-			echo "<td align='center'>Aujourd'hui</td>\n";
+			echo "<td align='center'>";
+			if(date("d/m/Y")==date("d/m/Y",$today)) {
+				echo "Aujourd'hui";
+			}
+			else {
+				echo jour_fr(date("D",$today),'majf2')." ".date("d/m",$today);
+			}
+			echo "</td>\n";
 			echo "<td style='text-align:center; width: 16px;'>\n";
 			echo "<a title=\"Aller au jour suivant\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($demain);dateChanged(calendarInstanciation);'><img src='../images/icons/arrow-right.png' width='16' height='16' title='Aller au jour suivant' alt='Aller au jour suivant' /></a>\n";
 			echo "</td>\n";

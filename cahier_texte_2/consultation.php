@@ -166,6 +166,7 @@ if ($year > $maxyear) {$year = $maxyear;}
 
 // On empêche un élève ou un parent de voir les CR des jours futurs
   /* --------- Ajout pour les séquences ---------------- */
+/*
 if ($_SESSION["statut"] == 'eleve' OR $_SESSION["statut"] == 'responsable'){
 
   if ($day > date("d")) {$day = date("d");}
@@ -173,6 +174,7 @@ if ($_SESSION["statut"] == 'eleve' OR $_SESSION["statut"] == 'responsable'){
   if ($year > date("Y")) {$year = date("Y");}
 
 }
+*/
 
 # Make the date valid if day is more then number of days in month
 while (!checkdate($month, $day, $year)) $day--;
@@ -230,7 +232,7 @@ echo "<div class=\"centre_table\">\n";
 			}
 			if ($selected_eleve_login != "") {
 				echo make_matiere_select_html('consultation.php', $selected_eleve_login, $id_groupe, $year, $month, $day);
-				echo "<a href='see_all.php?&year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=Toutes_matieres'>Voir l'ensemble du cahier de textes</a>";
+				echo "<a href='see_all.php?&year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=$selected_eleve_login&amp;id_groupe=Toutes_matieres'>Voir l'ensemble du cahier de textes</a>";
 			}
 		echo "</div>\n";
 		//echo "<td align=\"right\">\n";
@@ -448,7 +450,7 @@ echo "<div class=\"centre_cont_texte\">\n";
     echo "<div class=\"cct_gauche\">\n";
 	 // ?????????????????????????????????????????????????????????
 // ---------------------------- Lien vers see_all.php  ----
-	   echo "<a href='see_all.php?id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe'>Voir l'ensemble du cahier de textes</a>\n<br />\n";
+	   echo "<a href='see_all.php?id_classe=$id_classe&amp;login_eleve=$selected_eleve_login&amp;id_groupe=$id_groupe'>Voir l'ensemble du cahier de textes en $matiere_nom</a>\n<br />\n";
 	// Cela provoque une déconnexion de l'élève et le compte est rendu 'inactif'???
 	// ?????????????????????????????????????????????????????????
 
@@ -682,7 +684,11 @@ $td = date("d",$i);
               from ct_entry
               where (contenu != ''
               and id_groupe='$id_groupe'
-              and date_ct <= '$today'
+              and date_ct <= '$today'";
+          if ($_SESSION["statut"] == 'eleve' OR $_SESSION["statut"] == 'responsable') {
+              $req_notices.="and date_ct <= '".time()."'";
+          }
+          $req_notices.="
               and date_ct != ''
               and date_ct >= '".getSettingValue("begin_bookings")."')
               ORDER BY date_ct DESC, heure_entry DESC limit 10";
