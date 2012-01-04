@@ -728,7 +728,7 @@ foreach($eleve_col as $eleve) {
 					    }
 					}
 
-					//on va afficher des renseignements sur les heures précédente
+					//on va afficher des renseignements sur les heures prÃ©cÃ©dente
 					$traitee = false;
 					$hover = 'traitements - ';
                                         foreach ($absences_du_creneau as $abs_saisie) {
