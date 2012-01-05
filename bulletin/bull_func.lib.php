@@ -5153,8 +5153,6 @@ $hauteur_pris_app_abs=$hauteur_pris;
 				else {$textmention="-";}
 				// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 
-				//$pdf->drawTextBox(($texteavis), $tab_modele_pdf["longeur_avis_cons"][$classe_id]-5, $tab_modele_pdf["hauteur_avis_cons"][$classe_id]-10, 'J', 'M', 0);
-
 				//$avec_coches_mentions="y";
 				//if($avec_coches_mentions=="y") {
 				if($tab_modele_pdf["affich_coches_mentions"][$classe_id]!="n") {
@@ -5194,11 +5192,6 @@ $hauteur_pris_app_abs=$hauteur_pris;
 					cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
 				}
 
-				//=========================
-				// MODIF: boireaus 20081220
-				// DEBUG:
-				//$pdf->drawTextBox(($texteavis." \$Y_avis_cons_init=".$Y_avis_cons_init." \$tab_modele_pdf[\"hauteur_avis_cons\"][$classe_id]=".$tab_modele_pdf["hauteur_avis_cons"][$classe_id]." \$hauteur_pris_app_abs=".$hauteur_pris_app_abs), $tab_modele_pdf["longeur_avis_cons"][$classe_id]-5, $tab_modele_pdf["hauteur_avis_cons"][$classe_id]-10, 'J', 'M', 0);
-				//=========================
 				$X_pp_aff=$tab_modele_pdf["X_avis_cons"][$classe_id];
 
 				//$Y_pp_aff=$tab_modele_pdf["Y_avis_cons"][$classe_id]+$tab_modele_pdf["hauteur_avis_cons"][$classe_id]-5;
