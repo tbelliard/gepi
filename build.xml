@@ -202,5 +202,6 @@
 
  <!--target name="build" depends="clean,parallelTasks,phpunit,phpcb"/-->
  <!--target name="build" depends="clean,tarball,pdepend,phpmd,phpcpd,phpcs,phpdoc,phploc,phpunit,phpcb"/-->
- <target name="build" depends="clean,tarball,pdepend,phpmd,phpcpd,phpdoc,phploc,phpunit_no_code_coverage,phpcb"/>
+ <target name="ci-build" depends="clean,tarball,pdepend,phpmd,phpcpd,phpdoc,phploc,phpunit_no_code_coverage,phpcb"/>
+ <target name="build" depends="clean,tarball"/>
 </project>
