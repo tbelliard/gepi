@@ -36,7 +36,7 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 	$order_by=isset($_POST['order_by']) ? $_POST['order_by'] : (isset($_GET['order_by']) ? $_GET['order_by'] : "nom,prenom");
 
 	if(isset($rech_nom)) {
-		$rech_nom=preg_replace("/[^A-Za-z$string]/","",$rech_nom);
+		$rech_nom=preg_replace("/[^A-Za-z$string]/","%",$rech_nom);
 
 		if($order_by=='classe') {
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec, classes c WHERE e.nom LIKE '%$rech_nom%' AND jec.login=e.login AND jec.id_classe=c.id ORDER BY c.classe, e.nom, e.prenom;";
@@ -56,7 +56,7 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 		}
 	}
 	elseif(isset($rech_prenom)) {
-		$rech_prenom=preg_replace("/[^A-Za-z$string]/","",$rech_prenom);
+		$rech_prenom=preg_replace("/[^A-Za-z$string]/","%",$rech_prenom);
 		//echo "rech_prenom=$rech_prenom<br />";
 
 		if($order_by=='classe') {
