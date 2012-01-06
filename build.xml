@@ -193,6 +193,8 @@
       <exclude name="test/**"/>
       <exclude name=".gradle/**"/>
       <exclude name=".git/**"/>
+      <exclude name="temp/**"/>
+      <exclude name="lib/standalone/HTMLPurifier/DefinitionCache/Serializer/**"/>
       <exclude name="**/.gitignore"/>
     </tarfileset>
   </tar>
