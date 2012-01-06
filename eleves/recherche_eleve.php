@@ -3,6 +3,9 @@
 /*
 	$Id$
 */
+
+$string="";
+/*
 if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")){
 	$string = "ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸";
 	$encoding = mb_detect_encoding($string, "UTF-8, ISO-8859-1");
@@ -11,6 +14,7 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 } else {
 	$string = "";
 }
+*/
 //echo $string;
 
 	$rech_nom=isset($_POST['rech_nom']) ? $_POST['rech_nom'] : (isset($_GET['rech_nom']) ? $_GET['rech_nom'] : NULL);
