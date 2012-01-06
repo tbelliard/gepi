@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009-2011 Josselin Jacquard
+ * Copyright 2009-2012 Josselin Jacquard
  *
  * This file is part of GEPI.
  *
@@ -212,7 +212,19 @@ echo " <button style='background-color:".$color_fond_notices['p']."' onclick=\"j
 						getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$groupe->getId()."&today='+getCalendarUnixDate());
 					\">Voir NP</button>\n";
 
-echo "<br><br>\n";
+//echo "<br><br>\n";
+echo "<br />\n";
+// Retour aux notices d'aujourd'hui:
+$timestamp_du_jour=mktime(0,0,0,date('n'),date('j'),date('Y'));
+if($timestamp_du_jour!=$today) {
+	echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button style='background-color:".$color_fond_notices['c']."' onclick=\"javascript:
+							getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe='+ ".$groupe->getId()." + '&today='+$timestamp_du_jour,{ onComplete:function(transport) {initWysiwyg();}});
+							object_en_cours_edition = 'compte_rendu';
+						\">CR : Retour au ".date('d')."/".date('m')."</button>\n";
+}
+//echo "\$timestamp_du_jour=$timestamp_du_jour<br />";
+//echo "\$today=$today<br />";
+echo "<br />\n";
 
 //==============================================
 
