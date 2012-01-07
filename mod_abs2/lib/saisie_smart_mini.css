@@ -1,0 +1,53 @@
+#container form {
+	font-size: 24px;
+}
+	
+.invisible {
+	display: none;
+}
+
+.choix  {
+	display: block;	
+}
+
+.choix form {
+	display: block;
+}
+
+.noSmartphone {
+	display: none;
+}
+
+.smartphone {
+	display: inline;
+	font-size: 150%;
+	color :black;
+}
+	
+.trombine {
+	max-width: 90px; 
+	max-height: 90px;
+}
+	
+.fondVert {
+	background-color: greenyellow;
+}
+	
+.fondRouge {
+	background-color: pink;
+}
+	
+.policeRouge {
+	display: inline;
+	font-size: 150%;
+	color: red;
+}
+	
+.policeBlack {
+	display: inline;
+	font-size: 150%;
+	color: black;
+}
+
+
+	

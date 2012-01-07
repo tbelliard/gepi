@@ -26,11 +26,18 @@
 			foreach ($tbs_CSS as $value) {
 				if ($value!="") {
 					echo "<link rel=\"$value[rel]\" type=\"$value[type]\" href=\"$value[fichier]\" media=\"$value[media]\" />\n";
-		// [tbs_CSS.title;att=title]
+					echo "<link rel=\"$value[rel]\" type=\"$value[type]\" href=\"$value[fichier]\" media=\"screen and (max-width: 800px)\" />\n";
 				}
 			}
 			unset($value);
 		}
+		
+		if (isset($CSS_smartphone)) {
+	?>
+			<link rel="stylesheet" type="text/css" href="<?php echo $gepiPath.'/'.$CSS_smartphone; ?>.css" media="screen and (max-width: 800px)" />
+	<?php
+		}
+		
 	?>
 	
 <!-- Fin des styles -->

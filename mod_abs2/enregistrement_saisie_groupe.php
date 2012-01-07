@@ -24,9 +24,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Initialisation des feuilles de style après modification pour améliorer l'accessibilité
-$accessibilite="y";
-
 // Initialisations files
 require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
@@ -209,7 +206,7 @@ $message_erreur .= verif_debut_fin_saisie($dt_date_debut_appel, $dt_date_fin_app
 if ($utilisateur->getStatut() == 'professeur' && getSettingValue("abs2_saisie_prof_decale_journee")!='y' && getSettingValue("abs2_saisie_prof_decale")!='y') {
     $now = new DateTime('now');
     if ($dt_date_debut_appel->format('U') > $now->format('U') || $dt_date_fin_appel->format('U') < $now->format('U')) {
-	$message_erreur .= "Appel non autorisée et dehors des heures de cours dont on fait l'appel.<br/>";
+	$message_erreur .= "Appel non autorisée et en dehors des heures de cours dont on fait l'appel.<br/>";
     }
 }
 $saisie->setDebutAbs($dt_date_debut_appel);
