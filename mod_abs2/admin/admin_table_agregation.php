@@ -89,6 +89,16 @@ echo "</p>";
                     }
                 } elseif ($action == "regeneration") {
                     $eleve_col = EleveQuery::create()->paginate($page, $maxPerPage);
+					if (1 == $page) {
+						$del = AbsenceAgregationDecompteQuery::create()->deleteAll();
+						$nb = AbsenceAgregationDecompteQuery::create()->count();
+						if ($nb === 0) {
+							echo"<p>La Table est vide.</p>";
+						} else {
+							echo"<p>Un problème est survenu.</p>";
+							die();
+						}
+					}
                     echo'<div id="contain_div" class="css-panes">
                         <p> Traitement de la tranche d\'élève ' . $page . '/' . $eleve_col->getLastPage() . ' en cours... <br />
                             Attention cette opération peut être longue.</p>

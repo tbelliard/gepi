@@ -65,6 +65,12 @@ if (!PeutEffectuerActionSuppression($_SESSION["login"],$action,$liste_cible,$lis
     die();
 }
 
+//debug_var();
+
+if(isset($_GET['chemin_retour'])) {
+	$_SESSION['chemin_retour']=$_GET['chemin_retour'];
+}
+
 if (isset($liste_cible)) $tab_cible1 = explode(";", $liste_cible);
 if (isset($liste_cible2)) $tab_cible2 = explode(";", $liste_cible2);
 if (isset($liste_cible3)) $tab_cible3 = explode(";", $liste_cible3);

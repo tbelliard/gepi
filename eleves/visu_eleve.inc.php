@@ -43,7 +43,7 @@ if((!isset($ele_login))&&(!isset($Recherche_sans_js))) {
 	echo "<noscript>
 	<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire1'>
 		<p>
-		Afficher les ".$gepiSettings['denomination_eleves']." dont le <b>nom</b> contient&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='text' name='rech_nom' value='' />
+		Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>nom</strong> contient&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='text' name='rech_nom' value='' />
 		<input type='hidden' name='page' value='$page' />
 		<input type='submit' name='Recherche_sans_js' value='Rechercher' />
 		</p>
@@ -51,7 +51,7 @@ if((!isset($ele_login))&&(!isset($Recherche_sans_js))) {
 
 	<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire1'>
 		<p>
-		Afficher les ".$gepiSettings['denomination_eleves']." dont le <b>prénom</b> contient&nbsp;: <input type='text' name='rech_prenom' value='' />
+		Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>prénom</strong> contient&nbsp;: <input type='text' name='rech_prenom' value='' />
 		<input type='hidden' name='page' value='$page' />
 		<input type='submit' name='Recherche_sans_js' value='Rechercher' />
 		</p>
@@ -112,7 +112,7 @@ if((!isset($ele_login))&&(!isset($Recherche_sans_js))) {
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit=\"cherche_eleves('nom');return false;\" method='post' name='formulaire'>";
 	echo "<p>\n";
-	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <b>nom</b> contient&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='text' name='rech_nom' id='rech_nom' value='' onchange=\"affichage_et_action('nom')\" />\n";
+	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>nom</strong> contient&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='text' name='rech_nom' id='rech_nom' value='' onchange=\"affichage_et_action('nom')\" />\n";
 	echo "<input type='hidden' name='page' value='$page' />\n";
 	echo "<input type='button' name='Recherche' id='Recherche_nom' value='Rechercher' onclick=\"cherche_eleves('nom')\" />\n";
 	echo "</p>\n";
@@ -120,7 +120,7 @@ if((!isset($ele_login))&&(!isset($Recherche_sans_js))) {
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit=\"cherche_eleves('prenom');return false;\" method='post' name='formulaire'>";
 	echo "<p>\n";
-	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <b>prénom</b> contient&nbsp;: <input type='text' name='rech_prenom' id='rech_prenom' value='' onchange=\"affichage_et_action('prenom')\" />\n";
+	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>prénom</strong> contient&nbsp;: <input type='text' name='rech_prenom' id='rech_prenom' value='' onchange=\"affichage_et_action('prenom')\" />\n";
 	echo "<input type='hidden' name='page' value='$page' />\n";
 	echo "<input type='button' name='Recherche' id='Recherche_prenom' value='Rechercher' onclick=\"cherche_eleves('prenom')\" />\n";
 	echo "</p>\n";
@@ -883,15 +883,15 @@ Patientez pendant l'extraction des données... merci.
 		echo "background-color: ".$tab_couleur['eleve']."; ";
 		echo "'>";
 		echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=eleve' onclick=\"affiche_onglet('eleve');return false;\">";
-		//echo "<b>".$tab_ele['nom']." ".$tab_ele['prenom']." (<i>".$tab_ele['liste_classes']."</i>)</b>";
-		echo "<b>".$tab_ele['nom']." ".$tab_ele['prenom']." (<i>";
+		//echo "<strong>".$tab_ele['nom']." ".$tab_ele['prenom']." (<em>".$tab_ele['liste_classes']."</em>)</strong>";
+		echo "<strong>".$tab_ele['nom']." ".$tab_ele['prenom']." (<em>";
 		if(isset($tab_ele['liste_classes'])) {
 			echo $tab_ele['liste_classes'];
 		}
 		else {
 			echo "Aucune classe";
 		}
-		echo "</i>)</b>";
+		echo "</em>)</strong>";
 		echo "</a>";
 		echo "</div>\n";
 
@@ -1175,7 +1175,7 @@ Patientez pendant l'extraction des données... merci.
 				for($i=0;$i<count($tab_ele['resp']);$i++) {
 					if($tab_ele['resp'][$i]['resp_legal']!=0) {
 						echo "<td valign='top'>\n";
-						echo "<p>Responsable légal <b>".$tab_ele['resp'][$i]['resp_legal']."</b></p>\n";
+						echo "<p>Responsable légal <strong>".$tab_ele['resp'][$i]['resp_legal']."</strong></p>\n";
 
 						echo "<table class='boireaus' summary='Infos responsables (1)'>\n";
 						echo "<tr><th style='text-align: left;'>Nom:</th><td>";
@@ -1246,7 +1246,7 @@ Patientez pendant l'extraction des données... merci.
 
 						if($tab_ele['resp'][$i]['resp_legal']==0) {
 							echo "<td valign='top'>\n";
-							echo "<p>Contact (<i>non responsable légal</i>)</p>\n";
+							echo "<p>Contact (<em>non responsable légal</em>)</p>\n";
 
 							echo "<table class='boireaus' summary='Infos resp0'>\n";
 							echo "<tr><th style='text-align: left;'>Nom:</th><td>".$tab_ele['resp'][$i]['nom']."</td></tr>\n";
@@ -1364,7 +1364,7 @@ Patientez pendant l'extraction des données... merci.
 				}
 				echo "</table>\n";
 
-				echo "<p><b>".ucfirst($gepi_prof_suivi)."</b>: ";
+				echo "<p><strong>".ucfirst($gepi_prof_suivi)."</strong>: ";
 				for($loop=0;$loop<count($tab_ele['classe']);$loop++) {
 					if($loop>0) {echo ", ";}
 					if($tab_ele['classe'][$loop]['pp']['email']!="") {
@@ -1378,11 +1378,11 @@ Patientez pendant l'extraction des données... merci.
 					if($tab_ele['classe'][$loop]['pp']['email']!="") {
 						echo "</a>";
 					}
-					echo " (<i>".$tab_ele['classe'][$loop]['classe']."</i>)";
+					echo " (<em>".$tab_ele['classe'][$loop]['classe']."</em>)";
 				}
 				echo "</p>\n";
 
-				echo "<p><b>CPE chargé(e) du suivi</b>: ";
+				echo "<p><strong>CPE chargé(e) du suivi</strong>: ";
 				if($tab_ele['cpe']['email']!="") {
 					//echo "<a href='mailto:".$tab_ele['cpe']['email']."'>";
 					//echo "<a href='mailto:".$tab_ele['cpe']['email']."'>";
@@ -1905,10 +1905,10 @@ Patientez pendant l'extraction des données... merci.
             $aid_prof_resp_prenom[$n] = @mysql_result($aid_prof_query, 0, "prenom");
             $n++;
           }
-          echo "<tr><td><span class='small'><b>$nom_type_aid</b>";
+          echo "<tr><td><span class='small'><strong>$nom_type_aid</strong>";
           $n = '0';
           while ($n < $nb_lig) {
-            echo "<br /><i>$aid_prof_resp_nom[$n] $aid_prof_resp_prenom[$n]</i>";
+            echo "<br /><em>$aid_prof_resp_nom[$n] $aid_prof_resp_prenom[$n]</em>";
             $n++;
           }
           echo "</span></td>";
@@ -1944,8 +1944,8 @@ Patientez pendant l'extraction des données... merci.
           $aid_prof_resp =  @mysql_result($call_data, $z, "a.responsables");
           echo "<tr>\n";
           echo "<td><span class='small'>".$annee."</td>\n";
-          echo "<td><span class='small'><b>$nom_type_aid</b>";
-          echo "<br /><i>$aid_prof_resp</i>";
+          echo "<td><span class='small'><strong>$nom_type_aid</strong>";
+          echo "<br /><em>$aid_prof_resp</em>";
           echo "</span></td>\n";
           echo "<td><span class='small'><a href='../aid/modif_fiches.php?aid_id=$aid_id&amp;indice_aid=$indice_aid&amp;annee=$annee&amp;action=visu&amp;retour=' target='_blank'>$nom_aid</a></span></td>\n</tr>\n";
           $z++;
@@ -1989,7 +1989,16 @@ Patientez pendant l'extraction des données... merci.
 			    }
 			    else {
 				    echo "<table class='boireaus'>\n";
-				    echo "<caption>'Bilan des absences'</caption>\n";
+				    echo "<caption>
+						<strong>Etat périodique de l'absentéisme porté sur le bulletin</strong>
+						</br>
+						<em>Ce bilan est figé le jour de la bascule de l'état sur le bulletin";
+				if (getSettingValue("active_module_absence")=='2') {
+						echo "</br>
+						Il peut différer du bilan des saisies ci-dessous (justification tardive, ...)";
+						}
+						echo "</em>
+						</caption>\n";
 				    echo "<tr>\n";
 				    echo "<th>Période</th>\n";
 				    echo "<th>Nombre d'absences</th>\n";
@@ -2043,7 +2052,7 @@ Patientez pendant l'extraction des données... merci.
 				    echo '</table>'."\n";
 			    }
 				
-				if (getSettingValue("abs2_import_manuel_bulletin")=='y') {
+				if (getSettingValue("active_module_absence")=='2') {
 				  require_once("../lib/initialisationsPropel.inc.php");
 				  $eleve = EleveQuery::create()->findOneByLogin($ele_login);
 				  include 'visu_eleve_abs2.inc.php';
@@ -2051,7 +2060,13 @@ Patientez pendant l'extraction des données... merci.
 				
 			} elseif (getSettingValue("active_module_absence")=='2') {
 			    echo "<h2>Absences et retards de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
-			    // Initialisations files
+			    
+				//affichage de la date de sortie de l'élève de l'établissement
+				if ($tab_ele['date_sortie']!=0) {
+					echo "<p class=\"red\">Date de sortie de l'établissement : le ".affiche_date_sortie($tab_ele['date_sortie'])."</p>";;
+				}
+				
+				// Initialisations files
 			    require_once("../lib/initialisationsPropel.inc.php");
 			    $eleve = EleveQuery::create()->findOneByLogin($ele_login);
 

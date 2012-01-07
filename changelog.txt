@@ -1,9 +1,7 @@
 
-
 |==================|
 |= CHANGELOG GEPI =|
 |==================|
-
 Gepi-1.6.0 (31/12/2011)
 ===========================
 html :
@@ -19,6 +17,12 @@ Abs2 :
 
 Bulletins
 - Possibilité de donner à un statut autre le droit d'éditer les bulletins
+
+Interface :
+- pour la barre de menu 'professeurs', choix entre allégée et complète
+
+Trombinoscopes :
+- possibilité de renommer par lot les photos élèves lors de leur téléchargement
 
 Gepi-1.5.5 (12/08/2011)
 ===========================

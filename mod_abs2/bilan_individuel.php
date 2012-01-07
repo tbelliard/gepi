@@ -425,7 +425,12 @@ foreach ($eleve_col as $eleve) {
     if ($precedent_eleve_id != $eleve_id) {
         $donnees[$eleve_id]['nom'] = $eleve->getNom();
         $donnees[$eleve_id]['prenom'] = $eleve->getPrenom();
-        $donnees[$eleve_id]['classe'] = $eleve->getClasseNom();        
+        $donnees[$eleve_id]['classe'] = $eleve->getClasseNom();
+		if ($eleve->getDateSortie()) {
+			$donnees[$eleve_id]['sortie'] = date('j/m/Y',strtotime($eleve->getDateSortie()));
+		} else {
+			$donnees[$eleve_id]['sortie'] = "";
+		}
         $donnees[$eleve_id]['nbre_lignes_total'] = 0;
     }
     // on récupère les saisies de l'élève
@@ -704,11 +709,13 @@ foreach ($donnees as $id => $eleve) {
                     }
                     if($affichage_liens){
                       echo'<a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=ods&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'&ods2='.$ods2.'"><img src="../images/icons/ods.png" title="export ods"></a>
-                      <a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=odt&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'&texte_conditionnel='.$texte_conditionnel.'"><img src="../images/icons/odt.png" title="export odt"></a><br/><br/>';
-                    }else{
-                        echo'<br />';
+                      <a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=odt&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'&texte_conditionnel='.$texte_conditionnel.'"><img src="../images/icons/odt.png" title="export odt"></a><br/>';
                     }
-                    echo '<u><i>Absences :</i></u> <br />';
+					if ($eleve['sortie']){
+						echo'<span style="color:red">Date de sortie de l\'établissement : '.$eleve['sortie'].'</span>';
+					}
+                    echo'<br />';
+                    echo '<ins><em>Absences :</em></ins> <br />';
                     if (strval($eleve['demi_journees']) == 0) {
                         echo 'Aucune demi-journée';
                     } else {
@@ -731,7 +738,7 @@ foreach ($donnees as $id => $eleve) {
                         }
                     }
                     echo'<br /><br />';
-                    echo '<u><i>Retards :</i></u><br />';
+                    echo '<ins><em>Retards :</em></ins><br />';
                     if (strval($eleve['retards']) == 0) {
                         echo 'Aucun retard';
                     } else {

@@ -18,7 +18,7 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 	 *
 	 * Vérifie que l'ensemble de la table d'agrégation est à jours, pour tous les élèves.
 	 * Corrige automatiquement la table pour un certain nombres d'élèves (précisé par $reparation_nbr),
-	 * si plus d'élève que ce nombre sont en échec on renvoi faux
+	 * si plus d'élève que ce nombre sont en échec on renvoie faux
 	 *
 	 * @param      DateTime $dateDebut date de début pour la prise en compte du test
 	 * @param      DateTime $dateFin date de fin pour la prise en compte du test

@@ -431,9 +431,9 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est l
 </p>
 <br/>
 <p>
-	<?php if (getSettingValue("abs2_heure_demi_journee") == null || getSettingValue("abs2_heure_demi_journee") == '') saveSetting("abs2_heure_demi_journee", '11:50'); ?>
+	<?php if (getSettingValue("abs2_heure_demi_journee") == null || getSettingValue("abs2_heure_demi_journee") == '') saveSetting("abs2_heure_demi_journee", '11:55'); ?>
 	<input style="font-size:88%;" name="abs2_heure_demi_journee" value="<?php echo getSettingValue("abs2_heure_demi_journee")?>" type="text" maxlength="5" size="4"/>
-	Heure de bascule de demi-journée pour le décompte des demi-journées
+	Heure de bascule de demi-journée pour le décompte des demi-journées. Cette heure doit correspondre au tout début de la pause déjeuner (typiquement 11:55 ou 12:25).
 </p>
 
 <!--h2>G&eacute;rer l'acc&egrave;s des responsables d'&eacute;l&egrave;ves</h2>
