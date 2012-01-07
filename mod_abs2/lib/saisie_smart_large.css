@@ -1,0 +1,94 @@
+#container{
+	padding-left: 1%;
+	padding-right: 1%;
+}
+
+.fondVert {
+	background-color: green;
+}
+
+.fondRouge {
+	background-color: red;
+}
+	
+.trombine {
+	max-width: 60px; 
+	max-height: 60px;
+}
+	
+.impair {
+	background-color: #E8F1F4;
+}
+	
+.pair {
+	background-color: #C6DCE3;
+}
+	
+.absentHier {
+	background-color: blue;
+	color: white;
+	font-weight: bold;
+	text-align: center;
+}
+	
+.commentaire {
+	font-size: 88%;
+}
+	
+.saisieAnte {
+	font-size: 78%;
+}
+	
+.selects {
+	font-size: 88%; 
+	width: 140px;
+}	
+
+.pc88 {
+	font-size: 88%;
+}		
+
+.centre_tout_moyen {
+	text-align: center;
+}
+
+.tb_absences {
+	margin: auto;
+}
+	
+.choix {
+	display: table;
+	vertical-align: middle;
+    border-collapse: separate; /* Pour s'assurer que les cellules ne sont pas collées */
+    border-spacing: 15px; /* 15 pixels d'écartement entre les colonnes */
+	
+}
+	
+.choix form {
+	display:table-cell;
+	padding: .5em;
+	border: 1px solid;
+}
+	
+.tb_absences td span {
+	text-align: left;
+}
+	
+.tb_absences td .description {
+	display: block;
+	text-align: center;
+	cursor: pointer;
+}
+
+thead td .td_nom_creneau {
+	text-align: center;
+}
+
+	
+.policeRouge {
+	display: none;
+}
+	
+.policeBlack {
+	display: none;
+}	
