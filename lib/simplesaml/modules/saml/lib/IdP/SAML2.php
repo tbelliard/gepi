@@ -256,6 +256,7 @@ class sspmod_saml_IdP_SAML2 {
 			$consumerURL = NULL;
 			$consumerIndex = NULL;
 			$extensions = NULL;
+			$allowCreate = TRUE;
 
 			SimpleSAML_Logger::info('SAML2.0 - IdP.SSOService: IdP initiated authentication: '. var_export($spEntityId, TRUE));
 
@@ -296,6 +297,12 @@ class sspmod_saml_IdP_SAML2 {
 			} else {
 				$nameIDFormat = NULL;
 			}
+			if (isset($nameIdPolicy['AllowCreate'])) {
+				$allowCreate = $nameIdPolicy['AllowCreate'];
+			} else {
+				$allowCreate = FALSE;
+			}
+
 			SimpleSAML_Logger::info('SAML2.0 - IdP.SSOService: Incomming Authentication request: '. var_export($spEntityId, TRUE));
 		}
 
@@ -336,6 +343,7 @@ class sspmod_saml_IdP_SAML2 {
 			'saml:ConsumerURL' => $acsEndpoint['Location'],
 			'saml:Binding' => $acsEndpoint['Binding'],
 			'saml:NameIDFormat' => $nameIDFormat,
+			'saml:AllowCreate' => $allowCreate,
 			'saml:Extensions' => $extensions,
 		);
 
@@ -479,6 +487,23 @@ class sspmod_saml_IdP_SAML2 {
 
 		$binding = new SAML2_HTTPRedirect();
 		return $binding->getRedirectURL($lr);
+	}
+
+
+	/**
+	 * Retrieve the metadata for the given SP association.
+	 *
+	 * @param SimpleSAML_IdP $idp  The IdP the association belongs to.
+	 * @param array $association  The SP association.
+	 * @return SimpleSAML_Configuration|NULL  Configuration object for the SP metadata.
+	 */
+	public static function getAssociationConfig(SimpleSAML_IdP $idp, array $association) {
+		$metadata = SimpleSAML_Metadata_MetaDataStorageHandler::getMetadataHandler();
+		try {
+			return $metadata->getMetaDataConfig($association['saml:entityID'], 'saml20-sp-remote');
+		} catch (Exception $e) {
+			SimpleSAML_Configuration::loadFromArray(array(), 'Unknown SAML 2 entity.');
+		}
 	}
 
 

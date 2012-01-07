@@ -175,11 +175,12 @@ function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut, 
 			->useJTraitementSaisieEleveQuery()
 			  ->useAbsenceEleveTraitementQuery()
 				->filterByAJustificationId($justifie->getid())
+						->filterByDeletedAt(NULL)
 			  ->endUse()
 			->endUse()
 			;
 		  $traiteEleveDemi_col = $propel_traitEleveDemi->find();
-		  $traiteEleveDemi = $propel_eleve->getDemiJourneesAbsenceParCollection($traiteEleveDemi_col);
+		  $traiteEleveDemi = $propel_eleve->getDemiJourneesAbsenceParCollection($traiteEleveDemi_col,$date_debut,$date_fin);
 		  $donnees[$eleve_id]['traitement'][] = $traiteEleveDemi->count();
 		  $totalDemi += $traiteEleveDemi->count();
 		}
@@ -562,14 +563,15 @@ include('menu_bilans.inc.php');
 
 		<label for="bouton2">½ journées</label>
 	  </p>
-	  <p>Bilan du
+	  <p>
+		  <label for="date_absence_eleve_debut">Bilan du</label>
 		<input style="width : 8em;font-size:14px;" 
 			   type="text" 
 			   dojoType="dijit.form.DateTextBox" 
 			   id="date_absence_eleve_debut" 
 			   name="date_absence_eleve_debut" 
 			   value="<?php echo $dt_date_absence_eleve_debut->format('Y-m-d')?>" />
-		au
+		<label for="date_absence_eleve_fin">au</label>
 		<input style="width : 8em;font-size:14px;" 
 			   type="text" 
 			   dojoType="dijit.form.DateTextBox" 

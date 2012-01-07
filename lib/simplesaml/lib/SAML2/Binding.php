@@ -52,9 +52,9 @@ abstract class SAML2_Binding {
 	public static function getCurrentBinding() {
 		switch ($_SERVER['REQUEST_METHOD']) {
 		case 'GET':
-			if (array_key_exists('SAMLRequest', $_REQUEST) || array_key_exists('SAMLResponse', $_REQUEST)) {
+			if (array_key_exists('SAMLRequest', $_GET) || array_key_exists('SAMLResponse', $_GET)) {
 				return new SAML2_HTTPRedirect();
-			} elseif (array_key_exists('SAMLart', $_REQUEST) ){
+			} elseif (array_key_exists('SAMLart', $_GET) ){
 				return new SAML2_HTTPArtifact();
 			}
 			break;
@@ -67,12 +67,26 @@ abstract class SAML2_Binding {
 			} else {
 				$contentType = NULL;
 			}
-			if (array_key_exists('SAMLRequest', $_REQUEST) || array_key_exists('SAMLResponse', $_REQUEST)) {
+			if (array_key_exists('SAMLRequest', $_POST) || array_key_exists('SAMLResponse', $_POST)) {
 				return new SAML2_HTTPPost();
+			} elseif (array_key_exists('SAMLart', $_POST) ){
+				return new SAML2_HTTPArtifact();
 			} elseif ($contentType === 'text/xml') {
 				return new SAML2_SOAP();
 			}
 			break;
+		}
+
+		SimpleSAML_Logger::warning('Unable to find the SAML 2 binding used for this request.');
+		SimpleSAML_Logger::warning('Request method: ' . var_export($_SERVER['REQUEST_METHOD'], TRUE));
+		if (!empty($_GET)) {
+			SimpleSAML_Logger::warning("GET parameters: '" . implode("', '", array_map('addslashes', array_keys($_GET))) . "'");
+		}
+		if (!empty($_POST)) {
+			SimpleSAML_Logger::warning("POST parameters: '" . implode("', '", array_map('addslashes', array_keys($_POST))) . "'");
+		}
+		if (isset($_SERVER['CONTENT_TYPE'])) {
+			SimpleSAML_Logger::warning('Content-Type: ' . var_export($_SERVER['CONTENT_TYPE'], TRUE));
 		}
 
 		throw new Exception('Unable to find the current binding.');

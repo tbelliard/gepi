@@ -279,7 +279,7 @@ class SAML2_Utils {
 			array($root),
 			XMLSecurityDSig::SHA1,
 			array('http://www.w3.org/2000/09/xmldsig#enveloped-signature', XMLSecurityDSig::EXC_C14N),
-			array('id_name' => 'ID')
+			array('id_name' => 'ID', 'overwrite' => FALSE)
 			);
 
 		$objXMLSecDSig->sign($key);
@@ -344,19 +344,13 @@ class SAML2_Utils {
 			$encKey = $symmetricKeyInfo->encryptedCtx;
 			$symmetricKeyInfo->key = $inputKey->key;
 
-			$keySizes = array(
-				XMLSecurityKey::TRIPLEDES_CBC => 24,
-				XMLSecurityKey::AES128_CBC => 16,
-				XMLSecurityKey::AES192_CBC => 24,
-				XMLSecurityKey::AES256_CBC => 32,
-			);
-			if (!isset($keySizes[$symmetricKey->type])) {
+			$keySize = $symmetricKey->getSymmetricKeySize();
+			if ($keySize === NULL) {
 				/* To protect against "key oracle" attacks, we need to be able to create a
 				 * symmetric key, and for that we need to know the key size.
 				 */
-				throw new Exception('Unsupported encryption algorithm: ' . var_export($symmetricKey->type, TRUE));
+				throw new Exception('Unknown key size for encryption algorithm: ' . var_export($symmetricKey->type, TRUE));
 			}
-			$keySize = $keySizes[$symmetricKey->type];
 
 			try {
 				$key = $encKey->decryptKey($symmetricKeyInfo);
@@ -439,15 +433,21 @@ class SAML2_Utils {
 	/**
 	 * Extract localized strings from a set of nodes.
 	 *
-	 * @param DOMElement $parent  The element we should rund the XPath query on.
-	 * @param string $query  The XPath query we should use to retrieve the nodes.
+	 * @param DOMElement $parent  The element that contains the localized strings.
+	 * @param string $namespaceURI  The namespace URI the localized strings should have.
+	 * @param string $localName  The localName of the localized strings.
 	 * @return array  Localized strings.
 	 */
-	public static function extractLocalizedStrings(DOMElement $parent, $query) {
-		assert('is_string($query)');
+	public static function extractLocalizedStrings(DOMElement $parent, $namespaceURI, $localName) {
+		assert('is_string($namespaceURI)');
+		assert('is_string($localName)');
 
 		$ret = array();
-		foreach (self::xpQuery($parent, $query) as $node) {
+		for ($node = $parent->firstChild; $node !== NULL; $node = $node->nextSibling) {
+			if ($node->namespaceURI !== $namespaceURI || $node->localName !== $localName) {
+				continue;
+			}
+
 			if ($node->hasAttribute('xml:lang')) {
 				$language = $node->getAttribute('xml:lang');
 			} else {
@@ -463,15 +463,20 @@ class SAML2_Utils {
 	/**
 	 * Extract strings from a set of nodes.
 	 *
-	 * @param DOMElement $parent  The element we should rund the XPath query on.
-	 * @param string $query  The XPath query we should use to retrieve the nodes.
+	 * @param DOMElement $parent  The element that contains the localized strings.
+	 * @param string $namespaceURI  The namespace URI the string elements should have.
+	 * @param string $localName  The localName of the string elements.
 	 * @return array  The string values of the various nodes.
 	 */
-	public static function extractStrings(DOMElement $parent, $query) {
-		assert('is_string($query)');
+	public static function extractStrings(DOMElement $parent, $namespaceURI, $localName) {
+		assert('is_string($namespaceURI)');
+		assert('is_string($localName)');
 
 		$ret = array();
-		foreach (self::xpQuery($parent, $query) as $node) {
+		for ($node = $parent->firstChild; $node !== NULL; $node = $node->nextSibling) {
+			if ($node->namespaceURI !== $namespaceURI || $node->localName !== $localName) {
+				continue;
+			}
 			$ret[] = trim($node->textContent);
 		}
 

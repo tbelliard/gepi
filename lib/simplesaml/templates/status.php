@@ -8,7 +8,7 @@ if(array_key_exists('header', $this->data)) {
 $this->includeAtTemplateBase('includes/header.php');
 ?>
 
-<h2><?php if (isset($this->data['header'])) { echo($this->data['header']); } else { echo($this->t('{status:some_error_occured}')); } ?></h2>
+<h2><?php if (isset($this->data['header'])) { echo($this->data['header']); } else { echo($this->t('{status:some_error_occurred}')); } ?></h2>
 
 <p><?php echo($this->t('{status:intro}')); ?></p>
 
@@ -25,7 +25,7 @@ if(isset($this->data['sessionsize'])) {
 <h2><?php echo($this->t('{status:attributes_header}')); ?></h2>
 
 <?php
-// consent style listng start
+// consent style listing start
 $attributes = $this->data['attributes'];
 
 function present_list($attr) {
@@ -59,7 +59,8 @@ function present_attributes($t, $attributes, $nameParent) {
 	$alternate = array('odd', 'even'); $i = 0;
 	
 	$parentStr = (strlen($nameParent) > 0)? strtolower($nameParent) . '_': '';
-	$str = (strlen($nameParent) > 0)? '<table class="attributes">': '<table id="table_with_attributes"  class="attributes">';
+	$str = (strlen($nameParent) > 0)? '<table class="attributes" summary="attribute overview">':
+		'<table id="table_with_attributes"  class="attributes" summary="attribute overview">';
 
 	foreach ($attributes as $name => $value) {
 	

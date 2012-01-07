@@ -13,7 +13,7 @@
 		"hr": "Da, nastavi",
 		"hu": "Igen, elfogadom",
 		"fi": "Kyll\u00e4",
-		"pt-BR": "Sim, Aceito",
+		"pt-br": "Sim, Aceito",
 		"pt": "Sim, Aceito",
 		"pl": "Tak, akceptuj\u0119",
 		"cs": "Ano, akceptuji",
@@ -21,7 +21,11 @@
 		"it": "S\u00ec, continuare",
 		"lt": "Taip, t\u0119sti",
 		"ja": "\u306f\u3044\u3001\u7d9a\u3051\u307e\u3059",
-		"zh-tw": "\u662f\uff0c\u7e7c\u7e8c"
+		"zh-tw": "\u662f\uff0c\u7e7c\u7e8c",
+		"et": "Jah, j\u00e4tka",
+		"he": "\u05db\u05df, \u05d4\u05de\u05e9\u05da",
+		"ru": "\u0414\u0430, \u043f\u0440\u043e\u0434\u043e\u043b\u0436\u0438\u0442\u044c",
+		"zh": "\u662f\u7684\uff0c\u7ee7\u7eed"
 	},
 	"no": {
 		"no": "Nei, avbryt",
@@ -37,7 +41,7 @@
 		"hr": "Ne, odustani",
 		"hu": "Nem, nem fogadom el",
 		"fi": "ei",
-		"pt-BR": "N\u00e3o, n\u00e3o aceito",
+		"pt-br": "N\u00e3o, n\u00e3o aceito",
 		"pt": "N\u00e3o aceito",
 		"pl": "Nie, nie akceptuj\u0119",
 		"cs": "Ne, neakceptuji",
@@ -45,7 +49,11 @@
 		"it": "No, cancellare",
 		"lt": "Ne, nutraukti",
 		"ja": "\u3044\u3044\u3048\u3001\u30ad\u30e3\u30f3\u30bb\u30eb\u3057\u307e\u3059",
-		"zh-tw": "\u4e0d\uff0c\u53d6\u6d88"
+		"zh-tw": "\u4e0d\uff0c\u53d6\u6d88",
+		"et": "Ei, loobu",
+		"he": "\u05dc\u05d0, \u05d1\u05d8\u05dc",
+		"ru": "\u041d\u0435\u0442, \u043e\u0442\u043c\u0435\u043d\u0438\u0442\u044c",
+		"zh": "\u4e0d\uff0c\u53d6\u6d88"
 	},
 	"remember": {
 		"no": "Godta ogs\u00e5 for fremtiden",
@@ -61,7 +69,7 @@
 		"hr": "Zapamti moj odabir",
 		"hu": "Eml\u00e9kezzen a hozz\u00e1j\u00e1rul\u00e1sra",
 		"fi": "Muista",
-		"pt-BR": "Lembrar Consentimento",
+		"pt-br": "Lembrar Consentimento",
 		"pt": "Lembrar a minha escolha",
 		"pl": "Pami\u0119taj moj\u0105 zgod\u0119",
 		"cs": "Zapamatuj",
@@ -69,7 +77,11 @@
 		"it": "Ricordare",
 		"lt": "\u012esiminti",
 		"ja": "\u8a18\u61b6\u3059\u308b",
-		"zh-tw": "\u8a18\u4f4f"
+		"zh-tw": "\u8a18\u4f4f",
+		"et": "J\u00e4ta meelde",
+		"he": "\u05d6\u05db\u05d5\u05e8",
+		"ru": "\u0417\u0430\u043f\u043e\u043c\u043d\u0438\u0442\u044c",
+		"zh": "\u8bb0\u4f4f"
 	},
 	"consent_accept": {
 		"no": "For \u00e5 fullf\u00f8re innloggingen m\u00e5 du godta at opplysningene nedenfor sendes til SPNAME.",
@@ -85,7 +97,7 @@
 		"hr": "Servis SPNAME zahtjeva isporuku dolje navedenih podataka.",
 		"hu": "\u00d6n azonos\u00edtja mag\u00e1t ehhez a szolg\u00e1ltat\u00e1shoz SPNAME. Az azonos\u00edt\u00e1s sor\u00e1n IDPNAME az al\u00e1bbi adatokat fogja k\u00fcldeni a szolg\u00e1ltat\u00e1snak. Enged\u00e9lyezi?",
 		"fi": "Olet kirjautumassa palveluun SPNAME. Identiteetil\u00e4hteesi henkil\u00f6tietojasi palvelun tarjoajalle. Hyv\u00e4ksytk\u00f6 tietojen siirron?",
-		"pt-BR": "Voc\u00ea est\u00e1 prestes a acessar o servi\u00e7o SPNAME. O servi\u00e7o exige que as informa\u00e7\u00f5es a seguir sejam transferidas do IDPNAME. Voc\u00ea aceita isso?",
+		"pt-br": "Voc\u00ea est\u00e1 prestes a acessar o servi\u00e7o SPNAME. O servi\u00e7o exige que as informa\u00e7\u00f5es a seguir sejam transferidas do IDPNAME. Voc\u00ea aceita isso?",
 		"pt": "O servi\u00e7o SPNAME necessita que a informa\u00e7\u00e3o apresentada em baixo seja transferida.",
 		"pl": "SPNAME wymaga aby poni\u017csza informacja zosta\u0142a przes\u0142ana.",
 		"cs": "M\u016f\u017eete se p\u0159ihl\u00e1sit do slu\u017eby SPNAME",
@@ -93,7 +105,11 @@
 		"it": "SPNAME richiede che l'informazione sotto riportata sia trasferita.",
 		"lt": "SPNAME reikalauja persi\u0173sti \u017eemiau i\u0161vardint\u0105 informacij\u0105",
 		"ja": "SPNAME\u306f\u4ee5\u4e0b\u306e\u5909\u63db\u3055\u308c\u305f\u60c5\u5831\u3092\u8981\u6c42\u3057\u307e\u3059\u3002",
-		"zh-tw": "SPNAME \u8981\u6c42\u8a72\u8cc7\u8a0a\u65bc\u9019\u500b\u50b3\u9001\u3002"
+		"zh-tw": "SPNAME \u8981\u6c42\u8a72\u8cc7\u8a0a\u65bc\u9019\u500b\u50b3\u9001\u3002",
+		"et": "SPNAME n\u00f5uab allpool oleva info edastamist.",
+		"he": "SPNAME \u05d3\u05d5\u05e8\u05e9 \u05e9\u05de\u05d9\u05d3\u05e2 \u05d4\u05e0\"\u05dc \u05d9\u05d5\u05e2\u05d1\u05e8",
+		"ru": "SPNAME \u0442\u0440\u0435\u0431\u0443\u0435\u0442, \u0447\u0442\u043e\u0431\u044b \u0438\u043d\u0444\u043e\u0440\u043c\u0430\u0446\u0438\u044f, \u043f\u0440\u0435\u0434\u0441\u0442\u0430\u0432\u043b\u0435\u043d\u043d\u0430\u044f \u043d\u0438\u0436\u0435, \u0431\u044b\u043b\u0430 \u043f\u0435\u0440\u0435\u0434\u0430\u043d\u0430.",
+		"zh": "SPNAME\u8bf7\u6c42\u7684\u4fe1\u606f\u5df2\u7ecf\u88ab\u4f20\u8f93\u51fa\u53bb"
 	},
 	"login": {
 		"no": "innlogging",
@@ -109,7 +125,7 @@
 		"hr": "prijavi se",
 		"hu": "bejelentkez\u00e9s",
 		"fi": "Tunnus",
-		"pt-BR": "login",
+		"pt-br": "login",
 		"pt": "Entrar",
 		"pl": "login",
 		"cs": "Login",
@@ -117,7 +133,11 @@
 		"it": "connessione",
 		"lt": "login",
 		"ja": "\u30ed\u30b0\u30a4\u30f3",
-		"zh-tw": "\u767b\u5165"
+		"zh-tw": "\u767b\u5165",
+		"et": "logi sisse",
+		"he": "\u05db\u05e0\u05d9\u05e1\u05d4",
+		"ru": "\u0432\u043e\u0439\u0442\u0438",
+		"zh": "\u767b\u5f55"
 	},
 	"service_providers_for": {
 		"no": "Tjenesteleverand\u00f8r for",
@@ -133,7 +153,7 @@
 		"hr": "Davatelji usluge za",
 		"hu": "Alkalmaz\u00e1sszolg\u00e1ltat\u00f3k a k\u00f6vetkez\u0151 sz\u00e1m\u00e1ra",
 		"fi": "Palveluntarjoaja",
-		"pt-BR": "Provedor de servi\u00e7os para",
+		"pt-br": "Provedor de servi\u00e7os para",
 		"pt": "Fornecedores de Servi\u00e7o (SP) para",
 		"pl": "Dostawca Serwisu dla",
 		"cs": "Poskytovatel slu\u017eby pro",
@@ -141,7 +161,11 @@
 		"it": "Service Provider per",
 		"lt": "Paslaug\u0173 teik\u0117jai",
 		"ja": "\u30b5\u30fc\u30d3\u30b9\u30d7\u30ed\u30d0\u30a4\u30c0: ",
-		"zh-tw": "\u7d66\u670d\u52d9\u63d0\u4f9b\u8005"
+		"zh-tw": "\u7d66\u670d\u52d9\u63d0\u4f9b\u8005",
+		"et": "Teenusepakkujad",
+		"he": "\u05e1\u05e4\u05e7\u05d9 \u05e9\u05d9\u05e8\u05d5\u05ea \u05e2\u05d1\u05d5\u05e8",
+		"ru": "\u041f\u043e\u0441\u0442\u0430\u0432\u0449\u0438\u043a\u0438 \u0443\u0441\u043b\u0443\u0433 \u0434\u043b\u044f",
+		"zh": "\u670d\u52a1\u63d0\u4f9b\u8005\u7ed9"
 	},
 	"service_provider_header": {
 		"no": "Tjenesteleverand\u00f8r",
@@ -157,7 +181,7 @@
 		"hr": "Davatelj usluge",
 		"hu": "Alkalmaz\u00e1sszolg\u00e1ltat\u00f3",
 		"fi": "Palveluntarjoaja",
-		"pt-BR": "Provedor de Servi\u00e7os",
+		"pt-br": "Provedor de Servi\u00e7os",
 		"pt": "Fornecedor de Servi\u00e7o (SP)",
 		"pl": "Dostawca serwisu",
 		"cs": "Poskytovatel slu\u017eby",
@@ -165,7 +189,11 @@
 		"it": "Service Provider",
 		"lt": "Paslaugos teik\u0117jas",
 		"ja": "\u30b5\u30fc\u30d3\u30b9\u30d7\u30ed\u30d0\u30a4\u30c0",
-		"zh-tw": "\u670d\u52d9\u63d0\u4f9b\u8005"
+		"zh-tw": "\u670d\u52d9\u63d0\u4f9b\u8005",
+		"et": "Teenusepakkuja",
+		"he": "\u05e1\u05e4\u05e7 \u05e9\u05d9\u05e8\u05d5\u05ea",
+		"ru": "\u041f\u043e\u0441\u0442\u0430\u0432\u0449\u0438\u043a \u0443\u0441\u043b\u0443\u0433",
+		"zh": "\u670d\u52a1\u63d0\u4f9b\u8005"
 	},
 	"status_header": {
 		"no": "Samtykke-status",
@@ -181,7 +209,7 @@
 		"hr": "Status odobrenja",
 		"hu": "Hozz\u00e1j\u00e1rul\u00e1s \u00e1llapota",
 		"fi": "Hyv\u00e4ksynn\u00e4\u00e4n tila",
-		"pt-BR": "Status do Consentimento",
+		"pt-br": "Status do Consentimento",
 		"pt": "Consentimento",
 		"pl": "Status zgody",
 		"cs": "Status souhlasu",
@@ -189,7 +217,11 @@
 		"it": "Stato del consenso",
 		"lt": "Leidimo b\u016bsena",
 		"ja": "\u627f\u8a8d\u30b9\u30c6\u30fc\u30bf\u30b9",
-		"zh-tw": "\u540c\u610f\u72c0\u614b"
+		"zh-tw": "\u540c\u610f\u72c0\u614b",
+		"et": "N\u00f5usoleku olek",
+		"he": "\u05de\u05e6\u05d1 \u05d4\u05e1\u05db\u05de\u05d4",
+		"ru": "\u0420\u0430\u0437\u0440\u0435\u0448\u0438\u0442\u0435\u043b\u044c\u043d\u044b\u0439 \u0441\u0442\u0430\u0442\u0443\u0441",
+		"zh": "\u540c\u610f\u72b6\u6001"
 	},
 	"show_hide_attributes": {
 		"no": "Vis\/skjul opplysninger",
@@ -205,7 +237,7 @@
 		"hr": "prika\u017ei\/sakrij atribute",
 		"hu": "attrib\u00fatumok mutat\u00e1sa\/elrejt\u00e9se",
 		"fi": "N\u00e4yt\u00e4\/piilota attribuutteja",
-		"pt-BR": "mostra\/esconder Atributos",
+		"pt-br": "mostra\/esconder Atributos",
 		"pt": "Mostrar\/Ocultar atributos",
 		"pl": "poka\u017c\/ukryj atrybuty",
 		"cs": "zobraz\/skryj atributy",
@@ -213,7 +245,11 @@
 		"it": "Mostra\/nascondi attributi",
 		"lt": "parodyti\/pasl\u0117pti atributus",
 		"ja": "\u8868\u793a\/\u975e\u8868\u793a\u5c5e\u6027",
-		"zh-tw": "\u986f\u793a\/\u96b1\u85cf\u5c6c\u6027"
+		"zh-tw": "\u986f\u793a\/\u96b1\u85cf\u5c6c\u6027",
+		"et": "n\u00e4ita\/peida atribuudid",
+		"he": "\u05d4\u05e8\u05d0\u05d4\\\u05d4\u05e1\u05ea\u05e8 \u05ea\u05db\u05d5\u05e0\u05d5\u05ea ",
+		"ru": "\u043f\u043e\u043a\u0430\u0437\u0430\u0442\u044c\/\u0441\u043a\u0440\u044b\u0442\u044c \u0430\u0442\u0440\u0438\u0431\u0443\u0442\u044b",
+		"zh": "\u663e\u793a\/\u9690\u85cf\u5c5e\u6027"
 	},
 	"consent_privacypolicy": {
 		"no": "Personvern for tjenesten",
@@ -227,7 +263,7 @@
 		"hr": "Politika za\u0161tite privatnosti kod servisa",
 		"hu": "A szolg\u00e1ltat\u00e1s adatv\u00e1delmi nyilatkozata",
 		"fi": "Tietosuojaseloste palvelulle",
-		"pt-BR": "Pol\u00edtica de Privacidade deste servi\u00e7o",
+		"pt-br": "Pol\u00edtica de Privacidade deste servi\u00e7o",
 		"pt": "Pol\u00edtica de privacidade do servi\u00e7o",
 		"pl": "Polityka prywatno\u015bci dla serwisu",
 		"cs": "Bezpe\u010dnostn\u00ed politika slu\u017eby",
@@ -236,7 +272,11 @@
 		"it": "Politica della privacy per il servizio",
 		"lt": "\u0160ios paslaugos privatumo politika",
 		"ja": "\u30b5\u30fc\u30d3\u30b9\u306e\u30d7\u30e9\u30a4\u30d0\u30b7\u30dd\u30ea\u30b7\u30fc",
-		"zh-tw": "\u670d\u52d9\u96b1\u79c1\u6b0a\u653f\u7b56"
+		"zh-tw": "\u670d\u52d9\u96b1\u79c1\u6b0a\u653f\u7b56",
+		"et": "Teenuse privaatsuspoliitika",
+		"he": "\u05de\u05d3\u05d9\u05e0\u05d9\u05d5\u05ea \u05d4\u05e4\u05e8\u05d8\u05d9\u05d5\u05ea \u05e9\u05dc \u05d4\u05e9\u05d9\u05e8\u05d5\u05ea",
+		"ru": "\u041f\u043e\u043b\u0438\u0442\u0438\u043a\u0430 \u043a\u043e\u043d\u0444\u0438\u0434\u0435\u043d\u0446\u0438\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u0438 \u0434\u043b\u044f \u0441\u043b\u0443\u0436\u0431\u044b",
+		"zh": "\u8be5\u670d\u52a1\u7684\u9690\u79c1\u7b56\u7565"
 	},
 	"noconsent_title": {
 		"no": "Ikke akseptert overf\u00f8ring av informasjon",
@@ -250,7 +290,7 @@
 		"hr": "Isporuka nije odobrena",
 		"hu": "Nincs hozz\u00e1j\u00e1rul\u00e1s",
 		"fi": "Lupaa ei annettu",
-		"pt-BR": "Nenhum consentimento dado",
+		"pt-br": "Nenhum consentimento dado",
 		"pt": "Consentimento negado",
 		"pl": "Nie wyra\u017cono zgody",
 		"cs": "Souhlas nebyl vyd\u00e1n",
@@ -259,7 +299,11 @@
 		"it": "Nessun consenso dato",
 		"lt": "Leidimas neduotas",
 		"ja": "\u627f\u8a8d\u306f\u3042\u308a\u307e\u305b\u3093",
-		"zh-tw": "\u5c1a\u672a\u540c\u610f"
+		"zh-tw": "\u5c1a\u672a\u540c\u610f",
+		"et": "N\u00f5usolekut pole antud",
+		"he": "\u05dc\u05d0 \u05e0\u05d9\u05ea\u05e0\u05d4 \u05d4\u05e1\u05db\u05de\u05d4",
+		"ru": "\u041d\u0435\u0442 \u0434\u0430\u043d\u043d\u043e\u0433\u043e \u0441\u043e\u0433\u043b\u0430\u0441\u0438\u044f",
+		"zh": "\u672a\u540c\u610f"
 	},
 	"noconsent_text": {
 		"no": "Du har ikke akseptert \u00e5 overlevere opplysninger til tjenesteleverand\u00f8ren.",
@@ -273,7 +317,7 @@
 		"hr": "Niste dali pristanak da se va\u0161i podaci isporu\u010de davatelju usluge.",
 		"hu": "Nem adta hozz\u00e1j\u00e1rul\u00e1s\u00e1t, hogy adatait tov\u00e1bbadjuk a szolg\u00e1ltat\u00f3nak.",
 		"fi": "Et antanut lupaa siirt\u00e4\u00e4 henkil\u00f6tietojasi palveluntarjoajalle",
-		"pt-BR": "Voc\u00ea n\u00e3o deu o consentimento para a transfer\u00eancia de seus atributos para o provedor de servi\u00e7os.",
+		"pt-br": "Voc\u00ea n\u00e3o deu o consentimento para a transfer\u00eancia de seus atributos para o provedor de servi\u00e7os.",
 		"pt": "Negou o consentimento para a transfer\u00eancia dos seus atributos para o fornecedor de servi\u00e7o.",
 		"pl": "Nie wyrazi\u0142e\u015b zgody na przes\u0142anie Twoich atrybut\u00f3w do Dostawcy Serwisu.",
 		"cs": "Nedal jste souhlas pro zasl\u00e1n\u00ed sv\u00fdch atribut\u016f poskytovateli slu\u017eeb.",
@@ -282,7 +326,11 @@
 		"it": "Non hai dato il consenso per trasferire i tuoi attributi al service provider.",
 		"lt": "J\u016bs nesuteik\u0117te leidimo persi\u0173sti j\u016bs\u0173 atributus \u0161iam paslaugos teik\u0117jui.",
 		"ja": "\u3042\u306a\u305f\u306f\u30b5\u30fc\u30d3\u30b9\u30d7\u30ed\u30d0\u30a4\u30c0\u306b\u5c5e\u6027\u3092\u8ee2\u9001\u3059\u308b\u4e8b\u3092\u627f\u8a8d\u3057\u3066\u3044\u307e\u305b\u3093\u3002",
-		"zh-tw": "\u60a8\u4e0d\u540c\u610f\u50b3\u8f38\u60a8\u7684\u5c6c\u6027\u81f3\u670d\u52d9\u63d0\u4f9b\u8005\u3002"
+		"zh-tw": "\u60a8\u4e0d\u540c\u610f\u50b3\u8f38\u60a8\u7684\u5c6c\u6027\u81f3\u670d\u52d9\u63d0\u4f9b\u8005\u3002",
+		"et": "Sa ei andnud n\u00f5usolekut sinu atribuutide teenusepakkujale edastamiseks.",
+		"he": "\u05dc\u05d0 \u05e0\u05ea\u05e0\u05ea \u05d4\u05e1\u05db\u05de\u05d4 \u05dc\u05d4\u05e2\u05d1\u05e8\u05ea \u05d4\u05de\u05d0\u05e4\u05d9\u05d9\u05e0\u05d9\u05dd \u05dc\u05e1\u05e4\u05e7 \u05d4\u05e9\u05d9\u05e8\u05d5\u05ea.",
+		"ru": "\u0412\u044b \u043d\u0435 \u0434\u0430\u043b\u0438 \u0441\u043e\u0433\u043b\u0430\u0441\u0438\u0435 \u043d\u0430 \u043f\u0435\u0440\u0435\u0434\u0430\u0447\u0443 \u0432\u0430\u0448\u0438\u0445 \u0430\u0442\u0440\u0438\u0431\u0443\u0442\u043e\u0432 \u043a \u043f\u043e\u0441\u0442\u0430\u0432\u0449\u0438\u043a\u0443 \u0443\u0441\u043b\u0443\u0433.",
+		"zh": "\u4f60\u6ca1\u6709\u540c\u610f\u4f20\u8f93\u4f60\u7684\u76f8\u5173\u5c5e\u6027\u7ed9\u670d\u52a1\u63d0\u4f9b\u8005"
 	},
 	"noconsent_return": {
 		"no": "G\u00e5 tilbake til aksept-siden med opplysninger",
@@ -296,7 +344,7 @@
 		"hr": "Povratak na stranicu za kreiranje dozvola",
 		"hu": "Vissza az hozz\u00e1j\u00e1rul\u00e1s-kezel\u0151 oldalra",
 		"fi": "Palaa hyv\u00e4ksynt\u00e4sivulle",
-		"pt-BR": "Retornar a p\u00e1gina de consentimento",
+		"pt-br": "Retornar a p\u00e1gina de consentimento",
 		"pt": "Voltar \u00e0 p\u00e1gina de consentimento",
 		"pl": "Powr\u00f3t do strony wydania zezwolenia.",
 		"cs": "Zp\u00e1tky na str\u00e1nku pro souhlas",
@@ -305,7 +353,10 @@
 		"it": "Torna alla pagina del consenso",
 		"lt": "Gr\u012f\u017eti \u012f leidim\u0173 puslap\u012f",
 		"ja": "\u627f\u8a8d\u30da\u30fc\u30b8\u306b\u623b\u308b",
-		"zh-tw": "\u56de\u5230\u540c\u610f\u9801\u9762"
+		"zh-tw": "\u56de\u5230\u540c\u610f\u9801\u9762",
+		"et": "Tagasi n\u00f5usoleku lehele",
+		"he": "\u05d7\u05d6\u05d5\u05e8 \u05dc\u05d3\u05e3 \u05d4\u05e1\u05db\u05de\u05d4",
+		"zh": "\u8fd4\u56de\u540c\u610f\u754c\u9762"
 	},
 	"consent_header": {
 		"no": "Samtykke om overf\u00f8ring av personinformasjon",
@@ -327,7 +378,11 @@
 		"it": "Consenso al rilascio delle informazioni personali",
 		"lt": "Leidimas perduoti asmenin\u0119 informacij\u0105",
 		"ja": "\u500b\u4eba\u60c5\u5831\u306e\u627f\u8a8d\u3092\u89e3\u9664",
-		"zh-tw": "\u540c\u610f\u6709\u95dc\u65bc\u500b\u4eba\u95dc\u4fc2\u8cc7\u8a0a"
+		"zh-tw": "\u540c\u610f\u6709\u95dc\u65bc\u500b\u4eba\u95dc\u4fc2\u8cc7\u8a0a",
+		"et": "N\u00f5usolek isikuandmete edastamiseks",
+		"he": "\u05d4\u05e1\u05db\u05de\u05d4 \u05dc\u05d4\u05e2\u05d1\u05e8\u05ea \u05de\u05d9\u05d3\u05e2 \u05d0\u05d9\u05e9\u05d9",
+		"pt-br": "Consentimento sobre a libera\u00e7\u00e3o de informa\u00e7\u00f5es pessoais",
+		"zh": "\u540c\u610f\u5f00\u653e\u4e2a\u4eba\u4fe1\u606f"
 	},
 	"consent_attributes_header": {
 		"no": "Opplysninger som vil bli sendt til SPNAME",
@@ -349,7 +404,10 @@
 		"it": "Informazioni che saranno inviate a SPNAME",
 		"lt": "Informacija, kuri bus persi\u0173sta \u012f SPNAME",
 		"ja": "SPNAME\u3068\u3057\u3066\u9001\u4fe1\u3055\u308c\u308b\u60c5\u5831",
-		"zh-tw": "\u8cc7\u8a0a\u5c07\u88ab\u50b3\u9001\u81f3 SPNAME"
+		"zh-tw": "\u8cc7\u8a0a\u5c07\u88ab\u50b3\u9001\u81f3 SPNAME",
+		"et": "Andmed saadetakse SPNAME-le",
+		"he": "\u05d4\u05de\u05d9\u05d3\u05e2 \u05d9\u05e9\u05dc\u05d7 \u05dc SPNAME",
+		"zh": "\u4fe1\u606f\u5c06\u4f1a\u53d1\u9001\u7ed9SPNAME"
 	},
 	"show_attributes": {
 		"no": "Vis opplysninger",
@@ -371,7 +429,11 @@
 		"it": "Mostra attributi",
 		"lt": "Parodyti atributus",
 		"ja": "\u5c5e\u6027\u3092\u8868\u793a\u3059\u308b",
-		"zh-tw": "\u986f\u793a\u5c6c\u6027"
+		"zh-tw": "\u986f\u793a\u5c6c\u6027",
+		"et": "N\u00e4ita andmeid",
+		"he": "\u05d4\u05e6\u05d2 \u05de\u05d0\u05e4\u05d9\u05d9\u05e0\u05d9\u05dd",
+		"pt-br": "Mostrar atributos",
+		"zh": "\u663e\u793a\u5c5e\u6027"
 	},
 	"noconsent_goto_about": {
 		"no": "G\u00e5 til informasjonsside om tjenesten",
@@ -393,7 +455,11 @@
 		"it": "Vai alla pagina di informazioni per il servizio",
 		"lt": "Pereiti \u012f \u0161ios paslaugos informacin\u012f puslap\u012f",
 		"ja": "\u30b5\u30fc\u30d3\u30b9\u306e\u70ba\u306e\u60c5\u5831\u30da\u30fc\u30b8\u3092\u53c2\u7167",
-		"zh-tw": "\u81f3\u670d\u52d9\u8cc7\u8a0a\u9801\u9762"
+		"zh-tw": "\u81f3\u670d\u52d9\u8cc7\u8a0a\u9801\u9762",
+		"et": "Mine teenuse infolehele",
+		"he": "\u05dc\u05da \u05d0\u05dc \u05d3\u05e3 \u05d4\u05de\u05d9\u05d3\u05e2 \u05e9\u05dc \u05d4\u05e9\u05d9\u05e8\u05d5\u05ea",
+		"pt-br": "Ir para a P\u00e1gina de Informa\u00e7\u00e3o do servi\u00e7o",
+		"zh": "\u83b7\u53d6\u8be5\u670d\u52a1\u7684\u4fe1\u606f"
 	},
 	"consent_purpose": {
 		"no": "Form\u00e5let med SPNAME er SPDESC",
@@ -415,7 +481,10 @@
 		"it": "Lo scopo di SPNAME \u00e8 SPDESC",
 		"lt": "SPNAME paskirtis yra SPDESC",
 		"ja": "SPNAME\u306e\u76ee\u7684\u306fSPDESC\u3067\u3059",
-		"zh-tw": "SPNAME \u7684\u76ee\u7684\u5730\u70ba SPDESC"
+		"zh-tw": "SPNAME \u7684\u76ee\u7684\u5730\u70ba SPDESC",
+		"et": "Teenuse SPNAME eesm\u00e4rk on SPDESC",
+		"he": "\u05d4\u05de\u05d8\u05e8\u05d4 \u05e9\u05dc SPNAME \u05d4\u05d9\u05d0 SPDESC",
+		"zh": "SPNAME\u7684\u76ee\u7684\u662fSPDESC"
 	},
 	"table_caption": {
 		"no": "Bruker innformasjon",
@@ -435,7 +504,11 @@
 		"it": "Informazioni utente",
 		"lt": "Vartotojo informacija",
 		"ja": "\u30e6\u30fc\u30b6\u30fc\u60c5\u5831",
-		"zh-tw": "\u4f7f\u7528\u8005\u8cc7\u8a0a"
+		"zh-tw": "\u4f7f\u7528\u8005\u8cc7\u8a0a",
+		"et": "Kasutajainfo",
+		"he": "\u05de\u05d9\u05d3\u05e2 \u05e2\u05dc \u05d4\u05de\u05e9\u05ea\u05de\u05e9",
+		"pt-br": "Informa\u00e7\u00f5es do Usu\u00e1rio",
+		"zh": "\u7528\u6237\u4fe1\u606f"
 	},
 	"table_summary": {
 		"no": "Her listes den innformasjonen om deg som blir send til den tjenesten du er i ferd med \u00e5 logge p\u00e5",
@@ -455,7 +528,11 @@
 		"it": "Mostra le informazioni su di te che stanno per essere trasferire al servizio a cui ti vuoi collegare",
 		"lt": "Per\u017ei\u016br\u0117ti informacij\u0105 apie jus, kuri bus persi\u0173sta paslaugai, \u012f kuri\u0105 jungiat\u0117s",
 		"ja": "\u4e00\u89a7\u306e\u60c5\u5831\u306f\u3042\u306a\u305f\u304c\u30ed\u30b0\u30a4\u30f3\u3059\u308b\u969b\u306b\u30b5\u30fc\u30d3\u30b9\u306b\u8ee2\u9001\u3055\u308c\u307e\u3059\u3002",
-		"zh-tw": "\u5c07\u95dc\u65bc\u6211\u50b3\u9001\u81f3\u60a8\u9810\u8a08\u8981\u767b\u5165\u7684\u670d\u52d9"
+		"zh-tw": "\u5c07\u95dc\u65bc\u6211\u50b3\u9001\u81f3\u60a8\u9810\u8a08\u8981\u767b\u5165\u7684\u670d\u52d9",
+		"et": "Teave sinu kohta, mis edastatakse teenusele, millesse asud sisse logima",
+		"he": "\u05d4\u05e6\u05d2 \u05d0\u05ea \u05d4\u05de\u05d9\u05d3\u05e2 \u05e2\u05dc\u05d9\u05da \u05d0\u05e9\u05e8 \u05d9\u05d5\u05e2\u05d1\u05e8 \u05dc\u05e9\u05d9\u05e8\u05d5\u05ea \u05e9\u05d0\u05ea\u05d4 \u05e2\u05d5\u05de\u05d3 \u05dc\u05d4\u05ea\u05d7\u05d1\u05e8 \u05d0\u05dc\u05d9\u05d5",
+		"pt-br": "Liste as informa\u00e7\u00f5es sobre voc\u00ea que est\u00e1 prestes a ser transmitida para o servi\u00e7o que voc\u00ea est\u00e1 acessando",
+		"zh": "\u5f53\u4f60\u767b\u5f55\u65f6\u5c06\u8981\u4f20\u8f93\u7ed9\u670d\u52a1\u7684\u4fe1\u606f\u5217\u8868"
 	},
 	"show_attribute": {
 		"no": "Vis innhold",
@@ -474,6 +551,10 @@
 		"lt": "Parodyti leidim\u0105",
 		"ja": "\u5185\u5bb9\u3092\u8868\u793a\u3059\u308b",
 		"zh-tw": "\u986f\u793a\u5167\u5bb9",
-		"pl": "Wy\u015bwietl zawarto\u015b\u0107"
+		"pl": "Wy\u015bwietl zawarto\u015b\u0107",
+		"et": "N\u00e4ita sisu",
+		"he": "\u05d4\u05e6\u05d2 \u05ea\u05d5\u05db\u05df",
+		"pt-br": "Mostrar Conte\u00fado",
+		"zh": "\u663e\u793a\u5185\u5bb9"
 	}
 }

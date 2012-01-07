@@ -192,6 +192,8 @@
       <exclude name="test/**"/>
       <exclude name=".gradle/**"/>
       <exclude name=".git/**"/>
+      <exclude name="temp/**"/>
+      <exclude name="lib/standalone/HTMLPurifier/DefinitionCache/Serializer/**"/>
       <exclude name="**/.gitignore"/>
     </tarfileset>
   </tar>
@@ -200,5 +202,6 @@
 
  <!--target name="build" depends="clean,parallelTasks,phpunit,phpcb"/-->
  <!--target name="build" depends="clean,tarball,pdepend,phpmd,phpcpd,phpcs,phpdoc,phploc,phpunit,phpcb"/-->
- <target name="build" depends="clean,tarball,pdepend,phpmd,phpcpd,phpdoc,phploc,phpunit_no_code_coverage,phpcb"/>
+ <target name="ci-build" depends="clean,tarball,pdepend,phpmd,phpcpd,phpdoc,phploc,phpunit_no_code_coverage,phpcb"/>
+ <target name="build" depends="clean,tarball"/>
 </project>
