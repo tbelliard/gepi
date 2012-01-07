@@ -94,7 +94,7 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 		$wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
 		$s=str_replace("\r",'',$txt);
 		$nb=mb_strlen($s);
-		if($nb>0 and $s[$nb-1]=="\n")
+		if($nb>0 and mb_substr($s, $nb-1, 1)=="\n")
 			$nb--;
 		$b=0;
 		if($border){
@@ -121,7 +121,7 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 		while($i<$nb){
 
 			//Get next character
-			$c=$s[$i];
+			$c=mb_substr($s, $i, 1);
 			if($c=="\n"){
 				//Explicit line break
 				if($this->ws>0)
@@ -151,9 +151,10 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 				$ls=$l;
 				$ns++;
 			}
-			$l+=$cw[$c];
+			$l+=$this->GetStringWidth($c)*1000/($this->FontSize);
 			if($l>$wmax)
 			{
+
 				//Automatic line break
 				if($sep==-1)
 				{
@@ -171,7 +172,7 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 					if($align=='J')
 					{
 						$this->ws=($ns>1) ? ($wmax-$ls)/1000*$this->FontSize/($ns-1) : 0;
-						if ($prn==1) $this->_out(sprintf('%.3f Tw',$this->ws*$this->k));
+						if ($prn==1) $this->_out(sprintf('%.3F Tw',$this->ws*$this->k));
 					}
 					if ($prn==1){
 						$this->Cell($w,$h,mb_substr($s,$j,$sep-$j),$b,2,$align,$fill);

@@ -125,3 +125,12 @@ function postform(the_form){
  my_form = eval(the_form)
  my_form.submit();
 }
+
+
+function click_active_absence(elv) {
+	if (document.getElementById("active_absence_eleve_"+elv).checked) {
+		document.getElementById("label_active_absence_eleve_"+elv).className='policeRouge';
+	} else {
+		document.getElementById("label_active_absence_eleve_"+elv).className='policeBlack';
+	}
+}
