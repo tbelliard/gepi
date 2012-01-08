@@ -99,7 +99,7 @@ else {
 		}
 		else {
 			for($i=0;$i<count($tab_enfants);$i+=2) {
-				echo "<a href='".$_SERVER['PHP_SELF']."?".$tab_enfants[$i]."'>".$tab_enfants[$i+1]."</a><br />\n";
+				echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=".$tab_enfants[$i]."'>".$tab_enfants[$i+1]."</a><br />\n";                                
 			}
 
 			require("../lib/footer.inc.php");
