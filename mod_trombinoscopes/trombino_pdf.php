@@ -264,7 +264,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 	Header('Pragma: public');
 	require('../fpdf/fpdf.php');
 	
-	define('FPDF_FONTPATH','../fpdf/font/');
+	
 	define('LargeurPage',$largeur_page);
 	define('HauteurPage',$hauteur_page);
 	session_cache_limiter('private');
