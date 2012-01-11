@@ -403,7 +403,48 @@ if (file_exists(dirname(__FILE__).'/../lib/simplesaml/metadata/saml20-idp-hosted
 	echo "<label for='sacoche_base' style='cursor: pointer;'>Numéro de base sacoche (laisser vide si votre instalation de sacoche est mono établissement)</label>\n";
 	echo "<input type='text' size='5' name='sacoche_base' value='".getSettingValue("sacoche_base")."' id='sacoche_base' />\n<br/>";
 	echo 'pour une configuration manuelle, modifier le fichier /lib/simplesaml/metadate/saml20-sp-remote.php';
-	echo "</p>\n";
+        try {
+            require_once('../lib/simplesaml/lib/_autoload.php');
+            $config = SimpleSAML_Configuration::getConfig();
+            //$cert_file =SimpleSAML_Utilities::resolveCert('server.crt');
+            $metadata = SimpleSAML_Metadata_MetaDataStorageHandler::getMetadataHandler();
+            $spMetadata = $metadata->getMetaDataConfig('gepi-idp', 'saml20-idp-hosted');
+            if ($spMetadata != null) {
+                $cert_file =SimpleSAML_Utilities::resolveCert($spMetadata->getString('certificate'));
+                $x509cert = file_get_contents($cert_file);
+                echo '<br/>Empreinte (fingerprint) du certificat x509 (à renseigner dans votre logiciel founisseur de service) : ';
+                $lines = explode("\n", $x509cert);
+
+                $data = '';
+
+                foreach($lines as $line) {
+                        /* Remove '\r' from end of line if present. */
+                        $line = rtrim($line);
+                        if($line === '-----BEGIN CERTIFICATE-----') {
+                                /* Delete junk from before the certificate. */
+                                $data = '';
+                        } elseif($line === '-----END CERTIFICATE-----') {
+                                /* Ignore data after the certificate. */
+                                break;
+                        } elseif($line === '-----BEGIN PUBLIC KEY-----') {
+                                /* This isn't an X509 certificate. */
+                                return NULL;
+                        } else {
+                                /* Append the current line to the certificate data. */
+                                $data .= $line;
+                        }
+                }
+
+                /* $data now contains the certificate as a base64-encoded string. The fingerprint
+                    * of the certificate is the sha1-hash of the certificate.
+                    */
+                echo strtolower(sha1(base64_decode($data)));
+            }
+        } catch (Exception $e) {
+            echo '<br/>Impossible d\'afficher l\'empreinte (fingerprint) du certificat : '.$e->getMessage();
+        }
+        echo "</p>\n";
+        
 }
 
 
