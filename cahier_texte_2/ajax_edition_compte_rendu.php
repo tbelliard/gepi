@@ -194,11 +194,15 @@ foreach ($groups as $group_iter) {
 echo "</select>&nbsp;&nbsp;\n";
 //fin affichage des groupes
 
+//echo "<a href=\"javascript:alert(chaineActive)\">Test</a>";
+
+// Editer les devoirs:
 echo "<button style='background-color:".$color_fond_notices['t']."' onclick=\"javascript:
 						getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?id_groupe='+ ".$groupe->getId()." + '&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
 						object_en_cours_edition = 'devoir';
 					\">Editer les devoirs</button>\n";
 
+// Editer les notices privees:
 echo "<button style='background-color:".$color_fond_notices['p']."' onclick=\"javascript:
 						getWinEditionNotice().setAjaxContent('./ajax_edition_notice_privee.php?id_groupe='+ ".$groupe->getId()." + '&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
 						object_en_cours_edition = 'notice_privee';
@@ -209,11 +213,13 @@ echo " <button style='background-color:".$color_fond_notices['p']."' onclick=\"j
 						getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$groupe->getId()."&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
 					\">Voir NP</button>\n";
 */
+
+// Voir les notices privees:
 echo " <button style='background-color:".$color_fond_notices['p']."' onclick=\"javascript:
 						getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$groupe->getId()."&today='+getCalendarUnixDate());
 					\">Voir NP</button>\n";
 
-echo "<br><br>\n";
+echo "<br /><br />\n";
 
 // Nombre de notices pour ce jour :
 $num_notice = NULL;
@@ -291,6 +297,7 @@ echo "</legend>\n";
 
 echo "<div id=\"dupplication_notice\" style='display: none;'>oulalala</div>";
 echo "<div id=\"deplacement_notice\" style='display: none;'>oulalala</div>";
+
 echo "<form enctype=\"multipart/form-data\" name=\"modification_compte_rendu_form\" id=\"modification_compte_rendu_form\" action=\"ajax_enregistrement_compte_rendu.php\" method=\"post\" onsubmit=\"return AIM.submit(this, {'onComplete' : completeEnregistrementCompteRenduCallback})\" style=\"width: 100%;\">\n";
 echo add_token_field();
 // uid de pour ne pas refaire renvoyer plusieurs fois le même formulaire
@@ -425,7 +432,7 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 				//if ($ic=='1') { $ic='2'; $couleur_cellule_=$couleur_cellule[$type_couleur]; } else { $couleur_cellule_=$couleur_cellule_alt[$type_couleur]; $ic='1'; }
 				echo "<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: #FFFFFF;\"><td>
 						<a href='".$document->getEmplacement()."' target=\"_blank\">".$document->getTitre()."</a></td>
-						<td style=\"text-align: center;\">".round($document->getTaille()/1024,1)."</td>\n";
+						<td style=\"text-align: center;\" title=\"Taille du fichier\">".round($document->getTaille()/1024,1)."</td>\n";
 				if(getSettingValue('cdt_possibilite_masquer_pj')=='y') {
 					//echo "<td style=\"text-align: center;\" id='td_document_joint_".$document->getId()."'>";
 					echo "<td style=\"text-align: center;\">";
