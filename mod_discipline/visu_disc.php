@@ -74,6 +74,8 @@ elseif($_SESSION['statut']=='responsable') {
 	}
 }
 
+echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour à l'accueil' class='back_link'/> Retour</a>";
+
 if($_SESSION['statut']=='eleve') {
 	$ele_login=$_SESSION['login'];
 }
@@ -99,8 +101,9 @@ else {
 			$ele_login=$tab_ele_login[0];
 		}
 		else {
+			echo "<p>Choisissez l'enfant dont vous souhaitez consulter les incidents&nbsp;:<br />\n";
 			for($i=0;$i<count($tab_enfants);$i+=2) {
-				echo "<a href='".$_SERVER['PHP_SELF']."?".$tab_enfants[$i]."'>".$tab_enfants[$i+1]."</a><br />\n";
+				echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=".$tab_enfants[$i]."'>".$tab_enfants[$i+1]."</a><br />\n";
 			}
 
 			require("../lib/footer.inc.php");
@@ -109,6 +112,7 @@ else {
 	}
 
 }
+echo "</p>\n";
 
 require_once("../mod_discipline/sanctions_func_lib.php");
 
