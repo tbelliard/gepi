@@ -2169,7 +2169,7 @@ new Ajax.Autocompleter (
 			}
 			$tab_resp=get_resp_from_ele_login($ele_login[$i]);
 			for($j=0;$j<count($tab_resp);$j++) {
-				if(acces_resp_disc($tab_resp[$j]['login'])) {
+				if((isset($tab_resp[$j]['login']))&&(acces_resp_disc($tab_resp[$j]['login']))) {
 					if($chaine_avertissement=='') {$chaine_avertissement.="Détails visibles de ";}
 					else {$chaine_avertissement.=", ";}
 					$chaine_avertissement.=$tab_resp[$j]['designation'];
