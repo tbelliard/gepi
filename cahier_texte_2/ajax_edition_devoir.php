@@ -218,7 +218,7 @@ echo "<br />\n";
 $timestamp_du_jour=mktime(0,0,0,date('n'),date('j'),date('Y'));
 if($timestamp_du_jour!=$today) {
 	echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button style='background-color:".$color_fond_notices['c']."' onclick=\"javascript:
-							getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe='+ ".$groupe->getId()." + '&today='+$timestamp_du_jour,{ onComplete:function(transport) {initWysiwyg();}});
+							getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe='+ ".$groupe->getId()." + '&today='+$timestamp_du_jour,{ onComplete:function(transport) {initWysiwyg();updateCalendarWithUnixDate($timestamp_du_jour)}});
 							object_en_cours_edition = 'compte_rendu';
 						\">CR : Retour au ".date('d')."/".date('m')."</button>\n";
 }
