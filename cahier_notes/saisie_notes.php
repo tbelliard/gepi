@@ -444,7 +444,7 @@ if (isset($_POST['import_sacoche'])) {
 	$message_enregistrement = "Les modifications ont été enregistrées !";
 }
 $themessage  = 'Des notes ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
-$message_cnil_commentaires="* En conformité avec la CNIL, le professeur s'engage à ne faire figurer dans le carnet de notes que des notes et commentaires portés à la connaissance de l'élève (note et commentaire portés sur la copie, ...).";
+$message_cnil_commentaires="* En conformité avec la CNIL, le professeur s'engage à ne faire figurer dans le carnet de notes que des notes et commentaires portés à la connaissance de l'élève (<em>note et commentaire portés sur la copie, ...</em>).";
 //**************** EN-TETE *****************
 $titre_page = "Saisie des notes";
     /**
@@ -1465,6 +1465,7 @@ if(($id_devoir>0)||($nb_sous_cont==0)) {
 			$tabdiv_infobulle[]=creer_div_infobulle('repartition_notes_'.$k,$titre,"",$texte,"",14,0,'y','y','n','n');
 
 			echo " <a href='#' onmouseover=\"delais_afficher_div('repartition_notes_$k','y',-100,20,1500,10,10);\"";
+			echo " onclick=\"afficher_div('repartition_notes_$k','y',-100,20);return false;\"";
 			echo ">";
 			echo "<img src='../images/icons/histogramme.png' alt='Répartition des notes' />";
 			echo "</a>";
@@ -1481,6 +1482,7 @@ if(($id_devoir>0)||($nb_sous_cont==0)) {
 		// Colonne Moyenne de l'élève
 		echo "<td>";
 		echo " <a href='#' onmouseover=\"delais_afficher_div('repartition_notes_moyenne','y',-100,20,1500,10,10);\"";
+		echo " onclick=\"afficher_div('repartition_notes_moyenne','y',-100,20);return false;\"";
 		echo ">";
 		echo "<img src='../images/icons/histogramme.png' alt='Répartition des notes' />";
 		echo "</a>";
