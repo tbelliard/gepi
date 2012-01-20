@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -37,13 +37,13 @@ if ($resultat_session == 'c') {
   header("Location:utilisateurs/mon_compte.php?change_mdp=yes&retour=accueil#changemdp");
   die();
 } else if ($resultat_session == '0') {
-  header("Location: ./logout.php?auto=1");
+  header("Location: ../logout.php?auto=1");
   die();
 }
 
 // Sécurité
 if (!checkAccess()) {
-    header("Location: ./logout.php?auto=2");
+    header("Location: ../logout.php?auto=2");
     die();
 }
 function aff_debug($tableau){
@@ -62,6 +62,7 @@ $cr                 = isset($_POST["cr"]) ? $_POST["cr"] : NULL;
 
 $msg = NULL;
 $verif = 'ok'; // indicateur pour le suivi des erreurs
+$nb_reg=0;
 
 // =================================================== Le code métier =======================================/
 
@@ -101,6 +102,7 @@ if ($enregistrer == "Enregistrer"){
 
       if ($seance->save()){
         //$verif = 'yes';
+        $nb_reg++;
       }else{
         $verif = 'no';
       }
@@ -114,7 +116,9 @@ if ($enregistrer == "Enregistrer"){
 if ($verif == 'no'){
   $msg = "<p>Au moins un compte-rendu n'a pas pu &ecirc;tre enregistr&eacute; !</p>";
 }
-
+elseif($nb_reg>0) {
+	$msg="Enregistrement effectué.";
+}
 /**
  * Header en include
  */
@@ -129,7 +133,13 @@ if(($nb_max_seq=="")||(!preg_match("/^[0-9]*$/", $nb_max_seq))) {
 	$nb_max_seq=6;
 }
 ?>
-<p><a href="index.php"><img src="../images/icons/back.png" alt="Retour" class="back_link" /> Retour</a></p>
+<p><a href="index.php<?php
+
+	if(isset($enseignement)) {
+		echo "?id_groupe=$enseignement";
+	}
+
+?>"><img src="../images/icons/back.png" alt="Retour" class="back_link" /> Retour</a></p>
 <form action="#" method="post">
   <p>
     <label for="idSeq">Cr&eacute;er une s&eacute;quence pour le cahier de textes (<i>pr&eacute;cisez le nombre de s&eacute;ances</i>)</label>
