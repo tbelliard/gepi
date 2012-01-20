@@ -184,7 +184,7 @@ echo '
   <p>';
 
     $oCKeditor                             = new CKeditor();
-    $oCKeditor->BasePath                   = '../ckeditor/';
+    $oCKeditor->basePath                   = '../ckeditor/';
     $oCKeditor->editor('cr['.$a.']','');
   echo '</p>
 </div>
