@@ -264,11 +264,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 	Header('Pragma: public');
 	require('../fpdf/fpdf.php');
 	
-	// Pour drawTextBox()
-	//require_once("../fpdf/class.multicelltag.php");
-	//require_once("../class_php/gepi_pdf.class.php");
 	
-	define('FPDF_FONTPATH','../fpdf/font/');
 	define('LargeurPage',$largeur_page);
 	define('HauteurPage',$hauteur_page);
 	session_cache_limiter('private');

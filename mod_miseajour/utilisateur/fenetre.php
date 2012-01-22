@@ -45,12 +45,6 @@ if (getSettingValue("active_module_msj")!='y') {
 }
 
 	include('../lib/fonction_dossier.php');
-/*
-	include('../lib/pclzip.lib.php');
-	include('../lib/pcltar.lib.php');
-	include('../lib/pcltrace.lib.php');
-	include('../lib/pclerror.lib.php');
-*/
 // uid de pour ne pas refaire renvoyer plusieurs fois le même formulaire
 // autoriser la validation de formulaire $uid_post===$_SESSION['uid_prime']
 if(empty($_SESSION['uid_prime'])) {

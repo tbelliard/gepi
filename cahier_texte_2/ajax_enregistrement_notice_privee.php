@@ -90,44 +90,6 @@ if ($id_ct != null) {
 	$ctNoticePrivee->setIdLogin($utilisateur->getLogin());
 }
 
-if((isset($_POST['id_ct_a_importer']))&&($_POST['id_ct_a_importer']!='')) {
-	if(preg_match("/^devoir_/", $_POST['id_ct_a_importer'])) {
-		$id_ct_import=preg_replace("/^devoir_/", "", $_POST['id_ct_a_importer']);
-		if(preg_match("/^[0-9]*$/", $id_ct_import)) {
-			//$sql="SELECT id_ct, contenu FROM ct_devoirs_entry WHERE id_groupe='$id_groupe' AND id_ct='".$id_ct_import."';";
-			$sql="SELECT DISTINCT id_ct, contenu FROM ct_devoirs_entry cde, j_groupes_professeurs jgp WHERE jgp.id_groupe=cde.id_groupe AND jgp.login='".$_SESSION['login']."' AND cde.id_ct='".$id_ct_import."';";
-			$res_ct=mysql_query($sql);
-			if(mysql_num_rows($res_ct)==1) {
-				$lig_ct=mysql_fetch_object($res_ct);
-				$contenu.=$lig_ct->contenu;
-			}
-		}
-	}
-	elseif(preg_match("/^compte_rendu_/", $_POST['id_ct_a_importer'])) {
-		$id_ct_import=preg_replace("/^compte_rendu_/", "", $_POST['id_ct_a_importer']);
-		if(preg_match("/^[0-9]*$/", $id_ct_import)) {
-			//$sql="SELECT id_ct, contenu FROM ct_entry WHERE id_groupe='$id_groupe' AND id_ct='".$id_ct_import."';";
-			$sql="SELECT DISTINCT id_ct, contenu FROM ct_entry ce, j_groupes_professeurs jgp WHERE jgp.id_groupe=ce.id_groupe AND jgp.login='".$_SESSION['login']."' AND ce.id_ct='".$id_ct_import."';";
-			$res_ct=mysql_query($sql);
-			if(mysql_num_rows($res_ct)==1) {
-				$lig_ct=mysql_fetch_object($res_ct);
-				$contenu.=$lig_ct->contenu;
-			}
-		}
-	}
-	if(preg_match("/^notice_privee_/", $_POST['id_ct_a_importer'])) {
-		$id_ct_import=preg_replace("/^notice_privee_/", "", $_POST['id_ct_a_importer']);
-		if(preg_match("/^[0-9]*$/", $id_ct_import)) {
-			//$sql="SELECT id_ct, contenu FROM ct_private_entry WHERE id_groupe='$id_groupe' AND id_ct='".$id_ct_import."';";
-			$sql="SELECT DISTINCT id_ct, contenu FROM ct_private_entry cpe, j_groupes_professeurs jgp WHERE jgp.id_groupe=cpe.id_groupe AND jgp.login='".$_SESSION['login']."' AND cpe.id_ct='".$id_ct_import."';";
-			$res_ct=mysql_query($sql);
-			if(mysql_num_rows($res_ct)==1) {
-				$lig_ct=mysql_fetch_object($res_ct);
-				$contenu.=$lig_ct->contenu;
-			}
-		}
-	}
-}
 
 //affectation des parametres de la requete à l'objet ctNoticePrivee
 $contenu_cor = traitement_magic_quotes(corriger_caracteres($contenu),'');

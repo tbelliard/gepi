@@ -10,6 +10,10 @@ You can find the unit test classes and support files in the test/testsuite direc
 
 In order to run the tests, you must install PHPUnit:
 {{{
+> apt-get install phpunit
+}}}
+or
+{{{
 > pear channel-discover pear.phpunit.de
 > pear install phpunit/PHPUnit
 }}}

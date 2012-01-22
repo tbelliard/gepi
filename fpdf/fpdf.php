@@ -5,6 +5,7 @@
  * Version de FPDF
  */
 define('FPDF_VERSION','1.7');
+define('FPDF_FONTPATH',dirname(__FILE__).'/font/');
 
 require(dirname(__FILE__).'/tfpdf.php');
 

@@ -84,7 +84,7 @@ require_once("bulletin_pdf.inc.php");
 
 $bull_formule_bas=getSettingValue("bull_formule_bas") ? getSettingValue("bull_formule_bas") : "Bulletin à conserver précieusement. Aucun duplicata ne sera délivré. - GEPI : solution libre de gestion et de suivi des résultats scolaires.";
 
-define('FPDF_FONTPATH','../fpdf/font/');
+
 define('TopMargin','5');
 define('RightMargin','2');
 define('LeftMargin','2');
@@ -4018,7 +4018,6 @@ $cpt_ordre = $cpt_ordre + 1;
 		$pdf->SetXY($tab_modele_pdf["X_avis_cons"][$classe_id]+2.5,$tab_modele_pdf["Y_avis_cons"][$classe_id]+5);
 		$pdf->SetFont('DejaVu','',10);
 		$texteavis = $info_bulletin[$ident_eleve_aff][$id_periode]['avis_conseil_classe'];
-		//$pdf->drawTextBox($texteavis, $longeur_avis_cons[$classe_id]-5, $hauteur_avis_cons[$classe_id]-10, 'J', 'M', 0);
 		$pdf->drawTextBox($texteavis, $tab_modele_pdf["longeur_avis_cons"][$classe_id]-5, $tab_modele_pdf["hauteur_avis_cons"][$classe_id]-10, 'J', 'M', 0);
 		//$X_pp_aff=$X_avis_cons[$classe_id]; $Y_pp_aff=$Y_avis_cons[$classe_id]+$hauteur_avis_cons[$classe_id]-5;
 		$X_pp_aff=$tab_modele_pdf["X_avis_cons"][$classe_id];

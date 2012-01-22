@@ -21,7 +21,7 @@ if (!defined('FPDF_VERSION')) {
 	// Ensemble des données communes
 	require_once("bulletin_donnees.php");
 
-	define('FPDF_FONTPATH','../fpdf/font/');
+	
 	define('TopMargin','5');
 	define('RightMargin','2');
 	define('LeftMargin','2');

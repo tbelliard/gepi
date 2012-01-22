@@ -54,10 +54,17 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 			$html_balise .=(" ");
 
 			$html_balise .=("<a href=\"#\" onclick=\"javascript:
-									if(document.getElementById('id_ct_a_importer')) {document.getElementById('id_ct_a_importer').value='devoir_".$devoir->getIdCt()."'};
-									if(document.getElementById('affichage_import_notice')) {document.getElementById('affichage_import_notice').style.display=''}
-									return false;
-								\"><img style=\"border: 0px;\" src=\"../images/icons/copy-16.png\" alt=\"Copier vers la notice courante\" title=\"Copier vers la notice courante\" /></a>\n");
+                                            contenu_a_copier = '".addslashes($devoir->getContenu())."';
+                                            ct_a_importer_class='".get_class($devoir)."';
+                                            id_ct_a_importer='".$devoir->getIdCt()."';
+                                            new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$devoir->getIdGroupe()."&ct_a_importer_class=".get_class($devoir)."&id_ct_a_importer=".$devoir->getIdCt()."',{ onComplete:function() {updateDivModification();} });
+                                        \"><img style=\"border: 0px;\" src=\"");
+                        if (isset($_SESSION['ct_a_importer']) && $_SESSION['ct_a_importer'] == $devoir) {
+                            $html_balise .=("../images/icons/copy-16-gold.png");
+                        } else {
+                            $html_balise .=("../images/icons/copy-16.png");
+                        }
+                        $html_balise .=("\" alt=\"Copier\" title=\"Copier\" /></a>\n");
 			$html_balise .=(" ");
 
 			$html_balise .=("<a href=\"#\" onclick=\"javascript:
@@ -110,11 +117,18 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
 				$html_balise .=("<img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
 				$html_balise .=(" ");
 
-				$html_balise .=("<a href=\"#\" onclick=\"javascript:
-										if(document.getElementById('id_ct_a_importer')) {document.getElementById('id_ct_a_importer').value='notice_privee_".$notice_privee->getIdCt()."'};
-										if(document.getElementById('affichage_import_notice')) {document.getElementById('affichage_import_notice').style.display=''}
-										return false;
-									\"><img style=\"border: 0px;\" src=\"../images/icons/copy-16.png\" alt=\"Copier vers la notice courante\" title=\"Copier vers la notice courante\" /></a>\n");
+                                $html_balise .=("<a href=\"#\" onclick=\"javascript:
+                                                    contenu_a_copier = '".addslashes($notice_privee->getContenu())."';
+                                                    ct_a_importer_class='".get_class($notice_privee)."';
+                                                    id_ct_a_importer='".$notice_privee->getIdCt()."';
+                                                    new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$notice_privee->getIdGroupe()."&ct_a_importer_class=".get_class($notice_privee)."&id_ct_a_importer=".$notice_privee->getIdCt()."',{ onComplete:function() {updateDivModification();} });
+                                                \"><img style=\"border: 0px;\" src=\"");
+                                if (isset($_SESSION['ct_a_importer']) && $_SESSION['ct_a_importer'] == $notice_privee) {
+                                    $html_balise .=("../images/icons/copy-16-gold.png");
+                                } else {
+                                    $html_balise .=("../images/icons/copy-16.png");
+                                }
+                                $html_balise .=("\" alt=\"Copier\" title=\"Copier\" /></a>\n");
 				$html_balise .=(" ");
 
 				$html_balise .=("<a href=\"#\" onclick=\"javascript:
@@ -160,11 +174,18 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
 				$html_balise .=("<img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
 				$html_balise .=(" ");
 
-				$html_balise .=("<a href=\"#\" onclick=\"javascript:
-										if(document.getElementById('id_ct_a_importer')) {document.getElementById('id_ct_a_importer').value='compte_rendu_".$compte_rendu->getIdCt()."'};
-										if(document.getElementById('affichage_import_notice')) {document.getElementById('affichage_import_notice').style.display=''}
-										return false;
-									\"><img style=\"border: 0px;\" src=\"../images/icons/copy-16.png\" alt=\"Copier vers la notice courante\" title=\"Copier vers la notice courante\" /></a>\n");
+                                $html_balise .=("<a href=\"#\" onclick=\"javascript:
+                                                    contenu_a_copier = '".addslashes($compte_rendu->getContenu())."';
+                                                    ct_a_importer_class='".get_class($compte_rendu)."';
+                                                    id_ct_a_importer='".$compte_rendu->getIdCt()."';
+                                                    new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$compte_rendu->getIdGroupe()."&ct_a_importer_class=".get_class($compte_rendu)."&id_ct_a_importer=".$compte_rendu->getIdCt()."',{ onComplete:function() {updateDivModification();} });
+                                                \"><img style=\"border: 0px;\" src=\"");
+                                if (isset($_SESSION['ct_a_importer']) && $_SESSION['ct_a_importer'] == $compte_rendu) {
+                                    $html_balise .=("../images/icons/copy-16-gold.png");
+                                } else {
+                                    $html_balise .=("../images/icons/copy-16.png");
+                                }
+                                $html_balise .=("\" alt=\"Copier\" title=\"Copier\" /></a>\n");
 				$html_balise .=(" ");
 
 				$html_balise .=("<a href=\"#\" onclick=\"javascript:

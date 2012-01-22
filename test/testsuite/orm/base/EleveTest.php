@@ -88,7 +88,7 @@ class EleveTest extends GepiEmptyTestBase
 		
 		$classes = $florence_eleve->getClasses(5);
 		$this->assertEquals(0,$classes->count(),'Les classes de florence sont vides pour la période 5');
-		$this->assertEmpty($classes->getPrimaryKeys());
+		$this->assertEquals(0,count($classes->getPrimaryKeys()));
 
 	}
 
@@ -100,7 +100,7 @@ class EleveTest extends GepiEmptyTestBase
 
 		$groupes = $florence_eleve->getGroupes(5);//on récupère la classe pour la période 1
 		$this->assertEquals(0,$groupes->count(),'Les groupes de florence sont vides pour la période 5');
-		$this->assertEmpty($groupes->getPrimaryKeys());
+		$this->assertEquals(0,count($groupes->getPrimaryKeys()));
 
 		$groupes = $florence_eleve->getGroupes(new DateTime('2010-10-01'));
 		$this->assertNotNull($groupes,'La collection des groupes ne doit jamais retourner null');
