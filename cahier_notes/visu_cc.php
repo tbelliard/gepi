@@ -322,31 +322,28 @@ if(isset($_GET['export_pdf'])) {
 				global $nom_cc;
 				global $id_dev;
 				global $professeur_courant;
-				global $fonte, $MargeDroite, $largeur_page, $MargeGauche, $sc_interligne, $salle, $i;
-				//global $num_page;
-				//global $decompte_page;
+				//global $fonte, $MargeDroite, $largeur_page, $MargeGauche, $sc_interligne, $salle, $i;
+				global $MargeDroite, $largeur_page, $MargeGauche, $sc_interligne, $salle, $i;
 
-				$pdf->SetFont('DejaVu','B',14);
+				$this->SetFont('DejaVu','B',14);
 				$this->SetXY(10,10);
 				$this->Cell($largeur_page-$MargeDroite-$MargeGauche,10,getSettingValue('gepiSchoolName').' - Année scolaire '.getSettingValue('gepiYear'),'LRBT',1,'C');
 
 				$x1=$this->GetX();
 				$y1=$this->GetY();
 
-				$pdf->SetFont('DejaVu','B',12);
+				$this->SetFont('DejaVu','B',12);
 				$texte=ucfirst($nom_cc)." n°".$id_dev;
 				$largeur_tmp=$this->GetStringWidth($texte)+4;
 				$this->Cell($largeur_tmp,$this->FontSize*$sc_interligne,$texte,'LRBT',0,'C');
-
 				//$x2=$this->GetX();
 				$y2=$this->GetY();
 
-				$pdf->SetFont('DejaVu','B',12);
+				$this->SetFont('DejaVu','B',12);
 				$texte=$professeur_courant;
 				$larg_tmp=$sc_interligne*($this->GetStringWidth($texte));
 				$this->SetXY($largeur_page-$larg_tmp-$MargeDroite,$y1+($y2-$y1)/4);
 				$this->Cell($larg_tmp,$this->FontSize*$sc_interligne,$texte,'LRBT',1,'C');
-
 				//$this->Cell($larg_tmp,$this->FontSize*$sc_interligne,$this->GetY(),'LRBT',1,'C');
 			}
 		}
@@ -396,6 +393,8 @@ if(isset($_GET['export_pdf'])) {
 		$pdf->AddPage("P");
 		$pdf->EnteteCC();
 		$pdf->SetXY($x1,$y2);
+
+//echo "plop";
 
 		foreach($tab_ele as $ele_login => $tmp_tab) {
 			$total=0;
