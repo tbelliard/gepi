@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -133,7 +133,10 @@ echo add_token_field();
 <input type='hidden' name='is_posted' value='1' />
 <table class='boireaus' width = '100%' cellpadding = '5'>
 <tr>
-    <th><p class='bold'><a href='./index.php?orderby=m.matiere'<?php echo insert_confirm_abandon();?>>Identifiant matière</a></p></th>
+    <th>
+    <p class='bold'><a href='./index.php?orderby=m.matiere'<?php echo insert_confirm_abandon();?>>Identifiant matière</a><br />
+    <a href="javascript:afficher_masquer_matieres_sans_grp('afficher')"><img src="../images/icons/visible.png" width="19" height="16" title="Afficher les matières sans enseignement associé" alt="Afficher les matières sans enseignement associé" /></a> / <a href="javascript:afficher_masquer_matieres_sans_grp('masquer')"><img src="../images/icons/invisible.png" width="19" height="16" title="Masquer les matières sans enseignement associé" alt="Masquer les matières sans enseignement associé" /></a>
+    </p></th>
     <th><p class='bold'><a href='./index.php?orderby=m.nom_complet'<?php echo insert_confirm_abandon();?>>Nom complet</a></p></th>
     <th><p class='bold'><a href='./index.php?orderby=m.priority,m.nom_complet'<?php echo insert_confirm_abandon();?>>Ordre d'affichage<br />par défaut</a></p></th>
     <th><p class='bold'>Catégorie par défaut</p></th>
@@ -160,12 +163,22 @@ while ($i < $nombre_lignes){
     $alt=$alt*(-1);
 
 	$current_matiere = mysql_result($call_data, $i, "matiere");
-    $current_matiere_nom = mysql_result($call_data, $i, "nom_complet");
+	$current_matiere_nom = mysql_result($call_data, $i, "nom_complet");
     $current_matiere_priorite = mysql_result($call_data, $i, "priority");
     $current_matiere_categorie_id = mysql_result($call_data, $i, "categorie_id");
 
-    if ($current_matiere_priorite > 1) $current_matiere_priorite -= 10;
-    echo "<tr class='lig$alt white_hover'><td><a href='modify_matiere.php?current_matiere=$current_matiere'".insert_confirm_abandon().">$current_matiere</a></td>\n";
+    if ($current_matiere_priorite > 1) {$current_matiere_priorite -= 10;}
+
+	$sql="SELECT 1=1 FROM j_groupes_matieres WHERE id_matiere='$current_matiere';";
+	$res_grp_associes=mysql_query($sql);
+	$nb_grp_assoc=mysql_num_rows($res_grp_associes);
+
+	if($nb_grp_assoc==0) {
+		echo "<tr style='background-color:grey;' class='white_hover' id='tr_sans_grp_assoc_$i'><td title=\"Aucun enseignement n'est associé à cette matière\"><a href='modify_matiere.php?current_matiere=$current_matiere'".insert_confirm_abandon().">$current_matiere</a></td>\n";
+	}
+	else {
+		echo "<tr class='lig$alt white_hover'><td title=\"$nb_grp_assoc enseignement(s) associé(s) à cette matière\"><a href='modify_matiere.php?current_matiere=$current_matiere'".insert_confirm_abandon().">$current_matiere</a></td>\n";
+	}
     //echo "<td>$current_matiere_nom</td>";
     //echo "<td>".html_entity_decode($current_matiere_nom)."</td>";
     echo "<td>".htmlspecialchars($current_matiere_nom)."</td>\n";
@@ -208,4 +221,22 @@ while ($i < $nombre_lignes){
 </table>
 <input type='submit' value='Enregistrer' style='margin-left: 70%; margin-top: 25px; margin-bottom: 100px;' />
 </form>
+
+<script type='text/javascript'>
+function afficher_masquer_matieres_sans_grp(mode) {
+	for(i=0;i<<?php
+	echo $nombre_lignes;
+	?>;i++) {
+		if(document.getElementById('tr_sans_grp_assoc_'+i)) {
+			//alert(i);
+			if(mode=='afficher') {
+				document.getElementById('tr_sans_grp_assoc_'+i).style.display='';
+			}
+			else {
+				document.getElementById('tr_sans_grp_assoc_'+i).style.display='none';
+			}
+		}
+	}
+}
+</script>
 <?php require("../lib/footer.inc.php");?>
