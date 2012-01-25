@@ -1659,6 +1659,7 @@ if ($n > 0) {
 			echo "<a href='#' onmouseover=\"delais_afficher_div('div_description_svg_$m','y',-20,20,1000,20,20);\" onclick=\"afficher_div('div_description_svg_$m','y',-20,20); return false\" onmouseout=\"cacher_div('div_description_svg_$m')\">";
 			echo $value;
 			echo "</a>";
+			$m++;
 		}
 		else {
 			echo $value;
