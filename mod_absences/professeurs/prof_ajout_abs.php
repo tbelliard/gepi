@@ -3,7 +3,7 @@
  *
  * $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -39,7 +39,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../../logout.php?auto=1");
@@ -67,7 +67,8 @@ if($uid_post===$_SESSION['uid_prime']) {
 } else {
 	$valide_form = 'no';
 }
-	$_SESSION['uid_prime'] = $uid;
+$_SESSION['uid_prime'] = $uid;
+
 // ================= fin des fonctions de sécuritée =======================
 // On inclut les fonctions
 require_once("fonctions_prof_abs.php");
@@ -543,7 +544,7 @@ if (isset($echo)) {
 		$jour_aujourdhui = jour_semaine($datej);
 
     	// On vérifie si la menuBarre n'a pas renvoyé une classe (nouvelle version)
-    	if (getSettingValue("utiliserMenuBarre") != "no") AND $_SESSION["statut"] == "professeur" AND $menuBar == 'ok'){
+    	if ((getSettingValue("utiliserMenuBarre") != "no") AND $_SESSION["statut"] == "professeur" AND $menuBar == 'ok') {
 			$d_heure_absence_eleve = $horaire["debut"];
 			$a_heure_absence_eleve = $horaire["fin"];
 			$classe = isset($_GET["groupe"]) ? $_GET["groupe"] : NULL;
