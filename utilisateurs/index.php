@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -318,7 +318,7 @@ if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemo
 }
 ?>
  | Affecter les matières aux professeurs&nbsp;: <a href="tab_profs_matieres.php">Mode 1</a>
- - <a href='../init_xml2/init_alternatif.php?cat=profs'>Mode 2</a>";
+ - <a href='../init_xml2/init_alternatif.php?cat=profs'>Mode 2</a>
 
  | <a href="javascript:centrerpopup('help.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')">Aide</a>
  <?php
