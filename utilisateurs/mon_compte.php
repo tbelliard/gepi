@@ -1069,7 +1069,7 @@ if (getSettingValue("utiliserMenuBarre") != "no") {
 	echo "</p>\n";
 
 	echo "<p>
-			<em>La barre de menu horizontale allégée a une arborescence moins profonde pour que les menus \'professeurs\' s\'affichent plus rapidement au cas où le serveur serait saturé.</em>
+			<em>La barre de menu horizontale allégée a une arborescence moins profonde pour que les menus 'professeurs' s'affichent plus rapidement au cas où le serveur serait saturé.</em>
 		</p>\n";
 
 	echo "<br /><center><input type=\"submit\" value=\"Enregistrer\" /></center>\n";
