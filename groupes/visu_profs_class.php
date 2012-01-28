@@ -39,36 +39,36 @@ if (!checkAccess()) {
 	die();
 }
 
+$no_header=isset($_POST['no_header']) ? $_POST['no_header'] : (isset($_GET['no_header']) ? $_GET['no_header'] : 'n');
+
+$ajout_href_1="";
+$ajout_href_2="";
+$ajout_form="";
+if($no_header!='y') {
+	$titre_page = "Equipe pédagogique";
+}
+else {
+	$ajout_href_1="?no_header=y";
+	$ajout_href_2="&amp;no_header=y";
+	$ajout_form="<input type='hidden' name='no_header' value='y' />\n";
+
+}
 //**************** EN-TETE **************************************
-$titre_page = "Equipe pédagogique";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 
-/*
-echo "<p class='bold'>";
-echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>";
-echo "</p>\n";
-*/
-
-//$id_classe=isset($_GET['id_classe']) ? $_GET["id_classe"] : NULL;
 $id_classe=isset($_GET['id_classe']) ? $_GET["id_classe"] : (isset($_POST['id_classe']) ? $_POST["id_classe"] : NULL);
-//if(isset($_POST['id_classe'])){
 if(isset($id_classe)){
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 
 	echo "<p class='bold'>";
-	//echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-	echo "<a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-	//echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>";
-	//echo "</p>\n";
-
+	echo "<a href='".$_SERVER['PHP_SELF'].$ajout_href_1."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
 	if (!is_numeric($id_classe)){
 		echo "</p>\n";
 
 		echo "<p><b>ERREUR</b>: Le numéro de classe choisi n'est pas valide.</p>\n";
-		echo "<p><a href='".$_SERVER['PHP_SELF']."'>Retour</a></p>\n";
+		echo "<p><a href='".$_SERVER['PHP_SELF'].$ajout_href_1."'>Retour</a></p>\n";
 	}
 	else{
 		// =================================
@@ -127,18 +127,19 @@ if(isset($id_classe)){
 		}
 		// =================================
 
-		if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec'>Classe précédente</a>";}
+		if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec".$ajout_href_2."'>Classe précédente</a>";}
 		if($chaine_options_classes!="") {
 			echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
 			echo $chaine_options_classes;
 			echo "</select>\n";
 		}
-		if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv'>Classe suivante</a>";}
+		if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv".$ajout_href_2."'>Classe suivante</a>";}
 
+		echo $ajout_form;
+		
 		echo "</p>\n";
 		echo "</form>\n";
 
-		//$id_classe=$_POST["id_classe"];
 		$classe=get_classe($id_classe);
 
 		$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
@@ -149,7 +150,6 @@ if(isset($id_classe)){
 			}
 		}
 
-		//if($_SESSION['statut']=='professeur'){
 		if(($_SESSION['statut']=='professeur')&&(getSettingValue("GepiAccesVisuToutesEquipProf")!="yes")){
 			$test_prof_classe = sql_count(sql_query("SELECT login FROM j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe='$id_classe'"));
 			if($test_prof_classe==0){
@@ -308,7 +308,7 @@ if(isset($id_classe)){
 		}
 	}
 }
-else{
+else {
 
 	echo "<p class='bold'>";
 	echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
@@ -372,7 +372,7 @@ else{
 				echo "<td>\n";
 			}
 			//echo "<option value='$lig_class->id'>" . htmlspecialchars("$lig_class->classe") . "</option>\n";
-			echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$lig_class->id'>".htmlspecialchars("$lig_class->classe") . "</a><br />\n";
+			echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$lig_class->id".$ajout_href_2."'>".htmlspecialchars("$lig_class->classe") . "</a><br />\n";
 			$cpt++;
 		}
 		echo "</td>\n";
