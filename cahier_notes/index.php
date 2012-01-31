@@ -422,7 +422,7 @@ if  (isset($id_racine) and ($id_racine!='')) {
     }
 
     echo "<div class='norme'>\n";
-	echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"".$_SERVER['PHP_SELF']."\" method=\"get\">\n";
+	echo "<form enctype=\"multipart/form-data\" id= \"form1\" action=\"".$_SERVER['PHP_SELF']."\" method=\"get\">\n";
     echo "<p class='bold'>\n";
     echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a> | \n";
     echo "<a href='index.php?id_groupe=no_group'> Mes enseignements </a> | \n";
@@ -458,7 +458,7 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 					if($tab_groups[$loop]['id']==$id_groupe){
 						$num_groupe=$loop;
 	
-						$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+						$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='selected'>".htmlspecialchars($tab_groups[$loop]['description'])." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 	
 						$temoin_tmp=1;
 						if(isset($tab_groups[$loop+1])){
@@ -469,7 +469,7 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 						}
 					}
 					else {
-						$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+						$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".htmlspecialchars($tab_groups[$loop]['description'])." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
 					}
 	
 					if($temoin_tmp==0){
@@ -530,7 +530,7 @@ var tab_per_cn=new Array();\n";
 		$chaine_options_periodes="";
 		while($lig_cn=mysql_fetch_object($res_cn)) {
 			$chaine_options_periodes.="<option value='$lig_cn->id_cahier_notes'";
-			if($lig_cn->periode==$periode_num) {$chaine_options_periodes.=" selected='true'";}
+			if($lig_cn->periode==$periode_num) {$chaine_options_periodes.=" selected='selected'";}
 			$chaine_options_periodes.=">$lig_cn->periode</option>\n";
 
 			echo "tab_per_cn[$lig_cn->id_cahier_notes]=$lig_cn->periode;\n";
@@ -670,7 +670,7 @@ var tab_per_cn=new Array();\n";
 
     echo "<h3 class='gepi'>Liste des évaluations du carnet de notes</h3>\n";
     $empty = affiche_devoirs_conteneurs($id_racine,$periode_num, $empty, $current_group["classe"]["ver_periode"]["all"][$periode_num]);
-    echo "</ul>\n";
+    //echo "</ul>\n";
     if ($empty == 'yes') echo "<p><b>Actuellement, aucune évaluation.</b> Vous devez créer au moins une évaluation.</p>\n";
     if ($empty != 'yes') {
 		$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='bulletins' AND visible='n';";
@@ -732,12 +732,12 @@ if (isset($_GET['id_groupe']) and !(isset($_GET['periode_num'])) and !(isset($id
 
     $nom_classes = $current_group["classlist_string"];
 
-    echo "<p class=bold>";
+    echo "<p class='bold'>";
     echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|";
     echo "<a href='index.php?id_groupe=no_group'> Mes enseignements </a>|</p>\n";
     echo "<p class='bold'>Enseignement : ".htmlspecialchars($current_group["description"])." (" . $current_group["classlist_string"] .")</p>\n";
 
-    echo "<H3>Visualisation/modification - Choisissez la période : </H3>\n";
+    echo "<h3>Visualisation/modification - Choisissez la période : </h3>\n";
     $i="1";
     while ($i < ($current_group["nb_periode"])) {
         echo "<p><a href='index.php?id_groupe=$id_groupe&amp;periode_num=$i'>".ucfirst($current_group["periodes"][$i]["nom_periode"])."</a>";
@@ -758,7 +758,7 @@ if (isset($_GET['id_groupe']) and !(isset($_GET['periode_num'])) and !(isset($id
 
 if (!(isset($_GET['id_groupe'])) and !(isset($_GET['periode_num'])) and !(isset($id_racine))) {
     ?>
-    <p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a></p>
+    <p class='bold'><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a></p>
     <p>Accéder au carnet de notes : </p>
     <?php
     $groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
