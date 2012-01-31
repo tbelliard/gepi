@@ -162,7 +162,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 		$id_racine = mysql_result($appel_conteneurs, 0, 'id_racine');
 		$nom_conteneur = mysql_result($appel_conteneurs, 0, 'nom_court');
 		echo "<li>\n";
-		echo "$nom_conteneur ";
+		echo htmlspecialchars($nom_conteneur);
 		if ($ver_periode <= 1) {
 			echo " (<strong>".$gepiClosedPeriodLabel."</strong>) ";
 		}
@@ -212,7 +212,8 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					$nom_dev = mysql_result($appel_dev, $j, 'nom_court');
 					$id_dev = mysql_result($appel_dev, $j, 'id');
 					echo "<li>\n";
-					echo "<font color='green'>$nom_dev</font>";
+					//echo "<font color='green'>$nom_dev</font>";
+					echo "<span style='color:green;'>$nom_dev</span>";
 					echo " - <a href='saisie_notes.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev'>Saisie</a>";
 
 					$sql="SELECT 1=1 FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='$id_dev' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$periode_num';";
@@ -271,6 +272,8 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 				echo "</ul>\n";
 			}
 		}
+		echo "</li>\n";
+		echo "</ul>\n";
 	}
 	if ($ver_periode >= 2) {
 		$appel_conteneurs = mysql_query("SELECT * FROM cn_conteneurs WHERE (parent='$id_conteneur') order by nom_court");
@@ -1217,10 +1220,10 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 	}
 
 	if($page=='mon_compte') {
-		echo "<h2>Journal de vos connexions depuis <b>".$display_duree."</b>**</h2>\n";
+		echo "<h2>Journal de vos connexions depuis <strong>".$display_duree."</strong>**</h2>\n";
 	}
 	else {
-		echo "<h2>Journal des connexions de ".civ_nom_prenom($login)." depuis <b>".$display_duree."</b>**</h2>\n";
+		echo "<h2>Journal des connexions de ".civ_nom_prenom($login)." depuis <strong>".$display_duree."</strong>**</h2>\n";
 	}
 	$requete = '';
 	if ($duree != 'all') {$requete = "and START > now() - interval " . $duree . " day";}
@@ -1281,8 +1284,8 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 				$temp1 = "<font color='#FFA500'>";
 				$temp2 = "</font>";
 			} else if ($row[4] == 4) {
-				$temp1 = "<b><font color='red'>";
-				$temp2 = "</font></b>";
+				$temp1 = "<strong><font color='red'>";
+				$temp2 = "</font></strong>";
 
 			}
 
@@ -1507,7 +1510,7 @@ function affiche_acces_cdt() {
 									$retour.="</div>\n";
 								}
 	
-								$retour.="<p><b>L'accès a été ouvert pour le motif suivant&nbsp;:</b><br />";
+								$retour.="<p><strong>L'accès a été ouvert pour le motif suivant&nbsp;:</strong><br />";
 								$retour.=preg_replace("/\\\\r\\\\n/","<br />",$lig->description);
 								$retour.="</p>\n";
 	
@@ -1753,23 +1756,23 @@ function champ_input_choix_format_login($nom_champ, $default_login_gen_type="nnn
 <ul>
 	<li>Au maximum 48 caractères.</li>
 	<li>Au moins une lettre du prénom et une lettre du nom (<em>quel que soit l'ordre</em>).</li>
-	<li>Un caractère entre le prénom et le nom parmi \"<b>.-_</b>\", ou aucun.</li>
+	<li>Un caractère entre le prénom et le nom parmi \"<strong>.-_</strong>\", ou aucun.</li>
 </ul>
 <hr />
 <h4>Méthode employée</h4>
 <p>
 	Le modèle est indiqué à l'aide d'une suite de caractères.<br />
-	Exemples pour un utilisateur se nommant <b>Jean Aimarre</b>.
+	Exemples pour un utilisateur se nommant <strong>Jean Aimarre</strong>.
 </p>
 <ul>
-	<li>\"<b>ppp.nnnnnnnn</b>\" donnera \"<b>jea.aimarre</b>\"</li>
+	<li>\"<strong>ppp.nnnnnnnn</strong>\" donnera \"<strong>jea.aimarre</strong>\"</li>
 
-	<li>\"<b>ppp-nnn</b>\" donnera \"<b>jea-aim</b>\"</li>
-	<li>\"<b>p_nnnnnnnnnnn</b>\" donnera \"<b>j_aimarre</b>\"</li>
-	<li>\"<b>pnnnnn</b>\" donnera \"<b>jaimar</b>\"</li>
+	<li>\"<strong>ppp-nnn</strong>\" donnera \"<strong>jea-aim</strong>\"</li>
+	<li>\"<strong>p_nnnnnnnnnnn</strong>\" donnera \"<strong>j_aimarre</strong>\"</li>
+	<li>\"<strong>pnnnnn</strong>\" donnera \"<strong>jaimar</strong>\"</li>
 
-	<li>\"<b>nnnnnnnnp</b>\" donnera \"<b>aimarrej</b>\"</li>
-	<li>\"<b>n.ppp</b>\" donnera \"<b>a.jea</b>\"</li>
+	<li>\"<strong>nnnnnnnnp</strong>\" donnera \"<strong>aimarrej</strong>\"</li>
+	<li>\"<strong>n.ppp</strong>\" donnera \"<strong>a.jea</strong>\"</li>
 </ul>\n";
 
 		$tabdiv_infobulle[]=creer_div_infobulle('div_explication_formats_login_'.$nom_champ,$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');

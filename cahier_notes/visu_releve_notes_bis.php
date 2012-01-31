@@ -342,7 +342,7 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 		die();
 	}
 
-	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' id='formulaire'>\n";
 	// Affichage sur 3 colonnes
 	$nb_classes_par_colonne=round($nb_classes/3);
 
@@ -372,6 +372,7 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 	echo "</table>\n";
 
 echo "<script type='text/javascript'>
+	//<![CDATA[
 	function change_style_classe(num) {
 		if(document.getElementById('tab_id_classe_'+num)) {
 			if(document.getElementById('tab_id_classe_'+num).checked) {
@@ -382,14 +383,15 @@ echo "<script type='text/javascript'>
 			}
 		}
 	}
+	////]]>
 </script>\n";
 
-	echo "<p><a href='#' onClick='ModifCase(true)'>Tout cocher</a> / <a href='#' onClick='ModifCase(false)'>Tout décocher</a></p>\n";
+	echo "<p><a href='#' onclick='ModifCase(true)'>Tout cocher</a> / <a href='#' onclick='ModifCase(false)'>Tout décocher</a></p>\n";
 
 
 	$nb_grp_prof=0;
 	if(($_SESSION['statut']=='professeur')&&((getSettingValue("GepiAccesReleveProfToutesClasses") == "yes")||(getSettingValue("GepiAccesReleveProf") == "yes")||(getSettingValue("GepiAccesReleveProfTousEleves") == "yes"))) {
-		echo "<p><b>Alternativement</b>, vous pouvez choisir un groupe:</p>\n";
+		echo "<p><strong>Alternativement</strong>, vous pouvez choisir un groupe:</p>\n";
 
 		$groupes_prof=get_groups_for_prof($_SESSION['login']);
 		$nb_grp_prof=count($groupes_prof);
@@ -398,11 +400,11 @@ echo "<script type='text/javascript'>
 		for($i=0;$i<$nb_grp_prof;$i++) {
 			echo "<input type='radio' name='id_groupe' id='id_groupe_".$i."' value='".$groupes_prof[$i]['id']."' /> ";
 			echo "<label for='id_groupe_".$i."' style='cursor: pointer;'>\n";
-			echo $groupes_prof[$i]['name'];
-			echo "(<i>";
-			if($groupes_prof[$i]['name']!=$groupes_prof[$i]["matiere"]['nom_complet']) {echo $groupes_prof[$i]["matiere"]['nom_complet']." en ";}
-			echo $groupes_prof[$i]['classlist_string'];
-			echo "</i>)";
+			echo htmlspecialchars($groupes_prof[$i]['name']);
+			echo "(<em>";
+			if($groupes_prof[$i]['name']!=$groupes_prof[$i]["matiere"]['nom_complet']) {echo htmlspecialchars($groupes_prof[$i]["matiere"]['nom_complet'])." en ";}
+			echo htmlspecialchars($groupes_prof[$i]['classlist_string']);
+			echo "</em>)";
 			echo "</label>\n";
 			echo "<br />\n";
 		}
@@ -413,6 +415,7 @@ echo "<script type='text/javascript'>
 	echo "</form>\n";
 
 	echo "<script type='text/javascript'>
+	//<![CDATA[
 	function ModifCase(mode) {
 		for (var k=0;k<$cpt;k++) {
 			if(document.getElementById('tab_id_classe_'+k)){
@@ -432,6 +435,7 @@ echo "<script type='text/javascript'>
 			}
 		}
 	}
+	////]]>
 </script>\n";
 
 
@@ -481,11 +485,11 @@ elseif(!isset($choix_periode)) {
 	echo "<p class='bold'>Choisissez la période d'affichage pour ";
 	if(isset($id_groupe)) {
 		$current_group=get_group($id_groupe);
-		echo $current_group['name'];
-		echo "(<i>";
-		if($current_group['name']!=$current_group['matiere']['nom_complet']) {echo $current_group['matiere']['nom_complet']." en ";}
-		echo $current_group['classlist_string'];
-		echo "</i>)";
+		echo htmlspecialchars($current_group['name']);
+		echo "(<em>";
+		if($current_group['name']!=$current_group['matiere']['nom_complet']) {echo htmlspecialchars($current_group['matiere']['nom_complet'])." en ";}
+		echo htmlspecialchars($current_group['classlist_string']);
+		echo "</em>)";
 
 	}
 	else {
@@ -512,7 +516,7 @@ elseif(!isset($choix_periode)) {
 	$cal2 = new Calendrier("formulaire", "display_date_fin");
 	//=======================
 
-	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' id='formulaire'>\n";
 	echo "<table border='0' summary='Tableau de choix des périodes'>\n";
 	echo "<tr valign='top'>\n";
 	echo "<td>\n";
@@ -522,7 +526,7 @@ elseif(!isset($choix_periode)) {
 	// Dans le cas d'un retour en arrière, le champ peut avoir été préalablement coché
 	//if((!isset($choix_periode))||($choix_periode=="intervalle")) {
 	if(!isset($tab_periode_num)) {
-		echo "checked ";
+		echo "checked='checked' ";
 	}
 	echo "/>";
 	echo "</td>\n";
@@ -544,16 +548,16 @@ elseif(!isset($choix_periode)) {
 
 
 	echo "<td>\n";
-	echo "<label for='choix_periode_dates' style='cursor: pointer;'> \nDe la date : </label>";
+	echo "<label for='display_date_debut' style='cursor: pointer;'> \nDe la date : </label>";
 
-    echo "<input type='text' name = 'display_date_debut' id = 'display_date_debut' size='10' value = \"".$display_date_debut."\" onfocus=\"document.getElementById('choix_periode_dates').checked=true;\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
-    echo "<label for='choix_periode_dates' style='cursor: pointer;'><a href=\"#calend\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+    echo "<input type='text' name = 'display_date_debut' id = 'display_date_debut' size='10' value = \"".$display_date_debut."\" onfocus=\"document.getElementById('choix_periode_dates').checked=true;\" onkeydown=\"clavier_date(this.id,event);\" />";
+    echo "<label for='display_date_fin' style='cursor: pointer;'><a href=\"#calend\" onclick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier début\" style=\"border:0;\" /></a>\n";
 
     echo "&nbsp;à la date : </label>";
-    echo "<input type='text' name = 'display_date_fin' id = 'display_date_fin' size='10' value = \"".$display_date_fin."\" onfocus=\"document.getElementById('choix_periode_dates').checked=true;\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
-    echo "<label for='choix_periode_dates' style='cursor: pointer;'><a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+    echo "<input type='text' name = 'display_date_fin' id = 'display_date_fin' size='10' value = \"".$display_date_fin."\" onfocus=\"document.getElementById('choix_periode_dates').checked=true;\" onkeydown=\"clavier_date(this.id,event);\" />";
+    echo "<label for='choix_periode_dates' style='cursor: pointer;'><a href=\"#calend\" onclick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier fin\" style=\"border:0;\" /></a>\n";
 	echo "<br />\n";
-    echo " (<i>Veillez à respecter le format jj/mm/aaaa</i>)</label>\n";
+    echo " (<em>Veillez à respecter le format jj/mm/aaaa</em>)</label>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -572,7 +576,7 @@ elseif(!isset($choix_periode)) {
 	if(isset($tab_periode_num)) {
 		echo "checked ";
 	}
-	echo "/><label for='choix_periode' style='cursor: pointer;'> <b>Période</b></label>\n";
+	echo "/><label for='choix_periode' style='cursor: pointer;'> <strong>Période</strong></label>\n";
 
 	echo "</td>\n";
 	echo "<td>\n";
@@ -634,13 +638,15 @@ elseif(!isset($choix_periode)) {
 			if(!in_array($j,$tab_periode_exclue)) {
 				echo "<td style='background-color:lightgreen;'>";
 				//echo "<label for='choix_periode' style='cursor: pointer;'><input type=\"radio\" name=\"periode\" value='$j' /></label>\n";
-				echo "<label for='choix_periode' style='cursor: pointer;'><input type=\"checkbox\" name=\"tab_periode_num[]\" id=\"tab_periode_num_$j\" value='$j' ";
+				echo "<span style='cursor: pointer;'>
+				<label for=\"tab_periode_num_$j\" style=\"display:none;\">Période $j</label>
+				<input type=\"checkbox\" name=\"tab_periode_num[]\" id=\"tab_periode_num_$j\" value='$j' ";
 				// Dans le cas d'un retour en arrière, le champ peut avoir été préalablement coché
 				if((isset($tab_periode_num))&&(in_array($j,$tab_periode_num))) {
 					echo "checked ";
 				}
 				echo "onchange=\"document.getElementById('choix_periode').checked=true\" ";
-				echo "/></label>\n";
+				echo "/></span>\n";
 			}
 			else {
 				echo "<td style='background-color:red;'>&nbsp;";
@@ -666,36 +672,39 @@ elseif(!isset($choix_periode)) {
 	echo "</tr>\n";
 	echo "</table>\n";
 
+	echo "<p>";
 	if(isset($id_groupe)) {
 		// Cas d'un prof (on a forcé plus haut à NULL $id_groupe si on n'a pas affaire à un prof)
 		echo "<input type='hidden' name='id_groupe' value='".$id_groupe."' />\n";
 	}
 
-	/*
-	if($_SESSION['statut']=='eleve') {
-		// Il faudrait remplir les champs tab_selection_ele_".$i."_".$j."[] en tenant compte de $choix_periode qui n'est pas encore POSTé
-		echo "<input type='hidden' name='valide_select_eleves' value='y' />\n";
-	}
-	*/
-
-	echo "<p><input type='button' name='valide_choix_periode' value='Valider' onclick='check_et_submit_choix_periode()' /></p>\n";
+	echo "<input type='button' name='valide_choix_periode' value='Valider' onclick='check_et_submit_choix_periode()' /></p>\n";
 
 	echo "<noscript>\n";
 	echo "<p><input type='submit' name='valide_choix_periode' value='Valider' /></p>\n";
 	echo "</noscript>\n";
 
 	echo "</form>\n";
-
+?>
+<script type="text/javascript">
+	//<![CDATA[
+	getElementById('formulaire').setAttribute( "autocomplete", "off" );
+	////]]>
+</script>
+	
+	
+<?php
 	echo "<p><br /></p>\n";
 
-	echo "<p><i>Remarque&nbsp;:</i></p>\n";
+	echo "<p><em>Remarque&nbsp;:</em></p>\n";
 	echo "<blockquote>\n";
 	echo "<p>Les relevés d'une date à une autre ne font apparaître que les matières dans lesquelles il y a des notes.<br />\n";
 	echo "Les relevés pour une période complète en revanche font apparaître toutes les matières, même si aucune note n'est saisie.</p>\n";
-	echo "On choisit en général la période complète lorsqu'on veut imprimer un relevé en même temps que le bulletin (<i>au verso par exemple</i>) et en fin de période, il est bon d'avoir toutes les matières.</p>\n";
+	echo "<p>On choisit en général la période complète lorsqu'on veut imprimer un relevé en même temps que le bulletin (<em>au verso par exemple</em>) et en fin de période, il est bon d'avoir toutes les matières.</p>\n";
 	echo "</blockquote>\n";
 
 	echo "<script type='text/javascript'>
+	//<![CDATA[ 
 	function check_et_submit_choix_periode() {
 		if(document.getElementById('choix_periode').checked==true) {
 			var une_periode_cochee='n';
@@ -709,13 +718,14 @@ elseif(!isset($choix_periode)) {
 				alert('Vous n\'avez coché aucune période.');
 			}
 			else {
-				document.formulaire.submit();
+				document.getElementById('formulaire').submit();
 			}
 		}
 		else {
-			document.formulaire.submit();
+			document.getElementById('formulaire').submit();
 		}
 	}
+	//]]>
 </script>\n";
 
 }
@@ -732,14 +742,14 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 		echo " | ";
 		echo "<a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
 		echo " | ";
-		echo "<a href='".$_SERVER['PHP_SELF']."' onClick=\"document.forms['form_retour'].submit();return false;\">Choisir d'autres périodes</a>\n";
+		echo "<a href='".$_SERVER['PHP_SELF']."' onclick=\"document.forms['form_retour'].submit();return false;\">Choisir d'autres périodes</a>\n";
 	}
 	elseif(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='administrateur')) {
 		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
 		echo " | ";
 		echo "<a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
 		echo " | ";
-		echo "<a href='".$_SERVER['PHP_SELF']."' onClick=\"document.forms['form_retour'].submit();return false;\">Choisir d'autres périodes</a>\n";
+		echo "<a href='".$_SERVER['PHP_SELF']."' onclick=\"document.forms['form_retour'].submit();return false;\">Choisir d'autres périodes</a>\n";
 		echo " | ";
 		echo "<a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
 	}
@@ -751,7 +761,8 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	//===========================
 	// FORMULAIRE POUR LE RETOUR AU CHOIX DES PERIODES
 	echo "\n<!-- Formulaire de retour au choix des périodes -->\n";
-	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='form_retour'>\n";
+	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' id='form_retour'>\n";
+	echo "<p>\n";
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		echo "<input type='hidden' name='tab_id_classe[$i]' value='".$tab_id_classe[$i]."' />\n";
 	}
@@ -772,6 +783,7 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 		// Cas d'un prof (on a forcé plus haut à NULL $id_groupe si on n'a pas affaire à un prof)
 		echo "<input type='hidden' name='id_groupe' value='".$id_groupe."' />\n";
 	}
+	echo "</p>\n";
 	echo "</form>\n";
 	//===========================
 
@@ -806,16 +818,13 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	echo ":</p>\n";
 
 	echo "\n<!-- Formulaire de choix des élèves et des paramètres -->\n";
-	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire' target='_blank'>\n";
-	//echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire' target='_blank' onsubmit='if(test_check_ele()) {document.forms['formulaire'].submit();}'>\n";
-
-	//echo "<p><input type='submit' name='bouton_valide_select_eleves2' value='Valider' /></p>\n";
+	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' id='formulaire' target='_blank'>\n";
+	
 	echo "<p><input type='button' name='bouton_valide_select_eleves2' value='Valider' onclick='test_check_ele()' /></p>\n";
 
 	// Période d'affichage:
 	echo "<input type='hidden' name='choix_periode' value='$choix_periode' />\n";
 	if($choix_periode=='periode') {
-		//echo "<input type='hidden' name='periode' value='$periode' />\n";
 		for($j=0;$j<count($tab_periode_num);$j++) {
 			echo "<input type='hidden' name='tab_periode_num[$j]' value='".$tab_periode_num[$j]."' />\n";
 		}
@@ -840,13 +849,13 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	//echo "<input type='hidden' name='mode_bulletin' value='html' />\n";
 	//echo "<input type='hidden' name='un_seul_bull_par_famille' value='non' />\n";
 
-	echo "<p><input type='radio' id='releve_html' name='mode_bulletin' value='html' checked /><label for='releve_html'> Relevé HTML</label><br />\n";
+	echo "<p><input type='radio' id='releve_html' name='mode_bulletin' value='html' checked='checked' /><label for='releve_html'> Relevé HTML</label><br />\n";
 	echo "<input type='radio' id='releve_pdf' name='mode_bulletin' value='pdf' onchange='display_div_param_pdf();' /><label for='releve_pdf'> Relevé PDF</label></p>\n";
 
 	echo "<div id='div_param_pdf'>\n";
 		//echo "<br />\n";
 		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' name='use_cell_ajustee' id='use_cell_ajustee' value='n' ";
-		if((isset($_SESSION['pref_use_cell_ajustee']))&&($_SESSION['pref_use_cell_ajustee']=='n')) {echo "checked ";}
+		if((isset($_SESSION['pref_use_cell_ajustee']))&&($_SESSION['pref_use_cell_ajustee']=='n')) {echo "checked='checked' ";}
 		echo "/><label for='use_cell_ajustee' style='cursor: pointer;'> Ne pas utiliser la nouvelle fonction use_cell_ajustee() pour l'écriture des appréciations.</label>";
 
 		$titre_infobulle="Fonction cell_ajustee()\n";
@@ -873,6 +882,7 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	echo "</div>\n";
 
 	echo "<script type='text/javascript'>
+		//<![CDATA[
 	function display_div_param_pdf() {
 		if(document.getElementById('div_param_pdf')) {
 			if(document.getElementById('releve_pdf').checked==true) {
@@ -885,6 +895,7 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	}
 
 	display_div_param_pdf();
+	////]]>
 </script>\n";
 
 	//=======================================
@@ -900,13 +911,13 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	}
 	else {
 		echo "<p>\n";
-		echo "<b>Paramètres:</b> \n";
+		echo "<strong>Paramètres:</strong> \n";
 		echo "<span id='pliage_param_releve'>\n";
-		echo "(<i>";
+		echo "(<em>";
 		echo "<a href='#' onclick=\"document.getElementById('div_param_releve').style.display='';return false;\">Afficher</a>";
 		echo " / \n";
 		echo "<a href='#' onclick=\"document.getElementById('div_param_releve').style.display='none';return false;\">Masquer</a>";
-		echo " les paramètres du relevé de notes</i>).";
+		echo " les paramètres du relevé de notes</em>).";
 		echo "</span>\n";
 		echo "</p>\n";
 
@@ -915,15 +926,15 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 		if (($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
 			echo "<table border='0' summary='Tableau de paramètres'>\n";
 			echo "<tr><td valign='top'><input type='checkbox' name='un_seul_bull_par_famille' id='un_seul_bull_par_famille' value='oui' ";
-			if((isset($_SESSION['pref_un_seul_bull_par_famille']))&&($_SESSION['pref_un_seul_bull_par_famille']=='oui')) {echo "checked ";}
-			echo "/></td><td><label for='un_seul_bull_par_famille' style='cursor: pointer;'>Ne pas imprimer de relevé de notes pour le deuxième parent<br />(<i>même dans le cas de parents séparés</i>).</label></td></tr>\n";
+			if((isset($_SESSION['pref_un_seul_bull_par_famille']))&&($_SESSION['pref_un_seul_bull_par_famille']=='oui')) {echo "checked='checked' ";}
+			echo "/></td><td><label for='un_seul_bull_par_famille' style='cursor: pointer;'>Ne pas imprimer de relevé de notes pour le deuxième parent<br />(<em>même dans le cas de parents séparés</em>).</label></td></tr>\n";
 
 			echo "<tr><td valign='top'><input type='checkbox' name='deux_releves_par_page' id='deux_releves_par_page' value='oui' ";
-			if((isset($_SESSION['pref_deux_releves_par_page']))&&($_SESSION['pref_deux_releves_par_page']=='oui')) {echo "checked ";}
-			echo "/></td><td><label for='deux_releves_par_page' style='cursor: pointer;'>Produire deux relevés par page (<i>PDF</i>).</label></td></tr>\n";
+			if((isset($_SESSION['pref_deux_releves_par_page']))&&($_SESSION['pref_deux_releves_par_page']=='oui')) {echo "checked='checked' ";}
+			echo "/></td><td><label for='deux_releves_par_page' style='cursor: pointer;'>Produire deux relevés par page (<em>PDF</em>).</label></td></tr>\n";
 
 			echo "<tr><td valign='top'><input type='checkbox' name='tri_par_etab_orig' id='tri_par_etab_orig' value='y' ";
-			if((isset($_SESSION['pref_tri_par_etab_orig']))&&($_SESSION['pref_tri_par_etab_orig']=='y')) {echo "checked ";}
+			if((isset($_SESSION['pref_tri_par_etab_orig']))&&($_SESSION['pref_tri_par_etab_orig']=='y')) {echo "checked='checked' ";}
 			echo "/></td><td><label for='tri_par_etab_orig' style='cursor: pointer;'>Trier les relevés par établissement d'origine.</label></td></tr>\n";
 
 			echo "</table>\n";
@@ -948,6 +959,8 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 		echo "</div>\n";
 
 		echo "<script type='text/javascript'>
+			
+	//<![CDATA[
 function CocheLigne(item) {
 	for (var i=0;i<".count($tab_id_classe).";i++) {
 		if(document.getElementById(item+'_'+i)){
@@ -989,6 +1002,7 @@ if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
     echo "document.getElementById('div_param_releve').style.display='';";
 };
 
+echo "	////]]>";
 echo "</script>\n";
 
 	}
@@ -1007,7 +1021,7 @@ echo "</script>\n";
 			echo " et toutes les périodes";
 		}
 		*/
-		echo " <a href='#' onClick='cocher_tous_eleves();return false;'>Cocher tous les élèves</a> / <a href='#' onClick='decocher_tous_eleves();return false;'>Décocher tous les élèves</a></p>\n";
+		echo " <a href='#' onclick='cocher_tous_eleves();return false;'>Cocher tous les élèves</a> / <a href='#' onclick='decocher_tous_eleves();return false;'>Décocher tous les élèves</a></p>\n";
 	}
 
 	$max_eff_classe=0;
@@ -1166,7 +1180,7 @@ echo "</script>\n";
 								// Dans le cas d'un retour en arrière, des cases peuvent avoir été cochées
 								$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_'.$j]) ? $_POST['tab_selection_ele_'.$i.'_'.$j] : array();
 								if(in_array($lig_ele->login,$tab_selection_eleves)) {
-									echo "checked ";
+									echo "checked='checked' ";
 								}
 								echo "/></td>\n";
 							}
@@ -1196,7 +1210,7 @@ echo "</script>\n";
 									// Dans le cas d'un retour en arrière, des cases peuvent avoir été cochées
 									$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_'.$j]) ? $_POST['tab_selection_ele_'.$i.'_'.$j] : array();
 									if(in_array($lig_ele->login,$tab_selection_eleves)) {
-										echo "checked ";
+										echo "checked='checked' ";
 									}
 									echo "/></td>\n";
 								}
@@ -1216,7 +1230,7 @@ echo "</script>\n";
 							elseif($_SESSION['statut']=='responsable') {
 								// Un responsable ne voit que ses enfants
 								echo "<td><input type='checkbox' name='tab_selection_ele_".$i."_".$j."[]' id='tab_selection_ele_".$i."_".$j."_".$cpt."' value=\"".$lig_ele->login."\" ";
-								echo "checked ";
+								echo "checked='checked' ";
 								echo "/></td>\n";
 							}
 							else {
@@ -1233,7 +1247,7 @@ echo "</script>\n";
 									// Dans le cas d'un retour en arrière, des cases peuvent avoir été cochées
 									$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_'.$j]) ? $_POST['tab_selection_ele_'.$i.'_'.$j] : array();
 									if(in_array($lig_ele->login,$tab_selection_eleves)) {
-										echo "checked ";
+										echo "checked='checked' ";
 									}
 									echo "/></td>\n";
 								}
@@ -1258,7 +1272,7 @@ echo "</script>\n";
 						// Dans le cas d'un retour en arrière, des cases peuvent avoir été cochées
 						$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_'.$periode]) ? $_POST['tab_selection_ele_'.$i.'_'.$periode] : array();
 						if(in_array($lig_ele->login,$tab_selection_eleves)) {
-							echo "checked ";
+							echo "checked='checked' ";
 						}
 						echo "/></td>\n";
 					}
@@ -1287,7 +1301,7 @@ echo "</script>\n";
 							// Dans le cas d'un retour en arrière, des cases peuvent avoir été cochées
 							$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_'.$periode]) ? $_POST['tab_selection_ele_'.$i.'_'.$periode] : array();
 							if(in_array($lig_ele->login,$tab_selection_eleves)) {
-								echo "checked ";
+								echo "checked='checked' ";
 							}
 							echo "/></td>\n";
 						}
@@ -1298,7 +1312,7 @@ echo "</script>\n";
 						// Dans le cas d'un retour en arrière, des cases peuvent avoir été cochées
 						$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_'.$periode]) ? $_POST['tab_selection_ele_'.$i.'_'.$periode] : array();
 						if(in_array($lig_ele->login,$tab_selection_eleves)) {
-							echo "checked ";
+							echo "checked='checked' ";
 						}
 						echo "/></td>\n";
 					}
@@ -1318,7 +1332,7 @@ echo "</script>\n";
 //count($tab_periode_num)
 
 	echo "<script type='text/javascript'>
-
+//<![CDATA[
 function CocheColonneSelectEleves(i,j) {
 	for (var k=0;k<$max_eff_classe;k++) {
 		if(document.getElementById('tab_selection_ele_'+i+'_'+j+'_'+k)){
@@ -1392,11 +1406,11 @@ function decocher_tous_eleves() {
 	if(eff_eleve_checked==0) {
 		//alert('Aucun élève n est sélectionné.');
 		//return confirm('Aucun élève n est sélectionné. Voulez-vous quand même générer le relevé?');
-		if(confirm('Aucun élève n est sélectionné. Voulez-vous quand même générer le relevé?')) {document.forms['formulaire'].submit();}
+		if(confirm('Aucun élève n est sélectionné. Voulez-vous quand même générer le relevé?')) {document.getElementById('formulaire').submit();}
 	}
 	else {
 	//	alert('Au moins un élève est sélectionné: '+eff_eleve_checked);
-	document.forms['formulaire'].submit();
+	document.getElementById('formulaire').submit();
 	}
 }\n";
 	}
@@ -1404,16 +1418,18 @@ function decocher_tous_eleves() {
 		echo "function test_check_ele() {
 	// On ne fait pas de test dans le cas d'un login eleve
 	// L'élève ne peut consulter que ses notes et est donc nécessairement coché
-	document.forms['formulaire'].submit();
+	document.getElementById('formulaire').submit();
 }\n";
 	}
 	echo "// On coche tous les élèves par défaut:
 cocher_tous_eleves();
+////]]>
 </script>\n";
 
 	//echo "<p><a href='javascript:test_check_ele();return false;'>Test élève</a></p>\n";
 	//echo "<p><a href='#' onclick='test_check_ele();return false;'>Test élève</a></p>\n";
 
+	echo "<p>\n";
 	if(isset($id_groupe)) {
 		// Cas d'un prof (on a forcé plus haut à NULL $id_groupe si on n'a pas affaire à un prof)
 		echo "<input type='hidden' name='id_groupe' value='".$id_groupe."' />\n";
@@ -1431,7 +1447,7 @@ cocher_tous_eleves();
 	echo "<input type='hidden' name='valide_select_eleves' value='y' />\n";
 	//echo "<p><input type='submit' name='bouton_valide_select_eleves2' value='Valider' /></p>\n";
 	//echo "<p><input type='submit' name='bouton_valide_select_eleves2' value='Valider' onclick='test_check_ele()' /></p>\n";
-	echo "<p><input type='button' name='bouton_valide_select_eleves2' value='Valider' onclick='test_check_ele()' /></p>\n";
+	echo "<input type='button' name='bouton_valide_select_eleves2' value='Valider' onclick='test_check_ele()' /></p>\n";
 	echo "</form>\n";
 }
 
@@ -1595,10 +1611,10 @@ else {
 				echo "<div class='noprint' style='background-color:white; border: 1px solid red;'>\n";
 				echo "<h2>Classe de ".$classe."</h2>\n";
 				if($periode_num=="intervalle") {
-					echo "<p><b>Du $display_date_debut au $display_date_fin</b></p>\n";
+					echo "<p><strong>Du $display_date_debut au $display_date_fin</strong></p>\n";
 				}
 				else {
-					echo "<p><b>Période $periode_num</b></p>\n";
+					echo "<p><strong>Période $periode_num</strong></p>\n";
 				}
 
 				echo "<p>Effectif de la classe: ".$tab_releve[$id_classe][$periode_num]['eff_classe']."</p>\n";
@@ -1615,7 +1631,7 @@ else {
 				if($mode_bulletin!="pdf") {
 					//+++++++++++++++++++++++++++++++++++
 					// A FAIRE: Il faudrait afficher l'effectif des élèves choisis faisant partie de la classe/période...
-					echo "<p>".count($tab_releve[$id_classe][$periode_num]['eleve'])." élève(s) sélectionné(s) dans cette classe (<i>pour cette période</i>).</p>\n";
+					echo "<p>".count($tab_releve[$id_classe][$periode_num]['eleve'])." élève(s) sélectionné(s) dans cette classe (<em>pour cette période</em>).</p>\n";
 					//+++++++++++++++++++++++++++++++++++
 	
 					echo "</div>\n";
@@ -1698,7 +1714,7 @@ else {
 										$chaine_info_deux_releves="";
 										if(($un_seul_bull_par_famille=="non")&&($nb_releves>1)) {$chaine_info_deux_releves=".<br /><span style='color:red'>Plusieurs relevés pour une même famille&nbsp: les adresses des deux responsables diffèrent.</span><br /><span style='color:red'>Si vous ne souhaitez pas de deuxième relevé, pensez à cocher la case 'Un seul relevé par famille'.</span>";}
 
-										echo "<div class='espacement_bulletins'><div align='center'>Espacement (<i>non imprimé</i>) entre les relevés".$chaine_info_deux_releves."</div></div>\n";
+										echo "<div class='espacement_bulletins'><div align='center'>Espacement (<em>non imprimé</em>) entre les relevés".$chaine_info_deux_releves."</div></div>\n";
 	
 										flush();
 									}
