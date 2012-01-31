@@ -135,7 +135,7 @@ var currentEdit=null;
 		latex = latex.replace(/&plus;/g,'+');
 		latex = latex.replace(/&space;/g,' ');
 		
-		currentEdit.insertHtml('<img src="'+name+'" alt="'+latex+'" align="absmiddle" />');
+		currentEdit.insertHtml('<img src="'+name+'" alt="'+latex+'" align="absmiddle" class="formule_tex_latex_codecogs_com" />');
 	}		
 	
 })();	
