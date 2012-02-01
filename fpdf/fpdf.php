@@ -23,6 +23,8 @@ var $HREF;		// lien
 
 function __construct($orientation='P',$unit='mm',$format='A4')
 {
+    @setlocale(LC_NUMERIC,'C');
+
     parent::__construct($orientation,$unit,$format);
     //ajout de la police DejaVu
     $this->AddFont('DejaVu','','DejaVuSansCondensed.ttf',true);

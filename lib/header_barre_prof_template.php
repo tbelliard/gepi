@@ -445,6 +445,19 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 	$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/impression/impression_serie.php' , "texte"=>"Mes listes PDF");
 	$cpt_sous_menu++;
 
+	$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/groupes/visu_profs_class.php' , "texte"=>"Equipes pédagogiques");
+	$tmp_sous_menu2=array();
+	$cpt_sous_menu2=0;
+	foreach($tmp_mes_classes as $key => $value) {
+		$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/groupes/visu_profs_class.php?id_classe='.$key;
+		$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$value;
+		$cpt_sous_menu2++;
+	}
+	$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
+	$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
+	$cpt_sous_menu++;
+
+
 	$tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
 	$tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;
 

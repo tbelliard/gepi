@@ -2,7 +2,7 @@
 |==================|
 |= CHANGELOG GEPI =|
 |==================|
-Gepi-1.6.0 (31/12/2011)
+Gepi-1.6.0 (27/01/2012)
 ===========================
 html :
 - Utilisation de l'encodage utf-8 pour l'ensemble de gepi
@@ -13,7 +13,11 @@ Base de donnée :
 Abs2 :
 - Utilisation d'une table d'agrégation pour accélérer les bilans et statistiques
 - Ajout d'informations sur les absences dans la fiche élève
+- Ajout d'une page sur les taux d'absentéisme
 - Ajout d'un bilan sur les justifications
+- Dans les modèles OOo la chaine [saisies_string_eleve_id_[el_col.getIdEleve] est remplacée par
+[saisies_string_eleve_id_[el_col.getId]. Les modèles personnalisés doivent êtres modifiés en conséquence.
+- Les modèles personnalisés absence_email.txt et absence_sms.txt doivent être en UTF-8
 
 Bulletins
 - Possibilité de donner à un statut autre le droit d'éditer les bulletins
