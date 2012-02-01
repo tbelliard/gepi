@@ -114,7 +114,7 @@
 	}
 ?>
 
-<!-- Alertes sécurités	-->
+<!-- Alertes sécurité -->
 <?php
 	if ($afficheAccueil->alert_sums>0) {
 ?>
@@ -183,6 +183,26 @@
 
 <!-- Actions à effectuer -->
 <?php
+
+	if((getSettingValue('active_cahiers_texte')=='y')&&(getSettingValue('GepiCahierTexteVersion')=='2')) {
+		if(!file_exists("./temp/info_jours.js")) {
+			$sql="SELECT * FROM infos_actions WHERE titre='Fichier info_jours.js absent'";
+			$test_info_jours=mysql_query($sql);
+			if(mysql_num_rows($test_info_jours)==0) {
+				enregistre_infos_actions("Fichier info_jours.js absent","Le fichier info_jours.js destiné à tenir compte des jours ouvrés dans les saisies du cahier de textes n'est pas renseigné.\nVous pouvez le renseigner en <a href='$gepiPath/edt_organisation/admin_horaire_ouverture.php?action=visualiser'>saisissant ou re-validant les horaires d'ouverture</a> de l'établissement.","administrateur",'statut');
+			}
+		}
+		else {
+			$sql="SELECT * FROM infos_actions WHERE titre='Fichier info_jours.js absent'";
+			$test_info_jours=mysql_query($sql);
+			if(mysql_num_rows($test_info_jours)>0) {
+				while($lig_action=mysql_fetch_object($test_info_jours)) {
+					del_info_action($lig_action->id);
+				}
+			}
+		}
+	}
+	
 	affiche_infos_actions();
 ?>
 

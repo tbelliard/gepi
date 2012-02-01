@@ -5046,7 +5046,7 @@ $update_tempo4=mysql_query($sql);
 					foreach($adresse->children() as $key => $value) {
 						if(in_array(my_strtoupper($key),$tab_champs_adresse)) {
 							//$adresses[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'/"," ",$value)), "an", " .'-", " ");
-							$adresses[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',$value), "an", " .'-", " ");
+							$adresses[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',$value), "an", " .'°,-", " ");
 						}
 					}
 

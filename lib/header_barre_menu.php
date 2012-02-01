@@ -3,7 +3,7 @@
 /**
  * Fichier qui permet de construire la barre de menu
  *
- * @copyright 2008-2011
+ * @copyright 2008-2012
  * @license GNU/GPL v2
  * @package General
  * @subpackage Affichage
@@ -403,6 +403,14 @@ echo '<!--[if lt IE 7]>
 	$barre_eleve.= '      <li><a href="'.$gepiPath.'/groupes/mes_listes.php"'.insert_confirm_abandon().'>Mes listes CSV</a></li>'."\n";
 	$barre_eleve.= '      <li><a href="'.$gepiPath.'/impression/impression_serie.php"'.insert_confirm_abandon().'>Mes listes PDF</a></li>'."\n";
 
+	$barre_eleve.= '		<li class="plus"><a href="'.$gepiPath.'/groupes/visu_profs_class.php"'.insert_confirm_abandon().'>Équipes pédégogiques</a>'."\n";
+		$barre_eleve .= '		<ul class="niveau3">'."\n";
+		foreach($tmp_mes_classes as $key => $value) {
+			$barre_eleve.= '		<li><a href="'.$gepiPath.'/groupes/visu_profs_class.php?id_classe='.$key.'"'.insert_confirm_abandon().' onclick="ouvre_popup_visu_equip('.$key.');return false;">'.$value.'</a>'."\n";
+		}
+		$barre_eleve.= '			</ul>'."\n";
+	$barre_eleve.= '</li>'."\n";
+
 	$barre_eleve.= '   </ul>'."\n";
 	$barre_eleve.= '</li>'."\n";
 	//=======================================================
@@ -440,4 +448,13 @@ if ($barre_plugin!="")
 	</ul>
 </div>
 ';
+
+echo "<script type='text/javascript'>
+	var fen_visu_equip;
+	function ouvre_popup_visu_equip(id_classe){
+		eval(\"fen_visu_equip=window.open('$gepiPath/groupes/visu_profs_class.php?id_classe=\"+id_classe+\"&no_header=y','','width=500,height=400,menubar=yes,scrollbars=yes')\");
+		setTimeout('fen_visu_equip.focus()',500);
+	}
+</script>\n";
+
 ?>

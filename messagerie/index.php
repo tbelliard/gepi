@@ -24,12 +24,13 @@
 $action = isset($_POST["action"]) ? $_POST["action"] :(isset($_GET["action"]) ? $_GET["action"] :NULL);
 
 // On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
-if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
+if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) { $traite_anti_inject = "yes";}
 
 // Dans le cas ou on poste un message, pas de traitement anti_inject
 // Pour ne pas interférer avec fckeditor
-if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) and isset($_POST['ok']))
+if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) and isset($_POST['ok'])) {
     $traite_anti_inject = 'no';
+}
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -93,6 +94,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['cancel']))) {
 //
 if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) and isset($_POST['ok'])) {
 	check_token();
+
     $record = 'yes';
     $contenu_cor = traitement_magic_quotes(corriger_caracteres($_POST['message']));
     $statuts_destinataires = '_';
@@ -361,8 +363,10 @@ echo "<tr><td colspan=\"4\"><span class='grand'>".$titre_mess."</span></td></tr>
 //Enregistrer
 echo "<tr><td  colspan=\"4\" align=\"center\">\n";
 
-echo "<noscript><input type=\"submit\" value=\"Enregistrer\" style=\"font-variant: small-caps;\" name=\"ok\" /></noscript>\n";
-echo "<input type=\"button\" value=\"Enregistrer\" style=\"font-variant: small-caps;\" name=\"ok\" onclick=\"check_et_valide_form()\" />\n";
+echo "<input type='hidden' name='ok' value='y' />\n";
+
+echo "<noscript><input type=\"submit\" value=\"Enregistrer\" style=\"font-variant: small-caps;\" name=\"button_ok_noscript\" /></noscript>\n";
+echo "<input type=\"button\" value=\"Enregistrer\" style=\"font-variant: small-caps;\" name=\"button_ok\" onclick=\"check_et_valide_form()\" />\n";
 
 echo "<script type='text/javascript'>
 function check_et_valide_form() {
