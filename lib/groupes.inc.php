@@ -87,7 +87,7 @@ function get_groups_for_class($_id_classe, $ordre="", $d_apres_categories="n") {
 	}
 
 	if($d_apres_categories=='y') {
-		$sql="SELECT DISTINCT g.name, g.id, g.description
+		$sql="SELECT DISTINCT g.name, g.id, g.description, jgm.id_matiere
 				FROM j_groupes_classes jgc, 
 					j_groupes_matieres jgm, 
 					j_matieres_categories_classes jmcc, 
@@ -114,7 +114,7 @@ function get_groups_for_class($_id_classe, $ordre="", $d_apres_categories="n") {
 								") ORDER BY j.priorite, g.name";
 		}
 		else {
-			$sql="select g.name, g.id, g.description FROM groupes g, 
+			$sql="select g.name, g.id, g.description, jgm.id_matiere FROM groupes g, 
 					j_groupes_classes jgc, 
 					j_groupes_matieres jgm
 				WHERE (
@@ -133,6 +133,9 @@ function get_groups_for_class($_id_classe, $ordre="", $d_apres_categories="n") {
 		$temp[$i]["name"] = mysql_result($query, $i, "name");
 		$temp[$i]["description"] = mysql_result($query, $i, "description");
 		$temp[$i]["id"] = mysql_result($query, $i, "id");
+
+		$temp[$i]["matiere"]["matiere"] = mysql_result($query, $i, "id_matiere");
+
 		$get_classes = mysql_query("SELECT c.id, c.classe, c.nom_complet FROM classes c, j_groupes_classes j WHERE (" .
 										"c.id = j.id_classe and j.id_groupe = '" . $temp[$i]["id"]."')");
 		$nb_classes = mysql_num_rows($get_classes);
