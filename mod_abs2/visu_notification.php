@@ -242,6 +242,8 @@ foreach ($notification->getResponsableEleves() as $responsable) {
     echo '<div>';
     //$responsable = new ResponsableEleve();
     echo $responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.$responsable->getPrenom();
+echo ' - Courriel :';
+echo $notification->getEmail();
     if ($notification->getModifiable()) {
 	echo '<div style="float: right;">';
 	echo '<form method="post" action="enregistrement_modif_notification.php">';

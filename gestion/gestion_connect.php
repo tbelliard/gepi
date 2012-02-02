@@ -221,17 +221,41 @@ echo "<p class='bold'><a href=\"".$retour."\"><img src='../images/icons/back.png
 //
 echo "<h3 class='gepi'>Utilisateurs connectés en ce moment</h3>";
 echo "<div title=\"Utilisateurs connectés\">";
-echo "<ul>";
 // compte le nombre d'enregistrement dans la table
 //$sql = "select u.login, concat(u.prenom, ' ', u.nom) utilisa, u.email from log l, utilisateurs u where (l.LOGIN = u.login and l.END > now())";
-$sql = "select u.login, concat(u.prenom, ' ', u.nom) utilisa, u.email, u.auth_mode from log l, utilisateurs u where (l.LOGIN = u.login and l.END > now())";
+$sql = "select u.login, concat(u.prenom, ' ', u.nom) utilisa, u.email, u.auth_mode, u.statut, l.END from log l, utilisateurs u where (l.LOGIN = u.login and l.END > now()) ORDER BY statut";
 
 $res = sql_query($sql);
 if ($res) {
+	echo "<table class='boireaus' summary='Liste des utilisateurs connectés'>\n";
+	echo "<tr>\n";
+	echo "<th>Utilisateur</th>\n";
+	echo "<th>Statut</th>\n";
+	echo "<th>Envoyer un mail</th>\n";
+	echo "<th>Déconnecter en changeant<br />le mot de passe</th>\n";
+	echo "<th title=\"Si l'utilisateur n'agit pas, ne change pas de page, n'enregistre pas,... la session se terminera à la date et à l'heure indiquée\">Fin théorique<br />de session</th>\n";
+	echo "</tr>\n";
+
+	$alt=1;
     for ($i = 0; ($row = sql_row($res, $i)); $i++) {
+		$alt=$alt*(-1);
 
-		echo("<li>" . $row[1]. " | <a href=\"mailto:" . $row[2] . "\">Envoyer un mail</a>");
+		echo "<tr class='lig$alt white_hover'>\n";
+		echo "<td>\n";
+		echo $row[1];
+		echo "</td>\n";
 
+		echo "<td>\n";
+		echo $row[4];
+		echo "</td>\n";
+
+		echo "<td>\n";
+		if(check_mail($row[2])) {echo "<a href=\"mailto:" . $row[2] . "\"><img src='../images/icons/mail.png' width='16' height='16' alt=\"Envoyer un mail à ".$row[2]."\" title=\"Envoyer un mail à ".$row[2]."\" /></a>";}
+		elseif($row[2]=='') {echo "<img src='../images/disabled.png' width='16' height='16' alt=\"Pas d'adresse mail renseignée\" title=\"Pas d'adresse mail renseignée\" />";}
+		else {echo "<a href=\"mailto:" . $row[2] . "\"><img src='../images/icons/mail.png' width='16' height='16' alt=\"Envoyer un mail à ".$row[2]."\" title=\"Envoyer un mail à ".$row[2]."\" /></a><span style='color:red' title=\"L'adresse mail ".$row[2]." n'a pas l'air correcte\"> (*) </span>";}
+		echo "</td>\n";
+
+		echo "<td>\n";
 		$afficher_deconnecter_et_changer_mdp="n";
 		//if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and getSettingValue("use_sso") != "lcs" and getSettingValue("use_sso") != "ldap_scribe")) {
 		if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and getSettingValue("auth_sso") != "lcs" and getSettingValue("use_sso") != "ldap_scribe")) {
@@ -242,14 +266,20 @@ if ($res) {
 		}
 
 		if($afficher_deconnecter_et_changer_mdp=="y") {
-			echo " | <a href=\"../utilisateurs/change_pwd.php?user_login=".$row[0].add_token_in_url()."\">Déconnecter en changeant le mot de passe</a>";
+			echo "<a href=\"../utilisateurs/change_pwd.php?user_login=".$row[0].add_token_in_url()."\"><img src='../images/icons/quit_16.png' width='16' height='16' alt=\"Déconnecter en changeant le mot de passe\" title=\"Déconnecter en changeant le mot de passe\" /></a>";
 		}
-		echo "</li>";
+		echo "</td>\n";
+
+		echo "<td>\n";
+		echo strftime("%d/%m/%Y à %H:%M", mysql_date_to_unix_timestamp($row[5]));
+		echo "</td>\n";
+
+		echo "</tr>\n";
     }
 }
 
+echo "</table>";
 ?>
-</ul>
 </div>
 
 <hr class="header" style="margin-top: 32px; margin-bottom: 24px;"/>

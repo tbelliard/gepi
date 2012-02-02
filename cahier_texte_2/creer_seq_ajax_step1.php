@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
   header("Location:utilisateurs/mon_compte.php?change_mdp=yes&retour=accueil#changemdp");
   die();
 } else if ($resultat_session == '0') {
-  header("Location: ./logout.php?auto=1");
+  header("Location: ../logout.php?auto=1");
   die();
 }
 
@@ -67,7 +67,7 @@ if ($select == "nbre_sequences"){
 
   echo '
 <div id="listeSequences" style="border:2px solid gray; background-color: #33CC66; padding: 5px 5px 5px 5px;">
-  <form method="post" action="creer_sequence.php">
+  <form method="post" action="creer_sequence.php" name="formulaire">
     <p>
       <label for="idSeq">Titre de la s&eacute;quence</label>
       <input type="text" id="idSeq" name="titresequence" value="" />
@@ -78,15 +78,26 @@ if ($select == "nbre_sequences"){
       <label for="idDescSeq">Description</label>
       <input type="text" name="descsequence" value="" style="width: 40%;" />
     </p>';
+
+	include("../lib/calendrier/calendrier.class.php");
+
   $ts = date("U");
   for($a = 1 ; $a <= $_id ; $a++){
+
+	$cal[$a] = new Calendrier("formulaire", "idDate".$a);
 
     echo '
 <div style="border:2px solid gray;padding: 5px 5px 5px 5px;background-color:'.$color_fond_notices["c"].';">
   <p>
     <label for="idCR'.$a.'" style="font-weight: bold;color: red;">Compte-rendu '.$a.'</label> -
     <label for="idDate'.$a.'">Date</label>
-    <input type="text" id="idDate'.$a.'" name="dateseance['.$a.']" value="'.date("d/m/Y", $ts).'" />
+    <input type="text" id="idDate'.$a.'" name="dateseance['.$a.']" value="'.date("d/m/Y", $ts).'" size="12" onKeyDown="clavier_date(this.id,event);" AutoComplete="off" />
+';
+
+		echo "<a href=\"#calend\" onClick=\"".$cal[$a]->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"";
+		echo "><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
+
+	echo '
   </p>
 
   <p>';
