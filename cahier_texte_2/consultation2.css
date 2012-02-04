@@ -1,0 +1,25 @@
+
+.cdt_cadre_semaine {
+	border: 1px solid black;
+	min-height: 10em;
+	width:98%;
+	margin:0.5em;
+	margin-bottom: 1em;
+	padding:0.1em;
+	background-color: #DFDFDF;
+}
+
+.cdt_cadre_jour {
+	/*border: 1px solid green;*/
+	width: 100%;
+	min-height: 10em;
+}
+
+/* Colonne jour: */
+.cdt_tab_semaine td {
+	border: 1px solid black;
+	width: 18%;
+	vertical-align: top;
+	/*min-height: 10em;*/
+}
+
