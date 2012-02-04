@@ -2,7 +2,7 @@
 /*
  * @version: $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
  *
  * This file is part of GEPI.
  *
@@ -261,27 +261,50 @@ echo "<div class='see_all_general couleur_bord_tableau_notice'>".$html."</div>";
 	// echo "<div  style=\"border-bottom-style: solid; border-width:2px; border-color: ".$couleur_bord_tableau_notice."; \"><strong>CAHIER DE TEXTES: comptes rendus de séance</strong></div><br />";
 echo "<h2 class='grande_ligne couleur_bord_tableau_notice'>\n<strong>CAHIER DE TEXTES: comptes rendus de séance</strong>\n</h2>\n";
 
-$req_notices =
-	 "select 'c' type, contenu, date_ct, id_ct
-	 from ct_entry
-	 where (contenu != ''
-	 and id_groupe='".$id_groupe."'
-	 and date_ct != ''
-	 and date_ct >= '".getSettingValue("begin_bookings")."'
-	 and date_ct <= '".getSettingValue("end_bookings")."')
-	 ORDER BY date_ct ".$current_ordre.", heure_entry ".$current_ordre;
+if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+	$req_notices =
+		"select 'c' type, contenu, date_ct, id_ct
+		from ct_entry
+		where (contenu != ''
+		and id_groupe='".$id_groupe."'
+		and date_ct != ''
+		and date_ct >= '".getSettingValue("begin_bookings")."'
+		and date_ct <= '".getSettingValue("end_bookings")."'
+		and date_ct <= '".time()."')
+		ORDER BY date_ct ".$current_ordre.", heure_entry ".$current_ordre;
+}
+else {
+	$req_notices =
+		"select 'c' type, contenu, date_ct, id_ct
+		from ct_entry
+		where (contenu != ''
+		and id_groupe='".$id_groupe."'
+		and date_ct != ''
+		and date_ct >= '".getSettingValue("begin_bookings")."'
+		and date_ct <= '".getSettingValue("end_bookings")."')
+		ORDER BY date_ct ".$current_ordre.", heure_entry ".$current_ordre;
+}
+//echo "$req_notices<br />";
 $res_notices = mysql_query($req_notices);
 $notice = mysql_fetch_object($res_notices);
 
+$ts_limite_visibilite_devoirs_pour_eleves=time()+getSettingValue('delai_devoirs')*24*3600;
+
+if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+	$ts_limite_dev=$ts_limite_visibilite_devoirs_pour_eleves;
+}
+else {
+	$ts_limite_dev=getSettingValue("end_bookings");
+}
 $req_devoirs =
-	 "select 't' type, contenu, date_ct, id_ct, date_visibilite_eleve
-	 from ct_devoirs_entry
-	 where (contenu != ''
-	 and id_groupe = '".$id_groupe."'
-	 and date_ct != ''
-	 and date_ct >= '".getSettingValue("begin_bookings")."'
-	 and date_ct <= '".getSettingValue("end_bookings")."'
-	 ) order by date_ct ".$current_ordre;
+	"select 't' type, contenu, date_ct, id_ct, date_visibilite_eleve
+	from ct_devoirs_entry
+	where (contenu != ''
+	and id_groupe = '".$id_groupe."'
+	and date_ct != ''
+	and date_ct >= '".getSettingValue("begin_bookings")."'
+	and date_ct <= '".$ts_limite_dev."'
+	) order by date_ct ".$current_ordre;
 $res_devoirs = mysql_query($req_devoirs);
 $devoir = mysql_fetch_object($res_devoirs);
 
