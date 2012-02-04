@@ -3,7 +3,7 @@
 /*
 * $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -275,7 +275,7 @@ echo add_token_field();
 	  <h2>Délai de visualisation des devoirs</h2>
 	  <p class="italic">
 		Indiquez ici le délai en jours pendant lequel les devoirs seront visibles, à compter du jour de
-		visualisation sélectionné, dans l'interface publique de consulation des cahiers de textes.
+		visualisation sélectionné, dans l'interface publique de consultation des cahiers de textes.
 		<br />
 		Mettre la valeur 0 si vous ne souhaitez pas activer le module de remplissage des devoirs.
 		Dans ce cas, les professeurs font figurer les devoirs à faire dans la même case que le contenu des
