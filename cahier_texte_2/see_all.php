@@ -339,6 +339,8 @@ if(($id_groupe=='Toutes_matieres')&&
 		}
 	}
 
+	$ts_limite_visibilite_devoirs_pour_eleves=time()+getSettingValue('delai_devoirs')*24*3600;
+
 	$sql="SELECT ctd.* FROM ct_devoirs_entry ctd, j_groupes_classes jgc WHERE (contenu != ''
 		AND date_ct != ''
 		AND date_ct >= '".getSettingValue("begin_bookings")."'
@@ -352,21 +354,30 @@ if(($id_groupe=='Toutes_matieres')&&
 	$cpt=0;
 	$timestamp_courant=time();
 	while($lig=mysql_fetch_object($res)) {
-		if(($lig->date_visibilite_eleve=="")||
-			(($lig->date_visibilite_eleve!="")&&(mysql_date_to_unix_timestamp($lig->date_visibilite_eleve)<=$timestamp_courant))||
-			(verif_groupe_appartient_prof($lig->id_groupe)==1)) {
-			//echo "$lig->date_ct<br />";
-			$date_dev=strftime("%a %d %b %y", $lig->date_ct);
-			if(!in_array($date_dev,$tab_dates)) {
-				$tab_dates[]=$date_dev;
-				$tab_dates2[]=$lig->date_ct;
+		$notice_visible="y";
+		if($lig->date_ct>$ts_limite_visibilite_devoirs_pour_eleves) {
+			if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+				$notice_visible="n";
 			}
-			$tab_dev[$date_dev][$lig->id_groupe][$cpt]['id_ct']=$lig->id_ct;
-			$tab_dev[$date_dev][$lig->id_groupe][$cpt]['id_login']=$lig->id_login;
-			$tab_dev[$date_dev][$lig->id_groupe][$cpt]['contenu']=$lig->contenu;
-			$tab_dev[$date_dev][$lig->id_groupe][$cpt]['date_visibilite_eleve']=$lig->date_visibilite_eleve;
-			//echo " <span style='color:green'>\$tab_dev[$date_notice][$lig->id_groupe][$cpt]['contenu']=$lig->contenu</span><br />";
-			$cpt++;
+		}
+
+		if($notice_visible=="y") {
+			if(($lig->date_visibilite_eleve=="")||
+				(($lig->date_visibilite_eleve!="")&&(mysql_date_to_unix_timestamp($lig->date_visibilite_eleve)<=$timestamp_courant))||
+				(verif_groupe_appartient_prof($lig->id_groupe)==1)) {
+				//echo "$lig->date_ct<br />";
+				$date_dev=strftime("%a %d %b %y", $lig->date_ct);
+				if(!in_array($date_dev,$tab_dates)) {
+					$tab_dates[]=$date_dev;
+					$tab_dates2[]=$lig->date_ct;
+				}
+				$tab_dev[$date_dev][$lig->id_groupe][$cpt]['id_ct']=$lig->id_ct;
+				$tab_dev[$date_dev][$lig->id_groupe][$cpt]['id_login']=$lig->id_login;
+				$tab_dev[$date_dev][$lig->id_groupe][$cpt]['contenu']=$lig->contenu;
+				$tab_dev[$date_dev][$lig->id_groupe][$cpt]['date_visibilite_eleve']=$lig->date_visibilite_eleve;
+				//echo " <span style='color:green'>\$tab_dev[$date_notice][$lig->id_groupe][$cpt]['contenu']=$lig->contenu</span><br />";
+				$cpt++;
+			}
 		}
 	}
 	//echo "\$current_ordre=$current_ordre<br />";
@@ -521,6 +532,14 @@ else {
 $res_notices = mysql_query($req_notices);
 $notice = mysql_fetch_object($res_notices);
 
+$ts_limite_visibilite_devoirs_pour_eleves=time()+getSettingValue('delai_devoirs')*24*3600;
+
+if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+	$ts_limite_dev=$ts_limite_visibilite_devoirs_pour_eleves;
+}
+else {
+	$ts_limite_dev=getSettingValue("end_bookings");
+}
 $req_devoirs =
 	"select 't' type, contenu, date_ct, id_ct, date_visibilite_eleve
 	from ct_devoirs_entry
@@ -528,7 +547,7 @@ $req_devoirs =
 	and id_groupe = '".$id_groupe."'
 	and date_ct != ''
 	and date_ct >= '".getSettingValue("begin_bookings")."'
-	and date_ct <= '".getSettingValue("end_bookings")."'
+	and date_ct <= '".$ts_limite_dev."'
 	) order by date_ct ".$current_ordre;
 $res_devoirs = mysql_query($req_devoirs);
 $devoir = mysql_fetch_object($res_devoirs);
@@ -593,7 +612,6 @@ while (true) {
 		// Passage en HTML
 		// INSERT INTO setting SET name='depolluer_MSOffice', value='y';
 		if(getSettingValue('depolluer_MSOffice')=='y') {
-			//$content = &my_ereg_replace('.*<\!\[endif\]-->',"",$not_dev->contenu);
 			$content = &preg_replace('#.*<\!\[endif\]-->#',"",$not_dev->contenu);
 		}
 		else {
