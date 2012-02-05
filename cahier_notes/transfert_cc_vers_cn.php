@@ -184,7 +184,7 @@ if((isset($_GET['creer_dev']))||(isset($_GET['ecraser_contenu_dev']))) {
 			$sql="UPDATE cn_devoirs SET date_ele_resp='".strftime('%Y-%m-%d 00:00:00')."' WHERE id='$id_devoir_cn'";
 			$reg=mysql_query($sql);
 			if (!$reg) {$reg_ok = "no";}
-	
+
 			$sql="UPDATE cn_devoirs SET facultatif='O' WHERE id='$id_devoir_cn'";
 			$reg=mysql_query($sql);
 			if (!$reg) {$reg_ok = "no";}
