@@ -321,7 +321,6 @@ if ($affiche_categories) {
 	)
 	ORDER BY jgc.priorite,jgm.id_matiere");
 }
-
 $lignes_groupes = mysql_num_rows($groupeinfo);
 
 //
@@ -593,12 +592,16 @@ while($i < $lignes_groupes) {
 	$moy_max = -1;
 	$moy_min = 21;
 
+	//echo "<p>Debut d'un tour de boucle<br />\$i=$i et \$lignes_groupes=$lignes_groupes<br />";
+
 	foreach ($moyenne_annee_matiere as $tableau => $value) { unset($moyenne_annee_matiere[$tableau]);}
 
 	$var_group_id = mysql_result($groupeinfo, $i, "id_groupe");
 	$current_group = get_group($var_group_id);
 	// Coeff pour la classe
 	$current_coef = mysql_result($groupeinfo, $i, "coef");
+
+	//echo $current_group['name']."<br />";
 
 	if((!isset($current_group['visibilite']['cahier_notes']))||($current_group['visibilite']['cahier_notes']=='y')) {
 		$nb_col++;
@@ -950,10 +953,14 @@ while($i < $lignes_groupes) {
 	
 		//================================
 		$col_csv=array();
+/*
+echo "\$temoin_graphe=$temoin_graphe<br />";
 		if($temoin_graphe=="oui"){
+echo "\$i=$i et \$lignes_groupes=$lignes_groupes<br />";
 			if($i==$lignes_groupes-1){
 				for($loop=0;$loop<$nb_lignes_tableau;$loop++){
-	
+
+echo "\$chaine_moy_eleve1[$loop+$ligne_supl]=".$chaine_moy_eleve1[$loop+$ligne_supl].'<br />';
 					if(isset($chaine_moy_eleve1[$loop+$ligne_supl])) {
 	
 						$col_csv[1][$loop+$ligne_supl]=$col[1][$loop+$ligne_supl];
@@ -993,6 +1000,7 @@ while($i < $lignes_groupes) {
 				//echo "\$chaine_moy_classe=".$chaine_moy_classe."<br /><br />\n";
 			}
 		}
+*/
 		// ===============================
 		//========================================
 	
@@ -1058,6 +1066,51 @@ while($i < $lignes_groupes) {
 	}
 	$i++;
 }
+
+//=====================================================================
+// Liens vers les graphes sur les colonnes Nom_prenom:
+if($temoin_graphe=="oui"){
+	for($loop=0;$loop<$nb_lignes_tableau;$loop++){
+		if(isset($chaine_moy_eleve1[$loop+$ligne_supl])) {
+
+			$col_csv[1][$loop+$ligne_supl]=$col[1][$loop+$ligne_supl];
+
+			$tmp_col=$col[1][$loop+$ligne_supl];
+			//echo "\$current_eleve_login[$loop]=$current_eleve_login[$loop]<br />";
+			$col[1][$loop+$ligne_supl]="<a href='../visualisation/draw_graphe.php?".
+			"temp1=".strtr($chaine_moy_eleve1[$loop+$ligne_supl],',','.').
+			"&amp;temp2=".strtr($chaine_moy_classe[$loop+$ligne_supl],',','.').
+			"&amp;etiquette=".$chaine_matieres[$loop+$ligne_supl].
+			"&amp;titre=$graph_title".
+			"&amp;v_legend1=".$current_eleve_login[$loop].
+			"&amp;v_legend2=moyclasse".
+			"&amp;compteur=$compteur".
+			"&amp;nb_series=$nb_series".
+			"&amp;id_classe=$id_classe".
+			"&amp;mgen1=".
+			"&amp;mgen2=";
+			//"&amp;periode=$periode".
+			$col[1][$loop+$ligne_supl].="&amp;tronquer_nom_court=$tronquer_nom_court";
+			if($referent == "une_periode"){
+				$col[1][$loop+$ligne_supl].="&amp;periode=".rawurlencode("Période ".$num_periode);
+			}
+			else{
+				$col[1][$loop+$ligne_supl].="&amp;periode=".rawurlencode("Année");
+			}
+			$col[1][$loop+$ligne_supl].="&amp;largeur_graphe=$largeur_graphe".
+			"&amp;hauteur_graphe=$hauteur_graphe".
+			"&amp;taille_police=$taille_police".
+			"&amp;epaisseur_traits=$epaisseur_traits".
+			"&amp;temoin_image_escalier=$temoin_image_escalier".
+			"' target='_blank'>".$tmp_col.
+			"</a>";
+
+		}
+	}
+	//echo "\$chaine_moy_classe=".$chaine_moy_classe."<br /><br />\n";
+}
+//=====================================================================
+
 // Dernière colonne des moyennes générales
 if ($ligne_supl == 1) {
 	// Les moyennes pour chaque catégorie
