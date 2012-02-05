@@ -5125,4 +5125,68 @@ function jour_fr($jour_en, $mode="") {
 		return $jour_en;
 	}
 }
+
+function creer_info_jours_js() {
+	global $prefix_base, $niveau_arbo;
+
+	//echo "\$niveau_arbo=$niveau_arbo<br />";
+
+	if(!isset($prefix_base)) {$prefix_base="";}
+
+	// tableau semaine
+	$tab_sem[0] = 'lundi';
+	$tab_sem[1] = 'mardi';
+	$tab_sem[2] = 'mercredi';
+	$tab_sem[3] = 'jeudi';
+	$tab_sem[4] = 'vendredi';
+	$tab_sem[5] = 'samedi';
+	$tab_sem[6] = 'dimanche';
+
+	$chaine_jours_ouverts="";
+
+	$i=0;
+	for($i=0;$i<count($tab_sem);$i++) {
+		$sql="SELECT 1=1 FROM ".$prefix_base."horaires_etablissement
+				WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' AND
+						date_horaire_etablissement = '0000-00-00' AND ouvert_horaire_etablissement='1'";
+		$res_j_o=mysql_query($sql);
+		if(mysql_num_rows($res_j_o)) {
+			if($chaine_jours_ouverts!="") {$chaine_jours_ouverts.=",";}
+			$num_jour=$i+1;
+			$chaine_jours_ouverts.="'$num_jour'";
+		}
+	}
+
+	if($chaine_jours_ouverts=='') {
+		$chaine_jours_ouverts="'0','1','2','3','4','5','6'";
+	}
+
+	if(!isset($niveau_arbo)) {
+		$pref_arbo="..";
+	}
+	elseif("$niveau_arbo"=='public') {
+		$pref_arbo="..";
+	}
+	elseif("$niveau_arbo"=="0") {
+		$pref_arbo=".";
+	}
+	elseif("$niveau_arbo"=="1") {
+		$pref_arbo="..";
+	}
+	elseif("$niveau_arbo"=="2") {
+		$pref_arbo="../..";
+	}
+	elseif("$niveau_arbo"=="3") {
+		$pref_arbo="../../..";
+	}
+
+	//echo "\$pref_arbo=$pref_arbo<br />";
+
+	$f=fopen("$pref_arbo/temp/info_jours.js","w+");
+	fwrite($f,"// Tableau des jours ouverts
+	// 0 pour dimanche,
+	// 1 pour lundi,...
+	var tab_jours_ouverture=new Array($chaine_jours_ouverts);");
+	fclose($f);
+}
 ?>
