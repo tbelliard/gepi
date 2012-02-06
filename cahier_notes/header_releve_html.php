@@ -21,12 +21,12 @@
 
 	$logo_etab=getSettingValue("logo_etab") ? getSettingValue("logo_etab") : "";
 
-	echo "<html>
+	echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">
 <head>
-<meta HTTP-EQUIV='Content-Type' content='text/html; charset=utf-8' />
-<META HTTP-EQUIV='Pragma' CONTENT='no-cache' />
-<META HTTP-EQUIV='Cache-Control' CONTENT='no-cache' />
-<META HTTP-EQUIV='Expires' CONTENT='0' />
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+<meta http-equiv='Pragma' content='no-cache' />
+<meta http-equiv='Cache-Control' content='no-cache' />
+<meta http-equiv='Expires' content='0' />
 <title>".$gepiSchoolName." : Edition des relevés de notes</title>
 <link rel='stylesheet' type='text/css' href='../style.css' />\n";
 

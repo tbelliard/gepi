@@ -472,7 +472,15 @@ class Calendrier {
         echo "\t */\n";
         echo "\tfunction finOperation(val){\n";
         if ($popup){
-            echo "\t\twindow.opener.document.".$frm.".elements['".$chm."'].value = val;\n";
+			echo "var bool = window.opener.document.$frm || 0;
+			if(bool) {
+				\t\twindow.opener.document.".$frm.".elements['".$chm."'].value = val;\n
+			} else{
+				\t\twindow.opener.document.getElementById('".$frm."').elements['".$chm."'].value = val;\n
+			} ";
+			
+            //echo "\t\twindow.opener.document.".$frm.".elements['".$chm."'].value = val;\n";
+            //echo "\t\twindow.opener.document.getElementById('".$frm."').elements['".$chm."'].value = val;\n";
             echo "\t\twindow.close();\n";
         }else{
             echo "\t\tdocument.".$frm.".elements['".$chm."'].value = val;\n";
