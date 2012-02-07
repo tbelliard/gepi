@@ -1019,6 +1019,21 @@ Event.observe(window, 'load', temporiser_chargement_js);
 
 //setTimeout('getWinCalendar();', 5000);
 
+
+function insere_texte_dans_ckeditor(texte) {
+	CKEDITOR.instances['contenu'].insertHtml(texte);
+}
+
+function insere_image_dans_ckeditor(url, largeur, hauteur) {
+	texte="<img src='"+url+"'";
+	if((largeur!='')&&(hauteur!='')) {
+		texte=texte+" width='"+largeur+"' height='"+hauteur+"'";
+	}
+	texte=texte+" />";
+	CKEDITOR.instances['contenu'].insertHtml(texte);
+}
+
+
 /**
 *
 *  Fin des fonctions ajax du cahier de texte
