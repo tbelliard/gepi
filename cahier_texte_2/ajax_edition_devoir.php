@@ -451,8 +451,16 @@ echo "<script type='text/javascript'>
 				//			$titre_[$i] = $document->getTitre();
 				//			$taille = round( $document->getTaille()/1024,1);
 				//			$emplacement =  $document->getEmplacement();
-				echo "<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: #FFFFFF;\"><td>
-						<a href='".$document->getEmplacement()."' target=\"_blank\">".$document->getTitre()."</a></td>
+				echo "<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: #FFFFFF;\">
+						<td>\n";
+
+				if(preg_match("/(png|gif|jpg)$/i",$document->getEmplacement())) {
+					echo insere_lien_insertion_image_dans_ckeditor($document->getEmplacement());
+				}
+
+				echo "
+							<a href='".$document->getEmplacement()."' target=\"_blank\">".$document->getTitre()."</a>
+						</td>
 						<td style=\"text-align: center;\" title=\"Taille du fichier\">".round($document->getTaille()/1024,1)."</td>\n";
 						if(getSettingValue('cdt_possibilite_masquer_pj')=='y') {
 							echo "<td style=\"text-align: center;\">";
