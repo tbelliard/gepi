@@ -5126,6 +5126,9 @@ function jour_fr($jour_en, $mode="") {
 	}
 }
 
+/** fonction creant le fichier temp/info_jours.js pris en compte dans le CDT2 pour passer au jours suivant.
+ *
+ */
 function creer_info_jours_js() {
 	global $prefix_base, $niveau_arbo;
 
@@ -5189,4 +5192,111 @@ function creer_info_jours_js() {
 	var tab_jours_ouverture=new Array($chaine_jours_ouverts);");
 	fclose($f);
 }
+
+/** Fonction destinée à récupérer les images de formules mathématiques générées
+ * sur http://latex.codecogs.com/
+ * Cela évite de faire une requête vers le site http://latex.codecogs.com/ pour 
+ * chaque image et assure que lors de l'archivage, les images resteront 
+ * disponibles même si le site http://latex.codecogs.com/ cesse de fonctionner.
+ *
+ * @param string $texte Le texte à traiter
+ * @param integer $id_groupe L'identifiant du groupe
+ * @param string $type_notice Le type de notice
+ *               ('c' pour compte-rendu et 't' pour travail à faire)
+ * @return string La chaine corrigée après téléchargement des images vers
+ * ../documents/cl$idgroupe ou ../documents/cl_dev$idgroupe
+ */
+function get_img_formules_math($texte, $id_groupe, $type_notice="c") {
+	global $multisite;
+
+	$contenu_cor=$texte;
+
+	if(preg_match('|src="http://latex.codecogs.com/|', $contenu_cor)) {
+
+		$niv_arbo_tmp=2;
+		$dest_documents = '../documents/';
+		$dossier = '';
+		$multi = (isset($multisite) && $multisite == 'y') ? $_COOKIE['RNE'].'/' : NULL;
+		if ((isset($multisite) && $multisite == 'y') && is_dir('../documents/'.$multi) === false){
+			@mkdir('../documents/'.$multi);
+			$dest_documents .= $multi;
+			$niv_arbo_tmp++;
+		}elseif((isset($multisite) && $multisite == 'y')){
+			$dest_documents .= $multi;
+			$niv_arbo_tmp++;
+		}
+
+		//$type_notice="c";
+		if($type_notice=='c') {
+			$dest_documents.="/cl".$id_groupe;
+		}
+		else {
+			$dest_documents.="/cl_dev".$id_groupe;
+		}
+
+		if(!file_exists($dest_documents)) {
+			mkdir($dest_documents);
+			creation_index_redir_login($dest_documents,$niv_arbo_tmp);
+		}
+
+		$chaine="";
+		$tab_tmp=preg_split('/"/',$contenu_cor);
+		for($loop=0;$loop<count($tab_tmp);$loop++) {
+			if(preg_match("|^http://latex.codecogs.com/|",$tab_tmp[$loop])) {
+				$erreur="n";
+				$extension_fichier_formule="gif";
+				if(preg_match("|^http://latex.codecogs.com/gif.latex|",$tab_tmp[$loop])) {
+					$extension_fichier_formule="gif";
+				}
+				elseif(preg_match("|^http://latex.codecogs.com/png.latex|",$tab_tmp[$loop])) {
+					$extension_fichier_formule="png";
+				}
+				elseif(preg_match("|^http://latex.codecogs.com/swf.latex|",$tab_tmp[$loop])) {
+					$extension_fichier_formule="swf";
+				}
+				elseif(preg_match("|^http://latex.codecogs.com/emf.latex|",$tab_tmp[$loop])) {
+					$extension_fichier_formule="emf";
+				}
+				elseif(preg_match("|^http://latex.codecogs.com/pdf.latex|",$tab_tmp[$loop])) {
+					$extension_fichier_formule="pdf";
+				}
+				elseif(preg_match("|^http://latex.codecogs.com/svg.latex|",$tab_tmp[$loop])) {
+					$extension_fichier_formule="svg";
+				}
+
+				// Eviter les doublons:
+				$nom_tmp=strftime("%Y%m%d_%H%M%S");
+				$nom_tmp0=$nom_tmp;
+				$cpt=1;
+				while(file_exists($dest_documents."/".$nom_tmp.".".$extension_fichier_formule)) {
+					$nom_tmp=$nom_tmp0."_".$cpt;
+					if($cpt>100) {$erreur="y";}
+					$cpt++;
+				}
+
+				// Telechargement du fichier:
+				if($erreur=="n") {
+					$morceau_courant=$dest_documents."/".$nom_tmp.".".$extension_fichier_formule;
+					if(!copy($tab_tmp[$loop],$morceau_courant)) {$morceau_courant=$tab_tmp[$loop];}
+				}
+				else {
+					$morceau_courant=$tab_tmp[$loop];
+				}
+			}
+			else {
+				$morceau_courant=$tab_tmp[$loop];
+			}
+
+			// On complète la chaine du contenu de la notice:
+			if($chaine!="") {
+				$chaine.="\"";
+			}
+			$chaine.=$morceau_courant;
+		}
+		$contenu_cor=$chaine;
+	}
+
+	return $contenu_cor;
+}
+
 ?>

@@ -150,6 +150,12 @@ $contenu_cor = str_replace("\\r","",$contenu_cor);
 $contenu_cor = str_replace("\\n","",$contenu_cor);
 $contenu_cor = stripslashes($contenu_cor);
 if ($contenu_cor == "" or $contenu_cor == "<br>") $contenu_cor = "...";
+
+// Recuperation des images de formules mathematiques:
+//if(getSettingValue('get_img_formules_math')=='y') {
+	$contenu_cor=get_img_formules_math($contenu_cor, $id_groupe, "t");
+//}
+
 $ctTravailAFaire->setContenu($contenu_cor);
 $ctTravailAFaire->setDateCt($date_devoir);
 $ctTravailAFaire->setGroupe($groupe);
