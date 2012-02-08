@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -82,6 +82,80 @@ if (isset($_POST['bouton_sup'])) {
 
 }
 
+if (isset($_POST['reinit_assoc_fichiers'])) {
+	$msg="";
+
+	check_token();
+	$tab_sql=array();
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Adobe Illustrator', extension='ai', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='AIFF', extension='aiff', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Windows Media', extension='asf', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Windows Media', extension='avi', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='BMP', extension='bmp', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='BZip', extension='bz2', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='C source', extension='c', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Debian', extension='deb', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Word', extension='doc', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='LaTeX DVI', extension='dvi', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='PostScript', extension='eps', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='GeoGebra', extension='ggb', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='GIF', extension='gif', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='gr', extension='gr', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='GZ', extension='gz', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='C header', extension='h', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='HTML', extension='html', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='JPEG', extension='jpg', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Midi', extension='mid', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='QuickTime', extension='mov', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='MP3', extension='mp3', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='MPEG', extension='mpg', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Base de données OpenDocument', extension='odb', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Dessin OpenDocument', extension='odg', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Présentation OpenDocument', extension='odp', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Classeur OpenDocument', extension='ods', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Texte OpenDocument', extension='odt', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Ogg', extension='ogg', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Pascal', extension='pas', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='PDF', extension='pdf', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='PNG', extension='png', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='PowerPoint', extension='ppt', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='PostScript', extension='ps', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Photoshop', extension='psd', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='QuickTime', extension='qt', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='RealAudio', extension='ra', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='RealAudio', extension='ram', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='RealAudio', extension='rm', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='RTF', extension='rtf', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='StarOffice', extension='sdd', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='StarOffice', extension='sdw', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Stuffit', extension='sit', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Flash', extension='swf', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='OpenOffice Calc', extension='sxc', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='OpenOffice Impress', extension='sxi', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='OpenOffice', extension='sxw', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='LaTeX', extension='tex', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='TGZ', extension='tgz', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='TIFF', extension='tif', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='texte', extension='txt', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='WAV', extension='wav', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Windows Media', extension='wmv', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='GIMP multi-layer', extension='xcf', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Excel', extension='xls', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='XML', extension='xml', upload='oui';";
+	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Zip', extension='zip', upload='oui';";
+
+	$sql="TRUNCATE ct_types_documents;";
+	$menage=mysql_query($sql);
+
+	$nb_reg=0;
+	for($loop=0;$loop<count($tab_sql);$loop++) {
+		$insert=mysql_query($tab_sql[$loop]);
+		if(!$insert) {$msg.="Erreur lors de l'insertion : <br />".$tab_sql[$loop]."<br />";} else {$nb_reg++;}
+	}
+
+	if($nb_reg>0) {$msg.="$nb_reg enregistrement(s) effectué(s).<br />";}
+}
+
 //===========================================================
 // header
 $titre_page = "Types de fichiers autorisés en téléchargement";
@@ -93,7 +167,7 @@ if (isset($_GET['id'])) {
 	check_token(false);
   // Ajout ou modification d'un type de fichier
   ?>
-  <p class=bold><a href="modify_type_doc.php?a=a<?php echo add_token_in_url();?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+  <p class="bold"><a href="modify_type_doc.php?a=a<?php echo add_token_in_url();?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
   <?php
   if ($_GET['id']=='ajout') {
      echo "<h2>Type de fichier autorisé en téléchargement - Ajout d'un type de fichier</h2>";
@@ -109,6 +183,7 @@ if (isset($_GET['id'])) {
      $description = $row[1];
      $upload = $row[2];
   }
+
   ?>
   <form action="modify_type_doc.php" name="formulaire1" method="post">
 <?php
@@ -129,8 +204,17 @@ if (isset($_GET['id'])) {
 } else {
   // Affichage du tableau complet
   ?>
-  <p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>|<a href="modify_type_doc.php?id=ajout<?php echo add_token_in_url();?>"> Ajouter un type de fichier </a></p>
-  <H2>Types de fichiers autorisés en téléchargement</h2>
+
+  <form action="modify_type_doc.php" name="formulaire_reinit" method="post">
+<?php
+	echo add_token_field();
+?>
+  <p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>|<a href="modify_type_doc.php?id=ajout<?php echo add_token_in_url();?>"> Ajouter un type de fichier </a>
+  | <input type='submit' name='reinit_assoc_fichiers' value='Réinitialiser les extensions autorisées' />
+  </p>
+  </form>
+
+  <h2>Types de fichiers autorisés en téléchargement</h2>
   <form action="modify_type_doc.php" name="formulaire2" method="post">
 <?php
 	echo add_token_field();
@@ -156,5 +240,6 @@ if (isset($_GET['id'])) {
   }
   echo "</table></form>";
 }
+echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>

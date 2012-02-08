@@ -235,5 +235,18 @@ for($loop=0;$loop<count($tab_formats_login_a_tester);$loop++) {
 	}
 }
 
+$result .= "<br />";
+$req_test=mysql_query("SELECT 1=1 FROM ct_types_documents WHERE extension='ggb';");
+$res_test=mysql_num_rows($req_test);
+if ($res_test==0){
+  $result.="Ajout de GGB (GeoGebra) à la liste des extensions autorisées pour les fichiers joints aux cahiers de textes : ";
+  $result_inter = traite_requete("INSERT INTO ct_types_documents SET titre='GeoGebra', extension='ggb', upload='oui';");
+  if ($result_inter == '') {
+    $result.=msj_ok("Ok !");
+  } else {
+    $result.=msj_erreur("Erreur !");
+  }
+}
+
 $result.="<br />Fin mise à jour<br/>";
 ?>
