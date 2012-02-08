@@ -193,6 +193,8 @@ require_once("'.$pref_arbo.'/entete.php");
 			$pref_documents="";
 		}
 
+		$nb_doc_joints_visibles=0;
+
 		// documents joints
 		$html = '';
 		//$architecture="/documents/cl_dev";
@@ -201,7 +203,6 @@ require_once("'.$pref_arbo.'/entete.php");
 		} else if ($type_notice == "c") {
 			$sql = "SELECT titre, emplacement, visible_eleve_parent FROM ct_documents WHERE id_ct='$id_ct' ORDER BY 'titre'";
 		}
-		
 		$res = sql_query($sql);
 		if (($res) and (sql_count($res)!=0)) {
 			$html_tmp= "<span class='petit'>Document(s) joint(s):</span>";
@@ -228,12 +229,14 @@ require_once("'.$pref_arbo.'/entete.php");
 					$html_tmp.= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return false;\" href=\"$emplacement\">$titre</a></li>";
 
 					$tab_chemin_url[]=$emplacement;
+					$nb_doc_joints_visibles++;
 				}
 			}
-			$html .= "</ul>";
-
-
+			$html_tmp .= "</ul>";
 		}
+
+		if($nb_doc_joints_visibles>0) {$html.=$html_tmp;}
+
 		return $html;
 	}
 
@@ -876,4 +879,5 @@ require_once("'.$pref_arbo.'/entete.php");
 
 		return $tab_dates;
 	}
+
 ?>
