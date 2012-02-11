@@ -1325,8 +1325,8 @@ function tentative_intrusion($_niveau, $_description) {
 		if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 
 		$subject = $gepiPrefixeSujetMail."GEPI : Alerte sécurité -- Tentative d'intrusion";
-		$subject = "=?ISO-8859-1?B?".base64_encode($subject)."?=\r\n";
-	
+		$subject = "=?UTF-8?B?".base64_encode($subject)."?=\r\n";
+
 		$headers = "X-Mailer: PHP/" . phpversion()."\r\n";
 		$headers .= "MIME-Version: 1.0\r\n";
 		$headers .= "Content-type: text/plain; charset=UTF-8\r\n";
