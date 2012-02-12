@@ -1907,7 +1907,6 @@ function check_param_bloc_adresse_html($a4_ou_a3="a4") {
 	return $retour;
 }
 
-
 /**
  * Insertion d'un lien destiné à provoquer l'insertion du code <img src...>
  * vers l'url de l'image passée en paramètre.
@@ -1935,5 +1934,4 @@ function insere_lien_insertion_image_dans_ckeditor($url_img) {
 	}
 	return "<div style='float:right; width:18px;'><a href=\"javascript:insere_image_dans_ckeditor('".$url_img."','$tmp_largeur','$tmp_hauteur')\" title='Insérer cette image dans le texte'><img src='../images/up.png' width='18' height='18' alt='Insérer cette image dans le texte' /></a></div>";
 }
-
 ?>

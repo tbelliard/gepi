@@ -25,7 +25,7 @@
 
 $result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.0 </h3>";
 
-require 'updates/ISO_to_UTF8.inc.php';
+require dirname(__FILE__).'/ISO_to_UTF8.inc.php';
 
 $result.="<br />";
 $result.="<strong>Module relevé de notes :</strong>";
@@ -234,7 +234,6 @@ for($loop=0;$loop<count($tab_formats_login_a_tester);$loop++) {
 		}
 	}
 }
-
 
 $result .= "<br />";
 $req_test=mysql_query("SELECT 1=1 FROM ct_types_documents WHERE extension='ggb';");

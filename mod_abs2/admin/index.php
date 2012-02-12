@@ -270,9 +270,7 @@ if (getSettingValue("absence_classement_top") == '10'){
 // header
 $titre_page = "Gestion du module absence";
 require_once("../../lib/header.inc");
-
-
-echo "<p class='bold'><a href=\"../../accueil_modules.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+echo "<p class='bold'><a href=\"../../accueil_modules.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link' /> Retour | <a href=\"http://www.sylogix.org/projects/gepi/wiki/Abs_2\" alt='Aide' />Aide à la configuration</a>";
 echo "</p>";
     if (isset ($result)) {
 	    echo "<center><table width=\"80%\" border=\"1\" cellpadding=\"5\" cellspacing=\"1\" summary='Résultat de mise à jour'><tr><td><h2 align=\"center\">Résultat de la mise à jour</h2>";
@@ -280,6 +278,7 @@ echo "</p>";
 	    echo "</td></tr></table></center>";
     }
 ?>
+
 <h2>Gestion des absences par les CPE</h2>
 <p style="font-style: italic;">La désactivation du module de la gestion des absences n'entraîne aucune
 suppression des données. Lorsque le module est désactivé, les CPE n'ont pas accès au module.</p>

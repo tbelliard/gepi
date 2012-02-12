@@ -54,7 +54,7 @@ class JTraitementSaisieEleve extends BaseJTraitementSaisieEleve {
 	 * @throws     PropelException
 	 */
 	public function setAbsenceEleveTraitement(AbsenceEleveTraitement $v = null) {
-	    if ($this->getAbsenceEleveTraitement() != null &&  $this->getAbsenceEleveTraitement()->hashCode() != $v->hashCode()){
+	    if ($this->getATraitementId() != null && $v != null && $this->getATraitementId() != $v->getId()){
 	        throw new PropelException('Il ne faut pas modifier une jointure existante jTraitementSaisieEleve car la mise à jour de la table d agrégation non implémentée pour cette méthode');
 	    }
 	    return parent::setAbsenceEleveTraitement($v);
@@ -68,7 +68,7 @@ class JTraitementSaisieEleve extends BaseJTraitementSaisieEleve {
 	 * @throws     PropelException
 	 */
 	public function setAbsenceEleveSaisie(AbsenceEleveSaisie $v = null) {
-	    if ($this->getAbsenceEleveSaisie() != null &&  $this->getAbsenceEleveSaisie()->hashCode() != $v->hashCode()){
+	    if ($this->getASaisieId() != null && $v != null && $this->getASaisieId() != $v->getId()){
 	        throw new PropelException('Il ne faut pas modifier une jointure existante jTraitementSaisieEleve car la mise à jour de la table d agrégation non implémentée pour cette méthode');
 	    }
 	    return parent::setAbsenceEleveSaisie($v);
@@ -82,7 +82,7 @@ class JTraitementSaisieEleve extends BaseJTraitementSaisieEleve {
 	 */
 	public function setATraitementId($v)
 	{
-	    if ($this->getATraitementId() != null &&  $this->getATraitementId() != $v){
+	    if ($this->getATraitementId() != null && $this->getATraitementId() != $v){
 	        throw new PropelException('Il ne faut pas modifier une jointure existante jTraitementSaisieEleve car la mise à jour de la table d agrégation non implémentée pour cette méthode');
 	    }
 	    return parent::setATraitementId($v);
@@ -96,7 +96,7 @@ class JTraitementSaisieEleve extends BaseJTraitementSaisieEleve {
 	 */
 	public function setASaisieId($v)
 	{
-	    if ($this->getASaisieId() != null &&  $this->getASaisieId() != $v){
+	    if ($this->getASaisieId() != null && $this->getASaisieId() != $v){
 	        throw new PropelException('Il ne faut pas modifier une jointure existante jTraitementSaisieEleve car la mise à jour de la table d agrégation non implémentée pour cette méthode');
 	    }
 	    return parent::setASaisieId($v);
