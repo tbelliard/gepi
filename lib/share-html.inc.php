@@ -932,8 +932,9 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
 	  $out_html = "<form id=\"eleve\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n<h2 class='h2_label'>\n<label for=\"choix_eleve\"><strong><em>Elève :</em></strong></label>\n</h2>\n<p>\n<select id=\"choix_eleve\" name=\"eleve\" onchange=\"eleve_go()\">\n";
 	  $out_html .= "<option value=\"".$link."?year=".$year."&amp;month=".$month."&amp;day=".$day."\">(Choisissez un élève)</option>\n";
 		while ($current_eleve = mysql_fetch_object($get_eleves)) {
+		   //if (($current)&&(isset($current->login))) {
 		   if ($current) {
-		   	$selected = ($current_eleve->login == $current->login) ? "selected='selected'" : "";
+		   	$selected = ((is_object($current)&&($current_eleve->login == $current->login))||($current_eleve->login == $current)) ? "selected='selected'" : "";
 		   } else {
 		   	$selected = "";
 		   }
@@ -1906,4 +1907,31 @@ function check_param_bloc_adresse_html($a4_ou_a3="a4") {
 	return $retour;
 }
 
+/**
+ * Insertion d'un lien destiné à provoquer l'insertion du code <img src...>
+ * vers l'url de l'image passée en paramètre.
+  *
+ * @param string $url_img : Url de l'image
+ *
+ * @return string : Chaine HTML <div float:right...><a href...><img...></a></div>
+*/
+function insere_lien_insertion_image_dans_ckeditor($url_img) {
+	$tmp_largeur='';
+	$tmp_hauteur='';
+	$tmp_size = getimagesize($url_img);
+	if($tmp_size) {
+		// Pour que l'image puisse être redimensionnée facilement dans la page, on fixe la largeur max à 400px
+		$tmp_largeur_max=400;
+
+		if(($tmp_size[0]>$tmp_largeur_max)&&($tmp_size[1]>20)) {
+			$tmp_largeur=$tmp_largeur_max;
+			$tmp_hauteur=round($tmp_size[1]*$tmp_largeur_max/$tmp_size[0]);
+		}
+		else {
+			$tmp_largeur=$tmp_size[0];
+			$tmp_hauteur=$tmp_size[1];
+		}
+	}
+	return "<div style='float:right; width:18px;'><a href=\"javascript:insere_image_dans_ckeditor('".$url_img."','$tmp_largeur','$tmp_hauteur')\" title='Insérer cette image dans le texte'><img src='../images/up.png' width='18' height='18' alt='Insérer cette image dans le texte' /></a></div>";
+}
 ?>

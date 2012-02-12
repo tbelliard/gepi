@@ -25,7 +25,7 @@
 
 $result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.0 </h3>";
 
-require 'updates/ISO_to_UTF8.inc.php';
+require dirname(__FILE__).'/ISO_to_UTF8.inc.php';
 
 $result.="<br />";
 $result.="<strong>Module relevé de notes :</strong>";
@@ -233,6 +233,19 @@ for($loop=0;$loop<count($tab_formats_login_a_tester);$loop++) {
 			if(saveSetting($tab_formats_login_a_tester[$loop], "$format_login")) {$result .= msj_ok("Ok !");} else {$result .= msj_erreur("ECHEC");}
 		}
 	}
+}
+
+$result .= "<br />";
+$req_test=mysql_query("SELECT 1=1 FROM ct_types_documents WHERE extension='ggb';");
+$res_test=mysql_num_rows($req_test);
+if ($res_test==0){
+  $result.="Ajout de GGB (GeoGebra) à la liste des extensions autorisées pour les fichiers joints aux cahiers de textes : ";
+  $result_inter = traite_requete("INSERT INTO ct_types_documents SET titre='GeoGebra', extension='ggb', upload='oui';");
+  if ($result_inter == '') {
+    $result.=msj_ok("Ok !");
+  } else {
+    $result.=msj_erreur("Erreur !");
+  }
 }
 
 $result.="<br />Fin mise à jour<br/>";

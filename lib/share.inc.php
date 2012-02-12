@@ -1325,8 +1325,8 @@ function tentative_intrusion($_niveau, $_description) {
 		if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 
 		$subject = $gepiPrefixeSujetMail."GEPI : Alerte sécurité -- Tentative d'intrusion";
-		$subject = "=?ISO-8859-1?B?".base64_encode($subject)."?=\r\n";
-	
+		$subject = "=?UTF-8?B?".base64_encode($subject)."?=\r\n";
+
 		$headers = "X-Mailer: PHP/" . phpversion()."\r\n";
 		$headers .= "MIME-Version: 1.0\r\n";
 		$headers .= "Content-type: text/plain; charset=UTF-8\r\n";
@@ -2260,6 +2260,8 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 	global $class_special_infobulle;
 
 	$style_box="color: #000000; border: 1px solid #000000; padding: 0px; position: absolute; z-index:$zindex_infobulle;";
+	//$style_box="color: #000000; border: 1px solid #000000; padding: 0px; position: absolute; z-index:$zindex_infobulle; -moz-box-shadow: 8px 8px 12px #aaa;";
+	//$style_box="color: #000000; border: 1px solid #000000; padding: 0px; position: absolute; z-index:$zindex_infobulle; -moz-box-shadow: 8px 8px 12px #FAB4B4;";
 	
 	$style_bar="color: #ffffff; cursor: move; font-weight: bold; padding: 0px;";
 	$style_close="color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;";
@@ -5125,4 +5127,178 @@ function jour_fr($jour_en, $mode="") {
 		return $jour_en;
 	}
 }
+
+/** fonction creant le fichier temp/info_jours.js pris en compte dans le CDT2 pour passer au jours suivant.
+ *
+ */
+function creer_info_jours_js() {
+	global $prefix_base, $niveau_arbo;
+
+	//echo "\$niveau_arbo=$niveau_arbo<br />";
+
+	if(!isset($prefix_base)) {$prefix_base="";}
+
+	// tableau semaine
+	$tab_sem[0] = 'lundi';
+	$tab_sem[1] = 'mardi';
+	$tab_sem[2] = 'mercredi';
+	$tab_sem[3] = 'jeudi';
+	$tab_sem[4] = 'vendredi';
+	$tab_sem[5] = 'samedi';
+	$tab_sem[6] = 'dimanche';
+
+	$chaine_jours_ouverts="";
+
+	$i=0;
+	for($i=0;$i<count($tab_sem);$i++) {
+		$sql="SELECT 1=1 FROM ".$prefix_base."horaires_etablissement
+				WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' AND
+						date_horaire_etablissement = '0000-00-00' AND ouvert_horaire_etablissement='1'";
+		$res_j_o=mysql_query($sql);
+		if(mysql_num_rows($res_j_o)) {
+			if($chaine_jours_ouverts!="") {$chaine_jours_ouverts.=",";}
+			$num_jour=$i+1;
+			$chaine_jours_ouverts.="'$num_jour'";
+		}
+	}
+
+	if($chaine_jours_ouverts=='') {
+		$chaine_jours_ouverts="'0','1','2','3','4','5','6'";
+	}
+
+	if(!isset($niveau_arbo)) {
+		$pref_arbo="..";
+	}
+	elseif("$niveau_arbo"=='public') {
+		$pref_arbo="..";
+	}
+	elseif("$niveau_arbo"=="0") {
+		$pref_arbo=".";
+	}
+	elseif("$niveau_arbo"=="1") {
+		$pref_arbo="..";
+	}
+	elseif("$niveau_arbo"=="2") {
+		$pref_arbo="../..";
+	}
+	elseif("$niveau_arbo"=="3") {
+		$pref_arbo="../../..";
+	}
+
+	//echo "\$pref_arbo=$pref_arbo<br />";
+
+	$f=fopen("$pref_arbo/temp/info_jours.js","w+");
+	fwrite($f,"// Tableau des jours ouverts
+	// 0 pour dimanche,
+	// 1 pour lundi,...
+	var tab_jours_ouverture=new Array($chaine_jours_ouverts);");
+	fclose($f);
+}
+
+/** Fonction destinée à récupérer les images de formules mathématiques générées
+ * sur http://latex.codecogs.com/
+ * Cela évite de faire une requête vers le site http://latex.codecogs.com/ pour 
+ * chaque image et assure que lors de l'archivage, les images resteront 
+ * disponibles même si le site http://latex.codecogs.com/ cesse de fonctionner.
+ *
+ * @param string $texte Le texte à traiter
+ * @param integer $id_groupe L'identifiant du groupe
+ * @param string $type_notice Le type de notice
+ *               ('c' pour compte-rendu et 't' pour travail à faire)
+ * @return string La chaine corrigée après téléchargement des images vers
+ * ../documents/cl$idgroupe ou ../documents/cl_dev$idgroupe
+ */
+function get_img_formules_math($texte, $id_groupe, $type_notice="c") {
+	global $multisite;
+
+	$contenu_cor=$texte;
+
+	if(preg_match('|src="http://latex.codecogs.com/|', $contenu_cor)) {
+
+		$niv_arbo_tmp=2;
+		$dest_documents = '../documents/';
+		$dossier = '';
+		$multi = (isset($multisite) && $multisite == 'y') ? $_COOKIE['RNE'].'/' : NULL;
+		if ((isset($multisite) && $multisite == 'y') && is_dir('../documents/'.$multi) === false){
+			@mkdir('../documents/'.$multi);
+			$dest_documents .= $multi;
+			$niv_arbo_tmp++;
+		}elseif((isset($multisite) && $multisite == 'y')){
+			$dest_documents .= $multi;
+			$niv_arbo_tmp++;
+		}
+
+		//$type_notice="c";
+		if($type_notice=='c') {
+			$dest_documents.="/cl".$id_groupe;
+		}
+		else {
+			$dest_documents.="/cl_dev".$id_groupe;
+		}
+
+		if(!file_exists($dest_documents)) {
+			mkdir($dest_documents);
+			creation_index_redir_login($dest_documents,$niv_arbo_tmp);
+		}
+
+		$chaine="";
+		$tab_tmp=preg_split('/"/',$contenu_cor);
+		for($loop=0;$loop<count($tab_tmp);$loop++) {
+			if(preg_match("|^http://latex.codecogs.com/|",$tab_tmp[$loop])) {
+				$erreur="n";
+				$extension_fichier_formule="gif";
+				if(preg_match("|^http://latex.codecogs.com/gif.latex|",$tab_tmp[$loop])) {
+					$extension_fichier_formule="gif";
+				}
+				elseif(preg_match("|^http://latex.codecogs.com/png.latex|",$tab_tmp[$loop])) {
+					$extension_fichier_formule="png";
+				}
+				elseif(preg_match("|^http://latex.codecogs.com/swf.latex|",$tab_tmp[$loop])) {
+					$extension_fichier_formule="swf";
+				}
+				elseif(preg_match("|^http://latex.codecogs.com/emf.latex|",$tab_tmp[$loop])) {
+					$extension_fichier_formule="emf";
+				}
+				elseif(preg_match("|^http://latex.codecogs.com/pdf.latex|",$tab_tmp[$loop])) {
+					$extension_fichier_formule="pdf";
+				}
+				elseif(preg_match("|^http://latex.codecogs.com/svg.latex|",$tab_tmp[$loop])) {
+					$extension_fichier_formule="svg";
+				}
+
+				// Eviter les doublons:
+				$nom_tmp=strftime("%Y%m%d_%H%M%S");
+				$nom_tmp0=$nom_tmp;
+				$cpt=1;
+				while(file_exists($dest_documents."/".$nom_tmp.".".$extension_fichier_formule)) {
+					$nom_tmp=$nom_tmp0."_".$cpt;
+					if($cpt>100) {$erreur="y";}
+					$cpt++;
+				}
+
+				// Telechargement du fichier:
+				if($erreur=="n") {
+					$morceau_courant=$dest_documents."/".$nom_tmp.".".$extension_fichier_formule;
+					if(!copy($tab_tmp[$loop],$morceau_courant)) {$morceau_courant=$tab_tmp[$loop];}
+				}
+				else {
+					$morceau_courant=$tab_tmp[$loop];
+				}
+			}
+			else {
+				$morceau_courant=$tab_tmp[$loop];
+			}
+
+			// On complète la chaine du contenu de la notice:
+			if($chaine!="") {
+				$chaine.="\"";
+			}
+			$chaine.=$morceau_courant;
+		}
+		$contenu_cor=$chaine;
+	}
+
+	return $contenu_cor;
+}
+
 ?>
