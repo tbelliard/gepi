@@ -20,7 +20,7 @@
 function get_groups_for_prof($_login,$mode=NULL,$tab_champs=array()) {
 	// Par discipline puis par classe
 	if(!isset($mode)){
-		$requete_sql = "SELECT jgp.id_groupe, jgm.id_matiere,  jgc.id_classe
+		$requete_sql = "SELECT jgp.id_groupe, jgm.id_matiere, jgc.id_classe
 						FROM j_groupes_professeurs jgp, j_groupes_matieres jgm, j_groupes_classes jgc, classes c
 						WHERE (" .
 						"login = '" . $_login . "'
@@ -106,7 +106,7 @@ function get_groups_for_class($_id_classe, $ordre="", $d_apres_categories="n") {
 	else {
 		if($ordre=="old_way") {
 			// Ce que l'on avait auparavant.
-			$sql="select g.name, g.id, g.description ".
+			$sql="select DISTINCT g.name, g.id, g.description ".
 								"from groupes g, j_groupes_classes j ".
 								"where (" .
 								"g.id = j.id_groupe " .
@@ -114,7 +114,7 @@ function get_groups_for_class($_id_classe, $ordre="", $d_apres_categories="n") {
 								") ORDER BY j.priorite, g.name";
 		}
 		else {
-			$sql="select g.name, g.id, g.description, jgm.id_matiere FROM groupes g, 
+			$sql="select DISTINCT g.name, g.id, g.description, jgm.id_matiere FROM groupes g, 
 					j_groupes_classes jgc, 
 					j_groupes_matieres jgm
 				WHERE (
@@ -129,6 +129,111 @@ function get_groups_for_class($_id_classe, $ordre="", $d_apres_categories="n") {
 
 	$nb = mysql_num_rows($query);
 	$temp = array();
+	for ($i=0;$i<$nb;$i++) {
+		$temp[$i]["name"] = mysql_result($query, $i, "name");
+		$temp[$i]["description"] = mysql_result($query, $i, "description");
+		$temp[$i]["id"] = mysql_result($query, $i, "id");
+
+		$temp[$i]["matiere"]["matiere"] = mysql_result($query, $i, "id_matiere");
+
+		$get_classes = mysql_query("SELECT c.id, c.classe, c.nom_complet FROM classes c, j_groupes_classes j WHERE (" .
+										"c.id = j.id_classe and j.id_groupe = '" . $temp[$i]["id"]."')");
+		$nb_classes = mysql_num_rows($get_classes);
+		for ($k=0;$k<$nb_classes;$k++) {
+			$c_id = mysql_result($get_classes, $k, "id");
+			$c_classe = mysql_result($get_classes, $k, "classe");
+			$c_nom_complet = mysql_result($get_classes, $k, "nom_complet");
+
+			$temp[$i]["classes"][] = array("id" => $c_id, "classe" => $c_classe, "nom_complet" => $c_nom_complet);
+			if($k==0) {$temp[$i]["classlist_string"]="";} else {$temp[$i]["classlist_string"].=", ";}
+			$temp[$i]["classlist_string"].=$c_classe;
+		}
+	}
+
+	return $temp;
+}
+
+/** Renvoie un tableau des groupes d'un élève
+ * 
+ * ATTENTION: Avec les catégories, les groupes dans aucune catégorie n'apparaissent pas.
+ * 
+ *
+ * @param int $_login_eleve Login de l'élève
+ * @param int $_id_classe Identifiant de la classe de l'élève
+ * @param string $ordre Détermine l'ordre de tri
+ * @param string $d_apres_categories Détermine comment on prend en compte les catégories
+ * @return array Le tableau des groupes
+ *         (on ne récupère que les indices id, name, description du groupe et les classes associées,
+ *          pas les indices profs, eleves, periodes, matieres)
+ */
+function get_groups_for_eleve($_login_eleve, $_id_classe, $ordre="", $d_apres_categories="n") {
+	// ATTENTION: Avec les catégories, les groupes dans aucune catégorie n'apparaissent pas.
+	// Avec le choix "n" sur les catégories, on reste sur un fonctionnement proche de celui d'origine (cf old_way)
+
+	if (!is_numeric($_id_classe)) {$_id_classe = "0";}
+
+	if($d_apres_categories=="auto") {
+		$d_apres_categories="n";
+
+		$sql="SELECT display_mat_cat FROM classes WHERE id='".$_id_classe."';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$d_apres_categories=mysql_result($res,0,"display_mat_cat");
+		}
+	}
+
+	if($d_apres_categories=='y') {
+		$sql="SELECT DISTINCT g.name, g.id, g.description, jgm.id_matiere
+				FROM j_eleves_groupes jeg, 
+					j_groupes_classes jgc, 
+					j_groupes_matieres jgm, 
+					j_matieres_categories_classes jmcc, 
+					matieres m, 
+					matieres_categories mc,
+					groupes g
+				WHERE ( mc.id=jmcc.categorie_id AND 
+					jgc.categorie_id = jmcc.categorie_id AND 
+					jgc.id_classe=jmcc.classe_id AND 
+					jgc.id_classe='".$_id_classe."' AND 
+					jgm.id_groupe=jgc.id_groupe AND 
+					m.matiere = jgm.id_matiere AND
+					g.id=jgc.id_groupe AND
+					jeg.id_groupe=jgc.id_groupe AND
+					jeg.login='$_login_eleve')
+				ORDER BY jmcc.priority,mc.priority,jgc.priorite,m.nom_complet, g.name;";
+	}
+	else {
+		if($ordre=="old_way") {
+			// Ce que l'on avait auparavant.
+			$sql="select DISTINCT g.name, g.id, g.description ".
+								"from groupes g, j_groupes_classes jgc, j_eleves_groupes jeg ".
+								"where (" .
+								"g.id = jgc.id_groupe " .
+								" and jgc.id_classe = '" . $_id_classe . "'".
+								" AND jeg.id_groupe=jgc.id_groupe".
+								" AND jeg.login='$_login_eleve'".
+								") ORDER BY jgc.priorite, g.name";
+		}
+		else {
+			$sql="select DISTINCT g.name, g.id, g.description, jgm.id_matiere FROM groupes g, 
+					j_groupes_classes jgc, 
+					j_groupes_matieres jgm, 
+					j_eleves_groupes jeg
+				WHERE (
+					jgc.id_classe='".$_id_classe."' AND
+					jgm.id_groupe=jgc.id_groupe
+					AND jgc.id_groupe=g.id AND
+					jeg.id_groupe=jgc.id_groupe AND
+					jeg.login='$_login_eleve'
+					)
+				ORDER BY jgc.priorite,jgm.id_matiere, g.name;";
+		}
+	}
+	//echo "$sql<br />";
+	$query = mysql_query($sql);
+
+	$temp=array();
+	$nb = mysql_num_rows($query);
 	for ($i=0;$i<$nb;$i++) {
 		$temp[$i]["name"] = mysql_result($query, $i, "name");
 		$temp[$i]["description"] = mysql_result($query, $i, "description");

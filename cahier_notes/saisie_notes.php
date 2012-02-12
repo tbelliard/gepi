@@ -443,6 +443,9 @@ if (isset($_POST['import_sacoche'])) {
 } else {
 	$message_enregistrement = "Les modifications ont été enregistrées !";
 }
+
+require('cc_lib.php');
+
 $themessage  = 'Des notes ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 $message_cnil_commentaires="* En conformité avec la CNIL, le professeur s'engage à ne faire figurer dans le carnet de notes que des notes et commentaires portés à la connaissance de l'élève (<em>note et commentaire portés sur la copie, ...</em>).";
 //**************** EN-TETE *****************
@@ -684,6 +687,9 @@ if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
 echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;nom_pdf_en_detail=oui\" onclick=\"return VerifChargement()\"> Imprimer au format PDF </a>|";
 
 echo "<a href=\"../groupes/signalement_eleves.php?id_groupe=$id_groupe&amp;chemin_retour=../cahier_notes/saisie_notes.php?id_conteneur=$id_conteneur\"> Signaler des erreurs d'affectation</a>";
+
+echo "|<a href=\"index_cc.php?id_racine=$id_racine\"> ".ucfirst($nom_cc)."</a>";
+
 echo "</p>\n";
 echo "</form>\n";
 

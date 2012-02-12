@@ -785,7 +785,7 @@ padding-right:".$releve_addressblock_padding_right."mm;\n";
 			if($releve_addressblock_debug=="y"){echo "border: 1px solid blue;\n";}
 			echo "font-size: ".$releve_addressblock_font_size."pt;
 '>
-<div align='left'>
+<div style='text-align:left;'>
 $ligne1<br />
 $ligne2<br />
 $ligne3
@@ -975,7 +975,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 			// sans bloc adresse responsable
 			//-------------------------------
 
-            echo "<div align='center'>\n";
+            echo "<div class='center'>\n";
 			echo "<table width='$releve_largeurtableau' border='0' cellspacing='".$releve_cellspacing."' cellpadding='".$releve_cellpadding."'";
 			echo " summary=\"Tableau de l'entête\"";
 			echo ">\n";
@@ -1162,13 +1162,13 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 		$larg_col1 = $releve_col_matiere_largeur;
 		$larg_col2 = $larg_tab - $larg_col1;
 		//echo "<table width=\"$larg_tab\" class='boireaus' border=1 cellspacing=3 cellpadding=3>\n";
-        echo "<div align='center'>\n";
+        echo "<div class='center'>\n";
 		echo "<table width=\"$larg_tab\"$releve_class_bordure border='1' cellspacing='3' cellpadding='3'";
 		echo "summary=\"Tableau des notes\" ";
 		echo ">\n";
 		echo "<tr>\n";
-		echo "<td width=\"$larg_col1\" class='releve'><b>Matière</b><br /><i>Professeur</i></td>\n";
-		echo "<td width=\"$larg_col2\" class='releve'>Notes sur 20</td>\n";
+		echo "<td style=\"width: $larg_col1\" class='releve'><b>Matière</b><br /><i>Professeur</i></td>\n";
+		echo "<td style=\"width: $larg_col2\" class='releve'>Notes sur 20</td>\n";
 		echo "</tr>\n";
 
 		// Boucle groupes
@@ -1692,7 +1692,7 @@ if ($tab_rel['rn_abs_2'] == 'y') {
 			echo "<tr>\n";
 
 			if($tab_rel['rn_sign_chefetab']=='y'){
-				echo "<td width='$largeur_case'>\n";
+				echo "<td style='width: $largeur_case'>\n";
 				echo "<b>Signature du chef d'établissement:</b>";
 				for($m=0;$m<$tab_rel['rn_sign_nblig'];$m++) {
 					echo "<br />\n";
@@ -1701,7 +1701,7 @@ if ($tab_rel['rn_abs_2'] == 'y') {
 			}
 
 			if($tab_rel['rn_sign_pp']=='y'){
-				echo "<td width='$largeur_case'>\n";
+				echo "<td style='width: $largeur_case'>\n";
 				echo "<b>Signature du ".$gepi_prof_suivi.":</b>";
 				for($m=0;$m<$tab_rel['rn_sign_nblig'];$m++) {
 					echo "<br />\n";
@@ -1710,7 +1710,7 @@ if ($tab_rel['rn_abs_2'] == 'y') {
 			}
 
 			if($tab_rel['rn_sign_resp']=='y'){
-				echo "<td width='$largeur_case'>\n";
+				echo "<td style='width: $largeur_case'>\n";
 				echo "<b>Signature des responsables:</b>";
 				for($m=0;$m<$tab_rel['rn_sign_nblig'];$m++) {
 					echo "<br />\n";

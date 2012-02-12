@@ -693,6 +693,11 @@ div.info_abs {
 	border: 1px solid #$couleur_infobulle_fond_entete;
 }
 /*=====================================================*/
+/* Utilisation des couleurs d'info bulles pour cahier_texte_2/consultation2.css */
+.cdt_cadre_semaine {
+	background-color: #$couleur_infobulle_fond_corps;
+}
+/*=====================================================*/
 ");
 				fclose($fich);
 			}

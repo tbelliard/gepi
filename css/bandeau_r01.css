@@ -248,3 +248,7 @@ div.headerMessage {
 	font-variant: small-caps;
 	text-align: center;
 }
+
+.invisible {
+	display:none;
+}

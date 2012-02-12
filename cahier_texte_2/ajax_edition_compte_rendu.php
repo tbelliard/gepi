@@ -214,6 +214,8 @@ echo " <button style='background-color:".$color_fond_notices['p']."' onclick=\"j
 						getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$groupe->getId()."&today='+getCalendarUnixDate());
 					\">Voir NP</button>\n";
 
+//echo "<a href=\"javascript:insere_texte_dans_ckeditor('plop')\">Plop</a>";
+
 echo "<br /><br />\n";
 
 // Nombre de notices pour ce jour :
@@ -455,8 +457,16 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 			$nb_documents_joints=0;
 			foreach ($documents as $document) {
 				//if ($ic=='1') { $ic='2'; $couleur_cellule_=$couleur_cellule[$type_couleur]; } else { $couleur_cellule_=$couleur_cellule_alt[$type_couleur]; $ic='1'; }
-				echo "<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: #FFFFFF;\"><td>
-						<a href='".$document->getEmplacement()."' target=\"_blank\">".$document->getTitre()."</a></td>
+				echo "<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: #FFFFFF;\">
+						<td>\n";
+
+				if(preg_match("/(png|gif|jpg)$/i",$document->getEmplacement())) {
+					echo insere_lien_insertion_image_dans_ckeditor($document->getEmplacement());
+				}
+
+				echo "
+							<a href='".$document->getEmplacement()."' target=\"_blank\">".$document->getTitre()."</a>
+						</td>
 						<td style=\"text-align: center;\" title=\"Taille du fichier\">".round($document->getTaille()/1024,1)."</td>\n";
 				if(getSettingValue('cdt_possibilite_masquer_pj')=='y') {
 					//echo "<td style=\"text-align: center;\" id='td_document_joint_".$document->getId()."'>";
@@ -478,8 +488,8 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 				$nb_documents_joints++;
 			}
 			echo "</table>\n";
-			//gestion de modification du nom d'un documents
 
+			//gestion de modification du nom d'un documents
 			if($nb_documents_joints>0) {
 				echo "Nouveau nom <input type=\"text\" name=\"doc_name_modif\" size=\"25\" /> pour\n";
 				echo "<select name=\"id_document\">\n";
