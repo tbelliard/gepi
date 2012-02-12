@@ -936,7 +936,7 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
 	  $out_html .= "<option value=\"".$link."?year=".$year."&amp;month=".$month."&amp;day=".$day."\">(Choisissez un élève)</option>\n";
 		while ($current_eleve = mysql_fetch_object($get_eleves)) {
 		   if ($current) {
-		   	$selected = ($current_eleve->login == $current->login) ? "selected='selected'" : "";
+		   	$selected = ((is_object($current)&&($current_eleve->login == $current->login))||($current_eleve->login == $current)) ? "selected='selected'" : "";
 		   } else {
 		   	$selected = "";
 		   }
