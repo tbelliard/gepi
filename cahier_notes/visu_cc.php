@@ -400,6 +400,9 @@ if(isset($_GET['export_pdf'])) {
 			$total=0;
 			$total_sur=0;
 
+			// Nombre de vraies notes (pas absent, disp, ou -)
+			$nb_note=0;
+
 			//if($pdf->GetY()+$h_cell+$hauteur_par_eleve>$hauteur_page-$MargeBas) {
 			if($pdf->GetY()+$h_cell+$hauteur_par_eleve+$Espace_dx>$hauteur_page-$MargeBas) {
 				$num_page++;
@@ -466,6 +469,8 @@ if(isset($_GET['export_pdf'])) {
 						$total_sur+=$tab_eval[$i]['note_sur'];
 
 						$note_ev_courant=strtr($tmp_tab['eval'][$tab_eval[$i]['id_eval']],".",",");
+
+						$nb_note++;
 					}
 					else {
 						$note_ev_courant=$tmp_tab['eval'][$tab_eval[$i]['id_eval']];
@@ -489,6 +494,14 @@ if(isset($_GET['export_pdf'])) {
 				$pdf->SetXY($x_courant,$y+$h_cell);
 			}
 
+
+			if($nb_note>0) {
+				$total=strtr($total,'.',',');
+			}
+			else {
+				$total="-";
+			}
+
 			$pdf->SetFont('DejaVu','B',10);
 			$texte='Total';
 			$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
@@ -503,6 +516,7 @@ if(isset($_GET['export_pdf'])) {
 
 			if($total_sur>0) {
 				$moy=strtr(precision_arrondi(20*$total/$total_sur,$precision),'.',',');
+				//$moy=precision_arrondi(20*$total/$total_sur,$precision);
 			}
 			else {
 				$moy='-';
