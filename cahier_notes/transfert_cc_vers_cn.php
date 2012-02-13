@@ -88,6 +88,7 @@ $periode_num=$lig->periode;
 $id_groupe=$lig->id_groupe;
 
 
+@setlocale(LC_NUMERIC,'C');
 
 require('cc_lib.php');
 
@@ -184,7 +185,7 @@ if((isset($_GET['creer_dev']))||(isset($_GET['ecraser_contenu_dev']))) {
 			$sql="UPDATE cn_devoirs SET date_ele_resp='".strftime('%Y-%m-%d 00:00:00')."' WHERE id='$id_devoir_cn'";
 			$reg=mysql_query($sql);
 			if (!$reg) {$reg_ok = "no";}
-
+	
 			$sql="UPDATE cn_devoirs SET facultatif='O' WHERE id='$id_devoir_cn'";
 			$reg=mysql_query($sql);
 			if (!$reg) {$reg_ok = "no";}
@@ -265,7 +266,7 @@ if((isset($_GET['creer_dev']))||(isset($_GET['ecraser_contenu_dev']))) {
 							if(($tmp_tab['eval'][$tab_eval[$i]['id_eval']]!='')&&(preg_match('/^[0-9.]*$/',$tmp_tab['eval'][$tab_eval[$i]['id_eval']]))) {
 								$total+=$tmp_tab['eval'][$tab_eval[$i]['id_eval']];
 								$chaine_commentaire_part1.="+".$tmp_tab['eval'][$tab_eval[$i]['id_eval']];
-	
+
 								$total_sur+=$tab_eval[$i]['note_sur'];
 								$chaine_commentaire_part2.="+".$tab_eval[$i]['note_sur'];
 							}
@@ -297,9 +298,14 @@ if((isset($_GET['creer_dev']))||(isset($_GET['ecraser_contenu_dev']))) {
 
 				//$csv.=strtr($total,'.',',').";".strtr($total_sur,'.',',').";";
 				if($total_sur>0) {
-					//$moy=strtr(precision_arrondi(20*$total/$total_sur,$precision),'.',',');
 					$moy=precision_arrondi(20*$total/$total_sur,$precision_cc_dev);
-
+					/*
+					echo "\$total=$total<br />";
+					echo "\$total_sur=$total_sur<br />";
+					echo "$precision_cc_dev<br />";
+					$tmp_moy=20*$total/$total_sur;
+					echo "20*$total/$total_sur=".$tmp_moy." arrondi à $moy<br />";
+					*/
 					$sql.=", note='$moy', comment='$chaine_commentaire', statut='';";
 				}
 				else {
@@ -308,7 +314,8 @@ if((isset($_GET['creer_dev']))||(isset($_GET['ecraser_contenu_dev']))) {
 					$sql.=", note='', comment='$chaine_commentaire', statut='$moy';";
 				}
 				//$csv.="$moy;\r\n";
-
+				//echo "$sql<br />";
+				//echo "<br />";
 				$insert=mysql_query($sql);
 				if($insert) {
 					$succes_insert_note++;
