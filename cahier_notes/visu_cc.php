@@ -496,7 +496,7 @@ if(isset($_GET['export_pdf'])) {
 
 
 			if($nb_note>0) {
-				$total=strtr($total,'.',',');
+				$total_aff=strtr($total,'.',',');
 			}
 			else {
 				$total="-";
@@ -507,7 +507,7 @@ if(isset($_GET['export_pdf'])) {
 			$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
 			$texte='-';
 			$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
-			$texte=$total;
+			$texte=$total_aff;
 			$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
 			$texte=$total_sur;
 			$pdf->Cell($largeur_tab-3*floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
