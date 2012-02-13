@@ -54,7 +54,7 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 			$html_balise .=(" ");
 
 			$html_balise .=("<a href=\"#\" onclick=\"javascript:
-                                            contenu_a_copier = '".  htmlspecialchars($devoir->getContenu())."';
+                                            contenu_a_copier = '".addslashes(htmlspecialchars($devoir->getContenu()))."';
                                             ct_a_importer_class='".get_class($devoir)."';
                                             id_ct_a_importer='".$devoir->getIdCt()."';
                                             new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$devoir->getIdGroupe()."&ct_a_importer_class=".get_class($devoir)."&id_ct_a_importer=".$devoir->getIdCt()."',{ onComplete:function() {updateDivModification();} });
@@ -118,7 +118,7 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
 				$html_balise .=(" ");
 
                                 $html_balise .=("<a href=\"#\" onclick=\"javascript:
-                                                    contenu_a_copier = '".htmlspecialchars($notice_privee->getContenu())."';
+                                                    contenu_a_copier = '".addslashes(htmlspecialchars($notice_privee->getContenu()))."';
                                                     ct_a_importer_class='".get_class($notice_privee)."';
                                                     id_ct_a_importer='".$notice_privee->getIdCt()."';
                                                     new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$notice_privee->getIdGroupe()."&ct_a_importer_class=".get_class($notice_privee)."&id_ct_a_importer=".$notice_privee->getIdCt()."',{ onComplete:function() {updateDivModification();} });
@@ -175,7 +175,7 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
 				$html_balise .=(" ");
 
                                 $html_balise .=("<a href=\"#\" onclick=\"javascript:
-                                                    contenu_a_copier = '".htmlspecialchars($compte_rendu->getContenu())."';
+                                                    contenu_a_copier = '".addslashes(htmlspecialchars($compte_rendu->getContenu()))."';
                                                     ct_a_importer_class='".get_class($compte_rendu)."';
                                                     id_ct_a_importer='".$compte_rendu->getIdCt()."';
                                                     new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$compte_rendu->getIdGroupe()."&ct_a_importer_class=".get_class($compte_rendu)."&id_ct_a_importer=".$compte_rendu->getIdCt()."',{ onComplete:function() {updateDivModification();} });

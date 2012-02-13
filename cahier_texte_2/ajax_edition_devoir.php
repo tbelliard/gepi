@@ -284,7 +284,7 @@ echo "
 $contenu_a_copier =  isset($_SESSION['ct_a_importer']) ? $_SESSION['ct_a_importer']->getContenu() : '';
 echo (" <a href=\"#\" onclick=\"javascript: /*contenu_a_copier est globale*/
     if (window.contenu_a_copier == undefined) {
-        contenu_a_copier = '".htmlspecialchars($contenu_a_copier)."';
+        contenu_a_copier = '".addslashes(htmlspecialchars($contenu_a_copier))."';
     }
     CKEDITOR.instances['contenu'].insertHtml(contenu_a_copier);");
 echo("\"><img style=\"border: 0px;\" src=\"../images/icons/copy-16-gold.png");
