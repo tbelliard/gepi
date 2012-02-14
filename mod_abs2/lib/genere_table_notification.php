@@ -3,7 +3,7 @@
  *
  *
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stephane Boireau, Julien Jocal
+ * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stephane Boireau, Julien Jocal, Régis Bouguin
  *
  * This file is part of GEPI.
  *
@@ -35,18 +35,110 @@ class AbsencesNotificationHelper {
    * @return clsTinyButStrong $TBS deroulante des types d'absences
    */
   public static function MergeNotification($notification, $modele){
-    //on charge le modele et on merge les données de l'établissement
+	  global $tableNotifications;
+	  $indice = count($tableNotifications);
+	  //on charge le modele et on merge les données de l'établissement
     $TBS=self::MergeInfosEtab($modele);
-    $TBS->MergeField('notif_id',$notification->getId());
+
+    $heure_demi_journee = 11;
+    $minute_demi_journee = 50;
+    if (getSettingValue("abs2_heure_demi_journee") != null) {
+        try {
+    	$dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
+    	$heure_demi_journee = $dt_demi_journee->format('H');
+    	$minute_demi_journee = $dt_demi_journee->format('i');
+        } catch (Exception $x) {
+        }
+    }
+    $temps_demi_journee = $heure_demi_journee.$minute_demi_journee;
+	
     //on récupère la liste des noms d'eleves
     $eleve_col = new PropelCollection();
     if ($notification->getAbsenceEleveTraitement() != null) {
-	foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
-	    $eleve_col->add($saisie->getEleve());
-	}
+		foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
+			$eleve_col->add($saisie->getEleve());
+		}
     }
-    //merge des saisies pour modèles du type 1.5.3
-    $TBS->MergeBlock('el_col',$eleve_col);
+	
+	$cpt=0;
+	foreach ($eleve_col as $eleve) {
+		$tableNotifications[$indice]['notif_id'] = $notification->getId();
+		$tableNotifications[$indice]['getNom'] = $eleve->getNom();
+		$tableNotifications[$indice]['getPrenom'] = $eleve->getPrenom();
+		$tableNotifications[$indice]['getClasseNomComplet'] = $eleve->getClasseNomComplet();
+		$tableNotifications[$indice]['getId'] = $eleve->getId();
+		
+		//on va mettre les champs dans des variables simple
+		//on fait un petit traitement pour bien formatter ça si on a un ou deux responsables, avec le même nom de famille ou pas.
+		if ($notification->getAdresse() != null && $notification->getResponsableEleves()->count() == 1) {
+			$responsable = $notification->getResponsableEleves()->getFirst();
+			$destinataire = $responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.strtoupper($responsable->getPrenom());
+		} elseif ($notification->getAdresse() != null&& $notification->getResponsableEleves()->count() == 2) {
+			$responsable1 = $notification->getResponsableEleves()->getFirst();
+			$responsable2 = $notification->getResponsableEleves()->getNext();
+			if (strtoupper($responsable1->getNom()) == strtoupper($responsable2->getNom())) {
+			$destinataire = $responsable1->getCivilite().' et '.$responsable2->getCivilite().' '.strtoupper($responsable1->getNom());
+			} else {
+			$destinataire = $responsable1->getCivilite().' '.strtoupper($responsable1->getNom());
+			$destinataire .= ' et '.$responsable2->getCivilite().' '.strtoupper($responsable2->getNom());
+			}
+		} else {
+			$destinataire = '';
+		}
+		$tableNotifications[$indice]['destinataire'] = $destinataire;
+
+		$adr = $notification->getAdresse();
+		if ($adr == null) {
+			$adr = new Adresse();
+		}
+		$tableNotifications[$indice]['adr'] = $adr;
+
+		$saisies_col = AbsenceEleveSaisieQuery::create()->filterByEleveId($eleve->getId())
+				->useJTraitementSaisieEleveQuery()
+				->filterByATraitementId($notification->getAbsenceEleveTraitement()->getId())->endUse()
+				->orderBy("DebutAbs", Criteria::ASC)
+						->find();
+		foreach ($saisies_col as $saisie) {
+			$str = $saisie->getDateDescription();
+			if($saisie->getGroupeNameAvecClasses()!=''){
+				$str.= ', cours de '.$saisie->getGroupeNameAvecClasses();
+			}   
+			$tableSaisie[] = $str;
+			
+		}
+		$tableNotifications[$indice]['saisies_eleve'] = $tableSaisie;
+		//print_r($tableNotifications[$indice]['saisies_eleve']);
+
+		$demi_journee_string_col = new PropelCollection();array ();
+			$abs_col = AbsenceEleveSaisieQuery::create()->filterByEleve($eleve)
+			->useJTraitementSaisieEleveQuery()
+			->filterByATraitementId($notification->getAbsenceEleveTraitement()->getId())->endUse()
+			->orderBy("DebutAbs", Criteria::ASC)
+			->find();
+		require_once("helpers/AbsencesEleveSaisieHelper.php");
+		$demi_j = AbsencesEleveSaisieHelper::compte_demi_journee($abs_col);
+		foreach($demi_j as $date) {
+			$str = 'Le ';
+			$str .= (strftime("%a %d/%m/%Y", $date->format('U')));
+			if ($date->format('H') < 12) {
+			$next_date = $demi_j->getNext();
+			if ($next_date != null && $next_date->format('Y-m-d') == $date->format('Y-m-d')) {
+				$str .= ' la journée';
+			} else {
+				$str .= ' le matin';
+				//on recule le pointeur car on l'a avancé avec $demi_j->getNext()
+				$demi_j->getPrevious();
+			}
+			} else {
+			$str .= ' l\'après midi';
+			}
+			$demi_journee_string_col->append($str);
+		}
+		$tableNotifications[$indice]['demi_j_string'] = $demi_journee_string_col;
+		
+		$indice++;
+	}
+	
 
     foreach ($eleve_col as $eleve) {
             $saisies_string_col = new PropelCollection();
@@ -66,19 +158,7 @@ class AbsencesNotificationHelper {
             }
             $TBS->MergeBlock('saisies_string_eleve_id_'.$eleve->getId(), $saisies_string_col);
     }
-
-    $heure_demi_journee = 11;
-    $minute_demi_journee = 50;
-    if (getSettingValue("abs2_heure_demi_journee") != null) {
-        try {
-    	$dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
-    	$heure_demi_journee = $dt_demi_journee->format('H');
-    	$minute_demi_journee = $dt_demi_journee->format('i');
-        } catch (Exception $x) {
-        }
-    }
-    $temps_demi_journee = $heure_demi_journee.$minute_demi_journee;
-
+	
     foreach($eleve_col as $eleve) {
 	$demi_journee_string_col = new PropelCollection();array ();
         $abs_col = AbsenceEleveSaisieQuery::create()->filterByEleve($eleve)
@@ -129,12 +209,14 @@ class AbsencesNotificationHelper {
 	    $destinataire = '';
 	}
 	$TBS->MergeField('destinataire',$destinataire);
+	//$tableNotifications[$indice]['destinataire'] = $destinataire;
 
 	$adr = $notification->getAdresse();
 	if ($adr == null) {
 	    $adr = new Adresse();
 	}
-	$TBS->MergeField('adr',$adr);	
+	//$TBS->MergeField('adr',$adr);
+	//$tableNotifications[$indice]['adr'] = $adr;
 
     } else if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_EMAIL) {
 	$destinataire = '';
@@ -388,4 +470,9 @@ function tbs_str($FieldName,&$CurrRec) {
 
     $CurrRec = stripslashes($CurrRec);
 }
+
+function tbs_toLower($FieldName,&$CurrRec) {
+	$CurrRec = mb_strtolower($CurrRec);
+}
+
 ?>
