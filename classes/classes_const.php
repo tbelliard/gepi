@@ -44,6 +44,7 @@ include "../lib/periodes.inc.php";
 
 $_SESSION['chemin_retour'] = $gepiPath."/classes/classes_const.php?id_classe=".$id_classe;
 
+$explication_motif_bloquant_suppression_eleve_de_la_classe="La présence de moyennes, appréciations ou avis du conseil de classe est bloquante pour la suppression d'un élève d'une classe.<br />Vous pouvez demander aux professeurs de vider leurs notes et appréciations pour le ou les élèves en question.<br />Sinon, un compte de statut 'secours' permet de corriger/vider des moyennes, appréciations et/ou avis du conseil de classe.";
 
 if (isset($is_posted)) {
 	check_token();
@@ -256,7 +257,8 @@ if (isset($is_posted)) {
 						}
 
 						$autorisation_sup = 'no';
-						$msg = "<font color = 'red'>--> Impossible de retirer l'élève $eleve_login de la classe pour la période $i !<br />La présence de moyennes, appréciations ou avis du conseil de classe est bloquante.<br />En l'occurence, cet(te) élève a <strong>$motif_bloquant</strong> pour cette période. Commencez par supprimer les données de l'élève pour cette période !</font><br />\n";
+						if(!isset($msg)) {$msg="";}
+						$msg.="<font color = 'red'>--> Impossible de retirer l'élève $eleve_login de la classe pour la période $i !<br />Cet(te) élève a <strong>$motif_bloquant</strong> pour cette période. Commencez par supprimer les données de l'élève pour cette période !</font><br />\n";
 						$reg_ok = "impossible";
 					} else {
 						$liste_cible .= $eleve_login.";";
@@ -271,6 +273,10 @@ if (isset($is_posted)) {
 	}
 
 	//debug_var();
+
+	if($autorisation_sup=='no') {
+		$msg.="De façon générale&nbsp;: ".$explication_motif_bloquant_suppression_eleve_de_la_classe."<br />";
+	}
 
 	if (($liste_cible != '') and ($autorisation_sup != 'no')) {
 		header("Location: ../lib/confirm_query.php?liste_cible=$liste_cible&liste_cible2=$liste_cible2&liste_cible3=$liste_cible3&action=retire_eleve".add_token_in_url(false));
@@ -890,6 +896,8 @@ if($ouvrir_infobulle_nav=='y') {
 	setTimeout(\"afficher_div('navigation_classe','y',-100,20);\",1000)
 </script>\n";
 }
+
+echo "<p style='margin-left:4em; text-indent:-4em;'><em>NOTE&nbsp;:</em> ".$explication_motif_bloquant_suppression_eleve_de_la_classe."</p>\n";
 
 require("../lib/footer.inc.php");
 
