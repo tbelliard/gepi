@@ -90,51 +90,9 @@ $notifications_col = AbsenceEleveNotificationQuery::create()->filterByPrimaryKey
 //on imprime les courriers par lot
 //
 if (isset($_GET['envoyer_courrier']) && $_GET['envoyer_courrier'] == 'true') {
-    $courrier_source_col = new PropelCollection();
     $courrier_recap_col = new PropelCollection();
     $courrier_nouvellement_envoyés_col = new PropelCollection();
-    // Load the template
-    include_once 'lib/function.php';
-    $courrier_modele=repertoire_modeles('absence_modele_lettre_parents.odt');
-    include_once '../orm/helpers/AbsencesNotificationHelper.php';
-    foreach($notifications_col as $notif) {
-	if ($notif->getTypeNotification() != AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER) {
-	    continue;
-	}
-	$TBS = AbsencesNotificationHelper::MergeNotification($notif, $courrier_modele);
-	$source = $TBS->Source;
-	//on supprime la premiere balise text:p et la derniere apres le text:sequence-decls
-	$pos = mb_strpos($source, '</text:sequence-decls>') + 23;
-	$source = mb_substr($source, $pos);
-	$pos = mb_strpos($source, '>') + 1;
-	$source = mb_substr($source, $pos);
-	$pos = mb_strpos($source, '</office:text>');
-	$source = mb_substr($source, 0, $pos - 9);
-	$courrier_source_col->append($source);
-
-	$recap = $notif->getId().', ';
-	foreach ($notif->getResponsableEleves() as $responsable) {
-	    $recap .= $responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.$responsable->getPrenom();
-	    if (!$notif->getResponsableEleves()->isLast()) {
-		$recap .=  ' ';
-	    }
-	}
-	$courrier_recap_col->append($recap);
-
-	//on met un code d'erreur au cas ou le generation se fait mal
-	if ($notif->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_ETAT_INITIAL
-		|| $notif->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_PRET_A_ENVOYER) {
-	    $notif->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC);
-	    $notif->setErreurMessageEnvoi('Echec de l\'impression par lot');
-	    $notif->save();
-	    $courrier_nouvellement_envoyés_col->append($notif);
-	} else {
-	    $notif->setUpdatedAt('now');
-	    $notif->save();
-	}
-    }
-
-    //on imprime le global
+	
     // load the TinyButStrong libraries    
 	include_once('../tbs/tbs_class.php'); // TinyButStrong template engine
     
@@ -144,12 +102,43 @@ if (isset($_GET['envoyer_courrier']) && $_GET['envoyer_courrier'] == 'true') {
     include_once 'lib/function.php';
     $courrier_lot_modele=repertoire_modeles('absence_modele_impression_par_lot.odt');
     $TBS->LoadTemplate($courrier_lot_modele, OPENTBS_ALREADY_UTF8);
+	
+	include_once 'lib/genere_table_notification.php';
+	
+    foreach($notifications_col as $notif) {
+		if ($notif->getTypeNotification() != AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER) {
+			continue;
+		}
+		
+		$TBS = AbsencesNotificationHelper::MergeNotification($notif, $courrier_lot_modele);
+		
+		$recap = $notif->getId().', ';
+		foreach ($notif->getResponsableEleves() as $responsable) {
+			$recap .= $responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.$responsable->getPrenom();
+			if (!$notif->getResponsableEleves()->isLast()) {
+			$recap .=  ' ';
+			}
+		}
+		$courrier_recap_col->append($recap);
 
-    $TBS->MergeBlock('courrier_source_col',$courrier_source_col);
+		//on met un code d'erreur au cas ou le generation se fait mal
+		if ($notif->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_ETAT_INITIAL
+			|| $notif->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_PRET_A_ENVOYER) {
+			$notif->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC);
+			$notif->setErreurMessageEnvoi('Echec de l\'impression par lot');
+			$notif->save();
+			$courrier_nouvellement_envoyés_col->append($notif);
+		} else {
+			$notif->setUpdatedAt('now');
+			$notif->save();
+		}
+	}
 
-    $TBS->MergeField('nb_impressions',$courrier_recap_col->count());
+    //on imprime le global
+	$TBS->MergeBlock('notifications',$tableNotifications);
+
+    $TBS->MergeField('nb_impressions',count($tableNotifications));
     $TBS->MergeBlock('courrier_recap_col',$courrier_recap_col);
-    
     // Output as a download file (some automatic fields are merged here)
     //on change le statut des notifications
     foreach($courrier_nouvellement_envoyés_col as $notif) {
@@ -159,6 +148,8 @@ if (isset($_GET['envoyer_courrier']) && $_GET['envoyer_courrier'] == 'true') {
 	$notif->save();
     }
 
+    //$TBS->PlugIn(OPENTBS_DEBUG_XML_CURRENT);
+	//$TBS->PlugIn(OPENTBS_DEBUG_XML_SHOW);
     $now = new DateTime();
     $TBS->Show(OPENTBS_DOWNLOAD+TBS_EXIT, 'lot_abs_notif_'.$now->format('Y_m_d__H_i').'.odt');
 
