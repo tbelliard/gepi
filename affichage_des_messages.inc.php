@@ -1,4 +1,13 @@
 <?php
+// suppression d'un message du panneau d'affichage
+if (isset($_POST['supprimer_message']))
+	{
+	$r_sql="DELETE FROM `messages` WHERE `id`='".$_POST['supprimer_message']."'";
+	mysql_query($r_sql);
+	header("Location: ./accueil.php");
+	}
+
+
 // ----- Affichage des messages -----
 $today=mktime(0,0,0,date("m"),date("d"),date("Y"));
 $now=time();
