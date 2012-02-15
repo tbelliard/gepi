@@ -2,7 +2,7 @@
 /*
  * $Id: index.php 2554 2008-10-12 14:49:29Z crob $
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -77,7 +77,7 @@ $id_incident=isset($_POST['id_incident']) ? $_POST['id_incident'] : (isset($_GET
 //$ele_login=isset($_POST['ele_login']) ? $_POST['ele_login'] : (isset($_GET['ele_login']) ? $_GET['ele_login'] : NULL); 
 //$id_sanction=isset($_POST['id_sanction']) ? $_POST['id_sanction'] : (isset($_GET['id_sanction']) ? $_GET['id_sanction'] : NULL); 
 
-//Initialisation des données du modèle Ooo Retenue
+//Initialisation des données
 $date ='';
 $objet_rapport ='';
 $motif = '';
@@ -86,6 +86,10 @@ $fct_resp ='';
 $num_incident ='';
 $creneau ='';
 $lieu_incident ='';
+$mesures_demandees = '';
+$mesures_prises = '';
+$autres_mesures_prises = '';
+$incident_clos = '';
 
 
 // mode = module_discipline, on vient de la page saisie incident du module discipline
@@ -163,7 +167,7 @@ if ($mode=='module_discipline') {
 
 
 	// on récupère les données à transmettre au modèle de retenue open office.
-	$sql_incident="SELECT * FROM `s_incidents` WHERE `id_incident`=$id_incident";
+	$sql_incident="SELECT * FROM s_incidents WHERE id_incident=$id_incident";
 	$res_incident=mysql_query($sql_incident);
 	if(mysql_num_rows($res_incident)>0) {
 		$lig_incident=mysql_fetch_object($res_incident);
@@ -180,6 +184,72 @@ if ($mode=='module_discipline') {
 		//traitement de l'objet
 		$objet_rapport = $lig_incident->nature;
 		
+		// incident clos
+		$incident_clos = ($lig_incident->etat=="clos")?"L'incident est clos.":"";
+
+		//recherche des mesures prises dans la table s_traitement_incident
+		$sql_mesures_prises="SELECT s_mesures.mesure FROM s_traitement_incident,s_mesures WHERE s_traitement_incident.id_incident='$id_incident' AND s_traitement_incident.id_mesure=s_mesures.id AND s_mesures.type='prise'";
+		//echo "$sql_lieu<br />\n";
+		$res_mesures_prises=mysql_query($sql_mesures_prises);
+		if(mysql_num_rows($res_mesures_prises)>0) {
+			while ($lig_mesure_prise=mysql_fetch_object($res_mesures_prises)) {
+				if ($mesures_prises!="") {$mesures_prises .= "\n";}
+				$mesures_prises .= $lig_mesure_prise->mesure;
+			}
+		}
+
+		//recherche des mesures demandées dans la table s_traitement_incident
+		$travail_demande="";
+		$sql_mesures_demandees="SELECT s_mesures.mesure,s_travail_mesure.travail FROM s_traitement_incident,s_mesures,s_travail_mesure WHERE s_traitement_incident.id_incident='$id_incident' AND s_traitement_incident.id_mesure=s_mesures.id AND s_mesures.type='demandee' AND s_travail_mesure.id_incident='$id_incident'";
+		//echo "$sql_lieu<br />\n";
+		$res_mesures_demandees=mysql_query($sql_mesures_demandees);
+		if(mysql_num_rows($res_mesures_demandees)>0) {
+			while ($lig_mesure_demandee=mysql_fetch_object($res_mesures_demandees)) {
+				$mesures_demandees .= $lig_mesure_demandee->mesure."\n";
+				// quelque soit le nombre de mesures demandées il ne peut y avoir qu'un seul travail et/ou document
+				$travail_demande = "Travail : ".$lig_mesure_demandee->travail;
+			}
+			if ($travail_demande!="") {$mesures_demandees .= $travail_demande."\n";}
+		}
+
+		// recherche des suites données à l'incident
+		$sql_autres_mesures_prises="SELECT nature,id_sanction FROM s_sanctions WHERE s_sanctions.id_incident = '".$id_incident."'";
+		$res_autres_mesures_prises=mysql_query($sql_autres_mesures_prises);
+		if(mysql_num_rows($res_autres_mesures_prises)>0) {
+			while ($lig_autre_sanction=mysql_fetch_object($res_autres_mesures_prises)) {
+				switch($lig_autre_sanction->nature)
+				{
+					case "travail" :
+					$autres_mesures_prises .= "Travail\n";
+						$r_sql="SELECT travail FROM s_travail WHERE id_sanction='".$lig_autre_sanction->id_sanction."'";
+						$R=mysql_query($r_sql);
+						if ($R) {$autres_mesures_prises .= " ° ".mysql_result($R,0)."\n";}
+						break;
+					case "retenue" :
+					$autres_mesures_prises .= "Retenue\n";
+						$r_sql="SELECT travail FROM s_retenues WHERE id_sanction='".$lig_autre_sanction->id_sanction."'";
+						$R=mysql_query($r_sql);
+						if ($R) {$autres_mesures_prises .= " ° Travail : ".mysql_result($R,0)."\n";}
+						break;
+					case "exclusion" :
+					$autres_mesures_prises .= "Exclusion\n";
+						$r_sql="SELECT travail,type_exclusion,qualification_faits FROM s_exclusions WHERE id_sanction='".$lig_autre_sanction->id_sanction."'";
+						$R=mysql_query($r_sql);
+						if ($R) {$autres_mesures_prises .= " ° Type : ".mysql_result($R,0,1)."\n ° Travail : ".mysql_result($R,0,0)."\n ° Qualifications des faits : ".mysql_result($R,0,2)."\n";}
+						break;
+				}
+			}
+		}
+
+		$sql_autres_mesures_prises="SELECT s_autres_sanctions.description,s_types_sanctions.nature FROM s_sanctions ,s_autres_sanctions,s_types_sanctions WHERE s_sanctions.id_incident = '".$id_incident."'AND s_sanctions.id_sanction = s_autres_sanctions.id_sanction AND s_autres_sanctions.id_nature=s_types_sanctions.id_nature";
+		$res_autres_mesures_prises=mysql_query($sql_autres_mesures_prises);
+		if(mysql_num_rows($res_autres_mesures_prises)>0) {
+			while ($lig_autre_sanction=mysql_fetch_object($res_autres_mesures_prises)) {
+				$autres_mesures_prises .= $lig_autre_sanction->nature."\n";
+				if ($lig_autre_sanction->description!="") {$autres_mesures_prises .= " ° ".$lig_autre_sanction->description."\n";}
+			}
+		}
+
 		//recherche du lieu dans la table s_lieux_incidents
 		$sql_lieu="SELECT * FROM s_lieux_incidents WHERE id='$lig_incident->id_lieu';";
 		//echo "$sql_lieu<br />\n";
