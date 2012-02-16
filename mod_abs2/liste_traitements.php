@@ -67,6 +67,7 @@ include('include_pagination.php');
 
 $affichage = isset($_POST["affichage"]) ? $_POST["affichage"] :(isset($_GET["affichage"]) ? $_GET["affichage"] : NULL);
 $menu = isset($_POST["menu"]) ? $_POST["menu"] :(isset($_GET["menu"]) ? $_GET["menu"] : Null);
+$imprime = isset($_POST["imprime"]) ? $_POST["imprime"] :(isset($_GET["imprime"]) ? $_GET["imprime"] : Null);
 
 //==============================================
 $style_specifique[] = "mod_abs2/lib/abs_style";
@@ -172,9 +173,9 @@ if (getFiltreRechercheParam('order') == "asc_id") {
 } else if (getFiltreRechercheParam('order') == "des_utilisateur") {
     $query->useUtilisateurProfessionnelQuery()->orderBy('Nom', Criteria::DESC)->endUse();
 } else if (getFiltreRechercheParam('order') == "asc_eleve") {
-    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useEleveQuery()->orderBy('Nom', Criteria::ASC)->endUse()->endUse()->endUse();
+    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useEleveQuery()->orderBy('Nom', Criteria::ASC)->orderBy('Prenom', Criteria::ASC)->orderBy('Login', Criteria::ASC)->endUse()->endUse()->endUse();
 } else if (getFiltreRechercheParam('order') == "des_eleve") {
-    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useEleveQuery()->orderBy('Nom', Criteria::DESC)->endUse()->endUse()->endUse();
+    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useEleveQuery()->orderBy('Nom', Criteria::DESC)->orderBy('Prenom', Criteria::ASC)->orderBy('Login', Criteria::ASC)->endUse()->endUse()->endUse();
 } else if (getFiltreRechercheParam('order') == "asc_classe") {
     $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useClasseQuery()->orderBy('NomComplet', Criteria::ASC)->endUse()->endUse()->endUse();
 } else if (getFiltreRechercheParam('order') == "des_classe") {
@@ -303,6 +304,9 @@ if ($affichage == 'tableur') {
     $now = new DateTime();
     $nom_fichier .=  $now->format("d_m_Y").'.ods';
     $TBS->Show(OPENTBS_DOWNLOAD+TBS_EXIT, $nom_fichier);
+} elseif ('lot' == $imprime) {
+	include 'lib/traitements_vers_imprime_lot.php';
+	
 }
 
 require_once("../lib/header.inc");
@@ -335,7 +339,11 @@ echo "&nbsp;&nbsp;&nbsp;";
 echo '<button type="submit">Rechercher</button>';
 echo '<button type="submit" name="reinit_filtre" value="y" >Reinitialiser les filtres</button> ';
 echo '<button type="submit" name="affichage" value="tableur" >Exporter au format ods</button> ';
-
+?>
+<button type="submit" name="imprime" value="lot" title="Crée une notification par lot pour chaque élève" >
+	Notifications par lot
+</button>
+<?php
 echo "</p>";
 
 echo '<table id="table_liste_absents" class="tb_absences" style="border-spacing:0; width:100%">';
