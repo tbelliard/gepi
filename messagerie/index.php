@@ -509,29 +509,35 @@ echo "</td></tr>\n";
 echo "<tr><td  colspan=\"4\"><i>Statut(s) des destinataires du message :</i></td></tr>\n";
 echo "<tr>\n";
 echo "<td><input type=\"checkbox\" id=\"desti_p\" name=\"desti_p\" value=\"desti_p\"";
-if (strpos($statuts_destinataires, "p")) echo "checked";
+if (strpos($statuts_destinataires, "p")) {echo "checked";}
+echo " onchange='check_et_acces_champ_suppression_message()'";
 echo " /><label for='desti_p' style='cursor: pointer;'>Professeurs</label></td>\n";
 
 echo "<td><input type=\"checkbox\" id=\"desti_c\" name=\"desti_c\" value=\"desti_c\"";
-if (strpos($statuts_destinataires, "c")) echo "checked";
+if (strpos($statuts_destinataires, "c")) {echo "checked";}
+echo " onchange='check_et_acces_champ_suppression_message()'";
 echo " /><label for='desti_c' style='cursor: pointer;'>C.P.E.</label></td>\n";
 
 echo "<td><input type=\"checkbox\" id=\"desti_s\" name=\"desti_s\" value=\"desti_s\"";
-if (strpos($statuts_destinataires, "s")) echo "checked";
+if (strpos($statuts_destinataires, "s")) {echo "checked";}
+echo " onchange='check_et_acces_champ_suppression_message()'";
 echo " /><label for='desti_s' style='cursor: pointer;'>Scolarité</label></td>\n";
 echo "</tr>\n";
 
 echo "<tr>\n";
 echo "<td><input type=\"checkbox\" id=\"desti_a\" name=\"desti_a\" value=\"desti_a\"";
-if (strpos($statuts_destinataires, "a")) echo "checked";
+if (strpos($statuts_destinataires, "a")) {echo "checked";}
+echo " onchange='check_et_acces_champ_suppression_message()'";
 echo " /><label for='desti_a' style='cursor: pointer;'>Administrateur</label></td>\n";
 
 echo "<td><input type=\"checkbox\" id=\"desti_r\" name=\"desti_r\" value=\"desti_r\"";
-if (strpos($statuts_destinataires, "r")) echo "checked";
+if (strpos($statuts_destinataires, "r")) {echo "checked";}
+echo " onchange='check_et_acces_champ_suppression_message()'";
 echo " /><label for='desti_r' style='cursor: pointer;'>Responsables</label></td>\n";
 
 echo "<td><input type=\"checkbox\" id=\"desti_e\" name=\"desti_e\" value=\"desti_e\"";
-if (strpos($statuts_destinataires, "e")) echo "checked";
+if (strpos($statuts_destinataires, "e")) {echo "checked";}
+echo " onchange='check_et_acces_champ_suppression_message()'";
 echo " /><label for='desti_e' style='cursor: pointer;'>Elèves</label></td>\n";
 
 echo "</tr>\n";
@@ -682,6 +688,30 @@ function check_et_valide_form() {
 				document.formulaire.submit();
 			}
 		}
+	}
+}
+
+function check_et_acces_champ_suppression_message() {
+	var tab=new Array('desti_a', 'desti_c', 'desti_e', 'desti_p', 'desti_r', 'desti_s');
+	var acces='y';
+
+	for(i=0;i<tab.length;i++) {
+		if(document.getElementById(tab[i]).checked==true) {
+			acces='n';
+			break;
+		}
+	}
+
+	if(acces=='y') {
+		document.getElementById('suppression_possible_oui').disabled=false;
+		document.getElementById('suppression_possible_non').disabled=false;
+	}
+	else {
+		// On coche l'interdiction de suppression de message:
+		document.getElementById('suppression_possible_non').checked=true;
+
+		document.getElementById('suppression_possible_oui').disabled=true;
+		document.getElementById('suppression_possible_non').disabled=true;
 	}
 }
 </script>\n";
