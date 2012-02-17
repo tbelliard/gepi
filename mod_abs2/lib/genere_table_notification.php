@@ -475,4 +475,12 @@ function tbs_toLower($FieldName,&$CurrRec) {
 	$CurrRec = mb_strtolower($CurrRec);
 }
 
+// Fonction de comparaison
+function TriSaisie(AbsenceEleveSaisie $a, AbsenceEleveSaisie $b) {
+	if ($a->getDebutAbs('U') == $b->getDebutAbs('U')) {
+		return 0;
+	}
+	return (($a->getFirst()->getDebutAbs('U') < $b->getFirst()->getDebutAbs('U')) ? -1 : 1);
+}
+
 ?>
