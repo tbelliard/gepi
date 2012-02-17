@@ -23,3 +23,15 @@
 	/*min-height: 10em;*/
 }
 
+a.cdt_lien_jour {
+	text-decoration:none;
+	color:white;
+	font-weight:bold;
+}
+
+a.cdt_lien_groupe {
+	text-decoration:none;
+	color:black;
+	text-shadow: 1px 1px white;
+}
+
