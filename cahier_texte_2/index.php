@@ -108,6 +108,8 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
 //-----------------------------------------------------------------------------------
 
+//debug_var();
+
 // si l'id d'un groupe est spécifié, on l'enregistre dans un champ hidden, il sera utilisé par le javascript d'initialisation pour basculer vers le groupe concerné
 echo "<input type='hidden' name='id_groupe_init' id='id_groupe_init' value='";
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
@@ -116,7 +118,24 @@ if ($id_groupe != NULL) {
 } else if (isset($_SESSION['id_groupe_session'])) {
 	echo $_SESSION['id_groupe_session'];
 }
-echo "' />";
+echo "' />\n";
+
+//============================================
+// Pour pouvoir pointer une notice précise depuis une page externe:
+echo "<input type='hidden' name='type_notice_init' id='type_notice_init' value='";
+$type_notice = isset($_POST["type_notice"]) ? $_POST["type_notice"] :(isset($_GET["type_notice"]) ? $_GET["type_notice"] :NULL);
+if ($type_notice != NULL) {
+	echo $type_notice;
+}
+echo "' />\n";
+
+echo "<input type='hidden' name='id_ct_init' id='id_ct_init' value='";
+$id_ct = isset($_POST["id_ct"]) ? $_POST["id_ct"] :(isset($_GET["id_ct"]) ? $_GET["id_ct"] :NULL);
+if ($id_ct != NULL) {
+	echo $id_ct;
+}
+echo "' />\n";
+//============================================
 
 echo "<table width=\"98%\" cellspacing=0 align=\"center\" summary=\"Tableau d'entète\">\n";
 echo "<tr>\n";
