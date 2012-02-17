@@ -219,7 +219,9 @@ echo " <button style='background-color:".$color_fond_notices['p']."' onclick=\"j
 						getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$groupe->getId()."&today='+getCalendarUnixDate());
 					\">Voir NP</button>\n";
 
-//echo "<a href=\"javascript:insere_texte_dans_ckeditor('plop')\">Plop</a>";
+echo "<button style='background-color:lightblue' onclick=\"javascript:
+						getWinBanqueTexte().setAjaxContent('./ajax_affichage_banque_texte.php',{});
+					\">Banque</button>\n";
 
 echo "<br /><br />\n";
 
@@ -548,6 +550,13 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 			<?php echo "</form>";
 			echo "</fieldset>";
 
+if((isset($_GET['mettre_a_jour_cal']))&&($_GET['mettre_a_jour_cal']=='y')) {
+echo "<script type='text/javascript'>
+	object_en_cours_edition = 'compte_rendu';
+	updateCalendarWithUnixDate($today);
+	dateChanged(calendarInstanciation);
+</script>\n";
+}
 //echo "<a href=\"#\" onclick=\"javascript: document.getElementById('contenu').value=document.getElementById('contenu').value+'TRUC'; return false;\">CLIC</a>";
 //echo "<a href=\"#\" onclick=\"javascript: document.getElementById('contenu').value='TRUC'; return false;\">CLIC</a>";
 //echo "<a href=\"#\" onclick=\"javascript: alert(document.getElementById('contenu').value); return false;\">CLOC</a>";

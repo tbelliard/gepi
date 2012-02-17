@@ -153,6 +153,10 @@ echo " <button style='background-color:".$color_fond_notices['p']."' onclick=\"j
 						getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$groupe->getId()."&today='+getCalendarUnixDate());
 					\">Voir NP</button>\n";
 
+echo "<button style='background-color:lightblue' onclick=\"javascript:
+						getWinBanqueTexte().setAjaxContent('./ajax_affichage_banque_texte.php',{});
+					\">Banque</button>\n";
+
 // Nombre de notices pour ce jour :
 $num_notice = NULL;
 
@@ -326,4 +330,12 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 </table>
 <?php echo "</form>";
 echo "</fieldset>";
+
+if((isset($_GET['mettre_a_jour_cal']))&&($_GET['mettre_a_jour_cal']=='y')) {
+echo "<script type='text/javascript'>
+	object_en_cours_edition='notice_privee';
+	updateCalendarWithUnixDate($today);
+	dateChanged(calendarInstanciation);
+</script>\n";
+}
 ?>
