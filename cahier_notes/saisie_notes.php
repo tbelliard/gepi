@@ -129,6 +129,16 @@ if ($id_devoir)  {
 		if (is_numeric($id_groupe) && $id_groupe > 0) {
 			$current_group = get_group($id_groupe);
 
+			// Avec des classes qui n'ont pas le même nombre de période, on peut arriver avec un periode_num impossible pour un id_groupe
+			while((!isset($current_group["classe"]["ver_periode"]["all"][$periode_num]))&&($periode_num>0)) {
+				$periode_num--;
+			}
+			if($periode_num<1) {
+				$mess=rawurlencode("ERREUR: Aucune période n'a été trouvée pour le groupe choisi !");
+				header("Location: index.php?msg=$mess");
+				die();
+			}
+
 			$login_prof = $_SESSION['login'];
 			$appel_cahier_notes = mysql_query("SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe='$id_groupe' and periode='$periode_num')");
 			$nb_cahier_note = mysql_num_rows($appel_cahier_notes);
@@ -202,6 +212,18 @@ if (count($current_group["classes"]["list"]) > 1) {
  * Gestion des périodes
  */
 include "../lib/periodes.inc.php";
+
+/*
+// Pour gérer les classes avec des nombres de périodes différents
+while((!isset($current_group["classe"]["ver_periode"]["all"][$periode_num]))&&($periode_num>0)) {
+	$periode_num--;
+}
+if($periode_num<1) {
+	$mess=rawurlencode("ERREUR: Aucune période n'a été trouvée pour le groupe choisi !");
+	header("Location: index.php?msg=$mess");
+	die();
+}
+*/
 
 // On teste si la periode est vérouillée !
 if (($current_group["classe"]["ver_periode"]["all"][$periode_num] <= 1) and (isset($id_devoir)) and ($id_devoir!='') ) {
@@ -515,7 +537,7 @@ while ($j < $nb_dev) {
 echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"saisie_notes.php\" method=\"get\">\n";
 echo "<p class='bold'>\n";
 echo "<a href=\"../accueil.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|";
-echo "<a href='index.php'  onclick=\"return confirm_abandon (this, change, '$themessage')\"> Mes enseignements </a>|";
+echo "<a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"> Mes enseignements </a>|";
 
 
 
@@ -595,9 +617,19 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 </script>\n";
 
 			echo "<input type='hidden' name='periode_num' value='$periode_num' />\n";
-			echo "Période $periode_num: <select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+			echo "Période $periode_num&nbsp;:";
+			if((isset($id_grp_prec))&&($id_grp_prec!=0)) {
+				//arrow-left.png
+				echo " <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_num=$periode_num' title='Groupe précédent' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' width='16' height='16' alt='Groupe précédent' /></a>\n";
+			}
+			echo "<select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
 			echo $chaine_options_classes;
-			echo "</select> | \n";
+			echo "</select>\n";
+			if((isset($id_grp_suiv))&&($id_grp_suiv!=0)) {
+				//arrow-right.png
+				echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_suiv&amp;periode_num=$periode_num' title='Groupe suivant' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/forward.png' width='16' height='16' alt='Groupe suivant' /></a>\n";
+			}
+			echo " | \n";
 		}
 
 	}
@@ -608,11 +640,14 @@ $sql="SELECT * FROM cn_cahier_notes ccn where id_groupe='$id_groupe' ORDER BY pe
 $res_cn=mysql_query($sql);
 if(mysql_num_rows($res_cn)>1) {
 	// On ne propose pas de champ SELECT pour un seul canier de notes
+	$max_per=0;
 	$chaine_options_periodes="";
 	while($lig_cn=mysql_fetch_object($res_cn)) {
 		$chaine_options_periodes.="<option value='$lig_cn->id_cahier_notes'";
 		if($lig_cn->periode==$periode_num) {$chaine_options_periodes.=" selected='true'";}
 		$chaine_options_periodes.=">$lig_cn->periode</option>\n";
+
+		if($lig_cn->periode>$max_per) {$max_per=$lig_cn->periode;}
 	}
 
 	$index_num_periode=$periode_num-1;
@@ -641,9 +676,19 @@ if(mysql_num_rows($res_cn)>1) {
 	}
 </script>\n";
 
-	echo "<span title='Accéder au cahier de notes de la période (ne sont proposées que les périodes pour lesquelles le cahier de notes a été initialisé)'>Période </span><select name='tmp_id_conteneur' id='id_conteneur' onchange=\"confirm_changement_periode(change, '$themessage');\">\n";
+	echo "<span title='Accéder au cahier de notes de la période (ne sont proposées que les périodes pour lesquelles le cahier de notes a été initialisé)'>Période</span>";
+	if($periode_num>1) {
+		$periode_prec=$periode_num-1;
+		echo " <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_prec' title='Période précédente'><img src='../images/icons/back.png' width='16' height='16' alt='Période précédente' /></a>\n";
+	}
+	echo "<select name='tmp_id_conteneur' id='id_conteneur' onchange=\"confirm_changement_periode(change, '$themessage');\">\n";
 	echo $chaine_options_periodes;
-	echo "</select> | \n";
+	echo "</select>";
+	if($periode_num<$max_per) {
+		$periode_suiv=$periode_num+1;
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_suiv' title='Période suivante'><img src='../images/icons/forward.png' width='16' height='16' alt='Période suivante' /></a> \n";
+	}
+	echo " | \n";
 
 }
 
