@@ -48,6 +48,7 @@ foreach ($results as $traitement) {
 # Voir comment on sort
 
 
+	header("Location: liste_traitements.php");
 
 
 
