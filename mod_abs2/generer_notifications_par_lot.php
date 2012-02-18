@@ -60,6 +60,20 @@ if (getSettingValue("active_module_absence")!='2') {
 if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") {
     die("acces interdit");
 }
+
+$repertoireDestination = "../temp/";
+
+if(isset ($_FILES["monFichier"])) {
+	if ( is_uploaded_file($_FILES["monFichier"]["tmp_name"])) {
+		$nomDestination = $_FILES["monFichier"]["name"];
+		if (rename($_FILES["monFichier"]["tmp_name"], $repertoireDestination.$nomDestination)) {
+			$_SESSION['monFichier'] = $_FILES["monFichier"]["name"];
+		}
+	} else {
+		unset ($_SESSION['monFichier']);
+	}	
+}
+
 $menu = isset($_POST["menu"]) ? $_POST["menu"] :(isset($_GET["menu"]) ? $_GET["menu"] : NULL);
 //récupération des id des notifications
 $nb = 100;
@@ -89,6 +103,7 @@ $notifications_col = AbsenceEleveNotificationQuery::create()->filterByPrimaryKey
 if (isset ($_POST['valide']) && ('confirmer' == $_POST['valide'])) {
 	$_SESSION['compile'] = isset ($_POST['compile']) ? $_POST['compile'] : FALSE;
 }
+
 $_SESSION['compile'] = isset ($_SESSION['compile']) ? $_SESSION['compile'] : TRUE;
 //
 //on imprime les courriers par lot
@@ -105,7 +120,13 @@ if (isset($_GET['envoyer_courrier']) && $_GET['envoyer_courrier'] == 'true') {
     include_once('../tbs/plugins/tbs_plugin_opentbs.php');
     $TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
     include_once 'lib/function.php';
-    $courrier_lot_modele=repertoire_modeles('absence_modele_impression_par_lot.odt');
+	
+	if (isset ($_SESSION['monFichier'])) { 
+		$courrier_lot_modele=$repertoireDestination.$_SESSION['monFichier'];
+	} else {
+		$courrier_lot_modele=repertoire_modeles('absence_modele_impression_par_lot.odt');
+	}	
+    
     $TBS->LoadTemplate($courrier_lot_modele, OPENTBS_ALREADY_UTF8);
 	
 	
@@ -401,19 +422,45 @@ if ($notif_courrier_a_envoyer_col->isEmpty() && !$notif_courrier_fini->isEmpty()
 } elseif (!$notif_courrier_a_envoyer_col->isEmpty() || !$notif_courrier_fini->isEmpty()) {
     echo '<a dojoType="dijit.form.Button" onclick="window.open(\'generer_notifications_par_lot.php?envoyer_courrier=true\'); var loc = \'window.location = \\\'generer_notifications_par_lot.php\\\'\'; setTimeout(loc, 3000);" href="generer_notifications_par_lot.php?envoyer_courrier=true">Imprimer tous les courriers</a>';
     echo '<br/><br/>';
-}?>
-<form method="post" action="generer_notifications_par_lot.php">
-	<input type="checkbox" 
-		   name="compile" 
-		   id="compile" 
-		   <?php if($_SESSION['compile'])	 echo 'checked ="checked"';?>
-		    />
-	<input type="hidden" name="notification" value="<?php echo serialize($notif_courrier_fini); ?>" />
-	<label for="compile">
-		Une seule notification par élève
-	</label>
-	<input type="submit" name="valide" value="confirmer" />
-</form>
+}
+?>
+<fieldset>
+	<legend>Options</legend>
+	<form id="options" method="post" action="generer_notifications_par_lot.php">
+		<input type="checkbox" 
+			   name="compile" 
+			   id="compile" 
+			   <?php if($_SESSION['compile'])	 echo 'checked ="checked"';?>
+			   onchange="javascript: submit(document.getElementById('options'))"
+				/>
+		<input type="hidden" name="notification" value="<?php echo serialize($notif_courrier_fini); ?>" />
+		<input type="hidden" name="valide" value="confirmer" />
+		<label for="compile">
+			Une seule notification par élève
+		</label>
+		<input type="submit" name="valide" id="btn_submit" value="confirmer" />
+	</form>
+	<form id="fichierPerso" method="post" action="generer_notifications_par_lot.php" enctype="multipart/form-data" >
+		<label for="gabarit" title="Pour revenir au modèle de GEPI, laissez le champ vide et validez">
+			Utiliser le gabarit : <?php echo (isset ($_SESSION['monFichier']) ? $_SESSION['monFichier'] : 'de GEPI'); ?>
+		</label>
+		<br />
+		<input type="file" 
+			   name="monFichier" 
+			   id="gabarit"
+			   />
+		<button type="submit" 
+			   name="valide" 
+			   id="btn_submit" 
+			   value="Choisir" 
+			   >
+			Charger le fichier
+		</button>
+	</form>
+</fieldset>
+<script type="text/javascript">
+	document.getElementById('btn_submit').className='invisible';
+</script>
 	   
 <?php
 
