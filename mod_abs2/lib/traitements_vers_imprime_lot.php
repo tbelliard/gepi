@@ -1,33 +1,60 @@
 <?php
+/**
+ * 
+ * 
+ * @link liste_traitements.php
+ */
 
-# on passe par des notifications virtuelles mais regrouper les notifications lors de l'impression par lot serait mieux.
-	$loginEleves = array();
-	$lastLogin='';
-	# On recherche les élèves affichés
-	foreach ($results as $traitement) {
-		foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
-			if ($saisie->getEleve() != null) {
-				if (!in_array($saisie->getEleve()->getLogin(), $loginEleves)) {
-					$lastLogin = $saisie->getEleve()->getLogin();
-					$loginEleves[] = $saisie->getEleve()->getLogin();
-				}
-				
-			}	
-		}
+# $results : collection de traitements affichés dans liste_traitements.php
+
+# On crée une notification pret à envoyer
+
+foreach ($results as $traitement) {
+	# reprise du code de enregistrement_modif_notification ligne 86...
+	
+	$notification = new AbsenceEleveNotification();
+	$notification->setUtilisateurProfessionnel($utilisateur);
+	$notification->setAbsenceEleveTraitement($traitement);
+	
+	//on met le type courrier et le statut pret à envoyer
+	$notification->setTypeNotification(AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER);
+    $notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_PRET_A_ENVOYER);
+
+	$responsable_eleve1 = null;
+	$responsable_eleve2 = null;
+	foreach ($traitement->getResponsablesInformationsSaisies() as $responsable_information) {
+	    if ($responsable_information->getNiveauResponsabilite() == '1') {
+		$responsable_eleve1 = $responsable_information->getResponsableEleve();
+	    } else if ($responsable_information->getNiveauResponsabilite() == '2') {
+		$responsable_eleve2 = $responsable_information->getResponsableEleve();
+	    }
 	}
+	if ($responsable_eleve1 != null) {
+	    $notification->setEmail($responsable_eleve1->getMel());
+	    $notification->setTelephone($responsable_eleve1->getTelPort());
+	    $notification->setAdresseId($responsable_eleve1->getAdresseId());
+	    $notification->addResponsableEleve($responsable_eleve1);
+	}
+	if ($responsable_eleve2 != null) {
+	    if ($responsable_eleve1 == null
+		    || $responsable_eleve2->getAdresseId() == $responsable_eleve1->getAdresseId()) {
+		$notification->addResponsableEleve($responsable_eleve2);
+	    }
+	}
+	$notification->save();	
+}
+
+
+# Voir comment on sort
+
+
+
+
+
+
 	
-	# Pour chaque élève, on crée un traitement virtuel avec tous les traitements sélectionnés
-	
-	
-	# Pour chaque traitement on crée une notification virtuelle
-	
-	
-	# On imprime les notifications virtuelles et on enregistre une notification
 	
 	
 	
-	
-	print_r($loginEleves);
-	
-	die ('On imprime');
+	die ();
 ?>
