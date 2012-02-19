@@ -574,7 +574,7 @@ elseif(!isset($choix_periode)) {
 	// Dans le cas d'un retour en arrière, le champ peut avoir été préalablement coché
 	//if((isset($choix_periode))&&($choix_periode=="periode")) {
 	if(isset($tab_periode_num)) {
-		echo "checked ";
+		echo "checked= 'checked'";
 	}
 	echo "/><label for='choix_periode' style='cursor: pointer;'> <strong>Période</strong></label>\n";
 
@@ -643,7 +643,7 @@ elseif(!isset($choix_periode)) {
 				<input type=\"checkbox\" name=\"tab_periode_num[]\" id=\"tab_periode_num_$j\" value='$j' ";
 				// Dans le cas d'un retour en arrière, le champ peut avoir été préalablement coché
 				if((isset($tab_periode_num))&&(in_array($j,$tab_periode_num))) {
-					echo "checked ";
+					echo "checked ='checked'";
 				}
 				echo "onchange=\"document.getElementById('choix_periode').checked=true\" ";
 				echo "/></span>\n";
