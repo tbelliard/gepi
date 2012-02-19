@@ -44,6 +44,7 @@ include "../lib/periodes.inc.php";
 
 $_SESSION['chemin_retour'] = $gepiPath."/classes/classes_const.php?id_classe=".$id_classe;
 
+$explication_motif_bloquant_suppression_eleve_de_la_classe="La présence de moyennes, appréciations ou avis du conseil de classe est bloquante pour la suppression d'un élève d'une classe.<br />Vous pouvez demander aux professeurs de vider leurs notes et appréciations pour le ou les élèves en question.<br />Sinon, un compte de statut 'secours' permet de corriger/vider des moyennes, appréciations et/ou avis du conseil de classe.";
 
 if (isset($is_posted)) {
 	check_token();
@@ -226,16 +227,38 @@ if (isset($is_posted)) {
 
 
 				if ($del_eleve[$i] == 'yes') {
-					$test = mysql_query("SELECT * FROM matieres_notes WHERE (login='$eleve_login' and periode = '$i')");
+					$sql="SELECT * FROM matieres_notes WHERE (login='$eleve_login' and periode = '$i');";
+					//echo "$sql<br />";
+					$test = mysql_query($sql);
 					$nb_test = mysql_num_rows($test);
-					$test_app = mysql_query("SELECT * FROM matieres_appreciations WHERE (login='$eleve_login' and periode='$i')");
+
+					$sql="SELECT * FROM matieres_appreciations WHERE (login='$eleve_login' and periode='$i')";
+					//echo "$sql<br />";
+					$test_app = mysql_query($sql);
 					$nb_test_app = mysql_num_rows($test_app);
-					$test_app_conseil = mysql_query("SELECT * FROM avis_conseil_classe WHERE (login='$eleve_login' and periode='$i' and avis!='')");
+
+					$sql="SELECT * FROM avis_conseil_classe WHERE (login='$eleve_login' and periode='$i' and avis!='')";
+					//echo "$sql<br />";
+					$test_app_conseil = mysql_query($sql);
 					$nb_test_app_conseil = mysql_num_rows($test_app_conseil);
 
 					if (($nb_test != 0) or ($nb_test_app != 0) or ($nb_test_app_conseil != 0)) {
+						$motif_bloquant="";
+						if ($nb_test != 0) {
+							$motif_bloquant.=$nb_test." moyenne(s)";
+						}
+						if ($nb_test_app != 0) {
+							if($motif_bloquant!="") {$motif_bloquant.=", ";}
+							$motif_bloquant.=$nb_test_app." appréciation(s)";
+						}
+						if ($nb_test_app_conseil != 0) {
+							if($motif_bloquant!="") {$motif_bloquant.=", ";}
+							$motif_bloquant.="un avis du conseil de classe";
+						}
+
 						$autorisation_sup = 'no';
-						$msg = "<font color = 'red'>--> Impossible de retirer l'élève $eleve_login de la classe pour la période $i !<br />Celui-ci a des moyennes ou appréciations pour cette période. Commencez par supprimer les données de l'élève pour cette période !</font><br />\n";
+						if(!isset($msg)) {$msg="";}
+						$msg.="<font color = 'red'>--> Impossible de retirer l'élève $eleve_login de la classe pour la période $i !<br />Cet(te) élève a <strong>$motif_bloquant</strong> pour cette période. Commencez par supprimer les données de l'élève pour cette période !</font><br />\n";
 						$reg_ok = "impossible";
 					} else {
 						$liste_cible .= $eleve_login.";";
@@ -250,6 +273,10 @@ if (isset($is_posted)) {
 	}
 
 	//debug_var();
+
+	if($autorisation_sup=='no') {
+		$msg.="De façon générale&nbsp;: ".$explication_motif_bloquant_suppression_eleve_de_la_classe."<br />";
+	}
 
 	if (($liste_cible != '') and ($autorisation_sup != 'no')) {
 		header("Location: ../lib/confirm_query.php?liste_cible=$liste_cible&liste_cible2=$liste_cible2&liste_cible3=$liste_cible3&action=retire_eleve".add_token_in_url(false));
@@ -771,10 +798,15 @@ function imposer_cpe() {
 				// Tester s'il y a des notes/app dans le bulletin
 				$sql="SELECT 1=1 FROM matieres_notes WHERE login='".$login_eleve."' AND periode='".$i."';";
 				$verif=mysql_query($sql);
+				$nb_verif1=mysql_num_rows($verif);
 				$sql="SELECT 1=1 FROM matieres_appreciations WHERE login='".$login_eleve."' AND periode='".$i."';";
 				$verif2=mysql_query($sql);
+				$nb_verif2=mysql_num_rows($verif2);
+				$sql="SELECT 1=1 FROM avis_conseil_classe WHERE login='".$login_eleve."' AND periode='".$i."';";
+				$verif3=mysql_query($sql);
+				$nb_verif3=mysql_num_rows($verif3);
 
-				if((mysql_num_rows($verif)==0)&&(mysql_num_rows($verif2)==0)) {
+				if(($nb_verif1==0)&&($nb_verif2==0)&&($nb_verif3==0)) {
 
 					echo "<input type='checkbox' name='delete_".$k."[$i]' id='case_".$i."_".$k."' value='yes'";
 					echo " onchange='changement()'";
@@ -786,7 +818,22 @@ function imposer_cpe() {
 					}
 				}
 				else {
-					echo "<img src='../images/icons/bulletin_16.png' width='16' height='16' title=\"Bulletin non vide : L'élève ne peut pas être retiré de la classe\" alt=\"Bulletin non vide : L'élève ne peut pas être retiré de la classe\" />";
+					$motif_bloquant="";
+					if($nb_verif1>0) {$motif_bloquant.="$nb_verif1 moyenne(s)";}
+					if($nb_verif2>0) {
+						if($motif_bloquant!="") {$motif_bloquant.=", ";}
+						$motif_bloquant.="$nb_verif2 appréciation(s)";
+					}
+					if($nb_verif3>0) {
+						if($motif_bloquant!="") {$motif_bloquant.=", ";}
+						$motif_bloquant.="un avis du conseil de classe";
+					}
+
+					//onclick=\"afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$login_eleve','$id_classe','$i','$i');return false;\" 
+					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$login_eleve."&id_classe=$id_classe&periode1=$i&periode2=$i\" target=\"_blank\">";
+					echo "<img src='../images/icons/bulletin_16.png' width='16' height='16' title=\"Bulletin non vide ($motif_bloquant): L'élève ne peut pas être retiré de la classe\" alt=\"Bulletin non vide ($motif_bloquant): L'élève ne peut pas être retiré de la classe\" />";
+					echo "</a>";
+
 				}
 
 				echo "</p>";
@@ -849,6 +896,8 @@ if($ouvrir_infobulle_nav=='y') {
 	setTimeout(\"afficher_div('navigation_classe','y',-100,20);\",1000)
 </script>\n";
 }
+
+echo "<p style='margin-left:4em; text-indent:-4em;'><em>NOTE&nbsp;:</em> ".$explication_motif_bloquant_suppression_eleve_de_la_classe."</p>\n";
 
 require("../lib/footer.inc.php");
 

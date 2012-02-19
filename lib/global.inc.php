@@ -20,13 +20,13 @@ $longmax_login = "10";
 // labels des périodes
 $gepiClosedPeriodLabel = "période close";
 $gepiOpenPeriodLabel = "période ouverte";
-// La fonction gethostbyaddr utilisée dans le script gestion_connect.php et mon_compte.php retourne le nom d'hÃ´te correspondant ? une IP ("r?solution inverse").
+// La fonction gethostbyaddr utilisée dans le script gestion_connect.php et mon_compte.php retourne le nom d'hôte correspondant à une IP ("résolution inverse").
 // Chez certains hébergeurs, ou dans certaines configurations de serveurs, le temps d'exécution peut être très long.
 // Une solution consiste donc à ne pas faire de gethostbyaddr sur les IP locales , c'est-à-dire qui commence par 127., 10., 192.168.
 // Une solution plus radicale consiste à ne pas faire du tout de gethostbyaddr
 // $active_hostbyaddr = "all" : la résolution inverse de toutes les adresses IP est activée
 // $active_hostbyaddr = "no" : la résolution inverse des adresses IP est désactivée
-// $active_hostbyaddr = "no_local" : la r?solution inverse des adresses IP locales est désactivée
+// $active_hostbyaddr = "no_local" : la résolution inverse des adresses IP locales est désactivée
 $active_hostbyaddr = "no_local";
 
 
@@ -41,11 +41,11 @@ $block_sso = false ; // false|true
 
 $style_screen_ajout = "n";
 
-// Gepi est configur?s de mani?re ? bloquer temporairement le compte d'un utilisateur
-// apr?s un certain nombre de tentatives de connexion infructueuses (voir interface en ligne de gestion des connexions).
-// En contrepartie, un pirate peut se servir de ce m?canisme d'auto-d?fense pour bloquer en permanence des comptes utilisateur ou administrateur.
-// Pour faire face ? cette situation d'urgence, vous pouvez forcer le d?bloquage des comptes administrateur
-// et/ou mettre en liste noire, la ou les adresses IP incrimin?es.
+// Gepi est configuré de manière à bloquer temporairement le compte d'un utilisateur
+// après un certain nombre de tentatives de connexion infructueuses (voir interface en ligne de gestion des connexions).
+// En contrepartie, un pirate peut se servir de ce mécanisme d'auto-défense pour bloquer en permanence des comptes utilisateur ou administrateur.
+// Pour faire face à cette situation d'urgence, vous pouvez forcer le débloquage des comptes administrateur
+// et/ou mettre en liste noire, la ou les adresses IP incriminées.
 
 // Bloquer/débloquer les comptes administrateur en cas d'un trop grand nombre de connexions infructueuses
 // deux valeurs possibles :
@@ -182,9 +182,10 @@ $gepiAuthors = array(
     "Julien Jocal" => "collegerb@free.fr"
 );
 
-// Affichage des dates en franÃ§ais
+// Affichage des dates en français
 //ATTENTION, changer la locale LC_NUMERIC peut faire bugger la génération pdf
 @setlocale(LC_ALL,'fr-utf-8','fr_FR.utf-8','fr_FR.utf8','fr_FR.UTF-8','fr_FR.UTF8','C');
+@setlocale(LC_NUMERIC,'C');
 
 $gepiShowGenTime = "no"; // Pour afficher le temps de génération de certaines pages.
 $pageload_starttime = microtime(true);

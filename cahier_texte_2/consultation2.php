@@ -126,7 +126,7 @@ if ($today < getSettingValue("begin_bookings")) {
 }
 
 // Semaine précédente: Pour tester avec une base pas trop récente...
-$today=$today-3600*24*7;
+//$today=$today-3600*24*7;
 //==========================================================================
 
 unset($mode);
@@ -147,6 +147,7 @@ $tab_couleur_edt=array('','blue','lime','maroon','purple','red','yellow','aqua',
 // C'est fait plus loin
 
 $style_specifique[] = "cahier_texte_2/consultation2";
+$javascript_specifique[] = "cahier_texte_2/consultation2";
 
 //**************** EN-TETE *****************
 $titre_page = "Cahier de textes";
@@ -155,6 +156,7 @@ require_once("../lib/header.inc");
 
 //debug_var();
 
+//=============================================================
 echo "<p class='bold'>";
 echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/>\n";
 	echo "Retour à l'accueil\n";
@@ -164,7 +166,10 @@ echo "<a href=\"consultation.php\">\n";
 	echo "Affichage classique\n";
 echo "</a>\n";
 echo "</p>\n";
+//=============================================================
 
+//=============================================================
+// Mode d'affichage:
 // On force le mode par défaut pour les élèves et responsables
 if($_SESSION['statut']=='eleve') {
 	$mode='eleve';
@@ -382,6 +387,7 @@ else {
 	echo "<div style='clear:both;'>&nbsp;</div>";
 
 }
+//=============================================================
 
 $ts_aujourdhui=time();
 
@@ -390,6 +396,7 @@ $ts_semaine_suivante=$today+2*7*24*3600;
 
 $ts_limite_visibilite_devoirs_pour_eleves=$ts_aujourdhui+getSettingValue('delai_devoirs')*24*3600;
 
+//=============================================================
 // Définition de valeurs par défaut si nécessaire, et récupération des groupes associés au mode choisi:
 if($mode=='classe') {
 	if(!isset($id_classe)) {
@@ -416,6 +423,7 @@ if($mode=='classe') {
 		die();
 	}
 
+	// Passage à la semaine précédente/courante/suivante
 	echo "<div style='float: right; width:25em; text-align:center;'><a href='".$_SERVER['PHP_SELF']."?today=".$ts_aujourdhui."&amp;mode=$mode&amp;id_classe=$id_classe'>Aujourd'hui</a> - Semaines <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_precedente."&amp;mode=$mode&amp;id_classe=$id_classe'>précédente</a> / <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_suivante."&amp;mode=$mode&amp;id_classe=$id_classe'>suivante</a></div>\n";
 
 	$classe=get_class_from_id($id_classe);
@@ -443,6 +451,7 @@ elseif($mode=='eleve') {
 
 	$groups=get_groups_for_eleve($login_eleve, $id_classe);
 
+	// Passage à la semaine précédente/courante/suivante
 	echo "<div style='float: right; width:25em;'><a href='".$_SERVER['PHP_SELF']."?today=".$ts_aujourdhui."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>Aujourd'hui</a> - Semaines <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_precedente."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>précédente</a> / <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_suivante."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>suivante</a></div>\n";
 
 	echo "<p>Affichage pour un élève&nbsp;: <strong>".civ_nom_prenom($login_eleve)." (<em>$classe</em>)</strong></p>\n";
@@ -470,11 +479,14 @@ elseif($mode=='professeur') {
 
 	$groups=get_groups_for_prof($login_prof);
 
+	// Passage à la semaine précédente/courante/suivante
 	echo "<div style='float: right; width:25em;'><a href='".$_SERVER['PHP_SELF']."?today=".$ts_aujourdhui."&amp;mode=$mode&amp;login_prof=$login_prof'>Aujourd'hui</a> - Semaines <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_precedente."&amp;mode=$mode&amp;login_prof=$login_prof'>précédente</a> / <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_suivante."&amp;mode=$mode&amp;login_prof=$login_prof'>suivante</a></div>\n";
 
 	echo "<p>Affichage pour un professeur&nbsp;: <strong>".$tab_profs2[$login_prof]."</strong></p>\n";
 }
+//=============================================================
 
+//=============================================================
 // Récupération des groupes du professeur connecté:
 if($_SESSION['statut']=='professeur') {
 	$tab_mes_groupes=array();
@@ -495,6 +507,7 @@ if($_SESSION['statut']=='professeur') {
 		}
 	}
 }
+//=============================================================
 
 //================================================================
 // Récupération des identifiants de couleurs associées aux matières dans l'EDT
@@ -522,12 +535,14 @@ if(isset($tab_classe)) {
 }
 //================================================================
 
+//=============================================================
 // Récupération du premier jour de la semaine:
 $num_jour_semaine=strftime("%u",$today);
 //echo "\$num_jour_semaine=$num_jour_semaine<br />";
 $premier_jour_semaine=$today-(3600*24*($num_jour_semaine-1));
+//=============================================================
 
-
+//=============================================================
 // Récupération des notices:
 $tab_notice=array();
 for($i=0;$i<14;$i++) {
@@ -555,10 +570,11 @@ for($i=0;$i<14;$i++) {
 				//echo "<div style='border:1px solid black; margin:0.5em;'>".$current_group['name']."<br />".$ligne_ct->contenu."</div>\n";
 				$tab_notice[$i][$id_groupe]['ct_entry'][$cpt]="";
 
+				// Lien d'édition de la notice:
 				if(($_SESSION['statut']=='professeur')&&(in_array($id_groupe,$tab_mes_groupes))) {
 					if(($ligne_ct->id_login==$_SESSION['login'])||(getSettingAOui('cdt_autoriser_modif_multiprof'))) {
 						if((!getSettingAOui('visa_cdt_inter_modif_notices_visees'))||($ligne_ct->vise!='y')){
-							$tab_notice[$i][$id_groupe]['ct_entry'][$cpt]="<div style='float:right; width:16px;'><a href='../cahier_texte/index.php?id_groupe=$id_groupe&amp;id_ct=$ligne_ct->id_ct'><img src='../images/edit16.png' width='16' height='16' /></a></div>";
+							$tab_notice[$i][$id_groupe]['ct_entry'][$cpt].="<div style='float:right; width:16px;'><a href='../cahier_texte/index.php?id_groupe=$id_groupe&amp;id_ct=$ligne_ct->id_ct&amp;type_notice=cr'><img src='../images/edit16.png' width='16' height='16' /></a></div>";
 						}
 					}
 				}
@@ -587,13 +603,13 @@ for($i=0;$i<14;$i++) {
 			if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
 			($ligne_ct->date_ct<=$ts_limite_visibilite_devoirs_pour_eleves)) {
 
-				//echo "<div style='border:1px dashed red; margin:0.5em;'>".$current_group['name']."<br />".$ligne_ct->contenu."</div>\n";
 				$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$cpt]="";
 
+				// Lien d'édition de la notice:
 				if(($_SESSION['statut']=='professeur')&&(in_array($id_groupe,$tab_mes_groupes))) {
 					if(($ligne_ct->id_login==$_SESSION['login'])||(getSettingAOui('cdt_autoriser_modif_multiprof'))) {
 						if((!getSettingAOui('visa_cdt_inter_modif_notices_visees'))||($ligne_ct->vise!='y')){
-							$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$cpt]="<div style='float:right; width:16px;'><a href='../cahier_texte/index.php?id_groupe=$id_groupe&amp;id_ct=$ligne_ct->id_ct&amp;edit_devoir=yes'><img src='../images/edit16.png' width='16' height='16' /></a></div>";
+							$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$cpt].="<div style='float:right; width:16px;'><a href='../cahier_texte/index.php?id_groupe=$id_groupe&amp;id_ct=$ligne_ct->id_ct&amp;edit_devoir=yes&amp;type_notice=dev'><img src='../images/edit16.png' width='16' height='16' /></a></div>";
 						}
 					}
 				}
@@ -618,331 +634,325 @@ for($i=0;$i<14;$i++) {
 		$res_ct=mysql_query($sql);
 		$cpt=0;
 		while($ligne_ct=mysql_fetch_object($res_ct)) {
-			//echo "<div style='border:1px solid green; margin:0.5em;'>".$current_group['name']."<br />".$ligne_ct->contenu."</div>\n";
-			$tab_notice[$i][$id_groupe]['ct_private_entry'][$cpt]=$ligne_ct->contenu;
+			$tab_notice[$i][$id_groupe]['ct_private_entry'][$cpt]="";
+
+			// Lien d'édition de la notice:
+			// Les notices privées en multiprof??? sont-elles visibles du seul prof ou des profs du groupe?
+			if(($_SESSION['statut']=='professeur')&&(in_array($id_groupe,$tab_mes_groupes))) {
+				if(($ligne_ct->id_login==$_SESSION['login'])||(getSettingAOui('cdt_autoriser_modif_multiprof'))) {
+					$tab_notice[$i][$id_groupe]['ct_private_entry'][$cpt].="<div style='float:right; width:16px;'><a href='../cahier_texte/index.php?id_groupe=$id_groupe&amp;id_ct=$ligne_ct->id_ct&amp;type_notice=np'><img src='../images/edit16.png' width='16' height='16' /></a></div>";
+				}
+			}
+
+			$tab_notice[$i][$id_groupe]['ct_private_entry'][$cpt].=$ligne_ct->contenu;
 			$cpt++;
 		}
 
 	}
 }
+//=============================================================
 
-	$chaine_id_groupe="";
+//=============================================================
+$chaine_id_groupe="";
+foreach($groups as $current_group) {
+	$id_groupe=$current_group['id'];
+	if($chaine_id_groupe!="") {$chaine_id_groupe.=", ";}
+	$chaine_id_groupe.="'$id_groupe'";
+}
+//=============================================================
+
+//=============================================================
+// Boucle sur les 14 jours affichés
+$max_cpt_grp=0;
+for($i=0;$i<14;$i++) {
+	$ts_jour_debut=$premier_jour_semaine+$i*3600*24;
+
+	if($i%7==0) {
+		if($i>0) {
+			echo "</tr>\n";
+			echo "</table>\n";
+			echo "</div>\n";
+
+			//echo "<br />";
+		}
+
+		echo "<div class='cdt_cadre_semaine'>\n";
+		echo "<table border='1' width='100%'>\n";
+		echo "<tr class='cdt_tab_semaine'>\n";
+	}
+
+	echo "<td>\n";
+	echo "<div class='cdt_cadre_jour'>\n";
+
+	$temoin_dev_non_vides=0;
+	$temoin_cr_non_vides=0;
+	$temoin_np_non_vides=0;
+
+	$jour_courant=ucfirst(strftime("%a %d/%m/%y",$ts_jour_debut));
+
+	echo "<p id='p_jour_$i' class='infobulle_entete' style='text-align:center;'>";
+	echo "<a href='#ancre_travail_jour_$i' onclick=\"affichage_travail_jour($i);return false;\" class='cdt_lien_jour'>";
+	echo $jour_courant;
+	echo "</a>";
+	echo "</p>\n";
+
+	$titre_infobulle_jour="<a name='ancre_travail_jour_$i'></a>".$jour_courant;
+	$texte_infobulle_jour="";
+
+	$cpt_grp=0;
+	$cpt_notice=0;
+	// Boucle sur les groupes
 	foreach($groups as $current_group) {
 		$id_groupe=$current_group['id'];
-		if($chaine_id_groupe!="") {$chaine_id_groupe.=", ";}
-		$chaine_id_groupe.="'$id_groupe'";
-	}
 
-	// Boucle sur les 14 jours affichés
-	$max_cpt_grp=0;
-	for($i=0;$i<14;$i++) {
-		$ts_jour_debut=$premier_jour_semaine+$i*3600*24;
-
-		if($i%7==0) {
-			if($i>0) {
-				echo "</tr>\n";
-				echo "</table>\n";
-				echo "</div>\n";
-
-				//echo "<br />";
-			}
-	
-			echo "<div class='cdt_cadre_semaine'>\n";
-			echo "<table border='1' width='100%'>\n";
-			echo "<tr class='cdt_tab_semaine'>\n";
-		}
-
-		echo "<td><div class='cdt_cadre_jour'>\n";
-
-		$temoin_dev_non_vides=0;
-		$temoin_cr_non_vides=0;
-
-		$jour_courant=ucfirst(strftime("%a %d/%m/%y",$ts_jour_debut));
-
-		echo "<p id='p_jour_$i' class='infobulle_entete' style='font-weight:bold; text-align:center;'>";
-		echo "<a href='#' onclick=\"affichage_travail_jour($i);return false;\" style='text-decoration:none; color:white'>";
-
-		echo $jour_courant;
-		echo "</a>";
-		echo "</p>\n";
-
-		$titre_infobulle_jour=$jour_courant;
-		$texte_infobulle_jour="";
-
-		$cpt_grp=0;
-		$cpt_notice=0;
-		// Boucle sur les groupes
-		foreach($groups as $current_group) {
-			$id_groupe=$current_group['id'];
-
-			// Si il y a une notice pour ce groupe sur le jour courant de la boucle:
-			if(isset($tab_notice[$i][$id_groupe])) {
-				echo "<div style='border: 1px solid orange; margin:3px;";
-				//echo "opacity:0.5;";
-				// Colorisation différente selon le mode d'affichage:
-				if($mode=='professeur') {
-					if($couleur_classe[$current_group["classes"]["list"][0]]!='') {echo " background-color:".$couleur_classe[$current_group["classes"]["list"][0]].";";}
-				}
-				else {
-					if($couleur_matiere[$current_group['matiere']['matiere']]!='') {echo " background-color:".$tab_couleur_edt[$couleur_matiere[$current_group['matiere']['matiere']]].";";}
-				}
-				echo "'>";
-				//echo "<div style='color:black; opacity:1;'>";
-				echo "<a href=\"javascript:affichage_notices_tel_groupe($i, $id_groupe)\" style='text-decoration:none;color:black; text-shadow: 1px 1px white'>";
-				if($mode=='professeur') {
-					echo $current_group['name']." (<em>".$current_group['classlist_string']."</em>)";
-				}
-				else {
-					echo $current_group['name'];
-				}
-				echo "</a>";
-
-				//==================================================================
-				// Cadre pour le groupe courant dans le cadre du jour courant dans l'infobulle du jour:
-				$texte_infobulle_jour.="<div id='travail_jour_".$i."_groupe_".$id_groupe."'>\n";
-
-				$texte_dev_courant="";
-				if(isset($tab_notice[$i][$id_groupe]['ct_devoirs_entry'])) {
-					// Liste des devoirs donnés pour ce jour dans ce groupe:
-					for($j=0;$j<count($tab_notice[$i][$id_groupe]['ct_devoirs_entry']);$j++) {
-						$texte_dev_courant.="<div style='background-color:pink; border: 1px solid black; margin: 1px;'>\n";
-						$texte_dev_courant.=$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$j];
-						$texte_dev_courant.="</div>\n";
-						$temoin_dev_non_vides++;
-					}
-
-					if($texte_dev_courant!="") {
-						$texte_infobulle_jour.="<div style='width: 1em; background-color: pink; float: right; margin-left:3px; text-align:center;'>\n";
-						$texte_infobulle_jour.="<a href='#' onclick=\"alterne_affichage('travail_jour_".$i."_groupe_".$id_groupe."_devoirs');return false;\">";
-						$texte_infobulle_jour.="T";
-						$texte_infobulle_jour.="</a>";
-						$texte_infobulle_jour.="</div>\n";
-
-						$texte_dev_courant="<div id='travail_jour_".$i."_groupe_".$id_groupe."_devoirs' style='background-color:pink'>\n".$texte_dev_courant;
-						$texte_dev_courant.="</div>\n";
-					}
-				}
-
-				$texte_cr_courant="";
-				if(isset($tab_notice[$i][$id_groupe]['ct_entry'])) {
-					// Liste des compte-renddus pour ce jour dans ce groupe:
-					for($j=0;$j<count($tab_notice[$i][$id_groupe]['ct_entry']);$j++) {
-						$texte_cr_courant.="<div style='background-color:palegreen; border: 1px solid black; margin: 1px;'>\n";
-						$texte_cr_courant.=$tab_notice[$i][$id_groupe]['ct_entry'][$j];
-						$texte_cr_courant.="</div>\n";
-						$temoin_cr_non_vides++;
-					}
-
-					if($texte_cr_courant!="") {
-						$texte_infobulle_jour.="<div style='width: 1em; background-color: pink; float: right; margin-left:3px; text-align:center;'>\n";
-						$texte_infobulle_jour.="<a href='#' onclick=\"alterne_affichage('travail_jour_".$i."_groupe_".$id_groupe."_compte_rendu');return false;\">";
-						$texte_infobulle_jour.="C";
-						$texte_infobulle_jour.="</a>";
-						$texte_infobulle_jour.="</div>\n";
-
-						$texte_cr_courant="<div id='travail_jour_".$i."_groupe_".$id_groupe."_compte_rendu' style='background-color:palegreen'>\n".$texte_cr_courant;
-						$texte_cr_courant.="</div>\n";
-					}
-				}
-
-				// On remplit le cadre pour le groupe courant dans le cadre du jour courant dans l'infobulle du jour
-				// avec le nom du groupe, puis les devoirs donnés pour ce jour et enfin les compte-rendus de séance
-				$texte_infobulle_jour.="<b>".$current_group['name']."</b>";
-				$texte_infobulle_jour.=$texte_dev_courant;
-				$texte_infobulle_jour.=$texte_cr_courant;
-
-				$texte_infobulle_jour.="&nbsp;<br />";
-
-				$texte_infobulle_jour.="</div>\n";
-				// Fin du cadre pour le groupe courant dans le cadre du jour courant dans l'infobulle du jour
-				//==================================================================
-
-				//echo "</div>\n";
-
-				echo "</div>\n";
-			}
-			$cpt_grp++;
-		}
-
-
-
-		// Ajouter un lien jour précédent avant
-		if($i>0) {
-			$indice_prec=$i-1;
-			$lien_jour_prec="<a href='#' onclick=\"cacher_div('travail_jour_$i');document.getElementById('travail_jour_".$indice_prec."_contenu_corps').style.maxHeight='20em';document.getElementById('travail_jour_".$indice_prec."_contenu_corps').style.overflow='auto';afficher_div('travail_jour_".$indice_prec."','y',0,10);return false;\" style='text-decoration:none; color:white'>";
-			$lien_jour_prec.="<img src='../images/icons/arrow-left.png' />";
-			$lien_jour_prec.="</a>";
-
-			$titre_infobulle_jour=$lien_jour_prec." ".$titre_infobulle_jour;
-		}
-
-		// Ajouter un lien jour suivant après
-		if($i<14) {
-			$indice_suiv=$i+1;
-			$lien_jour_suiv="<a href='#' onclick=\"cacher_div('travail_jour_$i');document.getElementById('travail_jour_".$indice_suiv."_contenu_corps').style.maxHeight='20em';document.getElementById('travail_jour_".$indice_suiv."_contenu_corps').style.overflow='auto';afficher_div('travail_jour_".$indice_suiv."','y',0,10);return false;\" style='text-decoration:none; color:white'>";
-			$lien_jour_suiv.="<img src='../images/icons/arrow-right.png' />";
-			$lien_jour_suiv.="</a>";
-
-			$titre_infobulle_jour=$titre_infobulle_jour." ".$lien_jour_suiv;
-		}
-
-		if(($temoin_dev_non_vides>0)||($temoin_cr_non_vides>0)) {
-			$ajout="";
-			if($temoin_cr_non_vides>0) {
-				//$ajout.="<div style='width: 1em; background-color: palegreen; float: right; margin-left:3px; text-align:center;'>";
-				$ajout.="<a href='#' onclick=\"alterne_affichage_global('compte_rendu',$i);return false;\">";
-				$ajout.="C";
-				$ajout.="</a>";
-				//$ajout.="</div>\n";
-			}
-			//$titre_infobulle_jour=$ajout."<div style='width:15em;border:1px solid black;'>".$titre_infobulle_jour."</div>";
-
-			if($temoin_dev_non_vides>0) {
-				$ajout.=" ";
-				//$ajout.="<div style='width: 1em; background-color: pink; float: right; margin-left:3px; text-align:center;'>";
-				$ajout.="<a href='#' onclick=\"alterne_affichage_global('devoirs',$i);return false;\">";
-				$ajout.="T";
-				$ajout.="</a>";
-				//$ajout.="</div>\n";
-			}
-
-			$titre_infobulle_jour=$titre_infobulle_jour." ".$ajout;
-		}
-		else {
-			$texte_infobulle_jour.="Aucune saisie pour ce jour.";
-			$texte_infobulle_jour.="&nbsp;<br />";
-		}
-
-		if($cpt_grp>$max_cpt_grp) {$max_cpt_grp=$cpt_grp;}
-
-		if($texte_infobulle_jour=="") {
-
-			echo "<script type='text/javascript'>
-document.getElementById('p_jour_$i').style.innerHTML='$jour_courant';
-</script>\n";
-		}
-
-		$tabdiv_infobulle[]=creer_div_infobulle("travail_jour_".$i,$titre_infobulle_jour,"",$texte_infobulle_jour,"pink",20,0,'y','y','n','n');
-
-		echo "</div></td>\n";
-	}
-	echo "</tr>\n";
-	echo "</table>\n";
-	echo "</div>\n";
-
-
-//echo "<a href=\"javascript:cacher_div_motif('travail_')\">Test</a>";
-echo "<script type='text/javascript'>
-var tab_grp=new Array($chaine_id_groupe);
-
-function alterne_affichage(id) {
-	if(document.getElementById(id)) {
-		if(document.getElementById(id).style.display=='none') {
-			document.getElementById(id).style.display='';
-		}
-		else {
-			document.getElementById(id).style.display='none';
-		}
-	}
-}
-
-function alterne_affichage_global(type, num_jour) {
-	for(i=0;i<tab_grp.length;i++) {
-		id='travail_jour_'+num_jour+'_groupe_'+tab_grp[i]+'_'+type;
-		if(document.getElementById(id)) {
-			if(document.getElementById(id).style.display=='none') {
-				document.getElementById(id).style.display='';
+		// Si il y a une notice pour ce groupe sur le jour courant de la boucle:
+		if(isset($tab_notice[$i][$id_groupe])) {
+			echo "<div style='border: 1px solid orange; margin:3px;";
+			//echo "opacity:0.5;";
+			// Colorisation différente selon le mode d'affichage:
+			if($mode=='professeur') {
+				if($couleur_classe[$current_group["classes"]["list"][0]]!='') {echo " background-color:".$couleur_classe[$current_group["classes"]["list"][0]].";";}
 			}
 			else {
-				document.getElementById(id).style.display='none';
+				if($couleur_matiere[$current_group['matiere']['matiere']]!='') {echo " background-color:".$tab_couleur_edt[$couleur_matiere[$current_group['matiere']['matiere']]].";";}
 			}
+			echo "'>";
+
+			//echo "<div style='color:black; opacity:1;'>";
+
+			/*
+			echo "<a href=\"#ancre_travail_jour_".$i."_groupe_".$id_groupe."\" onclick=\"affichage_notices_tel_groupe($i, $id_groupe);return false;\" class='cdt_lien_groupe'>";
+			if($mode=='professeur') {
+				echo $current_group['name']." (<em>".$current_group['classlist_string']."</em>)";
+			}
+			else {
+				echo $current_group['name'];
+			}
+			echo "</a>";
+			*/
+
+			//==================================================================
+			// Cadre pour le groupe courant dans le cadre du jour courant dans l'infobulle du jour:
+			$texte_infobulle_jour.="<div id='travail_jour_".$i."_groupe_".$id_groupe."'>\n";
+
+			$texte_dev_courant="";
+			if(isset($tab_notice[$i][$id_groupe]['ct_devoirs_entry'])) {
+				// Liste des devoirs donnés pour ce jour dans ce groupe:
+				for($j=0;$j<count($tab_notice[$i][$id_groupe]['ct_devoirs_entry']);$j++) {
+					$texte_dev_courant.="<div style='background-color:".$color_fond_notices['t']."; border: 1px solid black; margin: 1px;'>\n";
+					$texte_dev_courant.=$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$j];
+					$texte_dev_courant.="</div>\n";
+					$temoin_dev_non_vides++;
+				}
+
+				if($texte_dev_courant!="") {
+					/*
+					$texte_infobulle_jour.="<div style='width: 1em; background-color: pink; float: right; margin-left:3px; text-align:center;'>\n";
+					$texte_infobulle_jour.="<a href='#' onclick=\"alterne_affichage('travail_jour_".$i."_groupe_".$id_groupe."_devoirs');return false;\">";
+					$texte_infobulle_jour.="T";
+					$texte_infobulle_jour.="</a>";
+					$texte_infobulle_jour.="</div>\n";
+					*/
+
+					$texte_dev_courant="<div id='travail_jour_".$i."_groupe_".$id_groupe."_devoirs' style='background-color:".$color_fond_notices['t']."'>\n".$texte_dev_courant;
+					$texte_dev_courant.="</div>\n";
+				}
+			}
+
+			$texte_cr_courant="";
+			if(isset($tab_notice[$i][$id_groupe]['ct_entry'])) {
+				// Liste des compte-renddus pour ce jour dans ce groupe:
+				for($j=0;$j<count($tab_notice[$i][$id_groupe]['ct_entry']);$j++) {
+					$texte_cr_courant.="<div style='background-color:palegreen; border: 1px solid black; margin: 1px;'>\n";
+					$texte_cr_courant.=$tab_notice[$i][$id_groupe]['ct_entry'][$j];
+					$texte_cr_courant.="</div>\n";
+					$temoin_cr_non_vides++;
+				}
+
+				if($texte_cr_courant!="") {
+					/*
+					$texte_infobulle_jour.="<div style='width: 1em; background-color: pink; float: right; margin-left:3px; text-align:center;'>\n";
+					$texte_infobulle_jour.="<a href='#' onclick=\"alterne_affichage('travail_jour_".$i."_groupe_".$id_groupe."_compte_rendu');return false;\">";
+					$texte_infobulle_jour.="C";
+					$texte_infobulle_jour.="</a>";
+					$texte_infobulle_jour.="</div>\n";
+					*/
+
+					$texte_cr_courant="<div id='travail_jour_".$i."_groupe_".$id_groupe."_compte_rendu' style='background-color:".$color_fond_notices['c']."'>\n".$texte_cr_courant;
+					$texte_cr_courant.="</div>\n";
+				}
+			}
+
+			$texte_np_courant="";
+			if(isset($tab_notice[$i][$id_groupe]['ct_private_entry'])) {
+				// Liste des notices privées pour ce jour dans ce groupe:
+				for($j=0;$j<count($tab_notice[$i][$id_groupe]['ct_private_entry']);$j++) {
+					$texte_np_courant.="<div style='background-color:".$color_fond_notices['p']."; border: 1px solid black; margin: 1px;'>\n";
+					$texte_np_courant.=$tab_notice[$i][$id_groupe]['ct_private_entry'][$j];
+					$texte_np_courant.="</div>\n";
+					$temoin_np_non_vides++;
+				}
+
+				if($texte_np_courant!="") {
+					/*
+					$texte_infobulle_jour.="<div style='width: 1em; background-color: ".$color_fond_notices['p']."; float: right; margin-left:3px; text-align:center;'>\n";
+					$texte_infobulle_jour.="<a href='#' onclick=\"alterne_affichage('travail_jour_".$i."_groupe_".$id_groupe."_notice_privee');return false;\">";
+					$texte_infobulle_jour.="P";
+					$texte_infobulle_jour.="</a>";
+					$texte_infobulle_jour.="</div>\n";
+					*/
+
+					$texte_np_courant="<div id='travail_jour_".$i."_groupe_".$id_groupe."_notice_privee' style='background-color:".$color_fond_notices['p']."'>\n".$texte_np_courant;
+					$texte_np_courant.="</div>\n";
+				}
+			}
+
+			// On remplit le cadre pour le groupe courant dans le cadre du jour courant dans l'infobulle du jour
+			// avec le nom du groupe, puis les devoirs donnés pour ce jour et enfin les compte-rendus de séance
+			$texte_infobulle_jour.="<a name='ancre_travail_jour_".$i."_groupe_".$id_groupe."'></a>\n";
+			$texte_infobulle_jour.="<strong>";
+			if($mode=='professeur') {
+				$texte_infobulle_jour.=$current_group['name']." (<em>".$current_group['classlist_string']."</em>)";
+			}
+			else {
+				$texte_infobulle_jour.=$current_group['name'];
+			}
+			$texte_infobulle_jour.="</strong>\n";
+			$texte_infobulle_jour.=$texte_dev_courant;
+			$texte_infobulle_jour.=$texte_cr_courant;
+			$texte_infobulle_jour.=$texte_np_courant;
+
+			$texte_infobulle_jour.="&nbsp;<br />\n";
+
+			$texte_infobulle_jour.="</div>\n";
+			// Fin du cadre pour le groupe courant dans le cadre du jour courant dans l'infobulle du jour
+			//==================================================================
+
+
+			// Pour repérer les enseignements avec tel ou tel type de notice
+			if($texte_np_courant!='') {
+				echo "<div style='width: 1em; background-color: ".$color_fond_notices['p']."; float: right; margin-left:3px; text-align:center;'>\n";
+				echo "<a href='#ancre_travail_jour_".$i."_groupe_".$id_groupe."' onclick=\"affichage_notices_tel_groupe($i, $id_groupe);return false;\">";
+				echo "P";
+				echo "</a>";
+				echo "</div>\n";
+			}
+			if($texte_dev_courant!='') {
+				echo "<div style='width: 1em; background-color: ".$color_fond_notices['t']."; float: right; margin-left:3px; text-align:center;'>\n";
+				echo "<a href='#ancre_travail_jour_".$i."_groupe_".$id_groupe."' onclick=\"affichage_notices_tel_groupe($i, $id_groupe);return false;\">";
+				echo "T";
+				echo "</a>";
+				echo "</div>\n";
+			}
+			if($texte_cr_courant!='') {
+				echo "<div style='width: 1em; background-color: ".$color_fond_notices['c']."; float: right; margin-left:3px; text-align:center;'>\n";
+				echo "<a href='#ancre_travail_jour_".$i."_groupe_".$id_groupe."' onclick=\"affichage_notices_tel_groupe($i, $id_groupe);return false;\">";
+				echo "C";
+				echo "</a>";
+				echo "</div>\n";
+			}
+
+
+			echo "<a href=\"#ancre_travail_jour_".$i."_groupe_".$id_groupe."\" onclick=\"affichage_notices_tel_groupe($i, $id_groupe);return false;\" class='cdt_lien_groupe'>";
+			if($mode=='professeur') {
+				echo $current_group['name']." (<em>".$current_group['classlist_string']."</em>)";
+			}
+			else {
+				echo $current_group['name'];
+			}
+			echo "</a>";
+
+
+			//echo "</div>\n";
+
+			echo "</div>\n";
 		}
+		$cpt_grp++;
 	}
-}
 
-function affichage_travail_jour(num_jour) {
-	if(document.getElementById('travail_jour_'+num_jour)) {
-		// On masque les infobulles de tous les jours
-		for(i=0;i<14;i++) {
-			if(document.getElementById('travail_jour_'+i)) {
-				document.getElementById('travail_jour_'+i).style.display='none';
-			}
-		}
+	// Ajouter un lien jour précédent avant
+	if($i>0) {
+		$indice_prec=$i-1;
+		$lien_jour_prec="<a href='#' onclick=\"cacher_div('travail_jour_$i');
+												var tmp_x=document.getElementById('travail_jour_$i').style.left;
+												var tmp_y=document.getElementById('travail_jour_$i').style.top;
+												affichage_travail_jour($indice_prec);
+												document.getElementById('travail_jour_$indice_prec').style.left=tmp_x;
+												document.getElementById('travail_jour_$indice_prec').style.top=tmp_y;
+												return false;\" style='text-decoration:none; color:white'>";
 
-		// On ajuste les dimensions de l'infobulle Jour
-		document.getElementById('travail_jour_'+num_jour+'_contenu_corps').style.maxHeight='20em';
-		document.getElementById('travail_jour_'+num_jour+'_contenu_corps').style.overflow='auto';
+		$lien_jour_prec.="<img src='../images/icons/arrow-left.png' />";
+		$lien_jour_prec.="</a>";
 
-		// On affiche tous les enseignements du jour:
-		for(i=0;i<tab_grp.length;i++) {
-			if(document.getElementById('travail_jour_'+num_jour+'_groupe_'+tab_grp[i])) {
-				document.getElementById('travail_jour_'+num_jour+'_groupe_'+tab_grp[i]).style.display='';
-
-				// On veille à ce que les sous-div de compte-rendu et devoirs soient visibles:
-				if(document.getElementById('travail_jour_'+num_jour+'_groupe_'+tab_grp[i]+'_devoirs')) {
-					document.getElementById('travail_jour_'+num_jour+'_groupe_'+tab_grp[i]+'_devoirs').style.display='';
-				}
-				if(document.getElementById('travail_jour_'+num_jour+'_groupe_'+tab_grp[i]+'_compte_rendu')) {
-					document.getElementById('travail_jour_'+num_jour+'_groupe_'+tab_grp[i]+'_compte_rendu').style.display='';
-				}
-			}
-		}
-
-		// On affiche et positionne l'infobulle du jour:
-		afficher_div('travail_jour_'+num_jour,'y',10,0)
+		$titre_infobulle_jour=$lien_jour_prec." ".$titre_infobulle_jour;
 	}
-}
 
-function affichage_notices_tel_groupe(num_jour, id_groupe) {
+	// Ajouter un lien jour suivant après
+	if($i<14) {
+		$indice_suiv=$i+1;
+		$lien_jour_suiv="<a href='#' onclick=\"cacher_div('travail_jour_$i');
+												var tmp_x=document.getElementById('travail_jour_$i').style.left;
+												var tmp_y=document.getElementById('travail_jour_$i').style.top;
+												affichage_travail_jour($indice_suiv);
+												document.getElementById('travail_jour_$indice_suiv').style.left=tmp_x;
+												document.getElementById('travail_jour_$indice_suiv').style.top=tmp_y;
+												return false;\" style='text-decoration:none; color:white'>";
+		$lien_jour_suiv.="<img src='../images/icons/arrow-right.png' />";
+		$lien_jour_suiv.="</a>";
 
-	if(document.getElementById('travail_jour_'+num_jour)) {
-		/*
-		if(document.getElementById('travail_jour_'+num_jour).style.display=='') {
-			document.getElementById('travail_jour_'+num_jour).style.display='none';
-		}
-		else {
-		*/
-			// On masque les infobulles de tous les jours
-			for(i=0;i<14;i++) {
-				if(document.getElementById('travail_jour_'+i)) {
-					document.getElementById('travail_jour_'+i).style.display='none';
-				}
-			}
-
-			if(document.getElementById('travail_jour_'+num_jour)) {
-				// On masque tous les enseignements
-				for(i=0;i<tab_grp.length;i++) {
-					if(document.getElementById('travail_jour_'+num_jour+'_groupe_'+tab_grp[i])) {
-						document.getElementById('travail_jour_'+num_jour+'_groupe_'+tab_grp[i]).style.display='none';
-					}
-				}
-
-				// On affiche l'enseignement demandé
-				if(document.getElementById('travail_jour_'+num_jour+'_groupe_'+id_groupe)) {
-					document.getElementById('travail_jour_'+num_jour+'_groupe_'+id_groupe).style.display='';
-				}
-
-				// On affiche l'infobulle du jour
-				//document.getElementById('travail_jour_'+num_jour).style.display='';
-				afficher_div('travail_jour_'+num_jour,'y',10,0);
-			}
-		//}
+		$titre_infobulle_jour=$titre_infobulle_jour." ".$lien_jour_suiv;
 	}
-}
 
-function cacher_div_motif(motif) {
-	tab_div=document.getElementsByTagName('div');
-	for(i=0;i<tab_div.length;i++) {
-		div_courant=tab_div[i];
-
-		if(div_courant.getAttribute('id')) {
-			id_courant=div_courant.getAttribute('id');
-			if(id_courant.substring(0,motif.length)==motif) {
-				cacher_div(id_courant);
-			}
+	// Masquage de tel type de notice d'un clic:
+	if(($temoin_dev_non_vides>0)||($temoin_cr_non_vides>0)||($temoin_np_non_vides>0)) {
+		$ajout="";
+		if($temoin_cr_non_vides>0) {
+			$ajout.="<a href='#' onclick=\"alterne_affichage_global('compte_rendu',$i);return false;\" style='background-color: ".$color_fond_notices['c'].";'>";
+			$ajout.="C";
+			$ajout.="</a>";
 		}
+
+		if($temoin_dev_non_vides>0) {
+			$ajout.=" ";
+			$ajout.="<a href='#' onclick=\"alterne_affichage_global('devoirs',$i);return false;\" style='background-color: ".$color_fond_notices['t'].";'>";
+			$ajout.="T";
+			$ajout.="</a>";
+		}
+
+		if($temoin_np_non_vides>0) {
+			$ajout.=" ";
+			$ajout.="<a href='#' onclick=\"alterne_affichage_global('notice_privee',$i);return false;\" style='background-color: ".$color_fond_notices['p'].";'>";
+			$ajout.="P";
+			$ajout.="</a>";
+		}
+
+		$titre_infobulle_jour=$titre_infobulle_jour." ".$ajout;
 	}
+	else {
+		$texte_infobulle_jour.="Aucune saisie pour ce jour.";
+		$texte_infobulle_jour.="&nbsp;<br />";
+	}
+
+	if($cpt_grp>$max_cpt_grp) {$max_cpt_grp=$cpt_grp;}
+
+	if($texte_infobulle_jour=="") {
+
+		echo "<script type='text/javascript'>
+document.getElementById('p_jour_$i').style.innerHTML='$jour_courant';
+</script>\n";
+	}
+
+	$tabdiv_infobulle[]=creer_div_infobulle("travail_jour_".$i,$titre_infobulle_jour,"",$texte_infobulle_jour,"pink",20,0,'y','y','n','n');
+
+	echo "</div></td>\n";
 }
+echo "</tr>\n";
+echo "</table>\n";
+echo "</div>\n";
+//=============================================================
+
+echo "<script type='text/javascript'>
+var tab_grp=new Array($chaine_id_groupe);
 
 // Si javascript est actif, on cache les boutons submit inutiles (déclenchement du submit sur onchange()):
 if(document.getElementById('bouton_submit_classe')) {document.getElementById('bouton_submit_classe').style.display='none';}

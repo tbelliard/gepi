@@ -41,12 +41,14 @@ function precision_arrondi($moyenne,$arrondir) {
 	//
 	// Calcul des arrondis
 	//
+	$moyenne=strtr($moyenne,",",".");
 	if ($arrondir == 's1') {
 		// s1 : arrondir au dixième de point supérieur
 		$moyenne = number_format(ceil(strval(10*$moyenne))/10,1,'.','');
 	} else if ($arrondir == 's5') {
 		// s5 : arrondir au demi-point supérieur
 		$moyenne = number_format(ceil(strval(2*$moyenne))/2,1,'.','');
+		//$moyenne = ceil(strval(2*$moyenne))/2;
 	} else if ($arrondir == 'se') {
 		// se : arrondir au point entier supérieur
 		$moyenne = number_format(ceil(strval($moyenne)),1,'.','');

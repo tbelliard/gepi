@@ -55,6 +55,8 @@ if (getSettingValue("active_carnets_notes")!='y') {
 	die("Le module n'est pas activé.");
 }
 
+@setlocale(LC_NUMERIC,'C');
+
 require('cc_lib.php');
 
 unset($id_racine);
@@ -97,6 +99,7 @@ else {
 $matiere_nom = $current_group["matiere"]["nom_complet"];
 $matiere_nom_court = $current_group["matiere"]["matiere"];
 $nom_classe = $current_group["classlist_string"];
+
 
 //debug_var();
 //-------------------------------------------------------------------------------------------------------------------
@@ -184,6 +187,9 @@ if(isset($_GET['export_csv'])) {
 			$total=0;
 			$total_sur=0;
 
+			// Nombre de vraies notes (pas absent, disp, ou -)
+			$nb_note=0;
+
 			$csv.="ELEVE;".$ele_login.";".$tmp_tab['nom'].";".$tmp_tab['prenom'].";".$tmp_tab['classe'].";";
 			for($i=0;$i<count($tab_eval);$i++) {
 				if(isset($tmp_tab['eval'][$tab_eval[$i]['id_eval']])) {
@@ -192,11 +198,23 @@ if(isset($_GET['export_csv'])) {
 					if(($tmp_tab['eval'][$tab_eval[$i]['id_eval']]!='')&&(preg_match('/^[0-9.]*$/',$tmp_tab['eval'][$tab_eval[$i]['id_eval']]))) {
 						$total+=$tmp_tab['eval'][$tab_eval[$i]['id_eval']];
 						$total_sur+=$tab_eval[$i]['note_sur'];
+
+						$nb_note++;
 					}
 				}
 				$csv.=";";
 			}
-			$csv.=strtr($total,'.',',').";".strtr($total_sur,'.',',').";";
+
+
+			if($nb_note>0) {
+				$total_aff=strtr($total,'.',',');
+			}
+			else {
+				$total_aff="-";
+			}
+
+			$csv.=$total_aff.";".strtr($total_sur,'.',',').";";
+
 			if($total_sur>0) {
 				$moy=strtr(precision_arrondi(20*$total/$total_sur,$precision),'.',',');
 			}
@@ -400,6 +418,9 @@ if(isset($_GET['export_pdf'])) {
 			$total=0;
 			$total_sur=0;
 
+			// Nombre de vraies notes (pas absent, disp, ou -)
+			$nb_note=0;
+
 			//if($pdf->GetY()+$h_cell+$hauteur_par_eleve>$hauteur_page-$MargeBas) {
 			if($pdf->GetY()+$h_cell+$hauteur_par_eleve+$Espace_dx>$hauteur_page-$MargeBas) {
 				$num_page++;
@@ -466,6 +487,8 @@ if(isset($_GET['export_pdf'])) {
 						$total_sur+=$tab_eval[$i]['note_sur'];
 
 						$note_ev_courant=strtr($tmp_tab['eval'][$tab_eval[$i]['id_eval']],".",",");
+
+						$nb_note++;
 					}
 					else {
 						$note_ev_courant=$tmp_tab['eval'][$tab_eval[$i]['id_eval']];
@@ -489,12 +512,20 @@ if(isset($_GET['export_pdf'])) {
 				$pdf->SetXY($x_courant,$y+$h_cell);
 			}
 
+
+			if($nb_note>0) {
+				$total_aff=strtr($total,'.',',');
+			}
+			else {
+				$total_aff="-";
+			}
+
 			$pdf->SetFont('DejaVu','B',10);
 			$texte='Total';
 			$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
 			$texte='-';
 			$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
-			$texte=$total;
+			$texte=$total_aff;
 			$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
 			$texte=$total_sur;
 			$pdf->Cell($largeur_tab-3*floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
@@ -503,10 +534,19 @@ if(isset($_GET['export_pdf'])) {
 
 			if($total_sur>0) {
 				$moy=strtr(precision_arrondi(20*$total/$total_sur,$precision),'.',',');
+				//$moy=precision_arrondi(20*$total/$total_sur,$precision);
 			}
 			else {
 				$moy='-';
 			}
+
+			/*
+			if($total_sur>0) {
+				$info_tmp="20*$total/$total_sur";
+				$tmp_moy=20*$total/$total_sur;
+				echo "moy=$moy<br />\n$info_tmp=$tmp_moy<br />\n";
+			}
+			*/
 
 			$texte='Moyenne';
 			$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
@@ -641,6 +681,9 @@ foreach ($liste_eleves as $eleve) {
 
 	$total=0;
 	$total_sur=0;
+
+	// Nombre de vraies notes (pas absent, disp, ou -)
+	$nb_note=0;
 	for($j=0;$j<count($cc_eval);$j++) {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover table_no_split'>\n";
@@ -652,6 +695,8 @@ foreach ($liste_eleves as $eleve) {
 			if(($cc_eval[$j]['note'][$eleve_login[$i]]!='')&&(preg_match('/^[0-9.]*$/',$cc_eval[$j]['note'][$eleve_login[$i]]))) {
 				$total+=$cc_eval[$j]['note'][$eleve_login[$i]];
 				$total_sur+=$cc_eval[$j]['note_sur'];
+
+				$nb_note++;
 			}
 		}
 		echo "</td>\n";
@@ -664,7 +709,17 @@ foreach ($liste_eleves as $eleve) {
 	echo "<tr class='table_no_split'>\n";
 	echo "<th>Total</th>\n";
 	echo "<th>-</th>\n";
-	echo "<th>$total</th>\n";
+
+
+	if($nb_note>0) {
+		$total_aff=strtr($total,'.',',');
+	}
+	else {
+		$total_aff="-";
+	}
+
+
+	echo "<th>$total_aff</th>\n";
 	echo "<th>$total_sur</th>\n";
 	echo "</tr>\n";
 
@@ -672,13 +727,17 @@ foreach ($liste_eleves as $eleve) {
 	echo "<th>Moyenne</th>\n";
 	echo "<th>-</th>\n";
 	if($total_sur!=0) {
-		//$moy=round(10*20*$total/$total_sur)/10;
-		$moy=precision_arrondi(20*$total/$total_sur,$precision);
+		$moy=strtr(precision_arrondi(20*strtr($total,",",".")/strtr($total_sur,",","."),$precision),'.',',');
+
+		//$info_tmp="20*$total/$total_sur";
+		//$tmp_moy=20*$total/$total_sur;
 	}
 	else {
 		$moy='-';
 	}
-	echo "<th>$moy</th>\n";
+	echo "<th>$moy";
+	//echo "<br />$info_tmp<br />$tmp_moy";
+	echo "</th>\n";
 	echo "<th>20</th>\n";
 	echo "</tr>\n";
 

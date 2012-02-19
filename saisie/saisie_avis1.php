@@ -152,6 +152,7 @@ if (isset($_POST['is_posted'])) {
 						$avis = traitement_magic_quotes(corriger_caracteres($NON_PROTECT[$nom_log]));
 						$avis=suppression_sauts_de_lignes_surnumeraires($avis);
 
+						/*
 						$test_eleve_avis_query = mysql_query("SELECT * FROM avis_conseil_classe WHERE (login='$reg_eleve_login' AND periode='$i')");
 						$test = mysql_num_rows($test_eleve_avis_query);
 						if ($test != "0") {
@@ -165,10 +166,20 @@ if (isset($_POST['is_posted'])) {
 							$sql.="statut=''";
 							$register = mysql_query($sql);
 						}
+						*/
+						$sql="DELETE FROM avis_conseil_classe WHERE (login='$reg_eleve_login' AND periode='$i');";
+						$menage=mysql_query($sql);
 
-						if (!$register) {
-							$msg.="Erreur lors de l'enregistrement des données de la période $i pour $reg_eleve_login<br />\n";
-							$pb_record = 'yes';
+						if(($avis!='')||((isset($id_mention)&&($id_mention!=0)))) {
+							$sql="INSERT INTO avis_conseil_classe SET login='$reg_eleve_login',periode='$i',avis='$avis',";
+							if(isset($id_mention)) {$sql.="id_mention='$id_mention',";}
+							$sql.="statut=''";
+							$register = mysql_query($sql);
+
+							if (!$register) {
+								$msg.="Erreur lors de l'enregistrement des données de la période $i pour $reg_eleve_login<br />\n";
+								$pb_record = 'yes';
+							}
 						}
 					}
 				}
@@ -503,7 +514,9 @@ if ($insert_mass_appreciation_type=="y") {
 		if ($ver_periode[$k] != "N") {
 			echo "<tr class='lig$alt'>\n<td><span title=\"$gepiClosedPeriodLabel\">$nom_periode[$k]</span></td>\n";
 		} else {
-			echo "<tr class='lig$alt'>\n<td>$nom_periode[$k]</td>\n";
+			echo "<tr class='lig$alt'>\n<td>";
+			echo $nom_periode[$k];
+			echo "</td>\n";
 		}
 
 		if ($ver_periode[$k] != "O") {
@@ -608,14 +621,30 @@ if ($insert_mass_appreciation_type=="y") {
 		$alt=1;
 		while ($k < $nb_periode) {
 			$alt=$alt*(-1);
-			if ($ver_periode[$k] != "N") {
-				echo "<tr class='lig$alt'>\n<td><span title=\"$gepiClosedPeriodLabel\">$nom_periode[$k]</span></td>\n";
-			} else {
-				echo "<tr class='lig$alt'>\n<td>$nom_periode[$k]</td>\n";
-			}
+
+			$result_test=0;
 			if ($ver_periode[$k] != "O") {
 				$call_eleve = mysql_query("SELECT login FROM j_eleves_classes WHERE (login = '$current_eleve_login' and id_classe='$id_classe' and periode='$k')");
 				$result_test = mysql_num_rows($call_eleve);
+			}
+
+			if ($ver_periode[$k] != "N") {
+				echo "<tr class='lig$alt'>\n<td><span title=\"$gepiClosedPeriodLabel\">$nom_periode[$k]</span></td>\n";
+			} elseif(($ver_periode[$k] != "O")&&($result_test>0)) {
+				echo "<tr class='lig$alt'>\n<td>";
+				echo "<a href='saisie_avis2.php?periode_num=".$k."&id_classe=".$id_classe."&fiche=y&current_eleve_login=".$current_eleve_login."&ind_eleve_login_suiv=$i#app'>";
+				echo $nom_periode[$k];
+				echo "</a>";
+				echo "</td>\n";
+			} else {
+				echo "<tr class='lig$alt'>\n<td>";
+				echo $nom_periode[$k];
+				echo "</td>\n";
+			}
+
+			if ($ver_periode[$k] != "O") {
+				//$call_eleve = mysql_query("SELECT login FROM j_eleves_classes WHERE (login = '$current_eleve_login' and id_classe='$id_classe' and periode='$k')");
+				//$result_test = mysql_num_rows($call_eleve);
 				if ($result_test != 0) {
 					echo "<td>\n";
 					echo "<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$current_eleve_login_t[$k]."\" />\n";
