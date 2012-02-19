@@ -521,7 +521,7 @@ elseif(!isset($choix_periode)) {
 	echo "<tr valign='top'>\n";
 	echo "<td>\n";
     echo "<a name=\"calend\"></a>";
-	//echo "<input type=\"radio\" name=\"choix_periode\" id='choix_periode_dates' value=\"intervalle\" checked />";
+	//echo "<input type=\"radio\" name=\"choix_periode\" id='choix_periode_dates' value=\"intervalle\" checked='checked '/>";
 	echo "<input type=\"radio\" name=\"choix_periode\" id='choix_periode_dates' value=\"intervalle\" ";
 	// Dans le cas d'un retour en arrière, le champ peut avoir été préalablement coché
 	//if((!isset($choix_periode))||($choix_periode=="intervalle")) {
@@ -819,8 +819,8 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 
 	echo "\n<!-- Formulaire de choix des élèves et des paramètres -->\n";
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' id='formulaire' target='_blank'>\n";
-	
-	echo "<p><input type='button' name='bouton_valide_select_eleves2' value='Valider' onclick='test_check_ele()' /></p>\n";
+
+	echo "<p><input type='button' name='bouton_valide_select_eleves2' value='Valider' onclick='test_check_ele()' />\n";
 
 	// Période d'affichage:
 	echo "<input type='hidden' name='choix_periode' value='$choix_periode' />\n";
@@ -834,7 +834,7 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 		echo "<input type='hidden' name='display_date_debut' value='$display_date_debut' />\n";
 		echo "<input type='hidden' name='display_date_fin' value='$display_date_fin' />\n";
 	}
-
+echo "</p>";
 
 
 
@@ -863,7 +863,7 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 		//$texte_infobulle.="\n";
 		$tabdiv_infobulle[]=creer_div_infobulle('a_propos_cell_ajustee',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
-		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_cell_ajustee','y',100,100);\"  onmouseout=\"cacher_div('a_propos_cell_ajustee');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_cell_ajustee','y',100,100);\"  onmouseout=\"cacher_div('a_propos_cell_ajustee');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='' /></a>";
 
 		echo "<br />\n";
 
@@ -875,7 +875,7 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 		//$texte_infobulle.="\n";
 		$tabdiv_infobulle[]=creer_div_infobulle('div_bull_debug_pdf',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
-		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('div_bull_debug_pdf','y',100,100);\"  onmouseout=\"cacher_div('div_bull_debug_pdf');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('div_bull_debug_pdf','y',100,100);\"  onmouseout=\"cacher_div('div_bull_debug_pdf');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='' /></a>";
 
 		echo "<br />\n";
 
@@ -902,12 +902,14 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 
 	if ((($_SESSION['statut']=='eleve') AND (getSettingValue("GepiAccesOptionsReleveEleve") != "yes"))||
 		(($_SESSION['statut']=='responsable') AND (getSettingValue("GepiAccesOptionsReleveParent") != "yes"))) {
+		echo "<p>\n";
 		// Témoin destiné à sauter l'étape des paramètres
 		echo "<input type='hidden' name='choix_parametres' value='y' />\n";
 		//echo "<input type='hidden' name='mode_bulletin' value='html' />\n";
 		echo "<input type='hidden' name='un_seul_bull_par_famille' value='oui' />\n";
 
 		echo "<input type='hidden' name='deux_releves_par_page' value='non' />\n";
+		echo "</p>\n";
 	}
 	else {
 		echo "<p>\n";
@@ -940,8 +942,10 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 			echo "</table>\n";
 		}
 		else {
+			echo "<p>\n";
 			echo "<input type='hidden' name='un_seul_bull_par_famille' value='oui' />\n";
 			echo "<input type='hidden' name='deux_releves_par_page' value='non' />\n";
+			echo "</p>\n";
 		}
 
 		// AJOUTER LES PARAMETRES...
@@ -952,9 +956,11 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 		include("tableau_choix_parametres_releves_notes.php");
 		//=======================================
 
+			echo "<p>\n";
 		echo "<input type='hidden' name='valide_select_eleves' value='y' />\n";
 		//echo "<p><input type='submit' name='choix_parametres' value='Valider' /></p>\n";
 		echo "<input type='hidden' name='choix_parametres' value='effectue' />\n";
+			echo "</p>\n";
 
 		echo "</div>\n";
 
@@ -1026,9 +1032,9 @@ echo "</script>\n";
 
 	$max_eff_classe=0;
 	for($i=0;$i<count($tab_id_classe);$i++) {
-		echo "<input type='hidden' name='tab_id_classe[$i]' value='".$tab_id_classe[$i]."' />\n";
+		echo "<p class='bold'><input type='hidden' name='tab_id_classe[$i]' value='".$tab_id_classe[$i]."' />\n";
 
-		echo "<p class='bold'>Classe de ".get_class_from_id($tab_id_classe[$i])."</p>\n";
+		echo "Classe de ".get_class_from_id($tab_id_classe[$i])."</p>\n";
 
 		echo "<table class='boireaus' summary='Tableau de choix des élèves'>\n";
 		echo "<tr>\n";
