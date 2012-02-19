@@ -57,7 +57,7 @@ class Eleve extends BaseEleve {
 
     function __construct() {
         parent::__construct();
-        $this->timestamp_start=microtime(true);
+        //$this->timestamp_start=microtime(true); //disable it because it makes a mess when comparing objects
     }
     
     // ERREUR ?? Il ne peut y avoir qu'une seule classe pour un élève pour une période !!
