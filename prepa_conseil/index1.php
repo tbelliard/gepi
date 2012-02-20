@@ -153,10 +153,18 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	$largeur_page=210;
 	$hauteur_page=297;
 
-	$marge_gauche=5;
-	$marge_droite=5;
-	$marge_haute=5;
-	$marge_basse=5;
+	$pref_marge=isset($_POST['marge_pdf_mes_moyennes']) ? $_POST['marge_pdf_mes_moyennes'] : 7;
+	if(($pref_marge=="")||(!preg_match("/^[0-9]*$/", $pref_marge))||($pref_marge<5)) {
+		$pref_marge=7;
+	}
+	else {
+		savePref($_SESSION['login'], 'marge_pdf_mes_moyennes', $pref_marge);
+	}
+	//marge_pdf_mes_moyennes
+	$marge_gauche=$pref_marge;
+	$marge_droite=$pref_marge;
+	$marge_haute=$pref_marge;
+	$marge_basse=$pref_marge;
 
 	$hauteur_police=10;
 	$largeur_col_nom_ele=40;
@@ -1891,6 +1899,8 @@ function checkbox_change(champ, cpt) {
 			echo "<input type='submit' value='Générer un PDF' />\n";
 			echo "<br />\n";
 			echo "Hauteur de ligne&nbsp;: <input type='text' name='h_cell' id='h_cell' value='10' size='2' onKeyDown=\"clavier_2(this.id,event,5,50);\" AutoComplete=\"off\" />mm\n";
+			echo "<br />\n";
+			echo "Marges&nbsp;: <input type='text' name='marge_pdf_mes_moyennes' id='marge_pdf_mes_moyennes' value='".getPref($_SESSION['login'],'marge_pdf_mes_moyennes',7)."' size='2' onKeyDown=\"clavier_2(this.id,event,5,20);\" AutoComplete=\"off\" />mm\n";
 		}
 		echo "</form>\n";
 
