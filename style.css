@@ -4,7 +4,6 @@ body {
 	margin: 0;
 	color: #330033;
 	background: #EEEEEE;
-	font: normal normal 11pt Verdana, sans-serif;
 }
 
 @media screen  {
@@ -78,7 +77,6 @@ table.normal td {
 /*==================================*/
 /* Styles généraux */
 p {
-	font: normal normal 11pt Verdana, sans-serif;
 	letter-spacing: -0.05em;
 	margin: 5px;
 }
@@ -89,7 +87,6 @@ img {
 
 a {
 	color: #0000AA;
-	font-family: Verdana, sans-serif;
 	text-decoration: none;
 	border: 0;
 }
@@ -107,19 +104,13 @@ a:active {
 
 input,submit,p,td,ul {
 	color: #330033;
-	font: normal 11pt Verdana;
 }
 
 textarea {
 	color: #330033;
-	font: normal 9pt Verdana;
 	border: 1px solid black;
 }
 
-input {
-	border: 1px solid black;
-	padding-left: 2px;
-}
 
 input:hover, input:active, input:focus {
 	border-color: red;
@@ -172,7 +163,6 @@ fieldset#login_box h2 {
 	margin:0;
 	padding: 0;
 	font-size: 11pt;
-	font-family: Verdana;
 	font-weight: bold;
 	letter-spacing: 0.1em;
 
@@ -227,7 +217,6 @@ div#lien_cahier_texte {
 	margin:0;
 	padding: 0;
 	font-size: 11pt;
-	font-family: Verdana;
 	font-weight: bold;
 	letter-spacing: 0.1em;
 }
@@ -237,7 +226,6 @@ div#lien_cahier_texte {
 	margin:0;
 	padding: 0;
 	font-size: 11pt;
-	font-family: Verdana;
 	font-weight: bold;
 	letter-spacing: 0.1em;
 }
@@ -303,7 +291,6 @@ div#headerLeft {
 
 div#headerLeft h3 {
 	color: white;
-	font-family: Verdana;
 	font-size: 14pt;
 }
 
@@ -380,24 +367,32 @@ table.table_acceuil {
 /* fin page acceuil*/
 
 h1 {
-	font: normal small-caps 20pt Verdana;
+	font-style:  normal;
+	font-variant: small-caps;
+	font-size: 20pt;
 	line-height: 300%;
 }
 
 h1.gepi {
-	font: normal small-caps 16pt Verdana;
+	font-style:  normal;
+	font-variant: small-caps;
+	font-size: 16pt;
 	text-align: center;
 	letter-spacing: 2px;
 	line-height: 300%;
 }
 
 h2 {
-	font: normal small-caps normal 14pt Verdana;
+	font-style:  normal;
+	font-variant: small-caps;
+	font-size: 14pt;
 	line-height: 200%;
 }
 
 h2.gepi {
-	font: normal small-caps normal 14pt Tahoma;
+	font-style:  normal;
+	font-variant: small-caps;
+	font-size: 14pt;
 	text-align: center;
 	letter-spacing: 2px;
 	text-decoration: underline;
@@ -405,11 +400,15 @@ h2.gepi {
 }
 
 h3 {
-	font: normal small-caps normal 14pt Verdana;
+	font-style:  normal;
+	font-variant: small-caps;
+	font-size: 14pt;
 	line-height: 125%;
 }
 h3.gepi {
-	font: normal small-caps normal 14pt Verdana;
+	font-style:  normal;
+	font-variant: small-caps;
+	font-size: 14pt;
 	line-height: 125%;
 }
 
@@ -432,7 +431,6 @@ p.bulletin {
 	color: #000000;
 	font-size: 10pt;
 	font-style: normal;
-	font-family: Tahoma;
 }
 
 p.cn {
@@ -553,7 +551,9 @@ th.col {
 	border-right: 1px solid #000000;
 	border-bottom: 1px solid #000000;
 	background: #B6B6D1;
-	font: normal small-caps normal 12pt Verdana;
+	font-style:  normal;
+	font-variant: small-caps;
+	font-size: 12pt;
 	text-align: center;
 }
 
@@ -569,7 +569,8 @@ th.col {
 
 .norme {
 	color: #330033;
-	font: normal 10pt Verdana;
+	font-style:  normal;
+	font-size: 14pt;
 }
 
 .small {
@@ -669,7 +670,6 @@ img.link {
 	text-align: center;
 	margin: 0px;
 	color: white;
-	font-family: Verdana;
 	font-size: 14pt;
 }
 	/* Correction Régis : h3 doit être contenu dans h2 qui doit être contenu dans h1 */
@@ -677,7 +677,6 @@ img.link {
 	text-align: center;
 	margin: 0px;
 	color: white;
-	font-family: Verdana;
 	font-size: 14pt;
 }
 
@@ -1028,7 +1027,6 @@ div.appreciations_deroulantes_graphe_old {
 position : absolute;/*j"ai choisi de positionner la boite à partir de l'entête*/
 top : 515px;/*idem*/
 left : 5px;/*idem*/
-font-family: Tahoma, Arial, Helvetica, Sans-Serif;
 font-size: 16px;/*0.95em;*/
 border: 1px solid #FFFFFF;
 width : 320px; /*largeur de la boite*/
@@ -1043,7 +1041,6 @@ div.appreciations_deroulantes_graphe {
 position : relative;/*j"ai choisi de positionner la boite à partir de l'entête*/
 top : 0px;/*idem*/
 left : 5px;/*idem*/
-font-family: Tahoma, Arial, Helvetica, Sans-Serif;
 font-size: 16px;/*0.95em;*/
 border: 1px solid #FFFFFF;
 width : 320px; /*largeur de la boite*/
@@ -1059,7 +1056,6 @@ border: 1px solid black;
 #menu_barre {
 	/*font-weight: bold;*/
 	font-size: 90%;
-	/*font-family: trebuchet ms,arial,tahoma,verdana,sans-serif;*/
 	z-index: 1000;
 	color: white;
 	background-color: #4a4a59;

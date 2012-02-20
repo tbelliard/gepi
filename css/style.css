@@ -3,7 +3,6 @@ body {
 	padding: 0em;
 	margin: 0em;
 	background: #EEEEEE;
-	font-family: DejaVu, verdana, sans-serif;
 	color: #330033;
 }
 
@@ -53,7 +52,6 @@ a:active {
 }
 
 h1.gepi {
-	font-family: DejaVu;
 	font-style: normal;
 	font-variant: small-caps;
 	font-weight: normal;
@@ -64,7 +62,6 @@ h1.gepi {
 }
 
 p {
-	font-family: DejaVu;
 	font-style: normal;
 	font-variant: normal;
 	font-weight: normal;
