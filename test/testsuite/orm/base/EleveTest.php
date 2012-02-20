@@ -647,4 +647,13 @@ class EleveTest extends GepiEmptyTestBase
 		$this->assertEquals(15,$nbAbs->count());	# On n'a plus que 15 absences comptabilisées
 		
 	}
+
+        public function testEquals() {
+            Propel::disableInstancePooling();
+            $eleve1 = EleveQuery::create()->findOneByLogin('Florence Michu');
+            usleep(1);
+            $eleve1idem = EleveQuery::create()->findOneByLogin('Florence Michu');
+            $this->assertEquals($eleve1, $eleve1idem);
+            Propel::enableInstancePooling();
+        }
 }
