@@ -145,7 +145,7 @@ abstract class BaseEdtHorairesEtablissementQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new EdtHorairesEtablissement();
 			$obj->hydrate($row);
-			EdtHorairesEtablissementPeer::addInstanceToPool($obj, (string) $row[0]);
+			EdtHorairesEtablissementPeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

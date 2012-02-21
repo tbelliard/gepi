@@ -134,7 +134,7 @@ abstract class BaseJEleveAncienEtablissementQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new JEleveAncienEtablissement();
 			$obj->hydrate($row);
-			JEleveAncienEtablissementPeer::addInstanceToPool($obj, serialize(array((string) $row[0], (string) $row[1])));
+			JEleveAncienEtablissementPeer::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
 		}
 		$stmt->closeCursor();
 

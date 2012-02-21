@@ -133,7 +133,7 @@ abstract class BaseEdtSemaineQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new EdtSemaine();
 			$obj->hydrate($row);
-			EdtSemainePeer::addInstanceToPool($obj, (string) $row[0]);
+			EdtSemainePeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

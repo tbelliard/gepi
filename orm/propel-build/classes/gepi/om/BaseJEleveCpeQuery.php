@@ -134,7 +134,7 @@ abstract class BaseJEleveCpeQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new JEleveCpe();
 			$obj->hydrate($row);
-			JEleveCpePeer::addInstanceToPool($obj, serialize(array((string) $row[0], (string) $row[1])));
+			JEleveCpePeer::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
 		}
 		$stmt->closeCursor();
 

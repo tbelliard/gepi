@@ -25,6 +25,12 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -1493,10 +1499,12 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		$copyObj->setUpdatedAt($this->getUpdatedAt());
 		$copyObj->setDeletedAt($this->getDeletedAt());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getJTraitementSaisieEleves() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1510,6 +1518,8 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -2321,7 +2331,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	 * @param      AbsenceEleveSaisie $absenceEleveSaisie The JTraitementSaisieEleve object to relate
 	 * @return     void
 	 */
-	public function addAbsenceEleveSaisie($absenceEleveSaisie)
+	public function addAbsenceEleveSaisie(AbsenceEleveSaisie $absenceEleveSaisie)
 	{
 		if ($this->collAbsenceEleveSaisies === null) {
 			$this->initAbsenceEleveSaisies();

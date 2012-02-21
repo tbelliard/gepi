@@ -25,6 +25,12 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -2243,10 +2249,12 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		$copyObj->setVersionCreatedAt($this->getVersionCreatedAt());
 		$copyObj->setVersionCreatedBy($this->getVersionCreatedBy());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getJTraitementSaisieEleves() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -2260,6 +2268,8 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -3168,7 +3178,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	 * @param      AbsenceEleveTraitement $absenceEleveTraitement The JTraitementSaisieEleve object to relate
 	 * @return     void
 	 */
-	public function addAbsenceEleveTraitement($absenceEleveTraitement)
+	public function addAbsenceEleveTraitement(AbsenceEleveTraitement $absenceEleveTraitement)
 	{
 		if ($this->collAbsenceEleveTraitements === null) {
 			$this->initAbsenceEleveTraitements();
@@ -3403,11 +3413,14 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	 *
 	 * @param   AbsenceEleveSaisieVersion $version The version object to use
 	 * @param   PropelPDO $con the connection to use
+	 * @param   array $loadedObjects objects thats been loaded in a chain of populateFromVersion calls on referrer or fk objects.
 	 *
 	 * @return  AbsenceEleveSaisie The current object (for fluent API support)
 	 */
-	public function populateFromVersion($version, $con = null)
+	public function populateFromVersion($version, $con = null, &$loadedObjects = array())
 	{
+	
+		$loadedObjects['AbsenceEleveSaisie'][$version->getId()][$version->getVersion()] = $this;
 		$this->setId($version->getId());
 		$this->setUtilisateurId($version->getUtilisateurId());
 		$this->setEleveId($version->getEleveId());

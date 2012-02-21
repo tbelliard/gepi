@@ -25,6 +25,12 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the nom_periode field.
 	 * @var        string
 	 */
@@ -1026,6 +1032,18 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 		$copyObj->setIdClasse($this->getIdClasse());
 		$copyObj->setDateVerrouillage($this->getDateVerrouillage());
 		$copyObj->setDateFin($this->getDateFin());
+
+		if ($deepCopy && !$this->startCopy) {
+			// important: temporarily setNew(false) because this affects the behavior of
+			// the getter/setter methods for fkey referrer objects.
+			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
+
+			//unflag object copy
+			$this->startCopy = false;
+		} // if ($deepCopy)
+
 		if ($makeNew) {
 			$copyObj->setNew(true);
 		}

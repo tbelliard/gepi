@@ -143,7 +143,7 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new JEleveClasse();
 			$obj->hydrate($row);
-			JEleveClassePeer::addInstanceToPool($obj, serialize(array((string) $row[0], (string) $row[1], (string) $row[2])));
+			JEleveClassePeer::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1], (string) $key[2])));
 		}
 		$stmt->closeCursor();
 

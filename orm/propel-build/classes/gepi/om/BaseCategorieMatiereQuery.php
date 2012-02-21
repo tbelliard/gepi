@@ -141,7 +141,7 @@ abstract class BaseCategorieMatiereQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new CategorieMatiere();
 			$obj->hydrate($row);
-			CategorieMatierePeer::addInstanceToPool($obj, (string) $row[0]);
+			CategorieMatierePeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

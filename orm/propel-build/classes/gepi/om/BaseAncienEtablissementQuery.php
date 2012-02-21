@@ -145,7 +145,7 @@ abstract class BaseAncienEtablissementQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new AncienEtablissement();
 			$obj->hydrate($row);
-			AncienEtablissementPeer::addInstanceToPool($obj, (string) $row[0]);
+			AncienEtablissementPeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

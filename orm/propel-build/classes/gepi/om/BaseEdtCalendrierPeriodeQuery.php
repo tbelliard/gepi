@@ -169,7 +169,7 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new EdtCalendrierPeriode();
 			$obj->hydrate($row);
-			EdtCalendrierPeriodePeer::addInstanceToPool($obj, (string) $row[0]);
+			EdtCalendrierPeriodePeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

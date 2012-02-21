@@ -145,7 +145,7 @@ abstract class BaseAbsenceEleveMotifQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new AbsenceEleveMotif();
 			$obj->hydrate($row);
-			AbsenceEleveMotifPeer::addInstanceToPool($obj, (string) $row[0]);
+			AbsenceEleveMotifPeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

@@ -173,7 +173,7 @@ abstract class BaseGroupeQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new Groupe();
 			$obj->hydrate($row);
-			GroupePeer::addInstanceToPool($obj, (string) $row[0]);
+			GroupePeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

@@ -189,7 +189,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new AbsenceEleveTraitement();
 			$obj->hydrate($row);
-			AbsenceEleveTraitementPeer::addInstanceToPool($obj, (string) $row[0]);
+			AbsenceEleveTraitementPeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

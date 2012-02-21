@@ -193,7 +193,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new EdtEmplacementCours();
 			$obj->hydrate($row);
-			EdtEmplacementCoursPeer::addInstanceToPool($obj, (string) $row[0]);
+			EdtEmplacementCoursPeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

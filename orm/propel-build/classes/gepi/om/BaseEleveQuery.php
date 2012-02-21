@@ -229,7 +229,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new Eleve();
 			$obj->hydrate($row);
-			ElevePeer::addInstanceToPool($obj, (string) $row[0]);
+			ElevePeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

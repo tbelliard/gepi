@@ -145,7 +145,7 @@ abstract class BaseCahierTexteCompteRenduFichierJointQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new CahierTexteCompteRenduFichierJoint();
 			$obj->hydrate($row);
-			CahierTexteCompteRenduFichierJointPeer::addInstanceToPool($obj, (string) $row[0]);
+			CahierTexteCompteRenduFichierJointPeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

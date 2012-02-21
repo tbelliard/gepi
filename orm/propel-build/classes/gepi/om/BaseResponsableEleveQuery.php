@@ -169,7 +169,7 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new ResponsableEleve();
 			$obj->hydrate($row);
-			ResponsableElevePeer::addInstanceToPool($obj, (string) $row[0]);
+			ResponsableElevePeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

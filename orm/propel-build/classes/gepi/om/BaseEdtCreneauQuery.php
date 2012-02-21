@@ -153,7 +153,7 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new EdtCreneau();
 			$obj->hydrate($row);
-			EdtCreneauPeer::addInstanceToPool($obj, (string) $row[0]);
+			EdtCreneauPeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

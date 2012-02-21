@@ -145,7 +145,7 @@ abstract class BaseAbsenceEleveJustificationQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new AbsenceEleveJustification();
 			$obj->hydrate($row);
-			AbsenceEleveJustificationPeer::addInstanceToPool($obj, (string) $row[0]);
+			AbsenceEleveJustificationPeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

@@ -181,7 +181,7 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new AidConfiguration();
 			$obj->hydrate($row);
-			AidConfigurationPeer::addInstanceToPool($obj, (string) $row[0]);
+			AidConfigurationPeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

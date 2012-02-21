@@ -25,6 +25,12 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -998,10 +1004,12 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 		$copyObj->setCp($this->getCp());
 		$copyObj->setVille($this->getVille());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getJEleveAncienEtablissements() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1009,6 +1017,8 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -1374,7 +1384,7 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 	 * @param      Eleve $eleve The JEleveAncienEtablissement object to relate
 	 * @return     void
 	 */
-	public function addEleve($eleve)
+	public function addEleve(Eleve $eleve)
 	{
 		if ($this->collEleves === null) {
 			$this->initEleves();

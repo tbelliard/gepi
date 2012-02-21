@@ -253,7 +253,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new UtilisateurProfessionnel();
 			$obj->hydrate($row);
-			UtilisateurProfessionnelPeer::addInstanceToPool($obj, (string) $row[0]);
+			UtilisateurProfessionnelPeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

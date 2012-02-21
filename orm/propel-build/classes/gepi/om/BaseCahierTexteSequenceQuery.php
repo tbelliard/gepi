@@ -141,7 +141,7 @@ abstract class BaseCahierTexteSequenceQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new CahierTexteSequence();
 			$obj->hydrate($row);
-			CahierTexteSequencePeer::addInstanceToPool($obj, (string) $row[0]);
+			CahierTexteSequencePeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

@@ -157,7 +157,7 @@ abstract class BaseCahierTexteNoticePriveeQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new CahierTexteNoticePrivee();
 			$obj->hydrate($row);
-			CahierTexteNoticePriveePeer::addInstanceToPool($obj, (string) $row[0]);
+			CahierTexteNoticePriveePeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

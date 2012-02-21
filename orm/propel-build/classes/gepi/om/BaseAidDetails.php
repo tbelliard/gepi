@@ -25,6 +25,12 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        string
 	 */
@@ -2155,7 +2161,6 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	 */
 	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setId($this->getId());
 		$copyObj->setNom($this->getNom());
 		$copyObj->setNumero($this->getNumero());
 		$copyObj->setIndiceAid($this->getIndiceAid());
@@ -2180,10 +2185,12 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 		$copyObj->setAfficheAdresse1($this->getAfficheAdresse1());
 		$copyObj->setEnConstruction($this->getEnConstruction());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getJAidUtilisateursProfessionnelss() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -2209,10 +2216,13 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
 			$copyObj->setNew(true);
+			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
 		}
 	}
 
@@ -3400,7 +3410,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	 * @param      UtilisateurProfessionnel $utilisateurProfessionnel The JAidUtilisateursProfessionnels object to relate
 	 * @return     void
 	 */
-	public function addUtilisateurProfessionnel($utilisateurProfessionnel)
+	public function addUtilisateurProfessionnel(UtilisateurProfessionnel $utilisateurProfessionnel)
 	{
 		if ($this->collUtilisateurProfessionnels === null) {
 			$this->initUtilisateurProfessionnels();
@@ -3552,7 +3562,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	 * @param      Eleve $eleve The JAidEleves object to relate
 	 * @return     void
 	 */
-	public function addEleve($eleve)
+	public function addEleve(Eleve $eleve)
 	{
 		if ($this->collEleves === null) {
 			$this->initEleves();

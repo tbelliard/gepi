@@ -25,6 +25,12 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the no_gep field.
 	 * @var        string
 	 */
@@ -2049,10 +2055,12 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		$copyObj->setDateSortie($this->getDateSortie());
 		$copyObj->setMefCode($this->getMefCode());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getJEleveClasses() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -2131,6 +2139,8 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -4594,7 +4604,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * @param      AncienEtablissement $ancienEtablissement The JEleveAncienEtablissement object to relate
 	 * @return     void
 	 */
-	public function addAncienEtablissement($ancienEtablissement)
+	public function addAncienEtablissement(AncienEtablissement $ancienEtablissement)
 	{
 		if ($this->collAncienEtablissements === null) {
 			$this->initAncienEtablissements();
@@ -4746,7 +4756,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * @param      AidDetails $aidDetails The JAidEleves object to relate
 	 * @return     void
 	 */
-	public function addAidDetails($aidDetails)
+	public function addAidDetails(AidDetails $aidDetails)
 	{
 		if ($this->collAidDetailss === null) {
 			$this->initAidDetailss();

@@ -133,7 +133,7 @@ abstract class BaseAbsenceEleveTypeStatutAutoriseQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new AbsenceEleveTypeStatutAutorise();
 			$obj->hydrate($row);
-			AbsenceEleveTypeStatutAutorisePeer::addInstanceToPool($obj, (string) $row[0]);
+			AbsenceEleveTypeStatutAutorisePeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

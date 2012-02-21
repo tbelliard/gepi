@@ -233,7 +233,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new AidDetails();
 			$obj->hydrate($row);
-			AidDetailsPeer::addInstanceToPool($obj, (string) $row[0]);
+			AidDetailsPeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

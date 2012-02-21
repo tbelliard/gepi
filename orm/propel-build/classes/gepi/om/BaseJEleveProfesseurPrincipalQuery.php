@@ -134,7 +134,7 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new JEleveProfesseurPrincipal();
 			$obj->hydrate($row);
-			JEleveProfesseurPrincipalPeer::addInstanceToPool($obj, serialize(array((string) $row[0], (string) $row[1])));
+			JEleveProfesseurPrincipalPeer::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
 		}
 		$stmt->closeCursor();
 

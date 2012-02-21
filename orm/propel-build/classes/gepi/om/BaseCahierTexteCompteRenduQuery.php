@@ -169,7 +169,7 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new CahierTexteCompteRendu();
 			$obj->hydrate($row);
-			CahierTexteCompteRenduPeer::addInstanceToPool($obj, (string) $row[0]);
+			CahierTexteCompteRenduPeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

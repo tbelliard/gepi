@@ -185,7 +185,7 @@ abstract class BaseAbsenceEleveNotificationQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new AbsenceEleveNotification();
 			$obj->hydrate($row);
-			AbsenceEleveNotificationPeer::addInstanceToPool($obj, (string) $row[0]);
+			AbsenceEleveNotificationPeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

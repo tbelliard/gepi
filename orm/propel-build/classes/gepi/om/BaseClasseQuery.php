@@ -249,7 +249,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new Classe();
 			$obj->hydrate($row);
-			ClassePeer::addInstanceToPool($obj, (string) $row[0]);
+			ClassePeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

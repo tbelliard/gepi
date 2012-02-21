@@ -241,7 +241,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new AbsenceEleveSaisie();
 			$obj->hydrate($row);
-			AbsenceEleveSaisiePeer::addInstanceToPool($obj, (string) $row[0]);
+			AbsenceEleveSaisiePeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

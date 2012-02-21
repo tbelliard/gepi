@@ -141,7 +141,7 @@ abstract class BaseAbsenceEleveLieuQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new AbsenceEleveLieu();
 			$obj->hydrate($row);
-			AbsenceEleveLieuPeer::addInstanceToPool($obj, (string) $row[0]);
+			AbsenceEleveLieuPeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

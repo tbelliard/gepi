@@ -133,7 +133,7 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new EdtSalle();
 			$obj->hydrate($row);
-			EdtSallePeer::addInstanceToPool($obj, (string) $row[0]);
+			EdtSallePeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

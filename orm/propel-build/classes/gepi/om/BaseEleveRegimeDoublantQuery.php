@@ -133,7 +133,7 @@ abstract class BaseEleveRegimeDoublantQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new EleveRegimeDoublant();
 			$obj->hydrate($row);
-			EleveRegimeDoublantPeer::addInstanceToPool($obj, (string) $row[0]);
+			EleveRegimeDoublantPeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

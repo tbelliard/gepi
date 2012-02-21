@@ -25,6 +25,12 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id_edt_semaine field.
 	 * @var        int
 	 */
@@ -780,12 +786,12 @@ abstract class BaseEdtSemaine extends BaseObject  implements Persistent
 	 */
 	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setIdEdtSemaine($this->getIdEdtSemaine());
 		$copyObj->setNumEdtSemaine($this->getNumEdtSemaine());
 		$copyObj->setTypeEdtSemaine($this->getTypeEdtSemaine());
 		$copyObj->setNumSemainesEtab($this->getNumSemainesEtab());
 		if ($makeNew) {
 			$copyObj->setNew(true);
+			$copyObj->setIdEdtSemaine(NULL); // this is a auto-increment column, so set to default value
 		}
 	}
 

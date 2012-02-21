@@ -25,6 +25,12 @@ abstract class BaseJProfesseursMatieres extends BaseObject  implements Persisten
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id_matiere field.
 	 * @var        string
 	 */
@@ -836,6 +842,18 @@ abstract class BaseJProfesseursMatieres extends BaseObject  implements Persisten
 		$copyObj->setIdMatiere($this->getIdMatiere());
 		$copyObj->setIdProfesseur($this->getIdProfesseur());
 		$copyObj->setOrdreMatieres($this->getOrdreMatieres());
+
+		if ($deepCopy && !$this->startCopy) {
+			// important: temporarily setNew(false) because this affects the behavior of
+			// the getter/setter methods for fkey referrer objects.
+			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
+
+			//unflag object copy
+			$this->startCopy = false;
+		} // if ($deepCopy)
+
 		if ($makeNew) {
 			$copyObj->setNew(true);
 		}

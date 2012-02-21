@@ -25,6 +25,12 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -2421,10 +2427,12 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 		$copyObj->setEctsDomainesEtude($this->getEctsDomainesEtude());
 		$copyObj->setEctsFonctionSignataireAttestation($this->getEctsFonctionSignataireAttestation());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getPeriodeNotes() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -2462,6 +2470,8 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -3832,7 +3842,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	 * @param      Groupe $groupe The JGroupesClasses object to relate
 	 * @return     void
 	 */
-	public function addGroupe($groupe)
+	public function addGroupe(Groupe $groupe)
 	{
 		if ($this->collGroupes === null) {
 			$this->initGroupes();
@@ -3984,7 +3994,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	 * @param      CategorieMatiere $categorieMatiere The JCategoriesMatieresClasses object to relate
 	 * @return     void
 	 */
-	public function addCategorieMatiere($categorieMatiere)
+	public function addCategorieMatiere(CategorieMatiere $categorieMatiere)
 	{
 		if ($this->collCategorieMatieres === null) {
 			$this->initCategorieMatieres();

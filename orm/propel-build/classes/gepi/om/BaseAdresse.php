@@ -25,6 +25,12 @@ abstract class BaseAdresse extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the adr_id field.
 	 * @var        string
 	 */
@@ -1073,7 +1079,6 @@ abstract class BaseAdresse extends BaseObject  implements Persistent
 	 */
 	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setId($this->getId());
 		$copyObj->setAdr1($this->getAdr1());
 		$copyObj->setAdr2($this->getAdr2());
 		$copyObj->setAdr3($this->getAdr3());
@@ -1082,10 +1087,12 @@ abstract class BaseAdresse extends BaseObject  implements Persistent
 		$copyObj->setPays($this->getPays());
 		$copyObj->setCommune($this->getCommune());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getResponsableEleves() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1099,10 +1106,13 @@ abstract class BaseAdresse extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
 			$copyObj->setNew(true);
+			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
 		}
 	}
 

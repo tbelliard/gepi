@@ -25,6 +25,12 @@ abstract class BaseEdtHorairesEtablissement extends BaseObject  implements Persi
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id_horaire_etablissement field.
 	 * @var        int
 	 */

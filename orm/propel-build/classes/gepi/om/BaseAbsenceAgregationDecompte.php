@@ -25,6 +25,12 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the eleve_id field.
 	 * @var        int
 	 */
@@ -1508,6 +1514,18 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 		$copyObj->setMotifsRetards($this->getMotifsRetards());
 		$copyObj->setCreatedAt($this->getCreatedAt());
 		$copyObj->setUpdatedAt($this->getUpdatedAt());
+
+		if ($deepCopy && !$this->startCopy) {
+			// important: temporarily setNew(false) because this affects the behavior of
+			// the getter/setter methods for fkey referrer objects.
+			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
+
+			//unflag object copy
+			$this->startCopy = false;
+		} // if ($deepCopy)
+
 		if ($makeNew) {
 			$copyObj->setNew(true);
 		}
@@ -1613,7 +1631,9 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 		$this->retards = null;
 		$this->retards_non_justifies = null;
 		$this->motifs_absences = null;
+		$this->motifs_absences_unserialized = null;
 		$this->motifs_retards = null;
+		$this->motifs_retards_unserialized = null;
 		$this->created_at = null;
 		$this->updated_at = null;
 		$this->alreadyInSave = false;

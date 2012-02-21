@@ -134,7 +134,7 @@ abstract class BaseJNotificationResponsableEleveQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new JNotificationResponsableEleve();
 			$obj->hydrate($row);
-			JNotificationResponsableElevePeer::addInstanceToPool($obj, serialize(array((string) $row[0], (string) $row[1])));
+			JNotificationResponsableElevePeer::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
 		}
 		$stmt->closeCursor();
 

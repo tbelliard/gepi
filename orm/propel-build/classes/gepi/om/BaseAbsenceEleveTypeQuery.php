@@ -177,7 +177,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new AbsenceEleveType();
 			$obj->hydrate($row);
-			AbsenceEleveTypePeer::addInstanceToPool($obj, (string) $row[0]);
+			AbsenceEleveTypePeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

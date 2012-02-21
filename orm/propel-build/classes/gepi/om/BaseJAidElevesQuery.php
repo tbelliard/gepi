@@ -134,7 +134,7 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new JAidEleves();
 			$obj->hydrate($row);
-			JAidElevesPeer::addInstanceToPool($obj, serialize(array((string) $row[0], (string) $row[1])));
+			JAidElevesPeer::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
 		}
 		$stmt->closeCursor();
 

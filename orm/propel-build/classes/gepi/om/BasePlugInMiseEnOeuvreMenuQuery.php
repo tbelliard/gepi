@@ -145,7 +145,7 @@ abstract class BasePlugInMiseEnOeuvreMenuQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new PlugInMiseEnOeuvreMenu();
 			$obj->hydrate($row);
-			PlugInMiseEnOeuvreMenuPeer::addInstanceToPool($obj, (string) $row[0]);
+			PlugInMiseEnOeuvreMenuPeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

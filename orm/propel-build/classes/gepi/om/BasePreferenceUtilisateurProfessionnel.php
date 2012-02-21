@@ -25,6 +25,12 @@ abstract class BasePreferenceUtilisateurProfessionnel extends BaseObject  implem
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the name field.
 	 * @var        string
 	 */
@@ -787,6 +793,18 @@ abstract class BasePreferenceUtilisateurProfessionnel extends BaseObject  implem
 	{
 		$copyObj->setName($this->getName());
 		$copyObj->setLogin($this->getLogin());
+
+		if ($deepCopy && !$this->startCopy) {
+			// important: temporarily setNew(false) because this affects the behavior of
+			// the getter/setter methods for fkey referrer objects.
+			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
+
+			//unflag object copy
+			$this->startCopy = false;
+		} // if ($deepCopy)
+
 		if ($makeNew) {
 			$copyObj->setNew(true);
 			$copyObj->setValue(NULL); // this is a auto-increment column, so set to default value

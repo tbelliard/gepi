@@ -25,6 +25,12 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id_salle field.
 	 * @var        int
 	 */
@@ -772,14 +778,15 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 	 */
 	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setIdSalle($this->getIdSalle());
 		$copyObj->setNumeroSalle($this->getNumeroSalle());
 		$copyObj->setNomSalle($this->getNomSalle());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getEdtEmplacementCourss() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -787,10 +794,13 @@ abstract class BaseEdtSalle extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
 			$copyObj->setNew(true);
+			$copyObj->setIdSalle(NULL); // this is a auto-increment column, so set to default value
 		}
 	}
 

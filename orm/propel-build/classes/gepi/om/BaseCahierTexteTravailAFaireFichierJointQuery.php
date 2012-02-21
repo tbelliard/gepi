@@ -145,7 +145,7 @@ abstract class BaseCahierTexteTravailAFaireFichierJointQuery extends ModelCriter
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new CahierTexteTravailAFaireFichierJoint();
 			$obj->hydrate($row);
-			CahierTexteTravailAFaireFichierJointPeer::addInstanceToPool($obj, (string) $row[0]);
+			CahierTexteTravailAFaireFichierJointPeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

@@ -25,6 +25,12 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the login field.
 	 * @var        string
 	 */
@@ -2377,7 +2383,6 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 */
 	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setLogin($this->getLogin());
 		$copyObj->setNom($this->getNom());
 		$copyObj->setPrenom($this->getPrenom());
 		$copyObj->setCivilite($this->getCivilite());
@@ -2397,10 +2402,12 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		$copyObj->setNumind($this->getNumind());
 		$copyObj->setAuthMode($this->getAuthMode());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getJGroupesProfesseurss() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -2492,10 +2499,13 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
 			$copyObj->setNew(true);
+			$copyObj->setLogin(NULL); // this is a auto-increment column, so set to default value
 		}
 	}
 
@@ -5745,7 +5755,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * @param      Groupe $groupe The JGroupesProfesseurs object to relate
 	 * @return     void
 	 */
-	public function addGroupe($groupe)
+	public function addGroupe(Groupe $groupe)
 	{
 		if ($this->collGroupes === null) {
 			$this->initGroupes();
@@ -5897,7 +5907,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * @param      AidDetails $aidDetails The JAidUtilisateursProfessionnels object to relate
 	 * @return     void
 	 */
-	public function addAidDetails($aidDetails)
+	public function addAidDetails(AidDetails $aidDetails)
 	{
 		if ($this->collAidDetailss === null) {
 			$this->initAidDetailss();
@@ -6049,7 +6059,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * @param      Matiere $matiere The JProfesseursMatieres object to relate
 	 * @return     void
 	 */
-	public function addMatiere($matiere)
+	public function addMatiere(Matiere $matiere)
 	{
 		if ($this->collMatieres === null) {
 			$this->initMatieres();

@@ -145,7 +145,7 @@ abstract class BasePlugInQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new PlugIn();
 			$obj->hydrate($row);
-			PlugInPeer::addInstanceToPool($obj, (string) $row[0]);
+			PlugInPeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

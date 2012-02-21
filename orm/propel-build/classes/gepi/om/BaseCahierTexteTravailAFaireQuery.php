@@ -165,7 +165,7 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new CahierTexteTravailAFaire();
 			$obj->hydrate($row);
-			CahierTexteTravailAFairePeer::addInstanceToPool($obj, (string) $row[0]);
+			CahierTexteTravailAFairePeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

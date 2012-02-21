@@ -141,7 +141,7 @@ abstract class BasePlugInAutorisationQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new PlugInAutorisation();
 			$obj->hydrate($row);
-			PlugInAutorisationPeer::addInstanceToPool($obj, (string) $row[0]);
+			PlugInAutorisationPeer::addInstanceToPool($obj, (string) $key);
 		}
 		$stmt->closeCursor();
 

@@ -146,7 +146,7 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new PeriodeNote();
 			$obj->hydrate($row);
-			PeriodeNotePeer::addInstanceToPool($obj, serialize(array((string) $row[0], (string) $row[1])));
+			PeriodeNotePeer::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
 		}
 		$stmt->closeCursor();
 
