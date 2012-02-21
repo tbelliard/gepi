@@ -192,12 +192,13 @@ class ModelCriteria extends Criteria
 	 * @param      string $conditionName A name to store the condition for a later combination with combine()
 	 * @param      string $clause The pseudo SQL clause, e.g. 'AuthorId = ?'
 	 * @param      mixed  $value A value for the condition
+	 * @param      mixed  $bindingType A value for the condition
 	 *
 	 * @return     ModelCriteria The current object, for fluid interface
 	 */
-	public function condition($conditionName, $clause, $value = null)
+	public function condition($conditionName, $clause, $value = null, $bindingType = null)
 	{
-		$this->addCond($conditionName, $this->getCriterionForClause($clause, $value), null, null);
+		$this->addCond($conditionName, $this->getCriterionForClause($clause, $value, $bindingType), null, $bindingType);
 
 		return $this;
 	}
@@ -533,8 +534,10 @@ class ModelCriteria extends Criteria
 			return;
 		}
 
-		// select() needs the PropelSimpleArrayFormatter
-		$this->setFormatter('PropelSimpleArrayFormatter');
+		// select() needs the PropelSimpleArrayFormatter if no formatter given
+		if (is_null($this->formatter)) {
+				$this->setFormatter('PropelSimpleArrayFormatter');
+		}
 
 		// clear only the selectColumns, clearSelectColumns() clears asColumns too
 		$this->selectColumns = array();
@@ -1181,6 +1184,9 @@ class ModelCriteria extends Criteria
 	 */
 	public function findOneOrCreate($con = null)
 	{
+		if ($this->joins) {
+			throw new PropelException('findOneOrCreate() cannot be used on a query with a join, because Propel cannot transform a SQL JOIN into a subquery. You should split the query in two queries to avoid joins.');
+		}
 		if (!$ret = $this->findOne($con)) {
 			$class = $this->getModelName();
 			$obj = new $class();
@@ -1436,7 +1442,8 @@ class ModelCriteria extends Criteria
 			|| $this->getOffset()
 			|| $this->getLimit()
 			|| $this->getHaving()
-			|| in_array(Criteria::DISTINCT, $this->getSelectModifiers());
+			|| in_array(Criteria::DISTINCT, $this->getSelectModifiers())
+			|| count($this->selectQueries) > 0;
 
 		$params = array();
 		if ($needsComplexCount) {
@@ -1786,7 +1793,7 @@ class ModelCriteria extends Criteria
 			} else {
 				$criterion = new Criterion($this, null, $clause, Criteria::CUSTOM);
 			}
-			
+
 		}
 		return $criterion;
 	}
@@ -1922,33 +1929,38 @@ class ModelCriteria extends Criteria
 	protected function getColumnFromName($phpName, $failSilently = true)
 	{
 		if (strpos($phpName, '.') === false) {
-			$class = $this->getModelAliasOrName();
+			$prefix = $this->getModelAliasOrName();
 		} else {
-			list($class, $phpName) = explode('.', $phpName);
+			// $prefix could be either class name or table name
+			list($prefix, $phpName) = explode('.', $phpName);
 		}
 
-		if ($class == $this->getModelAliasOrName()) {
-			// column of the Criteria's model
+		if ($prefix == $this->getModelAliasOrName() || $prefix == $this->getTableMap()->getName()) {
+			// column of the Criteria's model, or column name from Criteria's peer
 			$tableMap = $this->getTableMap();
-		} elseif (isset($this->joins[$class])) {
+		} elseif (isset($this->joins[$prefix])) {
 			// column of a relations's model
-			$tableMap = $this->joins[$class]->getTableMap();
-		} elseif ($this->hasSelectQuery($class)) {
-			return $this->getColumnFromSubQuery($class, $phpName, $failSilently);
+			$tableMap = $this->joins[$prefix]->getTableMap();
+		} elseif ($this->hasSelectQuery($prefix)) {
+			return $this->getColumnFromSubQuery($prefix, $phpName, $failSilently);
 		} elseif ($failSilently) {
 			return array(null, null);
 		} else {
-			throw new PropelException(sprintf('Unknown model or alias "%s"', $class));
+			throw new PropelException(sprintf('Unknown model, alias or table "%s"', $prefix));
 		}
 
 		if ($tableMap->hasColumnByPhpName($phpName)) {
 			$column = $tableMap->getColumnByPhpName($phpName);
-			if (isset($this->aliases[$class])) {
-				$this->currentAlias = $class;
-				$realColumnName = $class . '.' . $column->getName();
+			if (isset($this->aliases[$prefix])) {
+				$this->currentAlias = $prefix;
+				$realColumnName = $prefix . '.' . $column->getName();
 			} else {
 				$realColumnName = $column->getFullyQualifiedName();
 			}
+			return array($column, $realColumnName);
+		} elseif ($tableMap->hasColumn($phpName,false)) {
+			$column = $tableMap->getColumn($phpName,false);
+			$realColumnName = $column->getFullyQualifiedName();
 			return array($column, $realColumnName);
 		} elseif (isset($this->asColumns[$phpName])) {
 			// aliased column
@@ -1956,7 +1968,7 @@ class ModelCriteria extends Criteria
 		} elseif ($failSilently) {
 			return array(null, null);
 		} else {
-			throw new PropelException(sprintf('Unknown column "%s" on model or alias "%s"', $phpName, $class));
+			throw new PropelException(sprintf('Unknown column "%s" on model, alias or table "%s"', $phpName, $prefix));
 		}
 	}
 
@@ -1996,7 +2008,7 @@ class ModelCriteria extends Criteria
 	protected function getRealColumnName($columnName)
 	{
 		if (!$this->getTableMap()->hasColumnByPhpName($columnName)) {
-			throw new PropelException('Unkown column ' . $columnName . ' in model ' . $this->modelName);
+			throw new PropelException('Unknown column ' . $columnName . ' in model ' . $this->modelName);
 		}
 		if ($this->useAliasInSQL) {
 			return $this->modelAlias . '.' . $this->getTableMap()->getColumnByPhpName($columnName)->getName();
