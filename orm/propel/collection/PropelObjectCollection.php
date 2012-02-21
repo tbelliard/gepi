@@ -280,24 +280,4 @@ class PropelObjectCollection extends PropelCollection
 
 		return $relatedObjects;
 	}
-
-        /**
-	 * Add a an element to the collection, preventing duplicates
-	 *
-	 * @param     $element The element
-	 *
-	 * @return    bool if the element was added or not
-	 */
-	public function add($element)
-	{
-		if ($element != NULL) {
-		    if (!$this->contains($element) &&
-                       !in_array($element->getPrimaryKey(), $this->getPrimaryKeys(), true)) {
-                        $this->append($element);
-                        return true;
-                    }
-		}
-		return false;
-	}
-
 }

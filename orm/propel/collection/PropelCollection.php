@@ -571,7 +571,7 @@ class PropelCollection extends ArrayObject implements Serializable
 	}
 
 	/**
-	 * Add a an element to the collection, preventing duplicates
+	 * Add a an element to the collection, preventing duplicate instances
 	 *
 	 * @param     $element The element
 	 *
@@ -579,18 +579,11 @@ class PropelCollection extends ArrayObject implements Serializable
 	 */
 	public function add($element)
 	{
-		if ($element != NULL) {
-		    if ($this->isEmpty()) {
-			$this->append($element);
-			return true;
-		    } else if (!$this->contains($element)) {
-                        $this->append($element);
-                        return true;
-                    }
-		}
+                if (!$this->contains($element)) {
+                    $this->append($element);
+                    return true;
+                }
 		return false;
 	}
 
 }
-
-?>
