@@ -2,13 +2,14 @@
 body {
 	padding: 0;
 	margin: 0;
-	color: #330033;
+	color: #330033;;
+	font-family: "DejaVu Serif", Serif;
 	background: #EEEEEE;
 }
 
 @media screen  {
 	body {
-		background: #EAEAEA;
+		background: #EEEEEE;
 	}
 }
 

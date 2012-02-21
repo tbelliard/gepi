@@ -301,7 +301,6 @@ table {
 }
 
 .legende {
-	font-size: xx-small;
 	font-weight: normal;
 	font-style: italic;
 }
@@ -472,7 +471,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	float: right;
 	margin: 0px auto;
 	width : 90%;
-	font-size: 0.8em;
+	font-size: 1em;
 	color: black;
 	text-align: left;
 }
