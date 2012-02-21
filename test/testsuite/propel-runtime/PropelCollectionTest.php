@@ -38,6 +38,17 @@ class PropelCollectionTest extends GepiEmptyTestBase
         $eleve_col->add($eleve1);
         $eleve_col->add($eleve1);
         $this->assertEquals(1, count($eleve_col));
+    }
 
+    /**
+    * test a propel bug corrected in commit f23575d of propel github repo
+    *
+    */
+   public function testInstancePooling() {
+        ElevePeer::clearInstancePool();
+        foreach (AbsenceEleveSaisieQuery::create()->useEleveQuery()->filterByLogin('Florence Michu')->endUse()->find() as $saisie) {
+                $eleve_col[] = $saisie->getEleve();
+        }
+        $this->assertTrue($eleve_col[0] === $eleve_col[1]);
     }
 }
