@@ -52,15 +52,11 @@ class AbsencesNotificationHelper {
     }
     $temps_demi_journee = $heure_demi_journee.$minute_demi_journee;
 	
-	$lastEleves=array();
     //on récupère la liste des noms d'eleves
     $eleve_col = new PropelCollection();
     if ($notification->getAbsenceEleveTraitement() != null) {
 		foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
-			if (!in_array($saisie->getEleve()->getLogin(),$lastEleves)) {
-				$lastEleves[] = $saisie->getEleve()->getLogin();
-				$eleve_col->add($saisie->getEleve());
-			}
+			$eleve_col->add($saisie->getEleve());
 		}
     }
 	
