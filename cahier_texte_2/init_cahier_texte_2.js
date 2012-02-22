@@ -30,28 +30,45 @@ function initPage () {
 	//getWinCalendar();
 	setTimeout('getWinCalendar();', 500);
 
-	//si id_group_init est renseigné on affiche le groupe concerné, sinon on affiche les dernieres notices
+
+	// Si id_groupe_init, type_notice_init (cr|dev|np) et id_ct_init sont renseignés (non vides), on ouvre la notice indiquée
 	var id_groupe_init = $('id_groupe_init').value;
-	if (id_groupe_init != '') {
-	    id_groupe = id_groupe_init;
+	var type_notice_init = $('type_notice_init').value;
+	var id_ct_init = $('id_ct_init').value;
+	if ((id_groupe_init != '')&&(type_notice_init != '')&&(id_ct_init != '')) {
+	    //id_ct = id_ct_init;
+		id_groupe = id_groupe_init;
 	    getWinDernieresNotices().hide();
 	    getWinListeNotices();
-		/*
-	    new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe_init, {encoding: 'utf-8'});
-	    getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=' + id_groupe_init + '&today='+getCalendarUnixDate(), {
-		    encoding: 'utf-8',
-		    onComplete :
-		    function() {
-			    initWysiwyg();
-				debut_alert = new Date();
-				    }
-			    }
-	    );
-		*/
+
 		// On ajoute un délais pour que le calendrier soit chargé avant
-		setTimeout('initFenetreNotice('+id_groupe_init+')',500);
-	} else {
-            getWinDernieresNotices().hide();
+		//alert('initFenetreNoticePrecise('+id_groupe_init+','+id_ct_init+',"'+type_notice_init+'")')
+		setTimeout('initFenetreNoticePrecise('+id_groupe_init+','+id_ct_init+',"'+type_notice_init+'")',500);
+	}
+	else {
+		// Si id_group_init est renseigné on affiche le groupe concerné, sinon on affiche les dernieres notices
+		var id_groupe_init = $('id_groupe_init').value;
+		if (id_groupe_init != '') {
+			id_groupe = id_groupe_init;
+			getWinDernieresNotices().hide();
+			getWinListeNotices();
+			/*
+			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe_init, {encoding: 'utf-8'});
+			getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=' + id_groupe_init + '&today='+getCalendarUnixDate(), {
+				encoding: 'utf-8',
+				onComplete :
+				function() {
+					initWysiwyg();
+					debut_alert = new Date();
+						}
+					}
+			);
+			*/
+			// On ajoute un délais pour que le calendrier soit chargé avant
+			setTimeout('initFenetreNotice('+id_groupe_init+',"'+type_notice_init+'")',500);
+		} else {
+			getWinDernieresNotices().hide();
+		}
 	}
 }
 
@@ -85,6 +102,52 @@ function initFenetreNotice(id_groupe_init) {
 				    }
 			    }
 	    );
+}
+
+function initFenetreNoticePrecise(id_groupe_init,id_ct_init,type_notice_init) {
+
+	new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe_init, {encoding: 'UTF-8'});
+	if(type_notice_init=='cr') {
+		page="ajax_edition_compte_rendu.php";
+		getWinEditionNotice().setAjaxContent('./'+page+'?id_ct=' + id_ct_init + '&id_groupe=' + id_groupe_init + '&mettre_a_jour_cal=y', {
+			encoding: 'UTF-8',
+			onComplete :
+			function() {
+				initWysiwyg();
+				debut_alert = new Date();
+					}
+				}
+		);
+			// Pb: On arrive à la bonne date dans la notice, mais le calendrier n'est pas à la bonne date.
+			//     Du coup, Enr. et passer aux devoirs du jour suivant échoue.
+	}
+	else {
+		if(type_notice_init=='dev') {
+			page="ajax_edition_devoir.php";
+			getWinEditionNotice().setAjaxContent('./'+page+'?id_devoir=' + id_ct_init + '&id_groupe=' + id_groupe_init + '&mettre_a_jour_cal=y', {
+				encoding: 'UTF-8',
+				onComplete :
+				function() {
+					initWysiwyg();
+					debut_alert = new Date();
+						}
+					}
+			);
+			// Pb: On arrive à la bonne date dans la notice, mais le calendrier n'est pas à la bonne date.
+		}
+		else {
+			page="ajax_edition_notice_privee.php";
+			getWinEditionNotice().setAjaxContent('./'+page+'?id_ct=' + id_ct_init + '&id_groupe=' + id_groupe_init + '&mettre_a_jour_cal=y', {
+				encoding: 'UTF-8',
+				onComplete :
+				function() {
+					initWysiwyg();
+					debut_alert = new Date();
+						}
+					}
+			);
+		}
+	}
 }
 
 function include(filename)
@@ -1009,6 +1072,43 @@ function modif_visibilite_doc_joint(notice, id_ct, id_document) {
 	}
 }
 
+function getWinBanqueTexte() {
+	if (typeof winBanqueTexte=="undefined") {
+		winBanqueTexte = new Window(
+				{id: 'win_banque_texte',
+				title: 'Banque de textes',
+				showEffect: Element.show,
+				hideEffect: Element.hide,
+				top:100,
+				left:400,
+				width:300,
+				height:200}
+			);
+		$('win_banque_texte_content').setStyle({
+			backgroundColor: '#d0d0d0',
+			fontSize: '14px',
+			color: '#000000'
+		});
+	}
+
+	winBanqueTexte.show();
+	winBanqueTexte.toFront();
+	return winBanqueTexte;
+}
+/*
+function initFenetreBanque() {
+	new Ajax.Updater('affichage_banque_texte', './ajax_affichage_banque_texte.php', {encoding: 'UTF-8'});
+	getWinBanqueTexte().setAjaxContent('./ajax_affichage_banque_texte.php', {
+		encoding: 'UTF-8',
+		onComplete :
+		function() {
+			initWysiwyg();
+			debut_alert = new Date();
+				}
+			}
+	);
+}
+*/
 //include('../lib/DHTMLcalendar/lang/calendar-fr.js');
 //include('../lib/DHTMLcalendar/calendar-setup.js');
 
@@ -1022,6 +1122,19 @@ Event.observe(window, 'load', temporiser_chargement_js);
 
 function insere_texte_dans_ckeditor(texte) {
 	CKEDITOR.instances['contenu'].insertHtml(texte);
+}
+
+function insere_texte_dans_ckeditor_2(texte) {
+	CKEDITOR.instances['contenu'].insertHtml(unescape(texte));
+}
+
+function insere_texte_type_dans_ckeditor(id) {
+	if(document.getElementById(id)) {
+		CKEDITOR.instances['contenu'].insertHtml(document.getElementById(id).innerHTML);
+	}
+	else {
+		alert("L'identifiant de texte-type proposé ne correspond à aucun texte-type.");
+	}
 }
 
 function insere_image_dans_ckeditor(url, largeur, hauteur) {

@@ -52,11 +52,15 @@ class AbsencesNotificationHelper {
     }
     $temps_demi_journee = $heure_demi_journee.$minute_demi_journee;
 	
+	$lastEleves=array();
     //on récupère la liste des noms d'eleves
     $eleve_col = new PropelCollection();
     if ($notification->getAbsenceEleveTraitement() != null) {
 		foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
-			$eleve_col->add($saisie->getEleve());
+			if (!in_array($saisie->getEleve()->getLogin(),$lastEleves)) {
+				$lastEleves[] = $saisie->getEleve()->getLogin();
+				$eleve_col->add($saisie->getEleve());
+			}
 		}
     }
 	
@@ -473,6 +477,14 @@ function tbs_str($FieldName,&$CurrRec) {
 
 function tbs_toLower($FieldName,&$CurrRec) {
 	$CurrRec = mb_strtolower($CurrRec);
+}
+
+// Fonction de comparaison
+function TriSaisie(AbsenceEleveSaisie $a, AbsenceEleveSaisie $b) {
+	if ($a->getDebutAbs('U') == $b->getDebutAbs('U')) {
+		return 0;
+	}
+	return (($a->getFirst()->getDebutAbs('U') < $b->getFirst()->getDebutAbs('U')) ? -1 : 1);
 }
 
 ?>

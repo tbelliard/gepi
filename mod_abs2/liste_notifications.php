@@ -108,7 +108,9 @@ if (isFiltreRechercheParam('filter_type_notification')) {
     $query->filterByTypeNotification(getFiltreRechercheParam('filter_type_notification'));
 }
 if (isFiltreRechercheParam('filter_statut_notification')) {
-    $query->filterByStatutEnvoi(getFiltreRechercheParam('filter_statut_notification'));
+	if (getFiltreRechercheParam('filter_statut_notification') != 'SANS') {
+		$query->filterByStatutEnvoi(getFiltreRechercheParam('filter_statut_notification'));
+	}
 }
 if (isFiltreRechercheParam('filter_date_creation_notification_debut_plage')) {
     echo 'auiauiaui';

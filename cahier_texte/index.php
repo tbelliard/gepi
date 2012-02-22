@@ -65,10 +65,29 @@ if (getSettingValue("GepiCahierTexteVersion") == '2') {
 			$message_avertissement_navigateur = "Votre navigateur n'est pas compatible avec le cahier de texte 2, mais vous pouvez utiliser la version 1.";
 		} else {
 			$temp_header = "Location: ../cahier_texte_2/index.php";
+
+			$ajout_temp_header="";
 			$id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
 			if ($id_groupe != NULL) {
-				$temp_header .= "?id_groupe=" . $id_groupe;
+				$ajout_temp_header .= "?id_groupe=" . $id_groupe;
 			}
+
+			$id_ct = isset($_POST["id_ct"]) ? $_POST["id_ct"] :(isset($_GET["id_ct"]) ? $_GET["id_ct"] :NULL);
+			if ($id_ct != NULL) {
+				if($ajout_temp_header=="") {$ajout_temp_header.="?";}
+				else {$ajout_temp_header.="&";}
+				$ajout_temp_header .= "id_ct=" . $id_ct;
+			}
+
+			$type_notice = isset($_POST["type_notice"]) ? $_POST["type_notice"] :(isset($_GET["type_notice"]) ? $_GET["type_notice"] :NULL);
+			if ($type_notice != NULL) {
+				if($ajout_temp_header=="") {$ajout_temp_header.="?";}
+				else {$ajout_temp_header.="&";}
+				$ajout_temp_header .= "type_notice=" . $type_notice;
+			}
+			
+			$temp_header.=$ajout_temp_header;
+
 			header($temp_header);
 			die();
 		}

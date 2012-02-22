@@ -986,6 +986,7 @@ if ($eleve_col->isEmpty()) {
 							<?php echo $edt_creneau->getNomDefiniePeriode();?>
 						</td>
 				<?php $i++;
+
 				}?>
 					</tr>
 				</thead>
@@ -1025,6 +1026,7 @@ for($i = 0; $i<$eleve['creneaux_possibles']; $i++){ ?>
 <?php if (isset ($eleve['saisie'][$i]) && !empty ($eleve['saisie'][$i])) { ?>
 							<a class="saisieAnte" href='visu_saisie.php?id_saisie=<?php echo $eleve['saisie'][$i]['primaryKey']; ?>'>
 								Modif.&nbsp;saisie de <?php echo $eleve['saisie'][$i]['createdAt']; ?>
+
 <?php
 		$besoin_echo_virgule = false;
 		if (isset ($eleve['saisie'][$i]['traitements'])) {

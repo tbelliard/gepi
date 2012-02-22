@@ -212,6 +212,10 @@ echo " <button style='background-color:".$color_fond_notices['p']."' onclick=\"j
 						getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$groupe->getId()."&today='+getCalendarUnixDate());
 					\">Voir NP</button>\n";
 
+echo "<button style='background-color:lightblue' onclick=\"javascript:
+						getWinBanqueTexte().setAjaxContent('./ajax_affichage_banque_texte.php',{});
+					\">Banque</button>\n";
+
 //echo "<br><br>\n";
 echo "<br />\n";
 // Retour aux notices d'aujourd'hui:
@@ -596,6 +600,14 @@ $ouverture_auto_WinDevoirsDeLaClasse=getPref($_SESSION['login'], 'ouverture_auto
 if($ouverture_auto_WinDevoirsDeLaClasse=='y') {
 	echo "<script type='text/javascript'>
 	getWinDevoirsDeLaClasse().setAjaxContent('./ajax_devoirs_classe.php?id_classe=$id_classe&today='+getCalendarUnixDate());
+</script>\n";
+}
+
+if((isset($_GET['mettre_a_jour_cal']))&&($_GET['mettre_a_jour_cal']=='y')) {
+echo "<script type='text/javascript'>
+	object_en_cours_edition='devoir';
+	updateCalendarWithUnixDate($today);
+	dateChanged(calendarInstanciation);
 </script>\n";
 }
 ?>

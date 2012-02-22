@@ -3,7 +3,7 @@
  * Arborescence des évaluations
  * 
  *
- * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * 
  * @package Carnet_de_notes
  * @subpackage Conteneur
@@ -232,10 +232,33 @@ if (isset($_REQUEST['id_devoir'])) {
     	$id_racine = mysql_result($appel_devoir, 0, 'id_racine');
     }
 }
+
 if (isset($_GET['id_groupe']) and isset($_GET['periode_num'])) {
     $id_groupe = $_GET['id_groupe'];
     $periode_num = $_GET['periode_num'];
     $login_prof = $_SESSION['login'];
+
+    if(!isset($current_group)) {$current_group = get_group($id_groupe);}
+	// Avec des classes qui n'ont pas le même nombre de période, on peut arriver avec un periode_num impossible pour un id_groupe
+	while((!isset($current_group["classe"]["ver_periode"]["all"][$periode_num]))&&($periode_num>0)) {
+		$periode_num--;
+	}
+	if($periode_num<1) {
+		$mess=rawurlencode("ERREUR: Aucune période n'a été trouvée pour le groupe choisi !");
+		header("Location: index.php?msg=$mess");
+		die();
+	}
+
+	// Avec des classes qui n'ont pas le même nombre de période, on peut arriver avec un periode_num impossible pour un id_groupe
+	while((!isset($current_group["classe"]["ver_periode"]["all"][$periode_num]))&&($periode_num>0)) {
+		$periode_num--;
+	}
+	if($periode_num<1) {
+		$mess=rawurlencode("ERREUR: Aucune période n'a été trouvée pour le groupe choisi !");
+		header("Location: index.php?msg=$mess");
+		die();
+	}
+
     $appel_cahier_notes = mysql_query("SELECT id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe='$id_groupe' and periode='$periode_num')");
     $nb_cahier_note = mysql_num_rows($appel_cahier_notes);
     if ($nb_cahier_note == 0) {
@@ -508,9 +531,21 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 </script>\n";
 
 			echo "<input type='hidden' name='periode_num' id='periode_num' value='$periode_num' />\n";
-			echo "Période $periode_num: <select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+			echo "Période $periode_num&nbsp;:";
+			if((isset($id_grp_prec))&&($id_grp_prec!=0)) {
+				//onclick=\"return confirm_abandon (this, 'yes', '$themessage')\" 
+				//arrow-left.png
+				echo " <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_num=$periode_num' title='Groupe précédent'><img src='../images/icons/back.png' width='16' height='16' alt='Groupe précédent' /></a>\n";
+			}
+			echo "<select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
 			echo $chaine_options_classes;
-			echo "</select> | \n";
+			echo "</select>\n";
+			if((isset($id_grp_suiv))&&($id_grp_suiv!=0)) {
+				//onclick=\"return confirm_abandon (this, 'yes', '$themessage')\" 
+				//arrow-right.png
+				echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_suiv&amp;periode_num=$periode_num' title='Groupe suivant'><img src='../images/icons/forward.png' width='16' height='16' alt='Groupe suivant' /></a>\n";
+			}
+			echo " | \n";
 		}
 	}
 	// =================================
@@ -526,7 +561,7 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 		echo "<script type='text/javascript'>
 var tab_per_cn=new Array();\n";
 
-
+		$max_per=0;
 		$chaine_options_periodes="";
 		while($lig_cn=mysql_fetch_object($res_cn)) {
 			$chaine_options_periodes.="<option value='$lig_cn->id_cahier_notes'";
@@ -534,6 +569,8 @@ var tab_per_cn=new Array();\n";
 			$chaine_options_periodes.=">$lig_cn->periode</option>\n";
 
 			echo "tab_per_cn[$lig_cn->id_cahier_notes]=$lig_cn->periode;\n";
+
+			if($lig_cn->periode>$max_per) {$max_per=$lig_cn->periode;}
 		}
 
 		$index_num_periode=$periode_num-1;
@@ -566,9 +603,19 @@ var tab_per_cn=new Array();\n";
 	}
 </script>\n";
 	
-		echo "<span title='Accéder au cahier de notes de la période (ne sont proposées que les périodes pour lesquelles le cahier de notes a été initialisé)'>Période</span> <select name='id_racine' id='id_racine' onchange=\"confirm_changement_periode(change, '$themessage');\">\n";
+		echo "<span title='Accéder au cahier de notes de la période (ne sont proposées que les périodes pour lesquelles le cahier de notes a été initialisé)'>Période</span>&nbsp;:";
+		if($periode_num>1) {
+			$periode_prec=$periode_num-1;
+			echo " <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_prec' title='Période précédente'><img src='../images/icons/back.png' width='16' height='16' alt='Période précédente' /></a>\n";
+		}
+		echo "<select name='id_racine' id='id_racine' onchange=\"confirm_changement_periode(change, '$themessage');\">\n";
 		echo $chaine_options_periodes;
-		echo "</select> | \n";
+		echo "</select>";
+		if($periode_num<$max_per) {
+			$periode_suiv=$periode_num+1;
+			echo " <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_suiv' title='Période suivante'><img src='../images/icons/forward.png' width='16' height='16' alt='Période suivante' /></a>\n";
+		}
+		echo " | \n";
 	}
 
 
@@ -591,7 +638,7 @@ var tab_per_cn=new Array();\n";
         echo "<a href='add_modif_dev.php?id_conteneur=$id_racine&amp;mode_navig=retour_index'> Créer une évaluation </a> | \n";
         if ($periode_num!='1')  {
             $themessage = 'En cliquant sur OK, vous allez créer la même structure de boîtes que celle de la période précédente. Si des boîtes existent déjà, elles ne seront pas supprimées.';
-            echo "<a href='index.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;creer_structure=yes".add_token_in_url()."'  onclick=\"return confirm_abandon (this, 'yes', '$themessage')\"> Créer la même structure que la période précédente</a> | \n";
+            echo "<a href='index.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;creer_structure=yes".add_token_in_url()."' onclick=\"return confirm_abandon (this, 'yes', '$themessage')\"> Créer la même structure que la période précédente</a> | \n";
         }
     }
 
