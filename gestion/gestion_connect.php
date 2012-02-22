@@ -242,6 +242,18 @@ if ($res) {
 
 		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<td>\n";
+		if ($row[4]=="eleve") {
+		echo "<a href=\"../eleves/modify_eleve.php?eleve_login=" .$row[0]. "\" />";
+		}
+		elseif ($row[4]=="responsable") {
+		$sql= " SELECT pers_id FROM resp_pers where login='$row[0]'";
+		$res = sql_query($sql);
+		$id = mysql_fetch_array($res);
+		echo "<a href=\"../responsables/modify_resp.php?pers_id=" .$id['pers_id']. "\" />";
+		}
+		else {
+		echo "<a href=\"../utilisateurs/modify_user.php?user_login=" .$row[0]. "\" />";
+		}
 		echo $row[1];
 		echo "</td>\n";
 

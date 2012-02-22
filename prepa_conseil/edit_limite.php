@@ -130,7 +130,7 @@ $choix_edit == "2") {
 
 	$test = mysql_num_rows(mysql_query("SELECT jeg.* FROM j_eleves_groupes jeg, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jeg.id_groupe = jgp.id_groupe AND jeg.login = '".$login_eleve."')"));
 	if ($test == "0") {
-		tentative_intrusion("2", "Tentative d'accès par un prof à un bulletin simplifié d'un élève qu'il n'a pas en cours, sans en avoir l'autorisation.");
+		tentative_intrusion("2", "Tentative d'accès par un prof à un bulletin simplifié d'un élève ($login_eleve) qu'il n'a pas en cours, sans en avoir l'autorisation.");
 		echo "Vous ne pouvez pas accéder à cet élève !";
 		require ("../lib/footer.inc.php");
 		die();

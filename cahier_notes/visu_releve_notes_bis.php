@@ -820,7 +820,7 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	echo "\n<!-- Formulaire de choix des élèves et des paramètres -->\n";
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' id='formulaire' target='_blank'>\n";
 	
-	echo "<p><input type='button' name='bouton_valide_select_eleves2' value='Valider' onclick='test_check_ele()' />\n";
+	echo "<p><input type='button' name='bouton_valide_select_eleves2' value='Valider' onclick='test_check_ele()' /></p>\n";
 
 	// Période d'affichage:
 	echo "<input type='hidden' name='choix_periode' value='$choix_periode' />\n";
@@ -849,7 +849,7 @@ echo "</p>";
 	//echo "<input type='hidden' name='mode_bulletin' value='html' />\n";
 	//echo "<input type='hidden' name='un_seul_bull_par_famille' value='non' />\n";
 
-	echo "<p><input type='radio' id='releve_html' name='mode_bulletin' value='html' checked='checked' /><label for='releve_html'> Relevé HTML (nouvelle fenêtre)</label><br />\n";
+	echo "<p><input type='radio' id='releve_html' name='mode_bulletin' value='html' checked='checked' /><label for='releve_html'> Relevé HTML</label><br />\n";
 	echo "<input type='radio' id='releve_pdf' name='mode_bulletin' value='pdf' onchange='display_div_param_pdf();' /><label for='releve_pdf'> Relevé PDF</label></p>\n";
 
 	echo "<div id='div_param_pdf'>\n";
@@ -1710,7 +1710,7 @@ else {
 										$chaine_info_deux_releves="";
 										if(($un_seul_bull_par_famille=="non")&&($nb_releves>1)) {$chaine_info_deux_releves=".<br /><span style='color:red'>Plusieurs relevés pour une même famille&nbsp: les adresses des deux responsables diffèrent.</span><br /><span style='color:red'>Si vous ne souhaitez pas de deuxième relevé, pensez à cocher la case 'Un seul relevé par famille'.</span>";}
 
-										echo "<div class='espacement_bulletins'><div class='center'>Espacement (<em>non imprimé</em>) entre les relevés".$chaine_info_deux_releves."</div></div>\n";
+										echo "<div class='espacement_bulletins'><div align='center'>Espacement (<em>non imprimé</em>) entre les relevés".$chaine_info_deux_releves."</div></div>\n";
 	
 										flush();
 									}

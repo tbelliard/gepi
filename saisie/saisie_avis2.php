@@ -99,6 +99,7 @@ if (isset($_POST['is_posted'])) {
 		}
 		//echo "PLOP";
 		if ($reg == 'yes') {
+			/*
 			$test_eleve_avis_query = mysql_query("SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$periode_num')");
 			$test = mysql_num_rows($test_eleve_avis_query);
 			if ($test != "0") {
@@ -114,10 +115,22 @@ if (isset($_POST['is_posted'])) {
 				//echo "$sql<br />";
 				$register = mysql_query($sql);
 			}
-			if (!$register) {
-				$msg = "Erreur lors de l'enregistrement des données.";
-			} else {
-				$affiche_message = 'yes';             }
+			*/
+
+			$sql="DELETE FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$periode_num');";
+			$menage=mysql_query($sql);
+
+			if(($current_eleve_login_ap!='')||((isset($current_eleve_mention)&&($current_eleve_mention!=0)))) {
+				$sql="INSERT INTO avis_conseil_classe SET login='$current_eleve_login',periode='$periode_num',avis='$current_eleve_login_ap',";
+				if(isset($current_eleve_mention)) {$sql.="id_mention='$current_eleve_mention',";}
+				$sql.="statut=''";
+				$register = mysql_query($sql);
+
+				if (!$register) {
+					$msg = "Erreur lors de l'enregistrement des données.";
+				} else {
+					$affiche_message = 'yes';             }
+				}
 			}
 	} else {
 		$msg = "La période sur laquelle vous voulez enregistrer est verrouillée";
