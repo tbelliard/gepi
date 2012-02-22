@@ -100,7 +100,7 @@ if (isset($_GET['envoyer_courrier']) && $_GET['envoyer_courrier'] == 'true') {
     include_once('../tbs/plugins/tbs_plugin_opentbs.php');
     $TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
     include_once 'lib/function.php';
-    $courrier_lot_modele=repertoire_modeles('absence_modele_impression_par_lot.odt');
+    $courrier_lot_modele=repertoire_modeles('absence_modele_lettre_parents.odt');
     $TBS->LoadTemplate($courrier_lot_modele, OPENTBS_ALREADY_UTF8);
 	
 	include_once 'lib/genere_table_notification.php';

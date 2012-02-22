@@ -85,7 +85,7 @@ if ($notification->getTypeNotification() != AbsenceEleveNotificationPeer::TYPE_N
 if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER) {
     // Load the template
     // $modele_lettre_parents=repertoire_modeles("absence_modele_lettre_parents.odt");
-    $modele_lettre_parents=repertoire_modeles("absence_modele_impression_par_lot.odt");
+    $modele_lettre_parents=repertoire_modeles("absence_modele_lettre_parents.odt");
 	
     //include_once '../orm/helpers/AbsencesNotificationHelper.php';
 	include_once 'lib/genere_table_notification.php';
