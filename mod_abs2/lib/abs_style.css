@@ -129,15 +129,15 @@ div.legende{
    display:inline-block; 
     background-color: #CCCCCC;
     border: 2px outset black;
-    font: 10px Verdana;
+    font: 10px;
     padding:4px;
 }
 h3.legende{
-    font: normal small-caps normal 14pt Verdana;
+    font: normal small-caps normal 14pt;
     margin:2px;   
 }
 h4.legende{
-    font: normal small-caps normal 10pt Verdana;
+    font: normal small-caps normal 10pt;
     margin:2px;   
 }
 table.legende {
@@ -151,6 +151,6 @@ table.legende {
     padding:4px;
     border-spacing: 0px;
     border: 1px solid black;
-    font: 11px Verdana ;
+    font: 11px ;
 	
 }

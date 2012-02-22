@@ -212,7 +212,6 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					$nom_dev = mysql_result($appel_dev, $j, 'nom_court');
 					$id_dev = mysql_result($appel_dev, $j, 'id');
 					echo "<li>\n";
-					//echo "<font color='green'>$nom_dev</font>";
 					echo "<span style='color:green;'>$nom_dev</span>";
 					echo " - <a href='saisie_notes.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev'>Saisie</a>";
 
@@ -1000,7 +999,7 @@ function affiche_docs_joints($id_ct,$type_notice) {
                 $emplacement = $row[1];
               // Ouverture dans une autre fenêtre conservée parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
               // alternative, utiliser un javascript
-                $html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return FALSE;\" href=\"$emplacement\">$titre</a></li>";
+                $html .= "<li style=\"padding: 0px; margin: 0px;font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return FALSE;\" href=\"$emplacement\">$titre</a></li>";
           }
       }
       $html .= "</ul>";

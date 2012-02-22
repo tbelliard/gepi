@@ -744,21 +744,6 @@
    </g>
 </g>\n";
 
-/*
-			echo "<g transform=\"translate($xtmp,$ytmp)\">
-<g transform=\"rotate(30)\">
-<text x=\"0\" y=\"0\" font-size=\"$fontsizetext\" font-family=\"Verdana\" fill=\"$axes\" >
-BLA
-</text>
-</g>
-</g>\n";
-*/
-			/*
-			$fich=fopen("/tmp/svg_pb_nom_mat.txt","a+");
-			fwrite($fich,"\$matiere_nom_long[$i]=".$matiere_nom_long[$i]."\n");
-			fclose($fich);
-			*/
-
 		}
 		else{
 			//Affichage des matières dans la partie basse du graphique:
