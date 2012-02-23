@@ -110,7 +110,7 @@ function set_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_
 	if ($retour)
 		{
 		$id_message=mysql_insert_id();
-		if ($_POST['suppression_possible']=="oui" &&  $statuts_destinataires=="_")
+		if (isset($_POST['suppression_possible']) && $_POST['suppression_possible']=="oui" &&  $statuts_destinataires=="_")
 			$retour=ajout_bouton_supprimer_message($contenu_cor,$id_message);
 		}
 	return $retour;
@@ -448,6 +448,9 @@ if (isset($id_mess)) {
 		$mois = strftime("%m");
 		$jour = strftime("%d");
 		$display_date_debut = $jour."/".$mois."/".$annee;
+		$annee = strftime("%Y",time()+86400);
+		$mois = strftime("%m",time()+86400);
+		$jour = strftime("%d",time()+86400);
 		$display_date_fin = $jour."/".$mois."/".$annee;
 		$display_date_decompte = $display_date_fin;
 	}
