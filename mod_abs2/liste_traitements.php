@@ -340,8 +340,8 @@ echo '<button type="submit">Rechercher</button>';
 echo '<button type="submit" name="reinit_filtre" value="y" >Reinitialiser les filtres</button> ';
 echo '<button type="submit" name="affichage" value="tableur" >Exporter au format ods</button> ';
 ?>
-<button type="submit" name="imprime" value="lot" title="Crée une notification par lot pour chaque élève" >
-	Notifications par lot
+<button type="submit" name="imprime" value="lot" title="Crée un courrier pour chaque élève de la liste affichée ci-dessous" >
+	Courriers par lot
 </button>
 <?php
 echo "</p>";

@@ -16,6 +16,9 @@ Librairies :
 Cdt2 :
 - amélioration du copier coller de notices
 
+Abs2 :
+- génération de notifications par lot depuis une liste des traitements
+
 Gepi-1.6.0 (27/01/2012)
 ===========================
 html :

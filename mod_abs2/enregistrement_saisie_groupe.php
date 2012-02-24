@@ -206,7 +206,7 @@ $message_erreur .= verif_debut_fin_saisie($dt_date_debut_appel, $dt_date_fin_app
 if ($utilisateur->getStatut() == 'professeur' && getSettingValue("abs2_saisie_prof_decale_journee")!='y' && getSettingValue("abs2_saisie_prof_decale")!='y') {
     $now = new DateTime('now');
     if ($dt_date_debut_appel->format('U') > $now->format('U') || $dt_date_fin_appel->format('U') < $now->format('U')) {
-	$message_erreur .= "Appel non autorisée et en dehors des heures de cours dont on fait l'appel.<br/>";
+	$message_erreur .= "Appel non autorisé en dehors des heures de cours concernées.<br/>";
     }
 }
 $saisie->setDebutAbs($dt_date_debut_appel);
