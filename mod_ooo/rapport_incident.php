@@ -1,7 +1,5 @@
 <?php
 /*
- * $Id: index.php 2554 2008-10-12 14:49:29Z crob $
- *
  * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
@@ -103,8 +101,10 @@ if ($mode=='module_discipline') {
 	$cpt=0;
 	$tab_protagonistes=array(); //le tableau des login
 	$donnee_tab_protagonistes=array(); //le tableau des données
+	$nb_eleves=0; // nombre d'élèves concernés par l'incident
 
 	while($lig2=mysql_fetch_object($res2)) {
+		$nb_eleves++;
 		$tab_protagonistes[]=$lig2->login;
 
 		if($lig2->statut=='eleve') {
@@ -154,7 +154,8 @@ if ($mode=='module_discipline') {
 		}
 		$cpt++;
 	}
-
+	// on inverse les clés
+	$r_tab_protagonistes=array_flip($tab_protagonistes);
 	//affichage des donnée pour débug
 	/*
 				echo "<pre>";
@@ -188,51 +189,56 @@ if ($mode=='module_discipline') {
 		$incident_clos = ($lig_incident->etat=="clos")?"L'incident est clos.":"";
 
 		//recherche des mesures prises dans la table s_traitement_incident
-		$sql_mesures_prises="SELECT s_mesures.mesure FROM s_traitement_incident,s_mesures WHERE s_traitement_incident.id_incident='$id_incident' AND s_traitement_incident.id_mesure=s_mesures.id AND s_mesures.type='prise'";
+		$sql_mesures_prises="SELECT s_mesures.mesure,s_traitement_incident.login_ele FROM s_traitement_incident,s_mesures WHERE s_traitement_incident.id_incident='$id_incident' AND s_traitement_incident.id_mesure=s_mesures.id AND s_mesures.type='prise' ORDER BY s_traitement_incident.login_ele";
 		//echo "$sql_lieu<br />\n";
 		$res_mesures_prises=mysql_query($sql_mesures_prises);
 		if(mysql_num_rows($res_mesures_prises)>0) {
 			while ($lig_mesure_prise=mysql_fetch_object($res_mesures_prises)) {
 				if ($mesures_prises!="") {$mesures_prises .= "\n";}
+				if ($nb_eleves>1) {$mesures_prises .=$donnee_tab_protagonistes[$r_tab_protagonistes[$lig_mesure_prise->login_ele]]['nom']." : ";}
 				$mesures_prises .= $lig_mesure_prise->mesure;
 			}
 		}
 
 		//recherche des mesures demandées dans la table s_traitement_incident
 		$travail_demande="";
-		$sql_mesures_demandees="SELECT s_mesures.mesure,s_travail_mesure.travail FROM s_traitement_incident,s_mesures,s_travail_mesure WHERE s_traitement_incident.id_incident='$id_incident' AND s_traitement_incident.id_mesure=s_mesures.id AND s_mesures.type='demandee' AND s_travail_mesure.id_incident='$id_incident'";
+		$sql_mesures_demandees="SELECT s_mesures.mesure,s_travail_mesure.login_ele,s_travail_mesure.travail FROM s_traitement_incident,s_mesures,s_travail_mesure WHERE s_traitement_incident.id_incident='$id_incident' AND s_traitement_incident.login_ele=s_travail_mesure.login_ele AND s_traitement_incident.id_mesure=s_mesures.id AND s_mesures.type='demandee' AND s_travail_mesure.id_incident='$id_incident'  ORDER BY s_traitement_incident.login_ele";
 		//echo "$sql_lieu<br />\n";
 		$res_mesures_demandees=mysql_query($sql_mesures_demandees);
 		if(mysql_num_rows($res_mesures_demandees)>0) {
 			while ($lig_mesure_demandee=mysql_fetch_object($res_mesures_demandees)) {
+				if ($nb_eleves>1) {$mesures_demandees .=$donnee_tab_protagonistes[$r_tab_protagonistes[$lig_mesure_demandee->login_ele]]['nom']." : ";}
 				$mesures_demandees .= $lig_mesure_demandee->mesure."\n";
 				// quelque soit le nombre de mesures demandées il ne peut y avoir qu'un seul travail et/ou document
-				$travail_demande = "Travail : ".$lig_mesure_demandee->travail;
+				$travail_demande = " ° Travail : ".$lig_mesure_demandee->travail;
 			}
 			if ($travail_demande!="") {$mesures_demandees .= $travail_demande."\n";}
 		}
 
 		// recherche des suites données à l'incident
-		$sql_autres_mesures_prises="SELECT nature,id_sanction FROM s_sanctions WHERE s_sanctions.id_incident = '".$id_incident."'";
+		$sql_autres_mesures_prises="SELECT nature,id_sanction,login FROM s_sanctions WHERE s_sanctions.id_incident = '".$id_incident."' ORDER BY login";
 		$res_autres_mesures_prises=mysql_query($sql_autres_mesures_prises);
 		if(mysql_num_rows($res_autres_mesures_prises)>0) {
 			while ($lig_autre_sanction=mysql_fetch_object($res_autres_mesures_prises)) {
 				switch($lig_autre_sanction->nature)
 				{
 					case "travail" :
-					$autres_mesures_prises .= "Travail\n";
+						if ($nb_eleves>1) {$autres_mesures_prises .=$donnee_tab_protagonistes[$r_tab_protagonistes[$lig_autre_sanction->login]]['nom']." : ";}
+						$autres_mesures_prises .= "Travail\n";
 						$r_sql="SELECT travail FROM s_travail WHERE id_sanction='".$lig_autre_sanction->id_sanction."'";
 						$R=mysql_query($r_sql);
 						if ($R) {$autres_mesures_prises .= " ° ".mysql_result($R,0)."\n";}
 						break;
 					case "retenue" :
-					$autres_mesures_prises .= "Retenue\n";
+						if ($nb_eleves>1) {$autres_mesures_prises .=$donnee_tab_protagonistes[$r_tab_protagonistes[$lig_autre_sanction->login]]['nom']." : ";}
+						$autres_mesures_prises .= "Retenue\n";
 						$r_sql="SELECT travail FROM s_retenues WHERE id_sanction='".$lig_autre_sanction->id_sanction."'";
 						$R=mysql_query($r_sql);
 						if ($R) {$autres_mesures_prises .= " ° Travail : ".mysql_result($R,0)."\n";}
 						break;
 					case "exclusion" :
-					$autres_mesures_prises .= "Exclusion\n";
+						if ($nb_eleves>1) {$autres_mesures_prises .=$donnee_tab_protagonistes[$r_tab_protagonistes[$lig_autre_sanction->login]]['nom']." : ";}
+						$autres_mesures_prises .= "Exclusion\n";
 						$r_sql="SELECT travail,type_exclusion,qualification_faits FROM s_exclusions WHERE id_sanction='".$lig_autre_sanction->id_sanction."'";
 						$R=mysql_query($r_sql);
 						if ($R) {$autres_mesures_prises .= " ° Type : ".mysql_result($R,0,1)."\n ° Travail : ".mysql_result($R,0,0)."\n ° Qualifications des faits : ".mysql_result($R,0,2)."\n";}
@@ -240,11 +246,11 @@ if ($mode=='module_discipline') {
 				}
 			}
 		}
-
-		$sql_autres_mesures_prises="SELECT s_autres_sanctions.description,s_types_sanctions.nature FROM s_sanctions ,s_autres_sanctions,s_types_sanctions WHERE s_sanctions.id_incident = '".$id_incident."'AND s_sanctions.id_sanction = s_autres_sanctions.id_sanction AND s_autres_sanctions.id_nature=s_types_sanctions.id_nature";
+		$sql_autres_mesures_prises="SELECT s_autres_sanctions.description,s_types_sanctions.nature,s_sanctions.login FROM s_sanctions ,s_autres_sanctions,s_types_sanctions WHERE s_sanctions.id_incident = '".$id_incident."'AND s_sanctions.id_sanction = s_autres_sanctions.id_sanction AND s_autres_sanctions.id_nature=s_types_sanctions.id_nature ORDER BY s_sanctions.login";
 		$res_autres_mesures_prises=mysql_query($sql_autres_mesures_prises);
 		if(mysql_num_rows($res_autres_mesures_prises)>0) {
 			while ($lig_autre_sanction=mysql_fetch_object($res_autres_mesures_prises)) {
+				if ($nb_eleves>1) {$autres_mesures_prises .=$donnee_tab_protagonistes[$r_tab_protagonistes[$lig_autre_sanction->login]]['nom']." : ";}
 				$autres_mesures_prises .= $lig_autre_sanction->nature."\n";
 				if ($lig_autre_sanction->description!="") {$autres_mesures_prises .= " ° ".$lig_autre_sanction->description."\n";}
 			}
