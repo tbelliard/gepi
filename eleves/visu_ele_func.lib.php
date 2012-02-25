@@ -720,27 +720,16 @@ function info_eleve($ele_login) {
 		// rien et on laisse
 	}
 
-	//$acces_mod_discipline="n";
-	//if($acces_mod_discipline=='y') {
-	//if($acces_discipline=='y') {
-	$gepiVersion=getSettingValue('version');
-	$tmp_tab_gepiVersion=explode(".",$gepiVersion);
-	if(($gepiVersion=='trunk')||
-		($tmp_tab_gepiVersion[0]>1)||
-		(($tmp_tab_gepiVersion[0]==1)&&($tmp_tab_gepiVersion[1]>5))||
-		(($tmp_tab_gepiVersion[0]==1)&&($tmp_tab_gepiVersion[1]==5)&&($tmp_tab_gepiVersion[2]>2))||
-		(getSettingValue('discipline_experimental')=='y')) {
-		// Affecter auparavant la valeur de $acces_mod_discipline sur deux tests:
-		// - Module actif
-		// - Accès au module discipline précisé dans Gestion générale/Droits d'accès
+	// Affecter auparavant la valeur de $acces_mod_discipline sur deux tests:
+	// - Module actif
+	// - Accès au module discipline précisé dans Gestion générale/Droits d'accès
 
-		require_once("../mod_discipline/sanctions_func_lib.php");
+	require_once("../mod_discipline/sanctions_func_lib.php");
 
-		// tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin);
-		// $mode=all ou bien qualité: responsable, victime, témoin,...
+	// tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin);
+	// $mode=all ou bien qualité: responsable, victime, témoin,...
 
-		$tab_ele['tab_mod_discipline']=tab_mod_discipline($ele_login,"all",$date_debut_disc,$date_fin_disc);
-	}
+	$tab_ele['tab_mod_discipline']=tab_mod_discipline($ele_login,"all",$date_debut_disc,$date_fin_disc);
 
 	return $tab_ele;
 }
