@@ -224,6 +224,18 @@
 	 <input type='text' size='60' name='sacocheUrl' value='<?php echo(getSettingValue("sacocheUrl")); ?>' id='sacocheUrl' /><br/>
 	 <label for='sacoche_base' style='cursor: pointer;'>Numéro technique de «base» (laisser vide si votre instalation du logiciel d'évaluation par compétence est mono établissement)</label>
 	 <input type='text' size='5' name='sacoche_base' value='<?php echo(getSettingValue("sacoche_base")); ?>' id='sacoche_base' /><br/>
+         Empreinte du certificat actuellement intallé dans gepi : <?php
+         $file_path = dirname(__FILE__).'/../../../lib/simplesaml/cert/server.crt';
+         if (file_exists($file_path)) {
+            $cert = file_get_contents($file_path);
+            $cert = str_replace('-----BEGIN CERTIFICATE-----', '', $cert);
+            $cert = str_replace('-----END CERTIFICATE-----', '', $cert);
+            echo sha1(base64_decode($cert));
+         } else {
+             echo "pas de certificat trouvé";
+         }
+
+        ?>
 	</p>
 	
 	<p class="center">
