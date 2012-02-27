@@ -25,6 +25,12 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the nom field.
 	 * Note: this column has a database default value of: ''
 	 * @var        string
@@ -147,6 +153,12 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $aidDetailssScheduledForDeletion = null;
 
 	/**
 	 * Applies default values to this object.
@@ -345,7 +357,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->nom !== $v || $this->isNew()) {
+		if ($this->nom !== $v) {
 			$this->nom = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::NOM;
 		}
@@ -365,7 +377,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->nom_complet !== $v || $this->isNew()) {
+		if ($this->nom_complet !== $v) {
 			$this->nom_complet = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::NOM_COMPLET;
 		}
@@ -385,7 +397,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 			$v = (int) $v;
 		}
 
-		if ($this->note_max !== $v || $this->isNew()) {
+		if ($this->note_max !== $v) {
 			$this->note_max = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::NOTE_MAX;
 		}
@@ -405,7 +417,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->order_display1 !== $v || $this->isNew()) {
+		if ($this->order_display1 !== $v) {
 			$this->order_display1 = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::ORDER_DISPLAY1;
 		}
@@ -425,7 +437,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 			$v = (int) $v;
 		}
 
-		if ($this->order_display2 !== $v || $this->isNew()) {
+		if ($this->order_display2 !== $v) {
 			$this->order_display2 = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::ORDER_DISPLAY2;
 		}
@@ -445,7 +457,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->type_note !== $v || $this->isNew()) {
+		if ($this->type_note !== $v) {
 			$this->type_note = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::TYPE_NOTE;
 		}
@@ -465,7 +477,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 			$v = (int) $v;
 		}
 
-		if ($this->display_begin !== $v || $this->isNew()) {
+		if ($this->display_begin !== $v) {
 			$this->display_begin = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::DISPLAY_BEGIN;
 		}
@@ -485,7 +497,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 			$v = (int) $v;
 		}
 
-		if ($this->display_end !== $v || $this->isNew()) {
+		if ($this->display_end !== $v) {
 			$this->display_end = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::DISPLAY_END;
 		}
@@ -505,7 +517,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->message !== $v || $this->isNew()) {
+		if ($this->message !== $v) {
 			$this->message = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::MESSAGE;
 		}
@@ -525,7 +537,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->display_nom !== $v || $this->isNew()) {
+		if ($this->display_nom !== $v) {
 			$this->display_nom = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::DISPLAY_NOM;
 		}
@@ -545,7 +557,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 			$v = (int) $v;
 		}
 
-		if ($this->indice_aid !== $v || $this->isNew()) {
+		if ($this->indice_aid !== $v) {
 			$this->indice_aid = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::INDICE_AID;
 		}
@@ -565,7 +577,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->display_bulletin !== $v || $this->isNew()) {
+		if ($this->display_bulletin !== $v) {
 			$this->display_bulletin = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::DISPLAY_BULLETIN;
 		}
@@ -585,7 +597,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->bull_simplifie !== $v || $this->isNew()) {
+		if ($this->bull_simplifie !== $v) {
 			$this->bull_simplifie = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::BULL_SIMPLIFIE;
 		}
@@ -605,7 +617,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->outils_complementaires !== $v || $this->isNew()) {
+		if ($this->outils_complementaires !== $v) {
 			$this->outils_complementaires = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::OUTILS_COMPLEMENTAIRES;
 		}
@@ -625,7 +637,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->feuille_presence !== $v || $this->isNew()) {
+		if ($this->feuille_presence !== $v) {
 			$this->feuille_presence = $v;
 			$this->modifiedColumns[] = AidConfigurationPeer::FEUILLE_PRESENCE;
 		}
@@ -836,18 +848,18 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = AidConfigurationQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				AidConfigurationQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -899,7 +911,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -922,19 +934,24 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
-
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows = 1;
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows = AidConfigurationPeer::doUpdate($this, $con);
+					$this->doUpdate($con);
 				}
+				$affectedRows += 1;
+				$this->resetModified();
+			}
 
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+			if ($this->aidDetailssScheduledForDeletion !== null) {
+				if (!$this->aidDetailssScheduledForDeletion->isEmpty()) {
+					AidDetailsQuery::create()
+						->filterByPrimaryKeys($this->aidDetailssScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->aidDetailssScheduledForDeletion = null;
+				}
 			}
 
 			if ($this->collAidDetailss !== null) {
@@ -950,6 +967,147 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(AidConfigurationPeer::NOM)) {
+			$modifiedColumns[':p' . $index++]  = 'NOM';
+		}
+		if ($this->isColumnModified(AidConfigurationPeer::NOM_COMPLET)) {
+			$modifiedColumns[':p' . $index++]  = 'NOM_COMPLET';
+		}
+		if ($this->isColumnModified(AidConfigurationPeer::NOTE_MAX)) {
+			$modifiedColumns[':p' . $index++]  = 'NOTE_MAX';
+		}
+		if ($this->isColumnModified(AidConfigurationPeer::ORDER_DISPLAY1)) {
+			$modifiedColumns[':p' . $index++]  = 'ORDER_DISPLAY1';
+		}
+		if ($this->isColumnModified(AidConfigurationPeer::ORDER_DISPLAY2)) {
+			$modifiedColumns[':p' . $index++]  = 'ORDER_DISPLAY2';
+		}
+		if ($this->isColumnModified(AidConfigurationPeer::TYPE_NOTE)) {
+			$modifiedColumns[':p' . $index++]  = 'TYPE_NOTE';
+		}
+		if ($this->isColumnModified(AidConfigurationPeer::DISPLAY_BEGIN)) {
+			$modifiedColumns[':p' . $index++]  = 'DISPLAY_BEGIN';
+		}
+		if ($this->isColumnModified(AidConfigurationPeer::DISPLAY_END)) {
+			$modifiedColumns[':p' . $index++]  = 'DISPLAY_END';
+		}
+		if ($this->isColumnModified(AidConfigurationPeer::MESSAGE)) {
+			$modifiedColumns[':p' . $index++]  = 'MESSAGE';
+		}
+		if ($this->isColumnModified(AidConfigurationPeer::DISPLAY_NOM)) {
+			$modifiedColumns[':p' . $index++]  = 'DISPLAY_NOM';
+		}
+		if ($this->isColumnModified(AidConfigurationPeer::INDICE_AID)) {
+			$modifiedColumns[':p' . $index++]  = 'INDICE_AID';
+		}
+		if ($this->isColumnModified(AidConfigurationPeer::DISPLAY_BULLETIN)) {
+			$modifiedColumns[':p' . $index++]  = 'DISPLAY_BULLETIN';
+		}
+		if ($this->isColumnModified(AidConfigurationPeer::BULL_SIMPLIFIE)) {
+			$modifiedColumns[':p' . $index++]  = 'BULL_SIMPLIFIE';
+		}
+		if ($this->isColumnModified(AidConfigurationPeer::OUTILS_COMPLEMENTAIRES)) {
+			$modifiedColumns[':p' . $index++]  = 'OUTILS_COMPLEMENTAIRES';
+		}
+		if ($this->isColumnModified(AidConfigurationPeer::FEUILLE_PRESENCE)) {
+			$modifiedColumns[':p' . $index++]  = 'FEUILLE_PRESENCE';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO aid_config (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case 'NOM':
+						$stmt->bindValue($identifier, $this->nom, PDO::PARAM_STR);
+						break;
+					case 'NOM_COMPLET':
+						$stmt->bindValue($identifier, $this->nom_complet, PDO::PARAM_STR);
+						break;
+					case 'NOTE_MAX':
+						$stmt->bindValue($identifier, $this->note_max, PDO::PARAM_INT);
+						break;
+					case 'ORDER_DISPLAY1':
+						$stmt->bindValue($identifier, $this->order_display1, PDO::PARAM_STR);
+						break;
+					case 'ORDER_DISPLAY2':
+						$stmt->bindValue($identifier, $this->order_display2, PDO::PARAM_INT);
+						break;
+					case 'TYPE_NOTE':
+						$stmt->bindValue($identifier, $this->type_note, PDO::PARAM_STR);
+						break;
+					case 'DISPLAY_BEGIN':
+						$stmt->bindValue($identifier, $this->display_begin, PDO::PARAM_INT);
+						break;
+					case 'DISPLAY_END':
+						$stmt->bindValue($identifier, $this->display_end, PDO::PARAM_INT);
+						break;
+					case 'MESSAGE':
+						$stmt->bindValue($identifier, $this->message, PDO::PARAM_STR);
+						break;
+					case 'DISPLAY_NOM':
+						$stmt->bindValue($identifier, $this->display_nom, PDO::PARAM_STR);
+						break;
+					case 'INDICE_AID':
+						$stmt->bindValue($identifier, $this->indice_aid, PDO::PARAM_INT);
+						break;
+					case 'DISPLAY_BULLETIN':
+						$stmt->bindValue($identifier, $this->display_bulletin, PDO::PARAM_STR);
+						break;
+					case 'BULL_SIMPLIFIE':
+						$stmt->bindValue($identifier, $this->bull_simplifie, PDO::PARAM_STR);
+						break;
+					case 'OUTILS_COMPLEMENTAIRES':
+						$stmt->bindValue($identifier, $this->outils_complementaires, PDO::PARAM_STR);
+						break;
+					case 'FEUILLE_PRESENCE':
+						$stmt->bindValue($identifier, $this->feuille_presence, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1364,16 +1522,17 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 		$copyObj->setDisplayEnd($this->getDisplayEnd());
 		$copyObj->setMessage($this->getMessage());
 		$copyObj->setDisplayNom($this->getDisplayNom());
-		$copyObj->setIndiceAid($this->getIndiceAid());
 		$copyObj->setDisplayBulletin($this->getDisplayBulletin());
 		$copyObj->setBullSimplifie($this->getBullSimplifie());
 		$copyObj->setOutilsComplementaires($this->getOutilsComplementaires());
 		$copyObj->setFeuillePresence($this->getFeuillePresence());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getAidDetailss() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1381,10 +1540,13 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
 			$copyObj->setNew(true);
+			$copyObj->setIndiceAid('0'); // this is a auto-increment column, so set to default value
 		}
 	}
 
@@ -1429,7 +1591,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * Avoids crafting an 'init[$relationName]s' method name
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -1511,6 +1673,30 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of AidDetails objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $aidDetailss A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setAidDetailss(PropelCollection $aidDetailss, PropelPDO $con = null)
+	{
+		$this->aidDetailssScheduledForDeletion = $this->getAidDetailss(new Criteria(), $con)->diff($aidDetailss);
+
+		foreach ($aidDetailss as $aidDetails) {
+			// Fix issue with collection modified by reference
+			if ($aidDetails->isNew()) {
+				$aidDetails->setAidConfiguration($this);
+			}
+			$this->addAidDetails($aidDetails);
+		}
+
+		$this->collAidDetailss = $aidDetailss;
+	}
+
+	/**
 	 * Returns the number of related AidDetails objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1543,8 +1729,7 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 	 * through the AidDetails foreign key attribute.
 	 *
 	 * @param      AidDetails $l AidDetails
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     AidConfiguration The current object (for fluent API support)
 	 */
 	public function addAidDetails(AidDetails $l)
 	{
@@ -1552,9 +1737,19 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 			$this->initAidDetailss();
 		}
 		if (!$this->collAidDetailss->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collAidDetailss[]= $l;
-			$l->setAidConfiguration($this);
+			$this->doAddAidDetails($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	AidDetails $aidDetails The aidDetails object to add.
+	 */
+	protected function doAddAidDetails($aidDetails)
+	{
+		$this->collAidDetailss[]= $aidDetails;
+		$aidDetails->setAidConfiguration($this);
 	}
 
 	/**
@@ -1619,25 +1814,6 @@ abstract class BaseAidConfiguration extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(AidConfigurationPeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseAidConfiguration

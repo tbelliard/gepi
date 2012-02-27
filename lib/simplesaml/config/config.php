@@ -323,14 +323,6 @@ $config = array (
 		 * by checking the 'attributes' parameter in metadata on IdP hosted and SP remote.
 		 */
 		50 => 'core:AttributeLimit', 
-
-		60 => array(
-		    'class' => 'core:PHP',
-		    'code' => '
-		    	$path = dirname(dirname(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))))));
-		    	require_once($path."/lib/share.inc.php");
-			    $attributes = array_map_deep("ensure_utf8", $attributes);
-		    '),
 		
 		/* 
 		 * Search attribute "distinguishedName" for pattern and replaces if found

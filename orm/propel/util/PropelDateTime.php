@@ -34,7 +34,7 @@ class PropelDateTime extends DateTime
 	 * @var        string
 	 */
 	private $tzString;
-	
+
 	/**
 	 * Factory method to get a DateTime object from a temporal input
 	 *
@@ -55,7 +55,7 @@ class PropelDateTime extends DateTime
 			return null;
 		}
 		try {
-			if (is_numeric($value)) { // if it's a unix timestamp
+			if (self::isTimestamp($value)) { // if it's a unix timestamp
 				$dateTimeObject = new $dateTimeClass('@' . $value, new DateTimeZone('UTC'));
 				// timezone must be explicitly specified and then changed
 				// because of a DateTime bug: http://bugs.php.net/bug.php?id=43003
@@ -73,7 +73,26 @@ class PropelDateTime extends DateTime
 		}
 		return $dateTimeObject;
 	}
-	
+
+	public static function isTimestamp($value)
+	{
+		if (!is_numeric($value)) {
+			return false;
+		}
+
+		$stamp = strtotime($value);
+
+		if (false === $stamp) {
+			return true;
+		}
+
+		$month = date('m', $value);
+		$day   = date('d', $value);
+		$year  = date('Y', $value);
+
+		return checkdate($month, $day, $year);
+	}
+
 	/**
 	 * PHP "magic" function called when object is serialized.
 	 * Sets an internal property with the date string and returns properties

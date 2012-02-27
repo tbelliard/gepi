@@ -10,7 +10,7 @@
  * @package simpleSAMLphp
  */
  
-require_once('../../www/_include.php');
+require_once('../_include.php');
 
 $config = SimpleSAML_Configuration::getInstance();
 $session = SimpleSAML_Session::getInstance();

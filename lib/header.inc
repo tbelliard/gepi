@@ -150,8 +150,8 @@ if ($scriptaculous == "ok") {
 
 // Utilisation de dojo
 if (isset($dojo)) {
-    echo '<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/dojo/1.6.1/dojo/dojo.xd.js" djConfig="parseOnLoad: true"></script>'."\n";
-    echo '<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/dojo/1.6.1/dijit/themes/claro/claro.css" />';
+    echo '<script type="text/javascript" src="'.$gepiPath.'/lib/dojo/dojo/dojo.js" djConfig="parseOnLoad: true"></script>'."\n";
+    echo '<link rel="stylesheet" href="'.$gepiPath.'/lib/dojo/dijit/themes/claro/claro.css" />';
 }
 
 // Utilisation de windows.js
@@ -466,7 +466,7 @@ if (isset($pas_de_message_deconnexion) && $pas_de_message_deconnexion) {
 } else {
     $show_deco = 'show_message_deconnexion();';
 }?>
-<body onload="<?php echo $show_deco; ?><?php echo $charger_observeur; ?>" <?php if (isset($dojo)) {echo 'class=" claro " style="font:11pt Verdana,sans-serif;"';}?> >
+<body onload="<?php echo $show_deco; ?><?php echo $charger_observeur; ?>" <?php if (isset($dojo)) {echo 'class=" claro " style="font:11pt;"';}?> >
 
 <?php
 if (getSettingValue("impose_petit_entete_prof") == 'y' AND $_SESSION['statut'] == 'professeur') {
@@ -731,9 +731,11 @@ if (isset($titre_page)) {
                         if ($gepiGitCommit != null) {
                             $version_gepi .= ' '.substr($gepiGitCommit, 0, 6).' '.$gepiGitBranch;
                             try {
-                                $timestamp = exec('cd '.dirname(__FILE__).'; git show  --format=format:%ct '.$gepiGitCommit.'', $output);
-                                $date = new DateTime('@'.$timestamp);
-                                $version_gepi .= ' '.$date->format('d/m/Y H:i');
+                                exec('cd '.dirname(__FILE__).'; git log -1 --format=format:"%ct" '.$gepiGitCommit, $output);
+                                if (isset($output[0])) {
+                                    $date = new DateTime('@'.$output[0]);
+                                    $version_gepi .= ' '.$date->format('d/m/Y H:i');
+                                }
                             } catch (Exception $e) {
                             }
                         }

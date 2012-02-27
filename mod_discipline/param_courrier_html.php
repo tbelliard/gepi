@@ -38,7 +38,6 @@ if ($resultat_session == 'c') {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
-include("../fckeditor/fckeditor.php") ;
 
 // Check access
 // SQL : INSERT INTO droits VALUES ( '/mod_discipline/param_courrier_html.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Paramètres courrier HTML', '');

@@ -25,6 +25,12 @@ abstract class BaseJAidUtilisateursProfessionnels extends BaseObject  implements
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id_aid field.
 	 * @var        string
 	 */
@@ -264,18 +270,18 @@ abstract class BaseJAidUtilisateursProfessionnels extends BaseObject  implements
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = JAidUtilisateursProfessionnelsQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				JAidUtilisateursProfessionnelsQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -327,7 +333,7 @@ abstract class BaseJAidUtilisateursProfessionnels extends BaseObject  implements
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -369,19 +375,15 @@ abstract class BaseJAidUtilisateursProfessionnels extends BaseObject  implements
 				$this->setUtilisateurProfessionnel($this->aUtilisateurProfessionnel);
 			}
 
-
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows += JAidUtilisateursProfessionnelsPeer::doUpdate($this, $con);
+					$this->doUpdate($con);
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
 			$this->alreadyInSave = false;
@@ -389,6 +391,69 @@ abstract class BaseJAidUtilisateursProfessionnels extends BaseObject  implements
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(JAidUtilisateursProfessionnelsPeer::ID_AID)) {
+			$modifiedColumns[':p' . $index++]  = 'ID_AID';
+		}
+		if ($this->isColumnModified(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR)) {
+			$modifiedColumns[':p' . $index++]  = 'ID_UTILISATEUR';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO j_aid_utilisateurs (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case 'ID_AID':
+						$stmt->bindValue($identifier, $this->id_aid, PDO::PARAM_STR);
+						break;
+					case 'ID_UTILISATEUR':
+						$stmt->bindValue($identifier, $this->id_utilisateur, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -698,6 +763,18 @@ abstract class BaseJAidUtilisateursProfessionnels extends BaseObject  implements
 	{
 		$copyObj->setIdAid($this->getIdAid());
 		$copyObj->setIdUtilisateur($this->getIdUtilisateur());
+
+		if ($deepCopy && !$this->startCopy) {
+			// important: temporarily setNew(false) because this affects the behavior of
+			// the getter/setter methods for fkey referrer objects.
+			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
+
+			//unflag object copy
+			$this->startCopy = false;
+		} // if ($deepCopy)
+
 		if ($makeNew) {
 			$copyObj->setNew(true);
 		}
@@ -880,25 +957,6 @@ abstract class BaseJAidUtilisateursProfessionnels extends BaseObject  implements
 	public function __toString()
 	{
 		return (string) $this->exportTo(JAidUtilisateursProfessionnelsPeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseJAidUtilisateursProfessionnels

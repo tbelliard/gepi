@@ -21,12 +21,12 @@ class CKEditor
 	 * The version of %CKEditor.
 	 * \private
 	 */
-	var $version = '3.5.3';
+	var $version = '3.6.2';
 	/**
 	 * A constant string unique for each release of %CKEditor.
 	 * \private
 	 */
-	var $_timestamp = 'B37D54V';
+	var $_timestamp = 'B8DJ5M3';
 
 	/**
 	 * URL to the %CKEditor installation directory (absolute or relative to document root).
@@ -80,7 +80,7 @@ class CKEditor
 	 * A string indicating the creation date of %CKEditor.
 	 * Do not change it unless you want to force browsers to not use previously cached version of %CKEditor.
 	 */
-	var $timestamp = "B37D54V";
+	var $timestamp = "B8DJ5M3";
 	/**
 	 * An array that holds event listeners.
 	 * \private
@@ -517,8 +517,8 @@ class CKEditor
 			return "/ckeditor/";
 		}
 
-		$documentRoot = substr($realPath, 0, mb_strlen($realPath) - mb_strlen($selfPath));
-		$fileUrl = substr($file, mb_strlen($documentRoot));
+		$documentRoot = substr($realPath, 0, strlen($realPath) - strlen($selfPath));
+		$fileUrl = substr($file, strlen($documentRoot));
 		$ckeditorUrl = str_replace("ckeditor_php4.php", "", $fileUrl);
 
 		return $ckeditorUrl;

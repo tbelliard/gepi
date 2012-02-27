@@ -28,7 +28,7 @@ Mise en page pour validation et accessibilité
 }
 .expli_page {
 	text-align: center;
-	font: normal 12pt verdana sans-serif;
+	font: normal 12pt;
 }
 .info_importante {
 	font-style: normal;
@@ -96,7 +96,6 @@ Mise en page pour validation et accessibilité
 	padding-bottom: 0em;
 }
 .info {
-	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size: 0.8em;
 	margin-bottom: 1.5em;
 }
@@ -271,7 +270,7 @@ table.menu td {
 /* --- Affichage message page de garde --- */
 .gepi_garde {
 	text-align:center;
-	font: normal small-caps normal 14pt Verdana;
+	font: normal small-caps normal 14pt;
 	line-height: 125%;
 }
 
@@ -781,7 +780,7 @@ table.menu td {
 	background-color: #E0EEEF;
 }
 .choix_classe {
-	font: normal normal 11pt Verdana, sans-serif;
+	font: normal normal 11pt;
 	letter-spacing: -0.05em;
 	margin: 5px;
 }

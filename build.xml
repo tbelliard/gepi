@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="gepi" default="build" basedir=".">
+  <scriptdef name="branch_end_string" language="javascript">
+     <attribute name="text" />
+     <attribute name="property" />
+     <![CDATA[
+       var text = attributes.get("text");
+       var pos = text.lastIndexOf("/");
+	   text = text.substring(pos+1);
+  	   if (text == "HEAD") {
+	     text = "production";
+  	   }
+       project.setProperty(attributes.get("property"), text);
+     ]]>
+  </scriptdef>
+  <property environment="env" />
+  <branch_end_string text="${env.GIT_BRANCH}" property="branch_name" />
+  <property name="artifact_name" value="gepi-${branch_name}-${env.BUILD_ID}" />
+  <echo message="artifact_name = ${artifact_name}" />
+  <echo message="branch_name = ${branch_name}" />
+
+
+ <property name="source" value="."/>
+
+ <target name="clean"
+         description="Clean up and create artifact directories">
+  <delete dir="${basedir}/build/api"/>
+  <delete dir="${basedir}/build/code-browser"/>
+  <delete dir="${basedir}/build/coverage"/>
+  <delete dir="${basedir}/build/logs"/>
+  <delete dir="${basedir}/build/pdepend"/>
+  <delete>
+    <fileset dir="${basedir}/build" includes="*.tar.gz"/>
+  </delete>
+
+  <mkdir dir="${basedir}/build/api"/>
+  <mkdir dir="${basedir}/build/api/lib"/>
+  <mkdir dir="${basedir}/build/api/orm"/>
+  <mkdir dir="${basedir}/build/code-browser"/>
+  <mkdir dir="${basedir}/build/coverage"/>
+  <mkdir dir="${basedir}/build/logs"/>
+  <mkdir dir="${basedir}/build/pdepend"/>
+ </target>
+
+ <target name="phpunit"
+         description="Run unit tests using PHPUnit and generates junit.xml and clover.xml">
+  <exec executable="phpunit" failonerror="true">
+    <arg value="-c" />
+    <arg path="${basedir}/test/phpunit.xml" />
+  </exec>
+ </target>
+
+ <target name="phpunit_no_code_coverage"
+         description="Run unit tests using PHPUnit and generates junit.xml">
+  <exec executable="phpunit" failonerror="true">
+    <arg value="-c" />
+    <arg path="${basedir}/test/phpunit-nocc.xml" />
+  </exec>
+ </target>
+
+ <target name="parallelTasks"
+         description="Run the pdepend, phpmd, phpcpd, phpcs, phpdoc and phploc tasks in parallel using a maximum of 2 threads.">
+  <parallel threadCount="2">
+   <sequential>
+    <antcall target="pdepend"/>
+    <antcall target="phpmd"/>
+   </sequential>
+   <antcall target="phpcpd"/>
+   <antcall target="phpcs"/>
+   <antcall target="phpdoc"/>
+   <antcall target="phploc"/>
+  </parallel>
+ </target>
+
+ <target name="pdepend"
+         description="Generate jdepend.xml and software metrics charts using PHP_Depend">
+  <exec dir="${basedir}" executable="pdepend" failonerror="true">
+   <arg value="--suffix=php" />
+   <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
+   <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg" />
+   <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg" />
+   <arg value="--without-annotations" />
+   <arg line="--ignore=build,lib/simplesaml,orm/propel,orm/propel-build/classes/gepi/om,lib/standalone,tbs,ckeditor,artishow,fpdf"/>
+   <arg line="." />
+  </exec>
+ </target>
+
+ <target name="phpmd"
+         description="Generate pmd.xml using PHPMD">
+  <exec dir="${basedir}" executable="phpmd" failonerror="false">
+   <arg line="${source} xml ${basedir}/build/phpmd.xml --reportfile '${basedir}/build/logs/pmd.xml' --exclude 'build,lib/simplesaml,orm/propel,orm/propel-build/classes/gepi/om,lib/standalone,tbs,ckeditor,artishow,fpdf' --suffix 'php'"/>
+  </exec>
+ </target>
+
+ <target name="phpcpd"
+         description="Generate pmd-cpd.xml using PHPCPD">
+  <exec dir="${basedir}" executable="phpcpd" failonerror="false">
+      <arg line="--log-pmd build/logs/pmd-cpd.xml
+            --exclude build
+            --exclude lib/simplesaml
+            --exclude orm/propel
+            --exclude orm/propel-build/classes/gepi/om
+            --exclude lib/standalone
+            --exclude tbs
+            --exclude ckeditor
+            --exclude artishow
+            --exclude fpdf
+             ."/>
+  </exec>
+ </target>
+
+ <target name="phploc"
+         description="Generate phploc.csv">
+  <exec executable="phploc">
+   <arg value="--log-csv" />
+   <arg value="${basedir}/build/logs/phploc.csv" />
+   <arg value="--exclude" />
+   <arg value="*/build/*,*/lib/simplesaml/*,*/orm/propel/*,*/orm/propel-build/classes/gepi/om/*,*/lib/standalone/*,*/tbs/*,*/ckeditor/*,*/artishow/*,*/fpdf/*"/>
+   <arg path="${source}" />
+  </exec>
+ </target>
+
+ <target name="phpcs"
+         description="Generate checkstyle.xml using PHP_CodeSniffer">
+  <exec executable="phpcs" output="/dev/null">
+   <exec dir="${basedir}" executable="phpcs" output="${basedir}/build/logs/checkstyle.xml" failonerror="false">
+       <arg line="--report=checkstyle --extensions=php --ignore=build,lib/simplesaml,orm/propel,orm/propel-build/classes/gepi/om,lib/standalone,tbs,ckeditor,artishow,fpdf --standard=Zend ."/>
+   </exec>
+  </exec>
+ </target>
+
+ <target name="phpdoc"
+         description="Generate API documentation using PHPDocumentor">
+  <exec dir="${basedir}" executable="phpdoc" failonerror="false">
+   <arg line="-t ${basedir}/build/api/lib
+			  --directory '${source}/lib'
+			  -ti 'ZFCore Docs'
+			  --parseprivate on
+			  --undocumentedelements on
+			  --output HTML:Smarty:PHP
+			  --ignore '*.phtml'
+			  --sourcecode on"/>
+  </exec>
+  <exec dir="${basedir}" executable="phpdoc" failonerror="false">
+   <arg line="-t ${basedir}/build/api/orm
+			  --directory '${source}/orm'
+			  -ti 'ZFCore Docs'
+			  --parseprivate on
+			  --undocumentedelements on
+			  --output HTML:Smarty:PHP
+			  --ignore '*.phtml'
+			  --sourcecode on"/>
+  </exec>
+ </target>
+
+ <target name="phpcb" depends="phpcpd, phpmd"
+         description="Aggregate tool output with PHP_CodeBrowser">
+  <exec executable="phpcb">
+   <arg value="--log" />
+   <arg path="${basedir}/build/logs" />
+   <arg value="--source" />
+   <arg path="${source}" />
+   <arg value="--output" />
+   <arg path="${basedir}/build/code-browser" />
+  </exec>
+ </target>
+
+ <target name="version_replace">
+  <exec executable="sed">
+   <arg value="-i" />
+   <arg value='s/$gepiGitBranch = "".*/$gepiGitBranch = "${branch_name} ${env.BUILD_ID} build ${env.BUILD_TAG}";/g' />
+   <arg value="${source}/lib/global.inc.php" />
+  </exec>
+
+  <exec executable="sed">
+   <arg value="-i" />
+   <arg value='s/$gepiGitCommit = "".*/$gepiGitCommit = "${env.GIT_COMMIT}";/g' />
+   <arg value="${source}/lib/global.inc.php" />
+  </exec>
+
+ </target>
+
+ <target name="tarball" description="Make a tarball from src files" depends="version_replace">
+  <echo message="taring ${source}"/>
+
+  <tar destfile="${basedir}/build/gepi.tar.gz" compression="gzip">
+     <tarfileset dir="${source}" preserveLeadingSlashes="true" prefix="gepi">
+      <exclude name="build.xml"/>
+      <exclude name="build.gradle"/>
+      <exclude name="build/**"/>
+      <exclude name="test/**"/>
+      <exclude name=".gradle/**"/>
+      <exclude name=".git/**"/>
+      <exclude name="temp/**"/>
+      <exclude name="lib/standalone/HTMLPurifier/DefinitionCache/Serializer/**"/>
+      <exclude name="**/.gitignore"/>
+    </tarfileset>
+  </tar>
+  <copy file="${basedir}/build/gepi.tar.gz" tofile="${basedir}/build/${artifact_name}.tar.gz"/>
+ </target>
+
+ <!--target name="build" depends="clean,parallelTasks,phpunit,phpcb"/-->
+ <!--target name="build" depends="clean,tarball,pdepend,phpmd,phpcpd,phpcs,phpdoc,phploc,phpunit,phpcb"/-->
+ <target name="ci-build" depends="clean,tarball,pdepend,phpmd,phpcpd,phpdoc,phploc,phpunit_no_code_coverage,phpcb"/>
+ <target name="build" depends="clean,tarball"/>
+</project>

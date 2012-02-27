@@ -25,6 +25,12 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id_calendrier field.
 	 * @var        int
 	 */
@@ -114,6 +120,12 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $edtEmplacementCourssScheduledForDeletion = null;
 
 	/**
 	 * Get the [id_calendrier] column value.
@@ -725,18 +737,18 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = EdtCalendrierPeriodeQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				EdtCalendrierPeriodeQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -788,7 +800,7 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -811,19 +823,24 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
-
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows = 1;
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows = EdtCalendrierPeriodePeer::doUpdate($this, $con);
+					$this->doUpdate($con);
 				}
+				$affectedRows += 1;
+				$this->resetModified();
+			}
 
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+			if ($this->edtEmplacementCourssScheduledForDeletion !== null) {
+				if (!$this->edtEmplacementCourssScheduledForDeletion->isEmpty()) {
+					EdtEmplacementCoursQuery::create()
+						->filterByPrimaryKeys($this->edtEmplacementCourssScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->edtEmplacementCourssScheduledForDeletion = null;
+				}
 			}
 
 			if ($this->collEdtEmplacementCourss !== null) {
@@ -839,6 +856,129 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(EdtCalendrierPeriodePeer::ID_CALENDRIER)) {
+			$modifiedColumns[':p' . $index++]  = 'ID_CALENDRIER';
+		}
+		if ($this->isColumnModified(EdtCalendrierPeriodePeer::CLASSE_CONCERNE_CALENDRIER)) {
+			$modifiedColumns[':p' . $index++]  = 'CLASSE_CONCERNE_CALENDRIER';
+		}
+		if ($this->isColumnModified(EdtCalendrierPeriodePeer::NOM_CALENDRIER)) {
+			$modifiedColumns[':p' . $index++]  = 'NOM_CALENDRIER';
+		}
+		if ($this->isColumnModified(EdtCalendrierPeriodePeer::DEBUT_CALENDRIER_TS)) {
+			$modifiedColumns[':p' . $index++]  = 'DEBUT_CALENDRIER_TS';
+		}
+		if ($this->isColumnModified(EdtCalendrierPeriodePeer::FIN_CALENDRIER_TS)) {
+			$modifiedColumns[':p' . $index++]  = 'FIN_CALENDRIER_TS';
+		}
+		if ($this->isColumnModified(EdtCalendrierPeriodePeer::JOURDEBUT_CALENDRIER)) {
+			$modifiedColumns[':p' . $index++]  = 'JOURDEBUT_CALENDRIER';
+		}
+		if ($this->isColumnModified(EdtCalendrierPeriodePeer::HEUREDEBUT_CALENDRIER)) {
+			$modifiedColumns[':p' . $index++]  = 'HEUREDEBUT_CALENDRIER';
+		}
+		if ($this->isColumnModified(EdtCalendrierPeriodePeer::JOURFIN_CALENDRIER)) {
+			$modifiedColumns[':p' . $index++]  = 'JOURFIN_CALENDRIER';
+		}
+		if ($this->isColumnModified(EdtCalendrierPeriodePeer::HEUREFIN_CALENDRIER)) {
+			$modifiedColumns[':p' . $index++]  = 'HEUREFIN_CALENDRIER';
+		}
+		if ($this->isColumnModified(EdtCalendrierPeriodePeer::NUMERO_PERIODE)) {
+			$modifiedColumns[':p' . $index++]  = 'NUMERO_PERIODE';
+		}
+		if ($this->isColumnModified(EdtCalendrierPeriodePeer::ETABFERME_CALENDRIER)) {
+			$modifiedColumns[':p' . $index++]  = 'ETABFERME_CALENDRIER';
+		}
+		if ($this->isColumnModified(EdtCalendrierPeriodePeer::ETABVACANCES_CALENDRIER)) {
+			$modifiedColumns[':p' . $index++]  = 'ETABVACANCES_CALENDRIER';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO edt_calendrier (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case 'ID_CALENDRIER':
+						$stmt->bindValue($identifier, $this->id_calendrier, PDO::PARAM_INT);
+						break;
+					case 'CLASSE_CONCERNE_CALENDRIER':
+						$stmt->bindValue($identifier, $this->classe_concerne_calendrier, PDO::PARAM_STR);
+						break;
+					case 'NOM_CALENDRIER':
+						$stmt->bindValue($identifier, $this->nom_calendrier, PDO::PARAM_STR);
+						break;
+					case 'DEBUT_CALENDRIER_TS':
+						$stmt->bindValue($identifier, $this->debut_calendrier_ts, PDO::PARAM_STR);
+						break;
+					case 'FIN_CALENDRIER_TS':
+						$stmt->bindValue($identifier, $this->fin_calendrier_ts, PDO::PARAM_STR);
+						break;
+					case 'JOURDEBUT_CALENDRIER':
+						$stmt->bindValue($identifier, $this->jourdebut_calendrier, PDO::PARAM_STR);
+						break;
+					case 'HEUREDEBUT_CALENDRIER':
+						$stmt->bindValue($identifier, $this->heuredebut_calendrier, PDO::PARAM_STR);
+						break;
+					case 'JOURFIN_CALENDRIER':
+						$stmt->bindValue($identifier, $this->jourfin_calendrier, PDO::PARAM_STR);
+						break;
+					case 'HEUREFIN_CALENDRIER':
+						$stmt->bindValue($identifier, $this->heurefin_calendrier, PDO::PARAM_STR);
+						break;
+					case 'NUMERO_PERIODE':
+						$stmt->bindValue($identifier, $this->numero_periode, PDO::PARAM_INT);
+						break;
+					case 'ETABFERME_CALENDRIER':
+						$stmt->bindValue($identifier, $this->etabferme_calendrier, PDO::PARAM_INT);
+						break;
+					case 'ETABVACANCES_CALENDRIER':
+						$stmt->bindValue($identifier, $this->etabvacances_calendrier, PDO::PARAM_INT);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1216,7 +1356,6 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	 */
 	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setIdCalendrier($this->getIdCalendrier());
 		$copyObj->setClasseConcerneCalendrier($this->getClasseConcerneCalendrier());
 		$copyObj->setNomCalendrier($this->getNomCalendrier());
 		$copyObj->setDebutCalendrierTs($this->getDebutCalendrierTs());
@@ -1229,10 +1368,12 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 		$copyObj->setEtabfermeCalendrier($this->getEtabfermeCalendrier());
 		$copyObj->setEtabvacancesCalendrier($this->getEtabvacancesCalendrier());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getEdtEmplacementCourss() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1240,10 +1381,13 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
 			$copyObj->setNew(true);
+			$copyObj->setIdCalendrier(NULL); // this is a auto-increment column, so set to default value
 		}
 	}
 
@@ -1288,7 +1432,7 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * Avoids crafting an 'init[$relationName]s' method name
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -1370,6 +1514,30 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	}
 
 	/**
+	 * Sets a collection of EdtEmplacementCours objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $edtEmplacementCourss A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setEdtEmplacementCourss(PropelCollection $edtEmplacementCourss, PropelPDO $con = null)
+	{
+		$this->edtEmplacementCourssScheduledForDeletion = $this->getEdtEmplacementCourss(new Criteria(), $con)->diff($edtEmplacementCourss);
+
+		foreach ($edtEmplacementCourss as $edtEmplacementCours) {
+			// Fix issue with collection modified by reference
+			if ($edtEmplacementCours->isNew()) {
+				$edtEmplacementCours->setEdtCalendrierPeriode($this);
+			}
+			$this->addEdtEmplacementCours($edtEmplacementCours);
+		}
+
+		$this->collEdtEmplacementCourss = $edtEmplacementCourss;
+	}
+
+	/**
 	 * Returns the number of related EdtEmplacementCours objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1402,8 +1570,7 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	 * through the EdtEmplacementCours foreign key attribute.
 	 *
 	 * @param      EdtEmplacementCours $l EdtEmplacementCours
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     EdtCalendrierPeriode The current object (for fluent API support)
 	 */
 	public function addEdtEmplacementCours(EdtEmplacementCours $l)
 	{
@@ -1411,9 +1578,19 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 			$this->initEdtEmplacementCourss();
 		}
 		if (!$this->collEdtEmplacementCourss->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collEdtEmplacementCourss[]= $l;
-			$l->setEdtCalendrierPeriode($this);
+			$this->doAddEdtEmplacementCours($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	EdtEmplacementCours $edtEmplacementCours The edtEmplacementCours object to add.
+	 */
+	protected function doAddEdtEmplacementCours($edtEmplacementCours)
+	{
+		$this->collEdtEmplacementCourss[]= $edtEmplacementCours;
+		$edtEmplacementCours->setEdtCalendrierPeriode($this);
 	}
 
 
@@ -1599,25 +1776,6 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	public function __toString()
 	{
 		return (string) $this->exportTo(EdtCalendrierPeriodePeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseEdtCalendrierPeriode

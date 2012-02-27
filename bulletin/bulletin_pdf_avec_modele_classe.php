@@ -84,7 +84,7 @@ require_once("bulletin_pdf.inc.php");
 
 $bull_formule_bas=getSettingValue("bull_formule_bas") ? getSettingValue("bull_formule_bas") : "Bulletin à conserver précieusement. Aucun duplicata ne sera délivré. - GEPI : solution libre de gestion et de suivi des résultats scolaires.";
 
-define('FPDF_FONTPATH','../fpdf/font/');
+
 define('TopMargin','5');
 define('RightMargin','2');
 define('LeftMargin','2');

@@ -37,7 +37,7 @@
  */
 abstract class BaseEdtSalleQuery extends ModelCriteria
 {
-
+	
 	/**
 	 * Initializes internal state of BaseEdtSalleQuery object.
 	 *
@@ -74,11 +74,14 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 	}
 
 	/**
-	 * Find object by primary key
-	 * Use instance pooling to avoid a database query if the object exists
+	 * Find object by primary key.
+	 * Propel uses the instance pool to skip the database if the object exists.
+	 * Go fast if the query is untouched.
+	 *
 	 * <code>
 	 * $obj  = $c->findPk(12, $con);
 	 * </code>
+	 *
 	 * @param     mixed $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
@@ -86,17 +89,73 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ((null !== ($obj = EdtSallePeer::getInstanceFromPool((string) $key))) && $this->getFormatter()->isObjectFormatter()) {
+		if ($key === null) {
+			return null;
+		}
+		if ((null !== ($obj = EdtSallePeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
 			// the object is alredy in the instance pool
 			return $obj;
-		} else {
-			// the object has not been requested yet, or the formatter is not an object formatter
-			$criteria = $this->isKeepQuery() ? clone $this : $this;
-			$stmt = $criteria
-				->filterByPrimaryKey($key)
-				->getSelectStatement($con);
-			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
+		if ($con === null) {
+			$con = Propel::getConnection(EdtSallePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
+		if ($this->formatter || $this->modelAlias || $this->with || $this->select
+		 || $this->selectColumns || $this->asColumns || $this->selectModifiers
+		 || $this->map || $this->having || $this->joins) {
+			return $this->findPkComplex($key, $con);
+		} else {
+			return $this->findPkSimple($key, $con);
+		}
+	}
+
+	/**
+	 * Find object by primary key using raw SQL to go fast.
+	 * Bypass doSelect() and the object formatter by using generated code.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    EdtSalle A model object, or null if the key is not found
+	 */
+	protected function findPkSimple($key, $con)
+	{
+		$sql = 'SELECT ID_SALLE, NUMERO_SALLE, NOM_SALLE FROM salle_cours WHERE ID_SALLE = :p0';
+		try {
+			$stmt = $con->prepare($sql);
+			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), $e);
+		}
+		$obj = null;
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$obj = new EdtSalle();
+			$obj->hydrate($row);
+			EdtSallePeer::addInstanceToPool($obj, (string) $key);
+		}
+		$stmt->closeCursor();
+
+		return $obj;
+	}
+
+	/**
+	 * Find object by primary key.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    EdtSalle|array|mixed the result, formatted by the current formatter
+	 */
+	protected function findPkComplex($key, $con)
+	{
+		// As the query uses a PK condition, no limit(1) is necessary.
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
+		$stmt = $criteria
+			->filterByPrimaryKey($key)
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 	}
 
 	/**
@@ -111,10 +170,15 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{
+		if ($con === null) {
+			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		return $this
+		$stmt = $criteria
 			->filterByPrimaryKeys($keys)
-			->find($con);
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->format($stmt);
 	}
 
 	/**
@@ -143,7 +207,7 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id_salle column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIdSalle(1234); // WHERE id_salle = 1234
@@ -169,7 +233,7 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the numero_salle column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNumeroSalle('fooValue');   // WHERE numero_salle = 'fooValue'
@@ -197,7 +261,7 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the nom_salle column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNomSalle('fooValue');   // WHERE nom_salle = 'fooValue'
@@ -239,7 +303,7 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 		} elseif ($edtEmplacementCours instanceof PropelCollection) {
 			return $this
 				->useEdtEmplacementCoursQuery()
-					->filterByPrimaryKeys($edtEmplacementCours->getPrimaryKeys())
+				->filterByPrimaryKeys($edtEmplacementCours->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByEdtEmplacementCours() only accepts arguments of type EdtEmplacementCours or PropelCollection');
@@ -248,7 +312,7 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the EdtEmplacementCours relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -258,7 +322,7 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('EdtEmplacementCours');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -266,7 +330,7 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -274,7 +338,7 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'EdtEmplacementCours');
 		}
-		
+
 		return $this;
 	}
 
@@ -282,7 +346,7 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 	 * Use the EdtEmplacementCours relation EdtEmplacementCours object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -307,8 +371,8 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 	{
 		if ($edtSalle) {
 			$this->addUsingAlias(EdtSallePeer::ID_SALLE, $edtSalle->getIdSalle(), Criteria::NOT_EQUAL);
-	  }
-	  
+		}
+
 		return $this;
 	}
 

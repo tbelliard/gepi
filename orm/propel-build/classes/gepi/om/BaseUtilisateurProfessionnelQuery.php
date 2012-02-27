@@ -157,7 +157,7 @@
  */
 abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 {
-
+	
 	/**
 	 * Initializes internal state of BaseUtilisateurProfessionnelQuery object.
 	 *
@@ -194,11 +194,14 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	}
 
 	/**
-	 * Find object by primary key
-	 * Use instance pooling to avoid a database query if the object exists
+	 * Find object by primary key.
+	 * Propel uses the instance pool to skip the database if the object exists.
+	 * Go fast if the query is untouched.
+	 *
 	 * <code>
 	 * $obj  = $c->findPk(12, $con);
 	 * </code>
+	 *
 	 * @param     mixed $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
@@ -206,17 +209,73 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ((null !== ($obj = UtilisateurProfessionnelPeer::getInstanceFromPool((string) $key))) && $this->getFormatter()->isObjectFormatter()) {
+		if ($key === null) {
+			return null;
+		}
+		if ((null !== ($obj = UtilisateurProfessionnelPeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
 			// the object is alredy in the instance pool
 			return $obj;
-		} else {
-			// the object has not been requested yet, or the formatter is not an object formatter
-			$criteria = $this->isKeepQuery() ? clone $this : $this;
-			$stmt = $criteria
-				->filterByPrimaryKey($key)
-				->getSelectStatement($con);
-			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
+		if ($con === null) {
+			$con = Propel::getConnection(UtilisateurProfessionnelPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
+		if ($this->formatter || $this->modelAlias || $this->with || $this->select
+		 || $this->selectColumns || $this->asColumns || $this->selectModifiers
+		 || $this->map || $this->having || $this->joins) {
+			return $this->findPkComplex($key, $con);
+		} else {
+			return $this->findPkSimple($key, $con);
+		}
+	}
+
+	/**
+	 * Find object by primary key using raw SQL to go fast.
+	 * Bypass doSelect() and the object formatter by using generated code.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    UtilisateurProfessionnel A model object, or null if the key is not found
+	 */
+	protected function findPkSimple($key, $con)
+	{
+		$sql = 'SELECT LOGIN, NOM, PRENOM, CIVILITE, PASSWORD, SALT, EMAIL, SHOW_EMAIL, STATUT, ETAT, CHANGE_MDP, DATE_VERROUILLAGE, PASSWORD_TICKET, TICKET_EXPIRATION, NIVEAU_ALERTE, OBSERVATION_SECURITE, TEMP_DIR, NUMIND, AUTH_MODE FROM utilisateurs WHERE LOGIN = :p0';
+		try {
+			$stmt = $con->prepare($sql);
+			$stmt->bindValue(':p0', $key, PDO::PARAM_STR);
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), $e);
+		}
+		$obj = null;
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$obj = new UtilisateurProfessionnel();
+			$obj->hydrate($row);
+			UtilisateurProfessionnelPeer::addInstanceToPool($obj, (string) $key);
+		}
+		$stmt->closeCursor();
+
+		return $obj;
+	}
+
+	/**
+	 * Find object by primary key.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    UtilisateurProfessionnel|array|mixed the result, formatted by the current formatter
+	 */
+	protected function findPkComplex($key, $con)
+	{
+		// As the query uses a PK condition, no limit(1) is necessary.
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
+		$stmt = $criteria
+			->filterByPrimaryKey($key)
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 	}
 
 	/**
@@ -231,10 +290,15 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{
+		if ($con === null) {
+			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		return $this
+		$stmt = $criteria
 			->filterByPrimaryKeys($keys)
-			->find($con);
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->format($stmt);
 	}
 
 	/**
@@ -263,7 +327,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the login column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByLogin('fooValue');   // WHERE login = 'fooValue'
@@ -291,7 +355,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the nom column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNom('fooValue');   // WHERE nom = 'fooValue'
@@ -319,7 +383,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the prenom column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByPrenom('fooValue');   // WHERE prenom = 'fooValue'
@@ -347,7 +411,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the civilite column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCivilite('fooValue');   // WHERE civilite = 'fooValue'
@@ -375,7 +439,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the password column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByPassword('fooValue');   // WHERE password = 'fooValue'
@@ -403,7 +467,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the salt column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterBySalt('fooValue');   // WHERE salt = 'fooValue'
@@ -431,7 +495,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the email column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEmail('fooValue');   // WHERE email = 'fooValue'
@@ -459,7 +523,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the show_email column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByShowEmail('fooValue');   // WHERE show_email = 'fooValue'
@@ -487,7 +551,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the statut column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByStatut('fooValue');   // WHERE statut = 'fooValue'
@@ -515,7 +579,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the etat column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEtat('fooValue');   // WHERE etat = 'fooValue'
@@ -543,7 +607,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the change_mdp column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByChangeMdp('fooValue');   // WHERE change_mdp = 'fooValue'
@@ -571,7 +635,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the date_verrouillage column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByDateVerrouillage('2011-03-14'); // WHERE date_verrouillage = '2011-03-14'
@@ -613,7 +677,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the password_ticket column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByPasswordTicket('fooValue');   // WHERE password_ticket = 'fooValue'
@@ -641,7 +705,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the ticket_expiration column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByTicketExpiration('2011-03-14'); // WHERE ticket_expiration = '2011-03-14'
@@ -683,7 +747,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the niveau_alerte column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNiveauAlerte(1234); // WHERE niveau_alerte = 1234
@@ -723,7 +787,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the observation_securite column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByObservationSecurite(1234); // WHERE observation_securite = 1234
@@ -763,7 +827,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the temp_dir column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByTempDir('fooValue');   // WHERE temp_dir = 'fooValue'
@@ -791,7 +855,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the numind column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNumind('fooValue');   // WHERE numind = 'fooValue'
@@ -819,7 +883,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the auth_mode column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAuthMode('fooValue');   // WHERE auth_mode = 'fooValue'
@@ -861,7 +925,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} elseif ($jGroupesProfesseurs instanceof PropelCollection) {
 			return $this
 				->useJGroupesProfesseursQuery()
-					->filterByPrimaryKeys($jGroupesProfesseurs->getPrimaryKeys())
+				->filterByPrimaryKeys($jGroupesProfesseurs->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByJGroupesProfesseurs() only accepts arguments of type JGroupesProfesseurs or PropelCollection');
@@ -870,7 +934,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the JGroupesProfesseurs relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -880,7 +944,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JGroupesProfesseurs');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -888,7 +952,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -896,7 +960,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'JGroupesProfesseurs');
 		}
-		
+
 		return $this;
 	}
 
@@ -904,7 +968,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 * Use the JGroupesProfesseurs relation JGroupesProfesseurs object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -934,7 +998,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} elseif ($jScolClasses instanceof PropelCollection) {
 			return $this
 				->useJScolClassesQuery()
-					->filterByPrimaryKeys($jScolClasses->getPrimaryKeys())
+				->filterByPrimaryKeys($jScolClasses->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByJScolClasses() only accepts arguments of type JScolClasses or PropelCollection');
@@ -943,7 +1007,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the JScolClasses relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -953,7 +1017,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JScolClasses');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -961,7 +1025,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -969,7 +1033,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'JScolClasses');
 		}
-		
+
 		return $this;
 	}
 
@@ -977,7 +1041,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 * Use the JScolClasses relation JScolClasses object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1007,7 +1071,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} elseif ($cahierTexteCompteRendu instanceof PropelCollection) {
 			return $this
 				->useCahierTexteCompteRenduQuery()
-					->filterByPrimaryKeys($cahierTexteCompteRendu->getPrimaryKeys())
+				->filterByPrimaryKeys($cahierTexteCompteRendu->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByCahierTexteCompteRendu() only accepts arguments of type CahierTexteCompteRendu or PropelCollection');
@@ -1016,7 +1080,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the CahierTexteCompteRendu relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1026,7 +1090,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('CahierTexteCompteRendu');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1034,7 +1098,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1042,7 +1106,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'CahierTexteCompteRendu');
 		}
-		
+
 		return $this;
 	}
 
@@ -1050,7 +1114,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 * Use the CahierTexteCompteRendu relation CahierTexteCompteRendu object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1080,7 +1144,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} elseif ($cahierTexteTravailAFaire instanceof PropelCollection) {
 			return $this
 				->useCahierTexteTravailAFaireQuery()
-					->filterByPrimaryKeys($cahierTexteTravailAFaire->getPrimaryKeys())
+				->filterByPrimaryKeys($cahierTexteTravailAFaire->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByCahierTexteTravailAFaire() only accepts arguments of type CahierTexteTravailAFaire or PropelCollection');
@@ -1089,7 +1153,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the CahierTexteTravailAFaire relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1099,7 +1163,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('CahierTexteTravailAFaire');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1107,7 +1171,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1115,7 +1179,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'CahierTexteTravailAFaire');
 		}
-		
+
 		return $this;
 	}
 
@@ -1123,7 +1187,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 * Use the CahierTexteTravailAFaire relation CahierTexteTravailAFaire object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1153,7 +1217,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} elseif ($cahierTexteNoticePrivee instanceof PropelCollection) {
 			return $this
 				->useCahierTexteNoticePriveeQuery()
-					->filterByPrimaryKeys($cahierTexteNoticePrivee->getPrimaryKeys())
+				->filterByPrimaryKeys($cahierTexteNoticePrivee->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByCahierTexteNoticePrivee() only accepts arguments of type CahierTexteNoticePrivee or PropelCollection');
@@ -1162,7 +1226,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the CahierTexteNoticePrivee relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1172,7 +1236,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('CahierTexteNoticePrivee');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1180,7 +1244,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1188,7 +1252,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'CahierTexteNoticePrivee');
 		}
-		
+
 		return $this;
 	}
 
@@ -1196,7 +1260,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 * Use the CahierTexteNoticePrivee relation CahierTexteNoticePrivee object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1226,7 +1290,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} elseif ($jEleveCpe instanceof PropelCollection) {
 			return $this
 				->useJEleveCpeQuery()
-					->filterByPrimaryKeys($jEleveCpe->getPrimaryKeys())
+				->filterByPrimaryKeys($jEleveCpe->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByJEleveCpe() only accepts arguments of type JEleveCpe or PropelCollection');
@@ -1235,7 +1299,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the JEleveCpe relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1245,7 +1309,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JEleveCpe');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1253,7 +1317,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1261,7 +1325,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'JEleveCpe');
 		}
-		
+
 		return $this;
 	}
 
@@ -1269,7 +1333,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 * Use the JEleveCpe relation JEleveCpe object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1299,7 +1363,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} elseif ($jEleveProfesseurPrincipal instanceof PropelCollection) {
 			return $this
 				->useJEleveProfesseurPrincipalQuery()
-					->filterByPrimaryKeys($jEleveProfesseurPrincipal->getPrimaryKeys())
+				->filterByPrimaryKeys($jEleveProfesseurPrincipal->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByJEleveProfesseurPrincipal() only accepts arguments of type JEleveProfesseurPrincipal or PropelCollection');
@@ -1308,7 +1372,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the JEleveProfesseurPrincipal relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1318,7 +1382,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JEleveProfesseurPrincipal');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1326,7 +1390,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1334,7 +1398,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'JEleveProfesseurPrincipal');
 		}
-		
+
 		return $this;
 	}
 
@@ -1342,7 +1406,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 * Use the JEleveProfesseurPrincipal relation JEleveProfesseurPrincipal object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1372,7 +1436,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} elseif ($jAidUtilisateursProfessionnels instanceof PropelCollection) {
 			return $this
 				->useJAidUtilisateursProfessionnelsQuery()
-					->filterByPrimaryKeys($jAidUtilisateursProfessionnels->getPrimaryKeys())
+				->filterByPrimaryKeys($jAidUtilisateursProfessionnels->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByJAidUtilisateursProfessionnels() only accepts arguments of type JAidUtilisateursProfessionnels or PropelCollection');
@@ -1381,7 +1445,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the JAidUtilisateursProfessionnels relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1391,7 +1455,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JAidUtilisateursProfessionnels');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1399,7 +1463,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1407,7 +1471,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'JAidUtilisateursProfessionnels');
 		}
-		
+
 		return $this;
 	}
 
@@ -1415,7 +1479,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 * Use the JAidUtilisateursProfessionnels relation JAidUtilisateursProfessionnels object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1445,7 +1509,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} elseif ($absenceEleveSaisie instanceof PropelCollection) {
 			return $this
 				->useAbsenceEleveSaisieQuery()
-					->filterByPrimaryKeys($absenceEleveSaisie->getPrimaryKeys())
+				->filterByPrimaryKeys($absenceEleveSaisie->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByAbsenceEleveSaisie() only accepts arguments of type AbsenceEleveSaisie or PropelCollection');
@@ -1454,7 +1518,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the AbsenceEleveSaisie relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1464,7 +1528,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveSaisie');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1472,7 +1536,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1480,7 +1544,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'AbsenceEleveSaisie');
 		}
-		
+
 		return $this;
 	}
 
@@ -1488,7 +1552,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 * Use the AbsenceEleveSaisie relation AbsenceEleveSaisie object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1518,7 +1582,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} elseif ($absenceEleveTraitement instanceof PropelCollection) {
 			return $this
 				->useAbsenceEleveTraitementQuery()
-					->filterByPrimaryKeys($absenceEleveTraitement->getPrimaryKeys())
+				->filterByPrimaryKeys($absenceEleveTraitement->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByAbsenceEleveTraitement() only accepts arguments of type AbsenceEleveTraitement or PropelCollection');
@@ -1527,7 +1591,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the AbsenceEleveTraitement relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1537,7 +1601,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveTraitement');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1545,7 +1609,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1553,7 +1617,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'AbsenceEleveTraitement');
 		}
-		
+
 		return $this;
 	}
 
@@ -1561,7 +1625,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 * Use the AbsenceEleveTraitement relation AbsenceEleveTraitement object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1591,7 +1655,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} elseif ($absenceEleveTraitement instanceof PropelCollection) {
 			return $this
 				->useModifiedAbsenceEleveTraitementQuery()
-					->filterByPrimaryKeys($absenceEleveTraitement->getPrimaryKeys())
+				->filterByPrimaryKeys($absenceEleveTraitement->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByModifiedAbsenceEleveTraitement() only accepts arguments of type AbsenceEleveTraitement or PropelCollection');
@@ -1600,7 +1664,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the ModifiedAbsenceEleveTraitement relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1610,7 +1674,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('ModifiedAbsenceEleveTraitement');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1618,7 +1682,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1626,7 +1690,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'ModifiedAbsenceEleveTraitement');
 		}
-		
+
 		return $this;
 	}
 
@@ -1634,7 +1698,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 * Use the ModifiedAbsenceEleveTraitement relation AbsenceEleveTraitement object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1664,7 +1728,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} elseif ($absenceEleveNotification instanceof PropelCollection) {
 			return $this
 				->useAbsenceEleveNotificationQuery()
-					->filterByPrimaryKeys($absenceEleveNotification->getPrimaryKeys())
+				->filterByPrimaryKeys($absenceEleveNotification->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByAbsenceEleveNotification() only accepts arguments of type AbsenceEleveNotification or PropelCollection');
@@ -1673,7 +1737,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the AbsenceEleveNotification relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1683,7 +1747,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveNotification');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1691,7 +1755,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1699,7 +1763,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'AbsenceEleveNotification');
 		}
-		
+
 		return $this;
 	}
 
@@ -1707,7 +1771,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 * Use the AbsenceEleveNotification relation AbsenceEleveNotification object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1737,7 +1801,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} elseif ($jProfesseursMatieres instanceof PropelCollection) {
 			return $this
 				->useJProfesseursMatieresQuery()
-					->filterByPrimaryKeys($jProfesseursMatieres->getPrimaryKeys())
+				->filterByPrimaryKeys($jProfesseursMatieres->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByJProfesseursMatieres() only accepts arguments of type JProfesseursMatieres or PropelCollection');
@@ -1746,7 +1810,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the JProfesseursMatieres relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1756,7 +1820,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JProfesseursMatieres');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1764,7 +1828,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1772,7 +1836,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'JProfesseursMatieres');
 		}
-		
+
 		return $this;
 	}
 
@@ -1780,7 +1844,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 * Use the JProfesseursMatieres relation JProfesseursMatieres object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1810,7 +1874,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} elseif ($preferenceUtilisateurProfessionnel instanceof PropelCollection) {
 			return $this
 				->usePreferenceUtilisateurProfessionnelQuery()
-					->filterByPrimaryKeys($preferenceUtilisateurProfessionnel->getPrimaryKeys())
+				->filterByPrimaryKeys($preferenceUtilisateurProfessionnel->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByPreferenceUtilisateurProfessionnel() only accepts arguments of type PreferenceUtilisateurProfessionnel or PropelCollection');
@@ -1819,7 +1883,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the PreferenceUtilisateurProfessionnel relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1829,7 +1893,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('PreferenceUtilisateurProfessionnel');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1837,7 +1901,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1845,7 +1909,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'PreferenceUtilisateurProfessionnel');
 		}
-		
+
 		return $this;
 	}
 
@@ -1853,7 +1917,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 * Use the PreferenceUtilisateurProfessionnel relation PreferenceUtilisateurProfessionnel object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1883,7 +1947,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} elseif ($edtEmplacementCours instanceof PropelCollection) {
 			return $this
 				->useEdtEmplacementCoursQuery()
-					->filterByPrimaryKeys($edtEmplacementCours->getPrimaryKeys())
+				->filterByPrimaryKeys($edtEmplacementCours->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByEdtEmplacementCours() only accepts arguments of type EdtEmplacementCours or PropelCollection');
@@ -1892,7 +1956,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the EdtEmplacementCours relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1902,7 +1966,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('EdtEmplacementCours');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1910,7 +1974,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1918,7 +1982,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'EdtEmplacementCours');
 		}
-		
+
 		return $this;
 	}
 
@@ -1926,7 +1990,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 * Use the EdtEmplacementCours relation EdtEmplacementCours object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1953,10 +2017,10 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	{
 		return $this
 			->useJGroupesProfesseursQuery()
-				->filterByGroupe($groupe, $comparison)
+			->filterByGroupe($groupe, $comparison)
 			->endUse();
 	}
-	
+
 	/**
 	 * Filter the query by a related AidDetails object
 	 * using the j_aid_utilisateurs table as cross reference
@@ -1970,10 +2034,10 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	{
 		return $this
 			->useJAidUtilisateursProfessionnelsQuery()
-				->filterByAidDetails($aidDetails, $comparison)
+			->filterByAidDetails($aidDetails, $comparison)
 			->endUse();
 	}
-	
+
 	/**
 	 * Filter the query by a related Matiere object
 	 * using the j_professeurs_matieres table as cross reference
@@ -1987,10 +2051,10 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	{
 		return $this
 			->useJProfesseursMatieresQuery()
-				->filterByMatiere($matiere, $comparison)
+			->filterByMatiere($matiere, $comparison)
 			->endUse();
 	}
-	
+
 	/**
 	 * Exclude object from result
 	 *
@@ -2002,8 +2066,8 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	{
 		if ($utilisateurProfessionnel) {
 			$this->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $utilisateurProfessionnel->getLogin(), Criteria::NOT_EQUAL);
-	  }
-	  
+		}
+
 		return $this;
 	}
 

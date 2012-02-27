@@ -135,7 +135,7 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	// Ensemble des données communes
 	require_once("../bulletin/bulletin_donnees.php");
 
-	define('FPDF_FONTPATH','../fpdf/font/');
+	
 	session_cache_limiter('private');
 
 	$X1 = 0; $Y1 = 0; $X2 = 0; $Y2 = 0;

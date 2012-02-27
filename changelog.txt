@@ -2,6 +2,23 @@
 |==================|
 |= CHANGELOG GEPI =|
 |==================|
+
+Derniers Développements
+===========================
+Librairies :
+- Dojo (1.6.1) est embarqué localement
+- maj simplesamlphp 1.8.1
+- maj ckeditor 3.6.2
+- suppression de fckeditor
+- maj propel 1.6.4
+- maj opentbs 1.7.4
+
+Cdt2 :
+- amélioration du copier coller de notices
+
+Abs2 :
+- génération de notifications par lot depuis une liste des traitements
+
 Gepi-1.6.0 (27/01/2012)
 ===========================
 html :

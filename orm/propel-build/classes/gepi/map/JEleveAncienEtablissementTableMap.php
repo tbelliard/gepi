@@ -37,6 +37,7 @@ class JEleveAncienEtablissementTableMap extends TableMap
 		$this->setClassname('JEleveAncienEtablissement');
 		$this->setPackage('gepi');
 		$this->setUseIdGenerator(false);
+		$this->setIsCrossRef(true);
 		// columns
 		$this->addForeignPrimaryKey('ID_ELEVE', 'IdEleve', 'VARCHAR' , 'eleves', 'ID_ELEVE', true, 50, null);
 		$this->addForeignPrimaryKey('ID_ETABLISSEMENT', 'IdEtablissement', 'VARCHAR' , 'etablissements', 'ID', true, 8, '');

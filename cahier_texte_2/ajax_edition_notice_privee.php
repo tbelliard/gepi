@@ -222,6 +222,16 @@ echo "
 			\">
 	Deplacer la notice</a>\n";
 
+//il faut échapper les single quote pour le contenu à importer
+$contenu_a_copier =  isset($_SESSION['ct_a_importer']) ? $_SESSION['ct_a_importer']->getContenu() : '';
+echo (" <a href=\"#\" onclick=\"javascript: /*contenu_a_copier est globale*/
+    if (window.contenu_a_copier == undefined) {
+        contenu_a_copier = '".addslashes(htmlspecialchars($contenu_a_copier))."';
+    }
+    CKEDITOR.instances['contenu'].insertHtml(contenu_a_copier);");
+echo("\"><img style=\"border: 0px;\" src=\"../images/icons/copy-16-gold.png");
+echo("\" alt=\"Coller\" title=\"Coller le contenu\" /></a>\n");
+
 echo "</legend>\n";
 
 echo "<div id=\"dupplication_notice\" style='display: none;'>oulalala</div>\n";

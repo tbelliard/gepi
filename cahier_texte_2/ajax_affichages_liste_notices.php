@@ -57,6 +57,13 @@ $affiche_tout = isset($_POST["affiche_tout"]) ? $_POST["affiche_tout"] :(isset($
 //date présente
 $aujourdhui = mktime(0,0,0,date("m"),date("d"),date("Y"));
 
+if (isset($_REQUEST["id_ct_a_importer"])) {
+    $classname = $_REQUEST["ct_a_importer_class"].'Query';
+    if (class_exists($classname)) {
+        $_SESSION['ct_a_importer'] = $classname::create()->findOneByPrimaryKey($_REQUEST["id_ct_a_importer"]);
+    }
+}
+
 //utile uniquement pour la completion
 //$devoir = new CahierTexteTravailAFaire();
 //$compte_rendu = new CahierTexteCompteRendu();

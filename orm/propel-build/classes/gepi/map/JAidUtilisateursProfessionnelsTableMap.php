@@ -37,6 +37,7 @@ class JAidUtilisateursProfessionnelsTableMap extends TableMap
 		$this->setClassname('JAidUtilisateursProfessionnels');
 		$this->setPackage('gepi');
 		$this->setUseIdGenerator(false);
+		$this->setIsCrossRef(true);
 		// columns
 		$this->addForeignPrimaryKey('ID_AID', 'IdAid', 'VARCHAR' , 'aid', 'ID', true, 100, null);
 		$this->addForeignPrimaryKey('ID_UTILISATEUR', 'IdUtilisateur', 'VARCHAR' , 'utilisateurs', 'LOGIN', true, 100, null);

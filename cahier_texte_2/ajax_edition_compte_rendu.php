@@ -63,8 +63,6 @@ $succes_modification = isset($_POST["succes_modification"]) ? $_POST["succes_mod
 $today = isset($_POST["today"]) ? $_POST["today"] :(isset($_GET["today"]) ? $_GET["today"] :NULL);
 $ajout_nouvelle_notice = isset($_POST["ajout_nouvelle_notice"]) ? $_POST["ajout_nouvelle_notice"] :(isset($_GET["ajout_nouvelle_notice"]) ? $_GET["ajout_nouvelle_notice"] :NULL);
 
-$nouvelle_notice="n";
-
 $ctCompteRendu = CahierTexteCompteRenduPeer::retrieveByPK($id_ct);
 if ($ctCompteRendu != null) {
 	$groupe = $ctCompteRendu->getGroupe();
@@ -106,7 +104,6 @@ if ($ctCompteRendu != null) {
 	}
 
 	if ($ctCompteRendu == null) {
-		$nouvelle_notice="y";
 		//pas de notices, on initialise un nouvel objet
 		$ctCompteRendu = new CahierTexteCompteRendu();
 		$ctCompteRendu->setIdGroupe($groupe->getId());
@@ -167,8 +164,6 @@ if ($ctCompteRendu->getDateCt() == null) {
 
 //on mets le groupe dans le session, pour naviguer entre absence, cahier de texte et autres
 $_SESSION['id_groupe_session'] = $ctCompteRendu->getIdGroupe();
-
-//echo "\$nouvelle_notice=$nouvelle_notice<br />";
 
 // **********************************************
 // Affichage des différents groupes du professeur
@@ -297,6 +292,42 @@ echo "
 			\">
 	Deplacer la notice</a>\n";
 
+//il faut échapper les single quote pour le contenu à importer
+$contenu_a_copier =  isset($_SESSION['ct_a_importer']) ? $_SESSION['ct_a_importer']->getContenu() : '';
+echo (" <a href=\"#\" onclick=\"javascript: /*contenu_a_copier est globale*/
+    if (window.contenu_a_copier == undefined) {
+        contenu_a_copier = '".addslashes(htmlspecialchars($contenu_a_copier))."';
+    }
+    CKEDITOR.instances['contenu'].insertHtml(contenu_a_copier);");
+echo("\"><img style=\"border: 0px;\" src=\"../images/icons/copy-16-gold.png");
+echo("\" alt=\"Coller\" title=\"Coller le contenu\" /></a>\n");
+
+//il faut échapper les single quote pour le contenu à importer
+$ct_a_importer_class = isset($_SESSION['ct_a_importer']) ? get_class($_SESSION['ct_a_importer']) : '';
+$id_ct_a_importer = isset($_SESSION['ct_a_importer']) ? $_SESSION['ct_a_importer']->getPrimaryKey() : '';
+//pour le contenu à copier, on regarde d'abord si on a du contenu en javascript puis dans la session php
+echo (" <a href=\"#\" onclick=\"javascript: /*ct_a_importer_class est globale*/
+    if (window.ct_a_importer_class == undefined) {
+        ct_a_importer_class='".$ct_a_importer_class."';
+        id_ct_a_importer='".$id_ct_a_importer."';
+    }
+    var hiddenField1 = document.createElement('input');
+    hiddenField1.setAttribute('type', 'hidden');
+    hiddenField1.setAttribute('name', 'ct_a_importer_class');
+    hiddenField1.setAttribute('value', ct_a_importer_class);
+    $('modification_compte_rendu_form').appendChild(hiddenField1);
+    var hiddenField2 = document.createElement('input');
+    hiddenField2.setAttribute('type', 'hidden');
+    hiddenField2.setAttribute('name', 'id_ct_a_importer');
+    hiddenField2.setAttribute('value', id_ct_a_importer);
+    $('modification_compte_rendu_form').appendChild(hiddenField2);
+    $('contenu').value = CKEDITOR.instances['contenu'].getData();
+    $('modification_compte_rendu_form').request({
+        onComplete : function (transport) {updateWindows('');}
+    });");
+echo("\"><img style=\"border: 0px;\" src=\"../images/icons/copy-16-gold.png");
+echo("\" alt=\"Coller\" title=\"Coller les fichiers joints\" /></a>\n");
+
 echo "</legend>\n";
 
 echo "<div id=\"dupplication_notice\" style='display: none;'>oulalala</div>";
@@ -343,8 +374,6 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 		<?php } ?>
 
 		<?php
-			//if($nouvelle_notice=="y") {
-			//}
 			$sql="SELECT * FROM ct_devoirs_entry WHERE id_groupe='$id_groupe' AND date_ct='".$ctCompteRendu->getDateCt()."';";
 			//echo "$sql<br />";
 			$res_devoirs=mysql_query($sql);
@@ -355,10 +384,6 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 			}
 		?>
 		<input type='hidden' name='get_devoirs_du_jour' id='get_devoirs_du_jour' value='' />
-
-		<input type='hidden' name='importer_notice' id='importer_notice' value='' />
-		<input type='hidden' name='id_ct_a_importer' id='id_ct_a_importer' value='' />
-		<button type='submit' id='affichage_import_notice' style='font-variant: small-caps; display:none; background-color:red;' onClick="javascript:$('importer_notice').value='y';">Importer la notice</button>
 
 		<input type='hidden' id='passer_a' name='passer_a'
 			value='compte_rendu' /> <input type="hidden" name="date_ct"
@@ -420,15 +445,7 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 
 		echo "<textarea name=\"contenu\" style=\"background-color: white;\" id=\"contenu\">".$ctCompteRendu->getContenu()."</textarea>";
 
-		// lancement de FCKeditor
-//		$oFCKeditor = new FCKeditor('contenu') ;
-//		$oFCKeditor->BasePath = '../fckeditor/' ;
-//		$oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
-//		$oFCKeditor->ToolbarSet = 'Basic' ;
-//		$oFCKeditor->Value = $ctCompteRendu->getContenu() ;
-//		$oFCKeditor->Create() ;
-
-		//// gestion des fichiers attaché
+		// gestion des fichiers attaché
 		echo '<div style="border-style:solid; border-width:1px; border-color: '.$couleur_bord_tableau_notice.'; background-color: '.$couleur_cellule[$type_couleur].';  padding: 2px; margin: 2px;">';
 		echo "<b>Fichier(s) attaché(s) : </b><br />";
 		echo '<div id="div_fichier">';

@@ -33,7 +33,7 @@ send_file_download_headers('application/pdf',$nom_releve);
 
 require_once('../fpdf/fpdf.php');
 
-define('FPDF_FONTPATH','../fpdf/font/');
+
 define('LargeurPage','210');
 define('HauteurPage','297');
 

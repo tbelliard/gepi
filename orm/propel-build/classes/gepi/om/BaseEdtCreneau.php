@@ -25,6 +25,12 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id_definie_periode field.
 	 * @var        int
 	 */
@@ -91,6 +97,18 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $absenceEleveSaisiesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $edtEmplacementCourssScheduledForDeletion = null;
 
 	/**
 	 * Applies default values to this object.
@@ -326,7 +344,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 			$v = (int) $v;
 		}
 
-		if ($this->suivi_definie_periode !== $v || $this->isNew()) {
+		if ($this->suivi_definie_periode !== $v) {
 			$this->suivi_definie_periode = $v;
 			$this->modifiedColumns[] = EdtCreneauPeer::SUIVI_DEFINIE_PERIODE;
 		}
@@ -346,7 +364,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->type_creneaux !== $v || $this->isNew()) {
+		if ($this->type_creneaux !== $v) {
 			$this->type_creneaux = $v;
 			$this->modifiedColumns[] = EdtCreneauPeer::TYPE_CRENEAUX;
 		}
@@ -519,18 +537,18 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = EdtCreneauQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				EdtCreneauQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -582,7 +600,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -605,27 +623,24 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = EdtCreneauPeer::ID_DEFINIE_PERIODE;
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
+				if ($this->isNew()) {
+					$this->doInsert($con);
+				} else {
+					$this->doUpdate($con);
+				}
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
-				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(EdtCreneauPeer::ID_DEFINIE_PERIODE) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.EdtCreneauPeer::ID_DEFINIE_PERIODE.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows = 1;
-					$this->setIdDefiniePeriode($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
-				} else {
-					$affectedRows = EdtCreneauPeer::doUpdate($this, $con);
+			if ($this->absenceEleveSaisiesScheduledForDeletion !== null) {
+				if (!$this->absenceEleveSaisiesScheduledForDeletion->isEmpty()) {
+					AbsenceEleveSaisieQuery::create()
+						->filterByPrimaryKeys($this->absenceEleveSaisiesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->absenceEleveSaisiesScheduledForDeletion = null;
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collAbsenceEleveSaisies !== null) {
@@ -633,6 +648,15 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->edtEmplacementCourssScheduledForDeletion !== null) {
+				if (!$this->edtEmplacementCourssScheduledForDeletion->isEmpty()) {
+					EdtEmplacementCoursQuery::create()
+						->filterByPrimaryKeys($this->edtEmplacementCourssScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->edtEmplacementCourssScheduledForDeletion = null;
 				}
 			}
 
@@ -649,6 +673,110 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = EdtCreneauPeer::ID_DEFINIE_PERIODE;
+		if (null !== $this->id_definie_periode) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . EdtCreneauPeer::ID_DEFINIE_PERIODE . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(EdtCreneauPeer::ID_DEFINIE_PERIODE)) {
+			$modifiedColumns[':p' . $index++]  = 'ID_DEFINIE_PERIODE';
+		}
+		if ($this->isColumnModified(EdtCreneauPeer::NOM_DEFINIE_PERIODE)) {
+			$modifiedColumns[':p' . $index++]  = 'NOM_DEFINIE_PERIODE';
+		}
+		if ($this->isColumnModified(EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE)) {
+			$modifiedColumns[':p' . $index++]  = 'HEUREDEBUT_DEFINIE_PERIODE';
+		}
+		if ($this->isColumnModified(EdtCreneauPeer::HEUREFIN_DEFINIE_PERIODE)) {
+			$modifiedColumns[':p' . $index++]  = 'HEUREFIN_DEFINIE_PERIODE';
+		}
+		if ($this->isColumnModified(EdtCreneauPeer::SUIVI_DEFINIE_PERIODE)) {
+			$modifiedColumns[':p' . $index++]  = 'SUIVI_DEFINIE_PERIODE';
+		}
+		if ($this->isColumnModified(EdtCreneauPeer::TYPE_CRENEAUX)) {
+			$modifiedColumns[':p' . $index++]  = 'TYPE_CRENEAUX';
+		}
+		if ($this->isColumnModified(EdtCreneauPeer::JOUR_CRENEAU)) {
+			$modifiedColumns[':p' . $index++]  = 'JOUR_CRENEAU';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO edt_creneaux (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case 'ID_DEFINIE_PERIODE':
+						$stmt->bindValue($identifier, $this->id_definie_periode, PDO::PARAM_INT);
+						break;
+					case 'NOM_DEFINIE_PERIODE':
+						$stmt->bindValue($identifier, $this->nom_definie_periode, PDO::PARAM_STR);
+						break;
+					case 'HEUREDEBUT_DEFINIE_PERIODE':
+						$stmt->bindValue($identifier, $this->heuredebut_definie_periode, PDO::PARAM_STR);
+						break;
+					case 'HEUREFIN_DEFINIE_PERIODE':
+						$stmt->bindValue($identifier, $this->heurefin_definie_periode, PDO::PARAM_STR);
+						break;
+					case 'SUIVI_DEFINIE_PERIODE':
+						$stmt->bindValue($identifier, $this->suivi_definie_periode, PDO::PARAM_INT);
+						break;
+					case 'TYPE_CRENEAUX':
+						$stmt->bindValue($identifier, $this->type_creneaux, PDO::PARAM_STR);
+						break;
+					case 'JOUR_CRENEAU':
+						$stmt->bindValue($identifier, $this->jour_creneau, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setIdDefiniePeriode($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -999,10 +1127,12 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 		$copyObj->setTypeCreneaux($this->getTypeCreneaux());
 		$copyObj->setJourCreneau($this->getJourCreneau());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getAbsenceEleveSaisies() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1016,6 +1146,8 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -1065,7 +1197,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * Avoids crafting an 'init[$relationName]s' method name
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -1150,6 +1282,30 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of AbsenceEleveSaisie objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $absenceEleveSaisies A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setAbsenceEleveSaisies(PropelCollection $absenceEleveSaisies, PropelPDO $con = null)
+	{
+		$this->absenceEleveSaisiesScheduledForDeletion = $this->getAbsenceEleveSaisies(new Criteria(), $con)->diff($absenceEleveSaisies);
+
+		foreach ($absenceEleveSaisies as $absenceEleveSaisie) {
+			// Fix issue with collection modified by reference
+			if ($absenceEleveSaisie->isNew()) {
+				$absenceEleveSaisie->setEdtCreneau($this);
+			}
+			$this->addAbsenceEleveSaisie($absenceEleveSaisie);
+		}
+
+		$this->collAbsenceEleveSaisies = $absenceEleveSaisies;
+	}
+
+	/**
 	 * Returns the number of related AbsenceEleveSaisie objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1182,8 +1338,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	 * through the AbsenceEleveSaisie foreign key attribute.
 	 *
 	 * @param      AbsenceEleveSaisie $l AbsenceEleveSaisie
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     EdtCreneau The current object (for fluent API support)
 	 */
 	public function addAbsenceEleveSaisie(AbsenceEleveSaisie $l)
 	{
@@ -1191,9 +1346,19 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 			$this->initAbsenceEleveSaisies();
 		}
 		if (!$this->collAbsenceEleveSaisies->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collAbsenceEleveSaisies[]= $l;
-			$l->setEdtCreneau($this);
+			$this->doAddAbsenceEleveSaisie($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	AbsenceEleveSaisie $absenceEleveSaisie The absenceEleveSaisie object to add.
+	 */
+	protected function doAddAbsenceEleveSaisie($absenceEleveSaisie)
+	{
+		$this->collAbsenceEleveSaisies[]= $absenceEleveSaisie;
+		$absenceEleveSaisie->setEdtCreneau($this);
 	}
 
 
@@ -1440,6 +1605,30 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of EdtEmplacementCours objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $edtEmplacementCourss A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setEdtEmplacementCourss(PropelCollection $edtEmplacementCourss, PropelPDO $con = null)
+	{
+		$this->edtEmplacementCourssScheduledForDeletion = $this->getEdtEmplacementCourss(new Criteria(), $con)->diff($edtEmplacementCourss);
+
+		foreach ($edtEmplacementCourss as $edtEmplacementCours) {
+			// Fix issue with collection modified by reference
+			if ($edtEmplacementCours->isNew()) {
+				$edtEmplacementCours->setEdtCreneau($this);
+			}
+			$this->addEdtEmplacementCours($edtEmplacementCours);
+		}
+
+		$this->collEdtEmplacementCourss = $edtEmplacementCourss;
+	}
+
+	/**
 	 * Returns the number of related EdtEmplacementCours objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1472,8 +1661,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	 * through the EdtEmplacementCours foreign key attribute.
 	 *
 	 * @param      EdtEmplacementCours $l EdtEmplacementCours
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     EdtCreneau The current object (for fluent API support)
 	 */
 	public function addEdtEmplacementCours(EdtEmplacementCours $l)
 	{
@@ -1481,9 +1669,19 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 			$this->initEdtEmplacementCourss();
 		}
 		if (!$this->collEdtEmplacementCourss->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collEdtEmplacementCourss[]= $l;
-			$l->setEdtCreneau($this);
+			$this->doAddEdtEmplacementCours($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	EdtEmplacementCours $edtEmplacementCours The edtEmplacementCours object to add.
+	 */
+	protected function doAddEdtEmplacementCours($edtEmplacementCours)
+	{
+		$this->collEdtEmplacementCourss[]= $edtEmplacementCours;
+		$edtEmplacementCours->setEdtCreneau($this);
 	}
 
 
@@ -1674,25 +1872,6 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(EdtCreneauPeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseEdtCreneau

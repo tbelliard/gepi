@@ -1,5 +1,4 @@
 body {
-        font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
         font-size: 100%;
         color: #000000;
      }
@@ -21,7 +20,6 @@ t.form {
     }
 
 h1, h2 {
-       		font-family: "Trebuchet MS", Verdana, Geneva, Arial, Helvetica, sans-serif;
        }
 
 fieldset {
@@ -99,28 +97,6 @@ fieldset .row span.input label {
         background-color: transparent;
     }
 
-/*  select {
-        min-width: 60%;
-    }
-
-textarea {
-        min-width: 60%;
-    }
-
-input, textarea, selec AND $classe != "toutes"t {
-        font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-        font-size: 1em;
-        padding: 0.15em;
-    }
-
-input[type="text"], input[type="password"] {
-        min-width: 60%;
-    }
-
-input[type="file"] {
-        min-width: 60%;
-    } */
-
     * html fieldset {
         position: relative;
         padding-top: 2.75em;
@@ -152,7 +128,7 @@ input[type="file"] {
 .erreur_rouge_jaune {
     background: #FF3333;
     color: #FFFF33;
-    font: normal 10pt Arial;
+    font: normal 10pt;
     text-align: center;
 }
 

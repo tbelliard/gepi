@@ -478,25 +478,6 @@ class GepiDataPopulator
         $saisie_21->setDebutAbs('2011-05-30 08:00:00');
         $saisie_21->setFinAbs('2011-05-30 16:30:00');
         $saisie_21->save();
-		
-        $saisie_22 = new AbsenceEleveSaisie();
-        $saisie_22->setEleve($florence_eleve);
-        $saisie_22->setUtilisateurProfessionnel($lebesgue_prof);
-        $saisie_22->setDebutAbs('2010-11-09 08:00:00');
-        $saisie_22->setFinAbs('2010-11-09 08:25:00');//retard : ne comptera pas comme demi journée d'absence
-        $saisie_22->save();
-        $saisie_221 = new AbsenceEleveSaisie();
-        $saisie_221->setEleve($florence_eleve);
-        $saisie_221->setUtilisateurProfessionnel($lebesgue_prof);
-        $saisie_221->setDebutAbs('2010-11-09 08:00:00');
-        $saisie_221->setFinAbs('2010-11-09 08:26:00');//retard : ne comptera pas comme demi journée d'absence
-        $saisie_221->save();
-        $traitement = new AbsenceEleveTraitement();
-        $traitement->addAbsenceEleveSaisie($saisie_22);
-        $traitement->addAbsenceEleveSaisie($saisie_221);
-        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Retard intercours')->findOne());
-        $traitement->setUtilisateurProfessionnel($dolto_cpe);
-        $traitement->save();
         
         //on va purger les références, qui peuvent être fausses suite à des ajouts ultérieurs
         GepiDataPopulator::clearAllReferences();

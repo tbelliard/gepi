@@ -1,4 +1,4 @@
-GEPI-master
+GEPI-developpement
 ==============
 
 Eric ABGRALL <eric.abgrall@free.fr>
@@ -15,7 +15,7 @@ Eric LEBRUN <eric.lebrun@ac-poitiers.fr>
 
 http://gepi.mutualibre.org/
 
-ATTENTION! Ce paquetage contient la version en cours de développement de Gepi, dite "master" ex-"trunk", c'est-à-dire une version
+ATTENTION! Ce paquetage contient la version en cours de développement de Gepi, c'est-à-dire une version
 destinée à identifier et corriger les bugs induits par les nouvelles fonctionnalités.
 
 NE PAS UTILISER CETTE VERSION EN PRODUCTION ! Vous exposeriez votre base de données à des incohérences

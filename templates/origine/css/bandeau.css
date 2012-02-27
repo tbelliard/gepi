@@ -1,7 +1,6 @@
 /* $Id: bandeau.css */
 
 body{
-	font-family: DejaVu;
 	margin:0em;
 	padding:0em;
 }
@@ -213,9 +212,7 @@ background-color: #F00;
 /*================================================*/
 
 #menu_barre {
-	/*font-weight: bold;*/
 	font-size: 90%;
-	/*font-family: trebuchet ms,arial,tahoma,verdana,sans-serif;*/
 	z-index: 1000;
 	color: white;
 	background-color: #4a4a59;

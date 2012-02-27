@@ -368,7 +368,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						// Ensemble des données communes
 						require_once("../bulletin/bulletin_donnees.php");
 					
-						define('FPDF_FONTPATH','../fpdf/font/');
+						
 					
 						session_cache_limiter('private');
 					

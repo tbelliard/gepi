@@ -301,7 +301,7 @@ if(isset($_GET['export_pdf'])) {
 
 		require_once('../fpdf/fpdf.php');
 		
-		define('FPDF_FONTPATH','../fpdf/font/');
+		
 		define('LargeurPage','210');
 		define('HauteurPage','297');
 

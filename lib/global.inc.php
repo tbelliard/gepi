@@ -154,8 +154,8 @@ $couleur_cellule_gen = "#F6F7EF";
 //si on peut obtenir des informations sur la version dans le répertoire .git
 $gepiVersion = "dev";
 $gepiSvnRev = "";
-$gepiGitCommit = "7afbb11";
-$gepiGitBranch = "master";
+$gepiGitCommit = "";
+$gepiGitBranch = "";
 
 // Forcer l'utilisation du module de gestion des mise à jour de GEPI
 //

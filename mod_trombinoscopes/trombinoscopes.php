@@ -293,7 +293,7 @@ function reactiver(mavar) {
 
 	if ( ( $classe === 'toutes' or $groupe === 'toutes' or $equipepeda === 'toutes' or $discipline === 'toutes' ) or ( $classe === '' and $groupe === '' and $equipepeda === '' and $discipline === '' and $statusgepi === '' ) ) {
 
-		echo "<form method='post' action='trombinoscopes.php' name='form1' style='font-size: 0.71em;'>\n";
+		echo "<form method='post' action='trombinoscopes.php' name='form1' >\n";
 		echo "<div style='margin: auto; padding: 0px 20px 0px 20px;'>\n";
 
 		$acces="y";
@@ -305,7 +305,7 @@ function reactiver(mavar) {
 			$affichage_div_gauche="y";
 			echo "<div style='width: 45%; float: left; padding: 5px;'>\n";
 
-			echo "<div style='font: normal small-caps normal 14pt Verdana; border-collapse: separate; border-spacing: 0px; border: none; border-bottom: 1px solid lightgrey;'>".ucfirst($gepiSettings['denomination_eleve'])."</div>\n";
+			echo "<div style='font: normal small-caps normal 14pt; border-collapse: separate; border-spacing: 0px; border: none; border-bottom: 1px solid lightgrey;'>".ucfirst($gepiSettings['denomination_eleve'])."</div>\n";
 
 			//=================================================================
 			// CLASSES
@@ -481,7 +481,7 @@ function reactiver(mavar) {
 				echo "<div style='width: 45%; float: left; padding: 5px;'>\n";
 			}
 
-			echo "<div style='font: normal small-caps normal 14pt Verdana; border-collapse: separate; border-spacing: 0px; border: none; border-bottom: 1px solid lightgrey;'>Personnels</div>\n";
+			echo "<div style='font: normal small-caps; border-collapse: separate; border-spacing: 0px; border: none; border-bottom: 1px solid lightgrey;'><p>Personnels</p></div>\n";
 
 			//==========================================================
 			// EQUIPES PEDAGOGIQUES
@@ -677,7 +677,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 	echo "<div style='text-align: center;'>\n";
 	echo "<table width='100%' border='0' cellspacing='0' cellpadding='2' style='border : thin dashed #242424; background-color: #FFFFB8;' summary='Choix'>\n";
 	echo "<tr valign='top'>\n";
-	echo "<td align='left'><font face='Arial, Helvetica, sans-serif'>TROMBINOSCOPE ";
+	echo "<td align='left'><font>TROMBINOSCOPE ";
 
 	$datej = date('Y-m-d');
 	$annee_en_cours_t=annee_en_cours_t($datej);
@@ -1105,12 +1105,12 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 					}
 	
 					echo "' style='border: 0px; width: ".$valeur[0]."px; height: ".$valeur[1]."px;' alt=\"".$alt_nom_prenom_aff."\" title=\"".$alt_nom_prenom_aff."\" />\n";
-					echo "<br /><span style='font-family: Arial, Helvetica, sans-serif'>\n";
+					echo "<br /><span>\n";
 
 					echo $nom_prenom_aff;
 	
 					if ( $matiere_prof[$i] != '' ) {
-						echo "<span style='font: normal 10pt Arial, Helvetica, sans-serif;'>$matiere_prof[$i]</span>\n";
+						echo "<span'>$matiere_prof[$i]</span>\n";
 					}
 					if (( $action_affiche === 'groupe' )&&(strstr($current_group['classlist_string'],","))) {
 						$tab_ele_classes=get_class_from_ele_login($login_trombinoscope[$i]);
@@ -1185,12 +1185,12 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 				}
 
 				echo "' style='border: 0px; width: ".$valeur[0]."px; height: ".$valeur[1]."px;' alt=\"".$alt_nom_prenom_aff."\" title=\"".$alt_nom_prenom_aff."\" />\n";
-				echo "<br /><span style='font-family: Arial, Helvetica, sans-serif'>\n";
+				echo "<br /><span>\n";
 
 				echo $nom_prenom_aff;
 
 				if ( $matiere_prof[$i] != '' ) {
-					echo "<span style='font: normal 10pt Arial, Helvetica, sans-serif;'>$matiere_prof[$i]</span>\n";
+					echo "<span'>$matiere_prof[$i]</span>\n";
 				}
 				if (( $action_affiche === 'groupe' )&&(strstr($current_group['classlist_string'],","))) {
 

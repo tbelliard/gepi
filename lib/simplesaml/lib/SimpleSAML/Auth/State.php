@@ -37,6 +37,13 @@ class SimpleSAML_Auth_State {
 
 
 	/**
+	 * The index in the cloned state array which contains the identifier of the
+	 * original state.
+	 */
+	const CLONE_ORIGINAL_ID = 'SimpleSAML_Auth_State.cloneOriginalId';
+
+
+	/**
 	 * The index in the state array which contains the current stage.
 	 */
 	const STAGE = 'SimpleSAML_Auth_State.stage';
@@ -79,6 +86,12 @@ class SimpleSAML_Auth_State {
 
 
 	/**
+	 * State timeout.
+	 */
+	private static $stateTimeout = NULL;
+
+
+	/**
 	 * Retrieve the ID of a state array.
 	 *
 	 * Note that this function will not save the state.
@@ -108,6 +121,21 @@ class SimpleSAML_Auth_State {
 
 
 	/**
+	 * Retrieve state timeout.
+	 *
+	 * @return integer  State timeout.
+	 */
+	private static function getStateTimeout() {
+		if (self::$stateTimeout === NULL) {
+			$globalConfig = SimpleSAML_Configuration::getInstance();
+			self::$stateTimeout = $globalConfig->getInteger('session.state.timeout', 60*60);
+		}
+
+		return self::$stateTimeout;
+	}
+
+
+	/**
 	 * Save the state.
 	 *
 	 * This function saves the state, and returns an id which can be used to
@@ -132,11 +160,35 @@ class SimpleSAML_Auth_State {
 		/* Save state. */
 		$serializedState = serialize($state);
 		$session = SimpleSAML_Session::getInstance();
-		$session->setData('SimpleSAML_Auth_State', $id, $serializedState, 60*60);
+		$session->setData('SimpleSAML_Auth_State', $id, $serializedState, self::getStateTimeout());
 
 		SimpleSAML_Logger::debug('Saved state: ' . var_export($return, TRUE));
 
 		return $return;
+	}
+
+
+	/**
+	 * Clone the state.
+	 *
+	 * This function clones and returns the new cloned state.
+	 *
+	 * @param array $state  The original request state.
+	 * @return array  Cloned state data.
+	 */
+	public static function cloneState(array $state) {
+		$clonedState = $state;
+
+		if (array_key_exists(self::ID, $state)) {
+			$clonedState[self::CLONE_ORIGINAL_ID] = $state[self::ID];
+			unset($clonedState[self::ID]);
+
+			SimpleSAML_Logger::debug('Cloned state: ' . var_export($state[self::ID], TRUE));
+		} else {
+			SimpleSAML_Logger::debug('Cloned state with undefined id.');
+		}
+
+		return $clonedState;
 	}
 
 
@@ -149,12 +201,13 @@ class SimpleSAML_Auth_State {
 	 *
 	 * @param string $id  State identifier (with embedded restart information).
 	 * @param string $stage  The stage the state should have been saved in.
-	 * @return array  State information.
+	 * @param bool $allowMissing  Whether to allow the state to be missing.
+	 * @return array|NULL  State information, or NULL if the state is missing and $allowMissing is TRUE.
 	 */
-	public static function loadState($id, $stage) {
+	public static function loadState($id, $stage, $allowMissing = FALSE) {
 		assert('is_string($id)');
 		assert('is_string($stage)');
-
+		assert('is_bool($allowMissing)');
 		SimpleSAML_Logger::debug('Loading state: ' . var_export($id, TRUE));
 
 		$tmp = explode(':', $id, 2);
@@ -169,7 +222,10 @@ class SimpleSAML_Auth_State {
 		$state = $session->getData('SimpleSAML_Auth_State', $id);
 
 		if ($state === NULL) {
-			/* Could not find saved data. Attempt to restart. */
+			/* Could not find saved data. */
+			if ($allowMissing) {
+				return NULL;
+			}
 
 			if ($restartURL === NULL) {
 				throw new SimpleSAML_Error_NoState();

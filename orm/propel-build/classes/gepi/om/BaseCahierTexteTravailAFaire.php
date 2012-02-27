@@ -25,6 +25,12 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id_ct field.
 	 * @var        int
 	 */
@@ -109,6 +115,12 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $cahierTexteTravailAFaireFichierJointsScheduledForDeletion = null;
 
 	/**
 	 * Applies default values to this object.
@@ -273,7 +285,7 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 			$v = (int) $v;
 		}
 
-		if ($this->date_ct !== $v || $this->isNew()) {
+		if ($this->date_ct !== $v) {
 			$this->date_ct = $v;
 			$this->modifiedColumns[] = CahierTexteTravailAFairePeer::DATE_CT;
 		}
@@ -313,7 +325,7 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 			$v = (string) $v;
 		}
 
-		if ($this->vise !== $v || $this->isNew()) {
+		if ($this->vise !== $v) {
 			$this->vise = $v;
 			$this->modifiedColumns[] = CahierTexteTravailAFairePeer::VISE;
 		}
@@ -381,7 +393,7 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 			$v = (int) $v;
 		}
 
-		if ($this->id_sequence !== $v || $this->isNew()) {
+		if ($this->id_sequence !== $v) {
 			$this->id_sequence = $v;
 			$this->modifiedColumns[] = CahierTexteTravailAFairePeer::ID_SEQUENCE;
 		}
@@ -575,18 +587,18 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = CahierTexteTravailAFaireQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				CahierTexteTravailAFaireQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -638,7 +650,7 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -687,27 +699,24 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 				$this->setCahierTexteSequence($this->aCahierTexteSequence);
 			}
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = CahierTexteTravailAFairePeer::ID_CT;
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
+				if ($this->isNew()) {
+					$this->doInsert($con);
+				} else {
+					$this->doUpdate($con);
+				}
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
-				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(CahierTexteTravailAFairePeer::ID_CT) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.CahierTexteTravailAFairePeer::ID_CT.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setIdCt($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
-				} else {
-					$affectedRows += CahierTexteTravailAFairePeer::doUpdate($this, $con);
+			if ($this->cahierTexteTravailAFaireFichierJointsScheduledForDeletion !== null) {
+				if (!$this->cahierTexteTravailAFaireFichierJointsScheduledForDeletion->isEmpty()) {
+					CahierTexteTravailAFaireFichierJointQuery::create()
+						->filterByPrimaryKeys($this->cahierTexteTravailAFaireFichierJointsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->cahierTexteTravailAFaireFichierJointsScheduledForDeletion = null;
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collCahierTexteTravailAFaireFichierJoints !== null) {
@@ -723,6 +732,116 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = CahierTexteTravailAFairePeer::ID_CT;
+		if (null !== $this->id_ct) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . CahierTexteTravailAFairePeer::ID_CT . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(CahierTexteTravailAFairePeer::ID_CT)) {
+			$modifiedColumns[':p' . $index++]  = 'ID_CT';
+		}
+		if ($this->isColumnModified(CahierTexteTravailAFairePeer::DATE_CT)) {
+			$modifiedColumns[':p' . $index++]  = 'DATE_CT';
+		}
+		if ($this->isColumnModified(CahierTexteTravailAFairePeer::CONTENU)) {
+			$modifiedColumns[':p' . $index++]  = 'CONTENU';
+		}
+		if ($this->isColumnModified(CahierTexteTravailAFairePeer::VISE)) {
+			$modifiedColumns[':p' . $index++]  = 'VISE';
+		}
+		if ($this->isColumnModified(CahierTexteTravailAFairePeer::ID_GROUPE)) {
+			$modifiedColumns[':p' . $index++]  = 'ID_GROUPE';
+		}
+		if ($this->isColumnModified(CahierTexteTravailAFairePeer::ID_LOGIN)) {
+			$modifiedColumns[':p' . $index++]  = 'ID_LOGIN';
+		}
+		if ($this->isColumnModified(CahierTexteTravailAFairePeer::ID_SEQUENCE)) {
+			$modifiedColumns[':p' . $index++]  = 'ID_SEQUENCE';
+		}
+		if ($this->isColumnModified(CahierTexteTravailAFairePeer::DATE_VISIBILITE_ELEVE)) {
+			$modifiedColumns[':p' . $index++]  = 'DATE_VISIBILITE_ELEVE';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO ct_devoirs_entry (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case 'ID_CT':
+						$stmt->bindValue($identifier, $this->id_ct, PDO::PARAM_INT);
+						break;
+					case 'DATE_CT':
+						$stmt->bindValue($identifier, $this->date_ct, PDO::PARAM_INT);
+						break;
+					case 'CONTENU':
+						$stmt->bindValue($identifier, $this->contenu, PDO::PARAM_STR);
+						break;
+					case 'VISE':
+						$stmt->bindValue($identifier, $this->vise, PDO::PARAM_STR);
+						break;
+					case 'ID_GROUPE':
+						$stmt->bindValue($identifier, $this->id_groupe, PDO::PARAM_INT);
+						break;
+					case 'ID_LOGIN':
+						$stmt->bindValue($identifier, $this->id_login, PDO::PARAM_STR);
+						break;
+					case 'ID_SEQUENCE':
+						$stmt->bindValue($identifier, $this->id_sequence, PDO::PARAM_INT);
+						break;
+					case 'DATE_VISIBILITE_ELEVE':
+						$stmt->bindValue($identifier, $this->date_visibilite_eleve, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setIdCt($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1105,10 +1224,12 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 		$copyObj->setIdSequence($this->getIdSequence());
 		$copyObj->setDateVisibiliteEleve($this->getDateVisibiliteEleve());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getCahierTexteTravailAFaireFichierJoints() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1116,6 +1237,8 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -1312,7 +1435,7 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * Avoids crafting an 'init[$relationName]s' method name
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -1394,6 +1517,30 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Sets a collection of CahierTexteTravailAFaireFichierJoint objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $cahierTexteTravailAFaireFichierJoints A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setCahierTexteTravailAFaireFichierJoints(PropelCollection $cahierTexteTravailAFaireFichierJoints, PropelPDO $con = null)
+	{
+		$this->cahierTexteTravailAFaireFichierJointsScheduledForDeletion = $this->getCahierTexteTravailAFaireFichierJoints(new Criteria(), $con)->diff($cahierTexteTravailAFaireFichierJoints);
+
+		foreach ($cahierTexteTravailAFaireFichierJoints as $cahierTexteTravailAFaireFichierJoint) {
+			// Fix issue with collection modified by reference
+			if ($cahierTexteTravailAFaireFichierJoint->isNew()) {
+				$cahierTexteTravailAFaireFichierJoint->setCahierTexteTravailAFaire($this);
+			}
+			$this->addCahierTexteTravailAFaireFichierJoint($cahierTexteTravailAFaireFichierJoint);
+		}
+
+		$this->collCahierTexteTravailAFaireFichierJoints = $cahierTexteTravailAFaireFichierJoints;
+	}
+
+	/**
 	 * Returns the number of related CahierTexteTravailAFaireFichierJoint objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1426,8 +1573,7 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 	 * through the CahierTexteTravailAFaireFichierJoint foreign key attribute.
 	 *
 	 * @param      CahierTexteTravailAFaireFichierJoint $l CahierTexteTravailAFaireFichierJoint
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     CahierTexteTravailAFaire The current object (for fluent API support)
 	 */
 	public function addCahierTexteTravailAFaireFichierJoint(CahierTexteTravailAFaireFichierJoint $l)
 	{
@@ -1435,9 +1581,19 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 			$this->initCahierTexteTravailAFaireFichierJoints();
 		}
 		if (!$this->collCahierTexteTravailAFaireFichierJoints->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collCahierTexteTravailAFaireFichierJoints[]= $l;
-			$l->setCahierTexteTravailAFaire($this);
+			$this->doAddCahierTexteTravailAFaireFichierJoint($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	CahierTexteTravailAFaireFichierJoint $cahierTexteTravailAFaireFichierJoint The cahierTexteTravailAFaireFichierJoint object to add.
+	 */
+	protected function doAddCahierTexteTravailAFaireFichierJoint($cahierTexteTravailAFaireFichierJoint)
+	{
+		$this->collCahierTexteTravailAFaireFichierJoints[]= $cahierTexteTravailAFaireFichierJoint;
+		$cahierTexteTravailAFaireFichierJoint->setCahierTexteTravailAFaire($this);
 	}
 
 	/**
@@ -1498,25 +1654,6 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 	public function __toString()
 	{
 		return (string) $this->exportTo(CahierTexteTravailAFairePeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseCahierTexteTravailAFaire

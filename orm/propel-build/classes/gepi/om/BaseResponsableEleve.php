@@ -25,6 +25,12 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the pers_id field.
 	 * @var        string
 	 */
@@ -117,6 +123,24 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $absenceEleveNotificationsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $responsableInformationsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $jNotificationResponsableElevesScheduledForDeletion = null;
 
 	/**
 	 * Get the [pers_id] column value.
@@ -567,18 +591,18 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = ResponsableEleveQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				ResponsableEleveQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -630,7 +654,7 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -665,19 +689,39 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 				$this->setAdresse($this->aAdresse);
 			}
 
-
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows += ResponsableElevePeer::doUpdate($this, $con);
+					$this->doUpdate($con);
+				}
+				$affectedRows += 1;
+				$this->resetModified();
+			}
+
+			if ($this->absenceEleveNotificationsScheduledForDeletion !== null) {
+				if (!$this->absenceEleveNotificationsScheduledForDeletion->isEmpty()) {
+					JNotificationResponsableEleveQuery::create()
+						->filterByPrimaryKeys($this->absenceEleveNotificationsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->absenceEleveNotificationsScheduledForDeletion = null;
 				}
 
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+				foreach ($this->getAbsenceEleveNotifications() as $absenceEleveNotification) {
+					if ($absenceEleveNotification->isModified()) {
+						$absenceEleveNotification->save($con);
+					}
+				}
+			}
+
+			if ($this->responsableInformationsScheduledForDeletion !== null) {
+				if (!$this->responsableInformationsScheduledForDeletion->isEmpty()) {
+					ResponsableInformationQuery::create()
+						->filterByPrimaryKeys($this->responsableInformationsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->responsableInformationsScheduledForDeletion = null;
+				}
 			}
 
 			if ($this->collResponsableInformations !== null) {
@@ -685,6 +729,15 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->jNotificationResponsableElevesScheduledForDeletion !== null) {
+				if (!$this->jNotificationResponsableElevesScheduledForDeletion->isEmpty()) {
+					JNotificationResponsableEleveQuery::create()
+						->filterByPrimaryKeys($this->jNotificationResponsableElevesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->jNotificationResponsableElevesScheduledForDeletion = null;
 				}
 			}
 
@@ -701,6 +754,117 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(ResponsableElevePeer::PERS_ID)) {
+			$modifiedColumns[':p' . $index++]  = 'PERS_ID';
+		}
+		if ($this->isColumnModified(ResponsableElevePeer::LOGIN)) {
+			$modifiedColumns[':p' . $index++]  = 'LOGIN';
+		}
+		if ($this->isColumnModified(ResponsableElevePeer::NOM)) {
+			$modifiedColumns[':p' . $index++]  = 'NOM';
+		}
+		if ($this->isColumnModified(ResponsableElevePeer::PRENOM)) {
+			$modifiedColumns[':p' . $index++]  = 'PRENOM';
+		}
+		if ($this->isColumnModified(ResponsableElevePeer::CIVILITE)) {
+			$modifiedColumns[':p' . $index++]  = 'CIVILITE';
+		}
+		if ($this->isColumnModified(ResponsableElevePeer::TEL_PERS)) {
+			$modifiedColumns[':p' . $index++]  = 'TEL_PERS';
+		}
+		if ($this->isColumnModified(ResponsableElevePeer::TEL_PORT)) {
+			$modifiedColumns[':p' . $index++]  = 'TEL_PORT';
+		}
+		if ($this->isColumnModified(ResponsableElevePeer::TEL_PROF)) {
+			$modifiedColumns[':p' . $index++]  = 'TEL_PROF';
+		}
+		if ($this->isColumnModified(ResponsableElevePeer::MEL)) {
+			$modifiedColumns[':p' . $index++]  = 'MEL';
+		}
+		if ($this->isColumnModified(ResponsableElevePeer::ADR_ID)) {
+			$modifiedColumns[':p' . $index++]  = 'ADR_ID';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO resp_pers (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case 'PERS_ID':
+						$stmt->bindValue($identifier, $this->pers_id, PDO::PARAM_STR);
+						break;
+					case 'LOGIN':
+						$stmt->bindValue($identifier, $this->login, PDO::PARAM_STR);
+						break;
+					case 'NOM':
+						$stmt->bindValue($identifier, $this->nom, PDO::PARAM_STR);
+						break;
+					case 'PRENOM':
+						$stmt->bindValue($identifier, $this->prenom, PDO::PARAM_STR);
+						break;
+					case 'CIVILITE':
+						$stmt->bindValue($identifier, $this->civilite, PDO::PARAM_STR);
+						break;
+					case 'TEL_PERS':
+						$stmt->bindValue($identifier, $this->tel_pers, PDO::PARAM_STR);
+						break;
+					case 'TEL_PORT':
+						$stmt->bindValue($identifier, $this->tel_port, PDO::PARAM_STR);
+						break;
+					case 'TEL_PROF':
+						$stmt->bindValue($identifier, $this->tel_prof, PDO::PARAM_STR);
+						break;
+					case 'MEL':
+						$stmt->bindValue($identifier, $this->mel, PDO::PARAM_STR);
+						break;
+					case 'ADR_ID':
+						$stmt->bindValue($identifier, $this->adr_id, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1086,7 +1250,6 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 	 */
 	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setResponsableEleveId($this->getResponsableEleveId());
 		$copyObj->setLogin($this->getLogin());
 		$copyObj->setNom($this->getNom());
 		$copyObj->setPrenom($this->getPrenom());
@@ -1097,10 +1260,12 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 		$copyObj->setMel($this->getMel());
 		$copyObj->setAdresseId($this->getAdresseId());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getResponsableInformations() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1114,10 +1279,13 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
 			$copyObj->setNew(true);
+			$copyObj->setResponsableEleveId(NULL); // this is a auto-increment column, so set to default value
 		}
 	}
 
@@ -1211,7 +1379,7 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * Avoids crafting an 'init[$relationName]s' method name
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -1296,6 +1464,30 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of ResponsableInformation objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $responsableInformations A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setResponsableInformations(PropelCollection $responsableInformations, PropelPDO $con = null)
+	{
+		$this->responsableInformationsScheduledForDeletion = $this->getResponsableInformations(new Criteria(), $con)->diff($responsableInformations);
+
+		foreach ($responsableInformations as $responsableInformation) {
+			// Fix issue with collection modified by reference
+			if ($responsableInformation->isNew()) {
+				$responsableInformation->setResponsableEleve($this);
+			}
+			$this->addResponsableInformation($responsableInformation);
+		}
+
+		$this->collResponsableInformations = $responsableInformations;
+	}
+
+	/**
 	 * Returns the number of related ResponsableInformation objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1328,8 +1520,7 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 	 * through the ResponsableInformation foreign key attribute.
 	 *
 	 * @param      ResponsableInformation $l ResponsableInformation
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     ResponsableEleve The current object (for fluent API support)
 	 */
 	public function addResponsableInformation(ResponsableInformation $l)
 	{
@@ -1337,9 +1528,19 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 			$this->initResponsableInformations();
 		}
 		if (!$this->collResponsableInformations->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collResponsableInformations[]= $l;
-			$l->setResponsableEleve($this);
+			$this->doAddResponsableInformation($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	ResponsableInformation $responsableInformation The responsableInformation object to add.
+	 */
+	protected function doAddResponsableInformation($responsableInformation)
+	{
+		$this->collResponsableInformations[]= $responsableInformation;
+		$responsableInformation->setResponsableEleve($this);
 	}
 
 
@@ -1436,6 +1637,30 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of JNotificationResponsableEleve objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $jNotificationResponsableEleves A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setJNotificationResponsableEleves(PropelCollection $jNotificationResponsableEleves, PropelPDO $con = null)
+	{
+		$this->jNotificationResponsableElevesScheduledForDeletion = $this->getJNotificationResponsableEleves(new Criteria(), $con)->diff($jNotificationResponsableEleves);
+
+		foreach ($jNotificationResponsableEleves as $jNotificationResponsableEleve) {
+			// Fix issue with collection modified by reference
+			if ($jNotificationResponsableEleve->isNew()) {
+				$jNotificationResponsableEleve->setResponsableEleve($this);
+			}
+			$this->addJNotificationResponsableEleve($jNotificationResponsableEleve);
+		}
+
+		$this->collJNotificationResponsableEleves = $jNotificationResponsableEleves;
+	}
+
+	/**
 	 * Returns the number of related JNotificationResponsableEleve objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1468,8 +1693,7 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 	 * through the JNotificationResponsableEleve foreign key attribute.
 	 *
 	 * @param      JNotificationResponsableEleve $l JNotificationResponsableEleve
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     ResponsableEleve The current object (for fluent API support)
 	 */
 	public function addJNotificationResponsableEleve(JNotificationResponsableEleve $l)
 	{
@@ -1477,9 +1701,19 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 			$this->initJNotificationResponsableEleves();
 		}
 		if (!$this->collJNotificationResponsableEleves->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collJNotificationResponsableEleves[]= $l;
-			$l->setResponsableEleve($this);
+			$this->doAddJNotificationResponsableEleve($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	JNotificationResponsableEleve $jNotificationResponsableEleve The jNotificationResponsableEleve object to add.
+	 */
+	protected function doAddJNotificationResponsableEleve($jNotificationResponsableEleve)
+	{
+		$this->collJNotificationResponsableEleves[]= $jNotificationResponsableEleve;
+		$jNotificationResponsableEleve->setResponsableEleve($this);
 	}
 
 
@@ -1571,6 +1805,37 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of AbsenceEleveNotification objects related by a many-to-many relationship
+	 * to the current object by way of the j_notifications_resp_pers cross-reference table.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $absenceEleveNotifications A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setAbsenceEleveNotifications(PropelCollection $absenceEleveNotifications, PropelPDO $con = null)
+	{
+		$jNotificationResponsableEleves = JNotificationResponsableEleveQuery::create()
+			->filterByAbsenceEleveNotification($absenceEleveNotifications)
+			->filterByResponsableEleve($this)
+			->find($con);
+
+		$this->absenceEleveNotificationsScheduledForDeletion = $this->getJNotificationResponsableEleves()->diff($jNotificationResponsableEleves);
+		$this->collJNotificationResponsableEleves = $jNotificationResponsableEleves;
+
+		foreach ($absenceEleveNotifications as $absenceEleveNotification) {
+			// Fix issue with collection modified by reference
+			if ($absenceEleveNotification->isNew()) {
+				$this->doAddAbsenceEleveNotification($absenceEleveNotification);
+			} else {
+				$this->addAbsenceEleveNotification($absenceEleveNotification);
+			}
+		}
+
+		$this->collAbsenceEleveNotifications = $absenceEleveNotifications;
+	}
+
+	/**
 	 * Gets the number of AbsenceEleveNotification objects related by a many-to-many relationship
 	 * to the current object by way of the j_notifications_resp_pers cross-reference table.
 	 *
@@ -1606,18 +1871,26 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 	 * @param      AbsenceEleveNotification $absenceEleveNotification The JNotificationResponsableEleve object to relate
 	 * @return     void
 	 */
-	public function addAbsenceEleveNotification($absenceEleveNotification)
+	public function addAbsenceEleveNotification(AbsenceEleveNotification $absenceEleveNotification)
 	{
 		if ($this->collAbsenceEleveNotifications === null) {
 			$this->initAbsenceEleveNotifications();
 		}
 		if (!$this->collAbsenceEleveNotifications->contains($absenceEleveNotification)) { // only add it if the **same** object is not already associated
-			$jNotificationResponsableEleve = new JNotificationResponsableEleve();
-			$jNotificationResponsableEleve->setAbsenceEleveNotification($absenceEleveNotification);
-			$this->addJNotificationResponsableEleve($jNotificationResponsableEleve);
+			$this->doAddAbsenceEleveNotification($absenceEleveNotification);
 
 			$this->collAbsenceEleveNotifications[]= $absenceEleveNotification;
 		}
+	}
+
+	/**
+	 * @param	AbsenceEleveNotification $absenceEleveNotification The absenceEleveNotification object to add.
+	 */
+	protected function doAddAbsenceEleveNotification($absenceEleveNotification)
+	{
+		$jNotificationResponsableEleve = new JNotificationResponsableEleve();
+		$jNotificationResponsableEleve->setAbsenceEleveNotification($absenceEleveNotification);
+		$this->addJNotificationResponsableEleve($jNotificationResponsableEleve);
 	}
 
 	/**
@@ -1695,25 +1968,6 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(ResponsableElevePeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseResponsableEleve

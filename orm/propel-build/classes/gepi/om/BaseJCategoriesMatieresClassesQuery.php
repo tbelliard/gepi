@@ -45,7 +45,7 @@
  */
 abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 {
-
+	
 	/**
 	 * Initializes internal state of BaseJCategoriesMatieresClassesQuery object.
 	 *
@@ -82,10 +82,14 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	}
 
 	/**
-	 * Find object by primary key
+	 * Find object by primary key.
+	 * Propel uses the instance pool to skip the database if the object exists.
+	 * Go fast if the query is untouched.
+	 *
 	 * <code>
 	 * $obj = $c->findPk(array(12, 34), $con);
 	 * </code>
+	 *
 	 * @param     array[$categorie_id, $classe_id] $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
@@ -93,17 +97,74 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ((null !== ($obj = JCategoriesMatieresClassesPeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && $this->getFormatter()->isObjectFormatter()) {
+		if ($key === null) {
+			return null;
+		}
+		if ((null !== ($obj = JCategoriesMatieresClassesPeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
 			// the object is alredy in the instance pool
 			return $obj;
-		} else {
-			// the object has not been requested yet, or the formatter is not an object formatter
-			$criteria = $this->isKeepQuery() ? clone $this : $this;
-			$stmt = $criteria
-				->filterByPrimaryKey($key)
-				->getSelectStatement($con);
-			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
+		if ($con === null) {
+			$con = Propel::getConnection(JCategoriesMatieresClassesPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
+		if ($this->formatter || $this->modelAlias || $this->with || $this->select
+		 || $this->selectColumns || $this->asColumns || $this->selectModifiers
+		 || $this->map || $this->having || $this->joins) {
+			return $this->findPkComplex($key, $con);
+		} else {
+			return $this->findPkSimple($key, $con);
+		}
+	}
+
+	/**
+	 * Find object by primary key using raw SQL to go fast.
+	 * Bypass doSelect() and the object formatter by using generated code.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    JCategoriesMatieresClasses A model object, or null if the key is not found
+	 */
+	protected function findPkSimple($key, $con)
+	{
+		$sql = 'SELECT CATEGORIE_ID, CLASSE_ID, AFFICHE_MOYENNE, PRIORITY FROM j_matieres_categories_classes WHERE CATEGORIE_ID = :p0 AND CLASSE_ID = :p1';
+		try {
+			$stmt = $con->prepare($sql);
+			$stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
+			$stmt->bindValue(':p1', $key[1], PDO::PARAM_INT);
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), $e);
+		}
+		$obj = null;
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$obj = new JCategoriesMatieresClasses();
+			$obj->hydrate($row);
+			JCategoriesMatieresClassesPeer::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
+		}
+		$stmt->closeCursor();
+
+		return $obj;
+	}
+
+	/**
+	 * Find object by primary key.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    JCategoriesMatieresClasses|array|mixed the result, formatted by the current formatter
+	 */
+	protected function findPkComplex($key, $con)
+	{
+		// As the query uses a PK condition, no limit(1) is necessary.
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
+		$stmt = $criteria
+			->filterByPrimaryKey($key)
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 	}
 
 	/**
@@ -118,10 +179,15 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{
+		if ($con === null) {
+			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		return $this
+		$stmt = $criteria
 			->filterByPrimaryKeys($keys)
-			->find($con);
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->format($stmt);
 	}
 
 	/**
@@ -135,7 +201,7 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	{
 		$this->addUsingAlias(JCategoriesMatieresClassesPeer::CATEGORIE_ID, $key[0], Criteria::EQUAL);
 		$this->addUsingAlias(JCategoriesMatieresClassesPeer::CLASSE_ID, $key[1], Criteria::EQUAL);
-		
+
 		return $this;
 	}
 
@@ -157,13 +223,13 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 			$cton0->addAnd($cton1);
 			$this->addOr($cton0);
 		}
-		
+
 		return $this;
 	}
 
 	/**
 	 * Filter the query on the categorie_id column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCategorieId(1234); // WHERE categorie_id = 1234
@@ -191,7 +257,7 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the classe_id column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByClasseId(1234); // WHERE classe_id = 1234
@@ -219,7 +285,7 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the affiche_moyenne column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAfficheMoyenne(true); // WHERE affiche_moyenne = true
@@ -245,7 +311,7 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the priority column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByPriority(1234); // WHERE priority = 1234
@@ -309,7 +375,7 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the CategorieMatiere relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -319,7 +385,7 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('CategorieMatiere');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -327,7 +393,7 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -335,7 +401,7 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'CategorieMatiere');
 		}
-		
+
 		return $this;
 	}
 
@@ -343,7 +409,7 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	 * Use the CategorieMatiere relation CategorieMatiere object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -383,7 +449,7 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the Classe relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -393,7 +459,7 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Classe');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -401,7 +467,7 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -409,7 +475,7 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'Classe');
 		}
-		
+
 		return $this;
 	}
 
@@ -417,7 +483,7 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	 * Use the Classe relation Classe object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -444,8 +510,8 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 			$this->addCond('pruneCond0', $this->getAliasedColName(JCategoriesMatieresClassesPeer::CATEGORIE_ID), $jCategoriesMatieresClasses->getCategorieId(), Criteria::NOT_EQUAL);
 			$this->addCond('pruneCond1', $this->getAliasedColName(JCategoriesMatieresClassesPeer::CLASSE_ID), $jCategoriesMatieresClasses->getClasseId(), Criteria::NOT_EQUAL);
 			$this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
-	  }
-	  
+		}
+
 		return $this;
 	}
 

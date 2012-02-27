@@ -30,7 +30,7 @@ $filtrage_extensions_fichiers_table_ct_types_documents='y';
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
 
 // Dans le cas ou on poste une notice ou un devoir, pas de traitement anti_inject
-// Pour ne pas interférer avec fckeditor
+// Pour ne pas interférer avec l'échappement mysql déjà géré par propel
 $traite_anti_inject = 'no';
 
 require_once("../lib/initialisationsPropel.inc.php");
@@ -143,44 +143,6 @@ if ($ctTravailAFaire->getVise() == 'y') {
 	die();
 }
 
-if((isset($_POST['id_ct_a_importer']))&&($_POST['id_ct_a_importer']!='')) {
-	if(preg_match("/^devoir_/", $_POST['id_ct_a_importer'])) {
-		$id_ct_import=preg_replace("/^devoir_/", "", $_POST['id_ct_a_importer']);
-		if(preg_match("/^[0-9]*$/", $id_ct_import)) {
-			//$sql="SELECT id_ct, contenu FROM ct_devoirs_entry WHERE id_groupe='$id_groupe' AND id_ct='".$id_ct_import."';";
-			$sql="SELECT DISTINCT id_ct, contenu FROM ct_devoirs_entry cde, j_groupes_professeurs jgp WHERE jgp.id_groupe=cde.id_groupe AND jgp.login='".$_SESSION['login']."' AND cde.id_ct='".$id_ct_import."';";
-			$res_ct=mysql_query($sql);
-			if(mysql_num_rows($res_ct)==1) {
-				$lig_ct=mysql_fetch_object($res_ct);
-				$contenu.=$lig_ct->contenu;
-			}
-		}
-	}
-	elseif(preg_match("/^compte_rendu_/", $_POST['id_ct_a_importer'])) {
-		$id_ct_import=preg_replace("/^compte_rendu_/", "", $_POST['id_ct_a_importer']);
-		if(preg_match("/^[0-9]*$/", $id_ct_import)) {
-			//$sql="SELECT id_ct, contenu FROM ct_entry WHERE id_groupe='$id_groupe' AND id_ct='".$id_ct_import."';";
-			$sql="SELECT DISTINCT id_ct, contenu FROM ct_entry ce, j_groupes_professeurs jgp WHERE jgp.id_groupe=ce.id_groupe AND jgp.login='".$_SESSION['login']."' AND ce.id_ct='".$id_ct_import."';";
-			$res_ct=mysql_query($sql);
-			if(mysql_num_rows($res_ct)==1) {
-				$lig_ct=mysql_fetch_object($res_ct);
-				$contenu.=$lig_ct->contenu;
-			}
-		}
-	}
-	if(preg_match("/^notice_privee_/", $_POST['id_ct_a_importer'])) {
-		$id_ct_import=preg_replace("/^notice_privee_/", "", $_POST['id_ct_a_importer']);
-		if(preg_match("/^[0-9]*$/", $id_ct_import)) {
-			//$sql="SELECT id_ct, contenu FROM ct_private_entry WHERE id_groupe='$id_groupe' AND id_ct='".$id_ct_import."';";
-			$sql="SELECT DISTINCT id_ct, contenu FROM ct_private_entry cpe, j_groupes_professeurs jgp WHERE jgp.id_groupe=cpe.id_groupe AND jgp.login='".$_SESSION['login']."' AND cpe.id_ct='".$id_ct_import."';";
-			$res_ct=mysql_query($sql);
-			if(mysql_num_rows($res_ct)==1) {
-				$lig_ct=mysql_fetch_object($res_ct);
-				$contenu.=$lig_ct->contenu;
-			}
-		}
-	}
-}
 
 //affectation des parametres de la requete à l'objet ctCompteRendu
 $contenu_cor = traitement_magic_quotes(corriger_caracteres($contenu),'');
@@ -320,6 +282,27 @@ if (!empty($doc_name_modif) && (trim($doc_name_modif)) != '' && !empty($id_docum
 	}
 	$document->setTitre(corriger_caracteres($doc_name_modif));
 	$document->save();
+}
+
+//traitement de la copie de fichier joint
+if (isset($_REQUEST['ct_a_importer_class']) && isset($_REQUEST['id_ct_a_importer'])) {
+        $classname = $_REQUEST["ct_a_importer_class"].'Query';
+        if (class_exists($classname)) {
+            $notice = $classname::create()->findOneByPrimaryKey($_REQUEST["id_ct_a_importer"]);
+            if ($notice != null && $ctTravailAFaire!= null 
+                    && $notice != $ctTravailAFaire) {//pour la dernière condition, on évite de copier les fichiers joints d'une notice sur elle même
+                $method = 'get'.$_REQUEST["ct_a_importer_class"].'FichierJoints';
+                foreach($notice->$method() as $fichier_joint_modele) {
+                    $fj = new CahierTexteTravailAFaireFichierJoint();
+                    $fj->setEmplacement($fichier_joint_modele->getEmplacement());
+                    $fj->setTitre($fichier_joint_modele->getTitre());
+                    $fj->setTaille($fichier_joint_modele->getTaille());
+                    $fj->save();
+                    $ctTravailAFaire->addCahierTexteTravailAFaireFichierJoint($fj);
+                }
+                $ctTravailAFaire->save();
+            }
+        } 
 }
 
 echo($ctTravailAFaire->getIdCt());

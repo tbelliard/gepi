@@ -284,6 +284,42 @@ echo "
 			\">
 	Deplacer la notice</a>\n";
 
+//il faut échapper les single quote pour le contenu à importer
+$contenu_a_copier =  isset($_SESSION['ct_a_importer']) ? $_SESSION['ct_a_importer']->getContenu() : '';
+echo (" <a href=\"#\" onclick=\"javascript: /*contenu_a_copier est globale*/
+    if (window.contenu_a_copier == undefined) {
+        contenu_a_copier = '".addslashes(htmlspecialchars($contenu_a_copier))."';
+    }
+    CKEDITOR.instances['contenu'].insertHtml(contenu_a_copier);");
+echo("\"><img style=\"border: 0px;\" src=\"../images/icons/copy-16-gold.png");
+echo("\" alt=\"Coller\" title=\"Coller le contenu\" /></a>\n");
+
+//il faut échapper les single quote pour le contenu à importer
+$ct_a_importer_class = isset($_SESSION['ct_a_importer']) ? get_class($_SESSION['ct_a_importer']) : '';
+$id_ct_a_importer = isset($_SESSION['ct_a_importer']) ? $_SESSION['ct_a_importer']->getPrimaryKey() : '';
+//pour le contenu à copier, on regarde d'abord si on a du contenu en javascript puis dans la session php
+echo (" <a href=\"#\" onclick=\"javascript: /*ct_a_importer_class est globale*/
+    if (window.ct_a_importer_class == undefined) {
+        ct_a_importer_class='".$ct_a_importer_class."';
+        id_ct_a_importer='".$id_ct_a_importer."';
+    }
+    var hiddenField1 = document.createElement('input');
+    hiddenField1.setAttribute('type', 'hidden');
+    hiddenField1.setAttribute('name', 'ct_a_importer_class');
+    hiddenField1.setAttribute('value', ct_a_importer_class);
+    $('modification_compte_rendu_form').appendChild(hiddenField1);
+    var hiddenField2 = document.createElement('input');
+    hiddenField2.setAttribute('type', 'hidden');
+    hiddenField2.setAttribute('name', 'id_ct_a_importer');
+    hiddenField2.setAttribute('value', id_ct_a_importer);
+    $('modification_compte_rendu_form').appendChild(hiddenField2);
+    $('contenu').value = CKEDITOR.instances['contenu'].getData();
+    $('modification_compte_rendu_form').request({
+        onComplete : function (transport) {updateWindows('');}
+    });");
+echo("\"><img style=\"border: 0px;\" src=\"../images/icons/copy-16-gold.png");
+echo("\" alt=\"Coller\" title=\"Coller les fichiers joints\" /></a>\n");
+
 echo "</legend>\n";
 
 echo "<div id=\"dupplication_notice\" style='display: none;'></div>\n";
@@ -324,10 +360,6 @@ else {
 		<button type="submit" style='font-variant: small-caps;'
 			onClick="javascript:$('passer_a').value = 'passer_compte_rendu';">Enr. et
 		passer aux comptes rendus</button>
-
-		<input type='hidden' name='importer_notice' id='importer_notice' value='' />
-		<input type='hidden' name='id_ct_a_importer' id='id_ct_a_importer' value='' />
-		<button type='submit' id='affichage_import_notice' style='font-variant: small-caps; display:none; background-color:red;' onClick="javascript:$('importer_notice').value='y';">Importer la notice</button>
 
 		<?php
 /*

@@ -97,7 +97,7 @@
  */
 abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 {
-
+	
 	/**
 	 * Initializes internal state of BaseEdtEmplacementCoursQuery object.
 	 *
@@ -134,11 +134,14 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	}
 
 	/**
-	 * Find object by primary key
-	 * Use instance pooling to avoid a database query if the object exists
+	 * Find object by primary key.
+	 * Propel uses the instance pool to skip the database if the object exists.
+	 * Go fast if the query is untouched.
+	 *
 	 * <code>
 	 * $obj  = $c->findPk(12, $con);
 	 * </code>
+	 *
 	 * @param     mixed $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
@@ -146,17 +149,73 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ((null !== ($obj = EdtEmplacementCoursPeer::getInstanceFromPool((string) $key))) && $this->getFormatter()->isObjectFormatter()) {
+		if ($key === null) {
+			return null;
+		}
+		if ((null !== ($obj = EdtEmplacementCoursPeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
 			// the object is alredy in the instance pool
 			return $obj;
-		} else {
-			// the object has not been requested yet, or the formatter is not an object formatter
-			$criteria = $this->isKeepQuery() ? clone $this : $this;
-			$stmt = $criteria
-				->filterByPrimaryKey($key)
-				->getSelectStatement($con);
-			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
+		if ($con === null) {
+			$con = Propel::getConnection(EdtEmplacementCoursPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
+		if ($this->formatter || $this->modelAlias || $this->with || $this->select
+		 || $this->selectColumns || $this->asColumns || $this->selectModifiers
+		 || $this->map || $this->having || $this->joins) {
+			return $this->findPkComplex($key, $con);
+		} else {
+			return $this->findPkSimple($key, $con);
+		}
+	}
+
+	/**
+	 * Find object by primary key using raw SQL to go fast.
+	 * Bypass doSelect() and the object formatter by using generated code.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    EdtEmplacementCours A model object, or null if the key is not found
+	 */
+	protected function findPkSimple($key, $con)
+	{
+		$sql = 'SELECT ID_COURS, ID_GROUPE, ID_AID, ID_SALLE, JOUR_SEMAINE, ID_DEFINIE_PERIODE, DUREE, HEUREDEB_DEC, ID_SEMAINE, ID_CALENDRIER, MODIF_EDT, LOGIN_PROF FROM edt_cours WHERE ID_COURS = :p0';
+		try {
+			$stmt = $con->prepare($sql);
+			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), $e);
+		}
+		$obj = null;
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$obj = new EdtEmplacementCours();
+			$obj->hydrate($row);
+			EdtEmplacementCoursPeer::addInstanceToPool($obj, (string) $key);
+		}
+		$stmt->closeCursor();
+
+		return $obj;
+	}
+
+	/**
+	 * Find object by primary key.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    EdtEmplacementCours|array|mixed the result, formatted by the current formatter
+	 */
+	protected function findPkComplex($key, $con)
+	{
+		// As the query uses a PK condition, no limit(1) is necessary.
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
+		$stmt = $criteria
+			->filterByPrimaryKey($key)
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 	}
 
 	/**
@@ -171,10 +230,15 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{
+		if ($con === null) {
+			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		return $this
+		$stmt = $criteria
 			->filterByPrimaryKeys($keys)
-			->find($con);
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->format($stmt);
 	}
 
 	/**
@@ -203,7 +267,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id_cours column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIdCours(1234); // WHERE id_cours = 1234
@@ -229,7 +293,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id_groupe column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIdGroupe('fooValue');   // WHERE id_groupe = 'fooValue'
@@ -257,7 +321,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id_aid column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIdAid('fooValue');   // WHERE id_aid = 'fooValue'
@@ -285,7 +349,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id_salle column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIdSalle('fooValue');   // WHERE id_salle = 'fooValue'
@@ -313,7 +377,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the jour_semaine column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByJourSemaine('fooValue');   // WHERE jour_semaine = 'fooValue'
@@ -341,7 +405,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id_definie_periode column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIdDefiniePeriode('fooValue');   // WHERE id_definie_periode = 'fooValue'
@@ -369,7 +433,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the duree column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByDuree('fooValue');   // WHERE duree = 'fooValue'
@@ -397,7 +461,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the heuredeb_dec column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByHeuredebDec('fooValue');   // WHERE heuredeb_dec = 'fooValue'
@@ -425,7 +489,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id_semaine column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByTypeSemaine('fooValue');   // WHERE id_semaine = 'fooValue'
@@ -453,7 +517,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id_calendrier column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIdCalendrier('fooValue');   // WHERE id_calendrier = 'fooValue'
@@ -481,7 +545,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the modif_edt column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByModifEdt('fooValue');   // WHERE modif_edt = 'fooValue'
@@ -509,7 +573,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the login_prof column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByLoginProf('fooValue');   // WHERE login_prof = 'fooValue'
@@ -561,7 +625,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the Groupe relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -571,7 +635,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Groupe');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -579,7 +643,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -587,7 +651,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'Groupe');
 		}
-		
+
 		return $this;
 	}
 
@@ -595,7 +659,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 * Use the Groupe relation Groupe object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -635,7 +699,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the AidDetails relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -645,7 +709,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AidDetails');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -653,7 +717,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -661,7 +725,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'AidDetails');
 		}
-		
+
 		return $this;
 	}
 
@@ -669,7 +733,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 * Use the AidDetails relation AidDetails object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -709,7 +773,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the EdtSalle relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -719,7 +783,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('EdtSalle');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -727,7 +791,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -735,7 +799,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'EdtSalle');
 		}
-		
+
 		return $this;
 	}
 
@@ -743,7 +807,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 * Use the EdtSalle relation EdtSalle object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -783,7 +847,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the EdtCreneau relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -793,7 +857,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('EdtCreneau');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -801,7 +865,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -809,7 +873,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'EdtCreneau');
 		}
-		
+
 		return $this;
 	}
 
@@ -817,7 +881,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 * Use the EdtCreneau relation EdtCreneau object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -857,7 +921,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the EdtCalendrierPeriode relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -867,7 +931,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('EdtCalendrierPeriode');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -875,7 +939,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -883,7 +947,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'EdtCalendrierPeriode');
 		}
-		
+
 		return $this;
 	}
 
@@ -891,7 +955,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 * Use the EdtCalendrierPeriode relation EdtCalendrierPeriode object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -931,7 +995,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the UtilisateurProfessionnel relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -941,7 +1005,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UtilisateurProfessionnel');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -949,7 +1013,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -957,7 +1021,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'UtilisateurProfessionnel');
 		}
-		
+
 		return $this;
 	}
 
@@ -965,7 +1029,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 * Use the UtilisateurProfessionnel relation UtilisateurProfessionnel object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -995,7 +1059,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		} elseif ($absenceEleveSaisie instanceof PropelCollection) {
 			return $this
 				->useAbsenceEleveSaisieQuery()
-					->filterByPrimaryKeys($absenceEleveSaisie->getPrimaryKeys())
+				->filterByPrimaryKeys($absenceEleveSaisie->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByAbsenceEleveSaisie() only accepts arguments of type AbsenceEleveSaisie or PropelCollection');
@@ -1004,7 +1068,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the AbsenceEleveSaisie relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1014,7 +1078,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveSaisie');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1022,7 +1086,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1030,7 +1094,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'AbsenceEleveSaisie');
 		}
-		
+
 		return $this;
 	}
 
@@ -1038,7 +1102,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 * Use the AbsenceEleveSaisie relation AbsenceEleveSaisie object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1063,8 +1127,8 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	{
 		if ($edtEmplacementCours) {
 			$this->addUsingAlias(EdtEmplacementCoursPeer::ID_COURS, $edtEmplacementCours->getIdCours(), Criteria::NOT_EQUAL);
-	  }
-	  
+		}
+
 		return $this;
 	}
 

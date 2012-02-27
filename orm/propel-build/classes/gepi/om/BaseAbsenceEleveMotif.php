@@ -25,6 +25,12 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -86,6 +92,12 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 	 * @var        array
 	 */
 	protected $sortableQueries = array();
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $absenceEleveTraitementsScheduledForDeletion = null;
 
 	/**
 	 * Get the [id] column value.
@@ -461,6 +473,8 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = AbsenceEleveMotifQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			// sortable behavior
 			
@@ -468,16 +482,14 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 			AbsenceEleveMotifPeer::clearInstancePool();
 
 			if ($ret) {
-				AbsenceEleveMotifQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -547,7 +559,7 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -570,27 +582,24 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = AbsenceEleveMotifPeer::ID;
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
+				if ($this->isNew()) {
+					$this->doInsert($con);
+				} else {
+					$this->doUpdate($con);
+				}
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
-				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(AbsenceEleveMotifPeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.AbsenceEleveMotifPeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows = 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
-				} else {
-					$affectedRows = AbsenceEleveMotifPeer::doUpdate($this, $con);
+			if ($this->absenceEleveTraitementsScheduledForDeletion !== null) {
+				if (!$this->absenceEleveTraitementsScheduledForDeletion->isEmpty()) {
+					AbsenceEleveTraitementQuery::create()
+						->filterByPrimaryKeys($this->absenceEleveTraitementsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->absenceEleveTraitementsScheduledForDeletion = null;
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collAbsenceEleveTraitements !== null) {
@@ -606,6 +615,104 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = AbsenceEleveMotifPeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . AbsenceEleveMotifPeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(AbsenceEleveMotifPeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = 'ID';
+		}
+		if ($this->isColumnModified(AbsenceEleveMotifPeer::NOM)) {
+			$modifiedColumns[':p' . $index++]  = 'NOM';
+		}
+		if ($this->isColumnModified(AbsenceEleveMotifPeer::COMMENTAIRE)) {
+			$modifiedColumns[':p' . $index++]  = 'COMMENTAIRE';
+		}
+		if ($this->isColumnModified(AbsenceEleveMotifPeer::SORTABLE_RANK)) {
+			$modifiedColumns[':p' . $index++]  = 'SORTABLE_RANK';
+		}
+		if ($this->isColumnModified(AbsenceEleveMotifPeer::CREATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = 'CREATED_AT';
+		}
+		if ($this->isColumnModified(AbsenceEleveMotifPeer::UPDATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = 'UPDATED_AT';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO a_motifs (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case 'ID':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case 'NOM':
+						$stmt->bindValue($identifier, $this->nom, PDO::PARAM_STR);
+						break;
+					case 'COMMENTAIRE':
+						$stmt->bindValue($identifier, $this->commentaire, PDO::PARAM_STR);
+						break;
+					case 'SORTABLE_RANK':
+						$stmt->bindValue($identifier, $this->sortable_rank, PDO::PARAM_INT);
+						break;
+					case 'CREATED_AT':
+						$stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
+						break;
+					case 'UPDATED_AT':
+						$stmt->bindValue($identifier, $this->updated_at, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -935,10 +1042,12 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 		$copyObj->setCreatedAt($this->getCreatedAt());
 		$copyObj->setUpdatedAt($this->getUpdatedAt());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getAbsenceEleveTraitements() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -946,6 +1055,8 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -995,7 +1106,7 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * Avoids crafting an 'init[$relationName]s' method name
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -1077,6 +1188,30 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of AbsenceEleveTraitement objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $absenceEleveTraitements A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setAbsenceEleveTraitements(PropelCollection $absenceEleveTraitements, PropelPDO $con = null)
+	{
+		$this->absenceEleveTraitementsScheduledForDeletion = $this->getAbsenceEleveTraitements(new Criteria(), $con)->diff($absenceEleveTraitements);
+
+		foreach ($absenceEleveTraitements as $absenceEleveTraitement) {
+			// Fix issue with collection modified by reference
+			if ($absenceEleveTraitement->isNew()) {
+				$absenceEleveTraitement->setAbsenceEleveMotif($this);
+			}
+			$this->addAbsenceEleveTraitement($absenceEleveTraitement);
+		}
+
+		$this->collAbsenceEleveTraitements = $absenceEleveTraitements;
+	}
+
+	/**
 	 * Returns the number of related AbsenceEleveTraitement objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1109,8 +1244,7 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 	 * through the AbsenceEleveTraitement foreign key attribute.
 	 *
 	 * @param      AbsenceEleveTraitement $l AbsenceEleveTraitement
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     AbsenceEleveMotif The current object (for fluent API support)
 	 */
 	public function addAbsenceEleveTraitement(AbsenceEleveTraitement $l)
 	{
@@ -1118,9 +1252,19 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 			$this->initAbsenceEleveTraitements();
 		}
 		if (!$this->collAbsenceEleveTraitements->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collAbsenceEleveTraitements[]= $l;
-			$l->setAbsenceEleveMotif($this);
+			$this->doAddAbsenceEleveTraitement($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	AbsenceEleveTraitement $absenceEleveTraitement The absenceEleveTraitement object to add.
+	 */
+	protected function doAddAbsenceEleveTraitement($absenceEleveTraitement)
+	{
+		$this->collAbsenceEleveTraitements[]= $absenceEleveTraitement;
+		$absenceEleveTraitement->setAbsenceEleveMotif($this);
 	}
 
 
@@ -1372,7 +1516,7 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 				'arguments' => array(1, $rank, null, )
 			);
 		}
-		
+	
 		return $this;
 	}
 	
@@ -1389,7 +1533,7 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 	public function insertAtBottom(PropelPDO $con = null)
 	{
 		$this->setSortableRank(AbsenceEleveMotifQuery::create()->getMaxRank($con) + 1);
-		
+	
 		return $this;
 	}
 	
@@ -1431,17 +1575,17 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 		if ($oldRank == $newRank) {
 			return $this;
 		}
-		
+	
 		$con->beginTransaction();
 		try {
 			// shift the objects between the old and the new rank
 			$delta = ($oldRank < $newRank) ? -1 : 1;
 			AbsenceEleveMotifPeer::shiftRank($delta, min($oldRank, $newRank), max($oldRank, $newRank), $con);
-				
+	
 			// move the object to its new rank
 			$this->setSortableRank($newRank);
 			$this->save($con);
-			
+	
 			$con->commit();
 			return $this;
 		} catch (Exception $e) {
@@ -1474,7 +1618,7 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 			$object->setSortableRank($oldRank);
 			$object->save($con);
 			$con->commit();
-			
+	
 			return $this;
 		} catch (Exception $e) {
 			$con->rollback();
@@ -1502,7 +1646,7 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 			$prev = $this->getPrevious($con);
 			$this->swapWith($prev, $con);
 			$con->commit();
-			
+	
 			return $this;
 		} catch (Exception $e) {
 			$con->rollback();
@@ -1530,7 +1674,7 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 			$next = $this->getNext($con);
 			$this->swapWith($next, $con);
 			$con->commit();
-			
+	
 			return $this;
 		} catch (Exception $e) {
 			$con->rollback();
@@ -1573,7 +1717,7 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 			$bottom = AbsenceEleveMotifQuery::create()->getMaxRank($con);
 			$res = $this->moveToRank($bottom, $con);
 			$con->commit();
-			
+	
 			return $res;
 		} catch (Exception $e) {
 			$con->rollback();
@@ -1596,7 +1740,7 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 		);
 		// remove the object from the list
 		$this->setSortableRank(null);
-		
+	
 		return $this;
 	}
 	
@@ -1623,25 +1767,6 @@ abstract class BaseAbsenceEleveMotif extends BaseObject  implements Persistent
 	{
 		$this->modifiedColumns[] = AbsenceEleveMotifPeer::UPDATED_AT;
 		return $this;
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseAbsenceEleveMotif

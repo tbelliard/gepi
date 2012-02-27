@@ -29,94 +29,94 @@ input:focus {
 
 .norme_absence {
     color: #330033;
-    font: normal 10pt Arial;
+    font: normal 10pt;
     text-align: left;
 }
 
 .norme_absence_rouge {
     color: #FF0000;
-    font: normal 10pt Arial;
+    font: normal 10pt;
     text-align: center;
 }
 .norme_absence_orange {
     color: #FFCC33;
-    font: normal 10pt Arial;
+    font: normal 10pt;
     text-align: center;
 }
 
 .norme_absence_vert {
     color: #006600;
-    font: normal 10pt Arial;
+    font: normal 10pt;
 }
 
 .norme_absence_bleu {
     color: #330099;
-    font: normal 10pt Arial;
+    font: normal 10pt;
 }
 
 .norme_absence_gris_bleu {
     color: #E0EDF1;
-    font: normal 10pt Arial;
+    font: normal 10pt;
 }
 
 .norme_absence_gris_bleu_centre {
     color: #E0EDF1;
-    font: normal 10pt Arial;
+    font: normal 10pt;
     text-align: center;
 }
 
 .norme_absence_blanc {
     color: #FFFFFF;
-    font: normal 10pt Arial;
+    font: normal 10pt;
 }
 
 .norme_absence_jaune {
     color: #FFFF33;
-    font: normal 10pt Arial;
+    font: normal 10pt;
 }
 
 .norme_absence_jaune_claire {
     color: #FFFFCC;
-    font: normal 10pt Arial;
+    font: normal 10pt;
 }
 
 .norme_absence_min {
     color: #330033;
-    font: normal 8pt Arial;
+    font: normal 8pt;
     text-align: left;
 }
 
 .norme_absence_rouge_min {
     color: #FF0000;
-    font: normal 8pt Arial;
+    font: normal 8pt;
 }
 
 .norme_absence_vert_min {
     color: #006600;
-    font: normal 8pt Arial;
+    font: normal 8pt;
 }
 
 .norme_absence_gris_bleu_min {
     color: #E0EDF1;
-    font: normal 8pt Arial;
+    font: normal 8pt;
 }
 
 .norme_absence_blanc_min {
     color: #FFFFFF;
-    font: normal 8pt Arial;
+    font: normal 8pt;
     text-align: left;
 }
 
 .centre {
     color: #000000;
-    font: normal 10pt Arial;
+    font: normal 10pt;
     text-align: center;
 }
 
 
 .adroite {
     color: #000000;
-    font: normal 10pt Arial;
+    font: normal 10pt;
     text-align: right;
 }
 
@@ -172,19 +172,19 @@ input:focus {
 
 .tableau_centre {
 /*  background: #FFFFFF; */
-    font: normal 10pt Arial;
+    font: normal 10pt;
     margin: auto;
 }
 /* pour tableau moyen (ne prend pas toutes la page) */
 .tableau_moyen_centre {
 /*  background: #FFFFFF; */
-    font: normal 10pt Arial;
+    font: normal 10pt;
     width: 400px;
     margin: auto;
 }
 
 .tableau_moyen_centre_th {
-    font: normal 10pt Arial;
+    font: normal 10pt;
     margin: auto;
     border: thin solid #6495ed;
     padding: 0px;
@@ -194,7 +194,7 @@ input:focus {
 }
 
 .tableau_moyen_centre_th_25 {
-    font: normal 10pt Arial;
+    font: normal 10pt;
     margin: auto;
     border: thin solid #6495ed;
     width: 25px;
@@ -209,7 +209,7 @@ input:focus {
 .erreur_rouge_jaune {
     background: #FF3333;
     color: #FFFF33;
-    font: normal 10pt Arial;
+    font: normal 10pt;
     text-align: center;
 }
 
@@ -221,7 +221,7 @@ input:focus {
 
 /* pour le calque d'information */
 .tableau_calque_information {
-    font: normal 10pt Arial;
+    font: normal 10pt;
     width: 450px;
     background: #FFFFFF;
     border: 2px solid #0099CC;
@@ -230,7 +230,7 @@ input:focus {
 .texte_fondjaune_calque_information {
 /*  width: 450px;*/
     color: #330033;
-    font: normal 10pt Arial;
+    font: normal 10pt;
     background: #FFFFCC;
 /*  border: 2px solid #0099CC; */
 }
@@ -241,7 +241,7 @@ input:focus {
 .entete_tableau {
     width: 600px;
     color: #778899;
-    font: bold 15pt verdana, sans-serif;
+    font: bold 15pt;
     font-weight: bold;
     background-image: url(../images/haut_tab.png);
     margin: auto; /*    border: 2px solid #0099CC; */
@@ -249,7 +249,7 @@ input:focus {
 
 .entete_tableau_absence {
     width: 650px;
-    font: normal 12pt verdana, sans-serif;
+    font: normal 12pt;
     font-weight: bold;
     margin: auto; /*    border: 2px solid #0099CC; */
     border: solid 2px #2F4F4F;
@@ -258,7 +258,7 @@ input:focus {
 
 .titre_tableau_absence {
     color: #E8F1F4;
-    font: normal 12pt verdana, sans-serif;
+    font: normal 12pt;
     font-weight: bold;
     background-image: url(../images/haut_tab.png);
 }
@@ -266,14 +266,14 @@ input:focus {
 .titre_tableau_absence_valider {
     color: #E8F1F4;
     text-align: right;
-    font: normal 12pt verdana, sans-serif;
+    font: normal 12pt;
     font-weight: bold;
     background-image: url(../images/haut_tab.png);
 }
 
 .tr_tableau_absence_titre {
     color: #000000;
-    font: normal 10pt Arial;
+    font: normal 10pt;
     margin: auto;
     background: #C4E0EB;
 }
@@ -281,7 +281,7 @@ input:focus {
 .td_tableau_absence_1 {
     width: 20%;
     color: #000000;
-    font: normal 10pt Arial;
+    font: normal 10pt;
     margin: auto;
     background: #E8F1F4;
 }
@@ -289,7 +289,7 @@ input:focus {
 .td_tableau_absence_2 {
     width: 20%;
     color: #000000;
-    font: normal 10pt Arial;
+    font: normal 10pt;
     margin: auto;
     background: #C6DCE3;
 }
@@ -297,7 +297,7 @@ input:focus {
 .td_tableau_sel {
     width: 20%;
     color: #000000;
-    font: normal 10pt Arial;
+    font: normal 10pt;
     margin: auto;
     background: #00FF9A;
 }
@@ -310,7 +310,7 @@ input:focus {
 /* style pour la sélection */
 .entete_tableau_selection {
     width: 500px;
-    font: normal 12pt verdana, sans-serif;
+    font: normal 12pt;
     font-weight: bold;
     margin: auto; /*    border: 2px solid #0099CC; */
     border: solid 2px #2F4F4F;
@@ -319,7 +319,7 @@ input:focus {
 
 .titre_tableau_selection {
     color: #E8F1F4;
-    font: normal 12pt verdana, sans-serif;
+    font: normal 12pt;
     font-weight: bold;
     background-image: url(../images/haut_tab.png);
 }
@@ -327,7 +327,7 @@ input:focus {
 .td_tableau_selection {
  width: 50%;
     color: #000000;
-    font: normal 10pt Arial;
+    font: normal 10pt;
     text-align: center;
     margin: auto;
     background: #E8F1F4;
@@ -338,7 +338,7 @@ input:focus {
 .erreur {
 /*  color: #FFFF33; */
     color: #FFFFFF;
-    font: normal 10pt Arial;
+    font: normal 10pt;
     text-align: center;
 }
 
@@ -353,7 +353,7 @@ input:focus {
 .tableau_info_compt {
     width: 100px;
     color: #000000;
-    font: normal 10pt Arial;
+    font: normal 10pt;
     text-align: center;
     margin: auto;
     background: #FFFFCC;
@@ -363,7 +363,7 @@ input:focus {
 .tableau_info_disp {
     width: 100px;
     color: #000000;
-    font: normal 10pt Arial;
+    font: normal 10pt;
     text-align: center;
     margin: auto;
     background: #FCB596;
@@ -378,7 +378,7 @@ input:focus {
 .tableau_liste {
     width: 95%;
     color: #000000;
-    font: normal 10pt Arial;
+    font: normal 10pt;
     margin: auto;
     background: #FFFFCC;
     border-left: 2px solid #FFD700;
@@ -392,7 +392,7 @@ input:focus {
 .titre_tableau_gestion {
     color: #E8F1F4;
     text-align: left;
-    font: normal 12pt verdana, sans-serif;
+    font: normal 12pt;
     font-weight: bold;
     background-image: url(../images/haut_tab.png);
     border: 0px solid #F8F8F8;
@@ -401,7 +401,7 @@ input:focus {
 .td_tableau_gestion {
     width: 400px;
     text-align: left;
-    font: normal 12pt verdana, sans-serif;
+    font: normal 12pt;
 }
 
 .class10 {
@@ -435,12 +435,12 @@ input:focus {
 
 .norme_absence_gestion {
     color: #330033;
-    font: normal 10pt Arial;
+    font: normal 10pt;
     text-align: left;
 }
 
 .legend_texte {
-    font: normal 10pt Arial;
+    font: normal 10pt;
 }
 
 .titre_tableau_imprime {
@@ -448,33 +448,15 @@ input:focus {
     border: 5px solid;
     color: #E8F1F4;
     text-align: left;
-    font: normal 12pt verdana, sans-serif;
+    font: normal 12pt;
     font-weight: bold;
     background-image: url(../images/haut_tab2.png);
 }
 
-/*
-.fieldset_a {
-    position :              relative;
-    top :                   1em;
-    padding :               0 0.5em 1em 0.5em;
-    background-color :      #CCC;
-}
-html>body fieldset_a {
-    padding-top :           1em;
-    top :                   0;
-}
-legend {
-    position :              relative;
-    top :                   -1em;
-    padding :               0.4em;
-}*/
-
-
 .td_tableau_fiche {
     width: 50%;
     color: #000000;
-    font: normal 10pt Arial;
+    font: normal 10pt;
     text-align: left;
     margin: auto;
     background: #E8F1F4;
@@ -515,7 +497,7 @@ legend {
 }
 
 .dimi_texte {
-    font: normal 9pt verdana, sans-serif;
+    font: normal 9pt;
 }
 
 .texte_ou {
@@ -538,7 +520,6 @@ legend {
 	border-color: #5F5F5F;
 	width: 100px;
 	font-size : 0.7em;
-	font-family : Verdana, Arial, Helvetica, Geneva, sans-serif;
 	color : black; 
 }
 
@@ -548,7 +529,6 @@ legend {
 	border-color: #5F5F5F;
 	width: 20px;
 	font-size : 0.8em;
-	font-family : Verdana, Arial, Helvetica, Geneva, sans-serif;
 	color : black;
 	text-align: center; 
 }
@@ -568,7 +548,6 @@ legend {
 	border-color: #5F5F5F;
 	width: 20px;
 	font-size : 0.8em;
-	font-family : Verdana, Arial, Helvetica, Geneva, sans-serif;
 	color : black;
 	text-align: center; 
 }
@@ -577,7 +556,7 @@ legend {
 .titre_tableau_alert {
     color: #E8F1F4;
     text-align: left;
-    font: normal 12pt verdana, sans-serif;
+    font: normal 12pt;
     font-weight: bold;
     background-image: url(../images/tab_rouge.png);
     border: 0px solid #F8F8F8;
@@ -656,7 +635,7 @@ legend {
 .erreur_rouge_jaune {
     background: #FF3333;
     color: #FFFF33;
-    font: normal 10pt Arial;
+    font: normal 10pt;
     text-align: center;
 }
 
@@ -673,7 +652,7 @@ legend {
 .entete_tableau_absence_degrade {
     color: #E8F1F4;
     text-align: left;
-    font: normal 12pt verdana, sans-serif;
+    font: normal 12pt;
     font-weight: bold;
     background-image: url(mod_absences/images/haut_tab.png);
     border: 0px solid #F8F8F8;

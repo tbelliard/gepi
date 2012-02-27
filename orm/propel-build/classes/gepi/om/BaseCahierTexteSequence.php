@@ -25,6 +25,12 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -70,6 +76,24 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $cahierTexteCompteRendusScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $cahierTexteTravailAFairesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $cahierTexteNoticePriveesScheduledForDeletion = null;
 
 	/**
 	 * Get the [id] column value.
@@ -296,18 +320,18 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = CahierTexteSequenceQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				CahierTexteSequenceQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -359,7 +383,7 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -382,27 +406,24 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = CahierTexteSequencePeer::ID;
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
+				if ($this->isNew()) {
+					$this->doInsert($con);
+				} else {
+					$this->doUpdate($con);
+				}
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
-				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(CahierTexteSequencePeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.CahierTexteSequencePeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows = 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
-				} else {
-					$affectedRows = CahierTexteSequencePeer::doUpdate($this, $con);
+			if ($this->cahierTexteCompteRendusScheduledForDeletion !== null) {
+				if (!$this->cahierTexteCompteRendusScheduledForDeletion->isEmpty()) {
+					CahierTexteCompteRenduQuery::create()
+						->filterByPrimaryKeys($this->cahierTexteCompteRendusScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->cahierTexteCompteRendusScheduledForDeletion = null;
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collCahierTexteCompteRendus !== null) {
@@ -413,11 +434,29 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->cahierTexteTravailAFairesScheduledForDeletion !== null) {
+				if (!$this->cahierTexteTravailAFairesScheduledForDeletion->isEmpty()) {
+					CahierTexteTravailAFaireQuery::create()
+						->filterByPrimaryKeys($this->cahierTexteTravailAFairesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->cahierTexteTravailAFairesScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collCahierTexteTravailAFaires !== null) {
 				foreach ($this->collCahierTexteTravailAFaires as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->cahierTexteNoticePriveesScheduledForDeletion !== null) {
+				if (!$this->cahierTexteNoticePriveesScheduledForDeletion->isEmpty()) {
+					CahierTexteNoticePriveeQuery::create()
+						->filterByPrimaryKeys($this->cahierTexteNoticePriveesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->cahierTexteNoticePriveesScheduledForDeletion = null;
 				}
 			}
 
@@ -434,6 +473,86 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = CahierTexteSequencePeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . CahierTexteSequencePeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(CahierTexteSequencePeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = 'ID';
+		}
+		if ($this->isColumnModified(CahierTexteSequencePeer::TITRE)) {
+			$modifiedColumns[':p' . $index++]  = 'TITRE';
+		}
+		if ($this->isColumnModified(CahierTexteSequencePeer::DESCRIPTION)) {
+			$modifiedColumns[':p' . $index++]  = 'DESCRIPTION';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO ct_sequences (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case 'ID':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case 'TITRE':
+						$stmt->bindValue($identifier, $this->titre, PDO::PARAM_STR);
+						break;
+					case 'DESCRIPTION':
+						$stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -755,10 +874,12 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 		$copyObj->setTitre($this->getTitre());
 		$copyObj->setDescription($this->getDescription());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getCahierTexteCompteRendus() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -778,6 +899,8 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -827,7 +950,7 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * Avoids crafting an 'init[$relationName]s' method name
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -915,6 +1038,30 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of CahierTexteCompteRendu objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $cahierTexteCompteRendus A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setCahierTexteCompteRendus(PropelCollection $cahierTexteCompteRendus, PropelPDO $con = null)
+	{
+		$this->cahierTexteCompteRendusScheduledForDeletion = $this->getCahierTexteCompteRendus(new Criteria(), $con)->diff($cahierTexteCompteRendus);
+
+		foreach ($cahierTexteCompteRendus as $cahierTexteCompteRendu) {
+			// Fix issue with collection modified by reference
+			if ($cahierTexteCompteRendu->isNew()) {
+				$cahierTexteCompteRendu->setCahierTexteSequence($this);
+			}
+			$this->addCahierTexteCompteRendu($cahierTexteCompteRendu);
+		}
+
+		$this->collCahierTexteCompteRendus = $cahierTexteCompteRendus;
+	}
+
+	/**
 	 * Returns the number of related CahierTexteCompteRendu objects.
 	 *
 	 * @param      Criteria $criteria
@@ -947,8 +1094,7 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 * through the CahierTexteCompteRendu foreign key attribute.
 	 *
 	 * @param      CahierTexteCompteRendu $l CahierTexteCompteRendu
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     CahierTexteSequence The current object (for fluent API support)
 	 */
 	public function addCahierTexteCompteRendu(CahierTexteCompteRendu $l)
 	{
@@ -956,9 +1102,19 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 			$this->initCahierTexteCompteRendus();
 		}
 		if (!$this->collCahierTexteCompteRendus->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collCahierTexteCompteRendus[]= $l;
-			$l->setCahierTexteSequence($this);
+			$this->doAddCahierTexteCompteRendu($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	CahierTexteCompteRendu $cahierTexteCompteRendu The cahierTexteCompteRendu object to add.
+	 */
+	protected function doAddCahierTexteCompteRendu($cahierTexteCompteRendu)
+	{
+		$this->collCahierTexteCompteRendus[]= $cahierTexteCompteRendu;
+		$cahierTexteCompteRendu->setCahierTexteSequence($this);
 	}
 
 
@@ -1080,6 +1236,30 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of CahierTexteTravailAFaire objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $cahierTexteTravailAFaires A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setCahierTexteTravailAFaires(PropelCollection $cahierTexteTravailAFaires, PropelPDO $con = null)
+	{
+		$this->cahierTexteTravailAFairesScheduledForDeletion = $this->getCahierTexteTravailAFaires(new Criteria(), $con)->diff($cahierTexteTravailAFaires);
+
+		foreach ($cahierTexteTravailAFaires as $cahierTexteTravailAFaire) {
+			// Fix issue with collection modified by reference
+			if ($cahierTexteTravailAFaire->isNew()) {
+				$cahierTexteTravailAFaire->setCahierTexteSequence($this);
+			}
+			$this->addCahierTexteTravailAFaire($cahierTexteTravailAFaire);
+		}
+
+		$this->collCahierTexteTravailAFaires = $cahierTexteTravailAFaires;
+	}
+
+	/**
 	 * Returns the number of related CahierTexteTravailAFaire objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1112,8 +1292,7 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 * through the CahierTexteTravailAFaire foreign key attribute.
 	 *
 	 * @param      CahierTexteTravailAFaire $l CahierTexteTravailAFaire
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     CahierTexteSequence The current object (for fluent API support)
 	 */
 	public function addCahierTexteTravailAFaire(CahierTexteTravailAFaire $l)
 	{
@@ -1121,9 +1300,19 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 			$this->initCahierTexteTravailAFaires();
 		}
 		if (!$this->collCahierTexteTravailAFaires->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collCahierTexteTravailAFaires[]= $l;
-			$l->setCahierTexteSequence($this);
+			$this->doAddCahierTexteTravailAFaire($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	CahierTexteTravailAFaire $cahierTexteTravailAFaire The cahierTexteTravailAFaire object to add.
+	 */
+	protected function doAddCahierTexteTravailAFaire($cahierTexteTravailAFaire)
+	{
+		$this->collCahierTexteTravailAFaires[]= $cahierTexteTravailAFaire;
+		$cahierTexteTravailAFaire->setCahierTexteSequence($this);
 	}
 
 
@@ -1245,6 +1434,30 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of CahierTexteNoticePrivee objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $cahierTexteNoticePrivees A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setCahierTexteNoticePrivees(PropelCollection $cahierTexteNoticePrivees, PropelPDO $con = null)
+	{
+		$this->cahierTexteNoticePriveesScheduledForDeletion = $this->getCahierTexteNoticePrivees(new Criteria(), $con)->diff($cahierTexteNoticePrivees);
+
+		foreach ($cahierTexteNoticePrivees as $cahierTexteNoticePrivee) {
+			// Fix issue with collection modified by reference
+			if ($cahierTexteNoticePrivee->isNew()) {
+				$cahierTexteNoticePrivee->setCahierTexteSequence($this);
+			}
+			$this->addCahierTexteNoticePrivee($cahierTexteNoticePrivee);
+		}
+
+		$this->collCahierTexteNoticePrivees = $cahierTexteNoticePrivees;
+	}
+
+	/**
 	 * Returns the number of related CahierTexteNoticePrivee objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1277,8 +1490,7 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 * through the CahierTexteNoticePrivee foreign key attribute.
 	 *
 	 * @param      CahierTexteNoticePrivee $l CahierTexteNoticePrivee
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     CahierTexteSequence The current object (for fluent API support)
 	 */
 	public function addCahierTexteNoticePrivee(CahierTexteNoticePrivee $l)
 	{
@@ -1286,9 +1498,19 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 			$this->initCahierTexteNoticePrivees();
 		}
 		if (!$this->collCahierTexteNoticePrivees->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collCahierTexteNoticePrivees[]= $l;
-			$l->setCahierTexteSequence($this);
+			$this->doAddCahierTexteNoticePrivee($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	CahierTexteNoticePrivee $cahierTexteNoticePrivee The cahierTexteNoticePrivee object to add.
+	 */
+	protected function doAddCahierTexteNoticePrivee($cahierTexteNoticePrivee)
+	{
+		$this->collCahierTexteNoticePrivees[]= $cahierTexteNoticePrivee;
+		$cahierTexteNoticePrivee->setCahierTexteSequence($this);
 	}
 
 
@@ -1408,25 +1630,6 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(CahierTexteSequencePeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseCahierTexteSequence

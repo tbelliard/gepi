@@ -25,6 +25,12 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the login field.
 	 * @var        string
 	 */
@@ -247,6 +253,114 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $groupesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $aidDetailssScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $matieresScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $jGroupesProfesseurssScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $jScolClassessScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $cahierTexteCompteRendusScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $cahierTexteTravailAFairesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $cahierTexteNoticePriveesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $jEleveCpesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $jEleveProfesseurPrincipalsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $jAidUtilisateursProfessionnelssScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $absenceEleveSaisiesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $absenceEleveTraitementsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $modifiedAbsenceEleveTraitementsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $absenceEleveNotificationsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $jProfesseursMatieressScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $preferenceUtilisateurProfessionnelsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $edtEmplacementCourssScheduledForDeletion = null;
 
 	/**
 	 * Applies default values to this object.
@@ -672,7 +786,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$v = (string) $v;
 		}
 
-		if ($this->show_email !== $v || $this->isNew()) {
+		if ($this->show_email !== $v) {
 			$this->show_email = $v;
 			$this->modifiedColumns[] = UtilisateurProfessionnelPeer::SHOW_EMAIL;
 		}
@@ -732,7 +846,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$v = (string) $v;
 		}
 
-		if ($this->change_mdp !== $v || $this->isNew()) {
+		if ($this->change_mdp !== $v) {
 			$this->change_mdp = $v;
 			$this->modifiedColumns[] = UtilisateurProfessionnelPeer::CHANGE_MDP;
 		}
@@ -753,7 +867,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		if ($this->date_verrouillage !== null || $dt !== null) {
 			$currentDateAsString = ($this->date_verrouillage !== null && $tmpDt = new DateTime($this->date_verrouillage)) ? $tmpDt->format('Y-m-d') : null;
 			$newDateAsString = $dt ? $dt->format('Y-m-d') : null;
-			if ( ($currentDateAsString !== $newDateAsString) // normalized values don't match 
+			if ( ($currentDateAsString !== $newDateAsString) // normalized values don't match
 				|| ($dt->format('Y-m-d') === '2006-01-01') // or the entered value matches the default
 				 ) {
 				$this->date_verrouillage = $newDateAsString;
@@ -818,7 +932,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$v = (int) $v;
 		}
 
-		if ($this->niveau_alerte !== $v || $this->isNew()) {
+		if ($this->niveau_alerte !== $v) {
 			$this->niveau_alerte = $v;
 			$this->modifiedColumns[] = UtilisateurProfessionnelPeer::NIVEAU_ALERTE;
 		}
@@ -838,7 +952,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$v = (int) $v;
 		}
 
-		if ($this->observation_securite !== $v || $this->isNew()) {
+		if ($this->observation_securite !== $v) {
 			$this->observation_securite = $v;
 			$this->modifiedColumns[] = UtilisateurProfessionnelPeer::OBSERVATION_SECURITE;
 		}
@@ -898,7 +1012,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$v = (string) $v;
 		}
 
-		if ($this->auth_mode !== $v || $this->isNew()) {
+		if ($this->auth_mode !== $v) {
 			$this->auth_mode = $v;
 			$this->modifiedColumns[] = UtilisateurProfessionnelPeer::AUTH_MODE;
 		}
@@ -1108,18 +1222,18 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = UtilisateurProfessionnelQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				UtilisateurProfessionnelQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -1171,7 +1285,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -1194,19 +1308,69 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
-
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows = 1;
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows = UtilisateurProfessionnelPeer::doUpdate($this, $con);
+					$this->doUpdate($con);
+				}
+				$affectedRows += 1;
+				$this->resetModified();
+			}
+
+			if ($this->groupesScheduledForDeletion !== null) {
+				if (!$this->groupesScheduledForDeletion->isEmpty()) {
+					JGroupesProfesseursQuery::create()
+						->filterByPrimaryKeys($this->groupesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->groupesScheduledForDeletion = null;
 				}
 
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+				foreach ($this->getGroupes() as $groupe) {
+					if ($groupe->isModified()) {
+						$groupe->save($con);
+					}
+				}
+			}
+
+			if ($this->aidDetailssScheduledForDeletion !== null) {
+				if (!$this->aidDetailssScheduledForDeletion->isEmpty()) {
+					JAidUtilisateursProfessionnelsQuery::create()
+						->filterByPrimaryKeys($this->aidDetailssScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->aidDetailssScheduledForDeletion = null;
+				}
+
+				foreach ($this->getAidDetailss() as $aidDetails) {
+					if ($aidDetails->isModified()) {
+						$aidDetails->save($con);
+					}
+				}
+			}
+
+			if ($this->matieresScheduledForDeletion !== null) {
+				if (!$this->matieresScheduledForDeletion->isEmpty()) {
+					JProfesseursMatieresQuery::create()
+						->filterByPrimaryKeys($this->matieresScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->matieresScheduledForDeletion = null;
+				}
+
+				foreach ($this->getMatieres() as $matiere) {
+					if ($matiere->isModified()) {
+						$matiere->save($con);
+					}
+				}
+			}
+
+			if ($this->jGroupesProfesseurssScheduledForDeletion !== null) {
+				if (!$this->jGroupesProfesseurssScheduledForDeletion->isEmpty()) {
+					JGroupesProfesseursQuery::create()
+						->filterByPrimaryKeys($this->jGroupesProfesseurssScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->jGroupesProfesseurssScheduledForDeletion = null;
+				}
 			}
 
 			if ($this->collJGroupesProfesseurss !== null) {
@@ -1214,6 +1378,15 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->jScolClassessScheduledForDeletion !== null) {
+				if (!$this->jScolClassessScheduledForDeletion->isEmpty()) {
+					JScolClassesQuery::create()
+						->filterByPrimaryKeys($this->jScolClassessScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->jScolClassessScheduledForDeletion = null;
 				}
 			}
 
@@ -1225,11 +1398,29 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				}
 			}
 
+			if ($this->cahierTexteCompteRendusScheduledForDeletion !== null) {
+				if (!$this->cahierTexteCompteRendusScheduledForDeletion->isEmpty()) {
+					CahierTexteCompteRenduQuery::create()
+						->filterByPrimaryKeys($this->cahierTexteCompteRendusScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->cahierTexteCompteRendusScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collCahierTexteCompteRendus !== null) {
 				foreach ($this->collCahierTexteCompteRendus as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->cahierTexteTravailAFairesScheduledForDeletion !== null) {
+				if (!$this->cahierTexteTravailAFairesScheduledForDeletion->isEmpty()) {
+					CahierTexteTravailAFaireQuery::create()
+						->filterByPrimaryKeys($this->cahierTexteTravailAFairesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->cahierTexteTravailAFairesScheduledForDeletion = null;
 				}
 			}
 
@@ -1241,11 +1432,29 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				}
 			}
 
+			if ($this->cahierTexteNoticePriveesScheduledForDeletion !== null) {
+				if (!$this->cahierTexteNoticePriveesScheduledForDeletion->isEmpty()) {
+					CahierTexteNoticePriveeQuery::create()
+						->filterByPrimaryKeys($this->cahierTexteNoticePriveesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->cahierTexteNoticePriveesScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collCahierTexteNoticePrivees !== null) {
 				foreach ($this->collCahierTexteNoticePrivees as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->jEleveCpesScheduledForDeletion !== null) {
+				if (!$this->jEleveCpesScheduledForDeletion->isEmpty()) {
+					JEleveCpeQuery::create()
+						->filterByPrimaryKeys($this->jEleveCpesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->jEleveCpesScheduledForDeletion = null;
 				}
 			}
 
@@ -1257,11 +1466,29 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				}
 			}
 
+			if ($this->jEleveProfesseurPrincipalsScheduledForDeletion !== null) {
+				if (!$this->jEleveProfesseurPrincipalsScheduledForDeletion->isEmpty()) {
+					JEleveProfesseurPrincipalQuery::create()
+						->filterByPrimaryKeys($this->jEleveProfesseurPrincipalsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->jEleveProfesseurPrincipalsScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collJEleveProfesseurPrincipals !== null) {
 				foreach ($this->collJEleveProfesseurPrincipals as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->jAidUtilisateursProfessionnelssScheduledForDeletion !== null) {
+				if (!$this->jAidUtilisateursProfessionnelssScheduledForDeletion->isEmpty()) {
+					JAidUtilisateursProfessionnelsQuery::create()
+						->filterByPrimaryKeys($this->jAidUtilisateursProfessionnelssScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->jAidUtilisateursProfessionnelssScheduledForDeletion = null;
 				}
 			}
 
@@ -1273,11 +1500,29 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				}
 			}
 
+			if ($this->absenceEleveSaisiesScheduledForDeletion !== null) {
+				if (!$this->absenceEleveSaisiesScheduledForDeletion->isEmpty()) {
+					AbsenceEleveSaisieQuery::create()
+						->filterByPrimaryKeys($this->absenceEleveSaisiesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->absenceEleveSaisiesScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collAbsenceEleveSaisies !== null) {
 				foreach ($this->collAbsenceEleveSaisies as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->absenceEleveTraitementsScheduledForDeletion !== null) {
+				if (!$this->absenceEleveTraitementsScheduledForDeletion->isEmpty()) {
+					AbsenceEleveTraitementQuery::create()
+						->filterByPrimaryKeys($this->absenceEleveTraitementsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->absenceEleveTraitementsScheduledForDeletion = null;
 				}
 			}
 
@@ -1289,11 +1534,29 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				}
 			}
 
+			if ($this->modifiedAbsenceEleveTraitementsScheduledForDeletion !== null) {
+				if (!$this->modifiedAbsenceEleveTraitementsScheduledForDeletion->isEmpty()) {
+					AbsenceEleveTraitementQuery::create()
+						->filterByPrimaryKeys($this->modifiedAbsenceEleveTraitementsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->modifiedAbsenceEleveTraitementsScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collModifiedAbsenceEleveTraitements !== null) {
 				foreach ($this->collModifiedAbsenceEleveTraitements as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->absenceEleveNotificationsScheduledForDeletion !== null) {
+				if (!$this->absenceEleveNotificationsScheduledForDeletion->isEmpty()) {
+					AbsenceEleveNotificationQuery::create()
+						->filterByPrimaryKeys($this->absenceEleveNotificationsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->absenceEleveNotificationsScheduledForDeletion = null;
 				}
 			}
 
@@ -1305,6 +1568,15 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				}
 			}
 
+			if ($this->jProfesseursMatieressScheduledForDeletion !== null) {
+				if (!$this->jProfesseursMatieressScheduledForDeletion->isEmpty()) {
+					JProfesseursMatieresQuery::create()
+						->filterByPrimaryKeys($this->jProfesseursMatieressScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->jProfesseursMatieressScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collJProfesseursMatieress !== null) {
 				foreach ($this->collJProfesseursMatieress as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
@@ -1313,11 +1585,29 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				}
 			}
 
+			if ($this->preferenceUtilisateurProfessionnelsScheduledForDeletion !== null) {
+				if (!$this->preferenceUtilisateurProfessionnelsScheduledForDeletion->isEmpty()) {
+					PreferenceUtilisateurProfessionnelQuery::create()
+						->filterByPrimaryKeys($this->preferenceUtilisateurProfessionnelsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->preferenceUtilisateurProfessionnelsScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collPreferenceUtilisateurProfessionnels !== null) {
 				foreach ($this->collPreferenceUtilisateurProfessionnels as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->edtEmplacementCourssScheduledForDeletion !== null) {
+				if (!$this->edtEmplacementCourssScheduledForDeletion->isEmpty()) {
+					EdtEmplacementCoursQuery::create()
+						->filterByPrimaryKeys($this->edtEmplacementCourssScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->edtEmplacementCourssScheduledForDeletion = null;
 				}
 			}
 
@@ -1334,6 +1624,171 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(UtilisateurProfessionnelPeer::LOGIN)) {
+			$modifiedColumns[':p' . $index++]  = 'LOGIN';
+		}
+		if ($this->isColumnModified(UtilisateurProfessionnelPeer::NOM)) {
+			$modifiedColumns[':p' . $index++]  = 'NOM';
+		}
+		if ($this->isColumnModified(UtilisateurProfessionnelPeer::PRENOM)) {
+			$modifiedColumns[':p' . $index++]  = 'PRENOM';
+		}
+		if ($this->isColumnModified(UtilisateurProfessionnelPeer::CIVILITE)) {
+			$modifiedColumns[':p' . $index++]  = 'CIVILITE';
+		}
+		if ($this->isColumnModified(UtilisateurProfessionnelPeer::PASSWORD)) {
+			$modifiedColumns[':p' . $index++]  = 'PASSWORD';
+		}
+		if ($this->isColumnModified(UtilisateurProfessionnelPeer::SALT)) {
+			$modifiedColumns[':p' . $index++]  = 'SALT';
+		}
+		if ($this->isColumnModified(UtilisateurProfessionnelPeer::EMAIL)) {
+			$modifiedColumns[':p' . $index++]  = 'EMAIL';
+		}
+		if ($this->isColumnModified(UtilisateurProfessionnelPeer::SHOW_EMAIL)) {
+			$modifiedColumns[':p' . $index++]  = 'SHOW_EMAIL';
+		}
+		if ($this->isColumnModified(UtilisateurProfessionnelPeer::STATUT)) {
+			$modifiedColumns[':p' . $index++]  = 'STATUT';
+		}
+		if ($this->isColumnModified(UtilisateurProfessionnelPeer::ETAT)) {
+			$modifiedColumns[':p' . $index++]  = 'ETAT';
+		}
+		if ($this->isColumnModified(UtilisateurProfessionnelPeer::CHANGE_MDP)) {
+			$modifiedColumns[':p' . $index++]  = 'CHANGE_MDP';
+		}
+		if ($this->isColumnModified(UtilisateurProfessionnelPeer::DATE_VERROUILLAGE)) {
+			$modifiedColumns[':p' . $index++]  = 'DATE_VERROUILLAGE';
+		}
+		if ($this->isColumnModified(UtilisateurProfessionnelPeer::PASSWORD_TICKET)) {
+			$modifiedColumns[':p' . $index++]  = 'PASSWORD_TICKET';
+		}
+		if ($this->isColumnModified(UtilisateurProfessionnelPeer::TICKET_EXPIRATION)) {
+			$modifiedColumns[':p' . $index++]  = 'TICKET_EXPIRATION';
+		}
+		if ($this->isColumnModified(UtilisateurProfessionnelPeer::NIVEAU_ALERTE)) {
+			$modifiedColumns[':p' . $index++]  = 'NIVEAU_ALERTE';
+		}
+		if ($this->isColumnModified(UtilisateurProfessionnelPeer::OBSERVATION_SECURITE)) {
+			$modifiedColumns[':p' . $index++]  = 'OBSERVATION_SECURITE';
+		}
+		if ($this->isColumnModified(UtilisateurProfessionnelPeer::TEMP_DIR)) {
+			$modifiedColumns[':p' . $index++]  = 'TEMP_DIR';
+		}
+		if ($this->isColumnModified(UtilisateurProfessionnelPeer::NUMIND)) {
+			$modifiedColumns[':p' . $index++]  = 'NUMIND';
+		}
+		if ($this->isColumnModified(UtilisateurProfessionnelPeer::AUTH_MODE)) {
+			$modifiedColumns[':p' . $index++]  = 'AUTH_MODE';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO utilisateurs (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case 'LOGIN':
+						$stmt->bindValue($identifier, $this->login, PDO::PARAM_STR);
+						break;
+					case 'NOM':
+						$stmt->bindValue($identifier, $this->nom, PDO::PARAM_STR);
+						break;
+					case 'PRENOM':
+						$stmt->bindValue($identifier, $this->prenom, PDO::PARAM_STR);
+						break;
+					case 'CIVILITE':
+						$stmt->bindValue($identifier, $this->civilite, PDO::PARAM_STR);
+						break;
+					case 'PASSWORD':
+						$stmt->bindValue($identifier, $this->password, PDO::PARAM_STR);
+						break;
+					case 'SALT':
+						$stmt->bindValue($identifier, $this->salt, PDO::PARAM_STR);
+						break;
+					case 'EMAIL':
+						$stmt->bindValue($identifier, $this->email, PDO::PARAM_STR);
+						break;
+					case 'SHOW_EMAIL':
+						$stmt->bindValue($identifier, $this->show_email, PDO::PARAM_STR);
+						break;
+					case 'STATUT':
+						$stmt->bindValue($identifier, $this->statut, PDO::PARAM_STR);
+						break;
+					case 'ETAT':
+						$stmt->bindValue($identifier, $this->etat, PDO::PARAM_STR);
+						break;
+					case 'CHANGE_MDP':
+						$stmt->bindValue($identifier, $this->change_mdp, PDO::PARAM_STR);
+						break;
+					case 'DATE_VERROUILLAGE':
+						$stmt->bindValue($identifier, $this->date_verrouillage, PDO::PARAM_STR);
+						break;
+					case 'PASSWORD_TICKET':
+						$stmt->bindValue($identifier, $this->password_ticket, PDO::PARAM_STR);
+						break;
+					case 'TICKET_EXPIRATION':
+						$stmt->bindValue($identifier, $this->ticket_expiration, PDO::PARAM_STR);
+						break;
+					case 'NIVEAU_ALERTE':
+						$stmt->bindValue($identifier, $this->niveau_alerte, PDO::PARAM_INT);
+						break;
+					case 'OBSERVATION_SECURITE':
+						$stmt->bindValue($identifier, $this->observation_securite, PDO::PARAM_INT);
+						break;
+					case 'TEMP_DIR':
+						$stmt->bindValue($identifier, $this->temp_dir, PDO::PARAM_STR);
+						break;
+					case 'NUMIND':
+						$stmt->bindValue($identifier, $this->numind, PDO::PARAM_STR);
+						break;
+					case 'AUTH_MODE':
+						$stmt->bindValue($identifier, $this->auth_mode, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1928,7 +2383,6 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 */
 	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setLogin($this->getLogin());
 		$copyObj->setNom($this->getNom());
 		$copyObj->setPrenom($this->getPrenom());
 		$copyObj->setCivilite($this->getCivilite());
@@ -1948,10 +2402,12 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		$copyObj->setNumind($this->getNumind());
 		$copyObj->setAuthMode($this->getAuthMode());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getJGroupesProfesseurss() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -2043,10 +2499,13 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
 			$copyObj->setNew(true);
+			$copyObj->setLogin(NULL); // this is a auto-increment column, so set to default value
 		}
 	}
 
@@ -2091,7 +2550,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * Avoids crafting an 'init[$relationName]s' method name
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -2215,6 +2674,30 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Sets a collection of JGroupesProfesseurs objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $jGroupesProfesseurss A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setJGroupesProfesseurss(PropelCollection $jGroupesProfesseurss, PropelPDO $con = null)
+	{
+		$this->jGroupesProfesseurssScheduledForDeletion = $this->getJGroupesProfesseurss(new Criteria(), $con)->diff($jGroupesProfesseurss);
+
+		foreach ($jGroupesProfesseurss as $jGroupesProfesseurs) {
+			// Fix issue with collection modified by reference
+			if ($jGroupesProfesseurs->isNew()) {
+				$jGroupesProfesseurs->setUtilisateurProfessionnel($this);
+			}
+			$this->addJGroupesProfesseurs($jGroupesProfesseurs);
+		}
+
+		$this->collJGroupesProfesseurss = $jGroupesProfesseurss;
+	}
+
+	/**
 	 * Returns the number of related JGroupesProfesseurs objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2247,8 +2730,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * through the JGroupesProfesseurs foreign key attribute.
 	 *
 	 * @param      JGroupesProfesseurs $l JGroupesProfesseurs
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     UtilisateurProfessionnel The current object (for fluent API support)
 	 */
 	public function addJGroupesProfesseurs(JGroupesProfesseurs $l)
 	{
@@ -2256,9 +2738,19 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$this->initJGroupesProfesseurss();
 		}
 		if (!$this->collJGroupesProfesseurss->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collJGroupesProfesseurss[]= $l;
-			$l->setUtilisateurProfessionnel($this);
+			$this->doAddJGroupesProfesseurs($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	JGroupesProfesseurs $jGroupesProfesseurs The jGroupesProfesseurs object to add.
+	 */
+	protected function doAddJGroupesProfesseurs($jGroupesProfesseurs)
+	{
+		$this->collJGroupesProfesseurss[]= $jGroupesProfesseurs;
+		$jGroupesProfesseurs->setUtilisateurProfessionnel($this);
 	}
 
 
@@ -2355,6 +2847,30 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Sets a collection of JScolClasses objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $jScolClassess A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setJScolClassess(PropelCollection $jScolClassess, PropelPDO $con = null)
+	{
+		$this->jScolClassessScheduledForDeletion = $this->getJScolClassess(new Criteria(), $con)->diff($jScolClassess);
+
+		foreach ($jScolClassess as $jScolClasses) {
+			// Fix issue with collection modified by reference
+			if ($jScolClasses->isNew()) {
+				$jScolClasses->setUtilisateurProfessionnel($this);
+			}
+			$this->addJScolClasses($jScolClasses);
+		}
+
+		$this->collJScolClassess = $jScolClassess;
+	}
+
+	/**
 	 * Returns the number of related JScolClasses objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2387,8 +2903,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * through the JScolClasses foreign key attribute.
 	 *
 	 * @param      JScolClasses $l JScolClasses
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     UtilisateurProfessionnel The current object (for fluent API support)
 	 */
 	public function addJScolClasses(JScolClasses $l)
 	{
@@ -2396,9 +2911,19 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$this->initJScolClassess();
 		}
 		if (!$this->collJScolClassess->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collJScolClassess[]= $l;
-			$l->setUtilisateurProfessionnel($this);
+			$this->doAddJScolClasses($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	JScolClasses $jScolClasses The jScolClasses object to add.
+	 */
+	protected function doAddJScolClasses($jScolClasses)
+	{
+		$this->collJScolClassess[]= $jScolClasses;
+		$jScolClasses->setUtilisateurProfessionnel($this);
 	}
 
 
@@ -2495,6 +3020,30 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Sets a collection of CahierTexteCompteRendu objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $cahierTexteCompteRendus A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setCahierTexteCompteRendus(PropelCollection $cahierTexteCompteRendus, PropelPDO $con = null)
+	{
+		$this->cahierTexteCompteRendusScheduledForDeletion = $this->getCahierTexteCompteRendus(new Criteria(), $con)->diff($cahierTexteCompteRendus);
+
+		foreach ($cahierTexteCompteRendus as $cahierTexteCompteRendu) {
+			// Fix issue with collection modified by reference
+			if ($cahierTexteCompteRendu->isNew()) {
+				$cahierTexteCompteRendu->setUtilisateurProfessionnel($this);
+			}
+			$this->addCahierTexteCompteRendu($cahierTexteCompteRendu);
+		}
+
+		$this->collCahierTexteCompteRendus = $cahierTexteCompteRendus;
+	}
+
+	/**
 	 * Returns the number of related CahierTexteCompteRendu objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2527,8 +3076,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * through the CahierTexteCompteRendu foreign key attribute.
 	 *
 	 * @param      CahierTexteCompteRendu $l CahierTexteCompteRendu
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     UtilisateurProfessionnel The current object (for fluent API support)
 	 */
 	public function addCahierTexteCompteRendu(CahierTexteCompteRendu $l)
 	{
@@ -2536,9 +3084,19 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$this->initCahierTexteCompteRendus();
 		}
 		if (!$this->collCahierTexteCompteRendus->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collCahierTexteCompteRendus[]= $l;
-			$l->setUtilisateurProfessionnel($this);
+			$this->doAddCahierTexteCompteRendu($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	CahierTexteCompteRendu $cahierTexteCompteRendu The cahierTexteCompteRendu object to add.
+	 */
+	protected function doAddCahierTexteCompteRendu($cahierTexteCompteRendu)
+	{
+		$this->collCahierTexteCompteRendus[]= $cahierTexteCompteRendu;
+		$cahierTexteCompteRendu->setUtilisateurProfessionnel($this);
 	}
 
 
@@ -2660,6 +3218,30 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Sets a collection of CahierTexteTravailAFaire objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $cahierTexteTravailAFaires A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setCahierTexteTravailAFaires(PropelCollection $cahierTexteTravailAFaires, PropelPDO $con = null)
+	{
+		$this->cahierTexteTravailAFairesScheduledForDeletion = $this->getCahierTexteTravailAFaires(new Criteria(), $con)->diff($cahierTexteTravailAFaires);
+
+		foreach ($cahierTexteTravailAFaires as $cahierTexteTravailAFaire) {
+			// Fix issue with collection modified by reference
+			if ($cahierTexteTravailAFaire->isNew()) {
+				$cahierTexteTravailAFaire->setUtilisateurProfessionnel($this);
+			}
+			$this->addCahierTexteTravailAFaire($cahierTexteTravailAFaire);
+		}
+
+		$this->collCahierTexteTravailAFaires = $cahierTexteTravailAFaires;
+	}
+
+	/**
 	 * Returns the number of related CahierTexteTravailAFaire objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2692,8 +3274,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * through the CahierTexteTravailAFaire foreign key attribute.
 	 *
 	 * @param      CahierTexteTravailAFaire $l CahierTexteTravailAFaire
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     UtilisateurProfessionnel The current object (for fluent API support)
 	 */
 	public function addCahierTexteTravailAFaire(CahierTexteTravailAFaire $l)
 	{
@@ -2701,9 +3282,19 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$this->initCahierTexteTravailAFaires();
 		}
 		if (!$this->collCahierTexteTravailAFaires->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collCahierTexteTravailAFaires[]= $l;
-			$l->setUtilisateurProfessionnel($this);
+			$this->doAddCahierTexteTravailAFaire($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	CahierTexteTravailAFaire $cahierTexteTravailAFaire The cahierTexteTravailAFaire object to add.
+	 */
+	protected function doAddCahierTexteTravailAFaire($cahierTexteTravailAFaire)
+	{
+		$this->collCahierTexteTravailAFaires[]= $cahierTexteTravailAFaire;
+		$cahierTexteTravailAFaire->setUtilisateurProfessionnel($this);
 	}
 
 
@@ -2825,6 +3416,30 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Sets a collection of CahierTexteNoticePrivee objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $cahierTexteNoticePrivees A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setCahierTexteNoticePrivees(PropelCollection $cahierTexteNoticePrivees, PropelPDO $con = null)
+	{
+		$this->cahierTexteNoticePriveesScheduledForDeletion = $this->getCahierTexteNoticePrivees(new Criteria(), $con)->diff($cahierTexteNoticePrivees);
+
+		foreach ($cahierTexteNoticePrivees as $cahierTexteNoticePrivee) {
+			// Fix issue with collection modified by reference
+			if ($cahierTexteNoticePrivee->isNew()) {
+				$cahierTexteNoticePrivee->setUtilisateurProfessionnel($this);
+			}
+			$this->addCahierTexteNoticePrivee($cahierTexteNoticePrivee);
+		}
+
+		$this->collCahierTexteNoticePrivees = $cahierTexteNoticePrivees;
+	}
+
+	/**
 	 * Returns the number of related CahierTexteNoticePrivee objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2857,8 +3472,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * through the CahierTexteNoticePrivee foreign key attribute.
 	 *
 	 * @param      CahierTexteNoticePrivee $l CahierTexteNoticePrivee
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     UtilisateurProfessionnel The current object (for fluent API support)
 	 */
 	public function addCahierTexteNoticePrivee(CahierTexteNoticePrivee $l)
 	{
@@ -2866,9 +3480,19 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$this->initCahierTexteNoticePrivees();
 		}
 		if (!$this->collCahierTexteNoticePrivees->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collCahierTexteNoticePrivees[]= $l;
-			$l->setUtilisateurProfessionnel($this);
+			$this->doAddCahierTexteNoticePrivee($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	CahierTexteNoticePrivee $cahierTexteNoticePrivee The cahierTexteNoticePrivee object to add.
+	 */
+	protected function doAddCahierTexteNoticePrivee($cahierTexteNoticePrivee)
+	{
+		$this->collCahierTexteNoticePrivees[]= $cahierTexteNoticePrivee;
+		$cahierTexteNoticePrivee->setUtilisateurProfessionnel($this);
 	}
 
 
@@ -2990,6 +3614,30 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Sets a collection of JEleveCpe objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $jEleveCpes A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setJEleveCpes(PropelCollection $jEleveCpes, PropelPDO $con = null)
+	{
+		$this->jEleveCpesScheduledForDeletion = $this->getJEleveCpes(new Criteria(), $con)->diff($jEleveCpes);
+
+		foreach ($jEleveCpes as $jEleveCpe) {
+			// Fix issue with collection modified by reference
+			if ($jEleveCpe->isNew()) {
+				$jEleveCpe->setUtilisateurProfessionnel($this);
+			}
+			$this->addJEleveCpe($jEleveCpe);
+		}
+
+		$this->collJEleveCpes = $jEleveCpes;
+	}
+
+	/**
 	 * Returns the number of related JEleveCpe objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3022,8 +3670,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * through the JEleveCpe foreign key attribute.
 	 *
 	 * @param      JEleveCpe $l JEleveCpe
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     UtilisateurProfessionnel The current object (for fluent API support)
 	 */
 	public function addJEleveCpe(JEleveCpe $l)
 	{
@@ -3031,9 +3678,19 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$this->initJEleveCpes();
 		}
 		if (!$this->collJEleveCpes->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collJEleveCpes[]= $l;
-			$l->setUtilisateurProfessionnel($this);
+			$this->doAddJEleveCpe($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	JEleveCpe $jEleveCpe The jEleveCpe object to add.
+	 */
+	protected function doAddJEleveCpe($jEleveCpe)
+	{
+		$this->collJEleveCpes[]= $jEleveCpe;
+		$jEleveCpe->setUtilisateurProfessionnel($this);
 	}
 
 
@@ -3130,6 +3787,30 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Sets a collection of JEleveProfesseurPrincipal objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $jEleveProfesseurPrincipals A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setJEleveProfesseurPrincipals(PropelCollection $jEleveProfesseurPrincipals, PropelPDO $con = null)
+	{
+		$this->jEleveProfesseurPrincipalsScheduledForDeletion = $this->getJEleveProfesseurPrincipals(new Criteria(), $con)->diff($jEleveProfesseurPrincipals);
+
+		foreach ($jEleveProfesseurPrincipals as $jEleveProfesseurPrincipal) {
+			// Fix issue with collection modified by reference
+			if ($jEleveProfesseurPrincipal->isNew()) {
+				$jEleveProfesseurPrincipal->setUtilisateurProfessionnel($this);
+			}
+			$this->addJEleveProfesseurPrincipal($jEleveProfesseurPrincipal);
+		}
+
+		$this->collJEleveProfesseurPrincipals = $jEleveProfesseurPrincipals;
+	}
+
+	/**
 	 * Returns the number of related JEleveProfesseurPrincipal objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3162,8 +3843,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * through the JEleveProfesseurPrincipal foreign key attribute.
 	 *
 	 * @param      JEleveProfesseurPrincipal $l JEleveProfesseurPrincipal
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     UtilisateurProfessionnel The current object (for fluent API support)
 	 */
 	public function addJEleveProfesseurPrincipal(JEleveProfesseurPrincipal $l)
 	{
@@ -3171,9 +3851,19 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$this->initJEleveProfesseurPrincipals();
 		}
 		if (!$this->collJEleveProfesseurPrincipals->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collJEleveProfesseurPrincipals[]= $l;
-			$l->setUtilisateurProfessionnel($this);
+			$this->doAddJEleveProfesseurPrincipal($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	JEleveProfesseurPrincipal $jEleveProfesseurPrincipal The jEleveProfesseurPrincipal object to add.
+	 */
+	protected function doAddJEleveProfesseurPrincipal($jEleveProfesseurPrincipal)
+	{
+		$this->collJEleveProfesseurPrincipals[]= $jEleveProfesseurPrincipal;
+		$jEleveProfesseurPrincipal->setUtilisateurProfessionnel($this);
 	}
 
 
@@ -3270,6 +3960,30 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Sets a collection of JAidUtilisateursProfessionnels objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $jAidUtilisateursProfessionnelss A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setJAidUtilisateursProfessionnelss(PropelCollection $jAidUtilisateursProfessionnelss, PropelPDO $con = null)
+	{
+		$this->jAidUtilisateursProfessionnelssScheduledForDeletion = $this->getJAidUtilisateursProfessionnelss(new Criteria(), $con)->diff($jAidUtilisateursProfessionnelss);
+
+		foreach ($jAidUtilisateursProfessionnelss as $jAidUtilisateursProfessionnels) {
+			// Fix issue with collection modified by reference
+			if ($jAidUtilisateursProfessionnels->isNew()) {
+				$jAidUtilisateursProfessionnels->setUtilisateurProfessionnel($this);
+			}
+			$this->addJAidUtilisateursProfessionnels($jAidUtilisateursProfessionnels);
+		}
+
+		$this->collJAidUtilisateursProfessionnelss = $jAidUtilisateursProfessionnelss;
+	}
+
+	/**
 	 * Returns the number of related JAidUtilisateursProfessionnels objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3302,8 +4016,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * through the JAidUtilisateursProfessionnels foreign key attribute.
 	 *
 	 * @param      JAidUtilisateursProfessionnels $l JAidUtilisateursProfessionnels
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     UtilisateurProfessionnel The current object (for fluent API support)
 	 */
 	public function addJAidUtilisateursProfessionnels(JAidUtilisateursProfessionnels $l)
 	{
@@ -3311,9 +4024,19 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$this->initJAidUtilisateursProfessionnelss();
 		}
 		if (!$this->collJAidUtilisateursProfessionnelss->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collJAidUtilisateursProfessionnelss[]= $l;
-			$l->setUtilisateurProfessionnel($this);
+			$this->doAddJAidUtilisateursProfessionnels($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	JAidUtilisateursProfessionnels $jAidUtilisateursProfessionnels The jAidUtilisateursProfessionnels object to add.
+	 */
+	protected function doAddJAidUtilisateursProfessionnels($jAidUtilisateursProfessionnels)
+	{
+		$this->collJAidUtilisateursProfessionnelss[]= $jAidUtilisateursProfessionnels;
+		$jAidUtilisateursProfessionnels->setUtilisateurProfessionnel($this);
 	}
 
 
@@ -3410,6 +4133,30 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Sets a collection of AbsenceEleveSaisie objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $absenceEleveSaisies A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setAbsenceEleveSaisies(PropelCollection $absenceEleveSaisies, PropelPDO $con = null)
+	{
+		$this->absenceEleveSaisiesScheduledForDeletion = $this->getAbsenceEleveSaisies(new Criteria(), $con)->diff($absenceEleveSaisies);
+
+		foreach ($absenceEleveSaisies as $absenceEleveSaisie) {
+			// Fix issue with collection modified by reference
+			if ($absenceEleveSaisie->isNew()) {
+				$absenceEleveSaisie->setUtilisateurProfessionnel($this);
+			}
+			$this->addAbsenceEleveSaisie($absenceEleveSaisie);
+		}
+
+		$this->collAbsenceEleveSaisies = $absenceEleveSaisies;
+	}
+
+	/**
 	 * Returns the number of related AbsenceEleveSaisie objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3442,8 +4189,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * through the AbsenceEleveSaisie foreign key attribute.
 	 *
 	 * @param      AbsenceEleveSaisie $l AbsenceEleveSaisie
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     UtilisateurProfessionnel The current object (for fluent API support)
 	 */
 	public function addAbsenceEleveSaisie(AbsenceEleveSaisie $l)
 	{
@@ -3451,9 +4197,19 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$this->initAbsenceEleveSaisies();
 		}
 		if (!$this->collAbsenceEleveSaisies->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collAbsenceEleveSaisies[]= $l;
-			$l->setUtilisateurProfessionnel($this);
+			$this->doAddAbsenceEleveSaisie($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	AbsenceEleveSaisie $absenceEleveSaisie The absenceEleveSaisie object to add.
+	 */
+	protected function doAddAbsenceEleveSaisie($absenceEleveSaisie)
+	{
+		$this->collAbsenceEleveSaisies[]= $absenceEleveSaisie;
+		$absenceEleveSaisie->setUtilisateurProfessionnel($this);
 	}
 
 
@@ -3700,6 +4456,30 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Sets a collection of AbsenceEleveTraitement objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $absenceEleveTraitements A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setAbsenceEleveTraitements(PropelCollection $absenceEleveTraitements, PropelPDO $con = null)
+	{
+		$this->absenceEleveTraitementsScheduledForDeletion = $this->getAbsenceEleveTraitements(new Criteria(), $con)->diff($absenceEleveTraitements);
+
+		foreach ($absenceEleveTraitements as $absenceEleveTraitement) {
+			// Fix issue with collection modified by reference
+			if ($absenceEleveTraitement->isNew()) {
+				$absenceEleveTraitement->setUtilisateurProfessionnel($this);
+			}
+			$this->addAbsenceEleveTraitement($absenceEleveTraitement);
+		}
+
+		$this->collAbsenceEleveTraitements = $absenceEleveTraitements;
+	}
+
+	/**
 	 * Returns the number of related AbsenceEleveTraitement objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3732,8 +4512,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * through the AbsenceEleveTraitement foreign key attribute.
 	 *
 	 * @param      AbsenceEleveTraitement $l AbsenceEleveTraitement
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     UtilisateurProfessionnel The current object (for fluent API support)
 	 */
 	public function addAbsenceEleveTraitement(AbsenceEleveTraitement $l)
 	{
@@ -3741,9 +4520,19 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$this->initAbsenceEleveTraitements();
 		}
 		if (!$this->collAbsenceEleveTraitements->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collAbsenceEleveTraitements[]= $l;
-			$l->setUtilisateurProfessionnel($this);
+			$this->doAddAbsenceEleveTraitement($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	AbsenceEleveTraitement $absenceEleveTraitement The absenceEleveTraitement object to add.
+	 */
+	protected function doAddAbsenceEleveTraitement($absenceEleveTraitement)
+	{
+		$this->collAbsenceEleveTraitements[]= $absenceEleveTraitement;
+		$absenceEleveTraitement->setUtilisateurProfessionnel($this);
 	}
 
 
@@ -3890,6 +4679,30 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Sets a collection of ModifiedAbsenceEleveTraitement objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $modifiedAbsenceEleveTraitements A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setModifiedAbsenceEleveTraitements(PropelCollection $modifiedAbsenceEleveTraitements, PropelPDO $con = null)
+	{
+		$this->modifiedAbsenceEleveTraitementsScheduledForDeletion = $this->getModifiedAbsenceEleveTraitements(new Criteria(), $con)->diff($modifiedAbsenceEleveTraitements);
+
+		foreach ($modifiedAbsenceEleveTraitements as $modifiedAbsenceEleveTraitement) {
+			// Fix issue with collection modified by reference
+			if ($modifiedAbsenceEleveTraitement->isNew()) {
+				$modifiedAbsenceEleveTraitement->setModifieParUtilisateur($this);
+			}
+			$this->addModifiedAbsenceEleveTraitement($modifiedAbsenceEleveTraitement);
+		}
+
+		$this->collModifiedAbsenceEleveTraitements = $modifiedAbsenceEleveTraitements;
+	}
+
+	/**
 	 * Returns the number of related AbsenceEleveTraitement objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3922,8 +4735,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * through the AbsenceEleveTraitement foreign key attribute.
 	 *
 	 * @param      AbsenceEleveTraitement $l AbsenceEleveTraitement
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     UtilisateurProfessionnel The current object (for fluent API support)
 	 */
 	public function addModifiedAbsenceEleveTraitement(AbsenceEleveTraitement $l)
 	{
@@ -3931,9 +4743,19 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$this->initModifiedAbsenceEleveTraitements();
 		}
 		if (!$this->collModifiedAbsenceEleveTraitements->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collModifiedAbsenceEleveTraitements[]= $l;
-			$l->setModifieParUtilisateur($this);
+			$this->doAddModifiedAbsenceEleveTraitement($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	ModifiedAbsenceEleveTraitement $modifiedAbsenceEleveTraitement The modifiedAbsenceEleveTraitement object to add.
+	 */
+	protected function doAddModifiedAbsenceEleveTraitement($modifiedAbsenceEleveTraitement)
+	{
+		$this->collModifiedAbsenceEleveTraitements[]= $modifiedAbsenceEleveTraitement;
+		$modifiedAbsenceEleveTraitement->setModifieParUtilisateur($this);
 	}
 
 
@@ -4080,6 +4902,30 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Sets a collection of AbsenceEleveNotification objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $absenceEleveNotifications A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setAbsenceEleveNotifications(PropelCollection $absenceEleveNotifications, PropelPDO $con = null)
+	{
+		$this->absenceEleveNotificationsScheduledForDeletion = $this->getAbsenceEleveNotifications(new Criteria(), $con)->diff($absenceEleveNotifications);
+
+		foreach ($absenceEleveNotifications as $absenceEleveNotification) {
+			// Fix issue with collection modified by reference
+			if ($absenceEleveNotification->isNew()) {
+				$absenceEleveNotification->setUtilisateurProfessionnel($this);
+			}
+			$this->addAbsenceEleveNotification($absenceEleveNotification);
+		}
+
+		$this->collAbsenceEleveNotifications = $absenceEleveNotifications;
+	}
+
+	/**
 	 * Returns the number of related AbsenceEleveNotification objects.
 	 *
 	 * @param      Criteria $criteria
@@ -4112,8 +4958,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * through the AbsenceEleveNotification foreign key attribute.
 	 *
 	 * @param      AbsenceEleveNotification $l AbsenceEleveNotification
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     UtilisateurProfessionnel The current object (for fluent API support)
 	 */
 	public function addAbsenceEleveNotification(AbsenceEleveNotification $l)
 	{
@@ -4121,9 +4966,19 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$this->initAbsenceEleveNotifications();
 		}
 		if (!$this->collAbsenceEleveNotifications->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collAbsenceEleveNotifications[]= $l;
-			$l->setUtilisateurProfessionnel($this);
+			$this->doAddAbsenceEleveNotification($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	AbsenceEleveNotification $absenceEleveNotification The absenceEleveNotification object to add.
+	 */
+	protected function doAddAbsenceEleveNotification($absenceEleveNotification)
+	{
+		$this->collAbsenceEleveNotifications[]= $absenceEleveNotification;
+		$absenceEleveNotification->setUtilisateurProfessionnel($this);
 	}
 
 
@@ -4245,6 +5100,30 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Sets a collection of JProfesseursMatieres objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $jProfesseursMatieress A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setJProfesseursMatieress(PropelCollection $jProfesseursMatieress, PropelPDO $con = null)
+	{
+		$this->jProfesseursMatieressScheduledForDeletion = $this->getJProfesseursMatieress(new Criteria(), $con)->diff($jProfesseursMatieress);
+
+		foreach ($jProfesseursMatieress as $jProfesseursMatieres) {
+			// Fix issue with collection modified by reference
+			if ($jProfesseursMatieres->isNew()) {
+				$jProfesseursMatieres->setProfesseur($this);
+			}
+			$this->addJProfesseursMatieres($jProfesseursMatieres);
+		}
+
+		$this->collJProfesseursMatieress = $jProfesseursMatieress;
+	}
+
+	/**
 	 * Returns the number of related JProfesseursMatieres objects.
 	 *
 	 * @param      Criteria $criteria
@@ -4277,8 +5156,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * through the JProfesseursMatieres foreign key attribute.
 	 *
 	 * @param      JProfesseursMatieres $l JProfesseursMatieres
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     UtilisateurProfessionnel The current object (for fluent API support)
 	 */
 	public function addJProfesseursMatieres(JProfesseursMatieres $l)
 	{
@@ -4286,9 +5164,19 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$this->initJProfesseursMatieress();
 		}
 		if (!$this->collJProfesseursMatieress->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collJProfesseursMatieress[]= $l;
-			$l->setProfesseur($this);
+			$this->doAddJProfesseursMatieres($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	JProfesseursMatieres $jProfesseursMatieres The jProfesseursMatieres object to add.
+	 */
+	protected function doAddJProfesseursMatieres($jProfesseursMatieres)
+	{
+		$this->collJProfesseursMatieress[]= $jProfesseursMatieres;
+		$jProfesseursMatieres->setProfesseur($this);
 	}
 
 
@@ -4385,6 +5273,30 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Sets a collection of PreferenceUtilisateurProfessionnel objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $preferenceUtilisateurProfessionnels A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setPreferenceUtilisateurProfessionnels(PropelCollection $preferenceUtilisateurProfessionnels, PropelPDO $con = null)
+	{
+		$this->preferenceUtilisateurProfessionnelsScheduledForDeletion = $this->getPreferenceUtilisateurProfessionnels(new Criteria(), $con)->diff($preferenceUtilisateurProfessionnels);
+
+		foreach ($preferenceUtilisateurProfessionnels as $preferenceUtilisateurProfessionnel) {
+			// Fix issue with collection modified by reference
+			if ($preferenceUtilisateurProfessionnel->isNew()) {
+				$preferenceUtilisateurProfessionnel->setUtilisateurProfessionnel($this);
+			}
+			$this->addPreferenceUtilisateurProfessionnel($preferenceUtilisateurProfessionnel);
+		}
+
+		$this->collPreferenceUtilisateurProfessionnels = $preferenceUtilisateurProfessionnels;
+	}
+
+	/**
 	 * Returns the number of related PreferenceUtilisateurProfessionnel objects.
 	 *
 	 * @param      Criteria $criteria
@@ -4417,8 +5329,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * through the PreferenceUtilisateurProfessionnel foreign key attribute.
 	 *
 	 * @param      PreferenceUtilisateurProfessionnel $l PreferenceUtilisateurProfessionnel
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     UtilisateurProfessionnel The current object (for fluent API support)
 	 */
 	public function addPreferenceUtilisateurProfessionnel(PreferenceUtilisateurProfessionnel $l)
 	{
@@ -4426,9 +5337,19 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$this->initPreferenceUtilisateurProfessionnels();
 		}
 		if (!$this->collPreferenceUtilisateurProfessionnels->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collPreferenceUtilisateurProfessionnels[]= $l;
-			$l->setUtilisateurProfessionnel($this);
+			$this->doAddPreferenceUtilisateurProfessionnel($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	PreferenceUtilisateurProfessionnel $preferenceUtilisateurProfessionnel The preferenceUtilisateurProfessionnel object to add.
+	 */
+	protected function doAddPreferenceUtilisateurProfessionnel($preferenceUtilisateurProfessionnel)
+	{
+		$this->collPreferenceUtilisateurProfessionnels[]= $preferenceUtilisateurProfessionnel;
+		$preferenceUtilisateurProfessionnel->setUtilisateurProfessionnel($this);
 	}
 
 	/**
@@ -4500,6 +5421,30 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Sets a collection of EdtEmplacementCours objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $edtEmplacementCourss A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setEdtEmplacementCourss(PropelCollection $edtEmplacementCourss, PropelPDO $con = null)
+	{
+		$this->edtEmplacementCourssScheduledForDeletion = $this->getEdtEmplacementCourss(new Criteria(), $con)->diff($edtEmplacementCourss);
+
+		foreach ($edtEmplacementCourss as $edtEmplacementCours) {
+			// Fix issue with collection modified by reference
+			if ($edtEmplacementCours->isNew()) {
+				$edtEmplacementCours->setUtilisateurProfessionnel($this);
+			}
+			$this->addEdtEmplacementCours($edtEmplacementCours);
+		}
+
+		$this->collEdtEmplacementCourss = $edtEmplacementCourss;
+	}
+
+	/**
 	 * Returns the number of related EdtEmplacementCours objects.
 	 *
 	 * @param      Criteria $criteria
@@ -4532,8 +5477,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * through the EdtEmplacementCours foreign key attribute.
 	 *
 	 * @param      EdtEmplacementCours $l EdtEmplacementCours
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     UtilisateurProfessionnel The current object (for fluent API support)
 	 */
 	public function addEdtEmplacementCours(EdtEmplacementCours $l)
 	{
@@ -4541,9 +5485,19 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$this->initEdtEmplacementCourss();
 		}
 		if (!$this->collEdtEmplacementCourss->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collEdtEmplacementCourss[]= $l;
-			$l->setUtilisateurProfessionnel($this);
+			$this->doAddEdtEmplacementCours($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	EdtEmplacementCours $edtEmplacementCours The edtEmplacementCours object to add.
+	 */
+	protected function doAddEdtEmplacementCours($edtEmplacementCours)
+	{
+		$this->collEdtEmplacementCourss[]= $edtEmplacementCours;
+		$edtEmplacementCours->setUtilisateurProfessionnel($this);
 	}
 
 
@@ -4735,6 +5689,37 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Sets a collection of Groupe objects related by a many-to-many relationship
+	 * to the current object by way of the j_groupes_professeurs cross-reference table.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $groupes A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setGroupes(PropelCollection $groupes, PropelPDO $con = null)
+	{
+		$jGroupesProfesseurss = JGroupesProfesseursQuery::create()
+			->filterByGroupe($groupes)
+			->filterByUtilisateurProfessionnel($this)
+			->find($con);
+
+		$this->groupesScheduledForDeletion = $this->getJGroupesProfesseurss()->diff($jGroupesProfesseurss);
+		$this->collJGroupesProfesseurss = $jGroupesProfesseurss;
+
+		foreach ($groupes as $groupe) {
+			// Fix issue with collection modified by reference
+			if ($groupe->isNew()) {
+				$this->doAddGroupe($groupe);
+			} else {
+				$this->addGroupe($groupe);
+			}
+		}
+
+		$this->collGroupes = $groupes;
+	}
+
+	/**
 	 * Gets the number of Groupe objects related by a many-to-many relationship
 	 * to the current object by way of the j_groupes_professeurs cross-reference table.
 	 *
@@ -4770,18 +5755,26 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * @param      Groupe $groupe The JGroupesProfesseurs object to relate
 	 * @return     void
 	 */
-	public function addGroupe($groupe)
+	public function addGroupe(Groupe $groupe)
 	{
 		if ($this->collGroupes === null) {
 			$this->initGroupes();
 		}
 		if (!$this->collGroupes->contains($groupe)) { // only add it if the **same** object is not already associated
-			$jGroupesProfesseurs = new JGroupesProfesseurs();
-			$jGroupesProfesseurs->setGroupe($groupe);
-			$this->addJGroupesProfesseurs($jGroupesProfesseurs);
+			$this->doAddGroupe($groupe);
 
 			$this->collGroupes[]= $groupe;
 		}
+	}
+
+	/**
+	 * @param	Groupe $groupe The groupe object to add.
+	 */
+	protected function doAddGroupe($groupe)
+	{
+		$jGroupesProfesseurs = new JGroupesProfesseurs();
+		$jGroupesProfesseurs->setGroupe($groupe);
+		$this->addJGroupesProfesseurs($jGroupesProfesseurs);
 	}
 
 	/**
@@ -4848,6 +5841,37 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Sets a collection of AidDetails objects related by a many-to-many relationship
+	 * to the current object by way of the j_aid_utilisateurs cross-reference table.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $aidDetailss A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setAidDetailss(PropelCollection $aidDetailss, PropelPDO $con = null)
+	{
+		$jAidUtilisateursProfessionnelss = JAidUtilisateursProfessionnelsQuery::create()
+			->filterByAidDetails($aidDetailss)
+			->filterByUtilisateurProfessionnel($this)
+			->find($con);
+
+		$this->aidDetailssScheduledForDeletion = $this->getJAidUtilisateursProfessionnelss()->diff($jAidUtilisateursProfessionnelss);
+		$this->collJAidUtilisateursProfessionnelss = $jAidUtilisateursProfessionnelss;
+
+		foreach ($aidDetailss as $aidDetails) {
+			// Fix issue with collection modified by reference
+			if ($aidDetails->isNew()) {
+				$this->doAddAidDetails($aidDetails);
+			} else {
+				$this->addAidDetails($aidDetails);
+			}
+		}
+
+		$this->collAidDetailss = $aidDetailss;
+	}
+
+	/**
 	 * Gets the number of AidDetails objects related by a many-to-many relationship
 	 * to the current object by way of the j_aid_utilisateurs cross-reference table.
 	 *
@@ -4883,18 +5907,26 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * @param      AidDetails $aidDetails The JAidUtilisateursProfessionnels object to relate
 	 * @return     void
 	 */
-	public function addAidDetails($aidDetails)
+	public function addAidDetails(AidDetails $aidDetails)
 	{
 		if ($this->collAidDetailss === null) {
 			$this->initAidDetailss();
 		}
 		if (!$this->collAidDetailss->contains($aidDetails)) { // only add it if the **same** object is not already associated
-			$jAidUtilisateursProfessionnels = new JAidUtilisateursProfessionnels();
-			$jAidUtilisateursProfessionnels->setAidDetails($aidDetails);
-			$this->addJAidUtilisateursProfessionnels($jAidUtilisateursProfessionnels);
+			$this->doAddAidDetails($aidDetails);
 
 			$this->collAidDetailss[]= $aidDetails;
 		}
+	}
+
+	/**
+	 * @param	AidDetails $aidDetails The aidDetails object to add.
+	 */
+	protected function doAddAidDetails($aidDetails)
+	{
+		$jAidUtilisateursProfessionnels = new JAidUtilisateursProfessionnels();
+		$jAidUtilisateursProfessionnels->setAidDetails($aidDetails);
+		$this->addJAidUtilisateursProfessionnels($jAidUtilisateursProfessionnels);
 	}
 
 	/**
@@ -4961,6 +5993,37 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Sets a collection of Matiere objects related by a many-to-many relationship
+	 * to the current object by way of the j_professeurs_matieres cross-reference table.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $matieres A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setMatieres(PropelCollection $matieres, PropelPDO $con = null)
+	{
+		$jProfesseursMatieress = JProfesseursMatieresQuery::create()
+			->filterByMatiere($matieres)
+			->filterByProfesseur($this)
+			->find($con);
+
+		$this->matieresScheduledForDeletion = $this->getJProfesseursMatieress()->diff($jProfesseursMatieress);
+		$this->collJProfesseursMatieress = $jProfesseursMatieress;
+
+		foreach ($matieres as $matiere) {
+			// Fix issue with collection modified by reference
+			if ($matiere->isNew()) {
+				$this->doAddMatiere($matiere);
+			} else {
+				$this->addMatiere($matiere);
+			}
+		}
+
+		$this->collMatieres = $matieres;
+	}
+
+	/**
 	 * Gets the number of Matiere objects related by a many-to-many relationship
 	 * to the current object by way of the j_professeurs_matieres cross-reference table.
 	 *
@@ -4996,18 +6059,26 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * @param      Matiere $matiere The JProfesseursMatieres object to relate
 	 * @return     void
 	 */
-	public function addMatiere($matiere)
+	public function addMatiere(Matiere $matiere)
 	{
 		if ($this->collMatieres === null) {
 			$this->initMatieres();
 		}
 		if (!$this->collMatieres->contains($matiere)) { // only add it if the **same** object is not already associated
-			$jProfesseursMatieres = new JProfesseursMatieres();
-			$jProfesseursMatieres->setMatiere($matiere);
-			$this->addJProfesseursMatieres($jProfesseursMatieres);
+			$this->doAddMatiere($matiere);
 
 			$this->collMatieres[]= $matiere;
 		}
+	}
+
+	/**
+	 * @param	Matiere $matiere The matiere object to add.
+	 */
+	protected function doAddMatiere($matiere)
+	{
+		$jProfesseursMatieres = new JProfesseursMatieres();
+		$jProfesseursMatieres->setMatiere($matiere);
+		$this->addJProfesseursMatieres($jProfesseursMatieres);
 	}
 
 	/**
@@ -5229,25 +6300,6 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function __toString()
 	{
 		return (string) $this->exportTo(UtilisateurProfessionnelPeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseUtilisateurProfessionnel

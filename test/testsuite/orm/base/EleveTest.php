@@ -280,7 +280,7 @@ class EleveTest extends GepiEmptyTestBase
 		$florence_eleve->setDateSortie(strtotime('2010-10-04 00:00:00'));	# On sort l'élève
 		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-04 00:00:00'),new DateTime('2010-10-04 23:59:59'));
 		$this->assertEquals(0,$retard_col->count());
-
+		
 		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-18 00:00:00'),new DateTime('2010-10-18 23:59:59'));
 		$this->assertEquals(0,$retard_col->count());
 	}
@@ -647,4 +647,13 @@ class EleveTest extends GepiEmptyTestBase
 		$this->assertEquals(15,$nbAbs->count());	# On n'a plus que 15 absences comptabilisées
 		
 	}
+
+        public function testEquals() {
+            Propel::disableInstancePooling();
+            $eleve1 = EleveQuery::create()->findOneByLogin('Florence Michu');
+            usleep(1);
+            $eleve1idem = EleveQuery::create()->findOneByLogin('Florence Michu');
+            $this->assertEquals($eleve1, $eleve1idem);
+            Propel::enableInstancePooling();
+        }
 }

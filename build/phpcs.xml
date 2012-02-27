@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<ruleset name="gepi">
+ <description>Standard de codage pour gepi</description>
+ <exclude-pattern>*/build/*</exclude-pattern>
+ <exclude-pattern>*/lib/simplesaml/*</exclude-pattern>
+ <exclude-pattern>*/orm/propel/*</exclude-pattern>
+ <exclude-pattern>*/orm/propel-build/classes/gepi/om/*</exclude-pattern>
+ <exclude-pattern>*/lib/standalone/*</exclude-pattern>
+ <exclude-pattern>*/tbs/*</exclude-pattern>
+ <exclude-pattern>*/ckeditor/*</exclude-pattern>
+ <exclude-pattern>*/artishow/*</exclude-pattern>
+ <exclude-pattern>*/fpdf/*</exclude-pattern>
+ <rule ref="PEAR"/>
+</ruleset>

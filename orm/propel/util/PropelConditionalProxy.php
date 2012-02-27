@@ -33,37 +33,103 @@
  */
 class PropelConditionalProxy
 {
-	protected $mainObject;
-	
-	public function __construct($mainObject)
+	protected $criteria;
+	protected $parent;
+	protected $state;
+	protected $wasTrue;
+	protected $parentState;
+
+	public function __construct($criteria, $cond, $proxy = null)
 	{
-		$this->mainObject = $mainObject;
-	}
-	
-	public function _if()
-	{
-		throw new PropelException('_if() statements cannot be nested');
-	}
-	
-	public function _elseif($cond)
-	{
-		if($cond) {
-			return $this->mainObject;
+		$this->criteria = $criteria;
+		$this->wasTrue = false;
+		$this->setConditionalState($cond);
+		$this->parent = $proxy;
+
+		if (is_null($proxy)) {
+			$this->parentState = true;
 		} else {
-			return $this;
+			$this->parentState = $proxy->getConditionalState();
 		}
 	}
-	
+
+	/**
+	 * Returns a new level PropelConditionalProxy instance.
+	 * Allows for conditional statements in a fluid interface.
+	 *
+	 * @param      bool $cond
+	 *
+	 * @return     PropelConditionalProxy
+	 */
+	public function _if($cond)
+	{
+		return $this->criteria->_if($cond);
+	}
+
+	/**
+	 * Allows for conditional statements in a fluid interface.
+	 *
+	 * @param      bool $cond ignored
+	 *
+	 * @return     PropelConditionalProxy
+	 */
+	public function _elseif($cond)
+	{
+		return $this->setConditionalState(!$this->wasTrue && $cond);
+	}
+
+	/**
+	 * Allows for conditional statements in a fluid interface.
+	 *
+	 * @return     PropelConditionalProxy
+	 */
 	public function _else()
 	{
-		return $this->mainObject;
+		return $this->setConditionalState(!$this->state && !$this->wasTrue);
 	}
-	
+
+	/**
+	 * Returns the parent object
+	 * Allows for conditional statements in a fluid interface.
+	 *
+	 * @return     PropelConditionalProxy|Criteria
+	 */
 	public function _endif()
 	{
-		return $this->mainObject;
+		return $this->criteria->_endif();
 	}
-	
+
+	/**
+	 * return the current conditionnal status
+	 *
+	 * @return boolean
+	 */
+	protected function getConditionalState()
+	{
+		return $this->state && $this->parentState;
+	}
+
+	protected function setConditionalState($cond)
+	{
+		$this->state = (bool) $cond;
+		$this->wasTrue = $this->wasTrue || $this->state;
+		return $this->getCriteriaOrProxy();
+	}
+
+	public function getParentProxy()
+	{
+		return $this->parent;
+	}
+
+	public function getCriteriaOrProxy()
+	{
+		if ($this->state && $this->parentState) {
+			return $this->criteria;
+		}
+
+		return $this;
+	}
+
 	public function __call($name, $arguments)
 	{
 		return $this;

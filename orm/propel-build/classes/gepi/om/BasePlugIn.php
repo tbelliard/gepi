@@ -25,6 +25,12 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -77,6 +83,18 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $plugInAutorisationsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $plugInMiseEnOeuvreMenusScheduledForDeletion = null;
 
 	/**
 	 * Get the [id] column value.
@@ -363,18 +381,18 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = PlugInQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				PlugInQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -426,7 +444,7 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -449,27 +467,24 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = PlugInPeer::ID;
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
+				if ($this->isNew()) {
+					$this->doInsert($con);
+				} else {
+					$this->doUpdate($con);
+				}
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
-				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(PlugInPeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.PlugInPeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows = 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
-				} else {
-					$affectedRows = PlugInPeer::doUpdate($this, $con);
+			if ($this->plugInAutorisationsScheduledForDeletion !== null) {
+				if (!$this->plugInAutorisationsScheduledForDeletion->isEmpty()) {
+					PlugInAutorisationQuery::create()
+						->filterByPrimaryKeys($this->plugInAutorisationsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->plugInAutorisationsScheduledForDeletion = null;
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collPlugInAutorisations !== null) {
@@ -477,6 +492,15 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->plugInMiseEnOeuvreMenusScheduledForDeletion !== null) {
+				if (!$this->plugInMiseEnOeuvreMenusScheduledForDeletion->isEmpty()) {
+					PlugInMiseEnOeuvreMenuQuery::create()
+						->filterByPrimaryKeys($this->plugInMiseEnOeuvreMenusScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->plugInMiseEnOeuvreMenusScheduledForDeletion = null;
 				}
 			}
 
@@ -493,6 +517,98 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = PlugInPeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . PlugInPeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(PlugInPeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = 'ID';
+		}
+		if ($this->isColumnModified(PlugInPeer::NOM)) {
+			$modifiedColumns[':p' . $index++]  = 'NOM';
+		}
+		if ($this->isColumnModified(PlugInPeer::REPERTOIRE)) {
+			$modifiedColumns[':p' . $index++]  = 'REPERTOIRE';
+		}
+		if ($this->isColumnModified(PlugInPeer::DESCRIPTION)) {
+			$modifiedColumns[':p' . $index++]  = 'DESCRIPTION';
+		}
+		if ($this->isColumnModified(PlugInPeer::OUVERT)) {
+			$modifiedColumns[':p' . $index++]  = 'OUVERT';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO plugins (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case 'ID':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case 'NOM':
+						$stmt->bindValue($identifier, $this->nom, PDO::PARAM_STR);
+						break;
+					case 'REPERTOIRE':
+						$stmt->bindValue($identifier, $this->repertoire, PDO::PARAM_STR);
+						break;
+					case 'DESCRIPTION':
+						$stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
+						break;
+					case 'OUVERT':
+						$stmt->bindValue($identifier, $this->ouvert, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -823,10 +939,12 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 		$copyObj->setDescription($this->getDescription());
 		$copyObj->setOuvert($this->getOuvert());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getPlugInAutorisations() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -840,6 +958,8 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -889,7 +1009,7 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * Avoids crafting an 'init[$relationName]s' method name
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -974,6 +1094,30 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of PlugInAutorisation objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $plugInAutorisations A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setPlugInAutorisations(PropelCollection $plugInAutorisations, PropelPDO $con = null)
+	{
+		$this->plugInAutorisationsScheduledForDeletion = $this->getPlugInAutorisations(new Criteria(), $con)->diff($plugInAutorisations);
+
+		foreach ($plugInAutorisations as $plugInAutorisation) {
+			// Fix issue with collection modified by reference
+			if ($plugInAutorisation->isNew()) {
+				$plugInAutorisation->setPlugIn($this);
+			}
+			$this->addPlugInAutorisation($plugInAutorisation);
+		}
+
+		$this->collPlugInAutorisations = $plugInAutorisations;
+	}
+
+	/**
 	 * Returns the number of related PlugInAutorisation objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1006,8 +1150,7 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 	 * through the PlugInAutorisation foreign key attribute.
 	 *
 	 * @param      PlugInAutorisation $l PlugInAutorisation
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     PlugIn The current object (for fluent API support)
 	 */
 	public function addPlugInAutorisation(PlugInAutorisation $l)
 	{
@@ -1015,9 +1158,19 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 			$this->initPlugInAutorisations();
 		}
 		if (!$this->collPlugInAutorisations->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collPlugInAutorisations[]= $l;
-			$l->setPlugIn($this);
+			$this->doAddPlugInAutorisation($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	PlugInAutorisation $plugInAutorisation The plugInAutorisation object to add.
+	 */
+	protected function doAddPlugInAutorisation($plugInAutorisation)
+	{
+		$this->collPlugInAutorisations[]= $plugInAutorisation;
+		$plugInAutorisation->setPlugIn($this);
 	}
 
 	/**
@@ -1089,6 +1242,30 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of PlugInMiseEnOeuvreMenu objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $plugInMiseEnOeuvreMenus A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setPlugInMiseEnOeuvreMenus(PropelCollection $plugInMiseEnOeuvreMenus, PropelPDO $con = null)
+	{
+		$this->plugInMiseEnOeuvreMenusScheduledForDeletion = $this->getPlugInMiseEnOeuvreMenus(new Criteria(), $con)->diff($plugInMiseEnOeuvreMenus);
+
+		foreach ($plugInMiseEnOeuvreMenus as $plugInMiseEnOeuvreMenu) {
+			// Fix issue with collection modified by reference
+			if ($plugInMiseEnOeuvreMenu->isNew()) {
+				$plugInMiseEnOeuvreMenu->setPlugIn($this);
+			}
+			$this->addPlugInMiseEnOeuvreMenu($plugInMiseEnOeuvreMenu);
+		}
+
+		$this->collPlugInMiseEnOeuvreMenus = $plugInMiseEnOeuvreMenus;
+	}
+
+	/**
 	 * Returns the number of related PlugInMiseEnOeuvreMenu objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1121,8 +1298,7 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 	 * through the PlugInMiseEnOeuvreMenu foreign key attribute.
 	 *
 	 * @param      PlugInMiseEnOeuvreMenu $l PlugInMiseEnOeuvreMenu
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     PlugIn The current object (for fluent API support)
 	 */
 	public function addPlugInMiseEnOeuvreMenu(PlugInMiseEnOeuvreMenu $l)
 	{
@@ -1130,9 +1306,19 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 			$this->initPlugInMiseEnOeuvreMenus();
 		}
 		if (!$this->collPlugInMiseEnOeuvreMenus->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collPlugInMiseEnOeuvreMenus[]= $l;
-			$l->setPlugIn($this);
+			$this->doAddPlugInMiseEnOeuvreMenu($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	PlugInMiseEnOeuvreMenu $plugInMiseEnOeuvreMenu The plugInMiseEnOeuvreMenu object to add.
+	 */
+	protected function doAddPlugInMiseEnOeuvreMenu($plugInMiseEnOeuvreMenu)
+	{
+		$this->collPlugInMiseEnOeuvreMenus[]= $plugInMiseEnOeuvreMenu;
+		$plugInMiseEnOeuvreMenu->setPlugIn($this);
 	}
 
 	/**
@@ -1195,25 +1381,6 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(PlugInPeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BasePlugIn

@@ -24,7 +24,7 @@ abstract class BaseAbsenceEleveTypePeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'AbsenceEleveTypeTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 12;
 
@@ -72,7 +72,7 @@ abstract class BaseAbsenceEleveTypePeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-	
+
 	/**
 	 * An identiy map to hold any loaded instances of AbsenceEleveType objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -406,10 +406,10 @@ abstract class BaseAbsenceEleveTypePeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in AbsenceEleveTypeStatutAutorisePeer instance pool, 
+		// Invalidate objects in AbsenceEleveTypeStatutAutorisePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		AbsenceEleveTypeStatutAutorisePeer::clearInstancePool();
-		// Invalidate objects in AbsenceEleveTraitementPeer instance pool, 
+		// Invalidate objects in AbsenceEleveTraitementPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		AbsenceEleveTraitementPeer::clearInstancePool();
 	}
@@ -434,7 +434,7 @@ abstract class BaseAbsenceEleveTypePeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -531,9 +531,9 @@ abstract class BaseAbsenceEleveTypePeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveTypePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -647,9 +647,9 @@ abstract class BaseAbsenceEleveTypePeer {
 		if (!$criteria->hasSelectClause()) {
 			AbsenceEleveTypePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1130,7 +1130,7 @@ abstract class BaseAbsenceEleveTypePeer {
 		$c = new Criteria();
 		$c->addSelectColumn('MAX(' . AbsenceEleveTypePeer::RANK_COL . ')');
 		$stmt = AbsenceEleveTypePeer::doSelectStmt($c, $con);
-		
+	
 		return $stmt->fetchColumn();
 	}
 	
@@ -1150,7 +1150,7 @@ abstract class BaseAbsenceEleveTypePeer {
 	
 		$c = new Criteria;
 		$c->add(AbsenceEleveTypePeer::RANK_COL, $rank);
-		
+	
 		return AbsenceEleveTypePeer::doSelectOne($c, $con);
 	}
 	
@@ -1169,7 +1169,7 @@ abstract class BaseAbsenceEleveTypePeer {
 		if ($con === null) {
 			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME);
 		}
-		
+	
 		$con->beginTransaction();
 		try {
 			$ids = array_keys($order);

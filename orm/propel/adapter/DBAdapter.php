@@ -73,6 +73,17 @@ abstract class DBAdapter
 	}
 
 	/**
+	 * Prepare connection parameters.
+	 *
+	 * @param array	$params
+	 * @return array
+	 */
+	public function prepareParams($settings)
+	{
+		return $settings;
+	}
+
+	/**
 	 * This method is called after a connection was created to run necessary
 	 * post-initialization queries or code.
 	 *
@@ -242,7 +253,9 @@ abstract class DBAdapter
 
 	/**
 	 * Gets the generated ID (either last ID for autoincrement or next sequence ID).
-
+	 * Warning: duplicates logic from DefaultPlatform::getIdentifierPhp().
+	 * Any code modification here must be ported there.
+	 *
 	 * @param     PDO     $con
 	 * @param     string  $name
 	 *
@@ -254,18 +267,21 @@ abstract class DBAdapter
 	}
 
 	/**
-	 * Formats a temporal value brefore binding, given a ColumnMap object
+	 * Formats a temporal value brefore binding, given a ColumnMap object.
 	 *
-	 * @param     mixed      $value  The temporal value
-	 * @param     ColumnMap  $cMap
+	 * @param     mixed    $value  The temporal value
+	 * @param     mixed    $type PropelColumnTypes constant, or ColumnMap object
 	 *
 	 * @return    string  The formatted temporal value
 	 */
-	protected function formatTemporalValue($value, ColumnMap $cMap)
+	public function formatTemporalValue($value, $type)
 	{
 		/** @var $dt PropelDateTime */
 		if ($dt = PropelDateTime::newInstance($value)) {
-			switch($cMap->getType()) {
+			if ($type instanceof ColumnMap) {
+				$type = $type->getType();
+			}
+			switch($type) {
 				case PropelColumnTypes::TIMESTAMP:
 				case PropelColumnTypes::BU_TIMESTAMP:
 					$value = $dt->format($this->getTimestampFormatter());
@@ -422,11 +438,10 @@ abstract class DBAdapter
 						// functions may contain qualifiers so only take the last
 						// word as the table name.
 						// COUNT(DISTINCT books.price)
-						$lastSpace = strpos($tableName, ' ');
+						$tableName = substr($columnName, $parenPos + 1, $dotPos - ($parenPos + 1));
+						$lastSpace = strrpos($tableName, ' ');
 						if ($lastSpace !== false) { // COUNT(DISTINCT books.price)
 							$tableName = substr($tableName, $lastSpace + 1);
-						} else {
-							$tableName = substr($columnName, $parenPos + 1, $dotPos - ($parenPos + 1));
 						}
 					}
 					// is it a table alias?
@@ -450,9 +465,9 @@ abstract class DBAdapter
 
 		// Build the SQL from the arrays we compiled
 		$sql =  "SELECT "
-		. ($queryComment ? '/* ' . $queryComment . ' */ ' : '')
-		. ($selectModifiers ? (implode(' ', $selectModifiers) . ' ') : '')
-		. implode(", ", $selectClause);
+			. ($queryComment ? '/* ' . $queryComment . ' */ ' : '')
+			. ($selectModifiers ? (implode(' ', $selectModifiers) . ' ') : '')
+			. implode(", ", $selectClause);
 
 		return $sql;
 	}
@@ -530,7 +545,8 @@ abstract class DBAdapter
 			}
 			$tableName = $param['table'];
 			if (null === $tableName) {
-				$stmt->bindValue($parameter, $value);
+				$type = isset($param['type']) ? $param['type'] : PDO::PARAM_STR;
+				$stmt->bindValue($parameter, $value, $type);
 				continue;
 			}
 			$cMap = $dbMap->getTable($tableName)->getColumn($param['column']);
@@ -541,6 +557,8 @@ abstract class DBAdapter
 	/**
 	 * Binds a value to a positioned parameted in a statement,
 	 * given a ColumnMap object to infer the binding type.
+	 * Warning: duplicates logic from DefaultPlatform::getColumnBindingPHP().
+	 * Any code modification here must be ported there.
 	 *
 	 * @param     PDOStatement  $stmt  The statement to bind
 	 * @param     string        $parameter  Parameter identifier

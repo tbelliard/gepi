@@ -1,4 +1,4 @@
-GEPI-master- Procédure de mise à jour
+GEPI-developpement -- Procédure de mise à jour
 ==========================================
 
 *************

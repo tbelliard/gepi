@@ -105,7 +105,7 @@
  */
 abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 {
-
+	
 	/**
 	 * Initializes internal state of BaseAbsenceEleveSaisieVersionQuery object.
 	 *
@@ -142,10 +142,14 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 	}
 
 	/**
-	 * Find object by primary key
+	 * Find object by primary key.
+	 * Propel uses the instance pool to skip the database if the object exists.
+	 * Go fast if the query is untouched.
+	 *
 	 * <code>
 	 * $obj = $c->findPk(array(12, 34), $con);
 	 * </code>
+	 *
 	 * @param     array[$id, $version] $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
@@ -153,17 +157,74 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ((null !== ($obj = AbsenceEleveSaisieVersionPeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && $this->getFormatter()->isObjectFormatter()) {
+		if ($key === null) {
+			return null;
+		}
+		if ((null !== ($obj = AbsenceEleveSaisieVersionPeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
 			// the object is alredy in the instance pool
 			return $obj;
-		} else {
-			// the object has not been requested yet, or the formatter is not an object formatter
-			$criteria = $this->isKeepQuery() ? clone $this : $this;
-			$stmt = $criteria
-				->filterByPrimaryKey($key)
-				->getSelectStatement($con);
-			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveSaisieVersionPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
+		if ($this->formatter || $this->modelAlias || $this->with || $this->select
+		 || $this->selectColumns || $this->asColumns || $this->selectModifiers
+		 || $this->map || $this->having || $this->joins) {
+			return $this->findPkComplex($key, $con);
+		} else {
+			return $this->findPkSimple($key, $con);
+		}
+	}
+
+	/**
+	 * Find object by primary key using raw SQL to go fast.
+	 * Bypass doSelect() and the object formatter by using generated code.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    AbsenceEleveSaisieVersion A model object, or null if the key is not found
+	 */
+	protected function findPkSimple($key, $con)
+	{
+		$sql = 'SELECT ID, UTILISATEUR_ID, ELEVE_ID, COMMENTAIRE, DEBUT_ABS, FIN_ABS, ID_EDT_CRENEAU, ID_EDT_EMPLACEMENT_COURS, ID_GROUPE, ID_CLASSE, ID_AID, ID_S_INCIDENTS, ID_LIEU, DELETED_BY, CREATED_AT, UPDATED_AT, DELETED_AT, VERSION, VERSION_CREATED_AT, VERSION_CREATED_BY FROM a_saisies_version WHERE ID = :p0 AND VERSION = :p1';
+		try {
+			$stmt = $con->prepare($sql);
+			$stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
+			$stmt->bindValue(':p1', $key[1], PDO::PARAM_INT);
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), $e);
+		}
+		$obj = null;
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$obj = new AbsenceEleveSaisieVersion();
+			$obj->hydrate($row);
+			AbsenceEleveSaisieVersionPeer::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
+		}
+		$stmt->closeCursor();
+
+		return $obj;
+	}
+
+	/**
+	 * Find object by primary key.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    AbsenceEleveSaisieVersion|array|mixed the result, formatted by the current formatter
+	 */
+	protected function findPkComplex($key, $con)
+	{
+		// As the query uses a PK condition, no limit(1) is necessary.
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
+		$stmt = $criteria
+			->filterByPrimaryKey($key)
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 	}
 
 	/**
@@ -178,10 +239,15 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{
+		if ($con === null) {
+			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		return $this
+		$stmt = $criteria
 			->filterByPrimaryKeys($keys)
-			->find($con);
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->format($stmt);
 	}
 
 	/**
@@ -195,7 +261,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 	{
 		$this->addUsingAlias(AbsenceEleveSaisieVersionPeer::ID, $key[0], Criteria::EQUAL);
 		$this->addUsingAlias(AbsenceEleveSaisieVersionPeer::VERSION, $key[1], Criteria::EQUAL);
-		
+
 		return $this;
 	}
 
@@ -217,13 +283,13 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 			$cton0->addAnd($cton1);
 			$this->addOr($cton0);
 		}
-		
+
 		return $this;
 	}
 
 	/**
 	 * Filter the query on the id column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterById(1234); // WHERE id = 1234
@@ -251,7 +317,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the utilisateur_id column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUtilisateurId('fooValue');   // WHERE utilisateur_id = 'fooValue'
@@ -279,7 +345,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the eleve_id column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEleveId(1234); // WHERE eleve_id = 1234
@@ -319,7 +385,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the commentaire column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCommentaire('fooValue');   // WHERE commentaire = 'fooValue'
@@ -347,7 +413,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the debut_abs column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByDebutAbs('2011-03-14'); // WHERE debut_abs = '2011-03-14'
@@ -389,7 +455,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the fin_abs column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByFinAbs('2011-03-14'); // WHERE fin_abs = '2011-03-14'
@@ -431,7 +497,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id_edt_creneau column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIdEdtCreneau(1234); // WHERE id_edt_creneau = 1234
@@ -471,7 +537,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id_edt_emplacement_cours column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIdEdtEmplacementCours(1234); // WHERE id_edt_emplacement_cours = 1234
@@ -511,7 +577,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id_groupe column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIdGroupe(1234); // WHERE id_groupe = 1234
@@ -551,7 +617,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id_classe column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIdClasse(1234); // WHERE id_classe = 1234
@@ -591,7 +657,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id_aid column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIdAid(1234); // WHERE id_aid = 1234
@@ -631,7 +697,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id_s_incidents column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIdSIncidents(1234); // WHERE id_s_incidents = 1234
@@ -671,7 +737,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id_lieu column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIdLieu(1234); // WHERE id_lieu = 1234
@@ -711,7 +777,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the deleted_by column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByDeletedBy('fooValue');   // WHERE deleted_by = 'fooValue'
@@ -739,7 +805,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the created_at column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
@@ -781,7 +847,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the updated_at column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
@@ -823,7 +889,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the deleted_at column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByDeletedAt('2011-03-14'); // WHERE deleted_at = '2011-03-14'
@@ -865,7 +931,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the version column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByVersion(1234); // WHERE version = 1234
@@ -891,7 +957,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the version_created_at column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByVersionCreatedAt('2011-03-14'); // WHERE version_created_at = '2011-03-14'
@@ -933,7 +999,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the version_created_by column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByVersionCreatedBy('fooValue');   // WHERE version_created_by = 'fooValue'
@@ -985,7 +1051,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the AbsenceEleveSaisie relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -995,7 +1061,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveSaisie');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1003,7 +1069,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1011,7 +1077,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'AbsenceEleveSaisie');
 		}
-		
+
 		return $this;
 	}
 
@@ -1019,7 +1085,7 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 	 * Use the AbsenceEleveSaisie relation AbsenceEleveSaisie object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1046,8 +1112,8 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 			$this->addCond('pruneCond0', $this->getAliasedColName(AbsenceEleveSaisieVersionPeer::ID), $absenceEleveSaisieVersion->getId(), Criteria::NOT_EQUAL);
 			$this->addCond('pruneCond1', $this->getAliasedColName(AbsenceEleveSaisieVersionPeer::VERSION), $absenceEleveSaisieVersion->getVersion(), Criteria::NOT_EQUAL);
 			$this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
-	  }
-	  
+		}
+
 		return $this;
 	}
 

@@ -25,6 +25,12 @@ abstract class BaseArchiveEcts extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -584,18 +590,18 @@ abstract class BaseArchiveEcts extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = ArchiveEctsQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				ArchiveEctsQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -647,7 +653,7 @@ abstract class BaseArchiveEcts extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -682,27 +688,15 @@ abstract class BaseArchiveEcts extends BaseObject  implements Persistent
 				$this->setEleve($this->aEleve);
 			}
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = ArchiveEctsPeer::ID;
-			}
-
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(ArchiveEctsPeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.ArchiveEctsPeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows += ArchiveEctsPeer::doUpdate($this, $con);
+					$this->doUpdate($con);
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
 			$this->alreadyInSave = false;
@@ -710,6 +704,134 @@ abstract class BaseArchiveEcts extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = ArchiveEctsPeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . ArchiveEctsPeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(ArchiveEctsPeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = 'ID';
+		}
+		if ($this->isColumnModified(ArchiveEctsPeer::ANNEE)) {
+			$modifiedColumns[':p' . $index++]  = 'ANNEE';
+		}
+		if ($this->isColumnModified(ArchiveEctsPeer::INE)) {
+			$modifiedColumns[':p' . $index++]  = 'INE';
+		}
+		if ($this->isColumnModified(ArchiveEctsPeer::CLASSE)) {
+			$modifiedColumns[':p' . $index++]  = 'CLASSE';
+		}
+		if ($this->isColumnModified(ArchiveEctsPeer::NUM_PERIODE)) {
+			$modifiedColumns[':p' . $index++]  = 'NUM_PERIODE';
+		}
+		if ($this->isColumnModified(ArchiveEctsPeer::NOM_PERIODE)) {
+			$modifiedColumns[':p' . $index++]  = 'NOM_PERIODE';
+		}
+		if ($this->isColumnModified(ArchiveEctsPeer::SPECIAL)) {
+			$modifiedColumns[':p' . $index++]  = 'SPECIAL';
+		}
+		if ($this->isColumnModified(ArchiveEctsPeer::MATIERE)) {
+			$modifiedColumns[':p' . $index++]  = 'MATIERE';
+		}
+		if ($this->isColumnModified(ArchiveEctsPeer::PROFS)) {
+			$modifiedColumns[':p' . $index++]  = 'PROFS';
+		}
+		if ($this->isColumnModified(ArchiveEctsPeer::VALEUR)) {
+			$modifiedColumns[':p' . $index++]  = 'VALEUR';
+		}
+		if ($this->isColumnModified(ArchiveEctsPeer::MENTION)) {
+			$modifiedColumns[':p' . $index++]  = 'MENTION';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO archivage_ects (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case 'ID':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case 'ANNEE':
+						$stmt->bindValue($identifier, $this->annee, PDO::PARAM_STR);
+						break;
+					case 'INE':
+						$stmt->bindValue($identifier, $this->ine, PDO::PARAM_STR);
+						break;
+					case 'CLASSE':
+						$stmt->bindValue($identifier, $this->classe, PDO::PARAM_STR);
+						break;
+					case 'NUM_PERIODE':
+						$stmt->bindValue($identifier, $this->num_periode, PDO::PARAM_INT);
+						break;
+					case 'NOM_PERIODE':
+						$stmt->bindValue($identifier, $this->nom_periode, PDO::PARAM_STR);
+						break;
+					case 'SPECIAL':
+						$stmt->bindValue($identifier, $this->special, PDO::PARAM_STR);
+						break;
+					case 'MATIERE':
+						$stmt->bindValue($identifier, $this->matiere, PDO::PARAM_STR);
+						break;
+					case 'PROFS':
+						$stmt->bindValue($identifier, $this->profs, PDO::PARAM_STR);
+						break;
+					case 'VALEUR':
+						$stmt->bindValue($identifier, $this->valeur, PDO::PARAM_STR);
+						break;
+					case 'MENTION':
+						$stmt->bindValue($identifier, $this->mention, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1105,6 +1227,18 @@ abstract class BaseArchiveEcts extends BaseObject  implements Persistent
 		$copyObj->setProfs($this->getProfs());
 		$copyObj->setValeur($this->getValeur());
 		$copyObj->setMention($this->getMention());
+
+		if ($deepCopy && !$this->startCopy) {
+			// important: temporarily setNew(false) because this affects the behavior of
+			// the getter/setter methods for fkey referrer objects.
+			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
+
+			//unflag object copy
+			$this->startCopy = false;
+		} // if ($deepCopy)
+
 		if ($makeNew) {
 			$copyObj->setNew(true);
 			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1249,25 +1383,6 @@ abstract class BaseArchiveEcts extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(ArchiveEctsPeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseArchiveEcts

@@ -856,7 +856,7 @@ function updateWindows(message){
 			}
 		});
 
-	if (message != '') {
+	if (message != 'undefined' && message != '') {
 	    alert(message);
 	}
 }

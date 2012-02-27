@@ -1326,7 +1326,7 @@ function tentative_intrusion($_niveau, $_description) {
 
 		$subject = $gepiPrefixeSujetMail."GEPI : Alerte sécurité -- Tentative d'intrusion";
 		$subject = "=?UTF-8?B?".base64_encode($subject)."?=\r\n";
-
+	
 		$headers = "X-Mailer: PHP/" . phpversion()."\r\n";
 		$headers .= "MIME-Version: 1.0\r\n";
 		$headers .= "Content-type: text/plain; charset=UTF-8\r\n";
@@ -2260,8 +2260,6 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 	global $class_special_infobulle;
 
 	$style_box="color: #000000; border: 1px solid #000000; padding: 0px; position: absolute; z-index:$zindex_infobulle;";
-	//$style_box="color: #000000; border: 1px solid #000000; padding: 0px; position: absolute; z-index:$zindex_infobulle; -moz-box-shadow: 8px 8px 12px #aaa;";
-	//$style_box="color: #000000; border: 1px solid #000000; padding: 0px; position: absolute; z-index:$zindex_infobulle; -moz-box-shadow: 8px 8px 12px #FAB4B4;";
 	
 	$style_bar="color: #ffffff; cursor: move; font-weight: bold; padding: 0px;";
 	$style_close="color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;";
