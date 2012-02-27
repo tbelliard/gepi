@@ -1,15 +1,17 @@
 <?php
 /*
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 */
 
 //function bulletin_classe_bis($tab_moy,$total,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$test_coef,$affiche_categories) {
-function bulletin_classe($tab_moy,$total,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$test_coef,$affiche_categories) {
+function bulletin_classe($tab_moy,$total,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$test_coef,$affiche_categories,$couleur_lignes=NULL) {
 global $nb_notes,$nombre_eleves,$type_etablissement,$type_etablissement2;
 
 //global $avec_rapport_effectif;
 $avec_rapport_effectif="y";
+
+$alt=1;
 
 // données requises :
 //- $total : nombre total d'élèves
@@ -403,7 +405,15 @@ for($j=0;$j<$nombre_groupes;$j++) {
 				echo "</tr>\n";
 			}
 		}
-		echo "<tr>\n";
+		//echo "<tr>\n";
+		if($couleur_lignes=='y') {
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt'>\n";
+			$alt2=$alt;
+		}
+		else {
+			echo "<tr>\n";
+		}
 		echo "<td ";
 		if ($nb_periodes > 1) echo " rowspan= ".$nb_periodes;
 		//echo" width=\"$larg_col1\" class='bull_simpl'><b>$current_matiere_nom_complet</b>";
@@ -452,7 +462,16 @@ for($j=0;$j<$nombre_groupes;$j++) {
 		$nb=$periode1;
 		$print_tr = 'no';
 		while ($nb < $periode2+1) {
-			if ($print_tr == 'yes') echo "<tr style='border-width: 5px;'>\n";
+			if ($print_tr == 'yes') {
+				//echo "<tr style='border-width: 5px;'>\n";
+				if($couleur_lignes=='y') {
+					$alt2=$alt2*(-1);
+					echo "<tr class='lig$alt2' style='border-width: 5px;'>\n";
+				}
+				else {
+					echo "<tr>\n";
+				}
+			}
 
 			//=========================
 			// MODIF: boireaus 20080316
