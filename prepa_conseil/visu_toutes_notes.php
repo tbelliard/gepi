@@ -2307,10 +2307,18 @@ if((isset($avec_moy_gen_periodes_precedentes))&&($avec_moy_gen_periodes_preceden
 echo "'>Export CSV</a>
 </div>\n";
 
-// Pour une marge: Editer le style_screen_ajout.css et y mettre
-// #div_prepa_conseil_vtn {margin:20px;}
-// par exemple...
-echo "<div id='div_prepa_conseil_vtn'>\n";
+// Pour ajouter une marge:
+echo "<div id='div_prepa_conseil_vtn'";
+if(isset($_POST['vtn_pref_marges'])) {
+	$vtn_pref_marges=preg_replace('/[^0-9]/','',$_POST['vtn_pref_marges']);
+	if($vtn_pref_marges!='') {
+		echo " style='margin:".$vtn_pref_marges."px;'";
+		savePref($_SESSION['login'],'vtn_pref_marges',$vtn_pref_marges);
+	}
+	// Pour permettre de ne pas inserer de margin et memoriser ce choix, on accepte le champ vide:
+	$_SESSION['vtn_pref_marges']=$vtn_pref_marges;
+}
+echo ">\n";
 
 // Affichage de la légende de la colorisation
 if($vtn_coloriser_resultats=='y') {
