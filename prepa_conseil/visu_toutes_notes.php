@@ -2307,6 +2307,11 @@ if((isset($avec_moy_gen_periodes_precedentes))&&($avec_moy_gen_periodes_preceden
 echo "'>Export CSV</a>
 </div>\n";
 
+// Pour une marge: Editer le style_screen_ajout.css et y mettre
+// #div_prepa_conseil_vtn {margin:20px;}
+// par exemple...
+echo "<div id='div_prepa_conseil_vtn'>\n";
+
 // Affichage de la légende de la colorisation
 if($vtn_coloriser_resultats=='y') {
 	echo "<div class='noprint' style='float: right; width: 10em; text-align: center; padding-bottom:3px;'>\n";
@@ -2334,7 +2339,7 @@ if($vtn_coloriser_resultats=='y') {
 	$legende_colorisation.="</table>\n";
 
 	echo $legende_colorisation;
-echo "</div>\n";
+	echo "</div>\n";
 }
 
 if ($referent == "une_periode") {
@@ -2376,7 +2381,7 @@ if($vtn_coloriser_resultats=='y') {
 }
 echo "<p><br /></p>\n";
 
-
+echo "</div>\n"; // Fin du div_prepa_conseil_vtn
 
 //=======================================================
 // MODIF: boireaus 20080424
