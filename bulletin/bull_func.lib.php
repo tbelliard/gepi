@@ -4998,10 +4998,14 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				}
 				*/
 				$info_absence = $info_absence." du suivi : <i>".affiche_utilisateur($tab_bull['eleve'][$i]['cperesp_login'],$tab_bull['id_classe'])."</i>)";
-				//$pdf->MultiCellTag(200, 5, $info_absence, '', 'J', '');
-				//$pdf->MultiCellTag(200, 5, ($info_absence), '', 'J', '');
 				//$pdf->MultiCellTag($tab_modele_pdf["largeur_cadre_absences"][$classe_id], 5, ($info_absence), '', 'J', '');
-				$pdf->ext_MultiCellTag($tab_modele_pdf["largeur_cadre_absences"][$classe_id], 5, ($info_absence), '', 'J', '');
+				//$pdf->ext_MultiCellTag($tab_modele_pdf["largeur_cadre_absences"][$classe_id], 5, $info_absence, '', 'J', '');
+
+				$taille_max_police=8;
+				$taille_min_police=ceil($taille_max_police/3);
+				$largeur_dispo=$tab_modele_pdf["largeur_cadre_absences"][$classe_id];
+				$h_cell=5;
+				cell_ajustee($info_absence,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
 
 				//=========================
 				// MODIF: boireaus 20081220
@@ -5038,7 +5042,7 @@ $hauteur_pris_app_abs=0;
 					$pdf->SetFont('DejaVu','',8);
 					//$pdf->MultiCellTag(200, 3, ($info_absence_appreciation), '', 'J', '');
 					//$pdf->MultiCellTag($tab_modele_pdf["largeur_cadre_absences"][$classe_id], 3, ($info_absence_appreciation), '', 'J', '');
-					$pdf->ext_MultiCellTag($tab_modele_pdf["largeur_cadre_absences"][$classe_id], 3, ($info_absence_appreciation), '', 'J', '');
+					//$pdf->ext_MultiCellTag($tab_modele_pdf["largeur_cadre_absences"][$classe_id], 3, ($info_absence_appreciation), '', 'J', '');
 					$val = $pdf->GetStringWidth($info_absence_appreciation);
 					// nombre de lignes que prend la remarque cpe
 					//Arrondi à l'entier supérieur : ceil()
@@ -5046,7 +5050,13 @@ $hauteur_pris_app_abs=0;
 					$nb_ligne = ceil($val / 200);
 					$hauteur_pris = $nb_ligne * 3;
 
-$hauteur_pris_app_abs=$hauteur_pris;
+					$taille_max_police=8;
+					$taille_min_police=ceil($taille_max_police/3);
+					$largeur_dispo=$tab_modele_pdf["largeur_cadre_absences"][$classe_id];
+					$h_cell=$hauteur_pris;
+					cell_ajustee($info_absence_appreciation,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+
+					$hauteur_pris_app_abs=$hauteur_pris;
 
 					//$tab_modele_pdf["Y_avis_cons"][$classe_id] = $tab_modele_pdf["Y_avis_cons"][$classe_id] + $hauteur_pris;
 					$Y_avis_cons_init=$Y_avis_cons_init+$hauteur_pris;
