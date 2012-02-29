@@ -859,8 +859,6 @@ Patientez pendant l'extraction des données... merci.
 
 
 
-
-
 		// Bibliothèque de fonctions:
 		include("../eleves/visu_ele_func.lib.php");
 
@@ -1001,28 +999,19 @@ Patientez pendant l'extraction des données... merci.
 			echo "</div>\n";
 		}
 
-
-		$gepiVersion=getSettingValue('version');
-		$tmp_tab_gepiVersion=explode(".",$gepiVersion);
-		if(($gepiVersion=='trunk')||
-			($tmp_tab_gepiVersion[0]>1)||
-			(($tmp_tab_gepiVersion[0]==1)&&($tmp_tab_gepiVersion[1]>5))||
-			(($tmp_tab_gepiVersion[0]==1)&&($tmp_tab_gepiVersion[1]==5)&&($tmp_tab_gepiVersion[2]>2))||
-			(getSettingValue('discipline_experimental')=='y')) {
-			// Onglet Discipline
-			if($acces_discipline=="y") {
-				echo "<div id='t_discipline' class='t_onglet' style='";
-				if($onglet=='discipline') {
-					echo "border-bottom-color: ".$tab_couleur['discipline']."; ";
-				}
-				else {
-					echo "border-bottom-color: black; ";
-				}
-				echo "background-color: ".$tab_couleur['discipline']."; ";
-				echo "'>";
-				echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=discipline' onclick=\"affiche_onglet('discipline');return false;\">Discipline</a>";
-				echo "</div>\n";
+		// Onglet Discipline
+		if($acces_discipline=="y") {
+			echo "<div id='t_discipline' class='t_onglet' style='";
+			if($onglet=='discipline') {
+				echo "border-bottom-color: ".$tab_couleur['discipline']."; ";
 			}
+			else {
+				echo "border-bottom-color: black; ";
+			}
+			echo "background-color: ".$tab_couleur['discipline']."; ";
+			echo "'>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=discipline' onclick=\"affiche_onglet('discipline');return false;\">Discipline</a>";
+			echo "</div>\n";
 		}
 
 		// Onglet Années antérieures
@@ -2118,59 +2107,49 @@ Patientez pendant l'extraction des données... merci.
 
 		//===================================================
 
-		$gepiVersion=getSettingValue('version');
-		$tmp_tab_gepiVersion=explode(".",$gepiVersion);
-		if(($gepiVersion=='trunk')||
-			($tmp_tab_gepiVersion[0]>1)||
-			(($tmp_tab_gepiVersion[0]==1)&&($tmp_tab_gepiVersion[1]>5))||
-			(($tmp_tab_gepiVersion[0]==1)&&($tmp_tab_gepiVersion[1]==5)&&($tmp_tab_gepiVersion[2]>2))||
-			(getSettingValue('discipline_experimental')=='y')) {
-			//========================
-			// Onglet DISCIPLINE
-			//========================
+		//========================
+		// Onglet DISCIPLINE
+		//========================
+		if($acces_discipline=="y") {
+			echo "<div id='discipline' class='onglet' style='";
+			if($onglet!="discipline") {echo " display:none;";}
+			echo "background-color: ".$tab_couleur['discipline']."; ";
+			echo "'>";
+			echo "<h2>Incidents \"concernant\" l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
-			//echo "\$acces_discipline=$acces_discipline<br />";
-			//echo "\$onglet=$onglet<br />";
-
-			if($acces_discipline=="y") {
-				echo "<div id='discipline' class='onglet' style='";
-				if($onglet!="discipline") {echo " display:none;";}
-				echo "background-color: ".$tab_couleur['discipline']."; ";
-				echo "'>";
-				echo "<h2>Incidents \"concernant\" l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
-
-				//=======================
-				//Configuration du calendrier
-				include("../lib/calendrier/calendrier.class.php");
-				$cal1 = new Calendrier("form_date_disc", "date_debut_disc");
-				$cal2 = new Calendrier("form_date_disc", "date_fin_disc");
-				//=======================
+			//=======================
+			//Configuration du calendrier
+			include("../lib/calendrier/calendrier.class.php");
+			$cal1 = new Calendrier("form_date_disc", "date_debut_disc");
+			$cal2 = new Calendrier("form_date_disc", "date_fin_disc");
+			//=======================
 
 
-				echo "<form action='".$_SERVER['PHP_SELF']."' name='form_date_disc' method='post' />\n";
-				echo "<p>Extraire les incidents entre le ";
-				//echo "<input type='text' name='date_debut_disc' value='' />\n";
-				echo "<input type='text' name = 'date_debut_disc' id= 'date_debut_disc' size='10' value = \"".$date_debut_disc."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
-				echo "<a href=\"#\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+			echo "<form action='".$_SERVER['PHP_SELF']."' name='form_date_disc' method='post' />\n";
+			echo "<p>Extraire les incidents entre le ";
+			//echo "<input type='text' name='date_debut_disc' value='' />\n";
+			echo "<input type='text' name = 'date_debut_disc' id= 'date_debut_disc' size='10' value = \"".$date_debut_disc."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
+			echo "<a href=\"#\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 
-				echo "et le ";
-				//echo "<input type='text' name='date_fin_disc' value='' />\n";
-				echo "<input type='text' name = 'date_fin_disc' id= 'date_fin_disc' size='10' value = \"".$date_fin_disc."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
-				echo "<a href=\"#\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
+			echo "et le ";
+			//echo "<input type='text' name='date_fin_disc' value='' />\n";
+			echo "<input type='text' name = 'date_fin_disc' id= 'date_fin_disc' size='10' value = \"".$date_fin_disc."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
+			echo "<a href=\"#\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 
-				echo "<input type='submit' name='restreindre_intervalle_dates' value='Valider' />\n";
+			echo "<input type='submit' name='restreindre_intervalle_dates' value='Valider' />\n";
 
-				echo "<input type='hidden' name='onglet' value='discipline' />\n";
-				echo "<input type='hidden' name='ele_login' value=\"$ele_login\" />\n";
-				//echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
+			echo "<input type='hidden' name='onglet' value='discipline' />\n";
+			echo "<input type='hidden' name='ele_login' value=\"$ele_login\" />\n";
+			//echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 
-				echo "</p>\n";
-				echo "</form>\n";
+			echo "</p>\n";
+			echo "</form>\n";
 
+			if(isset($tab_ele['tab_mod_discipline'])) {
 				echo $tab_ele['tab_mod_discipline'];
-
-				echo "</div>\n";
 			}
+
+			echo "</div>\n";
 		}
 		//===================================================
 
@@ -2333,12 +2312,11 @@ Patientez pendant l'extraction des données... merci.
 		$chaine_tab_onglets_rel.=");";
 
 
-
 		echo "<script type='text/javascript'>
 	function affiche_onglet(id) {
 		$chaine_tab_onglets
 
-		for(i=0;i<tab_onglets.length;i++) {
+		for(i=0;i<=tab_onglets.length;i++) {
 			if(document.getElementById(tab_onglets[i])) {
 				document.getElementById(tab_onglets[i]).style.display='none';
 			}

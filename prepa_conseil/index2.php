@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -193,24 +193,26 @@ if (isset($id_classe)) {
 		echo "<table border='0' summary=\"Paramètres\">\n";
 		echo "<tr>\n";
 		echo "<td>Largeur en pixel du tableau : </td>\n";
-		echo "<td><input type=text name=larg_tab size=3 ";
+		echo "<td><input type='text' name='larg_tab' id='larg_tab' size='3' ";
 		if(isset($_SESSION['vtn_pref_larg_tab'])) {
 			echo "value=\"".$_SESSION['vtn_pref_larg_tab']."\"";
 		}
 		else {
 			echo "value=\"680\"";
 		}
+		echo "onkeydown=\"clavier_2(this.id,event,0,2000);\" autocomplete=\"off\" ";
 		echo " /></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td>Bords en pixel du tableau : </td>\n";
-		echo "<td><input type=text name=bord size=3 ";
+		echo "<td><input type='text' name='bord' id='bord' size='3' ";
 		if(isset($_SESSION['vtn_pref_bord'])) {
 			echo "value=\"".$_SESSION['vtn_pref_bord']."\"";
 		}
 		else {
 			echo "value=\"1\"";
 		}
+		echo "onkeydown=\"clavier_2(this.id,event,0,10);\" autocomplete=\"off\" ";
 		echo " /></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
@@ -229,6 +231,41 @@ if (isset($id_classe)) {
 			echo "checked";
 		}
 		echo " /></td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td>\n";
+		echo "<label for='vtn_pref_marges' style='cursor:pointer;'>\n";
+		echo "Marge ajoutée : \n";
+		echo "</label>\n";
+		echo "</td>\n";
+		$vtn_pref_marges=getPref($_SESSION['login'],'vtn_pref_marges','');
+		echo "<td><input type=\"text\" size=\"2\" name=\"vtn_pref_marges\" id=\"vtn_pref_marges\" ";
+		echo "value='";
+		if(isset($_SESSION['vtn_pref_marges'])) {
+			$vtn_pref_marges=preg_replace('/[^0-9]/','',$_SESSION['vtn_pref_marges']);
+			// Pour permettre de ne pas inserer de margin et memoriser ce choix, on accepte le champ vide:
+			//if($vtn_pref_marges!='') {
+				echo $vtn_pref_marges;
+			/*
+			}
+			else {
+				echo "0";
+			}
+			*/
+		}
+		elseif($vtn_pref_marges!='') {
+			echo $vtn_pref_marges;
+		}
+		// On n'impose pas de forcer le margin
+		/*
+		else {
+			echo "0";
+		}
+		*/
+		echo "' ";
+		echo "onkeydown=\"clavier_2(this.id,event,0,100);\" autocomplete=\"off\" ";
+		echo " />px</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 

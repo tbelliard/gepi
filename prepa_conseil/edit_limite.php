@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -130,7 +130,7 @@ $choix_edit == "2") {
 
 	$test = mysql_num_rows(mysql_query("SELECT jeg.* FROM j_eleves_groupes jeg, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jeg.id_groupe = jgp.id_groupe AND jeg.login = '".$login_eleve."')"));
 	if ($test == "0") {
-		tentative_intrusion("2", "Tentative d'accès par un prof à un bulletin simplifié d'un élève qu'il n'a pas en cours, sans en avoir l'autorisation.");
+		tentative_intrusion("2", "Tentative d'accès par un prof à un bulletin simplifié d'un élève ($login_eleve) qu'il n'a pas en cours, sans en avoir l'autorisation.");
 		echo "Vous ne pouvez pas accéder à cet élève !";
 		require ("../lib/footer.inc.php");
 		die();
@@ -266,8 +266,29 @@ $_SESSION['periode2']=$periode2;
 if(isset($login_prof)) {$_SESSION['login_prof']=$login_prof;}
 //=========================
 
+// Pour ajouter une marge:
+echo "<div id='div_prepa_conseil_bull_simp'";
+if(isset($_POST['bull_simp_pref_marges'])) {
+	$bull_simp_pref_marges=preg_replace('/[^0-9]/','',$_POST['bull_simp_pref_marges']);
+	if($bull_simp_pref_marges!='') {
+		echo " style='margin:".$bull_simp_pref_marges."px;'";
+		savePref($_SESSION['login'],'bull_simp_pref_marges',$bull_simp_pref_marges);
+	}
+	// Pour permettre de ne pas inserer de margin et memoriser ce choix, on accepte le champ vide:
+	$_SESSION['bull_simp_pref_marges']=$bull_simp_pref_marges;
+}
+echo ">\n";
+
+$couleur_alterne=isset($_POST['couleur_alterne']) ? $_POST['couleur_alterne'] : "n";
+if(($couleur_alterne!='y')&&($couleur_alterne!='n')) {
+	$couleur_alterne="n";
+}
+else {
+	savePref($_SESSION['login'],'bull_simp_pref_couleur_alterne',$couleur_alterne);
+}
+
 if ($choix_edit == '2') {
-    bulletin($tab_moy,$login_eleve,1,1,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories);
+	bulletin($tab_moy,$login_eleve,1,1,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories,$couleur_alterne);
 }
 
 if ($choix_edit != '2') {
@@ -335,7 +356,7 @@ if ($choix_edit != '2') {
 	//=========================
 	// AJOUT: boireaus 20080209
 	// Affichage des appréciations saisies pour la classe
-	bulletin_classe($tab_moy,$nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$nb_coef_superieurs_a_zero,$affiche_categories);
+	bulletin_classe($tab_moy,$nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$nb_coef_superieurs_a_zero,$affiche_categories,$couleur_alterne);
 	if ($choix_edit == '4') {
 		require("../lib/footer.inc.php");
 		die();
@@ -351,12 +372,14 @@ if ($choix_edit != '2') {
         //bulletin($current_eleve_login,$k,$nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories);
         //bulletin($current_eleve_login,$k,$nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories);
         //bulletin_bis($tab_moy,$current_eleve_login,$k,$nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories);
-        bulletin($tab_moy,$current_eleve_login,$k,$nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories);
+        bulletin($tab_moy,$current_eleve_login,$k,$nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories,$couleur_alterne);
         if ($i != $nombre_eleves-1) {echo "<p class=saut>&nbsp;</p>";}
         $i++;
     }
 
 }
+
+echo "</div>\n"; // Fin du div_prepa_conseil_bull_simp
 
 echo "<div class='noprint'>\n";
 //===========================================================

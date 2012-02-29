@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -820,14 +820,16 @@ echo add_token_field();
 			$session_gc_maxlifetime_minutes=$session_gc_maxlifetime/60;
 
 			if((getSettingValue("sessionMaxLength")!="")&&($session_gc_maxlifetime_minutes<getSettingValue("sessionMaxLength"))) {
-				echo "<span style='color:red; font-weight:bold;'>".$session_gc_maxlifetime." secondes</span>, soit un maximum de <span style='color:red; font-weight:bold;'>".$session_gc_maxlifetime_minutes."minutes</span> pour la session (<a href='../mod_serveur/test_serveur.php#reglages_php'>*</a>).";
+				echo "<span style='color:red;'>".$session_gc_maxlifetime." secondes</span>, soit un maximum de <span style='color:red; font-weight:bold;'>".$session_gc_maxlifetime_minutes."minutes</span> pour la session (<a href='../mod_serveur/test_serveur.php#reglages_php'>*</a>).";
 			}
 			else {
 				echo $session_gc_maxlifetime." secondes, soit un maximum de ".$session_gc_maxlifetime_minutes."minutes pour la session.";
 			}
 		?></span>
 		</td>
-		<td><input type="text" name="sessionMaxLength" id="sessionMaxLength" size="20" value="<?php echo(getSettingValue("sessionMaxLength")); ?>" onchange='changement()' onkeydown="clavier_2(this.id,event,1,600)" />
+		<td><input type="text" name="sessionMaxLength" id="sessionMaxLength" size="6" value="<?php echo(getSettingValue("sessionMaxLength")); ?>" onchange='changement()' onkeydown="clavier_2(this.id,event,1,600);min_to_jourheureminsec('sessionMaxLength','sessionMaxLength_en_minutes')" />&nbsp;min<span id='sessionMaxLength_en_minutes'<?php
+		if(getSettingValue("sessionMaxLength")>$session_gc_maxlifetime_minutes) {echo " style='color:red; text-decoration: blink;'";}
+		?>></span>
 		</td>
 	</tr>
 	<tr>
@@ -1278,6 +1280,105 @@ responsables&nbsp;:<br />
 	echo "<script type='text/javascript'>
 	document.getElementById('button_form_1').style.display='';\n";
 	echo insere_js_check_format_login('test_format_login', 'n');
+
+
+	echo "
+	function min_to_jourheureminsec(id_duree_en_min,id_dest) {
+		h_min='';
+
+		if((document.getElementById(id_duree_en_min))&&(document.getElementById(id_dest))) {
+			m=document.getElementById(id_duree_en_min).value;
+			if(isNaN(m)==true) {
+				// Ce n'est pas un nombre, on ne convertit pas
+				h_min=' Erreur !';
+			}
+			else {
+				s=m*60;
+				h_min=sec_to_jourheureminsec_construction_chaine(s);
+			}
+			document.getElementById(id_dest).innerHTML=h_min;
+		}
+	}
+
+	function sec_to_jourheureminsec(id_duree_en_sec,id_dest) {
+		h_min='';
+
+		if((document.getElementById(id_duree_en_sec))&&(document.getElementById(id_dest))) {
+			s=document.getElementById(id_duree_en_sec).value;
+			if(isNaN(s)==true) {
+				// Ce n'est pas un nombre, on ne convertit pas
+				h_min=' Erreur !';
+			}
+			else {
+				h_min=sec_to_jourheureminsec_construction_chaine(s);
+			}
+			document.getElementById(id_dest).innerHTML=h_min;
+		}
+	}
+	
+	function sec_to_jourheureminsec_construction_chaine(s) {
+		j=0;
+		if(s>=3600*24) {
+			j=Math.floor(s/(3600*24));
+			s=s-j*3600*24;
+		}
+
+		h=0;
+		if(s>=3600) {
+			h=Math.floor(s/3600);
+			s=s-h*3600;
+		}
+
+		m=0;
+		if(s>=60) {
+			m=Math.floor(s/60);
+			s=s-m*60;
+		}
+
+		h_min=' soit ';
+		if(j>0) {
+			h_min=h_min+j+'&nbsp;j';
+
+			if((h>0)||(m>0)||(s>0)) {
+				if(m<10) {
+					m='0'+m;
+				}
+				if(s<10) {
+					s='0'+s;
+				}
+				h_min=h_min+' '+h+'&nbsp;h '+m+'&nbsp;m '+s+'&nbsp;s';
+			}
+		}
+		else {
+			if(h>0) {
+				h_min=h_min+h+'&nbsp;h';
+
+				if((m>0)||(sec>0)) {
+					if(m<10) {
+						m='0'+m;
+					}
+					if(s<10) {
+						s='0'+s;
+					}
+					h_min=h_min+' '+m+'&nbsp;m '+s+'&nbsp;s';
+				}
+			}
+			else {
+				if(m<10) {
+					m='0'+m;
+				}
+				if(s<10) {
+					s='0'+s;
+				}
+				h_min=h_min+m+'&nbsp;m '+s+'&nbsp;s';
+			}
+		}
+
+		return h_min;
+	}
+
+	min_to_jourheureminsec('sessionMaxLength','sessionMaxLength_en_minutes');
+	";
 
 	echo "
 	function test_puis_submit() {

@@ -476,11 +476,18 @@
 <?php
 		foreach ($afficheAccueil->nom_connecte as $newentree) {
 ?>
-						<tr  class='<?php echo $newentree['style']; ?>'>
+						<tr class='<?php echo $newentree['style']; ?>'>
 							<td>
-                               <a href='mailto:<?php echo $newentree['courriel']; ?>' title='Envoyer un mail'>
-									<?php echo $newentree['texte']; ?>
-								</a>
+								<?php
+									if(($newentree['courriel']!="")&&(check_mail($newentree['courriel']))) {
+										echo "<a href='mailto:".$newentree['courriel']."' title='Envoyer un mail'>";
+										echo $newentree['texte'];
+										echo "</a>";
+									}
+									else {
+										echo $newentree['texte'];
+									}
+								?>
 							</td>
 							<td>
 								<?php
