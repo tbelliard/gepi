@@ -5243,7 +5243,14 @@ $hauteur_pris_app_abs=0;
 				//$avec_coches_mentions="y";
 				//if($avec_coches_mentions=="y") {
 				if($tab_modele_pdf["affich_coches_mentions"][$classe_id]!="n") {
-					$marge_droite_avis_cons=40;
+					//$marge_droite_avis_cons=40;
+
+					if(count($tableau_des_mentions_sur_le_bulletin)>0) {
+						$marge_droite_avis_cons=40;
+					}
+					else {
+						$marge_droite_avis_cons=5;
+					}
 				}
 				else {
 					$marge_droite_avis_cons=5;
