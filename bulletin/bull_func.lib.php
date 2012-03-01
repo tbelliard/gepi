@@ -1117,7 +1117,73 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 	// *****
 
 	$affiche_numero_responsable=$tab_bull['affiche_numero_responsable'];
-	
+
+	//=====================================
+	/*
+	// NE PAS SUPPRIMER CETTE SECTION... c'est pour le debug
+
+	// Règles en rouge:
+	// Selon ce que l'on souhaite débugger, décommenter une des deux règles
+	$pdf->SetDrawColor(255,0,0);
+	//=====================================
+	// Règle 1: horizontale
+	$tmp_marge_gauche=5;
+	$tmp_marge_haut=5;
+	$x=$tmp_marge_gauche;
+	$y=$tmp_marge_haut;
+
+	$pdf->SetXY($x,$y);
+	$pdf->Cell(200,1,'','T',0,'C',0);
+
+	for($loop=0;$loop<19;$loop++) {
+		$x=$tmp_marge_gauche+$loop*10;
+		$pdf->SetXY($x,$y);
+		$pdf->Cell(5,20,''.$loop,'',0,'L',0);
+		$pdf->SetXY($x,$y);
+		$pdf->Cell(10,270,'','L',0,'C',0);
+
+		for($loop2=0;$loop2<10;$loop2++) {
+			$pdf->SetXY($x+$loop2,$y);
+			$pdf->Cell(10,5,'','L',0,'C',0);
+		}
+	}
+	//=====================================
+	// Règle 2: verticale
+	$tmp_marge_gauche=1;
+	$tmp_marge_haut=0;
+	$x=$tmp_marge_gauche;
+	$y=$tmp_marge_haut;
+
+	$pdf->SetFont('DejaVu','',5);
+
+	// Ligne verticale
+	$pdf->SetXY($x,$y);
+	$pdf->Cell(1,280,'','L',0,'C',0);
+
+	for($loop=1;$loop<29;$loop++) {
+		// Repère numérique en cm
+		$y=$tmp_marge_haut+$loop*10-3;
+		$pdf->SetXY($x,$y);
+		$pdf->Cell(10,5,''.$loop,'',0,'L',0);
+
+		// Ligne tous les centimètres
+		$y=$tmp_marge_haut+$loop*10;
+		$pdf->SetXY($x,$y);
+		$pdf->Cell(200,10,'','T',0,'C',0);
+
+		// Les millimètres
+		for($loop2=0;$loop2<10;$loop2++) {
+			$pdf->SetXY($x,$y-10+$loop2);
+			$pdf->Cell(2,10,'','T',0,'C',0);
+		}
+	}
+	//=====================================
+	// Retour au noir pour les tracés qui suivent:
+	$pdf->SetDrawColor(0,0,0);
+	*/
+	//=====================================
+
+
 	if(($nb_releve_par_page!=1)||($nb_releve_par_page!=2)) {
 		// Actuellement, on n'a qu'un bulletin par page/recto donc qu'un relevé de notes par verso, mais sait-on jamais un jour...
 		$nb_releve_par_page=1;
@@ -2481,7 +2547,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			$pdf->SetXY($X_bloc_matiere, $Y_bloc_matiere);
 			$Y_decal = $Y_bloc_matiere;
 
-			fich_debug_bull("\$Y_decal=$Y_decal\n");
+			fich_debug_bull("Avant les AID_B: \$Y_decal=$Y_decal\n");
 
 
 			//======================================================
@@ -2927,6 +2993,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			}
 			// FIN DES AID AFFICHéS AVANT LES MATIERES
 			//======================================================
+			fich_debug_bull("Apres les AID_B: \$Y_decal=$Y_decal\n");
 
 
 			// Compteur du nombre de matières dans la catégorie
@@ -2997,8 +3064,6 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						}
 
 						// nombre de notes
-						// 20081118
-						//if($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1') {
 						if(($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1')&&($tab_modele_pdf["active_nombre_note"][$classe_id]!='1')) {
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
 							$pdf->SetFont('DejaVu','',10);
@@ -3203,8 +3268,9 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					}
 				}
 
-				fich_debug_bull("Après les catégories\n");
+				fich_debug_bull("Après les catégories en entête\n");
 				fich_debug_bull("\$Y_decal=$Y_decal\n");
+				fich_debug_bull("\$categorie_passe_count=$categorie_passe_count\n");
 
 				//============================
 				// Modif: boireaus 20070828
@@ -3225,6 +3291,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						}
 					}
 					*/
+					fich_debug_bull("\n");
+					fich_debug_bull("\$tab_bull['nom_cat_complet'][$m]=".$tab_bull['nom_cat_complet'][$m]."\n");
+					fich_debug_bull("\$categorie_passe=$categorie_passe\n");
+
 					if($tab_bull['nom_cat_complet'][$m]!=$categorie_passe) {
 						$categorie_passe_count=0;
 
@@ -3244,7 +3314,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					}
 					// fin des moyen par catégorie
 				}
-
+				fich_debug_bull("Après un test sur le changement de catégorie\n");
 				fich_debug_bull("\$categorie_passe_count=$categorie_passe_count\n");
 
 				//============================
@@ -3257,6 +3327,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				}
 
 				if($tab_modele_pdf["active_regroupement_cote"][$classe_id]==='1') {
+					// On dessine/écrit la catégorie sur le côté quand la catégorie suivante change
 					if($tab_bull['nom_cat_complet'][$m]!=$tab_bull['nom_cat_complet'][$m+1] and $categorie_passe!='')
 					{
 						//hauteur du regroupement hauteur des matier * nombre de matier de la catégorie
@@ -3299,6 +3370,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						}
 						$pdf->SetFont('DejaVu','',$hauteur_caractere_vertical);
 						$text_s = unhtmlentities($tab_bull['nom_cat_complet'][$m]);
+						//$text_s = $tab_bull['nom_cat_complet'][$m];
 						$longeur_test_s = $pdf->GetStringWidth($text_s);
 
 						// gestion de la taille du texte vertical
@@ -3317,15 +3389,15 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						}
 
 
-						//décalage pour centre le texte
-						$deca = ($hauteur_regroupement-$longeur_test_s)/2;
-						$deca = 0;
+						//décalage pour centrer le texte
 						$deca = ($hauteur_regroupement-$longeur_test_s)/2;
 
 						//place le texte dans le cadre
-						$placement = $Y_decal+$espace_entre_matier-$deca;
+						//$placement = $Y_decal+$espace_entre_matier-$deca;
+						$placement = $Y_categ_cote+$hauteur_regroupement-$deca;
 						$pdf->SetFont('DejaVu','',$hauteur_caractere_vertical);
-						$pdf->TextWithDirection($X_bloc_matiere-1,$placement,(unhtmlentities($text_s)),'U');
+						//$pdf->TextWithDirection($X_bloc_matiere-1,$placement,(unhtmlentities($text_s)),'U');
+						$pdf->TextWithDirection($X_bloc_matiere-1,$placement,$text_s,'U');
 						$pdf->SetFont('DejaVu','',10);
 						$pdf->SetFillColor(0, 0, 0);
 					}
@@ -3342,7 +3414,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				//============================
 
 				// Lignes de Matière, Note, Rang,... Appréciation
-
+				fich_debug_bull("Avant isset(\$tab_bull['note'][$m][$i]: \$Y_decal=$Y_decal\n");
 				$pdf->SetXY($X_bloc_matiere, $Y_decal);
 
 				// Si c'est une matière suivie par l'élève
@@ -3398,6 +3470,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					$pdf->SetFont('DejaVu','',8);
 
 					fich_debug_bull("\$info_nom_matiere=$info_nom_matiere\n");
+					fich_debug_bull("Le nom de matière est écrit; on est à mi-hauteur de la cellule pour écrire le nom du prof:\n");
 					fich_debug_bull("\$Y_decal=$Y_decal\n");
 
 					// nom des professeurs
@@ -3988,9 +4061,11 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					$largeur_utilise = 0;
 					// fin de boucle d'ordre
 					$Y_decal = $Y_decal+($espace_entre_matier/2);
+					fich_debug_bull("Apres affichage de l'appreciation: \$Y_decal=$Y_decal\n");
 				}
 			}
 
+			fich_debug_bull("Avant les AID_E: \$Y_decal=$Y_decal\n");
 
 			//======================================================
 			// DEBUT DES AID AFFICHéS APRES LES MATIERES
@@ -4432,6 +4507,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			}
 			// FIN DES AID AFFICHéS APRES LES MATIERES
 			//======================================================
+
+			fich_debug_bull("Apres les AID_E: \$Y_decal=$Y_decal\n");
 
 
 			//echo "\$tab_modele_pdf['active_moyenne'][$classe_id]=".$tab_modele_pdf["active_moyenne"][$classe_id]."<br />";
