@@ -213,6 +213,7 @@ echo "</table>\n<hr />";
 //	emplois du temps - affichage
 //
 //=================================
+$edt_avec_semAB="y";
 require_once("../edt_organisation/cdt_voir_view.php");
 
 require("../lib/footer.inc.php");

@@ -100,7 +100,7 @@ function AfficheIconePlusNew_CDT($id_groupe, $login_edt, $type_edt, $heuredeb_de
 //      permet de passer d'une semaine à l'autre
 //
 // ======================================================
-function AfficheBarCommutateurSemaines_CDT($login_edt, $visioedt, $type_edt_2, $week_min, $week_selected)
+function AfficheBarCommutateurSemaines_CDT($login_edt, $visioedt, $type_edt_2, $week_min, $week_selected, $avec_semAB='n')
 {
     $range = 8;
 
@@ -150,6 +150,15 @@ function AfficheBarCommutateurSemaines_CDT($login_edt, $visioedt, $type_edt_2, $
 
     echo $tab[$week_selected-1]["lundis"]." - ";      
     echo $tab[$week_selected-1]["vendredis"];
+    $avec_semAB="y";
+    if($avec_semAB=='y') {
+    	$sql="SELECT type_edt_semaine FROM edt_semaines WHERE id_edt_semaine='$week_selected' AND type_edt_semaine!='';";
+    	$res=mysql_query($sql);
+    	if(mysql_num_rows($res)>0) {
+    		$lig=mysql_fetch_object($res);
+    		echo " ($lig->type_edt_semaine)";
+    	}
+    }
     echo "</p>";
     echo "</div>";
     echo "<div class=\"spacer\"></div>";

@@ -5,7 +5,7 @@
  *
  * @package		GEPI
  * @subpackage	EmploisDuTemps
- * @copyright	Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Pascal Fautrero
+ * @copyright	Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Pascal Fautrero
  * @license		GNU/GPL, see COPYING.txt
  * 
  * This file is part of GEPI.
@@ -49,13 +49,18 @@ if ( getSettingValue("autorise_edt_tous") === 'y') {
 	// ========================= AFFICHAGE DE LA BARRE DE COMMUTATION DES PERIODES
 
 	if (($DisplayPeriodBar) AND ($DisplayEDT)) {
-			AfficheBarCommutateurPeriodes($login_edt, $visioedt, $type_edt_2);
+		AfficheBarCommutateurPeriodes($login_edt, $visioedt, $type_edt_2);
 	}
 
 	// ========================= AFFICHAGE DE LA BARRE DE COMMUTATION DES SEMAINES
 
 	if (($DisplayWeekBar) AND ($DisplayEDT)) {
+		if((isset($edt_avec_semAB))&&(($edt_avec_semAB=='y')||($edt_avec_semAB=='n'))) {
+			AfficheBarCommutateurSemaines_CDT($login_edt, $visioedt, $type_edt_2, $week_min, $_SESSION['week_selected'],$edt_avec_semAB);
+		}
+		else {
 			AfficheBarCommutateurSemaines_CDT($login_edt, $visioedt, $type_edt_2, $week_min, $_SESSION['week_selected']);
+		}
 	}
 
 
