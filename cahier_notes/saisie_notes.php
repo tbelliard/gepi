@@ -2033,7 +2033,7 @@ if ($id_devoir) {
 	}
 
 	//echo "<p id='p_tri'></p>\n";
-	echo "<p><span id='p_tri'></span>\n";
+	echo "<p id='p_liens_javascript' style='display:none;'><span id='p_tri'></span>\n";
 	echo "<script type='text/javascript'>
 	function affiche_lien_tri() {
 		var tab_indices=new Array($chaine_indices);
@@ -2079,6 +2079,9 @@ if ($id_devoir) {
 	}
 
 	affiche_lien_tri();
+
+	// On affiche le paragraphe avec les liens javascript via javascript pour ne pas les proposer si javascript est désactivé:
+	document.getElementById('p_liens_javascript').style.display='';
 </script>\n";
 	$titre_infobulle="Notes triées";
 	$texte_infobulle="<div id='notes_triees'></div>";
@@ -2301,6 +2304,7 @@ if ($id_devoir) {
 
 	echo "<a href='javascript:recopier_notes_vers_textarea()'>Recopier les notes vers le Textarea ci-dessous</a>";
 
+	echo "</p>\n";
 	//=====================================================
 
 
