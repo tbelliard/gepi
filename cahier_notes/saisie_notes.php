@@ -1767,6 +1767,7 @@ if ($multiclasses) {
 }
 
 echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
+$indice_max_log_eleve=$i;
 
 echo "<b>Moyennes :</b></td>\n";
 $w_pdf[] = $w2;
@@ -2031,7 +2032,8 @@ if ($id_devoir) {
 		}
 	}
 
-	echo "<p id='p_tri'></p>\n";
+	//echo "<p id='p_tri'></p>\n";
+	echo "<p><span id='p_tri'></span>\n";
 	echo "<script type='text/javascript'>
 	function affiche_lien_tri() {
 		var tab_indices=new Array($chaine_indices);
@@ -2083,6 +2085,10 @@ if ($id_devoir) {
 	$tabdiv_infobulle[]=creer_div_infobulle('div_tri',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
 
 	//=====================================================
+
+	echo " - ";
+
+	//=====================================================
 	// Ramener une note sur 20 (ou autre)
 	$cn_precision=getPref($_SESSION['login'], 'cn_precision', 's5');
 
@@ -2126,7 +2132,9 @@ if ($id_devoir) {
 <p><input type='button' name='valider_ramener_sur_N' value='Valider' onclick='effectuer_ramener_sur_N()' /></p>
 </div>";
 	$tabdiv_infobulle[]=creer_div_infobulle('div_ramener_sur_N',$titre_infobulle,"",$texte_infobulle,"",32,0,'y','y','n','n');
-	echo "<p id='p_ramener_sur_N2' style='display:none'><a href='#' onclick=\"afficher_div('div_ramener_sur_N','y',20,20); return false;\" target=\'_blank\'>Ramener sur N</a></p>";
+	echo "<span id='p_ramener_sur_N2' style='display:none'><a href='#' onclick=\"afficher_div('div_ramener_sur_N','y',20,20); return false;\" target=\'_blank\'>Ramener sur N</a></span>";
+
+	//=====================================================
 
 	echo "<script type='text/javascript'>
 	function effectuer_ramener_sur_N() {
@@ -2262,7 +2270,37 @@ if ($id_devoir) {
 
 	document.getElementById('p_ramener_sur_N').style.display='';
 	document.getElementById('p_ramener_sur_N2').style.display='';
+	
+	function recopier_notes_vers_textarea() {
+		if(document.getElementById('textarea_notes')) {
+			//document.getElementById('textarea_notes').value='';
+			liste_notes='';
+
+			var arr = document.getElementsByTagName('input');
+			for(j=0;j<$indice_max_log_eleve;j++) {
+				if(j>0) {liste_notes=liste_notes+'\\n';}
+
+				for(var i = 0; i < arr.length; i++) {
+					if(arr[i].name == 'note_eleve['+j+']') {
+						note_eleve=arr[i].value;
+
+						liste_notes=liste_notes+note_eleve;
+					}
+				}
+			}
+
+			document.getElementById('textarea_notes').value=liste_notes;
+		}
+	}
 </script>\n";
+	//=====================================================
+
+	echo " - ";
+
+	//=====================================================
+
+	echo "<a href='javascript:recopier_notes_vers_textarea()'>Recopier les notes vers le Textarea ci-dessous</a>";
+
 	//=====================================================
 
 
@@ -2294,7 +2332,7 @@ if ($id_devoir) {
 	echo "Coller ci-dessous les données à importer : <br />\n";
 	if (isset($_POST['notes'])) {$notes=preg_replace("/\\\\n/","\n",preg_replace("/\\\\r/","\r",$_POST['notes']));} else {$notes='';}
 	//echo "<textarea name='notes' rows='3' cols='40' wrap='virtual'>$notes</textarea>\n";
-	echo "<textarea name='notes' rows='3' cols='40' class='wrap'>$notes</textarea>\n";
+	echo "<textarea name='notes' id='textarea_notes' rows='3' cols='40' class='wrap'>$notes</textarea>\n";
 	echo "</td></tr></table>\n";
 
 	echo "<input type='hidden' name='id_conteneur' value='$id_conteneur' />\n";
