@@ -1076,9 +1076,17 @@ class class_page_accueil {
 					AND (getSettingValue("GepiScolImprBulSettings")=='yes'))
 			OR (($this->statutUtilisateur=='administrateur')
 					AND (getSettingValue("GepiAdminImprBulSettings")=='yes'))){
-	  $this->creeNouveauItem("/bulletin/param_bull.php",
-			  "Paramètres d'impression des bulletins",
-			  "Permet de modifier les paramètres de mise en page et d'impression des bulletins.");
+
+		if(getSettingValue('type_bulletin_par_defaut')=='pdf') {
+			$this->creeNouveauItem("/bulletin/param_bull_pdf.php",
+				  "Paramètres d'impression des bulletins",
+				  "Permet de modifier les paramètres de mise en page et d'impression des bulletins.");
+		}
+		else {
+			$this->creeNouveauItem("/bulletin/param_bull.php",
+				  "Paramètres d'impression des bulletins",
+				  "Permet de modifier les paramètres de mise en page et d'impression des bulletins.");
+		}
 	}
 
 	if ($this->statutUtilisateur=='scolarite'){

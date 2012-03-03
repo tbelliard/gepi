@@ -4,7 +4,7 @@
  *
  * $Id$
  *
- * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
+ * @copyright Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
  * @todo Les bulletins HTML utilisent les infos display_rang, display_coef,... de la table 'classes'.
  *Les bulletins PDF utilisent plutôt les infos de la table 'modele_bulletin' il me semble.
  *Il faudrait peut-être revoir le dispositif pour adopter la même stratégie.
@@ -75,6 +75,10 @@ $contexte_document_produit="bulletin";
 $nb_releve_par_page=1;
 
 $bull_pdf_debug=isset($_POST['bull_pdf_debug']) ? $_POST['bull_pdf_debug'] : "n";
+
+// HTML ou PDF par défaut:
+$type_bulletin_par_defaut=getSettingValue('type_bulletin_par_defaut');
+if(($type_bulletin_par_defaut!='html')&&($type_bulletin_par_defaut!='pdf')) {$type_bulletin_par_defaut='html';}
 
 //debug_var();
 
@@ -161,7 +165,12 @@ if(!isset($tab_id_classe)) {
 	if((($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes'))||
 	(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiProfImprBulSettings')=='yes'))||
 	(($_SESSION['statut']=='administrateur')&&(getSettingValue('GepiAdminImprBulSettings')=='yes'))) {
-		echo " | <a href='param_bull.php' target='_blank'>Paramètres d'impression des bulletins</a>";
+		if($type_bulletin_par_defaut=='pdf') {
+			echo " | <a id='lien_param_bull' href='param_bull_pdf.php' target='_blank'>Paramètres d'impression des bulletins PDF</a>";
+		}
+		else {
+			echo " | <a id='lien_param_bull' href='param_bull.php' target='_blank'>Paramètres d'impression des bulletins</a>";
+		}
 	}
 	
 	if((getSettingValue('ancien_dispositif_bulletins')=='y')&&($_SESSION['statut']!='autre')) {
@@ -287,7 +296,12 @@ elseif((!isset($choix_periode_num))||(!isset($tab_periode_num))) {
 	if((($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes'))||
 	(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiProfImprBulSettings')=='yes'))||
 	(($_SESSION['statut']=='administrateur')&&(getSettingValue('GepiAdminImprBulSettings')=='yes'))) {
-		echo " | <a href='param_bull.php' target='_blank'>Paramètres d'impression des bulletins</a>";
+		if($type_bulletin_par_defaut=='pdf') {
+			echo " | <a id='lien_param_bull' href='param_bull_pdf.php' target='_blank'>Paramètres d'impression des bulletins PDF</a>";
+		}
+		else {
+			echo " | <a id='lien_param_bull' href='param_bull.php' target='_blank'>Paramètres d'impression des bulletins</a>";
+		}
 	}
 	echo "</p>\n";
 
@@ -401,7 +415,12 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	if((($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes'))||
 	(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiProfImprBulSettings')=='yes'))||
 	(($_SESSION['statut']=='administrateur')&&(getSettingValue('GepiAdminImprBulSettings')=='yes'))) {
-		echo " | <a href='param_bull.php' target='_blank'>Paramètres d'impression des bulletins</a>";
+		if($type_bulletin_par_defaut=='pdf') {
+			echo " | <a id='lien_param_bull' href='param_bull_pdf.php' target='_blank'>Paramètres d'impression des bulletins PDF</a>";
+		}
+		else {
+			echo " | <a id='lien_param_bull' href='param_bull.php' target='_blank'>Paramètres d'impression des bulletins</a>";
+		}
 	}
 	echo "</p>\n";
 
@@ -427,16 +446,18 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 
 	//=======================================
 
+	/*
 	// HTML ou PDF
 	$type_bulletin_par_defaut=getSettingValue('type_bulletin_par_defaut');
 	if(($type_bulletin_par_defaut!='html')&&($type_bulletin_par_defaut!='pdf')) {$type_bulletin_par_defaut='html';}
+	*/
 
 	// A remplacer par la suite par un choix:
 	//echo "<input type='hidden' name='mode_bulletin' value='html' />\n";
 	echo "<table border='0' summary='Choix du type de bulletin'>\n";
 	echo "<tr>\n";
 	echo "<td valign='top'>\n";
-	echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_html' value='html' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg();checkbox_change(this.id);checkbox_change(\"mode_bulletin_pdf\");' ";
+	echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_html' value='html' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg();checkbox_change(this.id);checkbox_change(\"mode_bulletin_pdf\");change_lien_param_bull(\"html\");' ";
 	if($type_bulletin_par_defaut=='html') {echo "checked ";}
 	echo "/> ";
 	echo "</td>\n";
@@ -475,7 +496,7 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 			}
 		}
 		else {
-			echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_pdf' value='pdf' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg();checkbox_change(this.id);checkbox_change(\"mode_bulletin_html\");' ";
+			echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_pdf' value='pdf' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg();checkbox_change(this.id);checkbox_change(\"mode_bulletin_html\");change_lien_param_bull(\"pdf\");' ";
 			if($type_bulletin_par_defaut=='pdf') {echo "checked ";}
 			echo "/> ";
 			echo "</td>\n";
@@ -582,6 +603,19 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	}
 
 	display_div_modele_bulletin_pdf();
+	
+	function change_lien_param_bull(type) {
+		if(document.getElementById('lien_param_bull')) {
+			if(type=='pdf') {
+				document.getElementById('lien_param_bull').href='param_bull_pdf.php';
+				document.getElementById('lien_param_bull').innerHTML='Paramètres d\'impression des bulletins PDF';
+			}
+			else {
+				document.getElementById('lien_param_bull').href='param_bull.php';
+				document.getElementById('lien_param_bull').innerHTML='Paramètres d\'impression des bulletins';
+			}
+		}
+	}
 </script>\n";
 
 
