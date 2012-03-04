@@ -15,9 +15,17 @@ Librairies :
 
 Cdt2 :
 - amélioration du copier coller de notices
+- ajoutt d'un mode semaine: affichage de deux semaines en mode consultation
 
 Abs2 :
 - génération de notifications par lot depuis une liste des traitements
+
+Trombinoscopes:
+- Possibilité d'uploader les photos élèves en CPE (sous réserve d'un droit)
+- Possibilité d'uploader les photos élèves depuis l'affichage trombinoscope
+
+Gestion:
+- Gestion des matières: Affichage du nombre d'enseignements associés à une matière; possibilité de griser/masquer les matières sans enseignements.
 
 Gepi-1.6.0 (27/01/2012)
 ===========================
