@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -1095,8 +1095,8 @@ class class_page_accueil {
 			  "Cet outil vous permet de modifier/supprimer/ajouter des fiches de ".$this->gepiSettings['denomination_responsables']." des ".$this->gepiSettings['denomination_eleves'].".");
 	}
 
-	if ($this->statutUtilisateur=='scolarite'){
-	  $this->creeNouveauItem("/eleves/index.php",
+	if ($this->statutUtilisateur=='scolarite') {
+		$this->creeNouveauItem("/eleves/index.php",
 			  "Gestion des fiches ".$this->gepiSettings['denomination_eleves'],
 			  "Cet outil vous permet de modifier/supprimer/ajouter des fiches ".$this->gepiSettings['denomination_eleves'].".");
 	}
@@ -1174,10 +1174,22 @@ class class_page_accueil {
 
 	if(($this->statutUtilisateur=='scolarite')||
 			($this->statutUtilisateur=='professeur')||
-			($this->statutUtilisateur=='cpe')){
-	  $this->creeNouveauItem("/groupes/visu_mes_listes.php",
-			  "Visualisation de mes élèves",
-			  "Ce menu permet de vous permet de consulter vos listes d'".$this->gepiSettings['denomination_eleves']." par groupe constitué et enseigné.");
+			($this->statutUtilisateur=='cpe')) {
+		$this->creeNouveauItem("/groupes/visu_mes_listes.php",
+			"Visualisation de mes élèves",
+			"Ce menu permet de vous permet de consulter vos listes d'".$this->gepiSettings['denomination_eleves']." par groupe constitué et enseigné.");
+	}
+
+	if ((($this->statutUtilisateur=='cpe')&&(getSettingAOui('CpeAccesFichesEleves')))||
+		(($this->statutUtilisateur=='cpe')&&(getSettingAOui('CpeAccesUploadPhotosEleves')))
+	) {
+		$complement_texte="";
+		if(getSettingAOui('active_module_trombinoscopes')) {
+			$complement_texte="<br />Ce menu permet aussi d'uploader les photos des ".$this->gepiSettings['denomination_eleves'].".";
+		}
+		$this->creeNouveauItem("/eleves/index.php",
+			"Gestion des fiches ".$this->gepiSettings['denomination_eleves'],
+			"Cet outil vous permet de modifier/supprimer/ajouter des fiches ".$this->gepiSettings['denomination_eleves'].".".$complement_texte);
 	}
 
 	if(getSettingValue('active_mod_ooo')=='y') {

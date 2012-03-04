@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -1673,9 +1673,16 @@ if(isset($quelles_classes)) {
 		$lien_image_compte_utilisateur=lien_image_compte_utilisateur($eleve_login, "eleve", "", "n");
 		if($lien_image_compte_utilisateur!="") {echo "<div style='float:right; width: 16px'>".$lien_image_compte_utilisateur."</div>";}
 
-		echo "<p><a href='modify_eleve.php?eleve_login=$eleve_login&amp;quelles_classes=$quelles_classes&amp;order_type=$order_type";
-		if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-		echo "'>$eleve_nom $eleve_prenom</a>";
+		if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='autre')||
+			(($_SESSION['statut']=='cpe')&&(getSettingAOui('CpeAccesFichesEleves')))
+		) {
+			echo "<p><a href='modify_eleve.php?eleve_login=$eleve_login&amp;quelles_classes=$quelles_classes&amp;order_type=$order_type";
+			if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
+			echo "'>$eleve_nom $eleve_prenom</a>";
+		}
+		else {
+			echo "$eleve_nom $eleve_prenom";
+		}
 		if ($date_sortie_elv!=0) {
 		     echo "<br/>";
 		     echo "<span class=\"red\"><b>Sortie le ".affiche_date_sortie($date_sortie_elv)."</b></span>";;

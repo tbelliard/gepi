@@ -1617,6 +1617,16 @@ $titreItem='GepiAccesVisuToutesEquipCpe';
 $texteItem="a accès à la Visualisation de toutes les équipes";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='CpeAccesUploadPhotosEleves';
+$texteItem="a accès à l'upload des photos des ".$gepiSettings['denomination_eleves']."<br />sous réserve d'activation du module Trombinoscopes (<em>";
+if(!getSettingAOui('active_module_trombinoscopes')) {
+	$texteItem.="in";
+}
+$texteItem.="actif</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 /*
 
 			<!-- Années antérieures -->

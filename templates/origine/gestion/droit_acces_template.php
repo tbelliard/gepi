@@ -135,7 +135,7 @@
 	  if(my_strtolower($AfficheItem['statut']) == my_strtolower($StatutItem)){
 
 	?>
-	  <li>
+	  <li style='margin-left:2em;text-indent:-2em;'>
 		<input type="checkbox" name="<?php echo $AfficheItem['name'] ; ?>"
 			   id="<?php echo $AfficheItem['name'] ; ?>"
 			   value="yes" <?php if (getSettingValue($AfficheItem['name'])=='yes') echo 'checked="checked"'; ?>
