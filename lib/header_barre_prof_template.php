@@ -52,10 +52,23 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 	//=======================================================
 	$mes_groupes=get_groups_for_prof($_SESSION['login'],NULL,array('classes', 'periodes', 'visibilite'));
 	$tmp_mes_classes=array();
+	$tmp_mes_classes_pp=array();
 	foreach($mes_groupes as $tmp_group) {
 		foreach($tmp_group["classes"]["classes"] as $key_id_classe => $value_tab_classe) {
 			if(!in_array($value_tab_classe['classe'], $tmp_mes_classes)) {
 				$tmp_mes_classes[$key_id_classe]=$value_tab_classe['classe'];
+
+				$tmp_mes_classes_pp[$key_id_classe]="";
+				$sql="SELECT DISTINCT u.nom,u.prenom,u.civilite FROM utilisateurs u, j_eleves_classes jec, j_eleves_professeurs jep WHERE u.login=jep.professeur AND jep.login=jec.login AND jec.id_classe='$key_id_classe' ORDER BY u.nom,u.prenom;";
+				$res=mysql_query($sql);
+				if(mysql_num_rows($res)>0) {
+					while($lig=mysql_fetch_object($res)) {
+						if($tmp_mes_classes_pp[$key_id_classe]!='') {
+							$tmp_mes_classes_pp[$key_id_classe].=", ";
+						}
+						$tmp_mes_classes_pp[$key_id_classe].="<span title=\"$lig->civilite $lig->nom $lig->prenom\">".$lig->nom." ".mb_substr($lig->prenom,0,1)."</span>";
+					}
+				}
 			}
 		}
 	}
@@ -450,7 +463,7 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 	$cpt_sous_menu2=0;
 	foreach($tmp_mes_classes as $key => $value) {
 		$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/groupes/visu_profs_class.php?id_classe='.$key;
-		$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$value;
+		$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$value." <em style='font-size:x-small;'>(".$tmp_mes_classes_pp[$key].")</em>";
 		$cpt_sous_menu2++;
 	}
 	$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
