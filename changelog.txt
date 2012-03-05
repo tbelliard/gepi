@@ -15,7 +15,7 @@ Librairies :
 
 Cdt2 :
 - amélioration du copier coller de notices
-- ajoutt d'un mode semaine: affichage de deux semaines en mode consultation
+- ajout d'un mode semaine: affichage de deux semaines en mode consultation
 
 Abs2 :
 - génération de notifications par lot depuis une liste des traitements
