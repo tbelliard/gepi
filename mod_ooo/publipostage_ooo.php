@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -395,7 +395,7 @@ if(!isset($num_fich)) {
 				echo "<table width='100%' summary=\"Tableau de choix des utilisateurs auxquels distribuer le modèle\">\n";
 				echo "<tr valign='top' align='center'>\n";
 				echo "<td align='left'>\n";
-	
+
 				$cpt=0;
 				$statut_prec="";
 				while($lig=mysql_fetch_object($res)) {
@@ -425,14 +425,8 @@ if(!isset($num_fich)) {
 				echo "</td>\n";
 				echo "</tr>\n";
 				echo "</table>\n";
-			}
-		}
-	
-		echo "<p>Fichier modèle&nbsp;:&nbsp;<input type='file' name='monfichier' value='il a cliqué le bougre'><br />\n";
-		echo "<input type='submit' name='btn' Align='middle' value='Envoyer' /></p>\n";
-		echo "</form>\n";
 
-		echo "<script type='text/javascript'>
+				echo "<script type='text/javascript'>
 function cocher_decocher(mode) {
 	for (var k=0;k<$cpt;k++) {
 		if(document.getElementById('login_user_'+k)){
@@ -441,8 +435,14 @@ function cocher_decocher(mode) {
 		}
 	}
 }
-
 </script>\n";
+
+			}
+		}
+	
+		echo "<p>Fichier modèle&nbsp;:&nbsp;<input type='file' name='monfichier' value='il a cliqué le bougre'><br />\n";
+		echo "<input type='submit' name='btn' Align='middle' value='Envoyer' /></p>\n";
+		echo "</form>\n";
 
 		echo "<p><i>NOTES&nbsp;:</i></p>\n";
 		echo "<ul>\n";
