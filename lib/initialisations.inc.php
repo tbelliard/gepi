@@ -219,6 +219,28 @@ if (isset($_REQUEST["source"])) {
   * Fichier de configuration générale
   */
    require_once($chemin_relatif_gepi."/lib/global.inc.php");
+
+
+   
+ /**
+  * Initialisation de la variable $filtrage_html
+  */
+   require_once($chemin_relatif_gepi."/lib/filtrage_html.inc.php");
+	if($filtrage_html=="htmlpurifier") {
+ /**
+  * Utilisation de HTMLPurifier.standalone pour filtrer les saisies
+  */
+		require_once($chemin_relatif_gepi."/lib/HTMLPurifier.standalone.php");
+	}
+	elseif($filtrage_html=="inputfilter") {
+ /**
+  * Utilisation de class.inputfilter_clean.php pour filtrer les saisies
+  */
+		require_once($chemin_relatif_gepi."/lib/class.inputfilter_clean.php");
+	}
+
+
+
  /**
   * Traitement des données (filtrage de sécurité)
   */

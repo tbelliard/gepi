@@ -193,86 +193,142 @@ if ((!(in_array(mb_substr($url['path'], mb_strlen($gepiPath)),$liste_scripts_non
 array_walk($_SERVER, 'anti_inject');
 array_walk($_COOKIE, 'anti_inject');
 
+if($filtrage_html=='htmlpurifier') {
+	$config = HTMLPurifier_Config::createDefault();
+	$config->set('Core.Encoding', 'utf-8'); // replace with your encoding
+	$config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
+	$purifier = new HTMLPurifier($config);
 
-$config = HTMLPurifier_Config::createDefault();
-$config->set('Core.Encoding', 'utf-8'); // replace with your encoding
-$config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
-$purifier = new HTMLPurifier($config);
-
-foreach($_GET as $key => $value) {
-	if(!is_array($value)) {
-		$_GET[$key]=$purifier->purify($value);
-	}
-	else {
-		foreach($_GET[$key] as $key2 => $value2) {
-			$_GET[$key][$key2]=$purifier->purify($value2);
-		}
-	}
-}
-
-foreach($_POST as $key => $value) {
-	if(!is_array($value)) {
-		$_POST[$key]=$purifier->purify($value);
-	}
-	else {
-		foreach($_POST[$key] as $key2 => $value2) {
-			$_POST[$key][$key2]=$purifier->purify($value2);
-		}
-	}
-}
-
-if(isset($NON_PROTECT)) {
-	foreach($NON_PROTECT as $key => $value) {
-		if(!is_array($value)) {
-		    $NON_PROTECT[$key]=$purifier->purify($value);
-		}
-		else {
-			foreach($NON_PROTECT[$key] as $key2 => $value2) {
-				$NON_PROTECT[$key][$key2]=$purifier->purify($value2);;
-			}
-		}
-	}
-}
-	
-//on purge aussi les images avec une extension php
-if(isset($_GET)) {
 	foreach($_GET as $key => $value) {
 		if(!is_array($value)) {
-			$_GET[$key]=no_php_in_img($value);
+			$_GET[$key]=$purifier->purify($value);
 		}
 		else {
 			foreach($_GET[$key] as $key2 => $value2) {
-				$_GET[$key][$key2]=no_php_in_img($value2);
+				$_GET[$key][$key2]=$purifier->purify($value2);
 			}
 		}
 	}
-}
 
-if(isset($_POST)) {
 	foreach($_POST as $key => $value) {
 		if(!is_array($value)) {
-			$_POST[$key]=no_php_in_img($value);
+			$_POST[$key]=$purifier->purify($value);
 		}
 		else {
 			foreach($_POST[$key] as $key2 => $value2) {
-				$_POST[$key][$key2]=no_php_in_img($value2);
+				$_POST[$key][$key2]=$purifier->purify($value2);
 			}
 		}
 	}
-}
-if(isset($NON_PROTECT)) {
-	foreach($NON_PROTECT as $key => $value) {
-		if(!is_array($value)) {
-			$NON_PROTECT[$key]=no_php_in_img($value);
-		}
-		else {
-			foreach($NON_PROTECT[$key] as $key2 => $value2) {
-				$NON_PROTECT[$key][$key2]=no_php_in_img($value2);
+
+	if(isset($NON_PROTECT)) {
+		foreach($NON_PROTECT as $key => $value) {
+			if(!is_array($value)) {
+				$NON_PROTECT[$key]=$purifier->purify($value);
+			}
+			else {
+				foreach($NON_PROTECT[$key] as $key2 => $value2) {
+					$NON_PROTECT[$key][$key2]=$purifier->purify($value2);;
+				}
 			}
 		}
 	}
 }
 
+elseif($filtrage_html=='inputfilter') {
+	$oMyFilter = new InputFilter($aAllowedTags, $aAllowedAttr, 0, 0, 1);
+
+	foreach($_GET as $key => $value) {
+		if(!is_array($value)) {
+			if((strpos($_GET[$key],"<"))||(strpos($_GET[$key],">"))) {
+				$_GET[$key]=$oMyFilter->process($value);
+			}
+		}
+		else {
+			foreach($_GET[$key] as $key2 => $value2) {
+				if((strpos($_GET[$key][$key2],"<"))||(strpos($_GET[$key][$key2],">"))) {
+					$_GET[$key][$key2]=$oMyFilter->process($value2);
+				}
+			}
+		}
+	}
+
+	foreach($_POST as $key => $value) {
+		if(!is_array($value)) {
+			if((strpos($_POST[$key],"<"))||(strpos($_POST[$key],">"))) {
+				$_POST[$key]=$oMyFilter->process($value);
+			}
+		}
+		else {
+			foreach($_POST[$key] as $key2 => $value2) {
+				if((strpos($_POST[$key][$key2],"<"))||(strpos($_POST[$key][$key2],">"))) {
+					$_POST[$key][$key2]=$oMyFilter->process($value2);
+				}
+			}
+		}
+	}
+
+	if(isset($NON_PROTECT)) {
+		foreach($NON_PROTECT as $key => $value) {
+			if(!is_array($value)) {
+				//echo "strpos(\$NON_PROTECT[$key],'<')=strpos(".$NON_PROTECT[$key].",'<')=".strpos($NON_PROTECT[$key],"<")."<br />";
+				//echo "strpos(\$NON_PROTECT[$key],'>')=strpos(".$NON_PROTECT[$key].",'>')=".strpos($NON_PROTECT[$key],">")."<br />";
+				if((strpos($NON_PROTECT[$key],"<"))||(strpos($NON_PROTECT[$key],">"))) {
+					$NON_PROTECT[$key]=$oMyFilter->process($value);
+				}
+			}
+			else {
+				foreach($NON_PROTECT[$key] as $key2 => $value2) {
+					if((strpos($NON_PROTECT[$key][$key2],"<"))||(strpos($NON_PROTECT[$key][$key2],">"))) {
+						$NON_PROTECT[$key][$key2]=$oMyFilter->process($value2);;
+					}
+				}
+			}
+		}
+	}
+}
+
+//echo "utiliser_no_php_in_img=$utiliser_no_php_in_img<br />";
+if($utiliser_no_php_in_img=='y') {
+	//on purge aussi les images avec une extension php
+	if(isset($_GET)) {
+		foreach($_GET as $key => $value) {
+			if(!is_array($value)) {
+				$_GET[$key]=no_php_in_img($value);
+			}
+			else {
+				foreach($_GET[$key] as $key2 => $value2) {
+					$_GET[$key][$key2]=no_php_in_img($value2);
+				}
+			}
+		}
+	}
+
+	if(isset($_POST)) {
+		foreach($_POST as $key => $value) {
+			if(!is_array($value)) {
+				$_POST[$key]=no_php_in_img($value);
+			}
+			else {
+				foreach($_POST[$key] as $key2 => $value2) {
+					$_POST[$key][$key2]=no_php_in_img($value2);
+				}
+			}
+		}
+	}
+	if(isset($NON_PROTECT)) {
+		foreach($NON_PROTECT as $key => $value) {
+			if(!is_array($value)) {
+				$NON_PROTECT[$key]=no_php_in_img($value);
+			}
+			else {
+				foreach($NON_PROTECT[$key] as $key2 => $value2) {
+					$NON_PROTECT[$key][$key2]=no_php_in_img($value2);
+				}
+			}
+		}
+	}
+}
 //===========================================================
 
 
