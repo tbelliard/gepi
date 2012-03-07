@@ -234,6 +234,7 @@ $type_etablissement2["prive"]["aucun"] = "";
 // Ce n'est plus utilisé. Des valeurs dans la table setting remplacent maintenant ce paramètre: CommentairesTypesScol et CommentairesTypesPP
 
 
+/*
 //=============================
 // Un dispositif de filtrage des balises HTML soumises a été mis en place.
 // Sans ce dispositif, il est possible de déposer un code sournois pour provoquer des dégats lors de la visite par l'utilisateur auquel le piège est destiné.
@@ -253,6 +254,7 @@ $aAllowedTags = array("a", "b", "blink", "blockquote", "br", "caption", "center"
 $aAllowedAttr = array("abbr", "align", "alt", "axis", "background", "behavior", "bgcolor", "border", "bordercolor", "bordercolordark", "bordercolorlight", "bottompadding", "cellpadding", "cellspacing", "char", "charoff", "cite", "clear", "color", "cols", "direction", "face", "font-weight", "headers", "height", "href", "hspace", "leftpadding", "loop", "noshade", "nowrap", "point-size", "rel", "rev", "rightpadding", "rowspan", "rules", "scope", "scrollamount", "scrolldelay", "size", "span", "src", "start", "summary", "target", "title", "toppadding", "type", "valign", "value", "vspace", "width", "wrap", "style");
 //$aAllowedAttr = array("abbr", "align", "alt", "axis", "background", "behavior", "bgcolor", "border", "bordercolor", "bordercolordark", "bordercolorlight", "bottompadding", "cellpadding", "cellspacing", "char", "charoff", "cite", "clear", "color", "cols", "direction", "face", "font-weight", "headers", "height", "hspace", "leftpadding", "loop", "noshade", "nowrap", "point-size", "rel", "rev", "rightpadding", "rowspan", "rules", "scope", "scrollamount", "scrolldelay", "size", "span", "start", "summary", "target", "title", "toppadding", "type", "valign", "value", "vspace", "width", "wrap", "style");
 //=============================
+*/
 
 
 //=============================

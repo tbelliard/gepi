@@ -28,6 +28,8 @@
 		</a>
 
 		<?php
+
+/*
 			//=====================================
 			if($tbs_afficher_temoin_filtrage_html=='y') {
 				if($filtrage_html=='htmlpurifier') {
@@ -41,6 +43,7 @@
 				}
 			}
 			//=====================================
+*/
 		?>
 
 	<!-- titre de la page -->	

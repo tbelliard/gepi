@@ -220,7 +220,7 @@ if (isset($_POST['csrf_mode'])) {
 	}
 }
 
-
+/*
 //echo "\$filtrage_html=$filtrage_html<br />";
 if (isset($_POST['filtrage_html'])) {
 	check_token();
@@ -293,7 +293,7 @@ if(($filtrage_html!='inputfilter')&&
 	$filtrage_html=getSettingValue('filtrage_html');
 }
 //echo "\$filtrage_html=$filtrage_html<br />";
-
+*/
 //**************** EN-TETE *********************
 $titre_page = "Politique de sécurité";
 require_once("../lib/header.inc");
@@ -456,7 +456,7 @@ echo "<div style='margin-left:3em;'>\n";
 echo "</div>\n";
 
 
-
+/*
 // Filtrage HTML
 echo "<h2>Filtrage HTML</h2>\n";
 echo "<div style='margin-left:3em;'>\n";
@@ -541,7 +541,7 @@ echo "<div style='margin-left:3em;'>\n";
 	echo "<br />";
 
 echo "</div>\n";
-
+*/
 
 echo "<h2><a name='csrf_mode'></a>CSRF</h2>";
 echo "<div style='margin-left:3em;'>\n";
