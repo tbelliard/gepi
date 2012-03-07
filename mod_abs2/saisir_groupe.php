@@ -138,11 +138,11 @@ function redimensionne_image_petit($photo)
 	    echo ' Le '.$dt_date_absence_eleve->format('d/m/Y').' ';
 	}
  }
-
-
-
-
-
+ 
+$journeePossible = FALSE;
+if ('cpe' == $_SESSION['statut'] || 'scolarite' == $_SESSION['statut']) {
+	$journeePossible = TRUE;
+}
 
 // $affiche_debug=debug_var();
 // Initialiser la requête
@@ -156,6 +156,8 @@ if (isset($_POST["initialise"]) && $_POST["initialise"]==TRUE) {
   $_SESSION['date_absence_eleve'],
   $_SESSION['id_semaine']);
 }
+
+$_SESSION['showJournee'] = isset($_POST["journee"]) ? $_POST["journee"] : (isset($_SESSION['showJournee']) ? $_SESSION['showJournee'] : FALSE);
 
 //récupération des paramètres de la requète
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :(isset($_SESSION["id_groupe_abs"]) ? $_SESSION["id_groupe_abs"] : NULL));
@@ -177,6 +179,9 @@ if (isset($type_selection) && $type_selection != null) $_SESSION['type_selection
 if (isset($date_absence_eleve) && $date_absence_eleve != null) $_SESSION['date_absence_eleve'] = $date_absence_eleve;
 if (isset($id_semaine) && $id_semaine != null) $_SESSION['id_semaine'] = $id_semaine;
 
+if (TRUE == $_SESSION['showJournee']) {
+	$id_creneau = '1';
+}
 
 //initialisation des variables
 $current_cours = null;
@@ -705,10 +710,33 @@ include('menu_abs2.inc.php');
 <div class='css-panes' id='containDiv'>
 
 	<form class="center" action="./saisir_groupe.php" method="post" style="width: 100%;">
-		  <p>
-			  <button type='submit' style='width:25em;margin:0 auto;' name='initialise' value='TRUE'>
+		<p>
+			  <button type='submit' 
+					  style='width:25em;margin:0 auto;' 
+					  name='initialise' 
+					  value='<?php echo TRUE; ?>'
+					  title="Efface tous les filtres puis recharge la page">
 				  Ré-initialiser la page
 			  </button>
+<?php if ($journeePossible) { ?>			
+	<?php if ($_SESSION['showJournee']) { ?>
+			  <button type='submit' 
+					  style='width:25em;margin:0 auto;' 
+					  name='journee' 
+					  value='<?php echo FALSE; ?>'
+					  title="Saisie d'un seul créneau">
+				  Affichage 1 créneau
+			  </button>
+	<?php } else { ?>
+			  <button type='submit' 
+					  style='width:25em;margin:0 auto;' 
+					  name='journee' 
+					  value='<?php echo TRUE; ?>'
+					  title="Saisie de tous les créneaux de la journée">
+				  Affichage journée
+			  </button>
+	<?php } ?>
+<?php } ?>
 		</p>
 	</form >
 
@@ -860,6 +888,9 @@ if (!$classe_col->isEmpty()) {
 
 //**************** ELEVES *****************
 
+if (TRUE == $_SESSION['showJournee']) {
+	include 'lib/saisir_groupe_journee.php';
+} else {
 if ($eleve_col->isEmpty()) {
 ?>
     <p>Aucun créneau selectionné</p>
@@ -1147,22 +1178,23 @@ if ($eleve['creneau_courant'] == $i) { ?>
 		</p>
 <?php
 if ($utilisateur->getStatut() == 'professeur' && getSettingValue("active_cahiers_texte")=='y') {
-    echo '
+?>
     <p class="choix_fin">
 	    <input value="Enregistrer et passer au cahier de texte" name="cahier_texte" type="submit"/>
-    </p>';
+    </p>
+<?php
 }
 ?>
 	</form>
 </div>
 
 <?php
+	}
 }
 ?>
 </div>
 <?php
 require_once("../lib/footer.inc.php");
 
- 
- // $affiche_debug=debug_var();
+// $affiche_debug=debug_var();
  

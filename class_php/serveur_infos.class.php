@@ -153,15 +153,17 @@ class infos{
 	}
 	function defautCharset(){
 		$rep['defaut'] = $rep['toutes'] = NULL;
-		if (strpos($_SERVER['HTTP_ACCEPT_CHARSET'], "ISO-8859-1") === 0) {
+		if (isset ($_SERVER['HTTP_ACCEPT_CHARSET']) && strpos($_SERVER['HTTP_ACCEPT_CHARSET'], "ISO-8859-1") === 0) {
 			$rep['defaut'] = "ISO-8859-1";
-		}elseif (strpos($_SERVER['HTTP_ACCEPT_CHARSET'], "utf-8") === 0) {
+		}elseif (isset ($_SERVER['HTTP_ACCEPT_CHARSET']) && strpos($_SERVER['HTTP_ACCEPT_CHARSET'], "utf-8") === 0) {
 			$rep['defaut'] = "utf-8";
 		}else{
 			$rep['defaut'] = "inconnu";
 		}
-
-		$rep['toutes'] = $_SERVER['HTTP_ACCEPT_CHARSET'];
+		if (isset ($_SERVER['HTTP_ACCEPT_CHARSET'])) {
+			$rep['toutes'] = $_SERVER['HTTP_ACCEPT_CHARSET'];
+		}
+		
 
 		return $rep;
 	}

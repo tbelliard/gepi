@@ -317,7 +317,7 @@ for($i=0; $i<$total_eleves; $i++) {
     }
 
     if ($message_erreur_eleve[$id_eleve] != '') {
-	//il y a des erreurs, en evite l'enregistrement
+	//il y a des erreurs, on evite l'enregistrement
     } else {
 	if ($saisie->validate()) {
 	    $eleve->getAbsenceEleveSaisies();

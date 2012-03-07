@@ -140,6 +140,7 @@ if ($test->versionGd()) {
 		'suhosin.get.max_totalname_length', 
 		'suhosin.post.max_totalname_length', 
 		'suhosin.post.max_value_length', 
+		'suhosin.post.max_vars', 
 		'suhosin.request.max_totalname_length', 
 		'suhosin.request.max_value_length', 
 		'suhosin.request.max_vars');
