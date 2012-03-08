@@ -267,7 +267,7 @@ echo '<!--[if lt IE 7]>
 			// Saisie des avis de conseil de classe
 			if((getSettingValue("GepiRubConseilProf") == "yes")&&(is_pp($_SESSION['login']))) {
 				$barre_note.= '		<li><a href="'.$gepiPath.'/saisie/saisie_avis.php"'.insert_confirm_abandon().'>Saisie des avis de conseils de classe</a></li>'."\n";
-				$barre_note.= '		</li>'."\n";
+				//$barre_note.= '		</li>'."\n";
 			}
 
 
