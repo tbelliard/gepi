@@ -280,7 +280,7 @@ echo '<!--[if lt IE 7]>
 			// Saisie des avis de conseil de classe
 			if((getSettingValue("GepiRubConseilProf") == "yes")&&(is_pp($_SESSION['login']))) {
 				$barre_note.= '		<li><a href="'.$gepiPath.'/saisie/saisie_avis.php"'.insert_confirm_abandon().'>Saisie des avis de conseils de classe</a></li>'."\n";
-				$barre_note.= '		</li>'."\n";
+				//$barre_note.= '		</li>'."\n";
 			}
 
 
@@ -416,7 +416,7 @@ echo '<!--[if lt IE 7]>
 	$barre_eleve.= '      <li><a href="'.$gepiPath.'/groupes/mes_listes.php"'.insert_confirm_abandon().'>Mes listes CSV</a></li>'."\n";
 	$barre_eleve.= '      <li><a href="'.$gepiPath.'/impression/impression_serie.php"'.insert_confirm_abandon().'>Mes listes PDF</a></li>'."\n";
 
-	$barre_eleve.= '		<li class="plus"><a href="'.$gepiPath.'/groupes/visu_profs_class.php"'.insert_confirm_abandon().'>Équipes pédégogiques</a>'."\n";
+	$barre_eleve.= '		<li class="plus"><a href="'.$gepiPath.'/groupes/visu_profs_class.php"'.insert_confirm_abandon().'>Équipes pédagogiques</a>'."\n";
 		$barre_eleve .= '		<ul class="niveau3">'."\n";
 		foreach($tmp_mes_classes as $key => $value) {
 			$barre_eleve.= '		<li><a href="'.$gepiPath.'/groupes/visu_profs_class.php?id_classe='.$key.'"'.insert_confirm_abandon().' onclick="ouvre_popup_visu_equip('.$key.');return false;">'.$value." <em style='font-size:x-small;'>(".$tmp_mes_classes_pp[$key].")</em>".'</a></li>'."\n";
