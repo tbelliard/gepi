@@ -480,33 +480,15 @@ set_time_limit(20);
 				//on met le type courrier par défaut
 				$notification->setTypeNotification(AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER);
 
-				$responsable_eleve1 = null;
-				$responsable_eleve2 = null;
-				foreach ($traitement->getResponsablesInformationsSaisies() as $responsable_information) {
-					if ($responsable_information->getNiveauResponsabilite() == '1') {
-					$responsable_eleve1 = $responsable_information->getResponsableEleve();
-					} else if ($responsable_information->getNiveauResponsabilite() == '2') {
-					$responsable_eleve2 = $responsable_information->getResponsableEleve();
-					}
-				}
-				if ($responsable_eleve1 != null) {
-					$notification->setEmail($responsable_eleve1->getMel());
-					$notification->setTelephone($responsable_eleve1->getTelPort());
-					$notification->setAdresseId($responsable_eleve1->getAdresseId());
-					$notification->addResponsableEleve($responsable_eleve1);
-				}
-				if ($responsable_eleve2 != null) {
-					if ($responsable_eleve1 == null
-						|| $responsable_eleve2->getAdresseId() == $responsable_eleve1->getAdresseId()) {
-					$notification->addResponsableEleve($responsable_eleve2);
-					}
-				}
-				$notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_PRET_A_ENVOYER);
+				$result = $notification->preremplirResponsables();
+				if ($result) $notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_PRET_A_ENVOYER);
+
 				// on ajoute le motif au besoin
 				if (isset ($_POST["type_motif_eleve"])) {
 					$traitement->setAbsenceEleveMotif(AbsenceEleveMotifQuery::create()->findPk($_POST["type_motif_eleve"]));
 				}
 				$traitement->save();
+                                $notification->save();
 			}
 			
 			 /* */
