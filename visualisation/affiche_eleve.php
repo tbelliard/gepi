@@ -4018,9 +4018,37 @@ function eleve_suivant() {
 							for($loop_per=0;$loop_per<$nb_periode;$loop_per++) {
 								$alt=$alt*(-1);
 								echo "<tr class='lig$alt'>\n";
+								echo "<td>";
+								if (isset($tab_ele['absences'][$loop_per]['nb_absences'])) {
+									echo $tab_ele['absences'][$loop_per]['nb_absences'];
+								}
+								else {
+									echo "-";
+								}
+								echo "</td>\n";
+
+								echo "<td>";
+								if (isset($tab_ele['absences'][$loop_per]['non_justifie'])) {
+									echo $tab_ele['absences'][$loop_per]['non_justifie'];
+								}
+								else {
+									echo "-";
+								}
+								echo "</td>\n";
+
+								echo "<td>";
+								if (isset($tab_ele['absences'][$loop_per]['nb_retards'])) {
+									echo $tab_ele['absences'][$loop_per]['nb_retards'];
+								}
+								else {
+									echo "-";
+								}
+								echo "</td>\n";
+/*
 								echo "<td>".$tab_ele['absences'][$loop_per]['nb_absences']."</td>\n";
 								echo "<td>".$tab_ele['absences'][$loop_per]['non_justifie']."</td>\n";
 								echo "<td>".$tab_ele['absences'][$loop_per]['nb_retards']."</td>\n";
+*/
 								echo "</tr>\n";
 							}
 							echo "</table>\n";
