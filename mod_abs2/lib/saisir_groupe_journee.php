@@ -261,8 +261,8 @@ for($i=0;$i<count($tab_suhosin);$i++) {
 <div>
 <?php if(count($suhosin)) { ?>
 	<p style="color: red;">
-		Votre serveur est protéger par Suhosin, les valeurs de 'suhosin.post.max_vars' et de 'suhosin.request.max_vars' seront
-		peut-etre trop basses pour enregistrer tous les élèves
+		Votre serveur est protégé par Suhosin, les valeurs de 'suhosin.post.max_vars' et de 'suhosin.request.max_vars' seront
+		peut-être trop basses pour enregistrer tous les élèves
 	</p>
 <?php } ?>
 	<form method="post" action="saisir_groupe.php" id="creneau_cours_eleve">
