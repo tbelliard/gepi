@@ -519,6 +519,7 @@ $id_aid = $last_id_aid;
 $message_enregistrement .=	$message_reussite;
 
 // echo date('H:i:s').'<br />';
+//  $affiche_debug=debug_var();
 
 include("saisir_groupe.php");
 	

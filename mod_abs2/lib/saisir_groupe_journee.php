@@ -238,7 +238,7 @@ for($i=0;$i<count($tab_suhosin);$i++) {
 
 ?>
 	<script type="text/javascript">
-		<!--
+	//<![CDATA[
 		function change_bouton() {
 			var texte = "Enregistrement en cours!";
 			var depart_rd = 0;
@@ -254,8 +254,9 @@ for($i=0;$i<count($tab_suhosin);$i++) {
 			var taille_rd = document.getElementById("SavePrint2").firstChild.nodeValue.length;
 			document.getElementById("SavePrint2").firstChild.replaceData(depart_rd,taille_rd,texte);
 			document.getElementById("SavePrint2").disabled=true;
+			return true;
 }
-		//-->
+			//]]>
 	</script>
 		
 <div>
@@ -320,18 +321,22 @@ if ('cours' == $coursCreneaux) {
 					id="enregistre"
 					value="Enregistrer" 
 					style='width:25em;margin:0 auto;'
-					onclick="change_bouton();"
-					/>
+					onclick="change_bouton();" >
 				Enregistrer
 			</button>
+			
+			<input type="hidden"
+				   name="Valider"
+				   id="sauveImprime"
+				   value="Enregistrer" />
 			
 			<button type="submit"
 					name="Valider"
 					id="SavePrint"
 					value="SavePrint" 
 					style='width:25em;margin:0 auto;'
-					title ="Enregistre et crée une notification à 'état initial'"
-					onclick="change_bouton();">
+					title ="Enregistre et crée une notification à 'Pret à envoyer'"
+					onclick="document.getElementById('sauveImprime').value='SavePrint';change_bouton();" >
 				Enregistrer + notifications
 			</button>
 			
@@ -346,7 +351,7 @@ if (isset ($afficheEleve[0]['type_autorises'][0])) { ?>
 			<label for="type_motif_eleve">Motif : </label>
 			<select class="selects"
 					name="type_motif_eleve"
-					id="type_absence_eleve">
+					id="type_motif_eleve">
 				<option class="pc88" value="-1"> </option>
 				
 <?php foreach (AbsenceEleveMotifQuery::create()->orderByRank()->find() as $motif) { ?>
@@ -447,8 +452,10 @@ for($i = 0; $i<count($eleve['sequence']); $i++) {
 						class="center <?php echo $couleur; ?>"
 						>
 <?php if (intval($eleve['sequence'][$i]['duree'])) { ?>
+						<label for="active_absence_eleve_<?php echo $cpt; ?>" class="invisible"><?php echo $cpt; ?> actif</label>
 						<input type="checkbox" 
 							   name="active_absence_eleve[<?php echo $cpt; ?>]" 
+							   id="active_absence_eleve_<?php echo $cpt; ?>"
 							   />  
 						<input type="hidden" 
 							   name="id_eleve_absent[<?php echo $cpt; ?>]" 
@@ -458,8 +465,10 @@ for($i = 0; $i<count($eleve['sequence']); $i++) {
 						<br />
 <?php if (isset ($eleve['sequence'][$i]['heureDebut'])) {		 ?>	
 						
+						<label for="heure_debut_appel_<?php echo $cpt; ?>" class="invisible"><?php echo $cpt; ?> heure début appel</label>
 						<input type="text" 
 							   name="heure_debut_appel[<?php echo $cpt; ?>]"
+							   id="heure_debut_appel_<?php echo $cpt; ?>"
 							   size="5"
 							   style="font-family:sans-serif;text-align: center;"
 							   value="<?php echo date ('H:i', $eleve['sequence'][$i]['heureDebut']); ?>"
@@ -475,8 +484,10 @@ for($i = 0; $i<count($eleve['sequence']); $i++) {
 							   value="<?php echo $eleve['sequence'][$i]['id_groupe']; ?>"
 							   />
 						
+						<label for="heure_fin_appel_<?php echo $cpt; ?>" class="invisible"><?php echo $cpt; ?> heure fin appel</label>
 						<input type="text" 
 							   name="heure_fin_appel[<?php echo $cpt; ?>]"
+							   id="heure_fin_appel_<?php echo $cpt; ?>"
 							   size="5"
 							   style="font-family:sans-serif;text-align: center;"
 							   value="<?php echo date ('H:i', $eleve['sequence'][$i]['heureFin']); ?>"
@@ -489,9 +500,11 @@ for($i = 0; $i<count($eleve['sequence']); $i++) {
 $i = $i + $colspan - 1;
 $cpt++;
 } ?>		
-					<td class="center" title="Créer un traitement différent pour chaque saisie" >					
+					<td class="center" title="Créer un traitement différent pour chaque saisie" >
+						<label for="multi_traitement_<?php echo $eleve['id']; ?>" class="invisible"><?php echo $cpt; ?> traitement différent pour chaque saisie</label>					
 						<input type="checkbox" 
 							   name="multi_traitement[<?php echo $eleve['id']; ?>]" 
+							   id="multi_traitement_<?php echo $eleve['id']; ?>"
 							   />
 					</td>
 <?php if (isset ($eleve['nom_photo'])) { ?>
@@ -660,8 +673,7 @@ $numElv++;
 					id="enregistre2"
 					value="Enregistrer" 
 					style='width:25em;margin:0 auto;'
-					onclick="change_bouton();"
-					/>
+					onclick="change_bouton();" >
 				Enregistrer
 			</button>
 			
@@ -670,8 +682,8 @@ $numElv++;
 					id="SavePrint2"
 					value="SavePrint" 
 					style='width:25em;margin:0 auto;'
-					title ="Enregistre et crée une notification à 'état initial'"
-					onclick="change_bouton();">
+					title ="Enregistre et crée une notification à 'Pret à envoyer'"
+					onclick="document.getElementById('sauveImprime').value='SavePrint';change_bouton();" >
 				Enregistrer + notifications
 			</button>
 		</p>
