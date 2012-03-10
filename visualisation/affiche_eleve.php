@@ -3336,13 +3336,20 @@ function eleve_suivant() {
 
 							if($j==1) {
 								$alt_defile=1;
-								$txt_appreciations_deroulantes.="<li><table class='boireaus'><tr class='lig$alt_defile'><th rowspan='".count($num_periode)."'>".htmlspecialchars($matiere_nom[$i])."</th>";
+								//$txt_appreciations_deroulantes.="<li><table class='boireaus'><tr class='lig$alt_defile'><th rowspan='".count($num_periode)."'>".htmlspecialchars($matiere_nom[$i])."</th>";
+
+								//$txt_appreciations_deroulantes.="<li><strong>".htmlspecialchars($matiere_nom[$i])."&nbsp;:</strong>";
+								//$txt_appreciations_deroulantes.="<table class='boireaus'><tr class='lig$alt_defile'>";
+
+								$txt_appreciations_deroulantes.="<li><table class='boireaus' width='100%'><tr class='lig$alt_defile'><th colspan='2'>".htmlspecialchars($matiere_nom[$i])."</th></tr>";
+								$alt_defile=$alt_defile*(-1);
+								$txt_appreciations_deroulantes.="<tr class='lig$alt_defile'>";
 							}
 							else {
 								$alt_defile=$alt_defile*(-1);
 								$txt_appreciations_deroulantes.="<tr class='lig$alt_defile'>";
 							}
-							$txt_appreciations_deroulantes.="<td>".$j."</td>";
+							$txt_appreciations_deroulantes.="<td style='width:1em;'>".$j."</td>";
 							$txt_appreciations_deroulantes.="<td>".$app_tmp."</td></tr>";
 							if($j==count($num_periode)) {
 								$txt_appreciations_deroulantes.="</table></li>";
@@ -3394,6 +3401,8 @@ function eleve_suivant() {
 					window.onload =init_mrq;
 				//]]>
 				</script>\n";
+				//echo "<div style='display:none'><ul>$txt_appreciations_deroulantes</ul></div>";
+				//echo "<div><ul>$txt_appreciations_deroulantes</ul></div>";
 			}
 
 
