@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -2479,7 +2479,7 @@ function eleve_suivant() {
 							$app_tmp = str_replace("\n", "", $app_tmp);
 							$app_tmp = str_replace("\r\n", "", $app_tmp);
 							$app_tmp = str_replace("\r", "", $app_tmp); 
-							
+
 							$txt_appreciations_deroulantes.="<li><b>".htmlspecialchars($matiere_nom[$cpt])." : </b></br>".$app_tmp."</br></li>";
 							
 							if($type_graphe=='etoile'){
@@ -3148,6 +3148,8 @@ function eleve_suivant() {
 			$liste_matieres="";
 			$matiere=array();
 			$matiere_nom=array();
+			// Pour le déroulant des appréciations
+			$txt_appreciations_deroulantes="";
 
 			$cpt=0;
 			// Boucle sur l'ordre des matières:
@@ -3325,6 +3327,26 @@ function eleve_suivant() {
 						if((isset($tab_imagemap[$j][$i]))&&($tab_imagemap[$j][$i]!="")) {
 							$alt=$alt*(-1);
 							$texte_bulle.="<tr class='lig$alt'><td style='font-weight:bold;'>$j</td><td style='text-align:center;'>".$tab_imagemap[$j][$i]."</td></tr>\n";
+
+							// Pour le déroulant des appréciations
+							$app_tmp = $tab_imagemap[$j][$i];
+							$app_tmp = str_replace("\n", "", $app_tmp);
+							$app_tmp = str_replace("\r\n", "", $app_tmp);
+							$app_tmp = str_replace("\r", "", $app_tmp); 
+
+							if($j==1) {
+								$alt_defile=1;
+								$txt_appreciations_deroulantes.="<li><table class='boireaus'><tr class='lig$alt_defile'><th rowspan='".count($num_periode)."'>".htmlspecialchars($matiere_nom[$i])."</th>";
+							}
+							else {
+								$alt_defile=$alt_defile*(-1);
+								$txt_appreciations_deroulantes.="<tr class='lig$alt_defile'>";
+							}
+							$txt_appreciations_deroulantes.="<td>".$j."</td>";
+							$txt_appreciations_deroulantes.="<td>".$app_tmp."</td></tr>";
+							if($j==count($num_periode)) {
+								$txt_appreciations_deroulantes.="</table></li>";
+							}
 						}
 					}
 					$texte_bulle.="</table>\n";
@@ -3343,6 +3365,37 @@ function eleve_suivant() {
 
 
 			}
+
+
+			// Pour le déroulant des appréciations
+			if ($graphe_affiche_deroulant_appreciations=='oui') {
+				$graphe_hauteur_affichage_deroulant=$graphe_hauteur_affichage_deroulant."px";
+				echo "<script type='text/javascript'>
+				// <![CDATA[
+					var pas=1;
+					var h_fen='$graphe_hauteur_affichage_deroulant';
+					function scrollmrq(){
+						if (parseInt(mrq.style.top) > -h_mrq ) 
+						mrq.style.top = parseInt(mrq.style.top)-pas+'px'
+						else mrq.style.top=parseInt(h_fen)+'px'
+					}
+					function init_mrq(){
+						mrq=document.getElementById('appreciations_defile');
+						fen=document.getElementById('appreciations_deroulantes');
+						fen.onmouseover=function(){stoc=pas;pas=0};
+						fen.onmouseout=function(){pas=stoc};fen.style.height=h_fen;
+						h_mrq=mrq.offsetHeight;
+						with(mrq.style){position='absolute';top=h_fen;}
+						setInterval('scrollmrq()',50);
+					}
+		
+					document.getElementById('appreciations_defile').innerHTML='".addslashes($txt_appreciations_deroulantes)."';
+		
+					window.onload =init_mrq;
+				//]]>
+				</script>\n";
+			}
+
 
 			$sql="SELECT * FROM avis_conseil_classe WHERE login='$eleve1' ORDER BY periode;";
 			$res_avis=mysql_query($sql);
