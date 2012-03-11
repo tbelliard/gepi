@@ -359,7 +359,7 @@ if (isset($titre_page)) {
 		$tbs_bouton_taille=$gepiPath;
 	}
 
-	//$tbs_afficher_temoin_filtrage_html=getSettingValue('afficher_temoin_filtrage_html');
+	$tbs_afficher_temoin_filtrage_html=getSettingValue('afficher_temoin_filtrage_html');
 
 	//=== Nom Prénom utilisateur ===
 	if((!isset($_SESSION['prenom']))||(!isset($_SESSION['nom']))) {
