@@ -6,7 +6,7 @@
  *
  *
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -128,6 +128,13 @@ if ($test->versionGd()) {
 	else {
 		echo '
 	<li style="list-style-type:circle">La durée maximum de session est réglée à '.$session_gc_maxlifetime.' secondes, soit un maximum de '.$session_gc_maxlifetime_minutes.' minutes (<i>session.maxlifetime</i> dans le fichier php.ini).</li>';
+	}
+
+	$magic_quotes_gpc=ini_get('magic_quotes_gpc');
+	if($magic_quotes_gpc!='') {
+		echo '
+	<li style="list-style-type:circle">magic_quotes_gpc = '.$magic_quotes_gpc.'
+	</li>';
 	}
 	echo "</ul>\n";
 
