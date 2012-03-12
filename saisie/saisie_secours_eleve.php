@@ -437,7 +437,8 @@ else {
 				g.id=jgm.id_groupe AND
 				jgm.id_matiere=m.matiere AND
 				jeg.login='".$ele_login."' AND
-				jeg.periode='".$periode_num."';";
+				jeg.periode='".$periode_num."' AND
+				jeg.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletins' AND visible='n');";
 	//echo "$sql<br />\n";
 	$res_grp=mysql_query($sql);
 	if(mysql_num_rows($res_grp)==0) {
