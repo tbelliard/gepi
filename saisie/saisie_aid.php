@@ -107,7 +107,9 @@ if (isset($_POST['is_posted'])) {
 				//echo "<p>Période $k<br />";
 				if (($k >= $display_begin) and ($k <= $display_end)) {
 					$ver_periode[$k] = mysql_result($periode_query, $k-1, "verouiller");
-					if ($ver_periode[$k] == "N"){
+					//if ($ver_periode[$k] == "N"){
+					if ((($_SESSION['statut']=='secours')&&($ver_periode[$k] != "O"))||
+						(($_SESSION['statut']!='secours')&&($ver_periode[$k] == "N"))) {
 						//echo "La période n'est pas fermée en saisie.<br />";
 						//=========================
 						// AJOUT: boireaus 20071003
@@ -381,7 +383,9 @@ if (!isset($aid_id)) {
 						$current_eleve_login_n_t[$k] = $current_eleve_login."_n_t".$k;
 
 						$ver_periode[$k] = mysql_result($periode_query, $k-1, "verouiller");
-						if ($ver_periode[$k] != "N") {
+						//if ($ver_periode[$k] != "N") {
+						if ((($_SESSION['statut']=='secours')&&($ver_periode[$k] == "O"))||
+							(($_SESSION['statut']!='secours')&&($ver_periode[$k] != "N"))) {
 							echo "<td><b>";
 							if ($current_eleve_app_t[$k] != '') {
 								echo "$current_eleve_app_t[$k]";
