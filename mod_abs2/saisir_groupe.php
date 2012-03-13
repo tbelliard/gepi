@@ -413,16 +413,18 @@ if (isset($message_enregistrement)) {
 $eleve_col = new PropelCollection();
 if (isset($current_groupe) && $current_groupe != null) {
     $query = EleveQuery::create();
-    $eleve_col = $query->useJEleveGroupeQuery()
-                        ->filterByIdGroupe($current_groupe->getId())
-                        ->endUse()
-            ->where('Eleve.DateSortie<?','0')
+    if ($current_groupe->getPeriodeNoteOuverte() != null) {
+        $query->useJEleveGroupeQuery()->filterByGroupe($current_groupe)->filterByPeriode($current_groupe->getPeriodeNoteOuverte()->getNumPeriode())->endUse();
+    } else {
+        $query->useJEleveGroupeQuery()->filterByGroupe($current_groupe)->endUse();
+    }
+    $query->where('Eleve.DateSortie<?','0')
             ->orWhere('Eleve.DateSortie is NULL')
             ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve->format('U'))
             ->orderBy('Eleve.Nom','asc')
             ->orderBy('Eleve.Prenom','asc')
-            ->distinct()
-            ->find();
+            ->distinct();
+     $eleve_col = $query->find();
 } else if (isset($current_aid) && $current_aid != null) {
     $query = EleveQuery::create();
     $eleve_col = $query->useJAidElevesQuery()
@@ -437,16 +439,18 @@ if (isset($current_groupe) && $current_groupe != null) {
             ->find();
 } else if (isset($current_classe) && $current_classe != null) {
     $query = EleveQuery::create();
-    $eleve_col = $query->useJEleveClasseQuery()
-                        ->filterByIdClasse($current_classe->getId())
-                        ->endUse()
-            ->where('Eleve.DateSortie<?','0')
+    if ($current_classe->getPeriodeNoteOuverte() != null) {
+        $query->useJEleveClasseQuery()->filterByClasse($current_classe)->filterByPeriode($current_classe->getPeriodeNoteOuverte()->getNumPeriode())->endUse();
+    } else {
+        $query->useJEleveClasseQuery()->filterByClasse($current_classe)->endUse();
+    }
+    $query->where('Eleve.DateSortie<?','0')
             ->orWhere('Eleve.DateSortie is NULL')
             ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve->format('U'))
             ->orderBy('Eleve.Nom','asc')
             ->orderBy('Eleve.Prenom','asc')
-            ->distinct()
-            ->find();
+            ->distinct();
+    $eleve_col = $query->find();
 }
 
 //l'utilisateurs a-t-il deja saisie ce creneau ?
