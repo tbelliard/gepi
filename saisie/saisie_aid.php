@@ -234,6 +234,10 @@ if (isset($_POST['is_posted'])) {
 
 $call_data = mysql_query("DROP TABLE IF EXISTS $nom_table");
 $call_data = mysql_query("CREATE TEMPORARY TABLE $nom_table (id_classe integer, num integer NOT NULL)");
+$msg_pb="";
+if(!$call_data) {
+	$msg_pb="ERREUR&nbsp;: La création d'une table temporaire a échoué.<br />Le droit de créer des tables temporaires n'est peut-être pas attribué à l'utilisateur MySQL.<br />La présente page risque de ne pas fonctionner.";
+}
 $call_data = mysql_query("SELECT * FROM classes");
 $nombre_lignes = mysql_num_rows($call_data);
 $i = 0;
@@ -305,6 +309,10 @@ if (!isset($aid_id)) {
 } else {
 
 	echo " | <a href='saisie_aid.php?indice_aid=$indice_aid' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choix $nom_aid</a></p>\n";
+
+	if($msg_pb!='') {
+		echo "<p style='color:red'>$msg_pb</p>\n";
+	}
 
 	echo "<form enctype='multipart/form-data' action='saisie_aid.php' method='post'>\n";
 	echo "<center><input type='submit' value='Enregistrer' /></center>\n";
