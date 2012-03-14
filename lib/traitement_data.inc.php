@@ -231,17 +231,17 @@ foreach($_POST as $key => $value) {
 
 if(isset($NON_PROTECT)) {
 	foreach($NON_PROTECT as $key => $value) {
-	if(!is_array($value)) {
-		if ($magic_quotes) $value = stripslashes($value);
-		$NON_PROTECT[$key]=$purifier->purify($value);
-		if ($magic_quotes) $NON_PROTECT[$key] = addslashes($NON_PROTECT[$key]);
-	}
-	else {
-		foreach($NON_PROTECT[$key] as $key2 => $value2) {
-			if ($magic_quotes) $value2 = stripslashes($value2);
-			$NON_PROTECT[$key][$key2]=$purifier->purify($value2);
-			if ($magic_quotes) $NON_PROTECT[$key][$key2] = addslashes($NON_PROTECT[$key][$key2]);
+		if(!is_array($value)) {
+			if ($magic_quotes) $value = stripslashes($value);
+			$NON_PROTECT[$key]=$purifier->purify($value);
+			if ($magic_quotes) $NON_PROTECT[$key] = addslashes($NON_PROTECT[$key]);
 		}
+		else {
+			foreach($NON_PROTECT[$key] as $key2 => $value2) {
+				if ($magic_quotes) $value2 = stripslashes($value2);
+				$NON_PROTECT[$key][$key2]=$purifier->purify($value2);
+				if ($magic_quotes) $NON_PROTECT[$key][$key2] = addslashes($NON_PROTECT[$key][$key2]);
+			}
 		}
 	}
 }
