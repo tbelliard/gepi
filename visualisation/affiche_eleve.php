@@ -3322,6 +3322,8 @@ function eleve_suivant() {
 				if(isset($info_imagemap[$i])) {
 					$titre_bulle=htmlspecialchars($matiere_nom[$i]);
 
+					$compteur_periodes_app_deroul=0;
+
 					$texte_bulle="<table class='boireaus' style='margin:2px;' width='99%' summary='Imagemap'>\n";
 					$alt=1;
 					for($j=1;$j<=count($num_periode);$j++) {
@@ -3336,7 +3338,8 @@ function eleve_suivant() {
 							$app_tmp = str_replace("\r\n", "", $app_tmp);
 							$app_tmp = str_replace("\r", "", $app_tmp); 
 
-							if($j==1) {
+							//if($j==1) {
+							if($compteur_periodes_app_deroul==0) {
 								$alt_defile=1;
 								//$txt_appreciations_deroulantes.="<li><table class='boireaus'><tr class='lig$alt_defile'><th rowspan='".count($num_periode)."'>".htmlspecialchars($matiere_nom[$i])."</th>";
 
@@ -3346,6 +3349,8 @@ function eleve_suivant() {
 								$txt_appreciations_deroulantes.="<li><table class='boireaus' width='100%'><tr class='lig$alt_defile'><th colspan='2'>".htmlspecialchars($matiere_nom[$i])."</th></tr>";
 								$alt_defile=$alt_defile*(-1);
 								$txt_appreciations_deroulantes.="<tr class='lig$alt_defile'>";
+
+								$compteur_periodes_app_deroul++;
 							}
 							else {
 								$alt_defile=$alt_defile*(-1);
