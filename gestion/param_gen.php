@@ -827,7 +827,7 @@ echo add_token_field();
 			}
 		?></span>
 		</td>
-		<td><input type="text" name="sessionMaxLength" id="sessionMaxLength" size="6" value="<?php echo(getSettingValue("sessionMaxLength")); ?>" onchange='changement()' onkeydown="clavier_2(this.id,event,1,600);min_to_jourheureminsec('sessionMaxLength','sessionMaxLength_en_minutes')" />&nbsp;min<span id='sessionMaxLength_en_minutes'<?php
+		<td><input type="text" name="sessionMaxLength" id="sessionMaxLength" size="6" value="<?php echo(getSettingValue("sessionMaxLength")); ?>" onchange='changement()' onkeydown="clavier_2(this.id,event,1,600);min_to_jourheureminsec('sessionMaxLength','sessionMaxLength_en_minutes')" onblur="min_to_jourheureminsec('sessionMaxLength','sessionMaxLength_en_minutes')" autocomplete="off" />&nbsp;min<span id='sessionMaxLength_en_minutes'<?php
 		if(getSettingValue("sessionMaxLength")>$session_gc_maxlifetime_minutes) {echo " style='color:red; text-decoration: blink;'";}
 		?>></span>
 		</td>
@@ -1291,10 +1291,22 @@ responsables&nbsp;:<br />
 			if(isNaN(m)==true) {
 				// Ce n'est pas un nombre, on ne convertit pas
 				h_min=' Erreur !';
+
+				document.getElementById(id_dest).style.color='red';
+				document.getElementById(id_dest).style.textDecoration='blink';
 			}
 			else {
 				s=m*60;
 				h_min=sec_to_jourheureminsec_construction_chaine(s);
+
+				if(s<=$session_gc_maxlifetime) {
+					document.getElementById(id_dest).style.color='green';
+					document.getElementById(id_dest).style.textDecoration='none';
+				}
+				else {
+					document.getElementById(id_dest).style.color='red';
+					document.getElementById(id_dest).style.textDecoration='blink';
+				}
 			}
 			document.getElementById(id_dest).innerHTML=h_min;
 		}
