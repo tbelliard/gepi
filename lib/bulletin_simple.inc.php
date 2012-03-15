@@ -1508,12 +1508,15 @@ echo "
 	function valider_signalement_faute() {
 		signalement_id_groupe=document.getElementById('signalement_id_groupe').value;
 		signalement_login_eleve=document.getElementById('signalement_login_eleve').value;
-		signalement_message=escape(document.getElementById('signalement_message').value);
+		//signalement_message=escape(document.getElementById('signalement_message').value);
 		//signalement_message=document.getElementById('signalement_message').value;
+		signalement_message=encodeURIComponent(document.getElementById('signalement_message').value);
 
 		signalement_id_eleve=document.getElementById('signalement_id_eleve').value;
 		signalement_num_periode=document.getElementById('signalement_num_periode').value;
 		signalement_id_classe=document.getElementById('signalement_id_classe').value;
+
+		//alert(signalement_message);
 
 		new Ajax.Updater($('signalement_effectue_'+signalement_id_eleve+'_'+signalement_id_groupe+'_'+signalement_num_periode),'../lib/ajax_signaler_faute.php?signalement_login_eleve='+signalement_login_eleve+'&signalement_id_groupe='+signalement_id_groupe+'&signalement_id_classe='+signalement_id_classe+'&signalement_num_periode='+signalement_num_periode+'&signalement_message='+signalement_message+'".add_token_in_url(false)."',{method: 'get'});
 
