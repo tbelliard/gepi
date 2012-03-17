@@ -433,8 +433,7 @@ if (!isset($id_classe)) {
 	//if($v_elenoet!=""){
 	if($v_elenoet){
 	  $photo=nom_photo($v_elenoet);
-	  if("$photo"!=""){
-		//$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$v_eleve_nom_prenom\" />";
+	  if("$photo"!="") {
 		$texte.="<img src='".$photo."' width='150' alt=\"$v_eleve_nom_prenom\" />";
 		$texte.="<br />\n";
 	  }

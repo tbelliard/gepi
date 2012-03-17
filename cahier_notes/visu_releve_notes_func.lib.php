@@ -842,10 +842,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 
 			if ($activer_photo_releve=='y' and $active_module_trombinoscopes=='y') {
 				$photo=nom_photo($tab_rel['eleve'][$i]['elenoet']);
-				//echo "$photo";
-				//if("$photo"!=""){
 				if($photo){
-					//$photo="../photos/eleves/".$photo;
 					if(file_exists($photo)){
 						$dimphoto=redimensionne_image_releve($photo);
 						echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />'."\n";
@@ -984,10 +981,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 			echo "<td style=\"width: 30%;\">\n";
 			if ($activer_photo_releve=='y' and $active_module_trombinoscopes=='y') {
 				$photo=nom_photo($tab_rel['eleve'][$i]['elenoet']);
-				//echo "$photo";
-				//if("$photo"!=""){
 				if($photo){
-					//$photo="../photos/eleves/".$photo;
 					if(file_exists($photo)){
 						$dimphoto=redimensionne_image_releve($photo);
 

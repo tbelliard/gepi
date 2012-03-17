@@ -795,7 +795,6 @@ foreach ($results as $saisie) {
  	
 	    $nom_photo = $saisie->getEleve()->getNomPhoto(1);
 	    $photos = $nom_photo;
-	    //$photos = "../photos/eleves/".$nom_photo;
 	    //if (($nom_photo != "") && (file_exists($photos))) {
 	    if (($nom_photo != NULL) && (file_exists($photos))) {
 		$valeur = redimensionne_image_petit($photos);

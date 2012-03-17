@@ -1503,7 +1503,6 @@ else {
 						//onmouseover=\"this.style.backgroundColor='white'\" onmouseout=\"this.style.backgroundColor='$tmp_bgcolor'\"
 						$contenu_affichage_requete_courante.="<td>\n";
 						$contenu_affichage_requete_courante.="<a name='eleve$cpt'></a>\n";
-						//if(file_exists("../photos/eleves/".$lig->elenoet.".jpg")) {
 						if(nom_photo($lig->elenoet)) {
 							$contenu_affichage_requete_courante.="<a href='#eleve$cpt' onmouseover=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);\" onmouseout=\"cacher_div('div_photo')\" onclick=\"return false;\">";
 
