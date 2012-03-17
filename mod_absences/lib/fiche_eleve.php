@@ -227,7 +227,6 @@ if ($action === 'modifier')
 		<?php
 		if ( getSettingValue("active_module_trombinoscopes")=='y' ) {
 		$nom_photo = nom_photo($select_fiche_eleve_photo,"eleves",2);
-	             //$photos = "../../photos/eleves/".$nom_photo;
 	             $photos = $nom_photo;
 	                // if (($nom_photo == "") or (!(file_exists($photos)))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 	                 if (($nom_photo==NULL) or (!(file_exists($photos)))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }

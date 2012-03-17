@@ -1114,7 +1114,6 @@ foreach ($liste_eleves as $eleve_login) {
 					$titre="$eleve_nom $eleve_prenom";
 
 					$texte="<div align='center'>\n";
-					//$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$eleve_nom $eleve_prenom\" />";
 					$texte.="<img src='".$photo."' width='150' alt=\"$eleve_nom $eleve_prenom\" />";
 					$texte.="<br />\n";
 					$texte.="</div>\n";
@@ -1500,20 +1499,6 @@ foreach ($liste_eleves as $eleve_login) {
 		}
 		//==========================
 
-		/*
-
-			$titre=$v_eleve_nom_prenom1;
-			$texte="<div align='center'>\n";
-			$photo=nom_photo($v_elenoet1);
-			if("$photo"!=""){
-				$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$v_eleve_nom_prenom1\" />";
-				$texte.="<br />\n";
-			}
-			$texte.="</div>\n";
-
-			$tabdiv_infobulle[]=creer_div_infobulle('info_popup_eleve1',$titre,"",$texte,"",14,0,'y','y','n','n')
-		*/
-
 		echo "</div></th>\n";
 		echo "</tr>\n";
 
@@ -1526,16 +1511,6 @@ foreach ($liste_eleves as $eleve_login) {
 		$k=1;
 		$alt=1;
 		while ($k < $nb_periode) {
-
-			/*
-			$current_id_classe="";
-			$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$eleve_login' AND periode='$k';";
-			$res_classe=mysql_query($sql);
-			if(mysql_num_rows($res_classe)>0) {
-				$lig_classe=mysql_fetch_object($res_classe);
-				$current_id_classe=$lig_classe->id_classe;
-			}
-			*/
 
 			$alt=$alt*(-1);
 			if ($current_group["classe"]["ver_periode"]["all"][$k] == 0) {

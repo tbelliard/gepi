@@ -614,10 +614,6 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 
 								// Récupération du nom de la photo en tenant compte des histoires des zéro 02345.jpg ou 2345.jpg
 								$photo=nom_photo($reg_no_gep);
-/*
-								if("$photo"!=""){
-									if(unlink("../photos/eleves/$photo")){
- */
 								if($photo){
 									if(unlink($photo)){
 										$msg.="La photo ".$photo." a été supprimée. ";
@@ -739,10 +735,6 @@ elseif($_SESSION['statut']=="professeur"){
 
 							// Récupération du nom de la photo en tenant compte des histoires des zéro 02345.jpg ou 2345.jpg
 							$photo=nom_photo($reg_no_gep);
-/*
-							if("$photo"!=""){
-								if(unlink("../photos/eleves/$photo")){
- */
 							if($photo){
 								if(unlink($photo)){
 									$msg.="La photo ".$photo." a été supprimée. ";
@@ -1705,7 +1697,6 @@ if(isset($reg_no_gep)){
 	$temoin_photo="non";
 	//echo "<td>\$photo=$photo</td>";
 	if($photo){
-		//$photo="../photos/eleves/".$photo;
 		if(file_exists($photo)){
 			$temoin_photo="oui";
 			//echo "<td>\n";

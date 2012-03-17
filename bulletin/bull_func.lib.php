@@ -528,12 +528,8 @@ width:".$largeur1."%;\n";
 				//echo "$photo";
 				//if("$photo"!=""){
 				if($photo){
-					//$photo="../photos/eleves/".$photo;
-					//if(file_exists($photo)){
-						//$dimphoto=redimensionne_image($photo);
-						$dimphoto=redimensionne_image_b($photo);
-						echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />'."\n";
-					//}
+					$dimphoto=redimensionne_image_b($photo);
+					echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />'."\n";
 				}
 			}
 
@@ -667,7 +663,6 @@ width:".$largeur1."%;\n";
 				$photo=nom_photo($tab_bull['eleve'][$i]['elenoet']);
 				//echo "$photo";
 				if("$photo"!=""){
-					//$photo="../photos/eleves/".$photo;
 					if(file_exists($photo)){
 						echo '<img src="'.$photo.'" style="width: 60px; height: 80px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />'."\n";
 					}
@@ -1861,17 +1856,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$ajouter = '0';
 			}
 
-			/*
-			$photo[$i]="../photos/eleves/".$tab_bull['eleve'][$i]['elenoet'].".jpg";
-			if(!file_exists($photo[$i])) {
-				$photo[$i]="../photos/eleves/0".$tab_bull['eleve'][$i]['elenoet'].".jpg";
-			}
-			*/
-			$photo[$i]=$rep_photos.$tab_bull['eleve'][$i]['elenoet'].".jpg";
-			if(!file_exists($photo[$i])) {
-				$photo[$i]=$rep_photos."0".$tab_bull['eleve'][$i]['elenoet'].".jpg";
-			}
-
+			$photo[$i]=nom_photo($tab_bull['eleve'][$i]['elenoet']);
 
 			if($tab_modele_pdf["active_photo"][$classe_id]==='1' and $photo[$i]!='' and file_exists($photo[$i])) {
 				$L_photo_max = ($hauteur_cadre_eleve - ( $ajouter * 2 )) * 2.8;

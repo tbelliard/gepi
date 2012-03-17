@@ -54,7 +54,7 @@ if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 	$rep_photos='../photos/'.$_COOKIE['RNE'].'/eleves';
 }
 else {
-	$rep_photos='../photos/eleves';		
+	$rep_photos='../photos/eleves';
 }
 
 if((isset($_POST['is_posted']))&&(isset($_POST['supprimer']))) {
@@ -124,7 +124,6 @@ else {
 					//echo ", \n";
 					$chaine.=", \n";
 				}
-				//echo "<a href='../photos/eleves/$file'>$file</a>";
 				$chaine.="<a href='".$rep_photos."/$file' target='blank'>$file</a>";
 				$n++;
 			}

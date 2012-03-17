@@ -91,7 +91,7 @@ if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 
 }
 else {
-  $rep_photos='../photos/eleves/';
+	$rep_photos='../photos/eleves/';
 }
 
 $tab_regimes_autorises=array('d/p', 'int.', 'ext.', 'i-e');
@@ -729,7 +729,6 @@ if (!isset($quelles_classes)) {
 				$cpt_photo_manquante=0;
 				while($lig_tmp=mysql_fetch_object($test_elenoet_ok)){
 					$test_photo=nom_photo($lig_tmp->elenoet);
-					//if((!file_exists("../photos/eleves/".$lig_tmp->elenoet.".jpg"))&&(!file_exists("../photos/eleves/0".$lig_tmp->elenoet.".jpg"))){
 					if($test_photo==""){
 						$cpt_photo_manquante++;
 					}
@@ -1353,7 +1352,6 @@ if(isset($quelles_classes)) {
 				$i=0;
 				while($lig_tmp=mysql_fetch_object($test_elenoet_ok)) {
 					$test_photo=nom_photo($lig_tmp->elenoet);
-					//if((!file_exists("../photos/eleves/".$lig_tmp->elenoet.".jpg"))&&(!file_exists("../photos/eleves/0".$lig_tmp->elenoet.".jpg"))){
 					if($test_photo==""){
 						//if($chaine_photo_manquante!=""){$chaine_photo_manquante.=" OR ";}
 						//$chaine_photo_manquante.="elenoet='$lig_tmp->elenoet'";
@@ -1746,8 +1744,6 @@ if(isset($quelles_classes)) {
 				$temoin_photo="y";
 
 				$tabdiv_infobulle[]=creer_div_infobulle('photo_'.$eleve_login,$titre,"",$texte,"",14,0,'y','y','n','n');
-
-				//echo "<a href='../photos/eleves/$photo' target='_blank' onmouseover=\"afficher_div('photo_$eleve_login','y',-20,20);\">";
 
 				echo "<a href='".$photo."' target='_blank' onmouseover=\"delais_afficher_div('photo_$eleve_login','y',-20,20,500,40,30);\">";
 

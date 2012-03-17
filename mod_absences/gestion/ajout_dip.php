@@ -306,7 +306,6 @@ if ($action == "ajouter" or $action == "modifier" or $erreur = 1)
               if (getSettingValue("active_module_trombinoscopes")=='y') {
                    	  $nom_photo = '';
                       $nom_photo = nom_photo($id_eleve_photo,"eleves",2);
-                      //$photo = "../../photos/eleves/".$nom_photo;
                       //if ( $nom_photo === '' or !file_exists($photo) ) { $photo = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 					  if ( $nom_photo === NULL or !file_exists($photo) ) { $photo = "../../mod_trombinoscopes/images/trombivide.jpg"; }
                       $valeur=redimensionne_image($photo);
