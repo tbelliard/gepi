@@ -665,7 +665,8 @@ else{
 					}
 					echo "<td style='font-weight:bold;'>$lig_ant->annee : </td>\n";
 
-					$sql="SELECT DISTINCT num_periode,nom_periode FROM archivage_disciplines WHERE annee='$lig_ant->annee' ORDER BY num_periode ASC";
+					//$sql="SELECT DISTINCT num_periode,nom_periode FROM archivage_disciplines WHERE annee='$lig_ant->annee' ORDER BY num_periode ASC";
+					$sql="SELECT DISTINCT num_periode FROM archivage_disciplines WHERE annee='$lig_ant->annee' ORDER BY num_periode ASC";
 					$res_ant2=mysql_query($sql);
 
 					if(mysql_num_rows($res_ant2)==0){
@@ -674,7 +675,8 @@ else{
 					else{
 						$cpt=0;
 						while($lig_ant2=mysql_fetch_object($res_ant2)){
-							echo "<td style='text-align:center;'><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;aff_classe=y&amp;annee_scolaire=$lig_ant->annee&amp;num_periode=$lig_ant2->num_periode&amp;mode=bull_simp'>$lig_ant2->nom_periode</a></td>\n";
+							//echo "<td style='text-align:center;'><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;aff_classe=y&amp;annee_scolaire=$lig_ant->annee&amp;num_periode=$lig_ant2->num_periode&amp;mode=bull_simp'>$lig_ant2->nom_periode</a></td>\n";
+							echo "<td style='text-align:center;'><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;aff_classe=y&amp;annee_scolaire=$lig_ant->annee&amp;num_periode=$lig_ant2->num_periode&amp;mode=bull_simp'>Période $lig_ant2->num_periode</a></td>\n";
 							$cpt++;
 						}
 					}
