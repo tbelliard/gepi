@@ -2373,14 +2373,14 @@ if($temoin_note_sup10=='y') {
 }
 
 if($temoin_note_bonus=='y') {
-	if($temoin_note_bonus==1) {
+	if($nb_note_bonus==1) {
 		echo "<p>Il y a une matière à bonus&nbsp;: ";
 	}
 	else {
-		echo "<p>Il y a ".$temoin_note_bonus." matières à bonus&nbsp;: ";
+		echo "<p>Il y a ".$nb_note_bonus." matières à bonus&nbsp;: ";
 	}
 
-	echo "seuls les points au-dessus de 10/20 comptent (<em>éventuellement pondérés</em>), mais leur coefficient n'est pas intégré dans le total des coefficients. (<em>règle appliquée aux options du Baccalauréat, par ex.</em>)'</p>\n";
+	echo "seuls les points au-dessus de 10/20 comptent (<em>éventuellement pondérés</em>), mais leur coefficient n'est pas intégré dans le total des coefficients. (<em>règle appliquée aux options du Baccalauréat, par ex.</em>).</p>\n";
 }
 
 if($vtn_coloriser_resultats=='y') {
