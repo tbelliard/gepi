@@ -4232,6 +4232,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 										}
 										$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'cla.'.$valeur,'LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 									}
+
 									if($tab_modele_pdf["active_moyenne_min"][$classe_id]==='1') {
 										//if ($tab_bull['eleve'][$i]['moy_min_classe_grp'][$m]=="-") {
 										if (($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_min']=="-")||($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_min']=="")) {
@@ -4241,6 +4242,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 										}
 										$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'min.'.$valeur,'LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 									}
+
 									if($tab_modele_pdf["active_moyenne_max"][$classe_id]==='1') {
 										//if ($tab_bull['eleve'][$i]['moy_max_classe_grp'][$m]=="-") {
 										if (($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_max']=="-")||($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_max']=="")) {
@@ -5298,7 +5300,15 @@ $hauteur_pris_app_abs=0;
 					$pp_classe[$i]="";
 				}
 				//$pdf->MultiCellTag(200, 5, ($pp_classe[$i]), '', 'J', '');
-				$pdf->ext_MultiCellTag(200, 5, ($pp_classe[$i]), '', 'J', '');
+				//$pdf->ext_MultiCellTag(200, 5, ($pp_classe[$i]), '', 'J', '');
+
+				$taille_max_police=$taille;
+				$taille_min_police=ceil($taille_max_police/3);
+				//$largeur_dispo=200;
+				$largeur_dispo=$tab_modele_pdf["longeur_avis_cons"][$classe_id];
+				$h_cell=5;
+				cell_ajustee($pp_classe[$i],$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+
 			}
 
 			//if($avec_coches_mentions=="y") {
