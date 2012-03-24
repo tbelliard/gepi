@@ -5279,7 +5279,7 @@ $hauteur_pris_app_abs=0;
 				$Y_pp_aff=$Y_avis_cons_init+$hauteur_avis_cons_init-5;
 
 				$pdf->SetXY($X_pp_aff,$Y_pp_aff);
-				if ( $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id] != '' and $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id] < '15' ) {
+				if ( $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id] != '' and is_numeric($tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id]) and $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id]>0 and $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id] < '15' ) {
 					$taille = $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id];
 				} else {
 					$taille = '10';
