@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -644,7 +644,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 									if(is_uploaded_file($filephoto_tmp)){
 										$dest_file=$rep_photos.$reg_no_gep.".jpg";
 										//echo "\$dest_file=$dest_file<br />";
-										$source_file=stripslashes("$filephoto_tmp");
+										//$source_file=stripslashes("$filephoto_tmp");
 										$res_copy=copy("$source_file" , "$dest_file");
 										if($res_copy){
 											$msg.="Mise en place de la photo effectuée.";
@@ -765,7 +765,7 @@ elseif($_SESSION['statut']=="professeur"){
 
 								if(is_uploaded_file($filephoto_tmp)){
 									$dest_file=$rep_photos.$reg_no_gep.jpg;
-									$source_file=stripslashes("$filephoto_tmp");
+									//$source_file=stripslashes("$filephoto_tmp");
 									$res_copy=copy("$source_file" , "$dest_file");
 									if($res_copy){
 										$msg.="Mise en place de la photo effectuée.";
