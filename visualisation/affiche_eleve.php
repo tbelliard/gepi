@@ -1516,46 +1516,15 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			$lig_elenoet=mysql_fetch_object($res_elenoet);
 			$elenoet1=$lig_elenoet->elenoet;
 
-			/*
-			//if(file_exists("$chemin_photos/$eleve1.jpg")) {
-			if(file_exists("../photos/eleves/$elenoet1.jpg")) {
-				// Récupérer les dimensions de la photo...
-				//$dimimg=getimagesize("../photos/$eleve1.jpg");
-				$dimimg=getimagesize("../photos/eleves/$elenoet1.jpg");
-				//echo "$dimimg[0] et $dimimg[1]";
-
-				$largimg=$largeur_imposee_photo;
-				$hautimg=round($dimimg[1]*$largeur_imposee_s$dimimg[0]);
-
-				//echo "<img src='../photos/$eleve1.jpg' width='$largimg' height='$hautimg'>\n";
-				echo "<img src='../photos/eleves/$elenoet1.jpg' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
-			}
-			elseif(file_exists("../photos/eleves/0$elenoet1.jpg")) {
-				// Récupérer les dimensions de la photo...
-				//$dimimg=getimagesize("../photos/$eleve1.jpg");
-				$dimimg=getimagesize("../photos/eleves/0$elenoet1.jpg");
-				//echo "$dimimg[0] et $dimimg[1]";
+			$photo=nom_photo($elenoet1);
+			//if("$photo"!="") {
+			if ($photo) {
+				$dimimg=getimagesize($photo);
 
 				$largimg=$largeur_imposee_photo;
 				$hautimg=round($dimimg[1]*$largeur_imposee_photo/$dimimg[0]);
 
-				//echo "<img src='../photos/$eleve1.jpg' width='$largimg' height='$hautimg'>\n";
-				echo "<img src='../photos/eleves/0$elenoet1.jpg' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
-			}
-			*/
-			$photo=nom_photo($elenoet1);
-			//if("$photo"!="") {
-			  if ($photo) {
-				//if(file_exists("../photos/eleves/$photo")) {
-					//$dimimg=getimagesize("../photos/eleves/$photo");
-					$dimimg=getimagesize($photo);
-
-					$largimg=$largeur_imposee_photo;
-					$hautimg=round($dimimg[1]*$largeur_imposee_photo/$dimimg[0]);
-
-					//echo "<img src='../photos/eleves/$photo' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
-					echo "<img src='".$photo."' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
-				//}
+				echo "<img src='".$photo."' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
 			}
 
 		}
@@ -3322,6 +3291,8 @@ function eleve_suivant() {
 				if(isset($info_imagemap[$i])) {
 					$titre_bulle=htmlspecialchars($matiere_nom[$i]);
 
+					$compteur_periodes_app_deroul=0;
+
 					$texte_bulle="<table class='boireaus' style='margin:2px;' width='99%' summary='Imagemap'>\n";
 					$alt=1;
 					for($j=1;$j<=count($num_periode);$j++) {
@@ -3336,7 +3307,8 @@ function eleve_suivant() {
 							$app_tmp = str_replace("\r\n", "", $app_tmp);
 							$app_tmp = str_replace("\r", "", $app_tmp); 
 
-							if($j==1) {
+							//if($j==1) {
+							if($compteur_periodes_app_deroul==0) {
 								$alt_defile=1;
 								//$txt_appreciations_deroulantes.="<li><table class='boireaus'><tr class='lig$alt_defile'><th rowspan='".count($num_periode)."'>".htmlspecialchars($matiere_nom[$i])."</th>";
 
@@ -3346,6 +3318,8 @@ function eleve_suivant() {
 								$txt_appreciations_deroulantes.="<li><table class='boireaus' width='100%'><tr class='lig$alt_defile'><th colspan='2'>".htmlspecialchars($matiere_nom[$i])."</th></tr>";
 								$alt_defile=$alt_defile*(-1);
 								$txt_appreciations_deroulantes.="<tr class='lig$alt_defile'>";
+
+								$compteur_periodes_app_deroul++;
 							}
 							else {
 								$alt_defile=$alt_defile*(-1);

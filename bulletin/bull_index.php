@@ -2432,6 +2432,15 @@ else {
 
 										$n++;
 									}
+
+
+									// Initialisation pour le cas d'une période avec appréciation seule (note sur une autre préiode)
+									$tab_ele['aid_b'][$zz]['aid_note']='-';
+									$tab_ele['aid_b'][$zz]['aid_statut']='';
+									$tab_ele['aid_b'][$zz]['aid_note_moyenne']='-';
+									$tab_ele['aid_b'][$zz]['aid_note_max']='-';
+									$tab_ele['aid_b'][$zz]['aid_note_min']='-';
+
 									//------
 									// On appelle l'appréciation de l'élève, et sa note
 									//------
@@ -2589,6 +2598,15 @@ else {
 
 										$n++;
 									}
+
+									// Initialisation pour le cas d'une période avec appréciation seule (note sur une autre préiode)
+									$tab_ele['aid_e'][$zz]['aid_note']='-';
+									$tab_ele['aid_e'][$zz]['aid_statut']='';
+									$tab_ele['aid_e'][$zz]['aid_note_moyenne']='-';
+									$tab_ele['aid_e'][$zz]['aid_note_max']='-';
+									$tab_ele['aid_e'][$zz]['aid_note_min']='-';
+
+
 									//------
 									// On appelle l'appréciation de l'élève, et sa note
 									//------

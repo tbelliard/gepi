@@ -96,7 +96,6 @@ function infobulle_photo($eleve_login) {
 		$titre="$eleve_nom $eleve_prenom";
 
 		$texte="<div align='center'>\n";
-		//$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$eleve_nom $eleve_prenom\" />";
 		$texte.="<img src='".$photo."' width='150' alt=\"$eleve_nom $eleve_prenom\" />";
 		$texte.="<br />\n";
 		$texte.="</div>\n";

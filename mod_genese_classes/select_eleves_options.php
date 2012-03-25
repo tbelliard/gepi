@@ -576,7 +576,6 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			echo "<tr id='tr_eleve_$cpt' class='white_hover'>\n";
 			echo "<td>\n";
 			echo "<a name='eleve$cpt'></a>\n";
-			//if(file_exists("../photos/eleves/".$lig->elenoet.".jpg")) {
 			if(nom_photo($lig->elenoet)) {
 				echo "<a href='#eleve$cpt' onclick=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);return false;\">";
 				echo strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
@@ -939,8 +938,6 @@ echo "<div id='div_test_aff_classe2' class='infobulle_corps' style='position:abs
 
 $titre="<span id='entete_div_photo_eleve'>Elève</span>";
 $texte="<div id='corps_div_photo_eleve' align='center'>\n";
-//$texte.="<img src='../photos/eleves/".$photo."' id='id_photo_eleve' width='150' alt=\"Photo\" />";
-//$texte.="<img src='../photos/eleves/".$photo."' id='id_photo_eleve' width='150' alt=\"Photo\" />";
 $texte.="<br />\n";
 $texte.="</div>\n";
 

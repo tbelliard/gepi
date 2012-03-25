@@ -79,7 +79,8 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='csv')) {
 		$chaine_titre=$current_group['name']."_".preg_replace("/,/","_",$current_group['classlist_string']);
 	}
 
-	$nom_fic=$chaine_titre."_".$now.".csv";
+	//$nom_fic=$chaine_titre."_".$now.".csv";
+	$nom_fic=$chaine_titre."_".$now;
 
 	// Filtrer les caractères dans le nom de fichier:
 	$nom_fic=preg_replace("/[^a-zA-Z0-9_\.-]/","",remplace_accents($nom_fic,'all'));
@@ -101,6 +102,8 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='csv')) {
 		$fd.=preg_replace("/&#039;/","'",html_entity_decode($lignes_csv[$j])."\n");
 	}
 
+	$nom_fic.=".csv";
+
 	send_file_download_headers('text/x-csv',$nom_fic);
 	//echo $fd;
 	echo echo_csv_encoded($fd);
@@ -115,10 +118,13 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 		$chaine_titre=$current_group['name']."_".preg_replace("/,/","_",$current_group['classlist_string']);
 	}
 
-	$nom_fic=$chaine_titre."_".$now.".pdf";
+	//$nom_fic=$chaine_titre."_".$now.".pdf";
+	$nom_fic=$chaine_titre."_".$now;
 
 	// Filtrer les caractères dans le nom de fichier:
 	$nom_fic=preg_replace("/[^a-zA-Z0-9_\.-]/","",remplace_accents($nom_fic,'all'));
+
+	$nom_fic.=".pdf";
 
 	//include("get_param_pdf.php");
 

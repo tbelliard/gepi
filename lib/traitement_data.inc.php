@@ -193,7 +193,6 @@ if ((!(in_array(mb_substr($url['path'], mb_strlen($gepiPath)),$liste_scripts_non
 array_walk($_SERVER, 'anti_inject');
 array_walk($_COOKIE, 'anti_inject');
 
-
 $config = HTMLPurifier_Config::createDefault();
 $config->set('Core.Encoding', 'utf-8'); // replace with your encoding
 $config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
@@ -202,30 +201,30 @@ $magic_quotes = get_magic_quotes_gpc();
 
 foreach($_GET as $key => $value) {
 	if(!is_array($value)) {
-                if ($magic_quotes) $value = stripslashes($value);
+		if ($magic_quotes) $value = stripslashes($value);
 		$_GET[$key]=$purifier->purify($value);
-                if ($magic_quotes) $_GET[$key] = addslashes($_GET[$key]);
+		if ($magic_quotes) $_GET[$key] = addslashes($_GET[$key]);
 	}
 	else {
 		foreach($_GET[$key] as $key2 => $value2) {
-                        if ($magic_quotes) $value2 = stripslashes($value2);
+			if ($magic_quotes) $value2 = stripslashes($value2);
 			$_GET[$key][$key2]=$purifier->purify($value2);
-                        if ($magic_quotes) $_GET[$key][$key2] = addslashes($_GET[$key][$key2]);
+			if ($magic_quotes) $_GET[$key][$key2] = addslashes($_GET[$key][$key2]);
 		}
 	}
 }
 
 foreach($_POST as $key => $value) {
 	if(!is_array($value)) {
-                if ($magic_quotes) $value = stripslashes($value);
+		if ($magic_quotes) $value = stripslashes($value);
 		$_POST[$key]=$purifier->purify($value);
-                if ($magic_quotes) $_POST[$key] = addslashes($_POST[$key]);
+		if ($magic_quotes) $_POST[$key] = addslashes($_POST[$key]);
 	}
 	else {
 		foreach($_POST[$key] as $key2 => $value2) {
-                        if ($magic_quotes) $value2 = stripslashes($value2);
+			if ($magic_quotes) $value2 = stripslashes($value2);
 			$_POST[$key][$key2]=$purifier->purify($value2);
-                        if ($magic_quotes) $_POST[$key][$key2] = addslashes($_POST[$key][$key2]);
+			if ($magic_quotes) $_POST[$key][$key2] = addslashes($_POST[$key][$key2]);
 		}
 	}
 }
@@ -233,15 +232,15 @@ foreach($_POST as $key => $value) {
 if(isset($NON_PROTECT)) {
 	foreach($NON_PROTECT as $key => $value) {
 		if(!is_array($value)) {
-                    if ($magic_quotes) $value = stripslashes($value);
-		    $NON_PROTECT[$key]=$purifier->purify($value);
-                    if ($magic_quotes) $NON_PROTECT[$key] = addslashes($NON_PROTECT[$key]);
+			if ($magic_quotes) $value = stripslashes($value);
+			$NON_PROTECT[$key]=$purifier->purify($value);
+			if ($magic_quotes) $NON_PROTECT[$key] = addslashes($NON_PROTECT[$key]);
 		}
 		else {
 			foreach($NON_PROTECT[$key] as $key2 => $value2) {
-                                if ($magic_quotes) $value2 = stripslashes($value2);
+				if ($magic_quotes) $value2 = stripslashes($value2);
 				$NON_PROTECT[$key][$key2]=$purifier->purify($value2);
-                                if ($magic_quotes) $NON_PROTECT[$key][$key2] = addslashes($NON_PROTECT[$key][$key2]);
+				if ($magic_quotes) $NON_PROTECT[$key][$key2] = addslashes($NON_PROTECT[$key][$key2]);
 			}
 		}
 	}

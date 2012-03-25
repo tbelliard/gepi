@@ -377,8 +377,7 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 		if($v_elenoet1!=""){
 			$photo=nom_photo($v_elenoet1);
 			//if("$photo"!=""){
-			if($photo){
-				//$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$v_eleve_nom_prenom1\" />";
+			if($photo) {
 				$texte.="<img src='".$photo."' width='150' alt=\"$v_eleve_nom_prenom1\" />";
 				$texte.="<br />\n";
 			}
@@ -418,8 +417,7 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 		if($v_elenoet2!=""){
 			$photo=nom_photo($v_elenoet2);
 			//if("$photo"!=""){
-			if($photo){
-				//$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$v_eleve_nom_prenom2\" />";
+			if($photo) {
 				$texte.="<img src='".$photo."' width='150' alt=\"$v_eleve_nom_prenom2\" />";
 				$texte.="<br />\n";
 			}

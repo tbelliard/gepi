@@ -2739,27 +2739,25 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 	  $repertoire2="";
 	}
 
+
 	// Cas des élèves
 	if ($repertoire == "eleves") {
-	  
-	  if($_elenoet_ou_login!='') {
 
-		// on vérifie si la photo existe
+		if($_elenoet_ou_login!='') {
 
-		if(file_exists($chemin."../photos/".$repertoire2."eleves/".$_elenoet_ou_login.".jpg")) {
-			$photo=$chemin."../photos/".$repertoire2."eleves/".$_elenoet_ou_login.".jpg";
-		}
-		else if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y')
-		{
-		  // En multisite, on recherche aussi avec les logins
-		  if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-			// On récupère le login de l'élève
-			$sql = 'SELECT login FROM eleves WHERE elenoet = "'.$_elenoet_ou_login.'"';
-			$query = mysql_query($sql);
-			$_elenoet_ou_login = mysql_result($query, 0,'login');
-		  }
+			// on vérifie si la photo existe
 
-		  if(file_exists($chemin."../photos/".$repertoire2."eleves/$_elenoet_ou_login.jpg")) {
+			if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+				// En multisite, on recherche aussi avec les logins
+				if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+					// On récupère le login de l'élève
+					$sql = 'SELECT login FROM eleves WHERE elenoet = "'.$_elenoet_ou_login.'"';
+					$query = mysql_query($sql);
+					$_elenoet_ou_login = mysql_result($query, 0,'login');
+				}
+			}
+
+			if(file_exists($chemin."../photos/".$repertoire2."eleves/$_elenoet_ou_login.jpg")) {
 				$photo=$chemin."../photos/".$repertoire2."eleves/$_elenoet_ou_login.jpg";
 			}
 			else {
@@ -2779,8 +2777,6 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 			}
 
 		}
-
-	  }
 	}
 	// Cas des non-élèves
 	else {

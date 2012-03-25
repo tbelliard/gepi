@@ -499,7 +499,8 @@ else{
 	$titre=casse_mot(getSettingValue("gepi_denom_boite"),'majf2')." : ".$nom_conteneur." (".$nom_periode.")";
 }
 
-$titre_pdf = urlencode(utf8_decode($titre));
+//$titre_pdf = urlencode(utf8_decode($titre));
+$titre_pdf = urlencode($titre);
 if ($id_devoir != 0) {$titre .= " - SAISIE";} else {$titre .= " - VISUALISATION";}
 
 echo "<script type=\"text/javascript\" language=\"javascript\">";

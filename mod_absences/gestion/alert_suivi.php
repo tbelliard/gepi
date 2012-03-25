@@ -525,7 +525,6 @@ function twAfficheCache(nObjet,nEtat) {
 			<?php
 			if ( getSettingValue("active_module_trombinoscopes")=='y' ) {
 			    $nom_photo = nom_photo($elenoet_eleve,"eleves",2);
-			    //if ($nom_photo != "") $photos = "../../photos/eleves/".$nom_photo;
 			    if ($nom_photo != NULL) $photos = $nom_photo;
 			    //if ((!(file_exists($photos))) or ($nom_photo == "")) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 			    if ((!(file_exists($photos))) or ($nom_photo == NULL)) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }

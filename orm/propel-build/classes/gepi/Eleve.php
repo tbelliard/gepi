@@ -984,7 +984,6 @@ class Eleve extends BaseEleve {
 					for($i=0;$i<5;$i++){
 						if(mb_substr($_elenoet_ou_login,$i,1)=="0"){
 							$test_photo=mb_substr($_elenoet_ou_login,$i+1);
-							//if(file_exists($chemin."../photos/eleves/".$test_photo.".jpg")){
 							if(($test_photo!='')&&(file_exists($chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg"))) {
 								$photo=$chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg";
 								break;

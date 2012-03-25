@@ -528,12 +528,8 @@ width:".$largeur1."%;\n";
 				//echo "$photo";
 				//if("$photo"!=""){
 				if($photo){
-					//$photo="../photos/eleves/".$photo;
-					//if(file_exists($photo)){
-						//$dimphoto=redimensionne_image($photo);
-						$dimphoto=redimensionne_image_b($photo);
-						echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />'."\n";
-					//}
+					$dimphoto=redimensionne_image_b($photo);
+					echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />'."\n";
 				}
 			}
 
@@ -667,7 +663,6 @@ width:".$largeur1."%;\n";
 				$photo=nom_photo($tab_bull['eleve'][$i]['elenoet']);
 				//echo "$photo";
 				if("$photo"!=""){
-					//$photo="../photos/eleves/".$photo;
 					if(file_exists($photo)){
 						echo '<img src="'.$photo.'" style="width: 60px; height: 80px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />'."\n";
 					}
@@ -1861,17 +1856,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$ajouter = '0';
 			}
 
-			/*
-			$photo[$i]="../photos/eleves/".$tab_bull['eleve'][$i]['elenoet'].".jpg";
-			if(!file_exists($photo[$i])) {
-				$photo[$i]="../photos/eleves/0".$tab_bull['eleve'][$i]['elenoet'].".jpg";
-			}
-			*/
-			$photo[$i]=$rep_photos.$tab_bull['eleve'][$i]['elenoet'].".jpg";
-			if(!file_exists($photo[$i])) {
-				$photo[$i]=$rep_photos."0".$tab_bull['eleve'][$i]['elenoet'].".jpg";
-			}
-
+			$photo[$i]=nom_photo($tab_bull['eleve'][$i]['elenoet']);
 
 			if($tab_modele_pdf["active_photo"][$classe_id]==='1' and $photo[$i]!='' and file_exists($photo[$i])) {
 				$L_photo_max = ($hauteur_cadre_eleve - ( $ajouter * 2 )) * 2.8;
@@ -4247,6 +4232,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 										}
 										$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'cla.'.$valeur,'LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 									}
+
 									if($tab_modele_pdf["active_moyenne_min"][$classe_id]==='1') {
 										//if ($tab_bull['eleve'][$i]['moy_min_classe_grp'][$m]=="-") {
 										if (($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_min']=="-")||($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_min']=="")) {
@@ -4256,6 +4242,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 										}
 										$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'min.'.$valeur,'LR',2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 									}
+
 									if($tab_modele_pdf["active_moyenne_max"][$classe_id]==='1') {
 										//if ($tab_bull['eleve'][$i]['moy_max_classe_grp'][$m]=="-") {
 										if (($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_max']=="-")||($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_max']=="")) {
@@ -5292,7 +5279,7 @@ $hauteur_pris_app_abs=0;
 				$Y_pp_aff=$Y_avis_cons_init+$hauteur_avis_cons_init-5;
 
 				$pdf->SetXY($X_pp_aff,$Y_pp_aff);
-				if ( $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id] != '' and $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id] < '15' ) {
+				if ( $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id] != '' and is_numeric($tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id]) and $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id]>0 and $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id] < '15' ) {
 					$taille = $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id];
 				} else {
 					$taille = '10';
@@ -5313,7 +5300,15 @@ $hauteur_pris_app_abs=0;
 					$pp_classe[$i]="";
 				}
 				//$pdf->MultiCellTag(200, 5, ($pp_classe[$i]), '', 'J', '');
-				$pdf->ext_MultiCellTag(200, 5, ($pp_classe[$i]), '', 'J', '');
+				//$pdf->ext_MultiCellTag(200, 5, ($pp_classe[$i]), '', 'J', '');
+
+				$taille_max_police=$taille;
+				$taille_min_police=ceil($taille_max_police/3);
+				//$largeur_dispo=200;
+				$largeur_dispo=$tab_modele_pdf["longeur_avis_cons"][$classe_id];
+				$h_cell=5;
+				cell_ajustee($pp_classe[$i],$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+
 			}
 
 			//if($avec_coches_mentions=="y") {

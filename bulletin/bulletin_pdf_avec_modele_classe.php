@@ -672,11 +672,9 @@ if(!empty($model_bulletin)) {
 		$classe_nomlong[$cpt_i] = $donner['nom_complet'];
 		$classe_nomcour[$cpt_i] = $donner['classe'];
 
-		//$photo[$cpt_i] = "../photos/eleves/".my_strtolower($donner['elenoet']).".jpg";
 		$tmp_photo=nom_photo(my_strtolower($donner['elenoet']));
 		//if("$tmp_photo"!=""){
 		if($tmp_photo){
-			//$photo[$cpt_i] = "../photos/eleves/".$tmp_photo;
 			$photo[$cpt_i] = $tmp_photo;
 		}
 		else{
