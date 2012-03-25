@@ -156,7 +156,7 @@ function hidediv ( name ) {
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des absences";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 

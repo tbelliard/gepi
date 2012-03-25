@@ -62,7 +62,7 @@ $date_fin->setTime(23,59,59);
 // header
 $titre_page = "Gestion de la table d'agrégation des demi-journées d'absence";
 $javascript_specifique[] = "mod_abs2/lib/include";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 
 echo "<p class=bold>";
 echo "<a href=\"index.php\">";

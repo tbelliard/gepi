@@ -376,7 +376,7 @@ $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quit
 
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des classes | Gestion des élèves";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 $call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
 $classe = mysql_result($call_classe, "0", "classe");

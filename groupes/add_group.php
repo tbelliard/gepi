@@ -178,7 +178,7 @@ if (isset($_POST['is_posted'])) {
 
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des groupes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 ?>
 <p class="bold">

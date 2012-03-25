@@ -48,7 +48,7 @@ $v_legend2 = "";
 
 //**************** EN-TETE *****************
 $titre_page = "Outil de visualisation | Eleve vis à vis d'un autre élève";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);

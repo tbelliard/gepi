@@ -67,7 +67,7 @@ $demande_jour_semaine = isset($_POST["demande_jour_semaine"]) ? $_POST["demande_
 // header
 $titre_page = "Définition des créneaux horaires";
 $style_specifique = "templates/".NameTemplateEdt()."/css/style_edt";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 
 
 

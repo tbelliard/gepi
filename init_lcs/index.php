@@ -39,7 +39,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année pour les serveurs LCS";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 <p class='bold'><a href="../gestion/index.php#init_lcs"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>

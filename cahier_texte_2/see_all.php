@@ -154,7 +154,7 @@ else {
 
 //**************** EN-TETE *****************
 if ($current_imprime=='n') $titre_page = "Cahier de textes - Vue d'ensemble";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 if ($current_imprime=='y') echo "<div id='container'>\n";
 //**************** FIN EN-TETE *************
 

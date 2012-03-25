@@ -261,7 +261,7 @@ $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quit
 //**************** EN-TETE *****************
 $titre_page = "Epreuve blanche: Définition des salles";
 //echo "<div class='noprint'>\n";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 

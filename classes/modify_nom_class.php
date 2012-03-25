@@ -221,7 +221,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *******************************
 $titre_page = "Gestion des classes | Modifier les paramètres";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE ***************************
 
 $id_class_prec=0;

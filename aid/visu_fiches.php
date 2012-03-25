@@ -46,7 +46,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE *********************
 $titre_page = "Visualisation des fiches ".$nom_projet;
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 echo "<p class='bold'>";

@@ -488,7 +488,7 @@ set_time_limit(20);
 					$traitement->setAbsenceEleveMotif(AbsenceEleveMotifQuery::create()->findPk($_POST["type_motif_eleve"]));
 				}
 				$traitement->save();
-                                $notification->save();
+				$notification->save();
 			}
 			
 			 /* */

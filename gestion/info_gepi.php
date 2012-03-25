@@ -37,7 +37,7 @@ if ($resultat_session == '0') {
 
 //**************** EN-TETE *****************
 
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 
 //**************** FIN EN-TETE *************
 

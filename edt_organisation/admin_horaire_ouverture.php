@@ -216,7 +216,7 @@ else if (strstr($ua, "MSIE 7")) {
 }
 $style_specifique[] = "templates/".NameTemplateEDT()."/css/style_param";
 
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 
 require_once("./menu.inc.php");
 echo "<br/>\n";

@@ -67,7 +67,7 @@ if ($_SESSION['statut'] == "responsable") {
 
 //**************** EN-TETE **************************************
 $titre_page = "Equipe pédagogique";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
 echo "<p class='bold'>";

@@ -304,7 +304,7 @@ $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quit
 //**************** EN-TETE *****************
 $titre_page = "Epreuve blanche: Transfert vers carnet de notes";
 //echo "<div class='noprint'>\n";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 
@@ -469,7 +469,7 @@ for($j=0;$j<$cpt;$j++) {
 	for($i=1;$i<=$max_num_per_tt_grp;$i++) {
 		if($tab_grp[$j]['ver_periode'][$i]=='O') {
 			echo "<td><span title='Close ou partiellement close";
-			if(ereg(",",$tab_grp[$j]['class_list'])) {echo " pour une des classes de l'enseignement au moins";}
+			if(mb_ereg(",",$tab_grp[$j]['class_list'])) {echo " pour une des classes de l'enseignement au moins";}
 			echo "'>Close</span></td>\n";
 		}
 		elseif(isset($tab_grp[$j]['id_cn'][$i])) {

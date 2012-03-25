@@ -178,7 +178,7 @@ $javascript_specifique = "edt_gestion_gr/script/fonctions_edt2";
 $style_specifique = "edt_gestion_gr/style2_edt";
 
 // ===================== entete Gepi ======================================//
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 // ===================== fin entete =======================================//
 
 ?>

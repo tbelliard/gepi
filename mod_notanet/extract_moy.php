@@ -55,7 +55,7 @@ $themessage = "Des changements ont eu lieu sur cette page et n\'ont pas été en
 //**************** EN-TETE *****************
 $titre_page = "Notanet: Extraction des moyennes";
 //echo "<div class='noprint'>\n";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 

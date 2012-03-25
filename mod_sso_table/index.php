@@ -48,7 +48,7 @@ $test=mysql_query($sql);
 // **************** EN-TETE *****************
 $titre_page = "Gestion de la table de correspondance SSO";
 $style_specifique = "mod_sso_table/css/sso_table";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 // **************** FIN EN-TETE *****************
 
 

@@ -43,7 +43,7 @@ $email_reponse = isset($_POST["email_reponse"]) ? $_POST["email_reponse"] : '';
 $casier = isset($_POST["casier"]) ? $_POST["casier"] : '';
 
 //**************** EN-TETE *****************
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************
 
 ?>

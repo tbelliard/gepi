@@ -46,7 +46,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE *****************
 $titre_page = "Vérification du remplissage des bulletins";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 // On teste si un professeur peut effectuer cette operation

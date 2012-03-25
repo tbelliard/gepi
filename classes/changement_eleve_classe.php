@@ -124,7 +124,7 @@ function recherche_enfant2($id_parent_tmp, $current_group, $periode_num, $id_rac
 
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des classes | Changement de classe";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
 //debug_var();

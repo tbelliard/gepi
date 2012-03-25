@@ -75,7 +75,7 @@ if ($ok==0) {
 	//**************** EN-TETE **************************************
 	//$titre_page = "Impression de listes au format PDF <br />Choix des paramètres".$periode;
 	$titre_page = "Impression des avis (PDF) | Choix des paramètres";
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	//**************** FIN EN-TETE **********************************
 
 	//debug_var();

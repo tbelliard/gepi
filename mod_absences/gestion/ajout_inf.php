@@ -207,7 +207,7 @@ if(isset($eleve_absence_eleve_erreur[0]) and !empty($eleve_absence_eleve_erreur[
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des absences";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 <p class=bold>|<a href='gestion_absences.php?type=<?php echo $type; ?>'>Retour</a>|

@@ -508,7 +508,7 @@ $javascript_specifique = "mod_absences/lib/js_profs_abs";
 
 //**************** EN-TETE *****************
 $titre_page = "Saisie des absences";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 

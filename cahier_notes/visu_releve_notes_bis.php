@@ -63,7 +63,7 @@ $releve_pdf_debug=isset($_POST['releve_pdf_debug']) ? $_POST['releve_pdf_debug']
 if(!isset($_POST['choix_parametres'])) {
 	//**************** EN-TETE *********************
 	$titre_page = "Visualisation relevé de notes";
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 }
 //============== FIN ENTETE STANDARD =================

@@ -68,7 +68,7 @@ if(!isset($user_login)) {
 
 			//**************** EN-TETE *****************************
 			$titre_page = "Gestion des utilisateurs | Impression fiches utilisateurs";
-			require_once("../lib/header.inc");
+			require_once("../lib/header.inc.php");
 			//**************** FIN EN-TETE *****************
 	
 			echo "<p class='bold'>";
@@ -104,7 +104,7 @@ if(!isset($user_login)) {
 		if(!isset($id_classe)) {
 			//**************** EN-TETE *****************************
 			$titre_page = "Gestion des utilisateurs | Impression fiches responsables";
-			require_once("../lib/header.inc");
+			require_once("../lib/header.inc.php");
 			//**************** FIN EN-TETE *****************
 	
 			echo "<p class='bold'>";
@@ -214,7 +214,7 @@ if(!isset($user_login)) {
 		if(!isset($id_classe)) {
 			//**************** EN-TETE *****************************
 			$titre_page = "Gestion des utilisateurs | Impression fiches élèves";
-			require_once("../lib/header.inc");
+			require_once("../lib/header.inc.php");
 			//**************** FIN EN-TETE *****************
 	
 			echo "<p class='bold'>";
@@ -287,7 +287,7 @@ if(!isset($user_login)) {
 	else {
 		//**************** EN-TETE *****************************
 		$titre_page = "Gestion des utilisateurs | Impression fiches utilisateurs";
-		require_once("../lib/header.inc");
+		require_once("../lib/header.inc.php");
 		//**************** FIN EN-TETE *****************
 
 		echo "<p class='bold'>";
@@ -308,7 +308,7 @@ if(!isset($user_login)) {
 	if(count($user_login)==0) {
 		//**************** EN-TETE *****************************
 		$titre_page = "Gestion des utilisateurs | Impression fiches utilisateurs";
-		require_once("../lib/header.inc");
+		require_once("../lib/header.inc.php");
 		//**************** FIN EN-TETE *****************
 		echo "<p class='bold'>";
 		echo "<a href='$url_retour_index_utilisateurs'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour index utilisateurs</a>";
@@ -324,7 +324,7 @@ if(!isset($user_login)) {
 
 //**************** EN-TETE *****************************
 //$titre_page = "Gestion des utilisateurs | Impression fiches utilisateurs";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //function fiche_bienvenue($user_login, $mot_de_passe=NULL,$user_statut='personnels') {

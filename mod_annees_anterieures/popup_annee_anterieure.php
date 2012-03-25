@@ -377,7 +377,6 @@ echo "</head>\n";
 
 //**************** EN-TETE *****************
 //$titre_page = "Consultation des données antérieures";
-//require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 //echo "<div class='norme'><p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a>\n";

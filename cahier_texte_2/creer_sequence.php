@@ -115,7 +115,7 @@ if ($enregistrer == "Enregistrer"){
 
     // Gestion des erreurs//@TODO pas encore utilisé dans la page de retour
     if ($verif == 'no'){
-      $msg = "<p>Au moins un compte-rendu n'a pas pu &ecirc;tre enregistr&eacute; !</p>";
+      $msg = "<p>Au moins un compte-rendu n'a pas pu être enregistré !</p>";
     }
     header("Location: ../cahier_texte_2/index.php?id_groupe=" . $enseignement);die;
 
@@ -127,8 +127,8 @@ elseif($nb_reg>0) {
  * Header en include
  */
 $use_observeur = "ok";
-$titre_page = "Cr&eacute;er des s&eacute;quences pour le cahier de textes";
-include '../lib/header.inc';
+$titre_page = "Créer des séquences pour le cahier de textes";
+include '../lib/header.inc.php';
 //debug_var();
 
 $nb_max_seq=getSettingValue('cdt2_sequence_nb_max_notice');

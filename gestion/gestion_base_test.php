@@ -394,7 +394,7 @@ $defaultrowlimit=10;
 
 //**************** EN-TETE *****************
 $titre_page = "Outil de gestion | Sauvegardes/Restauration";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();

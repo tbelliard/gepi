@@ -258,7 +258,7 @@ if (isset($_POST['enable_password_recovery'])) {
 }
 
 // End standart header
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 isset($mode_navig);
 $mode_navig = isset($_POST["mode_navig"]) ? $_POST["mode_navig"] : (isset($_GET["mode_navig"]) ? $_GET["mode_navig"] : NULL);
 if ($mode_navig == 'accueil') {

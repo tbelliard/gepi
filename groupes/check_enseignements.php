@@ -135,7 +135,7 @@ if(isset($_GET['modif_coef'])) {
 $themessage  = 'Des paramètres ont été modifiés. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Enseignements";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 echo "<p class='bold'>\n";

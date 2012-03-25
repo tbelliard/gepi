@@ -87,7 +87,7 @@ if(($type_bulletin_par_defaut!='html')&&($type_bulletin_par_defaut!='pdf')) {$ty
 if (!isset($_POST['valide_select_eleves'])) {
 	//**************** EN-TETE *********************
 	$titre_page = "Edition des bulletins";
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 }
 //============== FIN ENTETE STANDARD =================

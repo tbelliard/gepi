@@ -47,7 +47,7 @@ $v_legend2 = "";
 
 //**************** EN-TETE *****************
 $titre_page = "Outil de visualisation | Elève vis à vis de la classe";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();

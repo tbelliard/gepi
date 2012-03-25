@@ -392,7 +392,7 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 include "../lib/periodes.inc.php";
 //**************** EN-TETE *****************
 if ($en_tete == "yes") $titre_page = "Visualisation des moyennes et appréciations";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();

@@ -138,7 +138,7 @@ $message_enregistrement = "Les modifications ont été enregistrées !";
 
 //**************** EN-TETE *****************
 $titre_page = "Notanet | Saisie de l'avis du chef d'établissement";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 $tmp_timeout=(getSettingValue("sessionMaxLength"))*60;

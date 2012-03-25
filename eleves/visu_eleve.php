@@ -76,7 +76,7 @@ $date_debut_disc=isset($_POST['date_debut_disc']) ? $_POST['date_debut_disc'] : 
 $date_fin_disc=isset($_POST['date_fin_disc']) ? $_POST['date_fin_disc'] : (isset($_SESSION['date_fin_disc']) ? $_SESSION['date_fin_disc'] : "$jour/$mois/$annee");
 
 // ===================== entete Gepi ======================================//
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 // ===================== fin entete =======================================//
 
 $page="visu_eleve.php";

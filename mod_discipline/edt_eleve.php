@@ -61,7 +61,7 @@ $utilisation_prototype="ok";
 $mode_header_reduit="y";
 //**************** EN-TETE *****************
 $titre_page = "Discipline: EDT élève";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();

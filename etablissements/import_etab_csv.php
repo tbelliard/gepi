@@ -44,7 +44,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE *****************
 $titre_page = "Etablissements | Importation d'un fichier csv";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 // $long_max : doit être plus grand que la plus grande ligne trouvée dans le fichier CSV
 $long_max = 8000;

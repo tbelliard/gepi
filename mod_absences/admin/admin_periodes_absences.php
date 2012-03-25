@@ -46,7 +46,7 @@ if (!checkAccess()) {
 }
 // header
 $titre_page = "Définition des créneaux horaires";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 
 	if (empty($_GET['action_sql']) and empty($_POST['action_sql'])) {$action_sql="";}
 	   else { if (isset($_GET['action_sql'])) {$action_sql=$_GET['action_sql'];} if (isset($_POST['action_sql'])) {$action_sql=$_POST['action_sql'];} }

@@ -150,7 +150,7 @@ $nom_periode = mysql_result($periode_query, $periode_num-1, "nom_periode");
 
 //**************** EN-TETE *****************
 $titre_page = "Export des notes/appréciations";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 $nom_fic=$_SESSION['login'];

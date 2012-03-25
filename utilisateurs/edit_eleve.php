@@ -296,7 +296,7 @@ if (!$error) {
 
 //**************** EN-TETE *****************
 $titre_page = "Modifier des comptes élèves";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> |

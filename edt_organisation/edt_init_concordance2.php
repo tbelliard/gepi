@@ -56,7 +56,7 @@ $msg_enreg = '';
 
 //=================================
 //$titre_page="Enregistrer les concordances(2) pour l'import de l'EdT";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //=================================
 
 echo "<div id='header'>

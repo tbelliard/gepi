@@ -212,6 +212,7 @@ if (empty($style)) $style = "style";
 
 //===== utiliser de préférence $gepiPath."/css/".$style.".css"
 $tbs_CSS[]=array("fichier"=>$gepiPath."/css/".$style.".css"  , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"screen" , "title"=>"");
+$tbs_CSS[]=array("fichier"=>$gepiPath."/css/".$style."_imprime.css"  , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"print" , "title"=>"");
 
 // Couleur de fond des pages
 if (!isset($titre_page)) $bgcouleur = "bgcolor= \"#FFFFFF\""; else $bgcouleur = "";

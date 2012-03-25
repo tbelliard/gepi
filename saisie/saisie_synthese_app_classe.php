@@ -122,7 +122,7 @@ if((isset($id_classe))&&(isset($num_periode))) {
 	$synthese=@mysql_result($res_current_synthese, 0, "synthese");
 
 	$titre_page="Synthèse classe";
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	include "../lib/periodes.inc.php";
 	include "../lib/bulletin_simple.inc.php";
 	include "../lib/bulletin_simple_classe.inc.php";
@@ -355,7 +355,7 @@ if((isset($id_classe))&&(isset($num_periode))) {
 
 //********************************
 $titre_page="Synthèse classe";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //********************************
 
 if(!isset($id_classe)) {

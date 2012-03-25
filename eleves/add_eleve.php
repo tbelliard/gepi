@@ -530,7 +530,7 @@ if (isset($eleve_login)) {
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des élèves | Ajouter/Modifier une fiche élève";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 if ((isset($order_type)) and (isset($quelles_classes))) {

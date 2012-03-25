@@ -103,7 +103,7 @@ $tab_fichiers_a_zipper=array();
 
 //**************** EN-TETE *****************
 $titre_page = "Cahier de textes - Export";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************
 
 //debug_var();

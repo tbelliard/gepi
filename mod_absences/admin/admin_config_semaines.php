@@ -45,7 +45,7 @@ if (!checkAccess()) {
 }
 // header
 $titre_page = "Définition des types de semaine de l'établissement";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 
 
 

@@ -1020,7 +1020,7 @@ $style_specifique[]="mod_discipline/mod_discipline";
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Discipline: Signaler un incident";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();
@@ -1434,7 +1434,7 @@ if(isset($id_incident)) {
 		if($etat_incident!='clos') {
 			echo "<input type='hidden' name='nb_protagonistes' value='$cpt' />\n";
 			echo "<input type='hidden' name='id_incident' value='$id_incident' />\n";
-			echo "<p><input type='submit' name='enregistrer_qualite' value='Enregistrer' /></p>\n";
+			echo "<p class='center'><input type='submit' name='enregistrer_qualite' value='Enregistrer' /></p>\n";
 
 			echo add_token_field(true);
 		}
@@ -1529,7 +1529,7 @@ if($step==0) {
 		//echo "</div>\n";
 
 		recherche_ele($rech_nom,$_SERVER['PHP_SELF']);
-		echo "<p><input type='submit' name='Ajouter' value='Ajouter' /></p>\n";
+		echo "<p class='center'><input type='submit' name='Ajouter' value='Ajouter' /></p>\n";
 
 	}
 	elseif(isset($id_classe)) {
@@ -1585,7 +1585,7 @@ if($step==0) {
 			echo "</tr>\n";
 			echo "</table>\n";
 
-			echo "<p><input type='submit' name='Ajouter' value='Ajouter' /></p>\n";
+			echo "<p class='center'><input type='submit' name='Ajouter' value='Ajouter' /></p>\n";
 
 			echo "</blockquote>\n";
 

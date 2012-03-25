@@ -144,7 +144,7 @@ if((isset($choix_options))&&((isset($lv1))||(isset($lv2))||(isset($lv3))||(isset
 //**************** EN-TETE *****************
 $titre_page = "Génèse classe: Choix options";
 //echo "<div class='noprint'>\n";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 

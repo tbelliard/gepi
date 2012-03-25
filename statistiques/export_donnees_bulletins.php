@@ -407,7 +407,7 @@ $utilisation_jsdivdrag = "non";
 
 // ===================== entete Gepi ======================================//
 $titre_page = "Export de données des bulletins";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 // ===================== fin entete =======================================//
 
 //debug_var();

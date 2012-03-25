@@ -106,7 +106,7 @@ $themessage="Des modifications ont été effectuées. Voulez-vous vraiment quitt
 
 //**************** EN-TETE *****************
 $titre_page = "Nettoyage des données antérieures";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 echo "<div class='norme'><p class=bold><a href='";

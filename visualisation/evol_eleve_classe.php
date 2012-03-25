@@ -41,7 +41,7 @@ header("Location: ../logout.php?auto=1");
 
 //**************** EN-TETE *****************
 $titre_page = "Outil de visualisation | Evolution de l'élève et de la classe sur l'année";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();

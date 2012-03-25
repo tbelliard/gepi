@@ -217,7 +217,7 @@ if(isset($_POST['upload_photo'])) {
 $style_specifique = "mod_trombinoscopes/styles/styles";
 //**************** EN-TETE *********************
 $titre_page = "Visualisation des trombinoscopes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
 ?>

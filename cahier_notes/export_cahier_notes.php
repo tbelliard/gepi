@@ -190,7 +190,7 @@ if(!isset($type_export)) {
     /**
      * Entête de la page
      */
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 
 	$titre=htmlspecialchars($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")";
@@ -845,7 +845,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
     /**
      * Entête de la page
      */
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 
 	$titre=htmlspecialchars($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")";

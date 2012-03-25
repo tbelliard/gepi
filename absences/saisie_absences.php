@@ -161,7 +161,7 @@ $themessage  = 'Des champs ont été modifiés. Voulez-vous vraiment quitter san
 $javascript_specifique = "saisie/scripts/js_saisie";
 //**************** EN-TETE *****************
 $titre_page = "Saisie des absences";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 <script type="text/javascript" language="javascript">

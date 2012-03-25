@@ -229,7 +229,7 @@ elseif(isset($_GET['suppr_fich'])) {
 
 //**************** EN-TETE *****************
 $titre_page = "Modèle Open Office - Publipostage";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 echo "<p class='bold'><a href='../accueil.php";
@@ -440,8 +440,8 @@ function cocher_decocher(mode) {
 			}
 		}
 	
-		echo "<p>Fichier modèle&nbsp;:&nbsp;<input type='file' name='monfichier' value='il a cliqué le bougre'><br />\n";
-		echo "<input type='submit' name='btn' Align='middle' value='Envoyer' /></p>\n";
+		echo "<p>Fichier modèle&nbsp;:&nbsp;<input type='file' name='monfichier' value='il a cliqué le bougre'></p>\n";
+		echo "<p class='center'><input type='submit' name='btn' Align='middle' value='Envoyer' /></p>\n";
 		echo "</form>\n";
 
 		echo "<p><i>NOTES&nbsp;:</i></p>\n";
@@ -559,7 +559,7 @@ else {
 				echo "</td>\n";
 				echo "</tr>\n";
 				echo "</table>\n";
-				echo "<input type='submit' value='Envoyer' />\n";
+				echo "<p class='center'><input type='submit' value='Envoyer' /></p>\n";
 				echo "</form>\n";
 			}
 		}

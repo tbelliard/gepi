@@ -40,7 +40,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des classes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];

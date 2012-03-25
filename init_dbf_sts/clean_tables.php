@@ -64,7 +64,7 @@ $liste_tables_del = array(
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Nettoyage des tables";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>

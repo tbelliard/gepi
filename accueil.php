@@ -206,7 +206,7 @@ if((($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite'))
 
 $post_reussi=FALSE;
 // ====== Inclusion des balises head et du bandeau =====
-include_once("./lib/header_template.inc");
+include_once("./lib/header_template.inc.php");
 $tbs_statut_utilisateur = $_SESSION['statut'];
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],"Accueil"))

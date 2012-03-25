@@ -126,7 +126,7 @@ if (isset($_POST['is_posted'])) {
 }
 //**************** EN-TETE *****************
 $titre_page = "Outil de gestion - Paramétrage des matières par lots";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 if ($max_periode <= 0) {

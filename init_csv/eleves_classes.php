@@ -45,7 +45,7 @@ $liste_tables_del = array("j_eleves_classes");
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation des matières";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //************** FIN EN-TETE ***************
 
 $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";

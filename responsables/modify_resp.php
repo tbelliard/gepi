@@ -391,7 +391,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *******************************
 $titre_page = "Ajouter ou modifier un responsable";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE ***************************
 
 //debug_var();

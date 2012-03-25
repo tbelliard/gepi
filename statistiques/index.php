@@ -62,7 +62,7 @@ if (!checkAccess()) {
 
 // ===================== entete Gepi ======================================//
 $titre_page = "Statistiques: Index";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 // ===================== fin entete =======================================//
 
 //debug_var();

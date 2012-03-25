@@ -65,7 +65,7 @@ include "../lib/periodes.inc.php";
 
 //**************** EN-TETE *****************
 $titre_page = "Saisie des moyennes et appréciations | Importation";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 // $long_max : doit être plus grand que la plus grande ligne trouvée dans le fichier CSV

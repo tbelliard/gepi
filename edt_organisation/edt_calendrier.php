@@ -415,7 +415,7 @@ $utilisation_prototype = "ok";
 //
 // =======================================================================
 
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //debug_var();
 require_once("./views/edt_calendrier_view.html");
 require("../lib/footer.inc.php");

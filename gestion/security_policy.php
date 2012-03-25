@@ -222,7 +222,7 @@ if (isset($_POST['csrf_mode'])) {
 
 //**************** EN-TETE *********************
 $titre_page = "Politique de sécurité";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();

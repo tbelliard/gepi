@@ -144,7 +144,7 @@ if ($etape == 2) {
 $style_specifique = "edt_organisation/style_edt";
 //**************** EN-TETE *****************
 $titre_page = "Les utilisateurs de l'ENT";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var(); // à enlever en production
 ?>

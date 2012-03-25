@@ -105,7 +105,7 @@ $javascript_specifique[] = "mod_abs2/lib/include";
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
 if ($affichage != 'ods') {
-    require_once("../lib/header.inc");
+    require_once("../lib/header.inc.php");
     include('menu_abs2.inc.php');
     include('menu_bilans.inc.php');
     ?>

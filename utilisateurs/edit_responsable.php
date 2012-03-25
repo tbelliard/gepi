@@ -280,7 +280,7 @@ aff_time();
 
 //**************** EN-TETE *****************
 $titre_page = "Modifier des comptes responsables";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();

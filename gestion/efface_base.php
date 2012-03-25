@@ -46,7 +46,7 @@ if (isset($_POST['confirm']) and ($_POST['confirm']=='Non')) {
 
 //**************** EN-TETE *****************
 $titre_page = "Outil de gestion | Effacement des données élèves";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?><p class=bold><a href='index.php#efface_base'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <H2>Effacement de la base</H2>

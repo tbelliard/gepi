@@ -51,7 +51,7 @@ if($_SESSION['statut']!='professeur') {
 
 //================================
 $titre_page = "Saisie de commentaires-types";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //================================
 
 if (!loadSettings()) {

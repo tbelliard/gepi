@@ -54,7 +54,7 @@ function affiche_debug($texte,$e_login){
 
 //**************** EN-TETE *****************
 $titre_page = "Vérification des affectations dans les groupes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='clean_tables.php'>Retour page précédente</a></p>";

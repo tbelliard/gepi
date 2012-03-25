@@ -16,7 +16,6 @@ img {
 a {
 	color: #0000AA;
 	text-decoration: none;
-	border: 0;
 }
 a:visited {
 	color: #0000AA;
@@ -46,10 +45,7 @@ a:active {
 
 #container {
 	margin-bottom:1em;
-}
-
-#container p {
-	margin-left:1em;
+	padding-left: 1em;
 }
 
 h1.gepi {
@@ -62,9 +58,48 @@ h1.gepi {
 	line-height: 200%;
 }
 
+h2 {
+	text-align: center;
+}
+
 p {
 	font-style: normal;
 	font-variant: normal;
 	font-weight: normal;
 	font-size: 11pt;
+}
+
+hr {
+	margin: 2em 0;
+}
+
+label {
+	cursor: pointer;
+}
+
+.ariane {
+	margin-left: .5em;
+	font-size:smaller;
+}
+
+.ligneCaps {
+	display: table-row;
+	font-variant: small-caps;
+}
+
+.cellTab {
+	display: table-cell;
+	vertical-align: middle;
+	padding: .5em;
+}
+
+.cellTab70 {
+	display: table-cell; 
+	width: 70%;
+	vertical-align: middle;
+	padding: .5em;
+}
+
+.plusPetit {
+	font-size:smaller;
 }

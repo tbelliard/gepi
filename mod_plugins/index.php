@@ -230,7 +230,7 @@ switch ($_erreur) {
 }
 // ================= HEADER ========================//
 $titre_page = "Param&eacute;trer les plugins";
-include '../lib/header.inc';
+include '../lib/header.inc.php';
 // ================ FIN HEADER =====================//
 //print_r($liste_plugins);
 //aff_debug($testXML);

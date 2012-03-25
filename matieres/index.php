@@ -113,7 +113,7 @@ if (isset($_POST['is_posted'])) {
 $themessage = 'Des modifications ont été effectuées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Gestion des matières";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 

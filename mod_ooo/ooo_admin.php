@@ -68,14 +68,13 @@ if (isset($_POST['is_posted']) and ($msg=='')) {
 }
 // header
 //$titre_page = "Gestion du module modèle Open Office";
-//require_once("../lib/header.inc");
 
 
 
 
 
 // ====== Inclusion des balises head et du bandeau =====
-include_once("../lib/header_template.inc");
+include_once("../lib/header_template.inc.php");
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion modèle Open Office"))
 		echo "erreur lors de la création du fil d'ariane";

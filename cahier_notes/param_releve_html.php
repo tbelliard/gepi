@@ -495,7 +495,7 @@ if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
 
 
 // End standart header
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 if (!loadSettings()) {
     die("Erreur chargement settings");
 }

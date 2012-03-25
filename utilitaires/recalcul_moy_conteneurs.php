@@ -66,7 +66,7 @@ if (getSettingValue("active_carnets_notes")!='y') {
 
 //**************** EN-TETE *****************
 $titre_page = "Carnet de notes - Correction des moyennes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 $num_periode=isset($_POST['num_periode']) ? $_POST['num_periode'] : NULL;

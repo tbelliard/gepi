@@ -482,7 +482,7 @@ if ($test_cahier_texte != 0) {
 $_SESSION['cacher_header'] = "y";
 //**************** EN-TETE *****************
 $titre_page = "Cahier de textes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************
 
 //debug_var();

@@ -158,7 +158,7 @@ else {
 
 //**************** EN-TETE *****************
 $titre_page = "Modèle Open Office - gérer ses modèles";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 echo "<script language=\"Javascript\" src=\"./lib/mod_ooo.js\"> </script>";
 //debug_var();

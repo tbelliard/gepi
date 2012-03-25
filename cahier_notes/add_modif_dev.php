@@ -530,7 +530,7 @@ $titre_page = "Carnet de notes - Ajout/modification d'une évaluation";
 /**
  * Entête de la page
  */
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"add_modif_dev.php\" method=\"post\">\n";
 echo add_token_field();

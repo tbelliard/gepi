@@ -349,7 +349,7 @@ if ($action == "visu")
     $titre_page = "Visualisation d'une fiche projet ".$nom_projet;
 else
     $titre_page = "Modification d'une fiche projet ".$nom_projet;
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 if ($action != "visu") {

@@ -589,7 +589,7 @@ if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 ****************************************************************/
 
 // ====== Inclusion des balises head et du bandeau =====
-include_once("../lib/header_template.inc");
+include_once("../lib/header_template.inc.php");
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
 		echo "erreur lors de la création du fil d'ariane";
@@ -637,7 +637,7 @@ if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
  * }
  */
 
-/*require_once("../lib/header.inc");
+/*
 ?>
 
 <p class='bold'><a href="../accueil_modules.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>

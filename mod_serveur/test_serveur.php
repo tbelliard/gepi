@@ -72,7 +72,7 @@ $charset = $test->defautCharset();
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "edt_organisation/style_edt";
 
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 /*++++++++++++++++++++++ fin entête ++++++++++++++++++++++++++++++++++++*/
 echo '
 <p class="bold"><a href="../gestion/index.php#test_serveur">

@@ -191,7 +191,7 @@ if(($id_classe=='-1' && $affichage=='html' && $click_filtrage!="ok" && $raz!=="o
 // pas de header ou menu dans le cas de l'export odt 
 // début de l'affichage des options
 if ($affichage != 'ods' && $affichage != 'odt' ) {
-    require_once("../lib/header.inc");
+    require_once("../lib/header.inc.php");
     include('menu_abs2.inc.php');
     include('menu_bilans.inc.php');
     if(ob_get_contents()){

@@ -105,7 +105,7 @@ if (!loadSettings()) {
 }
 //**************** EN-TETE *****************
 $titre_page = "Configuration du module Inscription";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 

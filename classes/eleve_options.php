@@ -175,7 +175,7 @@ if($_SESSION['statut']=="administrateur"){
 }
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des classes | Gestion des matières par élève";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
 //=============================

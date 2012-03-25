@@ -130,7 +130,7 @@ for($a = 0; $a < 6; $a++) {
 
 // ===================== Header et ses réglages =============
 $titre_page = "L'interface de saisie des absences";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 // ===================== fin du header ======================
 
 ?>

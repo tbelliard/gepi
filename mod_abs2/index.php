@@ -94,7 +94,7 @@ $style_specifique[] = "mod_abs2/lib/abs_style";
 $titre_page = "Les absences";
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 include('menu_abs2.inc.php');

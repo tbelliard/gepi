@@ -271,7 +271,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 
 //**************** EN-TETE *****************
 $titre_page = "Créer des comptes d'accès responsables";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 <p class='bold'><a href="edit_responsable.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>

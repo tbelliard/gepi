@@ -65,7 +65,7 @@ $style_specifique[] = "templates/".NameTemplateEDT()."/css/style_param";
 $utilisation_prototype = "ok";
 //============fin PROTOTYPE=============
 // On insère l'entête de Gepi
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 
 // On ajoute le menu EdT
 require_once("./menu.inc.php");

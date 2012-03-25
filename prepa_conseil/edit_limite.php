@@ -83,7 +83,7 @@ include "../lib/bulletin_simple.inc.php";
 include "../lib/bulletin_simple_classe.inc.php";
 //include "../lib/bulletin_simple_classe_bis.inc.php";
 //==============================
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 
 // Vérifications de sécurité
 if (

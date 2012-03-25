@@ -842,7 +842,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 
 //**************** EN-TETE *******************************
 if (!isset($_POST['display_entete'])) $titre_page = "Visualisation des relevés de notes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE ****************************
 
 //echo "\$choix_edit=$choix_edit<br />";

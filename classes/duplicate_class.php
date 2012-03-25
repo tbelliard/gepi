@@ -122,7 +122,7 @@ if (isset($eleves_selected)) {
 
 //**************** EN-TETE *****************
 $titre_page = "Duplication ou scission d'une classe";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 ?>

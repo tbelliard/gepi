@@ -211,7 +211,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 
 //**************** EN-TETE *****************
 $titre_page = "Créer des comptes d'accès élèves";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
 ?>

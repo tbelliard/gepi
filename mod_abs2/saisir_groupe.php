@@ -656,7 +656,7 @@ $_SESSION['cacher_header'] = "y";
 $tbs_last_connection = "";
 
 //**************** EN-TETE *****************
-require_once("../lib/header_template.inc");
+require_once("../lib/header_template.inc.php");
 //include("../templates/origine/bandeau_template.php");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">

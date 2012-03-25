@@ -164,7 +164,7 @@ if ($action == "modifier")
 
 // header
 $titre_page = "Gestion des actions de suivi";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 
 
 echo "<p class=bold>";

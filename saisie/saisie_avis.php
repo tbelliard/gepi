@@ -39,7 +39,7 @@ if (!checkAccess()) {
 }
 //**************** EN-TETE *****************
 $titre_page = "Saisie des avis du conseil de classe";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 // On teste si un professeur peut saisir les avis

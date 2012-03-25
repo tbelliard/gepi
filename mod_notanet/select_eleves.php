@@ -185,7 +185,7 @@ $style_specifique="mod_notanet/mod_notanet";
 //**************** EN-TETE *****************
 $titre_page = "Notanet: Associations élèves/type de brevet";
 //echo "<div class='noprint'>\n";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 

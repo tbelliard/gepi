@@ -83,7 +83,7 @@ if ($action == 'supprimer') {
 
 // header
 $titre_page = "Gestion des mef (module élémentaire de formation)";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 
 echo "<p class='bold'>";
 echo "<a href=\"../accueil_admin.php\">";

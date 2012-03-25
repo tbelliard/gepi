@@ -45,7 +45,7 @@ $nom_generique_aid = @mysql_result($call_data, 0, "nom");
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des ".$nom_generique_aid." | Outil d'importation";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 echo "<p class=bold><a href=\"index2.php?indice_aid=$indice_aid\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | ";

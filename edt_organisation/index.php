@@ -69,7 +69,7 @@ if ($action != "ajaxrequest") {
 
 	
 	
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	// ===============================================================
 	//
 	//                       DEMARRER LE CONTROLLEUR

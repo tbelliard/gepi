@@ -223,7 +223,7 @@ $message_enregistrement = "Les modifications ont été enregistrées !";
 $themessage = 'Des valeurs ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Saisie des ECTS";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 <script type="text/javascript" language="javascript">

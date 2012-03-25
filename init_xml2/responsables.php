@@ -22,7 +22,7 @@
 
 	//**************** EN-TETE *****************
 	$titre_page = "Outil d'initialisation de l'année : Importation des responsables des élèves";
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 
 	require_once("init_xml_lib.php");

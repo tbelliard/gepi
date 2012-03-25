@@ -189,7 +189,7 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 
 //**************** EN-TETE *****************
 $titre_page = "Autorisation exceptionnelle de saisie d'appréciations";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
 echo "<p class='bold'>\n";

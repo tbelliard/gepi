@@ -100,7 +100,7 @@ $message_erreur = isset($_SESSION["message_erreur"]) ? $_SESSION["message_erreur
 $style_specifique = "mod_miseajour/lib/style_maj";
 $javascript_specifique = "mod_miseajour/lib/javascript_maj";
 
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 
 //on recherche le fichier de mise à jour sur le site du principal
 if(url_exists($site_de_miseajour."version.msj")) {

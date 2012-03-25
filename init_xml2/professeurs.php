@@ -73,7 +73,7 @@ $liste_tables_del = $liste_tables_del_etape_professeurs;
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation des professeurs";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 require_once("init_xml_lib.php");

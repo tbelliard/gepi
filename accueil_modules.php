@@ -104,7 +104,6 @@ $titre_page = "Accueil - Administration des modules";
 $racine_gepi = 'yes';
 */
 /*
-require_once("./lib/header.inc");
 
 
 <p class=bold><a href="./accueil.php"><img src='./images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
@@ -268,7 +267,7 @@ if ($affiche=='yes') {
 // ====== Inclusion des balises head et du bandeau =====
  //$msg = "Essai message";
 
-	include_once("./lib/header_template.inc");
+	include_once("./lib/header_template.inc.php");
 /****************************************************************
 			FIN HAUT DE PAGE
 ****************************************************************/

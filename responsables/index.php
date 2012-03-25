@@ -248,7 +248,7 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des ".$gepiSettings['denomination_responsables'];
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //echo "\$num_resp=$num_resp<br />";

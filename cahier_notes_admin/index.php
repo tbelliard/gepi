@@ -135,7 +135,7 @@ $messageEnregistrer="Des informations ont été modifiées. Voulez-vous vraiment
 /**
  * Entête de la page
  */
-include_once("../lib/header_template.inc");
+include_once("../lib/header_template.inc.php");
 
 /****************************************************************
 			FIN HAUT DE PAGE

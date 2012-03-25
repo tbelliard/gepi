@@ -466,7 +466,7 @@ $style_specifique="mod_annees_anterieures/annees_anterieures";
 
 //**************** EN-TETE *****************
 $titre_page = "Consultation des données antérieures";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();

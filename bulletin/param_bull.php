@@ -705,7 +705,7 @@ $msg = "Enregistrement réussi !";
 
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 // End standart header
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 if (!loadSettings()) {
     die("Erreur chargement settings");
 }

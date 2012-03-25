@@ -89,7 +89,7 @@ $editer_banque=isset($_POST['editer_banque']) ? $_POST['editer_banque'] : (isset
 if($editer_banque=='y') {
 	//================================
 	$titre_page = "Saisie de textes-types";
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	//================================
 
 	echo "<p class='bold'><a href='../accueil.php' onClick='self.close();return false;'>Refermer</a>";

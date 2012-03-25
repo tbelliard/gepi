@@ -59,7 +59,7 @@ $messageEnregistrer="Des informations ont été modifiées. Voulez-vous vraiment
 // ====== Inclusion des balises head et du bandeau =====
 //$msg = "Essai message";
 
-include_once("../lib/header_template.inc");
+include_once("../lib/header_template.inc.php");
 
 /****************************************************************
 			FIN HAUT DE PAGE

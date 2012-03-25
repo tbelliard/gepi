@@ -156,7 +156,7 @@ if((isset($is_posted))&&(isset($projet))) {
 //**************** EN-TETE *****************
 $titre_page = "Génèse classe: Contraintes options/classes";
 //echo "<div class='noprint'>\n";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 

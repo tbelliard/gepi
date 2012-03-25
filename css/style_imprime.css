@@ -1,10 +1,17 @@
 
-
 body {
 	background: white;
 }
 
+#bandeau {
+	display: none;
+}
+
+#menu_barre {
+	display: none;
+}
+
 .noprint {
-		display: none;
+	display: none;
 }
 

@@ -456,7 +456,7 @@ $themessage="Des modifications ont été effectuées. Voulez-vous vraiment quitt
 
 //**************** EN-TETE *****************
 $titre_page = "Configuration des interfaces simplifiées";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();

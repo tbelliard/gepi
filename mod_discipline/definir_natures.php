@@ -242,7 +242,7 @@ $themessage = 'Des informations ont été modifiées. Voulez-vous vraiment quitt
 //**************** EN-TETE *****************
 //$titre_page = "Sanctions: Définition des qualités";
 $titre_page = "Discipline: Définition des natures";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
 
@@ -328,13 +328,13 @@ if($DisciplineNaturesRestreintes=="2") {echo "checked ";}
 echo "/><label for='DisciplineNaturesRestreintes_2'> Restreindre les natures d'incidents pouvant être sélectionnées aux seules natures ci-dessus.<br />Les utilisateurs devront choisir une des natures de la liste ci-dessus.</label><br />\n";
 echo "</p>\n";
 
-echo "<input type='hidden' name='is_posted' value='y' />\n";
-echo "<p><input type='submit' name='valider' value='Valider' /></p>\n";
+echo "<p><br /><input type='hidden' name='is_posted' value='y' /></p>\n";
+echo "<p class='center'><input type='submit' name='valider' value='Valider' /></p>\n";
 echo "</form>\n";
 
 echo "<p><br /></p>\n";
 
-echo "<p><i>NOTES&nbsp;:</i></p>
+echo "<p><em>NOTES&nbsp;:</em></p>
 <ul>
 	<li>
 		<p>Restreindre les natures d'incidents pouvant être sélectionnées aux seules natures ci-dessus permet d'éviter une trop grande dispersion des natures (<i>on peut sinon avoir 'Insolence', 'Comportement insolent', 'insolent',...</i>).<br />

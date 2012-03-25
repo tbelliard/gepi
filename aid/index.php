@@ -66,7 +66,7 @@ if (isset($_POST['sup'])) {
 
 //**************** EN-TETE *********************
 $titre_page = "Gestion des AID";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 echo "<p class=bold>";

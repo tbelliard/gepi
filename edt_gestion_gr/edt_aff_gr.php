@@ -258,7 +258,7 @@ while($gr = mysql_fetch_array($query_g)){
 $style_specifique = "/edt_gestion_gr/style2_edt";
 $javascript_specifique = "edt_gestion_gr/script/fonctions_edt2";
 $utilisation_win = 'oui';
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 echo '
 <!-- fin du header -->
 ';

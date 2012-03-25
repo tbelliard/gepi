@@ -137,8 +137,7 @@ $style_specifique="accueil_simpl_prof";
 
 //**************** EN-TETE *****************
 $titre_page = "Accueil GEPI";
-//require_once("../lib/header.inc");
-require_once("./lib/header.inc");
+require_once("./lib/header.inc.php");
 //**************** FIN EN-TETE *************
 
 //echo "\$colspan=$colspan<br />";

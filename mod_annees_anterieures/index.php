@@ -54,7 +54,7 @@ if(getSettingValue('active_annees_anterieures')!="y"){
 
 //**************** EN-TETE *****************
 $titre_page = "Données antérieures";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 echo "<div class='norme'><p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";

@@ -63,7 +63,7 @@ if (isset($_GET['action'])) {
 
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des groupes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];

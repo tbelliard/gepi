@@ -39,7 +39,7 @@ $style_specifique = "mod_absences/styles/bilan_absences";
 //+++++++++++++++++++++++++++++++++
 //++++++++++HEADER+++++++++++++++++
 $titre_page = "Bilan des absences.";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 //+++++++++FIN HEADER++++++++++++++
 
 // Initialisation des variables

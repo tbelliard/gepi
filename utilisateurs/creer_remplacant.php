@@ -433,7 +433,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des utilisateurs | Créer un remplaçant";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
 ?>

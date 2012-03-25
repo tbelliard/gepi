@@ -568,7 +568,7 @@ if(isset($generer_pdf)) {
 if(!isset($mode)) {
 	//**************** EN-TETE *****************
 	$titre_page = "Grille PDF pour les trombinoscopes";
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 	//debug_var();
 
@@ -599,7 +599,7 @@ if(!isset($mode)) {
 elseif($mode=='parametrer') {
 	//**************** EN-TETE *****************
 	$titre_page = "Grille PDF pour les trombinoscopes";
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 	//debug_var();
 
@@ -661,7 +661,7 @@ elseif($mode=='parametrer') {
 elseif($mode=='generer_grille') {
 	//**************** EN-TETE *****************
 	$titre_page = "Grille PDF pour les trombinoscopes";
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 	//debug_var();
 
@@ -746,7 +746,7 @@ elseif($mode=='generer_grille') {
 elseif($mode=='uploader') {
 	//**************** EN-TETE *****************
 	$titre_page = "Grille PDF pour les trombinoscopes";
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 	//debug_var();
 
@@ -870,7 +870,7 @@ elseif($mode=='uploader') {
 elseif($mode=='suppr_grille') {
 	//**************** EN-TETE *****************
 	$titre_page = "Grille PDF pour les trombinoscopes";
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 	//debug_var();
 

@@ -75,7 +75,7 @@ if(isset($_GET['debug'])){
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation des relations professeurs/classes/matières";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 require_once("init_xml_lib.php");

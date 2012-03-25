@@ -658,7 +658,7 @@ $user_show_email = mysql_result($call_user_info, "0", "show_email");
 
 //**************** EN-TETE *****************
 $titre_page = "Gérer son compte";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();

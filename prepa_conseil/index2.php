@@ -63,7 +63,7 @@ $javascript_specifique="prepa_conseil/colorisation_visu_toutes_notes";
 
 //**************** EN-TETE *****************
 $titre_page = "Visualisation des notes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
 ?>

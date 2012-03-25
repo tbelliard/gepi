@@ -66,7 +66,7 @@ if((isset($export_vocab))&&($export_vocab=="y")) {
 
 //================================
 $titre_page = "Saisie de vocabulaire";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //================================
 
 if (!loadSettings()) {

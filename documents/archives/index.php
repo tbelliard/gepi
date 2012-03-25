@@ -69,7 +69,7 @@ include('../../cahier_texte_2/cdt_lib.php');
 
 //**************** EN-TETE *****************
 $titre_page = "Cahier de textes - Archives";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 //**************** FIN EN-TETE *************
 
 //debug_var();

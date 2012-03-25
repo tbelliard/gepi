@@ -99,7 +99,7 @@ if(!isset($id_groupe)) {
 	/**
 	* Entête de la page
 	*/
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	//**************** FIN EN-TETE *************
 	
 	echo "<p class='bold'>\n";
@@ -157,7 +157,7 @@ if(!isset($id_groupe)) {
 /**
 * Entête de la page
 */
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //======================================
 
 //debug_var();

@@ -384,7 +384,7 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des élèves";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //************** FIN EN-TETE *****************
 
 if(getSettingValue('eleves_index_debug_var')=='y') {

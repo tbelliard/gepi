@@ -597,7 +597,7 @@ $themessage2 = "Êtes-vous sûr de vouloir effectuer cette opération ?\\n Actue
 //**************** EN-TETE *****************
 //$titre_page = "Gestion des utilisateurs | Modifier un utilisateur";
 $titre_page = "Création/modification d'un personnel";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 ?>

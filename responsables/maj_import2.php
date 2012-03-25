@@ -152,7 +152,7 @@ if(mysql_num_rows($res_col_eleves)>0) {
 
 //**************** EN-TETE *****************
 $titre_page = "Mise à jour eleves/responsables";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 require_once("../init_xml2/init_xml_lib.php");

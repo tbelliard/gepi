@@ -142,7 +142,7 @@ if($suppr_infos_actions_diff_mail=='y') {
 
 //**************** EN-TETE *******************************
 $titre_page = "Synchronisation des adresses mail élèves";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE ***************************
 
 //debug_var();

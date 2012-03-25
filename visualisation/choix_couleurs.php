@@ -102,7 +102,7 @@ if(isset($ok)) {
 
 //**************** EN-TETE *********************
 $titre_page = "Choix des couleurs de graphes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 /*

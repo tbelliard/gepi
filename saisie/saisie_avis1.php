@@ -196,7 +196,7 @@ $message_enregistrement = "Les modifications ont été enregistrées !";
 $javascript_specifique = "saisie/scripts/js_saisie";
 //**************** EN-TETE *****************
 $titre_page = "Saisie des avis | Saisie";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 $tmp_timeout=(getSettingValue("sessionMaxLength"))*60;

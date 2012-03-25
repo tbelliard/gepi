@@ -75,7 +75,7 @@ $utilisation_jsdivdrag = "non";
 $dojo = true;
 $_SESSION['cacher_header'] = "y";
 
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 if(!$menu){
 include('menu_abs2.inc.php');

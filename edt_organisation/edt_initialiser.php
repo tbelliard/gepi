@@ -58,7 +58,7 @@ $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 
 // On insère l'entête de Gepi
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 
 // On ajoute le menu EdT
 require_once("./menu.inc.php"); ?>

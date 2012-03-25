@@ -43,7 +43,7 @@ if (!checkAccess()) {
 //**************** EN-TETE **************************************
 //$titre_page = "Gestion des groupes";
 $titre_page = "Listes d'élèves";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 //debug_var();
 echo "<p class='bold'>";

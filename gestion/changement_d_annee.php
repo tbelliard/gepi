@@ -167,7 +167,7 @@ $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quit
 //**************** EN-TETE *****************
 // End standart header
 $titre_page = "Changement d'année";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();

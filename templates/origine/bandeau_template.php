@@ -309,7 +309,7 @@
 <?php
 			if ($tbs_msg !="") {
 ?>
-	<p class='headerMessage bold<?php if($post_reussi) echo " vert" ;?>'>
+	<p class='headerMessage bold<?php if(isset($post_reussi) && $post_reussi) echo " vert" ;?>'>
 <?php
 		echo $tbs_msg;
 ?>

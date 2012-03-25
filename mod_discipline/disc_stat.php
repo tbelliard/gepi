@@ -88,7 +88,7 @@ $id_nature_sanction=isset($_POST['id_nature_sanction']) ? $_POST['id_nature_sanc
 
 //**************** EN-TETE *****************
 $titre_page = "Discipline: Statistiques";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();

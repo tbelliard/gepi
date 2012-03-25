@@ -41,7 +41,7 @@ if (!checkAccess()) {
 }
 //**************** EN-TETE *****************
 $titre_page = "Impression des avis du conseil de classe";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();

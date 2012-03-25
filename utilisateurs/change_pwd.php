@@ -127,7 +127,7 @@ if (isset($user_login) and ($user_login!='')) {
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des utilisateurs | Modifier un mot de passe";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 <p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a> | <a href="help.php">Aide</a></p>

@@ -125,7 +125,7 @@ if(mysql_num_rows($res_class_tmp)>0){
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Gestion des classes - Ajout de périodes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";

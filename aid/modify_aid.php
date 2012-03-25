@@ -238,7 +238,7 @@ $style_specifique = "aid/style_aid";
 
 //**************** EN-TETE *********************
 $titre_page = "Gestion des $nom_aid | Modifier les $nom_aid";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 

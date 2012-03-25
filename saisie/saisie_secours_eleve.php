@@ -170,7 +170,7 @@ $utilisation_prototype = "ok";
 //$javascript_specifique = "saisie/scripts/js_saisie";
 //**************** EN-TETE *****************
 $titre_page = "Saisie des notes et appréciations";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 echo "<div class='norme'>\n";

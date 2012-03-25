@@ -174,7 +174,7 @@ $messageEnregistrer="Des informations ont été modifiées. Voulez-vous vraiment
 ****************************************************************/
 
 // ====== Inclusion des balises head et du bandeau =====
-include_once("../lib/header_template.inc");
+include_once("../lib/header_template.inc.php");
 
 /****************************************************************
 			FIN HAUT DE PAGE
@@ -182,116 +182,11 @@ include_once("../lib/header_template.inc");
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
 		echo "erreur lors de la création du fil d'ariane";
-//$titre_page = "Gestion des cahiers de textes";
-//require_once("../lib/header.inc");
+
 /****************************************************************
 			CONSTRUCTION DE LA PAGE
 ****************************************************************/
-/*
- * 
-<p class=bold><a href="../accueil_modules.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
-<h2>Activation des cahiers de textes</h2>
-<form action="index.php" name="form1" method="post">
-<i>La désactivation des cahiers de textes n'entraîne aucune suppression des données. Lorsque le module est désactivé, les professeurs n'ont pas accès au module et la consultation publique des cahiers de textes est impossible.</i>
-<br />
-<label for='activer_y' style='cursor: pointer;'><input type="radio" name="activer" id="activer_y" value="y" <?php if (getSettingValue("active_cahiers_texte")=='y') echo " checked='checked'"; ?> />
-&nbsp;Activer les cahiers de textes (consultation et édition)</label><br />
-<label for='activer_n' style='cursor: pointer;'><input type="radio" name="activer" id="activer_n" value="n" <?php if (getSettingValue("active_cahiers_texte")=='n') echo " checked='checked'"; ?> />
 
-&nbsp;Désactiver les cahiers de textes (consultation et édition)</label><br />
-<h2>Version des cahiers de textes</h2>
-<?php $extensions = get_loaded_extensions();
-		if(!in_array('pdo_mysql',$extensions)) {
-		    echo "<span style='color:red'>ATTENTION&nbsp;</span> Il semble que l'extension php 'pdo_mysql' ne soit pas présente.<br />Cela risque de rendre impossible l'utilisation de la version 2 du cahier de texte<br />";
-		}?>
-<p style="font-style: italic;">La version 2 du cahier de texte necessite php 5.2.x minimum</p>
-	<label for='version_1' style='cursor: pointer;'>
-	<input type="radio" name="version" id="version_1" value="1" <?php if (getSettingValue("GepiCahierTexteVersion")=='1') echo " checked='checked'"; ?> />
-&nbsp;Cahier de texte version 1</label> (<span style='font-size: small; font-style: italic;'>le cahier de texte version 1 ne sera plus supporté dans la future version 1.5.3</span>)<br />
-	<label for='version_2' style='cursor: pointer;'>
-	<input type="radio" name="version" id="version_2" value="2" <?php if (getSettingValue("GepiCahierTexteVersion")=='2') echo " checked='checked'"; ?> />
-&nbsp;Cahier de texte version 2</label><br />
-
-<h2>Début et fin des cahiers de textes</h2>
-<i>Seules les rubriques dont la date est comprise entre la date de début et la date de fin des cahiers de textes sont visibles dans
-l'interface de consultation publique.
-<br />L'édition (modification/suppression/ajout) des cahiers de textes par les utilisateurs de GEPI n'est pas affectée par ces dates.
-</i><br />
-<table>
-     <tr>
-        <td>
-        Date de début des cahiers de textes :
-        </td>
-        <td><?php
-        $bday = strftime("%d", getSettingValue("begin_bookings"));
-        $bmonth = strftime("%m", getSettingValue("begin_bookings"));
-        $byear = strftime("%Y", getSettingValue("begin_bookings"));
-        genDateSelector("begin_", $bday, $bmonth, $byear,"more_years") ?>
-        </td>
-    </tr>
-    <tr>
-        <td>
-        Date de fin des cahiers de textes :
-        </td>
-        <td><?php
-        $eday = strftime("%d", getSettingValue("end_bookings"));
-        $emonth = strftime("%m", getSettingValue("end_bookings"));
-        $eyear= strftime("%Y", getSettingValue("end_bookings"));
-        genDateSelector("end_",$eday,$emonth,$eyear,"more_years") ?>
-        </td>
-    </tr>
-</table>
-<input type="hidden" name="is_posted" value="1" />
-<h2>Accès public</h2>
-<label for='cahier_texte_acces_public_n' style='cursor: pointer;'><input type='radio' name='cahier_texte_acces_public' id='cahier_texte_acces_public_n' value='no'<?php if (getSettingValue("cahier_texte_acces_public") == "no") echo " checked='checked'";?> /> Désactiver la consultation publique des cahiers de textes (seuls des utilisateurs logués pourront y avoir accès en consultation, s'ils y sont autorisés)</label><br />
-<label for='cahier_texte_acces_public_y' style='cursor: pointer;'><input type='radio' name='cahier_texte_acces_public' id='cahier_texte_acces_public_y' value='yes'<?php if (getSettingValue("cahier_texte_acces_public") == "yes") echo " checked='checked'";?> /> Activer la consultation publique des cahiers de textes (tous les cahiers de textes visibles directement, ou par la saisie d'un login/mdp global)</label><br />
-<p>-> Accès à l'<a href='../public/index.php?id_classe=-1' target='_blank'>interface publique de consultation des cahiers de textes</a></p>
-<i>En l'absence de mot de passe et d'identifiant, l'accès à l'interface publique de consultation des cahiers de textes est totalement libre.</i>
-<br />
-Identifiant :
-<input type="text" name="cahiers_texte_login_pub" value="<?php echo getSettingValue("cahiers_texte_login_pub"); ?>" size="20" />
-<br />Mot de passe :
-<input type="text" name="cahiers_texte_passwd_pub" value="<?php echo getSettingValue("cahiers_texte_passwd_pub"); ?>" size="20" />
-
- 
-<h2>Délai de visualisation des devoirs</h2>
-<i>Indiquez ici le délai en jours pendant lequel les devoirs seront visibles, à compter du jour de visualisation sélectionné, dans l'interface publique de consulation des cahiers de textes.
-<br />Mettre la valeur 0 si vous ne souhaitez pas activer le module de remplissage des devoirs.
-Dans ce cas, les professeurs font figurer les devoirs à faire dans la même case que le contenu des séances.
-</i>
-<br />Délai :
-<input type="text" name="delai_devoirs" value="<?php echo getSettingValue("delai_devoirs"); ?>" size="2" /> jours
-
-<br /><br />
-
-
-<h2>Visa des cahiers de texte</h2>
-<label for='visa_cdt_inter_modif_notices_visees_y' style='cursor: pointer;'><input type='radio' name='visa_cdt_inter_modif_notices_visees' id='visa_cdt_inter_modif_notices_visees_y' value='yes'<?php if (getSettingValue("visa_cdt_inter_modif_notices_visees") == "yes") echo " checked='checked'";?> /> Activer l'interdiction pour les enseignants de modifier une notice après la signature des cahiers de textes</label><br />
-<label for='visa_cdt_inter_modif_notices_visees_n' style='cursor: pointer;'><input type='radio' name='visa_cdt_inter_modif_notices_visees' id='visa_cdt_inter_modif_notices_visees_n' value='no'<?php if (getSettingValue("visa_cdt_inter_modif_notices_visees") == "no") echo " checked='checked'";?> /> Désactiver l'interdiction pour les enseignants de modifier une notice après la signature des cahiers de textes</label><br />
-
-<br /><br />
-
-<center>
-	<input type="submit" value="Enregistrer" style="font-variant: small-caps;" />
-</center>
-</form>
-<hr />
-<h2>Gestion des cahiers de textes</h2>
-<ul>
-	<li><a href='modify_limites.php'>Espace disque maximal, taille maximale d'un fichier</a></li>
-	<li><a href='modify_type_doc.php'>Types de fichiers autorisés en téléchargement</a></li>
-	<li><a href='admin_ct.php'>Administration des cahiers de textes</a> (recherche des incohérences, modifications, suppressions)</li>
-	<li><a href='visa_ct.php'>Viser les cahiers de textes</a> (Signer les cahiers de textes)</li>
-</ul>
-
-<hr />
-<h2>Astuce</h2>
-<p>Si vous souhaitez n'utiliser que le module Cahier de textes dans Gepi, consultez la page suivante&nbsp;: <br /><a href='https://www.sylogix.org/wiki/gepi/Use_only_cdt' target='_blank'>https://www.sylogix.org/wiki/gepi/Use_only_cdt</a></p>
-
-
- */
-
-	//require("../lib/footer.inc.php");
 
 /****************************************************************
 			BAS DE PAGE

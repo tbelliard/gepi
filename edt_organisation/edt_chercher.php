@@ -65,7 +65,7 @@ else if (strstr($ua, "MSIE 7")) {
 	$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_ie7_param";
 }
 $style_specifique[] = "templates/".NameTemplateEDT()."/css/style_param";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 
 
 if (strstr($ua, "MSIE 6.0")) {

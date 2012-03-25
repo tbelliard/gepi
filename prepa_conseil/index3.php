@@ -122,7 +122,7 @@ if (isset($id_classe)) {
 
 //**************** EN-TETE *******************************
 $titre_page = "Edition simplifiée des bulletins";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE ****************************
 ?>
 <script type='text/javascript' language='javascript'>

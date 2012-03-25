@@ -47,7 +47,7 @@ $confirmation_suppr=isset($_POST['confirmation_suppr']) ? $_POST['confirmation_s
 
 //**************** EN-TETE *****************
 $titre_page = "Suppression d'une matière";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Retour à la gestion des matières</a></p>\n";

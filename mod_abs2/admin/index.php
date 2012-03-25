@@ -269,7 +269,7 @@ if (getSettingValue("absence_classement_top") == '10'){
 
 // header
 $titre_page = "Gestion du module absence";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 echo "<p class='bold'><a href=\"../../accueil_modules.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link' /> Retour | <a href=\"http://www.sylogix.org/projects/gepi/wiki/Abs_2\" alt='Aide' />Aide à la configuration</a>";
 echo "</p>";
     if (isset ($result)) {
@@ -279,11 +279,12 @@ echo "</p>";
     }
 ?>
 
+<form action="index.php" name="form1" method="post">
+<p class="center"><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></p>
 <h2>Gestion des absences par les CPE</h2>
 <p style="font-style: italic;">La désactivation du module de la gestion des absences n'entraîne aucune
 suppression des données. Lorsque le module est désactivé, les CPE n'ont pas accès au module.</p>
 
-<form action="index.php" name="form1" method="post">
 <?php
 echo add_token_field();
 ?>
@@ -450,7 +451,7 @@ entr&eacute;es dans Gepi par le biais du module absences.</p>
 </p-->
 	
 <br/>
-<div class="centre"><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></div>
+<p class="center"><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></p>
 
 </form>
 

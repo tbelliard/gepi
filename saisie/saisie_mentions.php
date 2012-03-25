@@ -203,7 +203,7 @@ if(isset($saisie_ordre_mentions)) {
 $titre_page = "Saisie de ".$gepi_denom_mention."s";
 //====================================
 // End standart header
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 if (!loadSettings()) {
 	die("Erreur chargement settings");
 }

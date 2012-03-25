@@ -130,7 +130,7 @@ if ($action == "modif_aid") {
 else {
 	$titre_page = "Gestion des AID | Ajouter Une AID";
 }
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 <p class=bold>

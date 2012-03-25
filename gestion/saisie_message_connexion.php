@@ -47,7 +47,7 @@ if (!checkAccess()) {
 
 //================================
 $titre_page = "Saisie de messages de connexion";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //================================
 
 if (!loadSettings()) {

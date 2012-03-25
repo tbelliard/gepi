@@ -203,9 +203,10 @@ function afficheChargement($indice,$nbEleves) {
   global $session_gepi; 
   require("../lib/global.inc.php");
   $gepiPath = "../";
+  $niveau_arbo = 1;
   $titre_page = "Répartition des justifications (chargement des données)";
   $_SESSION['cacher_header'] = "y";
-  require_once("../lib/header.inc");
+  require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 <p style ="display: block; width: 50%; margin:1em auto; text-align: center; font-size: large; font-weight: bold;">
@@ -536,7 +537,7 @@ $utilisation_scriptaculous="ok";
 $utilisation_win = 'oui';
 $_SESSION['cacher_header'] = "y";
 $dojo = true;
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 include('menu_abs2.inc.php');

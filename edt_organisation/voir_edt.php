@@ -233,7 +233,7 @@ else {
 //                                  VUE
 //		
 // =============================================================================
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 require_once("./voir_edt_view.php");
 require_once("../lib/footer.inc.php");
 

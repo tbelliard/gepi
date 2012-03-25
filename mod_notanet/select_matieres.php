@@ -162,7 +162,7 @@ if((isset($is_posted))&&(isset($type_brevet))) {
 //**************** EN-TETE *****************
 $titre_page = "Notanet: Associations type de brevet/matières";
 //echo "<div class='noprint'>\n";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 

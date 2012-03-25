@@ -83,7 +83,7 @@ $titre_page = "MEF";
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
 $javascript_specifique[] = "mod_abs2/lib/include";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 echo "<table cellspacing='15px' cellpadding='5px'><tr>";

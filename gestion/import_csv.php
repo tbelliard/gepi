@@ -42,7 +42,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE *****************
 $titre_page = "Outil de gestion | Importation";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 

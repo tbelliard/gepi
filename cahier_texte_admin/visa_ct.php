@@ -163,7 +163,7 @@ if (isset($_POST['visa_ct'])) {
 //=============================================
 // header
 $titre_page = "Signature des cahiers de textes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //=============================================
 
 //debug_var();

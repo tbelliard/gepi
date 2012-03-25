@@ -655,7 +655,7 @@ if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
 
 //**************** EN-TETE *********************
 $titre_page = "Paramètres de configuration des bulletins scolaires PDF";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 // Pour afficher les variables transmises en GET/POST/SERVER/SESSION

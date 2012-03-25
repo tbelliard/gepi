@@ -80,7 +80,7 @@ else{
 }
 
 // End standard header
-require_once("./lib/header.inc");
+require_once("./lib/header.inc.php");
 /*
 function acces($id,$statut) {
 	$tab_id = explode("?",$id);

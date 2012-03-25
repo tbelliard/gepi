@@ -93,7 +93,6 @@ if(isset($_POST['validation'])) {
 
 //**************** EN-TETE **************************************
 $titre_page = "Choix d'une couleur";
-//require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 
 ?>

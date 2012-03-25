@@ -456,7 +456,7 @@ if(isset($imprime)) {
 //**************** EN-TETE *****************
 $titre_page = "Epreuve blanche: Affichage";
 //echo "<div class='noprint'>\n";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 

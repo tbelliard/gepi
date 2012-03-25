@@ -109,7 +109,7 @@ $utilisation_tablekit="ok";
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
 if ($affichage != 'ods') {// on affiche pas de html
-    require_once("../lib/header.inc");
+    require_once("../lib/header.inc.php");
 
     include('menu_abs2.inc.php');
     include('menu_bilans.inc.php');

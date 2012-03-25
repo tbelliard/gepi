@@ -309,7 +309,7 @@ if ($affichage == 'tableur') {
 	
 }
 
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 if(!$menu){

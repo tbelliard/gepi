@@ -908,7 +908,7 @@ $datej=$year."-".$month."-".$day;
 $annee_en_cours_t=annee_en_cours_t($datej);
 //**************** EN-TETE *****************
 $titre_page = "Gestion des absences";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
 ?>

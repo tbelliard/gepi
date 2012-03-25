@@ -50,7 +50,7 @@ if (isset($is_posted)) {
 
 //**************** EN-TETE *****************
 $titre_page = "Matières : Importation des matières depuis un CSV";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil matières</a></p>

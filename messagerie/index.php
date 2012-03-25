@@ -290,7 +290,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 $message_suppression = "Confirmation de suppression";
 //**************** EN-TETE *****************
 $titre_page = "Gestion des messages";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************
 
 //debug_var();

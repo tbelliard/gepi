@@ -39,7 +39,7 @@ if (!checkAccess()) {
     die();
 }
 //**************** EN-TETE *****************
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 echo "<h2>Intitulé des séquences</h2>";
 echo "<p>Le tableau suivant indique quelles séquences correspondent à la matinée ou à l'après-midi.

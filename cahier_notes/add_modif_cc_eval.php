@@ -228,7 +228,7 @@ $titre_page="Carnet de notes - Ajout/modification d'un $nom_cc";
 /**
  * Entête de la page
  */
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";

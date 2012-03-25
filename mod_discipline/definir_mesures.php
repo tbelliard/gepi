@@ -155,7 +155,7 @@ if(isset($mesure)) {
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Discipline: Définition des mesures";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();
@@ -252,9 +252,9 @@ echo "</td>\n";
 echo "</tr>\n";
 echo "</table>\n";
 
-echo "<input type='hidden' name='cpt' value='$cpt' />\n";
+echo "<p><br /><input type='hidden' name='cpt' value='$cpt' /></p>\n";
 
-echo "<p><input type='submit' name='valider' value='Valider' /></p>\n";
+echo "<p class='center'><input type='submit' name='valider' value='Valider' /></p>\n";
 
 echo "</blockquote>\n";
 

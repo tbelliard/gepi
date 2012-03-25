@@ -1685,7 +1685,7 @@ function champs_radio_choix_format_login($nom_champ, $default_login_gen_type="na
 	for($i=0;$i<count($type_login);$i++) {
 		$retour.="<input type='radio' name='".$nom_champ."' id='".$nom_champ."_".$tableau_type_login[$i]."' value='".$tableau_type_login[$i]."' ";
 		if($default_login_gen_type==$tableau_type_login[$i]) {
-			$retour.="checked ";
+			$retour.="checked='checked' ";
 		}
 		$retour.=" onchange='changement()'";
 		$retour.="/> <label for='".$nom_champ."_".$tableau_type_login[$i]."'  style='cursor: pointer;'>".$tableau_type_login_description[$i]."</label>\n";
@@ -1693,7 +1693,7 @@ function champs_radio_choix_format_login($nom_champ, $default_login_gen_type="na
 	}
 
 	if (getSettingValue("use_ent") == "y") {
-		$retour.="<input type='radio' name='".$nom_champ."' id='".$nom_champ."_ent' value='ent' checked=\"checked\" ";
+		$retour.="<input type='radio' name='".$nom_champ."' id='".$nom_champ."_ent' value='ent' checked='checked' ";
 		$retour.="onchange='changement()' ";
 		$retour.="/>\n";
 		$retour.="<label for='".$nom_champ."_ent'  style='cursor: pointer;'>
@@ -1777,15 +1777,15 @@ function champ_input_choix_format_login($nom_champ, $default_login_gen_type="nnn
 		$tabdiv_infobulle[]=creer_div_infobulle('div_explication_formats_login_'.$nom_champ,$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 		//$retour.=creer_div_infobulle('div_explication_formats_login',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
-		$retour.=" <a href='#' onclick=\"afficher_div('div_explication_formats_login_$nom_champ','y',20,20); return false\" onmouseover=\"delais_afficher_div('div_explication_formats_login_$nom_champ','y',20,20,1000,20,20)\" onmouseout=\"cacher_div('div_explication_formats_login_.$nom_champ')\"><img src='../images/icons/ico_question_petit.png' width='15' height='15' /></a>";
+		$retour.=" <a href='#' onclick=\"afficher_div('div_explication_formats_login_$nom_champ','y',20,20); return false\" onmouseover=\"delais_afficher_div('div_explication_formats_login_$nom_champ','y',20,20,1000,20,20)\" onmouseout=\"cacher_div('div_explication_formats_login_.$nom_champ')\"><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='' title='aide' /></a>";
 	}
 
 	$retour.="<br />\n";
 	$retour.="Casse du login&nbsp;: <label for='".$nom_champ."_casse_min'>minuscules</label><input type='radio' name='".$nom_champ."_casse' id='".$nom_champ."_casse_min' value='min' ";
-	if((getSettingValue($nom_champ.'_casse')=='min')||(getSettingValue($nom_champ.'_casse')=='')) {$retour.="checked ";}
+	if((getSettingValue($nom_champ.'_casse')=='min')||(getSettingValue($nom_champ.'_casse')=='')) {$retour.="checked='checked' ";}
 	$retour.="/> / \n";
 	$retour.="<input type='radio' name='".$nom_champ."_casse' id='".$nom_champ."_casse_maj' value='maj' ";
-	if(getSettingValue($nom_champ.'_casse')=='maj') {$retour.="checked ";}
+	if(getSettingValue($nom_champ.'_casse')=='maj') {$retour.="checked='checked' ";}
 	$retour.="/><label for='".$nom_champ."_casse_maj'> majuscules</label>\n";
 
 	return $retour;

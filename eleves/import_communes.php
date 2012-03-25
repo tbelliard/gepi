@@ -107,7 +107,7 @@ if($mysql_collate!="") {$chaine_mysql_collate="COLLATE $mysql_collate";}
 
 //**************** EN-TETE *****************
 $titre_page = "Import des communes de naissance";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();

@@ -43,7 +43,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation des matières";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //************** FIN EN-TETE ***************
 
 $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";

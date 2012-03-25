@@ -146,7 +146,7 @@ if((isset($_SESSION['retour_cdt']))&&($_SESSION['retour_cdt']='visa_ct')) {
 
 //**************** EN-TETE *****************
 if ($current_imprime=='n') $titre_page = "Cahier de textes - Vue d'ensemble";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 if ($current_imprime=='y') echo "<div id='container'>\n";
 //**************** FIN EN-TETE *************
 // Création d'un espace entre le bandeau et le reste ainsi que le retour pour l'admin

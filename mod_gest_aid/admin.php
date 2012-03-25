@@ -66,12 +66,11 @@ if (isset($_POST['activer'])) {
 //**************** EN-TETE *****************
 // $titre_page = "Gestionnaires d'AID : Activation/désactivation";
 // echo "<div class='noprint'>\n";
-// require_once("../lib/header.inc");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 
 // ====== Inclusion des balises head et du bandeau =====
-include_once("../lib/header_template.inc");
+include_once("../lib/header_template.inc.php");
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion AID"))
 		echo "erreur lors de la création du fil d'ariane";

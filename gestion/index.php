@@ -73,9 +73,7 @@ $titre_page = "Gestion générale";
 $tbs_last_connection="";
 
 // ====== Inclusion des balises head et du bandeau =====
-//include_once("./../lib/header_template.inc");
-include_once("../lib/header_template.inc");
-// require_once("../lib/header.inc");
+include_once("../lib/header_template.inc.php");
 //**************** FIN EN-TETE *****************
 
 /*

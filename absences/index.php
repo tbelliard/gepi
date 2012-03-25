@@ -46,7 +46,7 @@ $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id
 include "../lib/periodes.inc.php";
 //**************** EN-TETE *****************
 $titre_page = "Saisie des absences";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 if (!isset($id_classe)) {

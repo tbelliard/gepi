@@ -163,7 +163,7 @@ if (isset($_POST['action'])) {
 
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des catégories de matières";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
 if (isset($_GET['action'])) {

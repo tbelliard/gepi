@@ -59,7 +59,7 @@ $messageEnregistrer = $themessage;
 
 // ====== Inclusion des balises head et du bandeau =====
 
-include_once("../lib/header_template.inc");
+include_once("../lib/header_template.inc.php");
 
 
 /****************************************************************
@@ -850,7 +850,6 @@ $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quit
 // End standart header
 		/*
 $titre_page = "Droits d'accès";
-require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
 <p class='bold'><a href="index.php"<?php

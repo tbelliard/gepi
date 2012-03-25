@@ -46,7 +46,7 @@ $mode_auto=isset($_POST['mode_auto']) ? $_POST['mode_auto'] : (isset($_GET['mode
 //==================================
 // header
 $titre_page = "Vérification/nettoyage des tables de la base de données GEPI";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //==================================
 
 //======================================================

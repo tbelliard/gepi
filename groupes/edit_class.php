@@ -298,7 +298,7 @@ $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quit
 //**************** EN-TETE **************************************
 //$titre_page = "Gestion des groupes";
 $titre_page = "Gestion des enseignements";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
 //debug_var();

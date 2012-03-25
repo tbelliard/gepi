@@ -44,7 +44,7 @@ $id_choix_periode=isset($_POST['id_choix_periode']) ? $_POST["id_choix_periode"]
 
 //**************** EN-TETE **************************************
 $titre_page = "Impression de listes au format PDF";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 //debug_var();
 echo "<p class='bold'>";

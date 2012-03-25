@@ -52,7 +52,7 @@ if ((isset($_GET['action'])) and ($_GET['action'] == "liste_presence"))
     unset ($titre_page);
 else
     $titre_page = "Outils de visualisation ".$nom_projet;
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 // Accueil
@@ -300,7 +300,7 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_presence")) {
             $j++;
         }
         echo "</table>\n";
-        if ($vide == 1) {
+        if (!isset ($vide) || $vide == 1) {
             echo "<br /><font color = red>Il n'y a actuellement aucun ".$gepiSettings['denomination_eleve']." dans cette AID !</font>\n";
         } else {
             echo "<table style=\"width:90%\" border=\"0\" cellpadding=\"5\">\n";

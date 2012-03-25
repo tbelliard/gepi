@@ -176,7 +176,7 @@ if ($action === "visualiser") {
 	// header
 	$titre_page = "Définition des types de semaine de l'établissement";
 	$style_specifique = "templates/".NameTemplateEdt()."/css/style_edt";
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	//====================================
 	
 	//debug_var();

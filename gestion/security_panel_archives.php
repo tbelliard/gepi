@@ -66,7 +66,7 @@ if(($duree2!="20dernieres")&&
 
 //**************** EN-TETE *****************
 $titre_page = "Sécurité Gepi - Archives -";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='security_policy.php'>Définir la politique de sécurité</a> | <a href='security_panel.php'>Panneau de sécurité</a></p>\n";
 echo "<br />\n";

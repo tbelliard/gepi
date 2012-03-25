@@ -40,7 +40,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE *****************
 $titre_page = "Outil de visualisation | Evolution de l'élève sur l'année";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 $periode = isset($_POST['periode']) ? $_POST['periode'] : (isset($_GET['periode']) ? $_GET['periode'] : NULL);

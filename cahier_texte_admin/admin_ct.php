@@ -188,7 +188,7 @@ if (isset($_POST['action'])) {
 //===================================================
 // header
 $titre_page = "Administration des cahiers de texte";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //===================================================
 
 //debug_var();

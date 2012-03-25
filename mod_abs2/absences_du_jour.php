@@ -128,7 +128,7 @@ $utilisation_scriptaculous="ok";
 $utilisation_win = 'oui';
 $_SESSION['cacher_header'] = "y";
 $dojo = true;
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 include('menu_abs2.inc.php');

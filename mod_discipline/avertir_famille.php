@@ -62,7 +62,7 @@ $msg="";
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Discipline: Avertir la famille";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 $gepiSchoolPays=mb_strtolower(getSettingValue('gepiSchoolPays'));

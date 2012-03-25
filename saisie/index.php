@@ -51,7 +51,7 @@ if (is_numeric($id_groupe) && $id_groupe > 0) {
 include "../lib/periodes.inc.php";
 //**************** EN-TETE *****************
 $titre_page = "Saisie des moyennes et appréciations";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 

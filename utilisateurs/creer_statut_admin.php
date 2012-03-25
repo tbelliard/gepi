@@ -76,12 +76,11 @@ if ($action == 'valide') {
 
 // ++++++++++++++++++++++ ENTETE ++++++++++++++++++++++++
 //$titre_page = "Module statuts personnalisés";
-//require_once("../lib/header.inc");
 // ++++++++++++++++++++ FIN ENTETE ++++++++++++++++++++++
 
 
 // ====== Inclusion des balises head et du bandeau =====
-include_once("../lib/header_template.inc");
+include_once("../lib/header_template.inc.php");
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
 		echo "erreur lors de la création du fil d'ariane";

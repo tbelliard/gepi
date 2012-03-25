@@ -416,7 +416,7 @@ if(isset($step)){
 				//**************
 				// Pour ne pas aller plus loin le temps du DEBUG
 				$titre_page = "Gestion des groupes";
-				require_once("../lib/header.inc");
+				require_once("../lib/header.inc.php");
 				die();
 				//**************
 				*/
@@ -430,7 +430,7 @@ if(isset($step)){
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des groupes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
 echo "<p class='bold'>\n";

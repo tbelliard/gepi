@@ -44,7 +44,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE *****************
 $titre_page = "Mise à jour eleves/responsables";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 // Passer à 'y' pour afficher les requêtes
