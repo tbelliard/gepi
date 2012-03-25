@@ -14,7 +14,7 @@ $Id: style_edt.css $
 }
 
 
-#menu_edt dl, dt, dd, ul, li {
+#menu_edt dl, dt, dd {
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
