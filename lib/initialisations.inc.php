@@ -12,6 +12,16 @@ ini_set('mbstring.internal_encoding','UTF-8');
 if (function_exists('mb_internal_encoding')) {
     mb_internal_encoding("UTF-8");
 }
+
+if (date_default_timezone_get() == 'UTC') {
+    date_default_timezone_set('Europe/Paris');
+} else {
+    //dans le cas où on détecte mal une zone UTC (donc non configurée à priori),
+    //on fait comme si il y avait bien une conf de précisée pour éviter l'erreur
+    //PHP Fatal error:  Uncaught exception 'Exception' with message 'DateTime::__construct(): It is not safe to rely on the system's timezone settings.
+    date_default_timezone_set(date_default_timezone_get());
+}
+
 //header('Content-Type: text/html; charset=UTF-8');
 
 /**
