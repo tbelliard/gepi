@@ -396,6 +396,7 @@ if (!isset($aid_trouve)) {
 ?>
 	</form>
 
+	<a name="gestion_fichiers" />
 	<h2>Gestion des fichiers</h2>
 <?php if(!file_exists('../photos/'.$repertoire.'eleves/') && !file_exists('../photos/'.$repertoire.'eleves/')) {?>
 	  <p>
@@ -474,6 +475,7 @@ if (!isset($aid_trouve)) {
 	  </p>
 	</form>
 
+	<a name="purge"></a>
 	<?php if( file_exists('../photos/'.$repertoire.'eleves/') ) {?>
 	<form action="trombinoscopes_admin.php" id="form4" method="post" title="Purger les photos">
 	<?php
@@ -501,7 +503,50 @@ if (!isset($aid_trouve)) {
 	</form>
  <?php 
  } ?>
- 
+
+	<?php if (file_exists('../photos/'.$repertoire.'eleves/') && getSettingValue('alea_nom_photo')==NULL) {?>
+	<form action="trombinoscopes_admin.php" id="form5" method="post" title="Encoder les noms des fichiers photo élèves">
+	<?php
+	echo add_token_field();
+	?>
+	<p>
+	<fieldset>
+		<legend class="bold">Encoder les noms des fichiers photo des élèves</legend>
+		Modifier les noms des fichiers photo des élèves de manière à en protéger l'accès.<br/>
+		<input type="hidden" name="encoder_noms_photo" value="oui">
+		<em>Cette opération modifie la configuration de GEPI de telle sorte que désormais les noms des fichiers photo des élèves seront toujours encodés.</em>
+ 	</fieldset>
+	<p class="center">
+		<input type="submit" 
+			value="Encoder"
+			style="font-variant: small-caps;" />
+	</p>
+	</form>
+ <?php 
+ } ?>
+
+	<?php if (file_exists('../photos/'.$repertoire.'eleves/') && getSettingValue('alea_nom_photo')!=NULL) {?>
+	<form action="trombinoscopes_admin.php" id="form6" method="post" title="Réencoder les noms des fichiers photo élèves">
+	<?php
+	echo add_token_field();
+	?>
+	<p>
+	<fieldset>
+		<legend class="bold">Re-encoder les noms des fichiers photo des élèves</legend>
+		Modifier les noms des fichiers photo des élèves de manière à en protéger l'accès.<br/>
+		<input type="hidden" name="re_encoder_noms_photo" value="oui">
+		<em>Cette opération est nécessaire uniquement s'il y a des problèmes d'accès aux photos des élèves.</em>
+ 	</fieldset>
+	<p class="center">
+		<input type="submit" 
+			value="re-encoder"
+			style="font-variant: small-caps;" />
+	</p>
+	</form>
+ <?php 
+ } ?>
+
+	<a name="telecharger_photos_eleves"></a>
 	<h2>Télécharger les photos</h2>
 	<form method="post" action="trombinoscopes_admin.php" id="formEnvoi1" enctype="multipart/form-data">
 	<fieldset>
@@ -550,7 +595,7 @@ if (!isset($aid_trouve)) {
 	echo add_token_field();
 	?>
 		<legend class="bold">
-			Restaurer les photos à partir d'une sauvegarde (ou d'un fichier ZIP)
+			Restaurer les photos à partir d'une sauvegarde
 		</legend>
 		<input type="hidden" name="action" value="upload" />
 		<input type="file" name="nom_du_fichier" title="Nom du fichier à télécharger"/>
@@ -570,7 +615,7 @@ if (!isset($aid_trouve)) {
 		  </em>
 		</p>
 
-		<p>Le fichier ZIP doit contenir une arborescence <b>photos/eleves</b> et/ou <b>photos/personnels</b> contenant respectivement les photos des élèves et des personnels encodées au format JPEG. Les photos des élèves doivent être nommées d'après les ELENOET des élèves (<em>ELENOET.jpg</em>) ou, pour un GEPI multisite, d'après les login des élèves (<em>login.jpg</em>).
+		<p>Le fichier de sauvegarde à restaurer doit contenir une arborescence <b>photos/eleves</b> et/ou <b>photos/personnels</b> contenant respectivement les fichiers photo des élèves et des personnels. Si la restauration a pour but de transférer les données sur une autre machine, la base doit être également restaurée sinon les noms des fichiers photo ne seront pas corrcetement associés aux personnes.</p>
 
 		<p>La <b>taille maximale</b> d'un fichier téléchargé vers le serveur est de <b><?php echo ini_get('upload_max_filesize');?>.</b><br/>Effectuez si nécessaire votre téléchargement en plusieurs fichiers ZIP.</p>
 

@@ -177,6 +177,17 @@ if ($etape == 4) {
 			}
 		}
 		fclose($fd);
+
+		// on active l'encodage des noms de fichier photo élève
+		// la requête qui suit doit être conforme à la fonction
+		// active_encode_nom_photo() de lib/share.inc.php
+		$query = "insert into setting set NAME = 'alea_nom_photo', VALUE = '".md5(time())."'";
+		$reg = mysql_query($query);
+		if (!$reg) {
+			echo "<p><font color=red>ERROR</font> : '$query'</p>\n";
+			echo "<p>Erreur retournée : ".mysql_error()."</p>\n";
+			$result_ok = 'no';
+		}
 	}
 
 	if ($result_ok == 'yes') {

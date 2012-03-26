@@ -57,7 +57,7 @@ class Eleve extends BaseEleve {
 
     function __construct() {
         parent::__construct();
-        //$this->timestamp_start=microtime(true); //disable it because it makes a mess when comparing objects
+        $this->timestamp_start=microtime(true);
     }
     
     // ERREUR ?? Il ne peut y avoir qu'une seule classe pour un élève pour une période !!
@@ -946,6 +946,12 @@ class Eleve extends BaseEleve {
 	    return $result;
 	}
 	
+	
+	protected function encode_nom_photo($nom_photo) {
+		global $gepiSettings;
+		if (!isset($gepiSettings['alea_nom_photo'])) return $nom_photo; // la valeur est déjà définie
+		else return substr(md5(getSettingValue('alea_nom_photo').$nom_photo),0,5).$nom_photo;
+		}
 	/**
 	 * Renvoie le nom de la photo de l'élève
 	 * Renvoie NULL si :
@@ -975,8 +981,8 @@ class Eleve extends BaseEleve {
 		
 		$photo = null;
 		// on vérifie si la photo existe
-		if(file_exists($chemin."../photos/".$repertoire2."eleves/".$_elenoet_ou_login.".jpg")) {
-			$photo=$chemin."../photos/".$repertoire2."eleves/".$_elenoet_ou_login.".jpg";
+		if(file_exists($chemin."../photos/".$repertoire2."eleves/".encode_nom_photo($_elenoet_ou_login).".jpg")) {
+			$photo=$chemin."../photos/".$repertoire2."eleves/".encode_nom_photo($_elenoet_ou_login).".jpg";
 		}
 		else if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y')
 		{
@@ -988,17 +994,16 @@ class Eleve extends BaseEleve {
 			$_elenoet_ou_login = mysql_result($query, 0,'login');
 		  }
 
-		  if(file_exists($chemin."../photos/".$repertoire2."eleves/$_elenoet_ou_login.jpg")) {
-				$photo=$chemin."../photos/".$repertoire2."eleves/$_elenoet_ou_login.jpg";
+		  if(file_exists($chemin."../photos/".$repertoire2."eleves/".encode_nom_photo($_elenoet_ou_login).".jpg")) {
+				$photo=$chemin."../photos/".$repertoire2."eleves/".encode_nom_photo($_elenoet_ou_login).".jpg";
 			}
 			else {
-				if(file_exists($chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg")) {
-					$photo=$chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg";
+				if(file_exists($chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",encode_nom_photo($_elenoet_ou_login)).".jpg")) {
+					$photo=$chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",encode_nom_photo($_elenoet_ou_login)).".jpg";
 				} else {
 					for($i=0;$i<5;$i++){
-						if(mb_substr($_elenoet_ou_login,$i,1)=="0"){
-							$test_photo=mb_substr($_elenoet_ou_login,$i+1);
-							//if(file_exists($chemin."../photos/eleves/".$test_photo.".jpg")){
+						if(mb_substr(encode_nom_photo($_elenoet_ou_login),$i,1)=="0"){
+							$test_photo=mb_substr(encode_nom_photo($_elenoet_ou_login),$i+1);
 							if(($test_photo!='')&&(file_exists($chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg"))) {
 								$photo=$chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg";
 								break;

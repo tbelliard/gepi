@@ -340,10 +340,10 @@ if(isset($_POST['upload_scan'])) {
 										imagecopy($img,$img_source,0,0,$x,$y,$larg_cadre_img,$haut_cadre_img);
 
 										if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-											imagejpeg($img, "../photos/eleves/$repertoire2".$lig2->login.'.jpg');
+											imagejpeg($img, "../photos/eleves/$repertoire2".encode_nom_photo($lig2->login).'.jpg');
 										}
 										else {
-											imagejpeg($img, "../photos/eleves/".$lig2->elenoet.'.jpg');
+											imagejpeg($img, "../photos/eleves/".encode_nom_photo($lig2->elenoet).'.jpg');
 										}
 										imagedestroy($img);
 									}
@@ -374,7 +374,7 @@ if(isset($generer_pdf)) {
 		Header('Pragma: public');
 		require('../fpdf/fpdf.php');
 		
-		
+		define('FPDF_FONTPATH','../fpdf/font/');
 		define('LargeurPage',$largeur_page);
 		define('HauteurPage',$hauteur_page);
 		session_cache_limiter('private');

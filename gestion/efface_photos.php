@@ -54,7 +54,7 @@ if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 	$rep_photos='../photos/'.$_COOKIE['RNE'].'/eleves';
 }
 else {
-	$rep_photos='../photos/eleves';		
+	$rep_photos='../photos/eleves';
 }
 
 if((isset($_POST['is_posted']))&&(isset($_POST['supprimer']))) {
@@ -69,8 +69,9 @@ if((isset($_POST['is_posted']))&&(isset($_POST['supprimer']))) {
 	while ($file = readdir($handle)) {
 		if((my_eregi(".jpg$",$file))||(my_eregi(".jpeg$",$file))){
 
-			$prefixe=mb_substr($file,0,strrpos($file,"."));
-			$sql="SELECT 1=1 FROM eleves WHERE elenoet='$prefixe'";
+			$prefixe=pathinfo($file,PATHINFO_FILENAME);
+			if (isset($gepiSettings['alea_nom_photo'])) $prefixe=substr($prefixe,5);
+			$sql="SELECT 1=1 FROM eleves WHERE elenoet='".$prefixe."'";
 			//echo "<br />$sql<br />\n";
 			$test=mysql_query($sql);
 
@@ -113,8 +114,9 @@ else {
 		if((my_eregi(".jpg$",$file))||(my_eregi(".jpeg$",$file))){
 			$nbjpg++;
 
-			$prefixe=mb_substr($file,0,strrpos($file,"."));
-			$sql="SELECT 1=1 FROM eleves WHERE elenoet='$prefixe'";
+			$prefixe=pathinfo($file,PATHINFO_FILENAME);
+			if (isset($gepiSettings['alea_nom_photo'])) $prefixe=substr($prefixe,5);
+			$sql="SELECT 1=1 FROM eleves WHERE elenoet='".$prefixe."'";
 			//echo "<br />$sql<br />\n";
 			$test=mysql_query($sql);
 
@@ -124,7 +126,6 @@ else {
 					//echo ", \n";
 					$chaine.=", \n";
 				}
-				//echo "<a href='../photos/eleves/$file'>$file</a>";
 				$chaine.="<a href='".$rep_photos."/$file' target='blank'>$file</a>";
 				$n++;
 			}

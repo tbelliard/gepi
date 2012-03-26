@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -91,7 +91,7 @@ if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 
 }
 else {
-  $rep_photos='../photos/eleves/';
+	$rep_photos='../photos/eleves/';
 }
 
 $tab_regimes_autorises=array('d/p', 'int.', 'ext.', 'i-e');
@@ -345,7 +345,7 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 				$dest = $rep_photos;
 				$n = 0;
 				//$msg.="\$rep_photos=$rep_photos<br />";
-				if (!deplacer_fichier_upload($sav_photo['tmp_name'][$cpt_photo], $rep_photos.$quiestce[$cpt_photo].".jpg")) {
+				if (!deplacer_fichier_upload($sav_photo['tmp_name'][$cpt_photo], $rep_photos.encode_nom_photo($quiestce[$cpt_photo]).".jpg")) {
 					$msg.="Problème de transfert : le fichier n°$cpt_photo n'a pas pu être transféré sur le répertoire photos/eleves/<br />";
 				} else {
 					//$msg = "Téléchargement réussi.";
@@ -353,7 +353,7 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 					if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
 						// si le redimensionnement des photos est activé on redimenssionne
 	
-						$source = imagecreatefromjpeg($rep_photos.$quiestce[$cpt_photo].".jpg"); // La photo est la source
+						$source = imagecreatefromjpeg($rep_photos.encode_nom_photo($quiestce[$cpt_photo]).".jpg"); // La photo est la source
 	
 						if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes")); } // On crée la miniature vide
 						if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(getSettingValue("h_resize_trombinoscopes"), getSettingValue("l_resize_trombinoscopes")); } // On crée la miniature vide
@@ -371,7 +371,7 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 						imagecopyresampled($destination, $source, 0, 0, 0, 0, $largeur_destination, $hauteur_destination, $largeur_source, $hauteur_source);
 						if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
 						// On enregistre la miniature sous le nom "mini_couchersoleil.jpg"
-						imagejpeg($destination, $rep_photos.$quiestce[$cpt_photo].".jpg",100);
+						imagejpeg($destination, $rep_photos.encode_nom_photo($quiestce[$cpt_photo]).".jpg",100);
 					}
 				}
 			}
@@ -729,7 +729,6 @@ if (!isset($quelles_classes)) {
 				$cpt_photo_manquante=0;
 				while($lig_tmp=mysql_fetch_object($test_elenoet_ok)){
 					$test_photo=nom_photo($lig_tmp->elenoet);
-					//if((!file_exists("../photos/eleves/".$lig_tmp->elenoet.".jpg"))&&(!file_exists("../photos/eleves/0".$lig_tmp->elenoet.".jpg"))){
 					if($test_photo==""){
 						$cpt_photo_manquante++;
 					}
@@ -1353,7 +1352,6 @@ if(isset($quelles_classes)) {
 				$i=0;
 				while($lig_tmp=mysql_fetch_object($test_elenoet_ok)) {
 					$test_photo=nom_photo($lig_tmp->elenoet);
-					//if((!file_exists("../photos/eleves/".$lig_tmp->elenoet.".jpg"))&&(!file_exists("../photos/eleves/0".$lig_tmp->elenoet.".jpg"))){
 					if($test_photo==""){
 						//if($chaine_photo_manquante!=""){$chaine_photo_manquante.=" OR ";}
 						//$chaine_photo_manquante.="elenoet='$lig_tmp->elenoet'";
@@ -1673,16 +1671,9 @@ if(isset($quelles_classes)) {
 		$lien_image_compte_utilisateur=lien_image_compte_utilisateur($eleve_login, "eleve", "", "n");
 		if($lien_image_compte_utilisateur!="") {echo "<div style='float:right; width: 16px'>".$lien_image_compte_utilisateur."</div>";}
 
-		if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='autre')||
-			(($_SESSION['statut']=='cpe')&&(getSettingAOui('CpeAccesFichesEleves')))
-		) {
-			echo "<p><a href='modify_eleve.php?eleve_login=$eleve_login&amp;quelles_classes=$quelles_classes&amp;order_type=$order_type";
-			if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-			echo "'>$eleve_nom $eleve_prenom</a>";
-		}
-		else {
-			echo "$eleve_nom $eleve_prenom";
-		}
+		echo "<p><a href='modify_eleve.php?eleve_login=$eleve_login&amp;quelles_classes=$quelles_classes&amp;order_type=$order_type";
+		if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
+		echo "'>$eleve_nom $eleve_prenom</a>";
 		if ($date_sortie_elv!=0) {
 		     echo "<br/>";
 		     echo "<span class=\"red\"><b>Sortie le ".affiche_date_sortie($date_sortie_elv)."</b></span>";;
@@ -1753,8 +1744,6 @@ if(isset($quelles_classes)) {
 				$temoin_photo="y";
 
 				$tabdiv_infobulle[]=creer_div_infobulle('photo_'.$eleve_login,$titre,"",$texte,"",14,0,'y','y','n','n');
-
-				//echo "<a href='../photos/eleves/$photo' target='_blank' onmouseover=\"afficher_div('photo_$eleve_login','y',-20,20);\">";
 
 				echo "<a href='".$photo."' target='_blank' onmouseover=\"delais_afficher_div('photo_$eleve_login','y',-20,20,500,40,30);\">";
 
@@ -1847,7 +1836,7 @@ if(isset($quelles_classes)) {
 			echo "<p><i>Notes</i>&nbsp;:</p>\n";
 			echo "<ul>\n";
 		}
-		echo "<li><i>Note</i>&nbsp;: Il est possible d'uploader un fichier <a href='../mod_trombinoscopes/trombinoscopes_admin.php#formEnvoi'>ZIP d'un lot de photos</a> plutôt que les uploader une par une.<br />Il faut que les photos soient nommées au format ELENOET.JPG</p></li>\n";
+		echo "<li><i>Note</i>&nbsp;: Il est possible d'uploader un fichier <a href='../mod_trombinoscopes/trombinoscopes_admin.php#telecharger_photos_eleves'>ZIP d'un lot de photos</a> plutôt que les uploader une par une.<br />Il faut que les photos soient nommées au format ELENOET.JPG</p></li>\n";
 		$temoin_notes_bas_de_page="y";
 	}
 

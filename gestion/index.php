@@ -307,7 +307,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
 
   if ($multisite != 'y') {
-	$chemin = "efface_photos.php";
+	$chemin = "../mod_trombinoscopes/trombinoscopes_admin.php#purge";
 	$titre = "Effacer les photos";
 	$expli = "Permet d'effacer les photos des ".$gepiSettings['denomination_eleves']." qui ne sont plus dans la base.";
 	$ancre="efface_photos";

@@ -2705,95 +2705,6 @@ function param_edt($statut){
 	}
 }
 
-/**
- * Renvoie le nom de la photo de l'élève ou du prof
- *
- * Renvoie NULL si :
- *
- * - le module trombinoscope n'est pas activé
- * - la photo n'existe pas.
- *
- * @param string $_elenoet_ou_login selon les cas, soit l'elenoet de l'élève soit le login du professeur
- * @param string $repertoire "eleves" ou "personnels"
- * @param int $arbo niveau d'aborescence (1 ou 2).
- * @return string Le chemin vers la photo ou NULL
- * @see getSettingValue()
- */
-function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
-	if ($arbo==2) {$chemin = "../";} else {$chemin = "";}
-	if (($repertoire != "eleves") and ($repertoire != "personnels")) {
-		return NULL;
-		die();
-	}
-	if (getSettingValue("active_module_trombinoscopes")!='y') {
-		return NULL;
-		die();
-	}
-		$photo=NULL;
-
-	// En multisite, on ajoute le répertoire RNE
-	if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-		  // On récupère le RNE de l'établissement
-      $repertoire2=$_COOKIE['RNE']."/";
-	}else{
-	  $repertoire2="";
-	}
-
-	// Cas des élèves
-	if ($repertoire == "eleves") {
-	  
-	  if($_elenoet_ou_login!='') {
-
-		// on vérifie si la photo existe
-
-		if(file_exists($chemin."../photos/".$repertoire2."eleves/".$_elenoet_ou_login.".jpg")) {
-			$photo=$chemin."../photos/".$repertoire2."eleves/".$_elenoet_ou_login.".jpg";
-		}
-		else if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y')
-		{
-		  // En multisite, on recherche aussi avec les logins
-		  if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-			// On récupère le login de l'élève
-			$sql = 'SELECT login FROM eleves WHERE elenoet = "'.$_elenoet_ou_login.'"';
-			$query = mysql_query($sql);
-			$_elenoet_ou_login = mysql_result($query, 0,'login');
-		  }
-
-		  if(file_exists($chemin."../photos/".$repertoire2."eleves/$_elenoet_ou_login.jpg")) {
-				$photo=$chemin."../photos/".$repertoire2."eleves/$_elenoet_ou_login.jpg";
-			}
-			else {
-				if(file_exists($chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg")) {
-					$photo=$chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg";
-				} else {
-					for($i=0;$i<5;$i++){
-						if(mb_substr($_elenoet_ou_login,$i,1)=="0"){
-							$test_photo=mb_substr($_elenoet_ou_login,$i+1);
-							if(($test_photo!='')&&(file_exists($chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg"))) {
-								$photo=$chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg";
-								break;
-							}
-						}
-					}
-				}
-			}
-
-		}
-
-	  }
-	}
-	// Cas des non-élèves
-	else {
-
-		$_elenoet_ou_login = md5(mb_strtolower($_elenoet_ou_login));
-			if(file_exists($chemin."../photos/".$repertoire2."personnels/$_elenoet_ou_login.jpg")){
-				$photo=$chemin."../photos/".$repertoire2."personnels/$_elenoet_ou_login.jpg";
-			} else {
-				$photo = NULL;
-		}
-	}
-	return $photo;
-}
 
 
 /**
@@ -3483,6 +3394,129 @@ function cree_repertoire_multisite() {
 	  }
 	}
 	return TRUE;
+}
+
+/**
+ * Crée une valeur aléatoire utilisée pour coder le nom des fichiers photo
+ * et l'enregistre dans la table 'setting'
+ * La présence de cette valeur dans la table 'setting' détermine si
+ * l'encodage est activé ou pas.
+ * Renvoie true si l'encodage est activé, false sinon.
+ *
+ * @return boolean true : l'encodage est activé
+ * @see encode_nom_photo()
+ */
+function active_encode_nom_photo() {
+	global $gepiSettings;
+	if (isset($gepiSettings['alea_nom_photo'])) return false; // la valeur est déjà définie
+	else {
+	$alea_nom_photo=md5(time());
+	return saveSetting('alea_nom_photo',$alea_nom_photo);
+	}
+}
+
+/**
+ * Ajoute au début d'un nom de fichier une chaîne 5 caractères pseudo alétaoires
+ * le but étant d'empêcher l'accès aux photos élèves.
+ *
+ * Renvoie le nom de fichier modifié si la valeur '$alea_nom_photo' est définie
+ * dans la table 'setting', sinon renvoie le nom de fichier inchangé.
+ *
+ * @param string $nom_photo le nom du fichier
+ * @return string le nom du fichier éventuellement modifié
+ * @see active_encode_nom_photo()
+ * 
+ */
+function encode_nom_photo($nom_photo) {
+	global $gepiSettings;
+	if (!isset($gepiSettings['alea_nom_photo'])) return $nom_photo; // la valeur est déjà définie
+	else return substr(md5(getSettingValue('alea_nom_photo').$nom_photo),0,5).$nom_photo;
+}
+
+/**
+ * Renvoie le nom de la photo de l'élève ou du prof
+ *
+ * Renvoie NULL si :
+ *
+ * - le module trombinoscope n'est pas activé
+ * - la photo n'existe pas.
+ *
+ * @param string $_elenoet_ou_login selon les cas, soit l'elenoet de l'élève soit le login du professeur
+ * @param string $repertoire "eleves" ou "personnels"
+ * @param int $arbo niveau d'aborescence (1 ou 2).
+ * @return string Le chemin vers la photo ou NULL
+ * @see getSettingValue()
+ */
+function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
+	if ($arbo==2) {$chemin = "../";} else {$chemin = "";}
+	if (($repertoire != "eleves") and ($repertoire != "personnels")) {
+		return NULL;
+		die();
+	}
+	if (getSettingValue("active_module_trombinoscopes")!='y') {
+		return NULL;
+		die();
+	}
+		$photo=NULL;
+
+	// En multisite, on ajoute le répertoire RNE
+	if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+		  // On récupère le RNE de l'établissement
+      $repertoire2=$_COOKIE['RNE']."/";
+	}else{
+	  $repertoire2="";
+	}
+
+
+	// Cas des élèves
+	if ($repertoire == "eleves") {
+
+		if($_elenoet_ou_login!='') {
+
+			// on vérifie si la photo existe
+
+			if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+				// En multisite, on recherche aussi avec les logins
+				if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+					// On récupère le login de l'élève
+					$sql = 'SELECT login FROM eleves WHERE elenoet = "'.$_elenoet_ou_login.'"';
+					$query = mysql_query($sql);
+					$_elenoet_ou_login = mysql_result($query, 0,'login');
+				}
+			}
+
+			if(file_exists($chemin."../photos/".$repertoire2."eleves/".encode_nom_photo($_elenoet_ou_login).".jpg")) {
+				$photo=$chemin."../photos/".$repertoire2."eleves/".encode_nom_photo($_elenoet_ou_login).".jpg";
+			}
+			else {
+				if(file_exists($chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",encode_nom_photo($_elenoet_ou_login)).".jpg")) {
+					$photo=$chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",encode_nom_photo($_elenoet_ou_login)).".jpg";
+				} else {
+					for($i=0;$i<5;$i++){
+						if(mb_substr(encode_nom_photo($_elenoet_ou_login),$i,1)=="0"){
+							$test_photo=mb_substr($_elenoet_ou_login,$i+1);
+							if(($test_photo!='')&&(file_exists($chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg"))) {
+								$photo=$chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg";
+								break;
+							}
+						}
+					}
+				}
+			}
+
+		}
+	}
+	// Cas des non-élèves
+	else {
+
+		$_elenoet_ou_login = md5(mb_strtolower($_elenoet_ou_login));
+			if(file_exists($chemin."../photos/".$repertoire2."personnels/$_elenoet_ou_login.jpg")){
+				$photo=$chemin."../photos/".$repertoire2."personnels/$_elenoet_ou_login.jpg";
+			} else {
+				$photo = NULL;
+		}
+	}
+	return $photo;
 }
 
 /**
