@@ -37,7 +37,7 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 die();
 }
-include("../fckeditor/fckeditor.php") ;
+include("../ckeditor/ckeditor.php");
 
 if(!isset($msg)){$msg="";}
 
@@ -95,7 +95,7 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 //debug_var();
 ?>
-<form enctype="multipart/form-data" action="modify_impression.php" method=post name=formulaire>
+<form action="modify_impression.php" method=post name=formulaire>
 <p class=bold><a href="index.php#modify_impression"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>|<a href="modify_impression.php?fiche=personnels"> Fiche Personnels Etablissement </a>|<a href="modify_impression.php?fiche=responsables"> Fiche <?php echo $gepiSettings['denomination_responsables']; ?></a>|<a href="modify_impression.php?fiche=eleves"> Fiche <?php echo $gepiSettings['denomination_eleves'];?> </a></p>
 
 <?php
@@ -113,7 +113,7 @@ $fiche=isset($_POST["fiche"]) ? $_POST["fiche"] : (isset($_GET["fiche"]) ? $_GET
 
 //echo "<table width=600>\n";
 //echo "<tr>\n<td>\n";
-echo "<div style='width: 600px;'>\n";
+echo "<div style='width: 850px;'>\n";
 
 switch ($fiche) {
 case 'personnels' :
@@ -134,12 +134,9 @@ case 'personnels' :
 		echo "<br />Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
 		echo "<br /><i>Mise en forme du message :</i>\n";
 
-		$oFCKeditor = new FCKeditor('impression_personnelFCK') ;
-		$oFCKeditor->BasePath = '../fckeditor/' ;
-		$oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
-		$oFCKeditor->ToolbarSet = 'Basic' ;
-		$oFCKeditor->Value      = $impression ;
-		$oFCKeditor->Create() ;
+		$oCKeditor = new CKeditor() ;
+		$oCKeditor->basePath = '../ckeditor/' ;
+		$oCKeditor->editor('impression_personnelFCK',$impression) ;
 
 		//echo "</div>\n";
     break;
@@ -162,12 +159,9 @@ case 'responsables' :
 		echo "<br />Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
 		echo "<br /><i>Mise en forme du message :</i>\n";
 
-		$oFCKeditor = new FCKeditor('impression_parentFCK') ;
-		$oFCKeditor->BasePath = '../fckeditor/' ;
-		$oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
-		$oFCKeditor->ToolbarSet = 'Basic' ;
-		$oFCKeditor->Value      = $impression_parent ;
-		$oFCKeditor->Create() ;
+		$oCKeditor = new CKeditor() ;
+		$oCKeditor->basePath = '../ckeditor/' ;
+		$oCKeditor->editor('impression_parentFCK',$impression_parent) ;
 
 		//echo "</div>\n";
     break;
@@ -191,12 +185,9 @@ case 'eleves' :
 		echo "<br />Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
 		echo "<br /><i>Mise en forme du message :</i>\n";
 
-		$oFCKeditor = new FCKeditor('impression_eleveFCK') ;
-		$oFCKeditor->BasePath = '../fckeditor/' ;
-		$oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
-		$oFCKeditor->ToolbarSet = 'Basic' ;
-		$oFCKeditor->Value      = $impression_eleve ;
-		$oFCKeditor->Create() ;
+		$oCKeditor = new CKeditor() ;
+		$oCKeditor->basePath = '../ckeditor/' ;
+		$oCKeditor->editor('impression_eleveFCK',$impression_eleve) ;
 
 		//echo "</div>\n";
 	break;
