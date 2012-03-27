@@ -19,7 +19,7 @@ include("calendrier_id.class.php");
  * calendrier.
  */
 $cal = new Calendrier($frm, $chm);
-$cal->auto_set_date($_POST);
+$cal->auto_set_date();
 $cal->affiche();
 
 ?>

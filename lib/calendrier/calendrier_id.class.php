@@ -212,7 +212,7 @@ class Calendrier {
      * @param   integer     $mois       Le numéro du mois (1 = janvier)
      * @return  boolean                 False si change_date n'existe pas, true sinon
      */
-    function auto_set_date($_POST){
+    function auto_set_date(){
         if (isset($_POST['change_date'])){
             $this->set_date($_POST['mois'], $_POST['annee']);
             return true;
