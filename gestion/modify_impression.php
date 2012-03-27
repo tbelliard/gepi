@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -19,6 +19,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
@@ -46,9 +47,11 @@ if (isset($_POST['ok'])) {
 
 	if	(isset($_POST['impression_personnelFCK'])) {
 		$imp = html_entity_decode($_POST['impression_personnelFCK']);
+		//$imp = $_POST['impression_personnelFCK'];
+		//echo "<pre>$imp</pre>";
 		if (!saveSetting("Impression", $imp)) {
 			$msg .= "Erreur lors de l'enregistrement de la fiche bienvenue pour le personnel !";
-			$erreur = true;
+			$error = true;
 		}
     }
 
@@ -56,7 +59,7 @@ if (isset($_POST['ok'])) {
 		$imp = html_entity_decode($_POST['impression_parentFCK']);
 		if (!saveSetting("ImpressionFicheParent", $imp)) {
 			$msg .= "Erreur lors de l'enregistrement de la fiche bienvenue pour les ".$gepiSettings['denomination_responsables']." !";
-			$erreur = true;
+			$error = true;
 		}
     }
 
@@ -64,7 +67,7 @@ if (isset($_POST['ok'])) {
 		$imp = html_entity_decode($_POST['impression_eleveFCK']);
 		if (!saveSetting("ImpressionFicheEleve", $imp)) {
 			$msg .= "Erreur lors de l'enregistrement de la fiche bienvenue pour les ".$gepiSettings['denomination_eleves']." !";
-			$erreur = true;
+			$error = true;
 		}
     }
 
