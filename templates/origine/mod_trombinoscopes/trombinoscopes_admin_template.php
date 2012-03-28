@@ -396,7 +396,7 @@ if (!isset($aid_trouve)) {
 ?>
 	</form>
 
-	<a name="gestion_fichiers" />
+	<a name="gestion_fichiers"></a>
 	<h2>Gestion des fichiers</h2>
 <?php if(!file_exists('../photos/'.$repertoire.'eleves/') && !file_exists('../photos/'.$repertoire.'eleves/')) {?>
 	  <p>
@@ -418,7 +418,7 @@ if (!isset($aid_trouve)) {
 			   id='supprime_personnels'
 			   value="oui"
 			   />
-		<label for="supprime_personnel" id='sup_pers'>
+		<label for="supprime_personnels" id='sup_pers'>
 		  Vider le dossier photos des personnels
 		</label>
 <?php } if( file_exists('../photos/'.$repertoire.'eleves/') ) {  ?>
@@ -427,7 +427,7 @@ if (!isset($aid_trouve)) {
 			   name="supp_eleve"
 			   id='supprime_eleves'
 			   value="oui" />
-		<label for="supprime_eleve" id='sup_ele'>
+		<label for="supprime_eleves" id='sup_ele'>
 		  Vider le dossier photos des élèves
 		</label>
 		<br/><em>Un fichier de sauvegarde sera créé, pensez à le récupérer puis le supprimer dans le module de gestion des sauvegardes.</em>
@@ -490,7 +490,7 @@ if (!isset($aid_trouve)) {
 			   name="cpts_inactifs"
 			   id='cpts_inactifs'
 			   value="oui" />
-		<label for="purge_dossier_photos">
+		<label for="cpts_inactifs">
 		  Effacer également les photos des élèves et des professeurs dont le compte est désactivé.
 		</label>
 		<br/><em>Un fichier de sauvegarde sera créé, pensez à le récupérer puis le supprimer dans le module de gestion des sauvegardes.</em>
