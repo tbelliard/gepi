@@ -91,7 +91,7 @@ include("menu_plugins.inc.php");
 		$menus .= '    <li><a href="'.$gepiPath.'/utilitaires/maj.php">Mise à jour de la base</a></li>'."\n";
 		$menus .= '    <li><a href="'.$gepiPath.'/utilitaires/clean_tables.php">Nettoyage de la base</a></li>'."\n";
 		$menus .= '    <li><a href="'.$gepiPath.'/gestion/efface_base.php">Effacer la base</a></li>'."\n";
-		$menus .= '    <li><a href="'.$gepiPath.'/gestion/efface_photos.php">Effacer les photos</a></li>'."\n";
+		$menus .= '    <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes_admin.php#purge">Effacer les photos</a></li>'."\n";
 		$menus .= '    <li><a href="'.$gepiPath.'/gestion/gestion_temp_dir.php">Dossiers temp.</a></li>'."\n";
 		$menus .= '</ul>'."\n";
 		$menus .= '</li>'."\n";

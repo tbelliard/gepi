@@ -65,6 +65,57 @@ $post_reussi=FALSE;
 require_once("../lib/initialisations.inc.php");
 require_once("../lib/share-csrf.inc.php");
 
+
+/**
+ * Encode ou re-encode les noms des fichiers photo des élèves en ajoutant une chaîne 5 caractères pseudo alétaoires
+ * le but étant d'empêcher l'accès aux photos élèves
+ * Cette fonction ne peut être utilisée que si la valeur 'alea_nom_fichier' n'est pas définie dans la table setting
+ * Renvoie un chaîne vide si tout s'est bien passé, les erreurs rencontrées sinon 
+ */
+function encode_nom_photo_des_eleves($re_encoder)
+	{
+	global $nb_modifs,$nb_erreurs,$gepiSettings;
+	$bilan="";
+	if (isset($gepiSettings['alea_nom_photo'])) return "La valeur 'alea_nom_photo' est déjà définie";
+	else
+		{
+		// on crée la valeur 'alea_nom_photo' dans la table setting
+		if (!active_encode_nom_photo()) $bilan="Impossible de créer la valeur 'alea_nom_photo'<br />";
+		else
+			{
+			// Cas du multisite
+			$rne="";
+			if (isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == 'y' && !$rne=$_COOKIE['RNE'])
+					$bilan="Multisite : erreur lors de la récupération du dossier photos de l'établissement.<br/>";
+			if ($bilan=="")
+				{
+				$rne=(isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y')?$rne=$_COOKIE['RNE']."/":"";
+				$dossier_photos_eleves="../photos/".$rne."eleves/";
+				$R_dossier_photos_eleves=opendir($dossier_photos_eleves);
+					while ($photo=readdir($R_dossier_photos_eleves))
+						{
+						if (is_file($dossier_photos_eleves.$photo) && $photo!="index.html")
+							{
+							$nom_photo=pathinfo($dossier_photos_eleves.$photo,PATHINFO_FILENAME);
+							// si on re-encode les noms de fichiers il faut supprimer l'ancien encodage
+							if ($re_encoder) $nom_photo=substr($nom_photo,5);
+							// on en profite pour normaliser l'extension en .jpg
+							if (@rename($dossier_photos_eleves.$photo,$dossier_photos_eleves.encode_nom_photo($nom_photo).".jpg")) $nb_modifs++;
+							else 
+								{
+								$nb_erreurs++;
+								if ($nb_erreurs<=10) $bilan.="Impossible d'encoder ".$photo.".jpg<br />";
+								}
+							}
+						}
+				closedir($R_dossier_photos_eleves);
+				}
+			}
+		}
+	return $bilan;
+	}
+
+
 function purge_dossier_photos($type_utilisateurs) {
 
 	// $type_utilisateurs : eleves ou personnels
@@ -82,7 +133,7 @@ function purge_dossier_photos($type_utilisateurs) {
 			while ($pt<mysql_num_rows($R_identifiants))
 				{
 				$identifiant=mysql_result($R_identifiants,$pt++);
-				$tab_identifiants[]=$identifiant;
+				$tab_identifiants[]=encode_nom_photo($identifiant);
 				}
 			}
 		}
@@ -96,6 +147,7 @@ function purge_dossier_photos($type_utilisateurs) {
 			{
 			$identifiant=mysql_result($R_identifiants,$pt++);
 			if ($type_utilisateurs=="personnels") $identifiant=md5(mb_strtolower($identifiant));
+			if ($type_utilisateurs=="eleves") $identifiant=encode_nom_photo($identifiant);
 			$tab_identifiants[]=$identifiant;
 			}
 		}
@@ -117,12 +169,13 @@ function purge_dossier_photos($type_utilisateurs) {
 				// dans tous les cas (élèves ou personnels) on cherchera parmi les fichiers login.jpg
 				$identifiant=mysql_result($R_inactifs,$pt,'login');
 				if ($type_utilisateurs=="personnels") $identifiant=md5(mb_strtolower($identifiant));
+				if ($type_utilisateurs=="eleves") $identifiant=encode_nom_photo($identifiant);
 				$tab_identifiants_inactifs[]=$identifiant;
 				// dans le cas des élèves on cherchera également parmi les fichiers elenoet.jpg
 				if ($type_utilisateurs=="eleves")
 					{
 					$identifiant=mysql_result($R_inactifs,$pt,'elenoet');
-					$tab_identifiants_inactifs[]=$identifiant;
+					$tab_identifiants_inactifs[]=encode_nom_photo($identifiant);
 					}
 				$pt++;
 				}
@@ -132,7 +185,7 @@ function purge_dossier_photos($type_utilisateurs) {
 	// on supprime les photos dont le nom ne se trouve pas dans $tab_identifiants
 	// ou se trouve dans $tab_identifiants_inactifs
 	$R_dossier_photos=opendir($repertoire_photos."/".$type_utilisateurs);
-	while ($photo = readdir($R_dossier_photos))
+	while ($photo=readdir($R_dossier_photos))
 		{
 		if (is_file($repertoire_photos."/".$type_utilisateurs."/".$photo) && $photo!="index.html")
 			{
@@ -144,6 +197,7 @@ function purge_dossier_photos($type_utilisateurs) {
 				if (@unlink($repertoire_photos."/".$type_utilisateurs."/".$nom_photo.".jpg")) $nb_photos_supp++; else $nb_erreurs++;
 			}
 		}
+	closedir($R_dossier_photos);
 }
 
 function aplanir_tree($chemin,$destination) {
@@ -153,7 +207,7 @@ function aplanir_tree($chemin,$destination) {
     if ($chemin[strlen($chemin)-1]!="/") $chemin.= "/";
     if ($destination[strlen($destination)-1]!="/") $destination.= "/";
     if (is_dir($chemin)) {
-		$dossier = opendir($chemin);
+		$dossier=opendir($chemin);
 		while ($fichier = readdir($dossier)) {
 			if ($fichier!="." && $fichier!="..") {
 				$chemin_fichier=$chemin.$fichier;
@@ -193,7 +247,7 @@ function del_tree($chemin) {
 }
 
 
-function copie_temp_vers_photos(&$nb_photos,$dossier_a_traiter,$type_a_traiter,$test_folder=false)
+function copie_temp_vers_photos(&$nb_photos,$dossier_a_traiter,$type_a_traiter,$test_folder=false,$encodage=false)
 // $dossier_a_traiter : 'eleves' ou 'personnels'
 // $type_a_traiter :  : 'élève' ou 'personnel'
 {
@@ -207,7 +261,9 @@ function copie_temp_vers_photos(&$nb_photos,$dossier_a_traiter,$type_a_traiter,$
 		$dossier = opendir($folder);
 		while ($Fichier = readdir($dossier)) {
 			if ($Fichier != "index.html" && $Fichier != "." && $Fichier != ".." && ((preg_match('/\.jpg/i', $Fichier))||(preg_match('/\.jpeg/i', $Fichier)))) {
-				$Fichier_dest=pathinfo($Fichier,PATHINFO_FILENAME).".jpg";
+				$Fichier_dest=pathinfo($Fichier,PATHINFO_FILENAME);
+				if ($encodage) $Fichier_dest=encode_nom_photo($Fichier_dest);
+				$Fichier_dest.=".jpg";
 				$source=$folder.$Fichier;
 				$dest=$repertoire_photos.$dossier_a_traiter."/".$Fichier_dest;
 				if (isset ($_POST["ecraser"]) && ($_POST["ecraser"]="yes")) {
@@ -219,9 +275,6 @@ function copie_temp_vers_photos(&$nb_photos,$dossier_a_traiter,$type_a_traiter,$
 						$nb_photos++;
 					}
 				}
-
-
-
 			}
 		}
 		if($nb_photos>0) {$msg_nb_trts.=$nb_photos." photo(s) ".$type_a_traiter."(s) transférée(s).<br/>\n";}
@@ -320,11 +373,13 @@ if (isset($_POST['is_posted']) and ($msg=='')) {
 
 // Suppression de photos
 	if(isset($_POST['sup_pers']) && $_POST['sup_pers']=="oui"){
+		check_token();
 		// suppression des photos du personnel
 		if (!efface_photos("personnels"))
 		$msg.="Erreur lors de la suppression des photos du personnel";
 	}
 	if (isset($_POST['supp_eleve']) && $_POST['supp_eleve']=="oui"){
+		check_token();
 		// suppression des photos des élèves
 		if (!efface_photos("eleves"))
 		$msg.="Erreur lors de la suppression des photos des élèves";
@@ -332,6 +387,7 @@ if (isset($_POST['is_posted']) and ($msg=='')) {
 
 // Affichage du personnel sans photo
 	if(isset ($_POST['voirPerso']) && $_POST['voirPerso']=="yes"){
+		check_token();
 		if (!recherche_personnel_sans_photo()){
 		$msg .= "Erreur lors de la sélection de professeur(s) sans photo";
 		}else{
@@ -343,6 +399,7 @@ if (isset($_POST['is_posted']) and ($msg=='')) {
 
 // Affichage des élèves sans photo
 	if (isset ($_POST['voirEleve']) && $_POST['voirEleve']=="yes"){
+	check_token();
 	if (!recherche_eleves_sans_photo()){
 		$msg .= "Erreur lors de la sélection des élèves sans photo";
 	}else{
@@ -357,44 +414,67 @@ if (isset($_POST['is_posted']) and ($msg=='')) {
 	$msg="";
 	if (isset($_POST['purge_dossier_photos']) && $_POST['purge_dossier_photos']=="oui")
 		{
+		check_token();
 		if (cree_zip_archive("photos")==TRUE)
 			{
-
 			$repertoire_photos=""; $msg_multisite="";
 			if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite']=='y')
 				// On récupère le RNE de l'établissement
 				if (!$repertoire_photos=$_COOKIE['RNE'])
-
 					$msg_multisite.="Multisite : erreur lors de la récupération du dossier photos de l'établissement.<br/>";
-
-
 					if ($msg_multisite=="")
-				{
-				if ($repertoire_photos!="") $repertoire_photos.="/";
-				$repertoire_photos="../photos/".$repertoire_photos;
+						{
+						if ($repertoire_photos!="") $repertoire_photos.="/";
+						$repertoire_photos="../photos/".$repertoire_photos;
 
 
-				$nb_photos_supp=0; $nb_erreurs=0;
-				// purge du dossier photos/eleves
-				purge_dossier_photos("eleves");
-				// purge du dossier photos/personnels
-				purge_dossier_photos("personnels");
+						$nb_photos_supp=0; $nb_erreurs=0;
+						// purge du dossier photos/eleves
+						purge_dossier_photos("eleves");
+						// purge du dossier photos/personnels
+						purge_dossier_photos("personnels");
 
-				if ($nb_photos_supp>0)
-					if ($nb_photos_supp>1) $msg=$nb_photos_supp." photos ont été suprimées.<br/>";
-						else $msg="Une photo a été suprimée.<br/>";
-					else $msg="Aucune photo n'a été supprimée.<br/>";
-				$post_reussi=TRUE;
-				if ($nb_erreurs>0)
-					{
-					if ($nb_erreurs>1) $msg.=$nb_erreurs." photos n'ont pu être supprimées.<br/>";
-						else $msg.="Une photo n'a pu être supprimée.<br/>";
-					$post_reussi=FALSE;
-					}
-				} else $msg=$msg_multisite.$msg;
+						if ($nb_photos_supp>0)
+							if ($nb_photos_supp>1) $msg=$nb_photos_supp." photos ont été suprimées.<br/>";
+								else $msg="Une photo a été suprimée.<br/>";
+							else $msg="Aucune photo n'a été supprimée.<br/>";
+						$post_reussi=TRUE;
+						if ($nb_erreurs>0)
+							{
+							if ($nb_erreurs>1) $msg.=$nb_erreurs." photos n'ont pu être supprimées.<br/>";
+								else $msg.="Une photo n'a pu être supprimée.<br/>";
+							$post_reussi=FALSE;
+							}
+						} else $msg=$msg_multisite.$msg;
 			}
 		else $msg.="Erreur lors de la création de la sauvegarde.<br/>";
 		}
+
+// Encodage ou re-encodage des noms des fichiers photo des élèves
+$msg="";
+if  ((isset($_POST['encoder_noms_photo']) and ($_POST['encoder_noms_photo']=='oui')) || (isset($_POST['re_encoder_noms_photo']) and ($_POST['re_encoder_noms_photo']=='oui')))
+	{
+	check_token();
+	$nb_modifs=0; $nb_erreurs=0;
+	$re_encode=false;
+	if (isset($_POST['re_encoder_noms_photo']) and ($_POST['re_encoder_noms_photo']=='oui'))
+		{
+		$re_encode=true;
+		saveSetting('alea_nom_photo',NULL);
+		unset($gepiSettings['alea_nom_photo']);
+		}
+	$retour=encode_nom_photo_des_eleves($re_encode);
+	if ($retour!="" && $nb_erreurs==0) $msg=$retour;
+	else 
+		if ($nb_erreurs==0)
+			if ($nb_modifs>0)
+				if ($nb_modifs>1) $msg=$nb_modifs." noms de fichiers photo ont été encodés.<br/>";
+				else $msg="Un nom de fichier photo a été encodé.<br/>";
+			else $msg="Aucun nom de fichier photo n'a été encodé (le dossier est probablement vide).<br/>";
+		else
+			if ($nb_erreurs<=10) $msg=$retour;
+			else $msg=$nb_erreurs." noms de fihiers photo n'ont pu être encodés.<br/>";
+	}
 
 // Liste des données élève
 if (isset($_GET['liste_eleves']) and ($_GET['liste_eleves']=='oui'))  {
@@ -492,7 +572,7 @@ if (isset($_POST['action']) and ($_POST['action']=='upload_photos_eleves'))  {
 						$repertoire_photos="../photos/".$repertoire_photos;
 						$msg_nb_trts=""; // nb de fichiers traités
 						// copie des fichiers vers /photos
-						copie_temp_vers_photos($nb_photos_eleves,'eleves','élève');
+						copie_temp_vers_photos($nb_photos_eleves,'eleves','élève',false,true);
 						if ($msg_nb_trts=="") $msg_nb_trts="Aucune photo n'a été transférée.<br/>\n";
 						if ($msg==""){
 							$msg= $msg_nb_trts;

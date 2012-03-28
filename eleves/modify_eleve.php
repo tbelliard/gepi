@@ -642,9 +642,9 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 									// Tester la taille max de la photo?
 
 									if(is_uploaded_file($filephoto_tmp)){
-										$dest_file=$rep_photos.$reg_no_gep.".jpg";
+										$dest_file=$rep_photos.encode_nom_photo($reg_no_gep).".jpg";
 										//echo "\$dest_file=$dest_file<br />";
-										//$source_file=stripslashes("$filephoto_tmp");
+										$source_file=$filephoto_tmp;
 										$res_copy=copy("$source_file" , "$dest_file");
 										if($res_copy){
 											$msg.="Mise en place de la photo effectuée.";
@@ -765,7 +765,7 @@ elseif($_SESSION['statut']=="professeur"){
 
 								if(is_uploaded_file($filephoto_tmp)){
 									$dest_file=$rep_photos.$reg_no_gep.jpg;
-									//$source_file=stripslashes("$filephoto_tmp");
+									$source_file=$filephoto_tmp;
 									$res_copy=copy("$source_file" , "$dest_file");
 									if($res_copy){
 										$msg.="Mise en place de la photo effectuée.";
