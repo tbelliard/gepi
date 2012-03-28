@@ -2,7 +2,7 @@
 @set_time_limit(0);
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -67,10 +67,10 @@ if((isset($_POST['is_posted']))&&(isset($_POST['supprimer']))) {
 	$nberreur=0;
 	$chaine="";
 	while ($file = readdir($handle)) {
-		if((my_eregi(".jpg$",$file))||(my_eregi(".jpeg$",$file))){
+		if((pre_match("/.jpg$/i",$file))||(preg_match("/.jpeg$/i",$file))){
 
 			$prefixe=pathinfo($file,PATHINFO_FILENAME);
-			if (isset($gepiSettings['alea_nom_photo'])) $prefixe=substr($prefixe,5);
+			if (isset($gepiSettings['alea_nom_photo'])) $prefixe=mb_substr($prefixe,5);
 			$sql="SELECT 1=1 FROM eleves WHERE elenoet='".$prefixe."'";
 			//echo "<br />$sql<br />\n";
 			$test=mysql_query($sql);
@@ -111,11 +111,11 @@ else {
 	$nbjpg=0;
 	$chaine="";
 	while ($file = readdir($handle)) {
-		if((my_eregi(".jpg$",$file))||(my_eregi(".jpeg$",$file))){
+		if((preg_match("/.jpg$/i",$file))||(preg_match("/.jpeg$/i",$file))){
 			$nbjpg++;
 
 			$prefixe=pathinfo($file,PATHINFO_FILENAME);
-			if (isset($gepiSettings['alea_nom_photo'])) $prefixe=substr($prefixe,5);
+			if (isset($gepiSettings['alea_nom_photo'])) $prefixe=mb_substr($prefixe,5);
 			$sql="SELECT 1=1 FROM eleves WHERE elenoet='".$prefixe."'";
 			//echo "<br />$sql<br />\n";
 			$test=mysql_query($sql);
