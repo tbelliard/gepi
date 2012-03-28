@@ -151,44 +151,6 @@ function no_php_in_img($chaine) {
 @set_magic_quotes_runtime(0);
 
 
-if (isset($variables_non_protegees)) cree_variables_non_protegees();
-
-unset($liste_scripts_non_traites);
-// Liste des scripts pour lesquels les données postées ne sont pas traitées si $traite_anti_inject = 'no';
-$liste_scripts_non_traites = array(
-"/visualisation/draw_artichow1.php",
-"/visualisation/draw_artichow2.php",
-"/public/contacter_admin_pub.php",
-"/lib/create_im_mat.php",
-"/gestion/contacter_admin.php",
-"/messagerie/index.php",
-"/gestion/accueil_sauve.php",
-"/cahier_texte/index.php",
-"/cahier_texte_2/ajax_enregistrement_compte_rendu.php",
-"/cahier_texte_2/ajax_enregistrement_devoir.php",
-"/cahier_texte_2/ajax_enregistrement_notice_privee.php",
-"/cahier_texte_2/creer_sequence.php"
-);
-
-// On ajoute la possibilité pour les plugins de s'ajouter à la liste
-if (isset($_ajouter_fichier_anti_inject)){
-  $liste_scripts_non_traites[] = "/mod_plugins/" . $_ajouter_fichier_anti_inject;
-}
-
-
-$url = parse_url($_SERVER['REQUEST_URI']);
-// On traite les données postées si nécessaire avec l'anti-injection mysql
-if ((!(in_array(mb_substr($url['path'], mb_strlen($gepiPath)),$liste_scripts_non_traites))) OR ((in_array(mb_substr($url['path'], mb_strlen($gepiPath)),$liste_scripts_non_traites)) AND (!(isset($traite_anti_inject)) OR (isset($traite_anti_inject) AND $traite_anti_inject !="no")))) {
-  array_walk($_GET, 'anti_inject');
-  array_walk($_POST, 'anti_inject');
-  array_walk($_REQUEST, 'anti_inject');
-}
-
-// On nettoie aussi $_SERVER et $_COOKIE de manière systématique
-array_walk($_SERVER, 'anti_inject');
-array_walk($_COOKIE, 'anti_inject');
-
-
 $config = HTMLPurifier_Config::createDefault();
 $config->set('Core.Encoding', 'utf-8'); // replace with your encoding
 $config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
@@ -280,6 +242,43 @@ if(isset($NON_PROTECT)) {
 		}
 	}
 }
+
+if (isset($variables_non_protegees)) cree_variables_non_protegees();
+
+unset($liste_scripts_non_traites);
+// Liste des scripts pour lesquels les données postées ne sont pas traitées si $traite_anti_inject = 'no';
+$liste_scripts_non_traites = array(
+"/visualisation/draw_artichow1.php",
+"/visualisation/draw_artichow2.php",
+"/public/contacter_admin_pub.php",
+"/lib/create_im_mat.php",
+"/gestion/contacter_admin.php",
+"/messagerie/index.php",
+"/gestion/accueil_sauve.php",
+"/cahier_texte/index.php",
+"/cahier_texte_2/ajax_enregistrement_compte_rendu.php",
+"/cahier_texte_2/ajax_enregistrement_devoir.php",
+"/cahier_texte_2/ajax_enregistrement_notice_privee.php",
+"/cahier_texte_2/creer_sequence.php"
+);
+
+// On ajoute la possibilité pour les plugins de s'ajouter à la liste
+if (isset($_ajouter_fichier_anti_inject)){
+  $liste_scripts_non_traites[] = "/mod_plugins/" . $_ajouter_fichier_anti_inject;
+}
+
+
+$url = parse_url($_SERVER['REQUEST_URI']);
+// On traite les données postées si nécessaire avec l'anti-injection mysql
+if ((!(in_array(mb_substr($url['path'], mb_strlen($gepiPath)),$liste_scripts_non_traites))) OR ((in_array(mb_substr($url['path'], mb_strlen($gepiPath)),$liste_scripts_non_traites)) AND (!(isset($traite_anti_inject)) OR (isset($traite_anti_inject) AND $traite_anti_inject !="no")))) {
+  array_walk($_GET, 'anti_inject');
+  array_walk($_POST, 'anti_inject');
+  array_walk($_REQUEST, 'anti_inject');
+}
+
+// On nettoie aussi $_SERVER et $_COOKIE de manière systématique
+array_walk($_SERVER, 'anti_inject');
+array_walk($_COOKIE, 'anti_inject');
 
 //===========================================================
 
