@@ -22,7 +22,6 @@ if (function_exists('mb_internal_encoding')) {
  */
 $GLOBALS['niveau_arbo']=$niveau_arbo;
 
-
 /**
  * Chemin de la racine de GEPI
  * 
@@ -219,16 +218,19 @@ if (isset($_REQUEST["source"])) {
   * Fichier de configuration générale
   */
    require_once($chemin_relatif_gepi."/lib/global.inc.php");
- /**
-  * Traitement des données (filtrage de sécurité)
-  */
-   require_once($chemin_relatif_gepi."/lib/traitement_data.inc.php");
+
  /**
   * Librairies
   * 
   * @see share.inc.php
   */
    include $chemin_relatif_gepi."/lib/share.inc.php";
+
+   /**
+  * Traitement des données (filtrage de sécurité)
+  */
+   require_once($chemin_relatif_gepi."/lib/traitement_data.inc.php");
+
  /**
   * Fonctions relatives aux groupes
   * 
