@@ -45,21 +45,8 @@ class Eleve extends BaseEleve {
 	 * @var        PeriodeNote object.
 	 */
 	protected $periodeNoteOuverte;
-    /**
-	 * @var        timestamp de lancement du débug
-	 */
-    private $timestamp_start=null;
-    /**
-	 * @var        mode de debuggage pour abs2
-	 */
-    private $debug=false;
      
 
-    function __construct() {
-        parent::__construct();
-        $this->timestamp_start=microtime(true);
-    }
-    
     // ERREUR ?? Il ne peut y avoir qu'une seule classe pour un élève pour une période !!
 	/**
 	 *
@@ -1668,16 +1655,6 @@ class Eleve extends BaseEleve {
 		}
 	    }
 	}
-
-    /**
-	 *
-	 * Affiche la durée d'execution pour le debug * 
-	 * 
-	 */
-    private function affiche_duree(){
-        $timestamp = microtime(true);
-        print_r('Temps d\'execution depuis le lancement : '.($timestamp - $this->timestamp_start).'<br />');        
-    }
 
 	/**
 	 *
