@@ -10,12 +10,7 @@ require_once(dirname(__FILE__)."/HTMLPurifier.standalone.php");
  * @todo Fout le bazar et inutile en UTF-8
  */
 function corriger_caracteres($texte) {
-  return $texte;
-    // 145,146,180 = simple quote ; 147,148 = double quote ; 150,151 = tiret long
-    $texte = strtr($texte, chr(145).chr(146).chr(180).chr(147).chr(148).chr(150).chr(151), "'''".'""--');
-    $texte = my_ereg_replace( chr(133), "...", $texte );
     return ensure_utf8($texte);
-    
 }
 
 function traitement_magic_quotes($_value) {
@@ -156,43 +151,6 @@ function no_php_in_img($chaine) {
 @set_magic_quotes_runtime(0);
 
 
-if (isset($variables_non_protegees)) cree_variables_non_protegees();
-
-unset($liste_scripts_non_traites);
-// Liste des scripts pour lesquels les données postées ne sont pas traitées si $traite_anti_inject = 'no';
-$liste_scripts_non_traites = array(
-"/visualisation/draw_artichow1.php",
-"/visualisation/draw_artichow2.php",
-"/public/contacter_admin_pub.php",
-"/lib/create_im_mat.php",
-"/gestion/contacter_admin.php",
-"/messagerie/index.php",
-"/gestion/accueil_sauve.php",
-"/cahier_texte/index.php",
-"/cahier_texte_2/ajax_enregistrement_compte_rendu.php",
-"/cahier_texte_2/ajax_enregistrement_devoir.php",
-"/cahier_texte_2/ajax_enregistrement_notice_privee.php",
-"/cahier_texte_2/creer_sequence.php"
-);
-
-// On ajoute la possibilité pour les plugins de s'ajouter à la liste
-if (isset($_ajouter_fichier_anti_inject)){
-  $liste_scripts_non_traites[] = "/mod_plugins/" . $_ajouter_fichier_anti_inject;
-}
-
-
-$url = parse_url($_SERVER['REQUEST_URI']);
-// On traite les données postées si nécessaire avec l'anti-injection mysql
-if ((!(in_array(mb_substr($url['path'], mb_strlen($gepiPath)),$liste_scripts_non_traites))) OR ((in_array(mb_substr($url['path'], mb_strlen($gepiPath)),$liste_scripts_non_traites)) AND (!(isset($traite_anti_inject)) OR (isset($traite_anti_inject) AND $traite_anti_inject !="no")))) {
-  array_walk($_GET, 'anti_inject');
-  array_walk($_POST, 'anti_inject');
-  array_walk($_REQUEST, 'anti_inject');
-}
-
-// On nettoie aussi $_SERVER et $_COOKIE de manière systématique
-array_walk($_SERVER, 'anti_inject');
-array_walk($_COOKIE, 'anti_inject');
-
 $config = HTMLPurifier_Config::createDefault();
 $config->set('Core.Encoding', 'utf-8'); // replace with your encoding
 $config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
@@ -246,102 +204,6 @@ if(isset($NON_PROTECT)) {
 	}
 }
 
-/*
-if($filtrage_html=='htmlpurifier') {
-	$config = HTMLPurifier_Config::createDefault();
-	$config->set('Core.Encoding', 'utf-8'); // replace with your encoding
-	$config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
-	$purifier = new HTMLPurifier($config);
-
-	foreach($_GET as $key => $value) {
-		if(!is_array($value)) {
-			$_GET[$key]=$purifier->purify($value);
-		}
-		else {
-			foreach($_GET[$key] as $key2 => $value2) {
-				$_GET[$key][$key2]=$purifier->purify($value2);
-			}
-		}
-	}
-
-	foreach($_POST as $key => $value) {
-		if(!is_array($value)) {
-			$_POST[$key]=$purifier->purify($value);
-		}
-		else {
-			foreach($_POST[$key] as $key2 => $value2) {
-				$_POST[$key][$key2]=$purifier->purify($value2);
-			}
-		}
-	}
-
-	if(isset($NON_PROTECT)) {
-		foreach($NON_PROTECT as $key => $value) {
-			if(!is_array($value)) {
-				$NON_PROTECT[$key]=$purifier->purify($value);
-			}
-			else {
-				foreach($NON_PROTECT[$key] as $key2 => $value2) {
-					$NON_PROTECT[$key][$key2]=$purifier->purify($value2);;
-				}
-			}
-		}
-	}
-}
-
-elseif($filtrage_html=='inputfilter') {
-	$oMyFilter = new InputFilter($aAllowedTags, $aAllowedAttr, 0, 0, 1);
-
-	foreach($_GET as $key => $value) {
-		if(!is_array($value)) {
-			if((strpos($_GET[$key],"<"))||(strpos($_GET[$key],">"))) {
-				$_GET[$key]=$oMyFilter->process($value);
-			}
-		}
-		else {
-			foreach($_GET[$key] as $key2 => $value2) {
-				if((strpos($_GET[$key][$key2],"<"))||(strpos($_GET[$key][$key2],">"))) {
-					$_GET[$key][$key2]=$oMyFilter->process($value2);
-				}
-			}
-		}
-	}
-
-	foreach($_POST as $key => $value) {
-		if(!is_array($value)) {
-			if((strpos($_POST[$key],"<"))||(strpos($_POST[$key],">"))) {
-				$_POST[$key]=$oMyFilter->process($value);
-			}
-		}
-		else {
-			foreach($_POST[$key] as $key2 => $value2) {
-				if((strpos($_POST[$key][$key2],"<"))||(strpos($_POST[$key][$key2],">"))) {
-					$_POST[$key][$key2]=$oMyFilter->process($value2);
-				}
-			}
-		}
-	}
-
-	if(isset($NON_PROTECT)) {
-		foreach($NON_PROTECT as $key => $value) {
-			if(!is_array($value)) {
-				//echo "strpos(\$NON_PROTECT[$key],'<')=strpos(".$NON_PROTECT[$key].",'<')=".strpos($NON_PROTECT[$key],"<")."<br />";
-				//echo "strpos(\$NON_PROTECT[$key],'>')=strpos(".$NON_PROTECT[$key].",'>')=".strpos($NON_PROTECT[$key],">")."<br />";
-				if((strpos($NON_PROTECT[$key],"<"))||(strpos($NON_PROTECT[$key],">"))) {
-					$NON_PROTECT[$key]=$oMyFilter->process($value);
-				}
-			}
-			else {
-				foreach($NON_PROTECT[$key] as $key2 => $value2) {
-					if((strpos($NON_PROTECT[$key][$key2],"<"))||(strpos($NON_PROTECT[$key][$key2],">"))) {
-						$NON_PROTECT[$key][$key2]=$oMyFilter->process($value2);;
-					}
-				}
-			}
-		}
-	}
-}
-*/
 //echo "utiliser_no_php_in_img=$utiliser_no_php_in_img<br />";
 //if($utiliser_no_php_in_img=='y') {
 	//on purge aussi les images avec une extension php
@@ -383,6 +245,44 @@ elseif($filtrage_html=='inputfilter') {
 		}
 	}
 //}
+
+if (isset($variables_non_protegees)) cree_variables_non_protegees();
+
+unset($liste_scripts_non_traites);
+// Liste des scripts pour lesquels les données postées ne sont pas traitées si $traite_anti_inject = 'no';
+$liste_scripts_non_traites = array(
+"/visualisation/draw_artichow1.php",
+"/visualisation/draw_artichow2.php",
+"/public/contacter_admin_pub.php",
+"/lib/create_im_mat.php",
+"/gestion/contacter_admin.php",
+"/messagerie/index.php",
+"/gestion/accueil_sauve.php",
+"/cahier_texte/index.php",
+"/cahier_texte_2/ajax_enregistrement_compte_rendu.php",
+"/cahier_texte_2/ajax_enregistrement_devoir.php",
+"/cahier_texte_2/ajax_enregistrement_notice_privee.php",
+"/cahier_texte_2/creer_sequence.php"
+);
+
+// On ajoute la possibilité pour les plugins de s'ajouter à la liste
+if (isset($_ajouter_fichier_anti_inject)){
+  $liste_scripts_non_traites[] = "/mod_plugins/" . $_ajouter_fichier_anti_inject;
+}
+
+
+$url = parse_url($_SERVER['REQUEST_URI']);
+// On traite les données postées si nécessaire avec l'anti-injection mysql
+if ((!(in_array(mb_substr($url['path'], mb_strlen($gepiPath)),$liste_scripts_non_traites))) OR ((in_array(mb_substr($url['path'], mb_strlen($gepiPath)),$liste_scripts_non_traites)) AND (!(isset($traite_anti_inject)) OR (isset($traite_anti_inject) AND $traite_anti_inject !="no")))) {
+  array_walk($_GET, 'anti_inject');
+  array_walk($_POST, 'anti_inject');
+  array_walk($_REQUEST, 'anti_inject');
+}
+
+// On nettoie aussi $_SERVER et $_COOKIE de manière systématique
+array_walk($_SERVER, 'anti_inject');
+array_walk($_COOKIE, 'anti_inject');
+
 //===========================================================
 
 

@@ -22,7 +22,6 @@ if (function_exists('mb_internal_encoding')) {
  */
 $GLOBALS['niveau_arbo']=$niveau_arbo;
 
-
 /**
  * Chemin de la racine de GEPI
  * 
@@ -220,29 +219,18 @@ if (isset($_REQUEST["source"])) {
   */
    require_once($chemin_relatif_gepi."/lib/global.inc.php");
 
-/*
-// Initialisation de la variable $filtrage_html
-   require_once($chemin_relatif_gepi."/lib/filtrage_html.inc.php");
-	if($filtrage_html=="htmlpurifier") {
-// Utilisation de HTMLPurifier.standalone pour filtrer les saisies
-		require_once($chemin_relatif_gepi."/lib/HTMLPurifier.standalone.php");
-	}
-	elseif($filtrage_html=="inputfilter") {
-// Utilisation de class.inputfilter_clean.php pour filtrer les saisies
-		require_once($chemin_relatif_gepi."/lib/class.inputfilter_clean.php");
-	}
-*/
-
- /**
-  * Traitement des données (filtrage de sécurité)
-  */
-   require_once($chemin_relatif_gepi."/lib/traitement_data.inc.php");
  /**
   * Librairies
   * 
   * @see share.inc.php
   */
    include $chemin_relatif_gepi."/lib/share.inc.php";
+
+   /**
+  * Traitement des données (filtrage de sécurité)
+  */
+   require_once($chemin_relatif_gepi."/lib/traitement_data.inc.php");
+
  /**
   * Fonctions relatives aux groupes
   * 
