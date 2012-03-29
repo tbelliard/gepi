@@ -4111,5 +4111,4 @@ unset($_SESSION['tri_par_etab_origine']);
 //fermeture du fichier pdf et lecture dans le navigateur 'nom', 'I/D'
 $nom_bulletin = 'bulletin_'.$nom_bulletin.'.pdf';
 $pdf->Output($nom_bulletin,'I');
-//$pdf->closeParsers();
 ?>
