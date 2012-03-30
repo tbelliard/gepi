@@ -263,9 +263,19 @@ class bul_PDF extends FPDF_MULTICELLTAG {
 		$font_dx=cos($font_angle);
 		$font_dy=sin($font_angle);
 
-		$s=sprintf('BT %.2f %.2f %.2f %.2f %.2f %.2f Tm (%s) Tj ET',
+                // Output a string
+                if ($this->unifontSubset)
+                {
+                        $txt2 = '('.$this->_escape($this->UTF8ToUTF16BE($txt, false)).')';
+                        foreach($this->UTF8StringToArray($txt) as $uni)
+                                $this->CurrentFont['subset'][$uni] = $uni;
+                }
+                else
+                        $txt2 = '('.$this->_escape($txt).')';
+
+		$s=sprintf('BT %.2f %.2f %.2f %.2f %.2f %.2f Tm %s Tj ET',
 			$txt_dx,$txt_dy,$font_dx,$font_dy,
-			$x*$this->k,($this->h-$y)*$this->k,$txt);
+			$x*$this->k,($this->h-$y)*$this->k,$txt2);
 		if ($this->ColorFlag)
 			$s='q '.$this->TextColor.' '.$s.' Q';
 		$this->_out($s);
