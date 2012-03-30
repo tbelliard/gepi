@@ -492,13 +492,6 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 			$sql="UPDATE eleves SET date_sortie = '$date_de_sortie_eleve', no_gep = '$reg_no_nat', nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='".$reg_naissance."', ereno='".$reg_resp1."', elenoet = '".$reg_no_gep."'";
 
 			$temoin_mon_compte_mais_pas_de_compte_pour_cet_eleve="n";
-			$sql_test="SELECT email FROM utilisateurs WHERE login='$eleve_login' AND statut='eleve';";
-			$res_email_utilisateur_ele=mysql_query($sql_test);
-			if(mysql_num_rows($res_email_utilisateur_ele)==0) {
-				$temoin_mon_compte_mais_pas_de_compte_pour_cet_eleve="y";
-			}
-
-			/*
 			if(getSettingValue('mode_email_ele')=='mon_compte') {
 				$sql_test="SELECT email FROM utilisateurs WHERE login='$eleve_login' AND statut='eleve';";
 				$res_email_utilisateur_ele=mysql_query($sql_test);
@@ -511,23 +504,17 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 				}
 			}
 			else {
-			*/
 				$sql.=",email='$reg_email'";
-			//}
+			}
 			$sql.=" WHERE login='".$eleve_login."'";
 
 			$reg_data = mysql_query($sql);
 			if (!$reg_data) {
 				$msg = "Erreur lors de l'enregistrement des données";
-			}
-			//elseif((getSettingValue('mode_email_ele')!='mon_compte')||($temoin_mon_compte_mais_pas_de_compte_pour_cet_eleve=="y")) {
-			else {
-				/*
+			} elseif((getSettingValue('mode_email_ele')!='mon_compte')||($temoin_mon_compte_mais_pas_de_compte_pour_cet_eleve=="y")) {
 				// On met à jour la table utilisateurs si un compte existe pour cet élève
 				$test_login = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '".$eleve_login ."'"), 0);
 				if ($test_login > 0) {
-				*/
-				if($temoin_mon_compte_mais_pas_de_compte_pour_cet_eleve=='n') {
 					$res = mysql_query("UPDATE utilisateurs SET nom='".$reg_nom."', prenom='".$reg_prenom."', email='".$reg_email."' WHERE login = '".$eleve_login."'");
 					//$msg.="TEMOIN test_login puis update<br />";
 				}
@@ -614,6 +601,10 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 
 								// Récupération du nom de la photo en tenant compte des histoires des zéro 02345.jpg ou 2345.jpg
 								$photo=nom_photo($reg_no_gep);
+/*
+								if("$photo"!=""){
+									if(unlink("../photos/eleves/$photo")){
+ */
 								if($photo){
 									if(unlink($photo)){
 										$msg.="La photo ".$photo." a été supprimée. ";
@@ -735,6 +726,10 @@ elseif($_SESSION['statut']=="professeur"){
 
 							// Récupération du nom de la photo en tenant compte des histoires des zéro 02345.jpg ou 2345.jpg
 							$photo=nom_photo($reg_no_gep);
+/*
+							if("$photo"!=""){
+								if(unlink("../photos/eleves/$photo")){
+ */
 							if($photo){
 								if(unlink($photo)){
 									$msg.="La photo ".$photo." a été supprimée. ";
@@ -1578,15 +1573,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			echo "value=\"".$eleve_email."\"";
 		}
 		echo " onchange='changement();' />";
-	//}
-
-	if((isset($compte_eleve_existe))&&($compte_eleve_existe=="y")&&(getSettingValue('mode_email_ele')=='mon_compte')) {
-		if (isset($eleve_email)) {
-			$txt_attention="ATTENTION : Le choix effectué dans 'Configuration générale' est de laisser l'utilisateur paramétrer son adresse mail dans 'Gérer mon compte'. Ne modifiez l'adresse mail que si c'est vraiment souhaitable.";
-			echo " <img src='../images/icons/ico_attention.png' width='22' height='19' alt=\"$txt_attention\" title=\"$txt_attention\" />";
-		}
 	}
-
 	if((isset($eleve_email))&&($eleve_email!='')) {
 		$tmp_date=getdate();
 		echo " <a href='mailto:".$eleve_email."?subject=GEPI&amp;body=";
@@ -1697,6 +1684,7 @@ if(isset($reg_no_gep)){
 	$temoin_photo="non";
 	//echo "<td>\$photo=$photo</td>";
 	if($photo){
+		//$photo="../photos/eleves/".$photo;
 		if(file_exists($photo)){
 			$temoin_photo="oui";
 			//echo "<td>\n";
