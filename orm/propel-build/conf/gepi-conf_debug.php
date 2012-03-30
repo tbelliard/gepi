@@ -72,14 +72,6 @@ $conf = array (
       ),
     ),
   ),
-  'log' =>
-  array (
-    'type' => 'file',
-    'name' => 'propel.log',
-    'ident' => 'propel',
-    'level' => '7',
-    'conf' => '',
-  ),
   'generator_version' => '1.5.3-dev',
 );
 $conf['classmap'] = include(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'classmap-gepi-conf.php');

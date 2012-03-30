@@ -94,6 +94,6 @@ class AbsenceAgregationDecompteQuery extends BaseAbsenceAgregationDecompteQuery 
      * @return    AbsenceAgregationDecompteQuery The current query, for fluid interface
      */
     public function filterByMarqueurFinMiseAJour() {
-    	return $this->filterByDateDemiJounee(null);
+        return $this->filterByDateDemiJounee('0001-01-01 00:00:00');
     }
 } // AbsenceAgregationDecompteQuery

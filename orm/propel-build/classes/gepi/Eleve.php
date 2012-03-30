@@ -1734,7 +1734,7 @@ class Eleve extends BaseEleve {
 		$query = 'select ELEVE_ID is not null as marqueur_calcul, union_date, updated_at, count_demi_jounee, now() as now
 		
 		FROM
-			(SELECT  a_agregation_decompte.ELEVE_ID from  a_agregation_decompte WHERE a_agregation_decompte.ELEVE_ID='.$this->getId().' AND a_agregation_decompte.DATE_DEMI_JOUNEE IS NULL
+			(SELECT  a_agregation_decompte.ELEVE_ID from  a_agregation_decompte WHERE a_agregation_decompte.ELEVE_ID='.$this->getId().' AND a_agregation_decompte.DATE_DEMI_JOUNEE =\'0001-01-01 00:00:00\'
 			) as a_agregation_decompte_null_select
 			
 		LEFT JOIN (
@@ -1880,10 +1880,10 @@ class Eleve extends BaseEleve {
 		}
 		$queryDelete->delete();
 		
-		//on supprime le marqueur qui certifie que le calcul pour cet eleve a été terminé correctement
-		AbsenceAgregationDecompteQuery::create()->filterByEleve($this)->filterByDateDemiJounee(null)->_or()->filterByDateDemiJounee('0000-00-00 00:00:00')->delete();
+                //on supprime le marqueur qui certifie que le calcul pour cet eleve a été terminé correctement
+		AbsenceAgregationDecompteQuery::create()->filterByEleve($this)->filterByMarqueurFinMiseAJour()->delete();
 		
-		$DMabsenceNonJustifiesCol = $this->getDemiJourneesNonJustifieesAbsence($dateDebutClone,$dateFinClone);
+                $DMabsenceNonJustifiesCol = $this->getDemiJourneesNonJustifieesAbsence($dateDebutClone,$dateFinClone);
 		$DMabsencesCol			= $this->getDemiJourneesAbsence($dateDebutClone,$dateFinClone);
 		$retards				= $this->getRetards($dateDebutClone,$dateFinClone);
 		$saisiesCol				= clone $this->getAbsColDecompteDemiJournee($dateDebutClone, $dateFinClone);//cette collection de saisie va nous permettre de récupérer les notifications et les motifs
@@ -2017,7 +2017,7 @@ class Eleve extends BaseEleve {
 		//on enregistre le marqueur qui certifie que le calcul pour cet eleve a été terminé correctement
 		$newAgregation = new AbsenceAgregationDecompte();
 		$newAgregation->setEleve($this);
-		$newAgregation->setDateDemiJounee(null);
+		$newAgregation->setDateDemiJounee('0001-01-01 00:00:00');
 		$newAgregation->save();
         if($this->debug){
             print_r('Fin de la mise à jour :');

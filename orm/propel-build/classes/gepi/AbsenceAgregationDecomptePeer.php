@@ -58,7 +58,7 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 			LEFT JOIN (
 				SELECT distinct ELEVE_ID
 				FROM `a_agregation_decompte`
-				WHERE date_demi_jounee IS NULL) as a_agregation_decompte_selection
+				WHERE date_demi_jounee = \'0001-01-01 00:00:00\') as a_agregation_decompte_selection
 			ON (eleves.ID_ELEVE=a_agregation_decompte_selection.ELEVE_ID)
 			WHERE a_agregation_decompte_selection.ELEVE_ID IS NULL';
 		$result = mysql_query($query);
@@ -141,11 +141,7 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 		}
 		
 		
-		/* on va récupéré trois informations en base de donnée :
-		 * - est-ce qu'il y a bien le marqueur de fin de calcul (entrée avec a_agregation_decompte.DATE_DEMI_JOUNEE IS NULL)
-		 * - est-ce que la date updated_at de mise à jour de la table est bien postérieure aux date de modification des saisies et autres entrées
-		 * - on va compter le nombre de demi journée, elle doivent être toutes remplies
-		 */
+		// est-ce que la date updated_at de mise à jour de la table est bien postérieure aux date de modification des saisies et autres entrées
 		$query = 'select union_date, updated_at, now() as now
 		
 		FROM
