@@ -44,6 +44,7 @@ if ($resultat_session == 'c') {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
+
 include("../ckeditor/ckeditor.php") ;
 
 if (!checkAccess()) {
@@ -158,6 +159,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 	check_token();
 	$record = 'yes';
 	$contenu_cor = traitement_magic_quotes(corriger_caracteres($_POST['message']));
+	//$contenu_cor = html_entity_decode($_POST['message']);
 
 	$statuts_destinataires = '_';
 	if (isset($_POST['desti_s'])) $statuts_destinataires .= 's';

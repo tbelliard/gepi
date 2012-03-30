@@ -144,7 +144,6 @@ elseif(!isset($_GET['nom_pdf_en_detail'])) {
 	send_file_download_headers('application/pdf',$ident_plus.'.pdf');
 
 	$pdf->Output($ident_plus.'.pdf','I');
-	$pdf->closeParsers();
 }
 else{
 	//$ident_plus = date("Ymd");
@@ -159,6 +158,5 @@ else{
 	send_file_download_headers('application/pdf',$ident_plus.'.pdf');
 
 	$pdf->Output($ident_plus.'.pdf','I');
-	$pdf->closeParsers();
 }
 ?>
