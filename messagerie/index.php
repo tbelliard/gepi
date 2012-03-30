@@ -44,7 +44,8 @@ if ($resultat_session == 'c') {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
-include("../fckeditor/fckeditor.php") ;
+//include("../fckeditor/fckeditor.php") ;
+include("../ckeditor/ckeditor.php");
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -158,6 +159,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 	check_token();
 	$record = 'yes';
 	$contenu_cor = traitement_magic_quotes(corriger_caracteres($_POST['message']));
+	//$contenu_cor = html_entity_decode($_POST['message']);
 
 	$statuts_destinataires = '_';
 	if (isset($_POST['desti_s'])) $statuts_destinataires .= 's';
@@ -626,12 +628,17 @@ echo "<tr><td  colspan=\"4\">\n";
 
 echo "<i>Mise en forme du message :</i>\n";
 
+/*
 $oFCKeditor = new FCKeditor('message') ;
 $oFCKeditor->BasePath = '../fckeditor/' ;  // '/FCKeditor/' is the default value.
 $oFCKeditor->Config['DefaultLanguage']	= 'fr' ;
 $oFCKeditor->ToolbarSet = 'Basic' ;
 $oFCKeditor->Value	= $contenu ;
 $oFCKeditor->Create() ;
+*/
+$oCKeditor = new CKeditor() ;
+$oCKeditor->basePath = '../ckeditor/' ;
+$oCKeditor->editor('message',$contenu) ;
 
 echo "</td></tr>";
 
