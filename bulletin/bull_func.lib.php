@@ -1741,7 +1741,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			}
 
 			//=========================
-			// Pour le moment, on fait une croix sur adr4 si la hauteur du cadre n'est pas saisie
+			// Pour le moment, on fait une croix sur cell_ajustee() si la hauteur du cadre n'est pas saisie
 			if(($hauteur_cadre_adresse==1)||($use_cell_ajustee=="n")) {
 				$texte_1_responsable = trim($tab_adr_ligne1[$num_resp_bull]);
 				$hauteur_caractere=12;
