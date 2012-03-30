@@ -744,8 +744,7 @@ switch( $duree2 ) {
 </div>
 
 <a name='tab_connexions'></a>
-<table class="col" style="width: 90%; margin-left: auto; margin-right: auto; margin-bottom: 32px;" cellpadding="5" cellspacing="0" summary='Tableau des connexions'>
-        <tr>
+	<table class='boireaus center'>
          <th class="col">Statut</th>
 		<th class="col">Identifiant</th>
         <th class="col">Début session</th>
