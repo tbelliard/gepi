@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -294,7 +294,7 @@ if($tri=='groupe') {
 			echo "<th>Effectifs</th>\n";
 			echo "<th>&nbsp;</th>\n";
 			for($i=0;$i<count($info_prof);$i++) {
-				echo "<th>\n";
+				echo "<th title=\"Nombre de copies attribuées à ce professeur par rapport au nombre d'élèves qu'il a en cours.\">\n";
 				echo "<span id='eff_prof_".$lig->id."_$i'>Effectif</span>";
 				echo "/".$eff_habituel_prof[$i]."\n";
 				echo "</th>\n";
@@ -474,6 +474,8 @@ elseif($tri=='salle') {
 	$tab_salle=array();
 	$cpt=0;
 	$compteur_salle=-1;
+	$compteur_eleves_du_prof=array();
+	// Boucle sur les salles
 	while($lig=mysql_fetch_object($res)) {
 		$tab_cpt_eleve[]=$cpt;
 
@@ -494,6 +496,7 @@ elseif($tri=='salle') {
 		echo "<th>Elèves</th>\n";
 		echo "<th>Classes</th>\n";
 		for($i=0;$i<count($info_prof);$i++) {
+			$compteur_eleves_du_prof[$i]=0;
 			echo "<th>\n";
 			if($etat!='clos') {
 				echo "<a href='javascript:coche($i,$compteur_salle,true)'>\n";
@@ -526,7 +529,7 @@ elseif($tri=='salle') {
 			echo "<th>Effectifs</th>\n";
 			echo "<th>&nbsp;</th>\n";
 			for($i=0;$i<count($info_prof);$i++) {
-				echo "<th>\n";
+				echo "<th title=\"Nombre de copies attribuées à ce professeur par rapport au nombre d'élèves qu'il a en cours.\">\n";
 				echo "<span id='eff_prof_".$lig->id."_$i'>Effectif</span>";
 				echo "/".$eff_habituel_prof[$i]."\n";
 				echo "</th>\n";
@@ -544,6 +547,7 @@ elseif($tri=='salle') {
 	
 		$alt=1;
 		//$tab_ele_prof=array();
+		$compteur_eleves_dans_la_salle=0;
 		while($lig2=mysql_fetch_object($res2)) {
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt white_hover'>\n";
@@ -565,6 +569,7 @@ elseif($tri=='salle') {
 
 				if((isset($tab_ele_prof_habituel[$login_ele]))&&($tab_ele_prof_habituel[$login_ele]==$login_prof[$i])) {
 					echo "<div style='float:right; width:17px;'><img src='../images/icons/flag.png' width='17' height='18' title='Professeur habituel de cet élève' alt='Professeur habituel de cet élève' /></div>\n";
+					$compteur_eleves_du_prof[$i]++;
 				}
 
 				if($etat!='clos') {
@@ -593,8 +598,19 @@ elseif($tri=='salle') {
 			echo "</td>\n";
 			echo "</tr>\n";
 			$cpt++;
+
+		$compteur_eleves_dans_la_salle++;
+
 		}
+		echo "<tr>\n";
+		echo "<th></th>\n";
+		echo "<th></th>\n";
+		for($i=0;$i<count($info_prof);$i++) {
+			echo "<th title=\"Le professeur a ".$compteur_eleves_du_prof[$i]." élève(s) en cours parmi les $compteur_eleves_dans_la_salle de cette salle\">".$compteur_eleves_du_prof[$i]."/".$compteur_eleves_dans_la_salle."</th>\n";
+		}
+		echo "<th></th>\n";
 		echo "</table>\n";
+		echo "</tr>\n";
 		//echo "\$cpt=$cpt<br />";
 
 		echo "</blockquote>\n";

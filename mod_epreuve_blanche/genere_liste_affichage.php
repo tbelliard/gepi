@@ -158,6 +158,7 @@ if(isset($imprime)) {
 					global $intitule_epreuve;
 					global $date_epreuve;
 					global $salle_courante;
+					global $effectif_salle_courante;
 					//global $num_page;
 					//global $decompte_page;
 
@@ -165,7 +166,8 @@ if(isset($imprime)) {
 					$this->SetFont('DejaVu','',7.5);
 
 					//$texte=getSettingValue("gepiSchoolName")."  ";
-					$texte=$intitule_epreuve." ($date_epreuve) - ".$salle_courante;
+					//$texte=$intitule_epreuve." ($date_epreuve) - ".$salle_courante;
+					$texte=$intitule_epreuve." ($date_epreuve) - ".$salle_courante." - (effectif : $effectif_salle_courante)";
 					$lg_text=$this->GetStringWidth($texte);
 					$this->SetXY(10,287);
 					$this->Cell(0,5,$texte,0,0,'L');
@@ -243,12 +245,14 @@ if(isset($imprime)) {
 
 			$compteur=0;
 			for($i=0;$i<count($id_salle);$i++) {
+
 				$decompte_page=$num_page;
 
 				$sql="SELECT DISTINCT e.nom, e.prenom, e.login, e.naissance, c.classe, ec.n_anonymat FROM eb_copies ec, eleves e, j_eleves_classes jec, classes c WHERE e.login=ec.login_ele AND ec.id_salle='$id_salle[$i]' AND ec.id_epreuve='$id_epreuve' AND jec.id_classe=c.id AND jec.login=e.login ORDER BY e.nom,e.prenom,e.naissance;";
 				//echo "$sql<br />";
 				$res=mysql_query($sql);
-				if(mysql_num_rows($res)>0) {
+				$effectif_salle_courante=mysql_num_rows($res);
+				if($effectif_salle_courante>0) {
 
 					//if($compteur>0) {$pdf->Footer();}
 					$num_page++;
@@ -437,6 +441,7 @@ if(isset($imprime)) {
 					}
 
 					$compteur++;
+
 				}
 			}
 

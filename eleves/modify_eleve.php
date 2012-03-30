@@ -528,6 +528,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 				if ($test_login > 0) {
 				*/
 				if($temoin_mon_compte_mais_pas_de_compte_pour_cet_eleve=='n') {
+
 					$res = mysql_query("UPDATE utilisateurs SET nom='".$reg_nom."', prenom='".$reg_prenom."', email='".$reg_email."' WHERE login = '".$eleve_login."'");
 					//$msg.="TEMOIN test_login puis update<br />";
 				}
@@ -614,6 +615,10 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 
 								// Récupération du nom de la photo en tenant compte des histoires des zéro 02345.jpg ou 2345.jpg
 								$photo=nom_photo($reg_no_gep);
+/*
+								if("$photo"!=""){
+									if(unlink("../photos/eleves/$photo")){
+ */
 								if($photo){
 									if(unlink($photo)){
 										$msg.="La photo ".$photo." a été supprimée. ";
@@ -735,6 +740,10 @@ elseif($_SESSION['statut']=="professeur"){
 
 							// Récupération du nom de la photo en tenant compte des histoires des zéro 02345.jpg ou 2345.jpg
 							$photo=nom_photo($reg_no_gep);
+/*
+							if("$photo"!=""){
+								if(unlink("../photos/eleves/$photo")){
+ */
 							if($photo){
 								if(unlink($photo)){
 									$msg.="La photo ".$photo." a été supprimée. ";
