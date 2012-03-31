@@ -3936,6 +3936,34 @@ function is_pp($login_prof,$id_classe="",$login_eleve="") {
 }
 
 /**
+ *Vérifie si un utilisateur est cpe de l'élève choisi ou de la classe choisie
+ * 
+ * $login_eleve : login de l'élève à tester (si vide, on teste juste si le cpe 
+ *                est responsable d'au moins un élève de la classe $id_classe
+ * 
+ * $id_classe : identifiant de la classe
+ *              (pris en compte seulement si le login_eleve est vide)
+ * 
+ * @param type $login_cpe login de l'utilisateur à tester
+ * @param type $id_classe identifiant de la classe
+ * @param type $login_eleve login de l'élève
+ * @return boolean 
+ */
+function is_cpe($login_cpe,$id_classe="",$login_eleve="") {
+	$retour=FALSE;
+	if($login_eleve=='') {
+		$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='$login_cpe' AND e_login='$login_eleve';";
+	}
+	elseif($id_classe!='') {
+		$sql="SELECT 1=1 FROM j_eleves_cpe jecpe, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.login=jecpe.e_login AND jecpe.cpe_login='$login_cpe';";
+	}
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {$retour=TRUE;}
+
+	return $retour;
+}
+
+/**
  * Vérifie qu'un utilisateur a le droit de voir la page en lien
  *
  * @param string $id l'adresse de la page telle qu'enregistrée dans la table droits

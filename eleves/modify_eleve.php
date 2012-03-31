@@ -731,16 +731,15 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 
 	//================================================
 }
-elseif($_SESSION['statut']=="professeur") {
+elseif(($_SESSION['statut']=="professeur")||($_SESSION['statut']=="cpe")) {
 	if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 		if(!isset($msg)){$msg="";}
 
 		//debug_var();
-
 		$sql="SELECT 1=1 FROM eleves WHERE login='$eleve_login' AND elenoet='$reg_no_gep';";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)==0) {
-			tentative_intrusion("2", "Tentative d'upload par un prof de la photo d'un élève ($eleve_login) pour un elenoet ($reg_no_gep) ne correspondant pas à cet élève.");
+			tentative_intrusion("2", "Tentative d'upload par un ".$_SESSION['statut']." de la photo d'un élève ($eleve_login) pour un elenoet ($reg_no_gep) ne correspondant pas à cet élève.");
 			echo "Incohérence entre le login élève et son numéro elenoet.";
 			require ("../lib/footer.inc.php");
 			die();
@@ -750,14 +749,20 @@ elseif($_SESSION['statut']=="professeur") {
 			if((isset($reg_no_gep))&&(isset($eleve_login))) {
 				if($reg_no_gep!="") {
 					if(mb_strlen(preg_replace("/[0-9]/","",$reg_no_gep))==0) {
-						if(getSettingValue("GepiAccesGestPhotoElevesProfP")!='yes') {
-							tentative_intrusion("2", "Tentative d'upload par un prof de la photo d'un élève ($eleve_login), sans avoir l'autorisation d'upload.");
+						if(($_SESSION['statut']=='professeur')&&(getSettingValue("GepiAccesGestPhotoElevesProfP")!='yes')) {
+							tentative_intrusion("2", "Tentative d'upload par un professeur de la photo d'un élève ($eleve_login), sans avoir l'autorisation d'upload.");
+							echo "L'upload de photo n'est pas autorisé pour les professeurs.";
+							require ("../lib/footer.inc.php");
+							die();
+						}
+						elseif(($_SESSION['statut']=='cpe')&&(getSettingValue("CpeAccesUploadPhotosEleves")!='yes')) {
+							tentative_intrusion("2", "Tentative d'upload par un cpe de la photo d'un élève ($eleve_login), sans avoir l'autorisation d'upload.");
 							echo "L'upload de photo n'est pas autorisé pour les professeurs.";
 							require ("../lib/footer.inc.php");
 							die();
 						}
 						else {
-							if(is_pp($_SESSION['login'],"",$eleve_login)) {
+							if(($_SESSION['statut']=='cpe')||(is_pp($_SESSION['login'],"",$eleve_login))) {
 								if(isset($_POST['suppr_filephoto'])) {
 									check_token();
 									if($_POST['suppr_filephoto']=='y'){
@@ -793,8 +798,8 @@ elseif($_SESSION['statut']=="professeur") {
 											// Tester la taille max de la photo?
 
 											if(is_uploaded_file($filephoto_tmp)){
-												$dest_file=$rep_photos.$reg_no_gep.".jpg";
-												//$source_file=stripslashes("$filephoto_tmp");
+												$dest_file=$rep_photos.encode_nom_photo($reg_no_gep).".jpg";
+												//echo "\$dest_file=$dest_file<br />";
 												$source_file=$filephoto_tmp;
 												$res_copy=copy("$source_file" , "$dest_file");
 												if($res_copy){
@@ -802,6 +807,35 @@ elseif($_SESSION['statut']=="professeur") {
 												}
 												else{
 													$msg.="Erreur lors de la mise en place de la photo.";
+												}
+
+												if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
+													// si le redimensionnement des photos est activé on redimenssionne
+													$source = imagecreatefromjpeg($dest_file); // La photo est la source
+
+													if (getSettingValue("active_module_trombinoscopes_rt")=='') {
+														$destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes"));
+													} // On crée la miniature vide
+
+													if (getSettingValue("active_module_trombinoscopes_rt")!='') {
+														$destination = imagecreatetruecolor(getSettingValue("h_resize_trombinoscopes"), getSettingValue("l_resize_trombinoscopes"));
+													} // On crée la miniature vide
+
+													// Les fonctions imagesx et imagesy renvoient la largeur et la hauteur d'une image
+													$largeur_source = imagesx($source);
+													$hauteur_source = imagesy($source);
+													$largeur_destination = imagesx($destination);
+													$hauteur_destination = imagesy($destination);
+
+													// On crée la miniature
+													imagecopyresampled($destination, $source, 0, 0, 0, 0, $largeur_destination, $hauteur_destination, $largeur_source, $hauteur_source);
+													if (getSettingValue("active_module_trombinoscopes_rt")!='') {
+														$degrees = getSettingValue("active_module_trombinoscopes_rt");
+														// $destination = imagerotate($destination,$degrees);
+														$destination = ImageRotateRightAngle($destination,$degrees);
+													}
+													// On enregistre la miniature sous le nom "mini_couchersoleil.jpg"
+													imagejpeg($destination, $dest_file,100);
 												}
 											}
 											else{
@@ -1690,6 +1724,14 @@ else {
 	if (isset($eleve_email)) {
 		echo "$eleve_email";
 	}
+	if((isset($eleve_email))&&($eleve_email!='')) {
+		$tmp_date=getdate();
+		echo " <a href='mailto:".$eleve_email."?subject=GEPI&amp;body=";
+		if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+		echo ",%0d%0aCordialement.'>";
+		echo "<img src='../images/imabulle/courrier.jpg' width='20' height='15' alt='Envoyer un courriel' border='0' />";
+		echo "</a>";
+	}
 	echo "</td>
 	</tr>
 	<tr>
@@ -1753,6 +1795,7 @@ if(isset($reg_no_gep)){
 	//echo "getSettingValue(\"GepiAccesGestPhotoElevesProfP\")=".getSettingValue("GepiAccesGestPhotoElevesProfP")."<br />";
   if ((getSettingValue("active_module_trombinoscopes")=='y') and 
   (($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")||
+  (($_SESSION['statut']=='cpe')&&(getSettingValue("CpeAccesUploadPhotosEleves")=='yes'))||
   (($_SESSION['statut']=="professeur")&&(getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes')&&(isset($eleve_login))&&(is_pp($_SESSION['login'],"",$eleve_login))))) {
 		echo "<div align='center'>\n";
 		//echo "<span id='lien_photo' style='font-size:xx-small;'>";

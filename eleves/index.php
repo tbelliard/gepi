@@ -351,7 +351,7 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 					//$msg = "Téléchargement réussi.";
 					$cpt_photos_mises_en_place++;
 					if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
-						// si le redimensionnement des photos est activé on redimenssionne
+						// si le redimensionnement des photos est activé on redimensionne
 	
 						$source = imagecreatefromjpeg($rep_photos.encode_nom_photo($quiestce[$cpt_photo]).".jpg"); // La photo est la source
 	
@@ -1107,7 +1107,7 @@ if (!isset($quelles_classes)) {
 if(isset($quelles_classes)) {
 	//echo "$quelles_classes<br />";
 
-	echo "<p class='small'>Remarque : l'identifiant mentionné ici ne permet pas aux élèves de se connecter à Gepi, il sert simplement d'identifiant unique.";
+	echo "<p class='small'><em>Remarque&nbsp;:</em> l'identifiant mentionné ici ne permet pas aux élèves de se connecter à Gepi, il sert simplement d'identifiant unique.";
 	//if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	if($_SESSION['statut']=="administrateur") {
 		echo " Pour permettre aux élèves de se connecter à Gepi, vous devez leur créer des comptes d'accès, en passant par la page Gestion des bases -> Gestion des comptes d'accès utilisateurs -> <a href='../utilisateurs/edit_eleve.php'>Elèves</a>.";
@@ -1672,7 +1672,8 @@ if(isset($quelles_classes)) {
 		if($lien_image_compte_utilisateur!="") {echo "<div style='float:right; width: 16px'>".$lien_image_compte_utilisateur."</div>";}
 
 		if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='autre')||
-			(($_SESSION['statut']=='cpe')&&(getSettingAOui('CpeAccesFichesEleves')))||
+			(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiAccesTouteFicheEleveCpe')))||
+			(($_SESSION['statut']=='cpe')&&(is_cpe($_SESSION['login'],'',$eleve_login)))||
 			(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'],"",$eleve_login))&&(getSettingAOui('GepiAccesGestElevesProfP')))) {
 			echo "<p><a href='modify_eleve.php?eleve_login=$eleve_login&amp;quelles_classes=$quelles_classes&amp;order_type=$order_type";
 			if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
