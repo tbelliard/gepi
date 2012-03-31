@@ -894,9 +894,14 @@ echo add_token_field();
 			<input type="text" name="longmin_pwd" id="longmin_pwd" size="20" value="<?php echo(getSettingValue("longmin_pwd")); ?>" onchange='changement()' onkeydown="clavier_2(this.id,event,1,50)" />
 		</span>
 	</p>
-	
-<?php if (isset($use_custom_denominations) && $use_custom_denominations) { ?>
-		
+
+	<?php
+		if(getSettingAOui('use_custom_denominations')) {
+			$use_custom_denominations=true;
+		}
+		if (isset($use_custom_denominations) && $use_custom_denominations) {
+	?>
+
 	<p class="ligneCaps">
 		<label for='denomination_professeur' class="cellTab70">
 			Dénomination des professeurs :
