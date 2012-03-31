@@ -1545,43 +1545,22 @@ if(getSettingValue('active_mod_ooo')=='y') {
 	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
 }
 //=======================================================================================
-/*
-      
-			</table>
-		</td>
-	</tr>
-	<tr>
-		<td style="font-variant: small-caps;">Un CPE</td>
-		<td>
-			<table border='0' summary='CPE'>
-			<tr valign='top'>
-				<td style='border: 0px;'><input type="checkbox" name="GepiAccesReleveCpe" id="GepiAccesReleveCpe" value="yes" <?php if (getSettingValue("GepiAccesReleveCpe")=='yes') echo 'checked="checked"'; ?> onchange='changement();' /></td>
-				<td style='border: 0px;'><label for='GepiAccesReleveCpe' style='cursor: pointer;'> a accès à tous les relevés de notes de toutes les classes</label></td>
-			</tr>
-		 */
+// CPE
 $statutItem="cpe";
+
+// Relevés de notes
 $titreItem='GepiAccesReleveCpe';
 $texteItem="a accès à tous les relevés de notes de toutes les classes";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
-/*
 
-			<tr valign='top'>
-				<td style='border: 0px;'><input type="checkbox" name="GepiAccesCdtCpe" id="GepiAccesCdtCpe" value="yes" <?php if (getSettingValue("GepiAccesCdtCpe")=='yes') echo 'checked="checked"'; ?> onchange='changement();' /></td>
-				<td style='border: 0px;'><label for='GepiAccesCdtCpe' style='cursor: pointer;'> a accès aux cahiers de textes</label></td>
-			</tr>
-		 */
+
+// CDT
 $titreItem='GepiAccesCdtCpe';
 $texteItem="a accès aux cahiers de textes";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
-/*
 
-			<tr valign='top'>
-				<td style='border: 0px;'><input type="checkbox" name="GepiAccesCdtCpeRestreint" id="GepiAccesCdtCpeRestreint" value="yes" <?php if (getSettingValue("GepiAccesCdtCpeRestreint")=='yes') echo 'checked="checked"'; ?> onchange='changement();' /></td>
-				<td style='border: 0px;'><label for='GepiAccesCdtCpeRestreint' style='cursor: pointer;'> a accès aux cahiers de textes des <?php echo $gepiSettings['denomination_eleves']; ?> dont il a la responsabilité<br /><em>bloque l'affichage des cahiers de textes de toutes les classes</em></label></td>
-			</tr>
-		 */
 $titreItem='GepiAccesCdtCpeRestreint';
 $texteItem="a accès aux cahiers de textes des ".$gepiSettings['denomination_eleves']." dont il a la responsabilité<br />
 			<em>bloque l'affichage des cahiers de textes de toutes les classes</em>";
@@ -1589,31 +1568,65 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 
+// Bulletins
 $titreItem='autoriser_signalement_faute_app_cpe';
 $texteItem="peut signaler, en période ouverte ou partiellement close, (<em>aux professeurs concernés</em>) des fautes (<em>de frappe;</em>) dans les appréciations des bulletins (<em>pour leur permettre corriger avant impression des bulletins</em>).";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
-/*
 
-			<tr valign='top'>
-				<td style='border: 0px;'><input type="checkbox" name="GepiPasswordReinitCpe" id="GepiPasswordReinitCpe" value="yes" <?php if (getSettingValue("GepiPasswordReinitCpe")=='yes') echo 'checked="checked"'; ?> /></td>
-				<td style='border: 0px;'><label for='GepiPasswordReinitCpe' style='cursor: pointer;'> peut réinitialiser lui-même son mot de passe perdu (<em>si fonction activée</em>)</label></td>
-			</tr>
-		 */
+// Avis du conseil de classe
+$titreItem='GepiRubConseilCpe';
+$texteItem="peut saisir les avis du conseil de classe (<em>pour les élèves qu'il a en responsabilité</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiRubConseilCpeTous';
+$texteItem="peut saisir les avis du conseil de classe (<em>pour tous les élèves de toutes les classes</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='CommentairesTypesCpe';
+$texteItem="peut utiliser des commentaires-types dans ces saisies d'avis du conseil de classe<br />
+			(<em>sous réserve de pouvoir saisir les avis du conseil de classe</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+
+// Divers
+$titreItem='GepiAccesVisuToutesEquipCpe';
+$texteItem="a accès à la Visualisation de toutes les équipes";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+
+//Années antérieures
+$titreItem='AACpeTout';
+$texteItem="a accès aux données d'années antérieures de tous les ".$gepiSettings['denomination_eleves'];
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='AACpeResp';
+$texteItem="a accès aux données d'années antérieures des ".$gepiSettings['denomination_eleves']." dont il est responsable";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+
+// Mon compte
 $titreItem='GepiPasswordReinitCpe';
 $texteItem="peut réinitialiser lui-même son mot de passe perdu (<em>si fonction activée</em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
-/*
 
-			<tr valign='top'>
-				<td style='border: 0px;'><input type="checkbox" name="GepiAccesVisuToutesEquipCpe" id="GepiAccesVisuToutesEquipCpe" value="yes" <?php if (getSettingValue("GepiAccesVisuToutesEquipCpe")=='yes') echo 'checked="checked"'; ?> onchange='changement();' /></td>
-				<td style='border: 0px;'><label for='GepiAccesVisuToutesEquipCpe' style='cursor: pointer;'> a accès à la Visualisation de toutes les équipes</label></td>
-			</tr>
-		 */
-$titreItem='GepiAccesVisuToutesEquipCpe';
-$texteItem="a accès à la Visualisation de toutes les équipes";
+$titreItem='GepiAccesModifMaPhotoCpe';
+$texteItem="a le droit d'envoyer/modifier lui-même sa photo dans 'Gérer mon compte'";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+
+// Photos
+$titreItem='GepiAccesTouteFicheEleveCpe';
+$texteItem="a le droit d'accéder à toutes les fiches élève";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -1626,53 +1639,15 @@ $texteItem.="actif</em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
-/*
 
-			<!-- Années antérieures -->
-			<tr valign='top'>
-				<td style='border: 0px;'><input type="checkbox" name="AACpeTout" id="AACpeTout" value="yes" <?php if (getSettingValue("AACpeTout")=='yes') echo 'checked="checked"'; ?> onchange='changement();' /></td>
-				<td style='border: 0px;'><label for='AACpeTout' style='cursor: pointer;'> a accès aux données d'années antérieures de tous les <?php echo $gepiSettings['denomination_eleves']; ?></label></td>
-			</tr>
-		 */
-$titreItem='AACpeTout';
-$texteItem="a accès aux données d'années antérieures de tous les ".$gepiSettings['denomination_eleves'];
-if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
-/*
-
-			<tr valign='top'>
-				<td style='border: 0px;'><input type="checkbox" name="AACpeResp" id="AACpeResp" value="yes" <?php if (getSettingValue("AACpeResp")=='yes') echo 'checked="checked"'; ?> onchange='changement();' /></td>
-				<td style='border: 0px;'><label for='AACpeResp' style='cursor: pointer;'> a accès aux données d'années antérieures des <?php echo $gepiSettings['denomination_eleves']; ?> dont il est responsable</label></td>
-			</tr>
-		 */
-$titreItem='AACpeResp';
-$texteItem="a accès aux données d'années antérieures des ".$gepiSettings['denomination_eleves']." dont il est responsable";
-if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
-/*
-
-			<tr valign='top'>
-				<td style='border: 0px;'><input type="checkbox" name="GepiAccesModifMaPhotoCpe" id="GepiAccesModifMaPhotoCpe" value="yes" <?php if (getSettingValue("GepiAccesModifMaPhotoCpe")=='yes') echo 'checked="checked"'; ?> onchange='changement();' /></td>
-				<td style='border: 0px;'><label for='GepiAccesModifMaPhotoCpe' style='cursor: pointer;'> a le droit d'envoyer/modifier lui-même sa photo dans 'Gérer mon compte'
-				</label></td>
-			</tr>
-		 */
-$titreItem='GepiAccesModifMaPhotoCpe';
-$texteItem="a le droit d'envoyer/modifier lui-même sa photo dans 'Gérer mon compte'";
-if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
-
-$titreItem='GepiAccesTouteFicheEleveCpe';
-$texteItem="a le droit d'accéder à toutes les fiches élève";
-if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
-  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
-
+// Absences
 $titreItem='GepiAccesAbsTouteClasseCpe';
 $texteItem="a le droit d'accéder à toutes les classes pour saisir les absences";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 
+// OOo
 if(getSettingValue('active_mod_ooo')=='y') {
   $titreItem='OOoUploadCpe';
   $texteItem="a accès à l'upload de fichiers modèles OpenOffice personnels.";

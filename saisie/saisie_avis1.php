@@ -47,6 +47,25 @@ include "../lib/periodes.inc.php";
 
 $msg="";
 
+//debug_var();
+
+
+// On teste si un professeur peut saisir les avis
+if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiRubConseilProf")!='yes') {
+	die("Droits insuffisants pour effectuer cette opération");
+}
+
+// On teste si le service scolarité peut saisir les avis
+if (($_SESSION['statut'] == 'scolarite') and getSettingValue("GepiRubConseilScol")!='yes') {
+	die("Droits insuffisants pour effectuer cette opération");
+}
+
+// On teste si le service cpe peut saisir les avis
+if (($_SESSION['statut'] == 'cpe') and getSettingValue("GepiRubConseilCpe")!='yes' and getSettingValue("GepiRubConseilCpeTous")!='yes') {
+   die("Droits insuffisants pour effectuer cette opération");
+}
+
+
 $gepi_denom_mention=getSettingValue("gepi_denom_mention");
 if($gepi_denom_mention=="") {
 	$gepi_denom_mention="mention";
@@ -69,50 +88,63 @@ if (isset($_POST['is_posted'])) {
 		}
 	}
 
-	// Synthèse
-	$i = '1';
-	while ($i < $nb_periode) {
-		if ($ver_periode[$i] != "O"){
-			if (isset($NON_PROTECT["synthese_".$i])){
-				// On enregistre la synthese
-				$synthese=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["synthese_".$i]));
-		
-				//$synthese=my_ereg_replace('(\\\r\\\n)+',"\r\n",$synthese);
-				$synthese=suppression_sauts_de_lignes_surnumeraires($synthese);
-
-				$sql="SELECT 1=1 FROM synthese_app_classe WHERE id_classe='$id_classe' AND periode='$i';";
-				$test=mysql_query($sql);
-				if(mysql_num_rows($test)==0) {
-					$sql="INSERT INTO synthese_app_classe SET id_classe='$id_classe', periode='$i', synthese='$synthese';";
-					$insert=mysql_query($sql);
-					if(!$insert) {$msg.="Erreur lors de l'enregistrement de la synthèse.";}
-					//else {$msg.="La synthèse a été enregistrée.";}
-				}
-				else {
-					$sql="UPDATE synthese_app_classe SET synthese='$synthese' WHERE id_classe='$id_classe' AND periode='$i';";
-					$update=mysql_query($sql);
-					if(!$update) {$msg.="Erreur lors de la mise à jour de la synthèse.";}
-					//else {$msg.="La synthèse a été mise à jour.";}
-				}
-			}
-		}
-		$i++;
-	}
-
-	if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
-		$quels_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
+	if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours') or (($_SESSION['statut'] == 'cpe')&&(getSettingAOui('GepiRubConseilCpeTous')))) {
+		$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
 		WHERE (c.id_classe='$id_classe' AND
 		c.login = e.login
-		) ORDER BY nom");
+		) ORDER BY nom, prenom";
+	}
+	elseif(($_SESSION['statut'] == 'cpe')&&(getSettingAOui('GepiRubConseilCpe'))) {
+		$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec, j_eleves_cpe jecpe
+		WHERE (jec.id_classe='$id_classe' AND
+		jec.login = e.login AND
+		jecpe.e_login = jec.login AND
+		jecpe.cpe_login = '".$_SESSION['login']."'
+		) ORDER BY nom, prenom";
 	} else {
-		$quels_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
+		$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
 		WHERE (c.id_classe='$id_classe' AND
 		c.login = e.login AND
 		p.login = c.login AND
 		p.professeur = '".$_SESSION['login']."'
-		) ORDER BY nom");
+		) ORDER BY nom, prenom";
 	}
+	//echo "$sql<br />";
+	$quels_eleves = mysql_query($sql);
 	$lignes = mysql_num_rows($quels_eleves);
+
+	if($lignes>0) {
+		// Synthèse
+		$i = '1';
+		while ($i < $nb_periode) {
+			if ($ver_periode[$i] != "O"){
+				if (isset($NON_PROTECT["synthese_".$i])){
+					// On enregistre la synthese
+					$synthese=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["synthese_".$i]));
+		
+					//$synthese=my_ereg_replace('(\\\r\\\n)+',"\r\n",$synthese);
+					$synthese=suppression_sauts_de_lignes_surnumeraires($synthese);
+
+					$sql="SELECT 1=1 FROM synthese_app_classe WHERE id_classe='$id_classe' AND periode='$i';";
+					$test=mysql_query($sql);
+					if(mysql_num_rows($test)==0) {
+						$sql="INSERT INTO synthese_app_classe SET id_classe='$id_classe', periode='$i', synthese='$synthese';";
+						$insert=mysql_query($sql);
+						if(!$insert) {$msg.="Erreur lors de l'enregistrement de la synthèse.";}
+						//else {$msg.="La synthèse a été enregistrée.";}
+					}
+					else {
+						$sql="UPDATE synthese_app_classe SET synthese='$synthese' WHERE id_classe='$id_classe' AND periode='$i';";
+						$update=mysql_query($sql);
+						if(!$update) {$msg.="Erreur lors de la mise à jour de la synthèse.";}
+						//else {$msg.="La synthèse a été mise à jour.";}
+					}
+				}
+			}
+			$i++;
+		}
+	}
+
 	$j = '0';
 	$pb_record = 'no';
 	while($j < $lignes) {
@@ -205,27 +237,17 @@ $tmp_timeout=(getSettingValue("sessionMaxLength"))*60;
 <script type="text/javascript" language="javascript">
 change = 'no';
 </script>
-<?php
-// On teste si un professeur peut saisir les avis
-if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiRubConseilProf")!='yes') {
-	die("Droits insuffisants pour effectuer cette opération");
-}
 
-// On teste si le service scolarité peut saisir les avis
-if (($_SESSION['statut'] == 'scolarite') and getSettingValue("GepiRubConseilScol")!='yes') {
-	die("Droits insuffisants pour effectuer cette opération");
-}
-?>
 <form enctype="multipart/form-data" action="saisie_avis1.php" name="form1" method='post'>
 <p class='bold'><a href="saisie_avis.php" onclick="return confirm_abandon(this, change, '<?php echo $themessage; ?>')"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Mes classes</a>
 
 <?php
 
 // Ajout lien classe précédente / classe suivante
-if($_SESSION['statut']=='scolarite'){
+if($_SESSION['statut']=='scolarite') {
 	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 }
-elseif($_SESSION['statut']=='professeur'){
+elseif($_SESSION['statut']=='professeur') {
 
 	// On a filtré plus haut les profs qui n'ont pas getSettingValue("GepiRubConseilProf")=='yes'
 	$sql="SELECT DISTINCT c.id,c.classe FROM classes c,
@@ -236,7 +258,7 @@ elseif($_SESSION['statut']=='professeur'){
 										jep.professeur='".$_SESSION['login']."'
 								ORDER BY c.classe;";
 }
-elseif($_SESSION['statut']=='cpe'){
+elseif($_SESSION['statut']=='cpe') {
 	// On ne devrait pas arriver ici en CPE...
 	// Il n'y a pas de droit de saisie des avis du conseil.
 	$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
@@ -247,11 +269,11 @@ elseif($_SESSION['statut']=='cpe'){
 		jecpe.cpe_login='".$_SESSION['login']."'
 		ORDER BY classe";
 }
-elseif($_SESSION['statut'] == 'autre'){
+elseif($_SESSION['statut'] == 'autre') {
 	// On recherche toutes les classes pour ce statut qui n'est accessible que si l'admin a donné les bons droits
 	$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
 }
-elseif($_SESSION['statut'] == 'secours'){
+elseif($_SESSION['statut'] == 'secours') {
 	$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
 }
 
@@ -355,19 +377,27 @@ if ($id_classe) {
 	}
 	?>
 	<?php
-	if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
-		$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
+	if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours') or (($_SESSION['statut'] == 'cpe')&&(getSettingValue("GepiRubConseilCpeTous")=='yes'))) {
+		$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
 		WHERE (c.id_classe='$id_classe' AND
 		c.login = e.login
-		) ORDER BY nom");
+		) ORDER BY nom, prenom";
+	} elseif ($_SESSION['statut'] == 'cpe') {
+		$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec, j_eleves_cpe jecpe
+		WHERE (jec.id_classe='$id_classe' AND
+		jec.login = e.login AND
+		jecpe.e_login = jec.login AND
+		jecpe.cpe_login = '".$_SESSION['login']."'
+		) ORDER BY nom, prenom";
 	} else {
-		$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
+		$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
 		WHERE (c.id_classe='$id_classe' AND
 		c.login = e.login AND
 		p.login = c.login AND
 		p.professeur = '".$_SESSION['login']."'
-		) ORDER BY nom");
+		) ORDER BY nom, prenom";
 	}
+	$appel_donnees_eleves=mysql_query($sql);
 	$nombre_lignes = mysql_num_rows($appel_donnees_eleves);
 
 
@@ -375,6 +405,7 @@ if ($id_classe) {
 /*
 	CommentairesTypesPP
 	CommentairesTypesScol
+	CommentairesTypesCpe
 */
 
 	// Fonction de renseignement du champ qui doit obtenir le focus après validation
@@ -685,7 +716,8 @@ if ($insert_mass_appreciation_type=="y") {
 
 					if((file_exists('saisie_commentaires_types.php'))
 						&&(($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiRubConseilProf")=='yes')&&(getSettingValue('CommentairesTypesPP')=='yes'))
-						||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))) {
+						||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))
+						||(($_SESSION['statut'] == 'cpe')&&((getSettingValue("GepiRubConseilCpe")=='yes')||(getSettingValue("GepiRubConseilCpeTous")=='yes'))&&(getSettingValue('CommentairesTypesCpe')=='yes'))) {
 
 						if($commentaires_type_classe_periode[$k]=="y"){
 							echo "<a href='#' onClick=\"document.getElementById('textarea_courant').value='n".$k.$num_id."';afficher_div('commentaire_type','y',30,-50);return false;\">Ajouter un commentaire-type</a>\n";
@@ -729,7 +761,8 @@ if ($insert_mass_appreciation_type=="y") {
 
 	if((file_exists('saisie_commentaires_types.php'))
 		&&(($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiRubConseilProf")=='yes')&&(getSettingValue('CommentairesTypesPP')=='yes'))
-		||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))) {
+		||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))
+		||(($_SESSION['statut'] == 'cpe')&&((getSettingValue("GepiRubConseilCpe")=='yes')||(getSettingValue("GepiRubConseilCpeTous")=='yes'))&&(getSettingValue('CommentairesTypesCpe')=='yes'))) {
 		//include('saisie_commentaires_types.php');
 		//include('saisie_commentaires_types2.php');
 		include('saisie_commentaires_types2b.php');

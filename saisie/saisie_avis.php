@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -31,7 +31,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -52,16 +52,31 @@ if (($_SESSION['statut'] == 'scolarite') and getSettingValue("GepiRubConseilScol
    die("Droits insuffisants pour effectuer cette opération");
 }
 
+// On teste si le service cpe peut saisir les avis
+if (($_SESSION['statut'] == 'cpe') and getSettingValue("GepiRubConseilCpe")!='yes' and getSettingValue("GepiRubConseilCpeTous")!='yes') {
+   die("Droits insuffisants pour effectuer cette opération");
+}
+
+
 echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
-if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
+if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours') or ($_SESSION['statut'] == 'cpe')) {
     //$call_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
 
 	if($_SESSION['statut']=='scolarite'){
-		$call_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
-	else{
-		$call_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
+	elseif($_SESSION['statut']=='cpe') {
+		if(getSettingValue("GepiRubConseilCpeTous")!='yes') {
+			$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
+		}
+		else {
+			$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE p.id_classe = c.id  AND jec.id_classe=c.id AND jecpe.cpe_login='".$_SESSION['login']."' AND jec.login=jecpe.e_login ORDER BY classe";
+		}
 	}
+	else {
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
+	}
+	$call_classe = mysql_query($sql);
 
     $nombre_classe = mysql_num_rows($call_classe);
 	if($nombre_classe==0){

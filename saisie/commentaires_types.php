@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -93,7 +93,9 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 }
 */
 if ((($_SESSION['statut']=='professeur') AND (getSettingValue("CommentairesTypesPP")=='yes') AND (mysql_num_rows(mysql_query("SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."'"))>0))
-	OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("CommentairesTypesScol")=='yes')))
+	OR (($_SESSION['statut']=='scolarite') AND (getSettingValue("CommentairesTypesScol")=='yes'))
+	OR (($_SESSION['statut']=='cpe') AND (getSettingValue("CommentairesTypesCpe")=='yes'))
+	)
 {
 	// Accès autorisé à la page
 }
@@ -141,13 +143,27 @@ else{
 			}
 			elseif($_SESSION['statut']=='scolarite'){
 				$sql="SELECT DISTINCT c.id,c.classe FROM j_scol_classes jsc, classes c
+
 									WHERE jsc.id_classe=c.id AND
 										jsc.login='".$_SESSION['login']."'
 									ORDER BY c.classe";
 			}
-			else{
-				// CA NE DEVRAIT PAS ARRIVER...
+			elseif(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiRubConseilCpe'))) {
+				$sql="SELECT DISTINCT c.id,c.classe FROM j_eleves_cpe jecpe, j_eleves_classes jec, classes c
+									WHERE jec.id_classe=c.id AND
+									jec.login=jecpe.e_login AND
+										jecpe.cpe_login='".$_SESSION['login']."'
+									ORDER BY c.classe";
+			}
+			elseif(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiRubConseilCpeTous'))) {
 				$sql="select distinct id,classe from classes order by classe";
+			}
+			else {
+				// CA NE DEVRAIT PAS ARRIVER...
+				//$sql="select distinct id,classe from classes order by classe";
+				echo "<p>Statut incorrect.</p>\n";
+				die();
+				require("../lib/footer.inc.php");
 			}
 
 			$resultat_classes=mysql_query($sql);

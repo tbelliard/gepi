@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -54,6 +54,11 @@ if (($_SESSION['statut'] == 'scolarite') and getSettingValue("GepiRubConseilScol
 die("Droits insuffisants pour effectuer cette opération");
 }
 
+// On teste si le service cpe peut saisir les avis
+if (($_SESSION['statut'] == 'cpe') and getSettingValue("GepiRubConseilCpe")!='yes' and getSettingValue("GepiRubConseilCpeTous")!='yes') {
+die("Droits insuffisants pour effectuer cette opération");
+}
+
 // initialisation
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_classe"]) ? $_GET["id_classe"] :NULL);
 $periode_num = isset($_POST["periode_num"]) ? $_POST["periode_num"] :(isset($_GET["periode_num"]) ? $_GET["periode_num"] :NULL);
@@ -86,7 +91,8 @@ if (isset($_POST['is_posted'])) {
 	if (($periode_num < $nb_periode) and ($periode_num > 0) and ($ver_periode[$periode_num] != "O"))  {
 		$reg = 'yes';
 		// si l'utilisateur n'a pas le statut scolarité, on vérifie qu'il est prof principal de l'élève
-		if (($_SESSION['statut'] != 'scolarite') and ($_SESSION['statut'] != 'secours')) {
+		//if (($_SESSION['statut'] != 'scolarite') and ($_SESSION['statut'] != 'secours')) {
+		if ($_SESSION['statut'] == 'professeur') {
 			$test_prof_suivi = sql_query1("select professeur from j_eleves_professeurs
 			where login = '$current_eleve_login' and
 			professeur = '".$_SESSION['login']."' and
@@ -97,25 +103,19 @@ if (isset($_POST['is_posted'])) {
 				$reg = 'no';
 			}
 		}
+		elseif(($_SESSION['statut'] == 'cpe')&&(!getSettingAOui('GepiRubConseilCpeTous'))) {
+			$test_cpe_suivi = sql_query1("select 1=1 from j_eleves_cpe
+			where e_login = '$current_eleve_login' and
+			cpe_login = '".$_SESSION['login']."'
+			");
+			if ($test_cpe_suivi == '-1') {
+				$msg = "Vous n'êtes pas cpe de cet élève.";
+				$reg = 'no';
+			}
+		}
+
 		//echo "PLOP";
 		if ($reg == 'yes') {
-			/*
-			$test_eleve_avis_query = mysql_query("SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$periode_num')");
-			$test = mysql_num_rows($test_eleve_avis_query);
-			if ($test != "0") {
-				$sql="UPDATE avis_conseil_classe SET avis='$current_eleve_login_ap',";
-				if(isset($current_eleve_mention)) {$sql.="id_mention='$current_eleve_mention',";}
-				$sql.="statut='' WHERE (login='$current_eleve_login' AND periode='$periode_num')";
-				//echo "$sql<br />";
-				$register = mysql_query($sql);
-			} else {
-				$sql="INSERT INTO avis_conseil_classe SET login='$current_eleve_login',periode='$periode_num',avis='$current_eleve_login_ap',";
-				if(isset($current_eleve_mention)) {$sql.="id_mention='$current_eleve_mention',";}
-				$sql.="statut=''";
-				//echo "$sql<br />";
-				$register = mysql_query($sql);
-			}
-			*/
 
 			$sql="DELETE FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$periode_num');";
 			$menage=mysql_query($sql);
@@ -137,23 +137,32 @@ if (isset($_POST['is_posted'])) {
 	}
 
 	if (isset($_POST['ok1']))  {
-		if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
-			$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
+		if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours') or (($_SESSION['statut'] == 'cpe')&&(getSettingAOui('GepiRubConseilCpeTous')))) {
+			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
 			WHERE (
 			c.id_classe='$id_classe' AND
 			c.login = e.login AND
 			c.periode = '".$periode_num."'
-
-			) ORDER BY nom,prenom");
+			) ORDER BY nom,prenom";
+		} elseif($_SESSION['statut'] == 'cpe') {
+			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec, j_eleves_cpe jecpe
+			WHERE (jec.id_classe='$id_classe' AND
+			jec.login = e.login AND
+			jecpe.e_login = jec.login AND
+			jecpe.cpe_login = '".$_SESSION['login']."' AND
+			jec.periode = '".$periode_num."'
+			) ORDER BY nom,prenom";
 		} else {
-			$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
+			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
 			WHERE (c.id_classe='$id_classe' AND
 			c.login = e.login AND
 			p.login = c.login AND
 			p.professeur = '".$_SESSION['login']."' AND
 			c.periode = '".$periode_num."'
-			) ORDER BY nom,prenom");
+			) ORDER BY nom,prenom";
 		}
+		echo "$sql<br />";
+		$appel_donnees_eleves = mysql_query($sql);
 		$nb_eleve = mysql_num_rows($appel_donnees_eleves);
 		$current_eleve_login = @mysql_result($appel_donnees_eleves, $ind_eleve_login_suiv, "login");
 		$ind_eleve_login_suiv++;
@@ -353,11 +362,21 @@ echo "</form>\n";
 		?>
 	</tr>
 	<?php
-	if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
+	if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours') or (($_SESSION['statut'] == 'cpe')&&(getSettingAOui('GepiRubConseilCpeTous')))) {
 		$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c
 		WHERE (c.id_classe='$id_classe' AND
 		c.login = e.login AND
 		c.periode = '".$periode_num."'
+		) ORDER BY nom,prenom";
+	} elseif($_SESSION['statut']=='cpe'){
+		// On ne devrait pas arriver ici en CPE...
+		// Il n'y a pas de droit de saisie des avis du conseil.
+		$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec, j_eleves_cpe jecpe
+		WHERE (jec.id_classe='$id_classe' AND
+		jec.login = e.login AND
+		jecpe.e_login = jec.login AND
+		jecpe.cpe_login = '".$_SESSION['login']."' AND
+		jec.periode = '".$periode_num."'
 		) ORDER BY nom,prenom";
 	} else {
 		$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c, j_eleves_professeurs p
@@ -631,7 +650,8 @@ if (isset($fiche)) {
 	//if((file_exists('saisie_commentaires_types.php'))&&($commentaires_types=='y')){
 	if((file_exists('saisie_commentaires_types.php'))
 		&&(($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiRubConseilProf")=='yes')&&(getSettingValue('CommentairesTypesPP')=='yes'))
-		||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))) {
+		||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))
+		||(($_SESSION['statut'] == 'cpe')&&((getSettingValue("GepiRubConseilCpe")=='yes')||(getSettingValue("GepiRubConseilCpeTous")=='yes'))&&(getSettingValue('CommentairesTypesCpe')=='yes'))) {
 		//include('saisie_commentaires_types.php');
 		echo "<td align='center'>\n";
 		include('saisie_commentaires_types2.php');

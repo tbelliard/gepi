@@ -466,7 +466,8 @@ class class_page_accueil {
 	}
 
 	if ((($this->test_prof_suivi != "0") and (getSettingValue("GepiRubConseilProf")=='yes'))
-			or (($this->statutUtilisateur!='professeur') and (getSettingValue("GepiRubConseilScol")=='yes') )
+			or (($this->statutUtilisateur=='scolarite') and (getSettingValue("GepiRubConseilScol")=='yes'))
+			or (($this->statutUtilisateur=='cpe') and ((getSettingValue("GepiRubConseilCpe")=='yes')||(getSettingValue("GepiRubConseilCpeTous")=='yes')))
 			or ($this->statutUtilisateur=='secours')  )
 	  $this->creeNouveauItem("/saisie/saisie_avis.php",
 			  "Bulletin : saisie des avis du conseil",
@@ -535,7 +536,10 @@ class class_page_accueil {
 			  AND (mysql_num_rows(mysql_query("SELECT 1=1 FROM j_eleves_professeurs
 											  WHERE professeur='".$this->loginUtilisateur."'"))>0))
 			  OR (($this->statutUtilisateur=='scolarite')
-					  AND (getSettingValue("CommentairesTypesScol")=='yes')))
+					  AND (getSettingValue("CommentairesTypesScol")=='yes'))
+			  OR (($this->statutUtilisateur=='cpe')
+					  AND (getSettingValue("CommentairesTypesCpe")=='yes'))
+		)
 	  {
 		$this->creeNouveauItem("/saisie/commentaires_types.php",
 				"Saisie de commentaires-types",

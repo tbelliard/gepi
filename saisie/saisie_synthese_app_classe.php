@@ -27,9 +27,6 @@ $variables_non_protegees = 'yes';
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
-//extract($_GET, EXTR_OVERWRITE);
-//extract($_POST, EXTR_OVERWRITE);
-
 // Classe choisie:
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 // Périodes de visualisation:
@@ -67,24 +64,43 @@ if((isset($id_classe))&&(isset($num_periode))) {
 
 	if($_SESSION['statut']=='professeur') {
 		// Le prof est-il PP
-		$sql="SELECT 1=1 FROM j_eleves_professeurs jep, j_eleves_classes jec WHERE jep.professeur='".$_SESSION['login']."' AND jec.login=jep.login AND jec.periode='$num_periode';";
+		$sql="SELECT 1=1 FROM j_eleves_professeurs jep, j_eleves_classes jec WHERE jep.professeur='".$_SESSION['login']."' AND jec.login=jep.login AND jec.id_classe='$id_classe' AND jec.periode='$num_periode';";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)==0) {
-			//tentative_intrusion("2", "Tentative d'accès par un prof à un bulletin simplifié d'un élève qu'il n'a pas en cours, sans en avoir l'autorisation.");
-
+			//tentative_intrusion("2", "Tentative d'accès par un prof à la saisie de synthèse d'une classe qu'il ne suit pas.");
 			header('Location: ../accueil.php&msg='.rawurlencode("Vous n'êtes pas autorisé à saisir la synthèse pour cette classe."));
-
 			die();
 		}
 	}
-	else {
-		// Sinon, c'est un compte scolarité.
+	elseif($_SESSION['statut']=='cpe') {
+		if(getSettingAOui('GepiRubConseilCpeTous')) {
+			// On peut poursuivre: L'accès à toutes les classes est donné.
+		}
+		elseif(getSettingAOui('GepiRubConseilCpe')) {
+			$sql="SELECT 1=1 FROM j_eleves_cpe jecpe, j_eleves_classes jec WHERE jecpe.cpe_login='".$_SESSION['login']."' AND jec.login=jecpe.e_login AND jec.id_classe='$id_classe' AND jec.periode='$num_periode';";
+			$test=mysql_query($sql);
+			if(mysql_num_rows($test)==0) {
+				//tentative_intrusion("2", "Tentative d'accès par un cpe à la saisie de synthèse d'une classe qu'il ne suit pas.");
+				header('Location: ../accueil.php&msg='.rawurlencode("Vous n'êtes pas autorisé à saisir la synthèse pour cette classe."));
+				die();
+			}
+		}
+	}
+	elseif($_SESSION['statut']=='scolarite') {
 		$sql="SELECT 1=1 FROM j_scol_classes WHERE id_classe='$id_classe';";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)==0) {
+			//tentative_intrusion("2", "Tentative d'accès par un compte scolarité à la saisie de synthèse d'une classe qu'il ne suit pas.");
 			header('Location: ../accueil.php&msg='.rawurlencode("Vous n'êtes pas autorisé à saisir la synthèse pour cette classe."));
 			die();
 		}
+	}
+	elseif($_SESSION['statut']=='secours') {
+		// On peut poursuivre: L'accès à toutes les classes est donné.
+	}
+	else {
+		header('Location: ../accueil.php&msg='.rawurlencode("Accès non autorisé à la saisir de la synthèse d'une classe."));
+		die();
 	}
 
 	// Tout est choisi, on va passer à l'affichage
@@ -121,8 +137,10 @@ if((isset($id_classe))&&(isset($num_periode))) {
 	$res_current_synthese=mysql_query($sql);
 	$synthese=@mysql_result($res_current_synthese, 0, "synthese");
 
+	//====================================
 	$titre_page="Synthèse classe";
 	require_once("../lib/header.inc.php");
+	//====================================
 	include "../lib/periodes.inc.php";
 	include "../lib/bulletin_simple.inc.php";
 	include "../lib/bulletin_simple_classe.inc.php";
@@ -164,25 +182,10 @@ if((isset($id_classe))&&(isset($num_periode))) {
 			$periode_num++;
 		}
 	}
-	
-	/*
-	// On regarde si on affiche les catégories de matières
-	$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
-	if ($affiche_categories == "y") { $affiche_categories = true; } else { $affiche_categories = false;}
-	*/
-	//echo "\$choix_edit=$choix_edit<br />";
-	
-	//=========================
-	// AJOUT: boireaus 20080316
+
 	$coefficients_a_1="non";
 	$affiche_graph = 'n';
-	/*
-	$get_cat = mysql_query("SELECT id FROM matieres_categories");
-	$categories = array();
-	while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
-		$categories[] = $row["id"];
-	}
-	*/
+
 	unset($tab_moy_gen);
 	unset($tab_moy);
 	//unset($tab_moy_cat_classe);
@@ -342,7 +345,7 @@ if((isset($id_classe))&&(isset($num_periode))) {
 	if(isset($url_retour)) {echo "<input type='hidden' name='url_retour' value='$url_retour' />\n";}
 
 	echo "<a name='synthese'></a>\n";
-	echo "<p><b>Saisie de la synthèse pour le groupe classe&nbsp;:</b><br />\n";
+	echo "<p><b>Saisie de la synthèse pour le groupe classe en période $num_periode&nbsp;:</b><br />\n";
 	echo "<textarea class='wrap' name=\"no_anti_inject_synthese\" rows='5' cols='60' onchange=\"changement()\"";
 	echo ">".stripslashes($synthese)."</textarea>\n";
 
@@ -369,13 +372,43 @@ if(!isset($id_classe)) {
 			die();
 		}
 	}
-	else {
+	elseif($_SESSION['statut']=='scolarite') {
 		$sql="SELECT DISTINCT id, classe FROM j_scol_classes jsc, classes c WHERE jsc.id_classe=c.id ORDER BY c.classe;";
 		$res_classe=mysql_query($sql);
 		if(mysql_num_rows($res_classe)==0) {
 			header('Location: ../accueil.php&msg='.rawurlencode("Vous n'êtes pas autorisé à saisir la synthèse pour une classe."));
 			die();
 		}
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		if(getSettingAOui('GepiRubConseilCpeTous')) {
+			$sql="SELECT DISTINCT id, classe FROM classes c ORDER BY c.classe;";
+			$res_classe=mysql_query($sql);
+			if(mysql_num_rows($res_classe)==0) {
+				header('Location: ../accueil.php&msg='.rawurlencode("Aucune classe n'a été trouvée."));
+				die();
+			}
+		}
+		elseif(getSettingAOui('GepiRubConseilCpe')) {
+			$sql="SELECT DISTINCT id, classe FROM j_eleves_cpe jecpe, j_eleves_classes jec, classes c WHERE jecpe.cpe_login='".$_SESSION['login']."' AND jec.login=jecpe.e_login AND jec.id_classe=c.id ORDER BY c.classe;";
+			$res_classe=mysql_query($sql);
+			if(mysql_num_rows($res_classe)==0) {
+				header('Location: ../accueil.php&msg='.rawurlencode("Vous n'êtes pas autorisé à saisir la synthèse pour une classe."));
+				die();
+			}
+		}
+	}
+	elseif($_SESSION['statut']=='secours') {
+		$sql="SELECT DISTINCT id, classe FROM classes c ORDER BY c.classe;";
+		$res_classe=mysql_query($sql);
+		if(mysql_num_rows($res_classe)==0) {
+			header('Location: ../accueil.php&msg='.rawurlencode("Aucune classe n'a été trouvée."));
+			die();
+		}
+	}
+	else {
+		header('Location: ../accueil.php&msg='.rawurlencode("Statut incorrect."));
+		die();
 	}
 
 	echo "<p class=\"bold\"><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
