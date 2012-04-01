@@ -188,12 +188,12 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 	include('alerte_popup.php');
 
 ?>
-
-</body>
 <?php
 //ajout pour dojo
 if (isset($javascript_footer_texte_specifique)) {
     echo $javascript_footer_texte_specifique;
 }
 ?>
+
+</body>
 </html>

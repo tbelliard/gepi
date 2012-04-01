@@ -55,12 +55,13 @@ include_once 'header_template.inc.php';
 
 <head>
 <!-- on inclut l'entête -->
-	<?php include($racineGepi.'/templates/origine/header_template.php');?>
+	<?php include($racineGepi.'/templates/origine/header_template.php'); ?>
+
 
 	<link rel="stylesheet" type="text/css" href="<?php echo $racineGepi;?>/templates/origine/css/accueil.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="<?php echo $racineGepi;?>/templates/origine/css/bandeau.css" media="screen" />
 	
-	
+
 <!-- corrections internet Exploreur -->
 	<!--[if lte IE 7]>
 		<link title='bandeau' rel='stylesheet' type='text/css' href='./templates/origine/css/accueil_ie.css' media='screen' />
@@ -84,6 +85,14 @@ include_once 'header_template.inc.php';
 			unset($value);
 		}
 	?>
+	
+<?php 
+// Utilisation de dojo
+if (isset($dojo)) {
+    echo '<script type="text/javascript" src="'.$gepiPath.'/lib/dojo/dojo/dojo.js" djConfig="parseOnLoad: true"></script>'."\n";
+    echo '<link rel="stylesheet" href="'.$gepiPath.'/lib/dojo/dijit/themes/claro/claro.css" />';
+}
+?>
 
 <!-- Fin des styles -->
 
@@ -100,7 +109,7 @@ include_once 'header_template.inc.php';
 <!-- ************************* -->
 <!-- Début du corps de la page -->
 <!-- ************************* -->
-<body onload="show_message_deconnexion();<?php if($tbs_charger_observeur) echo $tbs_charger_observeur;?>">
+<body onload="show_message_deconnexion();<?php if($tbs_charger_observeur) echo $tbs_charger_observeur;?>" <?php if (isset($dojo)) {echo 'class=" claro "';}?> >
 
 
 <!-- on inclut le bandeau -->
