@@ -62,6 +62,13 @@ table.boireaus {
 .boireaus .lig1 {
 	background-color: #FFE6AA;
 }
+.boireaus .nouveau {
+	background-color: #96c8f0;
+}
+.boireaus .modif {
+	background-color: #eeaaff;
+}
+
 
 /*
 #messagerie {
