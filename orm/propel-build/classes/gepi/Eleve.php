@@ -947,11 +947,6 @@ class Eleve extends BaseEleve {
 	}
 	
 	
-	protected function encode_nom_photo($nom_photo) {
-		global $gepiSettings;
-		if (!isset($gepiSettings['alea_nom_photo'])) return $nom_photo; // la valeur est déjà définie
-		else return substr(md5(getSettingValue('alea_nom_photo').$nom_photo),0,5).$nom_photo;
-		}
 	/**
 	 * Renvoie le nom de la photo de l'élève
 	 * Renvoie NULL si :
