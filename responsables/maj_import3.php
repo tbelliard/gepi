@@ -6860,7 +6860,7 @@ $update_tempo4=mysql_query($sql);
 							$tabdiv_infobulle[]=creer_div_infobulle('chgt_adr_'.$cpt,$titre,"",$texte,"",40,0,'y','y','n','n');
 
 							//$ligne_parent.="<a href='#' onmouseover=\"afficher_div('chgt_adr_".$cpt."','y',-20,20);\">";
-							$ligne_parent.="<a href='#' onmouseover=\"delais_afficher_div('chgt_adr_".$cpt."','y',-20,20,1000,20,20);\" onclick=\"afficher_div('chgt_adr_".$cpt."','y',-20,20);\">";
+							$ligne_parent.="<a href='#' onmouseover=\"delais_afficher_div('chgt_adr_".$cpt."','y',-20,20,1000,20,20);\" onclick=\"afficher_div('chgt_adr_".$cpt."','y',-20,20); return false;\">";
 							$ligne_parent.="<img src='../images/info.png' width='29' height='29'  align='middle' border='0' alt='Information' title='Information' />";
 							$ligne_parent.="</a> ";
 
