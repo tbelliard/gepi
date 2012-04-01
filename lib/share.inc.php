@@ -3963,6 +3963,36 @@ function is_cpe($login_cpe,$id_classe="",$login_eleve="") {
 	return $retour;
 }
 
+
+/**
+ * Récupère le tableau des login CPE associés à une classe
+ * 
+ * $id_classe : identifiant de la classe
+ *              (si vide, on récupère tous les CPE de l'établissement)
+ * 
+ * $login_eleve : login de l'élève à tester (si vide, on teste juste si le prof est PP 
+ * (éventuellement pour la classe si id_classe est non vide))
+ * 
+ * @param type $id_classe identifiant de la classe
+ * @return array
+ */
+function tab_cpe($id_classe='') {
+	$tab=array();
+	if((is_numeric($id_classe))&&($id_classe>0)) {
+		$sql="SELECT DISTINCT u.login FROM utilisateurs u, j_eleves_cpe jecpe, j_eleves_classes jec WHERE u.statut='cpe' AND u.etat='actif' AND u.login=jecpe.cpe_login AND jec.login=jecpe.e_login AND jec.id_classe='$id_classe' ORDER BY u.nom, u.prenom;";
+	}
+	else {
+		$sql="SELECT DISTINCT u.login FROM utilisateurs WHERE statut='cpe' AND etat='actif' ORDER BY nom, prenom;";
+	}
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tab[]=$lig->login;
+		}
+	}
+	return $tab;
+}
+
 /**
  * Vérifie qu'un utilisateur a le droit de voir la page en lien
  *
