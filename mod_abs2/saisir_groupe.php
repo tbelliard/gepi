@@ -492,8 +492,17 @@ foreach($eleve_col as $eleve) {
 	
 	$Yesterday = date("Y-m-d",mktime(0,0,0,$dt_date_absence_eleve->format("m") ,$dt_date_absence_eleve->format("d")-1,$dt_date_absence_eleve->format("Y")));
 	$compter_hier = $eleve->getAbsenceEleveSaisiesDuJour($Yesterday)->count();
+        $traitée_hier = false;
+        if ($compter_hier != 0) {
+            $traitée_hier = true;
+            $afficheEleve[$elv]['bulle_hier'] = '';
+            foreach ($eleve->getAbsenceEleveSaisiesDuJour($Yesterday) as $saisie) {
+                $traitée_hier = $traitée_hier && $saisie->getTraitee();
+                $afficheEleve[$elv]['bulle_hier'] .= $saisie->getTypesDescription();
+            }
+        }
 	$afficheEleve[$elv]['class_hier'] = ($compter_hier >= 1) ? "absentHier" : '';
-	$afficheEleve[$elv]['text_hier'] = ($compter_hier >= 1) ? $compter_hier.' enr.' : '';
+        $afficheEleve[$elv]['text_hier'] = $traitée_hier ? 'T' : '';
 	$afficheEleve[$elv]['position'] = $eleve_col->getPosition();
 	$afficheEleve[$elv]['id'] = $eleve->getId();
 	$afficheEleve[$elv]['nom'] = $eleve->getNom();
@@ -1032,7 +1041,7 @@ if ($eleve_col->isEmpty()) {
 							if ($eleve['creneau_courant'] != 0) {
 								echo ' noSmartphone';
 							} ?>">
-							<?php echo $eleve['text_hier']; ?>
+                                                        <span class="description" title="<?php echo htmlspecialchars($eleve['bulle_hier']); ?>"><?php echo $eleve['text_hier']; ?></span>
 						</td>
 						<td class='td_abs_eleves'>
 							<input type="hidden" 
