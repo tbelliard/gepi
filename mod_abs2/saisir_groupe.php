@@ -493,9 +493,9 @@ foreach($eleve_col as $eleve) {
 	$Yesterday = date("Y-m-d",mktime(0,0,0,$dt_date_absence_eleve->format("m") ,$dt_date_absence_eleve->format("d")-1,$dt_date_absence_eleve->format("Y")));
 	$compter_hier = $eleve->getAbsenceEleveSaisiesDuJour($Yesterday)->count();
         $traitée_hier = false;
+        $afficheEleve[$elv]['bulle_hier'] = '';
         if ($compter_hier != 0) {
             $traitée_hier = true;
-            $afficheEleve[$elv]['bulle_hier'] = '';
             foreach ($eleve->getAbsenceEleveSaisiesDuJour($Yesterday) as $saisie) {
                 $traitée_hier = $traitée_hier && $saisie->getTraitee();
                 $afficheEleve[$elv]['bulle_hier'] .= $saisie->getTypesDescription();
