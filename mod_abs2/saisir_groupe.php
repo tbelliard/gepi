@@ -491,18 +491,24 @@ foreach($eleve_col as $eleve) {
 	}
 	
 	$Yesterday = date("Y-m-d",mktime(0,0,0,$dt_date_absence_eleve->format("m") ,$dt_date_absence_eleve->format("d")-1,$dt_date_absence_eleve->format("Y")));
-	$compter_hier = $eleve->getAbsenceEleveSaisiesDuJour($Yesterday)->count();
-        $traitée_hier = false;
+	$abs_hier = false;
+        $traitee_hier = true;//les saisies de la veille ont-elle été traitées intégralement
+        $justifiee_hier = true;//les saisies de la veille ont-elle été justifiées intégralement
         $afficheEleve[$elv]['bulle_hier'] = '';
-        if ($compter_hier != 0) {
-            $traitée_hier = true;
-            foreach ($eleve->getAbsenceEleveSaisiesDuJour($Yesterday) as $saisie) {
-                $traitée_hier = $traitée_hier && $saisie->getTraitee();
-                $afficheEleve[$elv]['bulle_hier'] .= $saisie->getTypesDescription();
-            }
+        foreach ($eleve->getAbsenceEleveSaisiesDuJour($Yesterday) as $saisie) {
+            if (!$saisie->getManquementObligationPresence()) continue;
+            $abs_hier = true;
+            $traitee_hier = $traitee_hier && $saisie->getTraitee();
+            $justifiee_hier = $justifiee_hier && $saisie->getJustifiee();
+            $afficheEleve[$elv]['bulle_hier'] .= $saisie->getTypesDescription();
         }
-	$afficheEleve[$elv]['class_hier'] = ($compter_hier >= 1) ? "absentHier" : '';
-        $afficheEleve[$elv]['text_hier'] = $traitée_hier ? 'T' : '';
+        if ($abs_hier) {
+            $afficheEleve[$elv]['class_hier'] = $justifiee_hier ? "justifieeHier" : 'absentHier';
+            $afficheEleve[$elv]['text_hier'] = $traitee_hier ? 'T' : '';
+        } else {
+            $afficheEleve[$elv]['class_hier'] = '';
+            $afficheEleve[$elv]['text_hier'] = '';
+        }
 	$afficheEleve[$elv]['position'] = $eleve_col->getPosition();
 	$afficheEleve[$elv]['id'] = $eleve->getId();
 	$afficheEleve[$elv]['nom'] = $eleve->getNom();
@@ -1037,7 +1043,7 @@ if ($eleve_col->isEmpty()) {
 				<tbody>
 <?php foreach($afficheEleve as $eleve) { ?>
 					<tr class='<?php echo $eleve['background'];?>'>
-						<td class = "<?php if($eleve['class_hier'] !=''){echo 'absentHier';}
+						<td class = "<?php echo($eleve['class_hier']);
 							if ($eleve['creneau_courant'] != 0) {
 								echo ' noSmartphone';
 							} ?>">
