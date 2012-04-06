@@ -556,14 +556,16 @@ foreach($eleve_col as $eleve) {
 					$nb_creneau_a_saisir++;
 				}
 			}
-			// pour le creneau en cours on garde uniquement les absences de l'utilisateur pour ne pas l'influencer par d'autres saisies
-			$absences_du_creneau_du_prof = new PropelObjectCollection();
-			foreach ($absences_du_creneau as $abs) {
-				if ($abs->getUtilisateurId() == $utilisateur->getPrimaryKey()) {
-					$absences_du_creneau_du_prof->append($abs);
-				}
-			}
-			$absences_du_creneau = $absences_du_creneau_du_prof;
+			// pour le creneau en cours on garde uniquement les absences de l'utilisateur pour ne pas l'influencer par d'autres saisies sauf si configuré autrement
+                        if (getSettingValue("abs2_afficher_saisies_creneau_courant")!='y') {
+                            $absences_du_creneau_du_prof = new PropelObjectCollection();
+                            foreach ($absences_du_creneau as $abs) {
+                                    if ($abs->getUtilisateurId() == $utilisateur->getPrimaryKey()) {
+                                            $absences_du_creneau_du_prof->append($abs);
+                                    }
+                            }
+                            $absences_du_creneau = $absences_du_creneau_du_prof;
+                        }
 		} else if ($current_creneau != null && $edt_creneau->getHeuredebutDefiniePeriode('U') > $current_creneau->getHeuredebutDefiniePeriode('U')) {
 			//on n'affiche pas les informations apres le creneau en cours pour ne pas influencer la saisie si c'est un enseignant
 			if($utilisateur->getStatut() == "professeur"){
@@ -572,10 +574,13 @@ foreach($eleve_col as $eleve) {
 				$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
 			}
 		} else {
-			//on affiche  les informations pour les crenaux avant la saisie
-			$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
+			//on affiche  les informations pour les crenaux avant la saisie sauf si configuré autrement
+                        if (getSettingValue("abs2_cacher_creneaux_precedents")!='y') {
+                            $absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
+                        } else {
+                            $absences_du_creneau = new PropelCollection();
+                        }
 		}
-		$style = '';
 		$afficheEleve[$elv]['style'][$i] = "";
 		if (!$absences_du_creneau->isEmpty()) {
 			foreach ($absences_du_creneau as $abs_saisie) {
