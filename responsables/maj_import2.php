@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -310,7 +310,7 @@ if(!isset($step)) {
 
 	$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
 	if($suhosin_post_max_totalname_length!='') {
-		echo "<p class='color:red'>Le module suhosin est activé.<br />\nUn paramétrage trop restrictif de ce module peut perturber le fonctionnement de Gepi, particulièrement dans les pages comportant de nombreux champs de formulaire.<br />Cela peut empêcher le bon fonctionnement de la Mise à jour d'après Sconet.</p>\n";
+		echo "<p style='color:red'>Le module suhosin est activé.<br />\nUn paramétrage trop restrictif de ce module peut perturber le fonctionnement de Gepi, particulièrement dans les pages comportant de nombreux champs de formulaire.<br />Cela peut empêcher le bon fonctionnement de la Mise à jour d'après Sconet.</p>\n";
 	}
 
 	echo "<p>Vous allez importer des fichiers d'exports XML de Sconet.<br />\nLes fichiers requis au cours de la procédure sont dans un premier temps ElevesAvecAdresses.xml, puis le fichier ResponsablesAvecAdresses.xml</p>\n";
@@ -340,7 +340,13 @@ if(!isset($step)) {
 	}
 	else {
 		$alert_diff_mail_ele=getSettingValue('alert_diff_mail_ele');
-		echo "<p>Pour les élèves qui disposent d'un compte d'utilisateur, <br />\n";
+
+		echo "<br />\n";
+
+		echo "<p>\n";
+		echo "<strong>Adresse email&nbsp;:</strong>\n";
+		echo "<br />\n";
+		echo "Pour les élèves qui disposent d'un compte d'utilisateur, <br />\n";
 		echo "<input type='radio' name='alert_diff_mail_ele' id='alert_diff_mail_ele_y' value='y' ";
 		if($alert_diff_mail_ele=='y') {
 			echo "checked ";
@@ -358,7 +364,10 @@ if(!isset($step)) {
 	}
 
 	$alert_diff_etab_origine=getSettingValue('alert_diff_etab_origine');
+	echo "<br />\n";
 	echo "<p>\n";
+	echo "<strong>Établissement d'origine&nbsp;:</strong>\n";
+	echo "<br />\n";
 	echo "<input type='radio' name='alert_diff_etab_origine' id='alert_diff_etab_origine_y' value='y' ";
 	if($alert_diff_etab_origine=='y') {
 		echo "checked ";
@@ -377,9 +386,11 @@ if(!isset($step)) {
 	//==============================
 	// AJOUT pour tenir compte de l'automatisation ou non:
 	//echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+	echo "<br />\n";
 	echo "<input type='checkbox' name='stop' id='id_form_stop' value='y' /><label for='id_form_stop' style='cursor: pointer;'> Désactiver le mode automatique.</label>\n";
 	//==============================
 
+	echo "<br />\n";
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
 
