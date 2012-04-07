@@ -178,6 +178,28 @@ function ajoutTypesParDefaut() {
     }
 
     $type = new AbsenceEleveType();
+    $type->setNom("Erreur de saisie");
+    if (AbsenceEleveTypeQuery::create()->filterByNom($type->getNom())->find()->isEmpty()) {
+	$type->setCommentaire("Il y a probablement une erreur de saisie sur cet enregistrement. Pour être non comptabilisée,
+            une saisie de type 'Erreur de saisie' ne doit être associée avec aucun autre type, mais exclusivement avec le type erreur de saisie.");
+	$type->setJustificationExigible(false);
+	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::SOUS_RESP_ETAB_NON_PRECISE);
+	$type->setManquementObligationPresence(AbsenceEleveType::MANQU_OBLIG_PRESE_NON_PRECISE);
+
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("cpe");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("scolarite");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
+	$type->save();
+    }
+
+    $type = new AbsenceEleveType();
     $type->setNom("Infirmerie");
     if (AbsenceEleveTypeQuery::create()->filterByNom($type->getNom())->find()->isEmpty()) {
 	$type->setCommentaire("L'élève est à l'infirmerie.");
