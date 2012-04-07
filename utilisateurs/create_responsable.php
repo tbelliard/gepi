@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -278,6 +278,8 @@ require_once("../lib/header.inc.php");
 </p>
 <?php
 
+//debug_var();
+
 if(getSettingValue('auth_sso')=='lcs') {
 	echo "<p style='color:red; text-indent: -7em; margin-left: 7em;'><b>ATTENTION&nbsp;:</b> Il convient de choisir pour les parents un format de login différent de celui des comptes des utilisateurs élèves et professeurs (<em>comptes de l'annuaire LDAP</em>).<br />Sinon, avec l'arrivée de nouveaux élèves en cours d'année, il peut arriver qu'un élève obtienne un login déjà attribué à un responsable dans Gepi.<br />Pour choisir le format de login des responsables, consultez la page <a href='../gestion/param_gen.php#format_login_resp'>Configuration générale</a>.<br />";
 	$mode_generation_login_responsable=getSettingValue('mode_generation_login_responsable');
@@ -285,8 +287,8 @@ if(getSettingValue('auth_sso')=='lcs') {
 	echo "</p>\n";
 }
 
-$afficher_tous_les_resp=isset($_POST['afficher_tous_les_resp']) ? $_POST['afficher_tous_les_resp'] : "n";
-$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
+$afficher_tous_les_resp=isset($_POST['afficher_tous_les_resp']) ? $_POST['afficher_tous_les_resp'] : (isset($_GET['afficher_tous_les_resp']) ? $_GET['afficher_tous_les_resp'] : "n");
+$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : (isset($_GET['critere_recherche']) ? $_GET['critere_recherche'] : "");
 $critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/u", "", $critere_recherche);
 
 //$quels_parents = mysql_query("SELECT * FROM resp_pers WHERE login='' ORDER BY nom,prenom");

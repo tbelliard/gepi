@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -169,6 +169,14 @@ if(mysql_num_rows($res_col_eleves)>0) {
 	if(($lig_col_eleves->Collation!='utf8_unicode_ci')&&($lig_col_eleves->Collation!='utf8_general_ci')) {$chaine_collate="COLLATE latin1_bin ";}
 }
 // A REVOIR: Avec cette recherche, on pourrait créer temp_gep_import2 avec la bonne collation.
+
+$sql="SELECT 1=1 FROM utilisateurs WHERE statut='eleve' AND etat='actif' LIMIT 1;";
+$res_comptes_eleves=mysql_query($sql);
+$nb_comptes_eleves=mysql_num_rows($res_comptes_eleves);
+
+$sql="SELECT 1=1 FROM utilisateurs WHERE statut='eleve' AND etat='actif' LIMIT 1;";
+$res_comptes_resp=mysql_query($sql);
+$nb_comptes_resp=mysql_num_rows($res_comptes_resp);
 
 //**************** EN-TETE *****************
 $titre_page = "Mise à jour eleves/responsables";
@@ -1813,10 +1821,10 @@ else{
 
 				if(count($tab_ele_id_diff)>0){
 					if(count($tab_ele_id_diff)==1){
-						echo "<p>L'ELE_ID, pour lequel une ou des différences ont déjà été repérées, est: \n";
+						echo "<p>L'ELE_ID, pour lequel une ou des différences ont déjà été repérées, est&nbsp;: \n";
 					}
 					else{
-						echo "<p>Le(s) ELE_ID, pour lesquels une ou des différences ont déjà été repérées, sont: \n";
+						echo "<p>Le(s) ELE_ID, pour lesquels une ou des différences ont déjà été repérées, sont&nbsp;: \n";
 					}
 					$chaine_ele_id_diff="";
 					for($i=0;$i<count($tab_ele_id_diff);$i++){
@@ -2259,18 +2267,21 @@ $res=mysql_query($sql);
 					}
 				}
 
+				$nblignes=$eff_tranche;
 				// Dédoublonnage
 				//for($loop=0;$loop<count($tab_ele_id_diff);$loop++) {echo "\$tab_ele_id_diff[$loop]=$tab_ele_id_diff[$loop]<br />";}
-				$tab_ele_id_diff=array_unique($tab_ele_id_diff);
-				//echo "<p>Après array_unique():<br />";
-				//for($loop=0;$loop<count($tab_ele_id_diff);$loop++) {echo "\$tab_ele_id_diff[$loop]=$tab_ele_id_diff[$loop]<br />";}
+				if(isset($tab_ele_id_diff)) {
+					$tab_ele_id_diff=array_unique($tab_ele_id_diff);
+					//echo "<p>Après array_unique():<br />";
+					//for($loop=0;$loop<count($tab_ele_id_diff);$loop++) {echo "\$tab_ele_id_diff[$loop]=$tab_ele_id_diff[$loop]<br />";}
 
-				/*
-				if(!isset($parcours_diff)){
-					$nblignes=count($tab_ele_id_diff);
+					/*
+					if(!isset($parcours_diff)){
+						$nblignes=count($tab_ele_id_diff);
+					}
+					*/
+					$nblignes=min($eff_tranche,count($tab_ele_id_diff));
 				}
-				*/
-				$nblignes=min($eff_tranche,count($tab_ele_id_diff));
 				//echo "\$nblignes=$nblignes<br />";
 
 
@@ -3509,6 +3520,14 @@ $update_tempo4=mysql_query($sql);
 								$insert=mysql_query($sql);
 								if($insert){
 									echo "\n<span style='color:blue;'>";
+
+									if($nb_comptes_eleves>0) {
+										$info_action_titre="Nouvel élève&nbsp;:".remplace_accents(stripslashes($lig->ELENOM)."_".stripslashes($lig->ELEPRE));
+										$info_action_texte="Vous souhaitez peut-être créer un compte pour ce nouvel élève&nbsp;: <a href='utilisateurs/create_eleve.php?critere_recherche=$lig->ELENOM&afficher_tous_les_eleves=n'>".remplace_accents(stripslashes($lig->ELENOM)."_".stripslashes($lig->ELEPRE))."</a>.";
+										$info_action_destinataire=array("administrateur");
+										$info_action_mode="statut";
+										enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+									}
 								}
 								else{
 									echo "\n<span style='color:red;'>";
@@ -4137,7 +4156,8 @@ $update_tempo4=mysql_query($sql);
 					echo "<p><b>$prenom_eleve $nom_eleve</b> (<i>$lig_classe->classe</i>)</p>\n";
 
 					//===========================
-					// A FAIRE: boireaus 20071129
+					$tab_cpe_classe=tab_cpe($id_classe);
+
 					//          Ajouter l'association avec le PP et le CPE
 					$sql="SELECT login, nom, prenom FROM utilisateurs WHERE statut='cpe' AND etat='actif' ORDER BY nom, prenom;";
 					info_debug($sql);
@@ -4150,6 +4170,7 @@ $update_tempo4=mysql_query($sql);
 						while($lig_cpe=mysql_fetch_object($res_cpe)){
 							echo "<option value='$lig_cpe->login'";
 							if(mysql_num_rows($res_cpe)==1) {echo " selected";}
+							elseif((isset($tab_cpe_classe[0]))&&($lig_cpe->login==$tab_cpe_classe[0])) {echo " selected";}
 							echo ">$lig_cpe->nom $lig_cpe->prenom</option>\n";
 						}
 						echo "</select>\n";
@@ -4402,7 +4423,7 @@ $update_tempo4=mysql_query($sql);
 			// AJOUT pour tenir compte de l'automatisation ou non:
 			//echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			//==============================
-			echo "<p>Veuillez fournir le fichier ResponsablesAvecAdresses.xml:<br />\n";
+			echo "<p>Veuillez fournir le fichier <strong>ResponsablesAvecAdresses.xml</strong>&nbsp;:<br />\n";
 			echo "<input type=\"file\" size=\"80\" name=\"responsables_xml_file\" /><br />\n";
 			echo "<input type='hidden' name='step' value='10' />\n";
 			//echo "<input type='hidden' name='is_posted' value='yes' />\n";
@@ -4412,6 +4433,9 @@ $update_tempo4=mysql_query($sql);
 
 			echo add_token_field();
 
+			echo "<br />\n";
+
+			echo "<p>";
 			echo "<input type='checkbox' name='ne_pas_proposer_resp_sans_eleve' id='ne_pas_proposer_resp_sans_eleve' value='non' checked />\n";
 			//$ne_pas_proposer_resp_sans_eleve
 			echo "<label for='ne_pas_proposer_resp_sans_eleve' style='cursor: pointer;'> Ne pas proposer d'ajouter les responsables non associés à des élèves.</label><br />(<i>de telles entrées peuvent subsister en très grand nombre dans Sconet</i>)<br />\n";
@@ -4422,6 +4446,9 @@ $update_tempo4=mysql_query($sql);
 				echo "<input type='hidden' name='alert_diff_mail_resp' id='alert_diff_mail_ele_y' value='y' />\n";
 			}
 			else {
+				echo "<br />\n";
+
+				echo "<p><strong>Adresses email&nbsp;:</strong><br />\n";
 				$alert_diff_mail_resp=getSettingValue('alert_diff_mail_resp');
 				echo "Pour les responsables qui disposent d'un compte d'utilisateur, <br />\n";
 				echo "<input type='radio' name='alert_diff_mail_resp' id='alert_diff_mail_resp_y' value='y' ";
@@ -4440,9 +4467,20 @@ $update_tempo4=mysql_query($sql);
 				echo " les différences d'adresse Mail entre Sconet et le compte d'utilisateur.</label><br />\n";
 			}
 
+			// 20120331:
+			echo "<br />\n";
+			echo "<p><strong>Doublons d'adresse&nbsp;:</strong><br />\n";
+			$ne_pas_proposer_redoublonnage_adresse=getSettingValue('ne_pas_proposer_redoublonnage_adresse');
+			echo "<p><input type='checkbox' name='ne_pas_proposer_redoublonnage_adresse' id='ne_pas_proposer_redoublonnage_adresse' value='y'";
+			if($ne_pas_proposer_redoublonnage_adresse!='n') {echo " checked='true'";}
+			echo " /><label for='ne_pas_proposer_redoublonnage_adresse' style='cursor:pointer;'> Ne pas proposer de rétablir des doublons d'adresses identiques avec identifiant différent pour des parents qui conservent la même adresse.</label></p>\n";
+
+
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
 			//echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			echo "<br />\n";
+			echo "<p>\n";
 			echo "<input type='checkbox' name='stop' id='id_form_stop' value='y' ";
 			if("$stop"=="y"){echo "checked ";}
 			echo "/><label for='id_form_stop' style='cursor: pointer;'> Désactiver le mode automatique.</label>";
@@ -4472,6 +4510,13 @@ $update_tempo4=mysql_query($sql);
 			info_debug("=============== Phase step $step =================");
 
 			check_token(false);
+
+			if(isset($_POST['ne_pas_proposer_redoublonnage_adresse'])) {
+				saveSetting('ne_pas_proposer_redoublonnage_adresse','y');
+			}
+			else {
+				saveSetting('ne_pas_proposer_redoublonnage_adresse','n');
+			}
 
 			$_SESSION['ne_pas_proposer_resp_sans_eleve']=$ne_pas_proposer_resp_sans_eleve;
 			$_SESSION['alert_diff_mail_resp']=$alert_diff_mail_resp;
@@ -5183,7 +5228,9 @@ $update_tempo4=mysql_query($sql);
 			//echo "<p>Parcours de la tranche <b>$num_tranche/$nb_parcours</b>.</p>\n";
 			//flush();
 
-			$sql="SELECT pers_id FROM temp_resp_pers_import WHERE statut='' LIMIT 20;";
+			// 20120331
+			//$sql="SELECT pers_id FROM temp_resp_pers_import WHERE statut='' LIMIT 20;";
+			$sql="SELECT pers_id, adr_id FROM temp_resp_pers_import WHERE statut='' LIMIT 20;";
 			//echo "$sql<br />";
 			info_debug($sql);
 			$res1=mysql_query($sql);
@@ -5258,7 +5305,7 @@ $update_tempo4=mysql_query($sql);
 				flush();
 
 
-				echo "<p>Recherche des différences sur la tranche parcourue: ";
+				echo "<p>Recherche des différences sur la tranche parcourue&nbsp;: ";
 
 				$cpt=0;
 				//$chaine_nouveaux="";
@@ -5333,13 +5380,48 @@ $update_tempo4=mysql_query($sql);
 													rp.civilite!=t.civilite OR
 													rp.tel_pers!=t.tel_pers OR
 													rp.tel_port!=t.tel_port OR
-													rp.tel_prof!=t.tel_prof OR";
+													rp.tel_prof!=t.tel_prof";
+
+						// 20120331
+						$temoin_doublon_adr="n";
+						if(getSettingValue('ne_pas_proposer_redoublonnage_adresse')!='y') {
+							$sql.="						OR rp.adr_id!=t.adr_id";
+						}
+						else {
+							// 20120331
+							// Il faut un deuxième test:
+							$sql2="SELECT pers_id, ta.* FROM temp_resp_adr_import ta, temp_resp_pers_import tp WHERE tp.adr_id=ta.adr_id AND tp.adr_id='$lig->adr_id';";
+							//echo "$sql2<br />";
+							$res_temp_adr=mysql_query($sql2);
+							if(mysql_num_rows($res_temp_adr)>0) {
+								while($lig_temp_adr=mysql_fetch_object($res_temp_adr)) {
+									$sql3="SELECT ra.* FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.pers_id='$lig_temp_adr->pers_id'";
+									//echo "$sql3<br />";
+									$res_adr=mysql_query($sql3);
+									if(mysql_num_rows($res_adr)>0) {
+										while($lig_adr=mysql_fetch_object($res_adr)) {
+											if(($lig_temp_adr->adr1==$lig_adr->adr1)&&
+											($lig_temp_adr->adr2==$lig_adr->adr2)&&
+											($lig_temp_adr->adr3==$lig_adr->adr3)&&
+											($lig_temp_adr->adr4==$lig_adr->adr4)&&
+											($lig_temp_adr->cp==$lig_adr->cp)&&
+											($lig_temp_adr->commune==$lig_adr->commune)&&
+											($lig_temp_adr->pays==$lig_adr->pays)) {
+												$temoin_doublon_adr="y";
+												//echo "Ce n'est pas une nouvelle adresse.<br />";
+												break;
+											}
+										}
+									}
+								}
+							}
+						}
+
 						//if((getSettingValue('mode_email_resp')=='')||(getSettingValue('mode_email_resp')=='sconet')) {
 						if((getSettingValue('mode_email_resp')=='')||(getSettingValue('mode_email_resp')=='sconet')) {
-							$sql.="						rp.mel!=t.mel OR";
+							$sql.="						OR rp.mel!=t.mel";
 						}
-						$sql.="						rp.adr_id!=t.adr_id
-												)
+						$sql.="					)
 												AND rp.pers_id='".$lig->pers_id."';";
 						//echo "$sql<br />\n";
 						info_debug($sql);
@@ -5360,7 +5442,7 @@ $update_tempo4=mysql_query($sql);
 							die();
 						}
 
-						if(mysql_num_rows($test)>0){
+						if((mysql_num_rows($test)>0)&&($temoin_doublon_adr=="n")) {
 							info_debug("... avec une diff au moins dans resp_pers");
 							if($cpt>0) {
 								echo ", ";
@@ -5506,6 +5588,8 @@ $update_tempo4=mysql_query($sql);
 			//echo "<p>Parcours de la tranche <b>$num_tranche/$nb_parcours</b>.</p>\n";
 			//flush();
 
+// 20120331
+// FAIRE delete from resp_adr where adr_id not in (select adr_id from resp_pers); ?
 
 			$sql="SELECT DISTINCT adr_id FROM temp_resp_adr_import WHERE statut='' LIMIT 20;";
 			info_debug($sql);
@@ -5533,6 +5617,7 @@ $update_tempo4=mysql_query($sql);
 						$test=mysql_query($sql);
 
 						if(mysql_num_rows($test)>0){
+							// Il existe un ou des resp_pers déjà enregistrés qui est/sont associés à la cette adresse
 							while($lig3=mysql_fetch_object($test)){
 								$sql="INSERT INTO tempo2 SET col1='pers_id', col2='".$lig3->pers_id."';";
 								info_debug($sql);
@@ -5540,7 +5625,8 @@ $update_tempo4=mysql_query($sql);
 								info_debug("Modif adresse $lig2->adr_id pour resp_pers.pers_id=$lig3->pers_id");
 							}
 						}
-						else{
+						else {
+							// Personne n'est encore associé à ce numéro adresse
 							$sql="SELECT DISTINCT pers_id FROM temp_resp_pers_import WHERE adr_id='".$lig2->adr_id."';";
 							info_debug($sql);
 							$test=mysql_query($sql);
@@ -5612,7 +5698,7 @@ $update_tempo4=mysql_query($sql);
 				flush();
 
 
-				echo "<p>Recherche des différences sur la tranche parcourue: ";
+				echo "<p>Recherche des différences sur la tranche parcourue&nbsp;: ";
 
 				$cpt=0;
 				while($lig=mysql_fetch_object($res1)){
@@ -5621,24 +5707,64 @@ $update_tempo4=mysql_query($sql);
 					$sql="SELECT 1=1 FROM resp_adr ra WHERE ra.adr_id='$lig->adr_id'";
 					info_debug($sql);
 					$test1=mysql_query($sql);
-
 					if(mysql_num_rows($test1)==0){
-						// L'adresse est nouvelle, mais on n'a pas vérifié à ce stade si elle est bien associée à une personne
-						if($cpt>0){
-							echo ", ";
+						// 20120331
+
+						$temoin_nouvelle_adresse="y";
+						if(getSettingValue('ne_pas_proposer_redoublonnage_adresse')=='y') {
+							$sql="SELECT pers_id, ta.* FROM temp_resp_adr_import ta, temp_resp_pers_import tp WHERE tp.adr_id=ta.adr_id AND tp.adr_id='$lig->adr_id';";
+							//echo "$sql<br />";
+							$res_temp_adr=mysql_query($sql);
+							if(mysql_num_rows($res_temp_adr)>0) {
+								while($lig_temp_adr=mysql_fetch_object($res_temp_adr)) {
+									$sql="SELECT ra.* FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.pers_id='$lig_temp_adr->pers_id'";
+									//echo "$sql<br />";
+									$res_adr=mysql_query($sql);
+									if(mysql_num_rows($res_adr)>0) {
+										while($lig_adr=mysql_fetch_object($res_adr)) {
+											if(($lig_temp_adr->adr1==$lig_adr->adr1)&&
+											($lig_temp_adr->adr2==$lig_adr->adr2)&&
+											($lig_temp_adr->adr3==$lig_adr->adr3)&&
+											($lig_temp_adr->adr4==$lig_adr->adr4)&&
+											($lig_temp_adr->cp==$lig_adr->cp)&&
+											($lig_temp_adr->commune==$lig_adr->commune)&&
+											($lig_temp_adr->pays==$lig_adr->pays)) {
+												$temoin_nouvelle_adresse="n";
+												//echo "Ce n'est pas une nouvelle adresse.<br />";
+												break;
+											}
+										}
+									}
+								}
+							}
 						}
-						echo "<span style='color:blue;'>".$lig->adr_id."</span>";
-						$sql="UPDATE temp_resp_adr_import SET statut='nouveau' WHERE adr_id='$lig->adr_id';";
-						//echo "$sql<br />";
-						info_debug($sql);
-						$update=mysql_query($sql);
 
-						info_debug("Nouvelle adresse adr_id=$lig->adr_id");
+						if($temoin_nouvelle_adresse=="y") {
+							// L'adresse est nouvelle, mais on n'a pas vérifié à ce stade si elle est bien associée à une personne
+							if($cpt>0){
+								echo ", ";
+							}
+							echo "<span style='color:blue;'>".$lig->adr_id."</span>";
+							$sql="UPDATE temp_resp_adr_import SET statut='nouveau' WHERE adr_id='$lig->adr_id';";
+							//echo "$sql<br />";
+							info_debug($sql);
+							$update=mysql_query($sql);
 
-						$cpt++;
+							info_debug("Nouvelle adresse adr_id=$lig->adr_id");
+							$cpt++;
+						}
+						else {
+							// Pour ne pas re-parcourir cette adresse:
+							$sql="UPDATE temp_resp_adr_import SET statut='-' WHERE adr_id='$lig->adr_id';";
+							//echo "$sql<br />";
+							info_debug($sql);
+							$update=mysql_query($sql);
+							info_debug("Pas une nouvelle adresse adr_id=$lig->adr_id");
+						}
 					}
 					else {
 						$debug_time=time();
+
 						$sql="SELECT ra.adr_id FROM resp_adr ra, temp_resp_adr_import t
 										WHERE ra.adr_id=t.adr_id AND
 												(
@@ -5657,21 +5783,68 @@ $update_tempo4=mysql_query($sql);
 						$diff_debug_time=time()-$debug_time;
 						info_debug("Test modif adr_id=$lig->adr_id (durée: $diff_debug_time)");
 						if(mysql_num_rows($test)>0){
-							if($cpt>0){
-								echo ", ";
+
+// 20120331: Faire ici la recherche: Est-ce vraiment une modif ou ne va-t-on pas re-doublonner?
+/*
+							$temoin_modif_adresse="y";
+							if(getSettingValue('ne_pas_proposer_redoublonnage_adresse')=='y') {
+								$sql="SELECT pers_id, ta.* FROM temp_resp_adr_import ta, temp_resp_pers_import tp WHERE tp.adr_id=ta.adr_id AND tp.adr_id='$lig->adr_id';";
+								//echo "$sql<br />";
+								$res_temp_adr=mysql_query($sql);
+								if(mysql_num_rows($res_temp_adr)>0) {
+									while($lig_temp_adr=mysql_fetch_object($res_temp_adr)) {
+										$sql="SELECT ra.* FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.pers_id='$lig_temp_adr->pers_id'";
+										//echo "$sql<br />";
+										$res_adr=mysql_query($sql);
+										if(mysql_num_rows($res_adr)>0) {
+											while($lig_adr=mysql_fetch_object($res_adr)) {
+												if(($lig_temp_adr->adr1==$lig_adr->adr1)&&
+												($lig_temp_adr->adr2==$lig_adr->adr2)&&
+												($lig_temp_adr->adr3==$lig_adr->adr3)&&
+												($lig_temp_adr->adr4==$lig_adr->adr4)&&
+												($lig_temp_adr->cp==$lig_adr->cp)&&
+												($lig_temp_adr->commune==$lig_adr->commune)&&
+												($lig_temp_adr->pays==$lig_adr->pays)) {
+													$temoin_modif_adresse="n";
+													//echo "Ce n'est pas une nouvelle adresse.<br />";
+													break;
+												}
+											}
+										}
+									}
+								}
 							}
-							echo "<span style='color:green;'>".$lig->adr_id."</span>";
-							$sql="UPDATE temp_resp_adr_import SET statut='modif' WHERE adr_id='$lig->adr_id';";
-							info_debug($sql);
-							//echo "$sql<br />";
-							$update=mysql_query($sql);
-							info_debug("Adresse modifiée adr_id=$lig->adr_id");
-							$cpt++;
+
+							if($temoin_modif_adresse=="y") {
+*/
+								if($cpt>0) {
+									echo ", ";
+								}
+								echo "<span style='color:green;'>".$lig->adr_id."</span>";
+								$sql="UPDATE temp_resp_adr_import SET statut='modif' WHERE adr_id='$lig->adr_id';";
+								info_debug($sql);
+								//echo "$sql<br />";
+								$update=mysql_query($sql);
+								info_debug("Adresse modifiée adr_id=$lig->adr_id");
+								$cpt++;
+/*
+							}
+							else {
+								// Pas de différence sur l'adresse
+								// Pour ne pas laisser le statut vide (signe qu'on n'a pas encore testé ce pers_id):
+								$sql="UPDATE temp_resp_adr_import SET statut='-' WHERE adr_id='$lig->adr_id';";
+								echo "$sql<br />";
+								info_debug($sql);
+								$update=mysql_query($sql);
+								info_debug("Adresse adr_id=$lig->adr_id inchangée (doublon).");
+							}
+*/
 						}
 						else {
 							// Pas de différence sur l'adresse
 							// Pour ne pas laisser le statut vide (signe qu'on n'a pas encore testé ce pers_id):
 							$sql="UPDATE temp_resp_adr_import SET statut='-' WHERE adr_id='$lig->adr_id';";
+							//echo "$sql<br />";
 							info_debug($sql);
 							$update=mysql_query($sql);
 							info_debug("Adresse adr_id=$lig->adr_id inchangée.");
@@ -5702,7 +5875,7 @@ $update_tempo4=mysql_query($sql);
 		// 20090331
 		// INSERER LA LE CONTROLE DES col1=pers_id_disparu DANS tempo2
 		case "14b":
-			// A l'étape précédente passer à 14b s'il y a des col1=pers_id_disparu  et passer à 15 sinon
+			// A l'étape précédente passer à 14b s'il y a des col1=pers_id_disparu et passer à 15 sinon
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
 			info_debug("==============================================");
@@ -5757,13 +5930,18 @@ $update_tempo4=mysql_query($sql);
 								}
 							}
 							echo "<br />\n";
-	
+
 							// Supprimer la personne
 							echo "Suppression de la personne de la base&nbsp;: ";
 							$sql="DELETE FROM resp_pers WHERE pers_id='".$valid_pers_id[$i]."';";
 							info_debug($sql);
 							//echo "$sql<br />\n";
-							if(mysql_query($sql)) {echo "<span style='color:green;'>OK</span>";} else {echo "<span style='color:red;'>ERREUR</span>";}
+							if(mysql_query($sql)) {
+								echo "<span style='color:green;'>OK</span>";
+							}
+							else {
+								echo "<span style='color:red;'>ERREUR</span>";
+							}
 	
 							echo "</p>\n";
 
@@ -6054,6 +6232,8 @@ $update_tempo4=mysql_query($sql);
 			info_debug("==============================================");
 			info_debug("=============== Phase step $step =================");
 
+// A VERIFIER: La liste des suppression est incomplete (20120331)
+
 			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
@@ -6120,8 +6300,10 @@ $update_tempo4=mysql_query($sql);
 
 			echo "<input type='submit' value='Afficher les différences' /></p>\n";
 
-			echo "<p><input type='checkbox' name='ne_pas_proposer_redoublonnage_adresse' id='ne_pas_proposer_redoublonnage_adresse' value='y' checked='true' /><label for='ne_pas_proposer_redoublonnage_adresse' style='cursor:pointer;'> Ne pas proposer de rétablir des doublons d'adresses identiques avec identifiant différent pour des parents qui conservent la même adresse.</label></p>\n";
-
+			// 20120331
+			// Remonté plus haut et enregistré dans la base
+			//echo "<p><input type='checkbox' name='ne_pas_proposer_redoublonnage_adresse' id='ne_pas_proposer_redoublonnage_adresse' value='y' checked='true' /><label for='ne_pas_proposer_redoublonnage_adresse' style='cursor:pointer;'> Ne pas proposer de rétablir des doublons d'adresses identiques avec identifiant différent pour des parents qui conservent la même adresse.</label></p>\n";
+			echo "<input type='hidden' name='ne_pas_proposer_redoublonnage_adresse' value='".getSettingValue('ne_pas_proposer_redoublonnage_adresse')."' />\n";
 			echo "</form>\n";
 
 			break;
@@ -6340,26 +6522,55 @@ $update_tempo4=mysql_query($sql);
 					$ligne_parent.="<tr class='lig$alt'>\n";
 
 					$ligne_parent.="<td style='text-align: center;'>\n";
+
+					// 20120331
+					//$ligne_parent.="$cpt \n";
+
 					$ligne_parent.="<input type='checkbox' id='check_".$cpt."' name='valid_pers_id[]' value='$pers_id' />\n";
 					$ligne_parent.="<input type='hidden' name='liste_pers_id[]' value='$pers_id' />\n";
 					$ligne_parent.="</td>\n";
 
-					if($nouveau==0){
+					if($nouveau==0) {
 						$ligne_parent.="<td class='modif'>Modif</td>\n";
 					}
-					else{
+					else {
 						$sql="SELECT 1=1 FROM temp_resp_pers_import trp,
 												temp_responsables2_import tr,
 												eleves e
 										WHERE trp.pers_id='$pers_id' AND
 												trp.pers_id=tr.pers_id AND
 												tr.ele_id=e.ele_id";
+/*
+20120331: RECHERCHES SUR NETTOYAGE
+
+SELECT pers_id FROM temp_resp_pers_import trp WHERE 
+
+SELECT DISTINCT pers_id FROM temp_resp_pers_import trp
+		LEFT JOIN resp_pers rp ON trp.pers_id=rp.pers_id
+		WHERE rp.pers_id is null;
+
+Boucle
+SELECT 1=1 FROM temp_responsables2_import WHERE 
+
+Ou
+
+SELECT DISTINCT pers_id FROM temp_resp_pers_import trp
+LEFT JOIN temp_responsables2_import tr ON trp.pers_id=tr.pers_id
+WHERE tr.pers_id is null;
+
+
+DELETE FROM temp_resp_pers_import WHERE pers_id IN 
+(SELECT DISTINCT pers_id FROM temp_responsables2_import tr LEFT JOIN eleves e
+ON tr.ele_id=e.ele_id WHERE e.ele_id IS NULL)
+
+delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp_responsables2_import);
+*/
 						info_debug($sql);
 						$test=mysql_query($sql);
-						if(mysql_num_rows($test)>0){
+						if(mysql_num_rows($test)>0) {
 							$ligne_parent.="<td class='nouveau'>Nouveau</td>\n";
 						}
-						else{
+						else {
 							if($liste_resp_sans_eleve!=""){$liste_resp_sans_eleve.=",";}
 							//$liste_resp_sans_eleve.="'$pers_id'";
 							$liste_resp_sans_eleve.="'$cpt'";
@@ -6370,6 +6581,9 @@ $update_tempo4=mysql_query($sql);
 							$ligne_parent.="Nouveau<br />(*)";
 							$ligne_parent.="</a>";
 							$ligne_parent.="</td>\n";
+
+							// La ligne ne va pas etre affichee... si?
+							$alt=$alt*(-1);
 						}
 					}
 
@@ -6860,7 +7074,7 @@ $update_tempo4=mysql_query($sql);
 							$tabdiv_infobulle[]=creer_div_infobulle('chgt_adr_'.$cpt,$titre,"",$texte,"",40,0,'y','y','n','n');
 
 							//$ligne_parent.="<a href='#' onmouseover=\"afficher_div('chgt_adr_".$cpt."','y',-20,20);\">";
-							$ligne_parent.="<a href='#' onmouseover=\"delais_afficher_div('chgt_adr_".$cpt."','y',-20,20,1000,20,20);\" onclick=\"afficher_div('chgt_adr_".$cpt."','y',-20,20);\">";
+							$ligne_parent.="<a href='#' onmouseover=\"delais_afficher_div('chgt_adr_".$cpt."','y',-20,20,1000,20,20);\" onclick=\"afficher_div('chgt_adr_".$cpt."','y',-20,20); return false;\">";
 							$ligne_parent.="<img src='../images/info.png' width='29' height='29'  align='middle' border='0' alt='Information' title='Information' />";
 							$ligne_parent.="</a> ";
 
@@ -6925,15 +7139,15 @@ $update_tempo4=mysql_query($sql);
 							echo $ligne_parent;
 						}
 						else {
+							// 20120331: Pour debug: inverser les commentaires sur les 2 lignes suivantes:
+							echo "<tr style='display:none;'><td colspan='8'>pers_id=$pers_id";
+							//echo "<tr style='background-color:red;'><td colspan='8'>$pers_id";
 
-							echo "<tr style='display:none;'><td colspan='8'>Avant...";
-							//echo "<tr><td colspan='8'>Avant...";
-							//echo "<input type='hidden' name='valid_pers_id[]' value='$pers_id' />\n";
 							echo "<input type='hidden' name='liste_pers_id[]' value='$pers_id' />\n";
 							echo "</td></tr>\n";
+
+							// 20120331: Pour debug:
 							//echo $ligne_parent;
-							//echo "<tr style='display:none;'><td colspan='8'>... après</td></tr>\n";
-							//echo "<tr><td colspan='8'>... après</td></tr>\n";
 
 							$nb_chgt_adresse_inapproprie_non_affiche++;
 						}
@@ -7062,6 +7276,14 @@ $update_tempo4=mysql_query($sql);
 							$insert=mysql_query($sql);
 							if($insert){
 								echo "\n<span style='color:blue;'>";
+
+								if($nb_comptes_resp>0) {
+									$info_action_titre="Nouveau responsable&nbsp;:".remplace_accents(stripslashes($lig->nom)."_".stripslashes($lig->prenom));
+									$info_action_texte="Vous souhaitez peut-être créer un compte pour ce nouveau responsable&nbsp;: <a href='utilisateurs/create_responsable.php?critere_recherche=$lig->nom&afficher_tous_les_resp=n'>".remplace_accents(stripslashes($lig->nom)."_".stripslashes($lig->prenom))."</a>.";
+									$info_action_destinataire=array("administrateur");
+									$info_action_mode="statut";
+									enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+								}
 							}
 							else{
 								echo "\n<span style='color:red;'>";
@@ -7383,10 +7605,10 @@ $update_tempo4=mysql_query($sql);
 
 				if(isset($tab_resp_diff)) {
 					if(count($tab_resp_diff)==1) {
-						echo "<p>Le couple ELE_ID/PERS_ID pour lequel une ou des différences ont déjà été repérées, est: \n";
+						echo "<p>Le couple ELE_ID/PERS_ID pour lequel une ou des différences ont déjà été repérées, est&nbsp;: \n";
 					}
 					else{
-						echo "<p>Les couples ELE_ID/PERS_ID, pour lesquels une ou des différences ont déjà été repérées, sont: \n";
+						echo "<p>Les couples ELE_ID/PERS_ID, pour lesquels une ou des différences ont déjà été repérées, sont&nbsp;: \n";
 					}
 					$chaine_ele_resp="";
 					for($i=0;$i<count($tab_resp_diff);$i++){
@@ -8066,7 +8288,7 @@ $update_tempo4=mysql_query($sql);
 							//$ligne_courante.="<input type='checkbox' id='check_".$cpt."' name='new[]' value='$cpt' />";
 
 							// Elève(s) associé(s)
-							$sql="SELECT nom,prenom FROM eleves WHERE (ele_id='$ele_id')";
+							$sql="SELECT nom,prenom,login FROM eleves WHERE (ele_id='$ele_id')";
 							info_debug($sql);
 							$res4=mysql_query($sql);
 							if(mysql_num_rows($res4)>0){
@@ -8084,12 +8306,17 @@ $update_tempo4=mysql_query($sql);
 							$ligne_courante.="</td>\n";
 
 							$ligne_courante.="<td style='text-align:center;'>\n";
+							// 20120407
+							//$ligne_courante.="<a href='../responsables/modify_resp.php?pers_id=$pers_id' target='_blank'>";
 							$ligne_courante.="$lig2->nom";
+							//$ligne_courante.="</a>";
 							//$ligne_courante.="<input type='hidden' name='new_".$cpt."_resp_nom' value=\"$lig2->nom\" />\n";
 							$ligne_courante.="</td>\n";
 
 							$ligne_courante.="<td style='text-align:center;'>\n";
+							//$ligne_courante.="<a href='../responsables/modify_resp.php?pers_id=$pers_id' target='_blank'>";
 							$ligne_courante.="$lig2->prenom";
+							//$ligne_courante.="</a>";
 							//$ligne_courante.="<input type='hidden' name='new_".$cpt."_resp_prenom' value=\"$lig2->prenom\" />\n";
 							$ligne_courante.="</td>\n";
 
@@ -8137,12 +8364,18 @@ $update_tempo4=mysql_query($sql);
 							else{
 								$lig4=mysql_fetch_object($res4);
 								$ligne_courante.="<td style='text-align:center;'>\n";
+
+								// 20120407
+								$ligne_courante.="<a href='../eleves/modify_eleve.php?eleve_login=$lig4->login' target='_blank'>";
 								$ligne_courante.="$lig4->nom";
+								$ligne_courante.="</a>";
 								//$ligne_courante.="<input type='hidden' name='new_".$cpt."_ele_nom' value=\"$lig4->nom\" />\n";
 								$ligne_courante.="</td>\n";
 
 								$ligne_courante.="<td style='text-align:center;'>\n";
+								$ligne_courante.="<a href='../eleves/modify_eleve.php?eleve_login=$lig4->login' target='_blank'>";
 								$ligne_courante.="$lig4->prenom";
+								$ligne_courante.="</a>";
 								//$ligne_courante.="<input type='hidden' name='new_".$cpt."_ele_prenom' value=\"$lig4->prenom\" />\n";
 								$ligne_courante.="</td>\n";
 
@@ -8236,7 +8469,7 @@ $update_tempo4=mysql_query($sql);
 								//$ligne_courante.="<input type='checkbox' id='check_".$cpt."' name='modif[]' value='$cpt' />";
 
 								// Elève(s) associé(s)
-								$sql="SELECT nom,prenom FROM eleves WHERE (ele_id='$ele_id')";
+								$sql="SELECT nom,prenom,login FROM eleves WHERE (ele_id='$ele_id')";
 								info_debug($sql);
 								$res4=mysql_query($sql);
 								if(mysql_num_rows($res4)>0){
@@ -8254,13 +8487,19 @@ $update_tempo4=mysql_query($sql);
 								$ligne_courante.="</td>\n";
 
 								$ligne_courante.="<td style='text-align:center;'>\n";
+								// 20120407
+								$ligne_courante.="<a href='../responsables/modify_resp.php?pers_id=$pers_id' target='_blank'>";
 								$ligne_courante.="$lig2->nom";
+								$ligne_courante.="</a>";
 								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_nom' value=\"".mysql_real_escape_string($lig2->nom)."\" />\n";
 								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_nom' value=\"".$lig2->nom."\" />\n";
 								$ligne_courante.="</td>\n";
 
 								$ligne_courante.="<td style='text-align:center;'>\n";
+								// 20120407
+								$ligne_courante.="<a href='../responsables/modify_resp.php?pers_id=$pers_id' target='_blank'>";
 								$ligne_courante.="$lig2->prenom";
+								$ligne_courante.="</a>";
 								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_prenom' value=\"".mysql_real_escape_string($lig2->nom)."\" />\n";
 								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_prenom' value=\"".$lig2->prenom."\" />\n";
 								$ligne_courante.="</td>\n";
@@ -8306,13 +8545,19 @@ $update_tempo4=mysql_query($sql);
 								else{
 									$lig4=mysql_fetch_object($res4);
 									$ligne_courante.="<td style='text-align:center;'>\n";
+									// 20120407
+									$ligne_courante.="<a href='../eleves/modify_eleve.php?eleve_login=$lig4->login' target='_blank'>";
 									$ligne_courante.="$lig4->nom";
+									$ligne_courante.="</a>";
 									//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_ele_nom' value=\"".mysql_real_escape_string($lig4->nom)."\" />\n";
 									//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_ele_nom' value=\"".$lig4->nom."\" />\n";
 									$ligne_courante.="</td>\n";
 
 									$ligne_courante.="<td style='text-align:center;'>\n";
+									// 20120407
+									$ligne_courante.="<a href='../eleves/modify_eleve.php?eleve_login=$lig4->login' target='_blank'>";
 									$ligne_courante.="$lig4->prenom";
+									$ligne_courante.="</a>";
 									//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_ele_prenom' value=\"".mysql_real_escape_string($lig4->prenom)."\" />\n";
 									//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_ele_prenom' value=\"".$lig4->prenom."\" />\n";
 									$ligne_courante.="</td>\n";
