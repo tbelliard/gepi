@@ -47,17 +47,6 @@
 * along with GEPI; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-//==============================
-// PREPARATIFS boireaus 20080422
-// Pour passer à no_anti_inject comme pour les autres saisies d'appréciations
-// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
-$mode_commentaire_20080422="";
-//$mode_commentaire_20080422="no_anti_inject";
-
-if($mode_commentaire_20080422=="no_anti_inject") {
-	$variables_non_protegees = 'yes';
-}
-//==============================
 
 /**
  * Fichiers d'initialisation
@@ -356,9 +345,7 @@ if (isset($_POST['is_posted'])) {
 
 	$log_eleve=$_POST['log_eleve'];
 	$note_eleve=$_POST['note_eleve'];
-	if($mode_commentaire_20080422!="no_anti_inject") {
-		$comment_eleve=$_POST['comment_eleve'];
-	}
+	$comment_eleve=$_POST['comment_eleve'];
 
 	$indice_max_log_eleve=$_POST['indice_max_log_eleve'];
 
@@ -372,23 +359,7 @@ if (isset($_POST['is_posted'])) {
 					$note=$note_eleve[$i];
 					$elev_statut='';
 
-					// PREPARATIFS boireaus 20080422
-					// Pour passer à no_anti_inject comme pour les autres saisies d'appréciations
-					if($mode_commentaire_20080422!="no_anti_inject") {
-						// Problème: les accents sont codés en HTML...
-						$comment=$comment_eleve[$i];
-						$comment=addslashes(my_ereg_replace('(\\\r\\\n)+',"\r\n",my_ereg_replace("&#039;","'",html_entity_decode($comment))));
-					}
-					else {
-						if (isset($NON_PROTECT["comment_eleve".$i])){
-							$comment = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["comment_eleve".$i]));
-						}
-						else{
-							$comment = "";
-						}
-						// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-						$comment=my_ereg_replace('(\\\r\\\n)+',"\r\n",$comment);
-					}
+					$comment=$comment_eleve[$i];
 					
 					if (($note == 'disp')||($note == 'd')) {
 						$note = '0';
@@ -1075,15 +1046,11 @@ foreach ($liste_eleves as $eleve) {
 			$mess_note[$i][$k] .= "</td>\n";
 			$mess_comment[$i][$k] = "<td class='cn' bgcolor='$couleur_devoirs'>";
 			if ($current_group["classe"]["ver_periode"][$eleve_id_classe[$i]][$periode_num] == "N"){
-				if($mode_commentaire_20080422!="no_anti_inject") {
-					if ((isset($appreciations_import[$current_displayed_line])) and  ($appreciations_import[$current_displayed_line] != '')) {
-						$eleve_comment = $appreciations_import[$current_displayed_line];
-					}
-					$mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='comment_eleve[$i]' rows=1 cols=60 class='wrap' onchange=\"changement()\"";
-				}
-				else {
-					$mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='no_anti_inject_comment_eleve".$i."' rows=1 cols=30 class='wrap' onchange=\"changement()\"";
-				}
+				if ((isset($appreciations_import[$current_displayed_line])) and  ($appreciations_import[$current_displayed_line] != '')) {
+                                        $eleve_comment = $appreciations_import[$current_displayed_line];
+                                }
+                                $mess_comment[$i][$k] .= "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='comment_eleve[$i]' rows=1 cols=60 class='wrap' onchange=\"changement()\"";
+
 				if(getSettingValue("gepi_pmv")!="n"){
 					$mess_comment[$i][$k] .= " onfocus=\"";
 					$sql="SELECT elenoet FROM eleves WHERE login='$eleve_login[$i]';";
