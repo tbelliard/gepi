@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -79,6 +79,8 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
+
+$auth_sso=getSettingValue("auth_sso") ? getSettingValue("auth_sso") : "";
 
 //================================================
 if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
@@ -555,6 +557,9 @@ if($longmax_login_eleve=="") {
 }
 
 ?>
+
+<div id='suggestion_login' style='float:right; width:400px; height: 200px; border: 1px solid black; overflow:auto;'></div>;
+
 <form enctype="multipart/form-data" action="add_eleve.php" method="post">
 <?php
 echo add_token_field();
@@ -562,75 +567,127 @@ echo "<table>\n";
 echo "<tr>\n";
 echo "<td>\n";
 
-echo "<table cellpadding='5'>\n";
-echo "<tr>\n";
+	echo "<table cellpadding='5'>\n";
+	echo "<tr>\n";
 
-	$photo_largeur_max=150;
-	$photo_hauteur_max=150;
+		$photo_largeur_max=150;
+		$photo_hauteur_max=150;
 
-	function redimensionne_image($photo){
-		global $photo_largeur_max, $photo_hauteur_max;
+		function redimensionne_image($photo){
+			global $photo_largeur_max, $photo_hauteur_max;
 
-		// prendre les informations sur l'image
-		$info_image=getimagesize($photo);
-		// largeur et hauteur de l'image d'origine
-		$largeur=$info_image[0];
-		$hauteur=$info_image[1];
+			// prendre les informations sur l'image
+			$info_image=getimagesize($photo);
+			// largeur et hauteur de l'image d'origine
+			$largeur=$info_image[0];
+			$hauteur=$info_image[1];
 
-		// calcule le ratio de redimensionnement
-		$ratio_l=$largeur/$photo_largeur_max;
-		$ratio_h=$hauteur/$photo_hauteur_max;
-		$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
+			// calcule le ratio de redimensionnement
+			$ratio_l=$largeur/$photo_largeur_max;
+			$ratio_h=$hauteur/$photo_hauteur_max;
+			$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
 
-		// définit largeur et hauteur pour la nouvelle image
-		$nouvelle_largeur=round($largeur/$ratio);
-		$nouvelle_hauteur=round($hauteur/$ratio);
+			// définit largeur et hauteur pour la nouvelle image
+			$nouvelle_largeur=round($largeur/$ratio);
+			$nouvelle_hauteur=round($hauteur/$ratio);
 
-		return array($nouvelle_largeur, $nouvelle_hauteur);
-	}
-
-
-    if (isset($eleve_login)) {
-        echo "<td>Identifiant GEPI * : </td>
-        <td>".$eleve_login."<input type=hidden name='eleve_login' size=20 ";
-        if ($eleve_login) echo "value='$eleve_login'";
-        echo " /></td>\n";
-    } else {
-        echo "<td>Identifiant GEPI * : </td>
-        <td><input type=text name=reg_login size=20 value=\"\" maxlength='".$longmax_login_eleve."' /> (<i>max.$longmax_login_eleve caractères</i>)</td>\n";
-    }
-    ?>
-</tr>
-<tr>
-    <td>Nom * : </td>
-    <td><input type=text name='reg_nom' size=20 <?php if (isset($eleve_nom)) { echo "value=\"".$eleve_nom."\"";}?> /></td>
-</tr>
-<tr>
-    <td>Prénom * : </td>
-    <td><input type=text name='reg_prenom' size=20 <?php if (isset($eleve_prenom)) { echo "value=\"".$eleve_prenom."\"";}?> /></td>
-</tr>
-<tr>
-    <td>Email : </td>
-    <td><input type=text name='reg_email' size=20 <?php if (isset($eleve_email)) { echo "value=\"".$eleve_email."\"";}?> /></td>
-</tr>
-<tr>
-    <td>Identifiant National : </td>
-    <?php
-    echo "<td><input type='text' name='reg_no_nat' size='20' ";
-    if (isset($reg_no_nat)) echo "value=\"".$reg_no_nat."\"";
-    echo " /></td>\n";
-    ?>
-</tr>
-<?php
-    //echo "<tr><td>Numéro GEP : </td><td><input type=text name='reg_no_gep' size=20 ";
-    echo "<tr><td>Numéro interne Sconet (<i>elenoet</i>) : </td><td><input type='text' name='reg_no_gep' size='20' ";
-    if (isset($reg_no_gep)) echo "value=\"".$reg_no_gep."\"";
-    echo " /></td>\n";
+			return array($nouvelle_largeur, $nouvelle_hauteur);
+		}
 
 
-    ?>
+		if (isset($eleve_login)) {
+		    echo "<td>Identifiant GEPI * : </td>
+		    <td>".$eleve_login."<input type=hidden name='eleve_login' size=20 ";
+		    if ($eleve_login) echo "value='$eleve_login'";
+		    echo " /></td>\n";
+		} else {
+		    echo "<td>Identifiant GEPI * : </td>
+		    <td><input type='text' name='reg_login' id='reg_login' size='20' value=\"\" maxlength='".$longmax_login_eleve."' /> (<i>max.$longmax_login_eleve caractères</i>)</td>\n";
+		}
+		?>
+	</tr>
+	<tr>
+		<td>Nom *&nbsp;: </td>
+		<td>
+			<input type='text' name='reg_nom' id='nom' size='20' <?php
+				if($auth_sso=='lcs') {
+					if (isset($eleve_nom)) {
+						echo " value=\"".$eleve_nom."\"";
+					}
 
-</table>
+					if($auth_sso=='lcs') {
+						echo " onblur=\"affiche_login_lcs('nom')\"";
+					}
+					echo " />";
+
+					echo "
+	<script type='text/javascript'>
+		// <![CDATA[
+		function affiche_login_lcs(champ) {
+
+			valeur=document.getElementById(champ).value;
+			if(valeur!='') {
+
+				nom=document.getElementById('nom').value;
+				prenom=document.getElementById('prenom').value;
+
+				//alert('valeur='+valeur);
+				/*
+				if(champ=='nom') {
+					//new Ajax.Updater($('suggestion_login'),'cherche_login.php?champ='+champ+'&valeur='+valeur,{method: 'get'});
+					new Ajax.Updater($('suggestion_login'),'cherche_login.php?nom='+nom,{method: 'get'});
+				}
+				elseif(champ=='prenom') {
+				*/
+					new Ajax.Updater($('suggestion_login'),'cherche_login.php?nom='+nom+'&prenom='+prenom,{method: 'get'});
+				//}
+			}
+		}
+		//]]>
+	</script>\n";
+				}
+				else {
+					if (isset($eleve_nom)) {
+						echo " value=\"".$eleve_nom."\"";
+					}
+					echo " />";
+				}
+			?>
+		</td>
+	</tr>
+	<tr>
+		<td>Prénom * : </td>
+	<td><input type='text' name='reg_prenom' id='prenom' size='20' <?php
+		if (isset($eleve_prenom)) { echo "value=\"".$eleve_prenom."\"";}
+
+		if($auth_sso=='lcs') {
+			echo " onblur=\"affiche_login_lcs('prenom')\"";
+		}
+		echo " />";
+	?></td>
+	</tr>
+	<tr>
+		<td>Email : </td>
+		<td><input type=text name='reg_email' id='reg_email' size=20 <?php if (isset($eleve_email)) { echo "value=\"".$eleve_email."\"";}?> /></td>
+	</tr>
+	<tr>
+		<td>Identifiant National : </td>
+		<?php
+		echo "<td><input type='text' name='reg_no_nat' size='20' ";
+		if (isset($reg_no_nat)) echo "value=\"".$reg_no_nat."\"";
+		echo " /></td>\n";
+		?>
+	</tr>
+	<?php
+		//echo "<tr><td>Numéro GEP : </td><td><input type=text name='reg_no_gep' size=20 ";
+		echo "<tr><td>Numéro interne Sconet (<i>elenoet</i>) : </td><td><input type='text' name='reg_no_gep' id='elenoet' size='20' ";
+		if (isset($reg_no_gep)) echo "value=\"".$reg_no_gep."\"";
+		echo " /></td>\n";
+
+
+		?>
+
+	</table>
 <?php
 
 if(isset($reg_no_gep)){
@@ -646,7 +703,7 @@ echo "</tr>\n";
 echo "</table>\n";
 
 if (($reg_no_gep == '') and (isset($eleve_login))) {
-   echo "<font color=red>ATTENTION : Cet élève ne possède pas de numéro interne Sconet (elenoet). Vous ne pourrez pas importer les absences à partir des fichiers GEP/Sconet pour cet élèves.</font>\n";
+   echo "<font color='red'>ATTENTION : Cet élève ne possède pas de numéro interne Sconet (elenoet). Vous ne pourrez pas importer les absences à partir des fichiers GEP/Sconet pour cet élèves.</font>\n";
 
 	$sql="select value from setting where name='import_maj_xml_sconet'";
 	$test_sconet=mysql_query($sql);
@@ -654,7 +711,7 @@ if (($reg_no_gep == '') and (isset($eleve_login))) {
 		$lig_tmp=mysql_fetch_object($test_sconet);
 		if($lig_tmp->value=='1'){
 			echo "<br />";
-			echo "<font color=red>Vous ne pourrez pas non plus effectuer les mises à jour de ses informations depuis Sconet<br />(<i>l'ELENOET et l'ELE_ID ne correspondront pas aux données de Sconet</i>).</font>\n";
+			echo "<font color='red'>Vous ne pourrez pas non plus effectuer les mises à jour de ses informations depuis Sconet<br />(<i>l'ELENOET et l'ELE_ID ne correspondront pas aux données de Sconet</i>).</font>\n";
 		}
 	}
 }
@@ -665,13 +722,13 @@ if (($reg_no_gep == '') and (isset($eleve_login))) {
 <?php
 if (!(isset($eleve_sexe))) {$eleve_sexe="M";}
 ?>
-<label for='reg_sexeM' style='cursor: pointer;'><input type=radio name=reg_sexe id='reg_sexeM' value=M <?php if ($eleve_sexe == "M") { echo "CHECKED" ;} ?> /> Masculin</label>
-<label for='reg_sexeF' style='cursor: pointer;'><input type=radio name=reg_sexe id='reg_sexeF' value=F <?php if ($eleve_sexe == "F") { echo "CHECKED" ;} ?> /> Féminin</label>
+<label for='reg_sexeM' style='cursor: pointer;'><input type='radio' name='reg_sexe' id='reg_sexeM' value=M <?php if ($eleve_sexe == "M") { echo "CHECKED" ;} ?> /> Masculin</label>
+<label for='reg_sexeF' style='cursor: pointer;'><input type='radio' name='reg_sexe' id='reg_sexeF' value=F <?php if ($eleve_sexe == "F") { echo "CHECKED" ;} ?> /> Féminin</label>
 </div></td><td><div class='norme'>
 Date de naissance (respecter format 00/00/0000) : <br />
-Jour <input type=text name=birth_day size=2 value=<?php if (isset($eleve_naissance_jour)) echo $eleve_naissance_jour;?> />
-Mois<input type=text name=birth_month size=2 value=<?php if (isset($eleve_naissance_mois)) echo $eleve_naissance_mois;?> />
-Année<input type=text name=birth_year size=4 value=<?php if (isset($eleve_naissance_annee)) echo $eleve_naissance_annee;?> />
+Jour <input type='text' name='birth_day' id='birth_day' size='2' value=<?php if (isset($eleve_naissance_jour)) echo $eleve_naissance_jour;?> />
+Mois<input type='text' name='birth_month' id='birth_month' size='2' value=<?php if (isset($eleve_naissance_mois)) echo $eleve_naissance_mois;?> />
+Année<input type='text' name='birth_year' id='birth_year' size='4' value=<?php if (isset($eleve_naissance_annee)) echo $eleve_naissance_annee;?> />
 </div></td></tr>
 </table></center>
 
