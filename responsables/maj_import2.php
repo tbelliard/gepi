@@ -42,6 +42,11 @@ if (!checkAccess()) {
     die();
 }
 
+$eff_tranche_recherche_diff=isset($_POST['eff_tranche_recherche_diff']) ? $_POST['eff_tranche_recherche_diff'] : getSettingValue('maj_sconet_eff_tranche');
+if(($eff_tranche_recherche_diff=='')||(!is_numeric($eff_tranche_recherche_diff))||($eff_tranche_recherche_diff<1)) {
+	$eff_tranche_recherche_diff=20;
+}
+
 $ele_lieu_naissance=getSettingValue("ele_lieu_naissance") ? getSettingValue("ele_lieu_naissance") : "n";
 
 $ne_pas_tester_les_changements_de_classes=getSettingValue("no_test_chgt_clas");
@@ -382,6 +387,13 @@ if(!isset($step)) {
 	echo "/>\n";
 	echo "<label for='alert_diff_etab_origine_n' style='cursor: pointer;'> ne pas signaler";
 	echo " les modifications d'établissement d'origine.</label></p>\n";
+
+	echo "<br />\n";
+	echo "<p>";
+	echo "<label for='id_form_stop' style='cursor: pointer;'> Parcourir les élèves par tranches de &nbsp;:</label><input type='text' name='eff_tranche_recherche_diff' id='eff_tranche_recherche_diff' value='$eff_tranche_recherche_diff' size='3' />\n";
+	echo "<br />\n";
+	echo "<strong>Attention&nbsp;:</strong> Ne mettez pas une valeur trop élevée; vous pourriez atteindre la limite <strong>max_execution_time</strong> de PHP.";
+	echo "</p>\n";
 
 	//==============================
 	// AJOUT pour tenir compte de l'automatisation ou non:

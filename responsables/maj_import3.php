@@ -60,7 +60,11 @@ if (!checkAccess()) {
     die();
 }
 
-$eff_tranche_recherche_diff=20;
+
+$eff_tranche_recherche_diff=isset($_POST['eff_tranche_recherche_diff']) ? $_POST['eff_tranche_recherche_diff'] : getSettingValue('maj_sconet_eff_tranche');
+if(($eff_tranche_recherche_diff=='')||(!is_numeric($eff_tranche_recherche_diff))||($eff_tranche_recherche_diff<1)) {
+	$eff_tranche_recherche_diff=20;
+}
 
 $ele_lieu_naissance=getSettingValue("ele_lieu_naissance") ? getSettingValue("ele_lieu_naissance") : "n";
 
@@ -362,7 +366,13 @@ if(!isset($step)) {
 	}
 	else {
 		$alert_diff_mail_ele=getSettingValue('alert_diff_mail_ele');
-		echo "<p>Pour les élèves qui disposent d'un compte d'utilisateur, <br />\n";
+
+		echo "<br />\n";
+
+		echo "<p>\n";
+		echo "<strong>Adresse email&nbsp;:</strong>\n";
+		echo "<br />\n";
+		echo "Pour les élèves qui disposent d'un compte d'utilisateur, <br />\n";
 		echo "<input type='radio' name='alert_diff_mail_ele' id='alert_diff_mail_ele_y' value='y' ";
 		if($alert_diff_mail_ele=='y') {
 			echo "checked ";
@@ -380,7 +390,10 @@ if(!isset($step)) {
 	}
 
 	$alert_diff_etab_origine=getSettingValue('alert_diff_etab_origine');
+	echo "<br />\n";
 	echo "<p>\n";
+	echo "<strong>Établissement d'origine&nbsp;:</strong>\n";
+	echo "<br />\n";
 	echo "<input type='radio' name='alert_diff_etab_origine' id='alert_diff_etab_origine_y' value='y' ";
 	if($alert_diff_etab_origine=='y') {
 		echo "checked ";
@@ -396,9 +409,17 @@ if(!isset($step)) {
 	echo "<label for='alert_diff_etab_origine_n' style='cursor: pointer;'> ne pas signaler";
 	echo " les modifications d'établissement d'origine.</label></p>\n";
 
+	echo "<br />\n";
+	echo "<p>";
+	echo "<label for='id_form_stop' style='cursor: pointer;'> Parcourir les élèves par tranches de &nbsp;: </label><input type='text' name='eff_tranche_recherche_diff' id='eff_tranche_recherche_diff' value='$eff_tranche_recherche_diff' size='3' onkeydown=\"clavier_2(this.id,event,0,200);\" autocomplete='off' />\n";
+	echo "<br />\n";
+	echo "<strong>Attention&nbsp;:</strong> Ne mettez pas une valeur trop élevée; vous pourriez atteindre la limite <strong>max_execution_time</strong> de PHP.";
+	echo "</p>\n";
+
 	//==============================
 	// AJOUT pour tenir compte de l'automatisation ou non:
 	//echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+	echo "<br />\n";
 	echo "<input type='checkbox' name='stop' id='id_form_stop' value='y' /><label for='id_form_stop' style='cursor: pointer;'> Désactiver le mode automatique.</label>\n";
 	//==============================
 
@@ -426,6 +447,12 @@ else{
 		echo " | <a href=\"".$_SERVER['PHP_SELF']."\">Mise à jour Sconet</a>";
 	}
 	echo "</p>\n";
+
+	$eff_tranche_recherche_diff=isset($_POST['eff_tranche_recherche_diff']) ? $_POST['eff_tranche_recherche_diff'] : getSettingValue('maj_sconet_eff_tranche');
+	if(($eff_tranche_recherche_diff=='')||(!is_numeric($eff_tranche_recherche_diff))||($eff_tranche_recherche_diff<1)) {
+		$eff_tranche_recherche_diff=20;
+	}
+	saveSetting('maj_sconet_eff_tranche',$eff_tranche_recherche_diff);
 
 	//echo "\$step=$step<br />\n";
 
@@ -2173,7 +2200,7 @@ else{
 				echo "<p>Le parcours des différences est terminé.</p>\n";
 
 				echo "<input type='hidden' name='step' value='4' />\n";
-				echo "<p>Parcourir les différences par tranches de <input type='text' id='eff_tranche' name='eff_tranche' value='".min($cpt_tab_ele_id_diff,10)."' size='3' onkeydown=\"clavier_2(this.id,event,0,200);\" autocomplete='off' /> sur $cpt_tab_ele_id_diff<br />\n";
+				echo "<p>Afficher les différences par tranches de <input type='text' id='eff_tranche' name='eff_tranche' value='".min($cpt_tab_ele_id_diff,10)."' size='3' onkeydown=\"clavier_2(this.id,event,0,200);\" autocomplete='off' /> sur $cpt_tab_ele_id_diff<br />\n";
 				echo "<input type='submit' value='Afficher les différences' /></p>\n";
 
 				// On vide la table dont on va se resservir:
@@ -4475,6 +4502,11 @@ $update_tempo4=mysql_query($sql);
 			if($ne_pas_proposer_redoublonnage_adresse!='n') {echo " checked='true'";}
 			echo " /><label for='ne_pas_proposer_redoublonnage_adresse' style='cursor:pointer;'> Ne pas proposer de rétablir des doublons d'adresses identiques avec identifiant différent pour des parents qui conservent la même adresse.</label></p>\n";
 
+			echo "<p>";
+			echo "<label for='id_form_stop' style='cursor: pointer;'> Parcourir les responsables par tranches de &nbsp;: </label><input type='text' name='eff_tranche_recherche_diff' id='eff_tranche_recherche_diff' value='$eff_tranche_recherche_diff' size='3' onkeydown=\"clavier_2(this.id,event,0,200);\" autocomplete='off' />\n";
+			echo "<br />\n";
+			echo "<strong>Attention&nbsp;:</strong> Ne mettez pas une valeur trop élevée; vous pourriez atteindre la limite <strong>max_execution_time</strong> de PHP.";
+			echo "</p>\n";
 
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
@@ -4520,6 +4552,12 @@ $update_tempo4=mysql_query($sql);
 
 			$_SESSION['ne_pas_proposer_resp_sans_eleve']=$ne_pas_proposer_resp_sans_eleve;
 			$_SESSION['alert_diff_mail_resp']=$alert_diff_mail_resp;
+
+			$eff_tranche_recherche_diff=isset($_POST['eff_tranche_recherche_diff']) ? $_POST['eff_tranche_recherche_diff'] : getSettingValue('maj_sconet_eff_tranche');
+			if(($eff_tranche_recherche_diff=='')||(!is_numeric($eff_tranche_recherche_diff))||($eff_tranche_recherche_diff<1)) {
+				$eff_tranche_recherche_diff=20;
+			}
+			saveSetting('maj_sconet_eff_tranche',$eff_tranche_recherche_diff);
 
 			$post_max_size=ini_get('post_max_size');
 			$upload_max_filesize=ini_get('upload_max_filesize');
@@ -5214,9 +5252,9 @@ $update_tempo4=mysql_query($sql);
 
 				$nb_pers=$lig->nb_pers;
 
-				echo "<p>Les ".$nb_pers." personnes responsables vont être parcourus par tranches de 20 à la recherche de différences.</p>\n";
+				echo "<p>Les ".$nb_pers." personnes responsables vont être parcourus par tranches de $eff_tranche_recherche_diff à la recherche de différences.</p>\n";
 
-				$nb_parcours=ceil($nb_pers/20);
+				$nb_parcours=ceil($nb_pers/$eff_tranche_recherche_diff);
 			}
 			$num_tranche=isset($_POST['num_tranche']) ? $_POST['num_tranche'] : 1;
 			echo "<input type='hidden' name='nb_parcours' value='$nb_parcours' />\n";
@@ -5230,7 +5268,7 @@ $update_tempo4=mysql_query($sql);
 
 			// 20120331
 			//$sql="SELECT pers_id FROM temp_resp_pers_import WHERE statut='' LIMIT 20;";
-			$sql="SELECT pers_id, adr_id FROM temp_resp_pers_import WHERE statut='' LIMIT 20;";
+			$sql="SELECT pers_id, adr_id FROM temp_resp_pers_import WHERE statut='' LIMIT $eff_tranche_recherche_diff;";
 			//echo "$sql<br />";
 			info_debug($sql);
 			$res1=mysql_query($sql);
@@ -5574,9 +5612,9 @@ $update_tempo4=mysql_query($sql);
 
 				$nb_adr=$lig->nb_adr;
 
-				echo "<p>Les ".$nb_adr." adresses de personnes responsables vont être parcourues par tranches de 20 à la recherche de différences.</p>\n";
+				echo "<p>Les ".$nb_adr." adresses de personnes responsables vont être parcourues par tranches de $eff_tranche_recherche_diff à la recherche de différences.</p>\n";
 
-				$nb_parcours=ceil($nb_adr/20);
+				$nb_parcours=ceil($nb_adr/$eff_tranche_recherche_diff);
 			}
 			$num_tranche=isset($_POST['num_tranche']) ? $_POST['num_tranche'] : 1;
 			echo "<input type='hidden' name='nb_parcours' value='$nb_parcours' />\n";
@@ -5591,7 +5629,7 @@ $update_tempo4=mysql_query($sql);
 // 20120331
 // FAIRE delete from resp_adr where adr_id not in (select adr_id from resp_pers); ?
 
-			$sql="SELECT DISTINCT adr_id FROM temp_resp_adr_import WHERE statut='' LIMIT 20;";
+			$sql="SELECT DISTINCT adr_id FROM temp_resp_adr_import WHERE statut='' LIMIT $eff_tranche_recherche_diff;";
 			info_debug($sql);
 			//echo "$sql<br />";
 			$res1=mysql_query($sql);
@@ -6296,7 +6334,7 @@ $update_tempo4=mysql_query($sql);
 			//echo "$sql<br />";
 			$test=mysql_query($sql);
 			$nb_tmp_modif=mysql_num_rows($test);
-			echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' id='eff_tranche' value='".min(20,$nb_tmp_modif)."' size='3' onkeydown=\"clavier_2(this.id,event,0,200);\" autocomplete='off' /> sur un total de $nb_tmp_modif.<br />\n";
+			echo "<p>Afficher les différences par tranches de <input type='text' name='eff_tranche' id='eff_tranche' value='".min(20,$nb_tmp_modif)."' size='3' onkeydown=\"clavier_2(this.id,event,0,200);\" autocomplete='off' /> sur un total de $nb_tmp_modif.<br />\n";
 
 			echo "<input type='submit' value='Afficher les différences' /></p>\n";
 
@@ -7820,7 +7858,8 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 				info_debug($sql);
 				$test=mysql_query($sql);
 				$nb_associations_a_consulter=mysql_num_rows($test);
-				echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' id='eff_tranche' value='".min($eff_tranche_recherche_diff,$nb_associations_a_consulter)."' size='3' onkeydown=\"clavier_2(this.id,event,0,200);\" autocomplete='off' /> sur un total de $nb_associations_a_consulter.<br />\n";
+				//echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' id='eff_tranche' value='".min($eff_tranche_recherche_diff,$nb_associations_a_consulter)."' size='3' onkeydown=\"clavier_2(this.id,event,0,200);\" autocomplete='off' /> sur un total de $nb_associations_a_consulter.<br />\n";
+				echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' id='eff_tranche' value='".min(20,$nb_associations_a_consulter)."' size='3' onkeydown=\"clavier_2(this.id,event,0,200);\" autocomplete='off' /> sur un total de $nb_associations_a_consulter.<br />\n";
 
 				echo "Ne pas proposer de supprimer des responsables non associés à des élèves <input type='checkbox' name='suppr_resp_non_assoc' value='n' /><br />\n";
 				echo add_token_field();
@@ -7847,8 +7886,10 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 			info_debug("==============================================");
 			info_debug("=============== Phase step $step =================");
 
-			$eff_tranche=isset($_POST['eff_tranche']) ? $_POST['eff_tranche'] : $eff_tranche_recherche_diff;
-			if(preg_match("/[^0-9]/",$eff_tranche)) {$eff_tranche=$eff_tranche_recherche_diff;}
+			//$eff_tranche=isset($_POST['eff_tranche']) ? $_POST['eff_tranche'] : $eff_tranche_recherche_diff;
+			//if(preg_match("/[^0-9]/",$eff_tranche)) {$eff_tranche=$eff_tranche_recherche_diff;}
+			$eff_tranche=isset($_POST['eff_tranche']) ? $_POST['eff_tranche'] : 20;
+			if(preg_match("/[^0-9]/",$eff_tranche)) {$eff_tranche=20;}
 
 			$suppr_resp_non_assoc=isset($_POST['suppr_resp_non_assoc']) ? $_POST['suppr_resp_non_assoc'] : 'y';
 			
