@@ -1096,7 +1096,7 @@ for($i=0;$i<count($groups);$i++){
 								if($affiche_bull_simp_cette_classe=="y") {
 									//echo "<a href='../prepa_conseil/index3.php?id_classe=".$classe['id']."' onClick=\"valide_bull_simpl('".$classe['id']."','".$j."'); return false;\"><img src='../images/icons/bulletin_simpl.png' width='37' height='34' alt='Bulletin simplifié' border='0' />";
 									//echo "<a href='../prepa_conseil/index3.php?id_classe=".$classe['id']."' onClick=\"valide_bull_simpl('".$classe['id']."','".$j."'); return false;\">";
-									echo "<a href='prepa_conseil/index3.php?id_classe=".$classe['id']."' onClick=\"valide_bull_simpl('".$classe['id']."','".$j."'); return false;\"";
+									echo "<a href='prepa_conseil/index3.php?id_classe=".$classe['id']."&amp;couleur_alterne=y' onClick=\"valide_bull_simpl('".$classe['id']."','".$j."'); return false;\"";
 	
 									if($pref_accueil_infobulles=="y"){
 										echo " onmouseover=\"afficher_div('info_bs_".$i."_".$j."_".$cpt."','y',10,10);\" onmouseout=\"cacher_div('info_bs_".$i."_".$j."_".$cpt."');\"";
@@ -1225,6 +1225,7 @@ echo "<form enctype=\"multipart/form-data\" action=\"prepa_conseil/edit_limite.p
 echo "<input type=\"hidden\" name=\"choix_edit\" value=\"1\" />\n";
 echo "<input type=\"hidden\" name=\"periode1\" id=\"periode1\" value='1' />\n";
 echo "<input type=\"hidden\" name=\"periode2\" id=\"periode2\" value='1' />\n";
+echo "<input type=\"hidden\" name=\"couleur_alterne\" value='y' />\n";
 echo "<input type=\"hidden\" name=\"id_classe\" id=\"id_classe\" value='' />\n";
 echo "</form>\n";
 
