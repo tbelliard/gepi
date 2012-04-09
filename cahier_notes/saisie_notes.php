@@ -360,7 +360,8 @@ if (isset($_POST['is_posted'])) {
 					$elev_statut='';
 
 					$comment=$comment_eleve[$i];
-					
+					$comment=trim(suppression_sauts_de_lignes_surnumeraires($comment));
+
 					if (($note == 'disp')||($note == 'd')) {
 						$note = '0';
 						$elev_statut = 'disp';
