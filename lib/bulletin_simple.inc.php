@@ -142,6 +142,23 @@ if($afficher_signalement_faute=='y') {
 	$envoi_mail_actif=getSettingValue('envoi_mail_actif');
 }
 
+// 20120409
+if($_SESSION['statut']=='professeur') {
+	$tab_mes_groupes=array();
+	$sql = "SELECT jgp.id_groupe FROM j_groupes_professeurs jgp WHERE login = '" . $_SESSION['login'] . "';" ;
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tab_mes_groupes[]=$lig->id_groupe;
+		}
+	}
+
+	if((!isset($necessaire_corriger_appreciation_insere))||($necessaire_corriger_appreciation_insere=="n")) {
+		lib_corriger_appreciation();
+	}
+	global $corriger_app_id_groupe;
+}
+
 // données requise :
 //- le login de l'élève    : $current_eleve_login
 //- $compteur : compteur
@@ -796,13 +813,18 @@ if ($on_continue == 'yes') {
 					if ($current_eleve_appreciation[$nb]=="-1") {
 						echo "<span class='noprint'>-</span>\n";
 					}
-					else{
+					else {
+						// 20120409
+						echo "<div id='app_".$current_id_eleve."_".$current_group['id']."_$nb'>";
+
 						if((strstr($current_eleve_appreciation[$nb],">"))||(strstr($current_eleve_appreciation[$nb],"<"))){
 							echo "$current_eleve_appreciation[$nb]";
 						}
 						else{
 							echo nl2br($current_eleve_appreciation[$nb]);
 						}
+
+						echo "</div>\n";
 
 						echo "<textarea name='appreciation_".$current_id_eleve."_".$current_group['id']."[$nb]' id='appreciation_".$current_id_eleve."_".$current_group['id']."_$nb' style='display:none;'>".$current_eleve_appreciation[$nb]."</textarea>\n";
 
@@ -827,6 +849,11 @@ $current_group["classe"]["ver_periode"][$id_classe][$nb]
 						echo "-";
 					}
 					else {
+						// 20120409
+						if(($current_group["classe"]["ver_periode"][$id_classe][$nb]=='N')&&($_SESSION['statut']=='professeur')&&(in_array($current_group['id'],$tab_mes_groupes))) {
+							echo "<a href='#' onclick=\"modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb') ;return false;\"><img src='../images/edit16.png' width='16' height='16' /></a> ";
+						}
+
 						// Tester si l'adresse mail du/des profs de l'enseignement est renseignée et si l'envoi de mail est actif.
 						// Sinon, on pourrait enregistrer le signalement dans une table actions_signalements pour affichage comme le Panneau d'affichage
 	
@@ -835,7 +862,7 @@ $current_group["classe"]["ver_periode"][$id_classe][$nb]
 							echo " onclick=\"signaler_une_faute('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb') ;return false;\"";
 						}
 						echo "><img src='../images/icons/mail.png' width='16' height='16' alt='Signaler un problème/faute par mail' /></a>";
-					
+
 						echo "<span id='signalement_effectue_".$current_id_eleve."_".$current_group['id']."_$nb'></span>";
 					}
 					echo "</td>\n";
@@ -1542,5 +1569,123 @@ echo "
 	}
 }
 
+// 20120409
+$necessaire_corriger_appreciation_insere="n";
+function lib_corriger_appreciation() {
+	global $necessaire_corriger_appreciation_insere, $id_classe;
+	global $inclusion_depuis_graphes;
+
+	if($necessaire_corriger_appreciation_insere=="n") {
+
+		//========================================================
+		echo "<div id='div_corriger_app' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
+		
+			echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_corriger_app')\">\n";
+				echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";
+				echo "<a href='#' onClick=\"cacher_div('div_corriger_app');return false;\">\n";
+				echo "<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />\n";
+				echo "</a>\n";
+				echo "</div>\n";
+		
+				echo "<div id='titre_entete_corriger_app'></div>\n";
+			echo "</div>\n";
+			
+			echo "<div id='corps_corriger_app' class='infobulle_corps' style='color: #ffffff; cursor: auto; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
+
+echo "
+<form name='form_corriger_app' id='form_signalement_faute' action ='../lib/ajax_corriger_app.php' method='post' target='_blank'>
+<input type='hidden' name='corriger_app_login_eleve' id='corriger_app_login_eleve' value='' />
+<input type='hidden' name='corriger_app_id_groupe' id='corriger_app_id_groupe' value='' />
+<input type='hidden' name='corriger_app_id_eleve' id='corriger_app_id_eleve' value='' />
+<input type='hidden' name='corriger_app_num_periode' id='corriger_app_num_periode' value='' />
+<input type='hidden' name='corriger_app_id_classe' id='corriger_app_id_classe' value='$id_classe' />
+
+<div id='div_corriger_appreciation'></div>
+<!--textarea name='app' id='app' cols='50' rows='12'></textarea-->
+
+<input type='button' onclick='valider_corriger_app()' name='Valider' value='Valider' />\n";
+echo add_token_field();
+echo "</form>\n";
+
+			echo "</div>\n";
+		
+		echo "</div>\n";
+		//========================================================
+
+		//========================================================
+		echo "<script type='text/javascript'>
+	// <![CDATA[
+
+	function modifier_une_appreciation(eleve_login, id_eleve, id_groupe, liste_profs_du_groupe, num_periode) {
+
+		info_eleve=eleve_login;
+		if(document.getElementById('nom_prenom_eleve_'+id_eleve)) {
+			info_eleve=document.getElementById('nom_prenom_eleve_'+id_eleve).value;
+		}
+
+		document.getElementById('titre_entete_corriger_app').innerHTML='Corriger  l appréciation pour '+info_eleve+' période '+num_periode;
+
+		document.getElementById('corriger_app_login_eleve').value=eleve_login;
+		document.getElementById('corriger_app_id_groupe').value=id_groupe;
+
+		document.getElementById('corriger_app_id_eleve').value=id_eleve;
+		document.getElementById('corriger_app_num_periode').value=num_periode;
+
+		info_groupe=''
+		if(document.getElementById('corriger_app_id_groupe_'+id_groupe)) {
+			info_groupe=document.getElementById('corriger_app_id_groupe_'+id_groupe).value;
+		}
+
+		message='';
+		// Le champ textarea n'existe que si une appréciation a été enregistrée
+		if(document.getElementById('appreciation_'+id_eleve+'_'+id_groupe+'_'+num_periode)) {
+			message=message+document.getElementById('appreciation_'+id_eleve+'_'+id_groupe+'_'+num_periode).innerHTML;
+		}
+
+		//alert('message='+message);
+
+		document.getElementById('div_corriger_appreciation').innerHTML='<textarea name=\'app\' id=\'app\' cols=\'50\' rows=\'11\'>'+message+'</textarea>';
+
+		//document.getElementById('signalement_message').innerHTML=message;
+";
+
+		if((isset($inclusion_depuis_graphes))&&($inclusion_depuis_graphes=='y')) {
+			echo "		afficher_div('div_corriger_app','n',0,0);\n";
+		}
+		else {
+			echo "		afficher_div('div_corriger_app','y',100,100);\n";
+		}
+
+echo "
+	}
+
+	function valider_corriger_app() {
+		corriger_app_id_groupe=document.getElementById('corriger_app_id_groupe').value;
+		corriger_app_login_eleve=document.getElementById('corriger_app_login_eleve').value;
+
+		app=document.getElementById('app').value;
+
+		corriger_app_id_eleve=document.getElementById('corriger_app_id_eleve').value;
+		corriger_app_num_periode=document.getElementById('corriger_app_num_periode').value;
+		corriger_app_id_classe=document.getElementById('corriger_app_id_classe').value;
+
+		new Ajax.Updater($('app_'+corriger_app_id_eleve+'_'+corriger_app_id_groupe+'_'+corriger_app_num_periode),'../lib/ajax_corriger_app.php?a=a&".add_token_in_url(false)."',{method: 'post',
+		parameters: {
+			corriger_app_login_eleve: corriger_app_login_eleve,
+			corriger_app_id_groupe: corriger_app_id_groupe,
+			corriger_app_id_classe: corriger_app_id_classe,
+			corriger_app_num_periode: corriger_app_num_periode,
+			no_anti_inject_app: app,
+		}});
+
+		cacher_div('div_corriger_app');
+
+	}
+	//]]>
+</script>\n";
+		//========================================================
+
+	}
+}
 
 ?>
