@@ -221,11 +221,9 @@ if ($res) {
 		}
 		elseif ($row[4]=="responsable") {
 		$sql= " SELECT pers_id FROM resp_pers where login='$row[0]'";
-		$res = sql_query($sql);
-		$id = mysql_fetch_array($res);
-?>
-				<a href="../responsables/modify_resp.php?pers_id=<?php echo $id['pers_id']; ?>" ><?php echo $row[1]; ?></a>
-<?php
+		$res1 = sql_query($sql);
+		$id = mysql_fetch_array($res1);
+		echo "<a href=\"../responsables/modify_resp.php?pers_id=" .$id['pers_id']. "\" />".$row[1]."</a>";
 		}
 		else {
 ?>

@@ -1224,7 +1224,8 @@ if ($ligne_supl == 1) {
 			$rg[$k]=$k;
 
 			//echo $col[1][$k+1].": ".$col[$nb_col][$k+1]." et total_coef:".$total_coef_eleve[$k+1]."<br />";
-			$tmp_tab[$k]=$col[$nb_col][$k+$ligne_supl];
+			//echo "\$col[$nb_col][$k+$ligne_supl]=\$col[$nb_col][".($k+$ligne_supl)."]=".$col[$nb_col][$k+$ligne_supl]."<br />";
+			$tmp_tab[$k]=preg_replace("/,/",".",$col[$nb_col][$k+$ligne_supl]);
 
 			// Initialisation:
 			$col[$ind_colonne_rang][$k]="-";
