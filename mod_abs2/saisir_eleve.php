@@ -518,12 +518,6 @@ if (!$cours_col->isEmpty()) {
 		    //on affiche pas le cours si il n'est associé avec aucun creneau
 		    continue;
 		}
-		if (getSettingValue("abs2_saisie_prof_decale") != 'y') {
-		    if ($edt_cours->getJourSemaineNumeric() != date('W')) {
-			//on affiche pas ce cours
-			continue;
-		    }
-		}
 		echo "<option value='".$edt_cours->getIdCours()."'";
 		if ($id_cours == $edt_cours->getIdCours()) echo " selected='selected' ";
 		echo ">";

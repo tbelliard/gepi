@@ -16,7 +16,7 @@
  * - $id_classe : la classe concernée
  * - $periode_num : la période concernée
  *
- * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @package Notes
  * @subpackage scripts
  */
@@ -209,14 +209,16 @@ if (($test_coef != '0') and ($calcul_moy_gen == 'yes')) {
                 if ($coef_eleve != 0) {
                     if (($current_eleve_note[$j][$i] != '') and ($current_eleve_statut[$j][$i] == '')) {
                         if($current_mode_moy[$j]=='sup10') {
-                            if($moy_gen_eleve[$i]>=10) {
+                            //if($moy_gen_eleve[$i]>=10) {
+                            if($current_eleve_note[$j][$i]>=10) {
                                 $total_coef[$i] += $coef_eleve;
                                 $moy_gen_eleve[$i] += $coef_eleve*$current_eleve_note[$j][$i];
                             }
                             $moy_gen_classe[$i] += $coef_eleve*$current_classe_matiere_moyenne[$j];
                         }
                         elseif($current_mode_moy[$j]=='bonus') {
-                            if($moy_gen_eleve[$i]>=10) {
+                            //if($moy_gen_eleve[$i]>=10) {
+                            if($current_eleve_note[$j][$i]>=10) {
                                 $moy_gen_eleve[$i] += $coef_eleve*($current_eleve_note[$j][$i]-10);
                             }
                             $moy_gen_classe[$i] += $coef_eleve*$current_classe_matiere_moyenne[$j];
