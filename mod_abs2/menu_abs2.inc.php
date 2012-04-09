@@ -144,7 +144,7 @@ if(($_SESSION['statut']=='cpe')||
         echo "title='Bilans'>Bilan individuel</a></li>\n";
     }
 
-    echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Fond_de_salle">wiki</a></div>';
+    echo '<li style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Fond_de_salle">wiki</a></li>';
 
     echo "</ul>\n";
 
