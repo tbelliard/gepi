@@ -25,8 +25,15 @@
 }
 	
 .absentHier {
-	background-color: blue;
-	color: white;
+	background-color: red;
+	color: black;
+	font-weight: bold;
+	text-align: center;
+}
+
+.justifieeHier {
+	background-color: green;
+	color: green;
 	font-weight: bold;
 	text-align: center;
 }

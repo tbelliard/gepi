@@ -224,15 +224,26 @@ if (isset($_POST['is_posted'])) {
 				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_multi_type_non_justifiee !";
 			}
 		}
-//		if (isset($_POST['abs2_modification_saisie_sans_limite'])) {
-//			if (!saveSetting("abs2_modification_saisie_sans_limite", $_POST['abs2_modification_saisie_sans_limite'])) {
-//				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
-//			}
-//		} else {
-//			if (!saveSetting("abs2_modification_saisie_sans_limite", 'n')) {
-//				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
-//			}
-//		}
+
+		if (isset($_POST['abs2_cacher_creneaux_precedents'])) {
+			if (!saveSetting("abs2_cacher_creneaux_precedents", $_POST['abs2_cacher_creneaux_precedents'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_cacher_creneaux_precedents !";
+			}
+		} else {
+			if (!saveSetting("abs2_cacher_creneaux_precedents", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_cacher_creneaux_precedents !";
+			}
+		}
+
+		if (isset($_POST['abs2_afficher_saisies_creneau_courant'])) {
+			if (!saveSetting("abs2_afficher_saisies_creneau_courant", $_POST['abs2_afficher_saisies_creneau_courant'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_afficher_saisies_creneau_courant !";
+			}
+		} else {
+			if (!saveSetting("abs2_afficher_saisies_creneau_courant", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_afficher_saisies_creneau_courant !";
+			}
+		}
 
 	}
 }
@@ -353,11 +364,16 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est l
 	<?php if (getSettingValue("abs2_modification_saisie_une_heure")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_modification_saisie_une_heure">&nbsp;Permettre la modification d'une saisie par le professeur dans l'heure qui a suivi sa création</label>
 </p>
-<!--p>
-	<input type="checkbox" name="abs2_modification_saisie_sans_limite" value="y"
-	<?php //if (getSettingValue("abs2_modification_saisie_sans_limite")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_modification_saisie_sans_limite">&nbsp;Permettre la modification d'une saisie sans limite de temps</label>
-</p-->
+<p>
+	<input type="checkbox" name="abs2_cacher_creneaux_precedents" value="y"
+	<?php if (getSettingValue("abs2_cacher_creneaux_precedents")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_cacher_creneaux_precedents">&nbsp;Cacher les informations des créneaux précédents lors de la saisie</label>
+</p>
+<p>
+	<input type="checkbox" name="abs2_afficher_saisies_creneau_courant" value="y"
+	<?php if (getSettingValue("abs2_afficher_saisies_creneau_courant")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_afficher_saisies_creneau_courant">&nbsp;Afficher les informations préalablement existantes sur le créneau en cours de saisie</label>
+</p>
 
 <h2>Envoi des SMS</h2>
 <p>

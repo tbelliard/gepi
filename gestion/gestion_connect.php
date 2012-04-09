@@ -212,6 +212,12 @@ if ($res) {
 ?>
 				<a href="../eleves/modify_eleve.php?eleve_login=<?php echo $row[0]; ?>" ><?php echo $row[1]; ?></a>
 <?php
+		$sql= " SELECT id_classe FROM j_eleves_classes WHERE login='$row[0]'";
+		$res1 = sql_query($sql);
+		$id = mysql_fetch_array($res1);
+		$sql= " SELECT classe FROM classes WHERE id='$id[id_classe]'";
+		$res2 = sql_query($sql);
+		$classe_eleve = mysql_fetch_array($res2);
 		}
 		elseif ($row[4]=="responsable") {
 		$sql= " SELECT pers_id FROM resp_pers where login='$row[0]'";
@@ -230,7 +236,14 @@ if ($res) {
 			</td>
 			
 			<td>
-				<?php echo $row[4]; ?>
+				<?php
+				if ($row[4] == "eleve") {
+				echo $row[4]. " " .$classe_eleve['classe'];
+				}
+				else {
+				echo $row[4];
+				}
+				?>
 			</td>
 			
 			<td>
@@ -731,8 +744,7 @@ switch( $duree2 ) {
 </div>
 
 <a name='tab_connexions'></a>
-<table class="col" style="width: 90%; margin-left: auto; margin-right: auto; margin-bottom: 32px;" cellpadding="5" cellspacing="0" summary='Tableau des connexions'>
-        <tr>
+	<table class='boireaus center'>
          <th class="col">Statut</th>
 		<th class="col">Identifiant</th>
         <th class="col">Début session</th>

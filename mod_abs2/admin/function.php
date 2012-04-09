@@ -101,11 +101,6 @@ function ajoutTypesParDefaut() {
 	$type->setManquementObligationPresence(AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI);
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
-	$statut->setStatut("professeur");
-	$type->addAbsenceEleveTypeStatutAutorise($statut);
-	$statut->save();
-
-	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("cpe");
 	$type->addAbsenceEleveTypeStatutAutorise($statut);
 	$statut->save();
@@ -192,11 +187,6 @@ function ajoutTypesParDefaut() {
 	$type->setManquementObligationPresence(AbsenceEleveType::MANQU_OBLIG_PRESE_NON_PRECISE);
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
-	$statut->setStatut("professeur");
-	$type->addAbsenceEleveTypeStatutAutorise($statut);
-	$statut->save();
-
-	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("cpe");
 	$type->addAbsenceEleveTypeStatutAutorise($statut);
 	$statut->save();
@@ -206,12 +196,7 @@ function ajoutTypesParDefaut() {
 	$type->addAbsenceEleveTypeStatutAutorise($statut);
 	$statut->save();
 
-	$statut = new AbsenceEleveTypeStatutAutorise();
-	$statut->setStatut("autre");
-	$type->addAbsenceEleveTypeStatutAutorise($statut);
-	$statut->save();
-
- 	$type->save();
+	$type->save();
     }
 
     $type = new AbsenceEleveType();

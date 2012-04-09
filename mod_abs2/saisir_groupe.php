@@ -491,9 +491,24 @@ foreach($eleve_col as $eleve) {
 	}
 	
 	$Yesterday = date("Y-m-d",mktime(0,0,0,$dt_date_absence_eleve->format("m") ,$dt_date_absence_eleve->format("d")-1,$dt_date_absence_eleve->format("Y")));
-	$compter_hier = $eleve->getAbsenceEleveSaisiesDuJour($Yesterday)->count();
-	$afficheEleve[$elv]['class_hier'] = ($compter_hier >= 1) ? "absentHier" : '';
-	$afficheEleve[$elv]['text_hier'] = ($compter_hier >= 1) ? $compter_hier.' enr.' : '';
+	$abs_hier = false;
+        $traitee_hier = true;//les saisies de la veille ont-elle été traitées intégralement
+        $justifiee_hier = true;//les saisies de la veille ont-elle été justifiées intégralement
+        $afficheEleve[$elv]['bulle_hier'] = '';
+        foreach ($eleve->getAbsenceEleveSaisiesDuJour($Yesterday) as $saisie) {
+            if (!$saisie->getManquementObligationPresence()) continue;
+            $abs_hier = true;
+            $traitee_hier = $traitee_hier && $saisie->getTraitee();
+            $justifiee_hier = $justifiee_hier && $saisie->getJustifiee();
+            $afficheEleve[$elv]['bulle_hier'] .= $saisie->getTypesDescription();
+        }
+        if ($abs_hier) {
+            $afficheEleve[$elv]['class_hier'] = $justifiee_hier ? "justifieeHier" : 'absentHier';
+            $afficheEleve[$elv]['text_hier'] = $traitee_hier ? 'T' : '';
+        } else {
+            $afficheEleve[$elv]['class_hier'] = '';
+            $afficheEleve[$elv]['text_hier'] = '';
+        }
 	$afficheEleve[$elv]['position'] = $eleve_col->getPosition();
 	$afficheEleve[$elv]['id'] = $eleve->getId();
 	$afficheEleve[$elv]['nom'] = $eleve->getNom();
@@ -541,14 +556,16 @@ foreach($eleve_col as $eleve) {
 					$nb_creneau_a_saisir++;
 				}
 			}
-			// pour le creneau en cours on garde uniquement les absences de l'utilisateur pour ne pas l'influencer par d'autres saisies
-			$absences_du_creneau_du_prof = new PropelObjectCollection();
-			foreach ($absences_du_creneau as $abs) {
-				if ($abs->getUtilisateurId() == $utilisateur->getPrimaryKey()) {
-					$absences_du_creneau_du_prof->append($abs);
-				}
-			}
-			$absences_du_creneau = $absences_du_creneau_du_prof;
+			// pour le creneau en cours on garde uniquement les absences de l'utilisateur pour ne pas l'influencer par d'autres saisies sauf si configuré autrement
+                        if (getSettingValue("abs2_afficher_saisies_creneau_courant")!='y') {
+                            $absences_du_creneau_du_prof = new PropelObjectCollection();
+                            foreach ($absences_du_creneau as $abs) {
+                                    if ($abs->getUtilisateurId() == $utilisateur->getPrimaryKey()) {
+                                            $absences_du_creneau_du_prof->append($abs);
+                                    }
+                            }
+                            $absences_du_creneau = $absences_du_creneau_du_prof;
+                        }
 		} else if ($current_creneau != null && $edt_creneau->getHeuredebutDefiniePeriode('U') > $current_creneau->getHeuredebutDefiniePeriode('U')) {
 			//on n'affiche pas les informations apres le creneau en cours pour ne pas influencer la saisie si c'est un enseignant
 			if($utilisateur->getStatut() == "professeur"){
@@ -557,10 +574,13 @@ foreach($eleve_col as $eleve) {
 				$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
 			}
 		} else {
-			//on affiche  les informations pour les crenaux avant la saisie
-			$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
+			//on affiche  les informations pour les crenaux avant la saisie sauf si configuré autrement
+                        if (getSettingValue("abs2_cacher_creneaux_precedents")!='y') {
+                            $absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
+                        } else {
+                            $absences_du_creneau = new PropelCollection();
+                        }
 		}
-		$style = '';
 		$afficheEleve[$elv]['style'][$i] = "";
 		if (!$absences_du_creneau->isEmpty()) {
 			foreach ($absences_du_creneau as $abs_saisie) {
@@ -1028,11 +1048,11 @@ if ($eleve_col->isEmpty()) {
 				<tbody>
 <?php foreach($afficheEleve as $eleve) { ?>
 					<tr class='<?php echo $eleve['background'];?>'>
-						<td class = "<?php if($eleve['class_hier'] !=''){echo 'absentHier';}
+						<td class = "<?php echo($eleve['class_hier']);
 							if ($eleve['creneau_courant'] != 0) {
 								echo ' noSmartphone';
 							} ?>">
-							<?php echo $eleve['text_hier']; ?>
+                                                        <span class="description" title="<?php echo htmlspecialchars($eleve['bulle_hier']); ?>"><?php echo $eleve['text_hier']; ?></span>
 						</td>
 						<td class='td_abs_eleves'>
 							<input type="hidden" 
