@@ -450,27 +450,37 @@ if(mysql_num_rows($res)==0) {
 </p>
 
 <form action="gestion_connect.php" id="form_param_mdp" method="post">
-	<p style="text-align:right;">
+	<table>
+	<tr style="text-align:left;">
+	<td>
 	<?php echo add_token_field(); ?>
 		<label for="nombre_tentatives_connexion">
 			Nombre maximum de tentatives de connexion infructueuses : 
 		</label>
+	</td>
+	<td>
 		<input type="text" 
 			   name="nombre_tentatives_connexion" 
 			   id="nombre_tentatives_connexion"
 			   value="<?php echo getSettingValue('nombre_tentatives_connexion'); ?>"
 			   size="10" />
-	</p>
-	<p style="text-align:right;">
+	</td>
+	</tr>
+	<tr style="text-align:left;">
+	<td>
 		<label for="temps_compte_verrouille">
 			Temps en minutes pendant lequel un compte est temporairement verrouillé suite à un trop grand nombre d'essais infructueux :
 		</label>
+	</td>
+	<td>
 		<input type="text" 
 			   name="temps_compte_verrouille"
 			   id= "temps_compte_verrouille"
 			   value="<?php echo getSettingValue('temps_compte_verrouille'); ?>" 
 			   size="10" />
-	</p>
+	</td>
+	</tr>
+	</table>
 	
 	<p class="center">
 		<input type="submit" name="valid_param_mdp" value="Valider" />
@@ -789,7 +799,9 @@ $ligne_csv[0] = "statut;login;debut_session;fin_session;adresse_ip;navigateur;pr
 $nb_ligne = 1;
 
 if ($res) {
+    $alt=1;
     for ($i = 0; ($row = sql_row($res, $i)); $i++) {
+        $alt=$alt*(-1);
         $annee_f = mb_substr($row[8],0,4);
         $mois_f =  mb_substr($row[8],5,2);
         $jour_f =  mb_substr($row[8],8,2);
@@ -814,7 +826,7 @@ if ($res) {
         }
         if ($row[1] == '') {$row[1] = "<span style='color:red;font-weight:bold'>Utilisateur inconnu</span>";}
 
-        echo "<tr>\n";
+        echo "<tr class='lig$alt white_hover'>\n";
 		 echo "<td class=\"col\"><span class='small'>".$temp1.$row[10].$temp2."</span></td>\n";
         echo "<td class=\"col\"><span class='small'>".$temp1.$row[0]."<br />";
 		if($row[9]!='') {
