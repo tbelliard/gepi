@@ -159,7 +159,7 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	$largeur_page=210;
 	$hauteur_page=297;
 
-	$pref_marge=isset($_POST['marge_pdf_mes_moyennes']) ? $_POST['marge_pdf_mes_moyennes'] : 7;
+	$pref_marge=isset($_POST['marge_pdf_mes_moyennes']) ? $_POST['marge_pdf_mes_moyennes'] : getPref($_SESSION['login'],'marge_pdf_mes_moyennes',7);
 	if(($pref_marge=="")||(!preg_match("/^[0-9]*$/", $pref_marge))||($pref_marge<5)) {
 		$pref_marge=7;
 	}
@@ -180,8 +180,15 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 
 	// Hauteur des lignes:
 	//$h_cell=10;
-	$h_cell=isset($_POST['h_cell']) ? $_POST['h_cell'] : 10;
-	if((!preg_match("/^[0-9]+$/", $h_cell)||($h_cell<5))) {$h_cell=10;}
+	$h_cell=isset($_POST['h_cell']) ? $_POST['h_cell'] : getPref($_SESSION['login'], 'hauteur_ligne_pdf_mes_moyennes', 10);
+	if((!preg_match("/^[0-9]+$/", $h_cell)||($h_cell<5))) {
+		$h_cell=10;
+	}
+	else {
+		savePref($_SESSION['login'], 'hauteur_ligne_pdf_mes_moyennes', $h_cell);
+	}
+
+
 	$h_ligne_titre_tableau=10;
 
 	// Largeur des colonnes
@@ -366,7 +373,10 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 
 			$largeur_dispo=$largeur_col[$i];
 			//$texte=$tab[$i-1];
-			$texte=stripslashes(preg_replace("/\\\\r\\\\n/","\r\n",$tab[$i-1]));
+			//$texte=stripslashes(preg_replace("/\\\\r\\\\n/","\r\n",$tab[$i-1]));
+			$texte=preg_replace("/\\\\r/","\r",$tab[$i-1]);
+			$texte=preg_replace("/\\\\n/","\n",$texte);
+			$texte=stripslashes($texte);
 			if(preg_match("/^App/", $ligne1_csv[$i])) {
 				cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$taille_min_police,'LRBT');
 			}
@@ -1904,7 +1914,7 @@ function checkbox_change(champ, cpt) {
 		if ($en_tete == "yes") {
 			echo "<input type='submit' value='Générer un PDF' />\n";
 			echo "<br />\n";
-			echo "Hauteur de ligne&nbsp;: <input type='text' name='h_cell' id='h_cell' value='10' size='2' onKeyDown=\"clavier_2(this.id,event,5,50);\" AutoComplete=\"off\" />mm\n";
+			echo "Hauteur de ligne&nbsp;: <input type='text' name='h_cell' id='h_cell' value='".getPref($_SESSION['login'],'hauteur_ligne_pdf_mes_moyennes',10)."' size='2' onKeyDown=\"clavier_2(this.id,event,5,50);\" AutoComplete=\"off\" />mm\n";
 			echo "<br />\n";
 			echo "Marges&nbsp;: <input type='text' name='marge_pdf_mes_moyennes' id='marge_pdf_mes_moyennes' value='".getPref($_SESSION['login'],'marge_pdf_mes_moyennes',7)."' size='2' onKeyDown=\"clavier_2(this.id,event,5,20);\" AutoComplete=\"off\" />mm\n";
 		}
