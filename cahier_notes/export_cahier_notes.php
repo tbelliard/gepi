@@ -289,13 +289,27 @@ if(!isset($type_export)) {
 	echo "<h2>$titre</h2>\n";
 	echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	echo add_token_field();
+
 	echo "<p>Vous pouvez effectuer un export:<br />\n";
 	echo "<input type='hidden' name='id_racine' value='$id_racine' />\n";
-	echo "<input type='radio' name='type_export' id='type_export_csv' value='CSV' checked /><label for='type_export_csv' style='cursor: pointer;'> fichier CSV</label><br />\n";
+
+
+	$pref_export_cn=getPref($_SESSION['login'],'export_cn','csv');
+	echo "<input type='radio' name='type_export' id='type_export_csv' value='CSV' ";
+	if((getSettingValue("export_cn_ods")!='y')||
+		($pref_export_cn=='csv')) {
+		echo "checked ";
+	}
+	echo "/><label for='type_export_csv' style='cursor: pointer;'> fichier CSV</label><br />\n";
 
 	if(getSettingValue("export_cn_ods")=='y') {
-		echo "<input type='radio' name='type_export' id='type_export_ods' value='ODS' /><label for='type_export_ods' style='cursor: pointer;'> feuille de tableur ODS</label><br />\n";
+		echo "<input type='radio' name='type_export' id='type_export_ods' value='ODS' ";
+		if($pref_export_cn=='ods') {
+			echo "checked ";
+		}
+		echo "/><label for='type_export_ods' style='cursor: pointer;'> feuille de tableur ODS</label><br />\n";
 	}
+
 	echo "<input type='submit' name='envoyer' value='Valider' /></p>\n";
 	echo "</form>\n";
 /**
@@ -321,6 +335,8 @@ if($type_export=="CSV") {
 
 	// Génération du CSV
 
+	savePref($_SESSION['login'], 'export_cn', 'csv');
+
 	$nom_fic.=".csv";
 
 	$now=gmdate('D, d M Y H:i:s').' GMT';
@@ -332,7 +348,7 @@ if($type_export=="CSV") {
 
 	// On fait la liste des devoirs de ce carnet de notes
 	$appel_dev = mysql_query("select * from cn_devoirs where (id_racine='$id_racine') order by id_conteneur,date");
-	$nb_dev  = mysql_num_rows($appel_dev);
+	$nb_dev = mysql_num_rows($appel_dev);
 
 	$ligne_entete="GEPI_INFOS;GEPI_LOGIN_ELEVE;NOM;PRENOM;CLASSE;MOYENNE;GEPI_COL_1ER_DEVOIR";
 	$fd.="$ligne_entete\n";
@@ -485,6 +501,8 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 	 *  ... il faudra prévoir un nettoyage.
 	 * Il faudrait que l'option générer des ODS soit activable/désactivable par l'admin
      */
+
+	savePref($_SESSION['login'], 'export_cn', 'ods');
 
 	// On fait la liste des devoirs de ce carnet de notes
 	$appel_dev = mysql_query("select * from cn_devoirs where (id_racine='$id_racine') order by id_conteneur,date");
