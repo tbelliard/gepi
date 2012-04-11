@@ -218,7 +218,8 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						$affiche[1] = traitement_magic_quotes(corriger_caracteres($affiche[1]));
 	
 						$mode_generation_login=getSettingValue("mode_generation_login");
-	
+
+						/*
 						if ($mode_generation_login == "name") {
 							$temp1 = $affiche[0];
 							$temp1 = strtoupper($temp1);
@@ -311,6 +312,9 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 							$temp1 = remplace_accents($temp1,"all");
 						}
 						$login_prof = $temp1;
+						*/
+						$login_prof = generate_unique_login($affiche[0],$affiche[1],$mode_generation_login);
+
 						//$login_prof = remplace_accents($temp1,"all");
 						// On teste l'unicité du login que l'on vient de créer
 						$m = 2;
