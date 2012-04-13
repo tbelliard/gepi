@@ -544,6 +544,11 @@ if (isset($titre_page)) {
 						echo "</a>";
 				}
 
+				if(getSettingAOui('aff_temoin_check_serveur')) {
+					// insert into setting set name='aff_temoin_check_serveur', value='y';
+					temoin_check_srv();
+				}
+
 				//=== Titre de la page ===
 				echo "<h1>".$titre_page."</h1>\n";
 				echo "<!-- Dernière connexion -->\n";

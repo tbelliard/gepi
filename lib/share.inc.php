@@ -5295,4 +5295,46 @@ function get_img_formules_math($texte, $id_groupe, $type_notice="c") {
 	return $contenu_cor;
 }
 
+/** Fonction destinée à contacter le serveur toutes les $intervalle_temps secondes
+ *  et afficher si le serveur répond.
+ *  Pour contrôler que le serveur est OK avant de valider une page avec beaucoup de saisies
+ *
+ * @param string $id_div_retour nom du div inséré
+ * @param string $nom_js_func nom de la fonction js insérée
+ * @param string $nom_var nom de la variable js compteur de secondes
+ * @param string $taille la taille du div carré inséré
+ * @param integer $intervalle_temps l'intervalle de temps en secondes entre deux contacts du serveur
+ *
+ * @return string le code HTML et JS
+ */
+
+function temoin_check_srv($id_div_retour="retour_ping", $nom_js_func="check_srv", $nom_var="cpt_ping", $taille=10, $intervalle_temps=10) {
+	global $gepiPath;
+
+	echo "<div id='retour_ping' style='width:".$taille."px; height:".$taille."px; background-color:red; border:1px solid black; float:left; margin:1px;'></div>\n";
+
+	echo "<script type='text/javascript'>
+	var $nom_var=0;
+
+	function $nom_js_func() {
+
+		if(($nom_var==$intervalle_temps)||($nom_var==0)) {
+			$nom_var=0;
+
+			$('$id_div_retour').style.opacity=1;
+			$('$id_div_retour').innerHTML='';
+	
+			new Ajax.Updater($('$id_div_retour'),'$gepiPath/lib/echo.php?var=valeur',{method: 'get'});
+
+		}
+		else {
+			$('$id_div_retour').style.opacity=1-$nom_var/$intervalle_temps;
+		}
+		$nom_var+=1;
+		setTimeout('$nom_js_func()', 1000);
+	}
+
+	$nom_js_func();
+</script>\n";
+}
 ?>
