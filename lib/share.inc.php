@@ -5311,7 +5311,7 @@ function get_img_formules_math($texte, $id_groupe, $type_notice="c") {
 function temoin_check_srv($id_div_retour="retour_ping", $nom_js_func="check_srv", $nom_var="cpt_ping", $taille=10, $intervalle_temps=10) {
 	global $gepiPath;
 
-	echo "<div id='retour_ping' style='width:".$taille."px; height:".$taille."px; background-color:red; border:1px solid black; float:left; margin:1px;'></div>\n";
+	echo "<div id='retour_ping' style='width:".$taille."px; height:".$taille."px; background-color:red; border:1px solid black; float:left; margin:1px;' title=\"Témoin de réponse du serveur: Un test est effectué toutes les $intervalle_temps secondes. Si le témoin se maintient au rouge, c'est que le serveur n'est pas joignable.\"></div>\n";
 
 	echo "<script type='text/javascript'>
 	var $nom_var=0;
