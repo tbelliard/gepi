@@ -212,18 +212,18 @@ if ($res) {
 ?>
 				<a href="../eleves/modify_eleve.php?eleve_login=<?php echo $row[0]; ?>" ><?php echo $row[1]; ?></a>
 <?php
-		$sql= " SELECT id_classe FROM j_eleves_classes WHERE login='$row[0]'";
-		$res1 = sql_query($sql);
-		$id = mysql_fetch_array($res1);
-		$sql= " SELECT classe FROM classes WHERE id='$id[id_classe]'";
-		$res2 = sql_query($sql);
-		$classe_eleve = mysql_fetch_array($res2);
+			$sql= " SELECT id_classe FROM j_eleves_classes WHERE login='$row[0]'";
+			$res1 = sql_query($sql);
+			$id = mysql_fetch_array($res1);
+			$sql= " SELECT classe FROM classes WHERE id='$id[id_classe]'";
+			$res2 = sql_query($sql);
+			$classe_eleve = mysql_fetch_array($res2);
 		}
 		elseif ($row[4]=="responsable") {
-		$sql= " SELECT pers_id FROM resp_pers where login='$row[0]'";
-		$res1 = sql_query($sql);
-		$id = mysql_fetch_array($res1);
-		echo "<a href=\"../responsables/modify_resp.php?pers_id=" .$id['pers_id']. "\" />".$row[1]."</a>";
+			$sql= " SELECT pers_id FROM resp_pers where login='$row[0]'";
+			$res3 = sql_query($sql);
+			$id = mysql_fetch_array($res3);
+			echo "<a href=\"../responsables/modify_resp.php?pers_id=" .$id['pers_id']. "\" />".$row[1]."</a>";
 		}
 		else {
 ?>
