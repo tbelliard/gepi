@@ -469,7 +469,7 @@ if (isset($pas_de_message_deconnexion) && $pas_de_message_deconnexion) {
 <body onload="<?php echo $show_deco; ?><?php echo $charger_observeur; ?>" <?php if (isset($dojo)) {echo 'class=" claro " style="font:11pt Verdana,sans-serif;"';}?> >
 
 <?php
-if (getSettingValue("impose_petit_entete_prof") == 'y' AND $_SESSION['statut'] == 'professeur') {
+if (isset($_SESSION['statut']) AND getSettingValue("impose_petit_entete_prof") == 'y' AND $_SESSION['statut'] == 'professeur') {
 	$_SESSION['cacher_header']="y";
 }
 // Taille à récupérer dans la base pour initialiser $_SESSION['cacher_header']
