@@ -2854,8 +2854,8 @@ $update_tempo4=mysql_query($sql);
 											//echo "<a href='#' onmouseover=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
 											echo "<a href='#' onmouseover=\"delais_afficher_div('chgt_email_non_pris_en_compte','y',-20,20,1000,20,20);\" onclick=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
 
-											$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom));
-											$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='eleves/modify_eleve.php?eleve_login=$lig_ele->login'>".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom))."</a><br />L'adresse email renseignée par l'élève via 'Gérer mon compte' est différente de l'adresse enregistrée dans Sconet (".$affiche[12].").<br />Vous pouvez également effectuer la <a href='eleves/synchro_mail.php'>synchronisation globalement</a>.";
+											$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." ($lig_ele->login)";
+											$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='eleves/modify_eleve.php?eleve_login=$lig_ele->login'>".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))."</a><br />L'adresse email renseignée par l'élève via 'Gérer mon compte' est différente de l'adresse enregistrée dans Sconet (".$affiche[12].").<br />Vous pouvez également effectuer la <a href='eleves/synchro_mail.php'>synchronisation globalement</a>.";
 											$info_action_destinataire=array("administrateur","scolarite");
 											$info_action_mode="statut";
 											enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
@@ -2871,13 +2871,13 @@ $update_tempo4=mysql_query($sql);
 									echo " background-color: red;";
 									echo "'>";
 									echo "<a href='../classes/classes_const.php?id_classe=$lig_clas1->id&amp;msg=A_EFFECTUER_Changement_de_classe_vers_".remplace_accents(stripslashes($affiche[9]))."_pour_".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom),'all')."' target='_blank'>";
-									echo "$lig_clas1->classe -&gt; $affiche[9]";
+									echo preg_replace("/ /", "&nbsp;", $lig_clas1->classe)." -&gt; ".preg_replace("/ /", "&nbsp;", $affiche[9]);
 									echo "</a>";
 
 // RENSEIGNER UNE TABLE AVEC L'INDICATION QU'IL Y AURA UNE MODIF A FAIRE...
 
-									$info_action_titre="Changement de classe à effectuer pour ".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom));
-									$info_action_texte="Effectuer le <a href='classes/classes_const.php?id_classe=$lig_clas1->id&amp;msg=".rawurlencode("Le changement de classe de ".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom))." a été signalé lors de la mise à jour Sconet de $lig_clas1->classe vers $affiche[9].")."'>changement de classe</a> de $lig_clas1->classe vers $affiche[9]";
+									$info_action_titre="Changement de classe à effectuer pour ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." ($lig_ele->login)";
+									$info_action_texte="Effectuer le <a href='classes/classes_const.php?id_classe=$lig_clas1->id&amp;msg=".rawurlencode("Le changement de classe de ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." a été signalé lors de la mise à jour Sconet de $lig_clas1->classe vers $affiche[9].")."'>changement de classe</a> de $lig_clas1->classe vers $affiche[9]";
 									$info_action_destinataire="administrateur";
 									$info_action_mode="statut";
 									enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
@@ -3549,8 +3549,8 @@ $update_tempo4=mysql_query($sql);
 									echo "\n<span style='color:blue;'>";
 
 									if($nb_comptes_eleves>0) {
-										$info_action_titre="Nouvel élève&nbsp;:".remplace_accents(stripslashes($lig->ELENOM)."_".stripslashes($lig->ELEPRE));
-										$info_action_texte="Vous souhaitez peut-être créer un compte pour ce nouvel élève&nbsp;: <a href='utilisateurs/create_eleve.php?critere_recherche=$lig->ELENOM&afficher_tous_les_eleves=n'>".remplace_accents(stripslashes($lig->ELENOM)."_".stripslashes($lig->ELEPRE))."</a>.";
+										$info_action_titre="Nouvel élève&nbsp;: ".remplace_accents(stripslashes($lig->ELENOM)." ".stripslashes($lig->ELEPRE))." ($login_eleve)";
+										$info_action_texte="Vous souhaitez peut-être créer un compte pour ce nouvel élève&nbsp;: <a href='utilisateurs/create_eleve.php?critere_recherche=$lig->ELENOM&afficher_tous_les_eleves=n'>".remplace_accents(stripslashes($lig->ELENOM)." ".stripslashes($lig->ELEPRE))."</a>.";
 										$info_action_destinataire=array("administrateur");
 										$info_action_mode="statut";
 										enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
@@ -6809,8 +6809,8 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 														//$ligne_parent.="<a href='#' onmouseover=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
 														$ligne_parent.="<a href='#' onmouseover=\"delais_afficher_div('chgt_email_non_pris_en_compte','y',-20,20,1000,20,20);\" onclick=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
 	
-														$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom));
-														$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom))."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' est vide contrairement à l'adresse enregistrée dans Sconet ($lig_pers2->mel).<br />Vous pouvez également effectuer la <a href='responsables/synchro_mail.php'>synchronisation globalement</a>.";
+														$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_pers2->nom)." ".stripslashes($lig_pers2->prenom))." ($lig_pers2->pers_id)";
+														$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)." ".stripslashes($lig_pers2->prenom))."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' est vide contrairement à l'adresse enregistrée dans Sconet ($lig_pers2->mel).<br />Vous pouvez également effectuer la <a href='responsables/synchro_mail.php'>synchronisation globalement</a>.";
 														$info_action_destinataire=array("administrateur","scolarite");
 														$info_action_mode="statut";
 														enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
@@ -6823,8 +6823,8 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 															//$ligne_parent.="<a href='#' onmouseover=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
 															$ligne_parent.="<a href='#' onmouseover=\"delais_afficher_div('chgt_email_non_pris_en_compte','y',-20,20,1000,20,20);\" onclick=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
 	
-															$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom),'all');
-															$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom),'all')."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' ($lig_email_resp->email) diffère de l'adresse enregistrée dans Sconet ($lig_pers2->mel).<br />Vous pouvez également effectuer la <a href='responsables/synchro_mail.php'>synchronisation globalement</a>.";
+															$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_pers2->nom)." ".stripslashes($lig_pers2->prenom),'all')." ($lig_pers2->pers_id)";
+															$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)." ".stripslashes($lig_pers2->prenom),'all')."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' ($lig_email_resp->email) diffère de l'adresse enregistrée dans Sconet ($lig_pers2->mel).<br />Vous pouvez également effectuer la <a href='responsables/synchro_mail.php'>synchronisation globalement</a>.";
 															$info_action_destinataire=array("administrateur","scolarite");
 															$info_action_mode="statut";
 															enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
@@ -6834,8 +6834,8 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 															// Bizarre... si le responsable a mise à jour son adresse par Gérer mon compte en mode 'mon_compte', on devrait avoir la synchro... ou alors la mise à jour 'mode_email_resp' est intervenue entre temps
 															// ... faudrait-il aussi tester l'ancien resp_pers.mel et le utilisateurs.email?
 	
-															$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom));
-															$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom))."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' ($lig_email_resp->email) diffère de l'adresse enregistrée dans Sconet ($lig_pers2->mel).<br />Vous pouvez également effectuer la <a href='responsables/synchro_mail.php'>synchronisation globalement</a>.";
+															$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_pers2->nom)." ".stripslashes($lig_pers2->prenom))." ($lig_pers2->pers_id)";
+															$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)." ".stripslashes($lig_pers2->prenom))."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' ($lig_email_resp->email) diffère de l'adresse enregistrée dans Sconet ($lig_pers2->mel).<br />Vous pouvez également effectuer la <a href='responsables/synchro_mail.php'>synchronisation globalement</a>.";
 															$info_action_destinataire=array("administrateur","scolarite");
 															$info_action_mode="statut";
 															enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
@@ -7316,8 +7316,8 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								echo "\n<span style='color:blue;'>";
 
 								if($nb_comptes_resp>0) {
-									$info_action_titre="Nouveau responsable&nbsp;:".remplace_accents(stripslashes($lig->nom)."_".stripslashes($lig->prenom));
-									$info_action_texte="Vous souhaitez peut-être créer un compte pour ce nouveau responsable&nbsp;: <a href='utilisateurs/create_responsable.php?critere_recherche=$lig->nom&afficher_tous_les_resp=n'>".remplace_accents(stripslashes($lig->nom)."_".stripslashes($lig->prenom))."</a>.";
+									$info_action_titre="Nouveau responsable&nbsp;: ".remplace_accents(stripslashes($lig->nom)." ".stripslashes($lig->prenom))." ($lig1->col2)";
+									$info_action_texte="Vous souhaitez peut-être créer un compte pour ce nouveau responsable&nbsp;: <a href='utilisateurs/create_responsable.php?critere_recherche=$lig->nom&afficher_tous_les_resp=n'>".remplace_accents(stripslashes($lig->nom)." ".stripslashes($lig->prenom))."</a>.";
 									$info_action_destinataire=array("administrateur");
 									$info_action_mode="statut";
 									enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);

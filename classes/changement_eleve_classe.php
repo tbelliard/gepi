@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -738,6 +738,17 @@ Evitez les 'fantaisies';o).</p>
 		// Prof principal à modifier?
 		$ancre_login_eleve=my_ereg_replace("[^A-Za-z0-9_]","",$login_eleve);
 		echo "<p>N'oubliez pas de contrôler/corriger les associations CPE et ".getSettingValue("gepi_prof_suivi")." pour cet élève: <a href='classes_const.php?id_classe=$id_future_classe#$ancre_login_eleve'>$classe_future</a></p>\n";
+
+
+		// Ménage:
+		$sql="SELECT id FROM infos_actions WHERE titre LIKE 'Changement de classe %($login_eleve)';";
+		$res_actions=mysql_query($sql);
+		if(mysql_num_rows($res_actions)>0) {
+			while($lig_action=mysql_fetch_object($res_actions)) {
+				$menage=del_info_action($lig_action->id);
+				if(!$menage) {$msg.="Erreur lors de la suppression de l'action en attente en page d'accueil à propos de $login_eleve<br />";}
+			}
+		}
 
 	}
 }

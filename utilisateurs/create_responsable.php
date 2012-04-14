@@ -208,6 +208,16 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 						$reg2 = mysql_query($sql);
 						//$msg.="$sql<br />";
 						$nb_comptes++;
+
+						// Ménage:
+						$sql="SELECT id FROM infos_actions WHERE titre LIKE 'Nouveau responsable%($current_parent->pers_id)';";
+						$res_actions=mysql_query($sql);
+						if(mysql_num_rows($res_actions)>0) {
+							while($lig_action=mysql_fetch_object($res_actions)) {
+								$menage=del_info_action($lig_action->id);
+								if(!$menage) {$msg.="Erreur lors de la suppression de l'action en attente en page d'accueil à propos de $reg_login<br />";}
+							}
+						}
 					}
 				} else {
 					$msg .= "Erreur lors de la création du compte ".$reg_login." : l'utilisateur n'a pas pu être créé sur l'annuaire LDAP.<br/>";

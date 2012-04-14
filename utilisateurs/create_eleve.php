@@ -147,6 +147,16 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					if (!$reg) {
 						$msg .= "Erreur lors de la création du compte ".$current_eleve->login."<br />";
 					} else {
+						// Ménage:
+						$sql="SELECT id FROM infos_actions WHERE titre LIKE 'Nouvel %l%ve%($current_eleve->login)';";
+						$res_actions=mysql_query($sql);
+						if(mysql_num_rows($res_actions)>0) {
+							while($lig_action=mysql_fetch_object($res_actions)) {
+								$menage=del_info_action($lig_action->id);
+								if(!$menage) {$msg.="Erreur lors de la suppression de l'action en attente en page d'accueil à propos de $current_eleve->login<br />";}
+							}
+						}
+
 						$nb_comptes++;
 					}
 				}
