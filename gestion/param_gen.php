@@ -1449,7 +1449,7 @@ if($exp_imp_chgt_etab=="") {$exp_imp_chgt_etab="no";}
 				s=m*60;
 				h_min=sec_to_jourheureminsec_construction_chaine(s);
 
-				if(s<=$session_gc_maxlifetime) {
+				if(s<=<?php echo $session_gc_maxlifetime;?>) {
 					document.getElementById(id_dest).style.color='green';
 					document.getElementById(id_dest).style.textDecoration='none';
 				}
@@ -1554,7 +1554,8 @@ if($exp_imp_chgt_etab=="") {$exp_imp_chgt_etab="no";}
 					alert('Le format de login des responsables est invalide');
 				}
 				else {
-					document.form1.submit();
+					//document.form1.submit();
+					document.getElementById('form1').submit();
 				}
 			}
 		}
