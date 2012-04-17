@@ -1007,6 +1007,9 @@ if ($eleve_col->isEmpty()) {
 			<p class="choix_fin center">
 				<input value="Enregistrer et passer au cahier de texte" name="cahier_texte" type="submit"/>
 			</p>
+			<p class="center">
+				<a href="saisie_effectif_cantine.php?id_groupe=<?php echo $id_groupe;?>" target='_blank'>Cantine</a>
+			</p>
 			<?php } ?>
 <!-- Afichage du tableau de la liste des élèves -->
 <!-- Legende du tableau-->
