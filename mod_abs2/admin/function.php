@@ -329,6 +329,34 @@ function ajoutTypesParDefaut() {
     }
 
     $type = new AbsenceEleveType();
+    $type->setNom("Prévoir cantine");
+    if (AbsenceEleveTypeQuery::create()->filterByNom($type->getNom())->find()->isEmpty()) {
+	$type->setCommentaire("L'élève prévoit de manger au réfectoire.");
+	$type->setJustificationExigible(false);
+	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::SOUS_RESP_ETAB_NON_PRECISE);
+	$type->setManquementObligationPresence(AbsenceEleveType::MANQU_OBLIG_PRESE_NON_PRECISE);
+	$type->setModeInterface(AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN);
+    $type->setIdLieu($id_lieu_etab);
+
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("professeur");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("cpe");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("scolarite");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
+	$type->save();
+    }
+
+    $type = new AbsenceEleveType();
     $type->setNom("Dispensé (élève présent)");
     if (AbsenceEleveTypeQuery::create()->filterByNom($type->getNom())->find()->isEmpty()) {
 	$type->setCommentaire("L'élève est dispensé mais présent physiquement lors de la séance.");
