@@ -196,7 +196,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	    foreach ($traitements as $traitement) {
 		if ($traitement->getAbsenceEleveType() != null 
 		    && $traitement->getAbsenceEleveType()->getModeInterface() != null 
-		    && $traitement->getAbsenceEleveType()->getModeInterface() != AbsenceEleveType::TYPE_SAISIE_NON_PRECISE ) {
+		    && $traitement->getAbsenceEleveType()->getModeInterface() != AbsenceEleveType::MODE_INTERFACE_NON_PRECISE ) {
 		    return true;
 		}
 	    }

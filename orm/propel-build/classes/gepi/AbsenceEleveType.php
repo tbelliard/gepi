@@ -18,24 +18,24 @@ class AbsenceEleveType extends BaseAbsenceEleveType {
 	/**
 	 * Les types de creneaux possibles
 	 */
-	const TYPE_SAISIE_DEBUT_ABS = 'DEBUT_ABS';
-	const TYPE_SAISIE_FIN_ABS = 'FIN_ABS';
-	const TYPE_SAISIE_DEBUT_ET_FIN_ABS = 'DEBUT_ET_FIN_ABS';
-	const TYPE_SAISIE_NON_PRECISE = 'NON_PRECISE';
-	const TYPE_SAISIE_COMMENTAIRE_EXIGE = 'COMMENTAIRE_EXIGE';
-	const TYPE_SAISIE_DISCIPLINE = 'DISCIPLINE';
-	const TYPE_SAISIE_CHECKBOX_HIDDEN = 'CHECKBOX_HIDDEN';
-	const TYPE_SAISIE_CHECKBOX = 'CHECKBOX';
+	const MODE_INTERFACE_DEBUT_ABS = 'DEBUT_ABS';
+	const MODE_INTERFACE_FIN_ABS = 'FIN_ABS';
+	const MODE_INTERFACE_DEBUT_ET_FIN_ABS = 'DEBUT_ET_FIN_ABS';
+	const MODE_INTERFACE_NON_PRECISE = 'NON_PRECISE';
+	const MODE_INTERFACE_COMMENTAIRE_EXIGE = 'COMMENTAIRE_EXIGE';
+	const MODE_INTERFACE_DISCIPLINE = 'DISCIPLINE';
+	const MODE_INTERFACE_CHECKBOX_HIDDEN = 'CHECKBOX_HIDDEN';
+	const MODE_INTERFACE_CHECKBOX = 'CHECKBOX';
 
 	public static $LISTE_LABEL_TYPE_SAISIE = array(
-	    AbsenceEleveType::TYPE_SAISIE_DEBUT_ABS => 'Saisie de l\'heure du debut de l\'absence'
-	    , AbsenceEleveType::TYPE_SAISIE_FIN_ABS => 'Saisie de l\'heure de fin debut de l\'absence'
-	    , AbsenceEleveType::TYPE_SAISIE_DEBUT_ET_FIN_ABS => 'Saisie de l\'heure du debut et de fin de l\'absence'
-	    , AbsenceEleveType::TYPE_SAISIE_NON_PRECISE => 'Type de saisie non précisé'
-	    , AbsenceEleveType::TYPE_SAISIE_COMMENTAIRE_EXIGE => 'Saisie d\'un commentaire explicatif'
-	    , AbsenceEleveType::TYPE_SAISIE_CHECKBOX => 'Saisie de cases à cocher'
-	    , AbsenceEleveType::TYPE_SAISIE_CHECKBOX_HIDDEN => 'Saisie de cases à cocher cahées par défaut'
-	    , AbsenceEleveType::TYPE_SAISIE_DISCIPLINE => 'Saisie d\'un incident disciplinaire');
+	    AbsenceEleveType::MODE_INTERFACE_DEBUT_ABS => 'Saisie de l\'heure du debut de l\'absence'
+	    , AbsenceEleveType::MODE_INTERFACE_FIN_ABS => 'Saisie de l\'heure de fin debut de l\'absence'
+	    , AbsenceEleveType::MODE_INTERFACE_DEBUT_ET_FIN_ABS => 'Saisie de l\'heure du debut et de fin de l\'absence'
+	    , AbsenceEleveType::MODE_INTERFACE_NON_PRECISE => 'Type de saisie non précisé'
+	    , AbsenceEleveType::MODE_INTERFACE_COMMENTAIRE_EXIGE => 'Saisie d\'un commentaire explicatif'
+	    , AbsenceEleveType::MODE_INTERFACE_CHECKBOX => 'Saisie de cases à cocher'
+	    , AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN => 'Saisie de cases à cocher cahées par défaut'
+	    , AbsenceEleveType::MODE_INTERFACE_DISCIPLINE => 'Saisie d\'un incident disciplinaire');
 
 	/**
 	 * Les types de RESPONSABILITE_ETABLISSEMENT possibles
