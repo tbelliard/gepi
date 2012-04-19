@@ -218,6 +218,7 @@ echo add_token_field();
 		<option value='DEBUT_ET_FIN_ABS' <?php  if ($type != null && $type->getModeInterface() == 'DEBUT_ET_FIN_ABS') {echo "selected";} ?>>Saisir le moment de debut et de fin</option>
 		<option value='COMMENTAIRE_EXIGE' <?php  if ($type != null && $type->getModeInterface() == 'COMMENTAIRE_EXIGE') {echo "selected";} ?>>Saisir un commentaire</option>
 		--><option value='DISCIPLINE' <?php  if ($type != null && $type->getModeInterface() == 'DISCIPLINE') {echo "selected";} ?>>Saisir un incident disciplinaire</option>
+		<option value='CHECKBOX_HIDDEN' <?php  if ($type != null && $type->getModeInterface() == 'CHECKBOX_HIDDEN') {echo "selected";} ?>><?php echo AbsenceEleveType::$LISTE_LABEL_TYPE_SAISIE[AbsenceEleveType::TYPE_SAISIE_CHECKBOX_HIDDEN]?></option>
 	     </select>
 	   </td>
         <td>
