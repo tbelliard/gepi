@@ -23,5 +23,18 @@
  */
 
 $result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.1(dev) :</h3>";
+$result .= "&nbsp;->Modification du champ 'type_saisie' de la table 'a_types' en 'mode_interface'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_types LIKE 'mode_interface';"));
+if ($test_champ>0) {
+	$result .= msj_present("Le champ est déjà modifié.");
+}
+else {
+	$query = mysql_query("ALTER TABLE a_types CHANGE type_saisie mode_interface VARCHAR(50) DEFAULT 'NON_PRECISE' COMMENT 'Enumeration des possibilités de l\'interface de saisie de l\'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE, DISCIPLINE, CHECKBOX, CHECKBOX_HIDDEN'");
+	if ($query) {
+			$result .= msj_ok();
+	} else {
+			$result .= msj_erreur();
+	}
+}
 
 ?>

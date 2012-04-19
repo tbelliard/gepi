@@ -456,7 +456,7 @@ set_time_limit(20);
 					$traitement->addAbsenceEleveSaisie($saisie);
 					$traitement->setAbsenceEleveType($type);
 					$traitement->setUtilisateurProfessionnel($utilisateur);
-					if ($type->getTypeSaisie() == "DISCIPLINE" && getSettingValue("active_mod_discipline")=='y') {
+					if ($type->getModeInterface() == "DISCIPLINE" && getSettingValue("active_mod_discipline")=='y') {
 						//on affiche un lien pour saisir le module discipline
 						$saisie_discipline = true;
 					}

@@ -62,12 +62,12 @@ class AbsenceEleveType extends BaseAbsenceEleveType {
 	 * @return     string description lisible du type de saisie
 	 *
 	 */
-	public function getTypeSaisieDescription() {
-	    $type_code = $this->getTypeSaisie();
+	public function getModeInterfaceDescription() {
+	    $type_code = $this->getModeInterface();
 	    if ($type_code == "") {
 		return "";
 	    } else {
-		return AbsenceEleveType::$LISTE_LABEL_TYPE_SAISIE[$this->getTypeSaisie()];
+		return AbsenceEleveType::$LISTE_LABEL_TYPE_SAISIE[$this->getModeInterface()];
 	    }
 	}
 

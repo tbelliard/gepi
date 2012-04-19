@@ -307,7 +307,7 @@ function ajoutTypesParDefaut() {
 	$type->setJustificationExigible(false);
 	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::SOUS_RESP_ETAB_VRAI);
 	$type->setManquementObligationPresence(AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX);
-	$type->setTypeSaisie(AbsenceEleveType::TYPE_SAISIE_DISCIPLINE);
+	$type->setModeInterface(AbsenceEleveType::TYPE_SAISIE_DISCIPLINE);
     $type->setIdLieu($id_lieu_etab);
 
 	$statut = new AbsenceEleveTypeStatutAutorise();

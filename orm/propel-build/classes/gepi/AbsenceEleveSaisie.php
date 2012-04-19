@@ -174,11 +174,11 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 * @return     boolean
 	 *
 	 */
-	public function hasTypeSaisieDiscipline() {
+	public function hasModeInterfaceDiscipline() {
 	    $traitements = $this->getAbsenceEleveTraitements();
 	    foreach ($traitements as $traitement) {
 		if ($traitement->getAbsenceEleveType() != null &&
-		    $traitement->getAbsenceEleveType()->getTypeSaisie() == 'DISCIPLINE') {
+		    $traitement->getAbsenceEleveType()->getModeInterface() == 'DISCIPLINE') {
 		    return true;
 		}
 	    }
@@ -191,12 +191,12 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 * @return     boolean
 	 *
 	 */
-	public function hasTypeSaisie() {
+	public function hasModeInterface() {
 	    $traitements = $this->getAbsenceEleveTraitements();
 	    foreach ($traitements as $traitement) {
 		if ($traitement->getAbsenceEleveType() != null 
-		    && $traitement->getAbsenceEleveType()->getTypeSaisie() != null 
-		    && $traitement->getAbsenceEleveType()->getTypeSaisie() != AbsenceEleveType::TYPE_SAISIE_NON_PRECISE ) {
+		    && $traitement->getAbsenceEleveType()->getModeInterface() != null 
+		    && $traitement->getAbsenceEleveType()->getModeInterface() != AbsenceEleveType::TYPE_SAISIE_NON_PRECISE ) {
 		    return true;
 		}
 	    }
@@ -655,7 +655,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 					//le sql a ete generer en activant les logs propel et en recuperant le sql de la requete plus bas
 					$sql = "SELECT /* comment_getAbsenceEleveTraitements */ 
 								a_traitements.ID, a_traitements.UTILISATEUR_ID, a_traitements.A_TYPE_ID, a_traitements.A_MOTIF_ID, a_traitements.A_JUSTIFICATION_ID, a_traitements.COMMENTAIRE, a_traitements.MODIFIE_PAR_UTILISATEUR_ID, a_traitements.CREATED_AT, a_traitements.UPDATED_AT, a_traitements.DELETED_AT,
-								a_types.ID, a_types.NOM, a_types.JUSTIFICATION_EXIGIBLE, a_types.SOUS_RESPONSABILITE_ETABLISSEMENT, a_types.MANQUEMENT_OBLIGATION_PRESENCE, a_types.RETARD_BULLETIN, a_types.TYPE_SAISIE, a_types.COMMENTAIRE, a_types.ID_LIEU, a_types.SORTABLE_RANK, a_types.CREATED_AT, a_types.UPDATED_AT,
+								a_types.ID, a_types.NOM, a_types.JUSTIFICATION_EXIGIBLE, a_types.SOUS_RESPONSABILITE_ETABLISSEMENT, a_types.MANQUEMENT_OBLIGATION_PRESENCE, a_types.RETARD_BULLETIN, a_types.MODE_INTERFACE, a_types.COMMENTAIRE, a_types.ID_LIEU, a_types.SORTABLE_RANK, a_types.CREATED_AT, a_types.UPDATED_AT,
 								a_notifications.ID, a_notifications.UTILISATEUR_ID, a_notifications.A_TRAITEMENT_ID, a_notifications.TYPE_NOTIFICATION, a_notifications.EMAIL, a_notifications.TELEPHONE, a_notifications.ADR_ID, a_notifications.COMMENTAIRE, a_notifications.STATUT_ENVOI, a_notifications.DATE_ENVOI, a_notifications.ERREUR_MESSAGE_ENVOI, a_notifications.CREATED_AT, a_notifications.UPDATED_AT,
 								a_justifications.ID, a_justifications.NOM, a_justifications.COMMENTAIRE, a_justifications.SORTABLE_RANK, a_justifications.CREATED_AT, a_justifications.UPDATED_AT
 								FROM `a_traitements` INNER JOIN j_traitements_saisies ON (a_traitements.ID=j_traitements_saisies.A_TRAITEMENT_ID) LEFT JOIN a_types ON (a_traitements.A_TYPE_ID=a_types.ID) LEFT JOIN a_notifications ON (a_traitements.ID=a_notifications.A_TRAITEMENT_ID) LEFT JOIN a_justifications ON (a_traitements.A_JUSTIFICATION_ID=a_justifications.ID) WHERE j_traitements_saisies.A_SAISIE_ID='".$this->getId()."' and a_traitements.DELETED_AT IS null";
