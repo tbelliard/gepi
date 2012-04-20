@@ -247,8 +247,8 @@ if ($res) {
 		}
 		elseif ($row[4]=="responsable") {
 		$sql= " SELECT pers_id FROM resp_pers where login='$row[0]'";
-		$res = sql_query($sql);
-		$id = mysql_fetch_array($res);
+		$res3 = sql_query($sql);
+		$id = mysql_fetch_array($res3);
 		echo "<a href=\"../responsables/modify_resp.php?pers_id=" .$id['pers_id']. "\" />";
 		}
 		else {
@@ -256,7 +256,7 @@ if ($res) {
 		}
 		echo $row[1];
 		echo "</td>\n";
-
+		
 		echo "<td>\n";
 		echo $row[4];
 		echo "</td>\n";

@@ -79,7 +79,8 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='csv')) {
 		$chaine_titre=$current_group['name']."_".preg_replace("/,/","_",$current_group['classlist_string']);
 	}
 
-	$nom_fic=$chaine_titre."_".$now.".csv";
+	//$nom_fic=$chaine_titre."_".$now.".csv";
+	$nom_fic=$chaine_titre."_".$now;
 
 	// Filtrer les caractères dans le nom de fichier:
 	$nom_fic=preg_replace("/[^a-zA-Z0-9_\.-]/","",remplace_accents($nom_fic,'all'));
@@ -101,6 +102,8 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='csv')) {
 		$fd.=preg_replace("/&#039;/","'",html_entity_decode($lignes_csv[$j])."\n");
 	}
 
+	$nom_fic.=".csv";
+
 	send_file_download_headers('text/x-csv',$nom_fic);
 	//echo $fd;
 	echo echo_csv_encoded($fd);
@@ -115,10 +118,13 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 		$chaine_titre=$current_group['name']."_".preg_replace("/,/","_",$current_group['classlist_string']);
 	}
 
-	$nom_fic=$chaine_titre."_".$now.".pdf";
+	//$nom_fic=$chaine_titre."_".$now.".pdf";
+	$nom_fic=$chaine_titre."_".$now;
 
 	// Filtrer les caractères dans le nom de fichier:
 	$nom_fic=preg_replace("/[^a-zA-Z0-9_\.-]/","",remplace_accents($nom_fic,'all'));
+
+	$nom_fic.=".pdf";
 
 	//include("get_param_pdf.php");
 
@@ -153,7 +159,7 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 	$largeur_page=210;
 	$hauteur_page=297;
 
-	$pref_marge=isset($_POST['marge_pdf_mes_moyennes']) ? $_POST['marge_pdf_mes_moyennes'] : 7;
+	$pref_marge=isset($_POST['marge_pdf_mes_moyennes']) ? $_POST['marge_pdf_mes_moyennes'] : getPref($_SESSION['login'],'marge_pdf_mes_moyennes',7);
 	if(($pref_marge=="")||(!preg_match("/^[0-9]*$/", $pref_marge))||($pref_marge<5)) {
 		$pref_marge=7;
 	}
@@ -174,8 +180,15 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 
 	// Hauteur des lignes:
 	//$h_cell=10;
-	$h_cell=isset($_POST['h_cell']) ? $_POST['h_cell'] : 10;
-	if((!preg_match("/^[0-9]+$/", $h_cell)||($h_cell<5))) {$h_cell=10;}
+	$h_cell=isset($_POST['h_cell']) ? $_POST['h_cell'] : getPref($_SESSION['login'], 'hauteur_ligne_pdf_mes_moyennes', 10);
+	if((!preg_match("/^[0-9]+$/", $h_cell)||($h_cell<5))) {
+		$h_cell=10;
+	}
+	else {
+		savePref($_SESSION['login'], 'hauteur_ligne_pdf_mes_moyennes', $h_cell);
+	}
+
+
 	$h_ligne_titre_tableau=10;
 
 	// Largeur des colonnes
@@ -360,7 +373,10 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='pdf')) {
 
 			$largeur_dispo=$largeur_col[$i];
 			//$texte=$tab[$i-1];
-			$texte=stripslashes(preg_replace("/\\\\r\\\\n/","\r\n",$tab[$i-1]));
+			//$texte=stripslashes(preg_replace("/\\\\r\\\\n/","\r\n",$tab[$i-1]));
+			$texte=preg_replace("/\\\\r/","\r",$tab[$i-1]);
+			$texte=preg_replace("/\\\\n/","\n",$texte);
+			$texte=stripslashes($texte);
 			if(preg_match("/^App/", $ligne1_csv[$i])) {
 				cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$taille_min_police,'LRBT');
 			}
@@ -1898,7 +1914,7 @@ function checkbox_change(champ, cpt) {
 		if ($en_tete == "yes") {
 			echo "<input type='submit' value='Générer un PDF' />\n";
 			echo "<br />\n";
-			echo "Hauteur de ligne&nbsp;: <input type='text' name='h_cell' id='h_cell' value='10' size='2' onKeyDown=\"clavier_2(this.id,event,5,50);\" AutoComplete=\"off\" />mm\n";
+			echo "Hauteur de ligne&nbsp;: <input type='text' name='h_cell' id='h_cell' value='".getPref($_SESSION['login'],'hauteur_ligne_pdf_mes_moyennes',10)."' size='2' onKeyDown=\"clavier_2(this.id,event,5,50);\" AutoComplete=\"off\" />mm\n";
 			echo "<br />\n";
 			echo "Marges&nbsp;: <input type='text' name='marge_pdf_mes_moyennes' id='marge_pdf_mes_moyennes' value='".getPref($_SESSION['login'],'marge_pdf_mes_moyennes',7)."' size='2' onKeyDown=\"clavier_2(this.id,event,5,20);\" AutoComplete=\"off\" />mm\n";
 		}

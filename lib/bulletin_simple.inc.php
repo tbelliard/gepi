@@ -1508,9 +1508,11 @@ echo "
 	function valider_signalement_faute() {
 		signalement_id_groupe=document.getElementById('signalement_id_groupe').value;
 		signalement_login_eleve=document.getElementById('signalement_login_eleve').value;
+
 		//signalement_message=escape(document.getElementById('signalement_message').value);
-		//signalement_message=document.getElementById('signalement_message').value;
-		signalement_message=encodeURIComponent(document.getElementById('signalement_message').value);
+		signalement_message=document.getElementById('signalement_message').value;
+
+		//signalement_message=encodeURIComponent(document.getElementById('signalement_message').value);
 
 		signalement_id_eleve=document.getElementById('signalement_id_eleve').value;
 		signalement_num_periode=document.getElementById('signalement_num_periode').value;
@@ -1518,7 +1520,16 @@ echo "
 
 		//alert(signalement_message);
 
-		new Ajax.Updater($('signalement_effectue_'+signalement_id_eleve+'_'+signalement_id_groupe+'_'+signalement_num_periode),'../lib/ajax_signaler_faute.php?signalement_login_eleve='+signalement_login_eleve+'&signalement_id_groupe='+signalement_id_groupe+'&signalement_id_classe='+signalement_id_classe+'&signalement_num_periode='+signalement_num_periode+'&signalement_message='+signalement_message+'".add_token_in_url(false)."',{method: 'get'});
+		//new Ajax.Updater($('signalement_effectue_'+signalement_id_eleve+'_'+signalement_id_groupe+'_'+signalement_num_periode),'../lib/ajax_signaler_faute.php?signalement_login_eleve='+signalement_login_eleve+'&signalement_id_groupe='+signalement_id_groupe+'&signalement_id_classe='+signalement_id_classe+'&signalement_num_periode='+signalement_num_periode+'&signalement_message='+signalement_message+'".add_token_in_url(false)."',{method: 'get'});
+
+		new Ajax.Updater($('signalement_effectue_'+signalement_id_eleve+'_'+signalement_id_groupe+'_'+signalement_num_periode),'../lib/ajax_signaler_faute.php?a=a&".add_token_in_url(false)."',{method: 'post',
+		parameters: {
+			signalement_login_eleve: signalement_login_eleve,
+			signalement_id_groupe: signalement_id_groupe,
+			signalement_id_classe: signalement_id_classe,
+			signalement_num_periode: signalement_num_periode,
+			no_anti_inject_signalement_message: signalement_message,
+		}});
 
 		cacher_div('div_signaler_faute');
 		//document.getElementById('signalement_message').innerHTML='';

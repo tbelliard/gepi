@@ -402,7 +402,6 @@ echo '<div id="edt_'.$eleve->getLogin().'" style="display: none; position: stati
 			// Avec ou sans photo
 			if ((getSettingValue("active_module_trombinoscopes")=='y')) {
 			    $nom_photo = $eleve->getNomPhoto(1);
-			    //$photos = "../photos/eleves/".$nom_photo;
 			    $photos = $nom_photo;
 			   // if (($nom_photo == "") or (!(file_exists($photos)))) {
 			    if (($nom_photo == NULL) or (!(file_exists($photos)))) {
@@ -518,12 +517,6 @@ if (!$cours_col->isEmpty()) {
 		if ($edt_cours->getEdtCreneau() == NULL) {
 		    //on affiche pas le cours si il n'est associé avec aucun creneau
 		    continue;
-		}
-		if (getSettingValue("abs2_saisie_prof_decale") != 'y') {
-		    if ($edt_cours->getJourSemaineNumeric() != date('W')) {
-			//on affiche pas ce cours
-			continue;
-		    }
 		}
 		echo "<option value='".$edt_cours->getIdCours()."'";
 		if ($id_cours == $edt_cours->getIdCours()) echo " selected='selected' ";

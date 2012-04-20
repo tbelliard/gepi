@@ -839,6 +839,9 @@ echo add_token_field();
 		</td>
 	</tr>
 		<?php 
+			if(getSettingAOui('use_custom_denominations')) {
+				$use_custom_denominations=true;
+			}
 			if (isset($use_custom_denominations) && $use_custom_denominations) {
 		?>
 	<tr>

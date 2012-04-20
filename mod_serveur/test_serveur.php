@@ -198,7 +198,7 @@ if ($test->versionGd()) {
 	echo "locale actuellement utilisée : $locale";
 	if (!strstr(mb_strtolower($locale), 'utf')) {
 	    echo "<p style=\"color:red;\">";
-	    echo 'Votre système ne semble pas avoir de locale utf-8 d\'installée. Il est possible que sans locale utf-8 certains affichages de dates soient inéstétiques.</p>';
+	    echo 'Votre système ne semble pas avoir de locale utf-8 d\'installée. Il est possible que sans locale utf-8 certains affichages de dates soient inesthétiques.</p>';
 	}
 	echo "<br />\n";
 	

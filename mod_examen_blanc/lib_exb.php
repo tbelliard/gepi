@@ -646,12 +646,6 @@ function bull_exb($tab_ele,$i) {
 				$ajouter = '0';
 			}
 
-/*
-			$photo[$i]="../photos/eleves/".$tab_ele['elenoet'].".jpg";
-			if(!file_exists($photo[$i])) {
-				$photo[$i]="../photos/eleves/0".$tab_ele['elenoet'].".jpg";
-			}
-*/
 			$photo[$i]=nom_photo($tab_ele['elenoet']);
 			if(!$photo[$i]) {
 				$photo[$i]="";
@@ -2128,23 +2122,27 @@ setTimeout('calcul_moy_med_".$pref_id."()',1000);
 }
 
 // Fonction destinée à s'assurer en cas d'accès professeur principal que l'examen ne concerne bien que la classe du prof
-function is_pp_proprio_exb($id_exam) {
+function is_pp_proprio_exb($id_exam, $mode='') {
 	$retour=true;
+
+	$prof_login=$_SESSION['login'];
 
 	$sql="SELECT * FROM ex_classes WHERE id_exam='$id_exam';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
-		//$retour=false;
-
 		while($lig=mysql_fetch_object($res)) {
-			$sql="SELECT 1=1 FROM j_eleves_professeurs jep, j_eleves_classes jec WHERE jec.login=jep.login AND jep.id_classe=jec.id_classe AND jec.id_classe='$lig->id_classe';";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==0) {
+			if(!is_pp($prof_login,$lig->id_classe)) {
 				$retour=false;
 				break;
 			}
 		}
 	}
+	/*
+	elseif($mode=='index') {
+		$retour=false;
+	}
+	*/
+	// Inconvénient: Un PP peut supprimer les examens d'autres personnes tant qu'aucune classe n'est associée.
 
 	return $retour;
 }

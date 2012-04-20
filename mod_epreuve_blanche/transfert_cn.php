@@ -1,7 +1,7 @@
 <?php
 /**
  * 
- * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @package Epreuve_blanche
  * @subpackage Transfert
  */
@@ -469,7 +469,7 @@ for($j=0;$j<$cpt;$j++) {
 	for($i=1;$i<=$max_num_per_tt_grp;$i++) {
 		if($tab_grp[$j]['ver_periode'][$i]=='O') {
 			echo "<td><span title='Close ou partiellement close";
-			if(ereg(",",$tab_grp[$j]['class_list'])) {echo " pour une des classes de l'enseignement au moins";}
+			if(mb_ereg(",",$tab_grp[$j]['class_list'])) {echo " pour une des classes de l'enseignement au moins";}
 			echo "'>Close</span></td>\n";
 		}
 		elseif(isset($tab_grp[$j]['id_cn'][$i])) {

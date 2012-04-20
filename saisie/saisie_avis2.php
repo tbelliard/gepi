@@ -606,7 +606,6 @@ if (isset($fiche)) {
 		$titre="$current_eleve_nom $current_eleve_prenom";
 
 		$texte="<div align='center'>\n";
-		//$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$current_eleve_nom $current_eleve_prenom\" title=\"$current_eleve_nom $current_eleve_prenom\" />";
 		$texte.="<img src='".$photo."' width='150' alt=\"$current_eleve_nom $current_eleve_prenom\" title=\"$current_eleve_nom $current_eleve_prenom\" />";
 		$texte.="<br />\n";
 		$texte.="</div>\n";

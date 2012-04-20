@@ -778,7 +778,6 @@ if(($_SESSION['statut']=='administrateur')||
 				$temoin_photo="non";
 				//if("$photo"!="") {
 				if($photo) {
-					//$photo="../photos/eleves/".$photo;
 					if(file_exists($photo)) {
 						$temoin_photo="oui";
 						//echo "<td>\n";

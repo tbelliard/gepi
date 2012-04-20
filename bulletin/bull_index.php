@@ -4,7 +4,7 @@
  *
  * $Id$
  *
- * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
+ * @copyright Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
  * @todo Les bulletins HTML utilisent les infos display_rang, display_coef,... de la table 'classes'.
  *Les bulletins PDF utilisent plutôt les infos de la table 'modele_bulletin' il me semble.
  *Il faudrait peut-être revoir le dispositif pour adopter la même stratégie.
@@ -2398,6 +2398,15 @@ else {
 
 										$n++;
 									}
+
+
+									// Initialisation pour le cas d'une période avec appréciation seule (note sur une autre préiode)
+									$tab_ele['aid_b'][$zz]['aid_note']='-';
+									$tab_ele['aid_b'][$zz]['aid_statut']='';
+									$tab_ele['aid_b'][$zz]['aid_note_moyenne']='-';
+									$tab_ele['aid_b'][$zz]['aid_note_max']='-';
+									$tab_ele['aid_b'][$zz]['aid_note_min']='-';
+
 									//------
 									// On appelle l'appréciation de l'élève, et sa note
 									//------
@@ -2555,6 +2564,15 @@ else {
 
 										$n++;
 									}
+
+									// Initialisation pour le cas d'une période avec appréciation seule (note sur une autre préiode)
+									$tab_ele['aid_e'][$zz]['aid_note']='-';
+									$tab_ele['aid_e'][$zz]['aid_statut']='';
+									$tab_ele['aid_e'][$zz]['aid_note_moyenne']='-';
+									$tab_ele['aid_e'][$zz]['aid_note_max']='-';
+									$tab_ele['aid_e'][$zz]['aid_note_min']='-';
+
+
 									//------
 									// On appelle l'appréciation de l'élève, et sa note
 									//------

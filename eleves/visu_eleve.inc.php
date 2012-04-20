@@ -293,6 +293,11 @@ else {
 	echo "<input type='hidden' name='onglet' id='onglet_courant' value='";
 	if(isset($onglet)) {echo $onglet;}
 	echo "' />\n";
+
+
+	echo "<input type='hidden' name='onglet2' id='onglet_bull_courant' value='";
+	if(isset($onglet2)) {echo $onglet2;}
+	echo "' />\n";
 	echo "</form>\n";
 
 	// Affichage des onglets pour l'élève choisi
@@ -314,8 +319,21 @@ Patientez pendant l'extraction des données... merci.
 		else {
 			onglet='eleve';
 		}
-		//alert('".$_SERVER['PHP_SELF']."?id_classe='+id_classe+'&ele_login='+ele_login+'&onglet='+onglet);
-		document.location.replace('".$_SERVER['PHP_SELF']."?id_classe='+id_classe+'&ele_login='+ele_login+'&onglet='+onglet);
+
+		if(document.getElementById('onglet_bull_courant')) {
+			onglet2=document.getElementById('onglet_bull_courant').value;
+		}
+		else {
+			onglet2='';
+		}
+
+		if(onglet2=='') {
+			//alert('".$_SERVER['PHP_SELF']."?id_classe='+id_classe+'&ele_login='+ele_login+'&onglet='+onglet);
+			document.location.replace('".$_SERVER['PHP_SELF']."?id_classe='+id_classe+'&ele_login='+ele_login+'&onglet='+onglet);
+		}
+		else {
+			document.location.replace('".$_SERVER['PHP_SELF']."?id_classe='+id_classe+'&ele_login='+ele_login+'&onglet='+onglet+'&onglet2='+onglet2);
+		}
 	}
 </script>\n";
 
@@ -1114,9 +1132,7 @@ Patientez pendant l'extraction des données... merci.
 		if($active_module_trombinoscopes=="y") {
 			echo "<td valign='top'>\n";
 				$photo=nom_photo($tab_ele['elenoet']);
-				//if("$photo"!=""){
 				if($photo){
-					//$photo="../photos/eleves/".$photo;
 					if(file_exists($photo)){
 						$dimphoto=redimensionne_image_releve($photo);
 						echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />'."\n";
@@ -1563,19 +1579,30 @@ Patientez pendant l'extraction des données... merci.
 
 						$display_moy_gen=sql_query1("SELECT display_moy_gen FROM classes WHERE id='".$id_classe."'");
 
+						$cette_etiquette_d_onglet_en_gras="y";
 						echo "<div id='bulletin_$periode1' class='onglet' style='";
 						echo " background-color: ".$tab_couleur['bulletin'].";";
 						if((isset($onglet2))&&(mb_substr($onglet2,0,9)=='bulletin_')) {
 							if('bulletin_'.$n_per!=$onglet2) {
 								echo " display:none;";
+								$cette_etiquette_d_onglet_en_gras="n";
 							}
 						}
 						else {
 							if($n_per!=$periode_numero_1) {
 								echo " display:none;";
+								$cette_etiquette_d_onglet_en_gras="n";
 							}
 						}
 						echo "'>\n";
+
+						if($cette_etiquette_d_onglet_en_gras=="y") {
+							echo "<script type='text/javascript'>
+	document.getElementById('t_bulletin_$n_per').style.fontWeight='bold';
+	document.getElementById('t_bulletin_$n_per').style.borderBottomColor='white';
+	document.getElementById('t_bulletin_$n_per').style.borderBottomWidth='0px';
+</script>\n";
+						}
 
 						//bulletin($ele_login,1,1,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories,'y');
 						bulletin($tab_moy,$ele_login,1,1,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories,'y');
@@ -1703,19 +1730,29 @@ Patientez pendant l'extraction des données... merci.
 						$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
 						if ($affiche_categories == "y") { $affiche_categories = true; } else { $affiche_categories = false;}
 
+						$cette_etiquette_d_onglet_en_gras="y";
 						echo "<div id='releve_$periode1' class='onglet' style='";
 						echo " background-color: ".$tab_couleur['releve'].";";
 						if((isset($onglet2))&&(mb_substr($onglet2,0,7)=='releve_')) {
 							if('releve_'.$n_per!=$onglet2) {
 								echo " display:none;";
+								$cette_etiquette_d_onglet_en_gras="n";
 							}
 						}
 						else {
 							if($n_per!=$periode_numero_1) {
 								echo " display:none;";
+								$cette_etiquette_d_onglet_en_gras="n";
 							}
 						}
 						echo "'>\n";
+						if($cette_etiquette_d_onglet_en_gras=="y") {
+							echo "<script type='text/javascript'>
+	document.getElementById('t_releve_$n_per').style.fontWeight='bold';
+	document.getElementById('t_releve_$n_per').style.borderBottomColor='white';
+	document.getElementById('t_releve_$n_per').style.borderBottomWidth='0px';
+</script>\n";
+						}
 						//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 						// IL MANQUE UN PAQUET D'INITIALISATIONS POUR LES APPELS global DANS releve_html()
 						//echo "<pre>";
@@ -2348,15 +2385,19 @@ Patientez pendant l'extraction des données... merci.
 			if(document.getElementById('t_'+tab_onglets[i])) {
 				document.getElementById('t_'+tab_onglets[i]).style.borderBottomColor='black';
 				document.getElementById('t_'+tab_onglets[i]).style.borderBottomWidth='1px';
+				document.getElementById('t_'+tab_onglets[i]).style.fontWeight='';
 			}
 		}
 
 		if(document.getElementById(id)) {
 			document.getElementById(id).style.display='';
+
+			document.getElementById('onglet_bull_courant').value=id;
 		}
 		if(document.getElementById('t_'+id)) {
 			document.getElementById('t_'+id).style.borderBottomColor='white';
 			document.getElementById('t_'+id).style.borderBottomWidth='0px';
+			document.getElementById('t_'+id).style.fontWeight='bold';
 		}
 	}
 
@@ -2370,15 +2411,19 @@ Patientez pendant l'extraction des données... merci.
 			if(document.getElementById('t_'+tab_onglets[i])) {
 				document.getElementById('t_'+tab_onglets[i]).style.borderBottomColor='black';
 				document.getElementById('t_'+tab_onglets[i]).style.borderBottomWidth='1px';
+				document.getElementById('t_'+tab_onglets[i]).style.fontWeight='';
 			}
 		}
 
 		if(document.getElementById(id)) {
 			document.getElementById(id).style.display='';
+
+			document.getElementById('onglet_bull_courant').value=id;
 		}
 		if(document.getElementById('t_'+id)) {
 			document.getElementById('t_'+id).style.borderBottomColor='white';
 			document.getElementById('t_'+id).style.borderBottomWidth='0px';
+			document.getElementById('t_'+id).style.fontWeight='bold';
 		}
 	}
 </script>\n";
