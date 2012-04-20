@@ -198,7 +198,7 @@ if (!isset($btn)) { //premier passage : formulaire
     echo "Elles sont sensibles à la case. Le format d'une variable est [var.xxxxx]</p><br /><br />\n";
     echo "<p><u>Cas particulier du modèle de lettre aux parents pour le module absence 2 : </u><br />\n";
     echo "Une modification trop importante de ce modèle peut entraîner des dysfonctionnements ou des problèmes de mise en page avec la fonctionnalité d'impression par lot des courriers.<br />\n";
-    echo "C'est pourquoi il est recommandé, dans ce cas là, de se limiter a des modifications simple (nature du texte par exemple) du modèle de base proposé dans Gepi.<br /><br />\n";
+    echo "C'est pourquoi il est recommandé, dans ce cas là, de se limiter a des modifications simple (nature du texte par exemple) du modèle de base proposé dans GEPi.<br /><br />\n";
     echo "Dans les modèles du module abs2 la chaîne [saisies_string_eleve_id_[el_col.getIdEleve] est remplacée par [saisies_string_eleve_id_[el_col.getId] dans les fichiers absence_email.txt, absence_sms.txt et absence_modele_lettre_parent.odt. Les <b>modèles personnalisés doivent êtres modifiés</b> en conséquence.<br />\n";
     echo "Les modèles personnalisés <b>absence_email.txt et absence_sms.txt</b> doivent être en UTF-8</p><br /><br />\n";
     //Tableau des différents fichiers à envoyer
