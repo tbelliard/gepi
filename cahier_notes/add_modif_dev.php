@@ -691,8 +691,8 @@ if($interface_simplifiee=="y"){
 		echo "<tr style='display:none;'>\n";
 		echo "<td>Note sur :</td>\n";
 		echo "<td>\n";
-		echo "<input type='hidden' name = 'note_sur' value = '".getSettingValue("referentiel_note")."' />\n";
-		echo "<input type='hidden' name = 'ramener_sur_referentiel' value = 'F' />\n";
+		echo "<input type='hidden' name = 'note_sur' value = '".$note_sur."' />\n";
+		echo "<input type='hidden' name = 'ramener_sur_referentiel' value = '$ramener_sur_referentiel' />\n";
  		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -831,8 +831,8 @@ else{
 		echo "</td><td><input type='checkbox' name='ramener_sur_referentiel' value='V'"; if ($ramener_sur_referentiel == 'V') {echo " checked";} echo " /><br />";
 		echo "</td></tr>\n";
 	} else {
-		echo "<input type='hidden' name = 'note_sur' value = '".getSettingValue("referentiel_note")."'/>\n";
-		echo "<input type='hidden' name = 'ramener_sur_referentiel' value = 'F' />\n";
+		echo "<input type='hidden' name = 'note_sur' value = '".$note_sur."' />\n";
+		echo "<input type='hidden' name = 'ramener_sur_referentiel' value = '$ramener_sur_referentiel' />\n";
 	}
 
 	//====================================

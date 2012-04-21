@@ -501,7 +501,7 @@ if(!isset($id_groupe)) {
 				echo "<textarea name='description_acces' cols='50' rows='4'></textarea>";
 				echo "</p>";
 				echo "<p>Date à laquelle vous souhaitez supprimer l'accès&nbsp;: ";
-				echo "<input type='text' name='date2_acces' size='10' value=\"".$display_date_fin."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
+				echo "<input type='text' name='date2_acces' id='date2_acces' size='10' value=\"".$display_date_fin."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
 				echo "<a href=\"#calend\" onClick=\"".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 				echo "<br />\n";
 				echo "(<i>la suppression n'est pas automatique à la date indiquée, mais fixer une date peut aider à savoir si l'accès doit être conservé ou non</i>)</p>\n";
