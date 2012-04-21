@@ -360,6 +360,14 @@ if (isset($titre_page)) {
 		$tbs_bouton_taille=$gepiPath;
 	}
 
+
+	$tbs_aff_temoin_check_serveur="n";
+	if(getSettingAOui('aff_temoin_check_serveur')) {
+		// insert into setting set name='aff_temoin_check_serveur', value='y';
+		$tbs_aff_temoin_check_serveur="y";
+	}
+
+
 	//=== Nom Prénom utilisateur ===
 	if((!isset($_SESSION['prenom']))||(!isset($_SESSION['nom']))) {
 		$sql="SELECT nom, prenom FROM utilisateurs WHERE login='".$_SESSION['login']."';";

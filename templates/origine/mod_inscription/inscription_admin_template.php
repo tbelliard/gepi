@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -97,7 +97,7 @@
 <?php
 echo add_token_field();
 ?>
-		Le module Inscription vous permet de définir un ou plusieurs items (stage, intervention, ...),
+		Le module Inscription vous permet de définir un ou plusieurs items (<em>stage, intervention, ...</em>),
 		au(x)quel(s) les utilisateurs pourront s'inscrire ou se désinscrire en cochant ou décochant une croix.
 		<br />
 		<a href='help.php' onclick="javascript:centrerpopup('help.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes');return false;">

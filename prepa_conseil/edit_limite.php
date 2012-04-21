@@ -295,7 +295,7 @@ if(isset($_POST['bull_simp_pref_marges'])) {
 }
 echo ">\n";
 
-$couleur_alterne=isset($_POST['couleur_alterne']) ? $_POST['couleur_alterne'] : "n";
+$couleur_alterne=isset($_POST['couleur_alterne']) ? $_POST['couleur_alterne'] : (isset($_GET['couleur_alterne']) ? $_GET['couleur_alterne'] : "n");
 if(($couleur_alterne!='y')&&($couleur_alterne!='n')) {
 	$couleur_alterne="n";
 }

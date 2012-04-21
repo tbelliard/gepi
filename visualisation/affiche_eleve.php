@@ -4369,7 +4369,7 @@ echo "<div id='div_bull_simp' class='infobulle_corps' style='position: absolute;
 		echo "</div>\n";
 	echo "</div>\n";
 	
-	echo "<div id='corps_bull_simp' class='infobulle_corps' style='color: #ffffff; cursor: auto; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
+	echo "<div id='corps_bull_simp' class='infobulle_corps' style='color: #000000; cursor: auto; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
 	if($acces_bull_simp=="y") {
 		if($choix_periode=='periode') {
 			$periode1=$num_periode_choisie;

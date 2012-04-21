@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -97,7 +97,7 @@
 	
   <h1>Le module Inscription</h1>
   <p>
-	Le module Inscription permet de définir un ou plusieurs items (journée, stage, intervention, ...), au(x)quel(s) les utilisateurs pourront s'inscrire ou se désinscrire en cochant ou décochant une croix.
+	Le module Inscription permet de définir un ou plusieurs items (<em>journée, stage, intervention, ...</em>), au(x)quel(s) les utilisateurs pourront s'inscrire ou se désinscrire en cochant ou décochant une croix.
   </p>
   <ul>
 	<li>La configuration du module est accessible aux administrateurs et à la scolarité.</li>
@@ -116,7 +116,7 @@
 	  </span>
 	  <br />
 	  Tant que le module n'est pas entièrement configuré, vous avez intérêt à ne pas activer la page autorisant
-	  les inscriptions. De cette façon, ce module reste invisible aux autres utilisateurs (professeurs et cpe).
+	  les inscriptions. De cette façon, ce module reste invisible aux autres utilisateurs (<em>professeurs et cpe</em>).
 	  <br />
 	  De même, lorsque les inscriptions sont closes, vous pouvez désactiver les inscriptions, tout en gardant
 	  l'accès au module de configuration.
@@ -128,8 +128,8 @@
 	  <br />
 	  C'est la liste des entités auxquelles les utilisateurs pourront s'incrire.
 	  <br />
-	  Chaque entité est caratérisée par un identifiant numérique, une date (format AAAA/MM/JJ),
-	  une heure (20 caractères max), une description (200 caractères max).
+	  Chaque entité est caratérisée par un identifiant numérique, une date (<em>format AAAA/MM/JJ</em>),
+	  une heure (<em>20 caractères max</em>), une description (<em>200 caractères max</em>).
 	</li>
 	<li>
 	  <span class="bold">

@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -21,7 +21,7 @@
  */
 
 $accessibilite="y";
-$titre_page = "Gestion du module Notanet/Fiches Brevet";
+$titre_page = "Gestion du module Inscription";
 $niveau_arbo = 1;
 $gepiPathJava="./..";
 $post_reussi=FALSE;

@@ -27,6 +27,13 @@
 			<img src="<?php echo $tbs_bouton_taille;?>/images/down.png" alt='Afficher le bandeau' title='Afficher le bandeau' />
 		</a>
 
+	<!-- Témoin de contact du serveur -->
+	<?php
+		if($tbs_aff_temoin_check_serveur=='y') {
+			temoin_check_srv();
+		}
+	?>
+
 	<!-- titre de la page -->	
 		<h1><?php echo $titre_page; ?></h1>
 		
