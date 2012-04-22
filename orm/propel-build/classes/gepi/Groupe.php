@@ -28,31 +28,6 @@ class Groupe extends BaseGroupe {
 	protected $nameAvecClasses;
 
 	/**
-	 * Initializes the collClasses collection.
-	 *
-	 * @param      integer $periode numero de la periode ou objet periodeNote
-	 * @return     void
-	 */
-	public function initClasses()
-	{
-		$this->collClasses = new PropelObjectCollection();
-		$this->collClasses->setModel('Classe');
-	}
-
-	/**
-	 * Clears out the collClasses collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 */
-	public function clearClasses()
-	{
-		$this->collClasses = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
 	 * Reloads this object from datastore based on primary key and (optionally) resets all associated objects.
 	 *
 	 * This will only work if the object has been saved and has a valid primary key set.
@@ -66,7 +41,6 @@ class Groupe extends BaseGroupe {
 	{
 	    parent::reload($deep,$con);
 	    if ($deep) {  // also de-associate any related objects?
-		$this->collClasses = null;
 		$this->clearJGroupesClassess();	
 	    }
 	}
@@ -126,8 +100,8 @@ class Groupe extends BaseGroupe {
 	public function clearJGroupesClassess()
 	{
 		parent::clearJGroupesClassess();
-		$descriptionAvecClasses = null;
-		$nameAvecClasses = null;
+		$this->descriptionAvecClasses = null;
+		$this->nameAvecClasses = null;
 	}
 
 	/**
@@ -142,7 +116,6 @@ class Groupe extends BaseGroupe {
 	public function clearAllReferences($deep = false) {
 		parent::clearAllReferences($deep);
 		$this->clearJGroupesClassess();
-		$this->collClasses = null;
 	}
 
 	/**
@@ -370,4 +343,57 @@ class Groupe extends BaseGroupe {
             }
             return $mef_collection;
         }
+
+        /**
+	 * Gets a collection of Classe objects related by a many-to-many relationship
+	 * to the current object by way of the j_groupes_classes cross-reference table.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Groupe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     PropelCollection|array Classe[] List of Classe objects
+	 */
+	public function getClasses($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collClasses || null !== $criteria) {
+			if ($this->isNew() && null === $this->collClasses) {
+				// return empty collection
+				$this->initClasses();
+			} else {
+                            //si collJGroupesClassess est hydraté, on va regarder si les classes aussi sont hydratée
+                            $classe_hydrated = false;
+                            if (null !== $this->collJGroupesClassess) {
+                                $classe_hydrated = true;
+                                foreach($this->collJGroupesClassess as $jgroupeclasse) {
+                                    if ($jgroupeclasse === null) continue;
+                                    $classe_hydrated = $classe_hydrated && $jgroupeclasse->isClasseHydrated();
+                                    if (!$classe_hydrated) break;
+                                }
+                            }
+                            if (!$classe_hydrated || null !== $criteria) {//on refait une requete
+				$collClasses = ClasseQuery::create(null, $criteria)
+					->filterByGroupe($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collClasses;
+				}
+				$this->collClasses = $collClasses;
+                            } else {//on utilise ce qui est déjà hydraté
+                                $this->initClasses();
+                                foreach ($this->collJGroupesClassess as $jgroupeclasse) {
+                                    $this->collClasses->add($jgroupeclasse->getClasse());
+                                }
+                            }
+			}
+		}
+		return $this->collClasses;
+	}
+
+
 } // Groupe
