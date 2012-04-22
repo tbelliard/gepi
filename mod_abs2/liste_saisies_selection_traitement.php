@@ -617,7 +617,10 @@ echo '</span>';
 echo '<br />';
 echo ("<select name=\"filter_groupe\" onchange='submit()'>");
 echo "<option value=''></option>\n";
-foreach (GroupeQuery::create()->orderByName()->useJGroupesClassesQuery()->useClasseQuery()->orderByNom()->endUse()->endUse()->find()  as $group) {
+foreach (GroupeQuery::create()->orderByName()->useJGroupesClassesQuery()->useClasseQuery()->orderByNom()->endUse()->endUse()
+                                ->leftJoinWith('Groupe.JGroupesClasses')
+                                ->leftJoinWith('JGroupesClasses.Classe')
+                                ->find()  as $group) {
 	echo "<option value='".$group->getId()."'";
 	if (getFiltreRechercheParam('filter_groupe') === (string) $group->getId()) echo " SELECTED ";
 	echo ">";
