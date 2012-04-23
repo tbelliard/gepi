@@ -12,7 +12,7 @@
  * @method     AbsenceEleveTypeQuery orderBySousResponsabiliteEtablissement($order = Criteria::ASC) Order by the sous_responsabilite_etablissement column
  * @method     AbsenceEleveTypeQuery orderByManquementObligationPresence($order = Criteria::ASC) Order by the manquement_obligation_presence column
  * @method     AbsenceEleveTypeQuery orderByRetardBulletin($order = Criteria::ASC) Order by the retard_bulletin column
- * @method     AbsenceEleveTypeQuery orderByTypeSaisie($order = Criteria::ASC) Order by the type_saisie column
+ * @method     AbsenceEleveTypeQuery orderByModeInterface($order = Criteria::ASC) Order by the mode_interface column
  * @method     AbsenceEleveTypeQuery orderByCommentaire($order = Criteria::ASC) Order by the commentaire column
  * @method     AbsenceEleveTypeQuery orderByIdLieu($order = Criteria::ASC) Order by the id_lieu column
  * @method     AbsenceEleveTypeQuery orderBySortableRank($order = Criteria::ASC) Order by the sortable_rank column
@@ -25,7 +25,7 @@
  * @method     AbsenceEleveTypeQuery groupBySousResponsabiliteEtablissement() Group by the sous_responsabilite_etablissement column
  * @method     AbsenceEleveTypeQuery groupByManquementObligationPresence() Group by the manquement_obligation_presence column
  * @method     AbsenceEleveTypeQuery groupByRetardBulletin() Group by the retard_bulletin column
- * @method     AbsenceEleveTypeQuery groupByTypeSaisie() Group by the type_saisie column
+ * @method     AbsenceEleveTypeQuery groupByModeInterface() Group by the mode_interface column
  * @method     AbsenceEleveTypeQuery groupByCommentaire() Group by the commentaire column
  * @method     AbsenceEleveTypeQuery groupByIdLieu() Group by the id_lieu column
  * @method     AbsenceEleveTypeQuery groupBySortableRank() Group by the sortable_rank column
@@ -57,7 +57,7 @@
  * @method     AbsenceEleveType findOneBySousResponsabiliteEtablissement(string $sous_responsabilite_etablissement) Return the first AbsenceEleveType filtered by the sous_responsabilite_etablissement column
  * @method     AbsenceEleveType findOneByManquementObligationPresence(string $manquement_obligation_presence) Return the first AbsenceEleveType filtered by the manquement_obligation_presence column
  * @method     AbsenceEleveType findOneByRetardBulletin(string $retard_bulletin) Return the first AbsenceEleveType filtered by the retard_bulletin column
- * @method     AbsenceEleveType findOneByTypeSaisie(string $type_saisie) Return the first AbsenceEleveType filtered by the type_saisie column
+ * @method     AbsenceEleveType findOneByModeInterface(string $mode_interface) Return the first AbsenceEleveType filtered by the mode_interface column
  * @method     AbsenceEleveType findOneByCommentaire(string $commentaire) Return the first AbsenceEleveType filtered by the commentaire column
  * @method     AbsenceEleveType findOneByIdLieu(int $id_lieu) Return the first AbsenceEleveType filtered by the id_lieu column
  * @method     AbsenceEleveType findOneBySortableRank(int $sortable_rank) Return the first AbsenceEleveType filtered by the sortable_rank column
@@ -70,7 +70,7 @@
  * @method     array findBySousResponsabiliteEtablissement(string $sous_responsabilite_etablissement) Return AbsenceEleveType objects filtered by the sous_responsabilite_etablissement column
  * @method     array findByManquementObligationPresence(string $manquement_obligation_presence) Return AbsenceEleveType objects filtered by the manquement_obligation_presence column
  * @method     array findByRetardBulletin(string $retard_bulletin) Return AbsenceEleveType objects filtered by the retard_bulletin column
- * @method     array findByTypeSaisie(string $type_saisie) Return AbsenceEleveType objects filtered by the type_saisie column
+ * @method     array findByModeInterface(string $mode_interface) Return AbsenceEleveType objects filtered by the mode_interface column
  * @method     array findByCommentaire(string $commentaire) Return AbsenceEleveType objects filtered by the commentaire column
  * @method     array findByIdLieu(int $id_lieu) Return AbsenceEleveType objects filtered by the id_lieu column
  * @method     array findBySortableRank(int $sortable_rank) Return AbsenceEleveType objects filtered by the sortable_rank column
@@ -164,7 +164,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	 */
 	protected function findPkSimple($key, $con)
 	{
-		$sql = 'SELECT ID, NOM, JUSTIFICATION_EXIGIBLE, SOUS_RESPONSABILITE_ETABLISSEMENT, MANQUEMENT_OBLIGATION_PRESENCE, RETARD_BULLETIN, TYPE_SAISIE, COMMENTAIRE, ID_LIEU, SORTABLE_RANK, CREATED_AT, UPDATED_AT FROM a_types WHERE ID = :p0';
+		$sql = 'SELECT ID, NOM, JUSTIFICATION_EXIGIBLE, SOUS_RESPONSABILITE_ETABLISSEMENT, MANQUEMENT_OBLIGATION_PRESENCE, RETARD_BULLETIN, MODE_INTERFACE, COMMENTAIRE, ID_LIEU, SORTABLE_RANK, CREATED_AT, UPDATED_AT FROM a_types WHERE ID = :p0';
 		try {
 			$stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -414,31 +414,31 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query on the type_saisie column
+	 * Filter the query on the mode_interface column
 	 *
 	 * Example usage:
 	 * <code>
-	 * $query->filterByTypeSaisie('fooValue');   // WHERE type_saisie = 'fooValue'
-	 * $query->filterByTypeSaisie('%fooValue%'); // WHERE type_saisie LIKE '%fooValue%'
+	 * $query->filterByModeInterface('fooValue');   // WHERE mode_interface = 'fooValue'
+	 * $query->filterByModeInterface('%fooValue%'); // WHERE mode_interface LIKE '%fooValue%'
 	 * </code>
 	 *
-	 * @param     string $typeSaisie The value to use as filter.
+	 * @param     string $modeInterface The value to use as filter.
 	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
 	 */
-	public function filterByTypeSaisie($typeSaisie = null, $comparison = null)
+	public function filterByModeInterface($modeInterface = null, $comparison = null)
 	{
 		if (null === $comparison) {
-			if (is_array($typeSaisie)) {
+			if (is_array($modeInterface)) {
 				$comparison = Criteria::IN;
-			} elseif (preg_match('/[\%\*]/', $typeSaisie)) {
-				$typeSaisie = str_replace('*', '%', $typeSaisie);
+			} elseif (preg_match('/[\%\*]/', $modeInterface)) {
+				$modeInterface = str_replace('*', '%', $modeInterface);
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(AbsenceEleveTypePeer::TYPE_SAISIE, $typeSaisie, $comparison);
+		return $this->addUsingAlias(AbsenceEleveTypePeer::MODE_INTERFACE, $modeInterface, $comparison);
 	}
 
 	/**

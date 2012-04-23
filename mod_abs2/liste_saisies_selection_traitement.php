@@ -319,6 +319,9 @@ if ($order == "asc_id") {
 }
 
 $query->distinct();
+$query_count_eleve = clone $query;
+$total_eleve = $query_count_eleve->groupByEleveId()->count();
+
 $saisies_col = $query->paginate($page_number, $item_per_page);
 
 $nb_pages = (floor($saisies_col->getNbResults() / $item_per_page) + 1);
@@ -431,9 +434,9 @@ if ($saisies_col->haveToPaginate()) {
 }
 echo "Voir ";
 echo '<input type="text" name="item_per_page" size="1" value="'.$item_per_page.'"/>';
-echo "par page |  Nombre d'enregistrements : ";
+echo "par page |  Nbre de saisies : ";
 echo $saisies_col->count();
-
+echo " | Nbre d'élèves : ".$total_eleve;
 echo ' | <input type="checkbox" name="filter_saisies_supprimees"  onchange="submit()" value="y"';
 if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {echo "checked='checked'";}
 echo '/>';
@@ -614,7 +617,10 @@ echo '</span>';
 echo '<br />';
 echo ("<select name=\"filter_groupe\" onchange='submit()'>");
 echo "<option value=''></option>\n";
-foreach (GroupeQuery::create()->orderByName()->useJGroupesClassesQuery()->useClasseQuery()->orderByNom()->endUse()->endUse()->find()  as $group) {
+foreach (GroupeQuery::create()->orderByName()->useJGroupesClassesQuery()->useClasseQuery()->orderByNom()->endUse()->endUse()
+                                ->leftJoinWith('Groupe.JGroupesClasses')
+                                ->leftJoinWith('JGroupesClasses.Classe')
+                                ->find()  as $group) {
 	echo "<option value='".$group->getId()."'";
 	if (getFiltreRechercheParam('filter_groupe') === (string) $group->getId()) echo " SELECTED ";
 	echo ">";

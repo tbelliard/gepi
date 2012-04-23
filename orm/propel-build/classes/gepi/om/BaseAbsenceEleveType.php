@@ -70,11 +70,11 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 	protected $retard_bulletin;
 
 	/**
-	 * The value for the type_saisie field.
+	 * The value for the mode_interface field.
 	 * Note: this column has a database default value of: 'NON_PRECISE'
 	 * @var        string
 	 */
-	protected $type_saisie;
+	protected $mode_interface;
 
 	/**
 	 * The value for the commentaire field.
@@ -166,7 +166,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 		$this->sous_responsabilite_etablissement = 'NON_PRECISE';
 		$this->manquement_obligation_presence = 'NON_PRECISE';
 		$this->retard_bulletin = 'NON_PRECISE';
-		$this->type_saisie = 'NON_PRECISE';
+		$this->mode_interface = 'NON_PRECISE';
 	}
 
 	/**
@@ -240,13 +240,13 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Get the [type_saisie] column value.
-	 * Enumeration des possibilités de l'interface de saisie de l'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE, DISCIPLINE
+	 * Get the [mode_interface] column value.
+	 * Enumeration des possibilités de l'interface de saisie de l'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE, DISCIPLINE, CHECKBOX, CHECKBOX_HIDDEN
 	 * @return     string
 	 */
-	public function getTypeSaisie()
+	public function getModeInterface()
 	{
-		return $this->type_saisie;
+		return $this->mode_interface;
 	}
 
 	/**
@@ -484,24 +484,24 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 	} // setRetardBulletin()
 
 	/**
-	 * Set the value of [type_saisie] column.
-	 * Enumeration des possibilités de l'interface de saisie de l'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE, DISCIPLINE
+	 * Set the value of [mode_interface] column.
+	 * Enumeration des possibilités de l'interface de saisie de l'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE, DISCIPLINE, CHECKBOX, CHECKBOX_HIDDEN
 	 * @param      string $v new value
 	 * @return     AbsenceEleveType The current object (for fluent API support)
 	 */
-	public function setTypeSaisie($v)
+	public function setModeInterface($v)
 	{
 		if ($v !== null) {
 			$v = (string) $v;
 		}
 
-		if ($this->type_saisie !== $v) {
-			$this->type_saisie = $v;
-			$this->modifiedColumns[] = AbsenceEleveTypePeer::TYPE_SAISIE;
+		if ($this->mode_interface !== $v) {
+			$this->mode_interface = $v;
+			$this->modifiedColumns[] = AbsenceEleveTypePeer::MODE_INTERFACE;
 		}
 
 		return $this;
-	} // setTypeSaisie()
+	} // setModeInterface()
 
 	/**
 	 * Set the value of [commentaire] column.
@@ -633,7 +633,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 				return false;
 			}
 
-			if ($this->type_saisie !== 'NON_PRECISE') {
+			if ($this->mode_interface !== 'NON_PRECISE') {
 				return false;
 			}
 
@@ -665,7 +665,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 			$this->sous_responsabilite_etablissement = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
 			$this->manquement_obligation_presence = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
 			$this->retard_bulletin = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
-			$this->type_saisie = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
+			$this->mode_interface = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
 			$this->commentaire = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
 			$this->id_lieu = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
 			$this->sortable_rank = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
@@ -982,8 +982,8 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 		if ($this->isColumnModified(AbsenceEleveTypePeer::RETARD_BULLETIN)) {
 			$modifiedColumns[':p' . $index++]  = 'RETARD_BULLETIN';
 		}
-		if ($this->isColumnModified(AbsenceEleveTypePeer::TYPE_SAISIE)) {
-			$modifiedColumns[':p' . $index++]  = 'TYPE_SAISIE';
+		if ($this->isColumnModified(AbsenceEleveTypePeer::MODE_INTERFACE)) {
+			$modifiedColumns[':p' . $index++]  = 'MODE_INTERFACE';
 		}
 		if ($this->isColumnModified(AbsenceEleveTypePeer::COMMENTAIRE)) {
 			$modifiedColumns[':p' . $index++]  = 'COMMENTAIRE';
@@ -1029,8 +1029,8 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 					case 'RETARD_BULLETIN':
 						$stmt->bindValue($identifier, $this->retard_bulletin, PDO::PARAM_STR);
 						break;
-					case 'TYPE_SAISIE':
-						$stmt->bindValue($identifier, $this->type_saisie, PDO::PARAM_STR);
+					case 'MODE_INTERFACE':
+						$stmt->bindValue($identifier, $this->mode_interface, PDO::PARAM_STR);
 						break;
 					case 'COMMENTAIRE':
 						$stmt->bindValue($identifier, $this->commentaire, PDO::PARAM_STR);
@@ -1224,7 +1224,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 				return $this->getRetardBulletin();
 				break;
 			case 6:
-				return $this->getTypeSaisie();
+				return $this->getModeInterface();
 				break;
 			case 7:
 				return $this->getCommentaire();
@@ -1276,7 +1276,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 			$keys[3] => $this->getSousResponsabiliteEtablissement(),
 			$keys[4] => $this->getManquementObligationPresence(),
 			$keys[5] => $this->getRetardBulletin(),
-			$keys[6] => $this->getTypeSaisie(),
+			$keys[6] => $this->getModeInterface(),
 			$keys[7] => $this->getCommentaire(),
 			$keys[8] => $this->getIdLieu(),
 			$keys[9] => $this->getSortableRank(),
@@ -1343,7 +1343,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 				$this->setRetardBulletin($value);
 				break;
 			case 6:
-				$this->setTypeSaisie($value);
+				$this->setModeInterface($value);
 				break;
 			case 7:
 				$this->setCommentaire($value);
@@ -1390,7 +1390,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 		if (array_key_exists($keys[3], $arr)) $this->setSousResponsabiliteEtablissement($arr[$keys[3]]);
 		if (array_key_exists($keys[4], $arr)) $this->setManquementObligationPresence($arr[$keys[4]]);
 		if (array_key_exists($keys[5], $arr)) $this->setRetardBulletin($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setTypeSaisie($arr[$keys[6]]);
+		if (array_key_exists($keys[6], $arr)) $this->setModeInterface($arr[$keys[6]]);
 		if (array_key_exists($keys[7], $arr)) $this->setCommentaire($arr[$keys[7]]);
 		if (array_key_exists($keys[8], $arr)) $this->setIdLieu($arr[$keys[8]]);
 		if (array_key_exists($keys[9], $arr)) $this->setSortableRank($arr[$keys[9]]);
@@ -1413,7 +1413,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 		if ($this->isColumnModified(AbsenceEleveTypePeer::SOUS_RESPONSABILITE_ETABLISSEMENT)) $criteria->add(AbsenceEleveTypePeer::SOUS_RESPONSABILITE_ETABLISSEMENT, $this->sous_responsabilite_etablissement);
 		if ($this->isColumnModified(AbsenceEleveTypePeer::MANQUEMENT_OBLIGATION_PRESENCE)) $criteria->add(AbsenceEleveTypePeer::MANQUEMENT_OBLIGATION_PRESENCE, $this->manquement_obligation_presence);
 		if ($this->isColumnModified(AbsenceEleveTypePeer::RETARD_BULLETIN)) $criteria->add(AbsenceEleveTypePeer::RETARD_BULLETIN, $this->retard_bulletin);
-		if ($this->isColumnModified(AbsenceEleveTypePeer::TYPE_SAISIE)) $criteria->add(AbsenceEleveTypePeer::TYPE_SAISIE, $this->type_saisie);
+		if ($this->isColumnModified(AbsenceEleveTypePeer::MODE_INTERFACE)) $criteria->add(AbsenceEleveTypePeer::MODE_INTERFACE, $this->mode_interface);
 		if ($this->isColumnModified(AbsenceEleveTypePeer::COMMENTAIRE)) $criteria->add(AbsenceEleveTypePeer::COMMENTAIRE, $this->commentaire);
 		if ($this->isColumnModified(AbsenceEleveTypePeer::ID_LIEU)) $criteria->add(AbsenceEleveTypePeer::ID_LIEU, $this->id_lieu);
 		if ($this->isColumnModified(AbsenceEleveTypePeer::SORTABLE_RANK)) $criteria->add(AbsenceEleveTypePeer::SORTABLE_RANK, $this->sortable_rank);
@@ -1486,7 +1486,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 		$copyObj->setSousResponsabiliteEtablissement($this->getSousResponsabiliteEtablissement());
 		$copyObj->setManquementObligationPresence($this->getManquementObligationPresence());
 		$copyObj->setRetardBulletin($this->getRetardBulletin());
-		$copyObj->setTypeSaisie($this->getTypeSaisie());
+		$copyObj->setModeInterface($this->getModeInterface());
 		$copyObj->setCommentaire($this->getCommentaire());
 		$copyObj->setIdLieu($this->getIdLieu());
 		$copyObj->setSortableRank($this->getSortableRank());
@@ -2035,7 +2035,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 		$this->sous_responsabilite_etablissement = null;
 		$this->manquement_obligation_presence = null;
 		$this->retard_bulletin = null;
-		$this->type_saisie = null;
+		$this->mode_interface = null;
 		$this->commentaire = null;
 		$this->id_lieu = null;
 		$this->sortable_rank = null;

@@ -112,7 +112,7 @@ if ($action == 'supprimer') {
 		$type->setSousResponsabiliteEtablissement($sous_responsabilite_etablissement);
 		$type->setManquementObligationPresence($manquement_obligation_presence);
 		$type->setRetardBulletin($retard_bulletin);
-		$type->setTypeSaisie($type_saisie);
+		$type->setModeInterface($type_saisie);
         $type->setIdLieu($id_lieu);
 		$type->getAbsenceEleveTypeStatutAutorises(); //corrige un bug de propel sur la lecture de la base
 		if ($ajout_statut_type_saisie != '') {
@@ -212,12 +212,13 @@ echo add_token_field();
 	   </td>
            <td>
 	     <select name="type_saisie" id="type_saisie">
-		<option value='NON_PRECISE' <?php  if ($type != null && $type->getTypeSaisie() == 'NON_PRECISE') {echo "selected";} ?>>Type de saisie non précisé</option>
-		<!--<option value='DEBUT_ABS' <?php  if ($type != null && $type->getTypeSaisie() == 'DEBUT_ABS') {echo "selected";} ?>>Saisir le moment de debut de l'absence</option>
-		<option value='FIN_ABS' <?php  if ($type != null && $type->getTypeSaisie() == 'FIN_ABS') {echo "selected";} ?>>Saisir le moment de fin de l'absence</option>
-		<option value='DEBUT_ET_FIN_ABS' <?php  if ($type != null && $type->getTypeSaisie() == 'DEBUT_ET_FIN_ABS') {echo "selected";} ?>>Saisir le moment de debut et de fin</option>
-		<option value='COMMENTAIRE_EXIGE' <?php  if ($type != null && $type->getTypeSaisie() == 'COMMENTAIRE_EXIGE') {echo "selected";} ?>>Saisir un commentaire</option>
-		--><option value='DISCIPLINE' <?php  if ($type != null && $type->getTypeSaisie() == 'DISCIPLINE') {echo "selected";} ?>>Saisir un incident disciplinaire</option>
+		<option value='NON_PRECISE' <?php  if ($type != null && $type->getModeInterface() == 'NON_PRECISE') {echo "selected";} ?>>Type de saisie non précisé</option>
+		<!--<option value='DEBUT_ABS' <?php  if ($type != null && $type->getModeInterface() == 'DEBUT_ABS') {echo "selected";} ?>>Saisir le moment de debut de l'absence</option>
+		<option value='FIN_ABS' <?php  if ($type != null && $type->getModeInterface() == 'FIN_ABS') {echo "selected";} ?>>Saisir le moment de fin de l'absence</option>
+		<option value='DEBUT_ET_FIN_ABS' <?php  if ($type != null && $type->getModeInterface() == 'DEBUT_ET_FIN_ABS') {echo "selected";} ?>>Saisir le moment de debut et de fin</option>
+		<option value='COMMENTAIRE_EXIGE' <?php  if ($type != null && $type->getModeInterface() == 'COMMENTAIRE_EXIGE') {echo "selected";} ?>>Saisir un commentaire</option>
+		--><option value='DISCIPLINE' <?php  if ($type != null && $type->getModeInterface() == 'DISCIPLINE') {echo "selected";} ?>>Saisir un incident disciplinaire</option>
+		<option value='CHECKBOX_HIDDEN' <?php  if ($type != null && $type->getModeInterface() == 'CHECKBOX_HIDDEN') {echo "selected";} ?>><?php echo AbsenceEleveType::$LISTE_LABEL_TYPE_SAISIE[AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN]?></option>
 	     </select>
 	   </td>
         <td>
@@ -314,7 +315,7 @@ echo add_token_field();
 		else { echo "<img src='../../images/disabled.png' width='20' height='20' title='non' alt='non' />"; }
 	    ?>
 	  </td>
-	  <td><?php if ($type->getTypeSaisie() != AbsenceEleveType::TYPE_SAISIE_NON_PRECISE) {echo $type->getTypeSaisieDescription();} ?></td>
+	  <td><?php if ($type->getModeInterface() != AbsenceEleveType::MODE_INTERFACE_NON_PRECISE) {echo $type->getModeInterfaceDescription();} ?></td>
       <td><?php if ($type->getAbsenceEleveLieu() != null) {echo $type->getAbsenceEleveLieu()->getNom();} ?></td>
 	  <td><?php
 		foreach ($type->getAbsenceEleveTypeStatutAutorises() as $statut_saisie) {

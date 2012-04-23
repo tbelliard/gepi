@@ -154,7 +154,10 @@ echo '</td>';
 //on affiche une boite de selection avec les groupes et les creneaux
 //on affiche une boite de selection avec les aid
 if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
-    $groupe_col = GroupeQuery::create()->orderByName()->useJGroupesClassesQuery()->useClasseQuery()->orderByNom()->endUse()->endUse()->find();
+    $groupe_col = GroupeQuery::create()->orderByName()->useJGroupesClassesQuery()->useClasseQuery()->orderByNom()->endUse()->endUse()
+		->leftJoinWith('Groupe.JGroupesClasses')
+		->leftJoinWith('JGroupesClasses.Classe')
+                ->find();
 } else {
     $groupe_col = $utilisateur->getGroupes();
 }

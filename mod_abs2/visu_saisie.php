@@ -416,7 +416,7 @@ if ($saisie->getIdSIncidents() !== null) {
     echo "<a href='../mod_discipline/saisie_incident.php?id_incident=".
     $saisie->getIdSIncidents()."&step=2&return_url=no_return'>Visualiser l'incident </a>";
     echo '</td></tr>';
-} elseif ($modifiable && $saisie->hasTypeSaisieDiscipline()) {
+} elseif ($modifiable && $saisie->hasModeInterfaceDiscipline()) {
     echo '<tr><td>';
     echo 'Discipline : ';
     echo '</td><td colspan="2">';

@@ -449,7 +449,7 @@ foreach ($eleve_col as $eleve) {
         if ($type_extrait == '1' && !$saisie->getManquementObligationPresence()) {
             continue;
         }
-        if (!is_null($non_traitees) && $non_traitees != '' && $saisie->getTraitee() && $saisie->hasTypeSaisie()) {
+        if (!is_null($non_traitees) && $non_traitees != '' && $saisie->getTraitee() && $saisie->hasModeInterface()) {
             continue;
         }
         if ($saisie->getRetard()) {

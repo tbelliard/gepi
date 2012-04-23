@@ -59,30 +59,30 @@ class AbsenceEleveSaisieTest extends GepiEmptyTestBase
         AbsenceEleveSaisiePeer::disableAgregation();
     }
 
-    public function testHasTypeSaisie()
+    public function testHasModeInterface()
     {
         $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
         $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
-        $this->assertFalse($saisie->hasTypeSaisie());
+        $this->assertFalse($saisie->hasModeInterface());
 
         $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
-        $this->assertFalse($saisie->hasTypeSaisie());
+        $this->assertFalse($saisie->hasModeInterface());
 
         $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03')->getFirst();
-        $this->assertTrue($saisie->hasTypeSaisie());
+        $this->assertTrue($saisie->hasModeInterface());
     }
 
-    public function testHasTypeSaisieDiscipline()
+    public function testHasModeInterfaceDiscipline()
     {
         $florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
         $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-01')->getFirst();
-        $this->assertFalse($saisie->hasTypeSaisieDiscipline());
+        $this->assertFalse($saisie->hasModeInterfaceDiscipline());
 
         $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-02')->getFirst();
-        $this->assertFalse($saisie->hasTypeSaisieDiscipline());
+        $this->assertFalse($saisie->hasModeInterfaceDiscipline());
 
         $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour('2010-10-03')->getFirst();
-        $this->assertTrue($saisie->hasTypeSaisieDiscipline());
+        $this->assertTrue($saisie->hasModeInterfaceDiscipline());
     }
 
     public function testGetTraitee()

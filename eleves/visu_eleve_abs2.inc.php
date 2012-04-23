@@ -83,7 +83,7 @@ foreach ($saisie_col as $saisie) {
 	continue;
   }
  /* 
-  if (!is_null($non_traitees) && $non_traitees != '' && $saisie->getTraitee() && $saisie->hasTypeSaisie()) {
+  if (!is_null($non_traitees) && $non_traitees != '' && $saisie->getTraitee() && $saisie->hasModeInterface()) {
 	continue;
   }
   */
