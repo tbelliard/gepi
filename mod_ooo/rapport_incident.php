@@ -42,7 +42,7 @@ if (!checkAccess()) {
 
 include_once('./lib/lib_mod_ooo.php');
 
-include_once('./lib/tbs_class.php');
+include_once('../tbs/tbs_class.php');
 include_once('./lib/tbsooo_class.php');
 define( 'PCLZIP_TEMPORARY_DIR', '../mod_ooo/tmp/' );
 include_once('../lib/pclzip.lib.php');
