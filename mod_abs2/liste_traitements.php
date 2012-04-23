@@ -470,13 +470,13 @@ echo '</th>';
 echo '<th>';
 echo ("<select name=\"filter_manqement_obligation\" onchange='submit()'>");
 echo "<option value=''";
-if (isFiltreRechercheParam('filter_manqement_obligation') && getFiltreRechercheParam('filter_manqement_obligation') == 'y') {echo "checked='checked'";}
+if (!isFiltreRechercheParam('filter_manqement_obligation')) {echo "selected='selected'";}
 echo "></option>\n";
 echo "<option value='y' ";
-if (getFiltreRechercheParam('filter_manqement_obligation') == 'y') {echo "selected'";}
+if (getFiltreRechercheParam('filter_manqement_obligation') == 'y') {echo "selected='selected'";}
 echo ">oui</option>\n";
 echo "<option value='n' ";
-if (getFiltreRechercheParam('filter_manqement_obligation') == 'n') {echo "selected'";}
+if (getFiltreRechercheParam('filter_manqement_obligation') == 'n') {echo "selected='selected'";}
 echo ">non</option>\n";
 echo "</select>";
 echo '<br/>Manquement obligation scolaire (bulletin)';
