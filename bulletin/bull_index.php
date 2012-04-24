@@ -166,7 +166,8 @@ if(!isset($tab_id_classe)) {
 	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 	if((($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes'))||
 	(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiProfImprBulSettings')=='yes'))||
-	(($_SESSION['statut']=='administrateur')&&(getSettingValue('GepiAdminImprBulSettings')=='yes'))) {
+	(($_SESSION['statut']=='administrateur')&&(getSettingValue('GepiAdminImprBulSettings')=='yes'))||
+	(($_SESSION['statut']=='cpe')&&(getSettingValue('GepiCpeImprBulSettings')=='yes'))) {
 		if($type_bulletin_par_defaut=='pdf') {
 			echo " | <a id='lien_param_bull' href='param_bull_pdf.php' target='_blank'>Paramètres d'impression des bulletins PDF</a>";
 		}
@@ -189,6 +190,12 @@ if(!isset($tab_id_classe)) {
 		die();
 	}
 
+	if (($_SESSION['statut'] == 'cpe') and getSettingValue("GepiCpeImprBul")!='yes') {
+		echo "<p>Droits insuffisants pour effectuer cette opération</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
 	// Liste des classes avec élève:
 	//$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE c.id=jec.id_classe ORDER BY c.classe;";
 	if ($_SESSION["statut"] == "scolarite") {
@@ -204,7 +211,12 @@ if(!isset($tab_id_classe)) {
 		$message_0="Aucune classe avec élève n'a été trouvée.";
 	}
 	elseif ($_SESSION["statut"] == "professeur") {
-		$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs jep, j_eleves_classes jec WHERE (jep.professeur='".$_SESSION['login']."' AND jep.login = jec.login AND jec.id_classe = c.id);";
+		$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs jep, j_eleves_classes jec WHERE (jep.professeur='".$_SESSION['login']."' AND jep.login = jec.login AND jec.id_classe = c.id) ORDER BY c.classe;";
+
+			$message_0="Aucune classe (<i>avec élève</i>) ne vous est affectée pour l'édition des bulletins.";
+	}
+	elseif ($_SESSION["statut"] == "cpe") {
+		$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_cpe jecpe, j_eleves_classes jec WHERE (jecpe.cpe_login='".$_SESSION['login']."' AND jecpe.e_login = jec.login AND jec.id_classe = c.id) ORDER BY c.classe;";
 
 			$message_0="Aucune classe (<i>avec élève</i>) ne vous est affectée pour l'édition des bulletins.";
 	}
@@ -297,7 +309,8 @@ elseif((!isset($choix_periode_num))||(!isset($tab_periode_num))) {
 	echo "<a href='bull_index.php'>Choisir d'autres classes</a>\n";
 	if((($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes'))||
 	(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiProfImprBulSettings')=='yes'))||
-	(($_SESSION['statut']=='administrateur')&&(getSettingValue('GepiAdminImprBulSettings')=='yes'))) {
+	(($_SESSION['statut']=='administrateur')&&(getSettingValue('GepiAdminImprBulSettings')=='yes'))||
+	(($_SESSION['statut']=='cpe')&&(getSettingValue('GepiCpeImprBulSettings')=='yes'))) {
 		if($type_bulletin_par_defaut=='pdf') {
 			echo " | <a id='lien_param_bull' href='param_bull_pdf.php' target='_blank'>Paramètres d'impression des bulletins PDF</a>";
 		}
@@ -416,7 +429,8 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."' onClick=\"document.forms['form_retour'].submit();return false;\">Choisir d'autres périodes</a>\n";
 	if((($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes'))||
 	(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiProfImprBulSettings')=='yes'))||
-	(($_SESSION['statut']=='administrateur')&&(getSettingValue('GepiAdminImprBulSettings')=='yes'))) {
+	(($_SESSION['statut']=='administrateur')&&(getSettingValue('GepiAdminImprBulSettings')=='yes'))||
+	(($_SESSION['statut']=='cpe')&&(getSettingValue('GepiCpeImprBulSettings')=='yes'))) {
 		if($type_bulletin_par_defaut=='pdf') {
 			echo " | <a id='lien_param_bull' href='param_bull_pdf.php' target='_blank'>Paramètres d'impression des bulletins PDF</a>";
 		}
@@ -708,7 +722,6 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	echo "</blockquote>\n";
 	echo "</div>\n";
 	//===========================================
-
 
 	// L'admin peut avoir accès aux bulletins, mais il n'a de toute façon pas accès au relevés de notes.
 	$sql="SELECT 1=1 FROM droits WHERE id='/cahier_notes/visu_releve_notes_bis.php' AND ".$_SESSION['statut']."='V';";
@@ -1467,6 +1480,9 @@ else {
 		}
 		elseif ($_SESSION["statut"] == "professeur") {
 			$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs jep, j_eleves_classes jec WHERE (jep.professeur='".$_SESSION['login']."' AND jep.login = jec.login AND jec.id_classe = c.id AND c.id='$id_classe');";
+		}
+		elseif ($_SESSION["statut"] == "cpe") {
+			$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_cpe jecpe, j_eleves_classes jec WHERE (jecpe.cpe_login='".$_SESSION['login']."' AND jecpe.e_login = jec.login AND jec.id_classe = c.id AND c.id='$id_classe');";
 		}
 		else {
 			// On ne devrait pas arriver jusque-là...
