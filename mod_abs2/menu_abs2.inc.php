@@ -44,7 +44,8 @@ if(($_SESSION['statut']=='cpe')||
         || $url_end=='bilan_individuel.php'
         || $url_end=='totaux_du_jour.php'
         || $url_end=='statistiques.php'
-        || $url_end=='stat_justifications.php') {echo "class='current' ";}
+        || $url_end=='stat_justifications.php'
+        || $url_end=='liste_eleves.php') {echo "class='current' ";}
     echo "title='Bilans'>Bilans</a></li>\n";
 
     echo "<li><a href='saisir_groupe.php' ";
@@ -64,7 +65,7 @@ if(($_SESSION['statut']=='cpe')||
     echo "<li><a href='liste_saisies_selection_traitement.php' ";
     if($url_end=='liste_saisies_selection_traitement.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
     else {echo "style='background-color:#e6f8e7;' ";}
-    echo "title='Liste des saisies'>Liste des saisies</a></li>\n";
+    echo "title='Liste des saisies'>Liste saisies</a></li>\n";
 
     echo "<li><a href='visu_saisie.php' ";
     if($url_end=='visu_saisie.php' || $url_end=='enregistrement_modif_saisie.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
@@ -77,7 +78,7 @@ if(($_SESSION['statut']=='cpe')||
     echo "<li><a href='liste_traitements.php' ";
     if($url_end=='liste_traitements.php') {echo "class='current' style='background-color:#ebedb5; border-bottom:2px solid #ebedb5;' ";}
     else {echo "style='background-color:#f9f9de;' ";}
-    echo "title='Traitement'>Liste des traitements</a></li>\n";
+    echo "title='Traitement'>Liste traitements</a></li>\n";
 
     echo "<li><a href='visu_traitement.php' ";
     if($url_end=='visu_traitement.php' || $url_end=='enregistrement_modif_traitement.php') {
@@ -89,7 +90,7 @@ if(($_SESSION['statut']=='cpe')||
     echo "<li><a href='liste_notifications.php' ";
     if($url_end=='liste_notifications.php') {echo "class='current' style='background-color:#c7e3ec; border-bottom:2px solid #c7e3ec;' ";}
     else {echo "style='background-color:#ecf6f8;' ";}
-    echo "title='Notifications'>Liste des notifications</a></li>\n";
+    echo "title='Notifications'>Liste notifications</a></li>\n";
 
     echo "<li><a href='visu_notification.php' ";
     if($url_end=='visu_notification.php' || $url_end=='enregistrement_modif_notification.php' || $url_end=='generer_notification.php') {
