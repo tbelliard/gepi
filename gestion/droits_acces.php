@@ -1554,6 +1554,17 @@ $texteItem="a accès à tous les relevés de notes de toutes les classes";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+// Bulletins
+$titreItem='GepiCpeImprBul';
+$texteItem="édite/imprime les bulletins périodiques des classes dont il a la charge.<br />
+			(<em>Par défaut, seul un utilisateur ayant le statut scolarité peut éditer les bulletins</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiCpeImprBulSettings';
+$texteItem="a accès au paramétrage de l'impression des bulletins (<em>lorsqu'il est autorisé à éditer/imprimer les bulletins</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 // CDT
 $titreItem='GepiAccesCdtCpe';

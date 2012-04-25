@@ -1,4 +1,3 @@
-
 <?php
 /*
  * $Id$
@@ -1079,7 +1078,10 @@ class class_page_accueil {
 			OR (($this->statutUtilisateur=='scolarite')
 					AND (getSettingValue("GepiScolImprBulSettings")=='yes'))
 			OR (($this->statutUtilisateur=='administrateur')
-					AND (getSettingValue("GepiAdminImprBulSettings")=='yes'))){
+					AND (getSettingValue("GepiAdminImprBulSettings")=='yes'))
+			OR (($this->statutUtilisateur=='cpe')
+					AND (getSettingValue("GepiCpeImprBulSettings")=='yes'))
+					) {
 
 		if(getSettingValue('type_bulletin_par_defaut')=='pdf') {
 			$this->creeNouveauItem("/bulletin/param_bull_pdf.php",
@@ -1107,8 +1109,10 @@ class class_page_accueil {
 
 	if ((($this->test_prof_suivi != "0")
 				AND (getSettingValue("GepiProfImprBul")=='yes'))
-			OR ($this->statutUtilisateur!='professeur')){
-	  $this->creeNouveauItem("/bulletin/bull_index.php",
+			OR (($this->statutUtilisateur=='cpe')
+				AND (getSettingValue("GepiCpeImprBul")=='yes'))
+			OR (($this->statutUtilisateur!='professeur')AND($this->statutUtilisateur!='cpe'))) {
+		$this->creeNouveauItem("/bulletin/bull_index.php",
 			  "Visualisation et impression des bulletins",
 			  "Cet outil vous permet de visualiser à l'écran et d'imprimer les bulletins, classe par classe.");
 	}

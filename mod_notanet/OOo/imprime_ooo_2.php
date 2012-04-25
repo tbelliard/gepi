@@ -23,7 +23,7 @@
 
 
 include_once('../../mod_ooo/lib/lib_mod_ooo.php');
-include_once('../../mod_ooo/lib/tbs_class.php');
+include_once('../../tbs/tbs_class.php');
 include_once('../../mod_ooo/lib/tbsooo_class.php');
 //define( 'PCLZIP_TEMPORARY_DIR', $tempdir );
 define( 'PCLZIP_TEMPORARY_DIR', '../../temp/' );
