@@ -2,7 +2,7 @@
 /**
  *
  *
- * Copyright 2010 Josselin Jacquard
+ * Copyright 2012 Josselin Jacquard
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -90,13 +90,8 @@ if (isFiltreRechercheParam('filter_classe')) {
     $query->leftJoin('Eleve.JEleveClasse');
     $query->where('JEleveClasse.IdClasse = ?', getFiltreRechercheParam('filter_classe'));
 }
-if (isFiltreRechercheParam('filter_groupe')) {
-    $query->leftJoin('Eleve.JEleveGroupe');
-    $query->where('JEleveGroupe.IdGroupe = ?', getFiltreRechercheParam('filter_groupe'));
-}
-if (isFiltreRechercheParam('filter_aid')) {
-    $query->leftJoin('Eleve.JAidEleves');
-    $query->where('JAidEleves.IdAid = ?', getFiltreRechercheParam('filter_aid'));
+if (isFiltreRechercheParam('filter_regime')) {
+    $query->useEleveRegimeDoublantQuery()->filterByRegime(getFiltreRechercheParam('filter_regime'))->endUse();
 }
 if (isFiltreRechercheParam('filter_date_debut_saisie_debut_plage')) {
     $date_debut_saisie_debut_plage = new DateTime(str_replace("/",".",getFiltreRechercheParam('filter_date_debut_saisie_debut_plage')));
@@ -286,6 +281,37 @@ foreach (ClasseQuery::create()->orderByNom()->orderByNomComplet()->distinct()->f
 	echo $classe->getNom();
 	echo "</option>\n";
 }
+echo "</select>";
+echo '</th>';
+
+//en tete filtre qualité demi-pension
+echo '<th>';
+echo '<span style="white-space: nowrap;"> ';
+//echo '<nobr>';
+echo 'Régime';
+echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
+if ($order == "asc_regime") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
+echo 'border-width:1px;" alt="" name="order" value="asc_regime" onclick="this.form.order.value = this.value"/>';
+echo '<input type="image" src="../images/down.png" title="descendre" style="vertical-align: middle;width:15px; height:15px; ';
+if ($order == "des_regime") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
+echo 'border-width:1px;" alt="" name="order" value="des_regime" onclick="this.form.order.value = this.value"/>';
+echo '</span>';
+//echo '</nobr>';
+echo '<br />';
+echo ("<select name=\"filter_regime\" onchange='submit()'>");
+echo "<option value=''></option>\n";
+echo "<option value='d/p'";
+if (getFiltreRechercheParam('filter_regime') == 'd/p') echo " selected='selected' ";
+echo ">d/p</option>\n";
+echo "<option value='ext.'";
+if (getFiltreRechercheParam('filter_regime') == 'ext.') echo " selected='selected' ";
+echo ">ext.</option>\n";
+echo "<option value='int.'";
+if (getFiltreRechercheParam('filter_regime') == 'int.') echo " selected='selected' ";
+echo ">int.</option>\n";
+echo "<option value='i-e'";
+if (getFiltreRechercheParam('filter_regime') == 'i-e') echo " selected='selected' ";
+echo ">i-e</option>\n";
 echo "</select>";
 echo '</th>';
 
@@ -539,6 +565,12 @@ foreach ($results as $eleve) {
     //donnees classe
     echo '<td>';
     echo $eleve->getClasseNom();
+    echo '</td>';
+
+    //donnees régime
+    echo '<td>';
+    $reg = $eleve->getEleveRegimeDoublant();
+    if ($reg != null) echo $reg->getRegime();
     echo '</td>';
 
     //date saisie

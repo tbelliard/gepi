@@ -53,14 +53,14 @@ if(($_SESSION['statut']=='cpe')||
         echo "class='current' ";
         $_SESSION['abs2_onglet'] = 'saisir_groupe.php';
     }
-    echo "title='Saisir des absences et des retards pour un groupe'>Saisir un groupe</a></li>\n";
+    echo "title='Saisir des absences et des retards pour un groupe'>Saisir groupe</a></li>\n";
 
     echo "<li><a href='saisir_eleve.php' ";
     if($url_end=='saisir_eleve.php' || $url_end=='enregistrement_saisie_eleve.php') {
         echo "class='current' ";
         $_SESSION['abs2_onglet'] = 'saisir_eleve.php';
     }
-    echo "title='Saisir pour un eleve'>Saisir un élève</a></li>\n";
+    echo "title='Saisir pour un eleve'>Saisir élève</a></li>\n";
 
     echo "<li><a href='liste_saisies_selection_traitement.php' ";
     if($url_end=='liste_saisies_selection_traitement.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
