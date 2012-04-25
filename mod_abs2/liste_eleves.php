@@ -149,9 +149,13 @@ if (getFiltreRechercheParam('order') == "asc_id") {
     $query->orderBy('Nom', Criteria::DESC);
     $query->orderBy('Prenom', Criteria::DESC);
 } else if (getFiltreRechercheParam('order') == "asc_classe") {
-    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useClasseQuery()->orderBy('NomComplet', Criteria::ASC)->endUse()->endUse()->endUse();
+    $query->useJEleveClasseQuery()->useClasseQuery()->orderBy('NomComplet', Criteria::ASC)->endUse()->endUse();
 } else if (getFiltreRechercheParam('order') == "des_classe") {
-    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useClasseQuery()->orderBy('NomComplet', Criteria::DESC)->endUse()->endUse()->endUse();
+    $query->useJEleveClasseQuery()->useClasseQuery()->orderBy('NomComplet', Criteria::DESC)->endUse()->endUse();
+} else if (getFiltreRechercheParam('order') == "asc_regime") {
+    $query->useEleveRegimeDoublantQuery()->orderByRegime(Criteria::ASC)->endUse();
+} else if (getFiltreRechercheParam('order') == "des_regime") {
+    $query->useEleveRegimeDoublantQuery()->orderByRegime(Criteria::DESC)->endUse();
 } else if (getFiltreRechercheParam('order') == "asc_type") {
     $query->orderBy('ATypeId', Criteria::ASC);
 } else if (getFiltreRechercheParam('order') == "des_type") {
@@ -320,13 +324,6 @@ echo '<th>';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
 echo 'Date début saisie';
-echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px; vertical-align: middle;';
-if ($order == "asc_date_debut") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="asc_date_debut"/>';
-echo '<input type="image" src="../images/down.png" title="monter" style="width:15px; height:15px; vertical-align: middle;';
-if ($order == "des_date_debut") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="des_date_debut"/>';
-//echo '</nobr>';
 echo '</span>';
 echo '<br />';
 //echo '<nobr>';
@@ -375,13 +372,6 @@ echo '<th>';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
 echo 'Date fin saisie';
-echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px; vertical-align: middle;';
-if ($order == "asc_date_fin") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="asc_date_fin"/>';
-echo '<input type="image" src="../images/down.png" title="monter" style="width:15px; height:15px; vertical-align: middle;';
-if ($order == "des_date_fin") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="des_date_fin"/>';
-//echo '</nobr>';
 echo '</span>';
 echo '<br />';
 //echo '<nobr>';
@@ -428,16 +418,8 @@ echo '</th>';
 //en tete type d'absence
 echo '<th>';
 echo '<span style="white-space: nowrap;"> ';
-//echo '<nobr>';
 echo 'Type';
-echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
-if ($order == "asc_type") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="asc_type" onclick="this.form.order.value = this.value"/>';
-echo '<input type="image" src="../images/down.png" title="descendre" style="vertical-align: middle;width:15px; height:15px; ';
-if ($order == "des_type") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="des_type" onclick="this.form.order.value = this.value"/>';
 echo '</span>';
-//echo '</nobr>';
 echo '<br />';
 echo ("<select name=\"filter_type\" onchange='submit()'>");
 echo "<option value=''></option>\n";
@@ -469,16 +451,6 @@ echo '</th>';
 
 //en tete justification d'absence
 echo '<th>';
-echo '<span style="white-space: nowrap;"> ';
-//echo '<nobr>';
-echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
-if ($order == "asc_justification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="asc_justification" onclick="this.form.order.value = this.value"/>';
-echo '<input type="image" src="../images/down.png" title="descendre" style="vertical-align: middle;width:15px; height:15px; ';
-if ($order == "des_justification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="des_justification" onclick="this.form.order.value = this.value"/>';
-echo '</span>';
-echo '<br />';
 echo 'Justification';
 echo '<br />';
 echo ("<select name=\"filter_justification\" onchange='submit()'>");
@@ -500,16 +472,6 @@ echo '</th>';
 
 //en tete motif d'absence
 echo '<th>';
-echo '<span style="white-space: nowrap;"> ';
-//echo '<nobr>';
-echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
-if ($order == "asc_motif") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="asc_motif" onclick="this.form.order.value = this.value"/>';
-echo '<input type="image" src="../images/down.png" title="descendre" style="vertical-align: middle;width:15px; height:15px; ';
-if ($order == "des_motif") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="des_motif" onclick="this.form.order.value = this.value"/>';
-echo '</span>';
-echo '<br />';
 echo 'Motif';
 echo '<br />';
 echo ("<select name=\"filter_motif\" onchange='submit()'>");
