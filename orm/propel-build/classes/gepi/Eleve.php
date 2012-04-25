@@ -2056,5 +2056,22 @@ class Eleve extends BaseEleve {
                 $this->updateAbsenceAgregationTable();
 	}
     
+	/**
+	 * Gets a single EleveRegimeDoublant object, which is related to this object by a one-to-one relationship.
+         * Override because of a bug.
+	 *
+	 * @param      PropelPDO $con optional connection object
+	 * @return     EleveRegimeDoublant
+	 * @throws     PropelException
+	 */
+	public function getEleveRegimeDoublant(PropelPDO $con = null)
+	{
+
+		if ($this->singleEleveRegimeDoublant === null && !$this->isNew()) {
+			$this->singleEleveRegimeDoublant = EleveRegimeDoublantQuery::create()->findPk($this->getLogin(), $con);
+		}
+
+		return $this->singleEleveRegimeDoublant;
+	}
 	
 } // Eleve
