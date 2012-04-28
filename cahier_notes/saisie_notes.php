@@ -826,7 +826,7 @@ if ($id_devoir != 0) {
         $appel_note_sur = mysql_query("SELECT NOTE_SUR FROM cn_devoirs WHERE id = '$id_devoir'");
         $note_sur_verif = mysql_result($appel_note_sur,'0' ,'note_sur');
 	echo "<p class='cn'>Taper une note de 0 à ".$note_sur_verif." pour chaque élève, ou à défaut le code 'a' pour 'absent', le code 'd' pour 'dispensé', le code '-' ou 'n' pour absence de note.</p>\n";
-	echo "<p class='cn'>Vous pouvez également <b>importer directement vos notes par \"copier/coller\"</b> à partir d'un tableur ou d'une autre application : voir tout en bas de cette page.</p>\n";
+	echo "<p class='cn'>Vous pouvez également <b>importer directement vos notes par \"copier/coller\"</b> à partir d'un tableur ou d'une autre application : voir <a href='#import_notes_tableur'>tout en bas de cette page</a>.</p>\n";
 
 }
 echo "<p class=cn><b>Enseignement : ".$current_group['description']." (" . $current_group["classlist_string"] . ")";
@@ -2280,6 +2280,7 @@ if ($id_devoir) {
 	echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: 8px; margin-right: 100px;\">\n";
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post>\n";
 	echo add_token_field();
+	echo "<a name='import_notes_tableur'></a>";
 	echo "<h3 class='gepi'>Importation directe des notes par copier/coller à partir d'un tableur</h3>\n";
 	echo "<table summary=\"Tableau d'import\"><tr>\n";
 	echo "<td>De la ligne : ";
