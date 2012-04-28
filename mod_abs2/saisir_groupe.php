@@ -473,7 +473,6 @@ if ($current_cours != null) {
 }
 
 if ($current_creneau == null) {
-    //echo 'Aucun créneau selectionné';
     //on vide la liste des eleves pour eviter de proposer une saisie
     $eleve_col = new PropelObjectCollection();
 }
@@ -529,7 +528,6 @@ foreach($eleve_col as $eleve) {
 	}
 	
 	$col_creneaux = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
-	//echo "créneaux : ".$col_creneaux->count();
 	$afficheEleve[$elv]['creneaux_possibles'] = $col_creneaux->count();
 	for($i = 0; $i<$col_creneaux->count(); $i++){
 		$edt_creneau = $col_creneaux[$i];
@@ -557,15 +555,15 @@ foreach($eleve_col as $eleve) {
 				}
 			}
 			// pour le creneau en cours on garde uniquement les absences de l'utilisateur pour ne pas l'influencer par d'autres saisies sauf si configuré autrement
-                        if (getSettingValue("abs2_afficher_saisies_creneau_courant")!='y') {
-                            $absences_du_creneau_du_prof = new PropelObjectCollection();
-                            foreach ($absences_du_creneau as $abs) {
-                                    if ($abs->getUtilisateurId() == $utilisateur->getPrimaryKey()) {
-                                            $absences_du_creneau_du_prof->append($abs);
-                                    }
-                            }
-                            $absences_du_creneau = $absences_du_creneau_du_prof;
-                        }
+			if (getSettingValue("abs2_afficher_saisies_creneau_courant")!='y') {
+				$absences_du_creneau_du_prof = new PropelObjectCollection();
+				foreach ($absences_du_creneau as $abs) {
+						if ($abs->getUtilisateurId() == $utilisateur->getPrimaryKey()) {
+								$absences_du_creneau_du_prof->append($abs);
+						}
+				}
+				$absences_du_creneau = $absences_du_creneau_du_prof;
+			}
 		} else if ($current_creneau != null && $edt_creneau->getHeuredebutDefiniePeriode('U') > $current_creneau->getHeuredebutDefiniePeriode('U')) {
 			//on n'affiche pas les informations apres le creneau en cours pour ne pas influencer la saisie si c'est un enseignant
 			if($utilisateur->getStatut() == "professeur"){
@@ -575,11 +573,11 @@ foreach($eleve_col as $eleve) {
 			}
 		} else {
 			//on affiche  les informations pour les crenaux avant la saisie sauf si configuré autrement
-                        if (getSettingValue("abs2_cacher_creneaux_precedents")!='y') {
-                            $absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
-                        } else {
-                            $absences_du_creneau = new PropelCollection();
-                        }
+			if (getSettingValue("abs2_cacher_creneaux_precedents")!='y') {
+				$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
+			} else {
+				$absences_du_creneau = new PropelCollection();
+			}
 		}
 		$afficheEleve[$elv]['style'][$i] = "";
 		if (!$absences_du_creneau->isEmpty()) {
@@ -632,7 +630,6 @@ foreach($eleve_col as $eleve) {
 		}
 		
 		if ($nb_creneau_a_saisir > 0) {
-			//$i = $i + $nb_creneau_a_saisir - 1;
 			// le message d'erreur de l'enregistrement precedent provient du fichier enregistrement_saisies_groupe.php
 			if (isset($message_erreur_eleve[$eleve->getId()]) && $message_erreur_eleve[$eleve->getId()] != '') {
 				$afficheEleve[$elv]['erreurEnregistre'][$i] = $message_erreur_eleve[$eleve->getId()];
@@ -643,7 +640,7 @@ foreach($eleve_col as $eleve) {
 			if ($type_autorises->count() != 0) {
 				$afficheEleve[$elv]['type_autorises'][$i] = array();
 				foreach ($type_autorises as $type) {
-					$afficheEleve[$elv]['type_autorises'][$i][]= array('type'=>$type->getId(), 'nom'=>$type->getNom());
+					$afficheEleve[$elv]['type_autorises'][$i][]= array('type'=>$type->getId(), 'nom'=>$type->getNom(), 'modeInterface'=>$type->getModeInterface());
 				}
 			}
 		}
@@ -1114,15 +1111,68 @@ if (isset ($eleve['type_autorises'][$i])) { ?>
 						    <select class="selects"
 									onchange="this.form.elements['active_absence_eleve_<?php echo $eleve['position']; ?>'].checked = (this.options[this.selectedIndex].value != -1);" 
 									name="type_absence_eleve[<?php echo $eleve['position']; ?>]"
-									id="type_absence_eleve_<?php echo $eleve['position']; ?>">
+									id="type_absence_eleve_<?php echo $eleve['position']; ?>" >
 								<option class="pc88" value="-1"> </option>
 <?php foreach ($eleve['type_autorises'][$i] as $type) { ?>
 								<option class="pc88" value="<?php echo $type['type']; ?>">
-								<?php echo $type['nom']; ?>
+								<?php echo $type['nom']; ?> 
 								</option>
 <?php } ?>
 							</select>
+<?php 
+/*test des cases à cocher
+// unset ($_SESSION['abs2CheckTout']);
+// $_SESSION['abs2CheckTout'] = TRUE;
+ * 
+ */
+$caseCheck = FALSE;
+foreach ($eleve['type_autorises'][$i] as $type) { 
+	if (($type['modeInterface'] == AbsenceEleveType::MODE_INTERFACE_CHECKBOX)
+			|| ($type['modeInterface'] == AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN && 
+			isset ($_SESSION['abs2CheckTout']) 
+					&& $_SESSION['abs2CheckTout'] == TRUE)) { 
+		$caseCheck = TRUE;
+		?>
+							<p>
+								<input type="radio" 
+									   id="<?php echo $type['nom']; ?>_<?php echo $eleve['position']; ?>"
+									   name="check[<?php echo $eleve['position']; ?>]"
+									   value="<?php echo $type['type']; ?>"
+				
+<?php 					   
+/*
+if (isset ($eleve['saisie'][$i]['traitements'])) {
+	foreach ($eleve['saisie'][$i]['traitements'] as $bou_traitement) {
+		if ($bou_traitement == $type['nom']){
+			echo "checked='checked'";
+		}
+	} 
+} 
+*/?>
+									   />
+								<label for ="<?php echo $type['nom']; ?>_<?php echo $eleve['position']; ?>">
+									<?php echo $type['nom']; ?>
+								</label>
+								 
+							</p>
+
 <?php } 
+	}
+	if ($caseCheck) {?>
+							<p>
+			<input type="radio"
+				   id="faux_<?php echo $eleve['position']; ?>"
+				   name="check[<?php echo $eleve['position']; ?>]"
+				   value="<?php echo false ?>"
+				   checked='checked' />
+								<label for ="faux_<?php echo $eleve['position']; ?>">
+									
+								</label>
+							</p>
+				
+		
+<?php 	}
+}
 if ($eleve['creneau_courant'] == $i) { ?>
 							<label id="label_active_absence_eleve_<?php echo $eleve['position']; ?>" class="invisible smartphone" 
 								   for="active_absence_eleve_<?php echo $eleve['position']; ?>">
