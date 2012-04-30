@@ -133,7 +133,7 @@ class clsTinyButStrongOOo extends clsTinyButStrong
 
     // store the merge result in place of the XML source file
     $fdw = fopen($this->_ooo_basename.'/'.$this->_xml_filename, "w");
-    fwrite($fdw, $this->Source, mb_strlen($this->Source));
+    fwrite($fdw, $this->Source);
     fclose ($fdw);
 
     // test if XML file exist
@@ -225,7 +225,7 @@ class clsTinyButStrongOOo extends clsTinyButStrong
   {
     if (strpos($path_quote, ' ') !== false) {
       $path_quote = (strpos($path_quote, '"') === 0 ? '' : '"').$path_quote;
-      $path_quote = $path_quote.((strrpos($path_quote, '"') == mb_strlen($path_quote)-1) ? '' : '"');
+      $path_quote = $path_quote.((strrpos($path_quote, '"') == strlen($path_quote)-1) ? '' : '"');
     }
     return $path_quote;
   }
