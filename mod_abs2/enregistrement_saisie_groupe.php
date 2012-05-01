@@ -235,8 +235,14 @@ for($i=0; $i<$total_eleves; $i++) {
 	continue;
     }
     $id_eleve = $_POST['id_eleve_absent'][$i];
+	
+	// on teste si une case est cochée
+	if (isset ($_POST['check'][$i]) && $_POST['check'][$i]) {
+		$_POST['active_absence_eleve'][$i] = TRUE;
+		$_POST['type_absence_eleve'][$i] = $_POST['check'][$i];
+	}
 
-    //on test si l'eleve est coché absent
+    //on teste si l'eleve est coché absent
     if (!isset($_POST['active_absence_eleve'][$i])
 	&& !(isset($_POST['commentaire_absence_eleve'][$i]) && $_POST['commentaire_absence_eleve'][$i] != null)
 	&& !(isset($_POST['type_absence_eleve'][$i]) && $_POST['type_absence_eleve'][$i] != -1)
