@@ -987,7 +987,8 @@ if ($eleve_col->isEmpty()) {
 					   size="4"/>
 				<button onclick="SetAllTextFields('liste_absence_eleve', 'heure_debut_absence_eleve','',document.getElementById('heure_debut_appel').value);
 							    SetAllTextFields('liste_absence_eleve', 'heure_fin_absence_eleve','',document.getElementById('heure_fin_appel').value);
-							    return false;">
+							    return false;"
+                                        id ="bouton_changer_horaire">
 					Changer
 				</button>
 				<?php } ?>
@@ -1105,13 +1106,37 @@ for($i = 0; $i<$eleve['creneaux_possibles']; $i++){ ?>
 <?php } 
 if (isset ($eleve['erreurEnregistre'][$i])) { ?>	
 	Erreur : <?php echo $eleve['erreurEnregistre'][$i]; ?>
-<?php } 
-if (isset ($eleve['type_autorises'][$i])) { ?>
-							<label class="invisible" for="type_absence_eleve_<?php echo $eleve['position']; ?>">Type d'absence</label>
+<?php }
+if (isset ($eleve['type_autorises'][$i])) {
+        $radioButtonType = FALSE;
+        foreach ($eleve['type_autorises'][$i] as $type) {
+                if ($type['modeInterface'] == AbsenceEleveType::MODE_INTERFACE_CHECKBOX
+                                || $type['modeInterface'] == AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN) {
+                        $radioButtonType = TRUE;
+                        break;
+                }
+        }
+        $radioButtonTypeOnlyHidden = $radioButtonType;
+        foreach ($eleve['type_autorises'][$i] as $type) {
+                if ($type['modeInterface'] == AbsenceEleveType::MODE_INTERFACE_CHECKBOX) {
+                        $radioButtonTypeOnlyHidden = false;
+                        break;
+                }
+        }
+        $radioButtonTypeHasHidden = false;
+        foreach ($eleve['type_autorises'][$i] as $type) {
+                if ($type['modeInterface'] == AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN) {
+                        $radioButtonTypeHasHidden = true;
+                        break;
+                }
+        } ?>
+
+                                                    <label class="invisible" for="type_absence_eleve_<?php echo $eleve['position']; ?>">Type d'absence</label>
 						    <select class="selects"
-									onchange="this.form.elements['active_absence_eleve_<?php echo $eleve['position']; ?>'].checked = (this.options[this.selectedIndex].value != -1);" 
+									onchange="this.form.elements['active_absence_eleve_<?php echo $eleve['position']; ?>'].checked = (this.options[this.selectedIndex].value != -1);
+                                                                                    <?php if ($radioButtonType) {?>this.form.elements['radio_sans_type_absence_eleve_<?php echo $eleve['position']; ?>'].checked = true; <?php } ?>"
 									name="type_absence_eleve[<?php echo $eleve['position']; ?>]"
-									id="type_absence_eleve_<?php echo $eleve['position']; ?>" >
+									id="liste_type_absence_eleve_<?php echo $eleve['position']; ?>" >
 								<option class="pc88" value="-1"> </option>
 <?php foreach ($eleve['type_autorises'][$i] as $type) { ?>
 								<option class="pc88" value="<?php echo $type['type']; ?>">
@@ -1120,57 +1145,32 @@ if (isset ($eleve['type_autorises'][$i])) { ?>
 <?php } ?>
 							</select>
 <?php 
-/*test des cases à cocher
-// unset ($_SESSION['abs2CheckTout']);
-// $_SESSION['abs2CheckTout'] = TRUE;
- * 
- */
-$caseCheck = FALSE;
-foreach ($eleve['type_autorises'][$i] as $type) { 
-	if (($type['modeInterface'] == AbsenceEleveType::MODE_INTERFACE_CHECKBOX)
-			|| ($type['modeInterface'] == AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN && 
-			isset ($_SESSION['abs2CheckTout']) 
-					&& $_SESSION['abs2CheckTout'] == TRUE)) { 
-		$caseCheck = TRUE;
-		?>
+foreach ($eleve['type_autorises'][$i] as $type) {
+	if ($type['modeInterface'] == AbsenceEleveType::MODE_INTERFACE_CHECKBOX
+			|| $type['modeInterface'] == AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN) { ?>
 							<p>
-								<input type="radio" 
-									   id="<?php echo $type['nom']; ?>_<?php echo $eleve['position']; ?>"
+								<input type="radio"
+                                                                            onchange="this.form.elements['liste_type_absence_eleve_<?php echo $eleve['position']; ?>'].selectedIndex = 0; this.form.elements['active_absence_eleve_<?php echo $eleve['position']; ?>'].checked = true;"
+									   id="radio_<?php if ($type['modeInterface'] == AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN) echo 'hidden_'?>type_absence_eleve_<?php echo $type['type']; ?>_<?php echo $eleve['position']; ?>"
 									   name="check[<?php echo $eleve['position']; ?>]"
-									   value="<?php echo $type['type']; ?>"
-				
-<?php 					   
-/*
-if (isset ($eleve['saisie'][$i]['traitements'])) {
-	foreach ($eleve['saisie'][$i]['traitements'] as $bou_traitement) {
-		if ($bou_traitement == $type['nom']){
-			echo "checked='checked'";
-		}
-	} 
-} 
-*/?>
-									   />
-								<label for ="<?php echo $type['nom']; ?>_<?php echo $eleve['position']; ?>">
+									   value="<?php echo $type['type']; ?>"/>
+								<label for ="radio_<?php if ($type['modeInterface'] == AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN) echo 'hidden_'?>type_absence_eleve_<?php echo $type['type']; ?>_<?php echo $eleve['position']; ?>">
 									<?php echo $type['nom']; ?>
 								</label>
-								 
 							</p>
-
-<?php } 
-	}
-	if ($caseCheck) {?>
+<?php   }
+    }//on affiche une case vide pour saisier un élève sans option
+    if ($radioButtonType) {?>
 							<p>
-			<input type="radio"
-				   id="faux_<?php echo $eleve['position']; ?>"
-				   name="check[<?php echo $eleve['position']; ?>]"
-				   value="<?php echo false ?>"
-				   checked='checked' />
+                                                                <input type="radio"
+                                                                        onchange="this.form.elements['active_absence_eleve_<?php echo $eleve['position']; ?>'].checked = false;"
+                                                                        id="radio_sans_type_absence_eleve_<?php echo $eleve['position']; ?>"
+                                                                        name="check[<?php echo $eleve['position']; ?>]"
+                                                                        value="<?php echo false ?>"
+                                                                        checked='checked' />
 								<label for ="faux_<?php echo $eleve['position']; ?>">
-									
 								</label>
-							</p>
-				
-		
+                                                        </p>
 <?php 	}
 }
 if ($eleve['creneau_courant'] == $i) { ?>
@@ -1184,7 +1184,6 @@ if ($eleve['creneau_courant'] == $i) { ?>
 								   name="active_absence_eleve[<?php echo $eleve['position']; ?>]"
 								   value="1"
 								   type="checkbox" />
-								<br />
 								<label class="invisible" for="heure_debut_absence_eleve_<?php echo $eleve['position']; ?>">de</label>
 								<input class="pc88"
 									   onchange="this.form.elements['active_absence_eleve[<?php echo $eleve['position']; ?>]'].checked = true;"
@@ -1268,6 +1267,25 @@ if ($utilisateur->getStatut() == 'professeur' && getSettingValue("active_cahiers
 ?>
 </div>
 <?php
+$javascript_footer_texte_specifique = '<script type="text/javascript">';
+if ($radioButtonTypeOnlyHidden) {
+    $javascript_footer_texte_specifique .= '$$(\'input[type="radio"][id^="radio_sans_type_absence_eleve_"]\').each(Element.hide);';
+}
+$javascript_footer_texte_specifique .= '$$(\'input[type="radio"][id^="radio_hidden_"]\').each(Element.hide);';
+$javascript_footer_texte_specifique .= '$$(\'label[for^="radio_hidden_"]\').each(Element.hide);';
+
+$javascript_footer_texte_specifique .= '$(\'bouton_changer_horaire\').insert({after : \'';
+$javascript_footer_texte_specifique .= ' 				<button id="bouton_afficher_radio_hidden" onclick="return false;">';
+$javascript_footer_texte_specifique .= ' 					Aff. cases cachées';
+$javascript_footer_texte_specifique .= ' 				</button>\'';
+$javascript_footer_texte_specifique .= '});';
+$javascript_footer_texte_specifique .= '$(\'bouton_afficher_radio_hidden\').observe(\'click\', function( event )
+{
+  $$(\'input[type="radio"][id^="radio_sans_type_absence_eleve_"]\').each(Element.show);
+  $$(\'input[type="radio"][id^="radio_hidden_"]\').each(Element.show);
+  $$(\'label[for^="radio_hidden_"]\').each(Element.show);
+});';
+$javascript_footer_texte_specifique .= '</script>';
 require_once("../lib/footer.inc.php");
 
 // $affiche_debug=debug_var();
