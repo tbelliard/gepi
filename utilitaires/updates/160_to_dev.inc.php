@@ -23,18 +23,31 @@
  */
 
 $result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.1(dev) :</h3>";
-$result .= "&nbsp;->Modification du champ 'type_saisie' de la table 'a_types' en 'mode_interface'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_types LIKE 'mode_interface';"));
-if ($test_champ>0) {
-	$result .= msj_present("Le champ est déjà modifié.");
+
+$req_test=mysql_query("SELECT value FROM setting WHERE name = 'encodage_nom_photo'");
+$res_test=mysql_num_rows($req_test);
+if ($res_test==0){
+  $result_inter = traite_requete("INSERT INTO setting VALUES ('encodage_nom_photo', 'no');");
+  if ($result_inter == '') {
+    $result.=msj_ok("Définition du paramètre encodage_nom_photo : Ok !");
+  } else {
+    $result.=msj_erreur("Définition du paramètre encodage_nom_photo : Erreur !");
+  }
+} else {
+  $result .= msj_present("Le paramètre encodage_nom_photo existe déjà dans la table setting.");
 }
-else {
-	$query = mysql_query("ALTER TABLE a_types CHANGE type_saisie mode_interface VARCHAR(50) DEFAULT 'NON_PRECISE' COMMENT 'Enumeration des possibilités de l\'interface de saisie de l\'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE, DISCIPLINE, CHECKBOX, CHECKBOX_HIDDEN'");
-	if ($query) {
-			$result .= msj_ok();
-	} else {
-			$result .= msj_erreur();
-	}
+
+$req_test=mysql_query("SELECT value FROM setting WHERE name = 'alea_nom_photo'");
+$res_test=mysql_num_rows($req_test);
+if ($res_test==0){
+  $result_inter = traite_requete("INSERT INTO setting VALUES ('alea_nom_photo', MD5(UNIX_TIMESTAMP()));");
+  if ($result_inter == '') {
+    $result.=msj_ok("Définition du paramètre alea_nom_photo : Ok !");
+  } else {
+    $result.=msj_erreur("Définition du paramètre alea_nom_photo : Erreur !");
+  }
+} else {
+  $result .= msj_present("Le paramètre alea_nom_photo existe déjà dans la table setting.");
 }
 
 ?>
