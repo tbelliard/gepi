@@ -1336,7 +1336,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 	if(isset($affdiscipline)) {$texte_infobulle.="<input type='hidden' name='affdiscipline' value='$affdiscipline' />\n";}
 
 	if(isset($etape)) {$texte_infobulle.="<input type='hidden' name='etape' value='$etape' />\n";}
-	if(isset($classe)) {$texte_infobulle.="<input type='hidden' name='order_by' value='$order_by' />\n";}
+	if(isset($classe) && isset($order_by)) {$texte_infobulle.="<input type='hidden' name='order_by' value='$order_by' />\n";}
 
 	$texte_infobulle.="<input type='hidden' name='upload_photo' value='y' />\n";
 	$texte_infobulle.="<input type='hidden' name='login_photo' id='login_photo' value=\"\" />\n";

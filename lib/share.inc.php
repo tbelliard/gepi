@@ -3395,22 +3395,20 @@ function cree_repertoire_multisite() {
 }
 
 /**
- * Crée une valeur aléatoire utilisée pour coder le nom des fichiers photo
- * et l'enregistre dans la table 'setting'
- * La présence de cette valeur dans la table 'setting' détermine si
- * l'encodage est activé ou pas.
- * Renvoie true si l'encodage est activé, false sinon.
+ * Crée si nécessaire l'entrée 'encodage_nom_photo' dans la table 'setting'
+ * Crée ou modifie la valeur aléatoire 'alea_nom_photo' utilisée pour encoder
+ *  le nom des fichiers photo des élèves et l'enregistre dans la table 'setting'
+ * Renvoie true si l'encodage est activé ou réactivé, false sinon.
  *
- * @return boolean true : l'encodage est activé
+ * @param string $alea_nom_photo Si non vide détermine la valeur à donner à 'alea_nom_photo'
+ * @return boolean true : succès, false : échec
  * @see encode_nom_photo()
  */
-function active_encode_nom_photo() {
-	global $gepiSettings;
-	if (isset($gepiSettings['alea_nom_photo'])) return false; // la valeur est déjà définie
-	else {
-	$alea_nom_photo=md5(time());
-	return saveSetting('alea_nom_photo',$alea_nom_photo);
-	}
+function active_encodage_nom_photo($alea_nom_photo="") {
+	$retour=true;
+	if ((getSettingValue('encodage_nom_photo')==NULL) || !getSettingAOui('encodage_nom_photo')) $retour=$retour && saveSetting('encodage_nom_photo','yes');
+	if ($alea_nom_photo=="") $alea_nom_photo=md5(time());
+	return $retour && saveSetting('alea_nom_photo',$alea_nom_photo);
 }
 
 /**
@@ -3422,12 +3420,11 @@ function active_encode_nom_photo() {
  *
  * @param string $nom_photo le nom du fichier
  * @return string le nom du fichier éventuellement modifié
- * @see active_encode_nom_photo()
+ * @see active_encodage_nom_photo()
  * 
  */
 function encode_nom_photo($nom_photo) {
-	global $gepiSettings;
-	if (!isset($gepiSettings['alea_nom_photo'])) return $nom_photo; // la valeur est déjà définie
+	if (!getSettingAOui('encodage_nom_photo')) return $nom_photo; // la valeur est déjà définie
 	else return substr(md5(getSettingValue('alea_nom_photo').$nom_photo),0,5).$nom_photo;
 }
 
@@ -3715,13 +3712,14 @@ function path_niveau($niveau=1){
  *
  * @param string $dossier_a_archiver limité à documents ou photos
  * @param int $niveau niveau dans l'arborescence de la page appelante, racine = 0
- * @return boolean
+ * @return striung message d'erreur, vide si aucune erreur
+ * @see cree_zip_archive_msg()
  */
-function cree_zip_archive($dossier_a_archiver,$niveau=1) {
+function cree_zip_archive_avec_msg_erreur($dossier_a_archiver,$niveau=1) {
   $path = path_niveau();
   $dirname = "backup/".getSettingValue("backup_directory")."/";
   if (!defined('PCLZIP_TEMPORARY_DIR') || constant('PCLZIP_TEMPORARY_DIR')!=$path.$dirname) {
-    define( 'PCLZIP_TEMPORARY_DIR', $path.$dirname );
+    @define( 'PCLZIP_TEMPORARY_DIR', $path.$dirname );
   }
 
   require_once($path.'lib/pclzip.lib.php');
@@ -3738,9 +3736,17 @@ function cree_zip_archive($dossier_a_archiver,$niveau=1) {
 	  $chemin_stockage = $path.$dirname."_photos".$suffixe_zip.".zip";
 	  $dossier_a_traiter = $path.'photos/'; //le dossier à traiter
 	  if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-		$dossier_a_traiter .=$_COOKIE['RNE']."/";
+		if((isset($_COOKIE['RNE']))&&($_COOKIE['RNE']!='')) $dossier_a_traiter .=$_COOKIE['RNE']."/";
+		else return "RNE invalide&nbsp;:&nbsp;".$_COOKIE['RNE'];
 	  }
-	  $dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créer
+	  $dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créée
+	  // Si l'encodage des noms de photos est activé on sauvegarde la valeur 'alea_nom_photo'
+	  if (getSettingAOui('encodage_nom_photo'))
+		{
+		$fic_alea=fopen($dossier_a_traiter."alea_nom_photo.txt","w");
+		fwrite($fic_alea,getSettingValue("alea_nom_photo"));
+		fclose($fic_alea);
+		}
 	  break;
 	default:
 	  $chemin_stockage = '';
@@ -3751,14 +3757,28 @@ function cree_zip_archive($dossier_a_archiver,$niveau=1) {
 	  $v_list = $archive->create($dossier_a_traiter,
 			  PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
 			  PCLZIP_OPT_ADD_PATH, $dossier_dans_archive);
+	  // Si l'encodage des noms de photos est activé on supprime le fichier alea_nom_photo.txt
+	  if (getSettingAOui('encodage_nom_photo') && file_exists($dossier_a_traiter."alea_nom_photo.txt")) @unlink($dossier_a_traiter."alea_nom_photo.txt");
 	  if ($v_list == 0) {
-		 die("Error : ".$archive->errorInfo(TRUE));
-		return FALSE;
+		 return "Erreur : ".$archive->errorInfo(TRUE);
 	  }else {
-		return TRUE;
+		return "";
 	  }
 	}
   }
+}
+
+
+/**
+ * Crée une archive Zip des dossiers documents ou photos
+ *
+ * @param string $dossier_a_archiver limité à documents ou photos
+ * @param int $niveau niveau dans l'arborescence de la page appelante, racine = 0
+ * @return boolean
+ * @see cree_zip_archive_msg()
+ */
+function cree_zip_archive($dossier_a_archiver,$niveau=1) {
+  return (cree_zip_archive_avec_msg_erreur($dossier_a_archiver,$niveau)=="")?TRUE:FALSE;
 }
 
 /**

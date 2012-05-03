@@ -98,7 +98,7 @@
 		Lorsque le module est désactivé, il n'y a pas d'accès au module.
 	  </em>
 	</p>
-	<form action="trombinoscopes_admin.php" id="form1" method="post" title="Configuration générale">
+	<form action="trombinoscopes_admin.php" id="form0" method="post" title="Configuration générale">
 	  <fieldset>
 	<?php
 	echo add_token_field();
@@ -404,13 +404,32 @@ if (!isset($aid_trouve)) {
 	  </p>
 <?php } else 
 { ?>
+
+	<form action="trombinoscopes_admin.php" id="form1" method="post" title="Sauvegarder le dossier 'photos'">
+	<?php
+	echo add_token_field();
+	?>
+	<p>
+	<fieldset>
+		<legend class="bold">Sauvegarde du dossier 'photos'</legend>
+		<em>Un fichier de sauvegarde du dossier 'photos' sera créé, pensez à le récupérer puis le supprimer dans le <a href="../gestion/accueil_sauve.php">module de gestion des sauvegardes</a>.</em><br/>
+		<input type="hidden" name="sauvegarder_dossier_photos" value="oui">
+ 	</fieldset>
+	<p class="center">
+		<input type="submit" 
+			value="Sauvegarder"
+			style="font-variant: small-caps;" />
+	</p>
+	</form>
+
+
 	<form action="trombinoscopes_admin.php" id="form2" method="post" title="Gestion des fichiers">
 	<?php
 	echo add_token_field();
 	?>
 	  <fieldset>
 		<legend class="bold">
-		  <label for="supprime">Suppression</label>
+		  <label for="supprime">Suppression de photos</label>
 		</legend>
 <?php if( file_exists('../photos/'.$repertoire.'personnels/') ) { ?>
 		<input type="checkbox"
@@ -430,7 +449,7 @@ if (!isset($aid_trouve)) {
 		<label for="supprime_eleves" id='sup_ele'>
 		  Vider le dossier photos des élèves
 		</label>
-		<br/><em>Un fichier de sauvegarde sera créé, pensez à le récupérer puis le supprimer dans le module de gestion des sauvegardes.</em>
+		<br/><em>Un fichier de sauvegarde sera créé, pensez à le récupérer puis le supprimer dans le <a href="../gestion/accueil_sauve.php">module de gestion des sauvegardes</a>.</em>
 	  </fieldset>
 <?php } ?>
 	  <p class="center">
@@ -446,9 +465,7 @@ if (!isset($aid_trouve)) {
 	echo add_token_field();
 	?>
 	<fieldset>
-		<legend class="bold">
-		  Gestion
-		</legend>
+		<legend class="bold">Gestion du dossier 'photos'</legend>
 <?php if( file_exists('../photos/'.$repertoire.'personnels/') ) { ?>
 		<input type="checkbox"
 			   name="voirPerso"
@@ -483,7 +500,7 @@ if (!isset($aid_trouve)) {
 	?>
 	<p>
 	<fieldset>
-		<legend class="bold">Purger le dossier des photos</legend>
+		<legend class="bold">Purger le dossier 'photos'</legend>
 		Supprimer les photos des élèves et des professeurs qui ne sont plus référencés dans la base.<br/>
 		<input type="hidden" name="purge_dossier_photos" value="oui">
 		<input type="checkbox"
@@ -493,7 +510,7 @@ if (!isset($aid_trouve)) {
 		<label for="cpts_inactifs">
 		  Effacer également les photos des élèves et des professeurs dont le compte est désactivé.
 		</label>
-		<br/><em>Un fichier de sauvegarde sera créé, pensez à le récupérer puis le supprimer dans le module de gestion des sauvegardes.</em>
+		<br/><em>Un fichier de sauvegarde sera créé, pensez à le récupérer puis le supprimer dans le <a href="../gestion/accueil_sauve.php">module de gestion des sauvegardes</a>.</em>
  	  </fieldset>
 	  <p class="center">
 		<input type="submit" 
@@ -504,47 +521,71 @@ if (!isset($aid_trouve)) {
  <?php 
  } ?>
 
-	<?php if (file_exists('../photos/'.$repertoire.'eleves/') && getSettingValue('alea_nom_photo')==NULL) {?>
+<h2>Encodage des noms de fichier des photos élèves</h2>
+<p class="bold" style="margin-left:10px;";>Etat présent : l'encodage <?php echo (getSettingAOui("encodage_nom_photo"))?"est":"n'est pas"; ?> activé.</p>
+<p>L'encodage des noms de fichier des photos des élèves a pour but d'empêcher un(e) internaute mal intentionné(e) (et connaissant le elenoet ou le login d'un élève, ce qui peut être facile à subodorer) d'accéder aux fichiers du dossier photos/eleves. Cet encodage, facultatif, consiste à ajouter aux noms des fichiers un préfixe de cinq caractères aléatoires.<br />
+<span class="bold">Attention : </span>si l'encodage est activé alors pour transférer directement par FTP les fichiers photo des élèves (nommés sous la forme elenoet.jpg ou login.jpg) dans le dossier photos/eleves il faut au préalable désactiver l'encodage, procéder au transfert, puis activer l'encodage.</p>
+	<?php if (file_exists('../photos/'.$repertoire.'eleves/') && !getSettingAOui('encodage_nom_photo')) {?>
 	<form action="trombinoscopes_admin.php" id="form5" method="post" title="Encoder les noms des fichiers photo élèves">
 	<?php
 	echo add_token_field();
 	?>
 	<p>
 	<fieldset>
-		<legend class="bold">Encoder les noms des fichiers photo des élèves</legend>
-		Modifier les noms des fichiers photo des élèves de manière à en protéger l'accès.<br/>
+		<legend class="bold">Activer l'encodage des noms des fichiers photo des élèves</legend>
+		Cette opération, consistant à ajouter aux noms des fichiers un préfixe de cinq caractères aléatoires, peut-être longue si le nombre de photos est important.<br/>
 		<input type="hidden" name="encoder_noms_photo" value="oui">
-		<em>Cette opération modifie la configuration de GEPI de telle sorte que désormais les noms des fichiers photo des élèves seront toujours encodés.</em>
+		<em>Par précaution faire au péalable une sauvegarde du dossier 'photos'.</em>
  	</fieldset>
 	<p class="center">
 		<input type="submit" 
-			value="Encoder"
+			value="Activer l'encodage"
 			style="font-variant: small-caps;" />
 	</p>
 	</form>
  <?php 
  } ?>
 
-	<?php if (file_exists('../photos/'.$repertoire.'eleves/') && getSettingValue('alea_nom_photo')!=NULL) {?>
-	<form action="trombinoscopes_admin.php" id="form6" method="post" title="Réencoder les noms des fichiers photo élèves">
+	<?php if (file_exists('../photos/'.$repertoire.'eleves/') && getSettingAOui('encodage_nom_photo')) {?>
+
+	<form action="trombinoscopes_admin.php" id="form7" method="post" title="Désactiver l'encodage des noms des fichiers photo élèves">
 	<?php
 	echo add_token_field();
 	?>
 	<p>
 	<fieldset>
-		<legend class="bold">Re-encoder les noms des fichiers photo des élèves</legend>
-		Modifier les noms des fichiers photo des élèves de manière à en protéger l'accès.<br/>
-		<input type="hidden" name="re_encoder_noms_photo" value="oui">
-		<em>Cette opération est nécessaire uniquement s'il y a des problèmes d'accès aux photos des élèves.</em>
+		<legend class="bold">Désactiver l'encodage des noms des fichiers photo élèves</legend>
+		Cette opération, consistant à renommer les fichiers photo des élèves sous la forme elenoet.jpg ou login.jpg, peut-être longue si le nombre de photos est important.<br />
+		<input type="hidden" name="des_encoder_noms_photo" value="oui">
+		<em>Par précaution faire au péalable une sauvegarde du dossier 'photos'.</em>
  	</fieldset>
 	<p class="center">
 		<input type="submit" 
-			value="re-encoder"
+			value="Désactiver l'encodage"
+			style="font-variant: small-caps;" />
+	</p>
+	</form>
+	
+	<form action="trombinoscopes_admin.php" id="form6" method="post" title="Ré-encoder les noms des fichiers photo élèves">
+	<?php
+	echo add_token_field();
+	?>
+	<p>
+	<fieldset>
+		<legend class="bold">Ré-encoder les noms des fichiers photo des élèves</legend>
+		Cette opération est nécessaire uniquement s'il y a des problèmes d'accès aux photos des élèves.<br/>
+		<input type="hidden" name="re_encoder_noms_photo" value="oui">
+		<em>Par précaution faire au péalable une sauvegarde du dossier 'photos'.</em>
+ 	</fieldset>
+	<p class="center">
+		<input type="submit" 
+			value="Re-encoder"
 			style="font-variant: small-caps;" />
 	</p>
 	</form>
  <?php 
  } ?>
+
 
 	<a name="telecharger_photos_eleves"></a>
 	<h2>Télécharger les photos</h2>
@@ -589,6 +630,7 @@ if (!isset($aid_trouve)) {
 
 	<br/>
 
+
 	<form method="post" action="trombinoscopes_admin.php" id="formEnvoi2" enctype="multipart/form-data">
 	<fieldset>
 	<?php
@@ -598,7 +640,7 @@ if (!isset($aid_trouve)) {
 			Restaurer les photos à partir d'une sauvegarde
 		</legend>
 		<input type="hidden" name="action" value="upload" />
-		<input type="file" name="nom_du_fichier" title="Nom du fichier à télécharger"/>
+		<input type="file" name="nom_du_fichier" title="Nom du fichier à télécharger" />
 		<input type="submit" value="Restaurer"/>
 		<br/>
 		<input type="checkbox"
