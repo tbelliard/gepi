@@ -76,6 +76,10 @@ function encode_nom_photo_des_eleves($re_encoder)
 	{
 	global $nb_modifs,$nb_erreurs,$gepiSettings;
 	$bilan="";
+	// tableau stockant les noms des fichiers photo
+	// on ne peut pas renommer les fichiers tout en parcourant le dossier photos
+	// sinon des fichiers peuvent être renommés plusieurs fois
+	$t_noms_photos=array();
 	if (isset($gepiSettings['alea_nom_photo'])) return "La valeur 'alea_nom_photo' est déjà définie";
 	else
 		{
@@ -96,19 +100,24 @@ function encode_nom_photo_des_eleves($re_encoder)
 						{
 						if (is_file($dossier_photos_eleves.$photo) && $photo!="index.html")
 							{
-							$nom_photo=pathinfo($dossier_photos_eleves.$photo,PATHINFO_FILENAME);
-							// si on re-encode les noms de fichiers il faut supprimer l'ancien encodage
-							if ($re_encoder) $nom_photo=substr($nom_photo,5);
-							// on en profite pour normaliser l'extension en .jpg
-							if (@rename($dossier_photos_eleves.$photo,$dossier_photos_eleves.encode_nom_photo($nom_photo).".jpg")) $nb_modifs++;
-							else 
-								{
-								$nb_erreurs++;
-								if ($nb_erreurs<=10) $bilan.="Impossible d'encoder ".$photo.".jpg<br />";
-								}
+							$t_noms_photos[]=$photo;
 							}
 						}
 				closedir($R_dossier_photos_eleves);
+				// on renomme les fichiers photo
+				foreach($t_noms_photos as $photo)
+					{
+					$nom_photo=pathinfo($dossier_photos_eleves.$photo,PATHINFO_FILENAME);
+					// si on re-encode les noms de fichiers il faut supprimer l'ancien encodage
+					if ($re_encoder) $nom_photo=substr($nom_photo,5);
+					// on en profite pour normaliser l'extension en .jpg
+					if (rename($dossier_photos_eleves.$photo,$dossier_photos_eleves.encode_nom_photo($nom_photo).".jpg")) $nb_modifs++;
+					else 
+						{
+						$nb_erreurs++;
+						if ($nb_erreurs<=10) $bilan.="Impossible d'encoder ".$nom_photo.".jpg<br />";
+						}
+					}
 				}
 			}
 		}
