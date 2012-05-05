@@ -3,7 +3,7 @@
 |= CHANGELOG GEPI =|
 |==================|
 
-Derniers Développements
+Gepi-1.6.1
 ===========================
 Librairies :
 - Dojo (1.6.1) est embarqué localement
@@ -19,6 +19,8 @@ Cdt2 :
 
 Abs2 :
 - génération de notifications par lot depuis une liste des traitements
+- page pour extraires des listes d'élèves en utilisant les filtres abs2
+- implémentation de cases à cocher pour saisier les types d'absence
 
 Trombinoscopes:
 - Possibilité d'uploader les photos élèves en CPE (sous réserve d'un droit)

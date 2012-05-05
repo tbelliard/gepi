@@ -34,7 +34,7 @@ class AbsenceEleveType extends BaseAbsenceEleveType {
 	    , AbsenceEleveType::MODE_INTERFACE_NON_PRECISE => 'Type de saisie non précisé'
 	    , AbsenceEleveType::MODE_INTERFACE_COMMENTAIRE_EXIGE => 'Saisie d\'un commentaire explicatif'
 	    , AbsenceEleveType::MODE_INTERFACE_CHECKBOX => 'Saisie de cases à cocher'
-	    , AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN => 'Saisie de cases à cocher cahées par défaut'
+	    , AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN => 'Saisie de cases à cocher cachées par défaut'
 	    , AbsenceEleveType::MODE_INTERFACE_DISCIPLINE => 'Saisie d\'un incident disciplinaire');
 
 	/**
