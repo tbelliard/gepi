@@ -107,58 +107,19 @@ if(!isset($generer_fichiers_pdf_archivage)){
 	echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
 	echo "</p></div>\n";
 
-	echo "<p>Un fichier PDF par élève pour les N périodes va être généré dans un dossier temporaire.<br />Un zip sera généré pour permettre le téléchargement d'un coup de l'ensemble.<br />...</p>\n";
+	echo "<p>Pour chaque élève, un fichier PDF des N périodes de l'année va être généré dans un dossier temporaire.<br />\n(<em>dans une future version, un zip sera généré pour permettre le téléchargement d'un coup de l'ensemble</em>).</p>\n";
 
-	echo "<p><a href='".$_SERVER['PHP_SELF']."?generer_fichiers_pdf_archivage=y".add_token_in_url()."'>Générer les PDF par élève</a></p>\n";
+	//echo "<p><a href='".$_SERVER['PHP_SELF']."?generer_fichiers_pdf_archivage=y".add_token_in_url()."'>Générer les PDF par élève</a></p>\n";
 
-	/*
-	$sql="SELECT DISTINCT annee FROM archivage_disciplines ORDER BY annee";
-	$res_annee=mysql_query($sql);
-	//if(){
-	if(mysql_num_rows($res_annee)==0){
-		echo "<p>Concernant les données autres que les AIDs, aucune année n'est encore sauvegardée.</p>\n";
-	}
-	else{
-		echo "<p>Voici la liste des années sauvegardées:</p>\n";
-		echo "<ul>\n";
-		while($lig_annee=mysql_fetch_object($res_annee)){
-			$annee_scolaire=$lig_annee->annee;
-			echo "<li><b>Année $annee_scolaire (<a href='".$_SERVER['PHP_SELF']."?action=supp_annee&amp;annee_supp=".$annee_scolaire.add_token_in_url()."'   onclick=\"return confirm_abandon (this, 'yes', '$themessage')\">Supprimer toutes les données archivées pour cette année</a>) :<br /></b> ";
-			$sql="SELECT DISTINCT classe FROM archivage_disciplines WHERE annee='$annee_scolaire' ORDER BY classe;";
-			$res_classes=mysql_query($sql);
-			if(mysql_num_rows($res_classes)==0){
-				echo "Aucune classe???";
-			}
-			else{
-				$lig_classe=mysql_fetch_object($res_classes);
-				echo $lig_classe->classe;
+	echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
+	echo add_token_field();
+	echo "<p>Parcourir les élèves par tranches de&nbsp;: <input type='text' name='arch_bull_eff_tranche' size='2' value='".getPref($_SESSION['login'],'arch_bull_eff_tranche',10)."' /><br />\n";
+	echo "<input type='hidden' name='generer_fichiers_pdf_archivage' value='y' />\n";
+	echo "<input type=\"submit\" name='ok' value=\"Générer les PDF par élève\" style=\"font-variant: small-caps;\" /></p>\n";
+	echo "</form>\n";
 
-				while($lig_classe=mysql_fetch_object($res_classes)){
-					echo ", ".$lig_classe->classe;
-				}
-			}
-			echo "</li>\n";
-		}
-		echo "</ul>\n";
-		echo "<p><br /></p>\n";
-
-	}
-	echo "<p>Sous quel nom d'année voulez-vous sauvegarder l'année?</p>\n";
-	$default_annee=getSettingValue('gepiYear');
-
-	if($default_annee==""){
-		$instant=getdate();
-		$annee=$instant['year'];
-		$mois=$instant['mon'];
-
-		$annee2=$annee+1;
-		$default_annee=$annee."-".$annee2;
-	}
-
-	echo "<p>Année&nbsp;: <input type='text' name='annee_scolaire' value='$default_annee' /></p>\n";
-
-	echo "<center><input type=\"submit\" name='ok' value=\"Valider\" style=\"font-variant: small-caps;\" /></center>\n";
-	*/
+	echo "<br />\n";
+	echo "<p style='margin-left:4em; text-indent:-4em'><em>NOTE&nbsp;:</em> L'opération d'archivage est assez lourde.<br />Si vous parcourez les élèves par trop grosses tranches, vous risquez de dépasser le 'max_execution_time' de votre serveur.</p>";
 }
 else {
 	echo "<div class='norme'><p class=bold><a href='";
@@ -193,28 +154,110 @@ else {
 	if(isset($id_classe)) {
 		$dossier_archivage_pdf=getPref($_SESSION['login'], 'dossier_archivage_pdf', 'bulletins_pdf_individuels_eleves_'.strftime('%Y%m%d'));
 
-		$trouve="n";
-		for($loop=0;$loop<$cpt;$loop++) {
-			if((isset($tab_classe[$loop-1]['id_classe']))&&($tab_classe[$loop-1]['id_classe']==$id_classe)) {
-				//echo "\$tab_classe[$loop-1]['id_classe']=".$tab_classe[$loop-1]['id_classe']."<br />";
-				$id_classe=$tab_classe[$loop]['id_classe'];
-				$classe=$tab_classe[$loop]['classe'];
-				$trouve="y";
-				break;
+		if(isset($_GET['ele_chgt_classe'])) {
+			$sql="SELECT DISTINCT col1 FROM tempo2;";
+			$test=mysql_query($sql);
+			if(mysql_num_rows($test)>0) {
+				echo "<p>Il reste à traiter ".mysql_num_rows($test)." élève(s) ayant changé de classe en cours d'année.</p>\n";
+				$ele_chgt_classe="y";
+			}
+			else {
+				echo "<p>L'archivage est terminé.</p>\n";
+				echo "<p>Dossier temporaire d'archivage&nbsp;: <a href='../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf."/' target='_blank'>$dossier_archivage_pdf</a></p>\n";
+				require("../lib/footer.inc.php");
+				die();
 			}
 		}
+		else {
+			// Reste-t-il des élèves à parcourir dans cette classe?
+			$sql="SELECT col2 FROM tempo2 WHERE col1='$id_classe';";
+			$test=mysql_query($sql);
+			if(mysql_num_rows($test)>0) {
+				for($loop=0;$loop<$cpt;$loop++) {
+					if($tab_classe[$loop]['id_classe']==$id_classe) {
+						$classe=$tab_classe[$loop]['classe'];
+						break;
+					}
+				}
 
-		if($trouve=='n') {
-			echo "<p>Toutes les classes ont été parcourues.<br />Il ne reste que les élèves ayant changé de classe à traiter (<span style='color:red'>A FAIRE</span>).<br />Et enfin, il reste le ZIP à générer (<span style='color:red'>A FAIRE</span>).</p>\n";
-			echo "<p>Dossier temporaire d'archivage&nbsp;: <a href='../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf."/' target='_blank'>$dossier_archivage_pdf</a></p>\n";
-			require("../lib/footer.inc.php");
-			die();
+				echo "<p>Il reste ".mysql_num_rows($test)." élève(s) à parcourir dans la classe de $classe.<br />";
+			}
+			else {
+				// Recherche de la classe suivante:
+				$trouve="n";
+				for($loop=0;$loop<$cpt;$loop++) {
+					if((isset($tab_classe[$loop-1]['id_classe']))&&($tab_classe[$loop-1]['id_classe']==$id_classe)) {
+						//echo "\$tab_classe[$loop-1]['id_classe']=".$tab_classe[$loop-1]['id_classe']."<br />";
+						$id_classe=$tab_classe[$loop]['id_classe'];
+						$classe=$tab_classe[$loop]['classe'];
+						$trouve="y";
+						break;
+					}
+				}
+
+				if($trouve=='n') {
+					// On a parcouru toutes les classes:
+					echo "<p>Toutes les classes ont été parcourues.<br />Il ne reste que les élèves ayant changé de classe à traiter (<span style='color:red'>A FAIRE</span>).<br />Et enfin, il reste le ZIP à générer (<span style='color:red'>A FAIRE</span>).</p>\n";
+
+					$sql="SELECT DISTINCT login, id_classe FROM j_eleves_classes ORDER BY login, id_classe;";
+					$res_ele_classe=mysql_query($sql);
+					if(mysql_num_rows($res)>0) {
+						//$tab_login_ele_chgt_classe=array();
+						//$tab_id_classe_chgt_classe=array();
+
+						// Normalement, à ce stade, la table est vide
+						$sql="TRUNCATE tempo2;";
+						$menage=mysql_query($sql);
+
+						$ele_prec="";
+						while($lig=mysql_fetch_object($res_ele_classe)) {
+							if($lig->login==$ele_prec) {
+								/*
+								if(!in_array($lig->login, $tab_login_ele_chgt_classe)) {
+									$tab_login_ele_chgt_classe[]=$lig->login;
+								}
+
+								if(!in_array($lig->id_classe, $tab_id_classe_chgt_classe)) {
+									$tab_id_classe_chgt_classe[]=$lig->id_classe;
+								}
+								*/
+
+								$sql="INSERT INTO tempo2 SET col1='$lig->login';";
+								$insert=mysql_query($sql);
+							}
+							$ele_prec=$lig->login;
+						}
+					}
+
+					if(!isset($tab_login_ele_chgt_classe)) {
+						echo "<p>Dossier temporaire d'archivage&nbsp;: <a href='../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf."/' target='_blank'>$dossier_archivage_pdf</a></p>\n";
+						require("../lib/footer.inc.php");
+						die();
+					}
+					else {
+						$ele_chgt_classe="y";
+					}
+				}
+			}
 		}
 	}
 	else {
+		// Premier passage:
+		$arch_bull_eff_tranche=isset($_POST['arch_bull_eff_tranche']) ? $_POST['arch_bull_eff_tranche'] : 10;
+		if((!is_numeric($arch_bull_eff_tranche))||($arch_bull_eff_tranche<1)) {$arch_bull_eff_tranche=10;}
+		savePref($_SESSION['login'],'arch_bull_eff_tranche',$arch_bull_eff_tranche);
+
 		$dossier_archivage_pdf=savePref($_SESSION['login'], 'dossier_archivage_pdf', 'bulletins_pdf_individuels_eleves_'.strftime('%Y%m%d'));
 		@mkdir("../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf);
 
+		// On va faire la liste des élèves:
+		$sql="TRUNCATE tempo2;";
+		$menage=mysql_query($sql);
+
+		$sql="INSERT INTO tempo2 (SELECT DISTINCT id_classe, login FROM j_eleves_classes ORDER BY id_classe, login);";
+		$insert=mysql_query($sql);
+
+		// On commence avec la première classe:
 		$id_classe=$tab_classe[0]['id_classe'];
 		$classe=$tab_classe[0]['classe'];
 	}
@@ -223,7 +266,14 @@ else {
 	echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"../bulletin/bull_index.php\" method=\"post\">\n";
 
 	// Boucler sur les classes
-	echo "<p>Archiver la classe de $classe&nbsp;: ";
+	if(isset($ele_chgt_classe)) {
+		echo "<p>Archivage des élèves ayant changé de classe en cours d'année&nbsp;: ";
+		echo "<input type='hidden' name='ele_chgt_classe' value='y' />\n";
+		// Ce témoin rendra inopérantes les valeurs des champs tab_id_classe[] et tous_les_eleves
+	}
+	else {
+		echo "<p>Archiver la classe de $classe&nbsp;: ";
+	}
 	echo "<input type='hidden' name='mode_bulletin' value='pdf' />\n";
 	echo "<input type='hidden' name='type_bulletin' value='-1' />\n";
 
@@ -241,17 +291,24 @@ else {
 
 	echo "<input type='hidden' name='tab_id_classe[]' value='$id_classe' />\n";
 
+	// Pour ne pas avoir à poster la liste des élèves: (sauf pour la dernière étape avec les élèves qui ont changé de classe)
+	echo "<input type='hidden' name='tous_les_eleves' value='y' />\n";
+
 	// Pour ne pas avoir à faire la liste des périodes à ce stade:
 	echo "<input type='hidden' name='tab_periode_num[]' value='1' />\n";
 	echo "<input type='hidden' name='toutes_les_periodes' value='y' />\n";
 
-	// Pour ne pas avoir à poster la liste des élèves: (sauf pour la dernière étape avec les élèves qui ont changé de classe)
-	echo "<input type='hidden' name='tous_les_eleves' value='y' />\n";
-
 	echo "<br />\n";
 	echo "<input type='checkbox' name='archivage_fichiers_bull_pdf_auto' id='archivage_fichiers_bull_pdf_auto' value='y' ";
 	if($archivage_fichiers_bull_pdf_auto=='y') {echo "checked ";}
-	echo "/><label for='archivage_fichiers_bull_pdf_auto'> Boucler automatiquement sur la liste des classes</label>\n";
+	echo "/><label for='archivage_fichiers_bull_pdf_auto'> Boucler automatiquement sur la liste des ";
+	if(isset($ele_chgt_classe)) {
+		echo "élèves";
+	}
+	else {
+		echo "classes";
+	}
+	echo "</label>\n";
 
 	echo "<br />\n";
 	echo "<span id='bouton_validation'><input type='submit' name='valider' value='Valider' /></span>\n";
@@ -265,7 +322,6 @@ else {
 	setTimeout('document.formulaire.submit()', 2000);
 </script>\n";
 	}
-
 
 }
 

@@ -1193,6 +1193,43 @@ else {
 	$tableau_eleve['no_gep']=array();
 	$tableau_eleve['nom_prenom']=array();
 
+	// 20120505...
+	// Si on en est aux élèves ayant changé de classe... récupérer les classes de l'élève en cours
+	/*
+	if(isset($_POST['tab_login_ele_chgt_classe'])) {
+		$tab_login_ele_chgt_classe=$_POST['tab_login_ele_chgt_classe'];
+		unset($tab_id_classe);
+		$tab_id_classe=array();
+		for($loop=0;$loop_classe<count($tab_login_ele_chgt_classe);$loop_classe++) {
+			$sql="SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login='".$tab_login_ele_chgt_classe[$loop]."' ORDER BY periode;";
+			$res_classes=mysql_query($sql);
+			if(mysql_num_rows($res_classes)>0) {
+				while($lig_classe=mysql_fetch_object($res_classes)) {
+					if(!) {}
+				}
+			}
+		}
+	}
+	*/
+	if(isset($_POST['ele_chgt_classe'])) {
+		$sql="SELECT col1 AS login FROM tempo2 ORDER BY col1 LIMIT 1;";
+		$res_login_ele=mysql_query($sql);
+		if(mysql_num_rows($res_login_ele)>0) {
+			$lig_login_ele=mysql_fetch_object($res_login_ele);
+			$tab_restriction_ele=array();
+			$tab_restriction_ele[]=$lig_login_ele->login;
+
+			$sql="SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login='".$lig_login_ele->login."' ORDER BY periode;";
+			$res_classes=mysql_query($sql);
+			if(mysql_num_rows($res_classes)>0) {
+				$tab_id_classe=array();
+				while($lig_classe=mysql_fetch_object($res_classes)) {
+					$tab_id_classe[]=$lig_classe->id_classe;
+				}
+			}
+		}
+	}
+
 	// Boucle sur les classes
 	for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
 
@@ -1538,7 +1575,25 @@ else {
 		$res_eff_total_classe=mysql_query($sql);
 		$eff_total_classe=mysql_num_rows($res_eff_total_classe);
 
+		//=========================================================================
+		// Pour l'archivage des bulletins PDF:
+		if(((isset($_POST['tous_les_eleves']))&&($_POST['tous_les_eleves']=='y'))&&(!isset($_POST['ele_chgt_classe']))) {
+			// Si on en est aux élèves ayant changé de classe, on les parcourt un par un et $tab_restriction_ele est rempli plus haut
 
+			// On se restreint à une partie de la classe:
+			$arch_bull_eff_tranche=getPref($_SESSION['login'],'arch_bull_eff_tranche',10);
+
+			$tab_restriction_ele=array();
+			$sql="SELECT col2 AS login FROM tempo2 WHERE col1='$id_classe' ORDER BY col2 LIMIT $arch_bull_eff_tranche;";
+			$res_ele_tranche=mysql_query($sql);
+			if(mysql_num_rows($res_ele_tranche)>0) {
+				while($lig_ele_tranche=mysql_fetch_object($res_ele_tranche)) {
+					$tab_restriction_ele[]=$lig_ele_tranche->login;
+				}
+			}
+		}
+
+		// Pour l'archivage des bulletins PDF:
 		if((isset($_POST['toutes_les_periodes']))&&($_POST['toutes_les_periodes']=='y')) {
 			$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode;";
 			$res_periode=mysql_query($sql);
@@ -1549,6 +1604,7 @@ else {
 				}
 			}
 		}
+		//=========================================================================
 
 		// Boucle sur les périodes
 		for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
@@ -1664,12 +1720,20 @@ else {
 			//$tab_bulletin[$id_classe][$periode_num]['selection_eleves']=array();
 			$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num]) ? $_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num] : array();
 			if((isset($_POST['tous_les_eleves']))&&($_POST['tous_les_eleves']=='y')) {
-				$sql="SELECT login FROM j_eleves_classes WHERE id_classe='".$id_classe."' AND periode='".$periode_num."';";
+				$sql="SELECT login FROM j_eleves_classes WHERE id_classe='".$id_classe."' AND periode='".$periode_num."' ORDER BY login;";
 				$res_liste_ele=mysql_query($sql);
 				if(mysql_num_rows($res_liste_ele)>0) {
 					$tab_selection_eleves=array();
 					while($lig_liste_ele=mysql_fetch_object($res_liste_ele)) {
-						$tab_selection_eleves[]=$lig_liste_ele->login;
+						if(in_array($lig_liste_ele->login, $tab_restriction_ele)) {
+							$tab_selection_eleves[]=$lig_liste_ele->login;
+							
+							// Ménage:
+							$sql="DELETE FROM tempo2 WHERE col1='$id_classe' AND col2='$lig_liste_ele->login';";
+							$menage=mysql_query($sql);
+							// On va faire plusieurs fois le ménage (plusieurs périodes) pour un même élève,
+							// mais la liste des logins à retenir est faite hors de la boucle sur les périodes.
+						}
 					}
 				}
 			}
@@ -3077,16 +3141,39 @@ else {
 
 		$archivage_fichiers_bull_pdf_auto=isset($_POST['archivage_fichiers_bull_pdf_auto']) ? $_POST['archivage_fichiers_bull_pdf_auto'] : (isset($_GET['archivage_fichiers_bull_pdf_auto']) ? $_GET['archivage_fichiers_bull_pdf_auto'] : "n");
 
-		echo "Classe de $classe traitée.<br />";
-		echo "<a href='../mod_annees_anterieures/archivage_bull_pdf.php?id_classe=$id_classe&amp;generer_fichiers_pdf_archivage=y&amp;archivage_fichiers_bull_pdf_auto=$archivage_fichiers_bull_pdf_auto".add_token_in_url()."'>Suite</a>";
+		if(isset($_POST['ele_chgt_classe'])) {
+			//get_nom_prenom_eleve($tab_restriction_ele[0])
+			echo "<p>Bulletins de ".$tableau_eleve['nom_prenom'][0]." générés.<br />";
+			echo "<a href='../mod_annees_anterieures/archivage_bull_pdf.php?id_classe=$id_classe&amp;ele_chgt_classe=y&amp;generer_fichiers_pdf_archivage=y&amp;archivage_fichiers_bull_pdf_auto=$archivage_fichiers_bull_pdf_auto".add_token_in_url()."'>Suite</a>";
 
-		if($archivage_fichiers_bull_pdf_auto=='y') {
-			echo "<script type='text/javascript'>
+			if($archivage_fichiers_bull_pdf_auto=='y') {
+				echo "<script type='text/javascript'>
+	function archivage_suite() {
+		document.location='../mod_annees_anterieures/archivage_bull_pdf.php?id_classe=$id_classe&ele_chgt_classe=y&generer_fichiers_pdf_archivage=y&archivage_fichiers_bull_pdf_auto=$archivage_fichiers_bull_pdf_auto".add_token_in_url(false)."';
+	}
+	setTimeout('archivage_suite()',2000);
+</script>\n";
+			}
+		}
+		else {
+			$sql="SELECT col2 AS login FROM tempo2 WHERE col1='$id_classe' ORDER BY col2 LIMIT $arch_bull_eff_tranche;";
+			$res_ele_classe=mysql_query($sql);
+			if(mysql_num_rows($res_ele_classe)>0) {
+				echo "Classe de $classe en partie traitée (<em>il reste ".mysql_num_rows($res_ele_classe)." élève(s)</em>).<br />";
+			}
+			else {
+				echo "Classe de $classe traitée.<br />";
+			}
+			echo "<a href='../mod_annees_anterieures/archivage_bull_pdf.php?id_classe=$id_classe&amp;generer_fichiers_pdf_archivage=y&amp;archivage_fichiers_bull_pdf_auto=$archivage_fichiers_bull_pdf_auto".add_token_in_url()."'>Suite</a>";
+
+			if($archivage_fichiers_bull_pdf_auto=='y') {
+				echo "<script type='text/javascript'>
 	function archivage_suite() {
 		document.location='../mod_annees_anterieures/archivage_bull_pdf.php?id_classe=$id_classe&generer_fichiers_pdf_archivage=y&archivage_fichiers_bull_pdf_auto=$archivage_fichiers_bull_pdf_auto".add_token_in_url(false)."';
 	}
 	setTimeout('archivage_suite()',2000);
 </script>\n";
+			}
 		}
 
 		require("../lib/footer.inc.php");
