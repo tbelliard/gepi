@@ -55,40 +55,39 @@ if($gepiSettings['active_annees_anterieures'] !="y"){
 
 $msg="";
 
-// Suppression des données archivées pour une année donnée.
-if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
+if (isset($_GET['suppr_temp']) and ($_GET['suppr_temp']=="y")) {
 	check_token();
 
-	$sql="DELETE FROM archivage_disciplines WHERE annee='".$_GET["annee_supp"]."';";
-	$res_suppr1=mysql_query($sql);
-
-	// Maintenant, on regarde si l'année est encore utilisée dans archivage_types_aid
-	// Sinon, on supprime les entrées correspondantes à l'année dans archivage_eleves2 car elles ne servent plus à rien.
-	$test = sql_query1("select count(annee) from archivage_types_aid where annee='".$_GET['annee_supp']."'");
-	if ($test == 0) {
-		$sql="DELETE FROM archivage_eleves2 WHERE annee='".$_GET["annee_supp"]."';";
-		$res_suppr2=mysql_query($sql);
-	} else {
-		$res_suppr2 = 1;
+	$dossier_archivage_pdf=$_GET['dossier_archivage_pdf'];
+	$dossier_archivage_pdf_nettoye=preg_replace("/[^A-Za-z0-9_]/","",$dossier_archivage_pdf);
+	if(($dossier_archivage_pdf=='')||($dossier_archivage_pdf!=$dossier_archivage_pdf_nettoye)) {
+		$msg.="Le dossier à supprimer '$dossier_archivage_pdf' n'est pas convenable: $dossier_archivage_pdf_nettoye";
+	}
+	else {
+		$suppr=deltree("../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf);
+		if ($suppr) {
+			$msg .= "Succès de la suppression.";
+		} else {
+			$msg .= "Échec de la suppression.<br />";
+			//$msg .= "Un <a href='../gestion/gestion_temp_dir.php'>nettoyage des dossiers temporaires</a> est recommandée.";
+			$msg .= "Un Nettoyage des dossiers temporaires est recommandée.";
+		}
 	}
 
-	$sql="DELETE FROM archivage_ects WHERE annee='".$_GET["annee_supp"]."';";
-	$res_suppr3=mysql_query($sql);
-
-	// Maintenant, il faut supprimer les données élèves qui ne servent plus à rien
-	suppression_donnees_eleves_inutiles();
-
-	if (($res_suppr1) and ($res_suppr2) and ($res_suppr3)) {
-		$msg = "La suppression des données a été correctement effectuée.";
-	} else {
-		$msg = "Un ou plusieurs problèmes ont été rencontrés lors de la suppression.";
+	if(isset($_SESSION['chgt_annee'])) {
+		$dest="../gestion/changement_d_annee.php";
+	}
+	else {
+		$dest="./index.php";
 	}
 
+	header("Location: $dest?msg=$msg");
+	die();
 }
 
 if(isset($_GET['chgt_annee'])) {$_SESSION['chgt_annee']="y";}
 
-$themessage  = 'Etes-vous sûr de vouloir supprimer toutes les données concerant cette année ?';
+//$themessage  = 'Etes-vous sûr de vouloir supprimer toutes les données concerant cette année ?';
 
 //**************** EN-TETE *****************
 $titre_page = "Générer les bulletins PDF par élève";
@@ -122,10 +121,39 @@ if(!isset($generer_fichiers_pdf_archivage)){
 	echo "<p><em>NOTES&nbsp;:</em></p>
 	<ul>
 		<li>L'opération d'archivage est assez lourde.<br />Si vous parcourez les élèves par trop grosses tranches, vous risquez de dépasser le 'max_execution_time' de votre serveur.</li>
-		<li>Dans une future version, un zip sera généré pour permettre le téléchargement d'un coup de l'ensemble.</li>
+		<!--li>Dans une future version, un zip sera généré pour permettre le téléchargement d'un coup de l'ensemble.</li-->
 	</ul>\n";
 }
 else {
+	function zip_bull_pdf($dossier_a_traiter) {
+		$path = path_niveau();
+		$dirname = "backup/".getSettingValue("backup_directory")."/";
+		if (!defined('PCLZIP_TEMPORARY_DIR') || constant('PCLZIP_TEMPORARY_DIR')!=$path.$dirname) {
+			@define( 'PCLZIP_TEMPORARY_DIR', $path.$dirname );
+		}
+
+		require_once($path.'lib/pclzip.lib.php');
+
+		$dossier_a_traiter="../temp/".get_user_temp_directory()."/".$dossier_a_traiter;
+
+		$nom_fichier="_bulletins_pdf_individuels_eleves_".strftime('%Y%m%d_%H%M%S').".zip";
+		$chemin_stockage = $path.$dirname.$nom_fichier;
+		$dossier_dans_archive = "_bulletins_pdf_individuels_eleves_".strftime('%Y%m%d'); //le nom du dossier dans l'archive créée
+
+		if ($chemin_stockage !='') {
+			$archive = new PclZip($chemin_stockage);
+			$v_list = $archive->create($dossier_a_traiter,
+				  PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
+				  PCLZIP_OPT_ADD_PATH, $dossier_dans_archive);
+
+			if ($v_list == 0) {
+				return "Erreur : ".$archive->errorInfo(TRUE);
+			} else {
+				return "Archive zip créée&nbsp;: <a href='$chemin_stockage'>$nom_fichier</a>";
+			}
+		}
+	}
+
 	echo "<div class='norme'><p class=bold><a href='";
 	if(isset($_SESSION['chgt_annee'])) {
 		echo "../gestion/changement_d_annee.php";
@@ -133,7 +161,7 @@ else {
 	else {
 		echo "./index.php";
 	}
-	echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
+	echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 
 	check_token(false);
 
@@ -168,9 +196,13 @@ else {
 			else {
 				echo "<p>L'archivage est terminé.</p>\n";
 
-				echo "<p style='color:red'>Il reste à réaliser le Zip des fichiers PDF.</p>";
+				//echo "<p style='color:red'>Il reste à réaliser le Zip des fichiers PDF.</p>";
+				echo "<p>".zip_bull_pdf($dossier_archivage_pdf)."</p>\n";
 
 				echo "<p>Dossier temporaire d'archivage&nbsp;: <a href='../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf."/' target='_blank'>$dossier_archivage_pdf</a></p>\n";
+
+				echo "<br /><p>Pour des questions de place, il est recommandé de <a href='".$_SERVER['PHP_SELF']."?suppr_temp=y&amp;dossier_archivage_pdf=$dossier_archivage_pdf".add_token_in_url()."'>supprimer le dossier temporaire</a>.<br />Commencez cependant par récupérer l'archive ZIP<br />(<em>si vous n'en faites rien, vous pourrez néanmoins récupérer cette archive dans la page de <a href='../gestion/accueil_sauve.php'>Sauvegarde/Restauration de Gepi</a></em>).</p>";
+
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -204,7 +236,7 @@ else {
 
 				if($trouve=='n') {
 					// On a parcouru toutes les classes:
-					echo "<p>Toutes les classes ont été parcourues.<br />Il ne reste que les élèves ayant changé de classe à traiter (<span style='color:red'>A FAIRE</span>).<br />Et enfin, il reste le ZIP à générer (<span style='color:red'>A FAIRE</span>).</p>\n";
+					echo "<p>Toutes les classes ont été parcourues.<br />Il ne reste que les élèves ayant changé de classe à traiter.</p>\n";
 
 					$sql="SELECT DISTINCT login, id_classe FROM j_eleves_classes ORDER BY login, id_classe;";
 					$res_ele_classe=mysql_query($sql);
@@ -237,9 +269,16 @@ else {
 					}
 
 					if(!isset($tab_login_ele_chgt_classe)) {
+						echo "<p>Aucun élève n'a changé de classe en cours d'année.</p>\n";
+
 						echo "<p>Dossier temporaire d'archivage&nbsp;: <a href='../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf."/' target='_blank'>$dossier_archivage_pdf</a></p>\n";
 
-						echo "<p style='color:red'>Il reste à réaliser le Zip des fichiers PDF.</p>";
+						echo "<br />\n";
+
+						//echo "<p style='color:red'>Il reste à réaliser le Zip des fichiers PDF.</p>";
+						echo "<p>".zip_bull_pdf($dossier_archivage_pdf)."</p>\n";
+
+						echo "<br /><p>Pour des questions de place, il est recommandé de <a href='".$_SERVER['PHP_SELF']."?suppr_temp=y&amp;dossier_archivage_pdf=$dossier_archivage_pdf".add_token_in_url()."'>supprimer le dossier temporaire</a>.<br />Commencez cependant par récupérer l'archive ZIP<br />(<em>si vous n'en faites rien, vous pourrez néanmoins récupérer cette archive dans la page de <a href='../gestion/accueil_sauve.php'>Sauvegarde/Restauration de Gepi</a></em>).</p>";
 
 						require("../lib/footer.inc.php");
 						die();
