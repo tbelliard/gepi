@@ -107,7 +107,7 @@ if(!isset($generer_fichiers_pdf_archivage)){
 	echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
 	echo "</p></div>\n";
 
-	echo "<p>Pour chaque élève, un fichier PDF des N périodes de l'année va être généré dans un dossier temporaire.<br />\n(<em>dans une future version, un zip sera généré pour permettre le téléchargement d'un coup de l'ensemble</em>).</p>\n";
+	echo "<p>Pour chaque élève, un fichier PDF des N périodes de l'année va être généré dans un dossier temporaire.</p>\n";
 
 	//echo "<p><a href='".$_SERVER['PHP_SELF']."?generer_fichiers_pdf_archivage=y".add_token_in_url()."'>Générer les PDF par élève</a></p>\n";
 
@@ -119,7 +119,11 @@ if(!isset($generer_fichiers_pdf_archivage)){
 	echo "</form>\n";
 
 	echo "<br />\n";
-	echo "<p style='margin-left:4em; text-indent:-4em'><em>NOTE&nbsp;:</em> L'opération d'archivage est assez lourde.<br />Si vous parcourez les élèves par trop grosses tranches, vous risquez de dépasser le 'max_execution_time' de votre serveur.</p>";
+	echo "<p><em>NOTES&nbsp;:</em></p>
+	<ul>
+		<li>L'opération d'archivage est assez lourde.<br />Si vous parcourez les élèves par trop grosses tranches, vous risquez de dépasser le 'max_execution_time' de votre serveur.</li>
+		<li>Dans une future version, un zip sera généré pour permettre le téléchargement d'un coup de l'ensemble.</li>
+	</ul>\n";
 }
 else {
 	echo "<div class='norme'><p class=bold><a href='";
@@ -163,6 +167,9 @@ else {
 			}
 			else {
 				echo "<p>L'archivage est terminé.</p>\n";
+
+				echo "<p style='color:red'>Il reste à réaliser le Zip des fichiers PDF.</p>";
+
 				echo "<p>Dossier temporaire d'archivage&nbsp;: <a href='../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf."/' target='_blank'>$dossier_archivage_pdf</a></p>\n";
 				require("../lib/footer.inc.php");
 				die();
@@ -231,6 +238,9 @@ else {
 
 					if(!isset($tab_login_ele_chgt_classe)) {
 						echo "<p>Dossier temporaire d'archivage&nbsp;: <a href='../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf."/' target='_blank'>$dossier_archivage_pdf</a></p>\n";
+
+						echo "<p style='color:red'>Il reste à réaliser le Zip des fichiers PDF.</p>";
+
 						require("../lib/footer.inc.php");
 						die();
 					}

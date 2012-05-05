@@ -25,9 +25,14 @@ Abs2 :
 Trombinoscopes:
 - Possibilité d'uploader les photos élèves en CPE (sous réserve d'un droit)
 - Possibilité d'uploader les photos élèves depuis l'affichage trombinoscope
+- Possibilité d'encoder les noms de fichiers photo pour éviter des téléchargements non voulus
 
 Gestion:
 - Gestion des matières: Affichage du nombre d'enseignements associés à une matière; possibilité de griser/masquer les matières sans enseignements.
+
+Années antérieures:
+- Possibilité d'archiver les bulletins PDF.
+
 
 Gepi-1.6.0 (27/01/2012)
 ===========================
