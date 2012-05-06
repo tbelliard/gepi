@@ -107,7 +107,7 @@ if(mysql_num_rows($test)==0) {
 	$sql="SELECT * FROM matieres_categories;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
-		$result .= "<strong>Test de la présence d'accents HTML dans les noms de catégories de matières</strong><br />\n";
+		$result .= "<br /><p><strong>Test de la présence d'accents HTML dans les noms de catégories de matières</strong><br />\n";
 		$nb_corrections_html=0;
 		while($lig=mysql_fetch_object($res)) {
 			$correction=ensure_utf8(strtr($lig->nom_complet, $tab));
@@ -117,10 +117,10 @@ if(mysql_num_rows($test)==0) {
 				//echo "$sql<br />";
 				$update=mysql_query($sql);
 				if($update) {
-					$result .= msj_ok("Correction de l'encodage du nom de catégorie de matière en '$correction'<br />");
+					$result .= msj_ok("Correction de l'encodage d'un nom de catégorie de matière en '$correction'");
 				}
 				else {
-					$result .= msj_erreur("Erreur lors de la correction de l'encodage du nom de catégorie de matière '$lig->nom_complet' en '$correction'<br />");
+					$result .= msj_erreur("Erreur lors de la correction de l'encodage du nom de catégorie de matière '$lig->nom_complet' en '$correction'");
 				}
 			}
 		}
