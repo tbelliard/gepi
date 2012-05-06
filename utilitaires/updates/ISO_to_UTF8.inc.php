@@ -100,5 +100,35 @@ if (empty($donneesTable) ){
     $result .= msj_ok("Migration terminée : Tables encodées en ".SET_DEST);
 }
 
+$sql="SELECT 1=1 FROM setting WHERE name='conv_html_mat_cat';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)==0) {
+	$tab = array_flip (get_html_translation_table(HTML_ENTITIES));
+	$sql="SELECT * FROM matieres_categories;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$result .= "<strong>Test de la présence d'accents HTML dans les noms de catégories de matières</strong><br />\n";
+		$nb_corrections_html=0;
+		while($lig=mysql_fetch_object($res)) {
+			$correction=ensure_utf8(strtr($lig->nom_complet, $tab));
+			if($lig->nom_complet!=$correction) {
+				$nb_corrections_html++;
+				$sql="UPDATE matieres_categories SET nom_complet='$correction' WHERE id='$lig->id';";
+				//echo "$sql<br />";
+				$update=mysql_query($sql);
+				if($update) {
+					$result .= msj_ok("Correction de l'encodage du nom de catégorie de matière en '$correction'<br />");
+				}
+				else {
+					$result .= msj_erreur("Erreur lors de la correction de l'encodage du nom de catégorie de matière '$lig->nom_complet' en '$correction'<br />");
+				}
+			}
+		}
+		if($nb_corrections_html==0) {
+			$result .= "Aucune correction de nom de catégorie de matière requise.<br />";
+		}
+	}
+	saveSetting('conv_html_mat_cat','fait');
+}
 
 ?>
