@@ -828,35 +828,85 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
     /**
      * Création d'un .odc 
      */
-	require_once("../lib/ss_zip.class.php");
+	if(file_exists("../lib/ss_zip.class.php")) {
+		require_once("../lib/ss_zip.class.php");
 
-	$zip= new ss_zip('',6);
-	$zip->add_file("$tmp_fich",'content.xml');
+		$zip= new ss_zip('',6);
+		$zip->add_file("$tmp_fich",'content.xml');
 
-	// On n'ajoute pas les dossiers, ni les fichiers vides... ss_zip ne le supporte pas...
-	// ... et OpenOffice a l'air de supporter l'absence de ces dossiers/fichiers.
+		// On n'ajoute pas les dossiers, ni les fichiers vides... ss_zip ne le supporte pas...
+		// ... et OpenOffice a l'air de supporter l'absence de ces dossiers/fichiers.
 
-	$zip->add_file($chemin_modele_ods.'/Basic/script-lc.xml', 'Basic/script-lc.xml');
-	$zip->add_file($chemin_modele_ods.'/Basic/Standard/script-lb.xml', 'Basic/Standard/script-lb.xml');
-	$zip->add_file($chemin_modele_ods.'/Basic/Standard/Module1.xml', 'Basic/Standard/Module1.xml');
+		$zip->add_file($chemin_modele_ods.'/Basic/script-lc.xml', 'Basic/script-lc.xml');
+		$zip->add_file($chemin_modele_ods.'/Basic/Standard/script-lb.xml', 'Basic/Standard/script-lb.xml');
+		$zip->add_file($chemin_modele_ods.'/Basic/Standard/Module1.xml', 'Basic/Standard/Module1.xml');
 
-	// On ne met pas ce fichier parce que sa longueur vide fait une blague pour ss_zip.
+		// On ne met pas ce fichier parce que sa longueur vide fait une blague pour ss_zip.
 	
-	$zip->add_file($chemin_modele_ods.'/META-INF/manifest.xml', 'META-INF/manifest.xml');
-	$zip->add_file($chemin_modele_ods.'/settings.xml', 'settings.xml');
-	$zip->add_file($chemin_modele_ods.'/meta.xml', 'meta.xml');
-	$zip->add_file($chemin_modele_ods.'/Thumbnails/thumbnail.png', 'Thumbnails/thumbnail.png');
-	$zip->add_file($chemin_modele_ods.'/mimetype', 'mimetype');
-	$zip->add_file($chemin_modele_ods.'/styles.xml', 'styles.xml');
+		$zip->add_file($chemin_modele_ods.'/META-INF/manifest.xml', 'META-INF/manifest.xml');
+		$zip->add_file($chemin_modele_ods.'/settings.xml', 'settings.xml');
+		$zip->add_file($chemin_modele_ods.'/meta.xml', 'meta.xml');
+		$zip->add_file($chemin_modele_ods.'/Thumbnails/thumbnail.png', 'Thumbnails/thumbnail.png');
+		$zip->add_file($chemin_modele_ods.'/mimetype', 'mimetype');
+		$zip->add_file($chemin_modele_ods.'/styles.xml', 'styles.xml');
 
-	$zip->save("$tmp_fich.zip");
+		$zip->save("$tmp_fich.zip");
 
+		if(file_exists("$chemin_temp/$nom_fic")) {unlink("$chemin_temp/$nom_fic");}
+		rename("$tmp_fich.zip","$chemin_temp/$nom_fic");
 
-	if(file_exists("$chemin_temp/$nom_fic")) {unlink("$chemin_temp/$nom_fic");}
-	rename("$tmp_fich.zip","$chemin_temp/$nom_fic");
+		// Suppression du fichier content...xml
+		unlink($tmp_fich);
+	}
+	else {
+		$path = path_niveau();
+		$chemin_temp = $path."temp/".get_user_temp_directory()."/";
 
-	// Suppression du fichier content...xml
-	unlink($tmp_fich);
+		if (!defined('PCLZIP_TEMPORARY_DIR') || constant('PCLZIP_TEMPORARY_DIR')!=$chemin_temp) {
+			@define( 'PCLZIP_TEMPORARY_DIR', $chemin_temp);
+		}
+
+		$chemin_stockage = $chemin_temp."/".$nom_fic;
+
+		$dossier_a_traiter=$chemin_temp."export_cn_".strftime("%Y%m%d%H%M%S");
+		@mkdir($dossier_a_traiter);
+		copy($tmp_fich, $dossier_a_traiter."/content.xml");
+
+		@mkdir($dossier_a_traiter."/Basic");
+		@mkdir($dossier_a_traiter."/Basic/Standard");
+		@mkdir($dossier_a_traiter."/META-INF");
+		@mkdir($dossier_a_traiter."/Thumbnails");
+
+		$tab_fich_tmp=array('Basic/script-lc.xml', 'Basic/Standard/script-lb.xml', 'Basic/Standard/Module1.xml', 'META-INF/manifest.xml', 'settings.xml', 'meta.xml', 'Thumbnails/thumbnail.png', 'mimetype', 'styles.xml');
+		for($loop=0;$loop<count($tab_fich_tmp);$loop++) {
+			copy($chemin_modele_ods.'/'.$tab_fich_tmp[$loop], $dossier_a_traiter."/".$tab_fich_tmp[$loop]);
+		}
+
+		require_once($path.'lib/pclzip.lib.php');
+
+		if ($chemin_stockage !='') {
+			if(file_exists("$chemin_stockage")) {unlink("$chemin_stockage");}
+
+			//echo "\$chemin_stockage=$chemin_stockage<br />";
+			//echo "\$dossier_a_traiter=$dossier_a_traiter<br />";
+
+			$archive = new PclZip($chemin_stockage);
+			$v_list = $archive->create($dossier_a_traiter,
+				  PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
+				  PCLZIP_OPT_ADD_PATH, '');
+
+			if ($v_list == 0) {
+				$msg="Erreur : ".$archive->errorInfo(TRUE);
+			}
+			/*
+			else {
+				$msg="Archive zip créée&nbsp;: <a href='$chemin_stockage'>$chemin_stockage</a>";
+			}
+			*/
+
+			deltree($dossier_a_traiter);
+		}
+	}
 
 	//**************** EN-TETE *****************
 	$titre_page = "Export des notes";

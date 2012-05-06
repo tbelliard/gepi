@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -262,25 +262,77 @@ if (!checkAccess()) {
 			$fermeture=fclose($fichier_content_xml);
 			
 			set_time_limit(3000);
-			//require_once("ss_zip.class.php");
-			require_once("../lib/ss_zip.class.php");
+			if(file_exists("../lib/ss_zip.class.php")){
+				//require_once("ss_zip.class.php");
+				require_once("../lib/ss_zip.class.php");
 		
-			$zip= new ss_zip('',6);
-			//$zip->add_file('sxc/content.xml');
-			//$zip->add_file("ods/content.xml",'content.xml');
-			$zip->add_file("../temp/".$user_temp_directory."/content.xml",'content.xml');
-			$zip->add_file('ods/meta.xml','meta.xml');
-			$zip->add_file('ods/mimetype','mimetype');
-			$zip->add_file('ods/settings.xml','settings.xml');
-			$zip->add_file('ods/styles.xml','styles.xml');
-			$zip->add_file('ods/META-INF/manifest.xml','META-INF/manifest.xml');
-			//$zip->save("ods/$fichier_liste.zip");
-			$zip->save("../temp/".$user_temp_directory."/$fichier_liste.zip");
+				$zip= new ss_zip('',6);
+				//$zip->add_file('sxc/content.xml');
+				//$zip->add_file("ods/content.xml",'content.xml');
+				$zip->add_file("../temp/".$user_temp_directory."/content.xml",'content.xml');
+				$zip->add_file('ods/meta.xml','meta.xml');
+				$zip->add_file('ods/mimetype','mimetype');
+				$zip->add_file('ods/settings.xml','settings.xml');
+				$zip->add_file('ods/styles.xml','styles.xml');
+				$zip->add_file('ods/META-INF/manifest.xml','META-INF/manifest.xml');
+				//$zip->save("ods/$fichier_liste.zip");
+				$zip->save("../temp/".$user_temp_directory."/$fichier_liste.zip");
 	
-			//rename("ods/$fichier_liste.zip","ods/$fichier_liste.ods");
-			//rename("../temp/".$user_temp_directory."/$fichier_liste.zip","../temp/".$user_temp_directory."/$fichier_liste.ods");
-			rename("../temp/".$user_temp_directory."/$fichier_liste.zip","../temp/".$user_temp_directory."/".$fichier_liste."_detail.ods");
-	
+				//rename("ods/$fichier_liste.zip","ods/$fichier_liste.ods");
+				//rename("../temp/".$user_temp_directory."/$fichier_liste.zip","../temp/".$user_temp_directory."/$fichier_liste.ods");
+				rename("../temp/".$user_temp_directory."/$fichier_liste.zip","../temp/".$user_temp_directory."/".$fichier_liste."_detail.ods");
+			}
+			else {
+
+				$path = path_niveau();
+				$chemin_temp = $path."temp/".get_user_temp_directory()."/";
+
+				if (!defined('PCLZIP_TEMPORARY_DIR') || constant('PCLZIP_TEMPORARY_DIR')!=$chemin_temp) {
+					@define( 'PCLZIP_TEMPORARY_DIR', $chemin_temp);
+				}
+
+				$nom_fic=$fichier_liste."_detail.ods";
+				$chemin_stockage = $chemin_temp."/".$nom_fic;
+				$chemin_modele_ods='ods';
+
+				$dossier_a_traiter=$chemin_temp."liste_options_".strftime("%Y%m%d%H%M%S");
+
+				@mkdir($dossier_a_traiter);
+				copy("../temp/".$user_temp_directory."/content.xml", $dossier_a_traiter."/content.xml");
+
+				@mkdir($dossier_a_traiter."/META-INF");
+
+				$tab_fich_tmp=array('META-INF/manifest.xml', 'settings.xml', 'meta.xml', 'mimetype', 'styles.xml');
+				for($loop=0;$loop<count($tab_fich_tmp);$loop++) {
+					copy($chemin_modele_ods.'/'.$tab_fich_tmp[$loop], $dossier_a_traiter."/".$tab_fich_tmp[$loop]);
+				}
+
+				require_once($path.'lib/pclzip.lib.php');
+
+				if ($chemin_stockage !='') {
+					if(file_exists("$chemin_stockage")) {unlink("$chemin_stockage");}
+
+					//echo "\$chemin_stockage=$chemin_stockage<br />";
+					//echo "\$dossier_a_traiter=$dossier_a_traiter<br />";
+
+					$archive = new PclZip($chemin_stockage);
+					$v_list = $archive->create($dossier_a_traiter,
+						  PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
+						  PCLZIP_OPT_ADD_PATH, '');
+
+					if ($v_list == 0) {
+						echo "<p style='color:red'>Erreur : ".$archive->errorInfo(TRUE)."</p>";
+					}
+					/*
+					else {
+						$msg="Archive zip créée&nbsp;: <a href='$chemin_stockage'>$chemin_stockage</a>";
+					}
+					*/
+
+					deltree($dossier_a_traiter);
+				}
+			}
+
 			//echo "<a href='ods/".$fichier_liste.".ods'>$fichier_liste.ods</a>\n";
 			//echo "<p>Fichier&nbsp;: <a href='../temp/".$user_temp_directory."/".$fichier_liste.".ods' onclick=\"setTimeout('self.close()',3000);return true;\">$fichier_liste.ods</a></p>\n";
 			echo "<p>Fichier&nbsp;: <a href='../temp/".$user_temp_directory."/".$fichier_liste."_detail.ods' onclick=\"setTimeout('self.close()',3000);return true;\">".$fichier_liste."_detail.ods</a></p>\n";
@@ -406,24 +458,76 @@ if (!checkAccess()) {
 			
 	
 			set_time_limit(3000);
-			//require_once("ss_zip.class.php");
-			require_once("../lib/ss_zip.class.php");
+			if(file_exists("../lib/ss_zip.class.php")){
+				//require_once("ss_zip.class.php");
+				require_once("../lib/ss_zip.class.php");
 		
-			$zip= new ss_zip('',6);
-			//$zip->add_file('sxc/content.xml');
-			//$zip->add_file("ods/content.xml",'content.xml');
-			$zip->add_file("../temp/".$user_temp_directory."/content.xml",'content.xml');
-			$zip->add_file('ods/meta.xml','meta.xml');
-			$zip->add_file('ods/mimetype','mimetype');
-			$zip->add_file('ods/settings.xml','settings.xml');
-			$zip->add_file('ods/styles.xml','styles.xml');
-			$zip->add_file('ods/META-INF/manifest.xml','META-INF/manifest.xml');
-			//$zip->save("ods/$fichier_liste.zip");
-			$zip->save("../temp/".$user_temp_directory."/$fichier_liste.zip");
+				$zip= new ss_zip('',6);
+				//$zip->add_file('sxc/content.xml');
+				//$zip->add_file("ods/content.xml",'content.xml');
+				$zip->add_file("../temp/".$user_temp_directory."/content.xml",'content.xml');
+				$zip->add_file('ods/meta.xml','meta.xml');
+				$zip->add_file('ods/mimetype','mimetype');
+				$zip->add_file('ods/settings.xml','settings.xml');
+				$zip->add_file('ods/styles.xml','styles.xml');
+				$zip->add_file('ods/META-INF/manifest.xml','META-INF/manifest.xml');
+				//$zip->save("ods/$fichier_liste.zip");
+				$zip->save("../temp/".$user_temp_directory."/$fichier_liste.zip");
 	
-			//rename("ods/$fichier_liste.zip","ods/$fichier_liste.ods");
-			rename("../temp/".$user_temp_directory."/$fichier_liste.zip","../temp/".$user_temp_directory."/$fichier_liste.ods");
-	
+				//rename("ods/$fichier_liste.zip","ods/$fichier_liste.ods");
+				rename("../temp/".$user_temp_directory."/$fichier_liste.zip","../temp/".$user_temp_directory."/$fichier_liste.ods");
+			}
+			else {
+
+				$path = path_niveau();
+				$chemin_temp = $path."temp/".get_user_temp_directory()."/";
+
+				if (!defined('PCLZIP_TEMPORARY_DIR') || constant('PCLZIP_TEMPORARY_DIR')!=$chemin_temp) {
+					@define( 'PCLZIP_TEMPORARY_DIR', $chemin_temp);
+				}
+
+				$nom_fic=$fichier_liste.".ods";
+				$chemin_stockage = $chemin_temp."/".$nom_fic;
+				$chemin_modele_ods='ods';
+
+				$dossier_a_traiter=$chemin_temp."liste_options_".strftime("%Y%m%d%H%M%S");
+
+				@mkdir($dossier_a_traiter);
+				copy("../temp/".$user_temp_directory."/content.xml", $dossier_a_traiter."/content.xml");
+
+				@mkdir($dossier_a_traiter."/META-INF");
+
+				$tab_fich_tmp=array('META-INF/manifest.xml', 'settings.xml', 'meta.xml', 'mimetype', 'styles.xml');
+				for($loop=0;$loop<count($tab_fich_tmp);$loop++) {
+					copy($chemin_modele_ods.'/'.$tab_fich_tmp[$loop], $dossier_a_traiter."/".$tab_fich_tmp[$loop]);
+				}
+
+				require_once($path.'lib/pclzip.lib.php');
+
+				if ($chemin_stockage !='') {
+					if(file_exists("$chemin_stockage")) {unlink("$chemin_stockage");}
+
+					//echo "\$chemin_stockage=$chemin_stockage<br />";
+					//echo "\$dossier_a_traiter=$dossier_a_traiter<br />";
+
+					$archive = new PclZip($chemin_stockage);
+					$v_list = $archive->create($dossier_a_traiter,
+						  PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
+						  PCLZIP_OPT_ADD_PATH, '');
+
+					if ($v_list == 0) {
+						echo "<p style='color:red'>Erreur : ".$archive->errorInfo(TRUE)."</p>";
+					}
+					/*
+					else {
+						$msg="Archive zip créée&nbsp;: <a href='$chemin_stockage'>$chemin_stockage</a>";
+					}
+					*/
+
+					deltree($dossier_a_traiter);
+				}
+			}
+
 			//echo "<a href='ods/".$fichier_liste.".ods'>$fichier_liste.ods</a>\n";
 			//echo "<a href='../temp/".$user_temp_directory."/".$fichier_liste.".ods'>$fichier_liste.ods</a>\n";
 			echo "<p>Fichier&nbsp;: <a href='../temp/".$user_temp_directory."/".$fichier_liste.".ods' onclick=\"setTimeout('self.close()',3000);return true;\">$fichier_liste.ods</a></p>\n";

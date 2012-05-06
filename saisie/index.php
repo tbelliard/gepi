@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -292,13 +292,15 @@ if ($current_group) {
 		echo "<th>ODS</th>\n";
 
 		$temoin_ods="y";
+		/*
 		// Vérification si les tests file_exists() sont acceptés.
 		if(getSettingValue("gepi_pmv")!="n"){
 			if(!file_exists("../lib/ss_zip.class.php")){
 				$temoin_ods="n";
 			}
 		}
-
+		*/
+		
 		if($_SESSION['user_temp_directory']!='y'){
 			$temoin_ods="n";
 		}
