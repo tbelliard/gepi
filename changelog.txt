@@ -35,6 +35,10 @@ Années antérieures:
 
 Bulletins:
 - Possibilité de corriger ses propres appréciations depuis les Bulletins simplifiés.
+- Export ODS des notes et appréciations avec PclZip.
+
+Cahiers de notes:
+- Export ODS des carnets de notes avec PclZip.
 
 
 Gepi-1.6.0 (27/01/2012)
