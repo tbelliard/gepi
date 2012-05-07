@@ -315,110 +315,115 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						*/
 						$login_prof = generate_unique_login($affiche[0],$affiche[1],$mode_generation_login);
 
-						//$login_prof = remplace_accents($temp1,"all");
-						// On teste l'unicité du login que l'on vient de créer
-						$m = 2;
-						$test_unicite = 'no';
-						$temp = $login_prof;
-						while ($test_unicite != 'yes') {
-							$test_unicite = test_unique_login($login_prof);
-							if ($test_unicite != 'yes') {
-								$login_prof = $temp.$m;
-								$m++;
+						if(!$login_prof) {
+							$msg="Login non généré.<br />Le mode de génération choisi n'est peut-être pas valide : '$mode_generation_login'<br />Consultez la page <a href='../gestion/param_gen.php#format_login_resp'>Configuration générale</a> pour corriger ou revalider le choix de format de login.<br />";
+							$remplacant_non_cree="y";
+						}
+						else {
+							//$login_prof = remplace_accents($temp1,"all");
+							// On teste l'unicité du login que l'on vient de créer
+							$m = 2;
+							$test_unicite = 'no';
+							$temp = $login_prof;
+							while ($test_unicite != 'yes') {
+								$test_unicite = test_unique_login($login_prof);
+								if ($test_unicite != 'yes') {
+									$login_prof = $temp.$m;
+									$m++;
+								}
 							}
-						}
-						$affiche[0] = traitement_magic_quotes(corriger_caracteres($affiche[0]));
-						// Mot de passe
-						if((!isset($_POST['sso']))||($_POST['sso']== "no")) {
-							$pwd = md5(rand (1,9).rand (1,9).rand (1,9).rand (1,9).rand (1,9).rand (1,9));
-							$mess_mdp = $pwd;
-							//echo "<tr><td colspan='4'>Choix 2: $pwd</td></tr>";
-				//                       $mess_mdp = "Inconnu (compte bloqué)";
-						} elseif ($_POST['sso'] == "yes") {
-							$pwd = '';
-							$mess_mdp = "aucun (sso)";
-							//echo "<tr><td colspan='4'>sso</td></tr>";
-						}
-						// Fin code génération login de init_xml
-	
-	
-						//choix du format
-						//test du login
-						$test = mysql_query("SELECT * FROM utilisateurs WHERE login = '".$login_prof."'");
-						$nombreligne = mysql_num_rows($test);
-						if ($nombreligne != 0) {
-							$resultat = "NON";
-							$msg = "*** Attention ! Un utilisateur ayant le même identifiant existe déjà. Enregistrement impossible ! ***";
-						}
-	
-						if ($resultat != "NON") {
-							if ($is_pwd == "y") {
-								$reg_data = mysql_query("INSERT INTO utilisateurs SET nom='".$_POST['form_nom']."',prenom='".$_POST['form_prenom']."',civilite='".$_POST['form_civilite']."',login='".$login_prof."',password='$reg_password_c',statut='professeur',email='".$_POST['form_email']."',etat='actif', change_mdp='y'");
+							$affiche[0] = traitement_magic_quotes(corriger_caracteres($affiche[0]));
+							// Mot de passe
+							if((!isset($_POST['sso']))||($_POST['sso']== "no")) {
+								$pwd = md5(rand (1,9).rand (1,9).rand (1,9).rand (1,9).rand (1,9).rand (1,9));
+								$mess_mdp = $pwd;
+								//echo "<tr><td colspan='4'>Choix 2: $pwd</td></tr>";
+					//                       $mess_mdp = "Inconnu (compte bloqué)";
+							} elseif ($_POST['sso'] == "yes") {
+								$pwd = '';
+								$mess_mdp = "aucun (sso)";
+								//echo "<tr><td colspan='4'>sso</td></tr>";
 							}
-							else {
-								$reg_data = mysql_query("INSERT INTO utilisateurs SET nom='".$_POST['form_nom']."',prenom='".$_POST['form_prenom']."',civilite='".$_POST['form_civilite']."',login='".$login_prof."',password='',statut='professeur',email='".$_POST['form_email']."',etat='actif', change_mdp='n'");
+							// Fin code génération login de init_xml
+	
+	
+							//choix du format
+							//test du login
+							$test = mysql_query("SELECT * FROM utilisateurs WHERE login = '".$login_prof."'");
+							$nombreligne = mysql_num_rows($test);
+							if ($nombreligne != 0) {
+								$resultat = "NON";
+								$msg = "*** Attention ! Un utilisateur ayant le même identifiant existe déjà. Enregistrement impossible ! ***";
 							}
-						}
-						$msg="Vous venez de créer un nouvel utilisateur !<br />Par défaut, cet utilisateur est considéré comme actif.";
-						//$msg = $msg."<br />Pour imprimer les paramètres de l'utilisateur (identifiant, mot de passe, ...), cliquez <a href='impression_bienvenue.php?user_login=".$_POST['new_login']."&mot_de_passe=".urlencode($NON_PROTECT['password1'])."' target='_blank'>ici</a> !";
-						$msg = $msg."<br />Pour imprimer les paramètres de l'utilisateur (identifiant, mot de passe, ...), cliquez <a href='impression_bienvenue.php?user_login=".$login_prof."&amp;mot_de_passe=".urlencode($NON_PROTECT['password1'])."' target='_blank'>ici</a> !";
-						$msg = $msg."<br />Attention : ultérieurement, il vous sera impossible d'imprimer à nouveau le mot de passe d'un utilisateur ! ";
-						$user_login = $login_prof;
+	
+							if ($resultat != "NON") {
+								if ($is_pwd == "y") {
+									$reg_data = mysql_query("INSERT INTO utilisateurs SET nom='".$_POST['form_nom']."',prenom='".$_POST['form_prenom']."',civilite='".$_POST['form_civilite']."',login='".$login_prof."',password='$reg_password_c',statut='professeur',email='".$_POST['form_email']."',etat='actif', change_mdp='y'");
+								}
+								else {
+									$reg_data = mysql_query("INSERT INTO utilisateurs SET nom='".$_POST['form_nom']."',prenom='".$_POST['form_prenom']."',civilite='".$_POST['form_civilite']."',login='".$login_prof."',password='',statut='professeur',email='".$_POST['form_email']."',etat='actif', change_mdp='n'");
+								}
+							}
+							$msg="Vous venez de créer un nouvel utilisateur !<br />Par défaut, cet utilisateur est considéré comme actif.";
+							//$msg = $msg."<br />Pour imprimer les paramètres de l'utilisateur (identifiant, mot de passe, ...), cliquez <a href='impression_bienvenue.php?user_login=".$_POST['new_login']."&mot_de_passe=".urlencode($NON_PROTECT['password1'])."' target='_blank'>ici</a> !";
+							$msg = $msg."<br />Pour imprimer les paramètres de l'utilisateur (identifiant, mot de passe, ...), cliquez <a href='impression_bienvenue.php?user_login=".$login_prof."&amp;mot_de_passe=".urlencode($NON_PROTECT['password1'])."' target='_blank'>ici</a> !";
+							$msg = $msg."<br />Attention : ultérieurement, il vous sera impossible d'imprimer à nouveau le mot de passe d'un utilisateur ! ";
+							$user_login = $login_prof;
 	
 	
-						// Ajout au remplaçant des classes et matières enseignées du prof remplacé.
+							// Ajout au remplaçant des classes et matières enseignées du prof remplacé.
 	
-						//on recheche les matières du prof remplacé
-						$sql_matieres = "select * from j_professeurs_matieres where id_professeur='$login_prof_remplace'";
+							//on recheche les matières du prof remplacé
+							$sql_matieres = "select * from j_professeurs_matieres where id_professeur='$login_prof_remplace'";
 	
-						$result_matieres = mysql_query($sql_matieres);
-						$nombre_matieres = mysql_num_rows($result_matieres);
+							$result_matieres = mysql_query($sql_matieres);
+							$nombre_matieres = mysql_num_rows($result_matieres);
 	
-						for ($i=0;$i<$nombre_matieres;$i++) {
-							$id_matiere_prof_remplace[$i] = mysql_result($result_matieres,$i,'id_matiere');
-							$ordre_matiere_prof_remplace[$i] = mysql_result($result_matieres,$i,'ordre_matieres');
-							//echo "<br>".$id_matiere_prof_remplace[$i]." ".$ordre_matiere_prof_remplace[$i]."<br>";
-						}
+							for ($i=0;$i<$nombre_matieres;$i++) {
+								$id_matiere_prof_remplace[$i] = mysql_result($result_matieres,$i,'id_matiere');
+								$ordre_matiere_prof_remplace[$i] = mysql_result($result_matieres,$i,'ordre_matieres');
+								//echo "<br>".$id_matiere_prof_remplace[$i]." ".$ordre_matiere_prof_remplace[$i]."<br>";
+							}
 	
-						//on affecte les matières au prof remplaçant
-						for ($i=0;$i<sizeof($id_matiere_prof_remplace);$i++) {
-							$sql_matieres = "insert into j_professeurs_matieres set id_matiere='$id_matiere_prof_remplace[$i]', id_professeur='$login_prof', ordre_matieres='$ordre_matiere_prof_remplace[$i]'";
-							//echo "<br>".$sql_matieres;
-							$insertion = mysql_query($sql_matieres);
-						}
+							//on affecte les matières au prof remplaçant
+							for ($i=0;$i<sizeof($id_matiere_prof_remplace);$i++) {
+								$sql_matieres = "insert into j_professeurs_matieres set id_matiere='$id_matiere_prof_remplace[$i]', id_professeur='$login_prof', ordre_matieres='$ordre_matiere_prof_remplace[$i]'";
+								//echo "<br>".$sql_matieres;
+								$insertion = mysql_query($sql_matieres);
+							}
 
-						/*
-						// On recheche les groupes du prof remplacé
-						$sql_groupes = "select * from j_groupes_professeurs where login='$login_prof_remplace'";
+							/*
+							// On recheche les groupes du prof remplacé
+							$sql_groupes = "select * from j_groupes_professeurs where login='$login_prof_remplace'";
 	
-						$result_groupes = mysql_query($sql_groupes);
-						$nombre_groupes = mysql_num_rows($result_groupes);
+							$result_groupes = mysql_query($sql_groupes);
+							$nombre_groupes = mysql_num_rows($result_groupes);
 	
-						for ($i=0;$i<$nombre_groupes;$i++) {
-							$id_groupes_prof_remplace[$i] = mysql_result($result_groupes,$i,'id_groupe');
-							$ordre_groupes_prof_remplace[$i] = mysql_result($result_groupes,$i,'ordre_prof');
-							//echo "<br>".$id_matiere_prof_remplace[$i]." ".$ordre_matiere_prof_remplace[$i]."<br>";
-						}
+							for ($i=0;$i<$nombre_groupes;$i++) {
+								$id_groupes_prof_remplace[$i] = mysql_result($result_groupes,$i,'id_groupe');
+								$ordre_groupes_prof_remplace[$i] = mysql_result($result_groupes,$i,'ordre_prof');
+								//echo "<br>".$id_matiere_prof_remplace[$i]." ".$ordre_matiere_prof_remplace[$i]."<br>";
+							}
 	
-						// On affecte les groupes au prof remplaçant
-						for ($i=0;$i<sizeof($id_groupes_prof_remplace);$i++) {
-							$sql_groupes = "insert into j_groupes_professeurs set id_groupe='$id_groupes_prof_remplace[$i]', login='$login_prof', ordre_prof='$ordre_groupes_prof_remplace[$i]'";
-							//echo "<br>".$sql_groupes;
-							$insertion = mysql_query($sql_groupes);
-						}
-						*/
-
-						for($i=0;$i<count($id_groupe);$i++) {
-							$sql="select * from j_groupes_professeurs where login='$login_prof_remplace';";
-							$res=mysql_query($sql);
-							if(mysql_num_rows($res)>0) {
-								$lig=mysql_fetch_object($res);
-								$sql_groupes = "insert into j_groupes_professeurs set id_groupe='$id_groupe[$i]', login='$login_prof', ordre_prof='$lig->ordre_prof';";
+							// On affecte les groupes au prof remplaçant
+							for ($i=0;$i<sizeof($id_groupes_prof_remplace);$i++) {
+								$sql_groupes = "insert into j_groupes_professeurs set id_groupe='$id_groupes_prof_remplace[$i]', login='$login_prof', ordre_prof='$ordre_groupes_prof_remplace[$i]'";
 								//echo "<br>".$sql_groupes;
 								$insertion = mysql_query($sql_groupes);
 							}
+							*/
+
+							for($i=0;$i<count($id_groupe);$i++) {
+								$sql="select * from j_groupes_professeurs where login='$login_prof_remplace';";
+								$res=mysql_query($sql);
+								if(mysql_num_rows($res)>0) {
+									$lig=mysql_fetch_object($res);
+									$sql_groupes = "insert into j_groupes_professeurs set id_groupe='$id_groupe[$i]', login='$login_prof', ordre_prof='$lig->ordre_prof';";
+									//echo "<br>".$sql_groupes;
+									$insertion = mysql_query($sql_groupes);
+								}
+							}
 						}
-	
 					}
 					else {
 						$msg="La personne existe déjà dans la base (même nom et même prénom)";
@@ -446,6 +451,13 @@ require_once("../lib/header.inc");
 </p>
 
 <?php
+
+	if((isset($remplacant_non_cree))&&($remplacant_non_cree=="y")) {
+		echo "<p>Il s'est produit une erreur.</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
 	/*
 	//$sql_groupes = "select DISTINCT g.*, c.classe from j_groupes_professeurs jgp, g.id, j_groupes_classes jgc, classes c where jgp.login='$login_prof_remplace' AND jgp.id_groupe=g.id AND g.id=jgc.id_groupe AND jgc.id_classe=c.id;";
 	$sql_groupes = "select DISTINCT g.* from j_groupes_professeurs jgp, g.id, j_groupes_classes jgc WHERE jgp.login='$login_prof_remplace' AND jgp.id_groupe=g.id AND g.id=jgc.id_groupe;";
