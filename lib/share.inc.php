@@ -4433,14 +4433,15 @@ function get_tab_prof_suivi($id_classe) {
  *  - message_accueil_utilisateur("UNTEL","Bonjour Untel",130674844,130684567) : affiche le message "Bonjour Untel" sur la page du destinataire de login "UNTEL" à partir de la date 130674844, jusqu'à la date 130684567, avec décompte sur la date 130684567
  * - message_accueil_utilisateur("UNTEL","Bonjour Untel",130674844,130684567,130690844) : affiche le message "Bonjour Untel" sur la page du destinataire de login "UNTEL" à partir de la date 130674844, jusqu'à la date 130684567, avec décompte sur la date 130690844
  * 
- * @param type $login_destinataire login du destinataire (obligatoire)
- * @param type $texte texte du message contenant éventuellement des balises HTML et encodé en iso-8859-1 (obligatoire)
- * @param type $date_debut date à partir de laquelle est affiché le message (timestamp, optionnel)
- * @param type $date_fin date à laquelle le message n'est plus affiché (timestamp, optionnel)
- * @param type $date_decompte date butoir du décompte, la chaîne _DECOMPTE_ dans $texte est remplacée par un décompte (timestamp, optionnel)
+ * @param type string $login_destinataire login du destinataire (obligatoire)
+ * @param type string $texte texte du message contenant éventuellement des balises HTML et encodé en iso-8859-1 (obligatoire)
+ * @param type timestamp $date_debut date à partir de laquelle est affiché le message (optionnel)
+ * @param type timestamp $date_fin date à laquelle le message n'est plus affiché (optionnel)
+ * @param type timestamp $date_decompte date butoir du décompte, la chaîne _DECOMPTE_ dans $texte est remplacée par un décompte (optionnel)
+ * @param type bolean $bouton_supprimer détermine s'il faut ajouter au message le bouton "Supprimer ce message"
  * @return type TRUE ou FALSE selon que le message a été enregistré ou pas
  */
-function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$date_fin=0,$date_decompte=0)
+function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$date_fin=0,$date_decompte=0,$bouton_supprimer=false)
 {
 	// On arrondit le timestamp d'appel à l'heure (pas néceassaire mais pour l'esthétique)
 	$t_appel=time()-(time()%3600);
@@ -4463,7 +4464,20 @@ function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$d
 			$date_decompte=$date_fin;		
 		}
 	$r_sql="INSERT INTO `messages` values('','".addslashes($texte)."','".$date_debut."','".$date_fin."','".$_SESSION['login']."','_','".$login_destinataire."','".$date_decompte."')";
-	return mysql_query($r_sql);
+	$retour=mysql_query($r_sql)?true:false;
+	if ($retour && $bouton_supprimer)
+		{
+		$id_message=mysql_insert_id();
+		$contenu='
+		<form method="POST" action="accueil.php" name="f_suppression_message">
+		<input type="hidden" name="supprimer_message" value="'.$id_message.'">
+		<button type="submit" title=" Supprimer ce message " style="border: none; background: none; float: right;"><img style="vertical-align: bottom;" src="images/icons/delete.png"></button>
+		</form>'.addslashes($texte);
+		$r_sql="UPDATE `messages` SET `texte`='".$contenu."' WHERE `id`='".$id_message."'";
+		$retour=mysql_query($r_sql)?true:false;
+		}
+	return $retour;
+
 }
 
 /**
