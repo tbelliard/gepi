@@ -316,7 +316,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						$login_prof = generate_unique_login($affiche[0],$affiche[1],$mode_generation_login);
 
 						if(!$login_prof) {
-							$msg="Login non généré.<br />Le mode de génération choisi n'est peut-être pas valide : '$mode_generation_login'<br />Consultez la page <a href='../gestion/param_gen.php#format_login_resp'>Configuration générale</a> pour corriger ou revalider le choix de format de login.<br />";
+							$msg="Login non généré.<br />Le mode de génération choisi n'est peut-être pas valide : '$mode_generation_login'<br />Consultez la page <a href='../gestion/param_gen.php#format_login_pers'>Configuration générale</a> pour corriger ou revalider le choix de format de login.<br />";
 							$remplacant_non_cree="y";
 						}
 						else {
