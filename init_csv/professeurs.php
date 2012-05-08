@@ -349,10 +349,10 @@ if (!isset($_POST["action"])) {
 										$query_p = mysql_query($sql_p);
 										$nbre = mysql_num_rows($query_p);
 										if ($nbre >= 1 AND $nbre < 2) {
-											$temp1 = mysql_result($query_p, 0,"login_u");
+											$login_prof = mysql_result($query_p, 0,"login_u");
 										}else{
 											// Il faudrait alors proposer une alternative à ce cas
-											$temp1 = "erreur_".$k;
+											$login_prof = "erreur_".$k;
 										}
 									}
 								}
@@ -367,6 +367,23 @@ if (!isset($_POST["action"])) {
 							// Le prof semble déjà exister. On récupère son login actuel
 							$login_prof = mysql_result($test, 0, "login");
 							$prof_exists = true;
+						}
+
+						if((!$login_prof)||($login_prof=="")) {
+
+							$login_prof = "erreur_";
+
+							// On teste l'unicité du login que l'on vient de créer
+							$m = 2;
+							$test_unicite = 'no';
+							$temp = $login_prof;
+							while ($test_unicite != 'yes') {
+								$test_unicite = test_unique_login($login_prof);
+								if ($test_unicite != 'yes') {
+									$login_prof = $temp.$m;
+									$m++;
+								}
+							}
 						}
 
 						$data_tab[$k] = array();
