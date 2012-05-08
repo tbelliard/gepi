@@ -372,7 +372,7 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est l
 <p>
 	<input type="checkbox" name="abs2_afficher_saisies_creneau_courant" value="y"
 	<?php if (getSettingValue("abs2_afficher_saisies_creneau_courant")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_afficher_saisies_creneau_courant">&nbsp;Afficher les informations préalablement existantes sur le créneau en cours de saisie</label>
+	<label for="abs2_afficher_saisies_creneau_courant">&nbsp;Afficher en rouge le créneau en cours de saisie s'il existe déjà une autre saisie</label>
 </p>
 
 <h2>Envoi des SMS</h2>
