@@ -810,13 +810,17 @@ for($i=0;$i<count($id_classe);$i++){
 			$tab_eleves_OOo[$nb_eleve]['totalcoef_bis']=$TOTAL_COEF*20;
 			// La note AB compte comme un zéro... donc pour le total sans Histoire_des_Arts, il faut décompter les points et coef d'Histoire_des_Arts même si la note est AB
 			//if($tab_eleves_OOo[$nb_eleve][5][0]!='AB') {
-			if($tab_eleves_OOo[$nb_eleve][5][0]!='DI') {
-				$tab_eleves_OOo[$nb_eleve]['totalpoints_bis']-=$tab_eleves_OOo[$nb_eleve][5][1];
-				//$tab_eleves_OOo[$nb_eleve]['totalcoef_bis']-=$tab_eleves_OOo[$nb_eleve][5][-2]*20;
-				// L'Histoire des arts est sur 40... à extraire de là par la suite
-				$tab_eleves_OOo[$nb_eleve]['totalcoef_bis']-=2*20;
-			}
 
+			/*
+				// 20120508: L'Histoire des Arts n'est plus saisie dans Notanet
+
+				if($tab_eleves_OOo[$nb_eleve][5][0]!='DI') {
+					$tab_eleves_OOo[$nb_eleve]['totalpoints_bis']-=$tab_eleves_OOo[$nb_eleve][5][1];
+					//$tab_eleves_OOo[$nb_eleve]['totalcoef_bis']-=$tab_eleves_OOo[$nb_eleve][5][-2]*20;
+					// L'Histoire des arts est sur 40... à extraire de là par la suite
+					$tab_eleves_OOo[$nb_eleve]['totalcoef_bis']-=2*20;
+				}
+			*/
 			$tab_eleves_OOo[$nb_eleve]['classe']=get_classe_from_id($id_classe[$i]);
 
 
@@ -828,15 +832,19 @@ for($i=0;$i<count($id_classe);$i++){
 				$tab_eleves_OOo[$nb_eleve]['LV1_ou_ScPhy']=$tab_eleves_OOo[$nb_eleve][104];
 			}
 			
-			// Total des points sans Histoire des arts
-			$pointsHistoireArts=40;
-			if ($tab_eleves_OOo[$nb_eleve][5][1]) {
-				$tab_eleves_OOo[$nb_eleve]['totalSansHistoireArts']=$tab_eleves_OOo[$nb_eleve]['totalpoints']-$tab_eleves_OOo[$nb_eleve][5][1];
-				$tab_eleves_OOo[$nb_eleve]['totalcoefSansHistoireArts']=$tab_eleves_OOo[$nb_eleve]['totalcoef']-$pointsHistoireArts;
-			}else{
-				$tab_eleves_OOo[$nb_eleve]['totalSansHistoireArts']=$tab_eleves_OOo[$nb_eleve]['totalpoints'];
-				$tab_eleves_OOo[$nb_eleve]['totalcoefSansHistoireArts']=$tab_eleves_OOo[$nb_eleve]['totalcoef'];
-			}
+			/*
+				// 20120508: L'Histoire des Arts n'est plus saisie dans Notanet
+				// Total des points sans Histoire des arts
+				$pointsHistoireArts=40;
+				if ($tab_eleves_OOo[$nb_eleve][5][1]) {
+					$tab_eleves_OOo[$nb_eleve]['totalSansHistoireArts']=$tab_eleves_OOo[$nb_eleve]['totalpoints']-$tab_eleves_OOo[$nb_eleve][5][1];
+					$tab_eleves_OOo[$nb_eleve]['totalcoefSansHistoireArts']=$tab_eleves_OOo[$nb_eleve]['totalcoef']-$pointsHistoireArts;
+				}else{
+					$tab_eleves_OOo[$nb_eleve]['totalSansHistoireArts']=$tab_eleves_OOo[$nb_eleve]['totalpoints'];
+					$tab_eleves_OOo[$nb_eleve]['totalcoefSansHistoireArts']=$tab_eleves_OOo[$nb_eleve]['totalcoef'];
+				}
+			*/
+
 			//===== Fin ajout mai 2011 ======
 
 			// Pour les brevets PRO, on a soit LV1 soit ScPhy
