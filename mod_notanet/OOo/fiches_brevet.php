@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -179,7 +179,7 @@ if (isset($_GET['parametrer'])) {
 		echo "<table border='0'>\n";
 		echo "<tr>\n";
 		echo "<td valign='top'>\n";
-		echo "<input type='radio' name='fb_mode_moyenne' value='1' ";
+		echo "<input type='radio' name='fb_mode_moyenne' id='fb_mode_moyenne_1' value='1' ";
 		if($fb_mode_moyenne!="2"){
 			echo "checked='checked' />";
 		}
@@ -188,14 +188,14 @@ if (isset($_GET['parametrer'])) {
 		}
 		echo "</td>\n";
 		echo "<td>\n";
-		echo "Calculer la moyenne de toutes matières d'une même option Notanet confondues<br />\n";
-		echo "(<i>on compte ensemble les AGL1 et ALL1; c'est la moyenne de toute la LV1 qui est effectuée</i>)\n";
+		echo "<label for='fb_mode_moyenne_1'>Calculer la moyenne de toutes matières d'une même option Notanet confondues<br />\n";
+		echo "(<i>on compte ensemble les AGL1 et ALL1; c'est la moyenne de toute la LV1 qui est effectuée</i>)</label>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 
 		echo "<tr>\n";
 		echo "<td valign='top'>\n";
-		echo "<input type='radio' name='fb_mode_moyenne' value='2' ";
+		echo "<input type='radio' name='fb_mode_moyenne' id='fb_mode_moyenne_2' value='2' ";
 		if($fb_mode_moyenne=="2"){
 			echo "checked='checked' />";
 		}
@@ -204,8 +204,8 @@ if (isset($_GET['parametrer'])) {
 		}
 		echo "</td>\n";
 		echo "<td>\n";
-		echo "Calculer les moyennes par matières<br />\n";
-		echo "(<i>on ne mélange pas AGL1 et ALL1 dans le calcul de la moyenne de classe pour un élève</i>)\n";
+		echo "<label for='fb_mode_moyenne_2'>Calculer les moyennes par matières<br />\n";
+		echo "(<i>on ne mélange pas AGL1 et ALL1 dans le calcul de la moyenne de classe pour un élève</i>)</label>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
@@ -219,24 +219,24 @@ $fb_gab_perso=getSettingValue("fb_gab_perso");
 	echo "<tr";
 	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 	echo ">\n";
-	echo "<td valign='top'>Gabarits : <br />Vous pouvez utiliser les gabarits intégrés à Gépi (construits à partir des fiches brevets de Nantes) <br />ou utiliser le module OpenOffice pour enregistrer vos propres gabarits</td>\n";
+	echo "<td valign='top'>Gabarits : <br />Vous pouvez utiliser les gabarits intégrés à Gepi (construits à partir des fiches brevets de Nantes) <br />ou utiliser le module OpenOffice pour enregistrer vos propres gabarits</td>\n";
 	echo "<td>";
-	echo "<input type='radio' name='fb_gab_perso' value='1' ";
+	echo "<input type='radio' name='fb_gab_perso' id='fb_gab_perso_1' value='1' ";
 	if($fb_gab_perso=="1"){
 	  echo "checked='checked' />";
 	}
 	else{
 	  echo "/>";
 	}
-	echo " Gabarits personnels <br />";
-	echo "<input type='radio' name='fb_gab_perso' value='0' ";
+	echo "<label for='fb_gab_perso_1'> Gabarits personnels </label><br />";
+	echo "<input type='radio' name='fb_gab_perso' id='fb_gab_perso_0' value='0' ";
 	if($fb_gab_perso=="0"){
 	  echo "checked='checked' />";
 	}
 	else{
 	  echo "/>";
 	}
-	echo " Gabarits Gépi <br />";
+	echo "<label for='fb_gab_perso_0'> Gabarits Gepi </label><br />";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -247,36 +247,36 @@ $fb_dezip_ooo=getSettingValue("fb_dezip_ooo");
 	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 	echo ">\n";
 
-	echo "<td valign='top'>Décompresseur d'archive : <br />Gépi a besoin d'un décompresseur d'archive pour créer les fiches brevets. Vous devez sélectionner celui que vous voulez utiliser.</td>\n";
+	echo "<td valign='top'>Décompresseur d'archive : <br />Gepi a besoin d'un décompresseur d'archive pour créer les fiches brevets. Vous devez sélectionner celui que vous voulez utiliser.</td>\n";
 	echo "</td>";
 	echo "<td>";
 
-	echo "<input type='radio' name='fb_dezip_ooo' value='0' ";
+	echo "<input type='radio' name='fb_dezip_ooo' id='fb_dezip_ooo_0' value='0' ";
 	if($fb_dezip_ooo=="0"){
 	  echo "checked='checked' />";
 	}
 	else{
 	  echo "/>";
 	}
-	echo " ZIPARCHIVE et TinyDoc : le choix par défaut mais peut créer des fichiers corrompus si votre version de PHP est inférieur à 5.2.8 (utiliser OOo 3.2 pour réparer les fichiers) <br />\n";
+	echo "<label for='fb_dezip_ooo_0'> ZIPARCHIVE et TinyDoc : le choix par défaut mais peut créer des fichiers corrompus si votre version de PHP est inférieure à 5.2.8 (utiliser OOo 3.2 pour réparer les fichiers) </label><br />\n";
 	
-	echo "<input type='radio' name='fb_dezip_ooo' value='1' ";
+	echo "<input type='radio' name='fb_dezip_ooo' id='fb_dezip_ooo_1' value='1' ";
 	if($fb_dezip_ooo=="1"){
 	  echo "checked='checked' />";
 	}
 	else{
 	  echo "/>";
 	}
-	echo " ZIP-UNZIP et TinyDoc : nécessite que ZIP et UNZIP soient installés sur le serveur et que leurs chemins soient définis dans la variable d'environnement PATH <br />\n";
+	echo "<label for='fb_dezip_ooo_1'> ZIP-UNZIP et TinyDoc : nécessite que ZIP et UNZIP soient installés sur le serveur et que leurs chemins soient définis dans la variable d'environnement PATH </label><br />\n";
 
-	echo "<input type='radio' name='fb_dezip_ooo' value='2' ";
+	echo "<input type='radio' name='fb_dezip_ooo' id='fb_dezip_ooo_2' value='2' ";
 	if($fb_dezip_ooo=="2"){
 	  echo "checked='checked' />";
 	}
 	else{
 	  echo "/>";
 	}
-	echo " PCLZIP et TBSooo : classe plus ancienne, toutes les fonctionnalités de TinyDoc ne sont pas disponible dans les gabarits mais fonctionne avec PHP 5.2 <br />\n";
+	echo "<label for='fb_dezip_ooo_2'> PCLZIP et TBSooo : classe plus ancienne, toutes les fonctionnalités de TinyDoc ne sont pas disponible dans les gabarits mais fonctionne avec PHP 5.2 </label><br />\n";
 
 	echo "</td>\n";
 
