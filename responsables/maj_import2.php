@@ -3680,19 +3680,30 @@ else{
 								$login_eleve = $temp1.'_'.$temp2;
 								*/
 								$login_ele_gen_type=getSettingValue('login_ele_gen_type');
-								if($login_ele_gen_type=='') {$login_ele_gen_type='name9_p';}
-								$login_eleve=generate_unique_login($tmp_nom, $tmp_prenom, 'name9_p', 'maj');
-		
-								// On teste l'unicité du login que l'on vient de créer
-								$k = 2;
-								$test_unicite = 'no';
-								$temp = $login_eleve;
-								while ($test_unicite != 'yes') {
-									//$test_unicite = test_unique_e_login($login_eleve,$i);
-									$test_unicite = test_unique_login($login_eleve);
-									if ($test_unicite != 'yes') {
-										$login_eleve = $temp.$k;
-										$k++;
+								//if($login_ele_gen_type=='') {$login_ele_gen_type='nnnnnnnnn_p';}
+								if(!check_format_login($login_ele_gen_type)) {
+									$login_ele_gen_type='nnnnnnnnn_p';
+
+									$sql="SELECT * FROM infos_actions WHERE titre='Format des logins générés';";
+									$test_ia=mysql_query($sql);
+									if(mysql_num_rows($test_ia)==0) {
+										enregistre_infos_actions("Format des logins générés","Le format des logins générés par Gepi pour les différentes catégories d'utilisateurs doit être contrôlé et revalidé dans la page <a href='./gestion/param_gen.php#format_login_pers'>Configuration générale</a>",array("administrateur"),'statut');
+									}
+								}
+								$login_eleve=generate_unique_login($tmp_nom, $tmp_prenom, $login_ele_gen_type, 'maj');
+
+								if(($login_eleve)&&($login_eleve!='')) {
+									// On teste l'unicité du login que l'on vient de créer
+									$k = 2;
+									$test_unicite = 'no';
+									$temp = $login_eleve;
+									while ($test_unicite != 'yes') {
+										//$test_unicite = test_unique_e_login($login_eleve,$i);
+										$test_unicite = test_unique_login($login_eleve);
+										if ($test_unicite != 'yes') {
+											$login_eleve = $temp.$k;
+											$k++;
+										}
 									}
 								}
 							}

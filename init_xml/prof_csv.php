@@ -3,7 +3,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -345,6 +345,10 @@ if (!isset($is_posted)) {
 								}
 								else {
 									$temp1=generate_unique_login($affiche[0], $affiche[1], $_POST['login_gen_type'], $_POST['login_gen_type_casse']);
+								}
+
+								if((!$temp1)||($temp1=="")) {
+									$temp1="erreur_";
 								}
 
 								$login_prof = $temp1;

@@ -218,6 +218,11 @@ $tab_formats_login_a_tester=array('mode_generation_login', 'mode_generation_logi
 for($loop=0;$loop<count($tab_formats_login_a_tester);$loop++) {
 	$valeur_current_mode_generation_login=getSettingValue($tab_formats_login_a_tester[$loop]);
 	if(!check_format_login($valeur_current_mode_generation_login)) {
+		$sql="SELECT * FROM infos_actions WHERE titre='Format des logins générés';";
+		$test_ia=mysql_query($sql);
+		if(mysql_num_rows($test_ia)==0) {
+			enregistre_infos_actions("Format des logins générés","Le format des logins générés par Gepi pour les différentes catégories d'utilisateurs doit être contrôlé et revalidé dans la page <a href='./gestion/param_gen.php#format_login_pers'>Configuration générale</a>",array("administrateur"),'statut');
+		}
 
 		$result .= "Format de login ";
 		if($tab_formats_login_a_tester[$loop]=='mode_generation_login') {$result .= "<b>personnels</b>";}

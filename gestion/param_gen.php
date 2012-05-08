@@ -458,6 +458,7 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
+		$format_login_ok=0;
 		if (isset($_POST['mode_generation_login'])) {
 			if(!check_format_login($_POST['mode_generation_login'])) {
 				$msg .= "Format de login invalide pour les personnels !";
@@ -470,7 +471,8 @@ if (isset($_POST['is_posted'])) {
 					$nbre_carac = mb_strlen($_POST['mode_generation_login']);
 					$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login'";
 					$modif_maxlong = mysql_query($req);
-				}
+
+					$format_login_ok++;				}
 			}
 		}
 
@@ -497,6 +499,8 @@ if (isset($_POST['is_posted'])) {
 					$nbre_carac = mb_strlen($_POST['mode_generation_login_eleve']);
 					$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login_eleve'";
 					$modif_maxlong = mysql_query($req);
+
+					$format_login_ok++;
 				}
 			}
 		}
@@ -524,6 +528,18 @@ if (isset($_POST['is_posted'])) {
 					$nbre_carac = mb_strlen($_POST['mode_generation_login_responsable']);
 					$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login_responsable'";
 					$modif_maxlong = mysql_query($req);
+
+					$format_login_ok++;
+				}
+			}
+		}
+
+		if($format_login_ok==3) {
+			$sql="SELECT * FROM infos_actions WHERE titre='Format des logins générés';";
+			$test_ia=mysql_query($sql);
+			if(mysql_num_rows($test_ia)>0) {
+				while($lig=mysql_fetch_object($test_ia)) {
+					del_info_action($lig->id);
 				}
 			}
 		}
@@ -836,7 +852,7 @@ echo add_token_field();
 			<br />
 			(<em style='font-size: small'>sous réserve que les mails soient remplis</em>)
 			<br />
-			<span style='font-size: small'>
+			<span style='font-size: small' title='Cependant, en mettant tous les destinataires en BCC (Blind Carbon Copy, soit Copie Cachée), vous pouvez conserver la confidentialité des destinataires (il faut toutefois la plupart du temps au moins un destinataire non caché pour que l&apos;envoi soit accepté).'>
 				Nous attirons votre attention sur le fait qu'envoyer un mail à une liste d'utilisateurs via un lien mailto 
 				permet à chaque élève de connaitre les email des autres élèves sans que l'autorisation de divulgation 
 				ou non paramétrée dans <strong>Gérer mon compte</strong> soit prise en compte.
@@ -996,7 +1012,7 @@ echo add_token_field();
 
 	<p class="ligneCaps">
 		<label for='mode_generation_login' class="cellTab70">
-			<a name='format_login_resp'></a>
+			<a name='format_login_pers'></a>
 			Mode de génération automatique des logins personnels&nbsp;:
 		</label>
 		<span class="cellTab plusPetit">
@@ -1010,7 +1026,7 @@ echo add_token_field();
 
 	<p class="ligneCaps">
 		<label for='mode_generation_login_eleve' class="cellTab70">
-			<a name='format_login_resp'></a>
+			<a name='format_login_ele'></a>
 			Mode de génération automatique des logins élèves&nbsp;:
 		</label>
 		<span class="cellTab plusPetit">
