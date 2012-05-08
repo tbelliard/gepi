@@ -621,6 +621,8 @@ for($i=0;$i<count($id_classe);$i++){
 		while($lig1=mysql_fetch_object($res1)){
 
 			$tab_eleves_OOo[$nb_eleve]=array();
+			$tab_eleves_OOo[$nb_eleve]['fb_session']=$fb_session;
+
 			$tab_eleves_OOo[$nb_eleve]['nom']=$lig1->nom;
 			$tab_eleves_OOo[$nb_eleve]['prenom']=$lig1->prenom;
 			$tab_eleves_OOo[$nb_eleve]['ine']=$lig1->no_gep;
