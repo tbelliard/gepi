@@ -522,9 +522,11 @@ if (!isset($aid_trouve)) {
  } ?>
 
 <h2>Encodage des noms de fichier des photos élèves</h2>
-<p class="bold" style="margin-left:10px;";>Etat présent : l'encodage <?php echo (getSettingAOui("encodage_nom_photo"))?"est":"n'est pas"; ?> activé.</p>
+<p class="bold" style="margin-left:10px;";>Etat présent : <?php echo verifie_coherence_encodage(); ?></p>
 <p>L'encodage des noms de fichier des photos des élèves a pour but d'empêcher un(e) internaute mal intentionné(e) (et connaissant le elenoet ou le login d'un élève, ce qui peut être facile à subodorer) d'accéder aux fichiers du dossier photos/eleves. Cet encodage, facultatif, consiste à ajouter aux noms des fichiers un préfixe de cinq caractères aléatoires.<br />
-<span class="bold">Attention : </span>si l'encodage est activé alors pour transférer directement par FTP les fichiers photo des élèves (nommés sous la forme elenoet.jpg ou login.jpg) dans le dossier photos/eleves il faut au préalable désactiver l'encodage, procéder au transfert, puis activer l'encodage.</p>
+<span class="bold">Attention : </span><br />
+&nbsp;- si l'encodage est activé alors pour transférer directement par FTP les fichiers photo des élèves (nommés sous la forme elenoet.jpg, ou login.jpg dans le cas du multisite) dans le dossier photos/eleves il faut au préalable désactiver l'encodage, procéder au transfert, puis activer l'encodage ;<br />
+&nbsp;- lors d'une restauration de la base il faut veiller à maintenir la cohérence entre la base à restaurer et l'état présent de l'encodage, par exemple si la sauvegarde a été effectuée alors que l'encodage éait désactivé et qu'en l'état présent l'encodage est activé alors il faut le désactiver avant de restaurer la base (et réciproquement).</p>
 	<?php if (file_exists('../photos/'.$repertoire.'eleves/') && !getSettingAOui('encodage_nom_photo')) {?>
 	<form action="trombinoscopes_admin.php" id="form5" method="post" title="Encoder les noms des fichiers photo élèves">
 	<?php
