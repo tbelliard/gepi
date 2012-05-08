@@ -354,7 +354,18 @@ if (isset($_POST['is_posted'])) {
 				$msg .= "Erreur lors de l'enregistrement du paramètre exp_imp_chgt_etab !";
 			}
 		}
-	
+
+		if (isset($_POST['aff_temoin_check_serveur'])) {
+			if (!saveSetting("aff_temoin_check_serveur", $_POST['aff_temoin_check_serveur'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre aff_temoin_check_serveur !";
+			}
+		}
+		else{
+			if (!saveSetting("aff_temoin_check_serveur", 'n')) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre aff_temoin_check_serveur !";
+			}
+		}
+
 		if (isset($_POST['ele_lieu_naissance'])) {
 			if (!saveSetting("ele_lieu_naissance", $_POST['ele_lieu_naissance'])) {
 				$msg .= "Erreur lors de l'enregistrement du paramètre ele_lieu_naissance !";
@@ -1412,7 +1423,26 @@ if($exp_imp_chgt_etab=="") {$exp_imp_chgt_etab="no";}
 				   onchange='changement()' />
 		</span>
 	</p>
-	
+
+	<p class="ligneCaps">
+		<span class="cellTab70">
+			<label for='aff_temoin_check_serveur' style='cursor: pointer'>Effectuer des "contacts" réguliers du serveur et afficher un témoin pour s'assurer que le serveur est bien à l'écoute.</label>
+			<br />
+			<span class='small'>
+				(<em>cela peut être utile dans le cas où vous avez une qualité de connexion aléatoire</em>)&nbsp;:</label>
+			</span>
+		</span>
+		<span class="cellTab plusPetit">
+			<?php
+				$aff_temoin_check_serveur=getSettingValue("aff_temoin_check_serveur");
+				if($aff_temoin_check_serveur=="") {$aff_temoin_check_serveur="n";}
+				echo "<input type='checkbox' name='aff_temoin_check_serveur' id='aff_temoin_check_serveur' value='y'";
+				if($aff_temoin_check_serveur=='y') {echo " checked";}
+				echo " onchange='changement()' />\n";
+			?>
+		</span>
+	</p>
+
 	<p class="ligneCaps">
 		<span class="cellTab70">
 			N° d'enregistrement à la CNIL : <br />
