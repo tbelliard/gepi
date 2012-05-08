@@ -802,7 +802,7 @@ echo add_token_field();
 		<td style="font-variant: small-caps;">
 		<label for='envoi_mail_liste' style='cursor: pointer;'>Permettre d'envoyer des mails à une liste d'élèves :<br />
 		<span style='font-size: small'>(<i>sous réserve que les mails soient remplis</i>)</span><br />
-		<span style='font-size: small'>Nous attirons votre attention sur le fait qu'envoyer un mail à une liste d'utilisateurs via un lien mailto permet à chaque élève de connaitre les email des autres élèves sans que l'autorisation de divulgation ou non paramétrée dans <b>Gérer mon compte</b> soit prise en compte.</span></label>
+		<span style='font-size: small' title='Cependant, en mettant tous les destinataires en BCC (Blind Carbon Copy, soit Copie Cachée), vous pouvez conserver la confidentialité des destinataires (il faut toutefois la plupart du temps au moins un destinataire non caché pour que l&apos;envoi soit accepté).'>Nous attirons votre attention sur le fait qu'envoyer un mail à une liste d'utilisateurs via un lien mailto permet à chaque élève de connaitre les email des autres élèves sans que l'autorisation de divulgation ou non paramétrée dans <b>Gérer mon compte</b> soit prise en compte.</span></label>
 		</td>
 		<td valign='top'>
 		<input type="checkbox" id='envoi_mail_liste' name="envoi_mail_liste" value="y"
