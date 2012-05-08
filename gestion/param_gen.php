@@ -458,6 +458,7 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
+		$format_login_ok=0;
 		if (isset($_POST['mode_generation_login'])) {
 			if(!check_format_login($_POST['mode_generation_login'])) {
 				$msg .= "Format de login invalide pour les personnels !";
@@ -470,6 +471,8 @@ if (isset($_POST['is_posted'])) {
 					$nbre_carac = mb_strlen($_POST['mode_generation_login']);
 					$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login'";
 					$modif_maxlong = mysql_query($req);
+
+					$format_login_ok++;
 				}
 			}
 		}
@@ -497,6 +500,8 @@ if (isset($_POST['is_posted'])) {
 					$nbre_carac = mb_strlen($_POST['mode_generation_login_eleve']);
 					$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login_eleve'";
 					$modif_maxlong = mysql_query($req);
+
+					$format_login_ok++;
 				}
 			}
 		}
@@ -524,6 +529,18 @@ if (isset($_POST['is_posted'])) {
 					$nbre_carac = mb_strlen($_POST['mode_generation_login_responsable']);
 					$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login_responsable'";
 					$modif_maxlong = mysql_query($req);
+
+					$format_login_ok++;
+				}
+			}
+		}
+
+		if($format_login_ok==3) {
+			$sql="SELECT * FROM infos_actions WHERE titre='Format des logins générés';";
+			$test_ia=mysql_query($sql);
+			if(mysql_num_rows($test_ia)>0) {
+				while($lig=mysql_fetch_object($test_ia)) {
+					del_info_action($lig->id);
 				}
 			}
 		}
@@ -910,7 +927,7 @@ echo add_token_field();
 	<tr>
 		<td style="font-variant: small-caps;">
 
-		<a name='format_login_resp'></a>
+		<a name='format_login_pers'></a>
 		Mode de génération automatique des logins personnels&nbsp;:</td>
 	<td>
 		<?php
@@ -932,7 +949,7 @@ echo add_token_field();
 
 	<tr>
 		<td style="font-variant: small-caps;">
-			<a name='format_login_resp'></a>
+			<a name='format_login_ele'></a>
 			Mode de génération automatique des logins élèves&nbsp;:
 		</td>
 		<td>
