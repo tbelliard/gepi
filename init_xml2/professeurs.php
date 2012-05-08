@@ -584,6 +584,10 @@ else {
 							$login_prof=$login_prof_gepi;
 						}
 						else {
+							if((!$temp1)||($temp1=="")) {
+								$temp1="erreur_";
+							}
+
 							$login_prof = $temp1;
 							//$login_prof = remplace_accents($temp1,"all");
 							// On teste l'unicité du login que l'on vient de créer
@@ -592,7 +596,7 @@ else {
 							$temp = $login_prof;
 							while ($test_unicite != 'yes') {
 								$test_unicite = test_unique_login($login_prof);
-		
+	
 								if ($test_unicite != 'yes') {
 									$login_prof = $temp.$m;
 									$m++;
