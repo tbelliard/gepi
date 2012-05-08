@@ -237,8 +237,8 @@ if (isset ($_POST['maj'])) {
             require 'updates/155_to_160.inc.php';
 	}
 
-	if (($force_maj == 'yes') or (quelle_maj("dev"))) {
-            require 'updates/160_to_dev.inc.php';
+	if (($force_maj == 'yes') or (quelle_maj("1.6.1"))) {
+            require 'updates/160_to_161.inc.php';
 	}
 
 	// Mise à jour du numéro de version

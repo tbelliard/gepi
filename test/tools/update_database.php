@@ -10,7 +10,7 @@ require_once dirname(__FILE__) . '/../../lib/mysql.inc';
 require_once(dirname(__FILE__). '/../../lib/settings.inc');
 require_once(dirname(__FILE__). '/../../lib/share-html.inc.php');
 require_once dirname(__FILE__) . '/../../utilitaires/updates/155_to_160.inc.php';
-require_once dirname(__FILE__) . '/../../utilitaires/updates/160_to_dev.inc.php';
+require_once dirname(__FILE__) . '/../../utilitaires/updates/160_to_161.inc.php';
 // Remplace les sauts de ligne html <br> par \n dans le texte
 $result=preg_replace("#<br>#","\n",$result);
 $result=preg_replace("#<br/>#","\n",$result);

@@ -1,4 +1,4 @@
-GEPI-developpement -- Procédure de mise à jour
+GEPI-1.6.1 -- Procédure de mise à jour
 ==========================================
 
 *************
