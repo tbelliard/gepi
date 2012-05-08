@@ -317,7 +317,7 @@ echo (" <a href=\"#\" onclick=\"javascript: /*ct_a_importer_class est globale*/
     $('modification_compte_rendu_form').request({
         onComplete : function (transport) {updateWindows('');}
     });");
-echo("\"><img style=\"border: 0px;\" src=\"../images/icons/copy-16-gold.png");
+echo("\"><img style=\"border: 0px;\" src=\"../images/icons/copy-16-gold-trombone.png");
 echo("\" alt=\"Coller\" title=\"Coller les fichiers joints\" /></a>\n");
 
 echo "</legend>\n";
