@@ -85,7 +85,7 @@ function encode_nom_photo_des_eleves($re_encoder=false,$alea_nom_photo="")
 	else
 		{
 		// on active ou réactive l'encodage
-		if (!active_encodage_nom_photo($alea_nom_photo)) $bilan="Impossible d'activer l'encodage.<br />";
+		if (!active_encodage_nom_photo($alea_nom_photo)) $bilan="Impossible d'activer l'encodage dans la table 'setting').<br />";
 		else
 			{
 			// Cas du multisite
@@ -100,12 +100,16 @@ function encode_nom_photo_des_eleves($re_encoder=false,$alea_nom_photo="")
 				$R_dossier_photos_eleves=opendir($dossier_photos_eleves);
 					while ($photo=readdir($R_dossier_photos_eleves))
 						{
-						if (is_file($dossier_photos_eleves.$photo) && $photo!="index.html")
+						if (is_file($dossier_photos_eleves.$photo) && pathinfo($dossier_photos_eleves.$photo,PATHINFO_EXTENSION)=="jpg" && $photo!="index.html")
 							{
 							$t_noms_photos[]=$photo;
 							}
 						}
 				closedir($R_dossier_photos_eleves);
+				// on crée (ou recrée) un fichier témoin d'encodage activé
+				$fic_temoin=fopen($dossier_photos_eleves."encodage_active.txt","w");
+				fwrite($fic_temoin,encode_nom_photo("nom_photo"));
+				fclose($fic_temoin);
 				// on renomme les fichiers photo
 				foreach($t_noms_photos as $photo)
 					{
@@ -158,12 +162,14 @@ function des_encode_nom_photo_des_eleves()
 				$R_dossier_photos_eleves=opendir($dossier_photos_eleves);
 					while ($photo=readdir($R_dossier_photos_eleves))
 						{
-						if (is_file($dossier_photos_eleves.$photo) && $photo!="index.html")
+						if (is_file($dossier_photos_eleves.$photo) && pathinfo($dossier_photos_eleves.$photo,PATHINFO_EXTENSION)=="jpg" && $photo!="index.html")
 							{
 							$t_noms_photos[]=$photo;
 							}
 						}
 				closedir($R_dossier_photos_eleves);
+				// on supprime le fichier témoin d'encodage activé
+				if (file_exists($dossier_photos_eleves."encodage_active.txt")) unlink($dossier_photos_eleves."encodage_active.txt");
 				// on renomme les fichiers photo
 				foreach($t_noms_photos as $photo)
 					{
@@ -182,6 +188,45 @@ function des_encode_nom_photo_des_eleves()
 			}
 		}
 	return $bilan;
+	}
+
+/**
+ * Vérifie la cohérence entre le contenu du dossier des photos des éléves
+ * et les entrées de la table 'setting'
+ * Renvoie un chaîne donnant l'état présent de l'encodage si tout est correct
+ * ou un descriptif de l'incohérence et de la solution éventuelle
+ */
+function verifie_coherence_encodage()
+	{
+	// Cas du multisite
+	$rne=""; $bilan="";
+	if (isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == 'y' && !$rne=$_COOKIE['RNE'])
+			$bilan="Multisite : erreur lors de la récupération du dossier photos de l'établissement.<br/>";
+
+	if ($bilan=="")
+		{
+		$rne=(isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y')?$rne=$_COOKIE['RNE']."/":"";
+		$dossier_photos_eleves="../photos/".$rne."eleves/";
+		
+		if (getSettingAOui('encodage_nom_photo'))
+			if (file_exists($dossier_photos_eleves."encodage_active.txt"))
+				{
+				// on vérifie la cohérence entre son contenu et la valeur de 'alea_nom_photo'
+				$fic_temoin=fopen($dossier_photos_eleves."encodage_active.txt","r");
+				$temoin=fgets($fic_temoin);
+				fclose($fic_temoin);
+				if ($temoin==encode_nom_photo("nom_photo"))
+					return "<span style='color: blue'>l'encodage est activé</span>.";
+				else return "<span style='color: red'>l'encodage est activé mais il y a une incohérence avec l'état de la base, il faut ré-encoder les noms des fichiers photo des élèves</span>.";
+				}
+			else return "<span style='color: red'>l'encodage n'est pas activé mais il y a une incohérence avec l'état de la base, il faut actualiser le paramètre 'encodage_nom_photo' en cliquant <a href=\"trombinoscopes_admin.php?set_encodage_nom_photo=no".add_token_in_url()."\">sur ce lien</a></span>.";
+		else
+			if (file_exists($dossier_photos_eleves."encodage_active.txt"))
+				{
+				return "<span style='color: red'>l'encodage est activé mais il y a une incohérence avec l'état de la base, il faut actualiser le paramètre 'encodage_nom_photo' en cliquant <a href=\"trombinoscopes_admin.php?set_encodage_nom_photo=yes".add_token_in_url()."\">sur ce lien</a> puis ré-encoder les noms des fichiers photo des élèves</span>.";
+				}
+			else return "<span style='color: blue'>l'encodage est désactivé</span>.";
+		}
 	}
 
 function purge_dossier_photos($type_utilisateurs) {
@@ -564,6 +609,14 @@ if  ((isset($_POST['des_encoder_noms_photo']) and ($_POST['des_encoder_noms_phot
 		else
 			if ($nb_erreurs<=10) $msg=$retour;
 			else $msg=$nb_erreurs." noms de fihiers photo n'ont pu être dés-encodés.<br/>";
+	}
+
+// Modification par url de la valeur de 'encodage_nom_photo' dans la table 'setting'
+if (isset($_GET['set_encodage_nom_photo']))
+	{
+	$msg="";
+	check_token();
+	if (!saveSetting('encodage_nom_photo',$_GET['set_encodage_nom_photo'])) $msg="Impossible de modifier la valeur de 'encodage_nom_photo' dans la table 'setting'.<br />";
 	}
 
 // Liste des données élève
