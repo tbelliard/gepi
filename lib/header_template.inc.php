@@ -522,9 +522,9 @@ if (isset($titre_page)) {
                     }
                 } catch (Exception $e) {
                 }
-		$tbs_version_gepi = $version_gepi;
             }
         }
+		$tbs_version_gepi = $version_gepi;
 	} else {
 		$tbs_version_gepi=" ";			// nécessaire pour recaler le bandeau dans tous les navigateurs
 	}
