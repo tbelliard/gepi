@@ -217,11 +217,14 @@ echo " <button style='background-color:".$color_fond_notices['p']."' onclick=\"j
 echo "<button style='background-color:lightblue' onclick=\"javascript:
 						getWinBanqueTexte().setAjaxContent('./ajax_affichage_banque_texte.php',{});
 					\">Banque</button>\n";
-/*
-echo "<button style='background-color:lightblue' onclick=\"javascript:
-						getWinArchives().setAjaxContent('../documents/archives/index.php',{});
+
+if(file_exists("./archives.php")) {
+	// Mon fichier contient juste:
+	/* <?php echo "<iframe src='../documents/archives/index.php' width='100%' height='100%'/>"; ?> */
+	echo "<button style='background-color:bisque' onclick=\"javascript:
+						getWinArchives().setAjaxContent('./archives.php',{});
 					\">Archives</button>\n";
-*/
+}
 echo "<br /><br />\n";
 
 // Nombre de notices pour ce jour :
