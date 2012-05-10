@@ -521,6 +521,7 @@ if (!isset($aid_trouve)) {
  <?php 
  } ?>
 
+<a name='encodage'></a>
 <h2>Encodage des noms de fichier des photos élèves</h2>
 <p class="bold" style="margin-left:10px;";>Etat présent : <?php echo verifie_coherence_encodage(); ?></p>
 <p>L'encodage des noms de fichier des photos des élèves a pour but d'empêcher un(e) internaute mal intentionné(e) (<em>et connaissant le elenoet ou le login d'un élève, ce qui peut être facile à subodorer</em>) d'accéder aux fichiers du dossier photos/eleves. Cet encodage, facultatif, consiste à ajouter aux noms des fichiers un préfixe de cinq caractères aléatoires.<br />
@@ -537,7 +538,7 @@ if (!isset($aid_trouve)) {
 		<legend class="bold">Activer l'encodage des noms des fichiers photo des élèves</legend>
 		Cette opération, consistant à ajouter aux noms des fichiers un préfixe de cinq caractères aléatoires, peut-être longue si le nombre de photos est important.<br/>
 		<input type="hidden" name="encoder_noms_photo" value="oui">
-		<em>Par précaution faire au péalable une sauvegarde du dossier 'photos'.</em>
+		<em style='color:red'>Par précaution faire au péalable une sauvegarde du dossier 'photos'.</em>
  	</fieldset>
 	<p class="center">
 		<input type="submit" 

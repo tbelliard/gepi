@@ -41,14 +41,21 @@ $result .= "&nbsp;->Ajout d'entrées à la table 'setting' pour encodage des fic
 $req_test=mysql_query("SELECT value FROM setting WHERE name = 'encodage_nom_photo'");
 $res_test=mysql_num_rows($req_test);
 if ($res_test==0){
-  $result_inter = traite_requete("INSERT INTO setting VALUES ('encodage_nom_photo', 'no');");
-  if ($result_inter == '') {
-    $result.=msj_ok("Définition du paramètre encodage_nom_photo : Ok !");
-  } else {
-    $result.=msj_erreur("Définition du paramètre encodage_nom_photo : Erreur !");
-  }
+	$result_inter = traite_requete("INSERT INTO setting VALUES ('encodage_nom_photo', 'no');");
+	if ($result_inter == '') {
+		$result.=msj_ok("Définition du paramètre encodage_nom_photo : Ok !");
+	} else {
+		$result.=msj_erreur("Définition du paramètre encodage_nom_photo : Erreur !");
+	}
+
+	$titre="Encodage des photos";
+	$texte="Une fonctionnalité d'encodage des photos est proposée pour éviter des téléchargements abusifs.<br />Voir <a href='./mod_trombinoscopes/trombinoscopes_admin.php#encodage'>Administration du module Trombinoscope</a>";
+	$destinataire="administrateur";
+	$mode="statut";
+	enregistre_infos_actions($titre,$texte,$destinataire,$mode);
+
 } else {
-  $result .= msj_present("Le paramètre encodage_nom_photo existe déjà dans la table setting.");
+	$result .= msj_present("Le paramètre encodage_nom_photo existe déjà dans la table setting.");
 }
 $req_test=mysql_query("SELECT value FROM setting WHERE name = 'alea_nom_photo'");
 $res_test=mysql_num_rows($req_test);
