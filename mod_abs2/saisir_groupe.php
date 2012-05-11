@@ -1268,7 +1268,7 @@ if ($utilisateur->getStatut() == 'professeur' && getSettingValue("active_cahiers
 </div>
 <?php
 $javascript_footer_texte_specifique = '<script type="text/javascript">';
-if ($radioButtonTypeOnlyHidden) {
+if ((isset($radioButtonTypeOnlyHidden))&&($radioButtonTypeOnlyHidden)) {
     $javascript_footer_texte_specifique .= '$$(\'input[type="radio"][id^="radio_sans_type_absence_eleve_"]\').each(Element.hide);';
 }
 $javascript_footer_texte_specifique .= '$$(\'input[type="radio"][id^="radio_hidden_"]\').each(Element.hide);';

@@ -5,6 +5,7 @@ if ($eleve_col->isEmpty()) {
 <?php
 } else {
 
+include_once '../edt_organisation/fonctions_calendrier.php';
 include_once '../edt_organisation/fonctions_edt.php';
 include_once '../edt_organisation/req_database.php';
 include_once '../edt_organisation/fonctions_edt_eleve.php';
