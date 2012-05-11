@@ -22,7 +22,7 @@
  * @see msj_present()
  */
 
-$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.1(dev) :</h3>";
+$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.1 :</h3>";
 $result .= "&nbsp;->Modification du champ 'type_saisie' de la table 'a_types' en 'mode_interface'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_types LIKE 'mode_interface';"));
 if ($test_champ>0) {

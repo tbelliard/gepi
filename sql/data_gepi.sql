@@ -961,3 +961,4 @@ INSERT INTO droits SET id='/lib/ajax_corriger_app.php',administrateur='F',profes
 INSERT INTO droits VALUES ('/mod_annees_anterieures/archivage_bull_pdf.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Génération archives bulletins PDF', '');
 INSERT INTO setting VALUES ('encodage_nom_photo', 'yes');
 INSERT INTO setting VALUES ('alea_nom_photo', MD5(UNIX_TIMESTAMP()));
+INSERT INTO droits VALUES ('/mod_abs2/liste_eleves.php', 'F', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Liste des élèves avec les filtes absence', '');
