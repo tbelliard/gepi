@@ -354,8 +354,14 @@ echo '<!--[if lt IE 7]>
 			$barre_note.= '		</li>'."\n";
 
 
+			if((getSettingAOui('AAProfTout'))||(getSettingAOui('AAProfClasses'))||(getSettingAOui('AAProfGroupes'))||
+			((getSettingAOui('AAProfPrinc'))&&(is_pp($_SESSION['login'])))) {
+				$barre_note .= '	<li><a href="'.$gepiPath.'/mod_annees_anterieures/consultation_annee_anterieure.php"'.insert_confirm_abandon().'>Années antérieures</a>'."</li>\n";
+			}
+
 
 			// Ajouter Paramètres des bulletins et Impression des bulletins (pour les PP)
+
 
 
 		$barre_note.= '	</ul>'."\n";
