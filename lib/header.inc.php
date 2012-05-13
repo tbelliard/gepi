@@ -41,12 +41,14 @@ if (!isset ($racineGepi)) {
 
 $tbs_bouton_taille = isset ($tbs_bouton_taille) ? $tbs_bouton_taille : $racineGepi ;
 
-switch ($_SESSION['statut']) {
-	case 'professeur':
-		include_once $racineGepi.'/edt_organisation/fonctions_calendrier.php';
-		break;
-	default :
-		break;
+if(isset($_SESSION['statut'])) {
+	switch ($_SESSION['statut']) {
+		case 'professeur':
+			include_once $racineGepi.'/edt_organisation/fonctions_calendrier.php';
+			break;
+		default :
+			break;
+	}
 }
 
 include_once 'header_template.inc.php';

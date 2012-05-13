@@ -307,7 +307,7 @@ if (isset($use_observeur) AND $use_observeur == 'ok') {
 }
 $tbs_charger_observeur=$charger_observeur;
 
-if (getSettingValue("impose_petit_entete_prof") == 'y' AND $_SESSION['statut'] == 'professeur') {
+if (getSettingValue("impose_petit_entete_prof") == 'y' AND isset($_SESSION['statut']) AND $_SESSION['statut'] == 'professeur') {
 	$_SESSION['cacher_header']="y";
 }
 // Taille à récupérer dans la base pour initialiser $_SESSION['cacher_header']
@@ -369,13 +369,15 @@ if (isset($titre_page)) {
 
 
 	//=== Nom Prénom utilisateur ===
-	if((!isset($_SESSION['prenom']))||(!isset($_SESSION['nom']))) {
-		$sql="SELECT nom, prenom FROM utilisateurs WHERE login='".$_SESSION['login']."';";
-		$res_np=mysql_query($sql);
-		if(mysql_num_rows($res_np)>0) {
-			$lig_np=mysql_fetch_object($res_np);
-			$_SESSION['prenom']=$lig_np->prenom;
-			$_SESSION['nom']=$lig_np->nom;
+	if(isset($_SESSION['login'])) {
+		if((!isset($_SESSION['prenom']))||(!isset($_SESSION['nom']))) {
+			$sql="SELECT nom, prenom FROM utilisateurs WHERE login='".$_SESSION['login']."';";
+			$res_np=mysql_query($sql);
+			if(mysql_num_rows($res_np)>0) {
+				$lig_np=mysql_fetch_object($res_np);
+				$_SESSION['prenom']=$lig_np->prenom;
+				$_SESSION['nom']=$lig_np->nom;
+			}
 		}
 	}
 	if((isset($_SESSION['prenom']))||(isset($_SESSION['nom']))) {
@@ -390,59 +392,64 @@ if (isset($titre_page)) {
 	}
 				
 //=== statut utilisateur ===
-	if ($_SESSION['statut'] == "administrateur") {
-		$tbs_statut[]=array("classe"=>"rouge" , "texte"=>"Administrateur");
-	}elseif ($_SESSION['statut'] == "professeur") {
-		$nom_complet_matiere = sql_query1("select nom_complet from matieres
-		where matiere = '".$_SESSION['matiere']."'");
-		if ($nom_complet_matiere != '-1') {
-			$nom_complet_matiere=my_ereg_replace("&", "&amp;" , $nom_complet_matiere);
-			$tbs_statut[]=array("classe"=>"" , "texte"=>"Professeur de : " . ($nom_complet_matiere));
-		}else{
-			$tbs_statut[]=array("classe"=>"" , "texte"=>"Invité");
-		}
-	}elseif ($_SESSION['statut'] == "scolarite") {
-			$tbs_statut[]=array("classe"=>"" , "texte"=>"Scolarité");
-	}elseif ($_SESSION['statut'] == "cpe") {
-			$tbs_statut[]=array("classe"=>"" , "texte"=>"CPE");
-	}elseif ($_SESSION['statut'] == "eleve") {
-		$tab_tmp_info_classes=get_noms_classes_from_ele_login($_SESSION['login']);
-		$tbs_statut[]=array("classe"=>"" , "texte"=>"Élève de ".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]);
-	}elseif ($_SESSION['statut'] == "responsable") {
-		$tab_tmp_ele=get_enfants_from_resp_login($_SESSION['login']);
-		$chaine_enfants="";
-		if(count($tab_tmp_ele)>0) {
-			$nom_enfant=$tab_tmp_ele[1];
-//echo "\$chaine_enfants=\$tab_tmp_ele[1]=$tab_tmp_ele[1]<br />";
-			$tab_tmp_info_classes=get_noms_classes_from_ele_login($tab_tmp_ele[0]);
-			if(count($tab_tmp_info_classes)>0) {
-				$classe_enfant=$tab_tmp_info_classes[count($tab_tmp_info_classes)-1];
+	if (isset($_SESSION['statut'])) {
+		if ($_SESSION['statut'] == "administrateur") {
+			$tbs_statut[]=array("classe"=>"rouge" , "texte"=>"Administrateur");
+		}elseif ($_SESSION['statut'] == "professeur") {
+			$nom_complet_matiere = sql_query1("select nom_complet from matieres
+			where matiere = '".$_SESSION['matiere']."'");
+			if ($nom_complet_matiere != '-1') {
+				$nom_complet_matiere=my_ereg_replace("&", "&amp;" , $nom_complet_matiere);
+				$tbs_statut[]=array("classe"=>"" , "texte"=>"Professeur de : " . ($nom_complet_matiere));
 			}else{
-				$classe_enfant="";
+				$tbs_statut[]=array("classe"=>"" , "texte"=>"Invité");
 			}
-			$donnees_enfant[]=array("nom"=>$nom_enfant , "classe"=>$classe_enfant) ;
-			for($i=3;$i<count($tab_tmp_ele);$i+=2) {
-				$nom_enfant=", ".$tab_tmp_ele[$i];
-//echo "\$nom_enfant=$nom_enfant<br />";
-				unset($tab_tmp_info_classes);
-				$tab_tmp_info_classes=get_noms_classes_from_ele_login($tab_tmp_ele[$i-1]);
+		}elseif ($_SESSION['statut'] == "scolarite") {
+				$tbs_statut[]=array("classe"=>"" , "texte"=>"Scolarité");
+		}elseif ($_SESSION['statut'] == "cpe") {
+				$tbs_statut[]=array("classe"=>"" , "texte"=>"CPE");
+		}elseif ($_SESSION['statut'] == "eleve") {
+			$tab_tmp_info_classes=get_noms_classes_from_ele_login($_SESSION['login']);
+			$tbs_statut[]=array("classe"=>"" , "texte"=>"Élève de ".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]);
+		}elseif ($_SESSION['statut'] == "responsable") {
+			$tab_tmp_ele=get_enfants_from_resp_login($_SESSION['login']);
+			$chaine_enfants="";
+			if(count($tab_tmp_ele)>0) {
+				$nom_enfant=$tab_tmp_ele[1];
+	//echo "\$chaine_enfants=\$tab_tmp_ele[1]=$tab_tmp_ele[1]<br />";
+				$tab_tmp_info_classes=get_noms_classes_from_ele_login($tab_tmp_ele[0]);
 				if(count($tab_tmp_info_classes)>0) {
-					$chaine_enfants.=" (<em>".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]."</em>)";
 					$classe_enfant=$tab_tmp_info_classes[count($tab_tmp_info_classes)-1];
 				}else{
 					$classe_enfant="";
 				}
-			$donnees_enfant[]=array("nom"=>$nom_enfant , "classe"=>$classe_enfant) ;
+				$donnees_enfant[]=array("nom"=>$nom_enfant , "classe"=>$classe_enfant) ;
+				for($i=3;$i<count($tab_tmp_ele);$i+=2) {
+					$nom_enfant=", ".$tab_tmp_ele[$i];
+	//echo "\$nom_enfant=$nom_enfant<br />";
+					unset($tab_tmp_info_classes);
+					$tab_tmp_info_classes=get_noms_classes_from_ele_login($tab_tmp_ele[$i-1]);
+					if(count($tab_tmp_info_classes)>0) {
+						$chaine_enfants.=" (<em>".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]."</em>)";
+						$classe_enfant=$tab_tmp_info_classes[count($tab_tmp_info_classes)-1];
+					}else{
+						$classe_enfant="";
+					}
+				$donnees_enfant[]=array("nom"=>$nom_enfant , "classe"=>$classe_enfant) ;
+				}
 			}
-		}
-		$tbs_statut[]=array("classe"=>"" , "texte"=>"Responsable de ");
+			$tbs_statut[]=array("classe"=>"" , "texte"=>"Responsable de ");
 		
-	}elseif($_SESSION["statut"] == "autre") {
-		$tbs_statut[]=array("classe"=>"" , "texte"=>$_SESSION["statut_special"]);
-	}elseif($_SESSION["statut"] == "secours") {
-		$tbs_statut[]=array("classe"=>"" , "texte"=>"<strong class='rouge'>compte secours</strong>");
+		}elseif($_SESSION["statut"] == "autre") {
+			$tbs_statut[]=array("classe"=>"" , "texte"=>$_SESSION["statut_special"]);
+		}elseif($_SESSION["statut"] == "secours") {
+			$tbs_statut[]=array("classe"=>"" , "texte"=>"<strong class='rouge'>compte secours</strong>");
+		}
 	}
-					
+	else {
+		$tbs_statut[]=array("classe"=>"" , "texte"=>"Visiteur");
+	}
+
 	//On vérifie si le module de mise à jour est activé
 	$tbs_mise_a_jour="";
 	if (getSettingValue("active_module_msj")==='y' and $_SESSION['statut'] == 'administrateur') {
@@ -471,27 +478,29 @@ if (isset($titre_page)) {
 		$prefix = "../../";
 	}
 
-	if ($_SESSION['statut'] == 'administrateur') {
-		$tbs_deux_menu[]=array("lien"=>"http://gepi.mutualibre.org" , "onclick"=> "onclick=\"window.open(this.href, '_blank'); return false;\""  , "texte"=>"Visiter le site de GEPI");
-	}else{
-		if (getSettingValue("contact_admin_mailto")=='y') {
-			$gepiAdminAdress=getSettingValue("gepiAdminAdress");
-			$tmp_date=getdate();
-			$lien="mailto:$gepiAdminAdress?Subject=Gepi&amp;body=";
-			if ($tmp_date['hours']>=18) {$lien.= "Bonsoir";} else {$lien.= "Bonjour";}
-			$lien.=",%0d%0a%0d%0a%0d%0a%0d%0aCordialement.";
-			$tbs_deux_menu[]=array("lien"=>$lien , "onclick"=> ""  , "texte"=>"Contacter l'administrateur");
+	if (isset($_SESSION['statut'])) {
+		if ($_SESSION['statut'] == 'administrateur') {
+			$tbs_deux_menu[]=array("lien"=>"http://gepi.mutualibre.org" , "onclick"=> "onclick=\"window.open(this.href, '_blank'); return false;\""  , "texte"=>"Visiter le site de GEPI");
 		}else{
-			$tbs_deux_menu[]=array("lien"=>"$gepiPath/gestion/contacter_admin.php" , "onclick"=> "onclick=\"centrerpopup('$gepiPath/gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes'); return false;\""  , "texte"=>"Contacter l'administrateur");
+			if (getSettingValue("contact_admin_mailto")=='y') {
+				$gepiAdminAdress=getSettingValue("gepiAdminAdress");
+				$tmp_date=getdate();
+				$lien="mailto:$gepiAdminAdress?Subject=Gepi&amp;body=";
+				if ($tmp_date['hours']>=18) {$lien.= "Bonsoir";} else {$lien.= "Bonjour";}
+				$lien.=",%0d%0a%0d%0a%0d%0a%0d%0aCordialement.";
+				$tbs_deux_menu[]=array("lien"=>$lien , "onclick"=> ""  , "texte"=>"Contacter l'administrateur");
+			}else{
+				$tbs_deux_menu[]=array("lien"=>"$gepiPath/gestion/contacter_admin.php" , "onclick"=> "onclick=\"centrerpopup('$gepiPath/gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes'); return false;\""  , "texte"=>"Contacter l'administrateur");
+			}
 		}
 	}
-		
+
 	$tbs_deux_menu[]=array("lien"=>"$gepiPath/gestion/info_gepi.php" , "onclick"=> "onclick=\"centrerpopup('$gepiPath/gestion/info_gepi.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes'); return false;\""  , "texte"=>"Informations générales");
 	$tbs_deux_menu[]=array("lien"=>"$gepiPath/gestion/info_vie_privee.php" , "onclick"=> "onclick=\"centrerpopup('$gepiPath/gestion/info_vie_privee.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes'); return false;\""  , "texte"=>"Vie privée");
 	
 		 //=== Affichage de la version de Gepi ===
 		 //=== Affichage de la version de Gepi ===
-	if ($_SESSION['statut'] == "administrateur") {
+	if ((isset($_SESSION['statut']))&&($_SESSION['statut'] == "administrateur")) {
 		$version_gepi = 'version '.$gepiVersion;
         if ($gepiSvnRev != null) {
 			$version_gepi .= ' svn r'.$gepiSvnRev;
@@ -540,94 +549,96 @@ $tbs_menu_admin = array();
 $tbs_menu_scol = array();
 $tbs_menu_cpe = array();
 if (!isset($nobar)) { $nobar = "non"; }
-if (getSettingValue("utiliserMenuBarre") != "no" AND $_SESSION["statut"] == "professeur" AND $nobar != 'oui') {
-	// On vérifie que l'utilisateur ne l'a pas enlevée
+if(isset($_SESSION['statut'])) {
+	if (getSettingValue("utiliserMenuBarre") != "no" AND $_SESSION["statut"] == "professeur" AND $nobar != 'oui') {
+		// On vérifie que l'utilisateur ne l'a pas enlevée
 
-	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") != "no") {
-		// ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix un peu plus haut ?
-		if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
-              /**
-               * Fonctions de calendrier
-               */
-			require_once($prefix."edt_organisation/fonctions_calendrier.php");
-		}elseif(file_exists("fonctions_calendrier.php")) {
-              /**
-               * Fonctions de calendrier
-               */
-			require_once("./fonctions_calendrier.php");
+		if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") != "no") {
+			// ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix un peu plus haut ?
+			if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
+		          /**
+		           * Fonctions de calendrier
+		           */
+				require_once($prefix."edt_organisation/fonctions_calendrier.php");
+			}elseif(file_exists("fonctions_calendrier.php")) {
+		          /**
+		           * Fonctions de calendrier
+		           */
+				require_once("./fonctions_calendrier.php");
+			}
+		        /**
+		         * Barre de menu de enseignant
+		         */
+			include("header_barre_prof_template.php");
 		}
-            /**
-             * Barre de menu de enseignant
-             */
-		include("header_barre_prof_template.php");
+	} else if ((getSettingValue("utiliserMenuBarre") != "no") AND ($_SESSION["statut"] == "administrateur") AND ($nobar != 'oui')) {
+
+			// Il n'y a pas de préférence enregistrée pour des non_prof
+			// Du coup, on récupère la valeur par défaut: 'yes'
+			if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+				if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
+		          /**
+		           * Fonctions de calendrier
+		           */
+					require_once($prefix."edt_organisation/fonctions_calendrier.php");
+				} else if(file_exists("fonctions_calendrier.php")) {
+		          /**
+		           * Fonctions de calendrier
+		           */
+					require_once("./fonctions_calendrier.php");
+				}
+		        /**
+		         * Barre de menu de administrateur
+		         */
+				include("header_barre_admin_template.php");
+			}
+
+	} else if ((getSettingValue("utiliserMenuBarre") != "no") AND ($_SESSION["statut"] == "scolarite") AND ($nobar != 'oui')) {
+
+			// Il n'y a pas de préférence enregistrée pour des non_prof
+			// Du coup, on récupère la valeur par défaut: 'yes'
+			if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+				if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
+		          /**
+		           * Fonctions de calendrier
+		           */
+					require_once($prefix."edt_organisation/fonctions_calendrier.php");
+				} else if(file_exists("fonctions_calendrier.php")) {
+		          /**
+		           * Fonctions de calendrier
+		           */
+					require_once("./fonctions_calendrier.php");
+				}
+		        /**
+		         * Barre de menu de scolarité
+		         */
+				include("header_barre_scolarite_template.php");
+			}
+	
+	} else if ((getSettingValue("utiliserMenuBarre") != "no") AND ($_SESSION["statut"] == "cpe") AND ($nobar != 'oui')) {
+			// Il n'y a pas de préférence enregistrée pour des non_prof
+			// Du coup, on récupère la valeur par défaut: 'yes'
+			if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+				if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
+		          /**
+		           * Fonctions de calendrier
+		           */
+					require_once($prefix."edt_organisation/fonctions_calendrier.php");
+				} else if(file_exists("fonctions_calendrier.php")) {
+		          /**
+		           * Fonctions de calendrier
+		           */
+					require_once("./fonctions_calendrier.php");
+				}
+		        /**
+		         * Barre de menu de cpe
+		         */
+				include("header_barre_cpe_template.php");
+			}
+	
+	} else {
+		$tbs_menu_prof=array();
 	}
-} else if ((getSettingValue("utiliserMenuBarre") != "no") AND ($_SESSION["statut"] == "administrateur") AND ($nobar != 'oui')) {
-
-		// Il n'y a pas de préférence enregistrée pour des non_prof
-		// Du coup, on récupère la valeur par défaut: 'yes'
-		if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
-			if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
-              /**
-               * Fonctions de calendrier
-               */
-				require_once($prefix."edt_organisation/fonctions_calendrier.php");
-			} else if(file_exists("fonctions_calendrier.php")) {
-              /**
-               * Fonctions de calendrier
-               */
-				require_once("./fonctions_calendrier.php");
-			}
-            /**
-             * Barre de menu de administrateur
-             */
-			include("header_barre_admin_template.php");
-		}
-
-} else if ((getSettingValue("utiliserMenuBarre") != "no") AND ($_SESSION["statut"] == "scolarite") AND ($nobar != 'oui')) {
-
-		// Il n'y a pas de préférence enregistrée pour des non_prof
-		// Du coup, on récupère la valeur par défaut: 'yes'
-		if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
-			if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
-              /**
-               * Fonctions de calendrier
-               */
-				require_once($prefix."edt_organisation/fonctions_calendrier.php");
-			} else if(file_exists("fonctions_calendrier.php")) {
-              /**
-               * Fonctions de calendrier
-               */
-				require_once("./fonctions_calendrier.php");
-			}
-            /**
-             * Barre de menu de scolarité
-             */
-			include("header_barre_scolarite_template.php");
-		}
-	
-} else if ((getSettingValue("utiliserMenuBarre") != "no") AND ($_SESSION["statut"] == "cpe") AND ($nobar != 'oui')) {
-		// Il n'y a pas de préférence enregistrée pour des non_prof
-		// Du coup, on récupère la valeur par défaut: 'yes'
-		if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
-			if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
-              /**
-               * Fonctions de calendrier
-               */
-				require_once($prefix."edt_organisation/fonctions_calendrier.php");
-			} else if(file_exists("fonctions_calendrier.php")) {
-              /**
-               * Fonctions de calendrier
-               */
-				require_once("./fonctions_calendrier.php");
-			}
-            /**
-             * Barre de menu de cpe
-             */
-			include("header_barre_cpe_template.php");
-		}
-	
-} else {
-	$tbs_menu_prof=array();
 }
 
 // ==========> Fin on ajoute la barre de menu <========================= //
