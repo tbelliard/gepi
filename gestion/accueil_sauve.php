@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -1692,7 +1692,8 @@ if ($n > 0) {
 		$type_sauvegarde="";
 		if (preg_match('/^_photos/i',$value)&& preg_match('/.zip$/i',$value))$type_sauvegarde="photos";
 		if (preg_match('/^_cdt/i',$value)&& preg_match('/.zip$/i',$value)) $type_sauvegarde="cdt";
-		if (preg_match('/^gepi-/i',$value)&& (preg_match('/.gz$/i',$value) || preg_match('/.sql$/i',$value))) $type_sauvegarde="base";
+		//if (preg_match('/^gepi-/i',$value)&& (preg_match('/.gz$/i',$value) || preg_match('/.sql$/i',$value))) $type_sauvegarde="base";
+		if ((preg_match('/.sql.gz$/i',$value) || preg_match('/.sql$/i',$value))) $type_sauvegarde="base";
 		switch ($type_sauvegarde) {
 			case "photos" :
 				echo "<td><a href='../mod_trombinoscopes/trombinoscopes_admin.php?action=restaurer_photos&amp;file=$value".add_token_in_url()."'>Restaurer</a></td>\n";
