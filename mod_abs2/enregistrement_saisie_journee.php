@@ -207,16 +207,6 @@ if ($date_absence_eleve != null) {
 }
 
 
-
-// On détermine les dates de fin de journée pour le marqueur d'appel
-// $dt_date_debut_journee, $dt_date_fin_journee
-$dt_date_debut_journee = clone $dt_date_fin_journee = clone $dt_date_absence_eleve;
-
-$debutTimestamp = isset ($_POST['heure_debut_journee']) ? $_POST['heure_debut_journee'] : NULL;
-$dt_date_debut_journee-> setTimestamp($debutTimestamp);
-$finTimestamp = isset ($_POST['heure_fin_journee']) ? $_POST['heure_fin_journee'] : NULL;
-$dt_date_fin_journee-> setTimestamp($finTimestamp);
-
 if ($id_groupe == null && $id_classe == null && $id_aid == null) {
   	$message_enregistrement .= '<span style="color :red">Erreur : Il faut au moins une classe, une aid, un groupe pour faire un appel.</span><br/>';
 }
@@ -246,42 +236,6 @@ $saisiesAbs = isset ($_POST['active_absence_eleve']) ? $_POST['active_absence_el
 $message_erreur_eleve = array();
 $message_reussite = '';
 
-
-
-
-/*
-//on enregistre le marqueur d'appel (saisie sans eleve)
-$message_erreur = '';
-$saisie = new AbsenceEleveSaisie();
-
-$saisie->setIdEdtCreneau($id_creneau);
-$saisie->setIdEdtEmplacementCours($id_cours);
-$saisie->setIdGroupe($id_groupe);
-$saisie->setIdClasse($id_classe);
-$saisie->setIdAid($id_aid);
-$saisie->setUtilisateurId($utilisateur->getPrimaryKey());
-
-//on verifie si l'utilisateur a le droit de saisir cela
-//$message_erreur .= verif_debut_fin_saisie($dt_date_debut_journee, $dt_date_fin_journee, $utilisateur, NULL);
-$saisie->setDebutAbs($dt_date_debut_journee);
-$saisie->setFinAbs($dt_date_fin_journee);
-
-if ($message_erreur != '') {
-    $message_enregistrement .= '<span style="color :red">Erreur sur l\'enregistrement du marqueur d\'appel : '.$message_erreur.'</span>';
-    //on arrete la saisie
-    include("saisir_groupe.php");
-    die();
-} else if ($saisie->validate()) {
-    $saisie->save();
-    $message_reussite .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Marqueur d'appel enregistré</a><br/>";
-} else {
-    //on arrete la saisie
-    $message_enregistrement .= '<span style="color :red">Erreur sur l\'enregistrement du marqueur d\'appel : '.format_verif_failures($saisie).'</span>';
-    include("saisir_groupe.php");
-    die();
-}
-
-*/
 
 // On stocke les valeurs pour les récupérer après la boucle sur les élèves
 $last_id_aid= $id_classe;
