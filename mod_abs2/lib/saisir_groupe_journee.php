@@ -349,20 +349,6 @@ if ('cours' == $coursCreneaux) {
 <?php	
 if (isset ($afficheEleve[0]['type_autorises'][0])) { ?>
 						
-			<label for="type_motif_eleve">Motif : </label>
-			<select class="selects"
-					name="type_motif_eleve"
-					id="type_motif_eleve">
-				<option class="pc88" value="-1"> </option>
-				
-<?php foreach (AbsenceEleveMotifQuery::create()->orderByRank()->find() as $motif) { ?>
-				<option class="pc88" value="<?php echo $motif->getId(); ?>">
-					<?php echo $motif->getNom(); ?>
-				</option>
-<?php } ?>
-			
-			</select>
-			
 			<label for="type_absence_eleve">Type d'absence : </label>
 			<select class="selects"
 					name="type_absence_eleve"
@@ -374,8 +360,22 @@ if (isset ($afficheEleve[0]['type_autorises'][0])) { ?>
 				</option>
 <?php } ?>
 			</select>
-<?php } ?>			
-			
+<?php } ?>
+
+                        <label for="type_motif_eleve">Motif : </label>
+			<select class="selects"
+					name="type_motif_eleve"
+					id="type_motif_eleve">
+				<option class="pc88" value="-1"> </option>
+
+<?php foreach (AbsenceEleveMotifQuery::create()->orderByRank()->find() as $motif) { ?>
+				<option class="pc88" value="<?php echo $motif->getId(); ?>">
+					<?php echo $motif->getNom(); ?>
+				</option>
+<?php } ?>
+
+			</select>
+
 			<input type="hidden" 
 				   name="heure_debut_journee"
 				   value="<?php echo $premiere_heure; ?>"
