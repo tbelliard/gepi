@@ -2224,18 +2224,18 @@ else{
 			info_debug("==============================================");
 			info_debug("=============== Phase step $step =================");
 
-// 20110913
-$sql="SELECT * FROM tempo4 WHERE col1='maj_sconet_eleves' AND (col3='modif' OR col3='new');";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)>0) {
-	$tab_ele_id_diff=array();
-	while($lig=mysql_fetch_object($res)) {
-		$tab_ele_id_diff[]=$lig->col2;
-	}
-}
+			// 20110913
+			$sql="SELECT * FROM tempo4 WHERE col1='maj_sconet_eleves' AND (col3='modif' OR col3='new');";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				$tab_ele_id_diff=array();
+				while($lig=mysql_fetch_object($res)) {
+					$tab_ele_id_diff[]=$lig->col2;
+				}
+			}
 
-$sql="SELECT * FROM tempo2 WHERE col1='modif' OR col1='new';";
-$res=mysql_query($sql);
+			$sql="SELECT * FROM tempo2 WHERE col1='modif' OR col1='new';";
+			$res=mysql_query($sql);
 
 			//if(!isset($tab_ele_id_diff)){
 			if((!isset($tab_ele_id_diff))&&(mysql_num_rows($res)==0)) {
@@ -2385,9 +2385,9 @@ $res=mysql_query($sql);
 
 					$w=$k-1;
 
-// Pour ne pas représenter le même au tour suivant:
-$sql="UPDATE tempo4 SET col3='modif_ou_new_presente' WHERE col1='maj_sconet_eleves' AND col2='$tab_ele_id_diff[$w]';";
-$update_tempo4=mysql_query($sql);
+					// Pour ne pas représenter le même au tour suivant:
+					$sql="UPDATE tempo4 SET col3='modif_ou_new_presente' WHERE col1='maj_sconet_eleves' AND col2='$tab_ele_id_diff[$w]';";
+					$update_tempo4=mysql_query($sql);
 
 					$sql="SELECT DISTINCT * FROM temp_gep_import2 WHERE ELE_ID='$tab_ele_id_diff[$w]';";
 					info_debug($sql);
@@ -2404,7 +2404,7 @@ $update_tempo4=mysql_query($sql);
 						// IL FAUDRAIT FAIRE ICI LE MEME TRAITEMENT QUE DANS /init_xml/step3.php POUR LES PRENOMS COMPOSéS ET SAISIE DE PLUSIEURS PRéNOMS...
 						$affiche[1]=nettoyer_caracteres_nom($lig->ELEPRE, "a", " '_-", "");
 						$affiche[2]=nettoyer_caracteres_nom($lig->ELESEXE, "an", "", "");
-						$affiche[3]=nettoyer_caracteres_nom($lig->ELEDATNAIS, "a", "-", "");
+						$affiche[3]=nettoyer_caracteres_nom($lig->ELEDATNAIS, "an", "-", "");
 						$affiche[4]=nettoyer_caracteres_nom($lig->ELENOET, "an", "", "");
 						$affiche[5]=nettoyer_caracteres_nom($lig->ELE_ID, "an", "", "");
 						$affiche[6]=nettoyer_caracteres_nom($lig->ELEDOUBL, "an", "", "");
@@ -7327,11 +7327,15 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								echo "\n<span style='color:blue;'>";
 
 								if($nb_comptes_resp>0) {
-									$info_action_titre="Nouveau responsable&nbsp;: ".remplace_accents(stripslashes($lig->nom)." ".stripslashes($lig->prenom))." ($lig1->col2)";
-									$info_action_texte="Vous souhaitez peut-être créer un compte pour ce nouveau responsable&nbsp;: <a href='utilisateurs/create_responsable.php?critere_recherche=$lig->nom&afficher_tous_les_resp=n'>".remplace_accents(stripslashes($lig->nom)." ".stripslashes($lig->prenom))."</a>.";
-									$info_action_destinataire=array("administrateur");
-									$info_action_mode="statut";
-									enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+									$sql="SELECT 1=1 FROM temp_responsables2_import WHERE pers_id='".$lig1->col2."' AND (resp_legal='1' OR resp_legal='2');";
+									$test_resp_legal=mysql_query($sql);
+									if(mysql_num_rows($test_resp_legal)>0) {
+										$info_action_titre="Nouveau responsable&nbsp;: ".remplace_accents(stripslashes($lig->nom)." ".stripslashes($lig->prenom))." ($lig1->col2)";
+										$info_action_texte="Vous souhaitez peut-être créer un compte pour ce nouveau responsable&nbsp;: <a href='utilisateurs/create_responsable.php?critere_recherche=$lig->nom&afficher_tous_les_resp=n'>".remplace_accents(stripslashes($lig->nom)." ".stripslashes($lig->prenom))."</a>.";
+										$info_action_destinataire=array("administrateur");
+										$info_action_mode="statut";
+										enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+									}
 								}
 							}
 							else{
@@ -7948,14 +7952,19 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 				if(isset($suppr_resp)){
 					// On modifie la valeur de col1 pour les ele_id/pers_id supprimés pour ne pas les re-parcourir:
 					for($i=0;$i<count($suppr_resp);$i++){
+						$tab_tmp=explode("_",$suppr_resp[$i]);
+						$ele_id=$tab_tmp[1];
+						$pers_id=$tab_tmp[2];
+
 						$sql="UPDATE tempo2 SET col1='t_diff_suppr' WHERE col2='$suppr_resp[$i]';";
+						//echo "$sql<br />";
 						info_debug($sql);
 						$update=mysql_query($sql);
-					}
 
-					$sql="DELETE FROM responsables2 WHERE WHERE pers_id='$suppr_resp[$i]';";
-					info_debug($sql);
-					$nettoyage=mysql_query($sql);
+						$sql="DELETE FROM responsables2 WHERE WHERE pers_id='$pers_id';";
+						info_debug($sql);
+						$nettoyage=mysql_query($sql);
+					}
 				}
 
 				if(isset($modif)){
@@ -8324,7 +8333,16 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 
 							$ligne_courante.="<td style='background-color:red;'>&nbsp;</td>\n";
 							//$ligne_courante.="<td colspan='5'>Aucune personne associée???</td>\n";
-							$ligne_courante.="<td colspan='7'>Aucune personne associée???</td>\n";
+							$ligne_courante.="<td colspan='7'>Aucune personne associée ou personne non ajoutée dans l'étape PERSONNES\n";
+
+							$sql="SELECT * FROM temp_resp_pers_import WHERE pers_id='$pers_id';";
+							$res_temp_pers=mysql_query($sql);
+							if(mysql_num_rows($res_temp_pers)>0) {
+								$lig_tmp_resp=mysql_fetch_object($res_temp_pers);
+								$ligne_courante.="(<em>$lig_tmp_resp->nom $lig_tmp_resp->prenom</em>)";
+							}
+
+							$ligne_courante.=".</td>\n";
 							info_debug("Aucune personne associée???\n");
 
 							//=========================
@@ -8462,7 +8480,8 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 							$ligne_courante.="</td>\n";
 						}
 						else{
-							$ligne_courante.="<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='$pers_id' /></td>\n";
+							//$ligne_courante.="<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='$pers_id' /></td>\n";
+							$ligne_courante.="<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='t_".$ele_id."_".$pers_id."' /></td>\n";
 							$temoin_suppr_resp="y";
 						}
 						//=========================
