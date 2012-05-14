@@ -241,7 +241,7 @@ if (!empty($doc_name_modif) && (trim($doc_name_modif)) != '' && !empty($id_docum
 if (isset($_REQUEST['ct_a_importer_class']) && isset($_REQUEST['id_ct_a_importer'])) {
         $classname = $_REQUEST["ct_a_importer_class"].'Query';
         if (class_exists($classname)) {
-            $notice = $classname::create()->findOneByPrimaryKey($_REQUEST["id_ct_a_importer"]);
+            $notice = call_user_func($classname .'::create')->findOneByPrimaryKey($_REQUEST["id_ct_a_importer"]);
             if ($notice != null && $ctCompteRendu!= null 
                     && $notice != $ctCompteRendu) {//pour la dernière condition, on évite de copier les fichiers joints d'une notice sur elle même
                 $method = 'get'.$_REQUEST["ct_a_importer_class"].'FichierJoints';
