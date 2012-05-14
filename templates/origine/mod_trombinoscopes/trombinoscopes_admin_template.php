@@ -405,6 +405,7 @@ if (!isset($aid_trouve)) {
 <?php } else 
 { ?>
 
+	<a name="sauvegarde_dossier_photos"></a>
 	<form action="trombinoscopes_admin.php" id="form1" method="post" title="Sauvegarder le dossier 'photos'">
 	<?php
 	echo add_token_field();
@@ -538,7 +539,7 @@ if (!isset($aid_trouve)) {
 		<legend class="bold">Activer l'encodage des noms des fichiers photo des élèves</legend>
 		Cette opération, consistant à ajouter aux noms des fichiers un préfixe de cinq caractères aléatoires, peut-être longue si le nombre de photos est important.<br/>
 		<input type="hidden" name="encoder_noms_photo" value="oui">
-		<em style='color:red'>Par précaution faire au préalable une <a href='../gestion/accueil_sauve.php#dossier_photos'>sauvegarde du dossier 'photos'</a>.</em>
+		<em style='color:red'>Par précaution faire au préalable une <a href='trombinoscopes_admin.php#sauvegarde_dossier_photos' title="Sauvegarde du dossier 'photos'">sauvegarde du dossier 'photos'</a>.</em>
  	</fieldset>
 	<p class="center">
 		<input type="submit" 
@@ -560,7 +561,7 @@ if (!isset($aid_trouve)) {
 		<legend class="bold">Désactiver l'encodage des noms des fichiers photo élèves</legend>
 		Cette opération, consistant à renommer les fichiers photo des élèves sous la forme elenoet.jpg ou login.jpg, peut-être longue si le nombre de photos est important.<br />
 		<input type="hidden" name="des_encoder_noms_photo" value="oui">
-		<em style='color:red'>Par précaution faire au péalable une <a href='../gestion/accueil_sauve.php#dossier_photos'>sauvegarde du dossier 'photos'</a>.</em>
+		<em style='color:red'>Par précaution faire au préalable une <a href='trombinoscopes_admin.php#sauvegarde_dossier_photos' title="Sauvegarde du dossier 'photos'">sauvegarde du dossier 'photos'</a>.</em>
  	</fieldset>
 	<p class="center">
 		<input type="submit" 
@@ -578,7 +579,7 @@ if (!isset($aid_trouve)) {
 		<legend class="bold">Ré-encoder les noms des fichiers photo des élèves</legend>
 		Cette opération est nécessaire uniquement s'il y a des problèmes d'accès aux photos des élèves.<br/>
 		<input type="hidden" name="re_encoder_noms_photo" value="oui">
-		<em style='color:red'>Par précaution faire au péalable une <a href='../gestion/accueil_sauve.php#dossier_photos'>sauvegarde du dossier 'photos'</a>.</em>
+		<em style='color:red'>Par précaution faire au préalable une <a href='trombinoscopes_admin.php#sauvegarde_dossier_photos' title="Sauvegarde du dossier 'photos'"'>sauvegarde du dossier 'photos'</a>.</em>
  	</fieldset>
 	<p class="center">
 		<input type="submit" 
