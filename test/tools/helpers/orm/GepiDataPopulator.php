@@ -512,6 +512,24 @@ class GepiDataPopulator
         $traitement->setUtilisateurProfessionnel($dolto_cpe);
         $traitement->save();
 
+        $saisie_23 = new AbsenceEleveSaisie();
+        $saisie_23->setEleve($florence_eleve);
+        $saisie_23->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_23->setDebutAbs('2011-06-01 08:01:00');
+        $saisie_23->setFinAbs('2011-06-01 08:10:00');
+        $saisie_23->save();
+        $saisie_231 = new AbsenceEleveSaisie();
+        $saisie_231->setEleve($florence_eleve);
+        $saisie_231->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_231->setDebutAbs('2011-06-01 08:00:00');
+        $saisie_231->setFinAbs('2011-06-01 09:10:00');
+        $saisie_231->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_231);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Infirmerie')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
+
         //on va purger les références, qui peuvent être fausses suite à des ajouts ultérieurs
         GepiDataPopulator::clearAllReferences();
         

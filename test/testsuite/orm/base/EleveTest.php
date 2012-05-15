@@ -277,7 +277,12 @@ class EleveTest extends GepiEmptyTestBase
 		
 		$retard_col = $florence_eleve->getRetards(new DateTime('2010-10-18 00:00:00'),new DateTime('2010-10-18 23:59:59'));
 		$this->assertEquals(0,$retard_col->count());
-	}
+                $florence_eleve->setDateSortie(null);
+
+                //test de saisies englobant d'autres saisies
+                $retard_col = $florence_eleve->getRetards(new DateTime('2011-06-01 00:00:00'),new DateTime('2011-06-01 23:59:59'));
+		$this->assertEquals(0,$retard_col->count());
+                }
 
 	public function testGetAbsenceEleveSaisiesManquementObligationPresence() {
 		$florence_eleve = EleveQuery::create()->findOneByLogin('Florence Michu');
