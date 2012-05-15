@@ -1354,15 +1354,9 @@ class Eleve extends BaseEleve {
 					    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
 					    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
 					    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()) {
-					    	if ($saisie_contra->getManquementObligationPresence() && !$saisie_contra->getRetard()) {
-					    		//on a une saisie plus large qui est aussi un manquement à l'obligation de présence, donc on ne compte pas celle qui est englobée
+                                                                //on a une saisie plus large
 								$contra = true;
 								break;
-					    	} else if (getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y') {
-					    		//on a une saisie plus large qui est comptée comme présente, donc on ne compte pas celle la qui est englobée
-								$contra = true;
-								break;
-					    	}
 					}
 			    }
 			    if (!$contra) {
