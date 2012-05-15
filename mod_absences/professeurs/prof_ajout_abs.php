@@ -1052,8 +1052,10 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
                               AND j_eleves_groupes.id_groupe=groupes.id
                               AND j_eleves_groupes.periode = " . $_periode . "
                               AND id = '".$classe."'
+                              AND (eleves.date_sortie IS NULL OR eleves.date_sortie='' OR eleves.date_sortie='0000-00-00 00:00:00' OR eleves.date_sortie>'".strftime("%Y-%m-%d %H:%M:%S")."')
                             GROUP BY eleves.login
                             ORDER BY nom, prenom";
+
         $execution_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.mysql_error());
     }
 	$cpt_eleve = '0';
@@ -1108,6 +1110,8 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
                 }
             }
         }
+
+		//if((isset($data_liste_eleve["date_sortie"]))&&($data_liste_eleve["date_sortie"]!='')&&($data_liste_eleve["date_sortie"]!='0000-00-00 00:00:00')&&($data_liste_eleve["date_sortie"]<=strftime("%Y-%m-%d %H:%M:%S"))) {$eleve_dispo = false;}
 
         // ==================== fin du filtrage
         if ($eleve_dispo) {
