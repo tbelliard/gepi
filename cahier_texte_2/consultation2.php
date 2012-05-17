@@ -162,7 +162,12 @@ echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour
 	echo "Retour à l'accueil\n";
 echo "</a>\n";
 echo " | ";
-echo "<a href=\"consultation.php\">\n";
+if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+	echo "<a href=\"consultation.php\">\n";
+}
+else {
+	echo "<a href=\"see_all.php\">\n";
+}
 	echo "Affichage classique\n";
 echo "</a>\n";
 echo "</p>\n";
