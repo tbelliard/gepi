@@ -642,12 +642,11 @@ for($i=0;$i<14;$i++) {
 				if(($ligne_ct->id_login==$_SESSION['login'])||(getSettingAOui('cdt_autoriser_modif_multiprof'))) {
 					$tab_notice[$i][$id_groupe]['ct_private_entry'][$cpt].="<div style='float:right; width:16px;'><a href='../cahier_texte/index.php?id_groupe=$id_groupe&amp;id_ct=$ligne_ct->id_ct&amp;type_notice=np'><img src='../images/edit16.png' width='16' height='16' /></a></div>";
 				}
+
+				$tab_notice[$i][$id_groupe]['ct_private_entry'][$cpt].=$ligne_ct->contenu;
+				$cpt++;
 			}
-
-			$tab_notice[$i][$id_groupe]['ct_private_entry'][$cpt].=$ligne_ct->contenu;
-			$cpt++;
 		}
-
 	}
 }
 //=============================================================
