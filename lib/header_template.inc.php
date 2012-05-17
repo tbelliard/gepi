@@ -383,7 +383,12 @@ if (isset($titre_page)) {
 	if((isset($_SESSION['prenom']))||(isset($_SESSION['nom']))) {
 		$tbs_nom_prenom=$_SESSION['prenom'] . " " . $_SESSION['nom'];
 	}else {
-		$tbs_nom_prenom="NOM Prenom";
+		if (isset($_SESSION['statut'])) {
+			$tbs_nom_prenom="NOM Prenom";
+		}
+		else {
+			$tbs_nom_prenom="Visiteur";
+		}
 	}
 	
 	//=== Dernière connexion ===
