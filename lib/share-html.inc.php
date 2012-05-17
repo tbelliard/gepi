@@ -991,9 +991,11 @@ function affiche_docs_joints($id_ct,$type_notice) {
       $html .= "<span class='petit'>Document(s) joint(s):</span>";
       $html .= "<ul style=\"padding-left: 15px;\">";
       for ($i=0; ($row = sql_row($res,$i)); $i++) {
-          if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
-              ((getSettingValue('cdt_possibilite_masquer_pj')!='y')&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))||
-              ((getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==TRUE)&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))
+          if(((!isset($_SESSION['statut']))&&(getSettingValue('cdt_possibilite_masquer_pj')!='y'))||
+              ((!isset($_SESSION['statut']))&&(getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==TRUE))||
+              ((isset($_SESSION['statut']))&&($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+              ((isset($_SESSION['statut']))&&(getSettingValue('cdt_possibilite_masquer_pj')!='y')&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))||
+              ((isset($_SESSION['statut']))&&(getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==TRUE)&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))
           ) {
                 $titre = $row[0];
                 $emplacement = $row[1];
