@@ -3096,7 +3096,8 @@ else {
 			//send_file_download_headers('application/pdf','bulletin.pdf');
 
 			//$nom_fichier_bulletin = 'bulletin_'.$tableau_eleve['no_gep'][$j]."_".$tableau_eleve['nom_prenom'][$j]."_".$nom_bulletin.'.pdf';
-			$nom_fichier_bulletin = 'bulletin_'.$tableau_eleve['no_gep'][$j]."_".$tableau_eleve['nom_prenom'][$j]."_".strftime("%Y%m%d").'.pdf';
+			//$nom_fichier_bulletin = 'bulletin_'.$tableau_eleve['no_gep'][$j]."_".$tableau_eleve['nom_prenom'][$j]."_".strftime("%Y%m%d").'.pdf';
+			$nom_fichier_bulletin = 'bulletin_'.$tableau_eleve['nom_prenom'][$j]."_".$tableau_eleve['no_gep'][$j]."_annee_scolaire_".remplace_accents(getSettingValue('gepiYear'),"all")."_".strftime("%Y%m%d").'.pdf';
 
 			//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
 			$pdf=new bul_PDF('p', 'mm', 'A4');
