@@ -336,7 +336,7 @@ echo "<br /><br />";
 // Affichage des messages éditables
 //
 
-$appel_messages = mysql_query("SELECT * FROM messagesWHERE texte <> '' AND statuts_destinataires <> '_'  AND login_destinataire='' order by ".$order_by." DESC");
+$appel_messages = mysql_query("SELECT * FROM messages WHERE texte <> '' AND statuts_destinataires <> '_'  AND login_destinataire='' order by ".$order_by." DESC");
 $nb_messages = mysql_num_rows($appel_messages);
 
 if ($nb_messages>0) {
