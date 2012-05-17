@@ -582,21 +582,30 @@ for($i=0;$i<14;$i++) {
 							$tab_notice[$i][$id_groupe]['ct_entry'][$cpt].="<div style='float:right; width:16px;'><a href='../cahier_texte/index.php?id_groupe=$id_groupe&amp;id_ct=$ligne_ct->id_ct&amp;type_notice=cr'><img src='../images/edit16.png' width='16' height='16' /></a></div>";
 						}
 					}
+
+					$tab_notice[$i][$id_groupe]['ct_entry'][$cpt].=$ligne_ct->contenu;
 				}
-
-				$tab_notice[$i][$id_groupe]['ct_entry'][$cpt].=$ligne_ct->contenu;
-
-				$sql="SELECT * FROM ct_documents where id='$ligne_ct->id_ct';";
-				$res_doc=mysql_query($sql);
-				while($ligne_ct_doc=mysql_fetch_object($res_doc)) {
-					// A FAIRE: Tester si le document est visible ou non dans le cas ele/resp
-					if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
-					($ligne_ct_doc->visible_eleve_parent==1))
-					{
-						$tab_notice[$i][$id_groupe]['ct_entry'][$cpt].="<br />\n<a href='$ligne_ct_doc->emplacement'>".$ligne_ct_doc->titre."</a>";
+				else {
+					// Un élève,... ne voit pas les compte-rendus dans le futur
+					if($ligne_ct->date_ct<=$ts_aujourdhui) {
+						$tab_notice[$i][$id_groupe]['ct_entry'][$cpt].=$ligne_ct->contenu;
 					}
 				}
-				$cpt++;
+
+				if((($_SESSION['statut']=='professeur')&&(in_array($id_groupe,$tab_mes_groupes)))||
+					($ligne_ct->date_ct<=$ts_aujourdhui)) {
+					$sql="SELECT * FROM ct_documents where id='$ligne_ct->id_ct';";
+					$res_doc=mysql_query($sql);
+					while($ligne_ct_doc=mysql_fetch_object($res_doc)) {
+						// Tester si le document est visible ou non dans le cas ele/resp
+						if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+						($ligne_ct_doc->visible_eleve_parent==1))
+						{
+							$tab_notice[$i][$id_groupe]['ct_entry'][$cpt].="<br />\n<a href='$ligne_ct_doc->emplacement'>".$ligne_ct_doc->titre."</a>";
+						}
+					}
+					$cpt++;
+				}
 			}
 		}
 
