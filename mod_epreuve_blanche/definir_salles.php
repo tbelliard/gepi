@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -811,7 +811,11 @@ function coche(colonne,rang_groupe,mode) {
 	var tab_cpt0_ele=new Array($chaine_cpt0_eleves);
 	var tab_cpt1_ele=new Array($chaine_cpt1_eleves);
 
-	for(k=tab_cpt0_ele[rang_groupe];k<tab_cpt1_ele[rang_groupe];k++) {
+	//alert('tab_cpt0_ele['+rang_groupe+']='+tab_cpt0_ele[rang_groupe]);
+	//alert('tab_cpt1_ele['+rang_groupe+']='+tab_cpt1_ele[rang_groupe]);
+
+	//for(k=tab_cpt0_ele[rang_groupe];k<tab_cpt1_ele[rang_groupe];k++) {
+	for(k=eval(tab_cpt0_ele[rang_groupe]);k<eval(tab_cpt1_ele[rang_groupe]);k++) {
 		if(document.getElementById('id_salle_ele_'+colonne+'_'+k)) {
 			document.getElementById('id_salle_ele_'+colonne+'_'+k).checked=mode;
 		}
@@ -1007,7 +1011,14 @@ function coche(colonne,rang_groupe,mode) {
 	var tab_cpt0_ele=new Array($chaine_cpt0_eleves);
 	var tab_cpt1_ele=new Array($chaine_cpt1_eleves);
 
-	for(k=tab_cpt0_ele[rang_groupe];k<tab_cpt1_ele[rang_groupe];k++) {
+	//alert('tab_cpt0_ele['+rang_groupe+']='+tab_cpt0_ele[rang_groupe]);
+	//alert('tab_cpt1_ele['+rang_groupe+']='+tab_cpt1_ele[rang_groupe]);
+
+	cpt=0;
+	//for(k=tab_cpt0_ele[rang_groupe];k<tab_cpt1_ele[rang_groupe];k++) {
+	for(k=eval(tab_cpt0_ele[rang_groupe]);k<eval(tab_cpt1_ele[rang_groupe]);k++) {
+		//if(cpt<3) {alert('id_salle_ele_'+colonne+'_'+k);}
+		cpt++;
 		if(document.getElementById('id_salle_ele_'+colonne+'_'+k)) {
 			document.getElementById('id_salle_ele_'+colonne+'_'+k).checked=mode;
 		}
