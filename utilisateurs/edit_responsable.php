@@ -388,7 +388,7 @@ aff_time();
 	$critere_recherche=nettoyer_caracteres_nom($critere_recherche, 'a', ' -','');
   	$critere_recherche_login=isset($_POST['critere_recherche_login']) ? $_POST['critere_recherche_login'] : (isset($_GET['critere_recherche_login']) ? $_GET['critere_recherche_login'] : "");
 	//$critere_recherche_login=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/u", "", $critere_recherche_login);
-	$critere_recherche_login=nettoyer_caracteres_nom($critere_recherche_login, 'a', ' -','');
+	$critere_recherche_login=nettoyer_caracteres_nom($critere_recherche_login, 'a', ' -_.','');
 
 	$critere_id_classe=isset($_POST['critere_id_classe']) ? preg_replace('/[^0-9]/', '', $_POST['critere_id_classe']) : (isset($_POST['classe']) ? preg_replace('/[^0-9]/', '', $_POST['classe']) : "");
 	//====================================
