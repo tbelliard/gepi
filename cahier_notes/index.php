@@ -781,7 +781,7 @@ if (isset($_GET['id_groupe']) and !(isset($_GET['periode_num'])) and !(isset($id
 
     echo "<p class='bold'>";
     echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|";
-    echo "<a href='index.php?id_groupe=no_group'> Mes enseignements </a>|</p>\n";
+    echo "<a href='index.php?id_groupe=no_group'> Mes enseignements </a></p>\n";
     echo "<p class='bold'>Enseignement : ".htmlspecialchars($current_group["description"])." (" . $current_group["classlist_string"] .")</p>\n";
 
     echo "<h3>Visualisation/modification - Choisissez la période : </h3>\n";
