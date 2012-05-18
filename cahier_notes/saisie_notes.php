@@ -1545,7 +1545,7 @@ while($i < $nombre_lignes) {
 		$data_pdf[$pointer][] = ($eleve_classe[$i]);
 	}
 	$alt=$alt*(-1);
-	echo "<tr class='lig$alt'>\n";
+	echo "<tr class='lig$alt white_hover'>\n";
 	if ($eleve_classe[$i] != $prev_classe && $prev_classe != null && $order_by == "classe") {
 		echo "<td class=cn style='border-top: 2px solid blue; text-align:left;'>\n";
 
