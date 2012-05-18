@@ -542,9 +542,16 @@ if(isset($tab_classe)) {
 
 //=============================================================
 // Récupération du premier jour de la semaine:
-$num_jour_semaine=strftime("%u",$today);
+//$num_jour_semaine=strftime("%u",$today);
+$num_jour_semaine=strftime("%w",$today);
+if($num_jour_semaine==0) {$num_jour_semaine=7;}
 //echo "\$num_jour_semaine=$num_jour_semaine<br />";
 $premier_jour_semaine=$today-(3600*24*($num_jour_semaine-1));
+//echo "strftime('%d/%m/%Y',\$today)=".strftime("%d/%m/%Y",$today)."<br />";
+//echo "strftime('%u',\$today)=".strftime("%u",$today)."<br />";
+//echo "strftime('%w',\$today)=".strftime("%w",$today)."<br />";
+// %u 	Représentation ISO-8601 du jour de la semaine 	De 1 (pour Lundi) à 7 (pour Dimanche)
+// %w 	Représentation numérique du jour de la semaine 	De 0 (pour Dimanche) à 6 (pour Samedi)
 //=============================================================
 
 //=============================================================
@@ -570,20 +577,23 @@ for($i=0;$i<14;$i++) {
 		$res_ct=mysql_query($sql);
 		$cpt=0;
 		while($ligne_ct=mysql_fetch_object($res_ct)) {
-			if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+			//if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+			if((($_SESSION['statut']=='professeur')&&(in_array($id_groupe,$tab_mes_groupes)))||
 			($ligne_ct->date_ct<=$ts_aujourdhui)) {
 				//echo "<div style='border:1px solid black; margin:0.5em;'>".$current_group['name']."<br />".$ligne_ct->contenu."</div>\n";
 				$tab_notice[$i][$id_groupe]['ct_entry'][$cpt]="";
 
 				// Lien d'édition de la notice:
-				if(($_SESSION['statut']=='professeur')&&(in_array($id_groupe,$tab_mes_groupes))) {
-					if(($ligne_ct->id_login==$_SESSION['login'])||(getSettingAOui('cdt_autoriser_modif_multiprof'))) {
+				//if(($_SESSION['statut']=='professeur')&&(in_array($id_groupe,$tab_mes_groupes))) {
+					if(($_SESSION['statut']=='professeur')&&(($ligne_ct->id_login==$_SESSION['login'])||(getSettingAOui('cdt_autoriser_modif_multiprof')))) {
 						if((!getSettingAOui('visa_cdt_inter_modif_notices_visees'))||($ligne_ct->vise!='y')){
 							$tab_notice[$i][$id_groupe]['ct_entry'][$cpt].="<div style='float:right; width:16px;'><a href='../cahier_texte/index.php?id_groupe=$id_groupe&amp;id_ct=$ligne_ct->id_ct&amp;type_notice=cr'><img src='../images/edit16.png' width='16' height='16' /></a></div>";
 						}
 					}
 
+					// Notice proprement dite:
 					$tab_notice[$i][$id_groupe]['ct_entry'][$cpt].=$ligne_ct->contenu;
+				/*
 				}
 				else {
 					// Un élève,... ne voit pas les compte-rendus dans le futur
@@ -591,7 +601,10 @@ for($i=0;$i<14;$i++) {
 						$tab_notice[$i][$id_groupe]['ct_entry'][$cpt].=$ligne_ct->contenu;
 					}
 				}
+				*/
 
+				// Documents joints:
+				// Dans le futur, ils ne sont vus que par les profs du groupe
 				if((($_SESSION['statut']=='professeur')&&(in_array($id_groupe,$tab_mes_groupes)))||
 					($ligne_ct->date_ct<=$ts_aujourdhui)) {
 					$sql="SELECT * FROM ct_documents where id='$ligne_ct->id_ct';";
@@ -628,8 +641,10 @@ for($i=0;$i<14;$i++) {
 					}
 				}
 
+				// Notice proprement dite:
 				$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$cpt].=$ligne_ct->contenu;
 
+				// Documents joints:
 				$sql="SELECT * FROM ct_devoirs_documents where id='$ligne_ct->id_ct';";
 				$res_doc=mysql_query($sql);
 				while($ligne_ct_doc=mysql_fetch_object($res_doc)) {
@@ -648,17 +663,18 @@ for($i=0;$i<14;$i++) {
 		$res_ct=mysql_query($sql);
 		$cpt=0;
 		while($ligne_ct=mysql_fetch_object($res_ct)) {
-			$tab_notice[$i][$id_groupe]['ct_private_entry'][$cpt]="";
+			//$tab_notice[$i][$id_groupe]['ct_private_entry'][$cpt]="";
 
 			// Lien d'édition de la notice:
 			// Les notices privées en multiprof??? sont-elles visibles du seul prof ou des profs du groupe?
 			if(($_SESSION['statut']=='professeur')&&(in_array($id_groupe,$tab_mes_groupes))) {
 				if(($ligne_ct->id_login==$_SESSION['login'])||(getSettingAOui('cdt_autoriser_modif_multiprof'))) {
-					$tab_notice[$i][$id_groupe]['ct_private_entry'][$cpt].="<div style='float:right; width:16px;'><a href='../cahier_texte/index.php?id_groupe=$id_groupe&amp;id_ct=$ligne_ct->id_ct&amp;type_notice=np'><img src='../images/edit16.png' width='16' height='16' /></a></div>";
-				}
+					$tab_notice[$i][$id_groupe]['ct_private_entry'][$cpt]="<div style='float:right; width:16px;'><a href='../cahier_texte/index.php?id_groupe=$id_groupe&amp;id_ct=$ligne_ct->id_ct&amp;type_notice=np'><img src='../images/edit16.png' width='16' height='16' /></a></div>";
 
-				$tab_notice[$i][$id_groupe]['ct_private_entry'][$cpt].=$ligne_ct->contenu;
-				$cpt++;
+					// Notice proprement dite:
+					$tab_notice[$i][$id_groupe]['ct_private_entry'][$cpt].=$ligne_ct->contenu;
+					$cpt++;
+				}
 			}
 		}
 	}
@@ -844,6 +860,7 @@ for($i=0;$i<14;$i++) {
 
 			// Pour repérer les enseignements avec tel ou tel type de notice
 			if($texte_np_courant!='') {
+				// La restriction des notices visibles est fait plus haut
 				echo "<div style='width: 1em; background-color: ".$color_fond_notices['p']."; float: right; margin-left:3px; text-align:center;'>\n";
 				echo "<a href='#ancre_travail_jour_".$i."_groupe_".$id_groupe."' onclick=\"affichage_notices_tel_groupe($i, $id_groupe);return false;\">";
 				echo "P";
@@ -851,6 +868,7 @@ for($i=0;$i<14;$i++) {
 				echo "</div>\n";
 			}
 			if($texte_dev_courant!='') {
+				// La restriction des notices visibles est fait plus haut
 				echo "<div style='width: 1em; background-color: ".$color_fond_notices['t']."; float: right; margin-left:3px; text-align:center;'>\n";
 				echo "<a href='#ancre_travail_jour_".$i."_groupe_".$id_groupe."' onclick=\"affichage_notices_tel_groupe($i, $id_groupe);return false;\">";
 				echo "T";
@@ -858,6 +876,7 @@ for($i=0;$i<14;$i++) {
 				echo "</div>\n";
 			}
 			if($texte_cr_courant!='') {
+				// La restriction des notices visibles est fait plus haut
 				echo "<div style='width: 1em; background-color: ".$color_fond_notices['c']."; float: right; margin-left:3px; text-align:center;'>\n";
 				echo "<a href='#ancre_travail_jour_".$i."_groupe_".$id_groupe."' onclick=\"affichage_notices_tel_groupe($i, $id_groupe);return false;\">";
 				echo "C";
