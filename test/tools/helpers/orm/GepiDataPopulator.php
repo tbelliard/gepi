@@ -494,6 +494,42 @@ class GepiDataPopulator
         $saisie_21->setFinAbs('2011-05-30 16:30:00');
         $saisie_21->save();
         
+        $saisie_22 = new AbsenceEleveSaisie();
+        $saisie_22->setEleve($florence_eleve);
+        $saisie_22->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_22->setDebutAbs('2011-05-31 08:01:00');
+        $saisie_22->setFinAbs('2011-05-31 09:00:00');
+        $saisie_22->save();
+        $saisie_221 = new AbsenceEleveSaisie();
+        $saisie_221->setEleve($florence_eleve);
+        $saisie_221->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_221->setDebutAbs('2011-05-31 08:00:00');
+        $saisie_221->setFinAbs('2011-05-31 09:10:00');
+        $saisie_221->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_221);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Infirmerie')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
+
+        $saisie_23 = new AbsenceEleveSaisie();
+        $saisie_23->setEleve($florence_eleve);
+        $saisie_23->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_23->setDebutAbs('2011-06-01 08:01:00');
+        $saisie_23->setFinAbs('2011-06-01 08:10:00');
+        $saisie_23->save();
+        $saisie_231 = new AbsenceEleveSaisie();
+        $saisie_231->setEleve($florence_eleve);
+        $saisie_231->setUtilisateurProfessionnel($lebesgue_prof);
+        $saisie_231->setDebutAbs('2011-06-01 08:00:00');
+        $saisie_231->setFinAbs('2011-06-01 09:10:00');
+        $saisie_231->save();
+        $traitement = new AbsenceEleveTraitement();
+        $traitement->addAbsenceEleveSaisie($saisie_231);
+        $traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->filterByNom('Infirmerie')->findOne());
+        $traitement->setUtilisateurProfessionnel($dolto_cpe);
+        $traitement->save();
+
         //on va purger les références, qui peuvent être fausses suite à des ajouts ultérieurs
         GepiDataPopulator::clearAllReferences();
         
