@@ -438,7 +438,8 @@ function coche(colonne,rang_groupe,mode) {
 	var tab_cpt0_ele=new Array($chaine_cpt0_eleves);
 	var tab_cpt1_ele=new Array($chaine_cpt1_eleves);
 
-	for(k=tab_cpt0_ele[rang_groupe];k<tab_cpt1_ele[rang_groupe];k++) {
+	//for(k=tab_cpt0_ele[rang_groupe];k<tab_cpt1_ele[rang_groupe];k++) {
+	for(k=eval(tab_cpt0_ele[rang_groupe]);k<eval(tab_cpt1_ele[rang_groupe]);k++) {
 		if(document.getElementById('id_prof_ele_'+colonne+'_'+k)) {
 			document.getElementById('id_prof_ele_'+colonne+'_'+k).checked=mode;
 		}
@@ -816,7 +817,8 @@ function coche(colonne,rang_groupe,mode) {
 	var tab_cpt0_ele=new Array($chaine_cpt0_eleves);
 	var tab_cpt1_ele=new Array($chaine_cpt1_eleves);
 
-	for(k=tab_cpt0_ele[rang_groupe];k<tab_cpt1_ele[rang_groupe];k++) {
+	//for(k=tab_cpt0_ele[rang_groupe];k<tab_cpt1_ele[rang_groupe];k++) {
+	for(k=eval(tab_cpt0_ele[rang_groupe]);k<eval(tab_cpt1_ele[rang_groupe]);k++) {
 		if(document.getElementById('id_prof_ele_'+colonne+'_'+k)) {
 			document.getElementById('id_prof_ele_'+colonne+'_'+k).checked=mode;
 		}
