@@ -1887,7 +1887,8 @@ function get_class_from_ele_login($ele_login){
 			$tab_classe['liste_nbsp'].=preg_replace("/ /","&nbsp;",$lig_tmp->classe);
 
 			$tab_classe['id'.$a] = $lig_tmp->id_classe;
-			$a = $a++;
+			//$a = $a++;
+			$a++;
 		}
 	}
 	return $tab_classe;
@@ -5465,4 +5466,5 @@ function temoin_check_srv($id_div_retour="retour_ping", $nom_js_func="check_srv"
 	$nom_js_func();
 </script>\n";
 }
+
 ?>
