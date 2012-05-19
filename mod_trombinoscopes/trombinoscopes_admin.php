@@ -216,16 +216,16 @@ function verifie_coherence_encodage()
 				$temoin=fgets($fic_temoin);
 				fclose($fic_temoin);
 				if ($temoin==encode_nom_photo("nom_photo"))
-					return "<span style='color: blue'>l'encodage est activé</span>.";
-				else return "<span style='color: red'>l'encodage est activé mais il y a une incohérence avec l'état de la base, il faut ré-encoder les noms des fichiers photo des élèves</span>.";
+					return array('message'=>"<span style='color: blue'>l'encodage est activé</span>.",'type_incoherence'=>0);
+				else return array('message'=>"<span style='color: red'>l'encodage est activé mais il y a une incohérence avec l'état de la base, il faut ré-encoder les noms des fichiers photo des élèves</span>.",'type_incoherence'=>1);
 				}
-			else return "<span style='color: red'>l'encodage n'est pas activé mais il y a une incohérence avec l'état de la base, il faut actualiser le paramètre 'encodage_nom_photo' en cliquant <a href=\"trombinoscopes_admin.php?set_encodage_nom_photo=no".add_token_in_url()."\">sur ce lien</a></span>.";
+			else return array('message'=>"<span style='color: red'>l'encodage n'est pas activé mais il y a une incohérence avec l'état de la base, il faut actualiser le paramètre 'encodage_nom_photo' en cliquant <a href=\"trombinoscopes_admin.php?set_encodage_nom_photo=no".add_token_in_url()."\">sur ce lien</a></span>.",'type_incoherence'=>2);
 		else
 			if (file_exists($dossier_photos_eleves."encodage_active.txt"))
 				{
-				return "<span style='color: red'>l'encodage est activé mais il y a une incohérence avec l'état de la base, il faut actualiser le paramètre 'encodage_nom_photo' en cliquant <a href=\"trombinoscopes_admin.php?set_encodage_nom_photo=yes".add_token_in_url()."\">sur ce lien</a> puis ré-encoder les noms des fichiers photo des élèves</span>.";
+				return array('message'=>"<span style='color: red'>l'encodage est activé mais il y a une incohérence avec l'état de la base, il faut actualiser le paramètre 'encodage_nom_photo' en cliquant <a href=\"trombinoscopes_admin.php?set_encodage_nom_photo=yes".add_token_in_url()."\">sur ce lien</a> puis, si nécessaire, ré-encoder les noms des fichiers photo des élèves</span>.",'type_incoherence'=>3);
 				}
-			else return "<span style='color: blue'>l'encodage est désactivé</span>.";
+			else return array('message'=>"<span style='color: blue'>l'encodage est désactivé</span>.",'type_incoherence'=>0);
 		}
 	}
 
