@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -203,6 +203,8 @@ if($etat!='clos') {
 //echo "<p align='center'><input type='submit' name='bouton_valide_affect_eleves1' value='Valider' /></p>\n";
 
 if($tri=='groupe') {
+	$tab_eleves_deja_affiches=array();
+
 	$sql="SELECT DISTINCT g.* FROM eb_groupes eg, groupes g WHERE id_epreuve='$id_epreuve' AND eg.id_groupe=g.id ORDER BY g.name, g.description;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
@@ -308,49 +310,52 @@ if($tri=='groupe') {
 	
 		$alt=1;
 		for($j=0;$j<count($current_group["eleves"]["all"]["list"]);$j++) {
-			$alt=$alt*(-1);
-			echo "<tr class='lig$alt white_hover'>\n";
-			echo "<td style='text-align:left;'>\n";
-			$login_ele=$current_group["eleves"]["all"]["list"][$j];
-			echo "<input type='hidden' name='login_ele[$cpt]' value='$login_ele' />\n";
-			echo get_nom_prenom_eleve($login_ele);
-			echo "</td>\n";
+			if(!in_array($current_group["eleves"]["all"]["list"][$j],$tab_eleves_deja_affiches)) {
+				$tab_eleves_deja_affiches[]=$current_group["eleves"]["all"]["list"][$j];
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt white_hover'>\n";
+				echo "<td style='text-align:left;'>\n";
+				$login_ele=$current_group["eleves"]["all"]["list"][$j];
+				echo "<input type='hidden' name='login_ele[$cpt]' value='$login_ele' />\n";
+				echo get_nom_prenom_eleve($login_ele);
+				echo "</td>\n";
 	
-			echo "<td>\n";
-			$tmp_tab_classe=get_class_from_ele_login($login_ele);
-			echo $tmp_tab_classe['liste'];
-			echo "</td>\n";
+				echo "<td>\n";
+				$tmp_tab_classe=get_class_from_ele_login($login_ele);
+				echo $tmp_tab_classe['liste'];
+				echo "</td>\n";
 	
-			$affect="n";
-			for($i=0;$i<count($info_prof);$i++) {
+				$affect="n";
+				for($i=0;$i<count($info_prof);$i++) {
+					echo "<td>\n";
+					if($etat=='clos') {
+						if((isset($tab_ele_prof[$login_ele]))&&($tab_ele_prof[$login_ele]==$login_prof[$i])) {echo "X";$affect="y";}
+					}
+					else {
+						echo "<input type='radio' name='id_prof_ele[$cpt]' id='id_prof_ele_".$i."_$cpt' value='$login_prof[$i]' ";
+						echo "onchange='calcule_effectif();changement();' ";
+						// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les élèves du groupe (toutes périodes confondues)... à améliorer
+						if((isset($tab_ele_prof[$login_ele]))&&($tab_ele_prof[$login_ele]==$login_prof[$i])) {echo "checked ";$affect="y";}
+						echo "/>\n";
+					}
+					echo "</td>\n";
+				}
 				echo "<td>\n";
 				if($etat=='clos') {
-					if((isset($tab_ele_prof[$login_ele]))&&($tab_ele_prof[$login_ele]==$login_prof[$i])) {echo "X";$affect="y";}
+					if($affect=="n") {
+						echo "X";
+					}
 				}
 				else {
-					echo "<input type='radio' name='id_prof_ele[$cpt]' id='id_prof_ele_".$i."_$cpt' value='$login_prof[$i]' ";
+					echo "<input type='radio' name='id_prof_ele[$cpt]' id='id_prof_ele_".$i."_$cpt' value='' ";
 					echo "onchange='calcule_effectif();changement();' ";
-					// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les élèves du groupe (toutes périodes confondues)... à améliorer
-					if((isset($tab_ele_prof[$login_ele]))&&($tab_ele_prof[$login_ele]==$login_prof[$i])) {echo "checked ";$affect="y";}
+					if($affect=="n") {echo "checked ";}
 					echo "/>\n";
 				}
 				echo "</td>\n";
+				echo "</tr>\n";
+				$cpt++;
 			}
-			echo "<td>\n";
-			if($etat=='clos') {
-				if($affect=="n") {
-					echo "X";
-				}
-			}
-			else {
-				echo "<input type='radio' name='id_prof_ele[$cpt]' id='id_prof_ele_".$i."_$cpt' value='' ";
-				echo "onchange='calcule_effectif();changement();' ";
-				if($affect=="n") {echo "checked ";}
-				echo "/>\n";
-			}
-			echo "</td>\n";
-			echo "</tr>\n";
-			$cpt++;
 		}
 		echo "</table>\n";
 		//$tab_cpt_eleve[]=$cpt;
