@@ -623,6 +623,7 @@ else {
 	echo "</ul>\n";
 
 	if($tri=='groupe') {
+		$tab_eleves_deja_affiches=array();
 
 		echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 		echo add_token_field();
@@ -703,40 +704,46 @@ else {
 			echo "<span id='eff_salle_".$lig->id."_$i'>Effectif</span>";
 			echo "</th>\n";
 			echo "</tr>\n";
-	
+
+			// A FAIRE: Ne pas retenir les élèves ayant dépassé date_sortie
+			//          Retenir la dernière classe de chaque élève.
+			//          Problème: si les groupes appartiennent à des classes qui n'ont pas le même nombre de périodes
 			$alt=1;
 			for($j=0;$j<count($current_group["eleves"]["all"]["list"]);$j++) {
-				$alt=$alt*(-1);
-				echo "<tr class='lig$alt'>\n";
-				echo "<td style='text-align:left;'>\n";
-				$login_ele=$current_group["eleves"]["all"]["list"][$j];
-				echo "<input type='hidden' name='login_ele[$cpt]' value='$login_ele' />\n";
-				echo get_nom_prenom_eleve($login_ele);
-				echo "</td>\n";
+				if(!in_array($current_group["eleves"]["all"]["list"][$j],$tab_eleves_deja_affiches)) {
+					$tab_eleves_deja_affiches[]=$current_group["eleves"]["all"]["list"][$j];
+					$alt=$alt*(-1);
+					echo "<tr class='lig$alt'>\n";
+					echo "<td style='text-align:left;'>\n";
+					$login_ele=$current_group["eleves"]["all"]["list"][$j];
+					echo "<input type='hidden' name='login_ele[$cpt]' value='$login_ele' />\n";
+					echo get_nom_prenom_eleve($login_ele);
+					echo "</td>\n";
 	
-				echo "<td>\n";
-				$tmp_tab_classe=get_class_from_ele_login($login_ele);
-				echo $tmp_tab_classe['liste'];
-				echo "</td>\n";
-	
-				$affect="n";
-				for($i=0;$i<count($id_salle);$i++) {
 					echo "<td>\n";
-					echo "<input type='radio' name='id_salle_ele[$cpt]' id='id_salle_ele_".$i."_$cpt' value='$id_salle[$i]' ";
+					$tmp_tab_classe=get_class_from_ele_login($login_ele);
+					echo $tmp_tab_classe['liste'];
+					echo "</td>\n";
+	
+					$affect="n";
+					for($i=0;$i<count($id_salle);$i++) {
+						echo "<td>\n";
+						echo "<input type='radio' name='id_salle_ele[$cpt]' id='id_salle_ele_".$i."_$cpt' value='$id_salle[$i]' ";
+						echo "onchange='calcule_effectif();changement()' ";
+						// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les élèves du groupe (toutes périodes confondues)... à améliorer
+						if($tab_ele_id_salle[$login_ele]==$id_salle[$i]) {echo "checked ";$affect="y";}
+						echo "/>\n";
+						echo "</td>\n";
+					}
+					echo "<td>\n";
+					echo "<input type='radio' name='id_salle_ele[$cpt]' id='id_salle_ele_".$i."_$cpt' value='-1' ";
 					echo "onchange='calcule_effectif();changement()' ";
-					// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les élèves du groupe (toutes périodes confondues)... à améliorer
-					if($tab_ele_id_salle[$login_ele]==$id_salle[$i]) {echo "checked ";$affect="y";}
+					if($affect=="n") {echo "checked ";}
 					echo "/>\n";
 					echo "</td>\n";
+					echo "</tr>\n";
+					$cpt++;
 				}
-				echo "<td>\n";
-				echo "<input type='radio' name='id_salle_ele[$cpt]' id='id_salle_ele_".$i."_$cpt' value='-1' ";
-				echo "onchange='calcule_effectif();changement()' ";
-				if($affect=="n") {echo "checked ";}
-				echo "/>\n";
-				echo "</td>\n";
-				echo "</tr>\n";
-				$cpt++;
 			}
 			echo "</table>\n";
 	
