@@ -3092,12 +3092,36 @@ else {
 			die();
 		}
 
+		$arch_bull_nom_prenom=getPref($_SESSION['login'], 'arch_bull_nom_prenom', 'yes');
+		$arch_bull_INE=getPref($_SESSION['login'], 'arch_bull_INE', 'yes');
+		$arch_bull_annee_scolaire=getPref($_SESSION['login'], 'arch_bull_annee_scolaire', 'yes');
+		$arch_bull_date_edition=getPref($_SESSION['login'], 'arch_bull_date_edition', 'yes');
+		$arch_bull_classe=getPref($_SESSION['login'], 'arch_bull_classe', 'yes');
+
 		for($j=0;$j<count($tableau_eleve['login']);$j++) {
 			//send_file_download_headers('application/pdf','bulletin.pdf');
 
 			//$nom_fichier_bulletin = 'bulletin_'.$tableau_eleve['no_gep'][$j]."_".$tableau_eleve['nom_prenom'][$j]."_".$nom_bulletin.'.pdf';
 			//$nom_fichier_bulletin = 'bulletin_'.$tableau_eleve['no_gep'][$j]."_".$tableau_eleve['nom_prenom'][$j]."_".strftime("%Y%m%d").'.pdf';
-			$nom_fichier_bulletin = 'bulletin_'.$tableau_eleve['nom_prenom'][$j]."_".$tableau_eleve['no_gep'][$j]."_annee_scolaire_".remplace_accents(getSettingValue('gepiYear'),"all")."_".strftime("%Y%m%d").'.pdf';
+			//$nom_fichier_bulletin = 'bulletin_'.$tableau_eleve['nom_prenom'][$j]."_".$tableau_eleve['no_gep'][$j]."_annee_scolaire_".remplace_accents(getSettingValue('gepiYear'),"all")."_".strftime("%Y%m%d").'.pdf';
+
+			$nom_fichier_bulletin='bulletin';
+			if($arch_bull_nom_prenom=='yes') {$nom_fichier_bulletin.='_'.$tableau_eleve['nom_prenom'][$j];}
+			if($arch_bull_INE=='yes') {$nom_fichier_bulletin.='_'.$tableau_eleve['no_gep'][$j];}
+			if($arch_bull_annee_scolaire=='yes') {$nom_fichier_bulletin.="_annee_scolaire_".remplace_accents(getSettingValue('gepiYear'),"all");}
+			if($arch_bull_date_edition=='yes') {$nom_fichier_bulletin.="_".strftime("%Y%m%d");}
+			if($arch_bull_classe=='yes') {
+				if(isset($_POST['ele_chgt_classe'])) {
+					$tab_tmp_classe=get_class_from_ele_login($tableau_eleve['login']);
+					if(isset($tab_tmp_classe['liste'])) {
+						$nom_fichier_bulletin.="_".remplace_accents($tab_tmp_classe['liste'], 'all');
+					}
+				}
+				elseif(isset($classe)) {
+					$nom_fichier_bulletin.="_".$classe;
+				}
+			}
+			$nom_fichier_bulletin.='.pdf';
 
 			//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
 			$pdf=new bul_PDF('p', 'mm', 'A4');

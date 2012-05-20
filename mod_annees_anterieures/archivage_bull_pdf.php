@@ -112,6 +112,33 @@ if(!isset($generer_fichiers_pdf_archivage)){
 
 	echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 	echo add_token_field();
+
+	echo "<p>Nommage des fichiers&nbsp;:<br />Inclure dans le nom de fichier pour chaque élève&nbsp;:</p>\n";
+	echo "<input type='checkbox' id='arch_bull_nom_prenom' name='arch_bull_nom_prenom' value='yes'";
+	$arch_bull_nom_prenom=getPref($_SESSION['login'],'arch_bull_nom_prenom', 'yes');
+	if($arch_bull_nom_prenom=='yes') {echo " checked";}
+	echo " /><label for='arch_bull_nom_prenom'> Nom prénom de l'élève</label><br />\n";
+
+	echo "<input type='checkbox' id='arch_bull_INE' name='arch_bull_INE' value='yes'";
+	$arch_bull_INE=getPref($_SESSION['login'],'arch_bull_INE', 'yes');
+	if($arch_bull_INE=='yes') {echo " checked";}
+	echo " /><label for='arch_bull_INE'> INE (<em>numéro national de l'élève</em>)</label><br />\n";
+
+	echo "<input type='checkbox' id='arch_bull_annee_scolaire' name='arch_bull_annee_scolaire' value='yes'";
+	$arch_bull_annee_scolaire=getPref($_SESSION['login'],'arch_bull_annee_scolaire', 'yes');
+	if($arch_bull_annee_scolaire=='yes') {echo " checked";}
+	echo " /><label for='arch_bull_annee_scolaire'> Année scolaire</label><br />\n";
+
+	echo "<input type='checkbox' id='arch_bull_date_edition' name='arch_bull_date_edition' value='yes'";
+	$arch_bull_date_edition=getPref($_SESSION['login'],'arch_bull_date_edition', 'yes');
+	if($arch_bull_date_edition=='yes') {echo " checked";}
+	echo " /><label for='arch_bull_date_edition'> Date d'édition</label><br />\n";
+
+	echo "<input type='checkbox' id='arch_bull_classe' name='arch_bull_classe' value='yes'";
+	$arch_bull_classe=getPref($_SESSION['login'],'arch_bull_classe', 'yes');
+	if($arch_bull_classe=='yes') {echo " checked";}
+	echo " /><label for='arch_bull_classe'> Classe de l'élève</label><br />\n";
+
 	echo "<p>Parcourir les élèves par tranches de&nbsp;: <input type='text' name='arch_bull_eff_tranche' size='2' value='".getPref($_SESSION['login'],'arch_bull_eff_tranche',10)."' /><br />\n";
 	echo "<input type='hidden' name='generer_fichiers_pdf_archivage' value='y' />\n";
 	echo "<input type=\"submit\" name='ok' value=\"Générer les PDF par élève\" style=\"font-variant: small-caps;\" /></p>\n";
@@ -121,7 +148,7 @@ if(!isset($generer_fichiers_pdf_archivage)){
 	echo "<p><em>NOTES&nbsp;:</em></p>
 	<ul>
 		<li>L'opération d'archivage est assez lourde.<br />Si vous parcourez les élèves par trop grosses tranches, vous risquez de dépasser le 'max_execution_time' de votre serveur.</li>
-		<!--li>Dans une future version, un zip sera généré pour permettre le téléchargement d'un coup de l'ensemble.</li-->
+		<li>L'un au moins des champs permettant d'identifier l'élève doit être sélectionné.<br />Si, ni le Nom_prénom, ni l'INE ne sont sélectionnés, les deux champs seront automatiquement sélectionnés.</li>
 	</ul>\n";
 }
 else {
@@ -295,6 +322,24 @@ else {
 		$arch_bull_eff_tranche=isset($_POST['arch_bull_eff_tranche']) ? $_POST['arch_bull_eff_tranche'] : 10;
 		if((!is_numeric($arch_bull_eff_tranche))||($arch_bull_eff_tranche<1)) {$arch_bull_eff_tranche=10;}
 		savePref($_SESSION['login'],'arch_bull_eff_tranche',$arch_bull_eff_tranche);
+
+		$arch_bull_nom_prenom=isset($_POST['arch_bull_nom_prenom']) ? $_POST['arch_bull_nom_prenom'] : 'no';
+		$arch_bull_INE=isset($_POST['arch_bull_INE']) ? $_POST['arch_bull_INE'] : 'no';
+		if(($arch_bull_nom_prenom!='yes')&&($arch_bull_INE!='yes')) {
+			$arch_bull_nom_prenom='yes';
+			$arch_bull_INE='yes';
+		}
+		savePref($_SESSION['login'],'arch_bull_nom_prenom',$arch_bull_nom_prenom);
+		savePref($_SESSION['login'],'arch_bull_INE',$arch_bull_INE);
+
+		$arch_bull_annee_scolaire=isset($_POST['arch_bull_annee_scolaire']) ? $_POST['arch_bull_annee_scolaire'] : 'no';
+		savePref($_SESSION['login'],'arch_bull_annee_scolaire',$arch_bull_annee_scolaire);
+
+		$arch_bull_date_edition=isset($_POST['arch_bull_date_edition']) ? $_POST['arch_bull_date_edition'] : 'no';
+		savePref($_SESSION['login'],'arch_bull_date_edition',$arch_bull_date_edition);
+
+		$arch_bull_classe=isset($_POST['arch_bull_classe']) ? $_POST['arch_bull_classe'] : 'no';
+		savePref($_SESSION['login'],'arch_bull_classe',$arch_bull_classe);
 
 		$dossier_archivage_pdf=savePref($_SESSION['login'], 'dossier_archivage_pdf', 'bulletins_pdf_individuels_eleves_'.strftime('%Y%m%d'));
 		@mkdir("../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf);
