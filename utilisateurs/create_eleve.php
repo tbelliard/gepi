@@ -203,7 +203,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 			$msg .= "<br />Vous devez effectuer cette opération maintenant !";
 		} else {
 			if ($nb_comptes > 0) {
-				$msg .= "Vous avez créé des comptes d'accès en mode SSO ou LDAP, mais sans avoir configuré l'accès LDAP en écriture. En conséquence, vous ne pouvez pas générer de mot de passe pour les utilisateurs.<br />";
+				$msg .= "Vous avez créé un ou des comptes d'accès en mode SSO ou LDAP, mais sans avoir configuré l'accès LDAP en écriture. En conséquence, vous ne pouvez pas générer de mot de passe pour les utilisateurs.<br />";
 			}
 		}
 
