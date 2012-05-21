@@ -6636,7 +6636,12 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						}
 					}
 
-					$ligne_parent.="<td style='text-align:center;'><a href='modify_resp.php?pers_id=$pers_id' target='_blank'>$pers_id</a>";
+					if($nouveau==0){
+						$ligne_parent.="<td style='text-align:center;'><a href='modify_resp.php?pers_id=$pers_id' title='Afficher la fiche parent' target='_blank'>$pers_id</a>";
+					}
+					else {
+						$ligne_parent.="<td style='text-align:center;'>$pers_id";
+					}
 					//$ligne_parent.="<input type='hidden' name='modif_".$cpt."_pers_id' value='$pers_id' />\n";
 					//$ligne_parent.="<input type='text' name='modif_".$cpt."_pers_id' value='$pers_id' />\n";
 					$ligne_parent.="</td>\n";
