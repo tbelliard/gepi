@@ -2654,16 +2654,20 @@ else{
 								echo "</td>\n";
 
 								//echo "<td style='text-align: center; background-color: lightgreen;'>Modif</td>\n";
-								echo "<td class='modif'>Modif</td>\n";
+								echo "<td class='modif'><label for='check_".$cpt."'>Modif</label></td>\n";
 
 								// ELENOET:
 								echo "<td style='text-align: center;'>";
+								echo "<label for='check_".$cpt."'>";
 								echo "$affiche[4]";
+								echo "</label>";
 //								echo "<input type='hidden' name='modif_".$cpt."_elenoet' value='$affiche[4]' />\n";
 								echo "</td>\n";
 								// ELE_ID:
 								echo "<td style='text-align: center;'>";
+								echo "<label for='check_".$cpt."'>";
 								echo "$affiche[5]";
+								echo "</label>";
 //								echo "<input type='hidden' name='modif_".$cpt."_eleid' value='$affiche[5]' />\n";
 //								echo "<input type='hidden' name='modif_".$cpt."_login' value='$lig_ele->login' />\n";
 								echo "</td>\n";
@@ -2673,6 +2677,7 @@ else{
 								if(stripslashes($lig_ele->nom)!=stripslashes($affiche[0])){
 									//echo " background-color:lightgreen;'>";
 									echo " class='modif'>";
+									echo "<label for='check_".$cpt."'>";
 									if($lig_ele->nom!=''){
 										echo stripslashes($lig_ele->nom)." <font color='red'>-&gt;</font>\n";
 									}
@@ -2680,9 +2685,11 @@ else{
 								else{
 									//echo "'>";
 									echo ">";
+									echo "<label for='check_".$cpt."'>";
 								}
 								echo stripslashes($affiche[0]);
 //								echo "<input type='hidden' name='modif_".$cpt."_nom' value=\"$affiche[0]\" />\n";
+								echo "</label>";
 								echo "</td>\n";
 
 								//echo "<td style='text-align: center;";
@@ -2690,6 +2697,7 @@ else{
 								if(stripslashes($lig_ele->prenom)!=stripslashes($affiche[1])){
 									//echo " background-color:lightgreen;'>";
 									echo " class='modif'>";
+									echo "<label for='check_".$cpt."'>";
 									if($lig_ele->prenom!=''){
 										echo stripslashes($lig_ele->prenom)." <font color='red'>-&gt;</font>\n";
 									}
@@ -2697,9 +2705,11 @@ else{
 								else{
 									//echo "'>";
 									echo ">";
+									echo "<label for='check_".$cpt."'>";
 								}
 								echo stripslashes($affiche[1]);
 //								echo "<input type='hidden' name='modif_".$cpt."_prenom' value=\"$affiche[1]\" />\n";
+								echo "</label>";
 								echo "</td>\n";
 
 								//echo "<td style='text-align: center;";
@@ -2707,6 +2717,7 @@ else{
 								if($lig_ele->sexe!=$affiche[2]){
 									//echo " background-color:lightgreen;'>";
 									echo " class='modif'>";
+									echo "<label for='check_".$cpt."'>";
 									if($lig_ele->sexe!=''){
 										echo "$lig_ele->sexe <font color='red'>-&gt;</font>\n";
 									}
@@ -2714,9 +2725,11 @@ else{
 								else{
 									//echo "'>";
 									echo ">";
+									echo "<label for='check_".$cpt."'>";
 								}
 								echo "$affiche[2]";
 //								echo "<input type='hidden' name='modif_".$cpt."_sexe' value='$affiche[2]' />\n";
+								echo "</label>";
 								echo "</td>\n";
 
 								//echo "<td style='text-align: center;";
@@ -2728,6 +2741,7 @@ else{
 									if(($lig_ele->naissance!=$new_date)||($lig_ele->lieu_naissance!=stripslashes($affiche[11]))) {
 										//echo " background-color:lightgreen;'>";
 										echo " class='modif'>";
+										echo "<label for='check_".$cpt."'>";
 										if(($lig_ele->naissance!='')||($lig_ele->lieu_naissance!='')) {
 											if($lig_ele->naissance!='') {
 												echo "$lig_ele->naissance ";
@@ -2741,6 +2755,7 @@ else{
 									else{
 										//echo "'>";
 										echo ">";
+										echo "<label for='check_".$cpt."'>";
 									}
 									echo "$new_date";
 
@@ -2749,6 +2764,7 @@ else{
 									if($affiche[11]!="") {echo " à ".get_commune($affiche[11],1);}
 //									echo "<input type='hidden' name='modif_".$cpt."_naissance' value='$new_date' />\n";
 //									echo "<input type='hidden' name='modif_".$cpt."_lieu_naissance' value=\"".stripslashes($affiche[11])."\" />\n";
+									echo "</label>";
 									echo "</td>\n";
 								}
 								else {
@@ -2756,6 +2772,7 @@ else{
 									if($lig_ele->naissance!=$new_date){
 										//echo " background-color:lightgreen;'>";
 										echo " class='modif'>";
+										echo "<label for='check_".$cpt."'>";
 										if($lig_ele->naissance!=''){
 											echo "$lig_ele->naissance <font color='red'>-&gt;</font>\n";
 										}
@@ -2763,9 +2780,11 @@ else{
 									else{
 										//echo "'>";
 										echo ">";
+										echo "<label for='check_".$cpt."'>";
 									}
 									echo "$new_date";
 //									echo "<input type='hidden' name='modif_".$cpt."_naissance' value='$new_date' />\n";
+									echo "</label>";
 									echo "</td>\n";
 								}
 
@@ -2932,39 +2951,51 @@ else{
 
 								echo "<td style='text-align: center;'><input type='checkbox' id='check_".$cpt."' name='new[]' value='$affiche[5]' /></td>\n";
 
-								echo "<td class='nouveau'>Nouveau</td>\n";
+								echo "<td class='nouveau'><label for='check_".$cpt."'>Nouveau</label></td>\n";
 
 
 								echo "<td style='text-align: center;'>";
+								echo "<label for='check_".$cpt."'>";
 								echo "$affiche[4]";
+								echo "</label>";
 								echo "</td>\n";
 
 								echo "<td style='text-align: center;'>";
+								echo "<label for='check_".$cpt."'>";
 								echo "$affiche[5]";
+								echo "</label>";
 								echo "</td>\n";
 
 								echo "<td style='text-align: center;'>";
+								echo "<label for='check_".$cpt."'>";
 								echo stripslashes($affiche[0]);
+								echo "</label>";
 								echo "</td>\n";
 
 								echo "<td style='text-align: center;'>";
+								echo "<label for='check_".$cpt."'>";
 								echo stripslashes($affiche[1]);
 //								echo "<input type='hidden' name='new_".$cpt."_prenom' value=\"$affiche[1]\" />\n";
+								echo "</label>";
 								echo "</td>\n";
 
 								echo "<td style='text-align: center;'>";
+								echo "<label for='check_".$cpt."'>";
 								echo "$affiche[2]";
 //								echo "<input type='hidden' name='new_".$cpt."_sexe' value='$affiche[2]' />\n";
+								echo "</label>";
 								echo "</td>\n";
 
 								$new_date=mb_substr($affiche[3],0,4)."-".mb_substr($affiche[3],4,2)."-".mb_substr($affiche[3],6,2);
 								echo "<td style='text-align: center;'>";
+								echo "<label for='check_".$cpt."'>";
 								echo "$new_date";
 								if($ele_lieu_naissance=="y") {
 									echo " à ".get_commune($affiche[11],1);
 //									echo "<input type='hidden' name='new_".$cpt."_lieu_naissance' value=\"".stripslashes($affiche[11])."\" />\n";
 								}
 //								echo "<input type='hidden' name='new_".$cpt."_naissance' value='$new_date' />\n";
+								echo "</label>";
 								echo "</td>\n";
 
 
@@ -6580,7 +6611,7 @@ else{
 					$ligne_parent.="</td>\n";
 
 					if($nouveau==0) {
-						$ligne_parent.="<td class='modif'>Modif</td>\n";
+						$ligne_parent.="<td class='modif'><label for='check_".$cpt."'>Modif</label></td>\n";
 					}
 					else {
 						$sql="SELECT 1=1 FROM temp_resp_pers_import trp,
@@ -6617,7 +6648,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						info_debug($sql);
 						$test=mysql_query($sql);
 						if(mysql_num_rows($test)>0) {
-							$ligne_parent.="<td class='nouveau'>Nouveau</td>\n";
+							$ligne_parent.="<td class='nouveau'><label for='check_".$cpt."'>Nouveau</label></td>\n";
 						}
 						else {
 							if($liste_resp_sans_eleve!=""){$liste_resp_sans_eleve.=",";}
@@ -6656,6 +6687,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 					if($nouveau==0){
 						if(stripslashes($lig_pers2->nom)!=stripslashes($nom1)){
 							$ligne_parent.=" class='modif'>";
+							$ligne_parent.="<label for='check_".$cpt."'>";
 							if($nom1!=''){
 								$ligne_parent.=stripslashes($nom1)." <font color='red'>-&gt;</font>\n";
 							}
@@ -6664,18 +6696,22 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						}
 						else{
 							$ligne_parent.=">";
+							$ligne_parent.="<label for='check_".$cpt."'>";
 						}
 					}
 					else{
 						$ligne_parent.=">";
+						$ligne_parent.="<label for='check_".$cpt."'>";
 					}
 					$ligne_parent.=stripslashes($lig_pers2->nom);
+					$ligne_parent.="</label>";
 					$ligne_parent.="</td>\n";
 
 					$ligne_parent.="<td";
 					if($nouveau==0){
 						if(stripslashes($lig_pers2->prenom)!=stripslashes($prenom1)){
 							$ligne_parent.=" class='modif'>";
+							$ligne_parent.="<label for='check_".$cpt."'>";
 							if($prenom1!=''){
 								$ligne_parent.=stripslashes($prenom1)." <font color='red'>-&gt;</font>\n";
 							}
@@ -6684,12 +6720,15 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						}
 						else{
 							$ligne_parent.=">";
+							$ligne_parent.="<label for='check_".$cpt."'>";
 						}
 					}
 					else{
 						$ligne_parent.=">";
+						$ligne_parent.="<label for='check_".$cpt."'>";
 					}
 					$ligne_parent.=stripslashes($lig_pers2->prenom);
+					$ligne_parent.="</label>";
 					$ligne_parent.="</td>\n";
 
 
@@ -8373,7 +8412,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 							$ligne_courante.="</td>\n";
 
 							//$ligne_courante.="<td style='text-align:center; background-color: rgb(150, 200, 240);'>Nouveau</td>\n";
-							$ligne_courante.="<td class='nouveau'>Nouveau</td>\n";
+							$ligne_courante.="<td class='nouveau'><label for='check_".$cpt."'>Nouveau</label></td>\n";
 
 							$ligne_courante.="<td style='text-align:center;'>\n";
 							$ligne_courante.="$pers_id";
@@ -8381,18 +8420,15 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 							$ligne_courante.="</td>\n";
 
 							$ligne_courante.="<td style='text-align:center;'>\n";
-							// 20120407
-							//$ligne_courante.="<a href='../responsables/modify_resp.php?pers_id=$pers_id' target='_blank'>";
+							$ligne_courante.="<label for='check_".$cpt."'>";
 							$ligne_courante.="$lig2->nom";
-							//$ligne_courante.="</a>";
-							//$ligne_courante.="<input type='hidden' name='new_".$cpt."_resp_nom' value=\"$lig2->nom\" />\n";
+							$ligne_courante.="</label>";
 							$ligne_courante.="</td>\n";
 
 							$ligne_courante.="<td style='text-align:center;'>\n";
-							//$ligne_courante.="<a href='../responsables/modify_resp.php?pers_id=$pers_id' target='_blank'>";
+							$ligne_courante.="<label for='check_".$cpt."'>";
 							$ligne_courante.="$lig2->prenom";
-							//$ligne_courante.="</a>";
-							//$ligne_courante.="<input type='hidden' name='new_".$cpt."_resp_prenom' value=\"$lig2->prenom\" />\n";
+							$ligne_courante.="</label>";
 							$ligne_courante.="</td>\n";
 
 							// Existe-t-il déjà un numéro de responsable légal 1 ou 2 correspondant au nouvel arrivant?
@@ -8555,27 +8591,27 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								$ligne_courante.="</td>\n";
 
 								//$ligne_courante.="<td style='text-align:center; background-color:lightgreen;'>Modif</td>\n";
-								$ligne_courante.="<td class='modif'>Modif</td>\n";
+								$ligne_courante.="<td class='modif'><label for='check_".$cpt."'>Modif</label></td>\n";
 
 								$ligne_courante.="<td style='text-align:center;'>\n";
+								$ligne_courante.="<a href='../responsables/modify_resp.php?pers_id=$pers_id' target='_blank'>";
 								$ligne_courante.="$pers_id";
+								$ligne_courante.="</a>";
 								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_pers_id' value='$pers_id' />\n";
 								$ligne_courante.="</td>\n";
 
 								$ligne_courante.="<td style='text-align:center;'>\n";
-								// 20120407
-								$ligne_courante.="<a href='../responsables/modify_resp.php?pers_id=$pers_id' target='_blank'>";
+								$ligne_courante.="<label for='check_".$cpt."'>";
 								$ligne_courante.="$lig2->nom";
-								$ligne_courante.="</a>";
+								$ligne_courante.="</label>";
 								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_nom' value=\"".mysql_real_escape_string($lig2->nom)."\" />\n";
 								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_nom' value=\"".$lig2->nom."\" />\n";
 								$ligne_courante.="</td>\n";
 
 								$ligne_courante.="<td style='text-align:center;'>\n";
-								// 20120407
-								$ligne_courante.="<a href='../responsables/modify_resp.php?pers_id=$pers_id' target='_blank'>";
+								$ligne_courante.="<label for='check_".$cpt."'>";
 								$ligne_courante.="$lig2->prenom";
-								$ligne_courante.="</a>";
+								$ligne_courante.="</label>";
 								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_prenom' value=\"".mysql_real_escape_string($lig2->nom)."\" />\n";
 								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_prenom' value=\"".$lig2->prenom."\" />\n";
 								$ligne_courante.="</td>\n";
