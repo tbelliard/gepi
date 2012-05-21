@@ -2366,7 +2366,7 @@ $update_tempo4=mysql_query($sql);
 						// IL FAUDRAIT FAIRE ICI LE MEME TRAITEMENT QUE DANS /init_xml/step3.php POUR LES PRENOMS COMPOSéS ET SAISIE DE PLUSIEURS PRéNOMS...
 						$affiche[1]=nettoyer_caracteres_nom($lig->ELEPRE, "a", " '_-", "");
 						$affiche[2]=nettoyer_caracteres_nom($lig->ELESEXE, "an", "", "");
-						$affiche[3]=nettoyer_caracteres_nom($lig->ELEDATNAIS, "a", "-", "");
+						$affiche[3]=nettoyer_caracteres_nom($lig->ELEDATNAIS, "an", "-", "");
 						$affiche[4]=nettoyer_caracteres_nom($lig->ELENOET, "an", "", "");
 						$affiche[5]=nettoyer_caracteres_nom($lig->ELE_ID, "an", "", "");
 						$affiche[6]=nettoyer_caracteres_nom($lig->ELEDOUBL, "an", "", "");
@@ -6384,7 +6384,12 @@ $update_tempo4=mysql_query($sql);
 						}
 					}
 
-					$ligne_parent.="<td style='text-align:center;'><a href='modify_resp.php?pers_id=$pers_id' target='_blank'>$pers_id</a>";
+					if($nouveau==0){
+						$ligne_parent.="<td style='text-align:center;'><a href='modify_resp.php?pers_id=$pers_id' title='Afficher la fiche parent' target='_blank'>$pers_id</a>";
+					}
+					else {
+						$ligne_parent.="<td style='text-align:center;'>$pers_id";
+					}
 					//$ligne_parent.="<input type='hidden' name='modif_".$cpt."_pers_id' value='$pers_id' />\n";
 					//$ligne_parent.="<input type='text' name='modif_".$cpt."_pers_id' value='$pers_id' />\n";
 					$ligne_parent.="</td>\n";
