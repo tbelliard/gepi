@@ -54,10 +54,26 @@ if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 $expediteur=retourne_email($_SESSION['login']);
 if($expediteur=='') {$expediteur="Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">";}
 
+/*
 $envoi=mail($destinataire,
 	$gepiPrefixeSujetMail.$sujet_mail,
 	$message_mail,
 	"From: $expediteur\r\n"."Reply-to: $expediteur\r\n"."X-Mailer: PHP/" . phpversion());
+*/
+
+$sujet_mail = $gepiPrefixeSujetMail."GEPI : $sujet_mail";
+$sujet_mail = "=?UTF-8?B?".base64_encode($sujet_mail)."?=\r\n";
+
+$headers = "X-Mailer: PHP/" . phpversion()."\r\n";
+$headers .= "MIME-Version: 1.0\r\n";
+$headers .= "Content-type: text/plain; charset=UTF-8\r\n";
+$headers .= "From: $expediteur\r\n"."Reply-to: $expediteur\r\n";
+
+// On envoie le mail
+$envoi = mail($destinataire,
+	$sujet_mail,
+	$message_mail,
+	$headers);
 
 if($envoi) {echo " <img src='../images/enabled.png' width='20' height='20' alt='Message envoyé avec succès' title='Message envoyé avec succès' />";}
 else {echo " <img src='../images/icons/flag.png' width='17' height='18' alt='Echec de l envoi du message' title='Echec de l envoi du message' />";}
