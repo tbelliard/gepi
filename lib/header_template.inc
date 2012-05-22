@@ -506,7 +506,7 @@ if (isset($titre_page)) {
             if ($gepiGitCommit != null) {
                 $version_gepi .= ' '.substr($gepiGitCommit, 0, 6).' '.$gepiGitBranch;
                 try {
-                    exec('cd '.dirname(__FILE__).'; git log -1 --format=format:"%ct" '.$gepiGitCommit, $output);
+                    @exec('cd '.dirname(__FILE__).'; git log -1 --format=format:"%ct" '.$gepiGitCommit, $output);
                     if (isset($output[0])) {
                         $date = new DateTime('@'.$output[0]);
                         $version_gepi .= ' '.$date->format('d/m/Y H:i');
