@@ -365,12 +365,12 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est l
 	<label for="abs2_modification_saisie_une_heure">&nbsp;Permettre la modification d'une saisie par le professeur dans l'heure qui a suivi sa création</label>
 </p>
 <p>
-	<input type="checkbox" name="abs2_cacher_creneaux_precedents" value="y"
+	<input type="checkbox" name="abs2_cacher_creneaux_precedents" id="abs2_cacher_creneaux_precedents" value="y"
 	<?php if (getSettingValue("abs2_cacher_creneaux_precedents")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_cacher_creneaux_precedents">&nbsp;Cacher les informations des créneaux précédents lors de la saisie</label>
 </p>
 <p>
-	<input type="checkbox" name="abs2_afficher_saisies_creneau_courant" value="y"
+	<input type="checkbox" name="abs2_afficher_saisies_creneau_courant" id="abs2_afficher_saisies_creneau_courant" value="y"
 	<?php if (getSettingValue("abs2_afficher_saisies_creneau_courant")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_afficher_saisies_creneau_courant">&nbsp;Afficher en rouge le créneau en cours de saisie s'il existe déjà une autre saisie</label>
 </p>
