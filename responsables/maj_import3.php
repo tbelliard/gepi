@@ -2224,18 +2224,18 @@ else{
 			info_debug("==============================================");
 			info_debug("=============== Phase step $step =================");
 
-// 20110913
-$sql="SELECT * FROM tempo4 WHERE col1='maj_sconet_eleves' AND (col3='modif' OR col3='new');";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)>0) {
-	$tab_ele_id_diff=array();
-	while($lig=mysql_fetch_object($res)) {
-		$tab_ele_id_diff[]=$lig->col2;
-	}
-}
+			// 20110913
+			$sql="SELECT * FROM tempo4 WHERE col1='maj_sconet_eleves' AND (col3='modif' OR col3='new');";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				$tab_ele_id_diff=array();
+				while($lig=mysql_fetch_object($res)) {
+					$tab_ele_id_diff[]=$lig->col2;
+				}
+			}
 
-$sql="SELECT * FROM tempo2 WHERE col1='modif' OR col1='new';";
-$res=mysql_query($sql);
+			$sql="SELECT * FROM tempo2 WHERE col1='modif' OR col1='new';";
+			$res=mysql_query($sql);
 
 			//if(!isset($tab_ele_id_diff)){
 			if((!isset($tab_ele_id_diff))&&(mysql_num_rows($res)==0)) {
@@ -2385,9 +2385,9 @@ $res=mysql_query($sql);
 
 					$w=$k-1;
 
-// Pour ne pas représenter le même au tour suivant:
-$sql="UPDATE tempo4 SET col3='modif_ou_new_presente' WHERE col1='maj_sconet_eleves' AND col2='$tab_ele_id_diff[$w]';";
-$update_tempo4=mysql_query($sql);
+					// Pour ne pas représenter le même au tour suivant:
+					$sql="UPDATE tempo4 SET col3='modif_ou_new_presente' WHERE col1='maj_sconet_eleves' AND col2='$tab_ele_id_diff[$w]';";
+					$update_tempo4=mysql_query($sql);
 
 					$sql="SELECT DISTINCT * FROM temp_gep_import2 WHERE ELE_ID='$tab_ele_id_diff[$w]';";
 					info_debug($sql);
@@ -2404,7 +2404,7 @@ $update_tempo4=mysql_query($sql);
 						// IL FAUDRAIT FAIRE ICI LE MEME TRAITEMENT QUE DANS /init_xml/step3.php POUR LES PRENOMS COMPOSéS ET SAISIE DE PLUSIEURS PRéNOMS...
 						$affiche[1]=nettoyer_caracteres_nom($lig->ELEPRE, "a", " '_-", "");
 						$affiche[2]=nettoyer_caracteres_nom($lig->ELESEXE, "an", "", "");
-						$affiche[3]=nettoyer_caracteres_nom($lig->ELEDATNAIS, "a", "-", "");
+						$affiche[3]=nettoyer_caracteres_nom($lig->ELEDATNAIS, "an", "-", "");
 						$affiche[4]=nettoyer_caracteres_nom($lig->ELENOET, "an", "", "");
 						$affiche[5]=nettoyer_caracteres_nom($lig->ELE_ID, "an", "", "");
 						$affiche[6]=nettoyer_caracteres_nom($lig->ELEDOUBL, "an", "", "");
@@ -2654,16 +2654,20 @@ $update_tempo4=mysql_query($sql);
 								echo "</td>\n";
 
 								//echo "<td style='text-align: center; background-color: lightgreen;'>Modif</td>\n";
-								echo "<td class='modif'>Modif</td>\n";
+								echo "<td class='modif'><label for='check_".$cpt."'>Modif</label></td>\n";
 
 								// ELENOET:
 								echo "<td style='text-align: center;'>";
+								echo "<label for='check_".$cpt."'>";
 								echo "$affiche[4]";
+								echo "</label>";
 //								echo "<input type='hidden' name='modif_".$cpt."_elenoet' value='$affiche[4]' />\n";
 								echo "</td>\n";
 								// ELE_ID:
 								echo "<td style='text-align: center;'>";
+								echo "<label for='check_".$cpt."'>";
 								echo "$affiche[5]";
+								echo "</label>";
 //								echo "<input type='hidden' name='modif_".$cpt."_eleid' value='$affiche[5]' />\n";
 //								echo "<input type='hidden' name='modif_".$cpt."_login' value='$lig_ele->login' />\n";
 								echo "</td>\n";
@@ -2673,6 +2677,7 @@ $update_tempo4=mysql_query($sql);
 								if(stripslashes($lig_ele->nom)!=stripslashes($affiche[0])){
 									//echo " background-color:lightgreen;'>";
 									echo " class='modif'>";
+									echo "<label for='check_".$cpt."'>";
 									if($lig_ele->nom!=''){
 										echo stripslashes($lig_ele->nom)." <font color='red'>-&gt;</font>\n";
 									}
@@ -2680,9 +2685,11 @@ $update_tempo4=mysql_query($sql);
 								else{
 									//echo "'>";
 									echo ">";
+									echo "<label for='check_".$cpt."'>";
 								}
 								echo stripslashes($affiche[0]);
 //								echo "<input type='hidden' name='modif_".$cpt."_nom' value=\"$affiche[0]\" />\n";
+								echo "</label>";
 								echo "</td>\n";
 
 								//echo "<td style='text-align: center;";
@@ -2690,6 +2697,7 @@ $update_tempo4=mysql_query($sql);
 								if(stripslashes($lig_ele->prenom)!=stripslashes($affiche[1])){
 									//echo " background-color:lightgreen;'>";
 									echo " class='modif'>";
+									echo "<label for='check_".$cpt."'>";
 									if($lig_ele->prenom!=''){
 										echo stripslashes($lig_ele->prenom)." <font color='red'>-&gt;</font>\n";
 									}
@@ -2697,9 +2705,11 @@ $update_tempo4=mysql_query($sql);
 								else{
 									//echo "'>";
 									echo ">";
+									echo "<label for='check_".$cpt."'>";
 								}
 								echo stripslashes($affiche[1]);
 //								echo "<input type='hidden' name='modif_".$cpt."_prenom' value=\"$affiche[1]\" />\n";
+								echo "</label>";
 								echo "</td>\n";
 
 								//echo "<td style='text-align: center;";
@@ -2707,6 +2717,7 @@ $update_tempo4=mysql_query($sql);
 								if($lig_ele->sexe!=$affiche[2]){
 									//echo " background-color:lightgreen;'>";
 									echo " class='modif'>";
+									echo "<label for='check_".$cpt."'>";
 									if($lig_ele->sexe!=''){
 										echo "$lig_ele->sexe <font color='red'>-&gt;</font>\n";
 									}
@@ -2714,9 +2725,11 @@ $update_tempo4=mysql_query($sql);
 								else{
 									//echo "'>";
 									echo ">";
+									echo "<label for='check_".$cpt."'>";
 								}
 								echo "$affiche[2]";
 //								echo "<input type='hidden' name='modif_".$cpt."_sexe' value='$affiche[2]' />\n";
+								echo "</label>";
 								echo "</td>\n";
 
 								//echo "<td style='text-align: center;";
@@ -2728,6 +2741,7 @@ $update_tempo4=mysql_query($sql);
 									if(($lig_ele->naissance!=$new_date)||($lig_ele->lieu_naissance!=stripslashes($affiche[11]))) {
 										//echo " background-color:lightgreen;'>";
 										echo " class='modif'>";
+										echo "<label for='check_".$cpt."'>";
 										if(($lig_ele->naissance!='')||($lig_ele->lieu_naissance!='')) {
 											if($lig_ele->naissance!='') {
 												echo "$lig_ele->naissance ";
@@ -2741,6 +2755,7 @@ $update_tempo4=mysql_query($sql);
 									else{
 										//echo "'>";
 										echo ">";
+										echo "<label for='check_".$cpt."'>";
 									}
 									echo "$new_date";
 
@@ -2749,6 +2764,7 @@ $update_tempo4=mysql_query($sql);
 									if($affiche[11]!="") {echo " à ".get_commune($affiche[11],1);}
 //									echo "<input type='hidden' name='modif_".$cpt."_naissance' value='$new_date' />\n";
 //									echo "<input type='hidden' name='modif_".$cpt."_lieu_naissance' value=\"".stripslashes($affiche[11])."\" />\n";
+									echo "</label>";
 									echo "</td>\n";
 								}
 								else {
@@ -2756,6 +2772,7 @@ $update_tempo4=mysql_query($sql);
 									if($lig_ele->naissance!=$new_date){
 										//echo " background-color:lightgreen;'>";
 										echo " class='modif'>";
+										echo "<label for='check_".$cpt."'>";
 										if($lig_ele->naissance!=''){
 											echo "$lig_ele->naissance <font color='red'>-&gt;</font>\n";
 										}
@@ -2763,9 +2780,11 @@ $update_tempo4=mysql_query($sql);
 									else{
 										//echo "'>";
 										echo ">";
+										echo "<label for='check_".$cpt."'>";
 									}
 									echo "$new_date";
 //									echo "<input type='hidden' name='modif_".$cpt."_naissance' value='$new_date' />\n";
+									echo "</label>";
 									echo "</td>\n";
 								}
 
@@ -2932,39 +2951,51 @@ $update_tempo4=mysql_query($sql);
 
 								echo "<td style='text-align: center;'><input type='checkbox' id='check_".$cpt."' name='new[]' value='$affiche[5]' /></td>\n";
 
-								echo "<td class='nouveau'>Nouveau</td>\n";
+								echo "<td class='nouveau'><label for='check_".$cpt."'>Nouveau</label></td>\n";
 
 
 								echo "<td style='text-align: center;'>";
+								echo "<label for='check_".$cpt."'>";
 								echo "$affiche[4]";
+								echo "</label>";
 								echo "</td>\n";
 
 								echo "<td style='text-align: center;'>";
+								echo "<label for='check_".$cpt."'>";
 								echo "$affiche[5]";
+								echo "</label>";
 								echo "</td>\n";
 
 								echo "<td style='text-align: center;'>";
+								echo "<label for='check_".$cpt."'>";
 								echo stripslashes($affiche[0]);
+								echo "</label>";
 								echo "</td>\n";
 
 								echo "<td style='text-align: center;'>";
+								echo "<label for='check_".$cpt."'>";
 								echo stripslashes($affiche[1]);
 //								echo "<input type='hidden' name='new_".$cpt."_prenom' value=\"$affiche[1]\" />\n";
+								echo "</label>";
 								echo "</td>\n";
 
 								echo "<td style='text-align: center;'>";
+								echo "<label for='check_".$cpt."'>";
 								echo "$affiche[2]";
 //								echo "<input type='hidden' name='new_".$cpt."_sexe' value='$affiche[2]' />\n";
+								echo "</label>";
 								echo "</td>\n";
 
 								$new_date=mb_substr($affiche[3],0,4)."-".mb_substr($affiche[3],4,2)."-".mb_substr($affiche[3],6,2);
 								echo "<td style='text-align: center;'>";
+								echo "<label for='check_".$cpt."'>";
 								echo "$new_date";
 								if($ele_lieu_naissance=="y") {
 									echo " à ".get_commune($affiche[11],1);
 //									echo "<input type='hidden' name='new_".$cpt."_lieu_naissance' value=\"".stripslashes($affiche[11])."\" />\n";
 								}
 //								echo "<input type='hidden' name='new_".$cpt."_naissance' value='$new_date' />\n";
+								echo "</label>";
 								echo "</td>\n";
 
 
@@ -3508,19 +3539,30 @@ $update_tempo4=mysql_query($sql);
 								$login_eleve = $temp1.'_'.$temp2;
 								*/
 								$login_ele_gen_type=getSettingValue('login_ele_gen_type');
-								if($login_ele_gen_type=='') {$login_ele_gen_type='name9_p';}
-								$login_eleve=generate_unique_login($tmp_nom, $tmp_prenom, 'name9_p', 'maj');
-		
-								// On teste l'unicité du login que l'on vient de créer
-								$k = 2;
-								$test_unicite = 'no';
-								$temp = $login_eleve;
-								while ($test_unicite != 'yes') {
-									//$test_unicite = test_unique_e_login($login_eleve,$i);
-									$test_unicite = test_unique_login($login_eleve);
-									if ($test_unicite != 'yes') {
-										$login_eleve = $temp.$k;
-										$k++;
+								//if($login_ele_gen_type=='') {$login_ele_gen_type='nnnnnnnnn_p';}
+								if(!check_format_login($login_ele_gen_type)) {
+									$login_ele_gen_type='nnnnnnnnn_p';
+
+									$sql="SELECT * FROM infos_actions WHERE titre='Format des logins générés';";
+									$test_ia=mysql_query($sql);
+									if(mysql_num_rows($test_ia)==0) {
+										enregistre_infos_actions("Format des logins générés","Le format des logins générés par Gepi pour les différentes catégories d'utilisateurs doit être contrôlé et revalidé dans la page <a href='./gestion/param_gen.php#format_login_pers'>Configuration générale</a>",array("administrateur"),'statut');
+									}
+								}
+								$login_eleve=generate_unique_login($tmp_nom, $tmp_prenom, $login_ele_gen_type, 'maj');
+
+								if(($login_eleve)&&($login_eleve!='')) {
+									// On teste l'unicité du login que l'on vient de créer
+									$k = 2;
+									$test_unicite = 'no';
+									$temp = $login_eleve;
+									while ($test_unicite != 'yes') {
+										//$test_unicite = test_unique_e_login($login_eleve,$i);
+										$test_unicite = test_unique_login($login_eleve);
+										if ($test_unicite != 'yes') {
+											$login_eleve = $temp.$k;
+											$k++;
+										}
 									}
 								}
 							}
@@ -6569,7 +6611,7 @@ $update_tempo4=mysql_query($sql);
 					$ligne_parent.="</td>\n";
 
 					if($nouveau==0) {
-						$ligne_parent.="<td class='modif'>Modif</td>\n";
+						$ligne_parent.="<td class='modif'><label for='check_".$cpt."'>Modif</label></td>\n";
 					}
 					else {
 						$sql="SELECT 1=1 FROM temp_resp_pers_import trp,
@@ -6606,7 +6648,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						info_debug($sql);
 						$test=mysql_query($sql);
 						if(mysql_num_rows($test)>0) {
-							$ligne_parent.="<td class='nouveau'>Nouveau</td>\n";
+							$ligne_parent.="<td class='nouveau'><label for='check_".$cpt."'>Nouveau</label></td>\n";
 						}
 						else {
 							if($liste_resp_sans_eleve!=""){$liste_resp_sans_eleve.=",";}
@@ -6625,7 +6667,12 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						}
 					}
 
-					$ligne_parent.="<td style='text-align:center;'><a href='modify_resp.php?pers_id=$pers_id' target='_blank'>$pers_id</a>";
+					if($nouveau==0){
+						$ligne_parent.="<td style='text-align:center;'><a href='modify_resp.php?pers_id=$pers_id' title='Afficher la fiche parent' target='_blank'>$pers_id</a>";
+					}
+					else {
+						$ligne_parent.="<td style='text-align:center;'>$pers_id";
+					}
 					//$ligne_parent.="<input type='hidden' name='modif_".$cpt."_pers_id' value='$pers_id' />\n";
 					//$ligne_parent.="<input type='text' name='modif_".$cpt."_pers_id' value='$pers_id' />\n";
 					$ligne_parent.="</td>\n";
@@ -6640,6 +6687,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 					if($nouveau==0){
 						if(stripslashes($lig_pers2->nom)!=stripslashes($nom1)){
 							$ligne_parent.=" class='modif'>";
+							$ligne_parent.="<label for='check_".$cpt."'>";
 							if($nom1!=''){
 								$ligne_parent.=stripslashes($nom1)." <font color='red'>-&gt;</font>\n";
 							}
@@ -6648,18 +6696,22 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						}
 						else{
 							$ligne_parent.=">";
+							$ligne_parent.="<label for='check_".$cpt."'>";
 						}
 					}
 					else{
 						$ligne_parent.=">";
+						$ligne_parent.="<label for='check_".$cpt."'>";
 					}
 					$ligne_parent.=stripslashes($lig_pers2->nom);
+					$ligne_parent.="</label>";
 					$ligne_parent.="</td>\n";
 
 					$ligne_parent.="<td";
 					if($nouveau==0){
 						if(stripslashes($lig_pers2->prenom)!=stripslashes($prenom1)){
 							$ligne_parent.=" class='modif'>";
+							$ligne_parent.="<label for='check_".$cpt."'>";
 							if($prenom1!=''){
 								$ligne_parent.=stripslashes($prenom1)." <font color='red'>-&gt;</font>\n";
 							}
@@ -6668,12 +6720,15 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						}
 						else{
 							$ligne_parent.=">";
+							$ligne_parent.="<label for='check_".$cpt."'>";
 						}
 					}
 					else{
 						$ligne_parent.=">";
+						$ligne_parent.="<label for='check_".$cpt."'>";
 					}
 					$ligne_parent.=stripslashes($lig_pers2->prenom);
+					$ligne_parent.="</label>";
 					$ligne_parent.="</td>\n";
 
 
@@ -7316,11 +7371,15 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								echo "\n<span style='color:blue;'>";
 
 								if($nb_comptes_resp>0) {
-									$info_action_titre="Nouveau responsable&nbsp;: ".remplace_accents(stripslashes($lig->nom)." ".stripslashes($lig->prenom))." ($lig1->col2)";
-									$info_action_texte="Vous souhaitez peut-être créer un compte pour ce nouveau responsable&nbsp;: <a href='utilisateurs/create_responsable.php?critere_recherche=$lig->nom&afficher_tous_les_resp=n'>".remplace_accents(stripslashes($lig->nom)." ".stripslashes($lig->prenom))."</a>.";
-									$info_action_destinataire=array("administrateur");
-									$info_action_mode="statut";
-									enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+									$sql="SELECT 1=1 FROM temp_responsables2_import WHERE pers_id='".$lig1->col2."' AND (resp_legal='1' OR resp_legal='2');";
+									$test_resp_legal=mysql_query($sql);
+									if(mysql_num_rows($test_resp_legal)>0) {
+										$info_action_titre="Nouveau responsable&nbsp;: ".remplace_accents(stripslashes($lig->nom)." ".stripslashes($lig->prenom))." ($lig1->col2)";
+										$info_action_texte="Vous souhaitez peut-être créer un compte pour ce nouveau responsable&nbsp;: <a href='utilisateurs/create_responsable.php?critere_recherche=$lig->nom&afficher_tous_les_resp=n'>".remplace_accents(stripslashes($lig->nom)." ".stripslashes($lig->prenom))."</a>.";
+										$info_action_destinataire=array("administrateur");
+										$info_action_mode="statut";
+										enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+									}
 								}
 							}
 							else{
@@ -7937,14 +7996,19 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 				if(isset($suppr_resp)){
 					// On modifie la valeur de col1 pour les ele_id/pers_id supprimés pour ne pas les re-parcourir:
 					for($i=0;$i<count($suppr_resp);$i++){
+						$tab_tmp=explode("_",$suppr_resp[$i]);
+						$ele_id=$tab_tmp[1];
+						$pers_id=$tab_tmp[2];
+
 						$sql="UPDATE tempo2 SET col1='t_diff_suppr' WHERE col2='$suppr_resp[$i]';";
+						//echo "$sql<br />";
 						info_debug($sql);
 						$update=mysql_query($sql);
-					}
 
-					$sql="DELETE FROM responsables2 WHERE WHERE pers_id='$suppr_resp[$i]';";
-					info_debug($sql);
-					$nettoyage=mysql_query($sql);
+						$sql="DELETE FROM responsables2 WHERE WHERE pers_id='$pers_id';";
+						info_debug($sql);
+						$nettoyage=mysql_query($sql);
+					}
 				}
 
 				if(isset($modif)){
@@ -8313,7 +8377,16 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 
 							$ligne_courante.="<td style='background-color:red;'>&nbsp;</td>\n";
 							//$ligne_courante.="<td colspan='5'>Aucune personne associée???</td>\n";
-							$ligne_courante.="<td colspan='7'>Aucune personne associée???</td>\n";
+							$ligne_courante.="<td colspan='7'>Aucune personne associée ou personne non ajoutée dans l'étape PERSONNES\n";
+
+							$sql="SELECT * FROM temp_resp_pers_import WHERE pers_id='$pers_id';";
+							$res_temp_pers=mysql_query($sql);
+							if(mysql_num_rows($res_temp_pers)>0) {
+								$lig_tmp_resp=mysql_fetch_object($res_temp_pers);
+								$ligne_courante.="(<em>$lig_tmp_resp->nom $lig_tmp_resp->prenom</em>)";
+							}
+
+							$ligne_courante.=".</td>\n";
 							info_debug("Aucune personne associée???\n");
 
 							//=========================
@@ -8339,7 +8412,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 							$ligne_courante.="</td>\n";
 
 							//$ligne_courante.="<td style='text-align:center; background-color: rgb(150, 200, 240);'>Nouveau</td>\n";
-							$ligne_courante.="<td class='nouveau'>Nouveau</td>\n";
+							$ligne_courante.="<td class='nouveau'><label for='check_".$cpt."'>Nouveau</label></td>\n";
 
 							$ligne_courante.="<td style='text-align:center;'>\n";
 							$ligne_courante.="$pers_id";
@@ -8347,18 +8420,15 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 							$ligne_courante.="</td>\n";
 
 							$ligne_courante.="<td style='text-align:center;'>\n";
-							// 20120407
-							//$ligne_courante.="<a href='../responsables/modify_resp.php?pers_id=$pers_id' target='_blank'>";
+							$ligne_courante.="<label for='check_".$cpt."'>";
 							$ligne_courante.="$lig2->nom";
-							//$ligne_courante.="</a>";
-							//$ligne_courante.="<input type='hidden' name='new_".$cpt."_resp_nom' value=\"$lig2->nom\" />\n";
+							$ligne_courante.="</label>";
 							$ligne_courante.="</td>\n";
 
 							$ligne_courante.="<td style='text-align:center;'>\n";
-							//$ligne_courante.="<a href='../responsables/modify_resp.php?pers_id=$pers_id' target='_blank'>";
+							$ligne_courante.="<label for='check_".$cpt."'>";
 							$ligne_courante.="$lig2->prenom";
-							//$ligne_courante.="</a>";
-							//$ligne_courante.="<input type='hidden' name='new_".$cpt."_resp_prenom' value=\"$lig2->prenom\" />\n";
+							$ligne_courante.="</label>";
 							$ligne_courante.="</td>\n";
 
 							// Existe-t-il déjà un numéro de responsable légal 1 ou 2 correspondant au nouvel arrivant?
@@ -8451,7 +8521,8 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 							$ligne_courante.="</td>\n";
 						}
 						else{
-							$ligne_courante.="<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='$pers_id' /></td>\n";
+							//$ligne_courante.="<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='$pers_id' /></td>\n";
+							$ligne_courante.="<td style='text-align:center;'><input type='checkbox' name='suppr_resp[]' value='t_".$ele_id."_".$pers_id."' /></td>\n";
 							$temoin_suppr_resp="y";
 						}
 						//=========================
@@ -8520,27 +8591,27 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								$ligne_courante.="</td>\n";
 
 								//$ligne_courante.="<td style='text-align:center; background-color:lightgreen;'>Modif</td>\n";
-								$ligne_courante.="<td class='modif'>Modif</td>\n";
+								$ligne_courante.="<td class='modif'><label for='check_".$cpt."'>Modif</label></td>\n";
 
 								$ligne_courante.="<td style='text-align:center;'>\n";
+								$ligne_courante.="<a href='../responsables/modify_resp.php?pers_id=$pers_id' target='_blank'>";
 								$ligne_courante.="$pers_id";
+								$ligne_courante.="</a>";
 								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_pers_id' value='$pers_id' />\n";
 								$ligne_courante.="</td>\n";
 
 								$ligne_courante.="<td style='text-align:center;'>\n";
-								// 20120407
-								$ligne_courante.="<a href='../responsables/modify_resp.php?pers_id=$pers_id' target='_blank'>";
+								$ligne_courante.="<label for='check_".$cpt."'>";
 								$ligne_courante.="$lig2->nom";
-								$ligne_courante.="</a>";
+								$ligne_courante.="</label>";
 								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_nom' value=\"".mysql_real_escape_string($lig2->nom)."\" />\n";
 								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_nom' value=\"".$lig2->nom."\" />\n";
 								$ligne_courante.="</td>\n";
 
 								$ligne_courante.="<td style='text-align:center;'>\n";
-								// 20120407
-								$ligne_courante.="<a href='../responsables/modify_resp.php?pers_id=$pers_id' target='_blank'>";
+								$ligne_courante.="<label for='check_".$cpt."'>";
 								$ligne_courante.="$lig2->prenom";
-								$ligne_courante.="</a>";
+								$ligne_courante.="</label>";
 								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_prenom' value=\"".mysql_real_escape_string($lig2->nom)."\" />\n";
 								//$ligne_courante.="<input type='hidden' name='modif_".$cpt."_resp_prenom' value=\"".$lig2->prenom."\" />\n";
 								$ligne_courante.="</td>\n";

@@ -33,6 +33,7 @@ h2 {
 }
 
 table.boireaus {
+	margin-top: 1em;
 	border-style: solid;
 	border-width: 1px;
 	border-color: black;

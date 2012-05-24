@@ -109,7 +109,7 @@ function getSettingAOui($_name)
  * Utilisez cette fonction ponctuellement, Si vous devez sauvegarder plusieurs réglages,
  * vous devriez plutôt écrire votre propre code
  * 
- * @global array
+ * @global array $gepiSettings
  * @param text $_name Le nom du réglage
  * @param text $_value La valeur du réglage
  * @return bool TRUE si tout s'est bien passé, FALSE sinon
@@ -130,4 +130,28 @@ function saveSetting($_name, $_value)
     $gepiSettings[$_name] = $_value;
     return (TRUE);
 }
+
+/**
+ * Supprime une entrée dans la table setting
+ *
+ * Utilisez cette fonction ponctuellement, Si vous devez supprimer plusieurs réglages,
+ * vous devriez plutôt écrire votre propre code
+ * 
+ * @global array $gepiSettings
+ * @param text $_name Le nom du réglage
+ * @return bool TRUE si tout s'est bien passé, FALSE sinon
+ */
+function deleteSetting($_name)
+{
+    global $gepiSettings;
+    $R=mysql_query("SELECT * FROM setting WHERE NAME='".$_name."' LIMIT 1");
+		if (mysql_num_rows($R)>0) {
+		$sql = "DELETE FROM setting where NAME = \"" . $_name . "\"";
+		$res = sql_query($sql);
+		if ( ! $res) return (FALSE);
+		unset($GLOBALS["gepiSettings"][$_name]);
+		return (TRUE);
+    } else return (FALSE);
+}
+
 ?>

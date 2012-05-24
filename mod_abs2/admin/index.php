@@ -316,12 +316,12 @@ echo add_token_field();
 	<input type="hidden" name="is_posted" value="1" />
 </p>
 <p>
-	<input type="checkbox" name="abs2_import_manuel_bulletin" value="y"
+	<input type="checkbox" name="abs2_import_manuel_bulletin" id="abs2_import_manuel_bulletin" value="y"
 	<?php if (getSettingValue("abs2_import_manuel_bulletin")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_import_manuel_bulletin">&nbsp;Utiliser un import (manuel, gep ou sconet) pour les bulletins et fiches élève.</label>
+	<label for="abs2_import_manuel_bulletin">&nbsp;Utiliser un import (<em>manuel, gep ou sconet</em>) pour les bulletins et fiches élève.</label>
 </p>
 <p>
-	<input type="checkbox" name="abs2_alleger_abs_du_jour" value="y"
+	<input type="checkbox" name="abs2_alleger_abs_du_jour" id="abs2_alleger_abs_du_jour" value="y"
 	<?php if (getSettingValue("abs2_alleger_abs_du_jour")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_alleger_abs_du_jour">&nbsp;Alleger les calculs de la page absence du jour : désactive la recherche des saisies contradictoires et des présences.</label>
 </p>
@@ -345,34 +345,34 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est l
 	<input type="hidden" name="is_posted" value="1" />
 </p>
 <p>
-	<input type="checkbox" name="abs2_saisie_prof_decale_journee" value="y"
+	<input type="checkbox" name="abs2_saisie_prof_decale_journee" id="abs2_saisie_prof_decale_journee" value="y"
 	<?php if (getSettingValue("abs2_saisie_prof_decale_journee")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_saisie_prof_decale_journee">&nbsp;Permettre la saisie décalée sur une même journée par les professeurs</label>
 </p>
 <p>
-	<input type="checkbox" name="abs2_saisie_prof_decale" value="y"
+	<input type="checkbox" name="abs2_saisie_prof_decale" id="abs2_saisie_prof_decale" value="y"
 	<?php if (getSettingValue("abs2_saisie_prof_decale")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_saisie_prof_decale">&nbsp;Permettre la saisie décalée sans limite de temps par les professeurs</label>
 </p>
 <p>
-	<input type="checkbox" name="abs2_saisie_prof_hors_cours" value="y"
+	<input type="checkbox" name="abs2_saisie_prof_hors_cours" id="abs2_saisie_prof_hors_cours" value="y"
 	<?php if (getSettingValue("abs2_saisie_prof_hors_cours")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_saisie_prof_hors_cours">&nbsp;Permettre la saisie d'une absence hors des cours prévus dans l'emploi du temps du professeur</label>
 </p>
 <p>
-	<input type="checkbox" name="abs2_modification_saisie_une_heure" value="y"
+	<input type="checkbox" name="abs2_modification_saisie_une_heure" id="abs2_modification_saisie_une_heure" value="y"
 	<?php if (getSettingValue("abs2_modification_saisie_une_heure")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_modification_saisie_une_heure">&nbsp;Permettre la modification d'une saisie par le professeur dans l'heure qui a suivi sa création</label>
 </p>
 <p>
-	<input type="checkbox" name="abs2_cacher_creneaux_precedents" value="y"
+	<input type="checkbox" name="abs2_cacher_creneaux_precedents" id="abs2_cacher_creneaux_precedents" value="y"
 	<?php if (getSettingValue("abs2_cacher_creneaux_precedents")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_cacher_creneaux_precedents">&nbsp;Cacher les informations des créneaux précédents lors de la saisie</label>
 </p>
 <p>
-	<input type="checkbox" name="abs2_afficher_saisies_creneau_courant" value="y"
+	<input type="checkbox" name="abs2_afficher_saisies_creneau_courant" id="abs2_afficher_saisies_creneau_courant" value="y"
 	<?php if (getSettingValue("abs2_afficher_saisies_creneau_courant")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_afficher_saisies_creneau_courant">&nbsp;Afficher les informations préalablement existantes sur le créneau en cours de saisie</label>
+	<label for="abs2_afficher_saisies_creneau_courant">&nbsp;Afficher en rouge le créneau en cours de saisie s'il existe déjà une autre saisie</label>
 </p>
 
 <h2>Envoi des SMS</h2>

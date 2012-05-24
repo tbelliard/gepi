@@ -65,6 +65,8 @@ if($gepi_denom_mention=="") {
 }
 //================================
 
+$generer_fichiers_pdf_archivage=isset($_POST['generer_fichiers_pdf_archivage']) ? $_POST['generer_fichiers_pdf_archivage'] : (isset($_GET['generer_fichiers_pdf_archivage']) ? $_GET['generer_fichiers_pdf_archivage'] : "n");
+
 $intercaler_releve_notes=isset($_POST['intercaler_releve_notes']) ? $_POST['intercaler_releve_notes'] : NULL;
 
 $mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : NULL;
@@ -164,7 +166,8 @@ if(!isset($tab_id_classe)) {
 	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 	if((($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes'))||
 	(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiProfImprBulSettings')=='yes'))||
-	(($_SESSION['statut']=='administrateur')&&(getSettingValue('GepiAdminImprBulSettings')=='yes'))) {
+	(($_SESSION['statut']=='administrateur')&&(getSettingValue('GepiAdminImprBulSettings')=='yes'))||
+	(($_SESSION['statut']=='cpe')&&(getSettingValue('GepiCpeImprBulSettings')=='yes'))) {
 		if($type_bulletin_par_defaut=='pdf') {
 			echo " | <a id='lien_param_bull' href='param_bull_pdf.php' target='_blank'>Paramètres d'impression des bulletins PDF</a>";
 		}
@@ -187,6 +190,12 @@ if(!isset($tab_id_classe)) {
 		die();
 	}
 
+	if (($_SESSION['statut'] == 'cpe') and getSettingValue("GepiCpeImprBul")!='yes') {
+		echo "<p>Droits insuffisants pour effectuer cette opération</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
 	// Liste des classes avec élève:
 	//$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE c.id=jec.id_classe ORDER BY c.classe;";
 	if ($_SESSION["statut"] == "scolarite") {
@@ -202,7 +211,12 @@ if(!isset($tab_id_classe)) {
 		$message_0="Aucune classe avec élève n'a été trouvée.";
 	}
 	elseif ($_SESSION["statut"] == "professeur") {
-		$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs jep, j_eleves_classes jec WHERE (jep.professeur='".$_SESSION['login']."' AND jep.login = jec.login AND jec.id_classe = c.id);";
+		$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs jep, j_eleves_classes jec WHERE (jep.professeur='".$_SESSION['login']."' AND jep.login = jec.login AND jec.id_classe = c.id) ORDER BY c.classe;";
+
+			$message_0="Aucune classe (<i>avec élève</i>) ne vous est affectée pour l'édition des bulletins.";
+	}
+	elseif ($_SESSION["statut"] == "cpe") {
+		$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_cpe jecpe, j_eleves_classes jec WHERE (jecpe.cpe_login='".$_SESSION['login']."' AND jecpe.e_login = jec.login AND jec.id_classe = c.id) ORDER BY c.classe;";
 
 			$message_0="Aucune classe (<i>avec élève</i>) ne vous est affectée pour l'édition des bulletins.";
 	}
@@ -295,7 +309,8 @@ elseif((!isset($choix_periode_num))||(!isset($tab_periode_num))) {
 	echo "<a href='bull_index.php'>Choisir d'autres classes</a>\n";
 	if((($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes'))||
 	(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiProfImprBulSettings')=='yes'))||
-	(($_SESSION['statut']=='administrateur')&&(getSettingValue('GepiAdminImprBulSettings')=='yes'))) {
+	(($_SESSION['statut']=='administrateur')&&(getSettingValue('GepiAdminImprBulSettings')=='yes'))||
+	(($_SESSION['statut']=='cpe')&&(getSettingValue('GepiCpeImprBulSettings')=='yes'))) {
 		if($type_bulletin_par_defaut=='pdf') {
 			echo " | <a id='lien_param_bull' href='param_bull_pdf.php' target='_blank'>Paramètres d'impression des bulletins PDF</a>";
 		}
@@ -414,7 +429,8 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."' onClick=\"document.forms['form_retour'].submit();return false;\">Choisir d'autres périodes</a>\n";
 	if((($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes'))||
 	(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiProfImprBulSettings')=='yes'))||
-	(($_SESSION['statut']=='administrateur')&&(getSettingValue('GepiAdminImprBulSettings')=='yes'))) {
+	(($_SESSION['statut']=='administrateur')&&(getSettingValue('GepiAdminImprBulSettings')=='yes'))||
+	(($_SESSION['statut']=='cpe')&&(getSettingValue('GepiCpeImprBulSettings')=='yes'))) {
 		if($type_bulletin_par_defaut=='pdf') {
 			echo " | <a id='lien_param_bull' href='param_bull_pdf.php' target='_blank'>Paramètres d'impression des bulletins PDF</a>";
 		}
@@ -706,7 +722,6 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 	echo "</blockquote>\n";
 	echo "</div>\n";
 	//===========================================
-
 
 	// L'admin peut avoir accès aux bulletins, mais il n'a de toute façon pas accès au relevés de notes.
 	$sql="SELECT 1=1 FROM droits WHERE id='/cahier_notes/visu_releve_notes_bis.php' AND ".$_SESSION['statut']."='V';";
@@ -1172,6 +1187,49 @@ else {
 	decompte_debug($motif,"$motif avant la boucle classes");
 	//==============================
 
+	// 20120419
+	$tableau_eleve=array();
+	$tableau_eleve['login']=array();
+	$tableau_eleve['no_gep']=array();
+	$tableau_eleve['nom_prenom']=array();
+
+	// 20120505...
+	// Si on en est aux élèves ayant changé de classe... récupérer les classes de l'élève en cours
+	/*
+	if(isset($_POST['tab_login_ele_chgt_classe'])) {
+		$tab_login_ele_chgt_classe=$_POST['tab_login_ele_chgt_classe'];
+		unset($tab_id_classe);
+		$tab_id_classe=array();
+		for($loop=0;$loop_classe<count($tab_login_ele_chgt_classe);$loop_classe++) {
+			$sql="SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login='".$tab_login_ele_chgt_classe[$loop]."' ORDER BY periode;";
+			$res_classes=mysql_query($sql);
+			if(mysql_num_rows($res_classes)>0) {
+				while($lig_classe=mysql_fetch_object($res_classes)) {
+					if(!) {}
+				}
+			}
+		}
+	}
+	*/
+	if(isset($_POST['ele_chgt_classe'])) {
+		$sql="SELECT col1 AS login FROM tempo2 ORDER BY col1 LIMIT 1;";
+		$res_login_ele=mysql_query($sql);
+		if(mysql_num_rows($res_login_ele)>0) {
+			$lig_login_ele=mysql_fetch_object($res_login_ele);
+			$tab_restriction_ele=array();
+			$tab_restriction_ele[]=$lig_login_ele->login;
+
+			$sql="SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login='".$lig_login_ele->login."' ORDER BY periode;";
+			$res_classes=mysql_query($sql);
+			if(mysql_num_rows($res_classes)>0) {
+				$tab_id_classe=array();
+				while($lig_classe=mysql_fetch_object($res_classes)) {
+					$tab_id_classe[]=$lig_classe->id_classe;
+				}
+			}
+		}
+	}
+
 	// Boucle sur les classes
 	for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
 
@@ -1460,6 +1518,9 @@ else {
 		elseif ($_SESSION["statut"] == "professeur") {
 			$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs jep, j_eleves_classes jec WHERE (jep.professeur='".$_SESSION['login']."' AND jep.login = jec.login AND jec.id_classe = c.id AND c.id='$id_classe');";
 		}
+		elseif ($_SESSION["statut"] == "cpe") {
+			$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_cpe jecpe, j_eleves_classes jec WHERE (jecpe.cpe_login='".$_SESSION['login']."' AND jecpe.e_login = jec.login AND jec.id_classe = c.id AND c.id='$id_classe');";
+		}
 		else {
 			// On ne devrait pas arriver jusque-là...
 			echo "<p>Droits insuffisants pour effectuer cette opération</p>\n";
@@ -1514,6 +1575,36 @@ else {
 		$res_eff_total_classe=mysql_query($sql);
 		$eff_total_classe=mysql_num_rows($res_eff_total_classe);
 
+		//=========================================================================
+		// Pour l'archivage des bulletins PDF:
+		if(((isset($_POST['tous_les_eleves']))&&($_POST['tous_les_eleves']=='y'))&&(!isset($_POST['ele_chgt_classe']))) {
+			// Si on en est aux élèves ayant changé de classe, on les parcourt un par un et $tab_restriction_ele est rempli plus haut
+
+			// On se restreint à une partie de la classe:
+			$arch_bull_eff_tranche=getPref($_SESSION['login'],'arch_bull_eff_tranche',10);
+
+			$tab_restriction_ele=array();
+			$sql="SELECT col2 AS login FROM tempo2 WHERE col1='$id_classe' ORDER BY col2 LIMIT $arch_bull_eff_tranche;";
+			$res_ele_tranche=mysql_query($sql);
+			if(mysql_num_rows($res_ele_tranche)>0) {
+				while($lig_ele_tranche=mysql_fetch_object($res_ele_tranche)) {
+					$tab_restriction_ele[]=$lig_ele_tranche->login;
+				}
+			}
+		}
+
+		// Pour l'archivage des bulletins PDF:
+		if((isset($_POST['toutes_les_periodes']))&&($_POST['toutes_les_periodes']=='y')) {
+			$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode;";
+			$res_periode=mysql_query($sql);
+			if(mysql_num_rows($res_periode)>0) {
+				$tab_periode_num=array();
+				while($lig_periode=mysql_fetch_object($res_periode)) {
+					$tab_periode_num[]=$lig_periode->num_periode;
+				}
+			}
+		}
+		//=========================================================================
 
 		// Boucle sur les périodes
 		for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
@@ -1628,6 +1719,24 @@ else {
 			// tab_ele_".$i."_".$j.
 			//$tab_bulletin[$id_classe][$periode_num]['selection_eleves']=array();
 			$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num]) ? $_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num] : array();
+			if((isset($_POST['tous_les_eleves']))&&($_POST['tous_les_eleves']=='y')) {
+				$sql="SELECT login FROM j_eleves_classes WHERE id_classe='".$id_classe."' AND periode='".$periode_num."' ORDER BY login;";
+				$res_liste_ele=mysql_query($sql);
+				if(mysql_num_rows($res_liste_ele)>0) {
+					$tab_selection_eleves=array();
+					while($lig_liste_ele=mysql_fetch_object($res_liste_ele)) {
+						if(in_array($lig_liste_ele->login, $tab_restriction_ele)) {
+							$tab_selection_eleves[]=$lig_liste_ele->login;
+							
+							// Ménage:
+							$sql="DELETE FROM tempo2 WHERE col1='$id_classe' AND col2='$lig_liste_ele->login';";
+							$menage=mysql_query($sql);
+							// On va faire plusieurs fois le ménage (plusieurs périodes) pour un même élève,
+							// mais la liste des logins à retenir est faite hors de la boucle sur les périodes.
+						}
+					}
+				}
+			}
 			$tab_bulletin[$id_classe][$periode_num]['selection_eleves']=$tab_selection_eleves;
 
 
@@ -2929,6 +3038,12 @@ else {
 
 					// On affecte la partie élève $tab_ele dans $tab_bulletin
 					$tab_bulletin[$id_classe][$periode_num]['eleve'][$i]=$tab_ele;
+
+					if(!in_array($current_eleve_login[$i],$tableau_eleve['login'])) {
+						$tableau_eleve['login'][]=$current_eleve_login[$i];
+						$tableau_eleve['no_gep'][]=$tab_ele['no_gep'];
+						$tableau_eleve['nom_prenom'][]=remplace_accents($tab_ele['nom']."_".$tab_ele['prenom'],'all');
+					}
 				}
 			}
 		}
@@ -2952,6 +3067,144 @@ else {
 </script>\n";
 	}
 
+	// 20120419
+	if($generer_fichiers_pdf_archivage=='y') {
+
+		//**************** EN-TETE *********************
+		$titre_page = "Archivage des bulletins PDF";
+		require_once("../lib/header.inc.php");
+		//**************** FIN EN-TETE *****************
+
+		if(count($tab_id_classe)==1) {
+			$id_classe=$tab_id_classe[0];
+			$classe=get_class_from_id($id_classe);
+			echo "<p>Classe de ".$classe."</p>\n";
+		}
+
+		echo "<p>Patience...</p>\n";
+		flush();
+
+		//$dirname = "../backup/".getSettingValue("backup_directory")."/bulletins";
+		$dirname = "../temp/".get_user_temp_directory()."/".getPref($_SESSION['login'], 'dossier_archivage_pdf', 'bulletins_pdf_individuels_eleves_'.strftime('%Y%m%d'));
+		@mkdir($dirname);
+		if(!file_exists($dirname)) {
+			echo "<p>ERREUR d'acces au dossier des bulletins: $dirname</p>";
+			die();
+		}
+
+		$arch_bull_nom_prenom=getPref($_SESSION['login'], 'arch_bull_nom_prenom', 'yes');
+		$arch_bull_INE=getPref($_SESSION['login'], 'arch_bull_INE', 'yes');
+		$arch_bull_annee_scolaire=getPref($_SESSION['login'], 'arch_bull_annee_scolaire', 'yes');
+		$arch_bull_date_edition=getPref($_SESSION['login'], 'arch_bull_date_edition', 'yes');
+		$arch_bull_classe=getPref($_SESSION['login'], 'arch_bull_classe', 'yes');
+
+		for($j=0;$j<count($tableau_eleve['login']);$j++) {
+			//send_file_download_headers('application/pdf','bulletin.pdf');
+
+			//$nom_fichier_bulletin = 'bulletin_'.$tableau_eleve['no_gep'][$j]."_".$tableau_eleve['nom_prenom'][$j]."_".$nom_bulletin.'.pdf';
+			//$nom_fichier_bulletin = 'bulletin_'.$tableau_eleve['no_gep'][$j]."_".$tableau_eleve['nom_prenom'][$j]."_".strftime("%Y%m%d").'.pdf';
+			//$nom_fichier_bulletin = 'bulletin_'.$tableau_eleve['nom_prenom'][$j]."_".$tableau_eleve['no_gep'][$j]."_annee_scolaire_".remplace_accents(getSettingValue('gepiYear'),"all")."_".strftime("%Y%m%d").'.pdf';
+
+			$nom_fichier_bulletin='bulletin';
+			if($arch_bull_nom_prenom=='yes') {$nom_fichier_bulletin.='_'.$tableau_eleve['nom_prenom'][$j];}
+			if($arch_bull_INE=='yes') {$nom_fichier_bulletin.='_'.$tableau_eleve['no_gep'][$j];}
+			if($arch_bull_annee_scolaire=='yes') {$nom_fichier_bulletin.="_annee_scolaire_".remplace_accents(getSettingValue('gepiYear'),"all");}
+			if($arch_bull_date_edition=='yes') {$nom_fichier_bulletin.="_".strftime("%Y%m%d");}
+			if($arch_bull_classe=='yes') {
+				if(isset($_POST['ele_chgt_classe'])) {
+					$tab_tmp_classe=get_class_from_ele_login($tableau_eleve['login']);
+					if(isset($tab_tmp_classe['liste'])) {
+						$nom_fichier_bulletin.="_".remplace_accents($tab_tmp_classe['liste'], 'all');
+					}
+				}
+				elseif(isset($classe)) {
+					$nom_fichier_bulletin.="_".$classe;
+				}
+			}
+			$nom_fichier_bulletin.='.pdf';
+
+			//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
+			$pdf=new bul_PDF('p', 'mm', 'A4');
+			$nb_eleve_aff = 1;
+			$categorie_passe = '';
+			$categorie_passe_count = 0;
+			$pdf->SetCreator($gepiSchoolName);
+			$pdf->SetAuthor($gepiSchoolName);
+			$pdf->SetKeywords('');
+			$pdf->SetSubject('Bulletin');
+			$pdf->SetTitle('Bulletin');
+			$pdf->SetDisplayMode('fullwidth', 'single');
+			$pdf->SetCompression(TRUE);
+			$pdf->SetAutoPageBreak(TRUE, 5);
+
+			$responsable_place = 0;
+
+			// A faire: Forcer 1 seul bulletin par parent
+
+			for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
+				$id_classe=$tab_id_classe[$loop_classe];
+				$classe=get_class_from_id($id_classe);
+
+				for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
+					$periode_num=$tab_periode_num[$loop_periode_num];
+
+					for($i=0;$i<$tab_bulletin[$id_classe][$periode_num]['eff_classe'];$i++) {
+
+						if(isset($tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
+							if((isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login']))&&($tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login']==$tableau_eleve['login'][$j])) {
+								bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
+							}
+						}
+					}
+				}
+			}
+
+			echo $pdf->Output($dirname."/".$nom_fichier_bulletin,'F');
+			echo "<p><a href='$dirname/$nom_fichier_bulletin'>$nom_fichier_bulletin</a></p>\n";
+			flush();
+		}
+
+		$archivage_fichiers_bull_pdf_auto=isset($_POST['archivage_fichiers_bull_pdf_auto']) ? $_POST['archivage_fichiers_bull_pdf_auto'] : (isset($_GET['archivage_fichiers_bull_pdf_auto']) ? $_GET['archivage_fichiers_bull_pdf_auto'] : "n");
+
+		if(isset($_POST['ele_chgt_classe'])) {
+			//get_nom_prenom_eleve($tab_restriction_ele[0])
+			echo "<p>Bulletins de ".$tableau_eleve['nom_prenom'][0]." générés.<br />";
+			echo "<a href='../mod_annees_anterieures/archivage_bull_pdf.php?id_classe=$id_classe&amp;ele_chgt_classe=y&amp;generer_fichiers_pdf_archivage=y&amp;archivage_fichiers_bull_pdf_auto=$archivage_fichiers_bull_pdf_auto".add_token_in_url()."'>Suite</a>";
+
+			if($archivage_fichiers_bull_pdf_auto=='y') {
+				echo "<script type='text/javascript'>
+	function archivage_suite() {
+		document.location='../mod_annees_anterieures/archivage_bull_pdf.php?id_classe=$id_classe&ele_chgt_classe=y&generer_fichiers_pdf_archivage=y&archivage_fichiers_bull_pdf_auto=$archivage_fichiers_bull_pdf_auto".add_token_in_url(false)."';
+	}
+	setTimeout('archivage_suite()',2000);
+</script>\n";
+			}
+		}
+		else {
+			$sql="SELECT col2 AS login FROM tempo2 WHERE col1='$id_classe' ORDER BY col2 LIMIT $arch_bull_eff_tranche;";
+			$res_ele_classe=mysql_query($sql);
+			if(mysql_num_rows($res_ele_classe)>0) {
+				echo "Classe de $classe en partie traitée (<em>il reste ".mysql_num_rows($res_ele_classe)." élève(s)</em>).<br />";
+			}
+			else {
+				echo "Classe de $classe traitée.<br />";
+			}
+			echo "<a href='../mod_annees_anterieures/archivage_bull_pdf.php?id_classe=$id_classe&amp;generer_fichiers_pdf_archivage=y&amp;archivage_fichiers_bull_pdf_auto=$archivage_fichiers_bull_pdf_auto".add_token_in_url()."'>Suite</a>";
+
+			if($archivage_fichiers_bull_pdf_auto=='y') {
+				echo "<script type='text/javascript'>
+	function archivage_suite() {
+		document.location='../mod_annees_anterieures/archivage_bull_pdf.php?id_classe=$id_classe&generer_fichiers_pdf_archivage=y&archivage_fichiers_bull_pdf_auto=$archivage_fichiers_bull_pdf_auto".add_token_in_url(false)."';
+	}
+	setTimeout('archivage_suite()',2000);
+</script>\n";
+			}
+		}
+
+		require("../lib/footer.inc.php");
+		die();
+	}
+
 	if($mode_bulletin=="pdf") {
 		// définition d'une variable
 		$hauteur_pris = 0;
@@ -2960,7 +3213,17 @@ else {
 		* début de la génération du fichier PDF  *
 		* ****************************************/
 
-		if((!isset($bull_pdf_debug))||($bull_pdf_debug!='y')) {
+		/*
+		Faire la liste de tous les logins élèves
+		Boucler ensuite sur les logins élèves, puis sur les périodes, puis sur les classes
+		Retenir ce qui concerne le login courant et générer un fichier à chaque fois
+		
+		Ou alors remplir autrement le tableau $tab_bulletin
+		*/
+
+		//if((!isset($bull_pdf_debug))||($bull_pdf_debug!='y')) {
+		// 20120418
+		if(((!isset($bull_pdf_debug))||($bull_pdf_debug!='y'))&&($generer_fichiers_pdf_archivage!='y')) {
 			send_file_download_headers('application/pdf','bulletin.pdf');
 		}
 		//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
@@ -2980,6 +3243,7 @@ else {
 		$responsable_place = 0;
 	}
 
+	// Compteur pour insérer un saut dans les bulletins HTML
 	$compteur_bulletins=0;
 	for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
 		$id_classe=$tab_id_classe[$loop_classe];
@@ -3126,32 +3390,6 @@ else {
 
 		}
 	}
-
-	/*
-	echo "<style type='text/css'>
-	@media screen{
-		.espacement_bulletins {
-			width: 100%;
-			height: 50px;
-			border:1px solid red;
-			background-color: white;
-		}
-	}
-	@media print{
-		.espacement_bulletins {
-			display:none;
-		}
-
-		#remarques_bas_de_page {
-			display:none;
-		}
-
-		.alerte_erreur {
-			display:none;
-		}
-	}
-</style>\n";
-*/
 
 	if($mode_bulletin=="html") {
 		echo "<script type='text/javascript'>

@@ -72,21 +72,27 @@ require_once("../lib/share-csrf.inc.php");
  * Cette fonction ne peut être utilisée que si la valeur 'alea_nom_fichier' n'est pas définie dans la table setting
  * Renvoie un chaîne vide si tout s'est bien passé, les erreurs rencontrées sinon 
  */
-function encode_nom_photo_des_eleves($re_encoder)
+function encode_nom_photo_des_eleves($re_encoder=false,$alea_nom_photo="")
 	{
 	global $nb_modifs,$nb_erreurs,$gepiSettings;
 	$bilan="";
-	if (isset($gepiSettings['alea_nom_photo'])) return "La valeur 'alea_nom_photo' est déjà définie";
+	// tableau stockant les noms des fichiers photo
+	// on ne peut pas renommer les fichiers tout en parcourant le dossier photos
+	// sinon des fichiers peuvent être renommés plusieurs fois
+	$t_noms_photos=array();
+
+	if (getSettingAOui('encodage_nom_photo') && $re_encoder==false) return "L'encodage est déjà activé.<br />";
 	else
 		{
-		// on crée la valeur 'alea_nom_photo' dans la table setting
-		if (!active_encode_nom_photo()) $bilan="Impossible de créer la valeur 'alea_nom_photo'<br />";
+		// on active ou réactive l'encodage
+		if (!active_encodage_nom_photo($alea_nom_photo)) $bilan="Impossible d'activer l'encodage dans la table 'setting').<br />";
 		else
 			{
 			// Cas du multisite
 			$rne="";
 			if (isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == 'y' && !$rne=$_COOKIE['RNE'])
 					$bilan="Multisite : erreur lors de la récupération du dossier photos de l'établissement.<br/>";
+
 			if ($bilan=="")
 				{
 				$rne=(isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y')?$rne=$_COOKIE['RNE']."/":"";
@@ -94,27 +100,134 @@ function encode_nom_photo_des_eleves($re_encoder)
 				$R_dossier_photos_eleves=opendir($dossier_photos_eleves);
 					while ($photo=readdir($R_dossier_photos_eleves))
 						{
-						if (is_file($dossier_photos_eleves.$photo) && $photo!="index.html")
+						if (is_file($dossier_photos_eleves.$photo) && pathinfo($dossier_photos_eleves.$photo,PATHINFO_EXTENSION)=="jpg" && $photo!="index.html")
 							{
-							$nom_photo=pathinfo($dossier_photos_eleves.$photo,PATHINFO_FILENAME);
-							// si on re-encode les noms de fichiers il faut supprimer l'ancien encodage
-							if ($re_encoder) $nom_photo=substr($nom_photo,5);
-							// on en profite pour normaliser l'extension en .jpg
-							if (@rename($dossier_photos_eleves.$photo,$dossier_photos_eleves.encode_nom_photo($nom_photo).".jpg")) $nb_modifs++;
-							else 
-								{
-								$nb_erreurs++;
-								if ($nb_erreurs<=10) $bilan.="Impossible d'encoder ".$photo.".jpg<br />";
-								}
+							$t_noms_photos[]=$photo;
 							}
 						}
 				closedir($R_dossier_photos_eleves);
+				// on crée (ou recrée) un fichier témoin d'encodage activé
+				$fic_temoin=fopen($dossier_photos_eleves."encodage_active.txt","w");
+				fwrite($fic_temoin,encode_nom_photo("nom_photo"));
+				fclose($fic_temoin);
+				// on renomme les fichiers photo
+				foreach($t_noms_photos as $photo)
+					{
+					$nom_photo=pathinfo($dossier_photos_eleves.$photo,PATHINFO_FILENAME);
+					// si on re-encode les noms de fichiers il faut supprimer l'ancien encodage
+					if ($re_encoder) $nom_photo=substr($nom_photo,5);
+					// on en profite pour normaliser l'extension en .jpg
+					if (rename($dossier_photos_eleves.$photo,$dossier_photos_eleves.encode_nom_photo($nom_photo).".jpg")) $nb_modifs++;
+					else 
+						{
+						$nb_erreurs++;
+						if ($nb_erreurs<=10) $bilan.="Impossible d'encoder ".$nom_photo.".jpg<br />";
+						}
+					}
 				}
 			}
 		}
 	return $bilan;
 	}
 
+/**
+ * Désactive l'encodage des noms des fichiers photo
+ * Renvoie un chaîne vide si tout s'est bien passé, les erreurs rencontrées sinon 
+ */
+function des_encode_nom_photo_des_eleves()
+	{
+	global $nb_modifs,$nb_erreurs,$gepiSettings;
+	$bilan="";
+	// tableau stockant les noms des fichiers photo
+	// on ne peut pas renommer les fichiers tout en parcourant le dossier photos
+	// sinon des fichiers peuvent être renommés plusieurs fois
+	$t_noms_photos=array();
+
+	if (!getSettingAOui('encodage_nom_photo')) return "L'encodage n'est pas activé.<br />";
+	else
+		{
+		// on désactive l'encodage des photos
+		if (!saveSetting('encodage_nom_photo','no')) $bilan="Impossible de désactiver l'encodage.<br />";
+		else
+			{
+			// Cas du multisite
+			$rne="";
+			if (isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == 'y' && !$rne=$_COOKIE['RNE'])
+					$bilan="Multisite : erreur lors de la récupération du dossier photos de l'établissement.<br/>";
+
+			if ($bilan=="")
+				{
+				$rne=(isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y')?$rne=$_COOKIE['RNE']."/":"";
+				$dossier_photos_eleves="../photos/".$rne."eleves/";
+				$R_dossier_photos_eleves=opendir($dossier_photos_eleves);
+					while ($photo=readdir($R_dossier_photos_eleves))
+						{
+						if (is_file($dossier_photos_eleves.$photo) && pathinfo($dossier_photos_eleves.$photo,PATHINFO_EXTENSION)=="jpg" && $photo!="index.html")
+							{
+							$t_noms_photos[]=$photo;
+							}
+						}
+				closedir($R_dossier_photos_eleves);
+				// on supprime le fichier témoin d'encodage activé
+				if (file_exists($dossier_photos_eleves."encodage_active.txt")) unlink($dossier_photos_eleves."encodage_active.txt");
+				// on renomme les fichiers photo
+				foreach($t_noms_photos as $photo)
+					{
+					$nom_photo=pathinfo($dossier_photos_eleves.$photo,PATHINFO_FILENAME);
+					// supprimer l'ancien encodage
+					$nom_photo=substr($nom_photo,5);
+					// on en profite pour normaliser l'extension en .jpg
+					if (rename($dossier_photos_eleves.$photo,$dossier_photos_eleves.$nom_photo.".jpg")) $nb_modifs++;
+					else 
+						{
+						$nb_erreurs++;
+						if ($nb_erreurs<=10) $bilan.="Impossible de dés-encoder ".$nom_photo.".jpg<br />";
+						}
+					}
+				}
+			}
+		}
+	return $bilan;
+	}
+
+/**
+ * Vérifie la cohérence entre le contenu du dossier des photos des éléves
+ * et les entrées de la table 'setting'
+ * Renvoie un chaîne donnant l'état présent de l'encodage si tout est correct
+ * ou un descriptif de l'incohérence et de la solution éventuelle
+ */
+function verifie_coherence_encodage()
+	{
+	// Cas du multisite
+	$rne=""; $bilan="";
+	if (isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == 'y' && !$rne=$_COOKIE['RNE'])
+			$bilan="Multisite : erreur lors de la récupération du dossier photos de l'établissement.<br/>";
+
+	if ($bilan=="")
+		{
+		$rne=(isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y')?$rne=$_COOKIE['RNE']."/":"";
+		$dossier_photos_eleves="../photos/".$rne."eleves/";
+		
+		if (getSettingAOui('encodage_nom_photo'))
+			if (file_exists($dossier_photos_eleves."encodage_active.txt"))
+				{
+				// on vérifie la cohérence entre son contenu et la valeur de 'alea_nom_photo'
+				$fic_temoin=fopen($dossier_photos_eleves."encodage_active.txt","r");
+				$temoin=fgets($fic_temoin);
+				fclose($fic_temoin);
+				if ($temoin==encode_nom_photo("nom_photo"))
+					return array('message'=>"<span style='color: blue'>l'encodage est activé</span>.",'type_incoherence'=>0);
+				else return array('message'=>"<span style='color: red'>l'encodage est activé mais il y a une incohérence avec l'état de la base, il faut ré-encoder les noms des fichiers photo des élèves</span>.",'type_incoherence'=>1);
+				}
+			else return array('message'=>"<span style='color: red'>l'encodage n'est pas activé mais il y a une incohérence avec l'état de la base, il faut actualiser le paramètre 'encodage_nom_photo' en cliquant <a href=\"trombinoscopes_admin.php?set_encodage_nom_photo=no".add_token_in_url()."\">sur ce lien</a></span>.",'type_incoherence'=>2);
+		else
+			if (file_exists($dossier_photos_eleves."encodage_active.txt"))
+				{
+				return array('message'=>"<span style='color: red'>l'encodage est activé mais il y a une incohérence avec l'état de la base, il faut actualiser le paramètre 'encodage_nom_photo' en cliquant <a href=\"trombinoscopes_admin.php?set_encodage_nom_photo=yes".add_token_in_url()."\">sur ce lien</a> puis, si nécessaire, ré-encoder les noms des fichiers photo des élèves</span>.",'type_incoherence'=>3);
+				}
+			else return array('message'=>"<span style='color: blue'>l'encodage est désactivé</span>.",'type_incoherence'=>0);
+		}
+	}
 
 function purge_dossier_photos($type_utilisateurs) {
 
@@ -247,7 +360,7 @@ function del_tree($chemin) {
 }
 
 
-function copie_temp_vers_photos(&$nb_photos,$dossier_a_traiter,$type_a_traiter,$test_folder=false,$encodage=false)
+function copie_temp_vers_photos(&$nb_photos,$dossier_a_traiter,$type_a_traiter,$ecraser=true,$test_folder=false,$encodage=false)
 // $dossier_a_traiter : 'eleves' ou 'personnels'
 // $type_a_traiter :  : 'élève' ou 'personnel'
 {
@@ -260,13 +373,14 @@ function copie_temp_vers_photos(&$nb_photos,$dossier_a_traiter,$type_a_traiter,$
 		$nb_photos=0;
 		$dossier = opendir($folder);
 		while ($Fichier = readdir($dossier)) {
-			if ($Fichier != "index.html" && $Fichier != "." && $Fichier != ".." && ((preg_match('/\.jpg/i', $Fichier))||(preg_match('/\.jpeg/i', $Fichier)))) {
+			//if ($Fichier != "index.html" && $Fichier != "." && $Fichier != ".." && ((preg_match('/\.jpg/i', $Fichier))||(preg_match('/\.jpeg/i', $Fichier)))) {
+			if ((preg_match('/\.jpg/i', $Fichier))||(preg_match('/\.jpeg/i', $Fichier))) {
 				$Fichier_dest=pathinfo($Fichier,PATHINFO_FILENAME);
 				if ($encodage) $Fichier_dest=encode_nom_photo($Fichier_dest);
 				$Fichier_dest.=".jpg";
 				$source=$folder.$Fichier;
 				$dest=$repertoire_photos.$dossier_a_traiter."/".$Fichier_dest;
-				if (isset ($_POST["ecraser"]) && ($_POST["ecraser"]="yes")) {
+				if ($ecraser) {
 					@copy($source, $dest);
 					$nb_photos++;
 				} else {
@@ -409,11 +523,18 @@ if (isset($_POST['is_posted']) and ($msg=='')) {
 		}
 	}
 
+// Sauvegarde du dossier 'photos'
+	if (isset($_POST['sauvegarder_dossier_photos']) && $_POST['sauvegarder_dossier_photos']=="oui")
+		{
+		check_token();
+		if (cree_zip_archive('photos')) $msg="Le dossier 'photos' a été sauvegardé, vous pouvez le récupérer dans le <a href=\"../gestion/accueil_sauve.php\">module de gestion des sauvegardes</a>.";
+		else $msg="Echec de la sauvegarde du dossier 'photos'";
+		}
 
 // Purge du dossier photos
-	$msg="";
 	if (isset($_POST['purge_dossier_photos']) && $_POST['purge_dossier_photos']=="oui")
 		{
+		$msg="";
 		check_token();
 		if (cree_zip_archive("photos")==TRUE)
 			{
@@ -451,19 +572,14 @@ if (isset($_POST['is_posted']) and ($msg=='')) {
 		}
 
 // Encodage ou re-encodage des noms des fichiers photo des élèves
-$msg="";
 if  ((isset($_POST['encoder_noms_photo']) and ($_POST['encoder_noms_photo']=='oui')) || (isset($_POST['re_encoder_noms_photo']) and ($_POST['re_encoder_noms_photo']=='oui')))
 	{
+	$msg="";
 	check_token();
 	$nb_modifs=0; $nb_erreurs=0;
 	$re_encode=false;
-	if (isset($_POST['re_encoder_noms_photo']) and ($_POST['re_encoder_noms_photo']=='oui'))
-		{
-		$re_encode=true;
-		saveSetting('alea_nom_photo',NULL);
-		unset($gepiSettings['alea_nom_photo']);
-		}
-	$retour=encode_nom_photo_des_eleves($re_encode);
+	$re_encoder=(isset($_POST['re_encoder_noms_photo']) && ($_POST['re_encoder_noms_photo']=='oui'));
+	$retour=encode_nom_photo_des_eleves($re_encoder);
 	if ($retour!="" && $nb_erreurs==0) $msg=$retour;
 	else 
 		if ($nb_erreurs==0)
@@ -474,6 +590,33 @@ if  ((isset($_POST['encoder_noms_photo']) and ($_POST['encoder_noms_photo']=='ou
 		else
 			if ($nb_erreurs<=10) $msg=$retour;
 			else $msg=$nb_erreurs." noms de fihiers photo n'ont pu être encodés.<br/>";
+	}
+
+// Dés-encodage des noms des fichiers photo des élèves
+if  ((isset($_POST['des_encoder_noms_photo']) and ($_POST['des_encoder_noms_photo']=='oui')))
+	{
+	$msg="";
+	check_token();
+	$nb_modifs=0; $nb_erreurs=0;
+	$retour=des_encode_nom_photo_des_eleves();
+	if ($retour!="" && $nb_erreurs==0) $msg=$retour;
+	else 
+		if ($nb_erreurs==0)
+			if ($nb_modifs>0)
+				if ($nb_modifs>1) $msg=$nb_modifs." noms de fichiers photo ont été dés-encodés.<br/>";
+				else $msg="Un nom de fichier photo a été encodé.<br/>";
+			else $msg="Aucun nom de fichier photo n'a été dés-encodé (le dossier est probablement vide).<br/>";
+		else
+			if ($nb_erreurs<=10) $msg=$retour;
+			else $msg=$nb_erreurs." noms de fihiers photo n'ont pu être dés-encodés.<br/>";
+	}
+
+// Modification par url de la valeur de 'encodage_nom_photo' dans la table 'setting'
+if (isset($_GET['set_encodage_nom_photo']))
+	{
+	$msg="";
+	check_token();
+	if (!saveSetting('encodage_nom_photo',$_GET['set_encodage_nom_photo'])) $msg="Impossible de modifier la valeur de 'encodage_nom_photo' dans la table 'setting'.<br />";
 	}
 
 // Liste des données élève
@@ -572,7 +715,8 @@ if (isset($_POST['action']) and ($_POST['action']=='upload_photos_eleves'))  {
 						$repertoire_photos="../photos/".$repertoire_photos;
 						$msg_nb_trts=""; // nb de fichiers traités
 						// copie des fichiers vers /photos
-						copie_temp_vers_photos($nb_photos_eleves,'eleves','élève',false,true);
+						$ecraser=isset($_POST["ecraser"]) && ($_POST["ecraser"]=="yes");
+						copie_temp_vers_photos($nb_photos_eleves,'eleves','élève',$ecraser,false,true);
 						if ($msg_nb_trts=="") $msg_nb_trts="Aucune photo n'a été transférée.<br/>\n";
 						if ($msg==""){
 							$msg= $msg_nb_trts;
@@ -588,13 +732,15 @@ if (isset($_POST['action']) and ($_POST['action']=='upload_photos_eleves'))  {
 	}
 }
 
-// Restauration d'une sauvegarde
-if (isset($_POST['action']) and ($_POST['action'] == 'upload'))  {
+// Restauration d'une sauvegarde, ceci peut-ête appelé depuis gestion/acceuil_sauve.php (on a alors isset($_POST['action']) à false)
+if ((isset($_POST['action']) && $_POST['action'] == 'upload') || (isset($_GET['action']) && $_GET['action'] == 'restaurer_photos' &&  isset($_GET['file']))) {
 	check_token();
 	$msg="";
-	// Le téléchargement s'est-il bien passé ?
-	$sav_file = isset($_FILES["nom_du_fichier"]) ? $_FILES["nom_du_fichier"] : NULL;
-	if ($sav_file) {
+	// Le fichier sauvegarde est-il téléchargé ou défini ?
+	if (isset($_POST['action']))
+		$fichier_sauvegarde = isset($_FILES["nom_du_fichier"]) ? $_FILES["nom_du_fichier"] : NULL;
+		else $fichier_sauvegarde['name']=$_GET['file'];
+	if ($fichier_sauvegarde) {
 		// c'est dans $dir_temp que le travail se fera
 		$dir_temp ="../temp/trombinoscopes";
 		if ($multisite=='y' && isset($_COOKIE['RNE'])) $dir_temp."_".$_COOKIE['RNE'];
@@ -603,20 +749,22 @@ if (isset($_POST['action']) and ($_POST['action'] == 'upload'))  {
 				if (!@mkdir($dir_temp,0700,true)) $msg.="Impossible de créer ".$dir_temp."<br/>\n";
 		if ($msg=="") {
 			//  copie du fichier ZIP dans $dir_temp
-			$reponse=telecharge_fichier($sav_file,$dir_temp,"zip",'application/zip application/octet-stream application/x-zip-compressed');
+			if (isset($_POST['action']))
+				$reponse=telecharge_fichier($fichier_sauvegarde,$dir_temp,"zip",'application/zip application/octet-stream application/x-zip-compressed');
+				else $reponse=(copy("../backup/".getSettingValue("backup_directory")."/".$fichier_sauvegarde['name'],$dir_temp."/".$fichier_sauvegarde['name']))?"ok":"";
 			if ($reponse!="ok") {
 				$msg.=$reponse;
 			} else {
 				// dézipage du fichier
-				$reponse=dezip_PclZip_fichier($dir_temp."/".$sav_file['name'],$dir_temp,1);
+				$reponse=dezip_PclZip_fichier($dir_temp."/".$fichier_sauvegarde['name'],$dir_temp,1);
 				if ($reponse!="ok") {
 					$msg .= $reponse;
 				} else {
 					//suppression du fichier .zip
-					if (!@unlink ($dir_temp."/".$_FILES["nom_du_fichier"]['name'])) {
+					if (!@unlink ($dir_temp."/".$fichier_sauvegarde['name'])) {
 						$msg .= "Erreur lors de la suppression de ".$dir_temp."/".$_FILES["nom_du_fichier"]."<br/>\n";
 					}
-
+					// détermination du dossier destination
 					$repertoire_photos=""; $msg_multisite="";
 					if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite']=='y')
 						// On récupère le RNE de l'établissement
@@ -624,18 +772,47 @@ if (isset($_POST['action']) and ($_POST['action'] == 'upload'))  {
 							{
 							$msg_multisite.="Multisite : erreur lors de la récupération du dossier photos de l'établissement.<br/>";
 							}
-
 					if ($msg_multisite=="")
 						{
 						if ($repertoire_photos!="") $repertoire_photos.="/";
+						$repertoire_temp_photos=$dir_temp."/photos/".$repertoire_photos;
 						$repertoire_photos="../photos/".$repertoire_photos;
+
+						if (file_exists($repertoire_temp_photos."alea_nom_photo.txt"))
+							{
+							// si le fichier alea_nom_photo.txt est présent
+							// les noms de fichier sont encodés dans la sauvegarde
+							// on récupère la valeur alea_nom_photo
+							$f_alea=fopen($repertoire_temp_photos."alea_nom_photo.txt","r");
+							$alea_nom_photo=fgets($f_alea);
+							fclose($f_alea);
+							// l'encodage est-il activé
+							$re_encoder=getSettingAOui('encodage_nom_photo');
+							// on encode ou on ré-encode les noms des photos élèves présentes avec cette nouvelle valeur
+							encode_nom_photo_des_eleves($re_encoder,$alea_nom_photo);
+							// les noms des fichiers restaurés n'ont pas à être encodés
+							$post_restauration_encodage=false;
+							}
+						else
+							{
+							// les noms de fichier ne sont pas encodés dans la sauvegarde
+							// faudra-t-il encoder les noms des fichiers restaurés
+							$post_restauration_encodage=getSettingAOui('encodage_nom_photo');
+							// si l'encodage est activé il faut désencoder les noms des photos élèves présentes
+							if ($post_restauration_encodage)
+								{$retour=des_encode_nom_photo_des_eleves()."<br />"; if ($retour!="") $msg.=$retour;}
+							}
+
 						// copie des fichiers vers /photos
 						$msg_nb_trts=""; // nb de fichiers traités
 						$avertissement=""; // si l'arborescence est incomplète
+						$ecraser=(isset($_POST['action']))?(isset ($_POST["ecraser"]) && $_POST["ecraser"]=="yes"):true;
 						//Elèves
-						copie_temp_vers_photos($nb_photos_eleves,'eleves','élève',true);
+						copie_temp_vers_photos($nb_photos_eleves,'eleves','élève',$ecraser,true);
+						if ($post_restauration_encodage)
+							{$retour=encode_nom_photo_des_eleves()."<br />"; if ($retour!="") $msg.=$retour;}
 						//Personnels
-						copie_temp_vers_photos($nb_photos_personnels,'personnels','personnel',true);
+						copie_temp_vers_photos($nb_photos_personnels,'personnels','personnel',$ecraser,true);
 						if ($msg_nb_trts=="") $msg_nb_trts="Aucune photo n'a été transférée.<br/>\n";
 						if ($msg==""){
 							$msg= $msg_nb_trts.$avertissement;
@@ -645,8 +822,8 @@ if (isset($_POST['action']) and ($_POST['action'] == 'upload'))  {
 					}
 				}
 			}
-	// quoiqu'il se soit passé on supprime le dossier ../temp/trombinoscopes
-	del_tree("../temp/trombinoscopes");
+		// quoiqu'il se soit passé on supprime le dossier ../temp/trombinoscopes
+		del_tree("../temp/trombinoscopes");
 		}
 }
 
@@ -715,368 +892,6 @@ if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
  *
  * if ( $sousrub === 'dpok' ) {
  * }
- */
-
-/*
-?>
-
-<p class='bold'><a href="../accueil_modules.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
-
-<h2>Configuration générale</h2>
-<i>La désactivation du module trombinoscope n'entraîne aucune suppression des données. Lorsque le module est désactivé, il n'y a pas d'accès au module.</i>
-<br/>
-<form action="trombinoscopes_admin.php" name="form1" method="post">
-<p><strong>Elèves&nbsp;:</strong></p>
-<blockquote>
-<input type="radio" name="activer" id='activer_y' value="y" <?php if (getSettingValue("active_module_trombinoscopes")=='y') echo " checked='checked'"; ?>  />
-<label for='activer_y' style='cursor:pointer'>&nbsp;Activer le module trombinoscope</label><br/>
-<input type="radio" name="activer" id='activer_n' value="n" <?php
-	if (getSettingValue("active_module_trombinoscopes")!='y'){echo " checked='checked'";}
-?>  /><label for='activer_n' style='cursor:pointer'>&nbsp;Désactiver le module trombinoscope</label>
-<input type="hidden" name="is_posted" value="1" />
-</blockquote>
-
-<p><strong>Personnels&nbsp;:</strong></p>
-<blockquote>
-<input type="radio" name="activer_personnels" id='activer_personnels_y' value="y" <?php if (getSettingValue("active_module_trombino_pers")=='y') echo " checked='checked'"; ?>  /><label for='activer_personnels_y' style='cursor:pointer'>&nbsp;Activer le module trombinoscope des personnels</label><br/>
-<input type="radio" name="activer_personnels" id='activer_personnels_n' value="n" <?php
-	if (getSettingValue("active_module_trombino_pers")!='y'){echo " checked='checked'";}
-?>  /><label for='activer_personnels_n' style='cursor:pointer'>&nbsp;Désactiver le module trombinoscope des personnels</label>
-</blockquote>
-
-<br/>
-
-<h2>Configuration d'affichage et de stockage</h2>
-&nbsp;&nbsp;&nbsp;&nbsp;<i>Les valeurs ci-dessous vous servent au paramétrage des valeurs maxi des largeurs et des hauteurs.</i><br/>
-<span style="font-weight: bold;">Pour l'écran</span><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;largeur maxi <input name="l_max_aff_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("l_max_aff_trombinoscopes"); ?>" />&nbsp;
-hauteur maxi&nbsp;<input name="h_max_aff_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("h_max_aff_trombinoscopes"); ?>" />
-<br/><span style="font-weight: bold;">Pour l'impression</span><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;largeur maxi <input name="l_max_imp_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("l_max_imp_trombinoscopes"); ?>" />&nbsp;
-hauteur maxi&nbsp;<input name="h_max_imp_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("h_max_imp_trombinoscopes"); ?>" />&nbsp;Nombre de colonnes&nbsp;<input name="nb_col_imp_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("nb_col_imp_trombinoscopes"); ?>" />
-
-<br/><span style="font-weight: bold;">Pour le stockage sur le serveur</span><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;largeur <input name="l_resize_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("l_resize_trombinoscopes"); ?>" />&nbsp;
-hauteur &nbsp;<input name="h_resize_trombinoscopes" size="3" maxlength="3" value="<?php echo getSettingValue("h_resize_trombinoscopes"); ?>" />
-
-<br/>
-<h2>Configuration du redimensionnement des photos</h2>
-<i>La désactivation du redimensionnement des photos n'entraîne aucune suppression des données. Lorsque le système de redimensionnement est désactivé, les photos transferées sur le site ne seront pas réduites en <?php echo getSettingValue("l_resize_trombinoscopes");?>x<?php echo getSettingValue("h_resize_trombinoscopes");?>.</i>
-<br/><br/>
-<input type="radio" name="activer_redimensionne" id="activer_redimensionne_y" value="y" <?php if (getSettingValue("active_module_trombinoscopes_rd")=='y') echo " checked='checked'"; ?> /><label for='activer_redimensionne_y' style='cursor:pointer'>&nbsp;Activer le redimensionnement des photos en <?php echo getSettingValue("l_resize_trombinoscopes");?>x<?php echo getSettingValue("h_resize_trombinoscopes");?></label><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Remarque</b> attention GD doit être actif sur le serveur de GEPI pour utiliser le redimensionnement.<br/>
-<input type="radio" name="activer_redimensionne" id="activer_redimensionne_n" value="n" <?php if (getSettingValue("active_module_trombinoscopes_rd")=='n') echo " checked='checked'"; ?> /><label for='activer_redimensionne_n' style='cursor:pointer'>&nbsp;Désactiver le redimensionnement des photos</label>
-<ul><li>Rotation de l'image : <input name="activer_rotation" value="" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='') { ?>checked='checked'<?php } ?> /> 0°
-<input name="activer_rotation" value="90" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='90') { ?>checked='checked'<?php } ?> /> 90°
-<input name="activer_rotation" value="180" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='180') { ?>checked='checked'<?php } ?> /> 180°
-<input name="activer_rotation" value="270" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='270') { ?>checked='checked'<?php } ?> /> 270° &nbsp;Sélectionner une valeur si vous désirez une rotation de la photo originale</li>
-</ul>
-
-<h2>Gestion de l'accès des élèves</h2>
-Dans la page "Gestion générale"->"Droits d'accès", vous avez la possibilité de donner à <b>tous les élèves</b> le droit d'envoyer/modifier lui-même sa photo dans l'interface "Gérer mon compte".
-<br/>
-<b>Si cette option est activée</b>, vous pouvez, ci-dessous, gérer plus finement quels élèves ont le droit d'envoyer/modifier leur photo.
-<br/><b>Marche à suivre :</b>
-<ul>
-<li>Créez une "catégorie d'AID" ayant par exemple pour intitulé "trombinoscope".</li>
-<li>Configurez l'affichage de cette catégorie d'AID de sorte que :
-<br/>- L'AID n'apparaîsse pas dans le bulletin officiel,
-<br/>- L'AID n'apparaîsse pas dans le bulletin simplifié.
-<br/>Les autres paramètres n'ont pas d'importance.</li>
-<li>Dans la "Liste des aid de la catégorie", ajoutez une ou plusieurs AIDs.</li>
-<li>Ci-dessous, sélectionner dans la liste des catégories d'AIDs, celle portant le nom que vous avez donné ci-dessus.
-<i>(cette liste n'appararaît pas si vous n'avez pas donné la possibilité à tous les élèves d'envoyer/modifier leur photo dans "Gestion générale"->"Droits d'accès")</i>.
-</li>
-<li>Tous les élèves inscrits dans une des AIDs de la catégorie sus-nommée pourront alors envoyer/modifier leur photo (<em>à l'exception des élèves sans numéro Sconet ou "elenoet"</em>).</li>
-</ul>
-
-<?php
-if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
-    $req_trombino = mysql_query("select indice_aid, nom from aid_config order by nom");
-    $nb_aid = mysql_num_rows($req_trombino);
-    ?>
-    <b>Nom de la cat&eacute;gorie d'AID permettant de g&eacute;rer l'acc&egrave;s des &eacute;l&egrave;ves : </b><select name="num_aid_trombinoscopes" size="1">
-    <option value="">(aucune)</option>
-    <?php
-    $i = 0;
-    while($i < $nb_aid){
-        $indice_aid = mysql_result($req_trombino,$i,'indice_aid');
-        $aid_nom = mysql_result($req_trombino,$i,'nom');
-        $i++;
-        echo "<option value='".$indice_aid."' ";
-        if (getSettingValue("num_aid_trombinoscopes")==$indice_aid) echo " selected='selected'";
-        echo ">".$aid_nom."</option>";
-    }
-    ?>
-    </select><br/>
-    <b>Remarque&nbsp;:</b> Si "aucune" AID n'est définie, <b>tous les élèves</b> peuvent envoyer/modifier leur photo (<em>sauf ceux sans elenoet</em>).
-    <br/>
-<?php
-}
-?>
-
-<input type="hidden" name="is_posted" value="1" />
-<div class="center"><input type="submit" value="Enregistrer" style="font-variant: small-caps;" /></div>
-</form>
-
-<a name="gestion_fichiers"></a>
-<h2>Gestion des fichiers</h2>
-<ul>
-<li>Suppression
- <ul>
-  <?php //if( file_exists('../photos/personnels/') ) { ?>
-  <?php if( file_exists('../photos/'.$repertoire.'personnels/') ) { ?>
-  <li><a href="trombinoscopes_admin.php?sousrub=dp#validation">Vider le dossier photos des personnels</a></li>
-  <?php //} if( file_exists('../photos/eleves/') ) {?>
-  <?php } if( file_exists('../photos/'.$repertoire.'eleves/') ) {?>
-  <li><a href="trombinoscopes_admin.php?sousrub=de#validation">Vider le dossier photos des élèves</a></li>
-  <?php } ?>
- </ul>
-</li>
-<li>Gestion
- <ul>
-  <?php //if( file_exists('../photos/personnels/') ) { ?>
-  <?php if( file_exists('../photos/'.$repertoire.'personnels/') ) { ?>
-  <li><a href="trombinoscopes_admin.php?sousrub=vp#liste">Voir les personnels n'ayant pas de photos</a></li>
-  <?php //} if( file_exists('../photos/eleves/') ) {?>
-  <?php } if( file_exists('../photos/'.$repertoire.'eleves/') ) {?>
-  <li><a href="trombinoscopes_admin.php?sousrub=ve#liste">Voir les élèves n'ayant pas de photos</a></li>
-  <?php } ?>
- </ul>
-</li>
-</ul>
-
-
-<?php if ( $sousrub === 've' ) {
-
-	$cpt_eleve = '0';
-	$requete_liste_eleve = "SELECT * FROM ".$prefix_base."eleves e, ".$prefix_base."j_eleves_classes jec, ".$prefix_base."classes c WHERE e.login = jec.login AND jec.id_classe = c.id GROUP BY e.login ORDER BY id_classe, nom, prenom ASC";
-	$resultat_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br/>'.mysql_error());
-        while ( $donnee_liste_eleve = mysql_fetch_array ($resultat_liste_eleve))
-	{
-		$photo = '';
-		$eleve_login[$cpt_eleve] = $donnee_liste_eleve['login'];
-		$eleve_nom[$cpt_eleve] = $donnee_liste_eleve['nom'];
-		$eleve_prenom[$cpt_eleve] = $donnee_liste_eleve['prenom'];
-		$eleve_classe[$cpt_eleve] = $donnee_liste_eleve['nom_complet'];
-		$eleve_classe_court[$cpt_eleve] = $donnee_liste_eleve['classe'];
-		$eleve_elenoet[$cpt_eleve] = $donnee_liste_eleve['elenoet'];
-		$nom_photo = nom_photo($eleve_elenoet[$cpt_eleve]);
-		//$photo = "../photos/eleves/".$nom_photo;
-		$photo = $nom_photo;
-		//if (($nom_photo != "") and (file_exists($photo))) { $eleve_photo[$cpt_eleve] = 'oui'; } else { $eleve_photo[$cpt_eleve] = 'non'; }
-		if (($nom_photo) and (file_exists($photo))) { $eleve_photo[$cpt_eleve] = 'oui'; } else { $eleve_photo[$cpt_eleve] = 'non'; }
-		$cpt_eleve = $cpt_eleve + 1;
-	}
-
-	?><a name="liste"></a><h2>Liste des élèves n'ayant pas de photos</h2>
-	<table cellpadding="1" cellspacing="1" style="margin: auto; border: 0px; background: #088CB9; color: #E0EDF1; text-align: center;" summary="Elèves sans photo">
-	   <tr>
-	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Nom</td>
-	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Prénom</td>
-	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Classe</td>
-	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Numéro élève</td>
-	   </tr>
-	<?php
-	$cpt_eleve = '0'; $classe_passe = ''; $i = '1';
-	while ( !empty($eleve_login[$cpt_eleve]) )
-	{
-	        if ($i === '1') { $i = '2'; $couleur_cellule = 'background: #B7DDFF;'; } else { $couleur_cellule = 'background: #88C7FF;'; $i = '1'; }
-		if ( $eleve_photo[$cpt_eleve] === 'non' )
-		{
-			if ( $eleve_classe[$cpt_eleve] != $classe_passe and $cpt_eleve != '0' ) { ?><tr><td colspan="4">&nbsp;</td></tr><?php }
-		    ?><tr style="<?php echo $couleur_cellule; ?>">
-		        <td style="text-align: left;"><?php echo $eleve_nom[$cpt_eleve]; ?></td>
-		        <td style="text-align: left;"><?php echo $eleve_prenom[$cpt_eleve]; ?></td>
-		        <td style="text-align: center;"><?php echo $eleve_classe[$cpt_eleve].' ('.$eleve_classe_court[$cpt_eleve].')'; ?></td>
-		        <td style="text-align: center;"><?php echo $eleve_elenoet[$cpt_eleve]; ?></td>
-		      </tr><?php
-		}
-		$classe_passe = $eleve_classe[$cpt_eleve];
-		$cpt_eleve = $cpt_eleve + 1;
-	}
-?>
-</table><br/>
-<?php }
-
-if ( $sousrub === 'vp' ) {
-
-	$cpt_personnel = '0';
-	$requete_liste_personnel = "SELECT * FROM ".$prefix_base."utilisateurs u WHERE u.statut='professeur' ORDER BY nom, prenom ASC";
-	$resultat_liste_personnel = mysql_query($requete_liste_personnel) or die('Erreur SQL !'.$requete_liste_personnel.'<br/>'.mysql_error());
-        while ( $donnee_liste_personnel = mysql_fetch_array ($resultat_liste_personnel))
-	{
-		$photo = '';
-		$personnel_login[$cpt_personnel] = $donnee_liste_personnel['login'];
-		$personnel_nom[$cpt_personnel] = $donnee_liste_personnel['nom'];
-		$personnel_prenom[$cpt_personnel] = $donnee_liste_personnel['prenom'];
-
-		$codephoto = $personnel_login[$cpt_personnel];
-		$nom_photo = nom_photo($codephoto,"personnels");
-		//$photo = '../photos/personnels/'.$nom_photo;
-		$photo = $nom_photo;
-		//if (($nom_photo != "") and (file_exists($photo))) { $personnel_photo[$cpt_personnel] = 'oui'; } else { $personnel_photo[$cpt_personnel] = 'non'; }
-		if (($nom_photo) and (file_exists($photo))) { $personnel_photo[$cpt_personnel] = 'oui'; } else { $personnel_photo[$cpt_personnel] = 'non'; }
-		$cpt_personnel = $cpt_personnel + 1;
-	}
-
-	?><a name="liste"></a><h2>Liste des personnels n'ayant pas de photos</h2>
-	<table cellpadding="1" cellspacing="1" style="margin: auto; border: 0px; background: #088CB9; color: #E0EDF1; text-align: center;" summary="Personnels sans photo">
-	   <tr>
-	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Nom</td>
-	      <td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Prénom</td>
-	   </tr>
-	<?php
-	$cpt_personnel = '0'; $i = '1';
-	while ( !empty($personnel_login[$cpt_personnel]) )
-	{
-	        if ($i === '1') { $i = '2'; $couleur_cellule = 'background: #B7DDFF;'; } else { $couleur_cellule = 'background: #88C7FF;'; $i = '1'; }
-		if ( $personnel_photo[$cpt_personnel] === 'non' )
-		{
-		    ?><tr style="<?php echo $couleur_cellule; ?>">
-		        <td style="text-align: left;"><?php echo $personnel_nom[$cpt_personnel]; ?></td>
-		        <td style="text-align: left;"><?php echo $personnel_prenom[$cpt_personnel]; ?></td>
-		      </tr><?php
-		}
-		$cpt_personnel = $cpt_personnel + 1;
-	}
-?>
-</table><br/>
-<?php }
-
-if ( $sousrub === 'de' ) {
-
-	?><a name="validation"></a><div style="background-color: #FFFCDF; margin-left: 80px; margin-right: 80px; padding: 10px;  border-left: 5px solid #FF1F28; text-align: center; color: rgb(255, 0, 0); font-weight: bold;"><img src="../mod_absences/images/attention.png" alt="Attention" /><div style="margin: 10px;">Vous allez supprimer toutes les photos d'identité élève que contient le dossier photo de GEPI, êtes vous d'accord ?<br/><br/><a href="trombinoscopes_admin.php">NON</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="trombinoscopes_admin.php?sousrub=deok#supprime">OUI</a></div></div><?php
-}
-
-if ( $sousrub === 'dp' ) {
-
-	?>
-	<a name="validation"></a><div style="background-color: #FFFCDF; margin-left: 80px; margin-right: 80px; padding: 10px;  border-left: 5px solid #FF1F28; text-align: center; color: rgb(255, 0, 0); font-weight: bold;"><img src="../mod_absences/images/attention.png" alt="Attention" /><div style="margin: 10px;">Vous allez supprimer toutes les photos d'identité personnel que contient le dossier photo de GEPI, êtes vous d'accord ?<br/><br/><a href="trombinoscopes_admin.php">NON</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="trombinoscopes_admin.php?sousrub=dpok#supprime">OUI</a></div></div>
-<?php
-}
-
-
-if ( $sousrub === 'deok' ) {
-
-	// on liste les fichier du dossier photos/eleves
-	$fichier_sup=array();
-	//$folder = "../photos/eleves/";
-	$folder = "../photos/".$repertoire."eleves/";
-	$cpt_fichier = '0';
-	$dossier = opendir($folder);
-	while ($Fichier = readdir($dossier)) {
-	  if ($Fichier != "." && $Fichier != ".." && $Fichier != "index.html") {
-	    $nomFichier = $folder."".$Fichier;
-	    $fichier_sup[$cpt_fichier] = $nomFichier;
-	    $cpt_fichier = $cpt_fichier + 1;
-	  }
-	}
-	closedir($dossier);
-
-	//on supprime tout les fichiers
-	$cpt_fichier = '0';
-	?>
-	<a name="supprime"></a>
-	<!--h2>Liste des fichiers concernés et leurs états</h2-->
-	<h2>Liste des fichiers concernés</h2>
-
-	<?php
-		if(count($fichier_sup)==0) {
-			echo "<p style='margin-left: 50px;'>Le dossier <strong>$folder</strong> ne contient pas de photo.</p>\n";
-		}
-		else {
-	?>
-
-			<table cellpadding="1" cellspacing="1" style="margin: auto; border: 0px; background: #088CB9; color: #E0EDF1; text-align: center;" summary="Suppression">
-			<tr>
-				<td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Fichier</td>
-				<td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Etat</td>
-			</tr><?php $i = '1';
-			while ( !empty($fichier_sup[$cpt_fichier]) )
-			{
-					if ($i === '1') { $i = '2'; $couleur_cellule = 'background: #B7DDFF;'; } else { $couleur_cellule = 'background: #88C7FF;'; $i = '1'; }
-				if(file_exists($fichier_sup[$cpt_fichier]))
-				{
-					@unlink($fichier_sup[$cpt_fichier]);
-
-					if(file_exists($fichier_sup[$cpt_fichier]))
-					{ $etat = '<span style="color:red;">erreur, vous n\'avez pas les droits pour supprimer ce fichier</span>'; } else { $etat = 'supprimé'; }
-					?>
-				<tr style="<?php echo $couleur_cellule; ?>">
-					<td style="text-align: left; padding-left: 2px; padding-right: 2px;"><?php echo $fichier_sup[$cpt_fichier]; ?></td>
-					<td style="text-align: left; padding-left: 2px; padding-right: 2px;"><?php echo $etat; ?></td>
-				</tr><?php
-				}
-			$cpt_fichier = $cpt_fichier + 1;
-			}
-
-			echo "</table>\n";
-		}
-}
-
-if ( $sousrub === 'dpok' ) {
-
-	// on liste les fichier du dossier photos/personnels
-	$fichier_sup=array();
-	//$folder = "../photos/personnels/";
-	$folder = "../photos/".$repertoire."personnels/";
-	$cpt_fichier = '0';
-	$dossier = opendir($folder);
-	while ($Fichier = readdir($dossier)) {
-	  if ($Fichier != "." && $Fichier != ".." && $Fichier != "index.html") {
-	    $nomFichier = $folder."".$Fichier;
-	    $fichier_sup[$cpt_fichier] = $nomFichier;
-	    $cpt_fichier = $cpt_fichier + 1;
-	  }
-	}
-	closedir($dossier);
-
-	//on supprime tout les fichiers
-	$cpt_fichier = '0';
-	?>
-	<a name="supprime"></a>
-	<!--h2>Liste des fichiers concernés et leurs états</h2-->
-	<h2>Liste des fichiers concernés</h2>
-
-	<?php
-		if(count($fichier_sup)==0) {
-			echo "<p style='margin-left: 50px;'>Le dossier <strong>$folder</strong> ne contient pas de photo.</p>\n";
-		}
-		else {
-	?>
-
-			<table cellpadding="1" cellspacing="1" style="margin: auto; border: 0px; background: #088CB9; color: #E0EDF1; text-align: center;" summary="Suppression">
-			<tr>
-				<td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Fichier</td>
-				<td style="text-align: center; white-space: nowrap; padding-left: 2px; padding-right: 2px; font-weight: bold; color: #FFFFFF; padding-left: 2px; padding-right: 2px;">Etat</td>
-			</tr><?php $i = '1';
-			while ( !empty($fichier_sup[$cpt_fichier]) )
-			{
-					if ($i === '1') { $i = '2'; $couleur_cellule = 'background: #B7DDFF;'; } else { $couleur_cellule = 'background: #88C7FF;'; $i = '1'; }
-				if(file_exists($fichier_sup[$cpt_fichier]))
-				{
-					@unlink($fichier_sup[$cpt_fichier]);
-
-					if(file_exists($fichier_sup[$cpt_fichier]))
-					{ $etat = '<span style="color:red;">erreur, vous n\'avez pas les droits pour supprimer ce fichier</span>'; } else { $etat = 'supprimé'; }
-					?>
-				<tr style="<?php echo $couleur_cellule; ?>">
-					<td style="text-align: left; padding-left: 2px; padding-right: 2px;"><?php echo $fichier_sup[$cpt_fichier]; ?></td>
-					<td style="text-align: left; padding-left: 2px; padding-right: 2px;"><?php echo $etat; ?></td>
-				</tr><?php
-				}
-			$cpt_fichier = $cpt_fichier + 1;
-			}
-
-			echo "</table>\n";
-		}
-}
-
-
-echo "<p><br/></p>\n";
-require("../lib/footer.inc.php"); ?>
- *
  */
 
 

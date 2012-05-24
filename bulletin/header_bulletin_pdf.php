@@ -4,6 +4,9 @@
 if(((isset($bull_pdf_debug))&&($bull_pdf_debug=='y'))||((isset($releve_pdf_debug))&&($releve_pdf_debug=='y'))) {
 	echo "\nDEBUG\n";
 }
+elseif((isset($generer_fichiers_pdf_archivage))&&($generer_fichiers_pdf_archivage=='y')) {
+	//echo "\nArchivage\n";
+}
 else {
 	send_file_download_headers('application/pdf','bulletin.pdf');
 }

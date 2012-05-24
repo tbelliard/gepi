@@ -1109,6 +1109,32 @@ function initFenetreBanque() {
 	);
 }
 */
+
+function getWinArchives() {
+	if (typeof winArchives=="undefined") {
+		winArchives = new Window(
+				{id: 'win_archives',
+				title: 'Archives CDT',
+				showEffect: Element.show,
+				hideEffect: Element.hide,
+				top:100,
+				left:400,
+				width:800,
+				height:400}
+			);
+		$('win_archives_content').setStyle({
+			backgroundColor: '#d0d0d0',
+			fontSize: '14px',
+			color: '#000000'
+		});
+	}
+
+	winArchives.show();
+	winArchives.toFront();
+	return winArchives;
+}
+
+
 //include('../lib/DHTMLcalendar/lang/calendar-fr.js');
 //include('../lib/DHTMLcalendar/calendar-setup.js');
 

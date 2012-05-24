@@ -216,6 +216,14 @@ echo "<button style='background-color:lightblue' onclick=\"javascript:
 						getWinBanqueTexte().setAjaxContent('./ajax_affichage_banque_texte.php',{});
 					\">Banque</button>\n";
 
+if(file_exists("./archives.php")) {
+	// Mon fichier contient juste:
+	/* <?php echo "<iframe src='../documents/archives/index.php' width='100%' height='100%'/>"; ?> */
+	echo "<button style='background-color:bisque' onclick=\"javascript:
+						getWinArchives().setAjaxContent('./archives.php',{});
+					\">Archives</button>\n";
+}
+
 //echo "<br><br>\n";
 echo "<br />\n";
 // Retour aux notices d'aujourd'hui:
@@ -317,7 +325,7 @@ echo (" <a href=\"#\" onclick=\"javascript: /*ct_a_importer_class est globale*/
     $('modification_compte_rendu_form').request({
         onComplete : function (transport) {updateWindows('');}
     });");
-echo("\"><img style=\"border: 0px;\" src=\"../images/icons/copy-16-gold.png");
+echo("\"><img style=\"border: 0px;\" src=\"../images/icons/copy-16-gold-trombone.png");
 echo("\" alt=\"Coller\" title=\"Coller les fichiers joints\" /></a>\n");
 
 echo "</legend>\n";

@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -1463,6 +1463,9 @@ if (isset($action) and ($action == 'zip'))  {
 
 			break;
 		case "photos":
+			$retour=cree_zip_archive_avec_msg_erreur("photos",1);
+			if ($retour!="") die("<p style='color:red; text-align:center'>".$retour."</p>\n");
+			/*
 			$chemin_stockage = $path."/_photos".$suffixe_zip.".zip";
 			$dossier_a_traiter = '../photos/'; //le dossier à traiter
 			$dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créée
@@ -1485,10 +1488,23 @@ if (isset($action) and ($action == 'zip'))  {
 			}
 
 			if ($chemin_stockage !='') {
+
+				// Si l'encodage des noms de photos est activé on sauvegarde la valeur 'alea_nom_photo'
+				if (getSettingAOui('encodage_nom_photo'))
+					{
+					$fic_alea=fopen($dossier_a_traiter."alea_nom_photo.txt","w");
+					fwrite($fic_alea,getSettingValue("alea_nom_photo"));
+					fclose($fic_alea);
+					}
+
 				$archive = new PclZip($chemin_stockage);
 				$v_list = $archive->create($dossier_a_traiter,
 											PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
 											PCLZIP_OPT_ADD_PATH, $dossier_dans_archive);
+
+				// on supprime le fichier alea_nom_photo.txt
+				if (file_exists($dossier_a_traiter."alea_nom_photo.txt")) @unlink($dossier_a_traiter."alea_nom_photo.txt");
+
 				if ($v_list == 0) {
 					die("<p style='color:red; text-align:center'>Error : ".$archive->errorInfo(true)."</p>");
 				}
@@ -1496,7 +1512,7 @@ if (isset($action) and ($action == 'zip'))  {
 					echo "<p style='color:red; text-align:center;'>Le Zip a été créé.</p>";
 				}
 			}
-
+			*/
 			break;
 		default:
 			$chemin_stockage = '';
@@ -1668,10 +1684,26 @@ if ($n > 0) {
         echo "</td>\n";
         echo "<td><a href='accueil_sauve.php?action=sup&amp;file=$value".add_token_in_url()."'>Supprimer</a></td>\n";
 		//if (($value=='_photos.zip')||($value=='_cdt.zip')){
-		if ((preg_match('/^_photos/i',$value)&&preg_match('/.zip$/i',$value))||(preg_match('/^_cdt/i',$value)&&preg_match('/.zip$/i',$value))){
-		   echo "<td> </td>\n";
+		/*if ((preg_match('/^_photos/i',$value)&&preg_match('/.zip$/i',$value))||(preg_match('/^_cdt/i',$value)&&preg_match('/.zip$/i',$value))){
+		   echo "<td><a href='accueil_sauve.php?action=restaure_confirm&amp;file=$value".add_token_in_url()."'>Restaurer</a></td>\n";
 		} else {
-            echo "<td><a href='accueil_sauve.php?action=restaure_confirm&amp;file=$value".add_token_in_url()."'>Restaurer</a></td>\n";
+            echo "<td>a href='../mod_trombinoscopes/trombinoscopes_admin.php?action=restaurer&amp;file=$value".add_token_in_url()."'>Restaurer</a></td>\n";
+		}*/
+		$type_sauvegarde="";
+		if (preg_match('/^_photos/i',$value)&& preg_match('/.zip$/i',$value))$type_sauvegarde="photos";
+		if (preg_match('/^_cdt/i',$value)&& preg_match('/.zip$/i',$value)) $type_sauvegarde="cdt";
+		//if (preg_match('/^gepi-/i',$value)&& (preg_match('/.gz$/i',$value) || preg_match('/.sql$/i',$value))) $type_sauvegarde="base";
+		if ((preg_match('/.sql.gz$/i',$value) || preg_match('/.sql$/i',$value))) $type_sauvegarde="base";
+		switch ($type_sauvegarde) {
+			case "photos" :
+				echo "<td><a href='../mod_trombinoscopes/trombinoscopes_admin.php?action=restaurer_photos&amp;file=$value".add_token_in_url()."'>Restaurer</a></td>\n";
+				break;
+			case "base" :
+				echo "<td><a href='accueil_sauve.php?action=restaure_confirm&amp;file=$value".add_token_in_url()."#restaurer'>Restaurer</a></td>\n";
+				break;
+			default :
+				echo "<td></td>\n";
+				break;
 		}
         echo "<td><a href='savebackup.php?fileid=$m'>Télécharger</a></td>\n";
         echo "<td><a href='../backup/".$dirname."/".$value."'>Téléch. direct</a></td>\n";

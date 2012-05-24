@@ -1887,7 +1887,8 @@ function get_class_from_ele_login($ele_login){
 			$tab_classe['liste_nbsp'].=preg_replace("/ /","&nbsp;",$lig_tmp->classe);
 
 			$tab_classe['id'.$a] = $lig_tmp->id_classe;
-			$a = $a++;
+			//$a = $a++;
+			$a++;
 		}
 	}
 	return $tab_classe;
@@ -3395,22 +3396,20 @@ function cree_repertoire_multisite() {
 }
 
 /**
- * Crée une valeur aléatoire utilisée pour coder le nom des fichiers photo
- * et l'enregistre dans la table 'setting'
- * La présence de cette valeur dans la table 'setting' détermine si
- * l'encodage est activé ou pas.
- * Renvoie true si l'encodage est activé, false sinon.
+ * Crée si nécessaire l'entrée 'encodage_nom_photo' dans la table 'setting'
+ * Crée ou modifie la valeur aléatoire 'alea_nom_photo' utilisée pour encoder
+ *  le nom des fichiers photo des élèves et l'enregistre dans la table 'setting'
+ * Renvoie true si l'encodage est activé ou réactivé, false sinon.
  *
- * @return boolean true : l'encodage est activé
+ * @param string $alea_nom_photo Si non vide détermine la valeur à donner à 'alea_nom_photo'
+ * @return boolean true : succès, false : échec
  * @see encode_nom_photo()
  */
-function active_encode_nom_photo() {
-	global $gepiSettings;
-	if (isset($gepiSettings['alea_nom_photo'])) return false; // la valeur est déjà définie
-	else {
-	$alea_nom_photo=md5(time());
-	return saveSetting('alea_nom_photo',$alea_nom_photo);
-	}
+function active_encodage_nom_photo($alea_nom_photo="") {
+	$retour=true;
+	if ((getSettingValue('encodage_nom_photo')==NULL) || !getSettingAOui('encodage_nom_photo')) $retour=$retour && saveSetting('encodage_nom_photo','yes');
+	if ($alea_nom_photo=="") $alea_nom_photo=md5(time());
+	return $retour && saveSetting('alea_nom_photo',$alea_nom_photo);
 }
 
 /**
@@ -3422,12 +3421,11 @@ function active_encode_nom_photo() {
  *
  * @param string $nom_photo le nom du fichier
  * @return string le nom du fichier éventuellement modifié
- * @see active_encode_nom_photo()
+ * @see active_encodage_nom_photo()
  * 
  */
 function encode_nom_photo($nom_photo) {
-	global $gepiSettings;
-	if (!isset($gepiSettings['alea_nom_photo'])) return $nom_photo; // la valeur est déjà définie
+	if (!getSettingAOui('encodage_nom_photo')) return $nom_photo; // la valeur est déjà définie
 	else return substr(md5(getSettingValue('alea_nom_photo').$nom_photo),0,5).$nom_photo;
 }
 
@@ -3715,13 +3713,14 @@ function path_niveau($niveau=1){
  *
  * @param string $dossier_a_archiver limité à documents ou photos
  * @param int $niveau niveau dans l'arborescence de la page appelante, racine = 0
- * @return boolean
+ * @return striung message d'erreur, vide si aucune erreur
+ * @see cree_zip_archive_msg()
  */
-function cree_zip_archive($dossier_a_archiver,$niveau=1) {
+function cree_zip_archive_avec_msg_erreur($dossier_a_archiver,$niveau=1) {
   $path = path_niveau();
   $dirname = "backup/".getSettingValue("backup_directory")."/";
   if (!defined('PCLZIP_TEMPORARY_DIR') || constant('PCLZIP_TEMPORARY_DIR')!=$path.$dirname) {
-    define( 'PCLZIP_TEMPORARY_DIR', $path.$dirname );
+    @define( 'PCLZIP_TEMPORARY_DIR', $path.$dirname );
   }
 
   require_once($path.'lib/pclzip.lib.php');
@@ -3738,9 +3737,17 @@ function cree_zip_archive($dossier_a_archiver,$niveau=1) {
 	  $chemin_stockage = $path.$dirname."_photos".$suffixe_zip.".zip";
 	  $dossier_a_traiter = $path.'photos/'; //le dossier à traiter
 	  if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-		$dossier_a_traiter .=$_COOKIE['RNE']."/";
+		if((isset($_COOKIE['RNE']))&&($_COOKIE['RNE']!='')) $dossier_a_traiter .=$_COOKIE['RNE']."/";
+		else return "RNE invalide&nbsp;:&nbsp;".$_COOKIE['RNE'];
 	  }
-	  $dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créer
+	  $dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créée
+	  // Si l'encodage des noms de photos est activé on sauvegarde la valeur 'alea_nom_photo'
+	  if (getSettingAOui('encodage_nom_photo'))
+		{
+		$fic_alea=fopen($dossier_a_traiter."alea_nom_photo.txt","w");
+		fwrite($fic_alea,getSettingValue("alea_nom_photo"));
+		fclose($fic_alea);
+		}
 	  break;
 	default:
 	  $chemin_stockage = '';
@@ -3751,14 +3758,28 @@ function cree_zip_archive($dossier_a_archiver,$niveau=1) {
 	  $v_list = $archive->create($dossier_a_traiter,
 			  PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
 			  PCLZIP_OPT_ADD_PATH, $dossier_dans_archive);
+	  // Si l'encodage des noms de photos est activé on supprime le fichier alea_nom_photo.txt
+	  if (getSettingAOui('encodage_nom_photo') && file_exists($dossier_a_traiter."alea_nom_photo.txt")) @unlink($dossier_a_traiter."alea_nom_photo.txt");
 	  if ($v_list == 0) {
-		 die("Error : ".$archive->errorInfo(TRUE));
-		return FALSE;
+		 return "Erreur : ".$archive->errorInfo(TRUE);
 	  }else {
-		return TRUE;
+		return "";
 	  }
 	}
   }
+}
+
+
+/**
+ * Crée une archive Zip des dossiers documents ou photos
+ *
+ * @param string $dossier_a_archiver limité à documents ou photos
+ * @param int $niveau niveau dans l'arborescence de la page appelante, racine = 0
+ * @return boolean
+ * @see cree_zip_archive_msg()
+ */
+function cree_zip_archive($dossier_a_archiver,$niveau=1) {
+  return (cree_zip_archive_avec_msg_erreur($dossier_a_archiver,$niveau)=="")?TRUE:FALSE;
 }
 
 /**
@@ -4413,14 +4434,15 @@ function get_tab_prof_suivi($id_classe) {
  *  - message_accueil_utilisateur("UNTEL","Bonjour Untel",130674844,130684567) : affiche le message "Bonjour Untel" sur la page du destinataire de login "UNTEL" à partir de la date 130674844, jusqu'à la date 130684567, avec décompte sur la date 130684567
  * - message_accueil_utilisateur("UNTEL","Bonjour Untel",130674844,130684567,130690844) : affiche le message "Bonjour Untel" sur la page du destinataire de login "UNTEL" à partir de la date 130674844, jusqu'à la date 130684567, avec décompte sur la date 130690844
  * 
- * @param type $login_destinataire login du destinataire (obligatoire)
- * @param type $texte texte du message contenant éventuellement des balises HTML et encodé en iso-8859-1 (obligatoire)
- * @param type $date_debut date à partir de laquelle est affiché le message (timestamp, optionnel)
- * @param type $date_fin date à laquelle le message n'est plus affiché (timestamp, optionnel)
- * @param type $date_decompte date butoir du décompte, la chaîne _DECOMPTE_ dans $texte est remplacée par un décompte (timestamp, optionnel)
+ * @param type string $login_destinataire login du destinataire (obligatoire)
+ * @param type string $texte texte du message contenant éventuellement des balises HTML et encodé en iso-8859-1 (obligatoire)
+ * @param type timestamp $date_debut date à partir de laquelle est affiché le message (optionnel)
+ * @param type timestamp $date_fin date à laquelle le message n'est plus affiché (optionnel)
+ * @param type timestamp $date_decompte date butoir du décompte, la chaîne _DECOMPTE_ dans $texte est remplacée par un décompte (optionnel)
+ * @param type bolean $bouton_supprimer détermine s'il faut ajouter au message le bouton "Supprimer ce message"
  * @return type TRUE ou FALSE selon que le message a été enregistré ou pas
  */
-function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$date_fin=0,$date_decompte=0)
+function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$date_fin=0,$date_decompte=0,$bouton_supprimer=false)
 {
 	// On arrondit le timestamp d'appel à l'heure (pas néceassaire mais pour l'esthétique)
 	$t_appel=time()-(time()%3600);
@@ -4443,7 +4465,20 @@ function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$d
 			$date_decompte=$date_fin;		
 		}
 	$r_sql="INSERT INTO `messages` values('','".addslashes($texte)."','".$date_debut."','".$date_fin."','".$_SESSION['login']."','_','".$login_destinataire."','".$date_decompte."')";
-	return mysql_query($r_sql);
+	$retour=mysql_query($r_sql)?true:false;
+	if ($retour && $bouton_supprimer)
+		{
+		$id_message=mysql_insert_id();
+		$contenu='
+		<form method="POST" action="accueil.php" name="f_suppression_message">
+		<input type="hidden" name="supprimer_message" value="'.$id_message.'">
+		<button type="submit" title=" Supprimer ce message " style="border: none; background: none; float: right;"><img style="vertical-align: bottom;" src="images/icons/delete.png"></button>
+		</form>'.addslashes($texte);
+		$r_sql="UPDATE `messages` SET `texte`='".$contenu."' WHERE `id`='".$id_message."'";
+		$retour=mysql_query($r_sql)?true:false;
+		}
+	return $retour;
+
 }
 
 /**
@@ -5431,4 +5466,5 @@ function temoin_check_srv($id_div_retour="retour_ping", $nom_js_func="check_srv"
 	$nom_js_func();
 </script>\n";
 }
+
 ?>

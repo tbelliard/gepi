@@ -81,8 +81,8 @@ fwrite($f,"========================================"."\n");
 fclose($f);
 */
 
-if(!is_numeric($corriger_app_id_groupe)) {
-}
+//if(!is_numeric($corriger_app_id_groupe)) {
+//}
 
 if(($corriger_app_login_eleve=='')||($corriger_app_id_groupe=='')||(!is_numeric($corriger_app_id_groupe))||($corriger_app_id_groupe==0)||($app=='')) {
 	echo "<span style='color:red'> KO</span>";

@@ -2,7 +2,7 @@
 @set_time_limit(0);
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -369,20 +369,25 @@ else {
 					}
 				}
 				else {
-					// On teste l'unicité du login que l'on vient de créer: Normalement, c'est déjà fait avec generate_unique_login()... NON: On n'a pas testé la table tempo2.
-					$k = 2;
-					$test_unicite = 'no';
-					$temp = $login_eleve;
-					while ($test_unicite != 'yes') {
-						// test_unique_e_login() contrôle l'existence du login dans la table 'utilisateurs' et ***renseigne la table 'tempo2'***
-						//$test_unicite = test_unique_e_login($login_eleve,$i);
-						$test_unicite = test_unique_e_login($login_eleve,$id_tempo);
-						if ($test_unicite != 'yes') {
-							$login_eleve = $temp.$k;
-							$k++;
-						}
+					if((!$login_eleve)||($login_eleve=="")) {
+						$login_eleve="<span style='color:red'>Erreur</span>";
 					}
-					if($debug_ele=='y') {echo "<span style='color:coral;'>Login après contrôle d'unicité : $login_eleve</span><br />";}
+					else {
+						// On teste l'unicité du login que l'on vient de créer: Normalement, c'est déjà fait avec generate_unique_login()... NON: On n'a pas testé la table tempo2.
+						$k = 2;
+						$test_unicite = 'no';
+						$temp = $login_eleve;
+						while ($test_unicite != 'yes') {
+							// test_unique_e_login() contrôle l'existence du login dans la table 'utilisateurs' et ***renseigne la table 'tempo2'***
+							//$test_unicite = test_unique_e_login($login_eleve,$i);
+							$test_unicite = test_unique_e_login($login_eleve,$id_tempo);
+							if ($test_unicite != 'yes') {
+								$login_eleve = $temp.$k;
+								$k++;
+							}
+						}
+						if($debug_ele=='y') {echo "<span style='color:coral;'>Login après contrôle d'unicité : $login_eleve</span><br />";}
+					}
 				}
 			}
 	

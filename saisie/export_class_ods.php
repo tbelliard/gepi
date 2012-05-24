@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -261,57 +261,109 @@ $fermeture=fclose($fichier_tmp_xml);
 
 
 
-//set_time_limit(3000);
-require_once("../lib/ss_zip.class.php");
+if(file_exists("../lib/ss_zip.class.php")){
+	//set_time_limit(3000);
+	require_once("../lib/ss_zip.class.php");
 
-$zip= new ss_zip('',6);
-//$zip->add_file('sxc/content.xml');
-$zip->add_file("$tmp_fich",'content.xml');
+	$zip= new ss_zip('',6);
+	//$zip->add_file('sxc/content.xml');
+	$zip->add_file("$tmp_fich",'content.xml');
 
-// On n'ajoute pas les dossiers, ni les fichiers vides... ss_zip ne le supporte pas...
-// ... et OpenOffice a l'air de supporter l'absence de ces dossiers/fichiers.
-
-
-/*
-Configurations2/accelerator/current.xml
-META-INF/manifest.xml
-settings.xml
-Basic/script-lc.xml
-Basic/Standard/script-lb.xml
-Basic/Standard/Export_CSV.xml
-meta.xml
-Thumbnails/thumbnail.png
-mimetype
-styles.xml
-content.xml
-*/
+	// On n'ajoute pas les dossiers, ni les fichiers vides... ss_zip ne le supporte pas...
+	// ... et OpenOffice a l'air de supporter l'absence de ces dossiers/fichiers.
 
 
-$zip->add_file($chemin_modele_ods.'/Basic/script-lc.xml', 'Basic/script-lc.xml');
-$zip->add_file($chemin_modele_ods.'/Basic/Standard/script-lb.xml', 'Basic/Standard/script-lb.xml');
-$zip->add_file($chemin_modele_ods.'/Basic/Standard/Export_CSV.xml', 'Basic/Standard/Export_CSV.xml');
-
-// On ne met pas ce fichier parce que sa longueur vide fait une blague pour ss_zip.
-//$zip->add_file($chemin_modele_ods.'/Configurations2/accelerator/current.xml', 'Configurations2/accelerator/current.xml');
-
-$zip->add_file($chemin_modele_ods.'/META-INF/manifest.xml', 'META-INF/manifest.xml');
-$zip->add_file($chemin_modele_ods.'/settings.xml', 'settings.xml');
-$zip->add_file($chemin_modele_ods.'/meta.xml', 'meta.xml');
-//$zip->add_file($chemin_modele_ods.'/modele_ods/Thumbnails', 'Thumbnails');
-$zip->add_file($chemin_modele_ods.'/Thumbnails/thumbnail.png', 'Thumbnails/thumbnail.png');
-$zip->add_file($chemin_modele_ods.'/mimetype', 'mimetype');
-$zip->add_file($chemin_modele_ods.'/styles.xml', 'styles.xml');
-
-$zip->save("$tmp_fich.zip");
+	/*
+	Configurations2/accelerator/current.xml
+	META-INF/manifest.xml
+	settings.xml
+	Basic/script-lc.xml
+	Basic/Standard/script-lb.xml
+	Basic/Standard/Export_CSV.xml
+	meta.xml
+	Thumbnails/thumbnail.png
+	mimetype
+	styles.xml
+	content.xml
+	*/
 
 
-if(file_exists("$chemin_temp/$nom_fic")){unlink("$chemin_temp/$nom_fic");}
-//rename("$tmp_fich.zip","$chemin_modele_ods/$chaine_tmp.$nom_fic");
-rename("$tmp_fich.zip","$chemin_temp/$nom_fic");
+	$zip->add_file($chemin_modele_ods.'/Basic/script-lc.xml', 'Basic/script-lc.xml');
+	$zip->add_file($chemin_modele_ods.'/Basic/Standard/script-lb.xml', 'Basic/Standard/script-lb.xml');
+	$zip->add_file($chemin_modele_ods.'/Basic/Standard/Export_CSV.xml', 'Basic/Standard/Export_CSV.xml');
 
-// Suppression du fichier content...xml
-unlink($tmp_fich);
+	// On ne met pas ce fichier parce que sa longueur vide fait une blague pour ss_zip.
+	//$zip->add_file($chemin_modele_ods.'/Configurations2/accelerator/current.xml', 'Configurations2/accelerator/current.xml');
 
+	$zip->add_file($chemin_modele_ods.'/META-INF/manifest.xml', 'META-INF/manifest.xml');
+	$zip->add_file($chemin_modele_ods.'/settings.xml', 'settings.xml');
+	$zip->add_file($chemin_modele_ods.'/meta.xml', 'meta.xml');
+	//$zip->add_file($chemin_modele_ods.'/modele_ods/Thumbnails', 'Thumbnails');
+	$zip->add_file($chemin_modele_ods.'/Thumbnails/thumbnail.png', 'Thumbnails/thumbnail.png');
+	$zip->add_file($chemin_modele_ods.'/mimetype', 'mimetype');
+	$zip->add_file($chemin_modele_ods.'/styles.xml', 'styles.xml');
+
+	$zip->save("$tmp_fich.zip");
+
+
+	if(file_exists("$chemin_temp/$nom_fic")){unlink("$chemin_temp/$nom_fic");}
+	//rename("$tmp_fich.zip","$chemin_modele_ods/$chaine_tmp.$nom_fic");
+	rename("$tmp_fich.zip","$chemin_temp/$nom_fic");
+
+	// Suppression du fichier content...xml
+	unlink($tmp_fich);
+}
+else {
+
+	$path = path_niveau();
+	$chemin_temp = $path."temp/".get_user_temp_directory()."/";
+
+	if (!defined('PCLZIP_TEMPORARY_DIR') || constant('PCLZIP_TEMPORARY_DIR')!=$chemin_temp) {
+		@define( 'PCLZIP_TEMPORARY_DIR', $chemin_temp);
+	}
+
+	$chemin_stockage = $chemin_temp."/".$nom_fic;
+
+	$dossier_a_traiter=$chemin_temp."export_app_".strftime("%Y%m%d%H%M%S");
+	@mkdir($dossier_a_traiter);
+	copy($tmp_fich, $dossier_a_traiter."/content.xml");
+
+	@mkdir($dossier_a_traiter."/Basic");
+	@mkdir($dossier_a_traiter."/Basic/Standard");
+	@mkdir($dossier_a_traiter."/META-INF");
+	@mkdir($dossier_a_traiter."/Thumbnails");
+
+	$tab_fich_tmp=array('Basic/script-lc.xml', 'Basic/Standard/script-lb.xml', '/Basic/Standard/Export_CSV.xml', 'META-INF/manifest.xml', 'settings.xml', 'meta.xml', 'Thumbnails/thumbnail.png', 'mimetype', 'styles.xml');
+	for($loop=0;$loop<count($tab_fich_tmp);$loop++) {
+		copy($chemin_modele_ods.'/'.$tab_fich_tmp[$loop], $dossier_a_traiter."/".$tab_fich_tmp[$loop]);
+	}
+
+	require_once($path.'lib/pclzip.lib.php');
+
+	if ($chemin_stockage !='') {
+		if(file_exists("$chemin_stockage")) {unlink("$chemin_stockage");}
+
+		//echo "\$chemin_stockage=$chemin_stockage<br />";
+		//echo "\$dossier_a_traiter=$dossier_a_traiter<br />";
+
+		$archive = new PclZip($chemin_stockage);
+		$v_list = $archive->create($dossier_a_traiter,
+			  PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
+			  PCLZIP_OPT_ADD_PATH, '');
+
+		if ($v_list == 0) {
+			echo "<p style='color:red'>Erreur : ".$archive->errorInfo(TRUE)."</p>";
+		}
+		/*
+		else {
+			$msg="Archive zip créée&nbsp;: <a href='$chemin_stockage'>$chemin_stockage</a>";
+		}
+		*/
+
+		deltree($dossier_a_traiter);
+	}
+
+}
 
 
 

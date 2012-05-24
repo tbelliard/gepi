@@ -177,17 +177,6 @@ if ($etape == 4) {
 			}
 		}
 		fclose($fd);
-
-		// on active l'encodage des noms de fichier photo élève
-		// la requête qui suit doit être conforme à la fonction
-		// active_encode_nom_photo() de lib/share.inc.php
-		$query = "insert into setting set NAME = 'alea_nom_photo', VALUE = '".md5(time())."'";
-		$reg = mysql_query($query);
-		if (!$reg) {
-			echo "<p><font color=red>ERROR</font> : '$query'</p>\n";
-			echo "<p>Erreur retournée : ".mysql_error()."</p>\n";
-			$result_ok = 'no';
-		}
 	}
 
 	if ($result_ok == 'yes') {
@@ -233,6 +222,34 @@ if ($etape == 4) {
 			@fputs($f, $conn);
 			if (!@fclose($f)) $ok='no';
 		}
+
+	// si 'encodage_nom_photo'=="yes" création du fichier témoin 
+	// pour l'encodage des noms de fichier des photos élèves
+	if ($result_ok == 'yes') {
+	// on récupère la valeur de 'encodage_nom_photo' dans la table 'setting'
+		$R_encodage=@mysql_query("SELECT `VALUE` FROM `setting` WHERE `NAME`='encodage_nom_photo' LIMIT 1");
+		if (!$R_encodage) {$ok='no';
+		} else {
+				$encodage=@mysql_result($R_encodage,0);
+				if ($encodage=="yes") {
+					// on récupère la valeur de 'alea_nom_photo' dans la table 'setting'
+					$R_alea=@mysql_query("SELECT `VALUE` FROM `setting` WHERE `NAME`='alea_nom_photo' LIMIT 1");
+					if (!$R_alea) {$ok='no';
+					} else { 
+						$alea=@mysql_result($R_alea,0);
+						// on crée le fichier témoin
+						$fic_temoin=@fopen("../photos/eleves/encodage_active.txt","w");
+						if (!$fic_temoin) {
+							$ok = 'no';
+						} else {
+							// la valeur à écrire doit être conforme à la fonction 'encode_nom_photo()' de 'lib/share.inc.php'
+							$retour=@fwrite($fic_temoin,substr(md5($alea."nom_photo"),0,5)."nom_photo");
+							if ($retour===false || !@fclose($fic_temoin)) $ok='no';
+							}
+						}
+					}
+				}
+	}
 
 		if ($ok == 'yes') {
 			echo "<B>La structure de votre base de données est installée.</B>\n<p>Vous pouvez passer à l'étape suivante.</p>\n";

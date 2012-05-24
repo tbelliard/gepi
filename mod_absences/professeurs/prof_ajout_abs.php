@@ -951,7 +951,61 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 
 <!-- Afichage du tableau de la liste des élèves -->
 <!-- Legende du tableau-->
-	<?php echo '<p>'.$nbre_eleves.' élèves.</p>'; ?>
+	<?php
+		//=====================================================================
+		// on compte les créneaux pour savoir combien de cellules il faut créer
+		if (getSettingValue("creneau_different") != 'n') {
+			if (date("w") == getSettingValue("creneau_different")) {
+				$sql = "SELECT nom_definie_periode FROM edt_creneaux_bis WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
+			}else{
+				$sql = "SELECT nom_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
+			}
+		}else{
+			$sql = "SELECT nom_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
+		}
+		$req_noms = mysql_query($sql) OR DIE ('Pas de créneaux disponibles.');
+		$nbre_noms = mysql_num_rows($req_noms) OR die ('Impossible de compter les créneaux.');
+		$req_noms_1=$req_noms;
+		$nbre_noms_1=$nbre_noms;
+		//=====================================================================
+		// On insère les noms des différents créneaux
+		if (getSettingValue("creneau_different") != 'n') {
+			if (date("w") == getSettingValue("creneau_different")) {
+				$sql = "SELECT nom_definie_periode FROM edt_creneaux_bis WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
+			}else{
+				$sql = "SELECT nom_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
+			}
+		}else{
+			$sql = "SELECT nom_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
+		}
+		$req_noms = mysql_query($sql) OR DIE ('Pas de créneaux disponibles.');
+		$nbre_noms = mysql_num_rows($req_noms) OR DIE ('Impossible de compter les créneaux.');
+		$req_noms_2=$req_noms;
+		$nbre_noms_2=$nbre_noms;
+		//=====================================================================
+		if ($test[0] == "AID") {
+				// On a besoin du login, nom, prenom et sexe de l'élève
+			$requete_liste_eleve = "SELECT eleves.* FROM eleves, aid, j_aid_eleves WHERE eleves.login = j_aid_eleves.login AND j_aid_eleves.id_aid = aid.id AND id = '".$test[1]."' AND (eleves.date_sortie IS NULL OR eleves.date_sortie='' OR eleves.date_sortie='0000-00-00 00:00:00' OR eleves.date_sortie>'".strftime("%Y-%m-%d %H:%M:%S")."') GROUP BY eleves.login ORDER BY nom, prenom";
+			$execution_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL AID !'.$requete_liste_eleve.'<br />'.mysql_error());
+		}
+		else {
+
+			$requete_liste_eleve = "SELECT * FROM eleves, groupes, j_eleves_groupes 
+		                          WHERE eleves.login=j_eleves_groupes.login
+		                          AND j_eleves_groupes.id_groupe=groupes.id
+		                          AND j_eleves_groupes.periode = " . $_periode . "
+		                          AND id = '".$classe."'
+		                          AND (eleves.date_sortie IS NULL OR eleves.date_sortie='' OR eleves.date_sortie='0000-00-00 00:00:00' OR eleves.date_sortie>'".strftime("%Y-%m-%d %H:%M:%S")."')
+		                        GROUP BY eleves.login
+		                        ORDER BY nom, prenom";
+
+		    $execution_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.mysql_error());
+		}
+		//=====================================================================
+		$nbre_eleves=mysql_num_rows($execution_liste_eleve);
+
+		echo '<p>'.$nbre_eleves.' élèves.</p>';
+	?>
 	<table class="tb_code_couleur" summary="Code des couleurs">
 		<tr>
 			<td class="td_Retard">&nbsp;R&nbsp;</td><td>&nbsp;Retard</td>
@@ -981,7 +1035,8 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 		';
 	}
 	//Fin Ajout Eric
-	
+
+	/*
 	// on compte les créneaux pour savoir combien de cellules il faut créer
 	if (getSettingValue("creneau_different") != 'n') {
 		if (date("w") == getSettingValue("creneau_different")) {
@@ -994,6 +1049,8 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 	}
 	$req_noms = mysql_query($sql) OR DIE ('Pas de créneaux disponibles.');
 	$nbre_noms = mysql_num_rows($req_noms) OR die ('Impossible de compter les créneaux.');
+	*/
+	$nbre_noms=$nbre_noms_1;
 
 	echo '
 				<th colspan="'.$nbre_noms.'" class="th_abs_suivi" abbr="Créneaux">Suivi sur la journ&eacute;e</th>'."\n";
@@ -1015,7 +1072,8 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 				<td></td>';
 	}
     // Fin Ajout Eric
-	
+
+	/*
 	// On insère les noms des différents créneaux
 	if (getSettingValue("creneau_different") != 'n') {
 		if (date("w") == getSettingValue("creneau_different")) {
@@ -1028,6 +1086,9 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 	}
 	$req_noms = mysql_query($sql) OR DIE ('Pas de créneaux disponibles.');
 	$nbre_noms = mysql_num_rows($req_noms) OR DIE ('Impossible de compter les créneaux.');
+	*/
+	$nbre_noms=$nbre_noms_2;
+	$req_noms=$req_noms_2;
 
 	for($i=0; $i<$nbre_noms; $i++) {
 		$rep_sql[$i]["nom_creneau"] = mysql_result($req_noms, $i, "nom_definie_periode");
@@ -1040,9 +1101,10 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 			</tr>
 	<?php
 
+	/*
 	if ($test[0] == "AID") {
 			// On a besoin du login, nom, prenom et sexe de l'élève
-		$requete_liste_eleve = "SELECT eleves.* FROM eleves, aid, j_aid_eleves WHERE eleves.login = j_aid_eleves.login AND j_aid_eleves.id_aid = aid.id AND id = '".$test[1]."' GROUP BY eleves.login ORDER BY nom, prenom";
+		$requete_liste_eleve = "SELECT eleves.* FROM eleves, aid, j_aid_eleves WHERE eleves.login = j_aid_eleves.login AND j_aid_eleves.id_aid = aid.id AND id = '".$test[1]."' AND (eleves.date_sortie IS NULL OR eleves.date_sortie='' OR eleves.date_sortie='0000-00-00 00:00:00' OR eleves.date_sortie>'".strftime("%Y-%m-%d %H:%M:%S")."') GROUP BY eleves.login ORDER BY nom, prenom";
 		$execution_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL AID !'.$requete_liste_eleve.'<br />'.mysql_error());
 	}
 	else {
@@ -1052,10 +1114,14 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
                               AND j_eleves_groupes.id_groupe=groupes.id
                               AND j_eleves_groupes.periode = " . $_periode . "
                               AND id = '".$classe."'
+                              AND (eleves.date_sortie IS NULL OR eleves.date_sortie='' OR eleves.date_sortie='0000-00-00 00:00:00' OR eleves.date_sortie>'".strftime("%Y-%m-%d %H:%M:%S")."')
                             GROUP BY eleves.login
                             ORDER BY nom, prenom";
+
         $execution_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.mysql_error());
     }
+	*/
+
 	$cpt_eleve = '0';
 	$ic = '1';
 	$ligne= '0';
@@ -1108,6 +1174,8 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
                 }
             }
         }
+
+		//if((isset($data_liste_eleve["date_sortie"]))&&($data_liste_eleve["date_sortie"]!='')&&($data_liste_eleve["date_sortie"]!='0000-00-00 00:00:00')&&($data_liste_eleve["date_sortie"]<=strftime("%Y-%m-%d %H:%M:%S"))) {$eleve_dispo = false;}
 
         // ==================== fin du filtrage
         if ($eleve_dispo) {

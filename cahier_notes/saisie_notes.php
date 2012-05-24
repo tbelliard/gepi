@@ -76,6 +76,9 @@ if (getSettingValue("active_carnets_notes")!='y') {
 
 $msg="";
 
+// 20120509
+$delta_modif_note=0.5;
+
 unset($id_devoir);
 $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] : (isset($_GET["id_devoir"]) ? $_GET["id_devoir"] : NULL);
 //if($id_devoir=='') {$id_devoir=NULL;}
@@ -826,7 +829,7 @@ if ($id_devoir != 0) {
         $appel_note_sur = mysql_query("SELECT NOTE_SUR FROM cn_devoirs WHERE id = '$id_devoir'");
         $note_sur_verif = mysql_result($appel_note_sur,'0' ,'note_sur');
 	echo "<p class='cn'>Taper une note de 0 à ".$note_sur_verif." pour chaque élève, ou à défaut le code 'a' pour 'absent', le code 'd' pour 'dispensé', le code '-' ou 'n' pour absence de note.</p>\n";
-	echo "<p class='cn'>Vous pouvez également <b>importer directement vos notes par \"copier/coller\"</b> à partir d'un tableur ou d'une autre application : voir tout en bas de cette page.</p>\n";
+	echo "<p class='cn'>Vous pouvez également <b>importer directement vos notes par \"copier/coller\"</b> à partir d'un tableur ou d'une autre application : voir <a href='#import_notes_tableur'>tout en bas de cette page</a>.</p>\n";
 
 }
 echo "<p class=cn><b>Enseignement : ".$current_group['description']." (" . $current_group["classlist_string"] . ")";
@@ -1043,6 +1046,9 @@ foreach ($liste_eleves as $eleve) {
 					}
 				}
 				$mess_note[$i][$k].="\" onchange=\"verifcol($num_id);calcul_moy_med();changement();\" />";
+
+				// 20120509
+				$mess_note[$i][$k].="<span id='modif_note_$i' style='display:none'><a href='#' onclick=\"modif_note($num_id, $delta_modif_note);return false;\"><img src='../images/icons/add.png' width='16' height='16' alt='Augmenter la note de $delta_modif_note' title='Augmenter la note de $delta_modif_note' /></a><a href='#' onclick=\"modif_note($num_id, -$delta_modif_note);return false;\"><img src='../images/icons/remove.png' width='16' height='16' alt='Diminuer la note de $delta_modif_note' title='Diminuer la note de $delta_modif_note' /></a></span>";
 			}
 			$mess_note[$i][$k] .= "</td>\n";
 			$mess_comment[$i][$k] = "<td class='cn' bgcolor='$couleur_devoirs'>";
@@ -1084,6 +1090,8 @@ foreach ($liste_eleves as $eleve) {
 	$current_displayed_line++;
 	$i++;
 }
+// 20120509
+$max_indice_eleve=$i;
 
 // Affichage du tableau
 
@@ -1199,7 +1207,12 @@ echo "</tr>\n";
 echo "<tr>\n";
 echo "<td class=cn valign='top'>";
 //echo "&nbsp;";
-echo "<p id='p_ramener_sur_N' style='display:none'><a href='#' onclick=\"afficher_div('div_ramener_sur_N','y',20,20); return false;\" target=\'_blank\'>Ramener sur N</a></p>";
+echo "<p id='p_ramener_sur_N' style='display:none'><a href='#' onclick=\"afficher_div('div_ramener_sur_N','y',20,20); return false;\" target=\'_blank\'>Ramener sur N</a>";
+// 20120509
+if(getSettingAOui('cn_increment_notes')) {
+	echo " - <a href='#' onclick=\"affichage_modif_note();return false;\" title='Incrémenter/décrémenter les notes de $delta_modif_note'>+/-</a>";
+}
+echo "</p>";
 echo "<input type='hidden' name='cn_precision' id='cn_precision' value='' />\n";
 echo "</td>\n";
 $header_pdf[] = "Evaluation :";
@@ -1532,7 +1545,7 @@ while($i < $nombre_lignes) {
 		$data_pdf[$pointer][] = ($eleve_classe[$i]);
 	}
 	$alt=$alt*(-1);
-	echo "<tr class='lig$alt'>\n";
+	echo "<tr class='lig$alt white_hover'>\n";
 	if ($eleve_classe[$i] != $prev_classe && $prev_classe != null && $order_by == "classe") {
 		echo "<td class=cn style='border-top: 2px solid blue; text-align:left;'>\n";
 
@@ -2264,6 +2277,28 @@ if ($id_devoir) {
 			document.getElementById('textarea_notes').value=liste_notes;
 		}
 	}
+	
+	// 20120509
+	function modif_note(num, delta) {
+		var reg_virgule=new RegExp('[,]', 'g');
+
+		if(document.getElementById('n'+num)) {
+			note=document.getElementById('n'+num).value;
+			if(((note.search(/^[0-9.]+$/)!=-1)&&(note.lastIndexOf('.')==note.indexOf('.',0)))||
+			((note.search(/^[0-9,]+$/)!=-1)&&(note.lastIndexOf(',')==note.indexOf(',',0)))){
+				note_modifiee=eval(note.replace(reg_virgule, '.'))+eval(delta);
+				if((note_modifiee>=0)&&(note_modifiee<=$note_sur_verif)) {document.getElementById('n'+num).value=note_modifiee;}
+			}
+		}
+	}
+
+	function affichage_modif_note() {
+		for(i=0;i<$max_indice_eleve;i++) {
+			if(document.getElementById('modif_note_'+i)) {
+				document.getElementById('modif_note_'+i).style.display='';
+			}
+		}
+	}
 </script>\n";
 	//=====================================================
 
@@ -2280,6 +2315,7 @@ if ($id_devoir) {
 	echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: 8px; margin-right: 100px;\">\n";
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post>\n";
 	echo add_token_field();
+	echo "<a name='import_notes_tableur'></a>";
 	echo "<h3 class='gepi'>Importation directe des notes par copier/coller à partir d'un tableur</h3>\n";
 	echo "<table summary=\"Tableau d'import\"><tr>\n";
 	echo "<td>De la ligne : ";

@@ -356,7 +356,48 @@ elseif($_SESSION['statut']=="responsable"){
 		if(mysql_num_rows($test)>0){
 			$acces="y";
 
-			if(!isset($id_classe)){
+			$tab_eleves_resp=array();
+			if($_SESSION['statut']=='responsable') {
+				$tmp_tab_eleves_resp=get_enfants_from_resp_login($_SESSION['login']);
+				// On récupère un tableau avec login pour le premier indice et nom_prenom pour le 2è, puis on passe à l'élève suivant.
+				if(count($tmp_tab_eleves_resp)==2) {
+					$tab_eleves_resp[0]=array();
+					$tab_eleves_resp[0]['login']=$tmp_tab_eleves_resp[0];
+					$tab_eleves_resp[0]['nom_prenom']=$tmp_tab_eleves_resp[1];
+					$tab_class_ele=get_class_from_ele_login($tab_eleves_resp[0]['login']);
+					if(count($tab_class_ele)>0) {
+						$tab_eleves_resp[0]['id_classe']=$tab_class_ele['id0'];
+					}
+					else {
+						$tab_eleves_resp[0]['id_classe']=0;
+					}
+				}
+				elseif(count($tmp_tab_eleves_resp)>2) {
+					$cpt=0;
+					for($loop=0;$loop<count($tmp_tab_eleves_resp);$loop+=2) {
+						$tab_eleves_resp[$cpt]=array();
+						$tab_eleves_resp[$cpt]['login']=$tmp_tab_eleves_resp[$loop];
+						$tab_eleves_resp[$cpt]['nom_prenom']=$tmp_tab_eleves_resp[$loop+1];
+						$tab_class_ele=get_class_from_ele_login($tab_eleves_resp[$cpt]['login']);
+						if(count($tab_class_ele)>0) {
+							$tab_eleves_resp[$cpt]['id_classe']=$tab_class_ele['id0'];
+						}
+						else {
+							$tab_eleves_resp[$cpt]['id_classe']=0;
+						}
+						$cpt++;
+					}
+				}
+			}
+
+
+			if(!isset($id_classe)) {
+				if(count($tab_eleves_resp)==1) {
+					$logineleve=$tab_eleves_resp[0]['login'];
+					if(isset($tab_eleves_resp[0]['id_classe'])) {$id_classe=$tab_eleves_resp[0]['id_classe'];}
+					//$aff_classe="y";
+				}
+				/*
 				$sql_classes="SELECT DISTINCT c.id,c.classe FROM classes c,
 																j_eleves_classes jec,
 																eleves e,
@@ -374,6 +415,7 @@ elseif($_SESSION['statut']=="responsable"){
 					$lig_classe=mysql_fetch_object($res_classe);
 					$id_classe=$lig_classe->id;
 				}
+				*/
 			}
 
 			if(isset($id_classe)){
@@ -515,7 +557,33 @@ if(($_SESSION['statut']=='administrateur')&&(isset($_GET['ine']))) {
 	die();
 }
 //==================================================================
+/*
+echo "<pre>";
+print_r($tab_eleves_resp);
+echo "</pre>";
+*/
+//==================================================================
+if((!isset($id_classe))&&($_SESSION['statut']=='responsable')) {
+	if(count($tab_eleves_resp)==1) {
+		// Normalement, ce cas est géré plus haut
+		$logineleve=$tab_eleves_resp[0]['login'];
+		if(isset($tab_eleves_resp[0]['id_classe'])) {$id_classe=$tab_eleves_resp[0]['id_classe'];}
+		$aff_classe="y";
+	}
+	else {
+		// Il faut choisir l'élève
+		echo "<p>Choisissez l'".$gepiSettings['denomination_eleve']." pour lequel vous souhaitez consulter les données d'années antérieures.</p>\n";
+		echo "<ul>\n";
+		for($loop=0;$loop<count($tab_eleves_resp);$loop++) {
+			echo "<li><a href='".$_SERVER['PHP_SELF']."?logineleve=".$tab_eleves_resp[$loop]['login']."&amp;id_classe=".$tab_eleves_resp[$loop]['id_classe']."'>".$tab_eleves_resp[$loop]['nom_prenom']."</a></li>\n";
+		}
+		echo "</ul>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+}
 
+//==================================================================
 
 if(!isset($id_classe)){
 	echo "</p></form>\n";
@@ -566,10 +634,14 @@ if(!isset($id_classe)){
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
-
 }
-else{
-	if($_SESSION['statut']!='eleve') {
+else {
+	if($_SESSION['statut']=='responsable') {
+		if(count($tab_eleves_resp)>1) {
+			echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre ".$gepiSettings['denomination_eleve']."</a>";
+		}
+	}
+	elseif($_SESSION['statut']!='eleve') {
 		echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>";
 	}
 
@@ -743,7 +815,7 @@ else{
 
 	}
 	else{
-		if($_SESSION['statut']!='eleve'){
+		if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
 			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Choisir un autre ".$gepiSettings['denomination_eleve']."</a>\n";
 
 			if(isset($sql_ele)) {

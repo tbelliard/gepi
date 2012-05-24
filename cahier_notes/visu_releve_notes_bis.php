@@ -251,6 +251,9 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 	if (($_SESSION['statut'] == 'scolarite') AND (getSettingValue("GepiAccesReleveScol") == "yes")) {
 		$sql="SELECT DISTINCT c.* FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
+	elseif (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpeTousEleves") == "yes")) {
+		$sql="SELECT DISTINCT c.* FROM classes c ORDER BY classe";
+	}
 	elseif(($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") == "yes")) {
 		$sql="SELECT DISTINCT c.* FROM classes c,
 										j_eleves_classes jecl,
@@ -1076,6 +1079,13 @@ echo "</script>\n";
 							j_eleves_classes jec
 				WHERE jec.login=e.login AND
 							jec.id_classe='".$tab_id_classe[$i]."'
+				ORDER BY e.nom,e.prenom;";
+		}
+		elseif (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpeTousEleves") == "yes")) {
+			$sql="SELECT DISTINCT e.* FROM eleves e,
+							j_eleves_classes jec
+				WHERE jec.login=e.login AND
+						jec.id_classe='".$tab_id_classe[$i]."'
 				ORDER BY e.nom,e.prenom;";
 		}
 		elseif (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") == "yes")) {

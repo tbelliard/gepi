@@ -811,7 +811,10 @@ if ($on_continue == 'yes') {
 					// MODIF: boireaus
 					//echo $current_eleve_appreciation[$nb];
 					if ($current_eleve_appreciation[$nb]=="-1") {
+						// 20120409
+						echo "<div id='app_".$current_id_eleve."_".$current_group['id']."_$nb'>";
 						echo "<span class='noprint'>-</span>\n";
+						echo "</div>\n";
 					}
 					else {
 						// 20120409
@@ -831,7 +834,10 @@ if ($on_continue == 'yes') {
 					}
 					//======================================
 				} else {
-					echo " -";
+					// 20120409
+					echo "<div id='app_".$current_id_eleve."_".$current_group['id']."_$nb'>";
+					echo "<span class='noprint'>-</span>\n";
+					echo "</div>\n";
 				}
 				echo "</td>\n";
 

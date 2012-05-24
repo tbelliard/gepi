@@ -79,7 +79,7 @@ function ajout_bouton_supprimer_message($contenu_cor,$id_message)
 	<input type="hidden" name="supprimer_message" value="'.$id_message.'">
 	<button type="submit" title=" Supprimer ce message " style="border: none; background: none; float: right;"><img style="vertical-align: bottom;" src="images/icons/delete.png"></button>
 	</form>'.$contenu_cor;
-	$r_sql="UPDATE `messages` SET `texte`='".$contenu_cor."' WHERE `id`='".$id_message."'";
+	$r_sql="UPDATE messages SET texte='".$contenu_cor."' WHERE id='".$id_message."'";
 	return mysql_query($r_sql)?true:false;
 	}
 
@@ -125,8 +125,8 @@ $msg_erreur=""; $msg_OK="";
 //
 if (isset($_POST['purger']))
 	{
-	//$r_sql="DELETE FROM `messages` WHERE `date_fin`+86400 <= ".mktime(0,0,0,date("m"),date("d"),date("Y"));
-	$r_sql="DELETE FROM `messages` WHERE `date_fin`+86400 <= ".time();
+	//$r_sql="DELETE FROM messages WHERE date_fin+86400 <= ".mktime(0,0,0,date("m"),date("d"),date("Y"));
+	$r_sql="DELETE FROM messages WHERE date_fin+86400 <= ".time();
 	if (!mysql_query($r_sql)) $msg_erreur="Erreur lors de la purge des messages&nbsp;: ".mysql_error();
 	else	{
 			$msg_OK="Purge effectuée. ";
@@ -248,7 +248,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 		if ($_POST['id_classe']<>"")
 			{
 			$id_classe=$_POST['id_classe'];
-			$r_sql="SELECT DISTINCT `utilisateurs`.`login` FROM `j_groupes_classes`,`groupes`,`j_groupes_professeurs`,`utilisateurs` WHERE `j_groupes_classes`.`id_classe`='".$id_classe."' AND `j_groupes_classes`.`id_groupe`=`groupes`.`id` AND `groupes`.`id`=`j_groupes_professeurs`.`id_groupe` AND `j_groupes_professeurs`.`login`=`utilisateurs`.`login`";
+			$r_sql="SELECT DISTINCT utilisateurs.login FROM j_groupes_classes,groupes,j_groupes_professeurs,utilisateurs WHERE j_groupes_classes.id_classe='".$id_classe."' AND j_groupes_classes.id_groupe=groupes.id AND groupes.id=j_groupes_professeurs.id_groupe AND j_groupes_professeurs.login=utilisateurs.login";
 			$R_professeurs=mysql_query($r_sql);
 			while ($un_professeur=mysql_fetch_assoc($R_professeurs))
 				$t_login_destinataires[]=$un_professeur['login'];
@@ -336,7 +336,7 @@ echo "<br /><br />";
 // Affichage des messages éditables
 //
 
-$appel_messages = mysql_query("SELECT * FROM `messages`WHERE `texte` <> '' AND `statuts_destinataires` <> '_'  AND `login_destinataire`='' order by ".$order_by." DESC");
+$appel_messages = mysql_query("SELECT * FROM messages WHERE texte <> '' AND statuts_destinataires <> '_'  AND login_destinataire='' order by ".$order_by." DESC");
 $nb_messages = mysql_num_rows($appel_messages);
 
 if ($nb_messages>0) {
@@ -556,7 +556,7 @@ echo "<tr><td  colspan=\"4\" >\n";
 		<optgroup>
 		<option></option>
 	<?php
-	$r_sql="SELECT `login`,`nom`,`prenom` FROM `utilisateurs` WHERE `statut` IN ('administrateur','professeur','cpe','scolarite','secours','autre') ORDER BY `nom`,`prenom`";
+	$r_sql="SELECT login,nom,prenom FROM utilisateurs WHERE statut IN ('administrateur','professeur','cpe','scolarite','secours','autre') ORDER BY nom,prenom";
 	$R_utilisateurs=mysql_query($r_sql);
 	$initiale_courante=0;
 	while($utilisateur=mysql_fetch_array($R_utilisateurs))
@@ -587,12 +587,15 @@ echo "<tr><td  colspan=\"4\" >\n";
 		<optgroup>
 		<option></option>
 	<?php
-	$r_sql="SELECT `id`,`nom_complet` FROM `classes` ORDER BY `classe`";
+	$r_sql="SELECT id,nom_complet,classe FROM classes ORDER BY classe";
 	$R_classes=mysql_query($r_sql);
 	while($classe=mysql_fetch_array($R_classes))
 		{
 		?>
-		<option value="<?php echo $classe['id']; ?>" <?php if (isset($id_classe)) if ($classe['id']==$id_classe) echo "selected"; ?>><?php echo $classe['nom_complet']; ?></option>
+		<option value="<?php echo $classe['id']; ?>" <?php if (isset($id_classe)) if ($classe['id']==$id_classe) echo "selected"; ?>><?php
+			echo $classe['nom_complet'];
+			if($classe['nom_complet']!=$classe['classe']) {echo " (".$classe['classe'].")";}
+		?></option>
 		<?php
 		}
 	?>

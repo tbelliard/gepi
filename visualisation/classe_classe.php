@@ -74,11 +74,22 @@ if ((!isset($id_classe)) or ($id_classe=='')) {
 			ORDER BY classe";
 	}
 
-	if(((getSettingValue("GepiAccesMoyennesProfToutesClasses")=="yes")&&($_SESSION['statut']=='professeur'))||
+	if(((getSettingValue("GepiAccesReleveProfToutesClasses")=="yes")&&($_SESSION['statut']=='professeur'))||
 		((getSettingValue("GepiAccesReleveScol")=='yes')&&($_SESSION['statut']=='scolarite'))||
-		((getSettingValue("GepiAccesReleveCpe")=='yes')&&($_SESSION['statut']=='cpe'))) {
-		$sql="SELECT DISTINCT c.* FROM classes c ORDER BY classe";
+		((getSettingValue("GepiAccesReleveCpeTousEleves")=='yes')&&($_SESSION['statut']=='cpe'))) {
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe";
 	}
+	/*
+	elseif((getSettingValue("GepiAccesReleveCpe")=='yes')&&($_SESSION['statut']=='cpe')) {
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
+			p.id_classe = c.id AND
+			jec.id_classe=c.id AND
+			jec.periode=p.num_periode AND
+			jecpe.e_login=jec.login AND
+			jecpe.cpe_login='".$_SESSION['login']."'
+			ORDER BY classe";
+	}
+	*/
 
 	$call_classes=mysql_query($sql);
     $nombreligne = mysql_num_rows($call_classes);

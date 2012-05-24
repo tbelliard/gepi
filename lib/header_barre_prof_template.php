@@ -374,6 +374,14 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 
 
 
+			if((getSettingAOui('AAProfTout'))||(getSettingAOui('AAProfClasses'))||(getSettingAOui('AAProfGroupes'))||
+			((getSettingAOui('AAProfPrinc'))&&(is_pp($_SESSION['login'])))) {
+				$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_annees_anterieures/consultation_annee_anterieure.php' , "texte"=>"Années antérieures");
+				$cpt_sous_menu++;
+			}
+
+
+
 		$tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
 		$tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;
 		$compteur_menu++;

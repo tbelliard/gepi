@@ -36,6 +36,18 @@ function affichage_travail_jour(num_jour) {
 		document.getElementById('travail_jour_'+num_jour+'_contenu_corps').style.maxHeight='20em';
 		document.getElementById('travail_jour_'+num_jour+'_contenu_corps').style.overflow='auto';
 
+		// On affiche les témoins dans l'entête de l'infobulle du jour
+		// Si les liens existent, c'est qu'il y a un groupe au moins avec le type de notice correspondant
+		if(document.getElementById('lien_alterne_affichage_devoirs_jour_'+num_jour)) {
+			document.getElementById('lien_alterne_affichage_devoirs_jour_'+num_jour).style.display='';
+		}
+		if(document.getElementById('lien_alterne_affichage_notice_privee_jour_'+num_jour)) {
+			document.getElementById('lien_alterne_affichage_notice_privee_jour_'+num_jour).style.display='';
+		}
+		if(document.getElementById('lien_alterne_affichage_compte_rendu_jour_'+num_jour)) {
+			document.getElementById('lien_alterne_affichage_compte_rendu_jour_'+num_jour).style.display='';
+		}
+
 		// On affiche tous les enseignements du jour:
 		for(i=0;i<tab_grp.length;i++) {
 			if(document.getElementById('travail_jour_'+num_jour+'_groupe_'+tab_grp[i])) {
@@ -89,6 +101,36 @@ function affichage_notices_tel_groupe(num_jour, id_groupe) {
 				// On affiche l'enseignement demandé
 				if(document.getElementById('travail_jour_'+num_jour+'_groupe_'+id_groupe)) {
 					document.getElementById('travail_jour_'+num_jour+'_groupe_'+id_groupe).style.display='';
+
+					// Initialisation: On affiche tous les témoins:
+					if(document.getElementById('lien_alterne_affichage_devoirs_jour_'+num_jour)) {
+						document.getElementById('lien_alterne_affichage_devoirs_jour_'+num_jour).style.display='';
+					}
+					if(document.getElementById('lien_alterne_affichage_notice_privee_jour_'+num_jour)) {
+						document.getElementById('lien_alterne_affichage_notice_privee_jour_'+num_jour).style.display='';
+					}
+					if(document.getElementById('lien_alterne_affichage_compte_rendu_jour_'+num_jour)) {
+						document.getElementById('lien_alterne_affichage_compte_rendu_jour_'+num_jour).style.display='';
+					}
+
+					// On masque les témoins dans l'entête de l'infobulle du jour si il n'y a pas le type de notice correspondant pour le groupe affiché
+					if(!document.getElementById('travail_jour_'+num_jour+'_groupe_'+id_groupe+'_devoirs')) {
+						if(document.getElementById('lien_alterne_affichage_devoirs_jour_'+num_jour)) {
+							document.getElementById('lien_alterne_affichage_devoirs_jour_'+num_jour).style.display='none';
+						}
+					}
+
+					if(!document.getElementById('travail_jour_'+num_jour+'_groupe_'+id_groupe+'_notice_privee')) {
+						if(document.getElementById('lien_alterne_affichage_notice_privee_jour_'+num_jour)) {
+							document.getElementById('lien_alterne_affichage_notice_privee_jour_'+num_jour).style.display='none';
+						}
+					}
+
+					if(!document.getElementById('travail_jour_'+num_jour+'_groupe_'+id_groupe+'_compte_rendu')) {
+						if(document.getElementById('lien_alterne_affichage_compte_rendu_jour_'+num_jour)) {
+							document.getElementById('lien_alterne_affichage_compte_rendu_jour_'+num_jour).style.display='none';
+						}
+					}
 				}
 
 				// On affiche l'infobulle du jour

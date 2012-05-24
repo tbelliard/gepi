@@ -354,7 +354,18 @@ if (isset($_POST['is_posted'])) {
 				$msg .= "Erreur lors de l'enregistrement du paramètre exp_imp_chgt_etab !";
 			}
 		}
-	
+
+		if (isset($_POST['aff_temoin_check_serveur'])) {
+			if (!saveSetting("aff_temoin_check_serveur", $_POST['aff_temoin_check_serveur'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre aff_temoin_check_serveur !";
+			}
+		}
+		else{
+			if (!saveSetting("aff_temoin_check_serveur", 'n')) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre aff_temoin_check_serveur !";
+			}
+		}
+
 		if (isset($_POST['ele_lieu_naissance'])) {
 			if (!saveSetting("ele_lieu_naissance", $_POST['ele_lieu_naissance'])) {
 				$msg .= "Erreur lors de l'enregistrement du paramètre ele_lieu_naissance !";
@@ -458,6 +469,7 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
+		$format_login_ok=0;
 		if (isset($_POST['mode_generation_login'])) {
 			if(!check_format_login($_POST['mode_generation_login'])) {
 				$msg .= "Format de login invalide pour les personnels !";
@@ -470,7 +482,8 @@ if (isset($_POST['is_posted'])) {
 					$nbre_carac = mb_strlen($_POST['mode_generation_login']);
 					$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login'";
 					$modif_maxlong = mysql_query($req);
-				}
+
+					$format_login_ok++;				}
 			}
 		}
 
@@ -497,6 +510,8 @@ if (isset($_POST['is_posted'])) {
 					$nbre_carac = mb_strlen($_POST['mode_generation_login_eleve']);
 					$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login_eleve'";
 					$modif_maxlong = mysql_query($req);
+
+					$format_login_ok++;
 				}
 			}
 		}
@@ -524,6 +539,18 @@ if (isset($_POST['is_posted'])) {
 					$nbre_carac = mb_strlen($_POST['mode_generation_login_responsable']);
 					$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login_responsable'";
 					$modif_maxlong = mysql_query($req);
+
+					$format_login_ok++;
+				}
+			}
+		}
+
+		if($format_login_ok==3) {
+			$sql="SELECT * FROM infos_actions WHERE titre='Format des logins générés';";
+			$test_ia=mysql_query($sql);
+			if(mysql_num_rows($test_ia)>0) {
+				while($lig=mysql_fetch_object($test_ia)) {
+					del_info_action($lig->id);
 				}
 			}
 		}
@@ -836,7 +863,7 @@ echo add_token_field();
 			<br />
 			(<em style='font-size: small'>sous réserve que les mails soient remplis</em>)
 			<br />
-			<span style='font-size: small'>
+			<span style='font-size: small' title='Cependant, en mettant tous les destinataires en BCC (Blind Carbon Copy, soit Copie Cachée), vous pouvez conserver la confidentialité des destinataires (il faut toutefois la plupart du temps au moins un destinataire non caché pour que l&apos;envoi soit accepté).'>
 				Nous attirons votre attention sur le fait qu'envoyer un mail à une liste d'utilisateurs via un lien mailto 
 				permet à chaque élève de connaitre les email des autres élèves sans que l'autorisation de divulgation 
 				ou non paramétrée dans <strong>Gérer mon compte</strong> soit prise en compte.
@@ -896,11 +923,18 @@ echo add_token_field();
 	</p>
 
 	<?php
+		// insert into setting set name='use_custom_denominations', value='yes';
 		if(getSettingAOui('use_custom_denominations')) {
 			$use_custom_denominations=true;
 		}
+		$use_custom_denominations=true;
 		if (isset($use_custom_denominations) && $use_custom_denominations) {
 	?>
+
+	<br />
+
+	<p class="ligneCaps">Personnaliser certains libellés (<em>étudiants au lieu d'élèves, par ex.</em>).<br />
+	(<em>cette fonctionnalité est en cours d'implémentation, pas encore étendue à toutes les pages - ne pas hésiter à signaler les manques criants sur la liste 'users'</em>).</p>
 
 	<p class="ligneCaps">
 		<label for='denomination_professeur' class="cellTab70">
@@ -940,6 +974,8 @@ echo add_token_field();
 			<input type="text" name="denomination_responsables" size="20" value="<?php echo(getSettingValue("denomination_responsables")); ?>" onchange='changement()' />
 		</span>
 	</p>
+
+	<br />
 <?php } ?>
 	
 	<p class="ligneCaps">
@@ -996,7 +1032,7 @@ echo add_token_field();
 
 	<p class="ligneCaps">
 		<label for='mode_generation_login' class="cellTab70">
-			<a name='format_login_resp'></a>
+			<a name='format_login_pers'></a>
 			Mode de génération automatique des logins personnels&nbsp;:
 		</label>
 		<span class="cellTab plusPetit">
@@ -1010,7 +1046,7 @@ echo add_token_field();
 
 	<p class="ligneCaps">
 		<label for='mode_generation_login_eleve' class="cellTab70">
-			<a name='format_login_resp'></a>
+			<a name='format_login_ele'></a>
 			Mode de génération automatique des logins élèves&nbsp;:
 		</label>
 		<span class="cellTab plusPetit">
@@ -1396,7 +1432,26 @@ if($exp_imp_chgt_etab=="") {$exp_imp_chgt_etab="no";}
 				   onchange='changement()' />
 		</span>
 	</p>
-	
+
+	<p class="ligneCaps">
+		<span class="cellTab70">
+			<label for='aff_temoin_check_serveur' style='cursor: pointer'>Effectuer des "contacts" réguliers du serveur et afficher un témoin pour s'assurer que le serveur est bien à l'écoute.</label>
+			<br />
+			<span class='small'>
+				(<em>cela peut être utile dans le cas où vous avez une qualité de connexion aléatoire</em>)&nbsp;:</label>
+			</span>
+		</span>
+		<span class="cellTab plusPetit">
+			<?php
+				$aff_temoin_check_serveur=getSettingValue("aff_temoin_check_serveur");
+				if($aff_temoin_check_serveur=="") {$aff_temoin_check_serveur="n";}
+				echo "<input type='checkbox' name='aff_temoin_check_serveur' id='aff_temoin_check_serveur' value='y'";
+				if($aff_temoin_check_serveur=='y') {echo " checked";}
+				echo " onchange='changement()' />\n";
+			?>
+		</span>
+	</p>
+
 	<p class="ligneCaps">
 		<span class="cellTab70">
 			N° d'enregistrement à la CNIL : <br />

@@ -486,9 +486,18 @@ Patientez pendant l'extraction des données... merci.
 			$acces_discipline="y";
             $acces_fp="y";
 
+			$GepiAccesReleveCpeTousEleves=getSettingValue('GepiAccesReleveCpeTousEleves');
 			$GepiAccesReleveCpe=getSettingValue('GepiAccesReleveCpe');
-			if($GepiAccesReleveCpe=="yes") {
+			if($GepiAccesReleveCpeTousEleves=='yes') {
 				$acces_releves="y";
+			}
+			elseif($GepiAccesReleveCpe=="yes") {
+				$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."' AND e_login='".$ele_login."';";
+				$test=mysql_query($sql);
+
+				if(mysql_num_rows($test)>0) {
+					$acces_releves="y";
+				}
 			}
 
 			if($active_annees_anterieures=='y') {

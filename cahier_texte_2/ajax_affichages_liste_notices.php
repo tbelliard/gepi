@@ -60,7 +60,7 @@ $aujourdhui = mktime(0,0,0,date("m"),date("d"),date("Y"));
 if (isset($_REQUEST["id_ct_a_importer"])) {
     $classname = $_REQUEST["ct_a_importer_class"].'Query';
     if (class_exists($classname)) {
-        $_SESSION['ct_a_importer'] = $classname::create()->findOneByPrimaryKey($_REQUEST["id_ct_a_importer"]);
+        $_SESSION['ct_a_importer'] = call_user_func($classname .'::create')->findOneByPrimaryKey($_REQUEST["id_ct_a_importer"]);
     }
 }
 
@@ -112,7 +112,9 @@ echo "<div id=\"div_chaine_liste_notices\" style=\"display:inline;\"><img id=\"c
 
 echo "<p style='font-size:9pt'>";
 if(getSettingValue('cahier_texte_acces_public')!='no'){
-	echo "<a href='../public/see_all.php?id_groupe=" . $current_group->getId() ."' target='_blank'>Visualiser l'accès public</a>\n<br>";
+	echo "<a href='../public/see_all.php?id_groupe=" . $current_group->getId() ."' target='_blank'>Visualiser l'accès public</a>\n";
+	echo " | <a href='consultation2.php?mode=professeur' target='_blank'>Aff.semaine</a>";
+	echo "<br>";
 } else {
 	//$classes_du_groupe = $current_group->getClasses();
 	//echo "<a href='./see_all.php?year=". date("Y") ."&month=". date("m") ."&day=". date("d") ."&id_classe=" . $classes_du_groupe[0]->getId() ."&id_groupe=" . $current_group->getId() ."'>Visualiser les cahiers de textes</a>\n<br>";

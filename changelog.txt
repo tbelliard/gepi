@@ -3,7 +3,7 @@
 |= CHANGELOG GEPI =|
 |==================|
 
-Derniers Développements
+Gepi-1.6.1
 ===========================
 Librairies :
 - Dojo (1.6.1) est embarqué localement
@@ -16,16 +16,33 @@ Librairies :
 Cdt2 :
 - amélioration du copier coller de notices
 - ajout d'un mode semaine: affichage de deux semaines en mode consultation
+- possibilité de se créer une banque de termes à insérer dans une notice
 
 Abs2 :
 - génération de notifications par lot depuis une liste des traitements
+- page pour extraires des listes d'élèves en utilisant les filtres abs2
+- implémentation de cases à cocher pour saisir les types d'absence
+- possibilité d'afficher en rouge le créneaux en cours de saisie s'il existe déjà une saisie
 
 Trombinoscopes:
 - Possibilité d'uploader les photos élèves en CPE (sous réserve d'un droit)
 - Possibilité d'uploader les photos élèves depuis l'affichage trombinoscope
+- Possibilité d'encoder les noms de fichiers photo pour éviter des téléchargements non voulus
 
 Gestion:
 - Gestion des matières: Affichage du nombre d'enseignements associés à une matière; possibilité de griser/masquer les matières sans enseignements.
+- Mise à jour sconet: Possibilité de spécifier la largeur de tranche pour analyser les différences et ainsi réduire le temps de traitement.
+
+Années antérieures:
+- Possibilité d'archiver les bulletins PDF.
+
+Bulletins:
+- Possibilité de corriger ses propres appréciations depuis les Bulletins simplifiés.
+- Export ODS des notes et appréciations avec PclZip.
+
+Cahiers de notes:
+- Export ODS des carnets de notes avec PclZip.
+
 
 Gepi-1.6.0 (27/01/2012)
 ===========================

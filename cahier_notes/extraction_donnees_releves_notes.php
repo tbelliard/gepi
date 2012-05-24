@@ -382,6 +382,9 @@
 						}
 					}
 					// Si c'est un CPE
+					elseif(($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpeTousEleves") == "yes")) {
+						$autorisation_acces='y';
+					}
 					elseif(($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") == "yes")) {
 						$sql="SELECT 1=1 FROM j_eleves_cpe jec
 							WHERE (jec.e_login='".$current_eleve_login[$i]."' AND

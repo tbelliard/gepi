@@ -362,21 +362,75 @@ if(isset($_POST['valider_param'])) {
 		$fermeture=fclose($fichier_content_xml);
 		
 		set_time_limit(3000);
-		//require_once("ss_zip.class.php");
-		require_once("../lib/ss_zip.class.php");
 
 		$fichier_liste="options_eleves_gepi_".suppr_accents(preg_replace("/'/","&apos;",preg_replace('/[" ]/','',$projet)))."_".date("Ymd_Hi");
 
-		$zip= new ss_zip('',6);
-		$zip->add_file("../temp/".$user_temp_directory."/content.xml",'content.xml');
-		$zip->add_file('liste_options_ods/meta.xml','meta.xml');
-		$zip->add_file('liste_options_ods/mimetype','mimetype');
-		$zip->add_file('liste_options_ods/settings.xml','settings.xml');
-		$zip->add_file('liste_options_ods/styles.xml','styles.xml');
-		$zip->add_file('liste_options_ods/META-INF/manifest.xml','META-INF/manifest.xml');
-		$zip->save("../temp/".$user_temp_directory."/$fichier_liste.zip");
+		if(file_exists("../lib/ss_zip.class.php")){
+			//require_once("ss_zip.class.php");
+			require_once("../lib/ss_zip.class.php");
 
-		rename("../temp/".$user_temp_directory."/$fichier_liste.zip","../temp/".$user_temp_directory."/".$fichier_liste.".ods");
+			$zip= new ss_zip('',6);
+			$zip->add_file("../temp/".$user_temp_directory."/content.xml",'content.xml');
+			$zip->add_file('liste_options_ods/meta.xml','meta.xml');
+			$zip->add_file('liste_options_ods/mimetype','mimetype');
+			$zip->add_file('liste_options_ods/settings.xml','settings.xml');
+			$zip->add_file('liste_options_ods/styles.xml','styles.xml');
+			$zip->add_file('liste_options_ods/META-INF/manifest.xml','META-INF/manifest.xml');
+			$zip->save("../temp/".$user_temp_directory."/$fichier_liste.zip");
+
+			rename("../temp/".$user_temp_directory."/$fichier_liste.zip","../temp/".$user_temp_directory."/".$fichier_liste.".ods");
+		}
+		else {
+
+			$path = path_niveau();
+			$chemin_temp = $path."temp/".get_user_temp_directory()."/";
+
+			if (!defined('PCLZIP_TEMPORARY_DIR') || constant('PCLZIP_TEMPORARY_DIR')!=$chemin_temp) {
+				@define( 'PCLZIP_TEMPORARY_DIR', $chemin_temp);
+			}
+
+			$nom_fic=$fichier_liste.".ods";
+			$chemin_stockage = $chemin_temp."/".$nom_fic;
+			$chemin_modele_ods='liste_options_ods';
+
+			$dossier_a_traiter=$chemin_temp."liste_options_".strftime("%Y%m%d%H%M%S");
+
+			@mkdir($dossier_a_traiter);
+			copy("../temp/".$user_temp_directory."/content.xml", $dossier_a_traiter."/content.xml");
+
+			@mkdir($dossier_a_traiter."/META-INF");
+
+			$tab_fich_tmp=array('META-INF/manifest.xml', 'settings.xml', 'meta.xml', 'mimetype', 'styles.xml');
+			for($loop=0;$loop<count($tab_fich_tmp);$loop++) {
+				copy($chemin_modele_ods.'/'.$tab_fich_tmp[$loop], $dossier_a_traiter."/".$tab_fich_tmp[$loop]);
+			}
+
+			require_once($path.'lib/pclzip.lib.php');
+
+			if ($chemin_stockage !='') {
+				if(file_exists("$chemin_stockage")) {unlink("$chemin_stockage");}
+
+				//echo "\$chemin_stockage=$chemin_stockage<br />";
+				//echo "\$dossier_a_traiter=$dossier_a_traiter<br />";
+
+				$archive = new PclZip($chemin_stockage);
+				$v_list = $archive->create($dossier_a_traiter,
+					  PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
+					  PCLZIP_OPT_ADD_PATH, '');
+
+				if ($v_list == 0) {
+					echo "<p style='color:red'>Erreur : ".$archive->errorInfo(TRUE)."</p>";
+				}
+				/*
+				else {
+					$msg="Archive zip créée&nbsp;: <a href='$chemin_stockage'>$chemin_stockage</a>";
+				}
+				*/
+
+				deltree($dossier_a_traiter);
+			}
+
+		}
 
 		$lien_fichier_ods="<p>Fichier&nbsp;: <a href='../temp/".$user_temp_directory."/".$fichier_liste.".ods'>".$fichier_liste.".ods</a></p>\n";
 

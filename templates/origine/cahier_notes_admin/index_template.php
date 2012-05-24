@@ -130,7 +130,7 @@
 	
 	<p class="grandEspaceHaut">
 <?php
-	if(file_exists("../lib/ss_zip.class.php")){ 
+	//if(file_exists("../lib/ss_zip.class.php")){ 
 ?>
 	  <input type='checkbox' 
 			 name='export_cn_ods'
@@ -149,12 +149,13 @@
 		Permettre l'export des carnets de notes au format ODS.
 	  </label>
 	  <br />
-	  (<em>si les professeurs ne font pas le ménage après génération des exports, ces fichiers peuvent prendre de la place sur le serveur</em>)\n";
+	  (<em>si les professeurs ne font pas le ménage après génération des exports, ces fichiers peuvent prendre de la place sur le serveur</em>)<br />
 <?php
-	}
-	else{
+	//}
+	//else{
 ?>
-	  En mettant en place la bibliothèque 'ss_zip_.class.php' dans le dossier '/lib/', vous pouvez générer des fichiers tableur ODS pour permettre des saisies hors ligne, la conservation de données,...
+	  <br /><p>La génération de fichiers ODS utilise maintenant la bibliothèque pclzip, présente par défaut dans Gepi.<br /><br />
+	  Dans les versions précédentes de Gepi, en mettant en place la bibliothèque 'ss_zip.class.php' dans le dossier '/lib/', vous pouviez générer des fichiers tableur ODS pour permettre des saisies hors ligne, la conservation de données,...
 	  <br />
 	  Voir <a href='http://smiledsoft.com/demos/phpzip/'>http://smiledsoft.com/demos/phpzip/</a>
 	</p>
@@ -168,8 +169,8 @@
 
 <?php
 	  // Comme la bibliothèque n'est pas présente, on force la valeur à 'n':
-	  $svg_param=saveSetting("export_cn_ods", 'n');
-	}
+	  //$svg_param=saveSetting("export_cn_ods", 'n');
+	//}
 ?>
 	</p>
 
