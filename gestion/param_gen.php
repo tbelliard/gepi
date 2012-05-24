@@ -923,11 +923,18 @@ echo add_token_field();
 	</p>
 
 	<?php
+		// insert into setting set name='use_custom_denominations', value='yes';
 		if(getSettingAOui('use_custom_denominations')) {
 			$use_custom_denominations=true;
 		}
+		$use_custom_denominations=true;
 		if (isset($use_custom_denominations) && $use_custom_denominations) {
 	?>
+
+	<br />
+
+	<p class="ligneCaps">Personnaliser certains libellés (<em>étudiants au lieu d'élèves, par ex.</em>).<br />
+	(<em>cette fonctionnalité est en cours d'implémentation, pas encore étendue à toutes les pages - ne pas hésiter à signaler les manques criants sur la liste 'users'</em>).</p>
 
 	<p class="ligneCaps">
 		<label for='denomination_professeur' class="cellTab70">
@@ -967,6 +974,8 @@ echo add_token_field();
 			<input type="text" name="denomination_responsables" size="20" value="<?php echo(getSettingValue("denomination_responsables")); ?>" onchange='changement()' />
 		</span>
 	</p>
+
+	<br />
 <?php } ?>
 	
 	<p class="ligneCaps">
