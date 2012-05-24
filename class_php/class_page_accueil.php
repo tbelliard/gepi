@@ -685,7 +685,7 @@ class class_page_accueil {
             )
         )
         OR
-        (($this->statutUtilisateur == "cpe") AND getSettingValue("GepiAccesReleveCpe") == "yes")));
+        (($this->statutUtilisateur == "cpe") AND (getSettingValue("GepiAccesReleveCpe") == "yes")) OR (getSettingValue("GepiAccesReleveCpeTousEleves") == "yes")));
 
 	$condition2 = ($this->statutUtilisateur != "professeur" OR
 				(
