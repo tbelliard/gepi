@@ -1550,6 +1550,11 @@ $statutItem="cpe";
 
 // Relevés de notes
 $titreItem='GepiAccesReleveCpe';
+$texteItem="a accès aux relevés de notes des élèves qu'il a en responsabilité";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesReleveCpeTousEleves';
 $texteItem="a accès à tous les relevés de notes de toutes les classes";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
