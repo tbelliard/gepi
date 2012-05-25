@@ -110,24 +110,7 @@ if(!isset($extract_mode)) {
 
 	$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
 	if($suhosin_post_max_totalname_length!='') {
-		echo "<p class='bold'>Configuration suhosin</p>\n";
-		echo "<p>Le module suhosin est activé.<br />\nUn paramétrage trop restrictif de ce module peut perturber le fonctionnement de Gepi, particulièrement dans les pages comportant de nombreux champs de formulaire (<i>comme par exemple dans la page de saisie des appréciations par les professeurs</i>)</p>\n";
-		echo "<p>La page d'extraction des moyennes permettant de modifier/corriger des valeurs propose un très grand nombre de champs.<br />Le module suhosin risque de poser des problèmes.</p>";
-
-		$tab_suhosin=array('suhosin.cookie.max_totalname_length', 
-		'suhosin.get.max_totalname_length', 
-		'suhosin.post.max_totalname_length', 
-		'suhosin.post.max_value_length', 
-		'suhosin.request.max_totalname_length', 
-		'suhosin.request.max_value_length', 
-		'suhosin.request.max_vars');
-
-		for($i=0;$i<count($tab_suhosin);$i++) {
-			echo "- ".$tab_suhosin[$i]." = ".ini_get($tab_suhosin[$i])."<br />\n";
-		}
-
-		echo "En cas de problème, vous pouvez, soit désactiver le module, soit augmenter les valeurs.<br />\n";
-		echo "Le fichier de configuration de suhosin est habituellement en /etc/php5/conf.d/suhosin.ini<br />\nEn cas de modification de ce fichier, pensez à relancer le service apache ensuite pour prendre en compte la modification.<br />\n";
+		echo alerte_config_suhosin();
 	}
 
 }
@@ -577,12 +560,6 @@ function DecocheColonneSelectEleves(i,j) {
 		//echo "<p>Valider les corrections ci-dessus permet de générer un nouveau fichier d'export tenant compte de vos modifications.</p>";
 		echo "</form>\n";
 
-		echo "<script type='text/javascript'>
-var tab_input=document.getElementsByTagName('input');
-//alert(tab_input.length);
-if(document.getElementById('p_nombre_de_champs_input')) {document.getElementById('p_nombre_de_champs_input').innerHTML='Vous avez '+tab_input.length+' champs à poster.';}
-</script>\n";
-
 		echo "<p><i>NOTES:</i></p>\n";
 		echo "<ul>\n";
 		echo "<li><p><i>Rappel:</i> Seuls les élèves pour lesquels aucune erreur/indétermination n'est signalée auront leur exportation réalisée.</p></li>\n";
@@ -593,27 +570,21 @@ if(document.getElementById('p_nombre_de_champs_input')) {document.getElementById
 		echo "<p id='js_retablir_notes_enregistrees' style='display:none'>Si vous avez déjà fait une extraction, et que vous souhaitez réinjecter vos modifications précédemment enregistrées, vous pouvez cependant utiliser le lien suivant&nbsp;<br /><a href='#' onclick='retablir_notes_enregistrees(); return false;'>Rétablir toutes les notes précédemment enregistrées</a></p>\n";
 		echo "</li>\n";
 
+
 		$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
 		if($suhosin_post_max_totalname_length!='') {
 			echo "<li>";
-				echo "<p class='bold'>Configuration suhosin</p>\n";
-				echo "<p>Le module suhosin est activé.<br />\nUn paramétrage trop restrictif de ce module peut perturber le fonctionnement de Gepi, particulièrement dans les pages comportant de nombreux champs de formulaire (<i>comme par exemple dans la page de saisie des appréciations par les professeurs</i>)</p>\n";
-				echo "<p>La page d'extraction des moyennes permettant de modifier/corriger des valeurs propose un très grand nombre de champs.<br />Le module suhosin risque de poser des problèmes.</p>";
 
-				$tab_suhosin=array('suhosin.cookie.max_totalname_length', 
-				'suhosin.get.max_totalname_length', 
-				'suhosin.post.max_totalname_length', 
-				'suhosin.post.max_value_length', 
-				'suhosin.request.max_totalname_length', 
-				'suhosin.request.max_value_length', 
-				'suhosin.request.max_vars');
-		
-				for($i=0;$i<count($tab_suhosin);$i++) {
-					echo "- ".$tab_suhosin[$i]." = ".ini_get($tab_suhosin[$i])."<br />\n";
+				echo alerte_config_suhosin();
+
+				echo "<p>Si le nombre de champs 'input' dépasse la valeur de '<span style='color:red'>suhosin.post.max_vars</span>', vous devriez opter pour une <a href='".$_SERVER['PHP_SELF']."?extract_mode=select'>extraction partielle en sélectionnant une partie seulement des élèves</a>";
+				$suhosin_post_max_vars=ini_get('suhosin.post.max_vars');
+				if((is_numeric($suhosin_post_max_vars))&&($suhosin_post_max_vars>0)) {
+					echo " <span style='color:red'>en se limitant à environ ";
+					echo floor($suhosin_post_max_vars/22);
+					echo " élèves</span>";
 				}
-		
-				echo "En cas de problème, vous pouvez, soit désactiver le module, soit augmenter les valeurs.<br />\n";
-				echo "Le fichier de configuration de suhosin est habituellement en /etc/php5/conf.d/suhosin.ini<br />\nEn cas de modification de ce fichier, pensez à relancer le service apache ensuite pour prendre en compte la modification.<br />\n";
+				echo ".</p>\n";
 
 				// 20120524
 				echo "<p id='p_nombre_de_champs_input'></p>\n";
@@ -622,6 +593,11 @@ if(document.getElementById('p_nombre_de_champs_input')) {document.getElementById
 
 		echo "</ul>\n";
 
+		echo "<script type='text/javascript'>
+var tab_input=document.getElementsByTagName('input');
+//alert(tab_input.length);
+if(document.getElementById('p_nombre_de_champs_input')) {document.getElementById('p_nombre_de_champs_input').innerHTML='Vous avez '+tab_input.length+' champs à poster.';}
+</script>\n";
 
 		echo "<script type='text/javascript'>
 /*
