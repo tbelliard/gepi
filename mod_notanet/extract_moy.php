@@ -266,9 +266,6 @@ else {
 		}
 		elseif($extract_mode=="select") {
 
-			echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post' target='_blank'>\n";
-			echo add_token_field();
-
 			$tab_selection_ele=isset($_POST['tab_selection_ele']) ? $_POST['tab_selection_ele'] : array();
 
 			if((!isset($_POST['choix_eleves']))||(count($tab_selection_ele)==0)) {
@@ -295,7 +292,8 @@ else {
 					}
 				}
 
-				echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post' target='_blank'>\n";
+				echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post'>\n";
+				echo add_token_field();
 
 				$max_eff_classe=0;
 
@@ -372,6 +370,8 @@ function DecocheColonneSelectEleves(i,j) {
 				die();
 			}
 			else {
+				echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post' target='_blank'>\n";
+				echo add_token_field();
 
 				echo "<input type='hidden' name='choix_eleves' value='y' />\n";
 
@@ -577,8 +577,8 @@ function DecocheColonneSelectEleves(i,j) {
 
 				echo alerte_config_suhosin();
 
-				echo "<p>Si le nombre de champs 'input' dépasse la valeur de '<span style='color:red'>suhosin.post.max_vars</span>', vous devriez opter pour une <a href='".$_SERVER['PHP_SELF']."?extract_mode=select'>extraction partielle en sélectionnant une partie seulement des élèves</a>";
 				$suhosin_post_max_vars=ini_get('suhosin.post.max_vars');
+				echo "<p>Si le nombre de champs 'input' dépasse la valeur de '<span style='color:red'>suhosin.post.max_vars</span>' (<em style='color:red'>$suhosin_post_max_vars</em>), vous devriez opter pour une <a href='".$_SERVER['PHP_SELF']."?extract_mode=select'>extraction partielle en sélectionnant une partie seulement des élèves</a>";
 				if((is_numeric($suhosin_post_max_vars))&&($suhosin_post_max_vars>0)) {
 					echo " <span style='color:red'>en se limitant à environ ";
 					echo floor($suhosin_post_max_vars/22);
@@ -596,7 +596,7 @@ function DecocheColonneSelectEleves(i,j) {
 		echo "<script type='text/javascript'>
 var tab_input=document.getElementsByTagName('input');
 //alert(tab_input.length);
-if(document.getElementById('p_nombre_de_champs_input')) {document.getElementById('p_nombre_de_champs_input').innerHTML='Vous avez '+tab_input.length+' champs à poster.';}
+if(document.getElementById('p_nombre_de_champs_input')) {document.getElementById('p_nombre_de_champs_input').innerHTML='Vous avez <span style=\'color:red\'>'+tab_input.length+'</span> champs à poster.';}
 </script>\n";
 
 		echo "<script type='text/javascript'>
