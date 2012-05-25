@@ -1937,4 +1937,42 @@ function insere_lien_insertion_image_dans_ckeditor($url_img) {
 	}
 	return "<div style='float:right; width:18px;'><a href=\"javascript:insere_image_dans_ckeditor('".$url_img."','$tmp_largeur','$tmp_hauteur')\" title='Insérer cette image dans le texte'><img src='../images/up.png' width='18' height='18' alt='Insérer cette image dans le texte' /></a></div>";
 }
+
+/** fonction alertant sur la configuration de suhosin
+ *
+ * @return string Chaine de texte HTML 
+ */
+function alerte_config_suhosin() {
+	$retour="<p class='bold' style='color:red'>Configuration suhosin</p>\n";
+
+	$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
+	if($suhosin_post_max_totalname_length!='') {
+		$retour.="<p>Le module suhosin est activé.<br />\nUn paramétrage trop restrictif de ce module peut perturber le fonctionnement de Gepi, particulièrement dans les pages comportant de nombreux champs de formulaire (<i>comme par exemple dans la page de saisie des appréciations par les professeurs</i>)</p>\n";
+		$retour.="<p>La page d'extraction des moyennes permettant de modifier/corriger des valeurs propose un très grand nombre de champs.<br />Le module suhosin risque de poser des problèmes.</p>";
+
+		$tab_suhosin=array('suhosin.cookie.max_totalname_length', 
+		'suhosin.get.max_vars', 
+		'suhosin.get.max_totalname_length', 
+		'suhosin.post.max_vars', 
+		'suhosin.post.max_totalname_length', 
+		'suhosin.post.max_value_length', 
+		'suhosin.request.max_vars', 
+		'suhosin.request.max_totalname_length', 
+		'suhosin.request.max_value_length');
+
+		$retour.="<ul>\n";
+		for($i=0;$i<count($tab_suhosin);$i++) {
+			$retour.="<li>".$tab_suhosin[$i]." = ".ini_get($tab_suhosin[$i])."</li>\n";
+		}
+		$retour.="</ul>\n";
+
+		$retour.="En cas de problème, vous pouvez, soit désactiver le module, soit augmenter les valeurs.<br />\n";
+		$retour.="C'est généralement la valeur de 'suhosin.post.max_vars' qui pose problème.<br />\n";
+		$retour.="Le fichier de configuration de suhosin est habituellement en /etc/php5/conf.d/suhosin.ini<br />\nEn cas de modification de ce fichier, pensez à relancer le service apache ensuite pour prendre en compte la modification.<br />\n";
+	}
+	else {
+		$retour.="<p>Le module suhosin n'est pas activé.<br />Il ne peut pas perturver Gepi.</p>\n";
+	}
+	return $retour;
+}
 ?>
