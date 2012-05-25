@@ -119,6 +119,31 @@ if ($test == -1) {
 			primary key (id));
 	*/
 
+	$res = mysql_query('select * from temp_abs_import LIMIT 1;');
+	$numOfCols = mysql_num_fields($res);
+	for($i=0;$i<$numOfCols;$i++) {
+		//$result .= mysql_field_name($res, $i) . "<br />\n";
+		$nom_du_champ=mysql_field_name($res, $i);
+		if($nom_du_champ=='nbret') {
+			$result .= "&nbsp;-> Renommage du champ '$nom_du_champ' en 'nbRet' dans la table 'temp_abs_import'<br />";
+			$query = mysql_query("ALTER TABLE temp_abs_import CHANGE nbret nbRet INT(11) NOT NULL default '0';");
+			if ($query) {
+					$result .= msj_ok("Ok !");
+			} else {
+					$result .= msj_erreur();
+			}
+		}
+		elseif($nom_du_champ=='nbabs') {
+			$result .= "&nbsp;-> Renommage du champ '$nom_du_champ' en 'nbAbs' dans la table 'temp_abs_import'<br />";
+			$query = mysql_query("ALTER TABLE temp_abs_import CHANGE nbabs nbAbs INT(11) NOT NULL default '0';");
+			if ($query) {
+					$result .= msj_ok("Ok !");
+			} else {
+					$result .= msj_erreur();
+			}
+		}
+	}
+
 	// Normalement, l'ajout ci-dessous correspond à une très vieille version de la table:
 	$result .= "&nbsp;-> Ajout d'un champ 'cpe_login' à la table 'temp_abs_import'<br />";
 	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM temp_abs_import LIKE 'cpe_login';"));
