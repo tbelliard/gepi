@@ -129,3 +129,10 @@ label {
 	font-style: normal;
 }
 
+/* Div à la position fixe pour certains affichages */
+#fixe {
+	position:fixed;
+	bottom: 4em;
+	right: 4em;
+}
+
