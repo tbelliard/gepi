@@ -1122,24 +1122,22 @@ class Eleve extends BaseEleve {
 	        }
     		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence()) {
     		    $contra = false;
-    		    if (getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y') {
-    			//on va vérifier si il n'y a pas une saisie contradictoire simultanée
-    			foreach ($abs_saisie_col_2 as $saisie_contra) {
-        	        if ($saisie_contra->getEleveId() != $this->getId()) {
-        	            continue;
-        	        }
-    			    if ($saisie_contra->getId() != $saisie->getId()
-    				    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
-    				    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
-    				    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()
-    				    //si c'est une saisie specifiquement a non precise c'est du type erreur de saisie on ne la prend pas en compte
-    				    && ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence())) {
-    				$contra = true;
-    				break;
-    			    }
-    			}
-    		    }
-    		    if (!$contra) {
+                    //on va vérifier si il n'y a pas une saisie contradictoire simultanée
+                    foreach ($abs_saisie_col_2 as $saisie_contra) {
+                    if ($saisie_contra->getEleveId() != $this->getId()) {
+                        continue;
+                    }
+                        if ($saisie_contra->getId() != $saisie->getId()
+                                && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
+                                && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
+                                && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()
+                                //si c'est une saisie specifiquement a non precise c'est du type erreur de saisie on ne la prend pas en compte
+                                && ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence())) {
+                            $contra = true;
+                            break;
+                        }
+                    }
+                    if (!$contra) {
     			$abs_saisie_col_filtre->append($saisie);
     		    }
     		}
@@ -1356,15 +1354,9 @@ class Eleve extends BaseEleve {
 					    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
 					    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
 					    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()) {
-					    	if ($saisie_contra->getManquementObligationPresence() && !$saisie_contra->getRetard()) {
-					    		//on a une saisie plus large qui est aussi un manquement à l'obligation de présence, donc on ne compte pas celle qui est englobée
+                                                                //on a une saisie plus large
 								$contra = true;
 								break;
-					    	} else if (getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y') {
-					    		//on a une saisie plus large qui est comptée comme présente, donc on ne compte pas celle la qui est englobée
-								$contra = true;
-								break;
-					    	}
 					}
 			    }
 			    if (!$contra) {
