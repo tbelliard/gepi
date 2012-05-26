@@ -14,7 +14,8 @@
  * $tbs_last_connection
  */
 $tbs_last_connection = isset ($tbs_last_connection) ? $tbs_last_connection : '';
-$titre_page = isset ($titre_page) ? $titre_page : 'GEPI';
+//$titre_page = isset ($titre_page) ? $titre_page : 'GEPI';
+$titre_page = isset ($titre_page) ? $titre_page : NULL;
 $mode_header_reduit="y";
 if (!isset ($racineGepi)) {
 	switch  ($niveau_arbo) {
@@ -115,7 +116,11 @@ if (isset($dojo)) {
 
 
 <!-- on inclut le bandeau -->
-	<?php include($racineGepi.'/templates/origine/bandeau_template.php');?>
+	<?php
+		if(isset($titre_page)) {
+			include($racineGepi.'/templates/origine/bandeau_template.php');
+		}
+	?>
 
 <!-- fin bandeau_template.html      -->
 
