@@ -461,9 +461,20 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	if(((getSettingValue("GepiAccesReleveProfToutesClasses")=="yes")&&($_SESSION['statut']=='professeur'))||
 		((getSettingValue("GepiAccesReleveScol")=='yes')&&($_SESSION['statut']=='scolarite'))||
-		((getSettingValue("GepiAccesReleveCpe")=='yes')&&($_SESSION['statut']=='cpe'))) {
-		$sql="SELECT DISTINCT c.* FROM classes c ORDER BY classe";
+		((getSettingValue("GepiAccesReleveCpeTousEleves")=='yes')&&($_SESSION['statut']=='cpe'))) {
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe";
 	}
+	/*
+	elseif((getSettingValue("GepiAccesReleveCpe")=='yes')&&($_SESSION['statut']=='cpe')) {
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
+			p.id_classe = c.id AND
+			jec.id_classe=c.id AND
+			jec.periode=p.num_periode AND
+			jecpe.e_login=jec.login AND
+			jecpe.cpe_login='".$_SESSION['login']."'
+			ORDER BY classe";
+	}
+	*/
 
 	$call_data=mysql_query($sql);
 
@@ -3979,14 +3990,16 @@ function eleve_suivant() {
 					echo "Années antérieures";
 					echo "</a>";
 				}
-
-				echo "</p>\n";
-
+		echo " | ";
+		echo "<span id='pliage_abs'>\n";
+		echo "(<em>";
+		echo "<a href='#' onclick=\"document.getElementById('div_aff_abs').style.display='';return false;\">Afficher</a>";
+		echo " / \n";
+		echo "<a href='#' onclick=\"document.getElementById('div_aff_abs').style.display='none';return false;\">Masquer</a>";
+		echo " les absences</em>)";
+		echo "</span>\n";
+		echo "</p>\n";
 			}
-
-			// A FAIRE:
-			// Faire apparaitre les absences...
-			
 			// Bibliothèque de fonctions de la page consultation élève.
 			include("../eleves/visu_ele_func.lib.php");
 			// On extrait un tableau de l'ensemble des infos sur l'élève (bulletins, relevés de notes,... inclus)
@@ -3994,7 +4007,6 @@ function eleve_suivant() {
 			
 			//A FAIRE variable à utiliser et à initialiser pour afficher les absences sous le graphique
 			$afficher_absences='y';
-			
 			//La variable 	$num_periode_choisie 	  contient le numéro de la période en cours 
 				
 			if($afficher_absences=="y") {
@@ -4114,11 +4126,13 @@ function eleve_suivant() {
 						echo "</tr>\n";
 					    echo "</table>\n";
 				    }
+
 */
-				}
-// A décommenter pour le module abs 2 				
-				/* elseif (getSettingValue("active_module_absence")=='2') {
+}				
+
+				elseif (getSettingValue("active_module_absence")=='2') {
 				    // Initialisations files
+			echo "<div id='div_aff_abs'style='display:none'>\n";
 				    require_once("../lib/initialisationsPropel.inc.php");
 				    $eleve = EleveQuery::create()->findOneByLogin($eleve1);
 
@@ -4164,9 +4178,12 @@ function eleve_suivant() {
 				    }
 				    echo "</table>\n";
 				}
-*/
-			}
+			echo "</div>\n";
+
 		}
+
+	}		
+
 	    // FIN DE L'AFFICHAGE DES ABSENCES
 		
 		//=========================
