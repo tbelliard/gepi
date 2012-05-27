@@ -3954,8 +3954,12 @@ function eleve_suivant() {
 				$acces_aa=check_acces_aa($eleve1);
 			}
 
+			//A FAIRE variable à utiliser et à initialiser pour afficher les absences sous le graphique
+			$afficher_absences='y';
+
+			echo "<p align='center'>";
+
 			if($acces_bull_simp=="y") {
-				echo "<p align='center'>";
 				if($choix_periode=='toutes_periodes') {
 					//echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode\" onclick=\"sauve_desactivation_infobulle();afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','1','$nb_periode');restaure_desactivation_infobulle();return false;\" target=\"_blank\">";
 					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','1','$nb_periode');return false;\" target=\"_blank\">";
@@ -3970,48 +3974,57 @@ function eleve_suivant() {
 					//echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple toutes périodes en infobulle' title='Bulletin simple toutes périodes en infobulle' />";
 					echo "</a>";
 				}
-
-				if(check_droit_acces('/eleves/visu_eleve.php',$_SESSION['statut'])) {
-					echo " | ";
-	
-					echo "<a href=\"../eleves/visu_eleve.php?ele_login=".$eleve1."&id_classe=".$id_classe."\" target=\"_blank\">";
-					echo "Consultation";
-					echo "</a>";
-				}
-
-				if((getSettingValue('active_annees_anterieures')=='y')&&($acces_aa=='y')) {
-					echo " | ";
-
-					// A FAIRE:
-					// IL FAUT RECUPERER L'annee_scolaire et num_periode SI JAVASCRIPT N'EST PAS ACTIF
-					//echo "<a href=\"../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=$id_classe&logineleve=$eleve1&annee_scolaire=2008/2009&num_periode=3&mode=bull_simp\" onclick=\"sauve_desactivation_infobulle();afficher_div('div_annees_anterieures','y',-100,-200); affiche_annees_anterieures('$eleve1','$id_classe');restaure_desactivation_infobulle();return false;\" target=\"_blank\">";
-					echo "<a href=\"../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=$id_classe&logineleve=$eleve1&annee_scolaire=2008/2009&num_periode=3&mode=bull_simp\" onclick=\"afficher_div('div_annees_anterieures','y',-100,-200); affiche_annees_anterieures('$eleve1','$id_classe');return false;\" target=\"_blank\">";
-					//echo "<a href=\"javascript:afficher_div('div_annees_anterieures','y',-100,-200); affiche_annees_anterieures('$eleve1', '$id_classe'); return false;\" target=\"_blank\">";
-					echo "Années antérieures";
-					echo "</a>";
-				}
-		echo " | ";
-		echo "<span id='pliage_abs'>\n";
-		echo "(<em>";
-		echo "<a href='#' onclick=\"document.getElementById('div_aff_abs').style.display='';return false;\">Afficher</a>";
-		echo " / \n";
-		echo "<a href='#' onclick=\"document.getElementById('div_aff_abs').style.display='none';return false;\">Masquer</a>";
-		echo " les absences</em>)";
-		echo "</span>\n";
-		echo "</p>\n";
 			}
+
+			if(check_droit_acces('/eleves/visu_eleve.php',$_SESSION['statut'])) {
+				echo " | ";
+
+				echo "<a href=\"../eleves/visu_eleve.php?ele_login=".$eleve1."&id_classe=".$id_classe."\" target=\"_blank\">";
+				echo "Consultation";
+				echo "</a>";
+			}
+
+			if((getSettingValue('active_annees_anterieures')=='y')&&($acces_aa=='y')) {
+				echo " | ";
+
+				// A FAIRE:
+				// IL FAUT RECUPERER L'annee_scolaire et num_periode SI JAVASCRIPT N'EST PAS ACTIF
+				//echo "<a href=\"../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=$id_classe&logineleve=$eleve1&annee_scolaire=2008/2009&num_periode=3&mode=bull_simp\" onclick=\"sauve_desactivation_infobulle();afficher_div('div_annees_anterieures','y',-100,-200); affiche_annees_anterieures('$eleve1','$id_classe');restaure_desactivation_infobulle();return false;\" target=\"_blank\">";
+				echo "<a href=\"../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=$id_classe&logineleve=$eleve1&annee_scolaire=2008/2009&num_periode=3&mode=bull_simp\" onclick=\"afficher_div('div_annees_anterieures','y',-100,-200); affiche_annees_anterieures('$eleve1','$id_classe');return false;\" target=\"_blank\">";
+				//echo "<a href=\"javascript:afficher_div('div_annees_anterieures','y',-100,-200); affiche_annees_anterieures('$eleve1', '$id_classe'); return false;\" target=\"_blank\">";
+				echo "Années antérieures";
+				echo "</a>";
+			}
+
 			// Bibliothèque de fonctions de la page consultation élève.
 			include("../eleves/visu_ele_func.lib.php");
 			// On extrait un tableau de l'ensemble des infos sur l'élève (bulletins, relevés de notes,... inclus)
 			$tab_ele=info_eleve($eleve1);
-			
-			//A FAIRE variable à utiliser et à initialiser pour afficher les absences sous le graphique
-			$afficher_absences='y';
+
+			if($afficher_absences=="y") {
+				if((getSettingValue("active_module_absence")=='y')||
+					(getSettingValue("active_module_absence")=='2'&& getSettingValue("abs2_import_manuel_bulletin")=='y')||
+					((count($tab_ele['absences'])!=0)&&(getSettingValue("active_module_absence")!='y' && getSettingValue("active_module_absence")!='2'))) {
+					// On affiche les absences par défaut
+				}
+				elseif (getSettingValue("active_module_absence")=='2') {
+					echo " | ";
+					echo "<span id='pliage_abs'>\n";
+					echo "(<em>";
+					echo "<a href='#' onclick=\"document.getElementById('div_aff_abs').style.display='';return false;\">Afficher</a>";
+					echo " / \n";
+					echo "<a href='#' onclick=\"document.getElementById('div_aff_abs').style.display='none';return false;\">Masquer</a>";
+					echo " les absences</em>)";
+					echo "</span>\n";
+				}
+			}
+			echo "</p>\n";
+
 			//La variable 	$num_periode_choisie 	  contient le numéro de la période en cours 
 				
 			if($afficher_absences=="y") {
 				if((getSettingValue("active_module_absence")=='y')||
-					(getSettingValue("active_module_absence")=='2'&& getSettingValue("abs2_import_manuel_bulletin")=='y')||                                        
+					(getSettingValue("active_module_absence")=='2'&& getSettingValue("abs2_import_manuel_bulletin")=='y')||
 					((count($tab_ele['absences'])!=0)&&(getSettingValue("active_module_absence")!='y' && getSettingValue("active_module_absence")!='2'))) {
 
 					/*
@@ -4128,61 +4141,60 @@ function eleve_suivant() {
 				    }
 
 */
-}				
-
+				}
 				elseif (getSettingValue("active_module_absence")=='2') {
-				    // Initialisations files
-			echo "<div id='div_aff_abs'style='display:none'>\n";
-				    require_once("../lib/initialisationsPropel.inc.php");
-				    $eleve = EleveQuery::create()->findOneByLogin($eleve1);
+					// Initialisations files
+					echo "<div id='div_aff_abs'style='display:none'>\n";
+					require_once("../lib/initialisationsPropel.inc.php");
+					$eleve = EleveQuery::create()->findOneByLogin($eleve1);
 
-				    echo "<table class='boireaus' summary='Bilan des absences'>\n";
-				    echo "<tr>\n";
-				    echo "<th>Absences sur la période</th>\n";
-				    echo "<th>Nombre de 1/2 journées</th>\n";
-				    echo "<th>dont non justifiées</th>\n";
-				    echo "<th>Nombre de retards</th>\n";
-				    echo "</tr>\n";
-				    $alt=1;
-					
+					echo "<table class='boireaus' summary='Bilan des absences'>\n";
+					echo "<tr>\n";
+					echo "<th>Absences sur la période</th>\n";
+					echo "<th>Nombre de 1/2 journées</th>\n";
+					echo "<th>dont non justifiées</th>\n";
+					echo "<th>Nombre de retards</th>\n";
+					echo "</tr>\n";
+					$alt=1;
+				
 					// Il ne faudrait afficher que le T1, T2 ou T3 en se basant sur la variable $num_periode_choisie
-					
-				    foreach($eleve->getPeriodeNotes() as $periode_note) {
-					    //$periode_note = new PeriodeNote();
-					    if ($periode_note->getDateDebut() == null) {
+				
+					foreach($eleve->getPeriodeNotes() as $periode_note) {
+						//$periode_note = new PeriodeNote();
+						if ($periode_note->getDateDebut() == null) {
 						//periode non commencee
 						continue;
-					    }
-					    $alt=$alt*(-1);
-					    echo "<tr class='lig$alt'>\n";
-					    echo "<td>".$periode_note->getNomPeriode();
-					    echo " du ".$periode_note->getDateDebut('d/m/Y');
-					    echo " au ";
-					    if ($periode_note->getDateFin() == null) {
+						}
+						$alt=$alt*(-1);
+						echo "<tr class='lig$alt'>\n";
+						echo "<td>".$periode_note->getNomPeriode();
+						echo " du ".$periode_note->getDateDebut('d/m/Y');
+						echo " au ";
+						if ($periode_note->getDateFin() == null) {
 						$now = new DateTime('now');
 						echo $now->format('d/m/Y');
-					    } else {
+						} else {
 						echo $periode_note->getDateFin('d/m/Y');
-					    }
-					    echo "</td>\n";
-					    echo "<td>";
-					    echo $eleve->getDemiJourneesAbsence($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count();
-					    echo "</td>\n";
-					    echo "<td>";
-					    echo $eleve->getDemiJourneesNonJustifieesAbsence($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count();
-					    echo "</td>\n";
-					    echo "<td>";
-					    echo $eleve->getRetards($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count();
-					    echo "</td>\n";
-					    echo "</tr>\n";
-				    }
-				    echo "</table>\n";
-				}
-			echo "</div>\n";
+						}
+						echo "</td>\n";
+						echo "<td>";
+						echo $eleve->getDemiJourneesAbsence($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count();
+						echo "</td>\n";
+						echo "<td>";
+						echo $eleve->getDemiJourneesNonJustifieesAbsence($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count();
+						echo "</td>\n";
+						echo "<td>";
+						echo $eleve->getRetards($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count();
+						echo "</td>\n";
+						echo "</tr>\n";
+					}
+					echo "</table>\n";
 
+					echo "</div>\n";
+				}
 		}
 
-	}		
+	}
 
 	    // FIN DE L'AFFICHAGE DES ABSENCES
 		
