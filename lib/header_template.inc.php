@@ -125,7 +125,7 @@ $tbs_gepiPath = $gepiPath;
 $tbs_gepiSchoolName = getSettingValue("gepiSchoolName");
 
 $tbs_message_enregistrement="";
-if (isset($affiche_message) and ($affiche_message == 'yes')) { 
+if (isset($affiche_message) and ($affiche_message == 'yes') and isset($message_enregistrement)) { 
 	$tbs_message_enregistrement = $message_enregistrement;  
 } 
  
