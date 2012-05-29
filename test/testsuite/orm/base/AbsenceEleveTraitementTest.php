@@ -80,11 +80,6 @@ class AbsenceEleveTraitementTest extends GepiEmptyTestBase
         ->filterByEleve($florence_eleve)->filterByPlageTemps(new DateTime('2010-10-01'),new DateTime('2010-10-17 23:59:59'))
         ->endUse()->endUse()->find();
         $this->assertEquals(10,$traitements->count());
-        $traitements = AbsenceEleveTraitementQuery::create()->filterByManquementObligationPresence(false)
-        ->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()
-        ->filterByEleve($florence_eleve)
-        ->endUse()->endUse()->find();
-        $this->assertEquals(9,$traitements->count());
 
         saveSetting('abs2_saisie_par_defaut_sans_manquement','n');
     }
