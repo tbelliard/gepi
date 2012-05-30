@@ -573,7 +573,7 @@ foreach($eleve_col as $eleve) {
 			}
 		} else {
 			//on affiche  les informations pour les crenaux avant la saisie sauf si configuré autrement
-			if (getSettingValue("abs2_cacher_creneaux_precedents")!='y') {
+			if (getSettingValue("abs2_montrer_creneaux_precedents")=='y') {
 				$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
 			} else {
 				$absences_du_creneau = new PropelCollection();
