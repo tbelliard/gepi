@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -105,7 +105,7 @@ else{
 			echo "<tr class='lig$alt'>\n";
 			echo "<td>".$lig->ele_id."</td>\n";
 			echo "<td>".$lig->elenoet."</td>\n";
-			echo "<td>".$lig->login."</td>\n";
+			echo "<td><a href='../eleves/modify_eleve.php?eleve_login=$lig->login'>".$lig->login."</a></td>\n";
 			echo "<td>".mb_strtoupper($lig->nom)."</td>\n";
 			echo "<td>".ucfirst(mb_strtolower($lig->prenom))."</td>\n";
 			echo "<td>\n";
