@@ -241,6 +241,10 @@ if (count($lien_sup)){
 	  <a href="admin_actions_absences.php?action=visualiser">
 		Définir les actions sur le suivi des élèves
 	  </a>
+	  <br />
+	  <a href="admin_actions_absences.php?action=reinit_lettres_pdf<?php echo add_token_in_url();?>" onclick="return confirm('Vous allez supprimer les lettres absence PDF existantes pour re-remplir les tables avec les valeurs par défaut.\nUne sauvegarde préalable est recommandée.\nEtes-vous sûr ?')">
+		Réinitialiser les paramètres des lettres PDF
+	  </a> (<em>les tables de paramétrage seront vidées et re-remplies; ne pas y procéder si vous avez ajouté des types de lettres</em>)
   </p>
 	</blockquote>
 
