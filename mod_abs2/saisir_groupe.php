@@ -580,6 +580,9 @@ foreach($eleve_col as $eleve) {
 			}
 		}
 		$afficheEleve[$elv]['style'][$i] = "";
+                if ($deja_saisie && $nb_creneau_a_saisir > 0) {
+			$afficheEleve[$elv]['style'][$i] = "fondVert";
+		}
 		if (!$absences_du_creneau->isEmpty()) {
 			foreach ($absences_du_creneau as $abs_saisie) {
 				if ($abs_saisie->getManquementObligationPresence()) {
@@ -587,8 +590,6 @@ foreach($eleve_col as $eleve) {
 					break;
 				}
 			}
-		} else if ($deja_saisie && $nb_creneau_a_saisir > 0) {
-			$afficheEleve[$elv]['style'][$i] = "fondVert";
 		}
 		
 		if ($nb_creneau_a_saisir>1) {
@@ -1267,25 +1268,27 @@ if ($utilisateur->getStatut() == 'professeur' && getSettingValue("active_cahiers
 ?>
 </div>
 <?php
-$javascript_footer_texte_specifique = '<script type="text/javascript">';
-if ((isset($radioButtonTypeOnlyHidden))&&($radioButtonTypeOnlyHidden)) {
-    $javascript_footer_texte_specifique .= '$$(\'input[type="radio"][id^="radio_sans_type_absence_eleve_"]\').each(Element.hide);';
-}
-$javascript_footer_texte_specifique .= '$$(\'input[type="radio"][id^="radio_hidden_"]\').each(Element.hide);';
-$javascript_footer_texte_specifique .= '$$(\'label[for^="radio_hidden_"]\').each(Element.hide);';
+if (isset($radioButtonType)) {
+    $javascript_footer_texte_specifique = '<script type="text/javascript">';
+    if ((isset($radioButtonTypeOnlyHidden))&&($radioButtonTypeOnlyHidden)) {
+        $javascript_footer_texte_specifique .= '$$(\'input[type="radio"][id^="radio_sans_type_absence_eleve_"]\').each(Element.hide);';
+    }
+    $javascript_footer_texte_specifique .= '$$(\'input[type="radio"][id^="radio_hidden_"]\').each(Element.hide);';
+    $javascript_footer_texte_specifique .= '$$(\'label[for^="radio_hidden_"]\').each(Element.hide);';
 
-$javascript_footer_texte_specifique .= '$(\'bouton_changer_horaire\').insert({after : \'';
-$javascript_footer_texte_specifique .= ' 				<button id="bouton_afficher_radio_hidden" onclick="return false;">';
-$javascript_footer_texte_specifique .= ' 					Aff. cases cachées';
-$javascript_footer_texte_specifique .= ' 				</button>\'';
-$javascript_footer_texte_specifique .= '});';
-$javascript_footer_texte_specifique .= '$(\'bouton_afficher_radio_hidden\').observe(\'click\', function( event )
-{
-  $$(\'input[type="radio"][id^="radio_sans_type_absence_eleve_"]\').each(Element.show);
-  $$(\'input[type="radio"][id^="radio_hidden_"]\').each(Element.show);
-  $$(\'label[for^="radio_hidden_"]\').each(Element.show);
-});';
-$javascript_footer_texte_specifique .= '</script>';
+    $javascript_footer_texte_specifique .= '$(\'bouton_changer_horaire\').insert({after : \'';
+    $javascript_footer_texte_specifique .= ' 				<button id="bouton_afficher_radio_hidden" onclick="return false;">';
+    $javascript_footer_texte_specifique .= ' 					Aff. cases cachées';
+    $javascript_footer_texte_specifique .= ' 				</button>\'';
+    $javascript_footer_texte_specifique .= '});';
+    $javascript_footer_texte_specifique .= '$(\'bouton_afficher_radio_hidden\').observe(\'click\', function( event )
+    {
+    $$(\'input[type="radio"][id^="radio_sans_type_absence_eleve_"]\').each(Element.show);
+    $$(\'input[type="radio"][id^="radio_hidden_"]\').each(Element.show);
+    $$(\'label[for^="radio_hidden_"]\').each(Element.show);
+    });';
+    $javascript_footer_texte_specifique .= '</script>';
+}
 require_once("../lib/footer.inc.php");
 
 // $affiche_debug=debug_var();
