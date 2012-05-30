@@ -540,9 +540,13 @@ foreach ($results as $eleve) {
     $query_eleve_hydration = clone $query;
     $query_eleve_hydration->filterById($eleve->getId());
     $query_eleve_hydration->joinWith('Eleve.AbsenceEleveSaisie', Criteria::LEFT_JOIN);
+    $query_eleve_hydration->useAbsenceEleveSaisieQuery()->filterByDeletedAt(null)->endUse();
     $eleve_saisie_hydrated = $query_eleve_hydration->find()->getFirst();
     echo $eleve_saisie_hydrated->getAbsenceEleveSaisies()->count();
-    echo " saisies";
+    echo " saisie";
+    if ($eleve_saisie_hydrated->getAbsenceEleveSaisies()->count() > 1) {
+        echo "s";
+    }
     echo '</td>';
 
     $type_col = new PropelObjectCollection();
