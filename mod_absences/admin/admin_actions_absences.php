@@ -3,7 +3,7 @@
  *
  * $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -162,19 +162,80 @@ if ($action == "modifier")
       $data_modif_motif = mysql_fetch_array($resultat_modif_motif);
  }
 
+if ($action == "reinit_lettres_pdf") {
+	check_token();
+
+	$f=fopen("../../sql/mod_absences_reinit.sql", "r");
+	if(!$f) {
+		$msg="Erreur lors de l'ouverture du fichier de réinitialisation les lettres PDF du module Absences 1.<br />\n";
+	}
+	else {
+		$sql="TRUNCATE lettres_cadres;";
+		$res=mysql_query($sql);
+		$sql="TRUNCATE lettres_tcs;";
+		$res=mysql_query($sql);
+		$sql="TRUNCATE lettres_types;";
+		$res=mysql_query($sql);
+
+		$nb_err=0;
+		$nb_reg=0;
+		while(!feof($f)) {
+			$ligne=ensure_utf8(fgets($f, 4096));
+			if(trim($ligne)!="") {
+				$res=mysql_query($ligne);
+				if(!$res) {
+					$nb_err++;
+				}
+				else {
+					$nb_reg++;
+				}
+			}
+		}
+		fclose($f);
+		if($nb_err==0) {
+			if($nb_reg==0) {
+				$msg="Pas d'erreur relevée, mais aucun enregistrement effectué???<br />\n";
+			}
+			else {
+				$msg="$nb_reg enregistrement(s) effectué(s).<br />\n";
+			}
+		}
+		else {
+			if($nb_reg==0) {
+				$msg=$nb_err." erreur(s) relevée(s) et aucun enregistrement effectué???<br />\n";
+			}
+			else {
+				$msg=$nb_err." erreur(s) relevée(s) (???) et $nb_reg enregistrement(s) effectué(s).<br />\n";
+			}
+		}
+	}
+}
+
 // header
 $titre_page = "Gestion des actions de suivi";
 require_once("../../lib/header.inc");
 
 
-echo "<p class=bold>";
+echo "<p class='bold'>";
 if ($action=="modifier" OR $action=="ajouter") {
 	echo "<a href=\"admin_actions_absences.php?action=visualiser\">";
 } elseif ($action=="visualiser") {
 	echo "<a href='index.php'>";
 }
+elseif($action == "reinit_lettres_pdf") {
+	echo "<a href='index.php'>";
+}
 echo "<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>";
+
+//echo "\$action=$action<br />";
+
+if ($action == "reinit_lettres_pdf") {
+	echo "<p>Réinitialisation des paramètres des lettres PDF.</p>";
+	require("../../lib/footer.inc.php");
+	die();
+}
+
 ?>
 <?php if ($action === "visualiser") { ?>
 <?php /* div de centrage du tableau pour ie5 */ ?>
