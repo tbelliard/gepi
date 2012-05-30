@@ -132,6 +132,11 @@ if ( $mode === 'apercus' )
 	$nom_responsable[0][0] = 'Tartampion';
 	$prenom_responsable[0][0] = 'mozard';
 	$adresse_responsable[0][0] = 'rue alber';
+
+	$adressecomp_responsable[0][0] = ''; // adresse du responsable suite
+	$adressecomp2_responsable[0][0] = ''; // adresse du responsable suite
+	$adressecomp3_responsable[0][0] = ''; // adresse du responsable suite
+
 	$cp_responsable[0][0] = '54385';
 	$commune_responsable[0][0] = 'lacommune';
 	$remarque[0] = 'aucun';
@@ -237,10 +242,12 @@ if ( $lettre_action === 'originaux' ) {
 			}
 		} else {
 				$civilite_responsable[0][$i] = ''; // civilité du responsable
-			        $nom_responsable[0][$i] = ''; // nom du responsable
+				$nom_responsable[0][$i] = ''; // nom du responsable
 				$prenom_responsable[0][$i] = ''; // prénom du responsable
 				$adresse_responsable[0][$i] = ''; // adresse du responsable
 				$adressecomp_responsable[0][$i] = ''; // adresse du responsable suite
+				$adressecomp2_responsable[0][$i] = ''; // adresse du responsable suite
+				$adressecomp3_responsable[0][$i] = ''; // adresse du responsable suite
 				$commune_responsable[0][$i] = ''; // ville du responsable
 				$cp_responsable[0][$i] = ''; // code postal du responsable
 			}
