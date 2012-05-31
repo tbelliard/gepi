@@ -80,7 +80,7 @@
 		echo "
 			<script type='text/javascript'>
 				//<![CDATA[ 
-					alert($tbs_message_enregistrement);
+					alert(\"$tbs_message_enregistrement\");
 				//]]>
 			</script>
 		";
