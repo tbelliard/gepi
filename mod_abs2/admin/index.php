@@ -225,13 +225,13 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
-		if (isset($_POST['abs2_cacher_creneaux_precedents'])) {
-			if (!saveSetting("abs2_cacher_creneaux_precedents", $_POST['abs2_cacher_creneaux_precedents'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre abs2_cacher_creneaux_precedents !";
+		if (isset($_POST['abs2_montrer_creneaux_precedents'])) {
+			if (!saveSetting("abs2_montrer_creneaux_precedents", $_POST['abs2_montrer_creneaux_precedents'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_montrer_creneaux_precedents !";
 			}
 		} else {
-			if (!saveSetting("abs2_cacher_creneaux_precedents", 'n')) {
-				$msg = "Erreur lors de l'enregistrement du paramètre abs2_cacher_creneaux_precedents !";
+			if (!saveSetting("abs2_montrer_creneaux_precedents", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_montrer_creneaux_precedents !";
 			}
 		}
 
@@ -365,9 +365,9 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est l
 	<label for="abs2_modification_saisie_une_heure">&nbsp;Permettre la modification d'une saisie par le professeur dans l'heure qui a suivi sa création</label>
 </p>
 <p>
-	<input type="checkbox" name="abs2_cacher_creneaux_precedents" id="abs2_cacher_creneaux_precedents" value="y"
-	<?php if (getSettingValue("abs2_cacher_creneaux_precedents")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_cacher_creneaux_precedents">&nbsp;Cacher les informations des créneaux précédents lors de la saisie</label>
+	<input type="checkbox" name="abs2_montrer_creneaux_precedents" id="abs2_montrer_creneaux_precedents" value="y"
+	<?php if (getSettingValue("abs2_montrer_creneaux_precedents")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_montrer_creneaux_precedents">&nbsp;Montrer les informations des créneaux précédents lors de la saisie</label>
 </p>
 <p>
 	<input type="checkbox" name="abs2_afficher_saisies_creneau_courant" id="abs2_afficher_saisies_creneau_courant" value="y"
