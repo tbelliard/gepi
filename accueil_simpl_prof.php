@@ -451,6 +451,15 @@ if(($active_carnets_notes=="y")&&($pref_accueil_cn=="y")&&($colspan>0)){echo " r
 echo ">\n";
 echo "Classes</th>\n";
 
+// mod_abs2
+if ((getSettingValue("active_module_absence_professeur")=='y')&&(getSettingValue("active_module_absence")=='2')) {
+	echo "<th";
+	if(($active_carnets_notes=="y")&&($pref_accueil_cn=="y")&&($colspan>0)){echo " rowspan='3'";}
+	echo ">\n";
+	echo "Absences\n";
+	echo "</th>\n";
+}
+
 //if($active_cahiers_texte=="y"){
 if(($active_cahiers_texte=="y")&&($pref_accueil_ct=="y")){
 	echo "<th";
@@ -733,6 +742,18 @@ for($i=0;$i<count($groups);$i++){
 	//$liste_classes_du_groupe=trim($liste_classes_du_groupe);
 	$liste_classes_du_groupe=preg_replace("/ /","&nbsp;",trim($liste_classes_du_groupe));
 
+	// mod_abs2
+	if ((getSettingValue("active_module_absence_professeur")=='y')&&(getSettingValue("active_module_absence")=='2')) {
+		echo "<td>";
+		echo "<a href='mod_abs2/index.php?type_selection=id_groupe&amp;id_groupe=".$groups[$i]['id']."'";
+		if($pref_accueil_infobulles=="y"){
+			echo " onmouseover=\"afficher_div('info_ct_$i','y',10,10);\" onmouseout=\"cacher_div('info_ct_$i');\"";
+		}
+		echo ">";
+			echo "<img src='images/icons/absences.png' width='32' height='32' alt='Absences' border='0' />";
+		echo "</a>";
+		echo "</td>\n";
+	}
 
 	//if($active_cahiers_texte=="y"){
 	if(($active_cahiers_texte=="y")&&($pref_accueil_ct=="y")){
