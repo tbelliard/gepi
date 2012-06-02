@@ -2287,7 +2287,10 @@ if ($id_devoir) {
 			if(((note.search(/^[0-9.]+$/)!=-1)&&(note.lastIndexOf('.')==note.indexOf('.',0)))||
 			((note.search(/^[0-9,]+$/)!=-1)&&(note.lastIndexOf(',')==note.indexOf(',',0)))){
 				note_modifiee=eval(note.replace(reg_virgule, '.'))+eval(delta);
-				if((note_modifiee>=0)&&(note_modifiee<=$note_sur_verif)) {document.getElementById('n'+num).value=note_modifiee;}
+				if((note_modifiee>=0)&&(note_modifiee<=$note_sur_verif)) {
+					document.getElementById('n'+num).value=note_modifiee;
+					changement();
+				}
 			}
 		}
 	}
