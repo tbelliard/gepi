@@ -31,7 +31,7 @@ Trombinoscopes:
 - Possibilité d'encoder les noms de fichiers photo pour éviter des téléchargements non voulus
 
 Gestion:
-- Gestion des matières: Affichage du nombre d'enseignements associés à une matière; possibilité de griser/masquer les matières sans enseignements.
+- Gestion des matières: Affichage (en survol) du nombre d'enseignements associés à une matière; possibilité de griser/masquer les matières sans enseignements.
 - Mise à jour sconet: Possibilité de spécifier la largeur de tranche pour analyser les différences et ainsi réduire le temps de traitement.
 
 Années antérieures:
