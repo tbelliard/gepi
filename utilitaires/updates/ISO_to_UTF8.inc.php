@@ -77,6 +77,7 @@ unset ($donnees, $donneesBase);
 /* on s'occupe des tables */
 $result.="&nbsp;-> Passage des tables en ".SET_DEST."<br />";
 
+//$donneesTable=array();
 $query = mysql_query("SHOW table status");
 if ($query) {
 	while ($row = mysql_fetch_array($query, MYSQL_ASSOC)) {
@@ -87,6 +88,32 @@ if ($query) {
 } else {
 	die ('Erreur de lecture de la base');
 }
+// On vérifie que les clés de archivage_ects et de gc_ele_arriv_red ne sont pas trop longues ce qui bloque la conversion
+$queryToLong = mysql_query("SHOW COLUMNS FROM gc_ele_arriv_red");
+if ($queryToLong) {
+	while ($row = mysql_fetch_assoc($queryToLong)) {
+		if (mb_substr($row['Field'],0,5) == 'login' ) {
+			if (mb_substr($row['Type'],7,4) != '(50)' ) {
+				// Le champ login de gc_ele_arriv_red est trop long
+				$donneesTable[]='gc_ele_arriv_red';	
+				$queryReduit= mysql_query("ALTER TABLE gc_ele_arriv_red MODIFY login VARCHAR(50)");
+			}
+		}	
+	} 
+}
+$queryToLong = mysql_query("SHOW COLUMNS FROM archivage_ects");
+if ($queryToLong) {
+	while ($row = mysql_fetch_assoc($queryToLong)) {
+		if (mb_substr($row['Field'],0,3) == 'ine' ) {
+			if (mb_substr($row['Type'],7,4) != '(55)' ) {
+				// Le champ ine de archivage_ects est trop long
+				$donneesTable[]='archivage_ects';	
+				$queryReduit= mysql_query("ALTER TABLE archivage_ects MODIFY ine VARCHAR(55)");
+			}
+		}		
+	} 
+}
+
 if (empty($donneesTable) ){
     $result .= msj_present("Tables déjà encodées en ".SET_DEST);
 } else {
