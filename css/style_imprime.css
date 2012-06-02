@@ -34,3 +34,39 @@ table.boireaus {
 	font-style: normal;
 }
 
+
+table.menu {
+	width: 70%;
+	border-collapse: separate;
+	border-spacing: 0px;
+	border: none;
+	border-bottom: 1px solid lightgrey;
+	margin-right:auto;
+	margin-left:auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	padding-left: 0px;
+	background-image: url("./images/background/left-top-corner.png");
+	background-repeat: no-repeat;
+	background-position: -1px 0%;
+}
+
+table.menu td {
+	border: 1px solid lightgrey;
+	border-bottom: none;
+	border-top: 1px solid lightgrey;
+	border-left: 1px solid lightgrey;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+table.menu th {
+	border: none;
+	text-align: left;
+	padding-left: 20px;
+	padding-bottom: 3px;
+	padding-top: 3px;
+	font-size: 11pt;
+	color: black;
+
+}
