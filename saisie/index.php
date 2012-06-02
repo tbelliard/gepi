@@ -171,9 +171,9 @@ if ($current_group) {
 			else{
 				$tabdiv_infobulle[]=creer_div_infobulle("info_app_periode_$i","","","<center>".$gepiClosedPeriodLabel."</center>","",8,0,"n","n","y","n");
 
-				echo "<img src='../images/disabled.png' width='20' height='20' alt='Période close' ";
-				//echo " alt='".$gepiClosedPeriodLabel."' title='".$gepiClosedPeriodLabel."'";
-				echo " onmouseover=\"afficher_div('info_app_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_app_periode_$i')\" />\n";
+				echo "<a href='saisie_appreciations.php?id_groupe=$id_groupe' onmouseover=\"afficher_div('info_app_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_app_periode_$i')\">";
+				echo "<img src='../images/icons/chercher.png' width='32' height='32' alt='Consultation des appréciations' ";
+				echo "</a>";
 			}
 			echo "</td>\n";
 			$i++;
