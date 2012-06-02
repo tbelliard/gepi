@@ -1079,8 +1079,8 @@ function getWinBanqueTexte() {
 				title: 'Banque de textes',
 				showEffect: Element.show,
 				hideEffect: Element.hide,
-				top:100,
-				left:400,
+				top:10,
+				left:40,
 				width:300,
 				height:200}
 			);

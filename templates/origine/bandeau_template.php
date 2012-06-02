@@ -110,7 +110,7 @@
 					if ("$value[texte]"!="") {
 						echo "
 	<li class='ligne_premier_menu'>
-		<a href='$value[lien]'>
+		<a href='$value[lien]'".insert_confirm_abandon().">
 			<img src='$value[image]' alt='$value[alt]' title='$value[title]' height='16' width='16' />
 			<span class='menu_bandeau'>
 				&nbsp;$value[texte]
@@ -133,6 +133,7 @@
 			if (count($tbs_deux_menu)) {
 				foreach ($tbs_deux_menu as $value) {
 					if ("$value[texte]"!="") {
+						// Là le (js) insert_confirm_abandon() est inutile parce que c'est une ouverture dans une autre fenêtre
 						echo "
 	<li class='ligne_deux_menu'>
 		<a href='$value[lien]' $value[onclick] title=\"Nouvelle fenêtre\">

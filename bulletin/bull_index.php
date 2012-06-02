@@ -790,6 +790,55 @@ function ToutDeCocher() {
 	echo "</div>\n";
 
 
+	if (getSettingValue("active_module_absence")!='2' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
+		echo "<br />\n";
+		echo "<p class='bold'>Absences saisies&nbsp;:</p>\n";
+		echo "<table class='boireaus'>\n";
+		echo "<tr>\n";
+		echo "<th rowspan='2'>Classe</th>\n";
+		echo "<th colspan='".count($tab_periode_num)."'>Période(s)</th>\n";
+		echo "</tr>\n";
+		echo "<tr>\n";
+		for($j=0;$j<count($tab_periode_num);$j++) {
+			echo "<th>P".$tab_periode_num[$j]."</th>\n";
+		}
+		echo "</tr>\n";
+		$alt=1;
+		for($i=0;$i<count($tab_id_classe);$i++) {
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt white_hover'>\n";
+			echo "<td>".get_nom_classe($tab_id_classe[$i])."</td>\n";
+			for($j=0;$j<count($tab_periode_num);$j++) {
+				echo "<td>\n";
+
+				$sql="SELECT a.* FROM absences a, j_eleves_classes jec WHERE (jec.login=a.login AND jec.periode=a.periode AND jec.id_classe='".$tab_id_classe[$i]."' AND a.periode='".$tab_periode_num[$j]."');";
+				$test_abs_1 = mysql_query($sql);
+				echo mysql_num_rows($test_abs_1)." enregistrement(s)<br />\n";
+
+				//$sql="SELECT a.* FROM absences a, j_eleves_classes jec WHERE (jec.login=a.login AND jec.periode=a.periode AND a.periode='".$tab_periode_num[$j]."' AND (a.nb_absences>0 OR non_justifie>0 OR nb_retards>0));";
+				//$test_abs_2 = mysql_query($sql);
+
+				$sql="SELECT 1=1 FROM absences a, j_eleves_classes jec WHERE (jec.login=a.login AND jec.periode=a.periode AND jec.id_classe='".$tab_id_classe[$i]."' AND a.periode='".$tab_periode_num[$j]."' AND a.nb_absences>0);";
+				$test_nb_abs = mysql_query($sql);
+				echo "<span title=\"Nombre total de demi-journées d'absence pour des élèves de la classe\">".mysql_num_rows($test_nb_abs)."</span>\n";
+				echo " | ";
+				$sql="SELECT 1=1 FROM absences a, j_eleves_classes jec WHERE (jec.login=a.login AND jec.periode=a.periode AND a.periode='".$tab_periode_num[$j]."' AND jec.id_classe='".$tab_id_classe[$i]."' AND a.non_justifie>0);";
+				$test_nb_nj = mysql_query($sql);
+				echo "<span title=\"Nombre d'absences non justifiées pour la classe\">".mysql_num_rows($test_nb_nj)."</span>\n";
+				echo " | ";
+				$sql="SELECT 1=1 FROM absences a, j_eleves_classes jec WHERE (jec.login=a.login AND jec.periode=a.periode AND a.periode='".$tab_periode_num[$j]."' AND jec.id_classe='".$tab_id_classe[$i]."' AND a.nb_retards>0);";
+				$test_nb_ret = mysql_query($sql);
+				echo "<span title=\"Nombre de retards pour la classe\">".mysql_num_rows($test_nb_ret)."</span>\n";
+
+				echo "</td>\n";
+			}
+			echo "</tr>\n";
+		}
+		echo "</table>\n";
+		echo "<br />\n";
+	}
+
+
 	//=======================================
 	/*
 	echo "<div style='float:right; width:5em;'>\n";

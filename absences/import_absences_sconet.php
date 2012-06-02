@@ -526,6 +526,10 @@ require_once("../lib/header.inc.php");
 								echo "</form>\n";
 
 								echo "<p><i>NOTE:</i> Si des lignes sont marquées d'un <span style='color:red;'>ERR</span>, les valeurs ne seront pas importées pour cet(s) élève(s).</p>\n";
+								
+								echo "<script type='text/javascript'>
+									alert('ATTENTION : Rien n\'est encore enregistré. Vous devez confirmer l\'importation en bas de page.');
+								</script>\n";
 							}
 							if($etape==2) {
 

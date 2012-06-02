@@ -351,6 +351,7 @@ if(
 }
 //===============================================
 
+$style_specifique="visualisation/affiche_eleve";
 //**************** EN-TETE *****************
 $titre_page = "Outil de visualisation";
 //echo "<div class='noprint'>\n";
@@ -449,7 +450,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
 	}
 	elseif($_SESSION['statut']=='cpe') {
-		
+		/*
 		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
 			p.id_classe = c.id AND
 			jec.id_classe=c.id AND
@@ -457,14 +458,21 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			jecpe.e_login=jec.login AND
 			jecpe.cpe_login='".$_SESSION['login']."'
 			ORDER BY classe";
+		*/
+		// Les cpe ont accès à tous les bulletins, donc aussi aux courbes
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe";
 	}
 
+	if(((getSettingValue("GepiAccesReleveProfToutesClasses")=="yes")&&($_SESSION['statut']=='professeur'))||
+		((getSettingValue("GepiAccesReleveScol")=='yes')&&($_SESSION['statut']=='scolarite'))) {
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe";
+	}
+	/*
 	if(((getSettingValue("GepiAccesReleveProfToutesClasses")=="yes")&&($_SESSION['statut']=='professeur'))||
 		((getSettingValue("GepiAccesReleveScol")=='yes')&&($_SESSION['statut']=='scolarite'))||
 		((getSettingValue("GepiAccesReleveCpeTousEleves")=='yes')&&($_SESSION['statut']=='cpe'))) {
 		$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe";
 	}
-	/*
 	elseif((getSettingValue("GepiAccesReleveCpe")=='yes')&&($_SESSION['statut']=='cpe')) {
 		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
 			p.id_classe = c.id AND
@@ -475,7 +483,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			ORDER BY classe";
 	}
 	*/
-
+	//echo "$sql<br />";
 	$call_data=mysql_query($sql);
 
 	$nombre_lignes = mysql_num_rows($call_data);
@@ -488,19 +496,22 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	//$mode_graphe=(isset($_GET['mode_graphe'])) ? $_GET['mode_graphe'] : NULL;
 	//$chaine_mode_graphe=isset($mode_graphe) ? "&amp;mode_graphe=$mode_graphe" : "";
 
-	unset($lien_classe);
-	unset($txt_classe);
-	$i = 0;
-	while ($i < $nombre_lignes) {
-		$lien_classe[]=$_SERVER['PHP_SELF']."?id_classe=".mysql_result($call_data, $i, "id").$chaine_type_graphe;
-		//$lien_classe[]=$_SERVER['PHP_SELF']."?id_classe=".mysql_result($call_data, $i, "id").$chaine_type_graphe.$chaine_mode_graphe;
-		$txt_classe[]=ucfirst(mysql_result($call_data, $i, "classe"));
-		$i++;
+	if($nombre_lignes>0) {
+		unset($lien_classe);
+		unset($txt_classe);
+		$i = 0;
+		while ($i < $nombre_lignes) {
+			$lien_classe[]=$_SERVER['PHP_SELF']."?id_classe=".mysql_result($call_data, $i, "id").$chaine_type_graphe;
+			//$lien_classe[]=$_SERVER['PHP_SELF']."?id_classe=".mysql_result($call_data, $i, "id").$chaine_type_graphe.$chaine_mode_graphe;
+			$txt_classe[]=ucfirst(mysql_result($call_data, $i, "classe"));
+			$i++;
+		}
+
+		tab_liste($txt_classe,$lien_classe,3);
 	}
-
-	tab_liste($txt_classe,$lien_classe,3);
-
-	
+	else {
+		echo "<p style='color:red'>Vous n'êtes associé à aucun élève.</p>\n";
+	}
 	echo "</blockquote>\n";
 	//echo "</p>\n";
 	//echo "</form>\n";
