@@ -747,11 +747,18 @@ for($i=0;$i<count($groups);$i++){
 		echo "<td>";
 		echo "<a href='mod_abs2/index.php?type_selection=id_groupe&amp;id_groupe=".$groups[$i]['id']."'";
 		if($pref_accueil_infobulles=="y"){
-			echo " onmouseover=\"afficher_div('info_ct_$i','y',10,10);\" onmouseout=\"cacher_div('info_ct_$i');\"";
+			echo " onmouseover=\"afficher_div('info_abs_$i','y',10,10);\" onmouseout=\"cacher_div('info_abs_$i');\"";
 		}
 		echo ">";
 			echo "<img src='images/icons/absences.png' width='32' height='32' alt='Absences' border='0' />";
 		echo "</a>";
+
+		if($pref_accueil_infobulles=="y"){
+			echo "<div id='info_abs_$i' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 18em;' onmouseout=\"cacher_div('info_abs_$i');\">Absences de ".htmlspecialchars($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>).</div>\n";
+
+			$tab_liste_infobulles[]='info_abs_'.$i;
+		}
+
 		echo "</td>\n";
 	}
 
