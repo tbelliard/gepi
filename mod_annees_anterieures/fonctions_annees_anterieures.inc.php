@@ -14,6 +14,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 	//global $gepiPath;
 	global $gecko;
 
+	//echo "$annee_scolaire=$annee_scolaire<br />";
 
 	$poursuivre="y";
 
@@ -1290,7 +1291,8 @@ function affiche_onglets_aa($logineleve, $id_classe, $tab_periodes, $indice_ongl
 
 	echo "<script type='text/javascript'>
 	// <![CDATA[
-	function affiche_annees_anterieures(login_eleve,id_classe) {
+	//function affiche_annees_anterieures(login_eleve,id_classe) {
+	function affiche_annees_anterieures(login_eleve,id_classe,annee_scolaire) {
 		document.getElementById('titre_entete_annees_anterieures').innerHTML='Années antérieures de '+login_eleve;
 
 		if(document.getElementById('conteneur_t_annee_0')) {
@@ -1313,7 +1315,7 @@ function affiche_onglets_aa($logineleve, $id_classe, $tab_periodes, $indice_ongl
 			document.getElementById('t_periode_0').style.backgroundColor='white';
 		}
 
-		new Ajax.Updater($('contenu_onglet'),'../mod_annees_anterieures/ajax_bulletins.php?logineleve='+login_eleve+'&id_classe='+id_classe,{method: 'get'});
+		new Ajax.Updater($('contenu_onglet'),'../mod_annees_anterieures/ajax_bulletins.php?logineleve='+login_eleve+'&id_classe='+id_classe+'&annee_scolaire='+annee_scolaire,{method: 'get'});
 	}
 
 	function affiche_onglet_aa(logineleve,id_classe,annee_scolaire,num_periode,indice_onglet) {
