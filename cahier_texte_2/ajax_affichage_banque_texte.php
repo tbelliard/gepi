@@ -270,6 +270,13 @@ if($editer_banque=='y') {
 	echo "</form>\n";
 	echo "<p><br /></p>\n";
 
+	echo "<p><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li>Vous pouvez trouver utile de disposer de chaines du style de&nbsp;:<br />
+	\"<span style='color:green'>Exercice&nbsp;&nbsp;page&nbsp;</span>\", \"<span style='color:green'>Correction de l'</span>\",...</li>
+	<li>Les retours à la ligne ne sont pas supportés (<em>peut-être dans une prochaine version de Gepi</em>).</li>
+</ul>\n";
+
 	require("../lib/footer.inc.php");
 	die();
 }
