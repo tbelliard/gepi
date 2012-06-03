@@ -3996,15 +3996,17 @@ function eleve_suivant() {
 			}
 
 			if((getSettingValue('active_annees_anterieures')=='y')&&($acces_aa=='y')) {
-				echo " | ";
-
-				// A FAIRE:
-				// IL FAUT RECUPERER L'annee_scolaire et num_periode SI JAVASCRIPT N'EST PAS ACTIF
-				//echo "<a href=\"../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=$id_classe&logineleve=$eleve1&annee_scolaire=2008/2009&num_periode=3&mode=bull_simp\" onclick=\"sauve_desactivation_infobulle();afficher_div('div_annees_anterieures','y',-100,-200); affiche_annees_anterieures('$eleve1','$id_classe');restaure_desactivation_infobulle();return false;\" target=\"_blank\">";
-				echo "<a href=\"../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=$id_classe&logineleve=$eleve1&annee_scolaire=2008/2009&num_periode=3&mode=bull_simp\" onclick=\"afficher_div('div_annees_anterieures','y',-100,-200); affiche_annees_anterieures('$eleve1','$id_classe');return false;\" target=\"_blank\">";
-				//echo "<a href=\"javascript:afficher_div('div_annees_anterieures','y',-100,-200); affiche_annees_anterieures('$eleve1', '$id_classe'); return false;\" target=\"_blank\">";
-				echo "Années antérieures";
-				echo "</a>";
+				//$sql="SELECT annee FROM archivage_disciplines a, eleves e WHERE e.login='$eleve1' AND e.no_gep=a.INE ORDER BY annee DESC LIMIT 1;";
+				$sql="SELECT annee FROM archivage_disciplines a, eleves e WHERE e.login='$eleve1' AND e.no_gep=a.INE ORDER BY annee ASC LIMIT 1;";
+				//echo "$sql<br />";
+				$res_aa=mysql_query($sql);
+				if(mysql_num_rows($res_aa)>0) {
+					echo " | ";
+					$lig_aa=mysql_fetch_object($res_aa);
+					echo "<a href=\"../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=$id_classe&logineleve=$eleve1&annee_scolaire=$lig_aa->annee&num_periode=3&mode=bull_simp\" onclick=\"afficher_div('div_annees_anterieures','y',-100,-200); affiche_annees_anterieures('$eleve1','$id_classe','$lig_aa->annee');return false;\" target=\"_blank\">";
+					echo "Années antérieures";
+					echo "</a>";
+				}
 			}
 
 			// Bibliothèque de fonctions de la page consultation élève.
@@ -4474,7 +4476,6 @@ if(getSettingValue('active_annees_anterieures')=='y') {
 	if(isset($eleve1)) {
 		$tab_periodes_aa=check_acces_et_liste_periodes($eleve1,$id_classe);
 		affiche_onglets_aa($eleve1, $id_classe, $tab_periodes_aa, 0);
-
 	}
 }
 //===========================================================
