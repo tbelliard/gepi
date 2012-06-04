@@ -20,10 +20,10 @@ Cdt2 :
 
 Abs2 :
 - génération de notifications par lot depuis une liste des traitements
-- page pour extraires des listes d'élèves en utilisant les filtres abs2
+- page pour extraire des listes d'élèves en utilisant les filtres abs2
 - implémentation de cases à cocher pour saisir les types d'absence
-- possibilité d'afficher en rouge le créneaux en cours de saisie s'il existe déjà une saisie
-- changement du réglage par défaut pour la saisie prof de l'affichage des informations précédente
+- possibilité d'afficher en rouge le créneau en cours de saisie s'il existe déjà une saisie
+- changement du réglage par défaut pour la saisie prof de l'affichage des informations précédentes
 
 Trombinoscopes:
 - Possibilité d'uploader les photos élèves en CPE (sous réserve d'un droit)
