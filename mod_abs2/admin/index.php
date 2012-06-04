@@ -289,9 +289,16 @@ echo "</p>";
 	    echo "</td></tr></table></center>";
     }
 ?>
-
 <form action="index.php" name="form1" method="post">
 <p class="center"><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></p>
+* le responsable de l'absence, c'est l'élève (et ses parents) ; <br/>
+
+* le responsable de la *gestion* (ou traitement) de l'absence, c'est la vie scolaire ;<br/>
+
+* le responsable du *constat* de l'absence, c'est l'enseignant (pour un cours, ou l'adulte pour une activité encadrée).<br/>
+
+Si la gestion anticipe une absence, elle peut communiquer l'information, mais cela ne vaut pas constat, lequel devient alors validation de l'anticipation, mais reste indispensable.<br/>
+
 <h2>Gestion des absences par les CPE</h2>
 <p style="font-style: italic;">La désactivation du module de la gestion des absences n'entraîne aucune
 suppression des données. Lorsque le module est désactivé, les CPE n'ont pas accès au module.</p>
@@ -364,6 +371,10 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est l
 	<?php if (getSettingValue("abs2_modification_saisie_une_heure")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_modification_saisie_une_heure">&nbsp;Permettre la modification d'une saisie par le professeur dans l'heure qui a suivi sa création</label>
 </p>
+*ATTENTION* : Si vous cochez l'une des 2 cases ci-dessous, l'affichage de ces informations au moment de l'appel professeur est susceptible de fausser son jugement.
+Il est possible que l'enseignant *se fie uniquement à ces informations (sans effectuer un contrôle visuel effectif)* et que son appel soit erroné.
+Sa responsabilité pourrait être engagée.
+Vous pouvez-vous rapprocher de votre chef d'établissement afin de convenir de ce réglage.
 <p>
 	<input type="checkbox" name="abs2_montrer_creneaux_precedents" id="abs2_montrer_creneaux_precedents" value="y"
 	<?php if (getSettingValue("abs2_montrer_creneaux_precedents")=='y') echo " checked='checked'"; ?> />
