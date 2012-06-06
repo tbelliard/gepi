@@ -371,6 +371,9 @@ if(mysql_num_rows($res_grp)>1) {
 
 }
 
+echo " | <a href='edit_group.php?id_groupe=$id_groupe&amp;id_classe=".$current_group["classes"]["list"][0]."'";
+echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+echo ">Éditer l'enseignement</a>";
 
 echo "</p>";
 echo "</form>\n";
@@ -633,6 +636,7 @@ if(count($total_eleves)>0) {
 			else {
 				$new_classe="BIZARRE";
 			}
+			//echo "$e_login -&gt; $new_classe<br />";
 
 			if ($new_classe != $prev_classe and $order_by == "classe" and $multiclasses) {
 				echo "<tr style='background-color: #CCCCCC;'>\n";
@@ -710,7 +714,9 @@ if(count($total_eleves)>0) {
 
 						// Test sur la présence de notes dans cn ou de notes/app sur bulletin
 						if (!test_before_eleve_removal($e_login, $current_group['id'], $period["num_periode"])) {
+							echo "<a href='../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$e_login."&id_classe=".$eleves_list["users"][$e_login]["id_classe"]."&periode1=".$period["num_periode"]."&periode2=".$period["num_periode"]."' target='_blank'>";
 							echo "<img id='img_bull_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
+							echo "</a>";
 						}
 
 						$sql="SELECT DISTINCT id_devoir FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '".$e_login."' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '".$current_group['id']."' AND ccn.periode = '".$period["num_periode"]."')";

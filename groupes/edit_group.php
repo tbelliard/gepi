@@ -332,6 +332,22 @@ echo "<a href='mes_listes.php?id_groupe=$id_groupe'>Exporter la composition du g
 ?>
 <a href="edit_class.php?id_classe=<?php echo $id_classe;?>&amp;action=delete_group&amp;id_groupe=<?php echo $id_groupe;?><?php echo add_token_in_url();?>" onclick="return confirmlink(this, 'ATTENTION !!! LISEZ CET AVERTISSEMENT : La suppression d\'un enseignement est irréversible. Une telle suppression ne devrait pas avoir lieu en cours d\'année. Si c\'est le cas, cela peut entraîner la présence de données orphelines dans la base. Si des données officielles (notes et appréciations du bulletin) sont présentes, la suppression sera bloquée. Dans le cas contraire, toutes les données liées au groupe seront supprimées, incluant les notes saisies par les professeurs dans le carnet de notes ainsi que les données présentes dans le cahier de texte. Etes-vous *VRAIMENT SÛR* de vouloir continuer ?', 'Confirmation de la suppression')"> Supprimer le groupe</a>
 <?php
+echo " | <a href='edit_eleves.php?id_groupe=$id_groupe&id_classe=".$id_classe."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Modifier la liste des élèves</a>";
+/*
+if(count($current_group["classes"]["list"])==1) {
+	echo " | <a href='edit_eleves.php?id_groupe=$id_groupe&id_classe=".$current_group["classes"]["list"][0]."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Modifier la liste des élèves</a>";
+}
+elseif(count($current_group["classes"]["list"])>1) {
+	echo " | Modifier la liste des élèves en";
+	$cpt_classe=0;
+	foreach($current_group["classes"]["classes"] as $key => $value) {
+		if($cpt_classe>0) {echo ", ";}
+		echo " <a href='edit_eleves.php?id_groupe=$id_groupe&id_classe=$key' onclick=\"return confirm_abandon (this, change, '$themessage')\">".$value['classe']."</a>";
+		$cpt_classe++;
+	}
+}
+*/
+
 if ($mode == "groupe") {
 	echo "<h3>Modifier le groupe</h3>\n";
 } elseif ($mode == "regroupement") {
@@ -341,9 +357,9 @@ if ($mode == "groupe") {
 <form enctype="multipart/form-data" action="edit_group.php" method="post">
 <div style="width: 95%;">
 <div style="width: 45%; float: left;">
-<p>Nom court : <input type=text size=30 name=groupe_nom_court value = "<?php echo $reg_nom_groupe; ?>" /></p>
+<p>Nom court : <input type='text' size='30' name='groupe_nom_court' value = "<?php echo $reg_nom_groupe; ?>" onchange="changement()" /></p>
 
-<p>Nom complet : <input type=text size=50 name=groupe_nom_complet value = "<?php echo $reg_nom_complet; ?>" /></p>
+<p>Nom complet : <input type='text' size='50' name='groupe_nom_complet' value = "<?php echo $reg_nom_complet; ?>" onchange="changement()" /></p>
 
 <?php
 
