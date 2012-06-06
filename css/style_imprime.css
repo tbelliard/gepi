@@ -15,12 +15,30 @@ body {
 	display: none;
 }
 
-.boireaus td {
-	border: 1px solid black;
+/* Tableaux utilisés dans pas mal de pages */
+table.boireaus {
+	margin-top: 1em;
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	border-collapse: collapse;
 }
 
-table.boireaus {
-	border: 1px solid black;
+.boireaus th {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	font-weight:bold;
+	text-align:center;
+	vertical-align: middle;
+}
+
+.boireaus td {
+	text-align:center;
+	vertical-align: middle;
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
 }
 
 .bull_simpl {
@@ -70,3 +88,36 @@ table.menu th {
 	color: black;
 
 }
+
+/* Pour ne pas avoir de decoration sur les liens à l'impression */
+a {
+	color: #0000AA;
+	text-decoration: none;
+}
+a:visited {
+	color: #0000AA;
+	text-decoration: none;
+}
+a:hover {
+	color: gray;
+}
+a:active {
+	color: #0000AA;
+	text-decoration: none;
+}
+
+/* Vérifier si ces deux là sont utiles */
+.grand {
+	font-size: 16pt;
+}
+
+.norme {
+	font-style: normal;
+	font-size: 14pt;
+}
+
+/* Pour conserver des tailles de police raisonnables sur prepa_conseil/visu_toutes_notes.php au moins (peut-être ailleurs) */
+.small {
+	font-size: 8pt;
+}
+

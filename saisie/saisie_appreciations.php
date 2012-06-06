@@ -999,7 +999,7 @@ while ($k < $nb_periode) {
 			//$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"affiche_div_correction_groupe('$k','$cpt_correction');return false;\" alt='Proposer une correction' title='Proposer une correction'><img src='../images/edit16.png' width='16' height='16' alt='Proposer une correction' title='Proposer une correction' /></a>";
 			//$chaine_champs_textarea_correction.="<textarea name='reserve_correction_app_eleve_$cpt_correction' id='reserve_correction_app_eleve_$cpt_correction'>".$app_grp[$k]."</textarea>\n";
 			$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"affiche_div_correction_groupe('$k');return false;\" alt='Proposer une correction' title='Proposer une correction'><img src='../images/edit16.png' width='16' height='16' alt='Proposer une correction' title='Proposer une correction' /></a>";
-			$chaine_champs_textarea_correction.="<textarea name='reserve_correction_app_grp' id='reserve_correction_app_grp'>".$app_grp[$k]."</textarea>\n";
+			$chaine_champs_textarea_correction.="<textarea name='reserve_correction_app_grp_$k' id='reserve_correction_app_grp_$k'>".$app_grp[$k]."</textarea>\n";
 			$mess[$k].="</div>\n";
 
 			$cpt_correction++;
@@ -1712,7 +1712,7 @@ function affiche_div_correction_groupe(num_periode) {
 	document.getElementById('span_correction_periode2').innerHTML=num_periode;
 
 	//document.getElementById('correction_app_groupe').value=document.getElementById('reserve_correction_app_eleve_'+num_eleve).value;
-	document.getElementById('correction_app_groupe').value=document.getElementById('reserve_correction_app_grp').value;
+	document.getElementById('correction_app_groupe').value=document.getElementById('reserve_correction_app_grp_'+num_periode).value;
 
 	afficher_div('div_correction_grp','y',-100,20)
 
