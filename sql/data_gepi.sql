@@ -952,11 +952,14 @@ INSERT INTO droits VALUES ('/absences/import_absences_csv.php', 'F', 'F', 'V', '
 INSERT INTO droits SET id='/statistiques/stat_connexions.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Statistiques de connexion',statut='';
 INSERT INTO droits SET id='/groupes/check_enseignements.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Controle des enseignements',statut='';
 INSERT INTO droits VALUES ('/bulletin/index.php', 'V', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Edition des bulletins', '1');
+<<<<<<< HEAD
 INSERT INTO droits SET id='/lib/ajax_corriger_app.php',administrateur='F',professeur='V',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='V',description='Correction appreciation',statut='';
 INSERT INTO droits VALUES ('/mod_annees_anterieures/archivage_bull_pdf.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Génération archives bulletins PDF', '');
 INSERT INTO setting VALUES ('encodage_nom_photo', 'yes');
 INSERT INTO setting VALUES ('alea_nom_photo', MD5(UNIX_TIMESTAMP()));
 INSERT INTO droits VALUES ('/mod_abs2/liste_eleves.php', 'F', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Liste des élèves avec les filtes absence', '');
+=======
+>>>>>>> joss/production
 INSERT INTO lettres_cadres VALUES (1,'adresse responsable',100,40,100,5,'A l\'attention de\r\n<civilitee_court_responsable> <nom_responsable> <prenom_responsable>\r\n<adresse_responsable>\r\n<cp_responsable> <commune_responsable>\r\n',0,'||');
 INSERT INTO lettres_cadres VALUES (2,'adresse etablissement',0,0,0,0,'',0,'');
 INSERT INTO lettres_cadres VALUES (3,'datation',0,0,0,0,'',0,'');
