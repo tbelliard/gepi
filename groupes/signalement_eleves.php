@@ -679,7 +679,9 @@ if((isset($mode_signalement))&&($mode_signalement=="2")) {
 							}
 							
 							// Test sur la présence de notes dans cn ou de notes/app sur bulletin
+							$bull_non_vide="n";
 							if (!test_before_eleve_removal($e_login, $current_group['id'], $period["num_periode"])) {
+								$bull_non_vide="y";
 								echo "<img id='img_bull_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
 							}
 
@@ -709,6 +711,11 @@ if((isset($mode_signalement))&&($mode_signalement=="2")) {
 							if (in_array($e_login, (array)$current_group["eleves"][$period["num_periode"]]["list"])) {
 								echo " checked";
 							}
+
+							if($bull_non_vide=="y") {
+								echo " style='display: none'";
+							}
+
 							echo " />";
 
 							if ((isset($tab_sig[$period["num_periode"]]))&&(in_array($e_login, (array)$tab_sig[$period["num_periode"]]))) {
@@ -841,7 +848,7 @@ if((isset($mode_signalement))&&($mode_signalement=="2")) {
 
 	echo "<p><i>NOTE&nbsp;:</i></p>\n";
 
-	echo "<p style='margin-left:3em;'>On ne peut désinscrire que des élèves qui n'ont pas de note ni d'appréciation sur les bulletins.<br />En revanche, la présence de notes dans le carnet de notes n'empêche pas la désinscription.</p>\n";
+	echo "<p style='margin-left:3em;'>On ne peut désinscrire que des élèves qui n'ont pas de note ni d'appréciation sur les bulletins<br />(<em>si vous aviez inscrit 'élève absent' ou '-', vous pouvez supprimer votre appréciation ou note, puis signaler l'erreur d'affectation</em>).<br />En revanche, la présence de notes dans le carnet de notes n'empêche pas la désinscription.</p>\n";
 
 	echo "</form>\n";
 	require("../lib/footer.inc.php");
@@ -1059,7 +1066,9 @@ if(count($total_eleves)>0) {
 					if(mysql_num_rows($res_test)>0){
 
 						// Test sur la présence de notes dans cn ou de notes/app sur bulletin
+						$bull_non_vide="n";
 						if (!test_before_eleve_removal($e_login, $current_group['id'], $period["num_periode"])) {
+							$bull_non_vide="y";
 							echo "<img id='img_bull_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
 						}
 
@@ -1088,6 +1097,10 @@ if(count($total_eleves)>0) {
 							echo " value='en_trop'";
 						} else {
 							echo " value='manquant'";
+						}
+
+						if($bull_non_vide=="y") {
+							echo " style='display: none'";
 						}
 
 						if ((isset($tab_sig[$period["num_periode"]]))&&(in_array($e_login, (array)$tab_sig[$period["num_periode"]]))) {
@@ -1223,7 +1236,7 @@ if(count($total_eleves)>0) {
 
 	echo "<p><i>NOTE&nbsp;:</i></p>\n";
 
-	echo "<p style='margin-left:3em;'>On ne peut désinscrire que des élèves qui n'ont pas de note ni d'appréciation sur les bulletins.<br />En revanche, la présence de notes dans le carnet de notes n'empêche pas la désinscription.</p>\n";
+	echo "<p style='margin-left:3em;'>On ne peut désinscrire que des élèves qui n'ont pas de note ni d'appréciation sur les bulletins<br />(<em>si vous aviez inscrit 'élève absent' ou '-', vous pouvez supprimer votre appréciation ou note, puis signaler l'erreur d'affectation</em>).<br />En revanche, la présence de notes dans le carnet de notes n'empêche pas la désinscription.</p>\n";
 }
 else {
 	echo "</table>\n";
