@@ -3661,7 +3661,12 @@ function suivi_ariane($lien,$texte){
  * @param <boolean> $validation validation si TRUE,
  * @param <texte> $themessage message à afficher lors de la confirmation
  */
-function affiche_ariane($validation= FALSE,$themessage="" ){
+//function affiche_ariane($validation= FALSE,$themessage="" ){
+function affiche_ariane($validation= FALSE){
+  global $themessage;
+  if($themessage!="") {
+    $validation=TRUE;
+  }
   if (isset($_SESSION['ariane'])){
 	echo "<p class='ariane'>";
 	foreach ($_SESSION['ariane']['lien'] as $index=>$lienActuel){
