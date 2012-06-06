@@ -121,3 +121,8 @@ a:active {
 	font-size: 8pt;
 }
 
+/* Pour avoir les changements de pages dans les bulletins simplifiés et bulletins HTML */
+p.saut {
+	page-break-after: always;
+}
+
