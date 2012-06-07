@@ -681,6 +681,8 @@ else {
 <ul>\n";
 }
 echo "<li>Voir <a href='https://www.sylogix.org/projects/gepi/wiki/Gepi_socle_commun_notanet' target='_blank'>https://www.sylogix.org/projects/gepi/wiki/Gepi_socle_commun_notanet</a></li>
+<li>Dans l'interface Notanet (<em>hors de Gepi</em>), il semble qu'il faille fournir l'export CSV des notes de Gepi et aussi l'export XML de LPC.<br />
+Cela se fait avec le même choix 'Mettre à jour depuis un fichier externe' dans Notanet.</li>
 <li>Les élèves qui ont eu leur brevet l'an dernier, mais ont néanmoins redoublé, peuvent apparaître en erreur.<br />
 De la même façon, les élèves de SEGPA peuvent avoir la saisie de Socle commun faite dans LPC, mais ils ne passent pas le brevet.<br />
 Ils peuvent apparaître en erreur également.</li>

@@ -401,13 +401,14 @@ elseif($_SESSION['statut']=="scolarite") {
 
 	echo "<li><a href='saisie_avis.php'>Saisir l'avis du chef d'établissement</a>.</li>\n";
 
-	echo "<li><p>Générer les fiches brevet selon le modèle de:</p>
+	if(acces('/mod_notanet/OOo/imprime_ooo.php', 'scolarite')) {
+		echo "<li><p>Générer les fiches brevet selon le modèle de:</p>
 	<ul>\n";
 		echo "		<li><a href='OOo/imprime_ooo.php'>Modèle au format OpenOffice</a> <a href='https://www.sylogix.org/projects/gepi/wiki/GepiDoc_fbOooCalc'><img src='../images/icons/ico_question.png' alt='aide construction gabarit' title='Aide pour utiliser les gabarits .ods pour éditer les fiches brevets' title='Aide pour utiliser les gabarits .ods pour éditer les fiches brevets' /></a></li>\n";
 	//}
 	echo "	</ul>
 </li>\n";
-
+	}
 	echo "</ul>\n";
 
 	echo "<p><b>NOTES:</b> Pour un bon fonctionnement du dispositif, plusieurs opérations doivent auparavant être réalisées en statut administrateur.</p>\n";
