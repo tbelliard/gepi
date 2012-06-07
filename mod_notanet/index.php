@@ -58,7 +58,7 @@ $sql="INSERT INTO droits SET id='/mod_notanet/OOo/fiches_brevet.php',
 administrateur='V',
 professeur='F',
 cpe='F',
-scolarite='F',
+scolarite='V',
 eleve='F',
 responsable='F',
 secours='F',
@@ -76,7 +76,7 @@ $sql="INSERT INTO droits SET id='/mod_notanet/OOo/imprime_ooo.php',
 administrateur='V',
 professeur='F',
 cpe='F',
-scolarite='F',
+scolarite='V',
 eleve='F',
 responsable='F',
 secours='F',
@@ -400,6 +400,14 @@ elseif($_SESSION['statut']=="scolarite") {
 	echo "<li><a href='saisie_lvr.php'>Saisir les 'notes' de Langue Vivante Régionale</a> (<i>si un tel enseignement est évalué dans l'établissement</i>)</li>\n";
 
 	echo "<li><a href='saisie_avis.php'>Saisir l'avis du chef d'établissement</a>.</li>\n";
+
+	echo "<li><p>Générer les fiches brevet selon le modèle de:</p>
+	<ul>\n";
+		echo "		<li><a href='OOo/imprime_ooo.php'>Modèle au format OpenOffice</a> <a href='https://www.sylogix.org/projects/gepi/wiki/GepiDoc_fbOooCalc'><img src='../images/icons/ico_question.png' alt='aide construction gabarit' title='Aide pour utiliser les gabarits .ods pour éditer les fiches brevets' title='Aide pour utiliser les gabarits .ods pour éditer les fiches brevets' /></a></li>\n";
+	//}
+	echo "	</ul>
+</li>\n";
+
 	echo "</ul>\n";
 
 	echo "<p><b>NOTES:</b> Pour un bon fonctionnement du dispositif, plusieurs opérations doivent auparavant être réalisées en statut administrateur.</p>\n";
