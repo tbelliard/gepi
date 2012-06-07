@@ -668,8 +668,13 @@ if (isset($fiche)) {
 	<input type=hidden name=current_eleve_login value="<?php echo "$current_eleve_login";?>" />
 	<input type=hidden name=ind_eleve_login_suiv value="<?php echo "$ind_eleve_login_suiv";?>" />
 	<!--br /-->
-	<input type="submit" NAME="ok1" value="Enregistrer et passer à l'élève suivant" />
-	<input type="submit" NAME="ok2" value="Enregistrer et revenir à la liste" /><br /><br />&nbsp;
+	<?php
+		if($ind_eleve_login_suiv!=0) {
+			echo "<input type='submit' NAME='ok1' value=\"Enregistrer et passer à l'élève suivant\" />\n";
+		}
+	?>
+	<input type="submit" NAME="ok2" value="Enregistrer et revenir à la liste" />
+	<br /><br />&nbsp;
 
 	<div id="debug_fixe" style="position: fixed; bottom: 20%; right: 5%;"></div>
 
