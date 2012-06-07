@@ -301,6 +301,8 @@ for($i=0; $i<$total_eleves; $i++) {
 
     $saisie->setUtilisateurId($utilisateur->getPrimaryKey());
 
+    $saisie_discipline = false;
+
     if (isset($_POST['type_absence_eleve'][$i]) && $_POST['type_absence_eleve'][$i] != -1) {
 	$type = AbsenceEleveTypeQuery::create()->findPk($_POST['type_absence_eleve'][$i]);
 	if ($type != null) {
@@ -310,10 +312,7 @@ for($i=0; $i<$total_eleves; $i++) {
 		$traitement->addAbsenceEleveSaisie($saisie);
 		$traitement->setAbsenceEleveType($type);
 		$traitement->setUtilisateurProfessionnel($utilisateur);
-		if ($type->getModeInterface() == "DISCIPLINE" && getSettingValue("active_mod_discipline")=='y') {
-		    //on affiche un lien pour saisir le module discipline
-		    $saisie_discipline = true;
-		}
+		$saisie_discipline = ($type->getModeInterface() == "DISCIPLINE" && getSettingValue("active_mod_discipline")=='y');
 	    } else {
 		$message_erreur_eleve[$id_eleve] .= "Type d'absence non autorisé pour ce statut : ".$_POST['type_absence_eleve'][$i]."<br/>";
 	    }
