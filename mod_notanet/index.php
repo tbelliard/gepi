@@ -325,19 +325,19 @@ if($_SESSION['statut']=="administrateur") {
 	$truncate_tables=isset($_GET['truncate_tables']) ? $_GET['truncate_tables'] : NULL;
 	if($truncate_tables=='y') {
 		check_token();
-		echo "<p>Nettoyage des tables Notanet</p>\n";
-		$sql="TRUNCATE TABLE notanet;";
-		$del=mysql_query($sql);
-		$sql="TRUNCATE TABLE notanet_avis;";
-		$del=mysql_query($sql);
-		$sql="TRUNCATE TABLE notanet_app;";
-		$del=mysql_query($sql);
-		$sql="TRUNCATE TABLE notanet_verrou;";
-		$del=mysql_query($sql);
-		$sql="TRUNCATE TABLE notanet_socles;";
-		$del=mysql_query($sql);
-		$sql="TRUNCATE TABLE notanet_ele_type;";
-		$del=mysql_query($sql);
+
+		echo "<p class='bold'>Nettoyage des tables Notanet&nbsp;:</p>\n";
+
+		$msg="";
+		$table_a_vider=array('notanet', 'notanet_avis', 'notanet_app', 'notanet_verrou', 'notanet_socles', 'notanet_ele_type');
+		for($i=0;$i<count($table_a_vider);$i++) {
+			$sql="TRUNCATE TABLE $table_a_vider[$i];";
+			$del=mysql_query($sql);
+			if(!$del) {
+				$msg.="Erreur lors du nettoyage de la table '$table_a_vider[$i]'<br />";
+			}
+		}
+		if($msg=='') {echo "<p style='margin-left: 3em;'>Nettoyage effectué.</p>\n";} else {echo $msg;}
 	}
 }
 
