@@ -1382,8 +1382,11 @@ function tab_extract_moy($tab_ele,$id_clas) {
 	//$TOT=0;
 	//echo "<table border='1'>\n";
 	$sql="SELECT DISTINCT num_periode FROM periodes WHERE id_classe='$id_clas' ORDER BY num_periode";
+	//$sql="SELECT DISTINCT num_periode, verouiller FROM periodes WHERE id_classe='$id_clas' ORDER BY num_periode";
 	//echo "$sql<br />";
 	$resultat_periodes=mysql_query($sql);
+
+	//$tab_ver_per=array();
 	echo "<table class='boireaus'>\n";
 	echo "<tr style='font-weight: bold; text-align:center;'>\n";
 	echo "<th>Id</th>\n";
@@ -1391,6 +1394,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 	echo "<th>Moyenne</th>\n";
 	while($ligne_periodes=mysql_fetch_object($resultat_periodes)){
 		echo "<th>T $ligne_periodes->num_periode</th>\n";
+		//$tab_ver_per[$ligne_periodes->num_periode]=$ligne_periodes->verouiller;
 	}
 	echo "<th>Moyenne</th>\n";
 	echo "<th>Correction</th>\n";
@@ -1467,7 +1471,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 					$total=0;
 					$nbnotes=0;
 					//$sql="SELECT DISTINCT num_periode FROM periodes WHERE id_classe='$id_classe[$i]' ORDER BY num_periode";
-					$sql="SELECT DISTINCT num_periode FROM periodes WHERE id_classe='$id_clas' ORDER BY num_periode";
+					$sql="SELECT DISTINCT num_periode, verouiller FROM periodes WHERE id_classe='$id_clas' ORDER BY num_periode";
 					//echo "<td>$sql</td>";
 					$resultat_periodes=mysql_query($sql);
 					while($ligne_periodes=mysql_fetch_object($resultat_periodes)){
@@ -1540,6 +1544,9 @@ function tab_extract_moy($tab_ele,$id_clas) {
 									//echo "\$cpt=$cpt<br />";
 								}
 							}
+							if($ligne_periodes->verouiller=='N') {
+								echo "<img src='../images/icons/ico_attention.png' width='22' height='19' alt=\"ATTENTION: La période n'est pas verrouillée ! Les notes peuvent encore changer !\" title=\"ATTENTION: La période n'est pas verrouillée ! Les notes peuvent encore changer !\" />\n";
+							}
 							echo "</td>\n";
 						}
 						else{
@@ -1561,11 +1568,18 @@ function tab_extract_moy($tab_ele,$id_clas) {
 								if($ligne_notes->statut!=""){
 									$chaine_couleur=" bgcolor='red'";
 								}
-								echo "<td$chaine_couleur style='text-align:center;'>".$ligne_notes->note." - ".$ligne_notes->statut."</td>\n";
+								echo "<td$chaine_couleur style='text-align:center;'>".$ligne_notes->note." - ".$ligne_notes->statut;
 							}
 							else{
-								echo "<td$chaine_couleur style='text-align:center;'>X</td>\n";
+								echo "<td$chaine_couleur style='text-align:center;'>X";
 							}
+
+							if($ligne_periodes->verouiller=='N') {
+								echo "<img src='../images/icons/ico_attention.png' width='22' height='19' alt=\"ATTENTION: La période n'est pas verrouillée ! Les notes peuvent encore changer !\" title=\"ATTENTION: La période n'est pas verrouillée ! Les notes peuvent encore changer !\" style='float:right' />\n";
+							}
+
+							echo "</td>\n";
+
 						}
 					}
 					// Initialisation
