@@ -703,6 +703,29 @@ else{
 				die();
 			}
 
+			$nb_err=0;
+			
+			/*
+			<PARAMETRES>
+				<UAJ>TEL_RNE</UAJ>
+				<ANNEE_SCOLAIRE>2011</ANNEE_SCOLAIRE>
+				<DATE_EXPORT>22/05/2012</DATE_EXPORT>
+				<HORODATAGE>22/05/2012 08:09:38</HORODATAGE>
+			</PARAMETRES>
+			<DONNEES>
+				...
+			*/
+			$objet_parametres=($ele_xml->PARAMETRES);
+			foreach ($objet_parametres->children() as $key => $value) {
+				if($key=='ANNEE_SCOLAIRE') {
+					//$annee_scolaire=$value;
+					if(!preg_match("/^$value/", getSettingValue('gepiYear'))) {
+						echo "<p style='text-indent: -7.5em; margin-left: 7.5em;'><strong style='color:red'>ATTENTION&nbsp;:</strong> L'année scolaire du fichier XML (<em>$value</em>) ne semble pas correspondre à l'année scolaire paramétrée dans Gepi (<em>".getSettingValue('gepiYear')."</em>).<br />Auriez-vous récupéré un XML de l'année précédente ou de l'année prochaine (<em>il arrive que l'on bascule dans Sconet en juin ou courant septembre</em>)&nbsp;?</p><br />\n";
+						$nb_err++;
+					}
+				}
+			}
+
 			echo "<p>\n";
 			echo "Analyse de la section STRUCTURES pour ne conserver que les identifiants d'élèves affectés dans une classe...<br />\n";
 
@@ -754,7 +777,7 @@ else{
 				}
 			}
 
-			$nb_err=0;
+			//$nb_err=0;
 			// $cpt: Identifiant id_tempo
 			$id_tempo=1;
 			for($i=0;$i<count($eleves);$i++){
@@ -4785,6 +4808,20 @@ else{
 						die();
 					}
 
+					$nb_err=0;
+
+					$objet_parametres=($resp_xml->PARAMETRES);
+					foreach ($objet_parametres->children() as $key => $value) {
+						if($key=='ANNEE_SCOLAIRE') {
+							//$annee_scolaire=$value;
+							if(!preg_match("/^$value/", getSettingValue('gepiYear'))) {
+								echo "<p style='text-indent: -7.5em; margin-left: 7.5em;'><strong style='color:red'>ATTENTION&nbsp;:</strong> L'année scolaire du fichier XML (<em>$value</em>) ne semble pas correspondre à l'année scolaire paramétrée dans Gepi (<em>".getSettingValue('gepiYear')."</em>).<br />Auriez-vous récupéré un XML de l'année précédente ou de l'année prochaine (<em>il arrive que l'on bascule dans Sconet en juin ou courant septembre</em>)&nbsp;?</p><br />\n";
+								$nb_err++;
+							}
+						}
+					}
+
+
 					// PARTIE <PERSONNES>
 					// Compteur personnes:
 					$i=-1;
@@ -4829,7 +4866,7 @@ else{
 					}
 
 
-						$nb_err=0;
+						//$nb_err=0;
 						$stat=0;
 						$i=0;
 						while($i<count($personnes)){
