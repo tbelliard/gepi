@@ -28,7 +28,7 @@ $result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.5.3.1" . $rc . $
 $test = sql_query1("SHOW TABLES LIKE 'edt_semaines'");
 if ($test == -1) {
 	$result .= "<br />Création de la table 'edt_semaines'. ";
-	$sql="CREATE TABLE edt_semaines (id_edt_semaine int(11) NOT NULL auto_increment,num_edt_semaine int(11) NOT NULL default '0',type_edt_semaine varchar(10) NOT NULL default '', num_semaines_etab int(11) NOT NULL default '0', PRIMARY KEY  (id_edt_semaine));";
+	$sql="CREATE TABLE edt_semaines (id_edt_semaine int(11) NOT NULL auto_increment,num_edt_semaine int(11) NOT NULL default '0',type_edt_semaine varchar(10) NOT NULL default '', num_semaines_etab int(11) NOT NULL default '0', PRIMARY KEY  (id_edt_semaine)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'edt_semaines': ".$result_inter."<br />";
@@ -60,7 +60,7 @@ $result .= "<br /><br /><strong>Ajout d'une table pour les \"super-gestionnaires
 $result .= "<br />&nbsp;->Tentative de création de la table j_aidcateg_super_gestionnaires.<br />";
 $test = sql_query1("SHOW TABLES LIKE 'j_aidcateg_super_gestionnaires'");
 if ($test == -1) {
-	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS j_aidcateg_super_gestionnaires (indice_aid INT NOT NULL ,id_utilisateur VARCHAR( 50 ) NOT NULL);");
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS j_aidcateg_super_gestionnaires (indice_aid INT NOT NULL ,id_utilisateur VARCHAR( 50 ) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '')
 	$result .= msj_ok("La table j_aidcateg_super_gestionnaires a été créée !");
 	else

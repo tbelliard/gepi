@@ -676,10 +676,15 @@ if (!(isset($id_classe))) {
 
 							}
 
-							$tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante'][]=my_strtoupper($eleve_nom[$j])." ".casse_mot($eleve_prenom[$j],'majf2');
+
+
+							$eleve_nom_prenom=my_strtoupper($eleve_nom[$j])." ".casse_mot($eleve_prenom[$j],'majf2');
+							$tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante'][]=$eleve_nom_prenom;
 							if(($email!="")&&(check_mail($email))) {
 								$sujet_mail="[Gepi]: Appreciation non remplie: ".$id_eleve[$j];
-								$message_mail="Bonjour,\r\n\r\nCordialement";
+								$message_mail="Bonjour,\r\n\r\nL'appréciation en ".$tab_alerte_prof[$login_prof]['groupe'][$group_id]['info']." pour $eleve_nom_prenom n'est pas remplie.\r\n";
+								$message_mail.="Je vous serais reconnaissant(e) de bien vouloir la remplir rapidement.\r\nD'avance merci.\r\n\r\nCordialement\r\n-- \r\n".civ_nom_prenom($_SESSION['login']);
+
 								echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof)."</a>";
 							}
 							else{
