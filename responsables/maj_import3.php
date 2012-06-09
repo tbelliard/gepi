@@ -159,11 +159,13 @@ $stop=isset($_POST['stop']) ? $_POST['stop'] : (isset($_GET['stop']) ? $_GET['st
 
 $gepiSchoolRne=getSettingValue("gepiSchoolRne") ? getSettingValue("gepiSchoolRne") : "";
 
+//========================================================================
+// A SUPPRIMER A TERME PARCE QU'ON FORCE MAINTENANT utf8_general_ci
+/*
 $mysql_collate=getSettingValue("mysql_collate") ? getSettingValue("mysql_collate") : "";
 $chaine_mysql_collate="";
 if($mysql_collate!="") {$chaine_mysql_collate="COLLATE $mysql_collate";}
 
-// 29/09/2010
 $chaine_collate="";
 $sql="show full columns from eleves WHERE Field='nom';";
 $res_col_eleves=mysql_query($sql);
@@ -172,7 +174,11 @@ if(mysql_num_rows($res_col_eleves)>0) {
 	//echo "\$lig_col_eleves->Collation=$lig_col_eleves->Collation<br />";
 	if(($lig_col_eleves->Collation!='utf8_unicode_ci')&&($lig_col_eleves->Collation!='utf8_general_ci')) {$chaine_collate="COLLATE latin1_bin ";}
 }
-// A REVOIR: Avec cette recherche, on pourrait créer temp_gep_import2 avec la bonne collation.
+*/
+$chaine_mysql_collate="CHARSET utf8 COLLATE utf8_general_ci";
+$chaine_collate="COLLATE utf8_general_ci ";
+//$chaine_collate="COLLATE latin1_bin ";
+//========================================================================
 
 $sql="SELECT 1=1 FROM utilisateurs WHERE statut='eleve' AND etat='actif' LIMIT 1;";
 $res_comptes_eleves=mysql_query($sql);
@@ -1790,8 +1796,17 @@ else{
 						if(preg_match("/Illegal mix of collations/i",mysql_error())) {
 							echo "Il semble qu'il y ait un problème de 'collation' entre les champs 'eleves.ele_id' et 'temp_gep_import2.ele_id'&nbsp;:<br />\n";
 							echo "<span style='color:red'>".mysql_error()."</span><br />\n";
+							/*
 							echo "Il faudrait supprimer la table 'temp_gep_import2', renseigner la valeur de 'mysql_collate' dans la table 'setting' en mettant la même collation que pour votre champ 'eleves.ele_id'.<br />\n";
 							echo "Si par exemple, le champ 'eleves.ele_id' a pour collation 'latin1_general_ci', il faudrait exécuter une requête du type <span style='color:green;'>INSERT INTO setting SET name='mysql_collate', value='latin1_general_ci';</span> ou si la valeur existe déjà <span style='color:green;'>UPDATE setting SET value='latin1_general_ci' WHERE name='mysql_collate';</span><br />\n";
+							*/
+
+							if($_SESSION['statut']=='administrateur') {
+								echo "Il faudrait <a href='../utilitaires/clean_tables.php?maj=corriger_interclassements".add_token_in_url()."'>corriger les interclassements</a>.<br />\n";
+							}
+							else {
+								echo "Il faudrait contacter l'administrateur pour qu'il effectue dans la rubrique <strong>Nettoyage des tables</strong> à une <strong>correction des interclassements</strong>.<br />\n";
+							}
 						}
 						echo "</p>\n";
 
@@ -5414,8 +5429,17 @@ else{
 								//echo "<span style='color:red'>".mysql_error()."</span>\n";
 								echo "Il semble qu'il y ait un problème de 'collation' entre les champs 'eleves.ele_id' et 'temp_responsables2_import.ele_id'&nbsp;:<br />\n";
 								echo "<span style='color:red'>".mysql_error()."</span><br />\n";
+								/*
 								echo "Il faudrait supprimer la table 'temp_responsables2_import', renseigner la valeur de 'mysql_collate' dans la table 'setting' en mettant la même collation que pour votre champ 'eleves.ele_id'.<br />\n";
 								echo "Si par exemple, le champ 'eleves.ele_id' a pour collation 'latin1_general_ci', il faudrait exécuter une requête du type <span style='color:green;'>INSERT INTO setting SET name='mysql_collate', value='latin1_general_ci';</span> ou si la valeur existe déjà <span style='color:green;'>UPDATE setting SET value='latin1_general_ci' WHERE name='mysql_collate';</span><br />\n";
+								*/
+
+								if($_SESSION['statut']=='administrateur') {
+									echo "Il faudrait <a href='../utilitaires/clean_tables.php?maj=corriger_interclassements".add_token_in_url()."'>corriger les interclassements</a>.<br />\n";
+								}
+								else {
+									echo "Il faudrait contacter l'administrateur pour qu'il effectue dans la rubrique <strong>Nettoyage des tables</strong> à une <strong>correction des interclassements</strong>.<br />\n";
+								}
 							}
 							echo "</p>\n";
 		
@@ -5513,8 +5537,16 @@ else{
 								//echo "<span style='color:red'>".mysql_error()."</span>\n";
 								echo "Il semble qu'il y ait un problème de 'collation' entre les tables 'resp_pers' et 'temp_resp_pers_import'&nbsp;:<br />\n";
 								echo "<span style='color:red'>".mysql_error()."</span><br />\n";
+								/*
 								echo "Il faudrait supprimer la table 'temp_resp_pers_import', renseigner la valeur de 'mysql_collate' dans la table 'setting' en mettant la même collation que pour vos champs 'resp_pers'.<br />\n";
 								echo "Si par exemple, les champs de 'temp_resp_pers_import' ont pour collation 'latin1_general_ci', il faudrait exécuter une requête du type <span style='color:green;'>INSERT INTO setting SET name='mysql_collate', value='latin1_general_ci';</span> ou si la valeur existe déjà <span style='color:green;'>UPDATE setting SET value='latin1_general_ci' WHERE name='mysql_collate';</span><br />\n";
+								*/
+								if($_SESSION['statut']=='administrateur') {
+									echo "Il faudrait <a href='../utilitaires/clean_tables.php?maj=corriger_interclassements".add_token_in_url()."'>corriger les interclassements</a>.<br />\n";
+								}
+								else {
+									echo "Il faudrait contacter l'administrateur pour qu'il effectue dans la rubrique <strong>Nettoyage des tables</strong> à une <strong>correction des interclassements</strong>.<br />\n";
+								}
 							}
 							echo "</p>\n";
 		
@@ -7603,7 +7635,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 
 				//=========================================
 				// 20110911
-				$sql="CREATE TABLE IF NOT EXISTS tempo4 ( col1 varchar(100) NOT NULL default '', col2 varchar(100) NOT NULL default '', col3 varchar(100) NOT NULL default '', col4 varchar(100) NOT NULL default '');";
+				$sql="CREATE TABLE IF NOT EXISTS tempo4 ( col1 varchar(100) $chaine_mysql_collate NOT NULL default '', col2 varchar(100) $chaine_mysql_collate NOT NULL default '', col3 varchar(100) $chaine_mysql_collate NOT NULL default '', col4 varchar(100) $chaine_mysql_collate NOT NULL default '');";
 				info_debug($sql);
 				$res_tempo4=mysql_query($sql);
 
