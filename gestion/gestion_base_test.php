@@ -412,10 +412,10 @@ if (!function_exists("gzwrite")) {
 if (isset($action) and ($action == 'restaure_confirm'))  {
 	check_token(false);
 
-    echo "<h3>Confirmation de chargement des données de test. Attention, ne pas faire sur une base de production</h3>\n";
+    echo "<h3>Confirmation de chargement des données de test. <span style='color:red; text-decoration: blink;'>Attention, ne pas faire sur une base de production</span></h3>\n";
     echo "Fichier sélectionné pour la restauration : <b>".$_GET['file']."</b><br/>";
-    echo "Attention, les donnée vont etre écrasées, et il y des entrées (tables de jointures) qui seront dupliquée si les contraintes de cles primaires ne sont pas bonnes.\n";
-    echo "<p><b>Etes-vous sûr de vouloir continuer ?</b></p>\n";
+    echo "Attention, les données vont être écrasées, et il y des entrées (<em>tables de jointures</em>) qui seront dupliquées si les contraintes de clés primaires ne sont pas bonnes.\n";
+    echo "<p><b>Êtes-vous sûr de vouloir continuer ?</b></p>\n";
 
 	echo "<blockquote>\n";
 
@@ -501,7 +501,7 @@ if (isset($action) and ($action == 'restaure'))  {
 			echo "<p style='color:red'>Une erreur s'est produite!<br />";
 
 		} else {
-		    echo "<p style='color:red'>Ok<br />";
+		    echo "<p style='color:green'>Ok<br />";
 		}
 
 	require("../lib/footer.inc.php");
