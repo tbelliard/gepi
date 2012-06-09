@@ -96,7 +96,7 @@ if ($test == -1) {
 		nbAbs INT(11) NOT NULL default '0',
 		nbNonJustif INT(11) NOT NULL default '0',
 		nbRet INT(11) NOT NULL default '0',
-		UNIQUE KEY elenoet (elenoet));");
+		UNIQUE KEY elenoet (elenoet)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}

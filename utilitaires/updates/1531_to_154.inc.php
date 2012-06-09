@@ -104,7 +104,7 @@ if ($test == -1) {
 		nom_modele varchar(255) NOT NULL,
 		par_defaut ENUM('y','n') DEFAULT 'n',
 		PRIMARY KEY (id_modele)
-		);");
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -123,7 +123,7 @@ if ($test == -1) {
 		nom varchar(255) NOT NULL default '',
 		valeur varchar(255) NOT NULL,
 		INDEX id_modele_champ (id_modele, nom)
-		);");
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -143,7 +143,7 @@ if ($test == -1) {
 	commentaire TEXT   COMMENT 'commentaire saisi par l\'utilisateur',
 	sortable_rank INTEGER,
 	PRIMARY KEY (id)
-) ENGINE=MyISAM COMMENT='Lieu pour les types d\'absence ou les saisies';");
+)  ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Lieu pour les types d\'absence ou les saisies';");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -203,7 +203,7 @@ nom_court varchar(32) NOT NULL default '',
 nom_complet varchar(64) NOT NULL default '',
 description varchar(128) NOT NULL default '',
 arrondir char(2) NOT NULL default 's1',
-PRIMARY KEY  (id));");
+PRIMARY KEY  (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -226,7 +226,7 @@ description varchar(128) NOT NULL default '',
 date datetime NOT NULL default '0000-00-00 00:00:00',
 note_sur int(11) default '5',
 PRIMARY KEY  (id),
-INDEX dev_date (id_dev, date));");
+INDEX dev_date (id_dev, date)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -246,7 +246,7 @@ id_eval int(11) NOT NULL default '0',
 note float(10,1) NOT NULL default '0.0',
 statut char(1) NOT NULL default '',
 comment text NOT NULL,
-PRIMARY KEY  (login,id_eval));");
+PRIMARY KEY  (login,id_eval)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -405,7 +405,7 @@ if ($test == -1) {
 `fct_autorite` VARCHAR( 50 ) NOT NULL ,
 `nom_autorite` VARCHAR( 50 ) NOT NULL ,
 PRIMARY KEY ( `id_delegation` )
-);");
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -428,7 +428,7 @@ CREATE TABLE mef
 	libelle_long VARCHAR(300)  NOT NULL COMMENT 'libelle de la formation',
 	libelle_edition VARCHAR(300)  NOT NULL COMMENT 'libelle de la formation pour presentation',
 	PRIMARY KEY (id)
-) ENGINE=MyISAM COMMENT='Module élémentaire de formation';
+)  ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Module élémentaire de formation';
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -468,7 +468,7 @@ titre varchar(255) NOT NULL default '',
 description text NOT NULL,
 date datetime,
 PRIMARY KEY (id),
-INDEX id_titre (id, titre));";
+INDEX id_titre (id, titre)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'infos_actions': ".$result_inter."<br />";
@@ -483,7 +483,7 @@ id_info int(11) NOT NULL,
 nature enum('statut', 'individu') default 'individu',
 valeur varchar(255) default '',
 PRIMARY KEY (id),
-INDEX id_info (id_info));";
+INDEX id_info (id_info)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'infos_actions_destinataires': ".$result_inter."<br />";
@@ -518,7 +518,7 @@ if ($test == -1) {
   informations text NOT NULL,
   motif_report varchar(255) NOT NULL,
   PRIMARY KEY (id_report)
-) ENGINE=MyISAM;
+)  ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 ");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
@@ -571,7 +571,7 @@ if ($test == -1) {
 					chemin VARCHAR(255) NOT NULL DEFAULT '',
 					date1 DATETIME NOT NULL default '0000-00-00 00:00:00',
 					date2 DATETIME NOT NULL default '0000-00-00 00:00:00',
-					PRIMARY KEY (id)) ENGINE=MyISAM;");
+					PRIMARY KEY (id))  ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -588,7 +588,7 @@ if ($test == -1) {
 	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS acces_cdt_groupes (id INT(11) NOT NULL auto_increment,
 					id_acces INT(11) NOT NULL,
 					id_groupe INT(11) NOT NULL,
-					PRIMARY KEY (id)) ENGINE=MyISAM;");
+					PRIMARY KEY (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -605,7 +605,7 @@ if ($test == -1) {
 	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS vocabulaire (id INT(11) NOT NULL auto_increment,
 			terme VARCHAR(255) NOT NULL DEFAULT '',
 			terme_corrige VARCHAR(255) NOT NULL DEFAULT '',
-			PRIMARY KEY (id)) ENGINE=MyISAM;");
+			PRIMARY KEY (id))  ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -708,7 +708,7 @@ if ($test == -1) {
 		col1 VARCHAR(255) NOT NULL,
 		col2 TEXT,
 		PRIMARY KEY  (id)
-		);");
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -721,7 +721,7 @@ $test = sql_query1("SHOW TABLES LIKE 'tempo3_cdt';");
 if ($test == -1) {
 	$result .= "<br /><strong>Ajout d'une table temporaire 'tempo3_cdt' :</strong><br />";
 
-	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS tempo3_cdt (id_classe int(11) NOT NULL default '0', classe varchar(255) NOT NULL default '', matiere varchar(255) NOT NULL default '', enseignement varchar(255) NOT NULL default '', id_groupe int(11) NOT NULL default '0', fichier varchar(255) NOT NULL default '');");
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS tempo3_cdt (id_classe int(11) NOT NULL default '0', classe varchar(255) NOT NULL default '', matiere varchar(255) NOT NULL default '', enseignement varchar(255) NOT NULL default '', id_groupe int(11) NOT NULL default '0', fichier varchar(255) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}

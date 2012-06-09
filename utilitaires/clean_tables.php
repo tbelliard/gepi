@@ -2417,7 +2417,13 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 					}
 				}
 				*/
-				$texte_info_action.=$lig_champ->Collation;
+				if($lig_champ->Collation!='utf8_general_ci') {
+					$texte_info_action.="<span style='color:red'>".$lig_champ->Collation."</span>";
+					$texte_info_action.="<br /><a href='".$_SERVER['PHP_SELF']."?maj=corriger_interclassements&amp;table=$tab[0]".add_token_in_url()."'>Corriger</a>";
+				}
+				else {
+					$texte_info_action.=$lig_champ->Collation;
+				}
 				if(!in_array($lig_champ->Collation,$tab_collations)) {$tab_collations[]=$lig_champ->Collation;}
 				$texte_info_action.="</td>";
 				$texte_info_action.="</tr>";
@@ -2469,7 +2475,93 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 	//=====================================
 
+} elseif((isset($_POST['action']) AND $_POST['action'] == 'corriger_interclassements')||(isset($_GET['maj']) AND $_GET['maj'] == 'corriger_interclassements')) {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
 
+	echo "<p class='bold'>Correction des interclassements (<em>collations</em>)&nbsp;:</p>\n";
+
+	if((isset($_GET['table']))&&(preg_match("/^[A-Za-z0-9_]*$/",$_GET['table']))) {
+		echo "Correction de la table ".$_GET['table']." : ";
+		$sql="ALTER TABLE `".$_GET['table']."` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		$res=mysql_query($sql);
+		if(!$res) {
+			echo "<span style='color:red'>Erreur</span>";
+		}
+		else {
+			echo "<span style='color:green'>Ok</span>";
+		}
+		echo "<br />\n";
+	}
+	else {
+		$nb_corr=0;
+		$r_sql = mysql_query("SHOW TABLE STATUS");
+		while ($table = mysql_fetch_array($r_sql)) {
+			if($table['Collation']!="utf8_general_ci") {
+				//mysql_query("ALTER TABLE `".$table['Name']."` COLLATE utf8_general_ci");
+				echo "Correction de la table ".$table['Name']." : ";
+				$sql="ALTER TABLE `".$table['Name']."` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;";
+				$res=mysql_query($sql);
+				if(!$res) {
+					echo "<span style='color:red'>Erreur</span>";
+				}
+				else {
+					echo "<span style='color:green'>Ok</span>";
+				}
+				echo "<br />\n";
+				$nb_corr++;
+			}
+			/*
+			else {
+				$sql="SHOW FULL COLUMNS FROM ".$table['Name'];
+				$res=mysql_query($sql);
+				if(!$res) {
+					echo "<span style='color:red'>Erreur lors de l'extraction des champs de ".$table['Name']."</span><br />";
+				}
+				else {
+					// PB AVEC LE $res
+					while($lig=mysql_fetch_array($res)) {
+						$sql="SELECT DISTINCT COLLATION(".$lig['Field'].") AS interclassement FROM ".$table['Name'].";";
+						$res2=mysql_query($sql);
+						if(!$res2) {
+							echo "<span style='color:red'>Erreur lors de l'extraction de la COLLATION du champ ".$lig['Field']." de ".$table['Name']."</span><br />";
+						}
+						else {
+							if(mysql_num_rows($res2)>0) {
+								$correction_table_requise="n";
+								while($lig2=mysql_fetch_object($res2)) {
+									if($lig2->interclassement!='utf8_general_ci') {
+										$correction_table_requise="y";
+										break;
+									}
+								}
+								if($correction_table_requise=="y") {
+									echo "Correction de la table ".$table['Name']." : ";
+									$sql="ALTER TABLE `".$table['Name']."` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;";
+									$res=mysql_query($sql);
+									if(!$res) {
+										echo "<span style='color:red'>Erreur</span>";
+									}
+									else {
+										echo "<span style='color:green'>Ok</span>";
+									}
+									echo "<br />\n";
+									$nb_corr++;
+								}
+							}
+						}
+					}
+					echo "<span style='color:green'>Ok</span>";
+				}
+			}
+			*/
+		}
+
+		if($nb_corr==0) {
+			echo "<p>Aucune erreur de collation n'a été trouvée.</p>\n";
+		}
+	}
 } elseif ((isset($_POST['action']) AND $_POST['action'] == 'corrige_ordre_matieres_professeurs')||(isset($_POST['maj']) AND $_POST['maj'] == 'corrige_ordre_matieres_professeurs')||(isset($_GET['maj']) AND $_GET['maj'] == 'corrige_ordre_matieres_professeurs')) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
 	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
@@ -3263,6 +3355,16 @@ else {
 		echo "<center>\n";
 		echo "<input type=submit value=\"Contrôler les interclassements\" />\n";
 		echo "<input type='hidden' name='action' value='verif_interclassements' />\n";
+		echo "</form>\n";
+		
+		echo "<hr />\n";
+
+		echo "<p>Correction des interclassements (<i>COLLATION</i>) des champs des tables.<br />Si des anomalies ont été relevées lors d'un contrôle des interclassements, vous pouvez effectuer une correction&nbsp;:<br />Elle consistera à forcer l'interclassement 'utf8_general_ci' sur les tables Gepi.</p>\n";
+		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+		echo add_token_field();
+		echo "<center>\n";
+		echo "<input type=submit value=\"Corriger les interclassements\" />\n";
+		echo "<input type='hidden' name='action' value='corriger_interclassements' />\n";
 		echo "</form>\n";
 	
 		echo "<hr />\n";

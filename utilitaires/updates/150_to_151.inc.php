@@ -139,7 +139,7 @@
 		$result .= "&nbsp;->Création de la table 'salle_cours'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'salle_cours'"));
 		if ($test1 == 0) {
-			$query1 = mysql_query("CREATE TABLE salle_cours (`id_salle` INT( 3 ) NOT NULL AUTO_INCREMENT PRIMARY KEY , `numero_salle` VARCHAR( 10 ) NOT NULL , `nom_salle` VARCHAR( 50 ) NOT NULL);");
+			$query1 = mysql_query("CREATE TABLE salle_cours (`id_salle` INT( 3 ) NOT NULL AUTO_INCREMENT PRIMARY KEY , `numero_salle` VARCHAR( 10 ) NOT NULL , `nom_salle` VARCHAR( 50 ) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query1) {
 				$result .= msj_ok();
 			} else {
@@ -152,7 +152,7 @@
 		$result .= "&nbsp;->Création de la table 'edt_cours'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'edt_cours'"));
 		if ($test1 == 0) {
-			$query1 = mysql_query("CREATE TABLE `edt_cours` (`id_cours` int(3) NOT NULL auto_increment, `id_groupe` varchar(10) NOT NULL, `id_salle` varchar(3) NOT NULL, `jour_semaine` varchar(10) NOT NULL, `id_definie_periode` varchar(3) NOT NULL, `duree` varchar(10) NOT NULL default '2', `heuredeb_dec` varchar(3) NOT NULL default '0', `id_semaine` varchar(3) NOT NULL default '0', `id_calendrier` varchar(3) NOT NULL default '0', `modif_edt` varchar(3) NOT NULL default '0', PRIMARY KEY  (`id_cours`));");
+			$query1 = mysql_query("CREATE TABLE `edt_cours` (`id_cours` int(3) NOT NULL auto_increment, `id_groupe` varchar(10) NOT NULL, `id_salle` varchar(3) NOT NULL, `jour_semaine` varchar(10) NOT NULL, `id_definie_periode` varchar(3) NOT NULL, `duree` varchar(10) NOT NULL default '2', `heuredeb_dec` varchar(3) NOT NULL default '0', `id_semaine` varchar(3) NOT NULL default '0', `id_calendrier` varchar(3) NOT NULL default '0', `modif_edt` varchar(3) NOT NULL default '0', PRIMARY KEY  (`id_cours`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query1) {
 				$result .= msj_ok();
 			} else {
@@ -181,7 +181,7 @@
 		$result .= "&nbsp;->Création de la table 'edt_setting'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'edt_setting'"));
 		if ($test1 == 0) {
-			$query1 = mysql_query("CREATE TABLE `edt_setting` (`id` INT( 3 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,`reglage` VARCHAR( 30 ) NOT NULL ,`valeur` VARCHAR( 30 ) NOT NULL);");
+			$query1 = mysql_query("CREATE TABLE `edt_setting` (`id` INT( 3 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,`reglage` VARCHAR( 30 ) NOT NULL ,`valeur` VARCHAR( 30 ) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query1) {
 				$result .= msj_ok();
 			} else {
@@ -206,7 +206,7 @@
 `numero_periode` tinyint(4) NOT NULL default '0',
 `etabferme_calendrier` tinyint(4) NOT NULL,
 `etabvacances_calendrier` tinyint(4) NOT NULL,
-PRIMARY KEY (`id_calendrier`));");
+PRIMARY KEY (`id_calendrier`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query1) {
 				$result .= msj_ok();
 			} else {
@@ -240,7 +240,7 @@ PRIMARY KEY (`id_calendrier`));");
 					`nom_long` VARCHAR( 200 ) NOT NULL ,
 					`subdivision_type` VARCHAR( 20 ) NOT NULL DEFAULT 'autre',
 					`subdivision` VARCHAR( 50 ) NOT NULL ,
-					PRIMARY KEY ( `id` ));");
+					PRIMARY KEY ( `id` )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query1) {
 				$result .= msj_ok();
 			} else {
@@ -257,7 +257,7 @@ PRIMARY KEY (`id_calendrier`));");
 					`id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
 					`id_gr_nom` INT( 11 ) NOT NULL ,
 					`id_eleve` INT( 11 ) NOT NULL ,
-					PRIMARY KEY ( `id` ));");
+					PRIMARY KEY ( `id` )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query1) {
 				$result .= msj_ok();
 			} else {
@@ -274,7 +274,7 @@ PRIMARY KEY (`id_calendrier`));");
 					`id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
 					`id_gr_nom` INT( 11 ) NOT NULL ,
 					`id_utilisateurs` VARCHAR( 50 ) NOT NULL ,
-					PRIMARY KEY ( `id` ));");
+					PRIMARY KEY ( `id` )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query1) {
 				$result .= msj_ok();
 			} else {
@@ -291,7 +291,7 @@ PRIMARY KEY (`id_calendrier`));");
 					`id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
 					`id_gr_nom` INT( 11 ) NOT NULL ,
 					`id_classe` INT( 11 ) NOT NULL ,
-					PRIMARY KEY ( `id` ));");
+					PRIMARY KEY ( `id` )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query1) {
 				$result .= msj_ok();
 			} else {
@@ -580,7 +580,7 @@ PRIMARY KEY (`id_calendrier`));");
 		$result .= "&nbsp;->Création de la table 'droits_statut'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'droits_statut'"));
 		if ($test1 == 0) {
-			$query1 = mysql_query("CREATE TABLE `droits_statut` (`id` int(11) NOT NULL auto_increment, `nom_statut` varchar(30) NOT NULL, PRIMARY KEY  (`id`));");
+			$query1 = mysql_query("CREATE TABLE `droits_statut` (`id` int(11) NOT NULL auto_increment, `nom_statut` varchar(30) NOT NULL, PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query1) {
 				$result .= msj_ok();
 			} else {
@@ -593,7 +593,7 @@ PRIMARY KEY (`id_calendrier`));");
 		$result .= "&nbsp;->Création de la table 'droits_utilisateurs'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'droits_utilisateurs'"));
 		if ($test1 == 0) {
-			$query1 = mysql_query("CREATE TABLE `droits_utilisateurs` (`id` int(11) NOT NULL auto_increment, `id_statut` int(11) NOT NULL, `login_user` varchar(50) NOT NULL, PRIMARY KEY  (`id`));");
+			$query1 = mysql_query("CREATE TABLE `droits_utilisateurs` (`id` int(11) NOT NULL auto_increment, `id_statut` int(11) NOT NULL, `login_user` varchar(50) NOT NULL, PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query1) {
 				$result .= msj_ok();
 			} else {
@@ -606,7 +606,7 @@ PRIMARY KEY (`id_calendrier`));");
 		$result .= "&nbsp;->Création de la table 'droits_speciaux'<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'droits_speciaux'"));
 		if ($test1 == 0) {
-			$query1 = mysql_query("CREATE TABLE `droits_speciaux` (`id` int(11) NOT NULL auto_increment, `id_statut` int(11) NOT NULL, `nom_fichier` varchar(200) NOT NULL, `autorisation` char(1) NOT NULL, PRIMARY KEY  (`id`));");
+			$query1 = mysql_query("CREATE TABLE `droits_speciaux` (`id` int(11) NOT NULL auto_increment, `id_statut` int(11) NOT NULL, `nom_fichier` varchar(200) NOT NULL, `autorisation` char(1) NOT NULL, PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query1) {
 				$result .= msj_ok();
 			} else {
@@ -1016,7 +1016,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 `debut_ts` int(11) NOT NULL,
 `fin_ts` int(11) NOT NULL,
 `date_saisie` int(20) NOT NULL,
-`login_saisie` varchar(30) NOT NULL, PRIMARY KEY  (`id`));";
+`login_saisie` varchar(30) NOT NULL, PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$query = mysql_query($sql);
 			if ($query) {
 				$result .= msj_ok();
@@ -1035,7 +1035,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 			$sql = "CREATE TABLE `matieres_appreciations_tempo` ( `login` varchar(50) NOT NULL default '',
 `id_groupe` int(11) NOT NULL default '0',
 `periode` int(11) NOT NULL default '0',
-`appreciation` text NOT NULL, PRIMARY KEY  (`login`,`id_groupe`,`periode`));";
+`appreciation` text NOT NULL, PRIMARY KEY  (`login`,`id_groupe`,`periode`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$query = mysql_query($sql);
 			if ($query) {
 				$result .= msj_ok();
@@ -1086,7 +1086,7 @@ ADD `affiche_moyenne_maxi_general` TINYINT NOT NULL DEFAULT '1';";
 `heurefin_definie_periode` time NOT NULL default '00:00:00',
 `suivi_definie_periode` tinyint(4) NOT NULL,
 `type_creneaux` varchar(15) NOT NULL,
-PRIMARY KEY  (`id_definie_periode`));";
+PRIMARY KEY  (`id_definie_periode`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$query = mysql_query($sql);
 			if ($query) {
 				$result .= msj_ok();
@@ -1105,7 +1105,7 @@ PRIMARY KEY  (`id_definie_periode`));";
 (`id_init` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 `ident_export` VARCHAR( 100 ) NOT NULL ,
 `nom_export` VARCHAR( 200 ) NOT NULL ,
-`nom_gepi` VARCHAR( 200 ) NOT NULL);";
+`nom_gepi` VARCHAR( 200 ) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$query = mysql_query($sql);
 			if ($query) {
 				$result .= msj_ok();
@@ -1124,7 +1124,7 @@ PRIMARY KEY  (`id_definie_periode`));";
 
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'inscription_items'"));
 		if ($test == 0) {
-			$result_inter .= traite_requete("CREATE TABLE IF NOT EXISTS inscription_items (id int(11) NOT NULL auto_increment, date varchar(20) NOT NULL default '', heure varchar(10) NOT NULL default '', description varchar(200) NOT NULL default '', PRIMARY KEY  (id));");
+			$result_inter .= traite_requete("CREATE TABLE IF NOT EXISTS inscription_items (id int(11) NOT NULL auto_increment, date varchar(20) NOT NULL default '', heure varchar(10) NOT NULL default '', description varchar(200) NOT NULL default '', PRIMARY KEY  (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($result_inter == '')
 			$result .= msj_ok("La table inscription_items a été créée !");
 			else
@@ -1135,7 +1135,7 @@ PRIMARY KEY  (`id_definie_periode`));";
 
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'inscription_j_login_items'"));
 		if ($test == 0) {
-			$result_inter .= traite_requete("CREATE TABLE IF NOT EXISTS inscription_j_login_items (login varchar(20) NOT NULL default '', id int(11) NOT NULL default '0');");
+			$result_inter .= traite_requete("CREATE TABLE IF NOT EXISTS inscription_j_login_items (login varchar(20) NOT NULL default '', id int(11) NOT NULL default '0') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($result_inter == '')
 			$result .= msj_ok("La table inscription_j_login_items a été créée !");
 			else
@@ -1179,7 +1179,7 @@ PRIMARY KEY  (`id_definie_periode`));";
 		// Création de la table j_aidcateg_utilisateurs
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'j_aidcateg_utilisateurs'"));
 		if ($test == 0) {
-			$result_inter .= traite_requete("CREATE TABLE IF NOT EXISTS j_aidcateg_utilisateurs (indice_aid INT NOT NULL ,id_utilisateur VARCHAR( 50 ) NOT NULL);");
+			$result_inter .= traite_requete("CREATE TABLE IF NOT EXISTS j_aidcateg_utilisateurs (indice_aid INT NOT NULL ,id_utilisateur VARCHAR( 50 ) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($result_inter == '')
 			$result .= msj_ok("La table j_aidcateg_utilisateurs a été créée !");
 			else
@@ -1233,7 +1233,7 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 		}
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'j_aid_eleves_resp'"));
 		if ($test == 0) {
-			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `j_aid_eleves_resp` (`id_aid` varchar(100) NOT NULL default '',`login` varchar(60) NOT NULL default '',`indice_aid` int(11) NOT NULL default '0',PRIMARY KEY  (`id_aid`,`login`));");
+			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `j_aid_eleves_resp` (`id_aid` varchar(100) NOT NULL default '',`login` varchar(60) NOT NULL default '',`indice_aid` int(11) NOT NULL default '0',PRIMARY KEY  (`id_aid`,`login`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($result_inter == '')
 			$result .= msj_ok("La table j_aid_eleves_resp a été créée !");
 			else
@@ -1243,7 +1243,7 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 		}
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'aid_familles'"));
 		if ($test == 0) {
-			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `aid_familles` (`ordre_affichage` smallint(6) NOT NULL default '0',`id` smallint(6) NOT NULL default '0',`type` varchar(250) NOT NULL default '');");
+			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `aid_familles` (`ordre_affichage` smallint(6) NOT NULL default '0',`id` smallint(6) NOT NULL default '0',`type` varchar(250) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($result_inter == '')
 			$result .= msj_ok("La table aid_familles a été créée !");
 			else
@@ -1273,7 +1273,7 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 		}
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'aid_public'"));
 		if ($test == 0) {
-			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `aid_public` (`ordre_affichage` smallint(6) NOT NULL default '0',`id` smallint(6) NOT NULL default '0',`public` varchar(100) NOT NULL default '');");
+			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `aid_public` (`ordre_affichage` smallint(6) NOT NULL default '0',`id` smallint(6) NOT NULL default '0',`public` varchar(100) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($result_inter == '')
 			$result .= msj_ok("La table aid_public a été créée !");
 			else
@@ -1299,7 +1299,7 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 		}
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'aid_productions'"));
 		if ($test == 0) {
-			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `aid_productions` (`id` smallint(6) NOT NULL auto_increment, `nom` varchar(100) NOT NULL default '', PRIMARY KEY  (`id`) );");
+			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `aid_productions` (`id` smallint(6) NOT NULL auto_increment, `nom` varchar(100) NOT NULL default '', PRIMARY KEY  (`id`) ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($result_inter == '')
 			$result .= msj_ok("La table aid_productions a été créée !");
 			else
@@ -1336,7 +1336,7 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 		}
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'droits_aid'"));
 		if ($test == 0) {
-			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `droits_aid` (`id` varchar(200) NOT NULL default '',`public` char(1) NOT NULL default '',`professeur` char(1) NOT NULL default '',`cpe` char(1) NOT NULL default '',`scolarite` char(1) NOT NULL default '',`eleve` char(1) NOT NULL default '',`responsable` char(1) NOT NULL default 'F',`secours` char(1) NOT NULL default '',`description` varchar(255) NOT NULL default '',`statut` char(1) NOT NULL default '',PRIMARY KEY  (`id`));");
+			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `droits_aid` (`id` varchar(200) NOT NULL default '',`public` char(1) NOT NULL default '',`professeur` char(1) NOT NULL default '',`cpe` char(1) NOT NULL default '',`scolarite` char(1) NOT NULL default '',`eleve` char(1) NOT NULL default '',`responsable` char(1) NOT NULL default 'F',`secours` char(1) NOT NULL default '',`description` varchar(255) NOT NULL default '',`statut` char(1) NOT NULL default '',PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($result_inter == '')
 			$result .= msj_ok("La table des droits_aid a été créée !");
 			else
@@ -1389,7 +1389,7 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 		$result .= "<br />&nbsp;->Ajout de la table table matieres_appreciations_grp<br />";
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'matieres_appreciations_grp'"));
 		if ($test == 0) {
-			$result_inter = traite_requete("CREATE TABLE `matieres_appreciations_grp` ( `id_groupe` int(11) NOT NULL default '0', `periode` int(11) NOT NULL default '0', `appreciation` text NOT NULL, PRIMARY KEY  (`id_groupe`,`periode`));");
+			$result_inter = traite_requete("CREATE TABLE `matieres_appreciations_grp` ( `id_groupe` int(11) NOT NULL default '0', `periode` int(11) NOT NULL default '0', `appreciation` text NOT NULL, PRIMARY KEY  (`id_groupe`,`periode`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($result_inter == '')
 			$result .= msj_ok("La table matieres_appreciations_grp a été créée !");
 			else
@@ -1427,7 +1427,7 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 
 		$test = sql_query1("SHOW TABLES LIKE 'ateliers_config'");
 		if ($test == -1) {
-			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `ateliers_config` (`nom_champ` char(100) NOT NULL default '', `content` char(255) NOT NULL default '',`param` char(100) NOT NULL default '');");
+			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `ateliers_config` (`nom_champ` char(100) NOT NULL default '', `content` char(255) NOT NULL default '',`param` char(100) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($result_inter == '') {
 				$result .= msj_ok("La table ateliers_config a été créée.");
 			} else {
@@ -1552,7 +1552,7 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 		$result .= "<br />&nbsp;->Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves<br />";
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'matieres_appreciations_acces'"));
 		if ($test == 0) {
-			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `matieres_appreciations_acces` (`id_classe` INT( 11 ) NOT NULL , `statut` VARCHAR( 255 ) NOT NULL , `periode` INT( 11 ) NOT NULL , `date` DATE NOT NULL , `acces` ENUM( 'y', 'n', 'date' ) NOT NULL );");
+			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `matieres_appreciations_acces` (`id_classe` INT( 11 ) NOT NULL , `statut` VARCHAR( 255 ) NOT NULL , `periode` INT( 11 ) NOT NULL , `date` DATE NOT NULL , `acces` ENUM( 'y', 'n', 'date' ) NOT NULL ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($result_inter == '')
 			$result .= msj_ok("La table matieres_appreciations_acces a été créée !");
 			else
@@ -1589,7 +1589,7 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 		$result .= "<br />&nbsp;->Module archivage : Création des tables d'archivage<br />";
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_aids'"));
 		if ($test == 0) {
-			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_aids` (`id` int(11) NOT NULL auto_increment,`annee` varchar(200) NOT NULL default '',`nom` varchar(100) NOT NULL default '',`id_type_aid` int(11) NOT NULL default '0',`productions` varchar(100) NOT NULL default '',`resume` text NOT NULL,`famille` smallint(6) NOT NULL default '0',`mots_cles` text NOT NULL,`adresse1` varchar(255) NOT NULL default '',`adresse2` varchar(255) NOT NULL default '',`public_destinataire` varchar(50) NOT NULL default '',`contacts` text NOT NULL,`divers` text NOT NULL,`matiere1` varchar(100) NOT NULL default '',`matiere2` varchar(100) NOT NULL default '',`fiche_publique` enum('y','n') NOT NULL default 'n',`affiche_adresse1` enum('y','n') NOT NULL default 'n',`en_construction` enum('y','n') NOT NULL default 'n',`notes_moyenne` varchar(255) NOT NULL,`notes_min` varchar(255) NOT NULL,`notes_max` varchar(255) NOT NULL,`responsables` text NOT NULL,`eleves` text NOT NULL,`eleves_resp` text NOT NULL, PRIMARY KEY  (`id`));");
+			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_aids` (`id` int(11) NOT NULL auto_increment,`annee` varchar(200) NOT NULL default '',`nom` varchar(100) NOT NULL default '',`id_type_aid` int(11) NOT NULL default '0',`productions` varchar(100) NOT NULL default '',`resume` text NOT NULL,`famille` smallint(6) NOT NULL default '0',`mots_cles` text NOT NULL,`adresse1` varchar(255) NOT NULL default '',`adresse2` varchar(255) NOT NULL default '',`public_destinataire` varchar(50) NOT NULL default '',`contacts` text NOT NULL,`divers` text NOT NULL,`matiere1` varchar(100) NOT NULL default '',`matiere2` varchar(100) NOT NULL default '',`fiche_publique` enum('y','n') NOT NULL default 'n',`affiche_adresse1` enum('y','n') NOT NULL default 'n',`en_construction` enum('y','n') NOT NULL default 'n',`notes_moyenne` varchar(255) NOT NULL,`notes_min` varchar(255) NOT NULL,`notes_max` varchar(255) NOT NULL,`responsables` text NOT NULL,`eleves` text NOT NULL,`eleves_resp` text NOT NULL, PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($result_inter == '')
 			$result .= msj_ok("La table archivage_aids a été créée !");
 			else
@@ -1599,7 +1599,7 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 		}
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_eleves2'"));
 		if ($test == 0) {
-			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_eleves2` (`annee` varchar(50) NOT NULL default '',`ine` varchar(50) NOT NULL,`doublant` enum('-','R') NOT NULL default '-',`regime` varchar(255) NOT NULL, PRIMARY KEY  (`ine`,`annee`));");
+			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_eleves2` (`annee` varchar(50) NOT NULL default '',`ine` varchar(50) NOT NULL,`doublant` enum('-','R') NOT NULL default '-',`regime` varchar(255) NOT NULL, PRIMARY KEY  (`ine`,`annee`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($result_inter == '')
 			$result .= msj_ok("La table archivage_eleves2 a été créée !");
 			else
@@ -1609,7 +1609,7 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 		}
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_eleves'"));
 		if ($test == 0) {
-			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_eleves` (`ine` varchar(255) NOT NULL,`nom` varchar(255) NOT NULL default '',`prenom` varchar(255) NOT NULL default '',`sexe` char(1) NOT NULL,`naissance` date NOT NULL default '0000-00-00', PRIMARY KEY  (`ine`),  KEY `nom` (`nom`));");
+			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_eleves` (`ine` varchar(255) NOT NULL,`nom` varchar(255) NOT NULL default '',`prenom` varchar(255) NOT NULL default '',`sexe` char(1) NOT NULL,`naissance` date NOT NULL default '0000-00-00', PRIMARY KEY  (`ine`),  KEY `nom` (`nom`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($result_inter == '')
 			$result .= msj_ok("La table archivage_eleves a été créée !");
 			else
@@ -1619,7 +1619,7 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 		}
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_disciplines'"));
 		if ($test == 0) {
-			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_disciplines` (`id` int(11) NOT NULL auto_increment,`annee` varchar(200) NOT NULL,`INE` varchar(255) NOT NULL,`classe` varchar(255) NOT NULL,`num_periode` tinyint(4) NOT NULL,`nom_periode` varchar(255) NOT NULL,`special` varchar(255) NOT NULL,`matiere` varchar(255) NOT NULL,`prof` varchar(255) NOT NULL,`note` varchar(255) NOT NULL,`moymin` varchar(255) NOT NULL,`moymax` varchar(255) NOT NULL,`moyclasse` varchar(255) NOT NULL,`rang` tinyint(4) NOT NULL,`appreciation` text NOT NULL,`nb_absences` int(11) NOT NULL,`non_justifie` int(11) NOT NULL,`nb_retards` int(11) NOT NULL, PRIMARY KEY  (`id`));");
+			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_disciplines` (`id` int(11) NOT NULL auto_increment,`annee` varchar(200) NOT NULL,`INE` varchar(255) NOT NULL,`classe` varchar(255) NOT NULL,`num_periode` tinyint(4) NOT NULL,`nom_periode` varchar(255) NOT NULL,`special` varchar(255) NOT NULL,`matiere` varchar(255) NOT NULL,`prof` varchar(255) NOT NULL,`note` varchar(255) NOT NULL,`moymin` varchar(255) NOT NULL,`moymax` varchar(255) NOT NULL,`moyclasse` varchar(255) NOT NULL,`rang` tinyint(4) NOT NULL,`appreciation` text NOT NULL,`nb_absences` int(11) NOT NULL,`non_justifie` int(11) NOT NULL,`nb_retards` int(11) NOT NULL, PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($result_inter == '')
 			$result .= msj_ok("La table archivage_disciplines a été créée !");
 			else
@@ -1629,7 +1629,7 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 		}
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_appreciations_aid'"));
 		if ($test == 0) {
-			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_appreciations_aid` (`id_eleve` varchar(255) NOT NULL,`annee` varchar(200) NOT NULL,`classe` varchar(255) NOT NULL,`id_aid` int(11) NOT NULL,`periode` int(11) NOT NULL default '0',`appreciation` text NOT NULL,`note_eleve` varchar(50) NOT NULL,`note_moyenne_classe` varchar(255) NOT NULL,`note_min_classe` varchar(255) NOT NULL,`note_max_classe` varchar(255) NOT NULL,PRIMARY KEY  (`id_eleve`,`id_aid`,`periode`));");
+			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_appreciations_aid` (`id_eleve` varchar(255) NOT NULL,`annee` varchar(200) NOT NULL,`classe` varchar(255) NOT NULL,`id_aid` int(11) NOT NULL,`periode` int(11) NOT NULL default '0',`appreciation` text NOT NULL,`note_eleve` varchar(50) NOT NULL,`note_moyenne_classe` varchar(255) NOT NULL,`note_min_classe` varchar(255) NOT NULL,`note_max_classe` varchar(255) NOT NULL,PRIMARY KEY  (`id_eleve`,`id_aid`,`periode`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($result_inter == '')
 			$result .= msj_ok("La table archivage_appreciations_aid a été créée !");
 			else
@@ -1639,7 +1639,7 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 		}
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_aid_eleve'"));
 		if ($test == 0) {
-			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_aid_eleve` (`id_aid` int(11) NOT NULL default '0',`id_eleve` varchar(255) NOT NULL,`eleve_resp` char(1) NOT NULL default 'n',PRIMARY KEY  (`id_aid`,`id_eleve`));");
+			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_aid_eleve` (`id_aid` int(11) NOT NULL default '0',`id_eleve` varchar(255) NOT NULL,`eleve_resp` char(1) NOT NULL default 'n',PRIMARY KEY  (`id_aid`,`id_eleve`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($result_inter == '')
 			$result .= msj_ok("La table archivage_aid_eleve a été créée !");
 			else
@@ -1649,7 +1649,7 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 		}
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'archivage_types_aid'"));
 		if ($test == 0) {
-			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_types_aid` (`id` int(11) NOT NULL auto_increment,`annee` varchar(200) NOT NULL default '',`nom` varchar(100) NOT NULL default '',`nom_complet` varchar(100) NOT NULL default '',`note_sur` int(11) NOT NULL default '0',`type_note` varchar(5) NOT NULL default '', `display_bulletin` char(1) NOT NULL default 'y', PRIMARY KEY  (`id`));");
+			$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `archivage_types_aid` (`id` int(11) NOT NULL auto_increment,`annee` varchar(200) NOT NULL default '',`nom` varchar(100) NOT NULL default '',`nom_complet` varchar(100) NOT NULL default '',`note_sur` int(11) NOT NULL default '0',`type_note` varchar(5) NOT NULL default '', `display_bulletin` char(1) NOT NULL default 'y', PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($result_inter == '')
 			$result .= msj_ok("La table archivage_types_aid a été créée !");
 			else
@@ -1714,7 +1714,7 @@ ADD en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n'
 		$result .= "<br />&nbsp;->Tentative de création de la table j_aid_utilisateurs_gest.<br />";
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'j_aid_utilisateurs_gest'"));
 		if ($test == 0) {
-			$result_inter = traite_requete("CREATE TABLE j_aid_utilisateurs_gest (id_aid varchar(100) NOT NULL default '', id_utilisateur varchar(50) NOT NULL default '', indice_aid int(11) NOT NULL default '0', PRIMARY KEY  (id_aid,id_utilisateur))");
+			$result_inter = traite_requete("CREATE TABLE j_aid_utilisateurs_gest (id_aid varchar(100) NOT NULL default '', id_utilisateur varchar(50) NOT NULL default '', indice_aid int(11) NOT NULL default '0', PRIMARY KEY  (id_aid,id_utilisateur)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($result_inter == '')
 			$result .= msj_ok("La table j_aid_utilisateurs_gest a été créée !");
 			else
@@ -1752,7 +1752,7 @@ matiere varchar(50) NOT NULL,
 note varchar(4) NOT NULL default '',
 note_notanet varchar(4) NOT NULL,
 id_classe smallint(6) NOT NULL default '0'
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 		$result_inter = traite_requete($sql);
 		if ($result_inter != '') {
 			$result .= "Erreur sur la création de la table 'notanet': ".$result_inter."<br />";
@@ -1788,7 +1788,7 @@ matiere varchar(50) NOT NULL,
 note varchar(4) NOT NULL default '',
 note_notanet varchar(4) NOT NULL,
 id_classe smallint(6) NOT NULL default '0'
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 		$result_inter = traite_requete($sql);
 		if ($result_inter != '') {
 			$result .= "Erreur sur la création de la table 'notanet': ".$result_inter."<br />";
@@ -1802,7 +1802,7 @@ matiere varchar(50) NOT NULL,
 appreciation text NOT NULL,
 id int(11) NOT NULL auto_increment,
 PRIMARY KEY  (id)
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 		$result_inter = traite_requete($sql);
 		if ($result_inter != '') {
 			$result .= "Erreur sur la création de la table 'notanet_app': ".$result_inter."<br />";
@@ -1817,7 +1817,7 @@ notanet_mat varchar(255) NOT NULL default '',
 matiere varchar(50) NOT NULL default '',
 statut enum('imposee','optionnelle','non dispensee dans l etablissement') NOT NULL default 'imposee',
 PRIMARY KEY  (id)
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 		$result_inter = traite_requete($sql);
 		if ($result_inter != '') {
 			$result .= "Erreur sur la création de la table 'notanet_corresp': ".$result_inter."<br />";
@@ -1854,7 +1854,7 @@ PRIMARY KEY  (id)
 login varchar(50) NOT NULL,
 type_brevet tinyint(4) NOT NULL,
 PRIMARY KEY  (login)
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 		$result_inter = traite_requete($sql);
 		if ($result_inter != '') {
 			$result .= "Erreur sur la création de la table 'notanet_ele_type': ".$result_inter."<br />";
@@ -1865,7 +1865,7 @@ PRIMARY KEY  (login)
 id_classe TINYINT NOT NULL ,
 type_brevet TINYINT NOT NULL ,
 verrouillage CHAR( 1 ) NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 		$result_inter = traite_requete($sql);
 		if ($result_inter != '') {
 			$result .= "Erreur sur la création de la table 'notanet_verrou': ".$result_inter."<br />";
@@ -1877,7 +1877,7 @@ login VARCHAR( 50 ) NOT NULL ,
 favorable ENUM( 'O', 'N', '' ) NOT NULL ,
 avis TEXT NOT NULL ,
 PRIMARY KEY ( login )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 		$result_inter = traite_requete($sql);
 		if ($result_inter != '') {
 			$result .= "Erreur sur la création de la table 'notanet_avis': ".$result_inter."<br />";
@@ -1890,7 +1890,7 @@ b2i ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL ,
 a2 ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL ,
 lv VARCHAR( 50 ) NOT NULL ,
 PRIMARY KEY ( login )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 		$result_inter = traite_requete($sql);
 		if ($result_inter != '') {
 			$result .= "Erreur sur la création de la table 'notanet_socles': ".$result_inter."<br />";
@@ -2023,7 +2023,7 @@ code_commune_insee VARCHAR( 50 ) NOT NULL ,
 departement VARCHAR( 50 ) NOT NULL ,
 commune VARCHAR( 255 ) NOT NULL ,
 PRIMARY KEY ( code_commune_insee )
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 'communes': ".$result_inter."<br />";
@@ -2039,7 +2039,7 @@ id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 commentaire TEXT NOT NULL ,
 num_periode INT NOT NULL ,
 id_classe INT NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 'commentaires_types': ".$result_inter."<br />";
@@ -2083,7 +2083,7 @@ if(!empty($tab_model[$i])) {
 id_model_bulletin INT( 11 ) NOT NULL ,
 nom VARCHAR( 255 ) NOT NULL ,
 valeur VARCHAR( 255 ) NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 				$res_model=mysql_query($sql);
 				if(!$res_model) {
 					$result .= msj_erreur();
@@ -2316,7 +2316,7 @@ valeur VARCHAR( 255 ) NOT NULL
 id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 login VARCHAR( 255 ) NOT NULL ,
 app TEXT NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 'commentaires_types_profs': ".$result_inter."<br />";

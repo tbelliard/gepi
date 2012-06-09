@@ -67,7 +67,7 @@ id_lieu INT( 11 ) NOT NULL ,
 nature VARCHAR( 255 ) NOT NULL ,
 description TEXT NOT NULL,
 etat VARCHAR( 20 ) NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 's_incidents': ".$result_inter."<br />";
@@ -82,7 +82,7 @@ etat VARCHAR( 20 ) NOT NULL
 			$sql="CREATE TABLE IF NOT EXISTS s_qualites (
 id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 qualite VARCHAR( 50 ) NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 's_qualites': ".$result_inter."<br />";
@@ -107,7 +107,7 @@ qualite VARCHAR( 50 ) NOT NULL
 			$sql="CREATE TABLE IF NOT EXISTS s_types_sanctions (
 id_nature INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 nature VARCHAR( 255 ) NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 's_types_sanctions': ".$result_inter."<br />";
@@ -134,7 +134,7 @@ id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 id_sanction INT( 11 ) NOT NULL ,
 id_nature INT( 11 ) NOT NULL ,
 description TEXT NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 's_autres_sanctions': ".$result_inter."<br />";
@@ -149,7 +149,7 @@ id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 type ENUM('prise','demandee') ,
 mesure VARCHAR( 50 ) NOT NULL ,
 commentaire TEXT NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 's_mesures': ".$result_inter."<br />";
@@ -190,7 +190,7 @@ id_incident INT( 11 ) NOT NULL ,
 login_ele VARCHAR( 50 ) NOT NULL ,
 login_u VARCHAR( 50 ) NOT NULL ,
 id_mesure INT( 11 ) NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 's_traitement_incident': ".$result_inter."<br />";
@@ -203,7 +203,7 @@ id_mesure INT( 11 ) NOT NULL
 			$sql="CREATE TABLE IF NOT EXISTS s_lieux_incidents (
 id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 lieu VARCHAR( 255 ) NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 's_lieux_incidents': ".$result_inter."<br />";
@@ -232,7 +232,7 @@ login VARCHAR( 50 ) NOT NULL ,
 statut VARCHAR( 50 ) NOT NULL ,
 qualite VARCHAR( 50 ) NOT NULL,
 avertie ENUM('N','O') NOT NULL DEFAULT 'N'
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 's_protagonistes': ".$result_inter."<br />";
@@ -249,7 +249,7 @@ description TEXT NOT NULL ,
 nature VARCHAR( 255 ) NOT NULL ,
 effectuee ENUM( 'N', 'O' ) NOT NULL ,
 id_incident INT( 11 ) NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 's_sanctions': ".$result_inter."<br />";
@@ -265,7 +265,7 @@ id_incident INT( 11 ) NOT NULL ,
 login VARCHAR( 50 ) NOT NULL ,
 nature VARCHAR( 255 ) NOT NULL ,
 description TEXT NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 's_communication': ".$result_inter."<br />";
@@ -281,7 +281,7 @@ id_sanction INT( 11 ) NOT NULL ,
 date_retour DATE NOT NULL ,
 heure_retour VARCHAR( 20 ) NOT NULL ,
 travail TEXT NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 's_travail': ".$result_inter."<br />";
@@ -299,7 +299,7 @@ heure_debut VARCHAR( 20 ) NOT NULL ,
 duree FLOAT NOT NULL ,
 travail TEXT NOT NULL ,
 lieu VARCHAR( 255 ) NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 's_retenues': ".$result_inter."<br />";
@@ -318,7 +318,7 @@ date_fin DATE NOT NULL ,
 heure_fin VARCHAR( 20 ) NOT NULL,
 travail TEXT NOT NULL ,
 lieu VARCHAR( 255 ) NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 's_exclusions': ".$result_inter."<br />";
@@ -394,7 +394,7 @@ lieu VARCHAR( 255 ) NOT NULL
 		$result .= "&nbsp;->Création de la absences_repas<br />";
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'absences_repas'"));
 		if ($test == 0) {
-			$query3 = mysql_query("CREATE TABLE `absences_repas` (`id` int(5) NOT NULL auto_increment, `date_repas` date NOT NULL default '0000-00-00', `id_groupe` varchar(8) NOT NULL, `eleve_id` varchar(30) NOT NULL, `pers_id` varchar(30) NOT NULL, PRIMARY KEY  (`id`));");
+			$query3 = mysql_query("CREATE TABLE `absences_repas` (`id` int(5) NOT NULL auto_increment, `date_repas` date NOT NULL default '0000-00-00', `id_groupe` varchar(8) NOT NULL, `eleve_id` varchar(30) NOT NULL, `pers_id` varchar(30) NOT NULL, PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query3) {
 				$result .= msj_ok();
 			} else {
@@ -416,7 +416,7 @@ lieu VARCHAR( 255 ) NOT NULL
 			emplacement VARCHAR(255)  NOT NULL COMMENT 'chemin vers le document',
 			PRIMARY KEY (id),
 			INDEX ct_devoirs_documents_FI_1 (id_ct_devoir)
-			);";
+			) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 'ct_devoirs_documents': ".$result_inter."<br />";
@@ -454,7 +454,7 @@ lieu VARCHAR( 255 ) NOT NULL
 			FOREIGN KEY (id_login)
 			REFERENCES utilisateurs (login)
 			ON DELETE CASCADE
-			)ENGINE=MyISAM COMMENT='Notice privee du cahier de texte';";
+			) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Notice privee du cahier de texte';";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 'ct_private_entry': ".$result_inter."<br />";
@@ -584,7 +584,7 @@ lieu VARCHAR( 255 ) NOT NULL
                                         CONSTRAINT ects_credits_FK_2
                                             FOREIGN KEY (id_groupe)
                                             REFERENCES groupes (id)
-                                    )");
+                                    ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query2) {
 				$result .= msj_ok();
 			} else {
@@ -607,7 +607,7 @@ lieu VARCHAR( 255 ) NOT NULL
                                         CONSTRAINT ects_global_credits_FK_1
                                             FOREIGN KEY (id_eleve)
                                             REFERENCES eleves (id_eleve)
-                                    )");
+                                    ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query2) {
 				$result .= msj_ok();
 			} else {
@@ -640,7 +640,7 @@ lieu VARCHAR( 255 ) NOT NULL
                                         CONSTRAINT archivage_ects_FK_1
                                             FOREIGN KEY (ine)
                                             REFERENCES eleves (no_gep)
-                                    )");
+                                    ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query2) {
 				$result .= msj_ok();
 			} else {
@@ -815,7 +815,7 @@ lieu VARCHAR( 255 ) NOT NULL
 id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 titre VARCHAR( 255 ) NOT NULL ,
 description TEXT NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 'ct_sequences': ".$result_inter."<br />";
@@ -874,7 +874,7 @@ repertoire VARCHAR( 255 ) NOT NULL,
 description LONGTEXT NOT NULL,
 ouvert CHAR( 1 ) default 'n',
   UNIQUE KEY `nom` (`nom`)
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 'plugins': ".$result_inter."<br />";
@@ -890,7 +890,7 @@ plugin_id INT( 11 ) NOT NULL,
 fichier VARCHAR( 100 ) NOT NULL,
 user_statut VARCHAR( 50 ) NOT NULL,
 auth CHAR( 1 ) default 'n'
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 'plugins_autorisations': ".$result_inter."<br />";
@@ -907,7 +907,7 @@ user_statut VARCHAR( 50 ) NOT NULL,
 titre_item VARCHAR ( 255 ) NOT NULL,
 lien_item VARCHAR( 255 ) NOT NULL,
 description_item VARCHAR( 255 ) NOT NULL
-);";
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 'plugins_menus': ".$result_inter."<br />";
@@ -943,7 +943,7 @@ description_item VARCHAR( 255 ) NOT NULL
 		$test = sql_query1("SHOW TABLES LIKE 'ref_wiki'");
 		if ($test == -1) {
 			$result .= "<br />Création de la table 'ref_wiki'. ";
-			$sql="CREATE TABLE ref_wiki (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY , ref VARCHAR( 255 ) NOT NULL , url VARCHAR( 255 ) NOT NULL , INDEX ( ref ) );";
+			$sql="CREATE TABLE ref_wiki (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY , ref VARCHAR( 255 ) NOT NULL , url VARCHAR( 255 ) NOT NULL , INDEX ( ref ) ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			$result_inter = traite_requete($sql);
 			if ($result_inter != '') {
 				$result .= "<br />Erreur sur la création de la table 'ref_wiki': ".$result_inter."<br />";

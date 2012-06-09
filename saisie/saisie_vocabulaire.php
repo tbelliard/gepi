@@ -198,7 +198,8 @@ if(isset($compteur_nb_vocab)) {
 		$res_col=mysql_query($sql);
 		if(mysql_num_rows($res_col)>0) {
 			$lig_col=mysql_fetch_object($res_col);
-			if($lig_col->Collation!='utf8_unicode_ci') {$chaine_collate="COLLATE latin1_bin ";}
+			//if($lig_col->Collation!='utf8_unicode_ci') {$chaine_collate="COLLATE latin1_bin ";}
+			if($lig_col->Collation!='utf8_general_ci') {$chaine_collate="COLLATE latin1_bin ";}
 		}
 
 

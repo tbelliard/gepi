@@ -19,7 +19,7 @@ define('SET_DEST', 'latin1');
  /* */
 /* */
 define('SET_ORIGINE', 'latin1');
-define('SET_DEST', 'utf8');
+define('SET_DEST', 'utf8 COLLATE utf8_general_ci');
  /* */
 
 $result.="<br /><strong>Passage de la base en ".SET_DEST."</strong><br />";
