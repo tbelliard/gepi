@@ -339,6 +339,10 @@ Le fichier à fournir ci-dessous peut être téléchargé ici&nbsp;: <a href='ht
 	
 		echo "<p style='color:red;'>A FAIRE: proposer d'importer une bonne fois pour toutes les communes.<br />Signaler la taille de la table obtenue.</p>\n";
 	}
+	
+	echo "<p style='text-indent:-4em; margin-left: 4em;'><em>NOTES&nbsp;:</em> La prise en compte, pour les lieux de naissance, des communes importées dépend du paramétrage dans la page de <a href='../gestion/param_gen.php#ele_lieu_naissance'>Configuration générale</a> de 'ele_lieu_naissance'.<br />";
+	echo "Le paramétrage est actuellement <strong>ele_lieu_naissance=".getSettingValue('ele_lieu_naissance')."</strong>";
+	echo "</p>\n";
 }
 else {
 	if($step>0) {
