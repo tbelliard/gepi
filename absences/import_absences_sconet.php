@@ -53,6 +53,31 @@ require_once("../lib/header.inc");
 			echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 			//echo "</p>\n";
 
+			//==============================================================
+			$res = mysql_query('select * from temp_abs_import LIMIT 1;');
+			$numOfCols = mysql_num_fields($res);
+			// Même si la table est vide, on récupère bien la liste des champs
+			//$result .= "Nombre de colonnes dans la table 'temp_abs_import' : $numOfCols<br />";
+			//$result .= "Nombre d'enregistrements dans la table 'temp_abs_import' : ".mysql_num_rows($res)."<br />";
+
+			$tab_champs_temp_abs_import=array('id', 'login', 'cpe_login', 'elenoet', 'libelle', 'nbAbs', 'nbNonJustif', 'nbRet');
+			$nb_champs_temp_abs_import_trouves=0;
+			for($i=0;$i<$numOfCols;$i++) {
+				//$result .= mysql_field_name($res, $i) . "<br />\n";
+				$nom_du_champ=mysql_field_name($res, $i);
+				for($j=0;$j<count($tab_champs_temp_abs_import);$j++) {
+					if($nom_du_champ==$tab_champs_temp_abs_import[$j]) {
+						$nb_champs_temp_abs_import_trouves++;
+					}
+				}
+			}
+			if($nb_champs_temp_abs_import_trouves!=count($tab_champs_temp_abs_import)) {
+				echo "<p style='color:red; margin-left: 6em; text-indent: -6em;'><strong>ERREUR&nbsp;:</strong> La table 'temp_abs_import' n'a pas la bonne structure.<br />Contactez l'administrateur pour qu'il <strong>force</strong> une <strong>Mise à jour de la base</strong><br />(<em>cela se trouve dans <strong>Gestion générale/Mise à jour de la base/Forcer la mise à jour</strong></em>)</p>\n";
+				require("../lib/footer.inc.php");
+				die();
+			}
+			//==============================================================
+
 
 			// Il faudra pouvoir gérer id_classe comme un tableau
 			$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
@@ -462,6 +487,7 @@ require_once("../lib/header.inc");
 																							nbAbs='".$eleves[$i]['nbAbs']."',
 																							nbNonJustif='".$eleves[$i]['nbNonJustif']."',
 																							nbRet='".$eleves[$i]['nbRet']."';";
+														//echo "$sql<br />";
 														$insert=mysql_query($sql);
 														if(!$insert) {
 															echo "<span style='color:red;'>Erreur&nbsp;: $sql</span><br />\n";
