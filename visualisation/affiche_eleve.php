@@ -2038,11 +2038,25 @@ function eleve_suivant() {
 <input type='hidden' name='eleve_saisie_avis' value='$eleve1' />
 <input type='hidden' name='enregistrer_avis' id='enregistrer_avis' value='' />
 </div>\n";
-	
+
+						// ***** AJOUT POUR LES MENTIONS *****
+						echo "<div style='display:none;'>
+<textarea name='current_eleve_login_me' id='current_eleve_login_me' rows='1' cols='2' wrap='virtual' onchange=\"changement()\">$current_eleve_mention</textarea>
+<input type='hidden' name='enregistrer_mention' id='enregistrer_mention' value='' />
+</div>\n";
+						// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
+
 						echo "<script type='text/javascript'>
 	function save_avis(mode) {
 		document.getElementById('no_anti_inject_current_eleve_login_ap').value=document.getElementById('no_anti_inject_current_eleve_login_ap2').value;
 		document.getElementById('enregistrer_avis').value='y';
+
+		if(document.getElementById('current_eleve_login_me2')) {
+			document.getElementById('current_eleve_login_me').value=document.getElementById('current_eleve_login_me2').value;
+			document.getElementById('enregistrer_mention').value='y';
+		}
+		//alert('La mention actuelle est : '+document.getElementById('current_eleve_login_me').value+'.');
+
 		if(mode=='suivant') {
 			eleve_suivant();
 		}
