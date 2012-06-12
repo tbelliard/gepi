@@ -2497,11 +2497,10 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	else {
 		$nb_corr=0;
 		$r_sql = mysql_query("SHOW TABLE STATUS");
-		while ($table = mysql_fetch_array($r_sql)) {
-			if($table['Collation']!="utf8_general_ci") {
-				//mysql_query("ALTER TABLE `".$table['Name']."` COLLATE utf8_general_ci");
-				echo "Correction de la table ".$table['Name']." : ";
-				$sql="ALTER TABLE `".$table['Name']."` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		while ($une_table = mysql_fetch_array($r_sql)) {
+			if($une_table['Collation']!="utf8_general_ci") {
+				echo "Correction de la table ".$une_tableune_table['Name']." : ";
+				$sql="ALTER TABLE `".$une_table['Name']."` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;";
 				$res=mysql_query($sql);
 				if(!$res) {
 					echo "<span style='color:red; font-weight:bold;'>Erreur ".mysql_error()."</span><br />";
@@ -2512,52 +2511,38 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				echo "<br />\n";
 				$nb_corr++;
 			}
-
 			else {
-				$sql="SHOW FULL COLUMNS FROM ".$table['Name'];
+				$sql="SHOW FULL COLUMNS FROM ".$une_table['Name'];
 				$res=mysql_query($sql);
 				if(!$res) {
-					echo "<span style='color:red; font-weight:bold;'>Erreur lors de l'extraction des champs de ".$table['Name']."</span><br />";
+					echo "<span style='color:red; font-weight:bold;'>Erreur lors de l'extraction des champs de ".$une_table['Name']."</span><br />";
 				}
 				else {
-					// PB AVEC LE $res
-					while($lig=mysql_fetch_array($res)) {
-						$sql="SELECT DISTINCT COLLATION(".$lig['Field'].") AS interclassement FROM ".$table['Name'].";";
-						$res2=mysql_query($sql);
-						if(!$res2) {
-							echo "<span style='color:red; font-weight:bold;'>Erreur lors de l'extraction de la COLLATION du champ ".$lig['Field']." de ".$table['Name']."</span><br />";
-						}
-						else {
-							if(mysql_num_rows($res2)>0) {
-								$correction_table_requise="n";
-								while($lig2=mysql_fetch_object($res2)) {
-									if ($lig2->interclassement!='utf8_general_ci' && $lig2->interclassement!='binary') {
-										$correction_table_requise="y";
-										break;
-									}
-								}
-								if($correction_table_requise=="y") {
-									echo "Correction de la table ".$table['Name']." : ";
-									$sql="ALTER TABLE `".$table['Name']."` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;";
-									$res3=mysql_query($sql);
-									if(!$res3) {
-										echo "<span style='color:red; font-weight:bold;'>Erreur ".mysql_error()."</span><br />";
-									}
-									else {
-										echo "<span style='color:green'>Ok</span>";
-									}
-									echo "<br />\n";
-									$nb_corr++;
-								}
+					if(mysql_num_rows($res)>0) {
+						$correction_table_requise="n";
+						while($un_champ=mysql_fetch_array($res)) {
+							if ($un_champ['Collation']!='utf8_general_ci' && $un_champ['Collation']!=NULL) {
+								$correction_table_requise="y";
+								break;
 							}
 						}
+						if($correction_table_requise=="y") {
+							echo "Correction de la table ".$une_table['Name']." : ";
+							$sql="ALTER TABLE `".$une_table['Name']."` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;";
+							$res3=mysql_query($sql);
+							if(!$res3) {
+								echo "<span style='color:red; font-weight:bold;'>Erreur ".mysql_error()."</span><br />";
+							}
+							else {
+								echo "<span style='color:green'>Ok</span>";
+							}
+							echo "<br />\n";
+							$nb_corr++;
+						}
 					}
-					//echo "<span style='color:green'>Ok</span>";
 				}
 			}
-
 		}
-
 		if($nb_corr==0) {
 			echo "<p>Aucune erreur de collation n'a été trouvée.</p>\n";
 		}
