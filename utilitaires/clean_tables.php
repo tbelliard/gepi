@@ -1994,7 +1994,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				update_infos_action_nettoyage($id_info, $texte_info_action);
 			}
 			else{
-				$texte_info_action="<p style='color:red;'>Erreur lors du nettoyage de la table 'j_eleves_cpe'.</p>\n";
+				$texte_info_action="<p style='color:red; font-weight:bold;'>Erreur lors du nettoyage de la table 'j_eleves_cpe'.</p>\n";
 				echo $texte_info_action;
 				update_infos_action_nettoyage($id_info, $texte_info_action);
 			}
@@ -2048,7 +2048,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				$texte_info_action="<p>$nb_pb_pp erreur(s) nettoyée(s) dans la table 'j_eleves_professeurs'.</p>\n";;
 			}
 			else{
-				$texte_info_action="<p style='color:red;'>Erreur lors du nettoyage de la table 'j_eleves_professeurs'.</p>\n";
+				$texte_info_action="<p style='color:red; font-weight:bold;'>Erreur lors du nettoyage de la table 'j_eleves_professeurs'.</p>\n";
 			}
 			echo $texte_info_action;
 			update_infos_action_nettoyage($id_info, $texte_info_action);
@@ -2487,7 +2487,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		$sql="ALTER TABLE `".$_GET['table']."` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;";
 		$res=mysql_query($sql);
 		if(!$res) {
-			echo "<span style='color:red'>Erreur</span>";
+			echo "<span style='color:red; font-weight:bold;'>Erreur ".mysql_error()."</span><br />";
 		}
 		else {
 			echo "<span style='color:green'>Ok</span>";
@@ -2504,7 +2504,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				$sql="ALTER TABLE `".$table['Name']."` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;";
 				$res=mysql_query($sql);
 				if(!$res) {
-					echo "<span style='color:red'>Erreur</span>";
+					echo "<span style='color:red; font-weight:bold;'>Erreur ".mysql_error()."</span><br />";
 				}
 				else {
 					echo "<span style='color:green'>Ok</span>";
@@ -2512,12 +2512,12 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				echo "<br />\n";
 				$nb_corr++;
 			}
-			/*
+
 			else {
 				$sql="SHOW FULL COLUMNS FROM ".$table['Name'];
 				$res=mysql_query($sql);
 				if(!$res) {
-					echo "<span style='color:red'>Erreur lors de l'extraction des champs de ".$table['Name']."</span><br />";
+					echo "<span style='color:red; font-weight:bold;'>Erreur lors de l'extraction des champs de ".$table['Name']."</span><br />";
 				}
 				else {
 					// PB AVEC LE $res
@@ -2525,13 +2525,13 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 						$sql="SELECT DISTINCT COLLATION(".$lig['Field'].") AS interclassement FROM ".$table['Name'].";";
 						$res2=mysql_query($sql);
 						if(!$res2) {
-							echo "<span style='color:red'>Erreur lors de l'extraction de la COLLATION du champ ".$lig['Field']." de ".$table['Name']."</span><br />";
+							echo "<span style='color:red; font-weight:bold;'>Erreur lors de l'extraction de la COLLATION du champ ".$lig['Field']." de ".$table['Name']."</span><br />";
 						}
 						else {
 							if(mysql_num_rows($res2)>0) {
 								$correction_table_requise="n";
 								while($lig2=mysql_fetch_object($res2)) {
-									if($lig2->interclassement!='utf8_general_ci') {
+									if ($lig2->interclassement!='utf8_general_ci' && $lig2->interclassement!='binary') {
 										$correction_table_requise="y";
 										break;
 									}
@@ -2539,9 +2539,9 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 								if($correction_table_requise=="y") {
 									echo "Correction de la table ".$table['Name']." : ";
 									$sql="ALTER TABLE `".$table['Name']."` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;";
-									$res=mysql_query($sql);
-									if(!$res) {
-										echo "<span style='color:red'>Erreur</span>";
+									$res3=mysql_query($sql);
+									if(!$res3) {
+										echo "<span style='color:red; font-weight:bold;'>Erreur ".mysql_error()."</span><br />";
 									}
 									else {
 										echo "<span style='color:green'>Ok</span>";
@@ -2552,10 +2552,10 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 							}
 						}
 					}
-					echo "<span style='color:green'>Ok</span>";
+					//echo "<span style='color:green'>Ok</span>";
 				}
 			}
-			*/
+
 		}
 
 		if($nb_corr==0) {
@@ -2779,7 +2779,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			$cpt_nettoyage+=mysql_num_rows($test);
 		}
 		else {
-			echo "<span style='color:green'>$nb_suppr nettoyés</span>, <span style='color:red'>$nb_err erreur lors du nettoyage</span>";
+			echo "<span style='color:green'>$nb_suppr nettoyés</span>, <span style='color:red; font-weight:bold;'>$nb_err erreur lors du nettoyage</span>";
 		}
 		echo "<br />\n";
 	}
@@ -2804,7 +2804,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			$cpt_nettoyage+=mysql_num_rows($test);
 		}
 		else {
-			echo "<span style='color:green'>$nb_suppr nettoyés</span>, <span style='color:red'>$nb_err erreur lors du nettoyage</span>";
+			echo "<span style='color:green'>$nb_suppr nettoyés</span>, <span style='color:red; font-weight:bold;'>$nb_err erreur lors du nettoyage</span>";
 		}
 		echo "<br />\n";
 	}
@@ -2820,7 +2820,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			$cpt_nettoyage+=mysql_num_rows($test);
 		}
 		else {
-			echo "<span style='color:red'>erreur lors du nettoyage</span>";
+			echo "<span style='color:red; font-weight:bold;'>erreur lors du nettoyage</span>";
 		}
 		echo "<br />\n";
 	}
@@ -2836,7 +2836,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			$cpt_nettoyage+=mysql_num_rows($test);
 		}
 		else {
-			echo "<span style='color:red'>erreur lors du nettoyage</span>";
+			echo "<span style='color:red; font-weight:bold;'>erreur lors du nettoyage</span>";
 		}
 		echo "<br />\n";
 	}
@@ -2852,7 +2852,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			$cpt_nettoyage+=mysql_num_rows($test);
 		}
 		else {
-			echo "<span style='color:red'>erreur lors du nettoyage</span>";
+			echo "<span style='color:red; font-weight:bold;'>erreur lors du nettoyage</span>";
 		}
 		echo "<br />\n";
 	}
@@ -2871,7 +2871,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				$cpt_nettoyage+=mysql_num_rows($test);
 			}
 			else {
-				echo "<span style='color:red'>erreur lors du nettoyage</span>";
+				echo "<span style='color:red; font-weight:bold;'>erreur lors du nettoyage</span>";
 			}
 			echo "<br />\n";
 		}
@@ -3036,7 +3036,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				$cpt_nettoyage+=mysql_num_rows($test);
 			}
 			else {
-				echo "<span style='color:red'>ERREUR</span>";
+				echo "<span style='color:red; font-weight:bold;'>ERREUR</span>";
 			}
 			echo "<br />\n";
 		}
@@ -3056,7 +3056,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				echo "<span style='color:green'>OK</span>";
 			}
 			else {
-				echo "<span style='color:red'>ERREUR</span>";
+				echo "<span style='color:red; font-weight:bold;'>ERREUR</span>";
 			}
 			*/
 			while($lig=mysql_fetch_object($test)) {
@@ -3077,7 +3077,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				echo "<span style='color:green'>OK</span>";
 			}
 			else {
-				echo "<span style='color:red'>ERREUR</span>";
+				echo "<span style='color:red; font-weight:bold;'>ERREUR</span>";
 			}
 			echo "<br />\n";
 		}
@@ -3095,7 +3095,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				$cpt_nettoyage+=mysql_num_rows($test);
 			}
 			else {
-				echo "<span style='color:red'>ERREUR</span>";
+				echo "<span style='color:red; font-weight:bold;'>ERREUR</span>";
 			}
 			echo "<br />\n";
 		}
@@ -3115,7 +3115,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				echo "<span style='color:green'>OK</span>";
 			}
 			else {
-				echo "<span style='color:red'>ERREUR</span>";
+				echo "<span style='color:red; font-weight:bold;'>ERREUR</span>";
 			}
 			*/
 			while($lig=mysql_fetch_object($test)) {
@@ -3136,7 +3136,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				echo "<span style='color:green'>OK</span>";
 			}
 			else {
-				echo "<span style='color:red'>ERREUR</span>";
+				echo "<span style='color:red; font-weight:bold;'>ERREUR</span>";
 			}
 			echo "<br />\n";
 		}
@@ -3153,7 +3153,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				$cpt_nettoyage+=mysql_num_rows($test);
 			}
 			else {
-				echo "<span style='color:red'>ERREUR</span>";
+				echo "<span style='color:red; font-weight:bold;'>ERREUR</span>";
 			}
 			echo "<br />\n";
 
@@ -3189,7 +3189,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 						$cpt_nettoyage++;
 					}
 					else {
-						echo "<span style='color:red'>ERREUR</span>";
+						echo "<span style='color:red; font-weight:bold;'>ERREUR</span>";
 					}
 					echo "<br />\n";
 				}
