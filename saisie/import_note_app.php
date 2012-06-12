@@ -290,8 +290,10 @@ if (isset($is_posted )) {
 								//$data[$c]=my_ereg_replace("\|POINT-VIRGULE\|",";",$data[$c]);
 								$data[$c]=str_replace("|POINT-VIRGULE|",";",$data[$c]);
 								// =====================================================
-                                $col3 = $data[$c];
-                                $data_app = urlencode($data[$c]);
+                                //$col3 = $data[$c];
+                                $col3 = ensure_utf8($data[$c]);
+                                //$data_app = urlencode($data[$c]);
+                                $data_app = urlencode($col3);
                             }
                             $reg_app = "reg_".$row."_app";
 //                            echo "<INPUT TYPE=HIDDEN name='$reg_app' value = $data_app>";
