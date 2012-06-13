@@ -713,8 +713,12 @@ if($moy_min_classe1==21) {
 	$moy_min_classe1="-";
 }
 
-$moy_max_classe = max($moy_gen_eleve);
-$moy_max_classe1 = max($moy_gen_eleve1);
+if(count($moy_gen_eleve)>0) {
+	$moy_max_classe = max($moy_gen_eleve);
+}
+if(count($moy_gen_eleve1)>0) {
+	$moy_max_classe1 = max($moy_gen_eleve1);
+}
 
 //Calcul de la moyenne générale de la classe
 $nb_elv_classe=sizeof($moy_gen_eleve);
