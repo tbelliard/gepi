@@ -2001,6 +2001,9 @@ function eleve_suivant() {
 					if(mysql_num_rows($test_appartenance_ele_classe_periode)>0) {
 
 						$current_eleve_avis="";
+						// ***** AJOUT POUR LES MENTIONS *****
+						$current_eleve_mention="";
+						// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 						$sql="SELECT * FROM avis_conseil_classe WHERE login='$eleve1' AND periode='$num_periode_choisie';";
 						//echo "$sql<br />";
 						$res_avis=mysql_query($sql);
