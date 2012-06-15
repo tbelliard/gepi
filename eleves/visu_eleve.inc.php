@@ -1087,8 +1087,8 @@ Patientez pendant l'extraction des données... merci.
 			echo "<tr><th style='text-align: left;'>Nom&nbsp;:</th><td>";
 			if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiAccesTouteFicheEleveCpe')))||
-			(($_SESSION['statut']=='cpe')&&(is_cpe($_SESSION['login'],'',$eleve_login)))||
-			(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'],"",$eleve_login))&&(getSettingAOui('GepiAccesGestElevesProfP')))) {
+			(($_SESSION['statut']=='cpe')&&(is_cpe($_SESSION['login'],'',$ele_login)))||
+			(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'],"",$ele_login))&&(getSettingAOui('GepiAccesGestElevesProfP')))) {
 				echo "<a href='modify_eleve.php?eleve_login=".$ele_login."&amp;quelles_classes=certaines&amp;order_type=nom,prenom&amp;motif_rech='>".$tab_ele['nom']."</a>";
 			}
 			else {
