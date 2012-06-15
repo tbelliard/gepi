@@ -1137,7 +1137,7 @@ function affiche_onglets_aa($logineleve, $id_classe, $tab_periodes, $indice_ongl
 	border-left: 1px solid black;
 	border-right: 1px solid black;
 
-	border-radius: 6px 20px;
+	border-radius: 6px 20px 0px 0px;
 	-moz-border-radius-topleft: 6px;
 	-moz-border-radius-topright: 20px;
 
