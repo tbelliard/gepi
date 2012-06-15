@@ -81,11 +81,12 @@ if ( isset($_POST["creation_traitement"]) && $_POST["creation_traitement"] == 'y
 	$message_erreur_traitement = ' Erreur : aucune saisie sélectionnée';
     } else {
 	$traitement->save();
-    $url='./visu_traitement.php?id_traitement='.$traitement->getId().'';
-    if($menu){
-        $url.='&menu=false';
-    }
+        $url='./visu_traitement.php?id_traitement='.$traitement->getId().'';
+        if($menu){
+            $url.='&menu=false';
+        }
 	header("Location:".$url);
+        die;
     }
 } else if ( isset($_POST["ajout_traitement"]) && $_POST["ajout_traitement"] == 'yes') {
     $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
@@ -105,11 +106,12 @@ if ( isset($_POST["creation_traitement"]) && $_POST["creation_traitement"] == 'y
 	    $message_erreur_traitement = ' Erreur : aucune saisie sélectionnée';
 	} else {
 	    $traitement->save();
-        $url='./visu_traitement.php?id_traitement='.$traitement->getId().'';
-        if($menu){
-            $url.='&menu=false';
+            $url='./visu_traitement.php?id_traitement='.$traitement->getId().'';
+            if($menu){
+                $url.='&menu=false';
             }
             header("Location:".$url);
+            die;
 	}
     }
 }

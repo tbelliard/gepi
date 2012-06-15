@@ -219,7 +219,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 				echo "<td class='td_note_classe'>$lig_mat->moymin</td>\n";
 				echo "<td class='td_note_classe'>$lig_mat->moyclasse</td>\n";
 				echo "<td class='td_note_classe'>$lig_mat->moymax</td>\n";
-				echo "<td class='td_note'>$lig_mat->note</td>\n";
+				echo "<td class='td_note bold'>$lig_mat->note</td>\n";
 				echo "<td>".htmlspecialchars(stripslashes($lig_mat->appreciation))."</td>\n";
 				echo "</tr>\n";
 			}
@@ -257,7 +257,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 				echo "<td class='td_note_classe'>$lig_aid->moyenne_aid</td>\n";
 				echo "<td class='td_note_classe'>$lig_aid->min_aid</td>\n";
 				echo "<td class='td_note_classe'>$lig_aid->max_aid</td>\n";
-				echo "<td class='td_note'>$lig_aid->note_aid";
+				echo "<td class='td_note bold'>$lig_aid->note_aid";
 				echo "</td>\n";
 				echo "<td>";
 				if (($lig_aid->note_sur_aid != 20) and ($lig_aid->note_aid !='-')) {
@@ -1180,6 +1180,9 @@ function affiche_onglets_aa($logineleve, $id_classe, $tab_periodes, $indice_ongl
 	margin-left: 4px;
 */
 	/*padding: 3px;*/
+	color:black;
+	font-style: normal;
+	font-weight: normal;
 }
 </style>\n";
 
