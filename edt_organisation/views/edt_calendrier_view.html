@@ -41,7 +41,10 @@
 							<?php	for($i=0; $i<$ligne; $i++) {
 								$aff_checked = checked_calendar($tab_select[$i]["id"], $rep_modif["classe_concerne_calendrier"]); ?>
 							<label for="case_1_<?php echo $tab_select[$i]["id"]; ?>"><?php echo $tab_select[$i]["classe"]; ?></label>
-							<input  name="<?php echo $classes_concernees; ?>" 
+							<input  name="<?php 
+								//echo $classes_concernees;
+								echo "classes_concernees[]";
+								?>" 
 									value="<?php echo $tab_select[$i]["id"] ?>" 
 									id="case_1_<?php echo $tab_select[$i]["id"] ?>"<?php echo $aff_checked; ?> 
 									type="checkbox" />
@@ -52,7 +55,10 @@
 							<?php for($i=$ligne; $i<($ligne*2); $i++) {
 								$aff_checked = checked_calendar($tab_select[$i]["id"], $rep_modif["classe_concerne_calendrier"]); ?>
 							<label for="case_1_<?php echo $tab_select[$i]["id"]; ?>"><?php echo $tab_select[$i]["classe"]; ?></label>
-							<input  name="<?php echo $classes_concernees; ?>" 
+							<input  name="<?php 
+								//echo $classes_concernees;
+								echo "classes_concernees[]";
+								?>" 
 									value="<?php echo $tab_select[$i]["id"] ?>" 
 									id="case_1_<?php echo $tab_select[$i]["id"] ?>"<?php echo $aff_checked; ?> 
 									type="checkbox" />
@@ -63,7 +69,10 @@
 							<?php for($i=($ligne*2); $i<($ligne*3); $i++) {
 								$aff_checked = checked_calendar($tab_select[$i]["id"], $rep_modif["classe_concerne_calendrier"]); ?>
 								<label for="case_1_<?php echo $tab_select[$i]["id"]; ?>"><?php echo $tab_select[$i]["classe"]; ?></label>
-								<input  name="<?php echo $classes_concernees; ?>" 
+								<input  name="<?php 
+								//echo $classes_concernees;
+								echo "classes_concernees[]";
+								?>" 
 										value="<?php echo $tab_select[$i]["id"] ?>" 
 										id="case_1_<?php echo $tab_select[$i]["id"] ?>"<?php echo $aff_checked; ?> 
 										type="checkbox" />
@@ -75,7 +84,10 @@
 							<?php for($i=($ligne*3); $i<count($tab_select); $i++) {
 								$aff_checked = checked_calendar($tab_select[$i]["id"], $rep_modif["classe_concerne_calendrier"]); ?>
 								<label for="case_1_<?php echo $tab_select[$i]["id"]; ?>"><?php echo $tab_select[$i]["classe"]; ?></label>
-								<input  name="<?php echo $classes_concernees; ?>" 
+								<input  name="<?php 
+								//echo $classes_concernees;
+								echo "classes_concernees[]";
+								?>" 
 										value="<?php echo $tab_select[$i]["id"] ?>" 
 										id="case_1_<?php echo $tab_select[$i]["id"] ?>"<?php echo $aff_checked; ?> 
 										type="checkbox" />

@@ -57,8 +57,8 @@ if (param_edt($_SESSION["statut"]) != "yes") {
 	// Initialisation des variables
 	
 	
-$data = Array();	
-	
+$data = Array();
+
 $data['calendrier'] = isset($_GET["calendrier"]) ? $_GET["calendrier"] : (isset($_POST["calendrier"]) ? $_POST["calendrier"] : NULL);
 $data['new_periode'] = isset($_GET['new_periode']) ? $_GET['new_periode'] : (isset($_POST['new_periode']) ? $_POST['new_periode'] : NULL);
 $data['nom_periode'] = isset($_POST["nom_periode"]) ? $_POST["nom_periode"] : NULL;
@@ -270,6 +270,18 @@ if (isset($data['modif_ok']) AND isset($data['nom_periode'])) {
 	$jourdebut = $exp_jourdeb[2]."-".$exp_jourdeb[1]."-".$exp_jourdeb[0];
 	$fin_ts = gmmktime($exp_heurefin[0], $exp_heurefin[1], 0, $exp_jourfin[1], $exp_jourfin[0], $exp_jourfin[2]);
 	$jourfin = $exp_jourfin[2]."-".$exp_jourfin[1]."-".$exp_jourfin[0];
+
+	// On insère les classes qui sont concernées (0 = toutes)
+	if ($data['classes_concernees'][0] == "0") {
+		$classes_concernees_insert = "0";
+	}
+	else {
+			$classes_concernees_insert = "";
+		for ($c=0; $c<count($data['classes_concernees']); $c++) {
+			$classes_concernees_insert .= $data['classes_concernees'][$c].";";
+		}
+	}
+
 	$modif_periode = mysql_query("UPDATE edt_calendrier
 				SET nom_calendrier = '".traitement_magic_quotes($data['nom_periode'])."',
 				classe_concerne_calendrier = '".$classes_concernees_insert."',
@@ -363,6 +375,11 @@ if (isset($data['calendrier']) AND isset($data['modifier'])) {
 	$rep_modif = mysql_fetch_array(mysql_query("SELECT * FROM edt_calendrier WHERE id_calendrier = '".$data['modifier']."'"));
 	// On affiche la liste des classes
 	$tab_select = renvoie_liste("classe");
+	/*
+	echo "<pre>";
+	echo print_r($tab_select);
+	echo "</pre>";
+	*/
 	// On récupère les classes de la période ("zone de temps") à afficher
 	$toutes_classes = explode(";", $rep_modif["classe_concerne_calendrier"]);
 		// Fonction checked_calendar
@@ -383,10 +400,20 @@ if (isset($data['calendrier']) AND isset($data['modifier'])) {
 			// On enlève les secondes à l'affichage des heures
 		$aff_heuredeb = mb_substr($rep_modif["heuredebut_calendrier"], 0, -3);
 		$aff_heurefin = mb_substr($rep_modif["heurefin_calendrier"], 0, -3);
-		
-		$req_periodes = mysql_query("SELECT nom_periode, num_periode FROM periodes WHERE id_classe = '1'");
-		$nbre_periodes = mysql_num_rows($req_periodes);	
-		
+
+		// S'il n'y a pas de classe n°1 parce qu'on a ajouté des classes avec de nouveaux noms, puis supprimé la classe 1, on ne récupère aucune période.
+		//$req_periodes = mysql_query("SELECT nom_periode, num_periode FROM periodes WHERE id_classe = '1'");
+		//$req_periodes = mysql_query("SELECT nom_periode, num_periode FROM periodes WHERE id_classe IN (SELECT id_classe FROM classes c, periodes p WHERE p.id_classe=c.id ORDER BY p.num_periode DESC, c.classe LIMIT 1);");
+		/*
+		mysql> SELECT nom_periode, num_periode FROM periodes WHERE id_classe IN (SELECT id_classe FROM classes c, periodes p WHERE p.id_classe=c.id ORDER BY p.num_periode DESC, c.classe LIMIT 1);
+		ERROR 1235 (42000): This version of MySQL doesn't yet support 'LIMIT & IN/ALL/ANY/SOME subquery'
+		mysql> 
+		*/
+		$sql="SELECT id_classe FROM classes c, periodes p WHERE p.id_classe=c.id ORDER BY p.num_periode DESC, c.classe LIMIT 1;";
+		$res_clas_max_per=mysql_query($sql);
+		$id_classe_max_per=mysql_result($res_clas_max_per,0,"id_classe");
+		$req_periodes = mysql_query("SELECT nom_periode, num_periode FROM periodes WHERE id_classe = '$id_classe_max_per'");
+		$nbre_periodes = mysql_num_rows($req_periodes);
 	
 		// Choix des classes sur 3 (ou 4) colonnes
 		$modulo = count($tab_select) % 3;

@@ -86,6 +86,9 @@ if (isset($is_posted) and ($is_posted == 1)) {
 
 	$reg_data = 'yes';
 
+	$tab_ele_sans_cpe_defini=array();
+	$tab_ele_sans_pp_defini=array();
+
 	$k = '0';
 	while ($k < $nombreligne) {
 		$pb = 'no';
@@ -106,7 +109,7 @@ if (isset($is_posted) and ($is_posted == 1)) {
 					$test_clas_per=mysql_query($sql);
 					if(mysql_num_rows($test_clas_per)>0) {
 						$lig_clas_per=mysql_fetch_object($test_clas_per);
-						$msg_complement.=get_nom_prenom_eleve($login_eleve)." est déjà dans une autre classe&nbsp;: ".get_class_from_id($lig_clas_per->id_classe)."<br />\n";
+						$msg_complement.=get_nom_prenom_eleve($login_eleve)." est déjà dans une autre classe&nbsp;: ".get_class_from_id($lig_clas_per->id_classe)." en période $i<br />\n";
 						$reg_ok = 'no';
 					}
 					else {
@@ -156,7 +159,12 @@ if (isset($is_posted) and ($is_posted == 1)) {
 							$insert_cpe=mysql_query($sql);
 						}
 						else {
-							$msg_complement.="<br />L'élève $login_eleve n'a pas été associé à un CPE.";
+							if(!in_array($login_eleve, $tab_ele_sans_cpe_defini)) {
+								$msg_complement.="<br />L'élève $login_eleve n'a pas été <a href='";
+								$msg_complement.="classes_const.php?id_classe=$id_classe&amp;quitter_la_page=y";
+								$msg_complement.="' target='_blank'>associé</a> à un CPE.";
+								$tab_ele_sans_cpe_defini[]=$login_eleve;
+							}
 						}
 			
 						$sql="SELECT DISTINCT professeur FROM j_eleves_professeurs jep
@@ -176,7 +184,17 @@ if (isset($is_posted) and ($is_posted == 1)) {
 							$insert_pp=mysql_query($sql);
 						}
 						else {
-							$msg_complement.="<br />L'élève $login_eleve n'a pas été associé à un ".$gepiProfSuivi.".";
+							if(!in_array($login_eleve, $tab_ele_sans_pp_defini)) {
+								$msg_complement.="<br />L'élève $login_eleve n'a pas été <a href='";
+								if(mysql_num_rows($res_pp)==0) {
+									$msg_complement.="prof_suivi.php?id_classe=$id_classe";
+								}
+								else {
+									$msg_complement.="classes_const.php?id_classe=$id_classe&amp;quitter_la_page=y";
+								}
+								$msg_complement.="' target='_blank'>associé</a> à un ".$gepiProfSuivi.".";
+								$tab_ele_sans_pp_defini[]=$login_eleve;
+							}
 						}
 					}
 				}
@@ -218,9 +236,9 @@ if (isset($is_posted) and ($is_posted == 1)) {
 	}
 
 	if (($reg_data) == 'yes') {
-	$msg = "L'enregistrement des données a été correctement effectué !";
+		$msg = "L'enregistrement des données a été correctement effectué !";
 	} else {
-	$msg = "Il y a eu un problème lors de l'enregistrement !";
+		$msg = "Il y a eu un problème lors de l'enregistrement !";
 	}
 	$msg.=$msg_complement;
 }
