@@ -149,10 +149,10 @@ if (!isset($_POST["action"])) {
 			$reg_prof = preg_replace("/[^A-Za-z0-9._]/","",trim(my_strtoupper($reg_prof)));
 			if (mb_strlen($reg_prof) > 50) $reg_prof = mb_substr($reg_prof, 0, 50);
 
-			$reg_matiere = preg_replace("/[^A-Za-z0-9.\-]/","",trim(my_strtoupper($reg_matiere)));
+			$reg_matiere = preg_replace("/[^A-Za-z0-9._\-]/","",trim(my_strtoupper($reg_matiere)));
 			if (mb_strlen($reg_matiere) > 50) $reg_matiere = mb_substr($reg_matiere, 0, 50);
 
-			$reg_classes = preg_replace("/[^A-Za-z0-9.\-!]/","",trim($reg_classes));
+			$reg_classes = preg_replace("/[^A-Za-z0-9._ \-!]/","",trim($reg_classes));
 			if (mb_strlen($reg_classes) > 2000) $reg_classes = mb_substr($reg_classes, 0, 2000); // C'est juste pour éviter une tentative d'overflow...
 
 			$reg_type = preg_replace("/[^A-Za-z]/","",trim(my_strtoupper($reg_type)));
@@ -315,10 +315,10 @@ if (!isset($_POST["action"])) {
 						$tabligne[0] = preg_replace("/[^A-Za-z0-9._]/","",trim(my_strtoupper($tabligne[0])));
 						if (mb_strlen($tabligne[0]) > 50) $tabligne[0] = mb_substr($tabligne[0], 0, 50);
 			
-						$tabligne[1] = preg_replace("/[^A-Za-z0-9.\-]/","",trim(my_strtoupper($tabligne[1])));
+						$tabligne[1] = preg_replace("/[^A-Za-z0-9._\-]/","",trim(my_strtoupper($tabligne[1])));
 						if (mb_strlen($tabligne[1]) > 50) $tabligne[1] = mb_substr($tabligne[1], 0, 50);
 			
-						$tabligne[2] = preg_replace("/[^A-Za-z0-9.\-!]/","",trim($tabligne[2]));
+						$tabligne[2] = preg_replace("/[^A-Za-z0-9._ \-!]/","",trim($tabligne[2]));
 						if (mb_strlen($tabligne[2]) > 2000) $tabligne[2] = mb_substr($tabligne[2], 0, 2000);
 			
 						$tabligne[3] = preg_replace("/[^A-Za-z]/","",trim(my_strtoupper($tabligne[3])));

@@ -140,7 +140,7 @@ if (!isset($_POST["action"])) {
 			$reg_id_int = preg_replace("/[^0-9]/","",trim($reg_id_int));
 			if (mb_strlen($reg_id_int) > 50) $reg_id_int = mb_substr($reg_id_int, 0, 50);
 
-			$reg_classe = preg_replace("/[^A-Za-z0-9.\-]/","",trim($reg_classe));
+			$reg_classe = preg_replace("/[^A-Za-z0-9._ \-]/","",trim($reg_classe));
 			//$reg_classe=nettoyer_caracteres_nom($reg_classe, "an", " _-", "");
 			if (mb_strlen($reg_classe) > 100) $reg_classe = mb_substr($reg_classe, 0, 100);
 
@@ -275,7 +275,7 @@ if (!isset($_POST["action"])) {
 						if (mb_strlen($tabligne[0]) > 50) $tabligne[0] = mb_substr($tabligne[0], 0, 50);
 
 						//$tabligne[1] = preg_replace("/[^A-Za-z0-9 .\-éèüëïäê]/","",trim($tabligne[1]));
-						$tabligne[1]=preg_replace("/[^A-Za-z0-9.\-]/","",trim(remplace_accents($tabligne[1])));
+						$tabligne[1]=preg_replace("/[^A-Za-z0-9._ \-]/","",trim(remplace_accents($tabligne[1])));
 						//$tabligne[1]=nettoyer_caracteres_nom($tabligne[1], "an", " _-", "");
 						if (mb_strlen($tabligne[1]) > 100) $tabligne[1] = mb_substr($tabligne[1], 0, 100);
 
