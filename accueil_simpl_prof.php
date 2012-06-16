@@ -300,7 +300,7 @@ echo "<script type='text/javascript'>
 				document.getElementById('h_liste_pdf_'+num_periode).style.display='';
 			}
 
-			// Pour afficher/cacher les lignes du tableau, évaluer count($groups)=$nb_groupes
+			// Pour afficher/cacher les lignes du tableau, évaluer count(\$groups)=\$nb_groupes
 			for(i=0;i<=$nb_groupes;i++){
 				if(document.getElementById('h_cn_'+i+'_'+num_periode)){
 					document.getElementById('h_cn_'+i+'_'+num_periode).style.display='';
