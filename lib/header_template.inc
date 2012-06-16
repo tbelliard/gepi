@@ -485,6 +485,7 @@ if (isset($titre_page)) {
 		 //=== Affichage de la version de Gepi ===
 		 //=== Affichage de la version de Gepi ===
 	if ($_SESSION['statut'] == "administrateur") {
+		$tbs_version_gepi=" "; // Initialisation
 		$version_gepi = 'version '.$gepiVersion;
         if ($gepiSvnRev != null) {
 			$version_gepi .= ' svn r'.$gepiSvnRev;
