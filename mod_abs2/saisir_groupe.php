@@ -1062,7 +1062,7 @@ if ($eleve_col->isEmpty()) {
 								<?php if (isset ($eleve['classe'])) echo $eleve['classe']; ?>
 							</span>
 <?php if (isset ($eleve['accesFiche'])) { ?>
-							<a href='../eleves/visu_eleve.php?ele_login=<?php echo $eleve['accesFiche']; ?>' >
+							<a href='../eleves/visu_eleve.php?ele_login=<?php echo $eleve['accesFiche']; ?>&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank' >
 								(voir&nbsp;fiche)
 							</a>
 <?php } ?>

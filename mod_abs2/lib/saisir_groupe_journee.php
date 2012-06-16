@@ -433,7 +433,7 @@ foreach($afficheEleve as $eleve) {
 							<?php if (isset ($eleve['classe'])) echo $eleve['classe']; ?>
 						</span>
 <?php if (isset ($eleve['accesFiche'])) { ?>
-						<a href='../eleves/visu_eleve.php?ele_login=<?php echo $eleve['accesFiche']; ?>' >
+						<a href='../eleves/visu_eleve.php?ele_login=<?php echo $eleve['accesFiche']; ?>&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank'>
 							(voir&nbsp;fiche)
 						</a>
 <?php } ?>
@@ -573,7 +573,7 @@ foreach($eleve_col as $eleve) {
 							<?php if ($eleve->getClasse()) echo $eleve->getClasse()->getNom(); ?>
 						</span>
 <?php if ($utilisateur->getAccesFicheEleve($eleve)) { ?>
-						<a href='../eleves/visu_eleve.php?ele_login=<?php echo $eleve->getLogin(); ?>' >
+						<a href='../eleves/visu_eleve.php?ele_login=<?php echo $eleve->getLogin(); ?>&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank' >
 							(voir&nbsp;fiche)
 						</a>
 <?php } ?>
