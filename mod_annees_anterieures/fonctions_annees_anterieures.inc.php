@@ -919,7 +919,7 @@ function check_acces_et_liste_periodes($logineleve,$id_classe) {
 
 		if($acces=="y") {
 
-			$tab_annee=array();
+			//$tab_annee=array();
 			$tab_periodes=array();
 		
 			$sql="SELECT * FROM eleves WHERE login='$logineleve';";
@@ -953,7 +953,8 @@ function check_acces_et_liste_periodes($logineleve,$id_classe) {
 				if(mysql_num_rows($res_annees)>0) {
 					$cpt=0;
 					while($lig_annee=mysql_fetch_object($res_annees)) {
-						$tab_annee[$cpt]['annee']=$lig_annee->annee;
+						//$tab_annee[$cpt]['annee']=$lig_annee->annee;
+						//$tab_annee[$cpt]['annee']['annee']=$lig_annee->annee;
 		
 						$sql="SELECT DISTINCT num_periode FROM archivage_disciplines WHERE ine='$ine' AND annee='$lig_annee->annee' ORDER BY num_periode";
 						//echo "$sql<br />";
@@ -964,7 +965,7 @@ function check_acces_et_liste_periodes($logineleve,$id_classe) {
 						}
 						else {
 							while($lig_per=mysql_fetch_object($res_periodes)) {
-								$tab_annee[$cpt]['annee']['max_per']=$lig_per->num_periode;
+								//$tab_annee[$cpt]['annee']['max_per']=$lig_per->num_periode;
 								$tab_periodes[]=$lig_annee->annee."|".$lig_per->num_periode;
 							}
 						}
