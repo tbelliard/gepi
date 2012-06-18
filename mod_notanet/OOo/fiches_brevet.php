@@ -308,7 +308,7 @@ $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
 
 	//**************** EN-TETE *****************
-	require_once("../../lib/header.inc");
+	require_once("../../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 
 	echo "</p>\n";
@@ -327,7 +327,7 @@ $nb_type_brevet=mysql_num_rows($res);
 if($nb_type_brevet==0) {
 
 	//**************** EN-TETE *****************
-	require_once("../../lib/header.inc");
+	require_once("../../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 
 	echo "</p>\n";
@@ -356,7 +356,7 @@ if($nb_type_brevet==0) {
 if(!isset($type_brevet)) {
 
 	//**************** EN-TETE *****************
-	require_once("../../lib/header.inc");
+	require_once("../../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 
 	echo "<div class='noprint'>\n";
@@ -435,7 +435,7 @@ for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 if (!isset($id_classe)) {
 
 	//**************** EN-TETE *****************
-	require_once("../../lib/header.inc");
+	require_once("../../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 
 	// Choix de la classe:
@@ -478,7 +478,9 @@ if (!isset($id_classe)) {
 		$i++;
 	}
 	echo "</select></p>\n";
-	echo "<p>\n<label id='avec_app_label' style='cursor: pointer;'><input type='checkbox' name='avec_app' id='avec_app' value='y' checked='checked' /> Avec les appréciations</label>\n";
+	echo "<p>\n<input type='radio' name='tri' id='tri_alpha' value='alpha' checked='checked' /><label for='tri_alpha' style='cursor: pointer;'> Tri alphabétique sur les noms et prénoms des élèves indépendamment des classes.</label><br />\n";
+	echo "<input type='radio' name='tri' id='tri_classe' value='classe' /><label for='tri_classe' style='cursor: pointer;'> Tri par classe puis tri alphabétique sur les noms et prénoms des élèves.</label></p>\n";
+	echo "<p>\n<input type='checkbox' name='avec_app' id='avec_app' value='y' checked='checked' /><label for='avec_app' id='avec_app_label' style='cursor: pointer;'> Avec les appréciations</label>\n";
 	echo "<input type='submit' name='choix_classe' value='Envoyer' />\n</p>\n";
 
 	echo "</blockquote>\n";
@@ -889,8 +891,8 @@ for($i=0;$i<count($id_classe);$i++){
 						$tab_eleves_OOo[$nb_eleve]['totalcoef']-=$tab_champs_OOo[$num_matiere_a_decompter][3]*20;
 						$tab_eleves_OOo[$nb_eleve]['totalpoints_bis']-=$tab_eleves_OOo[$nb_eleve][$num_matiere_a_decompter][1];
 						$tab_eleves_OOo[$nb_eleve]['totalcoef_bis']-=$tab_champs_OOo[$num_matiere_a_decompter][3]*20;
-						$tab_eleves_OOo[$nb_eleve]['totalSansHistoireArts']-=$tab_eleves_OOo[$nb_eleve][$num_matiere_a_decompter][1];
-						$tab_eleves_OOo[$nb_eleve]['totalcoefSansHistoireArts']-=$tab_champs_OOo[$num_matiere_a_decompter][3]*20;
+						//$tab_eleves_OOo[$nb_eleve]['totalSansHistoireArts']-=$tab_eleves_OOo[$nb_eleve][$num_matiere_a_decompter][1];
+						//$tab_eleves_OOo[$nb_eleve]['totalcoefSansHistoireArts']-=$tab_champs_OOo[$num_matiere_a_decompter][3]*20;
 
 					}
 					else {
@@ -948,11 +950,59 @@ for($i=0;$i<count($id_classe);$i++){
 
 	// FIN DE LA BOUCLE SUR LA LISTE DES CLASSES
 }
+
 /*
 echo "<pre>";
 print_r($tab_eleves_OOo);
 echo "</pre>";
 */
+
+// Tri
+if((isset($_POST['tri']))&&($_POST['tri']=='alpha')) {
+	$tmp_tab_eleves_OOo=$tab_eleves_OOo;
+
+	/*
+	echo "<table><tr>";
+	echo "<td>";
+	*/
+
+	$rg=array();
+	$tab_nom_prenom_classe=array();
+	for($i=0;$i<count($tab_eleves_OOo);$i++) {
+		$rg[$i]=$i;
+		$tab_nom_prenom_classe[$i]=$tab_eleves_OOo[$i]['nom']." ".$tab_eleves_OOo[$i]['prenom']." ".$tab_eleves_OOo[$i]['classe'];
+		//echo "\$tab_nom_prenom_classe[$i]=".$tab_nom_prenom_classe[$i]."<br />\n";
+	}
+
+	array_multisort ($tab_nom_prenom_classe, SORT_ASC, SORT_STRING, $rg, SORT_ASC, SORT_NUMERIC);
+
+	/*
+	echo "</td>";
+	echo "<td>";
+	for($i=0;$i<count($tab_eleves_OOo);$i++) {
+		echo "\$rg[$i]=".$rg[$i]."<br />\n";
+	}
+	echo "</td>";
+	echo "<td>";
+	for($i=0;$i<count($tab_eleves_OOo);$i++) {
+		echo "\$tab_nom_prenom_classe[$i]=".$tab_nom_prenom_classe[$i]."<br />\n";
+	}
+	echo "</td>";
+	echo "<td>";
+	for($i=0;$i<count($tab_eleves_OOo);$i++) {
+		//echo "\$tab_nom_prenom_classe[\$rg[$i]]="."\$tab_nom_prenom_classe[".$rg[$i]."]=".$tab_nom_prenom_classe[$rg[$i]]."<br />\n";
+		echo "\$tab_eleves_OOo[\$rg[$i]]['nom']="."\$tab_eleves_OOo[".$rg[$i]."]['nom']=".$tab_eleves_OOo[$rg[$i]]['nom']."<br />\n";
+	}
+	echo "</td>";
+	echo "</tr></table>";
+	*/
+
+	unset($tab_eleves_OOo);
+
+	for($i=0;$i<count($tmp_tab_eleves_OOo);$i++) {
+		$tab_eleves_OOo[$i]=$tmp_tab_eleves_OOo[$rg[$i]];
+	}
+}
 //================================
 // === Fin construction du tableau fiche brevet===
 //================================
