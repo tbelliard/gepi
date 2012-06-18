@@ -786,7 +786,7 @@ foreach ($results as $saisie) {
 	echo ($saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom());
 	echo "</a>";
 	if ($utilisateur->getAccesFicheEleve($saisie->getEleve())) {
-	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."' target='_blank'>";
+	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank'>";
 	    echo ' (voir fiche)';
 	    echo "</a>";
 	}

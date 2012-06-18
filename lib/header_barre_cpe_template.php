@@ -165,9 +165,9 @@ if ($barre_plugin!="") {
 
 		//=======================================================
 		// Gestion
-		$menus .= '<li class="li_inline"><a href="#"'.insert_confirm_abandon().'>&nbsp;Elèves</a>'."\n";
+		$menus .= '<li class="li_inline"><a href="#"'.insert_confirm_abandon().'>&nbsp;Élèves</a>'."\n";
 		$menus .= '   <ul class="niveau2">'."\n";
-		$menus .= '       <li><a href="'.$gepiPath.'/eleves/visu_eleve.php"'.insert_confirm_abandon().'>Consultation elève</a></li>'."\n";
+		$menus .= '       <li><a href="'.$gepiPath.'/eleves/visu_eleve.php"'.insert_confirm_abandon().'>Consultation élève</a></li>'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes.php"'.insert_confirm_abandon().'>Trombinoscopes</a></li>'."\n";
 		$menus .= '   </ul>'."\n";
 		$menus .= '</li>'."\n";

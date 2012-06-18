@@ -497,7 +497,7 @@ foreach ($results as $notification) {
 	echo "</a>";
 	if ($utilisateur->getAccesFicheEleve($eleve)) {
 	    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
-	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' >";
+	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank' >";
 	    echo ' (voir fiche)';
 	    echo "</a>";
 	}
