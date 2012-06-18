@@ -308,7 +308,7 @@ $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
 
 	//**************** EN-TETE *****************
-	require_once("../../lib/header.inc");
+	require_once("../../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 
 	echo "</p>\n";
@@ -327,7 +327,7 @@ $nb_type_brevet=mysql_num_rows($res);
 if($nb_type_brevet==0) {
 
 	//**************** EN-TETE *****************
-	require_once("../../lib/header.inc");
+	require_once("../../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 
 	echo "</p>\n";
@@ -356,7 +356,7 @@ if($nb_type_brevet==0) {
 if(!isset($type_brevet)) {
 
 	//**************** EN-TETE *****************
-	require_once("../../lib/header.inc");
+	require_once("../../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 
 	echo "<div class='noprint'>\n";
@@ -435,7 +435,7 @@ for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 if (!isset($id_classe)) {
 
 	//**************** EN-TETE *****************
-	require_once("../../lib/header.inc");
+	require_once("../../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 
 	// Choix de la classe:
@@ -486,7 +486,7 @@ if (!isset($id_classe)) {
 	echo "</blockquote>\n";
 	echo "</form>\n";
 
-	// Fermeture du DIV container initialisé dans le header.inc
+	// Fermeture du DIV container initialisé dans le header.inc.php
 	echo "</div>\n";
 	require("../../lib/footer.inc.php");
 	die();
