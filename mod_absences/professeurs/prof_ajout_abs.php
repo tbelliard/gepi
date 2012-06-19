@@ -595,7 +595,11 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 	}
 ?>
 		<!-- <form method="post" action="prof_ajout_abs.php" name="absence"> -->
-		<form method="post" action="prof_ajout_abs.php" id="absence">
+		<form method="post" action="prof_ajout_abs.php" id="absence" name="form_absence">
+		<!--
+		<span id='js_afficher' style='display:none;'><a href="javascript: document.forms['form_absence'].submit()">Afficher les élèves</a></span>
+		<script type='text/javascript'>document.getElementById('js_afficher').style.display='';</script>
+		-->
 <?php
 	if(empty($d_date_absence_eleve)) {
 		$d_date_absence_eleve = date('d/m/Y');
@@ -603,7 +607,8 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 	// On vérifie si le professeur a le droit de modifier la date
 	if (getSettingValue("date_phase1") == "y") {
 		echo '
-	<p class="choix_fin">
+	<!--p class="choix_fin"-->
+	<p>
 		<label for="d_date_absence_eleve">Date</label>
 		<input size="10" id="d_date_absence_eleve" name="d_date_absence_eleve" value="'.$d_date_absence_eleve.'" />
 		<a href="#calend" onclick="'.$cal_1->get_strPopup('../../lib/calendrier/pop.calendrier_id.php', 350, 170).'">
@@ -703,7 +708,8 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 ?>
 		</select>
 </p>
-<p class="choix_fin">
+<!--p class="choix_fin"-->
+<p>
 	<label for="classe">Groupe</label>
 	<select id="classe" name="classe">
 <?php
@@ -756,7 +762,8 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 	   ';
 	}
 
-	echo '<p class="choix_fin">'."\n";
+	//echo '<p class="choix_fin">'."\n";
+	echo '<p>'."\n";
 	if (getSettingValue("active_module_trombinoscopes")=='y') {
 		if ($photo == 'avec_photo') {
 			$checkedPhoto = ' checked="checked"';
@@ -778,7 +785,8 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 	echo '</p>'."\n";
 ?>
 
-	<p class="choix_fin">
+	<!--p class="choix_fin"-->
+	<p>
 		<input value="2" name="etape" type="hidden" />
 		<input type="hidden" name="premier_passage" value="ok" />
 		<input value="<?php echo $passage_form; ?>" name="passage_form" type="hidden" />
@@ -921,7 +929,8 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 ?>
 	<div class="centre_tout_moyen">
 		<form method="post" action="prof_ajout_abs.php" id="liste_absence_eleve">
-			<p class="expli_page choix_fin">
+			<!--p class="expli_page choix_fin"-->
+			<p class="expli_page">
 				Saisie des absences<br/>
 				du <strong><?php echo date_frl(date_sql($d_date_absence_eleve)); ?></strong>
 				de <strong><?php echo heure_court($d_heure_absence_eleve); ?></strong>
@@ -935,16 +944,19 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 
 	if($passage_auto === 'oui' and $passage_form === '') {
 		echo '
-			<p class="choix_fin">
+			<!--p class="choix_fin"-->
+			<p>
 				<a href="prof_ajout_abs.php?passage_form=manuel">Ceci n\'est pas la bonne liste d\'appel ?</a>
 			</p>
 		';
 	}
 	?>
-			<p class="choix_fin">
+			<!--p class="choix_fin"-->
+			<p>
 				<input value="Enregistrer" name="Valider" type="submit"  onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
 			</p>
-			<p class="choix_fin">
+			<!--p class="choix_fin"-->
+			<p>
 				<input type="hidden" name="passer_cahier_texte" id="passer_cahier_texte" value="false" />
 				<input value="Enregistrer et passer au cahier de texte" name="Valider" type="submit"  onclick="document.getElementById('passer_cahier_texte').value = true; this.form.submit(); this.disabled=true; this.value='En cours'" />
 			</p>
