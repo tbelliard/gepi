@@ -908,7 +908,12 @@ function ToutDeCocher() {
 				$res_coef=mysql_query($sql);
 				if(mysql_num_rows($res_coef)>0) {
 					$tmp_coef=mysql_result($res_coef, 0, 'coef');
-					echo $tmp_coef;
+					if($_SESSION['statut']=='administrateur') {
+						echo "<a href='../groupes/edit_class.php?id_classe=".$tab_id_classe[$i]."' target='_blank'>".$tmp_coef."</a>";
+					}
+					else {
+						echo $tmp_coef;
+					}
 				}
 				echo "</td>\n";
 				echo "</tr>\n";
