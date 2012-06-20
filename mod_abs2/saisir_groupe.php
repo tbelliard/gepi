@@ -479,6 +479,8 @@ if ($current_creneau == null) {
 
 
 //**************** TABLEAU DES ELEVES *****************
+$tab_regimes=array();
+$tab_regimes_eleves=array();
 $afficheEleve = array();
 $elv = 0;
 foreach($eleve_col as $eleve) {
@@ -513,7 +515,19 @@ foreach($eleve_col as $eleve) {
 	$afficheEleve[$elv]['nom'] = $eleve->getNom();
 	$afficheEleve[$elv]['prenom'] = $eleve->getPrenom();
 	$afficheEleve[$elv]['civilite'] = $eleve->getCivilite();
-	
+	// 20120618
+	//$afficheEleve[$elv]['regime'] = $eleve->getRegime();
+	$afficheEleve[$elv]['regime'] = '';
+	$sql="SELECT regime FROM j_eleves_regime WHERE login='".$eleve->getLogin()."';";
+	$res_regime=mysql_query($sql);
+	if(mysql_num_rows($res_regime)>0) {
+		$afficheEleve[$elv]['regime'] = mysql_result($res_regime, 0, 'regime');
+		if(!in_array($afficheEleve[$elv]['regime'], $tab_regimes)) {
+			$tab_regimes[]=$afficheEleve[$elv]['regime'];
+		}
+		$tab_regimes_eleves[$afficheEleve[$elv]['regime']][]=$afficheEleve[$elv]['position'];
+	}
+
 	if ((isset($current_groupe) && $current_groupe != null && $current_groupe->getClasses()->count() == 1)
 		|| (isset($current_classe) && $current_classe != null)) {
 		//si le groupe a une seule classe ou si c'est une classe qui est sélectionner pas la peine d'afficher la classe.
@@ -656,6 +670,34 @@ foreach($eleve_col as $eleve) {
 		$afficheEleve[$elv]['nom_photo'] = $photos;
 	}
 	$elv++;
+}
+
+// 20120618
+$chaine_coche_decoche_regime="";
+$js_var_coche_decoche_regime="var etat_cocher_regime=new Array();\n";
+$js_var_coche_decoche_regime.="var nom_regime=new Array();\n";
+if(count($tab_regimes)>0) {
+
+	$chaine_coche_decoche_regime.="<span id='effectifs_regimes_js' style='display: none;'>";
+	for($i=0;$i<count($tab_regimes);$i++) {
+		//$chaine_coche_decoche_regime.="<div style='float:left; width:2em; margin-right: 0.5em;'><a href='#' onclick=\"cocher_decocher_regime($i); return false;\">".$tab_regimes[$i]."</a></div>\n";
+		$chaine_coche_decoche_regime.="<span style='margin-right: 0.2em; margin-left: 0.2em;'><a href='#' onclick=\"cocher_decocher_regime($i); return false;\">".count($tab_regimes_eleves[$tab_regimes[$i]])." ".$tab_regimes[$i]."</a></span>\n";
+		$js_var_coche_decoche_regime.="etat_cocher_regime[$i]=false;\n";
+		$js_var_coche_decoche_regime.="nom_regime[$i]='".$tab_regimes[$i]."';\n";
+		$js_var_coche_decoche_regime.="var ele_regime_$i=new Array(";
+		for($j=0;$j<count($tab_regimes_eleves[$tab_regimes[$i]]);$j++) {
+			if($j>0) {$js_var_coche_decoche_regime.=", ";}
+			$js_var_coche_decoche_regime.=$tab_regimes_eleves[$tab_regimes[$i]][$j];
+		}
+		$js_var_coche_decoche_regime.=");\n";
+	}
+	$chaine_coche_decoche_regime.="</span>";
+
+	$chaine_coche_decoche_regime.="<span id='effectifs_regimes_non_js'>";
+	for($i=0;$i<count($tab_regimes);$i++) {
+		$chaine_coche_decoche_regime.="<span style='margin-right: 0.2em; margin-left: 0.2em;'>".count($tab_regimes_eleves[$tab_regimes[$i]])." ".$tab_regimes[$i]."</span>\n";
+	}
+	$chaine_coche_decoche_regime.="</span>";
 }
 
 //==============================================
@@ -1009,7 +1051,8 @@ if ($eleve_col->isEmpty()) {
 			<?php } ?>
 <!-- Afichage du tableau de la liste des élèves -->
 <!-- Legende du tableau-->
-			<p class="center"><?php echo $eleve_col->count(); ?> élèves.</p>
+			<p class="center"><?php echo $eleve_col->count(); ?> élèves (<?php echo $chaine_coche_decoche_regime;
+?>).</p>
 <!-- Fin de la legende -->
 			<table class="tb_absences">
 				<caption class="invisible no_print">Absences</caption>
@@ -1037,7 +1080,17 @@ if ($eleve_col->isEmpty()) {
 									&& ($afficheEleve['0']['creneau_courant']  != ($i + 2))) {
 								echo ' noSmartphone';
 							}?> center">
-							<?php echo $edt_creneau->getNomDefiniePeriode();?>
+							<?php
+								// 20120618
+								if($afficheEleve['0']['creneau_courant'] == $i) {
+									//echo "<a href=\"#\" onclick=\"cocher_decocher_abs_eleves();return false;\">".$edt_creneau->getNomDefiniePeriode()."</a>";
+									echo "<a href=\"javascript:cocher_decocher_abs_eleves();\">".$edt_creneau->getNomDefiniePeriode()."</a>";
+									//echo $chaine_coche_decoche_regime;
+								}
+								else {
+									echo $edt_creneau->getNomDefiniePeriode();
+								}
+							?>
 						</td>
 				<?php $i++;
 
@@ -1045,7 +1098,11 @@ if ($eleve_col->isEmpty()) {
 					</tr>
 				</thead>
 				<tbody>
-<?php foreach($afficheEleve as $eleve) { ?>
+<?php 
+	$compteur_eleve=0;
+	foreach($afficheEleve as $eleve) {
+		$compteur_eleve++;
+?>
 					<tr class='<?php echo $eleve['background'];?>'>
 						<td class = "<?php echo($eleve['class_hier']);
 							if ($eleve['creneau_courant'] != 0) {
@@ -1065,6 +1122,14 @@ if ($eleve_col->isEmpty()) {
 							<a href='../eleves/visu_eleve.php?ele_login=<?php echo $eleve['accesFiche']; ?>&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank' >
 								(voir&nbsp;fiche)
 							</a>
+							<?php
+								/*
+								// DEBUG: 20120618
+								echo "<pre>";
+								echo print_r($eleve);
+								echo "</pre>";
+								*/
+							?>
 <?php } ?>
 						</td>
 <?php 
@@ -1268,6 +1333,70 @@ if ($utilisateur->getStatut() == 'professeur' && getSettingValue("active_cahiers
 ?>
 </div>
 <?php
+// 20120618
+if(isset($compteur_eleve)) {
+	echo "<script type='text/javascript'>
+	var etat_tout_cocher=false;
+	function cocher_decocher_abs_eleves() {
+		if(etat_tout_cocher==false) {
+			etat_tout_cocher=true;
+		}
+		else {
+			etat_tout_cocher=false;
+		}
+		for(i=0;i<".$compteur_eleve.";i++) {
+			if(document.getElementById('active_absence_eleve_'+i)) {
+				document.getElementById('active_absence_eleve_'+i).checked=etat_tout_cocher;
+			}
+		}
+	}
+	
+	$js_var_coche_decoche_regime
+	function cocher_decocher_regime(num) {
+		if(etat_cocher_regime[num]==false) {
+			etat_cocher_regime[num]=true;
+		}
+		else {
+			etat_cocher_regime[num]=false;
+		}
+
+		tab=eval('ele_regime_'+num);
+		//alert(tab.length);
+		for(i=0;i<tab.length;i++) {
+			if(document.getElementById('active_absence_eleve_'+tab[i])) {
+				document.getElementById('active_absence_eleve_'+tab[i]).checked=etat_cocher_regime[num];
+
+				if(document.getElementById('liste_type_absence_eleve_'+tab[i])) {
+					if(etat_cocher_regime[num]==false) {
+						document.getElementById('liste_type_absence_eleve_'+tab[i]).selectedIndex=0;
+					}
+					else {
+						for(j=0;j<document.getElementById('liste_type_absence_eleve_'+tab[i]).options.length;j++) {
+							/*
+							if(i==0) {
+								alert(document.getElementById('liste_type_absence_eleve_'+tab[i]).options[j].innerHTML+' et '+nom_regime[num])
+							}
+							*/
+							if(document.getElementById('liste_type_absence_eleve_'+tab[i]).options[j].innerHTML.replace(/^\s+/g,'').replace(/\s+$/g,'')==nom_regime[num].replace(/^\s+/g,'').replace(/\s+$/g,'')) {
+								//if(i<3) {alert('j='+j)}
+								document.getElementById('liste_type_absence_eleve_'+tab[i]).selectedIndex=j;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if(document.getElementById('effectifs_regimes_non_js')) {
+		document.getElementById('effectifs_regimes_non_js').style.display='none';
+	}
+	if(document.getElementById('effectifs_regimes_js')) {
+		document.getElementById('effectifs_regimes_js').style.display='';
+	}
+</script>\n";
+}
+
 if (isset($radioButtonType)) {
     $javascript_footer_texte_specifique = '<script type="text/javascript">';
     if ((isset($radioButtonTypeOnlyHidden))&&($radioButtonTypeOnlyHidden)) {
