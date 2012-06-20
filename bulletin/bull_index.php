@@ -868,7 +868,57 @@ function ToutDeCocher() {
 
 		echo "<input type='hidden' name='tab_id_classe[$i]' value='".$tab_id_classe[$i]."' />\n";
 
-		echo "<p class='bold'>Classe de ".get_class_from_id($tab_id_classe[$i])."</p>\n";
+		$classe_courante=get_class_from_id($tab_id_classe[$i]);
+		echo "<p class='bold'>Classe de ".$classe_courante."</p>\n";
+
+		echo "<div style='float:right'>\n";
+		echo "<div align='left' style='margin-left:11em; font-size: xx-small;'>\n";
+
+		echo "<table class='boireaus' summary='Coefficients des enseignements de ".$classe_courante."'>\n";
+		echo "<tr>\n";
+		echo "<th>Enseignement</th>\n";
+		echo "<th>Classes</th>\n";
+		echo "<th>Enseignant(s)</th>\n";
+		echo "<th>Coefficient</th>\n";
+		echo "</tr>\n";
+		$alt=1;
+		$tmp_groups = get_groups_for_class($tab_id_classe[$i],"","n");
+		foreach($tmp_groups as $tmp_current_group) {
+			$sql="SELECT * FROM j_groupes_visibilite WHERE id_groupe='".$tmp_current_group['id']."' AND domaine='bulletins' AND visible='n';";
+			$test_visu=mysql_query($sql);
+			if(mysql_num_rows($test_visu)==0) {
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt white_hover'>\n";
+				echo "<td>\n";
+				echo $tmp_current_group['name']."\n";
+				echo "</td>\n";
+
+				echo "<td>\n";
+				$tab_champs=array('profs');
+				$tmp_current_group_complement=get_group($tmp_current_group['id'] ,$tab_champs);
+				echo $tmp_current_group_complement['profs']['proflist_string']."\n";
+				echo "</td>\n";
+
+				echo "<td>\n";
+				echo $tmp_current_group['classlist_string']."\n";
+				echo "</td>\n";
+
+				echo "<td>\n";
+				$sql="SELECT coef FROM j_groupes_classes WHERE id_classe='".$tab_id_classe[$i]."' AND id_groupe='".$tmp_current_group['id']."';";
+				$res_coef=mysql_query($sql);
+				if(mysql_num_rows($res_coef)>0) {
+					$tmp_coef=mysql_result($res_coef, 0, 'coef');
+					echo $tmp_coef;
+				}
+				echo "</td>\n";
+				echo "</tr>\n";
+			}
+		}
+		unset($tmp_groups);
+		echo "</table>\n";
+
+		echo "</div>\n";
+		echo "</div>\n";
 
 		echo "<table class='boireaus' summary='Choix des élèves'>\n";
 		echo "<tr>\n";
