@@ -48,7 +48,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Choix des options des élèves',
+description='Genèse des classes: Choix des options des élèves',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -193,7 +193,7 @@ $_POST['autre_opt_3']=	Array (*)
 
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-$titre_page = "Génèse classe: Choix options élèves";
+$titre_page = "Genèse classe: Choix options élèves";
 //echo "<div class='noprint'>\n";
 require_once("../lib/header.inc.php");
 //echo "</div>\n";
@@ -328,10 +328,18 @@ echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 // Colorisation
 echo "<p>Colorisation&nbsp;: ";
 echo "<select name='colorisation' onchange='lance_colorisation()'>
-<option value='classe_fut' selected>Classe future</option>
-<option value='lv1'>LV1</option>
-<option value='lv2'>LV2</option>
-<option value='profil'>Profil</option>
+<option value='classe_fut'";
+if((isset($_POST['colorisation']))&&($_POST['colorisation']=='classe_fut')) {echo " selected='selected'";}
+echo ">Classe future</option>
+<option value='lv1'";
+if((isset($_POST['colorisation']))&&($_POST['colorisation']=='lv1')) {echo " selected='selected'";}
+echo ">LV1</option>
+<option value='lv2'";
+if((isset($_POST['colorisation']))&&($_POST['colorisation']=='lv2')) {echo " selected='selected'";}
+echo ">LV2</option>
+<option value='profil'";
+if((isset($_POST['colorisation']))&&($_POST['colorisation']=='profil')) {echo " selected='selected'";}
+echo ">Profil</option>
 </select>\n";
 
 echo "</p>\n";
@@ -573,9 +581,11 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			$num_eleve2_id_classe_actuelle[$j]=$cpt;
 			if(mb_strtoupper($lig->sexe)=='F') {$eff_tot_classe_F++;$eff_tot_F++;} else {$eff_tot_classe_M++;$eff_tot_M++;}
 
-			echo "<tr id='tr_eleve_$cpt' class='white_hover'>\n";
+			//echo "<tr id='tr_eleve_$cpt' class='white_hover' onmouseover=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.fontWeight='bold';\" onmouseout=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.fontWeight='normal';\">\n";
+			echo "<tr id='tr_eleve_$cpt' class='white_hover' onmouseover=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.color='red';\" onmouseout=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.color='black';\">\n";
 			echo "<td>\n";
 			echo "<a name='eleve$cpt'></a>\n";
+			echo "<span id='nom_prenom_eleve_numero_$cpt'>";
 			if(nom_photo($lig->elenoet)) {
 				echo "<a href='#eleve$cpt' onclick=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);return false;\">";
 				echo strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
@@ -584,6 +594,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			else {
 				echo mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
 			}
+			echo "</span>";
 			//echo "<input type='hidden' name='eleve[$cpt]' value='$lig->login' />\n";
 			echo "<input type='hidden' name='eleve[$cpt]' id='id_eleve_$cpt' value='$lig->login' />\n";
 			echo "<input type='hidden' name='id_classe_actuelle_eleve[$cpt]' value='$id_classe_actuelle[$j]' />\n";
@@ -1145,6 +1156,9 @@ function lance_colorisation() {
 		colorise(cat,".count($tab_profil).");
 	}
 }
+
+// Pour re-coloriser en fin de chargement de page si on a Enregistré...
+lance_colorisation();
 ";
 
 // probleme: si une classe ou catégorie (red ou arriv) a un effectif nul le rang du premier et du dernier élève ne sont pas affectés et on obtient alors une erreur
