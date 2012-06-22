@@ -49,7 +49,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Liste des classes futures (appel ajax)',
+description='Genèse des classes: Liste des classes futures (appel ajax)',
 statut='';";
 $insert=mysql_query($sql);
 }

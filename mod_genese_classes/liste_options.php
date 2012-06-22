@@ -48,7 +48,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Liste des options de classes existantes',
+description='Genèse des classes: Liste des options de classes existantes',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -439,7 +439,7 @@ if(isset($_POST['valider_param'])) {
 
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-$titre_page = "Génèse classe: Liste des options";
+$titre_page = "Genèse classe: Liste des options";
 //echo "<div class='noprint'>\n";
 require_once("../lib/header.inc.php");
 //echo "</div>\n";
@@ -678,7 +678,7 @@ echo "</form>\n";
 
 echo "<p>Cette page est destinée à générer un CSV des options à pointer en conseil de classe pour les préparatifs de conception de classe de l'année suivante.<br />
 Ce fichier correctement dûment sera réclamé à l'étape 4 'Importer les options futures des élèves d'après un CSV'.<br />
-Il conviendra d'ajouter des lignes de totaux (SOMME()) à l'aide du tableur si vous souhaitez faire un usage autre de ce fichier que l'import dans le module 'Génèse des classes'.<br />
+Il conviendra d'ajouter des lignes de totaux (SOMME()) à l'aide du tableur si vous souhaitez faire un usage autre de ce fichier que l'import dans le module 'Genèse des classes'.<br />
 Les champs comme login, elenoet, ele_id,... sont destinés à faciliter l'import en retour des choix dans les tables 'gc_*'.</p>\n";
 
 

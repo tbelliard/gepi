@@ -48,7 +48,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Sélection des arrivants/redoublants',
+description='Genèse des classes: Sélection des arrivants/redoublants',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -95,7 +95,7 @@ if((isset($projet))&&(isset($choix))&&(($choix=='Red')||($choix=='Arriv'))&&(iss
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Génèse classe: Sélection redoublants et arrivants";
+$titre_page = "Genèse classe: Sélection redoublants et arrivants";
 //echo "<div class='noprint'>\n";
 require_once("../lib/header.inc.php");
 //echo "</div>\n";

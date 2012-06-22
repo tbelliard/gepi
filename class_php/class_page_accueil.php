@@ -1637,11 +1637,11 @@ class class_page_accueil {
 	$this->b=0;
 
 	$this->creeNouveauItem("/mod_genese_classes/index.php",
-			"Génèse des classes",
+			"Genèse des classes",
 			"Effectuer la répartition des élèves par classes en tenant comptes des options,...");
 
 	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Génèse des classes",'images/icons/document.png');
+	  $this->creeNouveauTitre('accueil',"Genèse des classes",'images/icons/document.png');
 	  return true;
 	}
   }

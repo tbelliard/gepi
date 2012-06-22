@@ -48,7 +48,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Import options depuis CSV',
+description='Genèse des classes: Import options depuis CSV',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -65,7 +65,7 @@ $projet=isset($_POST['projet']) ? $_POST['projet'] : (isset($_GET['projet']) ? $
 
 
 //**************** EN-TETE *****************
-$titre_page = "Génèse classe: Import CSV des options";
+$titre_page = "Genèse classe: Import CSV des options";
 //echo "<div class='noprint'>\n";
 require_once("../lib/header.inc.php");
 //echo "</div>\n";

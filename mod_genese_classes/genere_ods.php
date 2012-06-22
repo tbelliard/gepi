@@ -48,7 +48,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Génération d un fichier ODS de listes',
+description='Genèse des classes: Génération d un fichier ODS de listes',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -83,7 +83,7 @@ if (!checkAccess()) {
 	$user_temp_directory=get_user_temp_directory();
 
 	//**************** EN-TETE *****************
-	$titre_page = "Génèse classe: Fichier ODS";
+	$titre_page = "Genèse classe: Fichier ODS";
 	//echo "<div class='noprint'>\n";
 	require_once("../lib/header.inc.php");
 	//echo "</div>\n";
