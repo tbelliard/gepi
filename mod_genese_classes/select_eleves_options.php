@@ -65,6 +65,10 @@ $projet=isset($_POST['projet']) ? $_POST['projet'] : (isset($_GET['projet']) ? $
 
 
 if(isset($_POST['is_posted'])) {
+	check_token();
+
+	//debug_var();
+
 	//echo "";
 	$eleve=isset($_POST['eleve']) ? $_POST['eleve'] : array();
 	$id_classe_actuelle_eleve=isset($_POST['id_classe_actuelle_eleve']) ? $_POST['id_classe_actuelle_eleve'] : array();
@@ -325,6 +329,8 @@ necessaire_bull_simple();
 
 echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 
+echo add_token_field();
+
 // Colorisation
 echo "<p>Colorisation&nbsp;: ";
 echo "<select name='colorisation' onchange='lance_colorisation()'>
@@ -582,19 +588,21 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			if(mb_strtoupper($lig->sexe)=='F') {$eff_tot_classe_F++;$eff_tot_F++;} else {$eff_tot_classe_M++;$eff_tot_M++;}
 
 			//echo "<tr id='tr_eleve_$cpt' class='white_hover' onmouseover=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.fontWeight='bold';\" onmouseout=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.fontWeight='normal';\">\n";
-			echo "<tr id='tr_eleve_$cpt' class='white_hover' onmouseover=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.color='red';\" onmouseout=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.color='black';\">\n";
+			echo "<tr id='tr_eleve_$cpt' class='white_hover' onmouseover=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.color='red';\" onmouseout=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.color='';\">\n";
 			echo "<td>\n";
 			echo "<a name='eleve$cpt'></a>\n";
-			echo "<span id='nom_prenom_eleve_numero_$cpt'>";
 			if(nom_photo($lig->elenoet)) {
 				echo "<a href='#eleve$cpt' onclick=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);return false;\">";
+				echo "<span id='nom_prenom_eleve_numero_$cpt'>";
 				echo strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
+				echo "</span>";
 				echo "</a>\n";
 			}
 			else {
+				echo "<span id='nom_prenom_eleve_numero_$cpt'>";
 				echo mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
+				echo "</span>";
 			}
-			echo "</span>";
 			//echo "<input type='hidden' name='eleve[$cpt]' value='$lig->login' />\n";
 			echo "<input type='hidden' name='eleve[$cpt]' id='id_eleve_$cpt' value='$lig->login' />\n";
 			echo "<input type='hidden' name='id_classe_actuelle_eleve[$cpt]' value='$id_classe_actuelle[$j]' />\n";
@@ -832,6 +840,7 @@ document.getElementById('eff_tot_classe_sexe_".$id_classe_actuelle[$j]."').inner
 }
 echo "<input type='hidden' name='projet' value='$projet' />\n";
 echo "</form>\n";
+
 
 
 
@@ -1219,6 +1228,25 @@ echo "function modif_colonne(col,j,mode) {
 	if(col.substr(0,cat.length)==cat) {lance_colorisation();}
 }
 </script>\n";
+
+$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
+if($suhosin_post_max_totalname_length!='') {
+	$alerte_config_suhosin=alerte_config_suhosin();
+	echo "<div align='center'>$alerte_config_suhosin";
+
+	$decompte_champs_radio=(count($classe_fut)-1)*$cpt+(count($lv1)-1)*$cpt+(count($lv2)-1)*$cpt+(count($lv3)-1)*$cpt;
+
+	echo "<div id='info_nb_input'></div>\n";
+
+	echo "<script type='text/javascript'>
+tab_input=document.getElementsByTagName('input');
+nb_input=eval(tab_input.length-$decompte_champs_radio);
+info_nb_champs=nb_input;
+document.getElementById('info_nb_input').innerHTML='<span style=\'color:red\'>Il y a '+info_nb_champs+' champs input qui seront envoyés en POST.</span><br />Les valeurs de suhosin.post.max_vars et suhosin.request.max_vars sont à surveiller.';
+</script>\n";
+
+	echo "</div>\n";
+}
 
 require("../lib/footer.inc.php");
 ?>
