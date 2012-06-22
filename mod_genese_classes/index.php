@@ -48,7 +48,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Accueil',
+description='Genèse des classes: Accueil',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -273,14 +273,14 @@ if(isset($projet)) {
 
 $truncate_tables=isset($_GET['truncate_tables']) ? $_GET['truncate_tables'] : NULL;
 if($truncate_tables=='y') {
-	$msg="<p>Nettoyage des tables Génèse des classes... <font color='red'>A FAIRE</font></p>\n";
+	$msg="<p>Nettoyage des tables Genèse des classes... <font color='red'>A FAIRE</font></p>\n";
 	$sql="TRUNCATE TABLE ...;";
 	//$del=mysql_query($sql);
 }
 
 
 //**************** EN-TETE *****************
-$titre_page = "Génèse classe: Accueil";
+$titre_page = "Genèse classe: Accueil";
 //echo "<div class='noprint'>\n";
 require_once("../lib/header.inc.php");
 //echo "</div>\n";
@@ -428,6 +428,11 @@ On répartit les cas restants.<br />
 Et enfin, on génère un affichage des listes de classes futures... ainsi que les regroupements de langues,...</p>
 <p>On procède éventuellement à quelques échanges, puis on présente des listes au principal qui accepte ou non la répartition proposée.</p>
 </li>\n";
+$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
+if($suhosin_post_max_totalname_length!='') {
+	$alerte_config_suhosin=alerte_config_suhosin();
+	echo "<li>$alerte_config_suhosin</li>\n";
+}
 echo "</ul>\n";
 
 require("../lib/footer.inc.php");
