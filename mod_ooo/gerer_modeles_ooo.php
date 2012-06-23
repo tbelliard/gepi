@@ -52,90 +52,113 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
 	//La description du document
 	
     //Retenue
+    $lien_wiki[]='';
     $entete_section[]="MODULE DISCIPLINE";
 	$fich[]="retenue.odt";
     $utilisation[]="Formulaire de retenue";	
+
     //rapport incident
+    $lien_wiki[]='';
     $entete_section[]="";
 	$fich[]="rapport_incident.odt";
     $utilisation[]="Formulaire de rapport d'incident";
+
 	//Exclusion temporaire
+    $lien_wiki[]='';
     $entete_section[]="";
 	$fich[]="discipline_exclusion.odt";
     $utilisation[]="Exclusion temporaire de l'établissement";
 
     //modèle ABS2
+    $lien_wiki[]='';
 	$entete_section[]="MODULE ABSENCE";
     $fich[]="absence_extraction_demi-journees.ods";
     $utilisation[]="ABS2 : Tableau des demi-journées d'absences";
 	
+    $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="absence_extraction_saisies.ods";
     $utilisation[]="ABS2 : Tableau des saisies d'absences";
 	
+    $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="absence_extraction_traitements.ods";
     $utilisation[]="ABS2 : Tableau des traitements d'absences";
     
+    $lien_wiki[]='';
     $entete_section[]="";
     $fich[]="absence_taux_absenteisme.ods";
     $utilisation[]="ABS2 : Tableau des taux d'absentéisme";
 
+    $lien_wiki[]='';
     $entete_section[]="";
     $fich[]="absence_extraction_bilan.ods";
     $utilisation[]="ABS2 : Tableau bilan par jour par élève au format tableur";
 
+    $lien_wiki[]='';
     $entete_section[]="";
     $fich[]="absence_extraction_bilan.odt";
     $utilisation[]="ABS2 : Tableau bilan par jour par élève au format traitement de textes";
 
+    $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="absence_modele_lettre_parents.odt";
     $utilisation[]="ABS2 : Modèle de lettre aux parents";
 	
+    $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="absence_email.txt";
     $utilisation[]="ABS2 : Modèle du courriel envoyé aux parents";
 	
+    $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="absence_sms.txt";
     $utilisation[]="ABS2 : Modèle de SMS envoyé aux parents";
 
 
     //Fiches brevet
+    $lien_wiki[]='http://www.sylogix.org/projects/gepi/wiki/GepiDoc_fbOooCalc#Gabarits-de-fiches-brevets-dautres-acad%C3%A9mies';
 	$entete_section[]="MODULE NOTANET";
     $fich[]="fb_CLG_lv2.ods";
     $utilisation[]="Fiche brevet série collège LV2";
 	
+    $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="fb_CLG_dp6.ods";
     $utilisation[]="Fiche brevet série collège ODP 6 heures";
 	
+    $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="fb_PRO.ods";
     $utilisation[]="Fiche brevet série professionnelle sans ODP";
 	
+    $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="fb_PRO_dp6.ods";
     $utilisation[]="Fiche brevet série professionnelle ODP 6 heures";
 	
+    $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="fb_PRO_agri.ods";
     $utilisation[]="Fiche brevet série professionnelle option agricole";
 	
+    $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="fb_TECHNO.ods";
     $utilisation[]="Fiche brevet série technologique sans ODP";
 	
+    $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="fb_TECHNO_dp6.ods";
     $utilisation[]="Fiche brevet série technologique ODP 6 heures";
 	
+    $lien_wiki[]='';
 	$entete_section[]="";
     $fich[]="fb_TECHNO_agri.ods";
     $utilisation[]="Fiche brevet série technologique option agricole";
 
     //rapport incident
+    $lien_wiki[]='';
 	$entete_section[]="MODULE ECTS";
     $fich[]="documents_ects.odt";
     $utilisation[]="Documents ECTS (pour BTS, prépas...)";
@@ -214,7 +237,9 @@ if (!isset($btn)) { //premier passage : formulaire
       //paire ou impaire	  
 	  if ($entete_section[$i] != "") { // Cas d'un entête
 	      echo "<tr>";
-	      echo "<td colspan=\"6\"></br></br><b>$entete_section[$i]</br></br></b></br></br></td>";
+	      echo "<td colspan=\"6\"></br></br><b>$entete_section[$i]";
+	      if($lien_wiki[$i] != "") {echo " <a href='".$lien_wiki[$i]."' target='_blank'><img src='../images/icons/ico_ampoule.png' width='15' height='25' title='Documentation/ressources' /></a>";}
+	      echo "</br></br></b></br></br></td>";
 		  echo "</tr>";
 	  }
 	  echo "<tr class='lig$alt'>\n<form name=\"form$i\" method='post' ENCTYPE='multipart/form-data' action='$PHP_SELF' onsubmit=\"return bonfich('$i')\" >\n";
