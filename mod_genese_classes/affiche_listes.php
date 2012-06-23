@@ -48,7 +48,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Affichage de listes',
+description='Genèse des classes: Affichage de listes',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -90,7 +90,7 @@ if((isset($projet))&&(isset($_POST['chgt_classe']))&&(isset($_POST['login_ele'])
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Génèse classe: affichage de listes";
+$titre_page = "Genèse classe: affichage de listes";
 //echo "<div class='noprint'>\n";
 require_once("../lib/header.inc.php");
 //echo "</div>\n";

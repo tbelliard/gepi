@@ -19,7 +19,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 $accessibilite="y";
-$titre_page = "Génèse classe: Activation/désactivation";
+$titre_page = "Genèse classe: Activation/désactivation";
 $niveau_arbo = 1;
 $gepiPathJava="./..";
 $post_reussi=FALSE;
@@ -55,7 +55,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Activation/désactivation',
+description='Genèse des classes: Activation/désactivation',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -83,7 +83,7 @@ if (isset($_POST['activer'])) {
 }
 
 //**************** EN-TETE *****************
-//$titre_page = "Génèse classe: Activation/désactivation";
+//$titre_page = "Genèse classe: Activation/désactivation";
 //echo "<div class='noprint'>\n";
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
@@ -92,7 +92,7 @@ if (isset($_POST['activer'])) {
 // ====== Inclusion des balises head et du bandeau =====
 include_once("../lib/header_template.inc.php");
 
-if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion Génèse classe"))
+if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion Genèse classe"))
 		echo "erreur lors de la création du fil d'ariane";
 /****************************************************************
 			FIN HAUT DE PAGE
@@ -143,10 +143,10 @@ echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n"
 echo "<p>
 <input type='radio' name='activer' id='activer_y' value='y' ";
 if (getSettingValue('active_mod_genese_classes')=='y') {echo ' checked';}
-echo " />&nbsp;<label for='activer_y' style='cursor: pointer;'>Activer le module Génèse des classes</label><br />
+echo " />&nbsp;<label for='activer_y' style='cursor: pointer;'>Activer le module Genèse des classes</label><br />
 <input type='radio' name='activer' id='activer_n' value='n' ";
 if (getSettingValue('active_mod_genese_classes')=='n') {echo ' checked';}
-echo " />&nbsp;<label for='activer_n' style='cursor: pointer;'>Désactiver le module Génèse des classes</label>
+echo " />&nbsp;<label for='activer_n' style='cursor: pointer;'>Désactiver le module Genèse des classes</label>
 <br />\n";
 
 echo " <input type='submit' name='valider' value='Valider' /></p>\n";

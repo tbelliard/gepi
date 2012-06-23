@@ -1971,7 +1971,7 @@ function alerte_config_suhosin() {
 		$retour.="Le fichier de configuration de suhosin est habituellement en /etc/php5/conf.d/suhosin.ini<br />\nEn cas de modification de ce fichier, pensez à relancer le service apache ensuite pour prendre en compte la modification.<br />\n";
 	}
 	else {
-		$retour.="<p>Le module suhosin n'est pas activé.<br />Il ne peut pas perturver Gepi.</p>\n";
+		$retour.="<p>Le module suhosin n'est pas activé.<br />Il ne peut pas perturber Gepi.</p>\n";
 	}
 	return $retour;
 }

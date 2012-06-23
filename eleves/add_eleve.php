@@ -558,7 +558,7 @@ if($longmax_login_eleve=="") {
 
 ?>
 
-<div id='suggestion_login' style='float:right; width:400px; height: 200px; border: 1px solid black; overflow:auto;'></div>;
+<div id='suggestion_login' style='float:right; width:400px; height: 200px; border: 1px solid black; overflow:auto;'></div>
 
 <form enctype="multipart/form-data" action="add_eleve.php" method="post">
 <?php

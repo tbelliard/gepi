@@ -486,7 +486,7 @@ if (!isset($id_classe)) {
 	echo "</blockquote>\n";
 	echo "</form>\n";
 
-	// Fermeture du DIV container initialisé dans le header.inc
+	// Fermeture du DIV container initialisé dans le header.inc.php
 	echo "</div>\n";
 	require("../../lib/footer.inc.php");
 	die();
@@ -625,6 +625,7 @@ for($i=0;$i<count($id_classe);$i++){
 			$tab_eleves_OOo[$nb_eleve]=array();
 			$tab_eleves_OOo[$nb_eleve]['fb_session']=$fb_session;
 
+			//echo "<p>$lig1->nom $lig1->prenom<br />";
 			$tab_eleves_OOo[$nb_eleve]['nom']=$lig1->nom;
 			$tab_eleves_OOo[$nb_eleve]['prenom']=$lig1->prenom;
 			$tab_eleves_OOo[$nb_eleve]['ine']=$lig1->no_gep;
@@ -661,6 +662,7 @@ for($i=0;$i<count($id_classe);$i++){
 				$TOTAL_COEF=0;
 				$TOTAL_POINTS=0;
 				for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
+					unset($matiere_gepi_courante);
 
 					//if ($tab_champs_OOo[$j][0]!='') {
 					if ((isset($tab_champs_OOo[$j][0]))&&($tab_champs_OOo[$j][0]!='')) {
@@ -671,11 +673,15 @@ for($i=0;$i<count($id_classe);$i++){
 						}
 						if($tab_champs_OOo[$j][3]>-2) {$tab_eleves_OOo[$nb_eleve][$j][3] = $moy_classe[$j];}
 
-						$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
+						$sql="SELECT note, matiere FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
+						//echo "$sql<br />";
 						$res_note=mysql_query($sql);
 						if(mysql_num_rows($res_note)>0){
 							$lig_note=mysql_fetch_object($res_note);
 							$tab_eleves_OOo[$nb_eleve][$j][0]=$lig_note->note;			// On récupère la note
+
+							// Dans le cas où il a fallu vider une des deux notes parce quil y avait plusieurs matières gepi remplies et associées à la même matière notanet, il faut récupérer l'appréciation associée à la bonne matière
+							$matiere_gepi_courante=$lig_note->matiere;
 
 							switch($tab_champs_OOo[$j][3]){
 								case '-2':      										// Socle B2I et A2

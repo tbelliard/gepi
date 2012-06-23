@@ -166,7 +166,7 @@ include("menu_plugins.inc.php");
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_discipline/discipline_admin.php">Discipline</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_ooo/ooo_admin.php">Modèles OpenOffice</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_ects/ects_admin.php">Saisie ECTS</a></li>'."\n";
-		$menus .= '      <li><a href="'.$gepiPath.'/mod_genese_classes/admin.php">Génèse des classes</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/mod_genese_classes/admin.php">Genèse des classes</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_epreuve_blanche/admin.php">Epreuves blanches</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_examen_blanc/admin.php">Examens blancs</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_gest_aid/admin.php">Gestionnaires AID</a></li>'."\n";
@@ -196,7 +196,7 @@ include("menu_plugins.inc.php");
 		$menus .= '  <li><a href="'.$gepiPath.'/mod_examen_blanc/index.php">Examens blancs</a></li>'."\n";
 		$menus .= '  <li><a href="'.$gepiPath.'/cahier_texte_admin/visa_ct.php">Visa c. de textes</a></li>'."\n";
 		$menus .= '  <li><a href="'.$gepiPath.'/mod_inscription/inscription_config.php">Inscriptions</a></li>'."\n";
-		$menus .= '  <li><a href="'.$gepiPath.'/mod_genese_classes/index.php">Génèse des classes</a></li>'."\n";
+		$menus .= '  <li><a href="'.$gepiPath.'/mod_genese_classes/index.php">Genèse des classes</a></li>'."\n";
 		$menus .= '</ul>'."\n";	
 		$menus .= '</li>'."\n";
 		

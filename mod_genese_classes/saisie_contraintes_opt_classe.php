@@ -48,7 +48,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Saisie des contraintes options/classes',
+description='Genèse des classes: Saisie des contraintes options/classes',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -154,7 +154,7 @@ if((isset($is_posted))&&(isset($projet))) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Génèse classe: Contraintes options/classes";
+$titre_page = "Genèse classe: Contraintes options/classes";
 //echo "<div class='noprint'>\n";
 require_once("../lib/header.inc.php");
 //echo "</div>\n";

@@ -48,7 +48,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Affectation des élèves',
+description='Genèse des classes: Affectation des élèves',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -120,7 +120,7 @@ if(isset($_POST['is_posted'])) {
 
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-$titre_page = "Génèse classe: affectation des élèves";
+$titre_page = "Genèse classe: affectation des élèves";
 //echo "<div class='noprint'>\n";
 require_once("../lib/header.inc.php");
 //echo "</div>\n";

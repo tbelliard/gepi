@@ -48,7 +48,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Choix des options',
+description='Genèse des classes: Choix des options',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -142,7 +142,7 @@ if((isset($choix_options))&&((isset($lv1))||(isset($lv2))||(isset($lv3))||(isset
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Génèse classe: Choix options";
+$titre_page = "Genèse classe: Choix options";
 //echo "<div class='noprint'>\n";
 require_once("../lib/header.inc.php");
 //echo "</div>\n";

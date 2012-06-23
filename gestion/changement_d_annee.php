@@ -198,8 +198,17 @@ if(getSettingValue('active_module_absence')=='2') {
 	echo " puis <a onclick=\"return(confirm('Voulez vous vider les tables d\'absences ?'));\" href='../utilitaires/clean_tables.php?action=clean_absences&amp;date_limite=31/07/".date('Y')."&amp;chgt_annee=y".add_token_in_url()."'/>purger les tables absences pour les absences antérieures au 31/07/".date('Y')."</a></p></li>";
 }
 echo "<li><p>Sauvegarder l'arborescence Gepi (<em>par ftp, sftp,...</em>) $lien_svg</p></li>\n";
-echo "<li><p>Conserver les données de l'année passée via le <a href='../mod_annees_anterieures/conservation_annee_anterieure.php?chgt_annee=y'>module Années antérieures</a>.</p></li>\n";
-echo "<li><p>Éventuellement, générer, pour chaque élève, un bulletin PDF des N périodes via le <a href='../mod_annees_anterieures/conservation_annee_anterieure.php?chgt_annee=y'>module Années antérieures</a>.</p></li>\n";
+if(my_strtolower(mb_substr(getSettingValue('active_annees_anterieures'),0,1))=='y') {
+	echo "<li><p>Conserver les données de l'année passée via le <a href='../mod_annees_anterieures/conservation_annee_anterieure.php?chgt_annee=y'>module Années antérieures</a>.</p></li>\n";
+	echo "<li><p>Éventuellement, générer, pour chaque élève, un bulletin PDF des N périodes via le <a href='../mod_annees_anterieures/archivage_bull_pdf.php?chgt_annee=y'>module Années antérieures</a>.</p></li>\n";
+}
+else {
+	echo "<li><p>Conserver les données de l'année passée via le <strong>module Années antérieures</strong>.<br /><span style='color:red'>Le module est inactif</span>.<br />Vous devriez <a href='../mod_annees_anterieures/admin.php' target='_blank'>activer le module</a>, quitte à limiter la liste des statuts d'utilisateurs autorisés à accéder à ces informations via la page <a href='../gestion/droits_acces.php' target='_blank'>Droits d'accès</a>.</p></li>\n";
+	echo "<li><p>Éventuellement, une fois le module activé (<em>et après rafraichissement de la page</em>) générer, pour chaque élève, un bulletin PDF des N périodes via le module Années antérieures.</p></li>\n";
+}
+if(file_exists("../mod_plugins/archivageAPB/index.php")) {
+	echo "<li><a href='../mod_plugins/archivageAPB/index.php'>Archiver les données de l'année qui se termine pour le plugin APB</a>.</li>\n";
+}
 echo "</ol>\n";
 
 echo "<p>La partie concernant la nouvelle année&nbsp;:</p>\n";
