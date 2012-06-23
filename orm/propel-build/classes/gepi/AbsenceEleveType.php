@@ -26,6 +26,7 @@ class AbsenceEleveType extends BaseAbsenceEleveType {
 	const MODE_INTERFACE_DISCIPLINE = 'DISCIPLINE';
 	const MODE_INTERFACE_CHECKBOX_HIDDEN = 'CHECKBOX_HIDDEN';
 	const MODE_INTERFACE_CHECKBOX = 'CHECKBOX';
+	const MODE_INTERFACE_CHECKBOX_HIDDEN_REGIME = 'CHECKBOX_HIDDEN_REGIME';
 
 	public static $LISTE_LABEL_TYPE_SAISIE = array(
 	    AbsenceEleveType::MODE_INTERFACE_DEBUT_ABS => 'Saisie de l\'heure du debut de l\'absence'
@@ -35,6 +36,7 @@ class AbsenceEleveType extends BaseAbsenceEleveType {
 	    , AbsenceEleveType::MODE_INTERFACE_COMMENTAIRE_EXIGE => 'Saisie d\'un commentaire explicatif'
 	    , AbsenceEleveType::MODE_INTERFACE_CHECKBOX => 'Saisie de cases à cocher'
 	    , AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN => 'Saisie de cases à cocher cachées par défaut'
+	    , AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN_REGIME => 'Saisie de cases à cocher liées au régime de l\'élève cachées par défaut'
 	    , AbsenceEleveType::MODE_INTERFACE_DISCIPLINE => 'Saisie d\'un incident disciplinaire');
 
 	/**

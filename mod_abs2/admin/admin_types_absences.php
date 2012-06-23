@@ -220,6 +220,7 @@ echo add_token_field();
 		--><option value='DISCIPLINE' <?php  if ($type != null && $type->getModeInterface() == 'DISCIPLINE') {echo "selected='selected'";} ?>>Saisir un incident disciplinaire</option>
 		<option value='CHECKBOX' <?php  if ($type != null && $type->getModeInterface() == 'CHECKBOX') {echo "selected='selected'";} ?>><?php echo AbsenceEleveType::$LISTE_LABEL_TYPE_SAISIE[AbsenceEleveType::MODE_INTERFACE_CHECKBOX]?></option>
 	    <option value='CHECKBOX_HIDDEN' <?php  if ($type != null && $type->getModeInterface() == 'CHECKBOX_HIDDEN') {echo "selected='selected'";} ?>><?php echo AbsenceEleveType::$LISTE_LABEL_TYPE_SAISIE[AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN]?></option>
+	    <option value='CHECKBOX_HIDDEN_REGIME' <?php  if ($type != null && $type->getModeInterface() == 'CHECKBOX_HIDDEN_REGIME') {echo "selected='selected'";} ?>><?php echo AbsenceEleveType::$LISTE_LABEL_TYPE_SAISIE[AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN_REGIME]?></option>
 	     </select>
 	   </td>
         <td>
