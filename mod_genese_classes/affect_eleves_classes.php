@@ -1576,16 +1576,21 @@ $_POST['projet']=	4eme_vers_3eme
 				}
 				else {
 		
-					echo "<tr id='tr_eleve_$cpt' class='white_hover'>\n";
+					//echo "<tr id='tr_eleve_$cpt' class='white_hover'>\n";
+					echo "<tr id='tr_eleve_$cpt' class='white_hover' onmouseover=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.color='red';\" onmouseout=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.color='';\">\n";
 					echo "<td>\n";
 					echo "<a name='eleve$cpt'></a>\n";
 					if(nom_photo($lig->elenoet)) {
 						echo "<a href='#eleve$cpt' onclick=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);return false;\">";
+						echo "<span id='nom_prenom_eleve_numero_$cpt'>";
 						echo mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
+						echo "</span>";
 						echo "</a>\n";
 					}
 					else {
+						echo "<span id='nom_prenom_eleve_numero_$cpt'>";
 						echo mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
+						echo "</span>";
 					}
 					echo "<input type='hidden' name='eleve[$cpt]' value='$lig->login' />\n";
 					echo "</td>\n";
