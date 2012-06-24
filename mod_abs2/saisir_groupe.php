@@ -388,8 +388,9 @@ if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getSta
 $eleve_col = new PropelCollection();
 if (isset($current_groupe) && $current_groupe != null) {
     $query = EleveQuery::create();
-    if ($current_groupe->getPeriodeNoteOuverte() != null) {
-        $query->useJEleveGroupeQuery()->filterByGroupe($current_groupe)->filterByPeriode($current_groupe->getPeriodeNoteOuverte()->getNumPeriode())->endUse();
+    $periode_cur = $current_groupe->getPeriodeNote($dt_date_absence_eleve);
+    if ($periode_cur != null) {
+        $query->useJEleveGroupeQuery()->filterByGroupe($current_groupe)->filterByPeriode($periode_cur->getNumPeriode())->endUse();
     } else {
         $query->useJEleveGroupeQuery()->filterByGroupe($current_groupe)->endUse();
     }
@@ -414,8 +415,9 @@ if (isset($current_groupe) && $current_groupe != null) {
             ->find();
 } else if (isset($current_classe) && $current_classe != null) {
     $query = EleveQuery::create();
-    if ($current_classe->getPeriodeNoteOuverte() != null) {
-        $query->useJEleveClasseQuery()->filterByClasse($current_classe)->filterByPeriode($current_classe->getPeriodeNoteOuverte()->getNumPeriode())->endUse();
+    $periode_cur = $current_classe->getPeriodeNote($dt_date_absence_eleve);
+    if ($periode_cur != null) {
+        $query->useJEleveClasseQuery()->filterByClasse($current_classe)->filterByPeriode($periode_cur->getNumPeriode())->endUse();
     } else {
         $query->useJEleveClasseQuery()->filterByClasse($current_classe)->endUse();
     }
