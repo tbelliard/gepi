@@ -5,6 +5,8 @@
 
 Gepi-1.6.2 (Version de développement)
 ===========================
+- Bulletins: - Affichage (à des fins de contrôle) des coef et profs associés aux enseignements avant génération des bulletins.
+             - Possibilité d'afficher tous les PP d'une classe et non seulement celui associé à l'élève sur les bulletins PDF.
 - ...
 
 Gepi-1.6.1 (10/06/2012)
