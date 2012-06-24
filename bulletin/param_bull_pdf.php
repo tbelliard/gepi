@@ -354,6 +354,14 @@ if(isset($_POST['valide_modif_model'])) {
 	else { if (isset($_GET['taille_titre_bloc_avis_conseil'])) { $taille_titre_bloc_avis_conseil = $_GET['taille_titre_bloc_avis_conseil']; } if (isset($_POST['taille_titre_bloc_avis_conseil'])) { $taille_titre_bloc_avis_conseil = $_POST['taille_titre_bloc_avis_conseil']; } }
 	if (empty($_GET['taille_profprincipal_bloc_avis_conseil']) and empty($_POST['taille_profprincipal_bloc_avis_conseil'])) { $taille_profprincipal_bloc_avis_conseil = ''; }
 	else { if (isset($_GET['taille_profprincipal_bloc_avis_conseil'])) { $taille_profprincipal_bloc_avis_conseil = $_GET['taille_profprincipal_bloc_avis_conseil']; } if (isset($_POST['taille_profprincipal_bloc_avis_conseil'])) { $taille_profprincipal_bloc_avis_conseil = $_POST['taille_profprincipal_bloc_avis_conseil']; } }
+
+
+	if (empty($_GET['afficher_tous_profprincipaux']) and empty($_POST['afficher_tous_profprincipaux'])) { $afficher_tous_profprincipaux = ''; }
+	else {
+		if (isset($_GET['afficher_tous_profprincipaux'])) { $afficher_tous_profprincipaux = $_GET['afficher_tous_profprincipaux']; }
+		if (isset($_POST['afficher_tous_profprincipaux'])) { $afficher_tous_profprincipaux = $_POST['afficher_tous_profprincipaux']; }
+	}
+
 	if (empty($_GET['affiche_fonction_chef']) and empty($_POST['affiche_fonction_chef'])) { $affiche_fonction_chef = ''; }
 	else { if (isset($_GET['affiche_fonction_chef'])) { $affiche_fonction_chef = $_GET['affiche_fonction_chef']; } if (isset($_POST['affiche_fonction_chef'])) { $affiche_fonction_chef = $_POST['affiche_fonction_chef']; } }
 	if (empty($_GET['taille_texte_fonction_chef']) and empty($_POST['taille_texte_fonction_chef'])) { $taille_texte_fonction_chef = ''; }
@@ -442,6 +450,7 @@ if(isset($_POST['valide_modif_model'])) {
 //==============================
 // Initialisation d'un tableau des champs de model_bulletin
 include('bulletin_pdf.inc.php');
+// Pour ajouter un paramètre, il faut ajouter la case à cocher dans la présente page (param_bull_pdf.php), mais il faut aussi déclarer le champ correspondant et sa valeur par défaut dans la page bulletin_pdf.inc.php
 //==============================
 
 //===================================================
@@ -1525,7 +1534,12 @@ function DecocheCheckbox() {
 			Largeur du bloc&nbsp;<input name="longeur_avis_cons" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($longeur_avis_cons)) { ?>value="<?php echo $longeur_avis_cons; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_avis_cons" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_avis_cons)) { ?>value="<?php echo $hauteur_avis_cons; ?>" <?php } ?> />mm&nbsp;<br />
 			Titre du bloc avis conseil de classe : <input name="titre_bloc_avis_conseil" size="19" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_bloc_avis_conseil)) { ?>value="<?php echo $titre_bloc_avis_conseil; ?>" <?php } ?> /><br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_titre_bloc_avis_conseil" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_titre_bloc_avis_conseil)) { ?>value="<?php echo $taille_titre_bloc_avis_conseil; ?>" <?php } ?> />pixel<br />
-			Taille du texte du professeur principal"&nbsp;<input name="taille_profprincipal_bloc_avis_conseil" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_profprincipal_bloc_avis_conseil)) { ?>value="<?php echo $taille_profprincipal_bloc_avis_conseil; ?>" <?php } ?> />pixel<br />
+			Taille du texte du <?php echo getSettingValue('gepi_prof_suivi');?>&nbsp;<input name="taille_profprincipal_bloc_avis_conseil" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_profprincipal_bloc_avis_conseil)) { ?>value="<?php echo $taille_profprincipal_bloc_avis_conseil; ?>" <?php } ?> />pixel<br />
+
+			<input name="afficher_tous_profprincipaux" id="afficher_tous_profprincipaux" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($afficher_tous_profprincipaux) and $afficher_tous_profprincipaux==='1') { ?>checked="checked"<?php } ?> /><label for='afficher_tous_profprincipaux'>&nbsp;Afficher les noms de tous les "<?php echo getSettingValue('gepi_prof_suivi');?>"<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;au lieu du seul <?php echo getSettingValue('gepi_prof_suivi');?> associé à l'élève<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;(<em>dans le cas où il y a plus d'un <?php echo getSettingValue('gepi_prof_suivi');?> associé<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;aux différents élèves de la classe</em>).</label><br />
 
 			<input name="cadre_avis_cons" id="cadre_avis_cons" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_avis_cons) and $cadre_avis_cons==='1') { ?>checked="checked"<?php } ?> /><label for='cadre_avis_cons'>&nbsp;Ajouter un encadrement</label><br />
 
