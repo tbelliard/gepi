@@ -97,15 +97,15 @@ if ($ok==0) {
 	echo "<b>Définition des marges du document&nbsp;:</b></p>\n";
 	echo "<table style='margin-left: 1em;' border='0'>\n";
 	$valeur=getPref($_SESSION['login'],'avis_pdf_marge_gauche',10);
-	echo "<tr><td>Marge à gauche&nbsp;:</td><td><input type=\"text\" name=\"marge_gauche\" id=\"marge_gauche\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,100);\" autocomplete=\"off\" /></td></tr>\n";
+	echo "<tr><td>Marge à gauche&nbsp;:</td><td><input type=\"text\" name=\"marge_gauche\" id=\"marge_gauche\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,100);\" autocomplete=\"off\" /></td><td>&nbsp;</td></tr>\n";
 	$valeur=getPref($_SESSION['login'],'avis_pdf_marge_droite',10);
-	echo "<tr><td>Marge à droite&nbsp;:</td><td><input type=\"text\" name=\"marge_droite\" id=\"marge_droite\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,100);\" autocomplete=\"off\" /></td></tr>\n";
+	echo "<tr><td>Marge à droite&nbsp;:</td><td><input type=\"text\" name=\"marge_droite\" id=\"marge_droite\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,100);\" autocomplete=\"off\" /></td><td>&nbsp;</td></tr>\n";
 	$valeur=getPref($_SESSION['login'],'avis_pdf_marge_haut',10);
-	echo "<tr><td>Marge du haut&nbsp;:</td><td><input type=\"text\" name=\"marge_haut\" id=\"marge_haut\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,150);\" autocomplete=\"off\" /></td></tr>\n";
+	echo "<tr><td>Marge du haut&nbsp;:</td><td><input type=\"text\" name=\"marge_haut\" id=\"marge_haut\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,150);\" autocomplete=\"off\" /></td><td>&nbsp;</td></tr>\n";
 	$valeur=getPref($_SESSION['login'],'avis_pdf_marge_bas',10);
-	echo "<tr><td>Marge du bas&nbsp;:</td><td><input type=\"text\" name=\"marge_bas\" id=\"marge_bas\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,150);\" autocomplete=\"off\" /></td></tr>\n";
+	echo "<tr><td>Marge du bas&nbsp;:</td><td><input type=\"text\" name=\"marge_bas\" id=\"marge_bas\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,150);\" autocomplete=\"off\" /></td><td>&nbsp;</td></tr>\n";
 	$valeur=getPref($_SESSION['login'],'avis_pdf_marge_reliure',1);
-	echo "<tr><td>Option marge reliure ?</td><td><input type=\"radio\" name=\"marge_reliure\" id=\"marge_reliure_1\" value=\"1\" ";
+	echo "<tr><td>Option marge reliure ?</td><td style='width:8em'><input type=\"radio\" name=\"marge_reliure\" id=\"marge_reliure_1\" value=\"1\" ";
 	if("$valeur"!="0") {
 		echo "checked ";
 	}
@@ -113,17 +113,19 @@ if ($ok==0) {
 	if("$valeur"=="0") {
 		echo "checked ";
 	}
-	echo "/><label for='marge_reliure_0'> Non</label></td></tr>\n";
+	echo "onchange=\"if(document.getElementById('marge_reliure_0').checked==true) {document.getElementById('avec_emplacement_trous_0').checked=true}\"";
+	echo "/><label for='marge_reliure_0'> Non</label></td><td>&nbsp;</td></tr>\n";
 	$valeur=getPref($_SESSION['login'],'avis_pdf_avec_emplacement_trous',1);
-	echo "<tr><td>Option emplacement des<br />perforations classeur  ?</td><td><input type=\"radio\" name=\"avec_emplacement_trous\" id=\"avec_emplacement_trous_1\" value=\"1\" ";
+	echo "<tr><td>Option emplacement des<br />perforations classeur&nbsp;?</td><td valign='top'><input type=\"radio\" name=\"avec_emplacement_trous\" id=\"avec_emplacement_trous_1\" value=\"1\" ";
 	if("$valeur"!="0") {
 		echo "checked ";
 	}
+	echo "onchange=\"if(document.getElementById('avec_emplacement_trous_1').checked==true) {document.getElementById('marge_reliure_1').checked=true}\"";
 	echo "/><label for='avec_emplacement_trous_1'> Oui</label> <input type=\"radio\" name=\"avec_emplacement_trous\" id=\"avec_emplacement_trous_0\" value=\"0\" ";
 	if("$valeur"=="0") {
 		echo "checked ";
 	}
-	echo "/><label for='avec_emplacement_trous_0'> Non</label></td></tr>\n";
+	echo "/><label for='avec_emplacement_trous_0'> Non</label></td><td valign='top'><p style='margin-left:1em;'><em>Sans effet, si on ne laisse pas de marge reliure</em></p></td></tr>\n";
 	echo "</table>\n";
 	echo "<br />\n";
 
@@ -143,7 +145,7 @@ if ($ok==0) {
 	echo "<b>Styles du tableau&nbsp;: </b><br />\n";
 	echo "<table style='margin-left: 1em;' border='0'>\n";
 	$valeur=getPref($_SESSION['login'],'avis_pdf_une_seule_page',1);
-	echo "<tr><td>Tout sur une seule page ?</td><td><input type=\"radio\" name=\"une_seule_page\" id=\"une_seule_page_1\" value=\"1\" ";
+	echo "<tr><td>Tout sur une seule page&nbsp;?</td><td style='width:8em'><input type=\"radio\" name=\"une_seule_page\" id=\"une_seule_page_1\" value=\"1\" ";
 	if("$valeur"!="0") {
 		echo "checked ";
 	}
@@ -151,11 +153,11 @@ if ($ok==0) {
 	if("$valeur"=="0") {
 		echo "checked ";
 	}
-	echo "/><label for='une_seule_page_0'> Non</label></td></tr>\n";
+	echo "/><label for='une_seule_page_0'> Non</label></td><td>&nbsp;</td></tr>\n";
 	$valeur=getPref($_SESSION['login'],'avis_pdf_h_ligne',8);
-	echo "<tr><td>Hauteur d'une ligne&nbsp;:</td><td><input type=\"text\" name=\"h_ligne\" id=\"h_ligne\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,100);\" autocomplete=\"off\" /> </td></tr>\n";
+	echo "<tr><td valign='top'>Hauteur d'une ligne&nbsp;:</td><td valign='top'><input type=\"text\" name=\"h_ligne\" id=\"h_ligne\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,100);\" autocomplete=\"off\" /> </td><td><em>La hauteur de ligne demandée n'est prise en compte que dans le cas<br />où on n'impose pas d'afficher tout sur une seule page</em></td></tr>\n";
 	$valeur=getPref($_SESSION['login'],'avis_pdf_l_nomprenom',40);
-	echo "<tr><td>Largeur colonne Nom / Prénom&nbsp;:</td><td><input type=\"text\" name=\"l_nomprenom\" id=\"l_nomprenom\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,100);\" autocomplete=\"off\" /></td></tr>\n";
+	echo "<tr><td>Largeur colonne Nom / Prénom&nbsp;:</td><td><input type=\"text\" name=\"l_nomprenom\" id=\"l_nomprenom\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,100);\" autocomplete=\"off\" /></td><td>&nbsp;</td></tr>\n";
 	echo "</table>\n";
 	echo "<input value=\"1\" name=\"ok\" type=\"hidden\" />\n";
 	echo "<br />\n";
