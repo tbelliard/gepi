@@ -1240,8 +1240,10 @@ class class_page_accueil {
 			"Impression PDF de listes",
 			"Ceci vous permet d'imprimer en PDF des listes avec les ".$this->gepiSettings['denomination_eleves'].", à l'unité ou en série. L'apparence des listes est paramétrable.");
 
-	if(($this->statutUtilisateur=='scolarite')||(($this->statutUtilisateur=='professeur')
-			AND ($this->test_prof_suivi != "0"))){
+	if(($this->statutUtilisateur=='scolarite')||
+		(($this->statutUtilisateur=='professeur') AND ($this->test_prof_suivi != "0"))||
+		(($this->statutUtilisateur=='cpe') AND ((getSettingAOui('GepiRubConseilCpeTous'))||(getSettingAOui('GepiRubConseilCpe'))))
+	){
 	  $this->creeNouveauItem("/saisie/impression_avis.php",
 			  "Impression PDF des avis du conseil de classe",
 			  "Ceci vous permet d'imprimer en PDF la synthèse des avis du conseil de classe.");

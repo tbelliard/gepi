@@ -1209,9 +1209,9 @@ echo "<td class=cn valign='top'>";
 //echo "&nbsp;";
 echo "<p id='p_ramener_sur_N' style='display:none'><a href='#' onclick=\"afficher_div('div_ramener_sur_N','y',20,20); return false;\" target=\'_blank\'>Ramener sur N</a>";
 // 20120509
-if(getSettingAOui('cn_increment_notes')) {
+//if(getSettingAOui('cn_increment_notes')) {
 	echo " - <a href='#' onclick=\"affichage_modif_note();return false;\" title='Incrémenter/décrémenter les notes de $delta_modif_note'>+/-</a>";
-}
+//}
 echo "</p>";
 echo "<input type='hidden' name='cn_precision' id='cn_precision' value='' />\n";
 echo "</td>\n";
