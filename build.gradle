@@ -1,0 +1,10 @@
+import org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact
+
+ant.importBuild 'build.xml'
+configurations {
+  archives
+} 
+artifacts{
+    archives new DefaultPublishArtifact(ant.antProject.properties["branch_name"]+"/"+ant.antProject.properties["artifact_name"], "tar.gz", "tar.gz", null, new Date(), 
+					file("build/"+ant.antProject.properties["artifact_name"] + ".tar.gz"))
+}
