@@ -267,6 +267,14 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		$nb_ligne_demande = $nb_eleves;
 
 		$h_cell = $hauteur_disponible / $nb_ligne_demande ;
+
+		/*
+		$f=fopen("/tmp/debug_avis_pdf.txt","w+");
+		fwrite($f, "\$hauteur_disponible=$hauteur_disponible\n");
+		fwrite($f, "\$nb_ligne_demande=$nb_ligne_demande\n");
+		fwrite($f, "\$h_cell=$h_cell\n");
+		fclose($f);
+		*/
 	}
 
 	$pdf->AddPage("P");
@@ -383,7 +391,15 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 
 		//if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-5) {
 		//if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-$h_cell-5) {
-		if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-$MargeHaut-5) {
+		//if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-$MargeHaut-5) {
+		if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-$MargeHaut-2) {
+			/*
+			$f=fopen("/tmp/debug_avis_pdf.txt","a+");
+			fwrite($f, "\$y_tmp+\$h_cell=$y_tmp+$h_cell=".(strtr($y_tmp,",",".")+strtr($h_cell,",","."))."\n");
+			fwrite($f, "297-\$MargeBas-\$MargeHaut-5=".(297-$MargeBas-$MargeHaut-5)."\n");
+			fclose($f);
+			*/
+
 			// Haut du tableau pour la deuxieme, troisieme,... page de la classe
 			// Pour la deuxieme, troisieme,... page d'une classe, on n'a pas d'entete:
 			$y_top_tableau=$MargeHaut;
