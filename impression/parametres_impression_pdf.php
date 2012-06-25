@@ -430,16 +430,18 @@ echo "<div>\n
 		echo "<tr><td>Marge du haut&nbsp;:</td><td><input type=\"text\" name=\"marge_haut\" id=\"marge_haut\" size=\"2\" maxlength=\"2\" value=\"$marge_haut\" onkeydown=\"clavier_2(this.id,event,0,150);\" autocomplete=\"off\" /></td></tr>\n";
 		echo "<tr><td>Marge du bas&nbsp;:</td><td><input type=\"text\" name=\"marge_bas\" id=\"marge_bas\" size=\"2\" maxlength=\"2\" value=\"$marge_bas\" onkeydown=\"clavier_2(this.id,event,0,150);\" autocomplete=\"off\" /></td></tr>\n";
 
-		echo "<tr><td>Option marge reliure ?</td><td><input type=\"radio\" name=\"marge_reliure\" id=\"marge_reliure_1\" value=\"1\" ";
+		echo "<tr><td>Option marge reliure ?</td><td style='width:8em'><input type=\"radio\" name=\"marge_reliure\" id=\"marge_reliure_1\" value=\"1\" ";
 		if($marge_reliure==1) {echo "checked ";}
 		echo "/><label for='marge_reliure_1'> Oui</label> <input type=\"radio\" name=\"marge_reliure\" id=\"marge_reliure_0\" value=\"0\" ";
 		if($marge_reliure!=1) {echo "checked ";}
+		echo "onchange=\"if(document.getElementById('marge_reliure_0').checked==true) {document.getElementById('avec_emplacement_trous_0').checked=true}\"";
 		echo "/><label for='marge_reliure_0'> Non</label></td></tr>\n";
 		echo "<tr><td>Option emplacement des<br />perforations classeur  ?</td><td><input type=\"radio\" name=\"avec_emplacement_trous\" id=\"avec_emplacement_trous_1\" value=\"1\" ";
 		if($avec_emplacement_trous==1) {echo "checked ";}
+		echo "onchange=\"if(document.getElementById('avec_emplacement_trous_1').checked==true) {document.getElementById('marge_reliure_1').checked=true}\"";
 		echo "/><label for='avec_emplacement_trous_1'> Oui</label> <input type=\"radio\" name=\"avec_emplacement_trous\" id=\"avec_emplacement_trous_0\" value=\"0\" ";
 		if($avec_emplacement_trous!=1) {echo "checked ";}
-		echo "/><label for='avec_emplacement_trous_0'> Non</label></td></tr>\n";
+		echo "/><label for='avec_emplacement_trous_0'> Non</label></td><td valign='top'><p style='margin-left:1em;'><em>Sans effet, si on ne laisse pas de marge reliure</em></p></td></tr>\n";
 		echo "</table>\n";
 
 		echo "<br />\n";
@@ -467,22 +469,22 @@ echo "<div>\n
 		echo "<br />\n";
 		echo "<b>Styles du tableau&nbsp;: </b><br />\n";
 		echo "<table style='margin-left: 1em;' border='0'>\n";
-		echo "<tr><td>Tout sur une seule page ?</td><td><input type=\"radio\" name=\"une_seule_page\" id=\"une_seule_page_1\" value=\"1\" ";
+		echo "<tr><td>Tout sur une seule page ?</td><td style='min-width:8em'><input type=\"radio\" name=\"une_seule_page\" id=\"une_seule_page_1\" value=\"1\" ";
 		if($une_seule_page==1) {echo "checked ";}
 		echo "/><label for='une_seule_page_1'> Oui</label> <input type=\"radio\" name=\"une_seule_page\" id=\"une_seule_page_0\" value=\"0\" ";
 		if($une_seule_page!=1) {echo "checked ";}
 		echo "/><label for='une_seule_page_0'> Non</label></td></tr>\n";
-		echo "<tr><td>Hauteur d'une ligne&nbsp;:</td><td><input type=\"text\" name=\"h_ligne\" id=\"h_ligne\" size=\"2\" maxlength=\"2\" value=\"$h_ligne\" onkeydown=\"clavier_2(this.id,event,0,300);\" autocomplete=\"off\" /> </td></tr>\n";
+		echo "<tr><td valign='top'>Hauteur d'une ligne&nbsp;:</td><td><input type=\"text\" name=\"h_ligne\" id=\"h_ligne\" size=\"2\" maxlength=\"2\" value=\"$h_ligne\" onkeydown=\"clavier_2(this.id,event,0,300);\" autocomplete=\"off\" /> <em>La hauteur de ligne demandée n'est prise en compte que dans le cas où on n'impose pas d'afficher tout sur une seule page</em></td></tr>\n";
 		echo "<tr><td>Largeur d'une colonne&nbsp;:</td><td><input type=\"text\" name=\"l_colonne\" id=\"l_colonne\" size=\"2\" maxlength=\"2\" value=\"$l_colonne\" onkeydown=\"clavier_2(this.id,event,0,300);\" autocomplete=\"off\" /> </td></tr>\n";
 		echo "<tr><td>Largeur colonne Nom / Prénom&nbsp;:</td><td><input type=\"text\" name=\"l_nomprenom\" id=\"l_nomprenom\" size=\"2\" maxlength=\"2\" value=\"$l_nomprenom\" onkeydown=\"clavier_2(this.id,event,0,300);\" autocomplete=\"off\" /> </td></tr>\n";
-		echo "<tr><td>Nombre ligne(s) avant&nbsp;:</td><td><input type=\"text\" name=\"nb_ligne_avant\" id=\"nb_ligne_avant\" size=\"2\" maxlength=\"2\" value=\"$nb_ligne_avant\" onkeydown=\"clavier_2(this.id,event,0,300);\" autocomplete=\"off\" /> \n";
+		echo "<tr><td>Nombre ligne(s) avant&nbsp;:</td><td><input type=\"text\" name=\"nb_ligne_avant\" id=\"nb_ligne_avant\" size=\"2\" maxlength=\"2\" value=\"$nb_ligne_avant\" onkeydown=\"clavier_2(this.id,event,0,300);\" autocomplete=\"off\" /> </td></tr>\n";
 		echo "<tr><td>Hauteur de la première ligne avant&nbsp;:</td><td><input type=\"text\" name=\"h_ligne1_avant\" id=\"h_ligne1_avant\" size=\"2\" maxlength=\"$h_ligne1_avant\" onkeydown=\"clavier_2(this.id,event,0,300);\" autocomplete=\"off\" value=\"25\" /> </td></tr>\n";
 		echo "<tr><td>Nombre ligne(s) après&nbsp;:</td><td><input type=\"text\" name=\"nb_ligne_apres\" id=\"nb_ligne_apres\" size=\"2\" maxlength=\"2\" value=\"$nb_ligne_apres\" onkeydown=\"clavier_2(this.id,event,0,300);\" autocomplete=\"off\" /> </td></tr>\n";
 		echo "<tr><td>Quadrillage total des cellules ?</td><td><input type=\"radio\" name=\"encadrement_total_cellules\" id=\"encadrement_total_cellules_1\" value=\"1\" ";
 		if($encadrement_total_cellules==1) {echo "checked ";}
 		echo "/><label for='encadrement_total_cellules_1'> Oui</label> [ <input type=\"radio\" name=\"encadrement_total_cellules\" id=\"encadrement_total_cellules_0\" value=\"0\" ";
 		if($encadrement_total_cellules!=1) {echo "checked ";}
-		echo "/><label for='encadrement_total_cellules_0'> Non</label> \n";
+		echo "/><label for='encadrement_total_cellules_0'> Non</label> </td></tr>\n";
 		echo "<tr><td>&nbsp;</td><td>Nombre de cellules quadrillées après le nom&nbsp;: <input type=\"text\" name=\"nb_cellules_quadrillees\" id=\"nb_cellules_quadrillees\" size=\"2\" maxlength=\"2\" value=\"$nb_cellules_quadrillees\" onkeydown=\"clavier_2(this.id,event,0,300);\" autocomplete=\"off\" /> ] </td></tr>\n";
 		echo "</table>\n";
 		echo "<br />\n";
