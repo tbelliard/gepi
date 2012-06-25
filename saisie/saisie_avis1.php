@@ -354,6 +354,10 @@ if(isset($id_class_suiv)){
 	if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>";}
 }
 //fin ajout lien classe précédente / classe suivante
+
+if((acces('/impression/avis_pdf.php', $_SESSION['statut']))&&(acces('/saisie/impression_avis.php', $_SESSION['statut']))) {
+	echo "| <a href='../saisie/impression_avis.php'>Impression PDF des avis</a>";
+}
 echo "</p>\n";
 
 echo "</form>\n";
@@ -543,10 +547,26 @@ if ($insert_mass_appreciation_type=="y") {
 	while ($k < $nb_periode) {
 		$alt=$alt*(-1);
 		if ($ver_periode[$k] != "N") {
-			echo "<tr class='lig$alt'>\n<td><span title=\"$gepiClosedPeriodLabel\">$nom_periode[$k]</span></td>\n";
+			echo "<tr class='lig$alt'>\n<td><span title=\"$gepiClosedPeriodLabel\">";
+			if(acces('/impression/avis_pdf.php', $_SESSION['statut'])) {
+				echo "<a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$k' onclick=\"return confirm_abandon (this, change, '$themessage')\">";
+				echo $nom_periode[$k];
+				echo "</a>";
+			}
+			else {
+				echo $nom_periode[$k];
+			}
+			echo "</span></td>\n";
 		} else {
 			echo "<tr class='lig$alt'>\n<td>";
-			echo $nom_periode[$k];
+			if(acces('/impression/avis_pdf.php', $_SESSION['statut'])) {
+				echo "<a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$k' onclick=\"return confirm_abandon (this, change, '$themessage')\">";
+				echo $nom_periode[$k];
+				echo "</a>";
+			}
+			else {
+				echo $nom_periode[$k];
+			}
 			echo "</td>\n";
 		}
 

@@ -136,6 +136,7 @@
 	$champ_bull_pdf[]="titre_bloc_avis_conseil";
 	$champ_bull_pdf[]="taille_titre_bloc_avis_conseil";
 	$champ_bull_pdf[]="taille_profprincipal_bloc_avis_conseil";
+	$champ_bull_pdf[]="afficher_tous_profprincipaux";
 	$champ_bull_pdf[]="affiche_fonction_chef";
 	$champ_bull_pdf[]="taille_texte_fonction_chef";
 	$champ_bull_pdf[]="taille_texte_identitee_chef";
@@ -333,6 +334,7 @@
 	$val_defaut_champ_bull_pdf["titre_bloc_avis_conseil"]="";
 	$val_defaut_champ_bull_pdf["taille_titre_bloc_avis_conseil"]=0;
 	$val_defaut_champ_bull_pdf["taille_profprincipal_bloc_avis_conseil"]=0;
+	$val_defaut_champ_bull_pdf["afficher_tous_profprincipaux"]=0;
 	$val_defaut_champ_bull_pdf["affiche_fonction_chef"]=0;
 	$val_defaut_champ_bull_pdf["taille_texte_fonction_chef"]=0;
 	$val_defaut_champ_bull_pdf["taille_texte_identitee_chef"]=0;

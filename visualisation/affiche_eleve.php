@@ -250,13 +250,15 @@ if(!is_numeric($id_classe)) {$id_classe=NULL;}
 if(
 	(
 		(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiRubConseilProf')=="yes"))||
-		(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiRubConseilScol')=="yes"))
+		(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiRubConseilScol')=="yes"))||
+		(($_SESSION['statut']=='cpe')&&((getSettingValue('GepiRubConseilCpe')=="yes")||(getSettingValue('GepiRubConseilCpeTous')=="yes")))
 	)&&(isset($_POST['enregistrer_avis']))&&($_POST['enregistrer_avis']=="y")
 ) {
 	check_token();
 
 	$eleve_saisie_avis = isset($_POST['eleve_saisie_avis']) ? $_POST['eleve_saisie_avis'] : NULL;
 	// Contrôler les caractères utilisés...
+	$eleve_saisie_avis=preg_replace("/[^A-Za-z0-9_.-]/","",$eleve_saisie_avis);
 
 	$num_periode_saisie = isset($_POST['num_periode_saisie']) ? $_POST['num_periode_saisie'] : NULL;
 
@@ -283,13 +285,27 @@ if(
 									jgp.login ='".$_SESSION['login']."';";
 			$verif=mysql_query($sql);
 			if (mysql_num_rows($verif)==0) {
-				tentative_intrusion(2, "Tentative de saisie d'avis du conseil de classe pour un élève dont vous n'êtes pas professeur principal.");
-				$mess=rawurlencode("Tentative de saisie d'avis du conseil de classe pour un élève non inscrit dans la classe.");
+				tentative_intrusion(2, "Tentative de saisie d'avis du conseil de classe pour un élève ($eleve_saisie_avis) dont vous n'êtes pas ".getSettingValue('gepi_prof_suivi').".");
+				$mess=rawurlencode("Tentative de saisie d'avis du conseil de classe pour un élève dont vous n'êtes pas ".getSettingValue('gepi_prof_suivi').".");
 				header("Location: ../accueil.php?msg=$mess");
 				die();
 			}
 		}
-		else {
+		elseif($_SESSION['statut']=='cpe') {
+			if(getSettingValue('GepiRubConseilCpeTous')!="yes") {
+				$sql="SELECT 1=1 FROM j_eleves_cpe
+								WHERE e_login='$eleve_saisie_avis' AND
+										cpe_login ='".$_SESSION['login']."';";
+				$verif=mysql_query($sql);
+				if (mysql_num_rows($verif)==0) {
+					tentative_intrusion(2, "Tentative de saisie d'avis du conseil de classe pour un élève ($eleve_saisie_avis) dont vous n'êtes pas CPE.");
+					$mess=rawurlencode("Tentative de saisie d'avis du conseil de classe pour un élève non inscrit dans la classe.");
+					header("Location: ../accueil.php?msg=$mess");
+					die();
+				}
+			}
+		}
+		elseif($_SESSION['statut']=='scolarite') {
 			// Compte scolarité
 			$sql="SELECT 1=1 FROM j_scol_classes jsc,
 								j_eleves_classes jec
@@ -299,11 +315,17 @@ if(
 								jsc.login='".$_SESSION['login']."';";
 			$verif=mysql_query($sql);
 			if (mysql_num_rows($verif)==0) {
-				tentative_intrusion(2, "Tentative de saisie d'avis du conseil de classe pour un élève d'une classe dont le compte scolarité n'est pas responsable.");
+				tentative_intrusion(2, "Tentative de saisie d'avis du conseil de classe pour un élève ($eleve_saisie_avis) d'une classe dont le compte scolarité n'est pas responsable.");
 				$mess=rawurlencode("Tentative de saisie d'avis du conseil de classe pour un élève d'une classe dont vous n'êtes pas responsable.");
 				header("Location: ../accueil.php?msg=$mess");
 				die();
 			}
+		}
+		else {
+			tentative_intrusion(2, "Tentative de saisie d'avis du conseil de classe pour ".$eleve_saisie_avis.".");
+			$mess=rawurlencode("Tentative non autorisée de saisie d'avis du conseil de classe.");
+			header("Location: ../accueil.php?msg=$mess");
+			die();
 		}
 
 		$sql="SELECT verouiller FROM periodes WHERE id_classe='$id_classe' AND num_periode='$num_periode_saisie';";
@@ -345,6 +367,41 @@ if(
 		else {
 			$msg = "La période sur laquelle vous voulez enregistrer est verrouillée";
 		}
+
+		if((isset($_POST['passer_a_recapitulatif_avis']))&&($_POST['passer_a_recapitulatif_avis']=='y')&&(acces('/saisie/saisie_avis2.php', $_SESSION['statut']))) {
+
+			if(
+				(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiRubConseilProf')=="yes"))||
+				(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiRubConseilScol')=="yes"))||
+				(($_SESSION['statut']=='cpe')&&((getSettingValue('GepiRubConseilCpe')=="yes")||(getSettingValue('GepiRubConseilCpeTous')=="yes")))
+			) {
+
+				$droit_saisie_avis="y";
+				// Contrôler si le prof est PP de l'élève
+				if($_SESSION['statut']=='professeur') {
+					$droit_saisie_avis="n";
+					$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' AND id_classe='$id_classe';";
+					$verif_pp=mysql_query($sql);
+					if(mysql_num_rows($verif_pp)>0) {
+						$droit_saisie_avis="y";
+					}
+				}
+				elseif(($_SESSION['statut']=='cpe')&&(getSettingValue('GepiRubConseilCpeTous')!="yes")) {
+					$droit_saisie_avis="n";
+					$sql="SELECT 1=1 FROM j_eleves_cpe jecpe, j_eleves_classes jec WHERE jecpe.cpe_login='".$_SESSION['login']."' AND jecpe.e_login=jec.login AND jec.id_classe='".$id_classe."';";
+					$verif_cpe=mysql_query($sql);
+					if(mysql_num_rows($verif_cpe)>0) {
+						$droit_saisie_avis="y";
+					}
+				}
+
+				if($droit_saisie_avis=="y") {
+					header("Location: ../saisie/saisie_avis2.php?id_classe=$id_classe&periode_num=$num_periode_saisie&msg=".rawurlencode($msg));
+					die();
+				}
+			}
+		}
+
 	}
 	else {echo "Periode non numérique: $num_periode_saisie<br />";}
 	unset($eleve_saisie_avis);
@@ -1782,10 +1839,10 @@ function eleve_suivant() {
 		echo "<script type='text/javascript'>desactivation_infobulle='n';</script>\n";
 	}
 
-	
+	echo "<input type='hidden' id='passer_a_recapitulatif_avis' name='passer_a_recapitulatif_avis' value='n' />";
+
 	//echo "<input type='text' id='id_truc' name='truc' value='' />";
 	//echo "</form>\n";
-
 
 	//================
 	// Déplacement: boireaus 20090727
@@ -1796,7 +1853,8 @@ function eleve_suivant() {
 	//if(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiRubConseilProf')=="yes")) {
 	if(
 		(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiRubConseilProf')=="yes"))||
-		(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiRubConseilScol')=="yes"))
+		(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiRubConseilScol')=="yes"))||
+		(($_SESSION['statut']=='cpe')&&((getSettingValue('GepiRubConseilCpe')=="yes")||(getSettingValue('GepiRubConseilCpeTous')=="yes")))
 	) {
 
 		$droit_saisie_avis="y";
@@ -1806,6 +1864,14 @@ function eleve_suivant() {
 			$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' AND login='".$eleve1."' AND id_classe='$id_classe';";
 			$verif_pp=mysql_query($sql);
 			if(mysql_num_rows($verif_pp)>0) {
+				$droit_saisie_avis="y";
+			}
+		}
+		elseif(($_SESSION['statut']=='cpe')&&(getSettingValue('GepiRubConseilCpeTous')!="yes")) {
+			$droit_saisie_avis="n";
+			$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."' AND e_login='".$eleve1."';";
+			$verif_cpe=mysql_query($sql);
+			if(mysql_num_rows($verif_cpe)>0) {
 				$droit_saisie_avis="y";
 			}
 		}
@@ -1869,6 +1935,13 @@ function eleve_suivant() {
 			}
 			//alert('La mention actuelle est : '+document.getElementById('current_eleve_login_me').value+'.');
 
+			if(mode=='recap') {
+				document.getElementById('passer_a_recapitulatif_avis').value='y';
+			}
+			else {
+				document.getElementById('passer_a_recapitulatif_avis').value='n';
+			}
+
 			if(mode=='suivant') {
 				eleve_suivant();
 			}
@@ -1930,13 +2003,17 @@ function eleve_suivant() {
 							//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
 							if($suivant<$nombreligne+1) {
-								$texte.=" <input type='button' NAME='ok1' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+								$texte.=" <input type='button' NAME='ok2' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+							}
+							elseif(acces('/saisie/saisie_avis2.php', $_SESSION['statut'])) {
+								$texte.=" <input type='button' NAME='ok2' value='Enregistrer et passer au récapitulatif' onClick=\"save_avis('recap');\" />\n";
 							}
 	
 							// METTRE AUSSI UN BOUTON POUR Enregistrer puis lancer eleve_suivant();
 							//require("insere_cmnt_type.php");
 							if((($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiRubConseilProf")=='yes')&&(getSettingValue('CommentairesTypesPP')=='yes'))
-							||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))) {
+							||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))
+							||(($_SESSION['statut'] == 'cpe')&&((getSettingValue("GepiRubConseilCpe")=='yes')||(getSettingValue("GepiRubConseilCpeTous")=='yes'))&&(getSettingValue('CommentairesTypesCpe')=='yes'))) {
 								$texte.=div_cmnt_type();
 							}
 
@@ -1987,13 +2064,17 @@ function eleve_suivant() {
 							//$texte_saisie_avis_fixe.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte_saisie_avis_fixe.="<br /><input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
 							if($suivant<$nombreligne+1) {
-								$texte_saisie_avis_fixe.=" <input type='button' NAME='ok1' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+								$texte_saisie_avis_fixe.=" <input type='button' NAME='ok2' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
 							}
-	
+							elseif(acces('/saisie/saisie_avis2.php', $_SESSION['statut'])) {
+								$texte_saisie_avis_fixe.=" <input type='button' NAME='ok2' value='Enregistrer et passer au récapitulatif' onClick=\"save_avis('recap');\" />\n";
+							}
+
 							// METTRE AUSSI UN BOUTON POUR Enregistrer puis lancer eleve_suivant();
 							//require("insere_cmnt_type.php");
 							if((($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiRubConseilProf")=='yes')&&(getSettingValue('CommentairesTypesPP')=='yes'))
-							||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))) {
+							||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))
+							||(($_SESSION['statut'] == 'cpe')&&((getSettingValue("GepiRubConseilCpe")=='yes')||(getSettingValue("GepiRubConseilCpeTous")=='yes'))&&(getSettingValue('CommentairesTypesCpe')=='yes'))) {
 								$texte_saisie_avis_fixe.=div_cmnt_type();
 							}
 
@@ -2059,6 +2140,13 @@ function eleve_suivant() {
 		}
 		//alert('La mention actuelle est : '+document.getElementById('current_eleve_login_me').value+'.');
 
+		if(mode=='recap') {
+			document.getElementById('passer_a_recapitulatif_avis').value='y';
+		}
+		else {
+			document.getElementById('passer_a_recapitulatif_avis').value='n';
+		}
+
 		if(mode=='suivant') {
 			eleve_suivant();
 		}
@@ -2115,13 +2203,17 @@ function eleve_suivant() {
 							//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
 							if($suivant<$nombreligne+1) {
-								$texte.=" <input type='button' NAME='ok1' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+								$texte.=" <input type='button' NAME='ok2' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+							}
+							elseif(acces('/saisie/saisie_avis2.php', $_SESSION['statut'])) {
+								$texte.=" <input type='button' NAME='ok2' value='Enregistrer et passer au récapitulatif' onClick=\"save_avis('recap');\" />\n";
 							}
 	
 							// METTRE AUSSI UN BOUTON POUR Enregistrer puis lancer eleve_suivant();
 							//require("insere_cmnt_type.php");
 							if((($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiRubConseilProf")=='yes')&&(getSettingValue('CommentairesTypesPP')=='yes'))
-							||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))) {
+							||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))
+							||(($_SESSION['statut'] == 'cpe')&&((getSettingValue("GepiRubConseilCpe")=='yes')||(getSettingValue("GepiRubConseilCpeTous")=='yes')))) {
 								$texte.=div_cmnt_type();
 							}
 
@@ -2172,13 +2264,17 @@ function eleve_suivant() {
 							//$texte_saisie_avis_fixe.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte_saisie_avis_fixe.="<br /><input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
 							if($suivant<$nombreligne+1) {
-								$texte_saisie_avis_fixe.=" <input type='button' NAME='ok1' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+								$texte_saisie_avis_fixe.=" <input type='button' NAME='ok2' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+							}
+							elseif(acces('/saisie/saisie_avis2.php', $_SESSION['statut'])) {
+								$texte_saisie_avis_fixe.=" <input type='button' NAME='ok2' value='Enregistrer et passer au récapitulatif' onClick=\"save_avis('recap');\" />\n";
 							}
 	
 							// METTRE AUSSI UN BOUTON POUR Enregistrer puis lancer eleve_suivant();
 							//require("insere_cmnt_type.php");
 							if((($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiRubConseilProf")=='yes')&&(getSettingValue('CommentairesTypesPP')=='yes'))
-							||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))) {
+							||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))
+							||(($_SESSION['statut'] == 'cpe')&&((getSettingValue("GepiRubConseilCpe")=='yes')||(getSettingValue("GepiRubConseilCpeTous")=='yes'))&&(getSettingValue('CommentairesTypesCpe')=='yes'))) {
 								$texte_saisie_avis_fixe.=div_cmnt_type();
 							}
 

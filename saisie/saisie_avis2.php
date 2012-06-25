@@ -331,13 +331,17 @@ if(isset($id_class_suiv)){
 	if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv&amp;periode_num=$periode_num' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>";}
 }
 //fin ajout lien classe précédente / classe suivante
+
+if(acces('/impression/avis_pdf.php', $_SESSION['statut'])) {
+	echo "| <a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$periode_num'>Impression PDF des avis</a>";
+}
 echo "</p>\n";
 
 echo "</form>\n";
 
 	?>
 
-	<p class='grand'>Classe : <?php echo $classe_suivi; ?></p>
+	<p class='grand'>Classe&nbsp;: <strong><?php echo $classe_suivi; ?></strong></p>
 
 	<p>Cliquez sur le nom de l'élève pour lequel vous voulez entrer ou modifier l'appréciation.</p>
 	<table class='boireaus' border="1" cellspacing="2" cellpadding="5" width="100%" summary="Choix de l'élève">
@@ -354,7 +358,19 @@ echo "</form>\n";
 			if($avec_mentions=="y") {
 				echo " width='60%'";
 			}
-		?>><b><?php echo ucfirst($nom_periode[$periode_num]) ; ?> : avis du conseil de classe</b></th>
+		?>>
+			<?php
+				if($periode_num>1) {
+					echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=".($periode_num-1)."'><img src='../images/icons/back.png' width='16' height='16' title='Afficher la période précédente' /></a> ";
+				}
+			?>
+			<b><?php echo ucfirst($nom_periode[$periode_num]) ; ?> : avis du conseil de classe</b>
+			<?php
+				if($periode_num<count($nom_periode)) {
+					echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=".($periode_num+1)."'><img src='../images/icons/forward.png' width='16' height='16' title='Afficher la période suivante' /></a> ";
+				}
+			?>
+		</th>
 		<?php
 			if($avec_mentions=="y") {
 				echo "<th><b>".ucfirst($gepi_denom_mention)."</b></th>\n";
@@ -392,6 +408,7 @@ echo "</form>\n";
 	$nombre_lignes = mysql_num_rows($appel_donnees_eleves);
 	$i = "0";
 	$alt=1;
+	$tab_mentions_distribuees=array();
 	while($i < $nombre_lignes) {
 		$current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
 		$ind_eleve_login_suiv = 0;
@@ -406,10 +423,19 @@ echo "</form>\n";
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
 		echo "<td>\n<a href = 'saisie_avis2.php?periode_num=$periode_num&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv#app'>$current_eleve_nom $current_eleve_prenom</a></td>\n";
-		echo "<td><span class=\"medium\">$current_eleve_avis&nbsp;</span></td>\n";
+		echo "<td><span class=\"medium\">".nl2br($current_eleve_avis)."&nbsp;</span></td>\n";
 		if($avec_mentions=="y") {
 			// *** AJOUT POUR LES MENTIONS
-			echo "<td><span class=\"medium\">".traduction_mention($current_eleve_mention)."</span></td>\n";
+			echo "<td><span class=\"medium\">";
+			$tmp_mention_courante=traduction_mention($current_eleve_mention);
+			echo $tmp_mention_courante;
+
+			if(($tmp_mention_courante!='')&&($tmp_mention_courante!='-')) {
+				$tab_mentions_distribuees[$current_eleve_mention]['mention']=$tmp_mention_courante;
+				if(!isset($tab_mentions_distribuees[$current_eleve_mention]['effectif'])) {$tab_mentions_distribuees[$current_eleve_mention]['effectif']=0;}
+				$tab_mentions_distribuees[$current_eleve_mention]['effectif']++;
+			}
+			echo "</span></td>\n";
 			// *** FIN D'AJOUT POUR LES MENTIONS ****
 		}
 		echo "</tr>\n";
@@ -417,11 +443,31 @@ echo "</form>\n";
 	}
 	echo "</table>\n";
 
+	if(count($tab_mentions_distribuees)>0) {
+		echo "<br />\n";
+		echo "<p class='bold'>Récapitulatif des mentions distribuées&nbsp;:</p>\n";
+		echo "<table class='boireaus'>\n";
+		echo "<tr class='lig$alt'>\n";
+		echo "<th>Mention</th>\n";
+		echo "<th>Effectif</th>\n";
+		echo "</tr>\n";
+		$alt=1;
+		foreach($tab_mentions_distribuees as $tab_mention) {
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt'>\n";
+			echo "<td>".$tab_mention['mention']."</td>\n";
+			echo "<td>".$tab_mention['effectif']."</td>\n";
+			echo "</tr>\n";
+		}
+		echo "</table>\n";
+	}
+
 	$sql="SELECT * FROM synthese_app_classe WHERE (id_classe='$id_classe' AND periode='$periode_num');";
 	$res_current_synthese=mysql_query($sql);
 	$current_synthese= @mysql_result($res_current_synthese, 0, "synthese");
 	if ($current_synthese=='') {$current_synthese='-';}
 
+	echo "<br />\n";
 	echo "<p><b>Synthèse des avis sur le groupe classe&nbsp;:</b></p>\n";
 	echo "<table class='boireaus' border='1' cellspacing='2' cellpadding='5' width='100%' summary='Synthese'>";
 	$alt=$alt*(-1);

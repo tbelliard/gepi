@@ -2544,6 +2544,24 @@ else {
 						}
 					}
 
+					// Récup infos des profs principaux (éventuellement multiples) associés à la classe:
+					$sql="SELECT DISTINCT u.login, u.nom, u.prenom, u.civilite FROM j_eleves_professeurs jep, utilisateurs u WHERE jep.id_classe='$id_classe' AND jep.professeur=u.login;";
+					$res_pp=mysql_query($sql);
+					//echo "$sql<br />";
+					if(mysql_num_rows($res_pp)>0) {
+						$tab_ele['pp_classe']=array();
+
+						$cpt_pp=0;
+						while($lig_pp=mysql_fetch_object($res_pp)) {
+							$tab_ele['pp_classe'][$cpt_pp]=array();
+							$tab_ele['pp_classe'][$cpt_pp]['login']=$lig_pp->login;
+							$tab_ele['pp_classe'][$cpt_pp]['nom']=$lig_pp->nom;
+							$tab_ele['pp_classe'][$cpt_pp]['prenom']=$lig_pp->prenom;
+							$tab_ele['pp_classe'][$cpt_pp]['civilite']=$lig_pp->civilite;
+							$cpt_pp++;
+						}
+					}
+
 					// Récup infos responsables
 					$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal FROM resp_pers rp,
 													resp_adr ra,

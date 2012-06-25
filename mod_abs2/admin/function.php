@@ -335,7 +335,7 @@ function ajoutTypesParDefaut() {
 	$type->setJustificationExigible(false);
 	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::SOUS_RESP_ETAB_NON_PRECISE);
 	$type->setManquementObligationPresence(AbsenceEleveType::MANQU_OBLIG_PRESE_NON_PRECISE);
-	$type->setModeInterface(AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN);
+	$type->setModeInterface(AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN_REGIME);
     $type->setIdLieu($id_lieu_etab);
 
 	$statut = new AbsenceEleveTypeStatutAutorise();

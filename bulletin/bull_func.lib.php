@@ -5392,12 +5392,18 @@ $hauteur_pris_app_abs=0;
 				// Le nom du professeur principal
 				$pp_classe[$i]="";
 				//if(isset($tab_bull['eleve'][$i]['pp']['login'])) {
-				if(isset($tab_bull['eleve'][$i]['pp'][0]['login'])) {
+				if($tab_modele_pdf["afficher_tous_profprincipaux"][$classe_id]==1) {
+					$index_pp='pp_classe';
+				}
+				else {
+					$index_pp='pp';
+				}
+				if(isset($tab_bull['eleve'][$i][$index_pp][0]['login'])) {
 					$pp_classe[$i]="<b>".ucfirst($gepi_prof_suivi)."</b> : ";
-					$pp_classe[$i].="<i>".affiche_utilisateur($tab_bull['eleve'][$i]['pp'][0]['login'],$tab_bull['eleve'][$i]['id_classe'])."</i>";
-					for($i_pp=1;$i_pp<count($tab_bull['eleve'][$i]['pp']);$i_pp++) {
+					$pp_classe[$i].="<i>".affiche_utilisateur($tab_bull['eleve'][$i][$index_pp][0]['login'],$tab_bull['eleve'][$i]['id_classe'])."</i>";
+					for($i_pp=1;$i_pp<count($tab_bull['eleve'][$i][$index_pp]);$i_pp++) {
 						$pp_classe[$i].=", ";
-						$pp_classe[$i].="<i>".affiche_utilisateur($tab_bull['eleve'][$i]['pp']['login'],$tab_bull['eleve'][$i]['id_classe'])."</i>";
+						$pp_classe[$i].="<i>".affiche_utilisateur($tab_bull['eleve'][$i][$index_pp][$i_pp]['login'],$tab_bull['eleve'][$i]['id_classe'])."</i>";
 					}
 				}
 				else {
