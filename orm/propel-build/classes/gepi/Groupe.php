@@ -314,7 +314,7 @@ class Groupe extends BaseGroupe {
 	}
 
  	/**
-	 * Retourne la periode de note actuelle pour une classe donnee.
+	 * Retourne la periode de note actuelle
 	 *
 	 * @return     PeriodeNote $periode la periode actuellement ouverte
 	 */
@@ -324,6 +324,25 @@ class Groupe extends BaseGroupe {
 		return null;
 	    } else {
 		return $classes->getFirst()->getPeriodeNoteOuverte();
+	    }
+	}
+
+	/**
+	 * Retourne la periode de note correspondante à la date donnée en paramètre.
+         * La recherche est faite sur un classe arbitraire associée au groupe
+         * On regarde proritairement les dates de fin des périodes de notes,
+         * puis les renseignements de l'edt.
+         * Si aucune période n'est trouvée on retourne la dernière période ouverte pour l'ordre chronologique,
+         * null sinon
+	 *
+	 * @return     PeriodeNote $periode la periode de la date précisée, ou null si non trouvé
+	 */
+	public function getPeriodeNote($v = 'now') {
+	    $classes = $this->getClasses();
+	    if ($classes->isEmpty()) {
+		return null;
+	    } else {
+		return $classes->getFirst()->getPeriodeNote($v);
 	    }
 	}
 
