@@ -105,7 +105,15 @@ if ($ok==0) {
 	$valeur=getPref($_SESSION['login'],'avis_pdf_marge_bas',10);
 	echo "<tr><td>Marge du bas&nbsp;:</td><td><input type=\"text\" name=\"marge_bas\" id=\"marge_bas\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,150);\" autocomplete=\"off\" /></td></tr>\n";
 	$valeur=getPref($_SESSION['login'],'avis_pdf_marge_reliure',1);
-	echo "<tr><td>Option marge reliure ?</td><td><input type=\"radio\" name=\"marge_reliure\" id=\"marge_reliure_1\" value=\"1\" checked /><label for='marge_reliure_1'> Oui</label> <input type=\"radio\" name=\"marge_reliure\" id=\"marge_reliure_0\" value=\"0\" /><label for='marge_reliure_0'> Non</label></td></tr>\n";
+	echo "<tr><td>Option marge reliure ?</td><td><input type=\"radio\" name=\"marge_reliure\" id=\"marge_reliure_1\" value=\"1\" ";
+	if("$valeur"!="0") {
+		echo "checked ";
+	}
+	echo "/><label for='marge_reliure_1'> Oui</label> <input type=\"radio\" name=\"marge_reliure\" id=\"marge_reliure_0\" value=\"0\" ";
+	if("$valeur"=="0") {
+		echo "checked ";
+	}
+	echo "/><label for='marge_reliure_0'> Non</label></td></tr>\n";
 	$valeur=getPref($_SESSION['login'],'avis_pdf_avec_emplacement_trous',1);
 	echo "<tr><td>Option emplacement des<br />perforations classeur  ?</td><td><input type=\"radio\" name=\"avec_emplacement_trous\" id=\"avec_emplacement_trous_1\" value=\"1\" ";
 	if("$valeur"!="0") {
