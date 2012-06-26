@@ -210,7 +210,7 @@ foreach($Eleves as $Eleve) {
                             if(($nom_resp[1]!=$nom_resp[2])&&($nom_resp[2]!="")) {
                                 // Les deux responsables légaux n'ont pas le même nom
                                     $ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1];
-                                    $ligne1.="<br />\n";
+                                    $ligne1.="\n";
                                     $ligne1.="et ";
                                     $ligne1.=$civilite_resp[2]." ".$nom_resp[2]." ".$prenom_resp[2];
                             } else {
@@ -235,18 +235,18 @@ foreach($Eleves as $Eleve) {
             }
             $ligne2=$adr1_resp[1];
             if($adr2_resp[1]!=""){
-                    $ligne2.="<br />\n".$adr2_resp[1];
+                    $ligne2.="\n".$adr2_resp[1];
             }
             if($adr3_resp[1]!=""){
-                    $ligne2.="<br />\n".$adr3_resp[1];
+                    $ligne2.="\n".$adr3_resp[1];
             }
             if($adr4_resp[1]!=""){
-                    $ligne2.="<br />\n".$adr4_resp[1];
+                    $ligne2.="\n".$adr4_resp[1];
             }
             $ligne3=$cp_resp[1]." ".$commune_resp[1];
             if(($pays_resp[1]!="")&&(mb_strtolower($pays_resp[1])!=mb_strtolower($gepiSettings['gepiSchoolPays']))) {
                     if($ligne3!=" "){
-                            $ligne3.="<br />";
+                            $ligne3.="\n";
                     }
                     $ligne3.="$pays_resp[1]";
             }
