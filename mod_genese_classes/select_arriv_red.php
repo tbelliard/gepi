@@ -159,6 +159,7 @@ if(!isset($choix)) {
 		echo "</th>\n";
 		echo "</tr>\n";
 		$alt=1;
+		$cpt=0;
 		while($lig=mysql_fetch_object($res)) {
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
@@ -166,15 +167,16 @@ if(!isset($choix)) {
 			$sql="SELECT nom,prenom FROM eleves WHERE login='$lig->login';";
 			$res2=mysql_query($sql);
 			$lig2=mysql_fetch_object($res2);
-			echo strtoupper($lig2->nom)." ".ucfirst(mb_strtolower($lig2->prenom));
+			echo "<label for='suppr_$cpt'>".strtoupper($lig2->nom)." ".ucfirst(mb_strtolower($lig2->prenom))."</label>";
 			echo "</td>\n";
 			echo "<td>\n";
 			echo $lig->statut;
 			echo "</td>\n";
 			echo "<td>\n";
-			echo "<input type='checkbox' name='suppr[]' value='$lig->login' />\n";
+			echo "<input type='checkbox' id='suppr_$cpt' name='suppr[]' value='$lig->login' />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
+			$cpt++;
 		}
 		echo "</table>\n";
 		echo "<input type='hidden' name='projet' value='$projet' />\n";
@@ -260,7 +262,7 @@ elseif($choix=='Red') {
 			while($lig_ele=mysql_fetch_object($res_ele)) {
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt'>\n";
-				echo "<td style='text-align:left;'>".$lig_ele->nom." ".$lig_ele->prenom."</td>\n";
+				echo "<td style='text-align:left;'><label for='tab_selection_ele_".$i."_".$cpt."'>".$lig_ele->nom." ".$lig_ele->prenom."</label></td>\n";
 
 				echo "<td><input type='checkbox' name='ele_login[]' id='tab_selection_ele_".$i."_".$cpt."' value=\"".$lig_ele->login."\" ";
 
@@ -334,7 +336,7 @@ elseif($choix=='Arriv') {
 	while($lig_ele=mysql_fetch_object($res_ele)) {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
-		echo "<td style='text-align:left;'>".$lig_ele->nom." ".$lig_ele->prenom."</td>\n";
+		echo "<td style='text-align:left;'><label for='tab_selection_ele_".$cpt."'>".$lig_ele->nom." ".$lig_ele->prenom."</label></td>\n";
 
 		echo "<td><input type='checkbox' name='ele_login[]' id='tab_selection_ele_".$cpt."' value=\"".$lig_ele->login."\" ";
 
