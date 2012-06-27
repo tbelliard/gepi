@@ -1103,6 +1103,7 @@ else {
 
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 
+	if(!isset($nom_requete)) {$nom_requete="";}
 	echo "<p>Nom de la requête&nbsp;: <input type='text' name='nom_requete' value=\"$nom_requete\" ></p>\n";
 	echo "<input type='hidden' name='id_aff' value=\"$id_aff\" >\n";
 	echo "<input type='hidden' name='id_req' value=\"$id_req\" >\n";
