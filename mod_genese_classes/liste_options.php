@@ -112,6 +112,7 @@ if(isset($_POST['valider_param'])) {
 		$cpt=0;
 		for($i=0;$i<count($id_classe);$i++) {
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$i]' ORDER BY nom,prenom;";
+			//$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$i]' AND (e.date_sortie IS NULL OR e.date_sortie NOT LIKE '20%') ORDER BY nom,prenom;";
 			$res=mysql_query($sql);
 			while($lig=mysql_fetch_object($res)) {
 				$ligne="";
@@ -291,6 +292,7 @@ if(isset($_POST['valider_param'])) {
 
 		for($k=0;$k<count($id_classe);$k++) {
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$k]' ORDER BY nom,prenom;";
+			//$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$k]' AND (e.date_sortie IS NULL OR e.date_sortie NOT LIKE '20%') ORDER BY nom,prenom;";
 			$res=mysql_query($sql);
 			while($lig=mysql_fetch_object($res)) {
 				$ecriture=fwrite($fichier_content_xml,'<table:table-row table:style-name="ro2">');

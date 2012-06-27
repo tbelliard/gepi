@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -32,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 //======================================================================================
 
@@ -159,6 +159,7 @@ if(!isset($choix)) {
 		echo "</th>\n";
 		echo "</tr>\n";
 		$alt=1;
+		$cpt=0;
 		while($lig=mysql_fetch_object($res)) {
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
@@ -166,15 +167,16 @@ if(!isset($choix)) {
 			$sql="SELECT nom,prenom FROM eleves WHERE login='$lig->login';";
 			$res2=mysql_query($sql);
 			$lig2=mysql_fetch_object($res2);
-			echo strtoupper($lig2->nom)." ".ucfirst(mb_strtolower($lig2->prenom));
+			echo "<label for='suppr_$cpt'>".strtoupper($lig2->nom)." ".ucfirst(mb_strtolower($lig2->prenom))."</label>";
 			echo "</td>\n";
 			echo "<td>\n";
 			echo $lig->statut;
 			echo "</td>\n";
 			echo "<td>\n";
-			echo "<input type='checkbox' name='suppr[]' value='$lig->login' />\n";
+			echo "<input type='checkbox' id='suppr_$cpt' name='suppr[]' value='$lig->login' />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
+			$cpt++;
 		}
 		echo "</table>\n";
 		echo "<input type='hidden' name='projet' value='$projet' />\n";
@@ -255,12 +257,20 @@ elseif($choix=='Red') {
 				WHERE jec.login=e.login AND
 							jec.id_classe='".$id_classe[$i]."'
 				ORDER BY e.nom,e.prenom;";
+			/*
+			$sql="SELECT DISTINCT e.* FROM eleves e,
+							j_eleves_classes jec
+				WHERE jec.login=e.login AND
+							jec.id_classe='".$id_classe[$i]."'
+							AND (e.date_sortie IS NULL OR e.date_sortie NOT LIKE '20%')
+				ORDER BY e.nom,e.prenom;";
+			*/
 			$res_ele=mysql_query($sql);
 			$alt=1;
 			while($lig_ele=mysql_fetch_object($res_ele)) {
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt'>\n";
-				echo "<td style='text-align:left;'>".$lig_ele->nom." ".$lig_ele->prenom."</td>\n";
+				echo "<td style='text-align:left;'><label for='tab_selection_ele_".$i."_".$cpt."'>".$lig_ele->nom." ".$lig_ele->prenom."</label></td>\n";
 
 				echo "<td><input type='checkbox' name='ele_login[]' id='tab_selection_ele_".$i."_".$cpt."' value=\"".$lig_ele->login."\" ";
 
@@ -324,25 +334,38 @@ elseif($choix=='Arriv') {
 	echo "<th>\n";
 	echo "<a href=\"javascript:CocheEleves();changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheEleves();changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
 	echo "</th>\n";
+	echo "<th>\n";
+	echo "<span title=\"Date de sortie de l'établissement\">Sortie</span>";
+	echo "</th>\n";
 	echo "</tr>\n";
 
 	$sql="SELECT e.* FROM eleves e
 		LEFT JOIN j_eleves_classes jec ON jec.login=e.login
 		where jec.login is NULL;";
+	/*
+	$sql="SELECT e.* FROM eleves e
+		LEFT JOIN j_eleves_classes jec ON jec.login=e.login
+		where jec.login is NULL AND (e.date_sortie IS NULL OR e.date_sortie NOT LIKE '20%');";
+	*/
 	$res_ele=mysql_query($sql);
 	$alt=1;
 	while($lig_ele=mysql_fetch_object($res_ele)) {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
-		echo "<td style='text-align:left;'>".$lig_ele->nom." ".$lig_ele->prenom."</td>\n";
+		echo "<td style='text-align:left;'><label for='tab_selection_ele_".$cpt."'>".$lig_ele->nom." ".$lig_ele->prenom."</label></td>\n";
 
 		echo "<td><input type='checkbox' name='ele_login[]' id='tab_selection_ele_".$cpt."' value=\"".$lig_ele->login."\" ";
 
 		$sql="SELECT 1=1 FROM gc_ele_arriv_red WHERE projet='$projet' AND login='$lig_ele->login' AND statut='$choix';";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0) { echo "checked ";}
-
 		echo "/></td>\n";
+		
+		echo "<td>";
+		if(($lig_ele->date_sortie!='NULL')&&(preg_match("/^20/",$lig_ele->date_sortie))) {
+			echo formate_date($lig_ele->date_sortie);
+		}
+		echo "</td>\n";
 		echo "</tr>\n";
 		$cpt++;
 	}

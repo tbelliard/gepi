@@ -368,6 +368,8 @@ if($_SESSION['statut']=="administrateur") {
 
 	echo "<li><a href='saisie_avis.php'>Saisir l'avis du chef d'établissement</a>.</li>\n";
 
+	echo "<li><a href='verif_saisies.php'>Vérifications avant impression</a>.</li>\n";
+
 	echo "<li><p>Générer les fiches brevet selon le modèle de:</p>
 	<ul>\n";
 	/*
@@ -400,6 +402,8 @@ elseif($_SESSION['statut']=="scolarite") {
 	echo "<li><a href='saisie_lvr.php'>Saisir les 'notes' de Langue Vivante Régionale</a> (<i>si un tel enseignement est évalué dans l'établissement</i>)</li>\n";
 
 	echo "<li><a href='saisie_avis.php'>Saisir l'avis du chef d'établissement</a>.</li>\n";
+
+	echo "<li><a href='verif_saisies.php'>Vérifications avant impression</a>.</li>\n";
 
 	if(acces('/mod_notanet/OOo/imprime_ooo.php', 'scolarite')) {
 		echo "<li><p>Générer les fiches brevet selon le modèle de:</p>

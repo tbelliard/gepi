@@ -83,7 +83,7 @@ if ($_POST['step'] == "5") {
             echo "La matière "
             .$nouvelle_matiere->getMatiere()." ("
             .$nouvelle_matiere->getNomComplet()
-            .") existe d&eacute;ja<br/>";
+            .") existe d&eacute;j&agrave;<br/>";
         }
         else {
             $nouvelle_matiere = new Matiere();

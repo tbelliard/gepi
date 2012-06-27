@@ -427,7 +427,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 	$num_per2=-1;
 	if(($id_classe_actuelle[$j]!='Red')&&($id_classe_actuelle[$j]!='Arriv')) {
 		$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe_actuelle[$j]' ORDER BY e.nom,e.prenom;";
-		
+		//$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe_actuelle[$j]' AND (e.date_sortie IS NULL OR e.date_sortie NOT LIKE '20%') ORDER BY e.nom,e.prenom;";
 		$sql_per="SELECT num_periode FROM periodes WHERE id_classe='$id_classe_actuelle[$j]' ORDER BY num_periode DESC LIMIT 1;";
 		$res_per=mysql_query($sql_per);
 		if(mysql_num_rows($res_per)>0) {
@@ -622,10 +622,19 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			$res_profil=mysql_query($sql);
 			if(mysql_num_rows($res_profil)==0) {
 				$profil='RAS';
+				$eleve_courant_non_encore_enregistre_dans_gc_eleves_options="y";
 			}
 			else {
 				$lig_profil=mysql_fetch_object($res_profil);
 				$profil=$lig_profil->profil;
+				$eleve_courant_non_encore_enregistre_dans_gc_eleves_options="n";
+			}
+
+			$temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre="n";
+			if($eleve_courant_non_encore_enregistre_dans_gc_eleves_options=="y") {
+				if(($lig->date_sortie!='NULL')&&(preg_match("/^20/",$lig->date_sortie))) {
+					$temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre="y";
+				}
 			}
 
 			echo "<input type='hidden' name='profil[$cpt]' id='profil_$cpt' value='$profil' />\n";
@@ -760,13 +769,29 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 
 				if($coche_possible=='y') {
 					echo "<input type='radio' name='classe_fut[$cpt]' id='classe_fut_".$i."_".$cpt."' value='$classe_fut[$i]' ";
-					if(mb_strtoupper($fut_classe)==mb_strtoupper($classe_fut[$i])) {echo "checked ";}
-					//alert('bip');
+
+					if($temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre=="y") {
+						if($classe_fut[$i]=='Dep') {
+							echo "checked ";
+							echo "title=\"Cet élève a quitté l'établissement le ".formate_date($lig->date_sortie)."\" ";
+						}
+					}
+					else {
+						if(mb_strtoupper($fut_classe)==mb_strtoupper($classe_fut[$i])) {echo "checked ";}
+					}
+
 					echo "onchange=\"calcule_effectif('classe_fut',".count($classe_fut).");colorise_ligne('classe_fut',$cpt,$i);changement();\" ";
 					//echo "title=\"$lig->login/$classe_fut[$i]\" ";
-					echo "onmouseover=\"test_aff_classe3('".$lig->login."','".$classe_fut[$i]."');\" onmouseout=\"cacher_div('div_test_aff_classe2');\" ";
+					if($temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre!="y") {
+						echo "onmouseover=\"test_aff_classe3('".$lig->login."','".$classe_fut[$i]."');\" onmouseout=\"cacher_div('div_test_aff_classe2');\" ";
+					}
 					echo "/>\n";
-
+					/*
+					echo $lig->date_sortie;
+					echo $temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre;
+					echo $classe_fut[$i];
+					echo $eleve_courant_non_encore_enregistre_dans_gc_eleves_options;
+					*/
 					//echo "'classe_fut_".$i."_".$cpt."'";
 				}
 				else {

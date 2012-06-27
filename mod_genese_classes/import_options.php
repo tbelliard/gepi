@@ -198,6 +198,7 @@ if($action=="upload_file") {
 				else {
 					//$sql="SELECT login FROM eleves WHERE ".strtolower($tabligne_entete_inverse["$cle"])."='".$valeur_cle."';";
 					$sql="SELECT login FROM eleves WHERE ".$cle."='".$valeur_cle."';";
+					//$sql="SELECT login FROM eleves WHERE ".$cle."='".$valeur_cle."' AND (e.date_sortie IS NULL OR e.date_sortie NOT LIKE '20%');";
 					$res=mysql_query($sql);
 					if(mysql_num_rows($res)==1) {
 						$lig_tmp=mysql_fetch_object($res);
