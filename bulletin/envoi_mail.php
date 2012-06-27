@@ -29,24 +29,31 @@ if (!checkAccess()) {
 check_token();
 
 // Initialisation des variables
-$destinataire=isset($_GET["destinataire"]) ? $_GET["destinataire"] : NULL;
-$sujet_mail=isset($_GET["sujet_mail"]) ? $_GET["sujet_mail"] : NULL;
-$message_mail=isset($_GET["message"]) ? $_GET["message"] : NULL;
+$destinataire=isset($_POST["destinataire"]) ? $_POST["destinataire"] : (isset($_GET["destinataire"]) ? $_GET["destinataire"] : NULL);
+$sujet_mail=isset($_POST["sujet_mail"]) ? $_POST["sujet_mail"] : (isset($_GET["sujet_mail"]) ? $_GET["sujet_mail"] : NULL);
+$message_mail=isset($_POST["message"]) ? $_POST["message"] : (isset($_GET["message"]) ? $_GET["message"] : NULL);
+
+//debug_var();
 
 // ========== Fin de l'initialisation de la page =============
-
+/*
+$fich=fopen("/tmp/envoi_mail.txt","a+");
+fwrite($fich,"===============================\n");
+fwrite($fich,"\$destinataire=$destinataire\n");
+fwrite($fich,"Message avant filtrage:\n");
+fwrite($fich,"\$message_mail=$message_mail\n");
+*/
 $message_mail=preg_replace("/\\\\n/","\n",$message_mail);
 $message_mail=stripslashes($message_mail);
 /*
-$fich=fopen("/tmp/envoi_mail.txt","a+");
-fwrite($fich,"\$destinataire=$destinataire\n");
+fwrite($fich,"\nMessage apres filtrage:\n");
 fwrite($fich,"\$message_mail=$message_mail\n");
 fwrite($fich,"===============================\n");
 fclose($fich);
-
-echo "\$destinataire=$destinataire<br />\n";
-echo "<pre>\$message_mail=$message_mail</pre>\n";
 */
+//echo "\$destinataire=$destinataire<br />\n";
+//echo "<pre>\$message_mail=$message_mail</pre>\n";
+
 
 $gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
 if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
