@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -32,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 //======================================================================================
 
@@ -255,6 +255,14 @@ elseif($choix=='Red') {
 				WHERE jec.login=e.login AND
 							jec.id_classe='".$id_classe[$i]."'
 				ORDER BY e.nom,e.prenom;";
+			/*
+			$sql="SELECT DISTINCT e.* FROM eleves e,
+							j_eleves_classes jec
+				WHERE jec.login=e.login AND
+							jec.id_classe='".$id_classe[$i]."'
+							AND (e.date_sortie IS NULL OR e.date_sortie NOT LIKE '20%')
+				ORDER BY e.nom,e.prenom;";
+			*/
 			$res_ele=mysql_query($sql);
 			$alt=1;
 			while($lig_ele=mysql_fetch_object($res_ele)) {
@@ -324,11 +332,19 @@ elseif($choix=='Arriv') {
 	echo "<th>\n";
 	echo "<a href=\"javascript:CocheEleves();changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheEleves();changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
 	echo "</th>\n";
+	echo "<th>\n";
+	echo "<span title=\"Date de sortie de l'établissement\">Sortie</span>";
+	echo "</th>\n";
 	echo "</tr>\n";
 
 	$sql="SELECT e.* FROM eleves e
 		LEFT JOIN j_eleves_classes jec ON jec.login=e.login
 		where jec.login is NULL;";
+	/*
+	$sql="SELECT e.* FROM eleves e
+		LEFT JOIN j_eleves_classes jec ON jec.login=e.login
+		where jec.login is NULL AND (e.date_sortie IS NULL OR e.date_sortie NOT LIKE '20%');";
+	*/
 	$res_ele=mysql_query($sql);
 	$alt=1;
 	while($lig_ele=mysql_fetch_object($res_ele)) {
@@ -341,8 +357,13 @@ elseif($choix=='Arriv') {
 		$sql="SELECT 1=1 FROM gc_ele_arriv_red WHERE projet='$projet' AND login='$lig_ele->login' AND statut='$choix';";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0) { echo "checked ";}
-
 		echo "/></td>\n";
+		
+		echo "<td>";
+		if(($lig_ele->date_sortie!='NULL')&&(preg_match("/^20/",$lig_ele->date_sortie))) {
+			echo formate_date($lig_ele->date_sortie);
+		}
+		echo "</td>\n";
 		echo "</tr>\n";
 		$cpt++;
 	}
