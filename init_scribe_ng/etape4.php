@@ -94,7 +94,7 @@ if ($_POST['step'] == "4") {
             .$compte_utilisateur_prof->getPrenom()
             .$compte_utilisateur_prof->getNom()
             ." (".$compte_utilisateur_prof->getLogin()
-            .") existe d&eacute;ja<br/>";
+            .") existe d&eacute;j&agrave;<br/>";
         }
         else {
             $new_compte_utilisateur = new UtilisateurProfessionnel();
