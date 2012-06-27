@@ -1175,3 +1175,4 @@ INSERT INTO lettres_types VALUES (9,'regime de sortie','suivi','');
 INSERT INTO lettres_types VALUES (10,'retenue','sanction','');
 INSERT INTO droits SET id='/mod_notanet/OOo/imprime_ooo.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Imprime fiches brevet OpenOffice',statut='';
 INSERT INTO droits SET id='/mod_notanet/OOo/fiches_brevet.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Fiches brevet OpenOffice',statut='';
+INSERT INTO droits SET id='/mod_notanet/verif_saisies.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Notanet: Verification avant impression des fiches brevet',statut='';
