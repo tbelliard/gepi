@@ -57,6 +57,7 @@ $chaine_couleur_lv3="'purple','greenyellow','violet','chartreuse','lightgray','g
 
 // Les variables $chaine_couleur_* sont utilisées pour initialiser des tableaux javascript.
 
+$tab_sexe=array('M','F');
 
 $tab_profil=array('GC','C','RAS','B','TB');
 // Pour le moment les valeurs testées dans les scripts javascript et les couleurs associées sont en dur dans les pages.

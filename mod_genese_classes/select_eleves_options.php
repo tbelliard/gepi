@@ -613,7 +613,8 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			//echo $lig->sexe;
 			//echo "<span style='display:none'>".$lig->sexe."</span>";
 			echo "<span style='display:none' id='eleve_sexe_$cpt'>".$lig->sexe."</span>";
-			echo image_sexe($lig->sexe);
+			//echo image_sexe($lig->sexe);
+			echo "<div id='div_sexe_$cpt' onclick=\"affiche_set_sexe($cpt, '$lig->login');changement();return false;\">".image_sexe($lig->sexe)."</div>\n";
 			echo "</td>\n";
 			echo "<td>$classe_actuelle[$j]</td>\n";
 			//echo "<td>Profil</td>\n";
@@ -755,7 +756,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			}
 
 			for($i=0;$i<count($classe_fut);$i++) {
-				echo "<td>\n";
+				echo "<td";
 
 				$coche_possible='y';
 				if(($classe_fut[$i]!='Red')&&($classe_fut[$i]!='Dep')&&($classe_fut[$i]!='')) {
@@ -766,6 +767,11 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 						}
 					}
 				}
+
+				if($coche_possible=='y') {
+					echo " onclick=\"document.getElementById('classe_fut_".$i."_".$cpt."').checked=true;calcule_effectif('classe_fut',".count($classe_fut).");colorise_ligne('classe_fut',$cpt,$i);changement();\"";
+				}
+				echo ">\n";
 
 				if($coche_possible=='y') {
 					echo "<input type='radio' name='classe_fut[$cpt]' id='classe_fut_".$i."_".$cpt."' value='$classe_fut[$i]' ";
@@ -808,7 +814,9 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			*/
 
 			for($i=0;$i<count($lv1);$i++) {
-				echo "<td>\n";
+				echo "<td";
+				echo " onclick=\"document.getElementById('lv1_".$i."_".$cpt."').checked=true;calcule_effectif('lv1',".count($lv1).");colorise_ligne('lv1',$cpt,$i);changement();\"";
+				echo ">\n";
 				echo "<input type='radio' name='lv1[$cpt]' id='lv1_".$i."_".$cpt."' value='$lv1[$i]' ";
 				if(in_array(mb_strtoupper($lv1[$i]),$tab_ele_opt)) {echo "checked ";}
 				echo "onchange=\"calcule_effectif('lv1',".count($lv1).");colorise_ligne('lv1',$cpt,$i);changement();\" ";
@@ -819,7 +827,9 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 
 
 			for($i=0;$i<count($lv2);$i++) {
-				echo "<td>\n";
+				echo "<td";
+				echo " onclick=\"document.getElementById('lv2_".$i."_".$cpt."').checked=true;calcule_effectif('lv2',".count($lv2).");colorise_ligne('lv2',$cpt,$i);changement();\"";
+				echo ">\n";
 				echo "<input type='radio' name='lv2[$cpt]' id='lv2_".$i."_".$cpt."' value='$lv2[$i]' ";
 				if(in_array(mb_strtoupper($lv2[$i]),$tab_ele_opt)) {echo "checked ";}
 				echo "onchange=\"calcule_effectif('lv2',".count($lv2).");colorise_ligne('lv2',$cpt,$i);changement();\" ";
@@ -830,7 +840,9 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 
 
 			for($i=0;$i<count($lv3);$i++) {
-				echo "<td>\n";
+				echo "<td";
+				echo " onclick=\"document.getElementById('lv3_".$i."_".$cpt."').checked=true;calcule_effectif('lv3',".count($lv3).");colorise_ligne('lv3',$cpt,$i);changement();\"";
+				echo ">\n";
 				echo "<input type='radio' name='lv3[$cpt]' id='lv3_".$i."_".$cpt."' value='$lv3[$i]' ";
 				if(in_array(mb_strtoupper($lv3[$i]),$tab_ele_opt)) {echo "checked ";}
 				echo "onchange=\"calcule_effectif('lv3',".count($lv3).");colorise_ligne('lv3',$cpt,$i);changement();\" ";
@@ -840,7 +852,9 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			}
 
 			for($i=0;$i<count($autre_opt);$i++) {
-				echo "<td>\n";
+				echo "<td";
+				echo " onclick=\"if(document.getElementById('autre_opt_".$i."_".$cpt."').checked==true) {document.getElementById('autre_opt_".$i."_".$cpt."').checked=false} else {document.getElementById('autre_opt_".$i."_".$cpt."').checked=true};calcule_effectif('autre_opt',".count($autre_opt).");changement();\"";
+				echo ">\n";
 				echo "<input type='checkbox' name='autre_opt_".$i."[$cpt]' id='autre_opt_".$i."_".$cpt."' value='$autre_opt[$i]' ";
 				if(in_array(mb_strtoupper($autre_opt[$i]),$tab_ele_opt)) {echo "checked ";}
 				echo "onchange=\"calcule_effectif('autre_opt',".count($autre_opt).");changement();\" ";
@@ -901,7 +915,18 @@ echo "<div id='div_test_aff_classe2' class='infobulle_corps' style='position:abs
 	$texte.="</p>\n";
 	$tabdiv_infobulle[]=creer_div_infobulle('div_set_profil',$titre,"",$texte,"",14,0,'y','y','n','n');
 
+	$titre="Sélection du sexe";
+	$texte="<p style='text-align:center;'>";
+	for($loop=0;$loop<count($tab_sexe);$loop++) {
+		if($loop>0) {$texte.=" - ";}
+		$texte.="<a href='#' onclick=\"set_sexe('".$tab_sexe[$loop]."');return false;\">$tab_sexe[$loop]</a>";
+	}
+	$texte.="</p>\n";
+	$tabdiv_infobulle[]=creer_div_infobulle('div_set_sexe',$titre,"",$texte,"",14,0,'y','y','n','n');
+
 	echo "<input type='hidden' name='profil_courant' id='profil_courant' value='-1' />\n";
+	echo "<input type='hidden' name='sexe_courant' id='sexe_courant' value='' />\n";
+	echo "<input type='hidden' name='login_eleve_courant' id='login_eleve_courant' value='' />\n";
 
 	echo "<script type='text/javascript'>
 
@@ -913,23 +938,6 @@ echo "<div id='div_test_aff_classe2' class='infobulle_corps' style='position:abs
 		//alert('cpt='+cpt)
 		if(document.getElementById('profil_'+cpt)) {
 			document.getElementById('profil_'+cpt).value=profil;
-			/*
-			if(profil=='GC') {
-				document.getElementById('div_profil_'+cpt).style.color='red';
-			}
-			if(profil=='C') {
-				document.getElementById('div_profil_'+cpt).style.color='orange';
-			}
-			if(profil=='RAS') {
-				document.getElementById('div_profil_'+cpt).style.color='gray';
-			}
-			if(profil=='B') {
-				document.getElementById('div_profil_'+cpt).style.color='green';
-			}
-			if(profil=='TB') {
-				document.getElementById('div_profil_'+cpt).style.color='blue';
-			}
-			*/
 			for(m=0;m<couleur_profil.length;m++) {
 				if(document.getElementById('profil_'+cpt).value==tab_profil[m]) {
 					document.getElementById('div_profil_'+cpt).style.color=couleur_profil[m];
@@ -949,29 +957,31 @@ echo "<div id='div_test_aff_classe2' class='infobulle_corps' style='position:abs
 	for(i=0;i<$cpt;i++) {
 		if(document.getElementById('profil_'+i)) {
 			profil=document.getElementById('profil_'+i).value;
-			/*
-			if(profil=='GC') {
-				document.getElementById('div_profil_'+i).style.color='red';
-			}
-			if(profil=='C') {
-				document.getElementById('div_profil_'+i).style.color='orange';
-			}
-			if(profil=='RAS') {
-				document.getElementById('div_profil_'+i).style.color='gray';
-			}
-			if(profil=='B') {
-				document.getElementById('div_profil_'+i).style.color='green';
-			}
-			if(profil=='TB') {
-				document.getElementById('div_profil_'+i).style.color='blue';
-			}
-			*/
 			for(m=0;m<couleur_profil.length;m++) {
 				if(document.getElementById('profil_'+i).value==tab_profil[m]) {
 					document.getElementById('div_profil_'+i).style.color=couleur_profil[m];
 				}
 			}
 		}
+	}
+
+	function set_sexe(sexe) {
+		var cpt=document.getElementById('sexe_courant').value;
+		var login_eleve_courant=document.getElementById('login_eleve_courant').value;
+		//document.getElementById('sexe_'+cpt).value=sexe;
+
+		new Ajax.Updater($('div_sexe_'+cpt),'../eleves/modif_sexe.php?login_eleve='+login_eleve_courant+'&sexe='+sexe+'&mode_retour=image".add_token_in_url(false)."',{method: 'get'});
+
+		document.getElementById('eleve_sexe_'+cpt).innerHTML=sexe;
+
+		calcule_effectif('classe_fut',".count($classe_fut).");
+		cacher_div('div_set_sexe');
+	}
+
+	function affiche_set_sexe(cpt, login) {
+		document.getElementById('sexe_courant').value=cpt;
+		document.getElementById('login_eleve_courant').value=login;
+		afficher_div('div_set_sexe','y',100,100);
 	}
 
 </script>
