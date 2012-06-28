@@ -5474,4 +5474,73 @@ function temoin_check_srv($id_div_retour="retour_ping", $nom_js_func="check_srv"
 </script>\n";
 }
 
+/** Fonction destinée à télécharger les images générées sur http://latex.codecogs.com/ 
+ *  et à corriger les notices en conséquence pour pointer sur uneURL locale
+ *
+ * @param integer $eff_parcours
+ *
+ * @return string le code HTML relatant le nombre de notices corrigées.
+ */
+
+function correction_notices_cdt_formules_maths($eff_parcours) {
+	$tab_grp=array();
+
+	$nb_corr=0;
+	$sql="SELECT * FROM ct_entry WHERE contenu LIKE '%http://latex.codecogs.com/%' LIMIT $eff_parcours;";
+	$res=mysql_query($sql);
+	while($lig=mysql_fetch_object($res)) {
+		$id_ct=$lig->id_ct;
+		$id_groupe=$lig->id_groupe;
+		$contenu=$lig->contenu;
+		$type_notice="c";
+
+		if(!isset($tab_grp[$id_groupe])) {
+			$tab_grp[$id_groupe]=get_group($id_groupe);
+		}
+
+		$contenu_corrige=get_img_formules_math($contenu, $id_groupe, $type_notice);
+		$sql="UPDATE ct_entry SET contenu='".mysql_real_escape_string($contenu_corrige)."' WHERE id_ct='$id_ct';";
+		$res_ct=mysql_query($sql);
+		if(!$res_ct) {
+			echo "<div style='border:1px solid red; margin:3px;'>";
+			echo "<p style='color:red;'>ERREUR sur<br />$sql";
+			echo "</div>\n";
+		}
+		else {
+			echo "<p>Correction sur une notice de <strong>compte-rendu</strong> en ".$tab_grp[$id_groupe]['name']." en ".$tab_grp[$id_groupe]['classlist_string']." : ".strftime("%d/%m/%Y", $lig->date_ct)."<br />\n";
+			$nb_corr++;
+		}
+		flush();
+	}
+	echo "<p>$nb_corr corrections effectuées sur 'ct_entry'.</p>";
+
+	$nb_corr=0;
+	$sql="SELECT * FROM ct_devoirs_entry WHERE contenu LIKE '%http://latex.codecogs.com/%' LIMIT $eff_parcours;";
+	$res=mysql_query($sql);
+	while($lig=mysql_fetch_object($res)) {
+		$id_ct=$lig->id_ct;
+		$id_groupe=$lig->id_groupe;
+		$contenu=$lig->contenu;
+		$type_notice="t";
+
+		if(!isset($tab_grp[$id_groupe])) {
+			$tab_grp[$id_groupe]=get_group($id_groupe);
+		}
+
+		$contenu_corrige=get_img_formules_math($contenu, $id_groupe, $type_notice);
+		$sql="UPDATE ct_devoirs_entry SET contenu='".mysql_real_escape_string($contenu_corrige)."' WHERE id_ct='$id_ct';";
+		$res_ct=mysql_query($sql);
+		if(!$res_ct) {
+			echo "<div style='border:1px solid red; margin:3px;'>";
+			echo "<p style='color:red;'>ERREUR sur<br />$sql";
+			echo "</div>\n";
+		}
+		else {
+			echo "<p>Correction sur une notice de <strong>devoir</strong> en ".$tab_grp[$id_groupe]['name']." en ".$tab_grp[$id_groupe]['classlist_string']." : ".strftime("%d/%m/%Y", $lig->date_ct)."<br />\n";
+			$nb_corr++;
+		}
+		flush();
+	}
+	echo "<p>$nb_corr corrections effectuées sur 'ct_devoirs_entry'.</p>";
+}
 ?>
