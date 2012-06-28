@@ -164,6 +164,11 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 
 		$chaine_longueur_ligne_courante="0";
 
+		// Suppression de mises en forme de textes vides:
+		$texte=preg_replace("|<b></b>|i","",$texte);
+		$texte=preg_replace("|<u></u>|i","",$texte);
+		$texte=preg_replace("|<i></i>|i","",$texte);
+
 		$tab=preg_split('/<(.*)>/U',$texte,-1,PREG_SPLIT_DELIM_CAPTURE);
 		foreach($tab as $i=>$valeur) {
 			// Avec $i pair on a le texte et les indices impairs correspondent aux balises (b et /b,...)
