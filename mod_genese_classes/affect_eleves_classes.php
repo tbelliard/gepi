@@ -664,7 +664,7 @@ function change_display(id) {
 		if(mysql_num_rows($res_test)>0) {
 			echo "<input type='checkbox' name='clas_fut[]' id='clas_fut_$cpt' value='$lig->classe' ";
 			if(in_array($lig->classe,$clas_fut)) {echo "checked ";}
-			echo "/><label for='clas_fut_$cpt'>$lig->classe</label><br />\n";
+			echo "/><label for='clas_fut_$cpt'>$lig->classe <span style='font-size:x-small'>(<em>".mysql_num_rows($res_test)."</em>)</span></label><br />\n";
 		}
 		else {
 			echo "_ $lig->classe<br />\n";
