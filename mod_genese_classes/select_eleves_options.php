@@ -327,7 +327,7 @@ include("lib_gc.php");
 necessaire_bull_simple();
 //=========================================
 
-echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
+echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form_select_eleves_options'>\n";
 
 echo add_token_field();
 
@@ -1180,7 +1180,7 @@ function colorise(mode,n) {
 colorise('classe_fut',".count($classe_fut).");
 
 function colorise_ligne(cat,cpt,i) {
-	if(document.forms[0].elements['colorisation'].options[document.forms[0].elements['colorisation'].selectedIndex].value==cat) {
+	if(document.forms['form_select_eleves_options'].elements['colorisation'].options[document.forms['form_select_eleves_options'].elements['colorisation'].selectedIndex].value==cat) {
 		if(cat=='classe_fut') {
 			document.getElementById('tr_eleve_'+cpt).style.backgroundColor=couleur_classe_fut[i];
 		}
@@ -1200,7 +1200,7 @@ function colorise_ligne(cat,cpt,i) {
 }
 
 function lance_colorisation() {
-	cat=document.forms[0].elements['colorisation'].options[document.forms[0].elements['colorisation'].selectedIndex].value;
+	cat=document.forms['form_select_eleves_options'].elements['colorisation'].options[document.forms['form_select_eleves_options'].elements['colorisation'].selectedIndex].value;
 	//alert(cat);
 	if(cat=='classe_fut') {
 		colorise(cat,".count($classe_fut).");
@@ -1277,7 +1277,7 @@ echo "function modif_colonne(col,j,mode) {
 
 	//alert('PLOP');
 
-	cat=document.forms[0].elements['colorisation'].options[document.forms[0].elements['colorisation'].selectedIndex].value;
+	cat=document.forms['form_select_eleves_options'].elements['colorisation'].options[document.forms['form_select_eleves_options'].elements['colorisation'].selectedIndex].value;
 	if(col.substr(0,cat.length)==cat) {lance_colorisation();}
 }
 </script>\n";
