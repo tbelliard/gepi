@@ -180,6 +180,68 @@ else {
 			}
 		}
 	}
+	
+	function index_archive_pdf() {
+		global $dossier_archivage_pdf;
+
+		$entete='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<link rel="stylesheet" type="text/css" href="style.css" />
+';
+
+		$fich_css=fopen("../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf."/style.css","w+");
+		fwrite($fich_css, "#contenu {
+	text-align:center;
+}\n");
+		fclose($fich_css);
+
+		$fich_index=fopen("../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf."/index.html","w+");
+		fwrite($fich_index, $entete."<title>Index ".getSettingValue('gepiYear')."</title></head><body><div id='contenu'><h1>Index ".getSettingValue('gepiYear')."</h1>\n");
+
+		$sql="SELECT * FROM tempo4 ORDER BY col4;";
+		$res_t4=mysql_query($sql);
+		if(mysql_num_rows($res_t4)>0) {
+			fwrite($fich_index, "<p><a href='index_eleves.html'>Index alphabétique des élèves</a></p>\n");
+
+			$fich_index_eleves=fopen("../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf."/index_eleves.html","w+");
+			fwrite($fich_index_eleves, $entete."<title>Index alphabétique des élèves".getSettingValue('gepiYear')."</title></head><body><div id='contenu'><h1>Index alphabétique des élèves".getSettingValue('gepiYear')."</h1>\n");
+			while($lig_t4=mysql_fetch_object($res_t4)) {
+				fwrite($fich_index_eleves, "<a href='".$lig_t4->col3."'>".$lig_t4->col4." (<em>".$lig_t4->col3."</em>)</a><br />\n");
+			}
+			fwrite($fich_index_eleves, "<p><a href='index.html'>Retour</a></p>\n");
+			fwrite($fich_index_eleves, "</div></body></html>\n");
+		}
+
+		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, tempo4 t WHERE c.id=t.col1 ORDER BY c.classe;";
+		$res_t_c=mysql_query($sql);
+		if(mysql_num_rows($res_t_c)>0) {
+			fwrite($fich_index, "<p><strong>Classes&nbsp;:</strong></p>\n");
+			while($lig_t_c=mysql_fetch_object($res_t_c)) {
+				fwrite($fich_index, "<p><a href='classe_".$lig_t_c->id.".html'>".$lig_t_c->classe."</a></p>\n");
+
+				$sql="SELECT * FROM tempo4 WHERE col1='".$lig_t_c->id."' ORDER BY col4;";
+				$res_t4=mysql_query($sql);
+				if(mysql_num_rows($res_t4)>0) {
+					$fich_index_classe=fopen("../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf."/classe_".$lig_t_c->id.".html","w+");
+					fwrite($fich_index_classe, $entete."<title>Classe de ".$lig_t_c->classe." ".getSettingValue('gepiYear')."</title></head><body><div id='contenu'><h1>Classe de ".$lig_t_c->classe." ".getSettingValue('gepiYear')."</h1>\n");
+					while($lig_t4=mysql_fetch_object($res_t4)) {
+						fwrite($fich_index_classe, "<a href='".$lig_t4->col3."'>".$lig_t4->col4." (<em>".$lig_t4->col3."</em>)</a><br />\n");
+					}
+					fwrite($fich_index_classe, "<p><a href='index.html'>Retour</a></p>\n");
+					fwrite($fich_index_classe, "</div></body></html>\n");
+				}
+			}
+		}
+
+		fwrite($fich_index, "</div></body></html>\n");
+	}
 
 	echo "<div class='norme'><p class=bold><a href='";
 	if(isset($_SESSION['chgt_annee'])) {
@@ -222,6 +284,9 @@ else {
 			}
 			else {
 				echo "<p>L'archivage est terminé.</p>\n";
+
+				echo "<p>Génération de pages d'index.</p>\n";
+				index_archive_pdf();
 
 				//echo "<p style='color:red'>Il reste à réaliser le Zip des fichiers PDF.</p>";
 				echo "<p>".zip_bull_pdf($dossier_archivage_pdf)."</p>\n";
@@ -298,6 +363,9 @@ else {
 					if(!isset($tab_login_ele_chgt_classe)) {
 						echo "<p>Aucun élève n'a changé de classe en cours d'année.</p>\n";
 
+						echo "<p>Génération de pages d'index.</p>\n";
+						index_archive_pdf();
+
 						echo "<p>Dossier temporaire d'archivage&nbsp;: <a href='../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf."/' target='_blank'>$dossier_archivage_pdf</a></p>\n";
 
 						echo "<br />\n";
@@ -343,6 +411,10 @@ else {
 
 		$dossier_archivage_pdf=savePref($_SESSION['login'], 'dossier_archivage_pdf', 'bulletins_pdf_individuels_eleves_'.strftime('%Y%m%d'));
 		@mkdir("../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf);
+
+		// On va stocker la liste des id_classe,login,fichiers
+		$sql="TRUNCATE tempo4;";
+		$menage=mysql_query($sql);
 
 		// On va faire la liste des élèves:
 		$sql="TRUNCATE tempo2;";
