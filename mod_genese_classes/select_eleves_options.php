@@ -816,6 +816,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			for($i=0;$i<count($lv1);$i++) {
 				echo "<td";
 				echo " onclick=\"document.getElementById('lv1_".$i."_".$cpt."').checked=true;calcule_effectif('lv1',".count($lv1).");colorise_ligne('lv1',$cpt,$i);changement();\"";
+				echo " title=\"$lig->login/$lv1[$i]\"";
 				echo ">\n";
 				echo "<input type='radio' name='lv1[$cpt]' id='lv1_".$i."_".$cpt."' value='$lv1[$i]' ";
 				if(in_array(mb_strtoupper($lv1[$i]),$tab_ele_opt)) {echo "checked ";}
@@ -829,6 +830,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			for($i=0;$i<count($lv2);$i++) {
 				echo "<td";
 				echo " onclick=\"document.getElementById('lv2_".$i."_".$cpt."').checked=true;calcule_effectif('lv2',".count($lv2).");colorise_ligne('lv2',$cpt,$i);changement();\"";
+				echo " title=\"$lig->login/$lv2[$i]\"";
 				echo ">\n";
 				echo "<input type='radio' name='lv2[$cpt]' id='lv2_".$i."_".$cpt."' value='$lv2[$i]' ";
 				if(in_array(mb_strtoupper($lv2[$i]),$tab_ele_opt)) {echo "checked ";}
@@ -842,6 +844,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			for($i=0;$i<count($lv3);$i++) {
 				echo "<td";
 				echo " onclick=\"document.getElementById('lv3_".$i."_".$cpt."').checked=true;calcule_effectif('lv3',".count($lv3).");colorise_ligne('lv3',$cpt,$i);changement();\"";
+				echo " title=\"$lig->login/$lv3[$i]\"";
 				echo ">\n";
 				echo "<input type='radio' name='lv3[$cpt]' id='lv3_".$i."_".$cpt."' value='$lv3[$i]' ";
 				if(in_array(mb_strtoupper($lv3[$i]),$tab_ele_opt)) {echo "checked ";}
@@ -854,6 +857,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			for($i=0;$i<count($autre_opt);$i++) {
 				echo "<td";
 				echo " onclick=\"if(document.getElementById('autre_opt_".$i."_".$cpt."').checked==true) {document.getElementById('autre_opt_".$i."_".$cpt."').checked=false} else {document.getElementById('autre_opt_".$i."_".$cpt."').checked=true};calcule_effectif('autre_opt',".count($autre_opt).");changement();\"";
+				echo " title=\"$lig->login/$autre_opt[$i]\"";
 				echo ">\n";
 				echo "<input type='checkbox' name='autre_opt_".$i."[$cpt]' id='autre_opt_".$i."_".$cpt."' value='$autre_opt[$i]' ";
 				if(in_array(mb_strtoupper($autre_opt[$i]),$tab_ele_opt)) {echo "checked ";}
