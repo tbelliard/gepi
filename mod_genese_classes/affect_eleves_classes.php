@@ -897,8 +897,11 @@ else {
 				$num_requete++;
 			}
 			echo "</select>\n";
+
+			echo "<input type='hidden' name='projet' value='$projet' />\n";
 			echo "<input type='hidden' name='id_aff' value='$id_aff' />\n";
-			echo "<input type='hidden' name='choix_affich' value='Valider' />\n";
+			echo "<input type='hidden' name='requete_definie' value='y' />\n";
+			echo "<input type='hidden' name='choix_affich' value='y' />\n";
 			echo "<input type='submit' name='changer_affect_eleves_classes' id='changer_affect_eleves_classes' value='Valider' />\n";
 		}
 	}
@@ -1783,7 +1786,7 @@ $_POST['projet']=	4eme_vers_3eme
 					}
 		
 					for($i=0;$i<count($lv1);$i++) {
-						echo "<td>\n";
+						echo "<td title='$lv1[$i]'>\n";
 						if(in_array(mb_strtoupper($lv1[$i]),$tab_ele_opt)) {
 							echo "<div style='display:none;'><input type='checkbox' name='lv1[$cpt]' id='lv1_".$i."_".$cpt."' value='$lv1[$i]' checked /></div>\n";
 							echo "<span title='$lv1[$i]'>X</span>";
@@ -1804,7 +1807,7 @@ $_POST['projet']=	4eme_vers_3eme
 		
 		
 					for($i=0;$i<count($lv2);$i++) {
-						echo "<td>\n";
+						echo "<td title='$lv2[$i]'>\n";
 						if(in_array(mb_strtoupper($lv2[$i]),$tab_ele_opt)) {
 							echo "<div style='display:none;'><input type='checkbox' name='lv2[$cpt]' id='lv2_".$i."_".$cpt."' value='$lv2[$i]' checked /></div>\n";
 							echo "<span title='$lv2[$i]'>X</span>";
@@ -1824,7 +1827,7 @@ $_POST['projet']=	4eme_vers_3eme
 		
 		
 					for($i=0;$i<count($lv3);$i++) {
-						echo "<td>\n";
+						echo "<td title='$lv3[$i]'>\n";
 						if(in_array(mb_strtoupper($lv3[$i]),$tab_ele_opt)) {
 							echo "<div style='display:none;'><input type='checkbox' name='lv3[$cpt]' id='lv3_".$i."_".$cpt."' value='$lv3[$i]' checked /></div>\n";
 							echo "<span title='$lv3[$i]'>X</span>";
@@ -1843,7 +1846,7 @@ $_POST['projet']=	4eme_vers_3eme
 					}
 		
 					for($i=0;$i<count($autre_opt);$i++) {
-						echo "<td>\n";
+						echo "<td title='$autre_opt[$i]'>\n";
 						if(in_array(mb_strtoupper($autre_opt[$i]),$tab_ele_opt)) {
 							echo "<div style='display:none;'><input type='checkbox' name='autre_opt[$cpt]' id='autre_opt_".$i."_".$cpt."' value='$autre_opt[$i]' checked /></div>\n";
 							echo "<span title='$autre_opt[$i]'>X</span>";
