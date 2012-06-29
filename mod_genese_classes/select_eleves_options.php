@@ -754,6 +754,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 				}
 			}
 
+			$temoin_une_classe_cochee_pour_cet_eleve="n";
 			for($i=0;$i<count($classe_fut);$i++) {
 				echo "<td>\n";
 
@@ -774,10 +775,23 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 						if($classe_fut[$i]=='Dep') {
 							echo "checked ";
 							echo "title=\"Cet élève a quitté l'établissement le ".formate_date($lig->date_sortie)."\" ";
+							$temoin_une_classe_cochee_pour_cet_eleve="y";
 						}
 					}
 					else {
-						if(mb_strtoupper($fut_classe)==mb_strtoupper($classe_fut[$i])) {echo "checked ";}
+						if(mb_strtoupper($fut_classe)==mb_strtoupper($classe_fut[$i])) {
+							echo "checked ";
+							$temoin_une_classe_cochee_pour_cet_eleve="y";
+						}
+					}
+
+					// Si aucune classe n'est cochée et qu'on en est à classe future non définie ''
+					// Quand on copie un projet par exemple futures_3emes pour faire futures_3emes_grp_langue
+					// on définie de nouvelles "classes" futures pour les groupes,
+					// et un élève qui a déjà une classe future dans le projet d'origine se retrouve sans aucune case cochée.
+					// Avec les test ci-dessous, on évitera ce pb.
+					if(($classe_fut[$i]=='')&&($temoin_une_classe_cochee_pour_cet_eleve=="n")) {
+						echo "checked ";
 					}
 
 					echo "onchange=\"calcule_effectif('classe_fut',".count($classe_fut).");colorise_ligne('classe_fut',$cpt,$i);changement();\" ";
