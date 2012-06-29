@@ -1146,7 +1146,7 @@ else {
 		$tab_ele[]=$lig_ele->login;
 	}
 
-	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
+	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form_affect_eleves_classes'>\n";
 
 	if(!isset($nom_requete)) {$nom_requete="";}
 	echo "<p>Nom de la requête&nbsp;: <input type='text' name='nom_requete' value=\"$nom_requete\" ></p>\n";
@@ -2205,8 +2205,8 @@ echo "
 	function colorise_ligne(cat,cpt,i) {
 		// On ne traite qu'une ligne contrairement à colorise()
 		//alert('couleur_classe_fut[0]='+couleur_classe_fut[0]);
-		//alert(document.forms[0].elements['colorisation'].options[document.forms[0].elements['colorisation'].selectedIndex].value);
-		if(document.forms[0].elements['colorisation'].options[document.forms[0].elements['colorisation'].selectedIndex].value==cat) {
+		//alert(document.forms['form_affect_eleves_classes'].elements['colorisation'].options[document.forms['form_affect_eleves_classes'].elements['colorisation'].selectedIndex].value);
+		if(document.forms['form_affect_eleves_classes'].elements['colorisation'].options[document.forms['form_affect_eleves_classes'].elements['colorisation'].selectedIndex].value==cat) {
 			if(cat=='classe_fut') {
 				//alert(cat);
 				//alert(i);
@@ -2229,7 +2229,7 @@ echo "
 	}
 	
 	function lance_colorisation() {
-		cat=document.forms[0].elements['colorisation'].options[document.forms[0].elements['colorisation'].selectedIndex].value;
+		cat=document.forms['form_affect_eleves_classes'].elements['colorisation'].options[document.forms['form_affect_eleves_classes'].elements['colorisation'].selectedIndex].value;
 		//alert(cat);
 		if(cat=='classe_fut') {
 			colorise(cat,".count($classe_fut).");
@@ -2255,7 +2255,7 @@ echo "
 			}
 		}
 	
-		cat=document.forms[0].elements['colorisation'].options[document.forms[0].elements['colorisation'].selectedIndex].value;
+		cat=document.forms['form_affect_eleves_classes'].elements['colorisation'].options[document.forms['form_affect_eleves_classes'].elements['colorisation'].selectedIndex].value;
 		if(col.substr(0,cat.length)==cat) {lance_colorisation();}
 
 		// Lancer un recalcul des effectifs
