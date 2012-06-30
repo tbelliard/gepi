@@ -328,16 +328,32 @@ if($_SESSION['statut']=="administrateur") {
 
 		echo "<p class='bold'>Nettoyage des tables Notanet&nbsp;:</p>\n";
 
-		$msg="";
 		$table_a_vider=array('notanet', 'notanet_avis', 'notanet_app', 'notanet_verrou', 'notanet_socles', 'notanet_ele_type');
-		for($i=0;$i<count($table_a_vider);$i++) {
-			$sql="TRUNCATE TABLE $table_a_vider[$i];";
-			$del=mysql_query($sql);
-			if(!$del) {
-				$msg.="Erreur lors du nettoyage de la table '$table_a_vider[$i]'<br />";
+
+		echo "<div style='margin-left:3em;'>\n";
+		if(!isset($_GET['confirmer'])) {
+			echo "<p>Vous allez vider les tables&nbsp;: \n";
+			echo $table_a_vider[0];
+			for($i=1;$i<count($table_a_vider);$i++) {
+				echo ", ".$table_a_vider[$i];
 			}
+			echo "</p>\n";
+			echo "<p>Cette opération, <strong>irréversible</strong>, ne devrait être effectuée que pour éliminer des scories éventuelles des saisies et extractions de l'année précédente.</p>\n";
+			echo "<p><a href='".$_SERVER['PHP_SELF']."?truncate_tables=y&amp;confirmer=y".add_token_in_url()."' onclick=\"return confirm('Vous allez vider les tables notanet et perdre les associations élèves/brevets, extractions, appréciations notanet et avis notanet. Etes-vous sûr?')\">Confirmer le nettoyage des tables Notanet</a>.</p>\n";
 		}
-		if($msg=='') {echo "<p style='margin-left: 3em;'>Nettoyage effectué.</p>\n";} else {echo $msg;}
+		else {
+			$msg="";
+			for($i=0;$i<count($table_a_vider);$i++) {
+				$sql="TRUNCATE TABLE $table_a_vider[$i];";
+				$del=mysql_query($sql);
+				if(!$del) {
+					$msg.="<span style='color:red'>Erreur lors du nettoyage de la table '$table_a_vider[$i]'</span><br />\n";
+				}
+			}
+			if($msg=='') {echo "<p style='margin-left: 3em;'>Nettoyage effectué.</p>\n";} else {echo $msg;}
+		}
+		echo "<p><br /></p>\n";
+		echo "</div>\n";
 	}
 }
 
@@ -390,7 +406,7 @@ if($_SESSION['statut']=="administrateur") {
 	//echo "<li><a href=''></a></li>\n";
 	echo "</ol>\n";
 
-	echo "<p>Au changement d'année: <a href='".$_SERVER['PHP_SELF']."?truncate_tables=y".add_token_in_url()."' onclick=\"return confirm('Vous allez vider les tables notanet et perdre les associations élèves/brevets, extractions, appréciations notanet et avis notanet. Etes-vous sûr?')\">Vider les saisies Notanet antérieures</a>.</p>\n";
+	echo "<p>Au changement d'année: <a href='".$_SERVER['PHP_SELF']."?truncate_tables=y".add_token_in_url()."'>Vider les saisies Notanet antérieures</a>.</p>\n";
 
 	echo "<p><b>NOTES:</b> Pour un bon fonctionnement du dispositif, il faut parcourir les points ci-dessus dans l'ordre.<br />
 	Voir <a href='https://www.sylogix.org/projects/gepi/wiki/Module_notanet' target='_blank'>https://www.sylogix.org/projects/gepi/wiki/Module_notanet</a></p>\n";
