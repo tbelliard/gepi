@@ -118,6 +118,7 @@ if(isset($_POST['is_posted'])) {
 	$msg.=$complement_msg;
 }
 
+$style_specifique[]="mod_genese_classes/mod_genese_classes";
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Genèse classe: affectation des élèves";
@@ -1622,20 +1623,21 @@ $_POST['projet']=	4eme_vers_3eme
 
 				}
 				else {
-		
+
 					//echo "<tr id='tr_eleve_$cpt' class='white_hover'>\n";
-					echo "<tr id='tr_eleve_$cpt' class='white_hover' onmouseover=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.color='red';\" onmouseout=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.color='';\">\n";
+					echo "<tr id='tr_eleve_$cpt' class='white_hover white_survol' onmouseover=\"this.style.backgroundColor='white';\" onmouseout=\"this.style.backgroundColor='';\">\n";
+					//echo "<tr id='tr_eleve_$cpt' class='white_hover' onmouseover=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.color='red';\" onmouseout=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.color='';\">\n";
 					echo "<td>\n";
 					echo "<a name='eleve$cpt'></a>\n";
 					if(nom_photo($lig->elenoet)) {
 						echo "<a href='#eleve$cpt' onclick=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);return false;\">";
-						echo "<span id='nom_prenom_eleve_numero_$cpt'>";
+						echo "<span id='nom_prenom_eleve_numero_$cpt' class='col_nom_eleve'>";
 						echo mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
 						echo "</span>";
 						echo "</a>\n";
 					}
 					else {
-						echo "<span id='nom_prenom_eleve_numero_$cpt'>";
+						echo "<span id='nom_prenom_eleve_numero_$cpt' class='col_nom_eleve'>";
 						echo mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
 						echo "</span>";
 					}

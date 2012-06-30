@@ -1,0 +1,49 @@
+
+table.boireaus {
+	margin-top: 1em;
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	border-collapse: collapse;
+}
+
+.boireaus th {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	background-color: #f0e68c;
+	font-weight:bold;
+	text-align:center;
+	vertical-align: middle;
+}
+
+.boireaus td {
+	text-align:center;
+	vertical-align: middle;
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+}
+.boireaus .lig-1 {
+	background-color: #C8FFC8;
+}
+.boireaus .lig1 {
+	background-color: #FFE6AA;
+}
+.boireaus .nouveau {
+	background-color: #96c8f0;
+}
+.boireaus .modif {
+	background-color: #eeaaff;
+}
+tr.white_hover:hover {
+	background-color:white;
+}
+
+tr.white_survol:hover {
+	background-color:white;
+}
+tr.white_survol:hover .col_nom_eleve {
+	color:red;
+}
+
