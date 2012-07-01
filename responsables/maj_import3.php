@@ -3522,7 +3522,7 @@ else{
 
 						$sql.=" WHERE ele_id='".$lig->ELE_ID."';";
 						//echo "============<br />";
-						echo "$sql<br />";
+						//echo "$sql<br />";
 						info_debug($sql);
 						$update=mysql_query($sql);
 						if($update){
@@ -3580,7 +3580,7 @@ else{
 
 							$sql.=" WHERE elenoet='".$lig->ELENOET."';";
 							//echo "============<br />";
-							echo "$sql<br />";
+							//echo "$sql<br />";
 							info_debug($sql);
 							$update=mysql_query($sql);
 							if($update){
