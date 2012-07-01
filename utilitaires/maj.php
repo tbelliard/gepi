@@ -241,6 +241,11 @@ if (isset ($_POST['maj'])) {
             require 'updates/160_to_161.inc.php';
 	}
 
+	if (($force_maj == 'yes') or (quelle_maj("1.6.2"))) {
+            require 'updates/161_to_dev.inc.php';
+            //require 'updates/161_to_162.inc.php';
+	}
+
 	// Mise à jour du numéro de version
 	saveSetting("version", $gepiVersion);
 	saveSetting("versionRc", $gepiRcVersion);
