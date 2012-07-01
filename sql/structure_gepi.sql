@@ -56,6 +56,9 @@ CREATE TABLE eleves
 	ereno VARCHAR(50) NOT NULL COMMENT 'Plus utilise',
 	ele_id VARCHAR(10) DEFAULT '' NOT NULL COMMENT 'cle utilise par Sconet dans ses fichiers xml',
 	email VARCHAR(255) DEFAULT '' NOT NULL COMMENT 'Courriel de l\'eleve',
+	tel_pers varchar(255) DEFAULT '' NOT NULL COMMENT 'Telephone personnel de l\'eleve',
+	tel_port varchar(255) DEFAULT '' NOT NULL COMMENT 'Telephone portable de l\'eleve',
+	tel_prof varchar(255) DEFAULT '' NOT NULL COMMENT 'Telephone professionnel (?) de l\'eleve',
 	id_eleve INTEGER(11) NOT NULL AUTO_INCREMENT COMMENT 'cle primaire autoincremente',
 	date_sortie DATETIME COMMENT 'Timestamp de sortie de l\'élève de l\'établissement (fin d\'inscription)',
 	mef_code BIGINT(20) COMMENT 'code mef de la formation de l\'eleve',
@@ -732,7 +735,10 @@ ELEOPT10 varchar(40) NOT NULL default '',
 ELEOPT11 varchar(40) NOT NULL default '',
 ELEOPT12 varchar(40) NOT NULL default '',
 LIEU_NAISSANCE varchar(50) NOT NULL default '',
-MEL varchar(255) NOT NULL default ''
+MEL varchar(255) NOT NULL default '',
+TEL_PERS varchar(255) NOT NULL default '',
+TEL_PORT varchar(255) NOT NULL default '',
+TEL_PROF varchar(255) NOT NULL default ''
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci ;
 
 DROP TABLE IF EXISTS temp_abs_import;

@@ -68,6 +68,10 @@ if(($eff_tranche_recherche_diff=='')||(!is_numeric($eff_tranche_recherche_diff))
 
 $ele_lieu_naissance=getSettingValue("ele_lieu_naissance") ? getSettingValue("ele_lieu_naissance") : "n";
 
+$ele_tel_pers=getSettingValue("ele_tel_pers") ? getSettingValue("ele_tel_pers") : "no";
+$ele_tel_port=getSettingValue("ele_tel_port") ? getSettingValue("ele_tel_port") : "yes";
+$ele_tel_prof=getSettingValue("ele_tel_prof") ? getSettingValue("ele_tel_prof") : "no";
+
 $ne_pas_tester_les_changements_de_classes=getSettingValue("no_test_chgt_clas");
 if($ne_pas_tester_les_changements_de_classes=="") {$ne_pas_tester_les_changements_de_classes="n";}
 // INSERT INTO setting SET name='no_test_chgt_clas', value='n';
@@ -152,6 +156,21 @@ $alert_diff_etab_origine=isset($_POST['alert_diff_etab_origine']) ? $_POST['aler
 saveSetting('alert_diff_mail_ele', $alert_diff_mail_ele);
 saveSetting('alert_diff_mail_resp', $alert_diff_mail_resp);
 saveSetting('alert_diff_etab_origine', $alert_diff_etab_origine);
+
+// =====================================================
+// Test sur les modifications de telephone élève
+$ele_tel_prof_signaler_modif=isset($_POST['ele_tel_prof_signaler_modif']) ? $_POST['ele_tel_prof_signaler_modif'] : (isset($_GET['ele_tel_prof_signaler_modif']) ? $_GET['ele_tel_prof_signaler_modif'] : (isset($_SESSION['ele_tel_prof_signaler_modif']) ? $_SESSION['ele_tel_prof_signaler_modif'] : getSettingValue('ele_tel_prof_signaler_modif')));
+if(($ele_tel_prof_signaler_modif!='yes')&&($ele_tel_prof_signaler_modif!='no')) {$ele_tel_prof_signaler_modif="yes";}
+saveSetting('ele_tel_prof_signaler_modif', $ele_tel_prof_signaler_modif);
+
+$ele_tel_pers_signaler_modif=isset($_POST['ele_tel_pers_signaler_modif']) ? $_POST['ele_tel_pers_signaler_modif'] : (isset($_GET['ele_tel_pers_signaler_modif']) ? $_GET['ele_tel_pers_signaler_modif'] : (isset($_SESSION['ele_tel_pers_signaler_modif']) ? $_SESSION['ele_tel_pers_signaler_modif'] : getSettingValue('ele_tel_pers_signaler_modif')));
+if(($ele_tel_pers_signaler_modif!='yes')&&($ele_tel_pers_signaler_modif!='no')) {$ele_tel_pers_signaler_modif="yes";}
+saveSetting('ele_tel_pers_signaler_modif', $ele_tel_pers_signaler_modif);
+
+$ele_tel_port_signaler_modif=isset($_POST['ele_tel_port_signaler_modif']) ? $_POST['ele_tel_port_signaler_modif'] : (isset($_GET['ele_tel_port_signaler_modif']) ? $_GET['ele_tel_port_signaler_modif'] : (isset($_SESSION['ele_tel_port_signaler_modif']) ? $_SESSION['ele_tel_port_signaler_modif'] : getSettingValue('ele_tel_port_signaler_modif')));
+if(($ele_tel_port_signaler_modif!='yes')&&($ele_tel_port_signaler_modif!='no')) {$ele_tel_port_signaler_modif="yes";}
+saveSetting('ele_tel_port_signaler_modif', $ele_tel_port_signaler_modif);
+// =====================================================
 
 $stop=isset($_POST['stop']) ? $_POST['stop'] : (isset($_GET['stop']) ? $_GET['stop'] :'n');
 
@@ -415,6 +434,49 @@ if(!isset($step)) {
 	echo "<label for='alert_diff_etab_origine_n' style='cursor: pointer;'> ne pas signaler";
 	echo " les modifications d'établissement d'origine.</label></p>\n";
 
+	// 20120630
+	$nb_types_tel_ele_utilises=0;
+	if(getSettingAOui('ele_tel_pers')) {$nb_types_tel_ele_utilises++;}
+	if(getSettingAOui('ele_tel_port')) {$nb_types_tel_ele_utilises++;}
+	if(getSettingAOui('ele_tel_prof')) {$nb_types_tel_ele_utilises++;}
+	if($nb_types_tel_ele_utilises>0) {
+		echo "<br />\n";
+		echo "<p>\n";
+		echo "<strong>Téléphone des élèves&nbsp;:</strong> Tester les modifications de&nbsp;:\n";
+		echo "<br />\n";
+
+		if(getSettingAOui('ele_tel_pers')) {
+			echo "<input type='checkbox' name='ele_tel_pers_signaler_modif' id='ele_tel_pers_signaler_modif' value='yes' ";
+			if($ele_tel_pers_signaler_modif=='yes') {
+				echo "checked ";
+			}
+			echo "/>\n";
+			echo "<label for='ele_tel_pers_signaler_modif' style='cursor: pointer;'> numéro de téléphone personnel";
+			echo "</label><br />\n";
+		}
+
+		if(getSettingAOui('ele_tel_port')) {
+			echo "<input type='checkbox' name='ele_tel_port_signaler_modif' id='ele_tel_port_signaler_modif' value='yes' ";
+			if($ele_tel_port_signaler_modif=='yes') {
+				echo "checked ";
+			}
+			echo "/>\n";
+			echo "<label for='ele_tel_port_signaler_modif' style='cursor: pointer;'> numéro de téléphone portable";
+			echo "</label><br />\n";
+		}
+
+		if(getSettingAOui('ele_tel_prof')) {
+			echo "<input type='checkbox' name='ele_tel_prof_signaler_modif' id='ele_tel_prof_signaler_modif' value='yes' ";
+			if($ele_tel_prof_signaler_modif=='yes') {
+				echo "checked ";
+			}
+			echo "/>\n";
+			echo "<label for='ele_tel_prof_signaler_modif' style='cursor: pointer;'> numéro de téléphone professionnel.";
+			echo "</label><br />\n";
+		}
+		echo "</p>\n";
+	}
+
 	echo "<br />\n";
 	echo "<p>";
 	echo "<label for='id_form_stop' style='cursor: pointer;'> Parcourir les élèves par tranches de &nbsp;: </label><input type='text' name='eff_tranche_recherche_diff' id='eff_tranche_recherche_diff' value='$eff_tranche_recherche_diff' size='3' onkeydown=\"clavier_2(this.id,event,0,200);\" autocomplete='off' />\n";
@@ -660,7 +722,10 @@ else{
 					`ELEOPT11` varchar(40) $chaine_mysql_collate NOT NULL default '',
 					`ELEOPT12` varchar(40) $chaine_mysql_collate NOT NULL default '',
 					`LIEU_NAISSANCE` varchar(50) $chaine_mysql_collate NOT NULL default '',
-					`MEL` varchar(255) $chaine_mysql_collate NOT NULL default ''
+					`MEL` varchar(255) $chaine_mysql_collate NOT NULL default '',
+					`TEL_PERS` varchar(255) $chaine_mysql_collate NOT NULL default '',
+					`TEL_PORT` varchar(255) $chaine_mysql_collate NOT NULL default '',
+					`TEL_PROF` varchar(255) $chaine_mysql_collate NOT NULL default ''
 					);";
 					info_debug($sql);
 					$create_table = mysql_query($sql);
@@ -916,7 +981,10 @@ else{
 			"CODE_COMMUNE_INSEE_NAISS",
 			"CODE_PAYS",
 			"VILLE_NAISS",
-			"MEL"
+			"MEL",
+			"TEL_PERSONNEL",
+			"TEL_PORTABLE",
+			"TEL_PROFESSIONNEL",
 			);
 
 			$tab_champs_scol_an_dernier=array("CODE_STRUCTURE",
@@ -1118,6 +1186,9 @@ else{
 
 						if(isset($eleves[$i]['mel'])) {$sql.=", mel='".$eleves[$i]['mel']."'";}
 
+						if(isset($eleves[$i]['tel_personnel'])) {$sql.=", tel_pers='".$eleves[$i]['tel_personnel']."'";}
+						if(isset($eleves[$i]['tel_portable'])) {$sql.=", tel_port='".$eleves[$i]['tel_portable']."'";}
+						if(isset($eleves[$i]['tel_professionnel'])) {$sql.=", tel_prof='".$eleves[$i]['tel_professionnel']."'";}
 
 						$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
 						affiche_debug("$sql<br />\n");
@@ -1975,6 +2046,15 @@ else{
 										e.naissance!=t2.col2 OR
 										e.lieu_naissance!=t.LIEU_NAISSANCE OR
 										e.no_gep!=t.ELENONAT";
+					if((getSettingValue('ele_tel_pers')=='yes')) {
+						$sql.="						OR e.tel_pers!=t.TEL_PERS";
+					}
+					if((getSettingValue('ele_tel_port')=='yes')) {
+						$sql.="						OR e.tel_port!=t.TEL_PORT";
+					}
+					if((getSettingValue('ele_tel_prof')=='yes')) {
+						$sql.="						OR e.tel_prof!=t.TEL_PROF";
+					}
 					if((getSettingValue('mode_email_ele')=='')||(getSettingValue('mode_email_ele')=='sconet')) {
 						$sql.="						OR e.email!=t.mel";
 					}
@@ -1991,6 +2071,15 @@ else{
 										e.sexe!=t.ELESEXE OR
 										e.naissance!=t2.col2 OR
 										e.no_gep!=t.ELENONAT";
+					if((getSettingValue('ele_tel_pers')=='yes')) {
+						$sql.="						OR e.tel_pers!=t.TEL_PERS";
+					}
+					if((getSettingValue('ele_tel_port')=='yes')) {
+						$sql.="						OR e.tel_port!=t.TEL_PORT";
+					}
+					if((getSettingValue('ele_tel_prof')=='yes')) {
+						$sql.="						OR e.tel_prof!=t.TEL_PROF";
+					}
 					if((getSettingValue('mode_email_ele')=='')||(getSettingValue('mode_email_ele')=='sconet')) {
 						$sql.="						OR e.email!=t.mel";
 					}
@@ -2262,6 +2351,12 @@ else{
 			info_debug("==============================================");
 			info_debug("=============== Phase step $step =================");
 
+			// 20120630
+			$nb_types_tel_ele_a_tester=0;
+			if((getSettingAOui('ele_tel_pers'))&&(getSettingAOui('ele_tel_pers_signaler_modif'))) {$nb_types_tel_ele_a_tester++;}
+			if((getSettingAOui('ele_tel_port'))&&(getSettingAOui('ele_tel_port_signaler_modif'))) {$nb_types_tel_ele_a_tester++;}
+			if((getSettingAOui('ele_tel_prof'))&&(getSettingAOui('ele_tel_prof_signaler_modif'))) {$nb_types_tel_ele_a_tester++;}
+
 			// 20110913
 			$sql="SELECT * FROM tempo4 WHERE col1='maj_sconet_eleves' AND (col3='modif' OR col3='new');";
 			$res=mysql_query($sql);
@@ -2407,6 +2502,13 @@ else{
 					echo "<th>Email</th>\n";
 				}
 
+				if(((getSettingValue('ele_tel_pers')=='yes')&&(getSettingAOui('ele_tel_pers_signaler_modif')))||
+					((getSettingValue('ele_tel_port')=='yes')&&(getSettingAOui('ele_tel_port_signaler_modif')))||
+					((getSettingValue('ele_tel_prof')=='yes')&&(getSettingAOui('ele_tel_prof_signaler_modif')))
+				) {
+					echo "<th>Tel</th>\n";
+				}
+
 				echo "<th>Classe</th>\n";
 				echo "<th>Etablissement d'origine</th>\n";
 				echo "</tr>\n";
@@ -2460,6 +2562,9 @@ else{
 
 						$affiche[12]=nettoyer_caracteres_nom($lig->MEL, "an", " @._-", "");
 
+						$affiche[13]=nettoyer_caracteres_nom($lig->TEL_PERS, "an", " @._-", "");
+						$affiche[14]=nettoyer_caracteres_nom($lig->TEL_PORT, "an", " @._-", "");
+						$affiche[15]=nettoyer_caracteres_nom($lig->TEL_PROF, "an", " @._-", "");
 
 							//$sql="SELECT * FROM eleves WHERE elenoet='$affiche[4]'";
 							$sql="SELECT * FROM eleves WHERE (elenoet='$affiche[4]' OR elenoet='".sprintf("%05d",$affiche[4])."')";
@@ -2505,7 +2610,10 @@ else{
 									//($lig_ele->lieu_naissance!=$affiche[11])||
 									($lig_ele->lieu_naissance!=stripslashes($affiche[11]))||
 									($lig_ele->no_gep!=$affiche[7])||
-									(($test_diff_email=="y")&&($lig_ele->email!=$affiche[12]))
+									(($test_diff_email=="y")&&($lig_ele->email!=$affiche[12]))||
+									((getSettingAOui('ele_tel_pers_signaler_modif'))&&($lig_ele->tel_pers!=$affiche[13]))||
+									((getSettingAOui('ele_tel_port_signaler_modif'))&&($lig_ele->tel_port!=$affiche[14]))||
+									((getSettingAOui('ele_tel_prof_signaler_modif'))&&($lig_ele->tel_prof!=$affiche[15]))
 									){
 										$temoin_modif='y';
 										$cpt_modif++;
@@ -2522,7 +2630,10 @@ else{
 									($lig_ele->sexe!=$affiche[2])||
 									($lig_ele->naissance!=$new_date)||
 									($lig_ele->no_gep!=$affiche[7])||
-									(($test_diff_email=="y")&&($lig_ele->email!=$affiche[12]))
+									(($test_diff_email=="y")&&($lig_ele->email!=$affiche[12]))||
+									((getSettingAOui('ele_tel_pers_signaler_modif'))&&($lig_ele->tel_pers!=$affiche[13]))||
+									((getSettingAOui('ele_tel_port_signaler_modif'))&&($lig_ele->tel_port!=$affiche[14]))||
+									((getSettingAOui('ele_tel_prof_signaler_modif'))&&($lig_ele->tel_prof!=$affiche[15]))
 									){
 										$temoin_modif='y';
 										$cpt_modif++;
@@ -2921,6 +3032,86 @@ else{
 									echo "</td>\n";
 								}
 
+
+								// 20120630
+
+								if(((getSettingValue('ele_tel_pers')=='yes')&&(getSettingAOui('ele_tel_pers_signaler_modif')))||
+									((getSettingValue('ele_tel_port')=='yes')&&(getSettingAOui('ele_tel_port_signaler_modif')))||
+									((getSettingValue('ele_tel_prof')=='yes')&&(getSettingAOui('ele_tel_prof_signaler_modif')))
+								) {
+
+									echo "<td>\n";
+										echo "<table class='boireaus'>\n";
+										if((getSettingValue('ele_tel_pers')=='yes')&&(getSettingAOui('ele_tel_pers_signaler_modif'))) {
+											echo "<tr>\n";
+											echo "<td>Pe</td>\n";
+											echo "<td";
+											if(stripslashes($lig_ele->tel_pers)!=stripslashes($affiche[13])){
+												echo " class='modif'>";
+												if($lig_ele->tel_pers!=''){
+													echo stripslashes($lig_ele->tel_pers)." <font color='red'>-&gt;</font>\n";
+												}
+											}
+											else{
+												//echo "'>";
+												echo ">";
+											}
+											echo stripslashes($affiche[13]);
+											echo "</td>\n";
+											echo "</tr>\n";
+										}
+										if((getSettingValue('ele_tel_port')=='yes')&&(getSettingAOui('ele_tel_port_signaler_modif'))) {
+											echo "<tr>\n";
+											echo "<td>Po</td>\n";
+											echo "<td";
+											if(stripslashes($lig_ele->tel_port)!=stripslashes($affiche[14])){
+												echo " class='modif'>";
+												if($lig_ele->tel_port!=''){
+													echo stripslashes($lig_ele->tel_port)." <font color='red'>-&gt;</font>\n";
+												}
+											}
+											else{
+												//echo "'>";
+												echo ">";
+											}
+											echo stripslashes($affiche[14]);
+											echo "</td>\n";
+											echo "</tr>\n";
+										}
+										if((getSettingValue('ele_tel_prof')=='yes')&&(getSettingAOui('ele_tel_prof_signaler_modif'))) {
+											echo "<tr>\n";
+											echo "<td>Pr</td>\n";
+											echo "<td";
+											if(stripslashes($lig_ele->tel_prof)!=stripslashes($affiche[15])){
+												echo " class='modif'>";
+												if($lig_ele->tel_prof!=''){
+													echo stripslashes($lig_ele->tel_prof)." <font color='red'>-&gt;</font>\n";
+												}
+											}
+											else{
+												//echo "'>";
+												echo ">";
+											}
+											echo stripslashes($affiche[15]);
+											echo "</td>\n";
+											echo "</tr>\n";
+										}
+										echo "</table>\n";
+
+
+									/*
+									if($nb_types_tel_ele_a_tester==1) {
+
+									}
+									else {
+										// On va mettre un tableau
+
+									}
+									*/
+									echo "</td>\n";
+								}
+
+
 								// Classe
 								//echo "<td style='text-align: center; background-color: white;'>";
 								echo "<td style='text-align: center;";
@@ -3105,6 +3296,44 @@ else{
 									echo "</td>\n";
 								}
 
+								// 20120630
+
+								if(((getSettingValue('ele_tel_pers')=='yes')&&(getSettingAOui('ele_tel_pers_signaler_modif')))||
+									((getSettingValue('ele_tel_port')=='yes')&&(getSettingAOui('ele_tel_port_signaler_modif')))||
+									((getSettingValue('ele_tel_prof')=='yes')&&(getSettingAOui('ele_tel_prof_signaler_modif')))
+								) {
+
+									echo "<td>\n";
+										echo "<table class='boireaus'>\n";
+										if((getSettingValue('ele_tel_pers')=='yes')&&(getSettingAOui('ele_tel_pers_signaler_modif'))) {
+											echo "<tr>\n";
+											echo "<td>Pe</td>\n";
+											echo "<td>";
+											echo stripslashes($affiche[13]);
+											echo "</td>\n";
+											echo "</tr>\n";
+										}
+										if((getSettingValue('ele_tel_port')=='yes')&&(getSettingAOui('ele_tel_port_signaler_modif'))) {
+											echo "<tr>\n";
+											echo "<td>Po</td>\n";
+											echo "<td>";
+											echo stripslashes($affiche[14]);
+											echo "</td>\n";
+											echo "</tr>\n";
+										}
+										if((getSettingValue('ele_tel_prof')=='yes')&&(getSettingAOui('ele_tel_prof_signaler_modif'))) {
+											echo "<tr>\n";
+											echo "<td>Pr</td>\n";
+											echo "<td>";
+											echo stripslashes($affiche[15]);
+											echo "</td>\n";
+											echo "</tr>\n";
+										}
+										echo "</table>\n";
+									echo "</td>\n";
+								}
+
+
 								echo "<td style='text-align: center;'>";
 								echo "$affiche[9]";
 								echo "</td>\n";
@@ -3264,6 +3493,17 @@ else{
 						$sql.=", email='".mysql_real_escape_string($lig->MEL)."'";
 					}
 
+					// 20120630
+					if((getSettingAOui('ele_tel_pers'))&&(getSettingAOui('ele_tel_pers_signaler_modif'))) {
+						$sql.=", tel_pers='".mysql_real_escape_string($lig->TEL_PERS)."'";
+					}
+					if((getSettingAOui('ele_tel_port'))&&(getSettingAOui('ele_tel_port_signaler_modif'))) {
+						$sql.=", tel_port='".mysql_real_escape_string($lig->TEL_PORT)."'";
+					}
+					if((getSettingAOui('ele_tel_prof'))&&(getSettingAOui('ele_tel_prof_signaler_modif'))) {
+						$sql.=", tel_prof='".mysql_real_escape_string($lig->TEL_PROF)."'";
+					}
+
 					// Je ne pense pas qu'on puisse corriger un ELENOET manquant...
 					// Si on fait des imports avec Sconet, l'ELENOET n'est pas vide.
 					// Et l'interface ne permet pas actuellement de saisir/corriger un ELE_ID
@@ -3282,7 +3522,7 @@ else{
 
 						$sql.=" WHERE ele_id='".$lig->ELE_ID."';";
 						//echo "============<br />";
-						//echo "$sql<br />";
+						echo "$sql<br />";
 						info_debug($sql);
 						$update=mysql_query($sql);
 						if($update){
@@ -3340,7 +3580,7 @@ else{
 
 							$sql.=" WHERE elenoet='".$lig->ELENOET."';";
 							//echo "============<br />";
-							//echo "$sql<br />";
+							echo "$sql<br />";
 							info_debug($sql);
 							$update=mysql_query($sql);
 							if($update){
@@ -3622,6 +3862,18 @@ else{
 									$sql.=", lieu_naissance='".$lig->LIEU_NAISSANCE."'";
 								}
 								$sql.=", email='".$lig->MEL."'";
+
+								// 20120630
+								if((getSettingAOui('ele_tel_pers'))&&(getSettingAOui('ele_tel_pers_signaler_modif'))) {
+									$sql.=", tel_pers='".mysql_real_escape_string($lig->TEL_PERS)."'";
+								}
+								if((getSettingAOui('ele_tel_port'))&&(getSettingAOui('ele_tel_port_signaler_modif'))) {
+									$sql.=", tel_port='".mysql_real_escape_string($lig->TEL_PORT)."'";
+								}
+								if((getSettingAOui('ele_tel_prof'))&&(getSettingAOui('ele_tel_prof_signaler_modif'))) {
+									$sql.=", tel_prof='".mysql_real_escape_string($lig->TEL_PROF)."'";
+								}
+
 								$sql.=";";
 								info_debug($sql);
 								$insert=mysql_query($sql);
