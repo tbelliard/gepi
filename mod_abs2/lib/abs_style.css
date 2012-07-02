@@ -144,13 +144,17 @@ table.legende {
     border-collapse: collapse;
     border-spacing: 0px;
     margin:4px;
-    
-	
 }
 .legende  td{
     padding:4px;
     border-spacing: 0px;
     border: 1px solid black;
     font: 11px ;
-	
 }
+.tableau_tel_resp {
+    display:none;
+}
+.div_tab_tel_resp:hover .tableau_tel_resp {
+    display:block;
+}
+
