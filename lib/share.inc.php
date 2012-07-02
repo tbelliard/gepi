@@ -5543,4 +5543,139 @@ function correction_notices_cdt_formules_maths($eff_parcours) {
 	}
 	echo "<p>$nb_corr corrections effectuées sur 'ct_devoirs_entry'.</p>";
 }
+
+
+/** Fonction destinée à retourner un tableau PHP des numéros de téléphone responsable (et élève)
+ *
+ * @param string $ele_login Login de l'élève
+ *
+ * @return array Tableau PHP des numéros de tel.
+ */
+function get_tel_resp_ele($ele_login) {
+	$tab_tel=array();
+
+	$cpt_resp=0;
+
+	$sql="SELECT rp.*, r.resp_legal, e.tel_pers AS ele_tel_pers, e.tel_port AS ele_tel_port, e.tel_prof AS ele_tel_prof FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND e.ele_id=r.ele_id AND r.pers_id=rp.pers_id AND (resp_legal='1' OR resp_legal='2') ORDER BY r.resp_legal;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tab_tel['responsable'][$cpt_resp]=array();
+			$tab_tel['responsable'][$cpt_resp]['resp_legal']=$lig->resp_legal;
+			$tab_tel['responsable'][$cpt_resp]['civ_nom_prenom']=$lig->civilite." ".casse_mot($lig->nom,'maj')." ".casse_mot($lig->prenom,'majf2');
+			if($lig->tel_pers!='') {
+				$tab_tel['responsable'][$cpt_resp]['tel_pers']=$lig->tel_pers;
+			}
+			if($lig->tel_port!='') {
+				$tab_tel['responsable'][$cpt_resp]['tel_port']=$lig->tel_port;
+			}
+			if($lig->tel_prof!='') {
+				$tab_tel['responsable'][$cpt_resp]['tel_prof']=$lig->tel_prof;
+			}
+
+			// On va remplir plusieurs fois les champs suivants (mais avec les mêmes valeurs) s'il y a plusieurs responsables
+			if((getSettingAOui('ele_tel_pers'))&&($lig->ele_tel_pers!='')) {
+				$tab_tel['eleve']['tel_pers']=$lig->ele_tel_pers;
+			}
+			if((getSettingAOui('ele_tel_port'))&&($lig->ele_tel_port!='')) {
+				$tab_tel['eleve']['tel_port']=$lig->ele_tel_port;
+			}
+			if((getSettingAOui('ele_tel_prof'))&&($lig->ele_tel_prof!='')) {
+				$tab_tel['eleve']['tel_prof']=$lig->ele_tel_prof;
+			}
+			$cpt_resp++;
+		}
+	}
+
+	$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND e.ele_id=r.ele_id AND r.pers_id=rp.pers_id AND resp_legal='0' ORDER BY rp.civilite, rp.nom, rp.prenom;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tab_tel['responsable'][$cpt_resp]=array();
+			$tab_tel['responsable'][$cpt_resp]['resp_legal']=$lig->resp_legal;
+			$tab_tel['responsable'][$cpt_resp]['civ_nom_prenom']=$lig->civilite." ".casse_mot($lig->nom,'maj')." ".casse_mot($lig->prenom,'majf2');
+			if($lig->tel_pers!='') {
+				$tab_tel['responsable'][$cpt_resp]['tel_pers']=$lig->tel_pers;
+			}
+			if($lig->tel_port!='') {
+				$tab_tel['responsable'][$cpt_resp]['tel_port']=$lig->tel_port;
+			}
+			if($lig->tel_prof!='') {
+				$tab_tel['responsable'][$cpt_resp]['tel_prof']=$lig->tel_prof;
+			}
+			$cpt_resp++;
+		}
+	}
+
+	return $tab_tel;
+}
+
+/** Fonction destinée à retourner un tableau HTML des numéros de téléphone responsable (et élève)
+ *
+ * @param string $ele_login Login de l'élève
+ *
+ * @return array Tableau HTML des numéros de tel.
+ */
+function tableau_tel_resp_ele($ele_login) {
+	$retour="";
+	$tab_tel=get_tel_resp_ele($ele_login);
+
+	$tab_style[1]="impair";
+	$tab_style[-1]="pair";
+
+	if((count($tab_tel['responsable'])>0)||(count($tab_tel['eleve'])>0)) {
+		$retour.="<table class='boireaus' summary='Tableau des numéros de téléphone'>\n";
+		//$retour.="<table class='tb_absences' summary='Tableau des numéros de telephone'>\n";
+		$retour.="<tr>\n";
+		$retour.="<th></th>\n";
+		$retour.="<th>Identité</th>\n";
+		$retour.="<th>Personnel</th>\n";
+		$retour.="<th>Portable</th>\n";
+		$retour.="<th>Professionnel</th>\n";
+		$retour.="</tr>\n";
+
+		$alt=1;
+		//foreach($tab_tel['responsable'] as $resp_legal => $tab_resp_legal) {
+		for($i=0;$i<count($tab_tel['responsable']);$i++) {
+			$alt=$alt*(-1);
+			$retour.="<tr class='lig$alt white_hover'>\n";
+			//$retour.="<tr class='".$tab_style[$alt]." white_hover'>\n";
+			$retour.="<td title='Numéro de responsable légal'>".$tab_tel['responsable'][$i]['resp_legal']."</td>\n";
+			$retour.="<td>".$tab_tel['responsable'][$i]['civ_nom_prenom']."</td>\n";
+			$retour.="<td>";
+			if(isset($tab_tel['responsable'][$i]['tel_pers'])) {$retour.=$tab_tel['responsable'][$i]['tel_pers'];}
+			$retour.="</td>\n";
+			$retour.="<td>";
+			if(isset($tab_tel['responsable'][$i]['tel_port'])) {$retour.=$tab_tel['responsable'][$i]['tel_port'];}
+			$retour.="</td>\n";
+			$retour.="<td>";
+			if(isset($tab_tel['responsable'][$i]['tel_prof'])) {$retour.=$tab_tel['responsable'][$i]['tel_prof'];}
+			$retour.="</td>\n";
+			$retour.="</tr>\n";
+		}
+
+		if(isset($tab_tel['eleve'])) {
+			$alt=$alt*(-1);
+			$retour.="<tr class='lig$alt white_hover'>\n";
+			$retour.="<td colspan='2'>Élève</td>\n";
+
+			$retour.="<td>";
+			if(isset($tab_tel['eleve']['tel_pers'])) {$retour.=$tab_tel['eleve']['tel_pers'];}
+			$retour.="</td>\n";
+
+			$retour.="<td>";
+			if(isset($tab_tel['eleve']['tel_port'])) {$retour.=$tab_tel['eleve']['tel_port'];}
+			$retour.="</td>\n";
+
+			$retour.="<td>";
+			if(isset($tab_tel['eleve']['tel_prof'])) {$retour.=$tab_tel['eleve']['tel_prof'];}
+			$retour.="</td>\n";
+
+			$retour.="</tr>\n";
+		}
+		$retour.="</table>\n";
+	}
+	return $retour;
+}
+
 ?>
