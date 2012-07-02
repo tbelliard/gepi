@@ -987,7 +987,7 @@ if ($eleve_col->isEmpty()) {
 								if($js_chaine_tab_types_abs_regimes!="") {
 									$js_chaine_tab_types_abs_regimes.=", ";
 								}
-								$js_chaine_tab_types_abs_regimes.=$type['type'];
+								$js_chaine_tab_types_abs_regimes.="'".$type['type']."'";
 							}
 							$alt=$alt*(-1);
 							//echo "<tr class='lig$alt'>\n";
@@ -1438,7 +1438,7 @@ echo '
 			//alert(tab.length)
 			for(i=0;i<tab.length;i++) {
 				champ_courant=tab[i];
-				champ_courant.checked=mode;
+				//champ_courant.checked=mode;
 
 				// On va récupérer le rang de l'élève depuis l'id de la forme: radio_hidden_type_absence_eleve_17_0
 				// Le rang de l'élève est le dernier nombre (0 dans l'exemple)
@@ -1448,7 +1448,14 @@ echo '
 				id_check_ele='active_absence_eleve_'+tab_tmp[6];
 
 				if(document.getElementById(id_check_ele)) {
-					document.getElementById(id_check_ele).checked=true;
+					// Si le checkbox n'est pas déjà coché, on prend en compte
+					// sinon, c'est un élève qui a déjà une autre saisie, on ne modifie pas.
+					if(document.getElementById(id_check_ele).checked!=true) {
+						// On coche le champ lié au régime
+						champ_courant.checked=mode;
+						// On coche le checkbox
+						document.getElementById(id_check_ele).checked=true;
+					}
 				}
 			}
 		}
@@ -1505,6 +1512,7 @@ echo '
 		var tab_type_abs_regime=new Array($js_chaine_tab_types_abs_regimes);
 		for(i=0;i<tab_type_abs_regime.length;i++) {
 			cpt=0;
+			//if(i<3) {alert('tab_type_abs_regime['+i+']='+tab_type_abs_regime[i]);}
 			if(document.getElementById('td_total_regime_'+tab_type_abs_regime[i])) {
 				for(j=0;j<".count($tab_regimes).";j++) {
 					tab=document.getElementsByClassName('type_abs_regime_'+tab_type_abs_regime[i]+'_'+j);
