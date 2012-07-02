@@ -5474,4 +5474,208 @@ function temoin_check_srv($id_div_retour="retour_ping", $nom_js_func="check_srv"
 </script>\n";
 }
 
+/** Fonction destinée à télécharger les images générées sur http://latex.codecogs.com/ 
+ *  et à corriger les notices en conséquence pour pointer sur uneURL locale
+ *
+ * @param integer $eff_parcours
+ *
+ * @return string le code HTML relatant le nombre de notices corrigées.
+ */
+
+function correction_notices_cdt_formules_maths($eff_parcours) {
+	$tab_grp=array();
+
+	$nb_corr=0;
+	$sql="SELECT * FROM ct_entry WHERE contenu LIKE '%http://latex.codecogs.com/%' LIMIT $eff_parcours;";
+	$res=mysql_query($sql);
+	while($lig=mysql_fetch_object($res)) {
+		$id_ct=$lig->id_ct;
+		$id_groupe=$lig->id_groupe;
+		$contenu=$lig->contenu;
+		$type_notice="c";
+
+		if(!isset($tab_grp[$id_groupe])) {
+			$tab_grp[$id_groupe]=get_group($id_groupe);
+		}
+
+		$contenu_corrige=get_img_formules_math($contenu, $id_groupe, $type_notice);
+		$sql="UPDATE ct_entry SET contenu='".mysql_real_escape_string($contenu_corrige)."' WHERE id_ct='$id_ct';";
+		$res_ct=mysql_query($sql);
+		if(!$res_ct) {
+			echo "<div style='border:1px solid red; margin:3px;'>";
+			echo "<p style='color:red;'>ERREUR sur<br />$sql";
+			echo "</div>\n";
+		}
+		else {
+			echo "<p>Correction sur une notice de <strong>compte-rendu</strong> en ".$tab_grp[$id_groupe]['name']." en ".$tab_grp[$id_groupe]['classlist_string']." : ".strftime("%d/%m/%Y", $lig->date_ct)."<br />\n";
+			$nb_corr++;
+		}
+		flush();
+	}
+	echo "<p>$nb_corr corrections effectuées sur 'ct_entry'.</p>";
+
+	$nb_corr=0;
+	$sql="SELECT * FROM ct_devoirs_entry WHERE contenu LIKE '%http://latex.codecogs.com/%' LIMIT $eff_parcours;";
+	$res=mysql_query($sql);
+	while($lig=mysql_fetch_object($res)) {
+		$id_ct=$lig->id_ct;
+		$id_groupe=$lig->id_groupe;
+		$contenu=$lig->contenu;
+		$type_notice="t";
+
+		if(!isset($tab_grp[$id_groupe])) {
+			$tab_grp[$id_groupe]=get_group($id_groupe);
+		}
+
+		$contenu_corrige=get_img_formules_math($contenu, $id_groupe, $type_notice);
+		$sql="UPDATE ct_devoirs_entry SET contenu='".mysql_real_escape_string($contenu_corrige)."' WHERE id_ct='$id_ct';";
+		$res_ct=mysql_query($sql);
+		if(!$res_ct) {
+			echo "<div style='border:1px solid red; margin:3px;'>";
+			echo "<p style='color:red;'>ERREUR sur<br />$sql";
+			echo "</div>\n";
+		}
+		else {
+			echo "<p>Correction sur une notice de <strong>devoir</strong> en ".$tab_grp[$id_groupe]['name']." en ".$tab_grp[$id_groupe]['classlist_string']." : ".strftime("%d/%m/%Y", $lig->date_ct)."<br />\n";
+			$nb_corr++;
+		}
+		flush();
+	}
+	echo "<p>$nb_corr corrections effectuées sur 'ct_devoirs_entry'.</p>";
+}
+
+
+/** Fonction destinée à retourner un tableau PHP des numéros de téléphone responsable (et élève)
+ *
+ * @param string $ele_login Login de l'élève
+ *
+ * @return array Tableau PHP des numéros de tel.
+ */
+function get_tel_resp_ele($ele_login) {
+	$tab_tel=array();
+
+	$cpt_resp=0;
+
+	$sql="SELECT rp.*, r.resp_legal, e.tel_pers AS ele_tel_pers, e.tel_port AS ele_tel_port, e.tel_prof AS ele_tel_prof FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND e.ele_id=r.ele_id AND r.pers_id=rp.pers_id AND (resp_legal='1' OR resp_legal='2') ORDER BY r.resp_legal;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tab_tel['responsable'][$cpt_resp]=array();
+			$tab_tel['responsable'][$cpt_resp]['resp_legal']=$lig->resp_legal;
+			$tab_tel['responsable'][$cpt_resp]['civ_nom_prenom']=$lig->civilite." ".casse_mot($lig->nom,'maj')." ".casse_mot($lig->prenom,'majf2');
+			if($lig->tel_pers!='') {
+				$tab_tel['responsable'][$cpt_resp]['tel_pers']=$lig->tel_pers;
+			}
+			if($lig->tel_port!='') {
+				$tab_tel['responsable'][$cpt_resp]['tel_port']=$lig->tel_port;
+			}
+			if($lig->tel_prof!='') {
+				$tab_tel['responsable'][$cpt_resp]['tel_prof']=$lig->tel_prof;
+			}
+
+			// On va remplir plusieurs fois les champs suivants (mais avec les mêmes valeurs) s'il y a plusieurs responsables
+			if((getSettingAOui('ele_tel_pers'))&&($lig->ele_tel_pers!='')) {
+				$tab_tel['eleve']['tel_pers']=$lig->ele_tel_pers;
+			}
+			if((getSettingAOui('ele_tel_port'))&&($lig->ele_tel_port!='')) {
+				$tab_tel['eleve']['tel_port']=$lig->ele_tel_port;
+			}
+			if((getSettingAOui('ele_tel_prof'))&&($lig->ele_tel_prof!='')) {
+				$tab_tel['eleve']['tel_prof']=$lig->ele_tel_prof;
+			}
+			$cpt_resp++;
+		}
+	}
+
+	$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND e.ele_id=r.ele_id AND r.pers_id=rp.pers_id AND resp_legal='0' ORDER BY rp.civilite, rp.nom, rp.prenom;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tab_tel['responsable'][$cpt_resp]=array();
+			$tab_tel['responsable'][$cpt_resp]['resp_legal']=$lig->resp_legal;
+			$tab_tel['responsable'][$cpt_resp]['civ_nom_prenom']=$lig->civilite." ".casse_mot($lig->nom,'maj')." ".casse_mot($lig->prenom,'majf2');
+			if($lig->tel_pers!='') {
+				$tab_tel['responsable'][$cpt_resp]['tel_pers']=$lig->tel_pers;
+			}
+			if($lig->tel_port!='') {
+				$tab_tel['responsable'][$cpt_resp]['tel_port']=$lig->tel_port;
+			}
+			if($lig->tel_prof!='') {
+				$tab_tel['responsable'][$cpt_resp]['tel_prof']=$lig->tel_prof;
+			}
+			$cpt_resp++;
+		}
+	}
+
+	return $tab_tel;
+}
+
+/** Fonction destinée à retourner un tableau HTML des numéros de téléphone responsable (et élève)
+ *
+ * @param string $ele_login Login de l'élève
+ *
+ * @return array Tableau HTML des numéros de tel.
+ */
+function tableau_tel_resp_ele($ele_login) {
+	$retour="";
+	$tab_tel=get_tel_resp_ele($ele_login);
+
+	$tab_style[1]="impair";
+	$tab_style[-1]="pair";
+
+	if((count($tab_tel['responsable'])>0)||(count($tab_tel['eleve'])>0)) {
+		$retour.="<table class='boireaus' summary='Tableau des numéros de téléphone'>\n";
+		//$retour.="<table class='tb_absences' summary='Tableau des numéros de telephone'>\n";
+		$retour.="<tr>\n";
+		$retour.="<th></th>\n";
+		$retour.="<th>Identité</th>\n";
+		$retour.="<th>Personnel</th>\n";
+		$retour.="<th>Portable</th>\n";
+		$retour.="<th>Professionnel</th>\n";
+		$retour.="</tr>\n";
+
+		$alt=1;
+		//foreach($tab_tel['responsable'] as $resp_legal => $tab_resp_legal) {
+		for($i=0;$i<count($tab_tel['responsable']);$i++) {
+			$alt=$alt*(-1);
+			$retour.="<tr class='lig$alt white_hover'>\n";
+			//$retour.="<tr class='".$tab_style[$alt]." white_hover'>\n";
+			$retour.="<td title='Numéro de responsable légal'>".$tab_tel['responsable'][$i]['resp_legal']."</td>\n";
+			$retour.="<td>".$tab_tel['responsable'][$i]['civ_nom_prenom']."</td>\n";
+			$retour.="<td>";
+			if(isset($tab_tel['responsable'][$i]['tel_pers'])) {$retour.=$tab_tel['responsable'][$i]['tel_pers'];}
+			$retour.="</td>\n";
+			$retour.="<td>";
+			if(isset($tab_tel['responsable'][$i]['tel_port'])) {$retour.=$tab_tel['responsable'][$i]['tel_port'];}
+			$retour.="</td>\n";
+			$retour.="<td>";
+			if(isset($tab_tel['responsable'][$i]['tel_prof'])) {$retour.=$tab_tel['responsable'][$i]['tel_prof'];}
+			$retour.="</td>\n";
+			$retour.="</tr>\n";
+		}
+
+		if(isset($tab_tel['eleve'])) {
+			$alt=$alt*(-1);
+			$retour.="<tr class='lig$alt white_hover'>\n";
+			$retour.="<td colspan='2'>Élève</td>\n";
+
+			$retour.="<td>";
+			if(isset($tab_tel['eleve']['tel_pers'])) {$retour.=$tab_tel['eleve']['tel_pers'];}
+			$retour.="</td>\n";
+
+			$retour.="<td>";
+			if(isset($tab_tel['eleve']['tel_port'])) {$retour.=$tab_tel['eleve']['tel_port'];}
+			$retour.="</td>\n";
+
+			$retour.="<td>";
+			if(isset($tab_tel['eleve']['tel_prof'])) {$retour.=$tab_tel['eleve']['tel_prof'];}
+			$retour.="</td>\n";
+
+			$retour.="</tr>\n";
+		}
+		$retour.="</table>\n";
+	}
+	return $retour;
+}
+
 ?>

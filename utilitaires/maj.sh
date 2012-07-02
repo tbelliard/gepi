@@ -146,6 +146,11 @@ Exemples d'utilisation :
 
     }
 
+    if ($force || $start_from == '1.6.1') {
+        require './updates/161_to_dev.inc.php';
+
+    }
+
 // Nettoyage pour envoyer le résultat dans la console
     $result = str_replace('<br />',"\n",$result);
     $result = str_replace('<br/>',"\n",$result);

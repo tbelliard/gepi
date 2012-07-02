@@ -60,7 +60,7 @@ echo "</ul>\n";
 echo "<p><br /></p>\n";
 */
 
-echo "<p><a href='maj_import2.php'>Mise à jour des données élèves/responsables à l'aide des fichiers XML de Sconet/STS</a>.</p>\n";
+echo "<p><a href='maj_import3.php'>Mise à jour des données élèves/responsables à l'aide des fichiers XML de Sconet/STS</a>.</p>\n";
 echo "<p><br /></p>\n";
 
 //==================================

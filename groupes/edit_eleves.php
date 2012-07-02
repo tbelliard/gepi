@@ -64,6 +64,11 @@ $reg_nom_groupe = $current_group["name"];
 debug_edit_eleves("reg_nom_groupe=$reg_nom_groupe");
 $reg_nom_complet = $current_group["description"];
 $reg_matiere = $current_group["matiere"]["matiere"];
+
+if(!isset($id_classe)) {
+	$id_classe=$current_group['classes']['list'][0];
+}
+
 $reg_id_classe = $id_classe;
 $reg_clazz = $current_group["classes"]["list"];
 $reg_professeurs = (array)$current_group["profs"]["list"];
@@ -316,13 +321,25 @@ echo "<script type='text/javascript'>
 	change='no';
 </script>\n";
 
+echo "<div style='float:left;'>";
 echo "<form enctype='multipart/form-data' action='edit_eleves.php' name='form_passage_a_un_autre_groupe' method='post'>\n";
 
 echo "<p class='bold'>\n";
-echo "<a href='edit_class.php?id_classe=$id_classe'";
-echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
-
+if(!$multiclasses) {
+	echo "<a href='edit_class.php?id_classe=$id_classe'";
+	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+	echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+}
+else {
+	$cpt_tmp_clas=0;
+	foreach($current_group['classes']['classes'] as $tmp_id_classe => $tmp_tab_clas_grp) {
+		if(	$cpt_tmp_clas>0) {echo " | ";}
+		echo "<a href='edit_class.php?id_classe=".$tmp_id_classe."'";
+		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+		echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour ".$tmp_tab_clas_grp['classe']."</a>\n";
+		$cpt_tmp_clas++;
+	}
+}
 
 //$sql="SELECT DISTINCT jgc.id_groupe FROM groupes g, j_groupes_classes jgc, j_eleves_groupes jeg WHERE jgc.id_classe='$id_classe' AND jeg.id_groupe=jgc.id_groupe AND g.id=jgc.id_groupe AND jgc.id_groupe!='$id_groupe' ORDER BY g.name;";
 $sql="SELECT DISTINCT jgc.id_groupe FROM groupes g, j_groupes_classes jgc WHERE jgc.id_classe='$id_classe' AND g.id=jgc.id_groupe ORDER BY g.name;";
@@ -346,10 +363,13 @@ if(mysql_num_rows($res_grp)>1) {
 		$cpt_grp++;
 	}
 	echo "</select>\n";
+	echo " <input type='submit' id='button_submit_passage_autre_groupe' value='Go'>\n";
 
 	echo "<script type='text/javascript'>
 	// Initialisation faite plus haut
 	//change='no';
+
+	document.getElementById('button_submit_passage_autre_groupe').style.display='none';
 
 	function confirm_changement_grp(thechange, themessage)
 	{
@@ -377,6 +397,66 @@ echo ">Éditer l'enseignement</a>";
 
 echo "</p>";
 echo "</form>\n";
+echo "</div>\n";
+
+// Formulaire pour passer à un autre groupe de la même matière éventuellement dans une autre classe
+$sql="SELECT DISTINCT jgc.id_groupe FROM groupes g, j_groupes_classes jgc, classes c, j_groupes_matieres jgm WHERE jgc.id_classe=c.id AND g.id=jgc.id_groupe AND g.id=jgm.id_groupe AND jgm.id_matiere='".$current_group['matiere']['matiere']."' ORDER BY c.classe, g.name;";
+//echo "$sql<br />\n";
+$res_grp=mysql_query($sql);
+if(mysql_num_rows($res_grp)>1) {
+
+	echo "<div style='float:left;'>";
+	echo "<form enctype='multipart/form-data' action='edit_eleves.php' name='form_passage_a_un_autre_groupe2' method='post'>\n";
+
+	echo "<p class='bold'>";
+
+	echo " | ";
+
+	echo "<select name='id_groupe' id='id_groupe_a_passage_autre_grp2' onchange=\"confirm_changement_grp2(change, '$themessage');\">\n";
+	$cpt_grp=0;
+	$chaine_js=array();
+	//echo "<option value=''>---</option>\n";
+	while($lig_grp=mysql_fetch_object($res_grp)) {
+
+		$tmp_grp=get_group($lig_grp->id_groupe);
+
+		echo "<option value='$lig_grp->id_groupe'";
+		if($lig_grp->id_groupe==$id_groupe) {echo " selected";$indice_grp_courant=$cpt_grp;}
+		echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")</option>\n";
+		$cpt_grp++;
+	}
+	echo "</select>\n";
+
+	echo " <input type='submit' id='button_submit_passage_autre_groupe2' value='Go'>\n";
+
+	echo "<script type='text/javascript'>
+
+	document.getElementById('button_submit_passage_autre_groupe2').style.display='none';
+
+	function confirm_changement_grp2(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.forms['form_passage_a_un_autre_groupe2'].submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.forms['form_passage_a_un_autre_groupe2'].submit();
+			}
+			else{
+				document.getElementById('id_groupe_a_passage_autre_grp2').selectedIndex=$indice_grp_courant;
+			}
+		}
+	}
+</script>\n";
+
+	echo "</p>";
+
+	echo "</form>\n";
+	echo "</div>\n";
+}
+echo "<div style='clear:both;'></div>\n";
 
 ?>
 

@@ -3306,6 +3306,9 @@ else {
 				$id_classe=$tab_id_classe[$loop_classe];
 				$classe=get_class_from_id($id_classe);
 
+				$sql="INSERT INTO tempo4 SET col1='$id_classe', col2='".$tableau_eleve['login'][$j]."', col3='$nom_fichier_bulletin', col4='".mysql_real_escape_string($tableau_eleve['nom_prenom'][$j])."';";
+				$res_t4=mysql_query($sql);
+
 				for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
 					$periode_num=$tab_periode_num[$loop_periode_num];
 
@@ -3322,6 +3325,7 @@ else {
 
 			echo $pdf->Output($dirname."/".$nom_fichier_bulletin,'F');
 			echo "<p><a href='$dirname/$nom_fichier_bulletin'>$nom_fichier_bulletin</a></p>\n";
+
 			flush();
 		}
 

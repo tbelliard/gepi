@@ -30,13 +30,14 @@ require_once("../lib/initialisations.inc.php");
 //include_once('./lib/tbs_class.php');
 //include_once('./lib/tbsooo_class.php');
 
-include_once('./lib/tinyButStrong.class.php');
-include_once('./lib/tinyDoc.class.php');
+//include_once('./lib/tinyButStrong.class.php');
+//include_once('./lib/tinyDoc.class.php');
 
+include_once('../tbs/tbs_class.php');
+include_once('../tbs/plugins/tbs_plugin_opentbs.php');
 
-
-define( 'PCLZIP_TEMPORARY_DIR', '../mod_ooo/tmp/' );
-include_once('../lib/pclzip.lib.php');
+//~ define( 'PCLZIP_TEMPORARY_DIR', '../mod_ooo/tmp/' );
+//~ include_once('../lib/pclzip.lib.php');
 
 
 // Resume session
@@ -209,7 +210,7 @@ foreach($Eleves as $Eleve) {
                             if(($nom_resp[1]!=$nom_resp[2])&&($nom_resp[2]!="")) {
                                 // Les deux responsables légaux n'ont pas le même nom
                                     $ligne1=$civilite_resp[1]." ".$nom_resp[1]." ".$prenom_resp[1];
-                                    $ligne1.="<br />\n";
+                                    $ligne1.="\n";
                                     $ligne1.="et ";
                                     $ligne1.=$civilite_resp[2]." ".$nom_resp[2]." ".$prenom_resp[2];
                             } else {
@@ -234,18 +235,18 @@ foreach($Eleves as $Eleve) {
             }
             $ligne2=$adr1_resp[1];
             if($adr2_resp[1]!=""){
-                    $ligne2.="<br />\n".$adr2_resp[1];
+                    $ligne2.="\n".$adr2_resp[1];
             }
             if($adr3_resp[1]!=""){
-                    $ligne2.="<br />\n".$adr3_resp[1];
+                    $ligne2.="\n".$adr3_resp[1];
             }
             if($adr4_resp[1]!=""){
-                    $ligne2.="<br />\n".$adr4_resp[1];
+                    $ligne2.="\n".$adr4_resp[1];
             }
             $ligne3=$cp_resp[1]." ".$commune_resp[1];
             if(($pays_resp[1]!="")&&(mb_strtolower($pays_resp[1])!=mb_strtolower($gepiSettings['gepiSchoolPays']))) {
                     if($ligne3!=" "){
-                            $ligne3.="<br />";
+                            $ligne3.="\n";
                     }
                     $ligne3.="$pays_resp[1]";
             }
@@ -419,120 +420,142 @@ $nom_fichier_xml_a_traiter ='content.xml';
 include_once ("./lib/chemin.inc.php");
 
 
-// instantiate a TBS OOo class
-$OOo = new tinyDoc();
-$OOo->setZipMethod('shell');
-$OOo->setZipBinary('zip');
-$OOo->setUnzipBinary('unzip');
+//~ // instantiate a TBS OOo class
+//~ $OOo = new tinyDoc();
+//~ $OOo->setZipMethod('shell');
+//~ $OOo->setZipBinary('zip');
+//~ $OOo->setUnzipBinary('unzip');
+//~ 
+//~ // setting the object
+//~ $OOo->SetProcessDir($nom_dossier_temporaire ); //dossier où se fait le traitement (décompression / traitement / compression)
+//~ // create a new openoffice document from the template with an unique id
+//~ $OOo->createFrom($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo); // le chemin du fichier est indiqué à partir de l'emplacement de ce fichier
+//~ // merge data with openoffice file named 'content.xml'
+//~ $OOo->loadXml($nom_fichier_xml_a_traiter); //Le fichier qui contient les variables et doit être parsé (il sera extrait)
 
-// setting the object
-$OOo->SetProcessDir($nom_dossier_temporaire ); //dossier où se fait le traitement (décompression / traitement / compression)
-// create a new openoffice document from the template with an unique id
-$OOo->createFrom($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo); // le chemin du fichier est indiqué à partir de l'emplacement de ce fichier
-// merge data with openoffice file named 'content.xml'
-$OOo->loadXml($nom_fichier_xml_a_traiter); //Le fichier qui contient les variables et doit être parsé (il sera extrait)
+$OOo = new clsTinyButStrong; // new instance of TBS
+$OOo->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
 
+
+$OOo->LoadTemplate($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo, OPENTBS_ALREADY_UTF8);
 
 
 // Traitement des tableaux
 // On insère ici les lignes concernant la gestion des tableaux
 if (!$page_garde) {
-    $OOo->mergeXml(
-        array(
-            'name' => 'page_garde',
-            'type' => 'clear'));
+    //~ $OOo->mergeXml(
+        //~ array(
+            //~ 'name' => 'page_garde',
+            //~ 'type' => 'clear'));
+    $OOo->MergeBlock('page_garde','clear');
 } else {
-    $OOo->mergeXmlBlock('page_garde',array('fake')); // Juste pour que le bloc s'initialise correctement
+    //~ $OOo->mergeXmlBlock('page_garde',array('fake')); // Juste pour que le bloc s'initialise correctement
+    $OOo->MergeBlock('page_garde',array('fake'));
 }
+
 if (!$releve) {
-    $OOo->mergeXml(
-        array(
-            'name' => 'releve',
-            'type' => 'clear'));
+    //~ $OOo->mergeXml(
+        //~ array(
+            //~ 'name' => 'releve',
+            //~ 'type' => 'clear'));
+    $OOo->MergeBlock('releve','clear');
 } else {
-    $OOo->mergeXmlBlock('releve',array('fake')); // Juste pour que le bloc s'initialise correctement
+    //~ $OOo->mergeXmlBlock('releve',array('fake')); // Juste pour que le bloc s'initialise correctement
+    $OOo->MergeBlock('releve',array('fake'));
 }
 if (!$attestation) {
-    $OOo->mergeXml(
-        array(
-            'name' => 'attestation',
-            'type' => 'clear'));
+    //~ $OOo->mergeXml(
+        //~ array(
+            //~ 'name' => 'attestation',
+            //~ 'type' => 'clear'));
+    $OOo->MergeBlock('attestation','clear');
 } else {
-    $OOo->mergeXmlBlock('attestation',array('fake')); // Juste pour que le bloc s'initialise correctement
+    //~ $OOo->mergeXmlBlock('attestation',array('fake')); // Juste pour que le bloc s'initialise correctement
+    $OOo->MergeBlock('attestation',array('fake'));
 }
 if (!$description) {
-    $OOo->mergeXml(
-        array(
-            'name' => 'description',
-            'type' => 'clear'));
+    //~ $OOo->mergeXml(
+        //~ array(
+            //~ 'name' => 'description',
+            //~ 'type' => 'clear'));
+    $OOo->MergeBlock('description','clear');
 } else {
-    $OOo->mergeXmlBlock('description',array('fake')); // Juste pour que le bloc s'initialise correctement
+    //~ $OOo->mergeXmlBlock('description',array('fake')); // Juste pour que le bloc s'initialise correctement
+    $OOo->MergeBlock('description',array('fake'));
 }
-
-$OOo->mergeXml(
-    array(
-      'name'      => 'eleves',
-      'type'      => 'block',
-      'data_type' => 'array',
-      'charset'   => 'UTF-8'
-    ),$eleves);
-
+//~ 
+//~ $OOo->mergeXml(
+    //~ array(
+      //~ 'name'      => 'eleves',
+      //~ 'type'      => 'block',
+      //~ 'data_type' => 'array',
+      //~ 'charset'   => 'UTF-8'
+    //~ ),$eleves);
+$OOo->MergeBlock('eleves',$eleves);
 
 // On insère les résultats
-$OOo->mergeXml(
-    array(
-      'name'      => 'resultats',
-      'type'      => 'block',
-      'data_type' => 'array',
-      'charset'   => 'UTF-8'
-    ),'resultats[%p1%]');
+//~ $OOo->mergeXml(
+    //~ array(
+      //~ 'name'      => 'resultats',
+      //~ 'type'      => 'block',
+      //~ 'data_type' => 'array',
+      //~ 'charset'   => 'UTF-8'
+    //~ ),'resultats[%p1%]');
+
+$OOo->MergeBlock('resultats','array','resultats[%p1%]');
 
 // On insère le récapitulatif des années
-$OOo->mergeXml(
-    array(
-      'name'      => 'recap_annees',
-      'type'      => 'block',
-      'data_type' => 'array',
-      'charset'   => 'UTF-8'
-    ),'recap_annees[%p1%]');
+//~ $OOo->mergeXml(
+    //~ array(
+      //~ 'name'      => 'recap_annees',
+      //~ 'type'      => 'block',
+      //~ 'data_type' => 'array',
+      //~ 'charset'   => 'UTF-8'
+    //~ ),'recap_annees[%p1%]');
+    
+$OOo->MergeBlock('recap_annees','array','recap_annees[%p1%]');
 
 $nom_fic_logo = getSettingValue("logo_etab");
 $nom_fic_logo_c = "../images/".$nom_fic_logo;
 if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
-    $OOo->mergeXmlField('logo',$nom_fic_logo_c);
+    $OOo->MergeField('logo',$nom_fic_logo_c);
 } else {
-    $OOo->mergeXmlField('logo','../images/blank.gif'); 
+    $OOo->MergeField('logo','../images/blank.gif'); 
 }
-
 
 // Fin de traitement des tableaux
 
 
-$OOo->saveXml(); //traitement du fichier extrait
-$OOo->close();
+//~ $OOo->saveXml(); //traitement du fichier extrait
+//~ $OOo->close();
+//~ 
 
 //Génération du nom du fichier
 $now = gmdate('d_M_Y_H:i:s');
 $nom_fichier_modele = explode('.',$nom_fichier_modele_ooo);
 $nom_fic = $nom_fichier_modele[0]."_généré_le_".$now.".".$nom_fichier_modele[1];
-header('Expires: ' . $now);
-if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
-    header('Content-Disposition: inline; filename="' . $nom_fic . '"');
-    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-    header('Pragma: public');
-} else {
-    header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
-    header('Pragma: no-cache');
-}
 
-// display
-header('Content-type: '.$OOo->getMimetype());
-header('Content-Length: '.filesize($OOo->getPathname()));
+//~ header('Expires: ' . $now);
+//~ if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+    //~ header('Content-Disposition: inline; filename="' . $nom_fic . '"');
+    //~ header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    //~ header('Pragma: public');
+//~ } else {
+    //~ header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
+    //~ header('Pragma: no-cache');
+//~ }
+//~ 
+//~ // display
+//~ header('Content-type: '.$OOo->getMimetype());
+//~ header('Content-Length: '.filesize($OOo->getPathname()));
+//~ 
+//~ 
+//~ 
+//~ // send and remove the document
+//~ $OOo->sendResponse();
+//~ $OOo->remove();
+//~ // Fin de traitement des tableaux
 
+$OOo->Show(OPENTBS_DOWNLOAD, $nom_fic);
 
-
-// send and remove the document
-$OOo->sendResponse();
-$OOo->remove();
-// Fin de traitement des tableaux
 ?>

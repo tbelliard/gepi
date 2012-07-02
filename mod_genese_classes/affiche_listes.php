@@ -388,19 +388,29 @@ if(!isset($afficher_listes)) {
 
 	if((isset($_GET['editer_requete']))&&(isset($_GET['id_req'])&&($_GET['id_req']!="")&&(mb_strlen(my_ereg_replace("[0-9]","",$_GET['id_req']))==0))) {
 		$id_req=$_GET['id_req'];
-		echo "<p class='bold'>Modification de la requête n°$id_req</p>\n";
-		echo "<input type='hidden' name='modifier_requete' value='y' />\n";
+		echo "<p class='bold'>Modification de la requête n°$id_req";
 
 		$tab_ed_req=array();
 		$sql="SELECT * FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='$id_req';";
 		//echo "$sql<br />\n";
 		$res_edit_req=mysql_query($sql);
 		if(mysql_num_rows($res_edit_req)>0) {
+			$tmp_tab_nom_requete=array();
 			while($lig_edit_req=mysql_fetch_object($res_edit_req)) {
 				$tab_ed_req[$lig_edit_req->type][]=$lig_edit_req->valeur;
 				//echo "\$tab_ed_req[$lig_edit_req->type][]=$lig_edit_req->valeur<br />";
+
+				if($lig_edit_req->nom_requete!="") {
+					if(!in_array($lig_edit_req->nom_requete, $tmp_tab_nom_requete)) {
+						echo " (<em>".$lig_edit_req->nom_requete."</em>)";
+						$tmp_tab_nom_requete[]=$lig_edit_req->nom_requete;
+					}
+				}
 			}
 		}
+
+		echo "</p>\n";
+		echo "<input type='hidden' name='modifier_requete' value='y' />\n";
 	}
 
 	if(isset($id_aff)) {
@@ -691,7 +701,14 @@ if(!isset($afficher_listes)) {
 				$txt_requete.="</td>\n";
 				$txt_requete.="<td>\n";
 				//$txt_requete.="<b><label for='suppr_$lig->id_req'>Requête n°$lig->id_req</label></b>";
-				$txt_requete.="<b><label for='suppr_$lig->id_req'>Requête n°$lig->id_req</label> <a href='".$_SERVER['PHP_SELF']."?editer_requete=y&amp;id_aff=$id_aff&amp;id_req=$lig->id_req&amp;projet=$projet'><img src ='../images/edit16.png'
+				$txt_requete.="<b><label for='suppr_$lig->id_req'>Requête n°$lig->id_req";
+				$sql="SELECT DISTINCT nom_requete FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='".$lig->id_req."' AND nom_requete!='';";
+				//$txt_requete.="<br />".$sql."<br />";
+				$res_tmp=mysql_query($sql);
+				while($lig_tmp=mysql_fetch_object($res_tmp)) {
+					$txt_requete.=" (<em>".$lig_tmp->nom_requete."</em>)";
+				}
+				$txt_requete.="</label> <a href='".$_SERVER['PHP_SELF']."?editer_requete=y&amp;id_aff=$id_aff&amp;id_req=$lig->id_req&amp;projet=$projet'><img src ='../images/edit16.png'
 width='16' height='16' alt='Editer les paramètres de la requête' /></a></b>";
 
 				//===========================================

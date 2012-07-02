@@ -426,6 +426,16 @@ if ($traitement->getModifiable()) {
     echo '</td></tr>';
 }
 
+if(($_SESSION['statut']=='cpe')||($_SESSION['statut']=='scolarite')||
+((($_SESSION['statut']=='professeur')&&(getSettingAOui('GepiAccesGestElevesProf'))))) {
+	echo '<tr><td style=\"vertical-align:top;\">';
+	echo 'Contact&nbsp;: ';
+	echo '</td><td>';
+	echo tableau_tel_resp_ele($saisie->getEleve()->getLogin());
+	echo '</td></tr>';
+	//flush();
+}
+
 echo '</tbody>';
 
 echo '</table>';

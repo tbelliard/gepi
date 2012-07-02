@@ -510,7 +510,17 @@ $eleve_col = $query
 			    echo ' (voir&nbsp;fiche)';
 			    echo "</a>";
 			}
-			
+			echo "<br />\n";
+			echo "<div class='div_tab_tel_resp'>\n";
+				echo "<div style='float:left; width:2em;'>\n";
+				echo "<img src='../images/imabulle/tel3.jpg' width='20' height='15' />";
+				echo "</div>\n";
+
+				echo "<div class='tableau_tel_resp'>\n";
+				echo tableau_tel_resp_ele($eleve->getLogin());
+				echo "</div>\n";
+			echo "</div>\n";
+
 			echo("</td>");
 
 			$col_creneaux = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();

@@ -1175,10 +1175,24 @@ if (!(isset($id_classe))) {
 		destinataire=document.getElementById('mail_'+num).value;
 		sujet_mail=document.getElementById('sujet_'+num).value;
 		message=document.getElementById('message_'+num).value;
+
 		//alert(message);
 		//new Ajax.Updater($('mail_envoye_'+num),'envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+message,{method: 'get'});
 		//new Ajax.Updater($('mail_envoye_'+num),'envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+escape(message)+'&csrf_alea='+csrf_alea,{method: 'get'});
-		new Ajax.Updater($('mail_envoye_'+num),'envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+encodeURIComponent(message)+'&csrf_alea='+csrf_alea,{method: 'get'});
+
+		document.getElementById('mail_envoye_'+num).innerHTML=\"<img src='../images/spinner.gif' width='20' height='20' alt='Action en cours d\'exécution' title='Action en cours d\'exécution' />\";
+
+		//new Ajax.Updater($('mail_envoye_'+num),'envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+encodeURIComponent(message)+'&csrf_alea='+csrf_alea,{method: 'get'});
+
+		//message=encodeURIComponent(message);
+		new Ajax.Updater($('mail_envoye_'+num),'envoi_mail.php',{method: 'post',
+		parameters: {
+			destinataire: destinataire,
+			sujet_mail: sujet_mail,
+			message: message,
+			csrf_alea: csrf_alea
+		}});
+
 	}
 	//]]>
 </script>\n";

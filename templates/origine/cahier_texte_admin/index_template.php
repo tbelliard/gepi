@@ -449,6 +449,7 @@ echo add_token_field();
 	  <li><a href='index.php?ajout_index_documents=y'>Protéger les sous-dossiers de 'documents/' contre des accès anormaux</a></li>
 	  <li><a href='../cahier_texte_2/archivage_cdt.php'>Archivage des cahiers de textes en fin d'année scolaire</a></li>
 	  <li><a href='../cahier_texte_2/export_cdt.php'>Export de cahiers de textes et accès inspecteur (<em>sans authentification</em>)</a></li>
+	  <li><a href='../cahier_texte_2/correction_notices_cdt_formules_maths.php'>Téléchargement des images de formules mathématiques et correction des notices en conséquence</a></li>
 	</ul>
 	
 	<hr />

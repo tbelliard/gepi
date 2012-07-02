@@ -121,6 +121,7 @@ if(isset($_POST['valider_raz_param'])) {
 'graphe_mode_graphe',
 'graphe_taille_police',
 'graphe_temoin_image_escalier',
+'graphe_pointille',
 'graphe_tronquer_nom_court');
 	for($loop=0;$loop<count($champ_aff);$loop++) {
 		$sql="DELETE FROM preferences WHERE login='".$_SESSION['login']."' AND name='$champ_aff[$loop]';";
@@ -189,6 +190,9 @@ tronquer_nom_court
 
 			if(isset($_POST['click_plutot_que_survol_aff_app'])) {save_params_graphe('graphe_click_plutot_que_survol_aff_app',$_POST['click_plutot_que_survol_aff_app']);}
 
+			if(isset($_POST['graphe_pointille'])) {save_params_graphe('graphe_pointille',$_POST['graphe_pointille']);}
+			else{save_params_graphe('graphe_pointille','yes');}
+
 			if($msg=='') {
 				$msg="Paramètres enregistrés.";
 			}
@@ -233,6 +237,8 @@ if(isset($_POST['parametrage_affichage'])) {
 	if(isset($_POST['graphe_hauteur_affichage_deroulant'])) {savePref($_SESSION['login'],'graphe_hauteur_affichage_deroulant',$_POST['graphe_hauteur_affichage_deroulant']);}
 
 	if(isset($_POST['click_plutot_que_survol_aff_app'])) {savePref($_SESSION['login'],'graphe_click_plutot_que_survol_aff_app',$_POST['click_plutot_que_survol_aff_app']);}
+
+	if(isset($_POST['graphe_pointille'])) {savePref($_SESSION['login'],'graphe_pointille',$_POST['graphe_pointille']);}
 
 	if($msg=='') {
 		$msg.="Préférences personnelles enregistrées.";
@@ -1030,6 +1036,25 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 
 
+	if(isset($_POST['graphe_pointille'])) {
+		$graphe_pointille=$_POST['graphe_pointille'];
+	}
+	else{
+		$pref_graphe_pointille=getPref($_SESSION['login'],'graphe_pointille','');
+		if(($pref_graphe_pointille=='yes')||($pref_graphe_pointille=='no')) {
+			$graphe_pointille=$pref_graphe_pointille;
+		}
+		else {
+			if(getSettingValue('graphe_pointille')) {
+				$graphe_pointille=getSettingValue('graphe_pointille');
+			}
+			else{
+				$graphe_pointille="yes";
+			}
+		}
+	}
+
+
 
 	if(isset($_POST['largeur_graphe'])) {
 		$largeur_graphe=$_POST['largeur_graphe'];
@@ -1380,6 +1405,14 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "<input type='radio' name='epaisseur_croissante_traits_periodes' id='epaisseur_croissante_traits_periodes_oui' value='oui'$checked /><label for='epaisseur_croissante_traits_periodes_oui' style='cursor: pointer;'> Oui </label>/";
 			if($epaisseur_croissante_traits_periodes!='oui') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<label for='epaisseur_croissante_traits_periodes_non' style='cursor: pointer;'> Non </label><input type='radio' name='epaisseur_croissante_traits_periodes' id='epaisseur_croissante_traits_periodes_non' value='non'$checked />";
+			echo "</td></tr>\n";
+
+
+			echo "<tr><td>Utiliser des pointillés quand <strong title='Une, pas plus'>une</strong> note manque&nbsp;:</td><td>\n";
+			if($graphe_pointille!='no') {$checked=" checked='yes'";} else {$checked="";}
+			echo "<input type='radio' name='graphe_pointille' id='graphe_pointille_oui' value='yes'$checked /><label for='graphe_pointille_oui' style='cursor: pointer;'> Oui </label>/";
+			if($graphe_pointille=='no') {$checked=" checked='yes'";} else {$checked="";}
+			echo "<label for='graphe_pointille_non' style='cursor: pointer;'> Non </label><input type='radio' name='graphe_pointille' id='graphe_pointille_non' value='no'$checked />";
 			echo "</td></tr>\n";
 
 

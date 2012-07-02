@@ -332,7 +332,42 @@ if (isset($_POST['is_posted'])) {
 				}
 			}
 		}
-	
+
+
+		if (isset($_POST['ele_tel_pers'])) {
+			if (!saveSetting("ele_tel_pers", $_POST['ele_tel_pers'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre ele_tel_pers !";
+			}
+		}
+		else{
+			if (!saveSetting("ele_tel_pers", 'no')) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre ele_tel_pers !";
+			}
+		}
+
+		if (isset($_POST['ele_tel_port'])) {
+			if (!saveSetting("ele_tel_port", $_POST['ele_tel_port'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre ele_tel_port !";
+			}
+		}
+		else{
+			if (!saveSetting("ele_tel_port", 'no')) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre ele_tel_port !";
+			}
+		}
+
+		if (isset($_POST['ele_tel_prof'])) {
+			if (!saveSetting("ele_tel_prof", $_POST['ele_tel_prof'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre ele_tel_prof !";
+			}
+		}
+		else{
+			if (!saveSetting("ele_tel_prof", 'no')) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre ele_tel_prof !";
+			}
+		}
+
+
 		if (isset($_POST['type_bulletin_par_defaut'])) {
 			if(($_POST['type_bulletin_par_defaut']=='html')||($_POST['type_bulletin_par_defaut']=='pdf')) {
 				if (!saveSetting("type_bulletin_par_defaut", $_POST['type_bulletin_par_defaut'])) {
@@ -1375,7 +1410,7 @@ if($avis_conseil_classe_a_la_mano=="") {$avis_conseil_classe_a_la_mano="n";}
 			<label for='avis_conseil_classe_a_la_mano' style='cursor: pointer'> à la main sur les bulletins imprimés</label>
 		</span>
 	</p>
-	
+
 	<p class="ligneCaps">
 		<span class="cellTab70">			
 			<a name='ancre_ele_lieu_naissance'></a>
@@ -1406,7 +1441,71 @@ if($ele_lieu_naissance=="") {$ele_lieu_naissance="no";}
 				   onchange='changement()' />
 		</span>
 	</p>
-	
+
+
+	<p class="ligneCaps">
+		<span class="cellTab70">			
+			<a name='ancre_ele_tel_pers'></a>
+			<label for='ele_tel_pers' style='cursor: pointer'>
+				Faire apparaitre le numéro de téléphone personnel des élèves&nbsp;:
+			</label>
+		</span>
+		<span class="cellTab plusPetit">
+<?php
+$ele_tel_pers=getSettingValue("ele_tel_pers");
+if($ele_tel_pers=="") {$ele_tel_pers="no";}
+?>
+			<input type='checkbox' 
+				   name='ele_tel_pers' 
+				   id='ele_tel_pers' 
+				   value='yes'
+				   <?php if($ele_tel_pers=='yes') {echo " checked='checked'";} ?>
+				   onchange='changement()' />
+		</span>
+	</p>
+
+	<p class="ligneCaps">
+		<span class="cellTab70">			
+			<a name='ancre_ele_tel_port'></a>
+			<label for='ele_tel_port' style='cursor: pointer'>
+				Faire apparaitre le numéro de téléphone portable des élèves&nbsp;:
+			</label>
+		</span>
+		<span class="cellTab plusPetit">
+<?php
+$ele_tel_port=getSettingValue("ele_tel_port");
+if($ele_tel_port=="") {$ele_tel_port="yes";}
+?>
+			<input type='checkbox' 
+				   name='ele_tel_port' 
+				   id='ele_tel_port' 
+				   value='yes'
+				   <?php if($ele_tel_port=='yes') {echo " checked='checked'";} ?>
+				   onchange='changement()' />
+		</span>
+	</p>
+
+	<p class="ligneCaps">
+		<span class="cellTab70">			
+			<a name='ancre_ele_tel_prof'></a>
+			<label for='ele_tel_prof' style='cursor: pointer'>
+				Faire apparaitre le numéro de téléphone professionnel des élèves&nbsp;:
+			</label>
+		</span>
+		<span class="cellTab plusPetit">
+<?php
+$ele_tel_prof=getSettingValue("ele_tel_prof");
+if($ele_tel_prof=="") {$ele_tel_prof="no";}
+?>
+			<input type='checkbox' 
+				   name='ele_tel_prof' 
+				   id='ele_tel_prof' 
+				   value='yes'
+				   <?php if($ele_tel_prof=='yes') {echo " checked='checked'";} ?>
+				   onchange='changement()' />
+		</span>
+	</p>
+
 	<p class="ligneCaps">
 		<span class="cellTab70">			
 			<a name='ancre_exp_imp_chgt_etab'></a>

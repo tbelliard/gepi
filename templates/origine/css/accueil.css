@@ -69,7 +69,9 @@ table.boireaus {
 .boireaus .modif {
 	background-color: #eeaaff;
 }
-
+tr.white_hover:hover {
+	background-color:white;
+}
 
 /*
 #messagerie {
