@@ -519,18 +519,14 @@ foreach($eleve_col as $eleve) {
 	$afficheEleve[$elv]['nom'] = $eleve->getNom();
 	$afficheEleve[$elv]['prenom'] = $eleve->getPrenom();
 	$afficheEleve[$elv]['civilite'] = $eleve->getCivilite();
-	// 20120618
-	//$afficheEleve[$elv]['regime'] = $eleve->getRegime();
-	$afficheEleve[$elv]['regime'] = '';
-	$sql="SELECT regime FROM j_eleves_regime WHERE login='".$eleve->getLogin()."';";
-	$res_regime=mysql_query($sql);
-	if(mysql_num_rows($res_regime)>0) {
-		$afficheEleve[$elv]['regime'] = mysql_result($res_regime, 0, 'regime');
-		if(!in_array($afficheEleve[$elv]['regime'], $tab_regimes)) {
-			$tab_regimes[]=$afficheEleve[$elv]['regime'];
-		}
-		$tab_regimes_eleves[$afficheEleve[$elv]['regime']][]=$afficheEleve[$elv]['position'];
-	}
+        $afficheEleve[$elv]['regime'] = '';
+        if ($eleve->getEleveRegimeDoublant() != null) {
+            $afficheEleve[$elv]['regime'] = $eleve->getEleveRegimeDoublant()->getRegime();
+            if(!in_array($afficheEleve[$elv]['regime'], $tab_regimes)) {
+                    $tab_regimes[]=$afficheEleve[$elv]['regime'];
+            }
+            $tab_regimes_eleves[$afficheEleve[$elv]['regime']][]=$afficheEleve[$elv]['position'];
+        }
 
 	if ((isset($current_groupe) && $current_groupe != null && $current_groupe->getClasses()->count() == 1)
 		|| (isset($current_classe) && $current_classe != null)) {
