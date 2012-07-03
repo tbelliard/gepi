@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -39,6 +39,10 @@ if (!checkAccess()) {
     die();
 }
 
+$tab_domaines=array('bulletins', 'cahier_notes');
+$tab_domaines_sigle=array('B', 'CN');
+$tab_domaines_texte=array('Bulletins', 'Cahiers de Notes');
+
 // Initialisation des variables utilisées dans le formulaire
 
 $reg_nom_groupe = '';
@@ -65,6 +69,8 @@ if(isset($reg_matiere)){
 }
 
 $reg_clazz = array();
+
+//debug_var();
 
 if (isset($_POST['is_posted'])) {
 	check_token();
@@ -104,6 +110,11 @@ if (isset($_POST['is_posted'])) {
     }
 
     $reg_clazz = $clazz;
+/*
+echo "<pre>";
+echo print_r($reg_clazz);
+echo "</pre>";
+*/
 
     if (empty($reg_clazz)) {
         $error = true;
@@ -125,6 +136,28 @@ if (isset($_POST['is_posted'])) {
         } else {
             $msg = "L'enseignement a bien été créé. ";
             $msg = urlencode($msg);
+
+			for($loo=0;$loo<count($tab_domaines);$loo++) {
+				$visibilite_groupe_domaine_courant=isset($_POST['visibilite_groupe_'.$tab_domaines[$loo]]) ? $_POST['visibilite_groupe_'.$tab_domaines[$loo]] : "n";
+				if($visibilite_groupe_domaine_courant=='n') {
+					$sql="INSERT j_groupes_visibilite SET id_groupe='".$create."', domaine='".$tab_domaines[$loo]."', visible='n';";
+					//echo "$sql<br />";
+					$insert=mysql_query($sql);
+					if(!$insert) {$msg.="Erreur lors de l'enregistrement de l'invisibilité du groupe n°".$create." sur les ".$tab_domaines_texte[$loo].".<br />";}
+				}
+			}
+
+			if(isset($_POST['coef'])) {
+				foreach($reg_clazz as $tmp_id_classe){
+					$sql="update j_groupes_classes set coef = '" . $_POST['coef'] . "' WHERE (id_groupe = '" . $create . "' and id_classe = '" . $tmp_id_classe . "');";
+					//echo "$sql<br />\n";
+					$res_coef=mysql_query($sql);
+					if(!$res_coef) {
+						$msg.="Erreur lors de l'enregistrement du coefficient du groupe n°".$create." en classe n°$tmp_id_classe.<br />";
+					}
+				}
+			}
+
 
             // On s'occupe des profs, s'il y en a.
                 $reg_professeurs = array();
@@ -195,11 +228,11 @@ if ($mode == "groupe") {
 <form enctype="multipart/form-data" action="add_group.php" method=post>
 <div style="width: 95%;">
 <div style="width: 45%; float: left;">
-<p>Nom court : <input type=text size=30 name=groupe_nom_court value = "<?php echo $reg_nom_groupe; ?>" /></p>
+<p>Nom court&nbsp;: <input type=text size=30 name=groupe_nom_court value = "<?php echo $reg_nom_groupe; ?>" /></p>
 
-<p>Nom complet : <input type=text size=30 name=groupe_nom_complet value = "<?php echo $reg_nom_complet; ?>" /></p>
+<p>Nom complet&nbsp;: <input type=text size=30 name=groupe_nom_complet value = "<?php echo $reg_nom_complet; ?>" /></p>
 
-<p>Matière enseignée à ce groupe :
+<p>Matière enseignée à ce groupe&nbsp;:
 <?php
 
 echo add_token_field();
@@ -221,7 +254,7 @@ echo "</select>\n";
 echo "</p>\n";
 
 if ($mode == "groupe") {
-    echo "<p>Classe à laquelle appartient le nouvel enseignement :\n";
+    echo "<p>Classe à laquelle appartient le nouvel enseignement&nbsp;:\n";
     echo "<select name='id_classe' size='1'>\n";
 
     $call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
@@ -244,7 +277,7 @@ if ($mode == "groupe") {
 
 } else if ($mode == "regroupement") {
     echo "<input type='hidden' name='id_classe' value='" . $id_classe . "' />\n";
-    echo "<p>Sélectionnez les classes auxquelles appartient le nouvel enseignement :<br />\n";
+    echo "<p>Sélectionnez les classes auxquelles appartient le nouvel enseignement&nbsp;:<br />\n";
     echo "<span style='color: red;'>Note : n'apparaissent que les classes ayant le même nombre de périodes.</span>\n";
     $current_classe_period_num = get_period_number($id_classe);
     $call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
@@ -289,32 +322,6 @@ if ($mode == "groupe") {
 
 			echo "<br />\n";
         }
-		/*
-        echo "<table width='100%'>\n";
-        echo "<tr valign='top' align='left'>\n";
-        echo "<td>\n";
-        $nb_class_par_colonne=round($nombre_lignes/3);
-        while ($i < $nombre_lignes){
-            if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
-                echo "</td>\n";
-                echo "<td>\n";
-            }
-
-            $_id_classe = mysql_result($call_data, $i, "id");
-            $classe = mysql_result($call_data, $i, "classe");
-            if (get_period_number($_id_classe) == $current_classe_period_num) {
-                echo "<input type='checkbox' name='classe_" . $_id_classe . "' id='classe_" . $_id_classe . "' value='yes'";
-
-                if (in_array($_id_classe, $reg_clazz) OR $_id_classe == $id_classe) {echo " checked";}
-
-                echo " /><label for='classe_".$_id_classe."' style='cursor: pointer;'>$classe</label>\n";
-                //echo ">$classe</option>\n";
-
-				echo "<br />\n";
-            }
-	        $i++;
-        }
-		*/
         //echo "</p>\n";
         echo "</td>\n";
         echo "</tr>\n";
@@ -323,7 +330,7 @@ if ($mode == "groupe") {
         echo "<p>Aucune classe définie !</p>\n";
     }
 }
-echo "<p>Catégorie de matière à laquelle appartient l'enseignement : ";
+echo "<p>Catégorie de matière à laquelle appartient l'enseignement&nbsp;: ";
 echo "<select size='1' name='categorie'>\n";
 $get_cat = mysql_query("SELECT id, nom_court FROM matieres_categories");
 $test = mysql_num_rows($get_cat);
@@ -338,12 +345,28 @@ while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
 }
 echo "</select>\n";
 
+echo "<p>Coefficient de l'enseignement&nbsp;: ";
+echo "<select name='coef' id='coef'>\n";
+for($i=0;$i<10;$i++){
+	echo "<option value='$i'>$i</option>\n";
+}
+echo "</select>\n";
+
+echo "<p>Visibilité de l'enseignement sur&nbsp;: <br />\n";
+for($loop=0;$loop<count($tab_domaines);$loop++) {
+	echo "&nbsp;&nbsp;&nbsp;<input type='checkbox' name='visibilite_groupe_".$tab_domaines[$loop]."' id='visibilite_groupe_".$tab_domaines[$loop]."' value='y' checked ";
+	echo " onchange=\"checkbox_change_visibilite('visibilite_groupe_".$tab_domaines[$loop]."'); changement();\"";
+	echo "title='Visibilité ".$tab_domaines[$loop]."' /><label for='visibilite_groupe_".$tab_domaines[$loop]."' id='texte_visibilite_groupe_".$tab_domaines[$loop]."'";
+	echo "style='font-weight:bold;' ";
+	echo ">".$tab_domaines_texte[$loop]."</label><br />\n";
+}
+
 echo "</div>\n";
 // On affiche une sélection des profs si la matière a été choisie
 
 if ($reg_matiere != null) {
     echo "<div style='width: 45%; float: right;'>\n";
-    echo "<p>Cochez les professeurs qui participent à cet enseignement : </p>\n";
+    echo "<p>Cochez les professeurs qui participent à cet enseignement&nbsp;: </p>\n";
 
     $sql="SELECT u.login, u.nom, u.prenom, u.civilite,u.statut FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.nom;";
     //echo "$sql<br />";
@@ -364,7 +387,7 @@ if ($reg_matiere != null) {
     }
 
     if (count($prof_list["list"]) == "0") {
-        echo "<p><font color=red>ERREUR !</font> Aucun professeur n'a été défini comme compétent dans la matière considérée.</p>\n";
+        echo "<p><span style='color:red'>ERREUR !</span> Aucun professeur n'a été défini comme compétent dans la matière considérée.<br /><a href='../matieres/modify_matiere.php?current_matiere=$reg_matiere'>Associer des professeurs à $reg_matiere</a></p>\n";
     } else {
         $total_profs = array_unique($prof_list["list"]);
         $p = 0;
@@ -414,7 +437,9 @@ if ($reg_matiere != null) {
 }
 // Fin : professeurs
 
-echo "<script type='text/javascript'>
+// S'il n'y a aucun prof, pas besoin de ce qui suit:
+if(isset($p)) {
+	echo "<script type='text/javascript'>
 function checkbox_change(cpt) {
 	if(document.getElementById('prof_'+cpt)) {
 		if(document.getElementById('prof_'+cpt).checked) {
@@ -430,6 +455,10 @@ for(i=0;i<$p;i++) {
 	checkbox_change(i);
 }
 </script>\n";
+}
+echo "<script type='text/javascript'>\n";
+echo js_checkbox_change_style('checkbox_change_visibilite');
+echo "</script>\n";
 
 
 echo "<div style='float: left; width: 100%'>\n";
