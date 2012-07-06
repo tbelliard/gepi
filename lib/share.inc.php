@@ -4475,7 +4475,7 @@ function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$d
 		{
 		$id_message=mysql_insert_id();
 		$contenu='
-		<form method="POST" action="accueil.php" name="f_suppression_message">
+		<form method="POST" action="#" name="f_suppression_message">
 		<input type="hidden" name="supprimer_message" value="'.$id_message.'">
 		<button type="submit" title=" Supprimer ce message " style="border: none; background: none; float: right;"><img style="vertical-align: bottom;" src="images/icons/delete.png"></button>
 		</form>'.addslashes($texte);

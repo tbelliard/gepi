@@ -4,7 +4,6 @@ if (isset($_POST['supprimer_message']))
 	{
 	$r_sql="DELETE FROM `messages` WHERE `id`='".$_POST['supprimer_message']."'";
 	mysql_query($r_sql);
-	header("Location: ./accueil.php");
 	}
 
 
