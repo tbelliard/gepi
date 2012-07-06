@@ -1083,7 +1083,7 @@ if ($eleve_col->isEmpty()) {
 					}
 				?>
 				<br/>
-				(les élèves non cochés seront considérés présents)
+				(<em>les élèves non cochés seront considérés présents</em>)
 			</p>
 			<p class="choix_fin center">
 				<input value="Enregistrer" 
@@ -1160,8 +1160,10 @@ if ($eleve_col->isEmpty()) {
 								   name="id_eleve_absent[<?php echo $eleve['position']; ?>]" 
 								   value="<?php echo $eleve['id']; ?>" />
 							<span class="td_abs_eleves">
-								<?php echo strtoupper($eleve['nom']).' '.ucfirst($eleve['prenom']).' ('.$eleve['civilite'].')'; ?>
+								<label for='active_absence_eleve_<?php echo $eleve['position']; ?>' id='label_nom_prenom_eleve_<?php echo $eleve['position']; ?>'>
+								<?php echo casse_mot($eleve['nom'],'maj').' '.casse_mot($eleve['prenom'],'majf2').' ('.$eleve['civilite'].')'; ?>
 								<?php if (isset ($eleve['classe'])) echo $eleve['classe']; ?>
+								</label>
 							</span>
 <?php if (isset ($eleve['accesFiche'])) { ?>
 							<a href='../eleves/visu_eleve.php?ele_login=<?php echo $eleve['accesFiche']; ?>&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank' >
@@ -1344,11 +1346,13 @@ if ($eleve['creneau_courant'] == $i) { ?>
 } ?>
 <?php if (isset ($eleve['nom_photo'])) { ?>
 						<td>
+							<label for='active_absence_eleve_<?php echo $eleve['position']; ?>'>
 							<img src="<?php echo $eleve['nom_photo']; ?>"
 								 class="trombine"
+								 id='img_photo_eleve_<?php echo $eleve['position']; ?>' 
 								 alt="" 
 								 title="" />
-							
+							</label>
 						</td>
 <?php } ?>
 <?php 				if ($current_creneau != null) {
