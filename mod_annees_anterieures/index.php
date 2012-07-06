@@ -85,6 +85,7 @@ echo "<p>Les pages d'administration:</p>\n";
 echo "<ul>\n";
 echo "<li><p><a href='nettoyer_annee_anterieure.php'>Nettoyage des données d'élèves ayant quitté l'établissement</a>.</p></li>\n";
 echo "<li><p><a href='corriger_ine.php'>Correction des INE non renseignés ou mal renseignés lors de la conservation</a>.</p></li>\n";
+echo "<li><p><a href='gerer_annees_anterieures.php'>Gérer les années antérieures précédemment archivées</a>.</p></li>\n";
 echo "<li><p><a href='conservation_annee_anterieure.php'>Conservation des données (*) de l'année qui se termine</a><br />(<i>(*) autres que les AIDs</i>).</p></li>\n";
 echo "<li><p><a href='archivage_aid.php'>Conservation des données des AIDs</a>.</p></li>\n";
 echo "<li><p><a href='archivage_bull_pdf.php'>Générer les bulletins PDF par élève</a>.</p></li>\n";
