@@ -75,13 +75,13 @@ if (getSettingValue("active_module_trombinoscopes")!='y') {
 	die("Le module n'est pas activé.");
 }
 
-$id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : NULL;
+$id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
 
 $sql="CREATE TABLE IF NOT EXISTS t_plan_de_classe (
 id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 id_groupe INT(11) NOT NULL ,
 login_prof VARCHAR(50) NOT NULL ,
-dim_photo INT(11) NOT NULL);";
+dim_photo INT(11) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 $sql="CREATE TABLE IF NOT EXISTS t_plan_de_classe_ele (
@@ -89,7 +89,7 @@ id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 id_plan INT( 11 ) NOT NULL,
 login_ele VARCHAR(50) NOT NULL ,
 x INT(11) NOT NULL ,
-y INT(11) NOT NULL);";
+y INT(11) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysql_query($sql);
 
 // On ne va afficher l'entête que pour le choix du groupe, pas sur la partie réalisation du plan de classe
@@ -162,7 +162,7 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
-$dim_photo=isset($_POST['dim_photo_'.$id_groupe]) ? $_POST['dim_photo_'.$id_groupe] : 100;
+$dim_photo=isset($_POST['dim_photo_'.$id_groupe]) ? $_POST['dim_photo_'.$id_groupe] : (isset($_GET['dim_photo_'.$id_groupe]) ? $_GET['dim_photo_'.$id_groupe] : 100);
 
 $dim_photo=preg_replace('/[^0-9]/','',$dim_photo);
 if(($dim_photo=="")||($dim_photo==0)) {$dim_photo=100;}
