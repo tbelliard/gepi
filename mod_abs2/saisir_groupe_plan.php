@@ -1113,7 +1113,7 @@ if ($eleve_col->isEmpty()) {
 				$sql="SELECT * FROM t_plan_de_classe WHERE id_groupe='".$id_groupe."' AND login_prof='".$_SESSION['login']."';";
 				$test_pdc=mysql_query($sql);
 				if(mysql_num_rows($test_pdc)==0) {
-					echo "<p>Aucun plan de classe n'a été trouvé pour ce groupe.<br /><a href='saisir_groupe.php?type_selection=id_groupe&amp;id_groupe=$id_groupe&amp;id_creneau=".$current_creneau->getIdDefiniePeriode()."'>Revenir à la saisie classique</a><br />ou <a href='../mod_trombinoscopes/plan_de_classe.php'>Définir un plan de classe</a></p>\n";
+					echo "<p>Aucun plan de classe n'a été trouvé pour ce groupe.<br /><a href='saisir_groupe.php?type_selection=id_groupe&amp;id_groupe=$id_groupe&amp;id_creneau=".$current_creneau->getIdDefiniePeriode()."'>Revenir à la saisie classique</a><br />ou <a href='../mod_trombinoscopes/plan_de_classe.php?id_groupe=$id_groupe&amp;dim_photo_$id_groupe=100".add_token_in_url()."' target='_blank'>Définir un plan de classe</a></p>\n";
 					require_once("../lib/footer.inc.php");
 					die();
 				}
@@ -1233,7 +1233,7 @@ echo "</pre>";
 					$x=10;
 					$y=$max_y+$hauteur_div+30;
 					echo "<div style='position:absolute; top:".$y."px; left:".$x."px; width:40em;; height:$hauteur_div; overflow: auto; color:red;'>\n";
-					echo "Un ou des élèves ne sont pas positionnés dans <a href='../mod_trombinoscopes/plan_de_classe.php?id_groupe=$id_groupe&amp;dim_photo_$id_groupe".add_token_in_url()."' target='_blank'>votre trombinoscope</a>";
+					echo "Un ou des élèves ne sont pas positionnés dans <a href='../mod_trombinoscopes/plan_de_classe.php?id_groupe=$id_groupe&amp;dim_photo_$id_groupe=$dim_photo_pdc".add_token_in_url()."' target='_blank'>votre trombinoscope</a>";
 					echo "</div>\n";
 				}
 			?>
