@@ -123,7 +123,7 @@ function redimensionne_image_petit($photo)
 	if ($utilisateur->getStatut() != 'professeur' || (getSettingValue("abs2_saisie_prof_decale")=='y' && getSettingValue("abs2_saisie_prof_decale_journee")=='y')) {
 	    $rand_id = rand(0,10000000);
 		echo '<label class="invisible" for="date_absence_eleve_'.$rand_id.'">date</label>';
-	    echo '<input size="9" id="date_absence_eleve_'.$rand_id.'" name="date_absence_eleve" value="'.$dt_date_absence_eleve->format('d/m/Y').'" />&nbsp;';
+	    echo '<input size="9" id="date_absence_eleve_'.$rand_id.'" name="date_absence_eleve" value="'.$dt_date_absence_eleve->format('d/m/Y').'" onKeyDown="clavier_date(this.id,event);" AutoComplete="off" />&nbsp;';
 	    echo '
 	    <script type="text/javascript">
 		Calendar.setup({
@@ -747,7 +747,7 @@ include('../templates/origine/header_template.php');
 <!-- on inclut le bandeau -->
 	<?php
 		include('../templates/origine/bandeau_template.php');
-		debug_var();
+		//debug_var();
 	?>
 
 <div id='container'>

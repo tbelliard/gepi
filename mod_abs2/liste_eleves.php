@@ -213,7 +213,7 @@ if ($eleves_col->haveToPaginate()) {
     echo "| ";
 }
 echo "Voir ";
-echo '<input type="text" name="item_per_page" size="1" value="'.$item_per_page.'"/>';
+echo '<input type="text" name="item_per_page" id="item_per_page" size="1" value="'.$item_per_page.'" onKeyDown="clavier_2(this.id, event, 1, '.$eleves_col->count().');" AutoComplete="off" />';
 echo "par page|  Nombre d'élèves : ";
 echo $eleves_col->count();
 
@@ -330,7 +330,7 @@ echo '<br />';
 echo '<span style="white-space: nowrap;"> ';
 echo 'Entre : <input size="13" id="filter_date_debut_saisie_debut_plage" name="filter_date_debut_saisie_debut_plage" value="';
 if (isFiltreRechercheParam('filter_date_debut_saisie_debut_plage')) {echo getFiltreRechercheParam('filter_date_debut_saisie_debut_plage');}
-echo '" />&nbsp;';
+echo '" onKeyDown="clavier_date(this.id,event);" AutoComplete="off" />&nbsp;';
 echo '<img id="trigger_filter_date_debut_saisie_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
 echo '</span>';
@@ -350,7 +350,7 @@ echo '<br />';
 echo '<span style="white-space: nowrap;"> ';
 echo 'Et : <input size="13" id="filter_date_debut_saisie_fin_plage" name="filter_date_debut_saisie_fin_plage" value="';
 if (isFiltreRechercheParam('filter_date_debut_saisie_fin_plage')) {echo getFiltreRechercheParam('filter_date_debut_saisie_fin_plage');}
-echo '" />&nbsp;';
+echo '" onKeyDown="clavier_date(this.id,event);" AutoComplete="off" />&nbsp;';
 echo '<img id="trigger_filter_date_debut_saisie_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
 echo '</span>';
@@ -378,7 +378,7 @@ echo '<br />';
 echo '<span style="white-space: nowrap;"> ';
 echo 'Entre : <input size="13" id="filter_date_fin_saisie_debut_plage" name="filter_date_fin_saisie_debut_plage" value="';
 if (isFiltreRechercheParam('filter_date_fin_saisie_debut_plage')) {echo getFiltreRechercheParam('filter_date_fin_saisie_debut_plage');}
-echo '" />&nbsp;';
+echo '" onKeyDown="clavier_date(this.id,event);" AutoComplete="off" />&nbsp;';
 echo '<img id="trigger_filter_date_fin_saisie_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
 echo '</span>';
@@ -398,7 +398,7 @@ echo '<br />';
 echo '<span style="white-space: nowrap;"> ';
 echo 'Et : <input size="13" id="filter_date_fin_saisie_fin_plage" name="filter_date_fin_saisie_fin_plage" value="';
 if (isFiltreRechercheParam('filter_date_fin_saisie_fin_plage')) {echo getFiltreRechercheParam('filter_date_fin_saisie_fin_plage');}
-echo '" />&nbsp;';
+echo '" onKeyDown="clavier_date(this.id,event);" AutoComplete="off" />&nbsp;';
 echo '<img id="trigger_filter_date_fin_saisie_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
 echo '</span>';
