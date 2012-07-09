@@ -97,7 +97,7 @@ if(isset($_GET['id_groupe'])) {
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 $login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : (isset($_GET['login_prof']) ? $_GET['login_prof'] : NULL);
 
-$action=isset($_POST['action']) ? $_POST['action'] : "export_zip";
+$action=isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : "export_zip");
 
 $tab_fichiers_a_zipper=array();
 
@@ -563,7 +563,7 @@ if(!isset($id_groupe)) {
 		echo "<p class='bold'>Choix des matières/enseignements&nbsp;:</p>\n";
 	
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
-	
+
 		$cpt=0;
 		$groups=get_groups_for_prof($_SESSION['login']);
 		echo "<table class='boireaus' summary='Choix des enseignements'>\n";
@@ -613,7 +613,12 @@ if(!isset($id_groupe)) {
 		echo "<br />\n";
 		echo " (<i>Veillez à respecter le format jj/mm/aaaa</i>)</label>\n";
 		echo "</p>\n";
-	
+
+		echo "<p>\n";
+		echo "<input type='radio' name='action' id='action_export_zip' value='export_zip' checked /><label for='action_export_zip'> Génération d'un ZIP</label><br />\n";
+		echo "<input type='radio' name='action' id='action_export_html' value='export_html' /><label for='action_export_html'> Affichage HTML simple</label>\n";
+		echo "</p>\n";
+
 		echo "<p><input type='submit' value='Valider' /></p>\n";
 		echo "</form>\n";
 	
@@ -730,16 +735,6 @@ if(($action=='acces')||($action=='acces2')) {
 	}
 
 	$description_acces=isset($_POST['description_acces']) ? $_POST['description_acces'] : "Test";
-
-	/*
-	$chemin_acces="documents/".$dirname."/index.html";
-	$res=enregistrement_creation_acces_cdt($chemin_acces, $description_acces, $date1_acces, $date2_acces, $id_groupe);
-	if(!$res) {
-		echo "<p style='color:red;'>Erreur lors de l'enregistrement de la mise en place de l'accès.</p>\n";
-		require("../lib/footer.inc.php");
-		die();
-	}
-	*/
 }
 
 if($action=='acces2') {
@@ -865,7 +860,9 @@ if(($_SESSION['statut']=='professeur')||(isset($login_prof))) {
 		}
 	}
 
-	arbo_export_cdt($nom_export, $dirname);
+	if($action!='export_html') {
+		arbo_export_cdt($nom_export, $dirname);
+	}
 
 	$chaine_id_groupe="";
 
@@ -926,16 +923,17 @@ if(($_SESSION['statut']=='professeur')||(isset($login_prof))) {
 		}
 	</script>\n";
 	//================================================================
-	
-	$html=html_entete("Index des cahiers de textes",0).$html;
-	$html.=html_pied_de_page();
-	
-	$f=fopen($dossier_export."/index.html","w+");
-	fwrite($f,$html);
-	fclose($f);
-	
-	$tab_fichiers_a_zipper[]=$dossier_export."/index.html";
 
+	if($action!='export_html') {
+		$html=html_entete("Index des cahiers de textes",0).$html;
+		$html.=html_pied_de_page();
+	
+		$f=fopen($dossier_export."/index.html","w+");
+		fwrite($f,$html);
+		fclose($f);
+
+		$tab_fichiers_a_zipper[]=$dossier_export."/index.html";
+	}
 }
 else {
 	// C'est une liste de classes/enseignements qui a été choisie
@@ -1087,15 +1085,16 @@ else {
 		</script>\n";
 		//================================================================
 		
-		$html=html_entete("Index des cahiers de textes de ".$nom_classe[$j],0).$html;
-		$html.=html_pied_de_page();
+		if($action!='export_html') {
+			$html=html_entete("Index des cahiers de textes de ".$nom_classe[$j],0).$html;
+			$html.=html_pied_de_page();
 
-		$f=fopen($dossier_export."/".$nom_fichier_index[$id_classe[$j]],"w+");
-		fwrite($f,$html);
-		fclose($f);
+			$f=fopen($dossier_export."/".$nom_fichier_index[$id_classe[$j]],"w+");
+			fwrite($f,$html);
+			fclose($f);
 		
-		$tab_fichiers_a_zipper[]=$dossier_export."/".$nom_fichier_index[$id_classe[$j]];
-
+			$tab_fichiers_a_zipper[]=$dossier_export."/".$nom_fichier_index[$id_classe[$j]];
+		}
 	}
 
 }
@@ -1190,26 +1189,27 @@ for($i=0;$i<count($id_groupe);$i++) {
 </script>\n";
 	//================================================================
 
-	$html=html_entete("CDT: ".$nom_detaille_groupe_non_html[$id_groupe[$i]],1).$html;
-	$html.=html_pied_de_page();
+	if($action!='export_html') {
+		$html=html_entete("CDT: ".$nom_detaille_groupe_non_html[$id_groupe[$i]],1).$html;
+		$html.=html_pied_de_page();
 
-	$f=fopen($dossier_export."/cahier_texte/".$nom_fichier[$id_groupe[$i]],"w+");
-	fwrite($f,$html);
-	fclose($f);
-
-	$tab_fichiers_a_zipper[]=$dossier_export."/cahier_texte/".$nom_fichier[$id_groupe[$i]];
-
-	if(count($tab_chemin_url)) {
-		$fichier_url=$dossier_export."/url_documents.txt";
-		$f=fopen($fichier_url,"a+");
-		for($k=0;$k<count($tab_chemin_url);$k++) {
-			fwrite($f,$tab_chemin_url[$k]."\n");
-		}
+		$f=fopen($dossier_export."/cahier_texte/".$nom_fichier[$id_groupe[$i]],"w+");
+		fwrite($f,$html);
 		fclose($f);
 
-		$tab_fichiers_a_zipper[]=$fichier_url;
-	}
+		$tab_fichiers_a_zipper[]=$dossier_export."/cahier_texte/".$nom_fichier[$id_groupe[$i]];
 
+		if(count($tab_chemin_url)) {
+			$fichier_url=$dossier_export."/url_documents.txt";
+			$f=fopen($fichier_url,"a+");
+			for($k=0;$k<count($tab_chemin_url);$k++) {
+				fwrite($f,$tab_chemin_url[$k]."\n");
+			}
+			fclose($f);
+
+			$tab_fichiers_a_zipper[]=$fichier_url;
+		}
+	}
 	echo "<hr width='200px' />\n";
 }
 
@@ -1220,12 +1220,14 @@ if(isset($_SERVER['HTTP_REFERER'])) {
 	$tmp=explode("?",$_SERVER['HTTP_REFERER']);
 	$chemin_site=preg_replace("#/cahier_texte_2#","",dirname($tmp[0]));
 
-	$fichier_url_site=$dossier_export."/url_site.txt";
-	$f=fopen($fichier_url_site,"a+");
-	fwrite($f,$chemin_site."\n");
-	fclose($f);
+	if($action!='export_html') {
+		$fichier_url_site=$dossier_export."/url_site.txt";
+		$f=fopen($fichier_url_site,"a+");
+		fwrite($f,$chemin_site."\n");
+		fclose($f);
 
-	$tab_fichiers_a_zipper[]=$fichier_url_site;
+		$tab_fichiers_a_zipper[]=$fichier_url_site;
+	}
 }
 
 if($action=='export_zip') {
