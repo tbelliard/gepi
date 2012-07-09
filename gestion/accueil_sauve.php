@@ -1351,18 +1351,27 @@ if (isset($action) and ($action == 'system_dump'))  {
 		$ver_mysql[2] = mb_substr($ver_mysql[2], 0, 2);
 	}
 
-	if ($ver_mysql[0] == "5" OR ($ver_mysql[0] == "4" AND $ver_mysql[1] >= "1")) {
-		$command = "mysqldump --skip-opt --add-drop-table --skip-disable-keys --quick -Q --create-options --set-charset --skip-comments -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
-	} elseif ($ver_mysql[0] == "4" AND $ver_mysql[1] == "0" AND $ver_mysql[2] >= "17") {
-		// Si on est là, c'est que le serveur mysql est d'une version 4.0.17 ou supérieure
-		$command = "mysqldump --add-drop-table --quick --quote-names --skip-comments -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
-	} else {
-		// Et là c'est qu'on a une version inférieure à 4.0.17
-		$command = "mysqldump --add-drop-table --quick --quote-names -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
+	if (PHP_OS == 'WINNT') {
+		$filename=substr($filename,0,-3);
+		$command = "mysqldump.exe --skip-opt --add-drop-table --skip-disable-keys --quick -Q --create-options --set-charset --skip-comments -h $dbHost -u $dbUser --password=$dbPass $dbDb > $filename";
+		$exec = exec($command);
+		gzip($filename);
+		unlink($filename);
+		$filename=$filename.".gz";
+	}
+	else {
+			if ($ver_mysql[0] == "5" OR ($ver_mysql[0] == "4" AND $ver_mysql[1] >= "1")) {
+				$command = "mysqldump --skip-opt --add-drop-table --skip-disable-keys --quick -Q --create-options --set-charset --skip-comments -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
+			} elseif ($ver_mysql[0] == "4" AND $ver_mysql[1] == "0" AND $ver_mysql[2] >= "17") {
+				// Si on est là, c'est que le serveur mysql est d'une version 4.0.17 ou supérieure
+				$command = "mysqldump --add-drop-table --quick --quote-names --skip-comments -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
+			} else {
+				// Et là c'est qu'on a une version inférieure à 4.0.17
+				$command = "mysqldump --add-drop-table --quick --quote-names -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
+			}
+		$exec = exec($command);
 	}
 
-
-	$exec = exec($command);
 	if (filesize($filename) > 10000) {
 		echo "<center><p style='color: red; font-weight: bold;'>La sauvegarde a été réalisée avec succès.</p></center>\n";
 		if((isset($_POST['description_sauvegarde']))&&($_POST['description_sauvegarde']!='')) {
