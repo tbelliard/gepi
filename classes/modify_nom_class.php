@@ -640,6 +640,9 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 	</td>
 </tr>
 
+<?php
+if(isset($id_classe)) {
+?>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps; vertical-align: top;">
@@ -663,6 +666,9 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 		?>
 	</td>
 </tr>
+<?php
+}
+?>
 <!-- ========================================= -->
 <tr>
 	<td colspan='3'>
