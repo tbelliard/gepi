@@ -650,7 +650,7 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 		$id_grp_suiv=0;
 		$temoin_tmp=0;
 		for($loop=0;$loop<count($tab_groups);$loop++) {
-			if((!isset($tab_groups[$loop]["visibilite"]["bulletins"]))||($tab_groups[$loop]["visibilite"]["cahier_notes"]=='y')) {
+			if((!isset($tab_groups[$loop]["visibilite"]["bulletins"]))||($tab_groups[$loop]["visibilite"]["bulletins"]=='y')) {
 				// Pour s'assurer de ne pas avoir deux fois le même groupe...
 				if(!in_array($tab_groups[$loop]['id'],$tmp_group)) {
 					$tmp_group[]=$tab_groups[$loop]['id'];
