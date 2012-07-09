@@ -47,6 +47,8 @@ $classe = get_classe($id_classe);
 
 include("../lib/periodes.inc.php");
 
+$affiche_categories=isset($_GET['affiche_categories']) ? $_GET['affiche_categories'] : (isset($_POST['affiche_categories']) ? $_POST["affiche_categories"] : 'n');
+
 if(isset($_GET['forcer_recalcul_rang'])) {
 	$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode DESC LIMIT 1;";
 	$res_per=mysql_query($sql);
@@ -578,13 +580,30 @@ echo "</form>\n";
 echo "</td>\n</tr>\n</table>\n";
 
 //$groups = get_groups_for_class($id_classe);
-$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
-if($affiche_categories=='y') {
-	$groups = get_groups_for_class($id_classe,"","y");
+
+$sql="SELECT 1=1 FROM j_groupes_classes jgc WHERE jgc.id_classe='$id_classe' AND categorie_id NOT IN (SELECT id FROM matieres_categories);";
+$test_cat_auc=mysql_query($sql);
+if(mysql_num_rows($test_cat_auc)==0) {
+	$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
+	if($affiche_categories=='y') {
+		$groups = get_groups_for_class($id_classe,"","y");
+	}
+	else {
+		$groups = get_groups_for_class($id_classe,"","n");
+	}
 }
 else {
-	$groups = get_groups_for_class($id_classe,"","n");
+	if($affiche_categories=='y') {
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Afficher tous les enseignements.</a>";
+		$groups = get_groups_for_class($id_classe,"","y");
+	}
+	else {
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;affiche_categories=y'>N'afficher que les enseignements inscrits dans une vraie catégorie (<em>autre que 'Aucune'</em>).</a>";
+		$groups = get_groups_for_class($id_classe,"","n");
+	}
 }
+
+
 if(count($groups)==0){
 
 	if($ouvrir_infobulle_nav=='y') {
@@ -789,7 +808,6 @@ for($i=0;$i<10;$i++){
 		} else {
 			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=regroupement'>";
 		}
-
 		echo $group["description"] . "</a></strong>";
 		echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".$group["description"]."\" />\n";
 
