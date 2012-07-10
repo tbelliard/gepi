@@ -209,6 +209,29 @@ if (isset($is_posted) and ($is_posted == '1')) {
 					$msg .= "<br/>Une erreur s'est produite lors de l'enregistrement des données de catégorie.";
 				}
 			}
+
+			$sql="SELECT login FROM utilisateurs WHERE etat='actif' AND statut='scolarite';";
+			$res_scol=mysql_query($sql);
+			if(mysql_num_rows($res_scol)>0) {
+				$nb_scol=0;
+				while($lig_scol=mysql_fetch_object($res_scol)) {
+					$sql="INSERT INTO j_scol_classes SET login='$lig_scol->login', id_classe='$id_classe';";
+					$insert=mysql_query($sql);
+					if(!$insert) {
+						$msg.="<br />Erreur lors de l'association du compte $lig_scol->login avec la classe.";
+					}
+					else {
+						$nb_scol++;
+					}
+				}
+				if($nb_scol==1) {
+					$msg.="<br />Un compte scolarité associé avec la classe.";
+				}
+				if($nb_scol>1) {
+					$msg.="<br />$nb_scol comptes scolarité associés avec la classe.";
+					$msg.="<br />Pour modifier la liste des comptes associés, suivez <a href='./scol_resp.php'>ce lien</a>.";
+				}
+			}
 		}
 
 		} else {
