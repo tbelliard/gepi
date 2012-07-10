@@ -242,9 +242,10 @@ AND jec.login = e.login
 AND jec.id_classe=c.id
 AND jeg.id_groupe = g.id
 AND g.id = '".$id_groupe."'
+AND (e.date_sortie is NULL OR e.date_sortie NOT LIKE '20%')
 GROUP BY nom, prenom
 ORDER BY $grp_order_by;";
-
+//echo "$sql<br />";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
 	echo "<p>Erreur lors de la requête $sql</p>\n";
