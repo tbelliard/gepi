@@ -1998,6 +1998,54 @@ else {
 						}
 					}
 				}
+				
+				// Tester si au moins une matière est dans une catégorie autre que AUCUNE...
+				$sql="SELECT DISTINCT categorie_id FROM j_groupes_classes jgc, matieres_categories mc WHERE mc.id=jgc.categorie_id AND jgc.id_classe='$id_classe' AND jgc.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletins' AND visible='n');";
+				$test_cat_auc=mysql_query($sql);
+				if(mysql_num_rows($test_cat_auc)==0) {
+					if($mode_bulletin!="pdf") {
+						echo "<h1 align='center'>Erreur</h1>";
+						echo "<p>Vous avez demandé à afficher les catégories de matières, mais aucun enseignement n'est dans une catégorie pour la classe n°$id_classe.<br />Contrôlez, en compte administrateur, Gestion des classes/&lt;Classe&gt; Enseignements.</p>\n";
+						require("../lib/footer.inc.php");
+						die();
+					}
+					else {
+
+						$pdf=new bul_PDF('p', 'mm', 'A4');
+						$pdf->SetCreator($gepiSchoolName);
+						$pdf->SetAuthor($gepiSchoolName);
+						$pdf->SetKeywords('');
+						$pdf->SetSubject('Bulletin');
+						$pdf->SetTitle('Bulletin');
+						$pdf->SetDisplayMode('fullwidth', 'single');
+						$pdf->SetCompression(TRUE);
+						$pdf->SetAutoPageBreak(TRUE, 5);
+
+						$pdf->AddPage(); //ajout d'une page au document
+						$pdf->SetFont('DejaVu');
+						$pdf->SetXY(20,20);
+						$pdf->SetFontSize(14);
+						$pdf->Cell(90,7, "ERREUR",0,2,'');
+
+						$pdf->SetXY(20,40);
+						$pdf->SetFontSize(10);
+						$pdf->Cell(150,7, "Vous avez demandé à afficher les catégories de matières,",0,2,'');
+						$pdf->SetXY(20,45);
+						$pdf->Cell(150,7, "mais aucun enseignement n'est dans une catégorie pour la classe ".get_nom_classe($id_classe).".",0,2,'');
+						$pdf->SetXY(20,50);
+						$pdf->Cell(150,7, "Contrôlez, en compte administrateur:",0,2,'');
+						$pdf->SetXY(20,55);
+						$pdf->Cell(150,7, "    Gestion des classes/<Classe> Enseignements",0,2,'');
+						$pdf->SetXY(20,60);
+						$pdf->Cell(150,7, "Ou bien, modifiez les Paramètres d'impression des bulletins",0,2,'');
+						$pdf->SetXY(20,65);
+						$pdf->Cell(150,7, "pour ne pas utiliser les catégories de matières.",0,2,'');
+
+						$nom_bulletin = 'Erreur_bulletin.pdf';
+						$pdf->Output($nom_bulletin,'I');
+						die();
+					}
+				}
 			}
 
 			//========================================
