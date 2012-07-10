@@ -1151,12 +1151,13 @@ echo "</pre>";
 						$y=$tab_coord[$eleve['accesFiche']]['y'];
 					}
 					else {
-						$y=$max_y+$hauteur_div+50;
+						$y=$max_y+$hauteur_div+70;
 						$x=(10+$largeur_div)*$compteur_nouvel_eleve+10;
 						$compteur_nouvel_eleve++;
 					}
 
-					echo "<div id='div_".$eleve['position']."' style='position:absolute; top:".$y."px; left:".$x."px; width:$largeur_div; height:$hauteur_div; overflow: auto;'>\n";
+					echo "<div id='div_".$eleve['position']."' style='position:absolute; top:".$y."px; left:".$x."px; width:".$largeur_div."px; height:".$hauteur_div."px; text-align:center;'>\n";
+					//overflow: auto; 
 
 					echo "<label for='active_absence_eleve_".$eleve['position']."'>\n";
 					$photo=nom_photo($eleve['elenoet'], "eleves");
@@ -1231,7 +1232,7 @@ echo "</pre>";
 
 				if($compteur_nouvel_eleve>0) {
 					$x=10;
-					$y=$max_y+$hauteur_div+30;
+					$y=$max_y+$hauteur_div+50;
 					echo "<div style='position:absolute; top:".$y."px; left:".$x."px; width:40em;; height:$hauteur_div; overflow: auto; color:red;'>\n";
 					echo "Un ou des élèves ne sont pas positionnés dans <a href='../mod_trombinoscopes/plan_de_classe.php?id_groupe=$id_groupe&amp;dim_photo_$id_groupe=$dim_photo_pdc".add_token_in_url()."' target='_blank'>votre trombinoscope</a>";
 					echo "</div>\n";
