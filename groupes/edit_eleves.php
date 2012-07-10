@@ -534,6 +534,7 @@ echo "<div style='clear:both;'></div>\n";
 
 <p>
 <b><a href="javascript:CocheCase(true);changement();">Tout cocher</a> - <a href="javascript:CocheCase(false);changement();">Tout décocher</a></b>
+ - <a href="javascript:griser_degriser('griser');changement();">Griser</a> - <a href="javascript:griser_degriser('degriser');changement();">Dégriser</a>
 </p>
 <form enctype="multipart/form-data" action="edit_eleves.php" name="formulaire" method='post'>
 <p><input type='submit' value='Enregistrer' /></p>
@@ -650,10 +651,10 @@ foreach ($current_group["periodes"] as $period) {
 		//echo "<a href=\"javascript:CochePeriode(" . $elements[$period["num_periode"]] . ")\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecochePeriode(" . $elements[$period["num_periode"]] . ")\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
 
 		if(count($total_eleves)>0) {
-			echo "<a href=\"javascript:CocheColonne(".$period["num_periode"].");changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' title='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(".$period["num_periode"].");changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' title='Tout décocher' /></a>";
+			echo "<a href=\"javascript:CocheColonne(".$period["num_periode"].");changement();griser_degriser(etat_grisage);\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' title='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(".$period["num_periode"].");changement();griser_degriser(etat_grisage);\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' title='Tout décocher' /></a>";
 
 			if($period["num_periode"]>1) {
-				echo " / <a href=\"javascript:copieElevesPeriode1(".$period["num_periode"].");changement();\"><img src='../images/icons/copy-16.png' width='16' height='16' alt='Copier les affectations de la première période' title='Copier les affectations de la première période' /></a>";
+				echo " / <a href=\"javascript:copieElevesPeriode1(".$period["num_periode"].");changement();griser_degriser(etat_grisage);\"><img src='../images/icons/copy-16.png' width='16' height='16' alt='Copier les affectations de la première période' title='Copier les affectations de la première période' /></a>";
 			}
 		}
 		//=========================
@@ -732,7 +733,7 @@ if(count($total_eleves)>0) {
 			}
 
 			$alt=$alt*(-1);
-			echo "<tr class='lig$alt white_hover'>\n";
+			echo "<tr id='tr_$num_eleve' class='lig$alt white_hover'>\n";
 			if (array_key_exists($e_login, $eleves_list["users"])) {
 				/*
 				echo "<td>" . $eleves_list["users"][$e_login]["prenom"] . " " .
@@ -842,7 +843,7 @@ if(count($total_eleves)>0) {
 			}
 			$elementlist = mb_substr($elementlist, 0, -1);
 	
-			echo "<td><a href=\"javascript:CocheLigne($num_eleve);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne($num_eleve);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></td>\n";
+			echo "<td><a href=\"javascript:CocheLigne($num_eleve);changement();griser_degriser(etat_grisage);\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne($num_eleve);changement();griser_degriser(etat_grisage);\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></td>\n";
 			$setting = get_eleve_groupe_setting($e_login, $id_groupe, "coef");
 			if (!$setting) {$setting = array(null);}
 			//echo "<td><input type='text' size='3' name='setting_coef[".$num_eleve."]' value='".$setting[0]."' /></td>\n";
@@ -865,10 +866,10 @@ if(count($total_eleves)>0) {
 		if($period["num_periode"]!="") {
 			echo "<th>";
 			if(count($total_eleves)>0) {
-				echo "<a href=\"javascript:DecocheColonne_si_bull_et_cn_vide(".$period["num_periode"].");changement();\"><img src='../images/icons/wizard.png' width='16' height='16' alt='Décocher les élèves sans note/app sur les bulletin et carnet de notes' title='Décocher les élèves sans note/app sur les bulletin et carnet de notes' /></a>";
+				echo "<a href=\"javascript:DecocheColonne_si_bull_et_cn_vide(".$period["num_periode"].");changement();griser_degriser(etat_grisage);\"><img src='../images/icons/wizard.png' width='16' height='16' alt='Décocher les élèves sans note/app sur les bulletin et carnet de notes' title='Décocher les élèves sans note/app sur les bulletin et carnet de notes' /></a>";
 
 				if((isset($tab_sig))&&(count($tab_sig)>0)) {
-					echo "<span id='prise_en_compte_signalement_".$period["num_periode"]."'>&nbsp;&nbsp;<a href=\"javascript:prise_en_compte_signalement(".$period["num_periode"].");changement();\"><img src='../images/icons/flag2.gif' width='16' height='16' alt='Prendre en compte tous les signalements d erreurs pour la période ".$period["num_periode"]."' title='Prendre en compte tous les signalements d erreurs pour la période ".$period["num_periode"]."' /></a></span>";
+					echo "<span id='prise_en_compte_signalement_".$period["num_periode"]."'>&nbsp;&nbsp;<a href=\"javascript:prise_en_compte_signalement(".$period["num_periode"].");changement();griser_degriser(etat_grisage);\"><img src='../images/icons/flag2.gif' width='16' height='16' alt='Prendre en compte tous les signalements d erreurs pour la période ".$period["num_periode"]."' title='Prendre en compte tous les signalements d erreurs pour la période ".$period["num_periode"]."' /></a></span>";
 				}
 			}
 			echo "</th>\n";
@@ -876,7 +877,7 @@ if(count($total_eleves)>0) {
 	}
 	echo "<th>";
 	if((isset($tab_sig))&&(count($tab_sig)>0)) {
-		echo "<span id='prise_en_compte_signalement_toutes_periodes'>&nbsp;&nbsp;<a href=\"javascript:prise_en_compte_signalement('prise_en_compte_signalement_toutes_periodes');changement();\"><img src='../images/icons/flag2.gif' width='16' height='16' alt='Prendre en compte tous les signalements d erreurs pour la période ".$period["num_periode"]."' title='Prendre en compte tous les signalements d erreurs pour la période ".$period["num_periode"]."' /></a></span>";
+		echo "<span id='prise_en_compte_signalement_toutes_periodes'>&nbsp;&nbsp;<a href=\"javascript:prise_en_compte_signalement('prise_en_compte_signalement_toutes_periodes');changement();griser_degriser(etat_grisage);\"><img src='../images/icons/flag2.gif' width='16' height='16' alt='Prendre en compte tous les signalements d erreurs pour la période ".$period["num_periode"]."' title='Prendre en compte tous les signalements d erreurs pour la période ".$period["num_periode"]."' /></a></span>";
 	}
 	else {
 		echo "&nbsp;";
@@ -900,7 +901,41 @@ if(count($total_eleves)>0) {
 	$nb_eleves=count($total_eleves);
 	
 	echo "<script type='text/javascript'>
-	
+	var etat_grisage='griser';
+
+	function griser_degriser(mode) {
+		if(mode=='griser') {
+			griser_degriser('degriser');
+
+			for (var ki=0;ki<$nb_eleves;ki++) {
+				temoin='n';
+				for(i=0;i<=".count($current_group["periodes"]).";i++) {
+					if(document.getElementById('case_'+i+'_'+ki)){
+						if(document.getElementById('case_'+i+'_'+ki).checked == true) {
+							temoin='y';
+						}
+					}
+				}
+
+				if(temoin=='n') {
+					if(document.getElementById('tr_'+ki)) {
+						document.getElementById('tr_'+ki).style.backgroundColor='grey';
+					}
+				}
+			}
+		}
+		else {
+			for (var ki=0;ki<$nb_eleves;ki++) {
+				if(document.getElementById('tr_'+ki)) {
+					document.getElementById('tr_'+ki).style.backgroundColor='';
+				}
+			}
+		}
+		etat_grisage=mode;
+	}
+
+	griser_degriser('griser');
+
 	function CocheColonne(i) {
 		for (var ki=0;ki<$nb_eleves;ki++) {
 			if(document.getElementById('case_'+i+'_'+ki)){
