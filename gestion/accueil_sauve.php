@@ -1351,13 +1351,14 @@ if (isset($action) and ($action == 'system_dump'))  {
 		$ver_mysql[2] = mb_substr($ver_mysql[2], 0, 2);
 	}
 
-	if (PHP_OS == 'WINNT') {
-		$filename=substr($filename,0,-3);
+	if (substr(PHP_OS,0,3) == 'WIN' && file_exists("mysqldump.exe")) {
+		// on est sous Window$ et on a $filename : "xxxx.sql.gz"
+		$filename=substr($filename,0,-3); // $filename : "xxxx.sql"
 		$command = "mysqldump.exe --skip-opt --add-drop-table --skip-disable-keys --quick -Q --create-options --set-charset --skip-comments -h $dbHost -u $dbUser --password=$dbPass $dbDb > $filename";
 		$exec = exec($command);
-		gzip($filename);
-		unlink($filename);
-		$filename=$filename.".gz";
+		gzip($filename); // on compresse et on obtient un fichier xxxx.sql.gz
+		unlink($filename); // on supprime le fichier xxxx.sql
+		$filename=$filename.".gz"; // // $filename : xxxx.sql.gz
 	}
 	else {
 			if ($ver_mysql[0] == "5" OR ($ver_mysql[0] == "4" AND $ver_mysql[1] >= "1")) {
@@ -1583,6 +1584,15 @@ if (!(file_exists("../backup/".$dirname."/.htaccess")) or !(file_exists("../back
 <p>Deux méthodes de sauvegarde sont disponibles : l'utilisation de la commande système mysqldump ou bien le système intégré à Gepi.<br/>
 La première méthode (mysqldump) est vigoureusement recommandée car beaucoup moins lourde en ressources, mais ne fonctionnera que sur certaines configurations serveurs.<br />
 La seconde méthode est lourde en ressources mais passera sur toutes les configurations.</p>
+<?php
+if (substr(PHP_OS,0,3) == 'WIN' && !file_exists("mysqldump.exe"))
+	{
+?>
+<p><b><font color="#FF0000">Attention : </font></b>pour utiliser la commande système mysqldump lorsque Gepi est hébergé sous Windows il faut au préalable copier le fichier "mysqldump.exe" dans le dossier "gestion" de Gepi. Ce fichier "mysqldump.exe" se trouve généralement dans le sous-dossier "bin" du dossier d'installation de MySQL.</p>
+<?php
+	}
+?>
+<br />
 <form enctype="multipart/form-data" action="accueil_sauve.php" method="post" name="formulaire">
 <?php
 	echo add_token_field();
@@ -1590,7 +1600,14 @@ La seconde méthode est lourde en ressources mais passera sur toutes les configu
 <div align='center'>
 <input type="submit" value="Sauvegarder" />
 <select name='action' size='1'>
-<option value='system_dump'<?php if (getSettingValue("mode_sauvegarde") == "mysqldump") echo " SELECTED";?>>avec mysqldump</option>
+<?php
+if (substr(PHP_OS,0,3) == 'WIN' && file_exists("mysqldump.exe"))
+	{
+?>
+	<option value='system_dump'<?php if (getSettingValue("mode_sauvegarde") == "mysqldump") echo " SELECTED";?>>avec mysqldump</option>
+<?php
+	}
+?>
 <option value='dump'<?php if (getSettingValue("mode_sauvegarde") == "gepi") echo " SELECTED";?>>sans mysqldump</option>
 </select>
 <br />
