@@ -1601,7 +1601,8 @@ if (substr(PHP_OS,0,3) == 'WIN' && !file_exists("mysqldump.exe"))
 <input type="submit" value="Sauvegarder" />
 <select name='action' size='1'>
 <?php
-if (substr(PHP_OS,0,3) == 'WIN' && file_exists("mysqldump.exe"))
+if ((substr(PHP_OS,0,3) == 'WIN' && file_exists("mysqldump.exe"))||
+	(substr(PHP_OS,0,3) != 'WIN'))
 	{
 ?>
 	<option value='system_dump'<?php if (getSettingValue("mode_sauvegarde") == "mysqldump") echo " SELECTED";?>>avec mysqldump</option>
