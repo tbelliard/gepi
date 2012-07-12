@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
 *
 * This file is part of GEPI.
 *
@@ -131,6 +131,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 									WHERE e.login = jec.login
 									AND jec.id_classe = c.id
 									AND id = '".$classe."'
+									AND (e.date_sortie is NULL OR e.date_sortie NOT LIKE '20%')
 									GROUP BY nom, prenom"; 
 	}
 
@@ -153,6 +154,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 									AND jec.id_classe=c.id
 									AND jeg.id_groupe = g.id
 									AND g.id = '".$groupe."'
+									AND (e.date_sortie is NULL OR e.date_sortie NOT LIKE '20%')
 									GROUP BY nom, prenom
 									ORDER BY $grp_order_by;";
 		}
@@ -165,6 +167,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 									AND jec.id_classe=c.id
 									AND jeg.id_groupe = g.id
 									AND g.id = '".$groupe."'
+									AND (e.date_sortie is NULL OR e.date_sortie NOT LIKE '20%')
 									GROUP BY nom, prenom
 									ORDER BY $grp_order_by;";
 		}
