@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -68,7 +68,7 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 	echo "<h3>Mes listes d'".$gepiSettings['denomination_eleves']."</h3>\n";
 
 	if($_SESSION['statut']=='professeur') {
-		echo "<p>Sélectionnez l'enseignement et la période pour lesquels vous souhaitez visualiser la liste des ".$gepiSettings['denomination_eleve']."s&nbsp;:</p>\n";
+		echo "<p>Sélectionnez l'enseignement et la période pour lesquels vous souhaitez visualiser la liste des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
 		$sql="SELECT DISTINCT g.id,g.description FROM groupes g, j_groupes_professeurs jgp WHERE
 			jgp.login = '".$_SESSION['login']."' AND
 			g.id=jgp.id_groupe
@@ -139,11 +139,11 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 
 	}
 	elseif($_SESSION['statut']=='cpe') {
-		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez visu_mes_listes la liste des ".$gepiSettings['denomination_eleves']."s&nbsp;:</p>\n";
+		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez visualiser la liste des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
 	}
 	else{
-		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez visualiser la liste des ".$gepiSettings['denomination_eleves']."s&nbsp;:</p>\n";
+		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez visualiser la liste des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
 		//$sql="SELECT id,classe FROM classes ORDER BY classe";
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
