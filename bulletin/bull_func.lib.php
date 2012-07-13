@@ -1544,7 +1544,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			}
 
 			//logo
-			$pdf->Image($logo, $X_logo, $Y_logo, $L_logo, $H_logo);
+			$tmp_dim_photo=getimagesize($logo);
+			if((isset($tmp_dim_photo[2]))&&($tmp_dim_photo[2]==2)) {
+				$pdf->Image($logo, $X_logo, $Y_logo, $L_logo, $H_logo);
+			}
 		}
 
 		//=========================================
@@ -1972,8 +1975,14 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$H_photo = $valeur[1];
 				$X_eleve_2 = $tab_modele_pdf["X_eleve"][$classe_id] + $L_photo + $ajouter + 1;
 				$Y_eleve_2 = $Y_photo;
-				$pdf->Image($photo[$i], $X_photo, $Y_photo, $L_photo, $H_photo);
-				$longeur_cadre_eleve = $longeur_cadre_eleve - ( $valeur[0] + $ajouter );
+
+				// Seules les images JPEG ont l'air acceptées... et on ne peut pas se fier à l'extension...
+				$tmp_dim_photo=getimagesize($photo[$i]);
+				//if((!isset($tmp_dim_photo['mime']))||(preg_match("/jpeg/i",$tmp_dim_photo['mime']))) {
+				if((isset($tmp_dim_photo[2]))&&($tmp_dim_photo[2]==2)) {
+					$pdf->Image($photo[$i], $X_photo, $Y_photo, $L_photo, $H_photo);
+					$longeur_cadre_eleve = $longeur_cadre_eleve - ( $valeur[0] + $ajouter );
+				}
 			}
 
 
@@ -5948,8 +5957,12 @@ function releve_pdf_20090429($tab_rel,$i) {
 			$H_logo=$valeur[1];
 			$X_etab=$X_logo+$L_logo;
 			$Y_etab=$Y_logo;
+
 			//logo
-			$pdf->Image($logo, $X_logo, $Y_logo, $L_logo, $H_logo);
+			$tmp_dim_photo=getimagesize($logo);
+			if((isset($tmp_dim_photo[2]))&&($tmp_dim_photo[2]==2)) {
+				$pdf->Image($logo, $X_logo, $Y_logo, $L_logo, $H_logo);
+			}
 		}
 		else {
 			$X_etab = $X_entete_etab; $Y_etab = $Y_entete_etab;
