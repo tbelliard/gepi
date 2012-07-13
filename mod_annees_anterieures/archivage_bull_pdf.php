@@ -192,7 +192,8 @@ else {
 
 	check_token(false);
 
-	$sql="SELECT * FROM classes ORDER BY classe;";
+	//$sql="SELECT * FROM classes ORDER BY classe;";
+	$sql="SELECT c.* FROM classes c, periodes p WHERE c.id=p.id_classe ORDER BY classe;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
 		echo "<p>Aucune classe trouvée.</p>";
