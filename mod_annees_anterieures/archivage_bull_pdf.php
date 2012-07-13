@@ -193,7 +193,7 @@ else {
 	check_token(false);
 
 	//$sql="SELECT * FROM classes ORDER BY classe;";
-	$sql="SELECT c.* FROM classes c, periodes p WHERE c.id=p.id_classe ORDER BY classe;";
+	$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE c.id=p.id_classe ORDER BY classe;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
 		echo "<p>Aucune classe trouvée.</p>";
@@ -251,6 +251,12 @@ else {
 			}
 			else {
 				// Recherche de la classe suivante:
+				/*
+				echo "Recherche de la classe suivante<br />";
+				echo "<pre>";
+				echo print_r($tab_classe);
+				echo "</pre>";
+				*/
 				$trouve="n";
 				for($loop=0;$loop<$cpt;$loop++) {
 					if((isset($tab_classe[$loop-1]['id_classe']))&&($tab_classe[$loop-1]['id_classe']==$id_classe)) {
