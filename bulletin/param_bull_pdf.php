@@ -1525,7 +1525,22 @@ function DecocheCheckbox() {
 			Largeur du bloc&nbsp;<input name="longeur_avis_cons" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($longeur_avis_cons)) { ?>value="<?php echo $longeur_avis_cons; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_avis_cons" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_avis_cons)) { ?>value="<?php echo $hauteur_avis_cons; ?>" <?php } ?> />mm&nbsp;<br />
 			Titre du bloc avis conseil de classe : <input name="titre_bloc_avis_conseil" size="19" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_bloc_avis_conseil)) { ?>value="<?php echo $titre_bloc_avis_conseil; ?>" <?php } ?> /><br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_titre_bloc_avis_conseil" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_titre_bloc_avis_conseil)) { ?>value="<?php echo $taille_titre_bloc_avis_conseil; ?>" <?php } ?> />pixel<br />
-			Taille du texte du professeur principal"&nbsp;<input name="taille_profprincipal_bloc_avis_conseil" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_profprincipal_bloc_avis_conseil)) { ?>value="<?php echo $taille_profprincipal_bloc_avis_conseil; ?>" <?php } ?> />pixel<br />
+			Taille du texte du <?php
+				$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
+				if($gepi_prof_suivi=='') {
+					$info_pp="<p style='color:red'>La variable '<strong>gepi_prof_suivi</strong>' n'est pas renseignée dans <strong>Gestion générale/Configuration générale</strong>.<br />";
+					$info_pp.="On y indique habituellement quelque chose comme '<strong>professeur principal</strong>'.";
+					if($_SESSION['statut']!='administrateur') {
+						$info_pp.="Signalez-le à l'administrateur du Gepi pour qu'il corrige.</p>\n";
+					}
+					$info_pp.="</p>";
+				}
+				echo $gepi_prof_suivi;
+			?>&nbsp;<input name="taille_profprincipal_bloc_avis_conseil" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_profprincipal_bloc_avis_conseil)) { ?>value="<?php echo $taille_profprincipal_bloc_avis_conseil; ?>" <?php } ?> />pixel<br />
+
+			<?php
+				if(isset($info_pp)) {echo $info_pp;}
+			?>
 
 			<input name="cadre_avis_cons" id="cadre_avis_cons" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_avis_cons) and $cadre_avis_cons==='1') { ?>checked="checked"<?php } ?> /><label for='cadre_avis_cons'>&nbsp;Ajouter un encadrement</label><br />
 
