@@ -807,6 +807,10 @@ width:".$largeur1."%;\n";
 		echo "\n<!-- Début de l'affichage du tableau des matières du bulletin n°$bulletin pour ".$tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom'].", ".$tab_bull['eleve'][$i]['classe']." -->\n\n";
         //=============================================
 
+		if($tab_bull['verouiller']=="N") {
+			echo "<p style='color:red'><strong>ATTENTION&nbsp;:</strong> La période n'est pas close. Les moyennes et appréciations peuvent encore évoluer.</p>\n";
+		}
+
 		// Tableau des matières/notes/appréciations
 		$k=$i+1;
 		include ($fichier_bulletin);
