@@ -398,6 +398,8 @@ elseif((!isset($choix_periode_num))||(!isset($tab_periode_num))) {
 		}
 		else {
 			echo "<td style='background-color:red; text-align:center;'>Période non close<br />pour une classe au moins";
+			// 20120713
+			echo "<br /><input type='checkbox' name='tab_periode_num[]' value='$i' title=\"ATTENTION: Les notes et appréciations des bulletins peuvent encore évoluer\" />\n";
 			if($_SESSION['statut']=='scolarite') {
 				echo " <a href='verrouillage.php' target='_blank'><img src='../images/icons/configure.png' width='16' height='16' title='Verrouillage/déverrouillage'/></a>\n";
 			}
@@ -1712,7 +1714,6 @@ else {
 
 		// Boucle sur les périodes
 		for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
-
 
 			if((isset($_POST['forcer_recalcul_moy_conteneurs']))&&($_POST['forcer_recalcul_moy_conteneurs']=='y')) {
 					$sql="SELECT DISTINCT ccn.id_cahier_notes,ccn.id_groupe FROM cn_cahier_notes ccn,groupes g,j_groupes_classes jgc,classes c WHERE

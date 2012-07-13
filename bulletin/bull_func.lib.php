@@ -1505,7 +1505,15 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 		//=========================================
 
-		if($tab_modele_pdf["affiche_filigrame"][$classe_id]==='1'){
+		// 20120713
+		if($tab_bull['verouiller']=="N") {
+			$pdf->SetFont('DejaVu','B',40);
+			$pdf->SetTextColor(255,192,203);
+			//$pdf->TextWithRotation(40,190,$texte_filigrame[$classe_id],45);
+			$pdf->TextWithRotation(40,210,"ATTENTION : Période non close",45);
+			$pdf->SetTextColor(0,0,0);
+		}
+		elseif($tab_modele_pdf["affiche_filigrame"][$classe_id]==='1'){
 			$pdf->SetFont('DejaVu','B',50);
 			$pdf->SetTextColor(255,192,203);
 			//$pdf->TextWithRotation(40,190,$texte_filigrame[$classe_id],45);
