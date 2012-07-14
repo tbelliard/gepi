@@ -5,8 +5,16 @@
 
 Gepi-1.6.2 (Version de développement)
 ===========================
-- Bulletins : - Affichage (à des fins de contrôle) des coef et profs associés aux enseignements avant génération des bulletins.
-              - Possibilité d'afficher tous les PP d'une classe et non seulement celui associé à l'élève sur les bulletins PDF.
+- Bulletins : - Affichage (à des fins de contrôle) des coef et profs associés 
+                aux enseignements avant génération des bulletins.
+              - Possibilité d'afficher tous les PP d'une classe et non seulement 
+                celui associé à l'élève sur les bulletins PDF.
+              - Possibilité d'imprimer les bulletins en période non close 
+                (mais avec filigrane (PDF) ou alerte en rouge (HTML) imposée
+                pour signaler que les moyennes et appréciations peuvent encore 
+                évoluer).
+                Cela permet de faire des vérifications et réglages avant la
+                fermeture de période.
 - Cahiers de textes : Possibilité d'inclure les documents joints dans l'export ZIP.
 - Abs2 : Possibilité de cocher les absences sur le plan de classe.
 - ...
