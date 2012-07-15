@@ -5678,4 +5678,47 @@ function tableau_tel_resp_ele($ele_login) {
 	return $retour;
 }
 
+/** Fonction destinée à retourner un tableau des dimensions et type d'une image après redimensionnement
+ *
+ * @param string $image chemin de l'image
+ * @param integer $dim_max_largeur la largeur maximale de l'image
+ * @param integer $dim_max_hauteur la hauteur maximale de l'image
+ * @param string $mode le type de redimensionnement:
+ *                      <vide> la hauteur ne doit pas dépasser $dim_max_hauteur, et la largeur retournées ne doit pas dépasser la $dim_max_largeur
+ *                      'largeur' on redimensionne en forçant la largeur à $dim_max_largeur
+ *                      'hauteur' on redimensionne en forçant la hauteur à $dim_max_hauteur
+ *
+ * @return array Tableau des dimensions et type
+ */
+function redim_img($image, $dim_max_largeur, $dim_max_hauteur, $mode="") {
+	$info_image=getimagesize($image);
+
+	$largeur=$info_image[0];
+	$hauteur=$info_image[1];
+
+	// calcule le ratio de redimensionnement
+	$ratio_l=$largeur/$dim_max_largeur;
+	$ratio_h=$hauteur/$dim_max_hauteur;
+	if($mode=="") {
+		$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
+	}
+	elseif($mode=="largeur") {
+		$ratio=$ratio_l;
+	}
+	else {
+		$ratio=$ratio_h;
+	}
+
+	// définit largeur et hauteur pour la nouvelle image
+	$nouvelle_largeur=round($largeur/$ratio);
+	$nouvelle_hauteur=round($hauteur/$ratio);
+
+	$type_img="";
+	if(isset($info_image[2])) {
+		// 1 = GIF, 2 = JPG, 3 = PNG, 4 = SWF, 5 = PSD, 6 = BMP, 7 = TIFF(orden de bytes intel), 8 = TIFF(orden de bytes motorola), 9 = JPC, 10 = JP2, 11 = JPX, 12 = JB2, 13 = SWC, 14 = IFF, 15 = WBMP, 16 = XBM.
+		$type_img=$info_image[2];
+	}
+
+	return array($nouvelle_largeur, $nouvelle_hauteur, $type_img);
+}
 ?>

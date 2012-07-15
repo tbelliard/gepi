@@ -183,6 +183,8 @@
 	$champ_bull_pdf[]="affiche_adresse_etab";
 	//=========================
 
+	$champ_bull_pdf[]="signature_img";
+
 	/*
 		mysql> show fields from modele_bulletin;
 		+--------------------+--------------+------+-----+---------+-------+
@@ -380,6 +382,8 @@
 	$val_defaut_champ_bull_pdf["affiche_nom_etab"]=1;
 	$val_defaut_champ_bull_pdf["affiche_adresse_etab"]=1;
 	//=========================
+
+	$val_defaut_champ_bull_pdf["signature_img"]=0;
 
 
 	for($loop_champs=0;$loop_champs<count($champ_bull_pdf);$loop_champs++) {

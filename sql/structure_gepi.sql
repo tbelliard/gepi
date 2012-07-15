@@ -765,3 +765,13 @@ statut VARCHAR( 20 ) NOT NULL ,
 auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
 date_reserve DATE DEFAULT '0000-00-00',
 temoin VARCHAR( 50 ) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci ;
+
+DROP TABLE IF EXISTS droits_acces_fichiers;
+CREATE TABLE IF NOT EXISTS droits_acces_fichiers (
+id INT(11) unsigned NOT NULL auto_increment,
+fichier VARCHAR( 255 ) NOT NULL ,
+identite VARCHAR( 255 ) NOT NULL ,
+type VARCHAR( 255 ) NOT NULL,
+PRIMARY KEY ( id )
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+

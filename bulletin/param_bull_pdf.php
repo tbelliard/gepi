@@ -43,7 +43,6 @@ if (!checkAccess()) {
 	die();
 }
 
-
 $reg_ok = 'yes';
 $msg = '';
 if (isset($_POST['option_modele_bulletin'])) {
@@ -54,6 +53,33 @@ if (isset($_POST['option_modele_bulletin'])) {
 		$reg_ok = 'no';
 	}
 }
+
+/*
+	// Pour ajouter un paramètre, il faut ajouter la case à cocher dans la présente page (param_bull_pdf.php), mais il faut aussi déclarer le champ correspondant et sa valeur par défaut dans la page bulletin_pdf.inc.php
+
+	if (empty($_GET['telle_var']) and empty($_POST['telle_var'])) {
+		$telle_var = '';
+	}
+	else {
+		if (isset($_GET['telle_var'])) { 
+			$telle_var = $_GET['telle_var']; 
+		}
+		if (isset($_POST['telle_var'])) {
+			$telle_var = $_POST['telle_var'];
+		}
+	}
+
+	// A VOIR: Remplacer par:
+	$telle_var=isset($_POST['telle_var']) ? $_POST['telle_var'] : (isset($_GET['telle_var']) ? $_GET['telle_var'] : "");
+
+	<?php
+		echo "<input type='checkbox' name='telle_var' id='telle_var' value='1' ";
+		if(isset($telle_var) and $telle_var=='1') { 
+			echo "checked='checked'";
+		}
+		echo "/><label for='telle_var'></label><br />\n";
+	?>
+*/
 
 //=========================
 // AJOUT: boireaus 20081224
@@ -443,6 +469,8 @@ if(isset($_POST['valide_modif_model'])) {
 
 	if (empty($_GET['affiche_numero_responsable']) and empty($_POST['affiche_numero_responsable'])) { $affiche_numero_responsable = ''; }
 	else { if (isset($_GET['affiche_numero_responsable'])) { $affiche_numero_responsable = $_GET['affiche_numero_responsable']; } if (isset($_POST['affiche_numero_responsable'])) { $affiche_numero_responsable = $_POST['affiche_numero_responsable']; } }
+
+	$signature_img=isset($_POST['signature_img']) ? $_POST['signature_img'] : (isset($_GET['signature_img']) ? $_GET['signature_img'] : "");
 
 // fin Christian
 //===================================================
@@ -1597,6 +1625,16 @@ function DecocheCheckbox() {
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_texte_fonction_chef" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_fonction_chef)) { ?>value="<?php echo $taille_texte_fonction_chef; ?>" <?php } ?> />pixel<br />
 
 			<input name="cadre_sign_chef" id="cadre_sign_chef" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_sign_chef) and $cadre_sign_chef==='1') { ?>checked="checked"<?php } ?> /><label for='cadre_sign_chef'>&nbsp;Ajouter un encadrement</label><br /><br />
+
+			<?php
+				echo "<input type='checkbox' name='signature_img' id='signature_img' value='1' ";
+				if(isset($signature_img) and $signature_img=='1') { 
+					echo "checked='checked'";
+				}
+				echo "/><label for='signature_img'>Insérer une image de signature</label><br />\n";
+				echo "(<em>sous réserve qu'une image de signature ait été uploadée en administrateur<br />et que vous soyez autorisé à utiliser cette signature</em>)";
+			?>
+
 			</td>
 		</tr>
 		<tr>

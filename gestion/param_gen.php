@@ -1727,7 +1727,7 @@ echo add_token_field();
 	<br />
 	Le logo est visible sur les bulletins officiels, ainsi que sur la page d'accueil publique des cahiers de texte
 	<br />
-	Modifier le Logo (png, jpg et gif uniquement) :
+	Modifier le Logo (<em>png, jpg et gif uniquement</em>) :
 	<br />
 	<input type="file" name="doc_file" onchange='changement()' />
 	<input type="submit" name="valid_logo" value="Enregistrer" /></p>
@@ -1757,6 +1757,12 @@ if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
 	<br />
 	Il a aussi été signalé que les JPEG progressifs/entrelacés peuvent perturber la génération de PDF.
 </p>
+
+<hr />
+
+	<p  class="cellTab" style="font-variant: small-caps;">
+		Fichier de signature/cachet : <a href='gestion_signature.php'>Choisir le fichier et en gérer l'accès</a>
+	</p>
 
 <hr />
 

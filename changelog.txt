@@ -15,6 +15,8 @@ Gepi-1.6.2 (Version de développement)
                 évoluer).
                 Cela permet de faire des vérifications et réglages avant la
                 fermeture de période.
+              - Possibilité d'insérer un fichier de signature
+                (bulletins PDF pour le moment).
 - Cahiers de textes : Possibilité d'inclure les documents joints dans l'export ZIP.
 - Abs2 : Possibilité de cocher les absences sur le plan de classe.
 - ...

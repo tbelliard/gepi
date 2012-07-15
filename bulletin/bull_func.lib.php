@@ -5518,6 +5518,59 @@ $hauteur_pris_app_abs=0;
 				//$pdf->SetXY($tab_modele_pdf["X_sign_chef"][$classe_id],$tab_modele_pdf["Y_sign_chef"][$classe_id]);
 				$pdf->SetXY($tab_modele_pdf["X_sign_chef"][$classe_id],$Y_sign_chef_init);
 
+				// 20120715
+				// Si une image de signature doit être insérée...
+				$tmp_fich=getSettingValue('fichier_signature');
+				$fich_sign = '../backup/'.getSettingValue('backup_directory').'/'.$tmp_fich;
+				//echo "\$fich_sign=$fich_sign<br />\n";
+				if($tab_modele_pdf["signature_img"][$classe_id]==='1' and ($tmp_fich!='') and file_exists($fich_sign))
+				{
+					$sql="SELECT 1=1 FROM droits_acces_fichiers WHERE fichier='signature_img' AND ((identite='".$_SESSION['statut']."' AND type='statut') OR (identite='".$_SESSION['login']."' AND type='individu'))";
+					$test=mysql_query($sql);
+					if(mysql_num_rows($test)>0) {
+						$X_sign = $tab_modele_pdf["X_sign_chef"][$classe_id];
+						$Y_sign = $Y_sign_chef_init;
+
+						$largeur_dispo=$tab_modele_pdf["longeur_sign_chef"][$classe_id]-10;
+						$hauteur_dispo=$hauteur_sign_chef_init-10;
+						/*
+						echo "\$tab_modele_pdf[\"longeur_sign_chef\"][$classe_id]=".$tab_modele_pdf["longeur_sign_chef"][$classe_id]."<br />\n";
+						echo "\$hauteur_sign_chef_init=".$hauteur_sign_chef_init."<br />\n";
+
+						$valeur=redimensionne_image($fich_sign, $largeur_dispo, );
+						$L_sign = $valeur[0];
+						$H_sign = $valeur[1];
+						*/
+
+						$tmp_dim_photo=getimagesize($fich_sign);
+						$ratio_l=$tmp_dim_photo[0]/$largeur_dispo;
+						$ratio_h=$tmp_dim_photo[1]/$hauteur_dispo;
+						if($ratio_l>$ratio_h) {
+							$L_sign = $largeur_dispo;
+							$H_sign = $largeur_dispo*$tmp_dim_photo[1]/$tmp_dim_photo[0];
+						}
+						else {
+							$H_sign = $hauteur_dispo;
+							$L_sign = $hauteur_dispo*$tmp_dim_photo[0]/$tmp_dim_photo[1];
+						}
+						/*
+						echo "\$X_sign=$X_sign<br />\n";
+						echo "\$Y_sign=$Y_sign<br />\n";
+						echo "\$L_sign=$L_sign<br />\n";
+						echo "\$H_sign=$H_sign<br />\n";
+						*/
+						$X_sign += ($tab_modele_pdf["longeur_sign_chef"][$classe_id]-$L_sign) / 2;
+						$Y_sign += ($hauteur_sign_chef_init-$H_sign) / 2;
+
+						$tmp_dim_photo=getimagesize($fich_sign);
+
+						if((isset($tmp_dim_photo[2]))&&($tmp_dim_photo[2]==2)) {
+							//$pdf->Image($fich_sign, $X_sign, $Y_sign, $L_sign, $H_sign);
+							$pdf->Image($fich_sign, round($X_sign), round($Y_sign), round($L_sign), round($H_sign));
+						}
+					}
+				}
+
 				$pdf->SetFont('DejaVu','',10);
 				if( $tab_modele_pdf["affichage_haut_responsable"][$classe_id] === '1' ) {
 					if ( $tab_modele_pdf["affiche_fonction_chef"][$classe_id] === '1' ){
