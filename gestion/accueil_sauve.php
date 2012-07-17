@@ -1783,8 +1783,8 @@ echo "<p style=\"color: red;\">ATTENTION : veillez à supprimer le fichier cré�
 echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=\"post\" name=\"formulaire3\">\n";
 echo add_token_field();
 echo "<br />Dossier à sauvegarder :<br />";
-echo "<input type=\"radio\" name=\"dossier\" id=\"dossier_photos\" value=\"photos\" checked/><label for='dossier_photos'> Dossier Photos (<em>_photos_le_DATE_a_HEURE.zip</em>)</label><br />";
-/*
+echo "<input type=\"radio\" name=\"dossier\" id=\"dossier_photos\" value=\"photos\" checked/><label for='dossier_photos'> Dossier Photos (<em>_photos_le_DATE_a_HEURE.zip</em>)</label>";
+
 $suffixe_zip="_le_".date("Y_m_d_\a_H\hi");
 $chemin_stockage = $path."/_photos".$suffixe_zip.".zip";
 $dossier_a_traiter = '../photos/'; //le dossier à traiter
@@ -1809,7 +1809,8 @@ if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 if ($chemin_stockage !='') {
 	echo " (<em>volume du dossier photos&nbsp;: ".volume_dir_human($dossier_a_traiter)."</em>)";
 }
-*/
+echo "<br />\n";
+
 if(!getSettingAOui('active_module_trombinoscopes')) {echo "<span style='color:red; margin-left:2em;'>Le module Trombinoscopes est <a href='../mod_trombinoscopes/trombinoscopes_admin.php'>inactif</a>, il ne devrait pas y avoir de photos à archiver.</span><br />";}
 echo "<input type=\"radio\" name=\"dossier\" id=\"dossier_cdt\" value=\"cdt\" /><label for='dossier_cdt'> Dossier documents du cahier de textes (<em>_cdt_le_DATE_a_HEURE.zip</em>)</label><br />\n";
 if(!getSettingAOui('active_cahiers_texte')) {echo "<span style='color:red; margin-left:2em;'>Le module Cahiers de textes est <a href='../cahier_texte_admin/index.php'>inactif</a>, il ne devrait pas y avoir de photos à archiver</span><br />";}
