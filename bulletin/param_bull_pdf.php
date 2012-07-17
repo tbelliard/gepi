@@ -1632,7 +1632,14 @@ function DecocheCheckbox() {
 					echo "checked='checked'";
 				}
 				echo "/><label for='signature_img'>Insérer une image de signature</label><br />\n";
-				echo "(<em>sous réserve qu'une image de signature ait été uploadée en administrateur<br />et que vous soyez autorisé à utiliser cette signature</em>)";
+				echo "(<em>sous réserve qu'une ";
+				if($_SESSION['statut']=='administrateur') {
+					echo "<a href='../gestion/gestion_signature.php'>image de signature</a>";
+				}
+				else {
+					echo "image de signature";
+				}
+				echo " ait été uploadée en administrateur<br />et que vous soyez autorisé à utiliser cette signature</em>)";
 			?>
 
 			</td>
