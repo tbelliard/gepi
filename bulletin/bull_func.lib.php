@@ -165,6 +165,10 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 		$bull_affiche_numero,		// affichage du numéro du bulletin
 		// L'affichage des graphes devrait provenir des Paramètres d'impression des bulletins HTML, mais le paramètre a été stocké dans $tab_bull
 		$bull_affiche_signature,	// affichage du nom du PP et du chef d'établissement
+
+		$bull_affiche_img_signature,
+		$url_fich_sign,
+
 		$bull_affiche_etab,			// Etablissement d'origine
 
 
@@ -979,6 +983,41 @@ width:".$largeur1."%;\n";
 			echo "<!-- Case: paraphe du proviseur -->\n";
 			if($tab_bull['formule']!='') {echo "<span class='bulletin'><b>".$tab_bull['formule']."</b>:</span><br />";}
 			if($tab_bull['suivi_par']!='') {echo "<span class='bulletin'><i>".$tab_bull['suivi_par']."</i></span>";}
+
+			// 20120716
+			// Si une image de signature doit être insérée...
+			/*
+			$tmp_fich=getSettingValue('fichier_signature');
+			$fich_sign = '../backup/'.getSettingValue('backup_directory').'/'.$tmp_fich;
+			//echo "\$fich_sign=$fich_sign<br />\n";
+			if($bull_affiche_img_signature=='y' and ($tmp_fich!='') and file_exists($fich_sign))
+			{
+				$sql="SELECT 1=1 FROM droits_acces_fichiers WHERE fichier='signature_img' AND ((identite='".$_SESSION['statut']."' AND type='statut') OR (identite='".$_SESSION['login']."' AND type='individu'))";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)>0) {
+			*/
+			if($url_fich_sign!="") {
+					$fich_sign=$url_fich_sign;
+
+					$largeur_dispo=getSettingValue('bull_largeur_img_signature');
+					$hauteur_dispo=getSettingValue('bull_hauteur_img_signature');
+
+					$tmp_dim_photo=getimagesize($fich_sign);
+					$ratio_l=$tmp_dim_photo[0]/$largeur_dispo;
+					$ratio_h=$tmp_dim_photo[1]/$hauteur_dispo;
+					if($ratio_l>$ratio_h) {
+						$L_sign = $largeur_dispo;
+						$H_sign = $largeur_dispo*$tmp_dim_photo[1]/$tmp_dim_photo[0];
+					}
+					else {
+						$H_sign = $hauteur_dispo;
+						$L_sign = $hauteur_dispo*$tmp_dim_photo[0]/$tmp_dim_photo[1];
+					}
+					echo "<center>\n";
+					echo "<img src='$fich_sign' width='$L_sign' height='$H_sign' />\n";
+					echo "</center>\n";
+				//}
+			}
 		}
 
         // Si une des deux variables 'bull_affiche_avis' ou 'bull_affiche_signature' est à 'y', il faut fermer le tableau

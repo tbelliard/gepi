@@ -3429,6 +3429,29 @@ else {
 		die();
 	}
 
+	if($mode_bulletin=="html") {
+		// 20120716
+		// Si une image de signature doit être insérée...
+		$bull_affiche_img_signature=getSettingValue('bull_affiche_img_signature');
+		$url_fich_sign="";
+
+		if($bull_affiche_img_signature=='y') {
+			$tmp_fich=getSettingValue('fichier_signature');
+			$fich_sign = '../backup/'.getSettingValue('backup_directory').'/'.$tmp_fich;
+			//echo "\$fich_sign=$fich_sign<br />\n";
+			if(($tmp_fich!='') and (file_exists($fich_sign))) {
+				$sql="SELECT 1=1 FROM droits_acces_fichiers WHERE fichier='signature_img' AND ((identite='".$_SESSION['statut']."' AND type='statut') OR (identite='".$_SESSION['login']."' AND type='individu'))";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)>0) {
+					// Si un .htaccess est en place dans backup, on n'atteind pas l'image sans fournir compte/mdp
+					$url_fich_sign="../temp/".get_user_temp_directory()."/".$tmp_fich;
+					copy($fich_sign, $url_fich_sign);
+					// La copie sera supprimée à la déconnexion
+				}
+			}
+		}
+	}
+
 	if($mode_bulletin=="pdf") {
 		// définition d'une variable
 		$hauteur_pris = 0;
