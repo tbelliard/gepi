@@ -1556,9 +1556,6 @@ function volume_human($volume){
  * @see volume_human()
  */
 function volume_dir_human($dir){
-	global $totalsize;
-	$totalsize=0;
-
 	$volume=volume_dir($dir);
 	return volume_human($volume);
 }
@@ -1571,7 +1568,8 @@ function volume_dir_human($dir){
  * @return int la taille totale du répertoire
  */
 function volume_dir($dir){
-	global $totalsize;
+	//global $totalsize;
+	$totalsize=0;
 
 	$handle = @opendir($dir);
 	while ($file = @readdir ($handle)){
