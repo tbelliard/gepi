@@ -183,24 +183,57 @@ if(!isset($choix_acces)) {
 	echo "<p>Vous pouvez mettre en place un fichier de signature/cachet et choisir quels statuts ou utilisateurs pourront insérer le fichier dans un document Gepi (<em>actuellement, seuls les bulletins PDF sont concernés</em>).</p>\n";
 
 	if(($nom_fichier_signature!="")&&(file_exists($dirname."/".$nom_fichier_signature))) {
+		echo "<br />\n";
 
-		$info_image=redim_img($dirname."/".$nom_fichier_signature, 200, 200);
-		echo "<p>Un fichier de signature est actuellement en place&nbsp;:<br /><img src='".$dirname."/".$nom_fichier_signature."' width='".$info_image[0]."' height='".$info_image[1]."' /></p>\n";
+		// Si un .htaccess est en place dans backup, on n'atteind pas l'image sans fournir compte/mdp
+		$url_fich_sign="../temp/".get_user_temp_directory()."/".md5(microtime()).$nom_fichier_signature;
+		copy($dirname."/".$nom_fichier_signature, $url_fich_sign);
+		// La copie sera supprimée à la déconnexion
 
-		echo "<p>";
+		//$info_image=redim_img($dirname."/".$nom_fichier_signature, 200, 200);
+		//echo "<p>Un fichier de signature est actuellement en place&nbsp;:<br /><img src='".$dirname."/".$nom_fichier_signature."' width='".$info_image[0]."' height='".$info_image[1]."' /></p>\n";
+		$info_image=redim_img($url_fich_sign, 200, 200);
+		echo "<p>Un fichier de signature est actuellement en place&nbsp;:<br /><img src='".$url_fich_sign."' width='".$info_image[0]."' height='".$info_image[1]."' /></p>\n";
+
+		echo "<p class='bold'>Comptes et statuts autorisés à insérer la signature/cachet&nbsp:</p>\n";
 		if(mysql_num_rows($res)==0) {
+			echo "<p style='margin-left: 3em;'>";
 			echo "Aucun statut ni utilisateur n'est autorisé à insérer le fichier dans un document Gepi.";
 		}
 		else {
+			$nb_statuts=0;
+			$nb_comptes=0;
 			while($lig=mysql_fetch_object($res)) {
-			
-		
+				if($lig->type=='statut') {
+					if($nb_statuts==0) {
+						echo "<p style='margin-left: 3em;'>";
+						echo "<strong>Statut(s)&nbsp;:</strong> ";
+					}
+					else {
+						echo ", ";
+					}
+					$nb_statuts++;
+				}
+
+				if($lig->type=='individu') {
+					if($nb_comptes==0) {
+						echo "<p style='margin-left: 3em;'>";
+						echo "<strong>Compte(s)&nbsp;:</strong> ";
+					}
+					else {
+						echo ", ";
+					}
+					$nb_comptes++;
+				}
+
+				echo $lig->identite;
 			}
 		}
 		echo "</p>\n";
+		echo "<br />\n";
 	}
 
-	echo "<p>";
+	echo "<p><strong>Mettre en place un fichier de signature&nbsp;:</strong><br />\n";
 	echo "Fichier&nbsp;: <input type=\"file\" name=\"sign_file\" onchange='changement()' />\n";
 	echo "<input type=\"submit\" name=\"valid_sign\" value=\"Enregistrer\" /></p>\n";
 
@@ -274,13 +307,13 @@ echo "<li><p>Le fichier mis en place n'est protégé contre un téléchargement 
 if(($nom_fichier_signature!="")&&(file_exists($dirname."/".$nom_fichier_signature))) {
 	echo "<br />";
 	echo "Si le .htaccess est en place et pris en compte par le serveur, vous devriez vous voir réclamer un couple compte/mot de passe pour télécharger l'image&nbsp;: <a href='".$dirname."/".$nom_fichier_signature."' target='_blank'>Tester la protection</a>.<br />";
-	echo "Si l'accès n'es pas protégé, toute personne connaissant le chemin (<em>aléatoire tout de même</em>) et le nom du fichier signature pourrait le récupérer.";
+	echo "Si l'accès n'est pas protégé, toute personne connaissant le chemin (<em>aléatoire tout de même</em>) et le nom du fichier signature pourrait le récupérer.";
 }
 echo "</p></li>\n";
 
 echo "<li><p>Le fichier mis en place peut se trouver après affichage dans une page web,... dans le cache de votre navigateur ou dans les fichiers temporaires du navigateur.<br />Pensez à effacer vos traces.</p></li>\n";
 
-echo "<li><p>On peut aussi se demander quelle garantie d'authenticité apporte une image insérée.<br />Un document peut être scanné et l'image réinsérée ailleurs.</p></li>\n";
+echo "<li><p>On peut aussi se demander quelle garantie d'authenticité apporte une image insérée.<br />Un document peut être scanné et l'image réinsérée ailleurs.<br />Conserver un tamponnage classique des bulletins peut être une bonne chose.</p></li>\n";
 echo "</ul>\n";
 require("../lib/footer.inc.php");
 ?>
