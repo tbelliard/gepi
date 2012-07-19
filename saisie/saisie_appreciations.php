@@ -1380,6 +1380,7 @@ foreach ($liste_eleves as $eleve_login) {
 				// MODIF: boireaus 20080520
 				//$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");\"";
 				$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");document.getElementById('focus_courant').value='".$k.$num_id."';";
+				$mess[$k].="repositionner_commtype(); afficher_positionner_div_notes('notes_".$eleve_login."_".$k."');";
 				//================================================
 				if(getSettingValue("gepi_pmv")!="n"){
 					$sql="SELECT elenoet FROM eleves WHERE login='".$eleve_login."';";
@@ -1607,6 +1608,41 @@ echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 
 
 echo "<script type='text/javascript'>
+
+	function repositionner_commtype() {
+		if(document.getElementById('div_commtype')) {
+			if(document.getElementById('div_commtype').style.display!='none') {
+				x=document.getElementById('div_commtype').style.left;
+				afficher_div('div_commtype','y',20,20);
+				document.getElementById('div_commtype').style.left=x;
+			}
+		}
+	}
+
+	function afficher_positionner_div_notes(id_div_notes) {
+		if(document.getElementById(id_div_notes)) {
+			div_note_aff='n';
+
+			tab_div=document.getElementsByTagName('div');
+			for(i=0;i<tab_div.length;i++) {
+				tmp_div=tab_div[i];
+				tmp_id=tmp_div.getAttribute('id');
+				if(tmp_id) {
+					if((tmp_id.substr(0,6)=='notes_')&&(tmp_id.substr(tmp_id.length-14,14)!='_contenu_corps')) {
+						if(tmp_div.style.display!='none') {
+							div_note_aff='y';
+							//alert(tmp_id);
+							break;
+						}
+					}
+				}
+			}
+
+			if(div_note_aff=='y') {
+				afficher_div(id_div_notes,'y',20,20);
+			}
+		}
+	}
 
 	function signaler_une_faute(eleve_login, id_eleve, id_groupe, liste_profs_du_groupe, num_periode) {
 
