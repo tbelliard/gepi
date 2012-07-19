@@ -86,13 +86,13 @@ fclose($f);
 
 
 if(($signalement_login_eleve=='')||($signalement_id_groupe=='')||($signalement_message=='')) {
-	echo "<span style='color:red'> KO</span>";
+	echo "<span style='color:red' title='Erreur lors du signalement de faute'> KO</span>";
 	return false;
 	die();
 }
 
 if(!preg_match('/^[0-9]*$/',$signalement_id_groupe)) {
-	echo "<span style='color:red'> KO</span>";
+	echo "<span style='color:red' title='Erreur lors du signalement de faute'> KO</span>";
 	return false;
 	die();
 }
@@ -110,7 +110,7 @@ if($envoi_mail_actif!='n') {
 	$sql="SELECT u.email FROM j_groupes_professeurs jgp, utilisateurs u WHERE u.login=jgp.login AND jgp.id_groupe='$signalement_id_groupe' AND u.email!='' AND u.email LIKE '%@%';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<span style='color:red'> KO</span>";
+		echo "<span style='color:red' title='Erreur lors du signalement de faute'> KO</span>";
 		return false;
 		die();
 	}
@@ -133,7 +133,7 @@ if($envoi_mail_actif!='n') {
 		if(envoi_mail($sujet, $signalement_message, $destinataire, $ajout_headers)) {$temoin=true;}
 	}
 
-	echo "<span style='color:green'> OK</span>";
+	echo "<span style='color:green' title='Signalement de faute effectué'> OK</span>";
 
 	$tab_champs=array('periodes');
 	$current_group=get_group($signalement_id_groupe,$tab_champs);
@@ -145,7 +145,7 @@ if($envoi_mail_actif!='n') {
 	return $temoin;
 }
 else {
-	echo "<span style='color:red'> KO</span>";
+	echo "<span style='color:red' title='Erreur lors du signalement de faute: Envoi de mail non actif'> KO</span>";
 	return false;
 }
 ?>
