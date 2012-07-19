@@ -1606,7 +1606,80 @@ echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 
 
 
-echo "<script type='text/javascript'>\n";
+echo "<script type='text/javascript'>
+
+	function signaler_une_faute(eleve_login, id_eleve, id_groupe, liste_profs_du_groupe, num_periode) {
+
+		info_eleve=eleve_login;
+		if(document.getElementById('nom_prenom_eleve_'+id_eleve)) {
+			info_eleve=document.getElementById('nom_prenom_eleve_'+id_eleve).value;
+		}
+
+		document.getElementById('titre_entete_signaler_faute').innerHTML='Signaler un problème/faute pour '+info_eleve+' période '+num_periode;
+
+		document.getElementById('signalement_login_eleve').value=eleve_login;
+		document.getElementById('signalement_id_groupe').value=id_groupe;
+
+		document.getElementById('signalement_id_eleve').value=id_eleve;
+		document.getElementById('signalement_num_periode').value=num_periode;
+
+		info_groupe=''
+		if(document.getElementById('signalement_id_groupe_'+id_groupe)) {
+			info_groupe=document.getElementById('signalement_id_groupe_'+id_groupe).value;
+		}
+
+		message='Bonjour,\\n\\nL\'appréciation de l\'élève '+info_eleve+' sur l\'enseignement n°'+id_groupe+' ('+info_groupe+') en période n°'+num_periode+' présente un problème ou une faute:\\n';
+		message=message+'================================\\n';
+		// Le champ textarea n'existe que si une appréciation a été enregistrée
+		if(document.getElementById('appreciation_'+id_eleve+'_'+id_groupe+'_'+num_periode)) {
+			//message=message+addslashes(document.getElementById('appreciation_'+id_eleve+'_'+id_groupe+'_'+num_periode).innerHTML);
+			message=message+document.getElementById('appreciation_'+id_eleve+'_'+id_groupe+'_'+num_periode).innerHTML;
+		}
+		//alert('document.getElementById(\'appreciation_'+id_eleve+'_'+id_groupe+'_'+num_periode+').innerHTML');
+		message=message+'\\n================================\\n\\nCordialement\\n-- \\n".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom']."'
+
+
+		//alert('message='+message);
+
+		document.getElementById('div_signalement_message').innerHTML='<textarea name=\'signalement_message\' id=\'signalement_message\' cols=\'50\' rows=\'11\'></textarea>';
+
+		document.getElementById('signalement_message').innerHTML=message;
+		//afficher_div('div_signaler_faute','n',0,0);
+		afficher_div('div_signaler_faute','n',0,-50);
+		//afficher_div('div_signaler_faute','y',100,100);
+	}
+
+	function valider_signalement_faute() {
+		signalement_id_groupe=document.getElementById('signalement_id_groupe').value;
+		signalement_login_eleve=document.getElementById('signalement_login_eleve').value;
+
+		//signalement_message=escape(document.getElementById('signalement_message').value);
+		signalement_message=document.getElementById('signalement_message').value;
+
+		//signalement_message=encodeURIComponent(document.getElementById('signalement_message').value);
+
+		signalement_id_eleve=document.getElementById('signalement_id_eleve').value;
+		signalement_num_periode=document.getElementById('signalement_num_periode').value;
+		signalement_id_classe=document.getElementById('signalement_id_classe').value;
+
+		//alert(signalement_message);
+
+		//new Ajax.Updater($('signalement_effectue_'+signalement_id_eleve+'_'+signalement_id_groupe+'_'+signalement_num_periode),'../lib/ajax_signaler_faute.php?signalement_login_eleve='+signalement_login_eleve+'&signalement_id_groupe='+signalement_id_groupe+'&signalement_id_classe='+signalement_id_classe+'&signalement_num_periode='+signalement_num_periode+'&signalement_message='+signalement_message+'".add_token_in_url(false)."',{method: 'get'});
+
+		new Ajax.Updater($('signalement_effectue_'+signalement_id_eleve+'_'+signalement_id_groupe+'_'+signalement_num_periode),'../lib/ajax_signaler_faute.php?a=a&".add_token_in_url(false)."',{method: 'post',
+		parameters: {
+			signalement_login_eleve: signalement_login_eleve,
+			signalement_id_groupe: signalement_id_groupe,
+			signalement_id_classe: signalement_id_classe,
+			signalement_num_periode: signalement_num_periode,
+			no_anti_inject_signalement_message: signalement_message,
+		}});
+
+		cacher_div('div_signaler_faute');
+		//document.getElementById('signalement_message').innerHTML='';
+
+	}
+\n";
 
 if((isset($chaine_test_vocabulaire))&&($chaine_test_vocabulaire!="")) {
 	echo $chaine_test_vocabulaire;
