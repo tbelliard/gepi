@@ -148,6 +148,16 @@ if ($aff_reglages2 == "oui") {
 	</div>
  		';
 
+	if(file_exists("edt_xml.php")) {
+		echo '
+ 	<div id="lien" style="background: #fefefe; margin-left: 200px; width: 400px; margin-top:1em;">
+ 		<br />
+		<p class="edt_lien"><a href="./edt_xml.php">Générer un export de type UnDeuxTemps à partir d\'un export EXP_COURS.xml d\'IndexEducation.</a></p>
+		<br />
+	</div>
+';
+	}
+
  //<div id=\"lien\"><a href=\"./index_edt.php?initialiser=ok&xml=ok\">Cliquer ici pour une initialisation par fichiers xml (type export STSWeb)</a></div>
 }
 else if ($aff_reglages2 == "non") {
