@@ -1975,4 +1975,43 @@ function alerte_config_suhosin() {
 	}
 	return $retour;
 }
+
+/** Retourne un tableau HTML de la liste des élèves associés au groupe
+ * @param integer $id_groupe : Identifiant du groupe
+ * @param integer $nb_col : Nombre de colonnes du tableau
+ *
+ * @return string Tableau HTML de la liste des élèves associés au groupe
+ */
+function tableau_html_eleves_du_groupe($id_groupe, $nb_col) {
+	$retour="<table border=\"1\" cellpadding=\"1\" cellspacing=\"1\" style=\"width: 500px;\">\n";
+	$retour.="<thead>\n";
+	$retour.="<tr style='background-color:white'>\n";
+	$retour.="<th>Élèves</th>\n";
+	for($i=1;$i<$nb_col;$i++) {
+		$retour.="<th>Col".($i+1)."</th>\n";
+	}
+	$retour.="</tr>\n";
+	$retour.="</thead>\n";
+	$retour.="<tbody>\n";
+	$sql="SELECT DISTINCT nom, prenom FROM eleves e, j_eleves_groupes jeg WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe';";
+	$res_ele_grp=mysql_query($sql);
+	if(mysql_num_rows($res_ele_grp)>0) {
+		$cpt=0;
+		while($lig_ele=mysql_fetch_object($res_ele_grp)) {
+			$retour.="<tr style='background-color:";
+			if($cpt%2==0) {$retour.="silver";} else {$retour.="white";}
+			$retour.=";'>\n";
+			$retour.="<td>".casse_mot($lig_ele->nom, 'maj')." ".casse_mot($lig_ele->prenom, 'majf2')."</td>\n";
+			for($i=1;$i<$nb_col;$i++) {
+				$retour.="<td></td>\n";
+			}
+			$retour.="</tr>\n";
+			$cpt++;
+		}
+	}
+	$retour.="</tbody>\n";
+	$retour.="</table>\n";
+	
+	return $retour;
+}
 ?>

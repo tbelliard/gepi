@@ -225,6 +225,9 @@ if(file_exists("./archives.php")) {
 						getWinArchives().setAjaxContent('./archives.php',{});
 					\">Archives</button>\n";
 }
+
+echo "<a href=\"javascript:insere_texte_dans_ckeditor(document.getElementById('div_tableau_eleves').innerHTML)\" title='Insérer un tableau de la liste des élèves dans le texte de la notice'><img src='../images/icons/buddy.png' width='16' height='16' alt='Insérer un tableau de la liste des élèves dans le texte de la notice' /></a>";
+
 echo "<br /><br />\n";
 
 // Nombre de notices pour ce jour :
@@ -584,4 +587,9 @@ echo "<script type='text/javascript'>
 //echo "<a href=\"#\" onclick=\"javascript: document.getElementById('contenu').value=document.getElementById('contenu').value+'TRUC'; return false;\">CLIC</a>";
 //echo "<a href=\"#\" onclick=\"javascript: document.getElementById('contenu').value='TRUC'; return false;\">CLIC</a>";
 //echo "<a href=\"#\" onclick=\"javascript: alert(document.getElementById('contenu').value); return false;\">CLOC</a>";
-			?>
+
+echo "<div id='div_tableau_eleves' style='display:none'>\n";
+echo tableau_html_eleves_du_groupe($id_groupe, 3);
+echo "</div>\n";
+
+?>

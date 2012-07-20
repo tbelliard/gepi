@@ -157,6 +157,16 @@ echo "<button style='background-color:lightblue' onclick=\"javascript:
 						getWinBanqueTexte().setAjaxContent('./ajax_affichage_banque_texte.php',{});
 					\">Banque</button>\n";
 
+if(file_exists("./archives.php")) {
+	// Mon fichier contient juste:
+	/* <?php echo "<iframe src='../documents/archives/index.php' width='100%' height='100%'/>"; ?> */
+	echo "<button style='background-color:bisque' onclick=\"javascript:
+						getWinArchives().setAjaxContent('./archives.php',{});
+					\">Archives</button>\n";
+}
+
+echo "<a href=\"javascript:insere_texte_dans_ckeditor(document.getElementById('div_tableau_eleves').innerHTML)\" title='Insérer un tableau de la liste des élèves dans le texte de la notice'><img src='../images/icons/buddy.png' width='16' height='16' alt='Insérer un tableau de la liste des élèves dans le texte de la notice' /></a>";
+
 // Nombre de notices pour ce jour :
 $num_notice = NULL;
 
@@ -348,4 +358,9 @@ echo "<script type='text/javascript'>
 	dateChanged(calendarInstanciation);
 </script>\n";
 }
+
+echo "<div id='div_tableau_eleves' style='display:none'>\n";
+echo tableau_html_eleves_du_groupe($id_groupe, 3);
+echo "</div>\n";
+
 ?>
