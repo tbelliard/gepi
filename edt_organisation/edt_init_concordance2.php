@@ -133,7 +133,9 @@ if ($etape != NULL) {
 
 		// Ce sont les cours qui arrivent, car on a terminé les concordances
 		//for($i = 0; $i < $nbre_lignes; $i++){
-		$sql="SELECT * FROM tempo2;";
+		$i=0;
+		//$sql="SELECT * FROM tempo2;";
+		$sql="SELECT texte AS col1 FROM tempo5;";
 		$res_tempo=mysql_query($sql);
 		while($lig_tempo=mysql_fetch_object($res_tempo)) {
 			// On initialise toutes les variables et on affiche la valeur de chaque cours
@@ -157,7 +159,7 @@ if ($etape != NULL) {
 
 			$enregistre = enregistreCoursCsv2($tab[0], $tab[1], $tab[2], $tab[3], $tab[4], $tab[5], $tab[6], $tab[7], $tab[8], $tab[9], $tab[10], $tab[11]);
 
-				$debug = 'ok';
+			$debug = 'ok';
 
 			if ($enregistre["reponse"] == 'ok') {
 				// On affiche les infos si c'est demandé
@@ -198,6 +200,8 @@ if ($etape != NULL) {
 			}else{
 				echo '(ligne '.$i.')&nbsp;->&nbsp;Il y a eu un souci car ce n\'est pas ok ou non qui arrive mais '.$enregistre["msg_erreur"].'.<br />';
 			}
+
+			$i++;
 		}
 		echo $msg_enreg; // permet d'afficher le message de bilan
 	}

@@ -30,6 +30,26 @@ if(mysql_num_rows($res_grp)>0) {
 	$lig_grp_def=mysql_fetch_object($res_grp);
 	$id_groupe_defaut=$lig_grp_def->id;
 }
+else {
+	$tmp_val=preg_replace("/[^A-Za-z0-9]/","%", $valeur);
+	$sql="SELECT id FROM groupes WHERE name LIKE '%$tmp_val%' LIMIT 1;";
+	$res_grp=mysql_query($sql);
+	if(mysql_num_rows($res_grp)>0) {
+		$lig_grp_def=mysql_fetch_object($res_grp);
+		$id_groupe_defaut=$lig_grp_def->id;
+	}
+}
+
+$tab_mat_ligne=array();
+if(isset($tab_matiere[$valeur])) {
+	$sql="SELECT DISTINCT id_groupe FROM j_groupes_matieres WHERE id_matiere='".mysql_real_escape_string($tab_matiere[$valeur])."';";
+	$res_mat=mysql_query($sql);
+	if(mysql_num_rows($res_mat)>0) {
+		while($lig_mat=mysql_fetch_object($res_mat)) {
+			$tab_mat_ligne[]=$lig_mat->id_groupe;
+		}
+	}
+}
 
 echo '
 	<select name ="'.$increment.'"'.$id_select.'>
@@ -58,8 +78,50 @@ echo '
 	}
 	echo '
 			</optgroup>
+';
+
+	if(count($tab_mat_ligne)>0) {
+
+		echo '
+			<optgroup label="Les groupes de la matière">';
+		$query = mysql_query("SELECT g.id, g.description, g.name FROM groupes g, j_groupes_matieres jgm WHERE jgm.id_groupe=g.id AND jgm.id_matiere='".mysql_real_escape_string($tab_matiere[$valeur])."' ORDER BY description");
+		$nbre_groupes = mysql_num_rows($query);
+		for($a = 0; $a < $nbre_groupes; $a++){
+			$id_groupe[$a]["id"] = mysql_result($query, $a, "id");
+			$id_groupe[$a]["description"] = mysql_result($query, $a, "description");
+			$id_groupe[$a]["name"] = mysql_result($query, $a, "name");
+
+			// On récupère toutes les infos pour l'affichage
+			// On n'utilise pas getGroup() car elle est trop longue et récupère trop de choses dont on n'a pas besoin
+
+			$query1 = mysql_query("SELECT classe FROM j_groupes_classes jgc, classes c WHERE jgc.id_classe = c.id AND jgc.id_groupe = '".$id_groupe[$a]["id"]."'");
+			$classe = mysql_fetch_array($query1);
+
+			// On teste le selected après s'être assuré qu'il n'était pas déjà renseigné
+				if ($id_groupe[$a]["description"] == $test_selected) {
+					$selected = ' selected="selected"';
+				} elseif($id_groupe[$a]["id"] == $id_groupe_defaut) {
+					$selected = ' selected="selected"';
+				} else {
+					$selected = '';
+				}
+
+			//echo '		<option value="'.$id_groupe[$a]["id"].'"'.$selected.'>'.$id_groupe[$a]["description"].'('.$classe[0].')</option>';
+			echo '		<option value="'.$id_groupe[$a]["id"].'"'.$selected;
+			if(in_array($id_groupe[$a]["id"], $tab_mat_ligne)) {
+				echo ' style="color:blue;"';
+			}
+			echo '>'.$id_groupe[$a]["description"].'('.$classe[0].') ('.$id_groupe[$a]["name"].')</option>';
+		}
+		echo '
+			</optgroup>
+';
+	}
+
+	echo '
 			<optgroup label="Les groupes">';
-	$query = mysql_query("SELECT id, description, name FROM groupes ORDER BY description");
+	//$query = mysql_query("SELECT id, description, name FROM groupes ORDER BY description");
+	$query = mysql_query("SELECT g.id, g.description, g.name FROM groupes g, j_groupes_matieres jgm WHERE jgm.id_groupe=g.id AND jgm.id_matiere!='".mysql_real_escape_string($tab_matiere[$valeur])."' ORDER BY description");
 	$nbre_groupes = mysql_num_rows($query);
 	for($a = 0; $a < $nbre_groupes; $a++){
 		$id_groupe[$a]["id"] = mysql_result($query, $a, "id");
@@ -82,10 +144,15 @@ echo '
 			}
 
 		//echo '		<option value="'.$id_groupe[$a]["id"].'"'.$selected.'>'.$id_groupe[$a]["description"].'('.$classe[0].')</option>';
-		echo '		<option value="'.$id_groupe[$a]["id"].'"'.$selected.'>'.$id_groupe[$a]["description"].'('.$classe[0].') ('.$id_groupe[$a]["name"].')</option>';
+		echo '		<option value="'.$id_groupe[$a]["id"].'"'.$selected;
+		if(in_array($id_groupe[$a]["id"], $tab_mat_ligne)) {
+			echo ' style="color:blue;"';
+		}
+		echo '>'.$id_groupe[$a]["description"].'('.$classe[0].') ('.$id_groupe[$a]["name"].')</option>';
 	}
 echo '
 			</optgroup>
-	</select>';
+';
+echo '	</select>';
 
 ?>

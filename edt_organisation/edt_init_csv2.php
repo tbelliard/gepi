@@ -284,14 +284,25 @@ if ($action == "upload_file") {
             $helpers = array('select_jours', 'select_creneaux', 'select_classes', 'select_matieres', 'select_professeurs', 'aucun', 'aucun',
                 'select_aid_groupes', 'aucun', 'aucun', 'select_frequence', 'aucun');
 
+			$tab_matiere=array();
+			
             echo '<p>' . $titre[$etape] . '</p>';
             if ($etape != 12) {
             	$aff_enregistrer = 'Enregistrer ces concordances';
                 while ($tab = fgetcsv($fp, 1024, ";")) {
+					/*
+					echo "<pre>";
+					echo print_r($tab);
+					echo "</pre>";
+					*/
                     if (in_array($tab[$etape], $tableau) === false) {
                         // Puisque la valeur du champ n'est pas encore dans $tableau, on l'insère pour éviter les doublons
                         if ($tab[$etape] != '') {
                             $tableau[] = $tab[$etape];
+
+							if($tab[3]!="") {
+								$tab_matiere[remplace_accents($tab[$etape], 'all_nospace')]=$tab[3];
+							}
                         }
                     }
                 }
@@ -366,7 +377,15 @@ if ($action == "upload_file") {
 					$aff_enregistrer = 'Enregistrer ces salles';
 				}
             } elseif ($etape == 12) {
-				$sql="TRUNCATE tempo2;";
+				$sql="CREATE TABLE IF NOT EXISTS tempo5 (
+				id INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+				texte TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+				info VARCHAR(200) NOT NULL
+				) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+				$create_table=mysql_query($sql);
+
+				//$sql="TRUNCATE tempo2;";
+				$sql="TRUNCATE tempo5;";
 				$menage=mysql_query($sql);
 
                 echo '
@@ -392,7 +411,8 @@ if ($action == "upload_file") {
                     }
 
                     //echo '					<input type="hidden" name="ligne_' . $b . '" value="' . $toutelaligne . '" />';
-					$sql="INSERT INTO tempo2 SET col1='".mysql_real_escape_string($toutelaligne)."';";
+					//$sql="INSERT INTO tempo2 SET col1='".mysql_real_escape_string($toutelaligne)."';";
+					$sql="INSERT INTO tempo5 SET texte='".mysql_real_escape_string($toutelaligne)."';";
 					$insert=mysql_query($sql);
 
                     $b++; // on incrémente le compteur pour le name
