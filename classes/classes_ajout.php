@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -354,7 +354,16 @@ if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_c
 </form>
 
 <form enctype="multipart/form-data" action="classes_ajout.php" name="formulaire" method=post>
-<p><b>Ajout d'élèves à la classe de <?php echo $classe; ?></b><br />Liste des élèves non affectés à une classe :</p>
+<p><b>Ajout d'élèves à la classe de <?php echo $classe; ?></b><br />
+<?php
+	if($nb_periode<=1) {
+		// On a $nb_periode = Nombre de périodes + 1
+		echo "<p class='red'>Il n'est pas possible d'ajouter des élèves dans une classe virtuelle (<em>sans aucune période</em>).<br />Commencez par <a href='periodes.php?id_classe=$id_classe'>ajouter des périodes</a> à la classe.</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+?>
+Liste des élèves non affectés à une classe&nbsp;:</p>
 
 <?php
 
