@@ -214,6 +214,7 @@
 
 				$i=0;
 				$tab_clas_ou_grp=array();
+				$tab_semaine=array();
 				foreach ($edt_xml->children() as $cours) {
 					//echo("<p><b>Structure</b><br />");
 
@@ -265,10 +266,15 @@
 						if((isset($tab_cours[$i]["enfant"]["classe"]))&&($tab_cours[$i]["enfant"]["classe"]!="")) {
 							if(!in_array($tab_cours[$i]["enfant"]["classe"], $tab_clas_ou_grp)) {$tab_clas_ou_grp[]=$tab_cours[$i]["enfant"]["classe"];}
 						}
+
+						if((isset($tab_cours[$i]["enfant"]["frequence"]))&&($tab_cours[$i]["enfant"]["frequence"]!="")) {
+							if(!in_array($tab_cours[$i]["enfant"]["frequence"], $tab_semaine)) {$tab_semaine[]=$tab_cours[$i]["enfant"]["frequence"];}
+						}
 					}
 				}
 
 				sort($tab_clas_ou_grp);
+				sort($tab_semaine);
 
 				echo "<p>Il y a probablement plus de groupes que de classes.<br />Cochez tous les groupes en cliquant sur le lien <a href=\"javascript:CocheColonne('groupe');changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' title='Tout cocher' /></a> des groupes, puis cochez une par une les classes dans la colonne classe.</p>\n";
 
@@ -314,8 +320,33 @@
 
 				}
 				echo "</table>\n";
+
+				if(count($tab_semaine)>0) {
+
+					$tab_sem=array();
+					$sql="SELECT * FROM tempo5 WHERE info='type_edt_semaine';";
+					$res_sem=mysql_query($sql);
+					if(mysql_num_rows($res_sem)>0) {
+						while($lig_sem=mysql_fetch_object($res_sem)) {
+							$tab_sem[]=$lig_sem->texte;
+						}
+					}
+
+					echo "<br />\n";
+					echo "<p>Il est également nécessaire pour la suite d'identifier les semaines déclarées dans <a href='admin_config_semaines.php?action=visualiser' target='_blank'>Définition des types de semaines</a>.</p>\n";
+					echo "<p>Quelles types de semaines particuliers faut-il retenir&nbsp;?</p>\n";
+					echo "<p>";
+					for($j=0;$j<count($tab_semaine);$j++) {
+						echo "<input type='checkbox' name='tab_sem[]' id='tab_sem_$j' value=\"".$tab_semaine[$j]."\" ";
+						if(in_array($tab_semaine[$j],$tab_sem)) {echo "checked ";}
+						echo "/><label for='tab_sem_$j'> ".$tab_semaine[$j]."</label><br />\n";
+					}
+					echo "</p>\n";
+					echo "<p>Ne pas cocher des codes correspondant à des cours ayant lieu chaque semaine.</p>\n";
+				}
+
 				echo "<input type='hidden' name='step' value='2' />\n";
-				echo "<input type='submit' name='Valider' value='Valider' />\n";
+				echo "<p><input type='submit' name='Valider' value='Valider' /></p>\n";
 				echo "</form>\n";
 
 				echo "<script type='text/javascript'>
@@ -336,6 +367,7 @@
 		}
 	}
 </script>\n";
+				echo "<p><br /></p>\n";
 			}
 
 			if($step==2) {
@@ -375,6 +407,15 @@
 					$insert=mysql_query($sql);
 					if($type[$i]=='groupe') {$tab_grp[]=$clas_ou_grp[$i];}
 					else {$tab_clas[]=$clas_ou_grp[$i];}
+				}
+
+				$sql="DELETE FROM tempo5 WHERE info='type_edt_semaine';";
+				$menage=mysql_query($sql);
+
+				$tab_sem=isset($_POST['tab_sem']) ? $_POST['tab_sem'] : array();
+				for($i=0;$i<count($tab_sem);$i++) {
+					$sql="INSERT INTO tempo5 SET texte='".mysql_real_escape_string($tab_sem[$i])."', info='type_edt_semaine';";
+					$insert=mysql_query($sql);
 				}
 
 				if(count($tab_grp)>0) {
@@ -422,7 +463,7 @@
 					}
 					echo "</table>\n";
 					echo "<input type='hidden' name='step' value='3' />\n";
-					echo "<input type='submit' name='Valider' value='Valider' />\n";
+					echo "<p><input type='submit' name='Valider' value='Valider' /></p>\n";
 					echo "</form>\n";
 
 					echo "<script type='text/javascript'>\n";
@@ -447,6 +488,7 @@
 		}
 	}
 </script>\n";
+					echo "<p><br /></p>\n";
 
 				}
 				else {
@@ -487,6 +529,19 @@
 				echo "<p>\n";
 				echo "Traitement du fichier...<br />\n";
 
+				$tab_sem=array();
+				$sql="SELECT * FROM tempo5 WHERE info='type_edt_semaine';";
+				$res_sem=mysql_query($sql);
+				if(mysql_num_rows($res_sem)>0) {
+					while($lig_sem=mysql_fetch_object($res_sem)) {
+						$tab_sem[]=$lig_sem->texte;
+					}
+				}
+/*
+echo "<pre>";
+echo print_r($tab_sem);
+echo "</pre>";
+*/
 				$nb_cours=0;
 				$nb_lignes=0;
 				$fich=fopen("../temp/".$tempdir."/g_edt_2.csv", "w+");
@@ -612,7 +667,8 @@
 										$ligne.=";";
 
 										// Freq
-										if(isset($tab_cours[$i]["enfant"]["frequence"])) {
+										//if(isset($tab_cours[$i]["enfant"]["frequence"])) {
+										if((isset($tab_cours[$i]["enfant"]["frequence"]))&&(in_array($tab_cours[$i]["enfant"]["frequence"],$tab_sem))) {
 											$ligne.=$tab_cours[$i]["enfant"]["frequence"];
 										}
 										$ligne.=";";
@@ -676,7 +732,8 @@
 									$ligne.=";";
 
 									// Freq
-									if(isset($tab_cours[$i]["enfant"]["frequence"])) {
+									//if(isset($tab_cours[$i]["enfant"]["frequence"])) {
+									if((isset($tab_cours[$i]["enfant"]["frequence"]))&&(in_array($tab_cours[$i]["enfant"]["frequence"],$tab_sem))) {
 										$ligne.=$tab_cours[$i]["enfant"]["frequence"];
 									}
 									$ligne.=";";
