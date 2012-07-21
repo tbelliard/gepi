@@ -310,6 +310,13 @@ $tbs_charger_observeur=$charger_observeur;
 if (getSettingValue("impose_petit_entete_prof") == 'y' AND isset($_SESSION['statut']) AND $_SESSION['statut'] == 'professeur') {
 	$_SESSION['cacher_header']="y";
 }
+
+$petit_entete=getPref($_SESSION['login'], "petit_entete", "");
+//echo "\$petit_entete=$petit_entete<br />";
+if(($petit_entete=='y')||($petit_entete=='n')) {
+	$_SESSION['cacher_header']=$petit_entete;
+}
+
 // Taille à récupérer dans la base pour initialiser $_SESSION['cacher_header']
 	// petit bandeau toute valeur sauf "n" ;
 	// grand bandeau "n";

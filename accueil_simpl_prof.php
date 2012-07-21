@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -149,8 +149,8 @@ echo "<a href=\"./accueil.php?accueil_simpl=n\">Accès au menu d'accueil</a>";
 //echo " | \n";
 //echo "<a href='index.php'> Carnet de notes </a> | \n";
 echo " | \n";
-//echo "<a href='./gestion/config_prefs.php'> Paramétrer mes interfaces simplifiées </a>\n";
-echo "<a href='./gestion/config_prefs.php'> Paramétrer mon interface </a>\n";
+//echo "<a href='./gestion/config_prefs.php'> Paramétrer mon interface </a>\n";
+echo "<a href='./utilisateurs/mon_compte.php#accueil_simpl_prof'> Paramétrer mon interface </a>\n";
 echo "</p>\n";
 echo "</div>\n";
 
