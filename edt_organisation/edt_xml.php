@@ -116,6 +116,7 @@
 
 		if(!isset($step)) {
 
+			echo "<p class='bold'>Uploader un nouveau fichier</p>\n";
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			echo add_token_field();
 			echo "<p>Veuillez fournir le fichier EXP_COURS.xml&nbsp;:<br />\n";
@@ -125,6 +126,34 @@
 			echo "<p><input type='submit' value='Valider' /></p>\n";
 			echo "</form>\n";
 
+			$dest_file="../temp/".$tempdir."/edt.xml";
+			if(file_exists($dest_file)) {
+				$sql="SELECT texte AS col1 FROM tempo5 WHERE info='groupe' OR info='classe';";
+				$res_grp=mysql_query($sql);
+				if(mysql_num_rows($res_grp)>0) {
+					echo "<br />\n";
+					echo "<p><span class='bold'>Ou</span> <a href='".$_SERVER['PHP_SELF']."?step=1'>repartir du fichier précédemment uploadé</a>.</p>\n";
+				}
+			}
+			
+			echo "<p><em>NOTES&nbsp;:</em></p>\n";
+			echo "<p style='margin-left:3em'>
+Pour générer le fichier EXP_COURS.xml à partir du logiciel EDT de la société Index Education :<br />
+<br />
+Conseils préliminaires :<br />
+- Réaliser l'exportation depuis la version complète d'EDT installée généralement sur le poste du chef d'établissement ou/et de l'adjoint et non depuis la version temporaire ou la version de consultation.<br />
+- S'assurer que les noms des groupes soient suffisamment explicites quant aux classes des élèves qui les composent afin de faciliter l'établissement des correspondances lors de l'importation dans Gepi (ex : soit un groupe d'ESP2 avec des élèves de 3ème 1 et de 3ème 2 et un autre avec des élèves de 3ème 3 et de 3ème 4 ; EDT va dénommer ces groupes 3ESP2GR.1 et 3ESP2GR.2 par défaut ; une appellation du genre 3_1&2ESP2 et 3_3&4ESP2 sera plus pratique).<br />
+<br />
+1. Se placer dans l'onglet Cours et extraire les cours pour lesquels on désire générer une exportation. Si l'on veut exporter l'ensemble de l'emploi du temps, faire une extraction complète (Extraire > Tout extraire).<br />
+2. Se rendre dans Fichiers > Imports/Exports > Autres > Exporter un fichier texte<br />
+3.  Dans la fenêtre qui apparaît, les paramètres par défaut sont corrects mais s'assurer quand même des suivants :<br />
+- Type de données à exporter : Cours<br />
+- Sélection du type d'export : Format XML (*.xml)<br />
+- Choix de la période : Année complète<br />
+- Cocher la case Visualiser toutes les données<br />
+4. Cliquer sur Exporter<br />
+5. EDT génère le fichier EXP_COURS.xml dont Gepi aura besoin<br />
+</p>\n";
 		}
 		else {
 			echo " | <a href='".$_SERVER['PHP_SELF']."'>Retour à l'upload du fichier</a>";
@@ -292,7 +321,7 @@
 				echo "<table class='boireaus'>\n";
 				$alt=1;
 				echo "<tr>\n";
-				echo "<th>Nom trouvé</th>\n";
+				echo "<th rowspan='2'>Nom trouvé</th>\n";
 				echo "<th>Classe<br />";
 				echo "<a href=\"javascript:CocheColonne('classe');changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' title='Tout cocher' /></a>";
 				echo "</th>\n";
@@ -300,21 +329,34 @@
 				echo "<a href=\"javascript:CocheColonne('groupe');changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' title='Tout cocher' /></a>";
 				echo "</th>\n";
 				echo "</tr>\n";
+
+				echo "<tr>\n";
+				//echo "<th>Nom trouvé</th>\n";
+				echo "<th id='total_clas'></th>\n";
+				echo "<th id='total_grp'></th>\n";
+				echo "</tr>\n";
+
 				for($i=0;$i<count($tab_clas_ou_grp);$i++) {
 					$alt=$alt*(-1);
 					echo "<tr class='lig$alt white_hover'>\n";
 					echo "<td id='ligne_$i'>".$tab_clas_ou_grp[$i];
 					echo "<input type='hidden' name='clas_ou_grp[$i]' value=\"".$tab_clas_ou_grp[$i]."\" />\n";
 					echo "</td>\n";
-					echo "<td onmouseover=\"document.getElementById('ligne_$i').style.color='red';\" onmouseout=\"document.getElementById('ligne_$i').style.color='';\" onclick=\"document.getElementById('type_clas_$i').checked=true;\"><input type='radio' name='type[$i]' id='type_clas_$i' value='classe' ";
+					echo "<td onmouseover=\"document.getElementById('ligne_$i').style.color='red';\" onmouseout=\"document.getElementById('ligne_$i').style.color='';\" onclick=\"document.getElementById('type_clas_$i').checked=true;mise_ligne_en_gras_ou_pas($i)\">\n";
+					echo "<input type='radio' name='type[$i]' id='type_clas_$i' value='classe' ";
 					if(!in_array($tab_clas_ou_grp[$i], $tab_grp)) {
 						echo "checked ";
 					}
+					//echo " onchange=\"if(document.getElementById('type_clas_$i').checked==true) {document.getElementById('ligne_$i').style.fontWeight='bold';} else {document.getElementById('ligne_$i').style.fontWeight='';}\" ";
+					echo " onchange=\"mise_en_gras_ou_pas($i);\" ";
 					echo "/></td>\n";
-					echo "<td onmouseover=\"document.getElementById('ligne_$i').style.color='red';\" onmouseout=\"document.getElementById('ligne_$i').style.color='';\" onclick=\"document.getElementById('type_grp_$i').checked=true;\"><input type='radio' name='type[$i]' id='type_grp_$i' value='groupe' ";
+
+					echo "<td onmouseover=\"document.getElementById('ligne_$i').style.color='red';\" onmouseout=\"document.getElementById('ligne_$i').style.color='';\" onclick=\"document.getElementById('type_grp_$i').checked=true;;mise_ligne_en_gras_ou_pas($i)\"><input type='radio' name='type[$i]' id='type_grp_$i' value='groupe' ";
 					if(in_array($tab_clas_ou_grp[$i], $tab_grp)) {
 						echo "checked ";
 					}
+					//echo " onchange=\"if(document.getElementById('type_clas_$i').checked==true) {document.getElementById('ligne_$i').style.fontWeight='bold';} else {document.getElementById('ligne_$i').style.fontWeight='';}\" ";
+					echo " onchange=\"mise_en_gras_ou_pas($i);\" ";
 					echo "/></td>\n";
 					echo "</tr>\n";
 
@@ -342,7 +384,7 @@
 						echo "/><label for='tab_sem_$j'> ".$tab_semaine[$j]."</label><br />\n";
 					}
 					echo "</p>\n";
-					echo "<p>Ne pas cocher des codes correspondant à des cours ayant lieu chaque semaine.</p>\n";
+					echo "<p><strong>Ne pas cocher</strong> des codes correspondant à des cours ayant lieu chaque semaine.</p>\n";
 				}
 
 				echo "<input type='hidden' name='step' value='2' />\n";
@@ -365,7 +407,53 @@
 				}
 			}
 		}
+
+		calcule_effectifs();
+		mise_en_gras_ou_pas();
 	}
+
+	function mise_ligne_en_gras_ou_pas(i) {
+		//alert(1);
+		if((document.getElementById('ligne_'+i))&&(document.getElementById('type_clas_'+i))) {
+			//alert(2);
+			if(document.getElementById('type_clas_'+i).checked==true) {
+				//alert(3);
+				document.getElementById('ligne_'+i).style.fontWeight='bold';
+				document.getElementById('ligne_'+i).style.backgroundColor='yellow';
+			}
+			else {
+				document.getElementById('ligne_'+i).style.fontWeight='';
+				document.getElementById('ligne_'+i).style.backgroundColor='';
+			}
+		}
+		calcule_effectifs();
+	}
+
+	function calcule_effectifs() {
+		var eff_clas=0;
+		var eff_grp=0;
+		var i;
+		for(i=0;i<$i;i++) {
+			if((document.getElementById('type_clas_'+i))&&(document.getElementById('type_clas_'+i).checked==true)) {
+				eff_clas++;
+			}
+			else {
+				eff_grp++;
+			}
+		}
+		document.getElementById('total_clas').innerHTML=eff_clas;
+		document.getElementById('total_grp').innerHTML=eff_grp;
+	}
+
+	function mise_en_gras_ou_pas() {
+		//alert('i='+$i);
+		for(i=0;i<$i;i++) {
+			//if(i<10) {alert('i='+i)}
+			mise_ligne_en_gras_ou_pas(i);
+		}
+	}
+
+	mise_en_gras_ou_pas();
 </script>\n";
 				echo "<p><br /></p>\n";
 			}
@@ -396,6 +484,7 @@
 					}
 				}
 
+				$chaine_clas="";
 				$clas_ou_grp=isset($_POST['clas_ou_grp']) ? $_POST['clas_ou_grp'] : array();
 				$type=isset($_POST['type']) ? $_POST['type'] : array();
 				//echo "count(\$clas_ou_grp)=".count($clas_ou_grp)."<br />";
@@ -406,7 +495,14 @@
 					$sql="INSERT INTO tempo5 SET texte='".mysql_real_escape_string($clas_ou_grp[$i])."', info='".$type[$i]."';";
 					$insert=mysql_query($sql);
 					if($type[$i]=='groupe') {$tab_grp[]=$clas_ou_grp[$i];}
-					else {$tab_clas[]=$clas_ou_grp[$i];}
+					else {
+						$tab_clas[]=$clas_ou_grp[$i];
+
+						if($chaine_clas!="") {
+							$chaine_clas.=", ";
+						}
+						$chaine_clas.="'".$clas_ou_grp[$i]."'";
+					}
 				}
 
 				$sql="DELETE FROM tempo5 WHERE info='type_edt_semaine';";
@@ -428,7 +524,10 @@
 					echo "<table class='boireaus'>\n";
 					$alt=1;
 					echo "<tr>\n";
-					echo "<th>Groupe</th>\n";
+					echo "<th>Groupe <a href='javascript:detection_classes_grp()' title=\"Tenter d'identifier les classes associées d'après le nom du groupe\">";
+					//echo "<img src='../images/icons/wizard.png' />";
+					echo "<img src='../images/icons/flag2.gif' /></a></th>\n";
+					echo "<th>Effectif</th>";
 					echo "<th>Classes associées<br />";
 
 					echo "<a href=\"javascript:CocheClasses(true);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Cocher toutes les classes' title='Cocher toutes les classes' /></a> / <a href=\"javascript:CocheClasses(false);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Décocher toutes les classes' title='Décocher toutes les classes' /></a>";
@@ -436,17 +535,25 @@
 					echo "</th>\n";
 					echo "</tr>\n";
 					$cpt=0;
+					$chaine_clas_num="";
 					for($i=0;$i<count($tab_grp);$i++) {
 						$alt=$alt*(-1);
 						echo "<tr class='lig$alt white_hover'>\n";
-						echo "<td>".$tab_grp[$i];
+						echo "<td>";
+						echo "<a href='javascript:coche_clas_grp($i)' id='a_grp_$i'>".$tab_grp[$i]."</a>";
 						echo "<input type='hidden' name='grp[$i]' value=\"".$tab_grp[$i]."\" />\n";
+						echo " <a href='javascript:decoche($i)'><img src='../images/disabled.png' /></a>";
+						echo "</td>\n";
+						echo "<td id='td_eff_$i'>\n";
+						echo "Effectif calculé dynamiquement";
 						echo "</td>\n";
 						echo "<td>\n";
+						if($chaine_clas_num!="") {$chaine_clas_num.=", ";}
+						$chaine_clas_num.="'$cpt'";
 						for($j=0;$j<count($tab_clas);$j++) {
 							echo "<div style='float:left; margin-right:1em;'>\n";
 							echo "<input type='checkbox' name='clas_".$i."[]' id='clas_".$cpt."' value=\"".$tab_clas[$j]."\"";
-							echo " onchange=\"checkbox_change_classe('clas_".$cpt."'); changement();\"";
+							echo " onchange=\"checkbox_change_classe('clas_".$cpt."'); calcule_effectif_ligne($i); changement();\"";
 							if((isset($tab_clas_grp[$tab_grp[$i]]))&&(in_array($tab_clas[$j],$tab_clas_grp[$tab_grp[$i]]))) {
 								echo " checked";
 							}
@@ -461,6 +568,8 @@
 						echo "</td>\n";
 						echo "</tr>\n";
 					}
+					if($chaine_clas_num!="") {$chaine_clas_num.=", ";}
+					$chaine_clas_num.="'$cpt'";
 					echo "</table>\n";
 					echo "<input type='hidden' name='step' value='3' />\n";
 					echo "<p><input type='submit' name='Valider' value='Valider' /></p>\n";
@@ -473,6 +582,7 @@
 
 					echo "<script type='text/javascript'>
 	function CocheClasses(mode) {
+		var i;
 		for(i=0;i<$cpt;i++) {
 			if(document.getElementById('clas_'+i)) {
 				document.getElementById('clas_'+i).checked=mode;
@@ -480,11 +590,101 @@
 			if(document.getElementById('texte_clas_'+i)) {
 				if(mode==true) {
 					document.getElementById('texte_clas_'+i).style.fontWeight='bold';
+					document.getElementById('texte_clas_'+i).style.backgroundColor='yellow';
 				}
 				else {
 					document.getElementById('texte_clas_'+i).style.fontWeight='';
+					document.getElementById('texte_clas_'+i).style.backgroundColor='';
 				}
 			}
+		}
+
+		calcule_effectifs('');
+	}
+
+	var tab_clas=new Array($chaine_clas);
+	var tab_clas_num=new Array($chaine_clas_num);
+
+	function coche_clas_grp(i) {
+		if(document.getElementById('a_grp_'+i)) {
+			tab=document.getElementById('a_grp_'+i).innerHTML.split(' ');
+			//alert('tab.length='+tab.length)
+			var j;
+			for(j=0;j<tab.length;j++) {
+				//alert('tab['+j+']='+tab[j])
+				var k;
+				for(k=tab_clas_num[i];k<tab_clas_num[i+1];k++) {
+					if(tab[j]!='') {
+						//if(document.getElementById('texte_clas_'+k).innerHTML==tab[j]) {alert('bingo: '+document.getElementById('texte_clas_'+k).innerHTML);}
+						//if(document.getElementById('texte_clas_'+k).innerHTML.toLowerCase()==tab[j].toLowerCase()) {
+						if(document.getElementById('texte_clas_'+k).innerHTML.toLowerCase().replace(/^\s+/g,'').replace(/\s+$/g,'')==tab[j].toLowerCase().replace(/^\s+/g,'').replace(/\s+$/g,'')) {
+							//if(document.getElementById('texte_clas_'+k).innerHTML.toLowerCase()==tab[j].toLowerCase()) {alert('bingo 2: '+document.getElementById('texte_clas_'+k).innerHTML.toLowerCase());}
+
+							if(document.getElementById('clas_'+k)) {
+								document.getElementById('clas_'+k).checked=true;
+							}
+							if(document.getElementById('texte_clas_'+k)) {
+								document.getElementById('texte_clas_'+k).style.fontWeight='bold';
+								document.getElementById('texte_clas_'+k).style.backgroundColor='yellow';
+							}
+						}
+					}
+				}
+			}
+		}
+
+		calcule_effectif_ligne(i);
+		//alert('calcule_effectif_ligne('+i+')');
+	}
+
+	function decoche(i) {
+		var k;
+		for(k=tab_clas_num[i];k<tab_clas_num[i+1];k++) {
+			if(document.getElementById('clas_'+k)) {
+				document.getElementById('clas_'+k).checked=false;
+			}
+			if(document.getElementById('texte_clas_'+k)) {
+				document.getElementById('texte_clas_'+k).style.fontWeight='';
+				document.getElementById('texte_clas_'+k).style.backgroundColor='';
+			}
+		}
+
+		calcule_effectif_ligne(i);
+	}
+
+	function calcule_effectifs(k) {
+		if(k=='') {
+			var i;
+			for(i=0;i<$cpt;i++) {
+				calcule_effectif_ligne(i);
+			}
+		}
+		else{
+			calcule_effectif_ligne(k);
+		}
+	}
+
+	function calcule_effectif_ligne(i) {
+		if(document.getElementById('td_eff_'+i)) {
+			eff=0;
+			var k;
+			for(k=tab_clas_num[i];k<tab_clas_num[i+1];k++) {
+				if(document.getElementById('clas_'+k)) {
+					if(document.getElementById('clas_'+k).checked==true) {
+						eff++;
+					}
+				}
+			}
+			document.getElementById('td_eff_'+i).innerHTML=eff;
+		}
+	}
+
+	calcule_effectifs('');
+	
+	function detection_classes_grp() {
+		var i;
+		for(i=0;i<$i;i++) {
+			coche_clas_grp(i);
 		}
 	}
 </script>\n";
