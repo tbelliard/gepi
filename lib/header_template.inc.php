@@ -157,6 +157,12 @@ if ($windows == 'oui') {
 	$tbs_CSS[]=array("fichier"=> $gepiPath."/edt_effets/themes/alphacube.css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
 }
 
+// Utilisation de tablekit
+$tablekit = isset($utilisation_tablekit) ? $utilisation_tablekit : NULL;
+if ($tablekit == "ok") {
+	$tbs_librairies[]=$gepiPath."/lib/tablekit.js";
+}
+
 if(isset($javascript_specifique)) {
 	// Il faudrait filtrer le contenu de la variable...
 	// On ajoute le ".js" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
