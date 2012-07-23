@@ -1054,7 +1054,7 @@ if (getSettingValue("utiliserMenuBarre") != "no") {
 	}
 
 	echo "<p>\n";
-	echo "<label for='visibleMenuLight' id='texte_visibleMenu'>Rendre visible la barre de menu horizontale allégée sous l'en-tête.</label>\n";
+	echo "<label for='visibleMenuLight' id='texte_visibleMenuLight'>Rendre visible la barre de menu horizontale allégée sous l'en-tête.</label>\n";
 	echo "<input type='radio' id='visibleMenuLight' name='afficher_menu' value='light'";
 	if($aff_checked=="light") echo " checked";
 	echo " />\n";
