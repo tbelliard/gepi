@@ -49,7 +49,7 @@
 	}
 	//**************** FIN EN-TETE *****************
 
-	$debug_import="y";
+	$debug_import="n";
 
 	// On va uploader les fichiers XML dans le tempdir de l'utilisateur (administrateur, ou scolarité pour les màj Sconet)
 	$tempdir=get_user_temp_directory();
