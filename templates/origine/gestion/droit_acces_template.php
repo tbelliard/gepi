@@ -132,8 +132,13 @@
 	</h3>
 	<ul class='div_tableau'>
 	<?php foreach ($droitAffiche->get_item() as $AfficheItem){ 
-	  if(my_strtolower($AfficheItem['statut']) == my_strtolower($StatutItem)){
-
+	//if(my_strtolower($AfficheItem['statut']) == my_strtolower($StatutItem)){
+	  if(my_strtolower($AfficheItem['statut']) == my_strtolower($StatutItem)) {
+		// Pour faire des rubriques/espaces
+		if($AfficheItem['name']=='') {
+			echo "<hr />\n";
+		}
+		else {
 	?>
 	  <li style='margin-left:2em;text-indent:-2em;'>
 		<input type="checkbox" name="<?php echo $AfficheItem['name'] ; ?>"
@@ -146,6 +151,7 @@
 		</label>
 	  </li>
 	  <?php
+		}
 	  }
 	}
 	unset ($AfficheItem);
