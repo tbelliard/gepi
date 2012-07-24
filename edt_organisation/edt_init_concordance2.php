@@ -4,7 +4,7 @@
  * Fichier qui enregistre les concordances et les cours du fichier edt_init_csv2.php
  *
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -91,8 +91,10 @@ if ($etape != NULL) {
 		}
 		// On envoie toutes les requêtes d'un coup
 		echo $values;
-		$envoie = mysql_query("INSERT INTO edt_init (id_init, ident_export, nom_export, nom_gepi)
-					VALUE ".$values." ('', ".$etape.", 'fin', 'fin')")
+		$sql="INSERT INTO edt_init (id_init, ident_export, nom_export, nom_gepi)
+					VALUE ".$values." ('', ".$etape.", 'fin', 'fin')";
+		//echo "<br />$sql<br />";
+		$envoie = mysql_query($sql)
 					OR error_reporting('Erreur dans la requête $envoie de l\'étape '.$etape.' : '.mysql_error().'<br />'.$envoie);
 		// On récupère le nombre de valeurs enregistrées et on affiche
 		if ($etape == 6 OR $etape == 8 OR $etape == 9 OR $etape == 11) {
@@ -157,6 +159,7 @@ if ($etape != NULL) {
 				}
 			}*/
 
+			//echo "<br /><p>\$enregistre = enregistreCoursCsv2($tab[0], $tab[1], $tab[2], $tab[3], $tab[4], $tab[5], $tab[6], $tab[7], $tab[8], $tab[9], $tab[10], $tab[11]);<br />";
 			$enregistre = enregistreCoursCsv2($tab[0], $tab[1], $tab[2], $tab[3], $tab[4], $tab[5], $tab[6], $tab[7], $tab[8], $tab[9], $tab[10], $tab[11]);
 
 			$debug = 'ok';

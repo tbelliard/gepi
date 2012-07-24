@@ -315,15 +315,21 @@ if ($action == "upload_file") {
 
                 //for($l = 0; $l < $nbre_lignes; $l++)
                 $l = 0; // comme itérateur
+				echo "<table>\n";
 				foreach ($tableau as $key => $val) {
                 	// On enlève les guillemets et les apostrophes et les accents
                 	//$valeur = my_ereg_replace("'", "wkzx", my_ereg_replace('"', "zxwk", $val));
                 	$valeur = remplace_accents($val, 'all_nospace');
+					//echo "<p>";
+					echo "<tr>\n";
+					echo "<td>\n";
                     echo '
-					<p>
 					<input type="hidden" name="nom_export_' . $l . '" value="' . $valeur . '" />
-					<label for="nomGepi' . $l . '"><b>' . $val . '</b></label>
+					<label for="nomGepi' . $l . '" id="texte_nomGepi' . $l . '" ><b>' . $val . '</b></label>
 					';
+
+                    echo "</td>\n";
+                    echo "<td>\n";
 
 					// On ne garde que le premier nom de la valeur du champ de l'import pour tester ensuite le selected du select
                     if ($etape != 2) {
@@ -368,9 +374,12 @@ if ($action == "upload_file") {
 					}
 
 
-                    echo '</p>';
+                    //echo '</p>';
+                    echo "</td>\n";
+                    echo "</tr>\n";
                     $l++;
                 }
+				echo "</table>\n";
                 if ($etape == 6 OR $etape == 8 OR $etape == 9 OR $etape == 11) {
                 	$aff_enregistrer = 'Passer à l\'étape suivante (aucun enregistrement)';
                 }elseif($etape == 5){
