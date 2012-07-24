@@ -26,7 +26,7 @@ if (!isset($nom_selected)) {
 }
 
 echo '
-	<select name ="'.$increment.'"'.$id_select.'>
+	<select name ="'.$increment.'"'.$id_select.' onmouseover="if(document.getElementById(\'texte_nomGepi'.$l.'\')) {document.getElementById(\'texte_nomGepi'.$l.'\').style.backgroundColor=\'yellow\'}" onmouseout="if(document.getElementById(\'texte_nomGepi'.$l.'\')) {document.getElementById(\'texte_nomGepi'.$l.'\').style.backgroundColor=\'\'}">
 		<option value="aucun">Liste des professeurs</option>';
 	// on recherche la liste des professeurs
 	$query = mysql_query("SELECT login, nom, prenom FROM utilisateurs

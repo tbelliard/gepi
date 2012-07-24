@@ -26,7 +26,7 @@ $id_select = isset($nom_id_select) ? ' id="'.$nom_id_select.'"' : NULL;
 $test_selected = isset($nom_selected) ? $nom_selected : NULL;
 
 echo '
-	<select name ="'.$increment.'"'.$id_select.'>
+	<select name ="'.$increment.'"'.$id_select.' onmouseover="if(document.getElementById(\'texte_nomGepi'.$l.'\')) {document.getElementById(\'texte_nomGepi'.$l.'\').style.backgroundColor=\'yellow\'}" onmouseout="if(document.getElementById(\'texte_nomGepi'.$l.'\')) {document.getElementById(\'texte_nomGepi'.$l.'\').style.backgroundColor=\'\'}">
 		<option value="aucun">Liste des types de semaine et des périodes du calendrier</option>';
 
 // On récupère les différents type de semaine

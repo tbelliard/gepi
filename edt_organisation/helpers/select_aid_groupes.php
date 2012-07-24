@@ -42,7 +42,9 @@ else {
 
 $tab_mat_ligne=array();
 if(isset($tab_matiere[$valeur])) {
-	$sql="SELECT DISTINCT id_groupe FROM j_groupes_matieres WHERE id_matiere='".mysql_real_escape_string($tab_matiere[$valeur])."';";
+	//$sql="SELECT DISTINCT id_groupe FROM j_groupes_matieres WHERE id_matiere='".mysql_real_escape_string($tab_matiere[$valeur])."';";
+	$sql="SELECT DISTINCT jgm.id_groupe FROM j_groupes_matieres jgm, j_groupes_classes jgc, classes c WHERE jgm.id_matiere='".mysql_real_escape_string($tab_matiere[$valeur])."' AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe;";
+	//echo "$sql<br />";
 	$res_mat=mysql_query($sql);
 	if(mysql_num_rows($res_mat)>0) {
 		while($lig_mat=mysql_fetch_object($res_mat)) {
@@ -52,7 +54,7 @@ if(isset($tab_matiere[$valeur])) {
 }
 
 echo '
-	<select name ="'.$increment.'"'.$id_select.'>
+	<select name ="'.$increment.'"'.$id_select.' onmouseover="if(document.getElementById(\'texte_nomGepi'.$l.'\')) {document.getElementById(\'texte_nomGepi'.$l.'\').style.backgroundColor=\'yellow\'}" onmouseout="if(document.getElementById(\'texte_nomGepi'.$l.'\')) {document.getElementById(\'texte_nomGepi'.$l.'\').style.backgroundColor=\'\'}">
 		<option value="aucun">Liste des AID et des groupes</option>
 			<optgroup label="Les AID">';
 	// on recherche la liste des AID
@@ -84,7 +86,9 @@ echo '
 
 		echo '
 			<optgroup label="Les groupes de la matière">';
-		$query = mysql_query("SELECT g.id, g.description, g.name FROM groupes g, j_groupes_matieres jgm WHERE jgm.id_groupe=g.id AND jgm.id_matiere='".mysql_real_escape_string($tab_matiere[$valeur])."' ORDER BY description");
+		//$sql="SELECT g.id, g.description, g.name FROM groupes g, j_groupes_matieres jgm WHERE jgm.id_groupe=g.id AND jgm.id_matiere='".mysql_real_escape_string($tab_matiere[$valeur])."' ORDER BY description";
+		$sql="SELECT DISTINCT g.id, g.description, g.name FROM groupes g, j_groupes_matieres jgm, j_groupes_classes jgc, classes c WHERE jgm.id_groupe=g.id AND jgm.id_matiere='".mysql_real_escape_string($tab_matiere[$valeur])."' AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe, g.description";
+		$query = mysql_query($sql);
 		$nbre_groupes = mysql_num_rows($query);
 		for($a = 0; $a < $nbre_groupes; $a++){
 			$id_groupe[$a]["id"] = mysql_result($query, $a, "id");
@@ -95,7 +99,15 @@ echo '
 			// On n'utilise pas getGroup() car elle est trop longue et récupère trop de choses dont on n'a pas besoin
 
 			$query1 = mysql_query("SELECT classe FROM j_groupes_classes jgc, classes c WHERE jgc.id_classe = c.id AND jgc.id_groupe = '".$id_groupe[$a]["id"]."'");
-			$classe = mysql_fetch_array($query1);
+			//$classe = mysql_fetch_array($query1);
+			//echo "<!-- ".print_r($classe)." -->\n";
+			$chaine_classe="";
+			$cpt_classe=0;
+			while($lig_classe=mysql_fetch_object($query1)) {
+				if($cpt_classe>0) {$chaine_classe.=", ";}
+				$chaine_classe.=$lig_classe->classe;
+				$cpt_classe++;
+			}
 
 			// On teste le selected après s'être assuré qu'il n'était pas déjà renseigné
 				if ($id_groupe[$a]["description"] == $test_selected) {
@@ -111,7 +123,16 @@ echo '
 			if(in_array($id_groupe[$a]["id"], $tab_mat_ligne)) {
 				echo ' style="color:blue;"';
 			}
-			echo '>'.$id_groupe[$a]["description"].'('.$classe[0].') ('.$id_groupe[$a]["name"].')</option>';
+			//echo '>'.$id_groupe[$a]["description"].'('.$classe[0].') ('.$id_groupe[$a]["name"].')</option>';
+			echo '>'.$id_groupe[$a]["name"].' - '.$id_groupe[$a]["description"].' (';
+			echo $chaine_classe;
+			/*
+			echo $classe[0];
+			for($loop=1;$loop<count($classe);$loop++) {
+				echo ", ".$classe[$loop];
+			}
+			*/
+			echo ') ('.$id_groupe[$a]["name"].')</option>';
 		}
 		echo '
 			</optgroup>
@@ -121,7 +142,9 @@ echo '
 	echo '
 			<optgroup label="Les groupes">';
 	//$query = mysql_query("SELECT id, description, name FROM groupes ORDER BY description");
-	$query = mysql_query("SELECT g.id, g.description, g.name FROM groupes g, j_groupes_matieres jgm WHERE jgm.id_groupe=g.id AND jgm.id_matiere!='".mysql_real_escape_string($tab_matiere[$valeur])."' ORDER BY description");
+	//$sql="SELECT g.id, g.description, g.name FROM groupes g, j_groupes_matieres jgm WHERE jgm.id_groupe=g.id AND jgm.id_matiere!='".mysql_real_escape_string($tab_matiere[$valeur])."' ORDER BY description";
+	$sql="SELECT DISTINCT g.id, g.description, g.name FROM groupes g, j_groupes_matieres jgm, j_groupes_classes jgc, classes c WHERE jgm.id_groupe=g.id AND jgm.id_matiere!='".mysql_real_escape_string($tab_matiere[$valeur])."' AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY g.name, g.description, c.classe";
+	$query = mysql_query($sql);
 	$nbre_groupes = mysql_num_rows($query);
 	for($a = 0; $a < $nbre_groupes; $a++){
 		$id_groupe[$a]["id"] = mysql_result($query, $a, "id");
@@ -132,7 +155,14 @@ echo '
 		// On n'utilise pas getGroup() car elle est trop longue et récupère trop de choses dont on n'a pas besoin
 
 		$query1 = mysql_query("SELECT classe FROM j_groupes_classes jgc, classes c WHERE jgc.id_classe = c.id AND jgc.id_groupe = '".$id_groupe[$a]["id"]."'");
-		$classe = mysql_fetch_array($query1);
+		//$classe = mysql_fetch_array($query1);
+		$chaine_classe="";
+		$cpt_classe=0;
+		while($lig_classe=mysql_fetch_object($query1)) {
+			if($cpt_classe>0) {$chaine_classe.=", ";}
+			$chaine_classe.=$lig_classe->classe;
+			$cpt_classe++;
+		}
 
 		// On teste le selected après s'être assuré qu'il n'était pas déjà renseigné
 			if ($id_groupe[$a]["description"] == $test_selected) {
@@ -148,7 +178,11 @@ echo '
 		if(in_array($id_groupe[$a]["id"], $tab_mat_ligne)) {
 			echo ' style="color:blue;"';
 		}
-		echo '>'.$id_groupe[$a]["description"].'('.$classe[0].') ('.$id_groupe[$a]["name"].')</option>';
+		//echo '>'.$id_groupe[$a]["description"].'('.$classe[0].') ('.$id_groupe[$a]["name"].')</option>';
+		//echo '>'.$id_groupe[$a]["description"].' (';
+		echo '>'.$id_groupe[$a]["name"].' - '.$id_groupe[$a]["description"].' (';
+		echo $chaine_classe;
+		echo ') ('.$id_groupe[$a]["name"].')</option>';
 	}
 echo '
 			</optgroup>
