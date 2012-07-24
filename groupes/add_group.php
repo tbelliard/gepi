@@ -39,10 +39,6 @@ if (!checkAccess()) {
     die();
 }
 
-$tab_domaines=array('bulletins', 'cahier_notes');
-$tab_domaines_sigle=array('B', 'CN');
-$tab_domaines_texte=array('Bulletins', 'Cahiers de Notes');
-
 // Initialisation des variables utilisées dans le formulaire
 
 $reg_nom_groupe = '';

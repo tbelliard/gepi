@@ -56,10 +56,6 @@ $reg_id_classe = $current_group["classes"]["list"][0];
 $reg_clazz = $current_group["classes"]["list"];
 $reg_professeurs = (array)$current_group["profs"]["list"];
 
-
-$tab_domaines=array('bulletins', 'cahier_notes');
-$tab_domaines_sigle=array('B', 'CN');
-$tab_domaines_texte=array('Bulletins', 'Cahiers de Notes');
 //================================
 $invisibilite_groupe=array();
 $sql="SELECT jgv.* FROM j_groupes_visibilite jgv WHERE jgv.visible='n';";

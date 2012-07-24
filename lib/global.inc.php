@@ -224,6 +224,11 @@ $type_etablissement2["prive"]["EREA"] = "privé";
 $type_etablissement2["prive"]["tous_niveaux"] = "privé";
 $type_etablissement2["prive"]["aucun"] = "";
 
+# Visibilité des groupes dans tel ou tel module:
+$tab_domaines=array('bulletins', 'cahier_notes', 'cahier_texte');
+$tab_domaines_sigle=array('B', 'CN', 'CDT');
+$tab_domaines_texte=array('Bulletins', 'Cahiers de Notes', 'Cahiers de Textes');
+
 # Make sure notice errors are not reported
 //error_reporting (E_ALL ^ E_NOTICE);
 

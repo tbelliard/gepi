@@ -166,6 +166,7 @@ include("affichage_des_messages.inc.php");
 $invisibilite_groupe=array();
 $invisibilite_groupe['bulletins']=array();
 $invisibilite_groupe['cahier_notes']=array();
+$invisibilite_groupe['cahier_texte']=array();
 $sql="SELECT jgv.* FROM j_groupes_visibilite jgv, j_groupes_professeurs jgp WHERE jgv.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' AND jgv.visible='n';";
 $res_jgv=mysql_query($sql);
 if(mysql_num_rows($res_jgv)>0) {
@@ -767,40 +768,22 @@ for($i=0;$i<count($groups);$i++){
 		// https://127.0.0.1/steph/gepi-trunk/cahier_texte/index.php?id_groupe=29&year=2007&month=6&day=30&edit_devoir=
 		// Cahier de textes:
 		echo "<td>";
-		//echo "<a href='../cahier_texte/index.php?id_groupe=".$groups[$i]['id']."&amp;year=$year&amp;month=$month&amp;day=$day&amp;edit_devoir='>";
-		//echo "<a href='cahier_texte/index.php?id_groupe=".$groups[$i]['id']."&amp;year=$year&amp;month=$month&amp;day=$day&amp;edit_devoir='>";
-		echo "<a href='cahier_texte/index.php?id_groupe=".$groups[$i]['id']."&amp;year=$year&amp;month=$month&amp;day=$day&amp;edit_devoir='";
-		if($pref_accueil_infobulles=="y"){
-			echo " onmouseover=\"afficher_div('info_ct_$i','y',10,10);\" onmouseout=\"cacher_div('info_ct_$i');\"";
-		}
-		echo ">";
-
-		//if(($accueil_aff_txt_icon==1)||($accueil_aff_txt_icon==3)){
-			//echo "<img src='../images/icons/cahier_textes.png' width='32' height='32' alt='Cahier de textes' border='0' />";
+		if(!in_array($groups[$i]['id'],$invisibilite_groupe['cahier_texte'])) {
+			echo "<a href='cahier_texte/index.php?id_groupe=".$groups[$i]['id']."&amp;year=$year&amp;month=$month&amp;day=$day&amp;edit_devoir='";
+			if($pref_accueil_infobulles=="y"){
+				echo " onmouseover=\"afficher_div('info_ct_$i','y',10,10);\" onmouseout=\"cacher_div('info_ct_$i');\"";
+			}
+			echo ">";
 			echo "<img src='images/icons/cahier_textes.png' width='32' height='32' alt='Cahier de textes' border='0' />";
-		/*
-		}
-		if($accueil_aff_txt_icon==3){
-			echo "<br />";
-		}
-		if($accueil_aff_txt_icon>=2){
-			echo "Cahier de textes";
-		}
-		*/
-		echo "</a>";
+			echo "</a>";
 
-		if($pref_accueil_infobulles=="y"){
-			//echo "<div id='info_ct_$i' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_ct_$i');\">Cet outil vous permet de constituer un cahier de textes pour le groupe ".htmlspecialchars($groups[$i]['description'])."(<i>$liste_classes_du_groupe</i>).</div>\n";
-			echo "<div id='info_ct_$i' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 18em;' onmouseout=\"cacher_div('info_ct_$i');\">Cahier de textes de ".htmlspecialchars($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>).</div>\n";
+			if($pref_accueil_infobulles=="y"){
+				echo "<div id='info_ct_$i' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 18em;' onmouseout=\"cacher_div('info_ct_$i');\">Cahier de textes de ".htmlspecialchars($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>).</div>\n";
 
-			$tab_liste_infobulles[]='info_ct_'.$i;
+				$tab_liste_infobulles[]='info_ct_'.$i;
+			}
+
 		}
-
-		/*
-		echo "<script type='text/javascript'>
-	cacher_div('info_ct_$i');
-</script>\n";
-		*/
 		echo "</td>\n";
 	}
 

@@ -100,11 +100,15 @@ echo ("<select id=\"id_groupe_colonne_gauche\" onChange=\"javascript:
 		\">");
 echo "<option value='-1'>choisissez un groupe</option>\n";
 foreach ($utilisateur->getGroupes() as $group) {
-	echo "<option id='colonne_gauche_select_group_option_".$group->getId()."' value='".$group->getId()."'";
-	if ($current_group->getId() == $group->getId()) echo " SELECTED ";
-	echo ">";
-	echo $group->getDescriptionAvecClasses();
-	echo "</option>\n";
+	$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$group->getId()."' AND domaine='cahier_texte' AND visible='n';";
+	$test_grp_visib=mysql_query($sql);
+	if(mysql_num_rows($test_grp_visib)==0) {
+		echo "<option id='colonne_gauche_select_group_option_".$group->getId()."' value='".$group->getId()."'";
+		if ($current_group->getId() == $group->getId()) echo " SELECTED ";
+		echo ">";
+		echo $group->getDescriptionAvecClasses();
+		echo "</option>\n";
+	}
 }
 echo "</select>&nbsp;";
 echo "<div id=\"div_chaine_liste_notices\" style=\"display:inline;\"><img id=\"chaine_liste_notice\" onLoad=\"updateChaineIcones()\" HEIGHT=\"16\" WIDTH=\"16\" style=\"border: 0px; vertical-align : middle\" src=\"../images/blank.gif\"  alt=\"Lier\" title=\"Lier la liste avec la fenetre edition de notices\" /></div>";

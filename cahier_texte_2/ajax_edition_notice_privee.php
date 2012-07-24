@@ -126,11 +126,15 @@ echo ("<select id=\"id_groupe_colonne_droite\" onChange=\"javascript:
 echo "<option value='-1'>choisissez un groupe</option>\n";
 $groups = $utilisateur->getGroupes();
 foreach ($groups as $group_iter) {
-	echo "<option id='colonne_droite_select_group_option_".$group_iter->getId()."' value='".$group_iter->getId()."'";
-	if ($groupe->getId() == $group_iter->getId()) echo " SELECTED ";
-	echo ">";
-	echo $group_iter->getDescriptionAvecClasses();
-	echo "</option>\n";
+	$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$group_iter->getId()."' AND domaine='cahier_texte' AND visible='n';";
+	$test_grp_visib=mysql_query($sql);
+	if(mysql_num_rows($test_grp_visib)==0) {
+		echo "<option id='colonne_droite_select_group_option_".$group_iter->getId()."' value='".$group_iter->getId()."'";
+		if ($groupe->getId() == $group_iter->getId()) echo " SELECTED ";
+		echo ">";
+		echo $group_iter->getDescriptionAvecClasses();
+		echo "</option>\n";
+	}
 }
 echo "</select>\n&nbsp;&nbsp;\n";
 //fin affichage des groupes

@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
  *
  * This file is part of GEPI.
  *
@@ -520,33 +520,38 @@ if (empty($groups)) {
 }
 	$a = 1;
 foreach($groups as $group) {
-        //echo "<b>";
-        if ($group["id"] == $current_group["id"]) {
-           echo "<p style=\"background-color: silver; padding: 2px; border: 1px solid black; font-weight: bold;\">" . $group["description"] . "&nbsp;-&nbsp;(";
-            $str = null;
-            foreach ($group["classes"]["classes"] as $classe) {
-                $str .= $classe["classe"] . ", ";
-            }
-            $str = mb_substr($str, 0, -2);
-            echo $str . ")&nbsp;</p>\n";
-        } else {
-        	echo "<span style=\"font-weight: bold;\">";
-           echo "<a href=\"index.php?id_groupe=". $group["id"] ."&amp;year=$year&amp;month=$month&amp;day=$day&amp;edit_devoir=$edit_devoir\">";
-           echo $group["name"] . "&nbsp;-&nbsp;(";
-            $str = null;
-            foreach ($group["classes"]["classes"] as $classe) {
-                $str .= $classe["classe"] . ", ";
-            }
-            $str = mb_substr($str, 0, -2);
-            echo $str . ")</a>&nbsp;</span>\n";
-        }
-        //echo "</b>\n";
-        if ($a == 2) {
-        	echo "<br />\n";
-        	$a = 1;
-        } else {
+	$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$group['id']."' AND domaine='cahier_texte' AND visible='n';";
+	//echo "$sql<br />\n";
+	$test_grp_visib=mysql_query($sql);
+	if(mysql_num_rows($test_grp_visib)==0) {
+		//echo "<b>";
+		if ($group["id"] == $current_group["id"]) {
+		   echo "<p style=\"background-color: silver; padding: 2px; border: 1px solid black; font-weight: bold;\">" . $group["description"] . "&nbsp;-&nbsp;(";
+			$str = null;
+			foreach ($group["classes"]["classes"] as $classe) {
+				$str .= $classe["classe"] . ", ";
+			}
+			$str = mb_substr($str, 0, -2);
+			echo $str . ")&nbsp;</p>\n";
+		} else {
+			echo "<span style=\"font-weight: bold;\">";
+		   echo "<a href=\"index.php?id_groupe=". $group["id"] ."&amp;year=$year&amp;month=$month&amp;day=$day&amp;edit_devoir=$edit_devoir\">";
+		   echo $group["name"] . "&nbsp;-&nbsp;(";
+			$str = null;
+			foreach ($group["classes"]["classes"] as $classe) {
+				$str .= $classe["classe"] . ", ";
+			}
+			$str = mb_substr($str, 0, -2);
+			echo $str . ")</a>&nbsp;</span>\n";
+		}
+		//echo "</b>\n";
+		if ($a == 2) {
+			echo "<br />\n";
+			$a = 1;
+		} else {
 			$a = 2;
 		}
+	}
 }
 // Fin Affichage des différents groupes du professeur
 // **********************************************

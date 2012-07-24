@@ -111,15 +111,7 @@ if(mysql_num_rows($res_class_tmp)>0){
 $priority_defaut = 5;
 
 //================================
-// Liste de domaines à déplacer par la suite dans global.inc ?
-/*
-$tab_domaines=array('bulletins', 'cahier_notes', 'absences', 'cahier_textes', 'edt');
-$tab_domaines_sigle=array('B', 'CN', 'Abs', 'CDT', 'EDT');
-$tab_domaines_texte=array('Bulletins', 'Cahiers de Notes', 'Absences', 'Cahiers De Textes', 'EDT');
-*/
-$tab_domaines=array('bulletins', 'cahier_notes');
-$tab_domaines_sigle=array('B', 'CN');
-$tab_domaines_texte=array('Bulletins', 'Cahiers de Notes');
+// Liste de domaines de visibilité des groupes déplacé dans global.inc.php
 //================================
 $invisibilite_groupe=array();
 for($loop=0;$loop<count($tab_domaines);$loop++) {

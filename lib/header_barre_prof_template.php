@@ -121,9 +121,14 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 		$tmp_sous_menu=array();
 		$cpt_sous_menu=0;
 		foreach($mes_groupes as $tmp_group) {
-			$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte/index.php?id_groupe='.$tmp_group['id'].'&amp;year='.strftime("%Y").'&amp;month='.strftime("%m").'&amp;day='.strftime("%d").'&amp;edit_devoir=';
-			$tmp_sous_menu[$cpt_sous_menu]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
-			$cpt_sous_menu++;
+			$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$tmp_group['id']."' AND domaine='cahier_texte' AND visible='n';";
+			//echo "$sql<br />\n";
+			$test_grp_visib=mysql_query($sql);
+			if(mysql_num_rows($test_grp_visib)==0) {
+				$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte/index.php?id_groupe='.$tmp_group['id'].'&amp;year='.strftime("%Y").'&amp;month='.strftime("%m").'&amp;day='.strftime("%d").'&amp;edit_devoir=';
+				$tmp_sous_menu[$cpt_sous_menu]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
+				$cpt_sous_menu++;
+			}
 		}
 		if(getSettingValue('GepiCahierTexteVersion')==2) {
 			$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte_2/see_all.php';
