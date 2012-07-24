@@ -55,7 +55,7 @@ $style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 $utilisation_prototype = "ok";
 // ============fin PROTOTYPE=============
 // On insère l'entête de Gepi
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 // On ajoute le menu EdT
 require_once("./menu.inc.php");
 // +++++++++++++++++++GESTION DU RETOUR vers absences+++++++++++++++++
@@ -315,21 +315,27 @@ if ($action == "upload_file") {
 
                 //for($l = 0; $l < $nbre_lignes; $l++)
                 $l = 0; // comme itérateur
-				echo "<table>\n";
+				echo "<table class='boireaus'>\n";
+				$alt=1;
 				foreach ($tableau as $key => $val) {
+					$alt=$alt*(-1);
                 	// On enlève les guillemets et les apostrophes et les accents
                 	//$valeur = my_ereg_replace("'", "wkzx", my_ereg_replace('"', "zxwk", $val));
                 	$valeur = remplace_accents($val, 'all_nospace');
 					//echo "<p>";
-					echo "<tr>\n";
-					echo "<td>\n";
+					echo "<tr";
+					echo " class='lig$alt'";
+					//if($alt==1) {echo " style='background-color:white;'";}
+					//else {echo " style='background-color:silver;'";}
+					echo ">\n";
+					echo "<td style='text-align:left; vertical-align:top;'>\n";
                     echo '
 					<input type="hidden" name="nom_export_' . $l . '" value="' . $valeur . '" />
 					<label for="nomGepi' . $l . '" id="texte_nomGepi' . $l . '" ><b>' . $val . '</b></label>
 					';
 
                     echo "</td>\n";
-                    echo "<td>\n";
+                    echo "<td style='text-align:left; vertical-align:top;'>\n";
 
 					// On ne garde que le premier nom de la valeur du champ de l'import pour tester ensuite le selected du select
                     if ($etape != 2) {
