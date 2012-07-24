@@ -49,7 +49,7 @@
 	}
 	//**************** FIN EN-TETE *****************
 
-	$debug_import="n";
+	$debug_import="y";
 
 	// On va uploader les fichiers XML dans le tempdir de l'utilisateur (administrateur, ou scolarité pour les màj Sconet)
 	$tempdir=get_user_temp_directory();
@@ -317,6 +317,15 @@ Conseils préliminaires :<br />
 					}
 				}
 
+				$tab_classes_base=array();
+				$sql="SELECT classe FROM classes;";
+				$res_classes_base=mysql_query($sql);
+				if(mysql_num_rows($res_classes_base)>0) {
+					while($lig_classes_base=mysql_fetch_object($res_classes_base)) {
+						$tab_classes_base[]=$lig_classes_base->classe;
+					}
+				}
+
 				echo "<form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 				echo "<table class='boireaus'>\n";
 				$alt=1;
@@ -344,15 +353,18 @@ Conseils préliminaires :<br />
 					echo "</td>\n";
 					echo "<td onmouseover=\"document.getElementById('ligne_$i').style.color='red';\" onmouseout=\"document.getElementById('ligne_$i').style.color='';\" onclick=\"document.getElementById('type_clas_$i').checked=true;mise_ligne_en_gras_ou_pas($i)\">\n";
 					echo "<input type='radio' name='type[$i]' id='type_clas_$i' value='classe' ";
-					if(!in_array($tab_clas_ou_grp[$i], $tab_grp)) {
+					$temoin_checked='n';
+					if(((count($tab_grp)>0)&&(!in_array($tab_clas_ou_grp[$i], $tab_grp)))||in_array($tab_clas_ou_grp[$i], $tab_classes_base)) {
 						echo "checked ";
+						$temoin_checked='y';
 					}
 					//echo " onchange=\"if(document.getElementById('type_clas_$i').checked==true) {document.getElementById('ligne_$i').style.fontWeight='bold';} else {document.getElementById('ligne_$i').style.fontWeight='';}\" ";
 					echo " onchange=\"mise_en_gras_ou_pas($i);\" ";
 					echo "/></td>\n";
 
 					echo "<td onmouseover=\"document.getElementById('ligne_$i').style.color='red';\" onmouseout=\"document.getElementById('ligne_$i').style.color='';\" onclick=\"document.getElementById('type_grp_$i').checked=true;;mise_ligne_en_gras_ou_pas($i)\"><input type='radio' name='type[$i]' id='type_grp_$i' value='groupe' ";
-					if(in_array($tab_clas_ou_grp[$i], $tab_grp)) {
+					//if(in_array($tab_clas_ou_grp[$i], $tab_grp)) {
+					if((in_array($tab_clas_ou_grp[$i], $tab_grp))||($temoin_checked=='n')) {
 						echo "checked ";
 					}
 					//echo " onchange=\"if(document.getElementById('type_clas_$i').checked==true) {document.getElementById('ligne_$i').style.fontWeight='bold';} else {document.getElementById('ligne_$i').style.fontWeight='';}\" ";
@@ -380,7 +392,7 @@ Conseils préliminaires :<br />
 					echo "<p>";
 					for($j=0;$j<count($tab_semaine);$j++) {
 						echo "<input type='checkbox' name='tab_sem[]' id='tab_sem_$j' value=\"".$tab_semaine[$j]."\" ";
-						if(in_array($tab_semaine[$j],$tab_sem)) {echo "checked ";}
+						if((in_array($tab_semaine[$j],$tab_sem))||(count($tab_sem)==0)) {echo "checked ";}
 						echo "/><label for='tab_sem_$j'> ".$tab_semaine[$j]."</label><br />\n";
 					}
 					echo "</p>\n";
@@ -515,7 +527,9 @@ Conseils préliminaires :<br />
 				}
 
 				if(count($tab_grp)>0) {
-					echo "<p>Recherche des classes associées aux groupes&nbsp;:</p>\n";
+					echo "<p class='bold'>Recherche des classes associées aux groupes&nbsp;:</p>\n";
+
+					echo "<p>Il s'agit maintenant de préciser à quelles classes sont associés les groupes.<br />Vous pouvez, si les noms des groupes reprennent le nom des classes, obtenir une <a href='javascript:detection_classes_grp()'>détection automatique</a> assez fiable.<br />Vous n'aurez qu'à contrôler et compléter.</p>\n";
 
 					sort($tab_grp);
 					sort($tab_clas);
@@ -715,6 +729,19 @@ Conseils préliminaires :<br />
 					}
 				}
 
+				if($debug_import=='y') {
+					echo "<pre style='color:green;'><b>Tableau \$grp&nbsp;:</b>";
+					print_r($grp);
+					echo "</pre>";
+					echo "<hr />";
+				}
+
+				if($debug_import=='y') {
+					echo "<pre style='color:green;'><b>Tableau \$tab_clas_grp&nbsp;:</b>";
+					print_r($tab_clas_grp);
+					echo "</pre>";
+				}
+
 				$step=4;
 			}
 
@@ -814,79 +841,145 @@ echo "</pre>";
 									$duree=1;
 								}
 							}
-							/*
-							echo "<pre>";
-							echo print_r($tab_cours[$i]);
-							echo "</pre>";
-							*/
+
 							if(in_array($tab_cours[$i]["enfant"]["classe"], $grp)) {
+							//if(($tab_cours[$i]["enfant"]["classe"]!='')&&(in_array($tab_cours[$i]["enfant"]["classe"], $grp))) {
 
-								for($j=0;$j<count($tab_clas_grp[$tab_cours[$i]["enfant"]["classe"]]);$j++) {
-									for($loop=0;$loop<$duree;$loop++) {
+								if(count($tab_clas_grp[$tab_cours[$i]["enfant"]["classe"]])>0) {
+									for($j=0;$j<count($tab_clas_grp[$tab_cours[$i]["enfant"]["classe"]]);$j++) {
+										for($loop=0;$loop<$duree;$loop++) {
 
-										$ligne=$tab_cours[$i]["enfant"]["jour"].";";
+											$ligne=$tab_cours[$i]["enfant"]["jour"].";";
 
-										$tmp_tab=explode("h", mb_strtolower($tab_cours[$i]["enfant"]["h.debut"]));
-										$heure=preg_replace("/^0*/","",$tmp_tab[0])+$loop;
-										if($heure<10) {$heure="0".$heure;}
-										$minute=$tmp_tab[1];
-										$ligne.=$heure."h".$minute.";";
+											$tmp_tab=explode("h", mb_strtolower($tab_cours[$i]["enfant"]["h.debut"]));
+											$heure=preg_replace("/^0*/","",$tmp_tab[0])+$loop;
+											if($heure<10) {$heure="0".$heure;}
+											$minute=$tmp_tab[1];
+											$ligne.=$heure."h".$minute.";";
 
 
-										//$ligne.=$tab_cours[$i]["enfant"]["classe"].";";
-										$ligne.=$tab_clas_grp[$tab_cours[$i]["enfant"]["classe"]][$j].";";
-										$ligne.=$tab_cours[$i]["enfant"]["mat_code"].";";
-										if(isset($tab_cours[$i]["enfant"]["prof_nom"])) {
-											$ligne.=$tab_cours[$i]["enfant"]["prof_nom"];
+											//$ligne.=$tab_cours[$i]["enfant"]["classe"].";";
+											$ligne.=$tab_clas_grp[$tab_cours[$i]["enfant"]["classe"]][$j].";";
+											$ligne.=$tab_cours[$i]["enfant"]["mat_code"].";";
+											if(isset($tab_cours[$i]["enfant"]["prof_nom"])) {
+												$ligne.=$tab_cours[$i]["enfant"]["prof_nom"];
+											}
+											if(isset($tab_cours[$i]["enfant"]["prof_prenom"])) {
+												$ligne.=" ".$tab_cours[$i]["enfant"]["prof_prenom"];
+											}
+											$ligne.=";";
+											if(isset($tab_cours[$i]["enfant"]["salle"])) {
+												$ligne.=$tab_cours[$i]["enfant"]["salle"];
+											}
+											$ligne.=";";
+
+											// Groupe
+											$ligne.=";";
+
+											// Regroup
+											$ligne.=$tab_cours[$i]["enfant"]["classe"].";";
+
+											// Eff
+											if(isset($tab_cours[$i]["enfant"]["effectif"])) {
+												$ligne.=$tab_cours[$i]["enfant"]["effectif"];
+											}
+											$ligne.=";";
+
+											// Mo
+											if(isset($tab_cours[$i]["enfant"]["mod."])) {
+												$ligne.=$tab_cours[$i]["enfant"]["mod."];
+											}
+											$ligne.=";";
+
+											// Freq
+											//if(isset($tab_cours[$i]["enfant"]["frequence"])) {
+											if((isset($tab_cours[$i]["enfant"]["frequence"]))&&(in_array($tab_cours[$i]["enfant"]["frequence"],$tab_sem))) {
+												$ligne.=$tab_cours[$i]["enfant"]["frequence"];
+											}
+											$ligne.=";";
+
+											// Aire
+											$ligne.=";";
+											$ligne.="\n";
+
+											fwrite($fich, $ligne);
+											if($debug_import=='y') {
+												echo "<span style='color:blue'>$ligne</span><br />\n";
+											}
+											//echo $ligne."<br />";
+											$nb_lignes++;
 										}
-										if(isset($tab_cours[$i]["enfant"]["prof_prenom"])) {
-											$ligne.=" ".$tab_cours[$i]["enfant"]["prof_prenom"];
-										}
-										$ligne.=";";
-										if(isset($tab_cours[$i]["enfant"]["salle"])) {
-											$ligne.=$tab_cours[$i]["enfant"]["salle"];
-										}
-										$ligne.=";";
-
-										// Groupe
-										$ligne.=";";
-
-										// Regroup
-										$ligne.=$tab_cours[$i]["enfant"]["classe"].";";
-
-										// Eff
-										if(isset($tab_cours[$i]["enfant"]["effectif"])) {
-											$ligne.=$tab_cours[$i]["enfant"]["effectif"];
-										}
-										$ligne.=";";
-
-										// Mo
-										if(isset($tab_cours[$i]["enfant"]["mod."])) {
-											$ligne.=$tab_cours[$i]["enfant"]["mod."];
-										}
-										$ligne.=";";
-
-										// Freq
-										//if(isset($tab_cours[$i]["enfant"]["frequence"])) {
-										if((isset($tab_cours[$i]["enfant"]["frequence"]))&&(in_array($tab_cours[$i]["enfant"]["frequence"],$tab_sem))) {
-											$ligne.=$tab_cours[$i]["enfant"]["frequence"];
-										}
-										$ligne.=";";
-
-										// Aire
-										$ligne.=";";
-										$ligne.="\n";
-
-										fwrite($fich, $ligne);
-										if($debug_import=='y') {
-											echo "<span style='color:blue'>$ligne</span><br />\n";
-										}
-										//echo $ligne."<br />";
-										$nb_lignes++;
 									}
+								}
+								else {
+									// Le groupe n'a été associé à aucune classe.
+									// Ce peut être le cas (commode) pour des AID.
+
+									$ligne=$tab_cours[$i]["enfant"]["jour"].";";
+
+									$tmp_tab=explode("h", mb_strtolower($tab_cours[$i]["enfant"]["h.debut"]));
+									$heure=preg_replace("/^0*/","",$tmp_tab[0])+$loop;
+									if($heure<10) {$heure="0".$heure;}
+									$minute=$tmp_tab[1];
+									$ligne.=$heure."h".$minute.";";
+
+
+									//$ligne.=$tab_cours[$i]["enfant"]["classe"].";";
+									//$ligne.=$tab_clas_grp[$tab_cours[$i]["enfant"]["classe"]][$j].";";
+									$ligne.=";";
+									$ligne.=$tab_cours[$i]["enfant"]["mat_code"].";";
+									if(isset($tab_cours[$i]["enfant"]["prof_nom"])) {
+										$ligne.=$tab_cours[$i]["enfant"]["prof_nom"];
+									}
+									if(isset($tab_cours[$i]["enfant"]["prof_prenom"])) {
+										$ligne.=" ".$tab_cours[$i]["enfant"]["prof_prenom"];
+									}
+									$ligne.=";";
+									if(isset($tab_cours[$i]["enfant"]["salle"])) {
+										$ligne.=$tab_cours[$i]["enfant"]["salle"];
+									}
+									$ligne.=";";
+
+									// Groupe
+									$ligne.=";";
+
+									// Regroup
+									$ligne.=$tab_cours[$i]["enfant"]["classe"].";";
+
+									// Eff
+									if(isset($tab_cours[$i]["enfant"]["effectif"])) {
+										$ligne.=$tab_cours[$i]["enfant"]["effectif"];
+									}
+									$ligne.=";";
+
+									// Mo
+									if(isset($tab_cours[$i]["enfant"]["mod."])) {
+										$ligne.=$tab_cours[$i]["enfant"]["mod."];
+									}
+									$ligne.=";";
+
+									// Freq
+									//if(isset($tab_cours[$i]["enfant"]["frequence"])) {
+									if((isset($tab_cours[$i]["enfant"]["frequence"]))&&(in_array($tab_cours[$i]["enfant"]["frequence"],$tab_sem))) {
+										$ligne.=$tab_cours[$i]["enfant"]["frequence"];
+									}
+									$ligne.=";";
+
+									// Aire
+									$ligne.=";";
+									$ligne.="\n";
+
+									fwrite($fich, $ligne);
+									if($debug_import=='y') {
+										echo "<span style='color:blue'>$ligne</span><br />\n";
+									}
+									//echo $ligne."<br />";
+									$nb_lignes++;
+
 								}
 							}
 							else {
+								// Cours associés à une classe (sans qu'un groupe soit déclaré)
 
 								for($loop=0;$loop<$duree;$loop++) {
 
