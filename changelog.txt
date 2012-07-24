@@ -19,6 +19,7 @@ Gepi-1.6.2 (Version de développement)
                 (bulletins PDF et HTML).
 - Cahiers de textes : Possibilité d'inclure les documents joints dans l'export ZIP.
 - Abs2 : Possibilité de cocher les absences sur le plan de classe.
+- Emplois du temps : Possibilité de restreindre l'accès prof aux EDT des autres profs.
 - ...
 
 Gepi-1.6.1 (10/06/2012)
