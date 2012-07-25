@@ -136,24 +136,39 @@
 				}
 			}
 			
+			echo "<p><br /></p>\n";
 			echo "<p><em>NOTES&nbsp;:</em></p>\n";
-			echo "<p style='margin-left:3em'>
-Pour générer le fichier EXP_COURS.xml à partir du logiciel EDT de la société Index Education :<br />
+			echo "<div style='margin-left:3em'>
+<p>Pour générer le fichier EXP_COURS.xml à partir du logiciel EDT de la société Index Education&nbsp;:<br />
+Voir <a href='http://www.sylogix.org/projects/gepi/wiki/Edt_indexedu_udt'>http://www.sylogix.org/projects/gepi/wiki/Edt_indexedu_udt</a></p>
+
 <br />
-Conseils préliminaires :<br />
-- Réaliser l'exportation depuis la version complète d'EDT installée généralement sur le poste du chef d'établissement ou/et de l'adjoint et non depuis la version temporaire ou la version de consultation.<br />
-- S'assurer que les noms des groupes soient suffisamment explicites quant aux classes des élèves qui les composent afin de faciliter l'établissement des correspondances lors de l'importation dans Gepi (ex : soit un groupe d'ESP2 avec des élèves de 3ème 1 et de 3ème 2 et un autre avec des élèves de 3ème 3 et de 3ème 4 ; EDT va dénommer ces groupes 3ESP2GR.1 et 3ESP2GR.2 par défaut ; une appellation du genre 3_1&2ESP2 et 3_3&4ESP2 sera plus pratique).<br />
-<br />
-1. Se placer dans l'onglet Cours et extraire les cours pour lesquels on désire générer une exportation. Si l'on veut exporter l'ensemble de l'emploi du temps, faire une extraction complète (Extraire > Tout extraire).<br />
-2. Se rendre dans Fichiers > Imports/Exports > Autres > Exporter un fichier texte<br />
-3.  Dans la fenêtre qui apparaît, les paramètres par défaut sont corrects mais s'assurer quand même des suivants :<br />
-- Type de données à exporter : Cours<br />
-- Sélection du type d'export : Format XML (*.xml)<br />
-- Choix de la période : Année complète<br />
-- Cocher la case Visualiser toutes les données<br />
-4. Cliquer sur Exporter<br />
-5. EDT génère le fichier EXP_COURS.xml dont Gepi aura besoin<br />
-</p>\n";
+
+<p><strong>Conseils préliminaires très importants&nbsp;:</strong></p>
+<ul>
+	<li><p>Ce type d'export ne peut se faire que depuis la version complète d'EDT installée généralement sur le poste du chef d'établissement ou/et de l'adjoint et non depuis la version temporaire ou la version de consultation.</p></li>
+	<li><p>S'assurer que les identifiants (les codes) des matières soient les mêmes dans EDT et dans Gepi (<strong>Onglet Matières</strong>) pour faciliter l'établissement des correspondances lors de l'importation dans Gepi. Faire attention en particulier aux identifiants des langues<br />(<em>ex : ALL1 utilisé dans EDT ne sera pas associé aussi facilement  par Gepi si on y utilise ALLBI au lieu d'ALL1</em>).</p></li>
+	<li><p>S'assurer que les noms des groupes soient suffisamment explicites quant aux classes des élèves qui les composent (<strong>Onglet Groupes</strong>) afin de faciliter l'établissement des correspondances<br />
+	(<em>ex : soit un groupe d'ESP2 avec des élèves de 3ème 1 et de 3ème 2 et un autre avec des élèves de 3ème 3 et de 3ème 4 ; EDT va dénommer ces groupes '3ESP2GR.1' et '3ESP2GR.2' par défaut ; une appellation du genre '3_1&2ESP2' et '3_3&4ESP2' sera nettement plus pratique</em>)<br />
+	(<em>astuce&nbsp;: l'identification 'automatique' des classes risque même d'être meilleure avec des noms comme '3_1 3_2 ESP2' et '3_3 3_4 ESP2'</em>)</p></li>
+</ul>
+
+<p><strong>Extraction proprement dite du XML&nbsp;:</strong></p>
+<ol>
+<li>Se placer dans l'onglet Cours et extraire les cours que l'on veut voir figurer dans l'edt de Gepi. Si l'on veut exporter l'ensemble de l'emploi du temps, faire une extraction complète (<strong>Extraire > Tout extraire</strong>).</li>
+<li>Se rendre dans <strong>Fichiers > Imports/Exports > Autres > Exporter un fichier texte</strong></li>
+<li>Dans la fenêtre qui apparaît, les paramètres par défaut sont corrects mais s'assurer quand même des suivants&nbsp;:<br />
+	<ul>
+	<li>Type de données à exporter : <strong>Cours</strong></li>
+	<li>Sélection du type d'export : <strong>Format XML (*.xml)</strong></li>
+	<li>Choix de la période : <strong>Année complète</strong></li>
+	<li>Cocher la case <strong>Visualiser toutes les données</strong></li>
+	</ul>
+</li>
+<li>Cliquer sur <strong>Exporter</strong></li>
+<li>EDT génère le fichier <strong>EXP_COURS.xml</strong> dont Gepi aura besoin</li>
+</ol>\n";
+			echo "<p><br /></p>\n";
 		}
 		else {
 			echo " | <a href='".$_SERVER['PHP_SELF']."'>Retour à l'upload du fichier</a>";
