@@ -126,6 +126,119 @@ if(mysql_num_rows($res_jgv)>0) {
 }
 //================================
 
+if (isset($_GET['ajouter_suffixes_noms_groupes'])) {
+	check_token();
+
+	$mode=isset($_GET['mode']) ? $_GET['mode'] : NULL;
+	if(!isset($mode)) {
+		$msg.="Mode de renommage invalide.<br />";
+	}
+	else {
+		$groups = get_groups_for_class($id_classe,"","n");
+
+		$alphabet=array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+		$nb_renommages=0;
+
+		$tab_grp_id_rech_homonyme=array();
+		$tab_grp_descr_homonyme=array();
+		$tab_grp_name=array();
+
+		// Récup de la liste des élèves de la classe toutes périodes confondues
+		$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe';";
+		$res_eff_classe=mysql_query($sql);
+		$eff_classe=mysql_num_rows($res_eff_classe);
+
+		foreach ($groups as $group) {
+			if(isset($tab_grp_id_rech_homonyme[$group["description"]])) {
+				$tab_grp_descr_homonyme[]=$group["description"];
+			}
+			$tab_grp_id_rech_homonyme[$group["description"]][]=$group["id"];
+			$tab_grp_name[$group["id"]]=$group["name"];
+		}
+
+		for($i=0;$i<count($tab_grp_descr_homonyme);$i++) {
+			// Y a-t-il aussi des homonymes sur les noms (courts) de ces groupes
+			$tab_grp_name_distincts=array();
+			for($j=0;$j<count($tab_grp_id_rech_homonyme[$tab_grp_descr_homonyme[$i]]);$j++) {
+				if(!in_array($tab_grp_name[$tab_grp_id_rech_homonyme[$tab_grp_descr_homonyme[$i]][$j]], $tab_grp_name_distincts)) {
+					$tab_grp_name_distincts[]=$tab_grp_name[$tab_grp_id_rech_homonyme[$tab_grp_descr_homonyme[$i]][$j]];
+				}
+			}
+
+			$corriger_noms="y";
+			if(count($tab_grp_name_distincts)==count($tab_grp_id_rech_homonyme[$tab_grp_descr_homonyme[$i]])) {
+				$corriger_noms="n";
+			}
+
+			// Ne pas renommer le groupe de plus grand effectif si cela correspond à l'effectif de la classe...
+			$max_eff=-1;
+			$id_grp_max_eff=-1;
+			$tab_eff=array();
+			$tab_eff_grp=array();
+			for($j=0;$j<count($tab_grp_id_rech_homonyme[$tab_grp_descr_homonyme[$i]]);$j++) {
+				$id_groupe_courant=$tab_grp_id_rech_homonyme[$tab_grp_descr_homonyme[$i]][$j];
+				$sql="SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe='".$id_groupe_courant."';";
+				$res_eff=mysql_query($sql);
+
+				$eff=mysql_num_rows($res_eff);
+				if(!in_array($eff, $tab_eff)) {$tab_eff[]=$eff;}
+				if($eff>$max_eff) {
+					$max_eff=$eff;
+					$id_grp_max_eff=$id_groupe_courant;
+				}
+				$tab_eff_grp[$id_groupe_courant]=$eff;
+			}
+
+			for($j=0;$j<count($tab_grp_id_rech_homonyme[$tab_grp_descr_homonyme[$i]]);$j++) {
+				$id_groupe_courant=$tab_grp_id_rech_homonyme[$tab_grp_descr_homonyme[$i]][$j];
+
+				$suffixe="";
+				if((count($tab_eff)==1)||
+				($id_groupe_courant!=$id_grp_max_eff)||
+				($tab_eff_grp[$id_groupe_courant]!=$eff_classe)) {
+					if($mode=='alpha') {
+						if(isset($alphabet[$j])) {
+							$suffixe=$alphabet[$j];
+						}
+						else {
+							$suffixe=$j+1;
+						}
+					}
+					elseif($mode=='num') {
+						$suffixe=$j+1;
+					}
+					else {
+						// Renommage d'après le numéro du groupe
+						$suffixe=$id_groupe_courant;
+					}
+					$suffixe="_".$suffixe;
+				}
+
+				$sql="UPDATE groupes SET description='".mysql_real_escape_string($tab_grp_descr_homonyme[$i].$suffixe)."'";
+				if($corriger_noms=="y") {
+					$nom_groupe_courant=$tab_grp_name[$id_groupe_courant];
+					$sql.=", name= '".mysql_real_escape_string($nom_groupe_courant.$suffixe)."'";
+				}
+				$sql.=" WHERE id='".$id_groupe_courant."';";
+				$update=mysql_query($sql);
+				if(!$update) {
+					$msg.="Erreur lors du renommage du groupe n°".$id_groupe_courant."<br />\n";
+				}
+				else {
+					$nb_renommages++;
+				}
+			}
+		}
+
+		if($nb_renommages>0) {
+			$msg.="$nb_renommages renommage(s) effectué(s).<br />\n";
+		}
+
+		unset($tab_grp_id_rech_homonyme);
+		unset($tab_grp_descr_homonyme);
+	}
+}
+
 if (isset($_POST['is_posted'])) {
 	check_token();
 
@@ -519,7 +632,7 @@ echo "</p>\n";
 echo "</form>\n";
 
 
-echo "<h3>Gestion des enseignements pour la classe :" . $classe["classe"]."</h3>\n";
+echo "<h3>Gestion des enseignements pour la classe&nbsp;:" . $classe["classe"]."<span id='span_asterisque'></span></h3>\n";
 
 echo "</td>\n";
 echo "<td width='60%' align='center'>\n";
@@ -612,6 +725,12 @@ if(count($groups)==0){
     //echo "</body></html>\n";
     die();
 }
+
+// Pour repérer des groupes homonymes
+$msg_groupes_homonymes="";
+$tab_id_groupe_homonyme=array();
+$tab_description_groupe_homonyme=array();
+
 ?>
 <form enctype="multipart/form-data" action="edit_class.php" name="formulaire" method="post">
 <?php
@@ -713,6 +832,8 @@ for($i=0;$i<10;$i++){
 		$nom_categories[$row->id]=$row->nom_complet;
 	}
 
+	//============================================================================================================
+
 	echo "<table class='boireaus' summary='Tableau des enseignements'>\n";
 	echo "<tr>\n";
 	echo "<th rowspan='2'>Supprimer</th>\n";
@@ -760,6 +881,16 @@ for($i=0;$i<10;$i++){
 
 		$current_group = get_group($group["id"]);
 		$total = count($group["classes"]);
+
+		if(in_array($current_group['description'], $tab_description_groupe_homonyme)) {
+			$msg_ajout="Plusieurs groupes portent la description <strong>".$current_group['description']."</strong>";
+			if(!preg_match("#$msg_ajout#", $msg_groupes_homonymes)) {
+				$msg_groupes_homonymes.=$msg_ajout."<br />\n";
+			}
+		}
+
+		$tab_id_groupe_homonyme[]=$current_group['id'];
+		$tab_description_groupe_homonyme[]=$current_group['description'];
 
 		//===============================
 		unset($result_matiere);
@@ -1025,6 +1156,22 @@ echo "<input type='hidden' name='is_posted' value='1' />\n";
 echo "<input type='hidden' name='id_classe' value='" . $id_classe . "' />\n";
 echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
 echo "</form>\n";
+
+if($msg_groupes_homonymes!='') {
+	echo "<p><br /></p>\n";
+	echo "<a name='groupes_homonymes'></a>\n";
+	echo "<p style='margin-left:6.3em; text-indent:-6.3em;'><span style='font-weight:bold; color:red'>Attention&nbsp;:</span> $msg_groupes_homonymes";
+	echo "Vous devriez renommer ces groupes de façon à ce que vous comme les professeurs,... les distinguent plus facilement.<br />";
+	echo "Vous pouvez par exemple ajouter des suffixes _1, _2,...<br />";
+	echo "ou laisser le nom sans suffixe pour un groupe classe et mettre des suffixes _1, _2,... pour des sous-groupes.<br />";
+	echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;ajouter_suffixes_noms_groupes=y&amp;mode=num".add_token_in_url()."'>Ajouter automatiquement des suffixes _1, _2,...</a> ou des <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;ajouter_suffixes_noms_groupes=y&amp;mode=alpha".add_token_in_url()."'>Ajouter automatiquement des suffixes _A, _B,...</a>";
+	echo "</p>\n";
+	echo "<p><br /></p>\n";
+
+	echo "<script type='text/javascript'>
+document.getElementById('span_asterisque').innerHTML=\" <a href='#groupes_homonymes' title='Plusieurs groupes ont des descriptions identiques'><img src='../images/icons/flag2.gif' width='17' height='18' /></a>\";
+</script>\n";
+}
 
 //================================================
 // AJOUT:boireaus
