@@ -94,6 +94,7 @@ if ($aff_reglages == "oui") {
 	<br />&nbsp;-&nbsp;<a href=\"./admin_config_semaines.php?action=visualiser\">le type de semaine</a> (paire/impaire, A/B/C, 1/2,...).
 	<br />&nbsp;-&nbsp;<a href=\"./admin_horaire_ouverture.php?action=visualiser\">les horaires de l'&eacute;tablissement</a>.</p>
 
+	<p>Voir <a href='http://www.sylogix.org/projects/gepi/wiki/Edt_init_auto'>http://www.sylogix.org/projects/gepi/wiki/Edt_init_auto</a></p>
 <hr />
 
 	<p>Il faut renseigner le calendrier en cliquant sur le menu &agrave; gauche. Toutes les p&eacute;riodes

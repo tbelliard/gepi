@@ -145,8 +145,8 @@ echo "</p>\n";
 
 echo "<p><a href='".$_SERVER['PHP_SELF']."?'>Ne rien griser</a>,<br />
 <a href='".$_SERVER['PHP_SELF']."?griser_cn=y'>Griser</a> ou <a href='".$_SERVER['PHP_SELF']."?masquer_cn=y'>masquer</a> les lignes d'enseignements n'apparaissant pas dans les carnets de notes,<br />
-<a href='".$_SERVER['PHP_SELF']."?griser_bull=y'>Griser</a> ou <a href='".$_SERVER['PHP_SELF']."?masquer_bull=y'>masquer</a> les lignes d'enseignements n'apparaissant pas dans les buletins,<br />
-<a href='".$_SERVER['PHP_SELF']."?griser_cn=y&amp;griser_bull=y'>Griser</a> ou <a href='".$_SERVER['PHP_SELF']."?masquer_cn=y&amp;masquer_bull=y'>masquer</a> les lignes d'enseignements n'apparaissant ni dans les carnets de notes, ni dans les bulletins.</p>\n";
+<a href='".$_SERVER['PHP_SELF']."?griser_bull=y'>Griser</a> ou <a href='".$_SERVER['PHP_SELF']."?masquer_bull=y'>masquer</a> les lignes d'enseignements n'apparaissant pas dans les bulletins,<br />
+<a href='".$_SERVER['PHP_SELF']."?griser_cn=y&amp;griser_bull=y'>Griser</a> ou <a href='".$_SERVER['PHP_SELF']."?masquer_cn=y&amp;masquer_bull=y'>masquer</a> les lignes d'enseignements n'apparaissant pas dans un des domaines (<em>carnets de notes et/ou bulletins</em>).</p>\n";
 
 $griser_cn=isset($_GET['griser_cn']) ? $_GET['griser_cn'] : "n";
 $griser_bull=isset($_GET['griser_bull']) ? $_GET['griser_bull'] : "n";
