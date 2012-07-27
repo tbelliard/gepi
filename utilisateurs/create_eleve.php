@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -147,6 +147,16 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					if (!$reg) {
 						$msg .= "Erreur lors de la création du compte ".$current_eleve->login."<br />";
 					} else {
+						// Ménage:
+						$sql="SELECT id FROM infos_actions WHERE titre LIKE 'Nouvel %l%ve%($current_eleve->login)';";
+						$res_actions=mysql_query($sql);
+						if(mysql_num_rows($res_actions)>0) {
+							while($lig_action=mysql_fetch_object($res_actions)) {
+								$menage=del_info_action($lig_action->id);
+								if(!$menage) {$msg.="Erreur lors de la suppression de l'action en attente en page d'accueil à propos de $current_eleve->login<br />";}
+							}
+						}
+
 						$nb_comptes++;
 					}
 				}
@@ -193,7 +203,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 			$msg .= "<br />Vous devez effectuer cette opération maintenant !";
 		} else {
 			if ($nb_comptes > 0) {
-				$msg .= "Vous avez créé des comptes d'accès en mode SSO ou LDAP, mais sans avoir configuré l'accès LDAP en écriture. En conséquence, vous ne pouvez pas générer de mot de passe pour les utilisateurs.<br />";
+				$msg .= "Vous avez créé un ou des comptes d'accès en mode SSO ou LDAP, mais sans avoir configuré l'accès LDAP en écriture. En conséquence, vous ne pouvez pas générer de mot de passe pour les utilisateurs.<br />";
 			}
 		}
 
@@ -211,7 +221,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 
 //**************** EN-TETE *****************
 $titre_page = "Créer des comptes d'accès élèves";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
 ?>
@@ -323,8 +333,8 @@ else{
 	echo "<p><b>Créer des comptes individuellement</b> :</p>\n";
 	echo "<blockquote>\n";
 
-	$afficher_tous_les_eleves=isset($_POST['afficher_tous_les_eleves']) ? $_POST['afficher_tous_les_eleves'] : "n";
-	$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
+	$afficher_tous_les_eleves=isset($_POST['afficher_tous_les_eleves']) ? $_POST['afficher_tous_les_eleves'] : (isset($_GET['afficher_tous_les_eleves']) ? $_GET['afficher_tous_les_eleves'] : "n");
+	$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : (isset($_GET['critere_recherche']) ? $_GET['critere_recherche'] : "");
 	$critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/", "", $critere_recherche);
 
 

@@ -25,6 +25,12 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the nom_periode field.
 	 * @var        string
 	 */
@@ -269,7 +275,7 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->verouiller !== $v || $this->isNew()) {
+		if ($this->verouiller !== $v) {
 			$this->verouiller = $v;
 			$this->modifiedColumns[] = PeriodeNotePeer::VEROUILLER;
 		}
@@ -485,18 +491,18 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = PeriodeNoteQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				PeriodeNoteQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -548,7 +554,7 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -583,19 +589,15 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 				$this->setClasse($this->aClasse);
 			}
 
-
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows += PeriodeNotePeer::doUpdate($this, $con);
+					$this->doUpdate($con);
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
 			$this->alreadyInSave = false;
@@ -603,6 +605,93 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(PeriodeNotePeer::NOM_PERIODE)) {
+			$modifiedColumns[':p' . $index++]  = 'NOM_PERIODE';
+		}
+		if ($this->isColumnModified(PeriodeNotePeer::NUM_PERIODE)) {
+			$modifiedColumns[':p' . $index++]  = 'NUM_PERIODE';
+		}
+		if ($this->isColumnModified(PeriodeNotePeer::VEROUILLER)) {
+			$modifiedColumns[':p' . $index++]  = 'VEROUILLER';
+		}
+		if ($this->isColumnModified(PeriodeNotePeer::ID_CLASSE)) {
+			$modifiedColumns[':p' . $index++]  = 'ID_CLASSE';
+		}
+		if ($this->isColumnModified(PeriodeNotePeer::DATE_VERROUILLAGE)) {
+			$modifiedColumns[':p' . $index++]  = 'DATE_VERROUILLAGE';
+		}
+		if ($this->isColumnModified(PeriodeNotePeer::DATE_FIN)) {
+			$modifiedColumns[':p' . $index++]  = 'DATE_FIN';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO periodes (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case 'NOM_PERIODE':
+						$stmt->bindValue($identifier, $this->nom_periode, PDO::PARAM_STR);
+						break;
+					case 'NUM_PERIODE':
+						$stmt->bindValue($identifier, $this->num_periode, PDO::PARAM_INT);
+						break;
+					case 'VEROUILLER':
+						$stmt->bindValue($identifier, $this->verouiller, PDO::PARAM_STR);
+						break;
+					case 'ID_CLASSE':
+						$stmt->bindValue($identifier, $this->id_classe, PDO::PARAM_INT);
+						break;
+					case 'DATE_VERROUILLAGE':
+						$stmt->bindValue($identifier, $this->date_verrouillage, PDO::PARAM_STR);
+						break;
+					case 'DATE_FIN':
+						$stmt->bindValue($identifier, $this->date_fin, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -943,6 +1032,18 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 		$copyObj->setIdClasse($this->getIdClasse());
 		$copyObj->setDateVerrouillage($this->getDateVerrouillage());
 		$copyObj->setDateFin($this->getDateFin());
+
+		if ($deepCopy && !$this->startCopy) {
+			// important: temporarily setNew(false) because this affects the behavior of
+			// the getter/setter methods for fkey referrer objects.
+			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
+
+			//unflag object copy
+			$this->startCopy = false;
+		} // if ($deepCopy)
+
 		if ($makeNew) {
 			$copyObj->setNew(true);
 		}
@@ -1080,25 +1181,6 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(PeriodeNotePeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BasePeriodeNote

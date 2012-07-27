@@ -75,7 +75,7 @@ $utilisation_jsdivdrag = "non";
 $dojo = true;
 $_SESSION['cacher_header'] = "y";
 
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 if(!$menu){
 include('menu_abs2.inc.php');
@@ -184,7 +184,6 @@ if ($saisie->getEleve() == null) {
     echo ' '.$saisie->getEleve()->getClasseNom();
     if ((getSettingValue("active_module_trombinoscopes")=='y') && $saisie->getEleve() != null) {
 	$nom_photo = $saisie->getEleve()->getNomPhoto(1);
-	//$photos = "../photos/eleves/".$nom_photo;
 	$photos = $nom_photo;
 	//if (($nom_photo == "") or (!(file_exists($photos)))) {
 	if (($nom_photo == NULL) or (!(file_exists($photos)))) {
@@ -194,7 +193,7 @@ if ($saisie->getEleve() == null) {
 	echo ' <img src="'.$photos.'" style="width: '.$valeur[0].'px; height: '.$valeur[1].'px; border: 0px; vertical-align: middle;" alt="" title="" />';
     }
     if ($utilisateur->getAccesFicheEleve($saisie->getEleve())) {
-	echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."' target='_blank'>";
+	echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."&amp;onglet=responsable&amp;quitter_la_page=y' target='_blank'>";
 	echo ' (voir fiche)';
 	echo "</a>";
     }
@@ -417,7 +416,7 @@ if ($saisie->getIdSIncidents() !== null) {
     echo "<a href='../mod_discipline/saisie_incident.php?id_incident=".
     $saisie->getIdSIncidents()."&step=2&return_url=no_return'>Visualiser l'incident </a>";
     echo '</td></tr>';
-} elseif ($modifiable && $saisie->hasTypeSaisieDiscipline()) {
+} elseif ($modifiable && $saisie->hasModeInterfaceDiscipline()) {
     echo '<tr><td>';
     echo 'Discipline : ';
     echo '</td><td colspan="2">';

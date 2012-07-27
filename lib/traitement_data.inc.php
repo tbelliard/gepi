@@ -10,12 +10,7 @@ require_once(dirname(__FILE__)."/HTMLPurifier.standalone.php");
  * @todo Fout le bazar et inutile en UTF-8
  */
 function corriger_caracteres($texte) {
-  return $texte;
-    // 145,146,180 = simple quote ; 147,148 = double quote ; 150,151 = tiret long
-    $texte = strtr($texte, chr(145).chr(146).chr(180).chr(147).chr(148).chr(150).chr(151), "'''".'""--');
-    $texte = my_ereg_replace( chr(133), "...", $texte );
     return ensure_utf8($texte);
-    
 }
 
 function traitement_magic_quotes($_value) {
@@ -156,6 +151,101 @@ function no_php_in_img($chaine) {
 @set_magic_quotes_runtime(0);
 
 
+$config = HTMLPurifier_Config::createDefault();
+$config->set('Core.Encoding', 'utf-8'); // replace with your encoding
+$config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
+$purifier = new HTMLPurifier($config);
+$magic_quotes = get_magic_quotes_gpc();
+
+foreach($_GET as $key => $value) {
+	if(!is_array($value)) {
+		if ($magic_quotes) $value = stripslashes($value);
+		$_GET[$key]=$purifier->purify($value);
+		if ($magic_quotes) $_GET[$key] = addslashes($_GET[$key]);
+	}
+	else {
+		foreach($_GET[$key] as $key2 => $value2) {
+			if ($magic_quotes) $value2 = stripslashes($value2);
+			$_GET[$key][$key2]=$purifier->purify($value2);
+			if ($magic_quotes) $_GET[$key][$key2] = addslashes($_GET[$key][$key2]);
+		}
+	}
+}
+
+foreach($_POST as $key => $value) {
+	if(!is_array($value)) {
+		if ($magic_quotes) $value = stripslashes($value);
+		$_POST[$key]=$purifier->purify($value);
+		if ($magic_quotes) $_POST[$key] = addslashes($_POST[$key]);
+	}
+	else {
+		foreach($_POST[$key] as $key2 => $value2) {
+			if ($magic_quotes) $value2 = stripslashes($value2);
+			$_POST[$key][$key2]=$purifier->purify($value2);
+			if ($magic_quotes) $_POST[$key][$key2] = addslashes($_POST[$key][$key2]);
+		}
+	}
+}
+
+if(isset($NON_PROTECT)) {
+	foreach($NON_PROTECT as $key => $value) {
+		if(!is_array($value)) {
+			if ($magic_quotes) $value = stripslashes($value);
+			$NON_PROTECT[$key]=$purifier->purify($value);
+			if ($magic_quotes) $NON_PROTECT[$key] = addslashes($NON_PROTECT[$key]);
+		}
+		else {
+			foreach($NON_PROTECT[$key] as $key2 => $value2) {
+				if ($magic_quotes) $value2 = stripslashes($value2);
+				$NON_PROTECT[$key][$key2]=$purifier->purify($value2);
+				if ($magic_quotes) $NON_PROTECT[$key][$key2] = addslashes($NON_PROTECT[$key][$key2]);
+			}
+		}
+	}
+}
+
+//echo "utiliser_no_php_in_img=$utiliser_no_php_in_img<br />";
+//if($utiliser_no_php_in_img=='y') {
+	//on purge aussi les images avec une extension php
+	if(isset($_GET)) {
+		foreach($_GET as $key => $value) {
+			if(!is_array($value)) {
+				$_GET[$key]=no_php_in_img($value);
+			}
+			else {
+				foreach($_GET[$key] as $key2 => $value2) {
+					$_GET[$key][$key2]=no_php_in_img($value2);
+				}
+			}
+		}
+	}
+
+	if(isset($_POST)) {
+		foreach($_POST as $key => $value) {
+			if(!is_array($value)) {
+				$_POST[$key]=no_php_in_img($value);
+			}
+			else {
+				foreach($_POST[$key] as $key2 => $value2) {
+					$_POST[$key][$key2]=no_php_in_img($value2);
+				}
+			}
+		}
+	}
+	if(isset($NON_PROTECT)) {
+		foreach($NON_PROTECT as $key => $value) {
+			if(!is_array($value)) {
+				$NON_PROTECT[$key]=no_php_in_img($value);
+			}
+			else {
+				foreach($NON_PROTECT[$key] as $key2 => $value2) {
+					$NON_PROTECT[$key][$key2]=no_php_in_img($value2);
+				}
+			}
+		}
+	}
+//}
+
 if (isset($variables_non_protegees)) cree_variables_non_protegees();
 
 unset($liste_scripts_non_traites);
@@ -192,86 +282,6 @@ if ((!(in_array(mb_substr($url['path'], mb_strlen($gepiPath)),$liste_scripts_non
 // On nettoie aussi $_SERVER et $_COOKIE de manière systématique
 array_walk($_SERVER, 'anti_inject');
 array_walk($_COOKIE, 'anti_inject');
-
-
-$config = HTMLPurifier_Config::createDefault();
-$config->set('Core.Encoding', 'utf-8'); // replace with your encoding
-$config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
-$purifier = new HTMLPurifier($config);
-
-foreach($_GET as $key => $value) {
-	if(!is_array($value)) {
-		$_GET[$key]=$purifier->purify($value);
-	}
-	else {
-		foreach($_GET[$key] as $key2 => $value2) {
-			$_GET[$key][$key2]=$purifier->purify($value2);
-		}
-	}
-}
-
-foreach($_POST as $key => $value) {
-	if(!is_array($value)) {
-		$_POST[$key]=$purifier->purify($value);
-	}
-	else {
-		foreach($_POST[$key] as $key2 => $value2) {
-			$_POST[$key][$key2]=$purifier->purify($value2);
-		}
-	}
-}
-
-if(isset($NON_PROTECT)) {
-	foreach($NON_PROTECT as $key => $value) {
-		if(!is_array($value)) {
-		    $NON_PROTECT[$key]=$purifier->purify($value);
-		}
-		else {
-			foreach($NON_PROTECT[$key] as $key2 => $value2) {
-				$NON_PROTECT[$key][$key2]=$purifier->purify($value2);;
-			}
-		}
-	}
-}
-	
-//on purge aussi les images avec une extension php
-if(isset($_GET)) {
-	foreach($_GET as $key => $value) {
-		if(!is_array($value)) {
-			$_GET[$key]=no_php_in_img($value);
-		}
-		else {
-			foreach($_GET[$key] as $key2 => $value2) {
-				$_GET[$key][$key2]=no_php_in_img($value2);
-			}
-		}
-	}
-}
-
-if(isset($_POST)) {
-	foreach($_POST as $key => $value) {
-		if(!is_array($value)) {
-			$_POST[$key]=no_php_in_img($value);
-		}
-		else {
-			foreach($_POST[$key] as $key2 => $value2) {
-				$_POST[$key][$key2]=no_php_in_img($value2);
-			}
-		}
-	}
-}
-if(isset($NON_PROTECT)) {
-	foreach($NON_PROTECT as $key => $value) {
-		if(!is_array($value)) {
-			$NON_PROTECT[$key]=no_php_in_img($value);
-		}
-		else {
-			foreach($NON_PROTECT[$key] as $key2 => $value2) {
-				$NON_PROTECT[$key][$key2]=no_php_in_img($value2);
-			}
-		}
-	}
-}
 
 //===========================================================
 

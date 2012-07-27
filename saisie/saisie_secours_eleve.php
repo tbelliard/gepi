@@ -170,7 +170,7 @@ $utilisation_prototype = "ok";
 //$javascript_specifique = "saisie/scripts/js_saisie";
 //**************** EN-TETE *****************
 $titre_page = "Saisie des notes et appréciations";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 echo "<div class='norme'>\n";
@@ -432,12 +432,16 @@ else {
 			FROM groupes g,
 				matieres m,
 				j_groupes_matieres jgm,
-				j_eleves_groupes jeg
+				j_eleves_groupes jeg,
+				j_groupes_classes jgc
 			WHERE g.id=jeg.id_groupe AND
 				g.id=jgm.id_groupe AND
 				jgm.id_matiere=m.matiere AND
 				jeg.login='".$ele_login."' AND
-				jeg.periode='".$periode_num."';";
+				jeg.periode='".$periode_num."' AND
+				jgc.id_groupe=jeg.id_groupe AND
+				jgc.id_classe='$id_classe' AND
+				jeg.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletins' AND visible='n') ORDER BY jgc.priorite,jgm.id_matiere;";
 	//echo "$sql<br />\n";
 	$res_grp=mysql_query($sql);
 	if(mysql_num_rows($res_grp)==0) {

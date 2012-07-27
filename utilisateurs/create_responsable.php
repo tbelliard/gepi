@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -208,6 +208,16 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 						$reg2 = mysql_query($sql);
 						//$msg.="$sql<br />";
 						$nb_comptes++;
+
+						// Ménage:
+						$sql="SELECT id FROM infos_actions WHERE titre LIKE 'Nouveau responsable%($current_parent->pers_id)';";
+						$res_actions=mysql_query($sql);
+						if(mysql_num_rows($res_actions)>0) {
+							while($lig_action=mysql_fetch_object($res_actions)) {
+								$menage=del_info_action($lig_action->id);
+								if(!$menage) {$msg.="Erreur lors de la suppression de l'action en attente en page d'accueil à propos de $reg_login<br />";}
+							}
+						}
 					}
 				} else {
 					$msg .= "Erreur lors de la création du compte ".$reg_login." : l'utilisateur n'a pas pu être créé sur l'annuaire LDAP.<br/>";
@@ -263,7 +273,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 			// =====================
 		} else {
 			if ($nb_comptes > 0) {
-				$msg .= "Vous avez créé des comptes d'accès en mode SSO ou LDAP, mais sans avoir configuré l'accès LDAP en écriture. En conséquence, vous ne pouvez pas générer de mot de passe pour les utilisateurs.<br/>";
+				$msg .= "Vous avez créé un ou des comptes d'accès en mode SSO ou LDAP, mais sans avoir configuré l'accès LDAP en écriture. En conséquence, vous ne pouvez pas générer de mot de passe pour les utilisateurs.<br/>";
 			}
 		}
 	}
@@ -271,12 +281,14 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 
 //**************** EN-TETE *****************
 $titre_page = "Créer des comptes d'accès responsables";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 <p class='bold'><a href="edit_responsable.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 </p>
 <?php
+
+//debug_var();
 
 if(getSettingValue('auth_sso')=='lcs') {
 	echo "<p style='color:red; text-indent: -7em; margin-left: 7em;'><b>ATTENTION&nbsp;:</b> Il convient de choisir pour les parents un format de login différent de celui des comptes des utilisateurs élèves et professeurs (<em>comptes de l'annuaire LDAP</em>).<br />Sinon, avec l'arrivée de nouveaux élèves en cours d'année, il peut arriver qu'un élève obtienne un login déjà attribué à un responsable dans Gepi.<br />Pour choisir le format de login des responsables, consultez la page <a href='../gestion/param_gen.php#format_login_resp'>Configuration générale</a>.<br />";
@@ -285,8 +297,8 @@ if(getSettingValue('auth_sso')=='lcs') {
 	echo "</p>\n";
 }
 
-$afficher_tous_les_resp=isset($_POST['afficher_tous_les_resp']) ? $_POST['afficher_tous_les_resp'] : "n";
-$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
+$afficher_tous_les_resp=isset($_POST['afficher_tous_les_resp']) ? $_POST['afficher_tous_les_resp'] : (isset($_GET['afficher_tous_les_resp']) ? $_GET['afficher_tous_les_resp'] : "n");
+$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : (isset($_GET['critere_recherche']) ? $_GET['critere_recherche'] : "");
 $critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/u", "", $critere_recherche);
 
 //$quels_parents = mysql_query("SELECT * FROM resp_pers WHERE login='' ORDER BY nom,prenom");

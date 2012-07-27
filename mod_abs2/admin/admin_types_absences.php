@@ -112,7 +112,7 @@ if ($action == 'supprimer') {
 		$type->setSousResponsabiliteEtablissement($sous_responsabilite_etablissement);
 		$type->setManquementObligationPresence($manquement_obligation_presence);
 		$type->setRetardBulletin($retard_bulletin);
-		$type->setTypeSaisie($type_saisie);
+		$type->setModeInterface($type_saisie);
         $type->setIdLieu($id_lieu);
 		$type->getAbsenceEleveTypeStatutAutorises(); //corrige un bug de propel sur la lecture de la base
 		if ($ajout_statut_type_saisie != '') {
@@ -133,10 +133,31 @@ if ($action == 'supprimer') {
     }
 }
 
+if(isset($_GET['corriger'])) {
+	check_token();
+
+	$table="a_types";
+
+	$sql="SELECT * FROM $table ORDER BY sortable_rank, nom;";
+	//echo "$sql<br />";
+	$res=mysql_query($sql);
+	$cpt=1;
+	while($lig=mysql_fetch_object($res)) {
+		$sql="UPDATE $table SET sortable_rank='$cpt' WHERE id='$lig->id';";
+		//echo "$sql<br />";
+		$update=mysql_query($sql);
+		if(!$update) {
+			$msg="Erreur lors de la correction des rangs.<br />";
+			break;
+		}
+		$cpt++;
+	}
+	$msg="Correction effectuée.<br />";
+}
 //==========================================
 // header
 $titre_page = "Gestion des types d'absence";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 //==========================================
 
 echo "<p class='bold'>";
@@ -192,41 +213,44 @@ echo add_token_field();
            <td><input name="justification_exigible" type="checkbox" id="justification_exigible" <?php  if ($type != null && $type->getJustificationExigible()) {echo "checked";} ?> /></td>
            <td>
 	     <select name="sous_responsabilite_etablissement" id="sous_responsabilite_etablissement">
-		<option value='<?php echo AbsenceEleveType::SOUS_RESP_ETAB_VRAI?>' <?php  if ($type != null && $type->getSousResponsabiliteEtablissement() == AbsenceEleveType::SOUS_RESP_ETAB_VRAI) {echo "selected";} ?>>oui</option>
-		<option value='<?php echo AbsenceEleveType::SOUS_RESP_ETAB_FAUX?>' <?php  if ($type != null && $type->getSousResponsabiliteEtablissement() == AbsenceEleveType::SOUS_RESP_ETAB_FAUX) {echo "selected";} ?>>non</option>
-		<option value='<?php echo AbsenceEleveType::SOUS_RESP_ETAB_NON_PRECISE?>' <?php  if ($type != null && $type->getSousResponsabiliteEtablissement() == AbsenceEleveType::SOUS_RESP_ETAB_NON_PRECISE) {echo "selected";} ?>>non precisé</option>
+		<option value='<?php echo AbsenceEleveType::SOUS_RESP_ETAB_VRAI?>' <?php  if ($type != null && $type->getSousResponsabiliteEtablissement() == AbsenceEleveType::SOUS_RESP_ETAB_VRAI) {echo "selected='selected'";} ?>>oui</option>
+		<option value='<?php echo AbsenceEleveType::SOUS_RESP_ETAB_FAUX?>' <?php  if ($type != null && $type->getSousResponsabiliteEtablissement() == AbsenceEleveType::SOUS_RESP_ETAB_FAUX) {echo "selected='selected'";} ?>>non</option>
+		<option value='<?php echo AbsenceEleveType::SOUS_RESP_ETAB_NON_PRECISE?>' <?php  if ($type != null && $type->getSousResponsabiliteEtablissement() == AbsenceEleveType::SOUS_RESP_ETAB_NON_PRECISE) {echo "selected='selected'";} ?>>non precisé</option>
 	     </select>
 	   </td>
            <td>
 	     <select name="manquement_obligation_presence" id="manquement_obligation_presence">
-		<option value='<?php echo AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI?>' <?php  if ($type != null && $type->getManquementObligationPresence() == AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI) {echo "selected";} ?>>oui</option>
-		<option value='<?php echo AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX?>' <?php  if ($type != null && $type->getManquementObligationPresence() == AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX) {echo "selected";} ?>>non</option>
-		<option value='<?php echo AbsenceEleveType::MANQU_OBLIG_PRESE_NON_PRECISE?>' <?php  if ($type != null && $type->getManquementObligationPresence() == AbsenceEleveType::MANQU_OBLIG_PRESE_NON_PRECISE) {echo "selected";} ?>>non precisé</option>
+		<option value='<?php echo AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI?>' <?php  if ($type != null && $type->getManquementObligationPresence() == AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI) {echo "selected='selected'";} ?>>oui</option>
+		<option value='<?php echo AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX?>' <?php  if ($type != null && $type->getManquementObligationPresence() == AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX) {echo "selected='selected'";} ?>>non</option>
+		<option value='<?php echo AbsenceEleveType::MANQU_OBLIG_PRESE_NON_PRECISE?>' <?php  if ($type != null && $type->getManquementObligationPresence() == AbsenceEleveType::MANQU_OBLIG_PRESE_NON_PRECISE) {echo "selected='selected'";} ?>>non precisé</option>
 	     </select>
 	   </td>
            <td>
 	     <select name="retard_bulletin" id="retard_bulletin">
-		<option value='<?php echo AbsenceEleveType::RETARD_BULLETIN_FAUX?>' <?php  if ($type != null && $type->getRetardBulletin() == AbsenceEleveType::RETARD_BULLETIN_FAUX) {echo "selected";} ?>>non</option>
-		<option value='<?php echo AbsenceEleveType::RETARD_BULLETIN_VRAI?>' <?php  if ($type != null && $type->getRetardBulletin() == AbsenceEleveType::RETARD_BULLETIN_VRAI) {echo "selected";} ?>>oui</option>
+		<option value='<?php echo AbsenceEleveType::RETARD_BULLETIN_FAUX?>' <?php  if ($type != null && $type->getRetardBulletin() == AbsenceEleveType::RETARD_BULLETIN_FAUX) {echo "selected='selected'";} ?>>non</option>
+		<option value='<?php echo AbsenceEleveType::RETARD_BULLETIN_VRAI?>' <?php  if ($type != null && $type->getRetardBulletin() == AbsenceEleveType::RETARD_BULLETIN_VRAI) {echo "selected='selected'";} ?>>oui</option>
 	     </select>
 	   </td>
            <td>
 	     <select name="type_saisie" id="type_saisie">
-		<option value='NON_PRECISE' <?php  if ($type != null && $type->getTypeSaisie() == 'NON_PRECISE') {echo "selected";} ?>>Type de saisie non précisé</option>
-		<!--<option value='DEBUT_ABS' <?php  if ($type != null && $type->getTypeSaisie() == 'DEBUT_ABS') {echo "selected";} ?>>Saisir le moment de debut de l'absence</option>
-		<option value='FIN_ABS' <?php  if ($type != null && $type->getTypeSaisie() == 'FIN_ABS') {echo "selected";} ?>>Saisir le moment de fin de l'absence</option>
-		<option value='DEBUT_ET_FIN_ABS' <?php  if ($type != null && $type->getTypeSaisie() == 'DEBUT_ET_FIN_ABS') {echo "selected";} ?>>Saisir le moment de debut et de fin</option>
-		<option value='COMMENTAIRE_EXIGE' <?php  if ($type != null && $type->getTypeSaisie() == 'COMMENTAIRE_EXIGE') {echo "selected";} ?>>Saisir un commentaire</option>
-		--><option value='DISCIPLINE' <?php  if ($type != null && $type->getTypeSaisie() == 'DISCIPLINE') {echo "selected";} ?>>Saisir un incident disciplinaire</option>
+		<option value='NON_PRECISE' <?php  if ($type != null && $type->getModeInterface() == 'NON_PRECISE') {echo "selected='selected'";} ?>>Type de saisie non précisé</option>
+		<!--<option value='DEBUT_ABS' <?php  if ($type != null && $type->getModeInterface() == 'DEBUT_ABS') {echo "selected='selected'";} ?>>Saisir le moment de debut de l'absence</option>
+		<option value='FIN_ABS' <?php  if ($type != null && $type->getModeInterface() == 'FIN_ABS') {echo "selected='selected'";} ?>>Saisir le moment de fin de l'absence</option>
+		<option value='DEBUT_ET_FIN_ABS' <?php  if ($type != null && $type->getModeInterface() == 'DEBUT_ET_FIN_ABS') {echo "selected='selected'";} ?>>Saisir le moment de debut et de fin</option>
+		<option value='COMMENTAIRE_EXIGE' <?php  if ($type != null && $type->getModeInterface() == 'COMMENTAIRE_EXIGE') {echo "selected='selected'";} ?>>Saisir un commentaire</option>
+		--><option value='DISCIPLINE' <?php  if ($type != null && $type->getModeInterface() == 'DISCIPLINE') {echo "selected='selected'";} ?>>Saisir un incident disciplinaire</option>
+		<option value='CHECKBOX' <?php  if ($type != null && $type->getModeInterface() == 'CHECKBOX') {echo "selected='selected'";} ?>><?php echo AbsenceEleveType::$LISTE_LABEL_TYPE_SAISIE[AbsenceEleveType::MODE_INTERFACE_CHECKBOX]?></option>
+	    <option value='CHECKBOX_HIDDEN' <?php  if ($type != null && $type->getModeInterface() == 'CHECKBOX_HIDDEN') {echo "selected='selected'";} ?>><?php echo AbsenceEleveType::$LISTE_LABEL_TYPE_SAISIE[AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN]?></option>
+	    <option value='CHECKBOX_HIDDEN_REGIME' <?php  if ($type != null && $type->getModeInterface() == 'CHECKBOX_HIDDEN_REGIME') {echo "selected='selected'";} ?>><?php echo AbsenceEleveType::$LISTE_LABEL_TYPE_SAISIE[AbsenceEleveType::MODE_INTERFACE_CHECKBOX_HIDDEN_REGIME]?></option>
 	     </select>
 	   </td>
         <td>
 	     <select name="id_lieu" id="id_lieu">
-             <option value='-1' <?php  if ($type != null && $type->getIdLieu()== null) {echo "selected";} ?>> </option>
+             <option value='-1' <?php  if ($type != null && $type->getIdLieu()== null) {echo "selected='selected'";} ?>> </option>
 		<?php
         $lieux=AbsenceEleveLieuQuery::create()->find();
         foreach ($lieux as $lieu) :?>
-             <option value='<?php echo $lieu->getId();?>' <?php if ($type != null && $type->getIdLieu() == $lieu->getId()) {echo "selected";} ?>><?php echo $lieu->getNom();?></option>
+             <option value='<?php echo $lieu->getId();?>' <?php if ($type != null && $type->getIdLieu() == $lieu->getId()) {echo "selected='selected'";} ?>><?php echo $lieu->getNom();?></option>
 	    <?php endforeach; ?>
          </select>
 	   </td>
@@ -314,7 +338,7 @@ echo add_token_field();
 		else { echo "<img src='../../images/disabled.png' width='20' height='20' title='non' alt='non' />"; }
 	    ?>
 	  </td>
-	  <td><?php if ($type->getTypeSaisie() != AbsenceEleveType::TYPE_SAISIE_NON_PRECISE) {echo $type->getTypeSaisieDescription();} ?></td>
+	  <td><?php if ($type->getModeInterface() != AbsenceEleveType::MODE_INTERFACE_NON_PRECISE) {echo $type->getModeInterfaceDescription();} ?></td>
       <td><?php if ($type->getAbsenceEleveLieu() != null) {echo $type->getAbsenceEleveLieu()->getNom();} ?></td>
 	  <td><?php
 		foreach ($type->getAbsenceEleveTypeStatutAutorises() as $statut_saisie) {
@@ -332,5 +356,7 @@ echo add_token_field();
     <br/><br/>
 </div>
 
-
-<?php require("../../lib/footer.inc.php");?>
+<?php
+	echo check_sortable_rank_trouble('a_types', 'types');
+	require("../../lib/footer.inc.php");
+?>

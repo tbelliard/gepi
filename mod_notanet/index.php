@@ -58,7 +58,7 @@ $sql="INSERT INTO droits SET id='/mod_notanet/OOo/fiches_brevet.php',
 administrateur='V',
 professeur='F',
 cpe='F',
-scolarite='F',
+scolarite='V',
 eleve='F',
 responsable='F',
 secours='F',
@@ -76,7 +76,7 @@ $sql="INSERT INTO droits SET id='/mod_notanet/OOo/imprime_ooo.php',
 administrateur='V',
 professeur='F',
 cpe='F',
-scolarite='F',
+scolarite='V',
 eleve='F',
 responsable='F',
 secours='F',
@@ -218,7 +218,7 @@ if(!$query) {
 //**************** EN-TETE *****************
 $titre_page = "Notanet: Accueil";
 //echo "<div class='noprint'>\n";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 
@@ -325,19 +325,35 @@ if($_SESSION['statut']=="administrateur") {
 	$truncate_tables=isset($_GET['truncate_tables']) ? $_GET['truncate_tables'] : NULL;
 	if($truncate_tables=='y') {
 		check_token();
-		echo "<p>Nettoyage des tables Notanet</p>\n";
-		$sql="TRUNCATE TABLE notanet;";
-		$del=mysql_query($sql);
-		$sql="TRUNCATE TABLE notanet_avis;";
-		$del=mysql_query($sql);
-		$sql="TRUNCATE TABLE notanet_app;";
-		$del=mysql_query($sql);
-		$sql="TRUNCATE TABLE notanet_verrou;";
-		$del=mysql_query($sql);
-		$sql="TRUNCATE TABLE notanet_socles;";
-		$del=mysql_query($sql);
-		$sql="TRUNCATE TABLE notanet_ele_type;";
-		$del=mysql_query($sql);
+
+		echo "<p class='bold'>Nettoyage des tables Notanet&nbsp;:</p>\n";
+
+		$table_a_vider=array('notanet', 'notanet_avis', 'notanet_app', 'notanet_verrou', 'notanet_socles', 'notanet_ele_type');
+
+		echo "<div style='margin-left:3em;'>\n";
+		if(!isset($_GET['confirmer'])) {
+			echo "<p>Vous allez vider les tables&nbsp;: \n";
+			echo $table_a_vider[0];
+			for($i=1;$i<count($table_a_vider);$i++) {
+				echo ", ".$table_a_vider[$i];
+			}
+			echo "</p>\n";
+			echo "<p>Cette opération, <strong>irréversible</strong>, ne devrait être effectuée que pour éliminer des scories éventuelles des saisies et extractions de l'année précédente.</p>\n";
+			echo "<p><a href='".$_SERVER['PHP_SELF']."?truncate_tables=y&amp;confirmer=y".add_token_in_url()."' onclick=\"return confirm('Vous allez vider les tables notanet et perdre les associations élèves/brevets, extractions, appréciations notanet et avis notanet. Etes-vous sûr?')\">Confirmer le nettoyage des tables Notanet</a>.</p>\n";
+		}
+		else {
+			$msg="";
+			for($i=0;$i<count($table_a_vider);$i++) {
+				$sql="TRUNCATE TABLE $table_a_vider[$i];";
+				$del=mysql_query($sql);
+				if(!$del) {
+					$msg.="<span style='color:red'>Erreur lors du nettoyage de la table '$table_a_vider[$i]'</span><br />\n";
+				}
+			}
+			if($msg=='') {echo "<p style='margin-left: 3em;'>Nettoyage effectué.</p>\n";} else {echo $msg;}
+		}
+		echo "<p><br /></p>\n";
+		echo "</div>\n";
 	}
 }
 
@@ -367,6 +383,8 @@ if($_SESSION['statut']=="administrateur") {
 	echo "<li><a href='verrouillage_saisie_app.php'>Verrouiller/déverrouiller la saisie des appréciations pour les fiches brevet</a><br />La saisie n'est possible pour les professeurs que si l'extraction des moyennes a été effectuée.</li>\n";
 
 	echo "<li><a href='saisie_avis.php'>Saisir l'avis du chef d'établissement</a>.</li>\n";
+
+	echo "<li><a href='verif_saisies.php'>Vérifications avant impression</a>.</li>\n";
 
 	echo "<li><p>Générer les fiches brevet selon le modèle de:</p>
 	<ul>\n";
@@ -400,6 +418,17 @@ elseif($_SESSION['statut']=="scolarite") {
 	echo "<li><a href='saisie_lvr.php'>Saisir les 'notes' de Langue Vivante Régionale</a> (<i>si un tel enseignement est évalué dans l'établissement</i>)</li>\n";
 
 	echo "<li><a href='saisie_avis.php'>Saisir l'avis du chef d'établissement</a>.</li>\n";
+
+	echo "<li><a href='verif_saisies.php'>Vérifications avant impression</a>.</li>\n";
+
+	if(acces('/mod_notanet/OOo/imprime_ooo.php', 'scolarite')) {
+		echo "<li><p>Générer les fiches brevet selon le modèle de:</p>
+	<ul>\n";
+		echo "		<li><a href='OOo/imprime_ooo.php'>Modèle au format OpenOffice</a> <a href='https://www.sylogix.org/projects/gepi/wiki/GepiDoc_fbOooCalc'><img src='../images/icons/ico_question.png' alt='aide construction gabarit' title='Aide pour utiliser les gabarits .ods pour éditer les fiches brevets' title='Aide pour utiliser les gabarits .ods pour éditer les fiches brevets' /></a></li>\n";
+	//}
+	echo "	</ul>
+</li>\n";
+	}
 	echo "</ul>\n";
 
 	echo "<p><b>NOTES:</b> Pour un bon fonctionnement du dispositif, plusieurs opérations doivent auparavant être réalisées en statut administrateur.</p>\n";

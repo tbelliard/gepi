@@ -263,7 +263,7 @@ if (isset($_POST['ok'])) {
 
     }
 
-    if ($_POST['nom_court'])  {
+    if (isset($_POST['nom_court'])) {
         $nom_court = $_POST['nom_court'];
     } else {
         $nom_court = "Devoir ".$id_devoir;
@@ -276,7 +276,7 @@ if (isset($_POST['ok'])) {
 		$reg=mysql_query($sql);
 	}
 
-    if ($_POST['nom_complet'])  {
+    if (isset($_POST['nom_complet'])) {
         $nom_complet = $_POST['nom_complet'];
     } else {
         $nom_complet = $nom_court;
@@ -290,7 +290,7 @@ if (isset($_POST['ok'])) {
 		$reg=mysql_query($sql);
 	}
 
-    if ($_POST['description'])  {
+    if (isset($_POST['description'])) {
         $reg = mysql_query("UPDATE cn_devoirs SET description = '".corriger_caracteres($_POST['description'])."' WHERE id = '$id_devoir'");
         if (!$reg)  $reg_ok = "no";
     }
@@ -300,7 +300,7 @@ if (isset($_POST['ok'])) {
 		$reg=mysql_query($sql);
 	}
 
-    if ($_POST['id_emplacement'])  {
+    if (isset($_POST['id_emplacement'])) {
         $id_emplacement = $_POST['id_emplacement'];
         $reg = mysql_query("UPDATE cn_devoirs SET id_conteneur = '".$id_emplacement."' WHERE id = '$id_devoir'");
         if (!$reg)  $reg_ok = "no";
@@ -344,7 +344,7 @@ if (isset($_POST['ok'])) {
 		$reg=mysql_query($sql);
 	}
 
-    if (($_POST['facultatif']) and preg_match("/^(O|N|B)$/", $_POST['facultatif'])) {
+    if (isset($_POST['facultatif']) and preg_match("/^(O|N|B)$/", $_POST['facultatif'])) {
         $reg = mysql_query("UPDATE cn_devoirs SET facultatif = '".$_POST['facultatif']."' WHERE id = '$id_devoir'");
         if (!$reg)  $reg_ok = "no";
 		for($i=0;$i<count($tab_group);$i++) {
@@ -354,7 +354,7 @@ if (isset($_POST['ok'])) {
 		}
     }
 
-    if ($_POST['display_date']) {
+    if (isset($_POST['display_date'])) {
         if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $_POST['display_date'])) {
             $annee = mb_substr($_POST['display_date'],6,4);
             $mois = mb_substr($_POST['display_date'],3,2);
@@ -375,7 +375,7 @@ if (isset($_POST['ok'])) {
     }
 
 	//====================================================
-    if ($_POST['date_ele_resp']) {
+    if (isset($_POST['date_ele_resp'])) {
         if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $_POST['date_ele_resp'])) {
             $annee = mb_substr($_POST['date_ele_resp'],6,4);
             $mois = mb_substr($_POST['date_ele_resp'],3,2);
@@ -530,7 +530,7 @@ $titre_page = "Carnet de notes - Ajout/modification d'une évaluation";
 /**
  * Entête de la page
  */
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"add_modif_dev.php\" method=\"post\">\n";
 echo add_token_field();
@@ -691,8 +691,8 @@ if($interface_simplifiee=="y"){
 		echo "<tr style='display:none;'>\n";
 		echo "<td>Note sur :</td>\n";
 		echo "<td>\n";
-		echo "<input type='hidden' name = 'note_sur' value = '".getSettingValue("referentiel_note")."' />\n";
-		echo "<input type='hidden' name = 'ramener_sur_referentiel' value = 'F' />\n";
+		echo "<input type='hidden' name = 'note_sur' value = '".$note_sur."' />\n";
+		echo "<input type='hidden' name = 'ramener_sur_referentiel' value = '$ramener_sur_referentiel' />\n";
  		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -831,8 +831,8 @@ else{
 		echo "</td><td><input type='checkbox' name='ramener_sur_referentiel' value='V'"; if ($ramener_sur_referentiel == 'V') {echo " checked";} echo " /><br />";
 		echo "</td></tr>\n";
 	} else {
-		echo "<input type='hidden' name = 'note_sur' value = '".getSettingValue("referentiel_note")."'/>\n";
-		echo "<input type='hidden' name = 'ramener_sur_referentiel' value = 'F' />\n";
+		echo "<input type='hidden' name = 'note_sur' value = '".$note_sur."' />\n";
+		echo "<input type='hidden' name = 'ramener_sur_referentiel' value = '$ramener_sur_referentiel' />\n";
 	}
 
 	//====================================

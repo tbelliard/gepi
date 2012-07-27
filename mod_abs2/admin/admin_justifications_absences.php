@@ -90,9 +90,32 @@ if ($action == 'supprimer') {
     }
 }
 
+if(isset($_GET['corriger'])) {
+	check_token();
+
+	$table="a_justifications";
+
+	$sql="SELECT * FROM $table ORDER BY sortable_rank, nom;";
+	//echo "$sql<br />";
+	$res=mysql_query($sql);
+	$cpt=1;
+	while($lig=mysql_fetch_object($res)) {
+		$sql="UPDATE $table SET sortable_rank='$cpt' WHERE id='$lig->id';";
+		//echo "$sql<br />";
+		$update=mysql_query($sql);
+		if(!$update) {
+			$msg="Erreur lors de la correction des rangs.<br />";
+			break;
+		}
+		$cpt++;
+	}
+	$msg="Correction effectuée.<br />";
+}
+//==========================================
 // header
 $titre_page = "Gestion des justifications d'absence";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
+//==========================================
 
 echo "<p class=bold>";
 echo "<a href=\"index.php\">";
@@ -172,5 +195,7 @@ echo add_token_field();
     <br/><br/>
 </div>
 
-
-<?php require("../../lib/footer.inc.php");?>
+<?php
+	echo check_sortable_rank_trouble('a_justifications', 'justifications');
+	require("../../lib/footer.inc.php");
+?>

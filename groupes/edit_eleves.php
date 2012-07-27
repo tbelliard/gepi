@@ -64,6 +64,11 @@ $reg_nom_groupe = $current_group["name"];
 debug_edit_eleves("reg_nom_groupe=$reg_nom_groupe");
 $reg_nom_complet = $current_group["description"];
 $reg_matiere = $current_group["matiere"]["matiere"];
+
+if(!isset($id_classe)) {
+	$id_classe=$current_group['classes']['list'][0];
+}
+
 $reg_id_classe = $id_classe;
 $reg_clazz = $current_group["classes"]["list"];
 $reg_professeurs = (array)$current_group["profs"]["list"];
@@ -227,7 +232,7 @@ if (isset($_POST['is_posted'])) {
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des groupes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
 //debug_var();
@@ -316,13 +321,25 @@ echo "<script type='text/javascript'>
 	change='no';
 </script>\n";
 
+echo "<div style='float:left;'>";
 echo "<form enctype='multipart/form-data' action='edit_eleves.php' name='form_passage_a_un_autre_groupe' method='post'>\n";
 
 echo "<p class='bold'>\n";
-echo "<a href='edit_class.php?id_classe=$id_classe'";
-echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
-
+if(!$multiclasses) {
+	echo "<a href='edit_class.php?id_classe=$id_classe'";
+	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+	echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+}
+else {
+	$cpt_tmp_clas=0;
+	foreach($current_group['classes']['classes'] as $tmp_id_classe => $tmp_tab_clas_grp) {
+		if(	$cpt_tmp_clas>0) {echo " | ";}
+		echo "<a href='edit_class.php?id_classe=".$tmp_id_classe."'";
+		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+		echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour ".$tmp_tab_clas_grp['classe']."</a>\n";
+		$cpt_tmp_clas++;
+	}
+}
 
 //$sql="SELECT DISTINCT jgc.id_groupe FROM groupes g, j_groupes_classes jgc, j_eleves_groupes jeg WHERE jgc.id_classe='$id_classe' AND jeg.id_groupe=jgc.id_groupe AND g.id=jgc.id_groupe AND jgc.id_groupe!='$id_groupe' ORDER BY g.name;";
 $sql="SELECT DISTINCT jgc.id_groupe FROM groupes g, j_groupes_classes jgc WHERE jgc.id_classe='$id_classe' AND g.id=jgc.id_groupe ORDER BY g.name;";
@@ -346,10 +363,13 @@ if(mysql_num_rows($res_grp)>1) {
 		$cpt_grp++;
 	}
 	echo "</select>\n";
+	echo " <input type='submit' id='button_submit_passage_autre_groupe' value='Go'>\n";
 
 	echo "<script type='text/javascript'>
 	// Initialisation faite plus haut
 	//change='no';
+
+	document.getElementById('button_submit_passage_autre_groupe').style.display='none';
 
 	function confirm_changement_grp(thechange, themessage)
 	{
@@ -371,9 +391,72 @@ if(mysql_num_rows($res_grp)>1) {
 
 }
 
+echo " | <a href='edit_group.php?id_groupe=$id_groupe&amp;id_classe=".$current_group["classes"]["list"][0]."'";
+echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+echo ">Éditer l'enseignement</a>";
 
 echo "</p>";
 echo "</form>\n";
+echo "</div>\n";
+
+// Formulaire pour passer à un autre groupe de la même matière éventuellement dans une autre classe
+$sql="SELECT DISTINCT jgc.id_groupe FROM groupes g, j_groupes_classes jgc, classes c, j_groupes_matieres jgm WHERE jgc.id_classe=c.id AND g.id=jgc.id_groupe AND g.id=jgm.id_groupe AND jgm.id_matiere='".$current_group['matiere']['matiere']."' ORDER BY c.classe, g.name;";
+//echo "$sql<br />\n";
+$res_grp=mysql_query($sql);
+if(mysql_num_rows($res_grp)>1) {
+
+	echo "<div style='float:left;'>";
+	echo "<form enctype='multipart/form-data' action='edit_eleves.php' name='form_passage_a_un_autre_groupe2' method='post'>\n";
+
+	echo "<p class='bold'>";
+
+	echo " | ";
+
+	echo "<select name='id_groupe' id='id_groupe_a_passage_autre_grp2' onchange=\"confirm_changement_grp2(change, '$themessage');\">\n";
+	$cpt_grp=0;
+	$chaine_js=array();
+	//echo "<option value=''>---</option>\n";
+	while($lig_grp=mysql_fetch_object($res_grp)) {
+
+		$tmp_grp=get_group($lig_grp->id_groupe);
+
+		echo "<option value='$lig_grp->id_groupe'";
+		if($lig_grp->id_groupe==$id_groupe) {echo " selected";$indice_grp_courant=$cpt_grp;}
+		echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")</option>\n";
+		$cpt_grp++;
+	}
+	echo "</select>\n";
+
+	echo " <input type='submit' id='button_submit_passage_autre_groupe2' value='Go'>\n";
+
+	echo "<script type='text/javascript'>
+
+	document.getElementById('button_submit_passage_autre_groupe2').style.display='none';
+
+	function confirm_changement_grp2(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.forms['form_passage_a_un_autre_groupe2'].submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.forms['form_passage_a_un_autre_groupe2'].submit();
+			}
+			else{
+				document.getElementById('id_groupe_a_passage_autre_grp2').selectedIndex=$indice_grp_courant;
+			}
+		}
+	}
+</script>\n";
+
+	echo "</p>";
+
+	echo "</form>\n";
+	echo "</div>\n";
+}
+echo "<div style='clear:both;'></div>\n";
 
 ?>
 
@@ -451,6 +534,7 @@ echo "</form>\n";
 
 <p>
 <b><a href="javascript:CocheCase(true);changement();">Tout cocher</a> - <a href="javascript:CocheCase(false);changement();">Tout décocher</a></b>
+ - <a href="javascript:griser_degriser('griser');changement();">Griser</a> - <a href="javascript:griser_degriser('degriser');changement();">Dégriser</a>
 </p>
 <form enctype="multipart/form-data" action="edit_eleves.php" name="formulaire" method='post'>
 <p><input type='submit' value='Enregistrer' /></p>
@@ -567,10 +651,10 @@ foreach ($current_group["periodes"] as $period) {
 		//echo "<a href=\"javascript:CochePeriode(" . $elements[$period["num_periode"]] . ")\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecochePeriode(" . $elements[$period["num_periode"]] . ")\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
 
 		if(count($total_eleves)>0) {
-			echo "<a href=\"javascript:CocheColonne(".$period["num_periode"].");changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' title='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(".$period["num_periode"].");changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' title='Tout décocher' /></a>";
+			echo "<a href=\"javascript:CocheColonne(".$period["num_periode"].");changement();griser_degriser(etat_grisage);\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' title='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(".$period["num_periode"].");changement();griser_degriser(etat_grisage);\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' title='Tout décocher' /></a>";
 
 			if($period["num_periode"]>1) {
-				echo " / <a href=\"javascript:copieElevesPeriode1(".$period["num_periode"].");changement();\"><img src='../images/icons/copy-16.png' width='16' height='16' alt='Copier les affectations de la première période' title='Copier les affectations de la première période' /></a>";
+				echo " / <a href=\"javascript:copieElevesPeriode1(".$period["num_periode"].");changement();griser_degriser(etat_grisage);\"><img src='../images/icons/copy-16.png' width='16' height='16' alt='Copier les affectations de la première période' title='Copier les affectations de la première période' /></a>";
 			}
 		}
 		//=========================
@@ -633,6 +717,7 @@ if(count($total_eleves)>0) {
 			else {
 				$new_classe="BIZARRE";
 			}
+			//echo "$e_login -&gt; $new_classe<br />";
 
 			if ($new_classe != $prev_classe and $order_by == "classe" and $multiclasses) {
 				echo "<tr style='background-color: #CCCCCC;'>\n";
@@ -648,7 +733,7 @@ if(count($total_eleves)>0) {
 			}
 
 			$alt=$alt*(-1);
-			echo "<tr class='lig$alt white_hover'>\n";
+			echo "<tr id='tr_$num_eleve' class='lig$alt white_hover'>\n";
 			if (array_key_exists($e_login, $eleves_list["users"])) {
 				/*
 				echo "<td>" . $eleves_list["users"][$e_login]["prenom"] . " " .
@@ -710,7 +795,9 @@ if(count($total_eleves)>0) {
 
 						// Test sur la présence de notes dans cn ou de notes/app sur bulletin
 						if (!test_before_eleve_removal($e_login, $current_group['id'], $period["num_periode"])) {
+							echo "<a href='../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$e_login."&id_classe=".$eleves_list["users"][$e_login]["id_classe"]."&periode1=".$period["num_periode"]."&periode2=".$period["num_periode"]."' target='_blank'>";
 							echo "<img id='img_bull_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
+							echo "</a>";
 						}
 
 						$sql="SELECT DISTINCT id_devoir FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '".$e_login."' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '".$current_group['id']."' AND ccn.periode = '".$period["num_periode"]."')";
@@ -756,7 +843,7 @@ if(count($total_eleves)>0) {
 			}
 			$elementlist = mb_substr($elementlist, 0, -1);
 	
-			echo "<td><a href=\"javascript:CocheLigne($num_eleve);changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne($num_eleve);changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></td>\n";
+			echo "<td><a href=\"javascript:CocheLigne($num_eleve);changement();griser_degriser(etat_grisage);\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne($num_eleve);changement();griser_degriser(etat_grisage);\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></td>\n";
 			$setting = get_eleve_groupe_setting($e_login, $id_groupe, "coef");
 			if (!$setting) {$setting = array(null);}
 			//echo "<td><input type='text' size='3' name='setting_coef[".$num_eleve."]' value='".$setting[0]."' /></td>\n";
@@ -779,10 +866,10 @@ if(count($total_eleves)>0) {
 		if($period["num_periode"]!="") {
 			echo "<th>";
 			if(count($total_eleves)>0) {
-				echo "<a href=\"javascript:DecocheColonne_si_bull_et_cn_vide(".$period["num_periode"].");changement();\"><img src='../images/icons/wizard.png' width='16' height='16' alt='Décocher les élèves sans note/app sur les bulletin et carnet de notes' title='Décocher les élèves sans note/app sur les bulletin et carnet de notes' /></a>";
+				echo "<a href=\"javascript:DecocheColonne_si_bull_et_cn_vide(".$period["num_periode"].");changement();griser_degriser(etat_grisage);\"><img src='../images/icons/wizard.png' width='16' height='16' alt='Décocher les élèves sans note/app sur les bulletin et carnet de notes' title='Décocher les élèves sans note/app sur les bulletin et carnet de notes' /></a>";
 
 				if((isset($tab_sig))&&(count($tab_sig)>0)) {
-					echo "<span id='prise_en_compte_signalement_".$period["num_periode"]."'>&nbsp;&nbsp;<a href=\"javascript:prise_en_compte_signalement(".$period["num_periode"].");changement();\"><img src='../images/icons/flag2.gif' width='16' height='16' alt='Prendre en compte tous les signalements d erreurs pour la période ".$period["num_periode"]."' title='Prendre en compte tous les signalements d erreurs pour la période ".$period["num_periode"]."' /></a></span>";
+					echo "<span id='prise_en_compte_signalement_".$period["num_periode"]."'>&nbsp;&nbsp;<a href=\"javascript:prise_en_compte_signalement(".$period["num_periode"].");changement();griser_degriser(etat_grisage);\"><img src='../images/icons/flag2.gif' width='16' height='16' alt='Prendre en compte tous les signalements d erreurs pour la période ".$period["num_periode"]."' title='Prendre en compte tous les signalements d erreurs pour la période ".$period["num_periode"]."' /></a></span>";
 				}
 			}
 			echo "</th>\n";
@@ -790,7 +877,7 @@ if(count($total_eleves)>0) {
 	}
 	echo "<th>";
 	if((isset($tab_sig))&&(count($tab_sig)>0)) {
-		echo "<span id='prise_en_compte_signalement_toutes_periodes'>&nbsp;&nbsp;<a href=\"javascript:prise_en_compte_signalement('prise_en_compte_signalement_toutes_periodes');changement();\"><img src='../images/icons/flag2.gif' width='16' height='16' alt='Prendre en compte tous les signalements d erreurs pour la période ".$period["num_periode"]."' title='Prendre en compte tous les signalements d erreurs pour la période ".$period["num_periode"]."' /></a></span>";
+		echo "<span id='prise_en_compte_signalement_toutes_periodes'>&nbsp;&nbsp;<a href=\"javascript:prise_en_compte_signalement('prise_en_compte_signalement_toutes_periodes');changement();griser_degriser(etat_grisage);\"><img src='../images/icons/flag2.gif' width='16' height='16' alt='Prendre en compte tous les signalements d erreurs pour la période ".$period["num_periode"]."' title='Prendre en compte tous les signalements d erreurs pour la période ".$period["num_periode"]."' /></a></span>";
 	}
 	else {
 		echo "&nbsp;";
@@ -814,7 +901,41 @@ if(count($total_eleves)>0) {
 	$nb_eleves=count($total_eleves);
 	
 	echo "<script type='text/javascript'>
-	
+	var etat_grisage='griser';
+
+	function griser_degriser(mode) {
+		if(mode=='griser') {
+			griser_degriser('degriser');
+
+			for (var ki=0;ki<$nb_eleves;ki++) {
+				temoin='n';
+				for(i=0;i<=".count($current_group["periodes"]).";i++) {
+					if(document.getElementById('case_'+i+'_'+ki)){
+						if(document.getElementById('case_'+i+'_'+ki).checked == true) {
+							temoin='y';
+						}
+					}
+				}
+
+				if(temoin=='n') {
+					if(document.getElementById('tr_'+ki)) {
+						document.getElementById('tr_'+ki).style.backgroundColor='grey';
+					}
+				}
+			}
+		}
+		else {
+			for (var ki=0;ki<$nb_eleves;ki++) {
+				if(document.getElementById('tr_'+ki)) {
+					document.getElementById('tr_'+ki).style.backgroundColor='';
+				}
+			}
+		}
+		etat_grisage=mode;
+	}
+
+	griser_degriser('griser');
+
 	function CocheColonne(i) {
 		for (var ki=0;ki<$nb_eleves;ki++) {
 			if(document.getElementById('case_'+i+'_'+ki)){

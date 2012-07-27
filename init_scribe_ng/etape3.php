@@ -46,7 +46,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation des responsables";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 // Utilisation de la classe LDAP chargee et configuree
@@ -117,7 +117,7 @@ if ($_POST['step'] == "3") {
           $resp->setMel($respemail);
           
           
-          $resp->setAdresseId($pers_id);
+          $resp->setResponsableEleveId($pers_id);
           
           
           // On créé l'adresse associée
@@ -131,7 +131,7 @@ if ($_POST['step'] == "3") {
           
           if ($resp_addr && $test_adr == 0) {
             $adr = new Adresse();
-            $adr->setAdresseId($pers_id);
+            $adr->setId($pers_id);
             $adr->setAdr1($resp_addr);
             $adr->setAdr2('');
             $adr->setAdr3('');
@@ -255,8 +255,8 @@ if ($_POST['step'] == "3") {
 else {
     // Affichage de la page des explications de l'etape 3 (aucune donnee postee)
     // La troisieme étape consiste a importer les responsables d'eleves, les associer a leur(s) eleve(s)
-    echo "<br><p>L'&eacute;tape 3 vous permet d'importer les reponsables d'&eacute;l&egrave;ve et de les associer &agrave; leur(s) &eacute;l&egrave;ve(s).</p>";
-    echo "<br><p>Les donn&eacute;es concernant les reponsables d'&eacute;l&egrave;ves actuellement en base seront remplac&eacute;es par ces nouvelles donn&eacute;es</p>";
+    echo "<br><p>L'&eacute;tape 3 vous permet d'importer les responsables d'&eacute;l&egrave;ve et de les associer &agrave; leur(s) &eacute;l&egrave;ve(s).</p>";
+    echo "<br><p>Les donn&eacute;es concernant les responsables d'&eacute;l&egrave;ves actuellement en base seront remplac&eacute;es par ces nouvelles donn&eacute;es</p>";
 
     // On test si les tables dans lesquelles on va importer sont vides
     if ((!is_table_vide("responsables2")) || (!is_table_vide("resp_pers")) || (!is_table_vide("resp_adr"))) {

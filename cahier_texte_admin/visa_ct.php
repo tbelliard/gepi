@@ -49,7 +49,7 @@ if(isset($_SESSION['retour_cdt'])) {unset($_SESSION['retour_cdt']);}
 
 $definir_visa_par_defaut=isset($_POST['definir_visa_par_defaut']) ? $_POST['definir_visa_par_defaut'] : (isset($_GET['definir_visa_par_defaut']) ? $_GET['definir_visa_par_defaut'] : NULL);
 
-include("../fckeditor/fckeditor.php") ;
+include("../ckeditor/ckeditor.php") ;
 
 if (isset($_POST['ok_enr_visa'])) {
 	check_token();
@@ -163,7 +163,7 @@ if (isset($_POST['visa_ct'])) {
 //=============================================
 // header
 $titre_page = "Signature des cahiers de textes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //=============================================
 
 //debug_var();
@@ -197,12 +197,9 @@ if(isset($definir_visa_par_defaut)) {
 	echo "<h2 class='gepi' style=\"text-align: center;\">Texte du visa par défaut</h2>\n";
 	echo "<p><em>Mise en forme du visa :</em></p><p>\n";
 	
-	$oFCKeditor = new FCKeditor('texte_visa_FCK') ;
-	$oFCKeditor->BasePath = '../fckeditor/' ;
-	$oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
-	$oFCKeditor->ToolbarSet = 'Basic' ;
-	$oFCKeditor->Value      = $texte_visa_cdt ;
-	$oFCKeditor->Create() ;
+	$oCKeditor = new CKeditor() ;
+	$oCKeditor->BasePath = '../ckeditor/' ;
+	$oCKeditor->editor('texte_visa_FCK',$texte_visa_cdt) ;
 	
 	echo "<input type='submit' name=\"ok_enr_visa\" value='Enregistrer le visa' /></p>\n";
 	echo "</form>\n";
@@ -234,7 +231,7 @@ echo "</ul>\n";
 <?php
 	echo add_token_field();
 
-	echo "<div style='width: 750px;'>\n";
+	echo "<div style='width: 820px;'>\n";
 	//echo "<fieldset style=\"border: 1px solid grey; font-size: 0.8em; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">\n";
 	
 	//echo "<form enctype=\"multipart/form-data\" action=\"visa_ct.php\" method=\"post\">\n";
@@ -242,12 +239,9 @@ echo "</ul>\n";
 	echo "<h2 class='gepi' style=\"text-align: center;\">Texte du visa à apposer sur les cahiers de textes</h2>\n";
 	echo "<p><em>Mise en forme du visa :</em> <a href='visa_ct.php'>Réinitialiser au visa par défaut</a></p><p>\n";
 	
-	$oFCKeditor = new FCKeditor('texte_visa_FCK') ;
-	$oFCKeditor->BasePath = '../fckeditor/' ;
-	$oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
-	$oFCKeditor->ToolbarSet = 'Basic' ;
-	$oFCKeditor->Value      = $texte_visa_cdt ;
-	$oFCKeditor->Create() ;
+	$oCKeditor = new CKeditor() ;
+	$oCKeditor->BasePath = '../ckeditor/' ;
+	$oCKeditor->editor('texte_visa_FCK',$texte_visa_cdt) ;
 	
 	//echo "<input type='submit' name=\"ok_enr_visa\" value='Enregistrer le visa' /></p>\n";
 	//echo "</form>\n";

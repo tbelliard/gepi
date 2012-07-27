@@ -65,7 +65,6 @@ if (!checkAccess()) {
 // ====== CSS particulier à l'EdT ================
 $style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 // ====== Entête de Gepi =========================
-//require_once("../lib/header.inc");
 // ===============================================
 
 // ++++++++++ Initialisation des variables +++++++
@@ -133,7 +132,7 @@ $message = "";
 ****************************************************************/
 
 // ====== Inclusion des balises head et du bandeau =====
-include_once("../lib/header_template.inc");
+include_once("../lib/header_template.inc.php");
 
 /****************************************************************
 			FIN HAUT DE PAGE

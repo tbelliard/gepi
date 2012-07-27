@@ -47,9 +47,10 @@ class SimpleSAML_Auth_LDAP {
 	 * @param bool $enable_tls
 	 * @param bool $debug
 	 * @param int $timeout
+	 * @param int $port
 	 */
 	// TODO: Flesh out documentation.
-	public function __construct($hostname, $enable_tls = TRUE, $debug = FALSE, $timeout = 0) {
+	public function __construct($hostname, $enable_tls = TRUE, $debug = FALSE, $timeout = 0, $port = 389) {
 
 		// Debug.
 		SimpleSAML_Logger::debug('Library - LDAP __construct(): Setup LDAP with ' .
@@ -71,7 +72,7 @@ class SimpleSAML_Auth_LDAP {
 		 * Prepare a connection for to this LDAP server. Note that this function
 		 * doesn't actually connect to the server.
 		 */
-		$this->ldap = @ldap_connect($hostname);
+		$this->ldap = @ldap_connect($hostname, $port);
 		if ($this->ldap == FALSE)
 			throw new $this->makeException('Library - LDAP __construct(): Unable to connect to \'' . $hostname . '\'', ERR_INTERNAL);
 
@@ -135,24 +136,27 @@ class SimpleSAML_Auth_LDAP {
 				case ERR_WRONG_PW:// 3 - ExInvalidCredential
 					return new SimpleSAML_Error_InvalidCredential($description, $errNo);
 				case ERR_AS_DATA_INCONSIST:// 4 - ExAsDataInconsist
-					return new SimpleSAML_Error_AuthSource($description, $errNo);
+					return new SimpleSAML_Error_AuthSource('ldap', $description);
 				case ERR_AS_INTERNAL:// 5 - ExAsInternal
-					return new SimpleSAML_Error_AuthSource($description, $errNo);
+					return new SimpleSAML_Error_AuthSource('ldap', $description);
 			}
 		}else{
+			if ($errNo !== 0) {
+				$description .= '; cause: \'' . ldap_error($this->ldap) . '\' (0x' . dechex($errNo) . ')';
+			}
 			switch ($errNo){
 				case 0x20://LDAP_NO_SUCH_OBJECT
-					SimpleSAML_Logger::warning($description . '; cause: \'' . ldap_error($this->ldap) . '\' (0x' . dechex($errNo) . ')');
+					SimpleSAML_Logger::warning($description);
 					return new SimpleSAML_Error_UserNotFound($description, $errNo);
 				case 0x31://LDAP_INVALID_CREDENTIALS
-					SimpleSAML_Logger::info($description . '; cause: \'' . ldap_error($this->ldap) . '\' (0x' . dechex($errNo) . ')');
+					SimpleSAML_Logger::info($description);
 					return new SimpleSAML_Error_InvalidCredential($description, $errNo);
 				case -1://NO_SERVER_CONNECTION
-					SimpleSAML_Logger::error($description . '; cause: \'' . ldap_error($this->ldap) . '\' (0x' . dechex($errNo) . ')');
-					return new SimpleSAML_Error_AuthSource($description, $errNo);
+					SimpleSAML_Logger::error($description);
+					return new SimpleSAML_Error_AuthSource('ldap', $description);
 				default:
-					SimpleSAML_Logger::error($description . '; cause: \'' . ldap_error($this->ldap) . '\' (0x' . dechex($errNo) . ')');
-					return new SimpleSAML_Error_AuthSource($description, $errNo);
+					SimpleSAML_Logger::error($description);
+					return new SimpleSAML_Error_AuthSource('ldap', $description);
 			}
 		}
 	}
@@ -186,24 +190,11 @@ class SimpleSAML_Auth_LDAP {
 		// Create the search filter.
 		$attribute = self::escape_filter_value($attribute, FALSE);
 		$value = self::escape_filter_value($value);
-		if (is_array($attribute)) {
-
-			// We have more than one attribute.
-			$filter = '';
-			foreach ($attribute AS $attr) {
-				$filter .= '(' . $attr . '=' . $value. ')';
-			}
-			$filter = '(|' . $filter . ')';
-
-		} elseif (is_string($attribute)) {
-
-			// We have only one attribute.
-			$filter = '(' . $attribute . '=' . $value. ')';
-
-		} else {
-			// We have an unknown attribute type...
-			throw $this->makeException('Library - LDAP search(): Search attribute must be an array or a string', ERR_INTERNAL);
+		$filter = '';
+		foreach ($attribute AS $attr) {
+			$filter .= '(' . $attr . '=' . $value. ')';
 		}
+		$filter = '(|' . $filter . ')';
 
 		// Search using generated filter.
 		SimpleSAML_Logger::debug('Library - LDAP search(): Searching base \'' . $base . '\' for \'' . $filter . '\'');
@@ -291,6 +282,85 @@ class SimpleSAML_Auth_LDAP {
 
 
 	/**
+	 * This method was created specifically for the ldap:AttributeAddUsersGroups->searchActiveDirectory()
+	 * method, but could be used for other LDAP search needs. It will search LDAP and return all the entries.
+	 *
+	 * @throws Exception
+	 * @param string|array $bases
+	 * @param string|array $filters Array of 'attribute' => 'values' to be combined into the filter, or a raw filter string
+	 * @param string|array $attributes Array of attributes requested from LDAP
+	 * @param bool $and If multiple filters defined, then either bind them with & or |
+	 * @param bool $escape Weather to escape the filter values or not
+	 * @return array
+	 */
+	public function searchformultiple($bases, $filters, $attributes = array(), $and = TRUE, $escape = TRUE) {
+
+		// Escape the filter values, if requested
+		if ($escape) {
+			$filters = $this->escape_filter_value($filters, FALSE);
+		}
+
+		// Build search filter
+		$filter = '';
+		if (is_array($filters)) {
+			foreach ($filters as $attribute => $value) {
+				$filter .= "($attribute=$value)";
+			}
+			if (count($filters) > 1) {
+				$filter = ($and ? '(&' : '(|') . $filter . ')';
+			}
+		} elseif (is_string($filters)) {
+			$filter = $filters;
+		}
+
+		// Verify filter was created
+		if ($filter == '' || $filter == '(=)') {
+			throw $this->makeException('ldap:LdapConnection->search_manual : No search filters defined', ERR_INTERNAL);
+		}
+
+		// Verify at least one base was passed
+		$bases = (array) $bases;
+		if (empty($bases)) {
+			throw $this->makeException('ldap:LdapConnection->search_manual : No base DNs were passed', ERR_INTERNAL);
+		}
+
+		// Search each base until result is found
+		$result = FALSE;
+		foreach ($bases as $base) {
+			$result = @ldap_search($this->ldap, $base, $filter, $attributes, 0, 0, $this->timeout);
+			if ($result !== FALSE) break;
+		}
+
+		// Verify that a result was found in one of the bases
+		if ($result === FALSE) {
+			throw $this->makeException(
+				'ldap:LdapConnection->search_manual : Failed to search LDAP using base(s) [' .
+				implode('; ', $bases) . '] with filter [' . $filter . ']. LDAP error [' .
+				ldap_error($this->ldap) . ']'
+			);
+		} elseif (@ldap_count_entries($this->ldap, $result) < 1) {
+			throw $this->makeException(
+				'ldap:LdapConnection->search_manual : No entries found in LDAP using base(s) [' .
+				implode('; ', $bases) . '] with filter [' . $filter . ']',
+				ERR_NO_USER
+			);
+		}
+
+		// Get all results
+		$results = ldap_get_entries($this->ldap, $result);
+		if ($results === FALSE) {
+			throw $this->makeException(
+				'ldap:LdapConnection->search_manual : Unable to retrieve entries from search results'
+			);
+		}
+
+		// Remove the count and return
+		unset($results['count']);
+		return $results;
+	}
+
+
+	/**
 	 * Bind to LDAP with a specific DN and password. Simple wrapper around
 	 * ldap_bind() with some additional logging.
 	 *
@@ -355,6 +425,33 @@ class SimpleSAML_Auth_LDAP {
 		// Bad.
 		throw $this->makeException('Library - LDAP bind(): Bind failed with DN \'' . $dn . '\'');
 
+	}
+
+
+	/**
+	 * Applies an LDAP option to the current connection.
+	 *
+	 * @throws Exception
+	 * @param $option
+	 * @param $value
+	 * @return void
+	 */
+	public function setOption($option, $value) {
+
+		// Attempt to set the LDAP option
+		if (!@ldap_set_option($this->ldap, $option, $value)) {
+			throw $this->makeException(
+				'ldap:LdapConnection->setOption : Failed to set LDAP option [' .
+				$option . '] with the value [' . $value . '] error: ' . ldap_error($this->ldap),
+				ERR_INTERNAL
+			);
+		}
+
+		// Log debug message
+		SimpleSAML_Logger::debug(
+			'ldap:LdapConnection->setOption : Set the LDAP option [' .
+			$option . '] with the value [' . $value . ']'
+		);
 	}
 
 

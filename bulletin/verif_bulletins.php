@@ -46,7 +46,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE *****************
 $titre_page = "Vérification du remplissage des bulletins";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 // On teste si un professeur peut effectuer cette operation
@@ -676,10 +676,15 @@ if (!(isset($id_classe))) {
 
 							}
 
-							$tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante'][]=my_strtoupper($eleve_nom[$j])." ".casse_mot($eleve_prenom[$j],'majf2');
+
+
+							$eleve_nom_prenom=my_strtoupper($eleve_nom[$j])." ".casse_mot($eleve_prenom[$j],'majf2');
+							$tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante'][]=$eleve_nom_prenom;
 							if(($email!="")&&(check_mail($email))) {
 								$sujet_mail="[Gepi]: Appreciation non remplie: ".$id_eleve[$j];
-								$message_mail="Bonjour,\r\n\r\nCordialement";
+								$message_mail="Bonjour,\r\n\r\nL'appréciation en ".$tab_alerte_prof[$login_prof]['groupe'][$group_id]['info']." pour $eleve_nom_prenom n'est pas remplie.\r\n";
+								$message_mail.="Je vous serais reconnaissant(e) de bien vouloir la remplir rapidement.\r\nD'avance merci.\r\n\r\nCordialement\r\n-- \r\n".civ_nom_prenom($_SESSION['login']);
+
 								echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".casse_mot($prenom_prof,'majf2')." ".my_strtoupper($nom_prof)."</a>";
 							}
 							else{
@@ -1170,9 +1175,24 @@ if (!(isset($id_classe))) {
 		destinataire=document.getElementById('mail_'+num).value;
 		sujet_mail=document.getElementById('sujet_'+num).value;
 		message=document.getElementById('message_'+num).value;
+
 		//alert(message);
 		//new Ajax.Updater($('mail_envoye_'+num),'envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+message,{method: 'get'});
-		new Ajax.Updater($('mail_envoye_'+num),'envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+escape(message)+'&csrf_alea='+csrf_alea,{method: 'get'});
+		//new Ajax.Updater($('mail_envoye_'+num),'envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+escape(message)+'&csrf_alea='+csrf_alea,{method: 'get'});
+
+		document.getElementById('mail_envoye_'+num).innerHTML=\"<img src='../images/spinner.gif' width='20' height='20' alt='Action en cours d\'exécution' title='Action en cours d\'exécution' />\";
+
+		//new Ajax.Updater($('mail_envoye_'+num),'envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+encodeURIComponent(message)+'&csrf_alea='+csrf_alea,{method: 'get'});
+
+		//message=encodeURIComponent(message);
+		new Ajax.Updater($('mail_envoye_'+num),'envoi_mail.php',{method: 'post',
+		parameters: {
+			destinataire: destinataire,
+			sujet_mail: sujet_mail,
+			message: message,
+			csrf_alea: csrf_alea
+		}});
+
 	}
 	//]]>
 </script>\n";

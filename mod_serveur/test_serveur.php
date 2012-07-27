@@ -72,7 +72,7 @@ $charset = $test->defautCharset();
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "edt_organisation/style_edt";
 
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 /*++++++++++++++++++++++ fin entête ++++++++++++++++++++++++++++++++++++*/
 echo '
 <p class="bold"><a href="../gestion/index.php#test_serveur">
@@ -140,6 +140,7 @@ if ($test->versionGd()) {
 		'suhosin.get.max_totalname_length', 
 		'suhosin.post.max_totalname_length', 
 		'suhosin.post.max_value_length', 
+		'suhosin.post.max_vars', 
 		'suhosin.request.max_totalname_length', 
 		'suhosin.request.max_value_length', 
 		'suhosin.request.max_vars');
@@ -198,7 +199,7 @@ if ($test->versionGd()) {
 	echo "locale actuellement utilisée : $locale";
 	if (!strstr(mb_strtolower($locale), 'utf')) {
 	    echo "<p style=\"color:red;\">";
-	    echo 'Votre système ne semble pas avoir de locale utf-8 d\'installée. Il est possible que sans locale utf-8 certains affichages de dates soient inéstétiques.</p>';
+	    echo 'Votre système ne semble pas avoir de locale utf-8 d\'installée. Il est possible que sans locale utf-8 certains affichages de dates soient inesthétiques.</p>';
 	}
 	echo "<br />\n";
 	

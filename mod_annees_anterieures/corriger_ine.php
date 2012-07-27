@@ -105,7 +105,7 @@ $themessage="Des modifications ont été effectuées. Voulez-vous vraiment quitt
 
 //**************** EN-TETE *****************
 $titre_page = "Correction d'INE pour les données antérieures";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 

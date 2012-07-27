@@ -1,12 +1,14 @@
 <?php
 
-/**
- * This file is part of the Propel package.
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @license    MIT License
- */
+if (date_default_timezone_get() == 'UTC') {
+    date_default_timezone_set('Europe/Paris');
+} else {
+    //dans le cas où on détecte mal une zone UTC (donc non configurée à priori),
+    //on fait comme si il y avait bien une conf de précisée pour éviter l'erreur
+    //PHP Fatal error:  Uncaught exception 'Exception' with message 'DateTime::__construct(): It is not safe to rely on the system's timezone settings.
+    date_default_timezone_set(date_default_timezone_get());
+}
+
 global $dbHost,$dbDb,$dbUser,$dbPass;
 require dirname(__FILE__) . '/../../../fixtures/config/connect.test.inc.php';
 require_once(dirname(__FILE__). '/../../../../lib/mysql.inc');

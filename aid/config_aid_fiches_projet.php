@@ -73,7 +73,7 @@ if (isset($is_posted) and ($is_posted == "1")) {
 
 //**************** EN-TETE *********************
 $titre_page = "Configuration des fiches projet";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 <form enctype="multipart/form-data" name="formulaire" action="config_aid_fiches_projet.php" method="post">

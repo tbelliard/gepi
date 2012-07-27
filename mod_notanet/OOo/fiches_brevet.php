@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -107,7 +107,7 @@ $avec_app=isset($_POST['avec_app']) ? $_POST['avec_app'] : "n";
 if (isset($_GET['parametrer'])) {
 
 	//**************** EN-TETE *****************
-	require_once("../../lib/header.inc");
+	require_once("../../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 
 
@@ -179,7 +179,7 @@ if (isset($_GET['parametrer'])) {
 		echo "<table border='0'>\n";
 		echo "<tr>\n";
 		echo "<td valign='top'>\n";
-		echo "<input type='radio' name='fb_mode_moyenne' value='1' ";
+		echo "<input type='radio' name='fb_mode_moyenne' id='fb_mode_moyenne_1' value='1' ";
 		if($fb_mode_moyenne!="2"){
 			echo "checked='checked' />";
 		}
@@ -188,14 +188,14 @@ if (isset($_GET['parametrer'])) {
 		}
 		echo "</td>\n";
 		echo "<td>\n";
-		echo "Calculer la moyenne de toutes matières d'une même option Notanet confondues<br />\n";
-		echo "(<i>on compte ensemble les AGL1 et ALL1; c'est la moyenne de toute la LV1 qui est effectuée</i>)\n";
+		echo "<label for='fb_mode_moyenne_1'>Calculer la moyenne de toutes matières d'une même option Notanet confondues<br />\n";
+		echo "(<i>on compte ensemble les AGL1 et ALL1; c'est la moyenne de toute la LV1 qui est effectuée</i>)</label>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 
 		echo "<tr>\n";
 		echo "<td valign='top'>\n";
-		echo "<input type='radio' name='fb_mode_moyenne' value='2' ";
+		echo "<input type='radio' name='fb_mode_moyenne' id='fb_mode_moyenne_2' value='2' ";
 		if($fb_mode_moyenne=="2"){
 			echo "checked='checked' />";
 		}
@@ -204,8 +204,8 @@ if (isset($_GET['parametrer'])) {
 		}
 		echo "</td>\n";
 		echo "<td>\n";
-		echo "Calculer les moyennes par matières<br />\n";
-		echo "(<i>on ne mélange pas AGL1 et ALL1 dans le calcul de la moyenne de classe pour un élève</i>)\n";
+		echo "<label for='fb_mode_moyenne_2'>Calculer les moyennes par matières<br />\n";
+		echo "(<i>on ne mélange pas AGL1 et ALL1 dans le calcul de la moyenne de classe pour un élève</i>)</label>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
@@ -219,24 +219,24 @@ $fb_gab_perso=getSettingValue("fb_gab_perso");
 	echo "<tr";
 	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 	echo ">\n";
-	echo "<td valign='top'>Gabarits : <br />Vous pouvez utiliser les gabarits intégrés à Gépi (construits à partir des fiches brevets de Nantes) <br />ou utiliser le module OpenOffice pour enregistrer vos propres gabarits</td>\n";
+	echo "<td valign='top'>Gabarits : <br />Vous pouvez utiliser les gabarits intégrés à Gepi (construits à partir des fiches brevets de Nantes) <br />ou utiliser le module OpenOffice pour enregistrer vos propres gabarits</td>\n";
 	echo "<td>";
-	echo "<input type='radio' name='fb_gab_perso' value='1' ";
+	echo "<input type='radio' name='fb_gab_perso' id='fb_gab_perso_1' value='1' ";
 	if($fb_gab_perso=="1"){
 	  echo "checked='checked' />";
 	}
 	else{
 	  echo "/>";
 	}
-	echo " Gabarits personnels <br />";
-	echo "<input type='radio' name='fb_gab_perso' value='0' ";
+	echo "<label for='fb_gab_perso_1'> Gabarits personnels </label><br />";
+	echo "<input type='radio' name='fb_gab_perso' id='fb_gab_perso_0' value='0' ";
 	if($fb_gab_perso=="0"){
 	  echo "checked='checked' />";
 	}
 	else{
 	  echo "/>";
 	}
-	echo " Gabarits Gépi <br />";
+	echo "<label for='fb_gab_perso_0'> Gabarits Gepi </label><br />";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -247,36 +247,36 @@ $fb_dezip_ooo=getSettingValue("fb_dezip_ooo");
 	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 	echo ">\n";
 
-	echo "<td valign='top'>Décompresseur d'archive : <br />Gépi a besoin d'un décompresseur d'archive pour créer les fiches brevets. Vous devez sélectionner celui que vous voulez utiliser.</td>\n";
+	echo "<td valign='top'>Décompresseur d'archive : <br />Gepi a besoin d'un décompresseur d'archive pour créer les fiches brevets. Vous devez sélectionner celui que vous voulez utiliser.</td>\n";
 	echo "</td>";
 	echo "<td>";
 
-	echo "<input type='radio' name='fb_dezip_ooo' value='0' ";
+	echo "<input type='radio' name='fb_dezip_ooo' id='fb_dezip_ooo_0' value='0' ";
 	if($fb_dezip_ooo=="0"){
 	  echo "checked='checked' />";
 	}
 	else{
 	  echo "/>";
 	}
-	echo " ZIPARCHIVE et TinyDoc : le choix par défaut mais peut créer des fichiers corrompus si votre version de PHP est inférieur à 5.2.8 (utiliser OOo 3.2 pour réparer les fichiers) <br />\n";
+	echo "<label for='fb_dezip_ooo_0'> ZIPARCHIVE et TinyDoc : le choix par défaut mais peut créer des fichiers corrompus si votre version de PHP est inférieure à 5.2.8 (utiliser OOo 3.2 pour réparer les fichiers) </label><br />\n";
 	
-	echo "<input type='radio' name='fb_dezip_ooo' value='1' ";
+	echo "<input type='radio' name='fb_dezip_ooo' id='fb_dezip_ooo_1' value='1' ";
 	if($fb_dezip_ooo=="1"){
 	  echo "checked='checked' />";
 	}
 	else{
 	  echo "/>";
 	}
-	echo " ZIP-UNZIP et TinyDoc : nécessite que ZIP et UNZIP soient installés sur le serveur et que leurs chemins soient définis dans la variable d'environnement PATH <br />\n";
+	echo "<label for='fb_dezip_ooo_1'> ZIP-UNZIP et TinyDoc : nécessite que ZIP et UNZIP soient installés sur le serveur et que leurs chemins soient définis dans la variable d'environnement PATH </label><br />\n";
 
-	echo "<input type='radio' name='fb_dezip_ooo' value='2' ";
+	echo "<input type='radio' name='fb_dezip_ooo' id='fb_dezip_ooo_2' value='2' ";
 	if($fb_dezip_ooo=="2"){
 	  echo "checked='checked' />";
 	}
 	else{
 	  echo "/>";
 	}
-	echo " PCLZIP et TBSooo : classe plus ancienne, toutes les fonctionnalités de TinyDoc ne sont pas disponible dans les gabarits mais fonctionne avec PHP 5.2 <br />\n";
+	echo "<label for='fb_dezip_ooo_2'> PCLZIP et TBSooo : classe plus ancienne, toutes les fonctionnalités de TinyDoc ne sont pas disponible dans les gabarits mais fonctionne avec PHP 5.2 </label><br />\n";
 
 	echo "</td>\n";
 
@@ -308,7 +308,7 @@ $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
 
 	//**************** EN-TETE *****************
-	require_once("../../lib/header.inc");
+	require_once("../../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 
 	echo "</p>\n";
@@ -327,7 +327,7 @@ $nb_type_brevet=mysql_num_rows($res);
 if($nb_type_brevet==0) {
 
 	//**************** EN-TETE *****************
-	require_once("../../lib/header.inc");
+	require_once("../../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 
 	echo "</p>\n";
@@ -356,7 +356,7 @@ if($nb_type_brevet==0) {
 if(!isset($type_brevet)) {
 
 	//**************** EN-TETE *****************
-	require_once("../../lib/header.inc");
+	require_once("../../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 
 	echo "<div class='noprint'>\n";
@@ -435,7 +435,7 @@ for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 if (!isset($id_classe)) {
 
 	//**************** EN-TETE *****************
-	require_once("../../lib/header.inc");
+	require_once("../../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 
 	// Choix de la classe:
@@ -478,13 +478,15 @@ if (!isset($id_classe)) {
 		$i++;
 	}
 	echo "</select></p>\n";
-	echo "<p>\n<label id='avec_app_label' style='cursor: pointer;'><input type='checkbox' name='avec_app' id='avec_app' value='y' checked='checked' /> Avec les appréciations</label>\n";
+	echo "<p>\n<input type='radio' name='tri' id='tri_alpha' value='alpha' checked='checked' /><label for='tri_alpha' style='cursor: pointer;'> Tri alphabétique sur les noms et prénoms des élèves indépendamment des classes.</label><br />\n";
+	echo "<input type='radio' name='tri' id='tri_classe' value='classe' /><label for='tri_classe' style='cursor: pointer;'> Tri par classe puis tri alphabétique sur les noms et prénoms des élèves.</label></p>\n";
+	echo "<p>\n<input type='checkbox' name='avec_app' id='avec_app' value='y' checked='checked' /><label for='avec_app' id='avec_app_label' style='cursor: pointer;'> Avec les appréciations</label>\n";
 	echo "<input type='submit' name='choix_classe' value='Envoyer' />\n</p>\n";
 
 	echo "</blockquote>\n";
 	echo "</form>\n";
 
-	// Fermeture du DIV container initialisé dans le header.inc
+	// Fermeture du DIV container initialisé dans le header.inc.php
 	echo "</div>\n";
 	require("../../lib/footer.inc.php");
 	die();
@@ -621,6 +623,9 @@ for($i=0;$i<count($id_classe);$i++){
 		while($lig1=mysql_fetch_object($res1)){
 
 			$tab_eleves_OOo[$nb_eleve]=array();
+			$tab_eleves_OOo[$nb_eleve]['fb_session']=$fb_session;
+
+			//echo "<p>$lig1->nom $lig1->prenom<br />";
 			$tab_eleves_OOo[$nb_eleve]['nom']=$lig1->nom;
 			$tab_eleves_OOo[$nb_eleve]['prenom']=$lig1->prenom;
 			$tab_eleves_OOo[$nb_eleve]['ine']=$lig1->no_gep;
@@ -657,6 +662,7 @@ for($i=0;$i<count($id_classe);$i++){
 				$TOTAL_COEF=0;
 				$TOTAL_POINTS=0;
 				for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
+					unset($matiere_gepi_courante);
 
 					//if ($tab_champs_OOo[$j][0]!='') {
 					if ((isset($tab_champs_OOo[$j][0]))&&($tab_champs_OOo[$j][0]!='')) {
@@ -667,11 +673,15 @@ for($i=0;$i<count($id_classe);$i++){
 						}
 						if($tab_champs_OOo[$j][3]>-2) {$tab_eleves_OOo[$nb_eleve][$j][3] = $moy_classe[$j];}
 
-						$sql="SELECT note FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
+						$sql="SELECT note, matiere FROM notanet WHERE login='$lig1->login' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
+						//echo "$sql<br />";
 						$res_note=mysql_query($sql);
 						if(mysql_num_rows($res_note)>0){
 							$lig_note=mysql_fetch_object($res_note);
 							$tab_eleves_OOo[$nb_eleve][$j][0]=$lig_note->note;			// On récupère la note
+
+							// Dans le cas où il a fallu vider une des deux notes parce quil y avait plusieurs matières gepi remplies et associées à la même matière notanet, il faut récupérer l'appréciation associée à la bonne matière
+							$matiere_gepi_courante=$lig_note->matiere;
 
 							switch($tab_champs_OOo[$j][3]){
 								case '-2':      										// Socle B2I et A2
@@ -810,13 +820,17 @@ for($i=0;$i<count($id_classe);$i++){
 			$tab_eleves_OOo[$nb_eleve]['totalcoef_bis']=$TOTAL_COEF*20;
 			// La note AB compte comme un zéro... donc pour le total sans Histoire_des_Arts, il faut décompter les points et coef d'Histoire_des_Arts même si la note est AB
 			//if($tab_eleves_OOo[$nb_eleve][5][0]!='AB') {
-			if($tab_eleves_OOo[$nb_eleve][5][0]!='DI') {
-				$tab_eleves_OOo[$nb_eleve]['totalpoints_bis']-=$tab_eleves_OOo[$nb_eleve][5][1];
-				//$tab_eleves_OOo[$nb_eleve]['totalcoef_bis']-=$tab_eleves_OOo[$nb_eleve][5][-2]*20;
-				// L'Histoire des arts est sur 40... à extraire de là par la suite
-				$tab_eleves_OOo[$nb_eleve]['totalcoef_bis']-=2*20;
-			}
 
+			/*
+				// 20120508: L'Histoire des Arts n'est plus saisie dans Notanet
+
+				if($tab_eleves_OOo[$nb_eleve][5][0]!='DI') {
+					$tab_eleves_OOo[$nb_eleve]['totalpoints_bis']-=$tab_eleves_OOo[$nb_eleve][5][1];
+					//$tab_eleves_OOo[$nb_eleve]['totalcoef_bis']-=$tab_eleves_OOo[$nb_eleve][5][-2]*20;
+					// L'Histoire des arts est sur 40... à extraire de là par la suite
+					$tab_eleves_OOo[$nb_eleve]['totalcoef_bis']-=2*20;
+				}
+			*/
 			$tab_eleves_OOo[$nb_eleve]['classe']=get_classe_from_id($id_classe[$i]);
 
 
@@ -828,15 +842,19 @@ for($i=0;$i<count($id_classe);$i++){
 				$tab_eleves_OOo[$nb_eleve]['LV1_ou_ScPhy']=$tab_eleves_OOo[$nb_eleve][104];
 			}
 			
-			// Total des points sans Histoire des arts
-			$pointsHistoireArts=40;
-			if ($tab_eleves_OOo[$nb_eleve][5][1]) {
-				$tab_eleves_OOo[$nb_eleve]['totalSansHistoireArts']=$tab_eleves_OOo[$nb_eleve]['totalpoints']-$tab_eleves_OOo[$nb_eleve][5][1];
-				$tab_eleves_OOo[$nb_eleve]['totalcoefSansHistoireArts']=$tab_eleves_OOo[$nb_eleve]['totalcoef']-$pointsHistoireArts;
-			}else{
-				$tab_eleves_OOo[$nb_eleve]['totalSansHistoireArts']=$tab_eleves_OOo[$nb_eleve]['totalpoints'];
-				$tab_eleves_OOo[$nb_eleve]['totalcoefSansHistoireArts']=$tab_eleves_OOo[$nb_eleve]['totalcoef'];
-			}
+			/*
+				// 20120508: L'Histoire des Arts n'est plus saisie dans Notanet
+				// Total des points sans Histoire des arts
+				$pointsHistoireArts=40;
+				if ($tab_eleves_OOo[$nb_eleve][5][1]) {
+					$tab_eleves_OOo[$nb_eleve]['totalSansHistoireArts']=$tab_eleves_OOo[$nb_eleve]['totalpoints']-$tab_eleves_OOo[$nb_eleve][5][1];
+					$tab_eleves_OOo[$nb_eleve]['totalcoefSansHistoireArts']=$tab_eleves_OOo[$nb_eleve]['totalcoef']-$pointsHistoireArts;
+				}else{
+					$tab_eleves_OOo[$nb_eleve]['totalSansHistoireArts']=$tab_eleves_OOo[$nb_eleve]['totalpoints'];
+					$tab_eleves_OOo[$nb_eleve]['totalcoefSansHistoireArts']=$tab_eleves_OOo[$nb_eleve]['totalcoef'];
+				}
+			*/
+
 			//===== Fin ajout mai 2011 ======
 
 			// Pour les brevets PRO, on a soit LV1 soit ScPhy
@@ -879,8 +897,8 @@ for($i=0;$i<count($id_classe);$i++){
 						$tab_eleves_OOo[$nb_eleve]['totalcoef']-=$tab_champs_OOo[$num_matiere_a_decompter][3]*20;
 						$tab_eleves_OOo[$nb_eleve]['totalpoints_bis']-=$tab_eleves_OOo[$nb_eleve][$num_matiere_a_decompter][1];
 						$tab_eleves_OOo[$nb_eleve]['totalcoef_bis']-=$tab_champs_OOo[$num_matiere_a_decompter][3]*20;
-						$tab_eleves_OOo[$nb_eleve]['totalSansHistoireArts']-=$tab_eleves_OOo[$nb_eleve][$num_matiere_a_decompter][1];
-						$tab_eleves_OOo[$nb_eleve]['totalcoefSansHistoireArts']-=$tab_champs_OOo[$num_matiere_a_decompter][3]*20;
+						//$tab_eleves_OOo[$nb_eleve]['totalSansHistoireArts']-=$tab_eleves_OOo[$nb_eleve][$num_matiere_a_decompter][1];
+						//$tab_eleves_OOo[$nb_eleve]['totalcoefSansHistoireArts']-=$tab_champs_OOo[$num_matiere_a_decompter][3]*20;
 
 					}
 					else {
@@ -938,11 +956,59 @@ for($i=0;$i<count($id_classe);$i++){
 
 	// FIN DE LA BOUCLE SUR LA LISTE DES CLASSES
 }
+
 /*
 echo "<pre>";
 print_r($tab_eleves_OOo);
 echo "</pre>";
 */
+
+// Tri
+if((isset($_POST['tri']))&&($_POST['tri']=='alpha')) {
+	$tmp_tab_eleves_OOo=$tab_eleves_OOo;
+
+	/*
+	echo "<table><tr>";
+	echo "<td>";
+	*/
+
+	$rg=array();
+	$tab_nom_prenom_classe=array();
+	for($i=0;$i<count($tab_eleves_OOo);$i++) {
+		$rg[$i]=$i;
+		$tab_nom_prenom_classe[$i]=$tab_eleves_OOo[$i]['nom']." ".$tab_eleves_OOo[$i]['prenom']." ".$tab_eleves_OOo[$i]['classe'];
+		//echo "\$tab_nom_prenom_classe[$i]=".$tab_nom_prenom_classe[$i]."<br />\n";
+	}
+
+	array_multisort ($tab_nom_prenom_classe, SORT_ASC, SORT_STRING, $rg, SORT_ASC, SORT_NUMERIC);
+
+	/*
+	echo "</td>";
+	echo "<td>";
+	for($i=0;$i<count($tab_eleves_OOo);$i++) {
+		echo "\$rg[$i]=".$rg[$i]."<br />\n";
+	}
+	echo "</td>";
+	echo "<td>";
+	for($i=0;$i<count($tab_eleves_OOo);$i++) {
+		echo "\$tab_nom_prenom_classe[$i]=".$tab_nom_prenom_classe[$i]."<br />\n";
+	}
+	echo "</td>";
+	echo "<td>";
+	for($i=0;$i<count($tab_eleves_OOo);$i++) {
+		//echo "\$tab_nom_prenom_classe[\$rg[$i]]="."\$tab_nom_prenom_classe[".$rg[$i]."]=".$tab_nom_prenom_classe[$rg[$i]]."<br />\n";
+		echo "\$tab_eleves_OOo[\$rg[$i]]['nom']="."\$tab_eleves_OOo[".$rg[$i]."]['nom']=".$tab_eleves_OOo[$rg[$i]]['nom']."<br />\n";
+	}
+	echo "</td>";
+	echo "</tr></table>";
+	*/
+
+	unset($tab_eleves_OOo);
+
+	for($i=0;$i<count($tmp_tab_eleves_OOo);$i++) {
+		$tab_eleves_OOo[$i]=$tmp_tab_eleves_OOo[$rg[$i]];
+	}
+}
 //================================
 // === Fin construction du tableau fiche brevet===
 //================================

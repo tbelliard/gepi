@@ -150,7 +150,7 @@ class AbsencesNotificationHelper {
 	$TBS->MergeField('destinataire',$destinataire);
     }
 
-    $TBS->Show(TBS_NOTHING);
+    // $TBS->Show(TBS_NOTHING);
     return $TBS;
   }
 

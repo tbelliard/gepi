@@ -28,9 +28,7 @@ $traite_anti_inject = 'no';
 // Initialisations files et inclusion des librairies utiles
 require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
-include_once('../mod_ooo/lib/tinyButStrong.class.php');
-include("../fckeditor/fckeditor.php");
-
+require_once("../ckeditor/ckeditor.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -46,6 +44,12 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
+$utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
+if ($utilisateur == null) {
+	header("Location: ../logout.php?auto=1");
+	die();
+}
+
 function aff_debug($tableau){
   echo '<pre>';
   print_r($tableau);
@@ -81,8 +85,7 @@ if ($enregistrer == "Enregistrer"){
   // Maintenant on peut relier les compte-rendus avec cette séquence
   $nbre = count ($cr);
 
-  for($i = 1 ; $i <= $nbre ; $i++){
-    $contenu = $seance = NULL;
+  for($i = 0 ; $i < $nbre ; $i++){
     // On vérifie si le CR est bien renseigné ainsi que sa date
     if ($dateseance[$i] == ''){
       // On ne fait rien, on n'enregistre pas un CR sans date
@@ -110,11 +113,12 @@ if ($enregistrer == "Enregistrer"){
     }
   }
 
-}
+    // Gestion des erreurs//@TODO pas encore utilisé dans la page de retour
+    if ($verif == 'no'){
+      $msg = "<p>Au moins un compte-rendu n'a pas pu être enregistré !</p>";
+    }
+    header("Location: ../cahier_texte_2/index.php?id_groupe=" . $enseignement);die;
 
-// Gestion des erreurs
-if ($verif == 'no'){
-  $msg = "<p>Au moins un compte-rendu n'a pas pu &ecirc;tre enregistr&eacute; !</p>";
 }
 elseif($nb_reg>0) {
 	$msg="Enregistrement effectué.";
@@ -123,9 +127,8 @@ elseif($nb_reg>0) {
  * Header en include
  */
 $use_observeur = "ok";
-$titre_page = "Cr&eacute;er des s&eacute;quences pour le cahier de textes";
-$javascript_specifique = "cahier_texte_2/js/fonctionscdt2";
-include '../lib/header.inc';
+$titre_page = "Créer des séquences pour le cahier de textes";
+include '../lib/header.inc.php';
 //debug_var();
 
 $nb_max_seq=getSettingValue('cdt2_sequence_nb_max_notice');
@@ -143,7 +146,7 @@ if(($nb_max_seq=="")||(!preg_match("/^[0-9]*$/", $nb_max_seq))) {
 <form action="#" method="post">
   <p>
     <label for="idSeq">Cr&eacute;er une s&eacute;quence pour le cahier de textes (<i>pr&eacute;cisez le nombre de s&eacute;ances</i>)</label>
-    <select id="idSeq" name="nbre_sequences">
+    <select id="idSeq" name="nbre_sequences" onchange="submit();">
       <option value="rien"> -- -- </option>
       <?php for($a = 1 ; $a <= $nb_max_seq ; $a++){
         echo '<option value="'.$a.'">'.$a.'</option>'."\n";
@@ -151,8 +154,46 @@ if(($nb_max_seq=="")||(!preg_match("/^[0-9]*$/", $nb_max_seq))) {
       ?>
     </select>
   </p>
+<?php 
+if (isset($_POST['nbre_sequences'])) {
+echo add_token_field();
+  // On affiche un select des enseignements de ce professeur
+    $aff_select_groups = '<select id="idGroupe" name="enseignement">'."\n";
+  foreach ($utilisateur->getGroupes() as $group) {
+    $aff_select_groups .= '<option value="'.$group->getId().'">'.$group->getDescriptionAvecClasses().'</option>'."\n";
+  }$aff_select_groups .= '</select>';
+  echo '
+<div id="listeSequences" style="border:2px solid gray; background-color: #33CC66; padding: 5px 5px 5px 5px;">
+  <form method="post" action="creer_sequence.php">
+    <p>
+      <label for="idSeq">Titre de la s&eacute;quence</label>
+      <input type="text" id="idSeq" name="titresequence" value="" />
+      <label for="idGroupe">Enseignement concern&eacute;</label>
+      '.$aff_select_groups.'
+    </p>';
+$ts = date("U");
+for ($a=0;$a<$_POST['nbre_sequences'];$a++) {
+echo '
+<div style="border:2px solid gray;padding: 5px 5px 5px 5px;background-color:'.$color_fond_notices["c"].';">
+  <p>
+    <label for="idCR'.$a.'" style="font-weight: bold;color: red;">Compte-rendu '.($a+1).'</label> -
+    <label for="idDate'.$a.'">Date</label>
+    <input type="text" id="idDate'.$a.'" name="dateseance['.$a.']" value="'.date("d/m/Y", $ts).'" />
+  </p>
 
-</form>
-  <?php echo $msg; ?>
-<div id="aff_result" style="display: none;"><!-- Affichage des données AJAX --></div>
-<?php include '../lib/footer.inc.php'; ?>
+  <p>';
+
+    $oCKeditor                             = new CKeditor();
+    $oCKeditor->basePath                   = '../ckeditor/';
+    $oCKeditor->editor('cr['.$a.']','');
+  echo '</p>
+</div>
+<br />';
+$ts = $ts + 86400;
+}
+ echo' <p>
+    <input type="submit" name="enregistrer" value="Enregistrer" />
+  </p>';
+}
+?>
+</form></div>

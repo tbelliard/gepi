@@ -145,9 +145,9 @@ INSERT INTO aid_public  values ('5', '5', 'Experts (ou spécialistes)');
 #
 # table classes
 #
-INSERT INTO classes  values ('1', '5A', '5eme A', 'Chef etablissement Test', '', 'cni', 'n', 'n', 'n', 'n', 'n', 'n', 'NULL', 'n', 'n', 'n', 'n', 'n', 'n', 'n', '3', '', '', '', '', '', '', '');
-INSERT INTO classes  values ('9', '5B', '5eme B', '', '', 'cni', 'n', 'n', 'n', 'n', 'n', 'n', 'NULL', 'n', 'n', 'n', 'n', 'n', 'n', 'n', '3', '', '', '', '', '', '', '');
-INSERT INTO classes  values ('115', '5E', 'cinquieme E', '', '', 'cni', 'n', 'n', 'n', 'n', 'n', 'n', 'NULL', 'n', 'n', 'n', 'n', 'n', 'n', 'n', '3', '', '', '', '', '', '', '');
+INSERT INTO classes  values ('1', '5A', '5eme A', '','Chef etablissement Test',  'cni', 'n', 'n', 'n', 'n', 'n', 'n', '1', 'n', 'n', 'n', 'n', 'n', 'n', 'n', '3', '', '', '', '', '', '', '', 'n');
+INSERT INTO classes  values ('9', '5B', '5eme B','', '', 'cni', 'n', 'n', 'n', 'n', 'n', 'n', '1', 'n', 'n', 'n', 'n', 'n', 'n', 'n', '3', '', '', '', '', '', '', '', 'n');
+INSERT INTO classes  values ('115', '5E', 'cinquieme E', '','',  'cni', 'n', 'n', 'n', 'n', 'n', 'n', '1', 'n', 'n', 'n', 'n', 'n', 'n', 'n', '3', '', '', '', '', '', '', '', 'n');
 
 
 #
@@ -608,7 +608,7 @@ INSERT INTO droits  values ('/mod_annees_anterieures/admin.php', 'V', 'F', 'F', 
 INSERT INTO droits  values ('/mod_annees_anterieures/nettoyer_annee_anterieure.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Suppression de données antérieures', '');
 INSERT INTO droits  values ('/mod_annees_anterieures/archivage_aid.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Fiches projets', '1');
 INSERT INTO droits  values ('/responsables/maj_import1.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Mise à jour depuis Sconet', '');
-INSERT INTO droits  values ('/responsables/maj_import2.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Mise à jour depuis Sconet', '');
+INSERT INTO droits  values ('/responsables/maj_import2.php', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Mise à jour depuis Sconet', '');
 INSERT INTO droits  values ('/mod_annees_anterieures/corriger_ine.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Correction d INE dans la table annees_anterieures', '');
 INSERT INTO droits  values ('/mod_annees_anterieures/liste_eleves_ajax.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Recherche d élèves', '');
 INSERT INTO droits  values ('/mod_absences/lib/graph_double_ligne_fiche.php', 'V', 'V', 'V', 'F', 'F', 'F', 'V', 'F', 'Graphique de la fiche élève', '1');
@@ -1079,15 +1079,14 @@ INSERT INTO edt_setting  values ('13', 'scolarite_modif_cours', 'y');
 #
 # table eleves
 #
-INSERT INTO eleves  values ('', 'testEleve1', 'nomtestEleve1', 'prenomtestEleve1', 'M', '1995-01-01', '', '', '', 'e000000001', '', '1');
-INSERT INTO eleves  values ('', 'testEleve2', 'nomtestEleve2', 'prenomtestEleve2', 'M', '1900-01-01', '', '', '', 'e000000002', '', '2');
-INSERT INTO eleves  values ('', 'testEleve3', 'nomtestEleve3', 'prenomtestEleve3', 'M', '1900-01-01', '', '', '', 'e000000003', '', '3');
-INSERT INTO eleves  values ('', 'testEleve4', 'nomtestEleve4', 'prenomtestEleve4', 'M', '1900-01-01', '', '', '', 'e000000004', '', '4');
-INSERT INTO eleves  values ('', 'eleve7', 'eleve7', 'Jean', 'M', '1900-01-01', '', 'eleleve7', '', 'e000000005', '', '229');
-INSERT INTO eleves  values ('', 'eleve8', 'eleve8', 'pren8om', 'M', '1900-01-01', '', '', '', 'e000000006', '', '230');
-INSERT INTO eleves  values ('', 'eleve9', 'eleve9', 'pré9', 'M', '1900-01-01', '', 'eleve9eleo', '', 'e000000007', '', '231');
-INSERT INTO eleves  values ('', 'eleve10', 'eleve10', 'j-f', 'M', '1900-01-01', '', 'eleve10eleo', '', 'e000000008', '', '232');
-INSERT INTO eleves  values ('', 'eleve11', 'eleve11', 'emma', 'M', '1900-01-01', '', 'eleauieve11', '', 'e000000009', '', '233');
+INSERT INTO eleves  values ('', 'testEleve1', 'nomtestEleve1', 'prenomtestEleve1', 'M', '1995-01-01', '', '', '', 'e000000001', '', '1', '0000-00-00 00:00:00', NULL);
+INSERT INTO eleves  values ('', 'testEleve3', 'nomtestEleve3', 'prenomtestEleve3', 'M', '1900-01-01', '', '', '', 'e000000003', '', '3', '0000-00-00 00:00:00', NULL);
+INSERT INTO eleves  values ('', 'testEleve4', 'nomtestEleve4', 'prenomtestEleve4', 'M', '1900-01-01', '', '', '', 'e000000004', '', '4', '0000-00-00 00:00:00', NULL);
+INSERT INTO eleves  values ('', 'eleve7', 'eleve7', 'Jean', 'M', '1900-01-01', '', 'eleleve7', '', 'e000000005', '', '229', '0000-00-00 00:00:00', NULL);
+INSERT INTO eleves  values ('', 'eleve8', 'eleve8', 'pren8om', 'M', '1900-01-01', '', '', '', 'e000000006', '', '230', '0000-00-00 00:00:00', NULL);
+INSERT INTO eleves  values ('', 'eleve9', 'eleve9', 'pré9', 'M', '1900-01-01', '', 'eleve9eleo', '', 'e000000007', '', '231', '0000-00-00 00:00:00', NULL);
+INSERT INTO eleves  values ('', 'eleve10', 'eleve10', 'j-f', 'M', '1900-01-01', '', 'eleve10eleo', '', 'e000000008', '', '232', '0000-00-00 00:00:00', NULL);
+INSERT INTO eleves  values ('', 'eleve11', 'eleve11', 'emma', 'M', '1900-01-01', '', 'eleauieve11', '', 'e000000009', '', '233', '0000-00-00 00:00:00', NULL);
 
 
 #
@@ -1734,9 +1733,9 @@ INSERT INTO message_login  values ('1', 'Base de test');
 #
 # table model_bulletin
 #
-INSERT INTO model_bulletin  values ('1', 'Standard', '1', '1', '1', '1', '1', '1', '1', '0', '0', '0', '0', '1', '1', '1', '1', '1', '0', '0', '0', '0', '0', '1', '1', '1', '1', '0', '0', '0', 'DejaVu', '110', '40', '5', '40', '1', '110', '5', '1', '5', '5', '72', '200', '175', '8', '8', '10', '18', '5', '5', '246.3', '5', '5', '250', '130', '37', '1', '138', '250', '67', '37', '0', '1', 'DUPLICATA INTERNET', '1', '1', '1', '1', '75', '75', '0', '1', '255', '255', '207', '1', '239', '239', '239', '1', '239', '239', '239', '1', '239', '239', '239', 'Matière', 'coef.', 'nb. n.', 'rang', 'Appréciation / Conseils', '0', '0.01', '2', '0', '1', '1', '1', '1', '0', '0', '40', '0', '0', '0', '0', '', '0', '0', '0', '0', '0', '', '', '', '', '', '', '0', '0', '0', '0', '0', '0', '0', '', '0', '', '0', '', '0', '0', '', '0', '0', '18', '0', '1', '1', '1', '0');
-INSERT INTO model_bulletin  values ('2', 'Standard avec photo', '1', '1', '1', '1', '1', '1', '1', '1', '0', '0', '0', '1', '1', '1', '1', '1', '0', '0', '0', '0', '0', '1', '1', '1', '1', '0', '0', '0', 'DejaVu', '110', '40', '5', '40', '1', '110', '5', '1', '5', '5', '72', '200', '175', '8', '8', '10', '18', '5', '5', '246.3', '5', '5', '250', '130', '37', '1', '138', '250', '67', '37', '0', '1', 'DUPLICATA INTERNET', '1', '1', '1', '1', '75', '75', '0', '1', '255', '255', '207', '1', '239', '239', '239', '1', '239', '239', '239', '1', '239', '239', '239', 'Matière', 'coef.', 'nb. n.', 'rang', 'Appréciation / Conseils', '0', '0', '2', '0', '1', '1', '1', '1', '0', '0', '40', '0', '0', '0', '0', '', '0', '0', '0', '0', '0', '', '', '', '', '', '', '0', '0', '0', '0', '0', '0', '0', '', '0', '', '0', '', '0', '0', '', '0', '0', '18', '0', '1', '1', '1', '0');
-INSERT INTO model_bulletin  values ('3', 'Affiche tout', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 'DejaVu', '110', '40', '5', '40', '1', '110', '5', '1', '5', '5', '72', '200', '175', '8', '8', '10', '16.5', '6.5', '5', '246.3', '5', '5', '250', '130', '37', '1', '138', '250', '67', '37', '1', '1', 'DUPLICATA INTERNET', '1', '1', '1', '1', '75', '75', '1', '1', '255', '255', '207', '1', '239', '239', '239', '1', '239', '239', '239', '1', '239', '239', '239', 'Matière', 'coef.', 'nb. n.', 'rang', 'Appréciation / Conseils', '1', '0.01', '2', '0', '1', '1', '2', '1', '1', '1', '40', '0', '0', '0', '0', '', '0', '0', '0', '0', '0', '', '', '', '', '', '', '0', '0', '0', '0', '0', '0', '0', '', '0', '', '0', '', '0', '0', '', '0', '0', '18', '0', '1', '1', '1', '0');
+INSERT INTO model_bulletin  values (1, 'Standard', 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 'Arial', 110, 40, 5, 40, 1, 110, 5, 1, 5, 5, 72, 200, 175, 8, 8, 10, 18, 5, 5, 246.3, 5, 5, 250, 130, 37, 1, 138, 250, 67, 37, 0, 0, 'DUPLICATA INTERNET', 1, 1, 1, 1, 75, 75, 0, 1, 255, 255, 207, 1, 239, 239, 239, 1, 239, 239, 239, 1, 239, 239, 239, 'Matière', 'coef.', 'nb. n.', 'rang', 'Appréciation / Conseils', 0, 0.01, 2, 0, 1, 1, 1, 1, 0, 0, 40, 0, 0, 0, 0, '', 0, 0, 0, 0, 0, '', '', '', '', '', '', 0, 0, 0, 0, 0, 0, 0, '', 0, '', 0, '', 0, 0, '', 0, 0, 18, 0, 1, 1, 1);
+INSERT INTO model_bulletin  values (2, 'Standard avec photo', 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 'Arial', 110, 40, 5, 40, 1, 110, 5, 1, 5, 5, 72, 200, 175, 8, 8, 10, 18, 5, 5, 246.3, 5, 5, 250, 130, 37, 1, 138, 250, 67, 37, 0, 0, 'DUPLICATA INTERNET', 1, 1, 1, 1, 75, 75, 0, 1, 255, 255, 207, 1, 239, 239, 239, 1, 239, 239, 239, 1, 239, 239, 239, 'Matière', 'coef.', 'nb. n.', 'rang', 'Appréciation / Conseils', 0, 0, 2, 0, 1, 1, 1, 1, 0, 0, 40, 0, 0, 0, 0, '', 0, 0, 0, 0, 0, '', '', '', '', '', '', 0, 0, 0, 0, 0, 0, 0, '', 0, '', 0, '', 0, 0, '', 0, 0, 18, 0, 1, 1, 1);
+INSERT INTO model_bulletin  values (3, 'Affiche tout', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 'Arial', 110, 40, 5, 40, 1, 110, 5, 1, 5, 5, 72, 200, 175, 8, 8, 10, 16.5, 6.5, 5, 246.3, 5, 5, 250, 130, 37, 1, 138, 250, 67, 37, 1, 0, 'DUPLICATA INTERNET', 1, 1, 1, 1, 75, 75, 1, 1, 255, 255, 207, 1, 239, 239, 239, 1, 239, 239, 239, 1, 239, 239, 239, 'Matière', 'coef.', 'nb. n.', 'rang', 'Appréciation / Conseils', 1, 0.01, 2, 0, 1, 1, 2, 1, 1, 1, 40, 0, 0, 0, 0, '', 0, 0, 0, 0, 0, '', '', '', '', '', '', 0, 0, 0, 0, 0, 0, 0, '', 0, '', 0, '', 0, 0, '', 0, 0, 18, 0, 1, 1, 1);
 
 
 #
@@ -2038,7 +2037,7 @@ INSERT INTO setting  values ('versionRc', '');
 INSERT INTO setting  values ('versionBeta', '');
 INSERT INTO setting  values ('sessionMaxLength', '80');
 INSERT INTO setting  values ('Impression', '<center><p class = \"grand\">Gestion des Elèves Par Internet</p></center>\r\n<br />\r\n<p class = \"grand\">Qu\'est-ce que GEPI ?</p>\r\n\r\n<p>Afin d\'étudier les modalités d\'informatisation des bulletins scolaires : notes et appréciations via Internet, une expérimentation (baptisée Gestion des Elèves Par Internet)a été mise en place. Cette expérimentation concerne les classes suivantes : \r\n<br />* ....\r\n<br />* ....\r\n<br />\r\n<br />\r\nCeci vous concerne car vous êtes professeur enseignant dans l\'une ou l\'autre de ces classes.\r\n<br />\r\n<br />\r\nA partir de la réception de ce document, vous pourrez remplir les bulletins informatisés :\r\n<span class = \"norme\">\r\n<UL><li>soit au lycée à partir de n\'importe quel poste connecté à Internet,\r\n<li>soit chez vous si vous disposez d\'une connexion Internet.\r\n</ul>\r\n</span>\r\n<p class = \"grand\">Comment accéder au module de saisie (notes etappréciations) :</p>\r\n<span class = \"norme\">\r\n<UL>\r\n    <LI>Se connecter à Internet\r\n    <LI>Lancer un navigateur (FireFox de préférence, Opera, Internet Explorer, ...)\r\n    <LI>Se connecter au site : https://adresse_du_site/gepi\r\n    <LI>Après quelques instants une page apparaît vous invitant à entrer un nom d\'identifiant et un mot de passe (cesinformations figurent en haut de cette page).\r\n    <br />ATTENTION : votre mot de passe est strictement confidentiel.\r\n    <br />\r\n    <br />Une fois ces informations fournies, cliquez sur le bouton \"Ok\".\r\n    <LI> Après quelques instants une page d\'accueil apparaît.<br />\r\nLa première fois, Gepi vous demande de changer votre mot de passe.\r\nChoisissez-en un facile à retenir, mais non trivial (évitez toute date\r\nde naissance, nom d\'animal familier, prénom, etc.), et contenant\r\nlettre(s), chiffre(s), et caractère(s) non alphanumérique(s).<br />\r\nLes fois suivantes, vous arriverez directement au menu général de\r\nl\'application. Pour bien prendre connaissance des possibilités de\r\nl\'application, n\'hésitez pas à essayer tous les liens disponibles !\r\n</ul></span>\r\n<p class = \"grand\">Remarque :</p>\r\n<p>GEPI est prévu pour que chaque professeur ne puisse modifier les notes ou les appréciations que dans les rubriques qui le concernent et uniquement pour ses élèves.\r\n<br />\r\nJe reste à votre disposition pour tout renseignement complémentaire.\r\n    <br />\r\n    Le proviseur adjoint\r\n</p>');
-INSERT INTO setting  values ('gepiYear', '2009/2010');
+INSERT INTO setting  values ('gepiYear', '2012/2013');
 INSERT INTO setting  values ('gepiSchoolName', 'Etablissement de test');
 INSERT INTO setting  values ('gepiSchoolAdress1', 'Adresse');
 INSERT INTO setting  values ('gepiSchoolAdress2', 'Boîte postale');
@@ -2353,13 +2352,13 @@ INSERT INTO setting  values ('GepiAccesAbsTouteClasseCpe', 'yes');
 #
 # table utilisateurs
 #
-INSERT INTO utilisateurs  values ('scola', 'nomscola', 'prenomscola', 'M.', '9a5a5bfbe1c425ee3a09b81c4e50ca70', '', 'no', 'scolarite', 'actif', 'n', '2006-01-01 00:00:00', '', '0000-00-00 00:00:00', '1', '0', 'SCOLA_u31j38j3892T42Nu9oxULHiRNXf69zEl7Hxz9k', '', 'gepi');
-INSERT INTO utilisateurs  values ('cpe', 'nomcpe', 'prenomcpe', 'M.', '6529b91d91e6c9f300372df13e262588', '', 'no', 'cpe', 'actif', 'n', '2006-01-01 00:00:00', '', '0000-00-00 00:00:00', '7', '0', 'CPE_070DE714g9FY14AbPeI4JwUJzGJHpud546yKS7', '', 'gepi');
-INSERT INTO utilisateurs  values ('prof1', 'nom profTest1', 'prenom profTest2', 'M.', 'ab992c2f7f6fedef6e9fb277674efac8', '', 'no', 'professeur', 'actif', 'n', '2006-01-01 00:00:00', '', '0000-00-00 00:00:00', '8', '0', 'PROF1_rPq85PCcDAwvSDY0Ed7Ph13Mu96SK935udH13', '', 'gepi');
-INSERT INTO utilisateurs  values ('profAngl', 'nomprofanglais', 'prenomprofanglais', 'M.', 'ab992c2f7f6fedef6e9fb277674efac8', '', 'no', 'professeur', 'actif', 'n', '2006-01-01 00:00:00', '', '0000-00-00 00:00:00', '0', '0', 'PROFANGL_Nx6Umg6l5gz0y7GcEYxDt3rpeyK717a2Hif91', '', 'gepi');
-INSERT INTO utilisateurs  values ('Pere', 'Pere1', 'PrenomPere', '', 'c8c07410beacb3cdbee5af1aa9341948', 'joss', 'no', 'responsable', 'actif', 'n', '2006-01-01 00:00:00', '', '0000-00-00 00:00:00', '0', '0', '', '', 'gepi');
-INSERT INTO utilisateurs  values ('azert', 'azert', 'azert', 'M.', 'a88d4ae7dc2a22f8473938d5e6230ec6', '', 'no', 'professeur', 'actif', 'y', '2006-01-01 00:00:00', '', '0000-00-00 00:00:00', '2', '0', '', '', 'gepi');
-INSERT INTO utilisateurs  values ('autre', 'aui', 'aui', 'M.', 'e710f1f4b31779a87562d6d8d5871c43', 'aui@aui.com', 'no', 'autre', 'actif', 'y', '2006-01-01 00:00:00', '', '0000-00-00 00:00:00', '0', '0', '', '', 'gepi');
+INSERT INTO utilisateurs  values ('scola', 'nomscola', 'prenomscola', 'M.', 'cb120a6a08fac73fed2189afec368630','', '', 'no', 'scolarite', 'actif', 'n', '2006-01-01 00:00:00', '', '0000-00-00 00:00:00', '1', '0', 'SCOLA_u31j38j3892T42Nu9oxULHiRNXf69zEl7Hxz9k', '', 'gepi');
+INSERT INTO utilisateurs  values ('cpe', 'nomcpe', 'prenomcpe', 'M.', 'cf5b5210da6051314a5311329a59e5d8','', '', 'no', 'cpe', 'actif', 'n', '2006-01-01 00:00:00', '', '0000-00-00 00:00:00', '7', '0', 'CPE_070DE714g9FY14AbPeI4JwUJzGJHpud546yKS7', '', 'gepi');
+INSERT INTO utilisateurs  values ('prof1', 'nom profTest1', 'prenom profTest2', 'M.', 'ab992c2f7f6fedef6e9fb277674efac8','', '', 'no', 'professeur', 'actif', 'n', '2006-01-01 00:00:00', '', '0000-00-00 00:00:00', '8', '0', 'PROF1_rPq85PCcDAwvSDY0Ed7Ph13Mu96SK935udH13', '', 'gepi');
+INSERT INTO utilisateurs  values ('profAngl', 'nomprofanglais', 'prenomprofanglais', 'M.', 'ab992c2f7f6fedef6e9fb277674efac8','', '', 'no', 'professeur', 'actif', 'n', '2006-01-01 00:00:00', '', '0000-00-00 00:00:00', '0', '0', 'PROFANGL_Nx6Umg6l5gz0y7GcEYxDt3rpeyK717a2Hif91', '', 'gepi');
+INSERT INTO utilisateurs  values ('Pere', 'Pere1', 'PrenomPere', '', 'c8c07410beacb3cdbee5af1aa9341948','', 'joss', 'no', 'responsable', 'actif', 'n', '2006-01-01 00:00:00', '', '0000-00-00 00:00:00', '0', '0', '', '', 'gepi');
+INSERT INTO utilisateurs  values ('azert', 'azert', 'azert', 'M.', 'a88d4ae7dc2a22f8473938d5e6230ec6', '','', 'no', 'professeur', 'actif', 'y', '2006-01-01 00:00:00', '', '0000-00-00 00:00:00', '2', '0', '', '', 'gepi');
+INSERT INTO utilisateurs  values ('autre', 'aui', 'aui', 'M.', 'e710f1f4b31779a87562d6d8d5871c43','', 'aui@aui.com', 'no', 'autre', 'actif', 'y', '2006-01-01 00:00:00', '', '0000-00-00 00:00:00', '0', '0', '', '', 'gepi');
 
 
 #

@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
 *
 * This file is part of GEPI.
 *
@@ -172,6 +172,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 									WHERE e.login = jec.login
 									AND jec.id_classe = c.id
 									AND id = '".$classe."'
+									AND (e.date_sortie is NULL OR e.date_sortie NOT LIKE '20%')
 									GROUP BY nom, prenom"; }
 	// élève d'un groupe
 		if ( $action_affiche === 'groupe' ) { 
@@ -192,6 +193,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 										AND jec.id_classe=c.id
 										AND jeg.id_groupe = g.id
 										AND g.id = '".$groupe."'
+										AND (e.date_sortie is NULL OR e.date_sortie NOT LIKE '20%')
 										GROUP BY nom, prenom
 										ORDER BY $grp_order_by;";
 			}
@@ -202,6 +204,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 										WHERE jeg.login = e.login
 										AND jeg.id_groupe = g.id
 										AND g.id = '".$groupe."'
+										AND (e.date_sortie is NULL OR e.date_sortie NOT LIKE '20%')
 										GROUP BY nom, prenom
 										ORDER BY $grp_order_by;";
 			}
@@ -292,8 +295,8 @@ function matiereprof($prof, $equipepeda) {
 <table width="100%" border="0" cellspacing="0" cellpadding="2" style="border : 1px solid #010101;" align="center" summary="Trombinoscope">
 	<tr>
 	<td width="70%" height="20" style="text-align: left; ">
-		<span style="font-family: Arial, Helvetica, sans-serif; font-size: 12px;">TROMBINOSCOPE <?php $datej = date('Y-m-d'); $annee_en_cours_t=annee_en_cours_t($datej); echo $annee_en_cours_t; ?></span><br />
-		<span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; font-weight: bold;"><?php echo $entete; ?></span>
+		<span style="font-size: 12px;">TROMBINOSCOPE <?php $datej = date('Y-m-d'); $annee_en_cours_t=annee_en_cours_t($datej); echo $annee_en_cours_t; ?></span><br />
+		<span style="font-size: 16px; font-weight: bold;"><?php echo $entete; ?></span>
 	</td>
 	</tr>
 </table>
@@ -423,11 +426,11 @@ function matiereprof($prof, $equipepeda) {
 			//echo "' style='border: 0px; width: $valeur[0]px; height: $valeur[1]px;' alt='$prenom_es $nom_es' title='$prenom_es $nom_es' />";
 			echo "' style='border: 0px; width: $valeur[0]px; height: $valeur[1]px;' alt=\"$alt_nom_prenom_aff\" title=\"$alt_nom_prenom_aff\" />";
 
-			echo "<br /><span style='font-family: Arial, Helvetica, sans-serif; font-size: 16px;'>";
+			echo "<br /><span style='font-size: 16px;'>";
 			//echo "<b>$nom_es</b><br />$prenom_es";
 			echo $nom_prenom_aff;
 			if ( $matiere_prof[$i] != '' ) {
-				echo "<span style=' font: normal 10pt Arial, Helvetica, sans-serif;'>$matiere_prof[$i]</span>";
+				echo "<span style=' font: normal 10pt;'>$matiere_prof[$i]</span>";
 			}
 			if (( $action_affiche === 'groupe' )&&(strstr($current_group['classlist_string'],","))) {
 				$tab_ele_classes=get_class_from_ele_login($login_trombinoscope[$i]);

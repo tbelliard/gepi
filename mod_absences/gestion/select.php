@@ -48,7 +48,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE *****************
 $titre_page = "Sélection d'un ou plusieurs élèves";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 if (empty($_GET['type'])) {$type = ""; } else {$type = $_GET['type']; }

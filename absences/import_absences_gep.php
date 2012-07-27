@@ -105,7 +105,7 @@ function affiche_debug($texte) {
 //include "../lib/periodes.inc.php";
 //**************** EN-TETE *****************
 $titre_page = "Outil d'importation des absences à partir du fichier F_EABS.DBF de la base GEP";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 <p class="bold">| <a href="../accueil.php">Accueil</a> | <a href="index.php?id_classe=<?php echo $id_classe; ?>">Retour</a> |</p>

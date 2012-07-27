@@ -23,6 +23,9 @@
 
 @set_time_limit(0);
 
+// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+$variables_non_protegees = 'yes';
+
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
@@ -49,34 +52,47 @@ check_token();
 
 header('Content-Type: text/html; charset=utf-8');
 
-/*
+//debug_var();
+
 $signalement_login_eleve=isset($_POST['signalement_login_eleve']) ? $_POST['signalement_login_eleve'] : "";
 $signalement_id_groupe=isset($_POST['signalement_id_groupe']) ? $_POST['signalement_id_groupe'] : "";
-$signalement_message=isset($_POST['signalement_message']) ? $_POST['signalement_message'] : "";
+$signalement_id_classe=isset($_POST['signalement_id_classe']) ? $_POST['signalement_id_classe'] : "";
+$signalement_num_periode=isset($_POST['signalement_num_periode']) ? $_POST['signalement_num_periode'] : "";
+
+$signalement_message=isset($NON_PROTECT['signalement_message']) ? traitement_magic_quotes($NON_PROTECT['signalement_message']) : "";
+
+/*
+$f=fopen("/tmp/debug_mail_signalement_faute.txt","a+");
+fwrite($f,"========================================"."\n");
+fwrite($f,"++++++++++++++++++++++++++++++++++++++++"."\n");
+fwrite($f,"========================================"."\n");
+fwrite($f,strftime("%Y%m%d à %H%M%S")."\n");
+fwrite($f,$signalement_message."\n");
+
+fwrite($f,"========================================"."\n");
+fwrite($f,strftime("%Y%m%d à %H%M%S")."\n");
+fwrite($f,$signalement_message."\n");
 */
 
-$signalement_login_eleve=isset($_GET['signalement_login_eleve']) ? $_GET['signalement_login_eleve'] : "";
-$signalement_id_groupe=isset($_GET['signalement_id_groupe']) ? $_GET['signalement_id_groupe'] : "";
-
-$signalement_id_classe=isset($_GET['signalement_id_classe']) ? $_GET['signalement_id_classe'] : "";
-$signalement_num_periode=isset($_GET['signalement_num_periode']) ? $_GET['signalement_num_periode'] : "";
-
-$signalement_message=isset($_GET['signalement_message']) ? $_GET['signalement_message'] : "";
-
-//echo "<pre>$signalement_message</pre>";
-
-//$signalement_message=my_ereg_replace("\\\\n","<br />",$signalement_message);
-$signalement_message=my_ereg_replace("\\\\n","\n",$signalement_message);
+$signalement_message=preg_replace("/\\\\n/","\n",$signalement_message);
 $signalement_message=stripslashes($signalement_message);
 
+/*
+fwrite($f,"========================================"."\n");
+fwrite($f,$signalement_message."\n");
+fwrite($f,"========================================"."\n");
+fclose($f);
+*/
+
+
 if(($signalement_login_eleve=='')||($signalement_id_groupe=='')||($signalement_message=='')) {
-	echo "<span style='color:red'> KO</span>";
+	echo "<span style='color:red' title='Erreur lors du signalement de faute'> KO</span>";
 	return false;
 	die();
 }
 
 if(!preg_match('/^[0-9]*$/',$signalement_id_groupe)) {
-	echo "<span style='color:red'> KO</span>";
+	echo "<span style='color:red' title='Erreur lors du signalement de faute'> KO</span>";
 	return false;
 	die();
 }
@@ -94,7 +110,7 @@ if($envoi_mail_actif!='n') {
 	$sql="SELECT u.email FROM j_groupes_professeurs jgp, utilisateurs u WHERE u.login=jgp.login AND jgp.id_groupe='$signalement_id_groupe' AND u.email!='' AND u.email LIKE '%@%';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
-		echo "<span style='color:red'> KO</span>";
+		echo "<span style='color:red' title='Erreur lors du signalement de faute'> KO</span>";
 		return false;
 		die();
 	}
@@ -117,7 +133,7 @@ if($envoi_mail_actif!='n') {
 		if(envoi_mail($sujet, $signalement_message, $destinataire, $ajout_headers)) {$temoin=true;}
 	}
 
-	echo "<span style='color:green'> OK</span>";
+	echo "<span style='color:green' title='Signalement de faute effectué'> OK</span>";
 
 	$tab_champs=array('periodes');
 	$current_group=get_group($signalement_id_groupe,$tab_champs);
@@ -129,7 +145,7 @@ if($envoi_mail_actif!='n') {
 	return $temoin;
 }
 else {
-	echo "<span style='color:red'> KO</span>";
+	echo "<span style='color:red' title='Erreur lors du signalement de faute: Envoi de mail non actif'> KO</span>";
 	return false;
 }
 ?>

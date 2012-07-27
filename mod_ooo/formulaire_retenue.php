@@ -73,7 +73,7 @@ if (isset($is_posted)) {
 
 // End standart header
 $titre_page = "Formulaire de retenue";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 
 echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 echo "<p>&nbsp;</p>";

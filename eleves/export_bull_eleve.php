@@ -215,7 +215,7 @@ $utilisation_jsdivdrag = "non";
 //$style_specifique = ".css";
 
 // ===================== entete Gepi ======================================//
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 // ===================== fin entete =======================================//
 
 $page="export_bull_eleve.php";

@@ -1326,7 +1326,7 @@ function tentative_intrusion($_niveau, $_description) {
 
 		$subject = $gepiPrefixeSujetMail."GEPI : Alerte sécurité -- Tentative d'intrusion";
 		$subject = "=?UTF-8?B?".base64_encode($subject)."?=\r\n";
-
+	
 		$headers = "X-Mailer: PHP/" . phpversion()."\r\n";
 		$headers .= "MIME-Version: 1.0\r\n";
 		$headers .= "Content-type: text/plain; charset=UTF-8\r\n";
@@ -1556,9 +1556,6 @@ function volume_human($volume){
  * @see volume_human()
  */
 function volume_dir_human($dir){
-	global $totalsize;
-	$totalsize=0;
-
 	$volume=volume_dir($dir);
 	return volume_human($volume);
 }
@@ -1571,7 +1568,8 @@ function volume_dir_human($dir){
  * @return int la taille totale du répertoire
  */
 function volume_dir($dir){
-	global $totalsize;
+	//global $totalsize;
+	$totalsize=0;
 
 	$handle = @opendir($dir);
 	while ($file = @readdir ($handle)){
@@ -1887,7 +1885,8 @@ function get_class_from_ele_login($ele_login){
 			$tab_classe['liste_nbsp'].=preg_replace("/ /","&nbsp;",$lig_tmp->classe);
 
 			$tab_classe['id'.$a] = $lig_tmp->id_classe;
-			$a = $a++;
+			//$a = $a++;
+			$a++;
 		}
 	}
 	return $tab_classe;
@@ -2260,8 +2259,6 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 	global $class_special_infobulle;
 
 	$style_box="color: #000000; border: 1px solid #000000; padding: 0px; position: absolute; z-index:$zindex_infobulle;";
-	//$style_box="color: #000000; border: 1px solid #000000; padding: 0px; position: absolute; z-index:$zindex_infobulle; -moz-box-shadow: 8px 8px 12px #aaa;";
-	//$style_box="color: #000000; border: 1px solid #000000; padding: 0px; position: absolute; z-index:$zindex_infobulle; -moz-box-shadow: 8px 8px 12px #FAB4B4;";
 	
 	$style_bar="color: #ffffff; cursor: move; font-weight: bold; padding: 0px;";
 	$style_close="color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;";
@@ -2706,97 +2703,6 @@ function param_edt($statut){
 		return "no";
 	}
 }
-
-/**
- * Renvoie le nom de la photo de l'élève ou du prof
- *
- * Renvoie NULL si :
- *
- * - le module trombinoscope n'est pas activé
- * - la photo n'existe pas.
- *
- * @param string $_elenoet_ou_login selon les cas, soit l'elenoet de l'élève soit le login du professeur
- * @param string $repertoire "eleves" ou "personnels"
- * @param int $arbo niveau d'aborescence (1 ou 2).
- * @return string Le chemin vers la photo ou NULL
- * @see getSettingValue()
- */
-function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
-	if ($arbo==2) {$chemin = "../";} else {$chemin = "";}
-	if (($repertoire != "eleves") and ($repertoire != "personnels")) {
-		return NULL;
-		die();
-	}
-	if (getSettingValue("active_module_trombinoscopes")!='y') {
-		return NULL;
-		die();
-	}
-		$photo=NULL;
-
-	// En multisite, on ajoute le répertoire RNE
-	if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-		  // On récupère le RNE de l'établissement
-      $repertoire2=$_COOKIE['RNE']."/";
-	}else{
-	  $repertoire2="";
-	}
-
-	// Cas des élèves
-	if ($repertoire == "eleves") {
-	  
-	  if($_elenoet_ou_login!='') {
-
-		// on vérifie si la photo existe
-
-		if(file_exists($chemin."../photos/".$repertoire2."eleves/".$_elenoet_ou_login.".jpg")) {
-			$photo=$chemin."../photos/".$repertoire2."eleves/".$_elenoet_ou_login.".jpg";
-		}
-		else if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y')
-		{
-		  // En multisite, on recherche aussi avec les logins
-		  if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-			// On récupère le login de l'élève
-			$sql = 'SELECT login FROM eleves WHERE elenoet = "'.$_elenoet_ou_login.'"';
-			$query = mysql_query($sql);
-			$_elenoet_ou_login = mysql_result($query, 0,'login');
-		  }
-
-		  if(file_exists($chemin."../photos/".$repertoire2."eleves/$_elenoet_ou_login.jpg")) {
-				$photo=$chemin."../photos/".$repertoire2."eleves/$_elenoet_ou_login.jpg";
-			}
-			else {
-				if(file_exists($chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg")) {
-					$photo=$chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg";
-				} else {
-					for($i=0;$i<5;$i++){
-						if(mb_substr($_elenoet_ou_login,$i,1)=="0"){
-							$test_photo=mb_substr($_elenoet_ou_login,$i+1);
-							if(($test_photo!='')&&(file_exists($chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg"))) {
-								$photo=$chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg";
-								break;
-							}
-						}
-					}
-				}
-			}
-
-		}
-
-	  }
-	}
-	// Cas des non-élèves
-	else {
-
-		$_elenoet_ou_login = md5(mb_strtolower($_elenoet_ou_login));
-			if(file_exists($chemin."../photos/".$repertoire2."personnels/$_elenoet_ou_login.jpg")){
-				$photo=$chemin."../photos/".$repertoire2."personnels/$_elenoet_ou_login.jpg";
-			} else {
-				$photo = NULL;
-		}
-	}
-	return $photo;
-}
-
 
 /**
  * Le message à afficher
@@ -3488,6 +3394,126 @@ function cree_repertoire_multisite() {
 }
 
 /**
+ * Crée si nécessaire l'entrée 'encodage_nom_photo' dans la table 'setting'
+ * Crée ou modifie la valeur aléatoire 'alea_nom_photo' utilisée pour encoder
+ *  le nom des fichiers photo des élèves et l'enregistre dans la table 'setting'
+ * Renvoie true si l'encodage est activé ou réactivé, false sinon.
+ *
+ * @param string $alea_nom_photo Si non vide détermine la valeur à donner à 'alea_nom_photo'
+ * @return boolean true : succès, false : échec
+ * @see encode_nom_photo()
+ */
+function active_encodage_nom_photo($alea_nom_photo="") {
+	$retour=true;
+	if ((getSettingValue('encodage_nom_photo')==NULL) || !getSettingAOui('encodage_nom_photo')) $retour=$retour && saveSetting('encodage_nom_photo','yes');
+	if ($alea_nom_photo=="") $alea_nom_photo=md5(time());
+	return $retour && saveSetting('alea_nom_photo',$alea_nom_photo);
+}
+
+/**
+ * Ajoute au début d'un nom de fichier une chaîne 5 caractères pseudo alétaoires
+ * le but étant d'empêcher l'accès aux photos élèves.
+ *
+ * Renvoie le nom de fichier modifié si la valeur '$alea_nom_photo' est définie
+ * dans la table 'setting', sinon renvoie le nom de fichier inchangé.
+ *
+ * @param string $nom_photo le nom du fichier
+ * @return string le nom du fichier éventuellement modifié
+ * @see active_encodage_nom_photo()
+ * 
+ */
+function encode_nom_photo($nom_photo) {
+	if (!getSettingAOui('encodage_nom_photo')) return $nom_photo; // la valeur est déjà définie
+	else return substr(md5(getSettingValue('alea_nom_photo').$nom_photo),0,5).$nom_photo;
+}
+
+/**
+ * Renvoie le nom de la photo de l'élève ou du prof
+ *
+ * Renvoie NULL si :
+ *
+ * - le module trombinoscope n'est pas activé
+ * - la photo n'existe pas.
+ *
+ * @param string $_elenoet_ou_login selon les cas, soit l'elenoet de l'élève soit le login du professeur
+ * @param string $repertoire "eleves" ou "personnels"
+ * @param int $arbo niveau d'aborescence (1 ou 2).
+ * @return string Le chemin vers la photo ou NULL
+ * @see getSettingValue()
+ */
+function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
+	if ($arbo==2) {$chemin = "../";} else {$chemin = "";}
+	if (($repertoire != "eleves") and ($repertoire != "personnels")) {
+		return NULL;
+		die();
+	}
+	if (getSettingValue("active_module_trombinoscopes")!='y') {
+		return NULL;
+		die();
+	}
+		$photo=NULL;
+
+	// En multisite, on ajoute le répertoire RNE
+	if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+		  // On récupère le RNE de l'établissement
+      $repertoire2=$_COOKIE['RNE']."/";
+	}else{
+	  $repertoire2="";
+	}
+
+
+	// Cas des élèves
+	if ($repertoire == "eleves") {
+
+		if($_elenoet_ou_login!='') {
+
+			// on vérifie si la photo existe
+
+			if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+				// En multisite, on recherche aussi avec les logins
+				if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+					// On récupère le login de l'élève
+					$sql = 'SELECT login FROM eleves WHERE elenoet = "'.$_elenoet_ou_login.'"';
+					$query = mysql_query($sql);
+					$_elenoet_ou_login = mysql_result($query, 0,'login');
+				}
+			}
+
+			if(file_exists($chemin."../photos/".$repertoire2."eleves/".encode_nom_photo($_elenoet_ou_login).".jpg")) {
+				$photo=$chemin."../photos/".$repertoire2."eleves/".encode_nom_photo($_elenoet_ou_login).".jpg";
+			}
+			else {
+				if(file_exists($chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",encode_nom_photo($_elenoet_ou_login)).".jpg")) {
+					$photo=$chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",encode_nom_photo($_elenoet_ou_login)).".jpg";
+				} else {
+					for($i=0;$i<5;$i++){
+						if(mb_substr(encode_nom_photo($_elenoet_ou_login),$i,1)=="0"){
+							$test_photo=mb_substr($_elenoet_ou_login,$i+1);
+							if(($test_photo!='')&&(file_exists($chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg"))) {
+								$photo=$chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg";
+								break;
+							}
+						}
+					}
+				}
+			}
+
+		}
+	}
+	// Cas des non-élèves
+	else {
+
+		$_elenoet_ou_login = md5(mb_strtolower($_elenoet_ou_login));
+			if(file_exists($chemin."../photos/".$repertoire2."personnels/$_elenoet_ou_login.jpg")){
+				$photo=$chemin."../photos/".$repertoire2."personnels/$_elenoet_ou_login.jpg";
+			} else {
+				$photo = NULL;
+		}
+	}
+	return $photo;
+}
+
+/**
  * Recherche les élèves sans photos
  *
  * @return array tableau de login - nom - prénom - classe - classe court - eleonet
@@ -3633,7 +3659,12 @@ function suivi_ariane($lien,$texte){
  * @param <boolean> $validation validation si TRUE,
  * @param <texte> $themessage message à afficher lors de la confirmation
  */
-function affiche_ariane($validation= FALSE,$themessage="" ){
+//function affiche_ariane($validation= FALSE,$themessage="" ){
+function affiche_ariane($validation= FALSE){
+  global $themessage;
+  if($themessage!="") {
+    $validation=TRUE;
+  }
   if (isset($_SESSION['ariane'])){
 	echo "<p class='ariane'>";
 	foreach ($_SESSION['ariane']['lien'] as $index=>$lienActuel){
@@ -3685,13 +3716,14 @@ function path_niveau($niveau=1){
  *
  * @param string $dossier_a_archiver limité à documents ou photos
  * @param int $niveau niveau dans l'arborescence de la page appelante, racine = 0
- * @return boolean
+ * @return striung message d'erreur, vide si aucune erreur
+ * @see cree_zip_archive_msg()
  */
-function cree_zip_archive($dossier_a_archiver,$niveau=1) {
+function cree_zip_archive_avec_msg_erreur($dossier_a_archiver,$niveau=1) {
   $path = path_niveau();
   $dirname = "backup/".getSettingValue("backup_directory")."/";
   if (!defined('PCLZIP_TEMPORARY_DIR') || constant('PCLZIP_TEMPORARY_DIR')!=$path.$dirname) {
-    define( 'PCLZIP_TEMPORARY_DIR', $path.$dirname );
+    @define( 'PCLZIP_TEMPORARY_DIR', $path.$dirname );
   }
 
   require_once($path.'lib/pclzip.lib.php');
@@ -3708,9 +3740,17 @@ function cree_zip_archive($dossier_a_archiver,$niveau=1) {
 	  $chemin_stockage = $path.$dirname."_photos".$suffixe_zip.".zip";
 	  $dossier_a_traiter = $path.'photos/'; //le dossier à traiter
 	  if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-		$dossier_a_traiter .=$_COOKIE['RNE']."/";
+		if((isset($_COOKIE['RNE']))&&($_COOKIE['RNE']!='')) $dossier_a_traiter .=$_COOKIE['RNE']."/";
+		else return "RNE invalide&nbsp;:&nbsp;".$_COOKIE['RNE'];
 	  }
-	  $dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créer
+	  $dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créée
+	  // Si l'encodage des noms de photos est activé on sauvegarde la valeur 'alea_nom_photo'
+	  if (getSettingAOui('encodage_nom_photo'))
+		{
+		$fic_alea=fopen($dossier_a_traiter."alea_nom_photo.txt","w");
+		fwrite($fic_alea,getSettingValue("alea_nom_photo"));
+		fclose($fic_alea);
+		}
 	  break;
 	default:
 	  $chemin_stockage = '';
@@ -3721,14 +3761,28 @@ function cree_zip_archive($dossier_a_archiver,$niveau=1) {
 	  $v_list = $archive->create($dossier_a_traiter,
 			  PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
 			  PCLZIP_OPT_ADD_PATH, $dossier_dans_archive);
+	  // Si l'encodage des noms de photos est activé on supprime le fichier alea_nom_photo.txt
+	  if (getSettingAOui('encodage_nom_photo') && file_exists($dossier_a_traiter."alea_nom_photo.txt")) @unlink($dossier_a_traiter."alea_nom_photo.txt");
 	  if ($v_list == 0) {
-		 die("Error : ".$archive->errorInfo(TRUE));
-		return FALSE;
+		 return "Erreur : ".$archive->errorInfo(TRUE);
 	  }else {
-		return TRUE;
+		return "";
 	  }
 	}
   }
+}
+
+
+/**
+ * Crée une archive Zip des dossiers documents ou photos
+ *
+ * @param string $dossier_a_archiver limité à documents ou photos
+ * @param int $niveau niveau dans l'arborescence de la page appelante, racine = 0
+ * @return boolean
+ * @see cree_zip_archive_msg()
+ */
+function cree_zip_archive($dossier_a_archiver,$niveau=1) {
+  return (cree_zip_archive_avec_msg_erreur($dossier_a_archiver,$niveau)=="")?TRUE:FALSE;
 }
 
 /**
@@ -3903,6 +3957,64 @@ function is_pp($login_prof,$id_classe="",$login_eleve="") {
 	if(mysql_num_rows($test)>0) {$retour=TRUE;}
 
 	return $retour;
+}
+
+/**
+ *Vérifie si un utilisateur est cpe de l'élève choisi ou de la classe choisie
+ * 
+ * $login_eleve : login de l'élève à tester (si vide, on teste juste si le cpe 
+ *                est responsable d'au moins un élève de la classe $id_classe
+ * 
+ * $id_classe : identifiant de la classe
+ *              (pris en compte seulement si le login_eleve est vide)
+ * 
+ * @param type $login_cpe login de l'utilisateur à tester
+ * @param type $id_classe identifiant de la classe
+ * @param type $login_eleve login de l'élève
+ * @return boolean 
+ */
+function is_cpe($login_cpe,$id_classe="",$login_eleve="") {
+	$retour=FALSE;
+	if($login_eleve=='') {
+		$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='$login_cpe' AND e_login='$login_eleve';";
+	}
+	elseif($id_classe!='') {
+		$sql="SELECT 1=1 FROM j_eleves_cpe jecpe, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.login=jecpe.e_login AND jecpe.cpe_login='$login_cpe';";
+	}
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {$retour=TRUE;}
+
+	return $retour;
+}
+
+
+/**
+ * Récupère le tableau des login CPE associés à une classe
+ * 
+ * $id_classe : identifiant de la classe
+ *              (si vide, on récupère tous les CPE de l'établissement)
+ * 
+ * $login_eleve : login de l'élève à tester (si vide, on teste juste si le prof est PP 
+ * (éventuellement pour la classe si id_classe est non vide))
+ * 
+ * @param type $id_classe identifiant de la classe
+ * @return array
+ */
+function tab_cpe($id_classe='') {
+	$tab=array();
+	if((is_numeric($id_classe))&&($id_classe>0)) {
+		$sql="SELECT DISTINCT u.login FROM utilisateurs u, j_eleves_cpe jecpe, j_eleves_classes jec WHERE u.statut='cpe' AND u.etat='actif' AND u.login=jecpe.cpe_login AND jec.login=jecpe.e_login AND jec.id_classe='$id_classe' ORDER BY u.nom, u.prenom;";
+	}
+	else {
+		$sql="SELECT DISTINCT u.login FROM utilisateurs WHERE statut='cpe' AND etat='actif' ORDER BY nom, prenom;";
+	}
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tab[]=$lig->login;
+		}
+	}
+	return $tab;
 }
 
 /**
@@ -4325,14 +4437,15 @@ function get_tab_prof_suivi($id_classe) {
  *  - message_accueil_utilisateur("UNTEL","Bonjour Untel",130674844,130684567) : affiche le message "Bonjour Untel" sur la page du destinataire de login "UNTEL" à partir de la date 130674844, jusqu'à la date 130684567, avec décompte sur la date 130684567
  * - message_accueil_utilisateur("UNTEL","Bonjour Untel",130674844,130684567,130690844) : affiche le message "Bonjour Untel" sur la page du destinataire de login "UNTEL" à partir de la date 130674844, jusqu'à la date 130684567, avec décompte sur la date 130690844
  * 
- * @param type $login_destinataire login du destinataire (obligatoire)
- * @param type $texte texte du message contenant éventuellement des balises HTML et encodé en iso-8859-1 (obligatoire)
- * @param type $date_debut date à partir de laquelle est affiché le message (timestamp, optionnel)
- * @param type $date_fin date à laquelle le message n'est plus affiché (timestamp, optionnel)
- * @param type $date_decompte date butoir du décompte, la chaîne _DECOMPTE_ dans $texte est remplacée par un décompte (timestamp, optionnel)
+ * @param type string $login_destinataire login du destinataire (obligatoire)
+ * @param type string $texte texte du message contenant éventuellement des balises HTML et encodé en iso-8859-1 (obligatoire)
+ * @param type timestamp $date_debut date à partir de laquelle est affiché le message (optionnel)
+ * @param type timestamp $date_fin date à laquelle le message n'est plus affiché (optionnel)
+ * @param type timestamp $date_decompte date butoir du décompte, la chaîne _DECOMPTE_ dans $texte est remplacée par un décompte (optionnel)
+ * @param type bolean $bouton_supprimer détermine s'il faut ajouter au message le bouton "Supprimer ce message"
  * @return type TRUE ou FALSE selon que le message a été enregistré ou pas
  */
-function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$date_fin=0,$date_decompte=0)
+function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$date_fin=0,$date_decompte=0,$bouton_supprimer=false)
 {
 	// On arrondit le timestamp d'appel à l'heure (pas néceassaire mais pour l'esthétique)
 	$t_appel=time()-(time()%3600);
@@ -4355,7 +4468,20 @@ function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$d
 			$date_decompte=$date_fin;		
 		}
 	$r_sql="INSERT INTO `messages` values('','".addslashes($texte)."','".$date_debut."','".$date_fin."','".$_SESSION['login']."','_','".$login_destinataire."','".$date_decompte."')";
-	return mysql_query($r_sql);
+	$retour=mysql_query($r_sql)?true:false;
+	if ($retour && $bouton_supprimer)
+		{
+		$id_message=mysql_insert_id();
+		$contenu='
+		<form method="POST" action="#" name="f_suppression_message">
+		<input type="hidden" name="supprimer_message" value="'.$id_message.'">
+		<button type="submit" title=" Supprimer ce message " style="border: none; background: none; float: right;"><img style="vertical-align: bottom;" src="images/icons/delete.png"></button>
+		</form>'.addslashes($texte);
+		$r_sql="UPDATE `messages` SET `texte`='".$contenu."' WHERE `id`='".$id_message."'";
+		$retour=mysql_query($r_sql)?true:false;
+		}
+	return $retour;
+
 }
 
 /**
@@ -5301,4 +5427,296 @@ function get_img_formules_math($texte, $id_groupe, $type_notice="c") {
 	return $contenu_cor;
 }
 
+/** Fonction destinée à contacter le serveur toutes les $intervalle_temps secondes
+ *  et afficher si le serveur répond.
+ *  Pour contrôler que le serveur est OK avant de valider une page avec beaucoup de saisies
+ *
+ * @param string $id_div_retour nom du div inséré
+ * @param string $nom_js_func nom de la fonction js insérée
+ * @param string $nom_var nom de la variable js compteur de secondes
+ * @param string $taille la taille du div carré inséré
+ * @param integer $intervalle_temps l'intervalle de temps en secondes entre deux contacts du serveur
+ *
+ * @return string le code HTML et JS
+ */
+
+function temoin_check_srv($id_div_retour="retour_ping", $nom_js_func="check_srv", $nom_var="cpt_ping", $taille=10, $intervalle_temps=10) {
+	global $gepiPath;
+
+	echo "<div id='retour_ping' style='width:".$taille."px; height:".$taille."px; background-color:red; border:1px solid black; float:left; margin:1px; display:none;' title=\"Témoin de réponse du serveur: Un test est effectué toutes les $intervalle_temps secondes. Si le témoin se maintient au rouge, c'est que le serveur n'est pas joignable.\"></div>\n";
+
+	echo "<script type='text/javascript'>
+	var $nom_var=0;
+
+	document.getElementById('retour_ping').style.display='';
+
+	function $nom_js_func() {
+
+		if(($nom_var==$intervalle_temps)||($nom_var==0)) {
+			$nom_var=0;
+
+			$('$id_div_retour').style.opacity=1;
+			$('$id_div_retour').innerHTML='';
+	
+			new Ajax.Updater($('$id_div_retour'),'$gepiPath/lib/echo.php?var=valeur',{method: 'get'});
+
+		}
+		else {
+			$('$id_div_retour').style.opacity=1-$nom_var/$intervalle_temps;
+		}
+		$nom_var+=1;
+		setTimeout('$nom_js_func()', 1000);
+	}
+
+	$nom_js_func();
+</script>\n";
+}
+
+/** Fonction destinée à télécharger les images générées sur http://latex.codecogs.com/ 
+ *  et à corriger les notices en conséquence pour pointer sur uneURL locale
+ *
+ * @param integer $eff_parcours
+ *
+ * @return string le code HTML relatant le nombre de notices corrigées.
+ */
+
+function correction_notices_cdt_formules_maths($eff_parcours) {
+	$tab_grp=array();
+
+	$nb_corr=0;
+	$sql="SELECT * FROM ct_entry WHERE contenu LIKE '%http://latex.codecogs.com/%' LIMIT $eff_parcours;";
+	$res=mysql_query($sql);
+	while($lig=mysql_fetch_object($res)) {
+		$id_ct=$lig->id_ct;
+		$id_groupe=$lig->id_groupe;
+		$contenu=$lig->contenu;
+		$type_notice="c";
+
+		if(!isset($tab_grp[$id_groupe])) {
+			$tab_grp[$id_groupe]=get_group($id_groupe);
+		}
+
+		$contenu_corrige=get_img_formules_math($contenu, $id_groupe, $type_notice);
+		$sql="UPDATE ct_entry SET contenu='".mysql_real_escape_string($contenu_corrige)."' WHERE id_ct='$id_ct';";
+		$res_ct=mysql_query($sql);
+		if(!$res_ct) {
+			echo "<div style='border:1px solid red; margin:3px;'>";
+			echo "<p style='color:red;'>ERREUR sur<br />$sql";
+			echo "</div>\n";
+		}
+		else {
+			echo "<p>Correction sur une notice de <strong>compte-rendu</strong> en ".$tab_grp[$id_groupe]['name']." en ".$tab_grp[$id_groupe]['classlist_string']." : ".strftime("%d/%m/%Y", $lig->date_ct)."<br />\n";
+			$nb_corr++;
+		}
+		flush();
+	}
+	echo "<p>$nb_corr corrections effectuées sur 'ct_entry'.</p>";
+
+	$nb_corr=0;
+	$sql="SELECT * FROM ct_devoirs_entry WHERE contenu LIKE '%http://latex.codecogs.com/%' LIMIT $eff_parcours;";
+	$res=mysql_query($sql);
+	while($lig=mysql_fetch_object($res)) {
+		$id_ct=$lig->id_ct;
+		$id_groupe=$lig->id_groupe;
+		$contenu=$lig->contenu;
+		$type_notice="t";
+
+		if(!isset($tab_grp[$id_groupe])) {
+			$tab_grp[$id_groupe]=get_group($id_groupe);
+		}
+
+		$contenu_corrige=get_img_formules_math($contenu, $id_groupe, $type_notice);
+		$sql="UPDATE ct_devoirs_entry SET contenu='".mysql_real_escape_string($contenu_corrige)."' WHERE id_ct='$id_ct';";
+		$res_ct=mysql_query($sql);
+		if(!$res_ct) {
+			echo "<div style='border:1px solid red; margin:3px;'>";
+			echo "<p style='color:red;'>ERREUR sur<br />$sql";
+			echo "</div>\n";
+		}
+		else {
+			echo "<p>Correction sur une notice de <strong>devoir</strong> en ".$tab_grp[$id_groupe]['name']." en ".$tab_grp[$id_groupe]['classlist_string']." : ".strftime("%d/%m/%Y", $lig->date_ct)."<br />\n";
+			$nb_corr++;
+		}
+		flush();
+	}
+	echo "<p>$nb_corr corrections effectuées sur 'ct_devoirs_entry'.</p>";
+}
+
+
+/** Fonction destinée à retourner un tableau PHP des numéros de téléphone responsable (et élève)
+ *
+ * @param string $ele_login Login de l'élève
+ *
+ * @return array Tableau PHP des numéros de tel.
+ */
+function get_tel_resp_ele($ele_login) {
+	$tab_tel=array();
+
+	$cpt_resp=0;
+
+	$sql="SELECT rp.*, r.resp_legal, e.tel_pers AS ele_tel_pers, e.tel_port AS ele_tel_port, e.tel_prof AS ele_tel_prof FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND e.ele_id=r.ele_id AND r.pers_id=rp.pers_id AND (resp_legal='1' OR resp_legal='2') ORDER BY r.resp_legal;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tab_tel['responsable'][$cpt_resp]=array();
+			$tab_tel['responsable'][$cpt_resp]['resp_legal']=$lig->resp_legal;
+			$tab_tel['responsable'][$cpt_resp]['civ_nom_prenom']=$lig->civilite." ".casse_mot($lig->nom,'maj')." ".casse_mot($lig->prenom,'majf2');
+			if($lig->tel_pers!='') {
+				$tab_tel['responsable'][$cpt_resp]['tel_pers']=$lig->tel_pers;
+			}
+			if($lig->tel_port!='') {
+				$tab_tel['responsable'][$cpt_resp]['tel_port']=$lig->tel_port;
+			}
+			if($lig->tel_prof!='') {
+				$tab_tel['responsable'][$cpt_resp]['tel_prof']=$lig->tel_prof;
+			}
+
+			// On va remplir plusieurs fois les champs suivants (mais avec les mêmes valeurs) s'il y a plusieurs responsables
+			if((getSettingAOui('ele_tel_pers'))&&($lig->ele_tel_pers!='')) {
+				$tab_tel['eleve']['tel_pers']=$lig->ele_tel_pers;
+			}
+			if((getSettingAOui('ele_tel_port'))&&($lig->ele_tel_port!='')) {
+				$tab_tel['eleve']['tel_port']=$lig->ele_tel_port;
+			}
+			if((getSettingAOui('ele_tel_prof'))&&($lig->ele_tel_prof!='')) {
+				$tab_tel['eleve']['tel_prof']=$lig->ele_tel_prof;
+			}
+			$cpt_resp++;
+		}
+	}
+
+	$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND e.ele_id=r.ele_id AND r.pers_id=rp.pers_id AND resp_legal='0' ORDER BY rp.civilite, rp.nom, rp.prenom;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tab_tel['responsable'][$cpt_resp]=array();
+			$tab_tel['responsable'][$cpt_resp]['resp_legal']=$lig->resp_legal;
+			$tab_tel['responsable'][$cpt_resp]['civ_nom_prenom']=$lig->civilite." ".casse_mot($lig->nom,'maj')." ".casse_mot($lig->prenom,'majf2');
+			if($lig->tel_pers!='') {
+				$tab_tel['responsable'][$cpt_resp]['tel_pers']=$lig->tel_pers;
+			}
+			if($lig->tel_port!='') {
+				$tab_tel['responsable'][$cpt_resp]['tel_port']=$lig->tel_port;
+			}
+			if($lig->tel_prof!='') {
+				$tab_tel['responsable'][$cpt_resp]['tel_prof']=$lig->tel_prof;
+			}
+			$cpt_resp++;
+		}
+	}
+
+	return $tab_tel;
+}
+
+/** Fonction destinée à retourner un tableau HTML des numéros de téléphone responsable (et élève)
+ *
+ * @param string $ele_login Login de l'élève
+ *
+ * @return array Tableau HTML des numéros de tel.
+ */
+function tableau_tel_resp_ele($ele_login) {
+	$retour="";
+	$tab_tel=get_tel_resp_ele($ele_login);
+
+	$tab_style[1]="impair";
+	$tab_style[-1]="pair";
+
+	if((count($tab_tel['responsable'])>0)||(count($tab_tel['eleve'])>0)) {
+		$retour.="<table class='boireaus' summary='Tableau des numéros de téléphone'>\n";
+		//$retour.="<table class='tb_absences' summary='Tableau des numéros de telephone'>\n";
+		$retour.="<tr>\n";
+		$retour.="<th></th>\n";
+		$retour.="<th>Identité</th>\n";
+		$retour.="<th>Personnel</th>\n";
+		$retour.="<th>Portable</th>\n";
+		$retour.="<th>Professionnel</th>\n";
+		$retour.="</tr>\n";
+
+		$alt=1;
+		//foreach($tab_tel['responsable'] as $resp_legal => $tab_resp_legal) {
+		for($i=0;$i<count($tab_tel['responsable']);$i++) {
+			$alt=$alt*(-1);
+			$retour.="<tr class='lig$alt white_hover'>\n";
+			//$retour.="<tr class='".$tab_style[$alt]." white_hover'>\n";
+			$retour.="<td title='Numéro de responsable légal'>".$tab_tel['responsable'][$i]['resp_legal']."</td>\n";
+			$retour.="<td>".$tab_tel['responsable'][$i]['civ_nom_prenom']."</td>\n";
+			$retour.="<td>";
+			if(isset($tab_tel['responsable'][$i]['tel_pers'])) {$retour.=$tab_tel['responsable'][$i]['tel_pers'];}
+			$retour.="</td>\n";
+			$retour.="<td>";
+			if(isset($tab_tel['responsable'][$i]['tel_port'])) {$retour.=$tab_tel['responsable'][$i]['tel_port'];}
+			$retour.="</td>\n";
+			$retour.="<td>";
+			if(isset($tab_tel['responsable'][$i]['tel_prof'])) {$retour.=$tab_tel['responsable'][$i]['tel_prof'];}
+			$retour.="</td>\n";
+			$retour.="</tr>\n";
+		}
+
+		if(isset($tab_tel['eleve'])) {
+			$alt=$alt*(-1);
+			$retour.="<tr class='lig$alt white_hover'>\n";
+			$retour.="<td colspan='2'>Élève</td>\n";
+
+			$retour.="<td>";
+			if(isset($tab_tel['eleve']['tel_pers'])) {$retour.=$tab_tel['eleve']['tel_pers'];}
+			$retour.="</td>\n";
+
+			$retour.="<td>";
+			if(isset($tab_tel['eleve']['tel_port'])) {$retour.=$tab_tel['eleve']['tel_port'];}
+			$retour.="</td>\n";
+
+			$retour.="<td>";
+			if(isset($tab_tel['eleve']['tel_prof'])) {$retour.=$tab_tel['eleve']['tel_prof'];}
+			$retour.="</td>\n";
+
+			$retour.="</tr>\n";
+		}
+		$retour.="</table>\n";
+	}
+	return $retour;
+}
+
+/** Fonction destinée à retourner un tableau des dimensions et type d'une image après redimensionnement
+ *
+ * @param string $image chemin de l'image
+ * @param integer $dim_max_largeur la largeur maximale de l'image
+ * @param integer $dim_max_hauteur la hauteur maximale de l'image
+ * @param string $mode le type de redimensionnement:
+ *                      <vide> la hauteur ne doit pas dépasser $dim_max_hauteur, et la largeur retournées ne doit pas dépasser la $dim_max_largeur
+ *                      'largeur' on redimensionne en forçant la largeur à $dim_max_largeur
+ *                      'hauteur' on redimensionne en forçant la hauteur à $dim_max_hauteur
+ *
+ * @return array Tableau des dimensions et type
+ */
+function redim_img($image, $dim_max_largeur, $dim_max_hauteur, $mode="") {
+	$info_image=getimagesize($image);
+
+	$largeur=$info_image[0];
+	$hauteur=$info_image[1];
+
+	// calcule le ratio de redimensionnement
+	$ratio_l=$largeur/$dim_max_largeur;
+	$ratio_h=$hauteur/$dim_max_hauteur;
+	if($mode=="") {
+		$ratio=($ratio_l>$ratio_h)?$ratio_l:$ratio_h;
+	}
+	elseif($mode=="largeur") {
+		$ratio=$ratio_l;
+	}
+	else {
+		$ratio=$ratio_h;
+	}
+
+	// définit largeur et hauteur pour la nouvelle image
+	$nouvelle_largeur=round($largeur/$ratio);
+	$nouvelle_hauteur=round($hauteur/$ratio);
+
+	$type_img="";
+	if(isset($info_image[2])) {
+		// 1 = GIF, 2 = JPG, 3 = PNG, 4 = SWF, 5 = PSD, 6 = BMP, 7 = TIFF(orden de bytes intel), 8 = TIFF(orden de bytes motorola), 9 = JPC, 10 = JP2, 11 = JPX, 12 = JB2, 13 = SWC, 14 = IFF, 15 = WBMP, 16 = XBM.
+		$type_img=$info_image[2];
+	}
+
+	return array($nouvelle_largeur, $nouvelle_hauteur, $type_img);
+}
 ?>

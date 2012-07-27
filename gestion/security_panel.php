@@ -74,7 +74,7 @@ if (isset($_GET['action'])) {
 
 //**************** EN-TETE *****************
 $titre_page = "Sécurité Gepi";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();

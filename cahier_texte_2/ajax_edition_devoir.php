@@ -187,11 +187,15 @@ echo ("<select id=\"id_groupe_colonne_droite\" onChange=\"javascript:
 		\">");
 echo "<option value='-1'>choisissez un groupe</option>\n";
 foreach ($utilisateur->getGroupes() as $group_iter) {
-	echo "<option id='colonne_droite_select_group_option_".$group_iter->getId()."' value='".$group_iter->getId()."'";
-	if ($groupe->getId() == $group_iter->getId()) echo " SELECTED ";
-	echo ">";
-	echo $group_iter->getDescriptionAvecClasses();
-	echo "</option>\n";
+	$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$group_iter->getId()."' AND domaine='cahier_texte' AND visible='n';";
+	$test_grp_visib=mysql_query($sql);
+	if(mysql_num_rows($test_grp_visib)==0) {
+		echo "<option id='colonne_droite_select_group_option_".$group_iter->getId()."' value='".$group_iter->getId()."'";
+		if ($groupe->getId() == $group_iter->getId()) echo " SELECTED ";
+		echo ">";
+		echo $group_iter->getDescriptionAvecClasses();
+		echo "</option>\n";
+	}
 }
 echo "</select>&nbsp;&nbsp;";
 
@@ -215,6 +219,16 @@ echo " <button style='background-color:".$color_fond_notices['p']."' onclick=\"j
 echo "<button style='background-color:lightblue' onclick=\"javascript:
 						getWinBanqueTexte().setAjaxContent('./ajax_affichage_banque_texte.php',{});
 					\">Banque</button>\n";
+
+if(file_exists("./archives.php")) {
+	// Mon fichier contient juste:
+	/* <?php echo "<iframe src='../documents/archives/index.php' width='100%' height='100%'/>"; ?> */
+	echo "<button style='background-color:bisque' onclick=\"javascript:
+						getWinArchives().setAjaxContent('./archives.php',{});
+					\">Archives</button>\n";
+}
+
+echo "<a href=\"javascript:insere_texte_dans_ckeditor(document.getElementById('div_tableau_eleves').innerHTML)\" title='Insérer un tableau de la liste des élèves dans le texte de la notice'><img src='../images/icons/buddy.png' width='16' height='16' alt='Insérer un tableau de la liste des élèves dans le texte de la notice' /></a>";
 
 //echo "<br><br>\n";
 echo "<br />\n";
@@ -284,6 +298,42 @@ echo "
 			\">
 	Deplacer la notice</a>\n";
 
+//il faut échapper les single quote pour le contenu à importer
+$contenu_a_copier =  isset($_SESSION['ct_a_importer']) ? $_SESSION['ct_a_importer']->getContenu() : '';
+echo (" <a href=\"#\" onclick=\"javascript: /*contenu_a_copier est globale*/
+    if (window.contenu_a_copier == undefined) {
+        contenu_a_copier = '".addslashes(htmlspecialchars($contenu_a_copier))."';
+    }
+    CKEDITOR.instances['contenu'].insertHtml(contenu_a_copier);");
+echo("\"><img style=\"border: 0px;\" src=\"../images/icons/copy-16-gold.png");
+echo("\" alt=\"Coller\" title=\"Coller le contenu\" /></a>\n");
+
+//il faut échapper les single quote pour le contenu à importer
+$ct_a_importer_class = isset($_SESSION['ct_a_importer']) ? get_class($_SESSION['ct_a_importer']) : '';
+$id_ct_a_importer = isset($_SESSION['ct_a_importer']) ? $_SESSION['ct_a_importer']->getPrimaryKey() : '';
+//pour le contenu à copier, on regarde d'abord si on a du contenu en javascript puis dans la session php
+echo (" <a href=\"#\" onclick=\"javascript: /*ct_a_importer_class est globale*/
+    if (window.ct_a_importer_class == undefined) {
+        ct_a_importer_class='".$ct_a_importer_class."';
+        id_ct_a_importer='".$id_ct_a_importer."';
+    }
+    var hiddenField1 = document.createElement('input');
+    hiddenField1.setAttribute('type', 'hidden');
+    hiddenField1.setAttribute('name', 'ct_a_importer_class');
+    hiddenField1.setAttribute('value', ct_a_importer_class);
+    $('modification_compte_rendu_form').appendChild(hiddenField1);
+    var hiddenField2 = document.createElement('input');
+    hiddenField2.setAttribute('type', 'hidden');
+    hiddenField2.setAttribute('name', 'id_ct_a_importer');
+    hiddenField2.setAttribute('value', id_ct_a_importer);
+    $('modification_compte_rendu_form').appendChild(hiddenField2);
+    $('contenu').value = CKEDITOR.instances['contenu'].getData();
+    $('modification_compte_rendu_form').request({
+        onComplete : function (transport) {updateWindows('');}
+    });");
+echo("\"><img style=\"border: 0px;\" src=\"../images/icons/copy-16-gold-trombone.png");
+echo("\" alt=\"Coller\" title=\"Coller les fichiers joints\" /></a>\n");
+
 echo "</legend>\n";
 
 echo "<div id=\"dupplication_notice\" style='display: none;'></div>\n";
@@ -324,10 +374,6 @@ else {
 		<button type="submit" style='font-variant: small-caps;'
 			onClick="javascript:$('passer_a').value = 'passer_compte_rendu';">Enr. et
 		passer aux comptes rendus</button>
-
-		<input type='hidden' name='importer_notice' id='importer_notice' value='' />
-		<input type='hidden' name='id_ct_a_importer' id='id_ct_a_importer' value='' />
-		<button type='submit' id='affichage_import_notice' style='font-variant: small-caps; display:none; background-color:red;' onClick="javascript:$('importer_notice').value='y';">Importer la notice</button>
 
 		<?php
 /*
@@ -578,4 +624,9 @@ echo "<script type='text/javascript'>
 	dateChanged(calendarInstanciation);
 </script>\n";
 }
+
+echo "<div id='div_tableau_eleves' style='display:none'>\n";
+echo tableau_html_eleves_du_groupe($id_groupe, 3);
+echo "</div>\n";
+
 ?>

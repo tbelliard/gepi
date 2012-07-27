@@ -28,77 +28,18 @@ $niveau_arbo=2;
 $prefixe_arbo_acces_cdt="../..";
 
 
-/*
-// Resume session
-$resultat_session = $session_gepi->security_check();
-if ($resultat_session == 'c') {
-	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-	die();
-} else if ($resultat_session == '0') {
-	header("Location: ../logout.php?auto=1");
-	die();
-}
-
-$sql="SELECT 1=1 FROM droits WHERE id='/cahier_texte_2/export_cdt.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
-$sql="INSERT INTO droits SET id='/cahier_texte_2/export_cdt.php',
-administrateur='V',
-professeur='V',
-cpe='V',
-scolarite='V',
-eleve='F',
-responsable='F',
-secours='F',
-autre='F',
-description='Export de CDT',
-statut='';";
-$insert=mysql_query($sql);
-}
-
-if (!checkAccess()) {
-	header("Location: ../logout.php?auto=1");
-	die();
-}
-*/
 
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
 	die("Le module n'est pas activé.");
 }
 
-/*
-//$display_date_debut=isset($_POST['display_date_debut']) ? $_POST['display_date_debut'] : NULL;
-//$display_date_fin=isset($_POST['display_date_fin']) ? $_POST['display_date_fin'] : NULL;
-
-//=======================
-//Configuration du calendrier
-include($prefixe_arbo_acces_cdt."/lib/calendrier/calendrier.class.php");
-//$cal1 = new Calendrier("form_choix_edit", "display_date_debut");
-//$cal2 = new Calendrier("form_choix_edit", "display_date_fin");
-$cal1 = new Calendrier("formulaire", "display_date_debut");
-$cal2 = new Calendrier("formulaire", "display_date_fin");
-$cal3 = new Calendrier("formulaire", "date2_acces");
-//=======================
-
-//=======================
-// Pour éviter de refaire le choix des dates en revenant ici, on utilise la SESSION...
-$annee = strftime("%Y");
-$mois = strftime("%m");
-$jour = strftime("%d");
-$heure = strftime("%H");
-$minute = strftime("%M");
-
-if($mois>7) {$date_debut_tmp="01/09/$annee";} else {$date_debut_tmp="01/09/".($annee-1);}
-
-$action=isset($_POST['action']) ? $_POST['action'] : "export_zip";
-*/
 
 require($prefixe_arbo_acces_cdt."/cahier_texte_2/cdt_lib.php");
 
 //**************** EN-TETE *****************
 $titre_page = "Cahier de textes - Accès";
-//require_once($prefixe_arbo_acces_cdt."/lib/header.inc");
+
 $n_arbo=2;
 echo html_entete('Cahier de textes',$n_arbo,'n',$login_prof);
 //**************** FIN EN-TETE *************
@@ -114,25 +55,6 @@ echo html_entete('Cahier de textes',$n_arbo,'n',$login_prof);
 $gepiSchoolName=getSettingValue('gepiSchoolName');
 $gepiYear=getSettingValue('gepiYear');
 
-/*
-$dirname=get_user_temp_directory();
-if(!$dirname) {
-	echo "<p style='color:red;'>Problème avec le dossier temporaire.</p>\n";
-	require($prefixe_arbo_acces_cdt."/lib/footer.inc.php");
-	die();
-}
-
-if($_SESSION['statut']=='professeur') {
-	echo "</p>\n";
-}
-else {
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Retour au choix des classes ou du professeur</a>";
-	echo "</p>\n";
-}
-*/
-
-//echo "<div id='div_archive_zip'></div>\n";
-//echo "<p class='bold'>Affichage des cahiers de textes extraits</p>\n";
 
 // Récupérer le max de getSettingValue("begin_bookings") et $display_date_debut
 $tmp_tab=explode("/",$display_date_debut);
@@ -166,17 +88,6 @@ $current_ordre='ASC';
 	// Préparation de l'arborescence
 	//$nom_export="export_cdt_".$login_prof."_".strftime("%Y%m%d_%H%M%S");
 
-/*
-	if($action=='acces') {
-		$chemin_acces="documents/".$dirname."/".$nom_export."/index.html";
-		$res=enregistrement_creation_acces_cdt($chemin_acces, $description_acces, $date1_acces, $date2_acces, $id_groupe);
-		if(!$res) {
-			echo "<p style='color:red;'>Erreur lors de l'enregistrement de la mise en place de l'accès.</p>\n";
-			require($prefixe_arbo_acces_cdt."/lib/footer.inc.php");
-			die();
-		}
-	}
-*/
 
 	//arbo_export_cdt($nom_export, $dirname);
 

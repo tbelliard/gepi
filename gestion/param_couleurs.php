@@ -1056,7 +1056,7 @@ div.info_abs {
 
 //**************** EN-TETE *****************
 $titre_page = "Couleurs et Modèles GEPI";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 include("../lib/couleurs_ccm.php"); 

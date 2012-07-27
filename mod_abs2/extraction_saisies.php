@@ -98,7 +98,7 @@ $dojo=true;
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
 if ($affichage != 'ods') {// on affiche pas de html
-    require_once("../lib/header.inc");
+    require_once("../lib/header.inc.php");
     
     if ($traitement_csv_en_cours != 'true') {
 

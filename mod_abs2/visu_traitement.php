@@ -76,7 +76,7 @@ if(!$menu){
 }
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 if(!$menu){
@@ -164,7 +164,6 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	echo $saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom();
 	if ((getSettingValue("active_module_trombinoscopes")=='y') && $saisie->getEleve() != null) {
 	    $nom_photo = $saisie->getEleve()->getNomPhoto(1);
-	    //$photos = "../photos/eleves/".$nom_photo;
 	    $photos = $nom_photo;
 	    //if (($nom_photo == "") or (!(file_exists($photos)))) {
 	    if (($nom_photo == NULL) or (!(file_exists($photos)))) {
@@ -174,8 +173,8 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	    echo ' <img src="'.$photos.'" style="width: '.$valeur[0].'px; height: '.$valeur[1].'px; border: 0px; vertical-align: middle;" alt="" title="" />';
 	}
 	if ($utilisateur->getAccesFicheEleve($saisie->getEleve())) {
-	    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."' target='_blank'>";
-	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."' >";
+	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."&amp;onglet=responsable&amp;quitter_la_page=y' target='_blank'>";
+	    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."' >";
 	    echo ' (voir fiche)';
 	    echo "</a>";
 	}
@@ -425,6 +424,16 @@ if ($traitement->getModifiable()) {
 	echo '</p>';
     echo '</form>';
     echo '</td></tr>';
+}
+
+if(($_SESSION['statut']=='cpe')||($_SESSION['statut']=='scolarite')||
+((($_SESSION['statut']=='professeur')&&(getSettingAOui('GepiAccesGestElevesProf'))))) {
+	echo '<tr><td style=\"vertical-align:top;\">';
+	echo 'Contact&nbsp;: ';
+	echo '</td><td>';
+	echo tableau_tel_resp_ele($saisie->getEleve()->getLogin());
+	echo '</td></tr>';
+	//flush();
 }
 
 echo '</tbody>';

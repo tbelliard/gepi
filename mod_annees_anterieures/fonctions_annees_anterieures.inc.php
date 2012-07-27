@@ -14,6 +14,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 	//global $gepiPath;
 	global $gecko;
 
+	//echo "$annee_scolaire=$annee_scolaire<br />";
 
 	$poursuivre="y";
 
@@ -218,7 +219,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 				echo "<td class='td_note_classe'>$lig_mat->moymin</td>\n";
 				echo "<td class='td_note_classe'>$lig_mat->moyclasse</td>\n";
 				echo "<td class='td_note_classe'>$lig_mat->moymax</td>\n";
-				echo "<td class='td_note'>$lig_mat->note</td>\n";
+				echo "<td class='td_note bold'>$lig_mat->note</td>\n";
 				echo "<td>".htmlspecialchars(stripslashes($lig_mat->appreciation))."</td>\n";
 				echo "</tr>\n";
 			}
@@ -256,7 +257,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 				echo "<td class='td_note_classe'>$lig_aid->moyenne_aid</td>\n";
 				echo "<td class='td_note_classe'>$lig_aid->min_aid</td>\n";
 				echo "<td class='td_note_classe'>$lig_aid->max_aid</td>\n";
-				echo "<td class='td_note'>$lig_aid->note_aid";
+				echo "<td class='td_note bold'>$lig_aid->note_aid";
 				echo "</td>\n";
 				echo "<td>";
 				if (($lig_aid->note_sur_aid != 20) and ($lig_aid->note_aid !='-')) {
@@ -918,7 +919,7 @@ function check_acces_et_liste_periodes($logineleve,$id_classe) {
 
 		if($acces=="y") {
 
-			$tab_annee=array();
+			//$tab_annee=array();
 			$tab_periodes=array();
 		
 			$sql="SELECT * FROM eleves WHERE login='$logineleve';";
@@ -952,7 +953,8 @@ function check_acces_et_liste_periodes($logineleve,$id_classe) {
 				if(mysql_num_rows($res_annees)>0) {
 					$cpt=0;
 					while($lig_annee=mysql_fetch_object($res_annees)) {
-						$tab_annee[$cpt]['annee']=$lig_annee->annee;
+						//$tab_annee[$cpt]['annee']=$lig_annee->annee;
+						//$tab_annee[$cpt]['annee']['annee']=$lig_annee->annee;
 		
 						$sql="SELECT DISTINCT num_periode FROM archivage_disciplines WHERE ine='$ine' AND annee='$lig_annee->annee' ORDER BY num_periode";
 						//echo "$sql<br />";
@@ -963,7 +965,7 @@ function check_acces_et_liste_periodes($logineleve,$id_classe) {
 						}
 						else {
 							while($lig_per=mysql_fetch_object($res_periodes)) {
-								$tab_annee[$cpt]['annee']['max_per']=$lig_per->num_periode;
+								//$tab_annee[$cpt]['annee']['max_per']=$lig_per->num_periode;
 								$tab_periodes[]=$lig_annee->annee."|".$lig_per->num_periode;
 							}
 						}
@@ -1136,7 +1138,7 @@ function affiche_onglets_aa($logineleve, $id_classe, $tab_periodes, $indice_ongl
 	border-left: 1px solid black;
 	border-right: 1px solid black;
 
-	border-radius: 6px 20px;
+	border-radius: 6px 20px 0px 0px;
 	-moz-border-radius-topleft: 6px;
 	-moz-border-radius-topright: 20px;
 
@@ -1179,6 +1181,9 @@ function affiche_onglets_aa($logineleve, $id_classe, $tab_periodes, $indice_ongl
 	margin-left: 4px;
 */
 	/*padding: 3px;*/
+	color:black;
+	font-style: normal;
+	font-weight: normal;
 }
 </style>\n";
 
@@ -1290,7 +1295,8 @@ function affiche_onglets_aa($logineleve, $id_classe, $tab_periodes, $indice_ongl
 
 	echo "<script type='text/javascript'>
 	// <![CDATA[
-	function affiche_annees_anterieures(login_eleve,id_classe) {
+	//function affiche_annees_anterieures(login_eleve,id_classe) {
+	function affiche_annees_anterieures(login_eleve,id_classe,annee_scolaire) {
 		document.getElementById('titre_entete_annees_anterieures').innerHTML='Années antérieures de '+login_eleve;
 
 		if(document.getElementById('conteneur_t_annee_0')) {
@@ -1313,7 +1319,7 @@ function affiche_onglets_aa($logineleve, $id_classe, $tab_periodes, $indice_ongl
 			document.getElementById('t_periode_0').style.backgroundColor='white';
 		}
 
-		new Ajax.Updater($('contenu_onglet'),'../mod_annees_anterieures/ajax_bulletins.php?logineleve='+login_eleve+'&id_classe='+id_classe,{method: 'get'});
+		new Ajax.Updater($('contenu_onglet'),'../mod_annees_anterieures/ajax_bulletins.php?logineleve='+login_eleve+'&id_classe='+id_classe+'&annee_scolaire='+annee_scolaire,{method: 'get'});
 	}
 
 	function affiche_onglet_aa(logineleve,id_classe,annee_scolaire,num_periode,indice_onglet) {

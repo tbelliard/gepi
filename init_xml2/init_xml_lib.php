@@ -256,14 +256,17 @@ function info_debug($texte,$mode=0) {
 	$debug=0;
 	if($debug==1) {
 		if($mode==1) {
+			// On écrase le fichier s'il existait déjà
 			$fich_debug=fopen("../backup/".$dirname."/debug_maj_import2.txt","w+");
 			fwrite($fich_debug,"$step;$texte;".time()."\n");
 			fclose($fich_debug);
 		}
 		elseif($mode==2) {
+			// Affichage d'un lien pour accéder au fichier de debug depuis la page web
 			echo "<p><a href='../backup/".$dirname."/debug_maj_import2.txt' target='_blank'>Fichier debug</a></p>";
 		}
 		else {
+			// On complète le fichier
 			//$fich_debug=fopen("/tmp/debug_maj_import2.txt","a+");
 			$fich_debug=fopen("../backup/".$dirname."/debug_maj_import2.txt","a+");
 			fwrite($fich_debug,"$step;$texte;".time()."\n");

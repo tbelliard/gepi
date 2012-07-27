@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -127,7 +127,7 @@ if (isset($user_login) and ($user_login!='')) {
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des utilisateurs | Modifier un mot de passe";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 <p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a> | <a href="help.php">Aide</a></p>
@@ -142,7 +142,8 @@ if ($auth_mode != "gepi" && $gepiSettings['ldap_write_access'] != "yes") {
     die();
 }
 
-echo "<p class='grand'>Changement du mot de passe</p>\n";
+echo "<h2>Changement du mot de passe</h2>\n";
+
 if (mb_strtoupper($user_login) != mb_strtoupper($_SESSION['login'])) {
     if (($user_statut == 'professeur') or ($user_statut == 'cpe') or ($user_statut == 'responsable')) {
         // Mot de passe comportant des lettres et des chiffres
@@ -156,10 +157,23 @@ if (mb_strtoupper($user_login) != mb_strtoupper($_SESSION['login'])) {
 
 	echo add_token_field();
 
-    echo "<div class=\"norme\">";
-    echo "Identifiant : ".$user_login;
-    echo "<br />Nom : $user_nom&nbsp;&nbsp;&nbsp;Prénom : $user_prenom";
-	//echo "</span>\n";
+	echo "<table class='boireaus'>\n";
+	echo "<tr class='lig1'>\n";
+	echo "<th>Identifiant&nbsp;: </th>\n";
+	echo "<td>$user_login</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr class='lig-1'>\n";
+	echo "<th>Nom&nbsp;: </th>\n";
+	echo "<td>$user_nom</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr class='lig1'>\n";
+	echo "<th>Prénom&nbsp;: </th>\n";
+	echo "<td>$user_prenom</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+
     echo "<p>Il est fortement conseillé de ne pas choisir un mot de passe trop simple.
     <br /><br /><b>Attention : le mot de passe doit comporter ".getSettingValue("longmin_pwd")." caractères minimum. ";
     if ($flag == 1)
@@ -168,8 +182,8 @@ if (mb_strtoupper($user_login) != mb_strtoupper($_SESSION['login'])) {
         echo "Il doit comporter au moins une lettre et au moins un chiffre.";
     echo "</b></p>\n";
     echo "<br />\n";
-	echo "<table summary='Mot de passe'>\n<tr><td>Nouveau mot de passe (".getSettingValue("longmin_pwd")." caractères minimum) : </td>\n<td><input type='password' name='no_anti_inject_password' size='20' /></td></tr>\n";
-    echo "<tr><td>Nouveau mot de passe (à confirmer) :</td><td><input type='password' name='reg_password2' size='20' /></td></tr>\n";
+	echo "<table summary='Mot de passe'>\n<tr><td>Nouveau mot de passe (<em>".getSettingValue("longmin_pwd")." caractères minimum</em>) : </td>\n<td><input type='password' name='no_anti_inject_password' size='20' /></td></tr>\n";
+    echo "<tr><td>Nouveau mot de passe (<em>à confirmer</em>) :</td><td><input type='password' name='reg_password2' size='20' /></td></tr>\n";
     echo "</table><input type='hidden' name='valid' value=\"yes\" />\n";
     echo "<input type='hidden' name='user_login' value='".$user_login."' />\n";
 
@@ -183,12 +197,12 @@ if (mb_strtoupper($user_login) != mb_strtoupper($_SESSION['login'])) {
 			$lig_ine=mysql_fetch_object($res_ine);
 			if($lig_ine->no_gep!='') {
 				echo "<input type='hidden' name='ine_password' value=\"$lig_ine->no_gep\" />\n";
-				echo "<p><input type='checkbox' name='mdp_INE' id='mdp_INE' value='y' /> <label for='mdp_INE' style='cursor:pointer'>Utiliser le numéro national de l'élève (<i>INE</i>) comme mot de passe initial lorsqu'il est renseigné.</label></p>\n";
+				echo "<p><input type='checkbox' name='mdp_INE' id='mdp_INE' value='y' /> <label for='mdp_INE' style='cursor:pointer'>Utiliser le numéro national de l'élève (<em>INE</em>) comme mot de passe initial lorsqu'il est renseigné.</label></p>\n";
 			}
 		}
 	}
 
-	echo "</div></form>\n";
+	echo "</form>\n";
 } else {
     echo "<p>Pour des raisons de sécurité, veuillez utiliser le module \"mon compte\" accessible à partir de la page d'accueil pour changer votre mot de passe !</p>";
 }

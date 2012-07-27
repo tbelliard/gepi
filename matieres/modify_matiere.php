@@ -209,7 +209,7 @@ if (isset($_POST['isposted'])) {
 $themessage = 'Des modifications ont été effectuées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *******************************
 $titre_page = "Gestion des matières | Modifier une matière";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE ****************************
 ?>
 <form enctype="multipart/form-data" action="modify_matiere.php" method=post>

@@ -69,7 +69,7 @@
  */
 abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 {
-
+	
 	/**
 	 * Initializes internal state of BaseAbsenceAgregationDecompteQuery object.
 	 *
@@ -106,10 +106,14 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 	}
 
 	/**
-	 * Find object by primary key
+	 * Find object by primary key.
+	 * Propel uses the instance pool to skip the database if the object exists.
+	 * Go fast if the query is untouched.
+	 *
 	 * <code>
 	 * $obj = $c->findPk(array(12, 34), $con);
 	 * </code>
+	 *
 	 * @param     array[$eleve_id, $date_demi_jounee] $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
@@ -117,17 +121,74 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ((null !== ($obj = AbsenceAgregationDecomptePeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && $this->getFormatter()->isObjectFormatter()) {
+		if ($key === null) {
+			return null;
+		}
+		if ((null !== ($obj = AbsenceAgregationDecomptePeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
 			// the object is alredy in the instance pool
 			return $obj;
-		} else {
-			// the object has not been requested yet, or the formatter is not an object formatter
-			$criteria = $this->isKeepQuery() ? clone $this : $this;
-			$stmt = $criteria
-				->filterByPrimaryKey($key)
-				->getSelectStatement($con);
-			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceAgregationDecomptePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
+		if ($this->formatter || $this->modelAlias || $this->with || $this->select
+		 || $this->selectColumns || $this->asColumns || $this->selectModifiers
+		 || $this->map || $this->having || $this->joins) {
+			return $this->findPkComplex($key, $con);
+		} else {
+			return $this->findPkSimple($key, $con);
+		}
+	}
+
+	/**
+	 * Find object by primary key using raw SQL to go fast.
+	 * Bypass doSelect() and the object formatter by using generated code.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    AbsenceAgregationDecompte A model object, or null if the key is not found
+	 */
+	protected function findPkSimple($key, $con)
+	{
+		$sql = 'SELECT ELEVE_ID, DATE_DEMI_JOUNEE, MANQUEMENT_OBLIGATION_PRESENCE, NON_JUSTIFIEE, NOTIFIEE, RETARDS, RETARDS_NON_JUSTIFIES, MOTIFS_ABSENCES, MOTIFS_RETARDS, CREATED_AT, UPDATED_AT FROM a_agregation_decompte WHERE ELEVE_ID = :p0 AND DATE_DEMI_JOUNEE = :p1';
+		try {
+			$stmt = $con->prepare($sql);
+			$stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
+			$stmt->bindValue(':p1', $key[1], PDO::PARAM_STR);
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), $e);
+		}
+		$obj = null;
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$obj = new AbsenceAgregationDecompte();
+			$obj->hydrate($row);
+			AbsenceAgregationDecomptePeer::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
+		}
+		$stmt->closeCursor();
+
+		return $obj;
+	}
+
+	/**
+	 * Find object by primary key.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    AbsenceAgregationDecompte|array|mixed the result, formatted by the current formatter
+	 */
+	protected function findPkComplex($key, $con)
+	{
+		// As the query uses a PK condition, no limit(1) is necessary.
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
+		$stmt = $criteria
+			->filterByPrimaryKey($key)
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 	}
 
 	/**
@@ -142,10 +203,15 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{
+		if ($con === null) {
+			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		return $this
+		$stmt = $criteria
 			->filterByPrimaryKeys($keys)
-			->find($con);
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->format($stmt);
 	}
 
 	/**
@@ -159,7 +225,7 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 	{
 		$this->addUsingAlias(AbsenceAgregationDecomptePeer::ELEVE_ID, $key[0], Criteria::EQUAL);
 		$this->addUsingAlias(AbsenceAgregationDecomptePeer::DATE_DEMI_JOUNEE, $key[1], Criteria::EQUAL);
-		
+
 		return $this;
 	}
 
@@ -181,13 +247,13 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 			$cton0->addAnd($cton1);
 			$this->addOr($cton0);
 		}
-		
+
 		return $this;
 	}
 
 	/**
 	 * Filter the query on the eleve_id column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEleveId(1234); // WHERE eleve_id = 1234
@@ -215,7 +281,7 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the date_demi_jounee column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByDateDemiJounee('2011-03-14'); // WHERE date_demi_jounee = '2011-03-14'
@@ -257,7 +323,7 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the manquement_obligation_presence column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByManquementObligationPresence(true); // WHERE manquement_obligation_presence = true
@@ -283,7 +349,7 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the non_justifiee column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNonJustifiee(true); // WHERE non_justifiee = true
@@ -309,7 +375,7 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the notifiee column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNotifiee(true); // WHERE notifiee = true
@@ -335,7 +401,7 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the retards column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByRetards(1234); // WHERE retards = 1234
@@ -375,7 +441,7 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the retards_non_justifies column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByRetardsNonJustifies(1234); // WHERE retards_non_justifies = 1234
@@ -415,7 +481,7 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the motifs_absences column
-	 * 
+	 *
 	 * @param     array $motifsAbsences The values to use as filter.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
@@ -490,7 +556,7 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the motifs_retards column
-	 * 
+	 *
 	 * @param     array $motifsRetards The values to use as filter.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
@@ -565,7 +631,7 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the created_at column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
@@ -607,7 +673,7 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the updated_at column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
@@ -673,7 +739,7 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the Eleve relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -683,7 +749,7 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Eleve');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -691,7 +757,7 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -699,7 +765,7 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'Eleve');
 		}
-		
+
 		return $this;
 	}
 
@@ -707,7 +773,7 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 	 * Use the Eleve relation Eleve object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -734,8 +800,8 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 			$this->addCond('pruneCond0', $this->getAliasedColName(AbsenceAgregationDecomptePeer::ELEVE_ID), $absenceAgregationDecompte->getEleveId(), Criteria::NOT_EQUAL);
 			$this->addCond('pruneCond1', $this->getAliasedColName(AbsenceAgregationDecomptePeer::DATE_DEMI_JOUNEE), $absenceAgregationDecompte->getDateDemiJounee(), Criteria::NOT_EQUAL);
 			$this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
-	  }
-	  
+		}
+
 		return $this;
 	}
 

@@ -127,7 +127,7 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($_POST["
 
 //**************** EN-TETE *********************
 $titre_page = "Gestion des ".$nom_aid;
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 

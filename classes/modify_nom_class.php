@@ -209,6 +209,29 @@ if (isset($is_posted) and ($is_posted == '1')) {
 					$msg .= "<br/>Une erreur s'est produite lors de l'enregistrement des données de catégorie.";
 				}
 			}
+
+			$sql="SELECT login FROM utilisateurs WHERE etat='actif' AND statut='scolarite';";
+			$res_scol=mysql_query($sql);
+			if(mysql_num_rows($res_scol)>0) {
+				$nb_scol=0;
+				while($lig_scol=mysql_fetch_object($res_scol)) {
+					$sql="INSERT INTO j_scol_classes SET login='$lig_scol->login', id_classe='$id_classe';";
+					$insert=mysql_query($sql);
+					if(!$insert) {
+						$msg.="<br />Erreur lors de l'association du compte $lig_scol->login avec la classe.";
+					}
+					else {
+						$nb_scol++;
+					}
+				}
+				if($nb_scol==1) {
+					$msg.="<br />Un compte scolarité associé avec la classe.";
+				}
+				if($nb_scol>1) {
+					$msg.="<br />$nb_scol comptes scolarité associés avec la classe.";
+					$msg.="<br />Pour modifier la liste des comptes associés, suivez <a href='./scol_resp.php'>ce lien</a>.";
+				}
+			}
 		}
 
 		} else {
@@ -221,7 +244,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *******************************
 $titre_page = "Gestion des classes | Modifier les paramètres";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE ***************************
 
 $id_class_prec=0;
@@ -315,7 +338,11 @@ if(isset($id_classe)) {
 	$titre="Navigation";
 	$texte="";
 	$texte.="<img src='../images/icons/date.png' alt='' /> <a href='periodes.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Périodes</a><br />";
-	$texte.="<img src='../images/icons/edit_user.png' alt='' /> <a href='classes_const.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Elèves</a><br />";
+	include "../lib/periodes.inc.php";
+	if($nb_periode>1) {
+		// On a $nb_periode = Nombre de périodes + 1
+		$texte.="<img src='../images/icons/edit_user.png' alt='' /> <a href='classes_const.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Élèves</a><br />";
+	}
 	$texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignements</a><br />";
 	$texte.="<img src='../images/icons/document.png' alt='' /> <a href='../groupes/edit_class_grp_lot.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">config.simplifiée</a><br />";
 	//$texte.="<img src='../images/icons/configure.png' alt='' /> <a href='modify_nom_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramètres</a>";
@@ -640,6 +667,9 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 	</td>
 </tr>
 
+<?php
+if(isset($id_classe)) {
+?>
 <tr>
 	<td>&nbsp;&nbsp;&nbsp;</td>
 	<td style="font-variant: small-caps; vertical-align: top;">
@@ -663,6 +693,9 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 		?>
 	</td>
 </tr>
+<?php
+}
+?>
 <!-- ========================================= -->
 <tr>
 	<td colspan='3'>

@@ -105,7 +105,7 @@ function add_eleve($_login, $_nom, $_prenom, $_civilite, $_naissance, $_elenoet 
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation des élèves";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 <script type="text/javascript">

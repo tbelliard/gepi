@@ -72,7 +72,6 @@ header('Content-Type: text/html; charset=utf-8');
 
 //==============================
 // Dans le cas d'un appel via ajax, on ne met pas de header: affichage dans une infobulle
-//require_once("../lib/header.inc");
 //==============================
 
 // Vérifications de sécurité

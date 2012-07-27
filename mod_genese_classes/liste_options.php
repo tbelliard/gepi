@@ -48,7 +48,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Liste des options de classes existantes',
+description='Genèse des classes: Liste des options de classes existantes',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -112,6 +112,7 @@ if(isset($_POST['valider_param'])) {
 		$cpt=0;
 		for($i=0;$i<count($id_classe);$i++) {
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$i]' ORDER BY nom,prenom;";
+			//$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$i]' AND (e.date_sortie IS NULL OR e.date_sortie NOT LIKE '20%') ORDER BY nom,prenom;";
 			$res=mysql_query($sql);
 			while($lig=mysql_fetch_object($res)) {
 				$ligne="";
@@ -291,6 +292,7 @@ if(isset($_POST['valider_param'])) {
 
 		for($k=0;$k<count($id_classe);$k++) {
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$k]' ORDER BY nom,prenom;";
+			//$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$k]' AND (e.date_sortie IS NULL OR e.date_sortie NOT LIKE '20%') ORDER BY nom,prenom;";
 			$res=mysql_query($sql);
 			while($lig=mysql_fetch_object($res)) {
 				$ecriture=fwrite($fichier_content_xml,'<table:table-row table:style-name="ro2">');
@@ -362,21 +364,75 @@ if(isset($_POST['valider_param'])) {
 		$fermeture=fclose($fichier_content_xml);
 		
 		set_time_limit(3000);
-		//require_once("ss_zip.class.php");
-		require_once("../lib/ss_zip.class.php");
 
 		$fichier_liste="options_eleves_gepi_".suppr_accents(preg_replace("/'/","&apos;",preg_replace('/[" ]/','',$projet)))."_".date("Ymd_Hi");
 
-		$zip= new ss_zip('',6);
-		$zip->add_file("../temp/".$user_temp_directory."/content.xml",'content.xml');
-		$zip->add_file('liste_options_ods/meta.xml','meta.xml');
-		$zip->add_file('liste_options_ods/mimetype','mimetype');
-		$zip->add_file('liste_options_ods/settings.xml','settings.xml');
-		$zip->add_file('liste_options_ods/styles.xml','styles.xml');
-		$zip->add_file('liste_options_ods/META-INF/manifest.xml','META-INF/manifest.xml');
-		$zip->save("../temp/".$user_temp_directory."/$fichier_liste.zip");
+		if(file_exists("../lib/ss_zip.class.php")){
+			//require_once("ss_zip.class.php");
+			require_once("../lib/ss_zip.class.php");
 
-		rename("../temp/".$user_temp_directory."/$fichier_liste.zip","../temp/".$user_temp_directory."/".$fichier_liste.".ods");
+			$zip= new ss_zip('',6);
+			$zip->add_file("../temp/".$user_temp_directory."/content.xml",'content.xml');
+			$zip->add_file('liste_options_ods/meta.xml','meta.xml');
+			$zip->add_file('liste_options_ods/mimetype','mimetype');
+			$zip->add_file('liste_options_ods/settings.xml','settings.xml');
+			$zip->add_file('liste_options_ods/styles.xml','styles.xml');
+			$zip->add_file('liste_options_ods/META-INF/manifest.xml','META-INF/manifest.xml');
+			$zip->save("../temp/".$user_temp_directory."/$fichier_liste.zip");
+
+			rename("../temp/".$user_temp_directory."/$fichier_liste.zip","../temp/".$user_temp_directory."/".$fichier_liste.".ods");
+		}
+		else {
+
+			$path = path_niveau();
+			$chemin_temp = $path."temp/".get_user_temp_directory()."/";
+
+			if (!defined('PCLZIP_TEMPORARY_DIR') || constant('PCLZIP_TEMPORARY_DIR')!=$chemin_temp) {
+				@define( 'PCLZIP_TEMPORARY_DIR', $chemin_temp);
+			}
+
+			$nom_fic=$fichier_liste.".ods";
+			$chemin_stockage = $chemin_temp."/".$nom_fic;
+			$chemin_modele_ods='liste_options_ods';
+
+			$dossier_a_traiter=$chemin_temp."liste_options_".strftime("%Y%m%d%H%M%S");
+
+			@mkdir($dossier_a_traiter);
+			copy("../temp/".$user_temp_directory."/content.xml", $dossier_a_traiter."/content.xml");
+
+			@mkdir($dossier_a_traiter."/META-INF");
+
+			$tab_fich_tmp=array('META-INF/manifest.xml', 'settings.xml', 'meta.xml', 'mimetype', 'styles.xml');
+			for($loop=0;$loop<count($tab_fich_tmp);$loop++) {
+				copy($chemin_modele_ods.'/'.$tab_fich_tmp[$loop], $dossier_a_traiter."/".$tab_fich_tmp[$loop]);
+			}
+
+			require_once($path.'lib/pclzip.lib.php');
+
+			if ($chemin_stockage !='') {
+				if(file_exists("$chemin_stockage")) {unlink("$chemin_stockage");}
+
+				//echo "\$chemin_stockage=$chemin_stockage<br />";
+				//echo "\$dossier_a_traiter=$dossier_a_traiter<br />";
+
+				$archive = new PclZip($chemin_stockage);
+				$v_list = $archive->create($dossier_a_traiter,
+					  PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
+					  PCLZIP_OPT_ADD_PATH, '');
+
+				if ($v_list == 0) {
+					echo "<p style='color:red'>Erreur : ".$archive->errorInfo(TRUE)."</p>";
+				}
+				/*
+				else {
+					$msg="Archive zip créée&nbsp;: <a href='$chemin_stockage'>$chemin_stockage</a>";
+				}
+				*/
+
+				deltree($dossier_a_traiter);
+			}
+
+		}
 
 		$lien_fichier_ods="<p>Fichier&nbsp;: <a href='../temp/".$user_temp_directory."/".$fichier_liste.".ods'>".$fichier_liste.".ods</a></p>\n";
 
@@ -385,9 +441,9 @@ if(isset($_POST['valider_param'])) {
 
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-$titre_page = "Génèse classe: Liste des options";
+$titre_page = "Genèse classe: Liste des options";
 //echo "<div class='noprint'>\n";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 
@@ -624,7 +680,7 @@ echo "</form>\n";
 
 echo "<p>Cette page est destinée à générer un CSV des options à pointer en conseil de classe pour les préparatifs de conception de classe de l'année suivante.<br />
 Ce fichier correctement dûment sera réclamé à l'étape 4 'Importer les options futures des élèves d'après un CSV'.<br />
-Il conviendra d'ajouter des lignes de totaux (SOMME()) à l'aide du tableur si vous souhaitez faire un usage autre de ce fichier que l'import dans le module 'Génèse des classes'.<br />
+Il conviendra d'ajouter des lignes de totaux (SOMME()) à l'aide du tableur si vous souhaitez faire un usage autre de ce fichier que l'import dans le module 'Genèse des classes'.<br />
 Les champs comme login, elenoet, ele_id,... sont destinés à faciliter l'import en retour des choix dans les tables 'gc_*'.</p>\n";
 
 

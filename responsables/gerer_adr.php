@@ -87,7 +87,7 @@ if(isset($suppr_ad)) {
 
 //**************** EN-TETE *******************************
 $titre_page = "Gestion des adresses de responsables";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE ***************************
 
 //debug_var();

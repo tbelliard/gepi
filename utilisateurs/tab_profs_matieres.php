@@ -113,7 +113,7 @@ if(isset($_POST['user_login'])){
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des utilisateurs | Affectation des matières aux professeurs";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 /*
 if($msg!=""){

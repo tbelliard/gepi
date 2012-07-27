@@ -63,7 +63,7 @@ $style_specifique = 'mod_absences/styles/parents_absences';
 $javascript_specifique = '';
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 // On récupère du header les infos sur les enfants : $tab_tmp_ele

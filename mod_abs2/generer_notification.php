@@ -84,14 +84,20 @@ if ($notification->getTypeNotification() != AbsenceEleveNotificationPeer::TYPE_N
 
 if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER) {
     // Load the template
+    // $modele_lettre_parents=repertoire_modeles("absence_modele_lettre_parents.odt");
     $modele_lettre_parents=repertoire_modeles("absence_modele_lettre_parents.odt");
-    include_once '../orm/helpers/AbsencesNotificationHelper.php';
+	
+    //include_once '../orm/helpers/AbsencesNotificationHelper.php';
+	include_once 'lib/genere_table_notification.php';
     $TBS = AbsencesNotificationHelper::MergeNotification($notification, $modele_lettre_parents);
-
+    $TBS->MergeField('nb_impressions',1);
+	
     $notification->setDateEnvoi('now');
     $notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_EN_COURS);
     $notification->save();
-
+	
+$TBS->MergeBlock('notifications',$tableNotifications);
+		
     // Output as a download file (some automatic fields are merged here)
     $TBS->Show(OPENTBS_DOWNLOAD+TBS_EXIT, 'abs_notif_'.$notification->getId().'.odt');
     die();

@@ -217,7 +217,7 @@ $themessage  = 'Des notes ont été modifiées. Voulez-vous vraiment quitter san
 $message_enregistrement = "Les modifications ont été enregistrées !";
 //**************** EN-TETE *****************
 $titre_page = "Saisie des moyennes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();

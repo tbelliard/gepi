@@ -97,13 +97,15 @@ if(isset($_GET['id_groupe'])) {
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 $login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : (isset($_GET['login_prof']) ? $_GET['login_prof'] : NULL);
 
-$action=isset($_POST['action']) ? $_POST['action'] : "export_zip";
+$action=isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : "export_zip");
+
+$inclure_doc_joints=isset($_POST['inclure_doc_joints']) ? $_POST['inclure_doc_joints'] : "n";
 
 $tab_fichiers_a_zipper=array();
 
 //**************** EN-TETE *****************
 $titre_page = "Cahier de textes - Export";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************
 
 //debug_var();
@@ -346,6 +348,8 @@ if(!isset($id_groupe)) {
 
 				echo "<p><b>Action à réaliser&nbsp;:</b><br />\n";
 				echo "<input type='radio' name='action' id='action_export_zip' value='export_zip' checked onchange='modif_param_affichage()' /><label for='action_export_zip'> Générer un export de cahier(s) de textes et le zipper</label><br />\n";
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' name='inclure_doc_joints' id='inclure_doc_joints' value='y' /><label for='inclure_doc_joints'> Inclure les documents joints dans l'archive ZIP</label>\n";
+				echo "<br />\n";
 				echo "ou<br />\n";
 				echo "Mettre en place un accès sans authentification aux cahier(s) de textes choisis<br />(<i>pour par exemple, permettre à un inspecteur de consulter les cahiers de textes d'un professeur lors d'une inspection</i>)";
 				echo "<br />\n";
@@ -486,6 +490,9 @@ if(!isset($id_groupe)) {
 	
 				echo "<p><b>Action à réaliser&nbsp;:</b><br />\n";
 				echo "<input type='radio' name='action' id='action_export_zip' value='export_zip' checked onchange='modif_param_affichage()' /><label for='action_export_zip'> Générer un export de cahier(s) de textes et le zipper</label><br />\n";
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' name='inclure_doc_joints' id='inclure_doc_joints' value='y' /><label for='inclure_doc_joints'> Inclure les documents joints dans l'archive ZIP</label>\n";
+				echo "<br />\n";
+				echo "ou<br />\n";
 				echo "<input type='radio' name='action' id='action_acces' value='acces' onchange='modif_param_affichage()' /><label for='action_acces'> Mettre en place un accès sans authentification aux cahier(s) de textes choisis<br />(<i>pour par exemple, permettre à un inspecteur de consulter les cahiers de textes d'un professeur lors d'une inspection</i>)</label><br />L'accès mis en place est 'statique', c'est-à-dire que seules les notices saisies à ce jour pourront être consultées.";
 
 				/*
@@ -501,7 +508,7 @@ if(!isset($id_groupe)) {
 				echo "<textarea name='description_acces' cols='50' rows='4'></textarea>";
 				echo "</p>";
 				echo "<p>Date à laquelle vous souhaitez supprimer l'accès&nbsp;: ";
-				echo "<input type='text' name='date2_acces' size='10' value=\"".$display_date_fin."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
+				echo "<input type='text' name='date2_acces' id='date2_acces' size='10' value=\"".$display_date_fin."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
 				echo "<a href=\"#calend\" onClick=\"".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 				echo "<br />\n";
 				echo "(<i>la suppression n'est pas automatique à la date indiquée, mais fixer une date peut aider à savoir si l'accès doit être conservé ou non</i>)</p>\n";
@@ -563,7 +570,7 @@ if(!isset($id_groupe)) {
 		echo "<p class='bold'>Choix des matières/enseignements&nbsp;:</p>\n";
 	
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
-	
+
 		$cpt=0;
 		$groups=get_groups_for_prof($_SESSION['login']);
 		echo "<table class='boireaus' summary='Choix des enseignements'>\n";
@@ -613,7 +620,14 @@ if(!isset($id_groupe)) {
 		echo "<br />\n";
 		echo " (<i>Veillez à respecter le format jj/mm/aaaa</i>)</label>\n";
 		echo "</p>\n";
-	
+
+		echo "<p>\n";
+		echo "<input type='radio' name='action' id='action_export_html' value='export_html' /><label for='action_export_html'> Affichage HTML simple</label>\n";
+		echo "<br />\n";
+		echo "<input type='radio' name='action' id='action_export_zip' value='export_zip' checked /><label for='action_export_zip'> Génération d'un ZIP</label>\n";
+		echo "(<em><input type='checkbox' name='inclure_doc_joints' id='inclure_doc_joints' value='y' /><label for='inclure_doc_joints'> Inclure les documents joints dans l'archive ZIP</label></em>)\n";
+		echo "</p>\n";
+
 		echo "<p><input type='submit' value='Valider' /></p>\n";
 		echo "</form>\n";
 	
@@ -730,16 +744,6 @@ if(($action=='acces')||($action=='acces2')) {
 	}
 
 	$description_acces=isset($_POST['description_acces']) ? $_POST['description_acces'] : "Test";
-
-	/*
-	$chemin_acces="documents/".$dirname."/index.html";
-	$res=enregistrement_creation_acces_cdt($chemin_acces, $description_acces, $date1_acces, $date2_acces, $id_groupe);
-	if(!$res) {
-		echo "<p style='color:red;'>Erreur lors de l'enregistrement de la mise en place de l'accès.</p>\n";
-		require("../lib/footer.inc.php");
-		die();
-	}
-	*/
 }
 
 if($action=='acces2') {
@@ -865,7 +869,9 @@ if(($_SESSION['statut']=='professeur')||(isset($login_prof))) {
 		}
 	}
 
-	arbo_export_cdt($nom_export, $dirname);
+	if($action!='export_html') {
+		arbo_export_cdt($nom_export, $dirname);
+	}
 
 	$chaine_id_groupe="";
 
@@ -926,16 +932,17 @@ if(($_SESSION['statut']=='professeur')||(isset($login_prof))) {
 		}
 	</script>\n";
 	//================================================================
-	
-	$html=html_entete("Index des cahiers de textes",0).$html;
-	$html.=html_pied_de_page();
-	
-	$f=fopen($dossier_export."/index.html","w+");
-	fwrite($f,$html);
-	fclose($f);
-	
-	$tab_fichiers_a_zipper[]=$dossier_export."/index.html";
 
+	if($action!='export_html') {
+		$html=html_entete("Index des cahiers de textes",0).$html;
+		$html.=html_pied_de_page();
+	
+		$f=fopen($dossier_export."/index.html","w+");
+		fwrite($f,$html);
+		fclose($f);
+
+		$tab_fichiers_a_zipper[]=$dossier_export."/index.html";
+	}
 }
 else {
 	// C'est une liste de classes/enseignements qui a été choisie
@@ -1087,20 +1094,23 @@ else {
 		</script>\n";
 		//================================================================
 		
-		$html=html_entete("Index des cahiers de textes de ".$nom_classe[$j],0).$html;
-		$html.=html_pied_de_page();
+		if($action!='export_html') {
+			$html=html_entete("Index des cahiers de textes de ".$nom_classe[$j],0).$html;
+			$html.=html_pied_de_page();
 
-		$f=fopen($dossier_export."/".$nom_fichier_index[$id_classe[$j]],"w+");
-		fwrite($f,$html);
-		fclose($f);
+			$f=fopen($dossier_export."/".$nom_fichier_index[$id_classe[$j]],"w+");
+			fwrite($f,$html);
+			fclose($f);
 		
-		$tab_fichiers_a_zipper[]=$dossier_export."/".$nom_fichier_index[$id_classe[$j]];
-
+			$tab_fichiers_a_zipper[]=$dossier_export."/".$nom_fichier_index[$id_classe[$j]];
+		}
 	}
 
 }
 
 echo "<hr width='200px' />\n";
+
+$tab_chemin_url=array();
 
 // Dans la page générée, permettre de masquer via JavaScript telle ou telle catégorie Notices ou devoirs,...
 for($i=0;$i<count($id_groupe);$i++) {
@@ -1109,7 +1119,6 @@ for($i=0;$i<count($id_groupe);$i++) {
 
 	$tab_dates=array();
 	$tab_dates2=array();
-	$tab_chemin_url=array();
 
 	$tab_notices=array();
 	$tab_dev=array();
@@ -1190,29 +1199,56 @@ for($i=0;$i<count($id_groupe);$i++) {
 </script>\n";
 	//================================================================
 
-	$html=html_entete("CDT: ".$nom_detaille_groupe_non_html[$id_groupe[$i]],1).$html;
-	$html.=html_pied_de_page();
+	if($action!='export_html') {
+		$html=html_entete("CDT: ".$nom_detaille_groupe_non_html[$id_groupe[$i]],1).$html;
+		$html.=html_pied_de_page();
 
-	$f=fopen($dossier_export."/cahier_texte/".$nom_fichier[$id_groupe[$i]],"w+");
-	fwrite($f,$html);
-	fclose($f);
+		$f=fopen($dossier_export."/cahier_texte/".$nom_fichier[$id_groupe[$i]],"w+");
+		fwrite($f,$html);
+		fclose($f);
 
-	$tab_fichiers_a_zipper[]=$dossier_export."/cahier_texte/".$nom_fichier[$id_groupe[$i]];
+		$tab_fichiers_a_zipper[]=$dossier_export."/cahier_texte/".$nom_fichier[$id_groupe[$i]];
+		// In n'y a qu'un fichier url_documents.txt par archive zip... il est commun à tous les groupes
+		/*
+		if(count($tab_chemin_url)>0) {
+			$fichier_url=$dossier_export."/url_documents.txt";
+			$f=fopen($fichier_url,"a+");
+			for($k=0;$k<count($tab_chemin_url);$k++) {
+				fwrite($f,$tab_chemin_url[$k]."\n");
 
-	if(count($tab_chemin_url)) {
+				//if(file_exists($tab_chemin_url[$k])) {
+				//	$tab_fichiers_a_zipper[]=$tab_chemin_url[$k];
+				//}
+
+			}
+			fclose($f);
+
+			$tab_fichiers_a_zipper[]=$fichier_url;
+		}
+		*/
+	}
+	echo "<hr width='200px' />\n";
+}
+
+if($action!='export_html') {
+	if(count($tab_chemin_url)>0) {
 		$fichier_url=$dossier_export."/url_documents.txt";
 		$f=fopen($fichier_url,"a+");
 		for($k=0;$k<count($tab_chemin_url);$k++) {
 			fwrite($f,$tab_chemin_url[$k]."\n");
+
+			/*
+			if(file_exists($tab_chemin_url[$k])) {
+				$tab_fichiers_a_zipper[]=$tab_chemin_url[$k];
+			}
+			*/
+
 		}
 		fclose($f);
 
 		$tab_fichiers_a_zipper[]=$fichier_url;
 	}
-
-	echo "<hr width='200px' />\n";
 }
-
 
 // Générer des fichiers URL_documents.txt (URL seule), URL_documents.csv (chemin;URL), script bash/batch/auto-it pour télécharger en créant/parcourant l'arborescence des documents
 
@@ -1220,12 +1256,14 @@ if(isset($_SERVER['HTTP_REFERER'])) {
 	$tmp=explode("?",$_SERVER['HTTP_REFERER']);
 	$chemin_site=preg_replace("#/cahier_texte_2#","",dirname($tmp[0]));
 
-	$fichier_url_site=$dossier_export."/url_site.txt";
-	$f=fopen($fichier_url_site,"a+");
-	fwrite($f,$chemin_site."\n");
-	fclose($f);
+	if($action!='export_html') {
+		$fichier_url_site=$dossier_export."/url_site.txt";
+		$f=fopen($fichier_url_site,"a+");
+		fwrite($f,$chemin_site."\n");
+		fclose($f);
 
-	$tab_fichiers_a_zipper[]=$fichier_url_site;
+		$tab_fichiers_a_zipper[]=$fichier_url_site;
+	}
 }
 
 if($action=='export_zip') {
@@ -1242,6 +1280,18 @@ if($action=='export_zip') {
 		echo "</p>\n";
 	}
 	else {
+		if($inclure_doc_joints=='y') {
+			//echo "count(\$tab_chemin_url)=".count($tab_chemin_url)."<br />";
+			if(count($tab_chemin_url)>0) {
+				for($k=0;$k<count($tab_chemin_url);$k++) {
+					//echo "Test de l'existence de $tab_chemin_url[$k]<br />";
+					if(file_exists($tab_chemin_url[$k])) {
+						//echo "Ajout de $tab_chemin_url[$k]<br />";
+						$archive->add($tab_chemin_url[$k],PCLZIP_OPT_REMOVE_PATH, '../', PCLZIP_OPT_ADD_PATH, $nom_export."/");
+					}
+				}
+			}
+		}
 		$basename_fichier_archive=basename($fichier_archive);
 		echo "<p class='bold'>Archive des cahiers de textes extraits&nbsp;: <a href='$fichier_archive'>$basename_fichier_archive</a></p>\n";
 	

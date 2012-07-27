@@ -134,7 +134,7 @@ if(isset($_POST['recopier'])) {
 
 //**************** EN-TETE *****************
 $titre_page = "Carnet de notes - Recopie des moyennes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 /*

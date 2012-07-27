@@ -268,7 +268,7 @@ elseif($mode=='responsables') {
 else {
 	$titre_page = "Gestion des utilisateurs";
 }
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************************
 
 //echo "\$total_photo=$total_photo<br />\$nb_succes_photos=$nb_succes_photos<br />\$nb_photos_proposees=$nb_photos_proposees<br />";

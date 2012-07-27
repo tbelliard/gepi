@@ -163,7 +163,7 @@ if((isset($_POST['suppr_incident']))&&($_SESSION['statut']!='professeur')) {
 
 //**************** EN-TETE *****************
 $titre_page = "Discipline: Incidents sans protagonistes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //echo "\$gepiPath=$gepiPath<br />";

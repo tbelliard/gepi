@@ -25,6 +25,12 @@ abstract class BaseMef extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -72,6 +78,12 @@ abstract class BaseMef extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $elevesScheduledForDeletion = null;
 
 	/**
 	 * Get the [id] column value.
@@ -356,18 +368,18 @@ abstract class BaseMef extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = MefQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				MefQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -419,7 +431,7 @@ abstract class BaseMef extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -442,27 +454,24 @@ abstract class BaseMef extends BaseObject  implements Persistent
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = MefPeer::ID;
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
+				if ($this->isNew()) {
+					$this->doInsert($con);
+				} else {
+					$this->doUpdate($con);
+				}
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
-				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(MefPeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.MefPeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows = 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
-				} else {
-					$affectedRows = MefPeer::doUpdate($this, $con);
+			if ($this->elevesScheduledForDeletion !== null) {
+				if (!$this->elevesScheduledForDeletion->isEmpty()) {
+					EleveQuery::create()
+						->filterByPrimaryKeys($this->elevesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->elevesScheduledForDeletion = null;
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collEleves !== null) {
@@ -478,6 +487,98 @@ abstract class BaseMef extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = MefPeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . MefPeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(MefPeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = 'ID';
+		}
+		if ($this->isColumnModified(MefPeer::MEF_CODE)) {
+			$modifiedColumns[':p' . $index++]  = 'MEF_CODE';
+		}
+		if ($this->isColumnModified(MefPeer::LIBELLE_COURT)) {
+			$modifiedColumns[':p' . $index++]  = 'LIBELLE_COURT';
+		}
+		if ($this->isColumnModified(MefPeer::LIBELLE_LONG)) {
+			$modifiedColumns[':p' . $index++]  = 'LIBELLE_LONG';
+		}
+		if ($this->isColumnModified(MefPeer::LIBELLE_EDITION)) {
+			$modifiedColumns[':p' . $index++]  = 'LIBELLE_EDITION';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO mef (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case 'ID':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case 'MEF_CODE':
+						$stmt->bindValue($identifier, $this->mef_code, PDO::PARAM_INT);
+						break;
+					case 'LIBELLE_COURT':
+						$stmt->bindValue($identifier, $this->libelle_court, PDO::PARAM_STR);
+						break;
+					case 'LIBELLE_LONG':
+						$stmt->bindValue($identifier, $this->libelle_long, PDO::PARAM_STR);
+						break;
+					case 'LIBELLE_EDITION':
+						$stmt->bindValue($identifier, $this->libelle_edition, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -797,10 +898,12 @@ abstract class BaseMef extends BaseObject  implements Persistent
 		$copyObj->setLibelleLong($this->getLibelleLong());
 		$copyObj->setLibelleEdition($this->getLibelleEdition());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getEleves() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -808,6 +911,8 @@ abstract class BaseMef extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -857,7 +962,7 @@ abstract class BaseMef extends BaseObject  implements Persistent
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * Avoids crafting an 'init[$relationName]s' method name
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -939,6 +1044,30 @@ abstract class BaseMef extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of Eleve objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $eleves A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setEleves(PropelCollection $eleves, PropelPDO $con = null)
+	{
+		$this->elevesScheduledForDeletion = $this->getEleves(new Criteria(), $con)->diff($eleves);
+
+		foreach ($eleves as $eleve) {
+			// Fix issue with collection modified by reference
+			if ($eleve->isNew()) {
+				$eleve->setMef($this);
+			}
+			$this->addEleve($eleve);
+		}
+
+		$this->collEleves = $eleves;
+	}
+
+	/**
 	 * Returns the number of related Eleve objects.
 	 *
 	 * @param      Criteria $criteria
@@ -971,8 +1100,7 @@ abstract class BaseMef extends BaseObject  implements Persistent
 	 * through the Eleve foreign key attribute.
 	 *
 	 * @param      Eleve $l Eleve
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Mef The current object (for fluent API support)
 	 */
 	public function addEleve(Eleve $l)
 	{
@@ -980,9 +1108,19 @@ abstract class BaseMef extends BaseObject  implements Persistent
 			$this->initEleves();
 		}
 		if (!$this->collEleves->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collEleves[]= $l;
-			$l->setMef($this);
+			$this->doAddEleve($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	Eleve $eleve The eleve object to add.
+	 */
+	protected function doAddEleve($eleve)
+	{
+		$this->collEleves[]= $eleve;
+		$eleve->setMef($this);
 	}
 
 	/**
@@ -1036,25 +1174,6 @@ abstract class BaseMef extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(MefPeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseMef

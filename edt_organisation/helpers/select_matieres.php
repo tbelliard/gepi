@@ -42,7 +42,7 @@ for($i = 0; $i < $nbre; $i++) {
 		<option value="' . $matiere[$i] . '"' . $selected . '>' . $nom[$i] . '</option>';
 }
 echo '
-	<select name ="' . $increment . '"'.$warning .'>
+	<select name ="' . $increment . '"'.$warning .' onmouseover="if(document.getElementById(\'texte_nomGepi'.$l.'\')) {document.getElementById(\'texte_nomGepi'.$l.'\').style.backgroundColor=\'yellow\'}" onmouseout="if(document.getElementById(\'texte_nomGepi'.$l.'\')) {document.getElementById(\'texte_nomGepi'.$l.'\').style.backgroundColor=\'\'}">
 		<option value="aucun">Liste des matières</option>';
 
 echo $options;

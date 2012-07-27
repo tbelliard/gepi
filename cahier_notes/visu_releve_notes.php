@@ -842,7 +842,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 
 //**************** EN-TETE *******************************
 if (!isset($_POST['display_entete'])) $titre_page = "Visualisation des relevés de notes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE ****************************
 
 //echo "\$choix_edit=$choix_edit<br />";
@@ -898,7 +898,7 @@ function ouvre_fenetre(id) {
 if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
 
 	if ((($_SESSION['statut'] == 'scolarite') AND (getSettingValue("GepiAccesReleveScol") == "yes"))
-    	OR (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") == "yes"))
+    	OR (($_SESSION['statut'] == 'cpe') AND ((getSettingValue("GepiAccesReleveCpe") == "yes") OR (getSettingValue("GepiAccesReleveCpeTousEleves") == "yes")))
     	OR ($_SESSION["statut"] == 'autre')
     	) {
 
@@ -924,7 +924,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 				echo " | Total : ".$nombreligne." classes\n";
 			echo "</strong>\n";
 			if(((($_SESSION['statut'] == 'scolarite') AND (getSettingValue("GepiAccesReleveScol") == "yes"))
-			OR (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") == "yes"))
+			OR (($_SESSION['statut'] == 'cpe') AND ((getSettingValue("GepiAccesReleveCpe") == "yes") OR (getSettingValue("GepiAccesReleveCpeTousEleves") == "yes")))
 			OR ($_SESSION['statut'] == 'autre')
 			) AND empty($format))
 				{
@@ -996,7 +996,7 @@ if (!isset($id_classe) and (!isset($id_groupe)) and $_SESSION['statut'] != "resp
 // rajout christian
 			if(
 				((($_SESSION['statut'] == 'scolarite') AND (getSettingValue("GepiAccesReleveScol") == "yes"))
-					OR (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") == "yes")))
+					OR (($_SESSION['statut'] == 'cpe') AND ((getSettingValue("GepiAccesReleveCpe") == "yes") OR (getSettingValue("GepiAccesReleveCpeTousEleves") == "yes"))))
 				AND $format == "pdf")
 			{
 				// echo "<form method='post' action='visu_releve_notes.php' name='imprime_pdf'>\n";
@@ -1502,7 +1502,7 @@ function aff_lig_adresse_parent(mode){
 			die();
 		} else if (
 			(($_SESSION['statut'] == "scolarite") AND (getSettingValue("GepiAccesReleveScol") != "yes"))
-			OR (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") != "yes"))
+			OR (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") != "yes") AND (getSettingValue("GepiAccesReleveCpeTousEleves") != "yes"))
 			OR ($_SESSION['statut'] == 'responsable' AND getSettingValue("GepiAccesReleveParent") != "yes")
 			OR ($_SESSION['statut'] == 'eleve' AND getSettingValue("GepiAccesReleveEleve") != "yes")) {
 			tentative_intrusion(2, "Tentative d'un utilisateur d'accéder aux relevés de notes sans y être autorisé.");
@@ -1677,6 +1677,7 @@ function aff_lig_adresse_parent(mode){
 						echo "<select size=\"1\" id=\"select_login_eleve\" name=\"login_eleve\" onclick=\"active(".$indice.")\">\n";
 //echo "<select size=\"1\" name=\"login_eleve\" onchange=\"active(".$indice.")\" onfocus=\"active(".$indice.")\">\n";
 
+						// Il faudrait filtrer la liste des élèves dans le cas cpe avec GepiAccesReleveCpe="yes", mais pas "GepiAccesReleveCpeTousEleves"="yes"
 			 			if (!$current_group) {
 							$call_eleve = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe = '$id_classe' and j.login=e.login) order by nom");
 							$nombreligne = mysql_num_rows($call_eleve);
@@ -2042,7 +2043,7 @@ echo "</form>\n";
 		die();
 	} else if (
     	(($_SESSION['statut'] == 'scolarite') AND (getSettingValue("GepiAccesReleveScol") != "yes"))
-    	 OR (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") != "yes"))
+    	 OR (($_SESSION['statut'] == 'cpe') AND (getSettingValue("GepiAccesReleveCpe") != "yes") AND (getSettingValue("GepiAccesReleveCpeTousEleves") != "yes"))
     	 OR ($_SESSION['statut'] == 'responsable' AND getSettingValue("GepiAccesReleveParent") != "yes")
     	 OR ($_SESSION['statut'] == 'eleve' AND getSettingValue("GepiAccesReleveEleve") != "yes")) {
 		tentative_intrusion(3, "Tentative d'un utilisateur d'accéder aux relevés de notes sans y être autorisé, avec passage volontaire de paramètres à la page.");

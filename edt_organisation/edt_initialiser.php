@@ -58,7 +58,7 @@ $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 
 // On insère l'entête de Gepi
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 
 // On ajoute le menu EdT
 require_once("./menu.inc.php"); ?>
@@ -94,6 +94,7 @@ if ($aff_reglages == "oui") {
 	<br />&nbsp;-&nbsp;<a href=\"./admin_config_semaines.php?action=visualiser\">le type de semaine</a> (paire/impaire, A/B/C, 1/2,...).
 	<br />&nbsp;-&nbsp;<a href=\"./admin_horaire_ouverture.php?action=visualiser\">les horaires de l'&eacute;tablissement</a>.</p>
 
+	<p>Voir <a href='http://www.sylogix.org/projects/gepi/wiki/Edt_init_auto'>http://www.sylogix.org/projects/gepi/wiki/Edt_init_auto</a></p>
 <hr />
 
 	<p>Il faut renseigner le calendrier en cliquant sur le menu &agrave; gauche. Toutes les p&eacute;riodes
@@ -147,6 +148,16 @@ if ($aff_reglages2 == "oui") {
 		<br />
 	</div>
  		';
+
+	if(file_exists("edt_xml.php")) {
+		echo '
+ 	<div id="lien" style="background: #fefefe; margin-left: 200px; width: 400px; margin-top:1em;">
+ 		<br />
+		<p class="edt_lien"><a href="./edt_xml.php">Générer un export de type UnDeuxTemps à partir d\'un export EXP_COURS.xml d\'IndexEducation.</a></p>
+		<br />
+	</div>
+';
+	}
 
  //<div id=\"lien\"><a href=\"./index_edt.php?initialiser=ok&xml=ok\">Cliquer ici pour une initialisation par fichiers xml (type export STSWeb)</a></div>
 }

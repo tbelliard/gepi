@@ -12,7 +12,7 @@
  * @method     AbsenceEleveTypeQuery orderBySousResponsabiliteEtablissement($order = Criteria::ASC) Order by the sous_responsabilite_etablissement column
  * @method     AbsenceEleveTypeQuery orderByManquementObligationPresence($order = Criteria::ASC) Order by the manquement_obligation_presence column
  * @method     AbsenceEleveTypeQuery orderByRetardBulletin($order = Criteria::ASC) Order by the retard_bulletin column
- * @method     AbsenceEleveTypeQuery orderByTypeSaisie($order = Criteria::ASC) Order by the type_saisie column
+ * @method     AbsenceEleveTypeQuery orderByModeInterface($order = Criteria::ASC) Order by the mode_interface column
  * @method     AbsenceEleveTypeQuery orderByCommentaire($order = Criteria::ASC) Order by the commentaire column
  * @method     AbsenceEleveTypeQuery orderByIdLieu($order = Criteria::ASC) Order by the id_lieu column
  * @method     AbsenceEleveTypeQuery orderBySortableRank($order = Criteria::ASC) Order by the sortable_rank column
@@ -25,7 +25,7 @@
  * @method     AbsenceEleveTypeQuery groupBySousResponsabiliteEtablissement() Group by the sous_responsabilite_etablissement column
  * @method     AbsenceEleveTypeQuery groupByManquementObligationPresence() Group by the manquement_obligation_presence column
  * @method     AbsenceEleveTypeQuery groupByRetardBulletin() Group by the retard_bulletin column
- * @method     AbsenceEleveTypeQuery groupByTypeSaisie() Group by the type_saisie column
+ * @method     AbsenceEleveTypeQuery groupByModeInterface() Group by the mode_interface column
  * @method     AbsenceEleveTypeQuery groupByCommentaire() Group by the commentaire column
  * @method     AbsenceEleveTypeQuery groupByIdLieu() Group by the id_lieu column
  * @method     AbsenceEleveTypeQuery groupBySortableRank() Group by the sortable_rank column
@@ -57,7 +57,7 @@
  * @method     AbsenceEleveType findOneBySousResponsabiliteEtablissement(string $sous_responsabilite_etablissement) Return the first AbsenceEleveType filtered by the sous_responsabilite_etablissement column
  * @method     AbsenceEleveType findOneByManquementObligationPresence(string $manquement_obligation_presence) Return the first AbsenceEleveType filtered by the manquement_obligation_presence column
  * @method     AbsenceEleveType findOneByRetardBulletin(string $retard_bulletin) Return the first AbsenceEleveType filtered by the retard_bulletin column
- * @method     AbsenceEleveType findOneByTypeSaisie(string $type_saisie) Return the first AbsenceEleveType filtered by the type_saisie column
+ * @method     AbsenceEleveType findOneByModeInterface(string $mode_interface) Return the first AbsenceEleveType filtered by the mode_interface column
  * @method     AbsenceEleveType findOneByCommentaire(string $commentaire) Return the first AbsenceEleveType filtered by the commentaire column
  * @method     AbsenceEleveType findOneByIdLieu(int $id_lieu) Return the first AbsenceEleveType filtered by the id_lieu column
  * @method     AbsenceEleveType findOneBySortableRank(int $sortable_rank) Return the first AbsenceEleveType filtered by the sortable_rank column
@@ -70,7 +70,7 @@
  * @method     array findBySousResponsabiliteEtablissement(string $sous_responsabilite_etablissement) Return AbsenceEleveType objects filtered by the sous_responsabilite_etablissement column
  * @method     array findByManquementObligationPresence(string $manquement_obligation_presence) Return AbsenceEleveType objects filtered by the manquement_obligation_presence column
  * @method     array findByRetardBulletin(string $retard_bulletin) Return AbsenceEleveType objects filtered by the retard_bulletin column
- * @method     array findByTypeSaisie(string $type_saisie) Return AbsenceEleveType objects filtered by the type_saisie column
+ * @method     array findByModeInterface(string $mode_interface) Return AbsenceEleveType objects filtered by the mode_interface column
  * @method     array findByCommentaire(string $commentaire) Return AbsenceEleveType objects filtered by the commentaire column
  * @method     array findByIdLieu(int $id_lieu) Return AbsenceEleveType objects filtered by the id_lieu column
  * @method     array findBySortableRank(int $sortable_rank) Return AbsenceEleveType objects filtered by the sortable_rank column
@@ -81,7 +81,7 @@
  */
 abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 {
-
+	
 	/**
 	 * Initializes internal state of BaseAbsenceEleveTypeQuery object.
 	 *
@@ -118,11 +118,14 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	}
 
 	/**
-	 * Find object by primary key
-	 * Use instance pooling to avoid a database query if the object exists
+	 * Find object by primary key.
+	 * Propel uses the instance pool to skip the database if the object exists.
+	 * Go fast if the query is untouched.
+	 *
 	 * <code>
 	 * $obj  = $c->findPk(12, $con);
 	 * </code>
+	 *
 	 * @param     mixed $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
@@ -130,17 +133,73 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ((null !== ($obj = AbsenceEleveTypePeer::getInstanceFromPool((string) $key))) && $this->getFormatter()->isObjectFormatter()) {
+		if ($key === null) {
+			return null;
+		}
+		if ((null !== ($obj = AbsenceEleveTypePeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
 			// the object is alredy in the instance pool
 			return $obj;
-		} else {
-			// the object has not been requested yet, or the formatter is not an object formatter
-			$criteria = $this->isKeepQuery() ? clone $this : $this;
-			$stmt = $criteria
-				->filterByPrimaryKey($key)
-				->getSelectStatement($con);
-			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
+		if ($this->formatter || $this->modelAlias || $this->with || $this->select
+		 || $this->selectColumns || $this->asColumns || $this->selectModifiers
+		 || $this->map || $this->having || $this->joins) {
+			return $this->findPkComplex($key, $con);
+		} else {
+			return $this->findPkSimple($key, $con);
+		}
+	}
+
+	/**
+	 * Find object by primary key using raw SQL to go fast.
+	 * Bypass doSelect() and the object formatter by using generated code.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    AbsenceEleveType A model object, or null if the key is not found
+	 */
+	protected function findPkSimple($key, $con)
+	{
+		$sql = 'SELECT ID, NOM, JUSTIFICATION_EXIGIBLE, SOUS_RESPONSABILITE_ETABLISSEMENT, MANQUEMENT_OBLIGATION_PRESENCE, RETARD_BULLETIN, MODE_INTERFACE, COMMENTAIRE, ID_LIEU, SORTABLE_RANK, CREATED_AT, UPDATED_AT FROM a_types WHERE ID = :p0';
+		try {
+			$stmt = $con->prepare($sql);
+			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), $e);
+		}
+		$obj = null;
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$obj = new AbsenceEleveType();
+			$obj->hydrate($row);
+			AbsenceEleveTypePeer::addInstanceToPool($obj, (string) $key);
+		}
+		$stmt->closeCursor();
+
+		return $obj;
+	}
+
+	/**
+	 * Find object by primary key.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    AbsenceEleveType|array|mixed the result, formatted by the current formatter
+	 */
+	protected function findPkComplex($key, $con)
+	{
+		// As the query uses a PK condition, no limit(1) is necessary.
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
+		$stmt = $criteria
+			->filterByPrimaryKey($key)
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 	}
 
 	/**
@@ -155,10 +214,15 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{
+		if ($con === null) {
+			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		return $this
+		$stmt = $criteria
 			->filterByPrimaryKeys($keys)
-			->find($con);
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->format($stmt);
 	}
 
 	/**
@@ -187,7 +251,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterById(1234); // WHERE id = 1234
@@ -213,7 +277,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the nom column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNom('fooValue');   // WHERE nom = 'fooValue'
@@ -241,7 +305,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the justification_exigible column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByJustificationExigible(true); // WHERE justification_exigible = true
@@ -267,7 +331,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the sous_responsabilite_etablissement column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterBySousResponsabiliteEtablissement('fooValue');   // WHERE sous_responsabilite_etablissement = 'fooValue'
@@ -295,7 +359,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the manquement_obligation_presence column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByManquementObligationPresence('fooValue');   // WHERE manquement_obligation_presence = 'fooValue'
@@ -323,7 +387,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the retard_bulletin column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByRetardBulletin('fooValue');   // WHERE retard_bulletin = 'fooValue'
@@ -350,36 +414,36 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query on the type_saisie column
-	 * 
+	 * Filter the query on the mode_interface column
+	 *
 	 * Example usage:
 	 * <code>
-	 * $query->filterByTypeSaisie('fooValue');   // WHERE type_saisie = 'fooValue'
-	 * $query->filterByTypeSaisie('%fooValue%'); // WHERE type_saisie LIKE '%fooValue%'
+	 * $query->filterByModeInterface('fooValue');   // WHERE mode_interface = 'fooValue'
+	 * $query->filterByModeInterface('%fooValue%'); // WHERE mode_interface LIKE '%fooValue%'
 	 * </code>
 	 *
-	 * @param     string $typeSaisie The value to use as filter.
+	 * @param     string $modeInterface The value to use as filter.
 	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
 	 */
-	public function filterByTypeSaisie($typeSaisie = null, $comparison = null)
+	public function filterByModeInterface($modeInterface = null, $comparison = null)
 	{
 		if (null === $comparison) {
-			if (is_array($typeSaisie)) {
+			if (is_array($modeInterface)) {
 				$comparison = Criteria::IN;
-			} elseif (preg_match('/[\%\*]/', $typeSaisie)) {
-				$typeSaisie = str_replace('*', '%', $typeSaisie);
+			} elseif (preg_match('/[\%\*]/', $modeInterface)) {
+				$modeInterface = str_replace('*', '%', $modeInterface);
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(AbsenceEleveTypePeer::TYPE_SAISIE, $typeSaisie, $comparison);
+		return $this->addUsingAlias(AbsenceEleveTypePeer::MODE_INTERFACE, $modeInterface, $comparison);
 	}
 
 	/**
 	 * Filter the query on the commentaire column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCommentaire('fooValue');   // WHERE commentaire = 'fooValue'
@@ -407,7 +471,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id_lieu column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIdLieu(1234); // WHERE id_lieu = 1234
@@ -449,7 +513,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the sortable_rank column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterBySortableRank(1234); // WHERE sortable_rank = 1234
@@ -489,7 +553,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the created_at column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
@@ -531,7 +595,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the updated_at column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
@@ -597,7 +661,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the AbsenceEleveLieu relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -607,7 +671,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveLieu');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -615,7 +679,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -623,7 +687,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'AbsenceEleveLieu');
 		}
-		
+
 		return $this;
 	}
 
@@ -631,7 +695,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	 * Use the AbsenceEleveLieu relation AbsenceEleveLieu object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -661,7 +725,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 		} elseif ($absenceEleveTypeStatutAutorise instanceof PropelCollection) {
 			return $this
 				->useAbsenceEleveTypeStatutAutoriseQuery()
-					->filterByPrimaryKeys($absenceEleveTypeStatutAutorise->getPrimaryKeys())
+				->filterByPrimaryKeys($absenceEleveTypeStatutAutorise->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByAbsenceEleveTypeStatutAutorise() only accepts arguments of type AbsenceEleveTypeStatutAutorise or PropelCollection');
@@ -670,7 +734,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the AbsenceEleveTypeStatutAutorise relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -680,7 +744,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveTypeStatutAutorise');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -688,7 +752,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -696,7 +760,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'AbsenceEleveTypeStatutAutorise');
 		}
-		
+
 		return $this;
 	}
 
@@ -704,7 +768,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	 * Use the AbsenceEleveTypeStatutAutorise relation AbsenceEleveTypeStatutAutorise object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -734,7 +798,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 		} elseif ($absenceEleveTraitement instanceof PropelCollection) {
 			return $this
 				->useAbsenceEleveTraitementQuery()
-					->filterByPrimaryKeys($absenceEleveTraitement->getPrimaryKeys())
+				->filterByPrimaryKeys($absenceEleveTraitement->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByAbsenceEleveTraitement() only accepts arguments of type AbsenceEleveTraitement or PropelCollection');
@@ -743,7 +807,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the AbsenceEleveTraitement relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -753,7 +817,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveTraitement');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -761,7 +825,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -769,7 +833,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'AbsenceEleveTraitement');
 		}
-		
+
 		return $this;
 	}
 
@@ -777,7 +841,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	 * Use the AbsenceEleveTraitement relation AbsenceEleveTraitement object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -802,8 +866,8 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	{
 		if ($absenceEleveType) {
 			$this->addUsingAlias(AbsenceEleveTypePeer::ID, $absenceEleveType->getId(), Criteria::NOT_EQUAL);
-	  }
-	  
+		}
+
 		return $this;
 	}
 
@@ -888,8 +952,8 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 		}
 		// shift the objects with a position lower than the one of object
 		$this->addSelectColumn('MAX(' . AbsenceEleveTypePeer::RANK_COL . ')');
-		$stmt = $this->getSelectStatement($con);
-		
+		$stmt = $this->doSelect($con);
+	
 		return $stmt->fetchColumn();
 	}
 	
@@ -908,7 +972,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 		if ($con === null) {
 			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME);
 		}
-		
+	
 		$con->beginTransaction();
 		try {
 			$ids = array_keys($order);

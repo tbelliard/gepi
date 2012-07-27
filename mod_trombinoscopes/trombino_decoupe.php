@@ -340,10 +340,10 @@ if(isset($_POST['upload_scan'])) {
 										imagecopy($img,$img_source,0,0,$x,$y,$larg_cadre_img,$haut_cadre_img);
 
 										if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-											imagejpeg($img, "../photos/eleves/$repertoire2".$lig2->login.'.jpg');
+											imagejpeg($img, "../photos/eleves/$repertoire2".encode_nom_photo($lig2->login).'.jpg');
 										}
 										else {
-											imagejpeg($img, "../photos/eleves/".$lig2->elenoet.'.jpg');
+											imagejpeg($img, "../photos/eleves/".encode_nom_photo($lig2->elenoet).'.jpg');
 										}
 										imagedestroy($img);
 									}
@@ -568,7 +568,7 @@ if(isset($generer_pdf)) {
 if(!isset($mode)) {
 	//**************** EN-TETE *****************
 	$titre_page = "Grille PDF pour les trombinoscopes";
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 	//debug_var();
 
@@ -599,7 +599,7 @@ if(!isset($mode)) {
 elseif($mode=='parametrer') {
 	//**************** EN-TETE *****************
 	$titre_page = "Grille PDF pour les trombinoscopes";
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 	//debug_var();
 
@@ -661,7 +661,7 @@ elseif($mode=='parametrer') {
 elseif($mode=='generer_grille') {
 	//**************** EN-TETE *****************
 	$titre_page = "Grille PDF pour les trombinoscopes";
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 	//debug_var();
 
@@ -746,7 +746,7 @@ elseif($mode=='generer_grille') {
 elseif($mode=='uploader') {
 	//**************** EN-TETE *****************
 	$titre_page = "Grille PDF pour les trombinoscopes";
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 	//debug_var();
 
@@ -870,7 +870,7 @@ elseif($mode=='uploader') {
 elseif($mode=='suppr_grille') {
 	//**************** EN-TETE *****************
 	$titre_page = "Grille PDF pour les trombinoscopes";
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 	//debug_var();
 

@@ -48,7 +48,7 @@ if (!checkAccess()) {
 }
 // header
 $titre_page = "Définition des créneaux horaires";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 
 // si égale 1 = ouvert si égale 2 = fermée
  function FermeeOuvert($rep)

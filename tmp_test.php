@@ -43,7 +43,7 @@ if($_SESSION['statut']!='administrateur') {
 
 //**************** EN-TETE *********************
 $titre_page = "Page de test";
-require_once("./lib/header.inc");
+require_once("./lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 echo "<p>Cette page est destinée à faire des tests de révision.</p>\n";

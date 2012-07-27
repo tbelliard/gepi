@@ -224,15 +224,26 @@ if (isset($_POST['is_posted'])) {
 				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_multi_type_non_justifiee !";
 			}
 		}
-//		if (isset($_POST['abs2_modification_saisie_sans_limite'])) {
-//			if (!saveSetting("abs2_modification_saisie_sans_limite", $_POST['abs2_modification_saisie_sans_limite'])) {
-//				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
-//			}
-//		} else {
-//			if (!saveSetting("abs2_modification_saisie_sans_limite", 'n')) {
-//				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
-//			}
-//		}
+
+		if (isset($_POST['abs2_montrer_creneaux_precedents'])) {
+			if (!saveSetting("abs2_montrer_creneaux_precedents", $_POST['abs2_montrer_creneaux_precedents'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_montrer_creneaux_precedents !";
+			}
+		} else {
+			if (!saveSetting("abs2_montrer_creneaux_precedents", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_montrer_creneaux_precedents !";
+			}
+		}
+
+		if (isset($_POST['abs2_afficher_saisies_creneau_courant'])) {
+			if (!saveSetting("abs2_afficher_saisies_creneau_courant", $_POST['abs2_afficher_saisies_creneau_courant'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_afficher_saisies_creneau_courant !";
+			}
+		} else {
+			if (!saveSetting("abs2_afficher_saisies_creneau_courant", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_afficher_saisies_creneau_courant !";
+			}
+		}
 
 	}
 }
@@ -269,7 +280,7 @@ if (getSettingValue("absence_classement_top") == '10'){
 
 // header
 $titre_page = "Gestion du module absence";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 echo "<p class='bold'><a href=\"../../accueil_modules.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link' /> Retour | <a href=\"http://www.sylogix.org/projects/gepi/wiki/Abs_2\" alt='Aide' />Aide à la configuration</a>";
 echo "</p>";
     if (isset ($result)) {
@@ -278,12 +289,13 @@ echo "</p>";
 	    echo "</td></tr></table></center>";
     }
 ?>
+<form action="index.php" name="form1" method="post">
+<p class="center"><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></p>
 
 <h2>Gestion des absences par les CPE</h2>
 <p style="font-style: italic;">La désactivation du module de la gestion des absences n'entraîne aucune
 suppression des données. Lorsque le module est désactivé, les CPE n'ont pas accès au module.</p>
 
-<form action="index.php" name="form1" method="post">
 <?php
 echo add_token_field();
 ?>
@@ -304,12 +316,12 @@ echo add_token_field();
 	<input type="hidden" name="is_posted" value="1" />
 </p>
 <p>
-	<input type="checkbox" name="abs2_import_manuel_bulletin" value="y"
+	<input type="checkbox" name="abs2_import_manuel_bulletin" id="abs2_import_manuel_bulletin" value="y"
 	<?php if (getSettingValue("abs2_import_manuel_bulletin")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_import_manuel_bulletin">&nbsp;Utiliser un import (manuel, gep ou sconet) pour les bulletins et fiches élève.</label>
+	<label for="abs2_import_manuel_bulletin">&nbsp;Utiliser un import (<em>manuel, gep ou sconet</em>) pour les bulletins et fiches élève.</label>
 </p>
 <p>
-	<input type="checkbox" name="abs2_alleger_abs_du_jour" value="y"
+	<input type="checkbox" name="abs2_alleger_abs_du_jour" id="abs2_alleger_abs_du_jour" value="y"
 	<?php if (getSettingValue("abs2_alleger_abs_du_jour")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_alleger_abs_du_jour">&nbsp;Alleger les calculs de la page absence du jour : désactive la recherche des saisies contradictoires et des présences.</label>
 </p>
@@ -333,30 +345,38 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est l
 	<input type="hidden" name="is_posted" value="1" />
 </p>
 <p>
-	<input type="checkbox" name="abs2_saisie_prof_decale_journee" value="y"
+	<input type="checkbox" name="abs2_saisie_prof_decale_journee" id="abs2_saisie_prof_decale_journee" value="y"
 	<?php if (getSettingValue("abs2_saisie_prof_decale_journee")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_saisie_prof_decale_journee">&nbsp;Permettre la saisie décalée sur une même journée par les professeurs</label>
 </p>
 <p>
-	<input type="checkbox" name="abs2_saisie_prof_decale" value="y"
+	<input type="checkbox" name="abs2_saisie_prof_decale" id="abs2_saisie_prof_decale" value="y"
 	<?php if (getSettingValue("abs2_saisie_prof_decale")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_saisie_prof_decale">&nbsp;Permettre la saisie décalée sans limite de temps par les professeurs</label>
 </p>
 <p>
-	<input type="checkbox" name="abs2_saisie_prof_hors_cours" value="y"
+	<input type="checkbox" name="abs2_saisie_prof_hors_cours" id="abs2_saisie_prof_hors_cours" value="y"
 	<?php if (getSettingValue("abs2_saisie_prof_hors_cours")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_saisie_prof_hors_cours">&nbsp;Permettre la saisie d'une absence hors des cours prévus dans l'emploi du temps du professeur</label>
 </p>
 <p>
-	<input type="checkbox" name="abs2_modification_saisie_une_heure" value="y"
+	<input type="checkbox" name="abs2_modification_saisie_une_heure" id="abs2_modification_saisie_une_heure" value="y"
 	<?php if (getSettingValue("abs2_modification_saisie_une_heure")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_modification_saisie_une_heure">&nbsp;Permettre la modification d'une saisie par le professeur dans l'heure qui a suivi sa création</label>
 </p>
-<!--p>
-	<input type="checkbox" name="abs2_modification_saisie_sans_limite" value="y"
-	<?php //if (getSettingValue("abs2_modification_saisie_sans_limite")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_modification_saisie_sans_limite">&nbsp;Permettre la modification d'une saisie sans limite de temps</label>
-</p-->
+<p>
+	<input type="checkbox" name="abs2_montrer_creneaux_precedents" id="abs2_montrer_creneaux_precedents" value="y" title="ATTENTION : Si vous cochez cette case, l'affichage de ces informations au moment de l'appel professeur est susceptible de fausser son jugement. Il est possible que l'enseignant se fie uniquement à ces informations (sans effectuer un contrôle visuel effectif) et que son appel soit erroné. Sa responsabilité pourrait être engagée. Vous pouvez-vous rapprocher de votre chef d'établissement afin de convenir de ce réglage."
+	<?php if (getSettingValue("abs2_montrer_creneaux_precedents")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_montrer_creneaux_precedents" title="ATTENTION : Si vous cochez cette case, l'affichage de ces informations au moment de l'appel professeur est susceptible de fausser son jugement. Il est possible que l'enseignant se fie uniquement à ces informations (sans effectuer un contrôle visuel effectif) et que son appel soit erroné. Sa responsabilité pourrait être engagée. Vous pouvez-vous rapprocher de votre chef d'établissement afin de convenir de ce réglage.">&nbsp;Montrer les informations des créneaux précédents lors de la saisie </label>
+</p>
+<p>
+	<input type="checkbox" name="abs2_afficher_saisies_creneau_courant" id="abs2_afficher_saisies_creneau_courant" value="y" title="ATTENTION : Si vous cochez cette case, l'affichage de ces informations au moment de l'appel professeur est susceptible de fausser son jugement. Il est possible que l'enseignant se fie uniquement à ces informations (sans effectuer un contrôle visuel effectif) et que son appel soit erroné. Sa responsabilité pourrait être engagée. Vous pouvez-vous rapprocher de votre chef d'établissement afin de convenir de ce réglage."
+	<?php if (getSettingValue("abs2_afficher_saisies_creneau_courant")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_afficher_saisies_creneau_courant" title="ATTENTION : Si vous cochez cette case, l'affichage de ces informations au moment de l'appel professeur est susceptible de fausser son jugement. Il est possible que l'enseignant se fie uniquement à ces informations (sans effectuer un contrôle visuel effectif) et que son appel soit erroné. Sa responsabilité pourrait être engagée. Vous pouvez-vous rapprocher de votre chef d'établissement afin de convenir de ce réglage.">&nbsp;Afficher en rouge le créneau en cours de saisie s'il existe déjà une autre saisie</label>
+</p>
+<p>
+<?php if ((getSettingValue("abs2_montrer_creneaux_precedents")=='y') or (getSettingValue("abs2_afficher_saisies_creneau_courant")=='y')) echo "<p style='color:red'> VOUS AVEZ COCHÉ UNE DES DEUX CASES CI-DESSUS : l'affichage de ces informations au moment de l'appel professeur est susceptible de fausser son jugement. Il est possible que l'enseignant se fie uniquement à ces informations (sans effectuer un contrôle visuel effectif) et que son appel soit erroné. Sa responsabilité pourrait être engagée. Vous pouvez-vous rapprocher de votre chef d'établissement afin de convenir de ce réglage.";?></p>
+</p>
 
 <h2>Envoi des SMS</h2>
 <p>
@@ -450,10 +470,13 @@ entr&eacute;es dans Gepi par le biais du module absences.</p>
 </p-->
 	
 <br/>
-<div class="centre"><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></div>
+<p class="center"><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></p>
 
 </form>
-
+<?php
+echo "<p style='color:red' font-style:bold> LES RESPONSABILITÉS : <br /><br /></p>";
+echo "<p style='color:red'>* Le responsable de l'absence, c'est l'élève (et ses parents).<br />* Le responsable de la <b>gestion</b> (ou traitement) de l'absence, c'est la vie scolaire.<br />* Le responsable du <b>constat</b> de l'absence, c'est l'enseignant (pour un cours, ou l'adulte pour une activité encadrée).<br />Si la gestion anticipe une absence, elle peut communiquer l'information, mais cela ne vaut pas constat, lequel devient alors validation de l'anticipation, mais reste indispensable.</p>";
+?>
 <br/><br/>
 <h2>Configuration avancée</h2>
 <blockquote>

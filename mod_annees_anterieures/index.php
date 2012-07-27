@@ -2,7 +2,7 @@
 /*
  * $Id : $
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -54,7 +54,7 @@ if(getSettingValue('active_annees_anterieures')!="y"){
 
 //**************** EN-TETE *****************
 $titre_page = "Données antérieures";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 echo "<div class='norme'><p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
@@ -85,8 +85,10 @@ echo "<p>Les pages d'administration:</p>\n";
 echo "<ul>\n";
 echo "<li><p><a href='nettoyer_annee_anterieure.php'>Nettoyage des données d'élèves ayant quitté l'établissement</a>.</p></li>\n";
 echo "<li><p><a href='corriger_ine.php'>Correction des INE non renseignés ou mal renseignés lors de la conservation</a>.</p></li>\n";
+echo "<li><p><a href='gerer_annees_anterieures.php'>Gérer les années antérieures précédemment archivées</a>.</p></li>\n";
 echo "<li><p><a href='conservation_annee_anterieure.php'>Conservation des données (*) de l'année qui se termine</a><br />(<i>(*) autres que les AIDs</i>).</p></li>\n";
 echo "<li><p><a href='archivage_aid.php'>Conservation des données des AIDs</a>.</p></li>\n";
+echo "<li><p><a href='archivage_bull_pdf.php'>Générer les bulletins PDF par élève</a>.</p></li>\n";
 echo "</ul>\n";
 
 echo "<p>Les pages de consultation:</p>\n";

@@ -92,7 +92,7 @@ $titre_page = "Absences du jour";
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
 $dojo = true;
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 include('menu_abs2.inc.php');

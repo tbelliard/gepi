@@ -5,7 +5,6 @@
 body, p
 {
   margin: 0.5em 0;
-  font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
@@ -29,7 +28,6 @@ h1 a:visited, h2 a:visited, h3 a:visited, h4 a:visited, h5 a:visited, h6 a:visit
 h1.art-logo-name, h1.art-logo-name a, h1.art-logo-name a:link, h1.art-logo-name a:visited, h1.art-logo-name a:hover
 {
   text-decoration: none;
-  font-family: "Trebuchet MS", Arial, Helvetica, Sans-Serif;
   font-style: normal;
   font-weight: bold;
   font-size: 28px;
@@ -679,7 +677,6 @@ div.art-content-layout-row
   color: #000000;
   margin-right: 10px;
   margin-left: 10px;
-  font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
   font-size: 12px;
   margin:0;
   padding: 0 10px 0 28px;
@@ -1138,7 +1135,6 @@ ul.art-vmenu ul li li li li li a:hover, ul.art-vmenu ul li li li li li a:hover.a
   color: #000000;
   margin-right: 10px;
   margin-left: 10px;
-  font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
   font-size: 12px;
   margin:0;
   padding: 0 10px 0 10px;
@@ -1226,7 +1222,6 @@ ul.art-vmenu ul li li li li li a:hover, ul.art-vmenu ul li li li li li a:hover.a
 /* begin Button */
 .art-button-wrapper .art-button
 {
-  font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
@@ -1278,7 +1273,6 @@ ul.art-vmenu ul li li li li li a:hover, ul.art-vmenu ul li li li li li a:hover.a
 input, select, textarea, select
 {
   vertical-align: middle;
-  font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
@@ -1764,7 +1758,6 @@ blockquote,
 /* begin PageFooter */
 .art-page-footer, .art-page-footer a, .art-page-footer a:link, .art-page-footer a:visited, .art-page-footer a:hover
 {
-  font-family: Arial;
   font-size: 10px;
   letter-spacing: normal;
   word-spacing: normal;
@@ -1850,7 +1843,6 @@ img.image
 		margin-top:-1px;
 		padding:0px;
 		text-align:center;
-		font-family: arial;
 		font-weight:bold;
 		color:black;
 	}

@@ -54,7 +54,7 @@ $id_absence_eleve_saisie=isset($_POST['id_absence_eleve_saisie']) ? $_POST['id_a
 
 $saisie = AbsenceEleveSaisieQuery::create()->findPk($id_absence_eleve_saisie);
 if ($saisie == null) {
-    require_once("../lib/header.inc");
+    require_once("../lib/header.inc.php");
     echo "Erreur, identifiant de saisie d'absence non transmis";
     require("../lib/footer.inc.php");
     die();

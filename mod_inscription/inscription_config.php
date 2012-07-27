@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -26,7 +26,7 @@ $variables_non_protegees = 'yes';
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
-include("../fckeditor/fckeditor.php") ;
+include("../ckeditor/ckeditor.php") ;
 
 
 
@@ -105,7 +105,7 @@ if (!loadSettings()) {
 }
 //**************** EN-TETE *****************
 $titre_page = "Configuration du module Inscription";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 
@@ -131,11 +131,11 @@ if (isset($_GET['action']) and ($_GET['action'] == "ajout")) {
         echo "<input type=\"hidden\" name=\"is_posted\" value=\"ajout\" />\n";
     }
     echo "<H2>Ajout d'un item</H2>\n";
-    echo "<p>un item correspond à une entité (stage, intervention dans les établissements, réunion...) à laquelle les utilisateurs peuvent s'inscrire.</p>\n";
+    echo "<p>un item correspond à une entité (<em>stage, intervention dans les établissements, réunion,...</em>) à laquelle les utilisateurs peuvent s'inscrire.</p>\n";
     echo "<table cellpadding=\"6\">\n";
-    echo "<tr><td>Date (au format AAAA/MM/JJ) : </td><td><input type=\"text\" name=\"date\" value=\"$date\" size=\"20\" /></td></tr>\n";
+    echo "<tr><td>Date (<em>au format AAAA/MM/JJ</em>) : </td><td><input type=\"text\" name=\"date\" value=\"$date\" size=\"20\" /></td></tr>\n";
     echo "<tr><td>Heure : </td><td><input type=\"text\" name=\"heure\" value=\"$heure\" size=\"20\" /></td></tr>\n";
-    echo "<tr><td>Description (lieu, ...) : </td><td><input type=\"text\" name=\"description\" value=\"$description\" size=\"50\" /></td></tr>\n";
+    echo "<tr><td>Description (<em>lieu, ...</em>) : </td><td><input type=\"text\" name=\"description\" value=\"$description\" size=\"50\" /></td></tr>\n";
 
     echo "</table>\n";
     echo "<input type=\"submit\" name=\"Enregistrer\" value=\"Envoyer\" />\n";
@@ -150,9 +150,9 @@ echo add_token_field();
 echo "<H2>Activation  / Désactivation</H2>\n";
 $active_prof = getSettingValue("active_inscription_utilisateurs");
 if ($active_prof == "y") {
-  echo "Actuellement, la page autorisant les inscriptions est activée : les utilisateurs (professeurs, cpe, scolarité) peuvent donc s'inscrire.";
+  echo "Actuellement, la page autorisant les inscriptions est activée : les utilisateurs (<em>professeurs, cpe, scolarité</em>) peuvent donc s'inscrire.";
 } else {
-  echo "Actuellement, la page autorisant les inscriptions n'est pas activée : les utilisateurs (professeurs, cpe, scolarité) ne peuvent pas s'inscrire.";
+  echo "Actuellement, la page autorisant les inscriptions n'est pas activée : les utilisateurs (<em>professeurs, cpe, scolarité</em>) ne peuvent pas s'inscrire.";
 }
 ?><br /> <label for='activer_y' style='cursor: pointer;'><input type="radio" name="activer" id="activer_y" value="y" <?php if (getSettingValue("active_inscription_utilisateurs")=='y') echo " checked"; ?> />
 &nbsp;Activer l'acc&egrave;s aux inscriptions</label><br />
@@ -161,13 +161,13 @@ if ($active_prof == "y") {
 <?php
 echo "<H2>Liste des items</H2>\n";
 if ($nombre_lignes != 0) {
-  echo "<p>Chaque item ci-dessous correspond à une entité (stage, intervention dans les établissements, réunion...) à laquelle les utilisateurs peuvent s'inscrire.</p>\n";
+  echo "<p>Chaque item ci-dessous correspond à une entité (<em>stage, intervention dans les établissements, réunion,...</em>) à laquelle les utilisateurs peuvent s'inscrire.</p>\n";
   echo "<table width=\"100%\" border=\"1\" cellspacing=\"1\" cellpadding=\"5\">\n";
   echo "<tr>\n";
   echo "<td><p class='bold'><a href='inscription_config.php?order_by_=id'>N°</a></p></td>\n";
   echo "<td><p class='bold'><a href='inscription_config.php?order_by_=date'>Date</a></p></td>\n";
   echo "<td><p class='bold'>Heure</p></td>\n";
-  echo "<td><p class='bold'><a href='inscription_config.php?order_by_=description'>Description (lieu, ...)</a></p></td>\n";
+  echo "<td><p class='bold'><a href='inscription_config.php?order_by_=description'>Description (<em>lieu,...</em>)</a></p></td>\n";
   echo "<td><p class='bold'>Personnes actuellement inscrites</p></td>\n";
   echo "<td><p class='bold'>-</p></td>\n";
   echo "</tr>\n";
@@ -225,14 +225,11 @@ echo "<input type=\"text\" name=\"mod_inscription_titre\" size=\"40\" value=\"".
 echo "<H2>Texte explicatif</H2>\n";
 echo "<p>Le texte ci-dessous sera visible par les personnes accédant au module d'inscription/désincription.</p>\n";
 echo "<input type=\"hidden\" name=\"is_posted_notes\" value=\"yes\" />\n";
-    // lancement de FCKeditor
+    // lancement de CKeditor
 
-    $oFCKeditor = new FCKeditor('no_anti_inject_notes') ;
-    $oFCKeditor->BasePath = '../fckeditor/' ;
-    $oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
-    $oFCKeditor->ToolbarSet = 'Basic' ;
-    $oFCKeditor->Value = $contenu ;
-    $oFCKeditor->Create() ;
+    $oCKeditor = new CKeditor() ;
+    $oCKeditor->BasePath = '../ckeditor/' ;
+    $oCKeditor->editor('no_anti_inject_notes',$contenu) ;
     echo "<br /><br />&nbsp;";
 
 

@@ -81,7 +81,13 @@
 <body onload="show_message_deconnexion();<?php echo $tbs_charger_observeur;?>">
 
 <!-- on inclut le bandeau -->
-	<?php include('../templates/origine/bandeau_template.php');?>
+	<?php
+		include('../templates/origine/bandeau_template.php');
+		//debug_var();
+
+		$anc_onglet=isset($_POST['onglet_courant']) ? $_POST['onglet_courant'] : 'administrateur';
+		if($anc_onglet=='') {$anc_onglet='administrateur';}
+	?>
 
 <!-- fin bandeau_template.html      -->
 
@@ -90,6 +96,7 @@
 	<a name="contenu" class="invisible">Début de la page</a>
 
 	<form method="post" action="#">
+	<input type='hidden' name='onglet_courant' id='onglet_courant' value='<?php echo $anc_onglet;?>' />
 	<p class="center">
 	  Ce module permet de modifier l'ordre des menus de la page accueil ainsi que les intitulés.
   	  <br /><span class="small">Remarque : si le nouveau nom du bloc est "bloc_invisible", ce dernier n'apparaitra pas dans le menu (ceci ne fonctionne pas pour les plugins).</span>
@@ -110,10 +117,17 @@
         <div class="systeme_onglets">
 	<div class="onglets">
 <?php
+	function traduit_statut($statut) {
+		if($statut=='scolarite') {return "Scolarité";}
+		elseif($statut=='eleve') {return casse_mot(getSettingValue('denomination_eleve'),'majf');}
+		elseif($statut=='responsable') {return casse_mot(getSettingValue('denomination_responsable'),'majf');}
+		else {return casse_mot($statut, "majf");}
+	}
+
 	foreach ($menuAffiche as $menuAfficheAdministrateur){
 ?>
-	  <a class="onglet_0 onglet" id='onglet_<?php echo $menuAfficheAdministrateur->statutUtilisateur ;?>' href="#<?php echo $menuAfficheAdministrateur->statutUtilisateur ;?>" title="section <?php echo $menuAfficheAdministrateur->statutUtilisateur ;?>" onclick="javascript:change_onglet('<?php echo $menuAfficheAdministrateur->statutUtilisateur; ?>');return false;">
-		<?php echo $menuAfficheAdministrateur->statutUtilisateur ;?>
+	  <a class="onglet_0 onglet" id='onglet_<?php echo $menuAfficheAdministrateur->statutUtilisateur ;?>' href="#<?php echo $menuAfficheAdministrateur->statutUtilisateur; ?>" title="section <?php echo $menuAfficheAdministrateur->statutUtilisateur ;?>" onclick="javascript:change_onglet('<?php echo $menuAfficheAdministrateur->statutUtilisateur; ?>');document.getElementById('onglet_courant').value='<?php echo $menuAfficheAdministrateur->statutUtilisateur; ?>';return false;">
+		<?php echo traduit_statut($menuAfficheAdministrateur->statutUtilisateur) ;?>
 	  </a>
 <?php
 	}
@@ -133,7 +147,7 @@
 
 	<h2 class="center bold">
 	  <a name="<?php echo $menuAfficheAdministrateur->statutUtilisateur ;?>" href="#container" title="retour début de page depuis <?php echo $menuAfficheAdministrateur->statutUtilisateur ;?>" >
-			<?php echo $menuAfficheAdministrateur->statutUtilisateur ;?>
+			<?php echo traduit_statut($menuAfficheAdministrateur->statutUtilisateur) ;?>
 	  </a>
 	</h2>
 <?php
@@ -209,7 +223,7 @@
 <script type="text/javascript">
         //<!--
 		//document.getElementByClassNames('contenu_onglet2').ClassNames = 'contenu_onglet';
-                var anc_onglet = 'administrateur';
+                var anc_onglet = '<?php echo $anc_onglet;?>';
                 change_onglet(anc_onglet);
         //-->
         </script>

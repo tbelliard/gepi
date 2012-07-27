@@ -695,10 +695,42 @@
 	//=====================================================================
 	//Tracé des courbes:
 
+	$afficher_pointille=mb_substr(getPref($_SESSION['login'], 'graphe_pointille',''),0,1);
+	if($afficher_pointille=='') {
+		$afficher_pointille=mb_substr(getSettingValue('graphe_pointille'),0,1);
+	}
+
+	//$white = imagecolorallocate($img, 255, 255, 255);
 
 	//for($k=1;$k<=$nb_series;$k++){
 	$epaisseur = $epaisseur_traits;
 	for($k=1;$k<=$nb_series_bis;$k++){
+
+		$style_pointille = Array(
+		$couleureleve[$k],
+		$couleureleve[$k],
+		$couleureleve[$k],
+		$couleureleve[$k],
+		$couleureleve[$k],
+		$couleureleve[$k],
+		$couleureleve[$k],
+		$couleureleve[$k],
+		IMG_COLOR_TRANSPARENT,
+		IMG_COLOR_TRANSPARENT,
+		IMG_COLOR_TRANSPARENT,
+		IMG_COLOR_TRANSPARENT,
+		IMG_COLOR_TRANSPARENT,
+		IMG_COLOR_TRANSPARENT,
+		IMG_COLOR_TRANSPARENT,
+		IMG_COLOR_TRANSPARENT
+		);
+
+		$style_plein = Array(
+		$couleureleve[$k],
+		$couleureleve[$k]
+		);
+
+
 		//Placement des points de la courbe:
 		for($i=1;$i<$nbMat+1;$i++){
 			$x1=$x[$i];
@@ -716,12 +748,27 @@
 		}
 
 		//Tracé de la courbe:
+		//$x_prec[0]=-1;
+		//$y_prec[0]=-1;
 		imagesetthickness($img,$epaisseur);
 		for($i=1;$i<$nbMat;$i++){
 			$x1=$x[$i];
 			$x2=$x[$i+1];
 			if(($ycourbe[$k][$i]!=-1)&&($ycourbe[$k][$i+1]!=-1)){
+				//$x_prec[$y+1]=$x2;
+				//$y_prec[$y+1]=$ycourbe[$k][$i+1];
 				imageLine($img,$x1,$ycourbe[$k][$i],$x2,$ycourbe[$k][$i+1],$couleureleve[$k]);
+			}
+			elseif(($afficher_pointille!='n')&&($ycourbe[$k][$i]!=-1)&&($ycourbe[$k][$i+2]!=-1)) {
+				/*
+				// imageDashedLine() est bugguée... on peut récupérer des hachures de 8mm de hauteur pour 2mm de large
+				imagesetthickness($img,1);
+				imageDashedLine($img,$x[$i+2],$ycourbe[$k][$i+2],$x1,$ycourbe[$k][$i],$couleureleve[$k]);
+				imagesetthickness($img,$epaisseur);
+				*/
+				imagesetstyle($img, $style_pointille);
+				imageLine($img,$x1,$ycourbe[$k][$i],$x[$i+2],$ycourbe[$k][$i+2],IMG_COLOR_STYLED);
+				imagesetstyle($img, $style_plein);
 			}
 		}
 		if($epaisseur_croissante_traits_periodes=='oui') {

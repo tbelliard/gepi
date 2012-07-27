@@ -55,7 +55,7 @@ $style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 $utilisation_prototype = "ok";
 // ============fin PROTOTYPE=============
 // On insère l'entête de Gepi
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 // On ajoute le menu EdT
 require_once("./menu.inc.php");
 // +++++++++++++++++++GESTION DU RETOUR vers absences+++++++++++++++++
@@ -284,14 +284,25 @@ if ($action == "upload_file") {
             $helpers = array('select_jours', 'select_creneaux', 'select_classes', 'select_matieres', 'select_professeurs', 'aucun', 'aucun',
                 'select_aid_groupes', 'aucun', 'aucun', 'select_frequence', 'aucun');
 
+			$tab_matiere=array();
+			
             echo '<p>' . $titre[$etape] . '</p>';
             if ($etape != 12) {
             	$aff_enregistrer = 'Enregistrer ces concordances';
                 while ($tab = fgetcsv($fp, 1024, ";")) {
+					/*
+					echo "<pre>";
+					echo print_r($tab);
+					echo "</pre>";
+					*/
                     if (in_array($tab[$etape], $tableau) === false) {
                         // Puisque la valeur du champ n'est pas encore dans $tableau, on l'insère pour éviter les doublons
                         if ($tab[$etape] != '') {
                             $tableau[] = $tab[$etape];
+
+							if($tab[3]!="") {
+								$tab_matiere[remplace_accents($tab[$etape], 'all_nospace')]=$tab[3];
+							}
                         }
                     }
                 }
@@ -304,15 +315,27 @@ if ($action == "upload_file") {
 
                 //for($l = 0; $l < $nbre_lignes; $l++)
                 $l = 0; // comme itérateur
+				echo "<table class='boireaus'>\n";
+				$alt=1;
 				foreach ($tableau as $key => $val) {
+					$alt=$alt*(-1);
                 	// On enlève les guillemets et les apostrophes et les accents
                 	//$valeur = my_ereg_replace("'", "wkzx", my_ereg_replace('"', "zxwk", $val));
                 	$valeur = remplace_accents($val, 'all_nospace');
+					//echo "<p>";
+					echo "<tr";
+					echo " class='lig$alt'";
+					//if($alt==1) {echo " style='background-color:white;'";}
+					//else {echo " style='background-color:silver;'";}
+					echo ">\n";
+					echo "<td style='text-align:left; vertical-align:top;'>\n";
                     echo '
-					<p>
 					<input type="hidden" name="nom_export_' . $l . '" value="' . $valeur . '" />
-					<label for="nomGepi' . $l . '"><b>' . $val . '</b></label>
+					<label for="nomGepi' . $l . '" id="texte_nomGepi' . $l . '" ><b>' . $val . '</b></label>
 					';
+
+                    echo "</td>\n";
+                    echo "<td style='text-align:left; vertical-align:top;'>\n";
 
 					// On ne garde que le premier nom de la valeur du champ de l'import pour tester ensuite le selected du select
                     if ($etape != 2) {
@@ -357,16 +380,27 @@ if ($action == "upload_file") {
 					}
 
 
-                    echo '</p>';
+                    //echo '</p>';
+                    echo "</td>\n";
+                    echo "</tr>\n";
                     $l++;
                 }
+				echo "</table>\n";
                 if ($etape == 6 OR $etape == 8 OR $etape == 9 OR $etape == 11) {
                 	$aff_enregistrer = 'Passer à l\'étape suivante (aucun enregistrement)';
                 }elseif($etape == 5){
 					$aff_enregistrer = 'Enregistrer ces salles';
 				}
             } elseif ($etape == 12) {
-				$sql="TRUNCATE tempo2;";
+				$sql="CREATE TABLE IF NOT EXISTS tempo5 (
+				id INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+				texte TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+				info VARCHAR(200) NOT NULL
+				) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+				$create_table=mysql_query($sql);
+
+				//$sql="TRUNCATE tempo2;";
+				$sql="TRUNCATE tempo5;";
 				$menage=mysql_query($sql);
 
                 echo '
@@ -392,7 +426,8 @@ if ($action == "upload_file") {
                     }
 
                     //echo '					<input type="hidden" name="ligne_' . $b . '" value="' . $toutelaligne . '" />';
-					$sql="INSERT INTO tempo2 SET col1='".mysql_real_escape_string($toutelaligne)."';";
+					//$sql="INSERT INTO tempo2 SET col1='".mysql_real_escape_string($toutelaligne)."';";
+					$sql="INSERT INTO tempo5 SET texte='".mysql_real_escape_string($toutelaligne)."';";
 					$insert=mysql_query($sql);
 
                     $b++; // on incrémente le compteur pour le name

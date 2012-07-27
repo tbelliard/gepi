@@ -68,7 +68,7 @@ if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont ét
 $style_specifique = "/mod_miseajour/lib/style_maj";
 
 $titre_page = "Gestion du module de mise à jour";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 // ============= fin header ==========
 ?>
 <p class="bold">
@@ -122,7 +122,7 @@ echo add_token_field();
 	<label for="dossierFtp">Nom du dossier d'installation de GEPI sur le FTP utilisé</label>
 	<input type="text" id="dossierFtp" name="dossier_ftp_gepi" value="<?php echo getSettingValue("dossier_ftp_gepi"); ?>" size="20" />&nbsp; ex: gepi
 	</p>
-	<p class="decale">
+	<p class="center">
 	<input type="hidden" name="is_posted" value="1" />
 	<input type="submit" value="Enregistrer" style="font-variant: small-caps;" />
 	</p>

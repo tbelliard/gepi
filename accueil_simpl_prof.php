@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -137,8 +137,7 @@ $style_specifique="accueil_simpl_prof";
 
 //**************** EN-TETE *****************
 $titre_page = "Accueil GEPI";
-//require_once("../lib/header.inc");
-require_once("./lib/header.inc");
+require_once("./lib/header.inc.php");
 //**************** FIN EN-TETE *************
 
 //echo "\$colspan=$colspan<br />";
@@ -150,8 +149,8 @@ echo "<a href=\"./accueil.php?accueil_simpl=n\">Accès au menu d'accueil</a>";
 //echo " | \n";
 //echo "<a href='index.php'> Carnet de notes </a> | \n";
 echo " | \n";
-//echo "<a href='./gestion/config_prefs.php'> Paramétrer mes interfaces simplifiées </a>\n";
-echo "<a href='./gestion/config_prefs.php'> Paramétrer mon interface </a>\n";
+//echo "<a href='./gestion/config_prefs.php'> Paramétrer mon interface </a>\n";
+echo "<a href='./utilisateurs/mon_compte.php#accueil_simpl_prof'> Paramétrer mon interface </a>\n";
 echo "</p>\n";
 echo "</div>\n";
 
@@ -167,6 +166,7 @@ include("affichage_des_messages.inc.php");
 $invisibilite_groupe=array();
 $invisibilite_groupe['bulletins']=array();
 $invisibilite_groupe['cahier_notes']=array();
+$invisibilite_groupe['cahier_texte']=array();
 $sql="SELECT jgv.* FROM j_groupes_visibilite jgv, j_groupes_professeurs jgp WHERE jgv.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' AND jgv.visible='n';";
 $res_jgv=mysql_query($sql);
 if(mysql_num_rows($res_jgv)>0) {
@@ -300,7 +300,7 @@ echo "<script type='text/javascript'>
 				document.getElementById('h_liste_pdf_'+num_periode).style.display='';
 			}
 
-			// Pour afficher/cacher les lignes du tableau, évaluer count($groups)=$nb_groupes
+			// Pour afficher/cacher les lignes du tableau, évaluer count(\$groups)=\$nb_groupes
 			for(i=0;i<=$nb_groupes;i++){
 				if(document.getElementById('h_cn_'+i+'_'+num_periode)){
 					document.getElementById('h_cn_'+i+'_'+num_periode).style.display='';
@@ -451,6 +451,15 @@ echo "<th";
 if(($active_carnets_notes=="y")&&($pref_accueil_cn=="y")&&($colspan>0)){echo " rowspan='3'";}
 echo ">\n";
 echo "Classes</th>\n";
+
+// mod_abs2
+if ((getSettingValue("active_module_absence_professeur")=='y')&&(getSettingValue("active_module_absence")=='2')) {
+	echo "<th";
+	if(($active_carnets_notes=="y")&&($pref_accueil_cn=="y")&&($colspan>0)){echo " rowspan='3'";}
+	echo ">\n";
+	echo "Absences\n";
+	echo "</th>\n";
+}
 
 //if($active_cahiers_texte=="y"){
 if(($active_cahiers_texte=="y")&&($pref_accueil_ct=="y")){
@@ -734,46 +743,47 @@ for($i=0;$i<count($groups);$i++){
 	//$liste_classes_du_groupe=trim($liste_classes_du_groupe);
 	$liste_classes_du_groupe=preg_replace("/ /","&nbsp;",trim($liste_classes_du_groupe));
 
+	// mod_abs2
+	if ((getSettingValue("active_module_absence_professeur")=='y')&&(getSettingValue("active_module_absence")=='2')) {
+		echo "<td>";
+		echo "<a href='mod_abs2/index.php?type_selection=id_groupe&amp;id_groupe=".$groups[$i]['id']."'";
+		if($pref_accueil_infobulles=="y"){
+			echo " onmouseover=\"afficher_div('info_abs_$i','y',10,10);\" onmouseout=\"cacher_div('info_abs_$i');\"";
+		}
+		echo ">";
+			echo "<img src='images/icons/absences.png' width='32' height='32' alt='Absences' border='0' />";
+		echo "</a>";
+
+		if($pref_accueil_infobulles=="y"){
+			echo "<div id='info_abs_$i' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 18em;' onmouseout=\"cacher_div('info_abs_$i');\">Absences de ".htmlspecialchars($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>).</div>\n";
+
+			$tab_liste_infobulles[]='info_abs_'.$i;
+		}
+
+		echo "</td>\n";
+	}
 
 	//if($active_cahiers_texte=="y"){
 	if(($active_cahiers_texte=="y")&&($pref_accueil_ct=="y")){
 		// https://127.0.0.1/steph/gepi-trunk/cahier_texte/index.php?id_groupe=29&year=2007&month=6&day=30&edit_devoir=
 		// Cahier de textes:
 		echo "<td>";
-		//echo "<a href='../cahier_texte/index.php?id_groupe=".$groups[$i]['id']."&amp;year=$year&amp;month=$month&amp;day=$day&amp;edit_devoir='>";
-		//echo "<a href='cahier_texte/index.php?id_groupe=".$groups[$i]['id']."&amp;year=$year&amp;month=$month&amp;day=$day&amp;edit_devoir='>";
-		echo "<a href='cahier_texte/index.php?id_groupe=".$groups[$i]['id']."&amp;year=$year&amp;month=$month&amp;day=$day&amp;edit_devoir='";
-		if($pref_accueil_infobulles=="y"){
-			echo " onmouseover=\"afficher_div('info_ct_$i','y',10,10);\" onmouseout=\"cacher_div('info_ct_$i');\"";
-		}
-		echo ">";
-
-		//if(($accueil_aff_txt_icon==1)||($accueil_aff_txt_icon==3)){
-			//echo "<img src='../images/icons/cahier_textes.png' width='32' height='32' alt='Cahier de textes' border='0' />";
+		if(!in_array($groups[$i]['id'],$invisibilite_groupe['cahier_texte'])) {
+			echo "<a href='cahier_texte/index.php?id_groupe=".$groups[$i]['id']."&amp;year=$year&amp;month=$month&amp;day=$day&amp;edit_devoir='";
+			if($pref_accueil_infobulles=="y"){
+				echo " onmouseover=\"afficher_div('info_ct_$i','y',10,10);\" onmouseout=\"cacher_div('info_ct_$i');\"";
+			}
+			echo ">";
 			echo "<img src='images/icons/cahier_textes.png' width='32' height='32' alt='Cahier de textes' border='0' />";
-		/*
-		}
-		if($accueil_aff_txt_icon==3){
-			echo "<br />";
-		}
-		if($accueil_aff_txt_icon>=2){
-			echo "Cahier de textes";
-		}
-		*/
-		echo "</a>";
+			echo "</a>";
 
-		if($pref_accueil_infobulles=="y"){
-			//echo "<div id='info_ct_$i' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_ct_$i');\">Cet outil vous permet de constituer un cahier de textes pour le groupe ".htmlspecialchars($groups[$i]['description'])."(<i>$liste_classes_du_groupe</i>).</div>\n";
-			echo "<div id='info_ct_$i' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 18em;' onmouseout=\"cacher_div('info_ct_$i');\">Cahier de textes de ".htmlspecialchars($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>).</div>\n";
+			if($pref_accueil_infobulles=="y"){
+				echo "<div id='info_ct_$i' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 18em;' onmouseout=\"cacher_div('info_ct_$i');\">Cahier de textes de ".htmlspecialchars($groups[$i]['description'])." (<i>$liste_classes_du_groupe</i>).</div>\n";
 
-			$tab_liste_infobulles[]='info_ct_'.$i;
+				$tab_liste_infobulles[]='info_ct_'.$i;
+			}
+
 		}
-
-		/*
-		echo "<script type='text/javascript'>
-	cacher_div('info_ct_$i');
-</script>\n";
-		*/
 		echo "</td>\n";
 	}
 
@@ -1097,7 +1107,7 @@ for($i=0;$i<count($groups);$i++){
 								if($affiche_bull_simp_cette_classe=="y") {
 									//echo "<a href='../prepa_conseil/index3.php?id_classe=".$classe['id']."' onClick=\"valide_bull_simpl('".$classe['id']."','".$j."'); return false;\"><img src='../images/icons/bulletin_simpl.png' width='37' height='34' alt='Bulletin simplifié' border='0' />";
 									//echo "<a href='../prepa_conseil/index3.php?id_classe=".$classe['id']."' onClick=\"valide_bull_simpl('".$classe['id']."','".$j."'); return false;\">";
-									echo "<a href='prepa_conseil/index3.php?id_classe=".$classe['id']."' onClick=\"valide_bull_simpl('".$classe['id']."','".$j."'); return false;\"";
+									echo "<a href='prepa_conseil/index3.php?id_classe=".$classe['id']."&amp;couleur_alterne=y' onClick=\"valide_bull_simpl('".$classe['id']."','".$j."'); return false;\"";
 	
 									if($pref_accueil_infobulles=="y"){
 										echo " onmouseover=\"afficher_div('info_bs_".$i."_".$j."_".$cpt."','y',10,10);\" onmouseout=\"cacher_div('info_bs_".$i."_".$j."_".$cpt."');\"";
@@ -1226,6 +1236,7 @@ echo "<form enctype=\"multipart/form-data\" action=\"prepa_conseil/edit_limite.p
 echo "<input type=\"hidden\" name=\"choix_edit\" value=\"1\" />\n";
 echo "<input type=\"hidden\" name=\"periode1\" id=\"periode1\" value='1' />\n";
 echo "<input type=\"hidden\" name=\"periode2\" id=\"periode2\" value='1' />\n";
+echo "<input type=\"hidden\" name=\"couleur_alterne\" value='y' />\n";
 echo "<input type=\"hidden\" name=\"id_classe\" id=\"id_classe\" value='' />\n";
 echo "</form>\n";
 

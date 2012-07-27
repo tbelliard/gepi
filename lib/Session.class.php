@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard
+ * Copyright 2001, 2012 Thomas Belliard
  *
  * This file is part of GEPI.
  *
@@ -27,6 +27,7 @@ if(getSettingValue('debug_test_mdp_file')!='') {
 else {
 	$debug_test_mdp_file="/tmp/test_mdp.txt";
 }
+//$debug_test_mdp_file="/tmp/test_mdp.txt";
 
 // Passer à 'y' pour loguer les premiers accès (pour expliquer à l'utilisateur ce qu'il fait de travers lors de sa première connexion)
 $debug_login_nouveaux_comptes="n";
@@ -721,15 +722,18 @@ class Session {
                             //on va tester avec le md5
                             if ($db_password == md5($_password)) {
                             } else {
-                                    if(getSettingValue('filtrage_html')=='htmlpurifier') {//utilse pour les ancienne base (2011-05-14)
+		                        $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Recu: '.$_password."\n");
+                                    //if(getSettingValue('filtrage_html')=='htmlpurifier') {//utilse pour les ancienne base (2011-05-14)
                                             $tmp_mdp = array_flip (get_html_translation_table(HTML_ENTITIES));
                                             $_password_unhtmlentities = strtr ($_password, $tmp_mdp);
+					                        //$this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'md5: \$_password_unhtmlentities='.$_password_unhtmlentities."\n");
                                             if ($db_password == md5($_password_unhtmlentities)) {
                                                     $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 OK avec unhtmlentities()'."\n");
                                             } else {
                                                     $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 en echec avec et sans modification unhtmlentities'."\n");
                                                     return false;
                                             }
+                                            /*
                                     } else {
                                             if ($db_password == md5(htmlentities($_password))) {
                                                     $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 OK avec htmlentities()'."\n");
@@ -738,6 +742,7 @@ class Session {
                                                     return false;
                                             }
                                     }
+                                    */
                             }
                             
                             //l'authentification est réussie sinon on serait déjà sorti de la fonction
@@ -758,15 +763,17 @@ class Session {
                             if ($db_password == hash_hmac('sha256', $_password, $db_salt)) {
                                     $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac OK sans modification'."\n");
                             } else {
-                                    if(getSettingValue('filtrage_html')=='htmlpurifier') {
+//                                    if(getSettingValue('filtrage_html')=='htmlpurifier') {
                                             $tmp_mdp = array_flip (get_html_translation_table(HTML_ENTITIES));
                                             $_password_unhtmlentities = strtr ($_password, $tmp_mdp);
+					                        //$this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'sha256: \$_password_unhtmlentities='.$_password_unhtmlentities."\n");
                                             if ($db_password == hash_hmac('sha256', $_password_unhtmlentities, $db_salt)) {
                                                     $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac OK avec unhtmlentities()'."\n");
                                             } else {
                                                     $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac en echec avec et sans modification unhtmlentities'."\n");
                                                    return false;
                                             }
+                                            /*
                                     } else {
                                             if ($db_password == hash_hmac('sha256', htmlentities($_password), $db_salt)) {
                                                     $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac OK avec htmlentities()'."\n");
@@ -775,6 +782,7 @@ class Session {
                                                     return false;
                                             }
                                     }
+                                    */
                             }
                         }
                         //si le login fait échec, la fonction a déjà retourné avec false
@@ -891,7 +899,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 					if (!empty($valeur)){
 					    // L'attribut est trouvé et non vide, on l'assigne pour mettre à jour l'utilisateur
 						// On s'assure que la chaîne est bien enregistrée en UTF-8.
-						$valeur = ensure_utf_8($valeur);
+						$valeur = ensure_utf8($valeur);
 						$this->cas_extra_attributes[$attribut] = trim(mysql_real_escape_string($valeur));
 					}
         }

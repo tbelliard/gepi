@@ -46,7 +46,7 @@
 */
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation de l'emploi du temps";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //==================================================

@@ -75,7 +75,7 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid,$id_aid) <= 0) {
 
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des élèves dans les AID";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
 	//================ TRAITEMENT des entrées ===================

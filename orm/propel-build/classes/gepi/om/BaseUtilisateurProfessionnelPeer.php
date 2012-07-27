@@ -24,7 +24,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'UtilisateurProfessionnelTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 19;
 
@@ -93,7 +93,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-	
+
 	/**
 	 * An identiy map to hold any loaded instances of UtilisateurProfessionnel objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -434,37 +434,37 @@ abstract class BaseUtilisateurProfessionnelPeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in JGroupesProfesseursPeer instance pool, 
+		// Invalidate objects in JGroupesProfesseursPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JGroupesProfesseursPeer::clearInstancePool();
-		// Invalidate objects in JScolClassesPeer instance pool, 
+		// Invalidate objects in JScolClassesPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JScolClassesPeer::clearInstancePool();
-		// Invalidate objects in CahierTexteCompteRenduPeer instance pool, 
+		// Invalidate objects in CahierTexteCompteRenduPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		CahierTexteCompteRenduPeer::clearInstancePool();
-		// Invalidate objects in CahierTexteTravailAFairePeer instance pool, 
+		// Invalidate objects in CahierTexteTravailAFairePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		CahierTexteTravailAFairePeer::clearInstancePool();
-		// Invalidate objects in CahierTexteNoticePriveePeer instance pool, 
+		// Invalidate objects in CahierTexteNoticePriveePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		CahierTexteNoticePriveePeer::clearInstancePool();
-		// Invalidate objects in JEleveCpePeer instance pool, 
+		// Invalidate objects in JEleveCpePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JEleveCpePeer::clearInstancePool();
-		// Invalidate objects in JEleveProfesseurPrincipalPeer instance pool, 
+		// Invalidate objects in JEleveProfesseurPrincipalPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JEleveProfesseurPrincipalPeer::clearInstancePool();
-		// Invalidate objects in JAidUtilisateursProfessionnelsPeer instance pool, 
+		// Invalidate objects in JAidUtilisateursProfessionnelsPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JAidUtilisateursProfessionnelsPeer::clearInstancePool();
-		// Invalidate objects in AbsenceEleveNotificationPeer instance pool, 
+		// Invalidate objects in AbsenceEleveNotificationPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		AbsenceEleveNotificationPeer::clearInstancePool();
-		// Invalidate objects in PreferenceUtilisateurProfessionnelPeer instance pool, 
+		// Invalidate objects in PreferenceUtilisateurProfessionnelPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		PreferenceUtilisateurProfessionnelPeer::clearInstancePool();
-		// Invalidate objects in EdtEmplacementCoursPeer instance pool, 
+		// Invalidate objects in EdtEmplacementCoursPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		EdtEmplacementCoursPeer::clearInstancePool();
 	}
@@ -489,7 +489,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *

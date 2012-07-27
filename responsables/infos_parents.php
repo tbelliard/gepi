@@ -332,7 +332,7 @@ if(isset($_GET['export_csv'])) {
 
 // ===================== entete Gepi ======================================//
 $titre_page = "Grille élèves/parents";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 // ===================== fin entete =======================================//
 
 //debug_var();

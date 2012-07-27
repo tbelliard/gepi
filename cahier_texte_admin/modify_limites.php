@@ -56,7 +56,7 @@ if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont ét
 
 // header
 $titre_page = "Gestion des cahiers de texte";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 ?>
 <p class=bold>
 <a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>

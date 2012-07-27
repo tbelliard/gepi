@@ -115,7 +115,7 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des classes | Initialisation  des options par GEP";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 ?>

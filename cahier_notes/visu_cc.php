@@ -301,7 +301,7 @@ if(isset($_GET['export_pdf'])) {
 
 		require_once('../fpdf/fpdf.php');
 		
-		define('FPDF_FONTPATH','../fpdf/font/');
+		
 		define('LargeurPage','210');
 		define('HauteurPage','297');
 
@@ -584,7 +584,7 @@ if(isset($_GET['export_pdf'])) {
 //$themessage  = 'Des notes ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Visualisation des notes CC";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
 

@@ -43,7 +43,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation des matières";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //************** FIN EN-TETE ***************
 ?>
 <p class="bold"><a href="index.php#disciplines"><img src='../images/icons/back.png' alt='Retour' class='back_link'/>Retour accueil initialisation</a></p>
@@ -115,7 +115,7 @@ if (!isset($_POST["action"])) {
 
 			// On nettoie et on vérifie :
 			$reg_nom_court = remplace_accents($reg_nom_court);
-			$reg_nom_court = preg_replace("/[^A-Za-z0-9.\-]/","",trim(my_strtoupper($reg_nom_court)));
+			$reg_nom_court = preg_replace("/[^A-Za-z0-9._\-]/","",trim(my_strtoupper($reg_nom_court)));
 			if (mb_strlen($reg_nom_court) > 50) $reg_nom_court = mb_substr($reg_nom_court, 0, 50);
 
 			$reg_nom_long=nettoyer_caracteres_nom($reg_nom_long, "an", " &'_-", "");
@@ -231,7 +231,7 @@ if (!isset($_POST["action"])) {
 
 							// On nettoie et on vérifie :
 							$tabligne[0]=remplace_accents($tabligne[0]);
-							$tabligne[0] = preg_replace("/[^A-Za-z0-9.\-]/","",trim(my_strtoupper($tabligne[0])));
+							$tabligne[0] = preg_replace("/[^A-Za-z0-9._\-]/","",trim(my_strtoupper($tabligne[0])));
 							if (mb_strlen($tabligne[0]) > 50) $tabligne[0] = mb_substr($tabligne[0], 0, 50);
 
 							$tabligne[1]=nettoyer_caracteres_nom($tabligne[1], "an", " .&'_-", "");

@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-define('FPDF_FONTPATH','../fpdf/font/');
+
 define('TopMargin','15');
 define('RightMargin','15');
 define('LeftMargin','15');
@@ -144,7 +144,6 @@ elseif(!isset($_GET['nom_pdf_en_detail'])) {
 	send_file_download_headers('application/pdf',$ident_plus.'.pdf');
 
 	$pdf->Output($ident_plus.'.pdf','I');
-	$pdf->closeParsers();
 }
 else{
 	//$ident_plus = date("Ymd");
@@ -159,6 +158,5 @@ else{
 	send_file_download_headers('application/pdf',$ident_plus.'.pdf');
 
 	$pdf->Output($ident_plus.'.pdf','I');
-	$pdf->closeParsers();
 }
 ?>

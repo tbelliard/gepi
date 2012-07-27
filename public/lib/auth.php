@@ -26,7 +26,7 @@ function phpdigAuth(){
     require("secure/connect.inc.php");
     //**************** EN-TETE *****************
     $titre_page = "Cahiers de texte";
-    require_once("lib/header.inc");
+    require_once("lib/header.inc.php");
 
     //**************** FIN EN-TETE *****************
     echo "<H3><center>En raison du caractère personnel du contenu, ce site est soumis à des restrictions utilisateurs.

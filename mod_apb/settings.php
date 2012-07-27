@@ -55,7 +55,7 @@ if ($resultat_session == 'c') {
 
 //**************** EN-TETE *****************
 $titre_page = "Export admissions post-bac";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 
@@ -68,4 +68,3 @@ require_once("../lib/header.inc");
 
 
 
-?>

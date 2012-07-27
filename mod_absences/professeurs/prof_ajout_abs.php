@@ -508,7 +508,7 @@ $javascript_specifique = "mod_absences/lib/js_profs_abs";
 
 //**************** EN-TETE *****************
 $titre_page = "Saisie des absences";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 
@@ -595,7 +595,11 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 	}
 ?>
 		<!-- <form method="post" action="prof_ajout_abs.php" name="absence"> -->
-		<form method="post" action="prof_ajout_abs.php" id="absence">
+		<form method="post" action="prof_ajout_abs.php" id="absence" name="form_absence">
+		<!--
+		<span id='js_afficher' style='display:none;'><a href="javascript: document.forms['form_absence'].submit()">Afficher les élèves</a></span>
+		<script type='text/javascript'>document.getElementById('js_afficher').style.display='';</script>
+		-->
 <?php
 	if(empty($d_date_absence_eleve)) {
 		$d_date_absence_eleve = date('d/m/Y');
@@ -603,7 +607,8 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 	// On vérifie si le professeur a le droit de modifier la date
 	if (getSettingValue("date_phase1") == "y") {
 		echo '
-	<p class="choix_fin">
+	<!--p class="choix_fin"-->
+	<p>
 		<label for="d_date_absence_eleve">Date</label>
 		<input size="10" id="d_date_absence_eleve" name="d_date_absence_eleve" value="'.$d_date_absence_eleve.'" />
 		<a href="#calend" onclick="'.$cal_1->get_strPopup('../../lib/calendrier/pop.calendrier_id.php', 350, 170).'">
@@ -703,7 +708,8 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 ?>
 		</select>
 </p>
-<p class="choix_fin">
+<!--p class="choix_fin"-->
+<p>
 	<label for="classe">Groupe</label>
 	<select id="classe" name="classe">
 <?php
@@ -756,7 +762,8 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 	   ';
 	}
 
-	echo '<p class="choix_fin">'."\n";
+	//echo '<p class="choix_fin">'."\n";
+	echo '<p>'."\n";
 	if (getSettingValue("active_module_trombinoscopes")=='y') {
 		if ($photo == 'avec_photo') {
 			$checkedPhoto = ' checked="checked"';
@@ -778,7 +785,8 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 	echo '</p>'."\n";
 ?>
 
-	<p class="choix_fin">
+	<!--p class="choix_fin"-->
+	<p>
 		<input value="2" name="etape" type="hidden" />
 		<input type="hidden" name="premier_passage" value="ok" />
 		<input value="<?php echo $passage_form; ?>" name="passage_form" type="hidden" />
@@ -921,7 +929,8 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 ?>
 	<div class="centre_tout_moyen">
 		<form method="post" action="prof_ajout_abs.php" id="liste_absence_eleve">
-			<p class="expli_page choix_fin">
+			<!--p class="expli_page choix_fin"-->
+			<p class="expli_page">
 				Saisie des absences<br/>
 				du <strong><?php echo date_frl(date_sql($d_date_absence_eleve)); ?></strong>
 				de <strong><?php echo heure_court($d_heure_absence_eleve); ?></strong>
@@ -935,23 +944,86 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 
 	if($passage_auto === 'oui' and $passage_form === '') {
 		echo '
-			<p class="choix_fin">
+			<!--p class="choix_fin"-->
+			<p>
 				<a href="prof_ajout_abs.php?passage_form=manuel">Ceci n\'est pas la bonne liste d\'appel ?</a>
 			</p>
 		';
 	}
 	?>
-			<p class="choix_fin">
+			<!--p class="choix_fin"-->
+			<p>
 				<input value="Enregistrer" name="Valider" type="submit"  onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
 			</p>
-			<p class="choix_fin">
+			<?php
+				if ($_SESSION['statut'] == 'professeur' && getSettingValue("active_cahiers_texte")=='y') {
+			?>
+			<!--p class="choix_fin"-->
+			<p>
 				<input type="hidden" name="passer_cahier_texte" id="passer_cahier_texte" value="false" />
 				<input value="Enregistrer et passer au cahier de texte" name="Valider" type="submit"  onclick="document.getElementById('passer_cahier_texte').value = true; this.form.submit(); this.disabled=true; this.value='En cours'" />
 			</p>
+			<?php
+				}
+			?>
 
 <!-- Afichage du tableau de la liste des élèves -->
 <!-- Legende du tableau-->
-	<?php echo '<p>'.$nbre_eleves.' élèves.</p>'; ?>
+	<?php
+		//=====================================================================
+		// on compte les créneaux pour savoir combien de cellules il faut créer
+		if (getSettingValue("creneau_different") != 'n') {
+			if (date("w") == getSettingValue("creneau_different")) {
+				$sql = "SELECT nom_definie_periode FROM edt_creneaux_bis WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
+			}else{
+				$sql = "SELECT nom_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
+			}
+		}else{
+			$sql = "SELECT nom_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
+		}
+		$req_noms = mysql_query($sql) OR DIE ('Pas de créneaux disponibles.');
+		$nbre_noms = mysql_num_rows($req_noms) OR die ('Impossible de compter les créneaux.');
+		$req_noms_1=$req_noms;
+		$nbre_noms_1=$nbre_noms;
+		//=====================================================================
+		// On insère les noms des différents créneaux
+		if (getSettingValue("creneau_different") != 'n') {
+			if (date("w") == getSettingValue("creneau_different")) {
+				$sql = "SELECT nom_definie_periode FROM edt_creneaux_bis WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
+			}else{
+				$sql = "SELECT nom_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
+			}
+		}else{
+			$sql = "SELECT nom_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
+		}
+		$req_noms = mysql_query($sql) OR DIE ('Pas de créneaux disponibles.');
+		$nbre_noms = mysql_num_rows($req_noms) OR DIE ('Impossible de compter les créneaux.');
+		$req_noms_2=$req_noms;
+		$nbre_noms_2=$nbre_noms;
+		//=====================================================================
+		if ($test[0] == "AID") {
+				// On a besoin du login, nom, prenom et sexe de l'élève
+			$requete_liste_eleve = "SELECT eleves.* FROM eleves, aid, j_aid_eleves WHERE eleves.login = j_aid_eleves.login AND j_aid_eleves.id_aid = aid.id AND id = '".$test[1]."' AND (eleves.date_sortie IS NULL OR eleves.date_sortie='' OR eleves.date_sortie='0000-00-00 00:00:00' OR eleves.date_sortie>'".strftime("%Y-%m-%d %H:%M:%S")."') GROUP BY eleves.login ORDER BY nom, prenom";
+			$execution_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL AID !'.$requete_liste_eleve.'<br />'.mysql_error());
+		}
+		else {
+
+			$requete_liste_eleve = "SELECT * FROM eleves, groupes, j_eleves_groupes 
+		                          WHERE eleves.login=j_eleves_groupes.login
+		                          AND j_eleves_groupes.id_groupe=groupes.id
+		                          AND j_eleves_groupes.periode = " . $_periode . "
+		                          AND id = '".$classe."'
+		                          AND (eleves.date_sortie IS NULL OR eleves.date_sortie='' OR eleves.date_sortie='0000-00-00 00:00:00' OR eleves.date_sortie>'".strftime("%Y-%m-%d %H:%M:%S")."')
+		                        GROUP BY eleves.login
+		                        ORDER BY nom, prenom";
+
+		    $execution_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.mysql_error());
+		}
+		//=====================================================================
+		$nbre_eleves=mysql_num_rows($execution_liste_eleve);
+
+		echo '<p>'.$nbre_eleves.' élèves.</p>';
+	?>
 	<table class="tb_code_couleur" summary="Code des couleurs">
 		<tr>
 			<td class="td_Retard">&nbsp;R&nbsp;</td><td>&nbsp;Retard</td>
@@ -981,7 +1053,8 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 		';
 	}
 	//Fin Ajout Eric
-	
+
+	/*
 	// on compte les créneaux pour savoir combien de cellules il faut créer
 	if (getSettingValue("creneau_different") != 'n') {
 		if (date("w") == getSettingValue("creneau_different")) {
@@ -994,6 +1067,8 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 	}
 	$req_noms = mysql_query($sql) OR DIE ('Pas de créneaux disponibles.');
 	$nbre_noms = mysql_num_rows($req_noms) OR die ('Impossible de compter les créneaux.');
+	*/
+	$nbre_noms=$nbre_noms_1;
 
 	echo '
 				<th colspan="'.$nbre_noms.'" class="th_abs_suivi" abbr="Créneaux">Suivi sur la journ&eacute;e</th>'."\n";
@@ -1015,7 +1090,8 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 				<td></td>';
 	}
     // Fin Ajout Eric
-	
+
+	/*
 	// On insère les noms des différents créneaux
 	if (getSettingValue("creneau_different") != 'n') {
 		if (date("w") == getSettingValue("creneau_different")) {
@@ -1028,6 +1104,9 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 	}
 	$req_noms = mysql_query($sql) OR DIE ('Pas de créneaux disponibles.');
 	$nbre_noms = mysql_num_rows($req_noms) OR DIE ('Impossible de compter les créneaux.');
+	*/
+	$nbre_noms=$nbre_noms_2;
+	$req_noms=$req_noms_2;
 
 	for($i=0; $i<$nbre_noms; $i++) {
 		$rep_sql[$i]["nom_creneau"] = mysql_result($req_noms, $i, "nom_definie_periode");
@@ -1040,9 +1119,10 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 			</tr>
 	<?php
 
+	/*
 	if ($test[0] == "AID") {
 			// On a besoin du login, nom, prenom et sexe de l'élève
-		$requete_liste_eleve = "SELECT eleves.* FROM eleves, aid, j_aid_eleves WHERE eleves.login = j_aid_eleves.login AND j_aid_eleves.id_aid = aid.id AND id = '".$test[1]."' GROUP BY eleves.login ORDER BY nom, prenom";
+		$requete_liste_eleve = "SELECT eleves.* FROM eleves, aid, j_aid_eleves WHERE eleves.login = j_aid_eleves.login AND j_aid_eleves.id_aid = aid.id AND id = '".$test[1]."' AND (eleves.date_sortie IS NULL OR eleves.date_sortie='' OR eleves.date_sortie='0000-00-00 00:00:00' OR eleves.date_sortie>'".strftime("%Y-%m-%d %H:%M:%S")."') GROUP BY eleves.login ORDER BY nom, prenom";
 		$execution_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL AID !'.$requete_liste_eleve.'<br />'.mysql_error());
 	}
 	else {
@@ -1052,10 +1132,14 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
                               AND j_eleves_groupes.id_groupe=groupes.id
                               AND j_eleves_groupes.periode = " . $_periode . "
                               AND id = '".$classe."'
+                              AND (eleves.date_sortie IS NULL OR eleves.date_sortie='' OR eleves.date_sortie='0000-00-00 00:00:00' OR eleves.date_sortie>'".strftime("%Y-%m-%d %H:%M:%S")."')
                             GROUP BY eleves.login
                             ORDER BY nom, prenom";
+
         $execution_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.mysql_error());
     }
+	*/
+
 	$cpt_eleve = '0';
 	$ic = '1';
 	$ligne= '0';
@@ -1108,6 +1192,8 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
                 }
             }
         }
+
+		//if((isset($data_liste_eleve["date_sortie"]))&&($data_liste_eleve["date_sortie"]!='')&&($data_liste_eleve["date_sortie"]!='0000-00-00 00:00:00')&&($data_liste_eleve["date_sortie"]<=strftime("%Y-%m-%d %H:%M:%S"))) {$eleve_dispo = false;}
 
         // ==================== fin du filtrage
         if ($eleve_dispo) {
@@ -1308,7 +1394,6 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
            // Avec ou sans photo
 		if ((getSettingValue("active_module_trombinoscopes")=='y') and ($photo=="avec_photo")) {
       $nom_photo = nom_photo($data_liste_eleve['elenoet'],"eleves",2);
-			//$photos = "../../photos/eleves/".$nom_photo;
 			//if (($nom_photo == "") or (!(file_exists($photos)))) {
 			if (($nom_photo == NULL) or (!(file_exists($nom_photo)))) {
 				$nom_photo = "../../mod_trombinoscopes/images/trombivide.jpg";
@@ -1356,9 +1441,15 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 		<div style="text-align: center; margin: 20px;">
 			<input value="Enregistrer" name="Valider" type="submit"  onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
 		</div>
+		<?php
+			if ($_SESSION['statut'] == 'professeur' && getSettingValue("active_cahiers_texte")=='y') {
+		?>
 		<div style="text-align: center; margin: 20px;">
 				<input value="Enregistrer et passer au cahier de texte" name="Valider" type="submit"  onclick="document.getElementById('passer_cahier_texte').value = true; this.form.submit(); this.disabled=true; this.value='En cours'" />
 		</div>
+		<?php
+			}
+		?>
 	</form>
 	<p class="info_importante">Quand vous saisissez vos absences (avec ou sans absent),
 	Gepi enregistre la date et l'heure ainsi que votre identifiant.</p>

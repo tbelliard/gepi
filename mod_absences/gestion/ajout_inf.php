@@ -207,7 +207,7 @@ if(isset($eleve_absence_eleve_erreur[0]) and !empty($eleve_absence_eleve_erreur[
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des absences";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 <p class=bold>|<a href='gestion_absences.php?type=<?php echo $type; ?>'>Retour</a>|
@@ -274,7 +274,6 @@ $i = 0;
                   if (getSettingValue("active_module_trombinoscopes")=='y') {
                   	  $nom_photo = '';
                       $nom_photo = nom_photo($id_eleve_photo,"eleves",2);
-                      //$photo = "../../photos/eleves/".$nom_photo;
                       //if ( $nom_photo === '' or !file_exists($photo) ) { $photo = "../../mod_trombinoscopes/images/trombivide.jpg"; }
                       if ( $nom_photo === NULL or !file_exists($photo) ) { $photo = "../../mod_trombinoscopes/images/trombivide.jpg"; }
                       $valeur=redimensionne_image($photo);

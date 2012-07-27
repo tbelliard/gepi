@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -45,7 +45,7 @@ if(strstr($_SERVER['HTTP_REFERER'],"eleves/index.php")) {$_SESSION['retour_apres
 
 //**************** EN-TETE *****************
 $titre_page = "Mise à jour eleves/responsables";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 echo "<p class=bold>";
 echo "<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
@@ -60,7 +60,7 @@ echo "</ul>\n";
 echo "<p><br /></p>\n";
 */
 
-echo "<p><a href='maj_import2.php'>Mise à jour des données élèves/responsables à l'aide des fichiers XML de Sconet/STS</a>.</p>\n";
+echo "<p><a href='maj_import3.php'>Mise à jour des données élèves/responsables à l'aide des fichiers XML de Sconet/STS</a>.</p>\n";
 echo "<p><br /></p>\n";
 
 //==================================
@@ -105,7 +105,7 @@ else{
 			echo "<tr class='lig$alt'>\n";
 			echo "<td>".$lig->ele_id."</td>\n";
 			echo "<td>".$lig->elenoet."</td>\n";
-			echo "<td>".$lig->login."</td>\n";
+			echo "<td><a href='../eleves/modify_eleve.php?eleve_login=$lig->login'>".$lig->login."</a></td>\n";
 			echo "<td>".mb_strtoupper($lig->nom)."</td>\n";
 			echo "<td>".ucfirst(mb_strtolower($lig->prenom))."</td>\n";
 			echo "<td>\n";

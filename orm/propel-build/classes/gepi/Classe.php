@@ -248,6 +248,70 @@ class Classe extends BaseClasse {
 		return null;
 	}
 
+
+	/**
+	 * Retourne la periode de note correspondante à la date donnée en paramètre.
+         * On regarde proritairement les dates de fin des périodes de notes,
+         * puis les renseignements de l'edt.
+         * Si aucune période n'est trouvée on retourne la dernière période ouverte pour l'ordre chronologique,
+         * null sinon
+	 *
+	 * @return     PeriodeNote $periode la periode de la date précisée, ou null si non trouvé
+	 */
+	public function getPeriodeNote($v = 'now') {
+            // we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+	    // -- which is unexpected, to say the least.
+	    //$dt = new DateTime();
+	    if ($v === null || $v === '') {
+		    $dt = null;
+	    } elseif ($v instanceof DateTime) {
+		    $dt = clone $v;
+	    } else {
+		    // some string/numeric value passed; we normalize that so that we can
+		    // validate it.
+		    try {
+			    if (is_numeric($v)) { // if it's a unix timestamp
+				    $dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+				    // We have to explicitly specify and then change the time zone because of a
+				    // DateTime bug: http://bugs.php.net/bug.php?id=43003
+				    $dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+			    } else {
+				    $dt = new DateTime($v);
+			    }
+		    } catch (Exception $x) {
+			    throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+		    }
+	    }
+
+		foreach ($this->getPeriodeNotes() as $periode) {
+		    if ($periode->getDateDebut('U') <= $dt->format('U')
+				    && $periode->getDateFin(null) != null && $periode->getDateFin('U') > $dt->format('U')) {
+                        return $periode;
+                    }
+		}
+
+                //si on est là on a trouvé aucune période renseignée qui convienne. On va regarder l'edt
+		//on verifie si il y a une periode du calendrier avec une periode de note precisee
+		$calendrier_periode = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($dt);
+		if ($calendrier_periode != null && $calendrier_periode->getNumeroPeriode() != null && $calendrier_periode->getNumeroPeriode() != 0) {
+		    $criteria = new Criteria();
+		    $criteria->add(PeriodeNotePeer::NUM_PERIODE,$calendrier_periode->getNumeroPeriode());
+		    $periodes = $this->getPeriodeNotes($criteria);
+		    return $periodes->getFirst();
+		}
+
+                //si on est là on a toujours trouvé aucune période. On renvoi la première période qui peut convenir
+                //et qui n'est pas encore achevée
+		foreach ($this->getPeriodeNotes() as $periode) {
+                    if ($periode->getDateDebut('U') <= $dt->format('U')
+                        && ($periode->getDateFin(null) === null || $periode->getDateFin('U') > $dt->format('U'))) {
+                        return $periode;
+                    }
+		}
+
+                return null;
+	}
+
  	/**
 	 * Retourne la collection de periode de note privée a des fins d'optimisation
 	 *

@@ -177,7 +177,7 @@ if((isset($mode))&&($mode=='imprime')) {
 		  require_once('../fpdf/fpdf.php');
 		}
 		
-		define('FPDF_FONTPATH','../fpdf/font/');
+		
 		//define('LargeurPage','210');
 		//define('HauteurPage','297');
 		define('LargeurPage',$largeur_page);
@@ -359,7 +359,7 @@ include('lib_eb.php');
 //**************** EN-TETE *****************
 $titre_page = "Epreuve blanche: Etiquettes";
 //echo "<div class='noprint'>\n";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 

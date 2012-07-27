@@ -175,7 +175,7 @@ $utilisation_win = "oui";
 $style_specifique = "mod_absences/styles/bilan_absences";
 
 // ===================== entete Gepi ======================================//
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 // ===================== fin entete =======================================//
 
 echo "<!-- page Bilan_des_absences.".$aff_debug."-->";

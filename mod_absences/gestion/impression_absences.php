@@ -78,7 +78,7 @@ if($id_lettre_suivi[0] != '' and $lettre_action === 'originaux')
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des absences";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 <script type="text/javascript" language="javascript">

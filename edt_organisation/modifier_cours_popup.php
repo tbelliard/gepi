@@ -159,7 +159,6 @@ $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 
 // +++++++++++++++ entête de Gepi +++++++++
-require_once("../lib/header.inc");
 // +++++++++++++++ entête de Gepi +++++++++
 
 // On ajoute le menu EdT
@@ -175,6 +174,7 @@ if (isset($modifier_cours) AND ($modifier_cours == "ok" OR $modifier_cours == "n
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 	<html lang="fr">
 	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title><?php echo TITLE_PAGE ?></title>
 	<link rel="stylesheet" type="text/css" href="./style_edt.css" />
 	<script type='text/javascript' src='./script/fonctions_edt.js'></script>

@@ -67,6 +67,7 @@ include('include_pagination.php');
 
 $affichage = isset($_POST["affichage"]) ? $_POST["affichage"] :(isset($_GET["affichage"]) ? $_GET["affichage"] : NULL);
 $menu = isset($_POST["menu"]) ? $_POST["menu"] :(isset($_GET["menu"]) ? $_GET["menu"] : Null);
+$imprime = isset($_POST["imprime"]) ? $_POST["imprime"] :(isset($_GET["imprime"]) ? $_GET["imprime"] : Null);
 
 //==============================================
 $style_specifique[] = "mod_abs2/lib/abs_style";
@@ -172,9 +173,9 @@ if (getFiltreRechercheParam('order') == "asc_id") {
 } else if (getFiltreRechercheParam('order') == "des_utilisateur") {
     $query->useUtilisateurProfessionnelQuery()->orderBy('Nom', Criteria::DESC)->endUse();
 } else if (getFiltreRechercheParam('order') == "asc_eleve") {
-    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useEleveQuery()->orderBy('Nom', Criteria::ASC)->endUse()->endUse()->endUse();
+    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useEleveQuery()->orderBy('Nom', Criteria::ASC)->orderBy('Prenom', Criteria::ASC)->orderBy('Login', Criteria::ASC)->endUse()->endUse()->endUse();
 } else if (getFiltreRechercheParam('order') == "des_eleve") {
-    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useEleveQuery()->orderBy('Nom', Criteria::DESC)->endUse()->endUse()->endUse();
+    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useEleveQuery()->orderBy('Nom', Criteria::DESC)->orderBy('Prenom', Criteria::ASC)->orderBy('Login', Criteria::ASC)->endUse()->endUse()->endUse();
 } else if (getFiltreRechercheParam('order') == "asc_classe") {
     $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useClasseQuery()->orderBy('NomComplet', Criteria::ASC)->endUse()->endUse()->endUse();
 } else if (getFiltreRechercheParam('order') == "des_classe") {
@@ -303,9 +304,12 @@ if ($affichage == 'tableur') {
     $now = new DateTime();
     $nom_fichier .=  $now->format("d_m_Y").'.ods';
     $TBS->Show(OPENTBS_DOWNLOAD+TBS_EXIT, $nom_fichier);
+} elseif ('lot' == $imprime) {
+	include 'lib/traitements_vers_imprime_lot.php';
+	
 }
 
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 if(!$menu){
@@ -335,7 +339,11 @@ echo "&nbsp;&nbsp;&nbsp;";
 echo '<button type="submit">Rechercher</button>';
 echo '<button type="submit" name="reinit_filtre" value="y" >Reinitialiser les filtres</button> ';
 echo '<button type="submit" name="affichage" value="tableur" >Exporter au format ods</button> ';
-
+?>
+<button type="submit" name="imprime" value="lot" title="Crée un courrier pour chaque élève de la liste affichée ci-dessous" >
+	Courriers par lot
+</button>
+<?php
 echo "</p>";
 
 echo '<table id="table_liste_absents" class="tb_absences" style="border-spacing:0; width:100%">';
@@ -462,13 +470,13 @@ echo '</th>';
 echo '<th>';
 echo ("<select name=\"filter_manqement_obligation\" onchange='submit()'>");
 echo "<option value=''";
-if (isFiltreRechercheParam('filter_manqement_obligation') && getFiltreRechercheParam('filter_manqement_obligation') == 'y') {echo "checked='checked'";}
+if (!isFiltreRechercheParam('filter_manqement_obligation')) {echo "selected='selected'";}
 echo "></option>\n";
 echo "<option value='y' ";
-if (getFiltreRechercheParam('filter_manqement_obligation') == 'y') {echo "selected'";}
+if (getFiltreRechercheParam('filter_manqement_obligation') == 'y') {echo "selected='selected'";}
 echo ">oui</option>\n";
 echo "<option value='n' ";
-if (getFiltreRechercheParam('filter_manqement_obligation') == 'n') {echo "selected'";}
+if (getFiltreRechercheParam('filter_manqement_obligation') == 'n') {echo "selected='selected'";}
 echo ">non</option>\n";
 echo "</select>";
 echo '<br/>Manquement obligation scolaire (bulletin)';
@@ -592,7 +600,7 @@ echo '<span style="white-space: nowrap;"> ';
 //echo '<nobr>';
 echo 'Entre : <input size="13" id="filter_date_creation_traitement_debut_plage" name="filter_date_creation_traitement_debut_plage" value="';
 if (isFiltreRechercheParam('filter_date_creation_traitement_debut_plage')) {echo getFiltreRechercheParam('filter_date_creation_traitement_debut_plage');}
-echo '" />&nbsp;';
+echo '" onKeyDown="clavier_date2(this.id,event);" AutoComplete="off" />&nbsp;';
 echo '<img id="trigger_filter_date_creation_traitement_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
 echo '</span>';
 //echo '</nobr>';
@@ -612,7 +620,7 @@ echo '<span style="white-space: nowrap;"> ';
 //echo '<nobr>';
 echo 'Et : <input size="13" id="filter_date_creation_traitement_fin_plage" name="filter_date_creation_traitement_fin_plage" value="';
 if (isFiltreRechercheParam('filter_date_creation_traitement_fin_plage') != null) {echo getFiltreRechercheParam('filter_date_creation_traitement_fin_plage');}
-echo '" />&nbsp;';
+echo '" onKeyDown="clavier_date2(this.id,event);" AutoComplete="off" />&nbsp;';
 echo '<img id="trigger_filter_date_creation_traitement_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
 echo '</span>';
 //echo '</nobr>';
@@ -708,7 +716,7 @@ foreach ($results as $traitement) {
 	echo ($eleve->getCivilite().' '.$eleve->getNom().' '.$eleve->getPrenom());
 	echo "</a>";
 	if ($utilisateur->getAccesFicheEleve($eleve)) {
-	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
+	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank'>";
 	    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' >";
 	    echo ' (voir fiche)';
 	    echo "</a>";
@@ -722,7 +730,6 @@ foreach ($results as $traitement) {
     echo "' style='display: block; height: 100%;'> ";
  	if ((getSettingValue("active_module_trombinoscopes")=='y')) {
 	    $nom_photo = $eleve->getNomPhoto(1);
-	    //$photos = "../photos/eleves/".$nom_photo;
 	    $photos = $nom_photo;
 	    //if (($nom_photo != "") && (file_exists($photos))) {
 	    if (($nom_photo != NULL) && (file_exists($photos))) {

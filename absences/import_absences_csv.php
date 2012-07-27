@@ -52,7 +52,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE *****************
 $titre_page = "Import absences CSV";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //************** FIN EN-TETE ***************
 
 //debug_var();

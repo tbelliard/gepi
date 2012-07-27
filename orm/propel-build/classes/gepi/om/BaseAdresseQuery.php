@@ -61,7 +61,7 @@
  */
 abstract class BaseAdresseQuery extends ModelCriteria
 {
-
+	
 	/**
 	 * Initializes internal state of BaseAdresseQuery object.
 	 *
@@ -98,11 +98,14 @@ abstract class BaseAdresseQuery extends ModelCriteria
 	}
 
 	/**
-	 * Find object by primary key
-	 * Use instance pooling to avoid a database query if the object exists
+	 * Find object by primary key.
+	 * Propel uses the instance pool to skip the database if the object exists.
+	 * Go fast if the query is untouched.
+	 *
 	 * <code>
 	 * $obj  = $c->findPk(12, $con);
 	 * </code>
+	 *
 	 * @param     mixed $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
@@ -110,17 +113,73 @@ abstract class BaseAdresseQuery extends ModelCriteria
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ((null !== ($obj = AdressePeer::getInstanceFromPool((string) $key))) && $this->getFormatter()->isObjectFormatter()) {
+		if ($key === null) {
+			return null;
+		}
+		if ((null !== ($obj = AdressePeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
 			// the object is alredy in the instance pool
 			return $obj;
-		} else {
-			// the object has not been requested yet, or the formatter is not an object formatter
-			$criteria = $this->isKeepQuery() ? clone $this : $this;
-			$stmt = $criteria
-				->filterByPrimaryKey($key)
-				->getSelectStatement($con);
-			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
+		if ($con === null) {
+			$con = Propel::getConnection(AdressePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
+		if ($this->formatter || $this->modelAlias || $this->with || $this->select
+		 || $this->selectColumns || $this->asColumns || $this->selectModifiers
+		 || $this->map || $this->having || $this->joins) {
+			return $this->findPkComplex($key, $con);
+		} else {
+			return $this->findPkSimple($key, $con);
+		}
+	}
+
+	/**
+	 * Find object by primary key using raw SQL to go fast.
+	 * Bypass doSelect() and the object formatter by using generated code.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    Adresse A model object, or null if the key is not found
+	 */
+	protected function findPkSimple($key, $con)
+	{
+		$sql = 'SELECT ADR_ID, ADR1, ADR2, ADR3, ADR4, CP, PAYS, COMMUNE FROM resp_adr WHERE ADR_ID = :p0';
+		try {
+			$stmt = $con->prepare($sql);
+			$stmt->bindValue(':p0', $key, PDO::PARAM_STR);
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), $e);
+		}
+		$obj = null;
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$obj = new Adresse();
+			$obj->hydrate($row);
+			AdressePeer::addInstanceToPool($obj, (string) $key);
+		}
+		$stmt->closeCursor();
+
+		return $obj;
+	}
+
+	/**
+	 * Find object by primary key.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    Adresse|array|mixed the result, formatted by the current formatter
+	 */
+	protected function findPkComplex($key, $con)
+	{
+		// As the query uses a PK condition, no limit(1) is necessary.
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
+		$stmt = $criteria
+			->filterByPrimaryKey($key)
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 	}
 
 	/**
@@ -135,10 +194,15 @@ abstract class BaseAdresseQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{
+		if ($con === null) {
+			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		return $this
+		$stmt = $criteria
 			->filterByPrimaryKeys($keys)
-			->find($con);
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->format($stmt);
 	}
 
 	/**
@@ -167,7 +231,7 @@ abstract class BaseAdresseQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the adr_id column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterById('fooValue');   // WHERE adr_id = 'fooValue'
@@ -195,7 +259,7 @@ abstract class BaseAdresseQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the adr1 column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAdr1('fooValue');   // WHERE adr1 = 'fooValue'
@@ -223,7 +287,7 @@ abstract class BaseAdresseQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the adr2 column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAdr2('fooValue');   // WHERE adr2 = 'fooValue'
@@ -251,7 +315,7 @@ abstract class BaseAdresseQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the adr3 column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAdr3('fooValue');   // WHERE adr3 = 'fooValue'
@@ -279,7 +343,7 @@ abstract class BaseAdresseQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the adr4 column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAdr4('fooValue');   // WHERE adr4 = 'fooValue'
@@ -307,7 +371,7 @@ abstract class BaseAdresseQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the cp column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCp('fooValue');   // WHERE cp = 'fooValue'
@@ -335,7 +399,7 @@ abstract class BaseAdresseQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the pays column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByPays('fooValue');   // WHERE pays = 'fooValue'
@@ -363,7 +427,7 @@ abstract class BaseAdresseQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the commune column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCommune('fooValue');   // WHERE commune = 'fooValue'
@@ -405,7 +469,7 @@ abstract class BaseAdresseQuery extends ModelCriteria
 		} elseif ($responsableEleve instanceof PropelCollection) {
 			return $this
 				->useResponsableEleveQuery()
-					->filterByPrimaryKeys($responsableEleve->getPrimaryKeys())
+				->filterByPrimaryKeys($responsableEleve->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByResponsableEleve() only accepts arguments of type ResponsableEleve or PropelCollection');
@@ -414,7 +478,7 @@ abstract class BaseAdresseQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the ResponsableEleve relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -424,7 +488,7 @@ abstract class BaseAdresseQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('ResponsableEleve');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -432,7 +496,7 @@ abstract class BaseAdresseQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -440,7 +504,7 @@ abstract class BaseAdresseQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'ResponsableEleve');
 		}
-		
+
 		return $this;
 	}
 
@@ -448,7 +512,7 @@ abstract class BaseAdresseQuery extends ModelCriteria
 	 * Use the ResponsableEleve relation ResponsableEleve object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -478,7 +542,7 @@ abstract class BaseAdresseQuery extends ModelCriteria
 		} elseif ($absenceEleveNotification instanceof PropelCollection) {
 			return $this
 				->useAbsenceEleveNotificationQuery()
-					->filterByPrimaryKeys($absenceEleveNotification->getPrimaryKeys())
+				->filterByPrimaryKeys($absenceEleveNotification->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByAbsenceEleveNotification() only accepts arguments of type AbsenceEleveNotification or PropelCollection');
@@ -487,7 +551,7 @@ abstract class BaseAdresseQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the AbsenceEleveNotification relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -497,7 +561,7 @@ abstract class BaseAdresseQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveNotification');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -505,7 +569,7 @@ abstract class BaseAdresseQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -513,7 +577,7 @@ abstract class BaseAdresseQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'AbsenceEleveNotification');
 		}
-		
+
 		return $this;
 	}
 
@@ -521,7 +585,7 @@ abstract class BaseAdresseQuery extends ModelCriteria
 	 * Use the AbsenceEleveNotification relation AbsenceEleveNotification object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -546,8 +610,8 @@ abstract class BaseAdresseQuery extends ModelCriteria
 	{
 		if ($adresse) {
 			$this->addUsingAlias(AdressePeer::ADR_ID, $adresse->getId(), Criteria::NOT_EQUAL);
-	  }
-	  
+		}
+
 		return $this;
 	}
 

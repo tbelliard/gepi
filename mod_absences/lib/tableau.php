@@ -156,7 +156,7 @@ function hidediv ( name ) {
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des absences";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 
@@ -724,7 +724,6 @@ if ($type == "A" or $type == "tous")
 
 				if (getSettingValue("active_module_trombinoscopes")=='y') {
 					$nom_photo = nom_photo($data_div['elenoet']);
-					//$photo = "../../photos/eleves/".$nom_photo;
 					$photo = $nom_photo;
 					//if (($nom_photo == "") or (!(file_exists($photo)))) {
 					if (($nom_photo == NULL) or (!(file_exists($photo)))) {
@@ -881,7 +880,6 @@ if ($type == "R" or $type == "tous") { ?>
 				<td class="texte_fondjaune_calque_information"><?php echo "<b>".strtoupper($data_div['nom'])."</b> ".ucfirst($data_div['prenom']); ?> élève de <?php echo "<b>".classe_de($data_div['login'])."</b>"; $id_classe_eleve = classe_de($data_div['login']); ?> est arrivé<?php if ($data_div['sexe'] == "F") { ?>e<?php } ?> en retard<br /> le <?php echo date_frl($data_div['d_date_absence_eleve']); ?><br /> à <?php if ($data_div['d_heure_absence_eleve'] == "") {} else { echo heure($data_div['d_heure_absence_eleve']);} ?></td>
                   <?php if (getSettingValue("active_module_trombinoscopes")=='y') {
                   $nom_photo = nom_photo($data_div['elenoet']);
-                  //$photo = "../../photos/eleves/".$nom_photo;
                   $photo = $nom_photo;
                   if (($nom_photo == "") or (!(file_exists($photo)))) { $photo = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 		 $valeur=redimensionne_image($photo);

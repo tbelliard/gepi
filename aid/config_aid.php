@@ -151,7 +151,7 @@ if (isset($is_posted) and ($is_posted == "1")) {
 
 //**************** EN-TETE *********************
 $titre_page = "Gestion des AID";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 ?>

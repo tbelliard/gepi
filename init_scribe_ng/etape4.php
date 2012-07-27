@@ -46,7 +46,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation des enseignants";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 // Utilisation de la classe LDAP chargee et configuree
@@ -94,7 +94,7 @@ if ($_POST['step'] == "4") {
             .$compte_utilisateur_prof->getPrenom()
             .$compte_utilisateur_prof->getNom()
             ." (".$compte_utilisateur_prof->getLogin()
-            .") existe d&eacute;ja<br/>";
+            .") existe d&eacute;j&agrave;<br/>";
         }
         else {
             $new_compte_utilisateur = new UtilisateurProfessionnel();

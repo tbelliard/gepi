@@ -206,7 +206,7 @@ $message_erreur .= verif_debut_fin_saisie($dt_date_debut_appel, $dt_date_fin_app
 if ($utilisateur->getStatut() == 'professeur' && getSettingValue("abs2_saisie_prof_decale_journee")!='y' && getSettingValue("abs2_saisie_prof_decale")!='y') {
     $now = new DateTime('now');
     if ($dt_date_debut_appel->format('U') > $now->format('U') || $dt_date_fin_appel->format('U') < $now->format('U')) {
-	$message_erreur .= "Appel non autorisée et en dehors des heures de cours dont on fait l'appel.<br/>";
+	$message_erreur .= "Appel non autorisé en dehors des heures de cours concernées.<br/>";
     }
 }
 $saisie->setDebutAbs($dt_date_debut_appel);
@@ -235,8 +235,14 @@ for($i=0; $i<$total_eleves; $i++) {
 	continue;
     }
     $id_eleve = $_POST['id_eleve_absent'][$i];
+	
+	// on teste si une case est cochée
+	if (isset ($_POST['check'][$i]) && $_POST['check'][$i]) {
+		$_POST['active_absence_eleve'][$i] = TRUE;
+		$_POST['type_absence_eleve'][$i] = $_POST['check'][$i];
+	}
 
-    //on test si l'eleve est coché absent
+    //on teste si l'eleve est coché absent
     if (!isset($_POST['active_absence_eleve'][$i])
 	&& !(isset($_POST['commentaire_absence_eleve'][$i]) && $_POST['commentaire_absence_eleve'][$i] != null)
 	&& !(isset($_POST['type_absence_eleve'][$i]) && $_POST['type_absence_eleve'][$i] != -1)
@@ -295,6 +301,8 @@ for($i=0; $i<$total_eleves; $i++) {
 
     $saisie->setUtilisateurId($utilisateur->getPrimaryKey());
 
+    $saisie_discipline = false;
+
     if (isset($_POST['type_absence_eleve'][$i]) && $_POST['type_absence_eleve'][$i] != -1) {
 	$type = AbsenceEleveTypeQuery::create()->findPk($_POST['type_absence_eleve'][$i]);
 	if ($type != null) {
@@ -304,10 +312,7 @@ for($i=0; $i<$total_eleves; $i++) {
 		$traitement->addAbsenceEleveSaisie($saisie);
 		$traitement->setAbsenceEleveType($type);
 		$traitement->setUtilisateurProfessionnel($utilisateur);
-		if ($type->getTypeSaisie() == "DISCIPLINE" && getSettingValue("active_mod_discipline")=='y') {
-		    //on affiche un lien pour saisir le module discipline
-		    $saisie_discipline = true;
-		}
+		$saisie_discipline = ($type->getModeInterface() == "DISCIPLINE" && getSettingValue("active_mod_discipline")=='y');
 	    } else {
 		$message_erreur_eleve[$id_eleve] .= "Type d'absence non autorisé pour ce statut : ".$_POST['type_absence_eleve'][$i]."<br/>";
 	    }
@@ -317,7 +322,7 @@ for($i=0; $i<$total_eleves; $i++) {
     }
 
     if ($message_erreur_eleve[$id_eleve] != '') {
-	//il y a des erreurs, en evite l'enregistrement
+	//il y a des erreurs, on evite l'enregistrement
     } else {
 	if ($saisie->validate()) {
 	    $eleve->getAbsenceEleveSaisies();

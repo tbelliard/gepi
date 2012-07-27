@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -122,7 +122,7 @@ if (isset($id_classe)) {
 
 //**************** EN-TETE *******************************
 $titre_page = "Edition simplifiée des bulletins";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE ****************************
 ?>
 <script type='text/javascript' language='javascript'>
@@ -488,7 +488,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "<input type=\"hidden\" name=\"choix_edit\" value=\"2\" />\n";
 		echo "<input type=\"hidden\" name=\"login_eleve\" value=\"".$login_eleve."\" />\n";
 	}
-	echo "<p>Choisissez la(les) période(s) : </p><br />\n";
+	echo "<p>Choisissez la(les) période(s) : </p>\n";
 	include "../lib/periodes.inc.php";
 
 	$periode1_par_defaut=1;
@@ -554,6 +554,48 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 	echo "</select>\n";
 	echo "<input type=hidden name=id_classe value=$id_classe />\n";
+
+	echo "<br />\n";
+	echo "<br />\n";
+
+	echo "<label for='bull_simp_pref_marges' style='cursor:pointer;'>\n";
+	echo "Ajouter une marge&nbsp;: \n";
+	echo "</label>\n";
+	$bull_simp_pref_marges=getPref($_SESSION['login'],'bull_simp_pref_marges','');
+	echo "<input type=\"text\" size=\"2\" name=\"bull_simp_pref_marges\" id=\"bull_simp_pref_marges\" ";
+	echo "value='";
+	if(isset($_SESSION['bull_simp_pref_marges'])) {
+		$bull_simp_pref_marges=preg_replace('/[^0-9]/','',$_SESSION['bull_simp_pref_marges']);
+		// Pour permettre de ne pas inserer de margin et memoriser ce choix, on accepte le champ vide:
+		echo $bull_simp_pref_marges;
+	}
+	elseif($bull_simp_pref_marges!='') {
+		echo $bull_simp_pref_marges;
+	}
+	echo "' ";
+	echo "onkeydown=\"clavier_2(this.id,event,0,100);\" autocomplete=\"off\" ";
+	echo " />px\n";
+
+	echo "<br />\n";
+
+	echo "<label for='couleur_alterne' style='cursor:pointer;'>\n";
+	echo "Couleurs de fond des lignes alternées&nbsp;: \n";
+	echo "</label>\n";
+	echo "<input type=\"checkbox\" name=\"couleur_alterne\" id=\"couleur_alterne\" value='y' ";
+	if(isset($_SESSION['bull_simp_pref_couleur_alterne'])) {
+		if($_SESSION['bull_simp_pref_couleur_alterne']=='y') {
+			echo "checked";
+		}
+	}
+	else {
+		$couleur_alterne=getPref($_SESSION['login'], 'bull_simp_pref_couleur_alterne', 'n');
+		if($couleur_alterne=='y') {
+			echo "checked";
+		}
+	}
+	echo " />\n";
+
+
 	echo "<br /><br /><center><input type=submit value=Valider /></center>\n";
 	echo "</form>\n";
 }

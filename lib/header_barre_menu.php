@@ -54,10 +54,23 @@ echo '<!--[if lt IE 7]>
 
 	$mes_groupes=get_groups_for_prof($_SESSION['login'],NULL,array('classes', 'periodes','visibilite'));
 	$tmp_mes_classes=array();
+	$tmp_mes_classes_pp=array();
 	foreach($mes_groupes as $tmp_group) {
 		foreach($tmp_group["classes"]["classes"] as $key_id_classe => $value_tab_classe) {
 			if(!in_array($value_tab_classe['classe'], $tmp_mes_classes)) {
 				$tmp_mes_classes[$key_id_classe]=$value_tab_classe['classe'];
+
+				$tmp_mes_classes_pp[$key_id_classe]="";
+				$sql="SELECT DISTINCT u.nom,u.prenom,u.civilite FROM utilisateurs u, j_eleves_classes jec, j_eleves_professeurs jep WHERE u.login=jep.professeur AND jep.login=jec.login AND jec.id_classe='$key_id_classe' ORDER BY u.nom,u.prenom;";
+				$res=mysql_query($sql);
+				if(mysql_num_rows($res)>0) {
+					while($lig=mysql_fetch_object($res)) {
+						if($tmp_mes_classes_pp[$key_id_classe]!='') {
+							$tmp_mes_classes_pp[$key_id_classe].=", ";
+						}
+						$tmp_mes_classes_pp[$key_id_classe].="<span title=\"$lig->civilite $lig->nom $lig->prenom\">".$lig->nom." ".mb_substr($lig->prenom,0,1)."</span>";
+					}
+				}
 			}
 		}
 	}
@@ -267,7 +280,7 @@ echo '<!--[if lt IE 7]>
 			// Saisie des avis de conseil de classe
 			if((getSettingValue("GepiRubConseilProf") == "yes")&&(is_pp($_SESSION['login']))) {
 				$barre_note.= '		<li><a href="'.$gepiPath.'/saisie/saisie_avis.php"'.insert_confirm_abandon().'>Saisie des avis de conseils de classe</a></li>'."\n";
-				$barre_note.= '		</li>'."\n";
+				//$barre_note.= '		</li>'."\n";
 			}
 
 
@@ -341,8 +354,14 @@ echo '<!--[if lt IE 7]>
 			$barre_note.= '		</li>'."\n";
 
 
+			if((getSettingAOui('AAProfTout'))||(getSettingAOui('AAProfClasses'))||(getSettingAOui('AAProfGroupes'))||
+			((getSettingAOui('AAProfPrinc'))&&(is_pp($_SESSION['login'])))) {
+				$barre_note .= '	<li><a href="'.$gepiPath.'/mod_annees_anterieures/consultation_annee_anterieure.php"'.insert_confirm_abandon().'>Années antérieures</a>'."</li>\n";
+			}
+
 
 			// Ajouter Paramètres des bulletins et Impression des bulletins (pour les PP)
+
 
 
 		$barre_note.= '	</ul>'."\n";
@@ -403,10 +422,10 @@ echo '<!--[if lt IE 7]>
 	$barre_eleve.= '      <li><a href="'.$gepiPath.'/groupes/mes_listes.php"'.insert_confirm_abandon().'>Mes listes CSV</a></li>'."\n";
 	$barre_eleve.= '      <li><a href="'.$gepiPath.'/impression/impression_serie.php"'.insert_confirm_abandon().'>Mes listes PDF</a></li>'."\n";
 
-	$barre_eleve.= '		<li class="plus"><a href="'.$gepiPath.'/groupes/visu_profs_class.php"'.insert_confirm_abandon().'>Équipes pédégogiques</a>'."\n";
+	$barre_eleve.= '		<li class="plus"><a href="'.$gepiPath.'/groupes/visu_profs_class.php"'.insert_confirm_abandon().'>Équipes pédagogiques</a>'."\n";
 		$barre_eleve .= '		<ul class="niveau3">'."\n";
 		foreach($tmp_mes_classes as $key => $value) {
-			$barre_eleve.= '		<li><a href="'.$gepiPath.'/groupes/visu_profs_class.php?id_classe='.$key.'"'.insert_confirm_abandon().' onclick="ouvre_popup_visu_equip('.$key.');return false;">'.$value.'</a></li>'."\n";
+			$barre_eleve.= '		<li><a href="'.$gepiPath.'/groupes/visu_profs_class.php?id_classe='.$key.'"'.insert_confirm_abandon().' onclick="ouvre_popup_visu_equip('.$key.');return false;">'.$value." <em style='font-size:x-small;'>(".$tmp_mes_classes_pp[$key].")</em>".'</a></li>'."\n";
 		}
 		$barre_eleve.= '			</ul>'."\n";
 	$barre_eleve.= '</li>'."\n";

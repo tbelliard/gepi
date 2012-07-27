@@ -19,7 +19,7 @@ define('SET_DEST', 'latin1');
  /* */
 /* */
 define('SET_ORIGINE', 'latin1');
-define('SET_DEST', 'utf8');
+define('SET_DEST', 'utf8 COLLATE utf8_general_ci');
  /* */
 
 $result.="<br /><strong>Passage de la base en ".SET_DEST."</strong><br />";
@@ -77,6 +77,7 @@ unset ($donnees, $donneesBase);
 /* on s'occupe des tables */
 $result.="&nbsp;-> Passage des tables en ".SET_DEST."<br />";
 
+//$donneesTable=array();
 $query = mysql_query("SHOW table status");
 if ($query) {
 	while ($row = mysql_fetch_array($query, MYSQL_ASSOC)) {
@@ -87,6 +88,32 @@ if ($query) {
 } else {
 	die ('Erreur de lecture de la base');
 }
+// On vérifie que les clés de archivage_ects et de gc_ele_arriv_red ne sont pas trop longues ce qui bloque la conversion
+$queryToLong = mysql_query("SHOW COLUMNS FROM gc_ele_arriv_red");
+if ($queryToLong) {
+	while ($row = mysql_fetch_assoc($queryToLong)) {
+		if (mb_substr($row['Field'],0,5) == 'login' ) {
+			if (mb_substr($row['Type'],7,4) != '(50)' ) {
+				// Le champ login de gc_ele_arriv_red est trop long
+				$donneesTable[]='gc_ele_arriv_red';	
+				$queryReduit= mysql_query("ALTER TABLE gc_ele_arriv_red MODIFY login VARCHAR(50)");
+			}
+		}	
+	} 
+}
+$queryToLong = mysql_query("SHOW COLUMNS FROM archivage_ects");
+if ($queryToLong) {
+	while ($row = mysql_fetch_assoc($queryToLong)) {
+		if (mb_substr($row['Field'],0,3) == 'ine' ) {
+			if (mb_substr($row['Type'],7,4) != '(55)' ) {
+				// Le champ ine de archivage_ects est trop long
+				$donneesTable[]='archivage_ects';	
+				$queryReduit= mysql_query("ALTER TABLE archivage_ects MODIFY ine VARCHAR(55)");
+			}
+		}		
+	} 
+}
+
 if (empty($donneesTable) ){
     $result .= msj_present("Tables déjà encodées en ".SET_DEST);
 } else {
@@ -100,5 +127,35 @@ if (empty($donneesTable) ){
     $result .= msj_ok("Migration terminée : Tables encodées en ".SET_DEST);
 }
 
+$sql="SELECT 1=1 FROM setting WHERE name='conv_html_mat_cat';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)==0) {
+	$tab = array_flip (get_html_translation_table(HTML_ENTITIES));
+	$sql="SELECT * FROM matieres_categories;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$result .= "<br /><p><strong>Test de la présence d'accents HTML dans les noms de catégories de matières</strong><br />\n";
+		$nb_corrections_html=0;
+		while($lig=mysql_fetch_object($res)) {
+			$correction=ensure_utf8(strtr($lig->nom_complet, $tab));
+			if($lig->nom_complet!=$correction) {
+				$nb_corrections_html++;
+				$sql="UPDATE matieres_categories SET nom_complet='$correction' WHERE id='$lig->id';";
+				//echo "$sql<br />";
+				$update=mysql_query($sql);
+				if($update) {
+					$result .= msj_ok("Correction de l'encodage d'un nom de catégorie de matière en '$correction'");
+				}
+				else {
+					$result .= msj_erreur("Erreur lors de la correction de l'encodage du nom de catégorie de matière '$lig->nom_complet' en '$correction'");
+				}
+			}
+		}
+		if($nb_corrections_html==0) {
+			$result .= "Aucune correction de nom de catégorie de matière requise.<br />";
+		}
+	}
+	saveSetting('conv_html_mat_cat','fait');
+}
 
 ?>

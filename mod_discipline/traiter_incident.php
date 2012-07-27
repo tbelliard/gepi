@@ -469,7 +469,7 @@ if (($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre'))  {
 else {
 	$titre_page = "Discipline: Traiter un incident";
 }
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();

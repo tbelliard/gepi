@@ -99,7 +99,7 @@ if(!$menu){
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
 $dojo = true;
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 if(!$menu){
@@ -319,6 +319,9 @@ if ($order == "asc_id") {
 }
 
 $query->distinct();
+$query_count_eleve = clone $query;
+$total_eleve = $query_count_eleve->groupByEleveId()->count();
+
 $saisies_col = $query->paginate($page_number, $item_per_page);
 
 $nb_pages = (floor($saisies_col->getNbResults() / $item_per_page) + 1);
@@ -431,9 +434,9 @@ if ($saisies_col->haveToPaginate()) {
 }
 echo "Voir ";
 echo '<input type="text" name="item_per_page" size="1" value="'.$item_per_page.'"/>';
-echo "par page |  Nombre d'enregistrements : ";
+echo "par page |  Nbre de saisies : ";
 echo $saisies_col->count();
-
+echo " | Nbre d'élèves : ".$total_eleve;
 echo ' | <input type="checkbox" name="filter_saisies_supprimees"  onchange="submit()" value="y"';
 if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {echo "checked='checked'";}
 echo '/>';
@@ -498,7 +501,7 @@ if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {
 	echo '<span style="white-space: nowrap;"> ';
 	echo 'Entre : <input size="13" id="filter_date_suppression_saisie_debut_plage" name="filter_date_suppression_saisie_debut_plage" value="';
 	if (isFiltreRechercheParam('filter_date_suppression_saisie_debut_plage')) {echo getFiltreRechercheParam('filter_date_suppression_saisie_debut_plage');}
-	echo '" />&nbsp;';
+	echo '" onKeyDown="clavier_date2(this.id,event);" AutoComplete="off" />&nbsp;';
 	echo '<img id="trigger_filter_date_suppression_saisie_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
 	//echo '</nobr>';
 	echo '</span>';
@@ -518,7 +521,7 @@ if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {
 	echo '<span style="white-space: nowrap;"> ';
 	echo 'Et : <input size="13" id="filter_date_suppression_saisie_fin_plage" name="filter_date_suppression_saisie_fin_plage" value="';
 	if (isFiltreRechercheParam('filter_date_suppression_saisie_fin_plage')) {echo getFiltreRechercheParam('filter_date_suppression_saisie_fin_plage');}
-	echo '" />&nbsp;';
+	echo '" onKeyDown="clavier_date2(this.id,event);" AutoComplete="off" />&nbsp;';
 	echo '<img id="trigger_filter_date_suppression_saisie_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
 	//echo '</nobr>';
 	echo '</span>';
@@ -614,7 +617,10 @@ echo '</span>';
 echo '<br />';
 echo ("<select name=\"filter_groupe\" onchange='submit()'>");
 echo "<option value=''></option>\n";
-foreach (GroupeQuery::create()->orderByName()->useJGroupesClassesQuery()->useClasseQuery()->orderByNom()->endUse()->endUse()->find()  as $group) {
+foreach (GroupeQuery::create()->orderByName()->useJGroupesClassesQuery()->useClasseQuery()->orderByNom()->endUse()->endUse()
+                                ->leftJoinWith('Groupe.JGroupesClasses')
+                                ->leftJoinWith('JGroupesClasses.Classe')
+                                ->find()  as $group) {
 	echo "<option value='".$group->getId()."'";
 	if (getFiltreRechercheParam('filter_groupe') === (string) $group->getId()) echo " SELECTED ";
 	echo ">";
@@ -695,7 +701,7 @@ echo '<br />';
 echo '<span style="white-space: nowrap;"> ';
 echo 'Entre : <input size="13" id="filter_date_debut_saisie_debut_plage" name="filter_date_debut_saisie_debut_plage" value="';
 if (isFiltreRechercheParam('filter_date_debut_saisie_debut_plage')) {echo getFiltreRechercheParam('filter_date_debut_saisie_debut_plage');}
-echo '" />&nbsp;';
+echo '" onKeyDown="clavier_date2(this.id,event);" AutoComplete="off" />&nbsp;';
 echo '<img id="trigger_filter_date_debut_saisie_debut_plage" src="../images/icons/calendrier.gif" alt=""/>';
 //echo '</nobr>';
 echo '</span>';
@@ -715,7 +721,7 @@ echo '<br />';
 echo '<span style="white-space: nowrap;"> ';
 echo 'Et : <input size="13" id="filter_date_debut_saisie_fin_plage" name="filter_date_debut_saisie_fin_plage" value="';
 if (isFiltreRechercheParam('filter_date_debut_saisie_fin_plage')) {echo getFiltreRechercheParam('filter_date_debut_saisie_fin_plage');}
-echo '" />&nbsp;';
+echo '" onKeyDown="clavier_date2(this.id,event);" AutoComplete="off" />&nbsp;';
 echo '<img id="trigger_filter_date_debut_saisie_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
 echo '</span>';
@@ -750,7 +756,7 @@ echo '<br />';
 echo '<span style="white-space: nowrap;"> ';
 echo 'Entre : <input size="13" id="filter_date_fin_saisie_debut_plage" name="filter_date_fin_saisie_debut_plage" value="';
 if (isFiltreRechercheParam('filter_date_fin_saisie_debut_plage')) {echo getFiltreRechercheParam('filter_date_fin_saisie_debut_plage');}
-echo '" />&nbsp;';
+echo '" onKeyDown="clavier_date2(this.id,event);" AutoComplete="off" />&nbsp;';
 echo '<img id="trigger_filter_date_fin_saisie_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
 echo '</span>';
@@ -770,7 +776,7 @@ echo '<br />';
 echo '<span style="white-space: nowrap;"> ';
 echo 'Et : <input size="13" id="filter_date_fin_saisie_fin_plage" name="filter_date_fin_saisie_fin_plage" value="';
 if (isFiltreRechercheParam('filter_date_fin_saisie_fin_plage')) {echo getFiltreRechercheParam('filter_date_fin_saisie_fin_plage');}
-echo '" />&nbsp;';
+echo '" onKeyDown="clavier_date2(this.id,event);" AutoComplete="off" />&nbsp;';
 echo '<img id="trigger_filter_date_fin_saisie_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
 echo '</span>';
@@ -819,13 +825,13 @@ echo '</th>';
 echo '<th>';
 echo ("<select name=\"filter_manqement_obligation\" onchange='submit()'>");
 echo "<option value=''";
-if (isFiltreRechercheParam('filter_manqement_obligation') && getFiltreRechercheParam('filter_manqement_obligation') == 'y') {echo "checked='checked'";}
+if (!isFiltreRechercheParam('filter_manqement_obligation')) {echo "selected='selected'";}
 echo "></option>\n";
 echo "<option value='y' ";
-if (getFiltreRechercheParam('filter_manqement_obligation') == 'y') {echo "selected'";}
+if (getFiltreRechercheParam('filter_manqement_obligation') == 'y') {echo "selected='selected'";}
 echo ">oui</option>\n";
 echo "<option value='n' ";
-if (getFiltreRechercheParam('filter_manqement_obligation') == 'n') {echo "selected'";}
+if (getFiltreRechercheParam('filter_manqement_obligation') == 'n') {echo "selected='selected'";}
 echo ">non</option>\n";
 echo "</select>";
 echo '<br/>Manquement obligation présence';
@@ -857,7 +863,7 @@ echo '<br />';
 echo '<span style="white-space: nowrap;"> ';
 echo 'Entre : <input size="13" id="filter_date_traitement_absence_debut_plage" name="filter_date_traitement_absence_debut_plage" value="';
 if (isFiltreRechercheParam('filter_date_traitement_absence_debut_plage')) {echo getFiltreRechercheParam('filter_date_traitement_absence_debut_plage');}
-echo '" />&nbsp;';
+echo '" onKeyDown="clavier_date2(this.id,event);" AutoComplete="off" />&nbsp;';
 echo '<img id="trigger_filter_date_traitement_absence_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
 echo '</span>';
@@ -877,7 +883,7 @@ echo '<br />';
 echo '<span style="white-space: nowrap;"> ';
 echo 'Et : <input size="13" id="filter_date_traitement_absence_fin_plage" name="filter_date_traitement_absence_fin_plage" value="';
 if (isFiltreRechercheParam('filter_date_traitement_absence_fin_plage')) {echo getFiltreRechercheParam('filter_date_traitement_absence_fin_plage');}
-echo '" />&nbsp;';
+echo '" onKeyDown="clavier_date2(this.id,event);" AutoComplete="off" />&nbsp;';
 echo '<img id="trigger_filter_date_traitement_absence_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
 echo '</span>';
@@ -917,7 +923,7 @@ echo '<br />';
 echo '<span style="white-space: nowrap;"> ';
 echo 'Entre : <input size="13" id="filter_date_creation_saisie_debut_plage" name="filter_date_creation_saisie_debut_plage" value="';
 if (isFiltreRechercheParam('filter_date_creation_saisie_debut_plage')) {echo getFiltreRechercheParam('filter_date_creation_saisie_debut_plage');}
-echo '" />&nbsp;';
+echo '" onKeyDown="clavier_date2(this.id,event);" AutoComplete="off" />&nbsp;';
 echo '<img id="trigger_filter_date_creation_saisie_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
 echo '</span>';
@@ -937,7 +943,7 @@ echo '<br />';
 echo '<span style="white-space: nowrap;"> ';
 echo 'Et : <input size="13" id="filter_date_creation_saisie_fin_plage" name="filter_date_creation_saisie_fin_plage" value="';
 if (isFiltreRechercheParam('filter_date_creation_saisie_fin_plage')) {echo getFiltreRechercheParam('filter_date_creation_saisie_fin_plage');}
-echo '" />&nbsp;';
+echo '" onKeyDown="clavier_date2(this.id,event);" AutoComplete="off" />&nbsp;';
 echo '<img id="trigger_filter_date_creation_saisie_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
 echo '</span>';
@@ -1079,7 +1085,7 @@ foreach ($results as $saisie) {
 	echo "</a>";
 	if ($utilisateur->getAccesFicheEleve($saisie->getEleve())) {
 	    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."' target='_blank'>";
-	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."' >";
+	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank' >";
 	    echo ' (voir fiche)';
 	    echo "</a>";
 	}
@@ -1090,7 +1096,6 @@ foreach ($results as $saisie) {
 
 	echo "<a href='liste_saisies_selection_traitement.php?filter_eleve=".$saisie->getEleve()->getNom()."&order=asc_eleve' style='display: block; height: 100%;'> ";
 	$nom_photo = $saisie->getEleve()->getNomPhoto(1);
-	    //$photos = "../photos/eleves/".$nom_photo;
 	    $photos = $nom_photo;
 	    //if (($nom_photo != "") && (file_exists($photos))) {
 	    if (($nom_photo != NULL) && (file_exists($photos))) {

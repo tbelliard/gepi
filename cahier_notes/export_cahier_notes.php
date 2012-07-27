@@ -190,7 +190,7 @@ if(!isset($type_export)) {
     /**
      * Entête de la page
      */
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 
 	$titre=htmlspecialchars($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")";
@@ -289,13 +289,27 @@ if(!isset($type_export)) {
 	echo "<h2>$titre</h2>\n";
 	echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	echo add_token_field();
+
 	echo "<p>Vous pouvez effectuer un export:<br />\n";
 	echo "<input type='hidden' name='id_racine' value='$id_racine' />\n";
-	echo "<input type='radio' name='type_export' id='type_export_csv' value='CSV' checked /><label for='type_export_csv' style='cursor: pointer;'> fichier CSV</label><br />\n";
+
+
+	$pref_export_cn=getPref($_SESSION['login'],'export_cn','csv');
+	echo "<input type='radio' name='type_export' id='type_export_csv' value='CSV' ";
+	if((getSettingValue("export_cn_ods")!='y')||
+		($pref_export_cn=='csv')) {
+		echo "checked ";
+	}
+	echo "/><label for='type_export_csv' style='cursor: pointer;'> fichier CSV</label><br />\n";
 
 	if(getSettingValue("export_cn_ods")=='y') {
-		echo "<input type='radio' name='type_export' id='type_export_ods' value='ODS' /><label for='type_export_ods' style='cursor: pointer;'> feuille de tableur ODS</label><br />\n";
+		echo "<input type='radio' name='type_export' id='type_export_ods' value='ODS' ";
+		if($pref_export_cn=='ods') {
+			echo "checked ";
+		}
+		echo "/><label for='type_export_ods' style='cursor: pointer;'> feuille de tableur ODS</label><br />\n";
 	}
+
 	echo "<input type='submit' name='envoyer' value='Valider' /></p>\n";
 	echo "</form>\n";
 /**
@@ -321,6 +335,8 @@ if($type_export=="CSV") {
 
 	// Génération du CSV
 
+	savePref($_SESSION['login'], 'export_cn', 'csv');
+
 	$nom_fic.=".csv";
 
 	$now=gmdate('D, d M Y H:i:s').' GMT';
@@ -332,7 +348,7 @@ if($type_export=="CSV") {
 
 	// On fait la liste des devoirs de ce carnet de notes
 	$appel_dev = mysql_query("select * from cn_devoirs where (id_racine='$id_racine') order by id_conteneur,date");
-	$nb_dev  = mysql_num_rows($appel_dev);
+	$nb_dev = mysql_num_rows($appel_dev);
 
 	$ligne_entete="GEPI_INFOS;GEPI_LOGIN_ELEVE;NOM;PRENOM;CLASSE;MOYENNE;GEPI_COL_1ER_DEVOIR";
 	$fd.="$ligne_entete\n";
@@ -485,6 +501,8 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 	 *  ... il faudra prévoir un nettoyage.
 	 * Il faudrait que l'option générer des ODS soit activable/désactivable par l'admin
      */
+
+	savePref($_SESSION['login'], 'export_cn', 'ods');
 
 	// On fait la liste des devoirs de ce carnet de notes
 	$appel_dev = mysql_query("select * from cn_devoirs where (id_racine='$id_racine') order by id_conteneur,date");
@@ -810,42 +828,92 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
     /**
      * Création d'un .odc 
      */
-	require_once("../lib/ss_zip.class.php");
+	if(file_exists("../lib/ss_zip.class.php")) {
+		require_once("../lib/ss_zip.class.php");
 
-	$zip= new ss_zip('',6);
-	$zip->add_file("$tmp_fich",'content.xml');
+		$zip= new ss_zip('',6);
+		$zip->add_file("$tmp_fich",'content.xml');
 
-	// On n'ajoute pas les dossiers, ni les fichiers vides... ss_zip ne le supporte pas...
-	// ... et OpenOffice a l'air de supporter l'absence de ces dossiers/fichiers.
+		// On n'ajoute pas les dossiers, ni les fichiers vides... ss_zip ne le supporte pas...
+		// ... et OpenOffice a l'air de supporter l'absence de ces dossiers/fichiers.
 
-	$zip->add_file($chemin_modele_ods.'/Basic/script-lc.xml', 'Basic/script-lc.xml');
-	$zip->add_file($chemin_modele_ods.'/Basic/Standard/script-lb.xml', 'Basic/Standard/script-lb.xml');
-	$zip->add_file($chemin_modele_ods.'/Basic/Standard/Module1.xml', 'Basic/Standard/Module1.xml');
+		$zip->add_file($chemin_modele_ods.'/Basic/script-lc.xml', 'Basic/script-lc.xml');
+		$zip->add_file($chemin_modele_ods.'/Basic/Standard/script-lb.xml', 'Basic/Standard/script-lb.xml');
+		$zip->add_file($chemin_modele_ods.'/Basic/Standard/Module1.xml', 'Basic/Standard/Module1.xml');
 
-	// On ne met pas ce fichier parce que sa longueur vide fait une blague pour ss_zip.
+		// On ne met pas ce fichier parce que sa longueur vide fait une blague pour ss_zip.
 	
-	$zip->add_file($chemin_modele_ods.'/META-INF/manifest.xml', 'META-INF/manifest.xml');
-	$zip->add_file($chemin_modele_ods.'/settings.xml', 'settings.xml');
-	$zip->add_file($chemin_modele_ods.'/meta.xml', 'meta.xml');
-	$zip->add_file($chemin_modele_ods.'/Thumbnails/thumbnail.png', 'Thumbnails/thumbnail.png');
-	$zip->add_file($chemin_modele_ods.'/mimetype', 'mimetype');
-	$zip->add_file($chemin_modele_ods.'/styles.xml', 'styles.xml');
+		$zip->add_file($chemin_modele_ods.'/META-INF/manifest.xml', 'META-INF/manifest.xml');
+		$zip->add_file($chemin_modele_ods.'/settings.xml', 'settings.xml');
+		$zip->add_file($chemin_modele_ods.'/meta.xml', 'meta.xml');
+		$zip->add_file($chemin_modele_ods.'/Thumbnails/thumbnail.png', 'Thumbnails/thumbnail.png');
+		$zip->add_file($chemin_modele_ods.'/mimetype', 'mimetype');
+		$zip->add_file($chemin_modele_ods.'/styles.xml', 'styles.xml');
 
-	$zip->save("$tmp_fich.zip");
+		$zip->save("$tmp_fich.zip");
 
+		if(file_exists("$chemin_temp/$nom_fic")) {unlink("$chemin_temp/$nom_fic");}
+		rename("$tmp_fich.zip","$chemin_temp/$nom_fic");
 
-	if(file_exists("$chemin_temp/$nom_fic")) {unlink("$chemin_temp/$nom_fic");}
-	rename("$tmp_fich.zip","$chemin_temp/$nom_fic");
+		// Suppression du fichier content...xml
+		unlink($tmp_fich);
+	}
+	else {
+		$path = path_niveau();
+		$chemin_temp = $path."temp/".get_user_temp_directory()."/";
 
-	// Suppression du fichier content...xml
-	unlink($tmp_fich);
+		if (!defined('PCLZIP_TEMPORARY_DIR') || constant('PCLZIP_TEMPORARY_DIR')!=$chemin_temp) {
+			@define( 'PCLZIP_TEMPORARY_DIR', $chemin_temp);
+		}
+
+		$chemin_stockage = $chemin_temp."/".$nom_fic;
+
+		$dossier_a_traiter=$chemin_temp."export_cn_".strftime("%Y%m%d%H%M%S");
+		@mkdir($dossier_a_traiter);
+		copy($tmp_fich, $dossier_a_traiter."/content.xml");
+
+		@mkdir($dossier_a_traiter."/Basic");
+		@mkdir($dossier_a_traiter."/Basic/Standard");
+		@mkdir($dossier_a_traiter."/META-INF");
+		@mkdir($dossier_a_traiter."/Thumbnails");
+
+		$tab_fich_tmp=array('Basic/script-lc.xml', 'Basic/Standard/script-lb.xml', 'Basic/Standard/Module1.xml', 'META-INF/manifest.xml', 'settings.xml', 'meta.xml', 'Thumbnails/thumbnail.png', 'mimetype', 'styles.xml');
+		for($loop=0;$loop<count($tab_fich_tmp);$loop++) {
+			copy($chemin_modele_ods.'/'.$tab_fich_tmp[$loop], $dossier_a_traiter."/".$tab_fich_tmp[$loop]);
+		}
+
+		require_once($path.'lib/pclzip.lib.php');
+
+		if ($chemin_stockage !='') {
+			if(file_exists("$chemin_stockage")) {unlink("$chemin_stockage");}
+
+			//echo "\$chemin_stockage=$chemin_stockage<br />";
+			//echo "\$dossier_a_traiter=$dossier_a_traiter<br />";
+
+			$archive = new PclZip($chemin_stockage);
+			$v_list = $archive->create($dossier_a_traiter,
+				  PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
+				  PCLZIP_OPT_ADD_PATH, '');
+
+			if ($v_list == 0) {
+				$msg="Erreur : ".$archive->errorInfo(TRUE);
+			}
+			/*
+			else {
+				$msg="Archive zip créée&nbsp;: <a href='$chemin_stockage'>$chemin_stockage</a>";
+			}
+			*/
+
+			deltree($dossier_a_traiter);
+		}
+	}
 
 	//**************** EN-TETE *****************
 	$titre_page = "Export des notes";
     /**
      * Entête de la page
      */
-	require_once("../lib/header.inc");
+	require_once("../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 
 	$titre=htmlspecialchars($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")";

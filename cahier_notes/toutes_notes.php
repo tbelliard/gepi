@@ -69,7 +69,7 @@ include "../lib/periodes.inc.php";
 
 //**************** EN-TETE *****************
 $titre_page = "Visualisation de toutes les notes de l'année";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 <script type='text/javascript' language='javascript'>

@@ -63,7 +63,6 @@ if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") 
 
 if (isset($_POST["creation_traitement"]) || isset($_POST["ajout_traitement"])) {
     include('creation_traitement.php');
-    die();
 }
 
 //récupération des paramètres de la requète
@@ -128,7 +127,7 @@ $utilisation_scriptaculous="ok";
 $utilisation_win = 'oui';
 $_SESSION['cacher_header'] = "y";
 $dojo = true;
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 include('menu_abs2.inc.php');
@@ -507,11 +506,21 @@ $eleve_col = $query
 			echo $eleve->getClasseNom($dt_date_absence_eleve);
 			if ($utilisateur->getAccesFicheEleve($eleve)) {
 			    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
-			    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' >";
+			    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank'>";
 			    echo ' (voir&nbsp;fiche)';
 			    echo "</a>";
 			}
-			
+			echo "<br />\n";
+			echo "<div class='div_tab_tel_resp'>\n";
+				echo "<div style='float:left; width:2em;'>\n";
+				echo "<img src='../images/imabulle/tel3.jpg' width='20' height='15' />";
+				echo "</div>\n";
+
+				echo "<div class='tableau_tel_resp'>\n";
+				echo tableau_tel_resp_ele($eleve->getLogin());
+				echo "</div>\n";
+			echo "</div>\n";
+
 			echo("</td>");
 
 			$col_creneaux = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
@@ -575,9 +584,7 @@ $eleve_col = $query
 					       // Avec ou sans photo
 			if ((getSettingValue("active_module_trombinoscopes")=='y')) {
 			    $nom_photo = $eleve->getNomPhoto(1);
-			    //$photos = "../photos/eleves/".$nom_photo;
 			    $photos = $nom_photo;
-			    //if (($nom_photo == "") or (!(file_exists($photos)))) {
 			    if (($nom_photo == NULL) or (!(file_exists($photos)))) {
 				    $photos = "../mod_trombinoscopes/images/trombivide.jpg";
 			    }

@@ -32,7 +32,7 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 
-// Check access
+// Check accessaccueil.php
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -73,11 +73,10 @@ $req_classes = mysql_query('SELECT id,classe,nom_complet,apb_niveau
 
 // header
 //$titre_page = "Gestion de l'export APB";
-//require_once("../lib/header.inc");
 
 
 // ====== Inclusion des balises head et du bandeau =====
-include_once("../lib/header_template.inc");
+include_once("../lib/header_template.inc.php");
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion Export APB"))
 		echo "erreur lors de la création du fil d'ariane";

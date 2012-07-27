@@ -30,8 +30,8 @@ class Propel
 	/**
 	 * The Propel version.
 	 */
-	const VERSION = '1.6.2-dev';
-	
+	const VERSION = '1.6.5-dev';
+
 	/**
 	 * A constant for <code>default</code>.
 	 */
@@ -155,8 +155,8 @@ class Propel
 	/**
 	 * @var        string Base directory to use for autoloading. Initialized in self::initBaseDir()
 	 */
-  protected static $baseDir;
-  
+	protected static $baseDir;
+
 	/**
 	 * @var        array A map of class names and their file paths for autoloading
 	 */
@@ -190,7 +190,7 @@ class Propel
 		'DebugPDOStatement'   => 'connection/DebugPDOStatement.php',
 
 		'PropelException'     => 'exception/PropelException.php',
-		
+
 		'ModelWith'           => 'formatter/ModelWith.php',
 		'PropelArrayFormatter' => 'formatter/PropelArrayFormatter.php',
 		'PropelFormatter'     => 'formatter/PropelFormatter.php',
@@ -198,7 +198,7 @@ class Propel
 		'PropelOnDemandFormatter' => 'formatter/PropelOnDemandFormatter.php',
 		'PropelStatementFormatter' => 'formatter/PropelStatementFormatter.php',
 		'PropelSimpleArrayFormatter' => 'formatter/PropelSimpleArrayFormatter.php',
-		
+
 		'BasicLogger'         => 'logger/BasicLogger.php',
 		'MojaviLogAdapter'    => 'logger/MojaviLogAdapter.php',
 		'StackLogger'	      => 'logger/StackLogger.php',
@@ -221,7 +221,7 @@ class Propel
 		'PropelParser'        => 'parser/PropelParser.php',
 		'PropelXMLParser'     => 'parser/PropelXMLParser.php',
 		'PropelYAMLParser'    => 'parser/PropelYAMLParser.php',
-		
+
 		'Criteria'            => 'query/Criteria.php',
 		'Criterion'           => 'query/Criterion.php',
 		'CriterionIterator'   => 'query/CriterionIterator.php',
@@ -249,6 +249,7 @@ class Propel
 		'MinValueValidator'   => 'validator/MinValueValidator.php',
 		'NotMatchValidator'   => 'validator/NotMatchValidator.php',
 		'RequiredValidator'   => 'validator/RequiredValidator.php',
+		'TypeValidator'       => 'validator/TypeValidator.php',
 		'UniqueValidator'     => 'validator/UniqueValidator.php',
 		'ValidValuesValidator' => 'validator/ValidValuesValidator.php',
 		'ValidationFailed'    => 'validator/ValidationFailed.php',
@@ -270,12 +271,12 @@ class Propel
 
 		// reset the connection map (this should enable runtime changes of connection params)
 		self::$connectionMap = array();
-		
+
 		if (isset(self::$configuration['classmap']) && is_array(self::$configuration['classmap'])) {
-		  PropelAutoloader::getInstance()->addClassPaths(self::$configuration['classmap']);
-		  PropelAutoloader::getInstance()->register();
-	  }
-		
+			PropelAutoloader::getInstance()->addClassPaths(self::$configuration['classmap']);
+			PropelAutoloader::getInstance()->register();
+		}
+
 		self::$isInit = true;
 	}
 
@@ -348,8 +349,8 @@ class Propel
 	{
 		if (is_array($c)) {
 			if (isset($c['propel']) && is_array($c['propel'])) {
-			  $c = $c['propel'];
-		  }
+				$c = $c['propel'];
+			}
 			$c = new PropelConfiguration($c);
 		}
 		self::$configuration = $c;
@@ -423,22 +424,22 @@ class Propel
 		if (self::hasLogger()) {
 			$logger = self::logger();
 			switch ($level) {
-				case self::LOG_EMERG:
-					return $logger->log($message, $level);
-				case self::LOG_ALERT:
-					return $logger->alert($message);
-				case self::LOG_CRIT:
-					return $logger->crit($message);
-				case self::LOG_ERR:
-					return $logger->err($message);
-				case self::LOG_WARNING:
-					return $logger->warning($message);
-				case self::LOG_NOTICE:
-					return $logger->notice($message);
-				case self::LOG_INFO:
-					return $logger->info($message);
-				default:
-					return $logger->debug($message);
+			case self::LOG_EMERG:
+				return $logger->log($message, $level);
+			case self::LOG_ALERT:
+				return $logger->alert($message);
+			case self::LOG_CRIT:
+				return $logger->crit($message);
+			case self::LOG_ERR:
+				return $logger->err($message);
+			case self::LOG_WARNING:
+				return $logger->warning($message);
+			case self::LOG_NOTICE:
+				return $logger->notice($message);
+			case self::LOG_INFO:
+				return $logger->info($message);
+			default:
+				return $logger->debug($message);
 			}
 		}
 		return true;
@@ -551,12 +552,12 @@ class Propel
 			return self::getSlaveConnection($name);
 		}
 
-	} 
-	
+	}
+
 	/**
 	 * Gets an already-opened write PDO connection or opens a new one for passed-in db name.
 	 *
-	 * @param      string $name The datasource name that is used to look up the DSN 
+	 * @param      string $name The datasource name that is used to look up the DSN
 	 *                          from the runtime configuation file. Empty name not allowed.
 	 *
 	 * @return     PDO A database connection
@@ -578,11 +579,11 @@ class Propel
 
 		return self::$connectionMap[$name]['master'];
 	}
-	
+
 	/**
 	 * Gets an already-opened read PDO connection or opens a new one for passed-in db name.
 	 *
-	 * @param      string $name The datasource name that is used to look up the DSN 
+	 * @param      string $name The datasource name that is used to look up the DSN
 	 *                          from the runtime configuation file. Empty name not allowed.
 	 *
 	 * @return     PDO A database connection
@@ -623,7 +624,7 @@ class Propel
 
 		return self::$connectionMap[$name]['slave'];
 	}
-	
+
 	/**
 	 * Opens a new PDO connection for passed-in db name.
 	 *
@@ -638,11 +639,13 @@ class Propel
 	 */
 	public static function initConnection($conparams, $name, $defaultClass = Propel::CLASS_PROPEL_PDO)
 	{
+		$adapter = self::getDB($name);
 
-		$dsn = $conparams['dsn'];
-		if ($dsn === null) {
+		if (null === $conparams['dsn']) {
 			throw new PropelException('No dsn specified in your connection parameters for datasource ['.$name.']');
 		}
+
+		$conparams = $adapter->prepareParams($conparams);
 
 		if (isset($conparams['classname']) && !empty($conparams['classname'])) {
 			$classname = $conparams['classname'];
@@ -653,7 +656,8 @@ class Propel
 			$classname = $defaultClass;
 		}
 
-		$user = isset($conparams['user']) ? $conparams['user'] : null;
+		$dsn	  = $conparams['dsn'];
+		$user	  = isset($conparams['user']) ? $conparams['user'] : null;
 		$password = isset($conparams['password']) ? $conparams['password'] : null;
 
 		// load any driver options from the config file
@@ -689,7 +693,6 @@ class Propel
 		}
 
 		// initialize the connection using the settings provided in the config file. this could be a "SET NAMES <charset>" query for MySQL, for instance
-		$adapter = self::getDB($name);
 		$adapter->initConnection($con, isset($conparams['settings']) && is_array($conparams['settings']) ? $conparams['settings'] : array());
 
 		return $con;
@@ -814,7 +817,7 @@ class Propel
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Initialize the base directory for the autoloader.
 	 * Avoids a call to dirname(__FILE__) each time self::autoload() is called.
@@ -878,7 +881,7 @@ class Propel
 
 	/**
 	 * Disable instance pooling.
-	 * 
+	 *
 	 * @return boolean true if the method changed the instance pooling state,
 	 *                 false if it was already disabled
 	 */
@@ -893,7 +896,7 @@ class Propel
 
 	/**
 	 * Enable instance pooling (enabled by default).
-	 * 
+	 *
 	 * @return boolean true if the method changed the instance pooling state,
 	 *                 false if it was already enabled
 	 */

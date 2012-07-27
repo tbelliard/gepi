@@ -1,0 +1,34 @@
+/* ===================== */
+div.appreciations_deroulantes_graphe_old {
+position : absolute;/*j"ai choisi de positionner la boite à partir de l'entête*/
+top : 515px;/*idem*/
+left : 5px;/*idem*/
+font-family: Tahoma, Arial, Helvetica, Sans-Serif;
+font-size: 16px;/*0.95em;*/
+border: 1px solid #FFFFFF;
+width : 320px; /*largeur de la boite*/
+padding : 2px;
+background: white;
+text-align:left;
+overflow: hidden;
+border: 1px solid black;
+}
+
+div.appreciations_deroulantes_graphe {
+position : relative;/*j"ai choisi de positionner la boite à partir de l'entête*/
+top : 0px;/*idem*/
+left : 5px;/*idem*/
+font-family: Tahoma, Arial, Helvetica, Sans-Serif;
+font-size: 16px;/*0.95em;*/
+border: 1px solid #FFFFFF;
+width : 320px; /*largeur de la boite*/
+padding : 2px;
+background: white;
+text-align:left;
+overflow: hidden;
+border: 1px solid black;
+}
+#appreciations_deroulantes {  overflow: hidden;  position: relative; }
+#appreciations_defile {  position: relative; }
+/*================================================*/
+

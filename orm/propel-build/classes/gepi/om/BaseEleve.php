@@ -25,6 +25,12 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the no_gep field.
 	 * @var        string
 	 */
@@ -204,6 +210,96 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $ancienEtablissementsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $aidDetailssScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $jEleveClassesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $jEleveCpesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $jEleveGroupesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $jEleveProfesseurPrincipalsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $eleveRegimeDoublantsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $responsableInformationsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $jEleveAncienEtablissementsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $jAidElevessScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $absenceEleveSaisiesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $absenceAgregationDecomptesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $creditEctssScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $creditEctsGlobalsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $archiveEctssScheduledForDeletion = null;
 
 	/**
 	 * Applies default values to this object.
@@ -558,7 +654,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->lieu_naissance !== $v || $this->isNew()) {
+		if ($this->lieu_naissance !== $v) {
 			$this->lieu_naissance = $v;
 			$this->modifiedColumns[] = ElevePeer::LIEU_NAISSANCE;
 		}
@@ -618,7 +714,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->ele_id !== $v || $this->isNew()) {
+		if ($this->ele_id !== $v) {
 			$this->ele_id = $v;
 			$this->modifiedColumns[] = ElevePeer::ELE_ID;
 		}
@@ -638,7 +734,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->email !== $v || $this->isNew()) {
+		if ($this->email !== $v) {
 			$this->email = $v;
 			$this->modifiedColumns[] = ElevePeer::EMAIL;
 		}
@@ -896,18 +992,18 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = EleveQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				EleveQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -959,7 +1055,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -994,27 +1090,54 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 				$this->setMef($this->aMef);
 			}
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = ElevePeer::ID_ELEVE;
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
+				if ($this->isNew()) {
+					$this->doInsert($con);
+				} else {
+					$this->doUpdate($con);
+				}
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
-				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(ElevePeer::ID_ELEVE) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.ElevePeer::ID_ELEVE.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
-				} else {
-					$affectedRows += ElevePeer::doUpdate($this, $con);
+			if ($this->ancienEtablissementsScheduledForDeletion !== null) {
+				if (!$this->ancienEtablissementsScheduledForDeletion->isEmpty()) {
+					JEleveAncienEtablissementQuery::create()
+						->filterByPrimaryKeys($this->ancienEtablissementsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->ancienEtablissementsScheduledForDeletion = null;
 				}
 
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+				foreach ($this->getAncienEtablissements() as $ancienEtablissement) {
+					if ($ancienEtablissement->isModified()) {
+						$ancienEtablissement->save($con);
+					}
+				}
+			}
+
+			if ($this->aidDetailssScheduledForDeletion !== null) {
+				if (!$this->aidDetailssScheduledForDeletion->isEmpty()) {
+					JAidElevesQuery::create()
+						->filterByPrimaryKeys($this->aidDetailssScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->aidDetailssScheduledForDeletion = null;
+				}
+
+				foreach ($this->getAidDetailss() as $aidDetails) {
+					if ($aidDetails->isModified()) {
+						$aidDetails->save($con);
+					}
+				}
+			}
+
+			if ($this->jEleveClassesScheduledForDeletion !== null) {
+				if (!$this->jEleveClassesScheduledForDeletion->isEmpty()) {
+					JEleveClasseQuery::create()
+						->filterByPrimaryKeys($this->jEleveClassesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->jEleveClassesScheduledForDeletion = null;
+				}
 			}
 
 			if ($this->collJEleveClasses !== null) {
@@ -1022,6 +1145,15 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->jEleveCpesScheduledForDeletion !== null) {
+				if (!$this->jEleveCpesScheduledForDeletion->isEmpty()) {
+					JEleveCpeQuery::create()
+						->filterByPrimaryKeys($this->jEleveCpesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->jEleveCpesScheduledForDeletion = null;
 				}
 			}
 
@@ -1033,11 +1165,29 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->jEleveGroupesScheduledForDeletion !== null) {
+				if (!$this->jEleveGroupesScheduledForDeletion->isEmpty()) {
+					JEleveGroupeQuery::create()
+						->filterByPrimaryKeys($this->jEleveGroupesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->jEleveGroupesScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collJEleveGroupes !== null) {
 				foreach ($this->collJEleveGroupes as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->jEleveProfesseurPrincipalsScheduledForDeletion !== null) {
+				if (!$this->jEleveProfesseurPrincipalsScheduledForDeletion->isEmpty()) {
+					JEleveProfesseurPrincipalQuery::create()
+						->filterByPrimaryKeys($this->jEleveProfesseurPrincipalsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->jEleveProfesseurPrincipalsScheduledForDeletion = null;
 				}
 			}
 
@@ -1049,9 +1199,27 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->eleveRegimeDoublantsScheduledForDeletion !== null) {
+				if (!$this->eleveRegimeDoublantsScheduledForDeletion->isEmpty()) {
+					EleveRegimeDoublantQuery::create()
+						->filterByPrimaryKeys($this->eleveRegimeDoublantsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->eleveRegimeDoublantsScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->singleEleveRegimeDoublant !== null) {
 				if (!$this->singleEleveRegimeDoublant->isDeleted()) {
 						$affectedRows += $this->singleEleveRegimeDoublant->save($con);
+				}
+			}
+
+			if ($this->responsableInformationsScheduledForDeletion !== null) {
+				if (!$this->responsableInformationsScheduledForDeletion->isEmpty()) {
+					ResponsableInformationQuery::create()
+						->filterByPrimaryKeys($this->responsableInformationsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->responsableInformationsScheduledForDeletion = null;
 				}
 			}
 
@@ -1063,11 +1231,29 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->jEleveAncienEtablissementsScheduledForDeletion !== null) {
+				if (!$this->jEleveAncienEtablissementsScheduledForDeletion->isEmpty()) {
+					JEleveAncienEtablissementQuery::create()
+						->filterByPrimaryKeys($this->jEleveAncienEtablissementsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->jEleveAncienEtablissementsScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collJEleveAncienEtablissements !== null) {
 				foreach ($this->collJEleveAncienEtablissements as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->jAidElevessScheduledForDeletion !== null) {
+				if (!$this->jAidElevessScheduledForDeletion->isEmpty()) {
+					JAidElevesQuery::create()
+						->filterByPrimaryKeys($this->jAidElevessScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->jAidElevessScheduledForDeletion = null;
 				}
 			}
 
@@ -1079,11 +1265,29 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->absenceEleveSaisiesScheduledForDeletion !== null) {
+				if (!$this->absenceEleveSaisiesScheduledForDeletion->isEmpty()) {
+					AbsenceEleveSaisieQuery::create()
+						->filterByPrimaryKeys($this->absenceEleveSaisiesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->absenceEleveSaisiesScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collAbsenceEleveSaisies !== null) {
 				foreach ($this->collAbsenceEleveSaisies as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->absenceAgregationDecomptesScheduledForDeletion !== null) {
+				if (!$this->absenceAgregationDecomptesScheduledForDeletion->isEmpty()) {
+					AbsenceAgregationDecompteQuery::create()
+						->filterByPrimaryKeys($this->absenceAgregationDecomptesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->absenceAgregationDecomptesScheduledForDeletion = null;
 				}
 			}
 
@@ -1095,6 +1299,15 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->creditEctssScheduledForDeletion !== null) {
+				if (!$this->creditEctssScheduledForDeletion->isEmpty()) {
+					CreditEctsQuery::create()
+						->filterByPrimaryKeys($this->creditEctssScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->creditEctssScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collCreditEctss !== null) {
 				foreach ($this->collCreditEctss as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
@@ -1103,11 +1316,29 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->creditEctsGlobalsScheduledForDeletion !== null) {
+				if (!$this->creditEctsGlobalsScheduledForDeletion->isEmpty()) {
+					CreditEctsGlobalQuery::create()
+						->filterByPrimaryKeys($this->creditEctsGlobalsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->creditEctsGlobalsScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collCreditEctsGlobals !== null) {
 				foreach ($this->collCreditEctsGlobals as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->archiveEctssScheduledForDeletion !== null) {
+				if (!$this->archiveEctssScheduledForDeletion->isEmpty()) {
+					ArchiveEctsQuery::create()
+						->filterByPrimaryKeys($this->archiveEctssScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->archiveEctssScheduledForDeletion = null;
 				}
 			}
 
@@ -1124,6 +1355,152 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = ElevePeer::ID_ELEVE;
+		if (null !== $this->id_eleve) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . ElevePeer::ID_ELEVE . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(ElevePeer::NO_GEP)) {
+			$modifiedColumns[':p' . $index++]  = 'NO_GEP';
+		}
+		if ($this->isColumnModified(ElevePeer::LOGIN)) {
+			$modifiedColumns[':p' . $index++]  = 'LOGIN';
+		}
+		if ($this->isColumnModified(ElevePeer::NOM)) {
+			$modifiedColumns[':p' . $index++]  = 'NOM';
+		}
+		if ($this->isColumnModified(ElevePeer::PRENOM)) {
+			$modifiedColumns[':p' . $index++]  = 'PRENOM';
+		}
+		if ($this->isColumnModified(ElevePeer::SEXE)) {
+			$modifiedColumns[':p' . $index++]  = 'SEXE';
+		}
+		if ($this->isColumnModified(ElevePeer::NAISSANCE)) {
+			$modifiedColumns[':p' . $index++]  = 'NAISSANCE';
+		}
+		if ($this->isColumnModified(ElevePeer::LIEU_NAISSANCE)) {
+			$modifiedColumns[':p' . $index++]  = 'LIEU_NAISSANCE';
+		}
+		if ($this->isColumnModified(ElevePeer::ELENOET)) {
+			$modifiedColumns[':p' . $index++]  = 'ELENOET';
+		}
+		if ($this->isColumnModified(ElevePeer::ERENO)) {
+			$modifiedColumns[':p' . $index++]  = 'ERENO';
+		}
+		if ($this->isColumnModified(ElevePeer::ELE_ID)) {
+			$modifiedColumns[':p' . $index++]  = 'ELE_ID';
+		}
+		if ($this->isColumnModified(ElevePeer::EMAIL)) {
+			$modifiedColumns[':p' . $index++]  = 'EMAIL';
+		}
+		if ($this->isColumnModified(ElevePeer::ID_ELEVE)) {
+			$modifiedColumns[':p' . $index++]  = 'ID_ELEVE';
+		}
+		if ($this->isColumnModified(ElevePeer::DATE_SORTIE)) {
+			$modifiedColumns[':p' . $index++]  = 'DATE_SORTIE';
+		}
+		if ($this->isColumnModified(ElevePeer::MEF_CODE)) {
+			$modifiedColumns[':p' . $index++]  = 'MEF_CODE';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO eleves (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case 'NO_GEP':
+						$stmt->bindValue($identifier, $this->no_gep, PDO::PARAM_STR);
+						break;
+					case 'LOGIN':
+						$stmt->bindValue($identifier, $this->login, PDO::PARAM_STR);
+						break;
+					case 'NOM':
+						$stmt->bindValue($identifier, $this->nom, PDO::PARAM_STR);
+						break;
+					case 'PRENOM':
+						$stmt->bindValue($identifier, $this->prenom, PDO::PARAM_STR);
+						break;
+					case 'SEXE':
+						$stmt->bindValue($identifier, $this->sexe, PDO::PARAM_STR);
+						break;
+					case 'NAISSANCE':
+						$stmt->bindValue($identifier, $this->naissance, PDO::PARAM_STR);
+						break;
+					case 'LIEU_NAISSANCE':
+						$stmt->bindValue($identifier, $this->lieu_naissance, PDO::PARAM_STR);
+						break;
+					case 'ELENOET':
+						$stmt->bindValue($identifier, $this->elenoet, PDO::PARAM_STR);
+						break;
+					case 'ERENO':
+						$stmt->bindValue($identifier, $this->ereno, PDO::PARAM_STR);
+						break;
+					case 'ELE_ID':
+						$stmt->bindValue($identifier, $this->ele_id, PDO::PARAM_STR);
+						break;
+					case 'EMAIL':
+						$stmt->bindValue($identifier, $this->email, PDO::PARAM_STR);
+						break;
+					case 'ID_ELEVE':
+						$stmt->bindValue($identifier, $this->id_eleve, PDO::PARAM_INT);
+						break;
+					case 'DATE_SORTIE':
+						$stmt->bindValue($identifier, $this->date_sortie, PDO::PARAM_STR);
+						break;
+					case 'MEF_CODE':
+						$stmt->bindValue($identifier, $this->mef_code, PDO::PARAM_INT);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1678,10 +2055,12 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		$copyObj->setDateSortie($this->getDateSortie());
 		$copyObj->setMefCode($this->getMefCode());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getJEleveClasses() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1760,6 +2139,8 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -1860,7 +2241,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * Avoids crafting an 'init[$relationName]s' method name
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -1975,6 +2356,30 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of JEleveClasse objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $jEleveClasses A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setJEleveClasses(PropelCollection $jEleveClasses, PropelPDO $con = null)
+	{
+		$this->jEleveClassesScheduledForDeletion = $this->getJEleveClasses(new Criteria(), $con)->diff($jEleveClasses);
+
+		foreach ($jEleveClasses as $jEleveClasse) {
+			// Fix issue with collection modified by reference
+			if ($jEleveClasse->isNew()) {
+				$jEleveClasse->setEleve($this);
+			}
+			$this->addJEleveClasse($jEleveClasse);
+		}
+
+		$this->collJEleveClasses = $jEleveClasses;
+	}
+
+	/**
 	 * Returns the number of related JEleveClasse objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2007,8 +2412,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * through the JEleveClasse foreign key attribute.
 	 *
 	 * @param      JEleveClasse $l JEleveClasse
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Eleve The current object (for fluent API support)
 	 */
 	public function addJEleveClasse(JEleveClasse $l)
 	{
@@ -2016,9 +2420,19 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$this->initJEleveClasses();
 		}
 		if (!$this->collJEleveClasses->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collJEleveClasses[]= $l;
-			$l->setEleve($this);
+			$this->doAddJEleveClasse($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	JEleveClasse $jEleveClasse The jEleveClasse object to add.
+	 */
+	protected function doAddJEleveClasse($jEleveClasse)
+	{
+		$this->collJEleveClasses[]= $jEleveClasse;
+		$jEleveClasse->setEleve($this);
 	}
 
 
@@ -2115,6 +2529,30 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of JEleveCpe objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $jEleveCpes A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setJEleveCpes(PropelCollection $jEleveCpes, PropelPDO $con = null)
+	{
+		$this->jEleveCpesScheduledForDeletion = $this->getJEleveCpes(new Criteria(), $con)->diff($jEleveCpes);
+
+		foreach ($jEleveCpes as $jEleveCpe) {
+			// Fix issue with collection modified by reference
+			if ($jEleveCpe->isNew()) {
+				$jEleveCpe->setEleve($this);
+			}
+			$this->addJEleveCpe($jEleveCpe);
+		}
+
+		$this->collJEleveCpes = $jEleveCpes;
+	}
+
+	/**
 	 * Returns the number of related JEleveCpe objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2147,8 +2585,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * through the JEleveCpe foreign key attribute.
 	 *
 	 * @param      JEleveCpe $l JEleveCpe
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Eleve The current object (for fluent API support)
 	 */
 	public function addJEleveCpe(JEleveCpe $l)
 	{
@@ -2156,9 +2593,19 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$this->initJEleveCpes();
 		}
 		if (!$this->collJEleveCpes->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collJEleveCpes[]= $l;
-			$l->setEleve($this);
+			$this->doAddJEleveCpe($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	JEleveCpe $jEleveCpe The jEleveCpe object to add.
+	 */
+	protected function doAddJEleveCpe($jEleveCpe)
+	{
+		$this->collJEleveCpes[]= $jEleveCpe;
+		$jEleveCpe->setEleve($this);
 	}
 
 
@@ -2255,6 +2702,30 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of JEleveGroupe objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $jEleveGroupes A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setJEleveGroupes(PropelCollection $jEleveGroupes, PropelPDO $con = null)
+	{
+		$this->jEleveGroupesScheduledForDeletion = $this->getJEleveGroupes(new Criteria(), $con)->diff($jEleveGroupes);
+
+		foreach ($jEleveGroupes as $jEleveGroupe) {
+			// Fix issue with collection modified by reference
+			if ($jEleveGroupe->isNew()) {
+				$jEleveGroupe->setEleve($this);
+			}
+			$this->addJEleveGroupe($jEleveGroupe);
+		}
+
+		$this->collJEleveGroupes = $jEleveGroupes;
+	}
+
+	/**
 	 * Returns the number of related JEleveGroupe objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2287,8 +2758,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * through the JEleveGroupe foreign key attribute.
 	 *
 	 * @param      JEleveGroupe $l JEleveGroupe
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Eleve The current object (for fluent API support)
 	 */
 	public function addJEleveGroupe(JEleveGroupe $l)
 	{
@@ -2296,9 +2766,19 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$this->initJEleveGroupes();
 		}
 		if (!$this->collJEleveGroupes->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collJEleveGroupes[]= $l;
-			$l->setEleve($this);
+			$this->doAddJEleveGroupe($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	JEleveGroupe $jEleveGroupe The jEleveGroupe object to add.
+	 */
+	protected function doAddJEleveGroupe($jEleveGroupe)
+	{
+		$this->collJEleveGroupes[]= $jEleveGroupe;
+		$jEleveGroupe->setEleve($this);
 	}
 
 
@@ -2395,6 +2875,30 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of JEleveProfesseurPrincipal objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $jEleveProfesseurPrincipals A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setJEleveProfesseurPrincipals(PropelCollection $jEleveProfesseurPrincipals, PropelPDO $con = null)
+	{
+		$this->jEleveProfesseurPrincipalsScheduledForDeletion = $this->getJEleveProfesseurPrincipals(new Criteria(), $con)->diff($jEleveProfesseurPrincipals);
+
+		foreach ($jEleveProfesseurPrincipals as $jEleveProfesseurPrincipal) {
+			// Fix issue with collection modified by reference
+			if ($jEleveProfesseurPrincipal->isNew()) {
+				$jEleveProfesseurPrincipal->setEleve($this);
+			}
+			$this->addJEleveProfesseurPrincipal($jEleveProfesseurPrincipal);
+		}
+
+		$this->collJEleveProfesseurPrincipals = $jEleveProfesseurPrincipals;
+	}
+
+	/**
 	 * Returns the number of related JEleveProfesseurPrincipal objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2427,8 +2931,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * through the JEleveProfesseurPrincipal foreign key attribute.
 	 *
 	 * @param      JEleveProfesseurPrincipal $l JEleveProfesseurPrincipal
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Eleve The current object (for fluent API support)
 	 */
 	public function addJEleveProfesseurPrincipal(JEleveProfesseurPrincipal $l)
 	{
@@ -2436,9 +2939,19 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$this->initJEleveProfesseurPrincipals();
 		}
 		if (!$this->collJEleveProfesseurPrincipals->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collJEleveProfesseurPrincipals[]= $l;
-			$l->setEleve($this);
+			$this->doAddJEleveProfesseurPrincipal($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	JEleveProfesseurPrincipal $jEleveProfesseurPrincipal The jEleveProfesseurPrincipal object to add.
+	 */
+	protected function doAddJEleveProfesseurPrincipal($jEleveProfesseurPrincipal)
+	{
+		$this->collJEleveProfesseurPrincipals[]= $jEleveProfesseurPrincipal;
+		$jEleveProfesseurPrincipal->setEleve($this);
 	}
 
 
@@ -2571,6 +3084,30 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of ResponsableInformation objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $responsableInformations A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setResponsableInformations(PropelCollection $responsableInformations, PropelPDO $con = null)
+	{
+		$this->responsableInformationsScheduledForDeletion = $this->getResponsableInformations(new Criteria(), $con)->diff($responsableInformations);
+
+		foreach ($responsableInformations as $responsableInformation) {
+			// Fix issue with collection modified by reference
+			if ($responsableInformation->isNew()) {
+				$responsableInformation->setEleve($this);
+			}
+			$this->addResponsableInformation($responsableInformation);
+		}
+
+		$this->collResponsableInformations = $responsableInformations;
+	}
+
+	/**
 	 * Returns the number of related ResponsableInformation objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2603,8 +3140,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * through the ResponsableInformation foreign key attribute.
 	 *
 	 * @param      ResponsableInformation $l ResponsableInformation
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Eleve The current object (for fluent API support)
 	 */
 	public function addResponsableInformation(ResponsableInformation $l)
 	{
@@ -2612,9 +3148,19 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$this->initResponsableInformations();
 		}
 		if (!$this->collResponsableInformations->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collResponsableInformations[]= $l;
-			$l->setEleve($this);
+			$this->doAddResponsableInformation($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	ResponsableInformation $responsableInformation The responsableInformation object to add.
+	 */
+	protected function doAddResponsableInformation($responsableInformation)
+	{
+		$this->collResponsableInformations[]= $responsableInformation;
+		$responsableInformation->setEleve($this);
 	}
 
 
@@ -2711,6 +3257,30 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of JEleveAncienEtablissement objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $jEleveAncienEtablissements A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setJEleveAncienEtablissements(PropelCollection $jEleveAncienEtablissements, PropelPDO $con = null)
+	{
+		$this->jEleveAncienEtablissementsScheduledForDeletion = $this->getJEleveAncienEtablissements(new Criteria(), $con)->diff($jEleveAncienEtablissements);
+
+		foreach ($jEleveAncienEtablissements as $jEleveAncienEtablissement) {
+			// Fix issue with collection modified by reference
+			if ($jEleveAncienEtablissement->isNew()) {
+				$jEleveAncienEtablissement->setEleve($this);
+			}
+			$this->addJEleveAncienEtablissement($jEleveAncienEtablissement);
+		}
+
+		$this->collJEleveAncienEtablissements = $jEleveAncienEtablissements;
+	}
+
+	/**
 	 * Returns the number of related JEleveAncienEtablissement objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2743,8 +3313,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * through the JEleveAncienEtablissement foreign key attribute.
 	 *
 	 * @param      JEleveAncienEtablissement $l JEleveAncienEtablissement
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Eleve The current object (for fluent API support)
 	 */
 	public function addJEleveAncienEtablissement(JEleveAncienEtablissement $l)
 	{
@@ -2752,9 +3321,19 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$this->initJEleveAncienEtablissements();
 		}
 		if (!$this->collJEleveAncienEtablissements->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collJEleveAncienEtablissements[]= $l;
-			$l->setEleve($this);
+			$this->doAddJEleveAncienEtablissement($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	JEleveAncienEtablissement $jEleveAncienEtablissement The jEleveAncienEtablissement object to add.
+	 */
+	protected function doAddJEleveAncienEtablissement($jEleveAncienEtablissement)
+	{
+		$this->collJEleveAncienEtablissements[]= $jEleveAncienEtablissement;
+		$jEleveAncienEtablissement->setEleve($this);
 	}
 
 
@@ -2851,6 +3430,30 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of JAidEleves objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $jAidElevess A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setJAidElevess(PropelCollection $jAidElevess, PropelPDO $con = null)
+	{
+		$this->jAidElevessScheduledForDeletion = $this->getJAidElevess(new Criteria(), $con)->diff($jAidElevess);
+
+		foreach ($jAidElevess as $jAidEleves) {
+			// Fix issue with collection modified by reference
+			if ($jAidEleves->isNew()) {
+				$jAidEleves->setEleve($this);
+			}
+			$this->addJAidEleves($jAidEleves);
+		}
+
+		$this->collJAidElevess = $jAidElevess;
+	}
+
+	/**
 	 * Returns the number of related JAidEleves objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2883,8 +3486,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * through the JAidEleves foreign key attribute.
 	 *
 	 * @param      JAidEleves $l JAidEleves
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Eleve The current object (for fluent API support)
 	 */
 	public function addJAidEleves(JAidEleves $l)
 	{
@@ -2892,9 +3494,19 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$this->initJAidElevess();
 		}
 		if (!$this->collJAidElevess->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collJAidElevess[]= $l;
-			$l->setEleve($this);
+			$this->doAddJAidEleves($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	JAidEleves $jAidEleves The jAidEleves object to add.
+	 */
+	protected function doAddJAidEleves($jAidEleves)
+	{
+		$this->collJAidElevess[]= $jAidEleves;
+		$jAidEleves->setEleve($this);
 	}
 
 
@@ -2991,6 +3603,30 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of AbsenceEleveSaisie objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $absenceEleveSaisies A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setAbsenceEleveSaisies(PropelCollection $absenceEleveSaisies, PropelPDO $con = null)
+	{
+		$this->absenceEleveSaisiesScheduledForDeletion = $this->getAbsenceEleveSaisies(new Criteria(), $con)->diff($absenceEleveSaisies);
+
+		foreach ($absenceEleveSaisies as $absenceEleveSaisie) {
+			// Fix issue with collection modified by reference
+			if ($absenceEleveSaisie->isNew()) {
+				$absenceEleveSaisie->setEleve($this);
+			}
+			$this->addAbsenceEleveSaisie($absenceEleveSaisie);
+		}
+
+		$this->collAbsenceEleveSaisies = $absenceEleveSaisies;
+	}
+
+	/**
 	 * Returns the number of related AbsenceEleveSaisie objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3023,8 +3659,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * through the AbsenceEleveSaisie foreign key attribute.
 	 *
 	 * @param      AbsenceEleveSaisie $l AbsenceEleveSaisie
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Eleve The current object (for fluent API support)
 	 */
 	public function addAbsenceEleveSaisie(AbsenceEleveSaisie $l)
 	{
@@ -3032,9 +3667,19 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$this->initAbsenceEleveSaisies();
 		}
 		if (!$this->collAbsenceEleveSaisies->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collAbsenceEleveSaisies[]= $l;
-			$l->setEleve($this);
+			$this->doAddAbsenceEleveSaisie($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	AbsenceEleveSaisie $absenceEleveSaisie The absenceEleveSaisie object to add.
+	 */
+	protected function doAddAbsenceEleveSaisie($absenceEleveSaisie)
+	{
+		$this->collAbsenceEleveSaisies[]= $absenceEleveSaisie;
+		$absenceEleveSaisie->setEleve($this);
 	}
 
 
@@ -3281,6 +3926,30 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of AbsenceAgregationDecompte objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $absenceAgregationDecomptes A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setAbsenceAgregationDecomptes(PropelCollection $absenceAgregationDecomptes, PropelPDO $con = null)
+	{
+		$this->absenceAgregationDecomptesScheduledForDeletion = $this->getAbsenceAgregationDecomptes(new Criteria(), $con)->diff($absenceAgregationDecomptes);
+
+		foreach ($absenceAgregationDecomptes as $absenceAgregationDecompte) {
+			// Fix issue with collection modified by reference
+			if ($absenceAgregationDecompte->isNew()) {
+				$absenceAgregationDecompte->setEleve($this);
+			}
+			$this->addAbsenceAgregationDecompte($absenceAgregationDecompte);
+		}
+
+		$this->collAbsenceAgregationDecomptes = $absenceAgregationDecomptes;
+	}
+
+	/**
 	 * Returns the number of related AbsenceAgregationDecompte objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3313,8 +3982,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * through the AbsenceAgregationDecompte foreign key attribute.
 	 *
 	 * @param      AbsenceAgregationDecompte $l AbsenceAgregationDecompte
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Eleve The current object (for fluent API support)
 	 */
 	public function addAbsenceAgregationDecompte(AbsenceAgregationDecompte $l)
 	{
@@ -3322,9 +3990,19 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$this->initAbsenceAgregationDecomptes();
 		}
 		if (!$this->collAbsenceAgregationDecomptes->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collAbsenceAgregationDecomptes[]= $l;
-			$l->setEleve($this);
+			$this->doAddAbsenceAgregationDecompte($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	AbsenceAgregationDecompte $absenceAgregationDecompte The absenceAgregationDecompte object to add.
+	 */
+	protected function doAddAbsenceAgregationDecompte($absenceAgregationDecompte)
+	{
+		$this->collAbsenceAgregationDecomptes[]= $absenceAgregationDecompte;
+		$absenceAgregationDecompte->setEleve($this);
 	}
 
 	/**
@@ -3396,6 +4074,30 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of CreditEcts objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $creditEctss A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setCreditEctss(PropelCollection $creditEctss, PropelPDO $con = null)
+	{
+		$this->creditEctssScheduledForDeletion = $this->getCreditEctss(new Criteria(), $con)->diff($creditEctss);
+
+		foreach ($creditEctss as $creditEcts) {
+			// Fix issue with collection modified by reference
+			if ($creditEcts->isNew()) {
+				$creditEcts->setEleve($this);
+			}
+			$this->addCreditEcts($creditEcts);
+		}
+
+		$this->collCreditEctss = $creditEctss;
+	}
+
+	/**
 	 * Returns the number of related CreditEcts objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3428,8 +4130,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * through the CreditEcts foreign key attribute.
 	 *
 	 * @param      CreditEcts $l CreditEcts
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Eleve The current object (for fluent API support)
 	 */
 	public function addCreditEcts(CreditEcts $l)
 	{
@@ -3437,9 +4138,19 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$this->initCreditEctss();
 		}
 		if (!$this->collCreditEctss->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collCreditEctss[]= $l;
-			$l->setEleve($this);
+			$this->doAddCreditEcts($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	CreditEcts $creditEcts The creditEcts object to add.
+	 */
+	protected function doAddCreditEcts($creditEcts)
+	{
+		$this->collCreditEctss[]= $creditEcts;
+		$creditEcts->setEleve($this);
 	}
 
 
@@ -3536,6 +4247,30 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of CreditEctsGlobal objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $creditEctsGlobals A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setCreditEctsGlobals(PropelCollection $creditEctsGlobals, PropelPDO $con = null)
+	{
+		$this->creditEctsGlobalsScheduledForDeletion = $this->getCreditEctsGlobals(new Criteria(), $con)->diff($creditEctsGlobals);
+
+		foreach ($creditEctsGlobals as $creditEctsGlobal) {
+			// Fix issue with collection modified by reference
+			if ($creditEctsGlobal->isNew()) {
+				$creditEctsGlobal->setEleve($this);
+			}
+			$this->addCreditEctsGlobal($creditEctsGlobal);
+		}
+
+		$this->collCreditEctsGlobals = $creditEctsGlobals;
+	}
+
+	/**
 	 * Returns the number of related CreditEctsGlobal objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3568,8 +4303,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * through the CreditEctsGlobal foreign key attribute.
 	 *
 	 * @param      CreditEctsGlobal $l CreditEctsGlobal
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Eleve The current object (for fluent API support)
 	 */
 	public function addCreditEctsGlobal(CreditEctsGlobal $l)
 	{
@@ -3577,9 +4311,19 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$this->initCreditEctsGlobals();
 		}
 		if (!$this->collCreditEctsGlobals->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collCreditEctsGlobals[]= $l;
-			$l->setEleve($this);
+			$this->doAddCreditEctsGlobal($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	CreditEctsGlobal $creditEctsGlobal The creditEctsGlobal object to add.
+	 */
+	protected function doAddCreditEctsGlobal($creditEctsGlobal)
+	{
+		$this->collCreditEctsGlobals[]= $creditEctsGlobal;
+		$creditEctsGlobal->setEleve($this);
 	}
 
 	/**
@@ -3651,6 +4395,30 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of ArchiveEcts objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $archiveEctss A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setArchiveEctss(PropelCollection $archiveEctss, PropelPDO $con = null)
+	{
+		$this->archiveEctssScheduledForDeletion = $this->getArchiveEctss(new Criteria(), $con)->diff($archiveEctss);
+
+		foreach ($archiveEctss as $archiveEcts) {
+			// Fix issue with collection modified by reference
+			if ($archiveEcts->isNew()) {
+				$archiveEcts->setEleve($this);
+			}
+			$this->addArchiveEcts($archiveEcts);
+		}
+
+		$this->collArchiveEctss = $archiveEctss;
+	}
+
+	/**
 	 * Returns the number of related ArchiveEcts objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3683,8 +4451,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * through the ArchiveEcts foreign key attribute.
 	 *
 	 * @param      ArchiveEcts $l ArchiveEcts
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Eleve The current object (for fluent API support)
 	 */
 	public function addArchiveEcts(ArchiveEcts $l)
 	{
@@ -3692,9 +4459,19 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$this->initArchiveEctss();
 		}
 		if (!$this->collArchiveEctss->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collArchiveEctss[]= $l;
-			$l->setEleve($this);
+			$this->doAddArchiveEcts($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	ArchiveEcts $archiveEcts The archiveEcts object to add.
+	 */
+	protected function doAddArchiveEcts($archiveEcts)
+	{
+		$this->collArchiveEctss[]= $archiveEcts;
+		$archiveEcts->setEleve($this);
 	}
 
 	/**
@@ -3761,6 +4538,37 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of AncienEtablissement objects related by a many-to-many relationship
+	 * to the current object by way of the j_eleves_etablissements cross-reference table.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $ancienEtablissements A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setAncienEtablissements(PropelCollection $ancienEtablissements, PropelPDO $con = null)
+	{
+		$jEleveAncienEtablissements = JEleveAncienEtablissementQuery::create()
+			->filterByAncienEtablissement($ancienEtablissements)
+			->filterByEleve($this)
+			->find($con);
+
+		$this->ancienEtablissementsScheduledForDeletion = $this->getJEleveAncienEtablissements()->diff($jEleveAncienEtablissements);
+		$this->collJEleveAncienEtablissements = $jEleveAncienEtablissements;
+
+		foreach ($ancienEtablissements as $ancienEtablissement) {
+			// Fix issue with collection modified by reference
+			if ($ancienEtablissement->isNew()) {
+				$this->doAddAncienEtablissement($ancienEtablissement);
+			} else {
+				$this->addAncienEtablissement($ancienEtablissement);
+			}
+		}
+
+		$this->collAncienEtablissements = $ancienEtablissements;
+	}
+
+	/**
 	 * Gets the number of AncienEtablissement objects related by a many-to-many relationship
 	 * to the current object by way of the j_eleves_etablissements cross-reference table.
 	 *
@@ -3796,18 +4604,26 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * @param      AncienEtablissement $ancienEtablissement The JEleveAncienEtablissement object to relate
 	 * @return     void
 	 */
-	public function addAncienEtablissement($ancienEtablissement)
+	public function addAncienEtablissement(AncienEtablissement $ancienEtablissement)
 	{
 		if ($this->collAncienEtablissements === null) {
 			$this->initAncienEtablissements();
 		}
 		if (!$this->collAncienEtablissements->contains($ancienEtablissement)) { // only add it if the **same** object is not already associated
-			$jEleveAncienEtablissement = new JEleveAncienEtablissement();
-			$jEleveAncienEtablissement->setAncienEtablissement($ancienEtablissement);
-			$this->addJEleveAncienEtablissement($jEleveAncienEtablissement);
+			$this->doAddAncienEtablissement($ancienEtablissement);
 
 			$this->collAncienEtablissements[]= $ancienEtablissement;
 		}
+	}
+
+	/**
+	 * @param	AncienEtablissement $ancienEtablissement The ancienEtablissement object to add.
+	 */
+	protected function doAddAncienEtablissement($ancienEtablissement)
+	{
+		$jEleveAncienEtablissement = new JEleveAncienEtablissement();
+		$jEleveAncienEtablissement->setAncienEtablissement($ancienEtablissement);
+		$this->addJEleveAncienEtablissement($jEleveAncienEtablissement);
 	}
 
 	/**
@@ -3874,6 +4690,37 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of AidDetails objects related by a many-to-many relationship
+	 * to the current object by way of the j_aid_eleves cross-reference table.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $aidDetailss A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setAidDetailss(PropelCollection $aidDetailss, PropelPDO $con = null)
+	{
+		$jAidElevess = JAidElevesQuery::create()
+			->filterByAidDetails($aidDetailss)
+			->filterByEleve($this)
+			->find($con);
+
+		$this->aidDetailssScheduledForDeletion = $this->getJAidElevess()->diff($jAidElevess);
+		$this->collJAidElevess = $jAidElevess;
+
+		foreach ($aidDetailss as $aidDetails) {
+			// Fix issue with collection modified by reference
+			if ($aidDetails->isNew()) {
+				$this->doAddAidDetails($aidDetails);
+			} else {
+				$this->addAidDetails($aidDetails);
+			}
+		}
+
+		$this->collAidDetailss = $aidDetailss;
+	}
+
+	/**
 	 * Gets the number of AidDetails objects related by a many-to-many relationship
 	 * to the current object by way of the j_aid_eleves cross-reference table.
 	 *
@@ -3909,18 +4756,26 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * @param      AidDetails $aidDetails The JAidEleves object to relate
 	 * @return     void
 	 */
-	public function addAidDetails($aidDetails)
+	public function addAidDetails(AidDetails $aidDetails)
 	{
 		if ($this->collAidDetailss === null) {
 			$this->initAidDetailss();
 		}
 		if (!$this->collAidDetailss->contains($aidDetails)) { // only add it if the **same** object is not already associated
-			$jAidEleves = new JAidEleves();
-			$jAidEleves->setAidDetails($aidDetails);
-			$this->addJAidEleves($jAidEleves);
+			$this->doAddAidDetails($aidDetails);
 
 			$this->collAidDetailss[]= $aidDetails;
 		}
+	}
+
+	/**
+	 * @param	AidDetails $aidDetails The aidDetails object to add.
+	 */
+	protected function doAddAidDetails($aidDetails)
+	{
+		$jAidEleves = new JAidEleves();
+		$jAidEleves->setAidDetails($aidDetails);
+		$this->addJAidEleves($jAidEleves);
 	}
 
 	/**
@@ -4109,25 +4964,6 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(ElevePeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseEleve

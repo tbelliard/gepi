@@ -191,7 +191,7 @@ if(($id_classe=='-1' && $affichage=='html' && $click_filtrage!="ok" && $raz!=="o
 // pas de header ou menu dans le cas de l'export odt 
 // début de l'affichage des options
 if ($affichage != 'ods' && $affichage != 'odt' ) {
-    require_once("../lib/header.inc");
+    require_once("../lib/header.inc.php");
     include('menu_abs2.inc.php');
     include('menu_bilans.inc.php');
     if(ob_get_contents()){
@@ -396,7 +396,7 @@ $table_synchro_ok = AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregation
     if (!$table_synchro_ok) {//la table n'est pas synchronisée. On va vérifier individuellement les élèves qui ne sont pas synchronisés
 		$eleve_col = $eleve_query->find();
 		if ($eleve_col->count()>150) {
-			echo 'Il semble que vous demander des statistiques sur trop d\'élèves et votre table de statistiques n\'est pas synchronisée. Veuillez faire une demande pour moins d\'élèves ou demander à votre administreteur de remplir la table d\'agrégation.';
+			echo '<span style="color:red">Il semble que vous demander des statistiques sur trop d\'élèves et votre table de statistiques n\'est pas synchronisée. Veuillez faire une demande pour moins d\'élèves ou demander à votre administreteur de remplir la table d\'agrégation.</span>';
 			if (ob_get_contents()) {
 				ob_flush();
 			}
@@ -449,7 +449,7 @@ foreach ($eleve_col as $eleve) {
         if ($type_extrait == '1' && !$saisie->getManquementObligationPresence()) {
             continue;
         }
-        if (!is_null($non_traitees) && $non_traitees != '' && $saisie->getTraitee() && $saisie->hasTypeSaisie()) {
+        if (!is_null($non_traitees) && $non_traitees != '' && $saisie->getTraitee() && $saisie->hasModeInterface()) {
             continue;
         }
         if ($saisie->getRetard()) {
@@ -703,7 +703,7 @@ foreach ($donnees as $id => $eleve) {
                     echo '<b>' . $eleve['nom'] . ' ' . $eleve['prenom'] . '</b></a><br/> (' . $eleve['classe'] . ')';
                     $propel_eleve=EleveQuery::create()->filterById($id)->findOne();
                     if ($utilisateur->getAccesFicheEleve($propel_eleve)) {
-                        echo "<a href='../eleves/visu_eleve.php?ele_login=".$propel_eleve->getLogin()."' target='_blank'>";
+                        echo "<a href='../eleves/visu_eleve.php?ele_login=".$propel_eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank'>";
                         echo ' (voir fiche)';
                         echo "</a>";
                     }

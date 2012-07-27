@@ -47,7 +47,7 @@ check_token();
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année | Initialisation  des options par GEP";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 // On vérifie si l'extension d_base est active

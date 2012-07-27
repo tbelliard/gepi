@@ -1,7 +1,6 @@
 /* $Id: bandeau.css */
 
 body{
-	font-family: DejaVu;
 	margin:0em;
 	padding:0em;
 }
@@ -213,9 +212,7 @@ background-color: #F00;
 /*================================================*/
 
 #menu_barre {
-	/*font-weight: bold;*/
 	font-size: 90%;
-	/*font-family: trebuchet ms,arial,tahoma,verdana,sans-serif;*/
 	z-index: 1000;
 	color: white;
 	background-color: #4a4a59;
@@ -223,7 +220,7 @@ background-color: #F00;
 	background-image: url("../../../images/degrade_noir.png");
 	background-position: left top;
 	background-repeat: repeat-x;
-	height:20px;
+	min-height:20px;
 }
 
 /* ul ul pour ne masquer par défaut que les sous-menus */
@@ -239,7 +236,7 @@ background-color: #F00;
 	margin-left: 0px; 
 	margin-right: 0px; 
 	margin-bottom: 0px;
-	margin-top: -3px;
+	margin-top: -4px;
 	border-left: #b0b0b0 1px solid; 
 	padding-top: 0px; 
 	border-bottom: #b0b0b0 1px solid; 

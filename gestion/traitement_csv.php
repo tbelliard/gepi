@@ -82,7 +82,7 @@ check_token();
 
 //**************** EN-TETE *****************
 $titre_page = "Outil de gestion | Traitement Importation";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 $nb_row++;

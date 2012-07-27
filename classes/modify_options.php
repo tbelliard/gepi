@@ -89,7 +89,7 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
 $message_enregistrement = "Les modifications ont été enregistrées !";
 //**************** EN-TETE *****************
 $titre_page = "Gestion des classes | Modification des options";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 

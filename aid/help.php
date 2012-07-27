@@ -37,7 +37,7 @@ die();
 
 //**************** EN-TETE *****************
 $titre_page = "Aide en ligne";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 ?>

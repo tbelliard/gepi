@@ -36,7 +36,6 @@ if ($resultat_session == 'c') {
     header("Location: ../logout.php?auto=1");
 	die();
 }
-//include("../fckeditor/fckeditor.php") ;
 
 // Check access
 if (!checkAccess()) {
@@ -52,7 +51,7 @@ if($_SESSION['statut']!='professeur') {
 
 //================================
 $titre_page = "Saisie de commentaires-types";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //================================
 
 if (!loadSettings()) {

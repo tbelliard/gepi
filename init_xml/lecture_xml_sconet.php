@@ -25,7 +25,7 @@ $debug_import="n";
 
 //**************** EN-TETE *****************
 $titre_page = "XML de SCONET: Génération de CSV";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 function extr_valeur($lig){

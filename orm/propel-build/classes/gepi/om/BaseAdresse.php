@@ -25,6 +25,12 @@ abstract class BaseAdresse extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the adr_id field.
 	 * @var        string
 	 */
@@ -95,6 +101,18 @@ abstract class BaseAdresse extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $responsableElevesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $absenceEleveNotificationsScheduledForDeletion = null;
 
 	/**
 	 * Get the [adr_id] column value.
@@ -474,18 +492,18 @@ abstract class BaseAdresse extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = AdresseQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				AdresseQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -537,7 +555,7 @@ abstract class BaseAdresse extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -560,19 +578,24 @@ abstract class BaseAdresse extends BaseObject  implements Persistent
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
-
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows = 1;
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows = AdressePeer::doUpdate($this, $con);
+					$this->doUpdate($con);
 				}
+				$affectedRows += 1;
+				$this->resetModified();
+			}
 
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+			if ($this->responsableElevesScheduledForDeletion !== null) {
+				if (!$this->responsableElevesScheduledForDeletion->isEmpty()) {
+					ResponsableEleveQuery::create()
+						->filterByPrimaryKeys($this->responsableElevesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->responsableElevesScheduledForDeletion = null;
+				}
 			}
 
 			if ($this->collResponsableEleves !== null) {
@@ -580,6 +603,15 @@ abstract class BaseAdresse extends BaseObject  implements Persistent
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->absenceEleveNotificationsScheduledForDeletion !== null) {
+				if (!$this->absenceEleveNotificationsScheduledForDeletion->isEmpty()) {
+					AbsenceEleveNotificationQuery::create()
+						->filterByPrimaryKeys($this->absenceEleveNotificationsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->absenceEleveNotificationsScheduledForDeletion = null;
 				}
 			}
 
@@ -596,6 +628,105 @@ abstract class BaseAdresse extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(AdressePeer::ADR_ID)) {
+			$modifiedColumns[':p' . $index++]  = 'ADR_ID';
+		}
+		if ($this->isColumnModified(AdressePeer::ADR1)) {
+			$modifiedColumns[':p' . $index++]  = 'ADR1';
+		}
+		if ($this->isColumnModified(AdressePeer::ADR2)) {
+			$modifiedColumns[':p' . $index++]  = 'ADR2';
+		}
+		if ($this->isColumnModified(AdressePeer::ADR3)) {
+			$modifiedColumns[':p' . $index++]  = 'ADR3';
+		}
+		if ($this->isColumnModified(AdressePeer::ADR4)) {
+			$modifiedColumns[':p' . $index++]  = 'ADR4';
+		}
+		if ($this->isColumnModified(AdressePeer::CP)) {
+			$modifiedColumns[':p' . $index++]  = 'CP';
+		}
+		if ($this->isColumnModified(AdressePeer::PAYS)) {
+			$modifiedColumns[':p' . $index++]  = 'PAYS';
+		}
+		if ($this->isColumnModified(AdressePeer::COMMUNE)) {
+			$modifiedColumns[':p' . $index++]  = 'COMMUNE';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO resp_adr (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case 'ADR_ID':
+						$stmt->bindValue($identifier, $this->adr_id, PDO::PARAM_STR);
+						break;
+					case 'ADR1':
+						$stmt->bindValue($identifier, $this->adr1, PDO::PARAM_STR);
+						break;
+					case 'ADR2':
+						$stmt->bindValue($identifier, $this->adr2, PDO::PARAM_STR);
+						break;
+					case 'ADR3':
+						$stmt->bindValue($identifier, $this->adr3, PDO::PARAM_STR);
+						break;
+					case 'ADR4':
+						$stmt->bindValue($identifier, $this->adr4, PDO::PARAM_STR);
+						break;
+					case 'CP':
+						$stmt->bindValue($identifier, $this->cp, PDO::PARAM_STR);
+						break;
+					case 'PAYS':
+						$stmt->bindValue($identifier, $this->pays, PDO::PARAM_STR);
+						break;
+					case 'COMMUNE':
+						$stmt->bindValue($identifier, $this->commune, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -948,7 +1079,6 @@ abstract class BaseAdresse extends BaseObject  implements Persistent
 	 */
 	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setId($this->getId());
 		$copyObj->setAdr1($this->getAdr1());
 		$copyObj->setAdr2($this->getAdr2());
 		$copyObj->setAdr3($this->getAdr3());
@@ -957,10 +1087,12 @@ abstract class BaseAdresse extends BaseObject  implements Persistent
 		$copyObj->setPays($this->getPays());
 		$copyObj->setCommune($this->getCommune());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getResponsableEleves() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -974,10 +1106,13 @@ abstract class BaseAdresse extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
 			$copyObj->setNew(true);
+			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
 		}
 	}
 
@@ -1022,7 +1157,7 @@ abstract class BaseAdresse extends BaseObject  implements Persistent
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * Avoids crafting an 'init[$relationName]s' method name
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -1107,6 +1242,30 @@ abstract class BaseAdresse extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of ResponsableEleve objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $responsableEleves A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setResponsableEleves(PropelCollection $responsableEleves, PropelPDO $con = null)
+	{
+		$this->responsableElevesScheduledForDeletion = $this->getResponsableEleves(new Criteria(), $con)->diff($responsableEleves);
+
+		foreach ($responsableEleves as $responsableEleve) {
+			// Fix issue with collection modified by reference
+			if ($responsableEleve->isNew()) {
+				$responsableEleve->setAdresse($this);
+			}
+			$this->addResponsableEleve($responsableEleve);
+		}
+
+		$this->collResponsableEleves = $responsableEleves;
+	}
+
+	/**
 	 * Returns the number of related ResponsableEleve objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1139,8 +1298,7 @@ abstract class BaseAdresse extends BaseObject  implements Persistent
 	 * through the ResponsableEleve foreign key attribute.
 	 *
 	 * @param      ResponsableEleve $l ResponsableEleve
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Adresse The current object (for fluent API support)
 	 */
 	public function addResponsableEleve(ResponsableEleve $l)
 	{
@@ -1148,9 +1306,19 @@ abstract class BaseAdresse extends BaseObject  implements Persistent
 			$this->initResponsableEleves();
 		}
 		if (!$this->collResponsableEleves->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collResponsableEleves[]= $l;
-			$l->setAdresse($this);
+			$this->doAddResponsableEleve($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	ResponsableEleve $responsableEleve The responsableEleve object to add.
+	 */
+	protected function doAddResponsableEleve($responsableEleve)
+	{
+		$this->collResponsableEleves[]= $responsableEleve;
+		$responsableEleve->setAdresse($this);
 	}
 
 	/**
@@ -1222,6 +1390,30 @@ abstract class BaseAdresse extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of AbsenceEleveNotification objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $absenceEleveNotifications A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setAbsenceEleveNotifications(PropelCollection $absenceEleveNotifications, PropelPDO $con = null)
+	{
+		$this->absenceEleveNotificationsScheduledForDeletion = $this->getAbsenceEleveNotifications(new Criteria(), $con)->diff($absenceEleveNotifications);
+
+		foreach ($absenceEleveNotifications as $absenceEleveNotification) {
+			// Fix issue with collection modified by reference
+			if ($absenceEleveNotification->isNew()) {
+				$absenceEleveNotification->setAdresse($this);
+			}
+			$this->addAbsenceEleveNotification($absenceEleveNotification);
+		}
+
+		$this->collAbsenceEleveNotifications = $absenceEleveNotifications;
+	}
+
+	/**
 	 * Returns the number of related AbsenceEleveNotification objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1254,8 +1446,7 @@ abstract class BaseAdresse extends BaseObject  implements Persistent
 	 * through the AbsenceEleveNotification foreign key attribute.
 	 *
 	 * @param      AbsenceEleveNotification $l AbsenceEleveNotification
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Adresse The current object (for fluent API support)
 	 */
 	public function addAbsenceEleveNotification(AbsenceEleveNotification $l)
 	{
@@ -1263,9 +1454,19 @@ abstract class BaseAdresse extends BaseObject  implements Persistent
 			$this->initAbsenceEleveNotifications();
 		}
 		if (!$this->collAbsenceEleveNotifications->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collAbsenceEleveNotifications[]= $l;
-			$l->setAdresse($this);
+			$this->doAddAbsenceEleveNotification($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	AbsenceEleveNotification $absenceEleveNotification The absenceEleveNotification object to add.
+	 */
+	protected function doAddAbsenceEleveNotification($absenceEleveNotification)
+	{
+		$this->collAbsenceEleveNotifications[]= $absenceEleveNotification;
+		$absenceEleveNotification->setAdresse($this);
 	}
 
 
@@ -1381,25 +1582,6 @@ abstract class BaseAdresse extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(AdressePeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseAdresse

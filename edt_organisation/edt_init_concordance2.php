@@ -4,7 +4,7 @@
  * Fichier qui enregistre les concordances et les cours du fichier edt_init_csv2.php
  *
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -56,7 +56,7 @@ $msg_enreg = '';
 
 //=================================
 //$titre_page="Enregistrer les concordances(2) pour l'import de l'EdT";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //=================================
 
 echo "<div id='header'>
@@ -91,8 +91,10 @@ if ($etape != NULL) {
 		}
 		// On envoie toutes les requêtes d'un coup
 		echo $values;
-		$envoie = mysql_query("INSERT INTO edt_init (id_init, ident_export, nom_export, nom_gepi)
-					VALUE ".$values." ('', ".$etape.", 'fin', 'fin')")
+		$sql="INSERT INTO edt_init (id_init, ident_export, nom_export, nom_gepi)
+					VALUE ".$values." ('', ".$etape.", 'fin', 'fin')";
+		//echo "<br />$sql<br />";
+		$envoie = mysql_query($sql)
 					OR error_reporting('Erreur dans la requête $envoie de l\'étape '.$etape.' : '.mysql_error().'<br />'.$envoie);
 		// On récupère le nombre de valeurs enregistrées et on affiche
 		if ($etape == 6 OR $etape == 8 OR $etape == 9 OR $etape == 11) {
@@ -133,7 +135,9 @@ if ($etape != NULL) {
 
 		// Ce sont les cours qui arrivent, car on a terminé les concordances
 		//for($i = 0; $i < $nbre_lignes; $i++){
-		$sql="SELECT * FROM tempo2;";
+		$i=0;
+		//$sql="SELECT * FROM tempo2;";
+		$sql="SELECT texte AS col1 FROM tempo5;";
 		$res_tempo=mysql_query($sql);
 		while($lig_tempo=mysql_fetch_object($res_tempo)) {
 			// On initialise toutes les variables et on affiche la valeur de chaque cours
@@ -155,9 +159,10 @@ if ($etape != NULL) {
 				}
 			}*/
 
+			//echo "<br /><p>\$enregistre = enregistreCoursCsv2($tab[0], $tab[1], $tab[2], $tab[3], $tab[4], $tab[5], $tab[6], $tab[7], $tab[8], $tab[9], $tab[10], $tab[11]);<br />";
 			$enregistre = enregistreCoursCsv2($tab[0], $tab[1], $tab[2], $tab[3], $tab[4], $tab[5], $tab[6], $tab[7], $tab[8], $tab[9], $tab[10], $tab[11]);
 
-				$debug = 'ok';
+			$debug = 'ok';
 
 			if ($enregistre["reponse"] == 'ok') {
 				// On affiche les infos si c'est demandé
@@ -198,6 +203,8 @@ if ($etape != NULL) {
 			}else{
 				echo '(ligne '.$i.')&nbsp;->&nbsp;Il y a eu un souci car ce n\'est pas ok ou non qui arrive mais '.$enregistre["msg_erreur"].'.<br />';
 			}
+
+			$i++;
 		}
 		echo $msg_enreg; // permet d'afficher le message de bilan
 	}

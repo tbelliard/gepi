@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -19,6 +19,7 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
@@ -36,7 +37,7 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 die();
 }
-include("../fckeditor/fckeditor.php") ;
+include("../ckeditor/ckeditor.php");
 
 if(!isset($msg)){$msg="";}
 
@@ -46,9 +47,11 @@ if (isset($_POST['ok'])) {
 
 	if	(isset($_POST['impression_personnelFCK'])) {
 		$imp = html_entity_decode($_POST['impression_personnelFCK']);
+		//$imp = $_POST['impression_personnelFCK'];
+		//echo "<pre>$imp</pre>";
 		if (!saveSetting("Impression", $imp)) {
 			$msg .= "Erreur lors de l'enregistrement de la fiche bienvenue pour le personnel !";
-			$erreur = true;
+			$error = true;
 		}
     }
 
@@ -56,7 +59,7 @@ if (isset($_POST['ok'])) {
 		$imp = html_entity_decode($_POST['impression_parentFCK']);
 		if (!saveSetting("ImpressionFicheParent", $imp)) {
 			$msg .= "Erreur lors de l'enregistrement de la fiche bienvenue pour les ".$gepiSettings['denomination_responsables']." !";
-			$erreur = true;
+			$error = true;
 		}
     }
 
@@ -64,7 +67,7 @@ if (isset($_POST['ok'])) {
 		$imp = html_entity_decode($_POST['impression_eleveFCK']);
 		if (!saveSetting("ImpressionFicheEleve", $imp)) {
 			$msg .= "Erreur lors de l'enregistrement de la fiche bienvenue pour les ".$gepiSettings['denomination_eleves']." !";
-			$erreur = true;
+			$error = true;
 		}
     }
 
@@ -88,11 +91,11 @@ if (isset($_POST['ok'])) {
 }
 //**************** EN-TETE *****************
 $titre_page = "Outil de gestion | Impression des paramètres";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
 ?>
-<form enctype="multipart/form-data" action="modify_impression.php" method=post name=formulaire>
+<form action="modify_impression.php" method=post name=formulaire>
 <p class=bold><a href="index.php#modify_impression"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>|<a href="modify_impression.php?fiche=personnels"> Fiche Personnels Etablissement </a>|<a href="modify_impression.php?fiche=responsables"> Fiche <?php echo $gepiSettings['denomination_responsables']; ?></a>|<a href="modify_impression.php?fiche=eleves"> Fiche <?php echo $gepiSettings['denomination_eleves'];?> </a></p>
 
 <?php
@@ -110,7 +113,7 @@ $fiche=isset($_POST["fiche"]) ? $_POST["fiche"] : (isset($_GET["fiche"]) ? $_GET
 
 //echo "<table width=600>\n";
 //echo "<tr>\n<td>\n";
-echo "<div style='width: 600px;'>\n";
+echo "<div style='width: 850px;'>\n";
 
 switch ($fiche) {
 case 'personnels' :
@@ -131,12 +134,9 @@ case 'personnels' :
 		echo "<br />Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
 		echo "<br /><i>Mise en forme du message :</i>\n";
 
-		$oFCKeditor = new FCKeditor('impression_personnelFCK') ;
-		$oFCKeditor->BasePath = '../fckeditor/' ;
-		$oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
-		$oFCKeditor->ToolbarSet = 'Basic' ;
-		$oFCKeditor->Value      = $impression ;
-		$oFCKeditor->Create() ;
+		$oCKeditor = new CKeditor() ;
+		$oCKeditor->basePath = '../ckeditor/' ;
+		$oCKeditor->editor('impression_personnelFCK',$impression) ;
 
 		//echo "</div>\n";
     break;
@@ -159,12 +159,9 @@ case 'responsables' :
 		echo "<br />Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
 		echo "<br /><i>Mise en forme du message :</i>\n";
 
-		$oFCKeditor = new FCKeditor('impression_parentFCK') ;
-		$oFCKeditor->BasePath = '../fckeditor/' ;
-		$oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
-		$oFCKeditor->ToolbarSet = 'Basic' ;
-		$oFCKeditor->Value      = $impression_parent ;
-		$oFCKeditor->Create() ;
+		$oCKeditor = new CKeditor() ;
+		$oCKeditor->basePath = '../ckeditor/' ;
+		$oCKeditor->editor('impression_parentFCK',$impression_parent) ;
 
 		//echo "</div>\n";
     break;
@@ -188,12 +185,9 @@ case 'eleves' :
 		echo "<br />Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
 		echo "<br /><i>Mise en forme du message :</i>\n";
 
-		$oFCKeditor = new FCKeditor('impression_eleveFCK') ;
-		$oFCKeditor->BasePath = '../fckeditor/' ;
-		$oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
-		$oFCKeditor->ToolbarSet = 'Basic' ;
-		$oFCKeditor->Value      = $impression_eleve ;
-		$oFCKeditor->Create() ;
+		$oCKeditor = new CKeditor() ;
+		$oCKeditor->basePath = '../ckeditor/' ;
+		$oCKeditor->editor('impression_eleveFCK',$impression_eleve) ;
 
 		//echo "</div>\n";
 	break;

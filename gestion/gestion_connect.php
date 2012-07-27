@@ -46,57 +46,11 @@ if (!checkAccess()) {
     die();
 }
 
-/*
-// Enregistrement de la durée de conservation des données
-
-if (isset($_POST['duree'])) {
-    if (!saveSetting(("duree_conservation_logs"), $_POST['duree'])) {
-        $msg = "Erreur lors de l'enregistrement de la durée de conservation des connexions !";
-    } else {
-        $msg = "La durée de conservation des connexions a été enregistrée.<br />Le changement sera pris en compte après la prochaine connexion à GEPI.";
-    }
-}
-
-
-if (isset($_POST['use_sso'])) {
-    if (!saveSetting(("use_sso"), $_POST['use_sso'])) {
-        $msg = "Erreur lors de l'enregistrement du mode d'authentification !";
-    } else {
-        $msg = "Le mode d'authentification a été enregistré.";
-    }
-}
-*/
-
 // Load settings
 
 if (!loadSettings()) {
     die("Erreur chargement settings");
 }
-
-
-/*// Suppression du journal de connexion
-
-if (isset($_POST['valid_sup_logs']) ) {
-    $sql = "delete from log where END < now()";
-    $res = sql_query($sql);
-    if ($res) {
-       $msg = "La suppression des entrées dans le journal de connexion a été effectuée.";
-    } else {
-       $msg = "Il y a eu un problème lors de la suppression des entrées dans le journal de connexion.";
-    }
-}
-
-// Changement de mot de passe obligatoire
-if (isset($_POST['valid_chgt_mdp'])) {
-    $sql = "update utilisateurs set change_mdp='y' where login != '".$_SESSION['login']."'";
-    $res = sql_query($sql);
-    if ($res) {
-       $msg = "La demande de changement obligatoire de mot de passe a été enregistrée.";
-    } else {
-       $msg = "Il y a eu un problème lors de l'enregistrement de la demande de changement obligatoire de mot de passe.";
-    }
-}
-*/
 
 //
 // Protection contre les attaques.
@@ -199,7 +153,7 @@ if(isset($_POST['valid_message'])){
 
 //================================
 // End standart header
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //================================
 
 //debug_var();
@@ -211,53 +165,116 @@ if ($mode_navig == 'accueil') {
 } else {
     $retour = "index.php#gestion_connect";
 }
+?>
+<p class='bold'>
+	<a href="<?php echo $retour; ?>">
+		<img src='../images/icons/back.png' alt='Retour' class='back_link'/>
+		Retour
+	</a>
+</p>
 
-echo "<p class='bold'><a href=\"".$retour."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
-
-
-
+<?php
 //
 // Affichage des personnes connectées
 //
-echo "<h3 class='gepi'>Utilisateurs connectés en ce moment</h3>";
-echo "<div title=\"Utilisateurs connectés\">";
+?>
+<h2>Utilisateurs connectés</h2>
+<?php
 // compte le nombre d'enregistrement dans la table
 //$sql = "select u.login, concat(u.prenom, ' ', u.nom) utilisa, u.email from log l, utilisateurs u where (l.LOGIN = u.login and l.END > now())";
 $sql = "select u.login, concat(u.prenom, ' ', u.nom) utilisa, u.email, u.auth_mode, u.statut, l.END from log l, utilisateurs u where (l.LOGIN = u.login and l.END > now()) ORDER BY statut";
 
 $res = sql_query($sql);
 if ($res) {
-	echo "<table class='boireaus' summary='Liste des utilisateurs connectés'>\n";
-	echo "<tr>\n";
-	echo "<th>Utilisateur</th>\n";
-	echo "<th>Statut</th>\n";
-	echo "<th>Envoyer un mail</th>\n";
-	echo "<th>Déconnecter en changeant<br />le mot de passe</th>\n";
-	echo "<th title=\"Si l'utilisateur n'agit pas, ne change pas de page, n'enregistre pas,... la session se terminera à la date et à l'heure indiquée\">Fin théorique<br />de session</th>\n";
-	echo "</tr>\n";
+?>
+	<table class='boireaus center'>
+		<caption>Utilisateurs connectés en ce moment</caption>
+		<tr>
+			<th>Utilisateur</th>
+			<th>Statut</th>
+			<th>Envoyer un mail</th>
+			<th>Déconnecter en changeant le mot de passe</th>
+			<th title="Si l'utilisateur n'agit pas, ne change pas de page, n'enregistre pas,... la session se terminera à la date et à l'heure indiquée">
+				Fin théorique de session
+			</th>
+		</tr>
+<?php
 
 	$alt=1;
     for ($i = 0; ($row = sql_row($res, $i)); $i++) {
 		$alt=$alt*(-1);
 
-		echo "<tr class='lig$alt white_hover'>\n";
-		echo "<td>\n";
-		echo $row[1];
-		echo "</td>\n";
-
-		echo "<td>\n";
-		echo $row[4];
-		echo "</td>\n";
-
-		echo "<td>\n";
-		if(check_mail($row[2])) {echo "<a href=\"mailto:" . $row[2] . "\"><img src='../images/icons/mail.png' width='16' height='16' alt=\"Envoyer un mail à ".$row[2]."\" title=\"Envoyer un mail à ".$row[2]."\" /></a>";}
-		elseif($row[2]=='') {echo "<img src='../images/disabled.png' width='16' height='16' alt=\"Pas d'adresse mail renseignée\" title=\"Pas d'adresse mail renseignée\" />";}
-		else {echo "<a href=\"mailto:" . $row[2] . "\"><img src='../images/icons/mail.png' width='16' height='16' alt=\"Envoyer un mail à ".$row[2]."\" title=\"Envoyer un mail à ".$row[2]."\" /></a><span style='color:red' title=\"L'adresse mail ".$row[2]." n'a pas l'air correcte\"> (*) </span>";}
-		echo "</td>\n";
-
-		echo "<td>\n";
+?>
+		<tr class='lig<?php echo $alt; ?> white_hover'>
+			<td>
+<?php
+		if ($row[4]=="eleve") {
+?>
+				<a href="../eleves/modify_eleve.php?eleve_login=<?php echo $row[0]; ?>" ><?php echo $row[1]; ?></a>
+<?php
+			$sql= " SELECT id_classe FROM j_eleves_classes WHERE login='$row[0]'";
+			$res1 = sql_query($sql);
+			$id = mysql_fetch_array($res1);
+			$sql= " SELECT classe FROM classes WHERE id='$id[id_classe]'";
+			$res2 = sql_query($sql);
+			$classe_eleve = mysql_fetch_array($res2);
+		}
+		elseif ($row[4]=="responsable") {
+			$sql= " SELECT pers_id FROM resp_pers where login='$row[0]'";
+			$res3 = sql_query($sql);
+			$id = mysql_fetch_array($res3);
+			echo "<a href=\"../responsables/modify_resp.php?pers_id=" .$id['pers_id']. "\" />".$row[1]."</a>";
+		}
+		else {
+?>
+				<a href="../utilisateurs/modify_user.php?user_login=<?php echo $row[0]; ?>" ><?php echo $row[1]; ?></a>
+<?php
+		}
+?>
+			</td>
+			
+			<td>
+				<?php
+				if ($row[4] == "eleve") {
+				echo $row[4]. " " .$classe_eleve['classe'];
+				}
+				else {
+				echo $row[4];
+				}
+				?>
+			</td>
+			
+			<td>
+<?php if(check_mail($row[2])) { ?>
+				<a href="mailto:<?php echo $row[2]; ?>">
+					<img src='../images/icons/mail.png' 
+						 width='16' 
+						 height='16' 
+						 alt="" 
+						 title="Envoyer un mail à <?php echo $row[2]; ?>" />
+				</a>
+<?php } elseif($row[2]=='') { ?>
+				<img src='../images/disabled.png' 
+					 width='16' 
+					 height='16' 
+					 alt="" 
+					 title="Pas d'adresse mail renseignée" />
+<?php } else { ?>
+				<a href="mailto:<?php echo $row[2]; ?>">
+				   <img src='../images/icons/mail.png' 
+						width='16' 
+						height='16' 
+						alt="" 
+						title="Envoyer un mail à <?php echo $row[2]; ?>" />
+				</a>
+				<span style='color:red' 
+					  title="L'adresse mail <?php echo $row[2]; ?> n'a pas l'air correcte"> (*) </span>
+<?php } ?>
+			</td>
+			
+			<td>
+<?php
 		$afficher_deconnecter_et_changer_mdp="n";
-		//if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and getSettingValue("use_sso") != "lcs" and getSettingValue("use_sso") != "ldap_scribe")) {
 		if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and getSettingValue("auth_sso") != "lcs" and getSettingValue("use_sso") != "ldap_scribe")) {
 			$afficher_deconnecter_et_changer_mdp="y";
 		}
@@ -265,224 +282,259 @@ if ($res) {
 			$afficher_deconnecter_et_changer_mdp="y";
 		}
 
-		if($afficher_deconnecter_et_changer_mdp=="y") {
-			echo "<a href=\"../utilisateurs/change_pwd.php?user_login=".$row[0].add_token_in_url()."\"><img src='../images/icons/quit_16.png' width='16' height='16' alt=\"Déconnecter en changeant le mot de passe\" title=\"Déconnecter en changeant le mot de passe\" /></a>";
-		}
-		echo "</td>\n";
-
-		echo "<td>\n";
-		echo strftime("%d/%m/%Y à %H:%M", mysql_date_to_unix_timestamp($row[5]));
-		echo "</td>\n";
-
-		echo "</tr>\n";
-    }
-}
-
-echo "</table>";
+		if($afficher_deconnecter_et_changer_mdp=="y") { 
 ?>
-</div>
+				<a href="../utilisateurs/change_pwd.php?user_login=<?php echo $row[0].add_token_in_url(); ?>">
+				   <img src='../images/icons/quit_16.png' 
+						width='16' 
+						height='16' 
+						alt="" 
+						title="Déconnecter en changeant le mot de passe" />
+				</a>
+<?php } ?>
+			</td>
+			
+			<td>
+				<?php echo strftime("%d/%m/%Y à %H:%M", mysql_date_to_unix_timestamp($row[5])); ?>
+			</td>
+		</tr>
+<?php }
+}
+?>
+	</table>
 
-<hr class="header" style="margin-top: 32px; margin-bottom: 24px;"/>
+<hr />
 <?php
 //
 // Activation/désactivation des connexions
 //
-echo "<h3 class='gepi'>Activation/désactivation des connexions</h3>\n";
+?>
+<h2>Activation/désactivation des connexions</h2>
 
 
+<?php
 $disable_login=getSettingValue("disable_login");
 
 if($disable_login=="yes"){
-	echo "<p>Les connexions sont actuellement <span style='font-weight:bold'>désactivées</span>.</p>\n";
+?>
+<p>Les connexions sont actuellement <span style='font-weight:bold'>désactivées</span>.</p>
+<?php
 }
 elseif($disable_login=="no"){
-	echo "<p>Les connexions sont actuellement <span style='font-weight:bold'>activées</span>.</p>\n";
-}
-else{
-	echo "<p>Les connexions <span style='font-weight:bold'>futures</span> sont actuellement <span style='font-weight:bold'>désactivées</span>.<br />Aucune nouvelle connexion n'est acceptée.</p>\n";
-}
+?>
+<p>Les connexions sont actuellement <span style='font-weight:bold'>activées</span>.</p>
+<?php } else { ?>
+<p>
+	Les connexions <span style='font-weight:bold'>futures</span> sont actuellement 
+	<span style='font-weight:bold'>désactivées</span>.<br />Aucune nouvelle connexion n'est acceptée.
+</p>
+<?php } ?>
+<p>
+	En désactivant les connexions, vous rendez impossible la connexion au site pour les utilisateurs, 
+	hormis les administrateurs.
+</p>
 
-echo "<p>En désactivant les connexions, vous rendez impossible la connexion au site pour les utilisateurs, hormis les administrateurs.</p>\n";
+<form action="gestion_connect.php" id="form_acti_connect" method="post">
+	<p>
+<?php echo add_token_field(); ?>
+		<input type='radio' 
+			   name='disable_login' 
+			   value='yes' 
+			   id='label_1a'
+			   <?php if ($disable_login=='yes'){ echo " checked='checked'";} ?> />
+		<label for='label_1a'>Désactiver les connexions</label>
+		<br />
+		(<em>
+			<span class='rouge'>
+				Attention, les utilisateurs actuellement connectés sont automatiquement déconnectés.
+			</span>
+		</em>)
+	</p>
+	
+	<p>
+		<input type='radio' 
+			   name='disable_login' 
+			   value='soft' 
+			   id='label_3a'
+			   <?php if ($disable_login=='soft'){ echo " checked='checked'";} ?> />
+		<label for='label_3a'>Désactiver les futures connexions</label>
+		<br />
+		(<em>
+			et attendre la fin des connexions actuelles pour pouvoir désactiver les connexions et 
+			procéder à une opération de maintenance, par exemple
+		</em>)
+	</p>
+	
+	<p>
+		<input type='radio' 
+			   name='disable_login' 
+			   value='no' 
+			   id='label_2a'
+			   <?php if ($disable_login=='no'){ echo " checked='checked'";} ?> />
+		<label for='label_2a'>Activer les connexions</label>
+	</p>
 
-echo "<form action=\"gestion_connect.php\" name=\"form_acti_connect\" method=\"post\">\n";
-echo add_token_field();
+	<p class="center">
+		<input type="submit" name="valid_acti_mdp" value="Valider" />
+	</p>
+</form>
 
-echo "<table border='0' summary='Activation/désactivation des connexions'>\n";
-echo "<tr>\n";
-echo "<td valign='top'>\n";
-echo "<input type='radio' name='disable_login' value='yes' id='label_1a'";
-if ($disable_login=='yes'){ echo " checked ";}
-echo " />\n";
-echo "</td>\n";
-echo "<td>\n";
-echo "<label for='label_1a' style='cursor: pointer;'>Désactiver les connexions</label>\n";
-echo "<br />\n";
-echo "(<i><span style='color:red;'>Attention, les utilisateurs actuellement connectés sont automatiquement déconnectés.</span></i>)\n";
-echo "</td>\n";
-echo "</tr>\n";
+<hr />
 
-echo "<tr>\n";
-echo "<td valign='top'>\n";
-echo "<input type='radio' name='disable_login' value='soft' id='label_3a'";
-if ($disable_login=='soft'){ echo " checked ";}
-echo " />\n";
-echo "</td>\n";
-echo "<td>\n";
-echo "<label for='label_3a' style='cursor: pointer;'>Désactiver les futures connexions</label>\n";
-echo "<br />(<i>et attendre la fin des connexions actuelles pour pouvoir désactiver les connexions et procéder à une opération de maintenance, par exemple</i>)\n";
-echo "</td>\n";
-echo "</tr>\n";
-
-echo "<tr>\n";
-echo "<td valign='top'>\n";
-echo "<input type='radio' name='disable_login' value='no' id='label_2a'";
-if ($disable_login=='no'){ echo " checked ";}
-echo " />\n";
-echo "</td>\n";
-echo "<td>\n";
-echo "<label for='label_2a' style='cursor: pointer;'>Activer les connexions</label>\n";
-echo "</td>\n";
-echo "</tr>\n";
-echo "</table>\n";
-
-echo "<center><input type=\"submit\" name=\"valid_acti_mdp\" value=\"Valider\" /></center>\n";
-echo "</form>\n";
-
-echo "<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\" />\n";
-
-
+<?php 
 //
 // Message sur la page de login
-//
-echo "<a name='message_login'></a>\n";
-echo "<h3 class='gepi'>Faire apparaitre un message sur la page de login</h3>\n";
+// ?>
+<a name='message_login'></a>
+<h2>Faire apparaitre un message sur la page de login</h2>
 
+<?php 
 $message_login=getSettingValue("message_login");
 if($message_login=='') {$message_login=0; saveSetting('message_login',$message_login);}
 
 $sql="SELECT * FROM message_login ORDER BY texte;";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	echo "<p>Aucun message n'a encore été saisi.</p>\n";
-	echo "<p><a href='saisie_message_connexion.php'>Saisir de nouveaux messages.</a></p>\n";
-}
-else {
-	echo "<form action=\"gestion_connect.php\" name=\"form_message_login\" method=\"post\">\n";
-	echo add_token_field();
+?>
+<p>Aucun message n'a encore été saisi.</p>
+<p><a href='saisie_message_connexion.php'>Saisir de nouveaux messages.</a></p>
+<?php } else { ?>
 
-	echo "<table summary='Choix du message'>\n";
-	echo "<tr>\n";
-	echo "<td valign='top'>\n";
-	echo "<input type='radio' name='message_login' id='message_login0' value='0' ";
-	if($message_login==0) {echo "checked ";}
-	echo "/>\n";
-	echo "</td>\n";
-	echo "<td>\n";
-	echo "<label for='message_login0'> Aucun message</label><br />\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-	while($lig=mysql_fetch_object($res)) {
-		echo "<tr>\n";
-		echo "<td valign='top'>\n";
-		echo "<input type='radio' name='message_login' id='message_login$lig->id' value='$lig->id'";
-		if($message_login==$lig->id) {echo "checked ";}
-		echo ">\n";
-		echo "</td>\n";
-		echo "<td>\n";
-		echo "<label for='message_login$lig->id'> ".nl2br($lig->texte)."</label><br />\n";
-		echo "</td>\n";
-		echo "</tr>\n";
-	}
-	echo "</table>\n";
+<form action="gestion_connect.php" id="form_message_login" method="post">
+	<p>
+	<?php echo add_token_field(); ?>
+		<input type='radio' 
+			   name='message_login' 
+			   id='message_login0' 
+			   value='0'
+			   <?php if($message_login==0) {echo " checked='checked'";} ?> />
+		<label for='message_login0'> Aucun message</label>
+	</p>
+<?php 
+	while($lig=mysql_fetch_object($res)) { ?>
+	<p>
+		<input type='radio' 
+			   name='message_login' 
+			   id='message_login<?php echo $lig->id; ?>' 
+			   value='<?php echo $lig->id; ?>'
+			   <?php if($message_login==$lig->id) {echo " checked='checked'";} ?> />
+		<label for='message_login<?php echo $lig->id; ?>'> <?php echo nl2br($lig->texte); ?></label>
+	</p>
+<?php } ?>
+	<p class="center"><input type="submit" name="valid_message" value="Valider" /></p>
+</form>
 
-	echo "<center><input type=\"submit\" name=\"valid_message\" value=\"Valider\" /></center>\n";
-	echo "</form>\n";
+<p><a href='saisie_message_connexion.php'>Saisir de nouveaux messages ou modifier des messages existants.</a></p>
 
-	echo "<p><a href='saisie_message_connexion.php'>Saisir de nouveaux messages ou modifier des messages existants.</a></p>\n";
+<?php } ?>
 
-}
-
-echo "<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\" />\n";
+<hr />
 
 
-
-/*
-//
-// Activation/désactivation de la procédure de récupération du mot de passe
-//
-echo "<h3 class='gepi'>Mots de passe perdus</h3>";
-echo "<form action=\"gestion_connect.php\" method=\"post\">";
-echo "<input type='radio' name='enable_password_recovery' value='no' id='label_1b'";
-if (getSettingValue("enable_password_recovery")=='no') echo " checked ";
-echo " /> <label for='label_1b'>Désactiver la procédure automatisée de récupération de mot de passe</label>";
-
-echo "<br /><input type='radio' name='enable_password_recovery' value='yes' id='label_2b'";
-if (getSettingValue("enable_password_recovery")=='yes') echo " checked ";
-echo " /> <label for='label_2b'>Activer la procédure automatisée de récupération de mot de passe</label>";
-
-echo "<center><input type=\"submit\" value=\"Valider\" /></center>";
-echo "</form>";
-
-echo"<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>";
-*/
+<?php 
 //
 // Protection contre les attaques.
-//
-echo "<h3 class='gepi'>Protection contre les attaques forces brutes.</h3>";
-echo "<p>Configuration de GEPI de manière à bloquer temporairement le compte d'un utilisateur après un certain nombre de tentatives de connexion infructueuses.
-<br />En contrepartie, un pirate peut se servir de ce mécanisme d'auto-défense pour bloquer en permanence des comptes utilisateur ou administrateur.
-<br />Si vous ête un jour confronté à cette situation d'urgence, vous pourrez dans le fichier \"config.inc.php\", forcer le débloquage des comptes administrateur
-et/ou mettre en liste noire, la ou les adresses IP incriminées.<br /></p>";
+// ?>
+<h2>Protection contre les attaques forces brutes.</h2>
+<p>
+	Configuration de GEPI de manière à bloquer temporairement le compte d'un utilisateur après un certain nombre de tentatives 
+	de connexion infructueuses.
+	<br />
+	En contrepartie, un pirate peut se servir de ce mécanisme d'auto-défense pour bloquer en permanence des comptes utilisateur 
+	ou administrateur.
+	<br />
+	Si vous ête un jour confronté à cette situation d'urgence, vous pourrez dans le fichier "config.inc.php", forcer le 
+	débloquage des comptes administrateur et/ou mettre en liste noire, la ou les adresses IP incriminées.
+</p>
 
-echo "<form action=\"gestion_connect.php\" name=\"form_param_mdp\" method=\"post\">";
-echo add_token_field();
-echo "<table summary='Paramétrage'><tr>";
-echo "<td>Nombre maximum de tentatives de connexion infructueuses: </td>";
-echo "<td><input type=\"text\" name=\"nombre_tentatives_connexion\" value=\"".getSettingValue("nombre_tentatives_connexion")."\" size=\"20\" /></td>";
-echo "</tr><tr>";
-echo "<td>Temps en minutes pendant lequel un compte est temporairement verrouillé suite à un trop grand nombre d'essais infructueux : </td>";
-echo "<td><input type=\"text\" name=\"temps_compte_verrouille\" value=\"".getSettingValue("temps_compte_verrouille")."\" size=\"20\" /></td>";
-echo "</tr></table>";
+<form action="gestion_connect.php" id="form_param_mdp" method="post">
+	<table>
+	<tr style="text-align:left;">
+	<td>
+	<?php echo add_token_field(); ?>
+		<label for="nombre_tentatives_connexion">
+			Nombre maximum de tentatives de connexion infructueuses : 
+		</label>
+	</td>
+	<td>
+		<input type="text" 
+			   name="nombre_tentatives_connexion" 
+			   id="nombre_tentatives_connexion"
+			   value="<?php echo getSettingValue('nombre_tentatives_connexion'); ?>"
+			   size="10" />
+	</td>
+	</tr>
+	<tr style="text-align:left;">
+	<td>
+		<label for="temps_compte_verrouille">
+			Temps en minutes pendant lequel un compte est temporairement verrouillé suite à un trop grand nombre d'essais infructueux :
+		</label>
+	</td>
+	<td>
+		<input type="text" 
+			   name="temps_compte_verrouille"
+			   id= "temps_compte_verrouille"
+			   value="<?php echo getSettingValue('temps_compte_verrouille'); ?>" 
+			   size="10" />
+	</td>
+	</tr>
+	</table>
+	
+	<p class="center">
+		<input type="submit" name="valid_param_mdp" value="Valider" />
+	</p>
+</form>
 
-echo "<center><input type=\"submit\" name=\"valid_param_mdp\" value=\"Valider\" /></center>";
-echo "</form><hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\" />";
+<hr />
 
-
-
-
+<?php 
 //
 // Avertissement des utilisateurs lors des connexions
-//
-echo "<h3 class='gepi'>Avertissement lors des connexions</h3>";
-echo "<p>Il est possible d'avertir les utilisateurs par mail lors de leur connexion, sous réserve que leur adresse mail soit renseignée dans Gepi (<i>information modifiable par le lien 'Gérer mon compte'</i>).<br />Si l'adresse n'est pas renseignée aucun mail ne peut parvenir à l'utilisateur qui se connecte.<br />Si l'adresse est correctement renseignée, en cas d'usurpation comme de connexion légitime, l'utilisateur recevra un mail.<br />S'il ne réagit pas en changeant de mot de passe et en avertissant l'administrateur lors d'une usurpation, des intrusions ultérieures pourront être opérées sans que l'utilisateur soit averti si l'intrus prend soin de supprimer/modifier l'adresse mail dans 'Gérer mon compte'.</p>\n";
+// ?>
+<h2>Avertissement lors des connexions</h2>
+<p>
+	Il est possible d'avertir les utilisateurs par mail lors de leur connexion, 
+	sous réserve que leur adresse mail soit renseignée dans Gepi (<em>information modifiable par le lien 'Gérer mon compte'</em>).
+	<br />
+	Si l'adresse n'est pas renseignée aucun mail ne peut parvenir à l'utilisateur qui se connecte.
+	<br />
+	Si l'adresse est correctement renseignée, en cas d'usurpation comme de connexion légitime, l'utilisateur recevra un mail.
+	<br />
+	S'il ne réagit pas en changeant de mot de passe et en avertissant l'administrateur lors d'une usurpation, 
+	des intrusions ultérieures pourront être opérées sans que l'utilisateur soit averti si l'intrus prend soin de 
+	supprimer/modifier l'adresse mail dans 'Gérer mon compte'.
+</p>
 
-echo "<form action=\"gestion_connect.php\" name=\"form_mail_connexion\" method=\"post\">";
-echo add_token_field();
-echo "<table summary='Mail'>\n";
-echo "<tr>\n";
-echo "<td valign='top'>Activer l'envoi de mail lors de la connexion: </td>\n";
-echo "<td>\n";
-echo "<label for='envoi_mail_connexion_y' style='cursor: pointer;'><input type=\"radio\" name=\"envoi_mail_connexion\" id=\"envoi_mail_connexion_y\" value='y' ";
-if(getSettingValue("envoi_mail_connexion")=="y") {
-	echo "checked ";
-}
-echo " /> Oui</label>\n";
-echo "<br />\n";
-echo "<label for='envoi_mail_connexion_n' style='cursor: pointer;'><input type=\"radio\" name=\"envoi_mail_connexion\" id=\"envoi_mail_connexion_n\" value='n' ";
-if(getSettingValue("envoi_mail_connexion")!="y") {
-	echo "checked ";
-}
-echo " /> Non</label>\n";
-echo "</td>\n";
-echo "</tr>\n";
-echo "</table>\n";
+<form action="gestion_connect.php" id="form_mail_connexion" method="post">
+	<p>
+	<?php echo add_token_field(); ?>
+			Activer l'envoi de mail lors de la connexion :
+		<input type="radio" 
+			   name="envoi_mail_connexion" 
+			   id="envoi_mail_connexion_y" 
+			   value='y'
+			   <?php if(getSettingValue("envoi_mail_connexion")=="y") { echo " checked='checked' "; } ?> />
+		<label for='envoi_mail_connexion_y'>
+			Oui
+		</label>
+		<input type="radio" 
+			   name="envoi_mail_connexion" 
+			   id="envoi_mail_connexion_n" 
+			   value='n'
+			   <?php if(getSettingValue("envoi_mail_connexion")!="y") {	echo "checked='checked' ";} ?> />
+		<label for='envoi_mail_connexion_n'>
+			Non
+		</label>
+	</p>
+	
+	<p class="center">
+		<input type="submit" name="valid_envoi_mail_connexion" value="Valider" />
+	</p>
+</form>
 
-echo "<center><input type=\"submit\" name=\"valid_envoi_mail_connexion\" value=\"Valider\" /></center>";
-echo "</form>\n";
-echo "<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\" />\n";
+<hr />
 
-
-
+<?php 
 /*
 //
 // Changement du mot de passe obligatoire
@@ -644,76 +696,64 @@ switch( $duree2 ) {
    break;
 }
 
-echo "<h3 class='gepi'>Journal des connexions <span style='font-weight:bold'>".$display_duree."</span></h3>";
-
 ?>
+<h2>Journal des connexions <span style='font-weight:bold'><?php echo $display_duree; ?></span></h2>
+
 <div title="Journal des connections" style="width: 100%;">
 <ul>
-<li>Les lignes en rouge signalent une tentative de connexion avec un mot de passe erroné.</li>
-<li>Les lignes en orange signalent une session close pour laquelle l'utilisateur ne s'est pas déconnecté correctement.</li>
-<li>Les lignes en noir signalent une session close normalement.</li>
-<li>Les lignes en vert indiquent les sessions en cours (cela peut correspondre à une connexion actuellement close mais pour laquelle l'utilisateur ne s'est pas déconnecté correctement).</li>
+	<li>Les lignes en rouge signalent une tentative de connexion avec un mot de passe erroné.</li>
+	<li>Les lignes en orange signalent une session close pour laquelle l'utilisateur ne s'est pas déconnecté correctement.</li>
+	<li>Les lignes en noir signalent une session close normalement.</li>
+	<li>Les lignes en vert indiquent les sessions en cours (cela peut correspondre à une connexion actuellement close mais pour laquelle l'utilisateur ne s'est pas déconnecté correctement).</li>
 </ul>
-
-<?php
-
-echo "<form action=\"gestion_connect.php#tab_connexions\" name=\"form_affiche_log\" method=\"post\">\n";
-echo "Afficher le journal des connexions : <select name=\"duree2\" size=\"1\">\n";
-echo "<option ";
-if ($duree2 == '20dernieres') echo "selected";
-echo " value='20dernieres'>les 20 dernières</option>\n";
-echo "<option ";
-if ($duree2 == 2) echo "selected";
-echo " value=2>depuis Deux jours</option>\n";
-echo "<option ";
-if ($duree2 == 7) echo "selected";
-echo " value=7>depuis Une semaine</option>\n";
-echo "<option ";
-if ($duree2 == 15) echo "selected";
-echo " value=15 >depuis Quinze jours</option>\n";
-echo "<option ";
-if ($duree2 == 30) echo "selected";
-echo " value=30>depuis Un mois</option>\n";
-echo "<option ";
-if ($duree2 == 60) echo "selected";
-echo " value=60>depuis Deux mois</option>\n";
-echo "<option ";
-if ($duree2 == 183) echo "selected";
-echo " value=183>depuis Six mois</option>\n";
-echo "<option ";
-if ($duree2 == 365) echo "selected";
-echo " value=365>depuis Un an</option>\n";
-echo "<option ";
-if ($duree2 == 'all') echo "selected";
-echo " value='all'>depuis Le début</option>\n";
-echo "</select>\n";
-echo " <input type=\"submit\" name=\"Valider\" value=\"Valider\" /><br /><br />\n";
-echo "<input type=hidden name=mode_navig value='$mode_navig' />\n";
-echo "</form>\n";
-
-echo "<div class='noprint' style='float: right; border: 1px solid black; background-color: white; width: 3em; height: 1em; text-align: center;'>\n";
-echo "<a href='".$_SERVER['PHP_SELF']."?mode=csv";
-echo "'>CSV</a>\n";
-echo "</div>\n";
-
-?>
+	
+<form action="gestion_connect.php#tab_connexions" id="form_affiche_log" method="post">
+	<p>
+	Afficher le journal des connexions : 
+	<select name="duree2" size="1">
+		<option <?php if ($duree2 == '20dernieres') echo "selected = 'selected'"; ?> value='20dernieres'>
+			les 20 dernières
+		</option>
+		<option <?php if ($duree2 == 2) echo "selected = 'selected'"; ?> value='2'>
+			depuis Deux jours
+		</option>
+		<option <?php if ($duree2 == 7) echo "selected = 'selected'"; ?> value='7'>
+			depuis Une semaine
+		</option>
+		<option <?php if ($duree2 == 15) echo "selected = 'selected'"; ?> value='15'>
+			depuis Quinze jours
+		</option>
+		<option <?php if ($duree2 == 30) echo "selected = 'selected'"; ?> value='30'>
+			depuis Un mois
+		</option>
+		<option <?php if ($duree2 == 60) echo "selected = 'selected'"; ?> value='60'>
+			depuis Deux mois
+		</option>
+		<option <?php if ($duree2 == 183) echo "selected = 'selected'"; ?> value='183'>
+			depuis Six mois
+		</option>
+		<option <?php if ($duree2 == 365) echo "selected = 'selected'"; ?> value='365'>
+			depuis Un an
+		</option>
+		<option <?php if ($duree2 == 'all') echo "selected = 'selected'"; ?> value='all'>
+			depuis Le début
+		</option>
+	</select>
+	</p>
+	<p>
+		<input type="submit" name="Valider" value="Valider" />
+		<input type="hidden" name="mode_navig" value='$mode_navig' />
+	</p>
+</form>
+	
+<div class='noprint' 
+	 style='float: right; border: 1px solid black; background-color: white; width: 3em; padding: .2em; text-align: center;'>
+	<a href='<?php echo $_SERVER['PHP_SELF']; ?>?mode=csv'>CSV</a>
+</div>
 
 <a name='tab_connexions'></a>
-<table class="col" style="width: 90%; margin-left: auto; margin-right: auto; margin-bottom: 32px;" cellpadding="5" cellspacing="0" summary='Tableau des connexions'>
-    <!--tr>
-        <th class="col">Statut</th>
-		<th class="col">Identifiant</th>
-        <th class="col">Début session</th>
-        <th class="col">Fin session</th>
-        <th class="col">Adresse IP et nom de la machine cliente</th>
-        <th class="col">Navigateur</th>
-        <th class="col">Provenance</th>
-    </tr-->
-
-    <tr>
-        <!--th class="col"><a href='gestion_connect.php?order_by=statut'>Statut</a></th>
-		<th class="col"><a href='gestion_connect.php?order_by=login'>Identifiant</a></th-->
-        <th class="col">Statut</th>
+	<table class='boireaus center'>
+         <th class="col">Statut</th>
 		<th class="col">Identifiant</th>
         <th class="col">Début session</th>
         <th class="col">Fin session</th>
@@ -727,11 +767,7 @@ $requete = '';
 $requete1 = '';
 if ($duree2 != 'all') {$requete = "where l.START > now() - interval " . $duree2 . " day";}
 if ($duree2 == '20dernieres') {$requete1 = "LIMIT 0,20"; $requete='';}
-/*
-$sql = "select l.LOGIN, concat(prenom, ' ', nom) utili, l.START, l.SESSION_ID, l.REMOTE_ADDR, l.USER_AGENT, l.REFERER,
- l.AUTOCLOSE, l.END, u.email, u.statut
-from log l LEFT JOIN utilisateurs u ON l.LOGIN = u.login ".$requete." order by START desc ".$requete1;
-*/
+
 $sql = "select l.LOGIN, concat(prenom, ' ', nom) utili, l.START, l.SESSION_ID, l.REMOTE_ADDR, l.USER_AGENT, l.REFERER,
  l.AUTOCLOSE, l.END, u.email, u.statut
 from log l LEFT JOIN utilisateurs u ON l.LOGIN = u.login ".$requete;
@@ -739,17 +775,7 @@ from log l LEFT JOIN utilisateurs u ON l.LOGIN = u.login ".$requete;
 $sql.=" order by ";
 if(isset($_GET['order_by'])) {
 	$order_by=$_GET['order_by'];
-	/*
-	// Seuls les tris sur la table 'log' peuvent fonctionner étant donnée la requête ci-dessus...
-	// ... sinon, il faudrait passer par un tableau PHP intermédiaire ou revoir complètement la requête...
-	if($order_by=='statut') {
-		$sql.="u.statut, ";
-	}
-	elseif($order_by=='login') {
-		$sql.="u.login, ";
-	}
-	elseif($order_by=='ip') {
-	*/
+	
 	if($order_by=='ip') {
 		$sql.="l.REMOTE_ADDR, ";
 	}
@@ -758,21 +784,6 @@ if(isset($_GET['order_by'])) {
 	}
 }
 $sql.="START desc ".$requete1;
-
-//echo "<tr><td colspan='7'>$sql</td></tr>\n";
-//flush();
-
-// $row[0] : log.LOGIN
-// $row[1] : USER
-// $row[2] : START
-// $row[3] : SESSION_ID
-// $row[4] : REMOTE_ADDR
-// $row[5] : USER_AGENT
-// $row[6] : REFERER
-// $row[7] : AUTOCLOSE
-// $row[8] : END
-// $row[9] : EMAIL
-// $row[9] : STATUT
 
 $day_now   = date("d");
 $month_now = date("m");
@@ -786,14 +797,15 @@ $ligne_csv[0] = "statut;login;debut_session;fin_session;adresse_ip;navigateur;pr
 $nb_ligne = 1;
 
 if ($res) {
+    $alt=1;
     for ($i = 0; ($row = sql_row($res, $i)); $i++) {
+        $alt=$alt*(-1);
         $annee_f = mb_substr($row[8],0,4);
         $mois_f =  mb_substr($row[8],5,2);
         $jour_f =  mb_substr($row[8],8,2);
         $heures_f = mb_substr($row[8],11,2);
         $minutes_f = mb_substr($row[8],14,2);
         $secondes_f = mb_substr($row[8],17,2);
-        //$date_fin_f = $jour_f."/".$mois_f."/".$annee_f." à ".$heures_f." h ".$minutes_f;
         $date_fin_f = $jour_f."/".$mois_f."/".$annee_f." à ".$heures_f."&nbsp;h&nbsp;".$minutes_f;
         $end_time = mktime($heures_f, $minutes_f, $secondes_f, $mois_f, $jour_f, $annee_f);
         $annee_b = mb_substr($row[2],0,4);
@@ -812,7 +824,7 @@ if ($res) {
         }
         if ($row[1] == '') {$row[1] = "<span style='color:red;font-weight:bold'>Utilisateur inconnu</span>";}
 
-        echo "<tr>\n";
+        echo "<tr class='lig$alt white_hover'>\n";
 		 echo "<td class=\"col\"><span class='small'>".$temp1.$row[10].$temp2."</span></td>\n";
         echo "<td class=\"col\"><span class='small'>".$temp1.$row[0]."<br />";
 		if($row[9]!='') {
@@ -880,54 +892,73 @@ if ($res) {
 }
 
 $_SESSION['donnees_export_csv_log']=$ligne_csv;
+?>
+</table>
+<p>
+	<em>NOTES :</em>
+</p>
+<p>
+	La résolution d'adresse IP en nom DNS peut ralentir l'affichage de cette page.
+	<br />
+	Dans le cas d'un serveur situé sur un réseau local, il se peut qu'aucun serveur DNS ne soit en mesure d'assurer 
+	la résolution IP/NOM.
+	<br />
+	Si l'attente vous pèse, vous pouvez modifier le paramétrage de la variable 
+	<span style='font-weight:bold'>$active_hostbyaddr</span> 
+	dans le fichier <span style='font-weight:bold'>lib/global.inc.php</span>
+</p>
 
-echo "</table>\n";
+<table class='boireaus'>
+	<caption>Valeurs possibles pour la variable :</caption>
+	<tr>
+		<th>Valeur</th>
+		<th>Signification</th>
+	</tr>
+	<tr class='lig1'>
+		<td>all</td>
+		<td>la résolution inverse de toutes les adresses IP est activée.<br />
+		Cela peut se traduire par des lenteurs à l'affichage de la présente page.
+		</td>
+	</tr>
+	<tr class='lig-1'>
+		<td>no</td>
+		<td>la résolution inverse des adresses IP est désactivée.<br />
+		Radical, mais toutes les adresses fournies sont en IP.</td>
+	</tr>
+	<tr class='lig1'>
+		<td>no_local</td>
+		<td>
+			la résolution inverse des adresses IP locales (<em>privées</em>) est désactivée.
+			<br />
+			Seules les adresses IP de 
+			<a href='#' onmouseover="afficher_div('ip_priv','y',20,20);" onclick="return false;">réseaux non-privés</a>
+			sont traduites en noms DNS.
 
-echo "<p><i>NOTES:</i></p>\n";
-echo "<ul>\n";
-echo "<li><p>La résolution d'adresse IP en nom DNS peut ralentir l'affichage de cette page.<br />
-Dans le cas d'un serveur situé sur un réseau local, il se peut qu'aucun serveur DNS ne soit en mesure d'assurer la résolution IP/NOM.<br />
-Si l'attente vous pèse, vous pouvez modifier le paramétrage de la variable <span style='font-weight:bold'>\$active_hostbyaddr</span> dans le fichier <span style='font-weight:bold'>lib/global.inc.php</span></p>\n";
-
-$texte="<p style='text-align:justify;'>L'organisme gérant l'espace d'adressage public (adresses IP routables) est l'Internet Assigned Number Authority (IANA). La RFC 1918 définit un espace d'adressage privé permettant à toute organisation d'attribuer des adresses IP aux machines de son réseau interne sans risque d'entrer en conflit avec une adresse IP publique allouée par l'IANA. Ces adresses dites non-routables correspondent aux plages d'adresses suivantes :</p>
-
+<?php	
+$texte="<p style='text-align:justify;margin: .5em;'>
+	L'organisme gérant l'espace d'adressage public (adresses IP routables) est l'Internet Assigned Number Authority (IANA). 
+	La RFC 1918 définit un espace d'adressage privé permettant à toute organisation d'attribuer des adresses IP 
+	aux machines de son réseau interne sans risque d'entrer en conflit avec une adresse IP publique allouée par l'IANA. 
+	Ces adresses dites non-routables correspondent aux plages d'adresses suivantes :</p>
 <ul>
 <li>Classe A : plage de 10.0.0.0 à 10.255.255.255 ;</li>
 <li>Classe B : plage de 172.16.0.0 à 172.31.255.255 ;</li>
 <li>Classe C : plage de 192.168.0.0 à 192.168.255.55 ;</li>
 </ul>
 
-<p style='text-align:justify;'>Toutes les machines d'un réseau interne, connectées à internet par l'intermédiaire d'un routeur et ne possédant pas d'adresse IP publique doivent utiliser une adresse contenue dans l'une de ces plages. Pour les petits réseaux domestiques, la plage d'adresses de 192.168.0.1 à 192.168.0.255 est généralement utilisée.</p>";
+<p style='text-align:justify;margin: .5em;'>Toutes les machines d'un réseau interne, connectées à internet par l'intermédiaire d'un routeur et ne possédant pas d'adresse IP publique doivent utiliser une adresse contenue dans l'une de ces plages. Pour les petits réseaux domestiques, la plage d'adresses de 192.168.0.1 à 192.168.0.255 est généralement utilisée.</p>";
 $tabdiv_infobulle[]=creer_div_infobulle('ip_priv',"Espaces d'adressage","",$texte,"",30,0,'y','y','n','n');
 
-echo "<p>Voici les valeurs possibles pour la variable:</p>
-<table class='boireaus' summary='Valeurs de active_hostbyaddr'>
-<tr>
-	<th>Valeur</th>
-	<th>Signification</th>
-</tr>
-<tr class='lig1'>
-	<td>all</td>
-	<td>la résolution inverse de toutes les adresses IP est activée.<br />
-	Cela peut se traduire par des lenteurs à l'affichage de la présente page.
-	</td>
-</tr>
-<tr class='lig-1'>
-	<td>no</td>
-	<td>la résolution inverse des adresses IP est désactivée.<br />
-	Radical, mais toutes les adresses fournies sont en IP.</td>
-</tr>
-<tr class='lig1'>
-	<td>no_local</td>
-	<td>la résolution inverse des adresses IP locales (<i>privées</i>) est désactivée.<br />
-	Seules les adresses IP de <a href='#' onmouseover=\"afficher_div('ip_priv','y',20,20);\" onclick=\"return false;\">réseaux non-privés</a> sont traduites en noms DNS.</td>
-</tr>
+?>
+			
+		</td>
+	</tr>
 </table>
-<p>La valeur actuelle de la variable <span style='font-weight:bold'>\$active_hostbyaddr</span> sur votre GEPI est: <span style='font-weight:bold'>$active_hostbyaddr</span></p>
-</li>\n";
-echo "</ul>\n";
+<p>
+	La valeur actuelle de la variable <span style='font-weight:bold'>$active_hostbyaddr</span> 
+	sur votre GEPI est: <span style='font-weight:bold'><?php echo $active_hostbyaddr; ?></span></p>
+</div>
 
-echo "</div>\n";
-
+	<?php	
 require("../lib/footer.inc.php");
 ?>

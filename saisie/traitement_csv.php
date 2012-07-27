@@ -62,7 +62,7 @@ if ($_SESSION['statut'] != "secours") {
 
 //**************** EN-TETE *****************
 $titre_page = "Saisie des moyennes et appréciations | Importation";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil saisie</a>";
 

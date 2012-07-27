@@ -89,7 +89,7 @@ if($nb_classes>0) {
 
 // ===================== entete Gepi ======================================//
 $titre_page = "Statistiques de connexion";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 // ===================== fin entete =======================================//
 
 //debug_var();

@@ -2,7 +2,7 @@
 /**
  *
  *
- * Copyright 2010-2012 Josselin Jacquard
+ * Copyright 2010 Josselin Jacquard
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -44,7 +44,8 @@ if(($_SESSION['statut']=='cpe')||
         || $url_end=='bilan_individuel.php'
         || $url_end=='totaux_du_jour.php'
         || $url_end=='statistiques.php'
-        || $url_end=='stat_justifications.php') {echo "class='current' ";}
+        || $url_end=='stat_justifications.php'
+        || $url_end=='liste_eleves.php') {echo "class='current' ";}
     echo "title='Bilans'>Bilans</a></li>\n";
 
     echo "<li><a href='saisir_groupe.php' ";
@@ -52,19 +53,19 @@ if(($_SESSION['statut']=='cpe')||
         echo "class='current' ";
         $_SESSION['abs2_onglet'] = 'saisir_groupe.php';
     }
-    echo "title='Saisir des absences et des retards pour un groupe'>Saisir un groupe</a></li>\n";
+    echo "title='Saisir des absences et des retards pour un groupe'>Saisir groupe</a></li>\n";
 
     echo "<li><a href='saisir_eleve.php' ";
     if($url_end=='saisir_eleve.php' || $url_end=='enregistrement_saisie_eleve.php') {
         echo "class='current' ";
         $_SESSION['abs2_onglet'] = 'saisir_eleve.php';
     }
-    echo "title='Saisir pour un eleve'>Saisir un élève</a></li>\n";
+    echo "title='Saisir pour un eleve'>Saisir élève</a></li>\n";
 
     echo "<li><a href='liste_saisies_selection_traitement.php' ";
     if($url_end=='liste_saisies_selection_traitement.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
     else {echo "style='background-color:#e6f8e7;' ";}
-    echo "title='Liste des saisies'>Liste des saisies</a></li>\n";
+    echo "title='Liste des saisies'>Liste saisies</a></li>\n";
 
     echo "<li><a href='visu_saisie.php' ";
     if($url_end=='visu_saisie.php' || $url_end=='enregistrement_modif_saisie.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
@@ -77,7 +78,7 @@ if(($_SESSION['statut']=='cpe')||
     echo "<li><a href='liste_traitements.php' ";
     if($url_end=='liste_traitements.php') {echo "class='current' style='background-color:#ebedb5; border-bottom:2px solid #ebedb5;' ";}
     else {echo "style='background-color:#f9f9de;' ";}
-    echo "title='Traitement'>Liste des traitements</a></li>\n";
+    echo "title='Traitement'>Liste traitements</a></li>\n";
 
     echo "<li><a href='visu_traitement.php' ";
     if($url_end=='visu_traitement.php' || $url_end=='enregistrement_modif_traitement.php') {
@@ -89,7 +90,7 @@ if(($_SESSION['statut']=='cpe')||
     echo "<li><a href='liste_notifications.php' ";
     if($url_end=='liste_notifications.php') {echo "class='current' style='background-color:#c7e3ec; border-bottom:2px solid #c7e3ec;' ";}
     else {echo "style='background-color:#ecf6f8;' ";}
-    echo "title='Notifications'>Liste des notifications</a></li>\n";
+    echo "title='Notifications'>Liste notifications</a></li>\n";
 
     echo "<li><a href='visu_notification.php' ";
     if($url_end=='visu_notification.php' || $url_end=='enregistrement_modif_notification.php' || $url_end=='generer_notification.php') {
@@ -106,9 +107,9 @@ if(($_SESSION['statut']=='cpe')||
     if($url_end=='saisir_eleve.php' || $url_end=='enregistrement_saisie_eleve.php' || $url_end=='saisir_groupe.php' || $url_end=='enregistrement_saisie_groupe.php') {
 	echo '<li style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Saisie_cpe">wiki</a></li>';
     } else if($url_end=='liste_notifications.php') {
-	echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Suivi">wiki</a></div>';
+	echo '<li style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Suivi">wiki</a></li>';
     } else if($url_end=='tableau_des_appels.php'|| $url_end=='absences_du_jour.php'||$url_end=='bilan_du_jour.php'||$url_end=='totaux_du_jour.php'||$url_end=='extraction_saisies.php'||$url_end=='extraction_demi-journees.php'||$url_end=='bilan_individuel.php'||$url_end=='statistiques.php'||$url_end=='stat_justifications.php') {
-	echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Bilans">wiki</a></div>';
+	echo '<li style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Bilans">wiki</a></li>';
     } else {
     echo '<li style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Traitement_notification">wiki</a></li>';
     }

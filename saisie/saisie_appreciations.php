@@ -580,7 +580,7 @@ $utilisation_prototype = "ok";
 $javascript_specifique = "saisie/scripts/js_saisie";
 //**************** EN-TETE *****************
 $titre_page = "Saisie des appréciations";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();
@@ -650,7 +650,7 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 		$id_grp_suiv=0;
 		$temoin_tmp=0;
 		for($loop=0;$loop<count($tab_groups);$loop++) {
-			if((!isset($tab_groups[$loop]["visibilite"]["bulletins"]))||($tab_groups[$loop]["visibilite"]["cahier_notes"]=='y')) {
+			if((!isset($tab_groups[$loop]["visibilite"]["bulletins"]))||($tab_groups[$loop]["visibilite"]["bulletins"]=='y')) {
 				// Pour s'assurer de ne pas avoir deux fois le même groupe...
 				if(!in_array($tab_groups[$loop]['id'],$tmp_group)) {
 					$tmp_group[]=$tab_groups[$loop]['id'];
@@ -732,6 +732,10 @@ if(isset($periode_cn)) {
 	echo "<input type='hidden' name='periode_cn' value='$periode_cn' />\n";
 }
 echo "</form>\n";
+
+// Largeur des textarea
+$saisie_app_nb_cols_textarea=getPref($_SESSION["login"],'saisie_app_nb_cols_textarea',100);
+
 ?>
 <form enctype="multipart/form-data" action="saisie_appreciations.php" method="post">
 <?php
@@ -971,7 +975,9 @@ while ($k < $nb_periode) {
 	$mess[$k]="";
 	$mess[$k].="<td>".$moyenne_t[$k]."</td>\n";
 	$mess[$k].="<td>\n";
-	if(((($current_group["classe"]["ver_periode"]['all'][$k] == 0)||($current_group["classe"]["ver_periode"]['all'][$k] == 1))&&($_SESSION['statut']!='secours'))||
+	//$mess[$k].="\$current_group['classe']['ver_periode']['all'][$k]=".$current_group["classe"]["ver_periode"]['all'][$k]."<br />";
+	//if(((($current_group["classe"]["ver_periode"]['all'][$k] == 0)||($current_group["classe"]["ver_periode"]['all'][$k] == 1))&&($_SESSION['statut']!='secours'))||
+	if((($current_group["classe"]["ver_periode"]['all'][$k] != 3)&&($_SESSION['statut']!='secours'))||
 	(($current_group["classe"]["ver_periode"]['all'][$k]==0)&&($_SESSION['statut']=='secours'))) {
 
 		//$mess[$k].=htmlspecialchars(nl2br($app_grp[$k]));
@@ -997,7 +1003,7 @@ while ($k < $nb_periode) {
 			//$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"affiche_div_correction_groupe('$k','$cpt_correction');return false;\" alt='Proposer une correction' title='Proposer une correction'><img src='../images/edit16.png' width='16' height='16' alt='Proposer une correction' title='Proposer une correction' /></a>";
 			//$chaine_champs_textarea_correction.="<textarea name='reserve_correction_app_eleve_$cpt_correction' id='reserve_correction_app_eleve_$cpt_correction'>".$app_grp[$k]."</textarea>\n";
 			$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"affiche_div_correction_groupe('$k');return false;\" alt='Proposer une correction' title='Proposer une correction'><img src='../images/edit16.png' width='16' height='16' alt='Proposer une correction' title='Proposer une correction' /></a>";
-			$chaine_champs_textarea_correction.="<textarea name='reserve_correction_app_grp' id='reserve_correction_app_grp'>".$app_grp[$k]."</textarea>\n";
+			$chaine_champs_textarea_correction.="<textarea name='reserve_correction_app_grp_$k' id='reserve_correction_app_grp_$k'>".$app_grp[$k]."</textarea>\n";
 			$mess[$k].="</div>\n";
 
 			$cpt_correction++;
@@ -1007,7 +1013,7 @@ while ($k < $nb_periode) {
 		if(!isset($id_premier_textarea)) {$id_premier_textarea=$k.$num_id;}
 
 		$mess[$k].="<input type='hidden' name='app_grp_".$k."' value=\"".$app_grp[$k]."\" />\n";
-		$mess[$k].="<textarea id=\"n".$k.$num_id."\" class='wrap' onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_grp_".$k."\" rows='2' cols='100' onchange=\"changement()\"";
+		$mess[$k].="<textarea id=\"n".$k.$num_id."\" class='wrap' onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_grp_".$k."\" rows='2' cols='$saisie_app_nb_cols_textarea' onchange=\"changement()\"";
 		$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");document.getElementById('focus_courant').value='".$k.$num_id."';";
 		$mess[$k].="document.getElementById('div_photo_eleve').innerHTML='';";
 		$mess[$k].="\"";
@@ -1114,7 +1120,6 @@ foreach ($liste_eleves as $eleve_login) {
 					$titre="$eleve_nom $eleve_prenom";
 
 					$texte="<div align='center'>\n";
-					//$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$eleve_nom $eleve_prenom\" />";
 					$texte.="<img src='".$photo."' width='150' alt=\"$eleve_nom $eleve_prenom\" />";
 					$texte.="<br />\n";
 					$texte.="</div>\n";
@@ -1363,7 +1368,7 @@ foreach ($liste_eleves as $eleve_login) {
 
 				$chaine_champs_input_login.="<input type='hidden' name='login_eleve_".$k."[$i]' id='login_eleve_".$k.$num_id."' value=\"".$eleve_login_t[$k]."\" />\n";
 
-				$mess[$k].="<textarea id=\"n".$k.$num_id."\" class='wrap' onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows='2' cols='100' onchange=\"changement();";
+				$mess[$k].="<textarea id=\"n".$k.$num_id."\" class='wrap' onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows='2' cols='$saisie_app_nb_cols_textarea' onchange=\"changement();";
 				$mess[$k].="ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');";
 				$mess[$k].="ajaxVerifAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');";
 				$chaine_test_vocabulaire.="ajaxVerifAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\n";
@@ -1375,6 +1380,7 @@ foreach ($liste_eleves as $eleve_login) {
 				// MODIF: boireaus 20080520
 				//$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");\"";
 				$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");document.getElementById('focus_courant').value='".$k.$num_id."';";
+				$mess[$k].="repositionner_commtype(); afficher_positionner_div_notes('notes_".$eleve_login."_".$k."');";
 				//================================================
 				if(getSettingValue("gepi_pmv")!="n"){
 					$sql="SELECT elenoet FROM eleves WHERE login='".$eleve_login."';";
@@ -1500,20 +1506,6 @@ foreach ($liste_eleves as $eleve_login) {
 		}
 		//==========================
 
-		/*
-
-			$titre=$v_eleve_nom_prenom1;
-			$texte="<div align='center'>\n";
-			$photo=nom_photo($v_elenoet1);
-			if("$photo"!=""){
-				$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$v_eleve_nom_prenom1\" />";
-				$texte.="<br />\n";
-			}
-			$texte.="</div>\n";
-
-			$tabdiv_infobulle[]=creer_div_infobulle('info_popup_eleve1',$titre,"",$texte,"",14,0,'y','y','n','n')
-		*/
-
 		echo "</div></th>\n";
 		echo "</tr>\n";
 
@@ -1526,16 +1518,6 @@ foreach ($liste_eleves as $eleve_login) {
 		$k=1;
 		$alt=1;
 		while ($k < $nb_periode) {
-
-			/*
-			$current_id_classe="";
-			$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$eleve_login' AND periode='$k';";
-			$res_classe=mysql_query($sql);
-			if(mysql_num_rows($res_classe)>0) {
-				$lig_classe=mysql_fetch_object($res_classe);
-				$current_id_classe=$lig_classe->id_classe;
-			}
-			*/
 
 			$alt=$alt*(-1);
 			if ($current_group["classe"]["ver_periode"]["all"][$k] == 0) {
@@ -1625,7 +1607,115 @@ echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 
 
 
-echo "<script type='text/javascript'>\n";
+echo "<script type='text/javascript'>
+
+	function repositionner_commtype() {
+		if(document.getElementById('div_commtype')) {
+			if(document.getElementById('div_commtype').style.display!='none') {
+				x=document.getElementById('div_commtype').style.left;
+				afficher_div('div_commtype','y',20,20);
+				document.getElementById('div_commtype').style.left=x;
+			}
+		}
+	}
+
+	function afficher_positionner_div_notes(id_div_notes) {
+		if(document.getElementById(id_div_notes)) {
+			div_note_aff='n';
+
+			tab_div=document.getElementsByTagName('div');
+			for(i=0;i<tab_div.length;i++) {
+				tmp_div=tab_div[i];
+				tmp_id=tmp_div.getAttribute('id');
+				if(tmp_id) {
+					if((tmp_id.substr(0,6)=='notes_')&&(tmp_id.substr(tmp_id.length-14,14)!='_contenu_corps')) {
+						if(tmp_div.style.display!='none') {
+							div_note_aff='y';
+							//alert(tmp_id);
+							break;
+						}
+					}
+				}
+			}
+
+			if(div_note_aff=='y') {
+				afficher_div(id_div_notes,'y',20,20);
+			}
+		}
+	}
+
+	function signaler_une_faute(eleve_login, id_eleve, id_groupe, liste_profs_du_groupe, num_periode) {
+
+		info_eleve=eleve_login;
+		if(document.getElementById('nom_prenom_eleve_'+id_eleve)) {
+			info_eleve=document.getElementById('nom_prenom_eleve_'+id_eleve).value;
+		}
+
+		document.getElementById('titre_entete_signaler_faute').innerHTML='Signaler un problème/faute pour '+info_eleve+' période '+num_periode;
+
+		document.getElementById('signalement_login_eleve').value=eleve_login;
+		document.getElementById('signalement_id_groupe').value=id_groupe;
+
+		document.getElementById('signalement_id_eleve').value=id_eleve;
+		document.getElementById('signalement_num_periode').value=num_periode;
+
+		info_groupe=''
+		if(document.getElementById('signalement_id_groupe_'+id_groupe)) {
+			info_groupe=document.getElementById('signalement_id_groupe_'+id_groupe).value;
+		}
+
+		message='Bonjour,\\n\\nL\'appréciation de l\'élève '+info_eleve+' sur l\'enseignement n°'+id_groupe+' ('+info_groupe+') en période n°'+num_periode+' présente un problème ou une faute:\\n';
+		message=message+'================================\\n';
+		// Le champ textarea n'existe que si une appréciation a été enregistrée
+		if(document.getElementById('appreciation_'+id_eleve+'_'+id_groupe+'_'+num_periode)) {
+			//message=message+addslashes(document.getElementById('appreciation_'+id_eleve+'_'+id_groupe+'_'+num_periode).innerHTML);
+			message=message+document.getElementById('appreciation_'+id_eleve+'_'+id_groupe+'_'+num_periode).innerHTML;
+		}
+		//alert('document.getElementById(\'appreciation_'+id_eleve+'_'+id_groupe+'_'+num_periode+').innerHTML');
+		message=message+'\\n================================\\n\\nCordialement\\n-- \\n".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom']."'
+
+
+		//alert('message='+message);
+
+		document.getElementById('div_signalement_message').innerHTML='<textarea name=\'signalement_message\' id=\'signalement_message\' cols=\'50\' rows=\'11\'></textarea>';
+
+		document.getElementById('signalement_message').innerHTML=message;
+		//afficher_div('div_signaler_faute','n',0,0);
+		afficher_div('div_signaler_faute','n',0,-50);
+		//afficher_div('div_signaler_faute','y',100,100);
+	}
+
+	function valider_signalement_faute() {
+		signalement_id_groupe=document.getElementById('signalement_id_groupe').value;
+		signalement_login_eleve=document.getElementById('signalement_login_eleve').value;
+
+		//signalement_message=escape(document.getElementById('signalement_message').value);
+		signalement_message=document.getElementById('signalement_message').value;
+
+		//signalement_message=encodeURIComponent(document.getElementById('signalement_message').value);
+
+		signalement_id_eleve=document.getElementById('signalement_id_eleve').value;
+		signalement_num_periode=document.getElementById('signalement_num_periode').value;
+		signalement_id_classe=document.getElementById('signalement_id_classe').value;
+
+		//alert(signalement_message);
+
+		//new Ajax.Updater($('signalement_effectue_'+signalement_id_eleve+'_'+signalement_id_groupe+'_'+signalement_num_periode),'../lib/ajax_signaler_faute.php?signalement_login_eleve='+signalement_login_eleve+'&signalement_id_groupe='+signalement_id_groupe+'&signalement_id_classe='+signalement_id_classe+'&signalement_num_periode='+signalement_num_periode+'&signalement_message='+signalement_message+'".add_token_in_url(false)."',{method: 'get'});
+
+		new Ajax.Updater($('signalement_effectue_'+signalement_id_eleve+'_'+signalement_id_groupe+'_'+signalement_num_periode),'../lib/ajax_signaler_faute.php?a=a&".add_token_in_url(false)."',{method: 'post',
+		parameters: {
+			signalement_login_eleve: signalement_login_eleve,
+			signalement_id_groupe: signalement_id_groupe,
+			signalement_id_classe: signalement_id_classe,
+			signalement_num_periode: signalement_num_periode,
+			no_anti_inject_signalement_message: signalement_message,
+		}});
+
+		cacher_div('div_signaler_faute');
+		//document.getElementById('signalement_message').innerHTML='';
+
+	}
+\n";
 
 if((isset($chaine_test_vocabulaire))&&($chaine_test_vocabulaire!="")) {
 	echo $chaine_test_vocabulaire;
@@ -1735,7 +1825,7 @@ function affiche_div_correction_groupe(num_periode) {
 	document.getElementById('span_correction_periode2').innerHTML=num_periode;
 
 	//document.getElementById('correction_app_groupe').value=document.getElementById('reserve_correction_app_eleve_'+num_eleve).value;
-	document.getElementById('correction_app_groupe').value=document.getElementById('reserve_correction_app_grp').value;
+	document.getElementById('correction_app_groupe').value=document.getElementById('reserve_correction_app_grp_'+num_periode).value;
 
 	afficher_div('div_correction_grp','y',-100,20)
 

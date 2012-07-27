@@ -45,21 +45,8 @@ class Eleve extends BaseEleve {
 	 * @var        PeriodeNote object.
 	 */
 	protected $periodeNoteOuverte;
-    /**
-	 * @var        timestamp de lancement du débug
-	 */
-    private $timestamp_start=null;
-    /**
-	 * @var        mode de debuggage pour abs2
-	 */
-    private $debug=false;
      
 
-    function __construct() {
-        parent::__construct();
-        $this->timestamp_start=microtime(true);
-    }
-    
     // ERREUR ?? Il ne peut y avoir qu'une seule classe pour un élève pour une période !!
 	/**
 	 *
@@ -946,6 +933,7 @@ class Eleve extends BaseEleve {
 	    return $result;
 	}
 	
+	
 	/**
 	 * Renvoie le nom de la photo de l'élève
 	 * Renvoie NULL si :
@@ -975,8 +963,8 @@ class Eleve extends BaseEleve {
 		
 		$photo = null;
 		// on vérifie si la photo existe
-		if(file_exists($chemin."../photos/".$repertoire2."eleves/".$_elenoet_ou_login.".jpg")) {
-			$photo=$chemin."../photos/".$repertoire2."eleves/".$_elenoet_ou_login.".jpg";
+		if(file_exists($chemin."../photos/".$repertoire2."eleves/".encode_nom_photo($_elenoet_ou_login).".jpg")) {
+			$photo=$chemin."../photos/".$repertoire2."eleves/".encode_nom_photo($_elenoet_ou_login).".jpg";
 		}
 		else if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y')
 		{
@@ -988,17 +976,16 @@ class Eleve extends BaseEleve {
 			$_elenoet_ou_login = mysql_result($query, 0,'login');
 		  }
 
-		  if(file_exists($chemin."../photos/".$repertoire2."eleves/$_elenoet_ou_login.jpg")) {
-				$photo=$chemin."../photos/".$repertoire2."eleves/$_elenoet_ou_login.jpg";
+		  if(file_exists($chemin."../photos/".$repertoire2."eleves/".encode_nom_photo($_elenoet_ou_login).".jpg")) {
+				$photo=$chemin."../photos/".$repertoire2."eleves/".encode_nom_photo($_elenoet_ou_login).".jpg";
 			}
 			else {
-				if(file_exists($chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg")) {
-					$photo=$chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg";
+				if(file_exists($chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",encode_nom_photo($_elenoet_ou_login)).".jpg")) {
+					$photo=$chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",encode_nom_photo($_elenoet_ou_login)).".jpg";
 				} else {
 					for($i=0;$i<5;$i++){
-						if(mb_substr($_elenoet_ou_login,$i,1)=="0"){
-							$test_photo=mb_substr($_elenoet_ou_login,$i+1);
-							//if(file_exists($chemin."../photos/eleves/".$test_photo.".jpg")){
+						if(mb_substr(encode_nom_photo($_elenoet_ou_login),$i,1)=="0"){
+							$test_photo=mb_substr(encode_nom_photo($_elenoet_ou_login),$i+1);
 							if(($test_photo!='')&&(file_exists($chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg"))) {
 								$photo=$chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg";
 								break;
@@ -1123,24 +1110,22 @@ class Eleve extends BaseEleve {
 	        }
     		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence()) {
     		    $contra = false;
-    		    if (getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y') {
-    			//on va vérifier si il n'y a pas une saisie contradictoire simultanée
-    			foreach ($abs_saisie_col_2 as $saisie_contra) {
-        	        if ($saisie_contra->getEleveId() != $this->getId()) {
-        	            continue;
-        	        }
-    			    if ($saisie_contra->getId() != $saisie->getId()
-    				    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
-    				    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
-    				    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()
-    				    //si c'est une saisie specifiquement a non precise c'est du type erreur de saisie on ne la prend pas en compte
-    				    && ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence())) {
-    				$contra = true;
-    				break;
-    			    }
-    			}
-    		    }
-    		    if (!$contra) {
+                    //on va vérifier si il n'y a pas une saisie contradictoire simultanée
+                    foreach ($abs_saisie_col_2 as $saisie_contra) {
+                    if ($saisie_contra->getEleveId() != $this->getId()) {
+                        continue;
+                    }
+                        if ($saisie_contra->getId() != $saisie->getId()
+                                && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
+                                && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
+                                && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()
+                                //si c'est une saisie specifiquement a non precise c'est du type erreur de saisie on ne la prend pas en compte
+                                && ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence())) {
+                            $contra = true;
+                            break;
+                        }
+                    }
+                    if (!$contra) {
     			$abs_saisie_col_filtre->append($saisie);
     		    }
     		}
@@ -1357,15 +1342,9 @@ class Eleve extends BaseEleve {
 					    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
 					    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
 					    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()) {
-					    	if ($saisie_contra->getManquementObligationPresence() && !$saisie_contra->getRetard()) {
-					    		//on a une saisie plus large qui est aussi un manquement à l'obligation de présence, donc on ne compte pas celle qui est englobée
+                                                                //on a une saisie plus large
 								$contra = true;
 								break;
-					    	} else if (getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y') {
-					    		//on a une saisie plus large qui est comptée comme présente, donc on ne compte pas celle la qui est englobée
-								$contra = true;
-								break;
-					    	}
 					}
 			    }
 			    if (!$contra) {
@@ -1664,16 +1643,6 @@ class Eleve extends BaseEleve {
 	    }
 	}
 
-    /**
-	 *
-	 * Affiche la durée d'execution pour le debug * 
-	 * 
-	 */
-    private function affiche_duree(){
-        $timestamp = microtime(true);
-        print_r('Temps d\'execution depuis le lancement : '.($timestamp - $this->timestamp_start).'<br />');        
-    }
-
 	/**
 	 *
 	 * Mets à jour la table d'agrégation des absences pour cet élève
@@ -1685,27 +1654,15 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function checkSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
-        if ($this->debug) {
-            if(is_null($this->timestamp_start)){
-                $this->timestamp_start = microtime(true);
-            }
-			print_r('<br/>Vérification pour l eleve '.$this->getId().'<br/>');
-		}
 		$dateDebutClone = null;
 		$dateFinClone = null;
 		
 		//on initialise les date clone qui seront manipulés dans l'algoritme, c'est nécessaire pour ne pas modifier les date passée en paramêtre.
 		if ($dateDebut != null) {
-			if ($this->debug) {
-				print_r('Date début '.$dateDebut->format('Y-m-d H:i').'<br/>');
-			}
 			$dateDebutClone = clone $dateDebut;
 			$dateDebutClone->setTime(0,0);
 		}
 		if ($dateFin != null) {
-			if ($this->debug) {
-				print_r('Date fin '.$dateFin->format('Y-m-d H:i').'<br/>');
-			}
 			$dateFinClone = clone $dateFin;
 			$dateFinClone->setTime(23,59);
 		}
@@ -1735,7 +1692,7 @@ class Eleve extends BaseEleve {
 		$query = 'select ELEVE_ID is not null as marqueur_calcul, union_date, updated_at, count_demi_jounee, now() as now
 		
 		FROM
-			(SELECT  a_agregation_decompte.ELEVE_ID from  a_agregation_decompte WHERE a_agregation_decompte.ELEVE_ID='.$this->getId().' AND a_agregation_decompte.DATE_DEMI_JOUNEE IS NULL
+			(SELECT  a_agregation_decompte.ELEVE_ID from  a_agregation_decompte WHERE a_agregation_decompte.ELEVE_ID='.$this->getId().' AND a_agregation_decompte.DATE_DEMI_JOUNEE =\'0001-01-01 00:00:00\'
 			) as a_agregation_decompte_null_select
 			
 		LEFT JOIN (
@@ -1759,65 +1716,31 @@ class Eleve extends BaseEleve {
 			
 		$result_query = mysql_query($query);
 		if ($result_query === false) {
-			if ($this->debug) {
-				echo $query;
-                $this->affiche_duree();
-			}
 			echo 'Erreur sur la requete : '.mysql_error().'<br/>';
 			return false;
 		}
 		$row = mysql_fetch_array($result_query, MYSQL_ASSOC);
-		if ($this->debug) {
-			print_r($row);
-			print_r('<br/>');
-		}
 		mysql_free_result($result_query);
 		if (!$row['marqueur_calcul']) {//si il n'y a pas le marqueur de calcul fini, on retourne faux
-			if ($this->debug) {
-				print_r('faux : Pas de marqueur de fin de calcul<br/>');
-                $this->affiche_duree();
-			}
 			return false;
 		} else if ($row['updated_at'] && $row['updated_at']  > $row['now']) {
-			if ($this->debug) {
-				print_r('faux : Date de mise a jour des agregation ne peut pas etre dans le futur<br/>');
-			}
 			return false;
 		} else if ($row['union_date'] && $row['union_date']  > $row['now']) {
-			if ($this->debug) {
-				print_r('faux : Date de mise a jour des saisie ou traitements ne peut pas etre dans le futur<br/>');
-			}
 			return false;
 		} else if ($row['union_date'] && (!$row['updated_at'] || $row['union_date'] > $row['updated_at'])){//si on a pas de updated_at dans la table d'agrégation, ou si la date de mise à jour des saisies est postérieure à updated_at ou 
-			if ($this->debug) {
-				print_r('faux : Date de mise a jour des agregations antérieure aux dates de saisies<br/>');
-                $this->affiche_duree();
-			}
-            
 			return false;
 		} else if ($dateDebutClone == null || $dateFinClone == null){
-            if ($this->debug) {
-                $this->affiche_duree();
-                }        
 			return true;//on ne vérifie pas le nombre d'entrée car les dates ne sont pas précisée
 		} else {
 			$nbre_demi_journees=(int)(($dateFinClone->format('U')+3600*6-$dateDebutClone->format('U'))/(3600*12)); // on compte les tranches de 12h
-            //on ajoute une heure à la date de fin pour dépasser 23:59:59 et bien dépasser la tranche de 00:00
-            //si on a un debut à 00:00 et une fin la même journée à 23:59, en ajoutant une heure à la fin on a largement deux tranches de 12h completes
-            //donc bien deux demi journées de décomptées
-            if ($row['count_demi_jounee'] == $nbre_demi_journees) {
-                if ($this->debug) {
-                $this->affiche_duree();
-                } 
-				return true;
-            } else {
-            	if ($this->debug) {
-	            	print_r('faux : $nbre_demi_journees dans la table : '.$row['count_demi_jounee'].'<br/>');
-	            	print_r('$nbre_demi_journees calculé : '.$nbre_demi_journees.'<br/>');
-                    $this->affiche_duree();
-                    }
-            	return false;
-            }
+                        //on ajoute une heure à la date de fin pour dépasser 23:59:59 et bien dépasser la tranche de 00:00
+                        //si on a un debut à 00:00 et une fin la même journée à 23:59, en ajoutant une heure à la fin on a largement deux tranches de 12h completes
+                        //donc bien deux demi journées de décomptées
+                        if ($row['count_demi_jounee'] == $nbre_demi_journees) {
+                                            return true;
+                        } else {
+                            return false;
+                        }
 		}
 	}
 	
@@ -1835,9 +1758,6 @@ class Eleve extends BaseEleve {
                 $now = new DateTime();
 		$dateDebutClone = null;
 		$dateFinClone = null;
-        if($this->debug){
-            print_r('Début de la mise à jour pour la saisie entre les dates :<br />');
-        }
         
 		if ($dateDebut != null && $dateFin != null && $dateDebut->format('U') > $dateFin->format('U')) {
 			throw new PropelException('Erreur: la date de debut ne peut être postérieure à la date de fin');
@@ -1858,16 +1778,10 @@ class Eleve extends BaseEleve {
 		if ($dateDebut != null) {
 			$dateDebutClone = clone $dateDebut;
 			$dateDebutClone->setTime(0,0);
-	        if($this->debug){
-	            print_r('Date Début '.$dateDebutClone->format('Y-m-d H:i').' à ');
-	        }
 		}
 		if ($dateFin != null) {
 			$dateFinClone = clone $dateFin;
 			$dateFinClone->setTime(23,59);
-	        if($this->debug){
-	            print_r('Date fin '.$dateFinClone->format('Y-m-d H:i').'<br/>');
-	        }
 		}
 		
 		
@@ -1881,10 +1795,10 @@ class Eleve extends BaseEleve {
 		}
 		$queryDelete->delete();
 		
-		//on supprime le marqueur qui certifie que le calcul pour cet eleve a été terminé correctement
-		AbsenceAgregationDecompteQuery::create()->filterByEleve($this)->filterByDateDemiJounee(null)->_or()->filterByDateDemiJounee('0000-00-00 00:00:00')->delete();
+                //on supprime le marqueur qui certifie que le calcul pour cet eleve a été terminé correctement
+		AbsenceAgregationDecompteQuery::create()->filterByEleve($this)->filterByMarqueurFinMiseAJour()->delete();
 		
-		$DMabsenceNonJustifiesCol = $this->getDemiJourneesNonJustifieesAbsence($dateDebutClone,$dateFinClone);
+                $DMabsenceNonJustifiesCol = $this->getDemiJourneesNonJustifieesAbsence($dateDebutClone,$dateFinClone);
 		$DMabsencesCol			= $this->getDemiJourneesAbsence($dateDebutClone,$dateFinClone);
 		$retards				= $this->getRetards($dateDebutClone,$dateFinClone);
 		$saisiesCol				= clone $this->getAbsColDecompteDemiJournee($dateDebutClone, $dateFinClone);//cette collection de saisie va nous permettre de récupérer les notifications et les motifs
@@ -2018,12 +1932,8 @@ class Eleve extends BaseEleve {
 		//on enregistre le marqueur qui certifie que le calcul pour cet eleve a été terminé correctement
 		$newAgregation = new AbsenceAgregationDecompte();
 		$newAgregation->setEleve($this);
-		$newAgregation->setDateDemiJounee(null);
+		$newAgregation->setDateDemiJounee('0001-01-01 00:00:00');
 		$newAgregation->save();
-        if($this->debug){
-            print_r('Fin de la mise à jour :');
-            $this->affiche_duree();
-        }        
 	}
 	
 	/**
@@ -2138,5 +2048,22 @@ class Eleve extends BaseEleve {
                 $this->updateAbsenceAgregationTable();
 	}
     
+	/**
+	 * Gets a single EleveRegimeDoublant object, which is related to this object by a one-to-one relationship.
+         * Override because of a bug.
+	 *
+	 * @param      PropelPDO $con optional connection object
+	 * @return     EleveRegimeDoublant
+	 * @throws     PropelException
+	 */
+	public function getEleveRegimeDoublant(PropelPDO $con = null)
+	{
+
+		if ($this->singleEleveRegimeDoublant === null && !$this->isNew()) {
+			$this->singleEleveRegimeDoublant = EleveRegimeDoublantQuery::create()->findPk($this->getLogin(), $con);
+		}
+
+		return $this->singleEleveRegimeDoublant;
+	}
 	
 } // Eleve

@@ -65,6 +65,15 @@ $onglet=isset($_POST['onglet']) ? $_POST['onglet'] : (isset($_GET['onglet']) ? $
 $onglet2=isset($_POST['onglet2']) ? $_POST['onglet2'] : (isset($_GET['onglet2']) ? $_GET['onglet2'] : NULL);
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 
+$quitter_la_page=isset($_POST['quitter_la_page']) ? $_POST['quitter_la_page'] : (isset($_GET['quitter_la_page']) ? $_GET['quitter_la_page'] : NULL);
+if((isset($quitter_la_page))&&($quitter_la_page=='y')) {
+	$chaine_quitter_page_ou_non="&amp;quitter_la_page=y";
+	$champ_quitter_page_ou_non="<input type='hidden' name='quitter_la_page' value='y' />\n";
+}
+else {
+	$chaine_quitter_page_ou_non="";
+	$champ_quitter_page_ou_non="";
+}
 
 $annee = strftime("%Y");
 $mois = strftime("%m");
@@ -76,7 +85,7 @@ $date_debut_disc=isset($_POST['date_debut_disc']) ? $_POST['date_debut_disc'] : 
 $date_fin_disc=isset($_POST['date_fin_disc']) ? $_POST['date_fin_disc'] : (isset($_SESSION['date_fin_disc']) ? $_SESSION['date_fin_disc'] : "$jour/$mois/$annee");
 
 // ===================== entete Gepi ======================================//
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 // ===================== fin entete =======================================//
 
 $page="visu_eleve.php";

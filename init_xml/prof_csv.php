@@ -3,7 +3,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -48,7 +48,7 @@ $liste_tables_del = $liste_tables_del_etape_professeurs;
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation des matières";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 ?>
@@ -345,6 +345,10 @@ if (!isset($is_posted)) {
 								}
 								else {
 									$temp1=generate_unique_login($affiche[0], $affiche[1], $_POST['login_gen_type'], $_POST['login_gen_type_casse']);
+								}
+
+								if((!$temp1)||($temp1=="")) {
+									$temp1="erreur_";
 								}
 
 								$login_prof = $temp1;

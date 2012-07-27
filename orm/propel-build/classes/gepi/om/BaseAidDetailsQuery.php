@@ -137,7 +137,7 @@
  */
 abstract class BaseAidDetailsQuery extends ModelCriteria
 {
-
+	
 	/**
 	 * Initializes internal state of BaseAidDetailsQuery object.
 	 *
@@ -174,11 +174,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	}
 
 	/**
-	 * Find object by primary key
-	 * Use instance pooling to avoid a database query if the object exists
+	 * Find object by primary key.
+	 * Propel uses the instance pool to skip the database if the object exists.
+	 * Go fast if the query is untouched.
+	 *
 	 * <code>
 	 * $obj  = $c->findPk(12, $con);
 	 * </code>
+	 *
 	 * @param     mixed $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
@@ -186,17 +189,73 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ((null !== ($obj = AidDetailsPeer::getInstanceFromPool((string) $key))) && $this->getFormatter()->isObjectFormatter()) {
+		if ($key === null) {
+			return null;
+		}
+		if ((null !== ($obj = AidDetailsPeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
 			// the object is alredy in the instance pool
 			return $obj;
-		} else {
-			// the object has not been requested yet, or the formatter is not an object formatter
-			$criteria = $this->isKeepQuery() ? clone $this : $this;
-			$stmt = $criteria
-				->filterByPrimaryKey($key)
-				->getSelectStatement($con);
-			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
+		if ($con === null) {
+			$con = Propel::getConnection(AidDetailsPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
+		if ($this->formatter || $this->modelAlias || $this->with || $this->select
+		 || $this->selectColumns || $this->asColumns || $this->selectModifiers
+		 || $this->map || $this->having || $this->joins) {
+			return $this->findPkComplex($key, $con);
+		} else {
+			return $this->findPkSimple($key, $con);
+		}
+	}
+
+	/**
+	 * Find object by primary key using raw SQL to go fast.
+	 * Bypass doSelect() and the object formatter by using generated code.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    AidDetails A model object, or null if the key is not found
+	 */
+	protected function findPkSimple($key, $con)
+	{
+		$sql = 'SELECT ID, NOM, NUMERO, INDICE_AID, PERSO1, PERSO2, PERSO3, PRODUCTIONS, RESUME, FAMILLE, MOTS_CLES, ADRESSE1, ADRESSE2, PUBLIC_DESTINATAIRE, CONTACTS, DIVERS, MATIERE1, MATIERE2, ELEVE_PEUT_MODIFIER, PROF_PEUT_MODIFIER, CPE_PEUT_MODIFIER, FICHE_PUBLIQUE, AFFICHE_ADRESSE1, EN_CONSTRUCTION FROM aid WHERE ID = :p0';
+		try {
+			$stmt = $con->prepare($sql);
+			$stmt->bindValue(':p0', $key, PDO::PARAM_STR);
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), $e);
+		}
+		$obj = null;
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$obj = new AidDetails();
+			$obj->hydrate($row);
+			AidDetailsPeer::addInstanceToPool($obj, (string) $key);
+		}
+		$stmt->closeCursor();
+
+		return $obj;
+	}
+
+	/**
+	 * Find object by primary key.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    AidDetails|array|mixed the result, formatted by the current formatter
+	 */
+	protected function findPkComplex($key, $con)
+	{
+		// As the query uses a PK condition, no limit(1) is necessary.
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
+		$stmt = $criteria
+			->filterByPrimaryKey($key)
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 	}
 
 	/**
@@ -211,10 +270,15 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{
+		if ($con === null) {
+			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		return $this
+		$stmt = $criteria
 			->filterByPrimaryKeys($keys)
-			->find($con);
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->format($stmt);
 	}
 
 	/**
@@ -243,7 +307,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterById('fooValue');   // WHERE id = 'fooValue'
@@ -271,7 +335,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the nom column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNom('fooValue');   // WHERE nom = 'fooValue'
@@ -299,7 +363,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the numero column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNumero('fooValue');   // WHERE numero = 'fooValue'
@@ -327,7 +391,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the indice_aid column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIndiceAid(1234); // WHERE indice_aid = 1234
@@ -369,7 +433,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the perso1 column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByPerso1('fooValue');   // WHERE perso1 = 'fooValue'
@@ -397,7 +461,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the perso2 column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByPerso2('fooValue');   // WHERE perso2 = 'fooValue'
@@ -425,7 +489,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the perso3 column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByPerso3('fooValue');   // WHERE perso3 = 'fooValue'
@@ -453,7 +517,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the productions column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByProductions('fooValue');   // WHERE productions = 'fooValue'
@@ -481,7 +545,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the resume column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByResume('fooValue');   // WHERE resume = 'fooValue'
@@ -509,7 +573,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the famille column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByFamille(1234); // WHERE famille = 1234
@@ -549,7 +613,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the mots_cles column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByMotsCles('fooValue');   // WHERE mots_cles = 'fooValue'
@@ -577,7 +641,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the adresse1 column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAdresse1('fooValue');   // WHERE adresse1 = 'fooValue'
@@ -605,7 +669,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the adresse2 column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAdresse2('fooValue');   // WHERE adresse2 = 'fooValue'
@@ -633,7 +697,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the public_destinataire column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByPublicDestinataire('fooValue');   // WHERE public_destinataire = 'fooValue'
@@ -661,7 +725,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the contacts column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByContacts('fooValue');   // WHERE contacts = 'fooValue'
@@ -689,7 +753,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the divers column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByDivers('fooValue');   // WHERE divers = 'fooValue'
@@ -717,7 +781,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the matiere1 column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByMatiere1('fooValue');   // WHERE matiere1 = 'fooValue'
@@ -745,7 +809,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the matiere2 column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByMatiere2('fooValue');   // WHERE matiere2 = 'fooValue'
@@ -773,7 +837,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the eleve_peut_modifier column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByElevePeutModifier('fooValue');   // WHERE eleve_peut_modifier = 'fooValue'
@@ -801,7 +865,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the prof_peut_modifier column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByProfPeutModifier('fooValue');   // WHERE prof_peut_modifier = 'fooValue'
@@ -829,7 +893,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the cpe_peut_modifier column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCpePeutModifier('fooValue');   // WHERE cpe_peut_modifier = 'fooValue'
@@ -857,7 +921,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the fiche_publique column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByFichePublique('fooValue');   // WHERE fiche_publique = 'fooValue'
@@ -885,7 +949,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the affiche_adresse1 column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAfficheAdresse1('fooValue');   // WHERE affiche_adresse1 = 'fooValue'
@@ -913,7 +977,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the en_construction column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEnConstruction('fooValue');   // WHERE en_construction = 'fooValue'
@@ -965,7 +1029,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the AidConfiguration relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -975,7 +1039,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AidConfiguration');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -983,7 +1047,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -991,7 +1055,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'AidConfiguration');
 		}
-		
+
 		return $this;
 	}
 
@@ -999,7 +1063,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	 * Use the AidConfiguration relation AidConfiguration object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1029,7 +1093,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 		} elseif ($jAidUtilisateursProfessionnels instanceof PropelCollection) {
 			return $this
 				->useJAidUtilisateursProfessionnelsQuery()
-					->filterByPrimaryKeys($jAidUtilisateursProfessionnels->getPrimaryKeys())
+				->filterByPrimaryKeys($jAidUtilisateursProfessionnels->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByJAidUtilisateursProfessionnels() only accepts arguments of type JAidUtilisateursProfessionnels or PropelCollection');
@@ -1038,7 +1102,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the JAidUtilisateursProfessionnels relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1048,7 +1112,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JAidUtilisateursProfessionnels');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1056,7 +1120,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1064,7 +1128,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'JAidUtilisateursProfessionnels');
 		}
-		
+
 		return $this;
 	}
 
@@ -1072,7 +1136,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	 * Use the JAidUtilisateursProfessionnels relation JAidUtilisateursProfessionnels object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1102,7 +1166,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 		} elseif ($jAidEleves instanceof PropelCollection) {
 			return $this
 				->useJAidElevesQuery()
-					->filterByPrimaryKeys($jAidEleves->getPrimaryKeys())
+				->filterByPrimaryKeys($jAidEleves->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByJAidEleves() only accepts arguments of type JAidEleves or PropelCollection');
@@ -1111,7 +1175,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the JAidEleves relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1121,7 +1185,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JAidEleves');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1129,7 +1193,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1137,7 +1201,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'JAidEleves');
 		}
-		
+
 		return $this;
 	}
 
@@ -1145,7 +1209,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	 * Use the JAidEleves relation JAidEleves object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1175,7 +1239,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 		} elseif ($absenceEleveSaisie instanceof PropelCollection) {
 			return $this
 				->useAbsenceEleveSaisieQuery()
-					->filterByPrimaryKeys($absenceEleveSaisie->getPrimaryKeys())
+				->filterByPrimaryKeys($absenceEleveSaisie->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByAbsenceEleveSaisie() only accepts arguments of type AbsenceEleveSaisie or PropelCollection');
@@ -1184,7 +1248,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the AbsenceEleveSaisie relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1194,7 +1258,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveSaisie');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1202,7 +1266,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1210,7 +1274,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'AbsenceEleveSaisie');
 		}
-		
+
 		return $this;
 	}
 
@@ -1218,7 +1282,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	 * Use the AbsenceEleveSaisie relation AbsenceEleveSaisie object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1248,7 +1312,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 		} elseif ($edtEmplacementCours instanceof PropelCollection) {
 			return $this
 				->useEdtEmplacementCoursQuery()
-					->filterByPrimaryKeys($edtEmplacementCours->getPrimaryKeys())
+				->filterByPrimaryKeys($edtEmplacementCours->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByEdtEmplacementCours() only accepts arguments of type EdtEmplacementCours or PropelCollection');
@@ -1257,7 +1321,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the EdtEmplacementCours relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1267,7 +1331,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('EdtEmplacementCours');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1275,7 +1339,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1283,7 +1347,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'EdtEmplacementCours');
 		}
-		
+
 		return $this;
 	}
 
@@ -1291,7 +1355,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	 * Use the EdtEmplacementCours relation EdtEmplacementCours object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1318,10 +1382,10 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	{
 		return $this
 			->useJAidUtilisateursProfessionnelsQuery()
-				->filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison)
+			->filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison)
 			->endUse();
 	}
-	
+
 	/**
 	 * Filter the query by a related Eleve object
 	 * using the j_aid_eleves table as cross reference
@@ -1335,10 +1399,10 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	{
 		return $this
 			->useJAidElevesQuery()
-				->filterByEleve($eleve, $comparison)
+			->filterByEleve($eleve, $comparison)
 			->endUse();
 	}
-	
+
 	/**
 	 * Exclude object from result
 	 *
@@ -1350,8 +1414,8 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	{
 		if ($aidDetails) {
 			$this->addUsingAlias(AidDetailsPeer::ID, $aidDetails->getId(), Criteria::NOT_EQUAL);
-	  }
-	  
+		}
+
 		return $this;
 	}
 

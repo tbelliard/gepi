@@ -160,7 +160,7 @@ if (isset($_POST['ok'])) {
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
 $titre_page = "Verrouillage et déverrouillage des périodes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 //debug_var();
 ?>

@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -40,6 +40,11 @@ if ($resultat_session == 'c') {
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
+}
+
+$eff_tranche_recherche_diff=isset($_POST['eff_tranche_recherche_diff']) ? $_POST['eff_tranche_recherche_diff'] : getSettingValue('maj_sconet_eff_tranche');
+if(($eff_tranche_recherche_diff=='')||(!is_numeric($eff_tranche_recherche_diff))||($eff_tranche_recherche_diff<1)) {
+	$eff_tranche_recherche_diff=100;
 }
 
 $ele_lieu_naissance=getSettingValue("ele_lieu_naissance") ? getSettingValue("ele_lieu_naissance") : "n";
@@ -152,7 +157,7 @@ if(mysql_num_rows($res_col_eleves)>0) {
 
 //**************** EN-TETE *****************
 $titre_page = "Mise à jour eleves/responsables";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 require_once("../init_xml2/init_xml_lib.php");
@@ -310,7 +315,7 @@ if(!isset($step)) {
 
 	$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
 	if($suhosin_post_max_totalname_length!='') {
-		echo "<p class='color:red'>Le module suhosin est activé.<br />\nUn paramétrage trop restrictif de ce module peut perturber le fonctionnement de Gepi, particulièrement dans les pages comportant de nombreux champs de formulaire.<br />Cela peut empêcher le bon fonctionnement de la Mise à jour d'après Sconet.</p>\n";
+		echo "<p style='color:red'>Le module suhosin est activé.<br />\nUn paramétrage trop restrictif de ce module peut perturber le fonctionnement de Gepi, particulièrement dans les pages comportant de nombreux champs de formulaire.<br />Cela peut empêcher le bon fonctionnement de la Mise à jour d'après Sconet.</p>\n";
 	}
 
 	echo "<p>Vous allez importer des fichiers d'exports XML de Sconet.<br />\nLes fichiers requis au cours de la procédure sont dans un premier temps ElevesAvecAdresses.xml, puis le fichier ResponsablesAvecAdresses.xml</p>\n";
@@ -340,7 +345,13 @@ if(!isset($step)) {
 	}
 	else {
 		$alert_diff_mail_ele=getSettingValue('alert_diff_mail_ele');
-		echo "<p>Pour les élèves qui disposent d'un compte d'utilisateur, <br />\n";
+
+		echo "<br />\n";
+
+		echo "<p>\n";
+		echo "<strong>Adresse email&nbsp;:</strong>\n";
+		echo "<br />\n";
+		echo "Pour les élèves qui disposent d'un compte d'utilisateur, <br />\n";
 		echo "<input type='radio' name='alert_diff_mail_ele' id='alert_diff_mail_ele_y' value='y' ";
 		if($alert_diff_mail_ele=='y') {
 			echo "checked ";
@@ -358,7 +369,10 @@ if(!isset($step)) {
 	}
 
 	$alert_diff_etab_origine=getSettingValue('alert_diff_etab_origine');
+	echo "<br />\n";
 	echo "<p>\n";
+	echo "<strong>Établissement d'origine&nbsp;:</strong>\n";
+	echo "<br />\n";
 	echo "<input type='radio' name='alert_diff_etab_origine' id='alert_diff_etab_origine_y' value='y' ";
 	if($alert_diff_etab_origine=='y') {
 		echo "checked ";
@@ -374,12 +388,21 @@ if(!isset($step)) {
 	echo "<label for='alert_diff_etab_origine_n' style='cursor: pointer;'> ne pas signaler";
 	echo " les modifications d'établissement d'origine.</label></p>\n";
 
+	echo "<br />\n";
+	echo "<p>";
+	echo "<label for='id_form_stop' style='cursor: pointer;'>Parcourir les élèves par tranches de &nbsp;: </label><input type='text' name='eff_tranche_recherche_diff' id='eff_tranche_recherche_diff' value='$eff_tranche_recherche_diff' size='3' onkeydown=\"clavier_2(this.id,event,0,200);\" autocomplete='off' />\n";
+	echo "<br />\n";
+	echo "<strong>Attention&nbsp;:</strong> Ne mettez pas une valeur trop élevée; vous pourriez atteindre la limite <strong>max_execution_time</strong> de PHP.";
+	echo "</p>\n";
+
 	//==============================
 	// AJOUT pour tenir compte de l'automatisation ou non:
 	//echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+	echo "<br />\n";
 	echo "<input type='checkbox' name='stop' id='id_form_stop' value='y' /><label for='id_form_stop' style='cursor: pointer;'> Désactiver le mode automatique.</label>\n";
 	//==============================
 
+	echo "<br />\n";
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
 
@@ -3657,19 +3680,30 @@ else{
 								$login_eleve = $temp1.'_'.$temp2;
 								*/
 								$login_ele_gen_type=getSettingValue('login_ele_gen_type');
-								if($login_ele_gen_type=='') {$login_ele_gen_type='name9_p';}
-								$login_eleve=generate_unique_login($tmp_nom, $tmp_prenom, 'name9_p', 'maj');
-		
-								// On teste l'unicité du login que l'on vient de créer
-								$k = 2;
-								$test_unicite = 'no';
-								$temp = $login_eleve;
-								while ($test_unicite != 'yes') {
-									//$test_unicite = test_unique_e_login($login_eleve,$i);
-									$test_unicite = test_unique_login($login_eleve);
-									if ($test_unicite != 'yes') {
-										$login_eleve = $temp.$k;
-										$k++;
+								//if($login_ele_gen_type=='') {$login_ele_gen_type='nnnnnnnnn_p';}
+								if(!check_format_login($login_ele_gen_type)) {
+									$login_ele_gen_type='nnnnnnnnn_p';
+
+									$sql="SELECT * FROM infos_actions WHERE titre='Format des logins générés';";
+									$test_ia=mysql_query($sql);
+									if(mysql_num_rows($test_ia)==0) {
+										enregistre_infos_actions("Format des logins générés","Le format des logins générés par Gepi pour les différentes catégories d'utilisateurs doit être contrôlé et revalidé dans la page <a href='./gestion/param_gen.php#format_login_pers'>Configuration générale</a>",array("administrateur"),'statut');
+									}
+								}
+								$login_eleve=generate_unique_login($tmp_nom, $tmp_prenom, $login_ele_gen_type, 'maj');
+
+								if(($login_eleve)&&($login_eleve!='')) {
+									// On teste l'unicité du login que l'on vient de créer
+									$k = 2;
+									$test_unicite = 'no';
+									$temp = $login_eleve;
+									while ($test_unicite != 'yes') {
+										//$test_unicite = test_unique_e_login($login_eleve,$i);
+										$test_unicite = test_unique_login($login_eleve);
+										if ($test_unicite != 'yes') {
+											$login_eleve = $temp.$k;
+											$k++;
+										}
 									}
 								}
 							}

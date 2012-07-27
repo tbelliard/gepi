@@ -39,3 +39,5 @@ images/background/degrade1.png
 images/background/degrade1_small.png
 images/background/degrade1_very_small.png
 
+# Ignore Les plugins
+mod_plugins/plugin*

@@ -52,6 +52,9 @@ $msg="";
 $jour_sanction=isset($_POST['jour_sanction']) ? $_POST['jour_sanction'] : (isset($_GET['jour_sanction']) ? $_GET['jour_sanction'] : NULL);
 $details=isset($_POST['details']) ? $_POST['details'] : (isset($_GET['details']) ? $_GET['details'] : "n");
 
+$order_by_date=isset($_POST['order_by_date']) ? $_POST['order_by_date'] : (isset($_GET['order_by_date']) ? $_GET['order_by_date'] : "asc");
+if(($order_by_date!="asc")&&($order_by_date!="desc")) {$order_by_date="asc";}
+
 $form_id_sanction=isset($_POST['form_id_sanction']) ? $_POST['form_id_sanction'] : NULL;
 $sanction_effectuee=isset($_POST['sanction_effectuee']) ? $_POST['sanction_effectuee'] : array();
 if(isset($form_id_sanction)) {
@@ -75,7 +78,7 @@ if(isset($form_id_sanction)) {
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Discipline: Liste des sanctions";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();
@@ -570,8 +573,9 @@ echo "<p><br /></p>\n";
 
 //================================================================
 // Liste des sanctions en souffrance... pouvoir les reprogrammer...
+echo "<a name='retenues_en_souffrance'></a>\n";
 // Retenues
-$sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE sr.date<'$annee-$mois-$jour' AND s.effectuee!='O' AND sr.id_sanction=s.id_sanction ORDER BY sr.date, sr.heure_debut, sr.lieu, s.login;";
+$sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE sr.date<'$annee-$mois-$jour' AND s.effectuee!='O' AND sr.id_sanction=s.id_sanction ORDER BY sr.date $order_by_date, sr.heure_debut, sr.lieu, s.login;";
 //echo "$sql<br />";
 $res_sanction=mysql_query($sql);
 if(mysql_num_rows($res_sanction)>0) {
@@ -579,7 +583,10 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "<blockquote>\n";
 	echo "<table class='boireaus' border='1' summary='Retenues' style='margin:2px;'>\n";
 	echo "<tr>\n";
-	echo "<th>Date</th>\n";
+	//echo "<th>Date</th>\n";
+	echo "<th><a href='".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=$details&amp;order_by_date=";
+	if($order_by_date=='asc') {echo "desc";} else {echo "asc";}
+	echo "#retenues_en_souffrance'>Date</a></th>\n";
 	echo "<th>Heure</th>\n";
 	echo "<th>Durée</th>\n";
 	echo "<th>Lieu</th>\n";
@@ -686,7 +693,8 @@ if(mysql_num_rows($res_sanction)>0) {
 }
 
 // Simple travail
-$sql="SELECT * FROM s_sanctions s, s_travail st WHERE st.id_sanction=s.id_sanction AND st.date_retour<'$annee-$mois-$jour' AND s.effectuee!='O' ORDER BY st.date_retour;";
+echo "<a name='travaux_en_souffrance'></a>\n";
+$sql="SELECT * FROM s_sanctions s, s_travail st WHERE st.id_sanction=s.id_sanction AND st.date_retour<'$annee-$mois-$jour' AND s.effectuee!='O' ORDER BY st.date_retour $order_by_date;";
 //echo "$sql<br />\n";
 $res_sanction=mysql_query($sql);
 if(mysql_num_rows($res_sanction)>0) {
@@ -695,7 +703,10 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "<table class='boireaus' border='1' summary='Travail' style='margin:2px;'>\n";
 	echo "<tr>\n";
 	echo "<th>Elève</th>\n";
-	echo "<th>Date de retour</th>\n";
+	//echo "<th>Date de retour</th>\n";
+	echo "<th><a href='".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=$details&amp;order_by_date=";
+	if($order_by_date=='asc') {echo "desc";} else {echo "asc";}
+	echo "#travaux_en_souffrance'>Date de retour</a></th>\n";
 	echo "<th>Travail</th>\n";
 	echo "<th>Donné par (Déclarant)</th>\n";
 	echo "<th>Effectué</th>\n";

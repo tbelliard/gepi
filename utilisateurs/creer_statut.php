@@ -383,7 +383,7 @@ if ($query) {
 //======================================================
 $titre_page = 'Gestion des statuts personnalis&eacute;s';
 $style_specifique = "utilisateurs/style_statut";
-include("../lib/header.inc");
+include("../lib/header.inc.php");
 //======================================================
 
 //debug_var();

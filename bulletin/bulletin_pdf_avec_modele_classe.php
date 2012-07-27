@@ -84,7 +84,7 @@ require_once("bulletin_pdf.inc.php");
 
 $bull_formule_bas=getSettingValue("bull_formule_bas") ? getSettingValue("bull_formule_bas") : "Bulletin à conserver précieusement. Aucun duplicata ne sera délivré. - GEPI : solution libre de gestion et de suivi des résultats scolaires.";
 
-define('FPDF_FONTPATH','../fpdf/font/');
+
 define('TopMargin','5');
 define('RightMargin','2');
 define('LeftMargin','2');
@@ -672,11 +672,9 @@ if(!empty($model_bulletin)) {
 		$classe_nomlong[$cpt_i] = $donner['nom_complet'];
 		$classe_nomcour[$cpt_i] = $donner['classe'];
 
-		//$photo[$cpt_i] = "../photos/eleves/".my_strtolower($donner['elenoet']).".jpg";
 		$tmp_photo=nom_photo(my_strtolower($donner['elenoet']));
 		//if("$tmp_photo"!=""){
 		if($tmp_photo){
-			//$photo[$cpt_i] = "../photos/eleves/".$tmp_photo;
 			$photo[$cpt_i] = $tmp_photo;
 		}
 		else{
@@ -4113,5 +4111,4 @@ unset($_SESSION['tri_par_etab_origine']);
 //fermeture du fichier pdf et lecture dans le navigateur 'nom', 'I/D'
 $nom_bulletin = 'bulletin_'.$nom_bulletin.'.pdf';
 $pdf->Output($nom_bulletin,'I');
-//$pdf->closeParsers();
 ?>

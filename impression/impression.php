@@ -45,7 +45,7 @@ if(isset($_POST['choix_modele'])) {
 
 //**************** EN-TETE **************************************
 $titre_page = "Impression de listes au format PDF";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 //debug_var();
 

@@ -1,4 +1,4 @@
-<?php
+p<?php
 /*
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
@@ -238,7 +238,7 @@ $style_specifique = "aid/style_aid";
 
 //**************** EN-TETE *********************
 $titre_page = "Gestion des $nom_aid | Modifier les $nom_aid";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 
@@ -540,29 +540,28 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
         echo "<tr><td>\n";
         echo "<b>$nom_eleve $prenom_eleve</b>, $classe_eleve </td>\n<td> <a href='../lib/confirm_query.php?liste_cible=$login_eleve&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_eleve_aid".add_token_in_url()."'><img src=\"../images/icons/delete.png\" title=\"Supprimer cet élève\" alt=\"Supprimer\" /></a>\n";
 
-        // Dans le cas où la catégorie d'AID est utilisée pour la gestion des accès au trombinoscope, on ajouter un lien sur la photo de l'élève.
-        if ((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y')) {
-          $info="<div align='center'>\n";
-      	  if($v_elenoet!=""){
-		        $photo=nom_photo($v_elenoet);
-//		        if($photo!=""){
-		        if($photo){
-			          //$info.="<img src='../photos/eleves/".$photo."' width='150' alt=\"photo\" />";
-			          $info.="<img src='".$photo."' width='150' alt=\"photo\" />";
-		        }
-	        }
-      	  $info.="</div>\n";
-      	  $tabdiv_infobulle[]=creer_div_infobulle('info_popup_eleve'.$v_elenoet,$titre,"",$info,"",14,0,'y','y','n','n');
+		// Dans le cas où la catégorie d'AID est utilisée pour la gestion des accès au trombinoscope, on ajouter un lien sur la photo de l'élève.
+		if ((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y')) {
+			$info="<div align='center'>\n";
+			if($v_elenoet!="") {
+				$photo=nom_photo($v_elenoet);
+				//if($photo!=""){
+				if($photo){
+					$info.="<img src='".$photo."' width='150' alt=\"photo\" />";
+				}
+			}
+			$info.="</div>\n";
+			$tabdiv_infobulle[]=creer_div_infobulle('info_popup_eleve'.$v_elenoet,$titre,"",$info,"",14,0,'y','y','n','n');
 
-		      if($photo!="") {
-       	    echo "<a href='#' onmouseover=\"afficher_div('info_popup_eleve".$v_elenoet."','y',30,-200);\"";
-	          echo " onmouseout=\"cacher_div('info_popup_eleve".$v_elenoet."');\">";
-	          echo "<img src='../images/icons/buddy.png' alt='Photo élève' />";
-	          echo "</a>";
-	        } else {
-	          echo "<img src='../images/icons/buddy_no.png' alt='Pas de photo' />";
-          }
-        }
+			if($photo!="") {
+				echo "<a href='#' onmouseover=\"afficher_div('info_popup_eleve".$v_elenoet."','y',30,-200);\"";
+				echo " onmouseout=\"cacher_div('info_popup_eleve".$v_elenoet."');\">";
+				echo "<img src='../images/icons/buddy.png' alt='Photo élève' />";
+				echo "</a>";
+			} else {
+				echo "<img src='../images/icons/buddy_no.png' alt='Pas de photo' />";
+			}
+		}
 
         echo "</td>";
         if ($activer_outils_comp == "y") {

@@ -86,7 +86,7 @@ $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
 $dojo=true;
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 include('menu_abs2.inc.php');
 include('menu_bilans.inc.php');
 ?>
@@ -313,7 +313,7 @@ foreach($classe_col as $classe){
             if($current_eleve !=null) echo '<br/>';
             $num_saisie=1;
                if ($utilisateur->getAccesFicheEleve($absenceSaisie->getEleve())) {
-                    echo "<a style='color: ".$absenceSaisie->getColor().";' href='../eleves/visu_eleve.php?ele_login=" . $absenceSaisie->getEleve()->getLogin() . "' target='_blank'>";
+                    echo "<a style='color: ".$absenceSaisie->getColor().";' href='../eleves/visu_eleve.php?ele_login=" . $absenceSaisie->getEleve()->getLogin() . "&amp;onglet=responsable&amp;quitter_la_page=y' target='_blank'>";
                     echo $absenceSaisie->getEleve()->getCivilite() . ' ' . $absenceSaisie->getEleve()->getNom() . ' ' . $absenceSaisie->getEleve()->getPrenom().' : ';
                     echo "</a>";
                 } else {
@@ -378,7 +378,7 @@ foreach($classe_col as $classe){
                     if($current_eleve !=null) echo '<br/>';
                     $num_saisie = 1;
                     if ($utilisateur->getAccesFicheEleve($absenceSaisie->getEleve())) {
-                        echo "<a style='color: " . $absenceSaisie->getColor() . ";' href='../eleves/visu_eleve.php?ele_login=" . $absenceSaisie->getEleve()->getLogin() . "' target='_blank'>";
+                        echo "<a style='color: " . $absenceSaisie->getColor() . ";' href='../eleves/visu_eleve.php?ele_login=" . $absenceSaisie->getEleve()->getLogin() . "&amp;onglet=responsable&amp;quitter_la_page=y' target='_blank'>";
                         echo $absenceSaisie->getEleve()->getCivilite() . ' ' . $absenceSaisie->getEleve()->getNom() . ' ' . $absenceSaisie->getEleve()->getPrenom() . ' : ';
                         echo "</a>";
                     } else {

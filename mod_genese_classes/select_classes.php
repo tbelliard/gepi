@@ -48,7 +48,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Choix des classes',
+description='Genèse des classes: Choix des classes',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -111,9 +111,9 @@ if((isset($choix_classes))&&((isset($id_classe))||(isset($classes_futures)))) {
 
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-$titre_page = "Génèse classe: Choix classes";
+$titre_page = "Genèse classe: Choix classes";
 //echo "<div class='noprint'>\n";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 

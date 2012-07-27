@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -121,6 +121,7 @@ if(isset($_POST['valider_raz_param'])) {
 'graphe_mode_graphe',
 'graphe_taille_police',
 'graphe_temoin_image_escalier',
+'graphe_pointille',
 'graphe_tronquer_nom_court');
 	for($loop=0;$loop<count($champ_aff);$loop++) {
 		$sql="DELETE FROM preferences WHERE login='".$_SESSION['login']."' AND name='$champ_aff[$loop]';";
@@ -189,6 +190,9 @@ tronquer_nom_court
 
 			if(isset($_POST['click_plutot_que_survol_aff_app'])) {save_params_graphe('graphe_click_plutot_que_survol_aff_app',$_POST['click_plutot_que_survol_aff_app']);}
 
+			if(isset($_POST['graphe_pointille'])) {save_params_graphe('graphe_pointille',$_POST['graphe_pointille']);}
+			else{save_params_graphe('graphe_pointille','yes');}
+
 			if($msg=='') {
 				$msg="Paramètres enregistrés.";
 			}
@@ -234,6 +238,8 @@ if(isset($_POST['parametrage_affichage'])) {
 
 	if(isset($_POST['click_plutot_que_survol_aff_app'])) {savePref($_SESSION['login'],'graphe_click_plutot_que_survol_aff_app',$_POST['click_plutot_que_survol_aff_app']);}
 
+	if(isset($_POST['graphe_pointille'])) {savePref($_SESSION['login'],'graphe_pointille',$_POST['graphe_pointille']);}
+
 	if($msg=='') {
 		$msg.="Préférences personnelles enregistrées.";
 	}
@@ -250,13 +256,15 @@ if(!is_numeric($id_classe)) {$id_classe=NULL;}
 if(
 	(
 		(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiRubConseilProf')=="yes"))||
-		(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiRubConseilScol')=="yes"))
+		(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiRubConseilScol')=="yes"))||
+		(($_SESSION['statut']=='cpe')&&((getSettingValue('GepiRubConseilCpe')=="yes")||(getSettingValue('GepiRubConseilCpeTous')=="yes")))
 	)&&(isset($_POST['enregistrer_avis']))&&($_POST['enregistrer_avis']=="y")
 ) {
 	check_token();
 
 	$eleve_saisie_avis = isset($_POST['eleve_saisie_avis']) ? $_POST['eleve_saisie_avis'] : NULL;
 	// Contrôler les caractères utilisés...
+	$eleve_saisie_avis=preg_replace("/[^A-Za-z0-9_.-]/","",$eleve_saisie_avis);
 
 	$num_periode_saisie = isset($_POST['num_periode_saisie']) ? $_POST['num_periode_saisie'] : NULL;
 
@@ -283,13 +291,27 @@ if(
 									jgp.login ='".$_SESSION['login']."';";
 			$verif=mysql_query($sql);
 			if (mysql_num_rows($verif)==0) {
-				tentative_intrusion(2, "Tentative de saisie d'avis du conseil de classe pour un élève dont vous n'êtes pas professeur principal.");
-				$mess=rawurlencode("Tentative de saisie d'avis du conseil de classe pour un élève non inscrit dans la classe.");
+				tentative_intrusion(2, "Tentative de saisie d'avis du conseil de classe pour un élève ($eleve_saisie_avis) dont vous n'êtes pas ".getSettingValue('gepi_prof_suivi').".");
+				$mess=rawurlencode("Tentative de saisie d'avis du conseil de classe pour un élève dont vous n'êtes pas ".getSettingValue('gepi_prof_suivi').".");
 				header("Location: ../accueil.php?msg=$mess");
 				die();
 			}
 		}
-		else {
+		elseif($_SESSION['statut']=='cpe') {
+			if(getSettingValue('GepiRubConseilCpeTous')!="yes") {
+				$sql="SELECT 1=1 FROM j_eleves_cpe
+								WHERE e_login='$eleve_saisie_avis' AND
+										cpe_login ='".$_SESSION['login']."';";
+				$verif=mysql_query($sql);
+				if (mysql_num_rows($verif)==0) {
+					tentative_intrusion(2, "Tentative de saisie d'avis du conseil de classe pour un élève ($eleve_saisie_avis) dont vous n'êtes pas CPE.");
+					$mess=rawurlencode("Tentative de saisie d'avis du conseil de classe pour un élève non inscrit dans la classe.");
+					header("Location: ../accueil.php?msg=$mess");
+					die();
+				}
+			}
+		}
+		elseif($_SESSION['statut']=='scolarite') {
 			// Compte scolarité
 			$sql="SELECT 1=1 FROM j_scol_classes jsc,
 								j_eleves_classes jec
@@ -299,11 +321,17 @@ if(
 								jsc.login='".$_SESSION['login']."';";
 			$verif=mysql_query($sql);
 			if (mysql_num_rows($verif)==0) {
-				tentative_intrusion(2, "Tentative de saisie d'avis du conseil de classe pour un élève d'une classe dont le compte scolarité n'est pas responsable.");
+				tentative_intrusion(2, "Tentative de saisie d'avis du conseil de classe pour un élève ($eleve_saisie_avis) d'une classe dont le compte scolarité n'est pas responsable.");
 				$mess=rawurlencode("Tentative de saisie d'avis du conseil de classe pour un élève d'une classe dont vous n'êtes pas responsable.");
 				header("Location: ../accueil.php?msg=$mess");
 				die();
 			}
+		}
+		else {
+			tentative_intrusion(2, "Tentative de saisie d'avis du conseil de classe pour ".$eleve_saisie_avis.".");
+			$mess=rawurlencode("Tentative non autorisée de saisie d'avis du conseil de classe.");
+			header("Location: ../accueil.php?msg=$mess");
+			die();
 		}
 
 		$sql="SELECT verouiller FROM periodes WHERE id_classe='$id_classe' AND num_periode='$num_periode_saisie';";
@@ -345,16 +373,52 @@ if(
 		else {
 			$msg = "La période sur laquelle vous voulez enregistrer est verrouillée";
 		}
+
+		if((isset($_POST['passer_a_recapitulatif_avis']))&&($_POST['passer_a_recapitulatif_avis']=='y')&&(acces('/saisie/saisie_avis2.php', $_SESSION['statut']))) {
+
+			if(
+				(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiRubConseilProf')=="yes"))||
+				(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiRubConseilScol')=="yes"))||
+				(($_SESSION['statut']=='cpe')&&((getSettingValue('GepiRubConseilCpe')=="yes")||(getSettingValue('GepiRubConseilCpeTous')=="yes")))
+			) {
+
+				$droit_saisie_avis="y";
+				// Contrôler si le prof est PP de l'élève
+				if($_SESSION['statut']=='professeur') {
+					$droit_saisie_avis="n";
+					$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' AND id_classe='$id_classe';";
+					$verif_pp=mysql_query($sql);
+					if(mysql_num_rows($verif_pp)>0) {
+						$droit_saisie_avis="y";
+					}
+				}
+				elseif(($_SESSION['statut']=='cpe')&&(getSettingValue('GepiRubConseilCpeTous')!="yes")) {
+					$droit_saisie_avis="n";
+					$sql="SELECT 1=1 FROM j_eleves_cpe jecpe, j_eleves_classes jec WHERE jecpe.cpe_login='".$_SESSION['login']."' AND jecpe.e_login=jec.login AND jec.id_classe='".$id_classe."';";
+					$verif_cpe=mysql_query($sql);
+					if(mysql_num_rows($verif_cpe)>0) {
+						$droit_saisie_avis="y";
+					}
+				}
+
+				if($droit_saisie_avis=="y") {
+					header("Location: ../saisie/saisie_avis2.php?id_classe=$id_classe&periode_num=$num_periode_saisie&msg=".rawurlencode($msg));
+					die();
+				}
+			}
+		}
+
 	}
 	else {echo "Periode non numérique: $num_periode_saisie<br />";}
 	unset($eleve_saisie_avis);
 }
 //===============================================
 
+$style_specifique="visualisation/affiche_eleve";
 //**************** EN-TETE *****************
 $titre_page = "Outil de visualisation";
 //echo "<div class='noprint'>\n";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 
@@ -449,7 +513,30 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
 	}
 	elseif($_SESSION['statut']=='cpe') {
-		
+		/*
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
+			p.id_classe = c.id AND
+			jec.id_classe=c.id AND
+			jec.periode=p.num_periode AND
+			jecpe.e_login=jec.login AND
+			jecpe.cpe_login='".$_SESSION['login']."'
+			ORDER BY classe";
+		*/
+		// Les cpe ont accès à tous les bulletins, donc aussi aux courbes
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe";
+	}
+
+	if(((getSettingValue("GepiAccesReleveProfToutesClasses")=="yes")&&($_SESSION['statut']=='professeur'))||
+		((getSettingValue("GepiAccesReleveScol")=='yes')&&($_SESSION['statut']=='scolarite'))) {
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe";
+	}
+	/*
+	if(((getSettingValue("GepiAccesReleveProfToutesClasses")=="yes")&&($_SESSION['statut']=='professeur'))||
+		((getSettingValue("GepiAccesReleveScol")=='yes')&&($_SESSION['statut']=='scolarite'))||
+		((getSettingValue("GepiAccesReleveCpeTousEleves")=='yes')&&($_SESSION['statut']=='cpe'))) {
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe";
+	}
+	elseif((getSettingValue("GepiAccesReleveCpe")=='yes')&&($_SESSION['statut']=='cpe')) {
 		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
 			p.id_classe = c.id AND
 			jec.id_classe=c.id AND
@@ -458,13 +545,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			jecpe.cpe_login='".$_SESSION['login']."'
 			ORDER BY classe";
 	}
-
-	if(((getSettingValue("GepiAccesReleveProfToutesClasses")=="yes")&&($_SESSION['statut']=='professeur'))||
-		((getSettingValue("GepiAccesReleveScol")=='yes')&&($_SESSION['statut']=='scolarite'))||
-		((getSettingValue("GepiAccesReleveCpe")=='yes')&&($_SESSION['statut']=='cpe'))) {
-		$sql="SELECT DISTINCT c.* FROM classes c ORDER BY classe";
-	}
-
+	*/
+	//echo "$sql<br />";
 	$call_data=mysql_query($sql);
 
 	$nombre_lignes = mysql_num_rows($call_data);
@@ -477,19 +559,22 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	//$mode_graphe=(isset($_GET['mode_graphe'])) ? $_GET['mode_graphe'] : NULL;
 	//$chaine_mode_graphe=isset($mode_graphe) ? "&amp;mode_graphe=$mode_graphe" : "";
 
-	unset($lien_classe);
-	unset($txt_classe);
-	$i = 0;
-	while ($i < $nombre_lignes) {
-		$lien_classe[]=$_SERVER['PHP_SELF']."?id_classe=".mysql_result($call_data, $i, "id").$chaine_type_graphe;
-		//$lien_classe[]=$_SERVER['PHP_SELF']."?id_classe=".mysql_result($call_data, $i, "id").$chaine_type_graphe.$chaine_mode_graphe;
-		$txt_classe[]=ucfirst(mysql_result($call_data, $i, "classe"));
-		$i++;
+	if($nombre_lignes>0) {
+		unset($lien_classe);
+		unset($txt_classe);
+		$i = 0;
+		while ($i < $nombre_lignes) {
+			$lien_classe[]=$_SERVER['PHP_SELF']."?id_classe=".mysql_result($call_data, $i, "id").$chaine_type_graphe;
+			//$lien_classe[]=$_SERVER['PHP_SELF']."?id_classe=".mysql_result($call_data, $i, "id").$chaine_type_graphe.$chaine_mode_graphe;
+			$txt_classe[]=ucfirst(mysql_result($call_data, $i, "classe"));
+			$i++;
+		}
+
+		tab_liste($txt_classe,$lien_classe,3);
 	}
-
-	tab_liste($txt_classe,$lien_classe,3);
-
-	
+	else {
+		echo "<p style='color:red'>Vous n'êtes associé à aucun élève.</p>\n";
+	}
 	echo "</blockquote>\n";
 	//echo "</p>\n";
 	//echo "</form>\n";
@@ -951,6 +1036,25 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 
 
+	if(isset($_POST['graphe_pointille'])) {
+		$graphe_pointille=$_POST['graphe_pointille'];
+	}
+	else{
+		$pref_graphe_pointille=getPref($_SESSION['login'],'graphe_pointille','');
+		if(($pref_graphe_pointille=='yes')||($pref_graphe_pointille=='no')) {
+			$graphe_pointille=$pref_graphe_pointille;
+		}
+		else {
+			if(getSettingValue('graphe_pointille')) {
+				$graphe_pointille=getSettingValue('graphe_pointille');
+			}
+			else{
+				$graphe_pointille="yes";
+			}
+		}
+	}
+
+
 
 	if(isset($_POST['largeur_graphe'])) {
 		$largeur_graphe=$_POST['largeur_graphe'];
@@ -1304,6 +1408,14 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "</td></tr>\n";
 
 
+			echo "<tr><td>Utiliser des pointillés quand <strong title='Une, pas plus'>une</strong> note manque&nbsp;:</td><td>\n";
+			if($graphe_pointille!='no') {$checked=" checked='yes'";} else {$checked="";}
+			echo "<input type='radio' name='graphe_pointille' id='graphe_pointille_oui' value='yes'$checked /><label for='graphe_pointille_oui' style='cursor: pointer;'> Oui </label>/";
+			if($graphe_pointille=='no') {$checked=" checked='yes'";} else {$checked="";}
+			echo "<label for='graphe_pointille_non' style='cursor: pointer;'> Non </label><input type='radio' name='graphe_pointille' id='graphe_pointille_non' value='no'$checked />";
+			echo "</td></tr>\n";
+
+
 			// - modèle de couleurs
 
 			//if($temoin_imageps=='oui') {$checked=" checked='yes'";}else{$checked="";}
@@ -1516,46 +1628,15 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			$lig_elenoet=mysql_fetch_object($res_elenoet);
 			$elenoet1=$lig_elenoet->elenoet;
 
-			/*
-			//if(file_exists("$chemin_photos/$eleve1.jpg")) {
-			if(file_exists("../photos/eleves/$elenoet1.jpg")) {
-				// Récupérer les dimensions de la photo...
-				//$dimimg=getimagesize("../photos/$eleve1.jpg");
-				$dimimg=getimagesize("../photos/eleves/$elenoet1.jpg");
-				//echo "$dimimg[0] et $dimimg[1]";
-
-				$largimg=$largeur_imposee_photo;
-				$hautimg=round($dimimg[1]*$largeur_imposee_s$dimimg[0]);
-
-				//echo "<img src='../photos/$eleve1.jpg' width='$largimg' height='$hautimg'>\n";
-				echo "<img src='../photos/eleves/$elenoet1.jpg' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
-			}
-			elseif(file_exists("../photos/eleves/0$elenoet1.jpg")) {
-				// Récupérer les dimensions de la photo...
-				//$dimimg=getimagesize("../photos/$eleve1.jpg");
-				$dimimg=getimagesize("../photos/eleves/0$elenoet1.jpg");
-				//echo "$dimimg[0] et $dimimg[1]";
+			$photo=nom_photo($elenoet1);
+			//if("$photo"!="") {
+			if ($photo) {
+				$dimimg=getimagesize($photo);
 
 				$largimg=$largeur_imposee_photo;
 				$hautimg=round($dimimg[1]*$largeur_imposee_photo/$dimimg[0]);
 
-				//echo "<img src='../photos/$eleve1.jpg' width='$largimg' height='$hautimg'>\n";
-				echo "<img src='../photos/eleves/0$elenoet1.jpg' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
-			}
-			*/
-			$photo=nom_photo($elenoet1);
-			//if("$photo"!="") {
-			  if ($photo) {
-				//if(file_exists("../photos/eleves/$photo")) {
-					//$dimimg=getimagesize("../photos/eleves/$photo");
-					$dimimg=getimagesize($photo);
-
-					$largimg=$largeur_imposee_photo;
-					$hautimg=round($dimimg[1]*$largeur_imposee_photo/$dimimg[0]);
-
-					//echo "<img src='../photos/eleves/$photo' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
-					echo "<img src='".$photo."' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
-				//}
+				echo "<img src='".$photo."' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
 			}
 
 		}
@@ -1791,10 +1872,10 @@ function eleve_suivant() {
 		echo "<script type='text/javascript'>desactivation_infobulle='n';</script>\n";
 	}
 
-	
+	echo "<input type='hidden' id='passer_a_recapitulatif_avis' name='passer_a_recapitulatif_avis' value='n' />";
+
 	//echo "<input type='text' id='id_truc' name='truc' value='' />";
 	//echo "</form>\n";
-
 
 	//================
 	// Déplacement: boireaus 20090727
@@ -1805,7 +1886,8 @@ function eleve_suivant() {
 	//if(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiRubConseilProf')=="yes")) {
 	if(
 		(($_SESSION['statut']=='professeur')&&(getSettingValue('GepiRubConseilProf')=="yes"))||
-		(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiRubConseilScol')=="yes"))
+		(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiRubConseilScol')=="yes"))||
+		(($_SESSION['statut']=='cpe')&&((getSettingValue('GepiRubConseilCpe')=="yes")||(getSettingValue('GepiRubConseilCpeTous')=="yes")))
 	) {
 
 		$droit_saisie_avis="y";
@@ -1815,6 +1897,14 @@ function eleve_suivant() {
 			$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' AND login='".$eleve1."' AND id_classe='$id_classe';";
 			$verif_pp=mysql_query($sql);
 			if(mysql_num_rows($verif_pp)>0) {
+				$droit_saisie_avis="y";
+			}
+		}
+		elseif(($_SESSION['statut']=='cpe')&&(getSettingValue('GepiRubConseilCpeTous')!="yes")) {
+			$droit_saisie_avis="n";
+			$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."' AND e_login='".$eleve1."';";
+			$verif_cpe=mysql_query($sql);
+			if(mysql_num_rows($verif_cpe)>0) {
 				$droit_saisie_avis="y";
 			}
 		}
@@ -1878,6 +1968,13 @@ function eleve_suivant() {
 			}
 			//alert('La mention actuelle est : '+document.getElementById('current_eleve_login_me').value+'.');
 
+			if(mode=='recap') {
+				document.getElementById('passer_a_recapitulatif_avis').value='y';
+			}
+			else {
+				document.getElementById('passer_a_recapitulatif_avis').value='n';
+			}
+
 			if(mode=='suivant') {
 				eleve_suivant();
 			}
@@ -1939,13 +2036,17 @@ function eleve_suivant() {
 							//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
 							if($suivant<$nombreligne+1) {
-								$texte.=" <input type='button' NAME='ok1' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+								$texte.=" <input type='button' NAME='ok2' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+							}
+							elseif(acces('/saisie/saisie_avis2.php', $_SESSION['statut'])) {
+								$texte.=" <input type='button' NAME='ok2' value='Enregistrer et passer au récapitulatif' onClick=\"save_avis('recap');\" />\n";
 							}
 	
 							// METTRE AUSSI UN BOUTON POUR Enregistrer puis lancer eleve_suivant();
 							//require("insere_cmnt_type.php");
 							if((($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiRubConseilProf")=='yes')&&(getSettingValue('CommentairesTypesPP')=='yes'))
-							||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))) {
+							||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))
+							||(($_SESSION['statut'] == 'cpe')&&((getSettingValue("GepiRubConseilCpe")=='yes')||(getSettingValue("GepiRubConseilCpeTous")=='yes'))&&(getSettingValue('CommentairesTypesCpe')=='yes'))) {
 								$texte.=div_cmnt_type();
 							}
 
@@ -1996,13 +2097,17 @@ function eleve_suivant() {
 							//$texte_saisie_avis_fixe.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte_saisie_avis_fixe.="<br /><input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
 							if($suivant<$nombreligne+1) {
-								$texte_saisie_avis_fixe.=" <input type='button' NAME='ok1' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+								$texte_saisie_avis_fixe.=" <input type='button' NAME='ok2' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
 							}
-	
+							elseif(acces('/saisie/saisie_avis2.php', $_SESSION['statut'])) {
+								$texte_saisie_avis_fixe.=" <input type='button' NAME='ok2' value='Enregistrer et passer au récapitulatif' onClick=\"save_avis('recap');\" />\n";
+							}
+
 							// METTRE AUSSI UN BOUTON POUR Enregistrer puis lancer eleve_suivant();
 							//require("insere_cmnt_type.php");
 							if((($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiRubConseilProf")=='yes')&&(getSettingValue('CommentairesTypesPP')=='yes'))
-							||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))) {
+							||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))
+							||(($_SESSION['statut'] == 'cpe')&&((getSettingValue("GepiRubConseilCpe")=='yes')||(getSettingValue("GepiRubConseilCpeTous")=='yes'))&&(getSettingValue('CommentairesTypesCpe')=='yes'))) {
 								$texte_saisie_avis_fixe.=div_cmnt_type();
 							}
 
@@ -2030,8 +2135,10 @@ function eleve_suivant() {
 					$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$id_classe' AND login='$eleve1'  AND periode='$num_periode_choisie';";
 					$test_appartenance_ele_classe_periode=mysql_query($sql);
 					if(mysql_num_rows($test_appartenance_ele_classe_periode)>0) {
-
 						$current_eleve_avis="";
+						// ***** AJOUT POUR LES MENTIONS *****
+						$current_eleve_mention="";
+						// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 						$sql="SELECT * FROM avis_conseil_classe WHERE login='$eleve1' AND periode='$num_periode_choisie';";
 						//echo "$sql<br />";
 						$res_avis=mysql_query($sql);
@@ -2047,11 +2154,32 @@ function eleve_suivant() {
 <input type='hidden' name='eleve_saisie_avis' value='$eleve1' />
 <input type='hidden' name='enregistrer_avis' id='enregistrer_avis' value='' />
 </div>\n";
-	
+
+						// ***** AJOUT POUR LES MENTIONS *****
+						echo "<div style='display:none;'>
+<textarea name='current_eleve_login_me' id='current_eleve_login_me' rows='1' cols='2' wrap='virtual' onchange=\"changement()\">$current_eleve_mention</textarea>
+<input type='hidden' name='enregistrer_mention' id='enregistrer_mention' value='' />
+</div>\n";
+						// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
+
 						echo "<script type='text/javascript'>
 	function save_avis(mode) {
 		document.getElementById('no_anti_inject_current_eleve_login_ap').value=document.getElementById('no_anti_inject_current_eleve_login_ap2').value;
 		document.getElementById('enregistrer_avis').value='y';
+
+		if(document.getElementById('current_eleve_login_me2')) {
+			document.getElementById('current_eleve_login_me').value=document.getElementById('current_eleve_login_me2').value;
+			document.getElementById('enregistrer_mention').value='y';
+		}
+		//alert('La mention actuelle est : '+document.getElementById('current_eleve_login_me').value+'.');
+
+		if(mode=='recap') {
+			document.getElementById('passer_a_recapitulatif_avis').value='y';
+		}
+		else {
+			document.getElementById('passer_a_recapitulatif_avis').value='n';
+		}
+
 		if(mode=='suivant') {
 			eleve_suivant();
 		}
@@ -2108,13 +2236,17 @@ function eleve_suivant() {
 							//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
 							if($suivant<$nombreligne+1) {
-								$texte.=" <input type='button' NAME='ok1' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+								$texte.=" <input type='button' NAME='ok2' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+							}
+							elseif(acces('/saisie/saisie_avis2.php', $_SESSION['statut'])) {
+								$texte.=" <input type='button' NAME='ok2' value='Enregistrer et passer au récapitulatif' onClick=\"save_avis('recap');\" />\n";
 							}
 	
 							// METTRE AUSSI UN BOUTON POUR Enregistrer puis lancer eleve_suivant();
 							//require("insere_cmnt_type.php");
 							if((($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiRubConseilProf")=='yes')&&(getSettingValue('CommentairesTypesPP')=='yes'))
-							||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))) {
+							||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))
+							||(($_SESSION['statut'] == 'cpe')&&((getSettingValue("GepiRubConseilCpe")=='yes')||(getSettingValue("GepiRubConseilCpeTous")=='yes')))) {
 								$texte.=div_cmnt_type();
 							}
 
@@ -2165,13 +2297,17 @@ function eleve_suivant() {
 							//$texte_saisie_avis_fixe.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte_saisie_avis_fixe.="<br /><input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
 							if($suivant<$nombreligne+1) {
-								$texte_saisie_avis_fixe.=" <input type='button' NAME='ok1' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+								$texte_saisie_avis_fixe.=" <input type='button' NAME='ok2' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
+							}
+							elseif(acces('/saisie/saisie_avis2.php', $_SESSION['statut'])) {
+								$texte_saisie_avis_fixe.=" <input type='button' NAME='ok2' value='Enregistrer et passer au récapitulatif' onClick=\"save_avis('recap');\" />\n";
 							}
 	
 							// METTRE AUSSI UN BOUTON POUR Enregistrer puis lancer eleve_suivant();
 							//require("insere_cmnt_type.php");
 							if((($_SESSION['statut'] == 'professeur')&&(getSettingValue("GepiRubConseilProf")=='yes')&&(getSettingValue('CommentairesTypesPP')=='yes'))
-							||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))) {
+							||(($_SESSION['statut'] == 'scolarite')&&(getSettingValue("GepiRubConseilScol")=='yes')&&(getSettingValue('CommentairesTypesScol')=='yes'))
+							||(($_SESSION['statut'] == 'cpe')&&((getSettingValue("GepiRubConseilCpe")=='yes')||(getSettingValue("GepiRubConseilCpeTous")=='yes'))&&(getSettingValue('CommentairesTypesCpe')=='yes'))) {
 								$texte_saisie_avis_fixe.=div_cmnt_type();
 							}
 
@@ -2479,7 +2615,7 @@ function eleve_suivant() {
 							$app_tmp = str_replace("\n", "", $app_tmp);
 							$app_tmp = str_replace("\r\n", "", $app_tmp);
 							$app_tmp = str_replace("\r", "", $app_tmp); 
-							
+
 							$txt_appreciations_deroulantes.="<li><b>".htmlspecialchars($matiere_nom[$cpt])." : </b></br>".$app_tmp."</br></li>";
 							
 							if($type_graphe=='etoile'){
@@ -3136,7 +3272,9 @@ function eleve_suivant() {
 															ORDER BY jmcc.priority,mc.priority,jgc.priorite,m.nom_complet";
 			}
 			else{
-				$sql="SELECT DISTINCT jgc.id_groupe, m.* FROM matieres m,j_groupes_classes jgc,j_groupes_matieres jgm WHERE (m.matiere=jgm.id_matiere AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe') ORDER BY jgc.priorite,m.matiere";
+				//$sql="SELECT DISTINCT jgc.id_groupe, m.* FROM matieres m,j_groupes_classes jgc,j_groupes_matieres jgm WHERE (m.matiere=jgm.id_matiere AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe') ORDER BY jgc.priorite,m.matiere";
+				$sql="SELECT DISTINCT jgc.id_groupe, m.* FROM matieres m,j_groupes_classes jgc,j_groupes_matieres jgm WHERE (m.matiere=jgm.id_matiere AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe' AND 
+				jgc.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletins' AND visible='n')) ORDER BY jgc.priorite,m.matiere";
 			}
 			//echo "$sql<br />";
 
@@ -3148,6 +3286,8 @@ function eleve_suivant() {
 			$liste_matieres="";
 			$matiere=array();
 			$matiere_nom=array();
+			// Pour le déroulant des appréciations
+			$txt_appreciations_deroulantes="";
 
 			$cpt=0;
 			// Boucle sur l'ordre des matières:
@@ -3318,6 +3458,8 @@ function eleve_suivant() {
 				if(isset($info_imagemap[$i])) {
 					$titre_bulle=htmlspecialchars($matiere_nom[$i]);
 
+					$compteur_periodes_app_deroul=0;
+
 					$texte_bulle="<table class='boireaus' style='margin:2px;' width='99%' summary='Imagemap'>\n";
 					$alt=1;
 					for($j=1;$j<=count($num_periode);$j++) {
@@ -3325,6 +3467,36 @@ function eleve_suivant() {
 						if((isset($tab_imagemap[$j][$i]))&&($tab_imagemap[$j][$i]!="")) {
 							$alt=$alt*(-1);
 							$texte_bulle.="<tr class='lig$alt'><td style='font-weight:bold;'>$j</td><td style='text-align:center;'>".$tab_imagemap[$j][$i]."</td></tr>\n";
+
+							// Pour le déroulant des appréciations
+							$app_tmp = $tab_imagemap[$j][$i];
+							$app_tmp = str_replace("\n", "", $app_tmp);
+							$app_tmp = str_replace("\r\n", "", $app_tmp);
+							$app_tmp = str_replace("\r", "", $app_tmp); 
+
+							//if($j==1) {
+							if($compteur_periodes_app_deroul==0) {
+								$alt_defile=1;
+								//$txt_appreciations_deroulantes.="<li><table class='boireaus'><tr class='lig$alt_defile'><th rowspan='".count($num_periode)."'>".htmlspecialchars($matiere_nom[$i])."</th>";
+
+								//$txt_appreciations_deroulantes.="<li><strong>".htmlspecialchars($matiere_nom[$i])."&nbsp;:</strong>";
+								//$txt_appreciations_deroulantes.="<table class='boireaus'><tr class='lig$alt_defile'>";
+
+								$txt_appreciations_deroulantes.="<li><table class='boireaus' width='100%'><tr class='lig$alt_defile'><th colspan='2'>".htmlspecialchars($matiere_nom[$i])."</th></tr>";
+								$alt_defile=$alt_defile*(-1);
+								$txt_appreciations_deroulantes.="<tr class='lig$alt_defile'>";
+
+								$compteur_periodes_app_deroul++;
+							}
+							else {
+								$alt_defile=$alt_defile*(-1);
+								$txt_appreciations_deroulantes.="<tr class='lig$alt_defile'>";
+							}
+							$txt_appreciations_deroulantes.="<td style='width:1em;'>".$j."</td>";
+							$txt_appreciations_deroulantes.="<td>".$app_tmp."</td></tr>";
+							if($j==count($num_periode)) {
+								$txt_appreciations_deroulantes.="</table></li>";
+							}
 						}
 					}
 					$texte_bulle.="</table>\n";
@@ -3343,6 +3515,39 @@ function eleve_suivant() {
 
 
 			}
+
+
+			// Pour le déroulant des appréciations
+			if ($graphe_affiche_deroulant_appreciations=='oui') {
+				$graphe_hauteur_affichage_deroulant=$graphe_hauteur_affichage_deroulant."px";
+				echo "<script type='text/javascript'>
+				// <![CDATA[
+					var pas=1;
+					var h_fen='$graphe_hauteur_affichage_deroulant';
+					function scrollmrq(){
+						if (parseInt(mrq.style.top) > -h_mrq ) 
+						mrq.style.top = parseInt(mrq.style.top)-pas+'px'
+						else mrq.style.top=parseInt(h_fen)+'px'
+					}
+					function init_mrq(){
+						mrq=document.getElementById('appreciations_defile');
+						fen=document.getElementById('appreciations_deroulantes');
+						fen.onmouseover=function(){stoc=pas;pas=0};
+						fen.onmouseout=function(){pas=stoc};fen.style.height=h_fen;
+						h_mrq=mrq.offsetHeight;
+						with(mrq.style){position='absolute';top=h_fen;}
+						setInterval('scrollmrq()',50);
+					}
+		
+					document.getElementById('appreciations_defile').innerHTML='".addslashes($txt_appreciations_deroulantes)."';
+		
+					window.onload =init_mrq;
+				//]]>
+				</script>\n";
+				//echo "<div style='display:none'><ul>$txt_appreciations_deroulantes</ul></div>";
+				//echo "<div><ul>$txt_appreciations_deroulantes</ul></div>";
+			}
+
 
 			$sql="SELECT * FROM avis_conseil_classe WHERE login='$eleve1' ORDER BY periode;";
 			$res_avis=mysql_query($sql);
@@ -3905,8 +4110,12 @@ function eleve_suivant() {
 				$acces_aa=check_acces_aa($eleve1);
 			}
 
+			//A FAIRE variable à utiliser et à initialiser pour afficher les absences sous le graphique
+			$afficher_absences='y';
+
+			echo "<p align='center'>";
+
 			if($acces_bull_simp=="y") {
-				echo "<p align='center'>";
 				if($choix_periode=='toutes_periodes') {
 					//echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode\" onclick=\"sauve_desactivation_infobulle();afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','1','$nb_periode');restaure_desactivation_infobulle();return false;\" target=\"_blank\">";
 					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','1','$nb_periode');return false;\" target=\"_blank\">";
@@ -3921,47 +4130,59 @@ function eleve_suivant() {
 					//echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple toutes périodes en infobulle' title='Bulletin simple toutes périodes en infobulle' />";
 					echo "</a>";
 				}
+			}
 
-				if(check_droit_acces('/eleves/visu_eleve.php',$_SESSION['statut'])) {
+			if(check_droit_acces('/eleves/visu_eleve.php',$_SESSION['statut'])) {
+				echo " | ";
+
+				echo "<a href=\"../eleves/visu_eleve.php?ele_login=".$eleve1."&id_classe=".$id_classe."\" target=\"_blank\">";
+				echo "Consultation";
+				echo "</a>";
+			}
+
+			if((getSettingValue('active_annees_anterieures')=='y')&&($acces_aa=='y')) {
+				//$sql="SELECT annee FROM archivage_disciplines a, eleves e WHERE e.login='$eleve1' AND e.no_gep=a.INE ORDER BY annee DESC LIMIT 1;";
+				$sql="SELECT annee FROM archivage_disciplines a, eleves e WHERE e.login='$eleve1' AND e.no_gep=a.INE ORDER BY annee ASC LIMIT 1;";
+				//echo "$sql<br />";
+				$res_aa=mysql_query($sql);
+				if(mysql_num_rows($res_aa)>0) {
 					echo " | ";
-	
-					echo "<a href=\"../eleves/visu_eleve.php?ele_login=".$eleve1."&id_classe=".$id_classe."\" target=\"_blank\">";
-					echo "Consultation";
-					echo "</a>";
-				}
-
-				if((getSettingValue('active_annees_anterieures')=='y')&&($acces_aa=='y')) {
-					echo " | ";
-
-					// A FAIRE:
-					// IL FAUT RECUPERER L'annee_scolaire et num_periode SI JAVASCRIPT N'EST PAS ACTIF
-					//echo "<a href=\"../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=$id_classe&logineleve=$eleve1&annee_scolaire=2008/2009&num_periode=3&mode=bull_simp\" onclick=\"sauve_desactivation_infobulle();afficher_div('div_annees_anterieures','y',-100,-200); affiche_annees_anterieures('$eleve1','$id_classe');restaure_desactivation_infobulle();return false;\" target=\"_blank\">";
-					echo "<a href=\"../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=$id_classe&logineleve=$eleve1&annee_scolaire=2008/2009&num_periode=3&mode=bull_simp\" onclick=\"afficher_div('div_annees_anterieures','y',-100,-200); affiche_annees_anterieures('$eleve1','$id_classe');return false;\" target=\"_blank\">";
-					//echo "<a href=\"javascript:afficher_div('div_annees_anterieures','y',-100,-200); affiche_annees_anterieures('$eleve1', '$id_classe'); return false;\" target=\"_blank\">";
+					$lig_aa=mysql_fetch_object($res_aa);
+					echo "<a href=\"../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=$id_classe&logineleve=$eleve1&annee_scolaire=$lig_aa->annee&num_periode=3&mode=bull_simp\" onclick=\"afficher_div('div_annees_anterieures','y',-100,-200); affiche_annees_anterieures('$eleve1','$id_classe','$lig_aa->annee');return false;\" target=\"_blank\">";
 					echo "Années antérieures";
 					echo "</a>";
 				}
-
-				echo "</p>\n";
-
 			}
 
-			// A FAIRE:
-			// Faire apparaitre les absences...
-			
 			// Bibliothèque de fonctions de la page consultation élève.
 			include("../eleves/visu_ele_func.lib.php");
 			// On extrait un tableau de l'ensemble des infos sur l'élève (bulletins, relevés de notes,... inclus)
 			$tab_ele=info_eleve($eleve1);
-			
-			//A FAIRE variable à utiliser et à initialiser pour afficher les absences sous le graphique
-			$afficher_absences='y';
-			
+
+			if($afficher_absences=="y") {
+				if((getSettingValue("active_module_absence")=='y')||
+					(getSettingValue("active_module_absence")=='2'&& getSettingValue("abs2_import_manuel_bulletin")=='y')||
+					((count($tab_ele['absences'])!=0)&&(getSettingValue("active_module_absence")!='y' && getSettingValue("active_module_absence")!='2'))) {
+					// On affiche les absences par défaut
+				}
+				elseif (getSettingValue("active_module_absence")=='2') {
+					echo " | ";
+					echo "<span id='pliage_abs'>\n";
+					echo "(<em>";
+					echo "<a href='#' onclick=\"document.getElementById('div_aff_abs').style.display='';return false;\">Afficher</a>";
+					echo " / \n";
+					echo "<a href='#' onclick=\"document.getElementById('div_aff_abs').style.display='none';return false;\">Masquer</a>";
+					echo " les absences</em>)";
+					echo "</span>\n";
+				}
+			}
+			echo "</p>\n";
+
 			//La variable 	$num_periode_choisie 	  contient le numéro de la période en cours 
 				
 			if($afficher_absences=="y") {
 				if((getSettingValue("active_module_absence")=='y')||
-					(getSettingValue("active_module_absence")=='2'&& getSettingValue("abs2_import_manuel_bulletin")=='y')||                                        
+					(getSettingValue("active_module_absence")=='2'&& getSettingValue("abs2_import_manuel_bulletin")=='y')||
 					((count($tab_ele['absences'])!=0)&&(getSettingValue("active_module_absence")!='y' && getSettingValue("active_module_absence")!='2'))) {
 
 					/*
@@ -4018,9 +4239,37 @@ function eleve_suivant() {
 							for($loop_per=0;$loop_per<$nb_periode;$loop_per++) {
 								$alt=$alt*(-1);
 								echo "<tr class='lig$alt'>\n";
+								echo "<td>";
+								if (isset($tab_ele['absences'][$loop_per]['nb_absences'])) {
+									echo $tab_ele['absences'][$loop_per]['nb_absences'];
+								}
+								else {
+									echo "-";
+								}
+								echo "</td>\n";
+
+								echo "<td>";
+								if (isset($tab_ele['absences'][$loop_per]['non_justifie'])) {
+									echo $tab_ele['absences'][$loop_per]['non_justifie'];
+								}
+								else {
+									echo "-";
+								}
+								echo "</td>\n";
+
+								echo "<td>";
+								if (isset($tab_ele['absences'][$loop_per]['nb_retards'])) {
+									echo $tab_ele['absences'][$loop_per]['nb_retards'];
+								}
+								else {
+									echo "-";
+								}
+								echo "</td>\n";
+/*
 								echo "<td>".$tab_ele['absences'][$loop_per]['nb_absences']."</td>\n";
 								echo "<td>".$tab_ele['absences'][$loop_per]['non_justifie']."</td>\n";
 								echo "<td>".$tab_ele['absences'][$loop_per]['nb_retards']."</td>\n";
+*/
 								echo "</tr>\n";
 							}
 							echo "</table>\n";
@@ -4048,59 +4297,63 @@ function eleve_suivant() {
 						echo "</tr>\n";
 					    echo "</table>\n";
 				    }
+
 */
 				}
-// A décommenter pour le module abs 2 				
-				/* elseif (getSettingValue("active_module_absence")=='2') {
-				    // Initialisations files
-				    require_once("../lib/initialisationsPropel.inc.php");
-				    $eleve = EleveQuery::create()->findOneByLogin($eleve1);
+				elseif (getSettingValue("active_module_absence")=='2') {
+					// Initialisations files
+					echo "<div id='div_aff_abs'style='display:none'>\n";
+					require_once("../lib/initialisationsPropel.inc.php");
+					$eleve = EleveQuery::create()->findOneByLogin($eleve1);
 
-				    echo "<table class='boireaus' summary='Bilan des absences'>\n";
-				    echo "<tr>\n";
-				    echo "<th>Absences sur la période</th>\n";
-				    echo "<th>Nombre de 1/2 journées</th>\n";
-				    echo "<th>dont non justifiées</th>\n";
-				    echo "<th>Nombre de retards</th>\n";
-				    echo "</tr>\n";
-				    $alt=1;
-					
+					echo "<table class='boireaus' summary='Bilan des absences'>\n";
+					echo "<tr>\n";
+					echo "<th>Absences sur la période</th>\n";
+					echo "<th>Nombre de 1/2 journées</th>\n";
+					echo "<th>dont non justifiées</th>\n";
+					echo "<th>Nombre de retards</th>\n";
+					echo "</tr>\n";
+					$alt=1;
+				
 					// Il ne faudrait afficher que le T1, T2 ou T3 en se basant sur la variable $num_periode_choisie
-					
-				    foreach($eleve->getPeriodeNotes() as $periode_note) {
-					    //$periode_note = new PeriodeNote();
-					    if ($periode_note->getDateDebut() == null) {
+				
+					foreach($eleve->getPeriodeNotes() as $periode_note) {
+						//$periode_note = new PeriodeNote();
+						if ($periode_note->getDateDebut() == null) {
 						//periode non commencee
 						continue;
-					    }
-					    $alt=$alt*(-1);
-					    echo "<tr class='lig$alt'>\n";
-					    echo "<td>".$periode_note->getNomPeriode();
-					    echo " du ".$periode_note->getDateDebut('d/m/Y');
-					    echo " au ";
-					    if ($periode_note->getDateFin() == null) {
+						}
+						$alt=$alt*(-1);
+						echo "<tr class='lig$alt'>\n";
+						echo "<td>".$periode_note->getNomPeriode();
+						echo " du ".$periode_note->getDateDebut('d/m/Y');
+						echo " au ";
+						if ($periode_note->getDateFin() == null) {
 						$now = new DateTime('now');
 						echo $now->format('d/m/Y');
-					    } else {
+						} else {
 						echo $periode_note->getDateFin('d/m/Y');
-					    }
-					    echo "</td>\n";
-					    echo "<td>";
-					    echo $eleve->getDemiJourneesAbsence($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count();
-					    echo "</td>\n";
-					    echo "<td>";
-					    echo $eleve->getDemiJourneesNonJustifieesAbsence($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count();
-					    echo "</td>\n";
-					    echo "<td>";
-					    echo $eleve->getRetards($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count();
-					    echo "</td>\n";
-					    echo "</tr>\n";
-				    }
-				    echo "</table>\n";
+						}
+						echo "</td>\n";
+						echo "<td>";
+						echo $eleve->getDemiJourneesAbsence($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count();
+						echo "</td>\n";
+						echo "<td>";
+						echo $eleve->getDemiJourneesNonJustifieesAbsence($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count();
+						echo "</td>\n";
+						echo "<td>";
+						echo $eleve->getRetards($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count();
+						echo "</td>\n";
+						echo "</tr>\n";
+					}
+					echo "</table>\n";
+
+					echo "</div>\n";
 				}
-*/
-			}
 		}
+
+	}
+
 	    // FIN DE L'AFFICHAGE DES ABSENCES
 		
 		//=========================
@@ -4303,7 +4556,7 @@ echo "<div id='div_bull_simp' class='infobulle_corps' style='position: absolute;
 		echo "</div>\n";
 	echo "</div>\n";
 	
-	echo "<div id='corps_bull_simp' class='infobulle_corps' style='color: #ffffff; cursor: auto; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
+	echo "<div id='corps_bull_simp' class='infobulle_corps' style='color: #000000; cursor: auto; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
 	if($acces_bull_simp=="y") {
 		if($choix_periode=='periode') {
 			$periode1=$num_periode_choisie;
@@ -4368,7 +4621,6 @@ if(getSettingValue('active_annees_anterieures')=='y') {
 	if(isset($eleve1)) {
 		$tab_periodes_aa=check_acces_et_liste_periodes($eleve1,$id_classe);
 		affiche_onglets_aa($eleve1, $id_classe, $tab_periodes_aa, 0);
-
 	}
 }
 //===========================================================

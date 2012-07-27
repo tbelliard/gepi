@@ -744,21 +744,6 @@
    </g>
 </g>\n";
 
-/*
-			echo "<g transform=\"translate($xtmp,$ytmp)\">
-<g transform=\"rotate(30)\">
-<text x=\"0\" y=\"0\" font-size=\"$fontsizetext\" font-family=\"Verdana\" fill=\"$axes\" >
-BLA
-</text>
-</g>
-</g>\n";
-*/
-			/*
-			$fich=fopen("/tmp/svg_pb_nom_mat.txt","a+");
-			fwrite($fich,"\$matiere_nom_long[$i]=".$matiere_nom_long[$i]."\n");
-			fclose($fich);
-			*/
-
 		}
 		else{
 			//Affichage des matières dans la partie basse du graphique:
@@ -891,6 +876,12 @@ BLA
 
 	
 	//Tracé des courbes:
+
+	$afficher_pointille=mb_substr(getPref($_SESSION['login'], 'graphe_pointille',''),0,1);
+	if($afficher_pointille=='') {
+		$afficher_pointille=mb_substr(getSettingValue('graphe_pointille'),0,1);
+	}
+
 	echo "\n<!-- Tracé des courbes -->\n";
 
 	//for($k=1;$k<=$nb_series;$k++){
@@ -930,7 +921,9 @@ BLA
 				$xtmp2=$x2;
 				$ytmp2=$ycourbe[$k][$i+1];
 				echo "<line x1=\"$xtmp1\" y1=\"$ytmp1\" x2=\"$xtmp2\" y2=\"$ytmp2\" style=\"stroke:".$couleureleve[$k]."; stroke-width:$epaisseur_traits\"/>\n";
-
+			}
+			elseif(($afficher_pointille!='n')&&($ycourbe[$k][$i]!=-1)&&($ycourbe[$k][$i+2]!=-1)) {
+				echo "<line x1=\"".$x[$i]."\" y1=\"".$ycourbe[$k][$i]."\" x2=\"".$x[$i+2]."\" y2=\"".$ycourbe[$k][$i+2]."\" style='stroke:".$couleureleve[$k]."; stroke-dasharray:4, 4; stroke-width:$epaisseur_traits'/>\n";
 			}
 		}
 	}

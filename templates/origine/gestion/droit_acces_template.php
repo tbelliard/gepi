@@ -88,9 +88,9 @@
     ?>
 	  <a class="onglet_0 onglet" id='onglet_<?php echo $StatutItem ;?>' href="#<?php echo $StatutItem ;?>" title="section <?php echo $StatutItem ;?>" onclick="javascript:change_onglet('<?php echo $StatutItem; ?>');document.getElementById('onglet_courant').value='<?php echo $StatutItem; ?>';return false;">
 	<?php
-		if (my_strtolower($StatutItem) =='responsable') echo ucfirst($gepiSettings['denomination_responsable']);
-		elseif (my_strtolower($StatutItem) =='eleve') echo ucfirst($gepiSettings['denomination_eleve']);
-		elseif (my_strtolower($StatutItem) =='professeur_principal') echo ucfirst(getSettingValue("gepi_prof_suivi"));
+		if (my_strtolower($StatutItem) =='responsable') echo casse_mot($gepiSettings['denomination_responsable'],'majf');
+		elseif (my_strtolower($StatutItem) =='eleve') echo casse_mot($gepiSettings['denomination_eleve'],'majf');
+		elseif (my_strtolower($StatutItem) =='professeur_principal') echo casse_mot(getSettingValue("gepi_prof_suivi"),'majf');
 		elseif (my_strtolower($StatutItem) =='scolarite') echo "Scolarité";
 		else echo $StatutItem ;
 	 ?>
@@ -119,8 +119,8 @@
 	  <a name="<?php echo $StatutItem ;?>" href="#container" title="retour début de page depuis <?php echo $StatutItem ;?>" >
 
 	  <?php
-		if (my_strtolower($StatutItem) =='responsable') echo $gepiSettings['denomination_responsable'];
-		elseif (my_strtolower($StatutItem) =='eleve') echo $gepiSettings['denomination_eleve'];
+		if (my_strtolower($StatutItem) =='responsable') echo casse_mot($gepiSettings['denomination_responsable'],'majf');
+		elseif (my_strtolower($StatutItem) =='eleve') echo casse_mot($gepiSettings['denomination_eleve'],'majf');
 		elseif (my_strtolower($StatutItem) =='professeur_principal') echo getSettingValue("gepi_prof_suivi");
 		elseif (my_strtolower($StatutItem) =='scolarite') echo "Scolarité";
 		else echo $StatutItem ;
@@ -132,10 +132,15 @@
 	</h3>
 	<ul class='div_tableau'>
 	<?php foreach ($droitAffiche->get_item() as $AfficheItem){ 
-	  if(my_strtolower($AfficheItem['statut']) == my_strtolower($StatutItem)){
-
+	//if(my_strtolower($AfficheItem['statut']) == my_strtolower($StatutItem)){
+	  if(my_strtolower($AfficheItem['statut']) == my_strtolower($StatutItem)) {
+		// Pour faire des rubriques/espaces
+		if($AfficheItem['name']=='') {
+			echo "<hr />\n";
+		}
+		else {
 	?>
-	  <li>
+	  <li style='margin-left:2em;text-indent:-2em;'>
 		<input type="checkbox" name="<?php echo $AfficheItem['name'] ; ?>"
 			   id="<?php echo $AfficheItem['name'] ; ?>"
 			   value="yes" <?php if (getSettingValue($AfficheItem['name'])=='yes') echo 'checked="checked"'; ?>
@@ -146,6 +151,7 @@
 		</label>
 	  </li>
 	  <?php
+		}
 	  }
 	}
 	unset ($AfficheItem);

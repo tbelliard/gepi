@@ -106,7 +106,7 @@ $titre_page = "Visualisation des moyennes des carnets de notes";
 /**
  * Entête de la page
  */
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 

@@ -279,7 +279,7 @@ class SAML2_Utils {
 			array($root),
 			XMLSecurityDSig::SHA1,
 			array('http://www.w3.org/2000/09/xmldsig#enveloped-signature', XMLSecurityDSig::EXC_C14N),
-			array('id_name' => 'ID')
+			array('id_name' => 'ID', 'overwrite' => FALSE)
 			);
 
 		$objXMLSecDSig->sign($key);
@@ -296,11 +296,13 @@ class SAML2_Utils {
 	/**
 	 * Decrypt an encrypted element.
 	 *
+	 * This is an internal helper function.
+	 *
 	 * @param DOMElement $encryptedData  The encrypted data.
 	 * @param XMLSecurityKey $inputKey  The decryption key.
 	 * @return DOMElement  The decrypted element.
 	 */
-	public static function decryptElement(DOMElement $encryptedData, XMLSecurityKey $inputKey) {
+	private static function _decryptElement(DOMElement $encryptedData, XMLSecurityKey $inputKey) {
 
 		$enc = new XMLSecEnc();
 
@@ -341,8 +343,35 @@ class SAML2_Utils {
 
 			$encKey = $symmetricKeyInfo->encryptedCtx;
 			$symmetricKeyInfo->key = $inputKey->key;
-			$key = $encKey->decryptKey($symmetricKeyInfo);
+
+			$keySize = $symmetricKey->getSymmetricKeySize();
+			if ($keySize === NULL) {
+				/* To protect against "key oracle" attacks, we need to be able to create a
+				 * symmetric key, and for that we need to know the key size.
+				 */
+				throw new Exception('Unknown key size for encryption algorithm: ' . var_export($symmetricKey->type, TRUE));
+			}
+
+			try {
+				$key = $encKey->decryptKey($symmetricKeyInfo);
+			} catch (Exception $e) {
+				/* We failed to decrypt this key. Log it, and substitute a "random" key. */
+				SimpleSAML_Logger::error('Failed to decrypt symmetric key: ' . $e->getMessage());
+				/* Create a replacement key, so that it looks like we fail in the same way as if the key was correctly padded. */
+
+				/* We base the symmetric key on the encrypted key, so that we always behave the same way for a given input key. */
+				$encryptedKey = $encKey->getCipherValue();
+				$key = md5($encryptedKey, TRUE);
+
+				/* Make sure that the key has the correct length. */
+				if (strlen($key) > $keySize) {
+					$key = substr($key, 0, $keySize);
+				} elseif (strlen($key) < $keySize) {
+					$key = str_pad($key, $keySize);
+				}
+			}
 			$symmetricKey->loadkey($key);
+
 		} else {
 			$symKeyAlgo = $symmetricKey->getAlgorith();
 			/* Make sure that the input key has the correct format. */
@@ -371,22 +400,54 @@ class SAML2_Utils {
 			throw new Exception('Missing encrypted element.');
 		}
 
+		if (!($decryptedElement instanceof DOMElement)) {
+			throw new Exception('Decrypted element was not actually a DOMElement.');
+		}
+
 		return $decryptedElement;
+	}
+
+
+	/**
+	 * Decrypt an encrypted element.
+	 *
+	 * @param DOMElement $encryptedData  The encrypted data.
+	 * @param XMLSecurityKey $inputKey  The decryption key.
+	 * @return DOMElement  The decrypted element.
+	 */
+	public static function decryptElement(DOMElement $encryptedData, XMLSecurityKey $inputKey) {
+
+		try {
+			return self::_decryptElement($encryptedData, $inputKey);
+		} catch (Exception $e) {
+			/*
+			 * Something went wrong during decryption, but for security
+			 * reasons we cannot tell the user what failed.
+			 */
+			SimpleSAML_Logger::error('Decryption failed: ' . $e->getMessage());
+			throw new Exception('Failed to decrypt XML element.');
+		}
 	}
 
 
 	/**
 	 * Extract localized strings from a set of nodes.
 	 *
-	 * @param DOMElement $parent  The element we should rund the XPath query on.
-	 * @param string $query  The XPath query we should use to retrieve the nodes.
+	 * @param DOMElement $parent  The element that contains the localized strings.
+	 * @param string $namespaceURI  The namespace URI the localized strings should have.
+	 * @param string $localName  The localName of the localized strings.
 	 * @return array  Localized strings.
 	 */
-	public static function extractLocalizedStrings(DOMElement $parent, $query) {
-		assert('is_string($query)');
+	public static function extractLocalizedStrings(DOMElement $parent, $namespaceURI, $localName) {
+		assert('is_string($namespaceURI)');
+		assert('is_string($localName)');
 
 		$ret = array();
-		foreach (self::xpQuery($parent, $query) as $node) {
+		for ($node = $parent->firstChild; $node !== NULL; $node = $node->nextSibling) {
+			if ($node->namespaceURI !== $namespaceURI || $node->localName !== $localName) {
+				continue;
+			}
+
 			if ($node->hasAttribute('xml:lang')) {
 				$language = $node->getAttribute('xml:lang');
 			} else {
@@ -402,15 +463,20 @@ class SAML2_Utils {
 	/**
 	 * Extract strings from a set of nodes.
 	 *
-	 * @param DOMElement $parent  The element we should rund the XPath query on.
-	 * @param string $query  The XPath query we should use to retrieve the nodes.
+	 * @param DOMElement $parent  The element that contains the localized strings.
+	 * @param string $namespaceURI  The namespace URI the string elements should have.
+	 * @param string $localName  The localName of the string elements.
 	 * @return array  The string values of the various nodes.
 	 */
-	public static function extractStrings(DOMElement $parent, $query) {
-		assert('is_string($query)');
+	public static function extractStrings(DOMElement $parent, $namespaceURI, $localName) {
+		assert('is_string($namespaceURI)');
+		assert('is_string($localName)');
 
 		$ret = array();
-		foreach (self::xpQuery($parent, $query) as $node) {
+		for ($node = $parent->firstChild; $node !== NULL; $node = $node->nextSibling) {
+			if ($node->namespaceURI !== $namespaceURI || $node->localName !== $localName) {
+				continue;
+			}
 			$ret[] = trim($node->textContent);
 		}
 

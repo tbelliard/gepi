@@ -152,10 +152,10 @@ $couleur_cellule_gen = "#F6F7EF";
 //les trois variables suivantes vont être remplies par un script de build avec les données svn ou git
 //dans le cas ou les variables ne sont pas remplies (donc pas de script de build), on regarde dans header.inc et header_template.inc
 //si on peut obtenir des informations sur la version dans le répertoire .git
-$gepiVersion = "dev";
+$gepiVersion = "master";
 $gepiSvnRev = "";
-$gepiGitCommit = "7afbb11";
-$gepiGitBranch = "master";
+$gepiGitCommit = "";
+$gepiGitBranch = "";
 
 // Forcer l'utilisation du module de gestion des mise à jour de GEPI
 //
@@ -223,6 +223,11 @@ $type_etablissement2["prive"]["lprof"] = "privé";
 $type_etablissement2["prive"]["EREA"] = "privé";
 $type_etablissement2["prive"]["tous_niveaux"] = "privé";
 $type_etablissement2["prive"]["aucun"] = "";
+
+# Visibilité des groupes dans tel ou tel module:
+$tab_domaines=array('bulletins', 'cahier_notes', 'cahier_texte');
+$tab_domaines_sigle=array('B', 'CN', 'CDT');
+$tab_domaines_texte=array('Bulletins', 'Cahiers de Notes', 'Cahiers de Textes');
 
 # Make sure notice errors are not reported
 //error_reporting (E_ALL ^ E_NOTICE);

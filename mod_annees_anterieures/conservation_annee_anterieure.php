@@ -111,7 +111,7 @@ $themessage  = 'Etes-vous sûr de vouloir supprimer toutes les données conceran
 
 //**************** EN-TETE *****************
 $titre_page = "Conservation des données antérieures (autres que AID)";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";

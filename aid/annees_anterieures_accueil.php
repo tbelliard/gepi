@@ -43,7 +43,7 @@ $annee_scolaire = isset($_POST["annee_scolaire"]) ? $_POST["annee_scolaire"] : (
 
 //**************** EN-TETE *********************
 $titre_page = "Fiches projets des années antérieures";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 if (!isset($annee_scolaire))  {

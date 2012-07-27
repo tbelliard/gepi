@@ -27,7 +27,7 @@ if(isset($_GET['ad_retour'])){
 
 //**************** EN-TETE *****************
 $titre_page = "XML de STS: Génération de CSV";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 echo "<p class=bold><a href='";

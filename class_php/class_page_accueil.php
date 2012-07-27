@@ -1,9 +1,8 @@
-
 <?php
 /*
  * $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -466,7 +465,8 @@ class class_page_accueil {
 	}
 
 	if ((($this->test_prof_suivi != "0") and (getSettingValue("GepiRubConseilProf")=='yes'))
-			or (($this->statutUtilisateur!='professeur') and (getSettingValue("GepiRubConseilScol")=='yes') )
+			or (($this->statutUtilisateur=='scolarite') and (getSettingValue("GepiRubConseilScol")=='yes'))
+			or (($this->statutUtilisateur=='cpe') and ((getSettingValue("GepiRubConseilCpe")=='yes')||(getSettingValue("GepiRubConseilCpeTous")=='yes')))
 			or ($this->statutUtilisateur=='secours')  )
 	  $this->creeNouveauItem("/saisie/saisie_avis.php",
 			  "Bulletin : saisie des avis du conseil",
@@ -535,7 +535,10 @@ class class_page_accueil {
 			  AND (mysql_num_rows(mysql_query("SELECT 1=1 FROM j_eleves_professeurs
 											  WHERE professeur='".$this->loginUtilisateur."'"))>0))
 			  OR (($this->statutUtilisateur=='scolarite')
-					  AND (getSettingValue("CommentairesTypesScol")=='yes')))
+					  AND (getSettingValue("CommentairesTypesScol")=='yes'))
+			  OR (($this->statutUtilisateur=='cpe')
+					  AND (getSettingValue("CommentairesTypesCpe")=='yes'))
+		)
 	  {
 		$this->creeNouveauItem("/saisie/commentaires_types.php",
 				"Saisie de commentaires-types",
@@ -682,7 +685,7 @@ class class_page_accueil {
             )
         )
         OR
-        (($this->statutUtilisateur == "cpe") AND getSettingValue("GepiAccesReleveCpe") == "yes")));
+        (($this->statutUtilisateur == "cpe") AND (getSettingValue("GepiAccesReleveCpe") == "yes")) OR (getSettingValue("GepiAccesReleveCpeTousEleves") == "yes")));
 
 	$condition2 = ($this->statutUtilisateur != "professeur" OR
 				(
@@ -1075,10 +1078,21 @@ class class_page_accueil {
 			OR (($this->statutUtilisateur=='scolarite')
 					AND (getSettingValue("GepiScolImprBulSettings")=='yes'))
 			OR (($this->statutUtilisateur=='administrateur')
-					AND (getSettingValue("GepiAdminImprBulSettings")=='yes'))){
-	  $this->creeNouveauItem("/bulletin/param_bull.php",
-			  "Paramètres d'impression des bulletins",
-			  "Permet de modifier les paramètres de mise en page et d'impression des bulletins.");
+					AND (getSettingValue("GepiAdminImprBulSettings")=='yes'))
+			OR (($this->statutUtilisateur=='cpe')
+					AND (getSettingValue("GepiCpeImprBulSettings")=='yes'))
+					) {
+
+		if(getSettingValue('type_bulletin_par_defaut')=='pdf') {
+			$this->creeNouveauItem("/bulletin/param_bull_pdf.php",
+				  "Paramètres d'impression des bulletins",
+				  "Permet de modifier les paramètres de mise en page et d'impression des bulletins.");
+		}
+		else {
+			$this->creeNouveauItem("/bulletin/param_bull.php",
+				  "Paramètres d'impression des bulletins",
+				  "Permet de modifier les paramètres de mise en page et d'impression des bulletins.");
+		}
 	}
 
 	if ($this->statutUtilisateur=='scolarite'){
@@ -1087,16 +1101,18 @@ class class_page_accueil {
 			  "Cet outil vous permet de modifier/supprimer/ajouter des fiches de ".$this->gepiSettings['denomination_responsables']." des ".$this->gepiSettings['denomination_eleves'].".");
 	}
 
-	if ($this->statutUtilisateur=='scolarite'){
-	  $this->creeNouveauItem("/eleves/index.php",
+	if ($this->statutUtilisateur=='scolarite') {
+		$this->creeNouveauItem("/eleves/index.php",
 			  "Gestion des fiches ".$this->gepiSettings['denomination_eleves'],
 			  "Cet outil vous permet de modifier/supprimer/ajouter des fiches ".$this->gepiSettings['denomination_eleves'].".");
 	}
 
 	if ((($this->test_prof_suivi != "0")
 				AND (getSettingValue("GepiProfImprBul")=='yes'))
-			OR ($this->statutUtilisateur!='professeur')){
-	  $this->creeNouveauItem("/bulletin/bull_index.php",
+			OR (($this->statutUtilisateur=='cpe')
+				AND (getSettingValue("GepiCpeImprBul")=='yes'))
+			OR (($this->statutUtilisateur!='professeur')AND($this->statutUtilisateur!='cpe'))) {
+		$this->creeNouveauItem("/bulletin/bull_index.php",
 			  "Visualisation et impression des bulletins",
 			  "Cet outil vous permet de visualiser à l'écran et d'imprimer les bulletins, classe par classe.");
 	}
@@ -1117,7 +1133,7 @@ class class_page_accueil {
 
 		$this->creeNouveauItem("/saisie/saisie_vocabulaire.php",
 			  "Lapsus ou fautes de frappe",
-			  "Cet outil vous permet de définir les associations de mots avec et sans faute de frappe à contrôler lors de la saisie des bulletins.<br />Il arrive qu'un professeur fasse une faute de frappe, mais que le mot obtenu existe bien (<em>Il n'est alors pas souligné par le navigateur comme erroné... et la fute passe inaperçu</em>)");
+			  "Cet outil vous permet de définir les associations de mots avec et sans faute de frappe à contrôler lors de la saisie des bulletins.<br />Il arrive qu'un professeur fasse une faute de frappe, mais que le mot obtenu existe bien (<em>Il n'est alors pas souligné par le navigateur comme erroné... et la faute passe inaperçu</em>)");
 	}
 
 	if ($this->b>0){
@@ -1166,10 +1182,22 @@ class class_page_accueil {
 
 	if(($this->statutUtilisateur=='scolarite')||
 			($this->statutUtilisateur=='professeur')||
-			($this->statutUtilisateur=='cpe')){
-	  $this->creeNouveauItem("/groupes/visu_mes_listes.php",
-			  "Visualisation de mes élèves",
-			  "Ce menu permet de vous permet de consulter vos listes d'".$this->gepiSettings['denomination_eleves']." par groupe constitué et enseigné.");
+			($this->statutUtilisateur=='cpe')) {
+		$this->creeNouveauItem("/groupes/visu_mes_listes.php",
+			"Visualisation de mes élèves",
+			"Ce menu permet de vous permet de consulter vos listes d'".$this->gepiSettings['denomination_eleves']." par groupe constitué et enseigné.");
+	}
+
+	if ((($this->statutUtilisateur=='cpe')&&(getSettingAOui('CpeAccesFichesEleves')))||
+		(($this->statutUtilisateur=='cpe')&&(getSettingAOui('CpeAccesUploadPhotosEleves')))
+	) {
+		$complement_texte="";
+		if(getSettingAOui('active_module_trombinoscopes')) {
+			$complement_texte="<br />Ce menu permet aussi d'uploader les photos des ".$this->gepiSettings['denomination_eleves'].".";
+		}
+		$this->creeNouveauItem("/eleves/index.php",
+			"Gestion des fiches ".$this->gepiSettings['denomination_eleves'],
+			"Cet outil vous permet de modifier/supprimer/ajouter des fiches ".$this->gepiSettings['denomination_eleves'].".".$complement_texte);
 	}
 
 	if(getSettingValue('active_mod_ooo')=='y') {
@@ -1212,8 +1240,10 @@ class class_page_accueil {
 			"Impression PDF de listes",
 			"Ceci vous permet d'imprimer en PDF des listes avec les ".$this->gepiSettings['denomination_eleves'].", à l'unité ou en série. L'apparence des listes est paramétrable.");
 
-	if(($this->statutUtilisateur=='scolarite')||(($this->statutUtilisateur=='professeur')
-			AND ($this->test_prof_suivi != "0"))){
+	if(($this->statutUtilisateur=='scolarite')||
+		(($this->statutUtilisateur=='professeur') AND ($this->test_prof_suivi != "0"))||
+		(($this->statutUtilisateur=='cpe') AND ((getSettingAOui('GepiRubConseilCpeTous'))||(getSettingAOui('GepiRubConseilCpe'))))
+	){
 	  $this->creeNouveauItem("/saisie/impression_avis.php",
 			  "Impression PDF des avis du conseil de classe",
 			  "Ceci vous permet d'imprimer en PDF la synthèse des avis du conseil de classe.");
@@ -1609,11 +1639,11 @@ class class_page_accueil {
 	$this->b=0;
 
 	$this->creeNouveauItem("/mod_genese_classes/index.php",
-			"Génèse des classes",
+			"Genèse des classes",
 			"Effectuer la répartition des élèves par classes en tenant comptes des options,...");
 
 	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Génèse des classes",'images/icons/document.png');
+	  $this->creeNouveauTitre('accueil',"Genèse des classes",'images/icons/document.png');
 	  return true;
 	}
   }

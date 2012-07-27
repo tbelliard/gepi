@@ -134,7 +134,7 @@ if ($action == "modifier") {
 $style_specifique = "edt_organisation/style_edt";
 //**************** EN-TETE *****************
 $titre_page = "Gestion des erreurs de login de l'ENT";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var(); // à enlever en production
 ?>

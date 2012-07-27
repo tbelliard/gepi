@@ -202,9 +202,6 @@ $utilisation_jsdivdrag = "non";
 //$javascript_specifique = "";
 //$style_specifique = "";
 
-// ===================== entete Gepi ======================================//
-// require_once("../lib/header.inc");
-// ===================== fin entete =======================================//
 
 
 /****************************************************************
@@ -212,7 +209,7 @@ $utilisation_jsdivdrag = "non";
 ****************************************************************/
 
 // ====== Inclusion des balises head et du bandeau =====
-include_once("../lib/header_template.inc");
+include_once("../lib/header_template.inc.php");
 
 /****************************************************************
 			FIN HAUT DE PAGE

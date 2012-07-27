@@ -85,7 +85,7 @@ $titre_page = "Les absences";
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
 $dojo = true;
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 include('menu_abs2.inc.php');
@@ -108,7 +108,9 @@ if (isFiltreRechercheParam('filter_type_notification')) {
     $query->filterByTypeNotification(getFiltreRechercheParam('filter_type_notification'));
 }
 if (isFiltreRechercheParam('filter_statut_notification')) {
-    $query->filterByStatutEnvoi(getFiltreRechercheParam('filter_statut_notification'));
+	if (getFiltreRechercheParam('filter_statut_notification') != 'SANS') {
+		$query->filterByStatutEnvoi(getFiltreRechercheParam('filter_statut_notification'));
+	}
 }
 if (isFiltreRechercheParam('filter_date_creation_notification_debut_plage')) {
     echo 'auiauiaui';
@@ -373,7 +375,7 @@ echo '<span style="white-space: nowrap;"> ';
 //echo '<nobr>';
 echo 'Entre : <input size="13" id="filter_date_creation_notification_debut_plage" name="filter_date_creation_notification_debut_plage" value="';
 if (isFiltreRechercheParam('filter_date_creation_notification_debut_plage')) {echo getFiltreRechercheParam('filter_date_creation_notification_debut_plage');}
-echo '" />&nbsp;';
+echo '" onKeyDown="clavier_date2(this.id,event);" AutoComplete="off" />&nbsp;';
 echo '<img id="trigger_filter_date_creation_notification_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
 echo '</span>';
 //echo '</nobr>';
@@ -393,7 +395,7 @@ echo '<span style="white-space: nowrap;"> ';
 //echo '<nobr>';
 echo 'Et : <input size="13" id="filter_date_creation_notification_fin_plage" name="filter_date_creation_notification_fin_plage" value="';
 if (isFiltreRechercheParam('filter_date_creation_notification_fin_plage')) {echo getFiltreRechercheParam('filter_date_creation_notification_fin_plage');}
-echo '" />&nbsp;';
+echo '" onKeyDown="clavier_date2(this.id,event);" AutoComplete="off" />&nbsp;';
 echo '<img id="trigger_filter_date_creation_notification_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
 echo '</span>';
 //echo '</nobr>';
@@ -495,7 +497,7 @@ foreach ($results as $notification) {
 	echo "</a>";
 	if ($utilisateur->getAccesFicheEleve($eleve)) {
 	    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
-	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' >";
+	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank' >";
 	    echo ' (voir fiche)';
 	    echo "</a>";
 	}
@@ -504,7 +506,6 @@ foreach ($results as $notification) {
 	    echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
 	    echo "<a href='liste_notifications.php?filter_eleve=".$eleve->getNom()."' style='display: block; height: 100%;'> ";
 	    $nom_photo = $eleve->getNomPhoto(1);
-	    //$photos = "../photos/eleves/".$nom_photo;
 	    $photos = $nom_photo;
 	    //if (($nom_photo != "") && (file_exists($photos))) {
 	    if (($nom_photo != NULL) && (file_exists($photos))) {

@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -39,7 +39,7 @@ if ($resultat_session == 'c') {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
-include("../fckeditor/fckeditor.php") ;
+include("../ckeditor/ckeditor.php") ;
 
 // Check access
 if (!checkAccess()) {
@@ -484,6 +484,44 @@ if (isset($_POST['is_posted'])) {
 			$reg_ok = 'no';
 		}
 	}
+	if (isset($_POST['bull_affiche_img_signature'])) {
+	
+		if (!saveSetting("bull_affiche_img_signature", $_POST['bull_affiche_img_signature'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affiche_img_signature !";
+			$reg_ok = 'no';
+		}
+	}
+
+	if (isset($_POST['bull_hauteur_img_signature'])) {
+		$bull_hauteur_img_signature=$_POST['bull_hauteur_img_signature'];
+
+		if(($bull_hauteur_img_signature!='')&&(preg_match("/^[0-9]*$/", $bull_hauteur_img_signature))&&($bull_hauteur_img_signature>0)) {
+			if (!saveSetting("bull_hauteur_img_signature", $_POST['bull_hauteur_img_signature'])) {
+				$msg .= "Erreur lors de l'enregistrement de bull_hauteur_img_signature !";
+				$reg_ok = 'no';
+			}
+		}
+		else {
+			$msg .= "Valeur incorrecte pour 'bull_hauteur_img_signature' !";
+			$reg_ok = 'no';
+		}
+	}
+
+	if (isset($_POST['bull_largeur_img_signature'])) {
+		$bull_largeur_img_signature=$_POST['bull_largeur_img_signature'];
+
+		if(($bull_largeur_img_signature!='')&&(preg_match("/^[0-9]*$/", $bull_largeur_img_signature))&&($bull_largeur_img_signature>0)) {
+			if (!saveSetting("bull_largeur_img_signature", $_POST['bull_largeur_img_signature'])) {
+				$msg .= "Erreur lors de l'enregistrement de bull_largeur_img_signature !";
+				$reg_ok = 'no';
+			}
+		}
+		else {
+			$msg .= "Valeur incorrecte pour 'bull_largeur_img_signature' !";
+			$reg_ok = 'no';
+		}
+	}
+
 	if (isset($_POST['bull_affiche_numero'])) {
 	
 		if (!saveSetting("bull_affiche_numero", $_POST['bull_affiche_numero'])) {
@@ -705,7 +743,7 @@ $msg = "Enregistrement réussi !";
 
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 // End standart header
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 if (!loadSettings()) {
     die("Erreur chargement settings");
 }
@@ -1349,6 +1387,51 @@ echo add_token_field();
 
     <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
+        Insérer la signature ou cachet de l'établissement&nbsp;:
+        <?php
+			echo "<br />\n(<em>sous réserve qu'une ";
+			if($_SESSION['statut']=='administrateur') {
+				echo "<a href='../gestion/gestion_signature.php'>image de signature</a>";
+			}
+			else {
+				echo "image de signature";
+			}
+			echo " ait été uploadée en administrateur<br />et que vous soyez autorisé à utiliser cette signature</em>)\n";
+        ?>
+        </td>
+        <td>
+        <?php
+        echo "<input type=\"radio\" name=\"bull_affiche_img_signature\" id=\"bull_affiche_img_signaturey\" value=\"y\" ";
+        if (getSettingValue("bull_affiche_img_signature") == 'y') echo " checked";
+        echo " /><label for='bull_affiche_img_signaturey' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"bull_affiche_img_signature\" id=\"bull_affiche_img_signaturen\" value=\"n\" ";
+        if (getSettingValue("bull_affiche_img_signature") != 'y') echo " checked";
+        echo " /><label for='bull_affiche_img_signaturen' style='cursor: pointer;'>&nbsp;Non</label>";
+        ?>
+        </td>
+    </tr>
+
+    <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps; vertical-align:top;">
+        Dimensions maximales (<em>en pixels</em>) de l'image de la signature ou cachet de l'établissement&nbsp;:
+       </td>
+        <td>
+        <?php
+        $bull_largeur_img_signature=getSettingValue('bull_largeur_img_signature');
+        if(($bull_largeur_img_signature=='')||(!preg_match("/^[0-9]*$/", $bull_largeur_img_signature))||($bull_largeur_img_signature==0)) {$bull_largeur_img_signature=200;}
+        echo "Largeur&nbsp;: <input type=\"text\" name=\"bull_largeur_img_signature\" id=\"bull_largeur_img_signature\" value=\"$bull_largeur_img_signature\" size=\"3\" onKeyDown=\"clavier_2(this.id,event,1,500);\" autocomplete=\"off\" />\n";
+
+        echo "<br />\n";
+
+        $bull_hauteur_img_signature=getSettingValue('bull_hauteur_img_signature');
+        if(($bull_hauteur_img_signature=='')||(!preg_match("/^[0-9]*$/", $bull_hauteur_img_signature))||($bull_hauteur_img_signature==0)) {$bull_hauteur_img_signature=200;}
+        echo "Hauteur&nbsp;: <input type=\"text\" name=\"bull_hauteur_img_signature\" id=\"bull_hauteur_img_signature\" value=\"$bull_hauteur_img_signature\" size=\"3\" onKeyDown=\"clavier_2(this.id,event,1,500);\" autocomplete=\"off\" />\n";
+        ?>
+        </td>
+    </tr>
+
+    <tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">
         Afficher l'établissement d'origine sur le bulletin :
         </td>
         <td>
@@ -1786,15 +1869,12 @@ Veillez à utiliser la fonction "aperçu avant impression" afin de vous rendre c
 	</tr>";
     // Modif : on utilise toute la largeur de la page pour afficher l'éditeur de textes
     echo "
-	<tr><td colspan=\"2\" ><div class='small'>
+	<tr><td colspan=\"2\" ><div class='small' style='width: 820px;'>
 		<i>Mise en forme du message :</i>";
 
-    $oFCKeditor = new FCKeditor('no_anti_inject_page_garde_texte') ;
-    $oFCKeditor->BasePath = '../fckeditor/' ;
-    $oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
-    $oFCKeditor->ToolbarSet = 'Basic' ;
-    $oFCKeditor->Value      = $impression ;
-    $oFCKeditor->Create() ;
+    $oCKeditor = new CKeditor();
+    $oCKeditor->BasePath = '../ckeditor/' ;
+    $oCKeditor->editor('no_anti_inject_page_garde_texte',$impression);
 ?>
 
 		</div>

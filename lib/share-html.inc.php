@@ -212,7 +212,6 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					$nom_dev = mysql_result($appel_dev, $j, 'nom_court');
 					$id_dev = mysql_result($appel_dev, $j, 'id');
 					echo "<li>\n";
-					//echo "<font color='green'>$nom_dev</font>";
 					echo "<span style='color:green;'>$nom_dev</span>";
 					echo " - <a href='saisie_notes.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev'>Saisie</a>";
 
@@ -935,7 +934,6 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
 	  $out_html = "<form id=\"eleve\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n<h2 class='h2_label'>\n<label for=\"choix_eleve\"><strong><em>Elève :</em></strong></label>\n</h2>\n<p>\n<select id=\"choix_eleve\" name=\"eleve\" onchange=\"eleve_go()\">\n";
 	  $out_html .= "<option value=\"".$link."?year=".$year."&amp;month=".$month."&amp;day=".$day."\">(Choisissez un élève)</option>\n";
 		while ($current_eleve = mysql_fetch_object($get_eleves)) {
-		   //if (($current)&&(isset($current->login))) {
 		   if ($current) {
 		   	$selected = ((is_object($current)&&($current_eleve->login == $current->login))||($current_eleve->login == $current)) ? "selected='selected'" : "";
 		   } else {
@@ -993,15 +991,17 @@ function affiche_docs_joints($id_ct,$type_notice) {
       $html .= "<span class='petit'>Document(s) joint(s):</span>";
       $html .= "<ul style=\"padding-left: 15px;\">";
       for ($i=0; ($row = sql_row($res,$i)); $i++) {
-          if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
-              ((getSettingValue('cdt_possibilite_masquer_pj')!='y')&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))||
-              ((getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==TRUE)&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))
+          if(((!isset($_SESSION['statut']))&&(getSettingValue('cdt_possibilite_masquer_pj')!='y'))||
+              ((!isset($_SESSION['statut']))&&(getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==TRUE))||
+              ((isset($_SESSION['statut']))&&($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+              ((isset($_SESSION['statut']))&&(getSettingValue('cdt_possibilite_masquer_pj')!='y')&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))||
+              ((isset($_SESSION['statut']))&&(getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==TRUE)&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))
           ) {
                 $titre = $row[0];
                 $emplacement = $row[1];
               // Ouverture dans une autre fenêtre conservée parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
               // alternative, utiliser un javascript
-                $html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return FALSE;\" href=\"$emplacement\">$titre</a></li>";
+                $html .= "<li style=\"padding: 0px; margin: 0px;font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return FALSE;\" href=\"$emplacement\">$titre</a></li>";
           }
       }
       $html .= "</ul>";
@@ -1687,7 +1687,7 @@ function champs_radio_choix_format_login($nom_champ, $default_login_gen_type="na
 	for($i=0;$i<count($type_login);$i++) {
 		$retour.="<input type='radio' name='".$nom_champ."' id='".$nom_champ."_".$tableau_type_login[$i]."' value='".$tableau_type_login[$i]."' ";
 		if($default_login_gen_type==$tableau_type_login[$i]) {
-			$retour.="checked ";
+			$retour.="checked='checked' ";
 		}
 		$retour.=" onchange='changement()'";
 		$retour.="/> <label for='".$nom_champ."_".$tableau_type_login[$i]."'  style='cursor: pointer;'>".$tableau_type_login_description[$i]."</label>\n";
@@ -1695,7 +1695,7 @@ function champs_radio_choix_format_login($nom_champ, $default_login_gen_type="na
 	}
 
 	if (getSettingValue("use_ent") == "y") {
-		$retour.="<input type='radio' name='".$nom_champ."' id='".$nom_champ."_ent' value='ent' checked=\"checked\" ";
+		$retour.="<input type='radio' name='".$nom_champ."' id='".$nom_champ."_ent' value='ent' checked='checked' ";
 		$retour.="onchange='changement()' ";
 		$retour.="/>\n";
 		$retour.="<label for='".$nom_champ."_ent'  style='cursor: pointer;'>
@@ -1779,15 +1779,15 @@ function champ_input_choix_format_login($nom_champ, $default_login_gen_type="nnn
 		$tabdiv_infobulle[]=creer_div_infobulle('div_explication_formats_login_'.$nom_champ,$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 		//$retour.=creer_div_infobulle('div_explication_formats_login',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
-		$retour.=" <a href='#' onclick=\"afficher_div('div_explication_formats_login_$nom_champ','y',20,20); return false\" onmouseover=\"delais_afficher_div('div_explication_formats_login_$nom_champ','y',20,20,1000,20,20)\" onmouseout=\"cacher_div('div_explication_formats_login_.$nom_champ')\"><img src='../images/icons/ico_question_petit.png' width='15' height='15' /></a>";
+		$retour.=" <a href='#' onclick=\"afficher_div('div_explication_formats_login_$nom_champ','y',20,20); return false\" onmouseover=\"delais_afficher_div('div_explication_formats_login_$nom_champ','y',20,20,1000,20,20)\" onmouseout=\"cacher_div('div_explication_formats_login_.$nom_champ')\"><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='' title='aide' /></a>";
 	}
 
 	$retour.="<br />\n";
 	$retour.="Casse du login&nbsp;: <label for='".$nom_champ."_casse_min'>minuscules</label><input type='radio' name='".$nom_champ."_casse' id='".$nom_champ."_casse_min' value='min' ";
-	if((getSettingValue($nom_champ.'_casse')=='min')||(getSettingValue($nom_champ.'_casse')=='')) {$retour.="checked ";}
+	if((getSettingValue($nom_champ.'_casse')=='min')||(getSettingValue($nom_champ.'_casse')=='')) {$retour.="checked='checked' ";}
 	$retour.="/> / \n";
 	$retour.="<input type='radio' name='".$nom_champ."_casse' id='".$nom_champ."_casse_maj' value='maj' ";
-	if(getSettingValue($nom_champ.'_casse')=='maj') {$retour.="checked ";}
+	if(getSettingValue($nom_champ.'_casse')=='maj') {$retour.="checked='checked' ";}
 	$retour.="/><label for='".$nom_champ."_casse_maj'> majuscules</label>\n";
 
 	return $retour;
@@ -1936,5 +1936,82 @@ function insere_lien_insertion_image_dans_ckeditor($url_img) {
 		}
 	}
 	return "<div style='float:right; width:18px;'><a href=\"javascript:insere_image_dans_ckeditor('".$url_img."','$tmp_largeur','$tmp_hauteur')\" title='Insérer cette image dans le texte'><img src='../images/up.png' width='18' height='18' alt='Insérer cette image dans le texte' /></a></div>";
+}
+
+/** fonction alertant sur la configuration de suhosin
+ *
+ * @return string Chaine de texte HTML 
+ */
+function alerte_config_suhosin() {
+	$retour="<p class='bold' style='color:red'>Configuration suhosin</p>\n";
+
+	$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
+	if($suhosin_post_max_totalname_length!='') {
+		$retour.="<p>Le module suhosin est activé.<br />\nUn paramétrage trop restrictif de ce module peut perturber le fonctionnement de Gepi, particulièrement dans les pages comportant de nombreux champs de formulaire (<i>comme par exemple dans la page de saisie des appréciations par les professeurs</i>)</p>\n";
+		$retour.="<p>La page d'extraction des moyennes permettant de modifier/corriger des valeurs propose un très grand nombre de champs.<br />Le module suhosin risque de poser des problèmes.</p>";
+
+		$tab_suhosin=array('suhosin.cookie.max_totalname_length', 
+		'suhosin.get.max_vars', 
+		'suhosin.get.max_totalname_length', 
+		'suhosin.post.max_vars', 
+		'suhosin.post.max_totalname_length', 
+		'suhosin.post.max_value_length', 
+		'suhosin.request.max_vars', 
+		'suhosin.request.max_totalname_length', 
+		'suhosin.request.max_value_length');
+
+		$retour.="<ul>\n";
+		for($i=0;$i<count($tab_suhosin);$i++) {
+			$retour.="<li>".$tab_suhosin[$i]." = ".ini_get($tab_suhosin[$i])."</li>\n";
+		}
+		$retour.="</ul>\n";
+
+		$retour.="En cas de problème, vous pouvez, soit désactiver le module, soit augmenter les valeurs.<br />\n";
+		$retour.="C'est généralement la valeur de 'suhosin.post.max_vars' qui pose problème.<br />\n";
+		$retour.="Le fichier de configuration de suhosin est habituellement en /etc/php5/conf.d/suhosin.ini<br />\nEn cas de modification de ce fichier, pensez à relancer le service apache ensuite pour prendre en compte la modification.<br />\n";
+	}
+	else {
+		$retour.="<p>Le module suhosin n'est pas activé.<br />Il ne peut pas perturber Gepi.</p>\n";
+	}
+	return $retour;
+}
+
+/** Retourne un tableau HTML de la liste des élèves associés au groupe
+ * @param integer $id_groupe : Identifiant du groupe
+ * @param integer $nb_col : Nombre de colonnes du tableau
+ *
+ * @return string Tableau HTML de la liste des élèves associés au groupe
+ */
+function tableau_html_eleves_du_groupe($id_groupe, $nb_col) {
+	$retour="<table border=\"1\" cellpadding=\"1\" cellspacing=\"1\" style=\"width: 500px;\">\n";
+	$retour.="<thead>\n";
+	$retour.="<tr style='background-color:white'>\n";
+	$retour.="<th>Élèves</th>\n";
+	for($i=1;$i<$nb_col;$i++) {
+		$retour.="<th>Col".($i+1)."</th>\n";
+	}
+	$retour.="</tr>\n";
+	$retour.="</thead>\n";
+	$retour.="<tbody>\n";
+	$sql="SELECT DISTINCT nom, prenom FROM eleves e, j_eleves_groupes jeg WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe';";
+	$res_ele_grp=mysql_query($sql);
+	if(mysql_num_rows($res_ele_grp)>0) {
+		$cpt=0;
+		while($lig_ele=mysql_fetch_object($res_ele_grp)) {
+			$retour.="<tr style='background-color:";
+			if($cpt%2==0) {$retour.="silver";} else {$retour.="white";}
+			$retour.=";'>\n";
+			$retour.="<td>".casse_mot($lig_ele->nom, 'maj')." ".casse_mot($lig_ele->prenom, 'majf2')."</td>\n";
+			for($i=1;$i<$nb_col;$i++) {
+				$retour.="<td></td>\n";
+			}
+			$retour.="</tr>\n";
+			$cpt++;
+		}
+	}
+	$retour.="</tbody>\n";
+	$retour.="</table>\n";
+	
+	return $retour;
 }
 ?>

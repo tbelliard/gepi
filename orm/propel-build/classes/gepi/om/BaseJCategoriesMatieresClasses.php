@@ -25,6 +25,12 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the categorie_id field.
 	 * @var        int
 	 */
@@ -183,7 +189,7 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 	} // setClasseId()
 
 	/**
-	 * Sets the value of the [affiche_moyenne] column. 
+	 * Sets the value of the [affiche_moyenne] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -202,7 +208,7 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 			}
 		}
 
-		if ($this->affiche_moyenne !== $v || $this->isNew()) {
+		if ($this->affiche_moyenne !== $v) {
 			$this->affiche_moyenne = $v;
 			$this->modifiedColumns[] = JCategoriesMatieresClassesPeer::AFFICHE_MOYENNE;
 		}
@@ -372,18 +378,18 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = JCategoriesMatieresClassesQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				JCategoriesMatieresClassesQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -435,7 +441,7 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -477,19 +483,15 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 				$this->setClasse($this->aClasse);
 			}
 
-
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows += JCategoriesMatieresClassesPeer::doUpdate($this, $con);
+					$this->doUpdate($con);
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
 			$this->alreadyInSave = false;
@@ -497,6 +499,81 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(JCategoriesMatieresClassesPeer::CATEGORIE_ID)) {
+			$modifiedColumns[':p' . $index++]  = 'CATEGORIE_ID';
+		}
+		if ($this->isColumnModified(JCategoriesMatieresClassesPeer::CLASSE_ID)) {
+			$modifiedColumns[':p' . $index++]  = 'CLASSE_ID';
+		}
+		if ($this->isColumnModified(JCategoriesMatieresClassesPeer::AFFICHE_MOYENNE)) {
+			$modifiedColumns[':p' . $index++]  = 'AFFICHE_MOYENNE';
+		}
+		if ($this->isColumnModified(JCategoriesMatieresClassesPeer::PRIORITY)) {
+			$modifiedColumns[':p' . $index++]  = 'PRIORITY';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO j_matieres_categories_classes (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case 'CATEGORIE_ID':
+						$stmt->bindValue($identifier, $this->categorie_id, PDO::PARAM_INT);
+						break;
+					case 'CLASSE_ID':
+						$stmt->bindValue($identifier, $this->classe_id, PDO::PARAM_INT);
+						break;
+					case 'AFFICHE_MOYENNE':
+						$stmt->bindValue($identifier, (int) $this->affiche_moyenne, PDO::PARAM_INT);
+						break;
+					case 'PRIORITY':
+						$stmt->bindValue($identifier, $this->priority, PDO::PARAM_INT);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -826,6 +903,18 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 		$copyObj->setClasseId($this->getClasseId());
 		$copyObj->setAfficheMoyenne($this->getAfficheMoyenne());
 		$copyObj->setPriority($this->getPriority());
+
+		if ($deepCopy && !$this->startCopy) {
+			// important: temporarily setNew(false) because this affects the behavior of
+			// the getter/setter methods for fkey referrer objects.
+			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
+
+			//unflag object copy
+			$this->startCopy = false;
+		} // if ($deepCopy)
+
 		if ($makeNew) {
 			$copyObj->setNew(true);
 		}
@@ -1011,25 +1100,6 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 	public function __toString()
 	{
 		return (string) $this->exportTo(JCategoriesMatieresClassesPeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseJCategoriesMatieresClasses

@@ -374,7 +374,7 @@ if (isset($_POST['is_posted'])) {
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des classes - Paramétrage des classes par lots";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 If ($max_periode <= 0) {

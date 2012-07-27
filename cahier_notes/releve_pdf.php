@@ -31,7 +31,7 @@ if (!defined('FPDF_VERSION')) {
 	require('../fpdf/fpdf.php');
 }
 
-define('FPDF_FONTPATH','../fpdf/font/');
+
 define('TopMargin','5');
 define('RightMargin','5');
 define('LeftMargin','5');

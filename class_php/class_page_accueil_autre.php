@@ -562,9 +562,18 @@ class class_page_accueil_autre {
 			  "Permet de définir quand les comptes ".$this->gepiSettings['denomination_eleves']." et ".$this->gepiSettings['denomination_responsables']."
 			  (s'ils existent) peuvent accéder aux appréciations des ".$this->gepiSettings['denomination_professeurs']."
 				sur le bulletin et avis du conseil de classe.");
-	$this->creeNouveauItem("/bulletin/param_bull.php",
+
+	if(getSettingValue('type_bulletin_par_defaut')=='pdf') {
+		$this->creeNouveauItem("/bulletin/param_bull_pdf.php",
 			  "Paramètres d'impression des bulletins",
 			  "Permet de modifier les paramètres de mise en page et d'impression des bulletins.");
+	}
+	else {
+		$this->creeNouveauItem("/bulletin/param_bull.php",
+			  "Paramètres d'impression des bulletins",
+			  "Permet de modifier les paramètres de mise en page et d'impression des bulletins.");
+	}
+
 	$this->creeNouveauItem("/responsables/index.php",
 			  "Gestion des fiches ".$this->gepiSettings['denomination_responsables'],
 			  "Cet outil vous permet de modifier/supprimer/ajouter des fiches

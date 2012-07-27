@@ -46,7 +46,7 @@ die();
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des absences";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
         // voir numero d'erreur = 2047 toutes les erreurs

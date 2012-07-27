@@ -38,7 +38,6 @@ if ($resultat_session == 'c') {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
-include("../fckeditor/fckeditor.php") ;
 
 // Check access
 // SQL : INSERT INTO droits VALUES ( '/mod_discipline/param_courrier_html.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Paramètres courrier HTML', '');
@@ -235,7 +234,7 @@ if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
 // End standart header
 //**************** EN-TETE *****************
 $titre_page = "Discipline: Paramètres courriers";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a></p>\n";

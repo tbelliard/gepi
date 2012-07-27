@@ -34,7 +34,7 @@ class PropelOnDemandCollection extends PropelCollection
 	{
 		$this->iterator = new PropelOnDemandIterator($formatter, $stmt);
 	}
-	
+
 	/**
 	 * Get an array representation of the collection
 	 * Each object is turned into an array and the result is returned
@@ -83,7 +83,7 @@ class PropelOnDemandCollection extends PropelCollection
 
 		return $ret;
 	}
-	
+
 	/**
 	 * Populates the collection from an array
 	 * Each object is populated from an array and the result is stored
@@ -248,5 +248,13 @@ class PropelOnDemandCollection extends PropelCollection
 	public function uksort($cmp_function)
 	{
 		throw new PropelException('The On Demand Collection is read only');
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function exportTo($parser, $usePrefix = true, $includeLazyLoadColumns = true)
+	{
+		throw new PropelException('A PropelOnDemandCollection cannot be exported.');
 	}
 }

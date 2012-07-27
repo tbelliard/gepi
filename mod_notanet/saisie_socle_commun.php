@@ -107,48 +107,117 @@ if (isset($_POST['is_posted'])) {
 elseif((isset($_POST['action']))&&($_POST['action']=='upload_file')) {
 	check_token();
 
+	$xml_file = isset($_FILES["xml_file"]) ? $_FILES["xml_file"] : NULL;
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
-	$fp=fopen($csv_file['tmp_name'],"r");
+	if(isset($xml_file)) {
 
-	if(!$fp) {
-		$msg.="Impossible d'ouvrir le fichier CSV !<br />";
-	} else {
-		$k = 0;
-		$nb_reg=0;
-		while (!feof($fp)) {
-			$ligne = fgets($fp, 4096);
-			if(trim($ligne)!="") {
-				$tab=explode("|",trim($ligne));
-				if((isset($tab[0]))&&($tab[0]!='')&&(isset($tab[1]))&&($tab[1]!='')&&(isset($tab[2]))&&($tab[2]!='')) {
-					$sql="SELECT DISTINCT login FROM notanet WHERE ine='$tab[0]';";
-					//echo "$sql<br />\n";
-					$res_login=mysql_query($sql);
-					if(mysql_num_rows($res_login)==1) {
-						$lig=mysql_fetch_object($res_login);
-						$sql="DELETE FROM notanet_socle_commun WHERE login='$lig->login' AND champ='$tab[1]';";
-						//echo "$sql<br />";
-						$nettoyage=mysql_query($sql);
+		$tempdir=get_user_temp_directory();
+		$source_file=$xml_file['tmp_name'];
 
-						$sql="INSERT INTO notanet_socle_commun SET login='$lig->login', champ='$tab[1]', valeur='$tab[2]';";
-						//echo "$sql<br />";
-						$insert=mysql_query($sql);
-						if($insert) {$nb_reg++;} else {$msg.="Erreur sur la requête $sql<br />";}
-					}
-					else {
-						$info_supplementaire="";
-						$sql="SELECT DISTINCT nom, prenom, classe FROM eleves e, j_eleves_classes jec, classes c WHERE e.login=jec.login AND jec.id_classe=c.id AND e.no_gep='$tab[0]';";
-						$res_ele_clas=mysql_query($sql);
-						if(mysql_num_rows($res_ele_clas)==1) {
-							$lig_ele_clas=mysql_fetch_object($res_ele_clas);
-							$info_supplementaire=" (<em>$lig_ele_clas->nom $lig_ele_clas->prenom ($lig_ele_clas->classe)</em>)";
+		if(!file_exists($source_file)) {
+			$msg="L'upload du fichier XML semble avoir échoué.<br />\n";
+		}
+		else {
+			$dest_file="../temp/".$tempdir."/notanet_socle.xml";
+			if(file_exists($dest_file)) {
+				unlink($dest_file);
+			}
+			$res_copy=copy("$source_file" , "$dest_file");
+
+			$lpc_xml=simplexml_load_file($dest_file);
+			if(!$lpc_xml) {
+				$msg="ECHEC du chargement du fichier avec simpleXML.<br />\n";
+			}
+			else {
+				$nom_racine=$lpc_xml->getName();
+				if(my_strtoupper($nom_racine)!='SOCLE') {
+					$msg="ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML LPC.<br />Sa racine devrait être 'SOCLE' et en l'occurence, c'est '$nom_racine'.<br />\n";
+				}
+				else {
+					$nb_reg=0;
+					$objet_donnees=($lpc_xml->donnees);
+					foreach ($objet_donnees->children() as $key => $value) {
+						//echo "$key->$value<br />";
+						$ligne = $value;
+						if(trim($ligne)!="") {
+							$tab=explode("|",trim($ligne));
+							if((isset($tab[0]))&&($tab[0]!='')&&(isset($tab[1]))&&($tab[1]!='')&&(isset($tab[2]))&&($tab[2]!='')) {
+								$sql="SELECT DISTINCT login FROM notanet WHERE ine='$tab[0]';";
+								//echo "$sql<br />\n";
+								$res_login=mysql_query($sql);
+								if(mysql_num_rows($res_login)==1) {
+									$lig=mysql_fetch_object($res_login);
+									$sql="DELETE FROM notanet_socle_commun WHERE login='$lig->login' AND champ='$tab[1]';";
+									//echo "$sql<br />";
+									$nettoyage=mysql_query($sql);
+
+									$sql="INSERT INTO notanet_socle_commun SET login='$lig->login', champ='$tab[1]', valeur='$tab[2]';";
+									//echo "$sql<br />";
+									$insert=mysql_query($sql);
+									if($insert) {$nb_reg++;} else {$msg.="Erreur sur la requête $sql<br />";}
+								}
+								else {
+									$info_supplementaire="";
+									$sql="SELECT DISTINCT nom, prenom, classe FROM eleves e, j_eleves_classes jec, classes c WHERE e.login=jec.login AND jec.id_classe=c.id AND e.no_gep='$tab[0]';";
+									$res_ele_clas=mysql_query($sql);
+									if(mysql_num_rows($res_ele_clas)==1) {
+										$lig_ele_clas=mysql_fetch_object($res_ele_clas);
+										$info_supplementaire=" (<em>$lig_ele_clas->nom $lig_ele_clas->prenom ($lig_ele_clas->classe)</em>)";
+									}
+									$msg.="Ligne non identifiée : ".$ligne.$info_supplementaire."<br />";
+									//$msg.="$sql<br />\n";
+								}
+							}
 						}
-						$msg.="Ligne non identifiée : ".$ligne.$info_supplementaire."<br />";
-						//$msg.="$sql<br />\n";
 					}
+					if($nb_reg>0) {$msg.="$nb_reg enregistrement(s) effectué(s).<br />";}
 				}
 			}
 		}
-		if($nb_reg>0) {$msg.="$nb_reg enregistrement(s) effectué(s).<br />";}
+	}
+	elseif(isset($csv_file)) {
+		$fp=fopen($csv_file['tmp_name'],"r");
+
+		if(!$fp) {
+			$msg.="Impossible d'ouvrir le fichier CSV !<br />";
+		} else {
+			//$k = 0;
+			$nb_reg=0;
+			while (!feof($fp)) {
+				$ligne = fgets($fp, 4096);
+				if(trim($ligne)!="") {
+					$tab=explode("|",trim($ligne));
+					if((isset($tab[0]))&&($tab[0]!='')&&(isset($tab[1]))&&($tab[1]!='')&&(isset($tab[2]))&&($tab[2]!='')) {
+						$sql="SELECT DISTINCT login FROM notanet WHERE ine='$tab[0]';";
+						//echo "$sql<br />\n";
+						$res_login=mysql_query($sql);
+						if(mysql_num_rows($res_login)==1) {
+							$lig=mysql_fetch_object($res_login);
+							$sql="DELETE FROM notanet_socle_commun WHERE login='$lig->login' AND champ='$tab[1]';";
+							//echo "$sql<br />";
+							$nettoyage=mysql_query($sql);
+
+							$sql="INSERT INTO notanet_socle_commun SET login='$lig->login', champ='$tab[1]', valeur='$tab[2]';";
+							//echo "$sql<br />";
+							$insert=mysql_query($sql);
+							if($insert) {$nb_reg++;} else {$msg.="Erreur sur la requête $sql<br />";}
+						}
+						else {
+							$info_supplementaire="";
+							$sql="SELECT DISTINCT nom, prenom, classe FROM eleves e, j_eleves_classes jec, classes c WHERE e.login=jec.login AND jec.id_classe=c.id AND e.no_gep='$tab[0]';";
+							$res_ele_clas=mysql_query($sql);
+							if(mysql_num_rows($res_ele_clas)==1) {
+								$lig_ele_clas=mysql_fetch_object($res_ele_clas);
+								$info_supplementaire=" (<em>$lig_ele_clas->nom $lig_ele_clas->prenom ($lig_ele_clas->classe)</em>)";
+							}
+							$msg.="Ligne non identifiée : ".$ligne.$info_supplementaire."<br />";
+							//$msg.="$sql<br />\n";
+						}
+					}
+				}
+			}
+			if($nb_reg>0) {$msg.="$nb_reg enregistrement(s) effectué(s).<br />";}
+		}
 	}
 }
 
@@ -157,7 +226,7 @@ $message_enregistrement = "Les modifications ont été enregistrées !";
 
 //**************** EN-TETE *****************
 $titre_page = "Notanet | Saisie Socle commun";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 $tmp_timeout=(getSettingValue("sessionMaxLength"))*60;
@@ -173,11 +242,14 @@ change = 'no';
 
 echo " | <a href='index.php'>Accueil Notanet</a>";
 echo " | <a href='".$_SERVER['PHP_SELF']."?mode=import_csv'>Importer un CSV</a>\n";
+echo " | <a href='".$_SERVER['PHP_SELF']."?mode=import_xml'>Importer un XML</a>\n";
 
 if((isset($mode))&&($mode=='import_csv')) {
 	echo "</p>\n";
 
-	echo "<p>L'application nationale LPC permet d'exporter les saisies effectuées.<br />";
+	echo "<p>L'application nationale LPC permet d'exporter les saisies effectuées.<br />\n";
+	echo "En 2011, le fichier était au format CSV.<br />\n";
+	echo "Il semble depuis être passé au <a href='".$_SERVER['PHP_SELF']."?mode=import_xml'>format XML</a>.<br />\n";
 	echo "Pour obtenir ce CSV, sur l'application LPC, il faut \"confirmer\" la maîtrise pour les élèves, puis effectuer la procédure d'export vers NOTANET.</p>\n";
 
 	echo "<p>Veuillez fournir le fichier&nbsp;:</p>\n";
@@ -188,12 +260,32 @@ if((isset($mode))&&($mode=='import_csv')) {
 	echo "<p><input type='submit' value='Valider' />\n";
 	echo "</form>\n";
 
-	echo "<p><i>NOTE</i>&nbsp;: L'extraction des moyennes doit avoir été effectuée avant l'import.</p>\n";
+	echo "<p><br /></p>\n";
+	echo "<p><i>NOTES</i>&nbsp;:</p>
+<ul>
+	<li><p>L'extraction des moyennes doit avoir été effectuée avant l'import.<br />Les élèves pour lesquels l'extraction n'a pas été faite, mais pour lesquels la saisie LPC a été effectuée risquent d'apparaître en erreur (<em>il n'y a pas lieu de s'alarmer, mais il faudra sans doute s'occuper de ces élèves à un moment</em>).</p></li>\n";
+}
+elseif((isset($mode))&&($mode=='import_xml')) {
+	echo "</p>\n";
 
+	echo "<p>L'application nationale LPC permet d'exporter les saisies effectuées.<br />";
+	echo "Pour obtenir ce XML, sur l'application LPC, il faut \"confirmer\" la maîtrise pour les élèves, puis dans le menu Administration, effectuer la procédure d'export vers NOTANET.</p>\n";
+
+	echo "<p>Veuillez fournir le fichier&nbsp;:</p>\n";
+	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo add_token_field();
+	echo "<input type='hidden' name='action' value='upload_file' />\n";
+	echo "<p><input type=\"file\" size=\"80\" name=\"xml_file\" />\n";
+	echo "<p><input type='submit' value='Valider' />\n";
+	echo "</form>\n";
+
+	echo "<p><br /></p>\n";
+	echo "<p><i>NOTES</i>&nbsp;:</p>
+<ul>
+	<li><p>L'extraction des moyennes doit avoir été effectuée avant l'import.<br />Les élèves pour lesquels l'extraction n'a pas été faite, mais pour lesquels la saisie LPC a été effectuée risquent d'apparaître en erreur (<em>il n'y a pas lieu de s'alarmer, mais il faudra sans doute s'occuper de ces élèves à un moment</em>).</p></li>\n";
 }
 elseif(!isset($id_classe)) {
 	echo "</p>\n";
-
 	//$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, notanet n,notanet_ele_type net WHERE p.id_classe = c.id AND c.id=n.id_classe ORDER BY classe;";
 	$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_eleves_classes jec, notanet_ele_type net WHERE p.id_classe = c.id AND c.id=jec.id_classe AND jec.login=net.login ORDER BY classe;";
 	$call_classes=mysql_query($sql);
@@ -580,10 +672,17 @@ function DecocheColonne(nom_col,num_classe) {
 
 }
 
-echo "<p><br /></p>\n";
-echo "<p><i>NOTES</i>&nbsp;:</p>
-<ul>
-<li>Voir <a href='https://www.sylogix.org/projects/gepi/wiki/Gepi_socle_commun_notanet' target='_blank'>https://www.sylogix.org/projects/gepi/wiki/Gepi_socle_commun_notanet</a></li>
+if((isset($mode))&&(($mode=='import_xml')||($mode=='import_csv'))) {
+	// Le début de la liste des notes de bas de page a déjà été affiché
+}
+else {
+	echo "<p><br /></p>\n";
+	echo "<p><i>NOTES</i>&nbsp;:</p>
+<ul>\n";
+}
+echo "<li>Voir <a href='https://www.sylogix.org/projects/gepi/wiki/Gepi_socle_commun_notanet' target='_blank'>https://www.sylogix.org/projects/gepi/wiki/Gepi_socle_commun_notanet</a></li>
+<li>Dans l'interface Notanet (<em>hors de Gepi</em>), il semble qu'il faille fournir l'export CSV des notes de Gepi et aussi l'export XML de LPC.<br />
+Cela se fait avec le même choix 'Mettre à jour depuis un fichier externe' dans Notanet.</li>
 <li>Les élèves qui ont eu leur brevet l'an dernier, mais ont néanmoins redoublé, peuvent apparaître en erreur.<br />
 De la même façon, les élèves de SEGPA peuvent avoir la saisie de Socle commun faite dans LPC, mais ils ne passent pas le brevet.<br />
 Ils peuvent apparaître en erreur également.</li>

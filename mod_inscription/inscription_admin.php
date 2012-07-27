@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -21,7 +21,7 @@
  */
 
 $accessibilite="y";
-$titre_page = "Gestion du module Notanet/Fiches Brevet";
+$titre_page = "Gestion du module Inscription";
 $niveau_arbo = 1;
 $gepiPathJava="./..";
 $post_reussi=FALSE;
@@ -62,11 +62,10 @@ if (isset($_POST['activer'])) {
 
 // header
 // $titre_page = "Gestion du module Inscription";
-// require_once("../lib/header.inc");
 
 
 // ====== Inclusion des balises head et du bandeau =====
-include_once("../lib/header_template.inc");
+include_once("../lib/header_template.inc.php");
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
 		echo "erreur lors de la création du fil d'ariane";

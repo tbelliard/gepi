@@ -257,7 +257,7 @@ if (isset($is_posted)) {
 
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des classes | Gestion des matières";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
 ?>

@@ -1,5 +1,5 @@
 <?php
-/* $Id$ */
+/* $Id: extract_moy.php 7260 2011-06-19 13:12:04Z crob $ */
 /*
 * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
@@ -55,9 +55,11 @@ $themessage = "Des changements ont eu lieu sur cette page et n\'ont pas été en
 //**************** EN-TETE *****************
 $titre_page = "Notanet: Extraction des moyennes";
 //echo "<div class='noprint'>\n";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
+
+//debug_var();
 
 // Bibliothèque pour Notanet et Fiches brevet
 include("lib_brevets.php");
@@ -98,13 +100,19 @@ if(!isset($extract_mode)) {
 	echo "</p>\n";
 	echo "<ul>\n";
 	echo "<li><a href='".$_SERVER['PHP_SELF']."?extract_mode=tous'>Extraire les moyennes pour tous les élèves associés à un type de brevet.</a></li>\n";
-	echo "<li><a href='".$_SERVER['PHP_SELF']."?extract_mode=select'></a>Extraire une sélection d'élèves</li>\n";
+	echo "<li><a href='".$_SERVER['PHP_SELF']."?extract_mode=select'>Extraire une sélection d'élèves</a></li>\n";
 	while($lig=mysql_fetch_object($res)) {
 		echo "<li><a href='".$_SERVER['PHP_SELF']."?extract_mode=".$lig->type_brevet."'>Extraire les moyennes pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
 	}
 	echo "</ul>\n";
 
 	echo "<p><i>ATTENTION&nbsp;:</i></p><p style='margin-left: 3em;'>Il ne faut faire l'<b>extraction</b> qu'<b>une seule fois</b> par type de brevet.<br />Lors de l'extraction, les valeurs préalablement saisies/enregistrées sont supprimées/remplacées.<br />Si vous devez corriger une extraction, il faut passer par le choix suivant&nbsp;: <a href='corrige_extract_moy.php'>Corriger l'extraction des moyennes</a>.</p>\n";
+
+	$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
+	if($suhosin_post_max_totalname_length!='') {
+		echo alerte_config_suhosin();
+	}
+
 }
 else {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'".insert_confirm_abandon().">Choisir un autre mode d'extraction</a>";
@@ -200,6 +208,7 @@ else {
 			}
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post' target='_blank'>\n";
+			echo add_token_field();
 
 			// Boucle élèves:
 			$num_eleve=0;
@@ -256,9 +265,171 @@ else {
 			}
 		}
 		elseif($extract_mode=="select") {
-			echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post' target='_blank'>\n";
 
-			// A FAIRE...
+			$tab_selection_ele=isset($_POST['tab_selection_ele']) ? $_POST['tab_selection_ele'] : array();
+
+			if((!isset($_POST['choix_eleves']))||(count($tab_selection_ele)==0)) {
+				$sql="SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec,
+								notanet_ele_type n,
+								notanet_corresp nc
+							WHERE n.login=jec.login AND
+								n.type_brevet=nc.type_brevet
+							ORDER BY id_classe";
+				$res=mysql_query($sql);
+				if(mysql_num_rows($res)==0) {
+					echo "<p>Il semble que des associations soient manquantes.<br />Auriez-vous sauté des étapes?</p>\n";
+
+					require("../lib/footer.inc.php");
+					die();
+				}
+				else {
+					unset($id_classe);
+
+					$cpt=0;
+					while($lig=mysql_fetch_object($res)) {
+						$id_classe[$cpt]=$lig->id_classe;
+						$cpt++;
+					}
+				}
+
+				echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post'>\n";
+				echo add_token_field();
+
+				$max_eff_classe=0;
+
+				// Boucle élèves:
+				for($i=0;$i<count($id_classe);$i++){
+					$classe=get_classe_from_id($id_classe[$i]);
+					echo "<h4>Classe de ".$classe."</h4>\n";
+					echo "<blockquote>\n";
+
+					//$call_eleve = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe[$i]' and e.login = c.login) order by c.id_classe,nom,prenom");
+					$sql="SELECT DISTINCT e.*,n.type_brevet FROM eleves e,
+									j_eleves_classes jec,
+									notanet_ele_type n
+								WHERE (jec.id_classe='$id_classe[$i]' AND
+										e.login=jec.login AND
+										n.login=e.login)
+								ORDER BY jec.id_classe,e.nom,e.prenom";
+					//echo $sql;
+					$call_eleve = mysql_query($sql);
+					$nombreligne = mysql_num_rows($call_eleve);
+
+					if($nombreligne>$max_eff_classe) {
+						$max_eff_classe=$nombreligne;
+					}
+
+					echo "<table class='boireaus'>\n";
+					echo "<th>Élève</th>\n";
+					echo "<th>\n";
+					echo "<a href=\"javascript:CocheColonneSelectEleves(".$i.");changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonneSelectEleves(".$i.");changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+					echo "</th>\n";
+					echo "</tr>\n";
+					$alt=1;
+					$k=0;
+					while($ligne=mysql_fetch_object($call_eleve)){
+						$alt=$alt*(-1);
+						echo "<tr class='lig$alt white_hover'>\n";
+						echo "<td style='text-align:left;'><label for='tab_selection_ele_".$i."_".$k."'>".$ligne->nom." ".$ligne->prenom."</label></td>\n";
+
+						echo "<td><input type='checkbox' name='tab_selection_ele[]' id='tab_selection_ele_".$i."_".$k."' value=\"".$ligne->login."\" ";
+						echo "/></td>\n";
+
+						$k++;
+					}
+					echo "</table>\n";
+					echo "</blockquote>\n";
+				}
+
+				echo "<input type='hidden' name='extract_mode' value='$extract_mode' />\n";
+				echo "<input type='hidden' name='choix_eleves' value='y' />\n";
+
+				echo "<p><input type='submit' name='valider' value='Valider' /></p>\n";
+				echo "</form>\n";
+
+				echo "<script type='text/javascript'>
+
+function CocheColonneSelectEleves(i,j) {
+	for (var k=0;k<$max_eff_classe;k++) {
+		if(document.getElementById('tab_selection_ele_'+i+'_'+k)){
+			document.getElementById('tab_selection_ele_'+i+'_'+k).checked = true;
+		}
+	}
+}
+
+function DecocheColonneSelectEleves(i,j) {
+	for (var k=0;k<$max_eff_classe;k++) {
+		if(document.getElementById('tab_selection_ele_'+i+'_'+k)){
+			document.getElementById('tab_selection_ele_'+i+'_'+k).checked = false;
+		}
+	}
+}
+</script>\n";
+
+				require("../lib/footer.inc.php");
+				die();
+			}
+			else {
+				echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post' target='_blank'>\n";
+				echo add_token_field();
+
+				echo "<input type='hidden' name='choix_eleves' value='y' />\n";
+
+				$num_eleve=0;
+				for($i=0;$i<count($tab_selection_ele);$i++){
+
+					$sql="SELECT DISTINCT e.*,n.type_brevet FROM eleves e,
+									notanet_ele_type n
+								WHERE (e.login='$tab_selection_ele[$i]' AND
+										n.login=e.login)";
+					//echo $sql;
+					$call_eleve = mysql_query($sql);
+					$nombreligne = mysql_num_rows($call_eleve);
+					// On ne doit faire qu'un tour dans cette boucle:
+					while($ligne=mysql_fetch_object($call_eleve)){
+						unset($tab_ele);
+						$tab_ele=array();
+
+						$tab_ele['nom']=$ligne->nom;
+						$tab_ele['prenom']=$ligne->prenom;
+						$tab_ele['login']=$ligne->login;
+						$tab_ele['no_gep']=$ligne->no_gep;
+						$tab_ele['type_brevet']=$ligne->type_brevet;
+
+						$id_classe_ele=0;
+						$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$ligne->login' ORDER BY periode DESC LIMIT 1;";
+						$res_clas_ele=mysql_query($sql);
+						if(mysql_num_rows($res_clas_ele)>0) {
+							$lig_clas_ele=mysql_fetch_object($res_clas_ele);
+							$id_classe_ele=$lig_clas_ele->id_classe;
+						}
+
+						/*
+						$sql="SELECT type_brevet FROM notanet_ele_type WHERE login='$ligne->login';";
+						$res2=mysql_query($sql);
+						$type_brevet
+						*/
+
+						// ********************************************************************************
+						// VERIFIER SI LES ASSOCIATIONS SONT FAITES POUR LE TYPE BREVET $ligne->type_brevet
+						// ********************************************************************************
+						$sql="SELECT 1=1 FROM notanet_corresp WHERE type_brevet='$ligne->type_brevet';";
+						$res=mysql_query($sql);
+						if(mysql_num_rows($res)>0) {
+							tab_extract_moy($tab_ele, $id_classe_ele);
+							flush();
+						}
+						else {
+							echo "<p><b>".mb_strtoupper($ligne->nom)." ".ucfirst(mb_strtolower($ligne->prenom))."</b>: <span style='color:red;'>Pas d'associations de matières effectuées pour <b>".$tab_type_brevet[$ligne->type_brevet]."</b></span></p>\n";
+
+							// Pas de id="INE_$num_eleve" pour cet élève (inutile)
+							echo "INE: <input type='hidden' name='INE[$num_eleve]' value='$ligne->no_gep' onchange='changement()' />\n";
+							echo "<input type='hidden' name='nom_eleve[$num_eleve]' value=\"".$tab_ele['nom']." ".$tab_ele['prenom']."\" />\n";
+						}
+						$num_eleve++;
+					}
+				}
+			}
 
 		}
 		else {
@@ -385,7 +556,7 @@ else {
 		echo "<input type='hidden' name='extract_mode' value='$extract_mode' />\n";
 		echo "<input type='hidden' name='nb_tot_eleves' value='$num_eleve' />\n";
 		//echo "<input type='submit' name='choix_corrections' value='Valider les corrections' />\n";
-		echo "<input type='submit' name='enregistrer_extract_moy' value='Enregistrer' />\n";
+		echo "<input type='submit' name='enregistrer_extract_moy' id='enregistrer_extract_moy' value='Enregistrer' />\n";
 		//echo "<p>Valider les corrections ci-dessus permet de générer un nouveau fichier d'export tenant compte de vos modifications.</p>";
 		echo "</form>\n";
 
@@ -399,32 +570,34 @@ else {
 		echo "<p id='js_retablir_notes_enregistrees' style='display:none'>Si vous avez déjà fait une extraction, et que vous souhaitez réinjecter vos modifications précédemment enregistrées, vous pouvez cependant utiliser le lien suivant&nbsp;<br /><a href='#' onclick='retablir_notes_enregistrees(); return false;'>Rétablir toutes les notes précédemment enregistrées</a></p>\n";
 		echo "</li>\n";
 
+
 		$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
 		if($suhosin_post_max_totalname_length!='') {
 			echo "<li>";
-				echo "<p class='bold'>Configuration suhosin</p>\n";
-				echo "<p>Le module suhosin est activé.<br />\nUn paramétrage trop restrictif de ce module peut perturber le fonctionnement de Gepi, particulièrement dans les pages comportant de nombreux champs de formulaire (<i>comme par exemple dans la page de saisie des appréciations par les professeurs</i>)</p>\n";
-				echo "<p>La page d'extraction des moyennes permettant de modifier/corriger des valeurs propose un très grand nombre de champs.<br />Le module suhosin risque de poser des problèmes.</p>";
 
-				$tab_suhosin=array('suhosin.cookie.max_totalname_length', 
-				'suhosin.get.max_totalname_length', 
-				'suhosin.post.max_totalname_length', 
-				'suhosin.post.max_value_length', 
-				'suhosin.request.max_totalname_length', 
-				'suhosin.request.max_value_length', 
-				'suhosin.request.max_vars');
-		
-				for($i=0;$i<count($tab_suhosin);$i++) {
-					echo "- ".$tab_suhosin[$i]." = ".ini_get($tab_suhosin[$i])."<br />\n";
+				echo alerte_config_suhosin();
+
+				$suhosin_post_max_vars=ini_get('suhosin.post.max_vars');
+				echo "<p>Si le nombre de champs 'input' dépasse la valeur de '<span style='color:red'>suhosin.post.max_vars</span>' (<em style='color:red'>$suhosin_post_max_vars</em>), vous devriez opter pour une <a href='".$_SERVER['PHP_SELF']."?extract_mode=select'>extraction partielle en sélectionnant une partie seulement des élèves</a>";
+				if((is_numeric($suhosin_post_max_vars))&&($suhosin_post_max_vars>0)) {
+					echo " <span style='color:red'>en se limitant à environ ";
+					echo floor($suhosin_post_max_vars/22);
+					echo " élèves</span>";
 				}
-		
-				echo "En cas de problème, vous pouvez, soit désactiver le module, soit augmenter les valeurs.<br />\n";
-				echo "Le fichier de configuration de suhosin est habituellement en /etc/php5/conf.d/suhosin.ini<br />\nEn cas de modification de ce fichier, pensez à relancer le service apache ensuite pour prendre en compte la modification.<br />\n";
+				echo ".</p>\n";
+
+				// 20120524
+				echo "<p id='p_nombre_de_champs_input'></p>\n";
 			echo "</li>";
 		}
 
 		echo "</ul>\n";
 
+		echo "<script type='text/javascript'>
+var tab_input=document.getElementsByTagName('input');
+//alert(tab_input.length);
+if(document.getElementById('p_nombre_de_champs_input')) {document.getElementById('p_nombre_de_champs_input').innerHTML='Vous avez <span style=\'color:red\'>'+tab_input.length+'</span> champs à poster.';}
+</script>\n";
 
 		echo "<script type='text/javascript'>
 /*
@@ -504,6 +677,11 @@ function retablir_notes_enregistrees() {
 				if(mysql_num_rows($res_login_ele)>0){
 					$lig_login_ele=mysql_fetch_object($res_login_ele);
 					$login_eleve=$lig_login_ele->login;
+
+					if($extract_mode=='select') {
+						$sql="DELETE FROM notanet WHERE login='$login_eleve';";
+						$nettoyage=mysql_query($sql);
+					}
 
 					$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$login_eleve' ORDER BY periode DESC";
 					$res_classe_ele=mysql_query($sql);

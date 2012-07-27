@@ -39,7 +39,7 @@ if (getSettingValue("active_cahiers_texte")!='y') {
 }
 
 //**************** EN-TETE *****************
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************
 $max_size_ko = getSettingValue("max_size")/1024;
 $total_max_size_ko = getSettingValue("total_max_size")/1024;

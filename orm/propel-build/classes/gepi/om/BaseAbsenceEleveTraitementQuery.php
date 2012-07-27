@@ -89,7 +89,7 @@
  */
 abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 {
-
+	
 	// soft_delete behavior
 	protected static $softDelete = true;
 	protected $localSoftDelete = true;
@@ -130,11 +130,14 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	}
 
 	/**
-	 * Find object by primary key
-	 * Use instance pooling to avoid a database query if the object exists
+	 * Find object by primary key.
+	 * Propel uses the instance pool to skip the database if the object exists.
+	 * Go fast if the query is untouched.
+	 *
 	 * <code>
 	 * $obj  = $c->findPk(12, $con);
 	 * </code>
+	 *
 	 * @param     mixed $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
@@ -142,17 +145,73 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ((null !== ($obj = AbsenceEleveTraitementPeer::getInstanceFromPool((string) $key))) && $this->getFormatter()->isObjectFormatter()) {
+		if ($key === null) {
+			return null;
+		}
+		if ((null !== ($obj = AbsenceEleveTraitementPeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
 			// the object is alredy in the instance pool
 			return $obj;
-		} else {
-			// the object has not been requested yet, or the formatter is not an object formatter
-			$criteria = $this->isKeepQuery() ? clone $this : $this;
-			$stmt = $criteria
-				->filterByPrimaryKey($key)
-				->getSelectStatement($con);
-			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveTraitementPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
+		if ($this->formatter || $this->modelAlias || $this->with || $this->select
+		 || $this->selectColumns || $this->asColumns || $this->selectModifiers
+		 || $this->map || $this->having || $this->joins) {
+			return $this->findPkComplex($key, $con);
+		} else {
+			return $this->findPkSimple($key, $con);
+		}
+	}
+
+	/**
+	 * Find object by primary key using raw SQL to go fast.
+	 * Bypass doSelect() and the object formatter by using generated code.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    AbsenceEleveTraitement A model object, or null if the key is not found
+	 */
+	protected function findPkSimple($key, $con)
+	{
+		$sql = 'SELECT ID, UTILISATEUR_ID, A_TYPE_ID, A_MOTIF_ID, A_JUSTIFICATION_ID, COMMENTAIRE, MODIFIE_PAR_UTILISATEUR_ID, CREATED_AT, UPDATED_AT, DELETED_AT FROM a_traitements WHERE ID = :p0';
+		try {
+			$stmt = $con->prepare($sql);
+			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), $e);
+		}
+		$obj = null;
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$obj = new AbsenceEleveTraitement();
+			$obj->hydrate($row);
+			AbsenceEleveTraitementPeer::addInstanceToPool($obj, (string) $key);
+		}
+		$stmt->closeCursor();
+
+		return $obj;
+	}
+
+	/**
+	 * Find object by primary key.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    AbsenceEleveTraitement|array|mixed the result, formatted by the current formatter
+	 */
+	protected function findPkComplex($key, $con)
+	{
+		// As the query uses a PK condition, no limit(1) is necessary.
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
+		$stmt = $criteria
+			->filterByPrimaryKey($key)
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 	}
 
 	/**
@@ -167,10 +226,15 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{
+		if ($con === null) {
+			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		return $this
+		$stmt = $criteria
 			->filterByPrimaryKeys($keys)
-			->find($con);
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->format($stmt);
 	}
 
 	/**
@@ -199,7 +263,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterById(1234); // WHERE id = 1234
@@ -225,7 +289,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the utilisateur_id column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUtilisateurId('fooValue');   // WHERE utilisateur_id = 'fooValue'
@@ -253,7 +317,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the a_type_id column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByATypeId(1234); // WHERE a_type_id = 1234
@@ -295,7 +359,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the a_motif_id column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAMotifId(1234); // WHERE a_motif_id = 1234
@@ -337,7 +401,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the a_justification_id column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAJustificationId(1234); // WHERE a_justification_id = 1234
@@ -379,7 +443,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the commentaire column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCommentaire('fooValue');   // WHERE commentaire = 'fooValue'
@@ -407,7 +471,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the modifie_par_utilisateur_id column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByModifieParUtilisateurId('fooValue');   // WHERE modifie_par_utilisateur_id = 'fooValue'
@@ -435,7 +499,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the created_at column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
@@ -477,7 +541,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the updated_at column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
@@ -519,7 +583,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the deleted_at column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByDeletedAt('2011-03-14'); // WHERE deleted_at = '2011-03-14'
@@ -585,7 +649,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the UtilisateurProfessionnel relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -595,7 +659,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UtilisateurProfessionnel');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -603,7 +667,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -611,7 +675,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'UtilisateurProfessionnel');
 		}
-		
+
 		return $this;
 	}
 
@@ -619,7 +683,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	 * Use the UtilisateurProfessionnel relation UtilisateurProfessionnel object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -659,7 +723,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the AbsenceEleveType relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -669,7 +733,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveType');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -677,7 +741,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -685,7 +749,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'AbsenceEleveType');
 		}
-		
+
 		return $this;
 	}
 
@@ -693,7 +757,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	 * Use the AbsenceEleveType relation AbsenceEleveType object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -733,7 +797,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the AbsenceEleveMotif relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -743,7 +807,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveMotif');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -751,7 +815,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -759,7 +823,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'AbsenceEleveMotif');
 		}
-		
+
 		return $this;
 	}
 
@@ -767,7 +831,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	 * Use the AbsenceEleveMotif relation AbsenceEleveMotif object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -807,7 +871,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the AbsenceEleveJustification relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -817,7 +881,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveJustification');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -825,7 +889,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -833,7 +897,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'AbsenceEleveJustification');
 		}
-		
+
 		return $this;
 	}
 
@@ -841,7 +905,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	 * Use the AbsenceEleveJustification relation AbsenceEleveJustification object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -881,7 +945,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the ModifieParUtilisateur relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -891,7 +955,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('ModifieParUtilisateur');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -899,7 +963,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -907,7 +971,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'ModifieParUtilisateur');
 		}
-		
+
 		return $this;
 	}
 
@@ -915,7 +979,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	 * Use the ModifieParUtilisateur relation UtilisateurProfessionnel object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -945,7 +1009,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 		} elseif ($jTraitementSaisieEleve instanceof PropelCollection) {
 			return $this
 				->useJTraitementSaisieEleveQuery()
-					->filterByPrimaryKeys($jTraitementSaisieEleve->getPrimaryKeys())
+				->filterByPrimaryKeys($jTraitementSaisieEleve->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByJTraitementSaisieEleve() only accepts arguments of type JTraitementSaisieEleve or PropelCollection');
@@ -954,7 +1018,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the JTraitementSaisieEleve relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -964,7 +1028,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JTraitementSaisieEleve');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -972,7 +1036,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -980,7 +1044,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'JTraitementSaisieEleve');
 		}
-		
+
 		return $this;
 	}
 
@@ -988,7 +1052,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	 * Use the JTraitementSaisieEleve relation JTraitementSaisieEleve object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1018,7 +1082,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 		} elseif ($absenceEleveNotification instanceof PropelCollection) {
 			return $this
 				->useAbsenceEleveNotificationQuery()
-					->filterByPrimaryKeys($absenceEleveNotification->getPrimaryKeys())
+				->filterByPrimaryKeys($absenceEleveNotification->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByAbsenceEleveNotification() only accepts arguments of type AbsenceEleveNotification or PropelCollection');
@@ -1027,7 +1091,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the AbsenceEleveNotification relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1037,7 +1101,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveNotification');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1045,7 +1109,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1053,7 +1117,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'AbsenceEleveNotification');
 		}
-		
+
 		return $this;
 	}
 
@@ -1061,7 +1125,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	 * Use the AbsenceEleveNotification relation AbsenceEleveNotification object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1088,10 +1152,10 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	{
 		return $this
 			->useJTraitementSaisieEleveQuery()
-				->filterByAbsenceEleveSaisie($absenceEleveSaisie, $comparison)
+			->filterByAbsenceEleveSaisie($absenceEleveSaisie, $comparison)
 			->endUse();
 	}
-	
+
 	/**
 	 * Exclude object from result
 	 *
@@ -1103,14 +1167,14 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	{
 		if ($absenceEleveTraitement) {
 			$this->addUsingAlias(AbsenceEleveTraitementPeer::ID, $absenceEleveTraitement->getId(), Criteria::NOT_EQUAL);
-	  }
-	  
+		}
+
 		return $this;
 	}
 
 	/**
 	 * Code to execute before every SELECT statement
-	 * 
+	 *
 	 * @param     PropelPDO $con The connection object used by the query
 	 */
 	protected function basePreSelect(PropelPDO $con)
@@ -1121,13 +1185,13 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 		} else {
 			AbsenceEleveTraitementPeer::enableSoftDelete();
 		}
-		
+
 		return $this->preSelect($con);
 	}
 
 	/**
 	 * Code to execute before every DELETE statement
-	 * 
+	 *
 	 * @param     PropelPDO $con The connection object used by the query
 	 */
 	protected function basePreDelete(PropelPDO $con)
@@ -1138,7 +1202,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 		} else {
 			return $this->hasWhereClause() ? $this->forceDelete($con) : $this->forceDeleteAll($con);
 		}
-		
+
 		return $this->preDelete($con);
 	}
 
@@ -1213,7 +1277,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	/**
 	 * Temporarily disable the filter on deleted rows
 	 * Valid only for the current query
-	 * 
+	 *
 	 * @see AbsenceEleveTraitementQuery::disableSoftDelete() to disable the filter for more than one query
 	 *
 	 * @return AbsenceEleveTraitementQuery The current query, for fluid interface
@@ -1270,7 +1334,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	{
 		return $this->update(array('DeletedAt' => null), $con);
 	}
-		
+	
 	/**
 	 * Enable the soft_delete behavior for this model
 	 */

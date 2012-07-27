@@ -83,7 +83,7 @@ $titre_page = "MEF";
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
 $javascript_specifique[] = "mod_abs2/lib/include";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 echo "<table cellspacing='15px' cellpadding='5px'><tr>";
@@ -237,7 +237,6 @@ foreach($eleve_col as $eleve) {
 			// Avec ou sans photo
 			if ((getSettingValue("active_module_trombinoscopes")=='y')) {
 			    $nom_photo = $eleve->getNomPhoto(1);
-			    //$photos = "../photos/eleves/".$nom_photo;
 			    $photos = $nom_photo;
 			   // if (($nom_photo == "") or (!(file_exists($photos)))) {
 			    if (($nom_photo == NULL) or (!(file_exists($photos)))) {

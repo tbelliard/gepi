@@ -91,7 +91,7 @@ if(isset($is_posted)) {
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *******************************
 $titre_page = "Choisir une adresse responsable";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE ***************************
 
 if(!getSettingValue('conv_new_resp_table')){

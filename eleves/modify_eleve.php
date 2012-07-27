@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -44,6 +44,13 @@ $birth_month = isset($_POST["birth_month"]) ? $_POST["birth_month"] : NULL;
 unset($birth_day);
 $birth_day = isset($_POST["birth_day"]) ? $_POST["birth_day"] : NULL;
 
+unset($reg_tel_pers);
+$reg_tel_pers = isset($_POST["reg_tel_pers"]) ? $_POST["reg_tel_pers"] : NULL;
+unset($reg_tel_port);
+$reg_tel_port = isset($_POST["reg_tel_port"]) ? $_POST["reg_tel_port"] : NULL;
+unset($reg_tel_prof);
+$reg_tel_prof = isset($_POST["reg_tel_prof"]) ? $_POST["reg_tel_prof"] : NULL;
+
 //Gestion de la date de sortie de l'établissement
 unset($date_sortie_jour);
 $date_sortie_jour = isset($_POST["date_sortie_jour"]) ? $_POST["date_sortie_jour"] : "00";
@@ -64,6 +71,7 @@ $reg_doublant = isset($_POST["reg_doublant"]) ? $_POST["reg_doublant"] : NULL;
 
 //=========================
 
+//debug_var();
 
 //=========================
 $modif_adr_pers_id=isset($_GET["modif_adr_pers_id"]) ? $_GET["modif_adr_pers_id"] : NULL;
@@ -119,6 +127,10 @@ if (!checkAccess()) {
     die();
 }
 
+if(!isset($eleve_login)) {
+    header("Location: ./index.php?msg=Élève non choisi.");
+    die();
+}
 
 if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 	// On récupère le RNE de l'établissement
@@ -455,7 +467,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 							ele_id = '".$ele_id."'
 							");
 						*/
-						$reg_data1 = mysql_query("INSERT INTO eleves SET
+						$sql="INSERT INTO eleves SET
 							no_gep = '".$reg_no_nat."',
 							nom='".$reg_nom."',
 							prenom='".$reg_prenom."',
@@ -464,8 +476,11 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 							sexe='".$reg_sexe."',
 							naissance='".$reg_naissance."',
 							elenoet = '".$reg_no_gep."',
-							ele_id = '".$ele_id."'
-							");
+							ele_id = '".$ele_id."'";
+						if(isset($reg_tel_pers)) {$sql.=",tel_pers='".$reg_tel_pers."'";}
+						if(isset($reg_tel_port)) {$sql.=",tel_port='".$reg_tel_port."'";}
+						if(isset($reg_tel_prof)) {$sql.=",tel_prof='".$reg_tel_prof."'";}
+						$reg_data1 = mysql_query();
 
 						// Régime:
 						$reg_data3 = mysql_query("INSERT INTO j_eleves_regime SET login='$reg_login', doublant='-', regime='d/p'");
@@ -491,7 +506,18 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 			// C'est une mise à jour pour un élève qui existait déjà dans la table 'eleves'.
 			$sql="UPDATE eleves SET date_sortie = '$date_de_sortie_eleve', no_gep = '$reg_no_nat', nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='".$reg_naissance."', ereno='".$reg_resp1."', elenoet = '".$reg_no_gep."'";
 
+			if(isset($reg_tel_pers)) {$sql.=",tel_pers='".$reg_tel_pers."'";}
+			if(isset($reg_tel_port)) {$sql.=",tel_port='".$reg_tel_port."'";}
+			if(isset($reg_tel_prof)) {$sql.=",tel_prof='".$reg_tel_prof."'";}
+
 			$temoin_mon_compte_mais_pas_de_compte_pour_cet_eleve="n";
+			$sql_test="SELECT email FROM utilisateurs WHERE login='$eleve_login' AND statut='eleve';";
+			$res_email_utilisateur_ele=mysql_query($sql_test);
+			if(mysql_num_rows($res_email_utilisateur_ele)==0) {
+				$temoin_mon_compte_mais_pas_de_compte_pour_cet_eleve="y";
+			}
+
+			/*
 			if(getSettingValue('mode_email_ele')=='mon_compte') {
 				$sql_test="SELECT email FROM utilisateurs WHERE login='$eleve_login' AND statut='eleve';";
 				$res_email_utilisateur_ele=mysql_query($sql_test);
@@ -504,17 +530,24 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 				}
 			}
 			else {
+			*/
 				$sql.=",email='$reg_email'";
-			}
+			//}
 			$sql.=" WHERE login='".$eleve_login."'";
 
 			$reg_data = mysql_query($sql);
 			if (!$reg_data) {
 				$msg = "Erreur lors de l'enregistrement des données";
-			} elseif((getSettingValue('mode_email_ele')!='mon_compte')||($temoin_mon_compte_mais_pas_de_compte_pour_cet_eleve=="y")) {
+			}
+			//elseif((getSettingValue('mode_email_ele')!='mon_compte')||($temoin_mon_compte_mais_pas_de_compte_pour_cet_eleve=="y")) {
+			else {
+				/*
 				// On met à jour la table utilisateurs si un compte existe pour cet élève
 				$test_login = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '".$eleve_login ."'"), 0);
 				if ($test_login > 0) {
+				*/
+				if($temoin_mon_compte_mais_pas_de_compte_pour_cet_eleve=='n') {
+
 					$res = mysql_query("UPDATE utilisateurs SET nom='".$reg_nom."', prenom='".$reg_prenom."', email='".$reg_email."' WHERE login = '".$eleve_login."'");
 					//$msg.="TEMOIN test_login puis update<br />";
 				}
@@ -633,9 +666,9 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 									// Tester la taille max de la photo?
 
 									if(is_uploaded_file($filephoto_tmp)){
-										$dest_file=$rep_photos.$reg_no_gep.".jpg";
+										$dest_file=$rep_photos.encode_nom_photo($reg_no_gep).".jpg";
 										//echo "\$dest_file=$dest_file<br />";
-										$source_file=stripslashes("$filephoto_tmp");
+										$source_file=$filephoto_tmp;
 										$res_copy=copy("$source_file" , "$dest_file");
 										if($res_copy){
 											$msg.="Mise en place de la photo effectuée.";
@@ -712,81 +745,140 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 
 	//================================================
 }
-elseif($_SESSION['statut']=="professeur"){
+elseif(($_SESSION['statut']=="professeur")||($_SESSION['statut']=="cpe")) {
 	if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 		if(!isset($msg)){$msg="";}
 
-		// Envoi de la photo
-		if(isset($reg_no_gep)) {
-			if($reg_no_gep!="") {
-				if(mb_strlen(preg_replace("/[0-9]/","",$reg_no_gep))==0){
-					if(isset($_POST['suppr_filephoto'])) {
-						check_token();
-						if($_POST['suppr_filephoto']=='y'){
-
-							// Récupération du nom de la photo en tenant compte des histoires des zéro 02345.jpg ou 2345.jpg
-							$photo=nom_photo($reg_no_gep);
-/*
-							if("$photo"!=""){
-								if(unlink("../photos/eleves/$photo")){
- */
-							if($photo){
-								if(unlink($photo)){
-									$msg.="La photo ".$photo." a été supprimée. ";
-								}
-								else{
-									$msg.="Echec de la suppression de la photo ".$photo." ";
-								}
-							}
-							else{
-								$msg.="Echec de la suppression de la photo correspondant à $reg_no_gep (<i>non trouvée</i>) ";
-							}
+		//debug_var();
+		$sql="SELECT 1=1 FROM eleves WHERE login='$eleve_login' AND elenoet='$reg_no_gep';";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)==0) {
+			tentative_intrusion("2", "Tentative d'upload par un ".$_SESSION['statut']." de la photo d'un élève ($eleve_login) pour un elenoet ($reg_no_gep) ne correspondant pas à cet élève.");
+			echo "Incohérence entre le login élève et son numéro elenoet.";
+			require ("../lib/footer.inc.php");
+			die();
+		}
+		else {
+			// Envoi de la photo
+			if((isset($reg_no_gep))&&(isset($eleve_login))) {
+				if($reg_no_gep!="") {
+					if(mb_strlen(preg_replace("/[0-9]/","",$reg_no_gep))==0) {
+						if(($_SESSION['statut']=='professeur')&&(getSettingValue("GepiAccesGestPhotoElevesProfP")!='yes')) {
+							tentative_intrusion("2", "Tentative d'upload par un professeur de la photo d'un élève ($eleve_login), sans avoir l'autorisation d'upload.");
+							echo "L'upload de photo n'est pas autorisé pour les professeurs.";
+							require ("../lib/footer.inc.php");
+							die();
 						}
-					}
+						elseif(($_SESSION['statut']=='cpe')&&(getSettingValue("CpeAccesUploadPhotosEleves")!='yes')) {
+							tentative_intrusion("2", "Tentative d'upload par un cpe de la photo d'un élève ($eleve_login), sans avoir l'autorisation d'upload.");
+							echo "L'upload de photo n'est pas autorisé pour les professeurs.";
+							require ("../lib/footer.inc.php");
+							die();
+						}
+						else {
+							if(($_SESSION['statut']=='cpe')||(is_pp($_SESSION['login'],"",$eleve_login))) {
+								if(isset($_POST['suppr_filephoto'])) {
+									check_token();
+									if($_POST['suppr_filephoto']=='y'){
 
-					// Contrôler qu'un seul élève a bien cet elenoet???
-					$sql="SELECT 1=1 FROM eleves WHERE elenoet='$reg_no_gep'";
-					$test=mysql_query($sql);
-					$nb_elenoet=mysql_num_rows($test);
-					if($nb_elenoet==1){
-						// filephoto
-						if(isset($_FILES['filephoto'])){
-							check_token();
-							$filephoto_tmp=$_FILES['filephoto']['tmp_name'];
-							if($filephoto_tmp!=""){
-								$filephoto_name=$_FILES['filephoto']['name'];
-								$filephoto_size=$_FILES['filephoto']['size'];
-								// Tester la taille max de la photo?
-
-								if(is_uploaded_file($filephoto_tmp)){
-									$dest_file=$rep_photos.$reg_no_gep.jpg;
-									$source_file=stripslashes("$filephoto_tmp");
-									$res_copy=copy("$source_file" , "$dest_file");
-									if($res_copy){
-										$msg.="Mise en place de la photo effectuée.";
-									}
-									else{
-										$msg.="Erreur lors de la mise en place de la photo.";
+										// Récupération du nom de la photo en tenant compte des histoires des zéro 02345.jpg ou 2345.jpg
+										$photo=nom_photo($reg_no_gep);
+										if($photo){
+											if(unlink($photo)){
+												$msg.="La photo ".$photo." a été supprimée. ";
+											}
+											else{
+												$msg.="Echec de la suppression de la photo ".$photo." ";
+											}
+										}
+										else{
+											$msg.="Echec de la suppression de la photo correspondant à $reg_no_gep (<i>non trouvée</i>) ";
+										}
 									}
 								}
+
+								// Contrôler qu'un seul élève a bien cet elenoet???
+								$sql="SELECT 1=1 FROM eleves WHERE elenoet='$reg_no_gep'";
+								$test=mysql_query($sql);
+								$nb_elenoet=mysql_num_rows($test);
+								if($nb_elenoet==1){
+									// filephoto
+									if(isset($_FILES['filephoto'])){
+										check_token();
+										$filephoto_tmp=$_FILES['filephoto']['tmp_name'];
+										if($filephoto_tmp!=""){
+											$filephoto_name=$_FILES['filephoto']['name'];
+											$filephoto_size=$_FILES['filephoto']['size'];
+											// Tester la taille max de la photo?
+
+											if(is_uploaded_file($filephoto_tmp)){
+												$dest_file=$rep_photos.encode_nom_photo($reg_no_gep).".jpg";
+												//echo "\$dest_file=$dest_file<br />";
+												$source_file=$filephoto_tmp;
+												$res_copy=copy("$source_file" , "$dest_file");
+												if($res_copy){
+													$msg.="Mise en place de la photo effectuée.";
+												}
+												else{
+													$msg.="Erreur lors de la mise en place de la photo.";
+												}
+
+												if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
+													// si le redimensionnement des photos est activé on redimenssionne
+													$source = imagecreatefromjpeg($dest_file); // La photo est la source
+
+													if (getSettingValue("active_module_trombinoscopes_rt")=='') {
+														$destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes"));
+													} // On crée la miniature vide
+
+													if (getSettingValue("active_module_trombinoscopes_rt")!='') {
+														$destination = imagecreatetruecolor(getSettingValue("h_resize_trombinoscopes"), getSettingValue("l_resize_trombinoscopes"));
+													} // On crée la miniature vide
+
+													// Les fonctions imagesx et imagesy renvoient la largeur et la hauteur d'une image
+													$largeur_source = imagesx($source);
+													$hauteur_source = imagesy($source);
+													$largeur_destination = imagesx($destination);
+													$hauteur_destination = imagesy($destination);
+
+													// On crée la miniature
+													imagecopyresampled($destination, $source, 0, 0, 0, 0, $largeur_destination, $hauteur_destination, $largeur_source, $hauteur_source);
+													if (getSettingValue("active_module_trombinoscopes_rt")!='') {
+														$degrees = getSettingValue("active_module_trombinoscopes_rt");
+														// $destination = imagerotate($destination,$degrees);
+														$destination = ImageRotateRightAngle($destination,$degrees);
+													}
+													// On enregistre la miniature sous le nom "mini_couchersoleil.jpg"
+													imagejpeg($destination, $dest_file,100);
+												}
+											}
+											else{
+												$msg.="Erreur lors de l'upload de la photo.";
+											}
+										}
+									}
+								}
+								elseif($nb_elenoet==0){
+										//$msg.="Le numéro GEP de l'élève n'est pas enregistré dans la table 'eleves'.";
+										$msg.="Le numéro interne Sconet (elenoet) de l'élève n'est pas enregistré dans la table 'eleves'.";
+								}
 								else{
-									$msg.="Erreur lors de l'upload de la photo.";
+									//$msg.="Le numéro GEP est commun à plusieurs élèves. C'est une anomalie.";
+									$msg.="Le numéro interne Sconet (elenoet) est commun à plusieurs élèves. C'est une anomalie.";
 								}
 							}
+							else {
+								tentative_intrusion("2", "Tentative d'upload par un prof de la photo d'un élève ($eleve_login) dont il n'est pas ".getSettingValue('gepi_prof_suivi').".");
+								echo "Upload de photo non autorisé : Vous n'êtes pas ".getSettingValue('gepi_prof_suivi')." de cet élève.";
+								require ("../lib/footer.inc.php");
+								die();
+							}
 						}
-					}
-					elseif($nb_elenoet==0){
-							//$msg.="Le numéro GEP de l'élève n'est pas enregistré dans la table 'eleves'.";
-							$msg.="Le numéro interne Sconet (elenoet) de l'élève n'est pas enregistré dans la table 'eleves'.";
 					}
 					else{
-						//$msg.="Le numéro GEP est commun à plusieurs élèves. C'est une anomalie.";
-						$msg.="Le numéro interne Sconet (elenoet) est commun à plusieurs élèves. C'est une anomalie.";
+						//$msg.="Le numéro GEP proposé contient des caractères non numériques.";
+						$msg.="Le numéro interne Sconet (elenoet) proposé contient des caractères non numériques.";
 					}
-				}
-				else{
-					//$msg.="Le numéro GEP proposé contient des caractères non numériques.";
-					$msg.="Le numéro interne Sconet (elenoet) proposé contient des caractères non numériques.";
 				}
 			}
 		}
@@ -875,6 +967,10 @@ if (isset($eleve_login)) {
     $reg_no_gep = mysql_result($call_eleve_info, "0", "elenoet");
 	$reg_ele_id = mysql_result($call_eleve_info, "0", "ele_id");
 
+	$reg_tel_pers = mysql_result($call_eleve_info, "0", "tel_pers");
+	$reg_tel_port = mysql_result($call_eleve_info, "0", "tel_port");
+	$reg_tel_prof = mysql_result($call_eleve_info, "0", "tel_prof");
+
     //$call_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve='$eleve_login' and e.id = j.id_etablissement)");
     $id_etab=0;
 	if($reg_no_gep!="") {
@@ -960,7 +1056,7 @@ if (isset($eleve_login)) {
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Gestion des élèves | Ajouter/Modifier une fiche élève";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();
@@ -1557,6 +1653,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	echo "	<th style='text-align:left;'>Email : </th>\n";
 	echo "	<td>";
 
+	/*
 	if((isset($compte_eleve_existe))&&($compte_eleve_existe=="y")&&(getSettingValue('mode_email_ele')=='mon_compte')) {
 		if (isset($eleve_email)) {
 			echo $eleve_email;
@@ -1566,12 +1663,21 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 		}
 	}
 	else {
+	*/
 		echo "<input type=text name='reg_email' size=18 ";
 		if (isset($eleve_email)) {
 			echo "value=\"".$eleve_email."\"";
 		}
 		echo " onchange='changement();' />";
+	//}
+
+	if((isset($compte_eleve_existe))&&($compte_eleve_existe=="y")&&(getSettingValue('mode_email_ele')=='mon_compte')) {
+		if (isset($eleve_email)) {
+			$txt_attention="ATTENTION : Le choix effectué dans 'Configuration générale' est de laisser l'utilisateur paramétrer son adresse mail dans 'Gérer mon compte'. Ne modifiez l'adresse mail que si c'est vraiment souhaitable.";
+			echo " <img src='../images/icons/ico_attention.png' width='22' height='19' alt=\"$txt_attention\" title=\"$txt_attention\" />";
+		}
 	}
+
 	if((isset($eleve_email))&&($eleve_email!='')) {
 		$tmp_date=getdate();
 		echo " <a href='mailto:".$eleve_email."?subject=GEPI&amp;body=";
@@ -1583,6 +1689,36 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	echo "</td>\n";
 	echo "</tr>\n";
 
+	if(getSettingAOui('ele_tel_pers')) {
+		echo "<tr>\n";
+		echo "<th style='text-align:left;'>Tel personnel&nbsp;: </th>\n";
+		echo "<td><input type='text' name='reg_tel_pers' size='20' ";
+		if (isset($reg_tel_pers)) echo "value=\"".$reg_tel_pers."\"";
+		echo " onchange='changement();' /></td>\n";
+		echo "</tr>\n";
+	}
+
+	if(!getSettingAOui('ele_tel_port')) {
+		// Par défaut, si on n'a pas enregistré la préférence dans Configuration générale, on affiche le tel port.
+	}
+	else {
+		echo "<tr>\n";
+		echo "<th style='text-align:left;'>Tel portable&nbsp;: </th>\n";
+		echo "<td><input type='text' name='reg_tel_port' size='20' ";
+		if (isset($reg_tel_port)) echo "value=\"".$reg_tel_port."\"";
+		echo " onchange='changement();' /></td>\n";
+		echo "</tr>\n";
+	}
+
+	if(getSettingAOui('ele_tel_prof')) {
+		echo "<tr>\n";
+		echo "<th style='text-align:left;'>Tel professionnel&nbsp;: </th>\n";
+		echo "<td><input type='text' name='reg_tel_prof' size='20' ";
+		if (isset($reg_tel_prof)) echo "value=\"".$reg_tel_prof."\"";
+		echo " onchange='changement();' /></td>\n";
+		echo "</tr>\n";
+	}
+
 	echo "<tr>\n";
 	echo "<th style='text-align:left;'>Identifiant National : </th>\n";
     echo "<td><input type='text' name='reg_no_nat' size='20' ";
@@ -1592,18 +1728,18 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	echo "</tr>\n";
 
     //echo "<tr><td>Numéro GEP : </td><td><input type=text name='reg_no_gep' size=20 ";
-    echo "<tr><th style='text-align:left;'>Numéro interne Sconet (<i>elenoet</i>) : </th><td><input type='text' name='reg_no_gep' size='20' ";
+    echo "<tr><th style='text-align:left;'>Numéro interne Sconet (<em style='font-weight:normal'>elenoet</em>) : </th><td><input type='text' name='reg_no_gep' size='20' ";
     if (isset($reg_no_gep)) echo "value=\"".$reg_no_gep."\"";
     echo " onchange='changement();' /></td>\n";
 	echo "</tr>\n";
 	
-    echo "<tr><th style='text-align:left;'>Numéro interne Sconet (<i>ele_id</i>) : </th><td>";
+    echo "<tr><th style='text-align:left;'>Numéro interne Sconet (<em style='font-weight:normal'>ele_id</em>) : </th><td>";
     if (isset($reg_ele_id)) {echo $reg_ele_id;}
     echo "</td>\n";
 	echo "</tr>\n";
 	
 	//Date de sortie de l'établissement
-    echo "<tr><th style='text-align:left;'>Date de sortie de l'établissement : <br/>(respecter format JJ/MM/AAAA)</th>";
+    echo "<tr><th style='text-align:left;'>Date de sortie de l'établissement : <br/>(<em style='font-weight:normal'>respecter format JJ/MM/AAAA</em>)</th>";
 	echo "<td><div class='norme'>";	
 	echo "Jour  <input type='text' name='date_sortie_jour' size='2' onchange='changement();' value=\""; if (isset($eleve_date_sortie_jour) and ($eleve_date_sortie_jour!="00") ) echo $eleve_date_sortie_jour; echo "\"/>";
 	echo " Mois  <input type='text' name='date_sortie_mois' size='2' onchange='changement();' value=\""; if (isset($eleve_date_sortie_mois) and ($eleve_date_sortie_mois!="00")) echo $eleve_date_sortie_mois; echo "\"/>";
@@ -1636,6 +1772,14 @@ else {
 	if (isset($eleve_email)) {
 		echo "$eleve_email";
 	}
+	if((isset($eleve_email))&&($eleve_email!='')) {
+		$tmp_date=getdate();
+		echo " <a href='mailto:".$eleve_email."?subject=GEPI&amp;body=";
+		if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+		echo ",%0d%0aCordialement.'>";
+		echo "<img src='../images/imabulle/courrier.jpg' width='20' height='15' alt='Envoyer un courriel' border='0' />";
+		echo "</a>";
+	}
 	echo "</td>
 	</tr>
 	<tr>
@@ -1658,7 +1802,7 @@ else {
     echo "</td>\n";
 	echo "</tr>\n";
 	
-	if ($eleve_date_de_sortie!=0) {
+	if ((isset($eleve_date_de_sortie))&&($eleve_date_de_sortie!=0)) {
 		//Date de sortie de l'établissement
 	    echo "<tr><th style='text-align:left;'>Date de sortie de l'établissement : <br/></th>";
 		echo "<td><div class='norme'>";	
@@ -1682,7 +1826,6 @@ if(isset($reg_no_gep)){
 	$temoin_photo="non";
 	//echo "<td>\$photo=$photo</td>";
 	if($photo){
-		//$photo="../photos/eleves/".$photo;
 		if(file_exists($photo)){
 			$temoin_photo="oui";
 			//echo "<td>\n";
@@ -1698,7 +1841,10 @@ if(isset($reg_no_gep)){
 	}
 
 	//echo "getSettingValue(\"GepiAccesGestPhotoElevesProfP\")=".getSettingValue("GepiAccesGestPhotoElevesProfP")."<br />";
-  if ((getSettingValue("active_module_trombinoscopes")=='y') and (($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")||(($_SESSION['statut']=="professeur")&&(getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes')))){
+  if ((getSettingValue("active_module_trombinoscopes")=='y') and 
+  (($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")||
+  (($_SESSION['statut']=='cpe')&&(getSettingValue("CpeAccesUploadPhotosEleves")=='yes'))||
+  (($_SESSION['statut']=="professeur")&&(getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes')&&(isset($eleve_login))&&(is_pp($_SESSION['login'],"",$eleve_login))))) {
 		echo "<div align='center'>\n";
 		//echo "<span id='lien_photo' style='font-size:xx-small;'>";
 		echo "<div id='lien_photo' style='border: 1px solid black; padding: 5px; margin: 5px;'>";

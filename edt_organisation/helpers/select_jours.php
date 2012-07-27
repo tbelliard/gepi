@@ -29,7 +29,7 @@ if (!isset($nom_selected)) {
 }
 
 echo '
-	<select name="'.$increment.'"'.$id_select.'>
+	<select name="'.$increment.'"'.$id_select.' onmouseover="if(document.getElementById(\'texte_nomGepi'.$l.'\')) {document.getElementById(\'texte_nomGepi'.$l.'\').style.backgroundColor=\'yellow\'}" onmouseout="if(document.getElementById(\'texte_nomGepi'.$l.'\')) {document.getElementById(\'texte_nomGepi'.$l.'\').style.backgroundColor=\'\'}">
 		<option value="aucun">Liste des jours</option>
 ';
 // On appele la liste des créneaux

@@ -161,7 +161,7 @@ if($acces=="n") {
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'importation des absences du module d'absence de GEPI";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
 ?>
@@ -204,7 +204,7 @@ if ( $etape === '0' ) {
 ?>
       <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
          <legend style="font: normal 10pt Arial;">&nbsp;Sélection&nbsp;</legend>
-            <div style="color: #E8F1F4; text-align: left; font: normal 12pt verdana, sans-serif; font-weight: bold; background-image: url(../mod_absences/images/haut_tab.png); border: 0px solid #F8F8F8;">Importation des absences</div>
+            <div style="color: #E8F1F4; text-align: left; font: normal 12pt; font-weight: bold; background-image: url(../mod_absences/images/haut_tab.png); border: 0px solid #F8F8F8;">Importation des absences</div>
             <div style="text-align: center; color: #330033; font: normal 10pt Arial;">
 		Pour la classe de <?php echo "$classe"; ?><br /><br />
 		Définissez les dates de début et de fin pour la période du <?php echo $nom_periode[$periode_num]; ?><br />
@@ -248,7 +248,7 @@ if ( $etape === '1' ) {
 <?php /* div de centrage du tableau pour ie5 */ ?>
 <div style="text-align: center;">
 
-	<span style="font: normal small-caps normal 14pt Verdana; line-height: 125%;">Classe de <?php echo "$classe"; ?> - Importation des absences de GEPI</span>
+	<span style="font: normal small-caps normal 14pt; line-height: 125%;">Classe de <?php echo "$classe"; ?> - Importation des absences de GEPI</span>
 	<br />pour le : <b><?php $temp = my_strtolower($nom_periode[$periode_num]); echo "$temp"; ?></b>
 	<br /><br />
 

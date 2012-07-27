@@ -126,7 +126,7 @@ $display_end = @mysql_result($call_data, 0, "display_end");
 
     //**************** EN-TETE *****************
 if (!isset($bord))     $titre_page = "Visualisation des appréciations ".$nom_aid;
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
     //**************** FIN EN-TETE *****************
 
 if (!isset($aid_id)) {

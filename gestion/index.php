@@ -73,9 +73,7 @@ $titre_page = "Gestion générale";
 $tbs_last_connection="";
 
 // ====== Inclusion des balises head et du bandeau =====
-//include_once("./../lib/header_template.inc");
-include_once("../lib/header_template.inc");
-// require_once("../lib/header.inc");
+include_once("../lib/header_template.inc.php");
 //**************** FIN EN-TETE *****************
 
 /*
@@ -307,7 +305,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
 
   if ($multisite != 'y') {
-	$chemin = "efface_photos.php";
+	$chemin = "../mod_trombinoscopes/trombinoscopes_admin.php#purge";
 	$titre = "Effacer les photos";
 	$expli = "Permet d'effacer les photos des ".$gepiSettings['denomination_eleves']." qui ne sont plus dans la base.";
 	$ancre="efface_photos";

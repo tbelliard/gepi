@@ -54,7 +54,7 @@ if(isset($_POST['valide_insertion_pays']) {
 
 //**************** EN-TETE *****************
 $titre_page = "Import des pays";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();

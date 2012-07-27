@@ -130,7 +130,7 @@ $javascript_specifique[] = "mod_abs2/lib/include";
 $titre_page = "Les absences";
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 include('menu_abs2.inc.php');
@@ -154,7 +154,10 @@ echo '</td>';
 //on affiche une boite de selection avec les groupes et les creneaux
 //on affiche une boite de selection avec les aid
 if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
-    $groupe_col = GroupeQuery::create()->orderByName()->useJGroupesClassesQuery()->useClasseQuery()->orderByNom()->endUse()->endUse()->find();
+    $groupe_col = GroupeQuery::create()->orderByName()->useJGroupesClassesQuery()->useClasseQuery()->orderByNom()->endUse()->endUse()
+		->leftJoinWith('Groupe.JGroupesClasses')
+		->leftJoinWith('JGroupesClasses.Classe')
+                ->find();
 } else {
     $groupe_col = $utilisateur->getGroupes();
 }
@@ -402,7 +405,6 @@ echo '<div id="edt_'.$eleve->getLogin().'" style="display: none; position: stati
 			// Avec ou sans photo
 			if ((getSettingValue("active_module_trombinoscopes")=='y')) {
 			    $nom_photo = $eleve->getNomPhoto(1);
-			    //$photos = "../photos/eleves/".$nom_photo;
 			    $photos = $nom_photo;
 			   // if (($nom_photo == "") or (!(file_exists($photos)))) {
 			    if (($nom_photo == NULL) or (!(file_exists($photos)))) {
@@ -518,12 +520,6 @@ if (!$cours_col->isEmpty()) {
 		if ($edt_cours->getEdtCreneau() == NULL) {
 		    //on affiche pas le cours si il n'est associé avec aucun creneau
 		    continue;
-		}
-		if (getSettingValue("abs2_saisie_prof_decale") != 'y') {
-		    if ($edt_cours->getJourSemaineNumeric() != date('W')) {
-			//on affiche pas ce cours
-			continue;
-		    }
 		}
 		echo "<option value='".$edt_cours->getIdCours()."'";
 		if ($id_cours == $edt_cours->getIdCours()) echo " selected='selected' ";

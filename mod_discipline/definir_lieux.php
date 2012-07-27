@@ -112,7 +112,7 @@ $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quit
 //**************** EN-TETE *****************
 //$titre_page = "Sanctions: Définition des qualités";
 $titre_page = "Discipline: Définition des lieux";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();

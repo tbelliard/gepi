@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -106,7 +106,7 @@ $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quit
 //**************** EN-TETE *****************
 $titre_page = "Epreuve blanche: Attribution des copies";
 //echo "<div class='noprint'>\n";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 
@@ -203,6 +203,8 @@ if($etat!='clos') {
 //echo "<p align='center'><input type='submit' name='bouton_valide_affect_eleves1' value='Valider' /></p>\n";
 
 if($tri=='groupe') {
+	$tab_eleves_deja_affiches=array();
+
 	$sql="SELECT DISTINCT g.* FROM eb_groupes eg, groupes g WHERE id_epreuve='$id_epreuve' AND eg.id_groupe=g.id ORDER BY g.name, g.description;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
@@ -294,7 +296,7 @@ if($tri=='groupe') {
 			echo "<th>Effectifs</th>\n";
 			echo "<th>&nbsp;</th>\n";
 			for($i=0;$i<count($info_prof);$i++) {
-				echo "<th>\n";
+				echo "<th title=\"Nombre de copies attribuées à ce professeur par rapport au nombre d'élèves qu'il a en cours.\">\n";
 				echo "<span id='eff_prof_".$lig->id."_$i'>Effectif</span>";
 				echo "/".$eff_habituel_prof[$i]."\n";
 				echo "</th>\n";
@@ -308,49 +310,52 @@ if($tri=='groupe') {
 	
 		$alt=1;
 		for($j=0;$j<count($current_group["eleves"]["all"]["list"]);$j++) {
-			$alt=$alt*(-1);
-			echo "<tr class='lig$alt white_hover'>\n";
-			echo "<td style='text-align:left;'>\n";
-			$login_ele=$current_group["eleves"]["all"]["list"][$j];
-			echo "<input type='hidden' name='login_ele[$cpt]' value='$login_ele' />\n";
-			echo get_nom_prenom_eleve($login_ele);
-			echo "</td>\n";
+			if(!in_array($current_group["eleves"]["all"]["list"][$j],$tab_eleves_deja_affiches)) {
+				$tab_eleves_deja_affiches[]=$current_group["eleves"]["all"]["list"][$j];
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt white_hover'>\n";
+				echo "<td style='text-align:left;'>\n";
+				$login_ele=$current_group["eleves"]["all"]["list"][$j];
+				echo "<input type='hidden' name='login_ele[$cpt]' value='$login_ele' />\n";
+				echo get_nom_prenom_eleve($login_ele);
+				echo "</td>\n";
 	
-			echo "<td>\n";
-			$tmp_tab_classe=get_class_from_ele_login($login_ele);
-			echo $tmp_tab_classe['liste'];
-			echo "</td>\n";
+				echo "<td>\n";
+				$tmp_tab_classe=get_class_from_ele_login($login_ele);
+				echo $tmp_tab_classe['liste'];
+				echo "</td>\n";
 	
-			$affect="n";
-			for($i=0;$i<count($info_prof);$i++) {
+				$affect="n";
+				for($i=0;$i<count($info_prof);$i++) {
+					echo "<td>\n";
+					if($etat=='clos') {
+						if((isset($tab_ele_prof[$login_ele]))&&($tab_ele_prof[$login_ele]==$login_prof[$i])) {echo "X";$affect="y";}
+					}
+					else {
+						echo "<input type='radio' name='id_prof_ele[$cpt]' id='id_prof_ele_".$i."_$cpt' value='$login_prof[$i]' ";
+						echo "onchange='calcule_effectif();changement();' ";
+						// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les élèves du groupe (toutes périodes confondues)... à améliorer
+						if((isset($tab_ele_prof[$login_ele]))&&($tab_ele_prof[$login_ele]==$login_prof[$i])) {echo "checked ";$affect="y";}
+						echo "/>\n";
+					}
+					echo "</td>\n";
+				}
 				echo "<td>\n";
 				if($etat=='clos') {
-					if((isset($tab_ele_prof[$login_ele]))&&($tab_ele_prof[$login_ele]==$login_prof[$i])) {echo "X";$affect="y";}
+					if($affect=="n") {
+						echo "X";
+					}
 				}
 				else {
-					echo "<input type='radio' name='id_prof_ele[$cpt]' id='id_prof_ele_".$i."_$cpt' value='$login_prof[$i]' ";
+					echo "<input type='radio' name='id_prof_ele[$cpt]' id='id_prof_ele_".$i."_$cpt' value='' ";
 					echo "onchange='calcule_effectif();changement();' ";
-					// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les élèves du groupe (toutes périodes confondues)... à améliorer
-					if((isset($tab_ele_prof[$login_ele]))&&($tab_ele_prof[$login_ele]==$login_prof[$i])) {echo "checked ";$affect="y";}
+					if($affect=="n") {echo "checked ";}
 					echo "/>\n";
 				}
 				echo "</td>\n";
+				echo "</tr>\n";
+				$cpt++;
 			}
-			echo "<td>\n";
-			if($etat=='clos') {
-				if($affect=="n") {
-					echo "X";
-				}
-			}
-			else {
-				echo "<input type='radio' name='id_prof_ele[$cpt]' id='id_prof_ele_".$i."_$cpt' value='' ";
-				echo "onchange='calcule_effectif();changement();' ";
-				if($affect=="n") {echo "checked ";}
-				echo "/>\n";
-			}
-			echo "</td>\n";
-			echo "</tr>\n";
-			$cpt++;
 		}
 		echo "</table>\n";
 		//$tab_cpt_eleve[]=$cpt;
@@ -433,7 +438,8 @@ function coche(colonne,rang_groupe,mode) {
 	var tab_cpt0_ele=new Array($chaine_cpt0_eleves);
 	var tab_cpt1_ele=new Array($chaine_cpt1_eleves);
 
-	for(k=tab_cpt0_ele[rang_groupe];k<tab_cpt1_ele[rang_groupe];k++) {
+	//for(k=tab_cpt0_ele[rang_groupe];k<tab_cpt1_ele[rang_groupe];k++) {
+	for(k=eval(tab_cpt0_ele[rang_groupe]);k<eval(tab_cpt1_ele[rang_groupe]);k++) {
 		if(document.getElementById('id_prof_ele_'+colonne+'_'+k)) {
 			document.getElementById('id_prof_ele_'+colonne+'_'+k).checked=mode;
 		}
@@ -474,6 +480,8 @@ elseif($tri=='salle') {
 	$tab_salle=array();
 	$cpt=0;
 	$compteur_salle=-1;
+	$compteur_eleves_du_prof=array();
+	// Boucle sur les salles
 	while($lig=mysql_fetch_object($res)) {
 		$tab_cpt_eleve[]=$cpt;
 
@@ -494,6 +502,7 @@ elseif($tri=='salle') {
 		echo "<th>Elèves</th>\n";
 		echo "<th>Classes</th>\n";
 		for($i=0;$i<count($info_prof);$i++) {
+			$compteur_eleves_du_prof[$i]=0;
 			echo "<th>\n";
 			if($etat!='clos') {
 				echo "<a href='javascript:coche($i,$compteur_salle,true)'>\n";
@@ -526,7 +535,7 @@ elseif($tri=='salle') {
 			echo "<th>Effectifs</th>\n";
 			echo "<th>&nbsp;</th>\n";
 			for($i=0;$i<count($info_prof);$i++) {
-				echo "<th>\n";
+				echo "<th title=\"Nombre de copies attribuées à ce professeur par rapport au nombre d'élèves qu'il a en cours.\">\n";
 				echo "<span id='eff_prof_".$lig->id."_$i'>Effectif</span>";
 				echo "/".$eff_habituel_prof[$i]."\n";
 				echo "</th>\n";
@@ -544,6 +553,7 @@ elseif($tri=='salle') {
 	
 		$alt=1;
 		//$tab_ele_prof=array();
+		$compteur_eleves_dans_la_salle=0;
 		while($lig2=mysql_fetch_object($res2)) {
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt white_hover'>\n";
@@ -565,6 +575,7 @@ elseif($tri=='salle') {
 
 				if((isset($tab_ele_prof_habituel[$login_ele]))&&($tab_ele_prof_habituel[$login_ele]==$login_prof[$i])) {
 					echo "<div style='float:right; width:17px;'><img src='../images/icons/flag.png' width='17' height='18' title='Professeur habituel de cet élève' alt='Professeur habituel de cet élève' /></div>\n";
+					$compteur_eleves_du_prof[$i]++;
 				}
 
 				if($etat!='clos') {
@@ -593,8 +604,19 @@ elseif($tri=='salle') {
 			echo "</td>\n";
 			echo "</tr>\n";
 			$cpt++;
+
+		$compteur_eleves_dans_la_salle++;
+
 		}
+		echo "<tr>\n";
+		echo "<th></th>\n";
+		echo "<th></th>\n";
+		for($i=0;$i<count($info_prof);$i++) {
+			echo "<th title=\"Le professeur a ".$compteur_eleves_du_prof[$i]." élève(s) en cours parmi les $compteur_eleves_dans_la_salle de cette salle\">".$compteur_eleves_du_prof[$i]."/".$compteur_eleves_dans_la_salle."</th>\n";
+		}
+		echo "<th></th>\n";
 		echo "</table>\n";
+		echo "</tr>\n";
 		//echo "\$cpt=$cpt<br />";
 
 		echo "</blockquote>\n";
@@ -795,7 +817,8 @@ function coche(colonne,rang_groupe,mode) {
 	var tab_cpt0_ele=new Array($chaine_cpt0_eleves);
 	var tab_cpt1_ele=new Array($chaine_cpt1_eleves);
 
-	for(k=tab_cpt0_ele[rang_groupe];k<tab_cpt1_ele[rang_groupe];k++) {
+	//for(k=tab_cpt0_ele[rang_groupe];k<tab_cpt1_ele[rang_groupe];k++) {
+	for(k=eval(tab_cpt0_ele[rang_groupe]);k<eval(tab_cpt1_ele[rang_groupe]);k++) {
 		if(document.getElementById('id_prof_ele_'+colonne+'_'+k)) {
 			document.getElementById('id_prof_ele_'+colonne+'_'+k).checked=mode;
 		}

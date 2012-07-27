@@ -44,7 +44,7 @@ class EdtHorairesEtablissementTableMap extends TableMap
 		$this->addColumn('OUVERTURE_HORAIRE_ETABLISSEMENT', 'OuvertureHoraireEtablissement', 'TIME', true, null, null);
 		$this->addColumn('FERMETURE_HORAIRE_ETABLISSEMENT', 'FermetureHoraireEtablissement', 'TIME', true, null, null);
 		$this->addColumn('PAUSE_HORAIRE_ETABLISSEMENT', 'PauseHoraireEtablissement', 'TIME', false, null, null);
-		$this->addColumn('OUVERT_HORAIRE_ETABLISSEMENT', 'OuvertHoraireEtablissement', 'BOOLEAN', true, null, null);
+		$this->addColumn('OUVERT_HORAIRE_ETABLISSEMENT', 'OuvertHoraireEtablissement', 'BOOLEAN', true, 1, null);
 		// validators
 	} // initialize()
 

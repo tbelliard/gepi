@@ -54,8 +54,7 @@ include "../class_php/class_menu_general.php";
 
 //**************** EN-TETE *****************
 $titre_page = "Discipline : Index";
-//require_once("../lib/header.inc");
-include_once("../lib/header_template.inc");
+include_once("../lib/header_template.inc.php");
 //**************** FIN EN-TETE *****************
 /****************************************************************
 			FIN HAUT DE PAGE

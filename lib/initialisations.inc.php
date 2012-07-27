@@ -12,6 +12,16 @@ ini_set('mbstring.internal_encoding','UTF-8');
 if (function_exists('mb_internal_encoding')) {
     mb_internal_encoding("UTF-8");
 }
+
+if (date_default_timezone_get() == 'UTC') {
+    date_default_timezone_set('Europe/Paris');
+} else {
+    //dans le cas où on détecte mal une zone UTC (donc non configurée à priori),
+    //on fait comme si il y avait bien une conf de précisée pour éviter l'erreur
+    //PHP Fatal error:  Uncaught exception 'Exception' with message 'DateTime::__construct(): It is not safe to rely on the system's timezone settings.
+    date_default_timezone_set(date_default_timezone_get());
+}
+
 //header('Content-Type: text/html; charset=UTF-8');
 
 /**
@@ -21,7 +31,6 @@ if (function_exists('mb_internal_encoding')) {
  * @name $niveau_arbo
  */
 $GLOBALS['niveau_arbo']=$niveau_arbo;
-
 
 /**
  * Chemin de la racine de GEPI
@@ -183,14 +192,8 @@ if($is_lcs_plugin=='yes') {
 
 }
 
-$version = mb_substr(phpversion(), 0, 1);
-if ($version == 4) {
-  $ldap_class = "/lib/LDAPServer.php4.class.php";
-  $session_class = "/lib/Session.php4.class.php";
-} else {
-  $ldap_class = "/lib/LDAPServer.class.php";
-  $session_class = "/lib/Session.class.php";
-}
+$ldap_class = "/lib/LDAPServer.class.php";
+$session_class = "/lib/Session.class.php";
 
 // Pour le multisite
 if (isset($_REQUEST['rne'])) {
@@ -219,16 +222,19 @@ if (isset($_REQUEST["source"])) {
   * Fichier de configuration générale
   */
    require_once($chemin_relatif_gepi."/lib/global.inc.php");
- /**
-  * Traitement des données (filtrage de sécurité)
-  */
-   require_once($chemin_relatif_gepi."/lib/traitement_data.inc.php");
+
  /**
   * Librairies
   * 
   * @see share.inc.php
   */
    include $chemin_relatif_gepi."/lib/share.inc.php";
+
+   /**
+  * Traitement des données (filtrage de sécurité)
+  */
+   require_once($chemin_relatif_gepi."/lib/traitement_data.inc.php");
+
  /**
   * Fonctions relatives aux groupes
   * 

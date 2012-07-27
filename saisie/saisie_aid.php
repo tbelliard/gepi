@@ -107,7 +107,9 @@ if (isset($_POST['is_posted'])) {
 				//echo "<p>Période $k<br />";
 				if (($k >= $display_begin) and ($k <= $display_end)) {
 					$ver_periode[$k] = mysql_result($periode_query, $k-1, "verouiller");
-					if ($ver_periode[$k] == "N"){
+					//if ($ver_periode[$k] == "N"){
+					if ((($_SESSION['statut']=='secours')&&($ver_periode[$k] != "O"))||
+						(($_SESSION['statut']!='secours')&&($ver_periode[$k] == "N"))) {
 						//echo "La période n'est pas fermée en saisie.<br />";
 						//=========================
 						// AJOUT: boireaus 20071003
@@ -232,6 +234,10 @@ if (isset($_POST['is_posted'])) {
 
 $call_data = mysql_query("DROP TABLE IF EXISTS $nom_table");
 $call_data = mysql_query("CREATE TEMPORARY TABLE $nom_table (id_classe integer, num integer NOT NULL)");
+$msg_pb="";
+if(!$call_data) {
+	$msg_pb="ERREUR&nbsp;: La création d'une table temporaire a échoué.<br />Le droit de créer des tables temporaires n'est peut-être pas attribué à l'utilisateur MySQL.<br />La présente page risque de ne pas fonctionner.";
+}
 $call_data = mysql_query("SELECT * FROM classes");
 $nombre_lignes = mysql_num_rows($call_data);
 $i = 0;
@@ -249,7 +255,7 @@ $message_enregistrement = "Les modifications ont été enregistrées !";
 $themessage  = 'Des notes ou des appréciations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Saisie des appréciations ".$nom_aid;
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
 ?>
@@ -303,6 +309,10 @@ if (!isset($aid_id)) {
 } else {
 
 	echo " | <a href='saisie_aid.php?indice_aid=$indice_aid' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choix $nom_aid</a></p>\n";
+
+	if($msg_pb!='') {
+		echo "<p style='color:red'>$msg_pb</p>\n";
+	}
 
 	echo "<form enctype='multipart/form-data' action='saisie_aid.php' method='post'>\n";
 	echo "<center><input type='submit' value='Enregistrer' /></center>\n";
@@ -381,7 +391,9 @@ if (!isset($aid_id)) {
 						$current_eleve_login_n_t[$k] = $current_eleve_login."_n_t".$k;
 
 						$ver_periode[$k] = mysql_result($periode_query, $k-1, "verouiller");
-						if ($ver_periode[$k] != "N") {
+						//if ($ver_periode[$k] != "N") {
+						if ((($_SESSION['statut']=='secours')&&($ver_periode[$k] == "O"))||
+							(($_SESSION['statut']!='secours')&&($ver_periode[$k] != "N"))) {
 							echo "<td><b>";
 							if ($current_eleve_app_t[$k] != '') {
 								echo "$current_eleve_app_t[$k]";

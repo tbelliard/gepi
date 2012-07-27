@@ -48,7 +48,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Génèse des classes: Choix des options des élèves',
+description='Genèse des classes: Choix des options des élèves',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -65,6 +65,10 @@ $projet=isset($_POST['projet']) ? $_POST['projet'] : (isset($_GET['projet']) ? $
 
 
 if(isset($_POST['is_posted'])) {
+	check_token();
+
+	//debug_var();
+
 	//echo "";
 	$eleve=isset($_POST['eleve']) ? $_POST['eleve'] : array();
 	$id_classe_actuelle_eleve=isset($_POST['id_classe_actuelle_eleve']) ? $_POST['id_classe_actuelle_eleve'] : array();
@@ -191,11 +195,12 @@ $_POST['autre_opt_3']=	Array (*)
 
 }
 
+$style_specifique[]="mod_genese_classes/mod_genese_classes";
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-$titre_page = "Génèse classe: Choix options élèves";
+$titre_page = "Genèse classe: Choix options élèves";
 //echo "<div class='noprint'>\n";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 
@@ -323,15 +328,25 @@ include("lib_gc.php");
 necessaire_bull_simple();
 //=========================================
 
-echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
+echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form_select_eleves_options'>\n";
+
+echo add_token_field();
 
 // Colorisation
 echo "<p>Colorisation&nbsp;: ";
 echo "<select name='colorisation' onchange='lance_colorisation()'>
-<option value='classe_fut' selected>Classe future</option>
-<option value='lv1'>LV1</option>
-<option value='lv2'>LV2</option>
-<option value='profil'>Profil</option>
+<option value='classe_fut'";
+if((isset($_POST['colorisation']))&&($_POST['colorisation']=='classe_fut')) {echo " selected='selected'";}
+echo ">Classe future</option>
+<option value='lv1'";
+if((isset($_POST['colorisation']))&&($_POST['colorisation']=='lv1')) {echo " selected='selected'";}
+echo ">LV1</option>
+<option value='lv2'";
+if((isset($_POST['colorisation']))&&($_POST['colorisation']=='lv2')) {echo " selected='selected'";}
+echo ">LV2</option>
+<option value='profil'";
+if((isset($_POST['colorisation']))&&($_POST['colorisation']=='profil')) {echo " selected='selected'";}
+echo ">Profil</option>
 </select>\n";
 
 echo "</p>\n";
@@ -413,7 +428,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 	$num_per2=-1;
 	if(($id_classe_actuelle[$j]!='Red')&&($id_classe_actuelle[$j]!='Arriv')) {
 		$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe_actuelle[$j]' ORDER BY e.nom,e.prenom;";
-		
+		//$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe_actuelle[$j]' AND (e.date_sortie IS NULL OR e.date_sortie NOT LIKE '20%') ORDER BY e.nom,e.prenom;";
 		$sql_per="SELECT num_periode FROM periodes WHERE id_classe='$id_classe_actuelle[$j]' ORDER BY num_periode DESC LIMIT 1;";
 		$res_per=mysql_query($sql_per);
 		if(mysql_num_rows($res_per)>0) {
@@ -573,17 +588,23 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			$num_eleve2_id_classe_actuelle[$j]=$cpt;
 			if(mb_strtoupper($lig->sexe)=='F') {$eff_tot_classe_F++;$eff_tot_F++;} else {$eff_tot_classe_M++;$eff_tot_M++;}
 
-			echo "<tr id='tr_eleve_$cpt' class='white_hover'>\n";
+			//echo "<tr id='tr_eleve_$cpt' class='white_hover' onmouseover=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.fontWeight='bold';\" onmouseout=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.fontWeight='normal';\">\n";
+			//echo "<tr id='tr_eleve_$cpt' class='white_hover' onmouseover=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.color='red';\" onmouseout=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.color='';\">\n";
+			echo "<tr id='tr_eleve_$cpt' class='white_hover white_survol' onmouseover=\"this.style.backgroundColor='white';\" onmouseout=\"this.style.backgroundColor='';\">\n";
+			//echo "<tr id='tr_eleve_$cpt' class='white_hover white_survol'\">\n";
 			echo "<td>\n";
 			echo "<a name='eleve$cpt'></a>\n";
-			//if(file_exists("../photos/eleves/".$lig->elenoet.".jpg")) {
 			if(nom_photo($lig->elenoet)) {
 				echo "<a href='#eleve$cpt' onclick=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);return false;\">";
+				echo "<span id='nom_prenom_eleve_numero_$cpt' class='col_nom_eleve'>";
 				echo strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
+				echo "</span>";
 				echo "</a>\n";
 			}
 			else {
+				echo "<span id='nom_prenom_eleve_numero_$cpt' class='col_nom_eleve'>";
 				echo mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
+				echo "</span>";
 			}
 			//echo "<input type='hidden' name='eleve[$cpt]' value='$lig->login' />\n";
 			echo "<input type='hidden' name='eleve[$cpt]' id='id_eleve_$cpt' value='$lig->login' />\n";
@@ -595,7 +616,8 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			//echo $lig->sexe;
 			//echo "<span style='display:none'>".$lig->sexe."</span>";
 			echo "<span style='display:none' id='eleve_sexe_$cpt'>".$lig->sexe."</span>";
-			echo image_sexe($lig->sexe);
+			//echo image_sexe($lig->sexe);
+			echo "<div id='div_sexe_$cpt' onclick=\"affiche_set_sexe($cpt, '$lig->login');changement();return false;\">".image_sexe($lig->sexe)."</div>\n";
 			echo "</td>\n";
 			echo "<td>$classe_actuelle[$j]</td>\n";
 			//echo "<td>Profil</td>\n";
@@ -604,10 +626,19 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			$res_profil=mysql_query($sql);
 			if(mysql_num_rows($res_profil)==0) {
 				$profil='RAS';
+				$eleve_courant_non_encore_enregistre_dans_gc_eleves_options="y";
 			}
 			else {
 				$lig_profil=mysql_fetch_object($res_profil);
 				$profil=$lig_profil->profil;
+				$eleve_courant_non_encore_enregistre_dans_gc_eleves_options="n";
+			}
+
+			$temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre="n";
+			if($eleve_courant_non_encore_enregistre_dans_gc_eleves_options=="y") {
+				if(($lig->date_sortie!='NULL')&&(preg_match("/^20/",$lig->date_sortie))) {
+					$temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre="y";
+				}
 			}
 
 			echo "<input type='hidden' name='profil[$cpt]' id='profil_$cpt' value='$profil' />\n";
@@ -727,8 +758,9 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 				}
 			}
 
+			$temoin_une_classe_cochee_pour_cet_eleve="n";
 			for($i=0;$i<count($classe_fut);$i++) {
-				echo "<td>\n";
+				echo "<td";
 
 				$coche_possible='y';
 				if(($classe_fut[$i]!='Red')&&($classe_fut[$i]!='Dep')&&($classe_fut[$i]!='')) {
@@ -741,14 +773,48 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 				}
 
 				if($coche_possible=='y') {
+					echo " onclick=\"document.getElementById('classe_fut_".$i."_".$cpt."').checked=true;calcule_effectif('classe_fut',".count($classe_fut).");colorise_ligne('classe_fut',$cpt,$i);changement();\"";
+				}
+				echo ">\n";
+
+				if($coche_possible=='y') {
 					echo "<input type='radio' name='classe_fut[$cpt]' id='classe_fut_".$i."_".$cpt."' value='$classe_fut[$i]' ";
-					if(mb_strtoupper($fut_classe)==mb_strtoupper($classe_fut[$i])) {echo "checked ";}
-					//alert('bip');
+
+					if($temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre=="y") {
+						if($classe_fut[$i]=='Dep') {
+							echo "checked ";
+							echo "title=\"Cet élève a quitté l'établissement le ".formate_date($lig->date_sortie)."\" ";
+							$temoin_une_classe_cochee_pour_cet_eleve="y";
+						}
+					}
+					else {
+						if(mb_strtoupper($fut_classe)==mb_strtoupper($classe_fut[$i])) {
+							echo "checked ";
+							$temoin_une_classe_cochee_pour_cet_eleve="y";
+						}
+					}
+
+					// Si aucune classe n'est cochée et qu'on en est à classe future non définie ''
+					// Quand on copie un projet par exemple futures_3emes pour faire futures_3emes_grp_langue
+					// on définie de nouvelles "classes" futures pour les groupes,
+					// et un élève qui a déjà une classe future dans le projet d'origine se retrouve sans aucune case cochée.
+					// Avec les test ci-dessous, on évitera ce pb.
+					if(($classe_fut[$i]=='')&&($temoin_une_classe_cochee_pour_cet_eleve=="n")) {
+						echo "checked ";
+					}
+
 					echo "onchange=\"calcule_effectif('classe_fut',".count($classe_fut).");colorise_ligne('classe_fut',$cpt,$i);changement();\" ";
 					//echo "title=\"$lig->login/$classe_fut[$i]\" ";
-					echo "onmouseover=\"test_aff_classe3('".$lig->login."','".$classe_fut[$i]."');\" onmouseout=\"cacher_div('div_test_aff_classe2');\" ";
+					if($temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre!="y") {
+						echo "onmouseover=\"test_aff_classe3('".$lig->login."','".$classe_fut[$i]."');\" onmouseout=\"cacher_div('div_test_aff_classe2');\" ";
+					}
 					echo "/>\n";
-
+					/*
+					echo $lig->date_sortie;
+					echo $temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre;
+					echo $classe_fut[$i];
+					echo $eleve_courant_non_encore_enregistre_dans_gc_eleves_options;
+					*/
 					//echo "'classe_fut_".$i."_".$cpt."'";
 				}
 				else {
@@ -765,7 +831,10 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			*/
 
 			for($i=0;$i<count($lv1);$i++) {
-				echo "<td>\n";
+				echo "<td";
+				echo " onclick=\"document.getElementById('lv1_".$i."_".$cpt."').checked=true;calcule_effectif('lv1',".count($lv1).");colorise_ligne('lv1',$cpt,$i);changement();\"";
+				echo " title=\"$lig->login/$lv1[$i]\"";
+				echo ">\n";
 				echo "<input type='radio' name='lv1[$cpt]' id='lv1_".$i."_".$cpt."' value='$lv1[$i]' ";
 				if(in_array(mb_strtoupper($lv1[$i]),$tab_ele_opt)) {echo "checked ";}
 				echo "onchange=\"calcule_effectif('lv1',".count($lv1).");colorise_ligne('lv1',$cpt,$i);changement();\" ";
@@ -776,7 +845,10 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 
 
 			for($i=0;$i<count($lv2);$i++) {
-				echo "<td>\n";
+				echo "<td";
+				echo " onclick=\"document.getElementById('lv2_".$i."_".$cpt."').checked=true;calcule_effectif('lv2',".count($lv2).");colorise_ligne('lv2',$cpt,$i);changement();\"";
+				echo " title=\"$lig->login/$lv2[$i]\"";
+				echo ">\n";
 				echo "<input type='radio' name='lv2[$cpt]' id='lv2_".$i."_".$cpt."' value='$lv2[$i]' ";
 				if(in_array(mb_strtoupper($lv2[$i]),$tab_ele_opt)) {echo "checked ";}
 				echo "onchange=\"calcule_effectif('lv2',".count($lv2).");colorise_ligne('lv2',$cpt,$i);changement();\" ";
@@ -787,7 +859,10 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 
 
 			for($i=0;$i<count($lv3);$i++) {
-				echo "<td>\n";
+				echo "<td";
+				echo " onclick=\"document.getElementById('lv3_".$i."_".$cpt."').checked=true;calcule_effectif('lv3',".count($lv3).");colorise_ligne('lv3',$cpt,$i);changement();\"";
+				echo " title=\"$lig->login/$lv3[$i]\"";
+				echo ">\n";
 				echo "<input type='radio' name='lv3[$cpt]' id='lv3_".$i."_".$cpt."' value='$lv3[$i]' ";
 				if(in_array(mb_strtoupper($lv3[$i]),$tab_ele_opt)) {echo "checked ";}
 				echo "onchange=\"calcule_effectif('lv3',".count($lv3).");colorise_ligne('lv3',$cpt,$i);changement();\" ";
@@ -797,7 +872,10 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			}
 
 			for($i=0;$i<count($autre_opt);$i++) {
-				echo "<td>\n";
+				echo "<td";
+				echo " onclick=\"if(document.getElementById('autre_opt_".$i."_".$cpt."').checked==true) {document.getElementById('autre_opt_".$i."_".$cpt."').checked=false} else {document.getElementById('autre_opt_".$i."_".$cpt."').checked=true};calcule_effectif('autre_opt',".count($autre_opt).");changement();\"";
+				echo " title=\"$lig->login/$autre_opt[$i]\"";
+				echo ">\n";
 				echo "<input type='checkbox' name='autre_opt_".$i."[$cpt]' id='autre_opt_".$i."_".$cpt."' value='$autre_opt[$i]' ";
 				if(in_array(mb_strtoupper($autre_opt[$i]),$tab_ele_opt)) {echo "checked ";}
 				echo "onchange=\"calcule_effectif('autre_opt',".count($autre_opt).");changement();\" ";
@@ -822,6 +900,7 @@ document.getElementById('eff_tot_classe_sexe_".$id_classe_actuelle[$j]."').inner
 }
 echo "<input type='hidden' name='projet' value='$projet' />\n";
 echo "</form>\n";
+
 
 
 
@@ -857,7 +936,18 @@ echo "<div id='div_test_aff_classe2' class='infobulle_corps' style='position:abs
 	$texte.="</p>\n";
 	$tabdiv_infobulle[]=creer_div_infobulle('div_set_profil',$titre,"",$texte,"",14,0,'y','y','n','n');
 
+	$titre="Sélection du sexe";
+	$texte="<p style='text-align:center;'>";
+	for($loop=0;$loop<count($tab_sexe);$loop++) {
+		if($loop>0) {$texte.=" - ";}
+		$texte.="<a href='#' onclick=\"set_sexe('".$tab_sexe[$loop]."');return false;\">$tab_sexe[$loop]</a>";
+	}
+	$texte.="</p>\n";
+	$tabdiv_infobulle[]=creer_div_infobulle('div_set_sexe',$titre,"",$texte,"",14,0,'y','y','n','n');
+
 	echo "<input type='hidden' name='profil_courant' id='profil_courant' value='-1' />\n";
+	echo "<input type='hidden' name='sexe_courant' id='sexe_courant' value='' />\n";
+	echo "<input type='hidden' name='login_eleve_courant' id='login_eleve_courant' value='' />\n";
 
 	echo "<script type='text/javascript'>
 
@@ -869,23 +959,6 @@ echo "<div id='div_test_aff_classe2' class='infobulle_corps' style='position:abs
 		//alert('cpt='+cpt)
 		if(document.getElementById('profil_'+cpt)) {
 			document.getElementById('profil_'+cpt).value=profil;
-			/*
-			if(profil=='GC') {
-				document.getElementById('div_profil_'+cpt).style.color='red';
-			}
-			if(profil=='C') {
-				document.getElementById('div_profil_'+cpt).style.color='orange';
-			}
-			if(profil=='RAS') {
-				document.getElementById('div_profil_'+cpt).style.color='gray';
-			}
-			if(profil=='B') {
-				document.getElementById('div_profil_'+cpt).style.color='green';
-			}
-			if(profil=='TB') {
-				document.getElementById('div_profil_'+cpt).style.color='blue';
-			}
-			*/
 			for(m=0;m<couleur_profil.length;m++) {
 				if(document.getElementById('profil_'+cpt).value==tab_profil[m]) {
 					document.getElementById('div_profil_'+cpt).style.color=couleur_profil[m];
@@ -905,29 +978,31 @@ echo "<div id='div_test_aff_classe2' class='infobulle_corps' style='position:abs
 	for(i=0;i<$cpt;i++) {
 		if(document.getElementById('profil_'+i)) {
 			profil=document.getElementById('profil_'+i).value;
-			/*
-			if(profil=='GC') {
-				document.getElementById('div_profil_'+i).style.color='red';
-			}
-			if(profil=='C') {
-				document.getElementById('div_profil_'+i).style.color='orange';
-			}
-			if(profil=='RAS') {
-				document.getElementById('div_profil_'+i).style.color='gray';
-			}
-			if(profil=='B') {
-				document.getElementById('div_profil_'+i).style.color='green';
-			}
-			if(profil=='TB') {
-				document.getElementById('div_profil_'+i).style.color='blue';
-			}
-			*/
 			for(m=0;m<couleur_profil.length;m++) {
 				if(document.getElementById('profil_'+i).value==tab_profil[m]) {
 					document.getElementById('div_profil_'+i).style.color=couleur_profil[m];
 				}
 			}
 		}
+	}
+
+	function set_sexe(sexe) {
+		var cpt=document.getElementById('sexe_courant').value;
+		var login_eleve_courant=document.getElementById('login_eleve_courant').value;
+		//document.getElementById('sexe_'+cpt).value=sexe;
+
+		new Ajax.Updater($('div_sexe_'+cpt),'../eleves/modif_sexe.php?login_eleve='+login_eleve_courant+'&sexe='+sexe+'&mode_retour=image".add_token_in_url(false)."',{method: 'get'});
+
+		document.getElementById('eleve_sexe_'+cpt).innerHTML=sexe;
+
+		calcule_effectif('classe_fut',".count($classe_fut).");
+		cacher_div('div_set_sexe');
+	}
+
+	function affiche_set_sexe(cpt, login) {
+		document.getElementById('sexe_courant').value=cpt;
+		document.getElementById('login_eleve_courant').value=login;
+		afficher_div('div_set_sexe','y',100,100);
 	}
 
 </script>
@@ -939,8 +1014,6 @@ echo "<div id='div_test_aff_classe2' class='infobulle_corps' style='position:abs
 
 $titre="<span id='entete_div_photo_eleve'>Elève</span>";
 $texte="<div id='corps_div_photo_eleve' align='center'>\n";
-//$texte.="<img src='../photos/eleves/".$photo."' id='id_photo_eleve' width='150' alt=\"Photo\" />";
-//$texte.="<img src='../photos/eleves/".$photo."' id='id_photo_eleve' width='150' alt=\"Photo\" />";
 $texte.="<br />\n";
 $texte.="</div>\n";
 
@@ -1110,7 +1183,7 @@ function colorise(mode,n) {
 colorise('classe_fut',".count($classe_fut).");
 
 function colorise_ligne(cat,cpt,i) {
-	if(document.forms[0].elements['colorisation'].options[document.forms[0].elements['colorisation'].selectedIndex].value==cat) {
+	if(document.forms['form_select_eleves_options'].elements['colorisation'].options[document.forms['form_select_eleves_options'].elements['colorisation'].selectedIndex].value==cat) {
 		if(cat=='classe_fut') {
 			document.getElementById('tr_eleve_'+cpt).style.backgroundColor=couleur_classe_fut[i];
 		}
@@ -1130,7 +1203,7 @@ function colorise_ligne(cat,cpt,i) {
 }
 
 function lance_colorisation() {
-	cat=document.forms[0].elements['colorisation'].options[document.forms[0].elements['colorisation'].selectedIndex].value;
+	cat=document.forms['form_select_eleves_options'].elements['colorisation'].options[document.forms['form_select_eleves_options'].elements['colorisation'].selectedIndex].value;
 	//alert(cat);
 	if(cat=='classe_fut') {
 		colorise(cat,".count($classe_fut).");
@@ -1148,6 +1221,9 @@ function lance_colorisation() {
 		colorise(cat,".count($tab_profil).");
 	}
 }
+
+// Pour re-coloriser en fin de chargement de page si on a Enregistré...
+lance_colorisation();
 ";
 
 // probleme: si une classe ou catégorie (red ou arriv) a un effectif nul le rang du premier et du dernier élève ne sont pas affectés et on obtient alors une erreur
@@ -1204,10 +1280,29 @@ echo "function modif_colonne(col,j,mode) {
 
 	//alert('PLOP');
 
-	cat=document.forms[0].elements['colorisation'].options[document.forms[0].elements['colorisation'].selectedIndex].value;
+	cat=document.forms['form_select_eleves_options'].elements['colorisation'].options[document.forms['form_select_eleves_options'].elements['colorisation'].selectedIndex].value;
 	if(col.substr(0,cat.length)==cat) {lance_colorisation();}
 }
 </script>\n";
+
+$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
+if($suhosin_post_max_totalname_length!='') {
+	$alerte_config_suhosin=alerte_config_suhosin();
+	echo "<div align='center'>$alerte_config_suhosin";
+
+	$decompte_champs_radio=(count($classe_fut)-1)*$cpt+(count($lv1)-1)*$cpt+(count($lv2)-1)*$cpt+(count($lv3)-1)*$cpt;
+
+	echo "<div id='info_nb_input'></div>\n";
+
+	echo "<script type='text/javascript'>
+tab_input=document.getElementsByTagName('input');
+nb_input=eval(tab_input.length-$decompte_champs_radio);
+info_nb_champs=nb_input;
+document.getElementById('info_nb_input').innerHTML='<span style=\'color:red\'>Il y a '+info_nb_champs+' champs input qui seront envoyés en POST.</span><br />Les valeurs de suhosin.post.max_vars et suhosin.request.max_vars sont à surveiller.';
+</script>\n";
+
+	echo "</div>\n";
+}
 
 require("../lib/footer.inc.php");
 ?>

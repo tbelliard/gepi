@@ -494,6 +494,7 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 
 	// Il reste à déterminer le groupe
 	if ($regroupement != '') {
+		//echo "\$regroupement=$regroupement<br />";
 
 		$test = explode("|", $regroupement);
 
@@ -504,6 +505,7 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 		}else{
 
 			$groupe_e = renvoiConcordances($regroupement, 7);
+			//echo "\$groupe_e=$groupe_e<br />";
 
 			if ($groupe_e == 'erreur') {
 				$regrp = '';
@@ -516,6 +518,7 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 		// On recherche le groupe
 		$regrp = '';
 		$groupe_e = renvoiIdGroupe($prof_e, $classe_e, $matiere_e, $regrp, $groupe, 'csv2');
+		//echo "\$groupe_e = renvoiIdGroupe($prof_e, $classe_e, $matiere_e, $regrp, $groupe, 'csv2');=$groupe_e<br />";
 	}
 
 	// On vérifie si tous les champs importants sont précisés ou non
@@ -527,11 +530,26 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 		// Il manque des informations
 		$retour["reponse"] = 'non';
 		$retour["msg_erreur"] .= $jour_e.'|'.$creneau_e.'|'.$groupe_e.'|'.$matiere_e.'|'.$classe_e.'|'.$prof_e;
-
+		//echo "Il manque des infos.<br />";
 	}else{
 		// On vérifie que cette ligne n'existe pas déjà
 		// On ne tient pas compte du type de semaine car on estime que si un enseignement a lieu sur deux types de semaines, c'est qu'il a lieu toutes les semaines
-		$ifexists = mysql_query("SELECT id_cours FROM edt_cours WHERE
+		if(preg_match("/^AID/", $groupe_e)) {
+			$tmp_tab=explode('|', $groupe_e);
+			$id_aid_courant=$tmp_tab[1];
+			$sql="SELECT id_cours FROM edt_cours WHERE
+							id_aid = '".$id_aid_courant."' AND
+							id_salle = '".$salle_e."' AND
+							jour_semaine = '".$jour_e."' AND
+							id_definie_periode = '".$creneau_e."' AND
+							duree = '".$duree_e."' AND
+							heuredeb_dec = '".$heuredeb_dec."' AND
+							id_calendrier = '0' AND
+							modif_edt = '0' AND
+							login_prof = '".$prof_e."';";
+		}
+		else {
+			$sql="SELECT id_cours FROM edt_cours WHERE
 							id_groupe = '".$groupe_e."' AND
 							id_salle = '".$salle_e."' AND
 							jour_semaine = '".$jour_e."' AND
@@ -540,7 +558,10 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 							heuredeb_dec = '".$heuredeb_dec."' AND
 							id_calendrier = '0' AND
 							modif_edt = '0' AND
-							login_prof = '".$prof_e."'")
+							login_prof = '".$prof_e."';";
+		}
+		//echo "Test ifexists : $sql<br />";
+		$ifexists = mysql_query($sql)
 							OR DIE('erreur dans la requête '.$ifexists.' : '.mysql_error());
 
 		$erreur_report = mysql_fetch_array($ifexists);
@@ -548,7 +569,35 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 
 		if (mysql_num_rows($ifexists) < 1) {
 			// On enregistre la ligne
-			$sql = "INSERT INTO `edt_cours` (`id_cours`,
+			//echo "\$groupe_e=$groupe_e<br />";
+			if(preg_match("/^AID/", $groupe_e)) {
+				$tmp_tab=explode('|', $groupe_e);
+				$id_aid_courant=$tmp_tab[1];
+				$sql = "INSERT INTO `edt_cours` (`id_cours`,
+										`id_aid`,
+										`id_salle`,
+										`jour_semaine`,
+										`id_definie_periode`,
+										`duree`,
+										`heuredeb_dec`,
+										`id_semaine`,
+										`id_calendrier`,
+										`modif_edt`,
+										`login_prof`)
+								VALUES ('',
+										'".$id_aid_courant."',
+										'".$salle_e."',
+										'".$jour_e."',
+										'".$creneau_e."',
+										'".$duree_e."',
+										'".$heuredeb_dec."',
+										'".$type_semaine."',
+										'0',
+										'0',
+										'".$prof_e."')";
+			}
+			else {
+				$sql = "INSERT INTO `edt_cours` (`id_cours`,
 										`id_groupe`,
 										`id_salle`,
 										`jour_semaine`,
@@ -570,6 +619,8 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 										'0',
 										'0',
 										'".$prof_e."')";
+			}
+			//echo "$sql<br />";
 
 			$retour["msg_erreur"] .= '<br />&nbsp;&nbsp;&nbsp;&nbsp;'.$sql;
 

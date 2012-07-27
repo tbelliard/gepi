@@ -45,12 +45,6 @@ if (getSettingValue("active_module_msj")!='y') {
 }
 
 	include('../lib/fonction_dossier.php');
-/*
-	include('../lib/pclzip.lib.php');
-	include('../lib/pcltar.lib.php');
-	include('../lib/pcltrace.lib.php');
-	include('../lib/pclerror.lib.php');
-*/
 // uid de pour ne pas refaire renvoyer plusieurs fois le même formulaire
 // autoriser la validation de formulaire $uid_post===$_SESSION['uid_prime']
 if(empty($_SESSION['uid_prime'])) {
@@ -106,7 +100,7 @@ $message_erreur = isset($_SESSION["message_erreur"]) ? $_SESSION["message_erreur
 $style_specifique = "mod_miseajour/lib/style_maj";
 $javascript_specifique = "mod_miseajour/lib/javascript_maj";
 
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 
 //on recherche le fichier de mise à jour sur le site du principal
 if(url_exists($site_de_miseajour."version.msj")) {

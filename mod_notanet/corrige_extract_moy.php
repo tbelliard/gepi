@@ -58,7 +58,7 @@ echo '<link rel="stylesheet" type="text/css" href="mod_notanet.css">';
 //**************** EN-TETE *****************
 $titre_page = "Notanet: Correction/Extraction des moyennes";
 //echo "<div class='noprint'>\n";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 

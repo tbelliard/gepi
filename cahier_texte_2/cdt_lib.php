@@ -206,7 +206,6 @@ require_once("'.$pref_arbo.'/entete.php");
 		$res = sql_query($sql);
 		if (($res) and (sql_count($res)!=0)) {
 			$html_tmp= "<span class='petit'>Document(s) joint(s):</span>";
-			//$html .= "<ul type=\"disc\" style=\"padding-left: 15px;\">";
 			$html_tmp.= "<ul style=\"padding-left: 15px;\">";
 			for ($i=0; ($row = sql_row($res,$i)); $i++) {
 				if(isset($_SESSION['statut']) && ((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
@@ -214,19 +213,8 @@ require_once("'.$pref_arbo.'/entete.php");
 					((getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==true)&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))))
 				) {
 					$titre = $row[0];
-					/*
-					// Inutile: Les fichiers déplacés se retrouvent dans archives/<RNE>/cahier_texte_<ANNEE>/documents/<RNE>/
-					if(isset($_COOKIE["RNE"])) {
-						$emplacement = $pref_documents.preg_replace("#^\.\./documents/".$_COOKIE["RNE"]."/#", "../documents/", $row[1]);
-					}
-					else {
-					*/
 						$emplacement = $pref_documents.$row[1];
-					//}
-					//$html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a href=\"$emplacement\" target=\"blank\">$titre</a></li>";
-					// Ouverture dans une autre fenêtre conservée parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
-					// alternative, utiliser un javascript
-					$html_tmp.= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return false;\" href=\"$emplacement\">$titre</a></li>";
+					$html_tmp.= "<li style=\"padding: 0px; margin: 0px; font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return false;\" href=\"$emplacement\">$titre</a></li>";
 
 					$tab_chemin_url[]=$emplacement;
 					$nb_doc_joints_visibles++;

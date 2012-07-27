@@ -43,7 +43,6 @@ if (!checkAccess()) {
 	die();
 }
 
-
 $reg_ok = 'yes';
 $msg = '';
 if (isset($_POST['option_modele_bulletin'])) {
@@ -54,6 +53,33 @@ if (isset($_POST['option_modele_bulletin'])) {
 		$reg_ok = 'no';
 	}
 }
+
+/*
+	// Pour ajouter un paramètre, il faut ajouter la case à cocher dans la présente page (param_bull_pdf.php), mais il faut aussi déclarer le champ correspondant et sa valeur par défaut dans la page bulletin_pdf.inc.php
+
+	if (empty($_GET['telle_var']) and empty($_POST['telle_var'])) {
+		$telle_var = '';
+	}
+	else {
+		if (isset($_GET['telle_var'])) { 
+			$telle_var = $_GET['telle_var']; 
+		}
+		if (isset($_POST['telle_var'])) {
+			$telle_var = $_POST['telle_var'];
+		}
+	}
+
+	// A VOIR: Remplacer par:
+	$telle_var=isset($_POST['telle_var']) ? $_POST['telle_var'] : (isset($_GET['telle_var']) ? $_GET['telle_var'] : "");
+
+	<?php
+		echo "<input type='checkbox' name='telle_var' id='telle_var' value='1' ";
+		if(isset($telle_var) and $telle_var=='1') { 
+			echo "checked='checked'";
+		}
+		echo "/><label for='telle_var'></label><br />\n";
+	?>
+*/
 
 //=========================
 // AJOUT: boireaus 20081224
@@ -354,6 +380,14 @@ if(isset($_POST['valide_modif_model'])) {
 	else { if (isset($_GET['taille_titre_bloc_avis_conseil'])) { $taille_titre_bloc_avis_conseil = $_GET['taille_titre_bloc_avis_conseil']; } if (isset($_POST['taille_titre_bloc_avis_conseil'])) { $taille_titre_bloc_avis_conseil = $_POST['taille_titre_bloc_avis_conseil']; } }
 	if (empty($_GET['taille_profprincipal_bloc_avis_conseil']) and empty($_POST['taille_profprincipal_bloc_avis_conseil'])) { $taille_profprincipal_bloc_avis_conseil = ''; }
 	else { if (isset($_GET['taille_profprincipal_bloc_avis_conseil'])) { $taille_profprincipal_bloc_avis_conseil = $_GET['taille_profprincipal_bloc_avis_conseil']; } if (isset($_POST['taille_profprincipal_bloc_avis_conseil'])) { $taille_profprincipal_bloc_avis_conseil = $_POST['taille_profprincipal_bloc_avis_conseil']; } }
+
+
+	if (empty($_GET['afficher_tous_profprincipaux']) and empty($_POST['afficher_tous_profprincipaux'])) { $afficher_tous_profprincipaux = ''; }
+	else {
+		if (isset($_GET['afficher_tous_profprincipaux'])) { $afficher_tous_profprincipaux = $_GET['afficher_tous_profprincipaux']; }
+		if (isset($_POST['afficher_tous_profprincipaux'])) { $afficher_tous_profprincipaux = $_POST['afficher_tous_profprincipaux']; }
+	}
+
 	if (empty($_GET['affiche_fonction_chef']) and empty($_POST['affiche_fonction_chef'])) { $affiche_fonction_chef = ''; }
 	else { if (isset($_GET['affiche_fonction_chef'])) { $affiche_fonction_chef = $_GET['affiche_fonction_chef']; } if (isset($_POST['affiche_fonction_chef'])) { $affiche_fonction_chef = $_POST['affiche_fonction_chef']; } }
 	if (empty($_GET['taille_texte_fonction_chef']) and empty($_POST['taille_texte_fonction_chef'])) { $taille_texte_fonction_chef = ''; }
@@ -436,12 +470,15 @@ if(isset($_POST['valide_modif_model'])) {
 	if (empty($_GET['affiche_numero_responsable']) and empty($_POST['affiche_numero_responsable'])) { $affiche_numero_responsable = ''; }
 	else { if (isset($_GET['affiche_numero_responsable'])) { $affiche_numero_responsable = $_GET['affiche_numero_responsable']; } if (isset($_POST['affiche_numero_responsable'])) { $affiche_numero_responsable = $_POST['affiche_numero_responsable']; } }
 
+	$signature_img=isset($_POST['signature_img']) ? $_POST['signature_img'] : (isset($_GET['signature_img']) ? $_GET['signature_img'] : "");
+
 // fin Christian
 //===================================================
 
 //==============================
 // Initialisation d'un tableau des champs de model_bulletin
 include('bulletin_pdf.inc.php');
+// Pour ajouter un paramètre, il faut ajouter la case à cocher dans la présente page (param_bull_pdf.php), mais il faut aussi déclarer le champ correspondant et sa valeur par défaut dans la page bulletin_pdf.inc.php
 //==============================
 
 //===================================================
@@ -655,7 +692,7 @@ if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
 
 //**************** EN-TETE *********************
 $titre_page = "Paramètres de configuration des bulletins scolaires PDF";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 // Pour afficher les variables transmises en GET/POST/SERVER/SESSION
@@ -1180,16 +1217,21 @@ function DecocheCheckbox() {
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label for="Y_centre_logo" style="cursor: pointer;">Positionnement du centrage (Y)</label>&nbsp;<input name="Y_centre_logo" id="Y_centre_logo" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($Y_centre_logo)) { ?>value="<?php echo $Y_centre_logo; ?>" <?php } ?> />mm<br /><br />
 
 				<div style="font-weight: bold; background: #CFCFCF;">Cadre information identité élève</div>
-			<input name="active_bloc_eleve" value="1" type="radio" <?php if(!empty($active_bloc_eleve) and $active_bloc_eleve==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_eleve" value="0" type="radio" <?php if(empty($active_bloc_eleve) or (!empty($active_bloc_eleve) and $active_bloc_eleve!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
+			<input name="active_bloc_eleve" id="active_bloc_eleve_1" value="1" type="radio" <?php if(!empty($active_bloc_eleve) and $active_bloc_eleve==='1') { ?>checked="checked"<?php } ?> /><label for='active_bloc_eleve_1'>&nbsp;Activer</label> &nbsp;<input name="active_bloc_eleve" id="active_bloc_eleve_0" value="0" type="radio" <?php if(empty($active_bloc_eleve) or (!empty($active_bloc_eleve) and $active_bloc_eleve!='1')) { ?>checked="checked"<?php } ?> /><label for='active_bloc_eleve_0'>&nbsp;Désactiver</label><br />
+			
 			Positionnement X&nbsp;<input name="X_eleve" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_eleve)) { ?>value="<?php echo $X_eleve; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_eleve" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($Y_eleve)) { ?>value="<?php echo $Y_eleve; ?>" <?php } ?> />mm&nbsp;<br />
+			
 			Largeur du bloc&nbsp;<input name="largeur_bloc_eleve" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_bloc_eleve)) { ?>value="<?php echo $largeur_bloc_eleve; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_bloc_eleve" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_bloc_eleve)) { ?>value="<?php echo $hauteur_bloc_eleve; ?>" <?php } ?> />mm&nbsp;<br />
 
 			<input name="cadre_eleve" id="cadre_eleve" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_eleve) and $cadre_eleve==='1') { ?>checked="checked"<?php } ?> /><label for='cadre_eleve'>&nbsp;Ajouter un encadrement</label><br />
 
 			<input name="active_photo" id="active_photo" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_photo) and $active_photo==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="active_photo" style="cursor: pointer;">la photo</label> (<input name="ajout_cadre_blanc_photo" id="ajout_cadre_blanc_photo" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($ajout_cadre_blanc_photo) and $ajout_cadre_blanc_photo==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="ajout_cadre_blanc_photo" style="cursor: pointer;">Ajouter un cadre blanc</label> )<br />
-			<input name="affiche_doublement" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_doublement) and $affiche_doublement==='1') { ?>checked="checked"<?php } ?> />&nbsp;si doublement<br />
-			<input name="affiche_date_naissance" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_date_naissance) and $affiche_date_naissance==='1') { ?>checked="checked"<?php } ?> />&nbsp;la date de naissance<br />
-			<input name="affiche_dp" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_dp) and $affiche_dp==='1') { ?>checked="checked"<?php } ?> />&nbsp;le régime<br />
+			
+			<input name="affiche_doublement" id="affiche_doublement" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_doublement) and $affiche_doublement==='1') { ?>checked="checked"<?php } ?> /><label for='affiche_doublement'>&nbsp;si doublement</label><br />
+			
+			<input name="affiche_date_naissance" id="affiche_date_naissance" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_date_naissance) and $affiche_date_naissance==='1') { ?>checked="checked"<?php } ?> /><label for='affiche_date_naissance'>&nbsp;la date de naissance</label><br />
+			
+			<input name="affiche_dp" id="affiche_dp" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_dp) and $affiche_dp==='1') { ?>checked="checked"<?php } ?> /><label for='affiche_dp'>&nbsp;le régime</label><br />
 
 			<?php
 				/*
@@ -1202,16 +1244,23 @@ function DecocheCheckbox() {
 				*/
 			?>
 
-			<input name="affiche_nom_court" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_nom_court) and $affiche_nom_court==='1') { ?>checked="checked"<?php } ?> />&nbsp;nom court de la classe<br />
+			<input name="affiche_nom_court" id="affiche_nom_court" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_nom_court) and $affiche_nom_court==='1') { ?>checked="checked"<?php } ?> /><label for='affiche_nom_court'>&nbsp;nom court de la classe</label><br />
+			
 			<input name="affiche_ine" id="affiche_ine" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_ine) and $affiche_ine==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_ine" style="cursor: pointer;">numéro INE de l'élève</label><br />
-			<input name="affiche_effectif_classe" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_effectif_classe) and $affiche_effectif_classe==='1') { ?>checked="checked"<?php } ?> />&nbsp;effectif de la classe<br />
-			<input name="affiche_numero_impression" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_numero_impression) and $affiche_numero_impression==='1') { ?>checked="checked"<?php } ?> />&nbsp;numéro d'impression<br />
-			<input name="affiche_etab_origine" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_etab_origine) and $affiche_etab_origine==='1') { ?>checked="checked"<?php } ?> />&nbsp;établissement d'origine<br /><br />
+			
+			<input name="affiche_effectif_classe" id="affiche_effectif_classe" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_effectif_classe) and $affiche_effectif_classe==='1') { ?>checked="checked"<?php } ?> /><label for='affiche_effectif_classe'>&nbsp;effectif de la classe</label><br />
+			
+			<input name="affiche_numero_impression" id="affiche_numero_impression" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_numero_impression) and $affiche_numero_impression==='1') { ?>checked="checked"<?php } ?> /><label for='affiche_numero_impression'>&nbsp;numéro d'impression</label><br />
+			
+			<input name="affiche_etab_origine" id="affiche_etab_origine" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_etab_origine) and $affiche_etab_origine==='1') { ?>checked="checked"<?php } ?> /><label for='affiche_etab_origine'>&nbsp;établissement d'origine</label><br /><br />
 
 			</td>
 				<td style="vertical-align: top; white-space: nowrap; text-align: left; width: 50%;">
+				
 				<div style="font-weight: bold; background: #CFCFCF;">Cadre datation du bulletin</div>
-			<input name="active_bloc_datation" value="1" type="radio" <?php if(!empty($active_bloc_datation) and $active_bloc_datation==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_datation" value="0" type="radio" <?php if(empty($active_bloc_datation) or (!empty($active_bloc_datation) and $active_bloc_datation!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
+				
+			<input name="active_bloc_datation" id="active_bloc_datation_1" value="1" type="radio" <?php if(!empty($active_bloc_datation) and $active_bloc_datation==='1') { ?>checked="checked"<?php } ?> /><label for='active_bloc_datation_1'>&nbsp;Activer</label> &nbsp;<input name="active_bloc_datation" id="active_bloc_datation_0" value="0" type="radio" <?php if(empty($active_bloc_datation) or (!empty($active_bloc_datation) and $active_bloc_datation!='1')) { ?>checked="checked"<?php } ?> /><label for='active_bloc_datation_0'>&nbsp;Désactiver</label><br />
+			
 			Positionnement X&nbsp;<input name="X_datation_bul" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_datation_bul)) { ?>value="<?php echo $X_datation_bul; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_datation_bul" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($Y_datation_bul)) { ?>value="<?php echo $Y_datation_bul; ?>" <?php } ?> />mm&nbsp;<br />
 			Largeur du bloc&nbsp;<input name="largeur_bloc_datation" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_bloc_datation)) { ?>value="<?php echo $largeur_bloc_datation; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_bloc_datation" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_bloc_datation)) { ?>value="<?php echo $hauteur_bloc_datation; ?>" <?php } ?> />mm&nbsp;<br />
 
@@ -1258,25 +1307,35 @@ function DecocheCheckbox() {
 					</select><br />
 			&nbsp;&nbsp;&nbsp;<input name="affiche_date_edition" id="affiche_date_edition" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_date_edition) and $affiche_date_edition==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_date_edition" style="cursor: pointer;">Afficher la date d'édition</label><br /><br /><br />
 
+
+
+
+
 				<div style="font-weight: bold; background: #CFCFCF;">Cadre adresse des parents</div>
-			<input name="active_bloc_adresse_parent" value="1" type="radio" <?php if(!empty($active_bloc_adresse_parent) and $active_bloc_adresse_parent==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_adresse_parent" value="0" type="radio" <?php if(empty($active_bloc_adresse_parent) or (!empty($active_bloc_adresse_parent) and $active_bloc_adresse_parent!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
+				
+			<input name="active_bloc_adresse_parent" id="active_bloc_adresse_parent_1" value="1" type="radio" <?php if(!empty($active_bloc_adresse_parent) and $active_bloc_adresse_parent==='1') { ?>checked="checked"<?php } ?> /><label for='active_bloc_adresse_parent_1'>&nbsp;Activer</label> &nbsp;<input name="active_bloc_adresse_parent" id="active_bloc_adresse_parent_0" value="0" type="radio" <?php if(empty($active_bloc_adresse_parent) or (!empty($active_bloc_adresse_parent) and $active_bloc_adresse_parent!='1')) { ?>checked="checked"<?php } ?> /><label for='active_bloc_adresse_parent_0'>&nbsp;Désactiver</label><br />
 			Positionnement X&nbsp;<input name="X_parent" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_parent)) { ?>value="<?php echo $X_parent; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_parent" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($Y_parent)) { ?>value="<?php echo $Y_parent; ?>" <?php } ?> />mm&nbsp;<br />
 			Largeur du bloc&nbsp;<input name="largeur_bloc_adresse" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_bloc_adresse)) { ?>value="<?php echo $largeur_bloc_adresse; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_bloc_adresse" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_bloc_adresse)) { ?>value="<?php echo $hauteur_bloc_adresse; ?>" <?php } ?> />mm&nbsp;<br />
 
 			<input name="cadre_adresse" id="cadre_adresse" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_adresse) and $cadre_adresse==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="cadre_adresse" style="cursor: pointer;">Ajouter un encadrement</label><br /><br />
 
 			Imprimer les bulletins pour :<br />
-			<input name="imprime_pour" value="1" type="radio" <?php if( (!empty($imprime_pour) and $imprime_pour==='1') or empty($imprime_pour) ) { ?>checked="checked"<?php } ?> />&nbsp;seulement pour le 1er responsable<br />
-			<input name="imprime_pour" value="2" type="radio" <?php if(!empty($imprime_pour) and $imprime_pour==='2') { ?>checked="checked"<?php } ?> />&nbsp;le 1er et 2ème responsable s'ils n'ont pas la même adresse<br />
-			<input name="imprime_pour" value="3" type="radio" <?php if(!empty($imprime_pour) and $imprime_pour==='3') { ?>checked="checked"<?php } ?> />&nbsp;forcer pour le 1er et 2ème responsable<br /><br />
+			<input name="imprime_pour" id="imprime_pour_1" value="1" type="radio" <?php if( (!empty($imprime_pour) and $imprime_pour==='1') or empty($imprime_pour) ) { ?>checked="checked"<?php } ?> /><label for='imprime_pour_1'>&nbsp;seulement pour le 1er responsable</label><br />
+			<input name="imprime_pour" id="imprime_pour_2" value="2" type="radio" <?php if(!empty($imprime_pour) and $imprime_pour==='2') { ?>checked="checked"<?php } ?> /><label for='imprime_pour_2'>&nbsp;le 1er et 2ème responsable s'ils n'ont pas la même adresse</label><br />
+			<input name="imprime_pour" id="imprime_pour_3" value="3" type="radio" <?php if(!empty($imprime_pour) and $imprime_pour==='3') { ?>checked="checked"<?php } ?> /><label for='imprime_pour_3'>&nbsp;forcer pour le 1er et 2ème responsable</label><br /><br />
 			
 			<input name="affiche_numero_responsable" id="affiche_numero_responsable" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_numero_responsable) and $affiche_numero_responsable==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_numero_responsable" style="cursor: pointer;">Afficher le numéro du responsable</label><br /><br />
 			</td>
 		</tr>
 		<tr>
 			<td style="vertical-align: top; white-space: nowrap; text-align: left; width: 50%;" colspan="2" rowspan="1">
+
+
+
+
 			<div style="font-weight: bold; background: #CFCFCF;">Cadre note et appréciation</div>
-			<input name="active_bloc_note_appreciation" value="1" type="radio" <?php if(!empty($active_bloc_note_appreciation) and $active_bloc_note_appreciation==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_note_appreciation" value="0" type="radio" <?php if(empty($active_bloc_note_appreciation) or (!empty($active_bloc_note_appreciation) and $active_bloc_note_appreciation!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
+			
+			<input name="active_bloc_note_appreciation" id="active_bloc_note_appreciation_1" value="1" type="radio" <?php if(!empty($active_bloc_note_appreciation) and $active_bloc_note_appreciation==='1') { ?>checked="checked"<?php } ?> /><label for='active_bloc_note_appreciation_1'>&nbsp;Activer</label> &nbsp;<input name="active_bloc_note_appreciation" id="active_bloc_note_appreciation_0" value="0" type="radio" <?php if(empty($active_bloc_note_appreciation) or (!empty($active_bloc_note_appreciation) and $active_bloc_note_appreciation!='1')) { ?>checked="checked"<?php } ?> /><label for='active_bloc_note_appreciation_0'>&nbsp;Désactiver</label><br />
 			Positionnement X&nbsp;<input name="X_note_app" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_note_app)) { ?>value="<?php echo $X_note_app; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_note_app" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($Y_note_app)) { ?>value="<?php echo $Y_note_app; ?>" <?php } ?> />mm&nbsp;<br />
 			Largeur du bloc&nbsp;<input name="longeur_note_app" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($longeur_note_app)) { ?>value="<?php echo $longeur_note_app; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_note_app" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_note_app)) { ?>value="<?php echo $hauteur_note_app; ?>" <?php } ?> />mm&nbsp;<br />
 			Entête<br />
@@ -1319,25 +1378,40 @@ function DecocheCheckbox() {
 						<option value="6" <?php if ( isset($ordre_entete_model_bulletin) and $ordre_entete_model_bulletin === '6' ) { ?>selected="selected"<?php } ?>>6 - min | classe | max | eleve | rang | niveau | appreciation |</option>
 					</select><br />
 
+
+
+
+
+
 			<!-- Autres -->
 
 			<div style="background: #EFEFEF; font-style:italic;">Autres</div>
-			<input name="active_coef_moyenne" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_coef_moyenne) and $active_coef_moyenne==='1') { ?>checked="checked"<?php } ?> />&nbsp;Coefficient de chaque matière<br />
+			<input name="active_coef_moyenne" id="active_coef_moyenne" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_coef_moyenne) and $active_coef_moyenne==='1') { ?>checked="checked"<?php } ?> /><label for='active_coef_moyenne'>&nbsp;Coefficient de chaque matière</label><br />
+			
 			&nbsp;&nbsp;&nbsp;- Largeur de la colonne des coefficients&nbsp;<input name="largeur_coef_moyenne" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_coef_moyenne)) { ?>value="<?php echo $largeur_coef_moyenne; ?>" <?php } ?> />mm<br />
-			&nbsp;&nbsp;&nbsp;<input name="active_coef_sousmoyene" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_coef_sousmoyene) and $active_coef_sousmoyene==='1') { ?>checked="checked"<?php } ?> />&nbsp;l'afficher sous la moyenne de l'élève<br />
-			<input name="active_nombre_note_case" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_nombre_note_case) and $active_nombre_note_case==='1') { ?>checked="checked"<?php } ?> />&nbsp;Nombre de notes par matière dans une case<br />
+			
+			&nbsp;&nbsp;&nbsp;<input name="active_coef_sousmoyene" id="active_coef_sousmoyene" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_coef_sousmoyene) and $active_coef_sousmoyene==='1') { ?>checked="checked"<?php } ?> /><label for='active_coef_sousmoyene'>&nbsp;l'afficher sous la moyenne de l'élève</label><br />
+			
+			<input name="active_nombre_note_case" id="active_nombre_note_case" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_nombre_note_case) and $active_nombre_note_case==='1') { ?>checked="checked"<?php } ?> /><label for='active_nombre_note_case'>&nbsp;Nombre de notes par matière dans une case</label><br />
+			
 			&nbsp;&nbsp;&nbsp;- Largeur de la colonne du nombre de notes&nbsp;<input name="largeur_nombre_note" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_nombre_note)) { ?>value="<?php echo $largeur_nombre_note; ?>" <?php } ?> />mm<br />
-			&nbsp;&nbsp;&nbsp;<input name="active_nombre_note" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_nombre_note) and $active_nombre_note==='1') { ?>checked="checked"<?php } ?> />&nbsp;l'afficher sous la moyenne de l'élève<br />
+			
+			&nbsp;&nbsp;&nbsp;<input name="active_nombre_note" id="active_nombre_note" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_nombre_note) and $active_nombre_note==='1') { ?>checked="checked"<?php } ?> /><label for='active_nombre_note'>&nbsp;l'afficher sous la moyenne de l'élève</label><br />
+
+
+
+
 
 			<!-- Moyenne -->
 
 			<div style="background: #EFEFEF; font-style:italic;">Moyenne</div>
-			<input name="active_moyenne" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne) and $active_moyenne==='1') { ?>checked="checked"<?php } ?> />&nbsp;Les moyennes<br />
+			<input name="active_moyenne" id="active_moyenne" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne) and $active_moyenne==='1') { ?>checked="checked"<?php } ?> /><label for='active_moyenne'>&nbsp;Les moyennes</label><br />
 			&nbsp;&nbsp;&nbsp;- Largeur de la colonne d'une moyenne&nbsp;<input name="largeur_d_une_moyenne" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_d_une_moyenne)) { ?>value="<?php echo $largeur_d_une_moyenne; ?>" <?php } ?> />mm<br />
 
 			<br />
 
-			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_eleve" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_eleve) and $active_moyenne_eleve==='1') { ?>checked="checked"<?php } ?> />&nbsp;Moyenne de l'élève&nbsp;&nbsp;&nbsp;(<input name="active_reperage_eleve" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_reperage_eleve) and $active_reperage_eleve==='1') { ?>checked="checked"<?php } ?> />&nbsp;Mettre un fond de couleur - R:<input name="couleur_reperage_eleve1" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_reperage_eleve1)) { ?>value="<?php echo $couleur_reperage_eleve1; ?>" <?php } ?> /> G:<input name="couleur_reperage_eleve2" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_reperage_eleve2)) { ?>value="<?php echo $couleur_reperage_eleve2; ?>" <?php } ?> /> B:<input name="couleur_reperage_eleve3" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_reperage_eleve3)) { ?>value="<?php echo $couleur_reperage_eleve3; ?>" <?php } ?> />)<br />
+			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_eleve" id="active_moyenne_eleve" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_eleve) and $active_moyenne_eleve==='1') { ?>checked="checked"<?php } ?> /><label for='active_moyenne_eleve'>&nbsp;Moyenne de l'élève</label>
+			&nbsp;&nbsp;&nbsp;(<input name="active_reperage_eleve" id="active_reperage_eleve" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_reperage_eleve) and $active_reperage_eleve==='1') { ?>checked="checked"<?php } ?> /><label for='active_reperage_eleve'>&nbsp;Mettre un fond de couleur</label> - R:<input name="couleur_reperage_eleve1" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_reperage_eleve1)) { ?>value="<?php echo $couleur_reperage_eleve1; ?>" <?php } ?> /> G:<input name="couleur_reperage_eleve2" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_reperage_eleve2)) { ?>value="<?php echo $couleur_reperage_eleve2; ?>" <?php } ?> /> B:<input name="couleur_reperage_eleve3" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_reperage_eleve3)) { ?>value="<?php echo $couleur_reperage_eleve3; ?>" <?php } ?> />)<br />
 
 
 			<?php
@@ -1373,13 +1447,13 @@ function DecocheCheckbox() {
 			?>
 			<br />
 
-			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_classe" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_classe) and $active_moyenne_classe==='1') { ?>checked="checked"<?php } ?> />&nbsp;Moyenne de la classe<br />
-			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_min" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_min) and $active_moyenne_min==='1') { ?>checked="checked"<?php } ?> />&nbsp;Moyenne la plus basse<br />
-			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_max" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_max) and $active_moyenne_max==='1') { ?>checked="checked"<?php } ?> />&nbsp;Moyenne la plus haute<br />
+			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_classe" id="active_moyenne_classe" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_classe) and $active_moyenne_classe==='1') { ?>checked="checked"<?php } ?> /><label for='active_moyenne_classe'>&nbsp;Moyenne de la classe</label><br />
+			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_min" id="active_moyenne_min" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_min) and $active_moyenne_min==='1') { ?>checked="checked"<?php } ?> /><label for='active_moyenne_min'>&nbsp;Moyenne la plus basse</label><br />
+			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_max" id="active_moyenne_max" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_max) and $active_moyenne_max==='1') { ?>checked="checked"<?php } ?> /><label for='active_moyenne_max'>&nbsp;Moyenne la plus haute</label><br />
 
 			<br />
 
-			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_general" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_general) and $active_moyenne_general === '1') { ?>checked="checked"<?php } ?> />&nbsp;Ligne des moyennes générales<br />
+			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_general" id="active_moyenne_general" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_general) and $active_moyenne_general === '1') { ?>checked="checked"<?php } ?> /><label for='active_moyenne_general'>&nbsp;Ligne des moyennes générales</label><br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="affiche_moyenne_mini_general" id="affiche_moyenne_mini_general" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_moyenne_mini_general) and $affiche_moyenne_mini_general === '1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_moyenne_mini_general" style="cursor: pointer;">moyenne générale la plus basse</label><br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="affiche_moyenne_maxi_general" id="affiche_moyenne_maxi_general" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_moyenne_maxi_general) and $affiche_moyenne_maxi_general === '1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_moyenne_maxi_general" style="cursor: pointer;">moyenne générale la plus haute</label><br />
 
@@ -1406,7 +1480,7 @@ function DecocheCheckbox() {
 				if($affiche_totalpoints_sur_totalcoefs=='2') {
 					echo "checked='checked' ";
 				}
-				echo " />&nbsp;<label for='affiche_totalpoints_sur_totalcoefs_2' style='cursor: pointer;'>afficher le total des coefficients seulement<br />\n";
+				echo " />&nbsp;<label for='affiche_totalpoints_sur_totalcoefs_2' style='cursor: pointer;'>afficher le total des coefficients seulement</label><br />\n";
 
 				/*
 				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name='affiche_totalpoints_sur_totalcoefs' id='affiche_totalpoints_sur_totalcoefs' style='border: 1px solid #74748F;' type='checkbox' value='1' ";
@@ -1427,29 +1501,45 @@ function DecocheCheckbox() {
 			<br />
 
 			&nbsp;Arrondir les moyennes à : <input name="arrondie_choix" value="0.01" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='0.01') { ?>checked="checked"<?php } ?> />0,01 <input name="arrondie_choix" value="0.1" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='0.1') { ?>checked="checked"<?php } ?> />0,1 <input name="arrondie_choix" value="0.25" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='0.25') { ?>checked="checked"<?php } ?> />0,25 <input name="arrondie_choix" value="0.5" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='0.5') { ?>checked="checked"<?php } ?> />0,5 <input name="arrondie_choix" value="1" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='1') { ?>checked="checked"<?php } ?> />1<br />
-			&nbsp;Nombre de zéros après la virgule : <input name="nb_chiffre_virgule" value="2" type="radio" <?php if(!empty($nb_chiffre_virgule) and $nb_chiffre_virgule==='2') { ?>checked="checked"<?php } ?> />2  <input name="nb_chiffre_virgule" value="1" type="radio" <?php if(!empty($nb_chiffre_virgule) and $nb_chiffre_virgule==='1') { ?>checked="checked"<?php } ?> />1 - <input name="chiffre_avec_zero" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($chiffre_avec_zero) and $chiffre_avec_zero==='1') { ?>checked="checked"<?php } ?> /> ne pas afficher le "0" après la virgule<br />
+			&nbsp;Nombre de zéros après la virgule : <input name="nb_chiffre_virgule" value="2" type="radio" <?php if(!empty($nb_chiffre_virgule) and $nb_chiffre_virgule==='2') { ?>checked="checked"<?php } ?> />2  <input name="nb_chiffre_virgule" value="1" type="radio" <?php if(!empty($nb_chiffre_virgule) and $nb_chiffre_virgule==='1') { ?>checked="checked"<?php } ?> />1 - <input name="chiffre_avec_zero" id="chiffre_avec_zero" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($chiffre_avec_zero) and $chiffre_avec_zero==='1') { ?>checked="checked"<?php } ?> /><label for='chiffre_avec_zero'> ne pas afficher le "0" après la virgule</label><br />
 
 			<!-- Autres -->
 
 			<div style="background: #EFEFEF; font-style:italic;">Autres</div>
-			<input name="active_rang" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_rang) and $active_rang==='1') { ?>checked="checked"<?php } ?> />&nbsp;Rang de l'élève<br />
+			<input name="active_rang" id="active_rang" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_rang) and $active_rang==='1') { ?>checked="checked"<?php } ?> /><label for='active_rang'>&nbsp;Rang de l'élève</label><br />
 			&nbsp;&nbsp;&nbsp;- Largeur de la colonne rang&nbsp;<input name="largeur_rang" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_rang)) { ?>value="<?php echo $largeur_rang; ?>" <?php } ?> />mm<br />
-			<input name="active_graphique_niveau" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_graphique_niveau) and $active_graphique_niveau==='1') { ?>checked="checked"<?php } ?> />&nbsp;Graphique de niveau<br />
+
+			<input name="active_graphique_niveau" id="active_graphique_niveau" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_graphique_niveau) and $active_graphique_niveau==='1') { ?>checked="checked"<?php } ?> /><label for='active_graphique_niveau'>&nbsp;Graphique de niveau</label><br />
 			&nbsp;&nbsp;&nbsp;- Largeur de la colonne niveau&nbsp;<input name="largeur_niveau" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_niveau)) { ?>value="<?php echo $largeur_niveau; ?>" <?php } ?> />mm<br />
-			<input name="active_appreciation" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_appreciation) and $active_appreciation==='1') { ?>checked="checked"<?php } ?> />&nbsp;Appréciation par matière<br />
-			&nbsp;&nbsp;&nbsp;<input name="autorise_sous_matiere" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($autorise_sous_matiere) and $autorise_sous_matiere==='1') { ?>checked="checked"<?php } ?> />&nbsp;Autoriser l'affichage des <?php echo getSettingValue('gepi_denom_boite')?>s<br />
+
+			<input name="active_appreciation" id="active_appreciation" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_appreciation) and $active_appreciation==='1') { ?>checked="checked"<?php } ?> /><label for='active_appreciation'>&nbsp;Appréciation par matière</label><br />
+			&nbsp;&nbsp;&nbsp;<input name="autorise_sous_matiere" id="autorise_sous_matiere" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($autorise_sous_matiere) and $autorise_sous_matiere==='1') { ?>checked="checked"<?php } ?> /><label for='autorise_sous_matiere'>&nbsp;Autoriser l'affichage des <?php echo getSettingValue('gepi_denom_boite')?>s</label><br />
+
 			Hauteur de la moyenne générale&nbsp;<input name="hauteur_entete_moyenne_general" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_entete_moyenne_general)) { ?>value="<?php echo $hauteur_entete_moyenne_general; ?>" <?php } ?> />mm<br />
+
 			<div style="background: #EFEFEF; font-style:italic;">Catégories de matières :</div>
-			&nbsp;&nbsp;&nbsp;<input name="active_regroupement_cote" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_regroupement_cote) and $active_regroupement_cote==='1') { ?>checked="checked"<?php } ?> />&nbsp;Nom des catégories de matières sur le coté&nbsp;&nbsp;&nbsp;(<input name="couleur_categorie_cote" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($couleur_categorie_cote) and $couleur_categorie_cote==='1') { ?>checked="checked"<?php } ?> />&nbsp;Mettre un fond de couleur - R:<input name="couleur_categorie_cote1" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_cote1)) { ?>value="<?php echo $couleur_categorie_cote1; ?>" <?php } ?> /> G:<input name="couleur_categorie_cote2" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_cote2)) { ?>value="<?php echo $couleur_categorie_cote2; ?>" <?php } ?> /> B:<input name="couleur_categorie_cote3" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_cote3)) { ?>value="<?php echo $couleur_categorie_cote3; ?>" <?php } ?> />)<br />
+			&nbsp;&nbsp;&nbsp;<input name="active_regroupement_cote" id="active_regroupement_cote" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_regroupement_cote) and $active_regroupement_cote==='1') { ?>checked="checked"<?php } ?> /><label for='active_regroupement_cote'>&nbsp;Nom des catégories de matières sur le coté</label>
+			&nbsp;&nbsp;&nbsp;(<input name="couleur_categorie_cote" id="couleur_categorie_cote" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($couleur_categorie_cote) and $couleur_categorie_cote==='1') { ?>checked="checked"<?php } ?> /><label for='couleur_categorie_cote'>&nbsp;Mettre un fond de couleur</label> - R:<input name="couleur_categorie_cote1" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_cote1)) { ?>value="<?php echo $couleur_categorie_cote1; ?>" <?php } ?> /> G:<input name="couleur_categorie_cote2" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_cote2)) { ?>value="<?php echo $couleur_categorie_cote2; ?>" <?php } ?> /> B:<input name="couleur_categorie_cote3" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_cote3)) { ?>value="<?php echo $couleur_categorie_cote3; ?>" <?php } ?> />)<br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_texte_categorie_cote" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_categorie_cote)) { ?>value="<?php echo $taille_texte_categorie_cote; ?>" <?php } ?> />pixel<br />
-			&nbsp;&nbsp;&nbsp;<input name="active_entete_regroupement" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_entete_regroupement) and $active_entete_regroupement==='1') { ?>checked="checked"<?php } ?> />&nbsp;Nom des catégories de matières en entête&nbsp;&nbsp;&nbsp;(<input name="couleur_categorie_entete" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($couleur_categorie_entete) and $couleur_categorie_entete==='1') { ?>checked="checked"<?php } ?> />&nbsp;Mettre un fond de couleur - R:<input name="couleur_categorie_entete1" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_entete1)) { ?>value="<?php echo $couleur_categorie_entete1; ?>" <?php } ?> /> G:<input name="couleur_categorie_entete2" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_entete2)) { ?>value="<?php echo $couleur_categorie_entete2; ?>" <?php } ?> /> B:<input name="couleur_categorie_entete3" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_entete3)) { ?>value="<?php echo $couleur_categorie_entete3; ?>" <?php } ?> />)<br />
+
+			&nbsp;&nbsp;&nbsp;<input name="active_entete_regroupement" id="active_entete_regroupement" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_entete_regroupement) and $active_entete_regroupement==='1') { ?>checked="checked"<?php } ?> /><label for='active_entete_regroupement'>&nbsp;Nom des catégories de matières en entête</label>
+			&nbsp;&nbsp;&nbsp;(<input name="couleur_categorie_entete" id="couleur_categorie_entete" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($couleur_categorie_entete) and $couleur_categorie_entete==='1') { ?>checked="checked"<?php } ?> /><label for='couleur_categorie_entete'>&nbsp;Mettre un fond de couleur</label> - R:<input name="couleur_categorie_entete1" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_entete1)) { ?>value="<?php echo $couleur_categorie_entete1; ?>" <?php } ?> /> G:<input name="couleur_categorie_entete2" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_entete2)) { ?>value="<?php echo $couleur_categorie_entete2; ?>" <?php } ?> /> B:<input name="couleur_categorie_entete3" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_categorie_entete3)) { ?>value="<?php echo $couleur_categorie_entete3; ?>" <?php } ?> />)<br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_texte_categorie" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_categorie)) { ?>value="<?php echo $taille_texte_categorie; ?>" <?php } ?> />pixel<br />
+
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Hauteur entête des catégories&nbsp;<input name="hauteur_info_categorie" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_info_categorie)) { ?>value="<?php echo $hauteur_info_categorie; ?>" <?php } ?> />mm<br />
-			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_regroupement" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_regroupement) and $active_moyenne_regroupement==='1') { ?>checked="checked"<?php } ?> />&nbsp;Moyenne des catégories de matières<br />
+
+			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_regroupement" id="active_moyenne_regroupement" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_regroupement) and $active_moyenne_regroupement==='1') { ?>checked="checked"<?php } ?> /><label for='active_moyenne_regroupement'>&nbsp;Moyenne des catégories de matières</label><br />
+
+
 			<div style="background: #EFEFEF; font-style:italic;">Moyenne générale</div>
-			&nbsp;&nbsp;&nbsp;<input name="couleur_moy_general" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($couleur_moy_general) and $couleur_moy_general==='1') { ?>checked="checked"<?php } ?> />&nbsp;Mettre un fond de couleur - R:<input name="couleur_moy_general1" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_moy_general1)) { ?>value="<?php echo $couleur_moy_general1; ?>" <?php } ?> /> G:<input name="couleur_moy_general2" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_moy_general2)) { ?>value="<?php echo $couleur_moy_general2; ?>" <?php } ?> /> B:<input name="couleur_moy_general3" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_moy_general3)) { ?>value="<?php echo $couleur_moy_general3; ?>" <?php } ?> /><br /><br />
+
+			&nbsp;&nbsp;&nbsp;<input name="couleur_moy_general" id="couleur_moy_general" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($couleur_moy_general) and $couleur_moy_general==='1') { ?>checked="checked"<?php } ?> /><label for='couleur_moy_general'>&nbsp;Mettre un fond de couleur</label> - R:<input name="couleur_moy_general1" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_moy_general1)) { ?>value="<?php echo $couleur_moy_general1; ?>" <?php } ?> /> G:<input name="couleur_moy_general2" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_moy_general2)) { ?>value="<?php echo $couleur_moy_general2; ?>" <?php } ?> /> B:<input name="couleur_moy_general3" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_moy_general3)) { ?>value="<?php echo $couleur_moy_general3; ?>" <?php } ?> /><br /><br />
+
+
+
+
 			<div style="font-weight: bold; background: #CFCFCF;">Cadre Absences/CPE</div>
-			<input name="active_bloc_absence" value="1" type="radio" <?php if(!empty($active_bloc_eleve) and $active_bloc_eleve==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_absence" value="0" type="radio" <?php if(empty($active_bloc_absence) or (!empty($active_bloc_absence) and $active_bloc_absence!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
+			<input name="active_bloc_absence" id="active_bloc_absence_1" value="1" type="radio" <?php if(!empty($active_bloc_eleve) and $active_bloc_eleve==='1') { ?>checked="checked"<?php } ?> /><label for='active_bloc_absence_1'>&nbsp;Activer</label> &nbsp;<input name="active_bloc_absence" id="active_bloc_absence_0" value="0" type="radio" <?php if(empty($active_bloc_absence) or (!empty($active_bloc_absence) and $active_bloc_absence!='1')) { ?>checked="checked"<?php } ?> /><label for='active_bloc_absence_0'>&nbsp;Désactiver</label><br />
 			
 			Positionnement X&nbsp;<input name="X_absence" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_absence)) { ?>value="<?php echo $X_absence; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_absence" size="3" style="border: 1px solid #74748F;" type="text"  <?php if(!empty($Y_absence)) { ?>value="<?php echo $Y_absence; ?>" <?php } ?> />mm&nbsp;<br />
 
@@ -1463,13 +1553,37 @@ function DecocheCheckbox() {
 		</tr>
 		<tr>
 			<td style="vertical-align: top; white-space: nowrap; text-align: left; width: 50%;">
+
+
 				<div style="font-weight: bold; background: #CFCFCF;">Cadre Avis conseil de classe</div>
-			<input name="active_bloc_avis_conseil" value="1" type="radio" <?php if(!empty($active_bloc_avis_conseil) and $active_bloc_avis_conseil==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_avis_conseil" value="0" type="radio" <?php if(empty($active_bloc_avis_conseil) or (!empty($active_bloc_avis_conseil) and $active_bloc_avis_conseil!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
+
+			<input name="active_bloc_avis_conseil" id="active_bloc_avis_conseil_1" value="1" type="radio" <?php if(!empty($active_bloc_avis_conseil) and $active_bloc_avis_conseil==='1') { ?>checked="checked"<?php } ?> /><label for='active_bloc_avis_conseil_1'>&nbsp;Activer</label> &nbsp;<input name="active_bloc_avis_conseil" id="active_bloc_avis_conseil_0" value="0" type="radio" <?php if(empty($active_bloc_avis_conseil) or (!empty($active_bloc_avis_conseil) and $active_bloc_avis_conseil!='1')) { ?>checked="checked"<?php } ?> /><label for='active_bloc_avis_conseil_0'>&nbsp;Désactiver</label><br />
 			Positionnement X&nbsp;<input name="X_avis_cons" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_avis_cons)) { ?>value="<?php echo $X_avis_cons; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_avis_cons" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($Y_avis_cons)) { ?>value="<?php echo $Y_avis_cons; ?>" <?php } ?> />mm&nbsp;<br />
 			Largeur du bloc&nbsp;<input name="longeur_avis_cons" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($longeur_avis_cons)) { ?>value="<?php echo $longeur_avis_cons; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_avis_cons" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_avis_cons)) { ?>value="<?php echo $hauteur_avis_cons; ?>" <?php } ?> />mm&nbsp;<br />
 			Titre du bloc avis conseil de classe : <input name="titre_bloc_avis_conseil" size="19" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_bloc_avis_conseil)) { ?>value="<?php echo $titre_bloc_avis_conseil; ?>" <?php } ?> /><br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_titre_bloc_avis_conseil" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_titre_bloc_avis_conseil)) { ?>value="<?php echo $taille_titre_bloc_avis_conseil; ?>" <?php } ?> />pixel<br />
-			Taille du texte du professeur principal"&nbsp;<input name="taille_profprincipal_bloc_avis_conseil" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_profprincipal_bloc_avis_conseil)) { ?>value="<?php echo $taille_profprincipal_bloc_avis_conseil; ?>" <?php } ?> />pixel<br />
+
+			Taille du texte du <?php
+				$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
+				if($gepi_prof_suivi=='') {
+					$info_pp="<p style='color:red'>La variable '<strong>gepi_prof_suivi</strong>' n'est pas renseignée dans <strong>Gestion générale/Configuration générale</strong>.<br />";
+					$info_pp.="On y indique habituellement quelque chose comme '<strong>professeur principal</strong>'.";
+					if($_SESSION['statut']!='administrateur') {
+						$info_pp.="Signalez-le à l'administrateur du Gepi pour qu'il corrige.</p>\n";
+					}
+					$info_pp.="</p>";
+				}
+				echo $gepi_prof_suivi;
+			?>&nbsp;<input name="taille_profprincipal_bloc_avis_conseil" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_profprincipal_bloc_avis_conseil)) { ?>value="<?php echo $taille_profprincipal_bloc_avis_conseil; ?>" <?php } ?> />pixel<br />
+
+			<?php
+				if(isset($info_pp)) {echo $info_pp;}
+			?>
+
+			<input name="afficher_tous_profprincipaux" id="afficher_tous_profprincipaux" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($afficher_tous_profprincipaux) and $afficher_tous_profprincipaux==='1') { ?>checked="checked"<?php } ?> /><label for='afficher_tous_profprincipaux'>&nbsp;Afficher les noms de tous les "<?php echo getSettingValue('gepi_prof_suivi');?>"<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;au lieu du seul <?php echo getSettingValue('gepi_prof_suivi');?> associé à l'élève<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;(<em>dans le cas où il y a plus d'un <?php echo getSettingValue('gepi_prof_suivi');?> associé<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;aux différents élèves de la classe</em>).</label><br />
 
 			<input name="cadre_avis_cons" id="cadre_avis_cons" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_avis_cons) and $cadre_avis_cons==='1') { ?>checked="checked"<?php } ?> /><label for='cadre_avis_cons'>&nbsp;Ajouter un encadrement</label><br />
 
@@ -1500,16 +1614,34 @@ function DecocheCheckbox() {
 
 			</td>
 				<td style="vertical-align: top; white-space: nowrap; text-align: left; width: 50%;">
+
 				<div style="font-weight: bold; background: #CFCFCF;">Cadre signature du chef</div>
-			<input name="active_bloc_chef" value="1" type="radio" <?php if(!empty($active_bloc_chef) and $active_bloc_chef==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_chef" value="0" type="radio" <?php if(empty($active_bloc_chef) or (!empty($active_bloc_chef) and $active_bloc_chef!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
+			<input name="active_bloc_chef" id="active_bloc_chef_1" value="1" type="radio" <?php if(!empty($active_bloc_chef) and $active_bloc_chef==='1') { ?>checked="checked"<?php } ?> /><label for='active_bloc_chef_1'>&nbsp;Activer &nbsp;</label><input name="active_bloc_chef" id="active_bloc_chef_0" value="0" type="radio" <?php if(empty($active_bloc_chef) or (!empty($active_bloc_chef) and $active_bloc_chef!='1')) { ?>checked="checked"<?php } ?> /><label for='active_bloc_chef_0'>&nbsp;Désactiver</label><br />
 			Positionnement X&nbsp;<input name="X_sign_chef" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_sign_chef)) { ?>value="<?php echo $X_sign_chef; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_sign_chef" size="3" style="border: 1px solid #74748F;" type="text"  <?php if(!empty($Y_sign_chef)) { ?>value="<?php echo $Y_sign_chef; ?>" <?php } ?> />mm&nbsp;<br />
 			Largeur du bloc&nbsp;<input name="longeur_sign_chef" size="3" style="border: 1px solid #74748F;" type="text"  <?php if(!empty($longeur_sign_chef)) { ?>value="<?php echo $longeur_sign_chef; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_sign_chef" size="3" style="border: 1px solid #74748F;" type="text"  <?php if(!empty($hauteur_sign_chef)) { ?>value="<?php echo $hauteur_sign_chef; ?>" <?php } ?> />mm&nbsp;<br />
-			<input name="affichage_haut_responsable" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affichage_haut_responsable) and $affichage_haut_responsable==='1') { ?>checked="checked"<?php } ?> />&nbsp;Afficher l'identité du responsable de direction<br />
+			<input name="affichage_haut_responsable" id="affichage_haut_responsable" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affichage_haut_responsable) and $affichage_haut_responsable==='1') { ?>checked="checked"<?php } ?> /><label for='affichage_haut_responsable'>&nbsp;Afficher l'identité du responsable de direction</label><br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_texte_identitee_chef" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_identitee_chef)) { ?>value="<?php echo $taille_texte_identitee_chef; ?>" <?php } ?> />pixel<br />
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="affiche_fonction_chef" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_fonction_chef) and $affiche_fonction_chef==='1') { ?>checked="checked"<?php } ?> />&nbsp;Afficher sa fonction<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="affiche_fonction_chef" id="affiche_fonction_chef" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_fonction_chef) and $affiche_fonction_chef==='1') { ?>checked="checked"<?php } ?> /><label for='affiche_fonction_chef'>&nbsp;Afficher sa fonction</label><br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_texte_fonction_chef" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_fonction_chef)) { ?>value="<?php echo $taille_texte_fonction_chef; ?>" <?php } ?> />pixel<br />
 
 			<input name="cadre_sign_chef" id="cadre_sign_chef" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_sign_chef) and $cadre_sign_chef==='1') { ?>checked="checked"<?php } ?> /><label for='cadre_sign_chef'>&nbsp;Ajouter un encadrement</label><br /><br />
+
+			<?php
+				echo "<input type='checkbox' name='signature_img' id='signature_img' value='1' ";
+				if(isset($signature_img) and $signature_img=='1') { 
+					echo "checked='checked'";
+				}
+				echo "/><label for='signature_img'>Insérer une image de signature</label><br />\n";
+				echo "(<em>sous réserve qu'une ";
+				if($_SESSION['statut']=='administrateur') {
+					echo "<a href='../gestion/gestion_signature.php'>image de signature</a>";
+				}
+				else {
+					echo "image de signature";
+				}
+				echo " ait été uploadée en administrateur<br />et que vous soyez autorisé à utiliser cette signature</em>)";
+			?>
+
 			</td>
 		</tr>
 		<tr>

@@ -2,7 +2,7 @@
 @set_time_limit(0);
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -43,7 +43,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE *****************
 $titre_page = "Outil de gestion | Effacement des photos élèves";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?><p class=bold><a href='index.php#efface_photos'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <h2>Effacement des photos d'élèves</h2>
@@ -54,7 +54,7 @@ if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 	$rep_photos='../photos/'.$_COOKIE['RNE'].'/eleves';
 }
 else {
-	$rep_photos='../photos/eleves';		
+	$rep_photos='../photos/eleves';
 }
 
 if((isset($_POST['is_posted']))&&(isset($_POST['supprimer']))) {
@@ -67,10 +67,11 @@ if((isset($_POST['is_posted']))&&(isset($_POST['supprimer']))) {
 	$nberreur=0;
 	$chaine="";
 	while ($file = readdir($handle)) {
-		if((my_eregi(".jpg$",$file))||(my_eregi(".jpeg$",$file))){
+		if((pre_match("/.jpg$/i",$file))||(preg_match("/.jpeg$/i",$file))){
 
-			$prefixe=mb_substr($file,0,strrpos($file,"."));
-			$sql="SELECT 1=1 FROM eleves WHERE elenoet='$prefixe'";
+			$prefixe=pathinfo($file,PATHINFO_FILENAME);
+			if (isset($gepiSettings['alea_nom_photo'])) $prefixe=mb_substr($prefixe,5);
+			$sql="SELECT 1=1 FROM eleves WHERE elenoet='".$prefixe."'";
 			//echo "<br />$sql<br />\n";
 			$test=mysql_query($sql);
 
@@ -110,11 +111,12 @@ else {
 	$nbjpg=0;
 	$chaine="";
 	while ($file = readdir($handle)) {
-		if((my_eregi(".jpg$",$file))||(my_eregi(".jpeg$",$file))){
+		if((preg_match("/.jpg$/i",$file))||(preg_match("/.jpeg$/i",$file))){
 			$nbjpg++;
 
-			$prefixe=mb_substr($file,0,strrpos($file,"."));
-			$sql="SELECT 1=1 FROM eleves WHERE elenoet='$prefixe'";
+			$prefixe=pathinfo($file,PATHINFO_FILENAME);
+			if (isset($gepiSettings['alea_nom_photo'])) $prefixe=mb_substr($prefixe,5);
+			$sql="SELECT 1=1 FROM eleves WHERE elenoet='".$prefixe."'";
 			//echo "<br />$sql<br />\n";
 			$test=mysql_query($sql);
 
@@ -124,7 +126,6 @@ else {
 					//echo ", \n";
 					$chaine.=", \n";
 				}
-				//echo "<a href='../photos/eleves/$file'>$file</a>";
 				$chaine.="<a href='".$rep_photos."/$file' target='blank'>$file</a>";
 				$n++;
 			}

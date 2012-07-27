@@ -276,7 +276,7 @@ if(isset($_POST['action_corrections'])) {
 
 //**************** EN-TETE *****************
 $titre_page = "Validation des corrections";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
 ?>

@@ -77,7 +77,9 @@ if (isset($visioedt)) {
     // ======================= AFFICHAGE DU SELECTEUR
     
     if (isset($visioedt) AND $visioedt == "prof1") {
-	    require_once("./voir_edt_prof.php");
+		if (($_SESSION['statut'] != "professeur") OR (($visioedt == "prof1") AND (getSettingValue('AccesProf_EdtProfs')!='no'))) {
+			require_once("./voir_edt_prof.php");
+		}
     }
     
     elseif (isset($visioedt) AND $visioedt == "salle1") {

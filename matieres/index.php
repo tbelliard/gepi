@@ -113,7 +113,7 @@ if (isset($_POST['is_posted'])) {
 $themessage = 'Des modifications ont été effectuées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Gestion des matières";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 
@@ -174,7 +174,7 @@ while ($i < $nombre_lignes){
 	$nb_grp_assoc=mysql_num_rows($res_grp_associes);
 
 	if($nb_grp_assoc==0) {
-		echo "<tr style='background-color:grey;' class='white_hover' id='tr_sans_grp_assoc_$i'><td title=\"Aucun enseignement n'est associé à cette matière\"><a href='modify_matiere.php?current_matiere=$current_matiere'".insert_confirm_abandon().">$current_matiere</a></td>\n";
+		echo "<tr style='background-color:grey;' class='white_hover' id='tr_sans_grp_assoc_$i'><td title=\"Aucun enseignement n'est associé à cette matière\"><a href='modify_matiere.php?current_matiere=$current_matiere'".insert_confirm_abandon()." style=\"color:#0000AA\">$current_matiere</a></td>\n";
 	}
 	else {
 		echo "<tr class='lig$alt white_hover'><td title=\"$nb_grp_assoc enseignement(s) associé(s) à cette matière\"><a href='modify_matiere.php?current_matiere=$current_matiere'".insert_confirm_abandon().">$current_matiere</a></td>\n";

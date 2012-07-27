@@ -43,7 +43,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation des matières";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //************** FIN EN-TETE ***************
 
 $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
@@ -113,7 +113,7 @@ if (!isset($_POST["action"])) {
 			// On nettoie et on vérifie :
 			$reg_id_int = preg_replace("/[^0-9]/","",trim($reg_id_int));
 			if (mb_strlen($reg_id_int) > 50) $reg_id_int = mb_substr($reg_id_int, 0, 50);
-			$reg_options = preg_replace("/[^A-Za-z0-9.\-!]/","",trim($reg_options));
+			$reg_options = preg_replace("/[^A-Za-z0-9._\-!]/","",trim($reg_options));
 			if (mb_strlen($reg_options) > 2000) $reg_options = mb_substr($reg_options, 0, 2000); // Juste pour éviter une tentative d'overflow...
 
 
@@ -250,7 +250,7 @@ if (!isset($_POST["action"])) {
 						if (mb_strlen($tabligne[0]) > 50) $tabligne[0] = mb_substr($tabligne[0], 0, 50);
 
 						if(!isset($tabligne[1])) {$tabligne[1]="";}
-						$tabligne[1] = preg_replace("/[^A-Za-z0-9.\-!]/","",trim($tabligne[1]));
+						$tabligne[1] = preg_replace("/[^A-Za-z0-9._\-!]/","",trim($tabligne[1]));
 						if (mb_strlen($tabligne[1]) > 2000) $tabligne[1] = mb_substr($tabligne[1], 0, 2000);
 
 						$data_tab[$k] = array();

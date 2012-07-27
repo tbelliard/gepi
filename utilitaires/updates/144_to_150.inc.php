@@ -399,7 +399,7 @@
 `pers_id` varchar(10) NOT NULL,
 `resp_legal` varchar(1) NOT NULL,
 `pers_contact` varchar(1) NOT NULL
-);");
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query1) {
 				$result .= msj_ok();
 			} else {
@@ -424,7 +424,7 @@
 `mel` varchar(100) NOT NULL,
 `adr_id` varchar(10) NOT NULL,
 PRIMARY KEY  (`pers_id`)
-);");
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query1) {
 				$result .= msj_ok();
 			} else {
@@ -447,7 +447,7 @@ PRIMARY KEY  (`pers_id`)
 `pays` varchar(50) NOT NULL,
 `commune` varchar(50) NOT NULL,
 PRIMARY KEY  (`adr_id`)
-);");
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query1) {
 				$result .= msj_ok();
 			} else {
@@ -513,7 +513,7 @@ PRIMARY KEY  (`adr_id`)
 		$result .= "&nbsp;->Création de la table tentatives_intrusion<br />";
 		$test1 = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'tentatives_intrusion'"));
 		if ($test1 == 0) {
-			$query1 = mysql_query("CREATE TABLE `tentatives_intrusion` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `login` VARCHAR( 255 ) NULL , `adresse_ip` VARCHAR( 255 ) NOT NULL , `date` DATETIME NOT NULL , `niveau` SMALLINT NOT NULL , `fichier` VARCHAR( 255 ) NOT NULL , `description` TEXT NOT NULL , `statut` VARCHAR( 255 ) NOT NULL , PRIMARY KEY ( `id`, `login` ))");
+			$query1 = mysql_query("CREATE TABLE `tentatives_intrusion` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `login` VARCHAR( 255 ) NULL , `adresse_ip` VARCHAR( 255 ) NOT NULL , `date` DATETIME NOT NULL , `niveau` SMALLINT NOT NULL , `fichier` VARCHAR( 255 ) NOT NULL , `description` TEXT NOT NULL , `statut` VARCHAR( 255 ) NOT NULL , PRIMARY KEY ( `id`, `login` )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query1) {
 				$result .= msj_ok();
 			} else {
@@ -642,7 +642,7 @@ PRIMARY KEY  (`adr_id`)
 				  `etat_alert_eleve` tinyint(4) NOT NULL,
 				  `etatpar_alert_eleve` varchar(100) NOT NULL,
 				  PRIMARY KEY  (`id_alert_eleve`)
-				  );");
+				  ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query1) {
 				$result .= msj_ok();
 			} else {
@@ -660,7 +660,7 @@ PRIMARY KEY  (`adr_id`)
 				  `nom_alert_groupe` varchar(150) NOT NULL,
 				  `creerpar_alert_groupe` varchar(100) NOT NULL,
 				  PRIMARY KEY  (`id_alert_groupe`)
-				  );");
+				  ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query1) {
 				$result .= msj_ok();
 			} else {
@@ -682,7 +682,7 @@ PRIMARY KEY  (`adr_id`)
 				  `date_debut_comptage` date NOT NULL,
 				  `nb_comptage_limit` varchar(200) NOT NULL,
 				  PRIMARY KEY  (`id_alert_type`)
-				  );");
+				  ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 			if ($query1) {
 				$result .= msj_ok();
 			} else {

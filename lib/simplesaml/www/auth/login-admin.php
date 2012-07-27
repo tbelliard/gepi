@@ -1,7 +1,7 @@
 <?php
 
 
-require_once('../../www/_include.php');
+require_once('../_include.php');
 
 $config = SimpleSAML_Configuration::getInstance();
 $metadata = SimpleSAML_Metadata_MetaDataStorageHandler::getMetadataHandler();
@@ -33,7 +33,7 @@ if (isset($_POST['password'])) {
 
 	/* Validate and sanitize form data. */
 
-	if ($_POST['password'] === $correctpassword) {
+	if (SimpleSAML_Utils_Crypto::pwValid($correctpassword, $_POST['password'])) {
 		$username = 'admin';
 		$password = $_POST['password'];
 	

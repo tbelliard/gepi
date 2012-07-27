@@ -3,7 +3,7 @@
 /**
  *
  *
- * @copyright 2008
+ * @copyright 2008-2012
  *
  * Fichier qui renvoie un select des créneaux horaires de l'établissement
  * pour l'intégrer dans un fomulaire
@@ -28,29 +28,51 @@ if (!isset($nom_selected)) {
 	$nom_selected = isset($nom_creneau) ? $nom_creneau : NULL; // permet de définir le selected
 }
 
+$nb_min_ref="";
+$ecart_creneau=120;
+if(preg_match("/[0-9]{1,2}h[0-9]{1,2}/", mb_strtolower($val))) {
+	$tab_tmp=explode("h", mb_strtolower($val));
+	$nb_min_ref=$tab_tmp[0]*60+$tab_tmp[1];
+}
+
 echo '
-	<select name="'.$increment.'"'.$id_select.'>
+	<select name="'.$increment.'"'.$id_select.' onmouseover="if(document.getElementById(\'texte_nomGepi'.$l.'\')) {document.getElementById(\'texte_nomGepi'.$l.'\').style.backgroundColor=\'yellow\'}" onmouseout="if(document.getElementById(\'texte_nomGepi'.$l.'\')) {document.getElementById(\'texte_nomGepi'.$l.'\').style.backgroundColor=\'\'}">
 		<option value="aucun">Liste des créneaux</option>
 ';
 // On appele la liste des créneaux
 $query = mysql_query("SELECT * FROM edt_creneaux WHERE type_creneaux != 'pause' AND type_creneaux != 'repas' ORDER BY heuredebut_definie_periode")
 			OR trigger_error('Erreur dans la recherche des créneaux : '.mysql_error());
 
-while($creneaux = mysql_fetch_array($query)){
+while($creneaux = mysql_fetch_array($query)) {
 	// On teste pour le selected
 	// Dans le cas de edt_init_csv2.php, on modifie la forme des heures de début de créneau
 	$test_creneau = explode("/", $_SERVER["SCRIPT_NAME"]);
+
+	//echo "<!-- \$test_creneau[3]=$test_creneau[3] -->\n";
+	$selected_2="n";
 
 	if ($test_creneau[3] == "edt_init_csv2.php") {
 		// On tranforme le créneau
 		$creneau_expl = explode(":", $creneaux["heuredebut_definie_periode"]);
 		$creneau_udt = $creneau_expl[0].'H'.$creneau_expl[1];
-	}else{
+		//echo "<!-- \$creneau_udt=$creneau_udt -->\n";
+	}else {
 		$creneau_udt = $creneaux["heuredebut_definie_periode"];
+
+		$tab_tmp=explode(":", $creneaux["heuredebut_definie_periode"]);
+		$nb_min_test=$tab_tmp[0]*60+$tab_tmp[1];
+		$ecart_test=abs($nb_min_test-$nb_min_ref);
+		if(($ecart_test<=35)&&($ecart_test<$ecart_creneau)) {
+			$ecart_creneau=$ecart_test;
+			$selected_2="y";
+		}
 	}
-	if ($nom_selected == $creneau_udt) {
+
+	//if ($nom_selected == $creneau_udt) {
+	if (($nom_selected == $creneau_udt)||($selected_2=='y')) {
 		$selected = ' selected="selected"';
-	}else{
+	}
+	else {
 		$selected = '';
 	}
 

@@ -36,7 +36,6 @@ if ($resultat_session == 'c') {
     header("Location: ../logout.php?auto=1");
 	die();
 }
-//include("../fckeditor/fckeditor.php") ;
 
 // Check access
 if (!checkAccess()) {
@@ -67,7 +66,7 @@ if((isset($export_vocab))&&($export_vocab=="y")) {
 
 //================================
 $titre_page = "Saisie de vocabulaire";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //================================
 
 if (!loadSettings()) {
@@ -198,7 +197,8 @@ if(isset($compteur_nb_vocab)) {
 		$res_col=mysql_query($sql);
 		if(mysql_num_rows($res_col)>0) {
 			$lig_col=mysql_fetch_object($res_col);
-			if($lig_col->Collation!='utf8_unicode_ci') {$chaine_collate="COLLATE latin1_bin ";}
+			//if($lig_col->Collation!='utf8_unicode_ci') {$chaine_collate="COLLATE latin1_bin ";}
+			if($lig_col->Collation!='utf8_general_ci') {$chaine_collate="COLLATE latin1_bin ";}
 		}
 
 

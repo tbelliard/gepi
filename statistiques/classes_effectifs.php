@@ -135,7 +135,7 @@ if(isset($_GET['export_csv'])) {
 
 // ===================== entete Gepi ======================================//
 $titre_page = "Classes, effectifs,...";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 // ===================== fin entete =======================================//
 
 //debug_var();

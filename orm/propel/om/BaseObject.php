@@ -16,10 +16,10 @@
  * @method     BaseObject fromYAML(string $data) Populate the object from a YAML string
  * @method     BaseObject fromJSON(string $data) Populate the object from a JSON string
  * @method     BaseObject fromCSV(string $data) Populate the object from a CSV string
- * @method     string toXML() Export the object to an XML string
- * @method     string toYAML() Export the object to a YAML string
- * @method     string toJSON() Export the object to a JSON string
- * @method     string toCSV() Export the object to a CSV string
+ * @method     string toXML(boolean $includeLazyLoadColumns) Export the object to an XML string
+ * @method     string toYAML(boolean $includeLazyLoadColumns) Export the object to a YAML string
+ * @method     string toJSON(boolean $includeLazyLoadColumns) Export the object to a JSON string
+ * @method     string toCSV(boolean $includeLazyLoadColumns) Export the object to a CSV string
  *
  * @author     Hans Lellelid <hans@xmpl.org> (Propel)
  * @author     Frank Y. Kim <frank.kim@clearink.com> (Torque)
@@ -48,14 +48,14 @@ abstract class BaseObject
 	 * @var        array
 	 */
 	protected $modifiedColumns = array();
-	
+
 	/**
 	 * The (virtual) columns that are added at runtime
 	 * The formatters can add supplementary columns based on a resultset
 	 * @var        array
 	 */
 	protected $virtualColumns = array();
-	 
+
 	/**
 	 * Empty constructor (this allows people with their own BaseObject implementation to use its constructor)
 	 */
@@ -151,31 +151,31 @@ abstract class BaseObject
 	 */
 	public function postSave(PropelPDO $con = null) { }
 
-	/**
-	 * Code to be run before inserting to database
-	 * @param PropelPDO $con
-	 * @return boolean
-	 */
-	public function preInsert(PropelPDO $con = null)
-	{
-		return true;
-	}
-	
+		/**
+		 * Code to be run before inserting to database
+		 * @param PropelPDO $con
+		 * @return boolean
+		 */
+		public function preInsert(PropelPDO $con = null)
+		{
+			return true;
+		}
+
 	/**
 	 * Code to be run after inserting to database
-	 * @param PropelPDO $con 
+	 * @param PropelPDO $con
 	 */
 	public function postInsert(PropelPDO $con = null) { }
 
-	/**
-	 * Code to be run before updating the object in database
-	 * @param PropelPDO $con
-	 * @return boolean
-	 */
-	public function preUpdate(PropelPDO $con = null)
-	{
-		return true;
-	}
+		/**
+		 * Code to be run before updating the object in database
+		 * @param PropelPDO $con
+		 * @return boolean
+		 */
+		public function preUpdate(PropelPDO $con = null)
+		{
+			return true;
+		}
 
 	/**
 	 * Code to be run after updating the object in database
@@ -183,37 +183,37 @@ abstract class BaseObject
 	 */
 	public function postUpdate(PropelPDO $con = null) { }
 
-	/**
-	 * Code to be run before deleting the object in database
-	 * @param PropelPDO $con
-	 * @return boolean
-	 */
-	public function preDelete(PropelPDO $con = null)
-	{
-		return true;
-	}
+		/**
+		 * Code to be run before deleting the object in database
+		 * @param PropelPDO $con
+		 * @return boolean
+		 */
+		public function preDelete(PropelPDO $con = null)
+		{
+			return true;
+		}
 
 	/**
 	 * Code to be run after deleting the object in database
 	 * @param PropelPDO $con
 	 */
 	public function postDelete(PropelPDO $con = null) { }
-	
-	/**
-	 * Sets the modified state for the object to be false.
-	 * @param      string $col If supplied, only the specified column is reset.
-	 * @return     void
-	 */
-	public function resetModified($col = null)
-	{
-		if ($col !== null) {
-			while (($offset = array_search($col, $this->modifiedColumns)) !== false) {
-				array_splice($this->modifiedColumns, $offset, 1);
+
+		/**
+		 * Sets the modified state for the object to be false.
+		 * @param      string $col If supplied, only the specified column is reset.
+		 * @return     void
+		 */
+		public function resetModified($col = null)
+		{
+			if ($col !== null) {
+				while (($offset = array_search($col, $this->modifiedColumns)) !== false) {
+					array_splice($this->modifiedColumns, $offset, 1);
+				}
+			} else {
+				$this->modifiedColumns = array();
 			}
-		} else {
-			$this->modifiedColumns = array();
 		}
-	}
 
 	/**
 	 * Compares this with another <code>BaseObject</code> instance.  If
@@ -253,7 +253,7 @@ abstract class BaseObject
 		}
 		return crc32(serialize($ok)); // serialize because it could be an array ("ComboKey")
 	}
-	
+
 	/**
 	 * Get the associative array of the virtual columns in this object
 	 *
@@ -275,7 +275,7 @@ abstract class BaseObject
 	{
 		return array_key_exists($name, $this->virtualColumns);
 	}
-		
+
 	/**
 	 * Get the value of a virtual column in this object
 	 *
@@ -288,9 +288,9 @@ abstract class BaseObject
 		}
 		return $this->virtualColumns[$name];
 	}
-	
+
 	/**
-	 * Get the value of a virtual column in this object
+	 * Set the value of a virtual column in this object
 	 *
 	 * @param      string $name The virtual column name
 	 * @param      mixed  $value The value to give to the virtual column
@@ -314,7 +314,7 @@ abstract class BaseObject
 	{
 		return Propel::log(get_class($this) . ': ' . $msg, $priority);
 	}
-	
+
 	/**
 	 * Populate the current object from a string, using a given parser format
 	 * <code>
@@ -344,18 +344,18 @@ abstract class BaseObject
 	 *  => {"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
 	 * </code>
 	 *
-	 * @param  mixed  $parser A PropelParser instance,
-	 *                        or a format name ('XML', 'YAML', 'JSON', 'CSV')
-	 * @return string The exported data
+	 * @param     mixed   $parser                 A PropelParser instance, or a format name ('XML', 'YAML', 'JSON', 'CSV')
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy load(ed) columns. Defaults to TRUE.
+	 * @return    string                          The exported data
 	 */
-	public function exportTo($parser)
+	public function exportTo($parser, $includeLazyLoadColumns = true)
 	{
 		if (!$parser instanceof PropelParser) {
 			$parser = PropelParser::getParser($parser);
 		}
-		return $parser->fromArray($this->toArray(BasePeer::TYPE_PHPNAME, true, array(), true));
+		return $parser->fromArray($this->toArray(BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns, array(), true));
 	}
-	
+
 	/**
 	 * Clean up internal collections prior to serializing
 	 * Avoids recursive loops that turn into segmentation faults when serializing
@@ -366,19 +366,37 @@ abstract class BaseObject
 		return array_keys(get_object_vars($this));
 	}
 
-	/** 
+	/**
 	 * Catches calls to undefined methods.
+	 *
 	 * Provides magic import/export method support (fromXML()/toXML(), fromYAML()/toYAML(), etc.).
 	 * Allows to define default __call() behavior if you use a custom BaseObject
-	 */ 
+	 *
+	 * @param	string  $name
+	 * @param   mixed   $params
+	 *
+	 * @return	array|string
+	 */
 	public function __call($name, $params)
 	{
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+		}
 		if (preg_match('/^from(\w+)$/', $name, $matches)) {
 			return $this->importFrom($matches[1], reset($params));
 		}
 		if (preg_match('/^to(\w+)$/', $name, $matches)) {
-			return $this->exportTo($matches[1]);
+			$includeLazyLoadColumns = isset($params[0]) ? $params[0] : true;
+			return $this->exportTo($matches[1], $includeLazyLoadColumns);
 		}
 		throw new PropelException('Call to undefined method: ' . $name);
-	} 
+	}
 }

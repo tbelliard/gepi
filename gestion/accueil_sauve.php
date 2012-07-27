@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -870,7 +870,7 @@ $defaultrowlimit=10;
 
 //**************** EN-TETE *****************
 $titre_page = "Outil de gestion | Sauvegardes/Restauration";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();
@@ -1351,18 +1351,28 @@ if (isset($action) and ($action == 'system_dump'))  {
 		$ver_mysql[2] = mb_substr($ver_mysql[2], 0, 2);
 	}
 
-	if ($ver_mysql[0] == "5" OR ($ver_mysql[0] == "4" AND $ver_mysql[1] >= "1")) {
-		$command = "mysqldump --skip-opt --add-drop-table --skip-disable-keys --quick -Q --create-options --set-charset --skip-comments -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
-	} elseif ($ver_mysql[0] == "4" AND $ver_mysql[1] == "0" AND $ver_mysql[2] >= "17") {
-		// Si on est là, c'est que le serveur mysql est d'une version 4.0.17 ou supérieure
-		$command = "mysqldump --add-drop-table --quick --quote-names --skip-comments -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
-	} else {
-		// Et là c'est qu'on a une version inférieure à 4.0.17
-		$command = "mysqldump --add-drop-table --quick --quote-names -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
+	if (substr(PHP_OS,0,3) == 'WIN' && file_exists("mysqldump.exe")) {
+		// on est sous Window$ et on a $filename : "xxxx.sql.gz"
+		$filename=substr($filename,0,-3); // $filename : "xxxx.sql"
+		$command = "mysqldump.exe --skip-opt --add-drop-table --skip-disable-keys --quick -Q --create-options --set-charset --skip-comments -h $dbHost -u $dbUser --password=$dbPass $dbDb > $filename";
+		$exec = exec($command);
+		gzip($filename); // on compresse et on obtient un fichier xxxx.sql.gz
+		unlink($filename); // on supprime le fichier xxxx.sql
+		$filename=$filename.".gz"; // // $filename : xxxx.sql.gz
+	}
+	else {
+			if ($ver_mysql[0] == "5" OR ($ver_mysql[0] == "4" AND $ver_mysql[1] >= "1")) {
+				$command = "mysqldump --skip-opt --add-drop-table --skip-disable-keys --quick -Q --create-options --set-charset --skip-comments -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
+			} elseif ($ver_mysql[0] == "4" AND $ver_mysql[1] == "0" AND $ver_mysql[2] >= "17") {
+				// Si on est là, c'est que le serveur mysql est d'une version 4.0.17 ou supérieure
+				$command = "mysqldump --add-drop-table --quick --quote-names --skip-comments -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
+			} else {
+				// Et là c'est qu'on a une version inférieure à 4.0.17
+				$command = "mysqldump --add-drop-table --quick --quote-names -h $dbHost -u $dbUser --password=$dbPass $dbDb | gzip > $filename";
+			}
+		$exec = exec($command);
 	}
 
-
-	$exec = exec($command);
 	if (filesize($filename) > 10000) {
 		echo "<center><p style='color: red; font-weight: bold;'>La sauvegarde a été réalisée avec succès.</p></center>\n";
 		if((isset($_POST['description_sauvegarde']))&&($_POST['description_sauvegarde']!='')) {
@@ -1455,14 +1465,20 @@ if (isset($action) and ($action == 'zip'))  {
 				if ($zip_error != 0) {
 					die("<p style='color:red; text-align:center'>Error : ".$archive->errorInfo(true)."</p>");
 				}
+				elseif($n>0) {
+					echo "<p style='color:red; text-align:center;'>Le Zip a été créé (<em>$n dossier(s) archivé(s)</em>).</p>";
+				}
 				else {
-					echo "<p style='color:red; text-align:center;'>Le Zip a été créé.</p>";
+					echo "<p style='color:red; text-align:center;'>Aucun dossier de documents joints à une notice n'a été trouvé.</p>";
 				}
 
 			}
 
 			break;
 		case "photos":
+			$retour=cree_zip_archive_avec_msg_erreur("photos",1);
+			if ($retour!="") die("<p style='color:red; text-align:center'>".$retour."</p>\n");
+			/*
 			$chemin_stockage = $path."/_photos".$suffixe_zip.".zip";
 			$dossier_a_traiter = '../photos/'; //le dossier à traiter
 			$dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créée
@@ -1485,18 +1501,33 @@ if (isset($action) and ($action == 'zip'))  {
 			}
 
 			if ($chemin_stockage !='') {
+
+				// Si l'encodage des noms de photos est activé on sauvegarde la valeur 'alea_nom_photo'
+				if (getSettingAOui('encodage_nom_photo'))
+					{
+					$fic_alea=fopen($dossier_a_traiter."alea_nom_photo.txt","w");
+					fwrite($fic_alea,getSettingValue("alea_nom_photo"));
+					fclose($fic_alea);
+					}
+
 				$archive = new PclZip($chemin_stockage);
 				$v_list = $archive->create($dossier_a_traiter,
 											PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
 											PCLZIP_OPT_ADD_PATH, $dossier_dans_archive);
+
+				// on supprime le fichier alea_nom_photo.txt
+				if (file_exists($dossier_a_traiter."alea_nom_photo.txt")) @unlink($dossier_a_traiter."alea_nom_photo.txt");
+
 				if ($v_list == 0) {
 					die("<p style='color:red; text-align:center'>Error : ".$archive->errorInfo(true)."</p>");
 				}
 				else {
-					echo "<p style='color:red; text-align:center;'>Le Zip a été créé.</p>";
+					echo "<p style='color:red; text-align:center;'>Le Zip a été créé.</p>\n";
+					// Apparemment volume_dir() et volume_dir_human() donnent des résultats fantaisistes... (surévalués 3 à 4 fois)
+					//echo "<p style='color:red; text-align:center;'>Le Zip a été créé (<em>volume du dossier photos&nbsp;: ".volume_dir_human($dossier_a_traiter)."</em>).</p>\n";
 				}
 			}
-
+			*/
 			break;
 		default:
 			$chemin_stockage = '';
@@ -1574,6 +1605,15 @@ if (!(file_exists("../backup/".$dirname."/.htaccess")) or !(file_exists("../back
 <p>Deux méthodes de sauvegarde sont disponibles : l'utilisation de la commande système mysqldump ou bien le système intégré à Gepi.<br/>
 La première méthode (mysqldump) est vigoureusement recommandée car beaucoup moins lourde en ressources, mais ne fonctionnera que sur certaines configurations serveurs.<br />
 La seconde méthode est lourde en ressources mais passera sur toutes les configurations.</p>
+<?php
+if (substr(PHP_OS,0,3) == 'WIN' && !file_exists("mysqldump.exe"))
+	{
+?>
+<p><b><font color="#FF0000">Attention : </font></b>pour utiliser la commande système mysqldump lorsque Gepi est hébergé sous Windows il faut au préalable copier le fichier "mysqldump.exe" dans le dossier "gestion" de Gepi. Ce fichier "mysqldump.exe" se trouve généralement dans le sous-dossier "bin" du dossier d'installation de MySQL.</p>
+<?php
+	}
+?>
+<br />
 <form enctype="multipart/form-data" action="accueil_sauve.php" method="post" name="formulaire">
 <?php
 	echo add_token_field();
@@ -1581,7 +1621,15 @@ La seconde méthode est lourde en ressources mais passera sur toutes les configu
 <div align='center'>
 <input type="submit" value="Sauvegarder" />
 <select name='action' size='1'>
-<option value='system_dump'<?php if (getSettingValue("mode_sauvegarde") == "mysqldump") echo " SELECTED";?>>avec mysqldump</option>
+<?php
+if ((substr(PHP_OS,0,3) == 'WIN' && file_exists("mysqldump.exe"))||
+	(substr(PHP_OS,0,3) != 'WIN'))
+	{
+?>
+	<option value='system_dump'<?php if (getSettingValue("mode_sauvegarde") == "mysqldump") echo " SELECTED";?>>avec mysqldump</option>
+<?php
+	}
+?>
 <option value='dump'<?php if (getSettingValue("mode_sauvegarde") == "gepi") echo " SELECTED";?>>sans mysqldump</option>
 </select>
 <br />
@@ -1668,10 +1716,26 @@ if ($n > 0) {
         echo "</td>\n";
         echo "<td><a href='accueil_sauve.php?action=sup&amp;file=$value".add_token_in_url()."'>Supprimer</a></td>\n";
 		//if (($value=='_photos.zip')||($value=='_cdt.zip')){
-		if ((preg_match('/^_photos/i',$value)&&preg_match('/.zip$/i',$value))||(preg_match('/^_cdt/i',$value)&&preg_match('/.zip$/i',$value))){
-		   echo "<td> </td>\n";
+		/*if ((preg_match('/^_photos/i',$value)&&preg_match('/.zip$/i',$value))||(preg_match('/^_cdt/i',$value)&&preg_match('/.zip$/i',$value))){
+		   echo "<td><a href='accueil_sauve.php?action=restaure_confirm&amp;file=$value".add_token_in_url()."'>Restaurer</a></td>\n";
 		} else {
-            echo "<td><a href='accueil_sauve.php?action=restaure_confirm&amp;file=$value".add_token_in_url()."'>Restaurer</a></td>\n";
+            echo "<td>a href='../mod_trombinoscopes/trombinoscopes_admin.php?action=restaurer&amp;file=$value".add_token_in_url()."'>Restaurer</a></td>\n";
+		}*/
+		$type_sauvegarde="";
+		if (preg_match('/^_photos/i',$value)&& preg_match('/.zip$/i',$value))$type_sauvegarde="photos";
+		if (preg_match('/^_cdt/i',$value)&& preg_match('/.zip$/i',$value)) $type_sauvegarde="cdt";
+		//if (preg_match('/^gepi-/i',$value)&& (preg_match('/.gz$/i',$value) || preg_match('/.sql$/i',$value))) $type_sauvegarde="base";
+		if ((preg_match('/.sql.gz$/i',$value) || preg_match('/.sql$/i',$value))) $type_sauvegarde="base";
+		switch ($type_sauvegarde) {
+			case "photos" :
+				echo "<td><a href='../mod_trombinoscopes/trombinoscopes_admin.php?action=restaurer_photos&amp;file=$value".add_token_in_url()."'>Restaurer</a></td>\n";
+				break;
+			case "base" :
+				echo "<td><a href='accueil_sauve.php?action=restaure_confirm&amp;file=$value".add_token_in_url()."#restaurer'>Restaurer</a></td>\n";
+				break;
+			default :
+				echo "<td></td>\n";
+				break;
 		}
         echo "<td><a href='savebackup.php?fileid=$m'>Télécharger</a></td>\n";
         echo "<td><a href='../backup/".$dirname."/".$value."'>Téléch. direct</a></td>\n";
@@ -1719,8 +1783,37 @@ echo "<p style=\"color: red;\">ATTENTION : veillez à supprimer le fichier cré�
 echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=\"post\" name=\"formulaire3\">\n";
 echo add_token_field();
 echo "<br />Dossier à sauvegarder :<br />";
-echo "<input type=\"radio\" name=\"dossier\" id=\"dossier_photos\" value=\"photos\" checked/><label for='dossier_photos'> Dossier Photos (_photos_le_DATE_a_HEURE.zip)</label><br />\n";
-echo "<input type=\"radio\" name=\"dossier\" id=\"dossier_cdt\" value=\"cdt\" /><label for='dossier_cdt'> Dossier documents du cahier de textes (_cdt_le_DATE_a_HEURE.zip)</label><br />\n";
+echo "<input type=\"radio\" name=\"dossier\" id=\"dossier_photos\" value=\"photos\" checked/><label for='dossier_photos'> Dossier Photos (<em>_photos_le_DATE_a_HEURE.zip</em>)</label>";
+
+$suffixe_zip="_le_".date("Y_m_d_\a_H\hi");
+$chemin_stockage = $path."/_photos".$suffixe_zip.".zip";
+$dossier_a_traiter = '../photos/'; //le dossier à traiter
+$dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créée
+
+if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+	//$dossier_a_traiter .=$_COOKIE['RNE']."/";
+	if((isset($_COOKIE['RNE']))&&($_COOKIE['RNE']!='')) {
+		if(!preg_match('/^[A-Za-z0-9]*$/', $_COOKIE['RNE'])) {
+			echo "<p style='color:red; text-align:center'>RNE invalide&nbsp;: ".$_COOKIE['RNE']."</p>\n";
+			$chemin_stockage="";
+		}
+		else {
+			$dossier_a_traiter = '../photos/'.$_COOKIE['RNE'].'/'; //le dossier à traiter
+		}
+	}
+	else {
+		echo "<p style='color:red; text-align:center'>RNE invalide.</p>\n";
+		$chemin_stockage="";
+	}
+}
+if ($chemin_stockage !='') {
+	echo " (<em>volume du dossier photos&nbsp;: ".volume_dir_human($dossier_a_traiter)."</em>)";
+}
+echo "<br />\n";
+
+if(!getSettingAOui('active_module_trombinoscopes')) {echo "<span style='color:red; margin-left:2em;'>Le module Trombinoscopes est <a href='../mod_trombinoscopes/trombinoscopes_admin.php'>inactif</a>, il ne devrait pas y avoir de photos à archiver.</span><br />";}
+echo "<input type=\"radio\" name=\"dossier\" id=\"dossier_cdt\" value=\"cdt\" /><label for='dossier_cdt'> Dossier documents du cahier de textes (<em>_cdt_le_DATE_a_HEURE.zip</em>)</label><br />\n";
+if(!getSettingAOui('active_cahiers_texte')) {echo "<span style='color:red; margin-left:2em;'>Le module Cahiers de textes est <a href='../cahier_texte_admin/index.php'>inactif</a>, il ne devrait pas y avoir de photos à archiver</span><br />";}
 echo "<br />\n";
 echo "<input type=\"hidden\" name=\"action\" value=\"zip\" />\n
 	  <input type=\"submit\" value=\"Créer l'archive\" name=\"bouton3\" />\n

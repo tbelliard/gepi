@@ -58,7 +58,7 @@ die();
 
 //**************** EN-TETE *****************
 $titre_page = "Aide en ligne";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 echo "<p>Le tableau suivant indique quelles fonctions de GEPI sont accessibles aux utilisateurs connectés selon leur statut (administrateur, professeur, C.P.E., scolarité, ou secours).";
 echo "<br />Le symbole * signale que l'accès à la fonction est configurable.<br /><br />";

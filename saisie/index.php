@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -51,7 +51,7 @@ if (is_numeric($id_groupe) && $id_groupe > 0) {
 include "../lib/periodes.inc.php";
 //**************** EN-TETE *****************
 $titre_page = "Saisie des moyennes et appréciations";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 
@@ -171,9 +171,9 @@ if ($current_group) {
 			else{
 				$tabdiv_infobulle[]=creer_div_infobulle("info_app_periode_$i","","","<center>".$gepiClosedPeriodLabel."</center>","",8,0,"n","n","y","n");
 
-				echo "<img src='../images/disabled.png' width='20' height='20' alt='Période close' ";
-				//echo " alt='".$gepiClosedPeriodLabel."' title='".$gepiClosedPeriodLabel."'";
-				echo " onmouseover=\"afficher_div('info_app_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_app_periode_$i')\" />\n";
+				echo "<a href='saisie_appreciations.php?id_groupe=$id_groupe' onmouseover=\"afficher_div('info_app_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_app_periode_$i')\">";
+				echo "<img src='../images/icons/chercher.png' width='32' height='32' alt='Consultation des appréciations' ";
+				echo "</a>";
 			}
 			echo "</td>\n";
 			$i++;
@@ -292,13 +292,15 @@ if ($current_group) {
 		echo "<th>ODS</th>\n";
 
 		$temoin_ods="y";
+		/*
 		// Vérification si les tests file_exists() sont acceptés.
 		if(getSettingValue("gepi_pmv")!="n"){
 			if(!file_exists("../lib/ss_zip.class.php")){
 				$temoin_ods="n";
 			}
 		}
-
+		*/
+		
 		if($_SESSION['user_temp_directory']!='y'){
 			$temoin_ods="n";
 		}

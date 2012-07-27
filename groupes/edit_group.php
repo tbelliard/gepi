@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -55,6 +55,17 @@ $reg_matiere = $current_group["matiere"]["matiere"];
 $reg_id_classe = $current_group["classes"]["list"][0];
 $reg_clazz = $current_group["classes"]["list"];
 $reg_professeurs = (array)$current_group["profs"]["list"];
+
+//================================
+$invisibilite_groupe=array();
+$sql="SELECT jgv.* FROM j_groupes_visibilite jgv WHERE jgv.visible='n';";
+$res_jgv=mysql_query($sql);
+if(mysql_num_rows($res_jgv)>0) {
+	while($lig_jgv=mysql_fetch_object($res_jgv)) {
+		$invisibilite_groupe=$lig_jgv->domaine;
+	}
+}
+//================================
 
 /*
 foreach($reg_clazz as $key => $value) {
@@ -218,6 +229,29 @@ if (isset($_POST['is_posted'])) {
 		$clazz[0] = $id_classe;
 	}
 
+
+	for($loo=0;$loo<count($tab_domaines);$loo++) {
+		$visibilite_groupe_domaine_courant=isset($_POST['visibilite_groupe_'.$tab_domaines[$loo]]) ? $_POST['visibilite_groupe_'.$tab_domaines[$loo]] : "n";
+
+		if(in_array($tab_domaines[$loo], $invisibilite_groupe)) {
+			if($visibilite_groupe_domaine_courant!='n') {
+				$sql="DELETE FROM j_groupes_visibilite WHERE id_groupe='".$id_groupe."' AND domaine='".$tab_domaines[$loo]."';";
+				//echo "$sql<br />";
+				$suppr=mysql_query($sql);
+				if(!$suppr) {$msg.="Erreur lors de la suppression de l'invisibilité du groupe n°".$id_groupe." sur les ".$tab_domaines_texte[$loo].".<br />";}
+			}
+		}
+		else {
+			if($visibilite_groupe_domaine_courant=='n') {
+				$sql="INSERT j_groupes_visibilite SET id_groupe='".$id_groupe."', domaine='".$tab_domaines[$loo]."', visible='n';";
+				//echo "$sql<br />";
+				$insert=mysql_query($sql);
+				if(!$insert) {$msg.="Erreur lors de l'enregistrement de l'invisibilité du groupe n°".$id_groupe." sur les ".$tab_domaines_texte[$loo].".<br />";}
+			}
+		}
+	}
+
+
 	// Professeurs
 	$reg_professeurs = array();
 	foreach ($_POST as $key => $value) {
@@ -302,7 +336,7 @@ echo "</pre>\n";
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des groupes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
 //debug_var();
@@ -332,6 +366,22 @@ echo "<a href='mes_listes.php?id_groupe=$id_groupe'>Exporter la composition du g
 ?>
 <a href="edit_class.php?id_classe=<?php echo $id_classe;?>&amp;action=delete_group&amp;id_groupe=<?php echo $id_groupe;?><?php echo add_token_in_url();?>" onclick="return confirmlink(this, 'ATTENTION !!! LISEZ CET AVERTISSEMENT : La suppression d\'un enseignement est irréversible. Une telle suppression ne devrait pas avoir lieu en cours d\'année. Si c\'est le cas, cela peut entraîner la présence de données orphelines dans la base. Si des données officielles (notes et appréciations du bulletin) sont présentes, la suppression sera bloquée. Dans le cas contraire, toutes les données liées au groupe seront supprimées, incluant les notes saisies par les professeurs dans le carnet de notes ainsi que les données présentes dans le cahier de texte. Etes-vous *VRAIMENT SÛR* de vouloir continuer ?', 'Confirmation de la suppression')"> Supprimer le groupe</a>
 <?php
+echo " | <a href='edit_eleves.php?id_groupe=$id_groupe&id_classe=".$id_classe."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Modifier la liste des élèves</a>";
+/*
+if(count($current_group["classes"]["list"])==1) {
+	echo " | <a href='edit_eleves.php?id_groupe=$id_groupe&id_classe=".$current_group["classes"]["list"][0]."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Modifier la liste des élèves</a>";
+}
+elseif(count($current_group["classes"]["list"])>1) {
+	echo " | Modifier la liste des élèves en";
+	$cpt_classe=0;
+	foreach($current_group["classes"]["classes"] as $key => $value) {
+		if($cpt_classe>0) {echo ", ";}
+		echo " <a href='edit_eleves.php?id_groupe=$id_groupe&id_classe=$key' onclick=\"return confirm_abandon (this, change, '$themessage')\">".$value['classe']."</a>";
+		$cpt_classe++;
+	}
+}
+*/
+
 if ($mode == "groupe") {
 	echo "<h3>Modifier le groupe</h3>\n";
 } elseif ($mode == "regroupement") {
@@ -341,9 +391,9 @@ if ($mode == "groupe") {
 <form enctype="multipart/form-data" action="edit_group.php" method="post">
 <div style="width: 95%;">
 <div style="width: 45%; float: left;">
-<p>Nom court : <input type=text size=30 name=groupe_nom_court value = "<?php echo $reg_nom_groupe; ?>" /></p>
+<p>Nom court : <input type='text' size='30' name='groupe_nom_court' value = "<?php echo $reg_nom_groupe; ?>" onchange="changement()" /></p>
 
-<p>Nom complet : <input type=text size=50 name=groupe_nom_complet value = "<?php echo $reg_nom_complet; ?>" /></p>
+<p>Nom complet : <input type='text' size='50' name='groupe_nom_complet' value = "<?php echo $reg_nom_complet; ?>" onchange="changement()" /></p>
 
 <?php
 
@@ -535,6 +585,35 @@ for ($i=0;$i<$nb_mat;$i++) {
 echo "</select>\n";
 //echo "</p>\n";
 */
+
+/*
+// Le coefficient peut différer d'une classe à l'autre.
+// On ne va pas l'éditer ici
+echo "<p>Coefficient de l'enseignement&nbsp;: ";
+echo "<select name='coef' id='coef'>\n";
+for($i=0;$i<max(10,      );$i++){
+	echo "<option value='$i'";
+	echo ">$i</option>\n";
+}
+echo "</select>\n";
+*/
+
+echo "<p>Visibilité de l'enseignement sur&nbsp;: <br />\n";
+for($loop=0;$loop<count($tab_domaines);$loop++) {
+	echo "&nbsp;&nbsp;&nbsp;<input type='checkbox' name='visibilite_groupe_".$tab_domaines[$loop]."' id='visibilite_groupe_".$tab_domaines[$loop]."' value='y' ";
+	$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='".$tab_domaines[$loop]."' AND visible='n';";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)==0) {
+		echo "checked ";
+	}
+	echo " onchange=\"checkbox_change_visibilite('visibilite_groupe_".$tab_domaines[$loop]."'); changement();\"";
+	echo "title='Visibilité ".$tab_domaines[$loop]."' /><label for='visibilite_groupe_".$tab_domaines[$loop]."' id='texte_visibilite_groupe_".$tab_domaines[$loop]."'";
+	if(mysql_num_rows($test)==0) {
+		echo "style='font-weight:bold;' ";
+	}
+	echo ">".$tab_domaines_texte[$loop]."</label><br />\n";
+}
+
 echo "</div>\n";
 // Edition des professeurs
 echo "<div style='width: 45%; float: right;'>\n";
@@ -560,6 +639,7 @@ for ($i=0;$i<$nb_mat;$i++) {
 }
 echo "</select>\n";
 echo "</p>\n";
+
 //=================================================
 
 // Mettre un témoin pour repérer le prof principal
@@ -600,7 +680,7 @@ for ($i=0;$i<$nb;$i++) {
 }
 
 if (count($prof_list["list"]) == "0") {
-	echo "<p><font color='red'>ERREUR !</font> Aucun professeur n'a été défini comme compétent dans la matière considérée.</p>\n";
+	echo "<p><span style='color:red'>ERREUR !</span> Aucun professeur n'a été défini comme compétent dans la matière considérée.<br /><a href='../matieres/modify_matiere.php?current_matiere=$reg_matiere'>Associer des professeurs à $reg_matiere</a></p>\n";
 } else {
 	$total_profs = array_merge($prof_list["list"], $reg_professeurs);
 	$total_profs = array_unique($total_profs);
@@ -692,6 +772,7 @@ function checkbox_change(cpt) {
 ";
 
 echo js_checkbox_change_style('checkbox_change_classe');
+echo js_checkbox_change_style('checkbox_change_visibilite');
 
 echo "
 for(i=0;i<$p;i++) {

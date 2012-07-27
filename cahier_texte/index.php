@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
  *
  * This file is part of GEPI.
  *
@@ -24,7 +24,7 @@
 if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) {$traite_anti_inject = "yes";}
 
 // Dans le cas ou on poste une notice ou un devoir, pas de traitement anti_inject
-// Pour ne pas interférer avec fckeditor
+// Pour ne pas interférer avec ckeditor
 if (isset($_POST['notes'])) {$traite_anti_inject = 'no';}
 
 $filtrage_extensions_fichiers_table_ct_types_documents='y';
@@ -33,7 +33,7 @@ $filtrage_extensions_fichiers_table_ct_types_documents='y';
 require_once("../lib/initialisations.inc.php");
 require_once("../lib/transform_functions.php");
 require_once("../public/lib/functions.inc");
-include("../fckeditor/fckeditor.php") ;
+include("../ckeditor/ckeditor.php") ;
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -482,7 +482,7 @@ if ($test_cahier_texte != 0) {
 $_SESSION['cacher_header'] = "y";
 //**************** EN-TETE *****************
 $titre_page = "Cahier de textes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************
 
 //debug_var();
@@ -520,33 +520,38 @@ if (empty($groups)) {
 }
 	$a = 1;
 foreach($groups as $group) {
-        //echo "<b>";
-        if ($group["id"] == $current_group["id"]) {
-           echo "<p style=\"background-color: silver; padding: 2px; border: 1px solid black; font-weight: bold;\">" . $group["description"] . "&nbsp;-&nbsp;(";
-            $str = null;
-            foreach ($group["classes"]["classes"] as $classe) {
-                $str .= $classe["classe"] . ", ";
-            }
-            $str = mb_substr($str, 0, -2);
-            echo $str . ")&nbsp;</p>\n";
-        } else {
-        	echo "<span style=\"font-weight: bold;\">";
-           echo "<a href=\"index.php?id_groupe=". $group["id"] ."&amp;year=$year&amp;month=$month&amp;day=$day&amp;edit_devoir=$edit_devoir\">";
-           echo $group["name"] . "&nbsp;-&nbsp;(";
-            $str = null;
-            foreach ($group["classes"]["classes"] as $classe) {
-                $str .= $classe["classe"] . ", ";
-            }
-            $str = mb_substr($str, 0, -2);
-            echo $str . ")</a>&nbsp;</span>\n";
-        }
-        //echo "</b>\n";
-        if ($a == 2) {
-        	echo "<br />\n";
-        	$a = 1;
-        } else {
+	$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$group['id']."' AND domaine='cahier_texte' AND visible='n';";
+	//echo "$sql<br />\n";
+	$test_grp_visib=mysql_query($sql);
+	if(mysql_num_rows($test_grp_visib)==0) {
+		//echo "<b>";
+		if ($group["id"] == $current_group["id"]) {
+		   echo "<p style=\"background-color: silver; padding: 2px; border: 1px solid black; font-weight: bold;\">" . $group["description"] . "&nbsp;-&nbsp;(";
+			$str = null;
+			foreach ($group["classes"]["classes"] as $classe) {
+				$str .= $classe["classe"] . ", ";
+			}
+			$str = mb_substr($str, 0, -2);
+			echo $str . ")&nbsp;</p>\n";
+		} else {
+			echo "<span style=\"font-weight: bold;\">";
+		   echo "<a href=\"index.php?id_groupe=". $group["id"] ."&amp;year=$year&amp;month=$month&amp;day=$day&amp;edit_devoir=$edit_devoir\">";
+		   echo $group["name"] . "&nbsp;-&nbsp;(";
+			$str = null;
+			foreach ($group["classes"]["classes"] as $classe) {
+				$str .= $classe["classe"] . ", ";
+			}
+			$str = mb_substr($str, 0, -2);
+			echo $str . ")</a>&nbsp;</span>\n";
+		}
+		//echo "</b>\n";
+		if ($a == 2) {
+			echo "<br />\n";
+			$a = 1;
+		} else {
 			$a = 2;
 		}
+	}
 }
 // Fin Affichage des différents groupes du professeur
 // **********************************************
@@ -1187,13 +1192,10 @@ echo "\n";
 ?>
 <tr><td colspan="4">
 <?php
-// lancement de FCKeditor
-$oFCKeditor = new FCKeditor('notes') ;
-$oFCKeditor->BasePath = '../fckeditor/' ;
-$oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
-$oFCKeditor->ToolbarSet = 'Basic' ;
-$oFCKeditor->Value = $contenu ;
-$oFCKeditor->Create() ;
+// lancement de CKeditor
+$oCKeditor = new CKeditor() ;
+$oCKeditor->BasePath = '../ckeditor/' ;
+$oCKeditor->editor('notes',$contenu) ;
 
 //echo "<a href=\"#\" onclick=\"javascript: document.getElementById('notes').value='TRUC'; return false;\">CLIC</a>";
 //echo "<a href=\"#\" onclick=\"javascript: alert(document.getElementById('notes').value); return false;\">CLOC</a>";

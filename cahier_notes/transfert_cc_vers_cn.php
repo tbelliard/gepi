@@ -498,7 +498,7 @@ function liste_devoirs_conteneurs($id_dev_cc, $id_conteneur, $periode_num) {
 			echo "</ul>\n";
 		}
 	//}
-	if ($empty != 'no') {return 'yes';}
+	if (isset ($empty) && $empty != 'no') {return 'yes';}
 }
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -506,7 +506,7 @@ $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quit
 //**************** EN-TETE *****************
 $titre_page = "Carnet de notes - Transfert de $nom_cc";
 //echo "<div class='noprint'>\n";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 

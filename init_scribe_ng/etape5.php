@@ -46,7 +46,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation des matières";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 // Utilisation de la classe LDAP chargee et configuree
@@ -83,7 +83,7 @@ if ($_POST['step'] == "5") {
             echo "La matière "
             .$nouvelle_matiere->getMatiere()." ("
             .$nouvelle_matiere->getNomComplet()
-            .") existe d&eacute;ja<br/>";
+            .") existe d&eacute;j&agrave;<br/>";
         }
         else {
             $nouvelle_matiere = new Matiere();

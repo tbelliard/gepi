@@ -136,6 +136,7 @@
 	$champ_bull_pdf[]="titre_bloc_avis_conseil";
 	$champ_bull_pdf[]="taille_titre_bloc_avis_conseil";
 	$champ_bull_pdf[]="taille_profprincipal_bloc_avis_conseil";
+	$champ_bull_pdf[]="afficher_tous_profprincipaux";
 	$champ_bull_pdf[]="affiche_fonction_chef";
 	$champ_bull_pdf[]="taille_texte_fonction_chef";
 	$champ_bull_pdf[]="taille_texte_identitee_chef";
@@ -181,6 +182,8 @@
 	$champ_bull_pdf[]="affiche_nom_etab";
 	$champ_bull_pdf[]="affiche_adresse_etab";
 	//=========================
+
+	$champ_bull_pdf[]="signature_img";
 
 	/*
 		mysql> show fields from modele_bulletin;
@@ -333,6 +336,7 @@
 	$val_defaut_champ_bull_pdf["titre_bloc_avis_conseil"]="";
 	$val_defaut_champ_bull_pdf["taille_titre_bloc_avis_conseil"]=0;
 	$val_defaut_champ_bull_pdf["taille_profprincipal_bloc_avis_conseil"]=0;
+	$val_defaut_champ_bull_pdf["afficher_tous_profprincipaux"]=0;
 	$val_defaut_champ_bull_pdf["affiche_fonction_chef"]=0;
 	$val_defaut_champ_bull_pdf["taille_texte_fonction_chef"]=0;
 	$val_defaut_champ_bull_pdf["taille_texte_identitee_chef"]=0;
@@ -378,6 +382,8 @@
 	$val_defaut_champ_bull_pdf["affiche_nom_etab"]=1;
 	$val_defaut_champ_bull_pdf["affiche_adresse_etab"]=1;
 	//=========================
+
+	$val_defaut_champ_bull_pdf["signature_img"]=0;
 
 
 	for($loop_champs=0;$loop_champs<count($champ_bull_pdf);$loop_champs++) {

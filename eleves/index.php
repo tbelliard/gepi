@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -63,6 +63,16 @@ if(isset($_SESSION['retour_apres_maj_sconet'])) {
 //log_debug(debug_var());
 //debug_var();
 
+/*if(isset($_GET['csv'])) {
+	check_token();
+
+	// La solution en GET ne fonctionne pas bien au niveau de l'encodage/décodage et si suhosin est actif, c'est la longueur de la chaine $_GET qui pose pb.
+	$nom_fic = "liste_eleve_gepi".strftime("%Y%m%d_%H%M%S").".csv";
+	send_file_download_headers('text/x-csv',$nom_fic);
+	echo urldecode($_GET['csv']);
+	die();
+}
+*/
 
  //répertoire des photos
 
@@ -91,7 +101,7 @@ if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 
 }
 else {
-  $rep_photos='../photos/eleves/';
+	$rep_photos='../photos/eleves/';
 }
 
 $tab_regimes_autorises=array('d/p', 'int.', 'ext.', 'i-e');
@@ -345,15 +355,15 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 				$dest = $rep_photos;
 				$n = 0;
 				//$msg.="\$rep_photos=$rep_photos<br />";
-				if (!deplacer_fichier_upload($sav_photo['tmp_name'][$cpt_photo], $rep_photos.$quiestce[$cpt_photo].".jpg")) {
+				if (!deplacer_fichier_upload($sav_photo['tmp_name'][$cpt_photo], $rep_photos.encode_nom_photo($quiestce[$cpt_photo]).".jpg")) {
 					$msg.="Problème de transfert : le fichier n°$cpt_photo n'a pas pu être transféré sur le répertoire photos/eleves/<br />";
 				} else {
 					//$msg = "Téléchargement réussi.";
 					$cpt_photos_mises_en_place++;
 					if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
-						// si le redimensionnement des photos est activé on redimenssionne
+						// si le redimensionnement des photos est activé on redimensionne
 	
-						$source = imagecreatefromjpeg($rep_photos.$quiestce[$cpt_photo].".jpg"); // La photo est la source
+						$source = imagecreatefromjpeg($rep_photos.encode_nom_photo($quiestce[$cpt_photo]).".jpg"); // La photo est la source
 	
 						if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes")); } // On crée la miniature vide
 						if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(getSettingValue("h_resize_trombinoscopes"), getSettingValue("l_resize_trombinoscopes")); } // On crée la miniature vide
@@ -371,7 +381,7 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 						imagecopyresampled($destination, $source, 0, 0, 0, 0, $largeur_destination, $hauteur_destination, $largeur_source, $hauteur_source);
 						if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
 						// On enregistre la miniature sous le nom "mini_couchersoleil.jpg"
-						imagejpeg($destination, $rep_photos.$quiestce[$cpt_photo].".jpg",100);
+						imagejpeg($destination, $rep_photos.encode_nom_photo($quiestce[$cpt_photo]).".jpg",100);
 					}
 				}
 			}
@@ -384,7 +394,7 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des élèves";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //************** FIN EN-TETE *****************
 
 if(getSettingValue('eleves_index_debug_var')=='y') {
@@ -729,7 +739,6 @@ if (!isset($quelles_classes)) {
 				$cpt_photo_manquante=0;
 				while($lig_tmp=mysql_fetch_object($test_elenoet_ok)){
 					$test_photo=nom_photo($lig_tmp->elenoet);
-					//if((!file_exists("../photos/eleves/".$lig_tmp->elenoet.".jpg"))&&(!file_exists("../photos/eleves/0".$lig_tmp->elenoet.".jpg"))){
 					if($test_photo==""){
 						$cpt_photo_manquante++;
 					}
@@ -1108,7 +1117,7 @@ if (!isset($quelles_classes)) {
 if(isset($quelles_classes)) {
 	//echo "$quelles_classes<br />";
 
-	echo "<p class='small'>Remarque : l'identifiant mentionné ici ne permet pas aux élèves de se connecter à Gepi, il sert simplement d'identifiant unique.";
+	echo "<p class='small'><em>Remarque&nbsp;:</em> l'identifiant mentionné ici ne permet pas aux élèves de se connecter à Gepi, il sert simplement d'identifiant unique.";
 	//if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	if($_SESSION['statut']=="administrateur") {
 		echo " Pour permettre aux élèves de se connecter à Gepi, vous devez leur créer des comptes d'accès, en passant par la page Gestion des bases -> Gestion des comptes d'accès utilisateurs -> <a href='../utilisateurs/edit_eleve.php'>Elèves</a>.";
@@ -1353,7 +1362,6 @@ if(isset($quelles_classes)) {
 				$i=0;
 				while($lig_tmp=mysql_fetch_object($test_elenoet_ok)) {
 					$test_photo=nom_photo($lig_tmp->elenoet);
-					//if((!file_exists("../photos/eleves/".$lig_tmp->elenoet.".jpg"))&&(!file_exists("../photos/eleves/0".$lig_tmp->elenoet.".jpg"))){
 					if($test_photo==""){
 						//if($chaine_photo_manquante!=""){$chaine_photo_manquante.=" OR ";}
 						//$chaine_photo_manquante.="elenoet='$lig_tmp->elenoet'";
@@ -1548,23 +1556,32 @@ if(isset($quelles_classes)) {
 
 
 
-
+	$csv="";
 	echo "<table border='1' cellpadding='2' class='boireaus'  summary='Tableau des élèves de la classe'>\n";
 	echo "<tr>\n";
 	echo "<th><p>Identifiant</p></th>\n";
+	$csv.="Identifiant;";
+	
 	echo "<th><p><a href='index.php?order_type=nom,prenom&amp;quelles_classes=$quelles_classes";
 	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
 	echo "'>Nom Prénom</a></p></th>\n";
+	$csv.="Nom Prénom;";
+	$csv.="Date sortie;";
+
 	echo "<th><p><a href='index.php?order_type=sexe,nom,prenom&amp;quelles_classes=$quelles_classes";
 	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
 	echo "'>Sexe</a></p></th>\n";
+	$csv.="Sexe;"
+	;
 	echo "<th><p><a href='index.php?order_type=naissance,nom,prenom&amp;quelles_classes=$quelles_classes";
 	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
 	echo "'>Date de naissance</a></p></th>\n";
+	$csv.="Date de naissance;";
 
 	echo "<th><p><a href='index.php?order_type=regime,nom,prenom&amp;quelles_classes=$quelles_classes";
 	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
 	echo "'>Régime</a></p></th>\n";
+	$csv.="Régime;";
 
 	if ($quelles_classes == 'na') {
 		echo "<th><p>Classe</p></th>\n";
@@ -1580,9 +1597,13 @@ if(isset($quelles_classes)) {
 		}
 		echo "</p></th>\n";
 	}
+	$csv.="Classe;";
+
 //    echo "<th><p>Classe</p></th>";
 	echo "<th><p>Enseign.<br />suivis</p></th>\n";
+	//$csv.=";";
 	echo "<th><p>".ucfirst(getSettingValue("gepi_prof_suivi"))."</p></th>\n";
+	$csv.=ucfirst(getSettingValue("gepi_prof_suivi")).";";
 
 	//if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	if($_SESSION['statut']=="administrateur") {
@@ -1591,6 +1612,7 @@ if(isset($quelles_classes)) {
 	elseif($_SESSION['statut']=="scolarite") {
 		echo "<th><p><span title=\"La suppression n'est possible qu'avec un compte administrateur\">Supprimer</span></p></th>\n";
 	}
+	//$csv.=";";
 
 	if (getSettingValue("active_module_trombinoscopes")=='y') {
 		if($_SESSION['statut']=="professeur") {
@@ -1602,7 +1624,10 @@ if(isset($quelles_classes)) {
 			echo "<th><p><input type='submit' value='Télécharger les photos' name='bouton1' /></th>\n";
 		}
 	}
+	//$csv.=";";
+
 	echo "</tr>\n";
+	$csv.="\r\n";
 
 	if(!isset($tab_eleve)){
 		$nombreligne = mysql_num_rows($calldata);
@@ -1652,7 +1677,13 @@ if(isset($quelles_classes)) {
 		$call_classe = mysql_query("SELECT n.classe, n.id FROM j_eleves_classes c, classes n WHERE (c.login ='$eleve_login' and c.id_classe = n.id) order by c.periode DESC");
 		$eleve_classe = @mysql_result($call_classe, 0, "classe");
 		$eleve_id_classe = @mysql_result($call_classe, 0, "id");
-		if ($eleve_classe == '') {$eleve_classe = "<font color='red'>N/A</font>";}
+		if ($eleve_classe == '') {
+			$eleve_classe = "<font color='red'>N/A</font>";
+			$eleve_classe_csv = "N/A";
+		}
+		else {
+			$eleve_classe_csv = $eleve_classe;
+		}
 		$call_suivi = mysql_query("SELECT u.* FROM utilisateurs u, j_eleves_professeurs s WHERE (s.login ='$eleve_login' and s.professeur = u.login and s.id_classe='$eleve_id_classe')");
 		if(mysql_num_rows($call_suivi)==0){
 			$eleve_profsuivi_nom = "";
@@ -1662,27 +1693,52 @@ if(isset($quelles_classes)) {
 			$eleve_profsuivi_nom = @mysql_result($call_suivi, 0, "nom");
 			$eleve_profsuivi_prenom = @mysql_result($call_suivi, 0, "prenom");
 		}
-		if ($eleve_profsuivi_nom == '') {$eleve_profsuivi_nom = "<font color='red'>N/A</font>";}
+		if ($eleve_profsuivi_nom == '') {
+			$eleve_profsuivi_nom = "<font color='red'>N/A</font>";
+			$eleve_profsuivi_nom_csv = "N/A";
+		}
+		else {
+			$eleve_profsuivi_nom_csv = $eleve_profsuivi_nom;
+		}
 		//$delete_login = 'delete_'.$eleve_login;
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover'>\n";
 
 		echo "<td><p>" . $eleve_login . "</p></td>\n";
+		$csv.="$eleve_login;";
+
 		echo "<td>";
 
 		$lien_image_compte_utilisateur=lien_image_compte_utilisateur($eleve_login, "eleve", "", "n");
 		if($lien_image_compte_utilisateur!="") {echo "<div style='float:right; width: 16px'>".$lien_image_compte_utilisateur."</div>";}
 
-		echo "<p><a href='modify_eleve.php?eleve_login=$eleve_login&amp;quelles_classes=$quelles_classes&amp;order_type=$order_type";
-		if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-		echo "'>$eleve_nom $eleve_prenom</a>";
+		if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='autre')||
+			(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiAccesTouteFicheEleveCpe')))||
+			(($_SESSION['statut']=='cpe')&&(is_cpe($_SESSION['login'],'',$eleve_login)))||
+			(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'],"",$eleve_login))&&(getSettingAOui('GepiAccesGestElevesProfP')))) {
+			echo "<p><a href='modify_eleve.php?eleve_login=$eleve_login&amp;quelles_classes=$quelles_classes&amp;order_type=$order_type";
+			if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
+			echo "'>$eleve_nom $eleve_prenom</a>";
+		}
+		else {
+			echo "$eleve_nom $eleve_prenom";
+		}
+		$csv.="$eleve_nom $eleve_prenom;";
+
 		if ($date_sortie_elv!=0) {
 		     echo "<br/>";
-		     echo "<span class=\"red\"><b>Sortie le ".affiche_date_sortie($date_sortie_elv)."</b></span>";;
+		     echo "<span class=\"red\"><b>Sortie le ".affiche_date_sortie($date_sortie_elv)."</b></span>";
+
+			$csv.=$date_sortie_elv;
 		}
 		echo "</p></td>\n";
+		$csv.=";";
+
 		echo "<td><p>$eleve_sexe</p></td>\n";
+		$csv.="$eleve_sexe;";
+
 		echo "<td><p>".affiche_date_naissance($eleve_naissance)."</p></td>\n";
+		$csv.=affiche_date_naissance($eleve_naissance).";";
 
 		echo "<td><p>";
 		if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
@@ -1696,6 +1752,7 @@ if(isset($quelles_classes)) {
 			echo $eleve_regime;
 		}
 		echo "</p></td>\n";
+		$csv.="$eleve_regime;";
 
 		if($_SESSION['statut']=='administrateur') {
 			echo "<td><p><a href='../classes/classes_const.php?id_classe=$eleve_id_classe'>$eleve_classe</a></p></td>\n";
@@ -1703,10 +1760,13 @@ if(isset($quelles_classes)) {
 		else {
 			echo "<td><p>$eleve_classe</p></td>\n";
 		}
+		$csv.="$eleve_classe_csv;";
 
 		echo "<td><p><a href='../classes/eleve_options.php?login_eleve=".$eleve_login."&amp;id_classe=$eleve_id_classe&amp;quitter_la_page=y' target='_blank'><img src='../images/icons/chercher.png' width='16' height='16' alt='Enseignements suivis' title='Enseignements suivis' /></a></p></td>\n";
+		//$csv.=";";
 
 		echo "<td><p>$eleve_profsuivi_nom $eleve_profsuivi_prenom</p></td>\n";
+		$csv.="$eleve_profsuivi_nom_csv $eleve_profsuivi_prenom;";
 
 		//if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 		if($_SESSION['statut']=="administrateur") {
@@ -1747,8 +1807,6 @@ if(isset($quelles_classes)) {
 
 				$tabdiv_infobulle[]=creer_div_infobulle('photo_'.$eleve_login,$titre,"",$texte,"",14,0,'y','y','n','n');
 
-				//echo "<a href='../photos/eleves/$photo' target='_blank' onmouseover=\"afficher_div('photo_$eleve_login','y',-20,20);\">";
-
 				echo "<a href='".$photo."' target='_blank' onmouseover=\"delais_afficher_div('photo_$eleve_login','y',-20,20,500,40,30);\">";
 
 				echo "<img src='../mod_trombinoscopes/images/";
@@ -1782,11 +1840,20 @@ if(isset($quelles_classes)) {
 		}
 
 		echo "</tr>\n";
+		$csv.="\r\n";
+
 		$i++;
 	}
 	echo "</table>\n";
 	echo "<p>Total : $nombreligne élève";
 	if($nombreligne>1) {echo "s";}
+
+	//echo " - <a href='".$_SERVER['PHP_SELF']."?csv=".urlencode($csv).add_token_in_url()."'>CSV</a>\n";
+	$fichier_csv="../temp/".get_user_temp_directory()."/liste_eleves_".strftime("%Y%m%d_%H%M%S").".csv";
+	$f=fopen($fichier_csv, "w+");
+	fwrite($f, $csv);
+	fclose($f);
+	echo " - <a href='$fichier_csv'>CSV</a>\n";
 	echo "</p>\n";
 
 	echo "<script type='text/javascript'>
@@ -1840,7 +1907,7 @@ if(isset($quelles_classes)) {
 			echo "<p><i>Notes</i>&nbsp;:</p>\n";
 			echo "<ul>\n";
 		}
-		echo "<li><i>Note</i>&nbsp;: Il est possible d'uploader un fichier <a href='../mod_trombinoscopes/trombinoscopes_admin.php#formEnvoi'>ZIP d'un lot de photos</a> plutôt que les uploader une par une.<br />Il faut que les photos soient nommées au format ELENOET.JPG</p></li>\n";
+		echo "<li><i>Note</i>&nbsp;: Il est possible d'uploader un fichier <a href='../mod_trombinoscopes/trombinoscopes_admin.php#telecharger_photos_eleves'>ZIP d'un lot de photos</a> plutôt que les uploader une par une.</p></li>\n";
 		$temoin_notes_bas_de_page="y";
 	}
 

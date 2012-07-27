@@ -88,7 +88,7 @@ $requete = "select * from aid_productions order by nom";
 
 //**************** EN-TETE *********************
 $titre_page = "Configuration des types de productions pour les fiches projet";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 <form enctype="multipart/form-data" name="formulaire" action="config_aid_productions.php" method="post">

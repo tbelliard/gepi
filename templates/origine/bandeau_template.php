@@ -27,6 +27,13 @@
 			<img src="<?php echo $tbs_bouton_taille;?>/images/down.png" alt='Afficher le bandeau' title='Afficher le bandeau' />
 		</a>
 
+	<!-- Témoin de contact du serveur -->
+	<?php
+		if($tbs_aff_temoin_check_serveur=='y') {
+			temoin_check_srv();
+		}
+	?>
+
 	<!-- titre de la page -->	
 		<h1><?php echo $titre_page; ?></h1>
 		
@@ -103,7 +110,7 @@
 					if ("$value[texte]"!="") {
 						echo "
 	<li class='ligne_premier_menu'>
-		<a href='$value[lien]'>
+		<a href='$value[lien]'".insert_confirm_abandon().">
 			<img src='$value[image]' alt='$value[alt]' title='$value[title]' height='16' width='16' />
 			<span class='menu_bandeau'>
 				&nbsp;$value[texte]
@@ -126,6 +133,7 @@
 			if (count($tbs_deux_menu)) {
 				foreach ($tbs_deux_menu as $value) {
 					if ("$value[texte]"!="") {
+						// Là le (js) insert_confirm_abandon() est inutile parce que c'est une ouverture dans une autre fenêtre
 						echo "
 	<li class='ligne_deux_menu'>
 		<a href='$value[lien]' $value[onclick] title=\"Nouvelle fenêtre\">
@@ -309,7 +317,7 @@
 <?php
 			if ($tbs_msg !="") {
 ?>
-	<p class='headerMessage bold<?php if($post_reussi) echo " vert" ;?>'>
+	<p class='headerMessage bold<?php if(isset($post_reussi) && $post_reussi) echo " vert" ;?>'>
 <?php
 		echo $tbs_msg;
 ?>

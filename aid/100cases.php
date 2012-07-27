@@ -25,7 +25,7 @@ require_once("../lib/initialisations.inc.php");
 
 //**************** EN-TETE *****************
 $titre_page = "Les 100 cases du savoir";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************
 ?>
 

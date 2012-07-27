@@ -41,7 +41,7 @@ if ($test == -1) {
 	$sql="CREATE TABLE IF NOT EXISTS ex_examens (id int(11) unsigned NOT NULL auto_increment,
 		intitule VARCHAR( 255 ) NOT NULL ,description TEXT NOT NULL ,
 		date DATE NOT NULL default '0000-00-00',
-		etat VARCHAR( 255 ) NOT NULL ,PRIMARY KEY ( id ));";
+		etat VARCHAR( 255 ) NOT NULL ,PRIMARY KEY ( id )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'ex_examens': ".$result_inter."<br />";
@@ -59,7 +59,7 @@ if ($test == -1) {
 		bonus CHAR(1) NOT NULL DEFAULT 'n',
 		ordre INT(11) unsigned NOT NULL,
 		PRIMARY KEY ( id )
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'ex_matieres': ".$result_inter."<br />";
@@ -74,7 +74,7 @@ if ($test == -1) {
 		id_exam int(11) unsigned NOT NULL,
 		id_classe int(11) unsigned NOT NULL,
 		PRIMARY KEY ( id )
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'ex_classes': ".$result_inter."<br />";
@@ -92,7 +92,7 @@ if ($test == -1) {
 		type VARCHAR( 255 ) NOT NULL ,
 		id_dev int(11) NOT NULL DEFAULT '0',
 		PRIMARY KEY ( id )
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'ex_groupes': ".$result_inter."<br />";
@@ -109,7 +109,7 @@ if ($test == -1) {
 		note float(10,1) NOT NULL default '0.0',
 		statut varchar(4) NOT NULL default '',
 		PRIMARY KEY ( id )
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'ex_notes': ".$result_inter."<br />";
@@ -131,7 +131,7 @@ if ($test == -1) {
 		date DATE NOT NULL default '0000-00-00',
 		etat VARCHAR( 255 ) NOT NULL ,
 		PRIMARY KEY ( id )
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'ex_examens': ".$result_inter."<br />";
@@ -151,7 +151,7 @@ if ($test == -1) {
 		statut VARCHAR(255) NOT NULL default '',
 		id_epreuve int(11) unsigned NOT NULL,
 		PRIMARY KEY ( id )
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'eb_copies': ".$result_inter."<br />";
@@ -166,7 +166,7 @@ if ($test == -1) {
 		salle VARCHAR( 255 ) NOT NULL ,
 		id_epreuve int(11) unsigned NOT NULL,
 		PRIMARY KEY ( id )
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'eb_salles': ".$result_inter."<br />";
@@ -182,7 +182,7 @@ if ($test == -1) {
 		id_groupe int(11) unsigned NOT NULL,
 		transfert varchar(1) NOT NULL DEFAULT 'n',
 		PRIMARY KEY ( id )
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	//echo "$sql<br />";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -198,7 +198,7 @@ if ($test == -1) {
 		id_epreuve int(11) unsigned NOT NULL,
 		login_prof VARCHAR(255) NOT NULL default '',
 		PRIMARY KEY ( id )
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	//echo "$sql<br />";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -215,7 +215,7 @@ if ($test == -1) {
 		periode int(11) NOT NULL default '0',
 		synthese text NOT NULL,
 		PRIMARY KEY  (id_classe,periode)
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	//echo "$sql<br />";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -231,7 +231,7 @@ if ($test == -1) {
 	$sql="CREATE TABLE IF NOT EXISTS message_login (
 		id int(11) NOT NULL auto_increment,
 		texte text NOT NULL,PRIMARY KEY  (id)
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	//echo "$sql<br />";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -302,7 +302,7 @@ else {
 $test = sql_query1("SHOW TABLES LIKE 'pays'");
 if ($test == -1) {
 	$result .= "<br />Création de la table 'pays'. ";
-	$sql="CREATE TABLE IF NOT EXISTS pays (code_pays VARCHAR( 50 ) NOT NULL, nom_pays VARCHAR( 255 ) NOT NULL, PRIMARY KEY ( code_pays ));";
+	$sql="CREATE TABLE IF NOT EXISTS pays (code_pays VARCHAR( 50 ) NOT NULL, nom_pays VARCHAR( 255 ) NOT NULL, PRIMARY KEY ( code_pays )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur lors de la création de la table 'pays': ".$result_inter."<br />";
@@ -324,7 +324,7 @@ if($test>0) {
 		$result .= msj_ok();
 
 		$result .= "<br />Re-création de la table 'pays'.";
-		$sql="CREATE TABLE IF NOT EXISTS pays (code_pays VARCHAR( 50 ) NOT NULL, nom_pays VARCHAR( 255 ) NOT NULL, PRIMARY KEY ( code_pays ));";
+		$sql="CREATE TABLE IF NOT EXISTS pays (code_pays VARCHAR( 50 ) NOT NULL, nom_pays VARCHAR( 255 ) NOT NULL, PRIMARY KEY ( code_pays )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 		$result_inter = traite_requete($sql);
 		if ($result_inter != '') {
 			$result .= "<br />Erreur lors de la création de la table 'pays': ".$result_inter."<br />";
@@ -439,7 +439,7 @@ if ($test == -1) {
 			nature varchar(50) NOT NULL default '',
 			valeur varchar(50) NOT NULL default '',
 			declarant varchar(50) NOT NULL default '',
-			PRIMARY KEY (id_groupe,login,periode,nature), INDEX (login));";
+			PRIMARY KEY (id_groupe,login,periode,nature), INDEX (login)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur lors de la création de la table 'j_signalement': ".$result_inter."<br />";
@@ -455,7 +455,7 @@ if ($test == -1) {
 $test = sql_query1("SHOW TABLES LIKE 's_alerte_mail'");
 if ($test == -1) {
 	$result .= "<br />Création de la table 's_alerte_mail'. ";
-	$sql="CREATE TABLE IF NOT EXISTS s_alerte_mail (id int(11) unsigned NOT NULL auto_increment, id_classe smallint(6) unsigned NOT NULL, destinataire varchar(50) NOT NULL default '', PRIMARY KEY (id), INDEX (id_classe,destinataire));";
+	$sql="CREATE TABLE IF NOT EXISTS s_alerte_mail (id int(11) unsigned NOT NULL auto_increment, id_classe smallint(6) unsigned NOT NULL, destinataire varchar(50) NOT NULL default '', PRIMARY KEY (id), INDEX (id_classe,destinataire)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur lors de la création de la table 's_alerte_mail': ".$result_inter."<br />";
@@ -896,7 +896,7 @@ else {
 $result .= "<br />&nbsp;->Ajout de la table table matieres_app_corrections<br />";
 $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'matieres_app_corrections'"));
 if ($test == 0) {
-	$result_inter = traite_requete("CREATE TABLE matieres_app_corrections (login varchar(255) NOT NULL default '', id_groupe int(11) NOT NULL default '0', periode int(11) NOT NULL default '0', appreciation text NOT NULL, PRIMARY KEY (login,id_groupe,periode));");
+	$result_inter = traite_requete("CREATE TABLE matieres_app_corrections (login varchar(255) NOT NULL default '', id_groupe int(11) NOT NULL default '0', periode int(11) NOT NULL default '0', appreciation text NOT NULL, PRIMARY KEY (login,id_groupe,periode)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("La table matieres_app_corrections a été créée !");
 	}
@@ -931,7 +931,7 @@ if ($test == -1) {
 		projet VARCHAR( 255 ) NOT NULL ,
 		commentaire TEXT NOT NULL ,
 		PRIMARY KEY ( id )
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'gc_projets': ".$result_inter."<br />";
@@ -948,7 +948,7 @@ if ($test == -1) {
 		classe varchar(100) NOT NULL default '',
 		statut enum( 'actuelle', 'future', 'red', 'arriv' ) NOT NULL DEFAULT 'future',
 		PRIMARY KEY ( id )
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'gc_divisions': ".$result_inter."<br />";
@@ -966,7 +966,7 @@ if ($test == -1) {
 		obligatoire ENUM('o','n') NOT NULL ,
 		exclusive smallint(6) unsigned NOT NULL,
 		PRIMARY KEY ( id )
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'gc_options': ".$result_inter."<br />";
@@ -983,7 +983,7 @@ if ($test == -1) {
 		classe_future VARCHAR( 255 ) NOT NULL ,
 		commentaire TEXT NOT NULL ,
 		PRIMARY KEY ( id )
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'gc_options_classes': ".$result_inter."<br />";
@@ -998,7 +998,7 @@ if ($test == -1) {
 		statut ENUM('Arriv','Red') NOT NULL ,
 		projet VARCHAR( 255 ) NOT NULL ,
 		PRIMARY KEY ( login , projet )
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'gc_ele_arriv_red': ".$result_inter."<br />";
@@ -1016,7 +1016,7 @@ if ($test == -1) {
 		type VARCHAR(255) NOT NULL,
 		valeur varchar(255) NOT NULL,
 		PRIMARY KEY ( id )
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'gc_affichages': ".$result_inter."<br />";
@@ -1039,7 +1039,7 @@ if ($test == -1) {
 		classe_future VARCHAR(255) NOT NULL ,
 		liste_opt VARCHAR( 255 ) NOT NULL ,
 		PRIMARY KEY ( id )
-		);";
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'gc_eleves_options': ".$result_inter."<br />";
@@ -1082,7 +1082,7 @@ if ($test == -1) {
 		auto_increment, categorie varchar(50) NOT NULL
 		default '',sigle varchar(20) NOT NULL
 		default '', PRIMARY KEY (id) )
-		ENGINE=MyISAM;";
+		 ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 's_categories': ".$result_inter."<br />";
@@ -1156,7 +1156,7 @@ CREATE TABLE a_motifs
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	sortable_rank INTEGER,
 	PRIMARY KEY (id)
-)ENGINE=MyISAM COMMENT='Liste des motifs possibles pour une absence';
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Liste des motifs possibles pour une absence';
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -1186,7 +1186,7 @@ CREATE TABLE a_justifications
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	sortable_rank INTEGER,
 	PRIMARY KEY (id)
-)ENGINE=MyISAM COMMENT='Liste des justifications possibles pour une absence';
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Liste des justifications possibles pour une absence';
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -1221,7 +1221,7 @@ CREATE TABLE a_types
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	sortable_rank INTEGER,
 	PRIMARY KEY (id)
-)ENGINE=MyISAM COMMENT='Liste des types d\'absences possibles dans l\'etablissement';
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Liste des types d\'absences possibles dans l\'etablissement';
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -1247,7 +1247,7 @@ CREATE TABLE a_types_statut
 		FOREIGN KEY (id_a_type)
 		REFERENCES a_types (id)
 		ON DELETE CASCADE
-)ENGINE=MyISAM COMMENT='Liste des statuts autorises à saisir des types d\'absences';
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Liste des statuts autorises à saisir des types d\'absences';
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -1334,7 +1334,7 @@ CREATE TABLE a_saisies
 		FOREIGN KEY (id_aid)
 		REFERENCES aid (id)
 		ON DELETE SET NULL
-)ENGINE=MyISAM COMMENT='Chaque saisie d\'absence doit faire l\'objet d\'une ligne dans la table a_saisies. Une saisie peut etre : une plage horaire longue durée (plusieurs jours), défini avec les champs debut_abs et fin_abs. Un creneau horaire, le jour etant precisé dans debut_abs. Un cours de l\'emploi du temps, le jours du cours etant precisé dans debut_abs.';
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Chaque saisie d\'absence doit faire l\'objet d\'une ligne dans la table a_saisies. Une saisie peut etre : une plage horaire longue durée (plusieurs jours), défini avec les champs debut_abs et fin_abs. Un creneau horaire, le jour etant precisé dans debut_abs. Un cours de l\'emploi du temps, le jours du cours etant precisé dans debut_abs.';
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -1377,7 +1377,7 @@ CREATE TABLE a_traitements
 		FOREIGN KEY (a_justification_id)
 		REFERENCES a_justifications (id)
 		ON DELETE SET NULL
-)ENGINE=MyISAM COMMENT='Un traitement peut gerer plusieurs saisies et consiste à definir les motifs/justifications... de ces absences saisies';
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Un traitement peut gerer plusieurs saisies et consiste à definir les motifs/justifications... de ces absences saisies';
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -1403,7 +1403,7 @@ CREATE TABLE j_traitements_saisies
 		FOREIGN KEY (a_traitement_id)
 		REFERENCES a_traitements (id)
 		ON DELETE CASCADE
-)ENGINE=MyISAM COMMENT='Table de jointure entre la saisie et le traitement des absences';
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Table de jointure entre la saisie et le traitement des absences';
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -1446,7 +1446,7 @@ CREATE TABLE a_notifications
 		FOREIGN KEY (adr_id)
 		REFERENCES resp_adr (adr_id)
 		ON DELETE SET NULL
-)ENGINE=MyISAM COMMENT='Notification (a la famille) des absences';
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Notification (a la famille) des absences';
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -1472,7 +1472,7 @@ CREATE TABLE j_notifications_resp_pers
 		FOREIGN KEY (pers_id)
 		REFERENCES resp_pers (pers_id)
 		ON DELETE CASCADE
-)ENGINE=MyISAM COMMENT='Table de jointure entre la notification et les personnes dont on va mettre le nom dans le message.';
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Table de jointure entre la notification et les personnes dont on va mettre le nom dans le message.';
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -1484,7 +1484,7 @@ CREATE TABLE j_notifications_resp_pers
 $test = sql_query1("SHOW TABLES LIKE 'matieres_app_delais'");
 if ($test == -1) {
 	$result .= "<br />Création de la table 'matieres_app_delais'. ";
-	$sql="CREATE TABLE matieres_app_delais (periode int(11) NOT NULL default '0', id_groupe int(11) NOT NULL default '0', date_limite TIMESTAMP NOT NULL, PRIMARY KEY  (periode,id_groupe), INDEX id_groupe (id_groupe));";
+	$sql="CREATE TABLE matieres_app_delais (periode int(11) NOT NULL default '0', id_groupe int(11) NOT NULL default '0', date_limite TIMESTAMP NOT NULL, PRIMARY KEY  (periode,id_groupe), INDEX id_groupe (id_groupe)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'matieres_app_delais': ".$result_inter."<br />";
@@ -1494,7 +1494,7 @@ if ($test == -1) {
 $test = sql_query1("SHOW TABLES LIKE 'edt_semaines'");
 if ($test == -1) {
 	$result .= "<br />Création de la table 'edt_semaines'. ";
-	$sql="CREATE TABLE edt_semaines (id_edt_semaine int(11) NOT NULL auto_increment,num_edt_semaine int(11) NOT NULL default '0',type_edt_semaine varchar(10) NOT NULL default '', num_semaines_etab int(11) NOT NULL default '0', PRIMARY KEY  (id_edt_semaine));";
+	$sql="CREATE TABLE edt_semaines (id_edt_semaine int(11) NOT NULL auto_increment,num_edt_semaine int(11) NOT NULL default '0',type_edt_semaine varchar(10) NOT NULL default '', num_semaines_etab int(11) NOT NULL default '0', PRIMARY KEY  (id_edt_semaine)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'edt_semaines': ".$result_inter."<br />";
@@ -1507,7 +1507,7 @@ $result .= "<br /><br /><strong>Ajout d'une table pour les \"super-gestionnaires
 $result .= "<br />&nbsp;->Tentative de création de la table j_aidcateg_super_gestionnaires.<br />";
 $test = sql_query1("SHOW TABLES LIKE 'j_aidcateg_super_gestionnaires'");
 if ($test == -1) {
-	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS j_aidcateg_super_gestionnaires (indice_aid INT NOT NULL ,id_utilisateur VARCHAR( 50 ) NOT NULL);");
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS j_aidcateg_super_gestionnaires (indice_aid INT NOT NULL ,id_utilisateur VARCHAR( 50 ) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '')
 	$result .= msj_ok("La table j_aidcateg_super_gestionnaires a été créée !");
 	else

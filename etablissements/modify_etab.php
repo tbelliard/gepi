@@ -84,7 +84,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 //**************** EN-TETE *******************************
 $titre_page = "Gestion des établissements | Ajouter, modifier un établissement";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE ***************************
 ?>
 <p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>

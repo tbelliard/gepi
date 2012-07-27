@@ -26,7 +26,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE **************************************
 $titre_page = "Test";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
 echo "<p>Page de test pour convertir la table 'model_bulletin' en une table à trois champs.<br />Pour les tests, la table 'model_bulletin' n'est pas supprimée.<br />Une table 'model<b>e</b>_bulletin' est créée à la place.</p>\n";

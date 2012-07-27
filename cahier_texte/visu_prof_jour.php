@@ -97,7 +97,7 @@ $utilisation_jsdivdrag = "non";
 //$style_specifique = "";
 
 // ===================== entete Gepi ======================================//
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 // ===================== fin entete =======================================//
 
 echo "<!-- page Cahier_de_textes_du_jour.-->";

@@ -368,7 +368,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						// Ensemble des données communes
 						require_once("../bulletin/bulletin_donnees.php");
 					
-						define('FPDF_FONTPATH','../fpdf/font/');
+						
 					
 						session_cache_limiter('private');
 					
@@ -639,7 +639,7 @@ if(isset($tabid_infobulle)) {
 //**************** EN-TETE *****************
 $titre_page = "Examen blanc: Relevé";
 //echo "<div class='noprint'>\n";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 

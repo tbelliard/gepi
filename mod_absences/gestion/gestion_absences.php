@@ -43,7 +43,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des absences";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 //************** FIN EN-TETE ***************
 
 
@@ -117,7 +117,6 @@ if ( $select_fiche_eleve != '' ) {
 	if (getSettingValue("active_module_trombinoscopes")=='y') {
 		$nom_photo = '';
 		$nom_photo = nom_photo($id_eleve_photo,"eleves",2);
-		//$photos = "../../photos/eleves/".$nom_photo;
 		$photos = $nom_photo;
 
 		//if ( $nom_photo === '' or !file_exists($photos) ) {

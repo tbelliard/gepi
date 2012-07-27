@@ -40,7 +40,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des classes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
@@ -128,7 +128,9 @@ if ($nombre_lignes != 0) {
 }
 else {
 	echo "<p class='grand'>Attention : aucune classe n'a été définie dans la base GEPI !</p>\n";
-	echo "<p>Vous pouvez ajouter des classes à la base en cliquant sur le lien ci-dessus, ou bien directement <br /><a href='../initialisation/index.php'>importer les élèves et les classes à partir de fichiers GEP.</a></p>\n";
+	echo "<p>Vous pouvez ajouter des classes à la base en cliquant sur le lien ci-dessus, ou bien directement<br />
+	<a href='../init_xml2/index.php'>importer les élèves et les classes à partir de fichiers XML de Sconet</a><br />
+	ou encore <a href='../init_csv/index.php'>importer les élèves et les classes à partir de fichiers CSV</a></p>\n";
 }
 require("../lib/footer.inc.php");
 ?>

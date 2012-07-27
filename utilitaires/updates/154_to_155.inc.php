@@ -58,7 +58,7 @@ if ($test == -1) {
 		nom_modele varchar(255) NOT NULL,
 		par_defaut ENUM('y','n') DEFAULT 'n',
 		PRIMARY KEY (id_modele)
-		);");
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -105,7 +105,7 @@ if ($test == -1) {
 			visible varchar(255) NOT NULL default '',
 			PRIMARY KEY (id),
 			INDEX id_groupe_domaine (id_groupe, domaine)
-		);");
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -261,7 +261,7 @@ if ($req_res == 0) {
 $result .= "<br /><strong>Ajout d'une table 's_travail_mesure' :</strong><br />";
 $test = sql_query1("SHOW TABLES LIKE 's_travail_mesure'");
 if ($test == -1) {
-	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS s_travail_mesure (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,id_incident INT( 11 ) NOT NULL ,login_ele VARCHAR( 50 ) NOT NULL , travail TEXT NOT NULL);");
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS s_travail_mesure (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,id_incident INT( 11 ) NOT NULL ,login_ele VARCHAR( 50 ) NOT NULL , travail TEXT NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -332,7 +332,7 @@ if ($test!=0) {
 		FOREIGN KEY (id)
 		REFERENCES a_saisies (id)
 		ON DELETE CASCADE
-) ENGINE=MyISAM;");
+)  ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($query) {
                 $result .= msj_ok();
                 
@@ -442,7 +442,7 @@ if ($test!=0) {
 		FOREIGN KEY (eleve_id)
 		REFERENCES eleves (id_eleve)
 		ON DELETE CASCADE
-) ENGINE=MyISAM COMMENT='Table d\'agregation des decomptes de demi journees d\'absence et de retard';
+)  ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Table d\'agregation des decomptes de demi journees d\'absence et de retard';
 	");
 	if ($query) {
                 $result .= msj_ok();
@@ -516,7 +516,7 @@ $test = sql_query1("SHOW TABLES LIKE 'mentions'");
 if ($test == -1) {
 	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS mentions (
 	id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-	mention VARCHAR(255) NOT NULL);");
+	mention VARCHAR(255) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -534,7 +534,7 @@ if ($test == -1) {
 id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 id_mention INT(11) NOT NULL ,
 id_classe INT(11) NOT NULL ,
-ordre TINYINT(4) NOT NULL);");
+ordre TINYINT(4) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -561,7 +561,7 @@ if ($test_champ>0) {
 $result .= "<br /><strong>Ajout d'une table s_natures :</strong><br />";
 $test = sql_query1("SHOW TABLES LIKE 's_natures'");
 if ($test == -1) {
-	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS s_natures ( id INT(11) NOT NULL auto_increment, nature varchar(50) NOT NULL default '', PRIMARY KEY (id));");
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS s_natures ( id INT(11) NOT NULL auto_increment, nature varchar(50) NOT NULL default '', PRIMARY KEY (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -597,7 +597,7 @@ groupe varchar(255) NOT NULL default '',
 regroup varchar(255) NOT NULL default '',
 mo varchar(255) NOT NULL default '', 
 PRIMARY KEY id (id)
-);");
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -615,7 +615,7 @@ if ($test == -1) {
 champ varchar(255) NOT NULL default '',
 nom_udt varchar(255) NOT NULL default '',
 nom_gepi varchar(255) NOT NULL default ''
-);");
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -823,7 +823,7 @@ if ($test == -1) {
     $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `sso_table_correspondance` ( `login_gepi` varchar(100) NOT NULL
                 default '', `login_sso` varchar(100) NOT NULL
                 default '', PRIMARY KEY (`login_gepi`) )
-                ENGINE=MyISAM;");
+                 ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
     if ($result_inter == '') {
         $result .= msj_ok("SUCCES !");
     } else {
@@ -907,7 +907,7 @@ if ($test == -1) {
     $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `sso_table_correspondance` ( `login_gepi` varchar(100) NOT NULL
                 default '', `login_sso` varchar(100) NOT NULL
                 default '', PRIMARY KEY (`login_gepi`) )
-                ENGINE=MyISAM;");
+                 ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
     if ($result_inter == '') {
         $result .= msj_ok("SUCCES !");
     } else {
@@ -968,7 +968,7 @@ ELEOPT11 varchar(40) NOT NULL default '',
 ELEOPT12 varchar(40) NOT NULL default '',
 LIEU_NAISSANCE varchar(50) NOT NULL default '',
 MEL varchar(255) NOT NULL default ''
-);");
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -1047,7 +1047,7 @@ if ($test_tempo_utilisateurs == -1) {
 			auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
 			date_reserve DATE DEFAULT '0000-00-00',
 			temoin VARCHAR( 50 ) NOT NULL
-			);");
+			) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}

@@ -107,7 +107,7 @@ if (isset($_POST['action']) and ($_POST['action'] == "reg_dest")) {
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
 $titre_page = "Destinataires des alertes";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 //debug_var();
 // Cette page a été ouverte en target='blank' depuis une autre page (par exemple /eleves/modify_eleve.php)

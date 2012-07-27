@@ -159,7 +159,7 @@ if (isset($_POST['reinit_assoc_fichiers'])) {
 //===========================================================
 // header
 $titre_page = "Types de fichiers autorisés en téléchargement";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //===========================================================
 //debug_var();
 

@@ -74,7 +74,7 @@ $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 $titre_page = "Les absences";
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 include('menu_abs2.inc.php');
@@ -252,6 +252,9 @@ if ($order == "asc_id") {
 }
 
 $query->distinct();
+$query_count_eleve = clone $query;
+$total_eleve = $query_count_eleve->groupByEleveId()->count();
+
 $saisies_col = $query->paginate($page_number, $item_per_page);
 
 $nb_pages = (floor($saisies_col->getNbResults() / $item_per_page) + 1);
@@ -271,9 +274,9 @@ if ($saisies_col->haveToPaginate()) {
 }
 echo "Voir ";
 echo '<input type="text" name="item_per_page" size="1" value="'.$item_per_page.'"/>';
-echo "par page|  Nombre d'enregistrements : ";
+echo "par page |  Nbre de saisies : ";
 echo $saisies_col->count();
-
+echo " | Nbre d'élèves : ".$total_eleve;
 echo "&nbsp;&nbsp;&nbsp;";
 echo '<button type="submit">Rechercher</button>';
 echo '<button type="submit" name="reinit_filtre" value="y">Réinitialiser les filtres</button> ';
@@ -783,7 +786,7 @@ foreach ($results as $saisie) {
 	echo ($saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom());
 	echo "</a>";
 	if ($utilisateur->getAccesFicheEleve($saisie->getEleve())) {
-	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."' target='_blank'>";
+	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank'>";
 	    echo ' (voir fiche)';
 	    echo "</a>";
 	}
@@ -795,7 +798,6 @@ foreach ($results as $saisie) {
  	
 	    $nom_photo = $saisie->getEleve()->getNomPhoto(1);
 	    $photos = $nom_photo;
-	    //$photos = "../photos/eleves/".$nom_photo;
 	    //if (($nom_photo != "") && (file_exists($photos))) {
 	    if (($nom_photo != NULL) && (file_exists($photos))) {
 		$valeur = redimensionne_image_petit($photos);

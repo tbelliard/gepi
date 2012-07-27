@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -160,10 +160,34 @@ if (isset($_POST['action'])) {
         }
     }
 }
+elseif((isset($_GET['action']))&&($_GET['action'] == "corrige_accents_html")) {
+	check_token();
+
+	$tab = array_flip (get_html_translation_table(HTML_ENTITIES));
+	$sql="SELECT * FROM matieres_categories;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$correction=ensure_utf8(strtr($lig->nom_complet, $tab));
+			if($lig->nom_complet!=$correction) {
+				$sql="UPDATE matieres_categories SET nom_complet='$correction' WHERE id='$lig->id';";
+				//echo "$sql<br />";
+				$update=mysql_query($sql);
+				if($update) {
+					$msg .= "Correction de l'encodage d'un nom de catégorie de matière en '$correction'<br />";
+				}
+				else {
+					$msg .= "Erreur lors de la correction de l'encodage du nom de catégorie de matière '$lig->nom_complet' en '$correction'<br />";
+				}
+			}
+		}
+	}
+	unset($_GET['action']);
+}
 
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des catégories de matières";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
 if (isset($_GET['action'])) {
@@ -271,6 +295,25 @@ if (isset($_GET['action'])) {
 	if($temoin_anomalie_categ_Aucune=='y') {
 		echo "<p style='color:red'>ANOMALIE&nbsp;: Il ne devrait pas exister de catégorie intitulée 'Aucune'.<br />Voir <a href='http://www.sylogix.org/wiki/gepi/Enseignement_invisible'>http://www.sylogix.org/wiki/gepi/Enseignement_invisible</a> et <a href='http://www.sylogix.org/wiki/gepi/Suppr_Cat_Aucune'>http://www.sylogix.org/wiki/gepi/Suppr_Cat_Aucune</a> pour des explications</p>\n";
 	}
+
+	$tab = array_flip (get_html_translation_table(HTML_ENTITIES));
+	$sql="SELECT * FROM matieres_categories;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$alerte_accents_html="<br /><p><span style='color:red; font-weight:bold;'>Attention&nbsp;:</span> Une ou des catégories ont des accents HTML dans leur nom complet (<em>accents enregistrés sous forme HTML dans la base de données</em>).<br />Cela peut perturber l'affichage des noms de catégories de matières dans les bulletins PDF (<em>et ailleurs peut-être</em>)</p>\n<ul>\n";
+		$ajout="";
+		while($lig=mysql_fetch_object($res)) {
+			$correction=ensure_utf8(strtr($lig->nom_complet, $tab));
+			if($lig->nom_complet!=$correction) {
+				$ajout.="<li>La catégorie de matière <strong>$lig->nom_complet</strong> a un ou des accents HTML</li>\n";
+			}
+		}
+		if($ajout!="") {
+			echo $alerte_accents_html.$ajout."</ul>\n";
+			echo "<p>Vous pouvez <a href='".$_SERVER['PHP_SELF']."?action=corrige_accents_html".add_token_in_url()."'>corriger d'un clic ce problème</a>.</p>\n";
+		}
+	}
+
 }
 require("../lib/footer.inc.php");
 ?>

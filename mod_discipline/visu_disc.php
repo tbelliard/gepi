@@ -53,7 +53,7 @@ if(mb_strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') 
 
 //**************** EN-TETE *****************
 $titre_page = "Discipline : Accès ".$_SESSION['statut'];
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 if($_SESSION['statut']=='eleve') {

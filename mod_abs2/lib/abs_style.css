@@ -129,28 +129,40 @@ div.legende{
    display:inline-block; 
     background-color: #CCCCCC;
     border: 2px outset black;
-    font: 10px Verdana;
+    font: 10px;
     padding:4px;
 }
 h3.legende{
-    font: normal small-caps normal 14pt Verdana;
+    font: normal small-caps normal 14pt;
     margin:2px;   
 }
 h4.legende{
-    font: normal small-caps normal 10pt Verdana;
+    font: normal small-caps normal 10pt;
     margin:2px;   
 }
 table.legende {
     border-collapse: collapse;
     border-spacing: 0px;
     margin:4px;
-    
-	
 }
 .legende  td{
     padding:4px;
     border-spacing: 0px;
     border: 1px solid black;
-    font: 11px Verdana ;
-	
+    font: 11px ;
 }
+.tableau_tel_resp {
+    display:none;
+}
+.div_tab_tel_resp:hover .tableau_tel_resp {
+    display:block;
+}
+
+img.bord_rouge {
+	border: 3px solid red;
+}
+
+img.sans_bord {
+	border: 0px solid black;
+}
+

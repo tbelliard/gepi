@@ -28,7 +28,7 @@
 	$tab_item[]='rn_datedev';
 	$tab_traduc['rn_datedev']="Avec les dates";
 	$tab_item[]='rn_sign_chefetab';
-	$tab_traduc['rn_sign_chefetab']="Avec case pour signature du chef d'établissement (<i>relevé HTML</i>)";
+	$tab_traduc['rn_sign_chefetab']="Avec case pour signature du chef d'établissement (<em>relevé HTML</em>)";
 	$tab_item[]='rn_sign_pp';
 	$tab_traduc['rn_sign_pp']="Avec case pour signature du $gepiProfSuivi";
 	$tab_item[]='rn_sign_resp';
@@ -54,17 +54,17 @@
 	// Affichage du nom de la classe Nom long  Nom court  Nom long (Nom court)
 	//$alt=$alt*(-1);
 	echo "<tr class='lig$alt white_hover'>\n";
-	echo "<td style='text-align:left;'>Affichage du nom de la classe (<i>relevé PDF</i>)<br />\n";
+	echo "<td style='text-align:left;'>Affichage du nom de la classe (<em>relevé PDF</em>)<br />\n";
 	echo "Nom long (1) / Nom court (2) / Nom court (Nom long) (3)";
 	echo "</td>\n";
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		echo "<td>\n";
-		//echo "<input type='radio' name='rn_aff_classe_nom[$i]' id='rn_aff_classe_nom_".$i."' value='1' />&nbsp;1<br />\n";
-		//echo "<input type='radio' name='rn_aff_classe_nom[$i]' id='rn_aff_classe_nom_".$i."' value='2' />&nbsp;2<br />\n";
-		//echo "<input type='radio' name='rn_aff_classe_nom[$i]' id='rn_aff_classe_nom_".$i."' value='3' />&nbsp;3<br />\n";
-		echo "<input type='radio' name='rn_aff_classe_nom[$i]' id='rn_aff_classe_nom_".$i."_1' value='1' checked /><br />\n";
-		echo "<input type='radio' name='rn_aff_classe_nom[$i]' id='rn_aff_classe_nom_".$i."_2' value='2' /><br />\n";
-		echo "<input type='radio' name='rn_aff_classe_nom[$i]' id='rn_aff_classe_nom_".$i."_3' value='3' />\n";
+		echo "<label for='rn_aff_classe_nom_".$i."_1' class='invisible'>Nom long</label>
+		<input type='radio' name='rn_aff_classe_nom[$i]' id='rn_aff_classe_nom_".$i."_1' value='1' checked='checked' /><br />\n";
+		echo "<label for='rn_aff_classe_nom_".$i."_2' class='invisible'>Nom long</label>
+		<input type='radio' name='rn_aff_classe_nom[$i]' id='rn_aff_classe_nom_".$i."_2' value='2' /><br />\n";
+		echo "<label for='rn_aff_classe_nom_".$i."_3' class='invisible'>Nom long</label>
+		<input type='radio' name='rn_aff_classe_nom[$i]' id='rn_aff_classe_nom_".$i."_3' value='3' />\n";
 		echo "</td>\n";
 	}
 
@@ -86,13 +86,13 @@
 		if($affiche_ligne=="y") {
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt white_hover'>\n";
-			//echo "<td style='text-align:left;'>".$tab_traduc[$tab_item[$k]]."\n";
 			echo "<td style='text-align:left;'>".$tab_traduc[$tab_item[$k]]."\n";
 			echo "</td>\n";
 
 			for($i=0;$i<count($tab_id_classe);$i++) {
 				echo "<td>\n";
-				echo "<input type='checkbox' name='".$tab_item[$k]."[$i]' id='".$tab_item[$k]."_".$i."' value='y' ";
+				echo "<label for='".$tab_item[$k]."_".$i."' class='invisible'>".$tab_traduc[$tab_item[$k]]."</label>
+					<input type='checkbox' name='".$tab_item[$k]."[$i]' id='".$tab_item[$k]."_".$i."' value='y' ";
 				$sql="SELECT * FROM classes WHERE id='".$tab_id_classe[$i]."';";
 				$res_class_tmp=mysql_query($sql);
 				if(mysql_num_rows($res_class_tmp)>0){
@@ -115,11 +115,12 @@
 	//$tab_traduc['rn_app']="Avec l'appréciation (sous réserve d'autorisation par le professeur)";
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt white_hover'>\n";
-	echo "<td style='text-align:left;'>Avec l'appréciation (<i>sous réserve d'autorisation par le professeur</i>)\n";
+	echo "<td style='text-align:left;'>Avec l'appréciation (<em>sous réserve d'autorisation par le professeur</em>)\n";
 	echo "</td>\n";
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		echo "<td>\n";
-		echo "<input type='checkbox' name='rn_app[$i]' id='rn_app_".$i."' size='2' value='y' />\n";
+		echo "<label for='rn_app_".$i."' class='invisible'>Avec l'appréciation</label>
+				<input type='checkbox' name='rn_app[$i]' id='rn_app_".$i."' size='2' value='y' />\n";
 		echo "</td>\n";
 	}
 
@@ -139,7 +140,8 @@
 		echo "</td>\n";
 		for($i=0;$i<count($tab_id_classe);$i++) {
 			echo "<td>\n";
-			echo "<input type='checkbox' name='rn_moy_classe[$i]' id='rn_moy_classe_".$i."' size='2' value='y' />\n";
+			echo "<label for='rn_moy_classe_".$i."' class='invisible'>Avec la moyenne de la classe</label>
+				<input type='checkbox' name='rn_moy_classe[$i]' id='rn_moy_classe_".$i."' size='2' value='y' />\n";
 			echo "</td>\n";
 		}
 	
@@ -154,7 +156,8 @@
 		echo "</td>\n";
 		for($i=0;$i<count($tab_id_classe);$i++) {
 			echo "<td>\n";
-			echo "<input type='checkbox' name='rn_moy_min_max_classe[$i]' id='rn_moy_min_max_classe_".$i."' size='2' value='y' />\n";
+			echo "<label for='rn_moy_min_max_classe_".$i."' class='invisible'>Avec les moyennes min/classe/max</label> 
+					<input type='checkbox' name='rn_moy_min_max_classe[$i]' id='rn_moy_min_max_classe_".$i."' size='2' value='y' />\n";
 			echo "</td>\n";
 		}
 	
@@ -177,8 +180,9 @@
 	echo "</td>\n";
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		echo "<td>\n";
-		echo "<input type='checkbox' name='rn_retour_ligne[$i]' id='rn_retour_ligne_".$i."' size='2' value='y' ";
-		if($rn_retour_ligne_defaut=='y') {echo "checked ";}
+		echo "<label for='rn_retour_ligne_".$i."' class='invisible'>Avec retour à la ligne</label> 
+					<input type='checkbox' name='rn_retour_ligne[$i]' id='rn_retour_ligne_".$i."' size='2' value='y' ";
+		if($rn_retour_ligne_defaut=='y') {echo "checked='checked' ";}
 		echo "/>\n";
 		echo "</td>\n";
 	}
@@ -197,11 +201,12 @@
 
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt white_hover'>\n";
-	echo "<td style='text-align:left;'>Rapport taille_standard / taille_minimale_de_police (<i>relevé PDF avec cell_ajustee()</i>)<br />(<i>Si pour que les notes tiennent dans la cellule, il faut réduire davantage la police, on supprime les retours à la ligne.</i>)\n";
+	echo "<td style='text-align:left;'>Rapport taille_standard / taille_minimale_de_police (<em>relevé PDF avec cell_ajustee()</em>)<br />(<em>Si pour que les notes tiennent dans la cellule, il faut réduire davantage la police, on supprime les retours à la ligne.</em>)\n";
 	echo "</td>\n";
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		echo "<td>\n";
-		echo "<input type='text' name='rn_rapport_standard_min_font[$i]' id='rn_rapport_standard_min_font_".$i."' size='2' value='".$rn_rapport_standard_min_font_defaut."' />\n";
+		echo "<label for='rn_rapport_standard_min_font_".$i."' class='invisible'>Rapport taille</label> 
+					<input type='text' name='rn_rapport_standard_min_font[$i]' id='rn_rapport_standard_min_font_".$i."' size='2' value='".$rn_rapport_standard_min_font_defaut."' />\n";
 		echo "</td>\n";
 	}
 	echo "<td>\n";
@@ -220,7 +225,8 @@
 		echo "</td>\n";
 		for($i=0;$i<count($tab_id_classe);$i++) {
 			echo "<td>\n";
-			echo "<input type='checkbox' name='rn_adr_resp[$i]' id='rn_adr_resp_".$i."' size='2' value='y' />\n";
+			echo "<label for='rn_adr_resp_".$i."' class='invisible'>Afficher l'adresse</label> 
+					<input type='checkbox' name='rn_adr_resp[$i]' id='rn_adr_resp_".$i."' size='2' value='y' />\n";
 			echo "</td>\n";
 		}
 		echo "<td>\n";
@@ -231,7 +237,7 @@
 
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover'>\n";
-		echo "<td style='text-align:left;'>Afficher le bloc observations (<i>relevé PDF</i>)\n";
+		echo "<td style='text-align:left;'>Afficher le bloc observations (<em>relevé PDF</em>)\n";
 
 		$titre_infobulle="Bloc observations en PDF\n";
 		$texte_infobulle="<p>Le bloc observations est affiché si une des conditions suivantes est remplie&nbsp;:</p>\n";
@@ -241,13 +247,14 @@
 		$texte_infobulle.="</ul>\n";
 		$tabdiv_infobulle[]=creer_div_infobulle('a_propos_bloc_observations',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
-		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_bloc_observations','y',100,100);\"  onmouseout=\"cacher_div('a_propos_bloc_observations');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
-		echo "</p>\n";
+		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_bloc_observations','y',100,100);\"  onmouseout=\"cacher_div('a_propos_bloc_observations');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Aide sur Bloc observations en PDF'/></a>";
+		// echo "</p>\n";
 
 		echo "</td>\n";
 		for($i=0;$i<count($tab_id_classe);$i++) {
 			echo "<td>\n";
-			echo "<input type='checkbox' name='rn_bloc_obs[$i]' id='rn_bloc_obs_".$i."' size='2' value='y' />\n";
+			echo "<label for='rn_bloc_obs_".$i."' class='invisible'>bloc observations</label> 
+					<input type='checkbox' name='rn_bloc_obs[$i]' id='rn_bloc_obs_".$i."' size='2' value='y' />\n";
 			echo "</td>\n";
 		}
 		echo "<td>\n";
@@ -262,7 +269,8 @@
 		echo "</td>\n";
 		for($i=0;$i<count($tab_id_classe);$i++) {
 			echo "<td>\n";
-			echo "<input type='text' name='rn_sign_nblig[$i]' id='rn_sign_nblig_".$i."' size='2' ";
+			echo "<label for='rn_sign_nblig_".$i."' class='invisible'>lignes pour la signature</label> 
+					<input type='text' name='rn_sign_nblig[$i]' id='rn_sign_nblig_".$i."' size='2' ";
 			$sql="SELECT * FROM classes WHERE id='".$tab_id_classe[$i]."';";
 			$res_class_tmp=mysql_query($sql);
 			if(mysql_num_rows($res_class_tmp)>0){
@@ -280,37 +288,39 @@
 
 		$titre_infobulle="Paramètres par défaut\n";
 		$texte_infobulle="Les paramètres par défaut sont proposés d'après le paramétrage de la classe.<br />\n";
-		$texte_infobulle.="En compte administrateur&nbsp;: <b>Gestion des bases/Gestion des classes/&lt;une_classe&gt; Paramètres/Paramètres des relevés de notes</b><br />ou<br /><b>Gestion des bases/Gestion des classes/Paramétrage de plusieurs classes par lots/Paramètres des relevés de notes</b>\n";
+		$texte_infobulle.="En compte administrateur&nbsp;: <strong>Gestion des bases/Gestion des classes/&lt;une_classe&gt; Paramètres/Paramètres des relevés de notes</strong><br />ou<br /><strong>Gestion des bases/Gestion des classes/Paramétrage de plusieurs classes par lots/Paramètres des relevés de notes</strong>\n";
 		$tabdiv_infobulle[]=creer_div_infobulle('a_propos_parametres_defaut_releve',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
-		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_parametres_defaut_releve','y',100,100);\"  onmouseout=\"cacher_div('a_propos_parametres_defaut_releve');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_parametres_defaut_releve','y',100,100);\"  onmouseout=\"cacher_div('a_propos_parametres_defaut_releve');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Aide sur Paramètres par défaut' /></a>";
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 
-		echo "<p>Préfixe pour les coefficients&nbsp;: \n";
-		echo "<input type='text' name='chaine_coef' size='5' value='$chaine_coef' />\n";
+		echo "<p><label for='chaine_coef'>Préfixe pour les coefficients&nbsp;: </label>\n";
+		echo "<input type='text' name='chaine_coef' id='chaine_coef' size='5' value='$chaine_coef' />\n";
 		echo "</p>\n";
 
-		//echo "<p>Formule à afficher en bas de page (<i>relevé HTML</i>):</p>\n";
+		//echo "<p>Formule à afficher en bas de page (<em>relevé HTML</em>):</p>\n";
 		echo "<p>Formule à afficher en bas de page&nbsp;: \n";
 
 		$titre_infobulle="Formule de bas de page\n";
-		$texte_infobulle="La formule de bas de page (<i>par défaut</i>) peut être paramétrée dans <b>Gestion des bases/Gestion des classes/&lt;une_classe&gt; Paramètres/Paramètres des relevés de notes</b><br />ou<br /><b>Gestion des bases/Gestion des classes/Paramétrage de plusieurs classes par lots/Paramètres des relevés de notes</b><br />\n";
+		$texte_infobulle="La formule de bas de page (<em>par défaut</em>) peut être paramétrée dans <strong>Gestion des bases/Gestion des classes/&lt;une_classe&gt; Paramètres/Paramètres des relevés de notes</strong><br />ou<br /><strong>Gestion des bases/Gestion des classes/Paramétrage de plusieurs classes par lots/Paramètres des relevés de notes</strong><br />\n";
 		$texte_infobulle.="&nbsp;<br />\n";
-		$texte_infobulle.="Si la formule dans le champ ci-dessous est vide, c'est la formule définie dans <b>Paramètres du relevé HTML</b> qui est utilisée.<br />\n";
+		$texte_infobulle.="Si la formule dans le champ ci-dessous est vide, c'est la formule définie dans <strong>Paramètres du relevé HTML</strong> qui est utilisée.<br />\n";
 		$texte_infobulle.="&nbsp;<br />\n";
 		$texte_infobulle.="Une différence entre les relevés HTML et PDF&nbsp;:<br />\n";
-		$texte_infobulle.="Dans le cas du relevé HTML la formule de <b>Paramètres du relevé HTML</b> est affichée en plus de la formule ci-dessous.<br />\n";
+		$texte_infobulle.="Dans le cas du relevé HTML la formule de <strong>Paramètres du relevé HTML</strong> est affichée en plus de la formule ci-dessous.<br />\n";
 		$tabdiv_infobulle[]=creer_div_infobulle('a_propos_formule_bas_de_page',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
-		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_formule_bas_de_page','y',100,100);\"  onmouseout=\"cacher_div('a_propos_formule_bas_de_page');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_formule_bas_de_page','y',100,100);\"  onmouseout=\"cacher_div('a_propos_formule_bas_de_page');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Aide sur formule de bas de page' /></a>";
 		echo "</p>\n";
 
 		echo "<table border='0' summary='Tableau des formules de bas de page'>\n";
 		for($i=0;$i<count($tab_id_classe);$i++) {
-			echo "<tr><td><b>".get_class_from_id($tab_id_classe[$i])."</b>: </td>";
-			echo "<td><input type='text' name='rn_formule[$i]' id='rn_formule_".$i."' size='40' value=\"";
+			echo "<tr><td><strong>".get_class_from_id($tab_id_classe[$i])."</strong>: </td>";
+			echo "<td>
+			<label for='rn_formule_".$i."' class='invisible'>Formule</label> 
+					<input type='text' name='rn_formule[$i]' id='rn_formule_".$i."' size='40' value=\"";
 			$sql="SELECT * FROM classes WHERE id='".$tab_id_classe[$i]."';";
 			$res_class_tmp=mysql_query($sql);
 			if(mysql_num_rows($res_class_tmp)>0){

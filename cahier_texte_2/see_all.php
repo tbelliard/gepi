@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
 *
 * This file is part of GEPI.
 *
@@ -154,14 +154,16 @@ else {
 
 //**************** EN-TETE *****************
 if ($current_imprime=='n') $titre_page = "Cahier de textes - Vue d'ensemble";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 if ($current_imprime=='y') echo "<div id='container'>\n";
 //**************** FIN EN-TETE *************
 
 //debug_var();
 
 // Création d'un espace entre le bandeau et le reste 
-echo "<p></p>\n";
+//echo "<p></p>\n";
+//echo "<div style='float:right; width:10em;z-index:10000;'><a href='consultation2.php'>Affichage semaine</a></div>\n";
+echo "<p><a href='consultation2.php'>Affichage semaine</a></p>\n";
 
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {

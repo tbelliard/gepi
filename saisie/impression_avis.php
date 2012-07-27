@@ -41,7 +41,7 @@ if (!checkAccess()) {
 }
 //**************** EN-TETE *****************
 $titre_page = "Impression des avis du conseil de classe";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();
@@ -62,7 +62,7 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 echo " | <a href='../impression/parametres_impression_pdf_avis.php'>Régler les paramètres du PDF</a>";
 echo "</p>\n";
 
-if ($_SESSION['statut'] == 'scolarite') { // Scolarite
+if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // Scolarite ou Cpe
 
 	if (($id_liste_periodes)!=0) {	
 	   //IMPRESSION A LA CHAINE
@@ -126,6 +126,16 @@ if ($_SESSION['statut'] == 'scolarite') { // Scolarite
 								FROM `periodes`, `classes` , `j_scol_classes` jsc
 								WHERE (jsc.login='$login_scolarite'
 								AND jsc.id_classe=classes.id
+								AND `periodes`.`num_periode` = ".$id_la_premiere_periode."
+								AND `classes`.`id` = `periodes`.`id_classe`)
+								ORDER BY `nom_complet` ASC";
+			}
+			elseif(($_SESSION['statut']=='cpe')&&(!getSettingAOui('GepiRubConseilCpeTous'))) { //n'affiche que les classes du profil scolarité
+				$requete_classe = "SELECT DISTINCT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` , jecpe.cpe_login
+								FROM `periodes`, `classes` , `j_eleves_cpe` jecpe, j_eleves_classes jec
+								WHERE (jecpe.cpe_login='".$_SESSION['login']."'
+								AND jec.id_classe=classes.id
+								AND jec.login=jecpe.e_login
 								AND `periodes`.`num_periode` = ".$id_la_premiere_periode."
 								AND `classes`.`id` = `periodes`.`id_classe`)
 								ORDER BY `nom_complet` ASC";
@@ -208,12 +218,7 @@ if ($_SESSION['statut'] == 'scolarite') { // Scolarite
 		echo "</tr>\n";
 		echo "</table>\n";
 	}
-
-
-
-// Module toutes les classes scolarité
-
-} else { // appel pour un prof
+} elseif($_SESSION['statut']=='professeur') { // appel pour un prof
     echo "<br />";
     $call_prof_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
     $nombre_classe = mysql_num_rows($call_prof_classe);
@@ -239,6 +244,8 @@ if ($_SESSION['statut'] == 'scolarite') { // Scolarite
             $j++;
         }
     }
+} else {
+	echo "<p style='color:red'>Vous n'avez aucun droit ici.</p>\n";
 }
 require("../lib/footer.inc.php");
 ?>

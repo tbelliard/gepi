@@ -516,7 +516,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     if (!isset($_POST['is_posted'])) {
         //**************** EN-TETE *****************
         $titre_page = "page de confirmation";
-        require_once("../lib/header.inc");
+        require_once("../lib/header.inc.php");
         //**************** FIN EN-TETE *****************
         ?><form action="confirm_query.php" method="post" enctype="application/x-www-form-urlencoded"><?php
 
@@ -589,7 +589,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 						$succes = 'no';
 						//**************** EN-TETE *****************
 						$titre_page = "page de confirmation";
-						require_once("../lib/header.inc");
+						require_once("../lib/header.inc.php");
 						//**************** FIN EN-TETE *****************
 
 						echo "<p><span class='bold'>$mess[$c] : </span><br />";

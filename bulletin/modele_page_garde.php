@@ -24,7 +24,7 @@
 require_once("../lib/initialisations.inc.php");
 
 //**************** EN-TETE *****************
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************
 
 $info_eleve_page_garde="Elève: Durand Camille, 3 A2";

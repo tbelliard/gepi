@@ -157,7 +157,7 @@ function isAffichable($abs, $date, $eleve) {
 
 //**************** EN-TETE *****************
 $titre_page = "Absences";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 include('menu_abs2.inc.php');
 include('menu_bilans.inc.php');
 ?>

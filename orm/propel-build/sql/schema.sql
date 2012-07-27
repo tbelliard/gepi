@@ -187,7 +187,7 @@ CREATE TABLE j_groupes_classes
 	priorite SMALLINT NOT NULL,
 	coef DECIMAL NOT NULL,
 	categorie_id INTEGER NOT NULL,
-	saisie_ects TINYINT DEFAULT 0 COMMENT 'Active ou non la saisie ECTS pour cet enseignement',
+	saisie_ects TINYINT(1) DEFAULT 0 COMMENT 'Active ou non la saisie ECTS pour cet enseignement',
 	valeur_ects DECIMAL COMMENT 'Valeur par défaut des ECTS pour cet enseignement',
 	PRIMARY KEY (id_groupe,id_classe),
 	INDEX j_groupes_classes_FI_2 (id_classe),
@@ -249,7 +249,7 @@ CREATE TABLE ct_documents
 	titre VARCHAR(255) NOT NULL COMMENT 'Titre du document (fichier joint)',
 	taille INTEGER DEFAULT 0 NOT NULL COMMENT 'Taille du document (fichier joint)',
 	emplacement VARCHAR(255) NOT NULL COMMENT 'Chemin du systeme de fichier vers le document (fichier joint)',
-	visible_eleve_parent TINYINT DEFAULT 1 COMMENT 'Visibilité élève/parent du document joint',
+	visible_eleve_parent TINYINT(1) DEFAULT 1 COMMENT 'Visibilité élève/parent du document joint',
 	PRIMARY KEY (id),
 	INDEX ct_documents_FI_1 (id_ct),
 	CONSTRAINT ct_documents_FK_1
@@ -305,7 +305,7 @@ CREATE TABLE ct_devoirs_documents
 	titre VARCHAR(255) NOT NULL COMMENT 'Titre du document (fichier joint)',
 	taille INTEGER DEFAULT 0 NOT NULL COMMENT 'Taille du document (fichier joint)',
 	emplacement VARCHAR(255) NOT NULL COMMENT 'Chemin du systeme de fichier vers le document (fichier joint)',
-	visible_eleve_parent TINYINT DEFAULT 1 COMMENT 'Visibilité élève/parent du document joint',
+	visible_eleve_parent TINYINT(1) DEFAULT 1 COMMENT 'Visibilité élève/parent du document joint',
 	PRIMARY KEY (id),
 	INDEX ct_devoirs_documents_FI_1 (id_ct_devoir),
 	CONSTRAINT ct_devoirs_documents_FK_1
@@ -781,11 +781,11 @@ CREATE TABLE a_types
 (
 	id INTEGER(11) NOT NULL AUTO_INCREMENT COMMENT 'Cle primaire auto-incrementee',
 	nom VARCHAR(250) NOT NULL COMMENT 'Nom du type d\'absence',
-	justification_exigible TINYINT COMMENT 'Ce type d\'absence doit entrainer une justification de la part de la famille',
+	justification_exigible TINYINT(1) COMMENT 'Ce type d\'absence doit entrainer une justification de la part de la famille',
 	sous_responsabilite_etablissement VARCHAR(255) DEFAULT 'NON_PRECISE' COMMENT 'L\'eleve est sous la responsabilite de l\'etablissement. Typiquement : absence infirmerie, mettre la propriété à vrai car l\'eleve est encore sous la responsabilité de l\'etablissement. Possibilite : \'vrai\'/\'faux\'/\'non_precise\'',
 	manquement_obligation_presence VARCHAR(50) DEFAULT 'NON_PRECISE' COMMENT 'L\'eleve manque à ses obligations de presence (L\'absence apparait sur le bulletin). Possibilite : \'vrai\'/\'faux\'/\'non_precise\'',
 	retard_bulletin VARCHAR(50) DEFAULT 'NON_PRECISE' COMMENT 'La saisie est comptabilisée dans le bulletin en tant que retard. Possibilite : \'vrai\'/\'faux\'/\'non_precise\'',
-	type_saisie VARCHAR(50) DEFAULT 'NON_PRECISE' COMMENT 'Enumeration des possibilités de l\'interface de saisie de l\'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE, DISCIPLINE',
+	mode_interface VARCHAR(50) DEFAULT 'NON_PRECISE' COMMENT 'Enumeration des possibilités de l\'interface de saisie de l\'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE, DISCIPLINE, CHECKBOX, CHECKBOX_HIDDEN',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'élève',
 	sortable_rank INTEGER,
@@ -1044,9 +1044,9 @@ CREATE TABLE a_agregation_decompte
 (
 	eleve_id INTEGER(11) NOT NULL COMMENT 'id de l\'eleve',
 	date_demi_jounee DATETIME DEFAULT '0000-00-00 00:00:00' NOT NULL COMMENT 'Date de la demi journée agrégée : 00:00 pour une matinée, 12:00 pour une après midi',
-	manquement_obligation_presence TINYINT DEFAULT 0 COMMENT 'Cette demi journée est comptée comme absence',
-	non_justifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journée est compté comme absence, y a-t-il une justification',
-	notifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journée est compté comme absence, y a-t-il une notification à la famille',
+	manquement_obligation_presence TINYINT(1) DEFAULT 0 COMMENT 'Cette demi journée est comptée comme absence',
+	non_justifiee TINYINT(1) DEFAULT 0 COMMENT 'Si cette demi journée est compté comme absence, y a-t-il une justification',
+	notifiee TINYINT(1) DEFAULT 0 COMMENT 'Si cette demi journée est compté comme absence, y a-t-il une notification à la famille',
 	retards INTEGER DEFAULT 0 COMMENT 'Nombre de retards total décomptés dans la demi journée',
 	retards_non_justifies INTEGER DEFAULT 0 COMMENT 'Nombre de retards non justifiés décomptés dans la demi journée',
 	motifs_absences TEXT COMMENT 'Liste des motifs (table a_motifs) associés à cette demi-journée d\'absence',
@@ -1180,7 +1180,7 @@ CREATE TABLE j_matieres_categories_classes
 (
 	categorie_id INTEGER(11) NOT NULL,
 	classe_id INTEGER(11) NOT NULL,
-	affiche_moyenne TINYINT DEFAULT 0 COMMENT 'Nom complet',
+	affiche_moyenne TINYINT(1) DEFAULT 0 COMMENT 'Nom complet',
 	priority INTEGER(6) NOT NULL COMMENT 'Priorite d\'affichage',
 	PRIMARY KEY (categorie_id,classe_id),
 	INDEX j_matieres_categories_classes_FI_2 (classe_id),
@@ -1325,7 +1325,7 @@ CREATE TABLE horaires_etablissement
 	ouverture_horaire_etablissement TIME NOT NULL COMMENT 'Heure d\'ouverture de l\'etablissement',
 	fermeture_horaire_etablissement TIME NOT NULL COMMENT 'Heure de fermeture de l\'etablissement',
 	pause_horaire_etablissement TIME COMMENT 'champ non utilise',
-	ouvert_horaire_etablissement TINYINT NOT NULL COMMENT '1 = etablissement ouvert - 0 = etablissement ferme',
+	ouvert_horaire_etablissement TINYINT(1) NOT NULL COMMENT '1 = etablissement ouvert - 0 = etablissement ferme',
 	PRIMARY KEY (id_horaire_etablissement)
 ) ENGINE=MyISAM COMMENT='Table contenant les heures d\'ouverture et de fermeture de l\'etablissement par journee';
 
@@ -1459,7 +1459,7 @@ CREATE TABLE a_saisies_version
 	created_at DATETIME COMMENT 'Date de creation de la saisie',
 	updated_at DATETIME COMMENT 'Date de modification de la saisie, y compris suppression, restauration et changement de version',
 	deleted_at DATETIME,
-	version INTEGER DEFAULT 0,
+	version INTEGER DEFAULT 0 NOT NULL,
 	version_created_at DATETIME,
 	version_created_by VARCHAR(100),
 	PRIMARY KEY (id,version),

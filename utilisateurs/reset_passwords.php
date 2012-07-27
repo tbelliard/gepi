@@ -58,7 +58,7 @@ $nouveaux_seulement=isset($_GET["nouveaux_seulement"]) ? $_GET["nouveaux_seuleme
 if (!(($mode_impression=='csv') or ($mode_impression=='pdf'))) {
 //**************** EN-TETE *****************************
 //$titre_page = "Gestion des utilisateurs | Réinitialisation des mots de passe";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 }
 

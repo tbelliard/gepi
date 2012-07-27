@@ -33,7 +33,7 @@ if (!checkAccess()) {
 
 // header
 $titre_page = "Export Admissions Post-Bac";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 ?>
 
 <p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>

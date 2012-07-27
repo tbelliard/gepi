@@ -106,7 +106,7 @@ $style_specifique[1] = "templates/DefaultEDT/css/small_edt";
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 //**************** EN-TETE *****************
 $titre_page = "Les absents du jour.";
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 //************** FIN EN-TETE ***************
 //debug_var();
 	// Traitement du passage entre absence et retard

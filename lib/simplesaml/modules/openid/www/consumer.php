@@ -1,23 +1,20 @@
 <?php
 
-$config = SimpleSAML_Configuration::getInstance();
-
 /* Find the authentication state. */
-if (!array_key_exists('AuthState', $_REQUEST)) {
+if (!array_key_exists('AuthState', $_REQUEST) || empty($_REQUEST['AuthState'])) {
 	throw new SimpleSAML_Error_BadRequest('Missing mandatory parameter: AuthState');
 }
-$state = SimpleSAML_Auth_State::loadState($_REQUEST['AuthState'], 'openid:state');
+
 $authState = $_REQUEST['AuthState'];
-$authSource = SimpleSAML_Auth_Source::getById($state['openid:AuthId']);
+$state = SimpleSAML_Auth_State::loadState($authState, 'openid:init');
+$sourceId = $state['openid:AuthId'];
+$authSource = SimpleSAML_Auth_Source::getById($sourceId);
 if ($authSource === NULL) {
-	throw new SimpleSAML_Error_BadRequest('Invalid AuthId \'' . $state['openid:AuthId'] . '\' - not found.');
+	throw new SimpleSAML_Error_BadRequest('Invalid AuthId \'' . $sourceId . '\' - not found.');
 }
 
-
 try {
-	if (array_key_exists('returned', $_GET)) {
-		$authSource->postAuth($state);
-	} elseif (!empty($_GET['openid_url'])) {
+	if (!empty($_GET['openid_url'])) {
 		$authSource->doAuth($state, (string)$_GET['openid_url']);
 	}
 } catch (Exception $e) {

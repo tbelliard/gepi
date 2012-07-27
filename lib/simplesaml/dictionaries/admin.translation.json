@@ -9,7 +9,7 @@
 		"da": "Unders\u00f8gelse af konfiguration",
 		"hr": "Provjera konfiguracije",
 		"hu": "Be\u00e1ll\u00edt\u00e1sok ellen\u0151rz\u00e9se",
-		"pt-BR": "Verificar configura\u00e7\u00e3o",
+		"pt-br": "Verificar configura\u00e7\u00e3o",
 		"pt": "Verifica\u00e7\u00e3o da configura\u00e7\u00e3o",
 		"pl": "Sprawdzenie konfiguracji",
 		"cs": "Verifikace konfigurace",
@@ -19,7 +19,11 @@
 		"it": "Verifica della configurazione",
 		"ja": "\u8a2d\u5b9a\u78ba\u8a8d",
 		"lt": "Konfig\u016bracijos patikrinimas",
-		"zh-tw": "\u8a2d\u5b9a\u6aa2\u67e5"
+		"zh-tw": "\u8a2d\u5b9a\u6aa2\u67e5",
+		"et": "Seadistuste kontroll",
+		"he": "\u05d1\u05d3\u05d9\u05e7\u05ea \u05d4\u05d2\u05d3\u05e8\u05d5\u05ea",
+		"ru": "\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u043a\u043e\u043d\u0444\u0438\u0433\u0443\u0440\u0430\u0446\u0438\u0438",
+		"zh": "\u914d\u7f6e\u68c0\u67e5"
 	},
 	"cfg_check_select_file": {
 		"no": "Velg hvilken konfigurasjonfil som skal sjekkes",
@@ -31,7 +35,7 @@
 		"da": "V\u00e6lg den konfiguration som skal unders\u00f8ges",
 		"hr": "Odaberite konfiguracijeku datoteku koju \u017eelite provjeriti:",
 		"hu": "V\u00e1lassza ki az ellen\u0151rizend\u0151 konfigur\u00e1ci\u00f3s \u00e1llom\u00e1nyt",
-		"pt-BR": "Selecione o arquivo de configura\u00e7\u00e3o para verificar",
+		"pt-br": "Selecione o arquivo de configura\u00e7\u00e3o para verificar",
 		"pt": "Escolha o ficheiro de configura\u00e7\u00e3o a verificar:",
 		"pl": "Wybierz plik konfiguracyjny do sprawdzenia:",
 		"cs": "Vyber konfiguracniho souboru k verifikaci:",
@@ -41,7 +45,11 @@
 		"it": "Selezionare il file di configurazione da verificare:",
 		"ja": "\u78ba\u8a8d\u3059\u308b\u8a2d\u5b9a\u30d5\u30a1\u30a4\u30eb\u3092\u9078\u629e:",
 		"lt": "Tikrinti konfig\u016bracijos fail\u0105:",
-		"zh-tw": "\u9078\u64c7\u8981\u6aa2\u67e5\u7684\u8a2d\u5b9a\u6a94\uff1a"
+		"zh-tw": "\u9078\u64c7\u8981\u6aa2\u67e5\u7684\u8a2d\u5b9a\u6a94\uff1a",
+		"et": "Vali seadistustefail, mida kontrollida:",
+		"he": "\u05d1\u05d7\u05e8 \u05e7\u05d5\u05d1\u05e5 \u05d4\u05d2\u05d3\u05e8\u05d5\u05ea \u05dc\u05d1\u05d3\u05d9\u05e7\u05d4:",
+		"ru": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0444\u0430\u0439\u043b \u043a\u043e\u043d\u0444\u0438\u0433\u0443\u0440\u0430\u0446\u0438\u0438 \u0434\u043b\u044f \u043f\u0440\u043e\u0432\u0435\u0440\u043a\u0438:",
+		"zh": "\u9009\u62e9\u4e00\u4e2a\u914d\u7f6e\u6587\u4ef6\u7528\u4e8e\u68c0\u6d4b"
 	},
 	"cfg_check_missing": {
 		"no": "Mangler element i konfigurasjonsfilen",
@@ -53,7 +61,7 @@
 		"da": "Valg kan ikke behandles - se konfigurationsfil",
 		"hr": "Parametri koji nedostaju u konfiguracijskoj datoteci",
 		"hu": "Hi\u00e1nyz\u00f3 opci\u00f3k a konfigur\u00e1ci\u00f3s \u00e1llom\u00e1nyban",
-		"pt-BR": "Op\u00e7\u00f5es faltando no arquivo de configura\u00e7\u00e3o",
+		"pt-br": "Op\u00e7\u00f5es faltando no arquivo de configura\u00e7\u00e3o",
 		"pt": "Op\u00e7\u00f5es ausentes do ficheiro de configura\u00e7\u00e3o",
 		"pl": "Brakuj\u0105ce opcje z pliku konfiguracyjnego",
 		"cs": "Chybejici polozky v konfiguracnim souboru",
@@ -63,7 +71,10 @@
 		"it": "Opzioni mancanti dal file di configurazione",
 		"ja": "\u8a2d\u5b9a\u30d5\u30a1\u30a4\u30eb\u306b\u30aa\u30d7\u30b7\u30e7\u30f3\u304c\u5728\u308a\u307e\u305b\u3093",
 		"lt": "Tr\u016bkstami parametrai konfig\u016braciniame faile",
-		"zh-tw": "\u8a2d\u5b9a\u6a94\u7f3a\u5c11\u9078\u9805"
+		"zh-tw": "\u8a2d\u5b9a\u6a94\u7f3a\u5c11\u9078\u9805",
+		"et": "Seadistustefailist puuduvad seadistused:",
+		"he": "\u05d0\u05e4\u05e9\u05e8\u05d5\u05d9\u05d5\u05ea \u05d7\u05e1\u05e8\u05d5\u05ea \u05de\u05e7\u05d5\u05d1\u05e5 \u05d4\u05d4\u05d2\u05d3\u05e8\u05d5\u05ea",
+		"zh": "\u914d\u7f6e\u6587\u4ef6\u4e2d\u9009\u9879\u7f3a\u5931"
 	},
 	"cfg_check_superfluous": {
 		"no": "Overf\u00f8ldig element i konfigurasjonsfilen",
@@ -75,7 +86,7 @@
 		"da": "Overfl\u00f8digt valg i konfigurationsfil",
 		"hr": "Suvi\u0161ni parametri u konfiguracijskoj datoteci",
 		"hu": "Felesleges opci\u00f3k a konfigur\u00e1ci\u00f3s \u00e1llom\u00e1nyban",
-		"pt-BR": "Op\u00e7\u00f5es sup\u00e9rfluas no arquivo de configura\u00e7\u00e3o",
+		"pt-br": "Op\u00e7\u00f5es sup\u00e9rfluas no arquivo de configura\u00e7\u00e3o",
 		"pt": "Op\u00e7\u00f5es sup\u00e9rfluas do ficheiro de configura\u00e7\u00e3o",
 		"pl": "Zb\u0119dne opcje w pliku konfiguracyjnym",
 		"cs": "Nadbyte\u010dn\u00e9 polo\u017eky v konfigura\u010dn\u00edm souboru",
@@ -85,7 +96,10 @@
 		"it": "Opzioni superflue nel file di configurazione",
 		"ja": "\u8a2d\u5b9a\u30d5\u30a1\u30a4\u30eb\u306b\u4e0d\u9069\u5207\u306a\u30aa\u30d7\u30b7\u30e7\u30f3\u304c\u5728\u308a\u307e\u3059",
 		"lt": "Pertekliniai parametrai konfig\u016braciniame faile",
-		"zh-tw": "\u591a\u9918\u8a2d\u5b9a\u5b58\u5728\u65bc\u8a2d\u5b9a\u6a94"
+		"zh-tw": "\u591a\u9918\u8a2d\u5b9a\u5b58\u5728\u65bc\u8a2d\u5b9a\u6a94",
+		"et": "\u00dcleliigne seadistus seadistustefailis",
+		"he": "\u05d0\u05e4\u05e9\u05e8\u05d5\u05d9\u05d5\u05ea \u05de\u05d9\u05d5\u05ea\u05e8\u05d5\u05ea \u05d1\u05e7\u05d5\u05d1\u05e5 \u05d4\u05d4\u05d2\u05d3\u05e8\u05d5\u05ea",
+		"zh": "\u914d\u7f6e\u6587\u4ef6\u4e2d\u62e5\u6709\u8fc7\u591a\u7684\u9009\u9879"
 	},
 	"cfg_check_noerrors": {
 		"no": "Ingen feil funnet",
@@ -97,7 +111,7 @@
 		"da": "Ingen fejl",
 		"hr": "Nije prona\u0111ena niti jedna pogre\u0161ka.",
 		"hu": "Nincs hiba.",
-		"pt-BR": "N\u00e3o foram encontrados erros.",
+		"pt-br": "N\u00e3o foram encontrados erros.",
 		"pt": "N\u00e3o foram encontrados erros.",
 		"pl": "Nie znaleziono b\u0142\u0119d\u00f3w.",
 		"cs": "Nenalezeny \u017e\u00e1dn\u00e9 chyby",
@@ -107,7 +121,10 @@
 		"it": "Nessun errore trovato.",
 		"ja": "\u30a8\u30e9\u30fc\u306f\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f\u3002",
 		"lt": "Klaid\u0173 nerasta.",
-		"zh-tw": "\u6c92\u6709\u932f\u8aa4\u3002"
+		"zh-tw": "\u6c92\u6709\u932f\u8aa4\u3002",
+		"et": "T\u00f5rkeid ei leitud",
+		"he": "\u05dc\u05d0 \u05e0\u05de\u05e6\u05d0\u05d5 \u05e9\u05d2\u05d9\u05d0\u05d5\u05ea.",
+		"zh": "\u6ca1\u6709\u53d1\u73b0\u9519\u8bef"
 	},
 	"cfg_check_back": {
 		"no": "G\u00e5 tilbake til fil-listen",
@@ -119,7 +136,7 @@
 		"da": "Tilbage til listen over filer",
 		"hr": "Vrati se nazad na popis datoteka",
 		"hu": "Vissza az f\u00e1jlok list\u00e1j\u00e1hoz",
-		"pt-BR": "Voltar a lista de arquivos",
+		"pt-br": "Voltar a lista de arquivos",
 		"pt": "Voltar \u00e0 lista de ficheiros",
 		"pl": "Powr\u00f3t do listy plik\u00f3w",
 		"cs": "Zp\u00e1tky na seznam soubor\u016f",
@@ -129,7 +146,10 @@
 		"it": "Tornare indietro alla lista dei file",
 		"ja": "\u30d5\u30a1\u30a4\u30eb\u30ea\u30b9\u30c8\u306b\u623b\u308b",
 		"lt": "Gr\u012f\u017eti \u012f fail\u0173 s\u0105ra\u0161\u0105",
-		"zh-tw": "\u56de\u5230\u6a94\u6848\u6e05\u55ae"
+		"zh-tw": "\u56de\u5230\u6a94\u6848\u6e05\u55ae",
+		"et": "Mine tagasi failide nimekirja",
+		"he": "\u05d7\u05d6\u05d5\u05e8 \u05d0\u05dc \u05e8\u05e9\u05d9\u05de\u05ea \u05d4\u05e7\u05d1\u05e6\u05d9\u05dd",
+		"zh": "\u8fd4\u56de\u81f3\u6587\u4ef6\u5217\u8868"
 	},
 	"metaover_header": {
 		"no": "Oversikt over metadata",
@@ -141,7 +161,7 @@
 		"da": "Metadataoversigt",
 		"hr": "Pregled metapodataka",
 		"hu": "Metaadat \u00e1ttekint\u00e9s",
-		"pt-BR": "Vis\u00e3o geral da metadata",
+		"pt-br": "Vis\u00e3o geral da metadata",
 		"pt": "Vista geral dos metadados",
 		"pl": "Przegl\u0105d metadanych",
 		"cs": "P\u0159ehled metadat",
@@ -151,7 +171,10 @@
 		"it": "Visione generale dei metadati",
 		"ja": "\u30e1\u30bf\u30c7\u30fc\u30bf\u306e\u6982\u8981",
 		"lt": "Metaduomen\u0173 per\u017ei\u016bra",
-		"zh-tw": "\u8a6e\u91cb\u8cc7\u6599\u7e3d\u89bd"
+		"zh-tw": "\u8a6e\u91cb\u8cc7\u6599\u7e3d\u89bd",
+		"et": "Metaandmete \u00fclevaade",
+		"he": "\u05e1\u05e7\u05d9\u05e8\u05ea \u05de\u05d8\u05d0-\u05de\u05d9\u05d3\u05e2",
+		"zh": "\u5143\u4fe1\u606f\u6d4f\u89c8"
 	},
 	"metaover_intro": {
 		"no": "For \u00e5 se p\u00e5 detaljene i en SAML-entitet, klikk p\u00e5 SAML-entitet overskriften",
@@ -163,7 +186,7 @@
 		"da": "For at se detaljer vedr\u00f8rende SAML-entiteten, klik p\u00e5 entitets-headeren",
 		"hr": "Da biste vidjeli detalje o SAML entitetu, kliknite na zaglavlje SAML entiteta.",
 		"hu": "A SAML entit\u00e1sok r\u00e9szletei\u00e9rt kattintson a SAML entit\u00e1s fejl\u00e9c\u00e9re",
-		"pt-BR": "Para ver os detalhes da entidade SAML, clique ",
+		"pt-br": "Para ver os detalhes da entidade SAML, clique ",
 		"pt": "Para obter detalhes sobre uma entidade SAML, clique no t\u00edtulo da entidade.",
 		"pl": "Kliknij na nag\u0142\u00f3wek ko\u0144c\u00f3wki aby wy\u015bwietli\u0107 szczeg\u00f3\u0142y SAML.",
 		"cs": "Pro zobrazen\u00ed detailu SAML entity, klikni na hlavi\u010dku entity",
@@ -173,7 +196,10 @@
 		"it": "Per visualizzare i dettagli di una entit\u00e0 SAML, cliccare sull'header SAML dell'entit\u00e0.",
 		"ja": "SAML\u5b9f\u4f53\u306e\u8a73\u7d30\u3092\u78ba\u8a8d\u3059\u308b\u70ba\u306b\u306f\u3001SAML\u5b9f\u4f53\u30d8\u30c3\u30c0\u3092\u30af\u30ea\u30c3\u30af\u3057\u3066\u4e0b\u3055\u3044\u3002",
 		"lt": "Nor\u0117dami per\u017ei\u016br\u0117ti detalesn\u0119 informacij\u0105 apie SAML, paspauskite ant SAML antra\u0161t\u0117s.",
-		"zh-tw": "\u9ede\u9078 SAML \u7269\u4ef6\u6a19\u984c\uff0c\u53ef\u6aa2\u8996 SAML \u7269\u4ef6\u8a73\u7d30\u8cc7\u8a0a\u3002"
+		"zh-tw": "\u9ede\u9078 SAML \u7269\u4ef6\u6a19\u984c\uff0c\u53ef\u6aa2\u8996 SAML \u7269\u4ef6\u8a73\u7d30\u8cc7\u8a0a\u3002",
+		"et": "SAML olemi detailide vaatamiseks kl\u00f5psa SAML olemi p\u00e4isel.",
+		"he": "\u05db\u05d3\u05d9 \u05dc\u05d4\u05e1\u05ea\u05db\u05dc \u05e2\u05dc \u05d4\u05e4\u05e8\u05d8\u05d9\u05dd \u05e9\u05dc \u05d9\u05e9\u05d5\u05ea SAML, \u05dc\u05d7\u05e5 \u05e2\u05dc \u05db\u05d5\u05ea\u05e8\u05ea \u05d9\u05e9\u05d5\u05ea \u05d4SAML ",
+		"zh": "\u60f3\u8981\u67e5\u770bSAML\u5b9e\u4f53\u7684\u8be6\u7ec6\u60c5\u51b5\uff0c\u8bf7\u70b9\u51fbSAML\u5b9e\u4f53\u8f7d\u5165\u5668"
 	},
 	"metaover_errorentry": {
 		"no": "Feil i metadataoppf\u00f8ringen",
@@ -186,7 +212,7 @@
 		"da": "Fejl i denne sektion af metadata",
 		"hr": "Pogre\u0161ka u ovom zapisu metapodataka",
 		"hu": "Hiba ebben a metaadat bejegyz\u00e9sben",
-		"pt-BR": "Erro na entrada desta metadata",
+		"pt-br": "Erro na entrada desta metadata",
 		"pt": "Erro nesta entrada de metadados",
 		"pl": "B\u0142\u0105d w metadanych",
 		"cs": "Chyba v t\u00e9to polo\u017ece metadat",
@@ -195,7 +221,10 @@
 		"it": "Errore in questo elemento dei metadati",
 		"ja": "\u3053\u306e\u30e1\u30bf\u30c7\u30fc\u30bf\u30a8\u30f3\u30c8\u30ea\u3067\u306e\u30a8\u30e9\u30fc",
 		"lt": "Klaida \u0161iame metaduomen\u0173 \u012fra\u0161e",
-		"zh-tw": "\u6709\u932f\u8aa4\u5b58\u5728\u9019\u500b\u8a6e\u91cb\u8cc7\u6599\u55ae\u5143"
+		"zh-tw": "\u6709\u932f\u8aa4\u5b58\u5728\u9019\u500b\u8a6e\u91cb\u8cc7\u6599\u55ae\u5143",
+		"et": "T\u00f5rge selles metaandmete kirjes",
+		"he": "\u05e9\u05d2\u05d9\u05d0\u05d4 \u05d1\u05e8\u05e9\u05d5\u05de\u05ea \u05de\u05d8\u05d0-\u05de\u05d9\u05d3\u05e2 \u05d6\u05d5",
+		"zh": "\u8be5\u5143\u4fe1\u606f\u5b9e\u4f53\u5b58\u5728\u9519\u8bef"
 	},
 	"metaover_required_found": {
 		"no": "Obligatorisk felt",
@@ -208,7 +237,7 @@
 		"da": "Obligatoriske felter",
 		"hr": "Obavezna polja",
 		"hu": "K\u00f6telez\u0151 mez\u0151k",
-		"pt-BR": "Campos requeridos",
+		"pt-br": "Campos requeridos",
 		"pt": "Campos obrigat\u00f3rios",
 		"pl": "Pola wymagane",
 		"cs": "Po\u017eadovan\u00e1 pole",
@@ -217,7 +246,10 @@
 		"it": "Campi richiesti",
 		"ja": "\u5fc5\u9808\u9805\u76ee",
 		"lt": "Privalomi laukai",
-		"zh-tw": "\u5fc5\u8981\u6b04\u4f4d"
+		"zh-tw": "\u5fc5\u8981\u6b04\u4f4d",
+		"et": "Kohustuslikud v\u00e4ljad",
+		"he": "\u05e9\u05d3\u05d5\u05ea \u05e0\u05d3\u05e8\u05e9\u05d9\u05dd",
+		"zh": "\u5fc5\u9700\u7684\u533a\u57df"
 	},
 	"metaover_required_not_found": {
 		"no": "F\u00f8lgende obligatoriske felter ble ikke funnet",
@@ -230,7 +262,7 @@
 		"da": "F\u00f8lgende obligatoriske felter kunne ikke findes ",
 		"hr": "Sljede\u0107a obavezna polja nisu prona\u0111ena",
 		"hu": "A k\u00f6vetkez\u0151 k\u00f6telez\u0151 mez\u0151k hi\u00e1nyoznak",
-		"pt-BR": "Os seguintes campos requeridos n\u00e3o foram encontrados",
+		"pt-br": "Os seguintes campos requeridos n\u00e3o foram encontrados",
 		"pt": "Os seguintes campos obrigat\u00f3rios n\u00e3o foram encontrados",
 		"pl": "Nastepuj\u0105ce wymagane pola nie zosta\u0142y znalezione",
 		"cs": "N\u00e1sleduj\u00edc\u00ed po\u017eadovan\u00e1 pole nenalezena",
@@ -239,7 +271,10 @@
 		"it": "I seguenti campi, richiesti, non sono stati trovati",
 		"ja": "\u4ee5\u4e0b\u306e\u5fc5\u9808\u9805\u76ee\u306f\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f",
 		"lt": "\u0160ie privalomi laukai nerasti",
-		"zh-tw": "\u4e0b\u5217\u8cc7\u6599\u627e\u4e0d\u5230\u5fc5\u8981\u6b04\u4f4d"
+		"zh-tw": "\u4e0b\u5217\u8cc7\u6599\u627e\u4e0d\u5230\u5fc5\u8981\u6b04\u4f4d",
+		"et": "J\u00e4rgmisi kohuslikke v\u00e4lju ei leitud",
+		"he": "\u05d4\u05e9\u05d3\u05d5\u05ea \u05d4\u05d3\u05e8\u05d5\u05e9\u05d9\u05dd \u05d4\u05d1\u05d0\u05d9\u05dd \u05dc\u05d0 \u05e0\u05de\u05e6\u05d0\u05d5",
+		"zh": "\u4e0b\u5217\u5fc5\u9700\u7684\u533a\u57df\u6ca1\u6709\u627e\u5230"
 	},
 	"metaover_optional_found": {
 		"no": "Valgbart felt",
@@ -252,7 +287,7 @@
 		"da": "Valgfrie felter",
 		"hr": "Opcionalna polja",
 		"hu": "Opcion\u00e1lis mez\u0151",
-		"pt-BR": "Campos opcionais",
+		"pt-br": "Campos opcionais",
 		"pt": "Campos opcionais",
 		"pl": "Pola opcjonalne",
 		"cs": "Voliteln\u00e1 pole",
@@ -261,7 +296,10 @@
 		"it": "Campi opzionali",
 		"ja": "\u4efb\u610f\u9805\u76ee",
 		"lt": "Neprivalomi laukai",
-		"zh-tw": "\u9078\u64c7\u6027\u6b04\u4f4d"
+		"zh-tw": "\u9078\u64c7\u6027\u6b04\u4f4d",
+		"et": "Lisav\u00e4ljad",
+		"he": "\u05e9\u05d3\u05d5\u05ea \u05e8\u05e9\u05d5\u05ea",
+		"zh": "\u9009\u9879\u533a\u57df"
 	},
 	"metaover_optional_not_found": {
 		"no": "F\u00f8lgende valgbare felt ble ikke funnet",
@@ -274,7 +312,7 @@
 		"da": "F\u00f8lgende valgfrie felter kunne ikke findes",
 		"hr": "Sljede\u0107a opcionalna polja nisu prona\u0111ena",
 		"hu": "A k\u00f6vetkez\u0151 opcion\u00e1lis mez\u0151k nem tal\u00e1lhat\u00f3k",
-		"pt-BR": "Os seguintes campos opcionais n\u00e3o foram encontrados",
+		"pt-br": "Os seguintes campos opcionais n\u00e3o foram encontrados",
 		"pt": "Os seguintes campos opcionais n\u00e3o foram encontrados",
 		"pl": "Nastepuj\u0105ce pola opcjonalne nie zosta\u0142y znalezione",
 		"cs": "asleduj\u00edc\u00ed voliteln\u00e1 pole nenalezena",
@@ -283,7 +321,10 @@
 		"it": "I seguenti campi, opzionali, non sono stati trovati",
 		"ja": "\u4ee5\u4e0b\u306e\u4efb\u610f\u9805\u76ee\u306f\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f",
 		"lt": "\u0160ie neprivalomi laukai nerasti",
-		"zh-tw": "\u4e0b\u5217\u8cc7\u6599\u627e\u4e0d\u5230\u9078\u64c7\u6027\u6b04\u4f4d"
+		"zh-tw": "\u4e0b\u5217\u8cc7\u6599\u627e\u4e0d\u5230\u9078\u64c7\u6027\u6b04\u4f4d",
+		"et": "J\u00e4rgmisi lisav\u00e4lju ei leitud",
+		"he": "\u05e9\u05d3\u05d5\u05ea \u05d4\u05e8\u05e9\u05d5\u05ea \u05d4\u05d1\u05d0\u05d9\u05dd \u05dc\u05d0 \u05e0\u05de\u05e6\u05d0\u05d5",
+		"zh": "\u4e0b\u5217\u5fc5\u9700\u7684\u9009\u9879\u533a\u57df\u6ca1\u6709\u627e\u5230"
 	},
 	"metaover_unknown_found": {
 		"no": "F\u00f8lgende felt ble ikke gjenkjent",
@@ -296,7 +337,7 @@
 		"da": "F\u00f8lgende felter kunne ikke tolkes",
 		"hr": "Sljede\u0107a polja nisu prepoznata",
 		"hu": "A k\u00f6vetkez\u0151 mez\u0151k nem \u00e9rtelmezhet\u0151k",
-		"pt-BR": "Os seguintes campos n\u00e3o foram reconhecidos",
+		"pt-br": "Os seguintes campos n\u00e3o foram reconhecidos",
 		"pt": "Os seguintes campos n\u00e3o foram reconhecidos",
 		"pl": "Nastepuj\u0105ce pola nie zosta\u0142y rozpoznane",
 		"cs": "N\u00e1sleduj\u00edc\u00ed pole nebyla rozpozn\u00e1na",
@@ -305,7 +346,10 @@
 		"it": "I seguenti campi non sono stati riconosciuti",
 		"ja": "\u4ee5\u4e0b\u306e\u9805\u76ee\u306f\u8a8d\u8b58\u3055\u308c\u307e\u305b\u3093\u3067\u3057\u305f",
 		"lt": "\u0160ie laukai neatpa\u017einti",
-		"zh-tw": "\u4e0b\u5217\u8cc7\u6599\u672a\u7d93\u78ba\u8a8d"
+		"zh-tw": "\u4e0b\u5217\u8cc7\u6599\u672a\u7d93\u78ba\u8a8d",
+		"et": "J\u00e4rgmistest v\u00e4ljadest ei saadud aru",
+		"he": "\u05d4\u05e9\u05d3\u05d5\u05ea \u05d4\u05d1\u05d0\u05d9\u05dd \u05dc\u05d0 \u05d6\u05d5\u05d4\u05d5",
+		"zh": "\u4e0b\u5217\u533a\u57df\u65e0\u6cd5\u8bc6\u522b"
 	},
 	"metadata_metadata": {
 		"no": "Metadata",
@@ -317,7 +361,7 @@
 		"da": "Metadata",
 		"hr": "Metapodaci",
 		"hu": "Metaadatok",
-		"pt-BR": "Metadata",
+		"pt-br": "Metadata",
 		"pt": "Metadados",
 		"pl": "Metadane",
 		"cs": "Metadata",
@@ -327,7 +371,10 @@
 		"it": "Metadati",
 		"ja": "\u30e1\u30bf\u30c7\u30fc\u30bf",
 		"lt": "Metaduomenys",
-		"zh-tw": "\u8a6e\u91cb\u8cc7\u6599"
+		"zh-tw": "\u8a6e\u91cb\u8cc7\u6599",
+		"et": "Metaandmed",
+		"he": "\u05de\u05d8\u05d0-\u05de\u05d9\u05d3\u05e2",
+		"zh": "\u5143\u4fe1\u606f"
 	},
 	"metadata_xmlformat": {
 		"no": "I SAML 2.0 Metadata XML Format:",
@@ -339,7 +386,7 @@
 		"da": "I SAML 2.0 metadata xml-format:",
 		"hr": "SAML 2.0 XML format metapodataka:",
 		"hu": "SAML 2.0 XML form\u00e1tumban:",
-		"pt-BR": "Em formato SAML 2.0 Metadata XML",
+		"pt-br": "Em formato SAML 2.0 Metadata XML",
 		"pt": "Metadados no formato XML SAML 2.0",
 		"pl": "W formacie SAML 2.0 Metadata XML",
 		"cs": "Ve SAML 2.0 metadata xml form\u00e1tu:",
@@ -349,7 +396,10 @@
 		"it": "Metadati SAML 2.0 in formato XML:",
 		"ja": "SAML 2.0 \u7528\u306e\u30e1\u30bf\u30c7\u30fc\u30bfXML\u30d5\u30a9\u30fc\u30de\u30c3\u30c8:",
 		"lt": "SAML 2.0 Metaduomenys XML formatu:",
-		"zh-tw": "\u5728 SAML 2.0 \u8a6e\u91cb\u8cc7\u6599 xml \u683c\u5f0f\uff1a"
+		"zh-tw": "\u5728 SAML 2.0 \u8a6e\u91cb\u8cc7\u6599 xml \u683c\u5f0f\uff1a",
+		"et": "SAML 2.0 metaandmete XML-vormingus:",
+		"he": "\u05de\u05d8\u05d0-\u05de\u05d9\u05d3\u05e2 \u05e2\u05d1\u05d5\u05e8 SAML 2.0 \u05d1\u05ea\u05d1\u05e0\u05d9\u05ea XML:",
+		"zh": "\u5728SAML 2.0 XML \u5143\u4fe1\u606f\u683c\u5f0f\u4e2d\uff1a"
 	},
 	"debug_sending_message_text_link": {
 		"no": "Du er i ferd med \u00e5 sende en melding. Trykk p\u00e5 send melding knappen for \u00e5 fortsette.",
@@ -361,7 +411,7 @@
 		"da": "Du er ved at sende en besked. Tryk p\u00e5 'send' for forts\u00e6tte",
 		"hr": "Kliknite na poveznicu \"Po\u0161alji poruku\" da biste poslali poruku.",
 		"hu": "\u00dczenetet k\u00fcldhet. Kattintson az \u00dczenet k\u00fcld\u00e9se linkre a folytat\u00e1shoz.",
-		"pt-BR": "Voc\u00ea est\u00e1 prestes a enviar uma mensagem. Clique no link enviar a mensagem para continuar.",
+		"pt-br": "Voc\u00ea est\u00e1 prestes a enviar uma mensagem. Clique no link enviar a mensagem para continuar.",
 		"pt": "Est\u00e1 prestes a enviar uma mensagem. Carregue na liga\u00e7\u00e3o para continuar.",
 		"cs": "M\u016f\u017eete poslat zpr\u00e1vu. Klikn\u011bte na odkaz pro pokra\u010dov\u00e1n\u00ed.",
 		"tr": "Mesaj g\u00f6ndermek \u00fczeresiniz. Devam etmek i\u00e7in mesaj g\u00f6nder linkine t\u0131klay\u0131n.",
@@ -370,7 +420,10 @@
 		"it": "Si sta per inviare un messaggio. Premere il pulsante di invio per continuare.",
 		"ja": "\u30e1\u30c3\u30bb\u30fc\u30b8\u3092\u9001\u4fe1\u3057\u307e\u3059\u3002\u7d9a\u3051\u308b\u306b\u306f\u30e1\u30c3\u30bb\u30fc\u30b8\u9001\u4fe1\u30ea\u30f3\u30af\u3092\u62bc\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
 		"lt": "J\u016bs\u0173 prane\u0161imas siun\u010diamas. Nor\u0117dami t\u0119sti, paspauskite prane\u0161imo patvirtinimo nuorod\u0105.",
-		"zh-tw": "\u60a8\u6b63\u5728\u50b3\u9001\u4e00\u5247\u8a0a\u606f\uff0c\u8acb\u9ede\u9078\u63d0\u4ea4\u8a0a\u606f\u9023\u7d50\u4f86\u7e7c\u7e8c\u3002"
+		"zh-tw": "\u60a8\u6b63\u5728\u50b3\u9001\u4e00\u5247\u8a0a\u606f\uff0c\u8acb\u9ede\u9078\u63d0\u4ea4\u8a0a\u606f\u9023\u7d50\u4f86\u7e7c\u7e8c\u3002",
+		"et": "Oled teadet saatmas. J\u00e4tkamiseks vajuta teateviidet.",
+		"he": "\u05d0\u05ea\u05d4 \u05e2\u05d5\u05de\u05d3 \u05dc\u05e9\u05dc\u05d5\u05d7 \u05d4\u05d5\u05d3\u05e2\u05d4. \u05dc\u05d7\u05e5 \u05e2\u05dc \u05db\u05e4\u05ea\u05d5\u05e8 \u05d4\u05e9\u05dc\u05d9\u05d7\u05d4 \u05db\u05d3\u05d9 \u05dc\u05d4\u05de\u05e9\u05d9\u05da.",
+		"zh": "\u4f60\u51c6\u5907\u53d1\u9001\u4e00\u4e2a\u6d88\u606f\uff0c\u8bf7\u70b9\u51fb\u63d0\u4ea4\u94fe\u63a5\u4ee5\u7ee7\u7eed"
 	},
 	"debug_sending_message_send": {
 		"no": "Send melding",
@@ -382,7 +435,7 @@
 		"da": "Send besked",
 		"hr": "Po\u0161alji poruku",
 		"hu": "\u00dczenet k\u00fcld\u00e9se",
-		"pt-BR": "Enviar mensagem",
+		"pt-br": "Enviar mensagem",
 		"pt": "Enviar mensagem",
 		"pl": "Wy\u015blij wiadomo\u015b\u0107",
 		"cs": "Poslat zpr\u00e1vu",
@@ -392,7 +445,10 @@
 		"it": "Invio messaggio",
 		"ja": "\u30e1\u30c3\u30bb\u30fc\u30b8\u3092\u9001\u4fe1",
 		"lt": "Patvirtinti prane\u0161im\u0105",
-		"zh-tw": "\u63d0\u4ea4\u8a0a\u606f"
+		"zh-tw": "\u63d0\u4ea4\u8a0a\u606f",
+		"et": "Saada teade",
+		"he": "\u05e9\u05dc\u05d7 \u05d4\u05d5\u05d3\u05e2\u05d4",
+		"zh": "\u63d0\u4ea4\u4fe1\u606f"
 	},
 	"debug_sending_message_msg_title": {
 		"no": "Melding",
@@ -404,7 +460,7 @@
 		"da": "Besked",
 		"hr": "Poruka",
 		"hu": "\u00dczenet",
-		"pt-BR": "Mensagem",
+		"pt-br": "Mensagem",
 		"pt": "Mensagem",
 		"pl": "Wiadomo\u015b\u0107",
 		"cs": "Zpr\u00e1va",
@@ -414,7 +470,10 @@
 		"it": "Messaggio",
 		"ja": "\u30e1\u30c3\u30bb\u30fc\u30b8",
 		"lt": "Prane\u0161imas",
-		"zh-tw": "\u8a0a\u606f"
+		"zh-tw": "\u8a0a\u606f",
+		"et": "Teade",
+		"he": "\u05d4\u05d5\u05d3\u05e2\u05d4",
+		"zh": "\u4fe1\u606f"
 	},
 	"debug_sending_message_msg_text": {
 		"no": "Siden du er i debug modus kan du se innholdet i meldingene du sender.",
@@ -426,7 +485,7 @@
 		"da": "Fordi du er i debug-mode kan du se indholdet af de beskeder du sender:",
 		"hr": "Obzirom da ste u modu za otkrivanje pogre\u0161aka, imate mogu\u0107nost vidjeti sadr\u017eaj poruke koju \u0161aljete:",
 		"hu": "Mivel hibakeres\u0151 m\u00f3dban van, l\u00e1thatja az elk\u00fcldend\u0151 \u00fczenet tartalm\u00e1t",
-		"pt-BR": "Como voc\u00ea est\u00e1 no modo de debug, voc\u00ea pode ver o conte\u00fado da mensagem que voc\u00ea est\u00e1 enviando:",
+		"pt-br": "Como voc\u00ea est\u00e1 no modo de debug, voc\u00ea pode ver o conte\u00fado da mensagem que voc\u00ea est\u00e1 enviando:",
 		"pt": "Estando em modo debug, pode consultar o conte\u00fado da mensagem que est\u00e1 a enviar:",
 		"cs": "Pokud jste v debug m\u00f3du, m\u016f\u017eete videt obsah zpr\u00e1vy, kterou pos\u00edl\u00e1te:",
 		"tr": "\"Debug\" modda oldu\u011funuz i\u00e7in, g\u00f6nderdi\u011finiz mesaj\u0131n i\u00e7eri\u011fini g\u00f6receksiniz.",
@@ -435,7 +494,10 @@
 		"it": "Poich\u00e8 ci si trova in modalit\u00e0 di debug, si pu\u00f2 vedere il contenuto del messaggio che si sta per inviare:",
 		"ja": "\u304a\u6c17\u3065\u304d\u306e\u69d8\u306b\u3042\u306a\u305f\u306f\u30c7\u30d0\u30c3\u30b0\u30e2\u30fc\u30c9\u306b\u3044\u307e\u3059\u3002\u3042\u306a\u305f\u306f\u9001\u4fe1\u3059\u308b\u30e1\u30c3\u30bb\u30fc\u30b8\u306e\u5185\u5bb9\u3092\u898b\u308b\u3053\u3068\u304c\u51fa\u6765\u307e\u3059\u3002",
 		"lt": "\u012ejungtas detalus nar\u0161ymas, tod\u0117l matote siun\u010diamos \u017einut\u0117s turin\u012f:",
-		"zh-tw": "\u7576\u60a8\u5728\u9664\u932f\u6a21\u5f0f\uff0c\u60a8\u53ef\u4ee5\u770b\u5230\u60a8\u6240\u50b3\u905e\u7684\u8a0a\u606f\u5167\u5bb9\uff1a"
+		"zh-tw": "\u7576\u60a8\u5728\u9664\u932f\u6a21\u5f0f\uff0c\u60a8\u53ef\u4ee5\u770b\u5230\u60a8\u6240\u50b3\u905e\u7684\u8a0a\u606f\u5167\u5bb9\uff1a",
+		"et": "Kuna oled silumisre\u017eiimis, siis on sul v\u00f5imalik n\u00e4ha saadetava teate sisu:",
+		"he": "\u05db\u05d9\u05d5\u05d5\u05df \u05e9\u05d0\u05ea\u05d4 \u05d1\u05de\u05e6\u05d1 \u05de\u05d1\u05d3\u05d9\u05e7\u05ea \u05d1\u05d0\u05d2\u05d9\u05dd, \u05d0\u05ea\u05d4 \u05e8\u05d5\u05d0\u05d4 \u05d0\u05ea \u05ea\u05d5\u05db\u05df \u05d4\u05d4\u05d5\u05d3\u05e2\u05d4 \u05e9\u05d0\u05ea\u05d4 \u05e9\u05d5\u05dc\u05d7:",
+		"zh": "\u5f53\u4f60\u5904\u5728\u8c03\u8bd5\u6a21\u5f0f\u4e2d\u65f6\uff0c\u4f60\u5c06\u770b\u5230\u4f60\u6b63\u5728\u53d1\u9001\u7684\u6d88\u606f\u7684\u5185\u5bb9"
 	},
 	"metaover_group_metadata.saml20-sp-remote": {
 		"no": "SAML 2.0 Tjenesteleverand\u00f8r (ekstern)",
@@ -447,7 +509,7 @@
 		"da": "SAML 2.0 tjenesteudbyder (remote)",
 		"hr": "SAML 2.0 davatelj usluge (udaljeni)",
 		"hu": "SAML 2.0 alkalmaz\u00e1sszolg\u00e1ltat\u00f3 (t\u00e1voli)",
-		"pt-BR": "SAML 2.0 Service Provider (Remoto)",
+		"pt-br": "SAML 2.0 Service Provider (Remoto)",
 		"pt": "Fornecedor de servi\u00e7o (SP) SAML 2.0 (Remoto)",
 		"pl": "SAML 2.0 Dostawca Serwisu (Zdalny)",
 		"cs": "SAML 2.O Service Provider (Remote - vzd\u00e1len\u00fd)",
@@ -457,7 +519,10 @@
 		"it": "SAML 2.0 Service Provider (Remoto)",
 		"ja": "SAML 2.0\u30b5\u30fc\u30d3\u30b9\u30d7\u30ed\u30d0\u30a4\u30c0(\u30ea\u30e2\u30fc\u30c8)",
 		"lt": "SAML 2.0 Paslaugos teik\u0117jas (nutol\u0119s)",
-		"zh-tw": "SAML 2.0 \u670d\u52d9\u63d0\u4f9b\u8005(\u9060\u7aef)"
+		"zh-tw": "SAML 2.0 \u670d\u52d9\u63d0\u4f9b\u8005(\u9060\u7aef)",
+		"et": "SAML 2.0 teenusepakkuja (kaug)",
+		"he": "\u05e1\u05e4\u05e7 \u05e9\u05d9\u05e8\u05d5\u05ea \u05de\u05e8\u05d5\u05d7\u05e7 \u05de\u05e1\u05d5\u05d2 SAML 2.0",
+		"zh": "SAML 2.0 \u670d\u52a1\u63d0\u4f9b\u8005 (\u8fdc\u7a0b)"
 	},
 	"metaover_group_metadata.saml20-idp-hosted": {
 		"no": "SAML 2.0 Identitetsleverand\u00f8r (ekstern)",
@@ -469,7 +534,7 @@
 		"da": "SAML 2.0 identitetsudbyder (hosted)",
 		"hr": "SAML 2.0 autentikacijski servis (lokalni)",
 		"hu": "SAML 2.0 szem\u00e9lyazonoss\u00e1g-szolg\u00e1ltat\u00f3 (helyi)",
-		"pt-BR": "SAML 2.0 Identity Provider (Local)",
+		"pt-br": "SAML 2.0 Identity Provider (Local)",
 		"pt": "Fornecedor de identidade (IdP) SAML 2.0 (Local)",
 		"pl": "SAML 2.0 Dostawca To\u017csamo\u015bci (Lokalny)",
 		"cs": "SAML 2.0 Identity Provider (Hosted - lok\u00e1ln\u00ed)",
@@ -479,7 +544,10 @@
 		"it": "SAML 2.o Identity Provider (Hosted)",
 		"ja": "SAML 2.0\u30a2\u30a4\u30c7\u30f3\u30c6\u30a3\u30c6\u30a3\u30d7\u30ed\u30d0\u30a4\u30c0(\u30db\u30b9\u30c8)",
 		"lt": "SAML 2.0 Tapatybi\u0173 teik\u0117jas (vietinis)",
-		"zh-tw": "SAML 2.0 \u9a57\u8b49\u63d0\u4f9b\u8005(\u4e3b\u6a5f)"
+		"zh-tw": "SAML 2.0 \u9a57\u8b49\u63d0\u4f9b\u8005(\u4e3b\u6a5f)",
+		"et": "SAML 2.0 identiteedipakkuja (hostitud)",
+		"he": "\u05e1\u05e4\u05e7 \u05d6\u05d4\u05d5\u05ea \u05de\u05e7\u05d5\u05de\u05d9 \u05de\u05e1\u05d5\u05d2 SAML 2.0",
+		"zh": "SAML 2.0 \u8eab\u4efd\u63d0\u4f9b\u8005\uff08\u672c\u5730\uff09"
 	},
 	"metaover_group_metadata.saml20-idp-remote": {
 		"no": "SAML 2.0 Identitetsleverand\u00f8r (ekstern)",
@@ -491,7 +559,7 @@
 		"da": "SAML 2.0 identitetsudbyder (remote)",
 		"hr": "SAML 2.0 autentikacijski servis (udaljeni)",
 		"hu": "SAML 2.0  szem\u00e9lyazonoss\u00e1g-szolg\u00e1ltat\u00f3 (t\u00e1voli)",
-		"pt-BR": "SAML 2.0 Identity Provider (Remoto)",
+		"pt-br": "SAML 2.0 Identity Provider (Remoto)",
 		"pt": "Fornecedor de identidade (IdP) SAML 2.0 (Remoto)",
 		"pl": "SAML 2.0 Dostawca To\u017csamo\u015bci (Zdalny)",
 		"cs": "SAML 2.0 Identity Provider (Remote - vzd\u00e1len\u00fd)",
@@ -501,7 +569,10 @@
 		"it": "SAML 2.0 Identity Provider (Remoto)",
 		"ja": "SAML 2.0\u30a2\u30a4\u30c7\u30f3\u30c6\u30a3\u30c6\u30a3\u30d7\u30ed\u30d0\u30a4\u30c0(\u30ea\u30e2\u30fc\u30c8)",
 		"lt": "SAML 2.0 Tapatybi\u0173 teik\u0117jas (nutol\u0119s)",
-		"zh-tw": "SAML 2.0 \u9a57\u8b49\u63d0\u4f9b\u8005(\u9060\u7aef)"
+		"zh-tw": "SAML 2.0 \u9a57\u8b49\u63d0\u4f9b\u8005(\u9060\u7aef)",
+		"et": "SAML 2.0 identiteedipakkuja (hostitud)",
+		"he": "\u05e1\u05e4\u05e7 \u05d6\u05d4\u05d5\u05ea \u05de\u05e8\u05d5\u05d7\u05e7 \u05de\u05e1\u05d5\u05d2 SAML 2.0",
+		"zh": "SAML 2.0 \u8eab\u4efd\u63d0\u4f9b\u8005\uff08\u8fdc\u7a0b\uff09"
 	},
 	"metaover_group_metadata.shib13-sp-hosted": {
 		"no": "Shib 1.3 Tjenesteleverand\u00f8r (intern)",
@@ -513,7 +584,7 @@
 		"da": "Shibboleth 1.3 tjenesteudbyder (hosted)",
 		"hr": "Shib 1.3 davatelj usluge (lokalni)",
 		"hu": "Shib 1.3 alkalmaz\u00e1sszolg\u00e1lat\u00f3 (helyi)",
-		"pt-BR": "Shib 1.3 Service Provider (Local)",
+		"pt-br": "Shib 1.3 Service Provider (Local)",
 		"pt": "Fornecedor de servi\u00e7o (SP) Shib 1.3 (Local)",
 		"pl": "Shib 1.3 Dostawca Serwisu (Lokalny)",
 		"cs": "Shib 1.3 Service Provider (Hosted - lok\u00e1ln\u00ed)",
@@ -523,7 +594,10 @@
 		"it": "Shib 1.3 Service Provider (Hosted)",
 		"ja": "Shib 1.3\u30b5\u30fc\u30d3\u30b9\u30d7\u30ed\u30d0\u30a4\u30c0(\u30db\u30b9\u30c8)",
 		"lt": "Shib 1.3 Paslaugos teik\u0117jas (vietinis)",
-		"zh-tw": "Shib 1.3 \u670d\u52d9\u63d0\u4f9b\u8005(\u4e3b\u6a5f)"
+		"zh-tw": "Shib 1.3 \u670d\u52d9\u63d0\u4f9b\u8005(\u4e3b\u6a5f)",
+		"et": "Shib 1.3 teenusepakkuja (hostitud)",
+		"he": "\u05e1\u05e4\u05e7 \u05e9\u05d9\u05e8\u05d5\u05ea \u05de\u05e7\u05d5\u05de\u05d9 \u05de\u05e1\u05d5\u05d2 Shib 1.3",
+		"zh": "Shib 1.3 \u670d\u52a1\u63d0\u4f9b\u8005\uff08\u672c\u5730\uff09"
 	},
 	"metaover_group_metadata.shib13-sp-remote": {
 		"no": "Shib 1.3 Tjenesteleverand\u00f8r (ekstern)",
@@ -535,7 +609,7 @@
 		"da": "Shibboleth 1.3 tjenesteudbyder (remote)",
 		"hr": "Shib 1.3 davatelj usluge (udaljeni)",
 		"hu": "Shib 1.3 alkalmaz\u00e1sszolg\u00e1ltat\u00f3 (t\u00e1voli)",
-		"pt-BR": "Shib 1.3 Service Provider (Remoto)",
+		"pt-br": "Shib 1.3 Service Provider (Remoto)",
 		"pt": "Fornecedor de servi\u00e7o (SP) SAML 2.0 (Remoto)",
 		"pl": "Shib 1.3 Dostawca Serwisu (Zdalny)",
 		"cs": "Shib 1.3 Service Provider (Remote - vzd\u00e1len\u00fd)",
@@ -545,7 +619,10 @@
 		"it": "Shib 1.3 Service Provider (Remoto)",
 		"ja": "Shib 1.3\u30b5\u30fc\u30d3\u30b9\u30d7\u30ed\u30d0\u30a4\u30c0(\u30ea\u30e2\u30fc\u30c8)",
 		"lt": "Shib 1.3 Paslaugos teik\u0117jas (nutol\u0119s)",
-		"zh-tw": "Shib 1.3 \u670d\u52d9\u63d0\u4f9b\u8005(\u9060\u7aef)"
+		"zh-tw": "Shib 1.3 \u670d\u52d9\u63d0\u4f9b\u8005(\u9060\u7aef)",
+		"et": "Shib 1.3 teenusepakkuja (kaug)",
+		"he": "\u05e1\u05e4\u05e7 \u05e9\u05d9\u05e8\u05d5\u05ea \u05de\u05e8\u05d5\u05d7\u05e7 \u05de\u05e1\u05d5\u05d2 Shib 1.3",
+		"zh": "Shib 1.3 \u670d\u52a1\u63d0\u4f9b\u8005\uff08\u8fdc\u7a0b\uff09"
 	},
 	"metaover_group_metadata.shib13-idp-hosted": {
 		"no": "Shib 1.3 Identitetsleverand\u00f8r (ekstern)",
@@ -557,7 +634,7 @@
 		"da": "Shibboleth 1.3 identitetsudbyder (hosted)",
 		"hr": "Shib 1.3 autentikacijski servis (lokalni)",
 		"hu": "Shib 1.3 szem\u00e9lyazonoss\u00e1g-szolg\u00e1ltat\u00f3 (helyi)",
-		"pt-BR": "Shib 1.3 Identity Provider (Local)",
+		"pt-br": "Shib 1.3 Identity Provider (Local)",
 		"pt": "Fornecedor de identidade (IdP) Shib 1.3 (Local)",
 		"pl": "Shib 1.3 Dostawca To\u017csamo\u015bci (Lokalny)",
 		"cs": "Shib 1.3 Identity Provider (Hosted - lok\u00e1ln\u00ed)",
@@ -567,7 +644,10 @@
 		"it": "Shib 1.3 Identity Provider (Hosted)",
 		"ja": "Shib 1.3\u30a2\u30a4\u30c7\u30f3\u30c6\u30a3\u30c6\u30a3\u30d7\u30ed\u30d0\u30a4\u30c0(\u30db\u30b9\u30c8)",
 		"lt": "Shib 1.3 Tapatybi\u0173 teik\u0117jas (vietinis)",
-		"zh-tw": "Shib 1.3 \u9a57\u8b49\u63d0\u4f9b\u8005(\u4e3b\u6a5f)"
+		"zh-tw": "Shib 1.3 \u9a57\u8b49\u63d0\u4f9b\u8005(\u4e3b\u6a5f)",
+		"et": "Shib 1.3 identiteedipakkuja (hostitud)",
+		"he": "\u05e1\u05e4\u05e7 \u05d6\u05d4\u05d5\u05ea \u05de\u05e7\u05d5\u05de\u05d9 \u05de\u05e1\u05d5\u05d2 Shib 1.3",
+		"zh": "Shib 1.3 \u8ba4\u8bc1\u63d0\u4f9b\u8005\uff08\u672c\u5730\uff09"
 	},
 	"metaover_group_metadata.shib13-idp-remote": {
 		"no": "Shib 1.3 Identitetsleverand\u00f8r (ekstern) ",
@@ -579,7 +659,7 @@
 		"da": "Shibboleth 1.3 identitetsudbyder (remote)",
 		"hr": "Shib 1.3 autentikacijski servis (udaljeni)",
 		"hu": "Shib 1.3 szem\u00e9lyazonoss\u00e1g-szolg\u00e1ltat\u00f3 (t\u00e1voli)",
-		"pt-BR": "Shib 1.3 Identity Provider (Remoto)",
+		"pt-br": "Shib 1.3 Identity Provider (Remoto)",
 		"pt": "Fornecedor de identidade (IdP) Shib 1.3 (Remoto)",
 		"pl": "Shib 1.3 Dostawca To\u017csamo\u015bci (Zdalny)",
 		"cs": "Shib 1.3 Identity Provider (Remote - vzd\u00e1len\u00fd)",
@@ -589,7 +669,10 @@
 		"it": "Shib 1.3 Identity Provider (Remoto)",
 		"ja": "Shib 1.3\u30a2\u30a4\u30c7\u30f3\u30c6\u30a3\u30c6\u30a3\u30d7\u30ed\u30d0\u30a4\u30c0(\u30ea\u30e2\u30fc\u30c8)",
 		"lt": "Shib 1.3 Tapatybi\u0173 teik\u0117jas (nutol\u0119s)",
-		"zh-tw": "Shib 1.3 \u9a57\u8b49\u63d0\u4f9b\u8005(\u9060\u7aef)"
+		"zh-tw": "Shib 1.3 \u9a57\u8b49\u63d0\u4f9b\u8005(\u9060\u7aef)",
+		"et": "Shib 1.3 identiteedipakkuja (kaug)",
+		"he": "\u05e1\u05e4\u05e7 \u05d6\u05d4\u05d5\u05ea \u05de\u05e8\u05d5\u05d7\u05e7 \u05de\u05e1\u05d5\u05d2 Shib 1.3",
+		"zh": "Shib 1.3 \u8ba4\u8bc1\u63d0\u4f9b\u8005\uff08\u8fdc\u7a0b\uff09"
 	},
 	"metaover_group_metadata.wsfed-sp-hosted": {
 		"no": "WS-Federation tjenesteleverand\u00f8r (intern)",
@@ -601,7 +684,7 @@
 		"da": "WS-Federation tjenesteudbyder (hosted)",
 		"hr": "<i>WS-Federation<\/i> davatelj usluge (lokalni)",
 		"hu": "WS-Federation alkalmaz\u00e1sszolg\u00e1ltat\u00f3 (helyi)",
-		"pt-BR": "WS-Federation Service Provider (Local)",
+		"pt-br": "WS-Federation Service Provider (Local)",
 		"pt": "Fornecedor de servi\u00e7o (SP) WS-Federation (Local)",
 		"pl": "WS-Federation Dostawca Serwisu (Lokalny)",
 		"cs": "WS-Federation Service Provider (Hosted - lok\u00e1ln\u00ed)",
@@ -611,7 +694,10 @@
 		"it": "WS-Federation Service Provider (Hosted)",
 		"ja": "WS-Federation\u30b5\u30fc\u30d3\u30b9\u30d7\u30ed\u30d0\u30a4\u30c0(\u30db\u30b9\u30c8)",
 		"lt": "WS-Federacijos Paslaugos teik\u0117jas (vietinis)",
-		"zh-tw": "WS-Federation \u670d\u52d9\u63d0\u4f9b\u8005(\u4e3b\u6a5f)"
+		"zh-tw": "WS-Federation \u670d\u52d9\u63d0\u4f9b\u8005(\u4e3b\u6a5f)",
+		"et": "WS-Federation teenusepakkuja (hostitud)",
+		"he": "\u05e1\u05e4\u05e7 \u05e9\u05d9\u05e8\u05d5\u05ea \u05de\u05e7\u05d5\u05de\u05d9 \u05de\u05e1\u05d5\u05d2 \u05d0\u05d9\u05d7\u05d5\u05d3-WS",
+		"zh": "WS-Federation \u670d\u52a1\u63d0\u4f9b\u8005\uff08\u672c\u5730\uff09"
 	},
 	"metaover_group_metadata.wsfed-idp-remote": {
 		"no": "WS-Federation identitetsleverand\u00f8r (ekstern)",
@@ -623,7 +709,7 @@
 		"da": "WS-Federation identitetsudbyder (remote)",
 		"hr": "<i>WS-Federation<\/i> autentikacijski servis (udaljeni)",
 		"hu": "WS-Federation alkalmaz\u00e1sszolg\u00e1ltat\u00f3 (t\u00e1voli)",
-		"pt-BR": "WS-Federation Identity Provider (Remoto)",
+		"pt-br": "WS-Federation Identity Provider (Remoto)",
 		"pt": "Fornecedor de identidade (IdP) WS-Federation (Remoto)",
 		"pl": "WS-Federation Dostawca To\u017csamo\u015bci (Zdalny)",
 		"cs": "WS-Federation Identity Provider (Remote - vzd\u00e1len\u00fd)",
@@ -633,7 +719,10 @@
 		"it": "WS-Federation Identity Provider (Remoto)",
 		"ja": "WS-Federation\u30a2\u30a4\u30c7\u30f3\u30c6\u30a3\u30c6\u30a3\u30d7\u30ed\u30d0\u30a4\u30c0(\u30ea\u30e2\u30fc\u30c8)",
 		"lt": "WS-Federacijos Paslaugos teik\u0117jas (nutol\u0119s)",
-		"zh-tw": "WS-Federation \u9a57\u8b49\u63d0\u4f9b\u8005(\u9060\u7aef)"
+		"zh-tw": "WS-Federation \u9a57\u8b49\u63d0\u4f9b\u8005(\u9060\u7aef)",
+		"et": "WS-Federation identiteedipakkuja (kaug)",
+		"he": "\u05e1\u05e4\u05e7 \u05d6\u05d4\u05d5\u05ea \u05de\u05e8\u05d5\u05d7\u05e7 \u05de\u05e1\u05d5\u05d2 \u05d0\u05d9\u05d7\u05d5\u05d3-WS",
+		"zh": "WS-Federation \u8eab\u4efd\u63d0\u4f9b\u8005\uff08\u8fdc\u7a0b\uff09"
 	},
 	"metaconv_title": {
 		"no": "Metadata parser",
@@ -645,7 +734,7 @@
 		"da": "Metadata parser",
 		"hr": "Analizator metapodataka",
 		"hu": "Metaadat \u00e9rtelmez\u0151",
-		"pt-BR": "Parser Metadata",
+		"pt-br": "Parser Metadata",
 		"pt": "Conversor de Metadados",
 		"pl": "Parser metadanych",
 		"cs": "Metadata parser",
@@ -655,7 +744,10 @@
 		"it": "Parser dei metadati",
 		"ja": "\u30e1\u30bf\u30c7\u30fc\u30bf\u30d1\u30fc\u30b5",
 		"lt": "Metaduomen\u0173 analizatorius",
-		"zh-tw": "\u8a6e\u91cb\u8cc7\u6599\u89e3\u6790"
+		"zh-tw": "\u8a6e\u91cb\u8cc7\u6599\u89e3\u6790",
+		"et": "Metaandmete parsija",
+		"he": "\u05de\u05e0\u05ea\u05d7 \u05de\u05d8\u05d0-\u05de\u05d9\u05d3\u05e2",
+		"zh": "\u5143\u4fe1\u606f\u5206\u6790\u5668"
 	},
 	"metaconv_xmlmetadata": {
 		"no": "XML metadata",
@@ -667,7 +759,7 @@
 		"da": "XML metadata",
 		"hr": "XML metapodaci",
 		"hu": "XML metaadat",
-		"pt-BR": "Metadata XML",
+		"pt-br": "Metadata XML",
 		"pt": "Metadados em XML",
 		"pl": "XML Metadane",
 		"cs": "XML Metadata",
@@ -677,7 +769,10 @@
 		"it": "Metadati XML",
 		"ja": "XML\u30e1\u30bf\u30c7\u30fc\u30bf",
 		"lt": "XML metaduomenys",
-		"zh-tw": "XML \u8a6e\u91cb\u8cc7\u6599"
+		"zh-tw": "XML \u8a6e\u91cb\u8cc7\u6599",
+		"et": "XML-metaandmed",
+		"he": "\u05de\u05d8\u05d0-\u05de\u05d9\u05d3\u05e2 \u05d1\u05ea\u05d1\u05e0\u05d9\u05ea XML",
+		"zh": "XML\u5143\u4fe1\u606f"
 	},
 	"metaconv_parse": {
 		"no": "Pars",
@@ -689,7 +784,7 @@
 		"da": "Parse",
 		"hr": "Analiziraj",
 		"hu": "\u00c9rtelmez",
-		"pt-BR": "Parse",
+		"pt-br": "Parse",
 		"pt": "Converter",
 		"pl": "Przetw\u00f3rz",
 		"cs": "Anal\u00fdza",
@@ -699,7 +794,10 @@
 		"it": "Analisi",
 		"ja": "\u30d1\u30fc\u30b9",
 		"lt": "Nagrin\u0117ti",
-		"zh-tw": "\u89e3\u6790"
+		"zh-tw": "\u89e3\u6790",
+		"et": "Parsi",
+		"he": "\u05e0\u05ea\u05d7",
+		"zh": "\u5206\u6790\u5668"
 	},
 	"metaconv_converted": {
 		"no": "Konvertert metadata",
@@ -711,7 +809,7 @@
 		"da": "Konverteret metadata",
 		"hr": "Pretvoreni metapodaci",
 		"hu": "Konvert\u00e1lt metaadatok",
-		"pt-BR": "Metadata convetida",
+		"pt-br": "Metadata convetida",
 		"pt": "Resultado da convers\u00e3o de Metadados",
 		"pl": "Skonwertowane metadane",
 		"cs": "Konvertovan\u00e1 metadata",
@@ -721,7 +819,10 @@
 		"it": "Metadati convertiti",
 		"ja": "\u5909\u63db\u3055\u308c\u305f\u30e1\u30bf\u30c7\u30fc\u30bf",
 		"lt": "Sukonvertuoti metaduomenys",
-		"zh-tw": "\u8f49\u63db\u8a6e\u91cb\u8cc7\u6599"
+		"zh-tw": "\u8f49\u63db\u8a6e\u91cb\u8cc7\u6599",
+		"et": "Teisendatud metaandmed",
+		"he": "\u05de\u05d8\u05d0-\u05de\u05d9\u05d3\u05e2 \u05de\u05d5\u05de\u05e8",
+		"zh": "\u8f6c\u6362\u8fc7\u7684\u5143\u4fe1\u606f"
 	},
 	"metadata_saml20-sp": {
 		"no": "SAML 2.0 SP metadata",
@@ -733,7 +834,7 @@
 		"da": "SAML 2.0 tjenesteudbyders metadata",
 		"hr": "SAML 2.0 metapodaci o davatelju usluge",
 		"hu": "SAML 2.0 SP Metaadatok",
-		"pt-BR": "SAML 2.0 SP Metadata",
+		"pt-br": "SAML 2.0 SP Metadata",
 		"pt": "Metadados SAML 2.0 SP",
 		"pl": "SAML 2.0 SP - Metadane",
 		"cs": "SAML 2.0 SP Metadata",
@@ -743,7 +844,10 @@
 		"it": "Metadati SAML 2.0 SP",
 		"ja": "SAML 2.0 SP\u30e1\u30bf\u30c7\u30fc\u30bf",
 		"lt": "SAML 2.0 SP Metaduomenys",
-		"zh-tw": "SAML 2.0 SP \u8a6e\u91cb\u8cc7\u6599"
+		"zh-tw": "SAML 2.0 SP \u8a6e\u91cb\u8cc7\u6599",
+		"et": "SAML 2.0 SP metaandmed",
+		"he": "\u05de\u05d8\u05d0-\u05de\u05d9\u05d3\u05e2 \u05e9\u05dc \u05e1\u05e9 \u05de\u05e1\u05d5\u05d2 SAML 2.0 ",
+		"zh": "SAML 2.0 SP \u5143\u4fe1\u606f"
 	},
 	"metadata_saml20-idp": {
 		"no": "SAML 2.0 IdP metadata",
@@ -755,7 +859,7 @@
 		"da": "SAML 2.0 identitetsudbyders metadata",
 		"hr": "SAML 2.0 metapodaci o autentikacijskom servisu",
 		"hu": "SAML 2.0 IdP Metaadatok",
-		"pt-BR": "SAML 2.0 IdP Metadata",
+		"pt-br": "SAML 2.0 IdP Metadata",
 		"pt": "Metadados SAML 2.0 IdP",
 		"pl": "SAML 2.0 IdP - Metadane",
 		"cs": "SAML 2.0 IdP Metadata",
@@ -765,7 +869,10 @@
 		"it": "Metadati SAML 2.0 IdP",
 		"ja": "SAML 2.0 IdP\u30e1\u30bf\u30c7\u30fc\u30bf",
 		"lt": "SAML 2.0 IdP Metaduomenys",
-		"zh-tw": "SAML 2.0 IdP \u8a6e\u91cb\u8cc7\u6599"
+		"zh-tw": "SAML 2.0 IdP \u8a6e\u91cb\u8cc7\u6599",
+		"et": "SAML 2.0 IdP metaandmed",
+		"he": "\u05de\u05d8\u05d0-\u05de\u05d9\u05d3\u05e2 \u05e9\u05dc \u05e1\u05d6 \u05de\u05e1\u05d5\u05d2 SAML 2.0 ",
+		"zh": "SAML 2.0 IdP \u5143\u4fe1\u606f"
 	},
 	"metadata_shib13-sp": {
 		"no": "Shib 1.3 SP metadata",
@@ -777,7 +884,7 @@
 		"da": "Shibboleth 1.3 tjenesteudbyders metadata",
 		"hr": "Shib 1.3 metapodaci o davatelju usluge",
 		"hu": "Shib 1.3 SP Metaadatok",
-		"pt-BR": "Shib 1.3 SP Metadata",
+		"pt-br": "Shib 1.3 SP Metadata",
 		"pt": "Metadados Shib 1.3 SP",
 		"pl": "Shib 1.3 SP - Metadane",
 		"cs": "Shib 1.3 SP Metadata",
@@ -787,7 +894,10 @@
 		"it": "Metadati Shib 1.3 SP",
 		"ja": "Shib 1.3 SP\u30e1\u30bf\u30c7\u30fc\u30bf",
 		"lt": "Shib 1.3 SP Metaduomenys",
-		"zh-tw": "Shib 1.3 SP \u8a6e\u91cb\u8cc7\u6599"
+		"zh-tw": "Shib 1.3 SP \u8a6e\u91cb\u8cc7\u6599",
+		"et": "Shib 1.3 SP metaandmed",
+		"he": "\u05de\u05d8\u05d0-\u05de\u05d9\u05d3\u05e2 \u05e9\u05dc \u05e1\u05e9 \u05de\u05e1\u05d5\u05d2 Shib 1.3",
+		"zh": "Shib 1.3 SP \u5143\u4fe1\u606f"
 	},
 	"metadata_shib13-idp": {
 		"no": "Shib 1.3 IdP metadata",
@@ -799,7 +909,7 @@
 		"da": "Shibboleth 1.3 identitetsudbyders metadata",
 		"hr": "Shib 1.3 metapodaci o autentikacijskom servisu",
 		"hu": "Shib 1.3 IdP Metaadatok",
-		"pt-BR": "Shib 1.3 IdP Metadata",
+		"pt-br": "Shib 1.3 IdP Metadata",
 		"pt": "Metadados Shib 1.3 IdP",
 		"pl": "Shib 1.3 IdP - Metadane",
 		"cs": "Shib 1.3 IdP Metadata",
@@ -809,7 +919,10 @@
 		"it": "Metadati Shib 1.3 IdP",
 		"ja": "Shib 1.3 IdP\u30e1\u30bf\u30c7\u30fc\u30bf",
 		"lt": "Shib 1.3 IdP Metaduomenys",
-		"zh-tw": "Shib 1.3 IdP \u8a6e\u91cb\u8cc7\u6599"
+		"zh-tw": "Shib 1.3 IdP \u8a6e\u91cb\u8cc7\u6599",
+		"et": "Shib 1.3 IdP metaandmed",
+		"he": "\u05de\u05d8\u05d0-\u05de\u05d9\u05d3\u05e2 \u05e9\u05dc \u05e1\u05d6 \u05de\u05e1\u05d5\u05d2 Shib 1.3",
+		"zh": "Shib 1.3 IdP \u5143\u4fe1\u606f"
 	},
 	"metadata_intro": {
 		"no": "Her er metadata som simpleSAMLphp har generert for deg. Du m\u00e5 utveksle metadata med de partene du stoler p\u00e5 for \u00e5 sette opp en f\u00f8derasjon.",
@@ -821,7 +934,7 @@
 		"da": "Her er det metadata, som simpleSAMLphp har genereret. Du kan sende det til dem du stoler i forbindelse med oprettelsen af en f\u00f8deration.",
 		"hr": "Ovo su metapodaci koje je simpleSAMLphp generirao za vas. Te metapodatke mo\u017eete poslati partnerima u koje imate povjerenja i s kojima \u017eelite uspostaviti federaciju.",
 		"hu": "Ezeket a metaadatokat a SimpleSAMLphp gener\u00e1lta. Ezt a dokumentumot k\u00fcldheti el f\u00f6der\u00e1ci\u00f3s partnerei sz\u00e1m\u00e1ra.",
-		"pt-BR": "Aqui est\u00e1 a metadata que o simpleSAMLphp gerou para voc\u00ea. Voc\u00ea pode enviar este documento metadata para parceiros confi\u00e1veis para a configura\u00e7\u00e3o de uma federa\u00e7\u00e3o confi\u00e1vel.",
+		"pt-br": "Aqui est\u00e1 a metadata que o simpleSAMLphp gerou para voc\u00ea. Voc\u00ea pode enviar este documento metadata para parceiros confi\u00e1veis para a configura\u00e7\u00e3o de uma federa\u00e7\u00e3o confi\u00e1vel.",
 		"pt": "De seguida pode encontrar os metadados gerados pelo simpleSAMLphp. Pode enviar este documento de metadados aos seus parceiros para configurar uma federa\u00e7\u00e3o.",
 		"pl": "Tutaj sa metadane, kt\u00f3re simpleSAMLphp wygenerowa\u0142 dla Ciebie. Mo\u017cesz je wys\u0142a\u0107 zaufanym partnerom w celu stworzenia zaufanej federacji.",
 		"cs": "Zde jsou metadata, kter\u00e1 pro v\u00e1s simpleSAMLphp generuje. M\u016f\u017eete zaslat tento dokument sv\u00fdm d\u016fv\u011bryhodn\u00fdm partner\u016fm a zalo\u017eit tak federaci.",
@@ -831,7 +944,10 @@
 		"it": "Questi sono i metadati che simpleSAMLphp ha generato e che possono essere inviati ai partner fidati per creare una federazione tra siti.",
 		"ja": "\u3053\u3053\u306f simpleSAMLphp \u304c\u751f\u6210\u3057\u305f\u30e1\u30bf\u30c7\u30fc\u30bf\u304c\u3042\u308a\u307e\u3059\u3002\u3042\u306a\u305f\u306f\u4fe1\u983c\u3059\u308b\u30d1\u30fc\u30c8\u30ca\u30fc\u306b\u3053\u306e\u30e1\u30bf\u30c7\u30fc\u30bf\u3092\u9001\u4fe1\u3057\u4fe1\u983c\u3055\u308c\u305f\u9023\u643a\u3092\u69cb\u7bc9\u51fa\u6765\u307e\u3059\u3002",
 		"lt": "Metaduomenys, kuriuos Jums sugeneravo simpleSAMLphp. Norint \u012fsteigti patikim\u0105 federacij\u0105, galite patikimiems partneriams i\u0161si\u0173sti \u0161iuos metaduomenis.",
-		"zh-tw": "\u9019\u662f simpleSAMLphp \u7522\u751f\u7d66\u60a8\u7684\u8a6e\u91cb\u8cc7\u6599\uff0c\u60a8\u53ef\u4ee5\u50b3\u9001\u6b64\u8a6e\u91cb\u8cc7\u6599\u6587\u4ef6\u7d66\u60a8\u4fe1\u4efb\u7684\u5925\u4f34\u4f86\u5efa\u7acb\u53ef\u9760\u7684\u806f\u76df\u3002"
+		"zh-tw": "\u9019\u662f simpleSAMLphp \u7522\u751f\u7d66\u60a8\u7684\u8a6e\u91cb\u8cc7\u6599\uff0c\u60a8\u53ef\u4ee5\u50b3\u9001\u6b64\u8a6e\u91cb\u8cc7\u6599\u6587\u4ef6\u7d66\u60a8\u4fe1\u4efb\u7684\u5925\u4f34\u4f86\u5efa\u7acb\u53ef\u9760\u7684\u806f\u76df\u3002",
+		"et": "Need on simpleSAMLphp poolt sulle genereeritud metaandmed. V\u00f5id saata need metaandmed usaldatavatele partneritele usaldatava f\u00f6deratsiooni loomiseks.",
+		"he": "\u05d4\u05e0\u05d4 \u05d4\u05de\u05d8\u05d0-\u05de\u05d9\u05d3\u05e2 \u05e9 simpleSAMLphp \u05d9\u05d9\u05e6\u05e8 \u05e2\u05d1\u05d5\u05e8\u05da. \u05d0\u05ea\u05d4 \u05d9\u05db\u05d5\u05dc \u05dc\u05e9\u05dc\u05d5\u05d7 \u05d0\u05ea \u05de\u05e1\u05de\u05da \u05d4\u05de\u05d8\u05d0-\u05de\u05d9\u05d3\u05e2 \u05dc\u05e9\u05d5\u05ea\u05e4\u05d9\u05dd \u05de\u05d4\u05d9\u05de\u05e0\u05d9\u05dd \u05db\u05d3\u05d9 \u05dc\u05d9\u05e6\u05d5\u05e8 \u05d0\u05d9\u05d7\u05d5\u05d3 \u05de\u05d0\u05d5\u05d1\u05d8\u05d7. ",
+		"zh": "\u8fd9\u91cc\u662fsimpleSAMLphp\u4e3a\u4f60\u751f\u6210\u7684\u5143\u4fe1\u606f\uff0c\u4f60\u5e94\u8be5\u53d1\u9001\u8fd9\u4e2a\u5143\u4fe1\u606f\u6587\u6863\u7ed9\u4f60\u7684\u4fe1\u4efb\u7684\u5408\u4f5c\u4f19\u4f34\u4ee5\u5efa\u7acb\u4fe1\u4efb\u7684\u8054\u76df"
 	},
 	"metadata_xmlurl": {
 		"no": "Du kan n\u00e5 <a href=\"%METAURL%\">metadata i XML-format p\u00e5 en dedikert URL<\/a>:",
@@ -843,7 +959,7 @@
 		"da": "Du kan f\u00e5 metadata-xml <a href=\"%METAURL%\">her<\/a>:",
 		"hr": "Metapodaci su dostupni na <a href=\"%METAURL%\">ovoj adresi<\/a>:",
 		"hu": "A k\u00f6vetkez\u0151 c\u00edmr\u0151l <a href=\"%METAURL%\">t\u00f6ltheti le a metaadatokat<\/a>:",
-		"pt-BR": "Voc\u00ea pode obter as metadatas xml <a href=\"%METAURL%\"> em uma URL dedicada<\/a>:",
+		"pt-br": "Voc\u00ea pode obter as metadatas xml <a href=\"%METAURL%\"> em uma URL dedicada<\/a>:",
 		"pt": "Pode <a href=\"%METAURL%\">obter os metadados em XML num URL dedicado<\/a>:",
 		"pl": "Mo\u017cesz <a href=\"%METAURL%\">pobra\u0107 metadane w formacie xml<\/a>:",
 		"cs": "<a href=\"%METAURL%\">Z\u00edskejte metadata v XML form\u00e1tu na dedikovan\u00e9 adrese<\/a>",
@@ -853,7 +969,10 @@
 		"it": "Si possono <a href=\"%METAURL%\">ottenere i metadati in XML dall'URL dedicata<\/a>:",
 		"ja": "<a href=\"%METAURL%\">\u3053\u306eURL\u3067\u30e1\u30bf\u30c7\u30fc\u30bf\u306eXML\u3092\u53d6\u5f97\u3067\u304d\u307e\u3059<\/a>:",
 		"lt": "J\u016bs galite <a href=\"%METAURL%\">gauti metaduomenis XML formatu<\/a>:",
-		"zh-tw": "<a href=\"%METAURL%\"> \u76f4\u63a5\u53d6\u5f97\u8a6e\u91cb\u8cc7\u6599 xml \u683c\u5f0f\u6a94 <\/a>"
+		"zh-tw": "<a href=\"%METAURL%\"> \u76f4\u63a5\u53d6\u5f97\u8a6e\u91cb\u8cc7\u6599 xml \u683c\u5f0f\u6a94 <\/a>",
+		"et": "<a href=\"%METAURL%\">Metaandmete XML-i on v\u00f5imalik saada spetsiaalselt aadressilt<\/a>:",
+		"he": "\u05d0\u05ea\u05d4 \u05d9\u05db\u05d5\u05dc <a href=\"%METAURL%\">\u05dc\u05e7\u05d1\u05dc \u05d0\u05ea \u05d4\u05de\u05d8\u05d0 \u05de\u05d9\u05d3\u05e2 \u05d1\u05db\u05ea\u05d5\u05d1\u05ea \u05e0\u05e4\u05e8\u05d3\u05ea<\/a>:",
+		"zh": "\u4f60\u53ef\u4ee5\u5728 <a href=\"%METAURL%\">\u83b7\u53d6\u5143\u4fe1\u606fXML<\/a>"
 	},
 	"metadata_simplesamlformat": {
 		"no": "I simpleSAMLphp format - bruk denne dersom du benytter simpleSAMLphp i den andre enden:",
@@ -865,7 +984,7 @@
 		"da": "I simpleSAMLphp flat-file format - brug dette hvis du ogs\u00e5 bruger simpleSAMLphp i den anden ende;",
 		"hr": "U simpleSAMLphp formatu - koristite ovu opciju ako se na drugoj strani tako\u0111er nalazi simpleSAMLphp entitet:",
 		"hu": "SimpleSAMLphp f\u00e1jl form\u00e1tumban - akkor haszn\u00e1lhat\u00f3, ha a m\u00e1sik oldalon simpleSAMLphp van:",
-		"pt-BR": "Em formato de arquivo plano simpleSAMLphp - use isso se voc\u00ea estiver usando uma entidade  simpleSAMLphp do outro lado:",
+		"pt-br": "Em formato de arquivo plano simpleSAMLphp - use isso se voc\u00ea estiver usando uma entidade  simpleSAMLphp do outro lado:",
 		"pt": "Metadados no formato ficheiro de configura\u00e7\u00e3o do simpleSAMLphp. Use esta alternativa se usar uma entidade simpleSAMLphp no outro extremo:",
 		"cs": "Ve simpleSAMLphp souborov\u00e9m form\u00e1tu (flat-file) - pou\u017eijte je, pokud pot\u0159ebujete pou\u017e\u00edvat simpleSAMLphp na druh\u00e9 stran\u011b:",
 		"tr": "E\u011fer di\u011fer tarafta bir simpleSAMLphp eleman\u0131n\u0131 kullan\u0131yorsan\u0131z, d\u00fcz simpleSAMLphp dosya bi\u00e7iminde bunu kullan\u0131n:",
@@ -874,7 +993,9 @@
 		"it": "In formato flat per simpleSAMLphp - da utilizzare se dall'altra parte c'\u00e8 un'entit\u00e0 che utilizza simpleSAMLphp",
 		"ja": "simpleSAMLphp \u306e\u30d5\u30a1\u30a4\u30eb\u30d5\u30a9\u30fc\u30de\u30c3\u30c8 - \u7247\u5074\u3067\u3082 simpleSAMLphp\u30a8\u30f3\u30c6\u30a3\u30c6\u30a3\u3092\u4f7f\u7528\u3059\u308b\u5834\u5408\u306b\u3053\u308c\u3092\u4f7f\u7528\u3057\u307e\u3059:",
 		"lt": "simpleSAMLphp paprasto failo formatas - naudokite j\u012f, jei naudojate simpleSAMLphp kitoje esyb\u0117je:",
-		"zh-tw": "\u5982\u679c\u60a8\u9700\u8981\u65bc\u5176\u4ed6\u5730\u65b9\u4f7f\u7528 simpleSAMLphp \u5be6\u9ad4 - \u8acb\u53c3\u95b1 simpleSAMLphp \u5e73\u9762\u6587\u4ef6\u683c\u5f0f\uff1a"
+		"zh-tw": "\u5982\u679c\u60a8\u9700\u8981\u65bc\u5176\u4ed6\u5730\u65b9\u4f7f\u7528 simpleSAMLphp \u5be6\u9ad4 - \u8acb\u53c3\u95b1 simpleSAMLphp \u5e73\u9762\u6587\u4ef6\u683c\u5f0f\uff1a",
+		"et": "simpleSAMLphp formaadis: kasuta seda siis, kui ka teine pool kasutab simpleSAMLphp-d:",
+		"he": "\u05d1\u05ea\u05d1\u05e0\u05d9\u05ea \u05e7\u05d5\u05d1\u05e5 simpleSAMLphp \u05e9\u05d8\u05d5\u05d7 - \u05dc\u05de\u05e7\u05e8\u05d9\u05dd \u05d1\u05d4\u05dd \u05d0\u05ea\u05d4 \u05de\u05e9\u05ea\u05de\u05e9 \u05d1\u05d9\u05e9\u05d5\u05ea simpleSAMLphp \u05d1\u05e6\u05d3 \u05d4\u05e9\u05e0\u05d9: "
 	},
 	"debug_sending_message_title": {
 		"no": "Sender melding",
@@ -886,7 +1007,7 @@
 		"da": "Sender besked",
 		"hr": "\u0160aljem poruku",
 		"hu": "\u00dczenet k\u00fcld\u00e9se",
-		"pt-BR": "Enviando a mensagem",
+		"pt-br": "Enviando a mensagem",
 		"pt": "A enviar a mensagem",
 		"pl": "Wysy\u0142anie wiadomo\u015bci",
 		"cs": "Pos\u00edl\u00e1m zpr\u00e1vu",
@@ -896,7 +1017,10 @@
 		"it": "Invio del messaggio",
 		"ja": "\u30e1\u30c3\u30bb\u30fc\u30b8\u3092\u9001\u4fe1\u4e2d",
 		"lt": "Siun\u010diamas prane\u0161imas",
-		"zh-tw": "\u50b3\u9001\u8a0a\u606f"
+		"zh-tw": "\u50b3\u9001\u8a0a\u606f",
+		"et": "Teate saatmine",
+		"he": "\u05e9\u05d5\u05dc\u05d7 \u05d4\u05d5\u05d3\u05e2\u05d4",
+		"zh": "\u6b63\u5728\u53d1\u9001\u6d88\u606f"
 	},
 	"debug_sending_message_text_button": {
 		"no": "Du er i ferd med \u00e5 sende en melding. Trykk knappen \u00abSend melding\u00bb for \u00e5 fortsette.",
@@ -908,7 +1032,7 @@
 		"da": "Tryk p\u00e5 'send' for at forts\u00e6tte med at sende beskeden",
 		"hr": "Kliknite na gumb \"Po\u0161alji poruku\" da biste poslali poruku.",
 		"hu": "\u00dczenetet k\u00fcldhet. Kattintson az \u00dczenet k\u00fcld\u00e9se gombra a folytat\u00e1shoz.",
-		"pt-BR": "Voc\u00ea est\u00e1 prestes a enviar uma mensagem. Aperte o bot\u00e3o enviar mensagem para continuar.",
+		"pt-br": "Voc\u00ea est\u00e1 prestes a enviar uma mensagem. Aperte o bot\u00e3o enviar mensagem para continuar.",
 		"pt": "Est\u00e1 prestes a enviar uma mensagem. Carregue no bot\u00e3o para continuar.",
 		"cs": "M\u016f\u017eete poslat zpr\u00e1vu. Po\u017eijte tla\u010d\u00edtko k pokra\u010dov\u00e1n\u00ed.",
 		"tr": "Mesaj g\u00f6ndermek \u00fczeresiniz. Devam etmek i\u00e7in mesaj g\u00f6nder butonuna t\u0131klay\u0131n.",
@@ -917,7 +1041,10 @@
 		"it": "Si sta per inviare un messaggio. Premere il pulsante di invio per continuare.",
 		"ja": "\u30e1\u30c3\u30bb\u30fc\u30b8\u3092\u9001\u4fe1\u3057\u307e\u3059\u3002\u7d9a\u3051\u308b\u306b\u306f\u30e1\u30c3\u30bb\u30fc\u30b8\u9001\u4fe1\u30dc\u30bf\u30f3\u3092\u62bc\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
 		"lt": "J\u016bs\u0173 prane\u0161imas siun\u010diamas. Nor\u0117dami t\u0119sti, paspauskite prane\u0161imo patvirtinimo mygtuk\u0105.",
-		"zh-tw": "\u60a8\u6b63\u5728\u50b3\u9001\u4e00\u5247\u8a0a\u606f\uff0c\u8acb\u9ede\u9078\u63d0\u4ea4\u8a0a\u606f\u6309\u9215\u4f86\u7e7c\u7e8c\u3002"
+		"zh-tw": "\u60a8\u6b63\u5728\u50b3\u9001\u4e00\u5247\u8a0a\u606f\uff0c\u8acb\u9ede\u9078\u63d0\u4ea4\u8a0a\u606f\u6309\u9215\u4f86\u7e7c\u7e8c\u3002",
+		"et": "Oled teadet saatmas. J\u00e4tkamiseks vajuta teatesaatmisnuppu.",
+		"he": "\u05d0\u05ea\u05d4 \u05e2\u05d5\u05de\u05d3 \u05dc\u05e9\u05dc\u05d5\u05d7 \u05d4\u05d5\u05d3\u05e2\u05d4. \u05dc\u05d7\u05e5 \u05e2\u05dc \u05db\u05e4\u05ea\u05d5\u05e8 \u05d4\u05e9\u05dc\u05d9\u05d7\u05d4 \u05db\u05d3\u05d9 \u05dc\u05d4\u05de\u05e9\u05d9\u05da.",
+		"zh": "\u4f60\u51c6\u5907\u53d1\u9001\u4e00\u4e2a\u6d88\u606f\uff0c\u8bf7\u70b9\u51fb\u63d0\u4ea4\u6309\u94ae\u4ee5\u7ee7\u7eed"
 	},
 	"debug_disable_debug_mode": {
 		"no": "Do kan skru av debug modus i den globale simpleSAMLphp konfigurasjonsfila <tt>config\/config.php<\/tt>.",
@@ -929,7 +1056,7 @@
 		"da": "Du kan sl\u00e5 debug-mode fra i den globale simpleSAMLphp-konfigurationsfil <tt>config\/config.php<\/tt>",
 		"hr": "Mo\u017eete isklju\u010diti mod za otkrivanje pogre\u0161aka u glavnoj simpleSAMLphp konfiguracijskoj datoteci <tt>config\/config.php<\/tt>. ",
 		"hu": "A simpleSAMLphp <tt>config\/config.php<\/tt> f\u00e1jlj\u00e1ban kikapcsolhatja a hibakeres\u0151 m\u00f3dot.",
-		"pt-BR": "Voc\u00ea pode desligar o modo de debug no arquivo de configura\u00e7\u00e3o global do simpleSAMLphp <tt>config\/config.php<\/tt>.",
+		"pt-br": "Voc\u00ea pode desligar o modo de debug no arquivo de configura\u00e7\u00e3o global do simpleSAMLphp <tt>config\/config.php<\/tt>.",
 		"pt": "Pode desligar o modo debug no ficheiro global de configura\u00e7\u00e3o <tt>config\/config.php<\/tt> do simpleSAMLphp.",
 		"pl": "Mo\u017cesz wy\u0142aczy\u0107 globalnie tryb debugowania w pliku  <tt>config\/config.php<\/tt>.",
 		"cs": "M\u016f\u017eete vypnout debug m\u00f3d v globaln\u00ed konfiguraci simpleSAMLphp <tt>config\/config.php<\/tt>.",
@@ -939,7 +1066,10 @@
 		"it": "E' possibile disabilitare la modalit\u00e0 di debug nel file di configurazione globale di simpleSAMLphp, <tt>config\/config.php<\/tt>.",
 		"ja": "\u3042\u306a\u305f\u306fsimpleSAMLphp\u306e\u30b0\u30ed\u30fc\u30d0\u30eb\u8a2d\u5b9a<tt>config\/config.php<\/tt>\u3067\u30c7\u30d0\u30c3\u30af\u30e2\u30fc\u30c9\u3092\u30aa\u30d5\u306b\u51fa\u6765\u307e\u3059\u3002",
 		"lt": "J\u016bs galite i\u0161jungti detal\u0173j\u012f nar\u0161ym\u0105 globaliame simpleSAMLphp konfig\u016braciniame faile <tt>config\/config.php<\/tt>.",
-		"zh-tw": "\u60a8\u53ef\u4ee5 simpleSAMLphp \u7684\u5168\u57df\u8a2d\u5b9a\u6a94 <tt>config\/config.php<\/tt> \u88e1\u95dc\u9589\u9664\u932f\u6a21\u5f0f\u3002"
+		"zh-tw": "\u60a8\u53ef\u4ee5 simpleSAMLphp \u7684\u5168\u57df\u8a2d\u5b9a\u6a94 <tt>config\/config.php<\/tt> \u88e1\u95dc\u9589\u9664\u932f\u6a21\u5f0f\u3002",
+		"et": "Silumisre\u017eiimi on v\u00f5imalik v\u00e4lja l\u00fclitada simpleSAMLphp seadistustefailist <tt>config\/config.php<\/tt>.",
+		"he": "\u05d0\u05ea\u05d4 \u05d9\u05db\u05d5\u05dc \u05dc\u05db\u05d1\u05d5\u05ea \u05d0\u05ea \u05de\u05e6\u05d1 \u05d1\u05d3\u05d9\u05e7\u05ea \u05d4\u05d1\u05d0\u05d2\u05d9\u05dd \u05d1\u05e7\u05d5\u05d1\u05e5 \u05d1\u05d4\u05d4\u05d2\u05d3\u05e8\u05d5\u05ea \u05d4\u05d2\u05dc\u05d5\u05d1\u05dc\u05d9 \u05e9\u05dc simpleSAMLphp <tt>config\/config.php<\/tt>.",
+		"zh": "\u4f60\u53ef\u4ee5\u5173\u95ed\u8c03\u8bd5\u6a21\u5f0f\uff0c\u5728simpleSAMLphp\u5168\u5c40\u914d\u7f6e\u6587\u4ef6<tt>config\/config.php<\/tt>\u4e2d"
 	},
 	"metaover_group_metadata.saml20-sp-hosted": {
 		"no": "SAML 2.0 tjenesteleverand\u00f8r (intern)",
@@ -951,7 +1081,7 @@
 		"da": "SAML 2.0 tjenesteudbyder (hosted)",
 		"hr": "SAML 2.0 davatelj usluge (lokalni)",
 		"hu": "SAML 2.0 alkalmaz\u00e1sszolg\u00e1ltat\u00f3 (helyi)",
-		"pt-BR": "SAML 2.0 Service Provider (Local)",
+		"pt-br": "SAML 2.0 Service Provider (Local)",
 		"pt": "Fornecedor de servi\u00e7o (SP) SAML 2.0 (Local)",
 		"pl": "SAML 2.0 Dostawca Serwisu (Lokalny)",
 		"cs": "SAML 2.0 Service Provider (Hosted - lok\u00e1ln\u00ed)",
@@ -961,7 +1091,10 @@
 		"it": "SAML 2.0 Service Provider (Hosted)",
 		"ja": "SAML 2.0\u30b5\u30fc\u30d3\u30b9\u30d7\u30ed\u30d0\u30a4\u30c0(\u30db\u30b9\u30c8)",
 		"lt": "SAML 2.0 Paslaugos teik\u0117jas (vietinis)",
-		"zh-tw": "SAML 2.0 \u670d\u52d9\u63d0\u4f9b\u8005(\u4e3b\u6a5f)"
+		"zh-tw": "SAML 2.0 \u670d\u52d9\u63d0\u4f9b\u8005(\u4e3b\u6a5f)",
+		"et": "SAML 2.0 teenusepakkuja (hostitud)",
+		"he": "\u05e1\u05e4\u05e7 \u05e9\u05d9\u05e8\u05d5\u05ea \u05de\u05e7\u05d5\u05de\u05d9 \u05de\u05e1\u05d5\u05d2 SAML 2.0",
+		"zh": "SAML 2.0 \u670d\u52a1\u63d0\u4f9b\u8005\uff08\u672c\u5730\uff09"
 	},
 	"cfg_check_notices": {
 		"no": "Notiser",
@@ -973,7 +1106,7 @@
 		"da": "Beskeder",
 		"hr": "Napomene",
 		"hu": "Megjegyz\u00e9sek",
-		"pt-BR": "Avisos",
+		"pt-br": "Avisos",
 		"pt": "Observa\u00e7\u00f5es",
 		"pl": "Uwagi",
 		"cs": "Poznamky",
@@ -983,6 +1116,30 @@
 		"it": "Notifiche",
 		"ja": "\u304a\u77e5\u3089\u305b",
 		"lt": "Prane\u0161imai",
-		"zh-tw": "\u5099\u8a3b"
+		"zh-tw": "\u5099\u8a3b",
+		"et": "M\u00e4rkused",
+		"he": "\u05d4\u05d5\u05d3\u05e2\u05d5\u05ea",
+		"ru": "\u0423\u0432\u0435\u0434\u043e\u043c\u043b\u0435\u043d\u0438\u044f",
+		"zh": "\u901a\u544a"
+	},
+	"metadata_cert": {
+		"nl": "Certificaten",
+		"sl": "Digitalna potrdila",
+		"sv": "Certifikat",
+		"he": "\u05ea\u05e2\u05d5\u05d3\u05d5\u05ea",
+		"et": "Sertifikaadid",
+		"de": "Zertifikate",
+		"zh": "\u8bc1\u4e66",
+		"da": "Certifikater"
+	},
+	"metadata_cert_intro": {
+		"nl": "Download de X509-certificaten in PEM-formaat.",
+		"sl": "Prenesi X509 digitalno potrdilo v PEM datoteki.",
+		"sv": "H\u00e4mta X509-certifikaten som PEM-kodade filer.",
+		"he": "\u05d4\u05d5\u05e8\u05d3 \u05d0\u05ea \u05ea\u05e2\u05d5\u05d3\u05d5\u05ea X509 \u05db\u05e7\u05d1\u05e6\u05d9 PEM-\u05de\u05e7\u05d5\u05d3\u05d3.",
+		"et": "Lae alla X509 sertifikaadid PEM kodeeringus failidena.",
+		"de": "Die X509-Zertifikate als PEM-kodierte Dateien herunterladen.",
+		"zh": "\u4e0b\u8f7dX509\u8bc1\u4e66\u4f5c\u4e3aPEM\u7f16\u7801\u7684\u6587\u4ef6",
+		"da": "Download X509 certifikaterne som PEM-indkodet filer."
 	}
 }

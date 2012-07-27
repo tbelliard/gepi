@@ -404,6 +404,14 @@ if(isset($enregistrer)) {
 				}
 			}
 
+			$saisie_app_nb_cols_textarea=isset($_POST['saisie_app_nb_cols_textarea']) ? $_POST['saisie_app_nb_cols_textarea'] : 100;
+			if((!is_numeric($saisie_app_nb_cols_textarea))||($saisie_app_nb_cols_textarea<=0)) {
+				$msg.="Valeur invalide sur saisie_app_nb_cols_textarea pour ".$_SESSION['login']."<br />\n";
+			}
+			elseif(!savePref($_SESSION['login'], 'saisie_app_nb_cols_textarea', $saisie_app_nb_cols_textarea)) {
+				$msg.="Erreur lors de l'enregistrement de saisie_app_nb_cols_textarea pour ".$_SESSION['login']."<br />\n";
+			}
+
 			$cn_avec_min_max=isset($_POST['cn_avec_min_max']) ? $_POST['cn_avec_min_max'] : "n";
 			if(!savePref($_SESSION['login'],'cn_avec_min_max',$cn_avec_min_max)) {
 				$msg.="Erreur lors de l'enregistrement de 'cn_avec_min_max'<br />\n";
@@ -456,7 +464,7 @@ $themessage="Des modifications ont été effectuées. Voulez-vous vraiment quitt
 
 //**************** EN-TETE *****************
 $titre_page = "Configuration des interfaces simplifiées";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();
@@ -642,12 +650,13 @@ else{
 	if(($page=="accueil_simpl")||($_SESSION['statut']=='professeur')){
 		echo "<p>Paramétrage de la page d'<b>accueil</b> simplifiée pour les ".$gepiSettings['denomination_professeurs'].".</p>\n";
 
+		echo "<div style='margin-left:3em;'>\n";
 		//$tabchamps=array('accueil_simpl','accueil_ct','accueil_trombino','accueil_cn','accueil_bull','accueil_visu','accueil_liste_pdf');
 		//accueil_aff_txt_icon
 		$tabchamps=array('accueil_simpl','accueil_infobulles','accueil_ct','accueil_trombino','accueil_cn','accueil_bull','accueil_visu','accueil_liste_pdf');
 
 		//echo "<table border='1'>\n";
-		echo "<table class='contenu' border='1' summary='Préférences professeurs'>\n";
+		echo "<table class='boireaus' border='1' summary='Préférences professeurs'>\n";
 
 		// 1ère ligne
 		//$lignes_entete="<tr style='background-color: white;'>\n";
@@ -718,6 +727,7 @@ else{
 		}
 
 		echo "</table>\n";
+		echo "</div>\n";
 	}
 
 
@@ -730,6 +740,7 @@ else{
 		echo "<p><br /></p>\n";
 		echo "<p><b>Paramètres du carnet de notes&nbsp;:</b></p>\n";
 
+		echo "<div style='margin-left:3em;'>\n";
 		$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name='aff_quartiles_cn'";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)==0) {
@@ -839,7 +850,7 @@ else{
 			$tabchamps=array( 'add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_date','add_modif_dev_date_ele_resp','add_modif_dev_boite');	
 		}
 		//echo "<table border='1'>\n";
-		echo "<table class='contenu' border='1' summary='Préférences professeurs'>\n";
+		echo "<table class='boireaus' border='1' summary='Préférences professeurs'>\n";
 
 		// 1ère ligne
 		//$lignes_entete.="<tr style='background-color: white;'>\n";
@@ -925,7 +936,7 @@ else{
 		$tabchamps=array('add_modif_conteneur_simpl','add_modif_conteneur_nom_court','add_modif_conteneur_nom_complet','add_modif_conteneur_description','add_modif_conteneur_coef','add_modif_conteneur_boite','add_modif_conteneur_aff_display_releve_notes','add_modif_conteneur_aff_display_bull');
 
 		//echo "<table border='1'>\n";
-		echo "<table class='contenu' border='1' summary='Préférences professeurs'>\n";
+		echo "<table class='boireaus' border='1' summary='Préférences professeurs'>\n";
 
 		// 1ère ligne
 		//$lignes_entete.="<tr style='background-color: white;'>\n";
@@ -996,6 +1007,9 @@ else{
 		echo "</table>\n";
 	}
 
+	if($_SESSION['statut']=='professeur') {
+		echo "</div>\n";
+	}
 
 
 
@@ -1004,6 +1018,7 @@ else{
 		echo "<p><br /></p>\n";
 		echo "<p><b>Paramètres de saisie des appréciations&nbsp;:</b></p>\n";
 
+		echo "<div style='margin-left:3em;'>\n";
 		$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name='aff_photo_saisie_app'";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)==0) {
@@ -1020,6 +1035,19 @@ else{
 		if($aff_photo_saisie_app=='y') {echo 'checked';}
 		echo "/><label for='aff_photo_saisie_app' id='texte_aff_photo_saisie_app'> Afficher par défaut les photos des élèves lors de la saisie des appréciations sur les bulletins.</label>\n";
 		echo "</p>\n";
+
+
+		$saisie_app_nb_cols_textarea=getPref($_SESSION["login"],'saisie_app_nb_cols_textarea',100);
+		echo "<p>\n";
+		echo "<label for='saisie_app_nb_cols_textarea'> Largeur en nombre de colonnes des champs de saisie des appréciations sur les bulletins&nbsp;: </label>\n";
+		echo "<input type='text' name='saisie_app_nb_cols_textarea' id='saisie_app_nb_cols_textarea' value='$saisie_app_nb_cols_textarea' ";
+		echo "onchange=\"changement()\" ";
+		echo "size='3' onkeydown=\"clavier_2(this.id,event,20,200);\" autocomplete='off' ";
+		echo "/>";
+		echo "</p>\n";
+
+		echo "</div>\n";
+
 	}
 
 

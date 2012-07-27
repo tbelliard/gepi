@@ -61,7 +61,7 @@ if (!$id_classe) {
 
 //**************** EN-TETE *****************
 $titre_page = "Récapitulatif ECTS";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
     echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
@@ -268,7 +268,7 @@ require_once("../lib/header.inc");
   }
   
   // Affichage des en-têtes du tableau
-  require('../lib/header.inc');
+  require('../lib/header.inc.php');
   ?>
   <style>
         .cell, .central_cell, .first_cell, .last_cell, .lone_cell

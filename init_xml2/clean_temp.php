@@ -44,7 +44,7 @@ check_token();
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année: Suppression des fichiers temporaires";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 ?>

@@ -40,6 +40,12 @@ class Criterion
 	/** Column name. */
 	protected $column;
 
+	/**
+	 * Binding type to be used for Criteria::RAW comparison
+	 * @var string any of the PDO::PARAM_ constant values
+	 */
+	protected $type;
+	
 	/** flag to ignore case in comparison */
 	protected $ignoreStringCase = false;
 
@@ -66,11 +72,11 @@ class Criterion
 	 * @param      mixed $value
 	 * @param      string $comparison
 	 */
-	public function __construct(Criteria $outer, $column, $value, $comparison = null)
+	public function __construct(Criteria $outer, $column, $value, $comparison = null, $type = null)
 	{
 		$this->value = $value;
 		$dotPos = strrpos($column, '.');
-		if ($dotPos === false) {
+		if ($dotPos === false || $comparison == Criteria::RAW) {
 			// no dot => aliased column
 			$this->table = null;
 			$this->column = $column;
@@ -79,6 +85,7 @@ class Criterion
 			$this->column = substr($column, $dotPos + 1);
 		}
 		$this->comparison = ($comparison === null) ? Criteria::EQUAL : $comparison;
+		$this->type = $type;
 		$this->init($outer);
 	}
 
@@ -254,7 +261,7 @@ class Criterion
 	public function appendPsTo(&$sb, array &$params)
 	{
 		$sb .= str_repeat ( '(', count($this->clauses) );
-		
+
 		$this->dispatchPsHandling($sb, $params);
 
 		foreach ($this->clauses as $key => $clause) {
@@ -263,9 +270,9 @@ class Criterion
 			$sb .= ')';
 		}
 	}
-	
+
 	/**
-	 * Figure out which Criterion method to use 
+	 * Figure out which Criterion method to use
 	 * to build the prepared statement and parameters using to the Criterion comparison
 	 * and call it to append the prepared statement and the parameters of the current clause
 	 *
@@ -278,6 +285,10 @@ class Criterion
 			case Criteria::CUSTOM:
 				// custom expression with no parameter binding
 				$this->appendCustomToPs($sb, $params);
+				break;
+			case Criteria::RAW:
+				// custom expression with a typed parameter binding
+				$this->appendRawToPs($sb, $params);
 				break;
 			case Criteria::IN:
 			case Criteria::NOT_IN:
@@ -296,7 +307,7 @@ class Criterion
 				$this->appendBasicToPs($sb, $params);
 		}
 	}
-	
+
 	/**
 	 * Appends a Prepared Statement representation of the Criterion onto the buffer
 	 * For custom expressions with no binding, e.g. 'NOW() = 1'
@@ -309,6 +320,22 @@ class Criterion
 		if ($this->value !== "") {
 			$sb .= (string) $this->value;
 		}
+	}
+
+	/**
+	 * Appends a Prepared Statement representation of the Criterion onto the buffer
+	 * For custom expressions with a typed binding, e.g. 'foobar = ?'
+	 *
+	 * @param      string &$sb The string that will receive the Prepared Statement
+	 * @param      array $params A list to which Prepared Statement parameters will be appended
+	 */
+	protected function appendRawToPs(&$sb, array &$params)
+	{
+		if (substr_count($this->column, '?') != 1) {
+			throw new PropelException(sprintf('Could not build SQL for expression "%s" because Criteria::RAW works only with a clause containing a single question mark placeholder', $this->column));
+		}
+		$params[] = array('table' => null, 'type' => $this->type, 'value' => $this->value);
+		$sb .= str_replace('?', ':p' . count($params), $this->column);
 	}
 
 	/**
@@ -361,9 +388,9 @@ class Criterion
 				$field = $db->ignoreCase($field);
 			}
 		}
-		
+
 		$params[] = array('table' => $this->realtable, 'column' => $this->column, 'value' => $this->value);
-		
+
 		$sb .= $field . $this->comparison;
 
 		// If selection is case insensitive use SQL UPPER() function
@@ -377,7 +404,7 @@ class Criterion
 
 	/**
 	 * Appends a Prepared Statement representation of the Criterion onto the buffer
-	 * For traditional expressions, e.g. table.column = ? or table.column >= ? etc. 
+	 * For traditional expressions, e.g. table.column = ? or table.column >= ? etc.
 	 *
 	 * @param      string &$sb The string that will receive the Prepared Statement
 	 * @param      array $params A list to which Prepared Statement parameters will be appended
@@ -393,9 +420,9 @@ class Criterion
 			if ($this->value === Criteria::CURRENT_DATE || $this->value === Criteria::CURRENT_TIME || $this->value === Criteria::CURRENT_TIMESTAMP) {
 				$sb .= $field . $this->comparison . $this->value;
 			} else {
-				
+
 				$params[] = array('table' => $this->realtable, 'column' => $this->column, 'value' => $this->value);
-				
+
 				// default case, it is a normal col = value expression; value
 				// will be replaced w/ '?' and will be inserted later using PDO bindValue()
 				if ($this->ignoreStringCase) {
@@ -403,7 +430,7 @@ class Criterion
 				} else {
 					$sb .= $field . $this->comparison . ':p'.count($params);
 				}
-				
+
 			}
 		} else {
 
@@ -420,7 +447,7 @@ class Criterion
 
 		}
 	}
-				
+
 	/**
 	 * This method checks another Criteria to see if they contain
 	 * the same attributes and hashtable entries.
@@ -516,7 +543,7 @@ class Criterion
 			$this->addCriterionTable($clause, $s);
 		}
 	}
-	
+
 	/**
 	 * get an array of all criterion attached to this
 	 * recursing through all sub criterion
@@ -530,7 +557,7 @@ class Criterion
 		}
 		return $criterions;
 	}
-	
+
 	/**
 	 * Ensures deep cloning of attached objects
 	 */

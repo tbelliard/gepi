@@ -109,7 +109,7 @@ $utilisation_tablekit="ok";
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
 if ($affichage != 'ods') {// on affiche pas de html
-    require_once("../lib/header.inc");
+    require_once("../lib/header.inc.php");
 
     include('menu_abs2.inc.php');
     include('menu_bilans.inc.php');
@@ -327,12 +327,12 @@ if ($affichage == 'html') {
 	$eleve_array_avec_data[$eleve->getPrimaryKey()] = Array(
 	    'eleve' => $eleve
 	    , 'getDemiJourneesAbsencePreRempli' => $eleve->getNbAbsences()
-	    , 'getDemiJourneesNonJustifieesPreRempli' => $eleve->getNbJustifiees()
+	    , 'getDemiJourneesNonJustifieesPreRempli' => $eleve->getNbNonJustifiees()
 	    , 'getRetardsPreRempli' => $eleve->getNbRetards()
 		);
 
 	    $nb_demijournees = $nb_demijournees + $eleve->getNbAbsences();
-	    $nb_nonjustifiees = $nb_nonjustifiees + $eleve->getNbJustifiees();
+	    $nb_nonjustifiees = $nb_nonjustifiees + $eleve->getNbNonJustifiees();
 	    $nb_retards = $nb_retards + $eleve->getNbRetards();
     }
 

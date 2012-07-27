@@ -53,7 +53,7 @@
 		//**************** EN-TETE *****************
 		$titre_page = "Fiches Brevet<br />Modèle Montpellier";
 		//echo "<div class='noprint'>\n";
-		require_once("../lib/header.inc");
+		require_once("../lib/header.inc.php");
 		//echo "</div>\n";
 		//**************** FIN EN-TETE *****************
 	}
@@ -250,7 +250,7 @@
 		}
 	}
 
-	define('FPDF_FONTPATH','../fpdf/font/');
+	
 	define('TopMargin','5');
 	define('RightMargin','2');
 	define('LeftMargin','2');

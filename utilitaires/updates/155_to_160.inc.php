@@ -82,6 +82,7 @@ if ($query) {
 		$result .= msj_erreur(mysql_error());
 }
 
+
 $result .= "<br />";
 $result .= "<strong>Ajout d'une table 'temp_abs_import' :</strong><br />";
 $test = sql_query1("SHOW TABLES LIKE 'temp_abs_import'");
@@ -95,7 +96,7 @@ if ($test == -1) {
 		nbAbs INT(11) NOT NULL default '0',
 		nbNonJustif INT(11) NOT NULL default '0',
 		nbRet INT(11) NOT NULL default '0',
-		UNIQUE KEY elenoet (elenoet));");
+		UNIQUE KEY elenoet (elenoet)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -103,21 +104,124 @@ if ($test == -1) {
 		$result .= msj_erreur("ECHEC !");
 	}
 } else {
-		$result .= msj_present("La table existe déjà");
+	$result .= msj_present("La table existe déjà");
+
+	/*
+		Une table du même nom avait précédemment la structure suivante:
+
+		CREATE TABLE IF NOT EXISTS $temp_table_abs (
+			id INT(11) not null auto_increment,
+			login VARCHAR(50) not null,
+			cpe_login VARCHAR(50) not null,
+			nbret INT(11) not null,
+			nbabs INT(11) not null,
+			nbnj INT(11) not null,
+			primary key (id));
+	*/
+
+	$res = mysql_query('select * from temp_abs_import LIMIT 1;');
+	$numOfCols = mysql_num_fields($res);
+	for($i=0;$i<$numOfCols;$i++) {
+		//$result .= mysql_field_name($res, $i) . "<br />\n";
+		$nom_du_champ=mysql_field_name($res, $i);
+		if($nom_du_champ=='nbret') {
+			$result .= "&nbsp;-> Renommage du champ '$nom_du_champ' en 'nbRet' dans la table 'temp_abs_import'<br />";
+			$query = mysql_query("ALTER TABLE temp_abs_import CHANGE nbret nbRet INT(11) NOT NULL default '0';");
+			if ($query) {
+					$result .= msj_ok("Ok !");
+			} else {
+					$result .= msj_erreur();
+			}
+		}
+		elseif($nom_du_champ=='nbabs') {
+			$result .= "&nbsp;-> Renommage du champ '$nom_du_champ' en 'nbAbs' dans la table 'temp_abs_import'<br />";
+			$query = mysql_query("ALTER TABLE temp_abs_import CHANGE nbabs nbAbs INT(11) NOT NULL default '0';");
+			if ($query) {
+					$result .= msj_ok("Ok !");
+			} else {
+					$result .= msj_erreur();
+			}
+		}
+	}
+
+	// Normalement, l'ajout ci-dessous correspond à une très vieille version de la table:
+	$result .= "&nbsp;-> Ajout d'un champ 'cpe_login' à la table 'temp_abs_import'<br />";
+	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM temp_abs_import LIKE 'cpe_login';"));
+	if ($test_champ==0) {
+		$query = mysql_query("ALTER TABLE temp_abs_import ADD cpe_login varchar(50) NOT NULL default '';");
+		if ($query) {
+				$result .= msj_ok("Ok !");
+		} else {
+				$result .= msj_erreur();
+		}
+	} else {
+		$result .= msj_present("Le champ existe déjà");
+	}
+
+	$result .= "&nbsp;-> Ajout d'un champ 'libelle' à la table 'temp_abs_import'<br />";
+	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM temp_abs_import LIKE 'libelle';"));
+	if ($test_champ==0) {
+		$query = mysql_query("ALTER TABLE temp_abs_import ADD libelle varchar(50) NOT NULL default '';");
+		if ($query) {
+				$result .= msj_ok("Ok !");
+		} else {
+				$result .= msj_erreur();
+		}
+	} else {
+		$result .= msj_present("Le champ existe déjà");
+	}
+
+	$result .= "&nbsp;-> Ajout d'un champ 'elenoet' à la table 'temp_abs_import'<br />";
+	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM temp_abs_import LIKE 'elenoet';"));
+	if ($test_champ==0) {
+		$query = mysql_query("ALTER TABLE temp_abs_import ADD elenoet varchar(50) NOT NULL default '';");
+		if ($query) {
+				$result .= msj_ok("Ok !");
+		} else {
+				$result .= msj_erreur();
+		}
+	} else {
+		$result .= msj_present("Le champ existe déjà");
+	}
+
+	$result .= "&nbsp;-> Test du champ 'nbNonJustif' dans la table 'temp_abs_import'<br />";
+	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM temp_abs_import LIKE 'nbnj';"));
+	if ($test_champ==0) {
+		$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM temp_abs_import LIKE 'nbNonJustif';"));
+		if ($test_champ==0) {
+			$query = mysql_query("ALTER TABLE temp_abs_import ADD nbNonJustif INT(11) NOT NULL default '0';");
+			if ($query) {
+					$result .= msj_ok("Ok !");
+			} else {
+					$result .= msj_erreur();
+			}
+		} else {
+			$result .= msj_present("Le champ existe déjà");
+		}
+	}
+	else {
+		$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM temp_abs_import LIKE 'nbNonJustif';"));
+		if ($test_champ==0) {
+			$result .= "Renommage du champ 'nbnj' en 'nbNonJustif'&nbsp;: ";
+			$query = mysql_query("ALTER TABLE temp_abs_import CHANGE nbnj nbNonJustif INT(11) NOT NULL default '0';");
+			if ($query) {
+					$result .= msj_ok("Ok !");
+			} else {
+					$result .= msj_erreur();
+			}
+		}
+		else {
+			$result .= "Suppression de l'ancien champ 'nbnj' &nbsp;: ";
+			$query = mysql_query("ALTER TABLE temp_abs_import DROP nbnj;");
+			if ($query) {
+					$result .= msj_ok("Ok !");
+			} else {
+					$result .= msj_erreur();
+			}
+		}
+	}
 }
 
-$result .= "&nbsp;-> Ajout d'un champ 'cpe_login' à la table 'temp_abs_import'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM temp_abs_import LIKE 'cpe_login';"));
-if ($test_champ==0) {
-	$query = mysql_query("ALTER TABLE temp_abs_import ADD cpe_login varchar(50) NOT NULL default '';");
-	if ($query) {
-			$result .= msj_ok("Ok !");
-	} else {
-			$result .= msj_erreur();
-	}
-} else {
-	$result .= msj_present("Le champ existe déjà");
-}
 
 $result .= "<br />";
 $req_test=mysql_query("SELECT value FROM setting WHERE name = 'utiliserMenuBarre'");
@@ -139,6 +243,11 @@ $tab_formats_login_a_tester=array('mode_generation_login', 'mode_generation_logi
 for($loop=0;$loop<count($tab_formats_login_a_tester);$loop++) {
 	$valeur_current_mode_generation_login=getSettingValue($tab_formats_login_a_tester[$loop]);
 	if(!check_format_login($valeur_current_mode_generation_login)) {
+		$sql="SELECT * FROM infos_actions WHERE titre='Format des logins générés';";
+		$test_ia=mysql_query($sql);
+		if(mysql_num_rows($test_ia)==0) {
+			enregistre_infos_actions("Format des logins générés","Le format des logins générés par Gepi pour les différentes catégories d'utilisateurs doit être contrôlé et revalidé dans la page <a href='./gestion/param_gen.php#format_login_pers'>Configuration générale</a>",array("administrateur"),'statut');
+		}
 
 		$result .= "Format de login ";
 		if($tab_formats_login_a_tester[$loop]=='mode_generation_login') {$result .= "<b>personnels</b>";}

@@ -40,11 +40,11 @@ class AbsenceEleveTypeTableMap extends TableMap
 		// columns
 		$this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 11, null);
 		$this->addColumn('NOM', 'Nom', 'VARCHAR', true, 250, null);
-		$this->addColumn('JUSTIFICATION_EXIGIBLE', 'JustificationExigible', 'BOOLEAN', false, null, null);
+		$this->addColumn('JUSTIFICATION_EXIGIBLE', 'JustificationExigible', 'BOOLEAN', false, 1, null);
 		$this->addColumn('SOUS_RESPONSABILITE_ETABLISSEMENT', 'SousResponsabiliteEtablissement', 'VARCHAR', false, 255, 'NON_PRECISE');
 		$this->addColumn('MANQUEMENT_OBLIGATION_PRESENCE', 'ManquementObligationPresence', 'VARCHAR', false, 50, 'NON_PRECISE');
 		$this->addColumn('RETARD_BULLETIN', 'RetardBulletin', 'VARCHAR', false, 50, 'NON_PRECISE');
-		$this->addColumn('TYPE_SAISIE', 'TypeSaisie', 'VARCHAR', false, 50, 'NON_PRECISE');
+		$this->addColumn('MODE_INTERFACE', 'ModeInterface', 'VARCHAR', false, 50, 'NON_PRECISE');
 		$this->addColumn('COMMENTAIRE', 'Commentaire', 'LONGVARCHAR', false, null, null);
 		$this->addForeignKey('ID_LIEU', 'IdLieu', 'INTEGER', 'a_lieux', 'ID', false, 11, null);
 		$this->addColumn('SORTABLE_RANK', 'SortableRank', 'INTEGER', false, null, null);
@@ -64,9 +64,9 @@ class AbsenceEleveTypeTableMap extends TableMap
 	} // buildRelations()
 
 	/**
-	 * 
+	 *
 	 * Gets the list of behaviors registered for this table
-	 * 
+	 *
 	 * @return array Associative array (name => parameters) of behaviors
 	 */
 	public function getBehaviors()

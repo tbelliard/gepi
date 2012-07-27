@@ -34,7 +34,14 @@ $Recherche_sans_js=isset($_POST['Recherche_sans_js']) ? $_POST['Recherche_sans_j
 
 
 if((!isset($ele_login))&&(!isset($Recherche_sans_js))) {
-	echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+	echo "<div class='norme'>\n";
+	echo "<p class='bold'>\n";
+	if((isset($quitter_la_page))&&($quitter_la_page=='y')) {
+		echo "<a href='visu_eleve.php' onClick='self.close();return false;'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Refermer la page </a>\n";
+	}
+	else {
+		echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+	}
 	echo "</p>\n";
 	echo "</div>\n";
 
@@ -46,6 +53,7 @@ if((!isset($ele_login))&&(!isset($Recherche_sans_js))) {
 		Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>nom</strong> contient&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='text' name='rech_nom' value='' />
 		<input type='hidden' name='page' value='$page' />
 		<input type='submit' name='Recherche_sans_js' value='Rechercher' />
+		$champ_quitter_page_ou_non
 		</p>
 	</form>
 
@@ -54,6 +62,7 @@ if((!isset($ele_login))&&(!isset($Recherche_sans_js))) {
 		Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>prénom</strong> contient&nbsp;: <input type='text' name='rech_prenom' value='' />
 		<input type='hidden' name='page' value='$page' />
 		<input type='submit' name='Recherche_sans_js' value='Rechercher' />
+		$champ_quitter_page_ou_non
 		</p>
 	</form>
 
@@ -115,6 +124,7 @@ if((!isset($ele_login))&&(!isset($Recherche_sans_js))) {
 	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>nom</strong> contient&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='text' name='rech_nom' id='rech_nom' value='' onchange=\"affichage_et_action('nom')\" />\n";
 	echo "<input type='hidden' name='page' value='$page' />\n";
 	echo "<input type='button' name='Recherche' id='Recherche_nom' value='Rechercher' onclick=\"cherche_eleves('nom')\" />\n";
+	echo $champ_quitter_page_ou_non;
 	echo "</p>\n";
 	echo "</form>\n";
 
@@ -123,6 +133,7 @@ if((!isset($ele_login))&&(!isset($Recherche_sans_js))) {
 	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>prénom</strong> contient&nbsp;: <input type='text' name='rech_prenom' id='rech_prenom' value='' onchange=\"affichage_et_action('prenom')\" />\n";
 	echo "<input type='hidden' name='page' value='$page' />\n";
 	echo "<input type='button' name='Recherche' id='Recherche_prenom' value='Rechercher' onclick=\"cherche_eleves('prenom')\" />\n";
+	echo $champ_quitter_page_ou_non;
 	echo "</p>\n";
 	echo "</form>\n";
 
@@ -200,7 +211,11 @@ if(document.getElementById('rech_nom')) {document.getElementById('rech_nom').foc
 elseif(isset($Recherche_sans_js)) {
 	// On ne passe ici que si JavaScript est désactivé
 	echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre ".$gepiSettings['denomination_eleve']."</a>\n";
+	echo " | <a href='".$_SERVER['PHP_SELF'];
+	if($chaine_quitter_page_ou_non!="") {
+		echo "?a=a$chaine_quitter_page_ou_non";
+	}
+	echo "'>Choisir un autre ".$gepiSettings['denomination_eleve']."</a>\n";
 	echo "</p>\n";
 	echo "</div>\n";
 
@@ -208,10 +223,23 @@ elseif(isset($Recherche_sans_js)) {
 }
 else {
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
+	echo $champ_quitter_page_ou_non;
 
-	echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+	//echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+	echo "<div class='norme'>\n";
+	echo "<p class='bold'>\n";
+	if((isset($quitter_la_page))&&($quitter_la_page=='y')) {
+		echo "<a href='visu_eleve.php' onClick='self.close();return false;'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Refermer la page </a>\n";
+	}
+	else {
+		echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+	}
 
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre ".$gepiSettings['denomination_eleve']."/classe</a>\n";
+	echo " | <a href='".$_SERVER['PHP_SELF'];
+	if($chaine_quitter_page_ou_non!="") {
+		echo "?a=a$chaine_quitter_page_ou_non";
+	}
+	echo "'>Choisir un autre ".$gepiSettings['denomination_eleve']."/classe</a>\n";
 
 	if(!isset($id_classe)) {
 		$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$ele_login' ORDER BY periode DESC;";
@@ -262,6 +290,7 @@ else {
 
 		if($ele_login_prec!=""){
 			echo " | <a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login_prec&amp;id_classe=$id_classe";
+			echo $chaine_quitter_page_ou_non;
 			echo "'";
 			echo " onclick=\"passer_a_eleve('$ele_login_prec','$id_classe');return false;\"";
 			echo ">".ucfirst($gepiSettings['denomination_eleve'])." précédent</a>";
@@ -273,6 +302,7 @@ else {
 		}
 		if($ele_login_suiv!=""){
 			echo " | <a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login_suiv&amp;id_classe=$id_classe";
+			echo $chaine_quitter_page_ou_non;
 			echo "'";
 			echo " onclick=\"passer_a_eleve('$ele_login_suiv','$id_classe');return false;\"";
 			echo ">".ucfirst($gepiSettings['denomination_eleve'])." suivant</a>";
@@ -292,6 +322,11 @@ else {
 
 	echo "<input type='hidden' name='onglet' id='onglet_courant' value='";
 	if(isset($onglet)) {echo $onglet;}
+	echo "' />\n";
+
+
+	echo "<input type='hidden' name='onglet2' id='onglet_bull_courant' value='";
+	if(isset($onglet2)) {echo $onglet2;}
 	echo "' />\n";
 	echo "</form>\n";
 
@@ -314,8 +349,21 @@ Patientez pendant l'extraction des données... merci.
 		else {
 			onglet='eleve';
 		}
-		//alert('".$_SERVER['PHP_SELF']."?id_classe='+id_classe+'&ele_login='+ele_login+'&onglet='+onglet);
-		document.location.replace('".$_SERVER['PHP_SELF']."?id_classe='+id_classe+'&ele_login='+ele_login+'&onglet='+onglet);
+
+		if(document.getElementById('onglet_bull_courant')) {
+			onglet2=document.getElementById('onglet_bull_courant').value;
+		}
+		else {
+			onglet2='';
+		}
+
+		if(onglet2=='') {
+			//alert('".$_SERVER['PHP_SELF']."?id_classe='+id_classe+'&ele_login='+ele_login+'&onglet='+onglet);
+			document.location.replace('".$_SERVER['PHP_SELF']."?id_classe='+id_classe+'&ele_login='+ele_login+'&onglet='+onglet);
+		}
+		else {
+			document.location.replace('".$_SERVER['PHP_SELF']."?id_classe='+id_classe+'&ele_login='+ele_login+'&onglet='+onglet+'&onglet2='+onglet2);
+		}
 	}
 </script>\n";
 
@@ -468,9 +516,18 @@ Patientez pendant l'extraction des données... merci.
 			$acces_discipline="y";
             $acces_fp="y";
 
+			$GepiAccesReleveCpeTousEleves=getSettingValue('GepiAccesReleveCpeTousEleves');
 			$GepiAccesReleveCpe=getSettingValue('GepiAccesReleveCpe');
-			if($GepiAccesReleveCpe=="yes") {
+			if($GepiAccesReleveCpeTousEleves=='yes') {
 				$acces_releves="y";
+			}
+			elseif($GepiAccesReleveCpe=="yes") {
+				$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."' AND e_login='".$ele_login."';";
+				$test=mysql_query($sql);
+
+				if(mysql_num_rows($test)>0) {
+					$acces_releves="y";
+				}
 			}
 
 			if($active_annees_anterieures=='y') {
@@ -880,7 +937,7 @@ Patientez pendant l'extraction des données... merci.
 		}
 		echo "background-color: ".$tab_couleur['eleve']."; ";
 		echo "'>";
-		echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=eleve' onclick=\"affiche_onglet('eleve');return false;\">";
+		echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=eleve$chaine_quitter_page_ou_non' onclick=\"affiche_onglet('eleve');return false;\">";
 		//echo "<strong>".$tab_ele['nom']." ".$tab_ele['prenom']." (<em>".$tab_ele['liste_classes']."</em>)</strong>";
 		echo "<strong>".$tab_ele['nom']." ".$tab_ele['prenom']." (<em>";
 		if(isset($tab_ele['liste_classes'])) {
@@ -904,7 +961,7 @@ Patientez pendant l'extraction des données... merci.
 			}
 			echo "background-color: ".$tab_couleur['responsables']."; ";
 			echo "'>";
-			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=responsables' onclick=\"affiche_onglet('responsables');return false;\">Responsables</a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=responsables$chaine_quitter_page_ou_non' onclick=\"affiche_onglet('responsables');return false;\">Responsables</a>";
 			echo "</div>\n";
 		}
 
@@ -919,7 +976,7 @@ Patientez pendant l'extraction des données... merci.
 			}
 			echo "background-color: ".$tab_couleur['enseignements']."; ";
 			echo "'>";
-			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=enseignements' onclick=\"affiche_onglet('enseignements');return false;\">Enseignements</a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=enseignements$chaine_quitter_page_ou_non' onclick=\"affiche_onglet('enseignements');return false;\">Enseignements</a>";
 			echo "</div>\n";
 		}
 
@@ -934,7 +991,7 @@ Patientez pendant l'extraction des données... merci.
 			}
 			echo "background-color: ".$tab_couleur['bulletins']."; ";
 			echo "'>";
-			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=bulletins' onclick=\"affiche_onglet('bulletins');return false;\">Bulletins</a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=bulletins$chaine_quitter_page_ou_non' onclick=\"affiche_onglet('bulletins');return false;\">Bulletins</a>";
 			echo "</div>\n";
 		}
 
@@ -949,7 +1006,7 @@ Patientez pendant l'extraction des données... merci.
 			}
 			echo "background-color: ".$tab_couleur['releves']."; ";
 			echo "'>";
-			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=releves' onclick=\"affiche_onglet('releves');return false;\">Relevés de notes</a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=releves$chaine_quitter_page_ou_non' onclick=\"affiche_onglet('releves');return false;\">Relevés de notes</a>";
 			echo "</div>\n";
 		}
 
@@ -964,7 +1021,7 @@ Patientez pendant l'extraction des données... merci.
 			}
 			echo "background-color: ".$tab_couleur['cdt']."; ";
 			echo "'>";
-			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=cdt' onclick=\"affiche_onglet('cdt');return false;\">Cahier de textes</a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=cdt$chaine_quitter_page_ou_non' onclick=\"affiche_onglet('cdt');return false;\">Cahier de textes</a>";
 			echo "</div>\n";
 		}
 
@@ -979,7 +1036,7 @@ Patientez pendant l'extraction des données... merci.
 			}
 			echo "background-color: ".$tab_couleur['fp']."; ";
 			echo "'>";
-			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=fp' onclick=\"affiche_onglet('fp');return false;\">Tous les projets</a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=fp$chaine_quitter_page_ou_non' onclick=\"affiche_onglet('fp');return false;\">Tous les projets</a>";
 			echo "</div>\n";
 		}
 
@@ -995,7 +1052,7 @@ Patientez pendant l'extraction des données... merci.
 			}
 			echo "background-color: ".$tab_couleur['absences']."; ";
 			echo "'>";
-			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=absences' onclick=\"affiche_onglet('absences');return false;\">Absences</a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=absences$chaine_quitter_page_ou_non' onclick=\"affiche_onglet('absences');return false;\">Absences</a>";
 			echo "</div>\n";
 		}
 
@@ -1010,7 +1067,7 @@ Patientez pendant l'extraction des données... merci.
 			}
 			echo "background-color: ".$tab_couleur['discipline']."; ";
 			echo "'>";
-			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=discipline' onclick=\"affiche_onglet('discipline');return false;\">Discipline</a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=discipline$chaine_quitter_page_ou_non' onclick=\"affiche_onglet('discipline');return false;\">Discipline</a>";
 			echo "</div>\n";
 		}
 
@@ -1025,7 +1082,7 @@ Patientez pendant l'extraction des données... merci.
 			}
 			echo "background-color: ".$tab_couleur['anna']."; ";
 			echo "'>";
-			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=anna' onclick=\"affiche_onglet('anna');return false;\">Années ant.</a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=anna$chaine_quitter_page_ou_non' onclick=\"affiche_onglet('anna');return false;\">Années ant.</a>";
 			echo "</div>\n";
 		}
 		//=====================================================================================
@@ -1058,7 +1115,10 @@ Patientez pendant l'extraction des données... merci.
 
 			echo "<table class='boireaus' summary='Infos élève (1)'>\n";
 			echo "<tr><th style='text-align: left;'>Nom&nbsp;:</th><td>";
-			if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
+			if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
+			(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiAccesTouteFicheEleveCpe')))||
+			(($_SESSION['statut']=='cpe')&&(is_cpe($_SESSION['login'],'',$ele_login)))||
+			(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'],"",$ele_login))&&(getSettingAOui('GepiAccesGestElevesProfP')))) {
 				echo "<a href='modify_eleve.php?eleve_login=".$ele_login."&amp;quelles_classes=certaines&amp;order_type=nom,prenom&amp;motif_rech='>".$tab_ele['nom']."</a>";
 			}
 			else {
@@ -1114,9 +1174,7 @@ Patientez pendant l'extraction des données... merci.
 		if($active_module_trombinoscopes=="y") {
 			echo "<td valign='top'>\n";
 				$photo=nom_photo($tab_ele['elenoet']);
-				//if("$photo"!=""){
 				if($photo){
-					//$photo="../photos/eleves/".$photo;
 					if(file_exists($photo)){
 						$dimphoto=redimensionne_image_releve($photo);
 						echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />'."\n";
@@ -1446,7 +1504,7 @@ Patientez pendant l'extraction des données... merci.
 						echo "background-color: ".$tab_couleur['bulletin']."; ";
 						echo "'>";
 
-						echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=bulletins&amp;onglet2=bulletin_$periode1' onclick=\"affiche_onglet('bulletins');affiche_onglet_bull('bulletin_$periode1');return false;\">";
+						echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=bulletins&amp;onglet2=bulletin_$periode1".$chaine_quitter_page_ou_non."' onclick=\"affiche_onglet('bulletins');affiche_onglet_bull('bulletin_$periode1');return false;\">";
 						echo "Période $periode1";
 						echo "</a>";
 						echo "</div>\n";
@@ -1563,19 +1621,30 @@ Patientez pendant l'extraction des données... merci.
 
 						$display_moy_gen=sql_query1("SELECT display_moy_gen FROM classes WHERE id='".$id_classe."'");
 
+						$cette_etiquette_d_onglet_en_gras="y";
 						echo "<div id='bulletin_$periode1' class='onglet' style='";
 						echo " background-color: ".$tab_couleur['bulletin'].";";
 						if((isset($onglet2))&&(mb_substr($onglet2,0,9)=='bulletin_')) {
 							if('bulletin_'.$n_per!=$onglet2) {
 								echo " display:none;";
+								$cette_etiquette_d_onglet_en_gras="n";
 							}
 						}
 						else {
 							if($n_per!=$periode_numero_1) {
 								echo " display:none;";
+								$cette_etiquette_d_onglet_en_gras="n";
 							}
 						}
 						echo "'>\n";
+
+						if($cette_etiquette_d_onglet_en_gras=="y") {
+							echo "<script type='text/javascript'>
+	document.getElementById('t_bulletin_$n_per').style.fontWeight='bold';
+	document.getElementById('t_bulletin_$n_per').style.borderBottomColor='white';
+	document.getElementById('t_bulletin_$n_per').style.borderBottomWidth='0px';
+</script>\n";
+						}
 
 						//bulletin($ele_login,1,1,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories,'y');
 						bulletin($tab_moy,$ele_login,1,1,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories,'y');
@@ -1648,7 +1717,7 @@ Patientez pendant l'extraction des données... merci.
 					}
 					echo "background-color: ".$tab_couleur['releve']."; ";
 					echo "'>";
-					echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=releves&amp;onglet2=releve_$periode1' onclick=\"affiche_onglet('releves');affiche_onglet_rel('releve_$periode1');return false;\">";
+					echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=releves&amp;onglet2=releve_$periode1".$chaine_quitter_page_ou_non."' onclick=\"affiche_onglet('releves');affiche_onglet_rel('releve_$periode1');return false;\">";
 					echo "Période $periode1";
 					echo "</a>";
 					echo "</div>\n";
@@ -1703,19 +1772,29 @@ Patientez pendant l'extraction des données... merci.
 						$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
 						if ($affiche_categories == "y") { $affiche_categories = true; } else { $affiche_categories = false;}
 
+						$cette_etiquette_d_onglet_en_gras="y";
 						echo "<div id='releve_$periode1' class='onglet' style='";
 						echo " background-color: ".$tab_couleur['releve'].";";
 						if((isset($onglet2))&&(mb_substr($onglet2,0,7)=='releve_')) {
 							if('releve_'.$n_per!=$onglet2) {
 								echo " display:none;";
+								$cette_etiquette_d_onglet_en_gras="n";
 							}
 						}
 						else {
 							if($n_per!=$periode_numero_1) {
 								echo " display:none;";
+								$cette_etiquette_d_onglet_en_gras="n";
 							}
 						}
 						echo "'>\n";
+						if($cette_etiquette_d_onglet_en_gras=="y") {
+							echo "<script type='text/javascript'>
+	document.getElementById('t_releve_$n_per').style.fontWeight='bold';
+	document.getElementById('t_releve_$n_per').style.borderBottomColor='white';
+	document.getElementById('t_releve_$n_per').style.borderBottomWidth='0px';
+</script>\n";
+						}
 						//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 						// IL MANQUE UN PAQUET D'INITIALISATIONS POUR LES APPELS global DANS releve_html()
 						//echo "<pre>";
@@ -1747,9 +1826,9 @@ Patientez pendant l'extraction des données... merci.
 			echo "<h2>Cahier de textes de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
 			echo "<p align='center'>";
-			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=cdt&amp;day=$j_sem_prec&amp;month=$m_sem_prec&amp;year=$y_sem_prec'><img src='../images/icons/back.png' width='16' height='16' alt='Semaine précédente' /></a> ";
+			echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=cdt&amp;day=$j_sem_prec&amp;month=$m_sem_prec&amp;year=$y_sem_prec".$chaine_quitter_page_ou_non."'><img src='../images/icons/back.png' width='16' height='16' alt='Semaine précédente' /></a> ";
 			echo "Du ".jour_en_fr(date("D",$date_ct1))." ".date("d/m/Y",$date_ct1)." au ".jour_en_fr(date("D",$date_ct2))." ".date("d/m/Y",$date_ct2);
-			echo " <a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=cdt&amp;day=$j_sem_suiv&amp;month=$m_sem_suiv&amp;year=$y_sem_suiv'><img src='../images/icons/forward.png' width='16' height='16' alt='Semaine suivante' /></a>";
+			echo " <a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login&amp;onglet=cdt&amp;day=$j_sem_suiv&amp;month=$m_sem_suiv&amp;year=$y_sem_suiv".$chaine_quitter_page_ou_non."'><img src='../images/icons/forward.png' width='16' height='16' alt='Semaine suivante' /></a>";
 			echo "</p>\n";
 
 			$couleur_dev="#FFCCCF";
@@ -2126,6 +2205,7 @@ Patientez pendant l'extraction des données... merci.
 
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='form_date_disc' method='post' />\n";
+			echo $champ_quitter_page_ou_non;
 			echo "<p>Extraire les incidents entre le ";
 			//echo "<input type='text' name='date_debut_disc' value='' />\n";
 			echo "<input type='text' name = 'date_debut_disc' id= 'date_debut_disc' size='10' value = \"".$date_debut_disc."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
@@ -2348,15 +2428,19 @@ Patientez pendant l'extraction des données... merci.
 			if(document.getElementById('t_'+tab_onglets[i])) {
 				document.getElementById('t_'+tab_onglets[i]).style.borderBottomColor='black';
 				document.getElementById('t_'+tab_onglets[i]).style.borderBottomWidth='1px';
+				document.getElementById('t_'+tab_onglets[i]).style.fontWeight='';
 			}
 		}
 
 		if(document.getElementById(id)) {
 			document.getElementById(id).style.display='';
+
+			document.getElementById('onglet_bull_courant').value=id;
 		}
 		if(document.getElementById('t_'+id)) {
 			document.getElementById('t_'+id).style.borderBottomColor='white';
 			document.getElementById('t_'+id).style.borderBottomWidth='0px';
+			document.getElementById('t_'+id).style.fontWeight='bold';
 		}
 	}
 
@@ -2370,17 +2454,23 @@ Patientez pendant l'extraction des données... merci.
 			if(document.getElementById('t_'+tab_onglets[i])) {
 				document.getElementById('t_'+tab_onglets[i]).style.borderBottomColor='black';
 				document.getElementById('t_'+tab_onglets[i]).style.borderBottomWidth='1px';
+				document.getElementById('t_'+tab_onglets[i]).style.fontWeight='';
 			}
 		}
 
 		if(document.getElementById(id)) {
 			document.getElementById(id).style.display='';
+
+			document.getElementById('onglet_bull_courant').value=id;
 		}
 		if(document.getElementById('t_'+id)) {
 			document.getElementById('t_'+id).style.borderBottomColor='white';
 			document.getElementById('t_'+id).style.borderBottomWidth='0px';
+			document.getElementById('t_'+id).style.fontWeight='bold';
 		}
 	}
+	
+	window.focus();
 </script>\n";
 
 		/*

@@ -1224,7 +1224,8 @@ if ($ligne_supl == 1) {
 			$rg[$k]=$k;
 
 			//echo $col[1][$k+1].": ".$col[$nb_col][$k+1]." et total_coef:".$total_coef_eleve[$k+1]."<br />";
-			$tmp_tab[$k]=$col[$nb_col][$k+$ligne_supl];
+			//echo "\$col[$nb_col][$k+$ligne_supl]=\$col[$nb_col][".($k+$ligne_supl)."]=".$col[$nb_col][$k+$ligne_supl]."<br />";
+			$tmp_tab[$k]=preg_replace("/,/",".",$col[$nb_col][$k+$ligne_supl]);
 
 			// Initialisation:
 			$col[$ind_colonne_rang][$k]="-";
@@ -1536,9 +1537,9 @@ if(isset($_GET['mode'])) {
 		$classe = sql_query1("SELECT classe FROM classes WHERE id = '$id_classe'");
 
 		if ($referent == "une_periode") {
-			$chaine_titre="Classe_".$classe."_Resultats_".$nom_periode[$num_periode]."_Annee_scolaire_".getSettingValue("gepiYear");
+			$chaine_titre="Classe_".$classe."_Resultats_CN_".$nom_periode[$num_periode]."_Annee_scolaire_".getSettingValue("gepiYear");
 		} else {
-			$chaine_titre="Classe_".$classe."_Resultats_Moyennes_annuelles_Annee_scolaire_".getSettingValue("gepiYear");
+			$chaine_titre="Classe_".$classe."_Resultats_CN_Moyennes_annuelles_Annee_scolaire_".getSettingValue("gepiYear");
 		}
 
 		$now = gmdate('D, d M Y H:i:s') . ' GMT';
@@ -1557,10 +1558,293 @@ if(isset($_GET['mode'])) {
 		echo echo_csv_encoded($fd);
 		die();
 	}
+	elseif($_GET['mode']=="pdf") {
+		$classe = sql_query1("SELECT classe FROM classes WHERE id = '$id_classe'");
+
+		if ($referent == "une_periode") {
+			$chaine_titre="Classe_".$classe."_Resultats_CN_".$nom_periode[$num_periode]."_Annee_scolaire_".getSettingValue("gepiYear");
+		} else {
+			$chaine_titre="Classe_".$classe."_Resultats_CN_Moyennes_annuelles_Annee_scolaire_".getSettingValue("gepiYear");
+		}
+
+		$now = gmdate('D, d M Y H:i:s') . ' GMT';
+
+		$nom_fic=$chaine_titre."_".$now;
+
+		// Filtrer les caractères dans le nom de fichier:
+		$nom_fic=preg_replace("/[^a-zA-Z0-9_.-]/","",remplace_accents($nom_fic,'all'));
+		$nom_fic.=".pdf";
+
+		require_once('../fpdf/fpdf.php');
+		require_once("../fpdf/class.multicelltag.php");
+
+		// Fichier d'extension de fpdf pour le bulletin
+		require_once("../class_php/gepi_pdf.class.php");
+
+		// Fonctions php des bulletins pdf
+		require_once("../bulletin/bulletin_fonctions.php");
+		// Ensemble des données communes
+		require_once("../bulletin/bulletin_donnees.php");
+
+		session_cache_limiter('private');
+
+		$X1 = 0; $Y1 = 0; $X2 = 0; $Y2 = 0;
+		$X3 = 0; $Y3 = 0; $X4 = 0; $Y4 = 0;
+		$X5 = 0; $Y5 = 0; $X6 = 0; $Y6 = 0;
+
+		$largeur_page=210;
+		$hauteur_page=297;
+
+		$pref_marge=7;
+		/*
+		$pref_marge=isset($_POST['marge_pdf_mes_moyennes']) ? $_POST['marge_pdf_mes_moyennes'] : getPref($_SESSION['login'],'marge_pdf_mes_moyennes',7);
+		if(($pref_marge=="")||(!preg_match("/^[0-9]*$/", $pref_marge))||($pref_marge<5)) {
+			$pref_marge=7;
+		}
+		else {
+			savePref($_SESSION['login'], 'marge_pdf_mes_moyennes', $pref_marge);
+		}
+		*/
+		//marge_pdf_mes_moyennes
+		$marge_gauche=$pref_marge;
+		$marge_droite=$pref_marge;
+		$marge_haute=$pref_marge;
+		$marge_basse=$pref_marge;
+
+		$hauteur_police=10;
+		$largeur_col_nom_ele=40;
+
+		// Hauteur de la ligne du titre de la page
+		$h_ligne_titre_page=10;
+
+		// Hauteur de la première ligne de tableau avec les noms de matières à la verticale.
+		$h_ligne_titre_tableau=40;
+
+		// Hauteur par defaut des lignes de tableau:
+		$h_cell=10;
+
+		// Largeur des colonnes
+		$largeur_col=array();
+		$largeur_col[1]=$largeur_col_nom_ele;
+		$indice_col_app=array();
+
+		$taille_max_police=$hauteur_police;
+		$taille_min_police=ceil($taille_max_police/3);
+
+		$x0=$marge_gauche;
+		$y0=$marge_haute;
+
+		$largeur_nomprenom_classe_et_notes=$marge_gauche+$largeur_col_nom_ele;
+
+		$format_page="P";
+
+		$pdf=new bul_PDF($format_page, 'mm', 'A4');
+		$pdf->SetCreator($gepiSchoolName);
+		$pdf->SetAuthor($gepiSchoolName);
+		$pdf->SetKeywords('');
+		$pdf->SetSubject('Toutes_notes');
+		$pdf->SetTitle('Toutes_notes');
+		$pdf->SetDisplayMode('fullwidth', 'single');
+		$pdf->SetCompression(TRUE);
+		$pdf->SetAutoPageBreak(TRUE, 5);
+
+		$pdf->AddPage();
+		$fonte='DejaVu';
+
+		$pdf->SetFont($fonte,'B',8);
+
+		$avec_date_naiss="n";
+		for($i=2;$i<=count($ligne1_csv);$i++) {
+			if(preg_match("/^Date de naiss/", $ligne1_csv[$i])) {
+				$avec_date_naiss="y";
+				break;
+			}
+		}
+
+		$largeur_col_notes=floor(10*($largeur_page-$marge_gauche-$marge_droite-$largeur_col_nom_ele-15)/(count($ligne1_csv)-2))/10;
+		//$info_largeur_col_notes="\$largeur_col_notes=floor(10*($largeur_page-$marge_gauche-$marge_droite-$largeur_col_nom_ele-15)/(".count($ligne1_csv)."-2))/10=$largeur_col_notes";
+
+		function ajuste_FontSize($texte, $largeur_dispo, $hauteur_caractere_initiale, $graisse='', $hauteur_caractere_minimale, $fonte='DejaVu') {
+			global $pdf;
+
+			$hauteur_caractere=$hauteur_caractere_initiale;
+			$pdf->SetFont($fonte,$graisse,$hauteur_caractere);
+			$val = $pdf->GetStringWidth($texte);
+
+			$etat_grandeur_texte='test';
+			while($etat_grandeur_texte != 'ok') {
+				if(($largeur_dispo < $val)&&($hauteur_caractere>=$hauteur_caractere_minimale-0.3)) {
+					$hauteur_caractere = $hauteur_caractere-0.3;
+					$pdf->SetFont($fonte,$graisse,$hauteur_caractere);
+					$val = $pdf->GetStringWidth($texte);
+				} else {
+					$etat_grandeur_texte = 'ok';
+				}
+			}
+
+			return $hauteur_caractere;
+		}
+
+		//====================================================
+		// Recherche des tailles de polices optimales
+
+		// Une taille sans importance, histoire de tester
+		$pdf->SetFont($fonte,'',12);
+		// Recherche du plus long nom_prenom
+		$texte_test[1]="Edmou Dugenou";
+		$longueur_max_nom_prenom=0;
+		$largeur_col[1]=$largeur_col_nom_ele;
+		for($i=1;$i<=count($col_csv[1]);$i++) {
+			$longueur_courante=$pdf->GetStringWidth($col_csv[1][$i]);
+			if($longueur_courante>$longueur_max_nom_prenom) {
+				$texte_test[1]=$col_csv[1][$i];
+				$longueur_max_nom_prenom=$longueur_courante;
+			}
+		}
+		$taille_police_col[1]=ajuste_FontSize($texte_test[1], $largeur_col[1], 12, 'B', 3);
+
+		for($i=2;$i<=count($ligne1_csv);$i++) {
+			if(preg_match("/^Date de naiss/", $ligne1_csv[$i])) {
+				$largeur_col[$i]=15;
+				$texte_test[$i]="99/99/99";
+			}
+			else {
+				$largeur_col[$i]=$largeur_col_notes;
+				$texte_test[$i]="disp";
+			}
+		}
+
+		for($i=2;$i<=count($ligne1_csv);$i++) {
+			$taille_police_col[$i]=ajuste_FontSize(" ".$texte_test[$i]." ", $largeur_col[$i], 12, '', 3);
+		}
+
+		$longueur_max_matiere=0;
+		$chaine_longueur_max_matiere="";
+		for($i=2;$i<=count($ligne1_csv);$i++) {
+			// Texte à mettre à la verticale:
+			$texte=$ligne1_csv[$i];
+
+			$longueur_courante=$pdf->GetStringWidth($texte);
+			if($longueur_courante>$longueur_max_matiere) {
+				$longueur_max_matiere=$longueur_courante;
+				$chaine_longueur_max_matiere=$texte;
+			}
+		}
+		$taille_police_matiere=ajuste_FontSize(" ".$chaine_longueur_max_matiere." ", $h_ligne_titre_tableau, 12, 'B', 3);
+		//====================================================
+
+		//$texte_titre=$current_group['profs']['proflist_string']." - ".$current_group['description']." en ".$current_group['classlist_string'];
+		$texte_titre=$chaine_titre;
+
+		$pdf->SetXY($x0,$y0);
+
+		$texte=$texte_titre;
+		$largeur_dispo=$largeur_page-$marge_gauche-$marge_droite;
+		$hauteur_caractere=12;
+		$h_ligne=$h_ligne_titre_page;
+		$graisse='B';
+		$alignement='C';
+		$bordure='';
+		cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$hauteur_caractere,$fonte,$graisse,$alignement,$bordure);
+		$y2=$y0+$h_ligne_titre_page;
+
+		//===========================
+		// Ligne d'entête du tableau
+		//$pdf->SetXY($x0,$y0);
+		$pdf->SetXY($x0,$y2);
+		$largeur_dispo=$largeur_col_nom_ele;
+		$texte=$ligne1_csv[1];
+
+		$graisse='B';
+		//$alignement='L';
+		$alignement='C';
+		$bordure='LRBT';
+		cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne_titre_tableau,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+
+		$pdf->SetFont($fonte,'B',$taille_police_matiere);
+		$alignement='C';
+		$x2=$x0+$largeur_col_nom_ele;
+		for($i=2;$i<=count($ligne1_csv);$i++) {
+			$pdf->SetXY($x2, $y2);
+			$largeur_dispo=$largeur_col[$i];
+
+			// Cadre de la cellule:
+			$pdf->Cell($largeur_dispo,$h_ligne_titre_tableau, "",'LRBT',2,'');
+
+			// Texte à la verticale:
+			$texte=" ".$ligne1_csv[$i]." ";
+
+			//ajuste_FontSize($texte, $h_ligne_titre_tableau, 12, 'B', 5);
+
+			$pdf->TextWithRotation($x2+Ceil($largeur_dispo/2),$y2+$h_ligne_titre_tableau,$texte,90);
+
+			$x2+=$largeur_dispo;
+		}
+		//===========================
+
+		$h_cell=min(10, floor(($hauteur_page-$marge_haute-$marge_basse-$h_ligne_titre_page-$h_ligne_titre_tableau)/(count($col)-1)));
+
+		/*
+		$pdf->SetXY(10, 110);
+		$pdf->Cell(190,10, $info_largeur_col_notes,'LRBT',2,'');
+		*/
+
+		$graisse='';
+		$alignement='C';
+		$bordure='LRBT';
+		$h_ligne=$h_cell;
+
+		$y2=$y2+$h_ligne_titre_tableau;
+		$k=1;
+		for($j=1;$j<count($col[1]);$j++) {
+			$x2=$x0;
+
+			/*
+			if($j%2==0) {
+			$pdf->SetFillColor(0,0,0);
+			}
+			else {
+			$pdf->SetFillColor(100,100,100);
+			}
+			*/
+
+			for($i=1;$i<=count($ligne1_csv);$i++) {
+				$pdf->SetXY($x2, $y2);
+
+				$largeur_dispo=$largeur_col[$i];
+
+				if(isset($col_csv[$i][$j])) {
+					$texte=" ".$col_csv[$i][$j]." ";
+					//$texte=$col_csv[$i][$j]." ";
+				}
+				else {
+					$texte=" ".$col[$i][$j]." ";
+					//$texte=$col[$i][$j]." ";
+				}
+
+				$pdf->SetFont($fonte,$graisse, $taille_police_col[$i]);
+
+				$pdf->Cell($largeur_dispo,$h_ligne, $texte,'LRBT',2,'C');
+
+				// On n'obtient pas des notes toutes de la même taille... c'est tout moche:
+				//cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+
+				$x2+=$largeur_dispo;
+			}
+			$y2+=$h_ligne;
+
+			$k++;
+		}
+
+		send_file_download_headers('application/pdf',$nom_fic);
+		$pdf->Output($nom_fic,'I');
+		die();
+
+	}
 }
 
 //**************** EN-TETE *****************
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //=================================================
@@ -1602,6 +1886,31 @@ $_SESSION['vtn_pref_coloriser_resultats']=$vtn_coloriser_resultats;
 //=================================================
 
 $classe = sql_query1("SELECT classe FROM classes WHERE id = '$id_classe'");
+
+
+// Lien pour générer un PDF
+echo "<div class='noprint' style='float: right; border: 1px solid black; background-color: white; width: 3em; height: 1em; text-align: center; padding-bottom:3px; margin-left:3px;'>
+<a href='".$_SERVER['PHP_SELF']."?mode=pdf&amp;id_classe=$id_classe&amp;num_periode=$num_periode";
+
+if(($aff_abs)&&($aff_abs=='y')) {
+	echo "&amp;aff_abs=$aff_abs";
+}
+if(($aff_reg)&&($aff_reg=='y')) {
+	echo "&amp;aff_reg=$aff_reg";
+}
+if(($aff_doub)&&($aff_doub=='y')) {
+	echo "&amp;aff_doub=$aff_doub";
+}
+if(($aff_rang)&&($aff_rang=='y')) {
+	echo "&amp;aff_rang=$aff_rang";
+}
+if(($aff_date_naiss)&&($aff_date_naiss=='y')) {
+	echo "&amp;aff_date_naiss=$aff_date_naiss";
+}
+echo add_token_in_url();
+
+echo "'>PDF</a>
+</div>\n";
 
 // Lien pour générer un CSV
 echo "<div class='noprint' style='float: right; border: 1px solid black; background-color: white; width: 7em; height: 1em; text-align: center; padding-bottom:3px;'>

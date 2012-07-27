@@ -101,11 +101,10 @@ if (getSettingValue("absence_classement_top") == '10'){
 
 // header
 // $titre_page = "Gestion du module absence";
-//require_once("../../lib/header.inc");
 
 
 // ====== Inclusion des balises head et du bandeau =====
-include_once("../../lib/header_template.inc");
+include_once("../../lib/header_template.inc.php");
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion Absences"))
 		echo "erreur lors de la création du fil d'ariane";

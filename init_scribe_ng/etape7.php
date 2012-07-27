@@ -46,7 +46,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : importation des personnels administratifs";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 // Utilisation de la classe LDAP chargee et configuree
@@ -92,7 +92,7 @@ if ($_POST['step'] == "7") {
             .$compte_utilisateur->getPrenom()
             .$compte_utilisateur->getNom()
             ." (".$compte_utilisateur->getLogin()
-            .") existe d&eacute;ja<br>";
+            .") existe d&eacute;j&agrave;<br>";
         }
         else {
             $new_compte_utilisateur = new UtilisateurProfessionnel();

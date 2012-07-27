@@ -181,7 +181,7 @@ $message_enregistrement = "Les modifications ont été enregistrées !";
 
 //**************** EN-TETE *****************
 $titre_page = "Notanet | Saisie des notes de LVR";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();

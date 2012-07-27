@@ -3,7 +3,7 @@
 /*
  *
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -127,7 +127,7 @@ $utilisation_jsdivdrag = "non";
 //$style_specifique = ".css";
 
 // ===================== entete Gepi ======================================//
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 // ===================== fin entete =======================================//
 
 $page="import_bull_eleve.php";
@@ -497,25 +497,32 @@ else {
 			echo "<p>Création d'un utilisateur professeur '$nom_etab_ori': ";
 
 			// CREER UN LOGIN
-			$login_etab=generate_unique_login($nom_etab_ori,$ville_etab_ori,"name");
-
-			$sql="INSERT INTO utilisateurs SET login='$login_etab',
-												nom='$nom_etab_ori',
-												prenom='$ville_etab_ori',
-												civilite='M.',
-												password='',
-												statut='professeur',
-												etat='inactif';";
-			$res=mysql_query($sql);
-			if($res) {
-				echo "<span style='color:green;'>OK</span>";
-				echo "</p>\n";
+			$login_etab=generate_unique_login($nom_etab_ori,$ville_etab_ori,"nnnnnnnnnnnnnnnnnnnn");
+			if((!$login_etab)||($login_etab=='')) {
+					echo "<span style='color:red;'>ERREUR&nbsp;:</span> Aucun login n'a pu être généré pour l'établissement $nom_etab_ori ($ville_etab_ori).";
+					echo "</p>\n";
+					require_once("../lib/footer.inc.php");
+					die();
 			}
 			else {
-				echo "<span style='color:red;'>ERREUR</span>";
-				echo "</p>\n";
-				require_once("../lib/footer.inc.php");
-				die();
+				$sql="INSERT INTO utilisateurs SET login='$login_etab',
+													nom='$nom_etab_ori',
+													prenom='$ville_etab_ori',
+													civilite='M.',
+													password='',
+													statut='professeur',
+													etat='inactif';";
+				$res=mysql_query($sql);
+				if($res) {
+					echo "<span style='color:green;'>OK</span>";
+					echo "</p>\n";
+				}
+				else {
+					echo "<span style='color:red;'>ERREUR</span>";
+					echo "</p>\n";
+					require_once("../lib/footer.inc.php");
+					die();
+				}
 			}
 		}
 		else {

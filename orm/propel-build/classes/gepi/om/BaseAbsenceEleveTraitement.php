@@ -25,6 +25,12 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -137,6 +143,24 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $absenceEleveSaisiesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $jTraitementSaisieElevesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $absenceEleveNotificationsScheduledForDeletion = null;
 
 	/**
 	 * Get the [id] column value.
@@ -709,28 +733,29 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = AbsenceEleveTraitementQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			// soft_delete behavior
 			if (!empty($ret) && AbsenceEleveTraitementQuery::isSoftDeleteEnabled()) {
 				$this->keepUpdateDateUnchanged();
 				$this->setDeletedAt(time());
 				$this->save($con);
+				$this->postDelete($con);
 				$con->commit();
 				AbsenceEleveTraitementPeer::removeInstanceFromPool($this);
 				return;
 			}
 
 			if ($ret) {
-				AbsenceEleveTraitementQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -793,7 +818,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -856,27 +881,39 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 				$this->setModifieParUtilisateur($this->aModifieParUtilisateur);
 			}
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = AbsenceEleveTraitementPeer::ID;
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
+				if ($this->isNew()) {
+					$this->doInsert($con);
+				} else {
+					$this->doUpdate($con);
+				}
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
-				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(AbsenceEleveTraitementPeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.AbsenceEleveTraitementPeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
-				} else {
-					$affectedRows += AbsenceEleveTraitementPeer::doUpdate($this, $con);
+			if ($this->absenceEleveSaisiesScheduledForDeletion !== null) {
+				if (!$this->absenceEleveSaisiesScheduledForDeletion->isEmpty()) {
+					JTraitementSaisieEleveQuery::create()
+						->filterByPrimaryKeys($this->absenceEleveSaisiesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->absenceEleveSaisiesScheduledForDeletion = null;
 				}
 
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+				foreach ($this->getAbsenceEleveSaisies() as $absenceEleveSaisie) {
+					if ($absenceEleveSaisie->isModified()) {
+						$absenceEleveSaisie->save($con);
+					}
+				}
+			}
+
+			if ($this->jTraitementSaisieElevesScheduledForDeletion !== null) {
+				if (!$this->jTraitementSaisieElevesScheduledForDeletion->isEmpty()) {
+					JTraitementSaisieEleveQuery::create()
+						->filterByPrimaryKeys($this->jTraitementSaisieElevesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->jTraitementSaisieElevesScheduledForDeletion = null;
+				}
 			}
 
 			if ($this->collJTraitementSaisieEleves !== null) {
@@ -884,6 +921,15 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->absenceEleveNotificationsScheduledForDeletion !== null) {
+				if (!$this->absenceEleveNotificationsScheduledForDeletion->isEmpty()) {
+					AbsenceEleveNotificationQuery::create()
+						->filterByPrimaryKeys($this->absenceEleveNotificationsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->absenceEleveNotificationsScheduledForDeletion = null;
 				}
 			}
 
@@ -900,6 +946,128 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = AbsenceEleveTraitementPeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . AbsenceEleveTraitementPeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(AbsenceEleveTraitementPeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = 'ID';
+		}
+		if ($this->isColumnModified(AbsenceEleveTraitementPeer::UTILISATEUR_ID)) {
+			$modifiedColumns[':p' . $index++]  = 'UTILISATEUR_ID';
+		}
+		if ($this->isColumnModified(AbsenceEleveTraitementPeer::A_TYPE_ID)) {
+			$modifiedColumns[':p' . $index++]  = 'A_TYPE_ID';
+		}
+		if ($this->isColumnModified(AbsenceEleveTraitementPeer::A_MOTIF_ID)) {
+			$modifiedColumns[':p' . $index++]  = 'A_MOTIF_ID';
+		}
+		if ($this->isColumnModified(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID)) {
+			$modifiedColumns[':p' . $index++]  = 'A_JUSTIFICATION_ID';
+		}
+		if ($this->isColumnModified(AbsenceEleveTraitementPeer::COMMENTAIRE)) {
+			$modifiedColumns[':p' . $index++]  = 'COMMENTAIRE';
+		}
+		if ($this->isColumnModified(AbsenceEleveTraitementPeer::MODIFIE_PAR_UTILISATEUR_ID)) {
+			$modifiedColumns[':p' . $index++]  = 'MODIFIE_PAR_UTILISATEUR_ID';
+		}
+		if ($this->isColumnModified(AbsenceEleveTraitementPeer::CREATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = 'CREATED_AT';
+		}
+		if ($this->isColumnModified(AbsenceEleveTraitementPeer::UPDATED_AT)) {
+			$modifiedColumns[':p' . $index++]  = 'UPDATED_AT';
+		}
+		if ($this->isColumnModified(AbsenceEleveTraitementPeer::DELETED_AT)) {
+			$modifiedColumns[':p' . $index++]  = 'DELETED_AT';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO a_traitements (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case 'ID':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case 'UTILISATEUR_ID':
+						$stmt->bindValue($identifier, $this->utilisateur_id, PDO::PARAM_STR);
+						break;
+					case 'A_TYPE_ID':
+						$stmt->bindValue($identifier, $this->a_type_id, PDO::PARAM_INT);
+						break;
+					case 'A_MOTIF_ID':
+						$stmt->bindValue($identifier, $this->a_motif_id, PDO::PARAM_INT);
+						break;
+					case 'A_JUSTIFICATION_ID':
+						$stmt->bindValue($identifier, $this->a_justification_id, PDO::PARAM_INT);
+						break;
+					case 'COMMENTAIRE':
+						$stmt->bindValue($identifier, $this->commentaire, PDO::PARAM_STR);
+						break;
+					case 'MODIFIE_PAR_UTILISATEUR_ID':
+						$stmt->bindValue($identifier, $this->modifie_par_utilisateur_id, PDO::PARAM_STR);
+						break;
+					case 'CREATED_AT':
+						$stmt->bindValue($identifier, $this->created_at, PDO::PARAM_STR);
+						break;
+					case 'UPDATED_AT':
+						$stmt->bindValue($identifier, $this->updated_at, PDO::PARAM_STR);
+						break;
+					case 'DELETED_AT':
+						$stmt->bindValue($identifier, $this->deleted_at, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1331,10 +1499,12 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		$copyObj->setUpdatedAt($this->getUpdatedAt());
 		$copyObj->setDeletedAt($this->getDeletedAt());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getJTraitementSaisieEleves() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1348,6 +1518,8 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -1642,7 +1814,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * Avoids crafting an 'init[$relationName]s' method name
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -1727,6 +1899,30 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	}
 
 	/**
+	 * Sets a collection of JTraitementSaisieEleve objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $jTraitementSaisieEleves A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setJTraitementSaisieEleves(PropelCollection $jTraitementSaisieEleves, PropelPDO $con = null)
+	{
+		$this->jTraitementSaisieElevesScheduledForDeletion = $this->getJTraitementSaisieEleves(new Criteria(), $con)->diff($jTraitementSaisieEleves);
+
+		foreach ($jTraitementSaisieEleves as $jTraitementSaisieEleve) {
+			// Fix issue with collection modified by reference
+			if ($jTraitementSaisieEleve->isNew()) {
+				$jTraitementSaisieEleve->setAbsenceEleveTraitement($this);
+			}
+			$this->addJTraitementSaisieEleve($jTraitementSaisieEleve);
+		}
+
+		$this->collJTraitementSaisieEleves = $jTraitementSaisieEleves;
+	}
+
+	/**
 	 * Returns the number of related JTraitementSaisieEleve objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1759,8 +1955,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	 * through the JTraitementSaisieEleve foreign key attribute.
 	 *
 	 * @param      JTraitementSaisieEleve $l JTraitementSaisieEleve
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     AbsenceEleveTraitement The current object (for fluent API support)
 	 */
 	public function addJTraitementSaisieEleve(JTraitementSaisieEleve $l)
 	{
@@ -1768,9 +1963,19 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 			$this->initJTraitementSaisieEleves();
 		}
 		if (!$this->collJTraitementSaisieEleves->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collJTraitementSaisieEleves[]= $l;
-			$l->setAbsenceEleveTraitement($this);
+			$this->doAddJTraitementSaisieEleve($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	JTraitementSaisieEleve $jTraitementSaisieEleve The jTraitementSaisieEleve object to add.
+	 */
+	protected function doAddJTraitementSaisieEleve($jTraitementSaisieEleve)
+	{
+		$this->collJTraitementSaisieEleves[]= $jTraitementSaisieEleve;
+		$jTraitementSaisieEleve->setAbsenceEleveTraitement($this);
 	}
 
 
@@ -1867,6 +2072,30 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	}
 
 	/**
+	 * Sets a collection of AbsenceEleveNotification objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $absenceEleveNotifications A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setAbsenceEleveNotifications(PropelCollection $absenceEleveNotifications, PropelPDO $con = null)
+	{
+		$this->absenceEleveNotificationsScheduledForDeletion = $this->getAbsenceEleveNotifications(new Criteria(), $con)->diff($absenceEleveNotifications);
+
+		foreach ($absenceEleveNotifications as $absenceEleveNotification) {
+			// Fix issue with collection modified by reference
+			if ($absenceEleveNotification->isNew()) {
+				$absenceEleveNotification->setAbsenceEleveTraitement($this);
+			}
+			$this->addAbsenceEleveNotification($absenceEleveNotification);
+		}
+
+		$this->collAbsenceEleveNotifications = $absenceEleveNotifications;
+	}
+
+	/**
 	 * Returns the number of related AbsenceEleveNotification objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1899,8 +2128,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	 * through the AbsenceEleveNotification foreign key attribute.
 	 *
 	 * @param      AbsenceEleveNotification $l AbsenceEleveNotification
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     AbsenceEleveTraitement The current object (for fluent API support)
 	 */
 	public function addAbsenceEleveNotification(AbsenceEleveNotification $l)
 	{
@@ -1908,9 +2136,19 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 			$this->initAbsenceEleveNotifications();
 		}
 		if (!$this->collAbsenceEleveNotifications->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collAbsenceEleveNotifications[]= $l;
-			$l->setAbsenceEleveTraitement($this);
+			$this->doAddAbsenceEleveNotification($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	AbsenceEleveNotification $absenceEleveNotification The absenceEleveNotification object to add.
+	 */
+	protected function doAddAbsenceEleveNotification($absenceEleveNotification)
+	{
+		$this->collAbsenceEleveNotifications[]= $absenceEleveNotification;
+		$absenceEleveNotification->setAbsenceEleveTraitement($this);
 	}
 
 
@@ -2027,6 +2265,37 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	}
 
 	/**
+	 * Sets a collection of AbsenceEleveSaisie objects related by a many-to-many relationship
+	 * to the current object by way of the j_traitements_saisies cross-reference table.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $absenceEleveSaisies A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setAbsenceEleveSaisies(PropelCollection $absenceEleveSaisies, PropelPDO $con = null)
+	{
+		$jTraitementSaisieEleves = JTraitementSaisieEleveQuery::create()
+			->filterByAbsenceEleveSaisie($absenceEleveSaisies)
+			->filterByAbsenceEleveTraitement($this)
+			->find($con);
+
+		$this->absenceEleveSaisiesScheduledForDeletion = $this->getJTraitementSaisieEleves()->diff($jTraitementSaisieEleves);
+		$this->collJTraitementSaisieEleves = $jTraitementSaisieEleves;
+
+		foreach ($absenceEleveSaisies as $absenceEleveSaisie) {
+			// Fix issue with collection modified by reference
+			if ($absenceEleveSaisie->isNew()) {
+				$this->doAddAbsenceEleveSaisie($absenceEleveSaisie);
+			} else {
+				$this->addAbsenceEleveSaisie($absenceEleveSaisie);
+			}
+		}
+
+		$this->collAbsenceEleveSaisies = $absenceEleveSaisies;
+	}
+
+	/**
 	 * Gets the number of AbsenceEleveSaisie objects related by a many-to-many relationship
 	 * to the current object by way of the j_traitements_saisies cross-reference table.
 	 *
@@ -2062,18 +2331,26 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	 * @param      AbsenceEleveSaisie $absenceEleveSaisie The JTraitementSaisieEleve object to relate
 	 * @return     void
 	 */
-	public function addAbsenceEleveSaisie($absenceEleveSaisie)
+	public function addAbsenceEleveSaisie(AbsenceEleveSaisie $absenceEleveSaisie)
 	{
 		if ($this->collAbsenceEleveSaisies === null) {
 			$this->initAbsenceEleveSaisies();
 		}
 		if (!$this->collAbsenceEleveSaisies->contains($absenceEleveSaisie)) { // only add it if the **same** object is not already associated
-			$jTraitementSaisieEleve = new JTraitementSaisieEleve();
-			$jTraitementSaisieEleve->setAbsenceEleveSaisie($absenceEleveSaisie);
-			$this->addJTraitementSaisieEleve($jTraitementSaisieEleve);
+			$this->doAddAbsenceEleveSaisie($absenceEleveSaisie);
 
 			$this->collAbsenceEleveSaisies[]= $absenceEleveSaisie;
 		}
+	}
+
+	/**
+	 * @param	AbsenceEleveSaisie $absenceEleveSaisie The absenceEleveSaisie object to add.
+	 */
+	protected function doAddAbsenceEleveSaisie($absenceEleveSaisie)
+	{
+		$jTraitementSaisieEleve = new JTraitementSaisieEleve();
+		$jTraitementSaisieEleve->setAbsenceEleveSaisie($absenceEleveSaisie);
+		$this->addJTraitementSaisieEleve($jTraitementSaisieEleve);
 	}
 
 	/**
@@ -2195,25 +2472,6 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	{
 		$this->setDeletedAt(null);
 		return $this->save($con);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseAbsenceEleveTraitement

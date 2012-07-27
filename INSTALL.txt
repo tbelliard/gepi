@@ -1,15 +1,12 @@
-GEPI-trunk- Procédure d'installation
+GEPI-1.6.2 -- Procédure d'installation
 ==========================================
+
+Version de développement: NE PAS INSTALLER EN PRODUCTION !
+La branche stable actuelle est la 1.6.1
 
 ****************************************************
 Installation - Etape 0 : téléchargement de l'archive
 ****************************************************
-
-ATTENTION! Ce paquetage contient la version en cours de développement de Gepi, dite "master", ex "trunk", c'est-à-dire une version
-destinée à identifier et corriger les bugs induits par les nouvelles fonctionnalités.
-
-NE PAS UTILISER CETTE VERSION EN PRODUCTION ! Vous exposeriez votre base de données à des incohérences
-qui pourraient la rendre incompatible avec la version stable.
 
 L'ensemble des fichiers nécessaires à l'installation sont rassemblés dans
 l'archive que vous avez téléchargée (secure/modeles/).

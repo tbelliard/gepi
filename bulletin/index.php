@@ -163,7 +163,7 @@ if (!checkAccess()) {
 
 //**************** EN-TETE *********************
 $titre_page = "Edition des bulletins";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 
@@ -351,8 +351,8 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 			<div id="div_1" style="display: <?php
 				//if( $coefficients_a_1 != '' or $bull_pdf_debug != '' or $active_entete_regroupement != '' ) {
 				if( $coefficients_a_1 != '' or $bull_pdf_debug != '' or $tri_par_etab_origine != '' ) {
-			?>block<?php } else { ?>none<?php } ?>; border-top: solid 1px; border-bottom: solid 1px; padding: 10px; background-color: #E0EEEF; font: normal 85% Verdana, Helvetica, sans-serif;"><!--a name="ao"></a-->
-			  <span style="font-family: Arial;">
+			?>block<?php } else { ?>none<?php } ?>; border-top: solid 1px; border-bottom: solid 1px; padding: 10px; background-color: #E0EEEF; font: normal 85% ;"><!--a name="ao"></a-->
+			  <span>
 				<input type="checkbox" name="tri_par_etab_origine" id="tri_par_etab_origine" value="oui" <?php if ( isset($tri_par_etab_origine) and $tri_par_etab_origine === 'oui' ) { ?>checked="checked"<?php } ?> />
 				&nbsp;<label for="tri_par_etab_origine" style="cursor: pointer;">Impression triée par établissement d'origine des élèves.</label><br />
 				<input type="checkbox" name="coefficients_a_1" id="coefficients_a_1" value="oui" <?php if ( isset($coefficients_a_1) and $coefficients_a_1 === 'oui' ) { ?>checked="checked"<?php } ?> />

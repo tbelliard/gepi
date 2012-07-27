@@ -112,6 +112,30 @@ if(isset($_GET['modif_visu_bull'])) {
 	}
 }
 
+if(isset($_GET['modif_visu_cdt'])) {
+	check_token();
+	if($_GET['modif_visu_cdt']=='afficher') {
+		$valeur="y";
+	}
+	else {
+		$valeur="n";
+	}
+
+	$id_groupe=isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL;
+	if(isset($id_groupe)) {
+		$sql="SELECT visible FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='cahier_texte';";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)==0) {
+			$sql="INSERT INTO j_groupes_visibilite SET id_groupe='$id_groupe', domaine='cahier_texte', visible='$valeur';";
+			$insert=mysql_query($sql);
+		}
+		else {
+			$sql="UPDATE j_groupes_visibilite SET visible='$valeur' WHERE id_groupe='$id_groupe' AND domaine='cahier_texte';";
+			$update=mysql_query($sql);
+		}
+	}
+}
+
 if(isset($_GET['modif_coef'])) {
 	check_token();
 
@@ -135,7 +159,7 @@ if(isset($_GET['modif_coef'])) {
 $themessage  = 'Des paramètres ont été modifiés. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Enseignements";
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 echo "<p class='bold'>\n";
@@ -145,16 +169,18 @@ echo "</p>\n";
 
 echo "<p><a href='".$_SERVER['PHP_SELF']."?'>Ne rien griser</a>,<br />
 <a href='".$_SERVER['PHP_SELF']."?griser_cn=y'>Griser</a> ou <a href='".$_SERVER['PHP_SELF']."?masquer_cn=y'>masquer</a> les lignes d'enseignements n'apparaissant pas dans les carnets de notes,<br />
-<a href='".$_SERVER['PHP_SELF']."?griser_bull=y'>Griser</a> ou <a href='".$_SERVER['PHP_SELF']."?masquer_bull=y'>masquer</a> les lignes d'enseignements n'apparaissant pas dans les buletins,<br />
-<a href='".$_SERVER['PHP_SELF']."?griser_cn=y&amp;griser_bull=y'>Griser</a> ou <a href='".$_SERVER['PHP_SELF']."?masquer_cn=y&amp;masquer_bull=y'>masquer</a> les lignes d'enseignements n'apparaissant ni dans les carnets de notes, ni dans les bulletins.</p>\n";
+<a href='".$_SERVER['PHP_SELF']."?griser_bull=y'>Griser</a> ou <a href='".$_SERVER['PHP_SELF']."?masquer_bull=y'>masquer</a> les lignes d'enseignements n'apparaissant pas dans les bulletins,<br />
+<a href='".$_SERVER['PHP_SELF']."?griser_cn=y&amp;griser_bull=y'>Griser</a> ou <a href='".$_SERVER['PHP_SELF']."?masquer_cn=y&amp;masquer_bull=y'>masquer</a> les lignes d'enseignements n'apparaissant pas dans un des domaines (<em>carnets de notes, bulletins et/ou cahiers de textes</em>).</p>\n";
 
 $griser_cn=isset($_GET['griser_cn']) ? $_GET['griser_cn'] : "n";
 $griser_bull=isset($_GET['griser_bull']) ? $_GET['griser_bull'] : "n";
+$griser_cdt=isset($_GET['griser_cdt']) ? $_GET['griser_cdt'] : "n";
 $masquer_cn=isset($_GET['masquer_cn']) ? $_GET['masquer_cn'] : "n";
 $masquer_bull=isset($_GET['masquer_bull']) ? $_GET['masquer_bull'] : "n";
+$masquer_cdt=isset($_GET['masquer_cdt']) ? $_GET['masquer_cdt'] : "n";
 
-$option_grisage="&amp;griser_cn=$griser_cn&amp;griser_bull=$griser_bull";
-$option_masquage="&amp;masquer_cn=$masquer_cn&amp;masquer_bull=$masquer_bull";
+$option_grisage="&amp;griser_cn=$griser_cn&amp;griser_bull=$griser_bull&amp;griser_cdt=$griser_cdt";
+$option_masquage="&amp;masquer_cn=$masquer_cn&amp;masquer_bull=$masquer_bull&amp;masquer_cdt=$masquer_cdt";
 
 $sql="SELECT id, classe FROM classes ORDER BY classe;";
 $res_classe=mysql_query($sql);
@@ -181,6 +207,7 @@ while($lig_classe=mysql_fetch_object($res_classe)) {
 		echo "<th>Coefficient</th>\n";
 		echo "<th>Visu.CN</th>\n";
 		echo "<th>Visu.Bull</th>\n";
+		echo "<th>Visu.CDT</th>\n";
 		echo "</tr>\n";
 		$alt=1;
 		foreach ($groups as $group) {
@@ -189,12 +216,16 @@ while($lig_classe=mysql_fetch_object($res_classe)) {
 			$afficher_ligne="y";
 			if(($masquer_cn=="y")&&(isset($current_group["visibilite"]["cahier_notes"]))&&($current_group["visibilite"]["cahier_notes"]=="n")) {$afficher_ligne="n";}
 			if(($masquer_bull=="y")&&(isset($current_group["visibilite"]["bulletins"]))&&($current_group["visibilite"]["bulletins"]=="n")) {$afficher_ligne="n";}
+			if(($masquer_cdt=="y")&&(isset($current_group["visibilite"]["cahier_texte"]))&&($current_group["visibilite"]["cahier_texte"]=="n")) {$afficher_ligne="n";}
 
 			if($afficher_ligne=="y") {
-				if((($griser_cn=='y')||($griser_bull=='y'))&&(isset($current_group["visibilite"]["cahier_notes"]))&&($current_group["visibilite"]["cahier_notes"]=="n")) {
+				if(($griser_cn=='y')&&(isset($current_group["visibilite"]["cahier_notes"]))&&($current_group["visibilite"]["cahier_notes"]=="n")) {
 					echo "<tr class='white_hover' style='background-color: grey;'>\n";
 				}
-				elseif((($griser_cn=='y')||($griser_bull=='y'))&&(isset($current_group["visibilite"]["bulletins"]))&&($current_group["visibilite"]["bulletins"]=="n")) {
+				elseif(($griser_bull=='y')&&(isset($current_group["visibilite"]["bulletins"]))&&($current_group["visibilite"]["bulletins"]=="n")) {
+					echo "<tr class='white_hover' style='background-color: grey;'>\n";
+				}
+				elseif(($griser_cdt=='y')&&(isset($current_group["visibilite"]["cahier_texte"]))&&($current_group["visibilite"]["cahier_texte"]=="n")) {
 					echo "<tr class='white_hover' style='background-color: grey;'>\n";
 				}
 				else {
@@ -250,6 +281,20 @@ while($lig_classe=mysql_fetch_object($res_classe)) {
 					echo "</a>";
 				}
 				echo "</td>\n";
+
+				echo "<td>";
+				if((!isset($current_group["visibilite"]["cahier_texte"]))||($current_group["visibilite"]["cahier_texte"]=="y")) {
+					echo "<a href='".$_SERVER['PHP_SELF']."?modif_visu_cdt=cacher&amp;id_groupe=".$current_group["id"].$option_grisage.$option_masquage.add_token_in_url()."#classe_$lig_classe->classe'>";
+					echo "<span style='color:blue;'>OUI</span>";
+					echo "</a>";
+				}
+				else {
+					echo "<a href='".$_SERVER['PHP_SELF']."?modif_visu_cdt=afficher&amp;id_groupe=".$current_group["id"].$option_grisage.$option_masquage.add_token_in_url()."#classe_$lig_classe->classe'>";
+					echo "<span style='color:red;'>NON</span>";
+					echo "</a>";
+				}
+				echo "</td>\n";
+
 				echo "</tr>\n";
 			}
 		}
@@ -258,6 +303,9 @@ while($lig_classe=mysql_fetch_object($res_classe)) {
 	echo "</div>\n";
 	flush();
 }
+
+echo "<p><br /></p>\n";
+echo "<p style='margin-left:3.5em; text-indent:-3.5em;'><em>NOTE&nbsp;</em> Cette page permet de contrôler des paramètres (<em>catégorie, coefficient, visibilité</em>) et de modifier un coefficient ou la visibilité d'un enseignement, mais si vous devez modifier de nombreux paramètres, vous gagnerez du temps à revenir au choix <strong>&lt;Telle_classe&gt;/Enseignements</strong> dans la page de <a href='../classes/index.php'>Gestion des classes</a>.</p>\n";
 
 /**
  * Pied de page

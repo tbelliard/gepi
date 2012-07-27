@@ -95,7 +95,7 @@ $scriptaculous_effet="effects,controls,builder,dragdrop";
 $style_specifique = "mod_discipline/stats2/apps/css/stats";
 $javascript_specifique = "mod_discipline/stats2/apps/js/stats";
 
-require_once("../../lib/header.inc");
+require_once("../../lib/header.inc.php");
 
 //**************** FIN EN-TETE *****************
 

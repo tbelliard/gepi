@@ -213,7 +213,7 @@ $titre_page = "Carnet de notes";
 /**
  * Entête de la page
  */
-require_once("../lib/header.inc");
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************
 
 /*
@@ -445,7 +445,7 @@ if  (isset($id_racine) and ($id_racine!='')) {
     }
 
     echo "<div class='norme'>\n";
-	echo "<form enctype=\"multipart/form-data\" id= \"form1\" action=\"".$_SERVER['PHP_SELF']."\" method=\"get\">\n";
+	echo "<form enctype=\"multipart/form-data\" id= \"form1\" name= \"form1\" action=\"".$_SERVER['PHP_SELF']."\" method=\"get\">\n";
     echo "<p class='bold'>\n";
     echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a> | \n";
     echo "<a href='index.php?id_groupe=no_group'> Mes enseignements </a> | \n";
@@ -717,7 +717,7 @@ var tab_per_cn=new Array();\n";
 
     echo "<h3 class='gepi'>Liste des évaluations du carnet de notes</h3>\n";
     $empty = affiche_devoirs_conteneurs($id_racine,$periode_num, $empty, $current_group["classe"]["ver_periode"]["all"][$periode_num]);
-    echo "</ul>\n";
+    //echo "</ul>\n";
     if ($empty == 'yes') echo "<p><b>Actuellement, aucune évaluation.</b> Vous devez créer au moins une évaluation.</p>\n";
     if ($empty != 'yes') {
 		$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='bulletins' AND visible='n';";
@@ -781,7 +781,7 @@ if (isset($_GET['id_groupe']) and !(isset($_GET['periode_num'])) and !(isset($id
 
     echo "<p class='bold'>";
     echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|";
-    echo "<a href='index.php?id_groupe=no_group'> Mes enseignements </a>|</p>\n";
+    echo "<a href='index.php?id_groupe=no_group'> Mes enseignements </a></p>\n";
     echo "<p class='bold'>Enseignement : ".htmlspecialchars($current_group["description"])." (" . $current_group["classlist_string"] .")</p>\n";
 
     echo "<h3>Visualisation/modification - Choisissez la période : </h3>\n";
