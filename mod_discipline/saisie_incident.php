@@ -78,9 +78,9 @@ function choix_heure($champ_heure,$div_choix_heure) {
 			}
 
 			$texte.="<tr class='white_hover'$td_style onmouseover=\"this.style.backgroundColor='white'\" onmouseout=\"this.style.backgroundColor='$tmp_bgcolor'\">\n";
-			$texte.="<td><a href='#' onclick=\"document.getElementById('$champ_heure').value='$lig_ac->nom_definie_periode';cacher_div('$div_choix_heure');return false;\">".$lig_ac->nom_definie_periode."</a></td>\n";
-			$texte.="<td><a href='#' onclick=\"document.getElementById('$champ_heure').value='$lig_ac->nom_definie_periode';cacher_div('$div_choix_heure');return false;\" style='text-decoration: none; color: black;'>".$lig_ac->heuredebut_definie_periode."</a></td>\n";
-			$texte.="<td><a href='#' onclick=\"document.getElementById('$champ_heure').value='$lig_ac->nom_definie_periode';cacher_div('$div_choix_heure');return false;\" style='text-decoration: none; color: black;'>".$lig_ac->heurefin_definie_periode."</a></td>\n";
+			$texte.="<td><a href='#' onclick=\"document.getElementById('$champ_heure').value='$lig_ac->nom_definie_periode';cacher_div('$div_choix_heure');changement();return false;\">".$lig_ac->nom_definie_periode."</a></td>\n";
+			$texte.="<td><a href='#' onclick=\"document.getElementById('$champ_heure').value='$lig_ac->nom_definie_periode';cacher_div('$div_choix_heure');changement();return false;\" style='text-decoration: none; color: black;'>".$lig_ac->heuredebut_definie_periode."</a></td>\n";
+			$texte.="<td><a href='#' onclick=\"document.getElementById('$champ_heure').value='$lig_ac->nom_definie_periode';cacher_div('$div_choix_heure');changement();return false;\" style='text-decoration: none; color: black;'>".$lig_ac->heurefin_definie_periode."</a></td>\n";
 			$texte.="</tr>\n";
 		}
 		$texte.="</table>\n";
@@ -1856,7 +1856,7 @@ elseif($step==2) {
 		include("../lib/calendrier/calendrier.class.php");
 		$cal = new Calendrier("formulaire", "display_date");
 
-		echo "<input type='text' name='display_date' id='display_date' size='10' value=\"".$display_date."\" onKeyDown=\"clavier_date_plus_moins(this.id,event);\" />\n";
+		echo "<input type='text' name='display_date' id='display_date' size='10' value=\"".$display_date."\" onKeyDown=\"clavier_date_plus_moins(this.id,event);\" onchange='changement()' />\n";
 		echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 
 		echo "</td>\n";
@@ -1894,7 +1894,7 @@ elseif($step==2) {
 		echo "<a href='#' onmouseover=\"delais_afficher_div('div_infobulle_avertissement_heure','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_infobulle_avertissement_heure');\" onclick=\"return false;\" title='Attention heure'><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Attention heure' /></a>";
 		echo "</div>\n";
 
-		echo "<input type='text' name='display_heure' id='display_heure' size='6' value=\"".$display_heure."\" onKeyDown=\"clavier_heure(this.id,event);\" AutoComplete=\"off\" />\n";
+		echo "<input type='text' name='display_heure' id='display_heure' size='6' value=\"".$display_heure."\" onKeyDown=\"clavier_heure(this.id,event);\" AutoComplete=\"off\" onchange='changement()' />\n";
 
 		choix_heure('display_heure','div_choix_heure');
 	}
@@ -1940,7 +1940,7 @@ elseif($step==2) {
 			echo ">\n";
 
 			//echo "<select name='choix_lieu' id='choix_lieu' onchange=\"maj_lieu('lieu_incident','choix_lieu');changement();\">\n";
-			echo "<select name='id_lieu' id='id_lieu'>\n";
+			echo "<select name='id_lieu' id='id_lieu' onchange='changement()'>\n";
 			echo "<option value=''>---</option>\n";
 			while($lig_lieu=mysql_fetch_object($res_lieu)) {
 				echo "<option value=\"$lig_lieu->id\"";
@@ -2006,7 +2006,7 @@ elseif($step==2) {
 			if(mysql_num_rows($res_nat)>0) {
 				$saisie_nature_libre="n";
 
-				echo "<select name='nature' id='nature'>\n";
+				echo "<select name='nature' id='nature' onchange='changement()'>\n";
 				while($lig_nat=mysql_fetch_object($res_nat)) {
 					echo "<option value=\"$lig_nat->nature\"";
 					if($lig_nat->nature==$nature) {echo " selected='selected'";}
@@ -2048,7 +2048,7 @@ new Ajax.Autocompleter (
 				while($lig_nat=mysql_fetch_object($res_nat)) {
 					$alt2=$alt2*(-1);
 					$texte.="<tr class='lig$alt2' onmouseover=\"this.style.backgroundColor='white';\" onmouseout=\"this.style.backgroundColor='';\">\n";
-					$texte.="<td ><a href='#' onclick=\"document.getElementById('nature').value='$lig_nat->nature';cacher_div('div_choix_nature');return false;\">".$lig_nat->nature."</a></td>\n";
+					$texte.="<td ><a href='#' onclick=\"document.getElementById('nature').value='$lig_nat->nature';cacher_div('div_choix_nature');changement();return false;\">".$lig_nat->nature."</a></td>\n";
 					$texte.="</tr>\n";
 				}
 				$texte.="</table>\n";
