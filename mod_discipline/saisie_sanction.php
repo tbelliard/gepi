@@ -171,7 +171,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 					//echo "$sql<br />\n";
 					$update=mysql_query($sql);
 					if(!$update) {
-						$msg.="Erreur lors de la mise à jour de l'exclusion n°$id_sanction.<br />";
+						$msg.="Erreur lors de la mise à jour de la retenue n°$id_sanction.<br />";
 					}
 				}
 			}
@@ -447,7 +447,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 					//echo "$sql<br />\n";
 					$update=mysql_query($sql);
 					if(!$update) {
-						$msg.="Erreur lors de la mise à jour de l'exclusion n°$id_sanction.<br />";
+						$msg.="Erreur lors de la mise à jour du travail n°$id_sanction.<br />";
 					}
 				}
 			}
