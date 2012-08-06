@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -127,7 +127,7 @@ else {
 	}
 }
 
-echo "<p class='bold'>Liste des retenues en ";
+echo "<p class='bold'>Liste des retenues (<em>et assimilées</em>) en ";
 if($lieu!="") {
 	echo $lieu;
 }
@@ -170,6 +170,7 @@ while($lig=mysql_fetch_object($res)) {
 
 		$alt=$alt*(-1);
 		$chaine_retenues.="<tr class='lig$alt'>\n";
+		$chaine_retenues.="<td>".$lig->nature."</td>\n";
 		$chaine_retenues.="<td>".$lig->heure_debut;
 		if($lig->duree>1) {$chaine_retenues.=" +";}
 		$chaine_retenues.="</td>\n";
@@ -200,6 +201,7 @@ if($chaine_retenues=="") {
 else {
 	echo "<table class='boireaus' border='1' summary='Autres retenues sur le créneau'>\n";
 	echo "<tr>\n";
+	echo "<th>Nature</th>\n";
 	echo "<th colspan='3'>Heure</th>\n";
 	echo "<th>Durée<br />(<em>en heures</em>)</th>\n";
 	echo "<th colspan='2'>Elève</th>\n";
@@ -213,7 +215,7 @@ echo "<p><br /></p>\n";
 
 echo "<p><em>Remarque&nbsp;:</em></p>\n";
 echo "<blockquote>\n";
-echo "<p>Cette page est destinée à déterminer si certains regroupements d'élèves sont à éviter pour des retenues.</p>\n";
+echo "<p>Cette page est destinée à déterminer si certains regroupements d'élèves sont à éviter pour des retenues (<em>et sanctions du même type</em>).</p>\n";
 echo "</blockquote>\n";
 echo "<p><br /></p>\n";
 

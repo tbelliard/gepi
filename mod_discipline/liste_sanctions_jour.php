@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -165,10 +165,11 @@ $sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE sr.date='".$mysql_jour_sa
 //echo "$sql<br />\n";
 $res_sanction=mysql_query($sql);
 if(mysql_num_rows($res_sanction)>0) {
-	echo "<p class='bold'>Retenues du jour&nbsp;: $jour_sanction</p>\n";
+	echo "<p class='bold'>Retenues (<em>et assimilées</em>) du jour&nbsp;: $jour_sanction</p>\n";
 	echo "<blockquote>\n";
 	echo "<table class='boireaus' border='1' summary='Retenues' style='margin:2px;'>\n";
 	echo "<tr>\n";
+	echo "<th>Nature</th>\n";
 	echo "<th>Heure</th>\n";
 	echo "<th>Durée</th>\n";
 	echo "<th>Lieu</th>\n";
@@ -189,6 +190,7 @@ if(mysql_num_rows($res_sanction)>0) {
 			echo "<tr class='lig$alt_b'>\n";
 		}
 		// \$lig_sanction->effectuee=$lig_sanction->effectuee et \$lig_sanction->id_sanction=$lig_sanction->id_sanction
+		echo "<td>$lig_sanction->nature</td>\n";
 		echo "<td>$lig_sanction->heure_debut</td>\n";
 		echo "<td>$lig_sanction->duree</td>\n";
 		echo "<td>$lig_sanction->lieu</td>\n";
@@ -229,90 +231,11 @@ if(mysql_num_rows($res_sanction)>0) {
 				echo ">Détails</a>";
 			}
 		}
-		/*
-		if($travail=="") {$travail="Aucun travail.";}
-		if($details=="y") {
-			echo nl2br($travail);
-		}
-		else {
-			$texte=nl2br($travail);
-			$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
-			if($tmp_doc_joints!="") {
-				$texte.="<br />";
-				$texte.=$tmp_doc_joints;
-			}
-			$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
-
-			echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
-			//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-			echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
-			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-			echo ">Détails</a>";
-		}
-		*/
 		echo "</td>\n";
 
 		echo "<td>\n";
 		echo lien_envoi_mail_rappel($lig_sanction->id_sanction, $num);
-		/*
-		$login_declarant=get_login_declarant_incident($lig_sanction->id_incident);
 
-		//pour le mail
-		$mail_declarant = retourne_email($login_declarant);
-		//echo add_token_field(true);
-		echo "<input type='hidden' name='sujet_$num' id='sujet_$num' value=\"[GEPI] Discipline : Demande de travail pour une retenue\" />\n";
-		echo "<input type='hidden' name='mail_$num' id='mail_$num' value=\"".$mail_declarant."\" />\n";
-
-		$trame_message="Bonjour, \n";
-		$trame_message.="La retenue (voir l'incident N°%num_incident%) de %prenom_nom% (%classe%) est planifiée le %jour% en/à %heure% pour une durée de %duree%H \n";
-		$trame_message.="Merci d'apporter le travail prévu à la vie scolaire. \n\nLa vie scolaire";
-		
-		
-		$num_incident=$lig_sanction->id_incident;
-		$prenom_nom=p_nom($lig_sanction->login) ;
-		$tmp_tab=get_class_from_ele_login($lig_sanction->login);
-		if(isset($tmp_tab['liste_nbsp'])) {$classe= $tmp_tab['liste_nbsp'];}
-		$date=formate_date($lig_sanction->date);
-		$heure=$lig_sanction->heure_debut;
-		$duree=$lig_sanction->duree;
-		
-		$trame_message=str_replace("%num_incident%",$num_incident,$trame_message);
-		$trame_message=str_replace("%prenom_nom%",$prenom_nom,$trame_message);
-		$trame_message=str_replace("%classe%",$classe,$trame_message);
-		$trame_message=str_replace("%jour%",$date,$trame_message);
-		$trame_message=str_replace("%heure%",$heure,$trame_message);
-		$trame_message=str_replace("%duree%",$duree,$trame_message);
-		
-		//echo $trame_message;
-		echo "<input type='hidden' name='message_$num' id='message_$num' value=\"$trame_message\"/>\n";
-
-		//echo "<td>\n";	
-		$ligne_nom_declarant=u_p_nom($login_declarant);
-		echo "$ligne_nom_declarant";
-		
-		//on autorise l'envoi de mail que pour les statuts Admin / CPE / Scolarite
-		if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($_SESSION['statut']=='scolarite')) {
-			if($lig_sanction->effectuee!="O") {
-			   echo "<span id='mail_envoye_$num'><a href='#' onclick=\"envoi_mail($num);return false;\"><img src='../images/icons/icone_mail.png' width='25' height='25' alt='Envoyer un mail pour demander le travail au déclarant' title='Envoyer un mail pour demander le travail au déclarant' /></a></span>";
-			}
-		}
-		*/
-        //echo "</td>\n";
-
-		/*
-		// portion de code issue de verif_bulletin.php ligne 1110
-		echo "<script type='text/javascript'>  
-	// <![CDATA[
-	function envoi_mail(num) {
-		csrf_alea=document.getElementById('csrf_alea').value;
-		destinataire=document.getElementById('mail_'+num).value;
-		sujet_mail=document.getElementById('sujet_'+num).value;
-		message=document.getElementById('message_'+num).value;
-		new Ajax.Updater($('mail_envoye_'+num),'../bulletin/envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+escape(message)+'&csrf_alea='+csrf_alea,{method: 'get'});
-	}
-	//]]>
-</script>\n";
-		*/
         echo "</td>\n";
 
 		echo "<td>\n";
@@ -335,20 +258,6 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "<p align='center'><input type='submit' value=\"Valider\" /></p>\n";
 	echo "</blockquote>\n";
 
-/*
-	// portion de code issue de verif_bulletin.php ligne 1110
-	echo "<script type='text/javascript'>
-	// <![CDATA[
-	function envoi_mail(num) {
-		csrf_alea=document.getElementById('csrf_alea').value;
-		destinataire=document.getElementById('mail_'+num).value;
-		sujet_mail=document.getElementById('sujet_'+num).value;
-		message=document.getElementById('message_'+num).value;
-		new Ajax.Updater($('mail_envoye_'+num),'../bulletin/envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+escape(message)+'&csrf_alea='+csrf_alea,{method: 'get'});
-	}
-	//]]>
-</script>\n";
-*/
 	echo envoi_mail_rappel_js();
 }
 
@@ -357,10 +266,11 @@ $sql="SELECT * FROM s_sanctions s, s_exclusions se WHERE se.id_sanction=s.id_san
 //echo "$sql<br />\n";
 $res_sanction=mysql_query($sql);
 if(mysql_num_rows($res_sanction)>0) {
-	echo "<p class='bold'>Exclusions du jour&nbsp;: $jour_sanction</p>\n";
+	echo "<p class='bold'>Exclusions (<em>et assimilées</em>) du jour&nbsp;: $jour_sanction</p>\n";
 	echo "<blockquote>\n";
 	echo "<table class='boireaus' border='1' summary='Exclusions' style='margin:2px;'>\n";
 	echo "<tr>\n";
+	echo "<th>Nature</th>\n";
 	echo "<th>Elève</th>\n";
 	echo "<th>Date début</th>\n";
 	echo "<th>Heure début</th>\n";
@@ -374,6 +284,8 @@ if(mysql_num_rows($res_sanction)>0) {
 	while($lig_sanction=mysql_fetch_object($res_sanction)) {
 		$alt_b=$alt_b*(-1);
 		echo "<tr class='lig$alt_b'>\n";
+
+		echo "<td>".ucfirst($lig_sanction->nature)."</td>\n";
 
 		echo "<td>";
 		echo p_nom($lig_sanction->login);
@@ -419,29 +331,8 @@ if(mysql_num_rows($res_sanction)>0) {
 				echo ">Détails</a>";
 			}
 		}
-		/*
-		if($travail=="") {$travail="Aucun travail.";}
-		if($details=="y") {
-			echo nl2br($travail);
-		}
-		else {
-			$texte=nl2br($travail);
-			$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
-			if($tmp_doc_joints!="") {
-				$texte.="<br />";
-				$texte.=$tmp_doc_joints;
-			}
-			$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
 
-			echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
-			//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-			echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
-			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-			echo ">Détails</a>";
-		}
-		*/
-
-        echo "<td>\n";
+		echo "<td>\n";
 		echo "<input type='checkbox' name='sanction_effectuee[$lig_sanction->id_sanction]' value='effectuee' ";
 		if($lig_sanction->effectuee=="O") {echo "checked='checked' ";}
 		echo "onchange='changement();' ";
@@ -466,6 +357,7 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "<blockquote>\n";
 	echo "<table class='boireaus' border='1' summary='Travail' style='margin:2px;'>\n";
 	echo "<tr>\n";
+	echo "<th>Nature</th>\n";
 	echo "<th>Elève</th>\n";
 	echo "<th>Travail</th>\n";
 	echo "<th>Donné par (Déclarant)</th>\n";
@@ -480,6 +372,8 @@ if(mysql_num_rows($res_sanction)>0) {
 		else {
 			echo "<tr class='lig$alt_b'>\n";
 		}
+
+		echo "<td>".ucfirst($lig_sanction->nature)."</td>\n";
 
 		echo "<td>";
 		echo p_nom($lig_sanction->login);
@@ -519,27 +413,6 @@ if(mysql_num_rows($res_sanction)>0) {
 				echo ">Détails</a>";
 			}
 		}
-		/*
-		if($travail=="") {$travail="Aucun travail.";}
-		if($details=="y") {
-			echo nl2br($travail);
-		}
-		else {
-			$texte=nl2br($travail);
-			$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
-			if($tmp_doc_joints!="") {
-				$texte.="<br />";
-				$texte.=$tmp_doc_joints;
-			}
-			$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
-
-			echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
-			//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-			echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
-			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-			echo ">Détails</a>";
-		}
-		*/
 		echo "</td>\n";
 		
 		echo "<td>\n";
@@ -579,11 +452,12 @@ $sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE sr.date<'$annee-$mois-$jo
 //echo "$sql<br />";
 $res_sanction=mysql_query($sql);
 if(mysql_num_rows($res_sanction)>0) {
-	echo "<p class='bold'>Liste des retenues non effectuées pour une date antérieure au $jour_sanction</p>\n";
+	echo "<p class='bold'>Liste des retenues (<em>et assimilées</em>) non effectuées pour une date antérieure au $jour_sanction</p>\n";
 	echo "<blockquote>\n";
 	echo "<table class='boireaus' border='1' summary='Retenues' style='margin:2px;'>\n";
 	echo "<tr>\n";
 	//echo "<th>Date</th>\n";
+	echo "<th>Nature</th>\n";
 	echo "<th><a href='".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=$details&amp;order_by_date=";
 	if($order_by_date=='asc') {echo "desc";} else {echo "asc";}
 	echo "#retenues_en_souffrance'>Date</a></th>\n";
@@ -600,7 +474,9 @@ if(mysql_num_rows($res_sanction)>0) {
 	while($lig_sanction=mysql_fetch_object($res_sanction)) {
 		$alt_b=$alt_b*(-1);
 		echo "<tr class='lig$alt_b'>\n";
-		echo "<td><a href='saisie_sanction.php?mode=modif&amp;valeur=retenue&amp;ele_login=$lig_sanction->login&amp;id_incident=$lig_sanction->id_incident&amp;id_sanction=$lig_sanction->id_sanction' title='Reprogrammer'";
+		echo "<td>".ucfirst($lig_sanction->nature)."</td>\n";
+		//echo "<td><a href='saisie_sanction.php?mode=modif&amp;valeur=retenue&amp;ele_login=$lig_sanction->login&amp;id_incident=$lig_sanction->id_incident&amp;id_sanction=$lig_sanction->id_sanction' title='Reprogrammer'";
+		echo "<td><a href='saisie_sanction.php?mode=modif&amp;valeur=$lig_sanction->id_nature_sanction&amp;ele_login=$lig_sanction->login&amp;id_incident=$lig_sanction->id_incident&amp;id_sanction=$lig_sanction->id_sanction' title='Reprogrammer'";
 		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 		echo ">".formate_date($lig_sanction->date)."</a></td>\n";
 		echo "<td>$lig_sanction->heure_debut</td>\n";
@@ -643,27 +519,6 @@ if(mysql_num_rows($res_sanction)>0) {
 				echo ">Détails</a>";
 			}
 		}
-		/*
-		if($travail=="") {$travail="Aucun travail.";}
-		if($details=="y") {
-			echo nl2br($travail);
-		}
-		else {
-			$texte=nl2br($travail);
-			$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
-			if($tmp_doc_joints!="") {
-				$texte.="<br />";
-				$texte.=$tmp_doc_joints;
-			}
-			$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
-
-			echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
-			//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-			echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
-			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-			echo ">Détails</a>";
-		}
-		*/
 		echo "</td>\n";
 		
 		echo "<td>\n";
@@ -702,6 +557,7 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "<blockquote>\n";
 	echo "<table class='boireaus' border='1' summary='Travail' style='margin:2px;'>\n";
 	echo "<tr>\n";
+	echo "<th>Nature</th>\n";
 	echo "<th>Elève</th>\n";
 	//echo "<th>Date de retour</th>\n";
 	echo "<th><a href='".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=$details&amp;order_by_date=";
@@ -715,6 +571,8 @@ if(mysql_num_rows($res_sanction)>0) {
 	while($lig_sanction=mysql_fetch_object($res_sanction)) {
 		$alt_b=$alt_b*(-1);
 		echo "<tr class='lig$alt_b'>\n";
+
+		echo "<td>".ucfirst($lig_sanction->nature)."</td>\n";
 
 		echo "<td>";
 		echo p_nom($lig_sanction->login);
@@ -758,27 +616,6 @@ if(mysql_num_rows($res_sanction)>0) {
 				echo ">Détails</a>";
 			}
 		}
-		/*
-		if($travail=="") {$travail="Aucun travail.";}
-		if($details=="y") {
-			echo nl2br($travail);
-		}
-		else {
-			$texte=nl2br($travail);
-			$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
-			if($tmp_doc_joints!="") {
-				$texte.="<br />";
-				$texte.=$tmp_doc_joints;
-			}
-			$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
-
-			echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
-			//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-			echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
-			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-			echo ">Détails</a>";
-		}
-		*/
 		echo "</td>\n";
 
 		echo "<td>\n";

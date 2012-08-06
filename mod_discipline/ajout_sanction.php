@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -54,6 +54,7 @@ $ele_login=isset($_GET['ele_login']) ? $_GET['ele_login'] : NULL;
 $id_incident=isset($_GET['id_incident']) ? $_GET['id_incident'] : NULL;
 
 //echo "plip";
+//debug_var();
 
 include('saisie_sanction.inc.php');
 

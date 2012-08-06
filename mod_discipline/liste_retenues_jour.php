@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -81,6 +81,7 @@ else {
 	
 			echo "<table class='boireaus' summary='Retenues du jour'>\n";
 			echo "<tr>\n";
+			echo "<th style='font-size:x-small;'>Nature</th>\n";
 			echo "<th style='font-size:x-small;'>Heure</th>\n";
 			echo "<th style='font-size:x-small;'>Dur&eacute;e</th>\n";
 			echo "<th style='font-size:x-small;'>Lieu</th>\n";
@@ -99,6 +100,7 @@ else {
 	
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt'>\n";
+				echo "<td style='font-size:x-small;'>"ucfirst($lig_sanction->nature)."</td>\n";
 				echo "<td style='font-size:x-small;'>$heure_debut</td>\n";
 				echo "<td style='font-size:x-small;'>$duree</td>\n";
 				echo "<td style='font-size:x-small;'>$lieu</td>\n";

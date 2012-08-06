@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Didier Blanqui
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Didier Blanqui
  *
  * This file is part of GEPI.
  *
@@ -146,7 +146,7 @@ Class Modele_Incidents extends Modele {
     return($this->data=parent::set_array('object',$this->res));
   }
   private function get_db_types_sanctions() {
-    $this->sql="SELECT id_nature,nature from s_types_sanctions";
+    $this->sql="SELECT id_nature,nature from s_types_sanctions2";
     $this->res=mysql_query($this->sql);
     return($this->data=parent::set_array('object',$this->res));
   }
@@ -265,7 +265,7 @@ Class Modele_Incidents extends Modele {
                     LEFT JOIN s_exclusions sexc ON san.id_sanction=sexc.id_sanction
                     LEFT JOIN s_travail str ON san.id_sanction=str.id_sanction
                     LEFT JOIN s_autres_sanctions saut ON san.id_sanction=saut.id_sanction
-                    LEFT JOIN s_types_sanctions sts ON sts.id_nature=saut.id_nature
+                    LEFT JOIN s_types_sanctions2 sts ON sts.id_nature=saut.id_nature
                     INNER JOIN s_protagonistes spr ON (spr.id_incident=san.id_incident AND spr.login=san.login)
                     WHERE  san.id_incident IN ('".$liste_incidents."')";
     $this->sql.=' GROUP BY san.id_sanction';
