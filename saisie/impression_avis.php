@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -165,7 +165,7 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 	
 	echo "<h3>Liste des classes : </h3>\n"; //modele imprime PDF
 	
-	// Pourle compte scolarite, possibilité d'imprimer les avis en synthèse (pour ses classes)
+	// Pour le compte scolarite, possibilité d'imprimer les avis en synthèse (pour ses classes)
 	echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez imprimer les avis :</p>\n";
 
 	$sql = "SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
