@@ -55,6 +55,16 @@ $ele_login=isset($_POST["ele_login"]) ? $_POST["ele_login"] :(isset($_GET["ele_l
 $id_groupe=isset($_POST["id_groupe"]) ? $_POST["id_groupe"] : NULL;
 $note_grp=isset($_POST["note_grp"]) ? $_POST["note_grp"] : NULL;
 
+
+/*
+// Pour la recherche par nom élève:
+$order_by=isset($_GET["order_by"]) ? $_GET["order_by"] :NULL;
+$rech_nom=isset($_GET["rech_nom"]) ? $_GET["rech_nom"] :NULL;
+$rech_prenom=isset($_GET["rech_prenom"]) ? $_GET["rech_prenom"] :NULL;
+$Recherche_sans_js=isset($_GET["Recherche_sans_js"]) ? $_GET["Recherche_sans_js"] :NULL;
+*/
+
+
 if((isset($_POST['is_posted']))&&
 (isset($id_classe))&&
 (isset($periode_num))&&
@@ -187,6 +197,50 @@ if(!isset($id_classe)) {
 	echo "</p>\n";
 	echo "</div>\n";
 
+
+	echo "<div id='recherche_avec_js' style='display:none;'>\n";
+	$page="saisie_secours_eleve.php";
+	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit=\"cherche_eleves('nom');return false;\" method='post' name='formulaire'>";
+	echo "<p>\n";
+	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>nom</strong> contient&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='text' name='rech_nom' id='rech_nom' value='' onchange=\"affichage_et_action('nom')\" />\n";
+	echo "<input type='hidden' name='page' value='$page' />\n";
+	echo "<input type='button' name='Recherche' id='Recherche_nom' value='Rechercher' onclick=\"cherche_eleves('nom')\" />\n";
+	//echo $champ_quitter_page_ou_non;
+	echo "</p>\n";
+	echo "</form>\n";
+
+	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit=\"cherche_eleves('prenom');return false;\" method='post' name='formulaire'>";
+	echo "<p>\n";
+	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>prénom</strong> contient&nbsp;: <input type='text' name='rech_prenom' id='rech_prenom' value='' onchange=\"affichage_et_action('prenom')\" />\n";
+	echo "<input type='hidden' name='page' value='$page' />\n";
+	echo "<input type='button' name='Recherche' id='Recherche_prenom' value='Rechercher' onclick=\"cherche_eleves('prenom')\" />\n";
+	//echo $champ_quitter_page_ou_non;
+	echo "</p>\n";
+	echo "</form>\n";
+
+	echo "<div id='liste_eleves'></div>\n";
+
+
+	echo "</div>\n";
+	echo "<script type='text/javascript'>
+document.getElementById('recherche_avec_js').style.display='';
+//affichage_et_action('nom');
+//affichage_et_action('prenom');
+
+if(document.getElementById('rech_nom')) {document.getElementById('rech_nom').focus();}
+
+function cherche_eleves(champ) {
+	if(champ=='nom') {
+		chaine=document.getElementById('rech_nom').value;
+		new Ajax.Updater($('liste_eleves'),'../eleves/liste_eleves.php?page=$page&rech_nom='+chaine,{method: 'get'});
+	}
+	else {
+		chaine=document.getElementById('rech_prenom').value;
+		new Ajax.Updater($('liste_eleves'),'../eleves/liste_eleves.php?page=$page&rech_prenom='+chaine,{method: 'get'});
+	}
+}
+</script>\n";
+
 	$sql="SELECT DISTINCT c.* FROM classes c WHERE 1 ORDER BY classe;";
 	//echo "$sql<br />";
 	$calldata = mysql_query($sql);
@@ -232,12 +286,17 @@ elseif(!isset($periode_num)) {
 
 	include "../lib/periodes.inc.php";
 
-	echo "<p>Choisissez la période:</p>\n";
+	if(isset($ele_login)) {
+		echo "<p class='bold'>".get_nom_prenom_eleve($ele_login)." en ".get_class_from_id($id_classe)."</p>\n";
+	}
+	echo "<p>Choisissez la période&nbsp;:</p>\n";
 
 	echo "<ul>\n";
 	for($i=1;$i<=count($nom_periode);$i++) {
 		if($ver_periode[$i]!="O") {
-			echo "<li><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=$i'>".$nom_periode[$i]."</a></li>\n";
+			echo "<li><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=$i";
+			if(isset($ele_login)) {echo "&amp;ele_login=$ele_login";}
+			echo "'>".$nom_periode[$i]."</a></li>\n";
 		}
 		else {
 			echo "<li>".$nom_periode[$i].": Période close</li>\n";
@@ -255,7 +314,8 @@ elseif(!isset($ele_login)) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choix classe</a>";
 
 	// Choisir une autre période
-	echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Choix période</a>";
+	echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe";
+	echo "'>Choix période</a>";
 
 	echo "</p>\n";
 	echo "</div>\n";
@@ -309,7 +369,9 @@ else {
 	echo " | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choix classe</a>";
 
 	// Choisir une autre période
-	echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choix période</a>";
+	echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe";
+	if(isset($ele_login)) {echo "&amp;ele_login=$ele_login";}
+	echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choix période</a>";
 
 	// Choisir un autre élève de la même classe
 	//echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=$periode_num' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choix élève</a>";
