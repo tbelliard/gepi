@@ -1938,6 +1938,18 @@ function insere_lien_insertion_image_dans_ckeditor($url_img) {
 	return "<div style='float:right; width:18px;'><a href=\"javascript:insere_image_dans_ckeditor('".$url_img."','$tmp_largeur','$tmp_hauteur')\" title='Insérer cette image dans le texte'><img src='../images/up.png' width='18' height='18' alt='Insérer cette image dans le texte' /></a></div>";
 }
 
+/**
+ * Insertion d'un lien destiné à provoquer l'insertion du code <a href...>
+ * vers l'url de l'afficheur GeoGebra avec le fichier GGB passé en paramètre.
+  *
+ * @param string $url_ggb : Url du fichier GGB
+ *
+ * @return string : Chaine HTML <div float:right...><a href...><img...></a></div>
+*/
+function insere_lien_insertion_lien_geogebra_dans_ckeditor($titre_ggb, $url_ggb) {
+	return "<div style='float:right; width:18px;'><a href=\"javascript:insere_lien_ggb_dans_ckeditor('".$titre_ggb."', '".$url_ggb."')\" title='Insérer un lien vers le visionneur GeoGebra pour ce fichier GGB'><img src='../images/up.png' width='18' height='18' alt='Insérer un lien vers le visionneur GeoGebra pour ce fichier GGB' /></a></div>";
+}
+
 /** fonction alertant sur la configuration de suhosin
  *
  * @return string Chaine de texte HTML 

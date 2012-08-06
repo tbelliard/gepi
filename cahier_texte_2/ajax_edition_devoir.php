@@ -513,6 +513,9 @@ echo "<script type='text/javascript'>
 				if(preg_match("/(png|gif|jpg)$/i",$document->getEmplacement())) {
 					echo insere_lien_insertion_image_dans_ckeditor($document->getEmplacement());
 				}
+				elseif(preg_match("/ggb$/i",$document->getEmplacement())) {
+					echo insere_lien_insertion_lien_geogebra_dans_ckeditor($document->getTitre(), $document->getEmplacement());
+				}
 
 				echo "
 							<a href='".$document->getEmplacement()."' target=\"_blank\">".$document->getTitre()."</a>
