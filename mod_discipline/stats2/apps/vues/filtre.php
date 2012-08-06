@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Didier Blanqui
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Didier Blanqui
  *
  * This file is part of GEPI.
  *
@@ -74,16 +74,19 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
                 <fieldset>
                     <legend>Choix des sanctions</legend>
                     <div id="recherche_classe">
-                            <?php $max=count($sanctions)+3;?>
+                            <?php
+                               //$max=count($sanctions)+3;
+                               $max=count($sanctions);
+                            ?>
                             <a href="javascript:modif_case('sanctions',true,<?php echo $max; ?>)"><img src='../../images/enabled.png' width='15' height='15' alt='Tout cocher' title='Tout cocher' /></a>/
                             <a href="javascript:modif_case('sanctions',false,<?php echo $max; ?>)"><img src='../../images/disabled.png' width='15' height='15' alt='Tout décocher' title='Tout décocher'/></a>
                             <br />
-                                <?php $cpt=0;?>
-                               <input type='checkbox' name='sanctions[]' id='sanctions_<?php echo $cpt;?>' value='travail' <?php if ($filtres_sanctions){if( in_array('travail', $filtres_sanctions)) echo "checked";} ?>/><label for='sanction_<?php echo $cpt;?>'>Travail</label><br />
-	                        <?php $cpt++;?>
+                                <?php //$cpt=0;?>
+                               <!--input type='checkbox' name='sanctions[]' id='sanctions_<?php echo $cpt;?>' value='travail' <?php if ($filtres_sanctions){if( in_array('travail', $filtres_sanctions)) echo "checked";} ?>/><label for='sanction_<?php echo $cpt;?>'>Travail</label><br />
+	                        <?php //$cpt++;?>
 	                       <input type='checkbox' name='sanctions[]' id='sanctions_<?php echo $cpt;?>' value='retenue' <?php if ($filtres_sanctions){if( in_array('retenue', $filtres_sanctions)) echo "checked";} ?>/><label for='sanction_<?php echo $cpt;?>'>Retenue</label><br />
-	                      <?php $cpt++;?>
-	                      <input type='checkbox' name='sanctions[]' id='sanctions_<?php echo $cpt;?>' value='exclusion' <?php if ($filtres_sanctions){if( in_array('exclusion', $filtres_sanctions)) echo "checked";} ?>/><label for='sanction_<?php echo $cpt;?>'>Exclusion</label><br />
+	                      <?php //$cpt++;?>
+	                      <input type='checkbox' name='sanctions[]' id='sanctions_<?php echo $cpt;?>' value='exclusion' <?php if ($filtres_sanctions){if( in_array('exclusion', $filtres_sanctions)) echo "checked";} ?>/><label for='sanction_<?php echo $cpt;?>'>Exclusion</label><br /-->
 	                      <?php  $cpt++;
                                 foreach($sanctions as $sanction) { ?>
                                     <input type="checkbox" name="sanctions[]" id="sanctions_<?php echo $cpt;?>" value="<?php echo $sanction->nature ?>" <?php if ($filtres_sanctions){if( in_array($sanction->nature, $filtres_sanctions)) echo "checked";} ?>/>
