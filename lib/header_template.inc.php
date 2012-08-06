@@ -539,16 +539,19 @@ if (isset($titre_page)) {
 					}
 				}
             }
+            //echo "\$gepiGitCommit=$gepiGitCommit<br />";
             if ($gepiGitCommit != null) {
                 $version_gepi .= ' '.substr($gepiGitCommit, 0, 6).' '.$gepiGitBranch;
-                try {
-                    @exec('cd '.dirname(__FILE__).'; git log -1 --format=format:"%ct" '.$gepiGitCommit, $output);
-                    if (isset($output[0])) {
-                        $date = new DateTime('@'.$output[0]);
-                        $version_gepi .= ' '.$date->format('d/m/Y H:i');
-                    }
-                } catch (Exception $e) {
-                }
+				if(!getSettingAOui('ne_pas_tester_version_via_git_log')) {
+		            try {
+		                @exec('cd '.dirname(__FILE__).'; git log -1 --format=format:"%ct" '.$gepiGitCommit, $output);
+		                if (isset($output[0])) {
+		                    $date = new DateTime('@'.$output[0]);
+		                    $version_gepi .= ' '.$date->format('d/m/Y H:i');
+		                }
+		            } catch (Exception $e) {
+		            }
+				}
             }
         }
 		$tbs_version_gepi = $version_gepi;

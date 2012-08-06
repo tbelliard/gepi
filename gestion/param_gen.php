@@ -659,6 +659,14 @@ if (isset($_POST['gepi_pmv'])) {
 	}
 }
 
+if (isset($_POST['ne_pas_tester_version_via_git_log'])) {
+	check_token();
+
+	if (!saveSetting("ne_pas_tester_version_via_git_log", $_POST['ne_pas_tester_version_via_git_log'])) {
+		$msg .= "Erreur lors de l'enregistrement de ne_pas_tester_version_via_git_log !";
+	}
+}
+
 
 // Load settings
 if (!loadSettings()) {
@@ -1811,6 +1819,60 @@ echo add_token_field();
 	<p>
 		Il arrive que ce test de présence provoque un affichage d'erreur (<em>à propos de pmv.php</em>).
 		Dans ce cas, désactivez simplement le test.
+	</p>
+</form>
+<hr />
+
+<form enctype="multipart/form-data" action="param_gen.php" method="post" id="form4" style="width: 100%;">
+	<p>
+<?php
+echo add_token_field();
+?>
+	</p>
+
+	<p  class="cellTab" style="font-variant: small-caps;">
+		Tester la date de la révision Gepi avec git<br />(<em>nécessite que git soit installé et accessible</em>) :
+	</p>
+	<p class="cellTab">
+		<input type="radio" 
+			   name="ne_pas_tester_version_via_git_log" 
+			   id="ne_pas_tester_version_via_git_log_n" 
+			   value="n" 
+			   <?php
+				if(!getSettingAOui('ne_pas_tester_version_via_git_log')) {echo "checked='checked'";}
+			   ?>
+			   onchange='changement()' />
+		<label for='ne_pas_tester_version_via_git_log_n' style='cursor: pointer;'>
+			Oui
+		</label>
+		<br />
+		<input type="radio" 
+			   name="ne_pas_tester_version_via_git_log" 
+			   id="ne_pas_tester_version_via_git_log_y" 
+			   value="y" 
+			   <?php
+				if(getSettingAOui('ne_pas_tester_version_via_git_log')) {echo "checked='checked'";}
+			   ?>
+			   onchange='changement()' />
+		<label for='ne_pas_tester_version_via_git_log_y' style='cursor: pointer;'>
+			Non
+		</label>
+	</p>
+
+	<p>
+	<input type="hidden" name="is_posted" value="1" />
+	</p>
+	<p class="center">
+		<input type="submit" name = "OK" value="Enregistrer" style="font-variant: small-caps;" />
+	</p>
+
+	<p>
+		<em>Remarque:</em>
+	</p>
+	<p>
+		git est l'outil de gestion de versions de Gepi.<br />
+		Si git est installé sur votre serveur et accessible par le serveur web, alors vous pouvez afficher dans l'entête administrateur sur la page d'accueil, la date de la révision en place.<br />
+		Cela peut être commode pour apporter des précisions sur votre version quand vous posez une question sur la liste gepi-users, mais l'absence éventuelle de git n'enlèvera aucune fonctionnalité à votre Gepi.
 	</p>
 </form>
 
