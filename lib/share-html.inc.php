@@ -2026,4 +2026,130 @@ function tableau_html_eleves_du_groupe($id_groupe, $nb_col) {
 	
 	return $retour;
 }
+
+/** Retourne un tableau HTML des groupes d'une classe dans telle matière
+ * @param integer $id_classe : Identifiant de ckasse
+ * @param string $matiere : Nom de matière
+ *
+ * @return string Tableau HTML de la liste des enseignements d'une matière donnée dans une classe
+ */
+function tableau_html_groupe_matiere_telle_classe($id_classe, $matiere, $tab_grp_exclus=array()) {
+	global $tab_domaines, $tab_domaines_sigle;
+
+	$cpt_grp=0;
+
+	$retour="<table class=\"boireaus\" border=\"1\" cellpadding=\"1\" cellspacing=\"1\">\n";
+	$retour.="<thead>\n";
+	$retour.="<tr>\n";
+	$retour.="<th rowspan='2'>Enseignement</th>\n";
+	$retour.="<th rowspan='2'>Classes</th>\n";
+	$retour.="<th rowspan='2'>Professeurs</th>\n";
+	$retour.="<th rowspan='2'>Coefficient</th>\n";
+	$retour.="<th rowspan='2'>Catégorie</th>\n";
+	$retour.="<th colspan='".count($tab_domaines_sigle)."'>Visibilité</th>\n";
+	$retour.="</tr>\n";
+
+	$retour.="<tr>\n";
+	for($i=0;$i<count($tab_domaines_sigle);$i++) {
+		$retour.="<th>".$tab_domaines_sigle[$i]."</th>\n";
+	}
+	$retour.="</tr>\n";
+	$retour.="</thead>\n";
+	$retour.="<tbody>\n";
+
+	// Remarque: Le coef peut différer d'une classe à l'autre pour un groupe multiclasses,
+	// mais la visibilité, elle est propre au groupe toutes classes confondues.
+	$sql="select DISTINCT g.name, g.id, g.description, jgm.id_matiere, jgc.coef, jgc.categorie_id FROM groupes g, 
+			j_groupes_classes jgc, 
+			j_groupes_matieres jgm
+		WHERE (
+			jgm.id_matiere='".$matiere."' AND
+			jgc.id_classe='".$id_classe."' AND
+			jgm.id_groupe=jgc.id_groupe
+			AND jgc.id_groupe=g.id
+			)
+		ORDER BY jgc.priorite,jgm.id_matiere, g.name;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$alt=1;
+		while($lig=mysql_fetch_object($res)) {
+			if(!in_array($lig->id, $tab_grp_exclus)) {
+				$alt=$alt*(-1);
+				$retour.="<tr class='lig$alt white_hover'>\n";
+				$retour.="<td>".$lig->name."</td>\n";
+
+				$retour.="<td>";
+				$sql="SELECT id, classe FROM classes c, j_groupes_classes jgc WHERE jgc.id_classe=c.id AND jgc.id_groupe='$lig->id' ORDER BY c.classe;";
+				$res_clas=mysql_query($sql);
+				$cpt=0;
+				while($lig_clas=mysql_fetch_object($res_clas)) {
+					if($cpt>0) {$retour.=", ";}
+					if($lig_clas->id==$id_classe) {
+						$retour.="<strong>".$lig_clas->classe."</strong>";
+					}
+					else {
+						$retour.=$lig_clas->classe;
+					}
+					$cpt++;
+				}
+				$retour.="</td>\n";
+
+				$retour.="<td>";
+				$sql="SELECT u.nom, u.prenom, u.civilite FROM j_groupes_professeurs jgp, utilisateurs u WHERE jgp.id_groupe='$lig->id' AND jgp.login=u.login ORDER BY u.nom, u.prenom;";
+				$res_prof=mysql_query($sql);
+				$cpt=0;
+				while($lig_prof=mysql_fetch_object($res_prof)) {
+					if($cpt>0) {$retour.=", ";}
+					$retour.=$lig_prof->civilite." ".casse_mot($lig_prof->nom, "maj")." ".casse_mot(mb_substr($lig_prof->prenom,0,1), "maj");
+					$cpt++;
+				}
+				$retour.="</td>\n";
+
+				$retour.="<td title='Coefficient propre à la classe. Si plusieurs classes sont associées à ce groupe, leurs coefficients peuvent différer.'>".$lig->coef."</td>\n";
+
+				$retour.="<td>";
+				$sql="SELECT * FROM matieres_categories WHERE id='$lig->categorie_id';";
+				$res_cat=mysql_query($sql);
+				if(mysql_num_rows($res_cat)==0) {
+					$retour.="<span style='color:red' title='Cet enseignement ne sera pas visible sur les bulletins si vous optez pour un affichage avec catégories de matières.'>Aucune</span>";
+				}
+				else {
+					$lig_cat=mysql_fetch_object($res_cat);
+					$retour.=$lig_cat->nom_court;
+				}
+				$retour.="</td>\n";
+
+				$tab_v=array();
+				$sql="SELECT * FROM j_groupes_visibilite WHERE id_groupe='$lig->id';";
+				$res_v=mysql_query($sql);
+				while($lig_v=mysql_fetch_object($res_v)) {
+					$tab_v[$lig_v->domaine]=$lig_v->visible;
+				}
+
+				for($i=0;$i<count($tab_domaines);$i++) {
+					$retour.="<td>";
+					if((!isset($tab_v[$tab_domaines[$i]]))||($tab_v[$tab_domaines[$i]]!='n')) {
+						$retour.="<img src='../images/enabled.png' width='20' height='20' title='Visible' alt='Visible' />";
+					}
+					else {
+						$retour.="<img src='../images/disabled.png' width='20' height='20' title='Invisible' alt='Invisible' />";
+					}
+					$retour.="</td>\n";
+				}
+				$retour.="</tr>\n";
+
+				$cpt_grp++;
+			}
+		}
+	}
+	$retour.="</tbody>\n";
+	$retour.="</table>\n";
+
+	if($cpt_grp>0) {
+		return $retour;
+	}
+	else {
+		return "";
+	}
+}
 ?>
