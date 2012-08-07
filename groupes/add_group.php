@@ -430,6 +430,14 @@ if ($reg_matiere != null) {
 		}
     }
     echo "</div>\n";
+
+	$tab_autres_groupes=tableau_html_groupe_matiere_telle_classe($id_classe, $reg_matiere);
+	if($tab_autres_groupes!="") {
+		echo "<div style='width: 45%; float: right; font-size:small; margin-top:1em;'>\n";
+		echo "<p>Il existe d'autres enseignements dans la même matière pour cette classe&nbsp;:</p>\n";
+		echo $tab_autres_groupes;
+		echo "</div>\n";
+	}
 }
 // Fin : professeurs
 
