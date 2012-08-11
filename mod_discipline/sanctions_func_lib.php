@@ -10,6 +10,9 @@ $largeur_survol_infobulle=100;
 // Délais en ms avant affichage:
 $delais_affichage_infobulle=500;
 
+// Familles de sanctions:
+$types_autorises=array('exclusion', 'retenue', 'travail', 'autre');
+
 $dossier_documents_discipline="documents/discipline";
 if(((isset($multisite))&&($multisite=='y'))||(getSettingValue('multisite')=='y')) {
 	if(isset($_COOKIE['RNE'])) {
@@ -999,7 +1002,7 @@ function get_login_declarant_incident($id_incident) {
 function afficher_tableau_des_reports($id_sanction) {
     global $id_incident;
 	$retour="";
-    $sql="SELECT * FROM s_reports WHERE id_sanction=$id_sanction ORDER BY id_report";
+    $sql="SELECT * FROM s_reports WHERE id_sanction='$id_sanction' ORDER BY id_report";
 		//echo $sql;
 		$res=mysql_query($sql);
         if(mysql_num_rows($res)>0) {
@@ -1035,7 +1038,7 @@ function afficher_tableau_des_reports($id_sanction) {
 
 //Fonction donnant le nombre de reports pour une sanction ($id_type_sanction)
 function nombre_reports($id_sanction,$aucun) {
-	$sql="SELECT * FROM s_reports WHERE id_sanction=$id_sanction ORDER BY id_report";
+	$sql="SELECT * FROM s_reports WHERE id_sanction='$id_sanction' ORDER BY id_report";
 	//echo $sql;
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
@@ -1485,4 +1488,13 @@ function envoi_mail_rappel_js() {
 	return $retour;
 }
 
+function get_nature_sanction($id_nature_sanction) {
+	$retour="";
+	$sql="SELECT nature FROM s_types_sanctions2 WHERE id_nature='$id_nature_sanction';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$retour=mysql_result($res,0,"nature");
+	}
+	return $retour;
+}
 ?>

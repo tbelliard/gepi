@@ -84,4 +84,98 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "<br />&nbsp;-> Ajout d'un champ 'id_nature_sanction' à la table 's_sanctions'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_sanctions LIKE 'id_nature_sanction';"));
+if ($test_champ==0) {
+	$query = mysql_query("ALTER TABLE s_sanctions ADD id_nature_sanction int(11) NOT NULL AFTER nature;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_sanctions LIKE 'id_nature_sanction';"));
+if ($test_champ>0) {
+	// On ajoute une table parce qu'on pourrait avoir une collision sur la migration avec une sanction autre de l'ancienne table s_types_sanctions que quelqu'un aurait eu l'idée de créer avec un des noms réservés (Retenue, Exclusion, Travail) parce qu'il manquait un test pour interdire cette bizarrerie.
+	$result .= "<br />";
+	$result .= "<strong>Ajout d'une table 's_types_sanctions2' :</strong><br />";
+	$test = sql_query1("SHOW TABLES LIKE 's_types_sanctions2'");
+	if ($test == -1) {
+		$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS s_types_sanctions2 (id_nature INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,nature VARCHAR( 255 ) NOT NULL ,type VARCHAR( 255 ) NOT NULL DEFAULT 'autre') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+		if ($result_inter == '') {
+			$result .= msj_ok("SUCCES !");
+
+			$tab_nature_sanction=array("Exclusion", "Retenue", "Travail");
+			for($loop=0;$loop<count($tab_nature_sanction);$loop++) {
+				$sql="SELECT id_nature FROM s_types_sanctions2 WHERE nature='".addslashes($tab_nature_sanction[$loop])."';";
+				$res_ns=mysql_query($sql);
+				if(mysql_num_rows($res_ns)==0) {
+					$result_inter = traite_requete("INSERT INTO s_types_sanctions2 SET nature='".addslashes($tab_nature_sanction[$loop])."', type='".$tab_nature_sanction[$loop]."';");
+					if ($result_inter == '') {
+						$id_nature_sanction_courante=mysql_insert_id();
+
+						$sql="UPDATE s_sanctions SET id_nature_sanction='$id_nature_sanction_courante' WHERE nature='".addslashes($tab_nature_sanction[$loop])."';";
+						$result_inter = traite_requete($sql);
+						if ($result_inter == '') {
+							$result.="&nbsp;-> Mise à jour des sanctions ".$tab_nature_sanction[$loop]." existantes : ".msj_ok("Ok !");
+						}
+						else {
+							$result.="&nbsp;-> Mise à jour des sanctions ".$tab_nature_sanction[$loop]." existantes : ".msj_erreur("Erreur !");
+						}
+					} else {
+						$result.=msj_erreur("Définition du type de sanction ".$tab_nature_sanction[$loop]." : Erreur !");
+					}
+				}
+				else {
+					//$tab_id_nature_sanction[$tab_nature_sanction[$loop]]=mysql_result($res_ns, 0, "id_nature");
+					$id_nature_sanction_courante=mysql_result($res_ns, 0, "id_nature");
+
+					$sql="UPDATE s_sanctions SET id_nature_sanction='$id_nature_sanction_courante' WHERE nature='".addslashes($tab_nature_sanction[$loop])."';";
+					$result_inter = traite_requete($sql);
+					if ($result_inter == '') {
+						$result.="&nbsp;-> Mise à jour des sanctions ".$tab_nature_sanction[$loop]." existantes : ".msj_ok("Ok !");
+					}
+					else {
+						$result.="&nbsp;-> Mise à jour des sanctions ".$tab_nature_sanction[$loop]." existantes : ".msj_erreur("Erreur !");
+					}
+				}
+			}
+
+			/*
+			$sql="INSERT INTO s_types_sanctions2 (SELECT '', nature, 'autre' FROM s_types_sanctions ORDER BY nature);";
+			$res_sts=mysql_query($sql);
+			*/
+			$sql="SELECT * FROM s_types_sanctions;";
+			$res_sts=mysql_query($sql);
+			while($lig_sts=mysql_fetch_object($res_sts)) {
+				$sql="INSERT INTO s_types_sanctions2 SET nature='".addslashes($lig_sts->nature)."', type='autre';";
+				$result_inter = traite_requete($sql);
+				if ($result_inter == '') {
+					$id_nature_sanction=mysql_insert_id();
+
+					$sql="update s_sanctions set id_nature_sanction='$id_nature_sanction', nature='".addslashes($lig_sts->nature)."' where id_sanction in (select id_sanction from s_autres_sanctions where id_nature='".$lig_sts->id_nature."');";
+					$result_inter = traite_requete($sql);
+					if ($result_inter == '') {
+						$result.="&nbsp;-> Mise à jour des sanctions ".$lig_sts->nature." existantes : ".msj_ok("Ok !");
+					}
+					else {
+						$result.="&nbsp;-> Mise à jour des sanctions ".$lig_sts->nature." existantes : ".msj_erreur("Erreur !");
+					}
+				}
+				else {
+					$result.="&nbsp;-> Re-déclaration de la nature de sanction ".$lig_sts->nature." : ".msj_erreur("Erreur !");
+				}
+			}
+
+		}
+		else {
+			$result .= msj_erreur("ECHEC !");
+		}
+	} else {
+		$result .= msj_present("La table existe déjà");
+	}
+}
 ?>

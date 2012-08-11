@@ -282,7 +282,10 @@ if (isset($style_screen_ajout))  {
 	} elseif ($niveau_arbo == "3") {
 	   $gepiPath2="../../..";
 	}
-	
+	elseif($niveau_arbo == "public") {
+	   $gepiPath2="..";
+	}
+
 		$Style_CSS=array(); // initialisation du tableau de Style supplémentaire	
 		
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
@@ -317,7 +320,8 @@ if (getSettingValue("impose_petit_entete_prof") == 'y' AND isset($_SESSION['stat
 	$_SESSION['cacher_header']="y";
 }
 
-$petit_entete=getPref($_SESSION['login'], "petit_entete", "");
+$petit_entete="";
+if(isset($_SESSION['login'])) {$petit_entete=getPref($_SESSION['login'], "petit_entete", "");}
 //echo "\$petit_entete=$petit_entete<br />";
 if(($petit_entete=='y')||($petit_entete=='n')) {
 	$_SESSION['cacher_header']=$petit_entete;
@@ -539,16 +543,19 @@ if (isset($titre_page)) {
 					}
 				}
             }
+            //echo "\$gepiGitCommit=$gepiGitCommit<br />";
             if ($gepiGitCommit != null) {
                 $version_gepi .= ' '.substr($gepiGitCommit, 0, 6).' '.$gepiGitBranch;
-                try {
-                    @exec('cd '.dirname(__FILE__).'; git log -1 --format=format:"%ct" '.$gepiGitCommit, $output);
-                    if (isset($output[0])) {
-                        $date = new DateTime('@'.$output[0]);
-                        $version_gepi .= ' '.$date->format('d/m/Y H:i');
-                    }
-                } catch (Exception $e) {
-                }
+				if(!getSettingAOui('ne_pas_tester_version_via_git_log')) {
+		            try {
+		                @exec('cd '.dirname(__FILE__).'; git log -1 --format=format:"%ct" '.$gepiGitCommit, $output);
+		                if (isset($output[0])) {
+		                    $date = new DateTime('@'.$output[0]);
+		                    $version_gepi .= ' '.$date->format('d/m/Y H:i');
+		                }
+		            } catch (Exception $e) {
+		            }
+				}
             }
         }
 		$tbs_version_gepi = $version_gepi;

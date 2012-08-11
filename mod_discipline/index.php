@@ -2,7 +2,7 @@
 
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -119,27 +119,31 @@ if(mysql_num_rows($test_table)==0) {
 	}
 }
 
-
-$sql="SHOW TABLES LIKE 's_types_sanctions';";
+$sql="SHOW TABLES LIKE 's_types_sanctions2';";
 $test_table=mysql_query($sql);
 if(mysql_num_rows($test_table)==0) {
-	$sql="CREATE TABLE IF NOT EXISTS s_types_sanctions (
+	echo "<p style='color:red'>Une mise à jour de la base est requise !</p>\n";
+	/*
+	$sql="CREATE TABLE IF NOT EXISTS s_types_sanctions2 (
 	id_nature INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-	nature VARCHAR( 255 ) NOT NULL
+	nature VARCHAR( 255 ) NOT NULL,
+	type VARCHAR( 255 ) NOT NULL
 	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	$creation=mysql_query($sql);
 	if($creation) {
-		$tab_type=array("Avertissement travail","Avertissement comportement");
+		$tab_type=array("Exclusion", "Retenue", "Travail", "Avertissement travail","Avertissement comportement");
 		for($loop=0;$loop<count($tab_type);$loop++) {
-			$sql="SELECT 1=1 FROM s_types_sanctions WHERE nature='".$tab_type[$loop]."';";
+			$sql="SELECT 1=1 FROM s_types_sanctions2 WHERE nature='".$tab_type[$loop]."';";
 			//echo "$sql<br />";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)==0) {
-				$sql="INSERT INTO s_types_sanctions SET nature='".$tab_type[$loop]."';";
+				if($loop<3) {$type=mb_strtolower($tab_type[$loop]);} else {$type="autre";}
+				$sql="INSERT INTO s_types_sanctions2 SET nature='".$tab_type[$loop]."', type='".$type."';";
 				$insert=mysql_query($sql);
 			}
 		}
 	}
+	*/
 }
 
 $sql="CREATE TABLE IF NOT EXISTS s_autres_sanctions (
@@ -243,6 +247,7 @@ id_sanction INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 login VARCHAR( 50 ) NOT NULL ,
 description TEXT NOT NULL ,
 nature VARCHAR( 255 ) NOT NULL ,
+id_nature_sanction INT(11),
 effectuee ENUM( 'N', 'O' ) NOT NULL ,
 id_incident INT( 11 ) NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";

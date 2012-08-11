@@ -783,6 +783,15 @@ for(i=0;i<$p;i++) {
 }
 
 echo "</div>\n";
+
+$tab_autres_groupes=tableau_html_groupe_matiere_telle_classe($id_classe, $reg_matiere, array($id_groupe));
+if($tab_autres_groupes!="") {
+	echo "<div style='width: 45%; float: right; font-size:small; margin-top:1em;'>\n";
+	echo "<p>Il existe d'autres enseignements dans la même matière pour cette classe&nbsp;:</p>\n";
+	echo $tab_autres_groupes;
+	echo "</div>\n";
+}
+
 echo "<div style='float: left; width: 100%'>\n";
 echo "<input type='hidden' name='is_posted' value='1' />\n";
 echo "<input type='hidden' name='mode' value='" . $mode . "' />\n";

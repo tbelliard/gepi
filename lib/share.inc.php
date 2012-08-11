@@ -3276,7 +3276,7 @@ function get_commune($code_commune_insee,$mode){
 }
 
 /**
- * Renvoi civilite nom prénom d'un utilisateur
+ * Renvoie civilite nom prénom d'un utilisateur avec compte (table 'utilisateurs')
  *
  * @param string $login Login de l'utilisateur recherché
  * @param string $mode si 'prenom' inverse le nom et le prénom

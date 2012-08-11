@@ -142,7 +142,7 @@ class HTMLPurifier_Printer_ConfigForm extends HTMLPurifier_Printer
                 $attr = array('for' => "{$this->name}:$ns.$directive");
 
                 // crop directive name if it's too long
-                if (!$this->compress || (mb_strlen($directive) < $this->compress)) {
+                if (!$this->compress || (strlen($directive) < $this->compress)) {
                     $directive_disp = $directive;
                 } else {
                     $directive_disp = substr($directive, 0, $this->compress - 2) . '...';

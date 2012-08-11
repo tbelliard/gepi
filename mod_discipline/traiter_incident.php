@@ -96,10 +96,10 @@ function liste_sanctions($id_incident,$ele_login) {
 				$retour.="<tr class='lig$alt_b'>\n";
 				//$retour.="<td>Retenue</td>\n";
 				if(($etat_incident!='clos')&&(($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre'))) {
-					$retour.="<td><a href='saisie_sanction.php?mode=modif&amp;valeur=retenue&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$ele_login'>Retenue</a></td>\n";
+					$retour.="<td><a href='saisie_sanction.php?mode=modif&amp;valeur=retenue&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$ele_login'>".ucfirst($lig_sanction->nature)."</a></td>\n";
 				}
 				else {
-					$retour.="<td>Retenue</td>\n";
+					$retour.="<td>".ucfirst($lig_sanction->nature)."</td>\n";
 				}
 				$retour.="<td>".formate_date($lig_sanction->date)."</td>\n";
 				$retour.="<td>$lig_sanction->heure_debut</td>\n";
@@ -165,10 +165,10 @@ function liste_sanctions($id_incident,$ele_login) {
 				$retour.="<tr class='lig$alt_b'>\n";
 				//$retour.="<td>Exclusion</td>\n";
 				if(($etat_incident!='clos')&&(($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre'))) {
-					$retour.="<td><a href='saisie_sanction.php?mode=modif&amp;valeur=exclusion&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$ele_login'>Exclusion</a></td>\n";
+					$retour.="<td><a href='saisie_sanction.php?mode=modif&amp;valeur=exclusion&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$ele_login'>".ucfirst($lig_sanction->nature)."</a></td>\n";
 				}
 				else {
-					$retour.="<td>Exclusion</td>\n";
+					$retour.="<td>".ucfirst($lig_sanction->nature)."</td>\n";
 				}
 				$retour.="<td>".formate_date($lig_sanction->date_debut)."</td>\n";
 				$retour.="<td>$lig_sanction->heure_debut</td>\n";
@@ -222,10 +222,10 @@ function liste_sanctions($id_incident,$ele_login) {
 				$alt_b=$alt_b*(-1);
 				$retour.="<tr class='lig$alt_b'>\n";
 				if (($etat_incident!='clos')&&(($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre'))) {
-					$retour.="<td><a href='saisie_sanction.php?mode=modif&amp;valeur=travail&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$ele_login'>Travail</a></td>\n";
+					$retour.="<td><a href='saisie_sanction.php?mode=modif&amp;valeur=travail&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$ele_login'>".ucfirst($lig_sanction->nature)."</a></td>\n";
 				}
 				else {
-					$retour.="<td>Travail</td>\n";
+					$retour.="<td>".ucfirst($lig_sanction->nature)."</td>\n";
 				}
 				$retour.="<td>".formate_date($lig_sanction->date_retour)."</td>\n";
 				$retour.="<td>";
@@ -257,7 +257,7 @@ function liste_sanctions($id_incident,$ele_login) {
 		}
 
 		// Autres sanctions
-		$sql="SELECT * FROM s_sanctions s, s_autres_sanctions sa, s_types_sanctions sts WHERE s.id_incident='$id_incident' AND s.login='".$ele_login."' AND sa.id_sanction=s.id_sanction AND sa.id_nature=sts.id_nature ORDER BY sts.nature;";
+		$sql="SELECT * FROM s_sanctions s, s_autres_sanctions sa, s_types_sanctions2 sts WHERE s.id_incident='$id_incident' AND s.login='".$ele_login."' AND sa.id_sanction=s.id_sanction AND sa.id_nature=sts.id_nature ORDER BY sts.nature;";
 		//echo "$sql<br />\n";
 		$res_sanction=mysql_query($sql);
 		if(mysql_num_rows($res_sanction)>0) {

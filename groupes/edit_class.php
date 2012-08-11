@@ -1242,7 +1242,7 @@ echo "}
 <li>Un seul coefficient non nul provoque l'apparition de tous les coefficients sur les bulletins.</li>
 <li>Un/des coefficients non nul(s) est/sont nécessaire(s) pour que la ligne moyenne générale apparaisse sur le bulletin.</li>
 <!--li>Les coefficients réglés ici ne s'appliquent qu'à la classe <?php echo $classe["classe"]?>, même dans le cas des enseignements concernant d'autres classes.</li-->
-<li>Pour les enseignements impliquant plusieurs classes, le coefficient s'applique à tous les élèves de la classe courante et peut être réglé indépendamment d'une classe à l'autre (pour le régler individuellement par élève, voir la liste des élèves inscrits).<br />
+<li>Pour les enseignements impliquant plusieurs classes, le coefficient s'applique à tous les élèves de la classe courante et peut être réglé indépendamment d'une classe à l'autre (<em>pour le régler individuellement par élève, voir la liste des élèves inscrits</em>).<br />
 Les coefficients réglés ici ne s'appliquent donc qu'à la classe
 <?php
     // Bizarre... $classe peut contenir une autre classe que celle en cours???
@@ -1250,6 +1250,7 @@ Les coefficients réglés ici ne s'appliquent donc qu'à la classe
     echo $classe_tmp["classe"];
 ?>
 , même dans le cas des enseignements concernant des regroupements de plusieurs classes.</li>
+<li>En revanche, la visibilité d'un groupe dans tel ou tel domaine (<em>bulletins, carnet de notes, cahiers de textes</em>) est propre au groupe (<em>pour toutes les classes associées au groupe</em>).</li>
 <li>
 	Les modes de prise en compte de la moyenne d'un enseignement dans la moyenne générale sont les suivants&nbsp;:
 	<ul>

@@ -300,7 +300,7 @@ else {
 		// Et on traite les fichiers uploadés
 		if (!isset($AllowedFilesExtensions)) {
 			//$AllowedFilesExtensions = array("bmp","csv","doc","epg","gif","ico","jpg","odg","odp","ods","odt","pdf","png","ppt","swf","txt","xcf","xls","zip","pps");
-			$AllowedFilesExtensions = array("bmp","csv","doc","dot","epg","gif", "gz","ico","jpg","jpeg","odg","odp","ods","odt","pdf","png","ppt","pptx","sql","swf","txt","xcf","xls","xlsx","xml","zip","pps","docx");
+			$AllowedFilesExtensions = array("bmp","csv","doc","dot","epg","gif","ggb","gz","ico","jpg","jpeg","odg","odp","ods","odt","pdf","png","ppt","pptx","sql","swf","txt","xcf","xls","xlsx","xml","zip","pps","docx");
 		}
 		
 		if (isset($_FILES) and !empty($_FILES)) {		

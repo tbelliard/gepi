@@ -292,7 +292,7 @@ function get_profs_for_group($_id_groupe) {
  * Renvoie les informations sur le groupe demandé
  *
  * @param integer $_id_groupe identifiant du groupe
- * @param array $tab_champs réglages permis par la fonction : all, matieres, classes, eleves, periodes, profs
+ * @param array $tab_champs réglages permis par la fonction : all, matieres, classes, eleves, periodes, profs, visibilite
  * @return array Tableaux imbriques des informations du groupe
  */
 function get_group($_id_groupe,$tab_champs=array('all')) {

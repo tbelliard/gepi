@@ -447,6 +447,11 @@ class class_page_accueil {
 			  "Bulletin : saisie des moyennes et des appréciations par matière",
 			  "Cet outil permet de saisir directement, sans passer par le carnet de notes, les moyennes et les appréciations du bulletin");
 
+	if ($this->statutUtilisateur=='secours')
+	  $this->creeNouveauItem("/saisie/saisie_secours_eleve.php",
+			  "Bulletin : saisie des moyennes et des appréciations pour un élève",
+			  "Cet outil permet de saisir/corriger directement, sans passer par le carnet de notes, les moyennes et les appréciations du bulletin pour un élève");
+
 	if($afficher_correction_validation=="y") {
 		$texte_item="Cet outil vous permet de valider les corrections d'appréciations proposées par des professeurs après la clôture d'une période.";
 		if($_SESSION['statut']=='scolarite') {
