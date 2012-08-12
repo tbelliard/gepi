@@ -761,14 +761,15 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 						}	
 						$retour.="</table>\n";
 					}		
-						
-					$sql="SELECT * FROM s_sanctions s WHERE s.id_incident='$lig->id_incident' AND s.login='$lig_prot->login' ORDER BY nature;";
-					//echo "$sql<br />\n";
+
+					//$sql="SELECT * FROM s_sanctions s WHERE s.id_incident='$lig->id_incident' AND s.login='$lig_prot->login' ORDER BY nature;";
+					$sql="SELECT * FROM s_sanctions s, s_types_sanctions2 sts WHERE s.id_incident='$lig->id_incident' AND s.login='$lig_prot->login' AND sts.id_nature=s.id_nature_sanction ORDER BY sts.nature;";
+					//$retour.="$sql<br />\n";
 					$res_suivi=mysql_query($sql);
 					if(mysql_num_rows($res_suivi)>0) {
 
 						//$retour.="<p style='text-align:left;'>Tableau des sanctions pour le protagoniste $lig_prot->login de l incident n°$lig->id_incident</p>\n";
-						$retour.="<p style='text-align:left; font-weight: bold;'>Sanctions</p>\n";
+						$retour.="<p style='text-align:left; font-weight: bold; margin-top:1em;'>Sanctions</p>\n";
 
 						$retour.="<table class='boireaus' border='1' summary='Tableau des sanctions pour le protagoniste $lig_prot->login de l incident n°$lig->id_incident'>\n";
 
@@ -797,9 +798,10 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 								}
 							}
 
-							if($lig_suivi->nature=='retenue') {
+							//if($lig_suivi->nature=='retenue') {
+							if(mb_strtolower($lig_suivi->type)=='retenue') {
 								$sql="SELECT * FROM s_retenues WHERE id_sanction='$lig_suivi->id_sanction';";
-								//echo "$sql<br />\n";
+								//$retour.="$sql<br />\n";
 								$res_retenue=mysql_query($sql);
 								if(mysql_num_rows($res_retenue)>0) {
 									$lig_retenue=mysql_fetch_object($res_retenue);
@@ -809,7 +811,8 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 									$retour.="X";
 								}
 							}
-							elseif($lig_suivi->nature=='exclusion') {
+							//elseif($lig_suivi->nature=='exclusion') {
+							elseif(mb_strtolower($lig_suivi->type)=='exclusion') {
 								$sql="SELECT * FROM s_exclusions WHERE id_sanction='$lig_suivi->id_sanction';";
 								//echo "$sql<br />\n";
 								$res_exclusion=mysql_query($sql);
@@ -821,7 +824,8 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 									$retour.="X";
 								}
 							}
-							elseif($lig_suivi->nature=='travail') {
+							//elseif($lig_suivi->nature=='travail') {
+							elseif(mb_strtolower($lig_suivi->type)=='travail') {
 								$sql="SELECT * FROM s_travail WHERE id_sanction='$lig_suivi->id_sanction';";
 								//echo "$sql<br />\n";
 								$res_travail=mysql_query($sql);
