@@ -2,7 +2,7 @@
 
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Didier Blanqui
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Didier Blanqui
 *
 * This file is part of GEPI.
 *
@@ -49,6 +49,18 @@ if(mb_strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') 
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
 	header("Location: ../accueil.php?msg=$mess");
+	die();
+}
+
+$acces_ok="n";
+if(($_SESSION['statut']=='administrateur')||
+(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiDiscDefinirNaturesCpe')))||
+(($_SESSION['statut']=='scolarite')&&(getSettingAOui('GepiDiscDefinirNaturesScol')))) {
+	$acces_ok="y";
+}
+else {
+	$msg="Vous n'avez pas le droit de définir les natures d'incidents.";
+	header("Location: ./index.php?msg=$msg");
 	die();
 }
 
@@ -114,16 +126,14 @@ if ((isset($nature))&&($nature != '')) {
 	}
 
 	if ($a_enregistrer == 'y') {
-		$nature=preg_replace('/(\\\r\\\n)+/',"\r\n",$nature);
-		$nature=preg_replace('/(\\\r)+/',"\r",$nature);
-		$nature=preg_replace('/(\\\n)+/',"\n",$nature);
+		$nature=suppression_sauts_de_lignes_surnumeraires($nature);
 
 		if(!array_key_exists($id_categorie_nature_nouvelle,$tab_categorie)) {
 			$id_categorie_nature_nouvelle=0;
 			$msg.="La catégorie choisie pour la nouvelle nature n'existe pas.<br />";
 		}
 
-		$sql = "INSERT INTO s_natures SET nature='" . $nature . "', id_categorie='".$id_categorie_nature_nouvelle."';";
+		$sql = "INSERT INTO s_natures SET nature='" . mysql_real_escape_string($nature) . "', id_categorie='".$id_categorie_nature_nouvelle."';";
 		//echo "$sql<br />";
 		$res = mysql_query($sql);
 		if (!$res) {

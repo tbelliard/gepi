@@ -577,11 +577,11 @@ $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/incidents_sans_protag
 $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/edt_eleve.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: EDT élève', '');";
 $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/ajout_sanction.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Ajout sanction', '');";
 $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/saisie_sanction.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Saisie sanction', '');";
-$tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_roles.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définition des rôles', '');";
-$tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_lieux.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définition des lieux', '');";
-$tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_mesures.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définition des mesures', '');";
+$tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_roles.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Définition des rôles', '');";
+$tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_lieux.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Définition des lieux', '');";
+$tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_mesures.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Définition des mesures', '');";
 $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/sauve_role.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Svg rôle incident', '');";
-$tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_autres_sanctions.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir types sanctions', '');";
+$tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_autres_sanctions.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Définir types sanctions', '');";
 $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/liste_retenues_jour.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Liste des retenues du jour', '');";
 $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/avertir_famille.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Avertir famille incident', '');";
 $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/avertir_famille_html.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Avertir famille incident', '');";
@@ -674,7 +674,7 @@ $tab_req[] = "INSERT INTO droits SET id='/groupes/signalement_eleves.php',admini
 
 $tab_req[] = "INSERT INTO droits SET id='/bulletin/envoi_mail.php', administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='V',autre='F',description='Envoi de mail via ajax',statut='';";
 
-$tab_req[] = "INSERT INTO droits VALUES ('/mod_discipline/destinataires_alertes.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Parametrage des destinataires de mail d alerte', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_discipline/destinataires_alertes.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Parametrage des destinataires de mail d alerte', '');";
 
 
 // Initialisation Scribe NG
@@ -730,7 +730,7 @@ $tab_req[] = "INSERT INTO droits VALUES ('/saisie/validation_corrections.php', '
 
 $tab_req[] = "INSERT INTO droits VALUES ('/gestion/param_ordre_item.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Modifier l ordre des items dans les menus', '');";
 
-$tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_categories.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir les catégories', '');";
+$tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_categories.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Définir les catégories', '');";
 $tab_req[] = "INSERT INTO droits SET id='/mod_discipline/stats2/index.php',administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Module discipline: Statistiques',statut='';";
 
 $tab_req[] = "INSERT INTO droits VALUES ( '/bulletin/autorisation_exceptionnelle_saisie_app.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Autorisation exceptionnelle de saisie d appréciation', '');";
@@ -811,7 +811,7 @@ $tab_req[] = "INSERT INTO droits VALUES ('/saisie/saisie_mentions.php', 'V', 'F'
 
 $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/visu_disc.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F', 'F', 'Discipline: Accès élève/parent', '');";
 
-$tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_natures.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir les natures', '');";
+$tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_natures.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Définir les natures', '');";
 
 $tab_req[] = "INSERT INTO droits SET id='/init_xml2/traite_csv_udt.php',
 administrateur='V',

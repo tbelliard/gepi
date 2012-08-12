@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -493,6 +493,48 @@ $texteItem="a le droit d'accéder à toutes les fiches élève";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+//+++++++++++++++++++++++++++
+
+$titreItem='';
+$texteItem="";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiDiscDefinirLieuxScol';
+$texteItem="a accès à la définition des lieux d'incidents";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiDiscDefinirRolesScol';
+$texteItem="a accès à la définition des rôles dans les incidents";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiDiscDefinirMesuresScol';
+$texteItem="a accès à la définition des mesures prises ou demandées à la suite d'incidents";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiDiscDefinirSanctionsScol';
+$texteItem="a accès à la définition des sanctions";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiDiscDefinirNaturesScol';
+$texteItem="a accès à la définition des natures d'incidents";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiDiscDefinirCategoriesScol';
+$texteItem="a accès à la définition des catégories d'incidents";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiDiscDefinirDestAlertesScol';
+$texteItem="a accès à la définition des destinataires d'alertes suite à des incidents";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 if(getSettingValue('active_mod_ooo')=='y') {
 	//+++++++++++++++++++++++++++
 
@@ -718,6 +760,47 @@ $texteItem="a le droit d'accéder à toutes les classes pour saisir les absences
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+//+++++++++++++++++++++++++++
+
+$titreItem='';
+$texteItem="";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiDiscDefinirLieuxCpe';
+$texteItem="a accès à la définition des lieux d'incidents";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiDiscDefinirRolesCpe';
+$texteItem="a accès à la définition des rôles dans les incidents";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiDiscDefinirMesuresCpe';
+$texteItem="a accès à la définition des mesures prises ou demandées à la suite d'incidents";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiDiscDefinirSanctionsCpe';
+$texteItem="a accès à la définition des sanctions";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiDiscDefinirNaturesCpe';
+$texteItem="a accès à la définition des natures d'incidents";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiDiscDefinirCategoriesCpe';
+$texteItem="a accès à la définition des catégories d'incidents";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiDiscDefinirDestAlertesCpe';
+$texteItem="a accès à la définition des destinataires d'alertes suite à des incidents";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 // OOo
 if(getSettingValue('active_mod_ooo')=='y') {

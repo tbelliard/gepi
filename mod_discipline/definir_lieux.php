@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -38,7 +38,7 @@ if ($resultat_session == 'c') {
 // SQL : INSERT INTO droits VALUES ( '/mod_discipline/definir_lieux.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir les lieux', '');
 // maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_lieux.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir les lieux', '');;";
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
+	header("Location: ../logout.php?auto=1");
 	die();
 }
 
@@ -46,6 +46,18 @@ if(mb_strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') 
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
 	header("Location: ../accueil.php?msg=$mess");
+	die();
+}
+
+$acces_ok="n";
+if(($_SESSION['statut']=='administrateur')||
+(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiDiscDefinirLieuxCpe')))||
+(($_SESSION['statut']=='scolarite')&&(getSettingAOui('GepiDiscDefinirLieuxScol')))) {
+	$acces_ok="y";
+}
+else {
+	$msg="Vous n'avez pas le droit de définir les lieux de sanctions.";
+	header("Location: ./index.php?msg=$msg");
 	die();
 }
 
@@ -92,12 +104,9 @@ if((isset($lieu))&&($lieu!='')) {
 	if($a_enregistrer=='y') {
 		check_token();
 
-		//$lieu=addslashes(preg_replace('/(\\\r\\\n)+/',"\r\n",preg_replace("/&#039;/","'",html_entity_decode($lieu))));
-		$lieu=preg_replace('/(\\\r\\\n)+/',"\r\n",$lieu);
-		$lieu=preg_replace('/(\\\r)+/',"\r",$lieu);
-		$lieu=preg_replace('/(\\\n)+/',"\n",$lieu);
+		$lieu=suppression_sauts_de_lignes_surnumeraires($lieu);
 
-		$sql="INSERT INTO s_lieux_incidents SET lieu='".$lieu."';";
+		$sql="INSERT INTO s_lieux_incidents SET lieu='".mysql_real_escape_string($lieu)."';";
 		$res=mysql_query($sql);
 		if(!$res) {
 			$msg.="ERREUR lors de l'enregistrement de ".$lieu."<br />\n";
@@ -155,7 +164,13 @@ else {
 		echo "</label>";
 		echo "</td>\n";
 
-		echo "<td><input type='checkbox' name='suppr_lieu[]' id='suppr_lieu_$cpt' value=\"$lig->id\" onchange='changement();' /></td>\n";
+		echo "<td>";
+		// On peut saisir un lieu de sanction autre que provenant de s_lieux_incidents
+		// Inutile donc d'interdire la suppression de lieux
+		//$sql="SELECT 1=1 FROM s_lieux_incidents sli, s_retenues sr WHERE sr.lieu=sli.lieu;";
+		//$sql="SELECT 1=1 FROM s_lieux_incidents sli, s_exclusions se WHERE se.lieu=sli.lieu;";
+		echo "<input type='checkbox' name='suppr_lieu[]' id='suppr_lieu_$cpt' value=\"$lig->id\" onchange='changement();' />";
+		echo "</td>\n";
 		echo "</tr>\n";
 
 		$cpt++;

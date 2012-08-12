@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -44,6 +44,18 @@ if(mb_strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') 
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
 	header("Location: ../accueil.php?msg=$mess");
+	die();
+}
+
+$acces_ok="n";
+if(($_SESSION['statut']=='administrateur')||
+(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiDiscDefinirDestAlertesCpe')))||
+(($_SESSION['statut']=='scolarite')&&(getSettingAOui('GepiDiscDefinirDestAlertesScol')))) {
+	$acces_ok="y";
+}
+else {
+	$msg="Vous n'avez pas le droit de définir les destinataires d'alertes.";
+	header("Location: ./index.php?msg=$msg");
 	die();
 }
 

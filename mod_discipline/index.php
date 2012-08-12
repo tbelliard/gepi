@@ -316,7 +316,29 @@ $menuTitre=array();
 $nouveauItem = new itemGeneral();
 
 //Début de la table configuration
-if($_SESSION['statut']=='administrateur') { 
+//if($_SESSION['statut']=='administrateur') { 
+if(($_SESSION['statut']=='administrateur')||
+	(($_SESSION['statut']=='cpe')&&(
+			(getSettingAOui('GepiDiscDefinirLieuxCpe'))||
+			(getSettingAOui('GepiDiscDefinirRolesCpe'))||
+			(getSettingAOui('GepiDiscDefinirMesuresCpe'))||
+			(getSettingAOui('GepiDiscDefinirSanctionsCpe'))||
+			(getSettingAOui('GepiDiscDefinirNaturesCpe'))||
+			(getSettingAOui('GepiDiscDefinirCategoriesCpe'))||
+			(getSettingAOui('GepiDiscDefinirDestAlertesCpe'))
+		)
+	)||
+	(($_SESSION['statut']=='scolarite')&&(
+			(getSettingAOui('GepiDiscDefinirLieuxScol'))||
+			(getSettingAOui('GepiDiscDefinirRolesScol'))||
+			(getSettingAOui('GepiDiscDefinirMesuresScol'))||
+			(getSettingAOui('GepiDiscDefinirSanctionsScol'))||
+			(getSettingAOui('GepiDiscDefinirNaturesScol'))||
+			(getSettingAOui('GepiDiscDefinirCategoriesScol'))||
+			(getSettingAOui('GepiDiscDefinirDestAlertesScol'))
+		)
+	)
+) { 
 /* ===== Titre du menu ===== */
 	$menuTitre[]=new menuGeneral;
 	end($menuTitre);
@@ -345,10 +367,17 @@ if($_SESSION['statut']=='administrateur') {
 	$nouveauItem->chemin='/mod_discipline/definir_lieux.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->titre="Définition des lieux" ;
-		$nouveauItem->expli="Définir la liste des lieux des incidents." ;
-		$nouveauItem->indexMenu=$a;
-		$menuPage[]=$nouveauItem;
+		$acces_ok="n";
+		if(($_SESSION['statut']=='administrateur')||
+		(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiDiscDefinirLieuxCpe')))||
+		(($_SESSION['statut']=='scolarite')&&(getSettingAOui('GepiDiscDefinirLieuxScol')))) {
+			$acces_ok="y";
+
+			$nouveauItem->titre="Définition des lieux" ;
+			$nouveauItem->expli="Définir la liste des lieux des incidents." ;
+			$nouveauItem->indexMenu=$a;
+			$menuPage[]=$nouveauItem;
+		}
 	}
 	unset($nouveauItem);
 /*
@@ -362,10 +391,17 @@ if($_SESSION['statut']=='administrateur') {
 	$nouveauItem->chemin='/mod_discipline/definir_roles.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->titre="Définition des rôles" ;
-		$nouveauItem->expli="Définir la liste des rôles des protagonistes." ;
-		$nouveauItem->indexMenu=$a;
-		$menuPage[]=$nouveauItem;
+		$acces_ok="n";
+		if(($_SESSION['statut']=='administrateur')||
+		(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiDiscDefinirRolesCpe')))||
+		(($_SESSION['statut']=='scolarite')&&(getSettingAOui('GepiDiscDefinirRolesScol')))) {
+			$acces_ok="y";
+
+			$nouveauItem->titre="Définition des rôles" ;
+			$nouveauItem->expli="Définir la liste des rôles des protagonistes." ;
+			$nouveauItem->indexMenu=$a;
+			$menuPage[]=$nouveauItem;
+		}
 	}
 	unset($nouveauItem);
 /*
@@ -380,10 +416,17 @@ if($_SESSION['statut']=='administrateur') {
 	$nouveauItem->chemin='/mod_discipline/definir_mesures.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->titre="Définition des mesures" ;
-		$nouveauItem->expli="Définir la liste des mesures prises comme suite à un incident." ;
-		$nouveauItem->indexMenu=$a;
-		$menuPage[]=$nouveauItem;
+		$acces_ok="n";
+		if(($_SESSION['statut']=='administrateur')||
+		(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiDiscDefinirMesuresCpe')))||
+		(($_SESSION['statut']=='scolarite')&&(getSettingAOui('GepiDiscDefinirMesuresScol')))) {
+			$acces_ok="y";
+
+			$nouveauItem->titre="Définition des mesures" ;
+			$nouveauItem->expli="Définir la liste des mesures prises comme suite à un incident." ;
+			$nouveauItem->indexMenu=$a;
+			$menuPage[]=$nouveauItem;
+		}
 	}
 	unset($nouveauItem);
 /*
@@ -398,10 +441,17 @@ if($_SESSION['statut']=='administrateur') {
 	$nouveauItem->chemin='/mod_discipline/definir_autres_sanctions.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->titre="Définition des types de sanctions" ;
-		$nouveauItem->expli="Définir la liste des sanctions pouvant être prises comme suite à un incident." ;
-		$nouveauItem->indexMenu=$a;
-		$menuPage[]=$nouveauItem;
+		$acces_ok="n";
+		if(($_SESSION['statut']=='administrateur')||
+		(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiDiscDefinirSanctionsCpe')))||
+		(($_SESSION['statut']=='scolarite')&&(getSettingAOui('GepiDiscDefinirSanctionsScol')))) {
+			$acces_ok="y";
+
+			$nouveauItem->titre="Définition des types de sanctions" ;
+			$nouveauItem->expli="Définir la liste des sanctions pouvant être prises comme suite à un incident." ;
+			$nouveauItem->indexMenu=$a;
+			$menuPage[]=$nouveauItem;
+		}
 	}
 	unset($nouveauItem);
 
@@ -410,10 +460,17 @@ if($_SESSION['statut']=='administrateur') {
 	$nouveauItem->chemin='/mod_discipline/definir_natures.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->titre="Définition des natures d'incidents" ;
-		$nouveauItem->expli="Définir les natures d'incidents (<em>liste indicative ou liste imposée</em>)." ;
-		$nouveauItem->indexMenu=$a;
-		$menuPage[]=$nouveauItem;
+		$acces_ok="n";
+		if(($_SESSION['statut']=='administrateur')||
+		(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiDiscDefinirNaturesCpe')))||
+		(($_SESSION['statut']=='scolarite')&&(getSettingAOui('GepiDiscDefinirNaturesScol')))) {
+			$acces_ok="y";
+
+			$nouveauItem->titre="Définition des natures d'incidents" ;
+			$nouveauItem->expli="Définir les natures d'incidents (<em>liste indicative ou liste imposée</em>)." ;
+			$nouveauItem->indexMenu=$a;
+			$menuPage[]=$nouveauItem;
+		}
 	}
 	unset($nouveauItem);
 
@@ -422,10 +479,17 @@ if($_SESSION['statut']=='administrateur') {
 	$nouveauItem->chemin='/mod_discipline/definir_categories.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->titre="Définition des catégories d'incidents" ;
-		$nouveauItem->expli="Définir les catégories d'incidents (<em>à des fins de statistiques</em>)." ;
-		$nouveauItem->indexMenu=$a;
-		$menuPage[]=$nouveauItem;
+		$acces_ok="n";
+		if(($_SESSION['statut']=='administrateur')||
+		(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiDiscDefinirCategoriesCpe')))||
+		(($_SESSION['statut']=='scolarite')&&(getSettingAOui('GepiDiscDefinirCategoriesScol')))) {
+			$acces_ok="y";
+
+			$nouveauItem->titre="Définition des catégories d'incidents" ;
+			$nouveauItem->expli="Définir les catégories d'incidents (<em>à des fins de statistiques</em>)." ;
+			$nouveauItem->indexMenu=$a;
+			$menuPage[]=$nouveauItem;
+		}
 	}
 	unset($nouveauItem);
 
@@ -443,10 +507,17 @@ if($_SESSION['statut']=='administrateur') {
 	$nouveauItem->chemin='/mod_discipline/destinataires_alertes.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->titre="Définition des destinataires d'alertes" ;
-		$nouveauItem->expli="Permet de définir la liste des utilisateurs recevant un mail lors de la saisie/modification d'un incident." ;
-		$nouveauItem->indexMenu=$a;
-		$menuPage[]=$nouveauItem;
+		$acces_ok="n";
+		if(($_SESSION['statut']=='administrateur')||
+		(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiDiscDefinirDestAlertesCpe')))||
+		(($_SESSION['statut']=='scolarite')&&(getSettingAOui('GepiDiscDefinirDestAlertesScol')))) {
+			$acces_ok="y";
+
+			$nouveauItem->titre="Définition des destinataires d'alertes" ;
+			$nouveauItem->expli="Permet de définir la liste des utilisateurs recevant un mail lors de la saisie/modification d'un incident." ;
+			$nouveauItem->indexMenu=$a;
+			$menuPage[]=$nouveauItem;
+		}
 	}
 	unset($nouveauItem);
 	

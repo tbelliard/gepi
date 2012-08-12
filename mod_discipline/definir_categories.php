@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Didier Blanqui
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Didier Blanqui
  *
  * This file is part of GEPI.
  *
@@ -49,6 +49,18 @@ if(mb_strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') 
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
 	header("Location: ../accueil.php?msg=$mess");
+	die();
+}
+
+$acces_ok="n";
+if(($_SESSION['statut']=='administrateur')||
+(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiDiscDefinirCategoriesCpe')))||
+(($_SESSION['statut']=='scolarite')&&(getSettingAOui('GepiDiscDefinirCategoriesScol')))) {
+	$acces_ok="y";
+}
+else {
+	$msg="Vous n'avez pas le droit de définir les catégories d'incidents.";
+	header("Location: ./index.php?msg=$msg");
 	die();
 }
 
@@ -104,11 +116,9 @@ if ((isset($categorie)) && ($categorie != '')) {
     }
 
     if ($a_enregistrer == 'y') {
-		$categorie=preg_replace('/(\\\r\\\n)+/',"\r\n",$categorie);
-		$categorie=preg_replace('/(\\\r)+/',"\r",$categorie);
-		$categorie=preg_replace('/(\\\n)+/',"\n",$categorie);
+		$categorie=suppression_sauts_de_lignes_surnumeraires($categorie);
 
-        $sql = "INSERT INTO s_categories SET categorie='" . $categorie . "', sigle='" . $sigle . "';";
+        $sql = "INSERT INTO s_categories SET categorie='" . mysql_real_escape_string($categorie) . "', sigle='" . $sigle . "';";
         $res = mysql_query($sql);
         if (!$res) {
             $msg.="ERREUR lors de l'enregistrement de " . $categorie . "<br />\n";

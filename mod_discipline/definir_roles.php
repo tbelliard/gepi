@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -44,6 +44,18 @@ if(mb_strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') 
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
 	header("Location: ../accueil.php?msg=$mess");
+	die();
+}
+
+$acces_ok="n";
+if(($_SESSION['statut']=='administrateur')||
+(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiDiscDefinirRolesCpe')))||
+(($_SESSION['statut']=='scolarite')&&(getSettingAOui('GepiDiscDefinirRolesScol')))) {
+	$acces_ok="y";
+}
+else {
+	$msg="Vous n'avez pas le droit de définir les rôles dans les incidents.";
+	header("Location: ./index.php?msg=$msg");
 	die();
 }
 
@@ -94,11 +106,9 @@ if((isset($qualite))&&($qualite!='')) {
 	if($a_enregistrer=='y') {
 		check_token();
 
-		$qualite=preg_replace('/(\\\r\\\n)+/',"\r\n",$qualite);
-		$qualite=preg_replace('/(\\\r)+/',"\r",$qualite);
-		$qualite=preg_replace('/(\\\n)+/',"\n",$qualite);
+		$qualite=suppression_sauts_de_lignes_surnumeraires($qualite);
 
-		$sql="INSERT INTO s_qualites SET qualite='".$qualite."';";
+		$sql="INSERT INTO s_qualites SET qualite='".mysql_real_escape_string($qualite)."';";
 		$res=mysql_query($sql);
 		if(!$res) {
 			$msg.="ERREUR lors de l'enregistrement de ".$qualite."<br />\n";
@@ -166,7 +176,7 @@ else {
 }
 echo "</blockquote>\n";
 
-echo "<p>Nouvelle qualité&nbsp;: <input type='text' name='qualite' value='' onchange='changement();' /></p>\n";
+echo "<p>Nouveau rôle&nbsp;: <input type='text' name='qualite' value='' onchange='changement();' /></p>\n";
 
 echo "<input type='hidden' name='cpt' value='$cpt' />\n";
 

@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -45,6 +45,18 @@ if(mb_strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') 
 	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
 	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
 	header("Location: ../accueil.php?msg=$mess");
+	die();
+}
+
+$acces_ok="n";
+if(($_SESSION['statut']=='administrateur')||
+(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiDiscDefinirMesuresCpe')))||
+(($_SESSION['statut']=='scolarite')&&(getSettingAOui('GepiDiscDefinirMesuresScol')))) {
+	$acces_ok="y";
+}
+else {
+	$msg="Vous n'avez pas le droit de définir les mesures.";
+	header("Location: ./index.php?msg=$msg");
 	die();
 }
 
@@ -98,11 +110,9 @@ if(isset($mesure)) {
 			//echo "Id_mesure: $lig->id<br />";
 			if(isset($NON_PROTECT["commentaire_".$lig->id])) {
 				$commentaire=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["commentaire_".$lig->id]));
-				$commentaire=preg_replace('/(\\\r\\\n)+/',"\r\n",$commentaire);
-				$commentaire=preg_replace('/(\\\r)+/',"\r",$commentaire);
-				$commentaire=preg_replace('/(\\\n)+/',"\n",$commentaire);
+				$commentaire=suppression_sauts_de_lignes_surnumeraires($commentaire);
 
-				$sql="UPDATE s_mesures SET commentaire='$commentaire' WHERE id='".$lig->id."';";
+				$sql="UPDATE s_mesures SET commentaire='".$commentaire."' WHERE id='".$lig->id."';";
 				//echo "$sql<br />\n";
 				$update=mysql_query($sql);
 				if(!$update) {
@@ -124,9 +134,7 @@ if(isset($mesure)) {
 
 		if($a_enregistrer=='y') {
 			//$mesure=addslashes(preg_replace('/(\\\r\\\n)+/',"\r\n",preg_replace("/&#039;/","'",html_entity_decode($mesure))));
-			$mesure=preg_replace('/(\\\r\\\n)+/',"\r\n",$mesure);
-			$mesure=preg_replace('/(\\\r)+/',"\r",$mesure);
-			$mesure=preg_replace('/(\\\n)+/',"\n",$mesure);
+			$mesure=suppression_sauts_de_lignes_surnumeraires($mesure);
 
 			if(isset($NON_PROTECT["commentaire"])) {
 				$commentaire=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["commentaire"]));
@@ -134,9 +142,7 @@ if(isset($mesure)) {
 			else {
 				$commentaire="";
 			}
-			$commentaire=preg_replace('/(\\\r\\\n)+/',"\r\n",$commentaire);
-			$commentaire=preg_replace('/(\\\r)+/',"\r",$commentaire);
-			$commentaire=preg_replace('/(\\\n)+/',"\n",$commentaire);
+			$commentaire=suppression_sauts_de_lignes_surnumeraires($commentaire);
 
 			$sql="INSERT INTO s_mesures SET mesure='".$mesure."', commentaire='$commentaire', type='".$type."';";
 			//echo "$sql<br />\n";
