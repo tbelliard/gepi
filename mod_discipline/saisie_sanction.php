@@ -191,7 +191,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 				//$sql="INSERT INTO s_sanctions SET login='$ele_login', nature='retenue', id_incident='$id_incident';";
 				//$sql="INSERT INTO s_sanctions SET login='$ele_login', nature='retenue', id_incident='$id_incident';";
 				$sql="INSERT INTO s_sanctions SET login='$ele_login', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident';";
-				echo "$sql<br />\n";
+				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
 				if(!$res) {
 					$msg.="Erreur lors de l'insertion de la sanction dans 's_sanctions'.<br />";
