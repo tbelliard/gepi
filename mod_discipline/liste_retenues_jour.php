@@ -100,7 +100,7 @@ else {
 	
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt'>\n";
-				echo "<td style='font-size:x-small;'>"ucfirst($lig_sanction->nature)."</td>\n";
+				echo "<td style='font-size:x-small;'>".ucfirst($lig_sanction->nature)."</td>\n";
 				echo "<td style='font-size:x-small;'>$heure_debut</td>\n";
 				echo "<td style='font-size:x-small;'>$duree</td>\n";
 				echo "<td style='font-size:x-small;'>$lieu</td>\n";
