@@ -2733,6 +2733,37 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	}
 	echo "</p>\n";
 
+	echo "<p>Recherche et suppression des documents (<em>travaux, punitions,...</em>) joints aux incidents et sanctions&nbsp;:<br />\n";
+	$dossier_documents_discipline="documents/discipline";
+	if(((isset($multisite))&&($multisite=='y'))||(getSettingValue('multisite')=='y')) {
+		if(isset($_COOKIE['RNE'])) {
+			$dossier_documents_discipline.="_".$_COOKIE['RNE'];
+			if(!file_exists("../$dossier_documents_discipline")) {
+				@mkdir("../$dossier_documents_discipline",0770);
+			}
+		}
+	}
+	$handle=opendir('../'.$dossier_documents_discipline);
+	$nb_suppr=0;
+	$nb_err=0;
+	while ($file = readdir($handle)) {
+		if (($file != '.') and ($file != '..') and ($file != 'remove.txt')
+		and ($file != '.htaccess') and ($file != '.htpasswd') and ($file != 'index.html') and ($file != '.test')
+		// Les tests précédents sont inutiles avec ce qui suit, mais les conserver permet de ne pas oublier des pièges en cas de modif
+		and(preg_match('/^incident_/', $file))) {
+			if(deltree('../'.$dossier_documents_discipline."/".$file, true)) {
+				$nb_suppr++;
+			}
+			else {
+				$nb_err++;
+			}
+		}
+	}
+	closedir($handle);
+	echo "$nb_suppr suppression(s) de dossiers d'incidents.<br />";
+	echo "$nb_err erreur(s) de suppression.";
+	echo "</p>\n";
+
 	echo "<p>Terminé.</p>\n";
 
 } elseif (isset($_POST['action']) AND $_POST['action'] == 'nettoyage_mod_discipline') {
@@ -3399,6 +3430,8 @@ else {
 
 	//====================================================
 
+	echo "<a name='nettoyage_par_le_vide'></a>\n";
+
 	echo "<h2>Nettoyage par le vide;) au changement d'année</h2>\n";
 	echo "<div style='margin-left: 3em;'>\n";
 
@@ -3435,7 +3468,11 @@ else {
 		echo "<input type=submit value=\"Vider les tables du module Discipline\" />\n";
 		echo "</center>\n";
 		echo "<input type='hidden' name='action' value='vidage_mod_discipline' />\n";
-		echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> et un <a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";
+		echo "<p><i>NOTES&nbsp;:</i></p>
+<ul>
+<li>Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> un <a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</li>
+<li>Les documents (<em>travaux, punitions,...</em>) joints au incidents et sanctions seront aussi supprimés.</li>
+</ul>\n";
 		echo "</form>\n";
 
 		echo "<hr />\n";
@@ -3447,7 +3484,10 @@ else {
 		echo "<input type=submit value=\"Vider les tables du module Cahier de Textes\" />\n";
 		echo "</center>\n";
 		echo "<input type='hidden' name='action' value='clean_cdt' />\n";
-		echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a>, l'<a href='../cahier_texte_2/archivage_cdt.php'>archivage des Cahiers de Textes</a> et l'<a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";
+		echo "<p><i>NOTES&nbsp;:</i></p>
+<ul>
+<li>Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a>, l'<a href='../cahier_texte_2/archivage_cdt.php'>archivage des Cahiers de Textes</a> et l'<a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</li>
+</ul>\n";
 		echo "</form>\n";
 
 	echo "</div>\n";
