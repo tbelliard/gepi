@@ -380,6 +380,10 @@ echo "</form>\n";
 
 echo "<p><br /></p>\n";
 
+echo "<p style='text-indent:-11em; margin-left:11em;'><em>Optionnel également&nbsp;:</em> Vous pouvez vider les absences de l'année passée, l'emploi du temps, les incidents/sanctions du module discipline en consultant la page de <a href='../utilitaires/clean_tables.php#nettoyage_par_le_vide'>Nettoyage de la base</a>.</p>\n";
+
+echo "<p><br /></p>\n";
+
 echo "<a name='svg_ext'></a>";
 echo "<p><em>NOTES&nbsp;:</em></p>\n";
 echo "<p style='margin-left:3em;'>La sauvegarde sur périphérique externe permet de remettre en place un GEPI si jamais votre GEPI en ligne subit des dégats (<em>crash du disque dur hébergeant votre GEPI, incendie du local serveur,...</em>).<br />Vous n'aurez normalement jamais besoin de ces sauvegardes, mais mieux vaut prendre des précautions.</p>\n";
