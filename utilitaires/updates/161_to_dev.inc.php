@@ -110,14 +110,15 @@ if ($test_champ>0) {
 
 			$tab_nature_sanction=array("Exclusion", "Retenue", "Travail");
 			for($loop=0;$loop<count($tab_nature_sanction);$loop++) {
-				$sql="SELECT id_nature FROM s_types_sanctions2 WHERE nature='".addslashes($tab_nature_sanction[$loop])."';";
+				$sql="SELECT id_nature FROM s_types_sanctions2 WHERE nature='".$tab_nature_sanction[$loop]."';";
 				$res_ns=mysql_query($sql);
 				if(mysql_num_rows($res_ns)==0) {
-					$result_inter = traite_requete("INSERT INTO s_types_sanctions2 SET nature='".addslashes($tab_nature_sanction[$loop])."', type='".$tab_nature_sanction[$loop]."';");
+					$result_inter = traite_requete("INSERT INTO s_types_sanctions2 SET nature='".$tab_nature_sanction[$loop]."', type='".mb_strtolower($tab_nature_sanction[$loop])."';");
 					if ($result_inter == '') {
 						$id_nature_sanction_courante=mysql_insert_id();
 
-						$sql="UPDATE s_sanctions SET id_nature_sanction='$id_nature_sanction_courante' WHERE nature='".addslashes($tab_nature_sanction[$loop])."';";
+						// La nature était en minuscule dans s_sanctions et il faut maintenant qu'elle coïncide avec la casse de s_types_sanctions2.nature (donc avec une initiale en majuscule)
+						$sql="UPDATE s_sanctions SET id_nature_sanction='$id_nature_sanction_courante', nature='".$tab_nature_sanction[$loop]."' WHERE nature='".$tab_nature_sanction[$loop]."';";
 						$result_inter = traite_requete($sql);
 						if ($result_inter == '') {
 							$result.="&nbsp;-> Mise à jour des sanctions ".$tab_nature_sanction[$loop]." existantes : ".msj_ok("Ok !");
@@ -133,7 +134,8 @@ if ($test_champ>0) {
 					//$tab_id_nature_sanction[$tab_nature_sanction[$loop]]=mysql_result($res_ns, 0, "id_nature");
 					$id_nature_sanction_courante=mysql_result($res_ns, 0, "id_nature");
 
-					$sql="UPDATE s_sanctions SET id_nature_sanction='$id_nature_sanction_courante' WHERE nature='".addslashes($tab_nature_sanction[$loop])."';";
+					// La nature était en minuscule dans s_sanctions et il faut maintenant qu'elle coïncide avec la casse de s_types_sanctions2.nature (donc avec une initiale en majuscule)
+					$sql="UPDATE s_sanctions SET id_nature_sanction='$id_nature_sanction_courante', nature='".$tab_nature_sanction[$loop]."' WHERE nature='".$tab_nature_sanction[$loop]."';";
 					$result_inter = traite_requete($sql);
 					if ($result_inter == '') {
 						$result.="&nbsp;-> Mise à jour des sanctions ".$tab_nature_sanction[$loop]." existantes : ".msj_ok("Ok !");
@@ -151,12 +153,12 @@ if ($test_champ>0) {
 			$sql="SELECT * FROM s_types_sanctions;";
 			$res_sts=mysql_query($sql);
 			while($lig_sts=mysql_fetch_object($res_sts)) {
-				$sql="INSERT INTO s_types_sanctions2 SET nature='".addslashes($lig_sts->nature)."', type='autre';";
+				$sql="INSERT INTO s_types_sanctions2 SET nature='".mysql_real_escape_string($lig_sts->nature)."', type='autre';";
 				$result_inter = traite_requete($sql);
 				if ($result_inter == '') {
 					$id_nature_sanction=mysql_insert_id();
 
-					$sql="update s_sanctions set id_nature_sanction='$id_nature_sanction', nature='".addslashes($lig_sts->nature)."' where id_sanction in (select id_sanction from s_autres_sanctions where id_nature='".$lig_sts->id_nature."');";
+					$sql="update s_sanctions set id_nature_sanction='$id_nature_sanction', nature='".mysql_real_escape_string($lig_sts->nature)."' where id_sanction in (select id_sanction from s_autres_sanctions where id_nature='".$lig_sts->id_nature."');";
 					$result_inter = traite_requete($sql);
 					if ($result_inter == '') {
 						$result.="&nbsp;-> Mise à jour des sanctions ".$lig_sts->nature." existantes : ".msj_ok("Ok !");
