@@ -1672,9 +1672,10 @@ while ($file = readdir($handle)) {
     //=================================
     // AJOUT: boireaus
     and ($file != 'csv')
+    and ($file != 'bulletins')
 	and ($file != 'notanet') //ne pas afficher le dossier notanet
     //=================================
-    and ($file != '.htaccess') and ($file != '.htpasswd') and ($file != 'index.html')
+    and ($file != '.htaccess') and ($file != '.htpasswd') and ($file != 'index.html') and ($file != '.test')
     and(!preg_match('/sql.gz.txt$/i', $file))) {
         $tab_file[] = $file;
         $n++;
