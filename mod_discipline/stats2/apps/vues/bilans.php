@@ -115,7 +115,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
           <tr><td  <?php if ($titre=='L\'Etablissement' ) {?> colspan="2" <?php }?> class='nouveau'><font class='titre'>Nombre total de jours d'exclusions pour ces incidents:</font> <?php echo $totaux[$titre]['jours_exclusions']; ?></td><?php if ($titre!=='L\'Etablissement' ) {?> <td  class='nouveau' > <font class='titre'>% sur la période/Etab: </font> <?php if($totaux['L\'Etablissement']['jours_exclusions']) echo round((100*($totaux[$titre]['jours_exclusions']/$totaux['L\'Etablissement']['jours_exclusions'])),2); else echo '0'; ?></td><?php } ?></tr>
         </table>
               <?php if($mode_detaille) { ?>
-        <table class="sortable resizable " id="table<?php echo $i;?>">
+        <table class="sortable resizable boireaus" id="table<?php echo $i;?>">
           <thead>
             <tr><th><font class='titre'>Date</font></th><th class="text"><font class='titre'>Déclarant</font></th><th><font class='titre'>Heure</font></th><th class="text"><font class='titre'>Nature</font></th>
               <th><font class='titre' title="Catégories">Cat.</font></th><th class="text" ><font class='titre'>Description</font></th><th  width="50%" class="nosort"><font class='titre'>Suivi</font></th></tr>
@@ -141,10 +141,10 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
                     <table class="boireaus" >
                       <tr><th><font class='titre'>Nature</font></th><th><font class='titre'>Mesure</font></th></tr>
                                       <?php
-                                      $alt_b=1;
+                                      $alt_c=1;
                                       foreach ($mesures[$incident->id_incident][$protagoniste->login] as $mesure) {
-                                        $alt_b=$alt_b*(-1); ?>
-                      <tr class="lig<?php echo $alt_b;?>"><td><?php echo $mesure->mesure; ?></td>
+                                        $alt_c=$alt_c*(-1); ?>
+                      <tr class="lig<?php echo $alt_c;?>"><td><?php echo $mesure->mesure; ?></td>
                         <td><?php echo $mesure->type.' par '.$mesure->login_u; ?></td></tr> <?php } ?>
                     </table>
                                     <?php  }
@@ -155,10 +155,10 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
                           <th><font class='titre'>Durée</font></th>
                       </tr>
                                       <?php
-                                      $alt_b=1;
+                                      $alt_d=1;
                                       foreach ($sanctions[$incident->id_incident][$protagoniste->login] as $sanction) {
-                                        $alt_b=$alt_b*(-1); ?>
-                      <tr class="lig<?php echo $alt_b;?>"><td><?php echo $sanction->nature; ?></td>
+                                        $alt_d=$alt_d*(-1); ?>
+                      <tr class="lig<?php echo $alt_d;?>"><td><?php echo $sanction->nature; ?></td>
                         <td><?php echo $sanction->effectuee; ?></td>
                         <td><?php if($sanction->nature=='retenue')echo $sanction->ret_date;
                                   if($sanction->nature=='exclusion')echo 'Du '.$sanction->exc_date_debut.' au '.$sanction->exc_date_fin;
