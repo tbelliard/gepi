@@ -2270,15 +2270,27 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 	if($bg_texte==''){
 		$div="<div id='$id' class='infobulle_corps";
 		if((isset($class_special_infobulle))&&($class_special_infobulle!='')) {$div.=" ".$class_special_infobulle;}
-		$div.="' style='$style_box width: ".$largeur.$unite_div_infobulle."; ";
+		$div.="' style='$style_box width: ".$largeur;
+		if(is_numeric($largeur)) {
+			$div.=$unite_div_infobulle;
+		}
+		$div.="; ";
 	}
 	else{
 		$div="<div id='$id' ";
 		if((isset($class_special_infobulle))&&($class_special_infobulle!='')) {$div.="class='".$class_special_infobulle."' ";}
-		$div.="style='$style_box background-color: $bg_texte; width: ".$largeur.$unite_div_infobulle."; ";
+		$div.="style='$style_box background-color: $bg_texte; width: ".$largeur;
+		if(is_numeric($largeur)) {
+			$div.=$unite_div_infobulle;
+		}
+		$div.="; ";
 	}
-	if($hauteur!=0){
-		$div.="height: ".$hauteur.$unite_div_infobulle."; ";
+	if(($hauteur!=0)||($hauteur!="")) {
+		$div.="height: ".$hauteur;
+		if(is_numeric($hauteur)) {
+			$div.=$unite_div_infobulle;
+		}
+		$div.=$unite_div_infobulle."; ";
 	}
 	// Position horizontale initiale pour permettre un affichage sans superposition si Javascript est désactivé:
 	$div.="left:".$posDiv_infobulle.$unite_div_infobulle.";";
@@ -2289,10 +2301,18 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 	// Elle n'est affichée que si le titre est non vide
 	if($titre!=""){
 		if($bg_titre==''){
-			$div.="<div class='infobulle_entete' style='$style_bar width: ".$largeur.$unite_div_infobulle.";'";
+			$div.="<div class='infobulle_entete' style='$style_bar width: ".$largeur;
+			if(is_numeric($largeur)) {
+				$div.=$unite_div_infobulle;
+			}
+			$div.=";'";
 		}
 		else{
-			$div.="<div style='$style_bar background-color: $bg_titre; width: ".$largeur.$unite_div_infobulle.";'";
+			$div.="<div style='$style_bar background-color: $bg_titre; width: ".$largeur;
+			if(is_numeric($largeur)) {
+				$div.=$unite_div_infobulle;
+			}
+			$div.=";'";
 		}
 		if($drag=="y"){
 			// Là on utilise les fonctions de http://www.brainjar.com stockées dans brainjar_drag.js
@@ -2334,9 +2354,17 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 		$div.=" onmouseout=\"cacher_div('$id');\"";
 	}
 	$div.=">\n";
-	if(($overflow=='y')&&($hauteur!=0)){
-		$hauteur_hors_titre=$hauteur-1;
-		$div.="<div style='width: ".$largeur.$unite_div_infobulle."; height: ".$hauteur_hors_titre.$unite_div_infobulle."; overflow: auto;'>\n";
+	if(($overflow=='y')&&(($hauteur!=0)||($hauteur!=""))) {
+		$hauteur_hors_titre=$hauteur-1; // Le calcul n'est correct que dans le cas où l'unité est 'em'
+		$div.="<div style='width: ".$largeur;
+		if(is_numeric($largeur)) {
+			$div.=$unite_div_infobulle;
+		}
+		$div.="; height: ".$hauteur_hors_titre;
+		if(is_numeric($hauteur)) {
+			$div.=$unite_div_infobulle;
+		}
+		$div.="; overflow: auto;'>\n";
 		$div.="<div style='padding-left: 1px;'>\n";
 		$div.=$texte;
 		$div.="</div>\n";
