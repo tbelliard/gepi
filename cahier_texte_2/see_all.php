@@ -497,11 +497,8 @@ $id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
 include "../lib/transform.php";
 $html .= affiche_docs_joints($id_ct,"c");
 if ($html != '') {
-	// echo "<div  style=\"border-bottom-style: solid; border-width:2px; border-color: ".$couleur_bord_tableau_notice."; \"><strong>INFORMATIONS GENERALES</strong></div>";
-	//echo "\n<div class='see_all_notice>\n";
 	echo "<h2 class='grande_ligne couleur_bord_tableau_notice'>\n<strong>INFORMATIONS GENERALES</strong>\n</h2>\n";
-	// echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice."; padding: 2px; margin: 2px;\" width = '100%' cellpadding='5'><tr><td>".$html."</td></tr></table>";
-echo "<div class='see_all_general couleur_bord_tableau_notice'>".$html."</div>";
+	echo "<div class='see_all_general couleur_bord_tableau_notice  color_fond_notices_i' style='width:98%'>".$html."</div>";
 }
 
 	// echo "<div  style=\"border-bottom-style: solid; border-width:2px; border-color: ".$couleur_bord_tableau_notice."; \"><strong>CAHIER DE TEXTES: comptes rendus de séance</strong></div><br />";
