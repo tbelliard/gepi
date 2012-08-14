@@ -302,6 +302,10 @@ else {
 	echo "<legend style='border: 1px solid grey;'>Choix d'une classe</legend>\n";
 	echo "<input type='hidden' name='mode' value='classe' />\n";
 
+	if(isset($today)) {
+		echo "<input type='hidden' name='today' value='$today' />\n";
+	}
+
 	echo "<select name='id_classe' onchange='document.form_choix_classe.submit();'>\n";
 	echo "<option value=''>---</option>\n";
 	for($i=0;$i<count($tab_classe);$i++) {
@@ -322,6 +326,10 @@ else {
 		echo "<legend style='border: 1px solid grey;'>Choix d'une de mes classes</legend>\n";
 		echo "<input type='hidden' name='mode' value='classe' />\n";
 
+		if(isset($today)) {
+			echo "<input type='hidden' name='today' value='$today' />\n";
+		}
+
 		echo "<select name='id_classe' onchange='document.form_choix_une_de_mes_classes.submit();'>\n";
 		echo "<option value=''>---</option>\n";
 		for($i=0;$i<count($tab_classe_du_prof);$i++) {
@@ -339,9 +347,13 @@ else {
 	if(isset($tab_eleve_de_la_classe)) {
 		echo "<form name='form_choix_eleve' enctype=\"multipart/form-data\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 		echo "<fieldset id='choixEleve' style='border: 1px solid grey; width:25%; float:left; margin-right:1em;'>\n";
-		echo "<legend style='border: 1px solid grey;'>Choix d'un élève de".$classe."</legend>\n";
+		echo "<legend style='border: 1px solid grey;'>Choix d'un élève de ".$classe."</legend>\n";
 		echo "<input type='hidden' name='mode' value='eleve' />\n";
 		echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
+
+		if(isset($today)) {
+			echo "<input type='hidden' name='today' value='$today' />\n";
+		}
 
 		echo "<select name='login_eleve' onchange='document.form_choix_eleve.submit();'>\n";
 		echo "<option value=''>---</option>\n";
@@ -365,6 +377,10 @@ else {
 		echo "<legend style='border: 1px solid grey;'>Choix d'un professeur</legend>\n";
 		echo "<input type='hidden' name='mode' value='professeur' />\n";
 
+		if(isset($today)) {
+			echo "<input type='hidden' name='today' value='$today' />\n";
+		}
+
 		echo "<select name='login_prof' onchange='document.form_choix_prof.submit();'>\n";
 		echo "<option value=''>---</option>\n";
 		for($i=0;$i<count($tab_profs);$i++) {
@@ -384,7 +400,11 @@ else {
 		//echo "<div style='border: 1px solid grey; width:20%; float:left; margin-right:1em;'>";
 		echo "<fieldset id='choixMesEnseignements' style='border: 1px solid grey; width:20%; float:left; margin-right:1em;'>\n";
 		echo "<legend style='border: 1px solid grey;'>Mes enseignements</legend>\n";
-		echo "<a href='".$_SERVER['PHP_SELF']."?mode=professeur'>Mes enseignements</a></div>\n";
+		echo "<a href='".$_SERVER['PHP_SELF']."?mode=professeur";
+		if(isset($today)) {
+			echo "&amp;today$today";
+		}
+		echo "'>Mes enseignements</a></div>\n";
 		echo "</fieldset>\n";
 	}
 
@@ -459,7 +479,7 @@ elseif($mode=='eleve') {
 	// Passage à la semaine précédente/courante/suivante
 	echo "<div style='float: right; width:25em;'><a href='".$_SERVER['PHP_SELF']."?today=".$ts_aujourdhui."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>Aujourd'hui</a> - Semaines <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_precedente."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>précédente</a> / <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_suivante."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>suivante</a></div>\n";
 
-	echo "<p>Affichage pour un élève&nbsp;: <strong>".civ_nom_prenom($login_eleve)." (<em>$classe</em>)</strong></p>\n";
+	echo "<p>Affichage pour un élève&nbsp;: <strong>".get_nom_prenom_eleve($login_eleve)." (<em>$classe</em>)</strong></p>\n";
 
 }
 elseif($mode=='professeur') {
@@ -490,7 +510,11 @@ elseif($mode=='professeur') {
 	echo "<p>Affichage pour un professeur&nbsp;: <strong>".$tab_profs2[$login_prof]."</strong></p>\n";
 }
 //=============================================================
-
+/*
+echo "<pre>";
+echo print_r($groups);
+echo "</pre>";
+*/
 //=============================================================
 // Récupération des groupes du professeur connecté:
 if($_SESSION['statut']=='professeur') {
