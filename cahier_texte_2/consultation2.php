@@ -347,7 +347,7 @@ else {
 	if(isset($tab_eleve_de_la_classe)) {
 		echo "<form name='form_choix_eleve' enctype=\"multipart/form-data\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 		echo "<fieldset id='choixEleve' style='border: 1px solid grey; width:25%; float:left; margin-right:1em;'>\n";
-		echo "<legend style='border: 1px solid grey;'>Choix d'un élève de ".$classe."</legend>\n";
+		echo "<legend style='border: 1px solid grey;'>Choix d'un élève de".$classe."</legend>\n";
 		echo "<input type='hidden' name='mode' value='eleve' />\n";
 		echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 
@@ -479,7 +479,7 @@ elseif($mode=='eleve') {
 	// Passage à la semaine précédente/courante/suivante
 	echo "<div style='float: right; width:25em;'><a href='".$_SERVER['PHP_SELF']."?today=".$ts_aujourdhui."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>Aujourd'hui</a> - Semaines <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_precedente."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>précédente</a> / <a href='".$_SERVER['PHP_SELF']."?today=".$ts_semaine_suivante."&amp;mode=$mode&amp;login_eleve=$login_eleve&amp;id_classe=$id_classe'>suivante</a></div>\n";
 
-	echo "<p>Affichage pour un élève&nbsp;: <strong>".get_nom_prenom_eleve($login_eleve)." (<em>$classe</em>)</strong></p>\n";
+	echo "<p>Affichage pour un élève&nbsp;: <strong>".civ_nom_prenom($login_eleve)." (<em>$classe</em>)</strong></p>\n";
 
 }
 elseif($mode=='professeur') {
@@ -510,11 +510,7 @@ elseif($mode=='professeur') {
 	echo "<p>Affichage pour un professeur&nbsp;: <strong>".$tab_profs2[$login_prof]."</strong></p>\n";
 }
 //=============================================================
-/*
-echo "<pre>";
-echo print_r($groups);
-echo "</pre>";
-*/
+
 //=============================================================
 // Récupération des groupes du professeur connecté:
 if($_SESSION['statut']=='professeur') {
@@ -1013,6 +1009,75 @@ if(document.getElementById('bouton_submit_classe')) {document.getElementById('bo
 if(document.getElementById('bouton_submit_une_de_mes_classes')) {document.getElementById('bouton_submit_une_de_mes_classes').style.display='none';}
 if(document.getElementById('bouton_submit_prof')) {document.getElementById('bouton_submit_prof').style.display='none';}
 </script>\n";
+
+/*
+echo "<pre>";
+echo print_r($tab_mes_groupes);
+echo "</pre>";
+
+echo "id_classe=$id_classe<br />";
+*/
+
+$tab_grp=array();
+/*
+if($_SESSION['statut']=='professeur') {
+
+	if($mode=='professeur') {
+		//$tab_champs=array();
+		$tab_grp=get_groups_for_prof($_SESSION['login']);
+	}
+}
+elseif(($_SESSION['statut']=='responsable')||($_SESSION['statut']=='eleve')) {
+	// A VOIR: Cas des élèves qui changent de classe...
+	$tab_grp=get_groups_for_eleve($login_eleve, $id_classe);
+}
+*/
+
+if($mode=='professeur') {
+	//$tab_champs=array();
+	$tab_grp=get_groups_for_prof($_SESSION['login']);
+}
+elseif($mode=='classe') {
+	$tab_grp=get_groups_for_class($id_classe);
+}
+elseif($mode=='eleve') {
+	// A VOIR: Cas des élèves qui changent de classe...
+	$tab_grp=get_groups_for_eleve($login_eleve, $id_classe);
+}
+
+
+if(count($tab_grp)>0) {
+	$infos_generales="";
+
+	foreach($tab_grp as $current_group) {
+		$id_groupe=$current_group['id'];
+
+		// Affichage des informations générales
+		//$sql="SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and (date_ct='' OR date_ct='0'));";
+		$sql="SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='');";
+		//echo "$sql<br />";
+		$appel_info_cahier_texte = mysql_query($sql);
+		$nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
+		$content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
+		$id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
+		include "../lib/transform.php";
+		$html .= affiche_docs_joints($id_ct,"c");
+
+		if($html!="") {
+			$infos_generales.="<div class='see_all_general couleur_bord_tableau_notice color_fond_notices_i' style='width:98%;'>";
+			$infos_generales.="<h3>".$current_group['name']." (<em>".$current_group['description']." en ".$current_group['classlist_string']."</em>)"."</h3>";
+			$infos_generales.=$html;
+			$infos_generales.="</div>";
+		}
+	}
+
+	if ($infos_generales != '') {
+		echo "<div style='padding:1em;'>\n";
+		echo "<h2 class='grande_ligne couleur_bord_tableau_notice'>\n<strong>INFORMATIONS GENERALES</strong>\n</h2>\n";
+		echo $infos_generales;
+		echo "</div>\n";
+	}
+}
 
 require("../lib/footer.inc.php");
 ?>
