@@ -428,7 +428,7 @@ if($mode=='classe') {
 		if($_SESSION['statut']=='professeur') {
 			$sql="SELECT id_classe FROM j_groupes_classes jgc, j_groupes_professeurs jgp, classes c WHERE jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' AND jgc.id_classe=c.id ORDER BY c.classe LIMIT 1;";
 			$res_classe=mysql_query($sql);
-			if(mysql_num_rows($res_classe)) {
+			if(mysql_num_rows($res_classe)>0) {
 				$id_classe = mysql_result($res_classe, 0, 'id_classe');
 			}
 		}
@@ -436,7 +436,7 @@ if($mode=='classe') {
 		if(!isset($id_classe)) {
 			$sql="SELECT id AS id_classe FROM classes ORDER BY classe LIMIT 1;";
 			$res_classe=mysql_query($sql);
-			if(mysql_num_rows($res_classe)) {
+			if(mysql_num_rows($res_classe)>0) {
 				$id_classe = mysql_result($res_classe, 0, 'id_classe');
 			}
 		}
@@ -467,7 +467,7 @@ elseif($mode=='eleve') {
 	if(!isset($id_classe)) {
 		$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$login_eleve' ORDER BY periode DESC LIMIT 1;";
 		$res_classe=mysql_query($sql);
-		if(mysql_num_rows($res_classe)) {
+		if(mysql_num_rows($res_classe)>0) {
 			$id_classe = mysql_result($res_classe, 0, 'id_classe');
 		}
 	}
@@ -490,7 +490,7 @@ elseif($mode=='professeur') {
 		else {
 			$sql="SELECT u.civilite, u.nom, u.prenom, u.login FROM utilisateurs u WHERE statut='professeur' AND etat='actif' ORDER BY u.nom, u.prenom LIMIT 1;";
 			$res_prof=mysql_query($sql);
-			if(mysql_num_rows($res_prof)) {
+			if(mysql_num_rows($res_prof)>0) {
 				$login_prof = mysql_result($res_prefs, 0, 'login');
 			}
 		}

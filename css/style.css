@@ -188,3 +188,16 @@ table.menu th {
 	color: black;
 
 }
+
+/* Mini-calendrier utilisé dans CDT et mod_absences 1 (au moins) */
+.cal_current_day{color:red}
+TD.calendar {border:0px; font-size: 7pt}
+TD.calendarcol1 {border:0px; font-size: 8pt}
+TD.calendarHeader {border:0px; font-size: 10pt}
+
+/* Styles utilisés ici et là... peut-être faudrait-il en remplacer certains par H1, H2,... */
+.grand {
+	color: #330033;
+	font-size: 16pt;
+}
+
