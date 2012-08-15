@@ -106,7 +106,7 @@
 
 		echo '
 			<p>
-				<input type="text" id="jourDebPer" name="jour_dperiode" maxlenght="10" size="10" value="'.$aff_jourdeb.'" />
+				<input type="text" id="jourDebPer" name="jour_dperiode" maxlenght="10" size="10" value="'.$aff_jourdeb.'" onKeyDown="clavier_date(this.id,event);" AutoComplete="off" />
 					<a href="#calend" onclick="window.open(\'../lib/calendrier/pop.calendrier.php?frm=nouvelle_periode&amp;ch=jour_dperiode\',\'calendrier\',\'width=350,height=170,scrollbars=0\').focus();">
 					<img src="../lib/calendrier/petit_calendrier.gif" alt="" border="0" /></a>
 				<label for="jourDebPer">Premier jour</label>
@@ -115,7 +115,7 @@
 				<label for="heureDeb">Heure de début</label>
 			</p>
 			<p>
-				<input type="text" id="jourFinPer" name="jour_fperiode" maxlenght="10" size="10" value="'.$aff_jourfin.'" />
+				<input type="text" id="jourFinPer" name="jour_fperiode" maxlenght="10" size="10" value="'.$aff_jourfin.'" onKeyDown="clavier_date(this.id,event);" AutoComplete="off" />
 					<a href="#calend" onclick="window.open(\'../lib/calendrier/pop.calendrier.php?frm=nouvelle_periode&amp;ch=jour_fperiode\',\'calendrier\',\'width=350,height=170,scrollbars=0\').focus();">
 					<img src="../lib/calendrier/petit_calendrier.gif" alt="" border="0" /></a>
 				<label for="jourFinPer">Dernier jour</label>
@@ -320,7 +320,7 @@ if ($modulo !== 0) {
 		</p>
 		<p>
 
-		<input type="text" name="jour_debut" maxlenght="10" size="10" value="'.$data['date_jour'].'" />
+		<input type="text" id="input_jour_debut" name="jour_debut" maxlenght="10" size="10" value="'.$data['date_jour'].'" onKeyDown="clavier_date(this.id,event);" AutoComplete="off" />
 		<a href="#calend" onclick="window.open(\'../lib/calendrier/pop.calendrier.php?frm=nouvelle_periode&amp;ch=jour_debut\',\'calendrier\',\'width=350,height=170,scrollbars=0\').focus();">
 		<img src="../lib/calendrier/petit_calendrier.gif" alt="" border="0" /></a>
 			<span class="legende">Premier jour</span>
@@ -330,7 +330,7 @@ if ($modulo !== 0) {
 		</p>
 		<p>
 
-		<input type="text" name="jour_fin" maxlenght="10" size="10" value="jj/mm/YYYY" />
+		<input type="text" id="input_jour_fin" name="jour_fin" maxlenght="10" size="10" value="jj/mm/YYYY" onKeyDown="clavier_date(this.id,event);" AutoComplete="off" />
 		<a href="#calend" onclick="window.open(\'../lib/calendrier/pop.calendrier.php?frm=nouvelle_periode&amp;ch=jour_fin\',\'calendrier\',\'width=350,height=170,scrollbars=0\').focus();">
 		<img src="../lib/calendrier/petit_calendrier.gif" alt="" border="0" /></a>
 			<span class="legende">Dernier jour</span>
