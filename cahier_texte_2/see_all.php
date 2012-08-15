@@ -171,6 +171,68 @@ if (getSettingValue("active_cahiers_texte")!='y') {
 }
 
 echo "<div class='centre_table'>\n";
+
+	$infos_generales="";
+	if((isset($id_groupe))&&($id_groupe=='Toutes_matieres')) {
+		// Informations générales
+		if (($_SESSION['statut'] == 'responsable')&&(isset($selected_eleve_login))) {
+			// A VOIR: Cas des élèves qui changent de classe...
+
+			//if((!isset($id_classe))||($id_classe<1)) {
+				$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$selected_eleve_login' ORDER BY periode DESC LIMIT 1;";
+				//echo "$sql<br />";
+				$res_classe=mysql_query($sql);
+				if(mysql_num_rows($res_classe)>0) {
+					//$id_classe = mysql_result($res_classe, 0, 'id_classe');
+					$tmp_id_classe = mysql_result($res_classe, 0, 'id_classe');
+				}
+			//}
+
+			//if(isset($id_classe)) {
+			if(isset($tmp_id_classe)) {
+				//$tab_grp=get_groups_for_eleve($selected_eleve_login, $id_classe);
+				$tab_grp=get_groups_for_eleve($selected_eleve_login, $tmp_id_classe);
+				//echo "get_groups_for_eleve($selected_eleve_login, $id_classe)<br />";
+
+				foreach($tab_grp as $tmp_current_group) {
+					$tmp_id_groupe=$tmp_current_group['id'];
+
+					// Affichage des informations générales
+					//$sql="SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and (date_ct='' OR date_ct='0'));";
+					$sql="SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$tmp_id_groupe' and date_ct='');";
+					//echo "$sql<br />";
+					$appel_info_cahier_texte = mysql_query($sql);
+					$nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
+					$content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
+					$id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
+					include "../lib/transform.php";
+					$html .= affiche_docs_joints($id_ct,"c");
+
+					if($html!="") {
+						$infos_generales.="<div class='see_all_general couleur_bord_tableau_notice color_fond_notices_i' style='width:98%;'>";
+						$infos_generales.="<h3>".$tmp_current_group['name']." (<em>".$tmp_current_group['description']." en ".$tmp_current_group['classlist_string']."</em>)"."</h3>";
+						$infos_generales.=$html;
+						$infos_generales.="</div>";
+					}
+				}
+
+				if ($infos_generales != '') {
+					$titre_infobulle="Informations générales";
+					$texte_infobulle="<div style='padding:1em;'>\n";
+					$texte_infobulle.="<h2 class='grande_ligne couleur_bord_tableau_notice'>\n<strong>INFORMATIONS GENERALES</strong>\n</h2>\n";
+					$texte_infobulle.=$infos_generales;
+					$texte_infobulle.="</div>\n";
+
+					$tabdiv_infobulle[]=creer_div_infobulle("div_informations_generales",$titre_infobulle,"",$texte_infobulle,"pink",30,0,'y','y','n','n');
+
+					echo "<div class='color_fond_notices_i' style='float:right; width:10em; text-align:center;'><a href='#informations_generales' onclick=\"afficher_div('div_informations_generales','y',10,10);return false;\">Informations générales</a></div>";
+				}
+			}
+		}
+		
+
+	}
+
 	// Choix classe et matière
 	echo "<div class='ct_col_gauche'>\n";
 		if ($current_imprime=='n') {
@@ -465,6 +527,14 @@ if(($id_groupe=='Toutes_matieres')&&
 			}
 		}
 		echo "</table>\n";
+		echo "</div>\n";
+	}
+
+	if ($infos_generales != '') {
+		echo "<a name='informations_generales'></a>";
+		echo "<div style='padding:1em;'>\n";
+		echo "<h2 class='grande_ligne couleur_bord_tableau_notice'>\n<strong>INFORMATIONS GENERALES</strong>\n</h2>\n";
+		echo $infos_generales;
 		echo "</div>\n";
 	}
 
