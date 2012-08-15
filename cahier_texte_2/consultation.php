@@ -225,7 +225,9 @@ echo "<div class=\"centre_table\">\n";
 					echo "Retour à l'accueil\n";
 				echo "</a>\n";
 				echo " | ";
-				echo "<a href=\"consultation2.php\">\n";
+				echo "<a href=\"consultation2.php";
+				if(($_SESSION['statut']=='responsable')&&(isset($login_eleve))) {echo "?login_eleve=$login_eleve";}
+				echo "\">\n";
 					echo "Affichage semaine\n";
 				echo "</a>\n";
 			echo "</p>\n";
