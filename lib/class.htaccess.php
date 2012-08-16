@@ -112,7 +112,9 @@ class htaccess
         {
             return false;
         }
-        $this->user[$name] = crypt($passwd, $this->crypt_method);
+        //$this->user[$name] = crypt($passwd, $this->crypt_method);      // PB
+        //$this->user[$name] = crypt($passwd,base64_encode($passwd));    // OK
+        $this->user[$name] = "{SHA}".base64_encode(sha1($passwd, TRUE)); // OK
         return TRUE;
     }
 
