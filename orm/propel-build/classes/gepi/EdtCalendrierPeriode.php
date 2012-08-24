@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class EdtCalendrierPeriode extends BaseEdtCalendrierPeriode {
-
-} // EdtCalendrierPeriode
+class EdtCalendrierPeriode extends BaseEdtCalendrierPeriode
+{
+}

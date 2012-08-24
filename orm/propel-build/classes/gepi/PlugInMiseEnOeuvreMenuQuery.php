@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class PlugInMiseEnOeuvreMenuQuery extends BasePlugInMiseEnOeuvreMenuQuery {
-
-} // PlugInMiseEnOeuvreMenuQuery
+class PlugInMiseEnOeuvreMenuQuery extends BasePlugInMiseEnOeuvreMenuQuery
+{
+}

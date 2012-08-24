@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class AbsenceEleveMotifPeer extends BaseAbsenceEleveMotifPeer {
-
-} // AbsenceEleveMotifPeer
+class AbsenceEleveMotifPeer extends BaseAbsenceEleveMotifPeer
+{
+}

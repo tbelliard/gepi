@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class EleveRegimeDoublant extends BaseEleveRegimeDoublant {
-
-} // EleveRegimeDoublant
+class EleveRegimeDoublant extends BaseEleveRegimeDoublant
+{
+}

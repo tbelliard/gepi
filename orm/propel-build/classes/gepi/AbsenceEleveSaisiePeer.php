@@ -5,7 +5,7 @@
 /**
  * Skeleton subclass for performing query and update operations on the 'a_saisies' table.
  *
- * Chaque saisie d'absence doit faire l'objet d'une ligne dans la table a_saisies. Une saisie peut etre : une plage horaire longue durée (plusieurs jours), défini avec les champs debut_abs et fin_abs. Un créneau horaire, le jour étant precisé dans debut_abs. Un cours de l'emploi du temps, le jours du cours etant precisé dans debut_abs.
+ * Chaque saisie d'absence doit faire l'objet d'une ligne dans la table a_saisies. Une saisie peut etre : une plage horaire longue durée (plusieurs jours), défini avec les champs debut_abs et fin_abs. Un creneau horaire, le jour etant precisé dans debut_abs. Un cours de l'emploi du temps, le jours du cours etant precisé dans debut_abs.
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as
@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class AbsenceEleveSaisiePeer extends BaseAbsenceEleveSaisiePeer {
-
+class AbsenceEleveSaisiePeer extends BaseAbsenceEleveSaisiePeer
+{
 	/**
 	 * Est-ce qu'on met à jour la table d'agrégation
 	 */
@@ -153,6 +153,4 @@ class AbsenceEleveSaisiePeer extends BaseAbsenceEleveSaisiePeer {
 	    return (!empty($failureMap) ? $failureMap : true);
 
 	}
-
-
-} // AbsenceEleveSaisiePeer
+}

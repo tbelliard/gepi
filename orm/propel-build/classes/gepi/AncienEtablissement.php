@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class AncienEtablissement extends BaseAncienEtablissement {
-
-} // AncienEtablissement
+class AncienEtablissement extends BaseAncienEtablissement
+{
+}

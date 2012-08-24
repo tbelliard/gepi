@@ -17,39 +17,39 @@
 class PreferenceUtilisateurProfessionnelTableMap extends TableMap
 {
 
-	/**
-	 * The (dot-path) name of this class
-	 */
-	const CLASS_NAME = 'gepi.map.PreferenceUtilisateurProfessionnelTableMap';
+    /**
+     * The (dot-path) name of this class
+     */
+    const CLASS_NAME = 'gepi.map.PreferenceUtilisateurProfessionnelTableMap';
 
-	/**
-	 * Initialize the table attributes, columns and validators
-	 * Relations are not initialized by this method since they are lazy loaded
-	 *
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function initialize()
-	{
-		// attributes
-		$this->setName('preferences');
-		$this->setPhpName('PreferenceUtilisateurProfessionnel');
-		$this->setClassname('PreferenceUtilisateurProfessionnel');
-		$this->setPackage('gepi');
-		$this->setUseIdGenerator(true);
-		// columns
-		$this->addPrimaryKey('NAME', 'Name', 'VARCHAR', true, 50, null);
-		$this->addColumn('VALUE', 'Value', 'LONGVARCHAR', true, null, null);
-		$this->addForeignPrimaryKey('LOGIN', 'Login', 'VARCHAR' , 'utilisateurs', 'LOGIN', true, 50, null);
-		// validators
-	} // initialize()
+    /**
+     * Initialize the table attributes, columns and validators
+     * Relations are not initialized by this method since they are lazy loaded
+     *
+     * @return void
+     * @throws PropelException
+     */
+    public function initialize()
+    {
+        // attributes
+        $this->setName('preferences');
+        $this->setPhpName('PreferenceUtilisateurProfessionnel');
+        $this->setClassname('PreferenceUtilisateurProfessionnel');
+        $this->setPackage('gepi');
+        $this->setUseIdGenerator(true);
+        // columns
+        $this->addPrimaryKey('NAME', 'Name', 'VARCHAR', true, 50, null);
+        $this->addColumn('VALUE', 'Value', 'LONGVARCHAR', true, null, null);
+        $this->addForeignPrimaryKey('LOGIN', 'Login', 'VARCHAR' , 'utilisateurs', 'LOGIN', true, 50, null);
+        // validators
+    } // initialize()
 
-	/**
-	 * Build the RelationMap objects for this table relationships
-	 */
-	public function buildRelations()
-	{
-		$this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('login' => 'login', ), 'CASCADE', null);
-	} // buildRelations()
+    /**
+     * Build the RelationMap objects for this table relationships
+     */
+    public function buildRelations()
+    {
+        $this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('login' => 'login', ), 'CASCADE', null);
+    } // buildRelations()
 
 } // PreferenceUtilisateurProfessionnelTableMap

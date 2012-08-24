@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class EdtSallePeer extends BaseEdtSallePeer {
-
-} // EdtSallePeer
+class EdtSallePeer extends BaseEdtSallePeer
+{
+}

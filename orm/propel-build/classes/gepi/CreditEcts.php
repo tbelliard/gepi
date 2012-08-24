@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class CreditEcts extends BaseCreditEcts {
-
-} // CreditEcts
+class CreditEcts extends BaseCreditEcts
+{
+}

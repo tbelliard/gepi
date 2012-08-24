@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class PreferenceUtilisateurProfessionnelPeer extends BasePreferenceUtilisateurProfessionnelPeer {
-
-} // PreferenceUtilisateurProfessionnelPeer
+class PreferenceUtilisateurProfessionnelPeer extends BasePreferenceUtilisateurProfessionnelPeer
+{
+}

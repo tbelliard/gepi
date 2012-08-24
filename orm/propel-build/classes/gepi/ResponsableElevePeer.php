@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class ResponsableElevePeer extends BaseResponsableElevePeer {
-
-} // ResponsableElevePeer
+class ResponsableElevePeer extends BaseResponsableElevePeer
+{
+}

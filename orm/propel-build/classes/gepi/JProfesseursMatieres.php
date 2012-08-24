@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class JProfesseursMatieres extends BaseJProfesseursMatieres {
-
-} // JProfesseursMatieres
+class JProfesseursMatieres extends BaseJProfesseursMatieres
+{
+}

@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class EdtCreneauQuery extends BaseEdtCreneauQuery {
-
-} // EdtCreneauQuery
+class EdtCreneauQuery extends BaseEdtCreneauQuery
+{
+}

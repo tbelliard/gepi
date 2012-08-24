@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class JEleveCpeQuery extends BaseJEleveCpeQuery {
-
-} // JEleveCpeQuery
+class JEleveCpeQuery extends BaseJEleveCpeQuery
+{
+}

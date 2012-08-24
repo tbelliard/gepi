@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class PeriodeNote extends BasePeriodeNote {
-
+class PeriodeNote extends BasePeriodeNote
+{
 	/**
 	 * @var        array PeriodesNote[] Collection to store aggregation of PeriodesNote objects.
 	 */
@@ -125,4 +125,4 @@ class PeriodeNote extends BasePeriodeNote {
 		}
 	    }
 	}
-} // PeriodeNote
+}

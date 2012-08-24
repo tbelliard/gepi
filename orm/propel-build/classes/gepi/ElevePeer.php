@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class ElevePeer extends BaseElevePeer {
-
+class ElevePeer extends BaseElevePeer
+{
 	/**
 	 * Récupère un élève à partir de son login.
 	 *
@@ -83,5 +83,4 @@ class ElevePeer extends BaseElevePeer {
 
     return $e_avec_classe;
   }
-
-} // ElevePeer
+}

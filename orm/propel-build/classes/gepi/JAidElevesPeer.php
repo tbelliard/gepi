@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class JAidElevesPeer extends BaseJAidElevesPeer {
-
-} // JAidElevesPeer
+class JAidElevesPeer extends BaseJAidElevesPeer
+{
+}

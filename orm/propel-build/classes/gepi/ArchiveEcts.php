@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class ArchiveEcts extends BaseArchiveEcts {
-
-} // ArchiveEcts
+class ArchiveEcts extends BaseArchiveEcts
+{
+}

@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class JEleveAncienEtablissementPeer extends BaseJEleveAncienEtablissementPeer {
-
-} // JEleveAncienEtablissementPeer
+class JEleveAncienEtablissementPeer extends BaseJEleveAncienEtablissementPeer
+{
+}

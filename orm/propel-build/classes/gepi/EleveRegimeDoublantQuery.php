@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class EleveRegimeDoublantQuery extends BaseEleveRegimeDoublantQuery {
-
-} // EleveRegimeDoublantQuery
+class EleveRegimeDoublantQuery extends BaseEleveRegimeDoublantQuery
+{
+}

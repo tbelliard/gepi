@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class AbsenceAgregationDecompte extends BaseAbsenceAgregationDecompte {
-
-} // AbsenceAgregationDecompte
+class AbsenceAgregationDecompte extends BaseAbsenceAgregationDecompte
+{
+}

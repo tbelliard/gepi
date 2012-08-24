@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class AbsenceEleveTypeStatutAutorisePeer extends BaseAbsenceEleveTypeStatutAutorisePeer {
-
-} // AbsenceEleveTypeStatutAutorisePeer
+class AbsenceEleveTypeStatutAutorisePeer extends BaseAbsenceEleveTypeStatutAutorisePeer
+{
+}

@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class CreditEctsGlobalQuery extends BaseCreditEctsGlobalQuery {
-
-} // CreditEctsGlobalQuery
+class CreditEctsGlobalQuery extends BaseCreditEctsGlobalQuery
+{
+}

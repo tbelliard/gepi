@@ -17,42 +17,42 @@
 class PlugInMiseEnOeuvreMenuTableMap extends TableMap
 {
 
-	/**
-	 * The (dot-path) name of this class
-	 */
-	const CLASS_NAME = 'gepi.map.PlugInMiseEnOeuvreMenuTableMap';
+    /**
+     * The (dot-path) name of this class
+     */
+    const CLASS_NAME = 'gepi.map.PlugInMiseEnOeuvreMenuTableMap';
 
-	/**
-	 * Initialize the table attributes, columns and validators
-	 * Relations are not initialized by this method since they are lazy loaded
-	 *
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function initialize()
-	{
-		// attributes
-		$this->setName('plugins_menus');
-		$this->setPhpName('PlugInMiseEnOeuvreMenu');
-		$this->setClassname('PlugInMiseEnOeuvreMenu');
-		$this->setPackage('gepi');
-		$this->setUseIdGenerator(true);
-		// columns
-		$this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 11, null);
-		$this->addForeignKey('PLUGIN_ID', 'PluginId', 'INTEGER', 'plugins', 'ID', true, 11, null);
-		$this->addColumn('USER_STATUT', 'UserStatut', 'VARCHAR', true, 50, null);
-		$this->addColumn('TITRE_ITEM', 'TitreItem', 'VARCHAR', true, 255, null);
-		$this->addColumn('LIEN_ITEM', 'LienItem', 'VARCHAR', true, 255, null);
-		$this->addColumn('DESCRIPTION_ITEM', 'DescriptionItem', 'VARCHAR', true, 255, null);
-		// validators
-	} // initialize()
+    /**
+     * Initialize the table attributes, columns and validators
+     * Relations are not initialized by this method since they are lazy loaded
+     *
+     * @return void
+     * @throws PropelException
+     */
+    public function initialize()
+    {
+        // attributes
+        $this->setName('plugins_menus');
+        $this->setPhpName('PlugInMiseEnOeuvreMenu');
+        $this->setClassname('PlugInMiseEnOeuvreMenu');
+        $this->setPackage('gepi');
+        $this->setUseIdGenerator(true);
+        // columns
+        $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 11, null);
+        $this->addForeignKey('PLUGIN_ID', 'PluginId', 'INTEGER', 'plugins', 'ID', true, 11, null);
+        $this->addColumn('USER_STATUT', 'UserStatut', 'VARCHAR', true, 50, null);
+        $this->addColumn('TITRE_ITEM', 'TitreItem', 'VARCHAR', true, 255, null);
+        $this->addColumn('LIEN_ITEM', 'LienItem', 'VARCHAR', true, 255, null);
+        $this->addColumn('DESCRIPTION_ITEM', 'DescriptionItem', 'VARCHAR', true, 255, null);
+        // validators
+    } // initialize()
 
-	/**
-	 * Build the RelationMap objects for this table relationships
-	 */
-	public function buildRelations()
-	{
-		$this->addRelation('PlugIn', 'PlugIn', RelationMap::MANY_TO_ONE, array('plugin_id' => 'id', ), 'CASCADE', null);
-	} // buildRelations()
+    /**
+     * Build the RelationMap objects for this table relationships
+     */
+    public function buildRelations()
+    {
+        $this->addRelation('PlugIn', 'PlugIn', RelationMap::MANY_TO_ONE, array('plugin_id' => 'id', ), 'CASCADE', null);
+    } // buildRelations()
 
 } // PlugInMiseEnOeuvreMenuTableMap

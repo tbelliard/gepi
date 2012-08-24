@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class EdtSemaine extends BaseEdtSemaine {
-
+class EdtSemaine extends BaseEdtSemaine
+{
  	/**
 	 *
 	 * Renvoi la date du lundi de la semaine
@@ -87,5 +87,4 @@ class EdtSemaine extends BaseEdtSemaine {
 		    return $dt->format($format);
 	    }
 	}
-
-} // EdtSemaine
+}

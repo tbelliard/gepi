@@ -13,9 +13,9 @@
  *
  * @package    propel.generator.gepi
  */
-class JEleveClasse extends BaseJEleveClasse {
-
-      	/**
+class JEleveClasse extends BaseJEleveClasse
+{
+    /**
 	 *
 	 * Retourne la periode de note associée
 	 *
@@ -29,6 +29,4 @@ class JEleveClasse extends BaseJEleveClasse {
 	public function isClasseHydrated() {
 	    return $this->aClasse != null;
 	}
-
-	
-} // JEleveClasse
+}

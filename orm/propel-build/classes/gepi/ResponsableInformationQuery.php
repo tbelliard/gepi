@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class ResponsableInformationQuery extends BaseResponsableInformationQuery {
-
-} // ResponsableInformationQuery
+class ResponsableInformationQuery extends BaseResponsableInformationQuery
+{
+}

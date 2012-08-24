@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class JAidUtilisateursProfessionnelsQuery extends BaseJAidUtilisateursProfessionnelsQuery {
-
-} // JAidUtilisateursProfessionnelsQuery
+class JAidUtilisateursProfessionnelsQuery extends BaseJAidUtilisateursProfessionnelsQuery
+{
+}

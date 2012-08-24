@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class EdtEmplacementCoursQuery extends BaseEdtEmplacementCoursQuery {
-
-} // EdtEmplacementCoursQuery
+class EdtEmplacementCoursQuery extends BaseEdtEmplacementCoursQuery
+{
+}

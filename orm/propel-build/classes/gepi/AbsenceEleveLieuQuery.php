@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class AbsenceEleveLieuQuery extends BaseAbsenceEleveLieuQuery {
-
-} // AbsenceEleveLieuQuery
+class AbsenceEleveLieuQuery extends BaseAbsenceEleveLieuQuery
+{
+}

@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class MatierePeer extends BaseMatierePeer {
-
-} // MatierePeer
+class MatierePeer extends BaseMatierePeer
+{
+}

@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class PlugInAutorisationPeer extends BasePlugInAutorisationPeer {
-
-} // PlugInAutorisationPeer
+class PlugInAutorisationPeer extends BasePlugInAutorisationPeer
+{
+}

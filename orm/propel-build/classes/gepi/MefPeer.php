@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class MefPeer extends BaseMefPeer {
-
-} // MefPeer
+class MefPeer extends BaseMefPeer
+{
+}

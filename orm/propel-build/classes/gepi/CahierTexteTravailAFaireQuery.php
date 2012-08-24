@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class CahierTexteTravailAFaireQuery extends BaseCahierTexteTravailAFaireQuery {
-
-} // CahierTexteTravailAFaireQuery
+class CahierTexteTravailAFaireQuery extends BaseCahierTexteTravailAFaireQuery
+{
+}

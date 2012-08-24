@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class EdtSemainePeer extends BaseEdtSemainePeer {
-
-} // EdtSemainePeer
+class EdtSemainePeer extends BaseEdtSemainePeer
+{
+}

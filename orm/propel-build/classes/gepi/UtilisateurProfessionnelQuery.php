@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class UtilisateurProfessionnelQuery extends BaseUtilisateurProfessionnelQuery {
-
-} // UtilisateurProfessionnelQuery
+class UtilisateurProfessionnelQuery extends BaseUtilisateurProfessionnelQuery
+{
+}

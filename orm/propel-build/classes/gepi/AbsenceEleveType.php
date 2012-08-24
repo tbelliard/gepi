@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class AbsenceEleveType extends BaseAbsenceEleveType {
-
+class AbsenceEleveType extends BaseAbsenceEleveType
+{
 	/**
 	 * Les types de creneaux possibles
 	 */
@@ -90,4 +90,4 @@ class AbsenceEleveType extends BaseAbsenceEleveType {
 		$criteria->add(AbsenceEleveTypeStatutAutorisePeer::STATUT, $statut);
 		return !($this->getAbsenceEleveTypeStatutAutorises($criteria)->isEmpty());
 	}
-} // AbsenceEleveType
+}

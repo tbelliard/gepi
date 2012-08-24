@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class GroupeQuery extends BaseGroupeQuery {
-
-} // GroupeQuery
+class GroupeQuery extends BaseGroupeQuery
+{
+}

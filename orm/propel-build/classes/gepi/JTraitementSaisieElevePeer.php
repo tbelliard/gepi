@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class JTraitementSaisieElevePeer extends BaseJTraitementSaisieElevePeer {
-
-} // JTraitementSaisieElevePeer
+class JTraitementSaisieElevePeer extends BaseJTraitementSaisieElevePeer
+{
+}

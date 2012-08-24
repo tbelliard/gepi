@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class AdresseQuery extends BaseAdresseQuery {
-
-} // AdresseQuery
+class AdresseQuery extends BaseAdresseQuery
+{
+}

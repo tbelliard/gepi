@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class AbsenceEleveNotificationQuery extends BaseAbsenceEleveNotificationQuery {
-
-} // AbsenceEleveNotificationQuery
+class AbsenceEleveNotificationQuery extends BaseAbsenceEleveNotificationQuery
+{
+}

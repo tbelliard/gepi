@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class CategorieMatierePeer extends BaseCategorieMatierePeer {
-
-} // CategorieMatierePeer
+class CategorieMatierePeer extends BaseCategorieMatierePeer
+{
+}

@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class JScolClassesQuery extends BaseJScolClassesQuery {
-
-} // JScolClassesQuery
+class JScolClassesQuery extends BaseJScolClassesQuery
+{
+}

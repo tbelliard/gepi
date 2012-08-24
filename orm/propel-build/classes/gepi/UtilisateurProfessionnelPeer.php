@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class UtilisateurProfessionnelPeer extends BaseUtilisateurProfessionnelPeer {
-
+class UtilisateurProfessionnelPeer extends BaseUtilisateurProfessionnelPeer
+{
 	/**
 	 *
 	 * Renvoi l'utilisateur de la session en cours (null si aucun utilisateur trouvé dans la session
@@ -37,5 +37,4 @@ class UtilisateurProfessionnelPeer extends BaseUtilisateurProfessionnelPeer {
             return null;
         }
 	}
-
-} // UtilisateurProfessionnelPeer
+}

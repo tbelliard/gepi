@@ -1,5 +1,7 @@
 <?php
 
+
+
 /**
  * Skeleton subclass for performing query and update operations on the 'eleves' table.
  *
@@ -11,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class EleveQuery extends BaseEleveQuery {
-
+class EleveQuery extends BaseEleveQuery
+{
     /**
      * Ajoute une jointure avec les classes pour minimiser le nombre de requetes.
      *
@@ -138,5 +140,3 @@ class EleveQuery extends BaseEleveQuery {
 
 
 }
-
-// EleveQuery

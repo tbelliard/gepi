@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class JTraitementSaisieEleveQuery extends BaseJTraitementSaisieEleveQuery {
-
-} // JTraitementSaisieEleveQuery
+class JTraitementSaisieEleveQuery extends BaseJTraitementSaisieEleveQuery
+{
+}

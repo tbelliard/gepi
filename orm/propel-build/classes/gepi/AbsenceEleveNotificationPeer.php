@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class AbsenceEleveNotificationPeer extends BaseAbsenceEleveNotificationPeer {
-
-} // AbsenceEleveNotificationPeer
+class AbsenceEleveNotificationPeer extends BaseAbsenceEleveNotificationPeer
+{
+}

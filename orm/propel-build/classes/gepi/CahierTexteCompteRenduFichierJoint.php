@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class CahierTexteCompteRenduFichierJoint extends BaseCahierTexteCompteRenduFichierJoint {
-
-} // CahierTexteCompteRenduFichierJoint
+class CahierTexteCompteRenduFichierJoint extends BaseCahierTexteCompteRenduFichierJoint
+{
+}

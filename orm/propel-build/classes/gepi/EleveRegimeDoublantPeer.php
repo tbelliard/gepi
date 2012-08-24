@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class EleveRegimeDoublantPeer extends BaseEleveRegimeDoublantPeer {
-
-} // EleveRegimeDoublantPeer
+class EleveRegimeDoublantPeer extends BaseEleveRegimeDoublantPeer
+{
+}

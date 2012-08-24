@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class AbsenceEleveTypeStatutAutoriseQuery extends BaseAbsenceEleveTypeStatutAutoriseQuery {
-
-} // AbsenceEleveTypeStatutAutoriseQuery
+class AbsenceEleveTypeStatutAutoriseQuery extends BaseAbsenceEleveTypeStatutAutoriseQuery
+{
+}

@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
-
+class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel
+{
 	/**
 	 * @var        array Classe[] Collection to store aggregation of Classe objects.
 	 */

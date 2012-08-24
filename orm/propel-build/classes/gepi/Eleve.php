@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class Eleve extends BaseEleve {
-
+class Eleve extends BaseEleve
+{
 	/**
 	 * @var        array PeriodesNote[] Collection to store aggregation of PeriodesNote objects.
 	 */
@@ -2065,5 +2065,4 @@ class Eleve extends BaseEleve {
 
 		return $this->singleEleveRegimeDoublant;
 	}
-	
-} // Eleve
+}

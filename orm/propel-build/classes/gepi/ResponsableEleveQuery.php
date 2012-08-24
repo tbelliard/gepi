@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class ResponsableEleveQuery extends BaseResponsableEleveQuery {
-
-} // ResponsableEleveQuery
+class ResponsableEleveQuery extends BaseResponsableEleveQuery
+{
+}

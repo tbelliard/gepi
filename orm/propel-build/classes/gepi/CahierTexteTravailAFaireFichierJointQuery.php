@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class CahierTexteTravailAFaireFichierJointQuery extends BaseCahierTexteTravailAFaireFichierJointQuery {
-
-} // CahierTexteTravailAFaireFichierJointQuery
+class CahierTexteTravailAFaireFichierJointQuery extends BaseCahierTexteTravailAFaireFichierJointQuery
+{
+}

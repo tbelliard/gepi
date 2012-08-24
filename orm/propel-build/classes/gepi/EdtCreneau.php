@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class EdtCreneau extends BaseEdtCreneau {
-
+class EdtCreneau extends BaseEdtCreneau
+{
 	/**
 	 * Les types de creneaux possibles
 	 */
@@ -120,4 +120,4 @@ class EdtCreneau extends BaseEdtCreneau {
 	    $desc .= $this->getHeurefinDefiniePeriode("H:i");
 	    return $desc;
 	}
-} // EdtCreneau
+}

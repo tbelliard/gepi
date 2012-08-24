@@ -17,40 +17,40 @@
 class JAidUtilisateursProfessionnelsTableMap extends TableMap
 {
 
-	/**
-	 * The (dot-path) name of this class
-	 */
-	const CLASS_NAME = 'gepi.map.JAidUtilisateursProfessionnelsTableMap';
+    /**
+     * The (dot-path) name of this class
+     */
+    const CLASS_NAME = 'gepi.map.JAidUtilisateursProfessionnelsTableMap';
 
-	/**
-	 * Initialize the table attributes, columns and validators
-	 * Relations are not initialized by this method since they are lazy loaded
-	 *
-	 * @return     void
-	 * @throws     PropelException
-	 */
-	public function initialize()
-	{
-		// attributes
-		$this->setName('j_aid_utilisateurs');
-		$this->setPhpName('JAidUtilisateursProfessionnels');
-		$this->setClassname('JAidUtilisateursProfessionnels');
-		$this->setPackage('gepi');
-		$this->setUseIdGenerator(false);
-		$this->setIsCrossRef(true);
-		// columns
-		$this->addForeignPrimaryKey('ID_AID', 'IdAid', 'VARCHAR' , 'aid', 'ID', true, 100, null);
-		$this->addForeignPrimaryKey('ID_UTILISATEUR', 'IdUtilisateur', 'VARCHAR' , 'utilisateurs', 'LOGIN', true, 100, null);
-		// validators
-	} // initialize()
+    /**
+     * Initialize the table attributes, columns and validators
+     * Relations are not initialized by this method since they are lazy loaded
+     *
+     * @return void
+     * @throws PropelException
+     */
+    public function initialize()
+    {
+        // attributes
+        $this->setName('j_aid_utilisateurs');
+        $this->setPhpName('JAidUtilisateursProfessionnels');
+        $this->setClassname('JAidUtilisateursProfessionnels');
+        $this->setPackage('gepi');
+        $this->setUseIdGenerator(false);
+        $this->setIsCrossRef(true);
+        // columns
+        $this->addForeignPrimaryKey('ID_AID', 'IdAid', 'VARCHAR' , 'aid', 'ID', true, 100, null);
+        $this->addForeignPrimaryKey('ID_UTILISATEUR', 'IdUtilisateur', 'VARCHAR' , 'utilisateurs', 'LOGIN', true, 100, null);
+        // validators
+    } // initialize()
 
-	/**
-	 * Build the RelationMap objects for this table relationships
-	 */
-	public function buildRelations()
-	{
-		$this->addRelation('AidDetails', 'AidDetails', RelationMap::MANY_TO_ONE, array('id_aid' => 'id', ), 'CASCADE', null);
-		$this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('id_utilisateur' => 'login', ), 'CASCADE', null);
-	} // buildRelations()
+    /**
+     * Build the RelationMap objects for this table relationships
+     */
+    public function buildRelations()
+    {
+        $this->addRelation('AidDetails', 'AidDetails', RelationMap::MANY_TO_ONE, array('id_aid' => 'id', ), 'CASCADE', null);
+        $this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('id_utilisateur' => 'login', ), 'CASCADE', null);
+    } // buildRelations()
 
 } // JAidUtilisateursProfessionnelsTableMap

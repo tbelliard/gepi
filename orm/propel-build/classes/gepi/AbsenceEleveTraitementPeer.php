@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class AbsenceEleveTraitementPeer extends BaseAbsenceEleveTraitementPeer {
-
+class AbsenceEleveTraitementPeer extends BaseAbsenceEleveTraitementPeer
+{
 	/**
 	 * Est-ce qu'on met à jour la table d'agrégation
 	 */
@@ -45,4 +45,4 @@ class AbsenceEleveTraitementPeer extends BaseAbsenceEleveTraitementPeer {
 	{
 		self::$isAgregationEnabled = false;
 	}
-} // AbsenceEleveTraitementPeer
+}

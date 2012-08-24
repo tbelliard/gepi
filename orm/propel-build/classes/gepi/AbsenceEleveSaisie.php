@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
-
+class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie
+{
 	/**
 	 * @var        bool to store aggregation of sousResponsabiliteEtablissement value
 	 */
@@ -1209,5 +1209,4 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	public function getAlreadyInSave() {
 		return $this->alreadyInSave;
 	}
-	
-} // AbsenceEleveSaisie
+}
