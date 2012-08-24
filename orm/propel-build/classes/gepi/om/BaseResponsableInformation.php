@@ -826,7 +826,7 @@ abstract class BaseResponsableInformation extends BaseObject implements Persiste
     {
         $criteria = new Criteria(ResponsableInformationPeer::DATABASE_NAME);
         $criteria->add(ResponsableInformationPeer::ELE_ID, $this->ele_id);
-        $criteria->add(ResponsableInformationPeer::RESP_LEGAL, $this->resp_legal);
+        $criteria->add(ResponsableInformationPeer::PERS_ID, $this->pers_id);
 
         return $criteria;
     }
@@ -840,7 +840,7 @@ abstract class BaseResponsableInformation extends BaseObject implements Persiste
     {
         $pks = array();
         $pks[0] = $this->getEleId();
-        $pks[1] = $this->getNiveauResponsabilite();
+        $pks[1] = $this->getResponsableEleveId();
 
         return $pks;
     }
@@ -854,7 +854,7 @@ abstract class BaseResponsableInformation extends BaseObject implements Persiste
     public function setPrimaryKey($keys)
     {
         $this->setEleId($keys[0]);
-        $this->setNiveauResponsabilite($keys[1]);
+        $this->setResponsableEleveId($keys[1]);
     }
 
     /**
@@ -864,7 +864,7 @@ abstract class BaseResponsableInformation extends BaseObject implements Persiste
     public function isPrimaryKeyNull()
     {
 
-        return (null === $this->getEleId()) && (null === $this->getNiveauResponsabilite());
+        return (null === $this->getEleId()) && (null === $this->getResponsableEleveId());
     }
 
     /**

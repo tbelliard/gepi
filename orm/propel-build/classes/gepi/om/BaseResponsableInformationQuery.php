@@ -91,7 +91,7 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
      * </code>
      *
      * @param array $key Primary key to use for the query
-                         A Primary key composition: [$ele_id, $resp_legal]
+                         A Primary key composition: [$ele_id, $pers_id]
      * @param     PropelPDO $con an optional connection object
      *
      * @return   ResponsableInformation|ResponsableInformation[]|mixed the result, formatted by the current formatter
@@ -130,7 +130,7 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT ELE_ID, PERS_ID, RESP_LEGAL, PERS_CONTACT FROM responsables2 WHERE ELE_ID = :p0 AND RESP_LEGAL = :p1';
+        $sql = 'SELECT ELE_ID, PERS_ID, RESP_LEGAL, PERS_CONTACT FROM responsables2 WHERE ELE_ID = :p0 AND PERS_ID = :p1';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_STR);
@@ -204,7 +204,7 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
     public function filterByPrimaryKey($key)
     {
         $this->addUsingAlias(ResponsableInformationPeer::ELE_ID, $key[0], Criteria::EQUAL);
-        $this->addUsingAlias(ResponsableInformationPeer::RESP_LEGAL, $key[1], Criteria::EQUAL);
+        $this->addUsingAlias(ResponsableInformationPeer::PERS_ID, $key[1], Criteria::EQUAL);
 
         return $this;
     }
@@ -223,7 +223,7 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
         }
         foreach ($keys as $key) {
             $cton0 = $this->getNewCriterion(ResponsableInformationPeer::ELE_ID, $key[0], Criteria::EQUAL);
-            $cton1 = $this->getNewCriterion(ResponsableInformationPeer::RESP_LEGAL, $key[1], Criteria::EQUAL);
+            $cton1 = $this->getNewCriterion(ResponsableInformationPeer::PERS_ID, $key[1], Criteria::EQUAL);
             $cton0->addAnd($cton1);
             $this->addOr($cton0);
         }
@@ -510,7 +510,7 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
     {
         if ($responsableInformation) {
             $this->addCond('pruneCond0', $this->getAliasedColName(ResponsableInformationPeer::ELE_ID), $responsableInformation->getEleId(), Criteria::NOT_EQUAL);
-            $this->addCond('pruneCond1', $this->getAliasedColName(ResponsableInformationPeer::RESP_LEGAL), $responsableInformation->getNiveauResponsabilite(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(ResponsableInformationPeer::PERS_ID), $responsableInformation->getResponsableEleveId(), Criteria::NOT_EQUAL);
             $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 

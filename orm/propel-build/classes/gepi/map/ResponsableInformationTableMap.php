@@ -39,8 +39,8 @@ class ResponsableInformationTableMap extends TableMap
         $this->setUseIdGenerator(false);
         // columns
         $this->addForeignPrimaryKey('ELE_ID', 'EleId', 'VARCHAR' , 'eleves', 'ELE_ID', true, 10, null);
-        $this->addForeignKey('PERS_ID', 'ResponsableEleveId', 'VARCHAR', 'resp_pers', 'PERS_ID', true, 10, null);
-        $this->addPrimaryKey('RESP_LEGAL', 'NiveauResponsabilite', 'VARCHAR', true, 1, null);
+        $this->addForeignPrimaryKey('PERS_ID', 'ResponsableEleveId', 'VARCHAR' , 'resp_pers', 'PERS_ID', true, 10, null);
+        $this->addColumn('RESP_LEGAL', 'NiveauResponsabilite', 'VARCHAR', true, 1, null);
         $this->addColumn('PERS_CONTACT', 'PersContact', 'VARCHAR', false, 1, null);
         // validators
     } // initialize()

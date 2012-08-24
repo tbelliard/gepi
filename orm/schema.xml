@@ -284,9 +284,9 @@
 	<table name="responsables2" phpName="ResponsableInformation" description="Table de jointure entre les eleves et leurs responsables legaux avec mention du niveau de ces responsables">
 		<column name="ele_id" primaryKey="true" required="true" type="VARCHAR" size="10" description="cle etrangere, ele_id de l'eleve"/>
 		<foreign-key foreignTable="eleves" onDelete="cascade"><reference local="ele_id" foreign="ele_id"/></foreign-key>
-		<column name="pers_id" phpName="ResponsableEleveId" required="true" type="VARCHAR" size="10" description="cle etrangere vers le responsable"/>
+		<column name="pers_id" primaryKey="true" phpName="ResponsableEleveId" required="true" type="VARCHAR" size="10" description="cle etrangere vers le responsable"/>
 		<foreign-key foreignTable="resp_pers" onDelete="cascade"><reference local="pers_id" foreign="pers_id"/></foreign-key>
-		<column name="resp_legal" phpName="NiveauResponsabilite" primaryKey="true" required="true" type="VARCHAR" size="1" description="Niveau de responsabilite"/>
+		<column name="resp_legal" phpName="NiveauResponsabilite" required="true" type="VARCHAR" size="1" description="Niveau de responsabilite"/>
 		<column name="pers_contact" description="Champ sconet non utilise" required="false" type="VARCHAR" size="1"/>
 	</table>
 	
