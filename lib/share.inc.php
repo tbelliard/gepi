@@ -704,6 +704,9 @@ function affiche_utilisateur($login,$id_classe) {
     case 'cni':
     if ($civilite != '') $result = $civilite." ";
     $result .= $nom." ".$i;
+    case 'cn':
+    if ($civilite != '') $result = $civilite." ";
+    $result .= $nom;
     break;
     $result = $nom." ".$prenom;
 

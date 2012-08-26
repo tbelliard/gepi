@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -482,28 +482,31 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <p><b>Formatage de l'identité des professeurs pour les bulletins&nbsp;:</b>
 <br /><br />
 <input type="radio" name="reg_format" id='reg_format_np' value="<?php echo "np"; ?>" <?php if ($format_nom=="np") echo " checked='checked ' "; ?> onchange='changement()' />
-<label for='reg_format_np' style='cursor: pointer;'>Nom Prénom (Durand Albert)</label>
+<label for='reg_format_np' style='cursor: pointer;'>Nom Prénom (<em>Durand Albert</em>)</label>
 <br />
 <input type="radio" name="reg_format" id='reg_format_pn' value="<?php echo "pn"; ?>" <?php if ($format_nom=="pn") echo " checked='checked ' "; ?> onchange='changement()' />
-<label for='reg_format_pn' style='cursor: pointer;'>Prénom Nom (Albert Durand)</label>
+<label for='reg_format_pn' style='cursor: pointer;'>Prénom Nom (<em>Albert Durand</em>)</label>
 <br />
 <input type="radio" name="reg_format" id='reg_format_in' value="<?php echo "in"; ?>" <?php   if ($format_nom=="in") echo " checked='checked ' "; ?> onchange='changement()' />
-<label for='reg_format_in' style='cursor: pointer;'>Initiale-Prénom Nom (A. Durand)</label>
+<label for='reg_format_in' style='cursor: pointer;'>Initiale-Prénom Nom (<em>A. Durand</em>)</label>
 <br />
 <input type="radio" name="reg_format" id='reg_format_ni' value="<?php echo "ni"; ?>" <?php   if ($format_nom=="ni") echo " checked='checked ' "; ?> onchange='changement()' />
-<label for='reg_format_ni' style='cursor: pointer;'>Initiale-Prénom Nom (Durand A.)</label>
+<label for='reg_format_ni' style='cursor: pointer;'>Initiale-Prénom Nom (<em>Durand A.</em>)</label>
 <br />
 <input type="radio" name="reg_format" id='reg_format_cnp' value="<?php echo "cnp"; ?>" <?php   if ($format_nom=="cnp") echo " checked='checked ' "; ?> onchange='changement()' />
-<label for='reg_format_cnp' style='cursor: pointer;'>Civilité Nom Prénom (M. Durand Albert)</label>
+<label for='reg_format_cnp' style='cursor: pointer;'>Civilité Nom Prénom (<em>M. Durand Albert</em>)</label>
 <br />
 <input type="radio" name="reg_format" id='reg_format_cpn' value="<?php echo "cpn"; ?>" <?php   if ($format_nom=="cpn") echo " checked='checked ' "; ?> onchange='changement()' />
-<label for='reg_format_cpn' style='cursor: pointer;'>Civilité Prénom Nom (M. Albert Durand)</label>
+<label for='reg_format_cpn' style='cursor: pointer;'>Civilité Prénom Nom (<em>M. Albert Durand</em>)</label>
 <br />
 <input type="radio" name="reg_format" id='reg_format_cin' value="<?php echo "cin"; ?>" <?php   if ($format_nom=="cin") echo " checked='checked ' "; ?> onchange='changement()' />
-<label for='reg_format_cin' style='cursor: pointer;'>Civ. initiale-Prénom Nom (M. A. Durand)</label>
+<label for='reg_format_cin' style='cursor: pointer;'>Civ. initiale-Prénom Nom (<em>M. A. Durand</em>)</label>
 <br />
 <input type="radio" name="reg_format" id='reg_format_cni' value="<?php echo "cni"; ?>" <?php   if ($format_nom=="cni") echo " checked='checked ' "; ?> onchange='changement()' />
-<label for='reg_format_cni' style='cursor: pointer;'>Civ. Nom initiale-Prénom  (M. Durand A.)</label>
+<label for='reg_format_cni' style='cursor: pointer;'>Civ. Nom initiale-Prénom  (<em>M. Durand A.</em>)</label>
+<br />
+<input type="radio" name="reg_format" id='reg_format_cn' value="<?php echo "cn"; ?>" <?php   if ($format_nom=="cn") echo " checked='checked ' "; ?> onchange='changement()' />
+<label for='reg_format_cn' style='cursor: pointer;'>Civ. Nom  (<em>M. Durand</em>)</label>
 
 <input type=hidden name=is_posted value=1 />
 <?php if (isset($id_classe)) {echo "<input type=hidden name=id_classe value=$id_classe />";} ?>
