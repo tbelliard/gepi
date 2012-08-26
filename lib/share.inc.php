@@ -1125,8 +1125,12 @@ function check_backup_directory() {
             for($len=$length,$r='';mb_strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
             $dirname = $pref_multi.$r;
             $create = mkdir("./backup/" . $dirname, 0700);
-            copy("./backup/index.html","./backup/".$dirname."/index.html");
+            //copy("./backup/index.html","./backup/".$dirname."/index.html");
             if ($create) {
+                $f=fopen("./backup/".$dirname."/index.html","w+");
+                fwrite($f, '<script type="text/javascript">document.location.replace("../../login.php");</script>');
+                fclose($f);
+
                 saveSetting("backup_directory", $dirname);
                 saveSetting("backupdir_lastchange",time());
             } else {
@@ -1165,6 +1169,11 @@ function check_backup_directory() {
         for($len=$length,$r='';mb_strlen($r)<$len;$r.=chr(!mt_rand(0,2) ? mt_rand(48,57):(!mt_rand(0,1)?mt_rand(65,90):mt_rand(97,122))));
         $newdirname = $pref_multi.$r;
         if (rename("./backup/".$dirname, "./backup/".$newdirname)) {
+            // Correction du contenu de l'index.html (bug sur le chemin relatif de la redir à une époque)
+            $f=fopen("./backup/".$newdirname."/index.html","w+");
+            fwrite($f, '<script type="text/javascript">document.location.replace("../../login.php");</script>');
+            fclose($f);
+
             saveSetting("backup_directory",$newdirname);
             saveSetting("backupdir_lastchange",time());
             return TRUE;
