@@ -2021,6 +2021,8 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				}
 				//echo "<!-- eleve=$eleve -->\n";
 
+				if($cpt_ele_cpe>0) {$texte_info_action.=", ";}
+
 				$sql="DELETE FROM j_eleves_cpe WHERE e_login='$lig->e_login';";
 				//echo "<!-- $sql -->\n";
 				$nettoyage=mysql_query($sql);
@@ -2072,6 +2074,8 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				else {
 					$eleve=$lig->login;
 				}
+
+				if($cpt_ele_pp>0) {$texte_info_action.=", ";}
 
 				$sql="DELETE FROM j_eleves_professeurs WHERE login='$lig->login';";
 				$nettoyage=mysql_query($sql);
