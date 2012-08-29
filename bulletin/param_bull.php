@@ -1872,8 +1872,7 @@ Veillez à utiliser la fonction "aperçu avant impression" afin de vous rendre c
 	<tr><td colspan=\"2\" ><div class='small' style='width: 820px;'>
 		<i>Mise en forme du message :</i>";
 
-    $oCKeditor = new CKeditor();
-    $oCKeditor->BasePath = '../ckeditor/' ;
+    $oCKeditor = new CKeditor('../ckeditor/');
     $oCKeditor->editor('no_anti_inject_page_garde_texte',$impression);
 ?>
 

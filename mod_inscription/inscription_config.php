@@ -227,8 +227,7 @@ echo "<p>Le texte ci-dessous sera visible par les personnes accédant au module 
 echo "<input type=\"hidden\" name=\"is_posted_notes\" value=\"yes\" />\n";
     // lancement de CKeditor
 
-    $oCKeditor = new CKeditor() ;
-    $oCKeditor->BasePath = '../ckeditor/' ;
+    $oCKeditor = new CKeditor('../ckeditor/');
     $oCKeditor->editor('no_anti_inject_notes',$contenu) ;
     echo "<br /><br />&nbsp;";
 

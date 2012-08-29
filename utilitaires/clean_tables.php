@@ -1285,7 +1285,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 	echo "<input type=\"hidden\" name='mode_auto' value='$mode_auto' />\n";
 
 	if(!isset($_POST['nettoyage_grp'])) {
-		$sql="CREATE TABLE tempo2 (
+		$sql="CREATE TABLE IF NOT EXISTS tempo2 (
 col1 varchar(100) NOT NULL default '',
 col2 varchar(100) NOT NULL default ''
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
@@ -1518,17 +1518,22 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="10")) or (isset($_GET['maj'
 	echo "</p>\n";
 
 	echo "<h2 align=\"center\">Etape 10/$total_etapes</h2>\n";
-
+	/*
 	$texte_info_action="<h2>Nettoyage des comptes élèves/responsables</h2>\n";
 	echo $texte_info_action;
 	update_infos_action_nettoyage($id_info, $texte_info_action);
-
+	*/
 	echo "<form action=\"clean_tables.php\" name='formulaire' method=\"post\">\n";
 	echo add_token_field();
 	echo "<input type=\"hidden\" name='mode_auto' value='$mode_auto' />\n";
 
 	if(!isset($_POST['nettoyage_comptes_ele_resp'])) {
-		$sql="CREATE TABLE tempo2 (
+
+		$texte_info_action="<h2>Nettoyage des comptes élèves/responsables</h2>\n";
+		echo $texte_info_action;
+		update_infos_action_nettoyage($id_info, $texte_info_action);
+
+		$sql="CREATE TABLE IF NOT EXISTS tempo2 (
 col1 varchar(100) NOT NULL default '',
 col2 varchar(100) NOT NULL default ''
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
@@ -2021,6 +2026,8 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				}
 				//echo "<!-- eleve=$eleve -->\n";
 
+				if($cpt_ele_cpe>0) {$texte_info_action.=", ";}
+
 				$sql="DELETE FROM j_eleves_cpe WHERE e_login='$lig->e_login';";
 				//echo "<!-- $sql -->\n";
 				$nettoyage=mysql_query($sql);
@@ -2072,6 +2079,8 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				else {
 					$eleve=$lig->login;
 				}
+
+				if($cpt_ele_pp>0) {$texte_info_action.=", ";}
 
 				$sql="DELETE FROM j_eleves_professeurs WHERE login='$lig->login';";
 				$nettoyage=mysql_query($sql);
