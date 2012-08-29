@@ -301,7 +301,7 @@ aff_time();
 	}
 	echo " | <a href='impression_bienvenue.php?mode=responsable'>Fiches bienvenue</a>";
 
-	echo " | <a href='import_prof_csv.php?export_statut=responsable'>Export CSV</a>";
+	echo " | <a href='import_prof_csv.php?export_statut=responsable' title='Seuls les comptes actifs sont exportés'>Export CSV</a>";
 
 	echo " | <a href='edit_eleve.php'>Comptes élèves</a>";
 
