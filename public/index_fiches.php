@@ -31,7 +31,7 @@ require_once("lib/functions.inc");
 //**************** EN-TETE *****************
 $titre_page = "Fiches projet";
 $page_accueil = "index_fiches.php";
-require_once("lib/header.inc.php");
+require_once("lib/header_public.inc.php");
 //**************** FIN EN-TETE *************
 
 // Initialisation des variables
