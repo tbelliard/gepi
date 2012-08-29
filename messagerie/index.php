@@ -631,8 +631,7 @@ echo "<tr><td  colspan=\"4\">\n";
 
 echo "<i>Mise en forme du message :</i>\n";
 
-$oCKeditor = new CKeditor() ;
-$oCKeditor->BasePath = '../ckeditor/' ;
+$oCKeditor = new CKeditor('../ckeditor/');
 $oCKeditor->editor('message',$contenu) ;
 
 echo "</td></tr>";
