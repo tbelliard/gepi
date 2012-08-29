@@ -85,6 +85,27 @@ while($j< $nombre_lignes) {
 			$liste_enfants.=$tmp_tab_enfants[$i];
 		}
 		$fd.=";".$liste_enfants;
+
+		// Ajout d'infos:
+		$sql="SELECT pers_id, civilite FROM resp_pers WHERE login='$user_login';";
+		$res_pers_id=mysql_query($sql);
+		if(mysql_num_rows($res_pers_id)==1) {
+			$civ=mysql_result($res_pers_id, 0, 'civilite');
+			if(($civ=='Mme')||($civ=='Mlle')) {
+				$fd.=";F";
+			}
+			else {
+				$fd.=";M";
+			}
+
+			$pers_id=mysql_result($res_pers_id, 0, 'pers_id');
+			$fd.=";R".$pers_id;
+		}
+		else {
+			$fd.=";;";
+		}
+
+		$fd.=";".$user_statut;
 	}
 	$fd.=";\n";
 	$j++;
