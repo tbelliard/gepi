@@ -197,8 +197,7 @@ if(isset($definir_visa_par_defaut)) {
 	echo "<h2 class='gepi' style=\"text-align: center;\">Texte du visa par défaut</h2>\n";
 	echo "<p><em>Mise en forme du visa :</em></p><p>\n";
 	
-	$oCKeditor = new CKeditor() ;
-	$oCKeditor->BasePath = '../ckeditor/' ;
+	$oCKeditor = new CKeditor('../ckeditor/');
 	$oCKeditor->editor('texte_visa_FCK',$texte_visa_cdt) ;
 	
 	echo "<input type='submit' name=\"ok_enr_visa\" value='Enregistrer le visa' /></p>\n";
@@ -239,8 +238,7 @@ echo "</ul>\n";
 	echo "<h2 class='gepi' style=\"text-align: center;\">Texte du visa à apposer sur les cahiers de textes</h2>\n";
 	echo "<p><em>Mise en forme du visa :</em> <a href='visa_ct.php'>Réinitialiser au visa par défaut</a></p><p>\n";
 	
-	$oCKeditor = new CKeditor() ;
-	$oCKeditor->BasePath = '../ckeditor/' ;
+	$oCKeditor = new CKeditor('../ckeditor/');
 	$oCKeditor->editor('texte_visa_FCK',$texte_visa_cdt) ;
 	
 	//echo "<input type='submit' name=\"ok_enr_visa\" value='Enregistrer le visa' /></p>\n";

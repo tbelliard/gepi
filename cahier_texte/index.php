@@ -1188,8 +1188,7 @@ echo "\n";
 <tr><td colspan="4">
 <?php
 // lancement de CKeditor
-$oCKeditor = new CKeditor() ;
-$oCKeditor->BasePath = '../ckeditor/' ;
+$oCKeditor = new CKeditor('../ckeditor/');
 $oCKeditor->editor('notes',$contenu) ;
 
 //echo "<a href=\"#\" onclick=\"javascript: document.getElementById('notes').value='TRUC'; return false;\">CLIC</a>";

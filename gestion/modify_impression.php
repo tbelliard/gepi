@@ -134,8 +134,7 @@ case 'personnels' :
 		echo "<br />Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
 		echo "<br /><i>Mise en forme du message :</i>\n";
 
-		$oCKeditor = new CKeditor() ;
-		$oCKeditor->basePath = '../ckeditor/' ;
+		$oCKeditor = new CKeditor('../ckeditor/');
 		$oCKeditor->editor('impression_personnelFCK',$impression) ;
 
 		//echo "</div>\n";
@@ -159,8 +158,7 @@ case 'responsables' :
 		echo "<br />Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
 		echo "<br /><i>Mise en forme du message :</i>\n";
 
-		$oCKeditor = new CKeditor() ;
-		$oCKeditor->basePath = '../ckeditor/' ;
+		$oCKeditor = new CKeditor('../ckeditor/');
 		$oCKeditor->editor('impression_parentFCK',$impression_parent) ;
 
 		//echo "</div>\n";
@@ -185,8 +183,7 @@ case 'eleves' :
 		echo "<br />Conseil : faites des tests pour éviter de mauvaises surprises lors de l'impression en masse.</p>\n";
 		echo "<br /><i>Mise en forme du message :</i>\n";
 
-		$oCKeditor = new CKeditor() ;
-		$oCKeditor->basePath = '../ckeditor/' ;
+		$oCKeditor = new CKeditor('../ckeditor/');
 		$oCKeditor->editor('impression_eleveFCK',$impression_eleve) ;
 
 		//echo "</div>\n";
