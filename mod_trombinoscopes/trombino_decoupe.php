@@ -1,7 +1,7 @@
 <?php
 /* $Id */
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -374,7 +374,7 @@ if(isset($generer_pdf)) {
 		Header('Pragma: public');
 		require('../fpdf/fpdf.php');
 		
-		define('FPDF_FONTPATH','../fpdf/font/');
+		//define('FPDF_FONTPATH','../fpdf/font/');
 		define('LargeurPage',$largeur_page);
 		define('HauteurPage',$hauteur_page);
 		session_cache_limiter('private');
