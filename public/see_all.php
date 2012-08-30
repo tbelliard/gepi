@@ -67,7 +67,7 @@ if ($current_imprime == 'n') {
 //**************** EN-TETE *****************
 if ($current_imprime=='n') $titre_page = "Cahier de textes - Vue d'ensemble";
 $page_accueil = "index.php?id_classe=-1";
-require_once("lib/header.inc.php");
+require_once("lib/header_public.inc.php");
 //**************** FIN EN-TETE *************
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
