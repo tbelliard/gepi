@@ -416,6 +416,7 @@ Voir <a href='http://www.sylogix.org/projects/gepi/wiki/Edt_indexedu_udt'>http:/
 
 				echo "<input type='hidden' name='step' value='2' />\n";
 				echo "<p><input type='submit' name='Valider' value='Valider' /></p>\n";
+				echo add_token_field();
 				echo "</form>\n";
 
 				echo "<script type='text/javascript'>
@@ -550,6 +551,7 @@ Voir <a href='http://www.sylogix.org/projects/gepi/wiki/Edt_indexedu_udt'>http:/
 					sort($tab_clas);
 
 					echo "<form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
+					echo add_token_field();
 					echo "<table class='boireaus'>\n";
 					$alt=1;
 					echo "<tr>\n";
@@ -933,7 +935,8 @@ echo "</pre>";
 									$ligne=$tab_cours[$i]["enfant"]["jour"].";";
 
 									$tmp_tab=explode("h", mb_strtolower($tab_cours[$i]["enfant"]["h.debut"]));
-									$heure=preg_replace("/^0*/","",$tmp_tab[0])+$loop;
+									//$heure=preg_replace("/^0*/","",$tmp_tab[0])+$loop;
+									$heure=preg_replace("/^0*/","",$tmp_tab[0]);
 									if($heure<10) {$heure="0".$heure;}
 									$minute=$tmp_tab[1];
 									$ligne.=$heure."h".$minute.";";
