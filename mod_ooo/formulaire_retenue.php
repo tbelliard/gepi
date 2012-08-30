@@ -190,7 +190,7 @@ $alt=1;
 echo "<input type='hidden' name='is_posted' value='y' />\n";
 echo "</form>\n";
 echo "<p>&nbsp;</p>";
-echo "<p class='bold'>REMARQUE : Les retenues saisies par le formulaire ci-dessus ne sont pas enregistrée dans le module discipline.";
+echo "<p class='bold'>REMARQUE : Les retenues saisies par le formulaire ci-dessus ne sont pas enregistrées dans le module discipline.";
 echo "&nbsp;</p>\n";
 	
 
