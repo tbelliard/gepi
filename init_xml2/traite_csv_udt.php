@@ -278,7 +278,7 @@
 						// On range dans tabindice les indices des champs retenus
 						for ($k = 0; $k < count($tabchamps); $k++) {
 							for ($i = 0; $i < count($en_tete); $i++) {
-								if ($en_tete[$i] == $tabchamps[$k]) {
+								if (remplace_accents($en_tete[$i]) == remplace_accents($tabchamps[$k])) {
 									$tabindice[] = $i;
 								}
 							}
