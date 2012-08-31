@@ -127,7 +127,9 @@ if (!$tempdir) {
 	}
 }
 
-// On vérifie que l'utilisateur utilise ou pas le module edt_gr
+// On force le fait de ne plus utiliser la table supprimée edt_gr_nom
+saveSetting('mod_edt_gr', 'n');
+/*// On vérifie que l'utilisateur utilise ou pas le module edt_gr
 if ($action == "modgr") {
 	if ($module_gr == 'y') {
 		$value = 'y';
@@ -149,6 +151,7 @@ if (getSettingValue('mod_edt_gr') == "y") {
 }else{
 	$checked_gr = '';
 }
+*/
 
 // Si l'utilisateur veut recommencer, on efface toutes les entrées de l'étape qu'il a demandée
 if ($recommencer != 'non' AND is_numeric($recommencer)) {
@@ -465,8 +468,9 @@ if (isset($_SESSION["explications"]) AND $_SESSION["explications"] == "non") {
 (en laissant l'option "cours" cochée par défaut, et en laissant
 a priori toutes les divisions/professeurs/matières/salles/...,
 sauf si on ne veut extraire qu'une partie de l'EdT)</p>
-<p class="red">Attention, il faut sauvegarder le fichier avec un tableur comme Calc d'OpenOffice.org car Excell fournit un csv qui pose des probl&egrave;mes &agrave; l'utilisation.</p>
-<p>Il faut enlever la ligne d'ent&ecirc;te.</p>
+<p class="red">Attention, il faut sauvegarder le fichier avec un tableur comme Calc d'OpenOffice.org car M$Excel fournit un csv qui pose des probl&egrave;mes &agrave; l'utilisation.</p>
+<p>Il faut aussi enlever la ligne d'ent&ecirc;te.<br />
+Si l'export généré est au format TXT (<i>séparateur tabulation</i>), se rendre dans le menu Outils/Préférences pour choisir CSV plutôt que TXT pour l'export.</p>
 <br />
 
 <p>Pour chaque partie, vous allez devoir faire le lien avec les informations de Gepi. Vous devrez donc faire passer le fichier csv 12 fois et
@@ -514,7 +518,7 @@ if (isset($_SESSION["explications"]) AND $_SESSION["explications"] == "non") {
 ?>
 <br /><br />
 
-	<div class="mode_gr">
+	<!--div class="mode_gr">
 	<p>Voulez-vous que Gepi cr&eacute;e tous les cours qu'il ne reconnait pas ?</p>
 	<p> Si vous utilisez ce mode, vous pourrez ensuite v&eacute;rifier et compl&eacute;ter les professeurs et les &eacute;l&egrave;ves dans le lien [Les groupes] du menu &agrave; gauche.</p>
 
@@ -529,7 +533,7 @@ if (isset($_SESSION["explications"]) AND $_SESSION["explications"] == "non") {
 
 	</form>
 	</div>
-<br />
+<br /-->
 	<div class="mode_gr">
 
 		<form name="refaire" action="edt_init_csv2.php" method="post">
