@@ -272,7 +272,11 @@ function reactiver(mavar) {
 	echo " | <a href='trombinoscopes.php'>Effectuer une autre sélection</a>";
 
 	if($_SESSION['statut']=='professeur') {
-		echo " | <a href='plan_de_classe.php'>Plan de classe</a>";
+		echo " | <a href='plan_de_classe.php";
+		if(isset($groupe)) {
+			echo "?id_groupe=$groupe";
+		}
+		echo "'>Plan de classe</a>";
 	}
 
 	if($_SESSION['statut']=='administrateur') {
