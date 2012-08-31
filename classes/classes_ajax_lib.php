@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -56,7 +56,7 @@ if($mode=='classes_param') {
 			echo "Pas de mati&egrave;re s&eacute;lectionn&eacute;e.";
 		}
 		else {
-			$sql="SELECT u.login,u.nom,u.prenom FROM utilisateurs u, j_professeurs_matieres jpm WHERE jpm.id_professeur=u.login AND id_matiere='$matiere' ORDER BY u.nom,u.prenom;";
+			$sql="SELECT u.login,u.nom,u.prenom FROM utilisateurs u, j_professeurs_matieres jpm WHERE jpm.id_professeur=u.login AND id_matiere='$matiere' AND etat='actif' ORDER BY u.nom,u.prenom;";
 			//echo "$sql<br />";
 			$res_prof=mysql_query($sql);
 
