@@ -63,7 +63,13 @@ if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_a
 
 //on va redirigé vers le bonee onglet
 if (isset($_SESSION['abs2_onglet']) && $_SESSION['abs2_onglet'] != 'index.php') {
-    header("Location: ./".$_SESSION['abs2_onglet']);
+
+    $param_saisie="";
+    if(($utilisateur->getStatut()=="professeur")&&($_SESSION['abs2_onglet']=="saisir_groupe.php")&&(isset($_GET['type_selection']))&&($_GET['type_selection']=='id_groupe')&&(isset($_GET['id_groupe']))&&(is_numeric($_GET['id_groupe']))) {
+       $param_saisie.="?type_selection=id_groupe&id_groupe=".$_GET['id_groupe'];
+    }
+
+    header("Location: ./".$_SESSION['abs2_onglet'].$param_saisie);
     die();
 }
 
@@ -71,7 +77,12 @@ if ($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite") 
     header("Location: ./absences_du_jour.php");
     die();
 } else if ($utilisateur->getStatut()=="professeur") {
-    header("Location: ./saisir_groupe.php");
+    $param_saisie="";
+    if((isset($_GET['type_selection']))&&($_GET['type_selection']=='id_groupe')&&(isset($_GET['id_groupe']))&&(is_numeric($_GET['id_groupe']))) {
+       $param_saisie.="?type_selection=id_groupe&id_groupe=".$_GET['id_groupe'];
+    }
+
+    header("Location: ./saisir_groupe.php".$param_saisie);
     die();
 } else if ($utilisateur->getStatut()=="autre") {
     if(acces('/mod_abs2/saisir_eleve.php', 'autre')){
