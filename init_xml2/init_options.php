@@ -55,6 +55,8 @@ if($_SESSION['statut']!='administrateur') {
 $titre_page = "Outil d'initialisation de l'année | Initialisation  des options par GEP";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
+
+include("init_xml_lib.php");
 ?>
 <p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
@@ -165,6 +167,12 @@ while ($classe_row = mysql_fetch_object($appel_donnees_classes)) {
 		}
 	}
 
+	if($debug_import=="y") {
+		echo "<pre>Tableau des options en classe de $classe : \$tab_options=$tab_options<br />\n";
+		echo print_r($tab_options)."<br />\n";
+		echo "</pre>\n";
+	}
+
 	$sql="SELECT e.login FROM eleves e, j_eleves_classes j WHERE (e.login = j.login and j.id_classe = '$id_classe');";
 	//echo "$sql<br />\n";
 	$appel_donnees_eleves = mysql_query($sql);
@@ -173,7 +181,7 @@ while ($classe_row = mysql_fetch_object($appel_donnees_classes)) {
 		$current_eleve_login = $i->login;
 		//$call_data = mysql_query("SELECT ELEOPT1,ELEOPT2,ELEOPT3,ELEOPT4,ELEOPT5,ELEOPT6,ELEOPT7,ELEOPT8,ELEOPT9,ELEOPT10,ELEOPT11,ELEOPT12 FROM temp_gep_import WHERE LOGIN = '$current_eleve_login'");
 		$sql="SELECT ELEOPT1,ELEOPT2,ELEOPT3,ELEOPT4,ELEOPT5,ELEOPT6,ELEOPT7,ELEOPT8,ELEOPT9,ELEOPT10,ELEOPT11,ELEOPT12 FROM temp_gep_import2 WHERE LOGIN = '$current_eleve_login';";
-		//echo "$sql<br />\n";
+		if($debug_import=="y") {echo "<p>$sql<br />\n";}
 		$call_data = mysql_query($sql);
 		while ($row = mysql_fetch_array($call_data, MYSQL_NUM)) {
 			$j="0";
@@ -182,6 +190,14 @@ while ($classe_row = mysql_fetch_object($appel_donnees_classes)) {
 				$suit_option = 'no';
 				if (in_array($tab_options[$j], $row)) {
 					$suit_option = 'yes';
+					if($debug_import=="y") {
+						echo "<span style='color:green'>$current_eleve_login suit l'option \$tab_options[$j]=$tab_options[$j]</span><br />";
+					}
+				}
+				else {
+					if($debug_import=="y") {
+						echo "<span style='color:red'>$current_eleve_login ne suit pas l'option \$tab_options[$j]=$tab_options[$j]</span><br />";
+					}
 				}
 
 				if ($suit_option == 'no') {
@@ -207,12 +223,12 @@ while ($classe_row = mysql_fetch_object($appel_donnees_classes)) {
 								"jgm.id_matiere = '" . $tab_options[$j] . "' and " .
 								"jgm.id_groupe = jgc.id_groupe and " .
 								"jgc.id_classe = '" . $id_classe . "')";
-						//echo "$sql<br />\n";
+						if($debug_import=="y") {echo "$sql<br />\n";}
 						$res_grp=mysql_query($sql);
 						if(mysql_num_rows($res_grp)>0) {
 							while($lig_grp=mysql_fetch_object($res_grp)) {
 								$sql="DELETE FROM j_eleves_groupes WHERE (id_groupe = '" . $lig_grp->id . "' and login='". $current_eleve_login . "');";
-								//echo "$sql<br />\n";
+								if($debug_import=="y") {echo "$sql<br />\n";}
 								$reg = mysql_query($sql);
 							}
 						}
