@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -557,6 +557,9 @@ if(!isset($num_periode)) {
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
 
+	echo "<br />\n";
+	echo "<p><em>NOTE&nbsp;:</em> Vous allez effectuer la répartition entre les groupes sur une période dans un premier temps, et dans un deuxième temps, vous pourrez recopier le paramétrage de cette période pour d'autres périodes.</p>\n";
+
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -570,8 +573,22 @@ if(!isset($_POST['recopie_select'])) {
 	echo "<p class='bold'\n>";
 	echo "<a href=\"../classes/index.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
+	// Il faut récupérer toutes les classes associées aux groupes choisis,
+	// sinon lorsqu'on trie par classe on ne retient que la classe sélectionnée au départ 
+	// (si on ne prend pas soin de sélectionner toutes les classes)
+	$id_classe=array();
+	for($i=0;$i<count($id_groupe);$i++) {
+		echo "<input type='hidden' name='id_groupe[]' value='$id_groupe[$i]' />\n";
+		$sql="SELECT DISTINCT id_classe FROM j_groupes_classes WHERE id_groupe='".$id_groupe[$i]."';";
+		$res_clas_grp=mysql_query($sql);
+		if(mysql_num_rows($res_clas_grp)>0) {
+			while($lig_clas_grp=mysql_fetch_object($res_clas_grp)) {
+				if(!in_array($lig_clas_grp->id_classe, $id_classe)) {$id_classe[]=$lig_clas_grp->id_classe;}
+			}
+		}
+	}
+
 	for($i=0;$i<count($id_classe);$i++) {echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";}
-	for($i=0;$i<count($id_groupe);$i++) {echo "<input type='hidden' name='id_groupe[]' value='$id_groupe[$i]' />\n";}
 
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
 
@@ -587,6 +604,7 @@ if(!isset($_POST['recopie_select'])) {
 	//===============================
 	echo "<div style='float:right; text-align:center; width:15em;'>\n";
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form2' method='post'>\n";
+	echo "<fieldset style='padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;'>\n";
 	for($i=0;$i<count($id_classe);$i++) {echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";}
 	for($i=0;$i<count($id_groupe);$i++) {echo "<input type='hidden' name='id_groupe[]' value='$id_groupe[$i]' />\n";}
 		echo "<input type='hidden' name='num_periode' value='$num_periode' />\n";
@@ -597,6 +615,7 @@ if(!isset($_POST['recopie_select'])) {
 	echo "<input type='submit' name='Passer_a_copie' value='Recopier des affectations' /> pour d'autres périodes\n";
 	echo "</noscript>";
 
+	echo "</fieldset>\n";
 	echo "</form>\n";
 	echo "</div>\n";
 	//===============================
@@ -626,12 +645,33 @@ if(!isset($_POST['recopie_select'])) {
 	{
 		if (!(thechange)) thechange='no';
 		if (thechange != 'yes') {
-			document.form1.submit();
+			document.form2.submit();
 		}
 		else{
 			var is_confirmed = confirm(themessage);
 			if(is_confirmed){
-				document.form1.submit();
+				document.form2.submit();
+			}
+		}
+	}
+
+	function confirm_Passer_a_tel_tri(thechange, themessage, tri)
+	{
+		if(tri=='classe') {
+			document.getElementById('order_by_classe').checked=true;
+		}
+		else {
+			document.getElementById('order_by_nom').checked=true;
+		}
+
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form3.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form3.submit();
 			}
 		}
 	}
@@ -639,6 +679,7 @@ if(!isset($_POST['recopie_select'])) {
 </script>\n";
 
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
+	echo "<fieldset style='padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: 1em;'>\n";
 	echo add_token_field();
 	for($i=0;$i<count($id_classe);$i++) {echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";}
 	for($i=0;$i<count($id_groupe);$i++) {echo "<input type='hidden' name='id_groupe[]' value='$id_groupe[$i]' />\n";}
@@ -657,10 +698,12 @@ if(!isset($_POST['recopie_select'])) {
 	echo "<table class='boireaus' summary='Répartition des élèves'>\n";
 	echo "<tr>\n";
 	//echo "<th>Elève</th>\n";
-	echo "<th><input type='submit' name='Valider_repartition2' value='Valider' />\n";
-	echo "<br /><a href=\"javascript:document.getElementById('order_by_nom').checked=true;document.form3.submit();\">Elève</a>";
+	echo "<th><input type='submit' name='Valider_repartition2' value='Enregistrer' />\n";
+	//echo "<br /><a href=\"javascript:document.getElementById('order_by_nom').checked=true;document.form3.submit();\">Elève</a>";
+	echo "<br /><a href=\"javascript:confirm_Passer_a_tel_tri(change, '$themessage', 'nom');\">Elève</a>";
 	echo "</th>\n";
-	echo "<th><a href=\"javascript:document.getElementById('order_by_classe').checked=true;document.form3.submit();\">Classe</a></th>\n";
+	//echo "<th><a href=\"javascript:document.getElementById('order_by_classe').checked=true;document.form3.submit();\">Classe</a></th>\n";
+	echo "<th><a href=\"javascript:confirm_Passer_a_tel_tri(change, '$themessage', 'classe');\">Classe</a></th>\n";
 	for($i=0;$i<count($id_groupe);$i++) {
 		echo "<th>\n";
 		$group[$i]=get_group($id_groupe[$i]);
@@ -829,7 +872,7 @@ if(!isset($_POST['recopie_select'])) {
 	echo "<tr>\n";
 	echo "<th>\n";
 	//echo "&nbsp;";
-	echo "<input type='submit' name='Valider_repartition' value='Valider' />\n";
+	echo "<input type='submit' name='Valider_repartition' value='Enregistrer' />\n";
 	echo "</th>\n";
 	echo "<th>\n";
 	echo "&nbsp;";
@@ -849,12 +892,15 @@ if(!isset($_POST['recopie_select'])) {
 	echo "<input type='hidden' name='nb_ele' value='$cpt' />\n";
 	echo "<input type='hidden' name='enregistrer_repartition' value='y' />\n";
 	echo "</table>\n";
-	//echo "<input type='submit' name='Valider_repartition' value='Valider' />\n";
+	echo "<p align='center'><input type='submit' name='Valider_repartition3' value='Enregistrer la répartition' /></p>\n";
+	echo "</fieldset>\n";
 	echo "</form>\n";
 
+	echo "<br />\n";
 
 	//===============================
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form3' method='post'>\n";
+	echo "<fieldset style='padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;'>\n";
 	echo add_token_field();
 	for($i=0;$i<count($id_classe);$i++) {echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";}
 	for($i=0;$i<count($id_groupe);$i++) {echo "<input type='hidden' name='id_groupe[]' value='$id_groupe[$i]' />\n";}
@@ -866,7 +912,11 @@ if(!isset($_POST['recopie_select'])) {
 	echo "<input type='radio' name='order_by' id='order_by_classe' value='classe' ";
 	if($order_by=='classe') {echo "checked ";}
 	echo "/><label for='order_by_classe'> Classe</label><br />\n";
-	echo "<input type='submit' value='Valider' />\n";
+	echo "<input type='button' name='modifier_le_tri' id='modifier_le_tri' value=\"Modifier le tri\" onclick=\"confirm_Modif_tri(change, '$themessage');\" style='display:none' />\n";
+	echo "<noscript>";
+	echo "<input type='submit' value='Modifier le tri' />\n";
+	echo "</noscript>";
+	echo "</fieldset>\n";
 	echo "</form>\n";
 	//===============================
 
@@ -898,6 +948,22 @@ if(!isset($_POST['recopie_select'])) {
 		}
 	}
 	*/
+
+	document.getElementById('modifier_le_tri').style.display='';
+	function confirm_Modif_tri(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form3.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form3.submit();
+			}
+		}
+	}
+
 </script>\n";
 
 	//====================================

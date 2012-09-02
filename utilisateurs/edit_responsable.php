@@ -490,7 +490,8 @@ aff_time();
 //$quels_parents = mysql_query("SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login) ORDER BY u.nom,u.prenom");
 
 if((!isset($_POST['afficher_resp_eleves_sans_classe']))||($_POST['afficher_resp_eleves_sans_classe']!='y')) {
-	if($critere_id_classe=='') {
+	//if($critere_id_classe=='') {
+	if(($critere_id_classe=='')||($afficher_tous_les_resp=='y')) {
 		$sql="SELECT u.*, r.pers_id FROM utilisateurs u, resp_pers r WHERE (u.statut = 'responsable' AND r.login = u.login";
 	}
 	else {
@@ -524,12 +525,13 @@ if((!isset($_POST['afficher_resp_eleves_sans_classe']))||($_POST['afficher_resp_
 else {
 	$sql="SELECT u.*,rp.pers_id FROM utilisateurs u, resp_pers rp, responsables2 r, eleves e  WHERE u.statut='responsable' AND rp.login=u.login AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND e.login NOT IN (SELECT login FROM j_eleves_classes) ORDER BY u.nom,u.prenom;";
 }
-//echo "$sql<br />";
+//echo "$sql<br />\n";
 $quels_parents = mysql_query($sql);
 
 // Effectif sans login avec filtrage sur le nom:
 $nb1 = mysql_num_rows($quels_parents);
 
+$compteur_resp=0;
 $alt=1;
 while ($current_parent = mysql_fetch_object($quels_parents)) {
 	$alt=$alt*(-1);
@@ -600,10 +602,12 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 			echo "</td>\n";
 		}
 	echo "</tr>\n";
+	$compteur_resp++;
 	flush();
 }
 echo "</table>\n";
 aff_time();
+echo "<p>$compteur_resp ligne(s) affichée(s).</p>\n";
 echo "</blockquote>\n";
 
 ?>
