@@ -205,10 +205,12 @@ echo "</pre>";
 
 }
 
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des groupes";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
+//echo "id_classe=$id_classe<br />";
 ?>
 <p class="bold">
 <a href="edit_class.php?id_classe=<?php echo $id_classe;?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
@@ -224,9 +226,9 @@ if ($mode == "groupe") {
 <form enctype="multipart/form-data" action="add_group.php" method=post>
 <div style="width: 95%;">
 <div style="width: 45%; float: left;">
-<p>Nom court&nbsp;: <input type=text size=30 name=groupe_nom_court value = "<?php echo $reg_nom_groupe; ?>" /></p>
+<p>Nom court&nbsp;: <input type="text" size="30" name="groupe_nom_court" onchange="changement();" value = "<?php echo $reg_nom_groupe; ?>" /></p>
 
-<p>Nom complet&nbsp;: <input type=text size=30 name=groupe_nom_complet value = "<?php echo $reg_nom_complet; ?>" /></p>
+<p>Nom complet&nbsp;: <input type="text" size="30" name="groupe_nom_complet" onchange="changement();" value = "<?php echo $reg_nom_complet; ?>" /></p>
 
 <p>Matière enseignée à ce groupe&nbsp;:
 <?php
@@ -236,7 +238,7 @@ echo add_token_field();
 $query = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
 $nb_mat = mysql_num_rows($query);
 
-echo "<select name='matiere' size='1'>\n";
+echo "<select name='matiere' size='1' onchange=\"changement();\">\n";
 
 for ($i=0;$i<$nb_mat;$i++) {
     $matiere = mysql_result($query, $i, "matiere");
@@ -251,17 +253,17 @@ echo "</p>\n";
 
 if ($mode == "groupe") {
     echo "<p>Classe à laquelle appartient le nouvel enseignement&nbsp;:\n";
-    echo "<select name='id_classe' size='1'>\n";
+    echo "<select name='id_classe' size='1' onchange=\"changement();\">\n";
 
     $call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
     $nombre_lignes = mysql_num_rows($call_data);
     if ($nombre_lignes != 0) {
         $i = 0;
         while ($i < $nombre_lignes){
-            $id_classe = mysql_result($call_data, $i, "id");
+            $tmp_id_classe = mysql_result($call_data, $i, "id");
             $classe = mysql_result($call_data, $i, "classe");
-                echo "<option value='" . $id_classe . "'";
-                if ($reg_id_classe == $id_classe) {echo " SELECTED";}
+                echo "<option value='" . $tmp_id_classe . "'";
+                if ($reg_id_classe == $tmp_id_classe) {echo " SELECTED";}
                 echo ">$classe</option>\n";
         $i++;
         }
@@ -313,7 +315,7 @@ if ($mode == "groupe") {
 
 			if (in_array($_id_classe, $reg_clazz) OR $_id_classe == $id_classe) {echo " checked";}
 
-			echo " /><label for='classe_".$_id_classe."' style='cursor: pointer;'>$classe</label>\n";
+			echo " onchange=\"changement();\" /><label for='classe_".$_id_classe."' style='cursor: pointer;'>$classe</label>\n";
 			//echo ">$classe</option>\n";
 
 			echo "<br />\n";
@@ -327,7 +329,7 @@ if ($mode == "groupe") {
     }
 }
 echo "<p>Catégorie de matière à laquelle appartient l'enseignement&nbsp;: ";
-echo "<select size='1' name='categorie'>\n";
+echo "<select size='1' name='categorie' onchange=\"changement();\">\n";
 $get_cat = mysql_query("SELECT id, nom_court FROM matieres_categories");
 $test = mysql_num_rows($get_cat);
 
@@ -431,6 +433,9 @@ if ($reg_matiere != null) {
     }
     echo "</div>\n";
 
+	//echo "id_classe=$id_classe<br />";
+
+	$avec_lien_edit_group="y";
 	$tab_autres_groupes=tableau_html_groupe_matiere_telle_classe($id_classe, $reg_matiere);
 	if($tab_autres_groupes!="") {
 		echo "<div style='width: 45%; float: right; font-size:small; margin-top:1em;'>\n";
