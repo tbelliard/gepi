@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -286,6 +286,14 @@ if (isset($_POST['is_posted'])) {
 								$coef_nouvel_enseignement=isset($_POST['coef_nouvel_enseignement']) ? $_POST['coef_nouvel_enseignement'] : 0;
 								$coef_nouvel_enseignement=my_ereg_replace("[^0-9]","",$_POST['coef_nouvel_enseignement']);
 
+								$nouvel_enseignement_visibilite=isset($_POST['nouvel_enseignement_visibilite']) ? $_POST['nouvel_enseignement_visibilite'] : array();
+								$nouvel_enseignement_non_visible=array();
+								for($loop=0;$loop<count($tab_domaines);$loop++) {
+									if(!in_array($tab_domaines[$loop], $nouvel_enseignement_visibilite)) {
+										$nouvel_enseignement_non_visible[]=$tab_domaines[$loop];
+									}
+								}
+
 								$professeur_nouvel_enseignement=isset($_POST['professeur_nouvel_enseignement']) ? $_POST['professeur_nouvel_enseignement'] : NULL;
 								$professeur_nouvel_enseignement=my_ereg_replace("[^A-Za-z0-9._-]","",$professeur_nouvel_enseignement);
 								if($professeur_nouvel_enseignement!="") {
@@ -344,6 +352,14 @@ if (isset($_POST['is_posted'])) {
 										$res_coef=mysql_query($sql);
 										if(!$res_coef) {
 											$msg .= "<br />Erreur lors de la mise à jour du coefficient du groupe n°$create pour la classe n°$id_classe.";
+										}
+									}
+
+									for($loop=0;$loop<count($nouvel_enseignement_non_visible);$loop++) {
+										$sql="INSERT INTO j_groupes_visibilite SET id_groupe='$create', domaine='".$nouvel_enseignement_non_visible[$loop]."', visible='n';";
+										$insert=mysql_query($sql);
+										if(!$insert) {
+											$msg .= "<br />Erreur lors de la mise à jour de la non visibilité de ".$nouvel_enseignement_non_visible[$loop]." du groupe n°$create pour la classe n°$id_classe.";
 										}
 									}
 								}
@@ -668,6 +684,34 @@ while ($per < $max_periode) {
 			echo "</select>\n";
 			//echo "<span style='color:red'>A FAIRE: pas pris en compte pour le moment</span>";
 			//echo "<br /><span style='color:red'>A FAIRE aussi: récupérer la catégorie associée à la matière dans 'matieres.categorie_id' et récupérer le matieres.nom_complet pour le nom du groupe</span>";
+			echo "</td>\n";
+			echo "</tr>\n";
+
+			echo "<tr>\n";
+			echo "<td colspan='2'>&nbsp;&nbsp;&nbsp;</td>\n";
+			echo "<td style='vertical-align:top'>\n";
+			echo "Visibilité&nbsp;: ";
+			echo "</td>\n";
+			echo "<td>\n";
+
+				echo "<table class='boireaus'>\n";
+				echo "<tr>\n";
+				for($loop=0;$loop<count($tab_domaines_sigle);$loop++) {
+					echo "<th title=\"Visibilité : ".$tab_domaines_texte[$loop]."\">\n";
+					echo $tab_domaines_sigle[$loop];
+					echo "</th>\n";
+				}
+				echo "</tr>\n";
+				echo "<tr class='lig-1'>\n";
+				for($loop=0;$loop<count($tab_domaines_sigle);$loop++) {
+					echo "<td title=\"Visibilité : ".$tab_domaines_texte[$loop]."\">\n";
+					echo "<input type='checkbox' name='nouvel_enseignement_visibilite[]' value='$tab_domaines[$loop]' checked />\n";
+					echo "</td>\n";
+				}
+				echo "</tr>\n";
+				echo "</table>\n";
+
+
 			echo "</td>\n";
 			echo "</tr>\n";
 
