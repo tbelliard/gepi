@@ -310,7 +310,7 @@
 
 							if($debug_import=='y') {
 								echo "<pre style='color:green;'><b>Tableau \$adresses[$i]&nbsp;:</b>";
-								print_r($adresses[$i]);
+								print_r($matiere[$i]);
 								echo "</pre>";
 							}
 				
