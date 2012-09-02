@@ -784,6 +784,7 @@ for(i=0;i<$p;i++) {
 
 echo "</div>\n";
 
+$avec_lien_edit_group="y";
 $tab_autres_groupes=tableau_html_groupe_matiere_telle_classe($id_classe, $reg_matiere, array($id_groupe));
 if($tab_autres_groupes!="") {
 	echo "<div style='width: 45%; float: right; font-size:small; margin-top:1em;'>\n";

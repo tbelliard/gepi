@@ -2035,6 +2035,7 @@ function tableau_html_eleves_du_groupe($id_groupe, $nb_col) {
  */
 function tableau_html_groupe_matiere_telle_classe($id_classe, $matiere, $tab_grp_exclus=array()) {
 	global $tab_domaines, $tab_domaines_sigle;
+	global $avec_lien_edit_group, $themessage;
 
 	$cpt_grp=0;
 
@@ -2076,7 +2077,14 @@ function tableau_html_groupe_matiere_telle_classe($id_classe, $matiere, $tab_grp
 			if(!in_array($lig->id, $tab_grp_exclus)) {
 				$alt=$alt*(-1);
 				$retour.="<tr class='lig$alt white_hover'>\n";
-				$retour.="<td>".$lig->name."</td>\n";
+				$retour.="<td>";
+				if($avec_lien_edit_group=="y") {
+					$retour.="<a href='edit_group.php?id_classe=$id_classe&amp;id_groupe=$lig->id' onclick=\"return confirm_abandon(this, change, '$themessage');\">".$lig->name."</a>";
+				}
+				else {
+					$retour.=$lig->name;
+				}
+				$retour.="</td>\n";
 
 				$retour.="<td>";
 				$sql="SELECT id, classe FROM classes c, j_groupes_classes jgc WHERE jgc.id_classe=c.id AND jgc.id_groupe='$lig->id' ORDER BY c.classe;";
