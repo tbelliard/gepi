@@ -713,18 +713,14 @@ if(!isset($_POST['recopie_select'])) {
 		echo "<br /><span style='font-size:small; color:red;'>".$id_groupe[$i]."</span>";
 		echo "<br />".preg_replace("/,/","<br />",$group[$i]['profs']['proflist_string']);
 
+		/*
 		//$tmp_tab_eleve=array_merge($tmp_tab_eleve,$group[$i]["eleves"][$num_periode]["list"]);
 		for($j=0;$j<count($group[$i]["eleves"][$num_periode]["list"]);$j++) {
-			//echo $group[$i]["eleves"][$num_periode]["list"][$j]." ";
-			/*
-			if(!in_array($group[$i]["eleves"][$num_periode]["list"][$j],$tmp_tab_eleve)) {
-				$tmp_tab_eleve[]=$group[$i]["eleves"][$num_periode]["list"][$j];
-			}
-			*/
 			if(!in_array($group[$i]["eleves"][$num_periode]["list"][$j],$tab_eleve)) {
 				$tab_eleve[]=$group[$i]["eleves"][$num_periode]["list"][$j];
 			}
 		}
+		*/
 		echo "</th>\n";
 	}
 	echo "<th>\n";
@@ -736,7 +732,8 @@ if(!isset($_POST['recopie_select'])) {
 	}
 	echo "</td><td>";
 	*/
-	//$order_by='classe';
+
+	/*
 	if($order_by=='classe') {
 		$tmp_tab_eleve=$tab_eleve;
 		unset($tab_eleve);
@@ -748,15 +745,46 @@ if(!isset($_POST['recopie_select'])) {
 				$test=mysql_query($sql);
 				if(mysql_num_rows($test)>0) {
 					$tab_eleve[]=$tmp_tab_eleve[$j];
-					//echo "$tmp_tab_eleve[$j]<br />";
+					echo "$tmp_tab_eleve[$j]<br />";
 				}
 			}
 		}
-
 	}
 	else {
-		sort($tab_eleve);
+		// On trie suivant le login... ce n'est pas forcément correct
+		//sort($tab_eleve);
 	}
+	*/
+
+	$tab_eleve=array();
+
+	$chaine_groupes="jeg.id_groupe='".$id_groupe[0]."'";
+	for($loop=1;$loop<count($id_groupe);$loop++) {
+		$chaine_groupes.=" OR jeg.id_groupe='".$id_groupe[$loop]."'";
+	}
+
+	if($order_by=='classe') {
+
+		for($loop=0;$loop<count($id_classe);$loop++) {
+			$sql="SELECT DISTINCT jeg.login FROM j_eleves_classes jec, j_eleves_groupes jeg, eleves e WHERE (jec.id_classe='".$id_classe[$loop]."' AND jec.periode='$num_periode' AND jec.login=jeg.login AND jeg.login=e.login AND ($chaine_groupes) AND jeg.periode='$num_periode') ORDER BY e.nom, e.prenom;";
+			$res_clas_grp=mysql_query($sql);
+			if(mysql_num_rows($res_clas_grp)>0) {
+				while($lig_clas_grp=mysql_fetch_object($res_clas_grp)) {
+					$tab_eleve[]=$lig_clas_grp->login;
+				}
+			}
+		}
+	}
+	else {
+		$sql="SELECT jeg.login FROM j_eleves_groupes jeg, eleves e WHERE jeg.login=e.login AND ($chaine_groupes) AND jeg.periode='$num_periode' ORDER BY e.nom, e.prenom;";
+		$res_ele_grp=mysql_query($sql);
+		if(mysql_num_rows($res_ele_grp)>0) {
+			while($lig_ele_grp=mysql_fetch_object($res_ele_grp)) {
+				$tab_eleve[]=$lig_ele_grp->login;
+			}
+		}
+	}
+
 	//echo "</td></tr></table>";
 	echo "</th>\n";
 	echo "</tr>\n";
