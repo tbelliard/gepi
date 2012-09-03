@@ -833,7 +833,7 @@ if(!isset($_POST['recopie_select'])) {
 			echo "</td>\n";
 			*/
 
-			$ligne_si_desinscription_possible.="<td>\n";
+			$ligne_si_desinscription_possible.="<td onclick=\"document.getElementById('grp_eleve_".$i."_".$cpt."').checked=true;changement();\">\n";
 			$ligne_si_desinscription_possible.="<input type='radio' name='grp_eleve[$cpt]' id='grp_eleve_".$i."_".$cpt."' value='".$id_groupe[$i]."' onchange='changement()' title=\"$tab_eleve[$j] -&gt; ".$group[$i]['name']." de ".$group[$i]['classlist_string']."\" ";
 			if(in_array($login_ele,$group[$i]["eleves"][$num_periode]["list"])) {
 				$ligne_si_desinscription_possible.="checked ";
