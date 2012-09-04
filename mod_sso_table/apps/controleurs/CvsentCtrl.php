@@ -325,7 +325,7 @@ class CvsentCtrl extends Controleur {
         $this->fic = fopen($file, 'r');
         $ligne_erreur = 1;
         while (($this->ligne = fgetcsv($this->fic, 1000, ";")) !== FALSE) {
-            if (sizeof($this->ligne) != 13) {
+            if (sizeof($this->ligne) < 13) {
                 $this->erreurs_lignes[] = $ligne_erreur;
             }
             $ligne_erreur++;
