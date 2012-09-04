@@ -426,8 +426,9 @@ if ($traitement->getModifiable()) {
     echo '</td></tr>';
 }
 
-if(($_SESSION['statut']=='cpe')||($_SESSION['statut']=='scolarite')||
-((($_SESSION['statut']=='professeur')&&(getSettingAOui('GepiAccesGestElevesProf'))))) {
+if((($_SESSION['statut']=='cpe')||($_SESSION['statut']=='scolarite')||
+((($_SESSION['statut']=='professeur')&&(getSettingAOui('GepiAccesGestElevesProf')))))&&
+(isset($saisie))) {
 	echo '<tr><td style=\"vertical-align:top;\">';
 	echo 'Contact&nbsp;: ';
 	echo '</td><td>';
