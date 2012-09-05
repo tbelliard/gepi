@@ -44,6 +44,9 @@ $create_mode = isset($_POST["mode"]) ? $_POST["mode"] : NULL;
 
 $_POST['reg_auth_mode'] = (!isset($_POST['reg_auth_mode']) OR !in_array($_POST['reg_auth_mode'], array("auth_locale", "auth_ldap", "auth_sso"))) ? "auth_locale" : $_POST['reg_auth_mode'];
 
+// Passer à 'y' pour provoquer l'affichage des requetes:
+$debug_create_resp="n";
+
 if ($create_mode == "classe" OR $create_mode == "individual") {
 	// On a une demande de création, on continue
 	check_token();
@@ -55,7 +58,9 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 	if ($create_mode == "individual") {
 		//echo "grouik : ".$_POST['pers_id'];
 		// $_POST['pers_id'] est filtré automatiquement contre les injections SQL, on l'utilise directement
-		$test = mysql_query("SELECT count(e.login) FROM eleves e, responsables2 re WHERE (e.ele_id = re.ele_id AND re.pers_id = '" . $_POST['pers_id'] ."')");
+		$sql="SELECT count(e.login) FROM eleves e, responsables2 re WHERE (e.ele_id = re.ele_id AND re.pers_id = '" . $_POST['pers_id'] ."')";
+		if($debug_create_resp=="y") {echo "$sql<br />\n";}
+		$test = mysql_query($sql);
 		if (mysql_result($test, 0) == "0") {
 			$error = true;
 			$msg .= "Erreur lors de la création de l'utilisateur : aucune association avec un élève n'a été trouvée !<br/>";
@@ -66,7 +71,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 				"r.login = '' AND " .
 				"r.pers_id = re.pers_id AND " .
 				"re.pers_id = '" . $_POST['pers_id'] ."')";
-			//echo "$sql<br />";
+			if($debug_create_resp=="y") {echo "$sql<br />\n";}
 			$quels_parents = mysql_query($sql);
 		}
 	} else {
@@ -89,7 +94,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					"e.login = jec.login AND " .
 					"jec.id_classe = c.id AND " .
 					"(re.resp_legal='1' OR re.resp_legal='2'))";
-			//echo "$sql<br />";
+			if($debug_create_resp=="y") {echo "$sql<br />\n";}
 			$quels_parents = mysql_query($sql);
 			if (!$quels_parents) $msg .= mysql_error();
 		} elseif (is_numeric($_POST['classe'])) {
@@ -110,7 +115,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					"e.login = jec.login AND " .
 					"jec.id_classe = '" . $_POST['classe']."' AND " .
 					"(re.resp_legal='1' OR re.resp_legal='2'))";
-			//echo "$sql<br />";
+			if($debug_create_resp=="y") {echo "$sql<br />\n";}
 			$quels_parents = mysql_query($sql);
 			if (!$quels_parents) $msg .= mysql_error();
 		} else {
@@ -136,7 +141,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 											WHERE nom_u = '".strtoupper($current_parent->nom)."'
 											AND prenom_u = '".strtoupper($current_parent->prenom)."'
 											AND statut_u = 'teacher'";
-
+					if($debug_create_resp=="y") {echo "$sql_p<br />\n";}
 					$query_p = mysql_query($sql_p);
 					$nbre = mysql_num_rows($query_p);
 
@@ -198,7 +203,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 							"etat = 'actif', " .
 							"auth_mode = '".$reg_auth."', " .
 							"change_mdp = 'n'";
-					//echo "$sql<br />";
+					if($debug_create_resp=="y") {echo "$sql<br />\n";}
 					$reg = mysql_query($sql);
 	
 					if (!$reg) {
@@ -206,11 +211,13 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					} else {
 						$sql="UPDATE resp_pers SET login = '" . $reg_login . "' WHERE (pers_id = '" . $current_parent->pers_id . "')";
 						$reg2 = mysql_query($sql);
+						if($debug_create_resp=="y") {echo "$sql<br />\n";}
 						//$msg.="$sql<br />";
 						$nb_comptes++;
 
 						// Ménage:
 						$sql="SELECT id FROM infos_actions WHERE titre LIKE 'Nouveau responsable%($current_parent->pers_id)';";
+						if($debug_create_resp=="y") {echo "$sql<br />\n";}
 						$res_actions=mysql_query($sql);
 						if(mysql_num_rows($res_actions)>0) {
 							while($lig_action=mysql_fetch_object($res_actions)) {
@@ -240,6 +247,17 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 		$chaine_nouveaux_seulement="";
 		if((isset($_POST['nouveaux_seulement']))&&($_POST['nouveaux_seulement'])) {
 			$chaine_nouveaux_seulement="&amp;nouveaux_seulement=y";
+			saveSetting('creer_comptes_parents_nouveaux_seulement', 'y');
+		}
+		else {
+			saveSetting('creer_comptes_parents_nouveaux_seulement', 'n');
+		}
+
+		if(isset($_POST['fiches_bienvenue_un_jeu_par_parent'])) {
+			saveSetting('fiches_bienvenue_un_jeu_par_parent', 'y');
+		}
+		else {
+			saveSetting('fiches_bienvenue_un_jeu_par_parent', 'n');
 		}
 
 		if ($nb_comptes > 0 && ($_POST['reg_auth_mode'] == "auth_locale" || $gepiSettings['ldap_write_access'] == "yes")) {
@@ -318,6 +336,7 @@ if($afficher_tous_les_resp!='y'){
 	}
 }
 $sql.=" ORDER BY rp.nom, rp.prenom";
+if($debug_create_resp=="y") {echo "$sql<br />\n";}
 
 // Effectif sans login avec filtrage sur le nom:
 $nb1 = mysql_num_rows(mysql_query($sql));
@@ -404,8 +423,12 @@ else{
 	echo "</select>\n";
 
 	echo "<br />\n";
-	echo "<input type='checkbox' name='nouveaux_seulement' id='nouveaux_seulement' value='y' /><label for='nouveaux_seulement'> Ne pas générer de fiche bienvenue pour les comptes existants</label><br />\n";
-
+	echo "<input type='checkbox' name='nouveaux_seulement' id='nouveaux_seulement' value='y' ";
+	if(getSettingAOui('creer_comptes_parents_nouveaux_seulement')) {echo "checked ";}
+	echo "/><label for='nouveaux_seulement'> Ne pas générer de fiche bienvenue pour les comptes existants</label><br />\n";
+	echo "<input type='checkbox' name='fiches_bienvenue_un_jeu_par_parent' id='fiches_bienvenue_un_jeu_par_parent' value='y' ";
+	if(getSettingAOui('fiches_bienvenue_un_jeu_par_parent')) {echo "checked ";}
+	echo "/><label for='fiches_bienvenue_un_jeu_par_parent'> Ne pas générer autant de jeux de fiches bienvenue par parent qu'il y a d'enfant<br />(<em>ce qui donnerait 3 fiches par parent s'il y a 3 enfants dans l'établissement (soit 6 fiches par couple)</em>).</label><br />\n";
 	echo "<input type='submit' name='Valider' value='Valider' />\n";
 	echo "</form>\n";
 
@@ -532,7 +555,7 @@ else{
 					r.ele_id=e.ele_id AND
 					jec.login=e.login AND
 					jec.id_classe=c.id";
-		//echo "$sql<br />";
+		if($debug_create_resp=="y") {echo "$sql<br />\n";}
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0){
 			$alt=$alt*(-1);
