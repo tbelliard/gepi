@@ -292,7 +292,7 @@ abstract class BaseResponsableInformationPeer
     {
         if (Propel::isInstancePoolingEnabled()) {
             if ($key === null) {
-                $key = serialize(array((string) $obj->getEleId(), (string) $obj->getResponsableEleveId()));
+                $key = serialize(array((string) $obj->getEleId(), (string) $obj->getNiveauResponsabilite()));
             } // if key === null
             ResponsableInformationPeer::$instances[$key] = $obj;
         }
@@ -315,7 +315,7 @@ abstract class BaseResponsableInformationPeer
     {
         if (Propel::isInstancePoolingEnabled() && $value !== null) {
             if (is_object($value) && $value instanceof ResponsableInformation) {
-                $key = serialize(array((string) $value->getEleId(), (string) $value->getResponsableEleveId()));
+                $key = serialize(array((string) $value->getEleId(), (string) $value->getNiveauResponsabilite()));
             } elseif (is_array($value) && count($value) === 2) {
                 // assume we've been passed a primary key
                 $key = serialize(array((string) $value[0], (string) $value[1]));
@@ -380,11 +380,11 @@ abstract class BaseResponsableInformationPeer
     public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
     {
         // If the PK cannot be derived from the row, return null.
-        if ($row[$startcol] === null && $row[$startcol + 1] === null) {
+        if ($row[$startcol] === null && $row[$startcol + 2] === null) {
             return null;
         }
 
-        return serialize(array((string) $row[$startcol], (string) $row[$startcol + 1]));
+        return serialize(array((string) $row[$startcol], (string) $row[$startcol + 2]));
     }
 
     /**
@@ -399,7 +399,7 @@ abstract class BaseResponsableInformationPeer
     public static function getPrimaryKeyFromRow($row, $startcol = 0)
     {
 
-        return array((string) $row[$startcol], (string) $row[$startcol + 1]);
+        return array((string) $row[$startcol], (string) $row[$startcol + 2]);
     }
 
     /**
@@ -1193,10 +1193,10 @@ abstract class BaseResponsableInformationPeer
                 $selectCriteria->setPrimaryTableName(ResponsableInformationPeer::TABLE_NAME);
             }
 
-            $comparison = $criteria->getComparison(ResponsableInformationPeer::PERS_ID);
-            $value = $criteria->remove(ResponsableInformationPeer::PERS_ID);
+            $comparison = $criteria->getComparison(ResponsableInformationPeer::RESP_LEGAL);
+            $value = $criteria->remove(ResponsableInformationPeer::RESP_LEGAL);
             if ($value) {
-                $selectCriteria->add(ResponsableInformationPeer::PERS_ID, $value, $comparison);
+                $selectCriteria->add(ResponsableInformationPeer::RESP_LEGAL, $value, $comparison);
             } else {
                 $selectCriteria->setPrimaryTableName(ResponsableInformationPeer::TABLE_NAME);
             }
@@ -1283,7 +1283,7 @@ abstract class BaseResponsableInformationPeer
             }
             foreach ($values as $value) {
                 $criterion = $criteria->getNewCriterion(ResponsableInformationPeer::ELE_ID, $value[0]);
-                $criterion->addAnd($criteria->getNewCriterion(ResponsableInformationPeer::PERS_ID, $value[1]));
+                $criterion->addAnd($criteria->getNewCriterion(ResponsableInformationPeer::RESP_LEGAL, $value[1]));
                 $criteria->addOr($criterion);
                 // we can invalidate the cache for this single PK
                 ResponsableInformationPeer::removeInstanceFromPool($value);
@@ -1351,12 +1351,12 @@ abstract class BaseResponsableInformationPeer
     /**
      * Retrieve object using using composite pkey values.
      * @param   string $ele_id
-     * @param   string $pers_id
+     * @param   string $resp_legal
      * @param      PropelPDO $con
      * @return   ResponsableInformation
      */
-    public static function retrieveByPK($ele_id, $pers_id, PropelPDO $con = null) {
-        $_instancePoolKey = serialize(array((string) $ele_id, (string) $pers_id));
+    public static function retrieveByPK($ele_id, $resp_legal, PropelPDO $con = null) {
+        $_instancePoolKey = serialize(array((string) $ele_id, (string) $resp_legal));
          if (null !== ($obj = ResponsableInformationPeer::getInstanceFromPool($_instancePoolKey))) {
              return $obj;
         }
@@ -1366,7 +1366,7 @@ abstract class BaseResponsableInformationPeer
         }
         $criteria = new Criteria(ResponsableInformationPeer::DATABASE_NAME);
         $criteria->add(ResponsableInformationPeer::ELE_ID, $ele_id);
-        $criteria->add(ResponsableInformationPeer::PERS_ID, $pers_id);
+        $criteria->add(ResponsableInformationPeer::RESP_LEGAL, $resp_legal);
         $v = ResponsableInformationPeer::doSelect($criteria, $con);
 
         return !empty($v) ? $v[0] : null;

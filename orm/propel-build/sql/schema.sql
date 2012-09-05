@@ -531,7 +531,7 @@ CREATE TABLE responsables2
     pers_id VARCHAR(10) NOT NULL COMMENT 'cle etrangere vers le responsable',
     resp_legal VARCHAR(1) NOT NULL COMMENT 'Niveau de responsabilite',
     pers_contact VARCHAR(1) COMMENT 'Champ sconet non utilise',
-    PRIMARY KEY (ele_id,pers_id),
+    PRIMARY KEY (ele_id,resp_legal),
     INDEX responsables2_FI_2 (pers_id),
     CONSTRAINT responsables2_FK_1
         FOREIGN KEY (ele_id)
