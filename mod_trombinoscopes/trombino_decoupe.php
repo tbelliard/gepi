@@ -756,13 +756,6 @@ elseif($mode=='uploader') {
 
 	echo "<p>Les images uploadées doivent être de type JPEG.</p>\n";
 
-	echo "<p>Les paramètres suivants peuvent influer sur le nombre de photos que vous pourrez uploader d'un coup&nbsp;:<br />\n";
-	$post_max_size=ini_get('post_max_size');
-	$upload_max_filesize=ini_get('upload_max_filesize');
-	echo "&nbsp;&nbsp;&nbsp;\$post_max_size=$post_max_size<br />\n";
-	echo "&nbsp;&nbsp;&nbsp;\$upload_max_filesize=$upload_max_filesize<br />\n";
-	echo "</p>\n";
-
 	if(!isset($id_grille)) {
 		$sql="SELECT DISTINCT id_grille FROM trombino_decoupe ORDER BY id_grille;";
 		$test=mysql_query($sql);
@@ -839,7 +832,7 @@ elseif($mode=='uploader') {
 			echo "<td>$lig->classe</td>\n";
 			$num_page=$lig->page+1;
 			echo "<td>".$num_page."</td>\n";
-			echo "<td><input type='file' name='image_$lig->page_global' value='' /></td>\n";
+			echo "<td><input type='file' name='image_$lig->page_global' value='' size='50' /></td>\n";
 			echo "</tr>\n";
 		}
 		echo "</select>\n";
@@ -860,10 +853,24 @@ elseif($mode=='uploader') {
 
 		echo "<br />\n";
 
+		echo "<p><em>Notes</em>&nbsp;:</p>\n";
+		echo "<ul>\n";
+		echo "<li><p>Les images uploadées doivent être de type JPEG.</p></li>\n";
 		$max_file_uploads=ini_get('max_file_uploads');
 		if(($max_file_uploads!="")&&(mb_strlen(my_ereg_replace("[^0-9]","",$max_file_uploads))==mb_strlen($max_file_uploads))&&($max_file_uploads>0)) {
-			echo "<p><i>Note</i>&nbsp;: L'upload des photos est limité à $max_file_uploads fichier(s) simultanément.</p>\n";
+			echo "<li><p>L'upload des photos est limité à <strong>$max_file_uploads fichier(s)</strong> simultanément.</p></li>\n";
 		}
+		echo "<li><p>Les images uploadées doivent être de type JPEG.</p></li>\n";
+		echo "<li>\n";
+		echo "<p>Les paramètres suivants peuvent influer sur le nombre de photos que vous pourrez uploader d'un coup&nbsp;:<br />\n";
+		$post_max_size=ini_get('post_max_size');
+		$upload_max_filesize=ini_get('upload_max_filesize');
+		echo "&nbsp;&nbsp;&nbsp;<span style='color:blue'>\$post_max_size=$post_max_size</span><br />\n";
+		echo "&nbsp;&nbsp;&nbsp;<span style='color:blue'>\$upload_max_filesize=$upload_max_filesize</span><br />\n";
+		echo "</p>\n";
+		echo "</li>\n";
+		echo "</ul>\n";
+
 	}
 
 }
