@@ -8,6 +8,7 @@
  * @license    MIT License
  */
 
+
 /**
  * Simple class that serves as a container for any information about a failed validation.
  *
@@ -22,100 +23,100 @@
  * @package    propel.runtime.validator
  * @see        BasePeer::doValidate()
  */
-class ValidationFailed
-{
-    /** Column name in tablename.COLUMN_NAME format */
-    private $colname;
+class ValidationFailed {
 
-    /** Message to display to user. */
-    private $message;
+	/** Column name in tablename.COLUMN_NAME format */
+	private $colname;
 
-    /** Validator object that caused this to fail. */
-    private $validator;
+	/** Message to display to user. */
+	private $message;
 
-    /**
-     * Construct a new ValidationFailed object.
-     *
-     * @param string $colname   Column name.
-     * @param string $message   Message to display to user.
-     * @param object $validator The Validator that caused this column to fail.
-     */
-    public function __construct($colname, $message, $validator = null)
-    {
-        $this->colname = $colname;
-        $this->message = $message;
-        $this->validator = $validator;
-    }
+	/** Validator object that caused this to fail. */
+	private $validator;
 
-    /**
-     * Set the column name.
-     *
-     * @param string $v
-     */
-    public function setColumn($v)
-    {
-        $this->colname = $v;
-    }
+	/**
+	 * Construct a new ValidationFailed object.
+	 *
+	 * @param     string  $colname Column name.
+	 * @param     string  $message Message to display to user.
+	 * @param     object  $validator The Validator that caused this column to fail.
+	 */
+	public function __construct($colname, $message, $validator = null)
+	{
+		$this->colname = $colname;
+		$this->message = $message;
+		$this->validator = $validator;
+	}
 
-    /**
-     * Gets the column name.
-     *
-     * @return string Qualified column name (tablename.COLUMN_NAME)
-     */
-    public function getColumn()
-    {
-        return $this->colname;
-    }
+	/**
+	 * Set the column name.
+	 *
+	 * @param     string  $v
+	 */
+	public function setColumn($v)
+	{
+		$this->colname = $v;
+	}
 
-    /**
-     * Set the message for the validation failure.
-     *
-     * @param string $v
-     */
-    public function setMessage($v)
-    {
-        $this->message = $v;
-    }
+	/**
+	 * Gets the column name.
+	 *
+	 * @return    string  Qualified column name (tablename.COLUMN_NAME)
+	 */
+	public function getColumn()
+	{
+		return $this->colname;
+	}
 
-    /**
-     * Gets the message for the validation failure.
-     *
-     * @return string
-     */
-    public function getMessage()
-    {
-        return $this->message;
-    }
+	/**
+	 * Set the message for the validation failure.
+	 *
+	 * @param     string  $v
+	 */
+	public function setMessage($v)
+	{
+		$this->message = $v;
+	}
 
-    /**
-     * Set the validator object that caused this to fail.
-     *
-     * @param object $v
-     */
-    public function setValidator($v)
-    {
-        $this->validator = $v;
-    }
+	/**
+	 * Gets the message for the validation failure.
+	 *
+	 * @return    string
+	 */
+	public function getMessage()
+	{
+		return $this->message;
+	}
 
-    /**
-     * Gets the validator object that caused this to fail.
-     *
-     * @return object
-     */
-    public function getValidator()
-    {
-        return $this->validator;
-    }
+	/**
+	 * Set the validator object that caused this to fail.
+	 *
+	 * @param     object  $v
+	 */
+	public function setValidator($v)
+	{
+		$this->validator = $v;
+	}
 
-    /**
-     * "magic" method to get string represenation of object.
-     * Maybe someday PHP5 will support the invoking this method automatically
-     * on (string) cast.  Until then it's pretty useless.
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->getMessage();
-    }
+	/**
+	 * Gets the validator object that caused this to fail.
+	 *
+	 * @return    object
+	 */
+	public function getValidator()
+	{
+		return $this->validator;
+	}
+
+	/**
+	 * "magic" method to get string represenation of object.
+	 * Maybe someday PHP5 will support the invoking this method automatically
+	 * on (string) cast.  Until then it's pretty useless.
+	 *
+	 * @return    string
+	 */
+	public function __toString()
+	{
+		return $this->getMessage();
+	}
 }
