@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class ArchiveEctsQuery extends BaseArchiveEctsQuery
-{
-}
+class ArchiveEctsQuery extends BaseArchiveEctsQuery {
+
+} // ArchiveEctsQuery

@@ -17,39 +17,39 @@
 class EdtSemaineTableMap extends TableMap
 {
 
-    /**
-     * The (dot-path) name of this class
-     */
-    const CLASS_NAME = 'gepi.map.EdtSemaineTableMap';
+	/**
+	 * The (dot-path) name of this class
+	 */
+	const CLASS_NAME = 'gepi.map.EdtSemaineTableMap';
 
-    /**
-     * Initialize the table attributes, columns and validators
-     * Relations are not initialized by this method since they are lazy loaded
-     *
-     * @return void
-     * @throws PropelException
-     */
-    public function initialize()
-    {
-        // attributes
-        $this->setName('edt_semaines');
-        $this->setPhpName('EdtSemaine');
-        $this->setClassname('EdtSemaine');
-        $this->setPackage('gepi');
-        $this->setUseIdGenerator(false);
-        // columns
-        $this->addPrimaryKey('ID_EDT_SEMAINE', 'IdEdtSemaine', 'INTEGER', true, 10, null);
-        $this->addColumn('NUM_EDT_SEMAINE', 'NumEdtSemaine', 'INTEGER', true, 10, null);
-        $this->addColumn('TYPE_EDT_SEMAINE', 'TypeEdtSemaine', 'VARCHAR', false, 10, null);
-        $this->addColumn('NUM_SEMAINES_ETAB', 'NumSemainesEtab', 'INTEGER', false, 10, null);
-        // validators
-    } // initialize()
+	/**
+	 * Initialize the table attributes, columns and validators
+	 * Relations are not initialized by this method since they are lazy loaded
+	 *
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function initialize()
+	{
+		// attributes
+		$this->setName('edt_semaines');
+		$this->setPhpName('EdtSemaine');
+		$this->setClassname('EdtSemaine');
+		$this->setPackage('gepi');
+		$this->setUseIdGenerator(false);
+		// columns
+		$this->addPrimaryKey('ID_EDT_SEMAINE', 'IdEdtSemaine', 'INTEGER', true, 10, null);
+		$this->addColumn('NUM_EDT_SEMAINE', 'NumEdtSemaine', 'INTEGER', true, 10, null);
+		$this->addColumn('TYPE_EDT_SEMAINE', 'TypeEdtSemaine', 'VARCHAR', false, 10, null);
+		$this->addColumn('NUM_SEMAINES_ETAB', 'NumSemainesEtab', 'INTEGER', false, 10, null);
+		// validators
+	} // initialize()
 
-    /**
-     * Build the RelationMap objects for this table relationships
-     */
-    public function buildRelations()
-    {
-    } // buildRelations()
+	/**
+	 * Build the RelationMap objects for this table relationships
+	 */
+	public function buildRelations()
+	{
+	} // buildRelations()
 
 } // EdtSemaineTableMap

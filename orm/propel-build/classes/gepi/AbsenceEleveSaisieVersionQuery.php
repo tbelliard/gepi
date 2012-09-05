@@ -5,7 +5,7 @@
 /**
  * Skeleton subclass for performing query and update operations on the 'a_saisies_version' table.
  *
- *
+ * 
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as
@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class AbsenceEleveSaisieVersionQuery extends BaseAbsenceEleveSaisieVersionQuery
-{
-}
+class AbsenceEleveSaisieVersionQuery extends BaseAbsenceEleveSaisieVersionQuery {
+
+} // AbsenceEleveSaisieVersionQuery

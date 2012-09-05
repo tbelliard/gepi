@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class EdtEmplacementCoursPeer extends BaseEdtEmplacementCoursPeer
-{
-}
+class EdtEmplacementCoursPeer extends BaseEdtEmplacementCoursPeer {
+
+} // EdtEmplacementCoursPeer

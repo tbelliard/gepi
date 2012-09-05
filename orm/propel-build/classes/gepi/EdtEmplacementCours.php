@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class EdtEmplacementCours extends BaseEdtEmplacementCours
-{
+class EdtEmplacementCours extends BaseEdtEmplacementCours {
+
 	/**
 	 *
 	 * Renvoi l'heure de debut du cours
@@ -268,4 +268,4 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours
 	    }
 	    return EdtEmplacementCours::$groupeFormatter;
 	}
-}
+} // EdtEmplacementCours

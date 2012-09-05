@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class JAidElevesQuery extends BaseJAidElevesQuery
-{
-}
+class JAidElevesQuery extends BaseJAidElevesQuery {
+
+} // JAidElevesQuery

@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class AbsenceEleveTypePeer extends BaseAbsenceEleveTypePeer
-{
-}
+class AbsenceEleveTypePeer extends BaseAbsenceEleveTypePeer {
+
+} // AbsenceEleveTypePeer

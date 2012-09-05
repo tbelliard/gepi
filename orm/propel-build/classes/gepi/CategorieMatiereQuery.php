@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class CategorieMatiereQuery extends BaseCategorieMatiereQuery
-{
-}
+class CategorieMatiereQuery extends BaseCategorieMatiereQuery {
+
+} // CategorieMatiereQuery

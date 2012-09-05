@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class PlugInMiseEnOeuvreMenu extends BasePlugInMiseEnOeuvreMenu
-{
-}
+class PlugInMiseEnOeuvreMenu extends BasePlugInMiseEnOeuvreMenu {
+
+} // PlugInMiseEnOeuvreMenu

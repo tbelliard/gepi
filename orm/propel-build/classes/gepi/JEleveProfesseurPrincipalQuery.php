@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class JEleveProfesseurPrincipalQuery extends BaseJEleveProfesseurPrincipalQuery
-{
-}
+class JEleveProfesseurPrincipalQuery extends BaseJEleveProfesseurPrincipalQuery {
+
+} // JEleveProfesseurPrincipalQuery

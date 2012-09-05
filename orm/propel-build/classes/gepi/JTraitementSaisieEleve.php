@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class JTraitementSaisieEleve extends BaseJTraitementSaisieEleve
-{
+class JTraitementSaisieEleve extends BaseJTraitementSaisieEleve {
+    
 	/**
 	 * Code to be run after deleting the object in database
 	 * @param PropelPDO $con
@@ -101,4 +101,5 @@ class JTraitementSaisieEleve extends BaseJTraitementSaisieEleve
 	    }
 	    return parent::setASaisieId($v);
 	}
-}
+
+} // JTraitementSaisieEleve

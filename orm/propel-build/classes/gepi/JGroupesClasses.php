@@ -13,10 +13,10 @@
  *
  * @package    propel.generator.gepi
  */
+class JGroupesClasses extends BaseJGroupesClasses {
 
-class JGroupesClasses extends BaseJGroupesClasses
-{
     public function isClasseHydrated() {
         return (null !== $this->aClasse);
     }
-}
+
+} // JGroupesClasses

@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class AbsenceEleveNotification extends BaseAbsenceEleveNotification
-{
+class AbsenceEleveNotification extends BaseAbsenceEleveNotification {
+
     /**
      *
      * Renvoi true / false suivant que la notification est modifiable ou pas
@@ -102,4 +102,5 @@ class AbsenceEleveNotification extends BaseAbsenceEleveNotification
 
             return true;
     }
-}
+    
+} // AbsenceEleveNotification

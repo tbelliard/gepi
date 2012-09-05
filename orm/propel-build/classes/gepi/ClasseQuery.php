@@ -13,8 +13,7 @@
  *
  * @package    propel.generator.gepi
  */
-class ClasseQuery extends BaseClasseQuery
-{
+class ClasseQuery extends BaseClasseQuery {
 	/**
 	 * Filtre la requete pour les classes qui sont sous la responsabilite de l'utilisateur
 	 * en tant que prof principal, cpe ou scolarite
@@ -40,4 +39,5 @@ class ClasseQuery extends BaseClasseQuery
 		return $this->where('1 <> 1');
 	    }
 	}
-}
+
+} // ClasseQuery

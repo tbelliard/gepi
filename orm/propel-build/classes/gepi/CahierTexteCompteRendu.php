@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class CahierTexteCompteRendu extends BaseCahierTexteCompteRendu
-{
+class CahierTexteCompteRendu extends BaseCahierTexteCompteRendu {
+
 	//optimisation de vitesse dans les cas ou les criteres sont null pour recuprer les fichiers joint
 	/**
 	 * @var        array CahierTexteCompteRenduFichierJoint[] Collection to store aggregation of CahierTexteCompteRenduFichierJoint objects.
@@ -73,4 +73,5 @@ class CahierTexteCompteRendu extends BaseCahierTexteCompteRendu
 	{
 		$this->collCahierTexteCompteRenduFichierJoints = null; // important to set this to NULL since that means it is uninitialized
 	}
-}
+	
+} // CahierTexteCompteRendu

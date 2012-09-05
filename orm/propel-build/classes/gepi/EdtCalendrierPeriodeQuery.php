@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class EdtCalendrierPeriodeQuery extends BaseEdtCalendrierPeriodeQuery
-{
-}
+class EdtCalendrierPeriodeQuery extends BaseEdtCalendrierPeriodeQuery {
+
+} // EdtCalendrierPeriodeQuery

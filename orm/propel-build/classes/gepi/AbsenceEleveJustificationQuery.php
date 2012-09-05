@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class AbsenceEleveJustificationQuery extends BaseAbsenceEleveJustificationQuery
-{
-}
+class AbsenceEleveJustificationQuery extends BaseAbsenceEleveJustificationQuery {
+
+} // AbsenceEleveJustificationQuery

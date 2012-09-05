@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class ResponsableInformation extends BaseResponsableInformation
-{
-}
+class ResponsableInformation extends BaseResponsableInformation {
+
+} // ResponsableInformation

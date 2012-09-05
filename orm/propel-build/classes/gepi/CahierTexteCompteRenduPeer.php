@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class CahierTexteCompteRenduPeer extends BaseCahierTexteCompteRenduPeer
-{
-}
+class CahierTexteCompteRenduPeer extends BaseCahierTexteCompteRenduPeer {
+
+} // CahierTexteCompteRenduPeer

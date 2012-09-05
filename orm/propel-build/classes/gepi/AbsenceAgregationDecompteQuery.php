@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class AbsenceAgregationDecompteQuery extends BaseAbsenceAgregationDecompteQuery
-{
+class AbsenceAgregationDecompteQuery extends BaseAbsenceAgregationDecompteQuery {
+    
     /**
      * Filtre la requete sur les dates de début et de fin. En cas de date nulle, 
      * le premier jour ou le dernier de l'année scolaire est utilisé
@@ -96,4 +96,4 @@ class AbsenceAgregationDecompteQuery extends BaseAbsenceAgregationDecompteQuery
     public function filterByMarqueurFinMiseAJour() {
         return $this->filterByDateDemiJounee('0001-01-01 00:00:00');
     }
-}
+} // AbsenceAgregationDecompteQuery

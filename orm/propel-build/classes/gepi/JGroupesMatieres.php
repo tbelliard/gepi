@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class JGroupesMatieres extends BaseJGroupesMatieres
-{
-}
+class JGroupesMatieres extends BaseJGroupesMatieres {
+
+} // JGroupesMatieres

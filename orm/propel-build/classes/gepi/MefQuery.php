@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class MefQuery extends BaseMefQuery
-{
-}
+class MefQuery extends BaseMefQuery {
+
+} // MefQuery

@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class JGroupesClassesPeer extends BaseJGroupesClassesPeer
-{
-}
+class JGroupesClassesPeer extends BaseJGroupesClassesPeer {
+
+} // JGroupesClassesPeer

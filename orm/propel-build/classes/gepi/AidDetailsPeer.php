@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class AidDetailsPeer extends BaseAidDetailsPeer
-{
-}
+class AidDetailsPeer extends BaseAidDetailsPeer {
+
+} // AidDetailsPeer

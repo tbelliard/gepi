@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class Adresse extends BaseAdresse
-{
+class Adresse extends BaseAdresse {
+
  	/**
 	 *
 	 * Renvoi la description de la liste des responsables habitant a cette adresse
@@ -69,4 +69,5 @@ class Adresse extends BaseAdresse
 
 	    return $result;
 	}
-}
+
+} // Adresse

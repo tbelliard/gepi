@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class EdtHorairesEtablissementQuery extends BaseEdtHorairesEtablissementQuery
-{
-}
+class EdtHorairesEtablissementQuery extends BaseEdtHorairesEtablissementQuery {
+
+} // EdtHorairesEtablissementQuery

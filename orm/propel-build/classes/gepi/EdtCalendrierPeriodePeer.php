@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class EdtCalendrierPeriodePeer extends BaseEdtCalendrierPeriodePeer
-{
+class EdtCalendrierPeriodePeer extends BaseEdtCalendrierPeriodePeer {
+
   private static $_all_periodes;
 
     /**
@@ -87,12 +87,21 @@ class EdtCalendrierPeriodePeer extends BaseEdtCalendrierPeriodePeer
                }else{
           //si une periode plus courte correspond on prend celle là
           if ($edtPeriode->getFinCalendrierTs()-$edtPeriode->getDebutCalendrierTs()<=$intervalle_periode) {
-		        $edt_periode_actuelle = $edtPeriode;
-		        $intervalle_periode=$edtPeriode->getFinCalendrierTs()-$edtPeriode->getDebutCalendrierTs();
-		      }
-		    }
-		  }
-		}
-		return $edt_periode_actuelle;
+            $edt_periode_actuelle = $edtPeriode;
+            $intervalle_periode=$edtPeriode->getFinCalendrierTs()-$edtPeriode->getDebutCalendrierTs();
+          }
+        }
+      }
+    }
+    return $edt_periode_actuelle;
+		//return null;
+//		return EdtCalendrierPeriodeQuery::create()
+//			->filterByJourdebutCalendrier($dt, Criteria::LESS_EQUAL)
+//			//->filterByHeuredebutCalendrier($dt, Criteria::GREATER_EQUAL)
+//			->filterByJourfinCalendrier($dt, Criteria::GREATER_EQUAL)
+//			//->filterByHeurefinCalendrier($dt, Criteria::LESS_EQUAL)
+//			->findOne();
 	}
-}
+
+
+} // EdtCalendrierPeriodePeer

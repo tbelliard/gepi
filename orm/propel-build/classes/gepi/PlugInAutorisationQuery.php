@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class PlugInAutorisationQuery extends BasePlugInAutorisationQuery
-{
-}
+class PlugInAutorisationQuery extends BasePlugInAutorisationQuery {
+
+} // PlugInAutorisationQuery

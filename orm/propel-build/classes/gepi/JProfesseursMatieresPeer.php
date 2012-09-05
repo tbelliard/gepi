@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class JProfesseursMatieresPeer extends BaseJProfesseursMatieresPeer
-{
-}
+class JProfesseursMatieresPeer extends BaseJProfesseursMatieresPeer {
+
+} // JProfesseursMatieresPeer

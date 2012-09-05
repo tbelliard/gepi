@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class JEleveAncienEtablissementQuery extends BaseJEleveAncienEtablissementQuery
-{
-}
+class JEleveAncienEtablissementQuery extends BaseJEleveAncienEtablissementQuery {
+
+} // JEleveAncienEtablissementQuery

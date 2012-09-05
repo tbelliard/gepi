@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class CahierTexteSequenceQuery extends BaseCahierTexteSequenceQuery
-{
-}
+class CahierTexteSequenceQuery extends BaseCahierTexteSequenceQuery {
+
+} // CahierTexteSequenceQuery

@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class PreferenceUtilisateurProfessionnelQuery extends BasePreferenceUtilisateurProfessionnelQuery
-{
-}
+class PreferenceUtilisateurProfessionnelQuery extends BasePreferenceUtilisateurProfessionnelQuery {
+
+} // PreferenceUtilisateurProfessionnelQuery

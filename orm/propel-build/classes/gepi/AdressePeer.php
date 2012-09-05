@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class AdressePeer extends BaseAdressePeer
-{
-}
+class AdressePeer extends BaseAdressePeer {
+
+} // AdressePeer

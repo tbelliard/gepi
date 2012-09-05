@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class PlugInQuery extends BasePlugInQuery
-{
-}
+class PlugInQuery extends BasePlugInQuery {
+
+} // PlugInQuery

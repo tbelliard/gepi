@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class Mef extends BaseMef
-{
-}
+class Mef extends BaseMef {
+
+} // Mef

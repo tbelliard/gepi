@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class AncienEtablissementPeer extends BaseAncienEtablissementPeer
-{
-}
+class AncienEtablissementPeer extends BaseAncienEtablissementPeer {
+
+} // AncienEtablissementPeer

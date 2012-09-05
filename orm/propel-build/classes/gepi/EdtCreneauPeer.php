@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class EdtCreneauPeer extends BaseEdtCreneauPeer
-{
+class EdtCreneauPeer extends BaseEdtCreneauPeer {
+
   private static $_all_creneaux;
 
     /**
@@ -102,4 +102,5 @@ class EdtCreneauPeer extends BaseEdtCreneauPeer
 	public static function retrieveLastEdtCreneau() {
 		return clone self::retrieveAllEdtCreneauxOrderByTime()->getLast();
 	}
-}
+
+} // EdtCreneauPeer

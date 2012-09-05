@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class CahierTexteTravailAFaire extends BaseCahierTexteTravailAFaire
-{
+class CahierTexteTravailAFaire extends BaseCahierTexteTravailAFaire {
+
 	//optimisation de vitess pour recuperer les fichiers joints dans le cas ou le critere est null
 
 	/**
@@ -74,4 +74,5 @@ class CahierTexteTravailAFaire extends BaseCahierTexteTravailAFaire
 	{
 		$this->collCahierTexteTravailAFaireFichierJoints = null; // important to set this to NULL since that means it is uninitialized
 	}
-}
+
+} // CahierTexteTravailAFaire

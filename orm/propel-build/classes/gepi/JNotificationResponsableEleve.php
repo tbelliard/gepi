@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class JNotificationResponsableEleve extends BaseJNotificationResponsableEleve
-{
-}
+class JNotificationResponsableEleve extends BaseJNotificationResponsableEleve {
+
+} // JNotificationResponsableEleve

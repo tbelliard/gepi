@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class EdtSalle extends BaseEdtSalle
-{
-}
+class EdtSalle extends BaseEdtSalle {
+
+} // EdtSalle

@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class ArchiveEctsPeer extends BaseArchiveEctsPeer
-{
-}
+class ArchiveEctsPeer extends BaseArchiveEctsPeer {
+
+} // ArchiveEctsPeer

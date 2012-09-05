@@ -13,8 +13,7 @@
  *
  * @package    propel.generator.gepi
  */
-class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer
-{
+class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 	/**
 	 *
 	 * Vérifie que l'ensemble de la table d'agrégation est à jours, pour tous les élèves.
@@ -230,4 +229,5 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer
 			}
 		}
 	}
-}
+	
+} // AbsenceAgregationDecomptePeer

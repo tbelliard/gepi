@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class PlugIn extends BasePlugIn
-{
+class PlugIn extends BasePlugIn {
+
   /**
    * Ouvre le plugin aux utilisateurs autorisés
    */
@@ -30,4 +30,5 @@ class PlugIn extends BasePlugIn
     $this->setOuvert("n");
     $this->save();
   }
-}
+
+} // PlugIn

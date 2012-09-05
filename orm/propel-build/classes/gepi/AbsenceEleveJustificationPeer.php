@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class AbsenceEleveJustificationPeer extends BaseAbsenceEleveJustificationPeer
-{
-}
+class AbsenceEleveJustificationPeer extends BaseAbsenceEleveJustificationPeer {
+
+} // AbsenceEleveJustificationPeer

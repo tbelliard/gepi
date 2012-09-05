@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class AidConfiguration extends BaseAidConfiguration
-{
-}
+class AidConfiguration extends BaseAidConfiguration {
+
+} // AidConfiguration

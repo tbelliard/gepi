@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class CahierTexteNoticePriveePeer extends BaseCahierTexteNoticePriveePeer
-{
-}
+class CahierTexteNoticePriveePeer extends BaseCahierTexteNoticePriveePeer {
+
+} // CahierTexteNoticePriveePeer

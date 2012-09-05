@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class EdtHorairesEtablissementPeer extends BaseEdtHorairesEtablissementPeer
-{
+class EdtHorairesEtablissementPeer extends BaseEdtHorairesEtablissementPeer {
+
   private static $_all_horaires;
 
   private static $_all_horaires_array_copy;
@@ -42,4 +42,5 @@ class EdtHorairesEtablissementPeer extends BaseEdtHorairesEtablissementPeer
 	    }
 	    return self::$_all_horaires_array_copy;
     }
-}
+
+} // EdtHorairesEtablissementPeer

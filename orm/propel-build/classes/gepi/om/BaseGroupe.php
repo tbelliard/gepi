@@ -8,4812 +8,4120 @@
  *
  * @package    propel.generator.gepi.om
  */
-abstract class BaseGroupe extends BaseObject implements Persistent
+abstract class BaseGroupe extends BaseObject  implements Persistent
 {
-    /**
-     * Peer class name
-     */
-    const PEER = 'GroupePeer';
-
-    /**
-     * The Peer class.
-     * Instance provides a convenient way of calling static methods on a class
-     * that calling code may not be able to identify.
-     * @var        GroupePeer
-     */
-    protected static $peer;
-
-    /**
-     * The flag var to prevent infinit loop in deep copy
-     * @var       boolean
-     */
-    protected $startCopy = false;
-
-    /**
-     * The value for the id field.
-     * @var        int
-     */
-    protected $id;
-
-    /**
-     * The value for the name field.
-     * @var        string
-     */
-    protected $name;
-
-    /**
-     * The value for the description field.
-     * @var        string
-     */
-    protected $description;
-
-    /**
-     * The value for the recalcul_rang field.
-     * @var        string
-     */
-    protected $recalcul_rang;
-
-    /**
-     * @var        PropelObjectCollection|JGroupesProfesseurs[] Collection to store aggregation of JGroupesProfesseurs objects.
-     */
-    protected $collJGroupesProfesseurss;
-    protected $collJGroupesProfesseurssPartial;
-
-    /**
-     * @var        PropelObjectCollection|JGroupesMatieres[] Collection to store aggregation of JGroupesMatieres objects.
-     */
-    protected $collJGroupesMatieress;
-    protected $collJGroupesMatieressPartial;
-
-    /**
-     * @var        PropelObjectCollection|JGroupesClasses[] Collection to store aggregation of JGroupesClasses objects.
-     */
-    protected $collJGroupesClassess;
-    protected $collJGroupesClassessPartial;
-
-    /**
-     * @var        PropelObjectCollection|CahierTexteCompteRendu[] Collection to store aggregation of CahierTexteCompteRendu objects.
-     */
-    protected $collCahierTexteCompteRendus;
-    protected $collCahierTexteCompteRendusPartial;
-
-    /**
-     * @var        PropelObjectCollection|CahierTexteTravailAFaire[] Collection to store aggregation of CahierTexteTravailAFaire objects.
-     */
-    protected $collCahierTexteTravailAFaires;
-    protected $collCahierTexteTravailAFairesPartial;
-
-    /**
-     * @var        PropelObjectCollection|CahierTexteNoticePrivee[] Collection to store aggregation of CahierTexteNoticePrivee objects.
-     */
-    protected $collCahierTexteNoticePrivees;
-    protected $collCahierTexteNoticePriveesPartial;
-
-    /**
-     * @var        PropelObjectCollection|JEleveGroupe[] Collection to store aggregation of JEleveGroupe objects.
-     */
-    protected $collJEleveGroupes;
-    protected $collJEleveGroupesPartial;
-
-    /**
-     * @var        PropelObjectCollection|AbsenceEleveSaisie[] Collection to store aggregation of AbsenceEleveSaisie objects.
-     */
-    protected $collAbsenceEleveSaisies;
-    protected $collAbsenceEleveSaisiesPartial;
-
-    /**
-     * @var        PropelObjectCollection|CreditEcts[] Collection to store aggregation of CreditEcts objects.
-     */
-    protected $collCreditEctss;
-    protected $collCreditEctssPartial;
-
-    /**
-     * @var        PropelObjectCollection|EdtEmplacementCours[] Collection to store aggregation of EdtEmplacementCours objects.
-     */
-    protected $collEdtEmplacementCourss;
-    protected $collEdtEmplacementCourssPartial;
-
-    /**
-     * @var        PropelObjectCollection|UtilisateurProfessionnel[] Collection to store aggregation of UtilisateurProfessionnel objects.
-     */
-    protected $collUtilisateurProfessionnels;
-
-    /**
-     * @var        PropelObjectCollection|Matiere[] Collection to store aggregation of Matiere objects.
-     */
-    protected $collMatieres;
-
-    /**
-     * @var        PropelObjectCollection|Classe[] Collection to store aggregation of Classe objects.
-     */
-    protected $collClasses;
-
-    /**
-     * Flag to prevent endless save loop, if this object is referenced
-     * by another object which falls in this transaction.
-     * @var        boolean
-     */
-    protected $alreadyInSave = false;
-
-    /**
-     * Flag to prevent endless validation loop, if this object is referenced
-     * by another object which falls in this transaction.
-     * @var        boolean
-     */
-    protected $alreadyInValidation = false;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var		PropelObjectCollection
-     */
-    protected $utilisateurProfessionnelsScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var		PropelObjectCollection
-     */
-    protected $matieresScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var		PropelObjectCollection
-     */
-    protected $classesScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var		PropelObjectCollection
-     */
-    protected $jGroupesProfesseurssScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var		PropelObjectCollection
-     */
-    protected $jGroupesMatieressScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var		PropelObjectCollection
-     */
-    protected $jGroupesClassessScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var		PropelObjectCollection
-     */
-    protected $cahierTexteCompteRendusScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var		PropelObjectCollection
-     */
-    protected $cahierTexteTravailAFairesScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var		PropelObjectCollection
-     */
-    protected $cahierTexteNoticePriveesScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var		PropelObjectCollection
-     */
-    protected $jEleveGroupesScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var		PropelObjectCollection
-     */
-    protected $absenceEleveSaisiesScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var		PropelObjectCollection
-     */
-    protected $creditEctssScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var		PropelObjectCollection
-     */
-    protected $edtEmplacementCourssScheduledForDeletion = null;
-
-    /**
-     * Get the [id] column value.
-     * Clee primaire du groupe
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Get the [name] column value.
-     * Nom du groupe
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * Get the [description] column value.
-     * Description du groupe
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * Get the [recalcul_rang] column value.
-     * recalcul_rang
-     * @return string
-     */
-    public function getRecalculRang()
-    {
-        return $this->recalcul_rang;
-    }
-
-    /**
-     * Set the value of [id] column.
-     * Clee primaire du groupe
-     * @param int $v new value
-     * @return Groupe The current object (for fluent API support)
-     */
-    public function setId($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->id !== $v) {
-            $this->id = $v;
-            $this->modifiedColumns[] = GroupePeer::ID;
-        }
-
-
-        return $this;
-    } // setId()
-
-    /**
-     * Set the value of [name] column.
-     * Nom du groupe
-     * @param string $v new value
-     * @return Groupe The current object (for fluent API support)
-     */
-    public function setName($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->name !== $v) {
-            $this->name = $v;
-            $this->modifiedColumns[] = GroupePeer::NAME;
-        }
-
-
-        return $this;
-    } // setName()
-
-    /**
-     * Set the value of [description] column.
-     * Description du groupe
-     * @param string $v new value
-     * @return Groupe The current object (for fluent API support)
-     */
-    public function setDescription($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->description !== $v) {
-            $this->description = $v;
-            $this->modifiedColumns[] = GroupePeer::DESCRIPTION;
-        }
-
-
-        return $this;
-    } // setDescription()
-
-    /**
-     * Set the value of [recalcul_rang] column.
-     * recalcul_rang
-     * @param string $v new value
-     * @return Groupe The current object (for fluent API support)
-     */
-    public function setRecalculRang($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->recalcul_rang !== $v) {
-            $this->recalcul_rang = $v;
-            $this->modifiedColumns[] = GroupePeer::RECALCUL_RANG;
-        }
-
-
-        return $this;
-    } // setRecalculRang()
-
-    /**
-     * Indicates whether the columns in this object are only set to default values.
-     *
-     * This method can be used in conjunction with isModified() to indicate whether an object is both
-     * modified _and_ has some values set which are non-default.
-     *
-     * @return boolean Whether the columns in this object are only been set with default values.
-     */
-    public function hasOnlyDefaultValues()
-    {
-        // otherwise, everything was equal, so return true
-        return true;
-    } // hasOnlyDefaultValues()
-
-    /**
-     * Hydrates (populates) the object variables with values from the database resultset.
-     *
-     * An offset (0-based "start column") is specified so that objects can be hydrated
-     * with a subset of the columns in the resultset rows.  This is needed, for example,
-     * for results of JOIN queries where the resultset row includes columns from two or
-     * more tables.
-     *
-     * @param array $row The row returned by PDOStatement->fetch(PDO::FETCH_NUM)
-     * @param int $startcol 0-based offset column which indicates which restultset column to start with.
-     * @param boolean $rehydrate Whether this object is being re-hydrated from the database.
-     * @return int             next starting column
-     * @throws PropelException - Any caught Exception will be rewrapped as a PropelException.
-     */
-    public function hydrate($row, $startcol = 0, $rehydrate = false)
-    {
-        try {
-
-            $this->id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
-            $this->name = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
-            $this->description = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
-            $this->recalcul_rang = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-            $this->resetModified();
-
-            $this->setNew(false);
-
-            if ($rehydrate) {
-                $this->ensureConsistency();
-            }
-
-            return $startcol + 4; // 4 = GroupePeer::NUM_HYDRATE_COLUMNS.
-
-        } catch (Exception $e) {
-            throw new PropelException("Error populating Groupe object", $e);
-        }
-    }
-
-    /**
-     * Checks and repairs the internal consistency of the object.
-     *
-     * This method is executed after an already-instantiated object is re-hydrated
-     * from the database.  It exists to check any foreign keys to make sure that
-     * the objects related to the current object are correct based on foreign key.
-     *
-     * You can override this method in the stub class, but you should always invoke
-     * the base method from the overridden method (i.e. parent::ensureConsistency()),
-     * in case your model changes.
-     *
-     * @throws PropelException
-     */
-    public function ensureConsistency()
-    {
-
-    } // ensureConsistency
-
-    /**
-     * Reloads this object from datastore based on primary key and (optionally) resets all associated objects.
-     *
-     * This will only work if the object has been saved and has a valid primary key set.
-     *
-     * @param boolean $deep (optional) Whether to also de-associated any related objects.
-     * @param PropelPDO $con (optional) The PropelPDO connection to use.
-     * @return void
-     * @throws PropelException - if this object is deleted, unsaved or doesn't have pk match in db
-     */
-    public function reload($deep = false, PropelPDO $con = null)
-    {
-        if ($this->isDeleted()) {
-            throw new PropelException("Cannot reload a deleted object.");
-        }
-
-        if ($this->isNew()) {
-            throw new PropelException("Cannot reload an unsaved object.");
-        }
-
-        if ($con === null) {
-            $con = Propel::getConnection(GroupePeer::DATABASE_NAME, Propel::CONNECTION_READ);
-        }
-
-        // We don't need to alter the object instance pool; we're just modifying this instance
-        // already in the pool.
-
-        $stmt = GroupePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
-        $row = $stmt->fetch(PDO::FETCH_NUM);
-        $stmt->closeCursor();
-        if (!$row) {
-            throw new PropelException('Cannot find matching row in the database to reload object values.');
-        }
-        $this->hydrate($row, 0, true); // rehydrate
-
-        if ($deep) {  // also de-associate any related objects?
-
-            $this->collJGroupesProfesseurss = null;
-
-            $this->collJGroupesMatieress = null;
-
-            $this->collJGroupesClassess = null;
-
-            $this->collCahierTexteCompteRendus = null;
-
-            $this->collCahierTexteTravailAFaires = null;
-
-            $this->collCahierTexteNoticePrivees = null;
-
-            $this->collJEleveGroupes = null;
-
-            $this->collAbsenceEleveSaisies = null;
-
-            $this->collCreditEctss = null;
-
-            $this->collEdtEmplacementCourss = null;
-
-            $this->collUtilisateurProfessionnels = null;
-            $this->collMatieres = null;
-            $this->collClasses = null;
-        } // if (deep)
-    }
-
-    /**
-     * Removes this object from datastore and sets delete attribute.
-     *
-     * @param PropelPDO $con
-     * @return void
-     * @throws PropelException
-     * @throws Exception
-     * @see        BaseObject::setDeleted()
-     * @see        BaseObject::isDeleted()
-     */
-    public function delete(PropelPDO $con = null)
-    {
-        if ($this->isDeleted()) {
-            throw new PropelException("This object has already been deleted.");
-        }
-
-        if ($con === null) {
-            $con = Propel::getConnection(GroupePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
-        }
-
-        $con->beginTransaction();
-        try {
-            $deleteQuery = GroupeQuery::create()
-                ->filterByPrimaryKey($this->getPrimaryKey());
-            $ret = $this->preDelete($con);
-            if ($ret) {
-                $deleteQuery->delete($con);
-                $this->postDelete($con);
-                $con->commit();
-                $this->setDeleted(true);
-            } else {
-                $con->commit();
-            }
-        } catch (Exception $e) {
-            $con->rollBack();
-            throw $e;
-        }
-    }
-
-    /**
-     * Persists this object to the database.
-     *
-     * If the object is new, it inserts it; otherwise an update is performed.
-     * All modified related objects will also be persisted in the doSave()
-     * method.  This method wraps all precipitate database operations in a
-     * single transaction.
-     *
-     * @param PropelPDO $con
-     * @return int             The number of rows affected by this insert/update and any referring fk objects' save() operations.
-     * @throws PropelException
-     * @throws Exception
-     * @see        doSave()
-     */
-    public function save(PropelPDO $con = null)
-    {
-        if ($this->isDeleted()) {
-            throw new PropelException("You cannot save an object that has been deleted.");
-        }
-
-        if ($con === null) {
-            $con = Propel::getConnection(GroupePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
-        }
-
-        $con->beginTransaction();
-        $isInsert = $this->isNew();
-        try {
-            $ret = $this->preSave($con);
-            if ($isInsert) {
-                $ret = $ret && $this->preInsert($con);
-            } else {
-                $ret = $ret && $this->preUpdate($con);
-            }
-            if ($ret) {
-                $affectedRows = $this->doSave($con);
-                if ($isInsert) {
-                    $this->postInsert($con);
-                } else {
-                    $this->postUpdate($con);
-                }
-                $this->postSave($con);
-                GroupePeer::addInstanceToPool($this);
-            } else {
-                $affectedRows = 0;
-            }
-            $con->commit();
-
-            return $affectedRows;
-        } catch (Exception $e) {
-            $con->rollBack();
-            throw $e;
-        }
-    }
-
-    /**
-     * Performs the work of inserting or updating the row in the database.
-     *
-     * If the object is new, it inserts it; otherwise an update is performed.
-     * All related objects are also updated in this method.
-     *
-     * @param PropelPDO $con
-     * @return int             The number of rows affected by this insert/update and any referring fk objects' save() operations.
-     * @throws PropelException
-     * @see        save()
-     */
-    protected function doSave(PropelPDO $con)
-    {
-        $affectedRows = 0; // initialize var to track total num of affected rows
-        if (!$this->alreadyInSave) {
-            $this->alreadyInSave = true;
-
-            if ($this->isNew() || $this->isModified()) {
-                // persist changes
-                if ($this->isNew()) {
-                    $this->doInsert($con);
-                } else {
-                    $this->doUpdate($con);
-                }
-                $affectedRows += 1;
-                $this->resetModified();
-            }
-
-            if ($this->utilisateurProfessionnelsScheduledForDeletion !== null) {
-                if (!$this->utilisateurProfessionnelsScheduledForDeletion->isEmpty()) {
-                    $pks = array();
-                    $pk = $this->getPrimaryKey();
-                    foreach ($this->utilisateurProfessionnelsScheduledForDeletion->getPrimaryKeys(false) as $remotePk) {
-                        $pks[] = array($pk, $remotePk);
-                    }
-                    JGroupesProfesseursQuery::create()
-                        ->filterByPrimaryKeys($pks)
-                        ->delete($con);
-                    $this->utilisateurProfessionnelsScheduledForDeletion = null;
-                }
-
-                foreach ($this->getUtilisateurProfessionnels() as $utilisateurProfessionnel) {
-                    if ($utilisateurProfessionnel->isModified()) {
-                        $utilisateurProfessionnel->save($con);
-                    }
-                }
-            }
-
-            if ($this->matieresScheduledForDeletion !== null) {
-                if (!$this->matieresScheduledForDeletion->isEmpty()) {
-                    $pks = array();
-                    $pk = $this->getPrimaryKey();
-                    foreach ($this->matieresScheduledForDeletion->getPrimaryKeys(false) as $remotePk) {
-                        $pks[] = array($pk, $remotePk);
-                    }
-                    JGroupesMatieresQuery::create()
-                        ->filterByPrimaryKeys($pks)
-                        ->delete($con);
-                    $this->matieresScheduledForDeletion = null;
-                }
-
-                foreach ($this->getMatieres() as $matiere) {
-                    if ($matiere->isModified()) {
-                        $matiere->save($con);
-                    }
-                }
-            }
-
-            if ($this->classesScheduledForDeletion !== null) {
-                if (!$this->classesScheduledForDeletion->isEmpty()) {
-                    $pks = array();
-                    $pk = $this->getPrimaryKey();
-                    foreach ($this->classesScheduledForDeletion->getPrimaryKeys(false) as $remotePk) {
-                        $pks[] = array($pk, $remotePk);
-                    }
-                    JGroupesClassesQuery::create()
-                        ->filterByPrimaryKeys($pks)
-                        ->delete($con);
-                    $this->classesScheduledForDeletion = null;
-                }
-
-                foreach ($this->getClasses() as $classe) {
-                    if ($classe->isModified()) {
-                        $classe->save($con);
-                    }
-                }
-            }
-
-            if ($this->jGroupesProfesseurssScheduledForDeletion !== null) {
-                if (!$this->jGroupesProfesseurssScheduledForDeletion->isEmpty()) {
-                    JGroupesProfesseursQuery::create()
-                        ->filterByPrimaryKeys($this->jGroupesProfesseurssScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->jGroupesProfesseurssScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collJGroupesProfesseurss !== null) {
-                foreach ($this->collJGroupesProfesseurss as $referrerFK) {
-                    if (!$referrerFK->isDeleted()) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->jGroupesMatieressScheduledForDeletion !== null) {
-                if (!$this->jGroupesMatieressScheduledForDeletion->isEmpty()) {
-                    JGroupesMatieresQuery::create()
-                        ->filterByPrimaryKeys($this->jGroupesMatieressScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->jGroupesMatieressScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collJGroupesMatieress !== null) {
-                foreach ($this->collJGroupesMatieress as $referrerFK) {
-                    if (!$referrerFK->isDeleted()) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->jGroupesClassessScheduledForDeletion !== null) {
-                if (!$this->jGroupesClassessScheduledForDeletion->isEmpty()) {
-                    JGroupesClassesQuery::create()
-                        ->filterByPrimaryKeys($this->jGroupesClassessScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->jGroupesClassessScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collJGroupesClassess !== null) {
-                foreach ($this->collJGroupesClassess as $referrerFK) {
-                    if (!$referrerFK->isDeleted()) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->cahierTexteCompteRendusScheduledForDeletion !== null) {
-                if (!$this->cahierTexteCompteRendusScheduledForDeletion->isEmpty()) {
-                    CahierTexteCompteRenduQuery::create()
-                        ->filterByPrimaryKeys($this->cahierTexteCompteRendusScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->cahierTexteCompteRendusScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collCahierTexteCompteRendus !== null) {
-                foreach ($this->collCahierTexteCompteRendus as $referrerFK) {
-                    if (!$referrerFK->isDeleted()) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->cahierTexteTravailAFairesScheduledForDeletion !== null) {
-                if (!$this->cahierTexteTravailAFairesScheduledForDeletion->isEmpty()) {
-                    CahierTexteTravailAFaireQuery::create()
-                        ->filterByPrimaryKeys($this->cahierTexteTravailAFairesScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->cahierTexteTravailAFairesScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collCahierTexteTravailAFaires !== null) {
-                foreach ($this->collCahierTexteTravailAFaires as $referrerFK) {
-                    if (!$referrerFK->isDeleted()) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->cahierTexteNoticePriveesScheduledForDeletion !== null) {
-                if (!$this->cahierTexteNoticePriveesScheduledForDeletion->isEmpty()) {
-                    CahierTexteNoticePriveeQuery::create()
-                        ->filterByPrimaryKeys($this->cahierTexteNoticePriveesScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->cahierTexteNoticePriveesScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collCahierTexteNoticePrivees !== null) {
-                foreach ($this->collCahierTexteNoticePrivees as $referrerFK) {
-                    if (!$referrerFK->isDeleted()) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->jEleveGroupesScheduledForDeletion !== null) {
-                if (!$this->jEleveGroupesScheduledForDeletion->isEmpty()) {
-                    JEleveGroupeQuery::create()
-                        ->filterByPrimaryKeys($this->jEleveGroupesScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->jEleveGroupesScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collJEleveGroupes !== null) {
-                foreach ($this->collJEleveGroupes as $referrerFK) {
-                    if (!$referrerFK->isDeleted()) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->absenceEleveSaisiesScheduledForDeletion !== null) {
-                if (!$this->absenceEleveSaisiesScheduledForDeletion->isEmpty()) {
-                    foreach ($this->absenceEleveSaisiesScheduledForDeletion as $absenceEleveSaisie) {
-                        // need to save related object because we set the relation to null
-                        $absenceEleveSaisie->save($con);
-                    }
-                    $this->absenceEleveSaisiesScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collAbsenceEleveSaisies !== null) {
-                foreach ($this->collAbsenceEleveSaisies as $referrerFK) {
-                    if (!$referrerFK->isDeleted()) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->creditEctssScheduledForDeletion !== null) {
-                if (!$this->creditEctssScheduledForDeletion->isEmpty()) {
-                    CreditEctsQuery::create()
-                        ->filterByPrimaryKeys($this->creditEctssScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->creditEctssScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collCreditEctss !== null) {
-                foreach ($this->collCreditEctss as $referrerFK) {
-                    if (!$referrerFK->isDeleted()) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->edtEmplacementCourssScheduledForDeletion !== null) {
-                if (!$this->edtEmplacementCourssScheduledForDeletion->isEmpty()) {
-                    foreach ($this->edtEmplacementCourssScheduledForDeletion as $edtEmplacementCours) {
-                        // need to save related object because we set the relation to null
-                        $edtEmplacementCours->save($con);
-                    }
-                    $this->edtEmplacementCourssScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collEdtEmplacementCourss !== null) {
-                foreach ($this->collEdtEmplacementCourss as $referrerFK) {
-                    if (!$referrerFK->isDeleted()) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            $this->alreadyInSave = false;
-
-        }
-
-        return $affectedRows;
-    } // doSave()
-
-    /**
-     * Insert the row in the database.
-     *
-     * @param PropelPDO $con
-     *
-     * @throws PropelException
-     * @see        doSave()
-     */
-    protected function doInsert(PropelPDO $con)
-    {
-        $modifiedColumns = array();
-        $index = 0;
-
-        $this->modifiedColumns[] = GroupePeer::ID;
-        if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . GroupePeer::ID . ')');
-        }
-
-         // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(GroupePeer::ID)) {
-            $modifiedColumns[':p' . $index++]  = 'ID';
-        }
-        if ($this->isColumnModified(GroupePeer::NAME)) {
-            $modifiedColumns[':p' . $index++]  = 'NAME';
-        }
-        if ($this->isColumnModified(GroupePeer::DESCRIPTION)) {
-            $modifiedColumns[':p' . $index++]  = 'DESCRIPTION';
-        }
-        if ($this->isColumnModified(GroupePeer::RECALCUL_RANG)) {
-            $modifiedColumns[':p' . $index++]  = 'RECALCUL_RANG';
-        }
-
-        $sql = sprintf(
-            'INSERT INTO groupes (%s) VALUES (%s)',
-            implode(', ', $modifiedColumns),
-            implode(', ', array_keys($modifiedColumns))
-        );
-
-        try {
-            $stmt = $con->prepare($sql);
-            foreach ($modifiedColumns as $identifier => $columnName) {
-                switch ($columnName) {
-                    case 'ID':
-                        $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
-                        break;
-                    case 'NAME':
-                        $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
-                        break;
-                    case 'DESCRIPTION':
-                        $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
-                        break;
-                    case 'RECALCUL_RANG':
-                        $stmt->bindValue($identifier, $this->recalcul_rang, PDO::PARAM_STR);
-                        break;
-                }
-            }
-            $stmt->execute();
-        } catch (Exception $e) {
-            Propel::log($e->getMessage(), Propel::LOG_ERR);
-            throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
-        }
-
-        try {
-            $pk = $con->lastInsertId();
-        } catch (Exception $e) {
-            throw new PropelException('Unable to get autoincrement id.', $e);
-        }
-        $this->setId($pk);
-
-        $this->setNew(false);
-    }
-
-    /**
-     * Update the row in the database.
-     *
-     * @param PropelPDO $con
-     *
-     * @see        doSave()
-     */
-    protected function doUpdate(PropelPDO $con)
-    {
-        $selectCriteria = $this->buildPkeyCriteria();
-        $valuesCriteria = $this->buildCriteria();
-        BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
-    }
-
-    /**
-     * Array of ValidationFailed objects.
-     * @var        array ValidationFailed[]
-     */
-    protected $validationFailures = array();
-
-    /**
-     * Gets any ValidationFailed objects that resulted from last call to validate().
-     *
-     *
-     * @return array ValidationFailed[]
-     * @see        validate()
-     */
-    public function getValidationFailures()
-    {
-        return $this->validationFailures;
-    }
-
-    /**
-     * Validates the objects modified field values and all objects related to this table.
-     *
-     * If $columns is either a column name or an array of column names
-     * only those columns are validated.
-     *
-     * @param mixed $columns Column name or an array of column names.
-     * @return boolean Whether all columns pass validation.
-     * @see        doValidate()
-     * @see        getValidationFailures()
-     */
-    public function validate($columns = null)
-    {
-        $res = $this->doValidate($columns);
-        if ($res === true) {
-            $this->validationFailures = array();
-
-            return true;
-        } else {
-            $this->validationFailures = $res;
-
-            return false;
-        }
-    }
-
-    /**
-     * This function performs the validation work for complex object models.
-     *
-     * In addition to checking the current object, all related objects will
-     * also be validated.  If all pass then <code>true</code> is returned; otherwise
-     * an aggreagated array of ValidationFailed objects will be returned.
-     *
-     * @param array $columns Array of column names to validate.
-     * @return mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objets otherwise.
-     */
-    protected function doValidate($columns = null)
-    {
-        if (!$this->alreadyInValidation) {
-            $this->alreadyInValidation = true;
-            $retval = null;
-
-            $failureMap = array();
-
-
-            if (($retval = GroupePeer::doValidate($this, $columns)) !== true) {
-                $failureMap = array_merge($failureMap, $retval);
-            }
-
-
-                if ($this->collJGroupesProfesseurss !== null) {
-                    foreach ($this->collJGroupesProfesseurss as $referrerFK) {
-                        if (!$referrerFK->validate($columns)) {
-                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-                        }
-                    }
-                }
-
-                if ($this->collJGroupesMatieress !== null) {
-                    foreach ($this->collJGroupesMatieress as $referrerFK) {
-                        if (!$referrerFK->validate($columns)) {
-                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-                        }
-                    }
-                }
-
-                if ($this->collJGroupesClassess !== null) {
-                    foreach ($this->collJGroupesClassess as $referrerFK) {
-                        if (!$referrerFK->validate($columns)) {
-                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-                        }
-                    }
-                }
-
-                if ($this->collCahierTexteCompteRendus !== null) {
-                    foreach ($this->collCahierTexteCompteRendus as $referrerFK) {
-                        if (!$referrerFK->validate($columns)) {
-                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-                        }
-                    }
-                }
-
-                if ($this->collCahierTexteTravailAFaires !== null) {
-                    foreach ($this->collCahierTexteTravailAFaires as $referrerFK) {
-                        if (!$referrerFK->validate($columns)) {
-                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-                        }
-                    }
-                }
-
-                if ($this->collCahierTexteNoticePrivees !== null) {
-                    foreach ($this->collCahierTexteNoticePrivees as $referrerFK) {
-                        if (!$referrerFK->validate($columns)) {
-                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-                        }
-                    }
-                }
-
-                if ($this->collJEleveGroupes !== null) {
-                    foreach ($this->collJEleveGroupes as $referrerFK) {
-                        if (!$referrerFK->validate($columns)) {
-                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-                        }
-                    }
-                }
-
-                if ($this->collAbsenceEleveSaisies !== null) {
-                    foreach ($this->collAbsenceEleveSaisies as $referrerFK) {
-                        if (!$referrerFK->validate($columns)) {
-                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-                        }
-                    }
-                }
-
-                if ($this->collCreditEctss !== null) {
-                    foreach ($this->collCreditEctss as $referrerFK) {
-                        if (!$referrerFK->validate($columns)) {
-                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-                        }
-                    }
-                }
-
-                if ($this->collEdtEmplacementCourss !== null) {
-                    foreach ($this->collEdtEmplacementCourss as $referrerFK) {
-                        if (!$referrerFK->validate($columns)) {
-                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-                        }
-                    }
-                }
-
-
-            $this->alreadyInValidation = false;
-        }
-
-        return (!empty($failureMap) ? $failureMap : true);
-    }
-
-    /**
-     * Retrieves a field from the object by name passed in as a string.
-     *
-     * @param string $name name
-     * @param string $type The type of fieldname the $name is of:
-     *               one of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
-     *               BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
-     *               Defaults to BasePeer::TYPE_PHPNAME
-     * @return mixed Value of field.
-     */
-    public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
-    {
-        $pos = GroupePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
-        $field = $this->getByPosition($pos);
-
-        return $field;
-    }
-
-    /**
-     * Retrieves a field from the object by Position as specified in the xml schema.
-     * Zero-based.
-     *
-     * @param int $pos position in xml schema
-     * @return mixed Value of field at $pos
-     */
-    public function getByPosition($pos)
-    {
-        switch ($pos) {
-            case 0:
-                return $this->getId();
-                break;
-            case 1:
-                return $this->getName();
-                break;
-            case 2:
-                return $this->getDescription();
-                break;
-            case 3:
-                return $this->getRecalculRang();
-                break;
-            default:
-                return null;
-                break;
-        } // switch()
-    }
-
-    /**
-     * Exports the object as an array.
-     *
-     * You can specify the key type of the array by passing one of the class
-     * type constants.
-     *
-     * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-     *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
-     *                    Defaults to BasePeer::TYPE_PHPNAME.
-     * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to true.
-     * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
-     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
-     *
-     * @return array an associative array containing the field names (as keys) and field values
-     */
-    public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
-    {
-        if (isset($alreadyDumpedObjects['Groupe'][$this->getPrimaryKey()])) {
-            return '*RECURSION*';
-        }
-        $alreadyDumpedObjects['Groupe'][$this->getPrimaryKey()] = true;
-        $keys = GroupePeer::getFieldNames($keyType);
-        $result = array(
-            $keys[0] => $this->getId(),
-            $keys[1] => $this->getName(),
-            $keys[2] => $this->getDescription(),
-            $keys[3] => $this->getRecalculRang(),
-        );
-        if ($includeForeignObjects) {
-            if (null !== $this->collJGroupesProfesseurss) {
-                $result['JGroupesProfesseurss'] = $this->collJGroupesProfesseurss->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collJGroupesMatieress) {
-                $result['JGroupesMatieress'] = $this->collJGroupesMatieress->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collJGroupesClassess) {
-                $result['JGroupesClassess'] = $this->collJGroupesClassess->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collCahierTexteCompteRendus) {
-                $result['CahierTexteCompteRendus'] = $this->collCahierTexteCompteRendus->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collCahierTexteTravailAFaires) {
-                $result['CahierTexteTravailAFaires'] = $this->collCahierTexteTravailAFaires->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collCahierTexteNoticePrivees) {
-                $result['CahierTexteNoticePrivees'] = $this->collCahierTexteNoticePrivees->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collJEleveGroupes) {
-                $result['JEleveGroupes'] = $this->collJEleveGroupes->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collAbsenceEleveSaisies) {
-                $result['AbsenceEleveSaisies'] = $this->collAbsenceEleveSaisies->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collCreditEctss) {
-                $result['CreditEctss'] = $this->collCreditEctss->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collEdtEmplacementCourss) {
-                $result['EdtEmplacementCourss'] = $this->collEdtEmplacementCourss->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * Sets a field from the object by name passed in as a string.
-     *
-     * @param string $name peer name
-     * @param mixed $value field value
-     * @param string $type The type of fieldname the $name is of:
-     *                     one of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
-     *                     BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
-     *                     Defaults to BasePeer::TYPE_PHPNAME
-     * @return void
-     */
-    public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
-    {
-        $pos = GroupePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
-
-        $this->setByPosition($pos, $value);
-    }
-
-    /**
-     * Sets a field from the object by Position as specified in the xml schema.
-     * Zero-based.
-     *
-     * @param int $pos position in xml schema
-     * @param mixed $value field value
-     * @return void
-     */
-    public function setByPosition($pos, $value)
-    {
-        switch ($pos) {
-            case 0:
-                $this->setId($value);
-                break;
-            case 1:
-                $this->setName($value);
-                break;
-            case 2:
-                $this->setDescription($value);
-                break;
-            case 3:
-                $this->setRecalculRang($value);
-                break;
-        } // switch()
-    }
-
-    /**
-     * Populates the object using an array.
-     *
-     * This is particularly useful when populating an object from one of the
-     * request arrays (e.g. $_POST).  This method goes through the column
-     * names, checking to see whether a matching key exists in populated
-     * array. If so the setByName() method is called for that column.
-     *
-     * You can specify the key type of the array by additionally passing one
-     * of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-     * BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
-     * The default key type is the column's BasePeer::TYPE_PHPNAME
-     *
-     * @param array  $arr     An array to populate the object from.
-     * @param string $keyType The type of keys the array uses.
-     * @return void
-     */
-    public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
-    {
-        $keys = GroupePeer::getFieldNames($keyType);
-
-        if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setDescription($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setRecalculRang($arr[$keys[3]]);
-    }
-
-    /**
-     * Build a Criteria object containing the values of all modified columns in this object.
-     *
-     * @return Criteria The Criteria object containing all modified values.
-     */
-    public function buildCriteria()
-    {
-        $criteria = new Criteria(GroupePeer::DATABASE_NAME);
-
-        if ($this->isColumnModified(GroupePeer::ID)) $criteria->add(GroupePeer::ID, $this->id);
-        if ($this->isColumnModified(GroupePeer::NAME)) $criteria->add(GroupePeer::NAME, $this->name);
-        if ($this->isColumnModified(GroupePeer::DESCRIPTION)) $criteria->add(GroupePeer::DESCRIPTION, $this->description);
-        if ($this->isColumnModified(GroupePeer::RECALCUL_RANG)) $criteria->add(GroupePeer::RECALCUL_RANG, $this->recalcul_rang);
-
-        return $criteria;
-    }
-
-    /**
-     * Builds a Criteria object containing the primary key for this object.
-     *
-     * Unlike buildCriteria() this method includes the primary key values regardless
-     * of whether or not they have been modified.
-     *
-     * @return Criteria The Criteria object containing value(s) for primary key(s).
-     */
-    public function buildPkeyCriteria()
-    {
-        $criteria = new Criteria(GroupePeer::DATABASE_NAME);
-        $criteria->add(GroupePeer::ID, $this->id);
-
-        return $criteria;
-    }
-
-    /**
-     * Returns the primary key for this object (row).
-     * @return int
-     */
-    public function getPrimaryKey()
-    {
-        return $this->getId();
-    }
-
-    /**
-     * Generic method to set the primary key (id column).
-     *
-     * @param  int $key Primary key.
-     * @return void
-     */
-    public function setPrimaryKey($key)
-    {
-        $this->setId($key);
-    }
-
-    /**
-     * Returns true if the primary key for this object is null.
-     * @return boolean
-     */
-    public function isPrimaryKeyNull()
-    {
-
-        return null === $this->getId();
-    }
-
-    /**
-     * Sets contents of passed object to values from current object.
-     *
-     * If desired, this method can also make copies of all associated (fkey referrers)
-     * objects.
-     *
-     * @param object $copyObj An object of Groupe (or compatible) type.
-     * @param boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @param boolean $makeNew Whether to reset autoincrement PKs and make the object new.
-     * @throws PropelException
-     */
-    public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
-    {
-        $copyObj->setName($this->getName());
-        $copyObj->setDescription($this->getDescription());
-        $copyObj->setRecalculRang($this->getRecalculRang());
-
-        if ($deepCopy && !$this->startCopy) {
-            // important: temporarily setNew(false) because this affects the behavior of
-            // the getter/setter methods for fkey referrer objects.
-            $copyObj->setNew(false);
-            // store object hash to prevent cycle
-            $this->startCopy = true;
-
-            foreach ($this->getJGroupesProfesseurss() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addJGroupesProfesseurs($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getJGroupesMatieress() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addJGroupesMatieres($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getJGroupesClassess() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addJGroupesClasses($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getCahierTexteCompteRendus() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addCahierTexteCompteRendu($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getCahierTexteTravailAFaires() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addCahierTexteTravailAFaire($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getCahierTexteNoticePrivees() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addCahierTexteNoticePrivee($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getJEleveGroupes() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addJEleveGroupe($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getAbsenceEleveSaisies() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addAbsenceEleveSaisie($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getCreditEctss() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addCreditEcts($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getEdtEmplacementCourss() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addEdtEmplacementCours($relObj->copy($deepCopy));
-                }
-            }
-
-            //unflag object copy
-            $this->startCopy = false;
-        } // if ($deepCopy)
-
-        if ($makeNew) {
-            $copyObj->setNew(true);
-            $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
-        }
-    }
-
-    /**
-     * Makes a copy of this object that will be inserted as a new row in table when saved.
-     * It creates a new object filling in the simple attributes, but skipping any primary
-     * keys that are defined for the table.
-     *
-     * If desired, this method can also make copies of all associated (fkey referrers)
-     * objects.
-     *
-     * @param boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return Groupe Clone of current object.
-     * @throws PropelException
-     */
-    public function copy($deepCopy = false)
-    {
-        // we use get_class(), because this might be a subclass
-        $clazz = get_class($this);
-        $copyObj = new $clazz();
-        $this->copyInto($copyObj, $deepCopy);
-
-        return $copyObj;
-    }
-
-    /**
-     * Returns a peer instance associated with this om.
-     *
-     * Since Peer classes are not to have any instance attributes, this method returns the
-     * same instance for all member of this class. The method could therefore
-     * be static, but this would prevent one from overriding the behavior.
-     *
-     * @return GroupePeer
-     */
-    public function getPeer()
-    {
-        if (self::$peer === null) {
-            self::$peer = new GroupePeer();
-        }
-
-        return self::$peer;
-    }
-
-
-    /**
-     * Initializes a collection based on the name of a relation.
-     * Avoids crafting an 'init[$relationName]s' method name
-     * that wouldn't work when StandardEnglishPluralizer is used.
-     *
-     * @param string $relationName The name of the relation to initialize
-     * @return void
-     */
-    public function initRelation($relationName)
-    {
-        if ('JGroupesProfesseurs' == $relationName) {
-            $this->initJGroupesProfesseurss();
-        }
-        if ('JGroupesMatieres' == $relationName) {
-            $this->initJGroupesMatieress();
-        }
-        if ('JGroupesClasses' == $relationName) {
-            $this->initJGroupesClassess();
-        }
-        if ('CahierTexteCompteRendu' == $relationName) {
-            $this->initCahierTexteCompteRendus();
-        }
-        if ('CahierTexteTravailAFaire' == $relationName) {
-            $this->initCahierTexteTravailAFaires();
-        }
-        if ('CahierTexteNoticePrivee' == $relationName) {
-            $this->initCahierTexteNoticePrivees();
-        }
-        if ('JEleveGroupe' == $relationName) {
-            $this->initJEleveGroupes();
-        }
-        if ('AbsenceEleveSaisie' == $relationName) {
-            $this->initAbsenceEleveSaisies();
-        }
-        if ('CreditEcts' == $relationName) {
-            $this->initCreditEctss();
-        }
-        if ('EdtEmplacementCours' == $relationName) {
-            $this->initEdtEmplacementCourss();
-        }
-    }
-
-    /**
-     * Clears out the collJGroupesProfesseurss collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addJGroupesProfesseurss()
-     */
-    public function clearJGroupesProfesseurss()
-    {
-        $this->collJGroupesProfesseurss = null; // important to set this to null since that means it is uninitialized
-        $this->collJGroupesProfesseurssPartial = null;
-    }
-
-    /**
-     * reset is the collJGroupesProfesseurss collection loaded partially
-     *
-     * @return void
-     */
-    public function resetPartialJGroupesProfesseurss($v = true)
-    {
-        $this->collJGroupesProfesseurssPartial = $v;
-    }
-
-    /**
-     * Initializes the collJGroupesProfesseurss collection.
-     *
-     * By default this just sets the collJGroupesProfesseurss collection to an empty array (like clearcollJGroupesProfesseurss());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initJGroupesProfesseurss($overrideExisting = true)
-    {
-        if (null !== $this->collJGroupesProfesseurss && !$overrideExisting) {
-            return;
-        }
-        $this->collJGroupesProfesseurss = new PropelObjectCollection();
-        $this->collJGroupesProfesseurss->setModel('JGroupesProfesseurs');
-    }
-
-    /**
-     * Gets an array of JGroupesProfesseurs objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this Groupe is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @return PropelObjectCollection|JGroupesProfesseurs[] List of JGroupesProfesseurs objects
-     * @throws PropelException
-     */
-    public function getJGroupesProfesseurss($criteria = null, PropelPDO $con = null)
-    {
-        $partial = $this->collJGroupesProfesseurssPartial && !$this->isNew();
-        if (null === $this->collJGroupesProfesseurss || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collJGroupesProfesseurss) {
-                // return empty collection
-                $this->initJGroupesProfesseurss();
-            } else {
-                $collJGroupesProfesseurss = JGroupesProfesseursQuery::create(null, $criteria)
-                    ->filterByGroupe($this)
-                    ->find($con);
-                if (null !== $criteria) {
-                    if (false !== $this->collJGroupesProfesseurssPartial && count($collJGroupesProfesseurss)) {
-                      $this->initJGroupesProfesseurss(false);
-
-                      foreach($collJGroupesProfesseurss as $obj) {
-                        if (false == $this->collJGroupesProfesseurss->contains($obj)) {
-                          $this->collJGroupesProfesseurss->append($obj);
-                        }
-                      }
-
-                      $this->collJGroupesProfesseurssPartial = true;
-                    }
-
-                    return $collJGroupesProfesseurss;
-                }
-
-                if($partial && $this->collJGroupesProfesseurss) {
-                    foreach($this->collJGroupesProfesseurss as $obj) {
-                        if($obj->isNew()) {
-                            $collJGroupesProfesseurss[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collJGroupesProfesseurss = $collJGroupesProfesseurss;
-                $this->collJGroupesProfesseurssPartial = false;
-            }
-        }
-
-        return $this->collJGroupesProfesseurss;
-    }
-
-    /**
-     * Sets a collection of JGroupesProfesseurs objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param PropelCollection $jGroupesProfesseurss A Propel collection.
-     * @param PropelPDO $con Optional connection object
-     */
-    public function setJGroupesProfesseurss(PropelCollection $jGroupesProfesseurss, PropelPDO $con = null)
-    {
-        $this->jGroupesProfesseurssScheduledForDeletion = $this->getJGroupesProfesseurss(new Criteria(), $con)->diff($jGroupesProfesseurss);
-
-        foreach ($this->jGroupesProfesseurssScheduledForDeletion as $jGroupesProfesseursRemoved) {
-            $jGroupesProfesseursRemoved->setGroupe(null);
-        }
-
-        $this->collJGroupesProfesseurss = null;
-        foreach ($jGroupesProfesseurss as $jGroupesProfesseurs) {
-            $this->addJGroupesProfesseurs($jGroupesProfesseurs);
-        }
-
-        $this->collJGroupesProfesseurss = $jGroupesProfesseurss;
-        $this->collJGroupesProfesseurssPartial = false;
-    }
-
-    /**
-     * Returns the number of related JGroupesProfesseurs objects.
-     *
-     * @param Criteria $criteria
-     * @param boolean $distinct
-     * @param PropelPDO $con
-     * @return int             Count of related JGroupesProfesseurs objects.
-     * @throws PropelException
-     */
-    public function countJGroupesProfesseurss(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-    {
-        $partial = $this->collJGroupesProfesseurssPartial && !$this->isNew();
-        if (null === $this->collJGroupesProfesseurss || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collJGroupesProfesseurss) {
-                return 0;
-            } else {
-                if($partial && !$criteria) {
-                    return count($this->getJGroupesProfesseurss());
-                }
-                $query = JGroupesProfesseursQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByGroupe($this)
-                    ->count($con);
-            }
-        } else {
-            return count($this->collJGroupesProfesseurss);
-        }
-    }
-
-    /**
-     * Method called to associate a JGroupesProfesseurs object to this object
-     * through the JGroupesProfesseurs foreign key attribute.
-     *
-     * @param    JGroupesProfesseurs $l JGroupesProfesseurs
-     * @return Groupe The current object (for fluent API support)
-     */
-    public function addJGroupesProfesseurs(JGroupesProfesseurs $l)
-    {
-        if ($this->collJGroupesProfesseurss === null) {
-            $this->initJGroupesProfesseurss();
-            $this->collJGroupesProfesseurssPartial = true;
-        }
-        if (!in_array($l, $this->collJGroupesProfesseurss->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddJGroupesProfesseurs($l);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param	JGroupesProfesseurs $jGroupesProfesseurs The jGroupesProfesseurs object to add.
-     */
-    protected function doAddJGroupesProfesseurs($jGroupesProfesseurs)
-    {
-        $this->collJGroupesProfesseurss[]= $jGroupesProfesseurs;
-        $jGroupesProfesseurs->setGroupe($this);
-    }
-
-    /**
-     * @param	JGroupesProfesseurs $jGroupesProfesseurs The jGroupesProfesseurs object to remove.
-     */
-    public function removeJGroupesProfesseurs($jGroupesProfesseurs)
-    {
-        if ($this->getJGroupesProfesseurss()->contains($jGroupesProfesseurs)) {
-            $this->collJGroupesProfesseurss->remove($this->collJGroupesProfesseurss->search($jGroupesProfesseurs));
-            if (null === $this->jGroupesProfesseurssScheduledForDeletion) {
-                $this->jGroupesProfesseurssScheduledForDeletion = clone $this->collJGroupesProfesseurss;
-                $this->jGroupesProfesseurssScheduledForDeletion->clear();
-            }
-            $this->jGroupesProfesseurssScheduledForDeletion[]= $jGroupesProfesseurs;
-            $jGroupesProfesseurs->setGroupe(null);
-        }
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related JGroupesProfesseurss from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|JGroupesProfesseurs[] List of JGroupesProfesseurs objects
-     */
-    public function getJGroupesProfesseurssJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = JGroupesProfesseursQuery::create(null, $criteria);
-        $query->joinWith('UtilisateurProfessionnel', $join_behavior);
-
-        return $this->getJGroupesProfesseurss($query, $con);
-    }
-
-    /**
-     * Clears out the collJGroupesMatieress collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addJGroupesMatieress()
-     */
-    public function clearJGroupesMatieress()
-    {
-        $this->collJGroupesMatieress = null; // important to set this to null since that means it is uninitialized
-        $this->collJGroupesMatieressPartial = null;
-    }
-
-    /**
-     * reset is the collJGroupesMatieress collection loaded partially
-     *
-     * @return void
-     */
-    public function resetPartialJGroupesMatieress($v = true)
-    {
-        $this->collJGroupesMatieressPartial = $v;
-    }
-
-    /**
-     * Initializes the collJGroupesMatieress collection.
-     *
-     * By default this just sets the collJGroupesMatieress collection to an empty array (like clearcollJGroupesMatieress());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initJGroupesMatieress($overrideExisting = true)
-    {
-        if (null !== $this->collJGroupesMatieress && !$overrideExisting) {
-            return;
-        }
-        $this->collJGroupesMatieress = new PropelObjectCollection();
-        $this->collJGroupesMatieress->setModel('JGroupesMatieres');
-    }
-
-    /**
-     * Gets an array of JGroupesMatieres objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this Groupe is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @return PropelObjectCollection|JGroupesMatieres[] List of JGroupesMatieres objects
-     * @throws PropelException
-     */
-    public function getJGroupesMatieress($criteria = null, PropelPDO $con = null)
-    {
-        $partial = $this->collJGroupesMatieressPartial && !$this->isNew();
-        if (null === $this->collJGroupesMatieress || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collJGroupesMatieress) {
-                // return empty collection
-                $this->initJGroupesMatieress();
-            } else {
-                $collJGroupesMatieress = JGroupesMatieresQuery::create(null, $criteria)
-                    ->filterByGroupe($this)
-                    ->find($con);
-                if (null !== $criteria) {
-                    if (false !== $this->collJGroupesMatieressPartial && count($collJGroupesMatieress)) {
-                      $this->initJGroupesMatieress(false);
-
-                      foreach($collJGroupesMatieress as $obj) {
-                        if (false == $this->collJGroupesMatieress->contains($obj)) {
-                          $this->collJGroupesMatieress->append($obj);
-                        }
-                      }
-
-                      $this->collJGroupesMatieressPartial = true;
-                    }
-
-                    return $collJGroupesMatieress;
-                }
-
-                if($partial && $this->collJGroupesMatieress) {
-                    foreach($this->collJGroupesMatieress as $obj) {
-                        if($obj->isNew()) {
-                            $collJGroupesMatieress[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collJGroupesMatieress = $collJGroupesMatieress;
-                $this->collJGroupesMatieressPartial = false;
-            }
-        }
-
-        return $this->collJGroupesMatieress;
-    }
-
-    /**
-     * Sets a collection of JGroupesMatieres objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param PropelCollection $jGroupesMatieress A Propel collection.
-     * @param PropelPDO $con Optional connection object
-     */
-    public function setJGroupesMatieress(PropelCollection $jGroupesMatieress, PropelPDO $con = null)
-    {
-        $this->jGroupesMatieressScheduledForDeletion = $this->getJGroupesMatieress(new Criteria(), $con)->diff($jGroupesMatieress);
-
-        foreach ($this->jGroupesMatieressScheduledForDeletion as $jGroupesMatieresRemoved) {
-            $jGroupesMatieresRemoved->setGroupe(null);
-        }
-
-        $this->collJGroupesMatieress = null;
-        foreach ($jGroupesMatieress as $jGroupesMatieres) {
-            $this->addJGroupesMatieres($jGroupesMatieres);
-        }
-
-        $this->collJGroupesMatieress = $jGroupesMatieress;
-        $this->collJGroupesMatieressPartial = false;
-    }
-
-    /**
-     * Returns the number of related JGroupesMatieres objects.
-     *
-     * @param Criteria $criteria
-     * @param boolean $distinct
-     * @param PropelPDO $con
-     * @return int             Count of related JGroupesMatieres objects.
-     * @throws PropelException
-     */
-    public function countJGroupesMatieress(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-    {
-        $partial = $this->collJGroupesMatieressPartial && !$this->isNew();
-        if (null === $this->collJGroupesMatieress || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collJGroupesMatieress) {
-                return 0;
-            } else {
-                if($partial && !$criteria) {
-                    return count($this->getJGroupesMatieress());
-                }
-                $query = JGroupesMatieresQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByGroupe($this)
-                    ->count($con);
-            }
-        } else {
-            return count($this->collJGroupesMatieress);
-        }
-    }
-
-    /**
-     * Method called to associate a JGroupesMatieres object to this object
-     * through the JGroupesMatieres foreign key attribute.
-     *
-     * @param    JGroupesMatieres $l JGroupesMatieres
-     * @return Groupe The current object (for fluent API support)
-     */
-    public function addJGroupesMatieres(JGroupesMatieres $l)
-    {
-        if ($this->collJGroupesMatieress === null) {
-            $this->initJGroupesMatieress();
-            $this->collJGroupesMatieressPartial = true;
-        }
-        if (!in_array($l, $this->collJGroupesMatieress->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddJGroupesMatieres($l);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param	JGroupesMatieres $jGroupesMatieres The jGroupesMatieres object to add.
-     */
-    protected function doAddJGroupesMatieres($jGroupesMatieres)
-    {
-        $this->collJGroupesMatieress[]= $jGroupesMatieres;
-        $jGroupesMatieres->setGroupe($this);
-    }
-
-    /**
-     * @param	JGroupesMatieres $jGroupesMatieres The jGroupesMatieres object to remove.
-     */
-    public function removeJGroupesMatieres($jGroupesMatieres)
-    {
-        if ($this->getJGroupesMatieress()->contains($jGroupesMatieres)) {
-            $this->collJGroupesMatieress->remove($this->collJGroupesMatieress->search($jGroupesMatieres));
-            if (null === $this->jGroupesMatieressScheduledForDeletion) {
-                $this->jGroupesMatieressScheduledForDeletion = clone $this->collJGroupesMatieress;
-                $this->jGroupesMatieressScheduledForDeletion->clear();
-            }
-            $this->jGroupesMatieressScheduledForDeletion[]= $jGroupesMatieres;
-            $jGroupesMatieres->setGroupe(null);
-        }
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related JGroupesMatieress from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|JGroupesMatieres[] List of JGroupesMatieres objects
-     */
-    public function getJGroupesMatieressJoinMatiere($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = JGroupesMatieresQuery::create(null, $criteria);
-        $query->joinWith('Matiere', $join_behavior);
-
-        return $this->getJGroupesMatieress($query, $con);
-    }
-
-    /**
-     * Clears out the collJGroupesClassess collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addJGroupesClassess()
-     */
-    public function clearJGroupesClassess()
-    {
-        $this->collJGroupesClassess = null; // important to set this to null since that means it is uninitialized
-        $this->collJGroupesClassessPartial = null;
-    }
-
-    /**
-     * reset is the collJGroupesClassess collection loaded partially
-     *
-     * @return void
-     */
-    public function resetPartialJGroupesClassess($v = true)
-    {
-        $this->collJGroupesClassessPartial = $v;
-    }
-
-    /**
-     * Initializes the collJGroupesClassess collection.
-     *
-     * By default this just sets the collJGroupesClassess collection to an empty array (like clearcollJGroupesClassess());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initJGroupesClassess($overrideExisting = true)
-    {
-        if (null !== $this->collJGroupesClassess && !$overrideExisting) {
-            return;
-        }
-        $this->collJGroupesClassess = new PropelObjectCollection();
-        $this->collJGroupesClassess->setModel('JGroupesClasses');
-    }
-
-    /**
-     * Gets an array of JGroupesClasses objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this Groupe is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @return PropelObjectCollection|JGroupesClasses[] List of JGroupesClasses objects
-     * @throws PropelException
-     */
-    public function getJGroupesClassess($criteria = null, PropelPDO $con = null)
-    {
-        $partial = $this->collJGroupesClassessPartial && !$this->isNew();
-        if (null === $this->collJGroupesClassess || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collJGroupesClassess) {
-                // return empty collection
-                $this->initJGroupesClassess();
-            } else {
-                $collJGroupesClassess = JGroupesClassesQuery::create(null, $criteria)
-                    ->filterByGroupe($this)
-                    ->find($con);
-                if (null !== $criteria) {
-                    if (false !== $this->collJGroupesClassessPartial && count($collJGroupesClassess)) {
-                      $this->initJGroupesClassess(false);
-
-                      foreach($collJGroupesClassess as $obj) {
-                        if (false == $this->collJGroupesClassess->contains($obj)) {
-                          $this->collJGroupesClassess->append($obj);
-                        }
-                      }
-
-                      $this->collJGroupesClassessPartial = true;
-                    }
-
-                    return $collJGroupesClassess;
-                }
-
-                if($partial && $this->collJGroupesClassess) {
-                    foreach($this->collJGroupesClassess as $obj) {
-                        if($obj->isNew()) {
-                            $collJGroupesClassess[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collJGroupesClassess = $collJGroupesClassess;
-                $this->collJGroupesClassessPartial = false;
-            }
-        }
-
-        return $this->collJGroupesClassess;
-    }
-
-    /**
-     * Sets a collection of JGroupesClasses objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param PropelCollection $jGroupesClassess A Propel collection.
-     * @param PropelPDO $con Optional connection object
-     */
-    public function setJGroupesClassess(PropelCollection $jGroupesClassess, PropelPDO $con = null)
-    {
-        $this->jGroupesClassessScheduledForDeletion = $this->getJGroupesClassess(new Criteria(), $con)->diff($jGroupesClassess);
-
-        foreach ($this->jGroupesClassessScheduledForDeletion as $jGroupesClassesRemoved) {
-            $jGroupesClassesRemoved->setGroupe(null);
-        }
-
-        $this->collJGroupesClassess = null;
-        foreach ($jGroupesClassess as $jGroupesClasses) {
-            $this->addJGroupesClasses($jGroupesClasses);
-        }
-
-        $this->collJGroupesClassess = $jGroupesClassess;
-        $this->collJGroupesClassessPartial = false;
-    }
-
-    /**
-     * Returns the number of related JGroupesClasses objects.
-     *
-     * @param Criteria $criteria
-     * @param boolean $distinct
-     * @param PropelPDO $con
-     * @return int             Count of related JGroupesClasses objects.
-     * @throws PropelException
-     */
-    public function countJGroupesClassess(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-    {
-        $partial = $this->collJGroupesClassessPartial && !$this->isNew();
-        if (null === $this->collJGroupesClassess || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collJGroupesClassess) {
-                return 0;
-            } else {
-                if($partial && !$criteria) {
-                    return count($this->getJGroupesClassess());
-                }
-                $query = JGroupesClassesQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByGroupe($this)
-                    ->count($con);
-            }
-        } else {
-            return count($this->collJGroupesClassess);
-        }
-    }
-
-    /**
-     * Method called to associate a JGroupesClasses object to this object
-     * through the JGroupesClasses foreign key attribute.
-     *
-     * @param    JGroupesClasses $l JGroupesClasses
-     * @return Groupe The current object (for fluent API support)
-     */
-    public function addJGroupesClasses(JGroupesClasses $l)
-    {
-        if ($this->collJGroupesClassess === null) {
-            $this->initJGroupesClassess();
-            $this->collJGroupesClassessPartial = true;
-        }
-        if (!in_array($l, $this->collJGroupesClassess->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddJGroupesClasses($l);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param	JGroupesClasses $jGroupesClasses The jGroupesClasses object to add.
-     */
-    protected function doAddJGroupesClasses($jGroupesClasses)
-    {
-        $this->collJGroupesClassess[]= $jGroupesClasses;
-        $jGroupesClasses->setGroupe($this);
-    }
-
-    /**
-     * @param	JGroupesClasses $jGroupesClasses The jGroupesClasses object to remove.
-     */
-    public function removeJGroupesClasses($jGroupesClasses)
-    {
-        if ($this->getJGroupesClassess()->contains($jGroupesClasses)) {
-            $this->collJGroupesClassess->remove($this->collJGroupesClassess->search($jGroupesClasses));
-            if (null === $this->jGroupesClassessScheduledForDeletion) {
-                $this->jGroupesClassessScheduledForDeletion = clone $this->collJGroupesClassess;
-                $this->jGroupesClassessScheduledForDeletion->clear();
-            }
-            $this->jGroupesClassessScheduledForDeletion[]= $jGroupesClasses;
-            $jGroupesClasses->setGroupe(null);
-        }
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related JGroupesClassess from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|JGroupesClasses[] List of JGroupesClasses objects
-     */
-    public function getJGroupesClassessJoinClasse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = JGroupesClassesQuery::create(null, $criteria);
-        $query->joinWith('Classe', $join_behavior);
-
-        return $this->getJGroupesClassess($query, $con);
-    }
-
-    /**
-     * Clears out the collCahierTexteCompteRendus collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addCahierTexteCompteRendus()
-     */
-    public function clearCahierTexteCompteRendus()
-    {
-        $this->collCahierTexteCompteRendus = null; // important to set this to null since that means it is uninitialized
-        $this->collCahierTexteCompteRendusPartial = null;
-    }
-
-    /**
-     * reset is the collCahierTexteCompteRendus collection loaded partially
-     *
-     * @return void
-     */
-    public function resetPartialCahierTexteCompteRendus($v = true)
-    {
-        $this->collCahierTexteCompteRendusPartial = $v;
-    }
-
-    /**
-     * Initializes the collCahierTexteCompteRendus collection.
-     *
-     * By default this just sets the collCahierTexteCompteRendus collection to an empty array (like clearcollCahierTexteCompteRendus());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initCahierTexteCompteRendus($overrideExisting = true)
-    {
-        if (null !== $this->collCahierTexteCompteRendus && !$overrideExisting) {
-            return;
-        }
-        $this->collCahierTexteCompteRendus = new PropelObjectCollection();
-        $this->collCahierTexteCompteRendus->setModel('CahierTexteCompteRendu');
-    }
-
-    /**
-     * Gets an array of CahierTexteCompteRendu objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this Groupe is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @return PropelObjectCollection|CahierTexteCompteRendu[] List of CahierTexteCompteRendu objects
-     * @throws PropelException
-     */
-    public function getCahierTexteCompteRendus($criteria = null, PropelPDO $con = null)
-    {
-        $partial = $this->collCahierTexteCompteRendusPartial && !$this->isNew();
-        if (null === $this->collCahierTexteCompteRendus || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collCahierTexteCompteRendus) {
-                // return empty collection
-                $this->initCahierTexteCompteRendus();
-            } else {
-                $collCahierTexteCompteRendus = CahierTexteCompteRenduQuery::create(null, $criteria)
-                    ->filterByGroupe($this)
-                    ->find($con);
-                if (null !== $criteria) {
-                    if (false !== $this->collCahierTexteCompteRendusPartial && count($collCahierTexteCompteRendus)) {
-                      $this->initCahierTexteCompteRendus(false);
-
-                      foreach($collCahierTexteCompteRendus as $obj) {
-                        if (false == $this->collCahierTexteCompteRendus->contains($obj)) {
-                          $this->collCahierTexteCompteRendus->append($obj);
-                        }
-                      }
-
-                      $this->collCahierTexteCompteRendusPartial = true;
-                    }
-
-                    return $collCahierTexteCompteRendus;
-                }
-
-                if($partial && $this->collCahierTexteCompteRendus) {
-                    foreach($this->collCahierTexteCompteRendus as $obj) {
-                        if($obj->isNew()) {
-                            $collCahierTexteCompteRendus[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collCahierTexteCompteRendus = $collCahierTexteCompteRendus;
-                $this->collCahierTexteCompteRendusPartial = false;
-            }
-        }
-
-        return $this->collCahierTexteCompteRendus;
-    }
-
-    /**
-     * Sets a collection of CahierTexteCompteRendu objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param PropelCollection $cahierTexteCompteRendus A Propel collection.
-     * @param PropelPDO $con Optional connection object
-     */
-    public function setCahierTexteCompteRendus(PropelCollection $cahierTexteCompteRendus, PropelPDO $con = null)
-    {
-        $this->cahierTexteCompteRendusScheduledForDeletion = $this->getCahierTexteCompteRendus(new Criteria(), $con)->diff($cahierTexteCompteRendus);
-
-        foreach ($this->cahierTexteCompteRendusScheduledForDeletion as $cahierTexteCompteRenduRemoved) {
-            $cahierTexteCompteRenduRemoved->setGroupe(null);
-        }
-
-        $this->collCahierTexteCompteRendus = null;
-        foreach ($cahierTexteCompteRendus as $cahierTexteCompteRendu) {
-            $this->addCahierTexteCompteRendu($cahierTexteCompteRendu);
-        }
-
-        $this->collCahierTexteCompteRendus = $cahierTexteCompteRendus;
-        $this->collCahierTexteCompteRendusPartial = false;
-    }
-
-    /**
-     * Returns the number of related CahierTexteCompteRendu objects.
-     *
-     * @param Criteria $criteria
-     * @param boolean $distinct
-     * @param PropelPDO $con
-     * @return int             Count of related CahierTexteCompteRendu objects.
-     * @throws PropelException
-     */
-    public function countCahierTexteCompteRendus(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-    {
-        $partial = $this->collCahierTexteCompteRendusPartial && !$this->isNew();
-        if (null === $this->collCahierTexteCompteRendus || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collCahierTexteCompteRendus) {
-                return 0;
-            } else {
-                if($partial && !$criteria) {
-                    return count($this->getCahierTexteCompteRendus());
-                }
-                $query = CahierTexteCompteRenduQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByGroupe($this)
-                    ->count($con);
-            }
-        } else {
-            return count($this->collCahierTexteCompteRendus);
-        }
-    }
-
-    /**
-     * Method called to associate a CahierTexteCompteRendu object to this object
-     * through the CahierTexteCompteRendu foreign key attribute.
-     *
-     * @param    CahierTexteCompteRendu $l CahierTexteCompteRendu
-     * @return Groupe The current object (for fluent API support)
-     */
-    public function addCahierTexteCompteRendu(CahierTexteCompteRendu $l)
-    {
-        if ($this->collCahierTexteCompteRendus === null) {
-            $this->initCahierTexteCompteRendus();
-            $this->collCahierTexteCompteRendusPartial = true;
-        }
-        if (!in_array($l, $this->collCahierTexteCompteRendus->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddCahierTexteCompteRendu($l);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param	CahierTexteCompteRendu $cahierTexteCompteRendu The cahierTexteCompteRendu object to add.
-     */
-    protected function doAddCahierTexteCompteRendu($cahierTexteCompteRendu)
-    {
-        $this->collCahierTexteCompteRendus[]= $cahierTexteCompteRendu;
-        $cahierTexteCompteRendu->setGroupe($this);
-    }
-
-    /**
-     * @param	CahierTexteCompteRendu $cahierTexteCompteRendu The cahierTexteCompteRendu object to remove.
-     */
-    public function removeCahierTexteCompteRendu($cahierTexteCompteRendu)
-    {
-        if ($this->getCahierTexteCompteRendus()->contains($cahierTexteCompteRendu)) {
-            $this->collCahierTexteCompteRendus->remove($this->collCahierTexteCompteRendus->search($cahierTexteCompteRendu));
-            if (null === $this->cahierTexteCompteRendusScheduledForDeletion) {
-                $this->cahierTexteCompteRendusScheduledForDeletion = clone $this->collCahierTexteCompteRendus;
-                $this->cahierTexteCompteRendusScheduledForDeletion->clear();
-            }
-            $this->cahierTexteCompteRendusScheduledForDeletion[]= $cahierTexteCompteRendu;
-            $cahierTexteCompteRendu->setGroupe(null);
-        }
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related CahierTexteCompteRendus from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|CahierTexteCompteRendu[] List of CahierTexteCompteRendu objects
-     */
-    public function getCahierTexteCompteRendusJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = CahierTexteCompteRenduQuery::create(null, $criteria);
-        $query->joinWith('UtilisateurProfessionnel', $join_behavior);
-
-        return $this->getCahierTexteCompteRendus($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related CahierTexteCompteRendus from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|CahierTexteCompteRendu[] List of CahierTexteCompteRendu objects
-     */
-    public function getCahierTexteCompteRendusJoinCahierTexteSequence($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = CahierTexteCompteRenduQuery::create(null, $criteria);
-        $query->joinWith('CahierTexteSequence', $join_behavior);
-
-        return $this->getCahierTexteCompteRendus($query, $con);
-    }
-
-    /**
-     * Clears out the collCahierTexteTravailAFaires collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addCahierTexteTravailAFaires()
-     */
-    public function clearCahierTexteTravailAFaires()
-    {
-        $this->collCahierTexteTravailAFaires = null; // important to set this to null since that means it is uninitialized
-        $this->collCahierTexteTravailAFairesPartial = null;
-    }
-
-    /**
-     * reset is the collCahierTexteTravailAFaires collection loaded partially
-     *
-     * @return void
-     */
-    public function resetPartialCahierTexteTravailAFaires($v = true)
-    {
-        $this->collCahierTexteTravailAFairesPartial = $v;
-    }
-
-    /**
-     * Initializes the collCahierTexteTravailAFaires collection.
-     *
-     * By default this just sets the collCahierTexteTravailAFaires collection to an empty array (like clearcollCahierTexteTravailAFaires());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initCahierTexteTravailAFaires($overrideExisting = true)
-    {
-        if (null !== $this->collCahierTexteTravailAFaires && !$overrideExisting) {
-            return;
-        }
-        $this->collCahierTexteTravailAFaires = new PropelObjectCollection();
-        $this->collCahierTexteTravailAFaires->setModel('CahierTexteTravailAFaire');
-    }
-
-    /**
-     * Gets an array of CahierTexteTravailAFaire objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this Groupe is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @return PropelObjectCollection|CahierTexteTravailAFaire[] List of CahierTexteTravailAFaire objects
-     * @throws PropelException
-     */
-    public function getCahierTexteTravailAFaires($criteria = null, PropelPDO $con = null)
-    {
-        $partial = $this->collCahierTexteTravailAFairesPartial && !$this->isNew();
-        if (null === $this->collCahierTexteTravailAFaires || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collCahierTexteTravailAFaires) {
-                // return empty collection
-                $this->initCahierTexteTravailAFaires();
-            } else {
-                $collCahierTexteTravailAFaires = CahierTexteTravailAFaireQuery::create(null, $criteria)
-                    ->filterByGroupe($this)
-                    ->find($con);
-                if (null !== $criteria) {
-                    if (false !== $this->collCahierTexteTravailAFairesPartial && count($collCahierTexteTravailAFaires)) {
-                      $this->initCahierTexteTravailAFaires(false);
-
-                      foreach($collCahierTexteTravailAFaires as $obj) {
-                        if (false == $this->collCahierTexteTravailAFaires->contains($obj)) {
-                          $this->collCahierTexteTravailAFaires->append($obj);
-                        }
-                      }
-
-                      $this->collCahierTexteTravailAFairesPartial = true;
-                    }
-
-                    return $collCahierTexteTravailAFaires;
-                }
-
-                if($partial && $this->collCahierTexteTravailAFaires) {
-                    foreach($this->collCahierTexteTravailAFaires as $obj) {
-                        if($obj->isNew()) {
-                            $collCahierTexteTravailAFaires[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collCahierTexteTravailAFaires = $collCahierTexteTravailAFaires;
-                $this->collCahierTexteTravailAFairesPartial = false;
-            }
-        }
-
-        return $this->collCahierTexteTravailAFaires;
-    }
-
-    /**
-     * Sets a collection of CahierTexteTravailAFaire objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param PropelCollection $cahierTexteTravailAFaires A Propel collection.
-     * @param PropelPDO $con Optional connection object
-     */
-    public function setCahierTexteTravailAFaires(PropelCollection $cahierTexteTravailAFaires, PropelPDO $con = null)
-    {
-        $this->cahierTexteTravailAFairesScheduledForDeletion = $this->getCahierTexteTravailAFaires(new Criteria(), $con)->diff($cahierTexteTravailAFaires);
-
-        foreach ($this->cahierTexteTravailAFairesScheduledForDeletion as $cahierTexteTravailAFaireRemoved) {
-            $cahierTexteTravailAFaireRemoved->setGroupe(null);
-        }
-
-        $this->collCahierTexteTravailAFaires = null;
-        foreach ($cahierTexteTravailAFaires as $cahierTexteTravailAFaire) {
-            $this->addCahierTexteTravailAFaire($cahierTexteTravailAFaire);
-        }
-
-        $this->collCahierTexteTravailAFaires = $cahierTexteTravailAFaires;
-        $this->collCahierTexteTravailAFairesPartial = false;
-    }
-
-    /**
-     * Returns the number of related CahierTexteTravailAFaire objects.
-     *
-     * @param Criteria $criteria
-     * @param boolean $distinct
-     * @param PropelPDO $con
-     * @return int             Count of related CahierTexteTravailAFaire objects.
-     * @throws PropelException
-     */
-    public function countCahierTexteTravailAFaires(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-    {
-        $partial = $this->collCahierTexteTravailAFairesPartial && !$this->isNew();
-        if (null === $this->collCahierTexteTravailAFaires || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collCahierTexteTravailAFaires) {
-                return 0;
-            } else {
-                if($partial && !$criteria) {
-                    return count($this->getCahierTexteTravailAFaires());
-                }
-                $query = CahierTexteTravailAFaireQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByGroupe($this)
-                    ->count($con);
-            }
-        } else {
-            return count($this->collCahierTexteTravailAFaires);
-        }
-    }
-
-    /**
-     * Method called to associate a CahierTexteTravailAFaire object to this object
-     * through the CahierTexteTravailAFaire foreign key attribute.
-     *
-     * @param    CahierTexteTravailAFaire $l CahierTexteTravailAFaire
-     * @return Groupe The current object (for fluent API support)
-     */
-    public function addCahierTexteTravailAFaire(CahierTexteTravailAFaire $l)
-    {
-        if ($this->collCahierTexteTravailAFaires === null) {
-            $this->initCahierTexteTravailAFaires();
-            $this->collCahierTexteTravailAFairesPartial = true;
-        }
-        if (!in_array($l, $this->collCahierTexteTravailAFaires->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddCahierTexteTravailAFaire($l);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param	CahierTexteTravailAFaire $cahierTexteTravailAFaire The cahierTexteTravailAFaire object to add.
-     */
-    protected function doAddCahierTexteTravailAFaire($cahierTexteTravailAFaire)
-    {
-        $this->collCahierTexteTravailAFaires[]= $cahierTexteTravailAFaire;
-        $cahierTexteTravailAFaire->setGroupe($this);
-    }
-
-    /**
-     * @param	CahierTexteTravailAFaire $cahierTexteTravailAFaire The cahierTexteTravailAFaire object to remove.
-     */
-    public function removeCahierTexteTravailAFaire($cahierTexteTravailAFaire)
-    {
-        if ($this->getCahierTexteTravailAFaires()->contains($cahierTexteTravailAFaire)) {
-            $this->collCahierTexteTravailAFaires->remove($this->collCahierTexteTravailAFaires->search($cahierTexteTravailAFaire));
-            if (null === $this->cahierTexteTravailAFairesScheduledForDeletion) {
-                $this->cahierTexteTravailAFairesScheduledForDeletion = clone $this->collCahierTexteTravailAFaires;
-                $this->cahierTexteTravailAFairesScheduledForDeletion->clear();
-            }
-            $this->cahierTexteTravailAFairesScheduledForDeletion[]= $cahierTexteTravailAFaire;
-            $cahierTexteTravailAFaire->setGroupe(null);
-        }
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related CahierTexteTravailAFaires from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|CahierTexteTravailAFaire[] List of CahierTexteTravailAFaire objects
-     */
-    public function getCahierTexteTravailAFairesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = CahierTexteTravailAFaireQuery::create(null, $criteria);
-        $query->joinWith('UtilisateurProfessionnel', $join_behavior);
-
-        return $this->getCahierTexteTravailAFaires($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related CahierTexteTravailAFaires from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|CahierTexteTravailAFaire[] List of CahierTexteTravailAFaire objects
-     */
-    public function getCahierTexteTravailAFairesJoinCahierTexteSequence($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = CahierTexteTravailAFaireQuery::create(null, $criteria);
-        $query->joinWith('CahierTexteSequence', $join_behavior);
-
-        return $this->getCahierTexteTravailAFaires($query, $con);
-    }
-
-    /**
-     * Clears out the collCahierTexteNoticePrivees collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addCahierTexteNoticePrivees()
-     */
-    public function clearCahierTexteNoticePrivees()
-    {
-        $this->collCahierTexteNoticePrivees = null; // important to set this to null since that means it is uninitialized
-        $this->collCahierTexteNoticePriveesPartial = null;
-    }
-
-    /**
-     * reset is the collCahierTexteNoticePrivees collection loaded partially
-     *
-     * @return void
-     */
-    public function resetPartialCahierTexteNoticePrivees($v = true)
-    {
-        $this->collCahierTexteNoticePriveesPartial = $v;
-    }
-
-    /**
-     * Initializes the collCahierTexteNoticePrivees collection.
-     *
-     * By default this just sets the collCahierTexteNoticePrivees collection to an empty array (like clearcollCahierTexteNoticePrivees());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initCahierTexteNoticePrivees($overrideExisting = true)
-    {
-        if (null !== $this->collCahierTexteNoticePrivees && !$overrideExisting) {
-            return;
-        }
-        $this->collCahierTexteNoticePrivees = new PropelObjectCollection();
-        $this->collCahierTexteNoticePrivees->setModel('CahierTexteNoticePrivee');
-    }
-
-    /**
-     * Gets an array of CahierTexteNoticePrivee objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this Groupe is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @return PropelObjectCollection|CahierTexteNoticePrivee[] List of CahierTexteNoticePrivee objects
-     * @throws PropelException
-     */
-    public function getCahierTexteNoticePrivees($criteria = null, PropelPDO $con = null)
-    {
-        $partial = $this->collCahierTexteNoticePriveesPartial && !$this->isNew();
-        if (null === $this->collCahierTexteNoticePrivees || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collCahierTexteNoticePrivees) {
-                // return empty collection
-                $this->initCahierTexteNoticePrivees();
-            } else {
-                $collCahierTexteNoticePrivees = CahierTexteNoticePriveeQuery::create(null, $criteria)
-                    ->filterByGroupe($this)
-                    ->find($con);
-                if (null !== $criteria) {
-                    if (false !== $this->collCahierTexteNoticePriveesPartial && count($collCahierTexteNoticePrivees)) {
-                      $this->initCahierTexteNoticePrivees(false);
-
-                      foreach($collCahierTexteNoticePrivees as $obj) {
-                        if (false == $this->collCahierTexteNoticePrivees->contains($obj)) {
-                          $this->collCahierTexteNoticePrivees->append($obj);
-                        }
-                      }
-
-                      $this->collCahierTexteNoticePriveesPartial = true;
-                    }
-
-                    return $collCahierTexteNoticePrivees;
-                }
-
-                if($partial && $this->collCahierTexteNoticePrivees) {
-                    foreach($this->collCahierTexteNoticePrivees as $obj) {
-                        if($obj->isNew()) {
-                            $collCahierTexteNoticePrivees[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collCahierTexteNoticePrivees = $collCahierTexteNoticePrivees;
-                $this->collCahierTexteNoticePriveesPartial = false;
-            }
-        }
-
-        return $this->collCahierTexteNoticePrivees;
-    }
-
-    /**
-     * Sets a collection of CahierTexteNoticePrivee objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param PropelCollection $cahierTexteNoticePrivees A Propel collection.
-     * @param PropelPDO $con Optional connection object
-     */
-    public function setCahierTexteNoticePrivees(PropelCollection $cahierTexteNoticePrivees, PropelPDO $con = null)
-    {
-        $this->cahierTexteNoticePriveesScheduledForDeletion = $this->getCahierTexteNoticePrivees(new Criteria(), $con)->diff($cahierTexteNoticePrivees);
-
-        foreach ($this->cahierTexteNoticePriveesScheduledForDeletion as $cahierTexteNoticePriveeRemoved) {
-            $cahierTexteNoticePriveeRemoved->setGroupe(null);
-        }
-
-        $this->collCahierTexteNoticePrivees = null;
-        foreach ($cahierTexteNoticePrivees as $cahierTexteNoticePrivee) {
-            $this->addCahierTexteNoticePrivee($cahierTexteNoticePrivee);
-        }
-
-        $this->collCahierTexteNoticePrivees = $cahierTexteNoticePrivees;
-        $this->collCahierTexteNoticePriveesPartial = false;
-    }
-
-    /**
-     * Returns the number of related CahierTexteNoticePrivee objects.
-     *
-     * @param Criteria $criteria
-     * @param boolean $distinct
-     * @param PropelPDO $con
-     * @return int             Count of related CahierTexteNoticePrivee objects.
-     * @throws PropelException
-     */
-    public function countCahierTexteNoticePrivees(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-    {
-        $partial = $this->collCahierTexteNoticePriveesPartial && !$this->isNew();
-        if (null === $this->collCahierTexteNoticePrivees || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collCahierTexteNoticePrivees) {
-                return 0;
-            } else {
-                if($partial && !$criteria) {
-                    return count($this->getCahierTexteNoticePrivees());
-                }
-                $query = CahierTexteNoticePriveeQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByGroupe($this)
-                    ->count($con);
-            }
-        } else {
-            return count($this->collCahierTexteNoticePrivees);
-        }
-    }
-
-    /**
-     * Method called to associate a CahierTexteNoticePrivee object to this object
-     * through the CahierTexteNoticePrivee foreign key attribute.
-     *
-     * @param    CahierTexteNoticePrivee $l CahierTexteNoticePrivee
-     * @return Groupe The current object (for fluent API support)
-     */
-    public function addCahierTexteNoticePrivee(CahierTexteNoticePrivee $l)
-    {
-        if ($this->collCahierTexteNoticePrivees === null) {
-            $this->initCahierTexteNoticePrivees();
-            $this->collCahierTexteNoticePriveesPartial = true;
-        }
-        if (!in_array($l, $this->collCahierTexteNoticePrivees->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddCahierTexteNoticePrivee($l);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param	CahierTexteNoticePrivee $cahierTexteNoticePrivee The cahierTexteNoticePrivee object to add.
-     */
-    protected function doAddCahierTexteNoticePrivee($cahierTexteNoticePrivee)
-    {
-        $this->collCahierTexteNoticePrivees[]= $cahierTexteNoticePrivee;
-        $cahierTexteNoticePrivee->setGroupe($this);
-    }
-
-    /**
-     * @param	CahierTexteNoticePrivee $cahierTexteNoticePrivee The cahierTexteNoticePrivee object to remove.
-     */
-    public function removeCahierTexteNoticePrivee($cahierTexteNoticePrivee)
-    {
-        if ($this->getCahierTexteNoticePrivees()->contains($cahierTexteNoticePrivee)) {
-            $this->collCahierTexteNoticePrivees->remove($this->collCahierTexteNoticePrivees->search($cahierTexteNoticePrivee));
-            if (null === $this->cahierTexteNoticePriveesScheduledForDeletion) {
-                $this->cahierTexteNoticePriveesScheduledForDeletion = clone $this->collCahierTexteNoticePrivees;
-                $this->cahierTexteNoticePriveesScheduledForDeletion->clear();
-            }
-            $this->cahierTexteNoticePriveesScheduledForDeletion[]= $cahierTexteNoticePrivee;
-            $cahierTexteNoticePrivee->setGroupe(null);
-        }
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related CahierTexteNoticePrivees from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|CahierTexteNoticePrivee[] List of CahierTexteNoticePrivee objects
-     */
-    public function getCahierTexteNoticePriveesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = CahierTexteNoticePriveeQuery::create(null, $criteria);
-        $query->joinWith('UtilisateurProfessionnel', $join_behavior);
-
-        return $this->getCahierTexteNoticePrivees($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related CahierTexteNoticePrivees from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|CahierTexteNoticePrivee[] List of CahierTexteNoticePrivee objects
-     */
-    public function getCahierTexteNoticePriveesJoinCahierTexteSequence($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = CahierTexteNoticePriveeQuery::create(null, $criteria);
-        $query->joinWith('CahierTexteSequence', $join_behavior);
-
-        return $this->getCahierTexteNoticePrivees($query, $con);
-    }
-
-    /**
-     * Clears out the collJEleveGroupes collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addJEleveGroupes()
-     */
-    public function clearJEleveGroupes()
-    {
-        $this->collJEleveGroupes = null; // important to set this to null since that means it is uninitialized
-        $this->collJEleveGroupesPartial = null;
-    }
-
-    /**
-     * reset is the collJEleveGroupes collection loaded partially
-     *
-     * @return void
-     */
-    public function resetPartialJEleveGroupes($v = true)
-    {
-        $this->collJEleveGroupesPartial = $v;
-    }
-
-    /**
-     * Initializes the collJEleveGroupes collection.
-     *
-     * By default this just sets the collJEleveGroupes collection to an empty array (like clearcollJEleveGroupes());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initJEleveGroupes($overrideExisting = true)
-    {
-        if (null !== $this->collJEleveGroupes && !$overrideExisting) {
-            return;
-        }
-        $this->collJEleveGroupes = new PropelObjectCollection();
-        $this->collJEleveGroupes->setModel('JEleveGroupe');
-    }
-
-    /**
-     * Gets an array of JEleveGroupe objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this Groupe is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @return PropelObjectCollection|JEleveGroupe[] List of JEleveGroupe objects
-     * @throws PropelException
-     */
-    public function getJEleveGroupes($criteria = null, PropelPDO $con = null)
-    {
-        $partial = $this->collJEleveGroupesPartial && !$this->isNew();
-        if (null === $this->collJEleveGroupes || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collJEleveGroupes) {
-                // return empty collection
-                $this->initJEleveGroupes();
-            } else {
-                $collJEleveGroupes = JEleveGroupeQuery::create(null, $criteria)
-                    ->filterByGroupe($this)
-                    ->find($con);
-                if (null !== $criteria) {
-                    if (false !== $this->collJEleveGroupesPartial && count($collJEleveGroupes)) {
-                      $this->initJEleveGroupes(false);
-
-                      foreach($collJEleveGroupes as $obj) {
-                        if (false == $this->collJEleveGroupes->contains($obj)) {
-                          $this->collJEleveGroupes->append($obj);
-                        }
-                      }
-
-                      $this->collJEleveGroupesPartial = true;
-                    }
-
-                    return $collJEleveGroupes;
-                }
-
-                if($partial && $this->collJEleveGroupes) {
-                    foreach($this->collJEleveGroupes as $obj) {
-                        if($obj->isNew()) {
-                            $collJEleveGroupes[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collJEleveGroupes = $collJEleveGroupes;
-                $this->collJEleveGroupesPartial = false;
-            }
-        }
-
-        return $this->collJEleveGroupes;
-    }
-
-    /**
-     * Sets a collection of JEleveGroupe objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param PropelCollection $jEleveGroupes A Propel collection.
-     * @param PropelPDO $con Optional connection object
-     */
-    public function setJEleveGroupes(PropelCollection $jEleveGroupes, PropelPDO $con = null)
-    {
-        $this->jEleveGroupesScheduledForDeletion = $this->getJEleveGroupes(new Criteria(), $con)->diff($jEleveGroupes);
-
-        foreach ($this->jEleveGroupesScheduledForDeletion as $jEleveGroupeRemoved) {
-            $jEleveGroupeRemoved->setGroupe(null);
-        }
-
-        $this->collJEleveGroupes = null;
-        foreach ($jEleveGroupes as $jEleveGroupe) {
-            $this->addJEleveGroupe($jEleveGroupe);
-        }
-
-        $this->collJEleveGroupes = $jEleveGroupes;
-        $this->collJEleveGroupesPartial = false;
-    }
-
-    /**
-     * Returns the number of related JEleveGroupe objects.
-     *
-     * @param Criteria $criteria
-     * @param boolean $distinct
-     * @param PropelPDO $con
-     * @return int             Count of related JEleveGroupe objects.
-     * @throws PropelException
-     */
-    public function countJEleveGroupes(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-    {
-        $partial = $this->collJEleveGroupesPartial && !$this->isNew();
-        if (null === $this->collJEleveGroupes || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collJEleveGroupes) {
-                return 0;
-            } else {
-                if($partial && !$criteria) {
-                    return count($this->getJEleveGroupes());
-                }
-                $query = JEleveGroupeQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByGroupe($this)
-                    ->count($con);
-            }
-        } else {
-            return count($this->collJEleveGroupes);
-        }
-    }
-
-    /**
-     * Method called to associate a JEleveGroupe object to this object
-     * through the JEleveGroupe foreign key attribute.
-     *
-     * @param    JEleveGroupe $l JEleveGroupe
-     * @return Groupe The current object (for fluent API support)
-     */
-    public function addJEleveGroupe(JEleveGroupe $l)
-    {
-        if ($this->collJEleveGroupes === null) {
-            $this->initJEleveGroupes();
-            $this->collJEleveGroupesPartial = true;
-        }
-        if (!in_array($l, $this->collJEleveGroupes->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddJEleveGroupe($l);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param	JEleveGroupe $jEleveGroupe The jEleveGroupe object to add.
-     */
-    protected function doAddJEleveGroupe($jEleveGroupe)
-    {
-        $this->collJEleveGroupes[]= $jEleveGroupe;
-        $jEleveGroupe->setGroupe($this);
-    }
-
-    /**
-     * @param	JEleveGroupe $jEleveGroupe The jEleveGroupe object to remove.
-     */
-    public function removeJEleveGroupe($jEleveGroupe)
-    {
-        if ($this->getJEleveGroupes()->contains($jEleveGroupe)) {
-            $this->collJEleveGroupes->remove($this->collJEleveGroupes->search($jEleveGroupe));
-            if (null === $this->jEleveGroupesScheduledForDeletion) {
-                $this->jEleveGroupesScheduledForDeletion = clone $this->collJEleveGroupes;
-                $this->jEleveGroupesScheduledForDeletion->clear();
-            }
-            $this->jEleveGroupesScheduledForDeletion[]= $jEleveGroupe;
-            $jEleveGroupe->setGroupe(null);
-        }
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related JEleveGroupes from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|JEleveGroupe[] List of JEleveGroupe objects
-     */
-    public function getJEleveGroupesJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = JEleveGroupeQuery::create(null, $criteria);
-        $query->joinWith('Eleve', $join_behavior);
-
-        return $this->getJEleveGroupes($query, $con);
-    }
-
-    /**
-     * Clears out the collAbsenceEleveSaisies collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addAbsenceEleveSaisies()
-     */
-    public function clearAbsenceEleveSaisies()
-    {
-        $this->collAbsenceEleveSaisies = null; // important to set this to null since that means it is uninitialized
-        $this->collAbsenceEleveSaisiesPartial = null;
-    }
-
-    /**
-     * reset is the collAbsenceEleveSaisies collection loaded partially
-     *
-     * @return void
-     */
-    public function resetPartialAbsenceEleveSaisies($v = true)
-    {
-        $this->collAbsenceEleveSaisiesPartial = $v;
-    }
-
-    /**
-     * Initializes the collAbsenceEleveSaisies collection.
-     *
-     * By default this just sets the collAbsenceEleveSaisies collection to an empty array (like clearcollAbsenceEleveSaisies());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initAbsenceEleveSaisies($overrideExisting = true)
-    {
-        if (null !== $this->collAbsenceEleveSaisies && !$overrideExisting) {
-            return;
-        }
-        $this->collAbsenceEleveSaisies = new PropelObjectCollection();
-        $this->collAbsenceEleveSaisies->setModel('AbsenceEleveSaisie');
-    }
-
-    /**
-     * Gets an array of AbsenceEleveSaisie objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this Groupe is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @return PropelObjectCollection|AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
-     * @throws PropelException
-     */
-    public function getAbsenceEleveSaisies($criteria = null, PropelPDO $con = null)
-    {
-        $partial = $this->collAbsenceEleveSaisiesPartial && !$this->isNew();
-        if (null === $this->collAbsenceEleveSaisies || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collAbsenceEleveSaisies) {
-                // return empty collection
-                $this->initAbsenceEleveSaisies();
-            } else {
-                $collAbsenceEleveSaisies = AbsenceEleveSaisieQuery::create(null, $criteria)
-                    ->filterByGroupe($this)
-                    ->find($con);
-                if (null !== $criteria) {
-                    if (false !== $this->collAbsenceEleveSaisiesPartial && count($collAbsenceEleveSaisies)) {
-                      $this->initAbsenceEleveSaisies(false);
-
-                      foreach($collAbsenceEleveSaisies as $obj) {
-                        if (false == $this->collAbsenceEleveSaisies->contains($obj)) {
-                          $this->collAbsenceEleveSaisies->append($obj);
-                        }
-                      }
-
-                      $this->collAbsenceEleveSaisiesPartial = true;
-                    }
-
-                    return $collAbsenceEleveSaisies;
-                }
-
-                if($partial && $this->collAbsenceEleveSaisies) {
-                    foreach($this->collAbsenceEleveSaisies as $obj) {
-                        if($obj->isNew()) {
-                            $collAbsenceEleveSaisies[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collAbsenceEleveSaisies = $collAbsenceEleveSaisies;
-                $this->collAbsenceEleveSaisiesPartial = false;
-            }
-        }
-
-        return $this->collAbsenceEleveSaisies;
-    }
-
-    /**
-     * Sets a collection of AbsenceEleveSaisie objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param PropelCollection $absenceEleveSaisies A Propel collection.
-     * @param PropelPDO $con Optional connection object
-     */
-    public function setAbsenceEleveSaisies(PropelCollection $absenceEleveSaisies, PropelPDO $con = null)
-    {
-        $this->absenceEleveSaisiesScheduledForDeletion = $this->getAbsenceEleveSaisies(new Criteria(), $con)->diff($absenceEleveSaisies);
-
-        foreach ($this->absenceEleveSaisiesScheduledForDeletion as $absenceEleveSaisieRemoved) {
-            $absenceEleveSaisieRemoved->setGroupe(null);
-        }
-
-        $this->collAbsenceEleveSaisies = null;
-        foreach ($absenceEleveSaisies as $absenceEleveSaisie) {
-            $this->addAbsenceEleveSaisie($absenceEleveSaisie);
-        }
-
-        $this->collAbsenceEleveSaisies = $absenceEleveSaisies;
-        $this->collAbsenceEleveSaisiesPartial = false;
-    }
-
-    /**
-     * Returns the number of related AbsenceEleveSaisie objects.
-     *
-     * @param Criteria $criteria
-     * @param boolean $distinct
-     * @param PropelPDO $con
-     * @return int             Count of related AbsenceEleveSaisie objects.
-     * @throws PropelException
-     */
-    public function countAbsenceEleveSaisies(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-    {
-        $partial = $this->collAbsenceEleveSaisiesPartial && !$this->isNew();
-        if (null === $this->collAbsenceEleveSaisies || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collAbsenceEleveSaisies) {
-                return 0;
-            } else {
-                if($partial && !$criteria) {
-                    return count($this->getAbsenceEleveSaisies());
-                }
-                $query = AbsenceEleveSaisieQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByGroupe($this)
-                    ->count($con);
-            }
-        } else {
-            return count($this->collAbsenceEleveSaisies);
-        }
-    }
-
-    /**
-     * Method called to associate a AbsenceEleveSaisie object to this object
-     * through the AbsenceEleveSaisie foreign key attribute.
-     *
-     * @param    AbsenceEleveSaisie $l AbsenceEleveSaisie
-     * @return Groupe The current object (for fluent API support)
-     */
-    public function addAbsenceEleveSaisie(AbsenceEleveSaisie $l)
-    {
-        if ($this->collAbsenceEleveSaisies === null) {
-            $this->initAbsenceEleveSaisies();
-            $this->collAbsenceEleveSaisiesPartial = true;
-        }
-        if (!in_array($l, $this->collAbsenceEleveSaisies->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddAbsenceEleveSaisie($l);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param	AbsenceEleveSaisie $absenceEleveSaisie The absenceEleveSaisie object to add.
-     */
-    protected function doAddAbsenceEleveSaisie($absenceEleveSaisie)
-    {
-        $this->collAbsenceEleveSaisies[]= $absenceEleveSaisie;
-        $absenceEleveSaisie->setGroupe($this);
-    }
-
-    /**
-     * @param	AbsenceEleveSaisie $absenceEleveSaisie The absenceEleveSaisie object to remove.
-     */
-    public function removeAbsenceEleveSaisie($absenceEleveSaisie)
-    {
-        if ($this->getAbsenceEleveSaisies()->contains($absenceEleveSaisie)) {
-            $this->collAbsenceEleveSaisies->remove($this->collAbsenceEleveSaisies->search($absenceEleveSaisie));
-            if (null === $this->absenceEleveSaisiesScheduledForDeletion) {
-                $this->absenceEleveSaisiesScheduledForDeletion = clone $this->collAbsenceEleveSaisies;
-                $this->absenceEleveSaisiesScheduledForDeletion->clear();
-            }
-            $this->absenceEleveSaisiesScheduledForDeletion[]= $absenceEleveSaisie;
-            $absenceEleveSaisie->setGroupe(null);
-        }
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related AbsenceEleveSaisies from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
-     */
-    public function getAbsenceEleveSaisiesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = AbsenceEleveSaisieQuery::create(null, $criteria);
-        $query->joinWith('UtilisateurProfessionnel', $join_behavior);
-
-        return $this->getAbsenceEleveSaisies($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related AbsenceEleveSaisies from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
-     */
-    public function getAbsenceEleveSaisiesJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = AbsenceEleveSaisieQuery::create(null, $criteria);
-        $query->joinWith('Eleve', $join_behavior);
-
-        return $this->getAbsenceEleveSaisies($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related AbsenceEleveSaisies from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
-     */
-    public function getAbsenceEleveSaisiesJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = AbsenceEleveSaisieQuery::create(null, $criteria);
-        $query->joinWith('EdtCreneau', $join_behavior);
-
-        return $this->getAbsenceEleveSaisies($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related AbsenceEleveSaisies from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
-     */
-    public function getAbsenceEleveSaisiesJoinEdtEmplacementCours($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = AbsenceEleveSaisieQuery::create(null, $criteria);
-        $query->joinWith('EdtEmplacementCours', $join_behavior);
-
-        return $this->getAbsenceEleveSaisies($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related AbsenceEleveSaisies from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
-     */
-    public function getAbsenceEleveSaisiesJoinClasse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = AbsenceEleveSaisieQuery::create(null, $criteria);
-        $query->joinWith('Classe', $join_behavior);
-
-        return $this->getAbsenceEleveSaisies($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related AbsenceEleveSaisies from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
-     */
-    public function getAbsenceEleveSaisiesJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = AbsenceEleveSaisieQuery::create(null, $criteria);
-        $query->joinWith('AidDetails', $join_behavior);
-
-        return $this->getAbsenceEleveSaisies($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related AbsenceEleveSaisies from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
-     */
-    public function getAbsenceEleveSaisiesJoinAbsenceEleveLieu($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = AbsenceEleveSaisieQuery::create(null, $criteria);
-        $query->joinWith('AbsenceEleveLieu', $join_behavior);
-
-        return $this->getAbsenceEleveSaisies($query, $con);
-    }
-
-    /**
-     * Clears out the collCreditEctss collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addCreditEctss()
-     */
-    public function clearCreditEctss()
-    {
-        $this->collCreditEctss = null; // important to set this to null since that means it is uninitialized
-        $this->collCreditEctssPartial = null;
-    }
-
-    /**
-     * reset is the collCreditEctss collection loaded partially
-     *
-     * @return void
-     */
-    public function resetPartialCreditEctss($v = true)
-    {
-        $this->collCreditEctssPartial = $v;
-    }
-
-    /**
-     * Initializes the collCreditEctss collection.
-     *
-     * By default this just sets the collCreditEctss collection to an empty array (like clearcollCreditEctss());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initCreditEctss($overrideExisting = true)
-    {
-        if (null !== $this->collCreditEctss && !$overrideExisting) {
-            return;
-        }
-        $this->collCreditEctss = new PropelObjectCollection();
-        $this->collCreditEctss->setModel('CreditEcts');
-    }
-
-    /**
-     * Gets an array of CreditEcts objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this Groupe is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @return PropelObjectCollection|CreditEcts[] List of CreditEcts objects
-     * @throws PropelException
-     */
-    public function getCreditEctss($criteria = null, PropelPDO $con = null)
-    {
-        $partial = $this->collCreditEctssPartial && !$this->isNew();
-        if (null === $this->collCreditEctss || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collCreditEctss) {
-                // return empty collection
-                $this->initCreditEctss();
-            } else {
-                $collCreditEctss = CreditEctsQuery::create(null, $criteria)
-                    ->filterByGroupe($this)
-                    ->find($con);
-                if (null !== $criteria) {
-                    if (false !== $this->collCreditEctssPartial && count($collCreditEctss)) {
-                      $this->initCreditEctss(false);
-
-                      foreach($collCreditEctss as $obj) {
-                        if (false == $this->collCreditEctss->contains($obj)) {
-                          $this->collCreditEctss->append($obj);
-                        }
-                      }
-
-                      $this->collCreditEctssPartial = true;
-                    }
-
-                    return $collCreditEctss;
-                }
-
-                if($partial && $this->collCreditEctss) {
-                    foreach($this->collCreditEctss as $obj) {
-                        if($obj->isNew()) {
-                            $collCreditEctss[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collCreditEctss = $collCreditEctss;
-                $this->collCreditEctssPartial = false;
-            }
-        }
-
-        return $this->collCreditEctss;
-    }
-
-    /**
-     * Sets a collection of CreditEcts objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param PropelCollection $creditEctss A Propel collection.
-     * @param PropelPDO $con Optional connection object
-     */
-    public function setCreditEctss(PropelCollection $creditEctss, PropelPDO $con = null)
-    {
-        $this->creditEctssScheduledForDeletion = $this->getCreditEctss(new Criteria(), $con)->diff($creditEctss);
-
-        foreach ($this->creditEctssScheduledForDeletion as $creditEctsRemoved) {
-            $creditEctsRemoved->setGroupe(null);
-        }
-
-        $this->collCreditEctss = null;
-        foreach ($creditEctss as $creditEcts) {
-            $this->addCreditEcts($creditEcts);
-        }
-
-        $this->collCreditEctss = $creditEctss;
-        $this->collCreditEctssPartial = false;
-    }
-
-    /**
-     * Returns the number of related CreditEcts objects.
-     *
-     * @param Criteria $criteria
-     * @param boolean $distinct
-     * @param PropelPDO $con
-     * @return int             Count of related CreditEcts objects.
-     * @throws PropelException
-     */
-    public function countCreditEctss(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-    {
-        $partial = $this->collCreditEctssPartial && !$this->isNew();
-        if (null === $this->collCreditEctss || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collCreditEctss) {
-                return 0;
-            } else {
-                if($partial && !$criteria) {
-                    return count($this->getCreditEctss());
-                }
-                $query = CreditEctsQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByGroupe($this)
-                    ->count($con);
-            }
-        } else {
-            return count($this->collCreditEctss);
-        }
-    }
-
-    /**
-     * Method called to associate a CreditEcts object to this object
-     * through the CreditEcts foreign key attribute.
-     *
-     * @param    CreditEcts $l CreditEcts
-     * @return Groupe The current object (for fluent API support)
-     */
-    public function addCreditEcts(CreditEcts $l)
-    {
-        if ($this->collCreditEctss === null) {
-            $this->initCreditEctss();
-            $this->collCreditEctssPartial = true;
-        }
-        if (!in_array($l, $this->collCreditEctss->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddCreditEcts($l);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param	CreditEcts $creditEcts The creditEcts object to add.
-     */
-    protected function doAddCreditEcts($creditEcts)
-    {
-        $this->collCreditEctss[]= $creditEcts;
-        $creditEcts->setGroupe($this);
-    }
-
-    /**
-     * @param	CreditEcts $creditEcts The creditEcts object to remove.
-     */
-    public function removeCreditEcts($creditEcts)
-    {
-        if ($this->getCreditEctss()->contains($creditEcts)) {
-            $this->collCreditEctss->remove($this->collCreditEctss->search($creditEcts));
-            if (null === $this->creditEctssScheduledForDeletion) {
-                $this->creditEctssScheduledForDeletion = clone $this->collCreditEctss;
-                $this->creditEctssScheduledForDeletion->clear();
-            }
-            $this->creditEctssScheduledForDeletion[]= $creditEcts;
-            $creditEcts->setGroupe(null);
-        }
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related CreditEctss from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|CreditEcts[] List of CreditEcts objects
-     */
-    public function getCreditEctssJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = CreditEctsQuery::create(null, $criteria);
-        $query->joinWith('Eleve', $join_behavior);
-
-        return $this->getCreditEctss($query, $con);
-    }
-
-    /**
-     * Clears out the collEdtEmplacementCourss collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addEdtEmplacementCourss()
-     */
-    public function clearEdtEmplacementCourss()
-    {
-        $this->collEdtEmplacementCourss = null; // important to set this to null since that means it is uninitialized
-        $this->collEdtEmplacementCourssPartial = null;
-    }
-
-    /**
-     * reset is the collEdtEmplacementCourss collection loaded partially
-     *
-     * @return void
-     */
-    public function resetPartialEdtEmplacementCourss($v = true)
-    {
-        $this->collEdtEmplacementCourssPartial = $v;
-    }
-
-    /**
-     * Initializes the collEdtEmplacementCourss collection.
-     *
-     * By default this just sets the collEdtEmplacementCourss collection to an empty array (like clearcollEdtEmplacementCourss());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initEdtEmplacementCourss($overrideExisting = true)
-    {
-        if (null !== $this->collEdtEmplacementCourss && !$overrideExisting) {
-            return;
-        }
-        $this->collEdtEmplacementCourss = new PropelObjectCollection();
-        $this->collEdtEmplacementCourss->setModel('EdtEmplacementCours');
-    }
-
-    /**
-     * Gets an array of EdtEmplacementCours objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this Groupe is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @return PropelObjectCollection|EdtEmplacementCours[] List of EdtEmplacementCours objects
-     * @throws PropelException
-     */
-    public function getEdtEmplacementCourss($criteria = null, PropelPDO $con = null)
-    {
-        $partial = $this->collEdtEmplacementCourssPartial && !$this->isNew();
-        if (null === $this->collEdtEmplacementCourss || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collEdtEmplacementCourss) {
-                // return empty collection
-                $this->initEdtEmplacementCourss();
-            } else {
-                $collEdtEmplacementCourss = EdtEmplacementCoursQuery::create(null, $criteria)
-                    ->filterByGroupe($this)
-                    ->find($con);
-                if (null !== $criteria) {
-                    if (false !== $this->collEdtEmplacementCourssPartial && count($collEdtEmplacementCourss)) {
-                      $this->initEdtEmplacementCourss(false);
-
-                      foreach($collEdtEmplacementCourss as $obj) {
-                        if (false == $this->collEdtEmplacementCourss->contains($obj)) {
-                          $this->collEdtEmplacementCourss->append($obj);
-                        }
-                      }
-
-                      $this->collEdtEmplacementCourssPartial = true;
-                    }
-
-                    return $collEdtEmplacementCourss;
-                }
-
-                if($partial && $this->collEdtEmplacementCourss) {
-                    foreach($this->collEdtEmplacementCourss as $obj) {
-                        if($obj->isNew()) {
-                            $collEdtEmplacementCourss[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collEdtEmplacementCourss = $collEdtEmplacementCourss;
-                $this->collEdtEmplacementCourssPartial = false;
-            }
-        }
-
-        return $this->collEdtEmplacementCourss;
-    }
-
-    /**
-     * Sets a collection of EdtEmplacementCours objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param PropelCollection $edtEmplacementCourss A Propel collection.
-     * @param PropelPDO $con Optional connection object
-     */
-    public function setEdtEmplacementCourss(PropelCollection $edtEmplacementCourss, PropelPDO $con = null)
-    {
-        $this->edtEmplacementCourssScheduledForDeletion = $this->getEdtEmplacementCourss(new Criteria(), $con)->diff($edtEmplacementCourss);
-
-        foreach ($this->edtEmplacementCourssScheduledForDeletion as $edtEmplacementCoursRemoved) {
-            $edtEmplacementCoursRemoved->setGroupe(null);
-        }
-
-        $this->collEdtEmplacementCourss = null;
-        foreach ($edtEmplacementCourss as $edtEmplacementCours) {
-            $this->addEdtEmplacementCours($edtEmplacementCours);
-        }
-
-        $this->collEdtEmplacementCourss = $edtEmplacementCourss;
-        $this->collEdtEmplacementCourssPartial = false;
-    }
-
-    /**
-     * Returns the number of related EdtEmplacementCours objects.
-     *
-     * @param Criteria $criteria
-     * @param boolean $distinct
-     * @param PropelPDO $con
-     * @return int             Count of related EdtEmplacementCours objects.
-     * @throws PropelException
-     */
-    public function countEdtEmplacementCourss(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-    {
-        $partial = $this->collEdtEmplacementCourssPartial && !$this->isNew();
-        if (null === $this->collEdtEmplacementCourss || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collEdtEmplacementCourss) {
-                return 0;
-            } else {
-                if($partial && !$criteria) {
-                    return count($this->getEdtEmplacementCourss());
-                }
-                $query = EdtEmplacementCoursQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByGroupe($this)
-                    ->count($con);
-            }
-        } else {
-            return count($this->collEdtEmplacementCourss);
-        }
-    }
-
-    /**
-     * Method called to associate a EdtEmplacementCours object to this object
-     * through the EdtEmplacementCours foreign key attribute.
-     *
-     * @param    EdtEmplacementCours $l EdtEmplacementCours
-     * @return Groupe The current object (for fluent API support)
-     */
-    public function addEdtEmplacementCours(EdtEmplacementCours $l)
-    {
-        if ($this->collEdtEmplacementCourss === null) {
-            $this->initEdtEmplacementCourss();
-            $this->collEdtEmplacementCourssPartial = true;
-        }
-        if (!in_array($l, $this->collEdtEmplacementCourss->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddEdtEmplacementCours($l);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param	EdtEmplacementCours $edtEmplacementCours The edtEmplacementCours object to add.
-     */
-    protected function doAddEdtEmplacementCours($edtEmplacementCours)
-    {
-        $this->collEdtEmplacementCourss[]= $edtEmplacementCours;
-        $edtEmplacementCours->setGroupe($this);
-    }
-
-    /**
-     * @param	EdtEmplacementCours $edtEmplacementCours The edtEmplacementCours object to remove.
-     */
-    public function removeEdtEmplacementCours($edtEmplacementCours)
-    {
-        if ($this->getEdtEmplacementCourss()->contains($edtEmplacementCours)) {
-            $this->collEdtEmplacementCourss->remove($this->collEdtEmplacementCourss->search($edtEmplacementCours));
-            if (null === $this->edtEmplacementCourssScheduledForDeletion) {
-                $this->edtEmplacementCourssScheduledForDeletion = clone $this->collEdtEmplacementCourss;
-                $this->edtEmplacementCourssScheduledForDeletion->clear();
-            }
-            $this->edtEmplacementCourssScheduledForDeletion[]= $edtEmplacementCours;
-            $edtEmplacementCours->setGroupe(null);
-        }
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related EdtEmplacementCourss from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|EdtEmplacementCours[] List of EdtEmplacementCours objects
-     */
-    public function getEdtEmplacementCourssJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = EdtEmplacementCoursQuery::create(null, $criteria);
-        $query->joinWith('AidDetails', $join_behavior);
-
-        return $this->getEdtEmplacementCourss($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related EdtEmplacementCourss from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|EdtEmplacementCours[] List of EdtEmplacementCours objects
-     */
-    public function getEdtEmplacementCourssJoinEdtSalle($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = EdtEmplacementCoursQuery::create(null, $criteria);
-        $query->joinWith('EdtSalle', $join_behavior);
-
-        return $this->getEdtEmplacementCourss($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related EdtEmplacementCourss from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|EdtEmplacementCours[] List of EdtEmplacementCours objects
-     */
-    public function getEdtEmplacementCourssJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = EdtEmplacementCoursQuery::create(null, $criteria);
-        $query->joinWith('EdtCreneau', $join_behavior);
-
-        return $this->getEdtEmplacementCourss($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related EdtEmplacementCourss from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|EdtEmplacementCours[] List of EdtEmplacementCours objects
-     */
-    public function getEdtEmplacementCourssJoinEdtCalendrierPeriode($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = EdtEmplacementCoursQuery::create(null, $criteria);
-        $query->joinWith('EdtCalendrierPeriode', $join_behavior);
-
-        return $this->getEdtEmplacementCourss($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Groupe is new, it will return
-     * an empty collection; or if this Groupe has previously
-     * been saved, it will retrieve related EdtEmplacementCourss from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Groupe.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|EdtEmplacementCours[] List of EdtEmplacementCours objects
-     */
-    public function getEdtEmplacementCourssJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = EdtEmplacementCoursQuery::create(null, $criteria);
-        $query->joinWith('UtilisateurProfessionnel', $join_behavior);
-
-        return $this->getEdtEmplacementCourss($query, $con);
-    }
-
-    /**
-     * Clears out the collUtilisateurProfessionnels collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addUtilisateurProfessionnels()
-     */
-    public function clearUtilisateurProfessionnels()
-    {
-        $this->collUtilisateurProfessionnels = null; // important to set this to null since that means it is uninitialized
-        $this->collUtilisateurProfessionnelsPartial = null;
-    }
-
-    /**
-     * Initializes the collUtilisateurProfessionnels collection.
-     *
-     * By default this just sets the collUtilisateurProfessionnels collection to an empty collection (like clearUtilisateurProfessionnels());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @return void
-     */
-    public function initUtilisateurProfessionnels()
-    {
-        $this->collUtilisateurProfessionnels = new PropelObjectCollection();
-        $this->collUtilisateurProfessionnels->setModel('UtilisateurProfessionnel');
-    }
-
-    /**
-     * Gets a collection of UtilisateurProfessionnel objects related by a many-to-many relationship
-     * to the current object by way of the j_groupes_professeurs cross-reference table.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this Groupe is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param Criteria $criteria Optional query object to filter the query
-     * @param PropelPDO $con Optional connection object
-     *
-     * @return PropelObjectCollection|UtilisateurProfessionnel[] List of UtilisateurProfessionnel objects
-     */
-    public function getUtilisateurProfessionnels($criteria = null, PropelPDO $con = null)
-    {
-        if (null === $this->collUtilisateurProfessionnels || null !== $criteria) {
-            if ($this->isNew() && null === $this->collUtilisateurProfessionnels) {
-                // return empty collection
-                $this->initUtilisateurProfessionnels();
-            } else {
-                $collUtilisateurProfessionnels = UtilisateurProfessionnelQuery::create(null, $criteria)
-                    ->filterByGroupe($this)
-                    ->find($con);
-                if (null !== $criteria) {
-                    return $collUtilisateurProfessionnels;
-                }
-                $this->collUtilisateurProfessionnels = $collUtilisateurProfessionnels;
-            }
-        }
-
-        return $this->collUtilisateurProfessionnels;
-    }
-
-    /**
-     * Sets a collection of UtilisateurProfessionnel objects related by a many-to-many relationship
-     * to the current object by way of the j_groupes_professeurs cross-reference table.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param PropelCollection $utilisateurProfessionnels A Propel collection.
-     * @param PropelPDO $con Optional connection object
-     */
-    public function setUtilisateurProfessionnels(PropelCollection $utilisateurProfessionnels, PropelPDO $con = null)
-    {
-        $this->clearUtilisateurProfessionnels();
-        $currentUtilisateurProfessionnels = $this->getUtilisateurProfessionnels();
-
-        $this->utilisateurProfessionnelsScheduledForDeletion = $currentUtilisateurProfessionnels->diff($utilisateurProfessionnels);
-
-        foreach ($utilisateurProfessionnels as $utilisateurProfessionnel) {
-            if (!$currentUtilisateurProfessionnels->contains($utilisateurProfessionnel)) {
-                $this->doAddUtilisateurProfessionnel($utilisateurProfessionnel);
-            }
-        }
-
-        $this->collUtilisateurProfessionnels = $utilisateurProfessionnels;
-    }
-
-    /**
-     * Gets the number of UtilisateurProfessionnel objects related by a many-to-many relationship
-     * to the current object by way of the j_groupes_professeurs cross-reference table.
-     *
-     * @param Criteria $criteria Optional query object to filter the query
-     * @param boolean $distinct Set to true to force count distinct
-     * @param PropelPDO $con Optional connection object
-     *
-     * @return int the number of related UtilisateurProfessionnel objects
-     */
-    public function countUtilisateurProfessionnels($criteria = null, $distinct = false, PropelPDO $con = null)
-    {
-        if (null === $this->collUtilisateurProfessionnels || null !== $criteria) {
-            if ($this->isNew() && null === $this->collUtilisateurProfessionnels) {
-                return 0;
-            } else {
-                $query = UtilisateurProfessionnelQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByGroupe($this)
-                    ->count($con);
-            }
-        } else {
-            return count($this->collUtilisateurProfessionnels);
-        }
-    }
-
-    /**
-     * Associate a UtilisateurProfessionnel object to this object
-     * through the j_groupes_professeurs cross reference table.
-     *
-     * @param  UtilisateurProfessionnel $utilisateurProfessionnel The JGroupesProfesseurs object to relate
-     * @return void
-     */
-    public function addUtilisateurProfessionnel(UtilisateurProfessionnel $utilisateurProfessionnel)
-    {
-        if ($this->collUtilisateurProfessionnels === null) {
-            $this->initUtilisateurProfessionnels();
-        }
-        if (!$this->collUtilisateurProfessionnels->contains($utilisateurProfessionnel)) { // only add it if the **same** object is not already associated
-            $this->doAddUtilisateurProfessionnel($utilisateurProfessionnel);
-
-            $this->collUtilisateurProfessionnels[]= $utilisateurProfessionnel;
-        }
-    }
-
-    /**
-     * @param	UtilisateurProfessionnel $utilisateurProfessionnel The utilisateurProfessionnel object to add.
-     */
-    protected function doAddUtilisateurProfessionnel($utilisateurProfessionnel)
-    {
-        $jGroupesProfesseurs = new JGroupesProfesseurs();
-        $jGroupesProfesseurs->setUtilisateurProfessionnel($utilisateurProfessionnel);
-        $this->addJGroupesProfesseurs($jGroupesProfesseurs);
-    }
-
-    /**
-     * Remove a UtilisateurProfessionnel object to this object
-     * through the j_groupes_professeurs cross reference table.
-     *
-     * @param UtilisateurProfessionnel $utilisateurProfessionnel The JGroupesProfesseurs object to relate
-     * @return void
-     */
-    public function removeUtilisateurProfessionnel(UtilisateurProfessionnel $utilisateurProfessionnel)
-    {
-        if ($this->getUtilisateurProfessionnels()->contains($utilisateurProfessionnel)) {
-            $this->collUtilisateurProfessionnels->remove($this->collUtilisateurProfessionnels->search($utilisateurProfessionnel));
-            if (null === $this->utilisateurProfessionnelsScheduledForDeletion) {
-                $this->utilisateurProfessionnelsScheduledForDeletion = clone $this->collUtilisateurProfessionnels;
-                $this->utilisateurProfessionnelsScheduledForDeletion->clear();
-            }
-            $this->utilisateurProfessionnelsScheduledForDeletion[]= $utilisateurProfessionnel;
-        }
-    }
-
-    /**
-     * Clears out the collMatieres collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addMatieres()
-     */
-    public function clearMatieres()
-    {
-        $this->collMatieres = null; // important to set this to null since that means it is uninitialized
-        $this->collMatieresPartial = null;
-    }
-
-    /**
-     * Initializes the collMatieres collection.
-     *
-     * By default this just sets the collMatieres collection to an empty collection (like clearMatieres());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @return void
-     */
-    public function initMatieres()
-    {
-        $this->collMatieres = new PropelObjectCollection();
-        $this->collMatieres->setModel('Matiere');
-    }
-
-    /**
-     * Gets a collection of Matiere objects related by a many-to-many relationship
-     * to the current object by way of the j_groupes_matieres cross-reference table.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this Groupe is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param Criteria $criteria Optional query object to filter the query
-     * @param PropelPDO $con Optional connection object
-     *
-     * @return PropelObjectCollection|Matiere[] List of Matiere objects
-     */
-    public function getMatieres($criteria = null, PropelPDO $con = null)
-    {
-        if (null === $this->collMatieres || null !== $criteria) {
-            if ($this->isNew() && null === $this->collMatieres) {
-                // return empty collection
-                $this->initMatieres();
-            } else {
-                $collMatieres = MatiereQuery::create(null, $criteria)
-                    ->filterByGroupe($this)
-                    ->find($con);
-                if (null !== $criteria) {
-                    return $collMatieres;
-                }
-                $this->collMatieres = $collMatieres;
-            }
-        }
-
-        return $this->collMatieres;
-    }
-
-    /**
-     * Sets a collection of Matiere objects related by a many-to-many relationship
-     * to the current object by way of the j_groupes_matieres cross-reference table.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param PropelCollection $matieres A Propel collection.
-     * @param PropelPDO $con Optional connection object
-     */
-    public function setMatieres(PropelCollection $matieres, PropelPDO $con = null)
-    {
-        $this->clearMatieres();
-        $currentMatieres = $this->getMatieres();
-
-        $this->matieresScheduledForDeletion = $currentMatieres->diff($matieres);
-
-        foreach ($matieres as $matiere) {
-            if (!$currentMatieres->contains($matiere)) {
-                $this->doAddMatiere($matiere);
-            }
-        }
-
-        $this->collMatieres = $matieres;
-    }
-
-    /**
-     * Gets the number of Matiere objects related by a many-to-many relationship
-     * to the current object by way of the j_groupes_matieres cross-reference table.
-     *
-     * @param Criteria $criteria Optional query object to filter the query
-     * @param boolean $distinct Set to true to force count distinct
-     * @param PropelPDO $con Optional connection object
-     *
-     * @return int the number of related Matiere objects
-     */
-    public function countMatieres($criteria = null, $distinct = false, PropelPDO $con = null)
-    {
-        if (null === $this->collMatieres || null !== $criteria) {
-            if ($this->isNew() && null === $this->collMatieres) {
-                return 0;
-            } else {
-                $query = MatiereQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByGroupe($this)
-                    ->count($con);
-            }
-        } else {
-            return count($this->collMatieres);
-        }
-    }
-
-    /**
-     * Associate a Matiere object to this object
-     * through the j_groupes_matieres cross reference table.
-     *
-     * @param  Matiere $matiere The JGroupesMatieres object to relate
-     * @return void
-     */
-    public function addMatiere(Matiere $matiere)
-    {
-        if ($this->collMatieres === null) {
-            $this->initMatieres();
-        }
-        if (!$this->collMatieres->contains($matiere)) { // only add it if the **same** object is not already associated
-            $this->doAddMatiere($matiere);
-
-            $this->collMatieres[]= $matiere;
-        }
-    }
-
-    /**
-     * @param	Matiere $matiere The matiere object to add.
-     */
-    protected function doAddMatiere($matiere)
-    {
-        $jGroupesMatieres = new JGroupesMatieres();
-        $jGroupesMatieres->setMatiere($matiere);
-        $this->addJGroupesMatieres($jGroupesMatieres);
-    }
-
-    /**
-     * Remove a Matiere object to this object
-     * through the j_groupes_matieres cross reference table.
-     *
-     * @param Matiere $matiere The JGroupesMatieres object to relate
-     * @return void
-     */
-    public function removeMatiere(Matiere $matiere)
-    {
-        if ($this->getMatieres()->contains($matiere)) {
-            $this->collMatieres->remove($this->collMatieres->search($matiere));
-            if (null === $this->matieresScheduledForDeletion) {
-                $this->matieresScheduledForDeletion = clone $this->collMatieres;
-                $this->matieresScheduledForDeletion->clear();
-            }
-            $this->matieresScheduledForDeletion[]= $matiere;
-        }
-    }
-
-    /**
-     * Clears out the collClasses collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addClasses()
-     */
-    public function clearClasses()
-    {
-        $this->collClasses = null; // important to set this to null since that means it is uninitialized
-        $this->collClassesPartial = null;
-    }
-
-    /**
-     * Initializes the collClasses collection.
-     *
-     * By default this just sets the collClasses collection to an empty collection (like clearClasses());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @return void
-     */
-    public function initClasses()
-    {
-        $this->collClasses = new PropelObjectCollection();
-        $this->collClasses->setModel('Classe');
-    }
-
-    /**
-     * Gets a collection of Classe objects related by a many-to-many relationship
-     * to the current object by way of the j_groupes_classes cross-reference table.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this Groupe is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param Criteria $criteria Optional query object to filter the query
-     * @param PropelPDO $con Optional connection object
-     *
-     * @return PropelObjectCollection|Classe[] List of Classe objects
-     */
-    public function getClasses($criteria = null, PropelPDO $con = null)
-    {
-        if (null === $this->collClasses || null !== $criteria) {
-            if ($this->isNew() && null === $this->collClasses) {
-                // return empty collection
-                $this->initClasses();
-            } else {
-                $collClasses = ClasseQuery::create(null, $criteria)
-                    ->filterByGroupe($this)
-                    ->find($con);
-                if (null !== $criteria) {
-                    return $collClasses;
-                }
-                $this->collClasses = $collClasses;
-            }
-        }
-
-        return $this->collClasses;
-    }
-
-    /**
-     * Sets a collection of Classe objects related by a many-to-many relationship
-     * to the current object by way of the j_groupes_classes cross-reference table.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param PropelCollection $classes A Propel collection.
-     * @param PropelPDO $con Optional connection object
-     */
-    public function setClasses(PropelCollection $classes, PropelPDO $con = null)
-    {
-        $this->clearClasses();
-        $currentClasses = $this->getClasses();
-
-        $this->classesScheduledForDeletion = $currentClasses->diff($classes);
-
-        foreach ($classes as $classe) {
-            if (!$currentClasses->contains($classe)) {
-                $this->doAddClasse($classe);
-            }
-        }
-
-        $this->collClasses = $classes;
-    }
-
-    /**
-     * Gets the number of Classe objects related by a many-to-many relationship
-     * to the current object by way of the j_groupes_classes cross-reference table.
-     *
-     * @param Criteria $criteria Optional query object to filter the query
-     * @param boolean $distinct Set to true to force count distinct
-     * @param PropelPDO $con Optional connection object
-     *
-     * @return int the number of related Classe objects
-     */
-    public function countClasses($criteria = null, $distinct = false, PropelPDO $con = null)
-    {
-        if (null === $this->collClasses || null !== $criteria) {
-            if ($this->isNew() && null === $this->collClasses) {
-                return 0;
-            } else {
-                $query = ClasseQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByGroupe($this)
-                    ->count($con);
-            }
-        } else {
-            return count($this->collClasses);
-        }
-    }
-
-    /**
-     * Associate a Classe object to this object
-     * through the j_groupes_classes cross reference table.
-     *
-     * @param  Classe $classe The JGroupesClasses object to relate
-     * @return void
-     */
-    public function addClasse(Classe $classe)
-    {
-        if ($this->collClasses === null) {
-            $this->initClasses();
-        }
-        if (!$this->collClasses->contains($classe)) { // only add it if the **same** object is not already associated
-            $this->doAddClasse($classe);
-
-            $this->collClasses[]= $classe;
-        }
-    }
-
-    /**
-     * @param	Classe $classe The classe object to add.
-     */
-    protected function doAddClasse($classe)
-    {
-        $jGroupesClasses = new JGroupesClasses();
-        $jGroupesClasses->setClasse($classe);
-        $this->addJGroupesClasses($jGroupesClasses);
-    }
-
-    /**
-     * Remove a Classe object to this object
-     * through the j_groupes_classes cross reference table.
-     *
-     * @param Classe $classe The JGroupesClasses object to relate
-     * @return void
-     */
-    public function removeClasse(Classe $classe)
-    {
-        if ($this->getClasses()->contains($classe)) {
-            $this->collClasses->remove($this->collClasses->search($classe));
-            if (null === $this->classesScheduledForDeletion) {
-                $this->classesScheduledForDeletion = clone $this->collClasses;
-                $this->classesScheduledForDeletion->clear();
-            }
-            $this->classesScheduledForDeletion[]= $classe;
-        }
-    }
-
-    /**
-     * Clears the current object and sets all attributes to their default values
-     */
-    public function clear()
-    {
-        $this->id = null;
-        $this->name = null;
-        $this->description = null;
-        $this->recalcul_rang = null;
-        $this->alreadyInSave = false;
-        $this->alreadyInValidation = false;
-        $this->clearAllReferences();
-        $this->resetModified();
-        $this->setNew(true);
-        $this->setDeleted(false);
-    }
-
-    /**
-     * Resets all references to other model objects or collections of model objects.
-     *
-     * This method is a user-space workaround for PHP's inability to garbage collect
-     * objects with circular references (even in PHP 5.3). This is currently necessary
-     * when using Propel in certain daemon or large-volumne/high-memory operations.
-     *
-     * @param boolean $deep Whether to also clear the references on all referrer objects.
-     */
-    public function clearAllReferences($deep = false)
-    {
-        if ($deep) {
-            if ($this->collJGroupesProfesseurss) {
-                foreach ($this->collJGroupesProfesseurss as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collJGroupesMatieress) {
-                foreach ($this->collJGroupesMatieress as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collJGroupesClassess) {
-                foreach ($this->collJGroupesClassess as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collCahierTexteCompteRendus) {
-                foreach ($this->collCahierTexteCompteRendus as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collCahierTexteTravailAFaires) {
-                foreach ($this->collCahierTexteTravailAFaires as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collCahierTexteNoticePrivees) {
-                foreach ($this->collCahierTexteNoticePrivees as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collJEleveGroupes) {
-                foreach ($this->collJEleveGroupes as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collAbsenceEleveSaisies) {
-                foreach ($this->collAbsenceEleveSaisies as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collCreditEctss) {
-                foreach ($this->collCreditEctss as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collEdtEmplacementCourss) {
-                foreach ($this->collEdtEmplacementCourss as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collUtilisateurProfessionnels) {
-                foreach ($this->collUtilisateurProfessionnels as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collMatieres) {
-                foreach ($this->collMatieres as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collClasses) {
-                foreach ($this->collClasses as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-        } // if ($deep)
-
-        if ($this->collJGroupesProfesseurss instanceof PropelCollection) {
-            $this->collJGroupesProfesseurss->clearIterator();
-        }
-        $this->collJGroupesProfesseurss = null;
-        if ($this->collJGroupesMatieress instanceof PropelCollection) {
-            $this->collJGroupesMatieress->clearIterator();
-        }
-        $this->collJGroupesMatieress = null;
-        if ($this->collJGroupesClassess instanceof PropelCollection) {
-            $this->collJGroupesClassess->clearIterator();
-        }
-        $this->collJGroupesClassess = null;
-        if ($this->collCahierTexteCompteRendus instanceof PropelCollection) {
-            $this->collCahierTexteCompteRendus->clearIterator();
-        }
-        $this->collCahierTexteCompteRendus = null;
-        if ($this->collCahierTexteTravailAFaires instanceof PropelCollection) {
-            $this->collCahierTexteTravailAFaires->clearIterator();
-        }
-        $this->collCahierTexteTravailAFaires = null;
-        if ($this->collCahierTexteNoticePrivees instanceof PropelCollection) {
-            $this->collCahierTexteNoticePrivees->clearIterator();
-        }
-        $this->collCahierTexteNoticePrivees = null;
-        if ($this->collJEleveGroupes instanceof PropelCollection) {
-            $this->collJEleveGroupes->clearIterator();
-        }
-        $this->collJEleveGroupes = null;
-        if ($this->collAbsenceEleveSaisies instanceof PropelCollection) {
-            $this->collAbsenceEleveSaisies->clearIterator();
-        }
-        $this->collAbsenceEleveSaisies = null;
-        if ($this->collCreditEctss instanceof PropelCollection) {
-            $this->collCreditEctss->clearIterator();
-        }
-        $this->collCreditEctss = null;
-        if ($this->collEdtEmplacementCourss instanceof PropelCollection) {
-            $this->collEdtEmplacementCourss->clearIterator();
-        }
-        $this->collEdtEmplacementCourss = null;
-        if ($this->collUtilisateurProfessionnels instanceof PropelCollection) {
-            $this->collUtilisateurProfessionnels->clearIterator();
-        }
-        $this->collUtilisateurProfessionnels = null;
-        if ($this->collMatieres instanceof PropelCollection) {
-            $this->collMatieres->clearIterator();
-        }
-        $this->collMatieres = null;
-        if ($this->collClasses instanceof PropelCollection) {
-            $this->collClasses->clearIterator();
-        }
-        $this->collClasses = null;
-    }
-
-    /**
-     * return the string representation of this object
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        return (string) $this->exportTo(GroupePeer::DEFAULT_STRING_FORMAT);
-    }
-
-    /**
-     * return true is the object is in saving state
-     *
-     * @return boolean
-     */
-    public function isAlreadyInSave()
-    {
-        return $this->alreadyInSave;
-    }
-
-}
+
+	/**
+	 * Peer class name
+	 */
+	const PEER = 'GroupePeer';
+
+	/**
+	 * The Peer class.
+	 * Instance provides a convenient way of calling static methods on a class
+	 * that calling code may not be able to identify.
+	 * @var        GroupePeer
+	 */
+	protected static $peer;
+
+	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
+	 * The value for the id field.
+	 * @var        int
+	 */
+	protected $id;
+
+	/**
+	 * The value for the name field.
+	 * @var        string
+	 */
+	protected $name;
+
+	/**
+	 * The value for the description field.
+	 * @var        string
+	 */
+	protected $description;
+
+	/**
+	 * The value for the recalcul_rang field.
+	 * @var        string
+	 */
+	protected $recalcul_rang;
+
+	/**
+	 * @var        array JGroupesProfesseurs[] Collection to store aggregation of JGroupesProfesseurs objects.
+	 */
+	protected $collJGroupesProfesseurss;
+
+	/**
+	 * @var        array JGroupesMatieres[] Collection to store aggregation of JGroupesMatieres objects.
+	 */
+	protected $collJGroupesMatieress;
+
+	/**
+	 * @var        array JGroupesClasses[] Collection to store aggregation of JGroupesClasses objects.
+	 */
+	protected $collJGroupesClassess;
+
+	/**
+	 * @var        array CahierTexteCompteRendu[] Collection to store aggregation of CahierTexteCompteRendu objects.
+	 */
+	protected $collCahierTexteCompteRendus;
+
+	/**
+	 * @var        array CahierTexteTravailAFaire[] Collection to store aggregation of CahierTexteTravailAFaire objects.
+	 */
+	protected $collCahierTexteTravailAFaires;
+
+	/**
+	 * @var        array CahierTexteNoticePrivee[] Collection to store aggregation of CahierTexteNoticePrivee objects.
+	 */
+	protected $collCahierTexteNoticePrivees;
+
+	/**
+	 * @var        array JEleveGroupe[] Collection to store aggregation of JEleveGroupe objects.
+	 */
+	protected $collJEleveGroupes;
+
+	/**
+	 * @var        array AbsenceEleveSaisie[] Collection to store aggregation of AbsenceEleveSaisie objects.
+	 */
+	protected $collAbsenceEleveSaisies;
+
+	/**
+	 * @var        array CreditEcts[] Collection to store aggregation of CreditEcts objects.
+	 */
+	protected $collCreditEctss;
+
+	/**
+	 * @var        array EdtEmplacementCours[] Collection to store aggregation of EdtEmplacementCours objects.
+	 */
+	protected $collEdtEmplacementCourss;
+
+	/**
+	 * @var        array UtilisateurProfessionnel[] Collection to store aggregation of UtilisateurProfessionnel objects.
+	 */
+	protected $collUtilisateurProfessionnels;
+
+	/**
+	 * @var        array Matiere[] Collection to store aggregation of Matiere objects.
+	 */
+	protected $collMatieres;
+
+	/**
+	 * @var        array Classe[] Collection to store aggregation of Classe objects.
+	 */
+	protected $collClasses;
+
+	/**
+	 * Flag to prevent endless save loop, if this object is referenced
+	 * by another object which falls in this transaction.
+	 * @var        boolean
+	 */
+	protected $alreadyInSave = false;
+
+	/**
+	 * Flag to prevent endless validation loop, if this object is referenced
+	 * by another object which falls in this transaction.
+	 * @var        boolean
+	 */
+	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $utilisateurProfessionnelsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $matieresScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $classesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $jGroupesProfesseurssScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $jGroupesMatieressScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $jGroupesClassessScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $cahierTexteCompteRendusScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $cahierTexteTravailAFairesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $cahierTexteNoticePriveesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $jEleveGroupesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $absenceEleveSaisiesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $creditEctssScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $edtEmplacementCourssScheduledForDeletion = null;
+
+	/**
+	 * Get the [id] column value.
+	 * Clee primaire du groupe
+	 * @return     int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	/**
+	 * Get the [name] column value.
+	 * Nom du groupe
+	 * @return     string
+	 */
+	public function getName()
+	{
+		return $this->name;
+	}
+
+	/**
+	 * Get the [description] column value.
+	 * Description du groupe
+	 * @return     string
+	 */
+	public function getDescription()
+	{
+		return $this->description;
+	}
+
+	/**
+	 * Get the [recalcul_rang] column value.
+	 * recalcul_rang
+	 * @return     string
+	 */
+	public function getRecalculRang()
+	{
+		return $this->recalcul_rang;
+	}
+
+	/**
+	 * Set the value of [id] column.
+	 * Clee primaire du groupe
+	 * @param      int $v new value
+	 * @return     Groupe The current object (for fluent API support)
+	 */
+	public function setId($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->id !== $v) {
+			$this->id = $v;
+			$this->modifiedColumns[] = GroupePeer::ID;
+		}
+
+		return $this;
+	} // setId()
+
+	/**
+	 * Set the value of [name] column.
+	 * Nom du groupe
+	 * @param      string $v new value
+	 * @return     Groupe The current object (for fluent API support)
+	 */
+	public function setName($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->name !== $v) {
+			$this->name = $v;
+			$this->modifiedColumns[] = GroupePeer::NAME;
+		}
+
+		return $this;
+	} // setName()
+
+	/**
+	 * Set the value of [description] column.
+	 * Description du groupe
+	 * @param      string $v new value
+	 * @return     Groupe The current object (for fluent API support)
+	 */
+	public function setDescription($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->description !== $v) {
+			$this->description = $v;
+			$this->modifiedColumns[] = GroupePeer::DESCRIPTION;
+		}
+
+		return $this;
+	} // setDescription()
+
+	/**
+	 * Set the value of [recalcul_rang] column.
+	 * recalcul_rang
+	 * @param      string $v new value
+	 * @return     Groupe The current object (for fluent API support)
+	 */
+	public function setRecalculRang($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->recalcul_rang !== $v) {
+			$this->recalcul_rang = $v;
+			$this->modifiedColumns[] = GroupePeer::RECALCUL_RANG;
+		}
+
+		return $this;
+	} // setRecalculRang()
+
+	/**
+	 * Indicates whether the columns in this object are only set to default values.
+	 *
+	 * This method can be used in conjunction with isModified() to indicate whether an object is both
+	 * modified _and_ has some values set which are non-default.
+	 *
+	 * @return     boolean Whether the columns in this object are only been set with default values.
+	 */
+	public function hasOnlyDefaultValues()
+	{
+		// otherwise, everything was equal, so return TRUE
+		return true;
+	} // hasOnlyDefaultValues()
+
+	/**
+	 * Hydrates (populates) the object variables with values from the database resultset.
+	 *
+	 * An offset (0-based "start column") is specified so that objects can be hydrated
+	 * with a subset of the columns in the resultset rows.  This is needed, for example,
+	 * for results of JOIN queries where the resultset row includes columns from two or
+	 * more tables.
+	 *
+	 * @param      array $row The row returned by PDOStatement->fetch(PDO::FETCH_NUM)
+	 * @param      int $startcol 0-based offset column which indicates which restultset column to start with.
+	 * @param      boolean $rehydrate Whether this object is being re-hydrated from the database.
+	 * @return     int next starting column
+	 * @throws     PropelException  - Any caught Exception will be rewrapped as a PropelException.
+	 */
+	public function hydrate($row, $startcol = 0, $rehydrate = false)
+	{
+		try {
+
+			$this->id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
+			$this->name = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
+			$this->description = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+			$this->recalcul_rang = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
+			$this->resetModified();
+
+			$this->setNew(false);
+
+			if ($rehydrate) {
+				$this->ensureConsistency();
+			}
+
+			return $startcol + 4; // 4 = GroupePeer::NUM_HYDRATE_COLUMNS.
+
+		} catch (Exception $e) {
+			throw new PropelException("Error populating Groupe object", $e);
+		}
+	}
+
+	/**
+	 * Checks and repairs the internal consistency of the object.
+	 *
+	 * This method is executed after an already-instantiated object is re-hydrated
+	 * from the database.  It exists to check any foreign keys to make sure that
+	 * the objects related to the current object are correct based on foreign key.
+	 *
+	 * You can override this method in the stub class, but you should always invoke
+	 * the base method from the overridden method (i.e. parent::ensureConsistency()),
+	 * in case your model changes.
+	 *
+	 * @throws     PropelException
+	 */
+	public function ensureConsistency()
+	{
+
+	} // ensureConsistency
+
+	/**
+	 * Reloads this object from datastore based on primary key and (optionally) resets all associated objects.
+	 *
+	 * This will only work if the object has been saved and has a valid primary key set.
+	 *
+	 * @param      boolean $deep (optional) Whether to also de-associated any related objects.
+	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
+	 * @return     void
+	 * @throws     PropelException - if this object is deleted, unsaved or doesn't have pk match in db
+	 */
+	public function reload($deep = false, PropelPDO $con = null)
+	{
+		if ($this->isDeleted()) {
+			throw new PropelException("Cannot reload a deleted object.");
+		}
+
+		if ($this->isNew()) {
+			throw new PropelException("Cannot reload an unsaved object.");
+		}
+
+		if ($con === null) {
+			$con = Propel::getConnection(GroupePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+
+		// We don't need to alter the object instance pool; we're just modifying this instance
+		// already in the pool.
+
+		$stmt = GroupePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+		$row = $stmt->fetch(PDO::FETCH_NUM);
+		$stmt->closeCursor();
+		if (!$row) {
+			throw new PropelException('Cannot find matching row in the database to reload object values.');
+		}
+		$this->hydrate($row, 0, true); // rehydrate
+
+		if ($deep) {  // also de-associate any related objects?
+
+			$this->collJGroupesProfesseurss = null;
+
+			$this->collJGroupesMatieress = null;
+
+			$this->collJGroupesClassess = null;
+
+			$this->collCahierTexteCompteRendus = null;
+
+			$this->collCahierTexteTravailAFaires = null;
+
+			$this->collCahierTexteNoticePrivees = null;
+
+			$this->collJEleveGroupes = null;
+
+			$this->collAbsenceEleveSaisies = null;
+
+			$this->collCreditEctss = null;
+
+			$this->collEdtEmplacementCourss = null;
+
+			$this->collUtilisateurProfessionnels = null;
+			$this->collMatieres = null;
+			$this->collClasses = null;
+		} // if (deep)
+	}
+
+	/**
+	 * Removes this object from datastore and sets delete attribute.
+	 *
+	 * @param      PropelPDO $con
+	 * @return     void
+	 * @throws     PropelException
+	 * @see        BaseObject::setDeleted()
+	 * @see        BaseObject::isDeleted()
+	 */
+	public function delete(PropelPDO $con = null)
+	{
+		if ($this->isDeleted()) {
+			throw new PropelException("This object has already been deleted.");
+		}
+
+		if ($con === null) {
+			$con = Propel::getConnection(GroupePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+		}
+
+		$con->beginTransaction();
+		try {
+			$deleteQuery = GroupeQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
+			$ret = $this->preDelete($con);
+			if ($ret) {
+				$deleteQuery->delete($con);
+				$this->postDelete($con);
+				$con->commit();
+				$this->setDeleted(true);
+			} else {
+				$con->commit();
+			}
+		} catch (Exception $e) {
+			$con->rollBack();
+			throw $e;
+		}
+	}
+
+	/**
+	 * Persists this object to the database.
+	 *
+	 * If the object is new, it inserts it; otherwise an update is performed.
+	 * All modified related objects will also be persisted in the doSave()
+	 * method.  This method wraps all precipitate database operations in a
+	 * single transaction.
+	 *
+	 * @param      PropelPDO $con
+	 * @return     int The number of rows affected by this insert/update and any referring fk objects' save() operations.
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	public function save(PropelPDO $con = null)
+	{
+		if ($this->isDeleted()) {
+			throw new PropelException("You cannot save an object that has been deleted.");
+		}
+
+		if ($con === null) {
+			$con = Propel::getConnection(GroupePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+		}
+
+		$con->beginTransaction();
+		$isInsert = $this->isNew();
+		try {
+			$ret = $this->preSave($con);
+			if ($isInsert) {
+				$ret = $ret && $this->preInsert($con);
+			} else {
+				$ret = $ret && $this->preUpdate($con);
+			}
+			if ($ret) {
+				$affectedRows = $this->doSave($con);
+				if ($isInsert) {
+					$this->postInsert($con);
+				} else {
+					$this->postUpdate($con);
+				}
+				$this->postSave($con);
+				GroupePeer::addInstanceToPool($this);
+			} else {
+				$affectedRows = 0;
+			}
+			$con->commit();
+			return $affectedRows;
+		} catch (Exception $e) {
+			$con->rollBack();
+			throw $e;
+		}
+	}
+
+	/**
+	 * Performs the work of inserting or updating the row in the database.
+	 *
+	 * If the object is new, it inserts it; otherwise an update is performed.
+	 * All related objects are also updated in this method.
+	 *
+	 * @param      PropelPDO $con
+	 * @return     int The number of rows affected by this insert/update and any referring fk objects' save() operations.
+	 * @throws     PropelException
+	 * @see        save()
+	 */
+	protected function doSave(PropelPDO $con)
+	{
+		$affectedRows = 0; // initialize var to track total num of affected rows
+		if (!$this->alreadyInSave) {
+			$this->alreadyInSave = true;
+
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
+				if ($this->isNew()) {
+					$this->doInsert($con);
+				} else {
+					$this->doUpdate($con);
+				}
+				$affectedRows += 1;
+				$this->resetModified();
+			}
+
+			if ($this->utilisateurProfessionnelsScheduledForDeletion !== null) {
+				if (!$this->utilisateurProfessionnelsScheduledForDeletion->isEmpty()) {
+					JGroupesProfesseursQuery::create()
+						->filterByPrimaryKeys($this->utilisateurProfessionnelsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->utilisateurProfessionnelsScheduledForDeletion = null;
+				}
+
+				foreach ($this->getUtilisateurProfessionnels() as $utilisateurProfessionnel) {
+					if ($utilisateurProfessionnel->isModified()) {
+						$utilisateurProfessionnel->save($con);
+					}
+				}
+			}
+
+			if ($this->matieresScheduledForDeletion !== null) {
+				if (!$this->matieresScheduledForDeletion->isEmpty()) {
+					JGroupesMatieresQuery::create()
+						->filterByPrimaryKeys($this->matieresScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->matieresScheduledForDeletion = null;
+				}
+
+				foreach ($this->getMatieres() as $matiere) {
+					if ($matiere->isModified()) {
+						$matiere->save($con);
+					}
+				}
+			}
+
+			if ($this->classesScheduledForDeletion !== null) {
+				if (!$this->classesScheduledForDeletion->isEmpty()) {
+					JGroupesClassesQuery::create()
+						->filterByPrimaryKeys($this->classesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->classesScheduledForDeletion = null;
+				}
+
+				foreach ($this->getClasses() as $classe) {
+					if ($classe->isModified()) {
+						$classe->save($con);
+					}
+				}
+			}
+
+			if ($this->jGroupesProfesseurssScheduledForDeletion !== null) {
+				if (!$this->jGroupesProfesseurssScheduledForDeletion->isEmpty()) {
+					JGroupesProfesseursQuery::create()
+						->filterByPrimaryKeys($this->jGroupesProfesseurssScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->jGroupesProfesseurssScheduledForDeletion = null;
+				}
+			}
+
+			if ($this->collJGroupesProfesseurss !== null) {
+				foreach ($this->collJGroupesProfesseurss as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->jGroupesMatieressScheduledForDeletion !== null) {
+				if (!$this->jGroupesMatieressScheduledForDeletion->isEmpty()) {
+					JGroupesMatieresQuery::create()
+						->filterByPrimaryKeys($this->jGroupesMatieressScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->jGroupesMatieressScheduledForDeletion = null;
+				}
+			}
+
+			if ($this->collJGroupesMatieress !== null) {
+				foreach ($this->collJGroupesMatieress as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->jGroupesClassessScheduledForDeletion !== null) {
+				if (!$this->jGroupesClassessScheduledForDeletion->isEmpty()) {
+					JGroupesClassesQuery::create()
+						->filterByPrimaryKeys($this->jGroupesClassessScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->jGroupesClassessScheduledForDeletion = null;
+				}
+			}
+
+			if ($this->collJGroupesClassess !== null) {
+				foreach ($this->collJGroupesClassess as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->cahierTexteCompteRendusScheduledForDeletion !== null) {
+				if (!$this->cahierTexteCompteRendusScheduledForDeletion->isEmpty()) {
+					CahierTexteCompteRenduQuery::create()
+						->filterByPrimaryKeys($this->cahierTexteCompteRendusScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->cahierTexteCompteRendusScheduledForDeletion = null;
+				}
+			}
+
+			if ($this->collCahierTexteCompteRendus !== null) {
+				foreach ($this->collCahierTexteCompteRendus as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->cahierTexteTravailAFairesScheduledForDeletion !== null) {
+				if (!$this->cahierTexteTravailAFairesScheduledForDeletion->isEmpty()) {
+					CahierTexteTravailAFaireQuery::create()
+						->filterByPrimaryKeys($this->cahierTexteTravailAFairesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->cahierTexteTravailAFairesScheduledForDeletion = null;
+				}
+			}
+
+			if ($this->collCahierTexteTravailAFaires !== null) {
+				foreach ($this->collCahierTexteTravailAFaires as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->cahierTexteNoticePriveesScheduledForDeletion !== null) {
+				if (!$this->cahierTexteNoticePriveesScheduledForDeletion->isEmpty()) {
+					CahierTexteNoticePriveeQuery::create()
+						->filterByPrimaryKeys($this->cahierTexteNoticePriveesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->cahierTexteNoticePriveesScheduledForDeletion = null;
+				}
+			}
+
+			if ($this->collCahierTexteNoticePrivees !== null) {
+				foreach ($this->collCahierTexteNoticePrivees as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->jEleveGroupesScheduledForDeletion !== null) {
+				if (!$this->jEleveGroupesScheduledForDeletion->isEmpty()) {
+					JEleveGroupeQuery::create()
+						->filterByPrimaryKeys($this->jEleveGroupesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->jEleveGroupesScheduledForDeletion = null;
+				}
+			}
+
+			if ($this->collJEleveGroupes !== null) {
+				foreach ($this->collJEleveGroupes as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->absenceEleveSaisiesScheduledForDeletion !== null) {
+				if (!$this->absenceEleveSaisiesScheduledForDeletion->isEmpty()) {
+					AbsenceEleveSaisieQuery::create()
+						->filterByPrimaryKeys($this->absenceEleveSaisiesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->absenceEleveSaisiesScheduledForDeletion = null;
+				}
+			}
+
+			if ($this->collAbsenceEleveSaisies !== null) {
+				foreach ($this->collAbsenceEleveSaisies as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->creditEctssScheduledForDeletion !== null) {
+				if (!$this->creditEctssScheduledForDeletion->isEmpty()) {
+					CreditEctsQuery::create()
+						->filterByPrimaryKeys($this->creditEctssScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->creditEctssScheduledForDeletion = null;
+				}
+			}
+
+			if ($this->collCreditEctss !== null) {
+				foreach ($this->collCreditEctss as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->edtEmplacementCourssScheduledForDeletion !== null) {
+				if (!$this->edtEmplacementCourssScheduledForDeletion->isEmpty()) {
+					EdtEmplacementCoursQuery::create()
+						->filterByPrimaryKeys($this->edtEmplacementCourssScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->edtEmplacementCourssScheduledForDeletion = null;
+				}
+			}
+
+			if ($this->collEdtEmplacementCourss !== null) {
+				foreach ($this->collEdtEmplacementCourss as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			$this->alreadyInSave = false;
+
+		}
+		return $affectedRows;
+	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = GroupePeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . GroupePeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(GroupePeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = 'ID';
+		}
+		if ($this->isColumnModified(GroupePeer::NAME)) {
+			$modifiedColumns[':p' . $index++]  = 'NAME';
+		}
+		if ($this->isColumnModified(GroupePeer::DESCRIPTION)) {
+			$modifiedColumns[':p' . $index++]  = 'DESCRIPTION';
+		}
+		if ($this->isColumnModified(GroupePeer::RECALCUL_RANG)) {
+			$modifiedColumns[':p' . $index++]  = 'RECALCUL_RANG';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO groupes (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case 'ID':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case 'NAME':
+						$stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
+						break;
+					case 'DESCRIPTION':
+						$stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
+						break;
+					case 'RECALCUL_RANG':
+						$stmt->bindValue($identifier, $this->recalcul_rang, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
+
+	/**
+	 * Array of ValidationFailed objects.
+	 * @var        array ValidationFailed[]
+	 */
+	protected $validationFailures = array();
+
+	/**
+	 * Gets any ValidationFailed objects that resulted from last call to validate().
+	 *
+	 *
+	 * @return     array ValidationFailed[]
+	 * @see        validate()
+	 */
+	public function getValidationFailures()
+	{
+		return $this->validationFailures;
+	}
+
+	/**
+	 * Validates the objects modified field values and all objects related to this table.
+	 *
+	 * If $columns is either a column name or an array of column names
+	 * only those columns are validated.
+	 *
+	 * @param      mixed $columns Column name or an array of column names.
+	 * @return     boolean Whether all columns pass validation.
+	 * @see        doValidate()
+	 * @see        getValidationFailures()
+	 */
+	public function validate($columns = null)
+	{
+		$res = $this->doValidate($columns);
+		if ($res === true) {
+			$this->validationFailures = array();
+			return true;
+		} else {
+			$this->validationFailures = $res;
+			return false;
+		}
+	}
+
+	/**
+	 * This function performs the validation work for complex object models.
+	 *
+	 * In addition to checking the current object, all related objects will
+	 * also be validated.  If all pass then <code>true</code> is returned; otherwise
+	 * an aggreagated array of ValidationFailed objects will be returned.
+	 *
+	 * @param      array $columns Array of column names to validate.
+	 * @return     mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objets otherwise.
+	 */
+	protected function doValidate($columns = null)
+	{
+		if (!$this->alreadyInValidation) {
+			$this->alreadyInValidation = true;
+			$retval = null;
+
+			$failureMap = array();
+
+
+			if (($retval = GroupePeer::doValidate($this, $columns)) !== true) {
+				$failureMap = array_merge($failureMap, $retval);
+			}
+
+
+				if ($this->collJGroupesProfesseurss !== null) {
+					foreach ($this->collJGroupesProfesseurss as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collJGroupesMatieress !== null) {
+					foreach ($this->collJGroupesMatieress as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collJGroupesClassess !== null) {
+					foreach ($this->collJGroupesClassess as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collCahierTexteCompteRendus !== null) {
+					foreach ($this->collCahierTexteCompteRendus as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collCahierTexteTravailAFaires !== null) {
+					foreach ($this->collCahierTexteTravailAFaires as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collCahierTexteNoticePrivees !== null) {
+					foreach ($this->collCahierTexteNoticePrivees as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collJEleveGroupes !== null) {
+					foreach ($this->collJEleveGroupes as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collAbsenceEleveSaisies !== null) {
+					foreach ($this->collAbsenceEleveSaisies as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collCreditEctss !== null) {
+					foreach ($this->collCreditEctss as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collEdtEmplacementCourss !== null) {
+					foreach ($this->collEdtEmplacementCourss as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+
+			$this->alreadyInValidation = false;
+		}
+
+		return (!empty($failureMap) ? $failureMap : true);
+	}
+
+	/**
+	 * Retrieves a field from the object by name passed in as a string.
+	 *
+	 * @param      string $name name
+	 * @param      string $type The type of fieldname the $name is of:
+	 *                     one of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
+	 *                     BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM
+	 * @return     mixed Value of field.
+	 */
+	public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
+	{
+		$pos = GroupePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+		$field = $this->getByPosition($pos);
+		return $field;
+	}
+
+	/**
+	 * Retrieves a field from the object by Position as specified in the xml schema.
+	 * Zero-based.
+	 *
+	 * @param      int $pos position in xml schema
+	 * @return     mixed Value of field at $pos
+	 */
+	public function getByPosition($pos)
+	{
+		switch($pos) {
+			case 0:
+				return $this->getId();
+				break;
+			case 1:
+				return $this->getName();
+				break;
+			case 2:
+				return $this->getDescription();
+				break;
+			case 3:
+				return $this->getRecalculRang();
+				break;
+			default:
+				return null;
+				break;
+		} // switch()
+	}
+
+	/**
+	 * Exports the object as an array.
+	 *
+	 * You can specify the key type of the array by passing one of the class
+	 * type constants.
+	 *
+	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
+	 *                    Defaults to BasePeer::TYPE_PHPNAME.
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
+	 *
+	 * @return    array an associative array containing the field names (as keys) and field values
+	 */
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
+	{
+		if (isset($alreadyDumpedObjects['Groupe'][$this->getPrimaryKey()])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['Groupe'][$this->getPrimaryKey()] = true;
+		$keys = GroupePeer::getFieldNames($keyType);
+		$result = array(
+			$keys[0] => $this->getId(),
+			$keys[1] => $this->getName(),
+			$keys[2] => $this->getDescription(),
+			$keys[3] => $this->getRecalculRang(),
+		);
+		if ($includeForeignObjects) {
+			if (null !== $this->collJGroupesProfesseurss) {
+				$result['JGroupesProfesseurss'] = $this->collJGroupesProfesseurss->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collJGroupesMatieress) {
+				$result['JGroupesMatieress'] = $this->collJGroupesMatieress->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collJGroupesClassess) {
+				$result['JGroupesClassess'] = $this->collJGroupesClassess->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collCahierTexteCompteRendus) {
+				$result['CahierTexteCompteRendus'] = $this->collCahierTexteCompteRendus->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collCahierTexteTravailAFaires) {
+				$result['CahierTexteTravailAFaires'] = $this->collCahierTexteTravailAFaires->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collCahierTexteNoticePrivees) {
+				$result['CahierTexteNoticePrivees'] = $this->collCahierTexteNoticePrivees->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collJEleveGroupes) {
+				$result['JEleveGroupes'] = $this->collJEleveGroupes->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collAbsenceEleveSaisies) {
+				$result['AbsenceEleveSaisies'] = $this->collAbsenceEleveSaisies->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collCreditEctss) {
+				$result['CreditEctss'] = $this->collCreditEctss->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collEdtEmplacementCourss) {
+				$result['EdtEmplacementCourss'] = $this->collEdtEmplacementCourss->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+		}
+		return $result;
+	}
+
+	/**
+	 * Sets a field from the object by name passed in as a string.
+	 *
+	 * @param      string $name peer name
+	 * @param      mixed $value field value
+	 * @param      string $type The type of fieldname the $name is of:
+	 *                     one of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME
+	 *                     BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM
+	 * @return     void
+	 */
+	public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
+	{
+		$pos = GroupePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+		return $this->setByPosition($pos, $value);
+	}
+
+	/**
+	 * Sets a field from the object by Position as specified in the xml schema.
+	 * Zero-based.
+	 *
+	 * @param      int $pos position in xml schema
+	 * @param      mixed $value field value
+	 * @return     void
+	 */
+	public function setByPosition($pos, $value)
+	{
+		switch($pos) {
+			case 0:
+				$this->setId($value);
+				break;
+			case 1:
+				$this->setName($value);
+				break;
+			case 2:
+				$this->setDescription($value);
+				break;
+			case 3:
+				$this->setRecalculRang($value);
+				break;
+		} // switch()
+	}
+
+	/**
+	 * Populates the object using an array.
+	 *
+	 * This is particularly useful when populating an object from one of the
+	 * request arrays (e.g. $_POST).  This method goes through the column
+	 * names, checking to see whether a matching key exists in populated
+	 * array. If so the setByName() method is called for that column.
+	 *
+	 * You can specify the key type of the array by additionally passing one
+	 * of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
+	 * BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
+	 * The default key type is the column's phpname (e.g. 'AuthorId')
+	 *
+	 * @param      array  $arr     An array to populate the object from.
+	 * @param      string $keyType The type of keys the array uses.
+	 * @return     void
+	 */
+	public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
+	{
+		$keys = GroupePeer::getFieldNames($keyType);
+
+		if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
+		if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
+		if (array_key_exists($keys[2], $arr)) $this->setDescription($arr[$keys[2]]);
+		if (array_key_exists($keys[3], $arr)) $this->setRecalculRang($arr[$keys[3]]);
+	}
+
+	/**
+	 * Build a Criteria object containing the values of all modified columns in this object.
+	 *
+	 * @return     Criteria The Criteria object containing all modified values.
+	 */
+	public function buildCriteria()
+	{
+		$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+
+		if ($this->isColumnModified(GroupePeer::ID)) $criteria->add(GroupePeer::ID, $this->id);
+		if ($this->isColumnModified(GroupePeer::NAME)) $criteria->add(GroupePeer::NAME, $this->name);
+		if ($this->isColumnModified(GroupePeer::DESCRIPTION)) $criteria->add(GroupePeer::DESCRIPTION, $this->description);
+		if ($this->isColumnModified(GroupePeer::RECALCUL_RANG)) $criteria->add(GroupePeer::RECALCUL_RANG, $this->recalcul_rang);
+
+		return $criteria;
+	}
+
+	/**
+	 * Builds a Criteria object containing the primary key for this object.
+	 *
+	 * Unlike buildCriteria() this method includes the primary key values regardless
+	 * of whether or not they have been modified.
+	 *
+	 * @return     Criteria The Criteria object containing value(s) for primary key(s).
+	 */
+	public function buildPkeyCriteria()
+	{
+		$criteria = new Criteria(GroupePeer::DATABASE_NAME);
+		$criteria->add(GroupePeer::ID, $this->id);
+
+		return $criteria;
+	}
+
+	/**
+	 * Returns the primary key for this object (row).
+	 * @return     int
+	 */
+	public function getPrimaryKey()
+	{
+		return $this->getId();
+	}
+
+	/**
+	 * Generic method to set the primary key (id column).
+	 *
+	 * @param      int $key Primary key.
+	 * @return     void
+	 */
+	public function setPrimaryKey($key)
+	{
+		$this->setId($key);
+	}
+
+	/**
+	 * Returns true if the primary key for this object is null.
+	 * @return     boolean
+	 */
+	public function isPrimaryKeyNull()
+	{
+		return null === $this->getId();
+	}
+
+	/**
+	 * Sets contents of passed object to values from current object.
+	 *
+	 * If desired, this method can also make copies of all associated (fkey referrers)
+	 * objects.
+	 *
+	 * @param      object $copyObj An object of Groupe (or compatible) type.
+	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
+	 * @throws     PropelException
+	 */
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
+	{
+		$copyObj->setName($this->getName());
+		$copyObj->setDescription($this->getDescription());
+		$copyObj->setRecalculRang($this->getRecalculRang());
+
+		if ($deepCopy && !$this->startCopy) {
+			// important: temporarily setNew(false) because this affects the behavior of
+			// the getter/setter methods for fkey referrer objects.
+			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
+
+			foreach ($this->getJGroupesProfesseurss() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addJGroupesProfesseurs($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getJGroupesMatieress() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addJGroupesMatieres($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getJGroupesClassess() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addJGroupesClasses($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getCahierTexteCompteRendus() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addCahierTexteCompteRendu($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getCahierTexteTravailAFaires() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addCahierTexteTravailAFaire($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getCahierTexteNoticePrivees() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addCahierTexteNoticePrivee($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getJEleveGroupes() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addJEleveGroupe($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getAbsenceEleveSaisies() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addAbsenceEleveSaisie($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getCreditEctss() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addCreditEcts($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getEdtEmplacementCourss() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addEdtEmplacementCours($relObj->copy($deepCopy));
+				}
+			}
+
+			//unflag object copy
+			$this->startCopy = false;
+		} // if ($deepCopy)
+
+		if ($makeNew) {
+			$copyObj->setNew(true);
+			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		}
+	}
+
+	/**
+	 * Makes a copy of this object that will be inserted as a new row in table when saved.
+	 * It creates a new object filling in the simple attributes, but skipping any primary
+	 * keys that are defined for the table.
+	 *
+	 * If desired, this method can also make copies of all associated (fkey referrers)
+	 * objects.
+	 *
+	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @return     Groupe Clone of current object.
+	 * @throws     PropelException
+	 */
+	public function copy($deepCopy = false)
+	{
+		// we use get_class(), because this might be a subclass
+		$clazz = get_class($this);
+		$copyObj = new $clazz();
+		$this->copyInto($copyObj, $deepCopy);
+		return $copyObj;
+	}
+
+	/**
+	 * Returns a peer instance associated with this om.
+	 *
+	 * Since Peer classes are not to have any instance attributes, this method returns the
+	 * same instance for all member of this class. The method could therefore
+	 * be static, but this would prevent one from overriding the behavior.
+	 *
+	 * @return     GroupePeer
+	 */
+	public function getPeer()
+	{
+		if (self::$peer === null) {
+			self::$peer = new GroupePeer();
+		}
+		return self::$peer;
+	}
+
+
+	/**
+	 * Initializes a collection based on the name of a relation.
+	 * Avoids crafting an 'init[$relationName]s' method name
+	 * that wouldn't work when StandardEnglishPluralizer is used.
+	 *
+	 * @param      string $relationName The name of the relation to initialize
+	 * @return     void
+	 */
+	public function initRelation($relationName)
+	{
+		if ('JGroupesProfesseurs' == $relationName) {
+			return $this->initJGroupesProfesseurss();
+		}
+		if ('JGroupesMatieres' == $relationName) {
+			return $this->initJGroupesMatieress();
+		}
+		if ('JGroupesClasses' == $relationName) {
+			return $this->initJGroupesClassess();
+		}
+		if ('CahierTexteCompteRendu' == $relationName) {
+			return $this->initCahierTexteCompteRendus();
+		}
+		if ('CahierTexteTravailAFaire' == $relationName) {
+			return $this->initCahierTexteTravailAFaires();
+		}
+		if ('CahierTexteNoticePrivee' == $relationName) {
+			return $this->initCahierTexteNoticePrivees();
+		}
+		if ('JEleveGroupe' == $relationName) {
+			return $this->initJEleveGroupes();
+		}
+		if ('AbsenceEleveSaisie' == $relationName) {
+			return $this->initAbsenceEleveSaisies();
+		}
+		if ('CreditEcts' == $relationName) {
+			return $this->initCreditEctss();
+		}
+		if ('EdtEmplacementCours' == $relationName) {
+			return $this->initEdtEmplacementCourss();
+		}
+	}
+
+	/**
+	 * Clears out the collJGroupesProfesseurss collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addJGroupesProfesseurss()
+	 */
+	public function clearJGroupesProfesseurss()
+	{
+		$this->collJGroupesProfesseurss = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collJGroupesProfesseurss collection.
+	 *
+	 * By default this just sets the collJGroupesProfesseurss collection to an empty array (like clearcollJGroupesProfesseurss());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initJGroupesProfesseurss($overrideExisting = true)
+	{
+		if (null !== $this->collJGroupesProfesseurss && !$overrideExisting) {
+			return;
+		}
+		$this->collJGroupesProfesseurss = new PropelObjectCollection();
+		$this->collJGroupesProfesseurss->setModel('JGroupesProfesseurs');
+	}
+
+	/**
+	 * Gets an array of JGroupesProfesseurs objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Groupe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array JGroupesProfesseurs[] List of JGroupesProfesseurs objects
+	 * @throws     PropelException
+	 */
+	public function getJGroupesProfesseurss($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collJGroupesProfesseurss || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJGroupesProfesseurss) {
+				// return empty collection
+				$this->initJGroupesProfesseurss();
+			} else {
+				$collJGroupesProfesseurss = JGroupesProfesseursQuery::create(null, $criteria)
+					->filterByGroupe($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collJGroupesProfesseurss;
+				}
+				$this->collJGroupesProfesseurss = $collJGroupesProfesseurss;
+			}
+		}
+		return $this->collJGroupesProfesseurss;
+	}
+
+	/**
+	 * Sets a collection of JGroupesProfesseurs objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $jGroupesProfesseurss A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setJGroupesProfesseurss(PropelCollection $jGroupesProfesseurss, PropelPDO $con = null)
+	{
+		$this->jGroupesProfesseurssScheduledForDeletion = $this->getJGroupesProfesseurss(new Criteria(), $con)->diff($jGroupesProfesseurss);
+
+		foreach ($jGroupesProfesseurss as $jGroupesProfesseurs) {
+			// Fix issue with collection modified by reference
+			if ($jGroupesProfesseurs->isNew()) {
+				$jGroupesProfesseurs->setGroupe($this);
+			}
+			$this->addJGroupesProfesseurs($jGroupesProfesseurs);
+		}
+
+		$this->collJGroupesProfesseurss = $jGroupesProfesseurss;
+	}
+
+	/**
+	 * Returns the number of related JGroupesProfesseurs objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related JGroupesProfesseurs objects.
+	 * @throws     PropelException
+	 */
+	public function countJGroupesProfesseurss(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collJGroupesProfesseurss || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJGroupesProfesseurss) {
+				return 0;
+			} else {
+				$query = JGroupesProfesseursQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByGroupe($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collJGroupesProfesseurss);
+		}
+	}
+
+	/**
+	 * Method called to associate a JGroupesProfesseurs object to this object
+	 * through the JGroupesProfesseurs foreign key attribute.
+	 *
+	 * @param      JGroupesProfesseurs $l JGroupesProfesseurs
+	 * @return     Groupe The current object (for fluent API support)
+	 */
+	public function addJGroupesProfesseurs(JGroupesProfesseurs $l)
+	{
+		if ($this->collJGroupesProfesseurss === null) {
+			$this->initJGroupesProfesseurss();
+		}
+		if (!$this->collJGroupesProfesseurss->contains($l)) { // only add it if the **same** object is not already associated
+			$this->doAddJGroupesProfesseurs($l);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	JGroupesProfesseurs $jGroupesProfesseurs The jGroupesProfesseurs object to add.
+	 */
+	protected function doAddJGroupesProfesseurs($jGroupesProfesseurs)
+	{
+		$this->collJGroupesProfesseurss[]= $jGroupesProfesseurs;
+		$jGroupesProfesseurs->setGroupe($this);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related JGroupesProfesseurss from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JGroupesProfesseurs[] List of JGroupesProfesseurs objects
+	 */
+	public function getJGroupesProfesseurssJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = JGroupesProfesseursQuery::create(null, $criteria);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
+
+		return $this->getJGroupesProfesseurss($query, $con);
+	}
+
+	/**
+	 * Clears out the collJGroupesMatieress collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addJGroupesMatieress()
+	 */
+	public function clearJGroupesMatieress()
+	{
+		$this->collJGroupesMatieress = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collJGroupesMatieress collection.
+	 *
+	 * By default this just sets the collJGroupesMatieress collection to an empty array (like clearcollJGroupesMatieress());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initJGroupesMatieress($overrideExisting = true)
+	{
+		if (null !== $this->collJGroupesMatieress && !$overrideExisting) {
+			return;
+		}
+		$this->collJGroupesMatieress = new PropelObjectCollection();
+		$this->collJGroupesMatieress->setModel('JGroupesMatieres');
+	}
+
+	/**
+	 * Gets an array of JGroupesMatieres objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Groupe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array JGroupesMatieres[] List of JGroupesMatieres objects
+	 * @throws     PropelException
+	 */
+	public function getJGroupesMatieress($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collJGroupesMatieress || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJGroupesMatieress) {
+				// return empty collection
+				$this->initJGroupesMatieress();
+			} else {
+				$collJGroupesMatieress = JGroupesMatieresQuery::create(null, $criteria)
+					->filterByGroupe($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collJGroupesMatieress;
+				}
+				$this->collJGroupesMatieress = $collJGroupesMatieress;
+			}
+		}
+		return $this->collJGroupesMatieress;
+	}
+
+	/**
+	 * Sets a collection of JGroupesMatieres objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $jGroupesMatieress A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setJGroupesMatieress(PropelCollection $jGroupesMatieress, PropelPDO $con = null)
+	{
+		$this->jGroupesMatieressScheduledForDeletion = $this->getJGroupesMatieress(new Criteria(), $con)->diff($jGroupesMatieress);
+
+		foreach ($jGroupesMatieress as $jGroupesMatieres) {
+			// Fix issue with collection modified by reference
+			if ($jGroupesMatieres->isNew()) {
+				$jGroupesMatieres->setGroupe($this);
+			}
+			$this->addJGroupesMatieres($jGroupesMatieres);
+		}
+
+		$this->collJGroupesMatieress = $jGroupesMatieress;
+	}
+
+	/**
+	 * Returns the number of related JGroupesMatieres objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related JGroupesMatieres objects.
+	 * @throws     PropelException
+	 */
+	public function countJGroupesMatieress(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collJGroupesMatieress || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJGroupesMatieress) {
+				return 0;
+			} else {
+				$query = JGroupesMatieresQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByGroupe($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collJGroupesMatieress);
+		}
+	}
+
+	/**
+	 * Method called to associate a JGroupesMatieres object to this object
+	 * through the JGroupesMatieres foreign key attribute.
+	 *
+	 * @param      JGroupesMatieres $l JGroupesMatieres
+	 * @return     Groupe The current object (for fluent API support)
+	 */
+	public function addJGroupesMatieres(JGroupesMatieres $l)
+	{
+		if ($this->collJGroupesMatieress === null) {
+			$this->initJGroupesMatieress();
+		}
+		if (!$this->collJGroupesMatieress->contains($l)) { // only add it if the **same** object is not already associated
+			$this->doAddJGroupesMatieres($l);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	JGroupesMatieres $jGroupesMatieres The jGroupesMatieres object to add.
+	 */
+	protected function doAddJGroupesMatieres($jGroupesMatieres)
+	{
+		$this->collJGroupesMatieress[]= $jGroupesMatieres;
+		$jGroupesMatieres->setGroupe($this);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related JGroupesMatieress from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JGroupesMatieres[] List of JGroupesMatieres objects
+	 */
+	public function getJGroupesMatieressJoinMatiere($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = JGroupesMatieresQuery::create(null, $criteria);
+		$query->joinWith('Matiere', $join_behavior);
+
+		return $this->getJGroupesMatieress($query, $con);
+	}
+
+	/**
+	 * Clears out the collJGroupesClassess collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addJGroupesClassess()
+	 */
+	public function clearJGroupesClassess()
+	{
+		$this->collJGroupesClassess = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collJGroupesClassess collection.
+	 *
+	 * By default this just sets the collJGroupesClassess collection to an empty array (like clearcollJGroupesClassess());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initJGroupesClassess($overrideExisting = true)
+	{
+		if (null !== $this->collJGroupesClassess && !$overrideExisting) {
+			return;
+		}
+		$this->collJGroupesClassess = new PropelObjectCollection();
+		$this->collJGroupesClassess->setModel('JGroupesClasses');
+	}
+
+	/**
+	 * Gets an array of JGroupesClasses objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Groupe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array JGroupesClasses[] List of JGroupesClasses objects
+	 * @throws     PropelException
+	 */
+	public function getJGroupesClassess($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collJGroupesClassess || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJGroupesClassess) {
+				// return empty collection
+				$this->initJGroupesClassess();
+			} else {
+				$collJGroupesClassess = JGroupesClassesQuery::create(null, $criteria)
+					->filterByGroupe($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collJGroupesClassess;
+				}
+				$this->collJGroupesClassess = $collJGroupesClassess;
+			}
+		}
+		return $this->collJGroupesClassess;
+	}
+
+	/**
+	 * Sets a collection of JGroupesClasses objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $jGroupesClassess A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setJGroupesClassess(PropelCollection $jGroupesClassess, PropelPDO $con = null)
+	{
+		$this->jGroupesClassessScheduledForDeletion = $this->getJGroupesClassess(new Criteria(), $con)->diff($jGroupesClassess);
+
+		foreach ($jGroupesClassess as $jGroupesClasses) {
+			// Fix issue with collection modified by reference
+			if ($jGroupesClasses->isNew()) {
+				$jGroupesClasses->setGroupe($this);
+			}
+			$this->addJGroupesClasses($jGroupesClasses);
+		}
+
+		$this->collJGroupesClassess = $jGroupesClassess;
+	}
+
+	/**
+	 * Returns the number of related JGroupesClasses objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related JGroupesClasses objects.
+	 * @throws     PropelException
+	 */
+	public function countJGroupesClassess(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collJGroupesClassess || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJGroupesClassess) {
+				return 0;
+			} else {
+				$query = JGroupesClassesQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByGroupe($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collJGroupesClassess);
+		}
+	}
+
+	/**
+	 * Method called to associate a JGroupesClasses object to this object
+	 * through the JGroupesClasses foreign key attribute.
+	 *
+	 * @param      JGroupesClasses $l JGroupesClasses
+	 * @return     Groupe The current object (for fluent API support)
+	 */
+	public function addJGroupesClasses(JGroupesClasses $l)
+	{
+		if ($this->collJGroupesClassess === null) {
+			$this->initJGroupesClassess();
+		}
+		if (!$this->collJGroupesClassess->contains($l)) { // only add it if the **same** object is not already associated
+			$this->doAddJGroupesClasses($l);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	JGroupesClasses $jGroupesClasses The jGroupesClasses object to add.
+	 */
+	protected function doAddJGroupesClasses($jGroupesClasses)
+	{
+		$this->collJGroupesClassess[]= $jGroupesClasses;
+		$jGroupesClasses->setGroupe($this);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related JGroupesClassess from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JGroupesClasses[] List of JGroupesClasses objects
+	 */
+	public function getJGroupesClassessJoinClasse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = JGroupesClassesQuery::create(null, $criteria);
+		$query->joinWith('Classe', $join_behavior);
+
+		return $this->getJGroupesClassess($query, $con);
+	}
+
+	/**
+	 * Clears out the collCahierTexteCompteRendus collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addCahierTexteCompteRendus()
+	 */
+	public function clearCahierTexteCompteRendus()
+	{
+		$this->collCahierTexteCompteRendus = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collCahierTexteCompteRendus collection.
+	 *
+	 * By default this just sets the collCahierTexteCompteRendus collection to an empty array (like clearcollCahierTexteCompteRendus());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initCahierTexteCompteRendus($overrideExisting = true)
+	{
+		if (null !== $this->collCahierTexteCompteRendus && !$overrideExisting) {
+			return;
+		}
+		$this->collCahierTexteCompteRendus = new PropelObjectCollection();
+		$this->collCahierTexteCompteRendus->setModel('CahierTexteCompteRendu');
+	}
+
+	/**
+	 * Gets an array of CahierTexteCompteRendu objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Groupe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array CahierTexteCompteRendu[] List of CahierTexteCompteRendu objects
+	 * @throws     PropelException
+	 */
+	public function getCahierTexteCompteRendus($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collCahierTexteCompteRendus || null !== $criteria) {
+			if ($this->isNew() && null === $this->collCahierTexteCompteRendus) {
+				// return empty collection
+				$this->initCahierTexteCompteRendus();
+			} else {
+				$collCahierTexteCompteRendus = CahierTexteCompteRenduQuery::create(null, $criteria)
+					->filterByGroupe($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collCahierTexteCompteRendus;
+				}
+				$this->collCahierTexteCompteRendus = $collCahierTexteCompteRendus;
+			}
+		}
+		return $this->collCahierTexteCompteRendus;
+	}
+
+	/**
+	 * Sets a collection of CahierTexteCompteRendu objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $cahierTexteCompteRendus A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setCahierTexteCompteRendus(PropelCollection $cahierTexteCompteRendus, PropelPDO $con = null)
+	{
+		$this->cahierTexteCompteRendusScheduledForDeletion = $this->getCahierTexteCompteRendus(new Criteria(), $con)->diff($cahierTexteCompteRendus);
+
+		foreach ($cahierTexteCompteRendus as $cahierTexteCompteRendu) {
+			// Fix issue with collection modified by reference
+			if ($cahierTexteCompteRendu->isNew()) {
+				$cahierTexteCompteRendu->setGroupe($this);
+			}
+			$this->addCahierTexteCompteRendu($cahierTexteCompteRendu);
+		}
+
+		$this->collCahierTexteCompteRendus = $cahierTexteCompteRendus;
+	}
+
+	/**
+	 * Returns the number of related CahierTexteCompteRendu objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related CahierTexteCompteRendu objects.
+	 * @throws     PropelException
+	 */
+	public function countCahierTexteCompteRendus(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collCahierTexteCompteRendus || null !== $criteria) {
+			if ($this->isNew() && null === $this->collCahierTexteCompteRendus) {
+				return 0;
+			} else {
+				$query = CahierTexteCompteRenduQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByGroupe($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collCahierTexteCompteRendus);
+		}
+	}
+
+	/**
+	 * Method called to associate a CahierTexteCompteRendu object to this object
+	 * through the CahierTexteCompteRendu foreign key attribute.
+	 *
+	 * @param      CahierTexteCompteRendu $l CahierTexteCompteRendu
+	 * @return     Groupe The current object (for fluent API support)
+	 */
+	public function addCahierTexteCompteRendu(CahierTexteCompteRendu $l)
+	{
+		if ($this->collCahierTexteCompteRendus === null) {
+			$this->initCahierTexteCompteRendus();
+		}
+		if (!$this->collCahierTexteCompteRendus->contains($l)) { // only add it if the **same** object is not already associated
+			$this->doAddCahierTexteCompteRendu($l);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	CahierTexteCompteRendu $cahierTexteCompteRendu The cahierTexteCompteRendu object to add.
+	 */
+	protected function doAddCahierTexteCompteRendu($cahierTexteCompteRendu)
+	{
+		$this->collCahierTexteCompteRendus[]= $cahierTexteCompteRendu;
+		$cahierTexteCompteRendu->setGroupe($this);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related CahierTexteCompteRendus from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array CahierTexteCompteRendu[] List of CahierTexteCompteRendu objects
+	 */
+	public function getCahierTexteCompteRendusJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = CahierTexteCompteRenduQuery::create(null, $criteria);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
+
+		return $this->getCahierTexteCompteRendus($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related CahierTexteCompteRendus from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array CahierTexteCompteRendu[] List of CahierTexteCompteRendu objects
+	 */
+	public function getCahierTexteCompteRendusJoinCahierTexteSequence($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = CahierTexteCompteRenduQuery::create(null, $criteria);
+		$query->joinWith('CahierTexteSequence', $join_behavior);
+
+		return $this->getCahierTexteCompteRendus($query, $con);
+	}
+
+	/**
+	 * Clears out the collCahierTexteTravailAFaires collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addCahierTexteTravailAFaires()
+	 */
+	public function clearCahierTexteTravailAFaires()
+	{
+		$this->collCahierTexteTravailAFaires = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collCahierTexteTravailAFaires collection.
+	 *
+	 * By default this just sets the collCahierTexteTravailAFaires collection to an empty array (like clearcollCahierTexteTravailAFaires());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initCahierTexteTravailAFaires($overrideExisting = true)
+	{
+		if (null !== $this->collCahierTexteTravailAFaires && !$overrideExisting) {
+			return;
+		}
+		$this->collCahierTexteTravailAFaires = new PropelObjectCollection();
+		$this->collCahierTexteTravailAFaires->setModel('CahierTexteTravailAFaire');
+	}
+
+	/**
+	 * Gets an array of CahierTexteTravailAFaire objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Groupe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array CahierTexteTravailAFaire[] List of CahierTexteTravailAFaire objects
+	 * @throws     PropelException
+	 */
+	public function getCahierTexteTravailAFaires($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collCahierTexteTravailAFaires || null !== $criteria) {
+			if ($this->isNew() && null === $this->collCahierTexteTravailAFaires) {
+				// return empty collection
+				$this->initCahierTexteTravailAFaires();
+			} else {
+				$collCahierTexteTravailAFaires = CahierTexteTravailAFaireQuery::create(null, $criteria)
+					->filterByGroupe($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collCahierTexteTravailAFaires;
+				}
+				$this->collCahierTexteTravailAFaires = $collCahierTexteTravailAFaires;
+			}
+		}
+		return $this->collCahierTexteTravailAFaires;
+	}
+
+	/**
+	 * Sets a collection of CahierTexteTravailAFaire objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $cahierTexteTravailAFaires A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setCahierTexteTravailAFaires(PropelCollection $cahierTexteTravailAFaires, PropelPDO $con = null)
+	{
+		$this->cahierTexteTravailAFairesScheduledForDeletion = $this->getCahierTexteTravailAFaires(new Criteria(), $con)->diff($cahierTexteTravailAFaires);
+
+		foreach ($cahierTexteTravailAFaires as $cahierTexteTravailAFaire) {
+			// Fix issue with collection modified by reference
+			if ($cahierTexteTravailAFaire->isNew()) {
+				$cahierTexteTravailAFaire->setGroupe($this);
+			}
+			$this->addCahierTexteTravailAFaire($cahierTexteTravailAFaire);
+		}
+
+		$this->collCahierTexteTravailAFaires = $cahierTexteTravailAFaires;
+	}
+
+	/**
+	 * Returns the number of related CahierTexteTravailAFaire objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related CahierTexteTravailAFaire objects.
+	 * @throws     PropelException
+	 */
+	public function countCahierTexteTravailAFaires(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collCahierTexteTravailAFaires || null !== $criteria) {
+			if ($this->isNew() && null === $this->collCahierTexteTravailAFaires) {
+				return 0;
+			} else {
+				$query = CahierTexteTravailAFaireQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByGroupe($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collCahierTexteTravailAFaires);
+		}
+	}
+
+	/**
+	 * Method called to associate a CahierTexteTravailAFaire object to this object
+	 * through the CahierTexteTravailAFaire foreign key attribute.
+	 *
+	 * @param      CahierTexteTravailAFaire $l CahierTexteTravailAFaire
+	 * @return     Groupe The current object (for fluent API support)
+	 */
+	public function addCahierTexteTravailAFaire(CahierTexteTravailAFaire $l)
+	{
+		if ($this->collCahierTexteTravailAFaires === null) {
+			$this->initCahierTexteTravailAFaires();
+		}
+		if (!$this->collCahierTexteTravailAFaires->contains($l)) { // only add it if the **same** object is not already associated
+			$this->doAddCahierTexteTravailAFaire($l);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	CahierTexteTravailAFaire $cahierTexteTravailAFaire The cahierTexteTravailAFaire object to add.
+	 */
+	protected function doAddCahierTexteTravailAFaire($cahierTexteTravailAFaire)
+	{
+		$this->collCahierTexteTravailAFaires[]= $cahierTexteTravailAFaire;
+		$cahierTexteTravailAFaire->setGroupe($this);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related CahierTexteTravailAFaires from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array CahierTexteTravailAFaire[] List of CahierTexteTravailAFaire objects
+	 */
+	public function getCahierTexteTravailAFairesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = CahierTexteTravailAFaireQuery::create(null, $criteria);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
+
+		return $this->getCahierTexteTravailAFaires($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related CahierTexteTravailAFaires from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array CahierTexteTravailAFaire[] List of CahierTexteTravailAFaire objects
+	 */
+	public function getCahierTexteTravailAFairesJoinCahierTexteSequence($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = CahierTexteTravailAFaireQuery::create(null, $criteria);
+		$query->joinWith('CahierTexteSequence', $join_behavior);
+
+		return $this->getCahierTexteTravailAFaires($query, $con);
+	}
+
+	/**
+	 * Clears out the collCahierTexteNoticePrivees collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addCahierTexteNoticePrivees()
+	 */
+	public function clearCahierTexteNoticePrivees()
+	{
+		$this->collCahierTexteNoticePrivees = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collCahierTexteNoticePrivees collection.
+	 *
+	 * By default this just sets the collCahierTexteNoticePrivees collection to an empty array (like clearcollCahierTexteNoticePrivees());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initCahierTexteNoticePrivees($overrideExisting = true)
+	{
+		if (null !== $this->collCahierTexteNoticePrivees && !$overrideExisting) {
+			return;
+		}
+		$this->collCahierTexteNoticePrivees = new PropelObjectCollection();
+		$this->collCahierTexteNoticePrivees->setModel('CahierTexteNoticePrivee');
+	}
+
+	/**
+	 * Gets an array of CahierTexteNoticePrivee objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Groupe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array CahierTexteNoticePrivee[] List of CahierTexteNoticePrivee objects
+	 * @throws     PropelException
+	 */
+	public function getCahierTexteNoticePrivees($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collCahierTexteNoticePrivees || null !== $criteria) {
+			if ($this->isNew() && null === $this->collCahierTexteNoticePrivees) {
+				// return empty collection
+				$this->initCahierTexteNoticePrivees();
+			} else {
+				$collCahierTexteNoticePrivees = CahierTexteNoticePriveeQuery::create(null, $criteria)
+					->filterByGroupe($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collCahierTexteNoticePrivees;
+				}
+				$this->collCahierTexteNoticePrivees = $collCahierTexteNoticePrivees;
+			}
+		}
+		return $this->collCahierTexteNoticePrivees;
+	}
+
+	/**
+	 * Sets a collection of CahierTexteNoticePrivee objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $cahierTexteNoticePrivees A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setCahierTexteNoticePrivees(PropelCollection $cahierTexteNoticePrivees, PropelPDO $con = null)
+	{
+		$this->cahierTexteNoticePriveesScheduledForDeletion = $this->getCahierTexteNoticePrivees(new Criteria(), $con)->diff($cahierTexteNoticePrivees);
+
+		foreach ($cahierTexteNoticePrivees as $cahierTexteNoticePrivee) {
+			// Fix issue with collection modified by reference
+			if ($cahierTexteNoticePrivee->isNew()) {
+				$cahierTexteNoticePrivee->setGroupe($this);
+			}
+			$this->addCahierTexteNoticePrivee($cahierTexteNoticePrivee);
+		}
+
+		$this->collCahierTexteNoticePrivees = $cahierTexteNoticePrivees;
+	}
+
+	/**
+	 * Returns the number of related CahierTexteNoticePrivee objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related CahierTexteNoticePrivee objects.
+	 * @throws     PropelException
+	 */
+	public function countCahierTexteNoticePrivees(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collCahierTexteNoticePrivees || null !== $criteria) {
+			if ($this->isNew() && null === $this->collCahierTexteNoticePrivees) {
+				return 0;
+			} else {
+				$query = CahierTexteNoticePriveeQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByGroupe($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collCahierTexteNoticePrivees);
+		}
+	}
+
+	/**
+	 * Method called to associate a CahierTexteNoticePrivee object to this object
+	 * through the CahierTexteNoticePrivee foreign key attribute.
+	 *
+	 * @param      CahierTexteNoticePrivee $l CahierTexteNoticePrivee
+	 * @return     Groupe The current object (for fluent API support)
+	 */
+	public function addCahierTexteNoticePrivee(CahierTexteNoticePrivee $l)
+	{
+		if ($this->collCahierTexteNoticePrivees === null) {
+			$this->initCahierTexteNoticePrivees();
+		}
+		if (!$this->collCahierTexteNoticePrivees->contains($l)) { // only add it if the **same** object is not already associated
+			$this->doAddCahierTexteNoticePrivee($l);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	CahierTexteNoticePrivee $cahierTexteNoticePrivee The cahierTexteNoticePrivee object to add.
+	 */
+	protected function doAddCahierTexteNoticePrivee($cahierTexteNoticePrivee)
+	{
+		$this->collCahierTexteNoticePrivees[]= $cahierTexteNoticePrivee;
+		$cahierTexteNoticePrivee->setGroupe($this);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related CahierTexteNoticePrivees from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array CahierTexteNoticePrivee[] List of CahierTexteNoticePrivee objects
+	 */
+	public function getCahierTexteNoticePriveesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = CahierTexteNoticePriveeQuery::create(null, $criteria);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
+
+		return $this->getCahierTexteNoticePrivees($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related CahierTexteNoticePrivees from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array CahierTexteNoticePrivee[] List of CahierTexteNoticePrivee objects
+	 */
+	public function getCahierTexteNoticePriveesJoinCahierTexteSequence($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = CahierTexteNoticePriveeQuery::create(null, $criteria);
+		$query->joinWith('CahierTexteSequence', $join_behavior);
+
+		return $this->getCahierTexteNoticePrivees($query, $con);
+	}
+
+	/**
+	 * Clears out the collJEleveGroupes collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addJEleveGroupes()
+	 */
+	public function clearJEleveGroupes()
+	{
+		$this->collJEleveGroupes = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collJEleveGroupes collection.
+	 *
+	 * By default this just sets the collJEleveGroupes collection to an empty array (like clearcollJEleveGroupes());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initJEleveGroupes($overrideExisting = true)
+	{
+		if (null !== $this->collJEleveGroupes && !$overrideExisting) {
+			return;
+		}
+		$this->collJEleveGroupes = new PropelObjectCollection();
+		$this->collJEleveGroupes->setModel('JEleveGroupe');
+	}
+
+	/**
+	 * Gets an array of JEleveGroupe objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Groupe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array JEleveGroupe[] List of JEleveGroupe objects
+	 * @throws     PropelException
+	 */
+	public function getJEleveGroupes($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collJEleveGroupes || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJEleveGroupes) {
+				// return empty collection
+				$this->initJEleveGroupes();
+			} else {
+				$collJEleveGroupes = JEleveGroupeQuery::create(null, $criteria)
+					->filterByGroupe($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collJEleveGroupes;
+				}
+				$this->collJEleveGroupes = $collJEleveGroupes;
+			}
+		}
+		return $this->collJEleveGroupes;
+	}
+
+	/**
+	 * Sets a collection of JEleveGroupe objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $jEleveGroupes A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setJEleveGroupes(PropelCollection $jEleveGroupes, PropelPDO $con = null)
+	{
+		$this->jEleveGroupesScheduledForDeletion = $this->getJEleveGroupes(new Criteria(), $con)->diff($jEleveGroupes);
+
+		foreach ($jEleveGroupes as $jEleveGroupe) {
+			// Fix issue with collection modified by reference
+			if ($jEleveGroupe->isNew()) {
+				$jEleveGroupe->setGroupe($this);
+			}
+			$this->addJEleveGroupe($jEleveGroupe);
+		}
+
+		$this->collJEleveGroupes = $jEleveGroupes;
+	}
+
+	/**
+	 * Returns the number of related JEleveGroupe objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related JEleveGroupe objects.
+	 * @throws     PropelException
+	 */
+	public function countJEleveGroupes(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collJEleveGroupes || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJEleveGroupes) {
+				return 0;
+			} else {
+				$query = JEleveGroupeQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByGroupe($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collJEleveGroupes);
+		}
+	}
+
+	/**
+	 * Method called to associate a JEleveGroupe object to this object
+	 * through the JEleveGroupe foreign key attribute.
+	 *
+	 * @param      JEleveGroupe $l JEleveGroupe
+	 * @return     Groupe The current object (for fluent API support)
+	 */
+	public function addJEleveGroupe(JEleveGroupe $l)
+	{
+		if ($this->collJEleveGroupes === null) {
+			$this->initJEleveGroupes();
+		}
+		if (!$this->collJEleveGroupes->contains($l)) { // only add it if the **same** object is not already associated
+			$this->doAddJEleveGroupe($l);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	JEleveGroupe $jEleveGroupe The jEleveGroupe object to add.
+	 */
+	protected function doAddJEleveGroupe($jEleveGroupe)
+	{
+		$this->collJEleveGroupes[]= $jEleveGroupe;
+		$jEleveGroupe->setGroupe($this);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related JEleveGroupes from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JEleveGroupe[] List of JEleveGroupe objects
+	 */
+	public function getJEleveGroupesJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = JEleveGroupeQuery::create(null, $criteria);
+		$query->joinWith('Eleve', $join_behavior);
+
+		return $this->getJEleveGroupes($query, $con);
+	}
+
+	/**
+	 * Clears out the collAbsenceEleveSaisies collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addAbsenceEleveSaisies()
+	 */
+	public function clearAbsenceEleveSaisies()
+	{
+		$this->collAbsenceEleveSaisies = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collAbsenceEleveSaisies collection.
+	 *
+	 * By default this just sets the collAbsenceEleveSaisies collection to an empty array (like clearcollAbsenceEleveSaisies());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initAbsenceEleveSaisies($overrideExisting = true)
+	{
+		if (null !== $this->collAbsenceEleveSaisies && !$overrideExisting) {
+			return;
+		}
+		$this->collAbsenceEleveSaisies = new PropelObjectCollection();
+		$this->collAbsenceEleveSaisies->setModel('AbsenceEleveSaisie');
+	}
+
+	/**
+	 * Gets an array of AbsenceEleveSaisie objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Groupe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
+	 * @throws     PropelException
+	 */
+	public function getAbsenceEleveSaisies($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collAbsenceEleveSaisies || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAbsenceEleveSaisies) {
+				// return empty collection
+				$this->initAbsenceEleveSaisies();
+			} else {
+				$collAbsenceEleveSaisies = AbsenceEleveSaisieQuery::create(null, $criteria)
+					->filterByGroupe($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collAbsenceEleveSaisies;
+				}
+				$this->collAbsenceEleveSaisies = $collAbsenceEleveSaisies;
+			}
+		}
+		return $this->collAbsenceEleveSaisies;
+	}
+
+	/**
+	 * Sets a collection of AbsenceEleveSaisie objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $absenceEleveSaisies A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setAbsenceEleveSaisies(PropelCollection $absenceEleveSaisies, PropelPDO $con = null)
+	{
+		$this->absenceEleveSaisiesScheduledForDeletion = $this->getAbsenceEleveSaisies(new Criteria(), $con)->diff($absenceEleveSaisies);
+
+		foreach ($absenceEleveSaisies as $absenceEleveSaisie) {
+			// Fix issue with collection modified by reference
+			if ($absenceEleveSaisie->isNew()) {
+				$absenceEleveSaisie->setGroupe($this);
+			}
+			$this->addAbsenceEleveSaisie($absenceEleveSaisie);
+		}
+
+		$this->collAbsenceEleveSaisies = $absenceEleveSaisies;
+	}
+
+	/**
+	 * Returns the number of related AbsenceEleveSaisie objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related AbsenceEleveSaisie objects.
+	 * @throws     PropelException
+	 */
+	public function countAbsenceEleveSaisies(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collAbsenceEleveSaisies || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAbsenceEleveSaisies) {
+				return 0;
+			} else {
+				$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByGroupe($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collAbsenceEleveSaisies);
+		}
+	}
+
+	/**
+	 * Method called to associate a AbsenceEleveSaisie object to this object
+	 * through the AbsenceEleveSaisie foreign key attribute.
+	 *
+	 * @param      AbsenceEleveSaisie $l AbsenceEleveSaisie
+	 * @return     Groupe The current object (for fluent API support)
+	 */
+	public function addAbsenceEleveSaisie(AbsenceEleveSaisie $l)
+	{
+		if ($this->collAbsenceEleveSaisies === null) {
+			$this->initAbsenceEleveSaisies();
+		}
+		if (!$this->collAbsenceEleveSaisies->contains($l)) { // only add it if the **same** object is not already associated
+			$this->doAddAbsenceEleveSaisie($l);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	AbsenceEleveSaisie $absenceEleveSaisie The absenceEleveSaisie object to add.
+	 */
+	protected function doAddAbsenceEleveSaisie($absenceEleveSaisie)
+	{
+		$this->collAbsenceEleveSaisies[]= $absenceEleveSaisie;
+		$absenceEleveSaisie->setGroupe($this);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related AbsenceEleveSaisies from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
+	 */
+	public function getAbsenceEleveSaisiesJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
+
+		return $this->getAbsenceEleveSaisies($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related AbsenceEleveSaisies from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
+	 */
+	public function getAbsenceEleveSaisiesJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('Eleve', $join_behavior);
+
+		return $this->getAbsenceEleveSaisies($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related AbsenceEleveSaisies from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
+	 */
+	public function getAbsenceEleveSaisiesJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('EdtCreneau', $join_behavior);
+
+		return $this->getAbsenceEleveSaisies($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related AbsenceEleveSaisies from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
+	 */
+	public function getAbsenceEleveSaisiesJoinEdtEmplacementCours($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('EdtEmplacementCours', $join_behavior);
+
+		return $this->getAbsenceEleveSaisies($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related AbsenceEleveSaisies from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
+	 */
+	public function getAbsenceEleveSaisiesJoinClasse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('Classe', $join_behavior);
+
+		return $this->getAbsenceEleveSaisies($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related AbsenceEleveSaisies from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
+	 */
+	public function getAbsenceEleveSaisiesJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('AidDetails', $join_behavior);
+
+		return $this->getAbsenceEleveSaisies($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related AbsenceEleveSaisies from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
+	 */
+	public function getAbsenceEleveSaisiesJoinAbsenceEleveLieu($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('AbsenceEleveLieu', $join_behavior);
+
+		return $this->getAbsenceEleveSaisies($query, $con);
+	}
+
+	/**
+	 * Clears out the collCreditEctss collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addCreditEctss()
+	 */
+	public function clearCreditEctss()
+	{
+		$this->collCreditEctss = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collCreditEctss collection.
+	 *
+	 * By default this just sets the collCreditEctss collection to an empty array (like clearcollCreditEctss());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initCreditEctss($overrideExisting = true)
+	{
+		if (null !== $this->collCreditEctss && !$overrideExisting) {
+			return;
+		}
+		$this->collCreditEctss = new PropelObjectCollection();
+		$this->collCreditEctss->setModel('CreditEcts');
+	}
+
+	/**
+	 * Gets an array of CreditEcts objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Groupe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array CreditEcts[] List of CreditEcts objects
+	 * @throws     PropelException
+	 */
+	public function getCreditEctss($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collCreditEctss || null !== $criteria) {
+			if ($this->isNew() && null === $this->collCreditEctss) {
+				// return empty collection
+				$this->initCreditEctss();
+			} else {
+				$collCreditEctss = CreditEctsQuery::create(null, $criteria)
+					->filterByGroupe($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collCreditEctss;
+				}
+				$this->collCreditEctss = $collCreditEctss;
+			}
+		}
+		return $this->collCreditEctss;
+	}
+
+	/**
+	 * Sets a collection of CreditEcts objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $creditEctss A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setCreditEctss(PropelCollection $creditEctss, PropelPDO $con = null)
+	{
+		$this->creditEctssScheduledForDeletion = $this->getCreditEctss(new Criteria(), $con)->diff($creditEctss);
+
+		foreach ($creditEctss as $creditEcts) {
+			// Fix issue with collection modified by reference
+			if ($creditEcts->isNew()) {
+				$creditEcts->setGroupe($this);
+			}
+			$this->addCreditEcts($creditEcts);
+		}
+
+		$this->collCreditEctss = $creditEctss;
+	}
+
+	/**
+	 * Returns the number of related CreditEcts objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related CreditEcts objects.
+	 * @throws     PropelException
+	 */
+	public function countCreditEctss(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collCreditEctss || null !== $criteria) {
+			if ($this->isNew() && null === $this->collCreditEctss) {
+				return 0;
+			} else {
+				$query = CreditEctsQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByGroupe($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collCreditEctss);
+		}
+	}
+
+	/**
+	 * Method called to associate a CreditEcts object to this object
+	 * through the CreditEcts foreign key attribute.
+	 *
+	 * @param      CreditEcts $l CreditEcts
+	 * @return     Groupe The current object (for fluent API support)
+	 */
+	public function addCreditEcts(CreditEcts $l)
+	{
+		if ($this->collCreditEctss === null) {
+			$this->initCreditEctss();
+		}
+		if (!$this->collCreditEctss->contains($l)) { // only add it if the **same** object is not already associated
+			$this->doAddCreditEcts($l);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	CreditEcts $creditEcts The creditEcts object to add.
+	 */
+	protected function doAddCreditEcts($creditEcts)
+	{
+		$this->collCreditEctss[]= $creditEcts;
+		$creditEcts->setGroupe($this);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related CreditEctss from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array CreditEcts[] List of CreditEcts objects
+	 */
+	public function getCreditEctssJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = CreditEctsQuery::create(null, $criteria);
+		$query->joinWith('Eleve', $join_behavior);
+
+		return $this->getCreditEctss($query, $con);
+	}
+
+	/**
+	 * Clears out the collEdtEmplacementCourss collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addEdtEmplacementCourss()
+	 */
+	public function clearEdtEmplacementCourss()
+	{
+		$this->collEdtEmplacementCourss = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collEdtEmplacementCourss collection.
+	 *
+	 * By default this just sets the collEdtEmplacementCourss collection to an empty array (like clearcollEdtEmplacementCourss());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initEdtEmplacementCourss($overrideExisting = true)
+	{
+		if (null !== $this->collEdtEmplacementCourss && !$overrideExisting) {
+			return;
+		}
+		$this->collEdtEmplacementCourss = new PropelObjectCollection();
+		$this->collEdtEmplacementCourss->setModel('EdtEmplacementCours');
+	}
+
+	/**
+	 * Gets an array of EdtEmplacementCours objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Groupe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array EdtEmplacementCours[] List of EdtEmplacementCours objects
+	 * @throws     PropelException
+	 */
+	public function getEdtEmplacementCourss($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collEdtEmplacementCourss || null !== $criteria) {
+			if ($this->isNew() && null === $this->collEdtEmplacementCourss) {
+				// return empty collection
+				$this->initEdtEmplacementCourss();
+			} else {
+				$collEdtEmplacementCourss = EdtEmplacementCoursQuery::create(null, $criteria)
+					->filterByGroupe($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collEdtEmplacementCourss;
+				}
+				$this->collEdtEmplacementCourss = $collEdtEmplacementCourss;
+			}
+		}
+		return $this->collEdtEmplacementCourss;
+	}
+
+	/**
+	 * Sets a collection of EdtEmplacementCours objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $edtEmplacementCourss A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setEdtEmplacementCourss(PropelCollection $edtEmplacementCourss, PropelPDO $con = null)
+	{
+		$this->edtEmplacementCourssScheduledForDeletion = $this->getEdtEmplacementCourss(new Criteria(), $con)->diff($edtEmplacementCourss);
+
+		foreach ($edtEmplacementCourss as $edtEmplacementCours) {
+			// Fix issue with collection modified by reference
+			if ($edtEmplacementCours->isNew()) {
+				$edtEmplacementCours->setGroupe($this);
+			}
+			$this->addEdtEmplacementCours($edtEmplacementCours);
+		}
+
+		$this->collEdtEmplacementCourss = $edtEmplacementCourss;
+	}
+
+	/**
+	 * Returns the number of related EdtEmplacementCours objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related EdtEmplacementCours objects.
+	 * @throws     PropelException
+	 */
+	public function countEdtEmplacementCourss(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collEdtEmplacementCourss || null !== $criteria) {
+			if ($this->isNew() && null === $this->collEdtEmplacementCourss) {
+				return 0;
+			} else {
+				$query = EdtEmplacementCoursQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByGroupe($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collEdtEmplacementCourss);
+		}
+	}
+
+	/**
+	 * Method called to associate a EdtEmplacementCours object to this object
+	 * through the EdtEmplacementCours foreign key attribute.
+	 *
+	 * @param      EdtEmplacementCours $l EdtEmplacementCours
+	 * @return     Groupe The current object (for fluent API support)
+	 */
+	public function addEdtEmplacementCours(EdtEmplacementCours $l)
+	{
+		if ($this->collEdtEmplacementCourss === null) {
+			$this->initEdtEmplacementCourss();
+		}
+		if (!$this->collEdtEmplacementCourss->contains($l)) { // only add it if the **same** object is not already associated
+			$this->doAddEdtEmplacementCours($l);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	EdtEmplacementCours $edtEmplacementCours The edtEmplacementCours object to add.
+	 */
+	protected function doAddEdtEmplacementCours($edtEmplacementCours)
+	{
+		$this->collEdtEmplacementCourss[]= $edtEmplacementCours;
+		$edtEmplacementCours->setGroupe($this);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related EdtEmplacementCourss from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array EdtEmplacementCours[] List of EdtEmplacementCours objects
+	 */
+	public function getEdtEmplacementCourssJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = EdtEmplacementCoursQuery::create(null, $criteria);
+		$query->joinWith('AidDetails', $join_behavior);
+
+		return $this->getEdtEmplacementCourss($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related EdtEmplacementCourss from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array EdtEmplacementCours[] List of EdtEmplacementCours objects
+	 */
+	public function getEdtEmplacementCourssJoinEdtSalle($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = EdtEmplacementCoursQuery::create(null, $criteria);
+		$query->joinWith('EdtSalle', $join_behavior);
+
+		return $this->getEdtEmplacementCourss($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related EdtEmplacementCourss from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array EdtEmplacementCours[] List of EdtEmplacementCours objects
+	 */
+	public function getEdtEmplacementCourssJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = EdtEmplacementCoursQuery::create(null, $criteria);
+		$query->joinWith('EdtCreneau', $join_behavior);
+
+		return $this->getEdtEmplacementCourss($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related EdtEmplacementCourss from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array EdtEmplacementCours[] List of EdtEmplacementCours objects
+	 */
+	public function getEdtEmplacementCourssJoinEdtCalendrierPeriode($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = EdtEmplacementCoursQuery::create(null, $criteria);
+		$query->joinWith('EdtCalendrierPeriode', $join_behavior);
+
+		return $this->getEdtEmplacementCourss($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related EdtEmplacementCourss from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array EdtEmplacementCours[] List of EdtEmplacementCours objects
+	 */
+	public function getEdtEmplacementCourssJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = EdtEmplacementCoursQuery::create(null, $criteria);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
+
+		return $this->getEdtEmplacementCourss($query, $con);
+	}
+
+	/**
+	 * Clears out the collUtilisateurProfessionnels collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addUtilisateurProfessionnels()
+	 */
+	public function clearUtilisateurProfessionnels()
+	{
+		$this->collUtilisateurProfessionnels = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collUtilisateurProfessionnels collection.
+	 *
+	 * By default this just sets the collUtilisateurProfessionnels collection to an empty collection (like clearUtilisateurProfessionnels());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initUtilisateurProfessionnels()
+	{
+		$this->collUtilisateurProfessionnels = new PropelObjectCollection();
+		$this->collUtilisateurProfessionnels->setModel('UtilisateurProfessionnel');
+	}
+
+	/**
+	 * Gets a collection of UtilisateurProfessionnel objects related by a many-to-many relationship
+	 * to the current object by way of the j_groupes_professeurs cross-reference table.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Groupe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     PropelCollection|array UtilisateurProfessionnel[] List of UtilisateurProfessionnel objects
+	 */
+	public function getUtilisateurProfessionnels($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collUtilisateurProfessionnels || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUtilisateurProfessionnels) {
+				// return empty collection
+				$this->initUtilisateurProfessionnels();
+			} else {
+				$collUtilisateurProfessionnels = UtilisateurProfessionnelQuery::create(null, $criteria)
+					->filterByGroupe($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collUtilisateurProfessionnels;
+				}
+				$this->collUtilisateurProfessionnels = $collUtilisateurProfessionnels;
+			}
+		}
+		return $this->collUtilisateurProfessionnels;
+	}
+
+	/**
+	 * Sets a collection of UtilisateurProfessionnel objects related by a many-to-many relationship
+	 * to the current object by way of the j_groupes_professeurs cross-reference table.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $utilisateurProfessionnels A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setUtilisateurProfessionnels(PropelCollection $utilisateurProfessionnels, PropelPDO $con = null)
+	{
+		$jGroupesProfesseurss = JGroupesProfesseursQuery::create()
+			->filterByUtilisateurProfessionnel($utilisateurProfessionnels)
+			->filterByGroupe($this)
+			->find($con);
+
+		$this->utilisateurProfessionnelsScheduledForDeletion = $this->getJGroupesProfesseurss()->diff($jGroupesProfesseurss);
+		$this->collJGroupesProfesseurss = $jGroupesProfesseurss;
+
+		foreach ($utilisateurProfessionnels as $utilisateurProfessionnel) {
+			// Fix issue with collection modified by reference
+			if ($utilisateurProfessionnel->isNew()) {
+				$this->doAddUtilisateurProfessionnel($utilisateurProfessionnel);
+			} else {
+				$this->addUtilisateurProfessionnel($utilisateurProfessionnel);
+			}
+		}
+
+		$this->collUtilisateurProfessionnels = $utilisateurProfessionnels;
+	}
+
+	/**
+	 * Gets the number of UtilisateurProfessionnel objects related by a many-to-many relationship
+	 * to the current object by way of the j_groupes_professeurs cross-reference table.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      boolean $distinct Set to true to force count distinct
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     int the number of related UtilisateurProfessionnel objects
+	 */
+	public function countUtilisateurProfessionnels($criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collUtilisateurProfessionnels || null !== $criteria) {
+			if ($this->isNew() && null === $this->collUtilisateurProfessionnels) {
+				return 0;
+			} else {
+				$query = UtilisateurProfessionnelQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByGroupe($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collUtilisateurProfessionnels);
+		}
+	}
+
+	/**
+	 * Associate a UtilisateurProfessionnel object to this object
+	 * through the j_groupes_professeurs cross reference table.
+	 *
+	 * @param      UtilisateurProfessionnel $utilisateurProfessionnel The JGroupesProfesseurs object to relate
+	 * @return     void
+	 */
+	public function addUtilisateurProfessionnel(UtilisateurProfessionnel $utilisateurProfessionnel)
+	{
+		if ($this->collUtilisateurProfessionnels === null) {
+			$this->initUtilisateurProfessionnels();
+		}
+		if (!$this->collUtilisateurProfessionnels->contains($utilisateurProfessionnel)) { // only add it if the **same** object is not already associated
+			$this->doAddUtilisateurProfessionnel($utilisateurProfessionnel);
+
+			$this->collUtilisateurProfessionnels[]= $utilisateurProfessionnel;
+		}
+	}
+
+	/**
+	 * @param	UtilisateurProfessionnel $utilisateurProfessionnel The utilisateurProfessionnel object to add.
+	 */
+	protected function doAddUtilisateurProfessionnel($utilisateurProfessionnel)
+	{
+		$jGroupesProfesseurs = new JGroupesProfesseurs();
+		$jGroupesProfesseurs->setUtilisateurProfessionnel($utilisateurProfessionnel);
+		$this->addJGroupesProfesseurs($jGroupesProfesseurs);
+	}
+
+	/**
+	 * Clears out the collMatieres collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addMatieres()
+	 */
+	public function clearMatieres()
+	{
+		$this->collMatieres = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collMatieres collection.
+	 *
+	 * By default this just sets the collMatieres collection to an empty collection (like clearMatieres());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initMatieres()
+	{
+		$this->collMatieres = new PropelObjectCollection();
+		$this->collMatieres->setModel('Matiere');
+	}
+
+	/**
+	 * Gets a collection of Matiere objects related by a many-to-many relationship
+	 * to the current object by way of the j_groupes_matieres cross-reference table.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Groupe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     PropelCollection|array Matiere[] List of Matiere objects
+	 */
+	public function getMatieres($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collMatieres || null !== $criteria) {
+			if ($this->isNew() && null === $this->collMatieres) {
+				// return empty collection
+				$this->initMatieres();
+			} else {
+				$collMatieres = MatiereQuery::create(null, $criteria)
+					->filterByGroupe($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collMatieres;
+				}
+				$this->collMatieres = $collMatieres;
+			}
+		}
+		return $this->collMatieres;
+	}
+
+	/**
+	 * Sets a collection of Matiere objects related by a many-to-many relationship
+	 * to the current object by way of the j_groupes_matieres cross-reference table.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $matieres A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setMatieres(PropelCollection $matieres, PropelPDO $con = null)
+	{
+		$jGroupesMatieress = JGroupesMatieresQuery::create()
+			->filterByMatiere($matieres)
+			->filterByGroupe($this)
+			->find($con);
+
+		$this->matieresScheduledForDeletion = $this->getJGroupesMatieress()->diff($jGroupesMatieress);
+		$this->collJGroupesMatieress = $jGroupesMatieress;
+
+		foreach ($matieres as $matiere) {
+			// Fix issue with collection modified by reference
+			if ($matiere->isNew()) {
+				$this->doAddMatiere($matiere);
+			} else {
+				$this->addMatiere($matiere);
+			}
+		}
+
+		$this->collMatieres = $matieres;
+	}
+
+	/**
+	 * Gets the number of Matiere objects related by a many-to-many relationship
+	 * to the current object by way of the j_groupes_matieres cross-reference table.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      boolean $distinct Set to true to force count distinct
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     int the number of related Matiere objects
+	 */
+	public function countMatieres($criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collMatieres || null !== $criteria) {
+			if ($this->isNew() && null === $this->collMatieres) {
+				return 0;
+			} else {
+				$query = MatiereQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByGroupe($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collMatieres);
+		}
+	}
+
+	/**
+	 * Associate a Matiere object to this object
+	 * through the j_groupes_matieres cross reference table.
+	 *
+	 * @param      Matiere $matiere The JGroupesMatieres object to relate
+	 * @return     void
+	 */
+	public function addMatiere(Matiere $matiere)
+	{
+		if ($this->collMatieres === null) {
+			$this->initMatieres();
+		}
+		if (!$this->collMatieres->contains($matiere)) { // only add it if the **same** object is not already associated
+			$this->doAddMatiere($matiere);
+
+			$this->collMatieres[]= $matiere;
+		}
+	}
+
+	/**
+	 * @param	Matiere $matiere The matiere object to add.
+	 */
+	protected function doAddMatiere($matiere)
+	{
+		$jGroupesMatieres = new JGroupesMatieres();
+		$jGroupesMatieres->setMatiere($matiere);
+		$this->addJGroupesMatieres($jGroupesMatieres);
+	}
+
+	/**
+	 * Clears out the collClasses collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addClasses()
+	 */
+	public function clearClasses()
+	{
+		$this->collClasses = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collClasses collection.
+	 *
+	 * By default this just sets the collClasses collection to an empty collection (like clearClasses());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initClasses()
+	{
+		$this->collClasses = new PropelObjectCollection();
+		$this->collClasses->setModel('Classe');
+	}
+
+	/**
+	 * Gets a collection of Classe objects related by a many-to-many relationship
+	 * to the current object by way of the j_groupes_classes cross-reference table.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Groupe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     PropelCollection|array Classe[] List of Classe objects
+	 */
+	public function getClasses($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collClasses || null !== $criteria) {
+			if ($this->isNew() && null === $this->collClasses) {
+				// return empty collection
+				$this->initClasses();
+			} else {
+				$collClasses = ClasseQuery::create(null, $criteria)
+					->filterByGroupe($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collClasses;
+				}
+				$this->collClasses = $collClasses;
+			}
+		}
+		return $this->collClasses;
+	}
+
+	/**
+	 * Sets a collection of Classe objects related by a many-to-many relationship
+	 * to the current object by way of the j_groupes_classes cross-reference table.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $classes A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setClasses(PropelCollection $classes, PropelPDO $con = null)
+	{
+		$jGroupesClassess = JGroupesClassesQuery::create()
+			->filterByClasse($classes)
+			->filterByGroupe($this)
+			->find($con);
+
+		$this->classesScheduledForDeletion = $this->getJGroupesClassess()->diff($jGroupesClassess);
+		$this->collJGroupesClassess = $jGroupesClassess;
+
+		foreach ($classes as $classe) {
+			// Fix issue with collection modified by reference
+			if ($classe->isNew()) {
+				$this->doAddClasse($classe);
+			} else {
+				$this->addClasse($classe);
+			}
+		}
+
+		$this->collClasses = $classes;
+	}
+
+	/**
+	 * Gets the number of Classe objects related by a many-to-many relationship
+	 * to the current object by way of the j_groupes_classes cross-reference table.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      boolean $distinct Set to true to force count distinct
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     int the number of related Classe objects
+	 */
+	public function countClasses($criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collClasses || null !== $criteria) {
+			if ($this->isNew() && null === $this->collClasses) {
+				return 0;
+			} else {
+				$query = ClasseQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByGroupe($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collClasses);
+		}
+	}
+
+	/**
+	 * Associate a Classe object to this object
+	 * through the j_groupes_classes cross reference table.
+	 *
+	 * @param      Classe $classe The JGroupesClasses object to relate
+	 * @return     void
+	 */
+	public function addClasse(Classe $classe)
+	{
+		if ($this->collClasses === null) {
+			$this->initClasses();
+		}
+		if (!$this->collClasses->contains($classe)) { // only add it if the **same** object is not already associated
+			$this->doAddClasse($classe);
+
+			$this->collClasses[]= $classe;
+		}
+	}
+
+	/**
+	 * @param	Classe $classe The classe object to add.
+	 */
+	protected function doAddClasse($classe)
+	{
+		$jGroupesClasses = new JGroupesClasses();
+		$jGroupesClasses->setClasse($classe);
+		$this->addJGroupesClasses($jGroupesClasses);
+	}
+
+	/**
+	 * Clears the current object and sets all attributes to their default values
+	 */
+	public function clear()
+	{
+		$this->id = null;
+		$this->name = null;
+		$this->description = null;
+		$this->recalcul_rang = null;
+		$this->alreadyInSave = false;
+		$this->alreadyInValidation = false;
+		$this->clearAllReferences();
+		$this->resetModified();
+		$this->setNew(true);
+		$this->setDeleted(false);
+	}
+
+	/**
+	 * Resets all references to other model objects or collections of model objects.
+	 *
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
+	 *
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
+	 */
+	public function clearAllReferences($deep = false)
+	{
+		if ($deep) {
+			if ($this->collJGroupesProfesseurss) {
+				foreach ($this->collJGroupesProfesseurss as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collJGroupesMatieress) {
+				foreach ($this->collJGroupesMatieress as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collJGroupesClassess) {
+				foreach ($this->collJGroupesClassess as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collCahierTexteCompteRendus) {
+				foreach ($this->collCahierTexteCompteRendus as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collCahierTexteTravailAFaires) {
+				foreach ($this->collCahierTexteTravailAFaires as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collCahierTexteNoticePrivees) {
+				foreach ($this->collCahierTexteNoticePrivees as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collJEleveGroupes) {
+				foreach ($this->collJEleveGroupes as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collAbsenceEleveSaisies) {
+				foreach ($this->collAbsenceEleveSaisies as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collCreditEctss) {
+				foreach ($this->collCreditEctss as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collEdtEmplacementCourss) {
+				foreach ($this->collEdtEmplacementCourss as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collUtilisateurProfessionnels) {
+				foreach ($this->collUtilisateurProfessionnels as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collMatieres) {
+				foreach ($this->collMatieres as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collClasses) {
+				foreach ($this->collClasses as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+		} // if ($deep)
+
+		if ($this->collJGroupesProfesseurss instanceof PropelCollection) {
+			$this->collJGroupesProfesseurss->clearIterator();
+		}
+		$this->collJGroupesProfesseurss = null;
+		if ($this->collJGroupesMatieress instanceof PropelCollection) {
+			$this->collJGroupesMatieress->clearIterator();
+		}
+		$this->collJGroupesMatieress = null;
+		if ($this->collJGroupesClassess instanceof PropelCollection) {
+			$this->collJGroupesClassess->clearIterator();
+		}
+		$this->collJGroupesClassess = null;
+		if ($this->collCahierTexteCompteRendus instanceof PropelCollection) {
+			$this->collCahierTexteCompteRendus->clearIterator();
+		}
+		$this->collCahierTexteCompteRendus = null;
+		if ($this->collCahierTexteTravailAFaires instanceof PropelCollection) {
+			$this->collCahierTexteTravailAFaires->clearIterator();
+		}
+		$this->collCahierTexteTravailAFaires = null;
+		if ($this->collCahierTexteNoticePrivees instanceof PropelCollection) {
+			$this->collCahierTexteNoticePrivees->clearIterator();
+		}
+		$this->collCahierTexteNoticePrivees = null;
+		if ($this->collJEleveGroupes instanceof PropelCollection) {
+			$this->collJEleveGroupes->clearIterator();
+		}
+		$this->collJEleveGroupes = null;
+		if ($this->collAbsenceEleveSaisies instanceof PropelCollection) {
+			$this->collAbsenceEleveSaisies->clearIterator();
+		}
+		$this->collAbsenceEleveSaisies = null;
+		if ($this->collCreditEctss instanceof PropelCollection) {
+			$this->collCreditEctss->clearIterator();
+		}
+		$this->collCreditEctss = null;
+		if ($this->collEdtEmplacementCourss instanceof PropelCollection) {
+			$this->collEdtEmplacementCourss->clearIterator();
+		}
+		$this->collEdtEmplacementCourss = null;
+		if ($this->collUtilisateurProfessionnels instanceof PropelCollection) {
+			$this->collUtilisateurProfessionnels->clearIterator();
+		}
+		$this->collUtilisateurProfessionnels = null;
+		if ($this->collMatieres instanceof PropelCollection) {
+			$this->collMatieres->clearIterator();
+		}
+		$this->collMatieres = null;
+		if ($this->collClasses instanceof PropelCollection) {
+			$this->collClasses->clearIterator();
+		}
+		$this->collClasses = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(GroupePeer::DEFAULT_STRING_FORMAT);
+	}
+
+} // BaseGroupe

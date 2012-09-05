@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class AbsenceEleveMotifQuery extends BaseAbsenceEleveMotifQuery
-{
-}
+class AbsenceEleveMotifQuery extends BaseAbsenceEleveMotifQuery {
+
+} // AbsenceEleveMotifQuery

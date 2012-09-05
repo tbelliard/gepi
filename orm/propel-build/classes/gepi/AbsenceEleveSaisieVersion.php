@@ -5,7 +5,7 @@
 /**
  * Skeleton subclass for representing a row from the 'a_saisies_version' table.
  *
- *
+ * 
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as
@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class AbsenceEleveSaisieVersion extends BaseAbsenceEleveSaisieVersion
-{
+class AbsenceEleveSaisieVersion extends BaseAbsenceEleveSaisieVersion {
+	
 	/**
 	 *
 	 * Renvoi une chaine de caractere compréhensible concernant les dates de debut et de fin
@@ -40,4 +40,5 @@ class AbsenceEleveSaisieVersion extends BaseAbsenceEleveSaisieVersion
 	    }
 	    return $message;
 	}
-}
+	
+} // AbsenceEleveSaisieVersion

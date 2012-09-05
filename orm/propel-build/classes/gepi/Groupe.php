@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class Groupe extends BaseGroupe
-{
+class Groupe extends BaseGroupe {
+
 	/**
 	 * The value for DescriptionAvecClasses
 	 * @var        string
@@ -413,4 +413,6 @@ class Groupe extends BaseGroupe
 		}
 		return $this->collClasses;
 	}
-}
+
+
+} // Groupe

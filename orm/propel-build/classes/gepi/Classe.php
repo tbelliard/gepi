@@ -13,8 +13,8 @@
  *
  * @package    propel.generator.gepi
  */
-class Classe extends BaseClasse
-{
+class Classe extends BaseClasse {
+
 	/**
 	 *
 	 * Retourne les emplacements de cours de l'heure temps reel. retourne une collection vide si pas pas de cours actuel
@@ -337,4 +337,5 @@ class Classe extends BaseClasse
             }
             return $mef_collection;
         }
-}
+
+} // Classe

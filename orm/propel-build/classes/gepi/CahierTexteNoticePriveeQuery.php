@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class CahierTexteNoticePriveeQuery extends BaseCahierTexteNoticePriveeQuery
-{
-}
+class CahierTexteNoticePriveeQuery extends BaseCahierTexteNoticePriveeQuery {
+
+} // CahierTexteNoticePriveeQuery

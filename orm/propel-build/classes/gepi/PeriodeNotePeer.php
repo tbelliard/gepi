@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class PeriodeNotePeer extends BasePeriodeNotePeer
-{
-}
+class PeriodeNotePeer extends BasePeriodeNotePeer {
+
+} // PeriodeNotePeer

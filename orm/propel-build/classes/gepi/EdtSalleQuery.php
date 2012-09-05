@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class EdtSalleQuery extends BaseEdtSalleQuery
-{
-}
+class EdtSalleQuery extends BaseEdtSalleQuery {
+
+} // EdtSalleQuery

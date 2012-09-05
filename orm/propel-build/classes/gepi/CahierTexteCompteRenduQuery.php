@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class CahierTexteCompteRenduQuery extends BaseCahierTexteCompteRenduQuery
-{
-}
+class CahierTexteCompteRenduQuery extends BaseCahierTexteCompteRenduQuery {
+
+} // CahierTexteCompteRenduQuery

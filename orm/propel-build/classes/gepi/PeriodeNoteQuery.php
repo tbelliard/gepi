@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class PeriodeNoteQuery extends BasePeriodeNoteQuery
-{
-}
+class PeriodeNoteQuery extends BasePeriodeNoteQuery {
+
+} // PeriodeNoteQuery
