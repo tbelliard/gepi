@@ -83,6 +83,7 @@ if(!$menu){
     include('menu_abs2.inc.php');
 }
 //===========================
+//debug_var();
 echo "<div class='css-panes' style='background-color:#ebedb5;' id='containDiv' style='overflow : auto;'>\n";
 
 
@@ -99,7 +100,7 @@ if ($traitement == null) {
 }
 
 if (isset($message_enregistrement)) {
-    echo $message_enregistrement;
+    echo "<span style='color:green'>".$message_enregistrement."</span>";
 }
 
 echo '<table class="normal">';
@@ -132,73 +133,77 @@ echo '</td><td>';
 echo '<table style="background-color:#cae7cb;">';
 $eleve_prec_id = null;
 
+$tab_id_eleves_traitement=array();
 foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
     //$saisie = new AbsenceEleveSaisie();
     if ($saisie->getEleve() == null) {
-	if (!$traitement->getAbsenceEleveSaisies()->isFirst()) {
-	    echo '</td></tr>';
-	}
-	echo '<tr><td>';
-	echo 'Aucune absence';
-	if ($saisie->getGroupe() != null) {
-	    echo ' pour le groupe ';
-	    echo $saisie->getGroupe()->getNameAvecClasses();
-	}
-	if ($saisie->getClasse() != null) {
-	    echo ' pour la classe ';
-	    echo $saisie->getClasse()->getNom();
-	}
-	if ($saisie->getAidDetails() != null) {
-	    echo ' pour l\'aid ';
-	    echo $saisie->getAidDetails()->getNom();
-	}
-	echo ' ';
-	echo $saisie->getTypesDescription();
-	echo '<tr><td>';
+		if (!$traitement->getAbsenceEleveSaisies()->isFirst()) {
+			echo '</td></tr>';
+		}
+		echo '<tr><td>';
+		echo 'Aucune absence';
+		if ($saisie->getGroupe() != null) {
+			echo ' pour le groupe ';
+			echo $saisie->getGroupe()->getNameAvecClasses();
+		}
+		if ($saisie->getClasse() != null) {
+			echo ' pour la classe ';
+			echo $saisie->getClasse()->getNom();
+		}
+		if ($saisie->getAidDetails() != null) {
+			echo ' pour l\'aid ';
+			echo $saisie->getAidDetails()->getNom();
+		}
+		echo ' ';
+		echo $saisie->getTypesDescription();
+		echo '<tr><td>';
     } elseif ($eleve_prec_id != $saisie->getEleve()->getPrimaryKey()) {
-	if (!$traitement->getAbsenceEleveSaisies()->isFirst()) {
-	    echo '</td></tr>';
-	}
-	echo '<tr><td>';
-	echo '<div>';
-	echo $saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom();
-	if ((getSettingValue("active_module_trombinoscopes")=='y') && $saisie->getEleve() != null) {
-	    $nom_photo = $saisie->getEleve()->getNomPhoto(1);
-	    $photos = $nom_photo;
-	    //if (($nom_photo == "") or (!(file_exists($photos)))) {
-	    if (($nom_photo == NULL) or (!(file_exists($photos)))) {
-		    $photos = "../mod_trombinoscopes/images/trombivide.jpg";
-	    }
-	    $valeur = redimensionne_image_petit($photos);
-	    echo ' <img src="'.$photos.'" style="width: '.$valeur[0].'px; height: '.$valeur[1].'px; border: 0px; vertical-align: middle;" alt="" title="" />';
-	}
-	if ($utilisateur->getAccesFicheEleve($saisie->getEleve())) {
-	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."&amp;onglet=responsable&amp;quitter_la_page=y' target='_blank'>";
-	    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."' >";
-	    echo ' (voir fiche)';
-	    echo "</a>";
-	}
-	echo '<div style="float: right; margin-top:0.35em; margin-left:0.2em;">';
-	if ($traitement->getAbsenceEleveSaisies()->isEmpty() && $traitement->getModifiable()) {
-	    echo '<form method="post" action="liste_saisies_selection_traitement.php">';
-        echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
-	echo '<p>';
-	    echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
-	    echo '<input type="hidden" name="filter_eleve" value="'.$saisie->getEleve()->getNom().'"/>';
-	    echo '<button type="submit">Ajouter</button>';
-	echo '</p>';
-	    echo '</form>';
-	}
-	echo '</div>';
-	echo '</div>';
-	echo '<br/>';
-	$eleve_prec_id = $saisie->getEleve()->getPrimaryKey();
+		if (!$traitement->getAbsenceEleveSaisies()->isFirst()) {
+			echo '</td></tr>';
+		}
+		echo '<tr><td>';
+
+		$tab_id_eleves_traitement[]=$saisie->getEleve()->getPrimaryKey();
+
+		echo '<div>';
+		echo $saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom();
+		if ((getSettingValue("active_module_trombinoscopes")=='y') && $saisie->getEleve() != null) {
+			$nom_photo = $saisie->getEleve()->getNomPhoto(1);
+			$photos = $nom_photo;
+			//if (($nom_photo == "") or (!(file_exists($photos)))) {
+			if (($nom_photo == NULL) or (!(file_exists($photos)))) {
+				$photos = "../mod_trombinoscopes/images/trombivide.jpg";
+			}
+			$valeur = redimensionne_image_petit($photos);
+			echo ' <img src="'.$photos.'" style="width: '.$valeur[0].'px; height: '.$valeur[1].'px; border: 0px; vertical-align: middle;" alt="" title="" />';
+		}
+		if ($utilisateur->getAccesFicheEleve($saisie->getEleve())) {
+			echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."&amp;onglet=responsable&amp;quitter_la_page=y' target='_blank'>";
+			//echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."' >";
+			echo ' (voir fiche)';
+			echo "</a>";
+		}
+		echo '<div style="float: right; margin-top:0.35em; margin-left:0.2em;">';
+		if ($traitement->getAbsenceEleveSaisies()->isEmpty() && $traitement->getModifiable()) {
+			echo '<form method="post" action="liste_saisies_selection_traitement.php">';
+		    echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
+		echo '<p>';
+			echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
+			echo '<input type="hidden" name="filter_eleve" value="'.$saisie->getEleve()->getNom().'"/>';
+			echo '<button type="submit">Ajouter</button>';
+		echo '</p>';
+			echo '</form>';
+		}
+		echo '</div>';
+		echo '</div>';
+		echo '<br/>';
+		$eleve_prec_id = $saisie->getEleve()->getPrimaryKey();
     }
     echo '<div>';
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."";
     if($menu){
-                echo"&menu=false";
-            } 
+        echo"&menu=false";
+    }
     echo"' style='height: 100%;'> ";
     echo $saisie->getDateDescription();
     echo ' ';
@@ -206,24 +211,41 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
     echo "</a>";
     echo '<div style="float: right;  margin-top:-0.22em; margin-left:0.2em;">';
     if ($traitement->getModifiable()) {
-	echo '<form method="post" action="enregistrement_modif_traitement.php">';
-    echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
-	echo '<p>';
-	echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
-	echo '<input type="hidden" name="modif" value="enlever_saisie"/>';
-	echo '<input type="hidden" name="id_saisie" value="'.$saisie->getPrimaryKey().'"/>';
-	echo '<button type="submit">Enlever</button>';
-	echo '</p>';
-	echo '</form>';
+		echo '<form method="post" action="enregistrement_modif_traitement.php">';
+		echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
+		echo '<p>';
+		echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
+		echo '<input type="hidden" name="modif" value="enlever_saisie"/>';
+		echo '<input type="hidden" name="id_saisie" value="'.$saisie->getPrimaryKey().'"/>';
+		echo '<button type="submit">Enlever</button>';
+		echo '</p>';
+		echo '</form>';
     }
     echo '</div>';
     echo '</div>';
     if (!$traitement->getAbsenceEleveSaisies()->isLast()) {
-	echo '<br/>';
+		echo '<br/>';
     }
 }
 if (!$traitement->getAbsenceEleveSaisies()->isEmpty()) {
     echo '<br/>';
+
+	// S'il y a plusieurs élèves à afficher dabs saisir_eleve.php, on ne parvient pas à ne récupérer qu'eux.
+	// Du coup, on n'affiche le lien que s'il n'y a qu'un élève pour le traitement.
+	if(count($tab_id_eleves_traitement)==1) {
+		echo '<div style="float:right; width:3em;">';
+		echo '<a href="saisir_eleve.php?type_selection=id_eleve&id_eleve='.$saisie->getEleve()->getPrimaryKey().'" title="Pour compléter/étendre la saisie après contact de la famille">Saisir</a>';
+		/*
+		echo "<form action='saisir_eleve.php' method='post'>\n";
+		for($loop=0;$loop<count($tab_id_eleves_traitement);$loop++) {
+			echo "<input type='hidden' name='id_eleve[]' value='".$tab_id_eleves_traitement[$loop]."' />\n";
+		}
+		echo "<input type='submit' value='Saisir' title='Pour compléter/étendre la saisie après contact de la famille'>\n";
+		echo "</form>\n";
+		*/
+		echo '</div>';
+	}
+
     echo '<form method="post" action="liste_saisies_selection_traitement.php">';
     echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
     echo '<p>';
