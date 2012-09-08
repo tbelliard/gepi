@@ -188,14 +188,16 @@ if(isset($id_classe)){
 		$res_eleves_classe=mysql_query($sql);
 		$nb_eleves_classe=mysql_num_rows($res_eleves_classe);
 
-		echo "<table border='0' summary='Equipe'>\n";
+		echo "<table class='boireaus' border='1' summary='Equipe'>\n";
+		$alt=1;
 
 		// Liste des CPE:
 		$sql="SELECT DISTINCT u.nom,u.prenom,u.email,jec.cpe_login FROM utilisateurs u,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jecl.id_classe='$id_classe' AND u.login=jec.cpe_login ORDER BY jec.cpe_login";
 		$result_cpe=mysql_query($sql);
 		if(mysql_num_rows($result_cpe)>0){
 			while($lig_cpe=mysql_fetch_object($result_cpe)){
-				echo "<tr valign='top'><td>VIE SCOLAIRE</td>\n";
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt white_hover' valign='top'><td>VIE SCOLAIRE</td>\n";
 
 				$sql="SELECT DISTINCT nom,prenom FROM eleves e,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jec.e_login=e.login AND jecl.id_classe='$id_classe' AND jec.cpe_login='$lig_cpe->cpe_login'";
 				$result_eleve=mysql_query($sql);
@@ -223,7 +225,7 @@ if(isset($id_classe)){
 
 		//echo "<table border='0'>\n";
 		//$sql="SELECT jgm.id_matiere,jgm.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgc.id_groupe=jgm.id_groupe AND jgc.id_classe='$id_classe' ORDER BY jgc.priorite, jgm.id_matiere";
-		$sql="SELECT m.nom_complet,jgm.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm, matieres m WHERE jgc.id_groupe=jgm.id_groupe AND m.matiere=jgm.id_matiere AND jgc.id_classe='$id_classe' ORDER BY jgc.priorite, m.matiere";
+		$sql="SELECT m.nom_complet,jgm.id_groupe, g.name, g.description FROM j_groupes_classes jgc, j_groupes_matieres jgm, matieres m, groupes g WHERE jgc.id_groupe=jgm.id_groupe AND m.matiere=jgm.id_matiere AND jgc.id_classe='$id_classe' AND g.id=jgc.id_groupe ORDER BY jgc.priorite, m.matiere";
 		//echo "$sql<br />";
 		$result_grp=mysql_query($sql);
 		while($lig_grp=mysql_fetch_object($result_grp)){
@@ -239,26 +241,44 @@ if(isset($id_classe)){
 			$res_nb_class_grp=mysql_query($sql);
 			$nb_class_grp=mysql_num_rows($res_nb_class_grp);
 
-
 			// Matière correspondant au groupe:
-			echo "<tr valign='top'><td>".htmlspecialchars($lig_grp->nom_complet)."</td>\n";
-
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt white_hover' valign='top'>\n";
+			echo "<td>\n";
+			//echo htmlspecialchars($lig_grp->nom_complet);
+			echo "<span title=\"Matière : $lig_grp->nom_complet\">".htmlspecialchars($lig_grp->name)."<br /><span style='font-size: x-small;'>".htmlspecialchars($lig_grp->description)."</span></span>\n";
+			echo "</td>\n";
 			echo "<td>";
-			echo "<a href='javascript:ouvre_popup(\"$lig_grp->id_groupe\",\"$id_classe\");'>".$nb_eleves." ";
-		if ($nb_eleves > 1) { echo $gepiSettings['denomination_eleves'];} else { echo $gepiSettings['denomination_eleve'];}
-		echo "</a>\n";
+
 			if($nb_class_grp>1){
 				// Effectif...
 				// ... pour tout le groupe
 				$sql="SELECT DISTINCT e.nom,e.prenom,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$lig_grp->id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login ORDER BY e.nom,e.prenom";
 				$res_tous_eleves_grp=mysql_query($sql);
 				$nb_tous_eleves_grp=mysql_num_rows($res_tous_eleves_grp);
+			}
 
-				echo " sur <a href='javascript:ouvre_popup(\"$lig_grp->id_groupe\",\"\");'>".$nb_tous_eleves_grp." ";
-		if ($nb_tous_eleves_grp > 1) { echo $gepiSettings['denomination_eleves'];} else { echo $gepiSettings['denomination_eleve'];}
-		echo "</a>\n";
-		}
-		
+			echo "<a href='javascript:ouvre_popup(\"$lig_grp->id_groupe\",\"$id_classe\");'";
+			if($nb_class_grp>1){
+				echo " title=\"Dans ce groupe de $nb_tous_eleves_grp élèves, $nb_eleves élèves sont en ".$classe['classe']."\"";
+			}
+			echo ">".$nb_eleves." ";
+			if ($nb_eleves > 1) { echo $gepiSettings['denomination_eleves'];} else { echo $gepiSettings['denomination_eleve'];}
+			echo "</a>\n";
+
+			if($nb_class_grp>1){
+				/*
+				// Effectif...
+				// ... pour tout le groupe
+				$sql="SELECT DISTINCT e.nom,e.prenom,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$lig_grp->id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login ORDER BY e.nom,e.prenom";
+				$res_tous_eleves_grp=mysql_query($sql);
+				$nb_tous_eleves_grp=mysql_num_rows($res_tous_eleves_grp);
+				*/
+
+				echo " sur <a href='javascript:ouvre_popup(\"$lig_grp->id_groupe\",\"\");' title='Groupe de $nb_tous_eleves_grp élèves'>".$nb_tous_eleves_grp." ";
+				if ($nb_tous_eleves_grp > 1) { echo $gepiSettings['denomination_eleves'];} else { echo $gepiSettings['denomination_eleve'];}
+				echo "</a>\n";
+			}
 			echo "</td>\n";
 
 
