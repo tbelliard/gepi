@@ -682,6 +682,9 @@ echo "</tr>\n</table>\n";
 //==============================
 
 echo "<input type='hidden' name='id_classe' value='" . $id_classe . "' />\n";
+
+echo "<div style='float:right; width:15px;'><a href='../classes/classes_param.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' title=\"Si vous devez créer plusieurs enseignements d'une même matière, vous gagnerez sans doute du temps à effectuer la création via un Paramétrage par lots\" /></a></div>";
+
 echo "<input type='submit' value='Créer' />\n";
 echo "</fieldset>\n";
 echo "</form>\n";
