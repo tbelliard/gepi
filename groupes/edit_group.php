@@ -259,7 +259,7 @@ if (isset($_POST['is_posted'])) {
 			//======================================
 			// MODIF: boireaus
 			//$msg = "Le groupe a bien été mis à jour.";
-			$msg = "L'enseignement ". stripslashes($reg_nom_complet) . " a bien été mis à jour.";
+			$msg = "Enseignement ". stripslashes($reg_nom_complet) . " bien mis à jour.";
 			$msg = urlencode($msg);
 
 			if(isset($chemin_retour)) {
