@@ -428,7 +428,35 @@ if (isset($data['calendrier']) AND isset($data['modifier'])) {
 		$aff_checked = ""; // par défaut, le checkbox n'est pas coché		
 }
 
+if((isset($_GET['maj_dates_mod_abs2']))&&($_GET['maj_dates_mod_abs2']=='y')) {
+	check_token();
+	if(!isset($msg)) {$msg="";}
+	$nb_reg=0;
 
+	$sql="select * from edt_calendrier WHERE numero_periode>0 AND classe_concerne_calendrier!='';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			if(preg_match("/;/", $lig->classe_concerne_calendrier)) {
+				$tab_classe=explode(";", $lig->classe_concerne_calendrier);
+			}
+			else {
+				$tab_classe[]=$lig->classe_concerne_calendrier;
+			}
+
+			for($loop=0;$loop<count($tab_classe);$loop++) {
+				$register=mysql_query("UPDATE periodes SET date_fin='".$lig->jourfin_calendrier."' WHERE (num_periode='".$lig->numero_periode."' and id_classe='".$tab_classe[$loop]."')");
+				if(!$register) {
+					$msg.="Erreur lors de la définition de la date de fin pour la classe ".get_class_from_id($tab_classe[$loop])." en période $lig->numero_periode.<br />";
+				}
+				else {
+					$nb_reg++;
+				}
+			}
+		}
+	}
+	if($nb_reg>0) {$msg.="$nb_reg date(s) enregistrée(s).<br />";}
+}
 
 // CSS et js particulier à l'EdT
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
