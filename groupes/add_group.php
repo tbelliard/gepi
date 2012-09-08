@@ -130,7 +130,7 @@ echo "</pre>";
         if (!$create) {
             $msg .= "Erreur lors de la création du groupe. ";
         } else {
-            $msg = "L'enseignement a bien été créé. ";
+            $msg = "Enseignement bien créé. ";
             $msg = urlencode($msg);
 
 			for($loo=0;$loo<count($tab_domaines);$loo++) {
@@ -191,10 +191,10 @@ echo "</pre>";
 
 					//if($res){$msg.="Mise à jour des professeurs du groupe effectuée. ";}else{$msg.="Echec de la mise à jour des professeurs du groupe. ";}
 					if (count($reg_professeurs) == 1) {
-						if($res){$msg.="Affectation du professeur à l'enseignement effectuée. ";}else{$msg.="Echec de l'affectation du professeur à l'enseignement. ";}
+						if($res){$msg.="Affectation du professeur à cet enseignement effectuée. ";}else{$msg.="Echec de l'affectation du professeur à cet enseignement. ";}
 					}
 					else{
-						if($res){$msg.="Affectation des professeurs à l'enseignement effectuée. ";}else{$msg.="Echec de l'affectation des professeurs à l'enseignement. ";}
+						if($res){$msg.="Affectation des professeurs à cet enseignement effectuée. ";}else{$msg.="Echec de l'affectation des professeurs à cet enseignement. ";}
 					}
                     //header("Location: ./edit_class.php?id_classe=$id_classe");
                     header("Location: ./edit_class.php?id_classe=$id_classe&msg=$msg");
