@@ -146,8 +146,6 @@ if($gepi_prof_suivi==""){
 	}
 ?>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="author" content="Stephane Boireau, A.S. RUE de Bernay/Pont-Audemer" />
-	<!--link type="text/css" rel="stylesheet" href="../styles.css" /-->
 	<link type="text/css" rel="stylesheet" href="../style.css" />
 <?php
 	if(isset($style_screen_ajout)){
@@ -400,6 +398,33 @@ if($gepi_prof_suivi==""){
 		}
 	}
 	else {
+
+		echo "<table class='boireaus' border='1'>\n";
+		$sql="SELECT DISTINCT jgp.login,u.nom,u.prenom,u.email, jgc.id_classe FROM j_groupes_professeurs jgp,utilisateurs u, j_groupes_classes jgc WHERE jgp.id_groupe='$id_groupe' AND u.login=jgp.login AND jgp.id_groupe=jgc.id_groupe ORDER BY u.nom, u.prenom";
+		//echo "$sql<br />";
+		$result_prof=mysql_query($sql);
+		$tab_prof_tmp=array();
+		$tab_id_classe_tmp=array();
+		while($lig_prof=mysql_fetch_object($result_prof)){
+			if(!in_array($lig_prof->login, $tab_prof_tmp)) {
+				$tab_prof_tmp[]=$lig_prof->login;
+				$tab_id_classe_tmp[]=$lig_prof->id_classe;
+			}
+		}
+
+		echo "<tr valign='top'><th>Professeur";
+		if(mysql_num_rows($result_prof)>1){echo "s";}
+		echo ":</th>\n";
+		echo "<td class='lig-1'>";
+		for($loop=0;$loop<count($tab_prof_tmp);$loop++){
+			echo affiche_utilisateur($tab_prof_tmp[$loop],$tab_id_classe_tmp[$loop]);
+			echo "<br />\n";
+		}
+		echo "</td>\n";
+		echo "</tr>\n";
+		echo "</table>\n";
+
+
 		if(isset($periode_num)) {
 			//$sql="SELECT DISTINCT e.nom,e.prenom,e.email,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login AND jeg.periode=jec.periode AND jec.periode='$periode_num'";
 			$sql="SELECT DISTINCT e.*, c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login AND jeg.periode=jec.periode AND jec.periode='$periode_num'";
