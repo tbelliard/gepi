@@ -48,6 +48,9 @@ DirectoryIndex login.php index.html index.htm index.php
     # directories from your webroot or otherwise protect them from being
     # downloaded.
     RewriteRule "(^|/)\." - [F]
+	
+	# Authentification dans le cas de PHP en mode CGI
+	RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
 
     # acces simplesaml forcé en https.
     RewriteCond %{HTTPS} off
