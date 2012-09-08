@@ -345,14 +345,39 @@ if (isset($_POST['is_posted'])) {
 										$reg_professeurs[]=$professeur_nouvel_enseignement;
 									}
 
+									$nouvel_enseignement_eleves=isset($_POST['nouvel_enseignement_eleves']) ? $_POST['nouvel_enseignement_eleves'] : "tous";
+									$tab_choix_nouvel_enseignement_eleves=array("tous", "aucun", "1", "2");
+									if(!in_array($nouvel_enseignement_eleves, $tab_choix_nouvel_enseignement_eleves)) {$nouvel_enseignement_eleves="tous";}
 									$reg_eleves=array();
 									foreach ($current_group["periodes"] as $period) {
 										$reg_eleves[$period['num_periode']]=array();
-										$sql="SELECT login FROM j_eleves_classes WHERE id_classe='$id_classe' AND periode='".$period['num_periode']."';";
-										$res_ele=mysql_query($sql);
-										if(mysql_num_rows($res_ele)>0){
-											while($lig_ele=mysql_fetch_object($res_ele)){
-												$reg_eleves[$period['num_periode']][]=$lig_ele->login;
+										if($nouvel_enseignement_eleves!="aucun") {
+											$sql="SELECT jec.login FROM j_eleves_classes jec, eleves e WHERE jec.id_classe='$id_classe' AND jec.periode='".$period['num_periode']."' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
+											$res_ele=mysql_query($sql);
+											$eff_ele_ens=mysql_num_rows($res_ele);
+											if($eff_ele_ens>0){
+												$cpt_ele_ens=0;
+												if($nouvel_enseignement_eleves=='1') {
+													while($lig_ele=mysql_fetch_object($res_ele)){
+														if($cpt_ele_ens<$eff_ele_ens/2) {
+															$reg_eleves[$period['num_periode']][]=$lig_ele->login;
+														}
+														$cpt_ele_ens++;
+													}
+												}
+												elseif($nouvel_enseignement_eleves=='2') {
+													while($lig_ele=mysql_fetch_object($res_ele)){
+														if($cpt_ele_ens>=$eff_ele_ens/2) {
+															$reg_eleves[$period['num_periode']][]=$lig_ele->login;
+														}
+														$cpt_ele_ens++;
+													}
+												}
+												else {
+													while($lig_ele=mysql_fetch_object($res_ele)){
+														$reg_eleves[$period['num_periode']][]=$lig_ele->login;
+													}
+												}
 											}
 										}
 									}
@@ -742,6 +767,21 @@ while ($per < $max_periode) {
 				echo "</tr>\n";
 				echo "</table>\n";
 
+
+			echo "</td>\n";
+			echo "</tr>\n";
+
+			echo "<tr>\n";
+			echo "<td colspan='2'>&nbsp;&nbsp;&nbsp;</td>\n";
+			echo "<td style='vertical-align:top'>\n";
+			echo "Mettre dans le groupe&nbsp;: ";
+			echo "</td>\n";
+			echo "<td>\n";
+
+			echo "<input type='radio' name='nouvel_enseignement_eleves' id='nouvel_enseignement_eleves_tous' value='tous' checked /><label for='nouvel_enseignement_eleves_tous'>tous les élèves de la classe</label><br />\n";
+			echo "<input type='radio' name='nouvel_enseignement_eleves' id='nouvel_enseignement_eleves_aucun' value='aucun' /><label for='nouvel_enseignement_eleves_aucun'>aucun élève</label><br />\n";
+			echo "<input type='radio' name='nouvel_enseignement_eleves' id='nouvel_enseignement_eleves_1' value='1' /><label for='nouvel_enseignement_eleves_1'>la première moitié de la classe</label><br />\n";
+			echo "<input type='radio' name='nouvel_enseignement_eleves' id='nouvel_enseignement_eleves_2' value='2' /><label for='nouvel_enseignement_eleves_2'>la deuxième moitié de la classe</label><br />\n";
 
 			echo "</td>\n";
 			echo "</tr>\n";
