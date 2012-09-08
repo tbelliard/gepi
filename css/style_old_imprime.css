@@ -1,0 +1,130 @@
+
+body {
+	background: white;
+}
+
+#bandeau {
+	display: none;
+}
+
+#menu_barre {
+	display: none;
+}
+
+.noprint {
+	display: none;
+}
+
+/* Tableaux utilisés dans pas mal de pages */
+table.boireaus {
+	margin-top: 1em;
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	border-collapse: collapse;
+}
+
+.boireaus th {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	font-weight:bold;
+	text-align:center;
+	vertical-align: middle;
+}
+
+.boireaus td {
+	text-align:center;
+	vertical-align: middle;
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+}
+
+.bull_simpl {
+	color: #000000;
+	font-size: 8pt;
+	font-style: normal;
+	font-weight: normal;
+}
+.bull_simpl_g {
+	color: #000000;
+	font-size: 12pt;
+	font-style: normal;
+	font-weight: normal;
+}
+
+
+table.menu {
+	width: 70%;
+	border-collapse: separate;
+	border-spacing: 0px;
+	border: none;
+	border-bottom: 1px solid lightgrey;
+	margin-right:auto;
+	margin-left:auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	padding-left: 0px;
+	background-image: url("./images/background/left-top-corner.png");
+	background-repeat: no-repeat;
+	background-position: -1px 0%;
+}
+
+table.menu td {
+	border: 1px solid lightgrey;
+	border-bottom: none;
+	border-top: 1px solid lightgrey;
+	border-left: 1px solid lightgrey;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+table.menu th {
+	border: none;
+	text-align: left;
+	padding-left: 20px;
+	padding-bottom: 3px;
+	padding-top: 3px;
+	font-size: 11pt;
+	color: black;
+
+}
+
+/* Pour ne pas avoir de decoration sur les liens à l'impression */
+a {
+	color: #0000AA;
+	text-decoration: none;
+}
+a:visited {
+	color: #0000AA;
+	text-decoration: none;
+}
+a:hover {
+	color: gray;
+}
+a:active {
+	color: #0000AA;
+	text-decoration: none;
+}
+
+/* Vérifier si ces deux là sont utiles */
+.grand {
+	font-size: 16pt;
+}
+
+.norme {
+	font-style: normal;
+	font-size: 14pt;
+}
+
+/* Pour conserver des tailles de police raisonnables sur prepa_conseil/visu_toutes_notes.php au moins (peut-être ailleurs) */
+.small {
+	font-size: 8pt;
+}
+
+/* Pour avoir les changements de pages dans les bulletins simplifiés et bulletins HTML */
+p.saut {
+	page-break-after: always;
+}
+

@@ -313,8 +313,14 @@ if (isset($_POST['is_posted'])) {
 								$reg_clazz = array();
 								$reg_clazz[] = $id_classe;
 								$reg_categorie = 1; // Récupérer par la suite la catégorie par défaut de la table 'matieres' (champ categorie_id)
-								$reg_nom_groupe=$matiere_nouvel_enseignement; // Obtenir une unicité...?
-								$reg_nom_complet=$matiere_nouvel_enseignement; // Obtenir une unicité...?
+
+								$nom_nouvel_enseignement=isset($_POST['nom_nouvel_enseignement']) ? $_POST['nom_nouvel_enseignement'] : "";
+								if($nom_nouvel_enseignement!="") {
+									$reg_nom_groupe=$nom_nouvel_enseignement;
+								}
+								else {
+									$reg_nom_groupe=$matiere_nouvel_enseignement; // Obtenir une unicité...?
+								}
 
 								$sql="SELECT nom_complet,categorie_id FROM matieres WHERE matiere='$matiere_nouvel_enseignement';";
 								$res_mat=mysql_query($sql);
@@ -323,6 +329,12 @@ if (isset($_POST['is_posted'])) {
 									$reg_categorie=$lig_mat->categorie_id;
 									$reg_nom_complet=$lig_mat->nom_complet;
 								}
+
+								$description_nouvel_enseignement=isset($_POST['description_nouvel_enseignement']) ? $_POST['description_nouvel_enseignement'] : "";
+								if($description_nouvel_enseignement!="") {
+									$reg_nom_complet=$description_nouvel_enseignement;
+								}
+
 								$reg_matiere=$matiere_nouvel_enseignement;
 								$create = create_group($reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_categorie);
 								if($create) {
@@ -661,7 +673,7 @@ while ($per < $max_periode) {
 		}
 		else {
 			echo "<td colspan='2'>\n";
-			echo "<select name='matiere_nouvel_enseignement' id='matiere_nouvel_enseignement' onchange=\"document.getElementById('creer_enseignement').checked=true;maj_prof_enseignement();\">\n";
+			echo "<select name='matiere_nouvel_enseignement' id='matiere_nouvel_enseignement' onchange=\"document.getElementById('creer_enseignement').checked=true;maj_prof_enseignement();maj_nom_descr_enseignement();\">\n";
 			echo "<option value=''>---</option>\n";
 			while($lig_mat=mysql_fetch_object($res_mat)) {
 				echo "<option value='$lig_mat->matiere'>".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
@@ -684,6 +696,25 @@ while ($per < $max_periode) {
 			echo "</select>\n";
 			//echo "<span style='color:red'>A FAIRE: pas pris en compte pour le moment</span>";
 			//echo "<br /><span style='color:red'>A FAIRE aussi: récupérer la catégorie associée à la matière dans 'matieres.categorie_id' et récupérer le matieres.nom_complet pour le nom du groupe</span>";
+			echo "</td>\n";
+			echo "</tr>\n";
+
+			echo "<tr>\n";
+			echo "<td colspan='2'>&nbsp;&nbsp;&nbsp;</td>\n";
+			echo "<td>\n";
+			echo "Nom&nbsp;: ";
+			echo "</td>\n";
+			echo "<td><input type='text' name='nom_nouvel_enseignement' id='nom_nouvel_enseignement' value='' /></td>\n";
+			echo "</tr>\n";
+
+			echo "<tr>\n";
+			echo "<td colspan='2'>&nbsp;&nbsp;&nbsp;</td>\n";
+			echo "<td>\n";
+			echo "Description&nbsp;: ";
+			echo "</td>\n";
+			echo "<td>\n";
+			echo "<div id='div_description_nouvel_enseignement' style='display:none;'></div>\n";
+			echo "<input type='text' name='description_nouvel_enseignement' id='description_nouvel_enseignement' value='' />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 
@@ -725,6 +756,18 @@ while ($per < $max_periode) {
 				function maj_prof_enseignement() {
 					matiere=document.getElementById('matiere_nouvel_enseignement').value;
 					new Ajax.Updater($('td_prof_nouvel_enseignement'),'classes_ajax_lib.php?mode=classes_param&matiere='+matiere,{method: 'get'});
+
+					//maj_nom_descr_enseignement();
+				}
+
+				function maj_nom_descr_enseignement() {
+					matiere=document.getElementById('matiere_nouvel_enseignement').value;
+
+					document.getElementById('nom_nouvel_enseignement').value=matiere;
+
+					new Ajax.Updater($('div_description_nouvel_enseignement'),'../matieres/matiere_ajax_lib.php?champ=nom_complet&matiere='+matiere,{method: 'get'});
+					//document.getElementById('description_nouvel_enseignement').value=document.getElementById('div_description_nouvel_enseignement').innerHTML;
+					setTimeout(\"document.getElementById('description_nouvel_enseignement').value=document.getElementById('div_description_nouvel_enseignement').innerHTML\", 1000);
 				}
 				//]]>
 			</script>\n";

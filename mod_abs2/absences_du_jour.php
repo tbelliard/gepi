@@ -316,11 +316,11 @@ echo "</tr></table>";
 </div> <br />
 <?php
 if (isset($message_erreur_traitement)) {
-    echo $message_erreur_traitement;
+    echo "<span style='color:red'>".$message_erreur_traitement."</span>";
 }
 
 if (isset($message_enregistrement)) {
-    echo($message_enregistrement);
+    echo "<span style='color:green'>".$message_enregistrement."</span>";
 }
 
 //afichage des eleves.
@@ -456,6 +456,7 @@ $eleve_col = $query
 			?>
 			    </div>
 			</div>
+
 			</p>
     <!-- Afichage du tableau de la liste des élèves -->
     <!-- <table style="text-align: left; width: 600px;" border="0" cellpadding="0" cellspacing="1"> -->
@@ -524,7 +525,9 @@ $eleve_col = $query
 			echo("</td>");
 
 			$col_creneaux = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
-			
+
+			$nb_checkbox_eleve_courant=0;
+			$id_checkbox_eleve_courant='';
 			for($i = 0; $i<$col_creneaux->count(); $i++){
 					$edt_creneau = $col_creneaux[$i];
 					$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
@@ -548,8 +551,8 @@ $eleve_col = $query
 					//si il y a des absences de l'utilisateurs on va proposer de les modifier
 					foreach ($absences_du_creneau as $saisie) {
 					    if (in_array($saisie->getPrimaryKey(), $saisie_affiches)) {
-						//on affiche les saisies une seule fois
-						continue;
+							//on affiche les saisies une seule fois
+							continue;
 					    }
 					    $saisie_affiches[] = $saisie->getPrimaryKey();
 					    $nb_checkbox = $nb_checkbox + 1;                        
@@ -557,8 +560,15 @@ $eleve_col = $query
 					    if ($saisie->getNotificationEnCours()){echo 'saisie_notification_en_cours="true"';}
                         if ($saisie->getNotifiee()) {echo 'saisie_notifiee="true"';}
 					    if ($saisie->getTraitee()) {echo 'saisie_traitee="true"';}
+
+						$id_checkbox_eleve_courant=$eleve->getPrimaryKey()."_".$nb_checkbox_eleve_courant;
+						echo " id='".$id_checkbox_eleve_courant."' ";
+
 					    echo '/>';                        
                         echo '<a style="font-size:88%;" href="#" onClick="javascript:showwindow(\'visu_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&menu=false\',\'Modifier,traiter ou notifier une saisie\');return false"><img src="../images/icons/saisie.png" title="Voir la saisie n°'.$saisie->getPrimaryKey().'"/>';
+
+						$nb_checkbox_eleve_courant++;
+
                         //if ($saisie->getNotifiee()) {echo " (notifiée)";}
 					    echo '</nobr> ';                        
 					    //echo $saisie->getTypesDescription();
@@ -601,35 +611,61 @@ $eleve_col = $query
 			    <span>Ajouter au traitement</span>
 			    <div dojoType="dijit.Menu"  style="white-space: nowrap; display: inline">';              		
 			foreach ($traitement_col as $traitement) {
-			    echo '<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.creer_traitement.submit();">';
+			    echo '<button dojoType="dijit.MenuItem" onClick="';
+			    if($nb_checkbox_eleve_courant==1) {
+			    	echo "if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
+			    }
+			    echo 'document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.creer_traitement.submit();">';
 			    echo ' Ajouter au traitement n° '.$traitement->getId().' ('.$traitement->getDescription().')';
 			    echo '</button>';
 			}
-            echo'	<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; document.creer_traitement.submit();">
+            echo'	<button dojoType="dijit.MenuItem" onClick="';
+			    if($nb_checkbox_eleve_courant==1) {
+			    	echo "if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
+			    }
+			    echo 'document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; document.creer_traitement.submit();">
 				    Créer un nouveau traitement
 				</button>';
 			echo '</div></div><br/>';
+
 			echo '<div dojoType="dijit.form.DropDownButton"  style="white-space: nowrap; display: inline">
 			    <span>Ajouter (fenêtre)</span>
 			    <div dojoType="dijit.Menu"  style="white-space: nowrap; display: inline">';				
 			foreach ($traitement_col as $traitement) {
-			    echo '<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; postwindow(document.creer_traitement,\'Traiter et notifier des saisies\');">';
+			    echo '<button dojoType="dijit.MenuItem" onClick="';
+			    if($nb_checkbox_eleve_courant==1) {
+			    	echo "if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
+			    }
+			    echo 'document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; postwindow(document.creer_traitement,\'Traiter et notifier des saisies\');">';
 			    echo ' Ajouter au traitement n° '.$traitement->getId().' ('.$traitement->getDescription().')';
 			    echo '</button>';
 			}
-            echo'<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; postwindow(document.creer_traitement,\'Traiter et notifier des saisies\');">
+            echo'<button dojoType="dijit.MenuItem" onClick="';
+			    if($nb_checkbox_eleve_courant==1) {
+			    	echo "if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
+			    }
+			    echo 'document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; postwindow(document.creer_traitement,\'Traiter et notifier des saisies\');">
 				    Créer un nouveau traitement (fenêtre)
 				 </button>';
 			echo '</div></div><br/>';
+
             echo '<div dojoType="dijit.form.DropDownButton"  style="white-space: nowrap; display: inline">
 			    <span>Ajouter (popup)</span>
 			    <div dojoType="dijit.Menu"  style="white-space: nowrap; display: inline">';				
 			foreach ($traitement_col as $traitement) {
-			    echo '<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; pop_it(document.creer_traitement);">';
+			    echo '<button dojoType="dijit.MenuItem" onClick="';
+			    if($nb_checkbox_eleve_courant==1) {
+			    	echo "if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
+			    }
+			    echo 'document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; pop_it(document.creer_traitement);">';
 			    echo ' Ajouter au traitement n° '.$traitement->getId().' ('.$traitement->getDescription().')';
 			    echo '</button>';
 			}
-            echo'<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; pop_it(document.creer_traitement);">
+            echo'<button dojoType="dijit.MenuItem" onClick="';
+			    if($nb_checkbox_eleve_courant==1) {
+			    	echo "if(document.getElementById('$id_checkbox_eleve_courant')) {document.getElementById('$id_checkbox_eleve_courant').checked=true;}";
+			    }
+			    echo 'document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; pop_it(document.creer_traitement);">
 				    Créer un nouveau traitement (popup)
 				 </button>';
 			echo '</div></div>';

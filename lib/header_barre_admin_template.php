@@ -83,6 +83,7 @@ include("menu_plugins.inc.php");
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/config_prefs.php" '.insert_confirm_abandon().'>Interface Profs</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/param_couleurs.php" '.insert_confirm_abandon().'>Couleurs</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/param_ordre_item.php" '.insert_confirm_abandon().'>Ordre des menus</a></li>'."\n";
+		$menus .= '     <li><a href="'.$gepiPath.'/gestion/modify_impression.php" '.insert_confirm_abandon().'>Fiches Bienvenue</a></li>'."\n";
 		$menus .= '   </ul>'."\n";
 		$menus .= '</li>'."\n";
 		$menus .= '<li class="li_inline"><a href="#">&nbsp;Maintenance</a>'."\n";
@@ -172,7 +173,15 @@ include("menu_plugins.inc.php");
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_gest_aid/admin.php" '.insert_confirm_abandon().'>Gestionnaires AID</a></li>'."\n";
 		$menus .= '    </ul>'."\n";		
 		$menus .= '  </li>'."\n";
-		$menus .= '  <li><a href="'.$gepiPath.'/mod_absences/gestion/voir_absences_viescolaire.php" '.insert_confirm_abandon().'>Absences</a></li>'."\n";
+
+		if (getSettingValue("active_module_absence")=='2') {
+			// Admin n'a pas le droit de consultation des absences en mod_abs2, mais il l'a en mod_absences (1)
+			//$menus .= '  <li><a href="'.$gepiPath.'/mod_abs2/index.php" '.insert_confirm_abandon().'>Absences</a></li>'."\n";
+		}
+		elseif (getSettingValue("active_module_absence")=='y') {
+			$menus .= '  <li><a href="'.$gepiPath.'/mod_absences/gestion/voir_absences_viescolaire.php" '.insert_confirm_abandon().'>Absences</a></li>'."\n";
+		}
+
 		$menus .= '  <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes.php" '.insert_confirm_abandon().'>Trombinoscopes</a></li>'."\n";
 		$menus .= '  <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php" '.insert_confirm_abandon().'>Emplois du temps</a></li>'."\n";
 		$menus .= '  <li class="plus"><a href="#">Bulletins</a>'."\n";
@@ -185,6 +194,7 @@ include("menu_plugins.inc.php");
 		$gepi_denom_mention=getSettingValue('gepi_denom_mention');
 		if($gepi_denom_mention=='') {$gepi_denom_mention="mention";}
 		$menus .= '      <li><a href="'.$gepiPath.'/saisie/saisie_mentions.php" '.insert_confirm_abandon().'>'.ucfirst($gepi_denom_mention).'s</a></li>'."\n";
+		$menus .= '     <li><a href="'.$gepiPath.'/gestion/modify_impression.php" '.insert_confirm_abandon().'>Fiches Bienvenue</a></li>'."\n";
 		$menus .= '    </ul>'."\n";		
 		$menus .= '  </li>'."\n";
 		$menus .= '  <li><a href="'.$gepiPath.'/mod_notanet/index.php" '.insert_confirm_abandon().'>Notanet/Brevet</a></li>'."\n";

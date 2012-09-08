@@ -605,7 +605,7 @@ else {
 		echo "<p class=bold><a href=\"#\" onclick=\"self.close();\">Refermer la page</a>\n";
 	}
 	*/
-	echo " | <a href='modify_resp.php&amp;quitter_la_page=y'";
+	echo " | <a href='modify_resp.php?quitter_la_page=y'";
 	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 	echo ">Ajouter un responsable</a>";
 }

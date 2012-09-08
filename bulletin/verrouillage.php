@@ -157,6 +157,11 @@ if (isset($_POST['ok'])) {
 	*/
 }
 
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
 $titre_page = "Verrouillage et déverrouillage des périodes";
@@ -380,11 +385,23 @@ if (($classe != 0) AND ($periode !=0)) {
 						echo " /></td>\n";
                         if(getSettingValue("active_module_absence")=="2"){
                             echo "<td>";
-                            echo "<input type=\"text\" size=\"8\" name=\"date_fin_".$nom_classe."\" value=\"";
+                            echo "<input type=\"text\" size=\"8\" name=\"date_fin_".$nom_classe."\" id=\"date_fin_".$nom_classe."\" value=\"";
                             if ($row_per[2] != 0) {
                                 echo date("d/m/Y", strtotime($row_per[2]));
                             }
                             echo "\"/>";
+
+ echo '
+<script type="text/javascript">
+Calendar.setup({
+    inputField     :    "date_fin_'.$nom_classe.'",     // id of the input field
+    ifFormat       :    "%d/%m/%Y",      // format of the input field
+    button         :    "date_fin_'.$nom_classe.'",  // trigger for the calendar (button ID)
+    align          :    "Bl",           // alignment (defaults to "Bl")
+    singleClick    :    true
+});
+</script>&nbsp;';
+
                             echo "</td>\n";
                         }
 						$j++;
