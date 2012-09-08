@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
  *
  * This file is part of GEPI.
  *
@@ -81,7 +81,8 @@ $today=mktime(0,0,0,$month,$day,$year);
 //**************** EN-TETE *****************
 $titre_page = "Cahier de textes";
 $page_accueil = "index.php?id_classe=-1";
-require_once("../lib/header.inc.php");
+//require_once("../lib/header.inc.php");
+require_once("lib/header_public.inc.php");
 //**************** FIN EN-TETE *************
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
