@@ -108,7 +108,12 @@ class CvsentCtrl extends Controleur {
             $this->fic = fopen($file, 'r');
             $statut = 'eleve';
             while (($this->ligne = fgetcsv($this->fic, 1024, ";")) !== FALSE) {
-
+             foreach($this->ligne as &$value){
+                 if(!mb_check_encoding($value, "UTF-8")){
+                     $value= utf8_encode($value);
+                 }
+             }
+             
                 // On charge la table temporaire
                 //$this->ligne[0] : rne
                 //$this->ligne[1] : uid
@@ -325,7 +330,7 @@ class CvsentCtrl extends Controleur {
         $this->fic = fopen($file, 'r');
         $ligne_erreur = 1;
         while (($this->ligne = fgetcsv($this->fic, 1000, ";")) !== FALSE) {
-            if (sizeof($this->ligne) != 13) {
+            if (sizeof($this->ligne) < 13) {
                 $this->erreurs_lignes[] = $ligne_erreur;
             }
             $ligne_erreur++;
