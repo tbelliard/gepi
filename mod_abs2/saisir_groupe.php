@@ -710,6 +710,7 @@ require_once("../lib/header_template.inc.php");
 <head>
 <!-- on inclut l'entête -->
 <?php 
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 include('../templates/origine/header_template.php');
 //include("../templates/origine/bandeau_template.php");
 ?>
@@ -741,6 +742,7 @@ include('../templates/origine/header_template.php');
 <!-- ************************* -->
 <!-- Début du corps de la page -->
 <!-- ************************* -->
+
 <body onload="show_message_deconnexion();<?php if($tbs_charger_observeur) echo $tbs_charger_observeur;?>">
 
 
@@ -757,9 +759,19 @@ include('../templates/origine/header_template.php');
 
 include('menu_abs2.inc.php');
 //===========================
+//debug_var();
 ?>
 <a name='haut_de_page'></a>
 <div class='css-panes' id='containDiv'>
+
+	<?php
+		if((acces("/groupes/signalement_eleves.php", $_SESSION['statut']))&&(isset($id_groupe))) {
+	?>
+	<!--div style='float:right; width:19px;'><a href='../groupes/signalement_eleves.php?id_groupe=<?php echo $id_groupe;?>' onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')"><img src='../images/icons/ico_question.png' width='19' height='19' title="Si la liste des élèves du groupe affiché n'est pas correcte, vous pouvez signaler ici les erreurs à l'administrateur." /></a></div-->
+	<div style='float:right; width:19px;'><a href='../groupes/signalement_eleves.php?id_groupe=<?php echo $id_groupe;?>' target="_blank"><img src='../images/icons/ico_question.png' width='19' height='19' title="Si la liste des élèves du groupe affiché n'est pas correcte, vous pouvez signaler ici les erreurs à l'administrateur." /></a></div>
+	<?php
+		}
+	?>
 
 	<form class="center" action="./saisir_groupe.php" method="post" style="width: 100%;">
 		<p>
