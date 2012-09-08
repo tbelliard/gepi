@@ -172,7 +172,15 @@ include("menu_plugins.inc.php");
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_gest_aid/admin.php" '.insert_confirm_abandon().'>Gestionnaires AID</a></li>'."\n";
 		$menus .= '    </ul>'."\n";		
 		$menus .= '  </li>'."\n";
-		$menus .= '  <li><a href="'.$gepiPath.'/mod_absences/gestion/voir_absences_viescolaire.php" '.insert_confirm_abandon().'>Absences</a></li>'."\n";
+
+		if (getSettingValue("active_module_absence")=='2') {
+			// Admin n'a pas le droit de consultation des absences en mod_abs2, mais il l'a en mod_absences (1)
+			//$menus .= '  <li><a href="'.$gepiPath.'/mod_abs2/index.php" '.insert_confirm_abandon().'>Absences</a></li>'."\n";
+		}
+		elseif (getSettingValue("active_module_absence")=='y') {
+			$menus .= '  <li><a href="'.$gepiPath.'/mod_absences/gestion/voir_absences_viescolaire.php" '.insert_confirm_abandon().'>Absences</a></li>'."\n";
+		}
+
 		$menus .= '  <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes.php" '.insert_confirm_abandon().'>Trombinoscopes</a></li>'."\n";
 		$menus .= '  <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php" '.insert_confirm_abandon().'>Emplois du temps</a></li>'."\n";
 		$menus .= '  <li class="plus"><a href="#">Bulletins</a>'."\n";
