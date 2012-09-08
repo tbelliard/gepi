@@ -4021,9 +4021,10 @@ function is_cpe($login_cpe,$id_classe="",$login_eleve="") {
 	elseif($id_classe!='') {
 		$sql="SELECT 1=1 FROM j_eleves_cpe jecpe, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.login=jecpe.e_login AND jecpe.cpe_login='$login_cpe';";
 	}
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)>0) {$retour=TRUE;}
-
+        if(isset($sql)) {
+            $test=mysql_query($sql);
+            if(mysql_num_rows($test)>0) {$retour=TRUE;}
+        }
 	return $retour;
 }
 
