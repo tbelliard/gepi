@@ -543,7 +543,7 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 			echo $current_parent->nom . " " . $current_parent->prenom;
 		echo "</td>\n";
 		echo "<td>";
-		$sql="SELECT DISTINCT e.nom,e.prenom,c.classe FROM eleves e,
+		$sql="SELECT DISTINCT e.login, e.nom,e.prenom,c.classe FROM eleves e,
 												j_eleves_classes jec,
 												classes c,
 												responsables2 r
@@ -560,7 +560,7 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 		}
 		else{
 			while($current_enfant=mysql_fetch_object($res_enfants)){
-				echo casse_mot($current_enfant->prenom,'majf2')." ".casse_mot($current_enfant->nom,'maj')." (<i>".$current_enfant->classe."</i>)<br />\n";
+				echo "<a href='../eleves/modify_eleve.php?eleve_login=$current_enfant->login'>".casse_mot($current_enfant->prenom,'majf2')." ".casse_mot($current_enfant->nom,'maj')."</a> (<i>".$current_enfant->classe."</i>)<br />\n";
 			}
 		}
 		echo "</td>\n";
