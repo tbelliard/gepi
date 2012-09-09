@@ -255,6 +255,14 @@ if ($id_liste_groupes!=NULL) {
 //echo $nb_pages;
 }
 
+
+if ($id_groupe != NULL) {
+	$current_group = get_group($id_groupe);
+}
+elseif((isset($id_liste_groupes))&&(count($id_liste_groupes)==1)) {
+	$current_group = get_group($id_liste_groupes[0]);
+}
+
 //echo $nb_pages;
 
 	// Cette boucle crée les différentes pages du PDF
@@ -372,7 +380,7 @@ if ($id_liste_groupes!=NULL) {
 			  //PP de la classe
 			  if ($id_groupe != NULL) {
 			  // On n'affiche pas le PP (il peut y en avoir plusieurs) ==> on affiche la période
-			    $sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode=$id_periode ORDER BY num_periode";
+			    $sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode='$id_periode' ORDER BY num_periode";
 				$res_per=mysql_query($sql);
 				if(mysql_num_rows($res_per)==0){
 					die("Problème avec les infos de la classe $id_classe</body></html>");
@@ -381,7 +389,15 @@ if ($id_liste_groupes!=NULL) {
 					$lig_tmp=mysql_fetch_object($res_per);
 					$periode=$lig_tmp->nom_periode;
 					//Affichage  de la période
-					$pdf->CellFitScale($L_entete_discipline,$H_entete_classe ,$periode,'TLBR',2,'C');
+					//$pdf->CellFitScale($L_entete_discipline,$H_entete_classe ,$periode,'TLBR',2,'C');
+					if(isset($current_group)) {
+						$texte_per=$current_group['classlist_string']." - ".$periode;
+						//$texte_per=$current_group['classlist_string'];
+					}
+					else {
+						$texte_per=$periode;
+					}
+					$pdf->CellFitScale($L_entete_discipline,$H_entete_classe ,$texte_per,'TLBR',2,'C');
 				}
 			   } else {
 				   $sql = "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$donnees_eleves[0]['login']."' and id_classe='$id_classe')";
@@ -395,7 +411,7 @@ if ($id_liste_groupes!=NULL) {
 			else {
               // On n'affiche pas le PP (il peut y en avoir plusieurs) ==> on affiche la période
 			  if ($id_groupe != NULL) {
-                $sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode=$id_periode ORDER BY num_periode";
+                $sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode='$id_periode' ORDER BY num_periode";
 				$res_per=mysql_query($sql);
 				if(mysql_num_rows($res_per)==0){
 					die("Problème avec les infos de la classe $id_classe</body></html>");
@@ -403,8 +419,15 @@ if ($id_liste_groupes!=NULL) {
 				else{
 					$lig_tmp=mysql_fetch_object($res_per);
 					$periode=$lig_tmp->nom_periode;
+					if(isset($current_group)) {
+						$texte_per=$current_group['classlist_string']." - ".$periode;
+					}
+					else {
+						$texte_per=$periode;
+					}
 					//Affichage  de la période
-					$pdf->CellFitScale($L_entete_discipline,$H_entete_classe ,$periode,'TLBR',2,'C');
+					//$pdf->CellFitScale($L_entete_discipline,$H_entete_classe ,$periode,'TLBR',2,'C');
+					$pdf->CellFitScale($L_entete_discipline,$H_entete_classe ,$texte_per,'TLBR',2,'C');
 				}
 			  }
 			  //$pdf->CellFitScale($L_entete_classe,$H_entete_classe,' '.$current_classe,'LTRB',2,'C');
@@ -643,7 +666,11 @@ if ($id_liste_groupes!=NULL) {
 		} // FOR
 
 	// sortie PDF sur écran
-	$nom_releve=date("Ymd_Hi");
+	$nom_releve="";
+	if(isset($current_group)) {
+		$nom_releve=remplace_accents($current_group['name']."_".$current_group['description']."_-_".$current_group['classlist_string']."_", "all");
+	}
+	$nom_releve.=date("Ymd_Hi");
 	$nom_releve = 'Liste_'.$nom_releve.'.pdf';
 	//header('Content-Type: application/pdf');
 	send_file_download_headers('application/pdf',$nom_releve);
