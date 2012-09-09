@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -475,9 +475,20 @@ echo "<div style='clear:both;'></div>\n";
 		}
 		echo ".</p>\n";
 	}
-?>
 
-<?php
+	// Effectifs des classes associées au groupe:
+	$tab_eff_clas_grp=array();
+	for($loop=0;$loop<count($current_group["classes"]["list"]);$loop++) {
+		$tab_eff_clas_grp[$current_group["classes"]["list"][$loop]]=array();
+
+		for($loop_per=1;$loop_per<$current_group["nb_periode"];$loop_per++) {
+			$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$current_group["classes"]["list"][$loop]."' AND periode='".$loop_per."';";
+			//echo "$sql<br />";
+			$res_compte=mysql_query($sql);
+			$tab_eff_clas_grp[$current_group["classes"]["list"][$loop]][$loop_per]=mysql_num_rows($res_compte);
+		}
+	}
+
 	$sql="SELECT DISTINCT jgc.id_groupe FROM groupes g, j_groupes_classes jgc, j_eleves_groupes jeg WHERE jgc.id_classe='$id_classe' AND jeg.id_groupe=jgc.id_groupe AND g.id=jgc.id_groupe AND jgc.id_groupe!='$id_groupe' ORDER BY g.name;";
 	//echo "$sql<br />\n";
 	$res_grp_avec_eleves=mysql_query($sql);
@@ -494,9 +505,15 @@ echo "<div style='clear:both;'></div>\n";
 
 			$tmp_grp=get_group($lig_grp_avec_eleves->id_groupe);
 
-			/*
-			$sql="SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe='$lig_grp_avec_eleves->id_groupe';";
-			*/
+			$temoin_classe_entiere="y";
+			for($loop=0;$loop<count($tmp_grp["classes"]["list"]);$loop++) {
+				for($loop_per=1;$loop_per<$current_group["nb_periode"];$loop_per++) {
+					if((isset($tab_eff_clas_grp[$current_group["classes"]["list"][$loop]][$loop_per]))&&(count($tmp_grp["eleves"][$loop_per]["telle_classe"][$tmp_grp["classes"]["list"][$loop]])!=$tab_eff_clas_grp[$current_group["classes"]["list"][$loop]][$loop_per])) {
+						$temoin_classe_entiere="n";
+						break;
+					}
+				}
+			}
 
 			$chaine_js[$cpt_ele_grp]="";
 			for($loop=0;$loop<count($tmp_grp["eleves"]["all"]["list"]);$loop++) {
@@ -507,8 +524,11 @@ echo "<div style='clear:both;'></div>\n";
 			$id_groupe_js[$cpt_ele_grp]=$lig_grp_avec_eleves->id_groupe;
 
 			echo "<option value='$cpt_ele_grp'";
+			if($temoin_classe_entiere=="y") {echo " style='color:grey;' title='Classe(s) entière(s)'";}
+			else {echo " title='Sous-groupe'";}
 			if((isset($_SESSION['id_groupe_reference_copie_assoc']))&&($_SESSION['id_groupe_reference_copie_assoc']==$lig_grp_avec_eleves->id_groupe)) {echo " selected='true'";}
 			echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")</option>\n";
+			//echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].") ".count($tmp_grp["eleves"][1]["list"])." élèves</option>\n";
 
 			$cpt_ele_grp++;
 		}
