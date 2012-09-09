@@ -258,14 +258,14 @@ if(mysql_num_rows($res_sig)>0) {
 
 function CocheCase(boul) {
 
- nbelements = document.formulaire.elements.length;
- for (i = 0 ; i < nbelements ; i++) {
-   if (document.formulaire.elements[i].type =='checkbox')
-      document.formulaire.elements[i].checked = boul ;
- }
+	nbelements = document.formulaire.elements.length;
+	for (i = 0 ; i < nbelements ; i++) {
+		if (document.formulaire.elements[i].type =='checkbox') {
+			document.formulaire.elements[i].checked = boul ;
+		}
+	}
 
 }
-
 
 <?php
 //=========================
@@ -489,11 +489,12 @@ echo "<div style='clear:both;'></div>\n";
 		}
 	}
 
+	echo "<div style='float:right; text-align:center;'>\n";
+
 	$sql="SELECT DISTINCT jgc.id_groupe FROM groupes g, j_groupes_classes jgc, j_eleves_groupes jeg WHERE jgc.id_classe='$id_classe' AND jeg.id_groupe=jgc.id_groupe AND g.id=jgc.id_groupe AND jgc.id_groupe!='$id_groupe' ORDER BY g.name;";
 	//echo "$sql<br />\n";
 	$res_grp_avec_eleves=mysql_query($sql);
 	if(mysql_num_rows($res_grp_avec_eleves)>0) {
-		echo "<div style='float:right; text-align:center;'>\n";
 		echo "<form enctype='multipart/form-data' action='edit_eleves.php' name='form_copie_ele' method='post'>\n";
 		echo "<p>\n";
 		echo "<select name='choix_modele_copie' id='choix_modele_copie'>\n";
@@ -547,15 +548,29 @@ echo "<div style='clear:both;'></div>\n";
 		echo "</script>\n";
 
 		echo "</form>\n";
-		echo "</div>\n";
+		echo "<br />\n";
 	}
 ?>
 
-
 <p>
-<b><a href="javascript:CocheCase(true);changement();">Tout cocher</a> - <a href="javascript:CocheCase(false);changement();">Tout décocher</a></b>
- - <a href="javascript:griser_degriser('griser');changement();">Griser</a> - <a href="javascript:griser_degriser('degriser');changement();">Dégriser</a>
+<b>
+<a href="javascript:CocheCase(true);changement();">Tout cocher</a> - 
+<a href="javascript:CocheCase(false);changement();">Tout décocher</a></b> - <br />
+
+<a href="javascript:CocheFrac(true, 1);changement();">Cocher la première moitié</a> - 
+<a href="javascript:CocheFrac(false, 1);changement();">Décocher la première moitié</a> - <br />
+<a href="javascript:CocheFrac(true, 2);changement();">Cocher la seconde moitié</a> - 
+<a href="javascript:CocheFrac(false, 2);changement();">Décocher la seconde moitié</a> - <br />
+
+<a href="javascript:griser_degriser('griser');changement();">Griser</a> - 
+<a href="javascript:griser_degriser('degriser');changement();">Dégriser</a>
 </p>
+
+<?php
+	echo "</div>\n";
+?>
+
+
 <form enctype="multipart/form-data" action="edit_eleves.php" name="formulaire" method='post'>
 <p><input type='submit' value='Enregistrer' /></p>
 <?php
@@ -1070,8 +1085,29 @@ if(count($total_eleves)>0) {
 ";
 	}
 
-	echo "</script>
-	";
+	echo "
+function CocheFrac(mode, part) {
+	for(i=0;i<$nb_eleves;i++) {
+		for(num_periode=0;num_periode<=".count($current_group["periodes"]).";num_periode++) {
+			if(document.getElementById('case_'+num_periode+'_'+i)) {
+				if(part==1) {
+					if(i<$nb_eleves/2) {
+						document.getElementById('case_'+num_periode+'_'+i).checked=mode;
+					}
+				}
+				else {
+					if(i>=$nb_eleves/2) {
+						document.getElementById('case_'+num_periode+'_'+i).checked=mode;
+					}
+				}
+			}
+		}
+	}
+	griser_degriser(etat_grisage);
+}
+";
+
+	echo "</script>\n";
 
 	echo "<p><br /></p>\n";
 
