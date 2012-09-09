@@ -39,8 +39,8 @@ if(mysql_num_rows($test)==0) {
     $sql="INSERT INTO droits SET id='/groupes/signalement_eleves.php',
 administrateur='F',
 professeur='V',
-cpe='F',
-scolarite='F',
+cpe='V',
+scolarite='V',
 eleve='F',
 responsable='F',
 secours='F',
@@ -74,7 +74,12 @@ $order_by = isset($_GET['order_by']) ? $_GET['order_by'] : (isset($_POST['order_
 $mode_signalement=isset($_GET['mode_signalement']) ? $_GET['mode_signalement'] : (isset($_POST['mode_signalement']) ? $_POST["mode_signalement"] : "2");
 
 if(!isset($_SESSION['chemin_retour'])) {
-	$_SESSION['chemin_retour']=isset($_GET['chemin_retour']) ? $_GET['chemin_retour'] : (isset($_POST['chemin_retour']) ? $_POST['chemin_retour'] : "../cahier_notes/index.php?id_groupe=$id_groupe");
+	if($_SESSION['statut']=='professeur') {
+		$_SESSION['chemin_retour']=isset($_GET['chemin_retour']) ? $_GET['chemin_retour'] : (isset($_POST['chemin_retour']) ? $_POST['chemin_retour'] : "../cahier_notes/index.php?id_groupe=$id_groupe");
+	}
+	else {
+		$_SESSION['chemin_retour']="../accueil.php";
+	}
 }
 
 //$periode_cn=isset($_GET['periode_cn']) ? $_GET['periode_cn'] : (isset($_POST['periode_cn']) ? $_POST["periode_cn"] : NULL);
@@ -314,26 +319,6 @@ function CocheCase(boul) {
 	}
 }
 
-function CocheLigne(ki) {
-	for (var i=1;i<$nb_periode;i++) {
-		if(document.getElementById('case_'+i+'_'+ki)){
-			document.getElementById('case_'+i+'_'+ki).checked = true;
-			changement_couleur(i+'_'+ki);
-			teste_changement_couleur_ligne(ki);
-		}
-	}
-}
-
-function DecocheLigne(ki) {
-	for (var i=1;i<$nb_periode;i++) {
-		if(document.getElementById('case_'+i+'_'+ki)){
-			document.getElementById('case_'+i+'_'+ki).checked = false;
-			changement_couleur(i+'_'+ki);
-			teste_changement_couleur_ligne(ki);
-		}
-	}
-}
-
 // Initialisation
 change='no';
 </script>\n";
@@ -344,10 +329,14 @@ echo "<a href='".$_SESSION['chemin_retour']."'";
 echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 
-$sql="SELECT DISTINCT jgp.id_groupe FROM groupes g, j_groupes_professeurs jgp WHERE jgp.login='".$_SESSION['login']."' AND g.id=jgp.id_groupe ORDER BY g.name;";
-//echo "$sql<br />\n";
-$res_grp=mysql_query($sql);
-if(mysql_num_rows($res_grp)>1) {
+$nb_grp=0;
+if($_SESSION['statut']=='professeur') {
+	$sql="SELECT DISTINCT jgp.id_groupe FROM groupes g, j_groupes_professeurs jgp WHERE jgp.login='".$_SESSION['login']."' AND g.id=jgp.id_groupe ORDER BY g.name;";
+	//echo "$sql<br />\n";
+	$res_grp=mysql_query($sql);
+	$nb_grp=mysql_num_rows($res_grp);
+}
+if($nb_grp>1) {
 	echo " | ";
 
 	echo "<select name='id_groupe' id='id_groupe_a_passage_autre_grp' onchange=\"confirm_changement_grp(change, '$themessage');\">\n";
@@ -398,10 +387,14 @@ if(mysql_num_rows($res_grp)>1) {
 }
 else {
 	if($mode_signalement=="2") {
-		echo " | <a href='".$_SERVER['PHP_SELF']."?mode_signalement=1&amp;id_groupe=$id_groupe'>Ancien mode</a>\n";
+		echo " | <a href='".$_SERVER['PHP_SELF']."?mode_signalement=1&amp;id_groupe=$id_groupe'";
+		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+		echo ">Ancien mode</a>\n";
 	}
 	else {
-		echo " | <a href='".$_SERVER['PHP_SELF']."?mode_signalement=2&amp;id_groupe=$id_groupe'>Nouveau mode</a>\n";
+		echo " | <a href='".$_SERVER['PHP_SELF']."?mode_signalement=2&amp;id_groupe=$id_groupe'";
+		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+		echo ">Nouveau mode</a>\n";
 	}
 	echo "</p>\n";
 }
@@ -451,9 +444,13 @@ if((isset($mode_signalement))&&($mode_signalement=="2")) {
 	
 	echo "<table border='1' class='boireaus' summary='Suivi de cet enseignement par les élèves en fonction des périodes'>\n";
 	echo "<tr>\n";
-	echo "<th><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;order_by=nom'>Nom/Prénom</a></th>\n";
+	echo "<th><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;order_by=nom'";
+	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+	echo ">Nom/Prénom</a></th>\n";
 	if ($multiclasses) {
-		echo "<th><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;order_by=classe'>Classe</a></th>\n";
+		echo "<th><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;order_by=classe'";
+		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+		echo ">Classe</a></th>\n";
 	}
 	foreach ($current_group["periodes"] as $period) {
 		if($period["num_periode"]!=""){
@@ -779,6 +776,28 @@ if((isset($mode_signalement))&&($mode_signalement=="2")) {
 	$nb_eleves=count($total_eleves);
 	
 	echo "<script type='text/javascript'>
+
+	function CocheLigne(ki) {
+		for (var i=1;i<$nb_periode;i++) {
+			//alert('Periode i='+i+' sur $nb_periode périodes et ligne='+ki)
+			if(document.getElementById('case_'+i+'_'+ki)){
+				document.getElementById('case_'+i+'_'+ki).checked = true;
+				changement_couleur(i+'_'+ki);
+				teste_changement_couleur_ligne(ki);
+			}
+		}
+	}
+
+	function DecocheLigne(ki) {
+		for (var i=1;i<$nb_periode;i++) {
+			if(document.getElementById('case_'+i+'_'+ki)){
+				document.getElementById('case_'+i+'_'+ki).checked = false;
+				changement_couleur(i+'_'+ki);
+				teste_changement_couleur_ligne(ki);
+			}
+		}
+	}
+
 	function changement_couleur(suffixe_id) {
 		if((document.getElementById('td_'+suffixe_id))&&(document.getElementById('case_'+suffixe_id))) {
 			if(document.getElementById('case_'+suffixe_id).checked==true) {
@@ -855,6 +874,9 @@ if((isset($mode_signalement))&&($mode_signalement=="2")) {
 	die();
 }
 
+//=================================================================================
+
+// Ancien mode
 
 echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
 echo add_token_field();
@@ -1167,7 +1189,24 @@ if(count($total_eleves)>0) {
 	$nb_eleves=count($total_eleves);
 	
 	echo "<script type='text/javascript'>
-	
+
+function CocheLigne(ki) {
+	for (var i=1;i<$nb_periode;i++) {
+		//alert('Periode i='+i+' sur $nb_periode périodes et ligne='+ki)
+		if(document.getElementById('case_'+i+'_'+ki)){
+			document.getElementById('case_'+i+'_'+ki).checked = true;
+		}
+	}
+}
+
+function DecocheLigne(ki) {
+	for (var i=1;i<$nb_periode;i++) {
+		if(document.getElementById('case_'+i+'_'+ki)){
+			document.getElementById('case_'+i+'_'+ki).checked = false;
+		}
+	}
+}
+
 	function CocheColonne(i) {
 		for (var ki=0;ki<$nb_eleves;ki++) {
 			if(document.getElementById('case_'+i+'_'+ki)){
