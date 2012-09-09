@@ -159,6 +159,9 @@ if (isset($_POST["initialise"]) && $_POST["initialise"]==TRUE) {
 
 $_SESSION['showJournee'] = isset($_POST["journee"]) ? $_POST["journee"] : (isset($_SESSION['showJournee']) ? $_SESSION['showJournee'] : FALSE);
 
+// Initialisation de variable:
+$afficher_passer_au_cdt="y";
+
 //récupération des paramètres de la requète
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :(isset($_SESSION["id_groupe_abs"]) ? $_SESSION["id_groupe_abs"] : NULL));
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_classe"]) ? $_GET["id_classe"] :(isset($_SESSION["id_classe_abs"]) ? $_SESSION["id_classe_abs"] : NULL));
@@ -1115,11 +1118,26 @@ if ($eleve_col->isEmpty()) {
 					   type="submit"  
 					   onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
 			</p>
-			<?php if ($utilisateur->getStatut() == 'professeur' && getSettingValue("active_cahiers_texte")=='y') { ?>
+			<?php
+			if ($utilisateur->getStatut() == 'professeur' && getSettingValue("active_cahiers_texte")=='y') { 
+				//$afficher_passer_au_cdt="y";
+				if(isset($id_groupe)) {
+					$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='cahier_texte' AND visible='n';";
+					//echo "$sql<br />";
+					$test_cdt=mysql_query($sql);
+					if(mysql_num_rows($test_cdt)>0) {
+						$afficher_passer_au_cdt="n";
+					}
+				}
+				if($afficher_passer_au_cdt=="y") {
+			?>
 			<p class="choix_fin center">
 				<input value="Enregistrer et passer au cahier de texte" name="cahier_texte" type="submit"/>
 			</p>
-			<?php } ?>
+			<?php
+				}
+			}
+			?>
 <!-- Afichage du tableau de la liste des élèves -->
 <!-- Legende du tableau-->
 			<p class="center"><?php echo $eleve_col->count(); ?> élèves (<?php echo $chaine_effectifs_regimes;?>).</p>
@@ -1403,11 +1421,13 @@ if ($eleve['creneau_courant'] == $i) { ?>
 		</p>
 <?php
 if ($utilisateur->getStatut() == 'professeur' && getSettingValue("active_cahiers_texte")=='y') {
+	if($afficher_passer_au_cdt=="y") {
 ?>
     <p class="choix_fin">
 	    <input value="Enregistrer et passer au cahier de texte" name="cahier_texte" type="submit"/>
     </p>
 <?php
+	}
 }
 ?>
 	</form>
