@@ -628,6 +628,8 @@ echo " | <a href='../groupes/repartition_ele_grp.php' onclick=\"return confirm_a
 
 echo " | <a href='../init_xml2/init_alternatif.php?cat=classes' onclick=\"return confirm_abandon (this, change, '$themessage')\">Création par lots</a>";
 
+echo " | <a href='../classes/classes_param.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramétrage par lots</a>";
+
 echo "</p>\n";
 echo "</form>\n";
 
