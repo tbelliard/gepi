@@ -1374,6 +1374,9 @@ else {
 				}
 			}
 		}
+		else {
+			alert(\"Vous n'avez pas coché le modèle de sélection dans la deuxième ligne du tableau.\")
+		}
 	}
 
 	function CocheColonne(indice_grp,num_per) {
