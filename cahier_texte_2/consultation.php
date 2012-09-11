@@ -424,7 +424,15 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
         }
     }
 
-    if ($nb_dev != 0) echo "</div>";
+    if ($nb_dev != 0) {echo "</div>";}
+
+	echo "<hr />\n";
+	echo "<p style='text-align:center; font-style:italic;'>Cahiers de textes du ";
+	echo strftime("%d/%m/%Y", getSettingValue("begin_bookings"));
+	echo " au ";
+	echo strftime("%d/%m/%Y", getSettingValue("end_bookings"));
+	echo "</p>\n";
+
 	require("../lib/footer.inc.php");
     die();
     //Affichage page de garde
@@ -438,6 +446,14 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 		echo "<p class='gepi_garde'>Choisissez une classe et une matière.</p>\n";
 	}
 	//echo "</center>";
+
+	echo "<hr />\n";
+	echo "<p style='text-align:center; font-style:italic;'>Cahiers de textes du ";
+	echo strftime("%d/%m/%Y", getSettingValue("begin_bookings"));
+	echo " au ";
+	echo strftime("%d/%m/%Y", getSettingValue("end_bookings"));
+	echo "</p>\n";
+
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -804,6 +820,13 @@ $td = date("d",$i);
 //   echo "</tr>\n";
 echo "</div>\n";
 // ---------------------------- Fin du conteneur 2 colonnes (/div) --
+
+	echo "<hr />\n";
+	echo "<p style='text-align:center; font-style:italic;'>Cahiers de textes du ";
+	echo strftime("%d/%m/%Y", getSettingValue("begin_bookings"));
+	echo " au ";
+	echo strftime("%d/%m/%Y", getSettingValue("end_bookings"));
+	echo "</p>\n";
 
 	require("../lib/footer.inc.php");
 ?>

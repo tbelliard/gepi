@@ -538,6 +538,13 @@ if(($id_groupe=='Toutes_matieres')&&
 		echo "</div>\n";
 	}
 
+	echo "<hr />\n";
+	echo "<p style='text-align:center; font-style:italic;'>Cahiers de textes du ";
+	echo strftime("%d/%m/%Y", getSettingValue("begin_bookings"));
+	echo " au ";
+	echo strftime("%d/%m/%Y", getSettingValue("end_bookings"));
+	echo "</p>\n";
+
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -556,6 +563,14 @@ if ($nb_test == 0) {
 		echo "Choisissez une classe et une matière.";
 	}
 	echo "\n</h2>\n";
+
+	echo "<hr />\n";
+	echo "<p style='text-align:center; font-style:italic;'>Cahiers de textes du ";
+	echo strftime("%d/%m/%Y", getSettingValue("begin_bookings"));
+	echo " au ";
+	echo strftime("%d/%m/%Y", getSettingValue("end_bookings"));
+	echo "</p>\n";
+
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -728,5 +743,13 @@ while (true) {
 
 //if ($current_imprime=='n') echo "</td></tr></table>";
 //echo "</td></tr></table>";
+
+echo "<hr />\n";
+echo "<p style='text-align:center; font-style:italic;'>Cahiers de textes du ";
+echo strftime("%d/%m/%Y", getSettingValue("begin_bookings"));
+echo " au ";
+echo strftime("%d/%m/%Y", getSettingValue("end_bookings"));
+echo "</p>\n";
+
 require("../lib/footer.inc.php");
 ?>

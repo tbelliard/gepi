@@ -1081,5 +1081,12 @@ if(count($tab_grp)>0) {
 	}
 }
 
+echo "<hr />\n";
+echo "<p style='text-align:center; font-style:italic;'>Cahiers de textes du ";
+echo strftime("%d/%m/%Y", getSettingValue("begin_bookings"));
+echo " au ";
+echo strftime("%d/%m/%Y", getSettingValue("end_bookings"));
+echo "</p>\n";
+
 require("../lib/footer.inc.php");
 ?>
