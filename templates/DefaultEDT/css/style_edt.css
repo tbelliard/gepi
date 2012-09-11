@@ -1647,7 +1647,7 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 .cadreInformation {
      position:relative;
      border:1px solid #000000;
-     background-color:blue;
+     background-color:lightblue;
      padding:2px 2px 2px 2px;
      height:100%;
      width:100%;

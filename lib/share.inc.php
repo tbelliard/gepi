@@ -5760,4 +5760,30 @@ function redim_img($image, $dim_max_largeur, $dim_max_hauteur, $mode="") {
 
 	return array($nouvelle_largeur, $nouvelle_hauteur, $type_img);
 }
+
+/** Fonction destinée à supprimer les accents HTML dans des enregistrements de la table setting
+ *
+ * @param string $name champ name dans la table setting
+ *
+ * @return integer 0 Correction inutile, 1 Correction réussie, 2 Echec de la correction.
+ */
+
+function virer_accents_html_setting($name) {
+	$tab = array_flip (get_html_translation_table(HTML_ENTITIES));
+	$valeur=getSettingValue($name);
+	$correction=ensure_utf8(strtr($valeur, $tab));
+	/*
+	$f=fopen("/tmp/correction_fb.txt", "a+");
+	fwrite($f, "=========================================================================\n");
+	fwrite($f, "name=$name\n");
+	fwrite($f, "value=$valeur\n");
+	fwrite($f, "value=$correction\n");
+	fclose($f);
+	*/
+	if($valeur!=$correction) {
+		if(saveSetting($name, $correction)) {return 1;} else {return 2;}
+	}
+	else {return 0;}
+}
+
 ?>
