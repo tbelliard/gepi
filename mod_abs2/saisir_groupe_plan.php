@@ -806,7 +806,11 @@ if (isset ($groupe_col) && !$groupe_col->isEmpty()) {
 			<p>
 				<input type="hidden" name="type_selection" value="id_groupe"/>
 				<label for="id_groupe">Groupe : </label>
-				<select id="id_groupe" name="id_groupe" class="small">
+				<select id="id_groupe" name="id_groupe" class="small"<?php
+					if(($_SESSION['statut']=='professeur')&&(!getSettingAOui('abs2_saisie_prof_decale'))&&(!getSettingAOui('abs2_saisie_prof_decale_journee'))) {
+						echo " onchange=\"document.forms['form_choix_groupe'].submit();\"";
+					}
+				?>>
 					<option value='-1'>choisissez un groupe</option>
 <?php
 foreach ($groupe_col as $group) {	
