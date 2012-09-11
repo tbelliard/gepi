@@ -11,6 +11,10 @@ $html = '';
 
 $stack = new Stack;
 
+// Pour contourner un pb avec ckeditor qui insère des tabulations à la pelle dans
+// le code enregistré dans la base
+// (Une saisie "24 page 45" devient après lib/transform.php "1. page 45" où le 1. est un <ol>)
+$content=preg_replace("/\t/","",$content);
 
 $tab_content = explode("\n", $content);
 $numlines = count($tab_content);
