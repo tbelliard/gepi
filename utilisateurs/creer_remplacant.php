@@ -146,6 +146,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 	else {
 		if ($_POST['form_nom'] == '')  {
 			$msg = "Veuillez entrer un nom pour l'utilisateur !";
+			$remplacant_non_cree="y";
 		} else {
 			$k = 0;
 			if(isset($_POST['max_mat'])) {
@@ -354,6 +355,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 							if ($nombreligne != 0) {
 								$resultat = "NON";
 								$msg = "*** Attention ! Un utilisateur ayant le même identifiant existe déjà. Enregistrement impossible ! ***";
+								$remplacant_non_cree="y";
 							}
 	
 							if ($resultat != "NON") {
@@ -427,6 +429,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 					}
 					else {
 						$msg="La personne existe déjà dans la base (même nom et même prénom)";
+						$remplacant_non_cree="y";
 					}
 				}
 				//
@@ -434,7 +437,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 				//
 			}  else {
 				$msg = "L'identifiant de l'utilisateur doit être constitué uniquement de lettres et de chiffres !";
-	
+				$remplacant_non_cree="y";
 			}
 		}
 	}
@@ -445,19 +448,21 @@ $titre_page = "Gestion des utilisateurs | Créer un remplaçant";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
-?>
-<p class='bold'>
-<a href="index.php?mode=personnels"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
-</p>
-
-<?php
 
 	if((isset($remplacant_non_cree))&&($remplacant_non_cree=="y")) {
+		echo "<p class='bold'>";
+		echo "<a href='creer_remplacant.php?login_prof_remplace=$login_prof_remplace'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+		echo "</p>";
+
 		echo "<p>Il s'est produit une erreur.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
-
+	else {
+		echo "<p class='bold'>";
+		echo "<a href='index.php?mode=personnels'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+		echo "</p>";
+	}
 	/*
 	//$sql_groupes = "select DISTINCT g.*, c.classe from j_groupes_professeurs jgp, g.id, j_groupes_classes jgc, classes c where jgp.login='$login_prof_remplace' AND jgp.id_groupe=g.id AND g.id=jgc.id_groupe AND jgc.id_classe=c.id;";
 	$sql_groupes = "select DISTINCT g.* from j_groupes_professeurs jgp, g.id, j_groupes_classes jgc WHERE jgp.login='$login_prof_remplace' AND jgp.id_groupe=g.id AND g.id=jgc.id_groupe;";
@@ -598,6 +603,9 @@ elseif(isset($temoin_erreur_affect_compte_existant)) {
 	}
 	else {
 		echo "<p>Le compte '<b>$compte_existant</b>' a été déclaré remplaçant de '<b>$login_prof_remplace</b>'.</p>\n";
+		if((getSettingAOui('autorise_edt_tous'))||(getSettingAOui('autorise_edt_admin'))) {
+			echo "<p>Pensez à <a href='../edt_organisation/transferer_edt.php' target='_blank'>transférer l'emploi du temps</a> après avoir pris soint d'imprimer la fiche bienvenue.</p>";
+		}
 	}
 }
 elseif($temoin_erreur=="y") {
@@ -605,6 +613,9 @@ elseif($temoin_erreur=="y") {
 }
 else {// fin affichage formulaire
   echo "<center><br/><br/><b>Remplaçant créé</b></center>";
+  if((getSettingAOui('autorise_edt_tous'))||(getSettingAOui('autorise_edt_admin'))) {
+    echo "<p align='center'>Pensez à <a href='../edt_organisation/transferer_edt.php' target='_blank'>transférer l'emploi du temps</a> après avoir pris soint d'imprimer la fiche bienvenue.</p>";
+  }
 }
 
 require("../lib/footer.inc.php");
