@@ -1933,6 +1933,9 @@ if(in_array($_SESSION['statut'], $tab_statuts_barre)) {
 	if(isset($message_choixEncodageCsv)) {
 		echo $message_choixEncodageCsv;
 	}
+
+	echo "<p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Ce paramétrage concerne les fichiers produits par Gepi et proposés au téléchargement.<br />Cela ne concerne pas les fichiers que vous uploadez/envoyez vers Gepi.</p>\n";
+
 	echo "</fieldset>\n";
 	echo "</form>\n";
 	//echo "  <hr />\n";

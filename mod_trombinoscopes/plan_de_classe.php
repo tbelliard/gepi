@@ -248,7 +248,12 @@ ORDER BY $grp_order_by;";
 //echo "$sql<br />";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	echo "<p>Erreur lors de la requête $sql</p>\n";
+	echo "<div style='position:absolute; top:0.5em; left:0.5em; width:5em; text-align:center;'>\n";
+	echo "<a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a><br />\n";
+	echo "</div>\n";
+
+	//echo "<p>Erreur lors de la requête $sql</p>\n";
+	echo "<p>Le groupe proposé a l'air de ne comporter aucun élève.<br />Si cela vous semble erroné, contactez l'administrateur.</p>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
