@@ -771,12 +771,12 @@ elseif(($_SESSION['statut']=="professeur")||($_SESSION['statut']=="cpe")) {
 						}
 						elseif(($_SESSION['statut']=='cpe')&&(getSettingValue("CpeAccesUploadPhotosEleves")!='yes')) {
 							tentative_intrusion("2", "Tentative d'upload par un cpe de la photo d'un élève ($eleve_login), sans avoir l'autorisation d'upload.");
-							echo "L'upload de photo n'est pas autorisé pour les professeurs.";
+							echo "L'upload de photo n'est pas autorisé pour les cpe.";
 							require ("../lib/footer.inc.php");
 							die();
 						}
 						else {
-							if(($_SESSION['statut']=='cpe')||(is_pp($_SESSION['login'],"",$eleve_login))) {
+							if(($_SESSION['statut']=='cpe')||(is_cpe($_SESSION['login'],"",$eleve_login))) {
 								if(isset($_POST['suppr_filephoto'])) {
 									check_token();
 									if($_POST['suppr_filephoto']=='y'){
