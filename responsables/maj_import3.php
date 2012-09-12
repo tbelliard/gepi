@@ -2265,9 +2265,33 @@ else{
 					if(!in_array($tab_ele_id[$i],$tab_ele_id_diff)) {
 						$sql="SELECT classe FROM classes c, eleves e, j_eleves_classes jec WHERE c.id=jec.id_classe AND jec.login=e.login AND e.ele_id='$tab_ele_id[$i]' ORDER BY jec.periode DESC LIMIT 1;";
 						//if($tab_ele_id[$i]=='596023') {affiche_debug($sql."<br />");}
+						//if(in_array($tab_ele_id[$i], array(406245, 549369, 406271, 407090))) {affiche_debug($sql."<br />");}
 						$test_clas1=mysql_query($sql);
-		
-						if(mysql_num_rows($test_clas1)>0) {
+
+						if(mysql_num_rows($test_clas1)==0) {
+							// L'élève n'est dans aucune classe dans Gepi, mais inscrit dans une classe dans le XML uploadé.
+							if($cpt==0){
+								echo "<p>Une ou des différences ont été trouvées dans la tranche étudiée à cette phase.";
+								echo "<br />\n";
+								echo "En voici le(s) ELE_ID: ";
+							}
+							else{
+								echo ", ";
+							}
+
+							//echo "<span style='color:green'>";
+							echo $tab_ele_id[$i];
+							//echo "</span>";
+							//echo "<input type='hidden' name='tab_ele_id_diff[]' value='".$tab_ele_id[$i]."' />\n";
+							$sql="UPDATE tempo4 SET col3='modif' WHERE col1='maj_sconet_eleves' AND col2='$tab_ele_id[$i]';";
+							$update=mysql_query($sql);
+							//echo "<br />\n";
+							// Pour le cas où on est dans la dernière tranche:
+							$tab_ele_id_diff[]=$tab_ele_id[$i];
+							$cpt++;
+							$cpt_tab_ele_id_diff++;
+						}
+						elseif(mysql_num_rows($test_clas1)>0) {
 							$lig_clas1=mysql_fetch_object($test_clas1);
 		
 							$sql="SELECT DIVCOD FROM temp_gep_import2 t WHERE t.ELE_ID='$tab_ele_id[$i]';";
@@ -2364,6 +2388,11 @@ else{
 				$tab_ele_id_diff=array();
 				while($lig=mysql_fetch_object($res)) {
 					$tab_ele_id_diff[]=$lig->col2;
+					/*
+					if(in_array($lig->col2, array(406245, 549369, 406271, 407090))) {
+						affiche_debug("$lig->col2 est dans tempo4 avec col3=$lig->col3<br />");
+					}
+					*/
 				}
 			}
 
@@ -2527,11 +2556,12 @@ else{
 
 					// Pour ne pas représenter le même au tour suivant:
 					$sql="UPDATE tempo4 SET col3='modif_ou_new_presente' WHERE col1='maj_sconet_eleves' AND col2='$tab_ele_id_diff[$w]';";
+					affiche_debug("<tr><td colspan='13'>$sql</td></tr>\n");
 					$update_tempo4=mysql_query($sql);
 
 					$sql="SELECT DISTINCT * FROM temp_gep_import2 WHERE ELE_ID='$tab_ele_id_diff[$w]';";
 					info_debug($sql);
-					//echo "<tr><td colspan='13'>$sql</td></tr>\n";
+					affiche_debug("<tr><td colspan='13'>$sql</td></tr>\n");
 					$res1=mysql_query($sql);
 					if(mysql_num_rows($res1)==0){
 						echo "<tr><td colspan='13' style='text-align:left;'>ele_id=\$tab_ele_id_diff[$w]='$tab_ele_id_diff[$w]' non trouvé dans 'temp_gep_import2' ???</td></tr>\n";
@@ -2734,6 +2764,14 @@ else{
 											$cpt_modif++;
 											$cpt_chgt_classe++;
 										}
+										$classe_actuelle_de_l_eleve=$lig_clas1->classe;
+									}
+									else {
+										$temoin_chgt_classe="y";
+										$temoin_modif='y';
+										$cpt_modif++;
+										$cpt_chgt_classe++;
+										$classe_actuelle_de_l_eleve="";
 									}
 								}
 
@@ -3118,18 +3156,43 @@ else{
 								if($temoin_chgt_classe=="y") {
 									echo " background-color: red;";
 									echo "'>";
-									echo "<a href='../classes/classes_const.php?id_classe=$lig_clas1->id&amp;msg=A_EFFECTUER_Changement_de_classe_vers_".remplace_accents(stripslashes($affiche[9]))."_pour_".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom),'all')."' target='_blank'>";
-									echo preg_replace("/ /", "&nbsp;", $lig_clas1->classe)." -&gt; ".preg_replace("/ /", "&nbsp;", $affiche[9]);
-									echo "</a>";
 
-// RENSEIGNER UNE TABLE AVEC L'INDICATION QU'IL Y AURA UNE MODIF A FAIRE...
+									if($classe_actuelle_de_l_eleve!="") {
+										echo "<a href='../classes/classes_const.php?id_classe=$lig_clas1->id&amp;msg=A_EFFECTUER_Changement_de_classe_vers_".remplace_accents(stripslashes($affiche[9]))."_pour_".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom),'all')."' target='_blank'>";
+										echo preg_replace("/ /", "&nbsp;", $lig_clas1->classe)." -&gt; ".preg_replace("/ /", "&nbsp;", $affiche[9]);
+										echo "</a>";
 
-									$info_action_titre="Changement de classe à effectuer pour ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." ($lig_ele->login)";
-									$info_action_texte="Effectuer le <a href='classes/classes_const.php?id_classe=$lig_clas1->id&amp;msg=".rawurlencode("Le changement de classe de ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." a été signalé lors de la mise à jour Sconet de $lig_clas1->classe vers $affiche[9].")."'>changement de classe</a> de $lig_clas1->classe vers $affiche[9]";
-									$info_action_destinataire="administrateur";
-									$info_action_mode="statut";
-									enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+										// RENSEIGNER UNE TABLE AVEC L'INDICATION QU'IL Y AURA UNE MODIF A FAIRE...
 
+										$info_action_titre="Changement de classe à effectuer pour ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." ($lig_ele->login)";
+										$info_action_texte="Effectuer le <a href='classes/classes_const.php?id_classe=$lig_clas1->id&amp;msg=".rawurlencode("Le changement de classe de ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." a été signalé lors de la mise à jour Sconet de $lig_clas1->classe vers $affiche[9].")."'>changement de classe</a> de $lig_clas1->classe vers $affiche[9]";
+										$info_action_destinataire="administrateur";
+										$info_action_mode="statut";
+										enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+									}
+									else {
+										$info_action_titre="Ajout dans une classe à effectuer pour ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." ($lig_ele->login)";
+
+										$sql="SELECT id FROM classes WHERE classe='".mysql_real_escape_string($affiche[9])."';";
+										$res_clas_fut=mysql_query($sql);
+										if(mysql_num_rows($res_clas_fut)>0) {
+											$lig_clas_fut=mysql_fetch_object($res_clas_fut);
+											echo "<a href='../classes/classes_ajout.php?id_classe=$lig_clas_fut->id&amp;msg=A_EFFECTUER_Inscription_en_".remplace_accents(stripslashes($affiche[9]))."_pour_".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom),'all')."' target='_blank'>";
+											echo "Aucune -&gt; ".preg_replace("/ /", "&nbsp;", $affiche[9]);
+											echo "</a>";
+
+											$info_action_texte="Effectuer l'<a href='classes/classes_ajout.php?id_classe=$lig_clas_fut->id&amp;msg=".rawurlencode("Ajouter ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." en classe de $affiche[9] comme signalé lors de la mise à jour Sconet.")."'>ajout dans la classe $affiche[9]</a>";
+										}
+										else {
+											echo "Aucune -&gt; ".preg_replace("/ /", "&nbsp;", $affiche[9]);
+
+											$info_action_texte="Effectuer l'ajout dans la classe $affiche[9] de ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." comme signalé lors de la mise à jour Sconet.";
+										}
+
+										$info_action_destinataire="administrateur";
+										$info_action_mode="statut";
+										enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+									}
 								}
 								else {
 									echo "'>";
