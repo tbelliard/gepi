@@ -396,7 +396,7 @@ $table_synchro_ok = AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregation
     if (!$table_synchro_ok) {//la table n'est pas synchronisée. On va vérifier individuellement les élèves qui ne sont pas synchronisés
 		$eleve_col = $eleve_query->find();
 		if ($eleve_col->count()>150) {
-			echo 'Il semble que vous demander des statistiques sur trop d\'élèves et votre table de statistiques n\'est pas synchronisée. Veuillez faire une demande pour moins d\'élèves ou demander à votre administreteur de remplir la table d\'agrégation.';
+			echo 'Il semble que vous demandez des statistiques sur trop d\'élèves et votre table de statistiques n\'est pas synchronisée. Veuillez faire une demande pour moins d\'élèves ou demander à votre administreteur de remplir la table d\'agrégation.';
 			if (ob_get_contents()) {
 				ob_flush();
 			}
