@@ -4,7 +4,7 @@
  * 
  * $Id$
  *
- * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * @copyright Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  * 
  * @package Trombinoscopes
  * @subpackage Conteneur
@@ -145,6 +145,20 @@ if(!isset($id_groupe)) {
 	}
 	echo "</table>\n";
 
+	$trombi_plan_titre=getPref($_SESSION['login'], 'trombi_plan_titre', 'login');
+	echo "<p>En titre au-dessus des photos, faire apparaître&nbsp;:<br />";
+	echo "<input type='radio' name='trombi_plan_titre' id='trombi_plan_titre_login' value='login' ";
+	if($trombi_plan_titre=='login') {echo "checked ";}
+	echo "/><label for='trombi_plan_titre_login'>le login</label><br />\n";
+
+	echo "<input type='radio' name='trombi_plan_titre' id='trombi_plan_titre_nom' value='nom' ";
+	if($trombi_plan_titre=='nom') {echo "checked ";}
+	echo "/><label for='trombi_plan_titre_nom'>le nom</label><br />\n";
+
+	echo "<input type='radio' name='trombi_plan_titre' id='trombi_plan_titre_prenom' value='prenom' ";
+	if($trombi_plan_titre=='prenom') {echo "checked ";}
+	echo "/><label for='trombi_plan_titre_prenom'>le prénom</label><br />\n";
+	echo "de l'élève.</p>\n";
 	echo "<p><input type='submit' name='Valider' value='Valider' /></p>\n";
 	echo "</form>\n";
 
@@ -167,6 +181,10 @@ $dim_photo=isset($_POST['dim_photo_'.$id_groupe]) ? $_POST['dim_photo_'.$id_grou
 $dim_photo=preg_replace('/[^0-9]/','',$dim_photo);
 if(($dim_photo=="")||($dim_photo==0)) {$dim_photo=100;}
 
+if(in_array($_POST['trombi_plan_titre'],array('login', 'nom', 'prenom'))) {
+	savePref($_SESSION['login'] ,"trombi_plan_titre", $_POST['trombi_plan_titre']);
+}
+$trombi_plan_titre=getPref($_SESSION['login'], 'trombi_plan_titre', 'login');
 
 $sql="SELECT * FROM t_plan_de_classe WHERE id_groupe='$id_groupe' AND login_prof='".$_SESSION['login']."';";
 $res=mysql_query($sql);
@@ -340,7 +358,10 @@ while($lig=mysql_fetch_object($res)) {
 	}
 
 	$texte.="' style='border: 0px; width: ".$valeur[0]."px; height: ".$valeur[1]."px;' alt=\"".$alt_nom_prenom_aff."\" title=\"".$alt_nom_prenom_aff."\" />\n";
-	$titre="$lig->login";
+
+	//$titre="$lig->login";
+	$titre=$lig->$trombi_plan_titre;
+
 	echo creer_div_infobulle("div_".$lig->login,$titre,"",$texte,"",$valeur[0],"","y","n","n","n",1000);
 	$chaine_affichage_div.="document.getElementById('div_".$lig->login."').style.display='';\n";
 
