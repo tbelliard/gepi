@@ -44,13 +44,6 @@ $birth_month = isset($_POST["birth_month"]) ? $_POST["birth_month"] : NULL;
 unset($birth_day);
 $birth_day = isset($_POST["birth_day"]) ? $_POST["birth_day"] : NULL;
 
-unset($reg_tel_pers);
-$reg_tel_pers = isset($_POST["reg_tel_pers"]) ? $_POST["reg_tel_pers"] : NULL;
-unset($reg_tel_port);
-$reg_tel_port = isset($_POST["reg_tel_port"]) ? $_POST["reg_tel_port"] : NULL;
-unset($reg_tel_prof);
-$reg_tel_prof = isset($_POST["reg_tel_prof"]) ? $_POST["reg_tel_prof"] : NULL;
-
 //Gestion de la date de sortie de l'établissement
 unset($date_sortie_jour);
 $date_sortie_jour = isset($_POST["date_sortie_jour"]) ? $_POST["date_sortie_jour"] : "00";
@@ -467,7 +460,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 							ele_id = '".$ele_id."'
 							");
 						*/
-						$sql="INSERT INTO eleves SET
+						$reg_data1 = mysql_query("INSERT INTO eleves SET
 							no_gep = '".$reg_no_nat."',
 							nom='".$reg_nom."',
 							prenom='".$reg_prenom."',
@@ -476,11 +469,8 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 							sexe='".$reg_sexe."',
 							naissance='".$reg_naissance."',
 							elenoet = '".$reg_no_gep."',
-							ele_id = '".$ele_id."'";
-						if(isset($reg_tel_pers)) {$sql.=",tel_pers='".$reg_tel_pers."'";}
-						if(isset($reg_tel_port)) {$sql.=",tel_port='".$reg_tel_port."'";}
-						if(isset($reg_tel_prof)) {$sql.=",tel_prof='".$reg_tel_prof."'";}
-						$reg_data1 = mysql_query();
+							ele_id = '".$ele_id."'
+							");
 
 						// Régime:
 						$reg_data3 = mysql_query("INSERT INTO j_eleves_regime SET login='$reg_login', doublant='-', regime='d/p'");
@@ -505,10 +495,6 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 		} else if ($continue == 'yes') {
 			// C'est une mise à jour pour un élève qui existait déjà dans la table 'eleves'.
 			$sql="UPDATE eleves SET date_sortie = '$date_de_sortie_eleve', no_gep = '$reg_no_nat', nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='".$reg_naissance."', ereno='".$reg_resp1."', elenoet = '".$reg_no_gep."'";
-
-			if(isset($reg_tel_pers)) {$sql.=",tel_pers='".$reg_tel_pers."'";}
-			if(isset($reg_tel_port)) {$sql.=",tel_port='".$reg_tel_port."'";}
-			if(isset($reg_tel_prof)) {$sql.=",tel_prof='".$reg_tel_prof."'";}
 
 			$temoin_mon_compte_mais_pas_de_compte_pour_cet_eleve="n";
 			$sql_test="SELECT email FROM utilisateurs WHERE login='$eleve_login' AND statut='eleve';";
@@ -750,7 +736,11 @@ elseif(($_SESSION['statut']=="professeur")||($_SESSION['statut']=="cpe")) {
 		if(!isset($msg)){$msg="";}
 
 		//debug_var();
+
+		// En cpe ou prof, on n'a pas accès à la modification de la fiche... donc pas de reg_no_gep
+		/*
 		$sql="SELECT 1=1 FROM eleves WHERE login='$eleve_login' AND elenoet='$reg_no_gep';";
+		//echo "$sql<br />";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)==0) {
 			tentative_intrusion("2", "Tentative d'upload par un ".$_SESSION['statut']." de la photo d'un élève ($eleve_login) pour un elenoet ($reg_no_gep) ne correspondant pas à cet élève.");
@@ -759,6 +749,16 @@ elseif(($_SESSION['statut']=="professeur")||($_SESSION['statut']=="cpe")) {
 			die();
 		}
 		else {
+		*/
+		$sql="SELECT elenoet FROM eleves WHERE login='$eleve_login' AND elenoet!='';";
+		//echo "$sql<br />";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)==0) {
+			$msg.="L'élève n'a pas d'elenoet.<br />La mise en place de la photo n'est pas possible.<br />";
+		}
+		else {
+			$reg_no_gep=mysql_result($test,0,"elenoet");
+
 			// Envoi de la photo
 			if((isset($reg_no_gep))&&(isset($eleve_login))) {
 				if($reg_no_gep!="") {
@@ -966,10 +966,6 @@ if (isset($eleve_login)) {
     $reg_no_nat = mysql_result($call_eleve_info, "0", "no_gep");
     $reg_no_gep = mysql_result($call_eleve_info, "0", "elenoet");
 	$reg_ele_id = mysql_result($call_eleve_info, "0", "ele_id");
-
-	$reg_tel_pers = mysql_result($call_eleve_info, "0", "tel_pers");
-	$reg_tel_port = mysql_result($call_eleve_info, "0", "tel_port");
-	$reg_tel_prof = mysql_result($call_eleve_info, "0", "tel_prof");
 
     //$call_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve='$eleve_login' and e.id = j.id_etablissement)");
     $id_etab=0;
@@ -1689,36 +1685,6 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	if(getSettingAOui('ele_tel_pers')) {
-		echo "<tr>\n";
-		echo "<th style='text-align:left;'>Tel personnel&nbsp;: </th>\n";
-		echo "<td><input type='text' name='reg_tel_pers' size='20' ";
-		if (isset($reg_tel_pers)) echo "value=\"".$reg_tel_pers."\"";
-		echo " onchange='changement();' /></td>\n";
-		echo "</tr>\n";
-	}
-
-	if(!getSettingAOui('ele_tel_port')) {
-		// Par défaut, si on n'a pas enregistré la préférence dans Configuration générale, on affiche le tel port.
-	}
-	else {
-		echo "<tr>\n";
-		echo "<th style='text-align:left;'>Tel portable&nbsp;: </th>\n";
-		echo "<td><input type='text' name='reg_tel_port' size='20' ";
-		if (isset($reg_tel_port)) echo "value=\"".$reg_tel_port."\"";
-		echo " onchange='changement();' /></td>\n";
-		echo "</tr>\n";
-	}
-
-	if(getSettingAOui('ele_tel_prof')) {
-		echo "<tr>\n";
-		echo "<th style='text-align:left;'>Tel professionnel&nbsp;: </th>\n";
-		echo "<td><input type='text' name='reg_tel_prof' size='20' ";
-		if (isset($reg_tel_prof)) echo "value=\"".$reg_tel_prof."\"";
-		echo " onchange='changement();' /></td>\n";
-		echo "</tr>\n";
-	}
-
 	echo "<tr>\n";
 	echo "<th style='text-align:left;'>Identifiant National : </th>\n";
     echo "<td><input type='text' name='reg_no_nat' size='20' ";
@@ -1728,18 +1694,18 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	echo "</tr>\n";
 
     //echo "<tr><td>Numéro GEP : </td><td><input type=text name='reg_no_gep' size=20 ";
-    echo "<tr><th style='text-align:left;'>Numéro interne Sconet (<em style='font-weight:normal'>elenoet</em>) : </th><td><input type='text' name='reg_no_gep' size='20' ";
+    echo "<tr><th style='text-align:left;'>Numéro interne Sconet (<i>elenoet</i>) : </th><td><input type='text' name='reg_no_gep' size='20' ";
     if (isset($reg_no_gep)) echo "value=\"".$reg_no_gep."\"";
     echo " onchange='changement();' /></td>\n";
 	echo "</tr>\n";
 	
-    echo "<tr><th style='text-align:left;'>Numéro interne Sconet (<em style='font-weight:normal'>ele_id</em>) : </th><td>";
+    echo "<tr><th style='text-align:left;'>Numéro interne Sconet (<i>ele_id</i>) : </th><td>";
     if (isset($reg_ele_id)) {echo $reg_ele_id;}
     echo "</td>\n";
 	echo "</tr>\n";
 	
 	//Date de sortie de l'établissement
-    echo "<tr><th style='text-align:left;'>Date de sortie de l'établissement : <br/>(<em style='font-weight:normal'>respecter format JJ/MM/AAAA</em>)</th>";
+    echo "<tr><th style='text-align:left;'>Date de sortie de l'établissement : <br/>(respecter format JJ/MM/AAAA)</th>";
 	echo "<td><div class='norme'>";	
 	echo "Jour  <input type='text' name='date_sortie_jour' size='2' onchange='changement();' value=\""; if (isset($eleve_date_sortie_jour) and ($eleve_date_sortie_jour!="00") ) echo $eleve_date_sortie_jour; echo "\"/>";
 	echo " Mois  <input type='text' name='date_sortie_mois' size='2' onchange='changement();' value=\""; if (isset($eleve_date_sortie_mois) and ($eleve_date_sortie_mois!="00")) echo $eleve_date_sortie_mois; echo "\"/>";
@@ -1882,7 +1848,7 @@ if(isset($eleve_login)){
 	//echo "\$reg_regime=$reg_regime<br />";
 	//echo "\$reg_doublant=$reg_doublant<br />";
 
-	if($_SESSION['statut']=="professeur") {
+	if(($_SESSION['statut']=="professeur")||($_SESSION['statut']=='cpe')) {
 		echo "<table border='0' summary='Infos 2'>\n";
 
 		echo "<tr><th style='text-align:left;'>Né(e) le: </th><td>$eleve_naissance_jour/$eleve_naissance_mois/$eleve_naissance_annee</td></tr>\n";
@@ -2020,7 +1986,7 @@ if($_SESSION['statut']=="professeur") {
 }
 else{
 */
-if($_SESSION['statut']!="professeur") {
+if(($_SESSION['statut']!="professeur")&&($_SESSION['statut']!="cpe")) {
 ?>
 <center>
 <!--table border = '1' CELLPADDING = '5'-->
