@@ -43,14 +43,14 @@ $test=mysql_query($sql);
 if(mysql_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/statistiques/classes_effectifs.php',
 administrateur='V',
-professeur='F',
-cpe='F',
-scolarite='F',
+professeur='V',
+cpe='V',
+scolarite='V',
 eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Export de données des bulletins',
+description='Effectifs des classes',
 statut='';";
 $insert=mysql_query($sql);
 }
@@ -59,17 +59,6 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
-
-
-/*
-function clean_string_csv($texte) {
-	// Pour remplacer les ; par ., et les " par '' et virer les retours à la ligne
-	$texte=preg_replace("/;/",".,",$texte);
-	$texte=preg_replace('/"/',"''",$texte);
-	$texte=preg_replace('/\\\r\\\n/','',$texte);
-	return $texte;
-}
-*/
 
 
 $sql="SELECT DISTINCT id, classe FROM classes ORDER BY classe;";

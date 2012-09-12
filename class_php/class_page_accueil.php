@@ -1122,7 +1122,7 @@ class class_page_accueil {
 			  "Cet outil vous permet de visualiser à l'écran et d'imprimer les bulletins, classe par classe.");
 	}
 
-	if ($this->statutUtilisateur=='administrateur'){
+	if ($this->statutUtilisateur=='administrateur') {
 		$this->creeNouveauItem("/statistiques/index.php",
 			  "Extractions statistiques",
 			  "Cet outil vous permet d'extraire des données à des fins statistiques (des bulletins, ...).");
@@ -1337,6 +1337,16 @@ class class_page_accueil {
 				"Cet outil permet d'accéder aux informations des ".$this->gepiSettings['denomination_eleves']." dont vous êtes ".$gepi_prof_suivi.".");
 	  }
 	}
+
+
+	if($this->statutUtilisateur!='administrateur') {
+		if (acces("/statistiques/index.php", $this->statutUtilisateur)) {
+			$this->creeNouveauItem("/statistiques/index.php",
+				  "Extractions statistiques",
+				  "Cet outil vous permet d'extraire des données à des fins statistiques (des bulletins, ...).");
+		}
+	}
+
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',"Visualisation - Impression",'images/icons/print.png');
 	  return true;

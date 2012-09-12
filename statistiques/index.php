@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -43,9 +43,9 @@ $test=mysql_query($sql);
 if(mysql_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/statistiques/index.php',
 administrateur='V',
-professeur='F',
-cpe='F',
-scolarite='F',
+professeur='V',
+cpe='V',
+scolarite='V',
 eleve='F',
 responsable='F',
 secours='F',
@@ -72,8 +72,10 @@ echo "</p>\n";
 
 echo "<ul>\n";
 echo "<li><a href='classes_effectifs.php'>Classes, effectifs,...</a></li>\n";
-echo "<li><a href='export_donnees_bulletins.php'>Export de données des bulletins</a></li>\n";
-echo "<li><a href='stat_connexions.php'>Statistiques de connexion</a></li>\n";
+if($_SESSION['statut']=='administrateur') {
+	echo "<li><a href='export_donnees_bulletins.php'>Export de données des bulletins</a></li>\n";
+	echo "<li><a href='stat_connexions.php'>Statistiques de connexion</a></li>\n";
+}
 echo "</ul>\n";
 
 
