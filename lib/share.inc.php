@@ -667,15 +667,21 @@ function affiche_utilisateur($login,$id_classe) {
     $prenom = @mysql_result($req, 0, 'prenom');
     $civilite = @mysql_result($req, 0, 'civilite');
     $req_format = mysql_query("select format_nom from classes where id = '".$id_classe."'");
-    $format = mysql_result($req_format, 0, 'format_nom');
-    $result = "";
-    $i='';
-    if ((($format == 'ni') OR ($format == 'in') OR ($format == 'cni') OR ($format == 'cin')) AND ($prenom != '')) {
-        $temp = explode("-", $prenom);
-        $i = mb_substr($temp[0], 0, 1);
-        if (isset($temp[1]) and ($temp[1] != '')) $i .= "-".mb_substr($temp[1], 0, 1);
-        $i .= ". ";
-    }
+	if(mysql_num_rows($req_format)>0) {
+		$format = mysql_result($req_format, 0, 'format_nom');
+		$result = "";
+		$i='';
+		if ((($format == 'ni') OR ($format == 'in') OR ($format == 'cni') OR ($format == 'cin')) AND ($prenom != '')) {
+		    $temp = explode("-", $prenom);
+		    $i = mb_substr($temp[0], 0, 1);
+		    if (isset($temp[1]) and ($temp[1] != '')) $i .= "-".mb_substr($temp[1], 0, 1);
+		    $i .= ". ";
+		}
+	}
+	else {
+		$format="";
+	}
+
     switch( $format ) {
     case 'np':
     $result = $nom." ".$prenom;
