@@ -661,6 +661,10 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 
 
 	}
+
+	// Pour afficher des détails en attribut title
+	$info_alt="";
+
 	// On vérifie si $enseignement est ou pas pas un AID (en vérifiant qu'il est bien renseigné)
 
 	if (($id_aid != NULL) AND ($id_aid != "")) 
@@ -715,6 +719,9 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 		    $res = $res." ".$rep_classe['classe'];
         }
         $rep_classe['classe'] = $res;
+
+		$info_alt.=" en $res";
+
 		// On récupère la période active en passant d'abord par le calendrier
 		$query_cal = mysql_query("SELECT numero_periode FROM edt_calendrier WHERE
 														debut_calendrier_ts <= '".date("U")."'
@@ -750,6 +757,8 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 
 			$titre_listeleve = "Liste des élèves (".$aff_nbre_eleve.")";
 
+			$info_alt.=" ($aff_nbre_eleve élèves)";
+
 			//$classe_js = aff_popup($rep_classe['classe'], "edt", $titre_listeleve, $contenu);
 			$id_div_p = $jour_semaine.$rep_classe['classe'].$id_creneaux.rand();
 			$id_div = strtr($id_div_p, " -|/'&;", "wwwwwww");
@@ -767,7 +776,7 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 		}
         else {
 
-        $req_login_prof = mysql_query("SELECT login_prof FROM edt_cours WHERE 
+             $req_login_prof = mysql_query("SELECT login_prof FROM edt_cours WHERE 
                                                                     id_groupe ='".$enseignement."' AND
                                                                     id_definie_periode = '".$id_creneaux."' AND
                                                                     jour_semaine = '".$jour_semaine."' AND
@@ -803,6 +812,11 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 			$rep_2_matiere = mysql_fetch_array($req_2_matiere);
 			$aff_matiere = $rep_2_matiere['id_matiere'];
 		}
+
+		$req_tmp_grp = mysql_query("SELECT * FROM groupes WHERE id='".$enseignement."'");
+		$lig_tmp_grp = mysql_fetch_object($req_tmp_grp);
+		$info_alt=$lig_tmp_grp->name." (".$lig_tmp_grp->description.") ".$info_alt;
+
 	}
 
     else
@@ -824,7 +838,7 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 		$aff_sem = '';
 	}else {
 		//$aff_sem = '<span style="font-color:#663333;"> - Sem.'.$rep_sem["id_semaine"].'</span>';
-		$aff_sem = '- Sem.'.$rep_sem["id_semaine"];
+		$aff_sem = '- Sem.'.$rep_sem["id_semaine"]." - ";
 	}
 
 	// On récupère le nom complet de la salle en question
@@ -834,49 +848,74 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 		$salle_aff = "numero_salle";
 	}
 	//$req_id_salle = mysql_query("SELECT id_salle FROM edt_cours WHERE id_groupe ='".$enseignement."' AND id_definie_periode ='".$id_creneaux."' AND jour_semaine ='".$jour_semaine."'");
-    $req_id_salle = mysql_query("SELECT id_salle FROM edt_cours WHERE id_cours ='".$req_recup_id["id_cours"]."'");
+
+	$sql="SELECT id_salle FROM edt_cours WHERE id_cours ='".$req_recup_id["id_cours"]."'";
+	$req_id_salle = mysql_query($sql);
 	$rep_id_salle = mysql_fetch_array($req_id_salle);
-	$req_salle = mysql_query("SELECT ".$salle_aff." FROM salle_cours WHERE id_salle ='".$rep_id_salle['id_salle']."'");
+
+	//$info_alt.=" $sql";
+	$sql="SELECT ".$salle_aff." FROM salle_cours WHERE id_salle ='".$rep_id_salle['id_salle']."'";
+	$req_salle = mysql_query($sql);
 	$tab_rep_salle = mysql_fetch_array($req_salle);
 	$rep_salle = $tab_rep_salle[0];
+
+	// Si le champ nom_salle est vide:
+	if($rep_salle=='') {$rep_salle=$rep_id_salle["id_salle"];}
+
+	//$info_alt.=" $sql";
+	if($rep_salle!="") {$info_alt.=" en salle $rep_salle";}
 
 	if (!isset($rep_nom_prof['nom'])){
         $rep_nom_prof['nom'] = " ";
     }
 
-	if ($type_edt == "prof"){
-	    if ($id_aid == "") 
-        {
-		    $ChaineComplete =$aff_matiere." ".$classe_js."<br />\n";
-        }
-        else
-        {
-		    $ChaineComplete =$aff_matiere."<br />\n";
-        } 
-        $ChaineComplete = $ChaineComplete.$aff_sem." <i>".$rep_salle."</i>";
-        if ($aff_nbre_eleve != 0)
-        {
-            //$ChaineComplete = $ChaineComplete.",".$aff_nbre_eleve." él.\n";
-        }
-		//echo "$ChaineComplete<br />";
-        return $ChaineComplete;
-	} elseif (($type_edt == "classe") OR ($type_edt == "eleve")) {
-		return ($aff_matiere."<br />".$rep_nom_prof['nom']."<br /><i>".$rep_salle."</i> ".$aff_sem."");
-	} elseif ($type_edt == "salle"){
-	    if ($id_aid == "") 
-        {
-		    $ChaineComplete =$aff_matiere."<br/>".$rep_nom_prof['nom']." ".$classe_js."<br />\n";
-        }
-        else
-        {
-		    $ChaineComplete =$aff_matiere."<br/>".$rep_nom_prof['nom']."<br/>\n";
-        } 
-        $ChaineComplete = $ChaineComplete.$aff_sem;
-        return $ChaineComplete;
-		//return ("".$aff_matiere."<br />\n".$rep_nom_prof['civilite']." ".$rep_nom_prof['nom']." ".$aff_sem."<br />\n".$classe_js."\n");
-	} else{
-		return '';
+
+	$ChaineComplete="";
+	if($info_alt!="") {
+		$ChaineComplete.="<span title=\"$info_alt\">";
 	}
+
+	if ($type_edt == "prof"){
+		if ($id_aid == "") 
+		{
+			$ChaineComplete.=$aff_matiere." ".$classe_js."<br />\n";
+		}
+		else
+		{
+			$ChaineComplete.=$aff_matiere."<br />\n";
+		} 
+
+		$ChaineComplete.=$aff_sem." <i>".$rep_salle."</i>";
+
+		if ($aff_nbre_eleve != 0)
+		{
+			//$ChaineComplete = $ChaineComplete.",".$aff_nbre_eleve." él.\n";
+		}
+		//echo "$ChaineComplete<br />";
+	} elseif (($type_edt == "classe") OR ($type_edt == "eleve")) {
+
+		$ChaineComplete.=$aff_matiere."<br />".$rep_nom_prof['nom']."<br /><i>".$rep_salle."</i> ".$aff_sem."";
+
+	} elseif ($type_edt == "salle"){
+
+		if ($id_aid == "") 
+		{
+			$ChaineComplete.=$aff_matiere."<br/>".$rep_nom_prof['nom']." ".$classe_js."<br />\n";
+		}
+		else
+		{
+			$ChaineComplete.=$aff_matiere."<br/>".$rep_nom_prof['nom']."<br/>\n";
+		} 
+
+		$ChaineComplete.= $aff_sem;
+		//return ("".$aff_matiere."<br />\n".$rep_nom_prof['civilite']." ".$rep_nom_prof['nom']." ".$aff_sem."<br />\n".$classe_js."\n");
+	}
+
+	if($info_alt!="") {
+		$ChaineComplete.="</span>";
+	}
+
+	return $ChaineComplete;
 }
 
 // Fonction qui renvoie le nombre de lignes du tableau EdT
