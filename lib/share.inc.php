@@ -5498,11 +5498,11 @@ function virer_accents_html_setting($name) {
 	fwrite($f, "=========================================================================\n");
 	fwrite($f, "name=$name\n");
 	fwrite($f, "value=$valeur\n");
-	fwrite($f, "value=$correction\n");
+	fwrite($f, "correction=$correction\n");
 	fclose($f);
 	*/
 	if($valeur!=$correction) {
-		if(saveSetting($name, $correction)) {return 1;} else {return 2;}
+		if(saveSetting($name, mysql_real_escape_string($correction))) {return 1;} else {return 2;}
 	}
 	else {return 0;}
 }
