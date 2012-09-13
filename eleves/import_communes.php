@@ -308,7 +308,7 @@ if(!isset($step)) {
 Ce fichier est volumineux (<i>la France compte quelques communes;o</i>).<br />
 Il serait dommage de faire enfler inutilement votre base en la remplissant avec toutes les communes de France.<br />
 Cette page va donc parcourir le fichier, remplir une table temporaire et n'en retenir finalement que les communes correspondant à vos élèves.<br />
-Le fichier à fournir ci-dessous peut être téléchargé ici&nbsp;: <a href='https://www.sylogix.org/attachments/647/communes1102.csv.zip'>https://www.sylogix.org/attachments/647/communes1102.csv.zip</a></p>\n";
+Le fichier à fournir ci-dessous peut être téléchargé ici&nbsp;: <a href='http://www.sylogix.org/attachments/download/1132/communes1209.csv.zip'>http://www.sylogix.org/attachments/download/1132/communes1209.csv.zip</a></p>\n";
 
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	

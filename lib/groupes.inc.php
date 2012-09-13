@@ -384,13 +384,15 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 				$temp["classes"]["list"][] = $c_id;
 				$temp["classes"]["classes"][$c_id] = array("id" => $c_id, "classe" => $c_classe, "nom_complet" => $c_nom_complet, "priorite" => $c_priorite, "coef" => $c_coef, "mode_moy" => $c_mode_moy, "saisie_ects" => $c_saisie_ects, "valeur_ects" => $c_valeur_ects, "categorie_id" => $c_cat_id);
 			}
-		
-			$str = NULL;
-			foreach ($temp["classes"]["classes"] as $classe) {
-				$str .= $classe["classe"] . ", ";
+
+			if(isset($temp["classes"]["classes"])) {
+				$str = NULL;
+				foreach ($temp["classes"]["classes"] as $classe) {
+					$str .= $classe["classe"] . ", ";
+				}
+				$str = mb_substr($str, 0, -2);
+				$temp["classlist_string"] = $str;
 			}
-			$str = mb_substr($str, 0, -2);
-			$temp["classlist_string"] = $str;
 		}
 	
 		if($get_profs=='y') {
