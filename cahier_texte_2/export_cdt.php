@@ -25,7 +25,6 @@ $accessibilite="y";
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
-require_once("../lib/transform_functions.php");
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -793,7 +792,6 @@ $prefixe_arbo_acces_cdt="../..";
 
 // Initialisations files
 require_once($prefixe_arbo_acces_cdt."/lib/initialisations.inc.php");
-require_once($prefixe_arbo_acces_cdt."/lib/transform_functions.php");
 
 //=================================
 // Login du professeur
@@ -870,10 +868,10 @@ if(($_SESSION['statut']=='professeur')||(isset($login_prof))) {
 	$chaine_id_groupe="";
 
 	// Générer la page d'index
-	$html="";
-	$html.="<h1 style='text-align:center;'>Cahiers de textes $chaine_info_prof(".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
-	$html.="<p>Cahier de textes (<i>$display_date_debut - $display_date_fin</i>) de&nbsp;:</p>\n";
-	$html.="<ul>\n";
+	$content="";
+	$content.="<h1 style='text-align:center;'>Cahiers de textes $chaine_info_prof(".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
+	$content.="<p>Cahier de textes (<i>$display_date_debut - $display_date_fin</i>) de&nbsp;:</p>\n";
+	$content.="<ul>\n";
 	for($i=0;$i<count($id_groupe);$i++) {
 	
 		// ===================================================
@@ -902,15 +900,15 @@ if(($_SESSION['statut']=='professeur')||(isset($login_prof))) {
 	
 		$nom_detaille_groupe_non_html[$id_groupe[$i]]=$current_group['name']." (".$current_group['description']." en (".$current_group['classlist_string']."))";
 	
-		$html.="<li><a id='lien_id_groupe_$id_groupe[$i]' href='cahier_texte/$nom_page_html_groupe'>".$current_group['name']." (<i>".$current_group['description']." en (".$current_group['classlist_string'].")</i>)</a></li>\n";
+		$content.="<li><a id='lien_id_groupe_$id_groupe[$i]' href='cahier_texte/$nom_page_html_groupe'>".$current_group['name']." (<i>".$current_group['description']." en (".$current_group['classlist_string'].")</i>)</a></li>\n";
 	}
-	$html.="</ul>\n";
+	$content.="</ul>\n";
 	
 	//================================================================
 	// Affichage dans la page d'export de ce qui va être fourni en zip
 	echo "<a name='affichage_page_index'></a>";
 	echo "<div style='border: 1px solid black;'>\n";
-	echo $html;
+	echo $content;
 	echo "</div>\n";
 
 	// Précaution
@@ -927,11 +925,11 @@ if(($_SESSION['statut']=='professeur')||(isset($login_prof))) {
 	</script>\n";
 	//================================================================
 	
-	$html=html_entete("Index des cahiers de textes",0).$html;
-	$html.=html_pied_de_page();
+	$content=html_entete("Index des cahiers de textes",0).$content;
+	$content.=html_pied_de_page();
 	
 	$f=fopen($dossier_export."/index.html","w+");
-	fwrite($f,$html);
+	fwrite($f,$content);
 	fclose($f);
 	
 	$tab_fichiers_a_zipper[]=$dossier_export."/index.html";
@@ -977,24 +975,24 @@ else {
 		arbo_export_cdt($nom_export, $dirname);
 
 		// Générer la page d'index
-		$html="";
-		$html.="<h1 style='text-align:center;'>Cahiers de textes de $chaine_classes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
-		$html.="<p>Cahier de textes (<i>$display_date_debut - $display_date_fin</i>) de&nbsp;:</p>\n";
-		$html.="<ul>\n";
+		$content="";
+		$content.="<h1 style='text-align:center;'>Cahiers de textes de $chaine_classes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
+		$content.="<p>Cahier de textes (<i>$display_date_debut - $display_date_fin</i>) de&nbsp;:</p>\n";
+		$content.="<ul>\n";
 		for($i=0;$i<count($id_classe);$i++) {
 			$nom_page_html_index_classe=$id_classe[$i]."_".$nom_classe_clean[$i].".html";
 
 			$nom_fichier_index[$id_classe[$i]]=$nom_page_html_index_classe;
 		
-			$html.="<li><a id='lien_id_classe_$id_classe[$i]' href='$nom_page_html_index_classe'>".$nom_classe[$i]."</a></li>\n";
+			$content.="<li><a id='lien_id_classe_$id_classe[$i]' href='$nom_page_html_index_classe'>".$nom_classe[$i]."</a></li>\n";
 		}
-		$html.="</ul>\n";
+		$content.="</ul>\n";
 		
 		//================================================================
 		// Affichage dans la page d'export de ce qui va être fourni en zip
 		echo "<a name='affichage_page_index'></a>";
 		echo "<div style='border: 1px solid black;'>\n";
-		echo $html;
+		echo $content;
 		echo "</div>\n";
 		
 		// Correctif des liens tels qu'affichés dans la page
@@ -1008,12 +1006,12 @@ else {
 		</script>\n";
 		//================================================================
 		
-		$html=html_entete("Index des cahiers de textes",0).$html;
-		$html.=html_pied_de_page();
+		$content=html_entete("Index des cahiers de textes",0).$content;
+		$content.=html_pied_de_page();
 
 		//echo "Ecriture de ".$dossier_export."/index.html<br />";
 		$f=fopen($dossier_export."/index.html","w+");
-		fwrite($f,$html);
+		fwrite($f,$content);
 		fclose($f);
 		
 		$tab_fichiers_a_zipper[]=$dossier_export."/index.html";
@@ -1032,10 +1030,10 @@ else {
 		$chaine_lien_id_groupe="";
 
 		// Générer la page d'index
-		$html="";
-		$html.="<h1 style='text-align:center;'>Cahiers de textes de ".$nom_classe[$j]."(".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
-		$html.="<p>Cahier de textes (<i>$display_date_debut - $display_date_fin</i>) de&nbsp;:</p>\n";
-		$html.="<ul>\n";
+		$content="";
+		$content.="<h1 style='text-align:center;'>Cahiers de textes de ".$nom_classe[$j]."(".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
+		$content.="<p>Cahier de textes (<i>$display_date_debut - $display_date_fin</i>) de&nbsp;:</p>\n";
+		$content.="<ul>\n";
 		for($i=0;$i<count($groups);$i++) {
 			$current_group=$groups[$i];
 			if(in_array($current_group['id'],$id_groupe)) {
@@ -1058,16 +1056,16 @@ else {
 			
 				$nom_detaille_groupe_non_html[$current_group['id']]=$current_group['name']." (".$current_group['description']." en (".$current_group['classlist_string']."))";
 			
-				$html.="<li><a id='lien_id_groupe_".$current_group['id']."_".$id_classe[$j]."' href='cahier_texte/$nom_page_html_groupe'>".$current_group['name']." (<i>".$current_group['description']." en (".$current_group['classlist_string'].")</i>)</a></li>\n";
+				$content.="<li><a id='lien_id_groupe_".$current_group['id']."_".$id_classe[$j]."' href='cahier_texte/$nom_page_html_groupe'>".$current_group['name']." (<i>".$current_group['description']." en (".$current_group['classlist_string'].")</i>)</a></li>\n";
 			}
 		}
-		$html.="</ul>\n";
+		$content.="</ul>\n";
 		
 		//================================================================
 		// Affichage dans la page d'export de ce qui va être fourni en zip
 		echo "<a name='affichage_page_index_".$id_classe[$j]."'></a>";
 		echo "<div style='border: 1px solid black;'>\n";
-		echo $html;
+		echo $content;
 		echo "</div>\n";
 
 		// Précaution
@@ -1087,11 +1085,11 @@ else {
 		</script>\n";
 		//================================================================
 		
-		$html=html_entete("Index des cahiers de textes de ".$nom_classe[$j],0).$html;
-		$html.=html_pied_de_page();
+		$content=html_entete("Index des cahiers de textes de ".$nom_classe[$j],0).$content;
+		$content.=html_pied_de_page();
 
 		$f=fopen($dossier_export."/".$nom_fichier_index[$id_classe[$j]],"w+");
-		fwrite($f,$html);
+		fwrite($f,$content);
 		fclose($f);
 		
 		$tab_fichiers_a_zipper[]=$dossier_export."/".$nom_fichier_index[$id_classe[$j]];
@@ -1114,7 +1112,7 @@ for($i=0;$i<count($id_groupe);$i++) {
 	$tab_notices=array();
 	$tab_dev=array();
 
-	$html="";
+	$content="";
 	
 	if(isset($id_classe)) {
 		// On a choisi une liste de classes/enseignements
@@ -1123,9 +1121,9 @@ for($i=0;$i<count($id_groupe);$i++) {
 		$current_group=get_group($id_groupe[$i],$tab_champs);
 
 		if(isset($current_group)) {
-			$html.="<div id='div_lien_retour_".$id_groupe[$i]."' class='noprint' style='float:right; width:6em'>";
+			$content.="<div id='div_lien_retour_".$id_groupe[$i]."' class='noprint' style='float:right; width:6em'>";
 			if(count($current_group["classes"]["list"])==1) {
-				$html.="<a id='lien_retour_".$id_groupe[$i]."' href='../index.html'>Retour</a>\n";
+				$content.="<a id='lien_retour_".$id_groupe[$i]."' href='../index.html'>Retour</a>\n";
 			}
 			else {
 				$chaine_cpt_classe="";
@@ -1133,26 +1131,26 @@ for($i=0;$i<count($id_groupe);$i++) {
 				foreach($current_group["classes"]["classes"] as $current_id_classe => $current_classe) {
 					if($cpt>0) {$chaine_cpt_classe.=", ";}
 
-					$html.="<a id='lien_retour_".$id_groupe[$i]."_$cpt' href='../".$nom_fichier_index[$current_id_classe]."'>".$current_classe['classe']."</a>\n";
+					$content.="<a id='lien_retour_".$id_groupe[$i]."_$cpt' href='../".$nom_fichier_index[$current_id_classe]."'>".$current_classe['classe']."</a>\n";
 
 					$chaine_cpt_classe.=$cpt;
 
 					$cpt++;
 				}
 			}
-			$html.="</div>\n";
+			$content.="</div>\n";
 		}
 	}
 	else {
 		// On a choisi un professeur
-		$html.="<div id='div_lien_retour_".$id_groupe[$i]."' class='noprint' style='float:right; width:6em'><a id='lien_retour_".$id_groupe[$i]."' href='../index.html'>Retour</a></div>\n";
+		$content.="<div id='div_lien_retour_".$id_groupe[$i]."' class='noprint' style='float:right; width:6em'><a id='lien_retour_".$id_groupe[$i]."' href='../index.html'>Retour</a></div>\n";
 	}
 
-	$html.="<a name='cible_lien_id_groupe_".$id_groupe[$i]."'></a>\n";
+	$content.="<a name='cible_lien_id_groupe_".$id_groupe[$i]."'></a>\n";
 
-	$html.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
-	$html.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin</p>\n";
-	$html.="<h2 style='text-align:center;'>Cahier de textes de ".$nom_detaille_groupe[$id_groupe[$i]]." (<i>$display_date_debut - $display_date_fin</i>)&nbsp;:</h2>\n";
+	$content.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
+	$content.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin</p>\n";
+	$content.="<h2 style='text-align:center;'>Cahier de textes de ".$nom_detaille_groupe[$id_groupe[$i]]." (<i>$display_date_debut - $display_date_fin</i>)&nbsp;:</h2>\n";
 
 	unset($tmp_tab);
 	$tmp_tab=get_dates_notices_et_dev($id_groupe[$i], "", "", $timestamp_debut_export, $timestamp_fin_export, "y", "y");
@@ -1161,11 +1159,11 @@ for($i=0;$i<count($id_groupe);$i++) {
 	$tab_dev=$tmp_tab[2];
 	unset($tmp_tab);
 
-	$html.=lignes_cdt($tab_dates, $tab_notices, $tab_dev);
+	$content.=lignes_cdt($tab_dates, $tab_notices, $tab_dev);
 
 	//================================================================
 	echo "<div style='border: 1px solid black;'>\n";
-	echo $html;
+	echo $content;
 	echo "</div>\n";
 
 	echo "<script type='text/javascript'>
@@ -1190,11 +1188,11 @@ for($i=0;$i<count($id_groupe);$i++) {
 </script>\n";
 	//================================================================
 
-	$html=html_entete("CDT: ".$nom_detaille_groupe_non_html[$id_groupe[$i]],1).$html;
-	$html.=html_pied_de_page();
+	$content=html_entete("CDT: ".$nom_detaille_groupe_non_html[$id_groupe[$i]],1).$content;
+	$content.=html_pied_de_page();
 
 	$f=fopen($dossier_export."/cahier_texte/".$nom_fichier[$id_groupe[$i]],"w+");
-	fwrite($f,$html);
+	fwrite($f,$content);
 	fclose($f);
 
 	$tab_fichiers_a_zipper[]=$dossier_export."/cahier_texte/".$nom_fichier[$id_groupe[$i]];
