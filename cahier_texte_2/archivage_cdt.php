@@ -25,7 +25,6 @@ $accessibilite="y";
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
-require_once("../lib/transform_functions.php");
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -404,32 +403,32 @@ else {
 					$chaine_login_prof.="'".$current_group["profs"]["list"][$loop]."'";
 				}
 
-				$html="";
+				$content="";
 		
 				//=====================
 				// Le retour doit être différent pour un prof et pour les autres statuts
-				$html.='<?php
+				$content.='<?php
 if($_SESSION["statut"]=="professeur") {
 	echo "<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'cdt_".$_SESSION["login"].".'.$extension.'\'>Retour</a></div>\n";
 }
 else {
 ';
 				foreach($current_group['classes']['classes'] as $key => $value) {
-					$html.='echo "<div class=\'noprint\' style=\'float:right; width:6em; margin: 3px; text-align:center; border: 1px solid black;\'><a href=\'classe_'.$value["id"].'.'.$extension.'\'>'.$value["classe"].'</a></div>\n";';
+					$content.='echo "<div class=\'noprint\' style=\'float:right; width:6em; margin: 3px; text-align:center; border: 1px solid black;\'><a href=\'classe_'.$value["id"].'.'.$extension.'\'>'.$value["classe"].'</a></div>\n";';
 				}
 
 				foreach($current_group['profs']['list'] as $key => $login_prof) {
-					$html.='echo "<div class=\'noprint\' style=\'float:right; width:10em; margin: 3px; text-align:center; border: 1px solid black;\'><a href=\'cdt_'.$login_prof.'.'.$extension.'\'>'.$current_group['profs']['users'][$login_prof]['civilite'].' '.$current_group['profs']['users'][$login_prof]['nom'].' '.my_strtoupper(mb_substr($current_group['profs']['users'][$login_prof]['prenom'],0,1)).'</a></div>\n";';
+					$content.='echo "<div class=\'noprint\' style=\'float:right; width:10em; margin: 3px; text-align:center; border: 1px solid black;\'><a href=\'cdt_'.$login_prof.'.'.$extension.'\'>'.$current_group['profs']['users'][$login_prof]['civilite'].' '.$current_group['profs']['users'][$login_prof]['nom'].' '.my_strtoupper(mb_substr($current_group['profs']['users'][$login_prof]['prenom'],0,1)).'</a></div>\n";';
 				}
 
-				$html.='}
+				$content.='}
 ?>
 ';
 				//=====================
 
-				$html.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
-				$html.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin</p>\n";
-				$html.="<h2 style='text-align:center;'>Cahier de textes de ".$nom_detaille_groupe." (<i>$display_date_debut - $display_date_fin</i>)&nbsp;:</h2>\n";
+				$content.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
+				$content.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin</p>\n";
+				$content.="<h2 style='text-align:center;'>Cahier de textes de ".$nom_detaille_groupe." (<i>$display_date_debut - $display_date_fin</i>)&nbsp;:</h2>\n";
 		
 				$sql="SELECT cte.* FROM ct_entry cte WHERE (contenu != ''
 					AND date_ct != ''
@@ -485,11 +484,11 @@ else {
 					array_multisort ($tab_dates, SORT_ASC, SORT_NUMERIC, $tab_dates2, SORT_DESC, SORT_NUMERIC);
 				}
 
-				$html.=lignes_cdt($tab_dates, $tab_notices, $tab_dev,$dossier_documents,$mode);
+				$content.=lignes_cdt($tab_dates, $tab_notices, $tab_dev,$dossier_documents,$mode);
 
 				/*
 				echo "<div style='border: 1px solid black;'>\n";
-				echo $html;
+				echo $content;
 				echo "</div>\n";
 		
 				echo "<script type='text/javascript'>
@@ -499,13 +498,13 @@ else {
 </script>\n";
 				*/
 
-				$html=html_entete("CDT: ".$nom_detaille_groupe_non_html,1,'y',"$chaine_login_prof").$html;
-				$html.=html_pied_de_page();
+				$content=html_entete("CDT: ".$nom_detaille_groupe_non_html,1,'y',"$chaine_login_prof").$content;
+				$content.=html_pied_de_page();
 
 				//echo "\$dossier_cdt=$dossier_cdt<br />";
 				//echo "\$nom_fichier=$nom_fichier<br />";
 				$f=fopen($dossier_cdt."/".$nom_fichier,"w+");
-				fwrite($f,$html);
+				fwrite($f,$content);
 				fclose($f);
 
 				foreach($current_group["classes"]["classes"] as $key => $value) {
@@ -563,33 +562,33 @@ else {
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)>0) {
 
-				$html='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'../../../index.'.$extension.'\'>Retour</a></div>';
+				$content='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'../../../index.'.$extension.'\'>Retour</a></div>';
 
-				$html.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
-				$html.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin\n";
-				$html.="<br />\n";
-				$html.="(<i>Archivage effectué le ".strftime("%d/%m/%Y à %H:%M:%S")."</i>)\n";
-				$html.="</p>\n";
+				$content.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
+				$content.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin\n";
+				$content.="<br />\n";
+				$content.="(<i>Archivage effectué le ".strftime("%d/%m/%Y à %H:%M:%S")."</i>)\n";
+				$content.="</p>\n";
 
-				$html.="<h2 style='text-align:center;'>Classes&nbsp;:</h2>\n";
+				$content.="<h2 style='text-align:center;'>Classes&nbsp;:</h2>\n";
 
-				$html.="<div align='center'>\n";
-				$html.="<table summary='Tableau des classes'>\n";
+				$content.="<div align='center'>\n";
+				$content.="<table summary='Tableau des classes'>\n";
 				while($lig_class=mysql_fetch_object($res)) {
-					//$html.="Classe de <a href='classe_".$lig_class->id_classe.".$extension'>".$lig_class->classe."</a><br />";
-					$html.="<tr><td>Classe de </td><td><a href='classe_".$lig_class->id_classe.".$extension'>".$lig_class->classe."</a></td></tr>\n";
+					//$content.="Classe de <a href='classe_".$lig_class->id_classe.".$extension'>".$lig_class->classe."</a><br />";
+					$content.="<tr><td>Classe de </td><td><a href='classe_".$lig_class->id_classe.".$extension'>".$lig_class->classe."</a></td></tr>\n";
 					//$sql="SELECT * FROM tempo3_cdt WHERE classe='$lig_class->classe';";
 				}
-				$html.="</table>\n";
-				$html.="</div>\n";
+				$content.="</table>\n";
+				$content.="</div>\n";
 
-				$html.="<p><br /></p>\n";
+				$content.="<p><br /></p>\n";
 
-				$html=html_entete("CDT: Index des classes",1,'y').$html;
-				$html.=html_pied_de_page();
+				$content=html_entete("CDT: Index des classes",1,'y').$content;
+				$content.=html_pied_de_page();
 		
 				$f=fopen($dossier_cdt."/index_classes.$extension","w+");
-				fwrite($f,$html);
+				fwrite($f,$content);
 				fclose($f);
 			}
 
@@ -602,24 +601,24 @@ else {
 			if(mysql_num_rows($res)>0) {
 				while($lig_class=mysql_fetch_object($res)) {
 
-					$html='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'index_classes.'.$extension.'\'>Retour</a></div>';
+					$content='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'index_classes.'.$extension.'\'>Retour</a></div>';
 
-					$html.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
-					$html.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin\n";
-					$html.="<br />\n";
-					$html.="(<i>Archivage effectué le ".strftime("%d/%m/%Y à %H:%M:%S")."</i>)\n";
-					$html.="</p>\n";
+					$content.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
+					$content.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin\n";
+					$content.="<br />\n";
+					$content.="(<i>Archivage effectué le ".strftime("%d/%m/%Y à %H:%M:%S")."</i>)\n";
+					$content.="</p>\n";
 	
-					$html.="<h2 style='text-align:center;'>Classe de $lig_class->classe&nbsp;:</h2>\n";
+					$content.="<h2 style='text-align:center;'>Classe de $lig_class->classe&nbsp;:</h2>\n";
 
 					$sql="SELECT * FROM tempo3_cdt WHERE classe='".addslashes($lig_class->classe)."';";
 					//echo "$sql<br />";
 					$res2=mysql_query($sql);
 					if(mysql_num_rows($res2)>0) {
-						$html.="<div align='center'>\n";
-						$html.="<table summary='Tableau des enseignements'>\n";
+						$content.="<div align='center'>\n";
+						$content.="<table summary='Tableau des enseignements'>\n";
 						while($lig_mat=mysql_fetch_object($res2)) {
-							//$html.="<b>$lig_mat->matiere</b>&nbsp;:<a href='$lig_mat->fichier'> $lig_mat->enseignement</a><br />";
+							//$content.="<b>$lig_mat->matiere</b>&nbsp;:<a href='$lig_mat->fichier'> $lig_mat->enseignement</a><br />";
 
 							$sql="SELECT DISTINCT u.* FROM utilisateurs u, j_groupes_professeurs jgp, tempo3_cdt t WHERE t.id_groupe=jgp.id_groupe AND u.login=jgp.login AND t.fichier='$lig_mat->fichier';";
 							$res3=mysql_query($sql);
@@ -631,17 +630,17 @@ else {
 								}
 							}
 
-							$html.="<tr><td><b>$lig_mat->matiere</b>&nbsp;:</td><td><a href='$lig_mat->fichier'> $lig_mat->enseignement</a></td><td>$liste_profs</td></tr>\n";
+							$content.="<tr><td><b>$lig_mat->matiere</b>&nbsp;:</td><td><a href='$lig_mat->fichier'> $lig_mat->enseignement</a></td><td>$liste_profs</td></tr>\n";
 						}
-						$html.="</table>\n";
-						$html.="</div>\n";
+						$content.="</table>\n";
+						$content.="</div>\n";
 					}
 
-					$html=html_entete("CDT: Classe de ".$lig_class->classe,1,'y').$html;
-					$html.=html_pied_de_page();
+					$content=html_entete("CDT: Classe de ".$lig_class->classe,1,'y').$content;
+					$content.=html_pied_de_page();
 			
 					$f=fopen($dossier_cdt."/classe_".$lig_class->id_classe.".$extension","w+");
-					fwrite($f,$html);
+					fwrite($f,$content);
 					fclose($f);
 				}
 			}
@@ -652,19 +651,19 @@ else {
 			$sql="SELECT DISTINCT u.* FROM tempo3_cdt t, j_groupes_professeurs jgp, utilisateurs u WHERE jgp.id_groupe=t.id_groupe AND jgp.login=u.login ORDER BY u.nom, u.prenom;";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)>0) {
-				$html='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'index.'.$extension.'\'>Retour</a></div>';
+				$content='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'index.'.$extension.'\'>Retour</a></div>';
 
-				$html.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
-				$html.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin\n";
-				$html.="<br />\n";
-				$html.="(<i>Archivage effectué le ".strftime("%d/%m/%Y à %H:%M:%S")."</i>)\n";
-				$html.="</p>\n";
+				$content.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
+				$content.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin\n";
+				$content.="<br />\n";
+				$content.="(<i>Archivage effectué le ".strftime("%d/%m/%Y à %H:%M:%S")."</i>)\n";
+				$content.="</p>\n";
 
-				$html.="<h2 style='text-align:center;'>Professeurs&nbsp;:</h2>\n";
+				$content.="<h2 style='text-align:center;'>Professeurs&nbsp;:</h2>\n";
 
-				$html.="<div align='center'>\n";
+				$content.="<div align='center'>\n";
 				while($lig_prof=mysql_fetch_object($res)) {
-					$html.="<a href='cdt_".$lig_prof->login.".$extension'> $lig_prof->civilite ".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom, 'majf2')."</a><br />";
+					$content.="<a href='cdt_".$lig_prof->login.".$extension'> $lig_prof->civilite ".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom, 'majf2')."</a><br />";
 
 					$sql="SELECT * FROM tempo3_cdt t, j_groupes_professeurs jgp WHERE jgp.id_groupe=t.id_groupe AND jgp.login='$lig_prof->login' ORDER BY classe, matiere;";
 					$res2=mysql_query($sql);
@@ -672,70 +671,70 @@ else {
 						// ================================================================================================
 						// Page index des enseignements du professeur courant ((essoufflé) dans la boucle) de l'archive CDT
 						// ================================================================================================
-						//$html2='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'index_professeurs.'.$extension.'\'>Retour</a></div>';
-						$html2='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'';
-						$html2.='<?php'."\n";
-						//$html2.='if($_SESSION["statut"]=="professeur") {echo "CDT_".$_SESSION["login"];} else {echo "index_professeurs";}'."\n";
-						$html2.='if($_SESSION["statut"]=="professeur") {echo "../../../index";} else {echo "index_professeurs";}'."\n";
-						$html2.='?>';
-						$html2.='.';
-						$html2.=$extension.'\'>Retour</a></div>';
+						//$content2='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'index_professeurs.'.$extension.'\'>Retour</a></div>';
+						$content2='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'';
+						$content2.='<?php'."\n";
+						//$content2.='if($_SESSION["statut"]=="professeur") {echo "CDT_".$_SESSION["login"];} else {echo "index_professeurs";}'."\n";
+						$content2.='if($_SESSION["statut"]=="professeur") {echo "../../../index";} else {echo "index_professeurs";}'."\n";
+						$content2.='?>';
+						$content2.='.';
+						$content2.=$extension.'\'>Retour</a></div>';
 
-						$html2.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
-						$html2.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin\n";
-						$html2.="<br />\n";
-						$html2.="(<i>Archivage effectué le ".strftime("%d/%m/%Y à %H:%M:%S")."</i>)\n";
-						$html2.="</p>\n";
+						$content2.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
+						$content2.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin\n";
+						$content2.="<br />\n";
+						$content2.="(<i>Archivage effectué le ".strftime("%d/%m/%Y à %H:%M:%S")."</i>)\n";
+						$content2.="</p>\n";
 		
-						$html2.="<h2 style='text-align:center;'>Professeur&nbsp;: $lig_prof->civilite ".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom, 'majf2')."</h2>\n";
+						$content2.="<h2 style='text-align:center;'>Professeur&nbsp;: $lig_prof->civilite ".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom, 'majf2')."</h2>\n";
 
-						$html2.="<div align='center'>\n";
-						$html2.="<table border='0' summary='Tableau des enseignements de $lig_prof->civilite ".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom, 'majf2')."'>\n";
+						$content2.="<div align='center'>\n";
+						$content2.="<table border='0' summary='Tableau des enseignements de $lig_prof->civilite ".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom, 'majf2')."'>\n";
 						$classe_prec="";
 						$cpt=0;
 						while($lig_clas_mat=mysql_fetch_object($res2)) {
 							if($lig_clas_mat->classe!=$classe_prec) {
 								if($classe_prec!="") {
-									$html2.="</td>\n";
-									$html2.="</tr>\n";
+									$content2.="</td>\n";
+									$content2.="</tr>\n";
 								}
 
 								$classe_prec=$lig_clas_mat->classe;
 
-								$html2.="<tr>\n";
-								$html2.="<td style='vertical-align:top;'>$lig_clas_mat->classe</td>\n";
-								$html2.="<td>\n";
+								$content2.="<tr>\n";
+								$content2.="<td style='vertical-align:top;'>$lig_clas_mat->classe</td>\n";
+								$content2.="<td>\n";
 
 							}
-							$html2.="<b>$lig_clas_mat->matiere</b>&nbsp;:<a href='$lig_clas_mat->fichier'> $lig_clas_mat->enseignement</a><br />";
+							$content2.="<b>$lig_clas_mat->matiere</b>&nbsp;:<a href='$lig_clas_mat->fichier'> $lig_clas_mat->enseignement</a><br />";
 
 							$cpt++;
 						}
 						if($cpt>0) {
-							$html2.="</td>\n";
-							$html2.="</tr>\n";
+							$content2.="</td>\n";
+							$content2.="</tr>\n";
 						}
-						$html2.="</table>\n";
-						$html2.="</div>\n";
+						$content2.="</table>\n";
+						$content2.="</div>\n";
 
-						$html2=html_entete("CDT: Professeur ".$lig_prof->civilite." ".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom, 'majf2'),1,'y',"'$lig_prof->login'").$html2;
-						$html2.=html_pied_de_page();
+						$content2=html_entete("CDT: Professeur ".$lig_prof->civilite." ".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom, 'majf2'),1,'y',"'$lig_prof->login'").$content2;
+						$content2.=html_pied_de_page();
 				
 						$f=fopen($dossier_cdt."/cdt_".$lig_prof->login.".$extension","w+");
-						fwrite($f,$html2);
+						fwrite($f,$content2);
 						fclose($f);
 					}
 
 				}
-				$html.="</div>\n";
+				$content.="</div>\n";
 
-				$html.="<p><br /></p>\n";
+				$content.="<p><br /></p>\n";
 
-				$html=html_entete("CDT: Liste des professeurs",1,'y').$html;
-				$html.=html_pied_de_page();
+				$content=html_entete("CDT: Liste des professeurs",1,'y').$content;
+				$content.=html_pied_de_page();
 		
 				$f=fopen($dossier_cdt."/index_professeurs.$extension","w+");
-				fwrite($f,$html);
+				fwrite($f,$content);
 				fclose($f);
 			}
 
@@ -744,25 +743,25 @@ else {
 			// Page de choix Index_classe ou Index_profs de l'archive CDT
 			// ==========================================================
 			// Faire en dessous une page qui parcourt les sous-dossiers d'années
-			$html='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'../../../index.'.$extension.'\'>Retour</a></div>';
+			$content='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'../../../index.'.$extension.'\'>Retour</a></div>';
 
-			$html.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
-			$html.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin\n";
-			$html.="<br />\n";
-			$html.="(<i>Archivage effectué le ".strftime("%d/%m/%Y à %H:%M:%S")."</i>)\n";
-			$html.="</p>\n";
+			$content.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
+			$content.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin\n";
+			$content.="<br />\n";
+			$content.="(<i>Archivage effectué le ".strftime("%d/%m/%Y à %H:%M:%S")."</i>)\n";
+			$content.="</p>\n";
 
-			$html.="<div align='center'>\n";
+			$content.="<div align='center'>\n";
 
-			$html.="<p><a href='index_classes.".$extension."'>Index des classes</a></p>\n";
-			$html.="<p><a href='index_professeurs.".$extension."'>Index des professeurs</a></p>\n";
-			$html.="</div>\n";
+			$content.="<p><a href='index_classes.".$extension."'>Index des classes</a></p>\n";
+			$content.="<p><a href='index_professeurs.".$extension."'>Index des professeurs</a></p>\n";
+			$content.="</div>\n";
 
-			$html=html_entete("CDT: Index",1,'y').$html;
-			$html.=html_pied_de_page();
+			$content=html_entete("CDT: Index",1,'y').$content;
+			$content.=html_pied_de_page();
 	
 			$f=fopen($dossier_cdt."/index.$extension","w+");
-			fwrite($f,$html);
+			fwrite($f,$content);
 			fclose($f);
 
 			echo "<p>Terminé.<br />Les pages d'index ont maintenant été créées.</p>\n";
