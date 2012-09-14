@@ -23,7 +23,6 @@
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
-require_once("../lib/transform_functions.php");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="fr">
@@ -86,7 +85,6 @@ if (!$res_devoirs) echo mysql_error($res_devoirs);
     if (mysql_num_rows($res_devoirs) > 0) {
         while ($devoir = mysql_fetch_object($res_devoirs)) {
             $content = &$devoir->contenu;
-            include ("../lib/transform.php");
         ?>
                     <table class="devoir">
                         <thead>
@@ -98,23 +96,23 @@ if (!$res_devoirs) echo mysql_error($res_devoirs);
                         <tbody>
                             <tr>
                                 <td colspan="2">
-        <?php echo($html); ?>
+        <?php echo($content); ?>
         <?php
             // fichier joint
             $architecture="cl_dev".$devoir->id_groupe;
                 $req_docs = "SELECT titre, emplacement FROM ct_documents WHERE id_ct = $devoir->id_ct AND emplacement LIKE '%".$architecture."%' ORDER BY titre";
             $res1 = sql_query($req_docs);
             if (($res1) and (sql_count($res1)!=0)) {
-                $html_dos = "<small style=\"font-weight: bold;\">Document(s) joint(s):</small>";
-                    $html_dos .= "<ul type=\"disc\" style=\"padding-left: 15px;\">";
+                $content_dos = "<small style=\"font-weight: bold;\">Document(s) joint(s):</small>";
+                    $content_dos .= "<ul type=\"disc\" style=\"padding-left: 15px;\">";
                     $res_docs = mysql_query($req_docs);
                     while ($doc = mysql_fetch_object($res_docs)) {
-                        $html_dos .= "<li style=\"padding: 0px; margin: 0px; \"><a href=\"$doc->emplacement\">$doc->titre</a></li>";
+                        $content_dos .= "<li style=\"padding: 0px; margin: 0px; \"><a href=\"$doc->emplacement\">$doc->titre</a></li>";
                     }
-                $html_dos .= "</ul>";
-                echo $html_dos;
+                $content_dos .= "</ul>";
+                echo $content_dos;
             }
-            $html_dos = '';
+            $content_dos = '';
         ?>
                                 </td>
                             </tr>

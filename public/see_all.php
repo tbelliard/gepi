@@ -26,7 +26,6 @@ $niveau_arbo = "public";
 require_once("../lib/initialisations.inc.php");
 
 require_once("../lib/mincals.inc");
-require_once("../lib/transform_functions.php");
 require_once("lib/functions.inc");
 // On vérifie si l'accès est restreint ou non
 require_once("lib/auth.php");
@@ -126,11 +125,10 @@ $appel_info_cahier_texte = mysql_query("SELECT contenu, id_ct  FROM ct_entry WHE
 $nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
 $content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
 $id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
-include "../lib/transform.php";
-$html .= affiche_docs_joints($id_ct,"c");
-if ($html != '') {
+$content .= affiche_docs_joints($id_ct,"c");
+if ($content != '') {
     echo "<div  style=\"border-bottom-style: solid; border-width:2px; border-color: ".$couleur_bord_tableau_notice."; \"><b>INFORMATIONS GENERALES</b></div>";
-    echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice."; padding: 2px; margin: 2px;\" width = '100%' cellpadding='5'><tr><td>".$html."</td></tr></table>";
+    echo "<table style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice."; padding: 2px; margin: 2px;\" width = '100%' cellpadding='5'><tr><td>".$content."</td></tr></table>";
 }
 
 echo "<div  style=\"border-bottom-style: solid; border-width:2px; border-color: ".$couleur_bord_tableau_notice."; \"><b>CAHIER DE TEXTES: compte-rendus de séance</b></div><br />";
@@ -193,10 +191,8 @@ while (true) {
         break;
     }
   }
-    // Passage en HTML
     $content = &$not_dev->contenu;
-    include ("../lib/transform.php");
-    $html .= affiche_docs_joints($not_dev->id_ct,$not_dev->type);
+    $content .= affiche_docs_joints($not_dev->id_ct,$not_dev->type);
 
     if ($not_dev->type == "t") {
         echo("<strong>A faire pour le : </strong>\n");
@@ -216,7 +212,7 @@ while (true) {
         $num_notice = 1;
       }
     }
-    echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices[$not_dev->type]."\">\n<tr>\n<td>\n$html</td>\n</tr>\n</table>\n<br/>\n");
+    echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices[$not_dev->type]."\">\n<tr>\n<td>\n$content</td>\n</tr>\n</table>\n<br/>\n");
     if ($not_dev->type == "c") $date_ct_old = $not_dev->date_ct;
 }
 

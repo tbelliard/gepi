@@ -31,7 +31,6 @@ $filtrage_extensions_fichiers_table_ct_types_documents='y';
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
-require_once("../lib/transform_functions.php");
 require_once("../public/lib/functions.inc");
 include("../ckeditor/ckeditor.php") ;
 
@@ -867,9 +866,8 @@ while (true) {
 		$content = &$not_dev->contenu;
 	}
 
-    include ("../lib/transform.php");
     // Documents joints
-    $html .= affiche_docs_joints($not_dev->id_ct,$not_dev->type);
+    $content .= affiche_docs_joints($not_dev->id_ct,$not_dev->type);
 
     if (($not_dev->date_ct > $today) and ($not_dev->type == "t")) {
         echo("<strong>A faire pour le :</strong><br/>\n");
@@ -903,50 +901,50 @@ while (true) {
 	}
 
 	//Modif  Eric visa des notices et interdiction de modifier suite à un visa des notices
-    $html_balise = '<div style="margin: 0px; float: left;">'."\n";
-	//$html_balise.=" $not_dev->id_ct ";
+    $content_balise = '<div style="margin: 0px; float: left;">'."\n";
+	//$content_balise.=" $not_dev->id_ct ";
     if ($not_dev->type == "c") {
 	    if (($not_dev->vise != 'y') or ($visa_cdt_inter_modif_notices_visees == 'no')){
-        $html_balise .=("<a href=\"index.php?id_ct=$not_dev->id_ct&amp;id_groupe=" . $current_group["id"] . "\"><img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
-        $html_balise .=(" ");
-        $html_balise .=(
+        $content_balise .=("<a href=\"index.php?id_ct=$not_dev->id_ct&amp;id_groupe=" . $current_group["id"] . "\"><img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
+        $content_balise .=(" ");
+        $content_balise .=(
             "<a href=\"index.php?id_ct_del=$not_dev->id_ct&amp;edit_devoir=$edit_devoir&amp;action=sup_entry&amp;uid_post=$uid&amp;id_groupe=".$current_group["id"].add_token_in_url()."\" onclick=\"return confirmlink(this,'suppression de la notice du " . strftime("%a %d %b %y", $not_dev->date_ct) . " ?','" . $message_suppression . "')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n"
         );
 		    // cas d'un visa, on n'affiche rien
             if ($not_dev->visa == 'y') {
-    		    $html_balise = " ";
+    		    $content_balise = " ";
 			} else {
 			if ($not_dev->vise == 'y') {
-			   $html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
+			   $content_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
 			}
 			}
 		} else {
 		     // cas d'un visa, on n'affiche rien
              if ($not_dev->visa == 'y') {
-    		    $html_balise .= " ";
+    		    $content_balise .= " ";
 		     } else {
-		        $html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
+		        $content_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
 		     }
 		}
     } else {
 	    if (($not_dev->vise != 'y') or ($visa_cdt_inter_modif_notices_visees == 'no')) {
-        $html_balise .=("<a href=\"index.php?id_ct=$not_dev->id_ct&amp;id_groupe=" . $current_group["id"] . "&amp;edit_devoir=yes\"><img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
-        $html_balise .=(" ");
-        $html_balise .=(
+        $content_balise .=("<a href=\"index.php?id_ct=$not_dev->id_ct&amp;id_groupe=" . $current_group["id"] . "&amp;edit_devoir=yes\"><img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
+        $content_balise .=(" ");
+        $content_balise .=(
             "<a href=\"index.php?id_ct_del=$not_dev->id_ct&amp;edit_devoir=$edit_devoir&amp;action=sup_devoirs&amp;uid_post=$uid&amp;id_groupe=".$current_group["id"].add_token_in_url()."\" onclick=\"return confirmlink(this,'suppression du devoir du " . strftime("%a %d %b %y", $not_dev->date_ct) . " ?','" . $message_suppression . "')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n"
 			 );
 			if ($not_dev->vise == 'y') {
-			   $html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
+			   $content_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
 			}
 
 		} else {
-		  $html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
+		  $content_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
 		}
     }
-    $html_balise .= "</div>\n";
+    $content_balise .= "</div>\n";
 
 
-    echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices[$not_dev->type]."\" summary=\"Tableau de...\">\n<tr>\n<td>\n$html_balise$html</td>\n</tr>\n</table>\n<br/>\n");
+    echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices[$not_dev->type]."\" summary=\"Tableau de...\">\n<tr>\n<td>\n$content_balise$content</td>\n</tr>\n</table>\n<br/>\n");
     if ($not_dev->type == "c") {$date_ct_old = $not_dev->date_ct;}
 }
 
@@ -959,28 +957,27 @@ $appel_info_cahier_texte = mysql_query("SELECT heure_entry, contenu, id_ct  FROM
 $nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
 $content = @mysql_result($appel_info_cahier_texte, 0,'contenu');
 $id_ctexte = @mysql_result($appel_info_cahier_texte, 0,'id_ct');
-include "../lib/transform.php";
   $architecture= "/documents/cl".$current_group["id"];
   $sql = "SELECT titre, emplacement FROM ct_documents WHERE id_ct='".$id_ctexte."' ORDER BY titre";
   $res = sql_query($sql);
   if (($res) and (sql_count($res)!=0)) {
-     $html .= "<small style=\"font-weight: bold;\">Document(s) joint(s):</small>\n";
-     $html .= "<ul type=\"disc\" style=\"padding-left: 15px; margin: 0px; padding-top: 0px; \">\n";
+     $content .= "<small style=\"font-weight: bold;\">Document(s) joint(s):</small>\n";
+     $content .= "<ul type=\"disc\" style=\"padding-left: 15px; margin: 0px; padding-top: 0px; \">\n";
      for ($i=0; ($row = sql_row($res,$i)); $i++) {
         $titre = $row[0];
         $emplacement = $row[1];
-        $html .=  "<li style=\"padding: 1px; margin: 1px; \"><a href='".$emplacement."' target=\"_blank\">".$titre."</a></li>\n";
+        $content .=  "<li style=\"padding: 1px; margin: 1px; \"><a href='".$emplacement."' target=\"_blank\">".$titre."</a></li>\n";
    }
-   $html .= "</ul>\n";
+   $content .= "</ul>\n";
   }
 echo "<b>Informations Générales</b>\n";
 if ($id_ctexte == $id_ct) {echo "<b><font color=\"red\"> - en&nbsp;modification</font></b>";}
 
-$html_balise = "<div style=\"margin: 0px; float: left;\"><a href='index.php?info=yes&amp;id_groupe=" . $current_group["id"] . "'><img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a> <a href='index.php?info=yes&amp;id_ct_del=$id_ctexte&amp;action=sup_entry&amp;uid_post=$uid&amp;id_groupe=".$current_group["id"].add_token_in_url()."' onclick=\"return confirmlink(this,'suppression de la notice Informations générales ?','".$message_suppression."')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>";
-//$html_balise.="Export au <a href='../cahier_texte_2/exportcsv.php?id_groupe=".$current_group["id"]."'>format csv</a> / <a href='../cahier_texte_2/export_cdt.php?id_groupe=".$current_group["id"]."'>format html</a><br/>";
-$html_balise.="</div>\n";
+$content_balise = "<div style=\"margin: 0px; float: left;\"><a href='index.php?info=yes&amp;id_groupe=" . $current_group["id"] . "'><img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a> <a href='index.php?info=yes&amp;id_ct_del=$id_ctexte&amp;action=sup_entry&amp;uid_post=$uid&amp;id_groupe=".$current_group["id"].add_token_in_url()."' onclick=\"return confirmlink(this,'suppression de la notice Informations générales ?','".$message_suppression."')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>";
+//$content_balise.="Export au <a href='../cahier_texte_2/exportcsv.php?id_groupe=".$current_group["id"]."'>format csv</a> / <a href='../cahier_texte_2/export_cdt.php?id_groupe=".$current_group["id"]."'>format html</a><br/>";
+$content_balise.="</div>\n";
 
-echo "<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["i"] ."; padding: 2px; margin: 2px;\" width=\"100%\" cellpadding=\"2\" summary=\"Tableau de...\">\n<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["i"]."; padding: 0px; margin: 0px;\">\n<td>\n".$html_balise.$html."</td>\n</tr>\n</table>\n<br />";
+echo "<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["i"] ."; padding: 2px; margin: 2px;\" width=\"100%\" cellpadding=\"2\" summary=\"Tableau de...\">\n<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["i"]."; padding: 0px; margin: 0px;\">\n<td>\n".$content_balise.$content."</td>\n</tr>\n</table>\n<br />";
 
 echo "Export au <a href='../cahier_texte_2/exportcsv.php?id_groupe=".$current_group["id"]."'>format csv</a> / <a href='../cahier_texte_2/export_cdt.php?id_groupe=".$current_group["id"]."'>format html</a><br/>";
 

@@ -26,7 +26,6 @@ $accessibilite="y";
 // Initialisations files
 require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
-require_once("../lib/transform_functions.php");
 
 function aff_debug($tableau){
 	echo '<pre>';
