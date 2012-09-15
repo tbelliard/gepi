@@ -7,6 +7,7 @@
  * @subpackage initialisation
  */
 /* Utilise l'encodage interne UTF-8 */
+header('Content-type: text/html; charset=UTF-8');
 ini_set('mbstring.language','UTF-8');
 ini_set('mbstring.internal_encoding','UTF-8');
 if (function_exists('mb_internal_encoding')) {

@@ -207,30 +207,51 @@ foreach($classe_col as $classe){
 	$classe_deja_sorties = Array();//liste des appels deja affiché sous la form [id_classe, id_utilisateur]
 	$groupe_deja_sortis = Array();//liste des appels deja affiché sous la form [id_groupe, id_utilisateur]
 	foreach ($cours_col as $edtCours) {//on regarde tous les cours enregistrés dans l'edt
-	    //$edtCours = new EdtEmplacementCours();
-	    $abs_col = AbsenceEleveSaisieQuery::create()->filterByPlageTemps($dt_debut_creneau, $dt_fin_creneau)
-		      ->filterByEdtEmplacementCours($edtCours)->find();
-	    if ($abs_col->isEmpty()) {
-		$appel_manquant = true;
-		$echo_str .= '<span style="color: red;">Non fait</span> - ';
-	    } else {
-		$echo_str .= $abs_col->getFirst()->getCreatedAt('H:i').' ';
-	    }
-	    if ($edtCours->getGroupe() != null) {
-		$echo_str .= $edtCours->getGroupe()->getName().' ';
-		if ($abs_col->getFirst() !== null) {
-		    $groupe_deja_sortis[] = Array($edtCours->getIdGroupe(),  $abs_col->getFirst()->getUtilisateurId());
+		//$edtCours = new EdtEmplacementCours();
+		$abs_col = AbsenceEleveSaisieQuery::create()->filterByPlageTemps($dt_debut_creneau, $dt_fin_creneau)
+													->filterByEdtEmplacementCours($edtCours)->find();
+		if ($abs_col->isEmpty()) {
+			//====================================================
+			// Vérifier si le prof a fait l'appel sans passer par le choix "Cours", par exemple par le choix "Groupe"
+			$temoin_appel_non_fait_sur_le_groupe_courant=true;
+			if ($edtCours->getIdGroupe() != null) {
+				$tmp_abs_col = AbsenceEleveSaisieQuery::create()->filterByPlageTemps($dt_debut_creneau, $dt_fin_creneau)
+						->filterByGroupe($classe->getGroupes())
+						->find();
+				if (!$tmp_abs_col->isEmpty()) {
+					foreach ($tmp_abs_col as $abs) {//$abs = new AbsenceEleveSaisie();
+						if (($abs->getIdGroupe()!=null)&&($abs->getIdGroupe()==$edtCours->getIdGroupe())) {
+							$temoin_appel_non_fait_sur_le_groupe_courant=false;
+							break;
+						}
+					}
+				}
+			}
+
+			if($temoin_appel_non_fait_sur_le_groupe_courant) {
+				$appel_manquant = true;
+				$echo_str .= '<span style="color: red;">Non fait</span> - ';
+			}
+			//====================================================
+		} else {
+			$echo_str .= $abs_col->getFirst()->getCreatedAt('H:i').' ';
 		}
-	    }
-	    if ($edtCours->getUtilisateurProfessionnel() != null) {
-		$echo_str .= $edtCours->getUtilisateurProfessionnel()->getCivilite().' '
-			.$edtCours->getUtilisateurProfessionnel()->getNom().' '
-			.strtoupper(mb_substr($edtCours->getUtilisateurProfessionnel()->getPrenom(), 0 ,1)).'. ';
-	    }
-	    if ($edtCours->getEdtSalle() != null) {
-		$echo_str .= '- <span style="font-style: italic;">('.$edtCours->getEdtSalle()->getNumeroSalle().')</span>';
-	    }
-	    $echo_str .= '<br/>';
+
+		if ($edtCours->getGroupe() != null) {
+			$echo_str .= $edtCours->getGroupe()->getName().' ';
+			if ($abs_col->getFirst() !== null) {
+				$groupe_deja_sortis[] = Array($edtCours->getIdGroupe(),  $abs_col->getFirst()->getUtilisateurId());
+			}
+		}
+		if ($edtCours->getUtilisateurProfessionnel() != null) {
+			$echo_str .= $edtCours->getUtilisateurProfessionnel()->getCivilite().' '
+						.$edtCours->getUtilisateurProfessionnel()->getNom().' '
+						.strtoupper(mb_substr($edtCours->getUtilisateurProfessionnel()->getPrenom(), 0 ,1)).'. ';
+		}
+		if ($edtCours->getEdtSalle() != null) {
+			$echo_str .= '- <span style="font-style: italic;">('.$edtCours->getEdtSalle()->getNumeroSalle().')</span>';
+		}
+		$echo_str .= '<br/>';
 	}
 
 	//$classe = new Classe();
@@ -247,45 +268,47 @@ foreach($classe_col as $classe){
             break;
         }
     }
+
 	if ($abs_col->isEmpty()||$test_saisies_sorti) {
-	    if ($cours_col->isEmpty()) {
-		$appel_manquant = true;
-		$echo_str .= 'Appel non fait<br/>';
-	    }
+		if ($cours_col->isEmpty()) {
+			$appel_manquant = true;
+			$echo_str .= 'Appel non fait<br/>';
+		}
 	} else {
-	    if ($cours_col->isEmpty()) {
-		$appel_manquant = false;
-	    }
-	    foreach ($abs_col as $abs) {//$abs = new AbsenceEleveSaisie();
-        if($abs->getEleve()!=null && $abs->getEleve()->isEleveSorti($dt_debut_creneau)){
-                continue;
-        }
-		$affiche = false;
-		if ($abs->getIdClasse()!=null && !in_array(Array($abs->getIdClasse(), $abs->getUtilisateurId()), $classe_deja_sorties)) {
-		    $echo_str .= $abs->getCreatedAt('H:i').' ';
-		    $echo_str .= ' '.$abs->getClasse()->getNom().' ';
-		    $classe_deja_sorties[] = Array($abs->getClasse()->getId(), $abs->getUtilisateurId());
-		    $affiche = true;
+		if ($cours_col->isEmpty()) {
+			$appel_manquant = false;
 		}
-		if ($abs->getIdGroupe()!=null && !in_array(Array($abs->getIdGroupe(), $abs->getUtilisateurId()), $groupe_deja_sortis)) {
-		    $echo_str .= $abs->getCreatedAt('H:i').' ';
-		    $echo_str .= ' '.$abs->getGroupe()->getName().' ';
-		    $groupe_deja_sortis[] = Array($abs->getIdGroupe(), $abs->getUtilisateurId());
-		    $affiche = true;
+
+		foreach ($abs_col as $abs) {//$abs = new AbsenceEleveSaisie();
+			if($abs->getEleve()!=null && $abs->getEleve()->isEleveSorti($dt_debut_creneau)){
+				continue;
+			}
+			$affiche = false;
+			if ($abs->getIdClasse()!=null && !in_array(Array($abs->getIdClasse(), $abs->getUtilisateurId()), $classe_deja_sorties)) {
+				$echo_str .= $abs->getCreatedAt('H:i').' ';
+				$echo_str .= ' '.$abs->getClasse()->getNom().' ';
+				$classe_deja_sorties[] = Array($abs->getClasse()->getId(), $abs->getUtilisateurId());
+				$affiche = true;
+			}
+			if ($abs->getIdGroupe()!=null && !in_array(Array($abs->getIdGroupe(), $abs->getUtilisateurId()), $groupe_deja_sortis)) {
+				$echo_str .= $abs->getCreatedAt('H:i').' ';
+				$echo_str .= ' '.$abs->getGroupe()->getName().' ';
+				$groupe_deja_sortis[] = Array($abs->getIdGroupe(), $abs->getUtilisateurId());
+				$affiche = true;
+			}
+			if ($affiche) {//on affiche un appel donc on va afficher les infos du prof
+				$echo_str .= ' '.$abs->getUtilisateurProfessionnel()->getCivilite().' '
+					.$abs->getUtilisateurProfessionnel()->getNom().' '
+					.strtoupper(mb_substr($abs->getUtilisateurProfessionnel()->getPrenom(), 0 ,1)).'. ';
+				$prof_deja_sortis[] = $abs->getUtilisateurProfessionnel()->getPrimaryKey();
+				$echo_str .= '<br/>';
+			}
 		}
-		if ($affiche) {//on affiche un appel donc on va afficher les infos du prof
-		    $echo_str .= ' '.$abs->getUtilisateurProfessionnel()->getCivilite().' '
-			    .$abs->getUtilisateurProfessionnel()->getNom().' '
-			    .strtoupper(mb_substr($abs->getUtilisateurProfessionnel()->getPrenom(), 0 ,1)).'. ';
-		    $prof_deja_sortis[] = $abs->getUtilisateurProfessionnel()->getPrimaryKey();
-		    $echo_str .= '<br/>';
-		}
-	    }
 	}
 	if ($appel_manquant) {
-	    echo '<td style="min-width: 350px;">';
+		echo '<td style="min-width: 350px;">';
 	} else {
-	    echo '<td style="min-width: 350px; background-color:#9f9">';
+		echo '<td style="min-width: 350px; background-color:#9f9">';
 	}
 	echo $echo_str;
 
