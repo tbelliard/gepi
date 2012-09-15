@@ -41,3 +41,5 @@ images/background/degrade1_very_small.png
 
 # Ignore Les plugins
 mod_plugins/plugin*
+mod_plugins/change_statut*
+
