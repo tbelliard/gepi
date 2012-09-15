@@ -667,15 +667,21 @@ function affiche_utilisateur($login,$id_classe) {
     $prenom = @mysql_result($req, 0, 'prenom');
     $civilite = @mysql_result($req, 0, 'civilite');
     $req_format = mysql_query("select format_nom from classes where id = '".$id_classe."'");
-    $format = mysql_result($req_format, 0, 'format_nom');
-    $result = "";
-    $i='';
-    if ((($format == 'ni') OR ($format == 'in') OR ($format == 'cni') OR ($format == 'cin')) AND ($prenom != '')) {
-        $temp = explode("-", $prenom);
-        $i = mb_substr($temp[0], 0, 1);
-        if (isset($temp[1]) and ($temp[1] != '')) $i .= "-".mb_substr($temp[1], 0, 1);
-        $i .= ". ";
-    }
+	if(mysql_num_rows($req_format)>0) {
+		$format = mysql_result($req_format, 0, 'format_nom');
+		$result = "";
+		$i='';
+		if ((($format == 'ni') OR ($format == 'in') OR ($format == 'cni') OR ($format == 'cin')) AND ($prenom != '')) {
+		    $temp = explode("-", $prenom);
+		    $i = mb_substr($temp[0], 0, 1);
+		    if (isset($temp[1]) and ($temp[1] != '')) $i .= "-".mb_substr($temp[1], 0, 1);
+		    $i .= ". ";
+		}
+	}
+	else {
+		$format="";
+	}
+
     switch( $format ) {
     case 'np':
     $result = $nom." ".$prenom;
@@ -5479,6 +5485,32 @@ function temoin_check_srv($id_div_retour="retour_ping", $nom_js_func="check_srv"
 
 	$nom_js_func();
 </script>\n";
+}
+
+
+/** Fonction destinée à supprimer les accents HTML dans des enregistrements de la table setting
+ *
+ * @param string $name champ name dans la table setting
+ *
+ * @return integer 0 Correction inutile, 1 Correction réussie, 2 Echec de la correction.
+ */
+
+function virer_accents_html_setting($name) {
+	$tab = array_flip (get_html_translation_table(HTML_ENTITIES));
+	$valeur=getSettingValue($name);
+	$correction=ensure_utf8(strtr($valeur, $tab));
+	/*
+	$f=fopen("/tmp/correction_fb.txt", "a+");
+	fwrite($f, "=========================================================================\n");
+	fwrite($f, "name=$name\n");
+	fwrite($f, "value=$valeur\n");
+	fwrite($f, "correction=$correction\n");
+	fclose($f);
+	*/
+	if($valeur!=$correction) {
+		if(saveSetting($name, mysql_real_escape_string($correction))) {return 1;} else {return 2;}
+	}
+	else {return 0;}
 }
 
 ?>

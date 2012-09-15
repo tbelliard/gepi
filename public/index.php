@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
  *
  * This file is part of GEPI.
  *
@@ -25,7 +25,6 @@ $niveau_arbo = "public";
 require_once("../lib/initialisations.inc.php");
 
 require_once("../lib/mincals.inc");
-require_once("../lib/transform_functions.php");
 require_once("lib/functions.inc");
 // On vérifie si l'accès est restreint ou non
 require_once("lib/auth.php");
@@ -81,7 +80,8 @@ $today=mktime(0,0,0,$month,$day,$year);
 //**************** EN-TETE *****************
 $titre_page = "Cahier de textes";
 $page_accueil = "index.php?id_classe=-1";
-require_once("../lib/header.inc.php");
+//require_once("../lib/header.inc.php");
+require_once("lib/header_public.inc.php");
 //**************** FIN EN-TETE *************
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
@@ -175,8 +175,6 @@ if (($nb_test == 0) and ($id_classe != -1) and ($delai != 0)) {
             // Affichage des devoirs dans chaque matière
             while ($ind < $nb_devoirs_cahier_texte) {
                 $content = mysql_result($appel_devoirs_cahier_texte, $ind, 'contenu');
-                // Mise en forme du texte
-                include "../lib/transform.php";
                 $date_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'date_ct');
                 $id_devoirs =  mysql_result($appel_devoirs_cahier_texte, $ind, 'id_ct');
                 $id_groupe_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'id');
@@ -188,12 +186,12 @@ if (($nb_test == 0) and ($id_classe != -1) and ($delai != 0)) {
                   if ($k != 0) $chaine .= ", ";
                   $chaine .= htmlspecialchars($prof[0])." ".mb_substr(htmlspecialchars($prof[1]),0,1).".";
                 }
-                $html = "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["f"]."; padding: 2px; margin: 2px;\"><font color='".$color_police_matieres."' style='font-variant: small-caps;'><small><b><u>".$matiere_devoirs." (".$chaine."):</u></b></small></font>".$html;
+                $content = "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["f"]."; padding: 2px; margin: 2px;\"><font color='".$color_police_matieres."' style='font-variant: small-caps;'><small><b><u>".$matiere_devoirs." (".$chaine."):</u></b></small></font>".$content;
                 // fichier joint
-                $html .= affiche_docs_joints($id_devoirs,"t");
-                $html .="</div>";
+                $content .= affiche_docs_joints($id_devoirs,"t");
+                $content .="</div>";
                 if ($nb_devoirs_cahier_texte != 0)
-                    echo $html;
+                    echo $content;
                 $ind++;
             }
         echo "</div><br />";
@@ -260,8 +258,6 @@ if ($delai != 0) {
             // Affichage des devoirs dans chaque matière
             while ($ind < $nb_devoirs_cahier_texte) {
                 $content = mysql_result($appel_devoirs_cahier_texte, $ind, 'contenu');
-                // Mise en forme du texte
-                include "../lib/transform.php";
                 $date_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'date_ct');
                 $id_devoirs =  mysql_result($appel_devoirs_cahier_texte, $ind, 'id_ct');
                 $id_groupe_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'id');
@@ -273,11 +269,11 @@ if ($delai != 0) {
                   if ($k != 0) $chaine .= ", ";
                   $chaine .= htmlspecialchars($prof[0])." ".mb_substr(htmlspecialchars($prof[1]),0,1).".";
                 }
-                $html = "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["f"]."; padding: 2px; margin: 2px;\"><font color='".$color_police_matieres."' style='font-variant: small-caps;'><small><b><u>".$matiere_devoirs." (".$chaine.") :</u></b></small></font>\n".$html;
+                $content = "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["f"]."; padding: 2px; margin: 2px;\"><font color='".$color_police_matieres."' style='font-variant: small-caps;'><small><b><u>".$matiere_devoirs." (".$chaine.") :</u></b></small></font>\n".$content;
                 // fichier joint
-                $html .= affiche_docs_joints($id_devoirs,"t");
-                $html .="</div>\n";
-                if ($nb_devoirs_cahier_texte != 0) echo $html;
+                $content .= affiche_docs_joints($id_devoirs,"t");
+                $content .="</div>\n";
+                if ($nb_devoirs_cahier_texte != 0) echo $content;
                 $ind++;
             }
         echo "</div><br />\n";
@@ -291,11 +287,10 @@ $appel_info_cahier_texte = mysql_query("SELECT contenu, id_ct  FROM ct_entry WHE
 $nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
 $content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
 $id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
-include "../lib/transform.php";
 // documents joints
-$html .= affiche_docs_joints($id_ct,"c");
-if ($html != '')
-echo "<b>Informations Générales</b><table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["i"]."; padding: 2px; margin: 2px;\" width = '100%' cellpadding='5'><tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["i"]."; padding: 2px; margin: 2px;\"><td>".$html."</td></tr></table><br />\n";
+$content .= affiche_docs_joints($id_ct,"c");
+if ($content != '')
+echo "<b>Informations Générales</b><table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["i"]."; padding: 2px; margin: 2px;\" width = '100%' cellpadding='5'><tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["i"]."; padding: 2px; margin: 2px;\"><td>".$content."</td></tr></table><br />\n";
 echo "</td>\n";
 // Fin de la première colonne
 
@@ -372,8 +367,7 @@ while (true) {
     }
     // Passage en HTML
     $content = &$not_dev->contenu;
-    include ("../lib/transform.php");
-    $html .= affiche_docs_joints($not_dev->id_ct,$not_dev->type);
+    $content .= affiche_docs_joints($not_dev->id_ct,$not_dev->type);
     $titre = "";
     if ($not_dev->type == "t") {
         $titre .= "<strong>A faire pour le : </strong>\n";
@@ -398,7 +392,7 @@ while (true) {
     <td style=\"border-style:solid; border-width: 0px 0px 0px 0px; border-color: #000000; background: ".$color_fond_notices[$not_dev->type]."; padding: 2px; margin: 0px;\">
     ".$titre."</td>
     <tr>
-    <td style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule_gen."; padding: 0.5px 10px 0.5px 10px; margin: 0px;\">".$html."</td>
+    <td style=\"border-style:solid; border-width:0px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule_gen."; padding: 0.5px 10px 0.5px 10px; margin: 0px;\">".$content."</td>
     </tr>
     </table><br />\n";
 

@@ -736,7 +736,11 @@ elseif(($_SESSION['statut']=="professeur")||($_SESSION['statut']=="cpe")) {
 		if(!isset($msg)){$msg="";}
 
 		//debug_var();
+
+		// En cpe ou prof, on n'a pas accès à la modification de la fiche... donc pas de reg_no_gep
+		/*
 		$sql="SELECT 1=1 FROM eleves WHERE login='$eleve_login' AND elenoet='$reg_no_gep';";
+		//echo "$sql<br />";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)==0) {
 			tentative_intrusion("2", "Tentative d'upload par un ".$_SESSION['statut']." de la photo d'un élève ($eleve_login) pour un elenoet ($reg_no_gep) ne correspondant pas à cet élève.");
@@ -745,6 +749,16 @@ elseif(($_SESSION['statut']=="professeur")||($_SESSION['statut']=="cpe")) {
 			die();
 		}
 		else {
+		*/
+		$sql="SELECT elenoet FROM eleves WHERE login='$eleve_login' AND elenoet!='';";
+		//echo "$sql<br />";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)==0) {
+			$msg.="L'élève n'a pas d'elenoet.<br />La mise en place de la photo n'est pas possible.<br />";
+		}
+		else {
+			$reg_no_gep=mysql_result($test,0,"elenoet");
+
 			// Envoi de la photo
 			if((isset($reg_no_gep))&&(isset($eleve_login))) {
 				if($reg_no_gep!="") {
@@ -757,12 +771,12 @@ elseif(($_SESSION['statut']=="professeur")||($_SESSION['statut']=="cpe")) {
 						}
 						elseif(($_SESSION['statut']=='cpe')&&(getSettingValue("CpeAccesUploadPhotosEleves")!='yes')) {
 							tentative_intrusion("2", "Tentative d'upload par un cpe de la photo d'un élève ($eleve_login), sans avoir l'autorisation d'upload.");
-							echo "L'upload de photo n'est pas autorisé pour les professeurs.";
+							echo "L'upload de photo n'est pas autorisé pour les cpe.";
 							require ("../lib/footer.inc.php");
 							die();
 						}
 						else {
-							if(($_SESSION['statut']=='cpe')||(is_pp($_SESSION['login'],"",$eleve_login))) {
+							if(($_SESSION['statut']=='cpe')||(is_cpe($_SESSION['login'],"",$eleve_login))) {
 								if(isset($_POST['suppr_filephoto'])) {
 									check_token();
 									if($_POST['suppr_filephoto']=='y'){
@@ -1834,7 +1848,7 @@ if(isset($eleve_login)){
 	//echo "\$reg_regime=$reg_regime<br />";
 	//echo "\$reg_doublant=$reg_doublant<br />";
 
-	if($_SESSION['statut']=="professeur") {
+	if(($_SESSION['statut']=="professeur")||($_SESSION['statut']=='cpe')) {
 		echo "<table border='0' summary='Infos 2'>\n";
 
 		echo "<tr><th style='text-align:left;'>Né(e) le: </th><td>$eleve_naissance_jour/$eleve_naissance_mois/$eleve_naissance_annee</td></tr>\n";
@@ -1972,7 +1986,7 @@ if($_SESSION['statut']=="professeur") {
 }
 else{
 */
-if($_SESSION['statut']!="professeur") {
+if(($_SESSION['statut']!="professeur")&&($_SESSION['statut']!="cpe")) {
 ?>
 <center>
 <!--table border = '1' CELLPADDING = '5'-->

@@ -222,6 +222,8 @@ while ($i < $nombre_lignes){
 <input type='submit' value='Enregistrer' style='margin-left: 70%; margin-top: 25px; margin-bottom: 100px;' />
 </form>
 
+<p style='text-indent: -4em; margin-left: 4em;'><em>NOTE&nbsp;:</em> Les matières qui ne sont associées à aucun enseignement apparaissent en gris.</p>
+
 <script type='text/javascript'>
 function afficher_masquer_matieres_sans_grp(mode) {
 	for(i=0;i<<?php

@@ -1117,6 +1117,9 @@ echo "<label for='choix_encodage_csv_windows_1252' id='texte_choix_encodage_csv_
 echo "</p>\n";
 
 echo "<br /><center><input type=\"submit\" value=\"Enregistrer\" /></center>\n";
+
+echo "<p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Ce paramétrage concerne les fichiers produits par Gepi et proposés au téléchargement.<br />Cela ne concerne pas les fichiers que vous uploadez/envoyez vers Gepi.</p>\n";
+
 echo "</fieldset>\n";
 echo "</form>\n";
 echo "  <hr />\n";

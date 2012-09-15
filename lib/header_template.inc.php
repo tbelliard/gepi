@@ -145,7 +145,12 @@ $scriptaculous = isset($utilisation_scriptaculous) ? $utilisation_scriptaculous 
 $script_effet = isset($scriptaculous_effet) ? $scriptaculous_effet : NULL;
 if ($scriptaculous == "ok") {
 	// On affiche le lien qui charge scriptaculous
-	$tbs_librairies[]=$gepiPath."/lib/scriptaculous.js?load=".$script_effet;
+	if(isset($script_effet)) {
+		$tbs_librairies[]=$gepiPath."/lib/scriptaculous.js?load=".$script_effet;
+	}
+	else {
+		$tbs_librairies[]=$gepiPath."/lib/scriptaculous.js";
+	}
 }
 // Utilisation de windows.js
 $windows = isset($utilisation_win) ? $utilisation_win : NULL;
