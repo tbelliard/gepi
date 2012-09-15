@@ -427,26 +427,7 @@ else{
 
 	//echo "\$step=$step<br />\n";
 
-	/*
-	if(($step==0)||
-		($step==1)||
-		($step==2)||
-		($step==3)||
-		($step==7)||
-		($step==8)||
-		($step==9)||
-		($step==10)||
-		($step==11)||
-		($step==14)
-		) {
-		echo "<div style='float: right; border: 1px solid black; width: 4em;'>
-<form name='formstop' action='".$_SERVER['PHP_SELF']."' method='post'>
-<input type='checkbox' name='stop' id='stop' value='y' /> Stop
-</form>
-</div>\n";
-	}
-	*/
-
+	
 	// On va uploader les fichiers XML dans le tempdir de l'utilisateur (administrateur, ou scolarité pour les màj Sconet)
 	$tempdir=get_user_temp_directory();
 	if(!$tempdir){
@@ -1098,12 +1079,17 @@ else{
 						}
 					}
 				}
-				/*
 				else{
-					echo $eleves[$i]['prenom']." ".$eleves[$i]['nom']." n'est pas dans \$tab_ele_id donc pas dans une classe...<br />";
+					// echo $eleves[$i]['prenom']." ".$eleves[$i]['nom']." n'est pas dans \$tab_ele_id donc pas dans une classe..."."<br />";
 					// On devrait supprimer l'élève de la table là, non?
+                                    // Si l'élève est encore dans la table, on enregistre sa date de sortie
+                                   //création de la chaine au format timestamp
+                                    list($day, $month, $year) = explode('/', $eleves[$i]['date_sortie']);
+		                   $date_de_sortie_eleve = $year."-".$month."-".$day." 00:00:00"; 
+                                    $sql_corrige="UPDATE eleves SET date_sortie = '$date_de_sortie_eleve'  WHERE ele_id='".$eleves[$i]['eleve_id']."';";
+                                    //echo $eleves[$i]['prenom']." ".$eleves[$i]['nom'].' mise a jour <br />'.$sql.'<br /><br />';
+                                    $res_corrige=mysql_query($sql_corrige);
 				}
-				*/
 			}
 
 			/*
