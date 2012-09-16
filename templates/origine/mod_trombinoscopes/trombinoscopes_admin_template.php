@@ -627,7 +627,7 @@ if (!isset($aid_trouve)) {
 		<span style="margin-left: 40px;">
 		- soit les photos  encodées au format JPEG nommées d'après les ELENOET des élèves (<em>ELENOET.jpg</em>) ou pour, un GEPI multisite, les login des élèves (<em>login.jpg</em>) ;<br/>
 		</span><span style="margin-left: 40px;">
-		- soit les photos  encodées au format JPEG et un fichier au <a href="http://fr.wikipedia.org/wiki/Comma-separated_values" target="_blank">format CSV</a>, <b>impérativement nommé <em>correspondances.csv</em></b>, établissant les correspondances entre (premier champ) les noms des fichiers photos et (second champ) les ELENOET des élèves ou, pour un GEPI multisite, les login des élèves (<a href="correspondances.csv" target="_blank">exemple de fichier correspondances.csv</a>) ; pour générer le fichier correspondances.csv vous pouvez <a href="trombinoscopes_admin.php?liste_eleves=oui<?php echo add_token_in_url(); ?>">récupérer la liste</a> des élèves avec prénom, nom, eleonet et login.  <br/>
+		- soit les photos  encodées au format JPEG et un fichier au <a href="http://fr.wikipedia.org/wiki/Comma-separated_values" target="_blank">format CSV</a>, <b>impérativement nommé <em>correspondances.csv</em> et avec des , comme séparateur de champs</b>, établissant les correspondances entre (premier champ) les noms des fichiers photos et (second champ) les ELENOET des élèves ou, pour un GEPI multisite, les login des élèves (<a href="correspondances.csv" target="_blank">exemple de fichier correspondances.csv</a>) ; pour générer le fichier correspondances.csv vous pouvez <a href="trombinoscopes_admin.php?liste_eleves=oui<?php echo add_token_in_url(); ?>">récupérer la liste</a> des élèves avec prénom, nom, eleonet et login.  <br/>
 		</span>
 		</p>
 
