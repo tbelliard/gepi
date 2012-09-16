@@ -747,6 +747,7 @@ $td = date("d",$i);
                 // Plus rien à afficher, on sort de la boucle
                 break;
               }
+              $content=$not_dev->contenu;
               $content .= affiche_docs_joints($not_dev->id_ct,$not_dev->type);
               $titre = "";
               if ($not_dev->type == "t") {
