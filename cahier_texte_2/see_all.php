@@ -169,6 +169,8 @@ if (getSettingValue("active_cahiers_texte")!='y') {
 	die("<p class='grand centre_texte'>Le cahier de textes n'est pas accessible pour le moment.</p>");
 }
 
+$html="";
+
 echo "<div class='centre_table'>\n";
 
 	$infos_generales="";
@@ -204,7 +206,9 @@ echo "<div class='centre_table'>\n";
 					$nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
 					$content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
 					$id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
-					include "../lib/transform.php";
+					//include "../lib/transform.php";
+
+					$html .= $content;
 					$html .= affiche_docs_joints($id_ct,"c");
 
 					if($html!="") {

@@ -1046,7 +1046,6 @@ elseif($mode=='eleve') {
 	$tab_grp=get_groups_for_eleve($login_eleve, $id_classe);
 }
 
-
 if(count($tab_grp)>0) {
 	$infos_generales="";
 
@@ -1061,8 +1060,9 @@ if(count($tab_grp)>0) {
 		$nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
 		$content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
 		$id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
-		include "../lib/transform.php";
-		$html .= affiche_docs_joints($id_ct,"c");
+		//include "../lib/transform.php";
+		$html=$content;
+		$html.=affiche_docs_joints($id_ct,"c");
 
 		if($html!="") {
 			$infos_generales.="<div class='see_all_general couleur_bord_tableau_notice color_fond_notices_i' style='width:98%;'>";
