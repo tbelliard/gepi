@@ -199,14 +199,39 @@ foreach($classe_col as $classe){
 	$dt_presque_fin_creneau = clone $dt_fin_creneau;
 	$dt_presque_fin_creneau->setTime($choix_creneau_obj->getHeurefinDefiniePeriode('H'), $choix_creneau_obj->getHeurefinDefiniePeriode('i') - 1);
 	$cours_col->addCollection( EdtEmplacementCoursHelper::getColEdtEmplacementCoursActuel($edtCoursCol, $dt_presque_fin_creneau));
-	
-
+/*
+echo "<td>";
+echo "\$dt_presque_fin_creneau=";
+echo "<pre>";
+echo print_r($dt_presque_fin_creneau);
+echo "</pre>";
+echo "<br />";
+echo "\$dt_debut_creneau=";
+echo "<pre>";
+echo print_r($dt_debut_creneau);
+echo "</pre>";
+echo "<br />";
+echo "\$dt_fin_creneau=";
+echo "<pre>";
+echo print_r($dt_fin_creneau);
+echo "</pre>";
+echo "<br />";
+echo "</td>";
+*/
 	//on teste si l'appel a été fait
 	$appel_manquant = false;
 	$echo_str = '';
 	$classe_deja_sorties = Array();//liste des appels deja affiché sous la form [id_classe, id_utilisateur]
 	$groupe_deja_sortis = Array();//liste des appels deja affiché sous la form [id_groupe, id_utilisateur]
 	foreach ($cours_col as $edtCours) {//on regarde tous les cours enregistrés dans l'edt
+		$echo_str .= "<span title=\"Cours dans l'emploi du temps";
+		if ($edtCours->getGroupe() != null) {
+			$echo_str .= " (id_groupe:".$edtCours->getIdGroupe().")";
+		}
+		$echo_str .= "\">";
+
+//$echo_str .= "edt.id_groupe=".$edtCours->getIdGroupe()." - ";
+
 		//$edtCours = new EdtEmplacementCours();
 		$abs_col = AbsenceEleveSaisieQuery::create()->filterByPlageTemps($dt_debut_creneau, $dt_fin_creneau)
 													->filterByEdtEmplacementCours($edtCours)->find();
@@ -220,6 +245,11 @@ foreach($classe_col as $classe){
 						->find();
 				if (!$tmp_abs_col->isEmpty()) {
 					foreach ($tmp_abs_col as $abs) {//$abs = new AbsenceEleveSaisie();
+/*
+if ($abs->getIdGroupe()!=null) {
+$echo_str .= "abs.id_groupe=".$abs->getIdGroupe()." - ";
+}
+*/
 						if (($abs->getIdGroupe()!=null)&&($abs->getIdGroupe()==$edtCours->getIdGroupe())) {
 							$temoin_appel_non_fait_sur_le_groupe_courant=false;
 							break;
@@ -251,6 +281,7 @@ foreach($classe_col as $classe){
 		if ($edtCours->getEdtSalle() != null) {
 			$echo_str .= '- <span style="font-style: italic;">('.$edtCours->getEdtSalle()->getNumeroSalle().')</span>';
 		}
+		$echo_str .= "</span>";
 		$echo_str .= '<br/>';
 	}
 
@@ -290,9 +321,15 @@ foreach($classe_col as $classe){
 				$classe_deja_sorties[] = Array($abs->getClasse()->getId(), $abs->getUtilisateurId());
 				$affiche = true;
 			}
-			if ($abs->getIdGroupe()!=null && !in_array(Array($abs->getIdGroupe(), $abs->getUtilisateurId()), $groupe_deja_sortis)) {
+			//if ($abs->getIdGroupe()!=null && !in_array(Array($abs->getIdGroupe(), $abs->getUtilisateurId()), $groupe_deja_sortis) && (!$abs->getEleve())) {
+			if ($abs->getIdGroupe()!=null && !in_array(Array($abs->getIdGroupe(), $abs->getUtilisateurId()), $groupe_deja_sortis) && ($abs->getEleve()==null)) {
+				$echo_str .= "<span title=\"Saisie/appel pour le groupe n°".$abs->getIdGroupe()."\">";
+				//$echo_str .= $abs->getPrimaryKey().' ';
+				//$echo_str .= "abs.id_groupe=".$abs->getIdGroupe().' ';
+				//if($abs->getEleve()) {$echo_str .= "- ".$abs->getEleve()->getId()." - ";}
 				$echo_str .= $abs->getCreatedAt('H:i').' ';
 				$echo_str .= ' '.$abs->getGroupe()->getName().' ';
+				$echo_str .= "</span>";
 				$groupe_deja_sortis[] = Array($abs->getIdGroupe(), $abs->getUtilisateurId());
 				$affiche = true;
 			}
