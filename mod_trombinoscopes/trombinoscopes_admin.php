@@ -692,14 +692,18 @@ if (isset($_POST['action']) and ($_POST['action']=='upload_photos_eleves'))  {
 					aplanir_tree($dir_temp_photos_eleves,$dir_temp_photos_eleves);
 
 					// on renomme éventuellement les photos
-					if (file_exists($dir_temp_photos_eleves."/correspondances.csv"))
+					if (file_exists($dir_temp_photos_eleves."/correspondances.csv")) { 
 						if (($fichier_csv=fopen($dir_temp_photos_eleves."/correspondances.csv","r"))!==FALSE)
 							{
 							while (($une_ligne=fgetcsv($fichier_csv,1000,","))!==FALSE) 
-								if (count($une_ligne)==2) 
-									rename($dir_temp_photos_eleves."/".$une_ligne[0],$dir_temp_photos_eleves."/".$une_ligne[1].".jpg");
+								if (count($une_ligne)==2) {
+                                                                 if (file_exists($dir_temp_photos_eleves."/".$une_ligne[0])) {
+                                                                     rename($dir_temp_photos_eleves."/".$une_ligne[0],$dir_temp_photos_eleves."/".$une_ligne[1].".jpg");
+                                                                 }
+                                                          }
 							fclose($fichier_csv);
 							}
+					}
 
 					$repertoire_photos=""; $msg_multisite="";
 					if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite']=='y')
