@@ -169,7 +169,7 @@ if (getSettingValue("active_cahiers_texte")!='y') {
 	die("<p class='grand centre_texte'>Le cahier de textes n'est pas accessible pour le moment.</p>");
 }
 
-$html="";
+$content="";
 
 echo "<div class='centre_table'>\n";
 
@@ -204,17 +204,15 @@ echo "<div class='centre_table'>\n";
 					//echo "$sql<br />";
 					$appel_info_cahier_texte = mysql_query($sql);
 					$nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
-					$content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
+					$content .= @mysql_result($appel_info_cahier_texte, 0, 'contenu');
 					$id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
-					//include "../lib/transform.php";
 
-					$html .= $content;
-					$html .= affiche_docs_joints($id_ct,"c");
+					$content .= affiche_docs_joints($id_ct,"c");
 
-					if($html!="") {
+					if($content!="") {
 						$infos_generales.="<div class='see_all_general couleur_bord_tableau_notice color_fond_notices_i' style='width:98%;'>";
 						$infos_generales.="<h3>".$tmp_current_group['name']." (<em>".$tmp_current_group['description']." en ".$tmp_current_group['classlist_string']."</em>)"."</h3>";
-						$infos_generales.=$html;
+						$infos_generales.=$content;
 						$infos_generales.="</div>";
 					}
 				}
