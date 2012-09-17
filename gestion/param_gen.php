@@ -1203,7 +1203,7 @@ responsables&nbsp;:<br />
 
 			echo "<input type='radio' name='acces_app_ele_resp' id='acces_app_ele_resp_periode_close' value='periode_close' onchange=\"changement();\" ";
 			if($acces_app_ele_resp=='periode_close') {echo "checked ";}
-			echo "/> <input type='text' name='delais_apres_cloture' id='delais_apres_cloture' value='$delais_apres_cloture' size='1' onchange='changement();document.getElementById('acces_app_ele_resp_periode_close').checked=true;' onkeydown=\"clavier_2(this.id,event,1,600);document.getElementById('acces_app_ele_resp_periode_close').checked=true;\" /><label for='acces_app_ele_resp_periode_close'> jours après la clôture de la période</label>\n";
+			echo "/> <input type='text' name='delais_apres_cloture' id='delais_apres_cloture' value='$delais_apres_cloture' size='1' onchange=\"changement();document.getElementById('acces_app_ele_resp_periode_close').checked=true;\" onkeydown=\"clavier_2(this.id,event,1,600);document.getElementById('acces_app_ele_resp_periode_close').checked=true;\" /><label for='acces_app_ele_resp_periode_close'> jours après la clôture de la période</label>\n";
 			?>
 		</td>
 	</tr>
