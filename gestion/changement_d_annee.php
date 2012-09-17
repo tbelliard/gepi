@@ -394,17 +394,22 @@ echo "<p><br /></p>\n";
 
 echo "<p style='text-indent:-11em; margin-left:11em;'><em>Optionnel également&nbsp;:</em> Vous pouvez vider les absences de l'année passée, l'emploi du temps, les incidents/sanctions du module discipline en consultant la page de <a href='../utilitaires/clean_tables.php#nettoyage_par_le_vide'>Nettoyage de la base</a>.</p>\n";
 
+echo "<p><br /></p>\n";
+
+echo "<a name='svg_ext'></a>";
+echo "<p><em>NOTES&nbsp;:</em></p>\n";
+echo "<ul>\n";
+echo "<li>\n";
+echo "<p>La sauvegarde sur périphérique externe permet de remettre en place un GEPI si jamais votre GEPI en ligne subit des dégats (<em>crash du disque dur hébergeant votre GEPI, incendie du local serveur,...</em>).<br />Vous n'aurez normalement jamais besoin de ces sauvegardes, mais mieux vaut prendre des précautions.</p>\n";
+echo "</li>\n";
+echo "<li>\n";
 echo "<p>Lors de l'initialisation de l'année, la date à laquelle une période a été close pour telle classe sera réinitialisée.<br />Ce n'était pas le cas pour une initialisation faite avant le 17/09/2012.<br />Pour forcer cette réinitialisation, <a href='".$_SERVER['PHP_SELF']."?reinit_dates_verrouillage_periode=y".add_token_in_url()."'>cliquer ici</a>.<br />Cette date de verrouillage présente un intérêt pour l'accès des responsables et élèves aux appréciations des bulletins dans le cas où vous avez choisi un accès automatique N jours après la clôture de la période.</p>\n";
 if(getSettingValue("active_module_absence")=="2"){
 	echo "<p>Ces dates de verrouillage, indiquant à quelle date la période de notes a été close, n'ont rien à voir avec les dates déclarées pour les fins de périodes d'absences dans la page de Verrouillage.<br />
 	Les dates de fin de période affichées dans la page de Verrouillage concernent la liste des élèves qui seront présentés dans vos groupes/classes pour la saisie des absences (<em>tel élève arrivé au 2è trimestre ou ayant changé de classe,... doit ou ne doit pas apparaître sur telle période dans tel groupe/classe</em>).</p>\n";
 }
-echo "<p><br /></p>\n";
-
-echo "<a name='svg_ext'></a>";
-echo "<p><em>NOTES&nbsp;:</em></p>\n";
-echo "<p style='margin-left:3em;'>La sauvegarde sur périphérique externe permet de remettre en place un GEPI si jamais votre GEPI en ligne subit des dégats (<em>crash du disque dur hébergeant votre GEPI, incendie du local serveur,...</em>).<br />Vous n'aurez normalement jamais besoin de ces sauvegardes, mais mieux vaut prendre des précautions.</p>\n";
-
+echo "</li>\n";
+echo "</ul>\n";
 echo "<p><br /></p>\n";
 
 require("../lib/footer.inc.php");
