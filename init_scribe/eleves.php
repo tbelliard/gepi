@@ -185,6 +185,15 @@ if (isset($_POST['step'])) {
                 }
             }
 
+			$sql="update periodes set date_verrouillage='0000-00-00 00:00:00';";
+			$res=mysql_query($sql);
+			if($res) {
+				echo "Réinitialisation des dates de verrouillage de périodes effectuée.<br />";
+			}
+			else {
+				echo "Erreur lors de la réinitialisation des dates de verrouillage de périodes.<br />";
+			}
+
             // On efface les classes qui ne sont pas réutilisées cette année  ainsi que les entrées correspondantes dans les groupes
             $sql = mysql_query("select distinct id_classe from periodes where verouiller='T'");
             $k = 0;
