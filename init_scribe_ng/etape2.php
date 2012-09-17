@@ -107,6 +107,15 @@ if ($_POST['step'] == "2") {
             }
         }
 
+		$sql="update periodes set date_verrouillage='0000-00-00 00:00:00';";
+		$res=mysql_query($sql);
+		if($res) {
+			echo "Réinitialisation des dates de verrouillage de périodes effectuée.<br />";
+		}
+		else {
+			echo "Erreur lors de la réinitialisation des dates de verrouillage de périodes.<br />";
+		}
+
         /*
          * Association des eleves a leur classes (pour chaque classe qui possede des periodes)
          * car on ne peut pas associer d'eleve a une classe sans periode
