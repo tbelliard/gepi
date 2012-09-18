@@ -212,6 +212,11 @@ $titre_page = "Mise à jour eleves/responsables";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
+if((isset($_POST['temoin_suhosin_1']))&&(!isset($_POST['temoin_suhosin_2']))) {
+	echo "<p style='color:red'>Il semble que certaines variables n'ont pas été transmises.<br />Cela peut arriver lorsqu'on tente de transmettre (<em>cocher trop de cases</em>) trop de variables.<br />Vous devriez tenter d'afficher moins de lignes à la fois.</p>\n";
+	echo alerte_config_suhosin();
+}
+
 require_once("../init_xml2/init_xml_lib.php");
 
 //debug_var();
@@ -2467,6 +2472,8 @@ else{
 				echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 				//==============================
 				echo "<input type='hidden' name='eff_tranche' value='$eff_tranche' />\n";
+
+				echo "<input type='hidden' name='temoin_suhosin_1' value='step4' />\n";
 /*
 				for($i=$eff_tranche;$i<count($tab_ele_id_diff);$i++){
 					//echo "$i: ";
@@ -3443,6 +3450,8 @@ else{
 				//echo "<p align='center'><input type=submit value='Enregistrer les modifications' /></p>\n";
 
 				echo add_token_field();
+
+				echo "<input type='hidden' name='temoin_suhosin_2' value='step4' />\n";
 
 				echo "</form>\n";
 			}
@@ -6438,6 +6447,7 @@ else{
 
 				echo "<input type='hidden' name='parcours_suppressions' value='y' />\n";
 
+				echo "<input type='hidden' name='temoin_suhosin_1' value='step14b' />\n";
 
 				$sql="SELECT col2 FROM tempo2 WHERE col1='pers_id_disparu' LIMIT $eff_tranche_recherche_diff;";
 				info_debug($sql);
@@ -6580,7 +6590,9 @@ else{
 </script>\n";
 
 				echo "<p><input type='submit' value='Supprimer les personnes cochées et passer à la suite' /></p>\n";
-	
+
+				echo "<input type='hidden' name='temoin_suhosin_2' value='step14b' />\n";
+
 				echo "</form>\n";
 
 			}
@@ -6779,6 +6791,8 @@ else{
 			echo "<input type='hidden' name='ne_pas_proposer_redoublonnage_adresse' value='$ne_pas_proposer_redoublonnage_adresse' />\n";
 			echo "<input type='hidden' name='eff_tranche' value='$eff_tranche' />\n";
 			echo add_token_field();
+
+			echo "<input type='hidden' name='temoin_suhosin_1' value='step16' />\n";
 
 			if(!isset($parcours_diff)) {
 				info_debug("========================================================");
@@ -7680,6 +7694,8 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 				echo "<p><input type='submit' value='Valider les modifications' /></p>\n";
 			}
 
+			echo "<input type='hidden' name='temoin_suhosin_2' value='step16' />\n";
+
 			//echo "<input type='hidden' name='is_posted' value='yes' />\n";
 			echo "</form>\n";
 
@@ -8332,6 +8348,8 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 			//==============================
 			echo "<input type='hidden' name='eff_tranche' value='$eff_tranche' />\n";
 			echo "<input type='hidden' name='suppr_resp_non_assoc' value='$suppr_resp_non_assoc' />\n";
+
+			echo "<input type='hidden' name='temoin_suhosin_1' value='step19' />\n";
 
 			echo "<input type='hidden' name='temoin_phase_19' value='19' />\n";
 			//if(!isset($parcours_diff)){
@@ -9189,6 +9207,8 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 				echo "</ul>\n";
 				*/
 			}
+
+			echo "<input type='hidden' name='temoin_suhosin_2' value='step19' />\n";
 
 			echo "</form>\n";
 
