@@ -934,9 +934,22 @@ echo "</table>\n";
 
 //==============================================
 // Infos compte utilisateur
-if((isset($compte_resp_existe))&&($compte_resp_existe=="y")&&isset($resp_login)&&($_SESSION['statut']=="administrateur")) {
+if((isset($compte_resp_existe))&&($compte_resp_existe=="y")&&(isset($resp_login))&&
+	(
+		($_SESSION['statut']=="administrateur")||
+		(($_SESSION['statut']=='scolarite')&&(getSettingAOui('ScolResetPassResp')))||
+		(($_SESSION['statut']=='cpe')&&(getSettingAOui('CpeResetPassResp')))
+	)
+) {
 	echo "<div style='float: right; width:15 em; text-align: center; border: 1px solid black;'>\n";
-	echo affiche_actions_compte($resp_login);
+	if($_SESSION['statut']=="administrateur") {
+		echo affiche_actions_compte($resp_login);
+		echo "<br />\n";
+	}
+
+	if(acces('/utilisateurs/reset_passwords.php', $_SESSION['statut'])) {
+		echo affiche_reinit_password($resp_login);
+	}
 	echo "</div>\n";
 }
 //==============================================

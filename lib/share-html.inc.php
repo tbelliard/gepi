@@ -1621,6 +1621,35 @@ function affiche_actions_compte($login) {
 }
 
 /**
+ * Crée une balise <p> avec les liens de réinitialisation de mot de passe
+ *
+ * @global string 
+ * @param string $login Id de l'utilisateur
+ * @return string La balises
+ * @see add_token_in_url()
+ */
+function affiche_reinit_password($login) {
+	global $gepiPath;
+
+	$retour="";
+
+	$user=get_infos_from_login_utilisateur($login);
+
+	$retour.="<p>\n";
+
+	$retour.="<a style='padding: 2px;' href='$gepiPath/utilisateurs/reset_passwords.php?user_login=".$login."&amp;user_status=".$user['statut']."&amp;mode=html";
+	$retour.=add_token_in_url()."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Réinitialiser le mot de passe</a><br />";
+
+	if ($user['statut'] == "responsable") {
+		$retour.="<a style='padding: 2px;' href='$gepiPath/utilisateurs/reset_passwords.php?user_login=".$login."&amp;user_status=".$user['statut']."&amp;mode=html&amp;affiche_adresse_resp=y";
+		$retour.=add_token_in_url()."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Idem avec adresse</a>";
+	}
+	$retour.="</p>\n";
+
+	return $retour;
+}
+
+/**
  * Insère une fonction javascript pour passer en gras/normal le label associé à un champ checkbox
  *
  * @param string $nom_js_func le nom de la fonction javascript (par défaut 'checkbox_change')
