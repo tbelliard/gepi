@@ -44,6 +44,8 @@ Gestion:
   (comme on peut masquer des groupes dans les bulletins et/ou carnets de notes).
 - Possibilité de renommer automatiquement les groupes d'une classe dont les
   descriptions sont identiques.
+- Possibilité pour les comptes scolarité de réinitialiser les mots de passe 
+  des responsables d'élèves (sous réserve de donner le droit)
 
 
 Gepi-1.6.1 (10/06/2012)
