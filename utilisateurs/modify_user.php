@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -696,6 +696,14 @@ if (!$session_gepi->auth_ldap || !$session_gepi->auth_sso) {
 		$remarque .= "est actuellement inactive. Si vous choisissez ce mode d'authentification, l'utilisateur ne disposera d'aucun moyen de s'authentifier dans Gepi.</em></p>";
 	}
 	echo $remarque;
+}
+
+if (($_SESSION['statut']=='administrateur') and (isset($user_login)) and ($user_login!='')) {
+	echo "<div style='float:right; width:10em; margin-top: 0.5em; text-align:center; border: 1px solid black;'>\n";
+	echo affiche_actions_compte($user_login, '_blank');
+	echo "<br />\n";
+	echo affiche_reinit_password($user_login);
+	echo "</div>\n";
 }
 
 ?>
