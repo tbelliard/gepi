@@ -1184,3 +1184,4 @@ INSERT INTO droits SET id='/cahier_texte_2/correction_notices_cdt_formules_maths
 INSERT INTO droits SET id='/gestion/gestion_signature.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Gestion signature',statut='';
 INSERT INTO droits VALUES ('/mod_abs2/saisir_groupe_plan.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Affichage du formulaire de saisie de absences sur plan de classe', '');
 INSERT INTO droits VALUES ( '/matieres/matiere_ajax_lib.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Ajax', '');
+INSERT INTO setting SET name='gepi_en_production', value='y';
