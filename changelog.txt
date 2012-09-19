@@ -46,6 +46,7 @@ Gestion:
   descriptions sont identiques.
 - Possibilité pour les comptes scolarité de réinitialiser les mots de passe 
   des responsables d'élèves (sous réserve de donner le droit)
+- Ajout de précautions pour l'accès aux choix sensibles 'Effacer la base' et 'Données de test'.
 
 
 Gepi-1.6.1 (10/06/2012)

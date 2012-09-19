@@ -180,4 +180,15 @@ if ($test_champ>0) {
 		$result .= msj_present("La table existe déjà");
 	}
 }
+
+// Initialisation d'une nouvelle variable:
+if(getSettingValue('gepi_en_production')=="") {
+	if(!saveSetting('gepi_en_production', 'y')) {
+		$result .= "Initialisation d'un témoin comme quoi le serveur Gepi n'est pas juste un serveur de test, mais un serveur en production : ".msj_erreur("ECHEC !");
+	}
+	else {
+		$result .= "Initialisation d'un témoin comme quoi le serveur Gepi n'est pas juste un serveur de test, mais un serveur en production : ".msj_ok("Ok !");
+	}
+}
+
 ?>
