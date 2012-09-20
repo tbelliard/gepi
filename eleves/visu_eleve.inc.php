@@ -171,12 +171,21 @@ if(document.getElementById('rech_nom')) {document.getElementById('rech_nom').foc
 		}
 	}
 
-
 	if($_SESSION['statut']=='scolarite') {
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
 	elseif($_SESSION['statut']=='professeur') {
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
+	}
+	elseif(($_SESSION['statut']=='cpe')&&
+		(getSettingAOui('GepiAccesReleveCpeTousEleves'))||
+		(getSettingAOui('GepiRubConseilCpeTous'))||
+		(getSettingAOui('GepiAccesCdtCpe'))||
+		(getSettingAOui('AACpeTout'))||
+		(getSettingAOui('GepiAccesTouteFicheEleveCpe'))||
+		(getSettingAOui('GepiAccesAbsTouteClasseCpe'))
+	) {
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
 	}
 	elseif($_SESSION['statut']=='cpe') {
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
