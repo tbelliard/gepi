@@ -37,6 +37,10 @@ unset($reg_no_nat);
 $reg_no_nat = isset($_POST["reg_no_nat"]) ? $_POST["reg_no_nat"] : NULL;
 unset($reg_no_gep);
 $reg_no_gep = isset($_POST["reg_no_gep"]) ? $_POST["reg_no_gep"] : NULL;
+
+unset($reg_auth_mode);
+$reg_auth_mode = isset($_POST["reg_auth_mode"]) ? $_POST["reg_auth_mode"] : NULL;
+
 unset($birth_year);
 $birth_year = isset($_POST["birth_year"]) ? $_POST["birth_year"] : NULL;
 unset($birth_month);
@@ -548,7 +552,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 				*/
 				if($temoin_mon_compte_mais_pas_de_compte_pour_cet_eleve=='n') {
 
-					$res = mysql_query("UPDATE utilisateurs SET nom='".$reg_nom."', prenom='".$reg_prenom."', email='".$reg_email."' WHERE login = '".$eleve_login."'");
+					$res = mysql_query("UPDATE utilisateurs SET nom='".$reg_nom."', prenom='".$reg_prenom."', email='".$reg_email."', auth_mode='$reg_auth_mode' WHERE login = '".$eleve_login."'");
 					//$msg.="TEMOIN test_login puis update<br />";
 				}
 			}
@@ -1582,9 +1586,15 @@ echo add_token_field();
 
 if(isset($eleve_login)) {
 	//$sql="SELECT 1=1 FROM utilisateurs WHERE login='$eleve_login' AND statut='eleve';";
-	$sql="SELECT 1=1 FROM utilisateurs WHERE login='$eleve_login';";
+	$sql="SELECT auth_mode FROM utilisateurs WHERE login='$eleve_login';";
 	$test_compte=mysql_query($sql);
-	if(mysql_num_rows($test_compte)>0) {$compte_eleve_existe="y";} else {$compte_eleve_existe="n";}
+	if(mysql_num_rows($test_compte)>0) {
+		$compte_eleve_existe="y";
+		$user_auth_mode=mysql_result($test_compte, 0, "auth_mode");
+	}
+	else {
+		$compte_eleve_existe="n";
+	}
 
 	if(($compte_eleve_existe=="y")&&(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite"))) {
 		//$journal_connexions=isset($_POST['journal_connexions']) ? $_POST['journal_connexions'] : (isset($_GET['journal_connexions']) ? $_GET['journal_connexions'] : 'n');
@@ -1636,19 +1646,40 @@ if (isset($eleve_login)) {
 	else {
 		echo $eleve_login;
 	}
-	echo "<input type=hidden name='eleve_login' size=20 ";
+	echo "<input type='hidden' name='eleve_login' size='20' ";
 	if ($eleve_login) echo "value='$eleve_login'";
 	echo " /></td>\n";
 } else {
 	echo "<th style='text-align:left;'>Identifiant GEPI * : </th>
-	<td><input type=text name=reg_login size=20 value=\"\" onchange='changement();' /></td>\n";
+	<td><input type='text' name='reg_login' size='20' value=\"\" onchange='changement();' /></td>\n";
 }
+echo "</tr>\n";
 
 if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
-	echo "</tr>
+
+	if($compte_eleve_existe=="y") {
+		echo "<tr><th style='text-align:left;'>Authentification&nbsp;:</th>\n";
+
+		echo "<td style='text-align:left;'>";
+		echo "<select id='select_auth_mode' name='reg_auth_mode' onchange='changement()'>
+		<option value='gepi' ";
+		if ($user_auth_mode=='gepi') echo ' selected ';
+		echo ">Locale (base Gepi)</option>
+		<option value='ldap' ";
+		if ($user_auth_mode=='ldap') echo ' selected ';
+		echo ">LDAP</option>
+		<option value='sso' ";
+		if ($user_auth_mode=='sso') echo ' selected ';
+		echo ">SSO (Cas, LCS, LemonLDAP)</option>
+		</select>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+
+	echo "
 	<tr>
 		<th style='text-align:left;'>Nom * : </th>
-		<td><input type=text name='reg_nom' size=20 ";
+		<td><input type='text' name='reg_nom' size='20' ";
 	if (isset($eleve_nom)) {
 		echo "value=\"".$eleve_nom."\"";
 	}
@@ -1656,7 +1687,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	</tr>
 	<tr>
 		<th style='text-align:left;'>Prénom * : </th>
-		<td><input type=text name='reg_prenom' size=20 ";
+		<td><input type='text' name='reg_prenom' size='20' ";
 	if (isset($eleve_prenom)) {
 		echo "value=\"".$eleve_prenom."\"";
 	}
@@ -1678,7 +1709,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	}
 	else {
 	*/
-		echo "<input type=text name='reg_email' size=18 ";
+		echo "<input type='text' name='reg_email' size='18' ";
 		if (isset($eleve_email)) {
 			echo "value=\"".$eleve_email."\"";
 		}
@@ -1763,7 +1794,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 
 }
 else {
-	echo "</tr>
+	echo "
 	<tr>
 		<th style='text-align:left;'>Nom * : </th>
 		<td>";
