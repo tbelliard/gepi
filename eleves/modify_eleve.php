@@ -1795,6 +1795,27 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	echo " Année <input type='text' name='date_sortie_annee' id='date_sortie_annee' size='4' onchange='changement();' value=\"";
 	if (isset($eleve_date_sortie_annee) and ($eleve_date_sortie_annee!="0000")) {echo $eleve_date_sortie_annee;}
 	echo "\" onKeyDown='clavier_2(this.id,event,2000,2100);' AutoComplete='off' />";
+
+	echo "<a href='javascript:date_sortie_aujourdhui()' title=\"Aujourd'hui\"><img src='../images/disabled.png' width='20' height='20' title=\"Aujourd'hui\" /></a>\n";
+	echo "<script type='text/javascript'>
+function date_sortie_aujourdhui() {
+	aujourdhui=new Date();
+	document.getElementById('date_sortie_jour').value=aujourdhui.getDate();
+	document.getElementById('date_sortie_mois').value=aujourdhui.getMonth()+1;
+	annee=aujourdhui.getYear();
+	if(annee<1000) {
+		//alert(annee);
+		if(annee>70) {
+			annee=1900+annee;
+		}
+		else {
+			annee=2000+annee;
+		}
+	}
+	document.getElementById('date_sortie_annee').value=annee;
+	changement();
+}
+</script>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
