@@ -1680,8 +1680,13 @@ if(isset($quelles_classes)) {
 		$pas_de_classe="n";
 		if ($eleve_classe == '') {
 			$eleve_classe = "<font color='red'>N/A</font>";
+			$eleve_classe_csv = "N/A";
 			$pas_de_classe="y";
 		}
+		else {
+			$eleve_classe_csv = $eleve_classe;
+		}
+
 		$call_suivi = mysql_query("SELECT u.* FROM utilisateurs u, j_eleves_professeurs s WHERE (s.login ='$eleve_login' and s.professeur = u.login and s.id_classe='$eleve_id_classe')");
 		if(mysql_num_rows($call_suivi)==0){
 			$eleve_profsuivi_nom = "";
