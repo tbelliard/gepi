@@ -1786,9 +1786,15 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	//Date de sortie de l'établissement
     echo "<tr><th style='text-align:left;'>Date de sortie de l'établissement : <br/>(<em style='font-weight:normal'>respecter format JJ/MM/AAAA</em>)</th>";
 	echo "<td><div class='norme'>";	
-	echo "Jour  <input type='text' name='date_sortie_jour' size='2' onchange='changement();' value=\""; if (isset($eleve_date_sortie_jour) and ($eleve_date_sortie_jour!="00") ) echo $eleve_date_sortie_jour; echo "\"/>";
-	echo " Mois  <input type='text' name='date_sortie_mois' size='2' onchange='changement();' value=\""; if (isset($eleve_date_sortie_mois) and ($eleve_date_sortie_mois!="00")) echo $eleve_date_sortie_mois; echo "\"/>";
-	echo " Année <input type='text' name='date_sortie_annee' size='4' onchange='changement();' value=\""; if (isset($eleve_date_sortie_annee) and ($eleve_date_sortie_annee!="0000")) echo $eleve_date_sortie_annee; echo "\"/>";
+	echo "Jour  <input type='text' name='date_sortie_jour' id='date_sortie_jour' size='2' onchange='changement();' value=\"";
+	if (isset($eleve_date_sortie_jour) and ($eleve_date_sortie_jour!="00") ) {echo $eleve_date_sortie_jour;}
+	echo "\" onKeyDown='clavier_2(this.id,event,1,31);' AutoComplete='off' />";
+	echo " Mois  <input type='text' name='date_sortie_mois' id='date_sortie_mois' size='2' onchange='changement();' value=\"";
+	if (isset($eleve_date_sortie_mois) and ($eleve_date_sortie_mois!="00")) {echo $eleve_date_sortie_mois;}
+	echo "\" onKeyDown='clavier_2(this.id,event,1,12);' AutoComplete='off' />";
+	echo " Année <input type='text' name='date_sortie_annee' id='date_sortie_annee' size='4' onchange='changement();' value=\"";
+	if (isset($eleve_date_sortie_annee) and ($eleve_date_sortie_annee!="0000")) {echo $eleve_date_sortie_annee;}
+	echo "\" onKeyDown='clavier_2(this.id,event,2000,2100);' AutoComplete='off' />";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -2079,12 +2085,22 @@ if (!(isset($eleve_sexe))) {$eleve_sexe="M";}
 </div></td>
 
 <td><div class='norme'>
-<b>Date de naissance (respecter format 00/00/0000) :</b> <br />
-Jour <input type=text name=birth_day size=2 onchange='changement();' value=<?php if (isset($eleve_naissance_jour)) echo $eleve_naissance_jour;?> />
-Mois<input type=text name=birth_month size=2 onchange='changement();' value=<?php if (isset($eleve_naissance_mois)) echo $eleve_naissance_mois;?> />
-Année<input type=text name=birth_year size=4 onchange='changement();' value=<?php if (isset($eleve_naissance_annee)) echo $eleve_naissance_annee;?> />
-
+<b>Date de naissance (<em>respecter format 00/00/0000</em>) :</b> <br />
 <?php
+
+echo "Jour <input type='text' name='birth_day' id='birth_day' size='2' onchange='changement();' value='";
+if (isset($eleve_naissance_jour)) {echo $eleve_naissance_jour;}
+echo "' onKeyDown='clavier_2(this.id,event,1,31);' AutoComplete='off' />";
+
+echo " Mois <input type='text' name='birth_month' id='birth_month' size='2' onchange='changement();' value='";
+if (isset($eleve_naissance_mois)) {echo $eleve_naissance_mois;}
+echo "' onKeyDown='clavier_2(this.id,event,1,12);' AutoComplete='off' />";
+
+echo " Année <input type='text' name='birth_year' id='birth_year' size='2' onchange='changement();' value='";
+if (isset($eleve_naissance_annee)) {echo $eleve_naissance_annee;}
+echo "' onKeyDown='clavier_2(this.id,event,1970,2100);' AutoComplete='off' />";
+
+
 if(getSettingValue('ele_lieu_naissance')=='y') {
 	echo "<br />\n";
 	echo "<b>Lieu de naissance&nbsp;:</b> ";
