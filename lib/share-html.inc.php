@@ -1394,6 +1394,13 @@ function affiche_infos_actions() {
 			echo "<div id='info_action_pliage' style='float:right; width: 1em'>\n";
 			echo "<a href=\"javascript:div_alterne_affichage('conteneur')\"><span id='img_pliage_conteneur'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
 			echo "</div>\n";
+
+			if($_SESSION['statut']=='administrateur') {
+				echo "<div style='float:right; width: 1em; margin-right:0.5em;'>\n";
+				echo "<a href=\"gestion/gestion_infos_actions.php\"><span id='img_pliage_conteneur'><img src='images/disabled.png' width='16' height='16' /></span></a>";
+				echo "</div>\n";
+			}
+
 			echo "Actions en attente";
 		echo "</div>\n";
 
