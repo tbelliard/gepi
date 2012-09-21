@@ -176,6 +176,18 @@ $texteItem="";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='GepiAccesCDTToutesClasses';
+$texteItem="a accès à la visualisation des cahiers de textes de toutes les classes";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+//+++++++++++++++++++++++++++
+
+$titreItem='';
+$texteItem="";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 $titreItem='GepiAccesVisuToutesEquipProf';
 $texteItem="a accès à la Visualisation de toutes les équipes";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))

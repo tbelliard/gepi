@@ -191,4 +191,13 @@ if(getSettingValue('gepi_en_production')=="") {
 	}
 }
 
+if(getSettingValue('GepiAccesCDTToutesClasses')=="") {
+	if(!saveSetting('GepiAccesCDTToutesClasses', 'yes')) {
+		$result .= "Initialisation d'une variable : Accès des professeurs aux cahiers de textes de toutes les classes : ".msj_erreur("ECHEC !");
+	}
+	else {
+		$result .= "Initialisation d'une variable : Accès des professeurs aux cahiers de textes de toutes les classes : ".msj_ok("Ok !");
+	}
+}
+
 ?>

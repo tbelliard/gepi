@@ -699,10 +699,10 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
  * @param type $year l'année
  * @param type $month le mois
  * @param type $day le jour
+ * @param type $domaine le domaine (cdt,...)
  * @return text la balise <form> complète
  */
-function make_classes_select_html($link, $current, $year, $month, $day)
-
+function make_classes_select_html($link, $current, $year, $month, $day, $domaine='')
 {
   // Pour le multisite, on doit récupérer le RNE de l'établissement
   $rne = isset($_GET['rne']) ? $_GET['rne'] : (isset($_POST['rne']) ? $_POST['rne'] : 'aucun');
@@ -719,7 +719,7 @@ function make_classes_select_html($link, $current, $year, $month, $day)
 
 
   if (isset($_SESSION['statut']) && ($_SESSION['statut']=='scolarite'
-		  && getSettingValue('GepiAccesCdtScolRestreint')=="yes")){
+		  && getSettingValue('GepiAccesCdtScolRestreint')=="yes")) {
   $sql = "SELECT DISTINCT c.id, c.classe
 	FROM classes c, j_groupes_classes jgc, ct_entry ct, j_scol_classes jsc
 	WHERE (c.id = jgc.id_classe
@@ -728,11 +728,8 @@ function make_classes_select_html($link, $current, $year, $month, $day)
 	  AND jsc.login='".$_SESSION ['login']."'
 		)
 	ORDER BY classe ;";
-
   } else if (isset($_SESSION['statut']) && ($_SESSION['statut']=='cpe'
-		  && getSettingValue('GepiAccesCdtCpeRestreint')=="yes")){
-
-
+		  && getSettingValue('GepiAccesCdtCpeRestreint')=="yes")) {
 	$sql = "SELECT DISTINCT c.id, c.classe
 	  FROM classes c, j_groupes_classes jgc, ct_entry ct, j_eleves_cpe jec,j_eleves_classes jecl
 	  WHERE (c.id = jgc.id_classe
@@ -741,14 +738,23 @@ function make_classes_select_html($link, $current, $year, $month, $day)
 	  AND jec.e_login = jecl.login
 	  AND jecl.id_classe = jgc.id_classe)
 	  ORDER BY classe ;";
-  }else{
-
-
-	$sql = "SELECT DISTINCT c.id, c.classe
-	  FROM classes c, j_groupes_classes jgc, ct_entry ct
-	  WHERE (c.id = jgc.id_classe
-	  AND jgc.id_groupe = ct.id_groupe)
-	  ORDER BY classe";
+  } else {
+	if(($_SESSION['statut']=='professeur')&&(!getSettingAOui('GepiAccesCDTToutesClasses'))) {
+		$sql = "SELECT DISTINCT c.id, c.classe
+		  FROM classes c, j_groupes_classes jgc, ct_entry ct, j_groupes_professeurs jgp
+		  WHERE (c.id = jgc.id_classe
+		  AND jgp.id_groupe = ct.id_groupe
+		  AND jgc.id_groupe = ct.id_groupe
+		  AND jgp.login='".$_SESSION['login']."')
+		  ORDER BY classe";
+	}
+	else {
+		$sql = "SELECT DISTINCT c.id, c.classe
+		  FROM classes c, j_groupes_classes jgc, ct_entry ct
+		  WHERE (c.id = jgc.id_classe
+		  AND jgc.id_groupe = ct.id_groupe)
+		  ORDER BY classe";
+	}
   }
 
   //GepiAccesCdtCpeRestreint

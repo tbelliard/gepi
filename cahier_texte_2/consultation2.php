@@ -297,28 +297,31 @@ else {
 	}
 
 	// Afficher les formulaires de choix pour les non-élève/non-responsable
-	// Choix d'une classe
-	echo "<form name='form_choix_classe' enctype=\"multipart/form-data\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
-	echo "<fieldset id='choixClasse' style='border: 1px solid grey; width:15%; float:left; margin-right:1em;'>\n";
-	echo "<legend style='border: 1px solid grey;'>Choix d'une classe</legend>\n";
-	echo "<input type='hidden' name='mode' value='classe' />\n";
+	if(($_SESSION['statut']!='professeur')||
+	(getSettingAOui('GepiAccesCDTToutesClasses'))) {
+		// Choix d'une classe
+		echo "<form name='form_choix_classe' enctype=\"multipart/form-data\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
+		echo "<fieldset id='choixClasse' style='border: 1px solid grey; width:15%; float:left; margin-right:1em;'>\n";
+		echo "<legend style='border: 1px solid grey;'>Choix d'une classe</legend>\n";
+		echo "<input type='hidden' name='mode' value='classe' />\n";
 
-	if(isset($today)) {
-		echo "<input type='hidden' name='today' value='$today' />\n";
+		if(isset($today)) {
+			echo "<input type='hidden' name='today' value='$today' />\n";
+		}
+
+		echo "<select name='id_classe' onchange='document.form_choix_classe.submit();'>\n";
+		echo "<option value=''>---</option>\n";
+		for($i=0;$i<count($tab_classe);$i++) {
+			echo "<option value='".$tab_classe[$i]['id_classe']."'";
+			if((isset($id_classe))&&($id_classe==$tab_classe[$i]['id_classe'])) {echo " selected='selected'";}
+			echo ">".$tab_classe[$i]['classe']."</option>\n";
+		}
+		echo "</select>\n";
+
+		echo "<input type=\"submit\" id='bouton_submit_classe' value=\"Valider\" />\n";
+		echo "</fieldset>\n";
+		echo "</form>\n";
 	}
-
-	echo "<select name='id_classe' onchange='document.form_choix_classe.submit();'>\n";
-	echo "<option value=''>---</option>\n";
-	for($i=0;$i<count($tab_classe);$i++) {
-		echo "<option value='".$tab_classe[$i]['id_classe']."'";
-		if((isset($id_classe))&&($id_classe==$tab_classe[$i]['id_classe'])) {echo " selected='selected'";}
-		echo ">".$tab_classe[$i]['classe']."</option>\n";
-	}
-	echo "</select>\n";
-
-	echo "<input type=\"submit\" id='bouton_submit_classe' value=\"Valider\" />\n";
-	echo "</fieldset>\n";
-	echo "</form>\n";
 
 	// Choix d'une classe du prof connecté
 	if(isset($tab_classe_du_prof)) {
