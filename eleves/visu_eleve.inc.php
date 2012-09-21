@@ -171,12 +171,21 @@ if(document.getElementById('rech_nom')) {document.getElementById('rech_nom').foc
 		}
 	}
 
-
 	if($_SESSION['statut']=='scolarite') {
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
 	elseif($_SESSION['statut']=='professeur') {
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
+	}
+	elseif(($_SESSION['statut']=='cpe')&&
+		(getSettingAOui('GepiAccesReleveCpeTousEleves'))||
+		(getSettingAOui('GepiRubConseilCpeTous'))||
+		(getSettingAOui('GepiAccesCdtCpe'))||
+		(getSettingAOui('AACpeTout'))||
+		(getSettingAOui('GepiAccesTouteFicheEleveCpe'))||
+		(getSettingAOui('GepiAccesAbsTouteClasseCpe'))
+	) {
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
 	}
 	elseif($_SESSION['statut']=='cpe') {
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
@@ -1108,13 +1117,29 @@ Patientez pendant l'extraction des données... merci.
 		if ($tab_ele['date_sortie']!=0) {
 		   echo "<span class=\"red\">Date de sortie de l'établissement : le ".affiche_date_sortie($tab_ele['date_sortie'])."<br/><br/></span>";;
 		}
-		
+
+		// 20120920
+		if(isset($tab_ele['compte_utilisateur'])) {
+			if(in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe'))) {
+				echo "<div style='float:right; width:16em; text-align:center;'>\n";
+					echo "<strong>Compte</strong>\n";
+					echo "<table class='boireaus' summary='Infos compte élève'>\n";
+					echo "<tr class='lig-1'><th style='text-align: left;'>Compte&nbsp;:</th><td>".$tab_ele['compte_utilisateur']['login']."</td></tr>";
+					echo "<tr class='lig1'><th style='text-align: left;'>Etat&nbsp;:</th><td>".$tab_ele['compte_utilisateur']['etat']."</td></tr>";
+					echo "<tr class='lig-1'><th style='text-align: left;'>Authentication&nbsp;:</th><td>".$tab_ele['compte_utilisateur']['auth_mode']."</td></tr>";
+
+					echo "</table>\n";
+				echo "</div>\n";
+			}
+		}
+
 		echo "<table border='0' summary='Infos élève'>\n";
 		echo "<tr>\n";
 		echo "<td valign='top'>\n";
 
 			echo "<table class='boireaus' summary='Infos élève (1)'>\n";
-			echo "<tr><th style='text-align: left;'>Nom&nbsp;:</th><td>";
+			$alt=-1;
+			echo "<tr class='lig$alt'><th style='text-align: left;'>Nom&nbsp;:</th><td>";
 			if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiAccesTouteFicheEleveCpe')))||
 			(($_SESSION['statut']=='cpe')&&(is_cpe($_SESSION['login'],'',$ele_login)))||
@@ -1125,14 +1150,21 @@ Patientez pendant l'extraction des données... merci.
 				echo $tab_ele['nom'];
 			}
 			echo "</td></tr>\n";
-			echo "<tr><th style='text-align: left;'>Prénom&nbsp;:</th><td>".$tab_ele['prenom']."</td></tr>\n";
-			echo "<tr><th style='text-align: left;'>Sexe&nbsp;:</th><td>".$tab_ele['sexe']."</td></tr>\n";
-			echo "<tr><th style='text-align: left;'>Né";
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt'><th style='text-align: left;'>Prénom&nbsp;:</th><td>".$tab_ele['prenom']."</td></tr>\n";
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt'><th style='text-align: left;'>Sexe&nbsp;:</th><td>".$tab_ele['sexe']."</td></tr>\n";
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt'><th style='text-align: left;'>Né";
 			if($tab_ele['sexe']=='F') {echo "e";}
 			echo " le&nbsp;:</th><td>".$tab_ele['naissance']."</td></tr>\n";
-			if(isset($tab_ele['lieu_naissance'])) {echo "<tr><th style='text-align: left;'>à&nbsp;:</th><td>".$tab_ele['lieu_naissance']."</td></tr>\n";}
+			if(isset($tab_ele['lieu_naissance'])) {
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt'><th style='text-align: left;'>à&nbsp;:</th><td>".$tab_ele['lieu_naissance']."</td></tr>\n";
+			}
 
-			echo "<tr><th style='text-align: left;'>Régime&nbsp;:</th><td>";
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt'><th style='text-align: left;'>Régime&nbsp;:</th><td>";
 			if ($tab_ele['regime'] == "d/p") {echo "Demi-pensionnaire";}
 			if ($tab_ele['regime'] == "ext.") {echo "Externe";}
 			if ($tab_ele['regime'] == "int.") {echo "Interne";}
@@ -1142,7 +1174,8 @@ Patientez pendant l'extraction des données... merci.
 			}
 			echo "</td></tr>\n";
 
-			echo "<tr><th style='text-align: left;'>Redoublant&nbsp;:</th><td>";
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt'><th style='text-align: left;'>Redoublant&nbsp;:</th><td>";
 			if ($tab_ele['doublant'] == 'R'){
 				echo "Oui";
 			}
@@ -1152,12 +1185,16 @@ Patientez pendant l'extraction des données... merci.
 			echo "</td></tr>\n";
 
 			if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe')) {
-				echo "<tr><th style='text-align: left;'>Elenoet&nbsp;:</th><td>".$tab_ele['elenoet']."</td></tr>\n";
-				echo "<tr><th style='text-align: left;'>Ele_id&nbsp;:</th><td>".$tab_ele['ele_id']."</td></tr>\n";
-				echo "<tr><th style='text-align: left;'>N°INE&nbsp;:</th><td>".$tab_ele['no_gep']."</td></tr>\n";
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt'><th style='text-align: left;'>Elenoet&nbsp;:</th><td>".$tab_ele['elenoet']."</td></tr>\n";
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt'><th style='text-align: left;'>Ele_id&nbsp;:</th><td>".$tab_ele['ele_id']."</td></tr>\n";
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt'><th style='text-align: left;'>N°INE&nbsp;:</th><td>".$tab_ele['no_gep']."</td></tr>\n";
 			}
 
-			echo "<tr><th style='text-align: left;'>Email&nbsp;:</th><td>";
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt'><th style='text-align: left;'>Email&nbsp;:</th><td>";
 			$tmp_date=getdate();
 			//echo "<a href='mailto:".$tab_ele['email']."?subject=GEPI&amp;body=";
 			echo "<a href='mailto:".$tab_ele['email']."?subject=GEPI&amp;body=";
@@ -1225,7 +1262,8 @@ Patientez pendant l'extraction des données... merci.
 						echo "<p>Responsable légal <strong>".$tab_ele['resp'][$i]['resp_legal']."</strong></p>\n";
 
 						echo "<table class='boireaus' summary='Infos responsables (1)'>\n";
-						echo "<tr><th style='text-align: left;'>Nom:</th><td>";
+						$alt=-1;
+						echo "<tr class='lig$alt'><th style='text-align: left;'>Nom:</th><td>";
 
 						if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
 							echo "<a href='../responsables/modify_resp.php?pers_id=".$tab_ele['resp'][$i]['pers_id']."'>".$tab_ele['resp'][$i]['nom']."</a>";
@@ -1235,14 +1273,26 @@ Patientez pendant l'extraction des données... merci.
 						}
 
 						echo "</td></tr>\n";
-						echo "<tr><th style='text-align: left;'>Prénom:</th><td>".$tab_ele['resp'][$i]['prenom']."</td></tr>\n";
-						echo "<tr><th style='text-align: left;'>Civilité:</th><td>".$tab_ele['resp'][$i]['civilite']."</td></tr>\n";
-						if($tab_ele['resp'][$i]['tel_pers']!='') {echo "<tr><th style='text-align: left;'>Tél.pers:</th><td>".$tab_ele['resp'][$i]['tel_pers']."</td></tr>\n";}
-						if($tab_ele['resp'][$i]['tel_port']!='') {echo "<tr><th style='text-align: left;'>Tél.port:</th><td>".$tab_ele['resp'][$i]['tel_port']."</td></tr>\n";}
-						if($tab_ele['resp'][$i]['tel_prof']!='') {echo "<tr><th style='text-align: left;'>Tél.prof:</th><td>".$tab_ele['resp'][$i]['tel_prof']."</td></tr>\n";}
+						$alt=$alt*(-1);
+						echo "<tr class='lig$alt'><th style='text-align: left;'>Prénom:</th><td>".$tab_ele['resp'][$i]['prenom']."</td></tr>\n";
+						$alt=$alt*(-1);
+						echo "<tr class='lig$alt'><th style='text-align: left;'>Civilité:</th><td>".$tab_ele['resp'][$i]['civilite']."</td></tr>\n";
+						if($tab_ele['resp'][$i]['tel_pers']!='') {
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.pers:</th><td>".$tab_ele['resp'][$i]['tel_pers']."</td></tr>\n";
+						}
+						if($tab_ele['resp'][$i]['tel_port']!='') {
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.port:</th><td>".$tab_ele['resp'][$i]['tel_port']."</td></tr>\n";
+						}
+						if($tab_ele['resp'][$i]['tel_prof']!='') {
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.prof:</th><td>".$tab_ele['resp'][$i]['tel_prof']."</td></tr>\n";
+						}
 						if($tab_ele['resp'][$i]['mel']!='') {
 							$tmp_date=getdate();
-							echo "<tr><th style='text-align: left;'>Courriel:</th><td>";
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Courriel:</th><td>";
 							echo "<a href='mailto:".$tab_ele['resp'][$i]['mel']."?subject=GEPI&amp;body=";
 							if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
 							echo ",%0d%0aCordialement.'>";
@@ -1252,10 +1302,19 @@ Patientez pendant l'extraction des données... merci.
 						}
 
 						if(!isset($tab_ele['resp'][$i]['etat'])) {
-							echo "<tr><th style='text-align: left;'>Dispose d'un compte:</th><td>Non</td></tr>\n";
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Dispose d'un compte:</th><td>Non</td></tr>\n";
 						}
 						else {
-							echo "<tr><th style='text-align: left;'>Dispose d'un compte:</th><td>Oui (";
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Dispose d'un compte:</th><td>";
+							if(in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe'))) {
+								echo $tab_ele['resp'][$i]['login'];
+							}
+							else {
+								echo "Oui";
+							}
+							echo " (";
 							if($tab_ele['resp'][$i]['etat']=='actif') {
 								echo "<span style='color:green;'>";
 							}
@@ -1264,16 +1323,42 @@ Patientez pendant l'extraction des données... merci.
 							}
 							echo $tab_ele['resp'][$i]['etat'];
 							echo "</span>)\n";
+
+							if(in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe'))) {
+								echo "<br />\n";
+								echo "Auth.: ".$tab_ele['resp'][$i]['auth_mode'];
+							}
 							echo "</td></tr>\n";
 						}
 
-						if($tab_ele['resp'][$i]['adr1']!='') {echo "<tr><th style='text-align: left;'>Ligne 1 adresse:</th><td>".$tab_ele['resp'][$i]['adr1']."</td></tr>\n";}
-						if($tab_ele['resp'][$i]['adr2']!='') {echo "<tr><th style='text-align: left;'>Ligne 2 adresse:</th><td>".$tab_ele['resp'][$i]['adr2']."</td></tr>\n";}
-						if($tab_ele['resp'][$i]['adr3']!='') {echo "<tr><th style='text-align: left;'>Ligne 3 adresse:</th><td>".$tab_ele['resp'][$i]['adr3']."</td></tr>\n";}
-						if($tab_ele['resp'][$i]['adr4']!='') {echo "<tr><th style='text-align: left;'>Ligne 4 adresse:</th><td>".$tab_ele['resp'][$i]['adr4']."</td></tr>\n";}
-						if($tab_ele['resp'][$i]['cp']!='') {echo "<tr><th style='text-align: left;'>Code postal:</th><td>".$tab_ele['resp'][$i]['cp']."</td></tr>\n";}
-						if($tab_ele['resp'][$i]['commune']!='') {echo "<tr><th style='text-align: left;'>Commune:</th><td>".$tab_ele['resp'][$i]['commune']."</td></tr>\n";}
-						if($tab_ele['resp'][$i]['pays']!='') {echo "<tr><th style='text-align: left;'>Pays:</th><td>".$tab_ele['resp'][$i]['pays']."</td></tr>\n";}
+						if($tab_ele['resp'][$i]['adr1']!='') {
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Ligne 1 adresse:</th><td>".$tab_ele['resp'][$i]['adr1']."</td></tr>\n";
+						}
+						if($tab_ele['resp'][$i]['adr2']!='') {
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Ligne 2 adresse:</th><td>".$tab_ele['resp'][$i]['adr2']."</td></tr>\n";
+						}
+						if($tab_ele['resp'][$i]['adr3']!='') {
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Ligne 3 adresse:</th><td>".$tab_ele['resp'][$i]['adr3']."</td></tr>\n";
+						}
+						if($tab_ele['resp'][$i]['adr4']!='') {
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Ligne 4 adresse:</th><td>".$tab_ele['resp'][$i]['adr4']."</td></tr>\n";
+						}
+						if($tab_ele['resp'][$i]['cp']!='') {
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Code postal:</th><td>".$tab_ele['resp'][$i]['cp']."</td></tr>\n";
+						}
+						if($tab_ele['resp'][$i]['commune']!='') {
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Commune:</th><td>".$tab_ele['resp'][$i]['commune']."</td></tr>\n";
+						}
+						if($tab_ele['resp'][$i]['pays']!='') {
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Pays:</th><td>".$tab_ele['resp'][$i]['pays']."</td></tr>\n";
+						}
 
 						echo "</table>\n";
 						echo "</td>\n";

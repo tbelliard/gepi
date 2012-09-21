@@ -699,10 +699,10 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
  * @param type $year l'année
  * @param type $month le mois
  * @param type $day le jour
+ * @param type $domaine le domaine (cdt,...)
  * @return text la balise <form> complète
  */
-function make_classes_select_html($link, $current, $year, $month, $day)
-
+function make_classes_select_html($link, $current, $year, $month, $day, $domaine='')
 {
   // Pour le multisite, on doit récupérer le RNE de l'établissement
   $rne = isset($_GET['rne']) ? $_GET['rne'] : (isset($_POST['rne']) ? $_POST['rne'] : 'aucun');
@@ -719,7 +719,7 @@ function make_classes_select_html($link, $current, $year, $month, $day)
 
 
   if (isset($_SESSION['statut']) && ($_SESSION['statut']=='scolarite'
-		  && getSettingValue('GepiAccesCdtScolRestreint')=="yes")){
+		  && getSettingValue('GepiAccesCdtScolRestreint')=="yes")) {
   $sql = "SELECT DISTINCT c.id, c.classe
 	FROM classes c, j_groupes_classes jgc, ct_entry ct, j_scol_classes jsc
 	WHERE (c.id = jgc.id_classe
@@ -728,11 +728,8 @@ function make_classes_select_html($link, $current, $year, $month, $day)
 	  AND jsc.login='".$_SESSION ['login']."'
 		)
 	ORDER BY classe ;";
-
   } else if (isset($_SESSION['statut']) && ($_SESSION['statut']=='cpe'
-		  && getSettingValue('GepiAccesCdtCpeRestreint')=="yes")){
-
-
+		  && getSettingValue('GepiAccesCdtCpeRestreint')=="yes")) {
 	$sql = "SELECT DISTINCT c.id, c.classe
 	  FROM classes c, j_groupes_classes jgc, ct_entry ct, j_eleves_cpe jec,j_eleves_classes jecl
 	  WHERE (c.id = jgc.id_classe
@@ -741,14 +738,23 @@ function make_classes_select_html($link, $current, $year, $month, $day)
 	  AND jec.e_login = jecl.login
 	  AND jecl.id_classe = jgc.id_classe)
 	  ORDER BY classe ;";
-  }else{
-
-
-	$sql = "SELECT DISTINCT c.id, c.classe
-	  FROM classes c, j_groupes_classes jgc, ct_entry ct
-	  WHERE (c.id = jgc.id_classe
-	  AND jgc.id_groupe = ct.id_groupe)
-	  ORDER BY classe";
+  } else {
+	if(($_SESSION['statut']=='professeur')&&(!getSettingAOui('GepiAccesCDTToutesClasses'))) {
+		$sql = "SELECT DISTINCT c.id, c.classe
+		  FROM classes c, j_groupes_classes jgc, ct_entry ct, j_groupes_professeurs jgp
+		  WHERE (c.id = jgc.id_classe
+		  AND jgp.id_groupe = ct.id_groupe
+		  AND jgc.id_groupe = ct.id_groupe
+		  AND jgp.login='".$_SESSION['login']."')
+		  ORDER BY classe";
+	}
+	else {
+		$sql = "SELECT DISTINCT c.id, c.classe
+		  FROM classes c, j_groupes_classes jgc, ct_entry ct
+		  WHERE (c.id = jgc.id_classe
+		  AND jgc.id_groupe = ct.id_groupe)
+		  ORDER BY classe";
+	}
   }
 
   //GepiAccesCdtCpeRestreint
@@ -1394,6 +1400,13 @@ function affiche_infos_actions() {
 			echo "<div id='info_action_pliage' style='float:right; width: 1em'>\n";
 			echo "<a href=\"javascript:div_alterne_affichage('conteneur')\"><span id='img_pliage_conteneur'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
 			echo "</div>\n";
+
+			if($_SESSION['statut']=='administrateur') {
+				echo "<div style='float:right; width: 1em; margin-right:0.5em;'>\n";
+				echo "<a href=\"gestion/gestion_infos_actions.php\"><span id='img_pliage_conteneur'><img src='images/disabled.png' width='16' height='16' /></span></a>";
+				echo "</div>\n";
+			}
+
 			echo "Actions en attente";
 		echo "</div>\n";
 
@@ -1582,10 +1595,11 @@ function affiche_acces_cdt() {
  *
  * @global string 
  * @param string $login Id de l'utilisateur
+ * @param string $target target pour ouvrir dans un autre onglet
  * @return string La balises
  * @see add_token_in_url()
  */
-function affiche_actions_compte($login) {
+function affiche_actions_compte($login, $target="") {
 	global $gepiPath;
 
 	$retour="";
@@ -1595,25 +1609,74 @@ function affiche_actions_compte($login) {
 	$retour.="<p>\n";
 	if ($user['etat'] == "actif") {
 		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=desactiver&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'>Désactiver le compte</a>";
+		$retour.=add_token_in_url()."'";
+		if($target!="") {
+			$retour.=" target='$target'";
+		}
+		$retour.=">Désactiver le compte</a>";
 	} else {
 		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=activer&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'>Réactiver le compte</a>";
+		$retour.=add_token_in_url()."'";
+		if($target!="") {
+			$retour.=" target='$target'";
+		}
+		$retour.=">Réactiver le compte</a>";
 	}
 	$retour.="<br />\n";
 	if ($user['observation_securite'] == 0) {
 		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=observer&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'>Placer en observation</a>";
+		$retour.=add_token_in_url()."'";
+		if($target!="") {
+			$retour.=" target='$target'";
+		}
+		$retour.=">Placer en observation</a>";
 	} else {
 		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=stop_observation&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'>Retirer l'observation</a>";
+		$retour.=add_token_in_url()."'";
+		if($target!="") {
+			$retour.=" target='$target'";
+		}
+		$retour.=">Retirer l'observation</a>";
 	}
 	if($user['niveau_alerte']>0) {
 		$retour.="<br />\n";
 		$retour.="Score cumulé&nbsp;: ".$user['niveau_alerte'];
 		$retour.="<br />\n";
 		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=reinit_cumul&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'>Réinitialiser cumul</a>";
+		$retour.=add_token_in_url()."'";
+		if($target!="") {
+			$retour.=" target='$target'";
+		}
+		$retour.=">Réinitialiser cumul</a>";
+	}
+	$retour.="</p>\n";
+
+	return $retour;
+}
+
+/**
+ * Crée une balise <p> avec les liens de réinitialisation de mot de passe
+ *
+ * @global string 
+ * @param string $login Id de l'utilisateur
+ * @return string La balises
+ * @see add_token_in_url()
+ */
+function affiche_reinit_password($login) {
+	global $gepiPath;
+
+	$retour="";
+
+	$user=get_infos_from_login_utilisateur($login);
+
+	$retour.="<p>\n";
+
+	$retour.="<a style='padding: 2px;' href='$gepiPath/utilisateurs/reset_passwords.php?user_login=".$login."&amp;user_status=".$user['statut']."&amp;mode=html";
+	$retour.=add_token_in_url()."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Réinitialiser le mot de passe</a><br />";
+
+	if ($user['statut'] == "responsable") {
+		$retour.="<a style='padding: 2px;' href='$gepiPath/utilisateurs/reset_passwords.php?user_login=".$login."&amp;user_status=".$user['statut']."&amp;mode=html&amp;affiche_adresse_resp=y";
+		$retour.=add_token_in_url()."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Idem avec adresse</a>";
 	}
 	$retour.="</p>\n";
 

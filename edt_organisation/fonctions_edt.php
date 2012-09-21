@@ -854,13 +854,20 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 	$rep_id_salle = mysql_fetch_array($req_id_salle);
 
 	//$info_alt.=" $sql";
-	$sql="SELECT ".$salle_aff." FROM salle_cours WHERE id_salle ='".$rep_id_salle['id_salle']."'";
+	//$sql="SELECT ".$salle_aff." FROM salle_cours WHERE id_salle ='".$rep_id_salle['id_salle']."'";
+	$sql="SELECT * FROM salle_cours WHERE id_salle ='".$rep_id_salle['id_salle']."'";
 	$req_salle = mysql_query($sql);
-	$tab_rep_salle = mysql_fetch_array($req_salle);
-	$rep_salle = $tab_rep_salle[0];
+	//$tab_rep_salle = mysql_fetch_array($req_salle);
+	//$rep_salle = $tab_rep_salle[0];
+	$lig_rep_salle = mysql_fetch_object($req_salle);
+	$rep_salle = $lig_rep_salle->$salle_aff;
 
 	// Si le champ nom_salle est vide:
-	if($rep_salle=='') {$rep_salle=$rep_id_salle["id_salle"];}
+	if($rep_salle=='') {
+		//$rep_salle=$rep_id_salle["numero_salle"];
+		//$rep_salle=$rep_id_salle["numero_salle"];
+		$rep_salle = $lig_rep_salle->numero_salle;
+	}
 
 	//$info_alt.=" $sql";
 	if($rep_salle!="") {$info_alt.=" en salle $rep_salle";}

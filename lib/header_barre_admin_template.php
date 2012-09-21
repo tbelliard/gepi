@@ -91,7 +91,9 @@ include("menu_plugins.inc.php");
 		$menus .= '    <li><a href="'.$gepiPath.'/gestion/accueil_sauve.php" '.insert_confirm_abandon().'>Sauvegardes</a></li>'."\n";
 		$menus .= '    <li><a href="'.$gepiPath.'/utilitaires/maj.php" '.insert_confirm_abandon().'>Mise à jour de la base</a></li>'."\n";
 		$menus .= '    <li><a href="'.$gepiPath.'/utilitaires/clean_tables.php" '.insert_confirm_abandon().'>Nettoyage de la base</a></li>'."\n";
-		$menus .= '    <li><a href="'.$gepiPath.'/gestion/efface_base.php" '.insert_confirm_abandon().'>Effacer la base</a></li>'."\n";
+		if(!getSettingAOui('gepi_en_production')) {
+			$menus .= '    <li><a href="'.$gepiPath.'/gestion/efface_base.php" '.insert_confirm_abandon().'>Effacer la base</a></li>'."\n";
+		}
 		$menus .= '    <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes_admin.php#purge" '.insert_confirm_abandon().'>Effacer les photos</a></li>'."\n";
 		$menus .= '    <li><a href="'.$gepiPath.'/gestion/gestion_temp_dir.php" '.insert_confirm_abandon().'>Dossiers temp.</a></li>'."\n";
 		$menus .= '</ul>'."\n";
@@ -146,7 +148,9 @@ include("menu_plugins.inc.php");
 		$menus .= '        <li><a href="'.$gepiPath.'/aid/index.php" '.insert_confirm_abandon().'>AID</a></li>'."\n";
 
 		$menus .= '        <li><a href="'.$gepiPath.'/etablissements/index.php" '.insert_confirm_abandon().'>Etablissements</a></li>'."\n";
-		$menus .= '        <li><a href="'.$gepiPath.'/gestion/gestion_base_test.php" '.insert_confirm_abandon().'>Données de tests</a></li>'."\n";
+		if(!getSettingAOui('gepi_en_production')) {
+			$menus .= '        <li><a href="'.$gepiPath.'/gestion/gestion_base_test.php" '.insert_confirm_abandon().'>Données de tests</a></li>'."\n";
+		}
 		$menus .= '  </ul>'."\n";
 		$menus .= '</li>'."\n";
 		$menus .= '<li class="li_inline"><a href="#">&nbsp;Modules</a>'."\n";

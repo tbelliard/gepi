@@ -45,10 +45,31 @@ if (isset($_POST['confirm']) and ($_POST['confirm']=='Non')) {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Outil de gestion | Effacement des données élèves";
+$titre_page = "Outil de gestion | Effacement des données";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?><p class=bold><a href='index.php#efface_base'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+
+<?php
+if(getSettingAOui('gepi_en_production')) {
+    echo "<h3 class='gepi'>Attention</h3>\n";
+    echo "<p>Votre serveur Gepi est paramétré comme un serveur en production.<br />Vous ne devriez pas effacer la base.<br />Vous perdriez tout ce qui est actuellement dans la base Gepi sauf&nbsp;:</p>
+<ul>
+    <li>Les classes (noms, périodes, ...)</li>
+    <li>Les catégories d'AID</li>
+    <li>La base établissement (<em>liste des établissements scolaires</em>)</li>
+    <li>Les logs de connexion</li>
+    <li>La base des matières</li>
+    <li>La base des utilisateurs</li>
+    <li>Le paramétrage général.</li>
+    <li>Les cahiers de texte</li>
+</ul>\n";
+
+    echo "<p>Vous pouvez modifier ce paramétrage dans la page de <a href='param_gen.php#gepi_en_production'>Configuration générale</a> si votre Gepi est en fait juste un Gepi de test.</p>\n";
+    require("../lib/footer.inc.php");
+    die();
+}
+?>
 <H2>Effacement de la base</H2>
 <?php
 if (isset($_POST['is_posted']) and ($_POST['is_posted'] == 1)) {
@@ -79,7 +100,7 @@ if (!isset($_POST['is_posted'])) {
     <ul>
     <li>Les classes (noms, périodes, ...)</li>
     <li>Les catégories d'AID</li>
-    <li>La base établissement</li>
+    <li>La base établissement (<em>liste des établissements scolaires</em>)</li>
     <li>Les logs de connexion</li>
     <li>La base des matières</li>
     <li>La base des utilisateurs</li>

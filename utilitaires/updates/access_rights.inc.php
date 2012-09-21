@@ -269,7 +269,7 @@ $tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/help.php', 'V', 'F', 'F'
 $tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/import_prof_csv.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des utilisateurs', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/impression_bienvenue.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des utilisateurs', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des utilisateurs', '');";
-$tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/reset_passwords.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Réinitialisation des mots de passe', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/reset_passwords.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Réinitialisation des mots de passe', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/modify_user.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des utilisateurs', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/mon_compte.php', 'V', 'V', 'V', 'V', 'V', 'V', 'V', 'F', 'Gestion du compte (informations personnelles, mot de passe, ...)', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/tab_profs_matieres.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Affectation des matieres aux professeurs', '')";
@@ -904,6 +904,8 @@ $tab_req[] = "INSERT INTO droits SET id='/gestion/gestion_signature.php',adminis
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/saisir_groupe_plan.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Affichage du formulaire de saisie de absences sur plan de classe', '');";
 
 $tab_req[] = "INSERT INTO droits VALUES ( '/matieres/matiere_ajax_lib.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Ajax', '');";
+
+$tab_req[] = "INSERT INTO droits VALUES ('/gestion/gestion_infos_actions.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Gestion des actions en attente signalées en page d accueil.', '1');";
 
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {

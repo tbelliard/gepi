@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -393,11 +393,18 @@ if (!isset($_SESSION['defaulttimeout'])) {
 $defaultrowlimit=10;
 
 //**************** EN-TETE *****************
-$titre_page = "Outil de gestion | Sauvegardes/Restauration";
+$titre_page = "Outil de gestion | Données de test";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();
+if(getSettingAOui('gepi_en_production')) {
+    echo "<h3 class='gepi'>Attention</h3>\n";
+    echo "<p>Votre serveur Gepi est paramétré comme un serveur en production.<br />Vous ne devriez pas charger des données de test (<em>cela polluerait votre base avec des données qui n'ont rien à voir avec celles de votre établissement</em>).</p>\n";
+    echo "<p>Vous pouvez modifier ce paramétrage dans la page de <a href='param_gen.php#gepi_en_production'>Configuration générale</a> si votre Gepi est en fait juste un Gepi de test.</p>\n";
+    require("../lib/footer.inc.php");
+    die();
+}
 
 if (!function_exists("gzwrite")) {
     echo "<h3 class='gepi'>Problème de configuration :</h3>\n";

@@ -108,6 +108,19 @@ function info_eleve($ele_login) {
 		$tab_ele['lieu_naissance']="";
 	}
 
+	$sql="SELECT * FROM utilisateurs WHERE statut='eleve' AND login='$ele_login';";
+	$res_user=mysql_query($sql);
+	if(mysql_num_rows($res_user)==1) {
+		$lig_user=mysql_fetch_object($res_user);
+
+		$tab_user=array('login','show_email','etat','date_verrouillage','niveau_alerte','observation_securite', 'auth_mode');
+		for($loop=0;$loop<count($tab_user);$loop++) {
+			$champ=$tab_user[$loop];
+			$tab_ele['compte_utilisateur'][$champ]=$lig_user->$champ;
+		}
+	}
+
+
 	$tab_ele['prof_liste_email']="";
 	$tab_ele['tab_prof_liste_email']=array();
 
@@ -571,12 +584,13 @@ function info_eleve($ele_login) {
 
 				//echo "\$lig_resp->login=".$lig_resp->login."<br />";
 				if($lig_resp->login!="") {
-					$sql="SELECT etat FROM utilisateurs WHERE login='".$lig_resp->login."';";
+					$sql="SELECT etat, auth_mode FROM utilisateurs WHERE login='".$lig_resp->login."';";
 					//echo "$sql<br />";
 					$res_u=mysql_query($sql);
 					if(mysql_num_rows($res_u)>0) {
 						$lig_u=mysql_fetch_object($res_u);
 						$tab_ele['resp'][$cpt]['etat']=$lig_u->etat;
+						$tab_ele['resp'][$cpt]['auth_mode']=$lig_u->auth_mode;
 					}
 				}
 

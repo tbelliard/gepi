@@ -1193,7 +1193,7 @@ class class_page_accueil {
 			"Ce menu permet de vous permet de consulter vos listes d'".$this->gepiSettings['denomination_eleves']." par groupe constitué et enseigné.");
 	}
 
-	if ((($this->statutUtilisateur=='cpe')&&(getSettingAOui('CpeAccesFichesEleves')))||
+	if ((($this->statutUtilisateur=='cpe')&&(getSettingAOui('GepiAccesTouteFicheEleveCpe')))||
 		(($this->statutUtilisateur=='cpe')&&(getSettingAOui('CpeAccesUploadPhotosEleves')))
 	) {
 		$complement_texte="";
