@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -1054,17 +1054,23 @@ elseif($acces_app_ele_resp=='periode_close') {
 								$accessible="n";
 							}
 							else {
-								$tmp_tabdate=explode(" ",$date_ver_periode[$i]);
-								$tabdate=explode("-",$tmp_tabdate[0]);
-								$display_date=$tabdate[2]."/".$tabdate[1]."/".$tabdate[0];
-
-								$timestamp_limite=mktime(0,0,0,$tabdate[1],$tabdate[2],$tabdate[0])+$delais_apres_cloture*24*3600;
-								$timestamp_courant=time();
-								if($timestamp_courant>=$timestamp_limite) {
-									$accessible="y";
+								if($date_ver_periode[$i]=="0000-00-00 00:00:00") {
+									$display_date="Clôture";
+									$accessible="n";
 								}
 								else {
-									$accessible="n";
+									$tmp_tabdate=explode(" ",$date_ver_periode[$i]);
+									$tabdate=explode("-",$tmp_tabdate[0]);
+									$display_date=$tabdate[2]."/".$tabdate[1]."/".$tabdate[0];
+
+									$timestamp_limite=mktime(0,0,0,$tabdate[1],$tabdate[2],$tabdate[0])+$delais_apres_cloture*24*3600;
+									$timestamp_courant=time();
+									if($timestamp_courant>=$timestamp_limite) {
+										$accessible="y";
+									}
+									else {
+										$accessible="n";
+									}
 								}
 							}
 

@@ -1853,7 +1853,7 @@ $texteItem="a accès à ses bulletins simplifiés<br />";
 	$texteItem.="L'accès aux appréciations est ouvert à la date saisie dans <a href='../classes/acces_appreciations.php' onclick=\"return confirm_abandon(this, change, '$themessage')\">Accès aux appréciations et avis du conseil</a>.<br />";
   } elseif($acces_app_ele_resp=='periode_close') {
 	$texteItem.= "L'accès aux appréciations est ouvert automatiquement ";
-	if($delais_apres_cloture>0) {echo $delais_apres_cloture." jours après ";}
+	if($delais_apres_cloture>0) {$texteItem.=$delais_apres_cloture." jours après ";}
 	$texteItem.= "la clôture de la période par un compte scolarité.";
 	$texteItem.= "<br />";
   }
@@ -2180,7 +2180,7 @@ if($acces_app_ele_resp=='manuel') {
   $texteItem.= "L'accès aux appréciations est ouvert à la date saisie dans <a href='../classes/acces_appreciations.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Accès aux appréciations et avis du conseil</a>.";
 } elseif($acces_app_ele_resp=='periode_close') {
   $texteItem.= "L'accès aux appréciations est ouvert automatiquement ";
-  if($delais_apres_cloture>0) {echo $delais_apres_cloture." jours après ";}
+  if($delais_apres_cloture>0) {$texteItem.= $delais_apres_cloture." jours après ";}
   $texteItem.= "la clôture de la période par un compte scolarité.";
 }
 $texteItem.= "<br />";

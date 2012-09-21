@@ -4185,9 +4185,11 @@ function affiche_date_sortie($date_sortie,$heure=FALSE) {
 	$eleve_date_sortie_heure=date('H', $eleve_date_de_sortie_time); 
 	$eleve_date_sortie_minute=date('i', $eleve_date_de_sortie_time); 
 	if ($heure) {
-		return $eleve_date_sortie_jour."/".$eleve_date_sortie_mois."/".$eleve_date_sortie_annee." ".$eleve_date_sortie_heure.":".$eleve_date_sortie_minute;
+		return sprintf("%02d", $eleve_date_sortie_jour)."/".sprintf("%02d", $eleve_date_sortie_mois)."/".$eleve_date_sortie_annee." ".$eleve_date_sortie_heure.":".$eleve_date_sortie_minute;
 	}
-	return $eleve_date_sortie_jour."/".$eleve_date_sortie_mois."/".$eleve_date_sortie_annee;
+	else {
+		return sprintf("%02d", $eleve_date_sortie_jour)."/".sprintf("%02d", $eleve_date_sortie_mois)."/".$eleve_date_sortie_annee;
+	}
 }
 
 /**

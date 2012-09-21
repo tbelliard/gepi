@@ -181,7 +181,8 @@ if (!isset($_POST["action"])) {
 									"nom_periode = 'Période ".$p . "', " .
 									"num_periode = '" . $p . "', " .
 									"verouiller = '" . $v . "', " .
-									"id_classe = '" . $classe_id . "'";
+									"id_classe = '" . $classe_id . "'".
+									"date_verrouillage='0000-00-00 00:00:00'";
 							//echo "$sql<br />";
 							$insert2 = mysql_query($sql);
 						}
@@ -216,6 +217,15 @@ if (!isset($_POST["action"])) {
 
 			$i++;
 			//if (!isset($_POST['ligne'.$i.'_id_int'])) $go = false;
+		}
+
+		$sql="update periodes set date_verrouillage='0000-00-00 00:00:00';";
+		$res=mysql_query($sql);
+		if($res) {
+			echo "Réinitialisation des dates de verrouillage de périodes effectuée.<br />";
+		}
+		else {
+			echo "Erreur lors de la réinitialisation des dates de verrouillage de périodes.<br />";
 		}
 
 		if ($error > 0) echo "<p><font color='red'>Il y a eu " . $error . " erreurs.</font></p>\n";

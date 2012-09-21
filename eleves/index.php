@@ -1564,7 +1564,7 @@ if(isset($quelles_classes)) {
 	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
 	echo "'>Régime</a></p></th>\n";
 
-	if ($quelles_classes == 'na') {
+	if (($quelles_classes == 'na')||($quelles_classes == 'dse')) {
 		echo "<th><p>Classe</p></th>\n";
 	} else {
 		echo "<th><p>";
@@ -1650,7 +1650,11 @@ if(isset($quelles_classes)) {
 		$call_classe = mysql_query("SELECT n.classe, n.id FROM j_eleves_classes c, classes n WHERE (c.login ='$eleve_login' and c.id_classe = n.id) order by c.periode DESC");
 		$eleve_classe = @mysql_result($call_classe, 0, "classe");
 		$eleve_id_classe = @mysql_result($call_classe, 0, "id");
-		if ($eleve_classe == '') {$eleve_classe = "<font color='red'>N/A</font>";}
+		$pas_de_classe="n";
+		if ($eleve_classe == '') {
+			$eleve_classe = "<font color='red'>N/A</font>";
+			$pas_de_classe="y";
+		}
 		$call_suivi = mysql_query("SELECT u.* FROM utilisateurs u, j_eleves_professeurs s WHERE (s.login ='$eleve_login' and s.professeur = u.login and s.id_classe='$eleve_id_classe')");
 		if(mysql_num_rows($call_suivi)==0){
 			$eleve_profsuivi_nom = "";
@@ -1703,7 +1707,7 @@ if(isset($quelles_classes)) {
 		}
 		echo "</p></td>\n";
 
-		if($_SESSION['statut']=='administrateur') {
+		if(($_SESSION['statut']=='administrateur')&&($pas_de_classe!="y")) {
 			echo "<td><p><a href='../classes/classes_const.php?id_classe=$eleve_id_classe'>$eleve_classe</a></p></td>\n";
 		}
 		else {

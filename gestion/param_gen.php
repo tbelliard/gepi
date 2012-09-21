@@ -1344,13 +1344,14 @@ if($delais_apres_cloture=="") {$delais_apres_cloture=0;}
 				   value='periode_close' 
 				   onchange='changement()' 
 				   <?php if($acces_app_ele_resp=='periode_close') {echo "checked='checked'";} ?>
-				   onkeydown='clavier_2(this.id,event,1,600)' />
+				    />
+			<input type='text' 
+				   name='delais_apres_cloture' 
+				   id='delais_apres_cloture' 
+				   value='<?php echo $delais_apres_cloture; ?>'
+				   size='1' 
+				   onchange="changement();document.getElementById('acces_app_ele_resp_periode_close').checked=true;" onkeydown="clavier_2(this.id,event,1,600);document.getElementById('acces_app_ele_resp_periode_close').checked=true;" />
 			<label for='acces_app_ele_resp_periode_close'>
-				<input type='text' 
-					   name='delais_apres_cloture' 
-					   value='<?php echo $delais_apres_cloture; ?>'
-					   size='1' 
-					   onchange='changement()' />
 				jours après la clôture de la période
 			</label>
 		</p>

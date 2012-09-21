@@ -152,6 +152,18 @@ if (isset($_POST['is_posted'])) {
 	}
 }
 
+if (isset($_GET['reinit_dates_verrouillage_periode'])) {
+	check_token();
+	$sql="update periodes set date_verrouillage='0000-00-00 00:00:00';";
+	$res=mysql_query($sql);
+	if($res) {
+		$msg.="Réinitialisation des dates de verrouillage de périodes effectuée.<br />";
+	}
+	else {
+		$msg.="Erreur lors de la réinitialisation des dates de verrouillage de périodes.<br />";
+	}
+}
+
 // Load settings
 if (!loadSettings()) {
 	die("Erreur chargement settings");
@@ -378,6 +390,13 @@ echo "</p>\n";
 echo "</fieldset>\n";
 echo "</form>\n";
 
+echo "<p><br /></p>\n";
+
+echo "<p>Lors de l'initialisation de l'année, la date à laquelle une période a été close pour telle classe sera réinitialisée.<br />Ce n'était pas le cas pour une initialisation faite avant le 17/09/2012.<br />Pour forcer cette réinitialisation, <a href='".$_SERVER['PHP_SELF']."?reinit_dates_verrouillage_periode=y".add_token_in_url()."'>cliquer ici</a>.<br />Cette date de verrouillage présente un intérêt pour l'accès des responsables et élèves aux appréciations des bulletins dans le cas où vous avez choisi un accès automatique N jours après la clôture de la période.</p>\n";
+if(getSettingValue("active_module_absence")=="2"){
+	echo "<p>Ces dates de verrouillage, indiquant à quelle date la période de notes a été close, n'ont rien à voir avec les dates déclarées pour les fins de périodes d'absences dans la page de Verrouillage.<br />
+	Les dates de fin de période affichées dans la page de Verrouillage concernent la liste des élèves qui seront présentés dans vos groupes/classes pour la saisie des absences (<em>tel élève arrivé au 2è trimestre ou ayant changé de classe,... doit ou ne doit pas apparaître sur telle période dans tel groupe/classe</em>).</p>\n";
+}
 echo "<p><br /></p>\n";
 
 echo "<a name='svg_ext'></a>";
