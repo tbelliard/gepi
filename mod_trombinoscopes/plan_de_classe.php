@@ -249,7 +249,7 @@ if(isset($_POST['enregistrer_position'])) {
 
 
 $current_group=get_group($id_groupe);
-echo "<h1 style='text-align:center; margin-top: 0.2em;'>".$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']."</h1>";
+//echo "<h1 style='text-align:center; margin-top: 0.2em;'>".$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']."</h1>";
 
 $grp_order_by="c.classe, e.nom, e.prenom";
 
@@ -266,6 +266,8 @@ ORDER BY $grp_order_by;";
 //echo "$sql<br />";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
+	echo "<h1 style='text-align:center; margin-top: 0.2em;'>".$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']."</h1>";
+
 	echo "<div style='position:absolute; top:0.5em; left:0.5em; width:5em; text-align:center;'>\n";
 	echo "<a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a><br />\n";
 	echo "</div>\n";
@@ -306,9 +308,39 @@ imageDestroy($img);
 //================================
 
 echo "<form action='".$_SERVER['PHP_SELF']."' name='form_reg_pos' method='post'>\n";
+echo "<div style='float:right; width:40px;'>\n";
+	echo "<div style='position:relative; top:18px; left:0px;'>\n";
+	echo "<a href='javascript:decale_photos(-10,0)' title='Décaler les photos vers la gauche'>";
+	echo "<img src='../images/arrow_left.png' width='18' height='18' />";
+	echo "</a>";
+	echo "</div\n>";
+
+	echo "<div style='position:relative; top:-14px; left:18px;'>\n";
+	echo "<a href='javascript:decale_photos(0,-10)' title='Décaler les photos vers le haut'>";
+	echo "<img src='../images/up.png' width='18' height='18' />";
+	echo "</a>";
+	echo "<br />";
+	echo "<a href='javascript:decale_photos(0,10)' title='Décaler les photos vers le bas'>";
+	echo "<img src='../images/down.png' width='18' height='18' />";
+	echo "</a>";
+	echo "</div\n>";
+
+	echo "<div style='position:relative; top:-50px; left:35px;'>\n";
+	echo "<a href='javascript:decale_photos(10,0)' title='Décaler les photos vers la droite'>";
+	echo "<img src='../images/arrow_right.png' width='18' height='18' />";
+	echo "</a>";
+	echo "</div\n>";
+echo "</div\n>";
+
+echo "<h1 style='text-align:center; margin-top: 0.2em;'>".$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']."</h1>";
+
 echo "<div style='position:absolute; top:0.5em; left:0.5em; width:5em; text-align:center;'>\n";
 echo "<a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a><br />\n";
 echo "<input type='button' name='Enregistrer' value='Enregistrer' class='noprint' onclick='enregistrement_position_div_photo()' />\n";
+
+echo "<br />";
+echo "<a href='javascript:decale_photos(10,0)'>Clic</a>";
+
 echo "</div>\n";
 
 echo add_token_field();
@@ -399,6 +431,31 @@ echo "<script type='text/javascript'>
 		}
 
 		document.form_reg_pos.submit();
+	}
+
+	function decale_photos(dx, dy) {
+		for(i=0;i<tab_ele.length;i++) {
+			if(document.getElementById('div_'+tab_ele[i])) {
+				/*
+				if(i<2) {
+					alert('x['+i+']='+document.getElementById('div_'+tab_ele[i]).style.left);
+					alert('Nettoyé x['+i+']='+document.getElementById('div_'+tab_ele[i]).style.left.replace('px',''));
+				}
+				*/
+				x=document.getElementById('div_'+tab_ele[i]).style.left.replace('px','');
+				x=eval(eval(x)+eval(dx));
+				/*
+				if(i<2) {
+					alert('Augmenté x['+i+']='+x);
+				}
+				*/
+				y=document.getElementById('div_'+tab_ele[i]).style.top.replace('px','');
+				y=eval(eval(y)+eval(dy));
+
+				document.getElementById('div_'+tab_ele[i]).style.left=x+'px';
+				document.getElementById('div_'+tab_ele[i]).style.top=y+'px';
+			}
+		}
 	}
 
 </script>\n";
