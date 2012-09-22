@@ -50,7 +50,18 @@ require_once("../lib/header.inc.php");
 }
 ?>
 
-<p>Vous allez effectuer l'initialisation de l'année scolaire qui vient de débuter.</p>
+<p><strong>Vous allez effectuer l'initialisation de l'année scolaire qui vient de débuter.</strong><br />
+(<em>c'est une opération que vous ne devez effectuer qu'<span style='color:red'>une seule fois par an</span>.<br />
+<?php
+
+	if(getSettingValue("import_maj_xml_sconet")==1) {
+		echo "Pour mettre à jour la base avec les informations saisies en cours d'année dans Sconet pour les changements d'adresses, arrivées d'èlèves,...<br />il faut effectuer une <a href='../responsables/maj_import.php'>Mise à jour d'après Sconet</a></em>)<br />";
+	}
+	else {
+		echo "L'initialisation d'année ne convient pas pour prendre en compte les changements d'adresses, arrivées d'èlèves,...</em>)<br />";
+	}
+?>
+<br />
 <?php
 
 	//if((getSettingValue('use_sso')=="lcs")||(getSettingValue('use_sso')=="ldap_scribe")) {
