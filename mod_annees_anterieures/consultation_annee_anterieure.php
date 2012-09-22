@@ -720,7 +720,7 @@ else {
 				//echo "$sql<br />";
 				$test_ine=mysql_query($sql);
 				if(mysql_num_rows($test_ine)==0) {
-					echo "<p>Il se peut que la table 'eleves' souffre de quelques lacunes&nbsp;: Aucun ".$gepiSettings['denomination_eleve']." n'a son numéro INE renseigné.</p>\n";
+					echo "<p style='color:red'>Il se peut que la table 'eleves' souffre de quelques lacunes&nbsp;: Aucun ".$gepiSettings['denomination_eleve']." n'a son numéro INE renseigné.<br />Une Mise à jour d'après Sconet peut permettre de corriger cela (<em>avec un compte administrateur</em>).<br />Vous pouvez aussi contrôler dans Gestion des bases/Gestion des élèves si une conversion ne vous est pas demandée pour compléter certaines informations.</p>\n";
 				}
 			}
 			else{
