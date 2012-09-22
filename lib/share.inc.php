@@ -2075,19 +2075,27 @@ function get_nom_classe($id_classe){
  * @param string $date
  * @return string La date formatée
  */
-function formate_date($date) {
+function formate_date($date, $avec_heure="n") {
 	$tmp_date=explode(" ",$date);
 	$tab_date=explode("-",$tmp_date[0]);
 
+	$retour="";
+
 	if(isset($tab_date[2])) {
-		return sprintf("%02d",$tab_date[2])."/".sprintf("%02d",$tab_date[1])."/".$tab_date[0];
+		$retour.=sprintf("%02d",$tab_date[2])."/".sprintf("%02d",$tab_date[1])."/".$tab_date[0];
 	}
 	elseif(isset($tab_date[0])) {
-		return $tab_date[0];
+		$retour.=$tab_date[0];
 	}
 	else {
-		return $date;
+		$retour.=$date;
 	}
+
+	if(($avec_heure=="y")&&(isset($tmp_date[1]))&&(preg_match("/[0-9]{2}:[0-9]{2}:[0-9]{2}/", $tmp_date[1]))) {
+		$retour.=" à ".$tmp_date[1];
+	}
+
+	return $retour;
 }
 
 /**
@@ -5792,6 +5800,37 @@ function virer_accents_html_setting($name) {
 		if(saveSetting($name, mysql_real_escape_string($correction))) {return 1;} else {return 2;}
 	}
 	else {return 0;}
+}
+
+/** Fonction destinée à enregistrer des détails sur la mise à jour Sconet en cours
+ *
+ * @param string $texte Texte à ajouter au log en cours
+ * @param string $fin 'y' ou 'n' pour mettre à jour la date de fin
+ *
+ * @return boolean Succès ou échec de l'enregistrement.
+ */
+
+function enregistre_log_maj_sconet($texte, $fin="n") {
+	$ts_maj_sconet=getSettingValue('ts_maj_sconet');
+	if($ts_maj_sconet=='') {
+		return false;
+	}
+	else {
+		$sql="SELECT * FROM log_maj_sconet WHERE date_debut='$ts_maj_sconet';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$lig=mysql_fetch_object($res);
+
+			$sql="UPDATE log_maj_sconet SET texte='".mysql_real_escape_string($lig->texte.$texte)."'";
+			if($fin!="n") {$sql.=", date_fin='".strftime("%Y-%m-%d %H:%M:%S")."'";}
+			$sql.=" WHERE date_debut='$ts_maj_sconet';";
+		}
+		else {
+			$sql="INSERT INTO log_maj_sconet SET date_debut='$ts_maj_sconet', login='".$_SESSION['login']."', date_fin='0000-00-00 00:00:00', texte='".mysql_real_escape_string($texte)."';";
+		}
+		$res=mysql_query($sql);
+		if($res) {return true;} else {return false;}
+	}
 }
 
 ?>

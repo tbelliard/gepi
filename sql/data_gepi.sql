@@ -385,7 +385,7 @@ INSERT INTO droits VALUES ('/init_xml/init_options.php', 'V', 'F', 'F', 'F', 'F'
 INSERT INTO droits VALUES ('/init_xml/save_csv.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation année scolaire', '');
 INSERT INTO droits VALUES ('/init_xml/responsables.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation année scolaire', '');
 INSERT INTO droits VALUES ('/init_xml/step3.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation année scolaire', '');
-INSERT INTO droits VALUES ('/responsables/maj_import.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Mise à jour depuis Sconet', '');
+INSERT INTO droits VALUES ('/responsables/maj_import.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Mise à jour depuis Sconet', '');
 INSERT INTO droits VALUES ('/responsables/conversion.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Conversion des données responsables', '');
 INSERT INTO droits VALUES ('/utilisateurs/create_responsable.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Création des utilisateurs au statut responsable', '');
 INSERT INTO droits VALUES ('/utilisateurs/create_eleve.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Création des utilisateurs au statut responsable', '');
@@ -1186,3 +1186,6 @@ INSERT INTO droits VALUES ('/mod_abs2/saisir_groupe_plan.php', 'F', 'V', 'F', 'F
 INSERT INTO droits VALUES ( '/matieres/matiere_ajax_lib.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Ajax', '');
 INSERT INTO setting SET name='gepi_en_production', value='y';
 INSERT INTO droits VALUES ('/gestion/gestion_infos_actions.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Gestion des actions en attente signalées en page d accueil.', '1');
+INSERT INTO droits SET id='/responsables/maj_import3.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',
+description='Mise à jour Sconet',statut='';
+

@@ -354,7 +354,7 @@ $tab_req[] = "INSERT INTO droits VALUES ('/init_xml/init_options.php', 'V', 'F',
 $tab_req[] = "INSERT INTO droits VALUES ('/init_xml/save_csv.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation année scolaire', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/init_xml/responsables.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation année scolaire', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/init_xml/step3.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation année scolaire', '');";
-$tab_req[] = "INSERT INTO droits VALUES ('/responsables/maj_import.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Mise à jour depuis Sconet', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/responsables/maj_import.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Mise à jour depuis Sconet', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/responsables/conversion.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Conversion des données responsables', '');";
 
 $tab_req[] = "INSERT INTO droits VALUES ('/utilisateurs/create_responsable.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Création des utilisateurs au statut responsable', '');";
@@ -906,6 +906,18 @@ $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/saisir_groupe_plan.php', 'F'
 $tab_req[] = "INSERT INTO droits VALUES ( '/matieres/matiere_ajax_lib.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Ajax', '');";
 
 $tab_req[] = "INSERT INTO droits VALUES ('/gestion/gestion_infos_actions.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Gestion des actions en attente signalées en page d accueil.', '1');";
+
+$tab_req[] = "INSERT INTO droits SET id='/responsables/maj_import3.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Mise à jour Sconet',
+statut='';";
 
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {

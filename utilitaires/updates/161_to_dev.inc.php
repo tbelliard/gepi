@@ -200,4 +200,25 @@ if(getSettingValue('GepiAccesCDTToutesClasses')=="") {
 	}
 }
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'log_maj_sconet' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'log_maj_sconet'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE log_maj_sconet (
+	id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+	login VARCHAR( 50 ) NOT NULL ,
+	texte TEXT NOT NULL ,
+	date_debut DATETIME NOT NULL ,
+	date_fin DATETIME NOT NULL
+	) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 ?>

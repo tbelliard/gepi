@@ -327,6 +327,10 @@ else{
 if($_SESSION['statut']=="scolarite") {
 	echo " | <a href=\"modify_resp.php\">Ajouter un ".$gepiSettings['denomination_responsable']."</a>\n";
 
+	if((getSettingValue("import_maj_xml_sconet")==1)&&(getSettingAOui('GepiAccesMajSconetScol'))) {
+		echo " | <a href=\"maj_import.php\">Mettre à jour depuis Sconet</a>\n";
+	}
+
 	$sql="SELECT 1=1 FROM utilisateurs WHERE statut='responsable';";
 	$test_resp=mysql_query($sql);
 	if(mysql_num_rows($test_resp)>0) {

@@ -49,6 +49,8 @@ Gestion:
   des responsables d'élèves (sous réserve de donner le droit)
 - Ajout de précautions pour l'accès aux choix sensibles 'Effacer la base' et 'Données de test'.
 - Possibilité pour l'admin de supprimer par signalements lots les actions en attente.
+- Possibilité de faire la mise à jour d'après Sconet en compte scolarité
+  (sous réserve de donner le droit dans Gestion des droits).
 
 
 Gepi-1.6.1 (10/06/2012)
