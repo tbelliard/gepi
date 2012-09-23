@@ -655,6 +655,12 @@ if (isset($_GET['liste_eleves']) and ($_GET['liste_eleves']=='oui'))  {
 }
 	
 // Chargement des photos élèves
+function erreur_rename_correspondances_csv()
+	{
+	global $msg,$une_ligne;
+	$msg.="correspondances.csv : impossible de renommer \"".$une_ligne[0]."\" en \"".$une_ligne[1]."\"<br />";
+	}
+
 if (isset($_POST['action']) and ($_POST['action']=='upload_photos_eleves'))  {
 	check_token();
 	$msg="";
@@ -695,13 +701,11 @@ if (isset($_POST['action']) and ($_POST['action']=='upload_photos_eleves'))  {
 					if (file_exists($dir_temp_photos_eleves."/correspondances.csv")) { 
 						if (($fichier_csv=fopen($dir_temp_photos_eleves."/correspondances.csv","r"))!==FALSE)
 							{
+							$old_error_handler = set_error_handler("erreur_rename_correspondances_csv");
 							while (($une_ligne=fgetcsv($fichier_csv,1000,","))!==FALSE) 
-								if (count($une_ligne)==2) {
-                                                                 if (file_exists($dir_temp_photos_eleves."/".$une_ligne[0])) {
-                                                                     rename($dir_temp_photos_eleves."/".$une_ligne[0],$dir_temp_photos_eleves."/".$une_ligne[1].".jpg");
-                                                                 }
-                                                          }
+								if (count($une_ligne)==2) rename($dir_temp_photos_eleves."/".$une_ligne[0],$dir_temp_photos_eleves."/".$une_ligne[1].".jpg");
 							fclose($fichier_csv);
+							restore_error_handler();
 							}
 					}
 
