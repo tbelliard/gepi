@@ -724,9 +724,8 @@ if(isset($tab_eleve_id)) {
 		if($loop>0) {$chaine_js_eleve_id.=", ";}
 		$chaine_js_eleve_id.="'".$tab_eleve_id[$loop]."'";
 	}
-}
 
-echo "<script type='text/javascript'>
+	echo "<script type='text/javascript'>
 function coche_checkbox_creneau(num) {
 	var tab_eleve_id=new Array($chaine_js_eleve_id);
 	for(i=0;i<tab_eleve_id.length;i++) {
@@ -743,6 +742,7 @@ function coche_checkbox_creneau(num) {
 	}
 }
 </script>\n";
+}
 
 $javascript_footer_texte_specifique = '<script type="text/javascript">
     dojo.require("dijit.form.Button");
