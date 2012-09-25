@@ -718,10 +718,12 @@ echo "</form>";
 echo "</div>\n";
 echo "</div>\n";
 
-$chaine_js_eleve_id="";
-for($loop=0;$loop<count($tab_eleve_id);$loop++) {
-	if($loop>0) {$chaine_js_eleve_id.=", ";}
-	$chaine_js_eleve_id.="'".$tab_eleve_id[$loop]."'";
+if(isset($tab_eleve_id)) {
+	$chaine_js_eleve_id="";
+	for($loop=0;$loop<count($tab_eleve_id);$loop++) {
+		if($loop>0) {$chaine_js_eleve_id.=", ";}
+		$chaine_js_eleve_id.="'".$tab_eleve_id[$loop]."'";
+	}
 }
 
 echo "<script type='text/javascript'>
