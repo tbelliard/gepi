@@ -181,7 +181,7 @@ if (!isset($_POST["action"])) {
 									"nom_periode = 'Période ".$p . "', " .
 									"num_periode = '" . $p . "', " .
 									"verouiller = '" . $v . "', " .
-									"id_classe = '" . $classe_id . "'".
+									"id_classe = '" . $classe_id . "', ".
 									"date_verrouillage='0000-00-00 00:00:00'";
 							//echo "$sql<br />";
 							$insert2 = mysql_query($sql);
