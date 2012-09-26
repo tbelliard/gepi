@@ -177,7 +177,7 @@ if(mysql_num_rows($res_col_eleves)>0) {
 }
 */
 $chaine_mysql_collate="CHARSET utf8 COLLATE utf8_general_ci";
-$chaine_collate="COLLATE utf8_general_ci ";
+$chaine_collate="COLLATE utf8_bin ";
 //$chaine_collate="COLLATE latin1_bin ";
 //========================================================================
 
