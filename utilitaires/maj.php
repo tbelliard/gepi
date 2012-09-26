@@ -128,7 +128,7 @@ echo ('
         <meta http-equiv="Content-Style-Type" content="text/css" />
 		<link rel="stylesheet" href="../style.css" type="text/css" />
 		<link rel="stylesheet" href="updates/updates.css" type="text/css" />
-		<title>Mise à jour de la base de donnée GEPI</title>
+		<title>Mise à jour de la base de données GEPI</title>
 		<link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
 		<link rel="icon" type="image/ico" href="../favicon.ico" />
 		');
@@ -153,7 +153,7 @@ if (($resultat_session == '0') and ($valid != 'yes')) {
 	echo('
 		<form action="maj.php" method="post">
 			<div class="center">
-				<h1 class="grand center">Mise à jour de la base de donnée GEPI<br />(Accès administrateur)</h1>
+				<h1 class="grand center">Mise à jour de la base de données GEPI<br />(Accès administrateur)</h1>
 			');
 
 	if (isset ($message)) {
