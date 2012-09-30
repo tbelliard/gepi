@@ -28,7 +28,8 @@ Mise en page pour validation et accessibilité
 }
 .expli_page {
 	text-align: center;
-	font: normal 12pt;
+	font-weight: normal;
+	font-size: 12pt;
 }
 .info_importante {
 	font-style: normal;
@@ -270,7 +271,10 @@ table.menu td {
 /* --- Affichage message page de garde --- */
 .gepi_garde {
 	text-align:center;
-	font: normal small-caps normal 14pt;
+        font-style: normal;
+        font-size: 14pt;
+        font-variant: small-caps;
+        font-weight: normal;
 	line-height: 125%;
 }
 
@@ -780,7 +784,9 @@ table.menu td {
 	background-color: #E0EEEF;
 }
 .choix_classe {
-	font: normal normal 11pt;
+        font-style: normal;
+        font-size: 11pt;
+        font-weight: normal;
 	letter-spacing: -0.05em;
 	margin: 5px;
 }

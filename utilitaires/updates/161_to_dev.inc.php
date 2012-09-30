@@ -221,4 +221,18 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "&nbsp;-> Ajout d'un champ 'primo_declarant' à la table 's_incidents'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_incidents LIKE 'primo_declarant';"));
+if ($test_champ==0) {
+	$query = mysql_query("ALTER TABLE s_incidents ADD primo_declarant varchar(50);");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.2(dev) :</h3>";
 ?>
