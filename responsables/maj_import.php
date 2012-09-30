@@ -41,6 +41,11 @@ if (!checkAccess()) {
     die();
 }
 
+if(($_SESSION['statut']=='scolarite')&&(!getSettingAOui('GepiAccesMajSconetScol'))) {
+	header("Location: ../accueil.php?msg=Mise à jour Sconet non autorisée en compte scolarité.");
+	die();
+}
+
 if(strstr($_SERVER['HTTP_REFERER'],"eleves/index.php")) {$_SESSION['retour_apres_maj_sconet']="../eleves/index.php";}
 
 //**************** EN-TETE *****************

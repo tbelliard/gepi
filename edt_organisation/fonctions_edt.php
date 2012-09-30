@@ -841,6 +841,9 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 		$aff_sem = '- Sem.'.$rep_sem["id_semaine"]." - ";
 	}
 
+	//=============================
+	// Initialisation
+	$rep_salle="";
 	// On récupère le nom complet de la salle en question
 	if (GetSettingEdt("edt_aff_salle") == "nom") {
 		$salle_aff = "nom_salle";
@@ -859,18 +862,21 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 	$req_salle = mysql_query($sql);
 	//$tab_rep_salle = mysql_fetch_array($req_salle);
 	//$rep_salle = $tab_rep_salle[0];
-	$lig_rep_salle = mysql_fetch_object($req_salle);
-	$rep_salle = $lig_rep_salle->$salle_aff;
+	if(mysql_num_rows($req_salle)>0) {
+		$lig_rep_salle = mysql_fetch_object($req_salle);
+		$rep_salle = $lig_rep_salle->$salle_aff;
 
-	// Si le champ nom_salle est vide:
-	if($rep_salle=='') {
-		//$rep_salle=$rep_id_salle["numero_salle"];
-		//$rep_salle=$rep_id_salle["numero_salle"];
-		$rep_salle = $lig_rep_salle->numero_salle;
+		// Si le champ nom_salle est vide:
+		if($rep_salle=='') {
+			//$rep_salle=$rep_id_salle["numero_salle"];
+			//$rep_salle=$rep_id_salle["numero_salle"];
+			$rep_salle = $lig_rep_salle->numero_salle;
+		}
 	}
 
 	//$info_alt.=" $sql";
 	if($rep_salle!="") {$info_alt.=" en salle $rep_salle";}
+	//=============================
 
 	if (!isset($rep_nom_prof['nom'])){
         $rep_nom_prof['nom'] = " ";

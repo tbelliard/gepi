@@ -505,6 +505,11 @@ $texteItem="a le droit d'accéder à toutes les fiches élève";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='GepiAccesMajSconetScol';
+$texteItem="a le droit d'effectuer les mises à jour des tables élèves et responsables d'après les XML de Sconet";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 //+++++++++++++++++++++++++++
 
 $titreItem='';

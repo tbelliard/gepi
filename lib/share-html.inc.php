@@ -2091,7 +2091,7 @@ function tableau_html_eleves_du_groupe($id_groupe, $nb_col) {
 }
 
 /** Retourne un tableau HTML des groupes d'une classe dans telle matière
- * @param integer $id_classe : Identifiant de ckasse
+ * @param integer $id_classe : Identifiant de classe
  * @param string $matiere : Nom de matière
  *
  * @return string Tableau HTML de la liste des enseignements d'une matière donnée dans une classe
@@ -2223,4 +2223,64 @@ function tableau_html_groupe_matiere_telle_classe($id_classe, $matiere, $tab_grp
 		return "";
 	}
 }
+
+/** Retourne ce qui a été logué d'une mise à jour d'après Sconet
+ * @param integer $id_maj_sconet : Identifiant de la mise à jour loguée.
+ * @param integer $ts_maj_sconet : date de début de la mise à jour Sconet.
+ *
+ * @return string Retourne ce qui a été logué d'une mise à jour d'après Sconet
+ */
+function get_infos_maj_sconet($id_maj_sconet="", $ts_maj_sconet="") {
+	$retour="";
+	if($id_maj_sconet!="") {
+		$sql="SELECT * FROM log_maj_sconet WHERE id='$id_maj_sconet';";
+	}
+	elseif($ts_maj_sconet!="") {
+		$sql="SELECT * FROM log_maj_sconet WHERE date_debut='$ts_maj_sconet';";
+	}
+
+	if(isset($sql)) {
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$lig=mysql_fetch_object($res);
+			$retour.="<p>Mise à jour d'après Sconet lancée par ".civ_nom_prenom($lig->login)." le ".formate_date($lig->date_debut, "y");
+			if($lig->date_fin!="0000-00-00 00:00:00") {
+				$retour.=" et achevée le ".formate_date($lig->date_fin, "y");
+			}
+			else {
+				$retour.=" et <span style='color:red'>non achevée</span>\n";
+			}
+			$retour.=".</p>\n";
+
+			$retour.=$lig->texte;
+		}
+	}
+	return $retour;
+}
+
+/** Retourne la date et le login correspondant à la dernière màj sconet lancée
+ *
+ * @return string Retourne la date et le login correspondant à la dernière màj sconet lancée
+ */
+function get_infos_derniere_maj_sconet() {
+	$retour="";
+
+	$sql="SELECT * FROM log_maj_sconet ORDER BY date_debut DESC LIMIT 1;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$lig=mysql_fetch_object($res);
+		$retour.="<p>La précédente mise à jour d'après Sconet a été lancée par ".civ_nom_prenom($lig->login)." le ".formate_date($lig->date_debut, "y");
+		if($lig->date_fin!="0000-00-00 00:00:00") {
+			$retour.=" et achevée le ".formate_date($lig->date_fin, "y");
+		}
+		else {
+			$retour.=" et <span style='color:red'>non achevée</span>\n";
+		}
+		$retour.=".</p>\n";
+
+		//$retour.=$lig->texte;
+	}
+	return $retour;
+}
+
 ?>

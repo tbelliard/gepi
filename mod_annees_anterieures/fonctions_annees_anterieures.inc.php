@@ -542,7 +542,7 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL,$ine=''){
 			//echo "$sql<br />";
 			$test_ine=mysql_query($sql);
 			if(mysql_num_rows($test_ine)==0) {
-				echo "<p>Le numéro INE de cet élève n'est pas renseigné.</p>\n";
+				echo "<p style='color:red'>Le numéro INE de cet élève n'est pas renseigné.</p>\n";
 			}
 		}
 		else{

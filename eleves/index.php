@@ -517,12 +517,23 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 	$droits = @sql_query1("SELECT ".$_SESSION['statut']." FROM droits WHERE id='/eleves/import_eleves_csv.php'");
 	if ($droits == "V") {
 		echo " | <a href=\"import_eleves_csv.php\" title=\"Télécharger le fichier des noms, prénoms, identifiants GEPI et classes\">Télécharger le fichier des élèves au format csv.</a>\n";
-
-		if(getSettingValue("import_maj_xml_sconet")==1){
-			echo " | <a href=\"../responsables/maj_import.php\">Mettre à jour depuis Sconet</a>\n";
-			echo " | <a href=\"import_communes.php\">Importer les communes de naissance des élèves</a>\n";
-		}
 	}
+
+
+	if((getSettingValue("import_maj_xml_sconet")==1)&&
+		(
+			($_SESSION['statut']=='administrateur')||
+			(($_SESSION['statut']=='scolarite')&&(getSettingAOui('GepiAccesMajSconetScol')))
+		)
+	) {
+		echo " | <a href=\"../responsables/maj_import.php\">Mettre à jour depuis Sconet</a>\n";
+	}
+
+	if((getSettingValue("import_maj_xml_sconet")==1)&&($_SESSION['statut']=='administrateur')) {
+		echo " | <a href=\"import_communes.php\">Importer les communes de naissance des élèves</a>\n";
+	}
+
+
 }
 
 if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {echo " | <a href='synchro_mail.php'>Synchroniser les adresses mail élèves</a>\n";}
