@@ -85,6 +85,27 @@ if(isset($suppr_ad)) {
 	}
 }
 
+
+if(isset($_GET['suppr_adresses_non_associees'])) {
+	check_token();
+
+	$sql="select 1=1 from resp_adr where adr_id not in (select distinct adr_id from resp_pers);";
+	$test=mysql_query($sql);
+	$nb_scories=mysql_num_rows($test);
+	if($nb_scories==0) {
+		$msg.="Toutes les adresses sont associées à des responsables.<br />\n";
+	}
+	else {
+		$msg.="$nb_scories adresses ne sont pas associées à des responsables&nbsp;: ";
+
+		$sql="delete from resp_adr where adr_id not in (select distinct adr_id from resp_pers);";
+		$del=mysql_query($sql);
+		if($del) {$msg.="<span style='color:green'>Nettoyées</span>";}
+		else {$msg.="<span style='color:red'>Echec du nettoyage</span>";}
+		$msg.="<br />\n";
+	}
+}
+
 //**************** EN-TETE *******************************
 $titre_page = "Gestion des adresses de responsables";
 require_once("../lib/header.inc.php");
@@ -123,7 +144,16 @@ if(!getSettingValue('conv_new_resp_table')){
 }
 
 ?>
-<p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href="dedoublonnage_adresses.php">Dédoublonner les adresses</a></p>
+<p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href="dedoublonnage_adresses.php">Dédoublonner les adresses</a>
+<?php
+	$sql="select 1=1 from resp_adr where adr_id not in (select distinct adr_id from resp_pers);";
+	$test=mysql_query($sql);
+	$nb_scories=mysql_num_rows($test);
+	if($nb_scories>0) {
+		echo " | <a href='".$_SERVER['PHP_SELF']."?suppr_adresses_non_associees=y".add_token_in_url()."'>Supprimer les adresses non associées</a>";
+	}
+?>
+</p>
 
 <?php
 	//debug_var();
