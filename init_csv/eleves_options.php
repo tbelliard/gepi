@@ -279,27 +279,29 @@ if (!isset($_POST["action"])) {
 				echo "<tr><th>ID interne de l'élève</th><th>Matières</th></tr>\n";
 
 				$alt=1;
-				for ($i=0;$i<$k-1;$i++) {
-					$alt=$alt*(-1);
-                    echo "<tr class='lig$alt'>\n";
-					echo "<td>\n";
-					$sql="INSERT INTO tempo2 SET col1='".$data_tab[$i]["id_int"]."',
-					col2='".mysql_real_escape_string($data_tab[$i]["options"])."';";
-					$insert=mysql_query($sql);
-					if(!$insert) {
-						echo "<span style='color:red'>";
-						echo $data_tab[$i]["id_int"];
- 						echo "</span>";
-						$nb_error++;
+				for ($i=0;$i<$k;$i++) {
+					if(isset($data_tab[$i]["id_int"])) {
+						$alt=$alt*(-1);
+						echo "<tr class='lig$alt'>\n";
+						echo "<td>\n";
+						$sql="INSERT INTO tempo2 SET col1='".$data_tab[$i]["id_int"]."',
+						col2='".mysql_real_escape_string($data_tab[$i]["options"])."';";
+						$insert=mysql_query($sql);
+						if(!$insert) {
+							echo "<span style='color:red'>";
+							echo $data_tab[$i]["id_int"];
+	 						echo "</span>";
+							$nb_error++;
+						}
+						else {
+							echo $data_tab[$i]["id_int"];
+						}
+						echo "</td>\n";
+						echo "<td>\n";
+						echo $data_tab[$i]["options"];
+						echo "</td>\n";
+						echo "</tr>\n";
 					}
-					else {
-						echo $data_tab[$i]["id_int"];
-					}
-					echo "</td>\n";
-					echo "<td>\n";
-					echo $data_tab[$i]["options"];
-					echo "</td>\n";
-					echo "</tr>\n";
 				}
 
 				echo "</table>\n";

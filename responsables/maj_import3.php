@@ -201,7 +201,7 @@ if(mysql_num_rows($res_col_eleves)>0) {
 }
 */
 $chaine_mysql_collate="CHARSET utf8 COLLATE utf8_general_ci";
-$chaine_collate="COLLATE utf8_general_ci ";
+$chaine_collate="COLLATE utf8_bin ";
 //$chaine_collate="COLLATE latin1_bin ";
 //========================================================================
 
@@ -1105,7 +1105,7 @@ else{
 
 				if(isset($eleves[$i]["prenom"])){
 					$tab_prenom = explode(" ",$eleves[$i]["prenom"]);
-					$tab_prenom[0] = nettoyer_caracteres_nom($tab_prenom[0], "a", " '-", "");
+					$tab_prenom[0] = nettoyer_caracteres_nom($tab_prenom[0], "a", " './-", "");
 					$eleves[$i]["prenom"] = preg_replace("/'/", "", $tab_prenom[0]);
 				}
 
@@ -2716,9 +2716,9 @@ else{
 						$lig=mysql_fetch_object($res1);
 						$affiche=array();
 
-						$affiche[0]=nettoyer_caracteres_nom($lig->ELENOM, "a", " '_-", "");
+						$affiche[0]=nettoyer_caracteres_nom($lig->ELENOM, "a", " '_./-", "");
 						// IL FAUDRAIT FAIRE ICI LE MEME TRAITEMENT QUE DANS /init_xml/step3.php POUR LES PRENOMS COMPOSéS ET SAISIE DE PLUSIEURS PRéNOMS...
-						$affiche[1]=nettoyer_caracteres_nom($lig->ELEPRE, "a", " '_-", "");
+						$affiche[1]=nettoyer_caracteres_nom($lig->ELEPRE, "a", " '_./-", "");
 						$affiche[2]=nettoyer_caracteres_nom($lig->ELESEXE, "an", "", "");
 						$affiche[3]=nettoyer_caracteres_nom($lig->ELEDATNAIS, "an", "-", "");
 						$affiche[4]=nettoyer_caracteres_nom($lig->ELENOET, "an", "", "");
@@ -5060,6 +5060,26 @@ else{
 			info_debug("==============================================");
 			info_debug("=============== Phase step $step =================");
 
+
+			// 20120927
+			$sql="select 1=1 from resp_adr where adr_id not in (select distinct adr_id from resp_pers);";
+			$test=mysql_query($sql);
+			$nb_scories=mysql_num_rows($test);
+			if($nb_scories>0) {
+				echo "<p style='color:red; text-indent:-8em;margin-left:8em;'><strong>ATTENTION&nbsp;:</strong> Des adresses ne sont pas associées à des responsables.";
+				//echo "<br />";
+				//echo "Si vous n'affichez pas les propositions de redoublonnage d'adresses, cela peut perturber la détection des autres modifications pour les responsables anciennement concernés par ces adresses.";
+				echo "</p>\n";
+				if($_SESSION['statut']=='administrateur') {
+					echo "<p style='margin-left:8em;'><a href='gerer_adr.php?suppr_adresses_non_associees=y".add_token_in_url()."' target='_blank'>Supprimer les adresses non associées</a></p>\n";
+				}
+				else {
+					echo "<p style='color:red'>Contactez l'administrateur pour effectuer la suppression des adresses non associées.</p>\n";
+				}
+				echo "<br />\n";
+			}
+
+
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
@@ -5398,14 +5418,19 @@ else{
 						$i++;
 						$personnes[$i]=array();
 
+						$debug_cet_objet="n";
 						foreach($personne->attributes() as $key => $value) {
 							// <PERSONNE PERSONNE_ID="294435">
-							$personnes[$i][my_strtolower($key)]=trim(nettoyer_caracteres_nom($value, "an", " .@'-", ""));
+							$personnes[$i][my_strtolower($key)]=trim(nettoyer_caracteres_nom($value, "an", " .@'./-", ""));
+							//if(($key=='PERSONNE_ID')&&(in_array($value, array('840470', '645875', '645690')))) {$debug_cet_objet="y";}
 						}
 
 						foreach($personne->children() as $key => $value) {
 							if(in_array(my_strtoupper($key),$tab_champs_personne)) {
-								$personnes[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'$/","",preg_replace("/^'/"," ",$value))), "an", " .@'_-", "");
+								$personnes[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'$/","",preg_replace("/^'/"," ",$value))), "an", " .@'_./-", "");
+								if($debug_cet_objet=="y") {
+									echo "<p>\$key=$key<br />\$value=$value<br />\$personnes[$i][".my_strtolower($key)."]=".$personnes[$i][my_strtolower($key)]."</p><br />\n";
+								}
 							}
 						}
 
@@ -6078,17 +6103,22 @@ else{
 						$temoin_doublon_adr="n";
 						if(getSettingValue('ne_pas_proposer_redoublonnage_adresse')!='y') {
 							$sql.="						OR rp.adr_id!=t.adr_id";
+							// Si on accepte de se voir proposer le redoublonnage d'adresse, on considère le changement d'adr_id comme suffisnat pour repérer une modif.
 						}
 						else {
 							// 20120331
 							// Il faut un deuxième test:
+							// Il faut voir si l'adresse a changé
 							$sql2="SELECT pers_id, ta.* FROM temp_resp_adr_import ta, temp_resp_pers_import tp WHERE tp.adr_id=ta.adr_id AND tp.adr_id='$lig->adr_id';";
+							//if(in_array($lig->pers_id, array('840470', '645875', '645690'))) {echo "<br />$sql2<br />\n";}
 							//echo "$sql2<br />";
 							$res_temp_adr=mysql_query($sql2);
 							if(mysql_num_rows($res_temp_adr)>0) {
 								while($lig_temp_adr=mysql_fetch_object($res_temp_adr)) {
-									$sql3="SELECT ra.* FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.pers_id='$lig_temp_adr->pers_id'";
+									//$sql3="SELECT ra.* FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.pers_id='$lig_temp_adr->pers_id';";
+									$sql3="SELECT ra.* FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.pers_id='$lig_temp_adr->pers_id' AND rp.adr_id!='$lig->adr_id';";
 									//echo "$sql3<br />";
+									//if(in_array($lig->pers_id, array('840470', '645875', '645690'))) {echo "<br />$sql3<br />\n";}
 									$res_adr=mysql_query($sql3);
 									if(mysql_num_rows($res_adr)>0) {
 										while($lig_adr=mysql_fetch_object($res_adr)) {
@@ -6108,6 +6138,7 @@ else{
 								}
 							}
 						}
+						//if(in_array($lig->pers_id, array('840470', '645875', '645690'))) {echo "\$temoin_doublon_adr=$temoin_doublon_adr<br />\n";}
 
 						//if((getSettingValue('mode_email_resp')=='')||(getSettingValue('mode_email_resp')=='sconet')) {
 						if((getSettingValue('mode_email_resp')=='')||(getSettingValue('mode_email_resp')=='sconet')) {
@@ -6116,6 +6147,7 @@ else{
 						$sql.="					)
 												AND rp.pers_id='".$lig->pers_id."';";
 						//echo "$sql<br />\n";
+						//if(in_array($lig->pers_id, array('840470', '645875', '645690'))) {echo "<br />$sql<br />\n";}
 						info_debug($sql);
 						//$test=mysql_query($sql);
 						if(!$test=mysql_query($sql)) {
@@ -6151,6 +6183,7 @@ else{
 							echo "<span style='color:green;'>".$lig->pers_id."</span>";
 							//echo "<input type='hidden' name='tab_pers_id_diff[]' value='$lig->pers_id' />\n";
 							$sql="UPDATE temp_resp_pers_import SET statut='modif' WHERE pers_id='$lig->pers_id';";
+							//if(in_array($lig->pers_id, array('840470', '645875', '645690'))) {echo "<br />$sql<br />\n";}
 							info_debug($sql);
 							$update=mysql_query($sql);
 							$cpt++;
@@ -6159,6 +6192,7 @@ else{
 							info_debug("... sans diff dans resp_pers");
 							// Pour ne pas laisser le statut vide (signe qu'on n'a pas encore testé ce pers_id):
 							$sql="UPDATE temp_resp_pers_import SET statut='-' WHERE pers_id='$lig->pers_id';";
+							//if(in_array($lig->pers_id, array('840470', '645875', '645690'))) {echo "<br />$sql<br />\n";}
 							info_debug($sql);
 							$update=mysql_query($sql);
 						}
