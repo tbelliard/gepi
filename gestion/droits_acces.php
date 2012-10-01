@@ -806,6 +806,8 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 //+++++++++++++++++++++++++++
 
+// Discipline
+
 $titreItem='';
 $texteItem="";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
@@ -846,6 +848,16 @@ $texteItem="a accès à la définition des destinataires d'alertes suite à des 
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='DisciplineCpeChangeDeclarant';
+$texteItem="a le droit de changer le déclarant d'un incident";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+      $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='DisciplineCpeChangeDefaut';
+$texteItem="Par défaut, a le droit de changer le déclarant d'un incident (si ce droit existe)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+      $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 // OOo
 if(getSettingValue('active_mod_ooo')=='y') {
 //+++++++++++++++++++++++++++
@@ -860,6 +872,16 @@ if(getSettingValue('active_mod_ooo')=='y') {
   if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
 }
+
+
+
+//+++++++++++++++++++++++++++
+
+	$titreItem='';
+	$texteItem="";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 //=======================================================================================
 
 // DROITS ADMINISTRATEUR

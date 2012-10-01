@@ -1258,6 +1258,7 @@ else{
 				else{
 					// echo $eleves[$i]['prenom']." ".$eleves[$i]['nom']." n'est pas dans \$tab_ele_id donc pas dans une classe..."."<br />";
 
+
 					// On devrait supprimer l'élève de la table là, non?
 					// Si l'élève est encore dans la table, on enregistre sa date de sortie
 					//création de la chaine au format timestamp
