@@ -69,128 +69,140 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 
         $id_tempo = @mysql_result($call_data, $i, "ID_TEMPO");
 
-        $req = mysql_query("select col2 from tempo2 where col1 = '$id_tempo'");
-        $reg_login = @mysql_result($req, 0, 'col2');
+	    $no_gep = @mysql_result($call_data, $i, "ELENONAT");
 
-        $no_gep = @mysql_result($call_data, $i, "ELENONAT");
+	    $reg_nom = @mysql_result($call_data, $i, "ELENOM");
+	    $reg_nom = nettoyer_caracteres_nom($reg_nom, "a", " '_-", "");
+	    $reg_nom = trim(preg_replace("/'/", " ", $reg_nom));
 
-        $reg_nom = @mysql_result($call_data, $i, "ELENOM");
-        $reg_nom = nettoyer_caracteres_nom($reg_nom, "a", " '_-", "");
-        $reg_nom = trim(preg_replace("/'/", " ", $reg_nom));
+	    $reg_prenom = @mysql_result($call_data, $i, "ELEPRE");
+	    $tab_prenom = explode(" ",$reg_prenom);
+	    $tab_prenom[0] = nettoyer_caracteres_nom($tab_prenom[0], "a", " '_-", "");
+	    $reg_prenom = preg_replace("/'/", "", $tab_prenom[0]);
 
-        $reg_prenom = @mysql_result($call_data, $i, "ELEPRE");
-        $tab_prenom = explode(" ",$reg_prenom);
-        $tab_prenom[0] = nettoyer_caracteres_nom($tab_prenom[0], "a", " '_-", "");
-        $reg_prenom = preg_replace("/'/", "", $tab_prenom[0]);
+	    $reg_elenoet = @mysql_result($call_data, $i, "ELENOET");
+	    //$reg_ereno = @mysql_result($call_data, $i, "ERENO");
+	    $reg_ele_id = @mysql_result($call_data, $i, "ELE_ID");
+	    $reg_sexe = @mysql_result($call_data, $i, "ELESEXE");
+	    $reg_naissance = @mysql_result($call_data, $i, "ELEDATNAIS");
+	    $reg_doublant = @mysql_result($call_data, $i, "ELEDOUBL");
+	    $reg_classe = @mysql_result($call_data, $i, "DIVCOD");
+	    $reg_etab = @mysql_result($call_data, $i, "ETOCOD_EP");
+	    $reg_regime = mysql_result($call_data, $i, "ELEREG");
 
-        $reg_elenoet = @mysql_result($call_data, $i, "ELENOET");
-        //$reg_ereno = @mysql_result($call_data, $i, "ERENO");
-        $reg_ele_id = @mysql_result($call_data, $i, "ELE_ID");
-        $reg_sexe = @mysql_result($call_data, $i, "ELESEXE");
-        $reg_naissance = @mysql_result($call_data, $i, "ELEDATNAIS");
-        $reg_doublant = @mysql_result($call_data, $i, "ELEDOUBL");
-        $reg_classe = @mysql_result($call_data, $i, "DIVCOD");
-        $reg_etab = @mysql_result($call_data, $i, "ETOCOD_EP");
-        $reg_regime = mysql_result($call_data, $i, "ELEREG");
+	    $reg_lieu_naissance = mysql_result($call_data, $i, "LIEU_NAISSANCE");
 
-        $reg_lieu_naissance = mysql_result($call_data, $i, "LIEU_NAISSANCE");
-
-        if (($reg_sexe != "M") and ($reg_sexe != "F")) {$reg_sexe = "M";}
-        if ($reg_naissance == '') {$reg_naissance = "19000101";}
-        $maj_tempo = mysql_query("UPDATE temp_gep_import2 SET LOGIN='$reg_login' WHERE ID_TEMPO='$id_tempo'");
-
-        $reg_eleve = mysql_query("INSERT INTO eleves SET no_gep='$no_gep',login='$reg_login',nom='".mysql_real_escape_string($reg_nom)."',prenom='".mysql_real_escape_string($reg_prenom)."',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='$reg_elenoet',ele_id='$reg_ele_id', lieu_naissance='$reg_lieu_naissance'");
-
-        if (!$reg_eleve) {echo "<p>Erreur lors de l'enregistrement de l'élève $reg_nom $reg_prenom.</p>\n";}
+		$reg_login="";
+	    $req = mysql_query("select col2 from tempo2 where col1 = '$id_tempo'");
+	    if($req) {
+		    $reg_login = @mysql_result($req, 0, 'col2');
+		}
 		else {
-			$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant1='".$reg_ele_id."' AND statut='eleve';";
-			if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-			$res_tmp_u=mysql_query($sql);
-			if(mysql_num_rows($res_tmp_u)>0) {
-				$lig_tmp_u=mysql_fetch_object($res_tmp_u);
-
-				$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".mysql_real_escape_string($reg_nom)."', prenom='".mysql_real_escape_string($reg_prenom)."', ";
-				if($reg_sexe=='M') {
-					$sql.="civilite='M', ";
-				}
-				else {
-					$sql.="civilite='MLLE', ";
-				}
-				$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".mysql_real_escape_string($lig_tmp_u->email)."', statut='eleve', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
-				if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-				$insert_u=mysql_query($sql);
-				if(!$insert_u) {
-					echo "Erreur lors de la re-création du compte utilisateur pour ".$reg_nom." ".$reg_prenom.".<br />\n";
-				}
-			}
+		    echo "<p style='color:red'>Erreur pour l'élève $reg_nom $reg_prenom (<em>non trouvé dans 'tempo2', donc pas de login trouvé</em>).</p>\n";
 		}
 
-		$regime=traite_regime_sconet($reg_regime);
-		if("$regime"=="ERR"){$regime="d/p";}
+		if($reg_login=="") {
+		    echo "<p style='color:red'>Erreur pour l'élève $reg_nom $reg_prenom : login vide</p>\n";
+		}
+		else {
 
-        if ($reg_doublant == "O") {$doublant = 'R';}
-        if ($reg_doublant != "O") {$doublant = '-';}
+		    if (($reg_sexe != "M") and ($reg_sexe != "F")) {$reg_sexe = "M";}
+		    if ($reg_naissance == '') {$reg_naissance = "19000101";}
+		    $maj_tempo = mysql_query("UPDATE temp_gep_import2 SET LOGIN='$reg_login' WHERE ID_TEMPO='$id_tempo'");
 
-        $register = mysql_query("INSERT INTO j_eleves_regime SET login='$reg_login',regime='$regime',doublant='$doublant'");
-        if (!$register) echo "<p>Erreur lors de l'enregistrement des infos de régime pour l'élève $reg_nom $reg_prenom.</p>\n";
+		    $reg_eleve = mysql_query("INSERT INTO eleves SET no_gep='$no_gep',login='$reg_login',nom='".mysql_real_escape_string($reg_nom)."',prenom='".mysql_real_escape_string($reg_prenom)."',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='$reg_elenoet',ele_id='$reg_ele_id', lieu_naissance='$reg_lieu_naissance'");
 
-        $call_classes = mysql_query("SELECT * FROM classes");
-        $nb_classes = mysql_num_rows($call_classes);
-        $j = 0;
-        while ($j < $nb_classes) {
-            $classe = mysql_result($call_classes, $j, "classe");
-            if ($reg_classe == $classe) {
-                $id_classe = mysql_result($call_classes, $j, "id");
-                $number_periodes = mysql_result(mysql_query("SELECT count(*) FROM periodes WHERE id_classe='$id_classe'"),0);
-                $u = 1;
-                while ($u <= $number_periodes) {
-                    $reg = mysql_query("INSERT INTO j_eleves_classes SET login='$reg_login',id_classe='$id_classe',periode='$u', rang='0'");
-                    if (!$reg) echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à la classe $classe pour la période $u</p>\n";
-                    $u++;
-                }
-            }
-            $j++;
-        }
+		    if (!$reg_eleve) {echo "<p style='color:red'>Erreur lors de l'enregistrement de l'élève $reg_nom $reg_prenom.</p>\n";}
+			else {
+				$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant1='".$reg_ele_id."' AND statut='eleve';";
+				if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+				$res_tmp_u=mysql_query($sql);
+				if(mysql_num_rows($res_tmp_u)>0) {
+					$lig_tmp_u=mysql_fetch_object($res_tmp_u);
 
-        if (($reg_etab != '')&&($reg_elenoet != '')) {
+					$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".mysql_real_escape_string($reg_nom)."', prenom='".mysql_real_escape_string($reg_prenom)."', ";
+					if($reg_sexe=='M') {
+						$sql.="civilite='M', ";
+					}
+					else {
+						$sql.="civilite='MLLE', ";
+					}
+					$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".mysql_real_escape_string($lig_tmp_u->email)."', statut='eleve', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
+					if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+					$insert_u=mysql_query($sql);
+					if(!$insert_u) {
+						echo "<span style='color:red'>Erreur lors de la re-création du compte utilisateur pour ".$reg_nom." ".$reg_prenom."</span>.<br />\n";
+					}
+				}
+			}
 
-			if($gepiSchoolRne!="") {
-				if($gepiSchoolRne!=$reg_etab) {
+			$regime=traite_regime_sconet($reg_regime);
+			if("$regime"=="ERR"){$regime="d/p";}
+
+		    if ($reg_doublant == "O") {$doublant = 'R';}
+		    if ($reg_doublant != "O") {$doublant = '-';}
+
+		    $register = mysql_query("INSERT INTO j_eleves_regime SET login='$reg_login',regime='$regime',doublant='$doublant'");
+		    if (!$register) echo "<p style='color:red'>Erreur lors de l'enregistrement des infos de régime pour l'élève $reg_nom $reg_prenom.</p>\n";
+
+		    $call_classes = mysql_query("SELECT * FROM classes");
+		    $nb_classes = mysql_num_rows($call_classes);
+		    $j = 0;
+		    while ($j < $nb_classes) {
+		        $classe = mysql_result($call_classes, $j, "classe");
+		        if ($reg_classe == $classe) {
+		            $id_classe = mysql_result($call_classes, $j, "id");
+		            $number_periodes = mysql_result(mysql_query("SELECT count(*) FROM periodes WHERE id_classe='$id_classe'"),0);
+		            $u = 1;
+		            while ($u <= $number_periodes) {
+		                $reg = mysql_query("INSERT INTO j_eleves_classes SET login='$reg_login',id_classe='$id_classe',periode='$u', rang='0'");
+		                if (!$reg) echo "<p style='color:red'>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à la classe $classe pour la période $u</p>\n";
+		                $u++;
+		            }
+		        }
+		        $j++;
+		    }
+
+		    if (($reg_etab != '')&&($reg_elenoet != '')) {
+
+				if($gepiSchoolRne!="") {
+					if($gepiSchoolRne!=$reg_etab) {
+						$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$reg_elenoet';";
+						$test_etab=mysql_query($sql);
+						if(mysql_num_rows($test_etab)==0){
+							$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$reg_elenoet', id_etablissement='$reg_etab';";
+							$insert_etab=mysql_query($sql);
+							if (!$insert_etab) {
+								echo "<p style='color:red'>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
+							}
+						}
+						else {
+							$sql="UPDATE j_eleves_etablissements SET id_etablissement='$reg_etab' WHERE id_eleve='$reg_elenoet';";
+							$update_etab=mysql_query($sql);
+							if (!$update_etab) {
+								echo "<p style='color:red'>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
+							}
+						}
+					}
+				}
+				else {
+					// Si le RNE de l'établissement courant (celui du GEPI) n'est pas renseigné, on insère les nouveaux enregistrements, mais on ne met pas à jour au risque d'écraser un enregistrement correct avec l'info que l'élève de 1ère était en 2nde dans le même établissement.
+					// Il suffira de faire un
+					//       DELETE FROM j_eleves_etablissements WHERE id_etablissement='$gepiSchoolRne';
+					// une fois le RNE renseigné.
 					$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$reg_elenoet';";
 					$test_etab=mysql_query($sql);
 					if(mysql_num_rows($test_etab)==0){
 						$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$reg_elenoet', id_etablissement='$reg_etab';";
 						$insert_etab=mysql_query($sql);
 						if (!$insert_etab) {
-							echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
-						}
-					}
-					else {
-						$sql="UPDATE j_eleves_etablissements SET id_etablissement='$reg_etab' WHERE id_eleve='$reg_elenoet';";
-						$update_etab=mysql_query($sql);
-						if (!$update_etab) {
-							echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
+							echo "<p style='color:red'>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
 						}
 					}
 				}
-			}
-			else {
-				// Si le RNE de l'établissement courant (celui du GEPI) n'est pas renseigné, on insère les nouveaux enregistrements, mais on ne met pas à jour au risque d'écraser un enregistrement correct avec l'info que l'élève de 1ère était en 2nde dans le même établissement.
-				// Il suffira de faire un
-				//       DELETE FROM j_eleves_etablissements WHERE id_etablissement='$gepiSchoolRne';
-				// une fois le RNE renseigné.
-				$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$reg_elenoet';";
-				$test_etab=mysql_query($sql);
-				if(mysql_num_rows($test_etab)==0){
-					$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$reg_elenoet', id_etablissement='$reg_etab';";
-					$insert_etab=mysql_query($sql);
-					if (!$insert_etab) {
-						echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
-					}
-				}
-			}
 
-        }
+		    }
+		}
         $i++;
     }
     // on vide la table tempo2 qui nous a servi à stocker les login temporaires des élèves
