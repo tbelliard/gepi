@@ -968,7 +968,7 @@ else{
 
 				if(isset($eleves[$i]["prenom"])){
 					$tab_prenom = explode(" ",$eleves[$i]["prenom"]);
-					$tab_prenom[0] = nettoyer_caracteres_nom($tab_prenom[0], "a", " '/.-", "");
+					$tab_prenom[0] = nettoyer_caracteres_nom($tab_prenom[0], "a", " './-", "");
 					$eleves[$i]["prenom"] = preg_replace("/'/", "", $tab_prenom[0]);
 				}
 
@@ -2497,9 +2497,9 @@ else{
 						$lig=mysql_fetch_object($res1);
 						$affiche=array();
 
-						$affiche[0]=nettoyer_caracteres_nom($lig->ELENOM, "a", " '_/.-", "");
+						$affiche[0]=nettoyer_caracteres_nom($lig->ELENOM, "a", " '_./-", "");
 						// IL FAUDRAIT FAIRE ICI LE MEME TRAITEMENT QUE DANS /init_xml/step3.php POUR LES PRENOMS COMPOSéS ET SAISIE DE PLUSIEURS PRéNOMS...
-						$affiche[1]=nettoyer_caracteres_nom($lig->ELEPRE, "a", " '_-/.", "");
+						$affiche[1]=nettoyer_caracteres_nom($lig->ELEPRE, "a", " '_./-", "");
 						$affiche[2]=nettoyer_caracteres_nom($lig->ELESEXE, "an", "", "");
 						$affiche[3]=nettoyer_caracteres_nom($lig->ELEDATNAIS, "an", "-", "");
 						$affiche[4]=nettoyer_caracteres_nom($lig->ELENOET, "an", "", "");
@@ -4981,13 +4981,13 @@ else{
 						$debug_cet_objet="n";
 						foreach($personne->attributes() as $key => $value) {
 							// <PERSONNE PERSONNE_ID="294435">
-							$personnes[$i][my_strtolower($key)]=trim(nettoyer_caracteres_nom($value, "an", " .@'/.-", ""));
+							$personnes[$i][my_strtolower($key)]=trim(nettoyer_caracteres_nom($value, "an", " .@'./-", ""));
 							//if(($key=='PERSONNE_ID')&&(in_array($value, array('840470', '645875', '645690')))) {$debug_cet_objet="y";}
 						}
 
 						foreach($personne->children() as $key => $value) {
 							if(in_array(my_strtoupper($key),$tab_champs_personne)) {
-								$personnes[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'$/","",preg_replace("/^'/"," ",$value))), "an", " .@'_/.-", "");
+								$personnes[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'$/","",preg_replace("/^'/"," ",$value))), "an", " .@'_./-", "");
 								if($debug_cet_objet=="y") {
 									echo "<p>\$key=$key<br />\$value=$value<br />\$personnes[$i][".my_strtolower($key)."]=".$personnes[$i][my_strtolower($key)]."</p><br />\n";
 								}
