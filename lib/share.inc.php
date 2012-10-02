@@ -5346,4 +5346,25 @@ function temoin_check_srv($id_div_retour="retour_ping", $nom_js_func="check_srv"
 </script>\n";
 }
 
+/** Fonction destinée à faire un test in_array() insensible à la casse
+ *
+ * @param string $chaine chaine 
+ * @param array $tableau tableau dans lequel on cherche la chaine
+ *
+ * @return boolean true/false
+ */
+
+function in_array_i($chaine, $tableau) {
+	$retour=false;
+	$chaine=mb_strtolower($chaine);
+	foreach($tableau as $key => $value) {
+		if($chaine==mb_strtolower($value)) {
+			$retour=true;
+			break;
+		}
+	}
+	return $retour;
+}
+
+
 ?>
