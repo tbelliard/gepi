@@ -710,9 +710,24 @@ if (!isset($quelles_classes)) {
 			echo "</label>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
+
+			$sql="SELECT DISTINCT e.login FROM eleves e, j_eleves_classes jec where e.login=jec.login AND e.date_sortie<>0";
+			$test_dse2=mysql_query($sql);
+			if(mysql_num_rows($test_dse2)>0){
+				echo "<tr>\n";
+				echo "<td style='vertical-align:top;'>\n";
+				echo "<input type='radio' name='quelles_classes' id='quelles_classes_dse_anomalie' value='dse_anomalie' onclick='verif2()' />\n";
+				echo "</td>\n";
+				echo "<td>\n";
+				echo "<label for='quelles_classes_dse_anomalie' style='cursor: pointer;'>\n";
+				echo "<span class='norme'>Les élèves dont la date de sortie de l'établissement est renseignée et qui sont pourtant inscrits dans une classe (<i>".mysql_num_rows($test_dse2)."</i>).</span><br />\n";
+				echo "Le élèves partis en cours d'année, risquent d'apparaître ici.<br />";
+				echo "</label>\n";
+				echo "</td>\n";
+				echo "</tr>\n";
+			}
 		}
-		
-		
+
 		$sql="SELECT 1=1 FROM eleves WHERE elenoet='' OR no_gep='';";
 		$test_incomplet=mysql_query($sql);
 		if(mysql_num_rows($test_incomplet)==0){
@@ -1539,7 +1554,16 @@ if(isset($quelles_classes)) {
 			$calldata = mysql_query($sql);
 
 			echo "<p align='center'>Liste des élèves ayant une date de sortie renseignée.</p>\n";
-			}
+		}
+		else if ($quelles_classes == 'dse_anomalie') { //Elève ayant une date de sortie renseignée mais néanmoins dans des classes
+			$sql="SELECT e.*, jer.* FROM eleves e
+					LEFT JOIN j_eleves_regime jer ON e.login=jer.login
+					WHERE jer.login =e.login AND e.date_sortie<>0 AND e.login IN (SELECT DISTINCT login FROM j_eleves_classes) ORDER BY $order_type;";
+			//echo "$sql<br />";
+			$calldata = mysql_query($sql);
+
+			echo "<p align='center'>Liste des élèves ayant une date de sortie renseignée, mais qui sont néanmoins inscrits dans une classe.</p>\n";
+		}
 		elseif ($quelles_classes == 'no_etab') {
 			if(preg_match('/classe/',$order_type)){
 				//$sql="SELECT distinct e.*,c.classe FROM j_eleves_classes jec, classes c, eleves e LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet where jee.id_eleve is NULL and jec.login=e.login and c.id=jec.id_classe ORDER BY $order_type;";

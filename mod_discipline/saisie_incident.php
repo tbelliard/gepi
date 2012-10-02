@@ -103,8 +103,8 @@ function recherche_ele($rech_nom,$page) {
 		echo "<p>Aucun nom d'&eacute;l&egrave;ve ne contient la chaine $rech_nom.</p>\n";
 	}
 	else{
-		//echo "<p>La recherche a retourné <b>$nb_ele</b> réponse(s):</p>\n";
-		echo "<p>La recherche a retourn&eacute; <b>$nb_ele</b> r&eacute;ponse";
+		//echo "<p>La recherche a retourné <strong>$nb_ele</strong> réponse(s):</p>\n";
+		echo "<p>La recherche a retourn&eacute; <strong>$nb_ele</strong> r&eacute;ponse";
 		if($nb_ele>1) {echo "s";}
 		echo ":</p>\n";
 		echo "<table border='1' class='boireaus' summary='Liste des élèves'>\n";
@@ -120,7 +120,7 @@ function recherche_ele($rech_nom,$page) {
 			$ele_login=$lig_ele->login;
 			$ele_nom=$lig_ele->nom;
 			$ele_prenom=$lig_ele->prenom;
-			//echo "<b>$ele_nom $ele_prenom</b>";
+			//echo "<strong>$ele_nom $ele_prenom</strong>";
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
 			echo "<td>\n";
@@ -167,7 +167,7 @@ function recherche_utilisateur($rech_nom,$page) {
 		echo "<p>Aucun nom d'utilisateur ne contient la chaine $rech_nom.</p>\n";
 	}
 	else{
-		echo "<p>La recherche a retourn&eacute; <b>$nb_utilisateur</b> r&eacute;ponse";
+		echo "<p>La recherche a retourn&eacute; <strong>$nb_utilisateur</strong> r&eacute;ponse";
 		if($nb_utilisateur>1) {echo "s";}
 		echo ":</p>\n";
 		echo "<table border='1' class='boireaus' summary='Liste des utilisateurs'>\n";
@@ -181,7 +181,7 @@ function recherche_utilisateur($rech_nom,$page) {
 			$utilisateur_login=$lig_utilisateur->login;
 			$utilisateur_nom=$lig_utilisateur->nom;
 			$utilisateur_prenom=$lig_utilisateur->prenom;
-			//echo "<b>$utilisateur_nom $utilisateur_prenom</b>";
+			//echo "<strong>$utilisateur_nom $utilisateur_prenom</strong>";
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
 			echo "<td>\n";
@@ -227,6 +227,8 @@ $id_lieu=isset($_POST['id_lieu']) ? $_POST['id_lieu'] : NULL;
 
 $avertie=isset($_POST['avertie']) ? $_POST['avertie'] : NULL;
 
+$change_declarant=isset($_POST['change_prof']) ? $_POST['change_prof'] : NULL;
+
 //$mesure_prise=isset($_POST['mesure_prise']) ? $_POST['mesure_prise'] : NULL;
 //$mesure_demandee=isset($_POST['mesure_demandee']) ? $_POST['mesure_demandee'] : NULL;
 $mesure_ele_login=isset($_POST['mesure_ele_login']) ? $_POST['mesure_ele_login'] : NULL;
@@ -258,6 +260,23 @@ if(isset($id_incident)) {
 }
 
 $msg="";
+
+
+// on change le déclarant si demandé
+if (($change_declarant=='Changer') && isset($_POST['choixProf']) && ($_POST['choixProf']!= '0') && ($etat_incident!='clos')) {
+    check_token();
+    $sql="UPDATE  s_incidents SET declarant='".$_POST['choixProf']."' WHERE id_incident='".$_POST['id_incident']."'";
+    $test=mysql_query($sql);
+    $msg .= "Déclarant modifié";
+    // On recherche le primo-déclarant
+    $resPrimo=mysql_query("SELECT primo_declarant FROM s_incidents WHERE id_incident='".$id_incident."'");
+    if (mysql_fetch_object($resPrimo)->primo_declarant == '') {
+        $sql="UPDATE  s_incidents SET primo_declarant ='".$_SESSION['login']."' WHERE id_incident='".$_POST['id_incident']."'";
+        // echo $sql;
+        $test=mysql_query($sql);
+        $msg .= " - Primo-déclarant modifié";
+    }
+}
 
 if($etat_incident!='clos') {
 	//echo "etat_incident=$etat_incident<br />";
@@ -333,7 +352,6 @@ if($etat_incident!='clos') {
 				}
 			}
 
-			//for($i=0;$i<count($u_login);$i++) {
 			for($i=0;$i<$nb_protagonistes;$i++) {
 				if(isset($u_login[$i])) {
 					$sql="SELECT 1=1 FROM s_protagonistes WHERE id_incident='$id_incident' AND login='".$u_login[$i]."';";
@@ -356,7 +374,6 @@ if($etat_incident!='clos') {
 						}
 					}
 					else {
-						//$sql="UPDATE s_protagonistes SET qualite='$qualite[$i]' WHERE id_incident='$id_incident' AND login='".$u_login[$i]."' AND statut='uve';";
 						$sql="UPDATE s_protagonistes SET qualite='".addslashes(preg_replace("/&#039;/","'",html_entity_decode($qualite[$i])))."' WHERE id_incident='$id_incident' AND login='".$u_login[$i]."';";
 						//echo "$sql<br />\n";
 						$res=mysql_query($sql);
@@ -371,7 +388,6 @@ if($etat_incident!='clos') {
 	elseif(isset($is_posted)) {
 		//echo "is_posted<br />";
 
-		//if(!isset($_POST['recherche_eleve'])) {
 		if((!isset($_POST['recherche_eleve']))&&(!isset($_POST['recherche_utilisateur']))) {
 			//echo "Ce n'est pas une recherche_eleve ni recherche_utilisateur<br />";
 
@@ -387,10 +403,6 @@ if($etat_incident!='clos') {
 				}
 				else {
 					
-					//$annee = mb_substr($display_date,0,4);
-					//$mois =  mb_substr($display_date,5,2);
-					//$jour =  mb_substr($display_date,8,2);
-					
 					$jour =  mb_substr($display_date,0,2);
 					$mois =  mb_substr($display_date,3,2);
 					$annee = mb_substr($display_date,6,4);
@@ -405,7 +417,6 @@ if($etat_incident!='clos') {
 				}
 	
 				if(!isset($display_heure)) {
-					//$display_heure=strftime("%H").":".strftime("%M");
 					$display_heure="";
 				}
 	
@@ -482,19 +493,9 @@ if($etat_incident!='clos') {
 				$temoin_modif="n";
 				$sql="UPDATE s_incidents SET ";
 				if(isset($display_date)) {
-					/*
-					$annee = mb_substr($display_date,0,4);
-					$mois =  mb_substr($display_date,5,2);
-					$jour =  mb_substr($display_date,8,2);
-					*/
 					$jour =  mb_substr($display_date,0,2);
 					$mois =  mb_substr($display_date,3,2);
 					$annee = mb_substr($display_date,6,4);
-					/*
-					echo "\$jour=$jour<br />";
-					echo "\$mois=$mois<br />";
-					echo "\$annee=$annee<br />";
-					*/
 	
 					if(!checkdate($mois,$jour,$annee)) {
 						$annee = strftime("%Y");
@@ -564,22 +565,6 @@ if($etat_incident!='clos') {
 					$temoin_modif="y";
 				}
 	
-	
-				// Recuperation du message_id pour les fils de discussion dans les mails
-			//	$sql_mi="SELECT message_id FROM s_incidents WHERE id_incident='$id_incident';";
-			//	$res_mi=mysql_query($sql_mi);
-			//	$lig_mi=mysql_fetch_object($res_mi);
-			//	if($lig_mi->message_id=="") {
-			//		$message_id=$id_incident.".".strftime("%Y%m%d%H%M%S",time()).".".mb_substr(md5(microtime()),0,6);
-			//		$temoin_modif="y";
-			//		$sql.=" message_id='$message_id', ";
-			//	}
-			//	else {
-			//		$references_mail=$lig_mi->message_id;
-			//	}
-
-
-	
 				// Pour faire sauter le ", " en fin de $sql:
 				$sql=mb_substr($sql,0,mb_strlen($sql)-2);
 	
@@ -614,8 +599,6 @@ if($etat_incident!='clos') {
 				}
 			}
 	
-			//echo "\$id_incident=$id_incident<br />";
-			//echo "count(\$ele_login)=".count($ele_login)."<br />";
 	
 			if(isset($id_incident)) {
 				//echo "Ce n'est pas une recherche_eleve ni recherche_utilisateur avec $id_incident (2)<br />";
@@ -626,8 +609,6 @@ if($etat_incident!='clos') {
 					$res=mysql_query($sql);
 					if(mysql_num_rows($res)==0) {
 						check_token();
-						//$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve', qualite='$qualite[$i]';";
-						//$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve', qualite='".addslashes(preg_replace("/&#039;/","'",html_entity_decode($qualite[$i])))."', avertie='avertie='".$avertie[$i]."';";
 						$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve';";
 						//echo "$sql<br />\n";
 						$res=mysql_query($sql);
@@ -636,17 +617,7 @@ if($etat_incident!='clos') {
 						}
 					}
 
-				//	else {
-				//		$sql="UPDATE s_protagonistes SET qualite='$qualite[$i]' WHERE id_incident='$id_incident' AND login='".$ele_login[$i]."' AND statut='eleve';";
-				//		echo "$sql<br />\n";
-				//		$res=mysql_query($sql);
-				//		if(!$res) {
-				//			$msg.="ERREUR lors de l'enregistrement de ".$ele_login[$i]."<br />\n";
-				//		}
-				//	}
 				}
-	
-				//echo "count(\$u_login)=".count($u_login)."<br />";
 
 				for($i=0;$i<count($u_login);$i++) {
 					$sql="SELECT 1=1 FROM s_protagonistes WHERE id_incident='$id_incident' AND login='".$u_login[$i]."';";
@@ -688,7 +659,14 @@ if($etat_incident!='clos') {
 						$tab_mes_enregistree=array();
 						//$sql="SELECT mesure FROM s_traitement_incident WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."';";
 						$sql="SELECT id_mesure FROM s_traitement_incident WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."';";
-						$res_mes=mysql_query($sql);
+				/*
+echo "<pre>
+envoi_mail($subject, 
+$texte_mail, 
+$destinataires, 
+$headers);
+</pre>";
+*/		$res_mes=mysql_query($sql);
 						if(mysql_num_rows($res_mes)>0) {
 							while($lig_mes=mysql_fetch_object($res_mes)) {
 								//$tab_mes_enregistree[]=$lig_mes->mesure;
@@ -754,9 +732,14 @@ if($etat_incident!='clos') {
 										$msg.="Les types autorisés sont ".array_to_chaine($AllowedFilesExtensions)."<br />";
 									}
 								}
-								else {
-									//echo "<p>Le fichier a été uploadé.</p>\n";
-				
+						/*
+echo "<pre>
+envoi_mail($subject, 
+$texte_mail, 
+$destinataires, 
+$headers);
+</pre>";
+*/		else {
 									$source_file=$document_joint['tmp_name'];
 									$dossier_courant="../$dossier_documents_discipline/incident_".$id_incident."/mesures/".$mesure_ele_login[$i];
 									if(!file_exists($dossier_courant)) {
@@ -796,22 +779,7 @@ if($etat_incident!='clos') {
 								}
 							}
 						}
-						/*
-						// Mis en commentaire pour ne pas supprimer trop hativement des fichiers
-						if(count($mesure_demandee)==0) {
-							// Supprimer d'éventuels fichiers associés? s'il ne reste plus aucune mesure, oui
-							$tab_documents_joints=get_documents_joints($id_incident, "mesure", $mesure_ele_login[$i]);
-							if(count($tab_documents_joints)>0) {
-								for($loop=0;$loop<count($tab_documents_joints);$loop++) {
-									$fichier_courant="../$dossier_documents_discipline/incident_".$id_incident."/mesures/".$mesure_ele_login[$i]."/".$tab_documents_joints[$loop];
-									if(!unlink($fichier_courant)) {
-										$msg.="Erreur lors de la suppression de $fichier_courant<br />";
-									}
-								}
-							}
-						}
-						*/
-
+						
 						//$tab_mesure_possible=array();
 						//$sql="SELECT mesure FROM s_mesures;";
 						$sql="SELECT * FROM s_mesures;";
@@ -820,11 +788,6 @@ if($etat_incident!='clos') {
 							while($lig_mes=mysql_fetch_object($res_mes)) {
 								//$tab_mesure_possible[]=$lig_mes->mesure;
 	
-								/*
-								if(in_array($lig_mes->mesure,$tab_mes_enregistree)) {
-									if((!in_array($lig_mes->mesure,$mesure_prise))&&
-										(!in_array($lig_mes->mesure,$mesure_demandee))) {
-								*/
 								if(in_array($lig_mes->id,$tab_mes_enregistree)) {
 									if((!in_array($lig_mes->id,$mesure_prise))&&
 										(!in_array($lig_mes->id,$mesure_demandee))) {
@@ -838,9 +801,7 @@ if($etat_incident!='clos') {
 									}
 								}
 								else {
-									//if(in_array($lig_mes->mesure,$mesure_prise)) {
-									//if((in_array($lig_mes->mesure,$mesure_prise))||
-									//	(in_array($lig_mes->mesure,$mesure_demandee))) {
+									
 									if((in_array($lig_mes->id,$mesure_prise))||
 										(in_array($lig_mes->id,$mesure_demandee))) {
 										// Cette mesure doit être enregistrée
@@ -989,14 +950,7 @@ if($etat_incident!='clos') {
       
 								// On envoie le mail
 								$envoi = envoi_mail($subject, $texte_mail, $destinataires, $headers);
-/*
-echo "<pre>
-envoi_mail($subject, 
-$texte_mail, 
-$destinataires, 
-$headers);
-</pre>";
-*/
+
 							}
 						}
 					}
@@ -1034,8 +988,9 @@ $page="saisie_incident.php";
 if (!isset($return_url) || $return_url == null) {
     $return_url = 'index.php';
 }
+echo "<p class='bold'>";
 if ($return_url != 'no_return') {
-    echo "<p class='bold'><a href='".$return_url."' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+   // echo "<p class='bold'><a href='".$return_url."' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 }
 
 if(($_SESSION['statut']=='administrateur')||
@@ -1046,11 +1001,11 @@ if(($_SESSION['statut']=='administrateur')||
 	WHERE sp.id_incident IS NULL;";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
-		echo " | <a href='incidents_sans_protagonistes.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Incidents sans protagonistes</a>\n";
-		echo " | <a href='traiter_incident.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Liste des incidents</a> (<i>avec protagonistes</i>)\n";
+		echo "<a href='incidents_sans_protagonistes.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Incidents sans protagonistes</a>\n";
+		echo " | <a href='traiter_incident.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Liste des incidents</a> (<em>avec protagonistes</em>)\n";
 	}
 	else {
-		echo " | <a href='traiter_incident.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Liste des incidents</a>\n";
+		echo "<a href='traiter_incident.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Liste des incidents</a>\n";
 	}
 }
 elseif (($_SESSION['statut']=='professeur')||
@@ -1060,26 +1015,26 @@ elseif (($_SESSION['statut']=='professeur')||
 	WHERE sp.id_incident IS NULL;";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
-		echo " | <a href='incidents_sans_protagonistes.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Incidents sans protagonistes</a>\n";
+		echo "<a href='incidents_sans_protagonistes.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Incidents sans protagonistes</a> | \n";
 	}
 
 	// Rechercher les incidents signalés par le prof ou ayant le prof pour protagoniste
 	$sql="SELECT 1=1 FROM s_incidents WHERE declarant='".$_SESSION['login']."';";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
-		echo " | <a href='traiter_incident.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Liste des incidents</a>\n";
+		echo "<a href='traiter_incident.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Liste des incidents</a>\n";
 	}
 	else {
 		$sql="SELECT 1=1 FROM s_protagonistes WHERE login='".$_SESSION['login']."';";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)>0) {
-			echo " | <a href='traiter_incident.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Liste des incidents</a>\n";
+			echo "<a href='traiter_incident.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Liste des incidents</a>\n";
 		}
 		else {
 			$sql="SELECT 1=1 FROM j_eleves_professeurs jep, s_protagonistes sp WHERE sp.login=jep.login AND jep.professeur='".$_SESSION['login']."';";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)>0) {
-				echo " | <a href='traiter_incident.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Liste des incidents</a>\n";
+				echo "<a href='traiter_incident.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Liste des incidents</a>\n";
 			}
 		}
 	}
@@ -1160,7 +1115,66 @@ if($etat_incident!='clos') {
 	//=====================================================
 }
 
-if(isset($id_incident)) {
+if(isset($id_incident) ) {
+	// ===== Pour les CPE, on ajoute la possibilité de changer le déclarant =====
+    if($_SESSION['statut']=='cpe' && $step== '2') {
+    if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
+        $peutChanger = FALSE;
+        // On recherche le primo-déclarant
+        $resPrimo=mysql_query("SELECT primo_declarant , declarant FROM s_incidents WHERE id_incident='".$id_incident."'");
+        $response = mysql_fetch_object($resPrimo);
+        if ($response->primo_declarant == $_SESSION['login'] || ($response->primo_declarant == '' && $response->declarant == $_SESSION['login'])) {
+            $peutChanger= TRUE;
+        }
+        if($peutChanger){
+            if (getSettingAOui('DisciplineCpeChangeDefaut')) {
+                // ===== Par défaut changement autorisé
+                $sqlProf="SELECT u.login , u.nom , u.prenom FROM utilisateurs u
+                    WHERE u.statut='professeur' 
+                        AND u.etat='actif'
+                        AND (u.login = (SELECT p.login FROM preferences p WHERE p.name='cpePeuChanger' AND p.value LIKE 'yes')
+                            OR u.login != (SELECT p.login FROM preferences p WHERE p.name='cpePeuChanger'))
+                    ORDER BY u.nom , u.prenom";
+            } else {
+                // ===== Par défaut changement interdit
+                $sqlProf="SELECT u.login , u.nom , u.prenom FROM utilisateurs u
+                    WHERE u.statut='professeur' 
+                        AND u.etat='actif'
+                        AND u.login = (SELECT p.login FROM preferences p WHERE p.name='cpePeuChanger' AND p.value LIKE 'yes')
+                    ORDER BY u.nom , u.prenom";
+            }
+            // echo $sqlProf."<br />";
+            $resProf=mysql_query($sqlProf);
+    ?>
+        <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='change_declare'>
+            <p class='bold'>Changer le déclarant</p>
+            <p>
+                <select id="choixProf" name="choixProf">
+                    <option value='0'>Choisir un déclarant</option>
+<?php
+                    if(mysql_num_rows($resProf)>0){
+                        while($lig_class_tmp=mysql_fetch_object($resProf)){
+?>
+                            <option value='<?php echo $lig_class_tmp->login ?>'>
+                                <?php echo $lig_class_tmp->nom ?> <?php echo $lig_class_tmp->prenom ?>
+                            </option>
+<?php
+                        }
+                    }
+?>
+                </select>
+                <input type='hidden' name='id_incident' value='<?php echo $id_incident ?>' />
+                <input type='hidden' name='step' value='<?php echo $step ?>' />
+                <?php echo add_token_field(true);?>
+                <input type="submit" name="change_prof" value="Changer" />
+            </p>
+        </form>
+<hr />
+<?php
+        }   
+    }
+  }   
+    
 	// AFFICHAGE DES PROTAGONISTES (déjà enregistrés) DE L'INCIDENT
 
 	// Récupération des qualités
@@ -1245,11 +1259,11 @@ if(isset($id_incident)) {
 
 				echo "</td>\n";
 				echo "<td>";
-				echo "élève (<i>";
+				echo "élève (<em>";
 				$tmp_tab=get_class_from_ele_login($lig->login);
 				//if(isset($tmp_tab['liste'])) {echo $tmp_tab['liste'];}
 				if(isset($tmp_tab['liste_nbsp'])) {echo $tmp_tab['liste_nbsp'];}
-				echo "</i>)";
+				echo "</em>)";
 				echo "</td>\n";
 
 				echo "<td";
@@ -1489,13 +1503,13 @@ if(isset($id_incident)) {
 		}
 	}
 	else {
-		echo "<p style='color:red;'>Aucun protagoniste n'a (<i>encore</i>) été spécifié pour cet incident.</p>\n";
+		echo "<p style='color:red;'>Aucun protagoniste n'a (<em>encore</em>) été spécifié pour cet incident.</p>\n";
 	}
 }
 else {
 	echo "<p class='bold'>Protagonistes de l'incident&nbsp;:</p>\n";
 	echo "<blockquote>\n";
-	echo "<p style='color:red;'>Aucun protagoniste n'a (<i>encore</i>) été spécifié pour cet incident.</p>\n";
+	echo "<p style='color:red;'>Aucun protagoniste n'a (<em>encore</em>) été spécifié pour cet incident.</p>\n";
 	echo "</blockquote>\n";
 }
 
@@ -1508,7 +1522,7 @@ if($step==0) {
 
 	echo "<form enctype='multipart/form-data' action='saisie_incident.php' method='post' name='formulaire1'>
 	<p>
-	Afficher les élèves dont le <b>nom</b> contient: <input type='text' name='rech_nom' value='' />
+	Afficher les élèves dont le <strong>nom</strong> contient: <input type='text' name='rech_nom' value='' />
 	<input type='hidden' name='page' value='$page' />
 	<input type='hidden' name='step' value='$step' />
 	<input type='hidden' name='is_posted' value='y' />
@@ -1524,9 +1538,6 @@ if($step==0) {
 	echo add_token_field();
 
 	if(isset($_POST['recherche_eleve'])) {
-		//echo " | <a href='saisie_incident.php'>Choisir un autre élève</a>\n";
-		//echo "</p>\n";
-		//echo "</div>\n";
 
 		recherche_ele($rech_nom,$_SERVER['PHP_SELF']);
 		echo "<p class='center'><input type='submit' name='Ajouter' value='Ajouter' /></p>\n";
@@ -1575,7 +1586,7 @@ if($step==0) {
 				echo "<td>\n";
 				echo "<label for='ele_login_$i' style='cursor:pointer;'>".ucfirst(mb_strtolower($lig_ele->prenom))." ".mb_strtoupper($lig_ele->nom)."</label>";
 				echo "</td>\n";
-				echo "</tr>\n";
+				echo "</trecho add_token_field(true);>\n";
 
 				$i++;
 			}
@@ -1661,7 +1672,7 @@ elseif($step==1) {
 
 	echo "<form enctype='multipart/form-data' action='saisie_incident.php' method='post' name='formulaire1'>
 	<p>
-	Afficher les utilisateurs dont le <b>nom</b> contient: <input type='text' name='rech_nom' value='' />
+	Afficher les utilisateurs dont le <strong>nom</strong> contient: <input type='text' name='rech_nom' value='' />
 	<input type='hidden' name='page' value='$page' />
 	<input type='hidden' name='step' value='$step' />
 	<input type='hidden' name='is_posted' value='y' />
@@ -1835,7 +1846,7 @@ elseif($step==2) {
 			$nature=$lig_inc->nature;
 			$description=$lig_inc->description;
 			$commentaire=$lig_inc->commentaire;
-			$id_lieu=$lig_inc->id_lieu;
+			$id_lieu=$lig_inc->id_lieu;echo add_token_field(true);
 		}
 	}
 
@@ -2208,7 +2219,7 @@ setTimeout('comptage_caracteres_textarea()', 1000);
 	// Ajout Eric
 	if ($autorise_commentaires_mod_disc=="yes") {
 	    echo "<td style='text-align:center;'>";
-		echo "<b>Zone de dialogue sur l'incident</b>";
+		echo "<strong>Zone de dialogue sur l'incident</strong>";
 		echo " <a href='#' onclick=\"return false;\" onmouseover=\"delais_afficher_div('div_explication_commentaires','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_explication_choix_nature')\"><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Choix nature' /></a>";
 		$texte="Cette zone de texte est disponible pour dialoguer avec la vie scolaire des modalités particulières de traitement de l'incident ou suivre les suites de celui-ci.<br /> Horaire et lieu d'une retenue demandée, demande de convocation de l'élève par le CPE, ...";
 		$tabdiv_infobulle[]=creer_div_infobulle('div_explication_commentaires',"Zone de texte : dialogue","",$texte,"",18,0,'y','y','n','n');
