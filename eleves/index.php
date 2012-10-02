@@ -715,19 +715,19 @@ if (!isset($quelles_classes)) {
 			$test_dse2=mysql_query($sql);
 			if(mysql_num_rows($test_dse2)>0){
 				echo "<tr>\n";
-				echo "<td>\n";
+				echo "<td style='vertical-align:top;'>\n";
 				echo "<input type='radio' name='quelles_classes' id='quelles_classes_dse_anomalie' value='dse_anomalie' onclick='verif2()' />\n";
 				echo "</td>\n";
 				echo "<td>\n";
 				echo "<label for='quelles_classes_dse_anomalie' style='cursor: pointer;'>\n";
-				echo "<span class='norme' style='color:red'>Les élèves dont la date de sortie de l'établissement est renseignée et qui sont pourtant inscrits dans une classe (<i>".mysql_num_rows($test_dse2)."</i>).</span><br />\n";
+				echo "<span class='norme'>Les élèves dont la date de sortie de l'établissement est renseignée et qui sont pourtant inscrits dans une classe (<i>".mysql_num_rows($test_dse2)."</i>).</span><br />\n";
+				echo "Le élèves partis en cours d'année, risquent d'apparaître ici.<br />";
 				echo "</label>\n";
 				echo "</td>\n";
 				echo "</tr>\n";
 			}
 		}
-		
-		
+
 		$sql="SELECT 1=1 FROM eleves WHERE elenoet='' OR no_gep='';";
 		$test_incomplet=mysql_query($sql);
 		if(mysql_num_rows($test_incomplet)==0){
