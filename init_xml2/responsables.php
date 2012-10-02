@@ -200,6 +200,11 @@
 
 			if($step==0){
 				$xml_file = isset($_FILES["responsables_xml_file"]) ? $_FILES["responsables_xml_file"] : NULL;
+				/*
+				echo "<pre>";
+				print_r($xml_file);
+				echo "</pre>";
+				*/
 				if(!is_uploaded_file($xml_file['tmp_name'])) {
 					echo "<p style='color:red;'>L'upload du fichier a échoué.</p>\n";
 
@@ -223,6 +228,9 @@
 						echo "et le volume de ".$xml_file['name']." serait<br />\n";
 						echo "\$xml_file['size']=".volume_human($xml_file['size'])."<br />\n";
 						echo "</p>\n";
+
+						echo "<p>Il semblerait que l'absence d'extension .XML ou .ZIP puisse aussi provoquer ce genre de symptômes.<br />Dans ce cas, ajoutez l'extension et ré-essayez.</p>\n";
+
 						// Il ne faut pas aller plus loin...
 						// SITUATION A GERER
 						require("../lib/footer.inc.php");
