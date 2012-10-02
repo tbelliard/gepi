@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -162,7 +162,9 @@ if ($_SESSION["statut"] == 'autre') {
 			$resultat_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.mysql_error());
             while($data_liste_eleve = mysql_fetch_array ($resultat_liste_eleve))
 			{
-				if (in_array($data_liste_eleve['login'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {?>
+				//if (in_array($data_liste_eleve['login'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
+				if (in_array_i($data_liste_eleve['login'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {
+			?>
 
                 <option value="<?php echo $data_liste_eleve['login']; ?>"><?php echo strtoupper($data_liste_eleve['nom'])." ".ucfirst($data_liste_eleve['prenom']); ?>&nbsp;(<?php echo $data_liste_eleve['classe']; ?>)</option>
             <?php
