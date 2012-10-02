@@ -259,8 +259,8 @@ function info_eleve($ele_login) {
 					"jgc.id_classe = '".$lig_per->id_classe."' AND " .
 					"jgm.id_groupe = jgc.id_groupe AND " .
 					"m.matiere = jgm.id_matiere AND " .
-					"g.id=jeg.id_groupe".
-					") " .
+					"g.id=jeg.id_groupe ".
+					"AND jgc.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='cahier_notes' AND visible='n')) " .
 					"ORDER BY jmcc.priority,jgc.priorite,m.nom_complet";
 				} else {
 					$sql="SELECT DISTINCT g.*,m.nom_complet " .
@@ -271,7 +271,7 @@ function info_eleve($ele_login) {
 					"jgc.id_classe = '".$lig_per->id_classe."' AND " .
 					"jgm.id_groupe = jgc.id_groupe AND
 					m.matiere=jgm.id_matiere AND jgm.id_groupe=g.id " .
-					") " .
+					"AND jgc.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='cahier_notes' AND visible='n')) " .
 					"ORDER BY jgc.priorite,jgm.id_matiere";
 				}
 				//$sql="SELECT DISTINCT g.*,m.nom_complet FROM groupes g, j_groupes_matieres jgm, matieres m, j_groupes_classes jgc, j_eleves_groupes jeg WHERE g.id=jgm.id_groupe AND m.matiere=jgm.id_matiere AND jgc.id_groupe=jgm.id_groupe AND jeg.id_groupe=g.id AND jeg.periode='".$lig_per->num_periode."' AND jeg.login='$ele_login' ORDER BY jgc.priorite,m.nom_complet;";
@@ -1100,164 +1100,169 @@ function releve_html($tab_rel,$id_classe,$num_periode,$index_per) {
 	$prev_cat_id = null;
 	$alt=1;
 	while ($j < count($tab_rel['periodes'][$index_per]['groupes'])) {
-
-		$index_grp=-1;
-		for($loop=0;$loop<count($tab_rel['groupes']);$loop++) {
-			//echo "<tr><td>".$tab_rel['groupes'][$loop]['id_groupe']."</td><td>".$tab_rel['periodes'][$index_per]['groupes'][$j]['id_groupe']."</td></tr>";
-			if($tab_rel['groupes'][$loop]['id_groupe']==$tab_rel['periodes'][$index_per]['groupes'][$j]['id_groupe']) {
-				$index_grp=$loop;
-				break;
+		/*
+		$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$tab_rel['periodes'][$index_per]['groupes'][$j]['id_groupe']."' AND domaine='bulletins' AND visible='n';";
+		$test_visibilite=mysql_query($sql);
+		if(mysql_num_rows($test_visibilite)>0) {
+		*/
+			$index_grp=-1;
+			for($loop=0;$loop<count($tab_rel['groupes']);$loop++) {
+				//echo "<tr><td>".$tab_rel['groupes'][$loop]['id_groupe']."</td><td>".$tab_rel['periodes'][$index_per]['groupes'][$j]['id_groupe']."</td></tr>";
+				if($tab_rel['groupes'][$loop]['id_groupe']==$tab_rel['periodes'][$index_per]['groupes'][$j]['id_groupe']) {
+					$index_grp=$loop;
+					break;
+				}
 			}
-		}
 
-		if ($tab_rel['periodes'][$index_per]['affiche_categories']) {
-			// On regarde si on change de catégorie de matière
-			//echo "<tr><td>\$tab_rel['periodes'][$index_per]['groupes'][$index_grp]['name']=".$tab_rel['periodes'][$index_per]['groupes'][$index_grp]['name']."<br />\$tab_rel['periodes'][$index_per]['groupes'][$index_grp]['id_cat']=".$tab_rel['periodes'][$index_per]['groupes'][$index_grp]['id_cat']."</td><td>$prev_cat_id</td></tr>\n";
-			//if ($tab_rel['periodes'][$index_per]['groupes'][$index_grp]['id_cat'] != $prev_cat_id) {
-			if ($tab_rel['periodes'][$index_per]['groupes'][$j]['id_cat'] != $prev_cat_id) {
-				//$prev_cat_id = $tab_rel['periodes'][$index_per]['groupes'][$index_grp]['id_cat'];
-				$prev_cat_id = $tab_rel['periodes'][$index_per]['groupes'][$j]['id_cat'];
+			if ($tab_rel['periodes'][$index_per]['affiche_categories']) {
+				// On regarde si on change de catégorie de matière
+				//echo "<tr><td>\$tab_rel['periodes'][$index_per]['groupes'][$index_grp]['name']=".$tab_rel['periodes'][$index_per]['groupes'][$index_grp]['name']."<br />\$tab_rel['periodes'][$index_per]['groupes'][$index_grp]['id_cat']=".$tab_rel['periodes'][$index_per]['groupes'][$index_grp]['id_cat']."</td><td>$prev_cat_id</td></tr>\n";
+				//if ($tab_rel['periodes'][$index_per]['groupes'][$index_grp]['id_cat'] != $prev_cat_id) {
+				if ($tab_rel['periodes'][$index_per]['groupes'][$j]['id_cat'] != $prev_cat_id) {
+					//$prev_cat_id = $tab_rel['periodes'][$index_per]['groupes'][$index_grp]['id_cat'];
+					$prev_cat_id = $tab_rel['periodes'][$index_per]['groupes'][$j]['id_cat'];
 
-				echo "<tr>\n";
-				echo "<td colspan='2'>\n\n";
-				//echo "<p style='padding: 0; margin:0; font-size: 10px;'>".$tab_rel['categorie'][$prev_cat_id]."</p>\n";
-				echo "<p style='padding: 0; margin:0; font-size: ".$releve_categ_font_size."px;";
-				if($releve_categ_bgcolor!="") {echo "background-color:$releve_categ_bgcolor;";}
-				//echo "'>".$tab_rel['categorie'][$prev_cat_id]."</p>\n";
-				echo "'>".$tab_rel['periodes'][$index_per]['groupes'][$j]['cat_nom_complet']."</p>\n";
+					echo "<tr>\n";
+					echo "<td colspan='2'>\n\n";
+					//echo "<p style='padding: 0; margin:0; font-size: 10px;'>".$tab_rel['categorie'][$prev_cat_id]."</p>\n";
+					echo "<p style='padding: 0; margin:0; font-size: ".$releve_categ_font_size."px;";
+					if($releve_categ_bgcolor!="") {echo "background-color:$releve_categ_bgcolor;";}
+					//echo "'>".$tab_rel['categorie'][$prev_cat_id]."</p>\n";
+					echo "'>".$tab_rel['periodes'][$index_per]['groupes'][$j]['cat_nom_complet']."</p>\n";
 
 
-				echo "</td>\n";
-				echo "</tr>\n";
+					echo "</td>\n";
+					echo "</tr>\n";
+				}
 			}
-		}
 
-		$alt=$alt*(-1);
-		echo "<tr class='lig$alt'>\n";
-		echo "<td class='releve'>\n";
-		echo "<b>".htmlspecialchars($tab_rel['periodes'][$index_per]['groupes'][$j]['matiere_nom_complet'])."</b>";
-		$k = 0;
-                $nbre_professeurs = isset($tab_rel['groupes'][$index_grp]['prof']) ? count($tab_rel['groupes'][$index_grp]['prof']) : NULL;
-		While ($k < $nbre_professeurs) {
-			echo "<br /><i>".affiche_utilisateur(htmlspecialchars($tab_rel['groupes'][$index_grp]['prof'][$k]['prof_login']),$id_classe)."</i>";
-			$k++;
-		}
-		echo "</td>\n";
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt'>\n";
+			echo "<td class='releve'>\n";
+			echo "<b>".htmlspecialchars($tab_rel['periodes'][$index_per]['groupes'][$j]['matiere_nom_complet'])."</b>";
+			$k = 0;
+		            $nbre_professeurs = isset($tab_rel['groupes'][$index_grp]['prof']) ? count($tab_rel['groupes'][$index_grp]['prof']) : NULL;
+			while($k < $nbre_professeurs) {
+				echo "<br /><i>".affiche_utilisateur(htmlspecialchars($tab_rel['groupes'][$index_grp]['prof'][$k]['prof_login']),$id_classe)."</i>";
+				$k++;
+			}
+			echo "</td>\n";
 
-		echo "<td class='releve' style='text-align:left;'>\n";
+			echo "<td class='releve' style='text-align:left;'>\n";
 
-		// Boucle sur la liste des devoirs
-		if(!isset($tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'])) {
-			echo "&nbsp;";
-		}
-		else {
-			$m=0;
-			$tiret = "no";
-			while($m<count($tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'])) {
-				// Note de l'élève sur le devoir:
-				$eleve_note=$tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'][$m]['note'];
-				// Statut de l'élève sur le devoir:
-				$eleve_statut=$tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'][$m]['statut'];
-				// Appréciation de l'élève sur le devoir:
-				$eleve_app=$tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'][$m]['app'];
-				// Le professeur a-t-il autorisé l'accès à l'appréciation lors de la saisie du devoir
-				$eleve_display_app=$tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'][$m]['display_app'];
-				// Nom court du devoir:
-				$eleve_nom_court=$tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'][$m]['nom_court'];
-				// Date du devoir:
-				$eleve_date=$tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'][$m]['date'];
-				// Coef du devoir:
-				$eleve_coef=$tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'][$m]['coef'];
-				//note sur
-				$eleve_note_sur=$tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'][$m]['note_sur'];
+			// Boucle sur la liste des devoirs
+			if(!isset($tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'])) {
+				echo "&nbsp;";
+			}
+			else {
+				$m=0;
+				$tiret = "no";
+				while($m<count($tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'])) {
+					// Note de l'élève sur le devoir:
+					$eleve_note=$tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'][$m]['note'];
+					// Statut de l'élève sur le devoir:
+					$eleve_statut=$tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'][$m]['statut'];
+					// Appréciation de l'élève sur le devoir:
+					$eleve_app=$tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'][$m]['app'];
+					// Le professeur a-t-il autorisé l'accès à l'appréciation lors de la saisie du devoir
+					$eleve_display_app=$tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'][$m]['display_app'];
+					// Nom court du devoir:
+					$eleve_nom_court=$tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'][$m]['nom_court'];
+					// Date du devoir:
+					$eleve_date=$tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'][$m]['date'];
+					// Coef du devoir:
+					$eleve_coef=$tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'][$m]['coef'];
+					//note sur
+					$eleve_note_sur=$tab_rel['periodes'][$index_per]['groupes'][$j]['devoir'][$m]['note_sur'];
 
-				//==========================================
-				// On teste s'il y aura une "Note" à afficher
-				if (($eleve_statut != '') and ($eleve_statut != 'v')) {
-					$affiche_note = $eleve_statut;
-				}
-				elseif ($eleve_statut == 'v') {
-					$affiche_note = "";
-				}
-				elseif ($eleve_note != '') {
-					$affiche_note = $eleve_note;
-					//if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $snnote['note_sur']!=getSettingValue("referentiel_note")) {
-					if((getSettingValue("note_autre_que_sur_referentiel")=="V") || 
-						((isset($snnote['note_sur']))&&($snnote['note_sur']!=getSettingValue("referentiel_note")))) {
-						$affiche_note .= "/".$eleve_note_sur;
+					//==========================================
+					// On teste s'il y aura une "Note" à afficher
+					if (($eleve_statut != '') and ($eleve_statut != 'v')) {
+						$affiche_note = $eleve_statut;
 					}
-				}
-				else {
-					$affiche_note = "";
-				}
-				//==========================================
-
-				// Nom du devoir ou pas
-				if(($tab_rel['rn_app']=="y") and ($eleve_display_app=="1")) {
-					if ($affiche_note=="") {
-						if ($tab_rel['rn_nomdev']!="y") {
-							$affiche_note = $eleve_nom_court;
-						}
-						else {
-							$affiche_note = "&nbsp;";
+					elseif ($eleve_statut == 'v') {
+						$affiche_note = "";
+					}
+					elseif ($eleve_note != '') {
+						$affiche_note = $eleve_note;
+						//if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $snnote['note_sur']!=getSettingValue("referentiel_note")) {
+						if((getSettingValue("note_autre_que_sur_referentiel")=="V") || 
+							((isset($snnote['note_sur']))&&($snnote['note_sur']!=getSettingValue("referentiel_note")))) {
+							$affiche_note .= "/".$eleve_note_sur;
 						}
 					}
-				}
+					else {
+						$affiche_note = "";
+					}
+					//==========================================
 
-				// Si une "Note" doit être affichée
-				if ($affiche_note != '') {
-					if ($tiret == "yes") {
-						if (($tab_rel['rn_app']=="y") or ($tab_rel['rn_nomdev']=="y")) {
-							echo "<br />";
-						}
-						else {
-							echo " - ";
-						}
-					}
-					if($tab_rel['rn_nomdev']=="y"){
-						echo "$eleve_nom_court: <b>".$affiche_note."</b>";
-					}
-					else{
-						echo "<b>".$affiche_note."</b>";
-					}
-
-					// Coefficient (si on affiche tous les coef...
-					// ou si on ne les affiche que s'il y a plusieurs coef différents)
-					//if(($tab_rel['rn_toutcoefdev']=="y")||
-					//	(($tab_rel['rn_coefdev_si_diff']=="y")&&($tab_rel['groupes'][$j]['differents_coef']=="y"))) {
-					if(($tab_rel['rn_toutcoefdev']=="y")||
-						(($tab_rel['rn_coefdev_si_diff']=="y")&&($tab_rel['periodes'][$index_per]['groupes'][$j]['differents_coef']=="y"))) {
-						echo " (<i><small>".$chaine_coef.$eleve_coef."</small></i>)";
-					}
-
-					// Si on a demandé à afficher les appréciations
-					// et si le prof a coché l'autorisation d'accès à l'appréciations
+					// Nom du devoir ou pas
 					if(($tab_rel['rn_app']=="y") and ($eleve_display_app=="1")) {
-						echo " - Appréciation : ";
-						if ($eleve_app!="") {
-							echo $eleve_app;
-						}
-						else {
-							echo "-";
+						if ($affiche_note=="") {
+							if ($tab_rel['rn_nomdev']!="y") {
+								$affiche_note = $eleve_nom_court;
+							}
+							else {
+								$affiche_note = "&nbsp;";
+							}
 						}
 					}
 
-					if($tab_rel['rn_datedev']=="y"){
-						// Format: 2006-09-28 00:00:00
-						$tmpdate=explode(" ",$eleve_date);
-						$tmpdate=explode("-",$tmpdate[0]);
-						echo " (<i><small>$tmpdate[2]/$tmpdate[1]/$tmpdate[0]</small></i>)";
+					// Si une "Note" doit être affichée
+					if ($affiche_note != '') {
+						if ($tiret == "yes") {
+							if (($tab_rel['rn_app']=="y") or ($tab_rel['rn_nomdev']=="y")) {
+								echo "<br />";
+							}
+							else {
+								echo " - ";
+							}
+						}
+						if($tab_rel['rn_nomdev']=="y"){
+							echo "$eleve_nom_court: <b>".$affiche_note."</b>";
+						}
+						else{
+							echo "<b>".$affiche_note."</b>";
+						}
+
+						// Coefficient (si on affiche tous les coef...
+						// ou si on ne les affiche que s'il y a plusieurs coef différents)
+						//if(($tab_rel['rn_toutcoefdev']=="y")||
+						//	(($tab_rel['rn_coefdev_si_diff']=="y")&&($tab_rel['groupes'][$j]['differents_coef']=="y"))) {
+						if(($tab_rel['rn_toutcoefdev']=="y")||
+							(($tab_rel['rn_coefdev_si_diff']=="y")&&($tab_rel['periodes'][$index_per]['groupes'][$j]['differents_coef']=="y"))) {
+							echo " (<i><small>".$chaine_coef.$eleve_coef."</small></i>)";
+						}
+
+						// Si on a demandé à afficher les appréciations
+						// et si le prof a coché l'autorisation d'accès à l'appréciations
+						if(($tab_rel['rn_app']=="y") and ($eleve_display_app=="1")) {
+							echo " - Appréciation : ";
+							if ($eleve_app!="") {
+								echo $eleve_app;
+							}
+							else {
+								echo "-";
+							}
+						}
+
+						if($tab_rel['rn_datedev']=="y"){
+							// Format: 2006-09-28 00:00:00
+							$tmpdate=explode(" ",$eleve_date);
+							$tmpdate=explode("-",$tmpdate[0]);
+							echo " (<i><small>$tmpdate[2]/$tmpdate[1]/$tmpdate[0]</small></i>)";
+						}
+						//====================================================================
+						// Après un tour avec affichage dans la boucle:
+						$tiret = "yes";
 					}
-					//====================================================================
-					// Après un tour avec affichage dans la boucle:
-					$tiret = "yes";
+
+					$m++;
 				}
-
-				$m++;
 			}
-		}
-		echo "</td>\n";
-		echo "</tr>\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		//}
 		$j++;
 	}
 
