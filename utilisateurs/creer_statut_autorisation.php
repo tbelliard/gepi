@@ -38,7 +38,8 @@ $autorise[4] = array('/mod_absences/gestion/select.php',
 $autorise[5] = array('/cahier_texte/see_all.php');
 $autorise[6] = array('/cahier_texte_admin/visa_ct.php');
 $autorise[7] = array('/edt_organisation/index_edt.php');
-$autorise[8] = array('/tous_les_edt');
+//$autorise[8] = array('/tous_les_edt');
+$autorise[8] = array('/tous_les_edt', '/edt_organisation/index_edt.php');
 $autorise[9] = array('/messagerie/index.php');
 $autorise[10]= array('/eleves/visu_eleve.php',
 						'/eleves/liste_eleves.php');
