@@ -1115,7 +1115,7 @@ Patientez pendant l'extraction des données... merci.
 		echo "<h2>Informations sur l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 		//affichage de la date de sortie de l'élève de l'établissement
 		if ($tab_ele['date_sortie']!=0) {
-		   echo "<span class=\"red\">Date de sortie de l'établissement : le ".affiche_date_sortie($tab_ele['date_sortie'])."<br/><br/></span>";;
+		   echo "<span style=\"color:red\">Date de sortie de l'établissement : le ".affiche_date_sortie($tab_ele['date_sortie'])."<br/><br/></span>";
 		}
 
 		// 20120920
@@ -2216,7 +2216,7 @@ Patientez pendant l'extraction des données... merci.
 			    
 				//affichage de la date de sortie de l'élève de l'établissement
 				if ($tab_ele['date_sortie']!=0) {
-					echo "<p class=\"red\">Date de sortie de l'établissement : le ".affiche_date_sortie($tab_ele['date_sortie'])."</p>";;
+					echo "<p style=\"color:red\">Date de sortie de l'établissement : le ".affiche_date_sortie($tab_ele['date_sortie'])."</p>";;
 				}
 				
 				// Initialisations files
