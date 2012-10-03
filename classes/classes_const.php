@@ -632,6 +632,12 @@ function imposer_cpe() {
 		$login_cpe_unique_actuel="";
 	}
 
+	$tab_eff_per=array();
+	$i="1";
+	while ($i < $nb_periode) {
+		$tab_eff_per[$i]=0;
+		$i++;
+	}
 
 	$k = '0';
 	echo "<table class='boireaus' border='1' cellpadding='5' class='boireaus' summary='Elèves'>\n";
@@ -681,7 +687,7 @@ function imposer_cpe() {
 	echo "<th>&nbsp;</th>\n";
 	echo "</tr>\n";
 	$alt=1;
-	While ($k < $nombreligne) {
+	while($k < $nombreligne) {
 		$login_eleve = mysql_result($call_eleves, $k, 'login');
 		$call_regime = mysql_query("SELECT * FROM j_eleves_regime WHERE login='$login_eleve'");
 		$doublant = @mysql_result($call_regime, 0, 'doublant');
@@ -792,6 +798,8 @@ function imposer_cpe() {
 			$call_trim = mysql_query("SELECT periode FROM j_eleves_classes WHERE (id_classe = '$id_classe' and periode = '$i' and login = '$login_eleve')");
 			$nb_ligne = mysql_num_rows($call_trim);
 			if ($nb_ligne != 0) {
+				if(!isset($tab_eff_per[$i])) {$tab_eff_per[$i]=0;}
+				$tab_eff_per[$i]++;
 				echo "<td>";
 				echo "<p align='center'>";
 
@@ -858,6 +866,23 @@ function imposer_cpe() {
 		echo "</tr>\n";
 		$k++;
 	}
+
+	echo "<tr>\n";
+	echo "<th>Total</th>\n";
+	echo "<th>&nbsp;</th>\n";
+	echo "<th>&nbsp;</th>\n";
+	echo "<th>&nbsp;</th>\n";
+	echo "<th>&nbsp;</th>\n";
+	$i="1";
+	while ($i < $nb_periode) {
+		echo "<th title='".$tab_eff_per[$i]." élève(s) en période $i'>";
+		echo $tab_eff_per[$i];
+		echo "</th>\n";
+		$i++;
+	}
+	echo "<th>&nbsp;</th>\n";
+	echo "</tr>\n";
+
 	echo "</table>\n";
 	echo "<p align='center'><input type='submit' value='Enregistrer' style='margin: 30px 0 60px 0;'/></p>\n";
 	echo "<br />\n";

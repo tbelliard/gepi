@@ -5121,15 +5121,15 @@ function array_map_deep($callback, $array) {
  */
 function joueAlarme($niveau_arbo = "0") {
   $retour ="";
-  	$footer_sound= isset ($_SESSION['login']) ? getPref($_SESSION['login'],'footer_sound',"") : NULL;
+  	$footer_sound= isset ($_SESSION['login']) ? getPref($_SESSION['login'],'footer_sound',NULL) : NULL;
 	if($footer_sound===NULL) {
 		$footer_sound=getSettingValue('footer_sound');
-		if($footer_sound=='') {
+		if($footer_sound==NULL) {
 			$footer_sound="KDE_Beep_Pop.wav";
 		}
 	}
 	
-	  if($footer_sound!=='') {
+	//if($footer_sound!=='') {
 
 	  if ($niveau_arbo == "0") {
 		  $chemin_sound="./sounds/".$footer_sound;
@@ -5156,7 +5156,7 @@ function joueAlarme($niveau_arbo = "0") {
   }
   </script>";
 	  }
-	}
+	//}
 	return $retour;
 } 
 
@@ -5885,4 +5885,31 @@ function in_array_i($chaine, $tableau) {
 	return $retour;
 }
 
+/** Fonction destinée à tester si un parent est responsable d'un élève
+ *
+ * @param string $login_eleve Login de l'élève
+ * @param string $login_resp Login du responsable
+ * @param string $pers_id Identifiant pers_id du responsable
+ *
+ * @return boolean true/false
+ */
+
+function is_responsable($login_eleve, $login_resp="", $pers_id="") {
+	$retour=false;
+	if($login_resp!="") {
+		$sql="SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e WHERE r.pers_id=rp.pers_id AND rp.login='$login_resp' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND (r.resp_legal='1' OR r.resp_legal='2');";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			$retour=true;
+		}
+	}
+	elseif($pers_id!="") {
+		$sql="SELECT 1=1 FROM responsables2 r, eleves e WHERE r.pers_id='$pers_id' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND (r.resp_legal='1' OR r.resp_legal='2');";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			$retour=true;
+		}
+	}
+	return $retour;
+}
 ?>
