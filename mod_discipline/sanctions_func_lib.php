@@ -710,135 +710,196 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 
 				$alt_2=1;
 				while($lig_prot=mysql_fetch_object($res_prot)) {
+					if($_SESSION['statut']=='eleve') {
+						if($_SESSION['login']==$lig_prot->login) {
+							$ligne_visible="y";
+						}
+						else {
+							$ligne_visible="n";
+						}
+					}
+					elseif($_SESSION['statut']=='responsable') {
+						$ligne_visible="n";
+						if(is_responsable($lig_prot->login, $_SESSION['login'])) {
+							$ligne_visible="y";
+						}
+					}
+
 					$alt_2=$alt_2*(-1);
 					$retour.="<tr class='lig$alt_2'>\n";
-					$retour.="<td>".p_nom($lig_prot->login)."</td>\n";
-					$retour.="<td>".$lig_prot->qualite."</td>\n";
+					$retour.="<td>";
+					if($lig_prot->statut=='eleve') {
+						if((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&($ligne_visible!="y")) {
+							$retour.="XXX";
+						}
+						else {
+							$retour.=p_nom($lig_prot->login);
+						}
+					}
+					else {
+						$retour.=civ_nom_prenom($lig_prot->login,"");
+					}
+					$retour.="</td>\n";
+
+					$retour.="<td>";
+					if($lig_prot->statut=='eleve') {
+						if((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&($ligne_visible!="y")) {
+							$retour.="XXX";
+						}
+						else {
+							$retour.=$lig_prot->qualite;
+						}
+					}
+					else {
+						$retour.=$lig_prot->qualite;
+					}
+					$retour.="</td>\n";
 
 					$retour.="<td style='padding: 3px;'>\n";
-					$alt=1;
+					if($lig_prot->statut=='eleve') {
+						if((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&($ligne_visible!="y")) {
+							$retour.="XXX";
+						}
+						else {
+							$retour.=$lig_prot->qualite;
+						}
+					}
+					else {
+						$retour.=$lig_prot->qualite;
+					}
 
-					$sql="SELECT * FROM s_traitement_incident sti, s_mesures sm WHERE sti.id_incident='$lig->id_incident' AND sti.login_ele='$lig_prot->login' AND sm.id=sti.id_mesure ORDER BY mesure;";
-					$res_suivi=mysql_query($sql);
-					if(mysql_num_rows($res_suivi)>0) {
 
-						//$retour.="<p style='text-align:left;'>Tableau des mesures pour le protagoniste $lig_prot->login de l incident n°$lig->id_incident</p>\n";
-						$retour.="<p style='text-align:left; font-weight: bold;'>Mesures</p>\n";
+					if((($_SESSION['statut']!='responsable')&&($_SESSION['statut']!='eleve'))||
+					($lig_prot->statut!='eleve')||
+					(($_SESSION['statut']=='responsable')&&($ligne_visible=="y"))||
+					(($_SESSION['statut']=='eleve')&&($ligne_visible=="y"))
+					) {
+						$alt=1;
+						$sql="SELECT * FROM s_traitement_incident sti, s_mesures sm WHERE sti.id_incident='$lig->id_incident' AND sti.login_ele='$lig_prot->login' AND sm.id=sti.id_mesure ORDER BY mesure;";
+						$res_suivi=mysql_query($sql);
+						if(mysql_num_rows($res_suivi)>0) {
 
-						$retour.="<table class='boireaus' border='1' summary='Tableau des mesures pour le protagoniste $lig_prot->login de l incident n°$lig->id_incident'>\n";
+							//$retour.="<p style='text-align:left;'>Tableau des mesures pour le protagoniste $lig_prot->login de l incident n°$lig->id_incident</p>\n";
+							$retour.="<p style='text-align:left; font-weight: bold;'>Mesures</p>\n";
 
-						$retour.="<tr>\n";
-						$retour.="<th>Nature</th>\n";
-						$retour.="<th>Mesure</th>\n";
-						$retour.="</tr>\n";
+							$retour.="<table class='boireaus' border='1' summary='Tableau des mesures pour le protagoniste $lig_prot->login de l incident n°$lig->id_incident'>\n";
 
-						while($lig_suivi=mysql_fetch_object($res_suivi)) {
-							$alt=$alt*(-1);
-							$retour.="<tr class='lig$alt'>\n";
-							$retour.="<td>$lig_suivi->mesure</td>\n";
+							$retour.="<tr>\n";
+							$retour.="<th>Nature</th>\n";
+							$retour.="<th>Mesure</th>\n";
+							$retour.="</tr>\n";
+
+							while($lig_suivi=mysql_fetch_object($res_suivi)) {
+								$alt=$alt*(-1);
+								$retour.="<tr class='lig$alt'>\n";
+								$retour.="<td>$lig_suivi->mesure</td>\n";
 							
-							if($lig_suivi->type=='prise') {
-								$retour.="<td>prise par ".u_p_nom($lig_suivi->login_u)."</td>\n";
+								if($lig_suivi->type=='prise') {
+									$retour.="<td>prise par ".u_p_nom($lig_suivi->login_u)."</td>\n";
 
-								if($temoin_eleve_responsable_de_l_incident=='y') {
-									if ($lig_suivi->login_ele==$ele_login) {  //Ajout ERIC test pour ne compter que pour l'élève demandé
-										if(isset($tab_mesure[addslashes($lig_suivi->mesure)])) {
-										   $tab_mesure[addslashes($lig_suivi->mesure)]++;
-										}
-										else {
-											$tab_mesure[addslashes($lig_suivi->mesure)]=1;
+									if($temoin_eleve_responsable_de_l_incident=='y') {
+										if ($lig_suivi->login_ele==$ele_login) {  //Ajout ERIC test pour ne compter que pour l'élève demandé
+											if(isset($tab_mesure[addslashes($lig_suivi->mesure)])) {
+											   $tab_mesure[addslashes($lig_suivi->mesure)]++;
+											}
+											else {
+												$tab_mesure[addslashes($lig_suivi->mesure)]=1;
+											}
 										}
 									}
 								}
-							}
-							else {
-								$retour.="<td>demandée par ".u_p_nom($lig_suivi->login_u)."</td>\n";
-							}
-							$retour.="</tr>\n";	
-						}	
-						$retour.="</table>\n";
-					}		
+								else {
+									$retour.="<td>demandée par ".u_p_nom($lig_suivi->login_u)."</td>\n";
+								}
+								$retour.="</tr>\n";	
+							}	
+							$retour.="</table>\n";
+						}		
 						
-					$sql="SELECT * FROM s_sanctions s WHERE s.id_incident='$lig->id_incident' AND s.login='$lig_prot->login' ORDER BY nature;";
-					//echo "$sql<br />\n";
-					$res_suivi=mysql_query($sql);
-					if(mysql_num_rows($res_suivi)>0) {
+						$sql="SELECT * FROM s_sanctions s WHERE s.id_incident='$lig->id_incident' AND s.login='$lig_prot->login' ORDER BY nature;";
+						//echo "$sql<br />\n";
+						$res_suivi=mysql_query($sql);
+						if(mysql_num_rows($res_suivi)>0) {
 
-						//$retour.="<p style='text-align:left;'>Tableau des sanctions pour le protagoniste $lig_prot->login de l incident n°$lig->id_incident</p>\n";
-						$retour.="<p style='text-align:left; font-weight: bold;'>Sanctions</p>\n";
+							//$retour.="<p style='text-align:left;'>Tableau des sanctions pour le protagoniste $lig_prot->login de l incident n°$lig->id_incident</p>\n";
+							$retour.="<p style='text-align:left; font-weight: bold;'>Sanctions</p>\n";
 
-						$retour.="<table class='boireaus' border='1' summary='Tableau des sanctions pour le protagoniste $lig_prot->login de l incident n°$lig->id_incident'>\n";
+							$retour.="<table class='boireaus' border='1' summary='Tableau des sanctions pour le protagoniste $lig_prot->login de l incident n°$lig->id_incident'>\n";
 
-						$retour.="<tr>\n";
-						$retour.="<th>Nature</th>\n";
-						$retour.="<th>Date</th>\n";
-						$retour.="<th>Description</th>\n";
-						$retour.="<th>Effectuée</th>\n";
-						$retour.="</tr>\n";
+							$retour.="<tr>\n";
+							$retour.="<th>Nature</th>\n";
+							$retour.="<th>Date</th>\n";
+							$retour.="<th>Description</th>\n";
+							$retour.="<th>Effectuée</th>\n";
+							$retour.="</tr>\n";
 				
 						
-						while($lig_suivi=mysql_fetch_object($res_suivi)) {
-							$alt=$alt*(-1);
-							$retour.="<tr class='lig$alt'>\n";
-							$retour.="<td>$lig_suivi->nature</td>\n";
-							$retour.="<td>";
+							while($lig_suivi=mysql_fetch_object($res_suivi)) {
+								$alt=$alt*(-1);
+								$retour.="<tr class='lig$alt'>\n";
+								$retour.="<td>$lig_suivi->nature</td>\n";
+								$retour.="<td>";
 
-							if($temoin_eleve_responsable_de_l_incident=='y') {
-								if ($lig_suivi->login==$ele_login) { //Ajout ERIC test pour ne compter que pour l'élève demandé
-									if(isset($tab_sanction[addslashes($lig_suivi->nature)])) {
-										$tab_sanction[addslashes($lig_suivi->nature)]++;
+								if($temoin_eleve_responsable_de_l_incident=='y') {
+									if ($lig_suivi->login==$ele_login) { //Ajout ERIC test pour ne compter que pour l'élève demandé
+										if(isset($tab_sanction[addslashes($lig_suivi->nature)])) {
+											$tab_sanction[addslashes($lig_suivi->nature)]++;
+										}
+										else {
+											$tab_sanction[addslashes($lig_suivi->nature)]=1;
+										}
+									}
+								}
+
+								if($lig_suivi->nature=='retenue') {
+									$sql="SELECT * FROM s_retenues WHERE id_sanction='$lig_suivi->id_sanction';";
+									//echo "$sql<br />\n";
+									$res_retenue=mysql_query($sql);
+									if(mysql_num_rows($res_retenue)>0) {
+										$lig_retenue=mysql_fetch_object($res_retenue);
+										$retour.=formate_date($lig_retenue->date)." (<i>".$lig_retenue->duree."H</i>)";
 									}
 									else {
-										$tab_sanction[addslashes($lig_suivi->nature)]=1;
+										$retour.="X";
 									}
 								}
-							}
+								elseif($lig_suivi->nature=='exclusion') {
+									$sql="SELECT * FROM s_exclusions WHERE id_sanction='$lig_suivi->id_sanction';";
+									//echo "$sql<br />\n";
+									$res_exclusion=mysql_query($sql);
+									if(mysql_num_rows($res_exclusion)>0) {
+										$lig_exclusion=mysql_fetch_object($res_exclusion);
+										$retour.="du ".formate_date($lig_exclusion->date_debut)." (<i>$lig_exclusion->heure_debut</i>) au ".formate_date($lig_exclusion->date_fin)." (<i>$lig_exclusion->heure_fin</i>)<br />$lig_exclusion->lieu";
+									}
+									else {
+										$retour.="X";
+									}
+								}
+								elseif($lig_suivi->nature=='travail') {
+									$sql="SELECT * FROM s_travail WHERE id_sanction='$lig_suivi->id_sanction';";
+									//echo "$sql<br />\n";
+									$res_travail=mysql_query($sql);
+									if(mysql_num_rows($res_travail)>0) {
+										$lig_travail=mysql_fetch_object($res_travail);
+										$retour.="pour le ".formate_date($lig_travail->date_retour)."  (<i>$lig_travail->heure_retour</i>)";
+									}
+									else {
+										$retour.="X";
+									}
+								}
 
-							if($lig_suivi->nature=='retenue') {
-								$sql="SELECT * FROM s_retenues WHERE id_sanction='$lig_suivi->id_sanction';";
-								//echo "$sql<br />\n";
-								$res_retenue=mysql_query($sql);
-								if(mysql_num_rows($res_retenue)>0) {
-									$lig_retenue=mysql_fetch_object($res_retenue);
-									$retour.=formate_date($lig_retenue->date)." (<i>".$lig_retenue->duree."H</i>)";
-								}
-								else {
-									$retour.="X";
-								}
+								$retour.="</td>\n";
+								$retour.="<td>$lig_suivi->description</td>\n";
+								$retour.="<td>$lig_suivi->effectuee</td>\n";
+								$retour.="</tr>\n";
 							}
-							elseif($lig_suivi->nature=='exclusion') {
-								$sql="SELECT * FROM s_exclusions WHERE id_sanction='$lig_suivi->id_sanction';";
-								//echo "$sql<br />\n";
-								$res_exclusion=mysql_query($sql);
-								if(mysql_num_rows($res_exclusion)>0) {
-									$lig_exclusion=mysql_fetch_object($res_exclusion);
-									$retour.="du ".formate_date($lig_exclusion->date_debut)." (<i>$lig_exclusion->heure_debut</i>) au ".formate_date($lig_exclusion->date_fin)." (<i>$lig_exclusion->heure_fin</i>)<br />$lig_exclusion->lieu";
-								}
-								else {
-									$retour.="X";
-								}
-							}
-							elseif($lig_suivi->nature=='travail') {
-								$sql="SELECT * FROM s_travail WHERE id_sanction='$lig_suivi->id_sanction';";
-								//echo "$sql<br />\n";
-								$res_travail=mysql_query($sql);
-								if(mysql_num_rows($res_travail)>0) {
-									$lig_travail=mysql_fetch_object($res_travail);
-									$retour.="pour le ".formate_date($lig_travail->date_retour)."  (<i>$lig_travail->heure_retour</i>)";
-								}
-								else {
-									$retour.="X";
-								}
-							}
-
-							$retour.="</td>\n";
-							$retour.="<td>$lig_suivi->description</td>\n";
-							$retour.="<td>$lig_suivi->effectuee</td>\n";
-							$retour.="</tr>\n";
-						}
 						
-						$retour.="</table>\n";
+							$retour.="</table>\n";
 
+						}
+					}
+					else {
+						$retour.="XXX";
 					}
 
 					$retour.="</td>\n";

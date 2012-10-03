@@ -498,8 +498,8 @@ else{
 				echo "upload_max_filesize=$upload_max_filesize<br />\n";
 				echo "</p>\n";
 
-				// Il ne faut pas aller plus loin...
-				// SITUATION A GERER
+				echo "<p>Il semblerait que l'absence d'extension .XML ou .ZIP puisse aussi provoquer ce genre de symptômes.<br />Dans ce cas, ajoutez l'extension et ré-essayez.</p>\n";
+
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -513,8 +513,9 @@ else{
 					echo "et le volume de ".$xml_file['name']." serait<br />\n";
 					echo "\$xml_file['size']=".volume_human($xml_file['size'])."<br />\n";
 					echo "</p>\n";
-					// Il ne faut pas aller plus loin...
-					// SITUATION A GERER
+
+					echo "<p>Il semblerait que l'absence d'extension .XML ou .ZIP puisse aussi provoquer ce genre de symptômes.<br />Dans ce cas, ajoutez l'extension et ré-essayez.</p>\n";
+
 					require("../lib/footer.inc.php");
 					die();
 				}
@@ -4785,8 +4786,8 @@ else{
 				echo "upload_max_filesize=$upload_max_filesize<br />\n";
 				echo "</p>\n";
 
-				// Il ne faut pas aller plus loin...
-				// SITUATION A GERER
+				echo "<p>Il semblerait que l'absence d'extension .XML ou .ZIP puisse aussi provoquer ce genre de symptômes.<br />Dans ce cas, ajoutez l'extension et ré-essayez.</p>\n";
+
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -4800,8 +4801,9 @@ else{
 					echo "et le volume de ".$xml_file['name']." serait<br />\n";
 					echo "\$xml_file['size']=".volume_human($xml_file['size'])."<br />\n";
 					echo "</p>\n";
-					// Il ne faut pas aller plus loin...
-					// SITUATION A GERER
+
+					echo "<p>Il semblerait que l'absence d'extension .XML ou .ZIP puisse aussi provoquer ce genre de symptômes.<br />Dans ce cas, ajoutez l'extension et ré-essayez.</p>\n";
+
 					require("../lib/footer.inc.php");
 					die();
 				}
