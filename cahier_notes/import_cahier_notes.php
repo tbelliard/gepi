@@ -319,7 +319,7 @@ else {
 									$tab_dev[$cpt_ele]['login']=$tabligne[$tabindice[1]];
 									// Il faudrait tester qu'il n'y a pas de caractères invalides dans le login...
 
-									if(mb_strlen(preg_replace("/[A-Z0-9_]/","",$tabligne[$tabindice[1]]))==0){
+									if(mb_strlen(preg_replace("/[A-Za-z0-9._-]/","",$tabligne[$tabindice[1]]))==0){
 										// L'élève fait-il partie du groupe?
 										$sql="SELECT 1=1 FROM j_eleves_groupes WHERE (login='".$tab_dev[$cpt_ele]['login']."' AND id_groupe='$id_groupe' AND periode='$periode_num')";
 										$test=mysql_query($sql);
@@ -332,11 +332,11 @@ else {
 												$note=$tabligne[$i];
 												$elev_statut='';
 
-												if($note=='disp'){
+												if((mb_strtolower($note)=='disp')||(mb_strtolower($note)=='d')) {
 													$note='0';
 													$elev_statut='disp';
 												}
-												elseif($note=='abs'){
+												if((mb_strtolower($note)=='abs')||(mb_strtolower($note)=='a')) {
 													$note='0';
 													$elev_statut='abs';
 												}
