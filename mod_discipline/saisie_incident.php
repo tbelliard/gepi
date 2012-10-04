@@ -60,7 +60,7 @@ function choix_heure($champ_heure,$div_choix_heure) {
 	if(mysql_num_rows($res_abs_cren)>0) {
 		echo " <a href='#' onclick=\"afficher_div('$div_choix_heure','y',10,-40); return false;\">Choix</a>";
 
-		$texte="<table class='boireaus' style='margin: auto;' border='1'><caption class='invisible'>Choix d'une heure</caption>\n";
+		$texte="<table class='boireaus' style='margin: auto;border:1px;'><caption class='invisible'>Choix d'une heure</caption>\n";
 		while($lig_ac=mysql_fetch_object($res_abs_cren)) {
 			$td_style="";
 			$tmp_bgcolor="";
@@ -105,7 +105,7 @@ function recherche_ele($rech_nom,$page) {
 		echo "<p>La recherche a retourné <strong>$nb_ele</strong> réponse";
 		if($nb_ele>1) {echo "s";}
 		echo ":</p>\n";
-		echo "<table border='1' class='boireaus'><caption class='invisible'>Liste des élèves</caption>\n";
+		echo "<table style='border:1px;' class='boireaus'><caption class='invisible'>Liste des élèves</caption>\n";
 		echo "<tr>\n";
 		//echo "<th>Elève</th>\n";
 		echo "<th>Sélectionner</th>\n";
@@ -168,7 +168,7 @@ function recherche_utilisateur($rech_nom,$page) {
 		echo "<p>La recherche a retourné <strong>$nb_utilisateur</strong> réponse";
 		if($nb_utilisateur>1) {echo "s";}
 		echo ":</p>\n";
-		echo "<table border='1' class='boireaus'><caption class='invisible'>Liste des  utilisateurs</caption>\n";
+		echo "<table style='border:1px;' class='boireaus'><caption class='invisible'>Liste des  utilisateurs</caption>\n";
 		echo "<tr>\n";
 		echo "<th>Sélectionner</th>\n";
 		echo "<th>Utilisateur</th>\n";
@@ -1253,7 +1253,7 @@ if(isset($id_incident) ) {
 ?>
     <p class='bold'>Protagonistes de l'incident n°<?php echo $id_incident; ?>&nbsp;:</p>
     <blockquote>
-        <table class='boireaus' border='1'>
+        <table class='boireaus' style="border:1px;">
             <caption class='invisible'>Protagonistes</caption>
             <tr>
                 <th>Individu</th>
@@ -1759,8 +1759,10 @@ if(isset($id_incident) ) {
 	//echo "$sql<br />";
 	if ($_SESSION['statut']!='autre') { //statut autre : ajout Eric de la condition 
 		$res_clas=mysql_query($sql);
-		if(mysql_num_rows($res_clas)>0) {
-			echo "<p>Ou choisir un élève dans une classe:</p>\n";
+		if(mysql_num_rows($res_clas)>0) {   
+?>
+    <p>Ou choisir un élève dans une classe:</p>
+<?php
 
 			$tab_txt=array();
 			$tab_lien=array();
@@ -1775,76 +1777,107 @@ if(isset($id_incident) ) {
 					$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id;
 				}
 			}
-
-			echo "<blockquote>\n";
-			tab_liste($tab_txt,$tab_lien,4);
-			echo "</blockquote>\n";
+ 
+?>
+    <blockquote>
+        <?php tab_liste($tab_txt,$tab_lien,4);?>
+    </blockquote>
+<?php
 	}
 }
-	echo "</blockquote>\n";
+?>
+</blockquote>
+<?php
 
 }
 elseif($step==1) {
 	//==========================================
 	// AJOUT DE PERSONNELS COMME PROTAGONISTES DE L'INCIDENT
-	echo "<p class='bold'>Ajouter des personnels&nbsp;:</p>\n";
+?>
+<p class='bold'>Ajouter des personnels&nbsp;:</p>
+<?php
 
 	//$sql="SELECT DISTINCT statut FROM utilisateurs WHERE statut!='responsable' ORDER BY statut;";
 	$sql="SELECT DISTINCT statut FROM utilisateurs WHERE statut!='responsable' AND etat='actif' ORDER BY statut;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
 		// Ca ne doit pas arriver;o)
-		echo "<p style='color:red;'>La table 'utilisateurs' ne comporte aucun compte???</p>\n";
-		echo "<p><br /></p>\n";
+?>
+<p style='color:red;'>La table 'utilisateurs' ne comporte aucun compte???</p>
+<p><br /></p>
+<?php
 		require("../lib/footer.inc.php");
 		die();
 	}
-
-	echo "<blockquote>\n";
-
-	echo "<form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire1'>
-	<p>
-	Afficher les utilisateurs dont le <strong>nom</strong> contient: <input type='text' name='rech_nom' value='' />
-	<input type='hidden' name='page' value='$page' />
-	<input type='hidden' name='step' value='$step' />
-	<input type='hidden' name='is_posted' value='y' />
-	<input type='submit' name='recherche_utilisateur' value='Rechercher'";
-	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-	echo " />
-	</p>\n";
-	if(isset($id_incident)) {echo "<input type='hidden' name='id_incident' value='$id_incident' />\n";}
-	echo "</form>\n";
-
+?>
+<blockquote>
+    <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire1'>
+        <p>
+            Afficher les utilisateurs dont le <strong>nom</strong> contient : 
+            <input type='text' name='rech_nom' value='' />
+            <input type='hidden' name='page' value='<?php echo $page; ?>' />
+            <input type='hidden' name='step' value='<?php echo $step; ?>' />
+            <input type='hidden' name='is_posted' value='y' />
+            <input type='submit' 
+                   name='recherche_utilisateur' 
+                   value='Rechercher'
+                   onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')" />
+        </p>
+<?php
+	echo "<p>".add_token_field()."</p>";
+	if(isset($id_incident)) {echo "<p><input type='hidden' name='id_incident' value='".$id_incident."' /></p>\n";}
+?>
+    </form>  
+<?php
 	if(isset($_POST['recherche_utilisateur'])) {
-        echo "<form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire2'>\n";
+?>
+    <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire2'>\n"; 
+<?php
 		echo "<p>".add_token_field()."</p>";
-
-        echo "<p><input type='hidden' name='page' value='$page' />\n";
-        echo "<input type='hidden' name='step' value='$step' /></p>\n";
-
+?>
+        <p>
+            <input type='hidden' name='page' value='<?php echo $page; ?>' />
+            <input type='hidden' name='step' value='<?php echo $step; ?>' />
+        </p>
+<?php
 		recherche_utilisateur($rech_nom,$_SERVER['PHP_SELF']);
-		echo "<p><input type='submit' name='Ajouter' value='Ajouter' /></p>\n";
-
+?>
+        <p>
+            <input type='submit' name='Ajouter' value='Ajouter' />
+        </p>
+<?php
         if(isset($id_incident)) {echo "<p><input type='hidden' name='id_incident' value='$id_incident' /></p>\n";}
-        echo "<p><input type='hidden' name='is_posted' value='y' /></p>\n";
-		echo "</form>\n";
+?>
+        <p>
+            <input type='hidden' name='is_posted' value='y' />
+        </p>
+    </form>
+<?php
 	}
 	elseif(isset($categ_u)) {
 		$sql="SELECT login, nom, prenom, civilite FROM utilisateurs WHERE statut='$categ_u' ORDER BY nom, prenom;";
 		$res2=mysql_query($sql);
 		if(mysql_num_rows($res2)==0) {
 			// Ca ne doit pas arriver;o)
-			echo "<p style='color:red;'>La table 'utilisateurs' ne comporte pas de comptes de statut '$categ_u'.</p>\n";
-			echo "<p><br /></p>\n";
+?>
+    <p style='color:red;'>
+        La table 'utilisateurs' ne comporte pas de comptes de statut '<?php echo $categ_u; ?>'.
+    </p>
+    <p><br /></p>
+<?php
 			require("../lib/footer.inc.php");
 			die();
 		}
-
-		echo "<form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire'>\n";
+?>
+    <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire'>
+<?php
 		echo "<p>".add_token_field()."</p>";
-
-		echo "<p><input type='hidden' name='step' value='$step' />\n";
-		echo "<input type='hidden' name='is_posted' value='y' /></p>\n";
+?>
+        <p>
+            <input type='hidden' name='step' value='<?php echo $step; ?>' />
+            <input type='hidden' name='is_posted' value='y' />
+        </p>
+<?php
 		if(isset($id_incident)) {echo "<p><input type='hidden' name='id_incident' value='$id_incident' /></p>\n";}
 
 		$nombreligne=mysql_num_rows($res2);
@@ -1853,75 +1886,104 @@ elseif($step==1) {
 
 		// Nombre de lignes dans chaque colonne:
 		$nb_par_colonne=round($nombreligne/$nbcol);
-
-		echo "<table width='100%' summary=\"Tableau de choix des $categ_u\">\n";
-		echo "<tr valign='top' align='center'>\n";
-		echo "<td align='left'>\n";
-
+?>
+        <table width='100%'>
+            <caption class="invisible">Tableau de choix des <?php echo $categ_u; ?></caption>
+            <tr valign='top' align='center'>
+                <td align='left'>
+<?php
 		$i = 0;
 		$alt=1;
-		echo "<table class='boireaus' summary='Colonne de $categ_u'>\n";
+?>
+                    <table class='boireaus'>
+                        <caption class="invisible">Colonne de <?php echo $categ_u; ?></caption>
+<?php
 		while ($i < $nombreligne){
 			$lig2=mysql_fetch_object($res2);
 
 			if(($i>0)&&(round($i/$nb_par_colonne)==$i/$nb_par_colonne)){
-					echo "</table>\n";
-				echo "</td>\n";
-				echo "<td align='left'>\n";
-
+?>
+                    </table>
+                </td>
+                <td align='left'>
+<?php
 					$alt=1;
-					echo "<table class='boireaus' summary='Colonne de $categ_u'>\n";
+?>
+                    <table class='boireaus'>
+                        <caption class="invisible">Colonne de <?php echo $categ_u; ?></caption>
+<?php
 			}
 
 			$alt=$alt*(-1);
-			echo "<tr class='lig$alt'>\n";
-			echo "<td>\n";
-			echo "<input type='checkbox' name='u_login[]' id='u_login_$i' value=\"$lig2->login\" />\n";
-			echo "</td>\n";
-			echo "<td>\n";
-			echo "<label for='u_login_$i' style='cursor:pointer;'>".$lig2->civilite." ".mb_strtoupper($lig2->nom)." ".ucfirst(mb_substr($lig2->prenom,0,1)).".</label>";
-			echo "</td>\n";
-
+?>
+                        <tr class='lig<?php echo $alt; ?>'>
+                            <td>
+                                <input type='checkbox' 
+                                       name='u_login[]' 
+                                       id='u_login_<?php echo $i; ?>' 
+                                       value="<?php echo $lig2->login; ?>" />
+                            </td>
+                            <td>
+                                <label for='u_login_<?php echo $i; ?>' 
+                                       style='cursor:pointer;'>
+                                    <?php echo $lig2->civilite; ?> 
+                                    <?php echo mb_strtoupper($lig2->nom); ?> 
+                                    <?php echo ucfirst(mb_substr($lig2->prenom,0,1)); ?>.
+                                </label>
+                            </td>
+<?php
 			$sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du
 											WHERE du.login_user = '".$lig2->login."'
 											AND du.id_statut = ds.id;";
 			$query = mysql_query($sql);
 			$result = mysql_fetch_array($query);
-			echo "<td>".$result['nom_statut']."</td>\n";
-
-			echo "</tr>\n";
+?>
+                            <td><?php echo $result['nom_statut']; ?></td>
+                        </tr>
+<?php
+			echo "\n";
 
 			$i++;
 		}
-			echo "</table>\n";
-
-		echo "</td>\n";
-		echo "</tr>\n";
-		echo "</table>\n";
-
-		echo "<p><input type='submit' name='Ajouter' value='Ajouter' /></p>\n";
-
-		echo "</form>\n";
-		echo "<p><br /></p>\n";
+?>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <p>
+            <input type='submit' name='Ajouter' value='Ajouter' />
+        </p>
+    </form>
+    <p><br /></p>
+<?php
 	}
-
-	echo "<p class='bold'>Choisir une catégorie de personnels&nbsp;:</p>\n";
-	echo "<blockquote>\n";
+?>
+    <p class='bold'>
+        Choisir une catégorie de personnels&nbsp;:
+    </p>
+    <blockquote>
+<?php
 	while($lig=mysql_fetch_object($res)) {
-		echo "<p><a href='saisie_incident.php?step=1&amp;categ_u=".$lig->statut;
-		if(isset($id_incident)) {echo "&amp;id_incident=$id_incident";}
-		echo "'";
-		echo " onclick='return confirm_abandon (this, change, \"$themessage\")'";
-		echo ">".ucfirst($lig->statut)."</a></p>\n";
+?>
+        <p>
+            <a href='saisie_incident.php?step=1&amp;categ_u=<?php echo $lig->statut; ?><?php if(isset($id_incident)) {echo "&amp;id_incident=$id_incident";}; ?>'
+               onclick='return confirm_abandon (this, change, "<?php echo $themessage; ?>")'>
+                <?php echo ucfirst($lig->statut); ?>
+            </a>
+        </p>
+<?php
 	}
-	echo "</blockquote>\n";
-	echo "</blockquote>\n";
-
+?>
+    </blockquote>
+</blockquote>
+<?php
 }
 elseif($step==2) {
 	//==========================================
 	// SAISIE DES DETAILS DE L'INCIDENT
-	echo "<p class='bold'>Détails de l'incident";
+?>
+<p class='bold'>Détails de l'incident
+<?php
 	if(isset($id_incident)) {
 		echo " n°$id_incident";
 
@@ -1929,14 +1991,23 @@ elseif($step==2) {
 		$res_dec=mysql_query($sql);
 		if(mysql_num_rows($res_dec)>0) {
 			$lig_dec=mysql_fetch_object($res_dec);
-			echo " (<span style='font-size:x-small; font-style:italic; color:red;'>signalé par ".u_p_nom($lig_dec->declarant)."</span>)";
+?>
+    (<span style='font-size:x-small; font-style:italic; color:red;'>
+        signalé par <?php echo u_p_nom($lig_dec->declarant); ?>
+    </span>)
+<?php
 		}
 	}
-	echo "&nbsp;:</p>\n";
+?>
+    &nbsp;:
+</p>
+<?php
 
 	if($etat_incident!='clos') {
-		echo "<form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire'>\n";
-		echo "<p>".add_token_field()."</p>";
+?>
+<form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire'>
+    <p><?php echo add_token_field(); ?></p>
+<?php
 	}
 
 	//echo "count(\$ele_login)=".count($ele_login)."<br />";
@@ -1963,7 +2034,11 @@ elseif($step==2) {
 	
 	if(isset($id_incident)) {
 		if($etat_incident!='clos') {
-			echo "<input type='hidden' name='id_incident' value='$id_incident' />\n";
+?>
+    <p>
+        <input type='hidden' name='id_incident' value='<?php echo $id_incident; ?>' />
+    </p>
+<?php
 		}
 		$sql="SELECT * FROM s_incidents WHERE id_incident='$id_incident';";
 		$res_inc=mysql_query($sql);
@@ -1977,37 +2052,61 @@ elseif($step==2) {
 			$nature=$lig_inc->nature;
 			$description=$lig_inc->description;
 			$commentaire=$lig_inc->commentaire;
-			$id_lieu=$lig_inc->id_lieu;echo add_token_field(true);
+			$id_lieu=$lig_inc->id_lieu;
+                        //echo add_token_field(true);
 		}
 	}
 
-	echo "<blockquote style='margin-right: 0.5em;'>\n";
-
+?>
+    <blockquote style='margin-right: 0.5em;'>
+<?php
 	$alt=1;
-	echo "<table class='boireaus' border='1' summary='Details incident'>\n";
+?>
+        <table class='boireaus' style="border:1px;">
+            <caption class="invisible">Détails de l'incident</caption>
+<?php
 	// Date de l'incident
 	$alt=$alt*(-1);
-	echo "<tr class='lig$alt'>\n";
-	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>\n";
-	echo "Date de l'incident&nbsp;:";
-	echo "</td>\n";
-
+?>
+            <tr class='lig<?php echo $alt; ?>'>
+                <td style='font-weight:bold;vertical-align:top;text-align:left;'>
+                    Date de l'incident&nbsp;:
+                </td>
+<?php
 	if($etat_incident!='clos') {
-		echo "<td style='text-align:left;'>\n";
+?>
+                <td style='text-align:left;'>
+<?php
 		//Configuration du calendrier
 		include("../lib/calendrier/calendrier.class.php");
 		$cal = new Calendrier("formulaire", "display_date");
-
-		echo "<input type='text' name='display_date' id='display_date' size='10' value=\"".$display_date."\" onKeyDown=\"clavier_date_plus_moins(this.id,event);\" onchange='changement()' />\n";
-		echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
-
-		echo "</td>\n";
-
-		//echo "<td width='1%' style='text-align:right;'><input type='submit' name='enregistrer' value='Enregistrer' onclick='verif_details_incident();' /></td>\n";
-		echo "<td width='1%' style='text-align:right;'>\n";
-		echo "<input type='button' name='enregistrer' value='Enregistrer' onclick='verif_details_incident();' />\n";
-		echo "<noscript><input type='submit' name='enregistrer' value='Enregistrer vraiment' /></noscript>\n";
-		echo "</td>\n";
+?>
+                    <input type='text' 
+                           name='display_date' 
+                           id='display_date' 
+                           size='10' 
+                           value="<?php echo $display_date; ?>" 
+                           onkeydown="clavier_date_plus_moins(this.id,event);" 
+                           onchange='changement()' />
+                    <a href="#calend" onclick="<?php echo $cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170); ?>">
+                        <img src="../lib/calendrier/petit_calendrier.gif" 
+                             style="border:0px;"
+                             alt="Petit calendrier" />
+                    </a>
+                </td>
+<?php
+/*
+                <td style='text-align:right; width:1%;'>
+                    <input type='submit' name='enregistrer' value='Enregistrer' onclick='verif_details_incident();' />
+                </td>
+ * 
+ */
+?>
+                <td style='text-align:right; width:1%;'>
+                    <input type='button' name='enregistrer' value='Enregistrer' onclick='verif_details_incident();' />
+                    <noscript><p><input type='submit' name='enregistrer' value='Enregistrer vraiment' /></p></noscript>
+                </td>
+<?php
 	}
 	else {
 		echo "<td style='text-align:left;'>\n";
@@ -2015,66 +2114,70 @@ elseif($step==2) {
 		echo "</td>\n";
 	}
 
-	echo "</tr>\n";
+?>
+            </tr>
+<?php
 	//========================
 	// Heure
 	$alt=$alt*(-1);
-	echo "<tr class='lig$alt'>\n";
-	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>\n";
-	echo "Heure de l'incident&nbsp;:";
-	echo "</td>\n";
-	echo "<td style='text-align:left;'";
-	if($etat_incident!='clos') {echo " colspan='2'";}
-	echo ">\n";
-
+?>
+            <tr class='lig<?php echo $alt; ?>'>
+                <td style='font-weight:bold;vertical-align:top;text-align:left;'>
+                    Heure de l'incident&nbsp;:
+                </td>
+                <td style='text-align:left;'<?php if($etat_incident!='clos') {echo " colspan='2'";}?>>
+<?php
 	if($etat_incident!='clos') {
 		$texte="ATTENTION&nbsp;: Il ne faut pas mettre une heure vide.<br />En cas d'incertitude sur l'heure, il vaut mieux mettre un point d'interrogation en guise d'heure.<br />Sinon, s'il n'y a pas d'incertitude, le créneau horaire M1, S2,... est préférable.";
 		$tabdiv_infobulle[]=creer_div_infobulle("div_infobulle_avertissement_heure","Heure non vide","",$texte,"",30,0,'y','y','n','n',2);
 
-		//echo "<div id='div_avertissement_heure' style='float:right; text-align: center; border:1px solid black; margin-top: 2px; min-width: 19px;'>\n";
-		echo "<div id='div_avertissement_heure' style='float:right;'>\n";
-		echo "<a href='#' onmouseover=\"delais_afficher_div('div_infobulle_avertissement_heure','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_infobulle_avertissement_heure');\" onclick=\"return false;\" title='Attention heure'><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Attention heure' /></a>";
-		echo "</div>\n";
+?>
+                    <div id='div_avertissement_heure' style='float:right;'>
+                        <a href='#' 
+                           onmouseover="delais_afficher_div('div_infobulle_avertissement_heure','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);" 
+                           onmouseout="cacher_div('div_infobulle_avertissement_heure');" 
+                           onclick="return false;" 
+                           title='Attention heure'>
+                            <img src='../images/icons/ico_question_petit.png' 
+                                 width='15' 
+                                 height='15' 
+                                 alt='Attention heure' />
+                        </a>
+                    </div>
+                    
+                    <input type='text' 
+                           name='display_heure' 
+                           id='display_heure' 
+                           size='6' 
+                           value="<?php echo $display_heure; ?>" 
+                           onkeydown="clavier_heure(this.id,event);" 
+                           AutoComplete="off" 
+                           onchange='changement()' />
 
-		echo "<input type='text' name='display_heure' id='display_heure' size='6' value=\"".$display_heure."\" onKeyDown=\"clavier_heure(this.id,event);\" AutoComplete=\"off\" onchange='changement()' />\n";
-
+<?php
 		choix_heure('display_heure','div_choix_heure');
 	}
 	else {
 		echo $display_heure;
 	}
 
-	echo "</td>\n";
-	echo "</tr>\n";
-
-
+?>
+                </td>
+            </tr>
+<?php
 
 	//========================
 	// Lieu
-	/*
-	$alt=$alt*(-1);
-	echo "<tr class='lig$alt'>\n";
-	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Lieu&nbsp;: </td>\n";
-	echo "<td style='text-align:left;'>\n";
-	//echo "<input type='text' name='lieu_incident' id='lieu_incident' value='$lieu_incident' onchange='changement();' />\n";
-	// Sélectionner parmi des lieux déjà saisis?
-	//$sql="SELECT DISTINCT lieu FROM s_retenues WHERE lieu!='' ORDER BY lieu;";
-	$sql="(SELECT DISTINCT lieu FROM s_incidents WHERE lieu!='')";
-	if(param_edt($_SESSION["statut"]) == 'yes') {
-		$sql.=" UNION (SELECT DISTINCT nom_salle AS lieu FROM salle_cours WHERE nom_salle!='')";
-	}
-	$sql.=" ORDER BY lieu;";
-	//echo "$sql<br />";
-	$res_lieu=mysql_query($sql);
-	*/
 
 	$sql="(SELECT * FROM s_lieux_incidents WHERE lieu!='')";
 	//echo "$sql<br />\n";
 	$res_lieu=mysql_query($sql);
 	if(mysql_num_rows($res_lieu)>0) {
 		$alt=$alt*(-1);
-		echo "<tr class='lig$alt'>\n";
-		echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Lieu&nbsp;: </td>\n";
+?>
+            <tr class='lig<?php echo $alt; ?>'>
+                <td style='font-weight:bold;vertical-align:top;text-align:left;'>Lieu&nbsp;: </td>
+<?php
 
 		echo "<td style='text-align:left;'";
 		if($etat_incident!='clos') {
@@ -2098,22 +2201,21 @@ elseif($step==2) {
 			}
 		}
 		echo "</td>\n";
-		echo "</tr>\n";
+?>
+            </tr>
+<?php
 	}
-	//echo "</td>\n";
-	//echo "</tr>\n";
 
 	//========================
 	// Nature de l'incident
 	$alt=$alt*(-1);
-	echo "<tr class='lig$alt'>\n";
-	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>\n";
-	echo "Nature de l'incident <span style='color:red;'>(*)</span>&nbsp;:";
-	echo "</td>\n";
-	echo "<td style='text-align:left;'";
-	if($etat_incident!='clos') {echo " colspan='2'";}
-	echo ">\n";
-
+?>
+            <tr class='lig<?php echo $alt; ?>'>
+                <td style='font-weight:bold;vertical-align:top;text-align:left;'>
+                    Nature de l'incident <span style='color:red;'>(*)</span>&nbsp;:
+                </td>
+                <td style='text-align:left;'<?php if($etat_incident!='clos') {echo " colspan='2'";} ?>>
+<?php
 	// Pouvoir sélectionner une nature parmi les natures déjà saisies auparavant et parmi une liste type
 	// insulte,violence,refus de travail,...
 	// Actuellement, la liste des propositions est uniquement recherchée dans les saisies précédentes.
@@ -2125,55 +2227,50 @@ elseif($step==2) {
 	if($etat_incident!='clos') {
 		$saisie_nature_libre="y";
 		if($DisciplineNaturesRestreintes==2) {
-			/*
-			// On limite les natures d'incident au contenu de s_categories
-			$sql="SELECT DISTINCT categorie FROM s_categories ORDER BY categorie;";
-			$res_cat=mysql_query($sql);
-			if(mysql_num_rows($res_cat)>0) {
-				$saisie_nature_libre="n";
-
-				echo "<select name='nature' id='nature'>\n";
-				while($lig_cat=mysql_fetch_object($res_cat)) {
-					echo "<option value=\"$lig_cat->categorie\"";
-					if($lig_cat->categorie==$nature) {echo " selected='selected'";}
-					echo ">$lig_cat->categorie</option>\n";
-				}
-				echo "</select>\n";
-			}
-			*/
-
+			
 			// On limite les natures d'incident au contenu de s_natures
 			$sql="SELECT DISTINCT nature FROM s_natures WHERE nature!='' ORDER BY nature;";
 			$res_nat=mysql_query($sql);
 			if(mysql_num_rows($res_nat)>0) {
 				$saisie_nature_libre="n";
-
-				echo "<select name='nature' id='nature' onchange='changement()'>\n";
+?>
+                    <select name='nature' id='nature' onchange='changement()'>
+<?php
 				while($lig_nat=mysql_fetch_object($res_nat)) {
-					echo "<option value=\"$lig_nat->nature\"";
-					if($lig_nat->nature==$nature) {echo " selected='selected'";}
-					echo ">$lig_nat->nature</option>\n";
+?>
+                        <option value="$lig_nat->nature"<?php if($lig_nat->nature==$nature) {echo " selected='selected'";} ?>>
+                            <?php echo $lig_nat->nature; ?>
+                        </option>
+<?php
 				}
-				echo "</select>\n";
+?>
+                    </select>
+<?php
 			}
 
 		}
 
 		if($saisie_nature_libre=="y") {
-			echo "<input type='text' name='nature' id='nature' size='30' value=\"".$nature."\" ";
-			//echo "onkeyup='check_incident()' ";
-			echo "/>\n";
-			echo "<div id='div_completion_nature' class='infobulle_corps'></div>\n";
-	
-			echo "<script type='text/javascript'>
+?>
+                    <input type='text' 
+                           name='nature' 
+                           id='nature' 
+                           size='30' 
+                           value="<?php echo $nature; ?>" />
+                    <div id='div_completion_nature' class='infobulle_corps'></div>
+                    
+                    <script type='text/javascript'>
+//<![CDATA[
 new Ajax.Autocompleter (
 	'nature',      // ID of the source field
 	'div_completion_nature',  // ID of the DOM element to update
 	'check_nature_incident.php', // Remote script URI
 	{method: 'post', paramName: 'nature'}
 );
-</script>\n";
+//]]>
+                    </script>
 
+<?php
 			if($DisciplineNaturesRestreintes!=1) {
 				$sql="SELECT DISTINCT nature FROM s_incidents WHERE nature!='' ORDER BY nature;";
 			}
@@ -2182,10 +2279,14 @@ new Ajax.Autocompleter (
 			}
 			$res_nat=mysql_query($sql);
 			if(mysql_num_rows($res_nat)>0) {
-				echo " <a href='#' onclick=\"cacher_toutes_les_infobulles();afficher_div('div_choix_nature','y',10,-40); return false;\">Choix</a>";
-				//echo " <a href='#' onclick=\"afficher_div('div_choix_nature','y',10,-40); return false;\" onmouseover=\"delais_afficher_div('div_explication_choix_nature','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_explication_choix_nature')\">Choix</a>";
-	
-				$texte="<table class='boireaus' style='margin: auto;' border='1' summary=\"Choix d'une nature\">\n";
+?>
+                    <a href='#' 
+                       onclick="cacher_toutes_les_infobulles();afficher_div('div_choix_nature','y',10,-40); return false;">
+                        Choix
+                    </a>
+                    
+<?php	
+				$texte="<table class='boireaus' style='margin: auto; border:1px;' summary=\"Choix d'une nature\">\n";
 				$alt2=1;
 				while($lig_nat=mysql_fetch_object($res_nat)) {
 					$alt2=$alt2*(-1);
@@ -2196,57 +2297,80 @@ new Ajax.Autocompleter (
 				$texte.="</table>\n";
 	
 				$tabdiv_infobulle[]=creer_div_infobulle('div_choix_nature',"Nature de l'incident","",$texte,"",14,0,'y','y','n','n');
-	
-				echo " <a href='#' onclick=\"return false;\" onmouseover=\"delais_afficher_div('div_explication_choix_nature','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_explication_choix_nature')\"><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Choix nature' /></a>";
-	
+
+?>
+                    <a href='#' 
+                       onclick="return false;" 
+                       onmouseover="delais_afficher_div('div_explication_choix_nature','y',10,-40,<?php echo $delais_affichage_infobulle; ?>,<?php echo $largeur_survol_infobulle; ?>,<?php echo $hauteur_survol_infobulle; ?>);" 
+                       onmouseout="cacher_div('div_explication_choix_nature')">
+                        <img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Choix nature' />
+                    </a>
+
+<?php		
 				$texte="Cliquez pour choisir une nature existante.<br />Ou si aucune nature n'est déjà définie, saisissez la nature d'incident de votre choix.";
 				$tabdiv_infobulle[]=creer_div_infobulle('div_explication_choix_nature',"Choix nature de l'incident","",$texte,"",18,0,'y','y','n','n');
 	
 				//====================================================
-	
-				/*
-				$titre="Nature de l'incident";
-				$texte="Blabla";
-				$tabdiv_infobulle[]=creer_div_infobulle('div_choix_nature2',"Nature de l'incident","",$texte,"",30,10,'y','y','y','n');
-				*/
 	
 				$id_infobulle_nature2='div_choix_nature2';
 				$largeur_infobulle_nature2=35;
 				$hauteur_infobulle_nature2=10;
 			
 				// Conteneur:
-				echo "<div id='$id_infobulle_nature2' class='infobulle_corps' style='color: #000000; border: 1px solid #000000; padding: 0px; position: absolute; width: ".$largeur_infobulle_nature2."em; height: ".$hauteur_infobulle_nature2."em; left: 1600px;'>\n";
-			
+?>
+                    <div id='<?php echo $id_infobulle_nature2; ?>' 
+                         class='infobulle_corps' 
+                         style='color: #000000; 
+                                border: 1px solid #000000; 
+                                padding: 0px; 
+                                position: absolute; 
+                                width: <?php echo $largeur_infobulle_nature2; ?>em; 
+                                height: <?php echo $hauteur_infobulle_nature2; ?>em; 
+                                left: 1600px;'>
+<?php
 					// Ligne d'entête/titre
-					echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px; width: ".$largeur_infobulle_nature2."em;' onmousedown=\"dragStart(event, '$id_infobulle_nature2')\">\n";
-	
-						echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>
-<a href='#' onClick=\"cacher_div('$id_infobulle_nature2');return false;\">
-<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />
-</a>
-</div>\n";
-						echo "<span style='padding-left: 1px; margin-bottom: 3px;'>Natures d'incidents semblables</span>\n";
-					echo "</div>\n";
-			
+?>
+                        <div class='infobulle_entete' 
+                             style='color: #ffffff; 
+                                    cursor: move; 
+                                    font-weight: bold; 
+                                    padding: 0px;
+                                    width: <?php echo $largeur_infobulle_nature2; ?>em;' 
+                             onmousedown="dragStart(event, '<?php echo $id_infobulle_nature2; ?>')">
+
+                            <div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>
+                                <a href='#' onclick="cacher_div('<?php echo $id_infobulle_nature2; ?>');return false;">
+                                    <img src='../images/icons/close16.png' style='width:16px; height:16px' alt='Fermer' />
+                                </a>
+                            </div>
+                            
+                            <span style='padding-left: 1px; margin-bottom: 3px;'>
+                                Natures d'incidents semblables
+                            </span>
+                        </div>			
+<?php
 					// Partie texte:
 					$hauteur_hors_titre=$hauteur_infobulle_nature2-1.5;
-					echo "<div id='".$id_infobulle_nature2."_texte' style='width: ".$largeur_infobulle_nature2."em; height: ".$hauteur_hors_titre."em; overflow: auto; padding-left: 1px;'>\n";
-					//$div.=$texte;
-					echo "</div>\n";
-				echo "</div>\n";
+?>
+                        <div id='<?php echo $id_infobulle_nature2; ?>_texte' 
+                             style='width: <?php echo $largeur_infobulle_nature2; ?>em; 
+                                    height: <?php echo $hauteur_hors_titre; ?>em; 
+                                    overflow: auto; 
+                                    padding-left: 1px;'>
+                        </div>
+                    </div>
+<?php
 				//=========================================
 	
-				/*
-				echo " Bis: <a href='#' onclick=\"return false;\" onmouseover=\"delais_afficher_div('div_choix_nature2','y',10,40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_choix_nature2')\"><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Choix nature' /></a>";
-				*/
-	
-				echo "<script type='text/javascript'>
+?>
+                    <script type='text/javascript'>
+//<![CDATA[
 	function check_incident(event) {
 
 		saisie=document.getElementById('nature').value;
 
 		//var reg=new RegExp(\"[ ,;.-']+\", \"g\");
-		var reg=new RegExp(\"[ ,;]+\", \"g\");
+		var reg=new RegExp("[ ,;]+", "g");
 		var tab1=saisie.split(reg);
 		var j=0;
 		var tab2=new Array();
@@ -2265,37 +2389,46 @@ new Ajax.Autocompleter (
 				chaine_rech=chaine_rech+'_'+tab2[i];
 			}
 
-			//new Ajax.Updater($('div_choix_nature2'),'check_nature_incident.php?chaine_rech='+chaine_rech,{method: 'get'});
 			new Ajax.Updater($('div_choix_nature2_texte'),'check_nature_incident.php?chaine_rech='+chaine_rech,{method: 'get'});
 			afficher_div('div_choix_nature2','y',10,40); ;
 		}
 	}
 
-</script>\n";
+//]]>
+</script>
+<?php
 				//====================================================
 			}
 		}
 	}
 	else {
 		echo $nature;
-	}
-	echo "</td>\n";
-	echo "</tr>\n";
+	}	
+?>
+                </td>
+            </tr>
+<?php
 	//========================
-	$alt=$alt*(-1);
-	echo "<tr class='lig$alt'>\n";
-	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>\n";
-	echo "Description de l'incident&nbsp;:&nbsp;";
-	echo "<div id='div_avertissement_description' style='float:right;'>\n";
-	echo " <a href='#' onclick=\"return false;\" onmouseover=\"delais_afficher_div('div_explication_description','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_explication_description')\"><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Description' /></a>";
-    echo "</div>";
+	$alt=$alt*(-1);	
+?>
+            <tr class='lig<?php echo $alt; ?>'>
+                <td style='font-weight:bold;vertical-align:top;text-align:left;'>
+                    Description de l'incident&nbsp;:&nbsp;
+                    <div id='div_avertissement_description' style='float:right;'>
+                        <a href='#' 
+                           onclick="return false;" 
+                           onmouseover="delais_afficher_div('div_explication_description','y',10,-40,<?php echo $delais_affichage_infobulle; ?>,<?php echo $largeur_survol_infobulle; ?>,<?php echo $hauteur_survol_infobulle; ?>);" 
+                           onmouseout="cacher_div('div_explication_description')">
+                            <img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Description' />
+                        </a>
+                    </div>
+<?php
 	$texte="Récit détaillé des faits (paroles prononcées, gestes, réactions, ...)<br />";
-	$tabdiv_infobulle[]=creer_div_infobulle('div_explication_description',"Description de l'incident","",$texte,"",18,0,'y','y','n','n');
-	echo "</td>\n";
-	echo "<td style='text-align:left;'";
-	if($etat_incident!='clos') {if ($autorise_commentaires_mod_disc !="yes") echo " colspan='2'";}
-	echo ">\n";
-
+	$tabdiv_infobulle[]=creer_div_infobulle('div_explication_description',"Description de l'incident","",$texte,"",18,0,'y','y','n','n');	
+?>
+                </td>
+                <td style='text-align:left;'<?php if($etat_incident!='clos') {if ($autorise_commentaires_mod_disc !="yes") echo " colspan='2'";} ?>>
+<?php
 	if(count($ele_login)>0) {
 		$chaine_avertissement="";
 		for($i=0;$i<count($ele_login);$i++) {
@@ -2320,11 +2453,18 @@ new Ajax.Autocompleter (
 	}
 
 	if($etat_incident!='clos') {
-		echo "<textarea id=\"description\" class='wrap' name=\"no_anti_inject_description\" rows='8' cols='60' onchange=\"changement()\">$description</textarea>\n";
-
-		echo "<div id='div_compteur_caracteres_textarea' style='width:20em; text-align:center'></div>
+?>
+                    <textarea id="description" 
+                              class='wrap' 
+                              name="no_anti_inject_description" 
+                              rows='8' 
+                              cols='60' 
+                              onchange="changement()"><?php echo $description; ?></textarea>
+                    
+                    <div id='div_compteur_caracteres_textarea' style='width:20em; text-align:center'></div>
 
 <script type='text/javascript'>
+//<![CDATA[
 function compte_caracteres_textarea(textarea_id, compteur_id) {
 	if(document.getElementById(compteur_id)) {
 		if(document.getElementById(textarea_id)) {
@@ -2339,39 +2479,56 @@ function comptage_caracteres_textarea() {
 }
 
 setTimeout('comptage_caracteres_textarea()', 1000);
-</script>\n";
+//]]>
+</script>
+<?php
 	}
 	else {
 		echo nl2br($description);
 	}
-	
-
-	echo "</td>\n";
+?>
+                </td>
+<?php
 	// Ajout Eric
 	if ($autorise_commentaires_mod_disc=="yes") {
-	    echo "<td style='text-align:center;'>";
-		echo "<strong>Zone de dialogue sur l'incident</strong>";
-		echo " <a href='#' onclick=\"return false;\" onmouseover=\"delais_afficher_div('div_explication_commentaires','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_explication_choix_nature')\"><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Choix nature' /></a>";
+?>
+                <td style='text-align:center;'>
+                    <strong>Zone de dialogue sur l'incident</strong>
+                    <a href='#' 
+                       onclick="return false;" 
+                       onmouseover="delais_afficher_div('div_explication_commentaires','y',10,-40,<?php echo $delais_affichage_infobulle; ?>,<?php echo $largeur_survol_infobulle; ?>,<?php echo $hauteur_survol_infobulle; ?>)"
+                       onmouseout="cacher_div('div_explication_choix_nature')">
+                        <img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Choix nature' />
+                    </a>
+<?php
 		$texte="Cette zone de texte est disponible pour dialoguer avec la vie scolaire des modalités particulières de traitement de l'incident ou suivre les suites de celui-ci.<br /> Horaire et lieu d'une retenue demandée, demande de convocation de l'élève par le CPE, ...";
 		$tabdiv_infobulle[]=creer_div_infobulle('div_explication_commentaires',"Zone de texte : dialogue","",$texte,"",18,0,'y','y','n','n');
-	    echo "<textarea id=\"commentaire\"  name=\"no_anti_inject_commentaire\" rows='8' cols='60' onchange=\"changement()\">$commentaire</textarea>\n";
-	    echo "</td>";
+?>
+                    <textarea id="commentaire"  
+                              name="no_anti_inject_commentaire" rows='8' cols='60' onchange="changement()">
+                        <?php echo $commentaire; ?>
+                    </textarea>
+                </td>
+<?php
 	}
 	// Fin ajout Eric
-
+?>
+            </tr>
+<?php
 	//========================
 	if(count($ele_login)>0) {
 		$alt=$alt*(-1);
-		echo "<tr class='lig$alt'>\n";
-		echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>\n";
-		echo "Mesures&nbsp;:";
-		echo "</td>\n";
+?>
+            <tr class='lig<?php echo $alt; ?>'>
+                <td style='font-weight:bold;vertical-align:top;text-align:left;'>
+                    Mesures&nbsp;:
+                </td>
+<?php
 
 		if($etat_incident!='clos') {
-			echo "<td style='text-align:left;'";
-			echo " colspan='2'";
-			echo ">\n";
-
+?>
+                <td style='text-align:left;' colspan='2'>
+<?php
 			$tab_mes_prise=array();
 			//$sql="SELECT mesure FROM s_mesures WHERE type='prise';";
 			$sql="SELECT * FROM s_mesures WHERE type='prise';";
@@ -2397,14 +2554,21 @@ setTimeout('comptage_caracteres_textarea()', 1000);
 			}
 
 			if((count($tab_mes_prise)>0)||(count($tab_mes_demandee)>0)) {
-				echo "<table class='boireaus' summary='Mesures' style='margin:2px;'>\n";
-				echo "<tr>\n";
-				echo "<th>Elève</th>\n";
+?>
+                    <table class='boireaus' style='margin:2px;'>
+                        <caption class="invisible">Mesures</caption>
+                        <tr>
+                            <th>Elève</th>
+<?php
 				if(count($tab_mes_prise)>0) {
-					echo "<th>Prises</th>\n";
+?>
+                            <th>Prises</th>
+<?php
 				}
 				if(count($tab_mes_demandee)>0) {
-					echo "<th>";
+?>
+                            <th>
+<?php
 
 					$texte="Les mesures demandées le sont par des professeurs.<br />";
 					$texte.="Un compte cpe ou scolarité peut ensuite saisir la sanction correspondante s'il juge la demande appropriée.<br />";
@@ -2412,29 +2576,33 @@ setTimeout('comptage_caracteres_textarea()', 1000);
 					$texte.="Il n'y a pas d'intérêt pour un CPE à cocher une de ces cases.<br />";
 					$texte.="Il vaut mieux passer à la saisie en suivant le lien Traitement/sanction en haut à droite.<br />";
 					$tabdiv_infobulle[]=creer_div_infobulle("div_mesures_demandees","Mesures demandées","",$texte,"",30,0,'y','y','n','n');
-
-					echo "<a href='#' onmouseover=\"delais_afficher_div('div_mesures_demandees','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">";
-					echo "Demandées";
-					echo "</a>\n";
-					echo "</th>\n";
-
-					echo "<th>\n";
-					//echo "Document(s) joint(s) à une mesure demandée";
-					echo "Travail et/ou document(s) joint(s) à une mesure demandée";
-					echo "</th>\n";
+?>
+                                <a href='#' 
+                                   onmouseover="delais_afficher_div('div_mesures_demandees','y',10,-40,<?php echo $delais_affichage_infobulle; ?>,<?php echo $largeur_survol_infobulle; ?>,<?php echo $hauteur_survol_infobulle; ?>);" 
+                                   onclick="return false;">
+                                    Demandées
+                                </a>
+                            </th>
+                            <th>
+                                Travail et/ou document(s) joint(s) à une mesure demandée
+                            </th>
+<?php
 				}
-				echo "</tr>\n";
+?>
+                        </tr>
+<?php
 
 				//echo "<tr><td>count(\$ele_login)=".count($ele_login)."</td></tr>";
 				// Boucle sur la liste des élèves
 				$alt2=1;
 				for($i=0;$i<count($ele_login);$i++) {
 					$alt2=$alt2*(-1);
-					echo "<tr class='lig$alt2'>\n";
-					echo "<td>\n";
-					echo "<input type='hidden' name='mesure_ele_login[$i]' value=\"".$ele_login[$i]."\" />\n";
-					echo p_nom($ele_login[$i]);
-
+?>
+                        <tr class='lig<?php echo $alt2; ?>'>
+                            <td>
+                                <input type='hidden' name='mesure_ele_login[$i]' value="<?php echo $ele_login[$i]; ?>" />
+                                <?php echo p_nom($ele_login[$i]); ?>
+<?php
 					$tmp_tab=get_class_from_ele_login($ele_login[$i]);
 					if(isset($tmp_tab['liste_nbsp'])) {echo "<br /><em style='font-size:x-small;'>(".$tmp_tab['liste_nbsp'].")</em>";}
 
@@ -2448,65 +2616,94 @@ setTimeout('comptage_caracteres_textarea()', 1000);
 							$tab_mes_eleve[]=$lig_mes->id_mesure;
 						}
 					}
-					echo "</td>\n";
+?>
+                            </td>
+<?php
 
 					if(count($tab_mes_prise)>0) {
-						echo "<td style='text-align:left; vertical-align:top;'>\n";
+?>
+                            <td style='text-align:left; vertical-align:top;'>
+<?php
 						for($loop=0;$loop<count($tab_mes_prise);$loop++) {
 							//echo "<input type='checkbox' name='mesure_prise_".$i."[]' id='mesure_prise_".$i."_$loop' value=\"".$tab_mes_prise[$loop]."\" onchange='changement();' ";
 							//if(in_array($tab_mes_prise[$loop],$tab_mes_eleve)) {echo "checked='checked' ";}
-							echo "<input type='checkbox' name='mesure_prise_".$i."[]' id='mesure_prise_".$i."_$loop' value=\"".$tab_id_mes_prise[$loop]."\" onchange='changement();' ";
-							if(in_array($tab_id_mes_prise[$loop],$tab_mes_eleve)) {echo "checked='checked' ";}
-							echo "/>\n";
-
-							echo "<label for='mesure_prise_".$i."_$loop' style='cursor:pointer;'>&nbsp;";
-							echo $tab_mes_prise[$loop];
-							echo "</label>";
-
+?>
+                                <input type='checkbox' 
+                                       name='mesure_prise_<?php echo $i; ?>[]' 
+                                       id='mesure_prise_<?php echo $i; ?>_<?php echo $loop; ?>' 
+                                       value="<?php echo $tab_id_mes_prise[$loop]; ?>" 
+                                       onchange='changement();'
+                                           <?php if(in_array($tab_id_mes_prise[$loop],$tab_mes_eleve)) {echo "checked='checked' ";} ?> />
+                                <label for='mesure_prise_<?php echo $i; ?>_<?php echo $loop; ?>' style='cursor:pointer;'>
+                                    &nbsp;<?php echo $tab_mes_prise[$loop]; ?></label>
+<?php 
 							if($tab_c_mes_prise[$loop]!='') {
 								if($i==0) {
 									$tabdiv_infobulle[]=creer_div_infobulle("div_commentaire_mesures_prise_$loop",$tab_mes_prise[$loop],"",$tab_c_mes_prise[$loop],"",30,0,'y','y','n','n');
 								}
-
-								echo " <a href='#' onmouseover=\"delais_afficher_div('div_commentaire_mesures_prise_$loop','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_commentaire_mesures_prise_$loop')\" onclick=\"return false;\">";
-								echo "<img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Précision' />";
-								echo "</a>\n";
+?>
+                                <a href='#' 
+                                   onmouseover="delais_afficher_div('div_commentaire_mesures_prise_<?php echo $loop; ?>','y',10,-40,<?php echo $delais_affichage_infobulle; ?>,<?php echo $largeur_survol_infobulle; ?>,<?php echo $hauteur_survol_infobulle; ?>);" 
+                                   onmouseout="cacher_div('div_commentaire_mesures_prise_<?php echo $loop; ?>')" 
+                                   onclick="return false;">
+                                    <img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Précision' />
+                                </a>
+<?php 
 							}
-
-							echo "<br />\n";
+?>
+                                <br />
+<?php 
 						}
-						echo "</td>\n";
+?>
+                            </td>
+<?php 
 					}
 
 					if(count($tab_mes_demandee)>0) {
-						echo "<td style='text-align:left; vertical-align:top;'>\n";
+?>
+                            <td style='text-align:left; vertical-align:top;'>
+<?php 
 						for($loop=0;$loop<count($tab_mes_demandee);$loop++) {
 							//echo "<input type='checkbox' name='mesure_demandee_".$i."[]' id='mesure_demandee_".$i."_$loop' value=\"".$tab_mes_demandee[$loop]."\" onchange='changement();' ";
 							//if(in_array($tab_mes_demandee[$loop],$tab_mes_eleve)) {echo "checked='checked' ";}
-							echo "<input type='checkbox' name='mesure_demandee_".$i."[]' id='mesure_demandee_".$i."_$loop' value=\"".$tab_id_mes_demandee[$loop]."\" onchange='changement(); check_coche_mes_demandee($i);' ";
-							if(in_array($tab_id_mes_demandee[$loop],$tab_mes_eleve)) {echo "checked='checked' ";}
-							echo "/>\n";
-
-							echo "<label for='mesure_demandee_".$i."_$loop' style='cursor:pointer;'>&nbsp;";
-							echo $tab_mes_demandee[$loop];
-							echo "</label>";
+?>
+                                <input type='checkbox' 
+                                       name='mesure_demandee_<?php echo $i; ?>[]'
+                                       id='mesure_demandee_<?php echo $i; ?>_<?php echo $loop; ?>' 
+                                       value="<?php echo $tab_id_mes_demandee[$loop]; ?>" 
+                                       onchange='changement(); check_coche_mes_demandee(<?php echo $i; ?>);'
+                                           <?php if(in_array($tab_id_mes_demandee[$loop],$tab_mes_eleve)) {echo "checked='checked' ";}; ?>
+                                       />
+                                <label for='mesure_demandee_<?php echo $i; ?>_<?php echo $loop; ?>' 
+                                       style='cursor:pointer;'>
+                                    &nbsp;<?php echo $tab_mes_demandee[$loop]; ?>
+                                </label>
+<?php 
 
 							if($tab_c_mes_demandee[$loop]!='') {
 								if($i==0) {
 									$tabdiv_infobulle[]=creer_div_infobulle("div_commentaire_mesures_demandee_$loop",$tab_mes_demandee[$loop],"",$tab_c_mes_demandee[$loop],"",30,0,'y','y','n','n');
 								}
-
-								echo " <a href='#' onmouseover=\"delais_afficher_div('div_commentaire_mesures_demandee_$loop','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_commentaire_mesures_demandee_$loop')\" onclick=\"return false;\">";
-								echo "<img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Précision' />";
-								echo "</a>\n";
+?>
+                                <a href='#' 
+                                   onmouseover="delais_afficher_div('div_commentaire_mesures_demandee_<?php echo $loop; ?>','y',10,-40,<?php echo $delais_affichage_infobulle; ?>,<?php echo $largeur_survol_infobulle; ?>,<?php echo $hauteur_survol_infobulle; ?>);" 
+                                   onmouseout="cacher_div('div_commentaire_mesures_demandee_<?php echo $loop; ?>')" 
+                                   onclick="return false;">
+                                    <img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Précision' />
+                                </a>
+<?php 
 							}
-
-							echo "<br />\n";
+?>
+                                <br />
+<?php 
 						}
-						echo "</td>\n";
+?>
+                            </td>
+<?php 
 					}
-
-					echo "<td>\n";
+?>
+                            <td>
+<?php 
 					//echo "Travail&nbsp;: <textarea name='travail_pour_mesure_demandee_".$i."' id='travail_pour_mesure_demandee_".$i."' cols='30'>Nature du travail pour la mesure demandée</textarea>\n";
 
 					$texte_travail="Travail : ";
@@ -2524,97 +2721,136 @@ setTimeout('comptage_caracteres_textarea()', 1000);
 						$lig_travail_mesure_demandee=mysql_fetch_object($res_travail_mesure_demandee);
 						$texte_travail=$lig_travail_mesure_demandee->travail;
 					}
-
-					echo "<textarea name='no_anti_inject_travail_pour_mesure_demandee_".$i."' id='travail_pour_mesure_demandee_".$i."' cols='30'>$texte_travail</textarea>\n";
+?>
+                                <textarea name='no_anti_inject_travail_pour_mesure_demandee_<?php echo $i; ?>' 
+                                          id='travail_pour_mesure_demandee_<?php echo $i; ?>' 
+                                          cols='30' 
+                                          rows='5' ><?php echo $texte_travail; ?></textarea>
+<?php
 
 					// Liste des fichiers déjà joints
 					$tab_file=get_documents_joints($id_incident, "mesure", $ele_login[$i]);
 					if(count($tab_file)>0) {
-						echo "<table class='boireaus' width='100%'>\n";
-						echo "<tr>\n";
-						echo "<th>Fichier</th>\n";
-						echo "<th>Supprimer</th>\n";
-						echo "</tr>\n";
+?>
+                                <table class='boireaus' width='100%'>
+                                    <caption class="invisible">Fichiers</caption>
+                                    <tr>\
+                                        <th>Fichier</th>
+                                        <th>Supprimer</th>
+                                    </tr>
+<?php
 						$alt3=1;
 						for($loop=0;$loop<count($tab_file);$loop++) {
 							$alt3=$alt3*(-1);
-							echo "<tr class='lig$alt3 white_hover'>\n";
-							echo "<td>$tab_file[$loop]</td>\n";
-							echo "<td><input type='checkbox' name='suppr_doc_joint_".$i."[]' value=\"$tab_file[$loop]\" /></td>\n";
+?>
+                                    <tr class='lig<?php echo $alt3; ?> white_hover'>
+                                        <td><?php echo $tab_file[$loop]; ?></td>
+                                        <td>
+                                            <input type='checkbox' 
+                                                   name='suppr_doc_joint_<?php echo $i; ?>[]' 
+                                                   value="<?php echo $tab_file[$loop]; ?>" />
+                                        </td>
+<?php
 							// PB: Est-ce qu'on ne risque pas de permettre d'aller supprimer des fichiers d'un autre incident?
 							//     Tester le nom de fichier et l'id_incident
 							//     Fichier en ../$dossier_documents_discipline/incident_<$id_incident>/mesures/<LOGIN_ELE>
-							echo "</tr>\n";
+?>
+                                    </tr>
+<?php
 						}
-						echo "</table>\n";
+?>
+                                </table>
+<?php
 					}
-
-					echo "<input type=\"file\" size=\"15\" name=\"document_joint_".$i."\" id=\"document_joint_".$i."\" /><br />\n";
-					echo "</td>\n";
-
-					echo "</tr>\n";
+?>
+                                <input type="file" 
+                                       size="15" 
+                                       name="document_joint_<?php echo $i; ?>" 
+                                       id="document_joint_<?php echo $i; ?>" />
+                                <br />
+                            </td>
+                        </tr>
+<?php
 				}
-
-				echo "</table>\n";
+?>
+                    </table>
+<?php
 			}
 			else {
-				echo "<p>Aucun type de mesure n'est défini.</p>\n";
+?>
+                    <p>Aucun type de mesure n'est défini.</p>
+<?php
 			}
-
-			echo "</td>\n";
+?>
+                </td>
+<?php
 		}
 		else {
-			echo "<td style='text-align:left;'";
-			echo ">\n";
-			$texte=affiche_mesures_incident($id_incident);
-			echo $texte;
-			echo "</td>\n";
+?>
+                <td style='text-align:left;'>
+<?php
+		$texte=affiche_mesures_incident($id_incident);
+?>
+                    <?php echo $texte; ?>
+                </td>
+<?php
 		}
-
-		echo "</tr>\n";
+?>
+            </tr>
+<?php
 	}
 	//========================
-	echo "</table>\n";
+?>
+        </table>
+<?php
 
 	if($etat_incident!='clos') {
-		echo "<p><input type='hidden' name='is_posted' value='y' />\n";
-		echo "<input type='hidden' name='step' value='$step' /></p>\n";
-		echo "<p style='text-align:center;'><input type='checkbox' name='clore_incident' id='clore_incident' value='y' />\n";
-		echo "<label for='clore_incident' style='cursor:pointer;'>&nbsp;Clore l'incident.</label>\n";
-		//echo "<br />";
-		echo "<em style='font-size:x-small;'>(sous réserve de ne pas <strong>Demander</strong> de mesure)</em>\n";
-		echo "</p>\n";
-		//echo "<p style='text-align:center;'><input type='submit' name='enregistrer2' value='Enregistrer' onclick='verif_details_incident();' /></p>\n";
+?>
+        <p>
+            <input type='hidden' name='is_posted' value='y' />
+            <input type='hidden' name='step' value='$step' />
+        </p>
+        <p style='text-align:center;'><input type='checkbox' name='clore_incident' id='clore_incident' value='y' />
+            <label for='clore_incident' style='cursor:pointer;'>&nbsp;Clore l'incident.</label>
+            <br />
+            <em style='font-size:x-small;'>(sous réserve de ne pas <strong>Demander</strong> de mesure)</em>
+        </p>
+        <p style='text-align:center;'>
+            <input type='button' name='enregistrer2' value='Enregistrer' onclick='verif_details_incident();' />
+        </p>
+        <noscript><p><input type='submit' name='enregistrer2' value='Enregistrer vraiment' /></p></noscript>
 
-		//echo "<p style='text-align:center;'><input type='submit' name='enregistrer2' value='Enregistrer' /></p>\n";
-		echo "<p style='text-align:center;'><input type='button' name='enregistrer2' value='Enregistrer' onclick='verif_details_incident();' /></p>\n";
-		echo "<noscript><input type='submit' name='enregistrer2' value='Enregistrer vraiment' /></noscript>\n";
-
-		//echo "<p style='text-align:center;'><input type='submit' name='enregistrer2' value='Enregistrer' onsubmit='verif_details_incident();' /></p>\n";
-
-
-		echo "<p><em>NOTE&nbsp;</em> <span style='color:red;'>(*)</span> Il est impératif de saisir une Nature d'incident pour des questions de facilité de traitement par la suite.</p>\n";
+        <p>
+            <em>NOTE&nbsp;</em> 
+            <span style='color:red;'>(*)</span> 
+            Il est impératif de saisir une Nature d'incident pour des questions de facilité de traitement par la suite.
+        </p>
+<?php
 	}
-	echo "</blockquote>\n";
-
+?>
+    </blockquote>
+<?php
 	if($etat_incident!='clos') {
-
-		echo "<script type='text/javascript'>
+?>
+    <script type='text/javascript'>
+//<![CDATA[
 	function verif_details_incident() {
-";
+<?php
 		if($saisie_nature_libre=="y") {
-			echo "if(document.getElementById('nature').value=='') {";
+?>
+			if(document.getElementById('nature').value=='') {
+<?php
 		}
 		else {
 			echo "if(document.getElementById('nature').options[document.getElementById('nature').selectedIndex].value=='') {";
 		}
-		echo "
-			alert(\"La nature de l'incident doit être précisée.\");
+?>
+			alert("La nature de l'incident doit être précisée.");
 			return false;
 		}
 		else {
 			if(document.getElementById('display_heure').value=='') {
-				alert(\"L'heure de l'incident (non vide) doit être précisée. \\nEn cas de doute sur l'heure, mettre un '?'.\");
+				alert("L'heure de l'incident (non vide) doit être précisée. \\nEn cas de doute sur l'heure, mettre un '?'.");
 				return false;
 			}
 			else {
@@ -2644,32 +2880,45 @@ setTimeout('comptage_caracteres_textarea()', 1000);
 			}
 		}
 	}
-";
+<?php
 		for($loop=0;$loop<count($ele_login);$loop++) {
 			echo "check_coche_mes_demandee($loop);\n";
 		}
+?>
 
-		echo "
-</script>\n";
+//]]>
+</script>
 
-		echo "</form>\n";
+</form>
+<?php
 	}
 
 
 	if(isset($tabid_infobulle)){
-		echo "<script type='text/javascript'>\n";
-		echo "function cacher_toutes_les_infobulles() {\n";
+?>
+<script type='text/javascript'>
+//<![CDATA[
+function cacher_toutes_les_infobulles() {
+<?php
 		if(count($tabid_infobulle)>0){
 			for($i=0;$i<count($tabid_infobulle);$i++){
 				echo "cacher_div('".$tabid_infobulle[$i]."');\n";
 			}
 		}
-		echo "}\n";
-		echo "</script>\n";
+?>
+}
+
+//]]>
+</script>
+<?php
 	}
 
 }
-echo "<p><br /></p>\n";
+?>
+<p>
+    <br />
+</p>
+<?php
 
 require("../lib/footer.inc.php");
 ?>
