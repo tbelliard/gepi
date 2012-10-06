@@ -887,21 +887,21 @@ for($i=0;$i<14;$i++) {
 				// La restriction des notices visibles est fait plus haut
 				echo "      <!-- Témoin de présence de notices privées pour le groupe $id_groupe sur le jour $i -->\n";
 				echo "      <div style='width: 1em; background-color: ".$color_fond_notices['p']."; float: right; margin-left:3px; text-align:center;'>\n";
-				echo "         <a href='#ancre_travail_jour_".$i."_groupe_".$id_groupe."' onclick=\"affichage_notices_tel_groupe($i, $id_groupe);return false;\">P</a>\n";
+				echo "         <a href='#ancre_travail_jour_".$i."_groupe_".$id_groupe."' onclick=\"affichage_notices_tel_groupe($i, $id_groupe);return false;\" title=\"Notice privée\">P</a>\n";
 				echo "      </div>\n";
 			}
 			if($texte_dev_courant!='') {
 				// La restriction des notices visibles est fait plus haut
 				echo "      <!-- Témoin de présence de notices de devoirs pour le groupe $id_groupe sur le jour $i -->\n";
 				echo "      <div style='width: 1em; background-color: ".$color_fond_notices['t']."; float: right; margin-left:3px; text-align:center;'>\n";
-				echo "         <a href='#ancre_travail_jour_".$i."_groupe_".$id_groupe."' onclick=\"affichage_notices_tel_groupe($i, $id_groupe);return false;\">T</a>\n";
+				echo "         <a href='#ancre_travail_jour_".$i."_groupe_".$id_groupe."' onclick=\"affichage_notices_tel_groupe($i, $id_groupe);return false;\" title=\"Travail à faire\">T</a>\n";
 				echo "      </div>\n";
 			}
 			if($texte_cr_courant!='') {
 				// La restriction des notices visibles est fait plus haut
 				echo "      <!-- Témoin de présence de comptes-rendus pour le groupe $id_groupe sur le jour $i -->\n";
 				echo "      <div style='width: 1em; background-color: ".$color_fond_notices['c']."; float: right; margin-left:3px; text-align:center;'>\n";
-				echo "         <a href='#ancre_travail_jour_".$i."_groupe_".$id_groupe."' onclick=\"affichage_notices_tel_groupe($i, $id_groupe);return false;\">C</a>\n";
+				echo "         <a href='#ancre_travail_jour_".$i."_groupe_".$id_groupe."' onclick=\"affichage_notices_tel_groupe($i, $id_groupe);return false;\" title=\"Compte-rendu de séance\">C</a>\n";
 				echo "      </div>\n";
 			}
 
