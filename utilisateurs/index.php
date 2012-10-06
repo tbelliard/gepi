@@ -445,7 +445,7 @@ echo "<th><p class=small><b>classe(s)</b></p></th>\n";
 echo "<th><p class=small><b>".getSettingValue('gepi_prof_suivi')."</b></p></th>\n";
 echo "<th><p class=small><b>supprimer</b></p></th>\n";
 echo "<th><p class=small><b>imprimer fiche bienvenue</b></p></th>\n";
-    if (getSettingValue("active_module_trombinoscopes")=='y') {
+    if (getSettingValue("active_module_trombino_pers")=='y') {
     	echo "<th><p><input type='submit' value='Télécharger les photos' name='bouton1' /></th>\n";
     }
 echo "</tr>\n";
@@ -692,7 +692,35 @@ while ($i < $nombreligne){
 	    echo "<tr class='lig$alt' style='background-color: slategray'>\n";
 	}
 
-	echo "<td><p class='small'><span class='bold'>{$col[$i][1]}</span></p></td>\n";
+	echo "<td><p class='small'><span class='bold'>{$col[$i][1]}</span></p>\n";
+	if (getSettingValue("active_module_trombino_pers")=='y') {
+		$codephoto = md5(mb_strtolower($col[$i][1]));
+		$photo = $rep_photos.$codephoto.'.jpg';
+		if(file_exists($photo)) {
+			echo "<a href='$photo' target='_blank' onmouseover=\"delais_afficher_div('photo_".$col[$i][1]."','y',20,20,1000,20,20);\"><img src='../mod_trombinoscopes/images/";
+			if($col[$i]['civ'] == 'Mme' or $col[$i]['civ'] == 'Mlle') {
+				echo "photo_f.png";
+			}
+			else {
+				echo "photo_g.png";
+			}
+			echo "' width='32' height='32'  align='middle' border='0' alt='photo présente' title='photo présente' /></a>\n";
+
+			$titre_infobulle_photo=$col[$i][2];
+
+			$texte_infobulle_photo="<div align='center'>\n";
+			$texte_infobulle_photo.="<img src='".$photo."' width='150' alt=\"".$col[$i][2]."\" />";
+			$texte_infobulle_photo.="<br />\n";
+			$texte_infobulle_photo.="</div>\n";
+
+			$temoin_photo="y";
+
+			$tabdiv_infobulle[]=creer_div_infobulle('photo_'.$col[$i][1],$titre_infobulle_photo,"",$texte_infobulle_photo,"",14,0,'y','y','n','n');
+
+		}
+	}
+	echo "</td>\n";
+
 	if ($col[$i][7] == "professeur") {
 		echo "<td><p class='small'><span class='bold'><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p>\n";
 		//echo "<br /><a href='creer_remplacant.php?login_prof_remplace=$user_login'>Créer un remplaçant</a>";
@@ -701,6 +729,8 @@ while ($i < $nombreligne){
 	} else {
 	  echo "<td><p class='small'><span class='bold'><a href='modify_user.php?user_login=$user_login'>{$col[$i][2]}</a></span></p></td>\n";
 	}
+
+
     echo "<td><p class='small'><span class='bold'>{$col[$i][3]}</span></p></td>\n";
     // Si c'est un professeur : matières si c'est un "autre" alors on affiche son statut personnalisé
     if ($col[$i][7] == "autre" AND getSettingValue("statuts_prives") == "y") {
@@ -737,27 +767,25 @@ while ($i < $nombreligne){
     echo "<td><p class='small'><span class='bold'><a target=\"_blank\" href='impression_bienvenue.php?user_login={$col[$i][1]}'>imprimer la 'fiche bienvenue'</a></span></p></td>\n";
 
     // Affichage du téléchargement pour la photo si le module trombi est activé
-	if (getSettingValue("active_module_trombinoscopes")=='y') {
-
-
-        	echo "<td style='white-space: nowrap;'><input name='photo[$i]' type='file' />\n";
-			echo "<input type='hidden' name='quiestce[$i]' value='";
-			$codephoto = md5(mb_strtolower($col[$i][1]));
-			echo $codephoto;
-			echo "' />\n";
-			$photo = $rep_photos.$codephoto.'.jpg';
-			if(file_exists($photo)) {
-				echo "<a href='$photo' target='_blank'><img src='../mod_trombinoscopes/images/";
-				if($col[$i]['civ'] == 'Mme' or $col[$i]['civ'] == 'Mlle') {
-					echo "photo_f.png";
-				}
-				else {
-					echo "photo_g.png";
-				}
-				echo "' width='32' height='32'  align='middle' border='0' alt='photo présente' title='photo présente' /></a>\n";
+	if (getSettingValue("active_module_trombino_pers")=='y') {
+		echo "<td style='white-space: nowrap;'><input name='photo[$i]' type='file' />\n";
+		echo "<input type='hidden' name='quiestce[$i]' value='";
+		$codephoto = md5(mb_strtolower($col[$i][1]));
+		echo $codephoto;
+		echo "' />\n";
+		$photo = $rep_photos.$codephoto.'.jpg';
+		if(file_exists($photo)) {
+			echo "<a href='$photo' target='_blank' onmouseover=\"delais_afficher_div('photo_".$col[$i][1]."','y',20,20,1000,20,20);\"><img src='../mod_trombinoscopes/images/";
+			if($col[$i]['civ'] == 'Mme' or $col[$i]['civ'] == 'Mlle') {
+				echo "photo_f.png";
 			}
-			echo "</td>\n";
+			else {
+				echo "photo_g.png";
+			}
+			echo "' width='32' height='32'  align='middle' border='0' alt='photo présente' title='photo présente' /></a>\n";
 		}
+		echo "</td>\n";
+	}
     // Fin de la ligne courante
     echo "</tr>\n";
     }

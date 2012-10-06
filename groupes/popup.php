@@ -181,6 +181,12 @@ if($gepi_prof_suivi==""){
 <body>
 
 <?php
+
+	$lien_visu_eleve="n";
+	if(acces('/eleves/visu_eleve.php',$_SESSION['statut'])) {
+		$lien_visu_eleve="y";
+	}
+
 	if($msg!=""){
 		echo "<p style='color:red; text-align:center;'>".$msg."</p>\n";
 	}
@@ -284,8 +290,8 @@ if($gepi_prof_suivi==""){
 						echo "</td>\n";
 					}
 					echo "<td>\n";
-					if(acces('/eleves/visu_eleve.php',$_SESSION['statut'])) {
-						echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y'>".affiche_date_naissance($lig_eleve->naissance)."</a>";
+					if($lien_visu_eleve=="y") {
+						echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève'>".affiche_date_naissance($lig_eleve->naissance)."</a>";
 					}
 					else {
 						echo affiche_date_naissance($lig_eleve->naissance);
@@ -382,8 +388,8 @@ if($gepi_prof_suivi==""){
 						echo "</td>\n";
 					}
 					echo "<td>\n";
-					if(acces('/eleves/visu_eleve.php',$_SESSION['statut'])) {
-						echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y'>".affiche_date_naissance($lig_eleve->naissance)."</a>";
+					if($lien_visu_eleve=="y") {
+						echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève'>".affiche_date_naissance($lig_eleve->naissance)."</a>";
 					}
 					else {
 						echo affiche_date_naissance($lig_eleve->naissance);
@@ -487,8 +493,8 @@ if($gepi_prof_suivi==""){
 						echo "</td>\n";
 					}
 					echo "<td>\n";
-					if(acces('/eleves/visu_eleve.php',$_SESSION['statut'])) {
-						echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y'>".affiche_date_naissance($lig_eleve->naissance)."</a>";
+					if($lien_visu_eleve=="y") {
+						echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève'>".affiche_date_naissance($lig_eleve->naissance)."</a>";
 					}
 					else {
 						echo affiche_date_naissance($lig_eleve->naissance);
