@@ -651,10 +651,8 @@ if($etat_incident!='clos') {
 					// Recherche des mesures déjà enregistrées:
 					for($i=0;$i<count($mesure_ele_login);$i++) {
 
-						//$msg.="\$mesure_ele_login[$i]=$mesure_ele_login[$i]<br />";
-
+						
 						$tab_mes_enregistree=array();
-						//$sql="SELECT mesure FROM s_traitement_incident WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."';";
 						$sql="SELECT id_mesure FROM s_traitement_incident WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."';";
 				/*
 echo "<pre>
@@ -992,7 +990,7 @@ if (!isset($return_url) || $return_url == null) {
 }
 //**************** FIN EN-TETE *****************
 
-// debug_var();
+ //debug_var();
 
 ?>
 <div id='div_svg_qualite' style='margin:auto; color:red; text-align:center;'></div>
@@ -2600,7 +2598,7 @@ setTimeout('comptage_caracteres_textarea()', 1000);
 ?>
                         <tr class='lig<?php echo $alt2; ?>'>
                             <td>
-                                <input type='hidden' name='mesure_ele_login[$i]' value="<?php echo $ele_login[$i]; ?>" />
+                                <input type='hidden' name='mesure_ele_login[<?php echo $i; ?>]' value="<?php echo $ele_login[$i]; ?>" />
                                 <?php echo p_nom($ele_login[$i]); ?>
 <?php
 					$tmp_tab=get_class_from_ele_login($ele_login[$i]);
@@ -2808,7 +2806,7 @@ setTimeout('comptage_caracteres_textarea()', 1000);
 ?>
         <p>
             <input type='hidden' name='is_posted' value='y' />
-            <input type='hidden' name='step' value='$step' />
+            <input type='hidden' name='step' value='<?php echo $step; ?>' />
         </p>
         <p style='text-align:center;'><input type='checkbox' name='clore_incident' id='clore_incident' value='y' />
             <label for='clore_incident' style='cursor:pointer;'>&nbsp;Clore l'incident.</label>
@@ -2854,7 +2852,7 @@ setTimeout('comptage_caracteres_textarea()', 1000);
 				return false;
 			}
 			else {
-				document.formulaire.submit();
+				document.getElementById('formulaire').submit();
 			}
 		}
 	}
