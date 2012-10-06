@@ -445,7 +445,7 @@ echo "<th><p class=small><b>classe(s)</b></p></th>\n";
 echo "<th><p class=small><b>".getSettingValue('gepi_prof_suivi')."</b></p></th>\n";
 echo "<th><p class=small><b>supprimer</b></p></th>\n";
 echo "<th><p class=small><b>imprimer fiche bienvenue</b></p></th>\n";
-    if (getSettingValue("active_module_trombinoscopes")=='y') {
+    if (getSettingValue("active_module_trombino_pers")=='y') {
     	echo "<th><p><input type='submit' value='Télécharger les photos' name='bouton1' /></th>\n";
     }
 echo "</tr>\n";
@@ -737,7 +737,7 @@ while ($i < $nombreligne){
     echo "<td><p class='small'><span class='bold'><a target=\"_blank\" href='impression_bienvenue.php?user_login={$col[$i][1]}'>imprimer la 'fiche bienvenue'</a></span></p></td>\n";
 
     // Affichage du téléchargement pour la photo si le module trombi est activé
-	if (getSettingValue("active_module_trombinoscopes")=='y') {
+	if (getSettingValue("active_module_trombino_pers")=='y') {
 
 
         	echo "<td style='white-space: nowrap;'><input name='photo[$i]' type='file' />\n";
