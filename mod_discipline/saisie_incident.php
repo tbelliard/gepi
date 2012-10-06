@@ -1206,16 +1206,16 @@ if(isset($id_incident) ) {
                     if(mysql_num_rows($resProf)>0){
                         while($lig_class_tmp=mysql_fetch_object($resProf)){
 ?>
-                            <option value='<?php echo $lig_class_tmp->login ?>'>
-                                <?php echo $lig_class_tmp->nom ?> <?php echo $lig_class_tmp->prenom ?>
+                            <option value='<?php echo $lig_class_tmp->login; ?>'>
+                                <?php echo $lig_class_tmp->nom; ?> <?php echo $lig_class_tmp->prenom; ?>
                             </option>
 <?php
                 }
             }
 ?>
                 </select>
-                <input type='hidden' name='id_incident' value='<?php echo $id_incident ?>' />
-                <input type='hidden' name='step' value='<?php echo $step ?>' />
+                <input type='hidden' name='id_incident' value='<?php echo $id_incident; ?>' />
+                <input type='hidden' name='step' value='<?php echo $step; ?>' />
                 <?php echo add_token_field(true);?>
                 <input type="submit" name="change_prof" value="Changer" />
             </p>
@@ -1320,7 +1320,7 @@ if(isset($id_incident) ) {
 ?>
                     élève (<em><?php if(isset($tmp_tab['liste_nbsp'])) {echo $tmp_tab['liste_nbsp'];} ?></em>)
                 </td>
-                <td id='td_qualite_protagoniste_<?php echo "$cpt" ?>'>
+                <td id='td_qualite_protagoniste_<?php echo "$cpt"; ?>'>
 <?php
         if($etat_incident!='clos') {
 //echo "<select name='qualite[$cpt]' onchange='changement();'>\n";
@@ -1475,7 +1475,7 @@ if(isset($id_incident) ) {
                     }
                     else {
 ?>
-            &nbsp
+            &nbsp;
  <?php
                     }
 ?>
@@ -1709,7 +1709,7 @@ if(isset($id_incident) ) {
                                               value="<?php echo $lig_ele->login; ?>" />
                                    </td>
                                    <td>
-                                       <label for='ele_login_$i' 
+                                       <label for='ele_login_<?php echo $i; ?>' 
                                               style='cursor:pointer;'><?php echo ucfirst(mb_strtolower($lig_ele->prenom))." ".mb_strtoupper($lig_ele->nom); ?>
                                        </label>
                                        <?php add_token_field(true); ?>
