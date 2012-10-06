@@ -98,6 +98,10 @@ if(isset($id_classe)){
 			$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
 		}
 
+		if(($_SESSION['statut']=='autre')&&(acces('/groupes/visu_profs_class.php', 'autre'))) {
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+		}
+
 		$chaine_options_classes="";
 
 		$res_class_tmp=mysql_query($sql);
@@ -360,6 +364,10 @@ else {
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
 	}
 	if(($_SESSION['statut']=='professeur')&&(getSettingValue("GepiAccesVisuToutesEquipProf") =="yes")){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+
+	if(($_SESSION['statut']=='autre')&&(acces('/groupes/visu_profs_class.php', 'autre'))) {
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
 	}
 
