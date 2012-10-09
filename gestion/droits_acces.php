@@ -804,6 +804,11 @@ $texteItem="a le droit d'accéder à toutes les classes pour saisir les absences
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='AccesCpeAgregationAbs2';
+$texteItem="a le droit d'accéder au remplissage/vidage de la table agrégation des absences";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 //+++++++++++++++++++++++++++
 
 // Discipline
