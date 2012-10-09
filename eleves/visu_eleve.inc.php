@@ -2279,6 +2279,20 @@ Patientez pendant l'extraction des données... merci.
 			if($onglet!="discipline") {echo " display:none;";}
 			echo "background-color: ".$tab_couleur['discipline']."; ";
 			echo "'>";
+
+			if(acces('/mod_discipline/saisie_incident.php', $_SESSION['statut'])) {
+				echo "<div style='float:right; width:4em;'>\n";
+				//echo "<a href='../mod_discipline/saisie_incident.php?ele_login[0]=".$ele_login."&amp;Ajouter=Ajouter".add_token_in_url()."' title='Saisir un incident'><img src='../images/icons/saisie.png' width='16' height='16' /></a>";
+				echo "<form action='../mod_discipline/saisie_incident.php' name='form_saisie_disc' method='post' />\n";
+				echo add_token_field();
+				echo "<input type='hidden' name='ele_login[0]' value=\"$ele_login\" />\n";
+				echo "<input type='hidden' name='is_posted' value=\"y\" />\n";
+				echo "<input type='hidden' name='Ajouter' value=\"Ajouter\" />\n";
+				echo "<input type='submit' name='Saisir' value=\"Saisir\" title=\"Saisir un nouvel incident\" />\n";
+				echo "</form>\n";
+				echo "</div>\n";
+			}
+
 			echo "<h2>Incidents \"concernant\" l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
 			//=======================
@@ -2287,7 +2301,6 @@ Patientez pendant l'extraction des données... merci.
 			$cal1 = new Calendrier("form_date_disc", "date_debut_disc");
 			$cal2 = new Calendrier("form_date_disc", "date_fin_disc");
 			//=======================
-
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='form_date_disc' method='post' />\n";
 			echo $champ_quitter_page_ou_non;
