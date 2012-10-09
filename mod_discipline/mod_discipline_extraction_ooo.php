@@ -211,14 +211,14 @@ while($lig_incident=mysql_fetch_object($res_incident)) {
 
 		// Retenues
 		$sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE s.id_incident='$id_incident_courant' AND s.login='".$ele_login."' AND sr.id_sanction=s.id_sanction ORDER BY sr.date, sr.heure_debut;";
-		//$retour.="$sql<br />\n";
+		//echo "$sql<br />\n";
 		$res_sanction=mysql_query($sql);
 		if(mysql_num_rows($res_sanction)>0) {
 			$texte_sanctions.=$designation_eleve;
 
 			while($lig_sanction=mysql_fetch_object($res_sanction)) {
 				//$texte_sanctions.=" : Retenue ";
-				$texte_sanctions.=" : ".ucfirst($lig->nature)." ";
+				$texte_sanctions.=" : ".ucfirst($lig_sanction->nature)." ";
 
 				$nombre_de_report=nombre_reports($lig_sanction->id_sanction,0);
 				if($nombre_de_report!=0) {$texte_sanctions.=" ($nombre_de_report reports)";}
@@ -254,7 +254,7 @@ while($lig_incident=mysql_fetch_object($res_incident)) {
 
 			while($lig_sanction=mysql_fetch_object($res_sanction)) {
 				//$texte_sanctions.=" : Exclusion ";
-				$texte_sanctions.=" : ".ucfirst($lig->nature)." ";
+				$texte_sanctions.=" : ".ucfirst($lig_sanction->nature)." ";
 
 				$texte_sanctions.=" ".formate_date($lig_sanction->date_debut);
 				$texte_sanctions.=" ".$lig_sanction->heure_debut;
@@ -286,7 +286,7 @@ while($lig_incident=mysql_fetch_object($res_incident)) {
 
 			while($lig_sanction=mysql_fetch_object($res_sanction)) {
 				//$texte_sanctions.=" : Travail pour le ";
-				$texte_sanctions.=" : ".ucfirst($lig->nature)." pour le ";
+				$texte_sanctions.=" : ".ucfirst($lig_sanction->nature)." pour le ";
 				$texte_sanctions.=formate_date($lig_sanction->date_retour);
 	
 				$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
