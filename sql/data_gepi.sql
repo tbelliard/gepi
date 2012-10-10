@@ -781,7 +781,7 @@ INSERT INTO setting VALUES ('GepiAccesEditionDocsEctsPP', 'no');
 INSERT INTO setting VALUES ('GepiAccesEditionDocsEctsScolarite', 'yes');
 INSERT INTO setting VALUES ('gepiSchoolStatut', 'public');
 INSERT INTO setting VALUES ('gepiSchoolAcademie', '');
-INSERT INTO ref_wiki VALUES ('','enseignement_invisible', 'http://www.sylogix.org/wiki/gepi/Enseignement_invisible');
+INSERT INTO ref_wiki VALUES ('','enseignement_invisible', 'http://www.sylogix.org/gepi/wiki/Enseignement_invisible');
 INSERT INTO droits VALUES('/saisie/export_cmnt_type_prof.php','F','V','F','F','F','F','F','F', 'Export appréciations-types pour les profs','');
 INSERT INTO setting VALUES ('note_autre_que_sur_referentiel', 'F');
 INSERT INTO setting VALUES ('referentiel_note', '20');
