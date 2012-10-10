@@ -909,7 +909,7 @@ for($i=0;$i<10;$i++){
 
 		if(($display_mat_cat=='y')&&($current_group["classes"]["classes"][$id_classe]["categorie_id"]=="0")) {
 			//echo "<br />\n";
-			$message_categorie_aucune="La matière n apparaitra pas sur les bulletins et relevés de notes. Voir http://www.sylogix.org/wiki/gepi/Enseignement_invisible";
+			$message_categorie_aucune="La matière n apparaitra pas sur les bulletins et relevés de notes. Voir http://www.sylogix.org/gepi/wiki/Enseignement_invisible";
 			//echo "<img src='../images/icons/ico_attention.png' width='22' height='19' alt='$message_categorie_aucune' title='$message_categorie_aucune' />\n";
 
 			echo "<a href='#' onclick=\"afficher_div('enseignement_invisible','y',-100,20);return false;\"";
