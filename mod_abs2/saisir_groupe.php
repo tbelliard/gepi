@@ -653,10 +653,23 @@ echo "</pre>";
 				}
 				// 20121009
 				else {
+					// Peut-être ajouter un test: les autres utilisateurs ont-ils le droit de voir ce qui a été saisi par un collègue?
+					// Pour permettre un affichage en title sur les cellules avec saisie
+					/*
+					echo "<hr />Saisie<pre>";
+					print_r($saisie);
+					echo "</pre>";
+					*/
 					foreach ($saisie->getAbsenceEleveTraitements() as $bou_traitement) {
 						if ($bou_traitement->getAbsenceEleveType() != null) {
-							$afficheEleve[$elv]['info_saisie'][$i]['traitements'][] = $bou_traitement->getAbsenceEleveType()->getNom();
-							//echo "\$afficheEleve[$elv]['info_saisie'][$i]['traitements'][] = ".$bou_traitement->getAbsenceEleveType()->getNom()."<br />";
+							$commentaire_associe="";
+							if($saisie->getCommentaire()!=null) {$commentaire_associe=" (".$saisie->getCommentaire().")";}
+							$afficheEleve[$elv]['info_saisie'][$i]['traitements'][] = $bou_traitement->getAbsenceEleveType()->getNom().$commentaire_associe;
+							/*
+							echo "<hr />bou_traitement<pre>";
+							print_r($bou_traitement);
+							echo "</pre>";
+							*/
 						}
 					}
 				}
@@ -670,6 +683,7 @@ echo "</pre>";
 				$txt = $abs_saisie->getTypesDescription();
 				if ($txt != '') {
 					$afficheEleve[$elv]['saisieDescription'][$i][] = $abs_saisie->getTypesDescription();
+					//echo $abs_saisie->getTypesDescription()."<br />";
 				}
 			}
 		}
@@ -1256,24 +1270,13 @@ for($i = 0; $i<$eleve['creneaux_possibles']; $i++){ ?>
 							}
 								?>"
 							<?php
-								// 20121009
-								/*
-								if (isset ($eleve['saisie'][$i]) && !empty ($eleve['saisie'][$i])) {
-									echo "
-							title=\"plip plop\"";
-								}
-								elseif($eleve['style'][$i]!='') {
-									echo "
-							title=\"azerty\"";
-								}
-								*/
 								if(isset($eleve['info_saisie'][$i]['traitements'])) {
 									$chaine_info="";
 									foreach($eleve['info_saisie'][$i]['traitements'] as $info_saisie) {
 										if($chaine_info!="") {	$chaine_info.=", ";}
 										$chaine_info.=$info_saisie;
 									}
-									echo " title=\"$chaine_info\"";
+									echo " title=\"".preg_replace('/"/',"'",$chaine_info)."\"";
 								}
 							?>>
 <?php if (isset ($eleve['saisie'][$i]) && !empty ($eleve['saisie'][$i])) {
@@ -1310,18 +1313,6 @@ echo "</pre>";
 ?>
 							<span class="description" title="<?php echo htmlspecialchars($hover); ?>">T</span>
 <?php }
-// 20121009
-/*
-elseif(isset($eleve['info_saisie'][$i]['traitements'])) {
-	$chaine_info="";
-	foreach($eleve['info_saisie'][$i]['traitements'] as $info_saisie) {
-		if($chaine_info!="") {	$chaine_info.=", ";}
-		$chaine_info.=$info_saisie;
-	}
-	echo $chaine_info;
-}
-*/
-
 if (isset ($eleve['erreurEnregistre'][$i])) { ?>	
 	Erreur : <?php echo $eleve['erreurEnregistre'][$i]; ?>
 <?php }
