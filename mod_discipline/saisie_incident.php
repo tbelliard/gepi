@@ -1410,7 +1410,7 @@ if(isset($id_incident) ) {
 <?php
                     }
 ?>
-                    </select>\n";
+                    </select>
 <?php
                 }
                 else {
@@ -1594,7 +1594,8 @@ if(isset($id_incident) ) {
 
 		//avertie=document.getElementById('avertie_'+cpt).value;
 		//+'&csrf_alea='+csrf_alea // inutile... dans sauve_famille_avertie.php, on propose un formulaire avant de générer/enregistrer quoi que ce soit
-		new Ajax.Updater($('div_svg_avertie'),'sauve_famille_avertie.php?id_incident='+id_incident+'&login='+login+'&avertie='+avertie+'".add_token_in_url(false)."',{method: 'get'});
+		//new Ajax.Updater($('div_svg_avertie'),'sauve_famille_avertie.php?id_incident='+id_incident+'&login='+login+'&avertie='+avertie+'".add_token_in_url(false)."',{method: 'get'});
+		new Ajax.Updater($('div_svg_avertie'),'sauve_famille_avertie.php?id_incident='+id_incident+'&login='+login+'&avertie='+avertie+'<?php echo add_token_in_url(false);?>',{method: 'get'});
 	}
 	//]]>
     </script>
