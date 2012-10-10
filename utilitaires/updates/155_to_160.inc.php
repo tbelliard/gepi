@@ -361,7 +361,7 @@ if ($res_test==0){
 }
 
 $sql="SELECT 1=1 FROM ref_wiki WHERE ref='enseignement_invisible';";
-$test=mysql_query($test);
+$test=mysql_query($sql);
 if(mysql_num_rows($test)==0) {
 	$sql="INSERT INTO ref_wiki VALUES ('','enseignement_invisible', 'http://www.sylogix.org/gepi/wiki/Enseignement_invisible');";
 	$update=mysql_query($sql);
