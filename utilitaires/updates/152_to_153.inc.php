@@ -1500,6 +1500,20 @@ if ($test == -1) {
 		$result .= "<br />Erreur sur la création de la table 'edt_semaines': ".$result_inter."<br />";
 	}
 }
+else {
+	$result .= "&nbsp;-> Ajout d'un champ 'num_semaines_etab' à la table 'edt_semaines'<br />";
+	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM edt_semaines LIKE 'num_semaines_etab';"));
+	if ($test_champ==0) {
+		$query = mysql_query("ALTER TABLE edt_semaines ADD num_semaines_etab int(11) NOT NULL default '0';");
+		if ($query) {
+				$result .= msj_ok("Ok !");
+		} else {
+				$result .= msj_erreur();
+		}
+	} else {
+		$result .= msj_present("Le champ existe déjà");
+	}
+}
 
 //==========================================================
 // Modification Delineau
