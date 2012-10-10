@@ -61,6 +61,8 @@ if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite" &
     die("acces interdit");
 }
 
+//debug_var();
+
 //récupération des paramètres de la requète
 $id_creneau = isset($_POST["id_creneau"]) ? $_POST["id_creneau"] :(isset($_GET["id_creneau"]) ? $_GET["id_creneau"] :NULL);
 $id_cours = isset($_POST["id_cours"]) ? $_POST["id_cours"] :(isset($_GET["id_cours"]) ? $_GET["id_cours"] :NULL);
@@ -245,7 +247,13 @@ for($i=0; $i<$total_eleves; $i++) {
 	if ($saisie->validate()) {
 	    $saisie->save();
 	    if (isset($traitement)) {
-		$traitement->save();
+			if(isset($_POST['id_motif'])) {
+				$traitement->setAbsenceEleveMotif(AbsenceEleveMotifQuery::create()->findPk($_POST["id_motif"]));
+			}
+			if(isset($_POST['id_justification'])) {
+				$traitement->setAbsenceEleveJustification(AbsenceEleveJustificationQuery::create()->findPk($_POST["id_justification"]));
+			}
+			$traitement->save();
 	    }
 	    $message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Saisie enregistrée pour l'eleve : ".$eleve->getNom()."</a>";
 	    if (isset($saisie_discipline) && $saisie_discipline == true) {
