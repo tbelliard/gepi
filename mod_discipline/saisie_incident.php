@@ -990,7 +990,7 @@ if (!isset($return_url) || $return_url == null) {
 }
 //**************** FIN EN-TETE *****************
 
- //debug_var();
+//debug_var();
 
 ?>
 <div id='div_svg_qualite' style='margin:auto; color:red; text-align:center;'></div>
@@ -1114,7 +1114,7 @@ if($etat_incident!='clos') {
 	//=====================================================
 	// MENU
 ?>
-<div id='s_menu' style='float:right; border: 1px solid black; background-color: white; width: 15em;'>
+<div id='s_menu' style='float:right; border: 1px solid black; background-color: white; width: 15em; margin-left:0.5em;'>
     <ul style='margin:0px;'>   
 <?php
 if($step!=0) {  
@@ -1196,6 +1196,8 @@ if(isset($id_incident) ) {
                 $resProf=mysql_query($sqlProf);
     ?>
         <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='change_declare'>
+        <fieldset style='border: 1px solid grey; margin-bottom:0.5em;'>
+        <legend style='border: 1px solid grey;'>Déclarant</legend>
             <p class='bold'>Changer le déclarant</p>
             <p>
                 <select id="choixProf" name="choixProf">
@@ -1217,8 +1219,9 @@ if(isset($id_incident) ) {
                 <?php echo add_token_field(true);?>
                 <input type="submit" name="change_prof" value="Changer" />
             </p>
+        </fieldset>
         </form>
-<hr />
+<!--hr /-->
 <?php
             }   
         }
@@ -1245,6 +1248,8 @@ if(isset($id_incident) ) {
         if($etat_incident!='clos') {
 ?>
 <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='form_suppr'>
+    <fieldset style='border: 1px solid grey;'>
+    <legend style='border: 1px solid grey;'>Protagonistes</legend>
     <p><input type='hidden' name='step' value='<?php echo $step; ?>' /></p>
 <?php
         }
@@ -1596,6 +1601,7 @@ if(isset($id_incident) ) {
  <?php	
 		if($etat_incident!='clos') {
 ?>
+</fieldset>
 </form>
  <?php	
 		}
@@ -1625,7 +1631,9 @@ if(isset($id_incident) ) {
 
 <blockquote>
     <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire1'>
-	<p>
+    <fieldset style='border: 1px solid grey;'>
+    <legend style='border: 1px solid grey;'>Recherche d'élèves</legend>
+    <p>
             Afficher les élèves dont le <strong>nom</strong> contient: 
             <input type='text' name='rech_nom' value='' />
             <input type='hidden' name='page' value='<?php echo $page; ?>' />
@@ -1635,16 +1643,21 @@ if(isset($id_incident) ) {
                    name='recherche_eleve' 
                    value='Rechercher'
                    onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')" />
-	</p>
+    </p>
  <?php	
         if(isset($id_incident)) {echo "<p><input type='hidden' name='id_incident' value='$id_incident' /></p>\n";}
 ?>
         <p>
             <?php echo add_token_field(); ?>
         </p>
+    </fieldset>
     </form>
     
     <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire2'>
+<?php if((isset($_POST['recherche_eleve']))||(isset($id_classe))) {?>
+        <fieldset style='border: 1px solid grey; margin-top:0.5em;'>
+        <legend style='border: 1px solid grey;'>Choix des élèves</legend>
+<?php }?>
         <p>
             <?php echo add_token_field(); ?>
         </p>
@@ -1735,6 +1748,9 @@ if(isset($id_incident) ) {
 ?>
             <input type='hidden' name='is_posted' value='y' />
         </p>
+<?php if((isset($_POST['recherche_eleve']))||(isset($id_classe))) {?>
+        </fieldset>
+<?php }?>
     </form>
 <?php
 
@@ -1796,7 +1812,7 @@ elseif($step==1) {
 <?php
 
 	//$sql="SELECT DISTINCT statut FROM utilisateurs WHERE statut!='responsable' ORDER BY statut;";
-	$sql="SELECT DISTINCT statut FROM utilisateurs WHERE statut!='responsable' AND etat='actif' ORDER BY statut;";
+	$sql="SELECT DISTINCT statut FROM utilisateurs WHERE statut!='responsable' AND statut!='eleve' AND etat='actif' ORDER BY statut;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
 		// Ca ne doit pas arriver;o)
@@ -1810,6 +1826,8 @@ elseif($step==1) {
 ?>
 <blockquote>
     <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire1'>
+        <fieldset style='border: 1px solid grey;'>
+        <legend style='border: 1px solid grey;'>Recherche de personnels</legend>
         <p>
             Afficher les utilisateurs dont le <strong>nom</strong> contient : 
             <input type='text' name='rech_nom' value='' />
@@ -1822,16 +1840,19 @@ elseif($step==1) {
                    onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')" />
         </p>
 <?php
-	echo "<p>".add_token_field()."</p>";
+	echo "<p>".add_token_field()."</p>\n";
 	if(isset($id_incident)) {echo "<p><input type='hidden' name='id_incident' value='".$id_incident."' /></p>\n";}
 ?>
+        </fieldset>
     </form>  
 <?php
 	if(isset($_POST['recherche_utilisateur'])) {
 ?>
     <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire2'>\n"; 
+        <fieldset style='border: 1px solid grey; margin-top:0.5em;'>
+        <legend style='border: 1px solid grey;'>Choix de personnels</legend>
 <?php
-		echo "<p>".add_token_field()."</p>";
+		echo "<p>".add_token_field()."</p>\n";
 ?>
         <p>
             <input type='hidden' name='page' value='<?php echo $page; ?>' />
@@ -1849,6 +1870,7 @@ elseif($step==1) {
         <p>
             <input type='hidden' name='is_posted' value='y' />
         </p>
+        </fieldset>
     </form>
 <?php
 	}
@@ -1869,7 +1891,9 @@ elseif($step==1) {
 ?>
     <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire'>
 <?php
-		echo "<p>".add_token_field()."</p>";
+		echo "<fieldset style='border: 1px solid grey; margin-top:0.5em;'>\n";
+		echo "<legend style='border: 1px solid grey;'>Choix de personnels ($categ_u)</legend>\n";
+		echo "<p>".add_token_field()."</p>\n";
 ?>
         <p>
             <input type='hidden' name='step' value='<?php echo $step; ?>' />
@@ -1951,6 +1975,7 @@ elseif($step==1) {
         <p>
             <input type='submit' name='Ajouter' value='Ajouter' />
         </p>
+        </fieldset>
     </form>
     <p><br /></p>
 <?php
@@ -2004,6 +2029,8 @@ elseif($step==2) {
 	if($etat_incident!='clos') {
 ?>
 <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='formulaire'>
+    <fieldset style='border: 1px solid grey;'>
+    <legend style='border: 1px solid grey;'>Détails de l'incident</legend>
     <p><?php echo add_token_field(); ?></p>
 <?php
 	}
@@ -2818,11 +2845,13 @@ setTimeout('comptage_caracteres_textarea()', 1000);
         </p>
         <noscript><p><input type='submit' name='enregistrer2' value='Enregistrer vraiment' /></p></noscript>
 
-        <p>
-            <em>NOTE&nbsp;</em> 
-            <span style='color:red;'>(*)</span> 
-            Il est impératif de saisir une Nature d'incident pour des questions de facilité de traitement par la suite.
-        </p>
+        <p><em>NOTES&nbsp;</em>&nbsp;:</p>
+        <ul>
+            <li><span style='color:red;'>(*)</span> Il est impératif de saisir une Nature d'incident pour des questions de facilité de traitement par la suite.</li>
+            <li>Les formulaires de saisie du rôle des protagonistes et de saisie des détails de l'incident sont séparés.<br />
+Ne faites pas de modification dans les deux formulaires sans valider entre les deux, vous perdriez la modification.</li>
+        </ul>
+
 <?php
 	}
 ?>
@@ -2886,7 +2915,7 @@ setTimeout('comptage_caracteres_textarea()', 1000);
 
 //]]>
 </script>
-
+    </fieldset>
 </form>
 <?php
 	}

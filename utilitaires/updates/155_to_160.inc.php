@@ -121,6 +121,9 @@ if ($test == -1) {
 
 	$res = mysql_query('select * from temp_abs_import LIMIT 1;');
 	$numOfCols = mysql_num_fields($res);
+	// Même si la table est vide, on récupère bien la liste des champs
+	//$result .= "Nombre de colonnes dans la table 'temp_abs_import' : $numOfCols<br />";
+	//$result .= "Nombre d'enregistrements dans la table 'temp_abs_import' : ".mysql_num_rows($res)."<br />";
 	for($i=0;$i<$numOfCols;$i++) {
 		//$result .= mysql_field_name($res, $i) . "<br />\n";
 		$nom_du_champ=mysql_field_name($res, $i);
@@ -355,6 +358,17 @@ if ($res_test==0){
   } else {
     $result.=msj_erreur("Erreur !");
   }
+}
+
+$sql="SELECT 1=1 FROM ref_wiki WHERE ref='enseignement_invisible';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)==0) {
+	$sql="INSERT INTO ref_wiki VALUES ('','enseignement_invisible', 'http://www.sylogix.org/gepi/wiki/Enseignement_invisible');";
+	$update=mysql_query($sql);
+}
+else {
+	$sql="UPDATE ref_wiki SET url='http://www.sylogix.org/gepi/wiki/Enseignement_invisible' WHERE ref='enseignement_invisible'";
+	$update=mysql_query($sql);
 }
 
 $result.="<br />Fin mise à jour<br/>";
