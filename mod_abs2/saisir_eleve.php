@@ -348,7 +348,8 @@ if (!$eleve_col->isEmpty()) {
 		//=============================================================
 		echo ("<tr><td align='left'>\n");
 
-		echo '<span title="Non fonctionnel pour le moment" style="color:red; text-decoration: blink;">Motif : </span>';
+		//echo '<span title="Non fonctionnel pour le moment" style="color:red; text-decoration: blink;">Motif : </span>';
+		echo 'Motif : ';
 		$motifs = AbsenceEleveMotifQuery::create()->orderByRank()->find();
 		/*
 		echo '<form method="post" action="enregistrement_modif_traitement.php">';
@@ -356,7 +357,7 @@ if (!$eleve_col->isEmpty()) {
 		echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
 		echo '<input type="hidden" name="modif" value="motif"/>';
 		*/
-		echo ("<select name=\"id_motif\" onchange='submit()'>");
+		echo ("<select name=\"id_motif\">");
 		echo "<option value='-1'></option>\n";
 		foreach ($motifs as $motif) {
 			echo "<option value='".$motif->getId()."'";
@@ -374,7 +375,8 @@ if (!$eleve_col->isEmpty()) {
 		echo ("<td>&nbsp;&nbsp;&nbsp;</td>\n");
 		echo ("<td align='left'>\n");
 
-		echo '<span title="Non fonctionnel pour le moment" style="color:red; text-decoration: blink;">Justification : </span>';
+		//echo '<span title="Non fonctionnel pour le moment" style="color:red; text-decoration: blink;">Justification : </span>';
+		echo 'Justification : ';
 		$justifications = AbsenceEleveJustificationQuery::create()->orderByRank()->find();
 		/*
 		echo '<form method="post" action="enregistrement_modif_traitement.php">';
@@ -382,7 +384,7 @@ if (!$eleve_col->isEmpty()) {
 		echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
 		echo '<input type="hidden" name="modif" value="justification"/>';
 		*/
-		echo ("<select name=\"id_justification\" onchange='submit()'>");
+		echo ("<select name=\"id_justification\">");
 		echo "<option value='-1'></option>\n";
 		foreach ($justifications as $justification) {
 			echo "<option value='".$justification->getId()."'";

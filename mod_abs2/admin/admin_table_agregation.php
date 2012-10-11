@@ -45,6 +45,18 @@ if (!checkAccess()) {
     die();
 }
 
+if($_SESSION['statut']!='administrateur') {
+	$acces_agr="n";
+	if(($_SESSION['statut']=='cpe')&&(getSettingAOui('AccesCpeAgregationAbs2'))) {
+		$acces_agr="y";
+	}
+
+	if($acces_agr=="n") {
+		header("Location: ../../logout.php?auto=1");
+		die();
+	}
+}
+
 //initialisation des variables 
 $action= isset($_POST['action'])?$_POST['action']:Null;
 $page= isset($_POST['page'])?$_POST['page']:1;
@@ -149,6 +161,7 @@ echo "</p>";
                 </noscript>
             <?php endif; ?>  
         </form>
+        <p><em>ATTENTION&nbsp;:</em> L'opération de remplissage est longue et gourmande en ressources.<br />Évitez de la lancer lorsque les professeurs doivent saisir des absences, leur cahier de textes,...</p>
     </div>
 <?php /* fin du div de centrage du tableau pour ie5 */ ?>
 <?php require("../../lib/footer.inc.php");?>

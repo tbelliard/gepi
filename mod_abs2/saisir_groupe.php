@@ -385,7 +385,6 @@ if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getSta
 } else {
     $classe_col = $utilisateur->getClasses();
 }
-
 //**************** ELEVES *****************
 //affichage des eleves. Il nous faut au moins un groupe ou une aid
 $eleve_col = new PropelCollection();
@@ -482,7 +481,6 @@ if ($current_creneau == null) {
     $eleve_col = new PropelObjectCollection();
 }
 
-
 //**************** TABLEAU DES ELEVES *****************
 // 20120618
 $tab_regimes=array();
@@ -500,36 +498,36 @@ foreach($eleve_col as $eleve) {
 	
 	$Yesterday = date("Y-m-d",mktime(0,0,0,$dt_date_absence_eleve->format("m") ,$dt_date_absence_eleve->format("d")-1,$dt_date_absence_eleve->format("Y")));
 	$abs_hier = false;
-        $traitee_hier = true;//les saisies de la veille ont-elle été traitées intégralement
-        $justifiee_hier = true;//les saisies de la veille ont-elle été justifiées intégralement
-        $afficheEleve[$elv]['bulle_hier'] = '';
-        foreach ($eleve->getAbsenceEleveSaisiesDuJour($Yesterday) as $saisie) {
-            if (!$saisie->getManquementObligationPresence()) continue;
-            $abs_hier = true;
-            $traitee_hier = $traitee_hier && $saisie->getTraitee();
-            $justifiee_hier = $justifiee_hier && $saisie->getJustifiee();
-            $afficheEleve[$elv]['bulle_hier'] .= $saisie->getTypesDescription();
-        }
-        if ($abs_hier) {
-            $afficheEleve[$elv]['class_hier'] = $justifiee_hier ? "justifieeHier" : 'absentHier';
-            $afficheEleve[$elv]['text_hier'] = $traitee_hier ? 'T' : '';
-        } else {
-            $afficheEleve[$elv]['class_hier'] = '';
-            $afficheEleve[$elv]['text_hier'] = '';
-        }
+	$traitee_hier = true;//les saisies de la veille ont-elle été traitées intégralement
+	$justifiee_hier = true;//les saisies de la veille ont-elle été justifiées intégralement
+	$afficheEleve[$elv]['bulle_hier'] = '';
+	foreach ($eleve->getAbsenceEleveSaisiesDuJour($Yesterday) as $saisie) {
+		if (!$saisie->getManquementObligationPresence()) continue;
+		$abs_hier = true;
+		$traitee_hier = $traitee_hier && $saisie->getTraitee();
+		$justifiee_hier = $justifiee_hier && $saisie->getJustifiee();
+		$afficheEleve[$elv]['bulle_hier'] .= $saisie->getTypesDescription();
+	}
+	if ($abs_hier) {
+		$afficheEleve[$elv]['class_hier'] = $justifiee_hier ? "justifieeHier" : 'absentHier';
+		$afficheEleve[$elv]['text_hier'] = $traitee_hier ? 'T' : '';
+	} else {
+		$afficheEleve[$elv]['class_hier'] = '';
+		$afficheEleve[$elv]['text_hier'] = '';
+	}
 	$afficheEleve[$elv]['position'] = $eleve_col->getPosition();
 	$afficheEleve[$elv]['id'] = $eleve->getId();
 	$afficheEleve[$elv]['nom'] = $eleve->getNom();
 	$afficheEleve[$elv]['prenom'] = $eleve->getPrenom();
 	$afficheEleve[$elv]['civilite'] = $eleve->getCivilite();
-        $afficheEleve[$elv]['regime'] = '';
-        if ($eleve->getEleveRegimeDoublant() != null) {
-            $afficheEleve[$elv]['regime'] = $eleve->getEleveRegimeDoublant()->getRegime();
-            if(!in_array($afficheEleve[$elv]['regime'], $tab_regimes)) {
-                    $tab_regimes[]=$afficheEleve[$elv]['regime'];
-            }
-            $tab_regimes_eleves[$afficheEleve[$elv]['regime']][]=$afficheEleve[$elv]['position'];
-        }
+	$afficheEleve[$elv]['regime'] = '';
+	if ($eleve->getEleveRegimeDoublant() != null) {
+		$afficheEleve[$elv]['regime'] = $eleve->getEleveRegimeDoublant()->getRegime();
+		if(!in_array($afficheEleve[$elv]['regime'], $tab_regimes)) {
+			$tab_regimes[]=$afficheEleve[$elv]['regime'];
+		}
+		$tab_regimes_eleves[$afficheEleve[$elv]['regime']][]=$afficheEleve[$elv]['position'];
+	}
 
 	if ((isset($current_groupe) && $current_groupe != null && $current_groupe->getClasses()->count() == 1)
 		|| (isset($current_classe) && $current_classe != null)) {
@@ -575,9 +573,9 @@ foreach($eleve_col as $eleve) {
 			if (getSettingValue("abs2_afficher_saisies_creneau_courant")!='y') {
 				$absences_du_creneau_du_prof = new PropelObjectCollection();
 				foreach ($absences_du_creneau as $abs) {
-						if ($abs->getUtilisateurId() == $utilisateur->getPrimaryKey()) {
-								$absences_du_creneau_du_prof->append($abs);
-						}
+					if ($abs->getUtilisateurId() == $utilisateur->getPrimaryKey()) {
+						$absences_du_creneau_du_prof->append($abs);
+					}
 				}
 				$absences_du_creneau = $absences_du_creneau_du_prof;
 			}
@@ -592,12 +590,25 @@ foreach($eleve_col as $eleve) {
 			//on affiche  les informations pour les crenaux avant la saisie sauf si configuré autrement
 			if (getSettingValue("abs2_montrer_creneaux_precedents")=='y') {
 				$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
+
+/*
+// 20121009
+if(!$absences_du_creneau->isEmpty()) {
+echo "<p>".$eleve->getLogin()."<br />".
+//$absences_du_creneau->get().
+"</p>";
+echo "<pre>";
+print_r($absences_du_creneau);
+echo "</pre>";
+}
+*/
+
 			} else {
 				$absences_du_creneau = new PropelCollection();
 			}
 		}
 		$afficheEleve[$elv]['style'][$i] = "";
-                if ($deja_saisie && $nb_creneau_a_saisir > 0) {
+		if ($deja_saisie && $nb_creneau_a_saisir > 0) {
 			$afficheEleve[$elv]['style'][$i] = "fondVert";
 		}
 		if (!$absences_du_creneau->isEmpty()) {
@@ -605,6 +616,10 @@ foreach($eleve_col as $eleve) {
 				if ($abs_saisie->getManquementObligationPresence()) {
 					$afficheEleve[$elv]['style'][$i] = "fondRouge";
 					break;
+				}
+				// 20121009
+				else {
+					$afficheEleve[$elv]['style'][$i] = "fondJaune";
 				}
 			}
 		}
@@ -617,6 +632,7 @@ foreach($eleve_col as $eleve) {
 		
 		//si il y a des absences de l'utilisateurs on va proposer de les modifier
 		if (getSettingValue("abs2_modification_saisie_une_heure")=='y') {
+			$cpt=0;
 			foreach ($absences_du_creneau as $saisie) {
 				if (in_array($saisie->getPrimaryKey(), $saisie_affiches)) {
 					// on affiche les saisies une seule fois
@@ -631,9 +647,33 @@ foreach($eleve_col as $eleve) {
 					foreach ($saisie->getAbsenceEleveTraitements() as $bou_traitement) {
 						if ($bou_traitement->getAbsenceEleveType() != null) {
 							$afficheEleve[$elv]['saisie'][$i]['traitements'][] = $bou_traitement->getAbsenceEleveType()->getNom();
+							//echo "\$afficheEleve[$elv]['saisie'][$i]['traitements'][] = ".$bou_traitement->getAbsenceEleveType()->getNom()."<br />";
 						}
 					}
 				}
+				// 20121009
+				else {
+					// Peut-être ajouter un test: les autres utilisateurs ont-ils le droit de voir ce qui a été saisi par un collègue?
+					// Pour permettre un affichage en title sur les cellules avec saisie
+					/*
+					echo "<hr />Saisie<pre>";
+					print_r($saisie);
+					echo "</pre>";
+					*/
+					foreach ($saisie->getAbsenceEleveTraitements() as $bou_traitement) {
+						if ($bou_traitement->getAbsenceEleveType() != null) {
+							$commentaire_associe="";
+							if($saisie->getCommentaire()!=null) {$commentaire_associe=" (".$saisie->getCommentaire().")";}
+							$afficheEleve[$elv]['info_saisie'][$i]['traitements'][] = $bou_traitement->getAbsenceEleveType()->getNom().$commentaire_associe;
+							/*
+							echo "<hr />bou_traitement<pre>";
+							print_r($bou_traitement);
+							echo "</pre>";
+							*/
+						}
+					}
+				}
+				$cpt++;
 			}
 		}
 		
@@ -643,6 +683,7 @@ foreach($eleve_col as $eleve) {
 				$txt = $abs_saisie->getTypesDescription();
 				if ($txt != '') {
 					$afficheEleve[$elv]['saisieDescription'][$i][] = $abs_saisie->getTypesDescription();
+					//echo $abs_saisie->getTypesDescription()."<br />";
 				}
 			}
 		}
@@ -1194,12 +1235,13 @@ if ($eleve_col->isEmpty()) {
 	foreach($afficheEleve as $eleve) {
 		$compteur_eleve++;
 ?>
+<!--tr><td>plop</td></tr-->
 					<tr class='<?php echo $eleve['background'];?>'>
 						<td class = "<?php echo($eleve['class_hier']);
 							if ($eleve['creneau_courant'] != 0) {
 								echo ' noSmartphone';
 							} ?>">
-                                                        <span class="description" title="<?php echo htmlspecialchars($eleve['bulle_hier']); ?>"><?php echo $eleve['text_hier']; ?></span>
+							<span class="description" title="<?php echo htmlspecialchars($eleve['bulle_hier']); ?>"><?php echo $eleve['text_hier']; ?></span>
 						</td>
 						<td class='td_abs_eleves'>
 							<input type="hidden" 
@@ -1226,24 +1268,40 @@ for($i = 0; $i<$eleve['creneaux_possibles']; $i++){ ?>
 									&& ($eleve['creneau_courant']  != ($i + 2))) {
 								echo ' noSmartphone';
 							}
-								?>">
-<?php if (isset ($eleve['saisie'][$i]) && !empty ($eleve['saisie'][$i])) { ?>
+								?>"
+							<?php
+								if(isset($eleve['info_saisie'][$i]['traitements'])) {
+									$chaine_info="";
+									foreach($eleve['info_saisie'][$i]['traitements'] as $info_saisie) {
+										if($chaine_info!="") {	$chaine_info.=", ";}
+										$chaine_info.=$info_saisie;
+									}
+									echo " title=\"".preg_replace('/"/',"'",$chaine_info)."\"";
+								}
+							?>>
+<?php if (isset ($eleve['saisie'][$i]) && !empty ($eleve['saisie'][$i])) {
+// 20121009
+/*
+echo "<pre>";
+print_r($eleve['saisie'][$i]);
+echo "</pre>";
+*/
+?>
 							<a class="saisieAnte" href='visu_saisie.php?id_saisie=<?php echo $eleve['saisie'][$i]['primaryKey']; ?>'>
-								Modif.&nbsp;saisie de <?php echo $eleve['saisie'][$i]['createdAt']; ?>
+								Modif.&nbsp;saisie de <?php
+		echo $eleve['saisie'][$i]['createdAt'];
 
-<?php
 		$besoin_echo_virgule = false;
 		if (isset ($eleve['saisie'][$i]['traitements'])) {
-		foreach ($eleve['saisie'][$i]['traitements'] as $bou_traitement) {
-			if ($besoin_echo_virgule) {
-				echo ', ';
-			} 
-?>
-								<?php echo $bou_traitement; ?>
-<?php 
-		$besoin_echo_virgule = true;
-	}
-}
+			foreach ($eleve['saisie'][$i]['traitements'] as $bou_traitement) {
+				if ($besoin_echo_virgule) {
+					echo ', ';
+				} 
+
+				echo $bou_traitement;
+				$besoin_echo_virgule = true;
+			}
+		}
 ?>
 							</a>
 							<br />
@@ -1254,7 +1312,7 @@ for($i = 0; $i<$eleve['creneaux_possibles']; $i++){ ?>
 	}
 ?>
 							<span class="description" title="<?php echo htmlspecialchars($hover); ?>">T</span>
-<?php } 
+<?php }
 if (isset ($eleve['erreurEnregistre'][$i])) { ?>	
 	Erreur : <?php echo $eleve['erreurEnregistre'][$i]; ?>
 <?php }

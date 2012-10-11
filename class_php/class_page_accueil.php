@@ -379,6 +379,12 @@ class class_page_accueil {
 		$this->creeNouveauItem("/mod_abs2/index.php",
 				"Gestion des Absences",
 				"Cet outil vous permet de gérer les absences des élèves");
+
+		if(($this->statutUtilisateur=="cpe")&&(getSettingAOui('AccesCpeAgregationAbs2'))) {
+			$this->creeNouveauItem("/mod_abs2/admin/admin_table_agregation.php",
+					"Agrégation des Absences",
+					"Cet outil vous permet de remplir/vider la table d'agrégation des absences");
+		}
 	  }
 
 			if ($this->b>0){

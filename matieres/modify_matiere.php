@@ -363,6 +363,59 @@ echo "</select>";
 </form>
 <!-- ============================================================================ -->
 <hr />
+
+<?php
+if((isset($current_matiere))&&($current_matiere!="")) {
+	$sql="SELECT DISTINCT g.id, g.name, g.description FROM groupes g, j_groupes_matieres jgm, j_groupes_classes jgc, classes c WHERE jgm.id_matiere='".$current_matiere."' AND jgm.id_groupe=g.id AND jgc.id_groupe=g.id AND jgc.id_classe=c.id ORDER BY c.classe, c.nom_complet";
+	//echo "$sql<br />";
+	$res_ens=mysql_query($sql);
+	$nb_ens=mysql_num_rows($res_ens);
+	if($nb_ens==0) {
+		echo "<p>Aucun enseignement n'est associé à la matière $current_matiere.</p>\n";
+	}
+	else {
+		echo "<p>$nb_ens enseignement(s) associé(s) à la matière $current_matiere&nbsp;:<br />";
+		while($lig_ens=mysql_fetch_object($res_ens)) {
+
+			$sql="SELECT c.id, c.classe FROM j_groupes_classes jgc, classes c WHERE jgc.id_classe=c.id AND jgc.id_groupe='$lig_ens->id' ORDER BY c.classe, c.nom_complet;";
+			$res_clas=mysql_query($sql);
+			$chaine_clas="";
+			if(mysql_num_rows($res_clas)>0) {
+				$cpt_clas=0;
+				while($lig_clas=mysql_fetch_object($res_clas)) {
+					if($cpt_clas>0) {$chaine_clas.=", ";}
+					$chaine_clas.="<a href='../groupes/edit_class.php?id_classe=$lig_clas->id'>$lig_clas->classe</a>";
+					$cpt_clas++;
+				}
+			}
+
+			$sql="SELECT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.login=u.login AND jgp.id_groupe='$lig_ens->id' ORDER BY u.nom, u.prenom;";
+			$res_prof=mysql_query($sql);
+			$chaine_prof="";
+			if(mysql_num_rows($res_prof)>0) {
+				$cpt_prof=0;
+				while($lig_prof=mysql_fetch_object($res_prof)) {
+					if($cpt_prof>0) {$chaine_prof.=", ";}
+					$chaine_prof.="<a href='../utilisateurs/modify_user.php?user_login=$lig_prof->login'>$lig_prof->civilite $lig_prof->nom ".mb_substr($lig_prof->prenom,0,1)."</a>";
+					$cpt_prof++;
+				}
+			}
+
+			echo "<a href='../groupes/edit_group.php?id_groupe=$lig_ens->id'>$lig_ens->name (<em>$lig_ens->description</em>)</a>";
+			if($chaine_clas!="") {
+				echo " en $chaine_clas";
+			}
+			if($chaine_prof!="") {
+				echo " avec $chaine_prof";
+			}
+			echo "<br />";
+		}
+		echo "</p>\n";
+	}
+	echo "<hr />\n";
+}
+?>
+
 <p><b>Aide :</b></p>
 <ul>
 <li><b>Nom de matière</b>

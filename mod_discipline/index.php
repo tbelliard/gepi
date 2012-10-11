@@ -750,13 +750,22 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
-/*
-	echo "<tr>\n";
-	    echo "<td width='30%'><a href='../mod_discipline/stats2/index.php'>Accèder aux statistiques</a>";
-	echo "</td>\n";
-	echo "<td>Sélectionner la période de traitement, les données à traiter (établissement, classes, elèves, ...) en appliquant (ou non) des filtres afin d'obtenir des bilans plus ou moins détaillés. </br>Visualiser les évolutions sous la forme de graphiques. Editer le Top 10, ...</td>\n";
-	echo "</tr>\n";
-	*/
+
+
+
+	$nouveauItem = new itemGeneral();
+	$nouveauItem->chemin='/mod_discipline/mod_discipline_extraction_ooo.php';
+	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+	{
+		$nouveauItem->titre="Extraction ODS" ;
+		$nouveauItem->expli="Extraction ODS des incidents et de leurs suites." ;
+		$nouveauItem->indexMenu=$a;
+		$menuPage[]=$nouveauItem;
+	}
+	unset($nouveauItem);
+
+
+
 	$nouveauItem = new itemGeneral();
 	$nouveauItem->chemin='/mod_discipline/stats2/index.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))

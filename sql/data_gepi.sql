@@ -784,7 +784,7 @@ INSERT INTO setting VALUES ('GepiAccesEditionDocsEctsPP', 'no');
 INSERT INTO setting VALUES ('GepiAccesEditionDocsEctsScolarite', 'yes');
 INSERT INTO setting VALUES ('gepiSchoolStatut', 'public');
 INSERT INTO setting VALUES ('gepiSchoolAcademie', '');
-INSERT INTO ref_wiki VALUES ('','enseignement_invisible', 'http://www.sylogix.org/wiki/gepi/Enseignement_invisible');
+INSERT INTO ref_wiki VALUES ('','enseignement_invisible', 'http://www.sylogix.org/gepi/wiki/Enseignement_invisible');
 INSERT INTO droits VALUES('/saisie/export_cmnt_type_prof.php','F','V','F','F','F','F','F','F', 'Export appréciations-types pour les profs','');
 INSERT INTO setting VALUES ('note_autre_que_sur_referentiel', 'F');
 INSERT INTO setting VALUES ('referentiel_note', '20');
@@ -843,7 +843,7 @@ INSERT INTO droits VALUES ('/mod_abs2/admin/admin_motifs_absences.php', 'V', 'F'
 INSERT INTO droits VALUES ('/mod_abs2/admin/admin_types_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
 INSERT INTO droits VALUES ('/mod_abs2/admin/admin_lieux_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
 INSERT INTO droits VALUES ('/mod_abs2/admin/admin_justifications_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
-INSERT INTO droits VALUES ('/mod_abs2/admin/admin_table_agregation.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
+INSERT INTO droits VALUES ('/mod_abs2/admin/admin_table_agregation.php', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
 INSERT INTO droits VALUES ('/mod_abs2/admin/admin_actions_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
 INSERT INTO droits VALUES ('/mod_abs2/index.php', 'F', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Administration du module absences', '');
 INSERT INTO droits VALUES ('/mod_abs2/saisir_groupe.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Affichage du formulaire de saisie de absences', '');
@@ -1188,4 +1188,5 @@ INSERT INTO setting SET name='gepi_en_production', value='y';
 INSERT INTO droits VALUES ('/gestion/gestion_infos_actions.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Gestion des actions en attente signalées en page d accueil.', '1');
 INSERT INTO droits SET id='/responsables/maj_import3.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',
 description='Mise à jour Sconet',statut='';
+INSERT INTO droits SET id='/mod_discipline/mod_discipline_extraction_ooo.php',administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Discipline : Extrait OOo des incidents',statut='';
 
