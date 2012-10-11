@@ -445,7 +445,7 @@ else {
 		echo "<h2>Recherche des références à des identifiants de groupes inexistants</h2>\n";
 
 		$err_no=0;
-		$table=array('j_groupes_classes','j_groupes_matieres','j_groupes_professeurs','j_eleves_groupes');
+		$table=array('j_groupes_classes','j_groupes_matieres','j_groupes_professeurs','j_eleves_groupes', 'j_groupes_visibilite', 'acces_cdt_groupes');
 		$id_grp_suppr=array();
 
 		for($i=0;$i<count($table);$i++){
