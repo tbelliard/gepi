@@ -1522,18 +1522,21 @@ function affiche_acces_cdt() {
 									$tab_champs=array('classes', 'professeurs');
 									while($lig3=mysql_fetch_object($res3)) {
 										$current_group=get_group($lig3->id_groupe);
-	
-										$chaine_profs="";
-										$cpt=0;
-										foreach($current_group['profs']['users'] as $login_prof => $current_prof) {
-											if($cpt>0) {$chaine_profs.=", ";}
-											$chaine_profs.=$current_prof['civilite']." ".$current_prof['nom']." ".$current_prof['prenom'];
-											$cpt++;
+										if((is_array($current_group))&&(count($current_group)>0)) {
+											$chaine_profs="";
+											if(isset($current_group['profs']['users'])) {
+												$cpt=0;
+												foreach($current_group['profs']['users'] as $login_prof => $current_prof) {
+													if($cpt>0) {$chaine_profs.=", ";}
+													$chaine_profs.=$current_prof['civilite']." ".$current_prof['nom']." ".$current_prof['prenom'];
+													$cpt++;
+												}
+											}
+
+											$chaine_enseignements.="<li>";
+											$chaine_enseignements.=$current_group['name']." (<i>".$current_group['description']."</i>) en ".$current_group['classlist_string']." (<i>".$chaine_profs."</i>)";
+											$chaine_enseignements.="</li>\n";
 										}
-	
-										$chaine_enseignements.="<li>";
-										$chaine_enseignements.=$current_group['name']." (<i>".$current_group['description']."</i>) en ".$current_group['classlist_string']." (<i>".$chaine_profs."</i>)";
-										$chaine_enseignements.="</li>\n";
 									}
 								}
 								$chaine_enseignements.="</ul>";
