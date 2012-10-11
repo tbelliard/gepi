@@ -348,7 +348,8 @@ if (!$eleve_col->isEmpty()) {
 		//=============================================================
 		echo ("<tr><td align='left'>\n");
 
-		echo '<span title="Non fonctionnel pour le moment" style="color:red; text-decoration: blink;">Motif : </span>';
+		//echo '<span title="Non fonctionnel pour le moment" style="color:red; text-decoration: blink;">Motif : </span>';
+		echo 'Motif : ';
 		$motifs = AbsenceEleveMotifQuery::create()->orderByRank()->find();
 		/*
 		echo '<form method="post" action="enregistrement_modif_traitement.php">';
@@ -374,7 +375,8 @@ if (!$eleve_col->isEmpty()) {
 		echo ("<td>&nbsp;&nbsp;&nbsp;</td>\n");
 		echo ("<td align='left'>\n");
 
-		echo '<span title="Non fonctionnel pour le moment" style="color:red; text-decoration: blink;">Justification : </span>';
+		//echo '<span title="Non fonctionnel pour le moment" style="color:red; text-decoration: blink;">Justification : </span>';
+		echo 'Justification : ';
 		$justifications = AbsenceEleveJustificationQuery::create()->orderByRank()->find();
 		/*
 		echo '<form method="post" action="enregistrement_modif_traitement.php">';
