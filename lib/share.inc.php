@@ -1684,7 +1684,7 @@ function ensure_utf8($str, $from_encoding = null) {
 function check_utf8 ($str) {
     if (mb_strlen($str) < 1000) {
     // From http://w3.org/International/questions/qa-forms-utf-8.html
-    $preg_match_result = 1 == preg_match('%^(?:
+    /*$preg_match_result = 1 == preg_match('%^(?:
           [\x09\x0A\x0D\x20-\x7E]            # ASCII
         | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
         |  \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs
@@ -1693,7 +1693,18 @@ function check_utf8 ($str) {
         |  \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3
         | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
         |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
-    )*$%xs', $str);
+    )*$%xs', $str); */
+	// test modifié pour éviter un crash du serveur Apache sous Win$
+	// http://stackoverflow.com/questions/7620910/regexp-in-preg-match-function-returning-browser-error
+	$preg_match_result = 
+	preg_match('%^(?:[\x09\x0A\x0D\x20-\x7E])*$%xs', $str) | // ASCII
+	preg_match('#[\xC2-\xDF][\x80-\xBF]#', $str) | // non-overlong 2-byte
+	preg_match('#\xE0[\xA0-\xBF][\x80-\xBF]#', $str) | // excluding overlongs
+	preg_match('#[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}#', $str) | // straight 3-byte
+	preg_match('#\xED[\x80-\x9F][\x80-\xBF]#', $str) | // excluding surrogates
+	preg_match('#\xF0[\x90-\xBF][\x80-\xBF]{2}#', $str) | // planes 1-3
+	preg_match('#[\xF1-\xF3][\x80-\xBF]{3}#', $str) | // planes 4-15
+	preg_match('# \xF4[\x80-\x8F][\x80-\xBF]{2}#', $str) ; // plane 16
     } else {
         $preg_match_result = FALSE;
     }
