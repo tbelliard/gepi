@@ -308,36 +308,52 @@ foreach ($donnees as $id => $eleve) {
     if(!isset($eleve['infos_saisies'])){
         continue;
     }
+
     foreach ($eleve['infos_saisies'] as $type_tab=>$value2) {
         foreach ($value2 as $journee) {
             foreach ($journee as $key => $value) {                
                 $style=$value['type_css'];
+
+                /*
+                echo "<tr><td colspan='6' style='background-color:white; text-align:left;'><pre>";
+                print_r($value);
+                echo "</pre></td></tr>";
+                */
 ?>
 	<tr>
 	  <?php $ligne++; ?>
 
 	  
 	  <td  align="center" class="<?php echo $style; ?>">
-		<?php echo $ligne; ?>
+		<?php echo $ligne;?>
 	  </td>
 	  <td  align="center" class="<?php echo $style; ?>">
 		<?php echo getDateDescription($value['dates']['debut'], $value['dates']['fin']) ; ?>
 	  </td>
 	  
 	  <td align="center" class="<?php echo $style; ?>">
-		  <?php if ($value['type'] !== 'Non traitée(s)') {
-                    $class = '';
-                    if ($value['type'] == 'Non défini') {
-                        $class = 'orange';
-                    } ?>
-		<span class="<?php echo $class; ?>"><?php echo $value['type']; ?></span>
-		  <?php }else { ?>
-		<span class="orange"><?php echo $value['type']; ?></span>
-          <?php } ?>
+		  <?php
+			$contenu_cellule=$value['type'];
+			if ($value['type'] !== 'Non traitée(s)') {
+				$class = '';
+				if ($value['type'] == 'Non défini') {
+					$class = 'orange';
+				}
+			}
+			else {
+				$class="orange";
+			}
+
+			if(($_SESSION['statut']=='cpe')&&(isset($value['saisies'][0]))) {
+				$contenu_cellule="<a href='../mod_abs2/visu_saisie.php?id_saisie=".$value['saisies'][0]."' target='_blank'><span class='$class'>".$value['type']."</span></a>";
+			}
+
+			echo $contenu_cellule;
+		  ?>
 	  </td>
 	  
 	  <td class="<?php echo $style; ?>">
-		<?php echo $value['motif']; ?>
+		  <?php echo $value['motif']; ?>
 	  </td>
 	  
 	  <td class="<?php echo $style; ?>">
