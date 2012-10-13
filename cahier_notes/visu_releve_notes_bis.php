@@ -1665,40 +1665,7 @@ else {
 	
 								//+++++++++++++++++++++++++++++++++++
 								//===============================================
-								/*
-	
-								// A FAIRE -> A FAIRE PLUS HAUT POUR NE PLUS FAIRE DE REQUETES DANS CETTE PARTIE Là
-	
-								// Contrôler qu'il n'y a pas d'usurpation d'accès
-								$autorisation_acces='n';
-								// Si c'est un prof
-								if($_SESSION['statut']=='professeur') {
-									// GepiAccesReleveProf               -> que les élèves de ses groupes
-									// GepiAccesReleveProfTousEleves     -> tous les élèves de ses classes
-									// GepiAccesReleveProfToutesClasses  -> tous les élèves de toutes les classes
-	
-									// GepiAccesReleveProfToutesClasses  -> tous les élèves de toutes les classes
-									if(getSettingValue("GepiAccesReleveProfToutesClasses") == "yes") {
-										// On vérifie seulement que c'est bien le login d'un élève d'une classe
-										$sql="SELECT 1=1 FROM j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND login='".$tab_releve[$id_classe][$periode_num]['eleve'][$i]['login']."';";
-										$verif=mysql_query($sql);
-										if(mysql_num_rows($verif)>0) {$autorisation_acces='y';}
-									}
-									elseif (getSettingValue("GepiAccesReleveProf") == "yes") {
-	
-									}
-									elseif (getSettingValue("GepiAccesReleveProfTousEleves") == "yes") {
-	
-									}
-									else {
-	
-									}
-								}
-								// Si c'est un CPE
-								// Si c'est un compte scolarité
-								// Si c'est un élève
-								// Si c'est un responsable
-								*/
+								
 								$autorisation_acces='y';
 								//===============================================
 								//+++++++++++++++++++++++++++++++++++
