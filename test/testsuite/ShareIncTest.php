@@ -24,6 +24,8 @@ class ShareIncTest extends PHPUnit_Framework_TestCase
 	    $this->assertTrue(check_utf8($utf8_str));
             $iso_str = file_get_contents(dirname(__FILE__) . "/../tools/iso-8859-1_str.txt");
 	    $this->assertFalse(check_utf8($iso_str));
+            $invalid_utf8_str = file_get_contents(dirname(__FILE__) . "/../tools/utf8_str.txt")."\xc3\x28";
+	    $this->assertFalse(check_utf8($invalid_utf8_str));
 	}
 	
 	public function test_detect_encoding()
