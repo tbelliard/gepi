@@ -1652,8 +1652,8 @@ if ($tab_rel['rn_abs_2'] == 'y') {
 
 	$nbAbsencesRetard = decompteAbsences($tab_rel['eleve'][$i]['login'], $choix_periode, $tab_rel)
 ?>
-<div style="width: <?php echo $releve_largeurtableau; ?>px; 
-	 margin: .5em auto;
+<div style="width: <?php echo ($releve_largeurtableau - 20); ?>px; 
+	 margin: .5em 0;
 	 padding: .2em .5em;
 	 border: 5px double black; ">
   <?php echo $nbAbsencesRetard['nbAbsences'] ; ?> absence(s)

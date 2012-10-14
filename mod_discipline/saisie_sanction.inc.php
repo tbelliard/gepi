@@ -185,6 +185,7 @@ else {
 		$duree_retenue=1;
 		$lieu_retenue="";
 		$travail="";
+        $materiel="";
 		if(isset($id_sanction)) {
 			$sql="SELECT * FROM s_retenues WHERE id_sanction='$id_sanction';";
 			$res_sanction=mysql_query($sql);
@@ -195,6 +196,7 @@ else {
 				$duree_retenue=$lig_sanction->duree;
 				$lieu_retenue=$lig_sanction->lieu;
 				$travail=$lig_sanction->travail;
+                $materiel=$lig_sanction->materiel;
 			}
 		}
 
@@ -204,6 +206,7 @@ else {
 			if(mysql_num_rows($res_travail_mesure_demandee)>0) {
 				$lig_travail_mesure_demandee=mysql_fetch_object($res_travail_mesure_demandee);
 				$travail=$lig_travail_mesure_demandee->travail;
+                $materiel=$lig_travail_mesure_demandee->materiel;
 			}
 		}
 
@@ -313,6 +316,16 @@ else {
 			sanction_documents_joints($id_incident, $ele_login);
 		}
 
+		echo "</td>\n";
+		echo "</tr>\n";
+	
+		$alt=$alt*(-1);
+		echo "<tr class='lig$alt'>\n";
+		echo "<td>\n";
+        echo "Matériel à apporter\n";
+		echo "</td>\n";
+		echo "<td>\n";
+        echo "<input type='text' name='materiel' onchange='changement();' value='$materiel' />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	

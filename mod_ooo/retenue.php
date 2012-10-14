@@ -91,6 +91,7 @@ $h_deb ='';
 $num_incident = '';
 $nb_report='';
 $texte_report='';
+$materiel='';
 
 //echo "\$mode=$mode<br />";
 //echo "\$id_incident=$id_incident<br />";
@@ -199,6 +200,9 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 			
 			$travail = $lig_sanction->travail;
 			$lieu = $lig_sanction->lieu;
+            
+            if ($lig_sanction->materiel) $materiel = $lig_sanction->materiel;
+			
 			
 			//recherche de l'heure de début. C'est le crénaux qui est enregistré.
 			$sql_heure = "SELECT * FROM `edt_creneaux` WHERE `nom_definie_periode`='$lig_sanction->heure_debut'";

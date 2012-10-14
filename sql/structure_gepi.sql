@@ -302,7 +302,7 @@ CREATE TABLE IF NOT EXISTS s_communication (id_communication INT( 11 ) NOT NULL 
 DROP TABLE IF EXISTS s_travail;
 CREATE TABLE IF NOT EXISTS s_travail (id_travail INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,id_sanction INT( 11 ) NOT NULL ,date_retour DATE NOT NULL ,heure_retour VARCHAR( 20 ) NOT NULL ,travail TEXT NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS s_retenues;
-CREATE TABLE IF NOT EXISTS s_retenues (id_retenue INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,id_sanction INT( 11 ) NOT NULL ,date DATE NOT NULL ,heure_debut VARCHAR( 20 ) NOT NULL ,duree FLOAT NOT NULL ,travail TEXT NOT NULL ,lieu VARCHAR( 255 ) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE TABLE IF NOT EXISTS s_retenues (id_retenue INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,id_sanction INT( 11 ) NOT NULL ,date DATE NOT NULL ,heure_debut VARCHAR( 20 ) NOT NULL ,duree FLOAT NOT NULL ,travail TEXT NOT NULL ,lieu VARCHAR( 255 ) NOT NULL , materiel VARCHAR( 150 ) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS s_exclusions;
 CREATE TABLE s_exclusions (id_exclusion int(11) NOT NULL AUTO_INCREMENT,  id_sanction int(11) NOT NULL DEFAULT '0',  date_debut date NOT NULL DEFAULT '0000-00-00',  heure_debut varchar(20) NOT NULL DEFAULT '',  date_fin date NOT NULL DEFAULT '0000-00-00',  heure_fin varchar(20) NOT NULL DEFAULT '',  travail text NOT NULL,  lieu varchar(255) NOT NULL DEFAULT '',  nombre_jours varchar(50) NOT NULL,  qualification_faits text NOT NULL,  num_courrier varchar(50) NOT NULL,  type_exclusion varchar(50) NOT NULL, id_signataire INT NOT NULL,  PRIMARY KEY (id_exclusion)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS s_reports;
@@ -588,7 +588,7 @@ CREATE TABLE IF NOT EXISTS j_groupes_visibilite (id INT(11) NOT NULL auto_increm
 DROP TABLE IF EXISTS ct_sequences;
 CREATE TABLE IF NOT EXISTS ct_sequences (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,titre VARCHAR( 255 ) NOT NULL , description TEXT NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS s_travail_mesure;
-CREATE TABLE IF NOT EXISTS s_travail_mesure (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,id_incident INT( 11 ) NOT NULL ,login_ele VARCHAR( 50 ) NOT NULL , travail TEXT NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE TABLE IF NOT EXISTS s_travail_mesure (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,id_incident INT( 11 ) NOT NULL ,login_ele VARCHAR( 50 ) NOT NULL , travail TEXT NOT NULL , materiel VARCHAR( 150 ) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS s_natures;
 CREATE TABLE IF NOT EXISTS s_natures ( id INT(11) NOT NULL auto_increment, nature varchar(50) NOT NULL default '', id_categorie int(11) not null default '0', PRIMARY KEY (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS udt_lignes;

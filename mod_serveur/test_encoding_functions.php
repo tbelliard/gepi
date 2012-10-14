@@ -33,7 +33,7 @@ function test_check_utf8()
     if (check_utf8("\xf0\x28\x8c\xbc")) {echo 'échec ligne 33 mod_serveur/test_encoding_functions.php'; return false;} 
     if (check_utf8("\xf0\x90\x28\xbc")) {echo 'échec ligne 34 mod_serveur/test_encoding_functions.php'; return false;} 
     if (check_utf8("\xf0\x28\x8c\x28")) {echo 'échec ligne 35 mod_serveur/test_encoding_functions.php'; return false;} 
-    //if (!check_utf8("\xf8\xa1\xa1\xa1\xa1")) {echo 'échec ligne 36 mod_serveur/test_encoding_functions.php'; return false;}
+    if (check_utf8("au à \xc3\x28")) {echo 'échec ligne 35 mod_serveur/test_encoding_functions.php'; return false;}
     //if (!check_utf8("\xfc\xa1\xa1\xa1\xa1\xa1")) {echo 'échec ligne 37 mod_serveur/test_encoding_functions.php'; return false;}
     
     return true;

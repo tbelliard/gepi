@@ -86,6 +86,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 			$heure_debut_main=isset($_POST['heure_debut_main']) ? $_POST['heure_debut_main'] : '00:00';
 			$duree_retenue=isset($_POST['duree_retenue']) ? $_POST['duree_retenue'] : 1;
 			$lieu_retenue=isset($_POST['lieu_retenue']) ? $_POST['lieu_retenue'] : NULL;
+            $materiel=isset($_POST['materiel']) ? $_POST['materiel'] : NULL;
 		
 			$report_demande=isset($_POST['report_demande']) ? $_POST['report_demande'] : NULL;
 			$choix_motif_report=isset($_POST['choix_motif_report']) ? $_POST['choix_motif_report'] : NULL;
@@ -178,7 +179,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 						   $heure_debut=$heure_debut_main;
 						}
 						//$sql="UPDATE s_retenues SET date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue', effectuee='N' WHERE id_sanction='$id_sanction';";
-						$sql="UPDATE s_retenues SET date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue' WHERE id_sanction='$id_sanction';";
+						$sql="UPDATE s_retenues SET date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue', materiel='$materiel' WHERE id_sanction='$id_sanction';";
 						//echo "$sql<br />\n";
 						$update=mysql_query($sql);
 						if(!$update) {
@@ -205,7 +206,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 						   $heure_debut=$heure_debut_main;
 					}
 					//$sql="INSERT INTO s_retenues SET id_sanction='$id_sanction', date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue', effectuee='N';";
-					$sql="INSERT INTO s_retenues SET id_sanction='$id_sanction', date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue';";
+					$sql="INSERT INTO s_retenues SET id_sanction='$id_sanction', date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue', materiel='$materiel';";
 					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 				}
@@ -228,7 +229,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 								$heure_debut=$heure_debut_main;
 							}
 							//$sql="INSERT INTO s_retenues SET id_sanction='$id_sanction', date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue', effectuee='N';";
-							$sql="INSERT INTO s_retenues SET id_sanction='$tmp_id_sanction', date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue';";
+							$sql="INSERT INTO s_retenues SET id_sanction='$tmp_id_sanction', date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue', materiel='$materiel';";
 							//echo "$sql<br />\n";
 							$res=mysql_query($sql);
 						}
