@@ -857,8 +857,6 @@ function delete_group($_id_groupe) {
     if (!$del3) $errors .= "Erreur lors de la suppression du lien groupe-eleves.<br/>";
     $del4 = mysql_query("DELETE from j_groupes_classes WHERE id_groupe = '" . $_id_groupe . "'");
     if (!$del4) $errors .= "Erreur lors de la suppression du lien groupe-classes.<br/>";
-    $del5 = mysql_query("DELETE from groupes WHERE id = '" . $_id_groupe . "'");
-    if (!$del5) $errors .= "Erreur lors de la suppression du groupe.<br/>";
     $del6 = mysql_query("DELETE from cn_cahier_notes, cn_conteneurs, cn_devoirs, cn_notes_conteneurs, cn_notes_devoirs WHERE (" .
             "cn_cahier_notes.id_groupe = '" . $_id_groupe . "' AND " .
             "cn_conteneurs.id_racine = cn_cahier_notes.id_cahier_notes AND " .
@@ -868,10 +866,15 @@ function delete_group($_id_groupe) {
     if (!$del6) $errors .= "Erreur lors de la suppression des données relatives au carnet de notes lié au groupe.<br/>";
     $text_ct = sql_query1("SELECT count(id_groupe) from ct_entry WHERE (ct_entry.id_groupe = '" . $_id_groupe . "'");
     if ($text_ct > 0) $errors .= "Attention un cahier de textes lié au groupe supprimé est maintenant \"orphelin\". Rendez-vous dans le module \"cahier de textes\" pour régler le problème.<br/>";
-    $del7 = mysql_query("DELETE from j_signalement WHERE id = '" . $_id_groupe . "'");
-    if (!$del7) $errors .= "Erreur lors de la suppression du groupe.<br/>";
-    $del8 = mysql_query("DELETE from j_groupes_visibilite WHERE id = '" . $_id_groupe . "'");
-    if (!$del8) $errors .= "Erreur lors de la suppression du groupe.<br/>";
+    $del7 = mysql_query("DELETE from j_signalement WHERE id_groupe = '" . $_id_groupe . "'");
+    if (!$del7) $errors .= "Erreur lors de la suppression des signalements associés au groupe.<br/>";
+    $del8 = mysql_query("DELETE from j_groupes_visibilite WHERE id_groupe = '" . $_id_groupe . "'");
+    if (!$del8) $errors .= "Erreur lors de la suppression des enregistrement de visibilité ou non du groupe.<br/>";
+    $del9 = mysql_query("DELETE from acces_cdt_groupes WHERE id_groupe = '" . $_id_groupe . "'");
+    if (!$del9) $errors .= "Erreur lors de la suppression des accès CDT pour ce groupe.<br/>";
+
+    $del5 = mysql_query("DELETE from groupes WHERE id = '" . $_id_groupe . "'");
+    if (!$del5) $errors .= "Erreur lors de la suppression du groupe.<br/>";
 
     if (!empty($errors)) {
         return $errors;

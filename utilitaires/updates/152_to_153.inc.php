@@ -699,12 +699,12 @@ if ($req) {
             $changes = true;
         }
     }
+	elseif(mysql_num_rows($req) == 53) {
+		$result .= "<p style=\"color:blue;\">La table edt_semaines contient bien 53 enregistrements.</p>";
+	}
 }
 if ($changes) {
     $result .= "<p style=\"color:green;\">Ajout d'un 53eme enregistrement dans la table edt_semaine : ok.</p>";
-}
-else {
-    $result .= "<p style=\"color:blue;\">La table edt_semaines contient bien 53 enregistrements.</p>";
 }
 
 
@@ -1498,6 +1498,32 @@ if ($test == -1) {
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'edt_semaines': ".$result_inter."<br />";
+	}
+}
+else {
+	$result .= "&nbsp;-> Ajout d'un champ 'num_semaines_etab' à la table 'edt_semaines'<br />";
+	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM edt_semaines LIKE 'num_semaines_etab';"));
+	if ($test_champ==0) {
+		$query = mysql_query("ALTER TABLE edt_semaines ADD num_semaines_etab int(11) NOT NULL default '0';");
+		if ($query) {
+				$result .= msj_ok("Ok !");
+		} else {
+				$result .= msj_erreur();
+		}
+	} else {
+		$result .= msj_present("Le champ existe déjà");
+	}
+}
+
+$test_champ=mysql_num_rows(mysql_query("SELECT 1=1 FROM edt_semaines;"));
+if ($test_champ==0) {
+	$result.="<br />Remplissage de la table 'edt_semaines' : ";
+	$query = mysql_query("INSERT INTO `edt_semaines` VALUES (1, 1, 'A', '0'),(2, 2, 'A', '0'),(3, 3, 'A', '0'),(4, 4, 'A', '0'),(5, 5, 'A', '0'),(6, 6, 'A', '0'),(7, 7, 'A', '0'),(8, 8, 'A', '0'),(9, 9, 'A', '0'),(10, 10, 'A', '0'),(11, 11, 'A', '0'),(12, 12, 'A', '0'),(13, 13, 'A', '0'),(14, 14, 'A', '0'),(15, 15, 'A', '0'),(16, 16, 'A', '0'),(17, 17, 'A', '0'),(18, 18, 'A', '0'),(19, 19, 'A', '0'),(20, 20, 'A', '0'),(21, 21, 'A', '0'),(22, 22, 'A', '0'),(23, 23, 'A', '0'),(24, 24, 'A', '0'),(25, 25, 'A', '0'),(26, 26, 'A', '0'),(27, 27, 'A', '0'),(28, 28, 'A', '0'),(29, 29, 'A', '0'),(30, 30, 'A', '0'),(31, 31, 'A', '0'),(32, 32, 'A', '0'),(33, 33, 'A', '0'),(34, 34, 'A', '0'),(35, 35, 'A', '0'),(36, 36, 'A', '0'),(37, 37, 'A', '0'),(38, 38, 'A', '0'),(39, 39, 'A', '0'),(40, 40, 'A', '0'),(41, 41, 'A', '0'),(42, 42, 'A', '0'),(43, 43, 'A', '0'),(44, 44, 'A', '0'),(45, 45, 'A', '0'),(46, 46, 'A', '0'),(47, 47, 'A', '0'),(48, 48, 'A', '0'),(49, 49, 'A', '0'),(50, 50, 'A', '0'),(51, 51, 'A', '0'),(52, 52, 'A', '0'),(53, 53, 'A', '0');
+");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
 	}
 }
 

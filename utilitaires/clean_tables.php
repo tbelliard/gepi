@@ -1158,7 +1158,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 
 	$temoin_aberrations_groupes=0;
 
-	$table=array('j_signalement', 'j_groupes_classes','j_groupes_matieres','j_groupes_professeurs','j_eleves_groupes');
+	$table=array('j_signalement', 'j_groupes_classes','j_groupes_matieres','j_groupes_professeurs','j_eleves_groupes', 'j_groupes_visibilite', 'acces_cdt_groupes');
 
 	if(!isset($_POST['nettoyage_grp'])) {
 		$texte_info_action="<h2>Nettoyage des aberrations sur les groupes</h2>\n";
@@ -2446,6 +2446,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			//$texte_info_action.="\$tab[0]=$tab[0]<br />\n";
 			//$sql="show fields from $tab[0] where type like 'varchar%' or type like 'char%';";
 			$sql="show full columns from $tab[0] where type like 'varchar%' or type like 'char%';";
+			//$sql="show full columns from $tab[0];";
 			$res_champs=mysql_query($sql);
 			$nb_champs=mysql_num_rows($res_champs);
 			$texte_info_action.="<tr class='lig$alt'>";
@@ -2475,6 +2476,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 					}
 				}
 				*/
+				//if($lig_champ->Collation!='utf8_general_ci' && $lig_champ->Collation!=NULL) {
 				if($lig_champ->Collation!='utf8_general_ci') {
 					$texte_info_action.="<span style='color:red'>".$lig_champ->Collation."</span>";
 					$texte_info_action.="<br /><a href='".$_SERVER['PHP_SELF']."?maj=corriger_interclassements&amp;table=$tab[0]".add_token_in_url()."'>Corriger</a>";
@@ -2482,12 +2484,14 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				else {
 					$texte_info_action.=$lig_champ->Collation;
 				}
+				//if(!in_array($lig_champ->Collation,$tab_collations) && $lig_champ->Collation!=NULL) {$tab_collations[]=$lig_champ->Collation;}
 				if(!in_array($lig_champ->Collation,$tab_collations)) {$tab_collations[]=$lig_champ->Collation;}
 				$texte_info_action.="</td>";
 				$texte_info_action.="</tr>";
 				$cpt++;
 			}
 			if($cpt==0) {
+				//$texte_info_action.="<td colspan='3'>Aucun champ</td>";
 				$texte_info_action.="<td colspan='3'>Aucun champ VARCHAR ni CHAR</td>";
 				$texte_info_action.="</tr>";
 			}
@@ -3430,6 +3434,7 @@ else {
 		echo "<center>\n";
 		echo "<input type=submit value=\"Contrôler les interclassements\" />\n";
 		echo "<input type='hidden' name='action' value='verif_interclassements' />\n";
+		echo "</center>\n";
 		echo "</form>\n";
 		
 		echo "<hr />\n";
@@ -3440,6 +3445,7 @@ else {
 		echo "<center>\n";
 		echo "<input type=submit value=\"Corriger les interclassements\" />\n";
 		echo "<input type='hidden' name='action' value='corriger_interclassements' />\n";
+		echo "</center>\n";
 		echo "</form>\n";
 	
 		echo "<hr />\n";
@@ -3450,6 +3456,7 @@ else {
 		echo "<center>\n";
 		echo "<input type=submit value=\"Corriger les ordres de matières des professeurs\" />\n";
 		echo "<input type='hidden' name='action' value='corrige_ordre_matieres_professeurs' />\n";
+		echo "</center>\n";
 		echo "</form>\n";
 	
 		echo "<hr />\n";
@@ -3460,6 +3467,7 @@ else {
 		echo "<center>\n";
 		echo "<input type=submit value=\"Contrôler les catégories de matières\" />\n";
 		echo "<input type='hidden' name='action' value='controle_categories_matieres' />\n";
+		echo "</center>\n";
 		echo "</form>\n";
 
 		echo "<hr />\n";
@@ -3470,6 +3478,7 @@ else {
 		echo "<center>\n";
 		echo "<input type=submit value=\"Nettoyage des tables du module Discipline\" />\n";
 		echo "<input type='hidden' name='action' value='nettoyage_mod_discipline' />\n";
+		echo "</center>\n";
 		echo "</form>\n";
 
 		echo "<hr />\n";
@@ -3480,6 +3489,7 @@ else {
 		echo "<center>\n";
 		echo "<input type=submit value=\"Nettoyage des tables du cahier de textes\" />\n";
 		echo "<input type='hidden' name='action' value='nettoyage_cdt' />\n";
+		echo "</center>\n";
 		echo "</form>\n";
 	
 
