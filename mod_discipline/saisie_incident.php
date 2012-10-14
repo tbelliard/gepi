@@ -2748,7 +2748,7 @@ setTimeout('comptage_caracteres_textarea()', 1000);
 						$texte_travail=$lig_travail_mesure_demandee->travail;
 					}
 ?>
-                                <textarea name='no_anti_inject_travail_pour_mesure_demandee_<?php echo $i; ?>' 
+                   <textarea name='no_anti_inject_travail_pour_mesure_demandee_<?php echo $i; ?>' 
                                           id='travail_pour_mesure_demandee_<?php echo $i; ?>' 
                                           cols='30' 
                                           rows='5' ><?php echo $texte_travail; ?></textarea>
@@ -2890,7 +2890,7 @@ Ne faites pas de modification dans les deux formulaires sans valider entre les d
 	function check_coche_mes_demandee(num) {
 		if(document.getElementById('document_joint_'+num)) {
 			temoin_check='n';
-			for(i=0;i<".count($tab_mes_demandee).";i++) {
+			for(i=0;i < <?php count($tab_mes_demandee); ?> ;i++) {
 				if(document.getElementById('mesure_demandee_'+num+'_'+i)) {
 					if(document.getElementById('mesure_demandee_'+num+'_'+i).checked==true) {
 						temoin_check='y';
