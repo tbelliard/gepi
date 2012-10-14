@@ -649,8 +649,8 @@ echo "		}
 
 if($num_resp==0){
 	echo "<div style='text-align:center;'>\n";
-	echo "<a href='#' onClick=\"document.getElementById('div_rech').style.display='';return false;\">Chercher</a>\n";
-	echo "<div id='div_rech' style='display:none;' align='center'>\n";
+	echo "<a href='#' onClick=\"document.getElementById('div_rech').style.display=''; document.getElementById('val_rech').focus(); return false;\">Chercher</a>\n";
+	echo "<div id='div_rech' align='center'>\n";
 	echo "<table border='0' summary='Recherche'><tr><td>les personnnes dont le \n";
 	echo "<input type='hidden' name='champ_rech' value='resp0' />\n";
 	echo "</td>\n";
@@ -713,7 +713,7 @@ if($num_resp==0){
 	echo "</label>\n";
 	echo "</td>\n";
 	echo "<td>\n";
-	echo "<input type='text' name='val_rech' value='$val_rech' />\n";
+	echo "<input type='text' name='val_rech' id='val_rech' value='$val_rech' />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
@@ -723,8 +723,8 @@ if($num_resp==0){
 }
 else{
 	echo "<div style='text-align:center;'>\n";
-	echo "<a href='#' onClick=\"document.getElementById('div_rech').style.display='';return false;\">Chercher</a>\n";
-	echo "<div id='div_rech' style='display:none;' align='center'>\n";
+	echo "<a href='#' onClick=\"document.getElementById('div_rech').style.display=''; document.getElementById('val_rech').focus(); return false;\">Chercher</a>\n";
+	echo "<div id='div_rech' align='center'>\n";
 	echo "<table border='0' summary='Recherche'><tr><td>parmi les </td>\n";
 	echo "<td>\n";
 	echo "<label for='champ_rech_resp1' style='cursor: pointer;'>\n";
@@ -830,7 +830,7 @@ else{
 	echo "</label>\n";
 	echo "</td>\n";
 	echo "<td>\n";
-	echo "<input type='text' name='val_rech' value='$val_rech' />\n";
+	echo "<input type='text' name='val_rech' id='val_rech' value='$val_rech' />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
@@ -841,6 +841,11 @@ else{
 if($val_rech!=""){
 	echo "<script type='text/javascript'>
 	document.getElementById('div_rech').style.display='';
+</script>\n";
+}
+else {
+	echo "<script type='text/javascript'>
+	document.getElementById('div_rech').style.display='none';
 </script>\n";
 }
 flush();
