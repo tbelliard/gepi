@@ -83,13 +83,14 @@ $_SESSION["retour"] = "index_edt";
 
 VerifierTablesDelestage();
 
+//debug_var();
+
     if ($salleslibres == "ok") {
         include('edt_chercher.php');
     }
     else {
         include('voir_edt.php');
     }
-
 
 ?>
 

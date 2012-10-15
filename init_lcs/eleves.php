@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -24,12 +24,12 @@ function connect_ldap($l_adresse,$l_port,$l_login,$l_pwd) {
     if($ds) {
        // On dit qu'on utilise LDAP V3, sinon la V2 par d?faut est utilis? et le bind ne passe pas.
        $norme = @ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
-       // Acc?s non anonyme
+       // Acces non anonyme
        if ($l_login != '') {
           // On tente un bind
           $b = @ldap_bind($ds, $l_login, $l_pwd);
        } else {
-          // Acc?s anonyme
+          // Acces anonyme
           $b = @ldap_bind($ds);
        }
        if ($b) {
@@ -170,13 +170,37 @@ if (isset($_POST['step'])) {
         if ($_POST['record'] == "yes") {
             // Les données ont été postées, on les traite donc immédiatement
 
-            $j=0;
-            while ($j < count($liste_tables_del)) {
-                if (mysql_result(mysql_query("SELECT count(*) FROM ".$liste_tables_del[$j]),0)!=0) {
-                    $del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
-                }
-                $j++;
-            }
+			echo "<p><em>On vide d'abord les tables suivantes&nbsp;:</em> ";
+			$j=0;
+			$k=0;
+			while ($j < count($liste_tables_del)) {
+				$sql="SHOW TABLES LIKE '".$liste_tables_del[$j]."';";
+				//echo "$sql<br />";
+				$test = sql_query1($sql);
+				if ($test != -1) {
+					if($k>0) {echo ", ";}
+					$sql="SELECT 1=1 FROM $liste_tables_del[$j];";
+					$res_test_tab=mysql_query($sql);
+					if(mysql_num_rows($res_test_tab)>0) {
+						$sql="DELETE FROM $liste_tables_del[$j];";
+						$del = @mysql_query($sql);
+						echo "<b>".$liste_tables_del[$j]."</b>";
+						echo " (".mysql_num_rows($res_test_tab).")";
+					}
+					else {
+						echo $liste_tables_del[$j];
+					}
+					$k++;
+				}
+				$j++;
+			}
+
+			// Suppression des comptes d'élèves:
+			echo "<br />\n";
+			echo "<p><em>On supprime les anciens comptes élèves dans Gepi...</em> ";
+			$sql="DELETE FROM utilisateurs WHERE statut='eleve';";
+			$del=mysql_query($sql);
+
 
             // On va enregistrer la liste des classes, ainsi que les périodes qui leur seront attribuées
 
@@ -242,6 +266,15 @@ if (isset($_POST['step'])) {
                 }
 
             }
+
+			$sql="update periodes set date_verrouillage='0000-00-00 00:00:00';";
+			$res=mysql_query($sql);
+			if($res) {
+				echo "Réinitialisation des dates de verrouillage de périodes effectuée.<br />";
+			}
+			else {
+				echo "Erreur lors de la réinitialisation des dates de verrouillage de périodes.<br />";
+			}
 
             // On efface les classes qui ne sont pas réutilisées cette année  ainsi que les entrées correspondantes dans  j_classes_matieres_professeurs
             $sql = mysql_query("select distinct id_classe from periodes where verouiller='T'");
@@ -524,18 +557,27 @@ if (isset($_POST['step'])) {
     echo "</ul>";
 
 
-    echo "<form enctype='multipart/form-data' action='eleves.php' method=post>";
+	echo "<form enctype='multipart/form-data' action='eleves.php' method=post>";
 	echo add_token_field();
-    echo "<input type=hidden name='step' value='1'>";
-    echo "<input type=hidden name='record' value='no'>";
-    $j=0;
-    $flag=0;
-    while (($j < count($liste_tables_del)) and ($flag==0)) {
-        if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-            $flag=1;
-        }
-        $j++;
-    }
+	echo "<input type=hidden name='step' value='1'>";
+	echo "<input type=hidden name='record' value='no'>";
+	$j=0;
+	$flag=0;
+	for($j=0;$j<count($liste_tables_del);$j++) {
+		$sql="SHOW TABLES LIKE '".$liste_tables_del[$j]."';";
+		//echo "$sql<br />";
+		$test = sql_query1($sql);
+		if ($test != -1) {
+			$sql="SELECT 1=1 FROM $liste_tables_del[$j];";
+			$res_test_tab=mysql_query($sql);
+			if(mysql_num_rows($res_test_tab)>0) {
+				$flag=1;
+				break;
+			}
+		}
+		//flush();
+	}
+
     if ($flag != 0){
         echo "<p><b>ATTENTION ...</b><br />";
         echo "Des données concernant la constitution des classes et l'affectation des élèves dans les classes sont présentes dans la base GEPI ! Si vous poursuivez la procédure, ces données seront définitivement effacées !</p>";

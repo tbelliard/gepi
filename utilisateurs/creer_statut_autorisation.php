@@ -38,7 +38,8 @@ $autorise[4] = array('/mod_absences/gestion/select.php',
 $autorise[5] = array('/cahier_texte/see_all.php');
 $autorise[6] = array('/cahier_texte_admin/visa_ct.php');
 $autorise[7] = array('/edt_organisation/index_edt.php');
-$autorise[8] = array('/tous_les_edt');
+//$autorise[8] = array('/tous_les_edt');
+$autorise[8] = array('/tous_les_edt', '/edt_organisation/index_edt.php');
 $autorise[9] = array('/messagerie/index.php');
 $autorise[10]= array('/eleves/visu_eleve.php',
 						'/eleves/liste_eleves.php');
@@ -67,6 +68,7 @@ $autorise[20]= array('/mod_abs2/saisir_eleve.php',
 $autorise[21]= array('/mod_abs2/bilan_individuel.php' );
 $autorise[22]= array('/mod_abs2/totaux_du_jour.php' );
 $autorise[23]= array('/bulletin/bull_index.php' );
+$autorise[24]= array('/groupes/visu_profs_class.php', '/groupes/popup.php');
 
 
 $iter = count($autorise);
@@ -95,7 +97,8 @@ $menu_accueil[19] = array('Absence2', 'Absence2 : accéder au module.', 'abs');
 $menu_accueil[20] = array('Absence2', 'Absence2 : saisir les absences.', 'abs_saisie');
 $menu_accueil[21] = array('Absence2', 'Absence2 : accéder à la page bilan individuel.', 'abs_bilan');
 $menu_accueil[22] = array('Absence2', 'Absence2 : accéder à la page totaux du jour.', 'abs_totaux');
-$menu_accueil[23] = array('Bulletin', 'Visualisation et impression des bulletins ','bul_print')
+$menu_accueil[23] = array('Bulletin', 'Visualisation et impression des bulletins ','bul_print');
+$menu_accueil[24] = array('Visualisation équipes', 'Visualisation des équipes pédagogiques', 'visu_equipes_peda');
 
 
 ?>

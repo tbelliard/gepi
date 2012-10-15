@@ -75,7 +75,14 @@ require_once("../../lib/header.inc.php");
 //debug_var();
 
 echo "<p class='bold'>";
-if($_SESSION['statut']=='professeur') {echo "<a href='../../cahier_texte_2/index.php'>";}
+if($_SESSION['statut']=='professeur') {
+	if (getSettingValue("GepiCahierTexteVersion")=='2') {
+		echo "<a href='../../cahier_texte_2/index.php'>";
+	}
+	else {
+		echo "<a href='../../cahier_texte/index.php'>";
+	}
+}
 else {echo "<a href='../../accueil.php'>";}
 echo "<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 if($_SESSION['statut']=='administrateur') {

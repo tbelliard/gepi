@@ -699,10 +699,10 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
  * @param type $year l'année
  * @param type $month le mois
  * @param type $day le jour
+ * @param type $domaine le domaine (cdt,...)
  * @return text la balise <form> complète
  */
-function make_classes_select_html($link, $current, $year, $month, $day)
-
+function make_classes_select_html($link, $current, $year, $month, $day, $domaine='')
 {
   // Pour le multisite, on doit récupérer le RNE de l'établissement
   $rne = isset($_GET['rne']) ? $_GET['rne'] : (isset($_POST['rne']) ? $_POST['rne'] : 'aucun');
@@ -719,7 +719,7 @@ function make_classes_select_html($link, $current, $year, $month, $day)
 
 
   if (isset($_SESSION['statut']) && ($_SESSION['statut']=='scolarite'
-		  && getSettingValue('GepiAccesCdtScolRestreint')=="yes")){
+		  && getSettingValue('GepiAccesCdtScolRestreint')=="yes")) {
   $sql = "SELECT DISTINCT c.id, c.classe
 	FROM classes c, j_groupes_classes jgc, ct_entry ct, j_scol_classes jsc
 	WHERE (c.id = jgc.id_classe
@@ -728,11 +728,8 @@ function make_classes_select_html($link, $current, $year, $month, $day)
 	  AND jsc.login='".$_SESSION ['login']."'
 		)
 	ORDER BY classe ;";
-
   } else if (isset($_SESSION['statut']) && ($_SESSION['statut']=='cpe'
-		  && getSettingValue('GepiAccesCdtCpeRestreint')=="yes")){
-
-
+		  && getSettingValue('GepiAccesCdtCpeRestreint')=="yes")) {
 	$sql = "SELECT DISTINCT c.id, c.classe
 	  FROM classes c, j_groupes_classes jgc, ct_entry ct, j_eleves_cpe jec,j_eleves_classes jecl
 	  WHERE (c.id = jgc.id_classe
@@ -741,14 +738,23 @@ function make_classes_select_html($link, $current, $year, $month, $day)
 	  AND jec.e_login = jecl.login
 	  AND jecl.id_classe = jgc.id_classe)
 	  ORDER BY classe ;";
-  }else{
-
-
-	$sql = "SELECT DISTINCT c.id, c.classe
-	  FROM classes c, j_groupes_classes jgc, ct_entry ct
-	  WHERE (c.id = jgc.id_classe
-	  AND jgc.id_groupe = ct.id_groupe)
-	  ORDER BY classe";
+  } else {
+	if(($_SESSION['statut']=='professeur')&&(!getSettingAOui('GepiAccesCDTToutesClasses'))) {
+		$sql = "SELECT DISTINCT c.id, c.classe
+		  FROM classes c, j_groupes_classes jgc, ct_entry ct, j_groupes_professeurs jgp
+		  WHERE (c.id = jgc.id_classe
+		  AND jgp.id_groupe = ct.id_groupe
+		  AND jgc.id_groupe = ct.id_groupe
+		  AND jgp.login='".$_SESSION['login']."')
+		  ORDER BY classe";
+	}
+	else {
+		$sql = "SELECT DISTINCT c.id, c.classe
+		  FROM classes c, j_groupes_classes jgc, ct_entry ct
+		  WHERE (c.id = jgc.id_classe
+		  AND jgc.id_groupe = ct.id_groupe)
+		  ORDER BY classe";
+	}
   }
 
   //GepiAccesCdtCpeRestreint
@@ -1394,6 +1400,13 @@ function affiche_infos_actions() {
 			echo "<div id='info_action_pliage' style='float:right; width: 1em'>\n";
 			echo "<a href=\"javascript:div_alterne_affichage('conteneur')\"><span id='img_pliage_conteneur'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
 			echo "</div>\n";
+
+			if($_SESSION['statut']=='administrateur') {
+				echo "<div style='float:right; width: 1em; margin-right:0.5em;'>\n";
+				echo "<a href=\"gestion/gestion_infos_actions.php\"><span id='img_pliage_conteneur'><img src='images/disabled.png' width='16' height='16' /></span></a>";
+				echo "</div>\n";
+			}
+
 			echo "Actions en attente";
 		echo "</div>\n";
 
@@ -1522,18 +1535,21 @@ function affiche_acces_cdt() {
 									$tab_champs=array('classes', 'professeurs');
 									while($lig3=mysql_fetch_object($res3)) {
 										$current_group=get_group($lig3->id_groupe);
-	
-										$chaine_profs="";
-										$cpt=0;
-										foreach($current_group['profs']['users'] as $login_prof => $current_prof) {
-											if($cpt>0) {$chaine_profs.=", ";}
-											$chaine_profs.=$current_prof['civilite']." ".$current_prof['nom']." ".$current_prof['prenom'];
-											$cpt++;
+										if((is_array($current_group))&&(count($current_group)>0)) {
+											$chaine_profs="";
+											if(isset($current_group['profs']['users'])) {
+												$cpt=0;
+												foreach($current_group['profs']['users'] as $login_prof => $current_prof) {
+													if($cpt>0) {$chaine_profs.=", ";}
+													$chaine_profs.=$current_prof['civilite']." ".$current_prof['nom']." ".$current_prof['prenom'];
+													$cpt++;
+												}
+											}
+
+											$chaine_enseignements.="<li>";
+											$chaine_enseignements.=$current_group['name']." (<i>".$current_group['description']."</i>) en ".$current_group['classlist_string']." (<i>".$chaine_profs."</i>)";
+											$chaine_enseignements.="</li>\n";
 										}
-	
-										$chaine_enseignements.="<li>";
-										$chaine_enseignements.=$current_group['name']." (<i>".$current_group['description']."</i>) en ".$current_group['classlist_string']." (<i>".$chaine_profs."</i>)";
-										$chaine_enseignements.="</li>\n";
 									}
 								}
 								$chaine_enseignements.="</ul>";
@@ -1582,10 +1598,11 @@ function affiche_acces_cdt() {
  *
  * @global string 
  * @param string $login Id de l'utilisateur
+ * @param string $target target pour ouvrir dans un autre onglet
  * @return string La balises
  * @see add_token_in_url()
  */
-function affiche_actions_compte($login) {
+function affiche_actions_compte($login, $target="") {
 	global $gepiPath;
 
 	$retour="";
@@ -1595,25 +1612,74 @@ function affiche_actions_compte($login) {
 	$retour.="<p>\n";
 	if ($user['etat'] == "actif") {
 		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=desactiver&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'>Désactiver le compte</a>";
+		$retour.=add_token_in_url()."'";
+		if($target!="") {
+			$retour.=" target='$target'";
+		}
+		$retour.=">Désactiver le compte</a>";
 	} else {
 		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=activer&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'>Réactiver le compte</a>";
+		$retour.=add_token_in_url()."'";
+		if($target!="") {
+			$retour.=" target='$target'";
+		}
+		$retour.=">Réactiver le compte</a>";
 	}
 	$retour.="<br />\n";
 	if ($user['observation_securite'] == 0) {
 		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=observer&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'>Placer en observation</a>";
+		$retour.=add_token_in_url()."'";
+		if($target!="") {
+			$retour.=" target='$target'";
+		}
+		$retour.=">Placer en observation</a>";
 	} else {
 		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=stop_observation&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'>Retirer l'observation</a>";
+		$retour.=add_token_in_url()."'";
+		if($target!="") {
+			$retour.=" target='$target'";
+		}
+		$retour.=">Retirer l'observation</a>";
 	}
 	if($user['niveau_alerte']>0) {
 		$retour.="<br />\n";
 		$retour.="Score cumulé&nbsp;: ".$user['niveau_alerte'];
 		$retour.="<br />\n";
 		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=reinit_cumul&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
-		$retour.=add_token_in_url()."'>Réinitialiser cumul</a>";
+		$retour.=add_token_in_url()."'";
+		if($target!="") {
+			$retour.=" target='$target'";
+		}
+		$retour.=">Réinitialiser cumul</a>";
+	}
+	$retour.="</p>\n";
+
+	return $retour;
+}
+
+/**
+ * Crée une balise <p> avec les liens de réinitialisation de mot de passe
+ *
+ * @global string 
+ * @param string $login Id de l'utilisateur
+ * @return string La balises
+ * @see add_token_in_url()
+ */
+function affiche_reinit_password($login) {
+	global $gepiPath;
+
+	$retour="";
+
+	$user=get_infos_from_login_utilisateur($login);
+
+	$retour.="<p>\n";
+
+	$retour.="<a style='padding: 2px;' href='$gepiPath/utilisateurs/reset_passwords.php?user_login=".$login."&amp;user_status=".$user['statut']."&amp;mode=html";
+	$retour.=add_token_in_url()."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Réinitialiser le mot de passe</a><br />";
+
+	if ($user['statut'] == "responsable") {
+		$retour.="<a style='padding: 2px;' href='$gepiPath/utilisateurs/reset_passwords.php?user_login=".$login."&amp;user_status=".$user['statut']."&amp;mode=html&amp;affiche_adresse_resp=y";
+		$retour.=add_token_in_url()."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Idem avec adresse</a>";
 	}
 	$retour.="</p>\n";
 
@@ -2028,7 +2094,7 @@ function tableau_html_eleves_du_groupe($id_groupe, $nb_col) {
 }
 
 /** Retourne un tableau HTML des groupes d'une classe dans telle matière
- * @param integer $id_classe : Identifiant de ckasse
+ * @param integer $id_classe : Identifiant de classe
  * @param string $matiere : Nom de matière
  *
  * @return string Tableau HTML de la liste des enseignements d'une matière donnée dans une classe
@@ -2160,4 +2226,64 @@ function tableau_html_groupe_matiere_telle_classe($id_classe, $matiere, $tab_grp
 		return "";
 	}
 }
+
+/** Retourne ce qui a été logué d'une mise à jour d'après Sconet
+ * @param integer $id_maj_sconet : Identifiant de la mise à jour loguée.
+ * @param integer $ts_maj_sconet : date de début de la mise à jour Sconet.
+ *
+ * @return string Retourne ce qui a été logué d'une mise à jour d'après Sconet
+ */
+function get_infos_maj_sconet($id_maj_sconet="", $ts_maj_sconet="") {
+	$retour="";
+	if($id_maj_sconet!="") {
+		$sql="SELECT * FROM log_maj_sconet WHERE id='$id_maj_sconet';";
+	}
+	elseif($ts_maj_sconet!="") {
+		$sql="SELECT * FROM log_maj_sconet WHERE date_debut='$ts_maj_sconet';";
+	}
+
+	if(isset($sql)) {
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$lig=mysql_fetch_object($res);
+			$retour.="<p>Mise à jour d'après Sconet lancée par ".civ_nom_prenom($lig->login)." le ".formate_date($lig->date_debut, "y");
+			if($lig->date_fin!="0000-00-00 00:00:00") {
+				$retour.=" et achevée le ".formate_date($lig->date_fin, "y");
+			}
+			else {
+				$retour.=" et <span style='color:red'>non achevée</span>\n";
+			}
+			$retour.=".</p>\n";
+
+			$retour.=$lig->texte;
+		}
+	}
+	return $retour;
+}
+
+/** Retourne la date et le login correspondant à la dernière màj sconet lancée
+ *
+ * @return string Retourne la date et le login correspondant à la dernière màj sconet lancée
+ */
+function get_infos_derniere_maj_sconet() {
+	$retour="";
+
+	$sql="SELECT * FROM log_maj_sconet ORDER BY date_debut DESC LIMIT 1;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$lig=mysql_fetch_object($res);
+		$retour.="<p>La précédente mise à jour d'après Sconet a été lancée par ".civ_nom_prenom($lig->login)." le ".formate_date($lig->date_debut, "y");
+		if($lig->date_fin!="0000-00-00 00:00:00") {
+			$retour.=" et achevée le ".formate_date($lig->date_fin, "y");
+		}
+		else {
+			$retour.=" et <span style='color:red'>non achevée</span>\n";
+		}
+		$retour.=".</p>\n";
+
+		//$retour.=$lig->texte;
+	}
+	return $retour;
+}
+
 ?>

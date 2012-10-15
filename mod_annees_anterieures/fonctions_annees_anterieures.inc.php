@@ -537,6 +537,13 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL,$ine=''){
 
 		if(mysql_num_rows($res_ant)==0){
 			echo "<p>Aucun résultat antérieur n'a été conservé pour cet élève.</p>\n";
+
+			$sql="SELECT 1=1 FROM eleves e WHERE e.login='$logineleve' AND e.no_gep!='NULL' AND e.no_gep!='';";
+			//echo "$sql<br />";
+			$test_ine=mysql_query($sql);
+			if(mysql_num_rows($test_ine)==0) {
+				echo "<p style='color:red'>Le numéro INE de cet élève n'est pas renseigné.</p>\n";
+			}
 		}
 		else{
 
@@ -565,7 +572,9 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL,$ine=''){
 				$res_ant2=mysql_query($sql);
 
 				if(mysql_num_rows($res_ant2)==0){
-					echo "<td>Aucun résultat antérieur n'a été conservé pour cet élève.</td>\n";
+					echo "<td>";
+					echo "Aucun résultat antérieur n'a été conservé pour cet élève.";
+					echo "</td>\n";
 				}
 				else{
 					$cpt=0;

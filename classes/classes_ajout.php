@@ -122,6 +122,17 @@ if (isset($is_posted) and ($is_posted == 1)) {
 							$sql="INSERT INTO j_eleves_classes VALUES('$login_eleve', '$id_classe', $i, '0');";
 							$reg_data = mysql_query($sql);
 							if (!($reg_data))  {$reg_ok = 'no';}
+							else {
+								// Ménage:
+								$sql="SELECT id FROM infos_actions WHERE titre LIKE 'Ajout dans une classe % effectuer pour %($login_eleve)';";
+								$res_actions=mysql_query($sql);
+								if(mysql_num_rows($res_actions)>0) {
+									while($lig_action=mysql_fetch_object($res_actions)) {
+										$menage=del_info_action($lig_action->id);
+										if(!$menage) {$msg.="Erreur lors de la suppression de l'action en attente en page d'accueil à propos de $login_eleve<br />";}
+									}
+								}
+							}
 						}
 
 		

@@ -10,7 +10,19 @@
 .fondRouge {
 	background-color: red;
 }
-	
+
+.fondBleu {
+	background-color: blue;
+}
+
+.fondJaune {
+	background-color: yellow;
+}
+
+.fondOrange {
+	background-color: orange;
+}
+
 .trombine {
 	max-width: 60px; 
 	max-height: 60px;

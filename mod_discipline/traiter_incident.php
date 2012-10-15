@@ -699,6 +699,11 @@ if(!isset($id_incident)) {
 
 	echo "<p align='center'><input type='submit' name='valider' value='Valider' /></p>\n";
 
+	$prof_is_pp="n";
+	if($_SESSION['statut']=='professeur') {
+		$prof_is_pp=is_pp($_SESSION['login']);
+	}
+
 	echo "<table class='boireaus' border='1' summary='Incidents'>\n";
 	echo "<tr>\n";
 	echo "<th>Id</th>\n";
@@ -709,8 +714,18 @@ if(!isset($id_incident)) {
 	if(($_SESSION['statut']=='professeur')) {
 		$sql="(SELECT DISTINCT si.date FROM s_incidents si, s_protagonistes sp WHERE (sp.login='".$_SESSION['login']."' OR si.declarant='".$_SESSION['login']."') AND sp.id_incident=si.id_incident)";
 
-		//$sql.=" UNION (SELECT DISTINCT si.date FROM s_incidents si, s_protagonistes sp, j_eleves_professeurs jep WHERE jep.login=sp.login AND jep.professeur='".$_SESSION['login']."' AND si.nature!='' AND sp.id_incident=si.id_incident)";
-		$sql.=" UNION (SELECT DISTINCT si.date FROM s_incidents si, s_protagonistes sp, j_eleves_professeurs jep WHERE jep.login=sp.login AND jep.professeur='".$_SESSION['login']."' AND sp.id_incident=si.id_incident)";
+		if($prof_is_pp) {
+			$sql.=" UNION (SELECT DISTINCT si.date FROM s_incidents si, s_protagonistes sp, j_eleves_professeurs jep WHERE jep.login=sp.login AND jep.professeur='".$_SESSION['login']."' AND sp.id_incident=si.id_incident)";
+		}
+
+		if(getSettingAOui('visuDiscProfGroupes')) {
+			$sql.=" UNION (SELECT DISTINCT si.date FROM s_incidents si, s_protagonistes sp, j_groupes_professeurs jgp, j_eleves_groupes jeg WHERE jeg.login=sp.login AND jeg.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' AND sp.id_incident=si.id_incident)";
+		}
+
+		if(getSettingAOui('visuDiscProfClasses')) {
+			$sql.=" UNION (SELECT DISTINCT si.date FROM s_incidents si, s_protagonistes sp, j_groupes_professeurs jgp, j_groupes_classes jgc, j_eleves_classes jec WHERE jec.login=sp.login AND jec.id_classe=jgc.id_classe AND jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' AND sp.id_incident=si.id_incident)";
+		}
+
 		//$sql.=" ORDER BY si.date DESC;";
 		$sql.=" ORDER BY date DESC;";
 	}
@@ -733,8 +748,18 @@ if(!isset($id_incident)) {
 	if(($_SESSION['statut']=='professeur')) {
 		$sql="(SELECT DISTINCT si.heure FROM s_incidents si, s_protagonistes sp WHERE (sp.login='".$_SESSION['login']."' OR si.declarant='".$_SESSION['login']."') AND sp.id_incident=si.id_incident)";
 
-		//$sql.=" UNION (SELECT DISTINCT si.heure FROM s_incidents si, s_protagonistes sp, j_eleves_professeurs jep WHERE jep.login=sp.login AND jep.professeur='".$_SESSION['login']."' AND si.nature!='' AND sp.id_incident=si.id_incident)";
-		$sql.=" UNION (SELECT DISTINCT si.heure FROM s_incidents si, s_protagonistes sp, j_eleves_professeurs jep WHERE jep.login=sp.login AND jep.professeur='".$_SESSION['login']."' AND sp.id_incident=si.id_incident)";
+		if($prof_is_pp) {
+			$sql.=" UNION (SELECT DISTINCT si.heure FROM s_incidents si, s_protagonistes sp, j_eleves_professeurs jep WHERE jep.login=sp.login AND jep.professeur='".$_SESSION['login']."' AND sp.id_incident=si.id_incident)";
+		}
+
+		if(getSettingAOui('visuDiscProfGroupes')) {
+			$sql.=" UNION (SELECT DISTINCT si.heure FROM s_incidents si, s_protagonistes sp, j_groupes_professeurs jgp, j_eleves_groupes jeg WHERE jeg.login=sp.login AND jeg.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' AND sp.id_incident=si.id_incident)";
+		}
+
+		if(getSettingAOui('visuDiscProfClasses')) {
+			$sql.=" UNION (SELECT DISTINCT si.heure FROM s_incidents si, s_protagonistes sp, j_groupes_professeurs jgp, j_groupes_classes jgc, j_eleves_classes jec WHERE jec.login=sp.login AND jec.id_classe=jgc.id_classe AND jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' AND sp.id_incident=si.id_incident)";
+		}
+
 		//$sql.=" ORDER BY si.heure ASC;";
 		$sql.=" ORDER BY heure ASC;";
 	}
@@ -804,7 +829,19 @@ if(!isset($id_incident)) {
 		//$sql.=" UNION (SELECT DISTINCT si.nature FROM s_incidents si, s_protagonistes sp, j_eleves_professeurs jep WHERE jep.login=sp.login AND jep.professeur='".$_SESSION['login']."' AND si.nature!='' AND sp.id_incident=si.id_incident)";
 
 		$sql="(SELECT DISTINCT si.nature FROM s_incidents si, s_protagonistes sp WHERE (sp.login='".$_SESSION['login']."' OR si.declarant='".$_SESSION['login']."') AND sp.id_incident=si.id_incident)";
-		$sql.=" UNION (SELECT DISTINCT si.nature FROM s_incidents si, s_protagonistes sp, j_eleves_professeurs jep WHERE jep.login=sp.login AND jep.professeur='".$_SESSION['login']."' AND sp.id_incident=si.id_incident)";
+
+		if($prof_is_pp) {
+			$sql.=" UNION (SELECT DISTINCT si.nature FROM s_incidents si, s_protagonistes sp, j_eleves_professeurs jep WHERE jep.login=sp.login AND jep.professeur='".$_SESSION['login']."' AND sp.id_incident=si.id_incident)";
+		}
+
+		if(getSettingAOui('visuDiscProfGroupes')) {
+			$sql.=" UNION (SELECT DISTINCT si.nature FROM s_incidents si, s_protagonistes sp, j_groupes_professeurs jgp, j_eleves_groupes jeg WHERE jeg.login=sp.login AND jeg.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' AND sp.id_incident=si.id_incident)";
+		}
+
+		if(getSettingAOui('visuDiscProfClasses')) {
+			$sql.=" UNION (SELECT DISTINCT si.nature FROM s_incidents si, s_protagonistes sp, j_groupes_professeurs jgp, j_groupes_classes jgc, j_eleves_classes jec WHERE jec.login=sp.login AND jec.id_classe=jgc.id_classe AND jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' AND sp.id_incident=si.id_incident)";
+		}
+
 		//$sql.=" ORDER BY si.nature ASC;";
 		$sql.=" ORDER BY nature ASC;";
 	}
@@ -814,7 +851,7 @@ if(!isset($id_incident)) {
 	}
 	$res_natures=mysql_query($sql);
 	while($lig_nature=mysql_fetch_object($res_natures)) {
-		echo "<option value='$lig_nature->nature'";
+		echo "<option value=\"$lig_nature->nature\"";
 		if($nature_incident==$lig_nature->nature) {echo " selected='selected'";}
 		if($lig_nature->nature!='') {
 			//echo ">".$lig_nature->nature."</option>\n";
@@ -849,32 +886,54 @@ if(!isset($id_incident)) {
 		if(($_SESSION['statut']=='professeur') ||($_SESSION['statut']=='autre')){
 			$affiche_option_protagoniste="n";
 
-			$sql="SELECT 1=1 FROM j_eleves_professeurs jep WHERE jep.professeur='".$_SESSION['login']."' AND jep.login='$lig_protagoniste->login';";
-			//echo "$sql<br />";
-			$res_test=mysql_query($sql);
-			if(mysql_num_rows($res_test)>0) {
-				$affiche_option_protagoniste="y";
+			if(getSettingAOui('visuDiscProfGroupes')) {
+				$sql="SELECT 1=1 FROM j_groupes_professeurs jgp, j_eleves_groupes jeg WHERE jgp.login='".$_SESSION['login']."' AND jgp.id_groupe=jeg.id_groupe AND jeg.login='".$lig_protagoniste->login."';";
+				//$chaine_tmp_debug.="$sql<br />";
+				$res_test=mysql_query($sql);
+				if(mysql_num_rows($res_test)>0) {
+					$affiche_option_protagoniste="y";
+				}
 			}
-			else {
-				$sql="SELECT si.id_incident FROM s_protagonistes sp, s_incidents si WHERE sp.id_incident=si.id_incident AND sp.login='$lig_protagoniste->login';";
+
+			if($affiche_option_protagoniste=="n") {
+				if(getSettingAOui('visuDiscProfClasses')) {
+					$sql="SELECT 1=1 FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_eleves_classes jec WHERE jgp.login='".$_SESSION['login']."' AND jgp.id_groupe=jgc.id_groupe AND jec.id_classe=jgc.id_classe AND jec.login='".$lig_protagoniste->login."';";
+					//$chaine_tmp_debug.="$sql<br />";
+					$res_test=mysql_query($sql);
+					if(mysql_num_rows($res_test)>0) {
+						$affiche_option_protagoniste="y";
+					}
+				}
+			}
+
+			if($affiche_option_protagoniste=="n") {
+				$sql="SELECT 1=1 FROM j_eleves_professeurs jep WHERE jep.professeur='".$_SESSION['login']."' AND jep.login='$lig_protagoniste->login';";
 				//echo "$sql<br />";
 				$res_test=mysql_query($sql);
 				if(mysql_num_rows($res_test)>0) {
-					while($lig_test=mysql_fetch_object($res_test)) {
-						$sql="SELECT 1=1 FROM s_protagonistes sp WHERE sp.id_incident='$lig_test->id_incident' AND sp.login='".$_SESSION['login']."';";
-						//echo "$sql<br />";
-						$res_test2=mysql_query($sql);
-						if(mysql_num_rows($res_test2)>0) {
-							$affiche_option_protagoniste="y";
-							break;
-						}
-						else {
-							$sql="SELECT 1=1 FROM s_incidents si WHERE si.id_incident='$lig_test->id_incident' AND si.declarant='".$_SESSION['login']."';";
+					$affiche_option_protagoniste="y";
+				}
+				else {
+					$sql="SELECT si.id_incident FROM s_protagonistes sp, s_incidents si WHERE sp.id_incident=si.id_incident AND sp.login='$lig_protagoniste->login';";
+					//echo "$sql<br />";
+					$res_test=mysql_query($sql);
+					if(mysql_num_rows($res_test)>0) {
+						while($lig_test=mysql_fetch_object($res_test)) {
+							$sql="SELECT 1=1 FROM s_protagonistes sp WHERE sp.id_incident='$lig_test->id_incident' AND sp.login='".$_SESSION['login']."';";
 							//echo "$sql<br />";
 							$res_test2=mysql_query($sql);
 							if(mysql_num_rows($res_test2)>0) {
 								$affiche_option_protagoniste="y";
 								break;
+							}
+							else {
+								$sql="SELECT 1=1 FROM s_incidents si WHERE si.id_incident='$lig_test->id_incident' AND si.declarant='".$_SESSION['login']."';";
+								//echo "$sql<br />";
+								$res_test2=mysql_query($sql);
+								if(mysql_num_rows($res_test2)>0) {
+									$affiche_option_protagoniste="y";
+									break;
+								}
 							}
 						}
 					}
@@ -901,11 +960,13 @@ if(!isset($id_incident)) {
 	echo "</select>\n";
 	//echo "$sql<br />";
 
+	//$chaine_tmp_debug="";
 	//if($_SESSION['statut']!='professeur') {
 		echo " ";
 		echo "<select name='id_classe_incident' onchange=\"document.formulaire.submit();\">\n";
 		echo "<option value=''>---</option>\n";
 		$sql="SELECT DISTINCT c.id,c.classe FROM s_protagonistes sp, j_eleves_classes jec, classes c WHERE sp.login=jec.login AND jec.id_classe=c.id ORDER BY c.classe ASC;";
+		//$chaine_tmp_debug.="$sql<br />";
 		$res_classes=mysql_query($sql);
 		while($lig_classe=mysql_fetch_object($res_classes)) {
 			$affiche_option_classe="y";
@@ -913,24 +974,35 @@ if(!isset($id_incident)) {
 			if($_SESSION['statut']=='professeur') {
 				$affiche_option_classe="n";
 
-				$sql="SELECT 1=1 FROM j_eleves_professeurs jep, j_eleves_classes jec WHERE jep.professeur='".$_SESSION['login']."' AND jep.login=jec.login AND jec.id_classe='".$lig_classe->id."';";
-				$res_test=mysql_query($sql);
-				if(mysql_num_rows($res_test)>0) {
-					$affiche_option_classe="y";
+				if((getSettingAOui('visuDiscProfClasses'))||(getSettingAOui('visuDiscProfGroupes'))) {
+					$sql="SELECT 1=1 FROM j_groupes_professeurs jgp, j_groupes_classes jgc WHERE jgp.login='".$_SESSION['login']."' AND jgp.id_groupe=jgc.id_groupe AND jgc.id_classe='".$lig_classe->id."';";
+					//$chaine_tmp_debug.="$sql<br />";
+					$res_test=mysql_query($sql);
+					if(mysql_num_rows($res_test)>0) {
+						$affiche_option_classe="y";
+					}
 				}
-				else {
-					// REQUETE A REVOIR:
-					$sql="SELECT si.id_incident FROM s_protagonistes sp, s_incidents si, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE sp.id_incident=si.id_incident AND jgp.id_groupe=jgc.id_groupe AND jgp.login=sp.login AND sp.login='".$_SESSION['login']."' AND jgc.id_classe='".$lig_classe->id."';";
+
+				if($affiche_option_classe=="n") {
+					$sql="SELECT 1=1 FROM j_eleves_professeurs jep, j_eleves_classes jec WHERE jep.professeur='".$_SESSION['login']."' AND jep.login=jec.login AND jec.id_classe='".$lig_classe->id."';";
 					$res_test=mysql_query($sql);
 					if(mysql_num_rows($res_test)>0) {
 						$affiche_option_classe="y";
 					}
 					else {
-						$sql="SELECT si.id_incident FROM s_protagonistes sp, s_incidents si, j_groupes_classes jgc, j_groupes_professeurs jgp, j_eleves_classes jec WHERE jgp.id_groupe=jgc.id_groupe AND jgp.login=si.declarant AND si.declarant='".$_SESSION['login']."' AND jgc.id_classe='".$lig_classe->id."' AND sp.id_incident=si.id_incident AND sp.login=jec.login AND jec.id_classe=jgc.id_classe;";
-						//echo "$sql<br />";
+						// REQUETE A REVOIR:
+						$sql="SELECT si.id_incident FROM s_protagonistes sp, s_incidents si, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE sp.id_incident=si.id_incident AND jgp.id_groupe=jgc.id_groupe AND jgp.login=sp.login AND sp.login='".$_SESSION['login']."' AND jgc.id_classe='".$lig_classe->id."';";
 						$res_test=mysql_query($sql);
 						if(mysql_num_rows($res_test)>0) {
 							$affiche_option_classe="y";
+						}
+						else {
+							$sql="SELECT si.id_incident FROM s_protagonistes sp, s_incidents si, j_groupes_classes jgc, j_groupes_professeurs jgp, j_eleves_classes jec WHERE jgp.id_groupe=jgc.id_groupe AND jgp.login=si.declarant AND si.declarant='".$_SESSION['login']."' AND jgc.id_classe='".$lig_classe->id."' AND sp.id_incident=si.id_incident AND sp.login=jec.login AND jec.id_classe=jgc.id_classe;";
+							//echo "$sql<br />";
+							$res_test=mysql_query($sql);
+							if(mysql_num_rows($res_test)>0) {
+								$affiche_option_classe="y";
+							}
 						}
 					}
 				}
@@ -944,6 +1016,7 @@ if(!isset($id_incident)) {
 			}
 		}
 		echo "</select>\n";
+	//echo $chaine_tmp_debug;
 	//}
 	echo "</th>\n";
 

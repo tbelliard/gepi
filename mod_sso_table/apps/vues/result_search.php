@@ -25,8 +25,8 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 };
 ?>
 [onload;file=maj.php]
-<p>Résultats de la recherche</p>
 <table width="80%" border="1" align="center" cellpadding="2" cellspacing="0">
+    <caption>Résultats de la recherche</caption>
   <tr bgcolor="#CACACA">
     <td width="30%"><strong>Login gépi</strong></td>
     <td width="30%"><strong>Nom</strong></td>

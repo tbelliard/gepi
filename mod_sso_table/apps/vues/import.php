@@ -25,7 +25,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 };
 ?>
 [onload;file=menu.php]
-<p>Vous allez mettre en place les correspondances entre les logins de g&eacute;pi et ceux d'un logiciel tiers :</p>
+<p>Vous allez mettre en place les correspondances entre les logins de gépi et ceux d'un logiciel tiers :</p>
 <p class="title-page">Veuillez fournir le fichier csv :</p>
 <form action="index.php?ctrl=import&action=result" enctype='multipart/form-data' method="post">
     <p>
@@ -34,7 +34,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
         <input type="radio" name="choix" value="ecrit" />Inscription dans la base : toutes les entrées sont traitées puis listées avec leur état. Les données sont écrites dans la base <br/>
     </p>
     <input type='file'  name='fichier'  />
-    <input type='submit' value='T&eacute;lechargement' />
+    <input type='submit' value='Télechargement' />
 </form>
 </body>
 </html>

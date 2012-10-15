@@ -123,7 +123,7 @@ function menage_utilisateurs_eleves() {
 //======================================================
 
 //$total_etapes = 8;
-$total_etapes = 15;
+$total_etapes = 16;
 $duree = 8;
 if (!isset($_GET['cpt'])) {
 	$cpt = 0;
@@ -1158,7 +1158,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 
 	$temoin_aberrations_groupes=0;
 
-	$table=array('j_signalement', 'j_groupes_classes','j_groupes_matieres','j_groupes_professeurs','j_eleves_groupes');
+	$table=array('j_signalement', 'j_groupes_classes','j_groupes_matieres','j_groupes_professeurs','j_eleves_groupes', 'j_groupes_visibilite', 'acces_cdt_groupes');
 
 	if(!isset($_POST['nettoyage_grp'])) {
 		$texte_info_action="<h2>Nettoyage des aberrations sur les groupes</h2>\n";
@@ -1819,6 +1819,55 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="11")) or (isset($_GET['maj'
 	echo "<input type=\"hidden\" name='mode_auto' value='$mode_auto' />\n";
 
 	echo "<input type='hidden' name='is_confirmed' value='yes' />\n";
+	echo "<input type='hidden' name='maj' value='12' />\n";
+	echo "<input type=\"hidden\" name=\"id_info\" value=\"$id_info\" />\n";
+
+	echo "<input type='submit' name='suite' value='Poursuivre' />\n";
+	echo "</form>\n";
+
+	echo script_suite_submit();
+
+/*
+	echo "<hr />\n";
+	echo "<h2 align=\"center\">Fin de la vérification des tables</h2>\n";
+*/
+
+}
+elseif ((isset($_POST['maj']) and (($_POST['maj'])=="12")) or (isset($_GET['maj']) and (($_GET['maj'])=="12"))) {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
+	echo "<h2 align=\"center\">Etape 12/$total_etapes</h2>\n";
+
+	$texte_info_action="<h2>Suppression des adresses responsables non associées</h2>\n";
+
+	$sql="select 1=1 from resp_adr where adr_id not in (select distinct adr_id from resp_pers);";
+	$test=mysql_query($sql);
+	$nb_scories=mysql_num_rows($test);
+	if($nb_scories==0) {
+		$texte_info_action.="<p>Toutes les adresses sont associées à des responsables.</p>\n";
+	}
+	else {
+		$texte_info_action.="<p>$nb_scories adresses ne sont pas associées à des responsables&nbsp;: ";
+
+		$sql="delete from resp_adr where adr_id not in (select distinct adr_id from resp_pers);";
+		$del=mysql_query($sql);
+		if($del) {$texte_info_action.="<span style='color:green'>Nettoyées</span>";}
+		else {$texte_info_action.="<span style='color:red'>Echec du nettoyage</span>";}
+		$texte_info_action.="</p>\n";
+	}
+
+	echo $texte_info_action;
+	update_infos_action_nettoyage($id_info, $texte_info_action);
+
+	//=====================================
+
+	echo "<form action=\"clean_tables.php\" name='formulaire' method=\"post\">\n";
+	echo add_token_field();
+	echo "<input type=\"hidden\" name='mode_auto' value='$mode_auto' />\n";
+
+	echo "<input type='hidden' name='is_confirmed' value='yes' />\n";
 	echo "<input type='hidden' name='maj' value='check_jec_jep_point' />\n";
 	echo "<input type=\"hidden\" name=\"id_info\" value=\"$id_info\" />\n";
 
@@ -1974,7 +2023,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 	if (isset($_POST['is_confirmed']) and $_POST['is_confirmed'] == "yes") {
 		if($_POST['maj']=='check_jec_jep_point') {
-			$texte_info_action="<h2 align=\"center\">Etape 12/$total_etapes<br />Vérification des tables 'j_eleves_cpe' et 'j_eleves_professeurs'</h2>\n";
+			$texte_info_action="<h2 align=\"center\">Etape 13/$total_etapes<br />Vérification des tables 'j_eleves_cpe' et 'j_eleves_professeurs'</h2>\n";
 		}
 		else {
 			$texte_info_action="<h2>Vérification des tables 'j_eleves_cpe' et 'j_eleves_professeurs'</h2>\n";
@@ -2360,7 +2409,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	echo "</p>\n";
 
 	if((isset($_POST['maj']))&&($_POST['maj']=='verif_interclassements')) {
-		$texte_info_action="<h2 align=\"center\">Etape 13/$total_etapes<br />Vérification des interclassements</h2>\n";
+		$texte_info_action="<h2 align=\"center\">Etape 14/$total_etapes<br />Vérification des interclassements</h2>\n";
 	}
 	else {
 		$texte_info_action="<h2>Vérification des interclassements</h2>\n";
@@ -2397,6 +2446,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			//$texte_info_action.="\$tab[0]=$tab[0]<br />\n";
 			//$sql="show fields from $tab[0] where type like 'varchar%' or type like 'char%';";
 			$sql="show full columns from $tab[0] where type like 'varchar%' or type like 'char%';";
+			//$sql="show full columns from $tab[0];";
 			$res_champs=mysql_query($sql);
 			$nb_champs=mysql_num_rows($res_champs);
 			$texte_info_action.="<tr class='lig$alt'>";
@@ -2426,6 +2476,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 					}
 				}
 				*/
+				//if($lig_champ->Collation!='utf8_general_ci' && $lig_champ->Collation!=NULL) {
 				if($lig_champ->Collation!='utf8_general_ci') {
 					$texte_info_action.="<span style='color:red'>".$lig_champ->Collation."</span>";
 					$texte_info_action.="<br /><a href='".$_SERVER['PHP_SELF']."?maj=corriger_interclassements&amp;table=$tab[0]".add_token_in_url()."'>Corriger</a>";
@@ -2433,12 +2484,14 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				else {
 					$texte_info_action.=$lig_champ->Collation;
 				}
+				//if(!in_array($lig_champ->Collation,$tab_collations) && $lig_champ->Collation!=NULL) {$tab_collations[]=$lig_champ->Collation;}
 				if(!in_array($lig_champ->Collation,$tab_collations)) {$tab_collations[]=$lig_champ->Collation;}
 				$texte_info_action.="</td>";
 				$texte_info_action.="</tr>";
 				$cpt++;
 			}
 			if($cpt==0) {
+				//$texte_info_action.="<td colspan='3'>Aucun champ</td>";
 				$texte_info_action.="<td colspan='3'>Aucun champ VARCHAR ni CHAR</td>";
 				$texte_info_action.="</tr>";
 			}
@@ -2562,7 +2615,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	echo "</p>\n";
 
 	if((isset($_POST['maj']))&&($_POST['maj']=='corrige_ordre_matieres_professeurs')) {
-		$texte_info_action="<h2 align=\"center\">Etape 14/$total_etapes<br />Vérification de l'ordre des matières des professeurs</h2>\n";
+		$texte_info_action="<h2 align=\"center\">Etape 15/$total_etapes<br />Vérification de l'ordre des matières des professeurs</h2>\n";
 	}
 	else {
 		$texte_info_action="<h2>Vérification de l'ordre des matières des professeurs</h2>\n";
@@ -2634,7 +2687,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	echo "</p>\n";
 
 	if((isset($_POST['maj']))&&($_POST['maj']=='controle_categories_matieres')) {
-		$texte_info_action="<h2 align=\"center\">Etape 15/$total_etapes<br />Vérification des catégories de matières</h2>\n";
+		$texte_info_action="<h2 align=\"center\">Etape 16/$total_etapes<br />Vérification des catégories de matières</h2>\n";
 	}
 	else {
 		$texte_info_action="<h2>Vérification des catégories de matières</h2>\n";
@@ -3318,6 +3371,7 @@ else {
 		echo "<a href='clean_tables.php?maj=9".add_token_in_url()."'>Tables concernant les groupes</a> (<i>associations élèves/enseignements/périodes/classes</i>)<br />\n";
 		echo "<a href='clean_tables.php?maj=10".add_token_in_url()."'>Tables concernant les comptes élèves et responsables</a><br />\n";
 		echo "<a href='clean_tables.php?maj=11".add_token_in_url()."'>Tables concernant les grilles PDF.</a><br />\n";
+		echo "<a href='clean_tables.php?maj=12".add_token_in_url()."'>Supprimer les adresses responsables non associées</a><br />\n";
 		echo "<a href='clean_tables.php?maj=check_jec_jep_point".add_token_in_url()."'>Contrôle des tables j_eleves_cpe et j_eleves_professeurs.</a><br />\n";
 		echo "<a href='clean_tables.php?maj=verif_interclassements".add_token_in_url()."'>Vérification des interclassements (<em>collation,...</em>).</a><br />\n";
 		echo "<a href='clean_tables.php?maj=corrige_ordre_matieres_professeurs".add_token_in_url()."'>Vérification de l'ordre des matières pour les professeurs.</a><br />\n";
@@ -3380,6 +3434,7 @@ else {
 		echo "<center>\n";
 		echo "<input type=submit value=\"Contrôler les interclassements\" />\n";
 		echo "<input type='hidden' name='action' value='verif_interclassements' />\n";
+		echo "</center>\n";
 		echo "</form>\n";
 		
 		echo "<hr />\n";
@@ -3390,6 +3445,7 @@ else {
 		echo "<center>\n";
 		echo "<input type=submit value=\"Corriger les interclassements\" />\n";
 		echo "<input type='hidden' name='action' value='corriger_interclassements' />\n";
+		echo "</center>\n";
 		echo "</form>\n";
 	
 		echo "<hr />\n";
@@ -3400,6 +3456,7 @@ else {
 		echo "<center>\n";
 		echo "<input type=submit value=\"Corriger les ordres de matières des professeurs\" />\n";
 		echo "<input type='hidden' name='action' value='corrige_ordre_matieres_professeurs' />\n";
+		echo "</center>\n";
 		echo "</form>\n";
 	
 		echo "<hr />\n";
@@ -3410,6 +3467,7 @@ else {
 		echo "<center>\n";
 		echo "<input type=submit value=\"Contrôler les catégories de matières\" />\n";
 		echo "<input type='hidden' name='action' value='controle_categories_matieres' />\n";
+		echo "</center>\n";
 		echo "</form>\n";
 
 		echo "<hr />\n";
@@ -3420,6 +3478,7 @@ else {
 		echo "<center>\n";
 		echo "<input type=submit value=\"Nettoyage des tables du module Discipline\" />\n";
 		echo "<input type='hidden' name='action' value='nettoyage_mod_discipline' />\n";
+		echo "</center>\n";
 		echo "</form>\n";
 
 		echo "<hr />\n";
@@ -3430,6 +3489,7 @@ else {
 		echo "<center>\n";
 		echo "<input type=submit value=\"Nettoyage des tables du cahier de textes\" />\n";
 		echo "<input type='hidden' name='action' value='nettoyage_cdt' />\n";
+		echo "</center>\n";
 		echo "</form>\n";
 	
 

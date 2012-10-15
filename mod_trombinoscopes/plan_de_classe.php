@@ -4,7 +4,7 @@
  * 
  * $Id$
  *
- * @copyright Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * @copyright Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  * 
  * @package Trombinoscopes
  * @subpackage Conteneur
@@ -145,6 +145,20 @@ if(!isset($id_groupe)) {
 	}
 	echo "</table>\n";
 
+	$trombi_plan_titre=getPref($_SESSION['login'], 'trombi_plan_titre', 'login');
+	echo "<p>En titre au-dessus des photos, faire apparaître&nbsp;:<br />";
+	echo "<input type='radio' name='trombi_plan_titre' id='trombi_plan_titre_login' value='login' ";
+	if($trombi_plan_titre=='login') {echo "checked ";}
+	echo "/><label for='trombi_plan_titre_login'>le login</label><br />\n";
+
+	echo "<input type='radio' name='trombi_plan_titre' id='trombi_plan_titre_nom' value='nom' ";
+	if($trombi_plan_titre=='nom') {echo "checked ";}
+	echo "/><label for='trombi_plan_titre_nom'>le nom</label><br />\n";
+
+	echo "<input type='radio' name='trombi_plan_titre' id='trombi_plan_titre_prenom' value='prenom' ";
+	if($trombi_plan_titre=='prenom') {echo "checked ";}
+	echo "/><label for='trombi_plan_titre_prenom'>le prénom</label><br />\n";
+	echo "de l'élève.</p>\n";
 	echo "<p><input type='submit' name='Valider' value='Valider' /></p>\n";
 	echo "</form>\n";
 
@@ -167,6 +181,10 @@ $dim_photo=isset($_POST['dim_photo_'.$id_groupe]) ? $_POST['dim_photo_'.$id_grou
 $dim_photo=preg_replace('/[^0-9]/','',$dim_photo);
 if(($dim_photo=="")||($dim_photo==0)) {$dim_photo=100;}
 
+if(in_array($_POST['trombi_plan_titre'],array('login', 'nom', 'prenom'))) {
+	savePref($_SESSION['login'] ,"trombi_plan_titre", $_POST['trombi_plan_titre']);
+}
+$trombi_plan_titre=getPref($_SESSION['login'], 'trombi_plan_titre', 'login');
 
 $sql="SELECT * FROM t_plan_de_classe WHERE id_groupe='$id_groupe' AND login_prof='".$_SESSION['login']."';";
 $res=mysql_query($sql);
@@ -231,7 +249,7 @@ if(isset($_POST['enregistrer_position'])) {
 
 
 $current_group=get_group($id_groupe);
-echo "<h1 style='text-align:center; margin-top: 0.2em;'>".$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']."</h1>";
+//echo "<h1 style='text-align:center; margin-top: 0.2em;'>".$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']."</h1>";
 
 $grp_order_by="c.classe, e.nom, e.prenom";
 
@@ -248,7 +266,14 @@ ORDER BY $grp_order_by;";
 //echo "$sql<br />";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	echo "<p>Erreur lors de la requête $sql</p>\n";
+	echo "<h1 style='text-align:center; margin-top: 0.2em;'>".$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']."</h1>";
+
+	echo "<div style='position:absolute; top:0.5em; left:0.5em; width:5em; text-align:center;'>\n";
+	echo "<a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a><br />\n";
+	echo "</div>\n";
+
+	//echo "<p>Erreur lors de la requête $sql</p>\n";
+	echo "<p>Le groupe proposé a l'air de ne comporter aucun élève.<br />Si cela vous semble erroné, contactez l'administrateur.</p>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -283,9 +308,39 @@ imageDestroy($img);
 //================================
 
 echo "<form action='".$_SERVER['PHP_SELF']."' name='form_reg_pos' method='post'>\n";
+echo "<div style='float:right; width:40px;'>\n";
+	echo "<div style='position:relative; top:18px; left:0px;'>\n";
+	echo "<a href='javascript:decale_photos(-10,0)' title='Décaler les photos vers la gauche'>";
+	echo "<img src='../images/arrow_left.png' width='18' height='18' />";
+	echo "</a>";
+	echo "</div\n>";
+
+	echo "<div style='position:relative; top:-14px; left:18px;'>\n";
+	echo "<a href='javascript:decale_photos(0,-10)' title='Décaler les photos vers le haut'>";
+	echo "<img src='../images/up.png' width='18' height='18' />";
+	echo "</a>";
+	echo "<br />";
+	echo "<a href='javascript:decale_photos(0,10)' title='Décaler les photos vers le bas'>";
+	echo "<img src='../images/down.png' width='18' height='18' />";
+	echo "</a>";
+	echo "</div\n>";
+
+	echo "<div style='position:relative; top:-50px; left:35px;'>\n";
+	echo "<a href='javascript:decale_photos(10,0)' title='Décaler les photos vers la droite'>";
+	echo "<img src='../images/arrow_right.png' width='18' height='18' />";
+	echo "</a>";
+	echo "</div\n>";
+echo "</div\n>";
+
+echo "<h1 style='text-align:center; margin-top: 0.2em;'>".$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']."</h1>";
+
 echo "<div style='position:absolute; top:0.5em; left:0.5em; width:5em; text-align:center;'>\n";
 echo "<a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a><br />\n";
 echo "<input type='button' name='Enregistrer' value='Enregistrer' class='noprint' onclick='enregistrement_position_div_photo()' />\n";
+
+echo "<br />";
+echo "<a href='javascript:decale_photos(10,0)'>Clic</a>";
+
 echo "</div>\n";
 
 echo add_token_field();
@@ -335,7 +390,10 @@ while($lig=mysql_fetch_object($res)) {
 	}
 
 	$texte.="' style='border: 0px; width: ".$valeur[0]."px; height: ".$valeur[1]."px;' alt=\"".$alt_nom_prenom_aff."\" title=\"".$alt_nom_prenom_aff."\" />\n";
-	$titre="$lig->login";
+
+	//$titre="$lig->login";
+	$titre=$lig->$trombi_plan_titre;
+
 	echo creer_div_infobulle("div_".$lig->login,$titre,"",$texte,"",$valeur[0],"","y","n","n","n",1000);
 	$chaine_affichage_div.="document.getElementById('div_".$lig->login."').style.display='';\n";
 
@@ -373,6 +431,31 @@ echo "<script type='text/javascript'>
 		}
 
 		document.form_reg_pos.submit();
+	}
+
+	function decale_photos(dx, dy) {
+		for(i=0;i<tab_ele.length;i++) {
+			if(document.getElementById('div_'+tab_ele[i])) {
+				/*
+				if(i<2) {
+					alert('x['+i+']='+document.getElementById('div_'+tab_ele[i]).style.left);
+					alert('Nettoyé x['+i+']='+document.getElementById('div_'+tab_ele[i]).style.left.replace('px',''));
+				}
+				*/
+				x=document.getElementById('div_'+tab_ele[i]).style.left.replace('px','');
+				x=eval(eval(x)+eval(dx));
+				/*
+				if(i<2) {
+					alert('Augmenté x['+i+']='+x);
+				}
+				*/
+				y=document.getElementById('div_'+tab_ele[i]).style.top.replace('px','');
+				y=eval(eval(y)+eval(dy));
+
+				document.getElementById('div_'+tab_ele[i]).style.left=x+'px';
+				document.getElementById('div_'+tab_ele[i]).style.top=y+'px';
+			}
+		}
 	}
 
 </script>\n";

@@ -628,6 +628,8 @@ echo " | <a href='../groupes/repartition_ele_grp.php' onclick=\"return confirm_a
 
 echo " | <a href='../init_xml2/init_alternatif.php?cat=classes' onclick=\"return confirm_abandon (this, change, '$themessage')\">Création par lots</a>";
 
+echo " | <a href='../classes/classes_param.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramétrage par lots</a>";
+
 echo "</p>\n";
 echo "</form>\n";
 
@@ -682,6 +684,9 @@ echo "</tr>\n</table>\n";
 //==============================
 
 echo "<input type='hidden' name='id_classe' value='" . $id_classe . "' />\n";
+
+echo "<div style='float:right; width:15px;'><a href='../classes/classes_param.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' title=\"Si vous devez créer plusieurs enseignements d'une même matière, vous gagnerez sans doute du temps à effectuer la création via un Paramétrage par lots\" /></a></div>";
+
 echo "<input type='submit' value='Créer' />\n";
 echo "</fieldset>\n";
 echo "</form>\n";
@@ -1032,7 +1037,7 @@ for($i=0;$i<10;$i++){
 
 		if(($display_mat_cat=='y')&&($current_group["classes"]["classes"][$id_classe]["categorie_id"]=="0")) {
 			//echo "<br />\n";
-			$message_categorie_aucune="La matière n apparaitra pas sur les bulletins et relevés de notes. Voir http://www.sylogix.org/wiki/gepi/Enseignement_invisible";
+			$message_categorie_aucune="La matière n apparaitra pas sur les bulletins et relevés de notes. Voir http://www.sylogix.org/gepi/wiki/Enseignement_invisible";
 			//echo "<img src='../images/icons/ico_attention.png' width='22' height='19' alt='$message_categorie_aucune' title='$message_categorie_aucune' />\n";
 
 			echo "<a href='#' onclick=\"afficher_div('enseignement_invisible','y',-100,20);return false;\"";

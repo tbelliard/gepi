@@ -116,7 +116,8 @@ $liste_tables_del_etape_eleves = array(
 "s_travail",
 "s_travail_mesure",
 // Table optionnelle pour les fils RSS de CDT
-"rss_users"
+"rss_users",
+"log_maj_sconet"
 );
 
 // Etape de l'import des matières
@@ -180,7 +181,8 @@ $liste_tables_del_etape_resp = array(
 "resp_pers",
 "resp_adr",
 "tempo2",
-"tempo"
+"tempo",
+"log_maj_sconet"
 );
 
 // Etape de l'import des professeurs

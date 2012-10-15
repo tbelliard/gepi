@@ -91,7 +91,9 @@ include("menu_plugins.inc.php");
 		$menus .= '    <li><a href="'.$gepiPath.'/gestion/accueil_sauve.php" '.insert_confirm_abandon().'>Sauvegardes</a></li>'."\n";
 		$menus .= '    <li><a href="'.$gepiPath.'/utilitaires/maj.php" '.insert_confirm_abandon().'>Mise à jour de la base</a></li>'."\n";
 		$menus .= '    <li><a href="'.$gepiPath.'/utilitaires/clean_tables.php" '.insert_confirm_abandon().'>Nettoyage de la base</a></li>'."\n";
-		$menus .= '    <li><a href="'.$gepiPath.'/gestion/efface_base.php" '.insert_confirm_abandon().'>Effacer la base</a></li>'."\n";
+		if(!getSettingAOui('gepi_en_production')) {
+			$menus .= '    <li><a href="'.$gepiPath.'/gestion/efface_base.php" '.insert_confirm_abandon().'>Effacer la base</a></li>'."\n";
+		}
 		$menus .= '    <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes_admin.php#purge" '.insert_confirm_abandon().'>Effacer les photos</a></li>'."\n";
 		$menus .= '    <li><a href="'.$gepiPath.'/gestion/gestion_temp_dir.php" '.insert_confirm_abandon().'>Dossiers temp.</a></li>'."\n";
 		$menus .= '</ul>'."\n";
@@ -146,7 +148,9 @@ include("menu_plugins.inc.php");
 		$menus .= '        <li><a href="'.$gepiPath.'/aid/index.php" '.insert_confirm_abandon().'>AID</a></li>'."\n";
 
 		$menus .= '        <li><a href="'.$gepiPath.'/etablissements/index.php" '.insert_confirm_abandon().'>Etablissements</a></li>'."\n";
-		$menus .= '        <li><a href="'.$gepiPath.'/gestion/gestion_base_test.php" '.insert_confirm_abandon().'>Données de tests</a></li>'."\n";
+		if(!getSettingAOui('gepi_en_production')) {
+			$menus .= '        <li><a href="'.$gepiPath.'/gestion/gestion_base_test.php" '.insert_confirm_abandon().'>Données de tests</a></li>'."\n";
+		}
 		$menus .= '  </ul>'."\n";
 		$menus .= '</li>'."\n";
 		$menus .= '<li class="li_inline"><a href="#">&nbsp;Modules</a>'."\n";
@@ -182,8 +186,14 @@ include("menu_plugins.inc.php");
 			$menus .= '  <li><a href="'.$gepiPath.'/mod_absences/gestion/voir_absences_viescolaire.php" '.insert_confirm_abandon().'>Absences</a></li>'."\n";
 		}
 
-		$menus .= '  <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes.php" '.insert_confirm_abandon().'>Trombinoscopes</a></li>'."\n";
-		$menus .= '  <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php" '.insert_confirm_abandon().'>Emplois du temps</a></li>'."\n";
+		if(getSettingAOui('active_module_trombinoscopes')) {
+			$menus .= '  <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes.php" '.insert_confirm_abandon().'>Trombinoscopes</a></li>'."\n";
+		}
+
+		if((getSettingAOui('autorise_edt_tous'))||(getSettingAOui('autorise_edt_admin'))||(getSettingAOui('autorise_edt_eleve'))) {
+			$menus .= '  <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php" '.insert_confirm_abandon().'>Emplois du temps</a></li>'."\n";
+		}
+
 		$menus .= '  <li class="plus"><a href="#">Bulletins</a>'."\n";
 		$menus .= '    <ul class="niveau3">'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/bulletin/autorisation_exceptionnelle_saisie_app.php" '.insert_confirm_abandon().'>Droits saisie profs</a></li>'."\n";
@@ -197,16 +207,32 @@ include("menu_plugins.inc.php");
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/modify_impression.php" '.insert_confirm_abandon().'>Fiches Bienvenue</a></li>'."\n";
 		$menus .= '    </ul>'."\n";		
 		$menus .= '  </li>'."\n";
-		$menus .= '  <li><a href="'.$gepiPath.'/mod_notanet/index.php" '.insert_confirm_abandon().'>Notanet/Brevet</a></li>'."\n";
-		$menus .= '  <li><a href="'.$gepiPath.'/mod_annees_anterieures/index.php" '.insert_confirm_abandon().'>Années antérieures</a></li>'."\n";
+		if(getSettingAOui('active_notanet')) {
+			$menus .= '  <li><a href="'.$gepiPath.'/mod_notanet/index.php" '.insert_confirm_abandon().'>Notanet/Brevet</a></li>'."\n";
+		}
+		if(getSettingAOui('active_annees_anterieures')) {
+			$menus .= '  <li><a href="'.$gepiPath.'/mod_annees_anterieures/index.php" '.insert_confirm_abandon().'>Années antérieures</a></li>'."\n";
+		}
 		$menus .= '  <li><a href="'.$gepiPath.'/messagerie/index.php" '.insert_confirm_abandon().'>Panneau d\'affichage</a></li>'."\n";
 		$menus .= '  <li><a href="'.$gepiPath.'/mod_ooo/index.php" '.insert_confirm_abandon().'>Modèles OpenOffice</a></li>'."\n";
-		$menus .= '  <li><a href="'.$gepiPath.'/mod_discipline/index.php" '.insert_confirm_abandon().'>Discipline/Sanctions</a></li>'."\n";
-		$menus .= '  <li><a href="'.$gepiPath.'/mod_epreuve_blanche/index.php" '.insert_confirm_abandon().'>Epreuves blanches</a></li>'."\n";
-		$menus .= '  <li><a href="'.$gepiPath.'/mod_examen_blanc/index.php" '.insert_confirm_abandon().'>Examens blancs</a></li>'."\n";
-		$menus .= '  <li><a href="'.$gepiPath.'/cahier_texte_admin/visa_ct.php" '.insert_confirm_abandon().'>Visa c. de textes</a></li>'."\n";
-		$menus .= '  <li><a href="'.$gepiPath.'/mod_inscription/inscription_config.php" '.insert_confirm_abandon().'>Inscriptions</a></li>'."\n";
-		$menus .= '  <li><a href="'.$gepiPath.'/mod_genese_classes/index.php" '.insert_confirm_abandon().'>Genèse des classes</a></li>'."\n";
+		if(getSettingAOui('active_mod_discipline')) {
+			$menus .= '  <li><a href="'.$gepiPath.'/mod_discipline/index.php" '.insert_confirm_abandon().'>Discipline/Sanctions</a></li>'."\n";
+		}
+		if(getSettingAOui('active_mod_epreuve_blanche')) {
+			$menus .= '  <li><a href="'.$gepiPath.'/mod_epreuve_blanche/index.php" '.insert_confirm_abandon().'>Epreuves blanches</a></li>'."\n";
+		}
+		if(getSettingAOui('active_mod_examen_blanc')) {
+			$menus .= '  <li><a href="'.$gepiPath.'/mod_examen_blanc/index.php" '.insert_confirm_abandon().'>Examens blancs</a></li>'."\n";
+		}
+		if(getSettingAOui('active_cahiers_texte')) {
+			$menus .= '  <li><a href="'.$gepiPath.'/cahier_texte_admin/visa_ct.php" '.insert_confirm_abandon().'>Visa c. de textes</a></li>'."\n";
+		}
+		if(getSettingAOui('active_inscription')) {
+			$menus .= '  <li><a href="'.$gepiPath.'/mod_inscription/inscription_config.php" '.insert_confirm_abandon().'>Inscriptions</a></li>'."\n";
+		}
+		if(getSettingAOui('active_mod_genese_classes')) {
+			$menus .= '  <li><a href="'.$gepiPath.'/mod_genese_classes/index.php" '.insert_confirm_abandon().'>Genèse des classes</a></li>'."\n";
+		}
 		$menus .= '</ul>'."\n";	
 		$menus .= '</li>'."\n";
 		

@@ -180,4 +180,87 @@ if ($test_champ>0) {
 		$result .= msj_present("La table existe déjà");
 	}
 }
+
+// Initialisation d'une nouvelle variable:
+if(getSettingValue('gepi_en_production')=="") {
+	if(!saveSetting('gepi_en_production', 'y')) {
+		$result .= "Initialisation d'un témoin comme quoi le serveur Gepi n'est pas juste un serveur de test, mais un serveur en production : ".msj_erreur("ECHEC !");
+	}
+	else {
+		$result .= "Initialisation d'un témoin comme quoi le serveur Gepi n'est pas juste un serveur de test, mais un serveur en production : ".msj_ok("Ok !");
+	}
+}
+
+if(getSettingValue('GepiAccesCDTToutesClasses')=="") {
+	if(!saveSetting('GepiAccesCDTToutesClasses', 'yes')) {
+		$result .= "Initialisation d'une variable : Accès des professeurs aux cahiers de textes de toutes les classes : ".msj_erreur("ECHEC !");
+	}
+	else {
+		$result .= "Initialisation d'une variable : Accès des professeurs aux cahiers de textes de toutes les classes : ".msj_ok("Ok !");
+	}
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'log_maj_sconet' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'log_maj_sconet'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE log_maj_sconet (
+	id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+	login VARCHAR( 50 ) NOT NULL ,
+	texte TEXT NOT NULL ,
+	date_debut DATETIME NOT NULL ,
+	date_fin DATETIME NOT NULL
+	) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<br />";
+$result .= "<strong>Module discipline :</strong><br />";
+$result .= "&nbsp;-> Ajout d'un champ 'primo_declarant' à la table 's_incidents'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_incidents LIKE 'primo_declarant';"));
+if ($test_champ==0) {
+	$query = mysql_query("ALTER TABLE s_incidents ADD primo_declarant varchar(50);");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'materiel' à la table 's_travail_mesure'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_travail_mesure LIKE 'materiel';"));
+if ($test_champ==0) {
+	$query = mysql_query("ALTER TABLE s_travail_mesure ADD materiel varchar(150);");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'materiel' à la table 's_retenues'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_retenues LIKE 'materiel';"));
+if ($test_champ==0) {
+	$query = mysql_query("ALTER TABLE s_retenues ADD materiel varchar(150);");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.2(dev) :</h3>";
 ?>

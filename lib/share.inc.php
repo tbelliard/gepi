@@ -218,7 +218,7 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='min') {
 	//==========================
 	// Nettoyage des caractères du nom et du prénom
 
-	$_prenom = remplace_accents($_prenom);
+	$_prenom = remplace_accents(preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe",$_prenom)))));
 
 	$prenoms = explode(" ",$_prenom);
 	$premier_prenom = $prenoms[0];
@@ -227,7 +227,7 @@ function generate_unique_login($_nom, $_prenom, $_mode, $_casse='min') {
 
 	$_prenom = preg_replace("/[^a-zA-Z.\-]/", "", $_prenom);
 
-	$_nom = remplace_accents($_nom);
+	$_nom = remplace_accents(preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe",$_nom)))));
 	$_nom = preg_replace("/[^a-zA-Z.\-]/", "", $_nom);
 
 	//==========================
@@ -667,15 +667,21 @@ function affiche_utilisateur($login,$id_classe) {
     $prenom = @mysql_result($req, 0, 'prenom');
     $civilite = @mysql_result($req, 0, 'civilite');
     $req_format = mysql_query("select format_nom from classes where id = '".$id_classe."'");
-    $format = mysql_result($req_format, 0, 'format_nom');
-    $result = "";
-    $i='';
-    if ((($format == 'ni') OR ($format == 'in') OR ($format == 'cni') OR ($format == 'cin')) AND ($prenom != '')) {
-        $temp = explode("-", $prenom);
-        $i = mb_substr($temp[0], 0, 1);
-        if (isset($temp[1]) and ($temp[1] != '')) $i .= "-".mb_substr($temp[1], 0, 1);
-        $i .= ". ";
-    }
+	if(mysql_num_rows($req_format)>0) {
+		$format = mysql_result($req_format, 0, 'format_nom');
+		$result = "";
+		$i='';
+		if ((($format == 'ni') OR ($format == 'in') OR ($format == 'cni') OR ($format == 'cin')) AND ($prenom != '')) {
+		    $temp = explode("-", $prenom);
+		    $i = mb_substr($temp[0], 0, 1);
+		    if (isset($temp[1]) and ($temp[1] != '')) $i .= "-".mb_substr($temp[1], 0, 1);
+		    $i .= ". ";
+		}
+	}
+	else {
+		$format="";
+	}
+
     switch( $format ) {
     case 'np':
     $result = $nom." ".$prenom;
@@ -1763,7 +1769,8 @@ function detect_encoding($str) {
  * @global string $GLOBALS['liste_caracteres_accentues']
  * @name $liste_caracteres_accentues
  */
-$GLOBALS['liste_caracteres_accentues']="ÂÄÀÁÃÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕØ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõø¨ûüùúýÿ¸";
+//$GLOBALS['liste_caracteres_accentues']="ÂÄÀÁÃÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕØ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõø¨ûüùúýÿ¸";
+$GLOBALS['liste_caracteres_accentues']="ÂÄÀÁÃÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕØÛÜÙÚÝ¾áàâäãåçéèêëîïìíñôöðòóõøûüùúýÿ";
 
 /**
  * Correspondances de caractères accentués/désaccentués
@@ -1771,7 +1778,8 @@ $GLOBALS['liste_caracteres_accentues']="ÂÄÀÁÃÅÇÊËÈÉÎÏÌÍÑÔÖÒÓ
  * @global string $GLOBALS['liste_caracteres_desaccentues']
  * @name $liste_caracteres_desaccentues
  */
-$GLOBALS['liste_caracteres_desaccentues']="AAAAAACEEEEIIIINOOOOOOSUUUUYYZaaaaaaceeeeiiiinooooooosuuuuyyz";
+//$GLOBALS['liste_caracteres_desaccentues']="AAAAAACEEEEIIIINOOOOOOSUUUUYYZaaaaaaceeeeiiiinooooooosuuuuyyz";
+$GLOBALS['liste_caracteres_desaccentues']="AAAAAACEEEEIIIINOOOOOOUUUUYYaaaaaaceeeeiiiinooooooouuuuyy";
 
 /**
  * Cette méthode prend une chaîne de caractères et s'assure qu'elle est bien retournée en ASCII
@@ -1855,17 +1863,47 @@ function accents_enleve($chaine,$mode=''){
  * @param type $chaine La chaine à traiter
  * @return La chaine corrigée
  */
-function nettoyer_caracteres_nom($chaine, $mode="a", $chaine_autres_caracteres_acceptes="", $caractere_remplacement="") {
+function nettoyer_caracteres_nom($chaine, $mode="a", $chaine_autres_caracteres_acceptes="", $caractere_remplacement="", $remplacer_oe_ae="n") {
 	global $liste_caracteres_accentues;
+	/*
+	echo "<p>";
+	echo "<span style='color:green'>\$liste_caracteres_accentues=$liste_caracteres_accentues</span><br />";
+	echo "<span style='color:green'>\$chaine=$chaine</span><br />";
+	*/
+	// Pour que le tiret soit à la fin si on le met dans $chaine_autres_caracteres_acceptes
+	$chaine_autres_caracteres_acceptes="ÆæŒœ".$chaine_autres_caracteres_acceptes;
 
-	$retour=preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe",trim(ensure_utf8($chaine))))));
+	$retour=trim(ensure_utf8($chaine));
+	if($remplacer_oe_ae=="y") {$retour=preg_replace("#Æ#u","AE",preg_replace("#æ#u","ae",preg_replace("#Œ#u","OE",preg_replace("#œ#u","oe",$retour))));}
+	//if($remplacer_oe_ae=="y") {$retour=preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/Œ/","OE",preg_replace("/œ/","oe",$retour))));}
 
 	// Le /u sur les preg_replace permet de traiter correctement des chaines utf8
 	if($mode=='a') {
+		
+		//echo "<span style='color:green'>\$retour=preg_replace(\"#[^A-Za-z".$liste_caracteres_accentues.$chaine_autres_caracteres_acceptes."]#u\",\"$caractere_remplacement\", $retour)=</span>";
+		$retour=preg_replace("#[^A-Za-z".$liste_caracteres_accentues.$chaine_autres_caracteres_acceptes."]#u","$caractere_remplacement", $retour);
+		//echo "<span style='color:green'>$retour</span><br />";
+		//echo "<br />";
+
+		/*
+		echo "\$retour=preg_replace(\"/[^A-Za-z".$liste_caracteres_accentues.$chaine_autres_caracteres_acceptes."]/u\",\"$caractere_remplacement\", $retour)=";
 		$retour=preg_replace("/[^A-Za-z".$liste_caracteres_accentues.$chaine_autres_caracteres_acceptes."]/u","$caractere_remplacement", $retour);
+		echo "$retour<br />";
+		echo "<br />";
+		*/
 	}
 	elseif($mode=='an') {
+		//echo "<span style='color:green'>\$retour=preg_replace(\"#[^A-Za-z0-9".$liste_caracteres_accentues.$chaine_autres_caracteres_acceptes."]#u\",\"$caractere_remplacement\", $retour)=</span>";
+		$retour=preg_replace("#[^A-Za-z0-9".$liste_caracteres_accentues.$chaine_autres_caracteres_acceptes."]#u","$caractere_remplacement", $retour);
+		//echo "<span style='color:green'>$retour</span><br />";
+		//echo "<br />";
+
+		/*
+		echo "\$retour=preg_replace(\"/[^A-Za-z0-9".$liste_caracteres_accentues.$chaine_autres_caracteres_acceptes."]/u\",\"$caractere_remplacement\", $retour)=";
 		$retour=preg_replace("/[^A-Za-z0-9".$liste_caracteres_accentues.$chaine_autres_caracteres_acceptes."]/u","$caractere_remplacement", $retour);
+		echo "$retour<br />";
+		echo "<br />";
+		*/
 	}
 
 	return $retour;
@@ -2069,19 +2107,27 @@ function get_nom_classe($id_classe){
  * @param string $date
  * @return string La date formatée
  */
-function formate_date($date) {
+function formate_date($date, $avec_heure="n") {
 	$tmp_date=explode(" ",$date);
 	$tab_date=explode("-",$tmp_date[0]);
 
+	$retour="";
+
 	if(isset($tab_date[2])) {
-		return sprintf("%02d",$tab_date[2])."/".sprintf("%02d",$tab_date[1])."/".$tab_date[0];
+		$retour.=sprintf("%02d",$tab_date[2])."/".sprintf("%02d",$tab_date[1])."/".$tab_date[0];
 	}
 	elseif(isset($tab_date[0])) {
-		return $tab_date[0];
+		$retour.=$tab_date[0];
 	}
 	else {
-		return $date;
+		$retour.=$date;
 	}
+
+	if(($avec_heure=="y")&&(isset($tmp_date[1]))&&(preg_match("/[0-9]{2}:[0-9]{2}:[0-9]{2}/", $tmp_date[1]))) {
+		$retour.=" à ".$tmp_date[1];
+	}
+
+	return $retour;
 }
 
 /**
@@ -4021,9 +4067,10 @@ function is_cpe($login_cpe,$id_classe="",$login_eleve="") {
 	elseif($id_classe!='') {
 		$sql="SELECT 1=1 FROM j_eleves_cpe jecpe, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.login=jecpe.e_login AND jecpe.cpe_login='$login_cpe';";
 	}
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)>0) {$retour=TRUE;}
-
+        if(isset($sql)) {
+            $test=mysql_query($sql);
+            if(mysql_num_rows($test)>0) {$retour=TRUE;}
+        }
 	return $retour;
 }
 
@@ -4210,9 +4257,11 @@ function affiche_date_sortie($date_sortie,$heure=FALSE) {
 	$eleve_date_sortie_heure=date('H', $eleve_date_de_sortie_time); 
 	$eleve_date_sortie_minute=date('i', $eleve_date_de_sortie_time); 
 	if ($heure) {
-		return $eleve_date_sortie_jour."/".$eleve_date_sortie_mois."/".$eleve_date_sortie_annee." ".$eleve_date_sortie_heure.":".$eleve_date_sortie_minute;
+		return sprintf("%02d", $eleve_date_sortie_jour)."/".sprintf("%02d", $eleve_date_sortie_mois)."/".$eleve_date_sortie_annee." ".$eleve_date_sortie_heure.":".$eleve_date_sortie_minute;
 	}
-	return $eleve_date_sortie_jour."/".$eleve_date_sortie_mois."/".$eleve_date_sortie_annee;
+	else {
+		return sprintf("%02d", $eleve_date_sortie_jour)."/".sprintf("%02d", $eleve_date_sortie_mois)."/".$eleve_date_sortie_annee;
+	}
 }
 
 /**
@@ -5072,15 +5121,15 @@ function array_map_deep($callback, $array) {
  */
 function joueAlarme($niveau_arbo = "0") {
   $retour ="";
-  	$footer_sound= isset ($_SESSION['login']) ? getPref($_SESSION['login'],'footer_sound',"") : NULL;
+  	$footer_sound= isset ($_SESSION['login']) ? getPref($_SESSION['login'],'footer_sound',NULL) : NULL;
 	if($footer_sound===NULL) {
 		$footer_sound=getSettingValue('footer_sound');
-		if($footer_sound=='') {
+		if($footer_sound==NULL) {
 			$footer_sound="KDE_Beep_Pop.wav";
 		}
 	}
 	
-	  if($footer_sound!=='') {
+	//if($footer_sound!=='') {
 
 	  if ($niveau_arbo == "0") {
 		  $chemin_sound="./sounds/".$footer_sound;
@@ -5107,7 +5156,7 @@ function joueAlarme($niveau_arbo = "0") {
   }
   </script>";
 	  }
-	}
+	//}
 	return $retour;
 } 
 
@@ -5758,5 +5807,109 @@ function redim_img($image, $dim_max_largeur, $dim_max_hauteur, $mode="") {
 	}
 
 	return array($nouvelle_largeur, $nouvelle_hauteur, $type_img);
+}
+
+/** Fonction destinée à supprimer les accents HTML dans des enregistrements de la table setting
+ *
+ * @param string $name champ name dans la table setting
+ *
+ * @return integer 0 Correction inutile, 1 Correction réussie, 2 Echec de la correction.
+ */
+
+function virer_accents_html_setting($name) {
+	$tab = array_flip (get_html_translation_table(HTML_ENTITIES));
+	$valeur=getSettingValue($name);
+	$correction=ensure_utf8(strtr($valeur, $tab));
+	/*
+	$f=fopen("/tmp/correction_fb.txt", "a+");
+	fwrite($f, "=========================================================================\n");
+	fwrite($f, "name=$name\n");
+	fwrite($f, "value=$valeur\n");
+	fwrite($f, "correction=$correction\n");
+	fclose($f);
+	*/
+	if($valeur!=$correction) {
+		if(saveSetting($name, mysql_real_escape_string($correction))) {return 1;} else {return 2;}
+	}
+	else {return 0;}
+}
+
+/** Fonction destinée à enregistrer des détails sur la mise à jour Sconet en cours
+ *
+ * @param string $texte Texte à ajouter au log en cours
+ * @param string $fin 'y' ou 'n' pour mettre à jour la date de fin
+ *
+ * @return boolean Succès ou échec de l'enregistrement.
+ */
+
+function enregistre_log_maj_sconet($texte, $fin="n") {
+	$ts_maj_sconet=getSettingValue('ts_maj_sconet');
+	if($ts_maj_sconet=='') {
+		return false;
+	}
+	else {
+		$sql="SELECT * FROM log_maj_sconet WHERE date_debut='$ts_maj_sconet';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$lig=mysql_fetch_object($res);
+
+			$sql="UPDATE log_maj_sconet SET texte='".mysql_real_escape_string($lig->texte.$texte)."'";
+			if($fin!="n") {$sql.=", date_fin='".strftime("%Y-%m-%d %H:%M:%S")."'";}
+			$sql.=" WHERE date_debut='$ts_maj_sconet';";
+		}
+		else {
+			$sql="INSERT INTO log_maj_sconet SET date_debut='$ts_maj_sconet', login='".$_SESSION['login']."', date_fin='0000-00-00 00:00:00', texte='".mysql_real_escape_string($texte)."';";
+		}
+		$res=mysql_query($sql);
+		if($res) {return true;} else {return false;}
+	}
+}
+
+/** Fonction destinée à faire un test in_array() insensible à la casse
+ *
+ * @param string $chaine chaine 
+ * @param array $tableau tableau dans lequel on cherche la chaine
+ *
+ * @return boolean true/false
+ */
+
+function in_array_i($chaine, $tableau) {
+	$retour=false;
+	$chaine=mb_strtolower($chaine);
+	foreach($tableau as $key => $value) {
+		if($chaine==mb_strtolower($value)) {
+			$retour=true;
+			break;
+		}
+	}
+	return $retour;
+}
+
+/** Fonction destinée à tester si un parent est responsable d'un élève
+ *
+ * @param string $login_eleve Login de l'élève
+ * @param string $login_resp Login du responsable
+ * @param string $pers_id Identifiant pers_id du responsable
+ *
+ * @return boolean true/false
+ */
+
+function is_responsable($login_eleve, $login_resp="", $pers_id="") {
+	$retour=false;
+	if($login_resp!="") {
+		$sql="SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e WHERE r.pers_id=rp.pers_id AND rp.login='$login_resp' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND (r.resp_legal='1' OR r.resp_legal='2');";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			$retour=true;
+		}
+	}
+	elseif($pers_id!="") {
+		$sql="SELECT 1=1 FROM responsables2 r, eleves e WHERE r.pers_id='$pers_id' AND e.ele_id=r.ele_id AND e.login='$login_eleve' AND (r.resp_legal='1' OR r.resp_legal='2');";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			$retour=true;
+		}
+	}
+	return $retour;
 }
 ?>

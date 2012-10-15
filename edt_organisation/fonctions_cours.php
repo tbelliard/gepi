@@ -355,7 +355,29 @@ if (($groupe != "") OR ($id_aid != "")) {
 		            $rep_nom_prof = mysql_fetch_array($req_nom_prof);
                     
                     //$enseignants .= $rep_nom_prof['nom']." (".mysql_num_rows($req_nombre_eleves)." élèves) ";
-					$enseignants .= $rep_nom_prof['nom']." (".$count." élèves) ";
+                    if($_SESSION['statut']=='administrateur') {
+						/*
+						$enseignants .= "<a href='index_edt.php?login_edt=".$tab_enseignement['login'][$k]."&amp;type_edt_2=prof&amp;visioedt=prof1' target='_blank' style='color:red'>".$rep_nom_prof['nom']."</a>"." (<a href='";
+						if ($groupe_type == "ENS") {
+							echo "../groupes/edit_eleves.php?id_groupe=".$tab_enseignement['id_groupe'][$k];
+						}
+						else {
+							echo "../aid/modify_aid_new.php?id_aid=".$tab_enseignement['id_groupe'][$k]."&indice_aid=";
+							// Comment récupérer le indice_aid?
+						}
+						echo "' target='_blank' style='color:red'>".$count." élèves</a>) ";
+						*/
+						$enseignants .= "<a href='index_edt.php?login_edt=".$tab_enseignement['login'][$k]."&amp;type_edt_2=prof&amp;visioedt=prof1' target='_blank' style='color:red'>".$rep_nom_prof['nom']."</a>";
+						if ($groupe_type == "ENS") {
+							$enseignants .= " (<a href='../groupes/edit_eleves.php?id_groupe=".$tab_enseignement['id_groupe'][$k]."' target='_blank' style='color:red'>".$count." élèves</a>) ";
+						}
+						else {
+							$enseignants .= " (".$count." élèves) ";
+						}
+					}
+					else {
+						$enseignants .= $rep_nom_prof['nom']." (".$count." élèves) ";
+					}
                     // ---- Si nb élèves < 5, ce sont sans doute des élèves affectés provisoirement dans un autre cours (CLA) : on accepte la création
                     //if (mysql_num_rows($req_nombre_eleves) >= 5) {
 					if ($count >=5) {

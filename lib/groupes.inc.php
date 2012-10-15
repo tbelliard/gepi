@@ -384,13 +384,15 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 				$temp["classes"]["list"][] = $c_id;
 				$temp["classes"]["classes"][$c_id] = array("id" => $c_id, "classe" => $c_classe, "nom_complet" => $c_nom_complet, "priorite" => $c_priorite, "coef" => $c_coef, "mode_moy" => $c_mode_moy, "saisie_ects" => $c_saisie_ects, "valeur_ects" => $c_valeur_ects, "categorie_id" => $c_cat_id);
 			}
-		
-			$str = NULL;
-			foreach ($temp["classes"]["classes"] as $classe) {
-				$str .= $classe["classe"] . ", ";
+
+			if(isset($temp["classes"]["classes"])) {
+				$str = NULL;
+				foreach ($temp["classes"]["classes"] as $classe) {
+					$str .= $classe["classe"] . ", ";
+				}
+				$str = mb_substr($str, 0, -2);
+				$temp["classlist_string"] = $str;
 			}
-			$str = mb_substr($str, 0, -2);
-			$temp["classlist_string"] = $str;
 		}
 	
 		if($get_profs=='y') {
@@ -480,6 +482,12 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 			foreach ($temp["periodes"] as $key => $period) {
 				$temp["eleves"][$key]["list"] = array();
 				$temp["eleves"][$key]["users"] = array();
+
+				$temp["eleves"][$key]["telle_classe"] = array();
+				foreach($temp["classes"]["list"] as $tmp_id_classe) {
+					$temp["eleves"][$key]["telle_classe"][$tmp_id_classe] = array();
+				}
+
 				$get_eleves = mysql_query("SELECT distinct j.login, e.nom, e.prenom, e.ele_id, e.elenoet FROM eleves e, j_eleves_groupes j WHERE (" .
 											"e.login = j.login and j.id_groupe = '" . $_id_groupe . "' and j.periode = '" . $period["num_periode"] . "') " .
 											"ORDER BY e.nom, e.prenom");
@@ -493,6 +501,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 					$res_classe_eleve_periode=mysql_query($sql);
 					if(mysql_num_rows($res_classe_eleve_periode)>0) {
 						$e_classe = mysql_result($res_classe_eleve_periode, 0);
+						$temp["eleves"][$key]["telle_classe"][$e_classe][] = $e_login;
 					}
 					else {
 						$e_classe=-1;
@@ -848,8 +857,6 @@ function delete_group($_id_groupe) {
     if (!$del3) $errors .= "Erreur lors de la suppression du lien groupe-eleves.<br/>";
     $del4 = mysql_query("DELETE from j_groupes_classes WHERE id_groupe = '" . $_id_groupe . "'");
     if (!$del4) $errors .= "Erreur lors de la suppression du lien groupe-classes.<br/>";
-    $del5 = mysql_query("DELETE from groupes WHERE id = '" . $_id_groupe . "'");
-    if (!$del5) $errors .= "Erreur lors de la suppression du groupe.<br/>";
     $del6 = mysql_query("DELETE from cn_cahier_notes, cn_conteneurs, cn_devoirs, cn_notes_conteneurs, cn_notes_devoirs WHERE (" .
             "cn_cahier_notes.id_groupe = '" . $_id_groupe . "' AND " .
             "cn_conteneurs.id_racine = cn_cahier_notes.id_cahier_notes AND " .
@@ -859,10 +866,15 @@ function delete_group($_id_groupe) {
     if (!$del6) $errors .= "Erreur lors de la suppression des données relatives au carnet de notes lié au groupe.<br/>";
     $text_ct = sql_query1("SELECT count(id_groupe) from ct_entry WHERE (ct_entry.id_groupe = '" . $_id_groupe . "'");
     if ($text_ct > 0) $errors .= "Attention un cahier de textes lié au groupe supprimé est maintenant \"orphelin\". Rendez-vous dans le module \"cahier de textes\" pour régler le problème.<br/>";
-    $del7 = mysql_query("DELETE from j_signalement WHERE id = '" . $_id_groupe . "'");
-    if (!$del7) $errors .= "Erreur lors de la suppression du groupe.<br/>";
-    $del8 = mysql_query("DELETE from j_groupes_visibilite WHERE id = '" . $_id_groupe . "'");
-    if (!$del8) $errors .= "Erreur lors de la suppression du groupe.<br/>";
+    $del7 = mysql_query("DELETE from j_signalement WHERE id_groupe = '" . $_id_groupe . "'");
+    if (!$del7) $errors .= "Erreur lors de la suppression des signalements associés au groupe.<br/>";
+    $del8 = mysql_query("DELETE from j_groupes_visibilite WHERE id_groupe = '" . $_id_groupe . "'");
+    if (!$del8) $errors .= "Erreur lors de la suppression des enregistrement de visibilité ou non du groupe.<br/>";
+    $del9 = mysql_query("DELETE from acces_cdt_groupes WHERE id_groupe = '" . $_id_groupe . "'");
+    if (!$del9) $errors .= "Erreur lors de la suppression des accès CDT pour ce groupe.<br/>";
+
+    $del5 = mysql_query("DELETE from groupes WHERE id = '" . $_id_groupe . "'");
+    if (!$del5) $errors .= "Erreur lors de la suppression du groupe.<br/>";
 
     if (!empty($errors)) {
         return $errors;

@@ -25,7 +25,6 @@ $accessibilite="y";
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
-require_once("../lib/transform_functions.php");
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -170,6 +169,8 @@ if (getSettingValue("active_cahiers_texte")!='y') {
 	die("<p class='grand centre_texte'>Le cahier de textes n'est pas accessible pour le moment.</p>");
 }
 
+$content="";
+
 echo "<div class='centre_table'>\n";
 
 	$infos_generales="";
@@ -203,15 +204,15 @@ echo "<div class='centre_table'>\n";
 					//echo "$sql<br />";
 					$appel_info_cahier_texte = mysql_query($sql);
 					$nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
-					$content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
+					$content .= @mysql_result($appel_info_cahier_texte, 0, 'contenu');
 					$id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
-					include "../lib/transform.php";
-					$html .= affiche_docs_joints($id_ct,"c");
 
-					if($html!="") {
+					$content .= affiche_docs_joints($id_ct,"c");
+
+					if($content!="") {
 						$infos_generales.="<div class='see_all_general couleur_bord_tableau_notice color_fond_notices_i' style='width:98%;'>";
 						$infos_generales.="<h3>".$tmp_current_group['name']." (<em>".$tmp_current_group['description']." en ".$tmp_current_group['classlist_string']."</em>)"."</h3>";
-						$infos_generales.=$html;
+						$infos_generales.=$content;
 						$infos_generales.="</div>";
 					}
 				}
@@ -538,6 +539,13 @@ if(($id_groupe=='Toutes_matieres')&&
 		echo "</div>\n";
 	}
 
+	echo "<hr />\n";
+	echo "<p style='text-align:center; font-style:italic;'>Cahiers de textes du ";
+	echo strftime("%d/%m/%Y", getSettingValue("begin_bookings"));
+	echo " au ";
+	echo strftime("%d/%m/%Y", getSettingValue("end_bookings"));
+	echo "</p>\n";
+
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -556,6 +564,14 @@ if ($nb_test == 0) {
 		echo "Choisissez une classe et une matière.";
 	}
 	echo "\n</h2>\n";
+
+	echo "<hr />\n";
+	echo "<p style='text-align:center; font-style:italic;'>Cahiers de textes du ";
+	echo strftime("%d/%m/%Y", getSettingValue("begin_bookings"));
+	echo " au ";
+	echo strftime("%d/%m/%Y", getSettingValue("end_bookings"));
+	echo "</p>\n";
+
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -564,11 +580,10 @@ $appel_info_cahier_texte = mysql_query("SELECT contenu, id_ct  FROM ct_entry WHE
 $nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
 $content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
 $id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
-include "../lib/transform.php";
-$html .= affiche_docs_joints($id_ct,"c");
-if ($html != '') {
+$content .= affiche_docs_joints($id_ct,"c");
+if ($content != '') {
 	echo "<h2 class='grande_ligne couleur_bord_tableau_notice'>\n<strong>INFORMATIONS GENERALES</strong>\n</h2>\n";
-	echo "<div class='see_all_general couleur_bord_tableau_notice  color_fond_notices_i' style='width:98%'>".$html."</div>";
+	echo "<div class='see_all_general couleur_bord_tableau_notice color_fond_notices_i' style='width:98%'>".$content."</div>";
 }
 
 	// echo "<div  style=\"border-bottom-style: solid; border-width:2px; border-color: ".$couleur_bord_tableau_notice."; \"><strong>CAHIER DE TEXTES: comptes rendus de séance</strong></div><br />";
@@ -686,9 +701,8 @@ while (true) {
 		else {
 			$content = &$not_dev->contenu;
 		}
-		include ("../lib/transform.php");
 	
-		$html .= affiche_docs_joints($not_dev->id_ct,$not_dev->type);
+		$content .= affiche_docs_joints($not_dev->id_ct,$not_dev->type);
 		echo "<h3 class='see_all_h3'>\n<strong>\n";
 			if ($not_dev->type == "t") {
 				echo("A faire pour le : ");
@@ -709,7 +723,7 @@ while (true) {
 				$num_notice = 1;
 			}
 		}
-		// echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices[$not_dev->type]."\">\n<tr>\n<td>\n$html</td>\n</tr>\n</table>\n<br/>\n");
+		// echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices[$not_dev->type]."\">\n<tr>\n<td>\n$content</td>\n</tr>\n</table>\n<br/>\n");
 		echo "<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_".$not_dev->type."'>";
 		/* if ($not_dev->type == "t") {
 			echo "see_all_a_faire'>\n";
@@ -721,12 +735,20 @@ while (true) {
 			echo "<div style='float:right; width: 6em; border: 1px solid black; margin: 2px; font-size: xx-small; text-align: center;'>Donné le ".formate_date($not_dev->date_visibilite_eleve)."</div>\n";
 		}
 
-		echo "$html\n</div>\n";
+		echo "$content\n</div>\n";
 		if ($not_dev->type == "c") {$date_ct_old = $not_dev->date_ct;}
 	}
 }
 
 //if ($current_imprime=='n') echo "</td></tr></table>";
 //echo "</td></tr></table>";
+
+echo "<hr />\n";
+echo "<p style='text-align:center; font-style:italic;'>Cahiers de textes du ";
+echo strftime("%d/%m/%Y", getSettingValue("begin_bookings"));
+echo " au ";
+echo strftime("%d/%m/%Y", getSettingValue("end_bookings"));
+echo "</p>\n";
+
 require("../lib/footer.inc.php");
 ?>

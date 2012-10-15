@@ -45,7 +45,21 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
 <p class=bold><a href="../gestion/index.php#init_scribe_ng"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
-<p>Vous allez effectuer l'initialisation de l'année scolaire qui vient de débuter, directement depuis l'annuaire LDAP de Scribe NG. Celui-ci doit donc avoir été préalablement alimenté. Cette procédure ne s'effectue qu'une seule fois.</p>
+
+<p>Vous allez effectuer l'initialisation de l'année scolaire qui vient de débuter, directement depuis l'annuaire LDAP de Scribe NG.<br />
+Celui-ci doit donc avoir été préalablement alimenté.<br />
+Cette procédure ne s'effectue qu'<span style='color:red'>une seule fois par an</span>.</p>
+
+<?php
+
+	if(getSettingValue("import_maj_xml_sconet")==1) {
+		echo "Pour mettre à jour la base avec les informations saisies en cours d'année dans Sconet pour les changements d'adresses, arrivées d'èlèves,...<br />il faut effectuer une <a href='../responsables/maj_import.php'>Mise à jour d'après Sconet</a></em>)<br />";
+	}
+	else {
+		echo "L'initialisation d'année ne convient pas pour prendre en compte les changements d'adresses, arrivées d'èlèves,...</em>)<br />";
+	}
+?>
+<br />
 
 <?php
 	echo "<p>Avez-vous pensé à effectuer les différentes opérations de fin d'année et préparation de nouvelle année à la page <a href='../gestion/changement_d_annee.php' style='font-weight:bold;'>Changement d'année</a>&nbsp?</p>\n";

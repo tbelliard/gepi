@@ -176,6 +176,18 @@ $texteItem="";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='GepiAccesCDTToutesClasses';
+$texteItem="a accès à la visualisation des cahiers de textes de toutes les classes";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+//+++++++++++++++++++++++++++
+
+$titreItem='';
+$texteItem="";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 $titreItem='GepiAccesVisuToutesEquipProf';
 $texteItem="a accès à la Visualisation de toutes les équipes";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
@@ -493,6 +505,11 @@ $texteItem="a le droit d'accéder à toutes les fiches élève";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='GepiAccesMajSconetScol';
+$texteItem="a le droit d'effectuer les mises à jour des tables élèves et responsables d'après les XML de Sconet";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 //+++++++++++++++++++++++++++
 
 $titreItem='';
@@ -563,6 +580,18 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 $titreItem='GepiAccesModifMaPhotoScolarite';
 $texteItem="a le droit d'envoyer/modifier lui-même sa photo dans 'Gérer mon compte'";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+//+++++++++++++++++++++++++++
+
+$titreItem='';
+$texteItem="";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='ScolResetPassResp';
+$texteItem="peut réinitialiser les mots de passe des comptes de statut responsable";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -720,6 +749,21 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 //+++++++++++++++++++++++++++
+/*
+
+// Inutile: Pour le moment, le CPE n'a pas accès aux fiches responsables (seulement aux infos via Consultation d'un élève)
+
+$titreItem='';
+$texteItem="";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='CpeResetPassResp';
+$texteItem="peut réinitialiser les mots de passe des comptes de statut responsable";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+*/
+//+++++++++++++++++++++++++++
 
 $titreItem='';
 $texteItem="";
@@ -760,7 +804,14 @@ $texteItem="a le droit d'accéder à toutes les classes pour saisir les absences
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='AccesCpeAgregationAbs2';
+$texteItem="a le droit d'accéder au remplissage/vidage de la table agrégation des absences";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 //+++++++++++++++++++++++++++
+
+// Discipline
 
 $titreItem='';
 $texteItem="";
@@ -802,6 +853,16 @@ $texteItem="a accès à la définition des destinataires d'alertes suite à des 
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='DisciplineCpeChangeDeclarant';
+$texteItem="a le droit de changer le déclarant d'un incident";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+      $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='DisciplineCpeChangeDefaut';
+$texteItem="Par défaut, a le droit de changer le déclarant d'un incident (si ce droit existe)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+      $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 // OOo
 if(getSettingValue('active_mod_ooo')=='y') {
 //+++++++++++++++++++++++++++
@@ -816,6 +877,16 @@ if(getSettingValue('active_mod_ooo')=='y') {
   if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
 }
+
+
+
+//+++++++++++++++++++++++++++
+
+	$titreItem='';
+	$texteItem="";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 //=======================================================================================
 
 // DROITS ADMINISTRATEUR
@@ -929,7 +1000,7 @@ $texteItem="a accès à ses bulletins simplifiés<br />";
 	$texteItem.="L'accès aux appréciations est ouvert à la date saisie dans <a href='../classes/acces_appreciations.php' onclick=\"return confirm_abandon(this, change, '$themessage')\">Accès aux appréciations et avis du conseil</a>.<br />";
   } elseif($acces_app_ele_resp=='periode_close') {
 	$texteItem.= "L'accès aux appréciations est ouvert automatiquement ";
-	if($delais_apres_cloture>0) {echo $delais_apres_cloture." jours après ";}
+	if($delais_apres_cloture>0) {$texteItem.=$delais_apres_cloture." jours après ";}
 	$texteItem.= "la clôture de la période par un compte scolarité.";
 	$texteItem.= "<br />";
   }
@@ -1132,7 +1203,7 @@ if($acces_app_ele_resp=='manuel') {
   $texteItem.= "L'accès aux appréciations est ouvert à la date saisie dans <a href='../classes/acces_appreciations.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Accès aux appréciations et avis du conseil</a>.";
 } elseif($acces_app_ele_resp=='periode_close') {
   $texteItem.= "L'accès aux appréciations est ouvert automatiquement ";
-  if($delais_apres_cloture>0) {echo $delais_apres_cloture." jours après ";}
+  if($delais_apres_cloture>0) {$texteItem.=$delais_apres_cloture." jours après ";}
   $texteItem.= "la clôture de la période par un compte scolarité.";
 }
 $texteItem.= "<br />";

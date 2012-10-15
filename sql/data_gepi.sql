@@ -201,7 +201,7 @@ INSERT INTO droits VALUES ('/utilisateurs/help.php', 'V', 'F', 'F', 'F', 'F', 'F
 INSERT INTO droits VALUES ('/utilisateurs/import_prof_csv.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des utilisateurs', '');
 INSERT INTO droits VALUES ('/utilisateurs/impression_bienvenue.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des utilisateurs', '');
 INSERT INTO droits VALUES ('/utilisateurs/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des utilisateurs', '');
-INSERT INTO droits VALUES ('/utilisateurs/reset_passwords.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Réinitialisation des mots de passe', '');
+INSERT INTO droits VALUES ('/utilisateurs/reset_passwords.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Réinitialisation des mots de passe', '');
 INSERT INTO droits VALUES ('/utilisateurs/modify_user.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des utilisateurs', '');
 INSERT INTO droits VALUES ('/utilisateurs/mon_compte.php', 'V', 'V', 'V', 'V', 'V', 'V', 'V', 'F', 'Gestion du compte (informations personnelles, mot de passe, ...)', '');
 INSERT INTO droits VALUES ('/visualisation/classe_classe.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Visualisation graphique des résultats scolaires', '');
@@ -385,7 +385,7 @@ INSERT INTO droits VALUES ('/init_xml/init_options.php', 'V', 'F', 'F', 'F', 'F'
 INSERT INTO droits VALUES ('/init_xml/save_csv.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation année scolaire', '');
 INSERT INTO droits VALUES ('/init_xml/responsables.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation année scolaire', '');
 INSERT INTO droits VALUES ('/init_xml/step3.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Initialisation année scolaire', '');
-INSERT INTO droits VALUES ('/responsables/maj_import.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Mise à jour depuis Sconet', '');
+INSERT INTO droits VALUES ('/responsables/maj_import.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Mise à jour depuis Sconet', '');
 INSERT INTO droits VALUES ('/responsables/conversion.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Conversion des données responsables', '');
 INSERT INTO droits VALUES ('/utilisateurs/create_responsable.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Création des utilisateurs au statut responsable', '');
 INSERT INTO droits VALUES ('/utilisateurs/create_eleve.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Création des utilisateurs au statut responsable', '');
@@ -784,7 +784,7 @@ INSERT INTO setting VALUES ('GepiAccesEditionDocsEctsPP', 'no');
 INSERT INTO setting VALUES ('GepiAccesEditionDocsEctsScolarite', 'yes');
 INSERT INTO setting VALUES ('gepiSchoolStatut', 'public');
 INSERT INTO setting VALUES ('gepiSchoolAcademie', '');
-INSERT INTO ref_wiki VALUES ('','enseignement_invisible', 'http://www.sylogix.org/wiki/gepi/Enseignement_invisible');
+INSERT INTO ref_wiki VALUES ('','enseignement_invisible', 'http://www.sylogix.org/gepi/wiki/Enseignement_invisible');
 INSERT INTO droits VALUES('/saisie/export_cmnt_type_prof.php','F','V','F','F','F','F','F','F', 'Export appréciations-types pour les profs','');
 INSERT INTO setting VALUES ('note_autre_que_sur_referentiel', 'F');
 INSERT INTO setting VALUES ('referentiel_note', '20');
@@ -819,7 +819,7 @@ INSERT INTO setting VALUES ('active_mod_apb', 'n');
 INSERT INTO setting VALUES ('active_mod_gest_aid', 'n');
 INSERT INTO droits VALUES ('/saisie/ajax_edit_limite.php', 'V', 'V', 'V', 'V', 'V', 'V', 'F', 'F', 'Edition des bulletins simplifiés (documents de travail)', '');
 INSERT INTO droits VALUES ( '/mod_discipline/check_nature_incident.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'V', 'Discipline: Recherche de natures d incident', '');
-INSERT INTO droits SET id='/groupes/signalement_eleves.php',administrateur='F',professeur='V',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Groupes: signalement des erreurs d affectation élève',statut='';
+INSERT INTO droits SET id='/groupes/signalement_eleves.php',administrateur='F',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Groupes: signalement des erreurs d affectation élève',statut='';
 INSERT INTO droits SET id='/bulletin/envoi_mail.php', administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='V',autre='F',description='Envoi de mail via ajax',statut='';
 INSERT INTO droits VALUES ('/mod_discipline/destinataires_alertes.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Parametrage des destinataires de mail d alerte', '');
 INSERT INTO droits SET id='/init_scribe_ng/index.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Initialisation Scribe NG - index',statut='';
@@ -843,7 +843,7 @@ INSERT INTO droits VALUES ('/mod_abs2/admin/admin_motifs_absences.php', 'V', 'F'
 INSERT INTO droits VALUES ('/mod_abs2/admin/admin_types_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
 INSERT INTO droits VALUES ('/mod_abs2/admin/admin_lieux_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
 INSERT INTO droits VALUES ('/mod_abs2/admin/admin_justifications_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
-INSERT INTO droits VALUES ('/mod_abs2/admin/admin_table_agregation.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
+INSERT INTO droits VALUES ('/mod_abs2/admin/admin_table_agregation.php', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
 INSERT INTO droits VALUES ('/mod_abs2/admin/admin_actions_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
 INSERT INTO droits VALUES ('/mod_abs2/index.php', 'F', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Administration du module absences', '');
 INSERT INTO droits VALUES ('/mod_abs2/saisir_groupe.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Affichage du formulaire de saisie de absences', '');
@@ -902,8 +902,8 @@ INSERT INTO droits SET id='/mod_trombinoscopes/trombino_decoupe.php', administra
 INSERT INTO setting SET name='autorise_commentaires_mod_disc', value='no';
 INSERT INTO droits SET id='/groupes/menage_eleves_groupes.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Groupes: Desinscription des eleves sans notes ni appreciations',statut='';
 INSERT INTO droits SET id='/statistiques/export_donnees_bulletins.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Export de données des bulletins',statut='';
-INSERT INTO droits SET id='/statistiques/index.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Statistiques: Index',statut='';
-INSERT INTO droits SET id='/statistiques/classes_effectifs.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Statistiques: classe, effectifs',statut='';
+INSERT INTO droits SET id='/statistiques/index.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Statistiques: Index',statut='';
+INSERT INTO droits SET id='/statistiques/classes_effectifs.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Statistiques: classe, effectifs',statut='';
 INSERT INTO droits SET id='/mod_annees_anterieures/ajax_bulletins.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='V',responsable='V',secours='F',autre='V',description='Accès aux bulletins d années antérieures',statut='';
 INSERT INTO droits SET id='/mod_annees_anterieures/ajax_signaler_faute.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='V',description='Possibilité de signaler une faute de frappe dans une appréciation',statut='';
 INSERT INTO droits SET id='/eleves/ajax_modif_eleve.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Enregistrement des modifications élève',statut='';
@@ -1184,3 +1184,9 @@ INSERT INTO droits SET id='/cahier_texte_2/correction_notices_cdt_formules_maths
 INSERT INTO droits SET id='/gestion/gestion_signature.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Gestion signature',statut='';
 INSERT INTO droits VALUES ('/mod_abs2/saisir_groupe_plan.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Affichage du formulaire de saisie de absences sur plan de classe', '');
 INSERT INTO droits VALUES ( '/matieres/matiere_ajax_lib.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Ajax', '');
+INSERT INTO setting SET name='gepi_en_production', value='y';
+INSERT INTO droits VALUES ('/gestion/gestion_infos_actions.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Gestion des actions en attente signalées en page d accueil.', '1');
+INSERT INTO droits SET id='/responsables/maj_import3.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',
+description='Mise à jour Sconet',statut='';
+INSERT INTO droits SET id='/mod_discipline/mod_discipline_extraction_ooo.php',administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Discipline : Extrait OOo des incidents',statut='';
+

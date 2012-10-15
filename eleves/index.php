@@ -517,12 +517,23 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 	$droits = @sql_query1("SELECT ".$_SESSION['statut']." FROM droits WHERE id='/eleves/import_eleves_csv.php'");
 	if ($droits == "V") {
 		echo " | <a href=\"import_eleves_csv.php\" title=\"Télécharger le fichier des noms, prénoms, identifiants GEPI et classes\">Télécharger le fichier des élèves au format csv.</a>\n";
-
-		if(getSettingValue("import_maj_xml_sconet")==1){
-			echo " | <a href=\"../responsables/maj_import.php\">Mettre à jour depuis Sconet</a>\n";
-			echo " | <a href=\"import_communes.php\">Importer les communes de naissance des élèves</a>\n";
-		}
 	}
+
+
+	if((getSettingValue("import_maj_xml_sconet")==1)&&
+		(
+			($_SESSION['statut']=='administrateur')||
+			(($_SESSION['statut']=='scolarite')&&(getSettingAOui('GepiAccesMajSconetScol')))
+		)
+	) {
+		echo " | <a href=\"../responsables/maj_import.php\">Mettre à jour depuis Sconet</a>\n";
+	}
+
+	if((getSettingValue("import_maj_xml_sconet")==1)&&($_SESSION['statut']=='administrateur')) {
+		echo " | <a href=\"import_communes.php\">Importer les communes de naissance des élèves</a>\n";
+	}
+
+
 }
 
 if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {echo " | <a href='synchro_mail.php'>Synchroniser les adresses mail élèves</a>\n";}
@@ -699,9 +710,24 @@ if (!isset($quelles_classes)) {
 			echo "</label>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
+
+			$sql="SELECT DISTINCT e.login FROM eleves e, j_eleves_classes jec where e.login=jec.login AND e.date_sortie<>0";
+			$test_dse2=mysql_query($sql);
+			if(mysql_num_rows($test_dse2)>0){
+				echo "<tr>\n";
+				echo "<td style='vertical-align:top;'>\n";
+				echo "<input type='radio' name='quelles_classes' id='quelles_classes_dse_anomalie' value='dse_anomalie' onclick='verif2()' />\n";
+				echo "</td>\n";
+				echo "<td>\n";
+				echo "<label for='quelles_classes_dse_anomalie' style='cursor: pointer;'>\n";
+				echo "<span class='norme'>Les élèves dont la date de sortie de l'établissement est renseignée et qui sont pourtant inscrits dans une classe (<i>".mysql_num_rows($test_dse2)."</i>).</span><br />\n";
+				echo "Le élèves partis en cours d'année, risquent d'apparaître ici.<br />";
+				echo "</label>\n";
+				echo "</td>\n";
+				echo "</tr>\n";
+			}
 		}
-		
-		
+
 		$sql="SELECT 1=1 FROM eleves WHERE elenoet='' OR no_gep='';";
 		$test_incomplet=mysql_query($sql);
 		if(mysql_num_rows($test_incomplet)==0){
@@ -1528,7 +1554,16 @@ if(isset($quelles_classes)) {
 			$calldata = mysql_query($sql);
 
 			echo "<p align='center'>Liste des élèves ayant une date de sortie renseignée.</p>\n";
-			}
+		}
+		else if ($quelles_classes == 'dse_anomalie') { //Elève ayant une date de sortie renseignée mais néanmoins dans des classes
+			$sql="SELECT e.*, jer.* FROM eleves e
+					LEFT JOIN j_eleves_regime jer ON e.login=jer.login
+					WHERE jer.login =e.login AND e.date_sortie<>0 AND e.login IN (SELECT DISTINCT login FROM j_eleves_classes) ORDER BY $order_type;";
+			//echo "$sql<br />";
+			$calldata = mysql_query($sql);
+
+			echo "<p align='center'>Liste des élèves ayant une date de sortie renseignée, mais qui sont néanmoins inscrits dans une classe.</p>\n";
+		}
 		elseif ($quelles_classes == 'no_etab') {
 			if(preg_match('/classe/',$order_type)){
 				//$sql="SELECT distinct e.*,c.classe FROM j_eleves_classes jec, classes c, eleves e LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet where jee.id_eleve is NULL and jec.login=e.login and c.id=jec.id_classe ORDER BY $order_type;";
@@ -1583,7 +1618,7 @@ if(isset($quelles_classes)) {
 	echo "'>Régime</a></p></th>\n";
 	$csv.="Régime;";
 
-	if ($quelles_classes == 'na') {
+	if (($quelles_classes == 'na')||($quelles_classes == 'dse')) {
 		echo "<th><p>Classe</p></th>\n";
 	} else {
 		echo "<th><p>";
@@ -1677,13 +1712,16 @@ if(isset($quelles_classes)) {
 		$call_classe = mysql_query("SELECT n.classe, n.id FROM j_eleves_classes c, classes n WHERE (c.login ='$eleve_login' and c.id_classe = n.id) order by c.periode DESC");
 		$eleve_classe = @mysql_result($call_classe, 0, "classe");
 		$eleve_id_classe = @mysql_result($call_classe, 0, "id");
+		$pas_de_classe="n";
 		if ($eleve_classe == '') {
 			$eleve_classe = "<font color='red'>N/A</font>";
 			$eleve_classe_csv = "N/A";
+			$pas_de_classe="y";
 		}
 		else {
 			$eleve_classe_csv = $eleve_classe;
 		}
+
 		$call_suivi = mysql_query("SELECT u.* FROM utilisateurs u, j_eleves_professeurs s WHERE (s.login ='$eleve_login' and s.professeur = u.login and s.id_classe='$eleve_id_classe')");
 		if(mysql_num_rows($call_suivi)==0){
 			$eleve_profsuivi_nom = "";
@@ -1754,7 +1792,7 @@ if(isset($quelles_classes)) {
 		echo "</p></td>\n";
 		$csv.="$eleve_regime;";
 
-		if($_SESSION['statut']=='administrateur') {
+		if(($_SESSION['statut']=='administrateur')&&($pas_de_classe!="y")) {
 			echo "<td><p><a href='../classes/classes_const.php?id_classe=$eleve_id_classe'>$eleve_classe</a></p></td>\n";
 		}
 		else {

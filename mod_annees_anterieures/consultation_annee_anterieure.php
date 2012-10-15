@@ -715,6 +715,13 @@ else {
 			$res_ant=mysql_query($sql);
 			if(mysql_num_rows($res_ant)==0){
 				echo "<p>Aucun résultat antérieur n'a été conservé pour cette classe.</p>\n";
+
+				$sql="SELECT 1=1 FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' AND e.no_gep!='NULL' AND e.no_gep!='';";
+				//echo "$sql<br />";
+				$test_ine=mysql_query($sql);
+				if(mysql_num_rows($test_ine)==0) {
+					echo "<p style='color:red'>Il se peut que la table 'eleves' souffre de quelques lacunes&nbsp;: Aucun ".$gepiSettings['denomination_eleve']." n'a son numéro INE renseigné.<br />Une Mise à jour d'après Sconet peut permettre de corriger cela (<em>avec un compte administrateur</em>).<br />Vous pouvez aussi contrôler dans Gestion des bases/Gestion des élèves si une conversion ne vous est pas demandée pour compléter certaines informations.</p>\n";
+				}
 			}
 			else{
 
@@ -742,7 +749,10 @@ else {
 					$res_ant2=mysql_query($sql);
 
 					if(mysql_num_rows($res_ant2)==0){
-						echo "<td>Aucun résultat antérieur n'a été conservé pour cet ".$gepiSettings['denomination_eleve'].".</td>\n";
+						echo "<td>";
+						//echo "Aucun résultat antérieur n'a été conservé pour cet ".$gepiSettings['denomination_eleve'].".";
+						echo "Aucun résultat antérieur n'a été conservé pour l'année ".$lig_ant->annee.".";
+						echo "</td>\n";
 					}
 					else{
 						$cpt=0;

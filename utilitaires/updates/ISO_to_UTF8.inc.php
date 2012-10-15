@@ -54,7 +54,7 @@ foreach ($donneesBase as $donnees) {
 */
   if (($donnees->Variable_name == 'character_set_database')&&($donnees->Value != SET_DEST)) {
       $result.=$donnees->Variable_name." est réglé à ".$donnees->Value."<br />";
-      $result.="passage de ".$donnees->Variable_name." à  ".SET_DEST."<br />";
+      $result.="Passage de ".$donnees->Variable_name." à  ".SET_DEST."<br />";
     $queryBase = mysql_query("ALTER DATABASE  CHARACTER SET ".SET_DEST.";");
   }
 }
@@ -155,7 +155,56 @@ if(mysql_num_rows($test)==0) {
 			$result .= "Aucune correction de nom de catégorie de matière requise.<br />";
 		}
 	}
+
 	saveSetting('conv_html_mat_cat','fait');
+}
+
+$sql="SELECT 1=1 FROM setting WHERE name='conv_html_fiche_bienvenue_personnels';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)==0) {
+	$correction=virer_accents_html_setting('Impression');
+	if($correction==0) {
+		$result .= msj_present("Pas d'accents HTML dans la Fiche Bienvenue des personnels.");
+	}
+	elseif($correction==1) {
+		$result .= msj_ok("Conversion des accents HTML dans la Fiche Bienvenue des personnels effectuée.");
+	}
+	else {
+		$result .= msj_erreur("Erreur lors de la conversion des accents HTML dans la Fiche Bienvenue des personnels.");
+	}
+	saveSetting('conv_html_fiche_bienvenue_personnels','fait');
+}
+
+$sql="SELECT 1=1 FROM setting WHERE name='conv_html_fiche_bienvenue_eleves';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)==0) {
+	$correction=virer_accents_html_setting('ImpressionFicheEleve');
+	if($correction==0) {
+		$result .= msj_present("Pas d'accents HTML dans la Fiche Bienvenue élève.");
+	}
+	elseif($correction==1) {
+		$result .= msj_ok("Conversion des accents HTML dans la Fiche Bienvenue élève effectuée.");
+	}
+	else {
+		$result .= msj_erreur("Erreur lors de la conversion des accents HTML dans la Fiche Bienvenue élève.");
+	}
+	saveSetting('conv_html_fiche_bienvenue_eleves','fait');
+}
+
+$sql="SELECT 1=1 FROM setting WHERE name='conv_html_fiche_bienvenue_responsables';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)==0) {
+	$correction=virer_accents_html_setting('ImpressionFicheParent');
+	if($correction==0) {
+		$result .= msj_present("Pas d'accents HTML dans la Fiche Bienvenue responsable.");
+	}
+	elseif($correction==1) {
+		$result .= msj_ok("Conversion des accents HTML dans la Fiche Bienvenue responsable effectuée.");
+	}
+	else {
+		$result .= msj_erreur("Erreur lors de la conversion des accents HTML dans la Fiche Bienvenue responsable.");
+	}
+	saveSetting('conv_html_fiche_bienvenue_responsables','fait');
 }
 
 ?>

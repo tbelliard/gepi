@@ -298,11 +298,13 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
   $ancre="clean_tables";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
   
-  $chemin = "efface_base.php";
-  $titre = "Effacer la base";
-  $expli = "Permet de réinitialiser les bases en effaçant toutes les données ".$gepiSettings['denomination_eleves']." de la base.";
-  $ancre="efface_base";
-  $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
+if(!getSettingAOui('gepi_en_production')) {
+	  $chemin = "efface_base.php";
+	  $titre = "Effacer la base";
+	  $expli = "Permet de réinitialiser les bases en effaçant toutes les données ".$gepiSettings['denomination_eleves']." de la base.";
+	  $ancre="efface_base";
+	  $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
+}
 
   if ($multisite != 'y') {
 	$chemin = "../mod_trombinoscopes/trombinoscopes_admin.php#purge";
@@ -318,12 +320,13 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
   $ancre="gestion_temp_dir";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
   
+if(!getSettingAOui('gepi_en_production')) {
   $chemin = "gestion_base_test.php";
   $titre = "Gestion des données de test";
   $expli = "Permet d'inserer des données de test dans la base. Ne pas utiliser sur une base de production.";
   $ancre="gestion_base_test";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
-
+}
 /*
 <!--
 <table class='menu' summary='Menu initialisation'>
@@ -394,14 +397,16 @@ if (LDAPServer::is_setup()) {
 	$ancre="chgt_annee";
 	$tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
 
-if (LDAPServer::is_setup()) {	
+if (LDAPServer::is_setup()) {
 	
 	$chemin="../init_scribe_ng/index.php";
 	$titre = "Initialisation à partir de l'annuaire LDAP du serveur Eole Scribe NG";
 	$expli = "Permet d'importer les données ".$gepiSettings['denomination_eleves'].", classes, ".$gepiSettings['denomination_professeurs'].", matières directement depuis le serveur LDAP de Scribe NG.";
 	$ancre="init_scribe_ng";
 	$tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
+}
 
+if(file_exists("../secure/config_lcs.inc.php")) {
 	$chemin="../init_lcs/index.php";
 	$titre = "Initialisation à partir de l'annuaire LDAP du serveur LCS";
 	$expli = "Permet d'importer les données ".$gepiSettings['denomination_eleves'].", classes, ".$gepiSettings['denomination_professeurs'].", matières directement depuis le serveur LDAP de LCS.";

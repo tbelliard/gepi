@@ -379,6 +379,12 @@ class class_page_accueil {
 		$this->creeNouveauItem("/mod_abs2/index.php",
 				"Gestion des Absences",
 				"Cet outil vous permet de gérer les absences des élèves");
+
+		if(($this->statutUtilisateur=="cpe")&&(getSettingAOui('AccesCpeAgregationAbs2'))) {
+			$this->creeNouveauItem("/mod_abs2/admin/admin_table_agregation.php",
+					"Agrégation des Absences",
+					"Cet outil vous permet de remplir/vider la table d'agrégation des absences");
+		}
 	  }
 
 			if ($this->b>0){
@@ -1122,7 +1128,7 @@ class class_page_accueil {
 			  "Cet outil vous permet de visualiser à l'écran et d'imprimer les bulletins, classe par classe.");
 	}
 
-	if ($this->statutUtilisateur=='administrateur'){
+	if ($this->statutUtilisateur=='administrateur') {
 		$this->creeNouveauItem("/statistiques/index.php",
 			  "Extractions statistiques",
 			  "Cet outil vous permet d'extraire des données à des fins statistiques (des bulletins, ...).");
@@ -1138,7 +1144,7 @@ class class_page_accueil {
 
 		$this->creeNouveauItem("/saisie/saisie_vocabulaire.php",
 			  "Lapsus ou fautes de frappe",
-			  "Cet outil vous permet de définir les associations de mots avec et sans faute de frappe à contrôler lors de la saisie des bulletins.<br />Il arrive qu'un professeur fasse une faute de frappe, mais que le mot obtenu existe bien (<em>Il n'est alors pas souligné par le navigateur comme erroné... et la faute passe inaperçu</em>)");
+			  "Cet outil vous permet de définir les associations de mots avec et sans faute de frappe à contrôler lors de la saisie des bulletins.<br />Il arrive qu'un professeur fasse une faute de frappe, mais que le mot obtenu existe bien (<em>Il n'est alors pas souligné par le navigateur comme erroné... et la faute passe inaperçue</em>)");
 	}
 
 	if ($this->b>0){
@@ -1193,7 +1199,7 @@ class class_page_accueil {
 			"Ce menu permet de vous permet de consulter vos listes d'".$this->gepiSettings['denomination_eleves']." par groupe constitué et enseigné.");
 	}
 
-	if ((($this->statutUtilisateur=='cpe')&&(getSettingAOui('CpeAccesFichesEleves')))||
+	if ((($this->statutUtilisateur=='cpe')&&(getSettingAOui('GepiAccesTouteFicheEleveCpe')))||
 		(($this->statutUtilisateur=='cpe')&&(getSettingAOui('CpeAccesUploadPhotosEleves')))
 	) {
 		$complement_texte="";
@@ -1337,6 +1343,16 @@ class class_page_accueil {
 				"Cet outil permet d'accéder aux informations des ".$this->gepiSettings['denomination_eleves']." dont vous êtes ".$gepi_prof_suivi.".");
 	  }
 	}
+
+
+	if($this->statutUtilisateur!='administrateur') {
+		if (acces("/statistiques/index.php", $this->statutUtilisateur)) {
+			$this->creeNouveauItem("/statistiques/index.php",
+				  "Extractions statistiques",
+				  "Cet outil vous permet d'extraire des données à des fins statistiques (des bulletins, ...).");
+		}
+	}
+
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',"Visualisation - Impression",'images/icons/print.png');
 	  return true;

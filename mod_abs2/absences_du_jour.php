@@ -471,14 +471,17 @@ $eleve_col = $query
 			    <tr>
 				    <td></td>
 				    <td></td>
-				    <?php foreach(EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime() as $edt_creneau){
-					    echo '		<td class="td_nom_creneau" style="text-align: center;">'.$edt_creneau->getNomDefiniePeriode().'</td>';
-				    }?>
+				    <?php
+						foreach(EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime() as $edt_creneau){
+							echo '		<td class="td_nom_creneau" style="text-align: center;"><a href="javascript:coche_checkbox_creneau('.$edt_creneau->getIdDefiniePeriode().')">'.$edt_creneau->getNomDefiniePeriode().'</a></td>';
+						}
+				    ?>
 			    </tr>
 
     <?php
     $nb_checkbox = 0; //nombre de checkbox
     $compteur = 0;
+    $tab_eleve_id=array();
     foreach($eleve_col as $eleve) {        
 	$compteur = $compteur + 1;
         $regime_eleve=EleveRegimeDoublantQuery::create()->findPk($eleve->getlogin())->getRegime();
@@ -549,6 +552,7 @@ $eleve_col = $query
 					echo '<td '.$style.'>';
                     
 					//si il y a des absences de l'utilisateurs on va proposer de les modifier
+					$nb_checkbox_eleve_courant_sur_ce_creneau=0;
 					foreach ($absences_du_creneau as $saisie) {
 					    if (in_array($saisie->getPrimaryKey(), $saisie_affiches)) {
 							//on affiche les saisies une seule fois
@@ -561,13 +565,17 @@ $eleve_col = $query
                         if ($saisie->getNotifiee()) {echo 'saisie_notifiee="true"';}
 					    if ($saisie->getTraitee()) {echo 'saisie_traitee="true"';}
 
-						$id_checkbox_eleve_courant=$eleve->getPrimaryKey()."_".$nb_checkbox_eleve_courant;
+						$eleve_id_courant=$eleve->getPrimaryKey();
+						$id_checkbox_eleve_courant=$eleve_id_courant."_".$edt_creneau->getIdDefiniePeriode()."_".$nb_checkbox_eleve_courant_sur_ce_creneau;
+
 						echo " id='".$id_checkbox_eleve_courant."' ";
+						if(!in_array($eleve_id_courant, $tab_eleve_id)) {$tab_eleve_id[]=$eleve_id_courant;}
 
 					    echo '/>';                        
                         echo '<a style="font-size:88%;" href="#" onClick="javascript:showwindow(\'visu_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&menu=false\',\'Modifier,traiter ou notifier une saisie\');return false"><img src="../images/icons/saisie.png" title="Voir la saisie n°'.$saisie->getPrimaryKey().'"/>';
 
 						$nb_checkbox_eleve_courant++;
+						$nb_checkbox_eleve_courant_sur_ce_creneau++;
 
                         //if ($saisie->getNotifiee()) {echo " (notifiée)";}
 					    echo '</nobr> ';                        
@@ -709,6 +717,32 @@ echo "</p>";
 echo "</form>";
 echo "</div>\n";
 echo "</div>\n";
+
+if(isset($tab_eleve_id)) {
+	$chaine_js_eleve_id="";
+	for($loop=0;$loop<count($tab_eleve_id);$loop++) {
+		if($loop>0) {$chaine_js_eleve_id.=", ";}
+		$chaine_js_eleve_id.="'".$tab_eleve_id[$loop]."'";
+	}
+
+	echo "<script type='text/javascript'>
+function coche_checkbox_creneau(num) {
+	var tab_eleve_id=new Array($chaine_js_eleve_id);
+	for(i=0;i<tab_eleve_id.length;i++) {
+		// suffixe '_0' on ne coche que la première saisie du créneau
+		// (tant pis s'il y en a plusieurs)
+		if(document.getElementById(tab_eleve_id[i]+'_'+num+'_0')) {
+			if(document.getElementById(tab_eleve_id[i]+'_'+num+'_0').checked!=true) {
+				document.getElementById(tab_eleve_id[i]+'_'+num+'_0').checked=true;
+			}
+			else {
+				document.getElementById(tab_eleve_id[i]+'_'+num+'_0').checked=false;
+			}
+		}
+	}
+}
+</script>\n";
+}
 
 $javascript_footer_texte_specifique = '<script type="text/javascript">
     dojo.require("dijit.form.Button");

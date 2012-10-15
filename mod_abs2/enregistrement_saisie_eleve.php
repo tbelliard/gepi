@@ -61,6 +61,8 @@ if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite" &
     die("acces interdit");
 }
 
+//debug_var();
+
 //récupération des paramètres de la requète
 $id_creneau = isset($_POST["id_creneau"]) ? $_POST["id_creneau"] :(isset($_GET["id_creneau"]) ? $_GET["id_creneau"] :NULL);
 $id_cours = isset($_POST["id_cours"]) ? $_POST["id_cours"] :(isset($_GET["id_cours"]) ? $_GET["id_cours"] :NULL);
@@ -244,10 +246,28 @@ for($i=0; $i<$total_eleves; $i++) {
 
 	if ($saisie->validate()) {
 	    $saisie->save();
+
+	    $lien_message_enregistrement="<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Saisie enregistrée pour l'eleve : ".$eleve->getNom()."</a>";
+
 	    if (isset($traitement)) {
-		$traitement->save();
+			$modif_lien_message_enregistrement="n";
+			if((isset($_POST['id_motif']))&&($_POST['id_motif']!='')&&($_POST['id_motif']!='-1')) {
+				$traitement->setAbsenceEleveMotif(AbsenceEleveMotifQuery::create()->findPk($_POST["id_motif"]));
+				$modif_lien_message_enregistrement="y";
+			}
+			if((isset($_POST['id_justification']))&&($_POST['id_justification']!='')&&($_POST['id_justification']!='-1')) {
+				$traitement->setAbsenceEleveJustification(AbsenceEleveJustificationQuery::create()->findPk($_POST["id_justification"]));
+				$modif_lien_message_enregistrement="y";
+			}
+			$traitement->save();
+
+			if($modif_lien_message_enregistrement=="y") {
+			    $lien_message_enregistrement="<a href='visu_traitement.php?id_traitement=".$traitement->getId()."&id_saisie_appel=".$saisie->getPrimaryKey()."'>Saisie et traitement enregistrés pour l'eleve : ".$eleve->getNom()."</a>";
+			}
 	    }
-	    $message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Saisie enregistrée pour l'eleve : ".$eleve->getNom()."</a>";
+
+	    $message_enregistrement .= $lien_message_enregistrement;
+
 	    if (isset($saisie_discipline) && $saisie_discipline == true) {
 		$message_enregistrement .= " &nbsp;<a href='../mod_discipline/saisie_incident_abs2.php?id_absence_eleve_saisie=".
 		    $saisie->getId()."&return_url=no_return".add_token_in_url()."'>Saisir un incident disciplinaire pour l'élève : ".$eleve->getNom()."</a>";

@@ -159,6 +159,9 @@ if (isset($_POST["initialise"]) && $_POST["initialise"]==TRUE) {
 
 $_SESSION['showJournee'] = isset($_POST["journee"]) ? $_POST["journee"] : (isset($_SESSION['showJournee']) ? $_SESSION['showJournee'] : FALSE);
 
+// Initialisation de variable:
+$afficher_passer_au_cdt="y";
+
 //récupération des paramètres de la requète
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :(isset($_SESSION["id_groupe_abs"]) ? $_SESSION["id_groupe_abs"] : NULL));
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_classe"]) ? $_GET["id_classe"] :(isset($_SESSION["id_classe_abs"]) ? $_SESSION["id_classe_abs"] : NULL));
@@ -382,7 +385,6 @@ if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getSta
 } else {
     $classe_col = $utilisateur->getClasses();
 }
-
 //**************** ELEVES *****************
 //affichage des eleves. Il nous faut au moins un groupe ou une aid
 $eleve_col = new PropelCollection();
@@ -479,7 +481,6 @@ if ($current_creneau == null) {
     $eleve_col = new PropelObjectCollection();
 }
 
-
 //**************** TABLEAU DES ELEVES *****************
 // 20120618
 $tab_regimes=array();
@@ -497,36 +498,36 @@ foreach($eleve_col as $eleve) {
 	
 	$Yesterday = date("Y-m-d",mktime(0,0,0,$dt_date_absence_eleve->format("m") ,$dt_date_absence_eleve->format("d")-1,$dt_date_absence_eleve->format("Y")));
 	$abs_hier = false;
-        $traitee_hier = true;//les saisies de la veille ont-elle été traitées intégralement
-        $justifiee_hier = true;//les saisies de la veille ont-elle été justifiées intégralement
-        $afficheEleve[$elv]['bulle_hier'] = '';
-        foreach ($eleve->getAbsenceEleveSaisiesDuJour($Yesterday) as $saisie) {
-            if (!$saisie->getManquementObligationPresence()) continue;
-            $abs_hier = true;
-            $traitee_hier = $traitee_hier && $saisie->getTraitee();
-            $justifiee_hier = $justifiee_hier && $saisie->getJustifiee();
-            $afficheEleve[$elv]['bulle_hier'] .= $saisie->getTypesDescription();
-        }
-        if ($abs_hier) {
-            $afficheEleve[$elv]['class_hier'] = $justifiee_hier ? "justifieeHier" : 'absentHier';
-            $afficheEleve[$elv]['text_hier'] = $traitee_hier ? 'T' : '';
-        } else {
-            $afficheEleve[$elv]['class_hier'] = '';
-            $afficheEleve[$elv]['text_hier'] = '';
-        }
+	$traitee_hier = true;//les saisies de la veille ont-elle été traitées intégralement
+	$justifiee_hier = true;//les saisies de la veille ont-elle été justifiées intégralement
+	$afficheEleve[$elv]['bulle_hier'] = '';
+	foreach ($eleve->getAbsenceEleveSaisiesDuJour($Yesterday) as $saisie) {
+		if (!$saisie->getManquementObligationPresence()) continue;
+		$abs_hier = true;
+		$traitee_hier = $traitee_hier && $saisie->getTraitee();
+		$justifiee_hier = $justifiee_hier && $saisie->getJustifiee();
+		$afficheEleve[$elv]['bulle_hier'] .= $saisie->getTypesDescription();
+	}
+	if ($abs_hier) {
+		$afficheEleve[$elv]['class_hier'] = $justifiee_hier ? "justifieeHier" : 'absentHier';
+		$afficheEleve[$elv]['text_hier'] = $traitee_hier ? 'T' : '';
+	} else {
+		$afficheEleve[$elv]['class_hier'] = '';
+		$afficheEleve[$elv]['text_hier'] = '';
+	}
 	$afficheEleve[$elv]['position'] = $eleve_col->getPosition();
 	$afficheEleve[$elv]['id'] = $eleve->getId();
 	$afficheEleve[$elv]['nom'] = $eleve->getNom();
 	$afficheEleve[$elv]['prenom'] = $eleve->getPrenom();
 	$afficheEleve[$elv]['civilite'] = $eleve->getCivilite();
-        $afficheEleve[$elv]['regime'] = '';
-        if ($eleve->getEleveRegimeDoublant() != null) {
-            $afficheEleve[$elv]['regime'] = $eleve->getEleveRegimeDoublant()->getRegime();
-            if(!in_array($afficheEleve[$elv]['regime'], $tab_regimes)) {
-                    $tab_regimes[]=$afficheEleve[$elv]['regime'];
-            }
-            $tab_regimes_eleves[$afficheEleve[$elv]['regime']][]=$afficheEleve[$elv]['position'];
-        }
+	$afficheEleve[$elv]['regime'] = '';
+	if ($eleve->getEleveRegimeDoublant() != null) {
+		$afficheEleve[$elv]['regime'] = $eleve->getEleveRegimeDoublant()->getRegime();
+		if(!in_array($afficheEleve[$elv]['regime'], $tab_regimes)) {
+			$tab_regimes[]=$afficheEleve[$elv]['regime'];
+		}
+		$tab_regimes_eleves[$afficheEleve[$elv]['regime']][]=$afficheEleve[$elv]['position'];
+	}
 
 	if ((isset($current_groupe) && $current_groupe != null && $current_groupe->getClasses()->count() == 1)
 		|| (isset($current_classe) && $current_classe != null)) {
@@ -572,9 +573,9 @@ foreach($eleve_col as $eleve) {
 			if (getSettingValue("abs2_afficher_saisies_creneau_courant")!='y') {
 				$absences_du_creneau_du_prof = new PropelObjectCollection();
 				foreach ($absences_du_creneau as $abs) {
-						if ($abs->getUtilisateurId() == $utilisateur->getPrimaryKey()) {
-								$absences_du_creneau_du_prof->append($abs);
-						}
+					if ($abs->getUtilisateurId() == $utilisateur->getPrimaryKey()) {
+						$absences_du_creneau_du_prof->append($abs);
+					}
 				}
 				$absences_du_creneau = $absences_du_creneau_du_prof;
 			}
@@ -589,12 +590,25 @@ foreach($eleve_col as $eleve) {
 			//on affiche  les informations pour les crenaux avant la saisie sauf si configuré autrement
 			if (getSettingValue("abs2_montrer_creneaux_precedents")=='y') {
 				$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
+
+/*
+// 20121009
+if(!$absences_du_creneau->isEmpty()) {
+echo "<p>".$eleve->getLogin()."<br />".
+//$absences_du_creneau->get().
+"</p>";
+echo "<pre>";
+print_r($absences_du_creneau);
+echo "</pre>";
+}
+*/
+
 			} else {
 				$absences_du_creneau = new PropelCollection();
 			}
 		}
 		$afficheEleve[$elv]['style'][$i] = "";
-                if ($deja_saisie && $nb_creneau_a_saisir > 0) {
+		if ($deja_saisie && $nb_creneau_a_saisir > 0) {
 			$afficheEleve[$elv]['style'][$i] = "fondVert";
 		}
 		if (!$absences_du_creneau->isEmpty()) {
@@ -602,6 +616,10 @@ foreach($eleve_col as $eleve) {
 				if ($abs_saisie->getManquementObligationPresence()) {
 					$afficheEleve[$elv]['style'][$i] = "fondRouge";
 					break;
+				}
+				// 20121009
+				else {
+					$afficheEleve[$elv]['style'][$i] = "fondJaune";
 				}
 			}
 		}
@@ -614,6 +632,7 @@ foreach($eleve_col as $eleve) {
 		
 		//si il y a des absences de l'utilisateurs on va proposer de les modifier
 		if (getSettingValue("abs2_modification_saisie_une_heure")=='y') {
+			$cpt=0;
 			foreach ($absences_du_creneau as $saisie) {
 				if (in_array($saisie->getPrimaryKey(), $saisie_affiches)) {
 					// on affiche les saisies une seule fois
@@ -628,9 +647,33 @@ foreach($eleve_col as $eleve) {
 					foreach ($saisie->getAbsenceEleveTraitements() as $bou_traitement) {
 						if ($bou_traitement->getAbsenceEleveType() != null) {
 							$afficheEleve[$elv]['saisie'][$i]['traitements'][] = $bou_traitement->getAbsenceEleveType()->getNom();
+							//echo "\$afficheEleve[$elv]['saisie'][$i]['traitements'][] = ".$bou_traitement->getAbsenceEleveType()->getNom()."<br />";
 						}
 					}
 				}
+				// 20121009
+				else {
+					// Peut-être ajouter un test: les autres utilisateurs ont-ils le droit de voir ce qui a été saisi par un collègue?
+					// Pour permettre un affichage en title sur les cellules avec saisie
+					/*
+					echo "<hr />Saisie<pre>";
+					print_r($saisie);
+					echo "</pre>";
+					*/
+					foreach ($saisie->getAbsenceEleveTraitements() as $bou_traitement) {
+						if ($bou_traitement->getAbsenceEleveType() != null) {
+							$commentaire_associe="";
+							if($saisie->getCommentaire()!=null) {$commentaire_associe=" (".$saisie->getCommentaire().")";}
+							$afficheEleve[$elv]['info_saisie'][$i]['traitements'][] = $bou_traitement->getAbsenceEleveType()->getNom().$commentaire_associe;
+							/*
+							echo "<hr />bou_traitement<pre>";
+							print_r($bou_traitement);
+							echo "</pre>";
+							*/
+						}
+					}
+				}
+				$cpt++;
 			}
 		}
 		
@@ -640,6 +683,7 @@ foreach($eleve_col as $eleve) {
 				$txt = $abs_saisie->getTypesDescription();
 				if ($txt != '') {
 					$afficheEleve[$elv]['saisieDescription'][$i][] = $abs_saisie->getTypesDescription();
+					//echo $abs_saisie->getTypesDescription()."<br />";
 				}
 			}
 		}
@@ -710,6 +754,7 @@ require_once("../lib/header_template.inc.php");
 <head>
 <!-- on inclut l'entête -->
 <?php 
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 include('../templates/origine/header_template.php');
 //include("../templates/origine/bandeau_template.php");
 ?>
@@ -741,6 +786,7 @@ include('../templates/origine/header_template.php');
 <!-- ************************* -->
 <!-- Début du corps de la page -->
 <!-- ************************* -->
+
 <body onload="show_message_deconnexion();<?php if($tbs_charger_observeur) echo $tbs_charger_observeur;?>">
 
 
@@ -757,9 +803,19 @@ include('../templates/origine/header_template.php');
 
 include('menu_abs2.inc.php');
 //===========================
+//debug_var();
 ?>
 <a name='haut_de_page'></a>
 <div class='css-panes' id='containDiv'>
+
+	<?php
+		if((acces("/groupes/signalement_eleves.php", $_SESSION['statut']))&&(isset($id_groupe))) {
+	?>
+	<!--div style='float:right; width:19px;'><a href='../groupes/signalement_eleves.php?id_groupe=<?php echo $id_groupe;?>' onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')"><img src='../images/icons/ico_question.png' width='19' height='19' title="Si la liste des élèves du groupe affiché n'est pas correcte, vous pouvez signaler ici les erreurs à l'administrateur." /></a></div-->
+	<div style='float:right; width:19px;'><a href='../groupes/signalement_eleves.php?id_groupe=<?php echo $id_groupe;?>' target="_blank"><img src='../images/icons/ico_question.png' width='19' height='19' title="Si la liste des élèves du groupe affiché n'est pas correcte, vous pouvez signaler ici les erreurs à l'administrateur." /></a></div>
+	<?php
+		}
+	?>
 
 	<form class="center" action="./saisir_groupe.php" method="post" style="width: 100%;">
 		<p>
@@ -798,11 +854,15 @@ include('menu_abs2.inc.php');
 // ===== Affichage des groupes ======
 if (isset ($groupe_col) && !$groupe_col->isEmpty()) {
 ?>
-		<form class="colonne" action="./saisir_groupe.php" method="post">
+		<form class="colonne" action="./saisir_groupe.php" method="post" name="form_choix_groupe">
 			<p>
 				<input type="hidden" name="type_selection" value="id_groupe"/>
 				<label for="id_groupe">Groupe : </label>
-				<select id="id_groupe" name="id_groupe" class="small">
+				<select id="id_groupe" name="id_groupe" class="small"<?php
+					if(($_SESSION['statut']=='professeur')&&(!getSettingAOui('abs2_saisie_prof_decale'))&&(!getSettingAOui('abs2_saisie_prof_decale_journee'))) {
+						echo " onchange=\"document.forms['form_choix_groupe'].submit();\"";
+					}
+				?>>
 					<option value='-1'>choisissez un groupe</option>
 <?php
 foreach ($groupe_col as $group) {	
@@ -1103,11 +1163,26 @@ if ($eleve_col->isEmpty()) {
 					   type="submit"  
 					   onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
 			</p>
-			<?php if ($utilisateur->getStatut() == 'professeur' && getSettingValue("active_cahiers_texte")=='y') { ?>
+			<?php
+			if ($utilisateur->getStatut() == 'professeur' && getSettingValue("active_cahiers_texte")=='y') { 
+				//$afficher_passer_au_cdt="y";
+				if(isset($id_groupe)) {
+					$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='cahier_texte' AND visible='n';";
+					//echo "$sql<br />";
+					$test_cdt=mysql_query($sql);
+					if(mysql_num_rows($test_cdt)>0) {
+						$afficher_passer_au_cdt="n";
+					}
+				}
+				if($afficher_passer_au_cdt=="y") {
+			?>
 			<p class="choix_fin center">
 				<input value="Enregistrer et passer au cahier de texte" name="cahier_texte" type="submit"/>
 			</p>
-			<?php } ?>
+			<?php
+				}
+			}
+			?>
 <!-- Afichage du tableau de la liste des élèves -->
 <!-- Legende du tableau-->
 			<p class="center"><?php echo $eleve_col->count(); ?> élèves (<?php echo $chaine_effectifs_regimes;?>).</p>
@@ -1160,12 +1235,13 @@ if ($eleve_col->isEmpty()) {
 	foreach($afficheEleve as $eleve) {
 		$compteur_eleve++;
 ?>
+<!--tr><td>plop</td></tr-->
 					<tr class='<?php echo $eleve['background'];?>'>
 						<td class = "<?php echo($eleve['class_hier']);
 							if ($eleve['creneau_courant'] != 0) {
 								echo ' noSmartphone';
 							} ?>">
-                                                        <span class="description" title="<?php echo htmlspecialchars($eleve['bulle_hier']); ?>"><?php echo $eleve['text_hier']; ?></span>
+							<span class="description" title="<?php echo htmlspecialchars($eleve['bulle_hier']); ?>"><?php echo $eleve['text_hier']; ?></span>
 						</td>
 						<td class='td_abs_eleves'>
 							<input type="hidden" 
@@ -1192,24 +1268,40 @@ for($i = 0; $i<$eleve['creneaux_possibles']; $i++){ ?>
 									&& ($eleve['creneau_courant']  != ($i + 2))) {
 								echo ' noSmartphone';
 							}
-								?>">
-<?php if (isset ($eleve['saisie'][$i]) && !empty ($eleve['saisie'][$i])) { ?>
+								?>"
+							<?php
+								if(isset($eleve['info_saisie'][$i]['traitements'])) {
+									$chaine_info="";
+									foreach($eleve['info_saisie'][$i]['traitements'] as $info_saisie) {
+										if($chaine_info!="") {	$chaine_info.=", ";}
+										$chaine_info.=$info_saisie;
+									}
+									echo " title=\"".preg_replace('/"/',"'",$chaine_info)."\"";
+								}
+							?>>
+<?php if (isset ($eleve['saisie'][$i]) && !empty ($eleve['saisie'][$i])) {
+// 20121009
+/*
+echo "<pre>";
+print_r($eleve['saisie'][$i]);
+echo "</pre>";
+*/
+?>
 							<a class="saisieAnte" href='visu_saisie.php?id_saisie=<?php echo $eleve['saisie'][$i]['primaryKey']; ?>'>
-								Modif.&nbsp;saisie de <?php echo $eleve['saisie'][$i]['createdAt']; ?>
+								Modif.&nbsp;saisie de <?php
+		echo $eleve['saisie'][$i]['createdAt'];
 
-<?php
 		$besoin_echo_virgule = false;
 		if (isset ($eleve['saisie'][$i]['traitements'])) {
-		foreach ($eleve['saisie'][$i]['traitements'] as $bou_traitement) {
-			if ($besoin_echo_virgule) {
-				echo ', ';
-			} 
-?>
-								<?php echo $bou_traitement; ?>
-<?php 
-		$besoin_echo_virgule = true;
-	}
-}
+			foreach ($eleve['saisie'][$i]['traitements'] as $bou_traitement) {
+				if ($besoin_echo_virgule) {
+					echo ', ';
+				} 
+
+				echo $bou_traitement;
+				$besoin_echo_virgule = true;
+			}
+		}
 ?>
 							</a>
 							<br />
@@ -1220,7 +1312,7 @@ for($i = 0; $i<$eleve['creneaux_possibles']; $i++){ ?>
 	}
 ?>
 							<span class="description" title="<?php echo htmlspecialchars($hover); ?>">T</span>
-<?php } 
+<?php }
 if (isset ($eleve['erreurEnregistre'][$i])) { ?>	
 	Erreur : <?php echo $eleve['erreurEnregistre'][$i]; ?>
 <?php }
@@ -1391,11 +1483,13 @@ if ($eleve['creneau_courant'] == $i) { ?>
 		</p>
 <?php
 if ($utilisateur->getStatut() == 'professeur' && getSettingValue("active_cahiers_texte")=='y') {
+	if($afficher_passer_au_cdt=="y") {
 ?>
     <p class="choix_fin">
 	    <input value="Enregistrer et passer au cahier de texte" name="cahier_texte" type="submit"/>
     </p>
 <?php
+	}
 }
 ?>
 	</form>

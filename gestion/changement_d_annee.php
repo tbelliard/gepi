@@ -152,6 +152,42 @@ if (isset($_POST['is_posted'])) {
 	}
 }
 
+if (isset($_GET['reinit_dates_verrouillage_periode'])) {
+	check_token();
+	$sql="update periodes set date_verrouillage='0000-00-00 00:00:00';";
+	$res=mysql_query($sql);
+	if($res) {
+		$msg.="Réinitialisation des dates de verrouillage de périodes effectuée.<br />";
+	}
+	else {
+		$msg.="Erreur lors de la réinitialisation des dates de verrouillage de périodes.<br />";
+	}
+}
+
+if (isset($_GET['suppr_reserve_eleve'])) {
+	check_token();
+	$sql="DELETE FROM tempo_utilisateurs WHERE statut='eleve';";
+	$res=mysql_query($sql);
+	if($res) {
+		$msg.="Suppression de la réserve sur les comptes élèves effectuée.<br />";
+	}
+	else {
+		$msg.="Erreur lors de la suppression de la réserve sur les comptes élèves.<br />";
+	}
+}
+
+if (isset($_GET['suppr_reserve_resp'])) {
+	check_token();
+	$sql="DELETE FROM tempo_utilisateurs WHERE statut='responsable';";
+	$res=mysql_query($sql);
+	if($res) {
+		$msg.="Suppression de la réserve sur les comptes responsables effectuée.<br />";
+	}
+	else {
+		$msg.="Erreur lors de la suppression de la réserve sur les comptes responsables.<br />";
+	}
+}
+
 // Load settings
 if (!loadSettings()) {
 	die("Erreur chargement settings");
@@ -296,6 +332,7 @@ if(mysql_num_rows($test)>0) {
 		}
 		echo "</em>)";
 	}
+	echo " - <a href='".$_SERVER['PHP_SELF']."?suppr_reserve_eleve=y".add_token_in_url()."' title=\"Cela supprime de la table 'tempo_utilisateurs', les comptes élèves. Cela ne supprime pas les comptes élèves actuellement enregistrés dans la table 'utilisateurs'. Vous pourrez donc refaire une mise en réserve des actuels comptes élèves tant que vous n'aurez pas lancé l'initialisation de la nouvelle année.\">Supprimer les comptes élèves mis en réserve</a>";
 	$temoin_reserve_compte_ele="faite";
 }
 else {
@@ -334,6 +371,7 @@ if(mysql_num_rows($test)>0) {
 		}
 		echo "</em>)";
 	}
+	echo " - <a href='".$_SERVER['PHP_SELF']."?suppr_reserve_resp=y".add_token_in_url()."' title=\"Cela supprime de la table 'tempo_utilisateurs', les comptes responsables. Cela ne supprime pas les comptes responsables actuellement enregistrés dans la table 'utilisateurs'. Vous pourrez donc refaire une mise en réserve des actuels comptes responsables tant que vous n'aurez pas lancé l'initialisation de la nouvelle année.\">Supprimer les comptes responsables mis en réserve</a>";
 	$temoin_reserve_compte_resp="faite";
 }
 else {
@@ -386,8 +424,18 @@ echo "<p><br /></p>\n";
 
 echo "<a name='svg_ext'></a>";
 echo "<p><em>NOTES&nbsp;:</em></p>\n";
-echo "<p style='margin-left:3em;'>La sauvegarde sur périphérique externe permet de remettre en place un GEPI si jamais votre GEPI en ligne subit des dégats (<em>crash du disque dur hébergeant votre GEPI, incendie du local serveur,...</em>).<br />Vous n'aurez normalement jamais besoin de ces sauvegardes, mais mieux vaut prendre des précautions.</p>\n";
-
+echo "<ul>\n";
+echo "<li>\n";
+echo "<p>La sauvegarde sur périphérique externe permet de remettre en place un GEPI si jamais votre GEPI en ligne subit des dégats (<em>crash du disque dur hébergeant votre GEPI, incendie du local serveur,...</em>).<br />Vous n'aurez normalement jamais besoin de ces sauvegardes, mais mieux vaut prendre des précautions.</p>\n";
+echo "</li>\n";
+echo "<li>\n";
+echo "<p>Lors de l'initialisation de l'année, la date à laquelle une période a été close pour telle classe sera réinitialisée.<br />Ce n'était pas le cas pour une initialisation faite avant le 17/09/2012.<br />Pour forcer cette réinitialisation, <a href='".$_SERVER['PHP_SELF']."?reinit_dates_verrouillage_periode=y".add_token_in_url()."'>cliquer ici</a>.<br />Cette date de verrouillage présente un intérêt pour l'accès des responsables et élèves aux appréciations des bulletins dans le cas où vous avez choisi un accès automatique N jours après la clôture de la période.</p>\n";
+if(getSettingValue("active_module_absence")=="2"){
+	echo "<p>Ces dates de verrouillage, indiquant à quelle date la période de notes a été close, n'ont rien à voir avec les dates déclarées pour les fins de périodes d'absences dans la page de Verrouillage.<br />
+	Les dates de fin de période affichées dans la page de Verrouillage concernent la liste des élèves qui seront présentés dans vos groupes/classes pour la saisie des absences (<em>tel élève arrivé au 2è trimestre ou ayant changé de classe,... doit ou ne doit pas apparaître sur telle période dans tel groupe/classe</em>).</p>\n";
+}
+echo "</li>\n";
+echo "</ul>\n";
 echo "<p><br /></p>\n";
 
 require("../lib/footer.inc.php");

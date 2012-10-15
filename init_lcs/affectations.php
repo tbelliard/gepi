@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -97,13 +97,30 @@ if (isset($_POST['is_posted'])) {
 	check_token();
 
     // L'admin a validé la procédure, on procède donc...
-    $j=0;
-    while ($j < count($liste_tables_del)) {
-        if (mysql_result(mysql_query("SELECT count(*) FROM ".$liste_tables_del[$j]),0)!=0) {
-            $del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
-        }
-        $j++;
-    }
+	echo "<p><em>On vide d'abord les tables suivantes&nbsp;:</em> ";
+	$j=0;
+	$k=0;
+	while ($j < count($liste_tables_del)) {
+		$sql="SHOW TABLES LIKE '".$liste_tables_del[$j]."';";
+		//echo "$sql<br />";
+		$test = sql_query1($sql);
+		if ($test != -1) {
+			if($k>0) {echo ", ";}
+			$sql="SELECT 1=1 FROM $liste_tables_del[$j];";
+			$res_test_tab=mysql_query($sql);
+			if(mysql_num_rows($res_test_tab)>0) {
+				$sql="DELETE FROM $liste_tables_del[$j];";
+				$del = @mysql_query($sql);
+				echo "<b>".$liste_tables_del[$j]."</b>";
+				echo " (".mysql_num_rows($res_test_tab).")";
+			}
+			else {
+				echo $liste_tables_del[$j];
+			}
+			$k++;
+		}
+		$j++;
+	}
 
     // On se connecte au LDAP
     $ds = connect_ldap($lcs_ldap_host,$lcs_ldap_port,"","");
@@ -197,14 +214,23 @@ if (isset($_POST['is_posted'])) {
 
 } else {
 
-    $j=0;
-    $flag=0;
-    while (($j < count($liste_tables_del)) and ($flag==0)) {
-        if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-            $flag=1;
-        }
-        $j++;
-    }
+	$j=0;
+	$flag=0;
+	for($j=0;$j<count($liste_tables_del);$j++) {
+		$sql="SHOW TABLES LIKE '".$liste_tables_del[$j]."';";
+		//echo "$sql<br />";
+		$test = sql_query1($sql);
+		if ($test != -1) {
+			$sql="SELECT 1=1 FROM $liste_tables_del[$j];";
+			$res_test_tab=mysql_query($sql);
+			if(mysql_num_rows($res_test_tab)>0) {
+				$flag=1;
+				break;
+			}
+		}
+		//flush();
+	}
+
     if ($flag != 0){
         echo "<p><b>ATTENTION ...</b><br />";
         echo "Des données concernant la constitution des classes et l'affectation des élèves dans les classes sont présentes dans la base GEPI ! Si vous poursuivez la procédure, ces données seront définitivement effacées !</p>";

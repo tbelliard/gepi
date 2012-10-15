@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -258,14 +258,14 @@ if(mysql_num_rows($res_sig)>0) {
 
 function CocheCase(boul) {
 
- nbelements = document.formulaire.elements.length;
- for (i = 0 ; i < nbelements ; i++) {
-   if (document.formulaire.elements[i].type =='checkbox')
-      document.formulaire.elements[i].checked = boul ;
- }
+	nbelements = document.formulaire.elements.length;
+	for (i = 0 ; i < nbelements ; i++) {
+		if (document.formulaire.elements[i].type =='checkbox') {
+			document.formulaire.elements[i].checked = boul ;
+		}
+	}
 
 }
-
 
 <?php
 //=========================
@@ -475,14 +475,26 @@ echo "<div style='clear:both;'></div>\n";
 		}
 		echo ".</p>\n";
 	}
-?>
 
-<?php
+	// Effectifs des classes associées au groupe:
+	$tab_eff_clas_grp=array();
+	for($loop=0;$loop<count($current_group["classes"]["list"]);$loop++) {
+		$tab_eff_clas_grp[$current_group["classes"]["list"][$loop]]=array();
+
+		for($loop_per=1;$loop_per<$current_group["nb_periode"];$loop_per++) {
+			$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$current_group["classes"]["list"][$loop]."' AND periode='".$loop_per."';";
+			//echo "$sql<br />";
+			$res_compte=mysql_query($sql);
+			$tab_eff_clas_grp[$current_group["classes"]["list"][$loop]][$loop_per]=mysql_num_rows($res_compte);
+		}
+	}
+
+	echo "<div style='float:right; text-align:center;'>\n";
+
 	$sql="SELECT DISTINCT jgc.id_groupe FROM groupes g, j_groupes_classes jgc, j_eleves_groupes jeg WHERE jgc.id_classe='$id_classe' AND jeg.id_groupe=jgc.id_groupe AND g.id=jgc.id_groupe AND jgc.id_groupe!='$id_groupe' ORDER BY g.name;";
 	//echo "$sql<br />\n";
 	$res_grp_avec_eleves=mysql_query($sql);
 	if(mysql_num_rows($res_grp_avec_eleves)>0) {
-		echo "<div style='float:right; text-align:center;'>\n";
 		echo "<form enctype='multipart/form-data' action='edit_eleves.php' name='form_copie_ele' method='post'>\n";
 		echo "<p>\n";
 		echo "<select name='choix_modele_copie' id='choix_modele_copie'>\n";
@@ -494,9 +506,15 @@ echo "<div style='clear:both;'></div>\n";
 
 			$tmp_grp=get_group($lig_grp_avec_eleves->id_groupe);
 
-			/*
-			$sql="SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe='$lig_grp_avec_eleves->id_groupe';";
-			*/
+			$temoin_classe_entiere="y";
+			for($loop=0;$loop<count($tmp_grp["classes"]["list"]);$loop++) {
+				for($loop_per=1;$loop_per<$current_group["nb_periode"];$loop_per++) {
+					if((isset($tab_eff_clas_grp[$current_group["classes"]["list"][$loop]][$loop_per]))&&(count($tmp_grp["eleves"][$loop_per]["telle_classe"][$tmp_grp["classes"]["list"][$loop]])!=$tab_eff_clas_grp[$current_group["classes"]["list"][$loop]][$loop_per])) {
+						$temoin_classe_entiere="n";
+						break;
+					}
+				}
+			}
 
 			$chaine_js[$cpt_ele_grp]="";
 			for($loop=0;$loop<count($tmp_grp["eleves"]["all"]["list"]);$loop++) {
@@ -507,8 +525,11 @@ echo "<div style='clear:both;'></div>\n";
 			$id_groupe_js[$cpt_ele_grp]=$lig_grp_avec_eleves->id_groupe;
 
 			echo "<option value='$cpt_ele_grp'";
+			if($temoin_classe_entiere=="y") {echo " style='color:grey;' title='Classe(s) entière(s)'";}
+			else {echo " title='Sous-groupe'";}
 			if((isset($_SESSION['id_groupe_reference_copie_assoc']))&&($_SESSION['id_groupe_reference_copie_assoc']==$lig_grp_avec_eleves->id_groupe)) {echo " selected='true'";}
 			echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")</option>\n";
+			//echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].") ".count($tmp_grp["eleves"][1]["list"])." élèves</option>\n";
 
 			$cpt_ele_grp++;
 		}
@@ -527,15 +548,29 @@ echo "<div style='clear:both;'></div>\n";
 		echo "</script>\n";
 
 		echo "</form>\n";
-		echo "</div>\n";
+		echo "<br />\n";
 	}
 ?>
 
-
 <p>
-<b><a href="javascript:CocheCase(true);changement();">Tout cocher</a> - <a href="javascript:CocheCase(false);changement();">Tout décocher</a></b>
- - <a href="javascript:griser_degriser('griser');changement();">Griser</a> - <a href="javascript:griser_degriser('degriser');changement();">Dégriser</a>
+<b>
+<a href="javascript:CocheCase(true);changement();">Tout cocher</a> - 
+<a href="javascript:CocheCase(false);changement();">Tout décocher</a></b> - <br />
+
+<a href="javascript:CocheFrac(true, 1);changement();">Cocher la première moitié</a> - 
+<a href="javascript:CocheFrac(false, 1);changement();">Décocher la première moitié</a> - <br />
+<a href="javascript:CocheFrac(true, 2);changement();">Cocher la seconde moitié</a> - 
+<a href="javascript:CocheFrac(false, 2);changement();">Décocher la seconde moitié</a> - <br />
+
+<a href="javascript:griser_degriser('griser');changement();">Griser</a> - 
+<a href="javascript:griser_degriser('degriser');changement();">Dégriser</a>
 </p>
+
+<?php
+	echo "</div>\n";
+?>
+
+
 <form enctype="multipart/form-data" action="edit_eleves.php" name="formulaire" method='post'>
 <p><input type='submit' value='Enregistrer' /></p>
 <?php
@@ -1050,8 +1085,29 @@ if(count($total_eleves)>0) {
 ";
 	}
 
-	echo "</script>
-	";
+	echo "
+function CocheFrac(mode, part) {
+	for(i=0;i<$nb_eleves;i++) {
+		for(num_periode=0;num_periode<=".count($current_group["periodes"]).";num_periode++) {
+			if(document.getElementById('case_'+num_periode+'_'+i)) {
+				if(part==1) {
+					if(i<$nb_eleves/2) {
+						document.getElementById('case_'+num_periode+'_'+i).checked=mode;
+					}
+				}
+				else {
+					if(i>=$nb_eleves/2) {
+						document.getElementById('case_'+num_periode+'_'+i).checked=mode;
+					}
+				}
+			}
+		}
+	}
+	griser_degriser(etat_grisage);
+}
+";
+
+	echo "</script>\n";
 
 	echo "<p><br /></p>\n";
 

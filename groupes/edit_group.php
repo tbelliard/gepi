@@ -333,6 +333,9 @@ print_r($reg_professeurs);
 echo "</pre>\n";
 */
 
+// Ajout sécurité:
+if((!isset($id_classe))||($id_classe=='')) {$id_classe=$current_group['classes']['list'][0];}
+
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des groupes";

@@ -25,7 +25,6 @@ $accessibilite="y";
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
-require_once("../lib/transform_functions.php");
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -320,8 +319,6 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
             // Affichage des devoirs dans chaque matière
             while ($ind < $nb_devoirs_cahier_texte) {
                 $content = mysql_result($appel_devoirs_cahier_texte, $ind, 'contenu');
-                // Mise en forme du texte
-                include "../lib/transform.php";
                 $date_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'date_ct');
                 $id_devoirs =  mysql_result($appel_devoirs_cahier_texte, $ind, 'id_ct');
                 $id_groupe_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'id');
@@ -339,13 +336,13 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 					// Comment est utilisé $chaine???
 					// ???????????????????????????????
                 }
-                //$html = "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["f"]."; padding: 2px; margin: 2px;\"><font color='".$color_police_matieres."' style='font-variant: small-caps;'><small><strong><u>".$matiere_devoirs." (".$chaine."):</u></strong></small></font>".$html;
-                $html = "<div class=\"matiere_a_faire couleur_bord_tableau_notice couleur_cellule_f color_police_matieres\">\n<h4 class=\"souligne\">".$matiere_devoirs." (".$chaine."):</h4>\n".$html;
+                //$content = "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["f"]."; padding: 2px; margin: 2px;\"><font color='".$color_police_matieres."' style='font-variant: small-caps;'><small><strong><u>".$matiere_devoirs." (".$chaine."):</u></strong></small></font>".$content;
+                $content = "<div class=\"matiere_a_faire couleur_bord_tableau_notice couleur_cellule_f color_police_matieres\">\n<h4 class=\"souligne\">".$matiere_devoirs." (".$chaine."):</h4>\n".$content;
                 // fichier joint
-                $html .= affiche_docs_joints($id_devoirs,"t");
-                $html .="</div>";
+                $content .= affiche_docs_joints($id_devoirs,"t");
+                $content .="</div>";
                 if ($nb_devoirs_cahier_texte != 0)
-                    echo $html;
+                    echo $content;
                 $ind++;
             }
         		// echo "</div>";
@@ -465,8 +462,6 @@ echo "<div class=\"centre_cont_texte\">\n";
             // Affichage des devoirs dans chaque matière
             while ($ind < $nb_devoirs_cahier_texte) {
               $content = mysql_result($appel_devoirs_cahier_texte, $ind, 'contenu');
-              // Mise en forme du texte
-              include "../lib/transform.php";
               $date_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'date_ct');
               $id_devoirs =  mysql_result($appel_devoirs_cahier_texte, $ind, 'id_ct');
               $id_groupe_devoirs = mysql_result($appel_devoirs_cahier_texte, $ind, 'id');
@@ -480,13 +475,13 @@ echo "<div class=\"centre_cont_texte\">\n";
                 //$chaine .= htmlspecialchars($prof[0])." ".mb_substr(htmlspecialchars($prof[1]),0,1).".";
               $chaine.=affiche_utilisateur($prof[2],$selected_eleve_classe);
               }
-//$html = "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["f"]."; padding: 2px; margin: 2px;\"><font color='".$color_police_matieres."' style='font-variant: small-caps;'><small><strong><u>".$matiere_devoirs." (".$chaine.") :</u></strong></small></font>\n".$html;
+//$content = "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["f"]."; padding: 2px; margin: 2px;\"><font color='".$color_police_matieres."' style='font-variant: small-caps;'><small><strong><u>".$matiere_devoirs." (".$chaine.") :</u></strong></small></font>\n".$content;
 // Correction Régis : ajout de class pour gérer la mise en page
-              $html = "<div class='matiere_a_faire couleur_bord_tableau_notice couleur_cellule_f color_police_matieres'>\n<h4 class='a_faire_titre color_police_matieres'>".$matiere_devoirs." (".$chaine.") :</h4>\n<div class='txt_gauche'>\n".$html;
+              $content = "<div class='matiere_a_faire couleur_bord_tableau_notice couleur_cellule_f color_police_matieres'>\n<h4 class='a_faire_titre color_police_matieres'>".$matiere_devoirs." (".$chaine.") :</h4>\n<div class='txt_gauche'>\n".$content;
               // fichier joint
-              $html .= affiche_docs_joints($id_devoirs,"t");
-              $html .="</div>\n</div>\n";
-              if ($nb_devoirs_cahier_texte != 0) echo $html;
+              $content .= affiche_docs_joints($id_devoirs,"t");
+              $content .="</div>\n</div>\n";
+              if ($nb_devoirs_cahier_texte != 0) echo $content;
               $ind++;
             }
 			 //echo "</div><br />\n";
@@ -504,16 +499,15 @@ echo "<div class=\"centre_cont_texte\">\n";
     $nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
     $content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
     $id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
-    include "../lib/transform.php";
 // documents joints
-    $html .= affiche_docs_joints($id_ct,"c");
-    if ($html != '') {
-//echo "<strong>Informations Générales</strong><table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["i"]."; padding: 2px; margin: 2px;\" width = '100%' cellpadding='5'><tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["i"]."; padding: 2px; margin: 2px;\"><td>".$html."</td></tr></table><br />\n";
+    $content .= affiche_docs_joints($id_ct,"c");
+    if ($content != '') {
+//echo "<strong>Informations Générales</strong><table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["i"]."; padding: 2px; margin: 2px;\" width = '100%' cellpadding='5'><tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["i"]."; padding: 2px; margin: 2px;\"><td>".$content."</td></tr></table><br />\n";
 // Correction Régis : remplacement de <strong> par <strong> + ajout de class pour gérer la mise en page
 	   echo "<h2 class='h2_label'><strong>Informations Générales</strong></h2>\n";
 	   echo "<div class='ct_info_generale couleur_bord_tableau_notice color_fond_notices_i'>\n";
 //		  echo "<tr class=\"tr_info_generale\">\n";
-			 echo "<div class='tr_info_generale couleur_bord_tableau_notice couleur_cellule_i'>".$html."</div>\n\n";
+			 echo "<div class='tr_info_generale couleur_bord_tableau_notice couleur_cellule_i'>".$content."</div>\n\n";
 //		  echo "</tr>\n";
 	   echo "</div>\n";
 // ---------------------------- Fin affichage des informations générales (div div /div) ---
@@ -649,10 +643,8 @@ $td = date("d",$i);
                 // Plus rien à afficher, on sort de la boucle
                 break;
               }
-              // Passage en HTML
               $content = &$not_dev->contenu;
-              include ("../lib/transform.php");
-              $html .= affiche_docs_joints($not_dev->id_ct,$not_dev->type);
+              $content .= affiche_docs_joints($not_dev->id_ct,$not_dev->type);
               $titre = "";
               if ($not_dev->type == "t") {
                 $titre .= "<strong>A faire pour le : </strong>\n";
@@ -689,7 +681,7 @@ $td = date("d",$i);
 //            echo "</tr>\n";
 // ---------------------------- contenu notices (div div div div div div) --
 //            echo "<tr>\n";
-              echo "<div class='cdt_fond_not_dev couleur_cellule_gen'>".$html."</div>\n";
+              echo "<div class='cdt_fond_not_dev couleur_cellule_gen'>".$content."</div>\n";
 // ---------------------------- Fin contenu notices (div div div div div /div) --
 //            echo "</tr>\n";
            echo "</div>\n";

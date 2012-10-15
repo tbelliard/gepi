@@ -667,6 +667,13 @@ if (isset($_POST['ne_pas_tester_version_via_git_log'])) {
 	}
 }
 
+if (isset($_POST['gepi_en_production'])) {
+	check_token();
+
+	if (!saveSetting("gepi_en_production", $_POST['gepi_en_production'])) {
+		$msg .= "Erreur lors de l'enregistrement de gepi_en_production !";
+	}
+}
 
 // Load settings
 if (!loadSettings()) {
@@ -1379,13 +1386,14 @@ if($delais_apres_cloture=="") {$delais_apres_cloture=0;}
 				   value='periode_close' 
 				   onchange='changement()' 
 				   <?php if($acces_app_ele_resp=='periode_close') {echo "checked='checked'";} ?>
-				   onkeydown='clavier_2(this.id,event,1,600)' />
+				    />
+			<input type='text' 
+				   name='delais_apres_cloture' 
+				   id='delais_apres_cloture' 
+				   value='<?php echo $delais_apres_cloture; ?>'
+				   size='1' 
+				   onchange="changement();document.getElementById('acces_app_ele_resp_periode_close').checked=true;" onkeydown="clavier_2(this.id,event,1,600);document.getElementById('acces_app_ele_resp_periode_close').checked=true;" />
 			<label for='acces_app_ele_resp_periode_close'>
-				<input type='text' 
-					   name='delais_apres_cloture' 
-					   value='<?php echo $delais_apres_cloture; ?>'
-					   size='1' 
-					   onchange='changement()' />
 				jours après la clôture de la période
 			</label>
 		</p>
@@ -1876,6 +1884,62 @@ echo add_token_field();
 	</p>
 </form>
 
+
+<hr />
+
+<a name='gepi_en_production'></a>
+<form enctype="multipart/form-data" action="param_gen.php" method="post" id="form4" style="width: 100%;">
+	<p>
+<?php
+echo add_token_field();
+?>
+	</p>
+
+	<p  class="cellTab" style="font-variant: small-caps;">
+		Gepi en production<br />(<em>par opposition à un Gepi de test</em>)&nbsp;:
+	</p>
+	<p class="cellTab">
+		<input type="radio" 
+			   name="gepi_en_production" 
+			   id="gepi_en_production_y" 
+			   value="y" 
+			   <?php
+				if(getSettingValue('gepi_en_production')=="") {saveSetting('gepi_en_production', 'y');}
+				if(getSettingAOui('gepi_en_production')) {echo "checked='checked'";}
+			   ?>
+			   onchange='changement()' />
+		<label for='gepi_en_production_y' style='cursor: pointer;'>
+			Oui
+		</label>
+		<br />
+		<input type="radio" 
+			   name="gepi_en_production" 
+			   id="gepi_en_production_n" 
+			   value="n" 
+			   <?php
+				if(!getSettingAOui('gepi_en_production')) {echo "checked='checked'";}
+			   ?>
+			   onchange='changement()' />
+		<label for='gepi_en_production_n' style='cursor: pointer;'>
+			Non
+		</label>
+	</p>
+
+	<p>
+	<input type="hidden" name="is_posted" value="1" />
+	</p>
+	<p class="center">
+		<input type="submit" name = "OK" value="Enregistrer" style="font-variant: small-caps;" />
+	</p>
+
+	<p>
+		<em>Remarque:</em>
+	</p>
+	<p>
+		Sur un serveur Gepi en production, avec des données que l'on ne veut pas perdre accidentellement, on désactive l'accès à quelques liens sensibles de Gepi comme <strong>Effacer la base</strong> et <strong>Données de test</strong>.<br />
+		Sur un Gepi de test en revanche, on peut souhaiter effectuer ces actions sensibles.
+	</p>
+</form>
 
 <?php
 require("../lib/footer.inc.php");
