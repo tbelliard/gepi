@@ -1550,8 +1550,12 @@ while($i < $nombre_lignes) {
 		echo "<td class=cn style='border-top: 2px solid blue; text-align:left;'>\n";
 
 		echo "$eleve_nom[$i] $eleve_prenom[$i]\n";
+		$tab_ele_notes[$i][]="";
 		echo "</td>";
-		if ($multiclasses) {echo "<td style='border-top: 2px solid blue;'>$eleve_classe[$i]</td>";}
+		if ($multiclasses) {
+			echo "<td style='border-top: 2px solid blue;'>$eleve_classe[$i]</td>";
+			$tab_ele_notes[$i][]="";
+		}
 		echo "\n";
 	} else {
 		echo "<td class=cn style='text-align:left;'>\n";

@@ -1121,27 +1121,28 @@ if($step!=0) {
 ?>
         <li>
             <a href='saisie_incident.php?step=0<?php if(isset($id_incident)) {echo "&amp;id_incident=".$id_incident;} ?>' 
-               onclick="return confirm_abandon (this, change, '$themessage')">
+               onclick='return confirm_abandon (this, change, "<?php echo $themessage; ?>")'>
                 Ajouter des élèves
             </a>
         </li>
 <?php
-
-} elseif($step!=1) { 
+}
+if($step!=1) { 
 ?>
         <li>
             <a href='saisie_incident.php?step=1<?php if(isset($id_incident)) {echo "&amp;id_incident=".$id_incident;} ?>'
-               onclick="return confirm_abandon (this, change, '$themessage')">
+               onclick='return confirm_abandon (this, change, "<?php echo $themessage; ?>")'>
                 Ajouter des personnels
             </a>
         </li>
         
 <?php
-} elseif($step!=2) {
+}
+if($step!=2) {
 ?>
         <li>
             <a href='saisie_incident.php?step=2<?php if(isset($id_incident)) {echo "&amp;id_incident=".$id_incident;} ?>'
-               onclick="return confirm_abandon (this, change, '$themessage')">
+               onclick='return confirm_abandon (this, change, "<?php echo $themessage; ?>")'>
                 Préciser l'incident
             </a>
         </li>            
@@ -1151,7 +1152,7 @@ if((isset($id_incident))&&($_SESSION['statut']!='professeur')&&(($_SESSION['stat
 ?>
         <li>
             <a href='saisie_sanction.php?id_incident=<?php echo $id_incident; ?>' 
-               onclick="return confirm_abandon (this, change, '$themessage')">
+               onclick='return confirm_abandon (this, change, "<?php echo $themessage; ?>")'>
                 Traitement/sanction
             </a>
         </li>     

@@ -30,10 +30,27 @@ class MajCtrl extends Controleur {
   function index () {
 
     $this->vue->LoadTemplate('maj.php');
+    
+    $sql="SELECT nom , prenom , statut , login FROM `utilisateurs` u  WHERE NOT login IN
+        (SELECT login_gepi FROM sso_table_correspondance)
+        ORDER BY nom , prenom ";
+    
+    $resp=mysql_query($sql);
+    if(mysql_num_rows($resp)==0) {
+        $this->var[]=Array('nom'=>'','statut'=>'','login_gepi'=>'','login_sso'=>'','ligne'=>'');
+    } else {
+        $lig=-1;
+        while($lig_correspond=mysql_fetch_object($resp)) {
+            $nomPrenom = $lig_correspond->nom." ".$lig_correspond->prenom;
+          $this->var[]=Array('nom'=>"$nomPrenom",'statut'=>"$lig_correspond->statut" , 'login_gepi'=>"$lig_correspond->login",'ligne'=>$lig);
+           $lig *= -1; 
+        }
+        $this->vue->MergeBlock('sso1',$this->var) ;
+    } 
+    
     $this->vue->show();
-
   }
-  function search () {
+  function search () {         
     try {
       $this->nom=$_POST['nom'];
       $data=new ImportModele();
@@ -41,12 +58,14 @@ class MajCtrl extends Controleur {
       if(!$this->search_result)throw new exception("Aucun utilisateur correspondant à vos critères de recherche n'existe dans Gépi avec son compte paramétré en sso");
       $this->vue->LoadTemplate('result_search.php');
       $this->vue->MergeBlock('b1',$this->search_result) ;
+        $this->vue->MergeBlock('sso1',array()) ;
       $this->vue->show();
 
     }catch (Exception $e) {
       $this->vue->LoadTemplate('exceptions.php');
       $this->mess[]=Array('mess'=>$e->getMessage());
       $this->vue->MergeBlock('b1',$this->mess) ;
+        $this->vue->MergeBlock('sso1',array()) ;
       $this->vue->Show() ;
 
     }

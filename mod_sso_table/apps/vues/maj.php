@@ -25,11 +25,29 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 };
 ?>
 [onload;file=menu.php]
-<p>A partir de cette page vous pouvez mettre &agrave; jour manuellement une correspondance :</p>
-<p>Rechercher un utilisateur dans G&eacute;pi. Attention son compte doit &ecirc;tre activ&eacute; et param&eacute;tr&eacute; en sso</p>
+<p>A partir de cette page vous pouvez mettre à jour manuellement une correspondance :</p>
+<p>Rechercher un utilisateur dans Gépi. Attention son compte doit être activé et paramétré en sso</p>
 <form action="index.php?ctrl=maj&action=search"  method="post">
           <input type="text" name="nom" id="nom" value="" />
           <input type="submit" name="action" value="Rechercher" class="submit"/>
 </form>
+
+<div style="text-align: center;">
+    <table class="boireaus sortable" style="margin:1em auto;">
+        <caption>Liste des utilisateurs sans correspondance</caption>
+        <tr>
+            <th title="Cliquer pour trier" style="cursor:pointer">Nom Prénom</th>
+            <th title="Cliquer pour trier" style="cursor:pointer">Statut</th>
+            <th title="Cliquer pour trier" style="cursor:pointer">Login</th>
+        </tr>
+        <tr class="lig[sso1.ligne]">
+            <td style="padding-left: .2em; padding-right: .2em;"> [sso1.nom;block=tr;bmagnet=table]</td>
+            <td style="padding-left: .2em; padding-right: .2em;"> [sso1.statut]</td>
+            <td style="padding-left: .2em; padding-right: .2em;"> [sso1.login_gepi]</td>
+        </tr>
+    </table>
+</div>
+
+
 </body>
  </html>

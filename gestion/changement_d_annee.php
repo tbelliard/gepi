@@ -164,6 +164,30 @@ if (isset($_GET['reinit_dates_verrouillage_periode'])) {
 	}
 }
 
+if (isset($_GET['suppr_reserve_eleve'])) {
+	check_token();
+	$sql="DELETE FROM tempo_utilisateurs WHERE statut='eleve';";
+	$res=mysql_query($sql);
+	if($res) {
+		$msg.="Suppression de la réserve sur les comptes élèves effectuée.<br />";
+	}
+	else {
+		$msg.="Erreur lors de la suppression de la réserve sur les comptes élèves.<br />";
+	}
+}
+
+if (isset($_GET['suppr_reserve_resp'])) {
+	check_token();
+	$sql="DELETE FROM tempo_utilisateurs WHERE statut='responsable';";
+	$res=mysql_query($sql);
+	if($res) {
+		$msg.="Suppression de la réserve sur les comptes responsables effectuée.<br />";
+	}
+	else {
+		$msg.="Erreur lors de la suppression de la réserve sur les comptes responsables.<br />";
+	}
+}
+
 // Load settings
 if (!loadSettings()) {
 	die("Erreur chargement settings");
@@ -308,6 +332,7 @@ if(mysql_num_rows($test)>0) {
 		}
 		echo "</em>)";
 	}
+	echo " - <a href='".$_SERVER['PHP_SELF']."?suppr_reserve_eleve=y".add_token_in_url()."' title=\"Cela supprime de la table 'tempo_utilisateurs', les comptes élèves. Cela ne supprime pas les comptes élèves actuellement enregistrés dans la table 'utilisateurs'. Vous pourrez donc refaire une mise en réserve des actuels comptes élèves tant que vous n'aurez pas lancé l'initialisation de la nouvelle année.\">Supprimer les comptes élèves mis en réserve</a>";
 	$temoin_reserve_compte_ele="faite";
 }
 else {
@@ -346,6 +371,7 @@ if(mysql_num_rows($test)>0) {
 		}
 		echo "</em>)";
 	}
+	echo " - <a href='".$_SERVER['PHP_SELF']."?suppr_reserve_resp=y".add_token_in_url()."' title=\"Cela supprime de la table 'tempo_utilisateurs', les comptes responsables. Cela ne supprime pas les comptes responsables actuellement enregistrés dans la table 'utilisateurs'. Vous pourrez donc refaire une mise en réserve des actuels comptes responsables tant que vous n'aurez pas lancé l'initialisation de la nouvelle année.\">Supprimer les comptes responsables mis en réserve</a>";
 	$temoin_reserve_compte_resp="faite";
 }
 else {
