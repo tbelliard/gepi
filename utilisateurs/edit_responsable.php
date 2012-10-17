@@ -206,6 +206,7 @@ if (!$error) {
 			}
 		}
 	}elseif ($action == "change_auth_mode") {
+		$ldap_write_access=false;
 		if ($gepiSettings['ldap_write_access'] == "yes") {
 			$ldap_write_access = true;
 			$ldap_server = new LDAPServer;
@@ -483,6 +484,7 @@ aff_time();
 	<th>Nom Prénom</th>
 	<th>Responsable de</th>
 	<th>Etat</th>
+	<th>Mode auth.</th>
 	<th>Supprimer</th>
 	<th colspan="4">Réinitialiser le mot de passe</th>
 </tr>
@@ -580,6 +582,11 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 			}
 			echo "</a>";
 		echo "</td>\n";
+
+		echo "<td>";
+		echo $current_parent->auth_mode;
+		echo "</td>\n";
+
 		echo "<td>";
 		echo "<a href='edit_responsable.php?action=supprimer&amp;mode=individual&amp;parent_login=".$current_parent->login.add_token_in_url()."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir supprimer l\'utilisateur ?')\">Supprimer</a>";
 		echo "</td>";
