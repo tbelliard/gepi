@@ -197,7 +197,7 @@ class sspmod_multiauth_Auth_Source_MultiAuth extends SimpleSAML_Auth_Source {
 		assert('is_string($source)');
 
 		$cookieName = 'multiauth_source_' . $this->authId;
-
+		$cookieName = str_replace(' ', '', $cookieName);
 		/* We save the cookies for 90 days. */
 		$saveUntil = time() + 60*60*24*90;
 
@@ -217,6 +217,7 @@ class sspmod_multiauth_Auth_Source_MultiAuth extends SimpleSAML_Auth_Source {
 	*/
 	public function getPreviousSource() {
 		$cookieName = 'multiauth_source_' . $this->authId;
+		$cookieName = str_replace(' ', '', $cookieName);
 		if(array_key_exists($cookieName, $_COOKIE)) {
 			return $_COOKIE[$cookieName];
 		} else {
