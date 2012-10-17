@@ -447,7 +447,7 @@ echo "<br />\n";
 <!--table border="1"-->
 <table class='boireaus' border='1' summary="Liste des comptes existants">
 <tr>
-	<th>Identifiant</th><th>Nom Prénom</th><th>Etat</th><th>Actions</th><th>Classe</th>
+	<th>Identifiant</th><th>Nom Prénom</th><th>Etat</th><th>Mode auth.</th><th>Actions</th><th>Classe</th>
 </tr>
 <?php
 //$quels_eleves = mysql_query("SELECT * FROM utilisateurs WHERE statut = 'eleve' ORDER BY nom,prenom");
@@ -507,6 +507,11 @@ while ($current_eleve = mysql_fetch_object($quels_eleves)) {
 			}
 			echo "</a>\n";
 		echo "</td>\n";
+
+		echo "<td>\n";
+		echo $current_eleve->auth_mode;
+		echo "</td>\n";
+
 		echo "<td>\n";
 		echo "<a href='edit_eleve.php?action=supprimer&amp;mode=individual&amp;eleve_login=".$current_eleve->login.add_token_in_url()."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir supprimer l\'utilisateur ?')\">Supprimer</a>\n";
 
