@@ -1656,7 +1656,7 @@ function vider_dir($dir){
 function ensure_utf8($str, $from_encoding = null) {
     if ($str === null || $str === '') {
         return $str;
-    } else if ($from_encoding == null && check_utf8($str)) {
+    } else if ($from_encoding == null && detect_utf8($str)) {
 	    return $str;
 	}
 	
@@ -1667,16 +1667,35 @@ function ensure_utf8($str, $from_encoding = null) {
     }
 	$result = null;
     if ($encoding !== false && $encoding != null) {
-        if ($result == null && function_exists('mb_convert_encoding')) {
+        if (function_exists('mb_convert_encoding')) {
             $result = mb_convert_encoding($str, 'UTF-8', $encoding);
         }
     }
-	if ($result === null || !check_utf8($result)) {
+	if ($result === null || !detect_utf8($result)) {
 	    throw new Exception('Impossible de convertir la chaine vers l\'utf8');
 	}
 	return $result;
 }
 
+
+/**
+ * Cette méthode prend une chaîne de caractères et teste si elle ne contient que 
+ * de l'ASCII 7 bits ou si elle contient au moins une suite d'octets codant un
+ * caractère en UTF8
+ * @param string $str La chaine à tester
+ * @return boolean
+ */
+function detect_utf8 ($str) {
+	// Inspiré de http://w3.org/International/questions/qa-forms-utf-8.html
+	return preg_match('%^(?:[\x09\x0A\x0D\x20-\x7E])*$%xs', $str) | // ASCII
+		preg_match('#[\xC2-\xDF][\x80-\xBF]#', $str) | // non-overlong 2-byte
+		preg_match('#\xE0[\xA0-\xBF][\x80-\xBF]#', $str) | // excluding overlongs
+		preg_match('#[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}#', $str) | // straight 3-byte
+		preg_match('#\xED[\x80-\x9F][\x80-\xBF]#', $str) | // excluding surrogates
+		preg_match('#\xF0[\x90-\xBF][\x80-\xBF]{2}#', $str) | // planes 1-3
+		preg_match('#[\xF1-\xF3][\x80-\xBF]{3}#', $str) | // planes 4-15
+		preg_match('# \xF4[\x80-\x8F][\x80-\xBF]{2}#', $str) ; // plane 16
+ }
 
 /**
  * Cette méthode prend une chaîne de caractères et teste si elle est bien encodée en UTF-8
@@ -1685,7 +1704,11 @@ function ensure_utf8($str, $from_encoding = null) {
  * @return boolean
  */
 function check_utf8 ($str) {
-    if (mb_strlen($str) < 1000) {
+    // Longueur maximale de la chaîne pour éviter un stack overflow
+	// dans le test à base d'expression régulière
+	$long_max=1000;
+	if (substr(PHP_OS,0,3) == 'WIN') $long_max=300; // dans le cas de Window$
+    if (mb_strlen($str) < $long_max) {
     // From http://w3.org/International/questions/qa-forms-utf-8.html
     $preg_match_result = 1 == preg_match('%^(?:
           [\x09\x0A\x0D\x20-\x7E]            # ASCII
@@ -1736,7 +1759,7 @@ function check_utf8 ($str) {
  */
 function detect_encoding($str) {
     //on commence par vérifier si c'est de l'utf8
-    if (check_utf8($str)) {
+    if (detect_utf8($str)) {
         return 'UTF-8';
     }
     
