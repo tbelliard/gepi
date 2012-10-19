@@ -607,6 +607,27 @@ if(isset($_POST['enregistrement_saisie_manuelle'])) {
 	}
 }
 
+if(isset($_POST['suppr'])) {
+	check_token();
+
+	$cpt_suppr=0;
+	$suppr=$_POST['suppr'];
+	for($loop=0;$loop<count($suppr);$loop++) {
+		$sql="DELETE FROM sso_table_correspondance WHERE login_gepi='".$suppr[$loop]."';";
+		$menage=mysql_query($sql);
+		if(!$menage) {
+			$msg.="Erreur lors de la suppression de ".$suppr[$loop]."<br />";
+		}
+		else {
+			$cpt_suppr++;
+		}
+	}
+
+	if($cpt_suppr>0) {
+		$msg.="$cpt_suppr association(s) supprimée(s).<br />";
+	}
+}
+
 if($mode=='vider') {
 	check_token();
 
@@ -627,7 +648,9 @@ require_once("../lib/header.inc.php");
 
 //echo "<p style='color:red'>REVOIR la page lien de Retour. Il faudrait que mod_ent/index.php soit une page commune pour pointer vers les divers rappochements selon les ENT (enregistrer un paramètre quelque part pour ne pas changer accidentellement de type d'ENT).</p>";
 
-echo "<p class=bold>
+//debug_var();
+
+echo "<p class='bold'>
 <a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
 
@@ -1382,8 +1405,14 @@ if($mode=="consult_responsables") {
 	$cpt=0;
 	$alt=1;
 	while($lig=mysql_fetch_object($res)) {
-		$tab_classe=get_class_from_ele_login($lig->login);
-		$classe=isset($tab_classe['liste_nbsp']) ? $tab_classe['liste_nbsp'] : "";
+		$tab_ele=get_enfants_from_resp_login($lig->login, 'avec_classe');
+		$chaine_ele="";
+		for($loop=1;$loop<count($tab_ele);$loop+=2) {
+			if($loop>1) {
+				$chaine_ele.=", ";
+			}
+			$chaine_ele.=$tab_ele[$loop];
+		}
 
 		$alt=$alt*(-1);
 		echo "
@@ -1393,7 +1422,7 @@ if($mode=="consult_responsables") {
 			<td><label for='suppr_$cpt'>$lig->login</label></td>
 			<td><label for='suppr_$cpt'>$lig->nom</label></td>
 			<td><label for='suppr_$cpt'>$lig->prenom</label></td>
-			<td><label for='suppr_$cpt'></label></td>
+			<td><label for='suppr_$cpt'>$chaine_ele</label></td>
 		</tr>
 ";
 		$cpt++;
