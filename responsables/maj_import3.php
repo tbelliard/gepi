@@ -5427,17 +5427,556 @@ else{
 					echo "<p>L'importation des adresses de responsables dans la base GEPI a été effectuée avec succès (<em>".$stat." enregistrements au total</em>).</p>\n";
 
 					echo "<script type='text/javascript'>
-	setTimeout(\"test_stop('13')\",3000);
+	setTimeout(\"test_stop('13a')\",3000);
 </script>\n";
 				}
 				//echo "<p>$stat enregistrement(s) ont été mis à jour dans la table 'temp_resp_adr_import'.</p>\n";
 
 				//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=13&amp;stop=$stop'>Suite</a></p>\n";
-				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=13&amp;stop=$stop' onClick=\"test_stop_suite('13'); return false;\">Suite</a></p>\n";
+				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=13a&amp;stop=$stop' onClick=\"test_stop_suite('13a'); return false;\">Suite</a></p>\n";
 
 				require("../lib/footer.inc.php");
 				die();
 			//}
+			break;
+		case "13a":
+			// 20121016
+
+			echo "<h2>Import/mise à jour des responsables</h2>\n";
+
+			info_debug("==============================================");
+			info_debug("=============== Phase step $step =================");
+
+			//debug_var();
+
+			if((isset($_POST['levee_incertitude']))&&(isset($_POST['login_resp']))) {
+				check_token(false);
+
+				$login_resp=$_POST['login_resp'];
+
+				echo "<p class='bold'>Parcours des modifications de login demandées...</p>\n";
+				foreach($login_resp as $key => $value) {
+					// On commence par vider le login pour éviter des collisions
+					$sql="UPDATE resp_pers SET login='' WHERE pers_id='".$key."';";
+					$preparatif=mysql_query($sql);
+				}
+
+				foreach($login_resp as $key => $value) {
+					if($value!='') {
+						echo "Mise à jour du login du responsable n°$key vers $value&nbsp;: ";
+						// Vérification
+						$sql="SELECT rp.* FROM resp_pers WHERE login='$value';";
+						$test==mysql_query($sql);
+						if(mysql_num_rows($test)==0) {
+							$sql="UPDATE resp_pers SET login='$value' WHERE pers_id='".$key."';";
+							$update=mysql_query($sql);
+							if($update) {
+								echo "<span style='color:green'>SUCCES</span>";
+							}
+							else {
+								echo "<span style='color:red'>ECHEC</span>";
+							}
+							echo "<br />\n";
+						}
+						else {
+							echo "<br /><span style='color:red'>Le login $value est déjà attribué à un autre utilisateur.</span><br />\n";
+						}
+					}
+					else {
+						echo "Le login du responsable n°$key est vide.<br />\n";
+					}
+				}
+
+				require("../lib/footer.inc.php");
+				die();
+			}
+
+			if(isset($_POST['suppr'])) {
+				check_token(false);
+
+				echo "<p class='bold'>Parcours des modifications demandées...</p>\n";
+
+				$nb_incertitudes=0;
+				$suppr=$_POST['suppr'];
+				$conserver=isset($_POST['conserver']) ? $_POST['conserver'] : array();
+
+				for($loop=0;$loop<count($suppr);$loop++) {
+					$sql="SELECT * FROM resp_pers WHERE pers_id='".$suppr[$loop]."';";
+					$res_rp=mysql_query($sql);
+					if(mysql_num_rows($res_rp)==0) {
+						// On ne devrait pas arriver là
+						echo "<span style='color:red'>Le responsable n°".$suppr[$loop]." proposé à la suppression n'existe pas.</span><br />";
+					}
+					else {
+						// Chercher les homonymes.
+						$lig_rp=mysql_fetch_object($res_rp);
+						$sql="SELECT rp.* FROM resp_pers rp WHERE rp.nom='".mysql_real_escape_string($lig_rp->nom)."' AND rp.prenom='".mysql_real_escape_string($lig_rp->prenom)."' AND rp.pers_id!='".$suppr[$loop]."' ORDER BY pers_id;";
+						$res_rp2=mysql_query($sql);
+						if(mysql_num_rows($res_rp2)==0) {
+							// On ne devrait pas arriver là... si: si on a supprimé les précédents homonymes dans le même submit
+							echo "Le responsable n°".$suppr[$loop]." (<em>$lig_rp->nom $lig_rp->prenom</em>) proposé à la suppression n'a pas ou plus d'homonyme.<br />Suppression&nbsp;: \n";
+
+							$sql="DELETE FROM utilisateurs WHERE statut='responsable' ANT login IN (SELECT login FROM resp_pers WHERE pers_id='".$suppr[$loop]."');";
+							$menage=mysql_query($sql);
+
+							$sql="DELETE FROM resp_pers WHERE pers_id='".$suppr[$loop]."';";
+							$menage=mysql_query($sql);
+							if($menage) {
+								echo "<span style='color:green'>SUCCES</span>";
+							}
+							else {
+								echo "<span style='color:red'>ECHEC</span>";
+							}
+							echo "<br />\n";
+						}
+						else {
+
+							if((!isset($conserver[$lig_rp->pers_id]))||($conserver[$lig_rp->pers_id]=='')) {
+								echo "Suppression du responsable n°".$suppr[$loop]." (<em>$lig_rp->nom $lig_rp->prenom</em>)&nbsp;: ";
+
+								$sql="DELETE FROM utilisateurs WHERE statut='responsable' ANT login IN (SELECT login FROM resp_pers WHERE pers_id='".$suppr[$loop]."');";
+								$menage=mysql_query($sql);
+
+								$sql="DELETE FROM resp_pers WHERE pers_id='".$suppr[$loop]."';";
+								$menage=mysql_query($sql);
+								if($menage) {
+									echo "<span style='color:green'>SUCCES</span>";
+								}
+								else {
+									echo "<span style='color:red'>ECHEC</span>";
+								}
+								echo "<br />\n";
+							}
+							else {
+								// Le login du compte qui va être supprimé, doit être conservé.
+
+								// Vérifier que c'est un compte responsable
+								$sql="SELECT statut FROM utilisateurs WHERE login='".$conserver[$lig_rp->pers_id]."';";
+								$test=mysql_query($sql);
+								if(mysql_num_rows($test)==0) {
+									echo "<span style='color:red'>Le login proposé ".$conserver[$lig_rp->pers_id]." n'existe pas.</span><br />";
+								}
+								else {
+									$statut_test=mysql_result($test, 0, "statut");
+									if($statut_test!='responsable') {
+										echo "<span style='color:red'>Le login proposé ".$conserver[$lig_rp->pers_id]." n'est pas un compte 'responsable', mais '$statut_test'.</span><br />";
+									}
+									else {
+
+										$nb_resp_conserves=0;
+
+										$tab_logins=array();
+										$tab_logins[]=$lig_rp->login;
+
+										$tab_homonymes=array();
+										$cpt_homonymes=0;
+										while($lig_rp2=mysql_fetch_object($res_rp2)) {
+											if(!in_array($lig_rp2->pers_id, $suppr)) {
+												$tab_homonymes[$nb_resp_conserves]['pers_id']=$lig_rp2->pers_id;
+												$tab_homonymes[$nb_resp_conserves]['login']=$lig_rp2->login;
+												$nb_resp_conserves++;
+											}
+											$tab_logins[]=$lig_rp2->login;
+											$cpt_homonymes++;
+										}
+
+										if(($nb_resp_conserves==1)&&(!isset($conserver[$tab_homonymes[0]['pers_id']]))) {
+											echo "Suppression du responsable n°".$suppr[$loop]." (<em>$lig_rp->nom $lig_rp->prenom</em>)&nbsp;: ";
+											$sql="DELETE FROM resp_pers WHERE pers_id='".$suppr[$loop]."';";
+											$menage=mysql_query($sql);
+											if($menage) {
+												echo "<span style='color:green'>SUCCES</span>";
+											}
+											else {
+												echo "<span style='color:red'>ECHEC</span>";
+											}
+											echo "<br />\n";
+
+											echo "$lig_rp->nom $lig_rp->prenom&nbsp;: Mise à jour du compte d'utilisateur de l'homonyme conservé (".$tab_homonymes[0]['pers_id'].") vers ".$conserver[$lig_rp->pers_id]."&nbsp;: ";
+											$sql="UPDATE resp_pers SET login='".$conserver[$lig_rp->pers_id]."' WHERE pers_id='".$tab_homonymes[0]['pers_id']."';";
+											$update=mysql_query($sql);
+											if($update) {
+												echo "<span style='color:green'>SUCCES</span>";
+											}
+											else {
+												echo "<span style='color:red'>ECHEC</span>";
+											}
+											echo "<br />\n";
+										}
+										else {
+											// Incertitude:
+											echo "<div id='incertitude_".$nb_incertitudes."'>\n";
+											echo "<span style='color:red'>Il y a une incertitude sur ce qu'il convient d'effectuer pour $lig_rp->nom $lig_rp->prenom</span><br />";
+											echo "<form action='".$_SERVER['PHP_SELF']."' id='form_incertitude".$nb_incertitudes."' target='_blank' method='post'>\n";
+											echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+											echo "<input type='hidden' name='step' value='13a' />\n";
+											echo "<input type='hidden' name='levee_incertitude' value='y' />\n";
+											echo add_token_field();
+
+											for($loop2=0;$loop2<count($tab_homonymes);$loop2++) {
+												echo "Responsable n°".$tab_homonymes[$loop2]['pers_id']."&nbsp;: ";
+												echo "<select name='login_resp[".$tab_homonymes[$loop2]['pers_id']."]'>\n";
+												echo "<option value=''>(vide)</option>\n";
+												echo "<option value='".$tab_homonymes[$loop2]['login']."' selected='true'>".$tab_homonymes[$loop2]['login']."</option>\n";
+												for($loop3=0;$loop3<count($tab_logins);$loop3++) {
+													if($tab_logins[$loop3]!=$tab_homonymes[$loop2]['login']) {
+														echo "<option value='".$tab_logins[$loop3]."'></option>\n";
+													}
+												}
+												echo "</select>\n";
+											}
+
+											echo "<p id='incertitude_submit_".$nb_incertitudes."'><input type='submit' value='Valider ces modifications' /></p>\n";
+											echo "<p id='incertitude_button_".$nb_incertitudes."' style='display:none;'><input type='button' value='Valider ces modifications' onclick=\"document.getElementById('incertitude_".$nb_incertitudes."').style.display='none'; document.getElementById('form_incertitude".$nb_incertitudes."').submit();\" /></p>\n";
+
+											echo "<p>Vous pouvez contrôler dans le tableau plus bas les <a href='#pers_id_".$lig_rp->pers_id."'>associations actuelles</a>.</p>";
+											echo "</form>\n";
+
+											echo "<script type='text/javascript'>document.getElementById('incertitude_submit_".$nb_incertitudes."').style.display='none';</script>\n";
+
+											// Il faut supprimer le responsable pour ne pas se retrouver à imposer deux resp_pers avec un même login (non vide)
+											echo "Suppression du responsable n°".$suppr[$loop]." (<em>$lig_rp->nom $lig_rp->prenom</em>)&nbsp;: ";
+											$sql="DELETE FROM resp_pers WHERE pers_id='".$suppr[$loop]."';";
+											$menage=mysql_query($sql);
+											if($menage) {
+												echo "<span style='color:green'>SUCCES</span>";
+											}
+											else {
+												echo "<span style='color:red'>ECHEC</span>";
+											}
+											echo "<br />\n";
+											echo "</div>\n";
+											$nb_incertitudes++;
+										}
+									}
+								}
+
+							}
+
+						}
+					}
+				}
+
+				echo "<hr />\n";
+			}
+
+			$cpt_suppressions_supposees_souhaitables=0;
+			$tab_suppressions_supposees_souhaitables=array();
+			echo "<p>Recherche de doublons parmi les responsables.<br />(<em>le test est fait sur les noms et prénoms des responsables</em>)</p>\n";
+			$sql="select count(nom),nom,prenom from resp_pers group by nom,prenom having count(nom)>1;";
+			$test=mysql_query($sql);
+			if(mysql_num_rows($test)==0) {
+				echo "<p>Aucun doublon de responsables n'a été trouvé.</p>
+						<script type='text/javascript'>
+							setTimeout(\"test_stop('13')\",3000);
+						</script>
+						<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=13&amp;stop=$stop' onClick=\"test_stop_suite('13'); return false;\">Suite</a></p>\n";
+			}
+			else {
+				echo "<p>Au moins un doublon (<em>possible</em>) a été détecté.<br />Vous allez pouvoir choisir ce que vous souhaitez supprimer ou conserver.</p>\n";
+
+				echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
+				echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+				echo "<input type='hidden' name='step' value='13a' />\n";
+				echo add_token_field();
+
+				echo "<table class='boireaus' border='1'>\n";
+				echo "<tr>\n";
+
+				//echo "<th rowspan='2'>Agir</th>\n";
+				echo "<th rowspan='2'>Doublon</th>\n";
+
+				echo "<th colspan='6'>Responsable</th>\n";
+
+				echo "<th colspan='3' style='background-color: lightblue'>Compte utilisateur</th>\n";
+
+				echo "<th colspan='2'>Élève associé</th>\n";
+
+				echo "</tr>\n";
+
+
+				echo "<tr>\n";
+
+				echo "<th title='Supprimer cette personne de la table resp_pers'>Supprimer</th>\n";
+				echo "<th>pers_id</th>\n";
+				echo "<th>Nom</th>\n";
+				echo "<th>Prénom</th>\n";
+				echo "<th>Tel.</th>\n";
+				echo "<th>Adresse</th>\n";
+
+				echo "<th style='background-color: lightblue' title='Dans le cas où vous supprimez une des personnes de la table resp_pers, ce login sera conservé/associé à la personne restante.'>Conserver</th>\n";
+				echo "<th style='background-color: lightblue'>Login</th>\n";
+				echo "<th style='background-color: lightblue'>Dernière<br />connexion</th>\n";
+
+				echo "<th title='Responsabilité actuellement présente dans Gepi'>Base</th>\n";
+				echo "<th title=\"Responsabilité présente dans Sconet/Siècle. C'est ce qu'il va vous être proposé de prendre en compte dans la suite de la Mise à jour d'après Sconet (sauf si vous supprimez cette personne)\">XML</th>\n";
+
+				echo "</tr>\n";
+
+				$cpt_rp=0;
+				$alt=1;
+				while($lig=mysql_fetch_object($test)) {
+					$sql="SELECT rp.* FROM resp_pers rp WHERE rp.nom='".mysql_real_escape_string($lig->nom)."' AND rp.prenom='".mysql_real_escape_string($lig->prenom)."' ORDER BY pers_id;";
+					$res_rp=mysql_query($sql);
+					if(mysql_num_rows($res_rp)>0) {
+						$cpt_nom_prenom_courant=0;
+						$alt=$alt*(-1);
+						while($lig_rp=mysql_fetch_object($res_rp)) {
+
+							echo "<tr class='lig$alt white_hover'>\n";
+							if($cpt_nom_prenom_courant==0) {
+								echo "<td rowspan='".mysql_num_rows($res_rp)."' title='".mysql_num_rows($res_rp)." homonymes'>";
+								//echo "<input type='checkbox' name='agir[]' id='' value='' />";
+								echo mysql_num_rows($res_rp);
+								echo "</td>\n";
+							}
+
+							echo "<td id='td_suppr_$lig_rp->pers_id' title='Supprimer cette personne de la table resp_pers' ><input type='checkbox' name='suppr[]' id='suppr_".$cpt_rp."_".$cpt_nom_prenom_courant."' value='$lig_rp->pers_id' onchange=\"change_couleur_resp_pers('suppr_".$cpt_rp."_".$cpt_nom_prenom_courant."', '$lig_rp->pers_id')\" /></td>\n";
+							echo "<td id='td_pers_id_$lig_rp->pers_id' title='Supprimer cette personne de la table resp_pers'><a name='pers_id_$lig_rp->pers_id'></a><label for='suppr_".$cpt_rp."_".$cpt_nom_prenom_courant."'>$lig_rp->pers_id</label></td>\n";
+							echo "<td id='td_nom_$lig_rp->pers_id' title='Supprimer cette personne de la table resp_pers'><label for='suppr_".$cpt_rp."_".$cpt_nom_prenom_courant."'>$lig_rp->nom</label></td>\n";
+							echo "<td id='td_prenom_$lig_rp->pers_id' title='Supprimer cette personne de la table resp_pers'><label for='suppr_".$cpt_rp."_".$cpt_nom_prenom_courant."'>$lig_rp->prenom</label></td>\n";
+							echo "<td id='td_tel_$lig_rp->pers_id' title='Supprimer cette personne de la table resp_pers'><label for='suppr_".$cpt_rp."_".$cpt_nom_prenom_courant."'>";
+							$cpt_tel=0;
+							if($lig_rp->tel_pers!="") {echo "Tpe:".preg_replace("/ /", ".", $lig_rp->tel_pers);$cpt_tel++;}
+							if($lig_rp->tel_prof!="") {
+								if($cpt_tel>0) {echo "<br />";}
+								echo "Tpr:".preg_replace("/ /", ".", $lig_rp->tel_prof);
+								$cpt_tel++;
+							}
+							if($lig_rp->tel_port!="") {
+								if($cpt_tel>0) {echo "<br />";}
+								echo "Tpo:".preg_replace("/ /", ".", $lig_rp->tel_port);
+								$cpt_tel++;
+							}
+
+							echo "</label></td>\n";
+
+							echo "<td id='td_adr_$lig_rp->pers_id' title='Supprimer cette personne de la table resp_pers'><label for='suppr_".$cpt_rp."_".$cpt_nom_prenom_courant."'>\n";
+							// Faire une fonction qui fasse cet affichage:
+							// Avec un paramètre, on pourrait même choisir: 1 ligne, plusieurs lignes ou tableau et même l'orientation du tableau
+							$sql="SELECT * FROM resp_adr WHERE adr_id='$lig_rp->adr_id';";
+							$res_adr=mysql_query($sql);
+							if(mysql_num_rows($res_adr)>0) {
+								$lig_adr=mysql_fetch_object($res_adr);
+								$cpt_info_adr=0;
+								if($lig_adr->adr1!="") {
+									echo $lig_adr->adr1;
+									$cpt_info_adr++;
+								}
+								if($lig_adr->adr2!="") {
+									if($cpt_info_adr>0) {echo ", ";}
+									echo $lig_adr->adr2;
+									$cpt_info_adr++;
+								}
+								if($lig_adr->adr3!="") {
+									if($cpt_info_adr>0) {echo ", ";}
+									echo $lig_adr->adr3;
+									$cpt_info_adr++;
+								}
+								if($lig_adr->adr4!="") {
+									if($cpt_info_adr>0) {echo ", ";}
+									echo $lig_adr->adr4;
+									$cpt_info_adr++;
+								}
+								if($cpt_info_adr>0) {
+									echo ", ";
+								}
+								echo $lig_adr->cp." ".$lig_adr->commune;
+
+								if($lig_adr->pays!=getSettingValue('gepiSchoolPays')) {
+									echo " (".$lig_adr->commune.")";
+								}
+							}
+							echo "</label></td>\n";
+
+							// Compte utilisateur et log de connexion
+							echo "<td>\n";
+							$derniere_connexion="";
+							$sql="SELECT statut, etat FROM utilisateurs WHERE login='".$lig_rp->login."';";
+							$res_u=mysql_query($sql);
+							if(mysql_num_rows($res_u)>0) {
+								$lig_u=mysql_fetch_object($res_u);
+
+								if($lig_u->statut!="responsable") {
+									echo "<div style='float:right; width:16px;'><img src='../images/icons/ico_attention.png' width='22' height='19' alt='ANOMALIE : Ce login correspond à un compte de statut $lig_u->statut' title='ANOMALIE : Ce login correspond à un compte de statut $lig_u->statut' /></div>\n";
+								}
+
+								$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig_rp->login, "", "_blank", "y");
+								if($lien_image_compte_utilisateur!="") {
+									echo "<div style='float:right; width:16px;'>".$lien_image_compte_utilisateur."</div>\n";
+								}
+
+								// Ou mettre un suppr_login[] pour que s'il n'y a pas de login, on ne propose pas de champ
+								echo "<input type='checkbox' name='conserver[$lig_rp->pers_id]' id='conserver_".$cpt_rp."_".$cpt_nom_prenom_courant."' value='$lig_rp->login' title='Dans le cas où vous supprimez une des personnes de la table resp_pers, ce login sera conservé/associé à la personne restante.' onchange=\"mise_en_gras_login_conserve('conserver_".$cpt_rp."_".$cpt_nom_prenom_courant."', '$lig_rp->pers_id')\" />\n";
+
+								$sql="SELECT * FROM log WHERE login='$lig_rp->login' AND autoclose!='4' ORDER BY START DESC LIMIT 1;";
+								//echo "$sql<br />";
+								$res_log=mysql_query($sql);
+								if(mysql_num_rows($res_log)>0) {
+									$date_connexion=mysql_result($res_log, 0, "START");
+									$derniere_connexion=formate_date($date_connexion);
+								}
+								else {
+									$sql="SELECT * FROM log WHERE login='$lig_rp->login' ORDER BY START DESC LIMIT 1;";
+									$res_log=mysql_query($sql);
+									if(mysql_num_rows($res_log)>0) {
+										$date_connexion=mysql_result($res_log, 0, "START");
+										$derniere_connexion="<span style='color:red'>Erreur sur le mot de passe le ".formate_date($date_connexion)."</span>";
+									}
+								}
+							}
+							else {
+								echo "<img src='../images/disabled.png' width='20' height='20' alt='Pas de compte utilisateur pour ce responsable' title='Pas de compte utilisateur pour ce responsable' />";
+							}
+							echo "</td>\n";
+
+							echo "<td id='td_login_$lig_rp->pers_id' title='Attribuer ce login au responsable non supprimé'><label for='conserver_".$cpt_rp."_".$cpt_nom_prenom_courant."'>$lig_rp->login</label></td>\n";
+							echo "<td title='Attribuer le login $lig_rp->login au responsable non supprimé'><label for='conserver_".$cpt_rp."_".$cpt_nom_prenom_courant."'>$derniere_connexion</label></td>\n";
+
+							// Élève associé dans la base
+							echo "<td>\n";
+							/*
+							$tab_ele_base=get_enfants_from_resp_login($lig_rp->login, 'avec_classe');
+							// Faire une fonction de ce qui suit, avec divers modes d'affichages, avec et sans lien,...
+							$chaine_ele="";
+							for($loop=1;$loop<count($tab_ele_base);$loop+=2) {
+								if($loop>1) {
+									$chaine_ele.=", ";
+								}
+								$chaine_ele.=$tab_ele_base[$loop];
+							}
+							*/
+							$tab_ele_base=get_enfants_from_pers_id($lig_rp->pers_id, 'avec_classe');
+							// Faire une fonction de ce qui suit, avec divers modes d'affichages, avec et sans lien,...
+							$chaine_ele="";
+							for($loop=1;$loop<count($tab_ele_base);$loop+=2) {
+								if($loop>1) {
+									$chaine_ele.=", ";
+								}
+								$chaine_ele.=$tab_ele_base[$loop];
+							}
+
+							if($chaine_ele!="") {
+								echo "<span title='Responsabilité actuellement présente dans Gepi'>";
+								echo $chaine_ele;
+								echo "</span>";
+							}
+							echo "</td>\n";
+
+							// Élève associé dans le XML
+							echo "<td>\n";
+							/*
+							$sql="SELECT e.nom,e.prenom,e.login FROM eleves e,
+																	temp_responsables2_import r,
+																	temp_resp_pers_import rp
+																WHERE e.ele_id=r.ele_id AND
+																	rp.pers_id=r.pers_id AND
+																	rp.login='$lig_rp->login' AND
+																	(r.resp_legal='1' OR r.resp_legal='2')
+																ORDER BY e.nom,e.prenom;";
+							*/
+							$sql="SELECT e.nom,e.prenom,e.login FROM eleves e,
+																	temp_responsables2_import r,
+																	temp_resp_pers_import rp
+																WHERE e.ele_id=r.ele_id AND
+																	rp.pers_id=r.pers_id AND
+																	rp.pers_id='$lig_rp->pers_id' AND
+																	(r.resp_legal='1' OR r.resp_legal='2')
+																ORDER BY e.nom,e.prenom;";
+							$res_ele_xml=mysql_query($sql);
+
+							$cpt_ele_xml=0;
+							if(mysql_num_rows($res_ele_xml)>0) {
+								echo "<span title=\"Responsabilité présente dans Sconet/Siècle. C'est ce qu'il va vous être proposé de prendre en compte dans la suite de la Mise à jour d'après Sconet (sauf si vous supprimez cette personne)\">";
+								while($lig_tmp=mysql_fetch_object($res_ele_xml)){
+									if($cpt_ele_xml>0) {echo ", ";}
+									echo mb_strtoupper($lig_tmp->nom)." ".ucfirst(mb_strtolower($lig_tmp->prenom));
+
+									$tmp_tab_clas=get_class_from_ele_login($lig_tmp->login);
+									if((isset($tmp_tab_clas['liste_nbsp']))&&($tmp_tab_clas['liste_nbsp']!='')) {
+										echo " (".$tmp_tab_clas['liste_nbsp'].")";
+									}
+
+									$cpt_ele_xml++;
+								}
+								echo "</span>";
+							}
+							else {
+								$tab_suppressions_supposees_souhaitables[$cpt_suppressions_supposees_souhaitables]['id_checkbox']="suppr_".$cpt_rp."_".$cpt_nom_prenom_courant;
+								$tab_suppressions_supposees_souhaitables[$cpt_suppressions_supposees_souhaitables]['pers_id']=$lig_rp->pers_id;
+								$cpt_suppressions_supposees_souhaitables++;
+							}
+
+							echo "</td>\n";
+
+							echo "</tr>\n";
+
+							$cpt_nom_prenom_courant++;
+						}
+					}
+					$cpt_rp++;
+				}
+				echo "</table>\n";
+
+				echo "<input type='hidden' name='nb_nom_prenom_resp' value='$cpt_rp' />\n";
+				echo "<p><input type='submit' value='Valider les modifications' /></p>\n";
+				echo "</form>\n";
+
+				echo "<script type='text/javascript'>
+	function change_couleur_resp_pers(id_checkbox, pers_id) {
+		if(document.getElementById(id_checkbox)) {
+			if(document.getElementById(id_checkbox).checked==true) {
+				couleur='grey';
+			}
+			else {
+				couleur='';
+			}
+
+			if(document.getElementById('td_suppr_'+pers_id)) {document.getElementById('td_suppr_'+pers_id).style.backgroundColor=couleur;}
+			if(document.getElementById('td_pers_id_'+pers_id)) {document.getElementById('td_pers_id_'+pers_id).style.backgroundColor=couleur;}
+			if(document.getElementById('td_nom_'+pers_id)) {document.getElementById('td_nom_'+pers_id).style.backgroundColor=couleur;}
+			if(document.getElementById('td_prenom_'+pers_id)) {document.getElementById('td_prenom_'+pers_id).style.backgroundColor=couleur;}
+			if(document.getElementById('td_tel_'+pers_id)) {document.getElementById('td_tel_'+pers_id).style.backgroundColor=couleur;}
+			if(document.getElementById('td_adr_'+pers_id)) {document.getElementById('td_adr_'+pers_id).style.backgroundColor=couleur;}
+		}
+	}
+
+	function mise_en_gras_login_conserve(id_checkbox, pers_id) {
+		if(document.getElementById(id_checkbox)) {
+			if(document.getElementById(id_checkbox).checked==true) {
+				graisse='bold';
+			}
+			else {
+				graisse='normal';
+			}
+
+			if(document.getElementById('td_login_'+pers_id)) {document.getElementById('td_login_'+pers_id).style.fontWeight=graisse;}
+		}
+	}
+";
+				for($loop=0;$loop<count($tab_suppressions_supposees_souhaitables);$loop++) {
+					echo "if(document.getElementById('".$tab_suppressions_supposees_souhaitables[$loop]['id_checkbox']."')) {document.getElementById('".$tab_suppressions_supposees_souhaitables[$loop]['id_checkbox']."').checked=true;change_couleur_resp_pers('".$tab_suppressions_supposees_souhaitables[$loop]['id_checkbox']."', '".$tab_suppressions_supposees_souhaitables[$loop]['pers_id']."')}";
+				}
+				echo "
+</script>\n";
+
+
+
+				echo "<br />";
+				echo "<p>Ou <a href='".$_SERVER['PHP_SELF']."?step=13&amp;stop=$stop'>passer à la suite sans modification</a>.</p>\n";
+				echo "<p><br /></p>\n";
+
+				echo "<p><em>NOTES&nbsp;:</em></p>\n";
+				echo "<ul>
+<li>Lors du dédoublonnage dans Sconet, il peut arriver que le responsable conservé (pers_id) ne soit pas celui qui a été pris en compte dans Gepi pour la distribution des comptes d'utilisateurs aux parents.<br />Il faut alors recoller les morceaux dans Gepi.</li>
+<li>Si un seul enregistrement subsiste dans Sconet/Siècle pour un responsable, il est recommandé de conserver dans Gepi ce responsable et de lui affecter l'ancien login si le responsable disposait d'un compte pour se connecter dans Gepi.</li>
+</ul>\n";
+
+			}
+
+			require("../lib/footer.inc.php");
+			die();
+
 			break;
 		case "13":
 			// On va commencer les comparaisons...
@@ -5942,7 +6481,7 @@ else{
 				}
 
 
-
+// 20121016
 				if($ne_pas_proposer_resp_sans_eleve=="si"){
 					//echo "<input type='hidden' name='step' value='15' />\n";
 					echo "<input type='hidden' name='step' value='16' />\n";
@@ -6523,6 +7062,7 @@ else{
 			break;
 
 		case "15":
+// 20121016
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
 			info_debug("==============================================");
@@ -6606,6 +7146,7 @@ else{
 
 		//case 15:
 		case "16":
+// 20121016
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
 			info_debug("==============================================");
@@ -9204,9 +9745,31 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 				}
 
 				echo "<p>$nb_suppr suppression(s) de responsabilité(s).<br />$nb_err erreur(s).</p>\n";
+
+				echo "<p><br /></p>\n";
 			}
 
-			echo "<p><br /></p>\n";
+			if(isset($_GET['suppr_scories_utilisateurs'])) {
+				check_token(false);
+				echo "<p>Suppression de la table 'utilisateurs' des comptes pour des responsables qui ne sont plus dans votre table 'resp_pers'&nbsp;: ";
+				$sql="DELETE FROM utilisateurs WHERE statut='responsable' AND login NOT IN (SELECT login FROM resp_pers);";
+				$menage=mysql_query($sql);
+				if($menage) {
+					echo "<span style='color:green'>SUCCES</span>";
+				}
+				else {
+					echo "<span style='color:red'>ECHEC</span>";
+				}
+				echo "</p>\n";
+				echo "<p><br /></p>\n";
+			}
+
+			$sql="SELECT 1=1 FROM utilisateurs WHERE statut='responsable' AND login NOT IN (SELECT login FROM resp_pers);";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				echo "<p>Il reste dans la table 'utilisateurs' des comptes pour des responsables qui ne sont plus dans votre table 'resp_pers'.<br />Vous devriez les <a href='".$_SERVER['PHP_SELF']."?step=21&amp;suppr_scories_utilisateurs=y".add_token_in_url()."'>supprimer</a>.</p>\n";
+				echo "<p><br /></p>\n";
+			}
 
 			echo "<p>Retour à:</p>\n";
 			echo "<ul>\n";
