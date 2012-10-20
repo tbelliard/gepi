@@ -513,7 +513,11 @@ while ($j < $nb_dev) {
 echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"saisie_notes.php\" method=\"get\">\n";
 echo "<p class='bold'>\n";
 echo "<a href=\"../accueil.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|";
-echo "<a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"> Mes enseignements </a>|";
+echo "<a href='index.php";
+if(isset($id_devoir)) {
+	echo "?id_groupe=no_group";
+}
+echo "'  onclick=\"return confirm_abandon (this, change, '$themessage')\"> Mes enseignements </a>|";
 
 
 
