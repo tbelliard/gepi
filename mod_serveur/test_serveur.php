@@ -87,6 +87,7 @@ echo '
 
 echo '
 	<h4>Les données de base de votre serveur web :</h4>
+	<p>OS serveur&nbsp;: '.PHP_OS.' (<em>'.@php_uname().'</em>).</p>
 	<p'.$style_register.'>Le register_globals est à '.$test->secureServeur().'.</p>
 	<p>Le serveur web est '.$test->version_serveur().'</p>
 	<p>Encodage '.$charset['toutes'].' -> encodage par défaut : '.$charset['defaut'].'.</p>';
