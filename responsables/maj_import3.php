@@ -202,17 +202,17 @@ if(getSettingValue('maj_import2_debug_var')=='y') {
 }
 
 if(isset($step)) {
-	if(($step==0)||
+	if(($step=="0")||
 		($step=="0b")||
-		($step==1)||
-		($step==2)||
-		($step==3)||
-		($step==10)||
-		($step==11)||
-		($step==12)||
-		($step==13)||
-		($step==14)||
-		($step==18)
+		($step=="1")||
+		($step=="2")||
+		($step=="3")||
+		($step=="10")||
+		($step=="11")||
+		($step=="12")||
+		($step=="13")||
+		($step=="14")||
+		($step=="18")
 		) {
 //		($step==17)
 
@@ -5662,8 +5662,12 @@ else{
 
 			$cpt_suppressions_supposees_souhaitables=0;
 			$tab_suppressions_supposees_souhaitables=array();
+
+			$cpt_id_checkbox_logins_connexion_reussie=0;
+			$tab_id_checkbox_logins_connexion_reussie=array();
+
 			echo "<p>Recherche de doublons parmi les responsables.<br />(<em>le test est fait sur les noms et prénoms des responsables</em>)</p>\n";
-			$sql="select count(nom),nom,prenom from resp_pers group by nom,prenom having count(nom)>1;";
+			$sql="select count(nom),nom,prenom from resp_pers group by nom,prenom having count(nom)>1  order by nom, prenom;";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)==0) {
 				echo "<p>Aucun doublon de responsables n'a été trouvé.</p>
@@ -5720,6 +5724,11 @@ else{
 					$res_rp=mysql_query($sql);
 					if(mysql_num_rows($res_rp)>0) {
 						$cpt_nom_prenom_courant=0;
+
+						$cpt_connexion_reussie=0;
+						$id_checkbox_login_connexion_reussie="";
+						$pers_id_login_connexion_reussie="";
+
 						$alt=$alt*(-1);
 						while($lig_rp=mysql_fetch_object($res_rp)) {
 
@@ -5815,6 +5824,10 @@ else{
 								if(mysql_num_rows($res_log)>0) {
 									$date_connexion=mysql_result($res_log, 0, "START");
 									$derniere_connexion=formate_date($date_connexion);
+
+									$id_checkbox_login_connexion_reussie="conserver_".$cpt_rp."_".$cpt_nom_prenom_courant;
+									$pers_id_login_connexion_reussie=$lig_rp->pers_id;
+									$cpt_connexion_reussie++;
 								}
 								else {
 									$sql="SELECT * FROM log WHERE login='$lig_rp->login' ORDER BY START DESC LIMIT 1;";
@@ -5913,6 +5926,12 @@ else{
 
 							$cpt_nom_prenom_courant++;
 						}
+
+						if($cpt_connexion_reussie==1) {
+							$tab_id_checkbox_logins_connexion_reussie[$cpt_id_checkbox_logins_connexion_reussie]['id_checkbox']=$id_checkbox_login_connexion_reussie;
+							$tab_id_checkbox_logins_connexion_reussie[$cpt_id_checkbox_logins_connexion_reussie]['pers_id']=$pers_id_login_connexion_reussie;
+							$cpt_id_checkbox_logins_connexion_reussie++;
+						}
 					}
 					$cpt_rp++;
 				}
@@ -5954,22 +5973,32 @@ else{
 		}
 	}
 ";
+				$tab_pers_id_supposes_a_supprimer=array();
 				for($loop=0;$loop<count($tab_suppressions_supposees_souhaitables);$loop++) {
-					echo "if(document.getElementById('".$tab_suppressions_supposees_souhaitables[$loop]['id_checkbox']."')) {document.getElementById('".$tab_suppressions_supposees_souhaitables[$loop]['id_checkbox']."').checked=true;change_couleur_resp_pers('".$tab_suppressions_supposees_souhaitables[$loop]['id_checkbox']."', '".$tab_suppressions_supposees_souhaitables[$loop]['pers_id']."')}";
+					echo "	if(document.getElementById('".$tab_suppressions_supposees_souhaitables[$loop]['id_checkbox']."')) {document.getElementById('".$tab_suppressions_supposees_souhaitables[$loop]['id_checkbox']."').checked=true;change_couleur_resp_pers('".$tab_suppressions_supposees_souhaitables[$loop]['id_checkbox']."', '".$tab_suppressions_supposees_souhaitables[$loop]['pers_id']."')}";
+					$tab_pers_id_supposes_a_supprimer[]=$tab_suppressions_supposees_souhaitables[$loop]['pers_id'];
 				}
+
+				for($loop=0;$loop<count($tab_id_checkbox_logins_connexion_reussie);$loop++) {
+					if(in_array($tab_id_checkbox_logins_connexion_reussie[$loop]['pers_id'], $tab_pers_id_supposes_a_supprimer)) {
+						echo "	if(document.getElementById('".$tab_id_checkbox_logins_connexion_reussie[$loop]['id_checkbox']."')) {document.getElementById('".$tab_id_checkbox_logins_connexion_reussie[$loop]['id_checkbox']."').checked=true;mise_en_gras_login_conserve('".$tab_id_checkbox_logins_connexion_reussie[$loop]['id_checkbox']."', '".$tab_id_checkbox_logins_connexion_reussie[$loop]['pers_id']."')}";
+					}
+				}
+
 				echo "
 </script>\n";
 
 
 
 				echo "<br />";
-				echo "<p>Ou <a href='".$_SERVER['PHP_SELF']."?step=13&amp;stop=$stop'>passer à la suite sans modification</a>.</p>\n";
+				echo "<p class='bold'>Ou <a href='".$_SERVER['PHP_SELF']."?step=13&amp;stop=$stop'>passer à la suite sans modification</a>.</p>\n";
 				echo "<p><br /></p>\n";
 
 				echo "<p><em>NOTES&nbsp;:</em></p>\n";
 				echo "<ul>
 <li>Lors du dédoublonnage dans Sconet, il peut arriver que le responsable conservé (pers_id) ne soit pas celui qui a été pris en compte dans Gepi pour la distribution des comptes d'utilisateurs aux parents.<br />Il faut alors recoller les morceaux dans Gepi.</li>
 <li>Si un seul enregistrement subsiste dans Sconet/Siècle pour un responsable, il est recommandé de conserver dans Gepi ce responsable et de lui affecter l'ancien login si le responsable disposait d'un compte pour se connecter dans Gepi.</li>
+<li>Si un ancien responsable (<em>présent dans la base Gepi</em>) et un nouveau responsable (<em>présent dans Sconet/Siècle et proposé ici à l'importation dans Gepi</em>) sont tous les deux associés à des élèves dans la colonne XML (<em>Sconet/Siècle</em>), alors vous ne devriez supprimer ni l'un, ni l'autre, mais faire le ménage dans Sconet/Siècle pour ne pas conserver ces doublons.</li>
 </ul>\n";
 
 			}
@@ -6039,7 +6068,7 @@ else{
 
 			// 20120331
 			//$sql="SELECT pers_id FROM temp_resp_pers_import WHERE statut='' LIMIT 20;";
-			$sql="SELECT pers_id, adr_id FROM temp_resp_pers_import WHERE statut='' LIMIT $eff_tranche_recherche_diff;";
+			$sql="SELECT pers_id, adr_id FROM temp_resp_pers_import WHERE statut='' ORDER BY nom,prenom,pers_id LIMIT $eff_tranche_recherche_diff;";
 			//echo "$sql<br />";
 			info_debug($sql);
 			$res1=mysql_query($sql);
@@ -6426,7 +6455,8 @@ else{
 // 20120331
 // FAIRE delete from resp_adr where adr_id not in (select adr_id from resp_pers); ?
 
-			$sql="SELECT DISTINCT adr_id FROM temp_resp_adr_import WHERE statut='' LIMIT $eff_tranche_recherche_diff;";
+			//$sql="SELECT DISTINCT adr_id FROM temp_resp_adr_import WHERE statut='' LIMIT $eff_tranche_recherche_diff;";
+			$sql="SELECT DISTINCT ta.adr_id FROM temp_resp_adr_import ta, temp_resp_pers_import tp WHERE ta.statut='' AND ta.adr_id=tp.adr_id ORDER BY tp.nom, tp.prenom LIMIT $eff_tranche_recherche_diff;";
 			info_debug($sql);
 			//echo "$sql<br />";
 			$res1=mysql_query($sql);
@@ -6481,10 +6511,11 @@ else{
 				}
 
 
-// 20121016
+				// 20121020
 				if($ne_pas_proposer_resp_sans_eleve=="si"){
 					//echo "<input type='hidden' name='step' value='15' />\n";
-					echo "<input type='hidden' name='step' value='16' />\n";
+					//echo "<input type='hidden' name='step' value='16' />\n";
+					echo "<input type='hidden' name='step' value='16a' />\n";
 					echo "<p><input type='submit' value='Afficher les différences' /></p>\n";
 				}
 				else{
@@ -6710,6 +6741,7 @@ else{
 		// 20090331
 		// INSERER LA LE CONTROLE DES col1=pers_id_disparu DANS tempo2
 		case "14b":
+// 20121020
 			// A l'étape précédente passer à 14b s'il y a des col1=pers_id_disparu et passer à 15 sinon
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
@@ -6832,28 +6864,38 @@ else{
 				echo "<table class='boireaus' summary='Tableau des responsables disparus de Sconet'>\n";
 	
 				$ligne_entete_tableau="<tr>\n";
-				$ligne_entete_tableau.="<td style='text-align: center; font-weight: bold;'>Supprimer<br />\n";
+				$ligne_entete_tableau.="<th rowspan='2'>Supprimer<br />\n";
 	
 				$ligne_entete_tableau.="<a href=\"javascript:modifcase('coche')\">";
 				$ligne_entete_tableau.="<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>";
 				$ligne_entete_tableau.=" / ";
 				$ligne_entete_tableau.="<a href=\"javascript:modifcase('decoche')\">";
 				$ligne_entete_tableau.="<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
-				$ligne_entete_tableau.="</td>\n";
+				$ligne_entete_tableau.="</th>\n";
 	
-				$ligne_entete_tableau.="<td style='text-align:center; font-weight: bold;'>Statut</td>\n";
+				$ligne_entete_tableau.="<th rowspan='2'>Statut</th>\n";
 	
-				$ligne_entete_tableau.="<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>pers_id</td>\n";
-				$ligne_entete_tableau.="<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>Nom</td>\n";
-				$ligne_entete_tableau.="<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>Prénom</td>\n";
-				$ligne_entete_tableau.="<td style='text-align:center; font-weight:bold; background-color: rgb(150, 200, 240);'>Civilité</td>\n";
-	
-				$ligne_entete_tableau.="<td style='text-align:center; font-weight:bold; background-color: #FAFABE;'>Responsable de</td>\n";
+				$ligne_entete_tableau.="<th rowspan='2'>pers_id</th>\n";
+				$ligne_entete_tableau.="<th rowspan='2'>Nom</th>\n";
+				$ligne_entete_tableau.="<th rowspan='2'>Prénom</th>\n";
+				$ligne_entete_tableau.="<th rowspan='2'>Civilité</th>\n";
+
+				$ligne_entete_tableau.="<th rowspan='2' style='background-color:lightblue'>Login</th>\n";
+
+				$ligne_entete_tableau.="<th colspan='2'>Responsable de</th>\n";
 				$ligne_entete_tableau.="</tr>\n";
-	
+
+				$ligne_entete_tableau2="<tr>\n";
+				$ligne_entete_tableau2.="<th>Base</th>\n";
+				$ligne_entete_tableau2.="<th>XML</th>\n";
+				$ligne_entete_tableau2.="</tr>\n";
+
 				// Entête du tableau:
 				echo $ligne_entete_tableau;
-	
+				echo $ligne_entete_tableau2;
+
+				$tab_cpt_doublons_supposes=array();
+
 				$alt=1;
 				$cpt=0;
 				//echo "mysql_num_rows(\$test)=".mysql_num_rows($test)."<br />";
@@ -6865,7 +6907,7 @@ else{
 					$res_pers1=mysql_query($sql);
 					if(mysql_num_rows($res_pers1)==0){
 						// CA NE DEVRAIT PAS ARRIVER
-						echo "<tr style='color:red;'><td colspan='7'>Anomalie: Aucun responsable ne correspond à pers_id=$pers_id</td></tr>\n";
+						echo "<tr style='color:red;'><td colspan='8'>Anomalie: Aucun responsable ne correspond à pers_id=$pers_id</td></tr>\n";
 					}
 					else{
 						$lig_pers1=mysql_fetch_object($res_pers1);
@@ -6884,24 +6926,28 @@ else{
 						$ligne_parent.="<input type='hidden' name='liste_pers_id[]' value='$pers_id' />\n";
 						$ligne_parent.="</td>\n";
 	
-						$ligne_parent.="<td>Disparu</td>\n";
+						$ligne_parent.="<td><label for='check_".$cpt."'>Disparu</label></td>\n";
 		
 						$ligne_parent.="<td style='text-align:center;'><a href='modify_resp.php?pers_id=$pers_id' target='_blank'>$pers_id</a>";
 						$ligne_parent.="</td>\n";
 			
-						$ligne_parent.="<td>";
+						$ligne_parent.="<td><label for='check_".$cpt."'>";
 						$ligne_parent.=stripslashes($nom1);
-						$ligne_parent.="</td>\n";
+						$ligne_parent.="</label></td>\n";
 		
-						$ligne_parent.="<td>";
+						$ligne_parent.="<td><label for='check_".$cpt."'>";
 						$ligne_parent.=stripslashes($prenom1);
-						$ligne_parent.="</td>\n";
+						$ligne_parent.="</label></td>\n";
 	
-						$ligne_parent.="<td>";
+						$ligne_parent.="<td><label for='check_".$cpt."'>";
 						$ligne_parent.=ucfirst($civilite1);
-						$ligne_parent.="</td>\n";
+						$ligne_parent.="</label></td>\n";
 	
-						$ligne_parent.="<td>\n";
+						$ligne_parent.="<td><label for='check_".$cpt."'>";
+						$ligne_parent.=$lig_pers1->login;
+						$ligne_parent.="</label></td>\n";
+
+						$ligne_parent.="<td><label for='check_".$cpt."'>\n";
 						$sql="SELECT e.login, e.nom, e.prenom, r.resp_legal FROM eleves e, responsables2 r WHERE r.pers_id='$pers_id' AND r.ele_id=e.ele_id ORDER BY e.prenom;";
 						info_debug($sql);
 						//$ligne_parent.="$sql<br />";
@@ -6911,6 +6957,8 @@ else{
 							$ligne_parent.="<span style='color:red;'>X</span>\n";
 						}
 						else {
+							$ligne_parent.="<span title='Responsabilité présente dans la base Gepi'>";
+
 							$cpt_tmp=0;
 							while($lig2=mysql_fetch_object($res_ele)){
 								if($cpt_tmp>0) {$ligne_parent.="<br />\n";}
@@ -6926,13 +6974,86 @@ else{
 								if($lig2->resp_legal==0) {$ligne_parent.="</span>";}
 								$cpt_tmp++;
 							}
+							$ligne_parent.="</span>";
 						}
-						$ligne_parent.="</td>\n";
-		
+						$ligne_parent.="</label></td>\n";
+
+						$ligne_parent.="<td></td>\n";
+
 						$ligne_parent.="</tr>\n";
-	
+
 						echo $ligne_parent;
+
+						// Détection d'une situation de doublon:
+						$sql="SELECT tp.* FROM temp_resp_pers_import tp, temp_responsables2_import tr WHERE tp.pers_id!='$pers_id' AND tp.pers_id=tr.pers_id AND tp.nom='".mysql_real_escape_string($nom1)."' AND tp.prenom='".mysql_real_escape_string($prenom1)."' AND tr.ele_id IN (SELECT ele_id FROM responsables2 WHERE pers_id='$pers_id' AND (resp_legal='1' OR resp_legal='2')) AND tp.pers_id NOT IN (SELECT pers_id FROM resp_pers);";
+						//echo "$sql<br />";
+						$verif_d=mysql_query($sql);
+						if(mysql_num_rows($verif_d)>0) {
+							while($lig_d=mysql_fetch_object($verif_d)) {
+								$ligne_parent="<tr class='lig$alt'>\n";
+		
+								$ligne_parent.="<td colspan='2' class='nouveau' style='text-align: center;' title=\"Un nouveau responsable homonyme de celui ci-dessus est présent dans le XML fourni (présent dans Sconet/Siècle en somme). S'il s'agit d'un doublon, il vaut mieux ne pas supprimer le responsable ci-dessus et gérer le doublon un peu plus loin (après les recherches de différences (nouveaux et modifications)).\"><label for='check_".$cpt."'>\n";
+								$ligne_parent.="Doublon&nbsp;?\n";
+								$ligne_parent.="</label></td>\n";
+			
+								$ligne_parent.="<td style='text-align:center;'><label for='check_".$cpt."'>$lig_d->pers_id</label></td>\n";
+								if(!in_array($cpt, $tab_cpt_doublons_supposes)) {
+									$tab_cpt_doublons_supposes[]=$cpt;
+								}
+
+								$ligne_parent.="<td><label for='check_".$cpt."'>";
+								$ligne_parent.=stripslashes($lig_d->nom);
+								$ligne_parent.="</label></td>\n";
+		
+								$ligne_parent.="<td><label for='check_".$cpt."'>";
+								$ligne_parent.=stripslashes($lig_d->prenom);
+								$ligne_parent.="</label></td>\n";
+
+								$ligne_parent.="<td><label for='check_".$cpt."'>";
+								$ligne_parent.=ucfirst($lig_d->civilite);
+								$ligne_parent.="</label></td>\n";
 	
+								$ligne_parent.="<td>";
+								$ligne_parent.="</td>\n";
+
+								$ligne_parent.="<td></td>\n";
+
+								$ligne_parent.="<td><label for='check_".$cpt."'>\n";
+								$sql="SELECT e.login, e.nom, e.prenom, r.resp_legal FROM eleves e, temp_responsables2_import r WHERE r.pers_id='$lig_d->pers_id' AND r.ele_id=e.ele_id ORDER BY e.prenom;";
+								info_debug($sql);
+								//$ligne_parent.="$sql<br />";
+								$res_ele=mysql_query($sql);
+								if(mysql_num_rows($res_ele)==0) {
+									//$ligne_parent.="&nbsp;\n";
+									$ligne_parent.="<span style='color:red;'>X</span>\n";
+								}
+								else {
+									$ligne_parent.="<span title=\"Responsabilité présente dans le XML fourni (dans Sconet/Siècle en somme). C'est cette responsabilité qui va être proposée à l'importation un peu plus loin dans la Mise à jour d'après Sconet/Siècle.\">";
+									$cpt_tmp=0;
+									while($lig2=mysql_fetch_object($res_ele)){
+										if($cpt_tmp>0) {$ligne_parent.="<br />\n";}
+										$tmp_classes=get_class_from_ele_login($lig2->login);
+										if(isset($tmp_classes['liste'])) {
+											$info_classe=$tmp_classes['liste'];
+										}
+										else {
+											$info_classe='Aucune classe';
+										}
+										if($lig2->resp_legal==0) {$ligne_parent.="<span style='font-size:x-small;'>";}
+										$ligne_parent.="$lig2->nom $lig2->prenom (".$info_classe.")";
+										if($lig2->resp_legal==0) {$ligne_parent.="</span>";}
+										$cpt_tmp++;
+									}
+									$ligne_parent.="</span>";
+								}
+								$ligne_parent.="</label></td>\n";
+
+								$ligne_parent.="</tr>\n";
+
+								echo $ligne_parent;
+							}
+
+						}
 					}
 	
 					// Ménage pour ne pas le reproposer au tour suivant
@@ -6948,15 +7069,34 @@ else{
 	
 				echo "</table>\n";
 
+				$chaine="";
+				for($loop=0;$loop<count($tab_cpt_doublons_supposes);$loop++) {
+					if($chaine!="") {$chaine.=", ";}
+					$chaine.="'".$tab_cpt_doublons_supposes[$loop]."'";
+				}
+
 				echo "<script type='text/javascript'>
+	var exclusions=new Array($chaine);
+
+	// http://stackoverflow.com/questions/784012/javascript-equivalent-of-phps-in-array
+	function inArray(needle, haystack) {
+		var length = haystack.length;
+		for(var i = 0; i < length; i++) {
+			if(haystack[i] == needle) return true;
+		}
+		return false;
+	}
+
 	function modifcase(mode){
 		for(i=0;i<$cpt;i++){
-			if(document.getElementById('check_'+i)){
-				if(mode=='coche'){
-					document.getElementById('check_'+i).checked=true;
-				}
-				else{
-					document.getElementById('check_'+i).checked=false;
+			if(!inArray(i, exclusions)) {
+				if(document.getElementById('check_'+i)) {
+					if(mode=='coche'){
+						document.getElementById('check_'+i).checked=true;
+					}
+					else{
+						document.getElementById('check_'+i).checked=false;
+					}
 				}
 			}
 		}
@@ -6964,8 +7104,11 @@ else{
 </script>\n";
 
 				echo "<p><input type='submit' value='Supprimer les personnes cochées et passer à la suite' /></p>\n";
-	
+
 				echo "</form>\n";
+
+				echo "<p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Si des doublonnages de responsables sont détectés, il est recommandé de ne pas supprimer les responsables existants (<em>particulièrement si ces responsables disposent de comptes utilisateurs</em>).<br />La gestion du doublon pourra être effectuée un peu plus loin (<em>après la recherche des nouveaux responsables et des modifications de responsables existants</em>) dans la mise à jour.</p>\n";
+
 
 			}
 
@@ -7062,7 +7205,6 @@ else{
 			break;
 
 		case "15":
-// 20121016
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
 			info_debug("==============================================");
@@ -7075,7 +7217,9 @@ else{
 			// AJOUT pour tenir compte de l'automatisation ou non:
 			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			//echo "<input type='hidden' name='step' value='15' />\n";
-			echo "<input type='hidden' name='step' value='16' />\n";
+			//echo "<input type='hidden' name='step' value='16' />\n";
+			// 20121020
+			echo "<input type='hidden' name='step' value='16a' />\n";
 			//==============================
 
 			$sql="SELECT col2 FROM tempo2 WHERE col1='pers_id';";
@@ -7127,6 +7271,7 @@ else{
 
 			echo "<p>$cpt fantôme(s) supprimé(s) de la table temporaire.</p>\n";
 
+
 			$sql="SELECT DISTINCT col2 FROM tempo2 WHERE col1='pers_id';";
 			info_debug($sql);
 			//echo "$sql<br />";
@@ -7144,9 +7289,306 @@ else{
 
 			break;
 
-		//case 15:
+		case "16a":
+			// 20121020
+			echo "<h2>Import/mise à jour des responsables</h2>\n";
+
+
+			if(isset($_POST['rapprocher_pers_id'])) {
+				echo "<p class='bold'>Prise en compte des modifications&nbsp;:</p>\n";
+				$rapprocher_pers_id=$_POST['rapprocher_pers_id'];
+				for($loop=0;$loop<count($rapprocher_pers_id);$loop++) {
+					$tab=explode("|", $rapprocher_pers_id[$loop]);
+					if((isset($tab[0]))&&($tab[0]!="")&&(isset($tab[1]))&&($tab[1]!="")) {
+						$nouveau_pers_id=$tab[0];
+						$ancien_pers_id=$tab[1];
+
+						// On vérifie que le nouveau pers_id n'est pas déjà attribué à un autre dans resp_pers
+						$sql="SELECT * FROM resp_pers WHERE pers_id='$nouveau_pers_id';";
+						$res=mysql_query($sql);
+						if(mysql_num_rows($res)>0) {
+							$lig=mysql_fetch_object($res);
+							echo "<span style='color:red'>Le pers_id n°$nouveau_pers_id est déjà attribué à $lig->nom $lig->prenom.</span><br />\n";
+						}
+						else {
+							$sql="SELECT * FROM resp_pers WHERE pers_id='$ancien_pers_id';";
+							$res=mysql_query($sql);
+							if(mysql_num_rows($res)>0) {
+								$lig=mysql_fetch_object($res);
+
+								echo "Mise à jour de la responsabilité pour $lig->nom $lig->prenom (<em>$ancien_pers_id&gt;$nouveau_pers_id</em>)&nbsp;: ";
+								$sql="UPDATE responsables2 SET pers_id='$nouveau_pers_id' WHERE pers_id='$ancien_pers_id';";
+								$update=mysql_query($sql);
+								if($update) {
+									echo "<span style='color:green'>SUCCES</span>";
+								}
+								else {
+									echo "<span style='color:red'>ECHEC</span>";
+								}
+								echo "<br />\n";
+
+								echo "Mise à jour de l'identité dans resp_pers pour $lig->nom $lig->prenom (<em>$ancien_pers_id&gt;$nouveau_pers_id</em>)&nbsp;: ";
+								$sql="UPDATE resp_pers SET pers_id='$nouveau_pers_id' WHERE pers_id='$ancien_pers_id';";
+								$update=mysql_query($sql);
+								if($update) {
+									echo "<span style='color:green'>SUCCES</span>";
+								}
+								else {
+									echo "<span style='color:red'>ECHEC</span>";
+								}
+								echo "<br />\n";
+							}
+						}
+					}
+				}
+				echo "<p><br /></p>\n";
+			}
+
+
+
+			$sql="SELECT DISTINCT col2 FROM tempo2 t, temp_resp_pers_import tp WHERE tp.pers_id=t.col2 AND t.col1='pers_id' AND t.col2 NOT IN (SELECT pers_id FROM resp_pers) ORDER BY tp.nom, tp.prenom;";
+			info_debug($sql);
+			//echo "$sql<br />";
+			$test=mysql_query($sql);
+
+			$cpt_resp=0;
+			$chaine="";
+			$alt=1;
+			if(mysql_num_rows($test)>0){
+				while($lig=mysql_fetch_object($test)) {
+					// On recherche si le nouveau est associé en resp_legal 1 ou 2 à un élève qui a déjà un resp_legal 1 ou 2 dans la base.
+					$sql="SELECT ele_id FROM temp_responsables2_import WHERE pers_id='$lig->col2' AND (resp_legal='1' OR resp_legal='2') AND ele_id IN (SELECT ele_id FROM responsables2 WHERE resp_legal='1' OR resp_legal='2');";
+					$res2=mysql_query($sql);
+					if(mysql_num_rows($res2)>0){
+
+						$sql="SELECT * FROM temp_resp_pers_import WHERE pers_id='$lig->col2';";
+						$res_n=mysql_query($sql);
+						if(mysql_num_rows($res_n)>0){
+							$lig_n=mysql_fetch_object($res_n);
+
+							$alt=$alt*(-1);
+							$chaine.="<tr class='lig$alt white_hover'>\n";
+
+							$chaine.="<td class='nouveau'>Nouveau</td>\n";
+							$chaine.="<td>$lig->col2</td>\n";
+							$chaine.="<td>$lig_n->nom</td>\n";
+							$chaine.="<td>$lig_n->prenom</td>\n";
+							$chaine.="<td>";
+							$cpt_tel=0;
+							if($lig_n->tel_pers!="") {
+								$chaine.="Tpe:".preg_replace("/ /", ".", $lig_n->tel_pers);
+								$cpt_tel++;
+							}
+							if($lig_n->tel_prof!="") {
+								if($cpt_tel>0) {$chaine.="<br />";}
+								$chaine.="Tpr:".preg_replace("/ /", ".", $lig_n->tel_prof);
+								$cpt_tel++;
+							}
+							if($lig_n->tel_port!="") {
+								if($cpt_tel>0) {$chaine.="<br />";}
+								$chaine.="Tpo:".preg_replace("/ /", ".", $lig_n->tel_port);
+								$cpt_tel++;
+							}
+							$chaine.="</td>\n";
+
+							// Le nouveau n'a pas encore de login
+							$chaine.="<td>";
+							$chaine.="</td>\n";
+
+							// Le nouveau n'est pas encore associé à un élève dans la base
+							$chaine.="<td>";
+							$chaine.="</td>\n";
+
+							$chaine.="<td>";
+							$sql="SELECT e.login, e.nom, e.prenom FROM eleves e, temp_responsables2_import t WHERE t.ele_id=e.ele_id AND t.pers_id='$lig->col2' ORDER BY e.nom, e.prenom;";
+							$res_e=mysql_query($sql);
+							if(mysql_num_rows($res_e)>0) {
+								$chaine.="<span title=\"Responsabilité présente dans Sconet/Siècle. C'est ce qu'il va vous être proposé de prendre en compte dans la suite de la Mise à jour d'après Sconet (sauf si vous supprimez cette personne)\">";
+								$cpt_ele=0;
+								while($lig_e=mysql_fetch_object($res_e)) {
+									if($cpt_ele>0) {$chaine.="<br />";}
+									$chaine.=$lig_e->nom." ".$lig_e->prenom;
+									$tmp_clas=get_class_from_ele_login($lig_e->login);
+									if(isset($tmp_clas['liste_nbsp'])) {
+										$chaine.=" (<em>".$tmp_clas['liste_nbsp']."</em>)";
+									}
+									$cpt_ele++;
+								}
+								$chaine.="</span>";
+							}
+							$chaine.="</td>\n";
+
+							$chaine.="</tr>\n";
+						}
+
+						$tab_pers_id_affiche=array();
+						while($lig2=mysql_fetch_object($res2)) {
+							$sql="SELECT rp.* FROM resp_pers rp, responsables2 r WHERE r.pers_id=rp.pers_id AND r.ele_id='$lig2->ele_id' AND (r.resp_legal='1' OR r.resp_legal='2');";
+							//echo "$sql<br />";
+							$res3=mysql_query($sql);
+							if(mysql_num_rows($res3)>0){
+								while($lig3=mysql_fetch_object($res3)) {
+									if(!in_array($lig3->pers_id, $tab_pers_id_affiche)) {
+										$chaine.="<tr class='lig$alt white_hover'>\n";
+
+										$chaine.="<td title=\"Attribuer le pers_id $lig->col2 du 'nouveau' responsable à cet 'ancien' responsable pour qu'il conserve ses compte d'utilisateur et mot de passe tout en collant aux informations actuellement saisies dans Sconet/Siècle.\">\n";
+										$chaine.="<input type='checkbox' name='rapprocher_pers_id[]' id='rapprocher_pers_id_$cpt_resp' value='$lig->col2|$lig3->pers_id' />\n";
+										$chaine.="</td>\n";
+
+										$chaine.="<td><label for='rapprocher_pers_id_$cpt_resp'>$lig3->pers_id</label></td>\n";
+										$chaine.="<td><label for='rapprocher_pers_id_$cpt_resp'>$lig3->nom</label></td>\n";
+										$chaine.="<td><label for='rapprocher_pers_id_$cpt_resp'>$lig3->prenom</label></td>\n";
+										$chaine.="<td><label for='rapprocher_pers_id_$cpt_resp'>";
+										$cpt_tel=0;
+										if($lig3->tel_pers!="") {
+											$chaine.="Tpe:".preg_replace("/ /", ".", $lig3->tel_pers);
+											$cpt_tel++;
+										}
+										if($lig3->tel_prof!="") {
+											if($cpt_tel>0) {$chaine.="<br />";}
+											$chaine.="Tpr:".preg_replace("/ /", ".", $lig3->tel_prof);
+											$cpt_tel++;
+										}
+										if($lig3->tel_port!="") {
+											if($cpt_tel>0) {$chaine.="<br />";}
+											$chaine.="Tpo:".preg_replace("/ /", ".", $lig3->tel_port);
+											$cpt_tel++;
+										}
+										$chaine.="</label></td>\n";
+
+										$chaine.="<td><label for='rapprocher_pers_id_$cpt_resp'>";
+										$chaine.=$lig3->login;
+										$chaine.="</label></td>\n";
+
+										$chaine.="<td><label for='rapprocher_pers_id_$cpt_resp'>";
+										$sql="SELECT e.login, e.nom, e.prenom FROM eleves e, responsables2 r WHERE r.ele_id=e.ele_id AND r.pers_id='$lig3->pers_id' ORDER BY e.nom, e.prenom;";
+										$res_e=mysql_query($sql);
+										if(mysql_num_rows($res_e)>0) {
+											$chaine.="<span title='Responsabilité actuellement présente dans Gepi'>";
+											$cpt_ele=0;
+											while($lig_e=mysql_fetch_object($res_e)) {
+												if($cpt_ele>0) {$chaine.="<br />";}
+												$chaine.=$lig_e->nom." ".$lig_e->prenom;
+												$tmp_clas=get_class_from_ele_login($lig_e->login);
+												if(isset($tmp_clas['liste_nbsp'])) {
+													$chaine.=" (<em>".$tmp_clas['liste_nbsp']."</em>)";
+												}
+												$cpt_ele++;
+											}
+											$chaine.="</span>";
+										}
+										$chaine.="</label></td>\n";
+
+										$chaine.="<td>";
+										$sql="SELECT e.login, e.nom, e.prenom FROM eleves e, temp_responsables2_import t WHERE t.ele_id=e.ele_id AND t.pers_id='$lig3->pers_id' ORDER BY e.nom, e.prenom;";
+										$res_e=mysql_query($sql);
+										if(mysql_num_rows($res_e)>0) {
+											$chaine.="<span title=\"Responsabilité présente dans Sconet/Siècle.\">";
+											$cpt_ele=0;
+											while($lig_e=mysql_fetch_object($res_e)) {
+												if($cpt_ele>0) {$chaine.="<br />";}
+												$chaine.=$lig_e->nom." ".$lig_e->prenom;
+												$tmp_clas=get_class_from_ele_login($lig_e->login);
+												if(isset($tmp_clas['liste_nbsp'])) {
+													$chaine.=" (<em>".$tmp_clas['liste_nbsp']."</em>)";
+												}
+												$cpt_ele++;
+											}
+											$chaine.="</span>";
+										}
+										$chaine.="</td>\n";
+
+
+										$chaine.="</tr>\n";
+
+										$tab_pers_id_affiche[]=$lig3->pers_id;
+										$cpt_resp++;
+									}
+								}
+							}
+						}
+
+
+					}
+				}
+			}
+
+			if($chaine!="") {
+				echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+				echo "<fieldset style='border: 1px solid grey;'>\n";
+
+				echo "<p class='bold'>Contrôle des doublons...</p>\n";
+				echo "<p>Veuillez contrôler si les nouveaux repérés sont vraiment des nouveaux ou s'il s'agit de doublons.<br />Voir en bas de tableau les explications.</p>\n";
+
+				echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+				echo "<input type='hidden' name='step' value='16a' />\n";
+
+				if(isset($_POST['eff_tranche'])) {
+					echo "<input type='hidden' name='eff_tranche' value='".$_POST['eff_tranche']."' />\n";
+				}
+
+				echo "<table class='boireaus'>\n";
+
+				echo "<tr>\n";
+				echo "<th rowspan='2'>Rapprocher</th>\n";
+				echo "<th rowspan='2'>pers_id</th>\n";
+				echo "<th rowspan='2'>Nom</th>\n";
+				echo "<th rowspan='2'>Prénom</th>\n";
+				echo "<th rowspan='2'>Tel</th>\n";
+				echo "<th rowspan='2' style='background-color:lightblue'>Login</th>\n";
+				echo "<th colspan='2'>Responsable de</th>\n";
+				echo "</tr>\n";
+
+				echo "<tr>\n";
+				echo "<th>Base</th>\n";
+				echo "<th>XML</th>\n";
+				echo "</tr>\n";
+
+				echo $chaine;
+				echo "</table>\n";
+
+				echo "<input type='submit' value='Valider' /></p>\n";
+
+				//echo "<span style='color:red'>Ajouter une colonne 'Prendre le pers_id du nouveau'<br />Tester quand même si les anciens sont aussi dans temp_resp_pers_import... si oui, il n'y a pas lieu de proposer la modif... sauf si le resp n'est plus associé à aucun élève</span><br />";
+
+				echo "<p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Si les responsables n'ont pas de compte d'utilisateur pour se connecter dans Gepi, cette phase ne présente pas franchement d'intérêt.<br />L'objectif est ici d'éviter de changer le responsable qui dispose déjà d'un compte d'utilisateur.<br />Un nouveau login pourrait sinon être généré.</p>\n";
+
+				echo "</fieldset>\n";
+				echo "</form>\n";
+				echo "<p><br /></p>\n";
+			}
+
+
+			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			echo "<fieldset style='border: 1px solid grey;'>\n";
+			echo "<p class='bold'>Ou passer à la suite</p>\n";
+			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
+			echo "<input type='hidden' name='step' value='16' />\n";
+
+			$eff_tranche=isset($_POST['eff_tranche'])?$_POST['eff_tranche']:20;
+
+			$sql="SELECT DISTINCT col2 FROM tempo2 WHERE col1='pers_id';";
+			info_debug($sql);
+			//echo "$sql<br />";
+			$test=mysql_query($sql);
+			$nb_tmp_modif=mysql_num_rows($test);
+
+			echo "<p>Afficher les différences par tranches de <input type='text' name='eff_tranche' id='eff_tranche' value='".min($eff_tranche,$nb_tmp_modif)."' size='3' onkeydown=\"clavier_2(this.id,event,0,200);\" autocomplete='off' /> sur un total de $nb_tmp_modif.<br />\n";
+
+			echo "<input type='submit' value='Afficher les différences' /></p>\n";
+			echo "<input type='hidden' name='ne_pas_proposer_redoublonnage_adresse' value='".getSettingValue('ne_pas_proposer_redoublonnage_adresse')."' />\n";
+			echo "</fieldset>\n";
+			echo "</form>\n";
+
+
+
+
+
+
+
+			break;
+
 		case "16":
-// 20121016
 			echo "<h2>Import/mise à jour des responsables</h2>\n";
 
 			info_debug("==============================================");
@@ -7405,6 +7847,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						info_debug($sql);
 						$test=mysql_query($sql);
 						if(mysql_num_rows($test)>0) {
+// 20121020
 							$ligne_parent.="<td class='nouveau'><label for='check_".$cpt."'>Nouveau</label></td>\n";
 						}
 						else {
