@@ -62,6 +62,7 @@ if (!(($mode_impression=='csv') or ($mode_impression=='pdf'))) {
 	//**************** FIN EN-TETE *****************
 }
 
+
 //debug_var();
 
 // Passer à 'y' pour provoquer l'affichage des requetes:
@@ -536,6 +537,15 @@ while ($p < $nb_users) {
 	// On réinitialise le mot de passe
 
 	// =====================
+	// MODIF: boireaus 20071102
+	//if(in_array(,$tab_password)){
+
+	$ne_pas_ecraser_passwd=false;
+	// si on vient de create_eleve.php ne pas écraser les mots de passe existants
+	if(isset($_GET['ne_pas_ecraser_passwd']) && $_GET['ne_pas_ecraser_passwd']="y") {
+		$ne_pas_ecraser_passwd=true;
+	}
+
 	$temoin_user_deja_traite="n";
 	if(isset($creation_comptes_classe)) {
 		if(array_key_exists($user_login,$tab_password)){
@@ -594,16 +604,28 @@ while ($p < $nb_users) {
 			// Dans ce cas, on imprime quand même une feuille, mais on ne modifie pas le mot de passe
 			// (il a été stocké dans un tableau et on le re-sert)
 		}
-		else {
-			//$new_password = pass_gen();
-			if(($user_status=='eleve')&&($mdp_INE=='y')) {
-				$sql="SELECT no_gep FROM eleves WHERE login='$user_login';";
-				if($debug_create_resp=="y") {echo "$sql<br />\n";}
-				$res_ine=mysql_query($sql);
-				if(mysql_num_rows($res_ine)>0){
-					$lig_ine=mysql_fetch_object($res_ine);
-					if($lig_ine->no_gep!='') {
-						$new_password=$lig_ine->no_gep;
+		else{
+		
+			$sql="SELECT login FROM utilisateurs WHERE login='$user_login' AND password!='';";
+			$test_pass_non_vide=mysql_query($sql);
+			if(mysql_num_rows($test_pass_non_vide) && $ne_pas_ecraser_passwd>0){
+				$new_password="<span style='color:red;'>Non modifié</span>";
+				$ecraser_passwd_user=false;
+			} else {
+				//$new_password = pass_gen();
+				$ecraser_passwd_user=true;
+				if(($user_status=='eleve')&&($mdp_INE=='y')) {
+					$sql="SELECT no_gep FROM eleves WHERE login='$user_login';";
+					$res_ine=mysql_query($sql);
+					if(mysql_num_rows($res_ine)>0){
+						$lig_ine=mysql_fetch_object($res_ine);
+						if($lig_ine->no_gep!='') {
+							$new_password=$lig_ine->no_gep;
+						}
+						else {
+							$new_password = pass_gen();
+							$tab_non_INE_password[]="$user_nom $user_prenom";
+						}
 					}
 					else {
 						$new_password = pass_gen();
@@ -612,36 +634,38 @@ while ($p < $nb_users) {
 				}
 				else {
 					$new_password = pass_gen();
-					$tab_non_INE_password[]="$user_nom $user_prenom";
 				}
 			}
-			else {
-				$new_password = pass_gen();
-			}
-			$tab_password[$user_login]=$new_password;
 
+			$tab_password[$user_login]=$new_password;
 			if ($user_auth_mode != "gepi") {
 				// L'utilisateur est un utilisateur SSO. On enregistre un mot de passe vide.
-				$sql="UPDATE utilisateurs SET password='', change_mdp = 'n' WHERE login='" . $user_login . "'";
-				if($debug_create_resp=="y") {echo "$sql<br />\n";}
-				$save_new_pass = mysql_query($sql);
-
+				$save_new_pass = mysql_query("UPDATE utilisateurs SET password='', change_mdp = 'n' WHERE login='" . $user_login . "'");
 				// Si l'accès LDAP en écriture est paramétré, on va mettre à jour le mot de passe de l'utilisateur
 				// directement dans l'annuaire.
 				if ($gepiSettings['ldap_write_access'] == "yes") {
-					$ldap_server = new LDAPServer;
-					$reg_data = $ldap_server->update_user($user_login, '', '', '', '', $new_password,'');
+					if ($ecraser_passwd_user) {
+						$ldap_server = new LDAPServer;
+						$reg_data = $ldap_server->update_user($user_login, '', '', '', '', $new_password,'');
+						} else {
+								// On réinitialise la variable $new_password à zéro, pour être sûr
+								// qu'il n'y ait pas de confusion par la suite.
+								$new_password = '';
+								}
 				} else {
 					// On réinitialise la variable $new_password à zéro, pour être sûr
 					// qu'il n'y ait pas de confusion par la suite.
 					$new_password = '';
 				}
 			} else {
-				$save_new_pass = Session::change_password_gepi($user_login,$new_password);
-				if ($save_new_pass) {
-					$sql="UPDATE utilisateurs SET change_mdp = 'y' WHERE login='$user_login'";
-					if($debug_create_resp=="y") {echo "$sql<br />\n";}
-					mysql_query($sql);
+				if ($ecraser_passwd_user) {
+					$save_new_pass = Session::change_password_gepi($user_login,$new_password);
+					if ($save_new_pass) {
+						mysql_query("UPDATE utilisateurs SET change_mdp = 'y' WHERE login='$user_login'");
+						$sql="UPDATE utilisateurs SET change_mdp = 'y' WHERE login='$user_login'";
+						if($debug_create_resp=="y") {echo "$sql<br />\n";}
+						mysql_query($sql);
+					}
 				}
 			}
 		}

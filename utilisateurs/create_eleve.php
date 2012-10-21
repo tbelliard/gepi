@@ -191,13 +191,13 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 				// Si on opère sur toutes les classes, on ne spécifie aucune classe
 
             	if ($_POST['classe'] == "all") {
-				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=html$chaine_mdp_INE".add_token_in_url()."' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression HTML)</a>";
-				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=csv$chaine_mdp_INE".add_token_in_url()."' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Export CSV)</a>";
-				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=pdf$chaine_mdp_INE".add_token_in_url()."' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression PDF)</a>";
+				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;ne_pas_ecraser_passwd=y&amp;mode=html$chaine_mdp_INE".add_token_in_url()."' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression HTML)</a>";
+				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;ne_pas_ecraser_passwd=y&amp;mode=csv$chaine_mdp_INE".add_token_in_url()."' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Export CSV)</a>";
+				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;ne_pas_ecraser_passwd=y&amp;mode=pdf$chaine_mdp_INE".add_token_in_url()."' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression PDF)</a>";
 				} elseif (is_numeric($_POST['classe'])) {
-				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=html$chaine_mdp_INE".add_token_in_url()."' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression HTML)</a>";
-				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=csv$chaine_mdp_INE".add_token_in_url()."' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Export CSV)</a>";
-				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=pdf$chaine_mdp_INE".add_token_in_url()."' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression PDF)</a>";
+				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;ne_pas_ecraser_passwd=y&amp;user_classe=".$_POST['classe']."&amp;mode=html$chaine_mdp_INE".add_token_in_url()."' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression HTML)</a>";
+				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;ne_pas_ecraser_passwd=y&amp;user_classe=".$_POST['classe']."&amp;mode=csv$chaine_mdp_INE".add_token_in_url()."' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Export CSV)</a>";
+				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;ne_pas_ecraser_passwd=y&amp;user_classe=".$_POST['classe']."&amp;mode=pdf$chaine_mdp_INE".add_token_in_url()."' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression PDF)</a>";
 				}
 			}
 			$msg .= "<br />Vous devez effectuer cette opération maintenant !";

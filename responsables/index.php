@@ -971,8 +971,10 @@ if("$num_resp"=="0"){
 				if($lig1->civilite!=""){echo "$lig1->civilite \n";}
 				echo "$lig1->nom $lig1->prenom</a>\n";
 
-				$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig1->login, "responsable", "", "n");
-				if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+				if($lig1->login!="") {
+					$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig1->login, "responsable", "", "n");
+					if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+				}
 
 				echo "</td>\n";
 
@@ -1179,9 +1181,10 @@ else{
 							if($lig2->civilite!=""){echo "$lig2->civilite \n";}
 							echo "$lig2->nom $lig2->prenom</a>\n";
 
-							$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig2->login, "responsable", "", "n");
-							if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
-
+							if($lig2->login!="") {
+								$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig2->login, "responsable", "", "n");
+								if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+							}
 							echo "</td>\n";
 
 							echo "<td style='text-align:center;'";
@@ -1246,8 +1249,10 @@ else{
 											if($lig4->civilite!=""){echo "$lig4->civilite \n";}
 											echo "$lig4->nom $lig4->prenom</a>\n";
 
-											$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig4->login, "responsable", "", "n");
-											if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+											if($lig4->login!="") {
+												$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig4->login, "responsable", "", "n");
+												if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+											}
 
 											echo "</td>\n";
 
@@ -1356,7 +1361,7 @@ else{
 									}
 
 
-									$sql="SELECT rp.nom,rp.prenom,rp.civilite,r.*,ra.* FROM resp_pers rp, responsables2 r, resp_adr ra WHERE
+									$sql="SELECT rp.login, rp.nom,rp.prenom,rp.civilite,r.*,ra.* FROM resp_pers rp, responsables2 r, resp_adr ra WHERE
 										rp.pers_id=r.pers_id AND
 										rp.adr_id=ra.adr_id AND
 										r.ele_id='$lig3->ele_id' AND
@@ -1370,8 +1375,10 @@ else{
 											if($lig4->civilite!=""){echo "$lig4->civilite \n";}
 											echo "$lig4->nom $lig4->prenom</a>\n";
 
-											$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig4->login, "responsable", "", "n");
-											if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+											if($lig4->login!="") {
+												$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig4->login, "responsable", "", "n");
+												if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+											}
 
 											echo "</td>\n";
 
@@ -1423,8 +1430,10 @@ else{
 										if($lig2->civilite!=""){echo "$lig2->civilite \n";}
 										echo "$lig2->nom $lig2->prenom</a>\n";
 
-										$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig2->login, "responsable", "", "n");
-										if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+										if($lig2->login!="") {
+											$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig2->login, "responsable", "", "n");
+											if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+										}
 
 										echo "</td>\n";
 
@@ -1572,8 +1581,10 @@ else{
 						if($lig2->civilite!=""){echo "$lig2->civilite \n";}
 						echo "$lig2->nom $lig2->prenom</a>\n";
 
-						$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig2->login, "responsable", "", "n");
-						if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+						if($lig2->login!="") {
+							$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig2->login, "responsable", "", "n");
+							if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+						}
 
 						echo "</td>\n";
 
@@ -1620,8 +1631,10 @@ else{
 					if($lig3->civilite!=""){echo "$lig3->civilite \n";}
 					echo "$lig3->nom $lig3->prenom</a>\n";
 
-					$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig3->login, "responsable", "", "n");
-					if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+					if($lig3->login!="") {
+						$lien_image_compte_utilisateur=lien_image_compte_utilisateur($lig3->login, "responsable", "", "n");
+						if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+					}
 
 					echo "</td>\n";
 

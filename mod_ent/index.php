@@ -5,7 +5,7 @@
  * Module d'intégration de Gepi dans un ENT réalisé au moment de l'intégration de Gepi dans ARGOS dans l'académie de Bordeaux
  * Fichier permettant de récupérer de nouveaux élèves dans le ldap de l'ENT
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane boireau, Julien Jocal
+ * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -45,6 +45,11 @@ if (!checkAccess()) {
 // Sécurité supplémentaire pour éviter d'aller voir ce fichier si on n'est pas dans un ent
 if (getSettingValue("use_ent") != 'y') {
 	die('Fichier interdit.');
+}
+
+if((preg_match("/^027/", getSettingValue('gepiSchoolRne')))||(preg_match("/^076/", getSettingValue('gepiSchoolRne')))) {
+	header("Location:./index_itop.php");
+	die();
 }
 
 // ======================= Initialisation des variables ==========================

@@ -1251,7 +1251,7 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 <li>Les lignes en <span style='color:black; font-weight:bold;'>noir</span> signalent une <span style='color:black; font-weight:bold;'>session close normalement</span>.</li>
 <li>Les lignes en <span style='color:green; font-weight:bold;'>vert</span> indiquent les <span style='color:green; font-weight:bold;'>sessions en cours</span> (<em>cela peut correspondre à une connexion actuellement close mais pour laquelle vous ne vous êtes pas déconnecté correctement</em>).</li>
 </ul>
-<table class='col' style='width: 90%; margin-left: auto; margin-right: auto; margin-bottom: 32px;' cellpadding='5' cellspacing='0' summary='Connexions'>
+<table class='boireaus' style='width: 90%; margin-left: auto; margin-right: auto; margin-bottom: 32px;' cellpadding='5' cellspacing='0' summary='Connexions'>
 	<tr>
 		<th class='col'>Début session</th>
 		<th class='col'>Fin session</th>
@@ -1262,6 +1262,7 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 
 	$res = sql_query($sql);
 	if ($res) {
+		$alt=1;
 		for ($i = 0; ($row = sql_row($res, $i)); $i++)
 		{
 			$annee_b = mb_substr($row[0],0,4);
@@ -1296,10 +1297,11 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 
 			}
 
-			echo "<tr>\n";
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt white_hover'>\n";
 			echo "<td class=\"col\">".$temp1.$date_debut.$temp2."</td>\n";
-			if ($row[4] == 2) {
-				echo "<td class=\"col\">".$temp1."Tentative de connexion<br />avec mot de passe erroné.".$temp2."</td>\n";
+			if ($row[4] == 4) {
+				echo "<td class=\"col\">".$temp1.$date_fin."<br />Tentative de connexion<br />avec mot de passe erroné.".$temp2."</td>\n";
 			}
 			else {
 				echo "<td class=\"col\">".$temp1.$date_fin.$temp2."</td>\n";
