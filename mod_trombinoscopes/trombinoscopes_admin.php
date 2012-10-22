@@ -300,7 +300,7 @@ function purge_dossier_photos($type_utilisateurs) {
 	$R_dossier_photos=opendir($repertoire_photos."/".$type_utilisateurs);
 	while ($photo=readdir($R_dossier_photos))
 		{
-		if (is_file($repertoire_photos."/".$type_utilisateurs."/".$photo) && $photo!="index.html")
+		if (is_file($repertoire_photos."/".$type_utilisateurs."/".$photo) && $photo!="index.html" && $photo!="encodage_active.txt")
 			{
 			$nom_photo=pathinfo($repertoire_photos."/".$type_utilisateurs."/".$photo,PATHINFO_FILENAME);
 			// en principe on ne trouve que des fichiers JPEG dans le dossier

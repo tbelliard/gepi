@@ -333,6 +333,11 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
+		if (isset($_POST['informer_scolarite_modif_mail'])) {
+			if (!saveSetting("informer_scolarite_modif_mail", $_POST['informer_scolarite_modif_mail'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre informer_scolarite_modif_mail !";
+			}
+		}
 
 		if (isset($_POST['ele_tel_pers'])) {
 			if (!saveSetting("ele_tel_pers", $_POST['ele_tel_pers'])) {
@@ -366,7 +371,6 @@ if (isset($_POST['is_posted'])) {
 				$msg .= "Erreur lors de l'enregistrement du paramètre ele_tel_prof !";
 			}
 		}
-
 
 		if (isset($_POST['type_bulletin_par_defaut'])) {
 			if(($_POST['type_bulletin_par_defaut']=='html')||($_POST['type_bulletin_par_defaut']=='pdf')) {
@@ -1181,7 +1185,7 @@ echo add_token_field();
 			</label>
 		</span>
 	</p>
-	
+
 	<p class="ligneCaps">
 		<span class="cellTab70">
 			<a name='mode_email_ele'></a>
@@ -1209,7 +1213,25 @@ echo add_token_field();
 			</label>
 		</span>
 	</p>
-	
+
+	<p class="ligneCaps">
+		<span class="cellTab70">
+			<a name='informer_scolarite_modif_mail'></a>
+			Dans le cas où vous choisissez ci-dessus Mise à jour du mail depuis Gérer mon compte, envoyer un mail à <?php
+			if(getSettingValue('gepiSchoolEmail')!='') {
+				echo getSettingValue('gepiSchoolEmail');
+			}
+			else {
+				echo "(<em>gepiSchoolEmail non renseigné</em>)";
+			}
+		?> pour signaler le changement de mail de façon à permettre de reporter la saisie dans Sconet.
+		</span>
+		<span class="cellTab plusPetit">
+		<input type="radio" name="informer_scolarite_modif_mail" id="informer_scolarite_modif_mail_y" value="y" <?php if((getSettingValue("informer_scolarite_modif_mail")=="y")||(getSettingValue("informer_scolarite_modif_mail")=="")) {echo 'checked';} ?> onchange='changement()' /> <label for='informer_scolarite_modif_mail_y' style='cursor: pointer;'>Oui</label><br />
+		<input type="radio" name="informer_scolarite_modif_mail" id="informer_scolarite_modif_mail_n" value="n" <?php if(getSettingValue("informer_scolarite_modif_mail")=="n"){echo 'checked';} ?> onchange='changement()' /> <label for='informer_scolarite_modif_mail_n' style='cursor: pointer;'>Non</label><br />
+		</span>
+	</p>
+
 	<p class="ligneCaps">
 		<span class="cellTab70">
 			Type de bulletins par défaut&nbsp;:
